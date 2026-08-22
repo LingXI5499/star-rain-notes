@@ -1,0 +1,132 @@
+/**
+ * 墨境 · Inkspace — frozen design tokens (02-ui-design.md §3).
+ *
+ * Light tokens live on :root; dark tokens activate under [data-theme="dark"].
+ * The active-theme switching (Light / Dark / System, localStorage override)
+ * is implemented in TASK-004; this file only declares the frozen values.
+ */
+:root {
+  /* Light palette */
+  --bg-page: #f7f7f4;
+  --bg-surface: #ffffff;
+  --bg-subtle: #f1f2ee;
+  --text-primary: #171918;
+  --text-secondary: #5f6662;
+  --text-muted: #89908c;
+  --border: #e4e7e3;
+  --border-strong: #ccd1cd;
+  --primary: #28564d;
+  --primary-hover: #1e453e;
+  --accent: #b86f47;
+  --success: #357a55;
+  --warning: #a56828;
+  --danger: #b44848;
+  /* Text color placed on a --primary filled surface (button / active chip). */
+  --on-primary: #ffffff;
+
+  /* Typography */
+  --font-family: 'Inter', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', system-ui, sans-serif;
+  --font-display-xl: 72px / 76px var(--font-family);
+  --font-display: 56px / 62px var(--font-family);
+  --font-h1: 42px / 50px var(--font-family);
+  --font-h2: 32px / 40px var(--font-family);
+  --font-h3: 24px / 32px var(--font-family);
+  --font-h4: 20px / 28px var(--font-family);
+  --font-body: 16px / 28px var(--font-family);
+  --font-prose: 17px / 1.8 var(--font-family);
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+  --space-8: 40px;
+  --space-9: 48px;
+  --space-10: 64px;
+  --space-11: 80px;
+  --space-12: 96px;
+  --space-13: 128px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+
+  /* Layout containers — unified Layout System (前台布局系统优化):
+     wide page shell + narrow prose + functional sidebars.
+     --container-* stay as aliases so existing classes keep working. */
+  --layout-max-width: 1400px;
+  --content-max-width: 780px;
+  --sidebar-width: 240px;
+  --aside-width: 280px;
+  --layout-gap: 32px;
+  --page-padding-x: 32px;
+
+  --container-marketing: var(--layout-max-width);
+  --container-content: var(--content-max-width);
+  --container-docs: var(--layout-max-width);
+
+  /* Header / shell */
+  --header-height: 64px;
+  --header-height-mobile: 56px;
+  --admin-sidebar-width: 228px;
+  --admin-sidebar-collapsed: 64px;
+
+  /* Global Search UX V2 — search widget + overlay layers.
+     z-index follows the existing small-scale system (header 20, chapter
+     columns 40/41); the search panel floats above page content and the
+     sheet sits above everything transient. */
+  --z-header: 20;
+  --z-search-panel: 60;
+  --z-search-sheet: 100;
+  --search-input-height: 38px;
+}
+
+[data-theme='dark'] {
+  /* Dark palette */
+  --bg-page: #101211;
+  --bg-surface: #171a18;
+  --bg-subtle: #1d211f;
+  --text-primary: #f0f2ef;
+  --text-secondary: #b0b7b3;
+  --text-muted: #8b958f;
+  --border: #292e2b;
+  --border-strong: #414945;
+  --primary: #74a99b;
+  --primary-hover: #8fbcb0;
+  --accent: #d18b64;
+  --success: #5cb383;
+  --warning: #d9a45b;
+  --danger: #e0746f;
+  /* --primary is light in dark mode, so text on it must be dark for contrast. */
+  --on-primary: #0d1a16;
+}
+
+/* ------------------------------------------------------------------
+   Element Plus brand alignment (TASK-011 follow-up): map EP's primary
+   color to the Inkspace green so admin controls stay coherent with the
+   rest of the UI in both themes. Shades are the light-3…9 / dark-2
+   ramp Element Plus derives hover / plain / disabled states from.
+   ------------------------------------------------------------------ */
+:root {
+  --el-color-primary: #28564d;
+  --el-color-primary-light-3: #4e7a6f;
+  --el-color-primary-light-5: #7aa096;
+  --el-color-primary-light-7: #a9c2bb;
+  --el-color-primary-light-8: #c3d5d0;
+  --el-color-primary-light-9: #e3ece9;
+  --el-color-primary-dark-2: #20443c;
+}
+
+[data-theme='dark'] {
+  --el-color-primary: #6fa393;
+  --el-color-primary-light-3: #5b8a7b;
+  --el-color-primary-light-5: #4a7467;
+  --el-color-primary-light-7: #3a5c52;
+  --el-color-primary-light-8: #2f4c44;
+  --el-color-primary-light-9: #243c36;
+  --el-color-primary-dark-2: #8ab8ab;
+}

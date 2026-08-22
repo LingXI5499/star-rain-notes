@@ -1,0 +1,47 @@
+# Star Rain Notes V1 — systemd unit (Spring Boot JAR, 06-testing-deployment.md §7)
+#
+# Install:
+#   sudo cp deploy/systemd/star-rain-notes.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now star-rain-notes
+#
+# Secrets come from /etc/star-rain-notes/star-rain-notes.env (chmod 600,
+# template: deploy/env/star-rain-notes.env.example) — never from the unit file.
+
+[Unit]
+Description=Star Rain Notes V1 (Spring Boot)
+Documentation=https://gitee.com/linglingxixixi/yulanlin-blog
+After=network.target mysql.service
+Wants=mysql.service
+
+[Service]
+Type=simple
+User=starrain
+Group=starrain
+WorkingDirectory=/opt/star-rain-notes
+
+# Environment only contains non-secret defaults; secrets live in the env file
+Environment=SPRING_PROFILES_ACTIVE=prod
+Environment=SERVER_PORT=24680
+EnvironmentFile=-/etc/star-rain-notes/star-rain-notes.env
+
+ExecStart=/usr/bin/java -Xms256m -Xmx512m -jar /opt/star-rain-notes/app.jar
+ExecReload=/bin/kill -s HUP $MAINPID
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+
+# Logs (06 §7): append to /var/log/star-rain-notes (writable by the service)
+StandardOutput=append:/var/log/star-rain-notes/star-rain-notes.log
+StandardError=append:/var/log/star-rain-notes/star-rain-notes.log
+
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+ReadWritePaths=/srv/star-rain-notes/uploads /var/log/star-rain-notes
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+
+# Admin CMS and the SPA search page are noindex; keep crawlers out.
+Disallow: /admin
+Disallow: /search
+
+Sitemap: https://yulanlin.cn/sitemap.xml

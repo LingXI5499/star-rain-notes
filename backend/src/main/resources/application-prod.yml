@@ -1,0 +1,21 @@
+# Production profile (06-testing-deployment.md §9) — secret-free template.
+#
+# Everything here is either a prod-only default or reads from the
+# environment. Secrets (MYSQL_PASSWORD, APP_SETUP_TOKEN, ...) are injected at
+# runtime via the systemd EnvironmentFile (deploy/env/star-rain-notes.env.example
+# → /etc/star-rain-notes/star-rain-notes.env) and never committed to Git.
+#
+# Activate with:  --spring.profiles.active=prod  (SPRING_PROFILES_ACTIVE=prod)
+server:
+  servlet:
+    session:
+      cookie:
+        # Production runs behind HTTPS: the session cookie must be Secure.
+        # Override with SESSION_COOKIE_SECURE=false only for non-TLS smoke runs.
+        secure: ${SESSION_COOKIE_SECURE:true}
+
+app:
+  media:
+    # Absolute media directory served by Nginx at /uploads (06 §8); the DB
+    # keeps only the relative storage key.
+    storage-dir: ${MEDIA_STORAGE_DIR:/srv/star-rain-notes/uploads}

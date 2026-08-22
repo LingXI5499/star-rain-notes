@@ -1,0 +1,18 @@
+# 测试 profile（gitignored —— 含真实凭据，严禁提交）
+# 由数据库集成测试 @ActiveProfiles("test") 激活；Flyway 在测试上下文启动时
+# 对 fresh test database 执行 V1/V2 迁移。
+spring:
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/star_rain_notes_test?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&sslMode=DISABLED&allowPublicKeyRetrieval=true
+    username: root
+    password: "1234"
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+
+app:
+  media:
+    # 测试专用存储目录（target/ 下，mvn clean 自动清理，与开发 uploads 隔离）
+    storage-dir: target/test-uploads
+    public-base: /uploads
