@@ -37,6 +37,9 @@ class V1SchemaMigrationTest {
             "english_overview",
             "vocabulary_theme",
             "vocabulary_word",
+            "english_grammar_course",
+            "english_grammar_section",
+            "english_grammar_lesson",
             "tutorial_node_hierarchy_backup_v5",
             "tutorial_category_full_backup_v7",
             "tutorial_full_backup_v7",
@@ -47,7 +50,7 @@ class V1SchemaMigrationTest {
     private JdbcTemplate jdbc;
 
     @Test
-    void createsAllTwentyCoreAndBackupTables() {
+    void createsAllCoreAndBackupTables() {
         Integer count = jdbc.queryForObject("""
                 SELECT COUNT(*)
                 FROM information_schema.tables
@@ -55,7 +58,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(20);
+        assertThat(count).isEqualTo(23);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -81,14 +84,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV7AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV8AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -98,6 +101,6 @@ class V1SchemaMigrationTest {
         assertThat(descriptions).containsExactly(
                 "init schema", "seed system singletons", "create vocabulary", "seed vocabulary",
                 "flatten tutorial hierarchy", "enforce curriculum parents",
-                "restore authoritative tutorial taxonomy");
+                "restore authoritative tutorial taxonomy", "create english grammar");
     }
 }

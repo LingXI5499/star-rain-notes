@@ -7,5 +7,6 @@ public record SearchCountsView(
         long tutorial,
         long chapter,
         long blog,
-        long portfolio) {
+        long portfolio,
+        long grammar) {
 }

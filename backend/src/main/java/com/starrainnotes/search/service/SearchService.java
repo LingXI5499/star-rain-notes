@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Global search over the four published content sources (04 §15):
- * TUTORIAL, CHAPTER, BLOG, PORTFOLIO.
+ * Global search over published tutorials, chapters, blogs, portfolios and
+ * the independent English grammar course.
  *
  * <p>No ES / Redis / search table — plain indexed LIKE with parameter binding
  * and escaped %/_ wildcards. Ranking: title exact +100, title prefix +80,
@@ -55,13 +55,15 @@ public class SearchService {
         List<Candidate> chapters = searchChapters(pattern, query);
         List<Candidate> blogs = searchBlogs(pattern, query);
         List<Candidate> portfolios = searchPortfolios(pattern, query);
+        List<Candidate> grammar = searchGrammar(pattern, query);
 
         SearchCountsView counts = new SearchCountsView(
-                tutorials.size(), chapters.size(), blogs.size(), portfolios.size());
+                tutorials.size(), chapters.size(), blogs.size(), portfolios.size(), grammar.size());
 
         boolean includeTutorial = type == null || type.isBlank() || "tutorial".equals(type);
         boolean includeBlog = type == null || type.isBlank() || "blog".equals(type);
         boolean includePortfolio = type == null || type.isBlank() || "portfolio".equals(type);
+        boolean includeGrammar = type == null || type.isBlank() || "grammar".equals(type);
 
         List<Candidate> all = new ArrayList<>();
         if (includeTutorial) {
@@ -73,6 +75,9 @@ public class SearchService {
         }
         if (includePortfolio) {
             all.addAll(portfolios);
+        }
+        if (includeGrammar) {
+            all.addAll(grammar);
         }
 
         all.sort(Comparator.comparingInt(Candidate::score).reversed()
@@ -159,6 +164,23 @@ public class SearchService {
             String summary = rs.getString("summary");
             String body = rs.getString("body_markdown");
             return new Candidate("PORTFOLIO", rs.getLong("id"), title, summary, rs.getString("slug"),
+                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
+                    score(query, title, summary, body));
+        }, pattern, pattern, pattern);
+    }
+
+    private List<Candidate> searchGrammar(String pattern, String query) {
+        return jdbc.query("""
+                SELECT l.id, l.title, l.summary, l.body_markdown, l.slug, l.updated_at
+                FROM english_grammar_lesson l
+                JOIN english_grammar_course c ON c.id=l.course_id
+                WHERE c.publish_status='PUBLISHED' AND l.publish_status='PUBLISHED'
+                  AND (l.title LIKE ? OR l.summary LIKE ? OR l.body_markdown LIKE ?)
+                """, (rs, rowNum) -> {
+            String title = rs.getString("title");
+            String summary = rs.getString("summary");
+            String body = rs.getString("body_markdown");
+            return new Candidate("GRAMMAR", rs.getLong("id"), title, summary, rs.getString("slug"),
                     null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
                     score(query, title, summary, body));
         }, pattern, pattern, pattern);
