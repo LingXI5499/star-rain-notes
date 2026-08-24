@@ -1,4 +1,18 @@
-import type { App } from 'vue'
+import type { App, Directive } from 'vue'
+import { ElButton } from 'element-plus/es/components/button/index.mjs'
+import { ElDatePicker } from 'element-plus/es/components/date-picker/index.mjs'
+import { ElDialog } from 'element-plus/es/components/dialog/index.mjs'
+import { ElDropdown, ElDropdownItem, ElDropdownMenu } from 'element-plus/es/components/dropdown/index.mjs'
+import { ElForm, ElFormItem } from 'element-plus/es/components/form/index.mjs'
+import { ElInput } from 'element-plus/es/components/input/index.mjs'
+import { ElInputNumber } from 'element-plus/es/components/input-number/index.mjs'
+import { ElOption, ElSelect } from 'element-plus/es/components/select/index.mjs'
+import { ElPagination } from 'element-plus/es/components/pagination/index.mjs'
+import { ElSwitch } from 'element-plus/es/components/switch/index.mjs'
+import { ElTable, ElTableColumn } from 'element-plus/es/components/table/index.mjs'
+import { ElTag } from 'element-plus/es/components/tag/index.mjs'
+import { ElUpload } from 'element-plus/es/components/upload/index.mjs'
+import { requireApp } from './app-context'
 
 /**
  * Element Plus lazy registration (TASK-011).
@@ -16,27 +30,61 @@ import type { App } from 'vue'
  * `registerElementPlus()` is idempotent and safe to call concurrently.
  */
 
-let app: App | null = null
 let registered = false
 let pending: Promise<void> | null = null
 
-export function bindElementPlus(target: App): void {
-  app = target
+const components = [
+  ElButton,
+  ElDatePicker,
+  ElDialog,
+  ElDropdown,
+  ElDropdownItem,
+  ElDropdownMenu,
+  ElForm,
+  ElFormItem,
+  ElInput,
+  ElInputNumber,
+  ElOption,
+  ElPagination,
+  ElSelect,
+  ElSwitch,
+  ElTable,
+  ElTableColumn,
+  ElTag,
+  ElUpload,
+] as const
+
+// Element Plus' loading directive imports its full service/overlay stack and
+// added ~477 KB to the lazy admin payload. Lists only need a clear busy state,
+// so a tiny accessible directive is sufficient here.
+const loadingDirective: Directive<HTMLElement, boolean> = {
+  mounted(element, binding) {
+    applyLoadingState(element, Boolean(binding.value))
+  },
+  updated(element, binding) {
+    applyLoadingState(element, Boolean(binding.value))
+  },
+}
+
+function applyLoadingState(element: HTMLElement, loading: boolean): void {
+  element.classList.toggle('app-loading', loading)
+  if (loading) element.setAttribute('aria-busy', 'true')
+  else element.removeAttribute('aria-busy')
 }
 
 export async function registerElementPlus(): Promise<void> {
   if (registered) return
-  if (!app) {
-    throw new Error('registerElementPlus() called before bindElementPlus()')
-  }
   if (!pending) {
     pending = (async () => {
       await Promise.all([
         import('element-plus/dist/index.css'),
         import('element-plus/theme-chalk/dark/css-vars.css'),
       ])
-      const { default: ElementPlus } = await import('element-plus')
-      app?.use(ElementPlus)
+      const app: App = requireApp()
+      for (const component of components) {
+        app.use(component)
+      }
+      app.directive('loading', loadingDirective)
       registered = true
     })()
   }

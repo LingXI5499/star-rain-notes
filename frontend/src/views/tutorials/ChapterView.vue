@@ -77,10 +77,6 @@ onMounted(load)
 watch(() => route.params.tutorialSlug, load)
 watch(() => route.params.chapterSlug, load)
 
-function scrollToBody() {
-  const el = document.getElementById('reader-body')
-  if (el) el.scrollIntoView({ behavior: 'smooth' })
-}
 </script>
 
 <template>
@@ -136,14 +132,12 @@ function scrollToBody() {
 
       <header class="reader__header">
         <div>
+          <p class="reader__document-label">DOCUMENTATION · {{ chapter.tutorialTitle }}</p>
           <h1 class="reader__title">{{ chapter.chapterTitle }}</h1>
           <p class="reader__meta">
             字数 {{ charCount }} · 预计阅读 {{ readMinutes }} 分钟 · 发布于 {{ formatDate(chapter.publishedAt) }}
           </p>
         </div>
-        <button type="button" class="reader__start" @click="scrollToBody()">
-          开始学习 →
-        </button>
       </header>
 
       <div id="reader-body" class="reader__body">
@@ -156,7 +150,8 @@ function scrollToBody() {
           :to="`/tutorials/${detail.slug}/${chapter.previous.chapterSlug}`"
           class="reader__prevnext-link"
         >
-          ← {{ chapter.previous.chapterTitle }}
+          <small>上一篇</small>
+          <strong>← {{ chapter.previous.chapterTitle }}</strong>
         </RouterLink>
         <span v-else />
         <RouterLink
@@ -164,7 +159,8 @@ function scrollToBody() {
           :to="`/tutorials/${detail.slug}/${chapter.next.chapterSlug}`"
           class="reader__prevnext-link reader__prevnext-link--next"
         >
-          {{ chapter.next.chapterTitle }} →
+          <small>下一篇</small>
+          <strong>{{ chapter.next.chapterTitle }} →</strong>
         </RouterLink>
       </nav>
     </article>
@@ -195,8 +191,9 @@ function scrollToBody() {
 <style scoped>
 .reader {
   display: grid;
-  grid-template-columns: var(--sidebar-width) minmax(0, 1fr) var(--aside-width);
-  gap: var(--layout-gap);
+  grid-template-columns: minmax(240px, 280px) minmax(0, 780px) minmax(190px, 230px);
+  justify-content: center;
+  gap: clamp(28px, 4vw, 64px);
   align-items: start;
 }
 
@@ -205,7 +202,8 @@ function scrollToBody() {
   top: calc(var(--header-height) + var(--space-6));
   max-height: calc(100vh - var(--header-height) - var(--space-12));
   overflow-y: auto;
-  padding-right: var(--space-4);
+  padding: 0 var(--space-5) var(--space-6) 0;
+  border-right: 1px solid var(--border);
 }
 
 .reader__tutorial {
@@ -244,7 +242,7 @@ function scrollToBody() {
 
 .reader__article {
   min-width: 0;
-  max-width: var(--content-max-width);
+  width: 100%;
 }
 
 .reader__breadcrumb {
@@ -262,16 +260,23 @@ function scrollToBody() {
 }
 
 .reader__header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
+  margin-bottom: var(--space-8);
+  padding-bottom: var(--space-6);
+  border-bottom: 1px solid var(--border);
+}
+
+.reader__document-label {
+  margin-bottom: var(--space-3);
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .13em;
 }
 
 .reader__title {
-  font-size: 36px;
-  line-height: 44px;
+  font-size: clamp(34px, 4vw, 46px);
+  line-height: 1.18;
+  letter-spacing: -.025em;
   margin-bottom: var(--space-3);
 }
 
@@ -280,25 +285,25 @@ function scrollToBody() {
   color: var(--text-muted);
 }
 
-.reader__start {
-  flex-shrink: 0;
-  padding: var(--space-2) var(--space-6);
-  border: none;
-  border-radius: var(--radius-md);
-  background: var(--primary);
-  color: var(--on-primary);
-  font-size: 15px;
-  font-weight: 500;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.reader__start:hover {
-  background: var(--primary-hover);
-}
-
 .reader__body {
   min-height: 200px;
+}
+
+.reader__body :deep(.markdown-body) {
+  font-size: 16px;
+  line-height: 1.85;
+}
+
+.reader__body :deep(.markdown-body h2) {
+  margin-top: 2.4em;
+  padding-bottom: .45em;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: calc(var(--header-height) + var(--space-5));
+}
+
+.reader__body :deep(.markdown-body h3),
+.reader__body :deep(.markdown-body h4) {
+  scroll-margin-top: calc(var(--header-height) + var(--space-5));
 }
 
 .reader__prevnext {
@@ -311,9 +316,37 @@ function scrollToBody() {
 }
 
 .reader__prevnext-link {
-  font-size: 15px;
-  color: var(--primary);
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-width: min(280px, 45%);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
   max-width: 45%;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+
+.reader__prevnext-link:hover {
+  border-color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 5%, transparent);
+}
+
+.reader__prevnext-link small {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.reader__prevnext-link strong {
+  color: var(--primary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.reader__prevnext-link--next {
+  margin-left: auto;
+  text-align: right;
 }
 
 .reader__toc {
@@ -326,10 +359,8 @@ function scrollToBody() {
 }
 
 .reader__toc-card {
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--bg-surface);
-  padding: var(--space-5);
+  padding: var(--space-2) 0 var(--space-4) var(--space-5);
+  border-left: 1px solid var(--border);
 }
 
 .reader__toc-title {

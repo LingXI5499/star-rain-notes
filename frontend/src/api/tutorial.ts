@@ -49,6 +49,7 @@ export interface PublicTutorialSummary {
   categoryId: number
   categoryName: string
   publishedChapterCount: number
+  firstChapterSlug: string | null
 }
 
 export interface PublicCategoryNode {
@@ -99,6 +100,8 @@ export interface AdminTutorialSummary {
   categoryId: number
   categoryName: string | null
   publishStatus: string
+  sortOrder: number
+  chapterCount: number
   publishedAt: string | null
   updatedAt: string
 }
@@ -238,6 +241,7 @@ export async function fetchAdminTutorials(params: {
   pageSize?: number
   status?: string
   q?: string
+  categoryId?: number
 }): Promise<TutorialPage> {
   const { data } = await http.get<TutorialPage>('/admin/tutorials', { params })
   return data
@@ -260,6 +264,10 @@ export async function updateTutorial(id: number, payload: TutorialPayload): Prom
 
 export async function deleteTutorial(id: number): Promise<void> {
   await http.delete(`/admin/tutorials/${id}`)
+}
+
+export async function moveTutorial(id: number, payload: { targetIndex: number }): Promise<void> {
+  await http.post(`/admin/tutorials/${id}/move`, payload)
 }
 
 export async function publishTutorial(id: number): Promise<AdminTutorialDetail> {
@@ -293,6 +301,10 @@ export async function updateCategory(id: number, payload: CategoryPayload): Prom
 
 export async function deleteCategory(id: number): Promise<void> {
   await http.delete(`/admin/tutorial-categories/${id}`)
+}
+
+export async function moveCategory(id: number, payload: MovePayload): Promise<void> {
+  await http.post(`/admin/tutorial-categories/${id}/move`, payload)
 }
 
 // ---------------------------------------------------------------

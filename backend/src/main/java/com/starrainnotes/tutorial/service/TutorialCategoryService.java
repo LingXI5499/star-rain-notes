@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.tutorial.dto.CategoryNodeView;
 import com.starrainnotes.tutorial.dto.CreateCategoryRequest;
+import com.starrainnotes.tutorial.dto.MoveCategoryRequest;
 import com.starrainnotes.tutorial.dto.PublicCategoryNodeView;
 import com.starrainnotes.tutorial.dto.UpdateCategoryRequest;
 import com.starrainnotes.tutorial.entity.Tutorial;
@@ -12,6 +13,7 @@ import com.starrainnotes.tutorial.mapper.TutorialCategoryMapper;
 import com.starrainnotes.tutorial.mapper.TutorialMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,6 +94,7 @@ public class TutorialCategoryService {
     // create / update / delete
     // ---------------------------------------------------------------
 
+    @Transactional
     public CategoryNodeView create(CreateCategoryRequest request) {
         if (request.parentId() != null && categoryMapper.selectById(request.parentId()) == null) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_CATEGORY_NOT_FOUND",
@@ -103,11 +106,13 @@ public class TutorialCategoryService {
         category.setName(request.name());
         category.setSlug(request.slug());
         category.setParentId(request.parentId());
-        category.setSortOrder(request.sortOrder() == null ? 0 : request.sortOrder());
+        category.setSortOrder(request.sortOrder() == null
+                ? nextSiblingOrder(request.parentId()) : request.sortOrder());
         categoryMapper.insert(category);
         return toAdminNode(category, List.of());
     }
 
+    @Transactional
     public CategoryNodeView update(Long categoryId, UpdateCategoryRequest request) {
         TutorialCategory category = categoryMapper.selectById(categoryId);
         if (category == null) {
@@ -117,20 +122,58 @@ public class TutorialCategoryService {
         assertNoCycle(categoryId, request.parentId());
         assertSlugFree(request.slug(), categoryId);
 
+        Long oldParentId = category.getParentId();
         category.setName(request.name());
         category.setSlug(request.slug());
         category.setParentId(request.parentId());
-        category.setSortOrder(request.sortOrder() == null ? 0 : request.sortOrder());
+        category.setSortOrder(request.sortOrder() == null
+                ? (java.util.Objects.equals(oldParentId, request.parentId())
+                ? category.getSortOrder() : nextSiblingOrder(request.parentId()))
+                : request.sortOrder());
         categoryMapper.updateById(category);
+        if (!java.util.Objects.equals(oldParentId, request.parentId())) {
+            normalizeSiblings(oldParentId);
+            normalizeSiblings(request.parentId());
+        }
         return toAdminNode(category, List.of());
     }
 
-    public void delete(Long categoryId) {
-        TutorialCategory category = categoryMapper.selectById(categoryId);
-        if (category == null) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "CATEGORY_NOT_FOUND",
-                    "Category not found", "The category does not exist.");
+    /**
+     * Reparents and reorders a category atomically.  This is deliberately a
+     * small action endpoint so drag-and-drop does not need to resubmit title
+     * or slug fields and cannot accidentally reset their sort order.
+     */
+    @Transactional
+    public void move(Long categoryId, MoveCategoryRequest request) {
+        TutorialCategory category = requireCategory(categoryId);
+        assertNoCycle(categoryId, request.targetParentId());
+
+        Long oldParentId = category.getParentId();
+        Long newParentId = request.targetParentId();
+        List<TutorialCategory> sourceSiblings = loadSiblings(oldParentId);
+        List<TutorialCategory> targetSiblings = java.util.Objects.equals(oldParentId, newParentId)
+                ? sourceSiblings : loadSiblings(newParentId);
+
+        sourceSiblings.removeIf(item -> item.getId().equals(categoryId));
+        if (targetSiblings != sourceSiblings) {
+            targetSiblings.removeIf(item -> item.getId().equals(categoryId));
         }
+        int index = Math.min(Math.max(request.targetIndex(), 0), targetSiblings.size());
+        category.setParentId(newParentId);
+        // Persist the reparent even when its existing sort order happens to
+        // match the destination slot and therefore needs no normalization.
+        categoryMapper.updateById(category);
+        targetSiblings.add(index, category);
+
+        normalizeSiblings(sourceSiblings);
+        if (targetSiblings != sourceSiblings) {
+            normalizeSiblings(targetSiblings);
+        }
+    }
+
+    @Transactional
+    public void delete(Long categoryId) {
+        TutorialCategory category = requireCategory(categoryId);
         Long children = categoryMapper.selectCount(
                 new LambdaQueryWrapper<TutorialCategory>().eq(TutorialCategory::getParentId, categoryId));
         if (children != null && children > 0) {
@@ -144,6 +187,7 @@ public class TutorialCategoryService {
                     "Category has tutorials", "A category containing tutorials cannot be deleted.");
         }
         categoryMapper.deleteById(categoryId);
+        normalizeSiblings(category.getParentId());
     }
 
     // ---------------------------------------------------------------
@@ -154,6 +198,49 @@ public class TutorialCategoryService {
         return categoryMapper.selectList(new LambdaQueryWrapper<TutorialCategory>()
                 .orderByAsc(TutorialCategory::getSortOrder)
                 .orderByAsc(TutorialCategory::getId));
+    }
+
+    private TutorialCategory requireCategory(Long categoryId) {
+        TutorialCategory category = categoryMapper.selectById(categoryId);
+        if (category == null) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "CATEGORY_NOT_FOUND",
+                    "Category not found", "The category does not exist.");
+        }
+        return category;
+    }
+
+    private List<TutorialCategory> loadSiblings(Long parentId) {
+        LambdaQueryWrapper<TutorialCategory> wrapper = new LambdaQueryWrapper<TutorialCategory>()
+                .orderByAsc(TutorialCategory::getSortOrder)
+                .orderByAsc(TutorialCategory::getId);
+        if (parentId == null) {
+            wrapper.isNull(TutorialCategory::getParentId);
+        } else {
+            wrapper.eq(TutorialCategory::getParentId, parentId);
+        }
+        return categoryMapper.selectList(wrapper);
+    }
+
+    private int nextSiblingOrder(Long parentId) {
+        return loadSiblings(parentId).stream()
+                .mapToInt(item -> item.getSortOrder() == null ? 0 : item.getSortOrder())
+                .max()
+                .orElse(0) + 10;
+    }
+
+    private void normalizeSiblings(Long parentId) {
+        normalizeSiblings(loadSiblings(parentId));
+    }
+
+    private void normalizeSiblings(List<TutorialCategory> siblings) {
+        for (int index = 0; index < siblings.size(); index++) {
+            TutorialCategory sibling = siblings.get(index);
+            int order = (index + 1) * 10;
+            if (!Integer.valueOf(order).equals(sibling.getSortOrder())) {
+                sibling.setSortOrder(order);
+                categoryMapper.updateById(sibling);
+            }
+        }
     }
 
     private List<CategoryNodeView> buildAdminTree(List<TutorialCategory> all) {

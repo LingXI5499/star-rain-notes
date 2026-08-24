@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
+import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
 import { deleteMedia, fetchMediaAssets, formatSize, uploadMedia, type MediaAsset } from '@/api/media'
@@ -61,7 +62,6 @@ async function copyUrl(asset: MediaAsset) {
 
 async function remove(asset: MediaAsset) {
   try {
-    const { ElMessageBox } = await import('element-plus')
     await ElMessageBox.confirm(
       `确定删除「${asset.originalName}」？\n注意：Markdown 正文中可能仍引用该文件，删除后图片将失效。`,
       '删除确认',

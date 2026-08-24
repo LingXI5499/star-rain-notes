@@ -181,6 +181,26 @@ class TutorialCategoryAdminIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
+    void moveCategoryReordersRootSiblings() throws Exception {
+        MockHttpSession session = loginSession();
+        Long a = createCategory(session, "A", "a", null);
+        Long b = createCategory(session, "B", "b", null);
+        Long c = createCategory(session, "C", "c", null);
+
+        mockMvc.perform(withCsrf(jsonPost("/api/v1/admin/tutorial-categories/" + c + "/move",
+                        "{\"targetParentId\":null,\"targetIndex\":0}"), csrf(session)).session(session))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/v1/admin/tutorial-categories/tree").session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(c))
+                .andExpect(jsonPath("$[1].id").value(a))
+                .andExpect(jsonPath("$[2].id").value(b));
+        org.assertj.core.api.Assertions.assertThat(jdbc.queryForObject(
+                "SELECT sort_order FROM tutorial_category WHERE id = ?", Integer.class, c)).isEqualTo(10);
+    }
+
+    @Test
     void deleteCategoryWithChildrenRejected() throws Exception {
         MockHttpSession session = loginSession();
         Long a = createCategory(session, "A", "a", null);

@@ -11,5 +11,6 @@ public record PublicTutorialSummaryView(
         String coverUrl,
         Long categoryId,
         String categoryName,
-        long publishedChapterCount) {
+        long publishedChapterCount,
+        String firstChapterSlug) {
 }

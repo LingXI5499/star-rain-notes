@@ -4,7 +4,6 @@ import WideLayout from '@/layouts/WideLayout.vue'
 import ProseLayout from '@/layouts/ProseLayout.vue'
 import DocumentationLayout from '@/layouts/DocumentationLayout.vue'
 import { useAuthStore } from '@/stores/auth'
-import { registerElementPlus } from '@/plugins/element-plus'
 import { hasUnsavedChanges } from '@/composables/useUnsavedGuard'
 import { applyPageMeta } from '@/lib/seo'
 
@@ -165,7 +164,7 @@ const router = createRouter({
         {
           path: 'tutorials/categories',
           name: 'admin-tutorial-categories',
-          component: () => import('@/views/admin/CategoryTreeView.vue'),
+          redirect: { name: 'admin-tutorials' },
         },
         {
           path: 'tutorials/new',
@@ -180,7 +179,10 @@ const router = createRouter({
         {
           path: 'tutorials/:id/chapters',
           name: 'admin-tutorial-chapters',
-          component: () => import('@/views/admin/ChapterManageView.vue'),
+          redirect: (to) => ({
+            name: 'admin-tutorials',
+            query: { tutorial: String(to.params.id) },
+          }),
         },
         {
           path: 'tutorials/:id/chapters/new',
@@ -280,6 +282,7 @@ router.beforeEach(async (to) => {
     }
   }
   if (to.meta.elementPlus) {
+    const { registerElementPlus } = await import('@/plugins/element-plus')
     await registerElementPlus()
   }
   if (!to.path.startsWith('/admin')) {

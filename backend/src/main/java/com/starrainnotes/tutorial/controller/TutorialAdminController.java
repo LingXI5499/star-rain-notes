@@ -2,6 +2,7 @@ package com.starrainnotes.tutorial.controller;
 
 import com.starrainnotes.tutorial.dto.AdminTutorialDetailView;
 import com.starrainnotes.tutorial.dto.CreateTutorialRequest;
+import com.starrainnotes.tutorial.dto.MoveTutorialRequest;
 import com.starrainnotes.tutorial.dto.TutorialPageView;
 import com.starrainnotes.tutorial.dto.UpdateTutorialRequest;
 import com.starrainnotes.tutorial.service.TutorialService;
@@ -36,8 +37,9 @@ public class TutorialAdminController {
     public TutorialPageView list(@RequestParam(defaultValue = "1") int page,
                                  @RequestParam(defaultValue = "10") int pageSize,
                                  @RequestParam(required = false) String status,
-                                 @RequestParam(required = false) String q) {
-        return tutorialService.adminList(page, pageSize, status, q);
+                                 @RequestParam(required = false) String q,
+                                 @RequestParam(required = false) Long categoryId) {
+        return tutorialService.adminList(page, pageSize, status, q, categoryId);
     }
 
     @PostMapping
@@ -61,6 +63,13 @@ public class TutorialAdminController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long tutorialId) {
         tutorialService.delete(tutorialId);
+    }
+
+    @PostMapping("/{tutorialId}/move")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void move(@PathVariable Long tutorialId,
+                     @Valid @RequestBody MoveTutorialRequest request) {
+        tutorialService.move(tutorialId, request);
     }
 
     @PostMapping("/{tutorialId}/publish")

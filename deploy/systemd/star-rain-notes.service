@@ -25,11 +25,13 @@ Environment=SPRING_PROFILES_ACTIVE=prod
 Environment=SERVER_PORT=24680
 EnvironmentFile=-/etc/star-rain-notes/star-rain-notes.env
 
-ExecStart=/usr/bin/java -Xms256m -Xmx512m -jar /opt/star-rain-notes/app.jar
+ExecStart=/usr/bin/java -Xms128m -Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar /opt/star-rain-notes/app.jar
 ExecReload=/bin/kill -s HUP $MAINPID
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=30
+MemoryMax=768M
+TasksMax=256
 
 # Logs (06 §7): append to /var/log/star-rain-notes (writable by the service)
 StandardOutput=append:/var/log/star-rain-notes/star-rain-notes.log

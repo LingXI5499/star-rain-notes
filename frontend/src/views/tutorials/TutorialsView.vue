@@ -7,386 +7,193 @@ import {
   type PublicCategoryNode,
   type PublicTutorialSummary,
 } from '@/api/tutorial'
+import TutorialCategoryNav from '@/components/TutorialCategoryNav.vue'
 
-/**
- * Tutorial center (V3 polish): top category chips + featured highlight card +
- * tutorial card grid with live sort. Uses real data (real chapter counts).
- */
 const route = useRoute()
 const router = useRouter()
-
 const categories = ref<PublicCategoryNode[]>([])
-const flatCategories = ref<PublicCategoryNode[]>([])
 const tutorials = ref<PublicTutorialSummary[]>([])
 const loading = ref(true)
 const error = ref(false)
 const activeSlug = ref('')
-const sortBy = ref<'default' | 'chapters'>('default')
+const query = ref('')
 
 function flatten(nodes: PublicCategoryNode[]): PublicCategoryNode[] {
-  const out: PublicCategoryNode[] = []
-  for (const node of nodes) {
-    out.push(node)
-    out.push(...flatten(node.children))
-  }
-  return out
+  return nodes.flatMap((node) => [node, ...flatten(node.children)])
 }
 
+const flatCategories = computed(() => flatten(categories.value))
+const activeCategory = computed(() => flatCategories.value.find((item) => item.slug === activeSlug.value) ?? null)
 const displayed = computed(() => {
-  const list = [...tutorials.value]
-  if (sortBy.value === 'chapters') {
-    list.sort((a, b) => b.publishedChapterCount - a.publishedChapterCount)
-  }
-  return list
+  const keyword = query.value.trim().toLowerCase()
+  return keyword
+    ? tutorials.value.filter((item) => item.title.toLowerCase().includes(keyword) || item.summary.toLowerCase().includes(keyword))
+    : tutorials.value
 })
 
-const activeCategory = computed(
-  () => flatCategories.value.find((c) => c.slug === activeSlug.value) ?? null,
-)
-const featured = computed(() =>
-  activeCategory.value
-    ? activeCategory.value
-    : flatCategories.value.find((c) => c.slug === 'java-fullstack') ?? flatCategories.value[0] ?? null,
-)
-
-async function load() {
+async function loadTutorials() {
   loading.value = true
   error.value = false
-  try {
-    tutorials.value = await fetchPublicTutorials(activeSlug.value || undefined)
-  } catch {
-    error.value = true
-  } finally {
-    loading.value = false
-  }
+  try { tutorials.value = await fetchPublicTutorials(activeSlug.value || undefined) }
+  catch { error.value = true }
+  finally { loading.value = false }
 }
 
-function selectCategory(slug: string) {
+async function selectCategory(slug: string) {
+  if (slug === activeSlug.value) return
   activeSlug.value = slug
-  router.replace({ query: slug ? { categorySlug: slug } : {} })
-  void load()
+  query.value = ''
+  await router.replace({ query: slug ? { categorySlug: slug } : {} })
+  await loadTutorials()
 }
 
 onMounted(async () => {
-  try {
-    categories.value = await fetchPublicCategoryTree()
-    flatCategories.value = flatten(categories.value)
-  } catch {
-    // Category filters are secondary; a failure only hides the navigation.
-  }
-  if (typeof route.query.categorySlug === 'string') {
-    activeSlug.value = route.query.categorySlug
-  }
-  await load()
+  try { categories.value = await fetchPublicCategoryTree() }
+  catch { /* Tutorial cards remain usable when category navigation fails. */ }
+  activeSlug.value = typeof route.query.categorySlug === 'string' ? route.query.categorySlug : ''
+  await loadTutorials()
 })
 
-watch(
-  () => route.query.categorySlug,
-  (value) => {
-    const slug = typeof value === 'string' ? value : ''
-    if (slug !== activeSlug.value) {
-      activeSlug.value = slug
-      void load()
-    }
-  },
-)
+watch(() => route.query.categorySlug, (value) => {
+  const slug = typeof value === 'string' ? value : ''
+  if (slug !== activeSlug.value) { activeSlug.value = slug; void loadTutorials() }
+})
 </script>
 
 <template>
-  <section class="tutorials">
-    <header class="tutorials__hero">
-      <p class="tutorials__eyebrow">TUTORIALS · KNOWLEDGE SYSTEM</p>
-      <h1 class="tutorials__title">教程</h1>
-      <p class="tutorials__subtitle">
-        系统化技术课程与知识体系，持续学习、长期成长。从基础到进阶，构建完整的知识体系。
-      </p>
-      <nav v-if="flatCategories.length" class="tutorials__chips" role="group" aria-label="分类筛选">
-        <button
-          type="button"
-          class="tutorials__chip"
-          :class="{ 'is-active': activeSlug === '' }"
-          @click="selectCategory('')"
-        >
-          全部
-        </button>
-        <button
-          v-for="category in flatCategories"
-          :key="category.id"
-          type="button"
-          class="tutorials__chip"
-          :class="{ 'is-active': activeSlug === category.slug }"
-          @click="selectCategory(category.slug)"
-        >
-          {{ category.name }}
-        </button>
-      </nav>
+  <section class="tutorial-catalog">
+    <header class="tutorial-catalog__hero">
+      <div>
+        <p class="tutorial-catalog__eyebrow">LEARNING PATHS · 教程中心</p>
+        <h1>选择一门教程，开始系统学习</h1>
+        <p>左侧按知识体系浏览，右侧从教程卡片进入；课程内提供完整目录、上下篇与页内导航。</p>
+      </div>
+      <div class="tutorial-catalog__summary">
+        <strong>{{ tutorials.length }}</strong>
+        <span>{{ activeCategory ? '当前分类教程' : '公开教程' }}</span>
+      </div>
     </header>
 
-    <!-- featured highlight card -->
-    <RouterLink
-      v-if="featured"
-      :to="featured.slug ? `/tutorials?categorySlug=${featured.slug}` : '/tutorials'"
-      class="tutorials__featured"
-    >
-      <span class="tutorials__featured-icon" aria-hidden="true">
-        <svg viewBox="0 0 24 24" width="34" height="34" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-      </span>
-      <div class="tutorials__featured-body">
-        <p class="tutorials__featured-tag">精选推荐 · {{ featured.name }}</p>
-        <h2 class="tutorials__featured-title">{{ featured.name }}</h2>
-        <p class="tutorials__featured-desc">
-          {{ featured.name }}知识体系：覆盖核心基础到进阶应用，系统化学习路径。
-        </p>
-        <p class="tutorials__featured-meta">{{ tutorials.length }} 个教程</p>
-      </div>
-      <span class="tutorials__featured-cta">查看教程 →</span>
-    </RouterLink>
+    <div class="tutorial-catalog__layout">
+      <aside class="tutorial-catalog__sidebar">
+        <div class="tutorial-catalog__sidebar-head">
+          <span>教程目录</span>
+          <small>{{ flatCategories.length }} 类</small>
+        </div>
+        <nav aria-label="教程分类">
+          <button
+            type="button"
+            class="tutorial-catalog__all"
+            :class="{ 'tutorial-catalog__all--active': !activeSlug }"
+            @click="selectCategory('')"
+          >
+            <span>全部教程</span><span>›</span>
+          </button>
+          <ul class="tutorial-catalog__category-tree">
+            <TutorialCategoryNav
+              v-for="category in categories"
+              :key="category.id"
+              :node="category"
+              :active-slug="activeSlug"
+              @select="selectCategory"
+            />
+          </ul>
+        </nav>
+      </aside>
 
-    <div class="tutorials__toolbar">
-      <p class="tutorials__count">共 {{ tutorials.length }} 个教程</p>
-      <select v-model="sortBy" class="tutorials__sort" aria-label="排序">
-        <option value="default">综合排序</option>
-        <option value="chapters">章节数</option>
-      </select>
-    </div>
+      <main class="tutorial-catalog__content">
+        <div class="tutorial-catalog__content-head">
+          <div>
+            <p class="tutorial-catalog__path">教程 / {{ activeCategory?.name || '全部教程' }}</p>
+            <h2>{{ activeCategory?.name || '全部教程' }}</h2>
+            <p>共 {{ tutorials.length }} 门可学习教程</p>
+          </div>
+          <label class="tutorial-catalog__search">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input v-model="query" type="search" placeholder="筛选当前教程" aria-label="筛选当前教程" />
+          </label>
+        </div>
 
-    <div v-if="loading" class="tutorials__empty">加载中…</div>
-    <div v-else-if="error" class="tutorials__empty">加载失败，请稍后重试。</div>
-    <div v-else-if="!displayed.length" class="tutorials__empty">暂无教程</div>
-    <div v-else class="tutorials__grid">
-      <RouterLink
-        v-for="tutorial in displayed"
-        :key="tutorial.id"
-        :to="`/tutorials/${tutorial.slug}`"
-        class="tutorial-card"
-      >
-        <p class="tutorial-card__category">{{ tutorial.categoryName }}</p>
-        <h2 class="tutorial-card__title">{{ tutorial.title }}</h2>
-        <p class="tutorial-card__summary">{{ tutorial.summary }}</p>
-        <p class="tutorial-card__meta">{{ tutorial.publishedChapterCount }} 个章节</p>
-        <span class="tutorial-card__more">查看 →</span>
-      </RouterLink>
+        <div v-if="loading" class="tutorial-catalog__empty">正在加载教程…</div>
+        <div v-else-if="error" class="tutorial-catalog__empty">加载失败，请稍后重试。</div>
+        <div v-else-if="!displayed.length" class="tutorial-catalog__empty">当前分类暂无匹配教程。</div>
+        <div v-else class="tutorial-catalog__grid">
+          <RouterLink
+            v-for="tutorial in displayed"
+            :key="tutorial.id"
+            :to="tutorial.firstChapterSlug ? `/tutorials/${tutorial.slug}/${tutorial.firstChapterSlug}` : `/tutorials/${tutorial.slug}`"
+            class="tutorial-card"
+          >
+            <div v-if="tutorial.coverUrl" class="tutorial-card__cover">
+              <img :src="tutorial.coverUrl" :alt="tutorial.title" loading="lazy" />
+            </div>
+            <div v-else class="tutorial-card__cover tutorial-card__cover--placeholder" aria-hidden="true">
+              <span>{{ tutorial.title.slice(0, 1) }}</span>
+            </div>
+            <div class="tutorial-card__body">
+              <p class="tutorial-card__category">{{ tutorial.categoryName }}</p>
+              <h3>{{ tutorial.title }}</h3>
+              <p class="tutorial-card__summary">{{ tutorial.summary }}</p>
+              <div class="tutorial-card__footer">
+                <span>{{ tutorial.publishedChapterCount }} 个章节</span>
+                <strong>开始学习 →</strong>
+              </div>
+            </div>
+          </RouterLink>
+        </div>
+      </main>
     </div>
   </section>
 </template>
 
 <style scoped>
-.tutorials__hero {
-  margin-bottom: var(--space-8);
-}
-
-.tutorials__eyebrow {
-  font-size: 14px;
-  letter-spacing: 0.18em;
-  color: var(--accent);
-  margin-bottom: var(--space-3);
-}
-
-.tutorials__title {
-  font-size: 42px;
-  line-height: 50px;
-  margin-bottom: var(--space-3);
-}
-
-.tutorials__subtitle {
-  font-size: 16px;
-  line-height: 28px;
-  color: var(--text-secondary);
-  max-width: 560px;
-  margin-bottom: var(--space-6);
-}
-
-/* ---------- category chips ---------- */
-.tutorials__chips {
+.tutorial-catalog__hero {
   display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-}
-
-.tutorials__chip {
-  padding: var(--space-2) var(--space-5);
-  border-radius: 999px;
-  border: 1px solid var(--border-strong);
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 14px;
-  cursor: pointer;
-  transition:
-    color 0.15s ease,
-    border-color 0.15s ease,
-    background-color 0.15s ease;
-}
-
-.tutorials__chip:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.tutorials__chip.is-active {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: var(--on-primary);
-}
-
-/* ---------- featured highlight ---------- */
-.tutorials__featured {
-  display: flex;
-  align-items: center;
-  gap: var(--space-5);
-  padding: var(--space-6) var(--space-7);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background:
-    linear-gradient(120deg, color-mix(in srgb, var(--primary) 10%, transparent), transparent 60%),
-    var(--bg-surface);
-  margin-bottom: var(--space-8);
-  color: var(--text-primary);
-  transition:
-    border-color 0.15s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.tutorials__featured:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 10px 28px rgb(0 0 0 / 0.08);
-}
-
-.tutorials__featured-icon {
-  color: var(--accent);
-  flex-shrink: 0;
-}
-
-.tutorials__featured-body {
-  flex: 1;
-  min-width: 0;
-}
-
-.tutorials__featured-tag {
-  font-size: 13px;
-  color: var(--accent);
-  margin-bottom: var(--space-2);
-}
-
-.tutorials__featured-title {
-  font-size: 26px;
-  line-height: 34px;
-  margin-bottom: var(--space-2);
-}
-
-.tutorials__featured-desc {
-  font-size: 14px;
-  line-height: 22px;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-3);
-}
-
-.tutorials__featured-meta {
-  font-size: 14px;
-  color: var(--primary);
-  font-weight: 500;
-}
-
-.tutorials__featured-cta {
-  flex-shrink: 0;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--primary);
-  white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-  .tutorials__featured {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-}
-
-/* ---------- toolbar ---------- */
-.tutorials__toolbar {
-  display: flex;
-  align-items: center;
+  align-items: flex-end;
   justify-content: space-between;
-  margin-bottom: var(--space-5);
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+  padding: var(--space-7) 0;
+  border-bottom: 1px solid var(--border);
 }
-
-.tutorials__count {
-  font-size: 14px;
-  color: var(--text-muted);
-}
-
-.tutorials__sort {
-  padding: var(--space-1) var(--space-3);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: var(--bg-surface);
-  color: var(--text-secondary);
-  font-size: 13px;
-}
-
-/* ---------- tutorial cards ---------- */
-.tutorials__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: var(--space-5);
-}
-
-.tutorial-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--space-6);
-  color: var(--text-primary);
-  transition:
-    border-color 0.15s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.tutorial-card:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgb(0 0 0 / 0.08);
-}
-
-.tutorial-card__category {
-  font-size: 13px;
-  color: var(--accent);
-}
-
-.tutorial-card__title {
-  font-size: 20px;
-  line-height: 28px;
-  font-weight: 600;
-}
-
-.tutorial-card__summary {
-  font-size: 14px;
-  line-height: 22px;
-  color: var(--text-secondary);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.tutorial-card__meta {
-  font-size: 13px;
-  color: var(--text-muted);
-  margin-top: auto;
-}
-
-.tutorial-card__more {
-  font-size: 14px;
-  color: var(--primary);
-}
-
-.tutorials__empty {
-  color: var(--text-muted);
-  padding: var(--space-8) 0;
-}
+.tutorial-catalog__eyebrow { margin-bottom: var(--space-3); color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .16em; }
+.tutorial-catalog__hero h1 { max-width: 760px; margin-bottom: var(--space-3); font-size: clamp(32px,4vw,48px); line-height: 1.16; letter-spacing: -.03em; }
+.tutorial-catalog__hero p:last-child { max-width: 720px; color: var(--text-secondary); font-size: 15px; line-height: 1.8; }
+.tutorial-catalog__summary { min-width: 130px; padding: var(--space-4) var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface); text-align: center; }
+.tutorial-catalog__summary strong { display: block; color: var(--primary); font-size: 28px; }
+.tutorial-catalog__summary span { color: var(--text-muted); font-size: 12px; }
+.tutorial-catalog__layout { display: grid; grid-template-columns: 260px minmax(0,1fr); gap: var(--space-8); align-items: start; }
+.tutorial-catalog__sidebar { position: sticky; top: calc(var(--header-height) + var(--space-5)); max-height: calc(100vh - var(--header-height) - var(--space-10)); overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface); }
+.tutorial-catalog__sidebar-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4); border-bottom: 1px solid var(--border); font-weight: 700; }
+.tutorial-catalog__sidebar-head small { color: var(--text-muted); font-weight: 400; }
+.tutorial-catalog__sidebar nav { padding: var(--space-3); }
+.tutorial-catalog__all { width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border: 0; border-radius: 7px; color: var(--text-secondary); background: none; font-size: 14px; text-align: left; cursor: pointer; }
+.tutorial-catalog__all:hover { background: var(--bg-subtle); color: var(--text-primary); }
+.tutorial-catalog__all--active { color: var(--primary); background: color-mix(in srgb,var(--primary) 11%,transparent); font-weight: 600; }
+.tutorial-catalog__category-tree { margin: 3px 0 0; padding: 0; list-style: none; }
+.tutorial-catalog__content { min-width: 0; }
+.tutorial-catalog__content-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--space-6); }
+.tutorial-catalog__path { margin-bottom: var(--space-2); color: var(--text-muted); font-size: 12px; }
+.tutorial-catalog__content-head h2 { margin-bottom: 4px; font-size: 26px; line-height: 1.3; }
+.tutorial-catalog__content-head > div > p:last-child { color: var(--text-muted); font-size: 13px; }
+.tutorial-catalog__search { width: min(280px,38vw); height: 40px; display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: 8px; color: var(--text-muted); background: var(--bg-surface); }
+.tutorial-catalog__search:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb,var(--primary) 12%,transparent); }
+.tutorial-catalog__search input { min-width: 0; flex: 1; border: 0; outline: 0; color: var(--text-primary); background: none; }
+.tutorial-catalog__grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(290px,1fr)); gap: var(--space-5); }
+.tutorial-card { overflow: hidden; display: flex; flex-direction: column; min-height: 330px; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); background: var(--bg-surface); transition: transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease; }
+.tutorial-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb,var(--primary) 55%,var(--border)); box-shadow: 0 14px 35px rgb(0 0 0/.09); }
+.tutorial-card__cover { height: 128px; overflow: hidden; background: var(--bg-subtle); }
+.tutorial-card__cover img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform 240ms ease; }
+.tutorial-card:hover .tutorial-card__cover img { transform: scale(1.03); }
+.tutorial-card__cover--placeholder { display: grid; place-items: center; background: linear-gradient(135deg,color-mix(in srgb,var(--primary) 18%,var(--bg-surface)),color-mix(in srgb,var(--accent) 11%,var(--bg-surface))); }
+.tutorial-card__cover--placeholder span { color: color-mix(in srgb,var(--primary) 80%,var(--text-primary)); font-size: 42px; font-weight: 800; opacity: .75; }
+.tutorial-card__body { flex: 1; display: flex; flex-direction: column; padding: var(--space-5); }
+.tutorial-card__category { margin-bottom: var(--space-2); color: var(--accent); font-size: 12px; }
+.tutorial-card h3 { margin-bottom: var(--space-3); font-size: 19px; line-height: 1.45; }
+.tutorial-card__summary { display: -webkit-box; overflow: hidden; margin-bottom: var(--space-5); color: var(--text-secondary); font-size: 14px; line-height: 1.7; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.tutorial-card__footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px; }
+.tutorial-card__footer strong { color: var(--primary); font-size: 13px; }
+.tutorial-catalog__empty { padding: var(--space-10); border: 1px dashed var(--border-strong); border-radius: var(--radius-md); color: var(--text-muted); text-align: center; }
+@media (max-width: 900px) { .tutorial-catalog__hero { align-items: flex-start; } .tutorial-catalog__summary { display: none; } .tutorial-catalog__layout { grid-template-columns: 1fr; } .tutorial-catalog__sidebar { position: static; max-height: none; } }
+@media (max-width: 620px) { .tutorial-catalog__content-head { align-items: stretch; flex-direction: column; } .tutorial-catalog__search { width: 100%; } .tutorial-catalog__grid { grid-template-columns: 1fr; } }
 </style>

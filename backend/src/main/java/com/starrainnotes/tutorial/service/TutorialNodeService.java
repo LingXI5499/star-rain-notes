@@ -226,23 +226,27 @@ public class TutorialNodeService {
             }
         }
 
-        List<TutorialNode> siblings = loadChildren(tutorialId, newParentId);
-        siblings.removeIf(sibling -> sibling.getId().equals(nodeId));
-        int index = Math.min(Math.max(request.targetIndex(), 0), siblings.size());
-        siblings.add(index, node);
+        Long oldParentId = node.getParentId();
+        List<TutorialNode> sourceSiblings = loadChildren(tutorialId, oldParentId);
+        List<TutorialNode> targetSiblings = java.util.Objects.equals(oldParentId, newParentId)
+                ? sourceSiblings : loadChildren(tutorialId, newParentId);
+        sourceSiblings.removeIf(sibling -> sibling.getId().equals(nodeId));
+        if (targetSiblings != sourceSiblings) {
+            targetSiblings.removeIf(sibling -> sibling.getId().equals(nodeId));
+        }
+        int index = Math.min(Math.max(request.targetIndex(), 0), targetSiblings.size());
+        node.setParentId(newParentId);
+        // The reparent must be written even if the old and new numeric sort
+        // orders happen to coincide.
+        nodeMapper.updateById(node);
+        targetSiblings.add(index, node);
 
-        // normalize sibling sortOrder to (i+1)*10 and persist within the transaction
-        for (int i = 0; i < siblings.size(); i++) {
-            TutorialNode sibling = siblings.get(i);
-            int order = (i + 1) * 10;
-            if (sibling.getId().equals(nodeId)) {
-                sibling.setSortOrder(order);
-                sibling.setParentId(newParentId);
-                nodeMapper.updateById(sibling);
-            } else if (!Integer.valueOf(order).equals(sibling.getSortOrder())) {
-                sibling.setSortOrder(order);
-                nodeMapper.updateById(sibling);
-            }
+        // Normalize both affected sibling sets.  The former implementation
+        // only normalized the destination, leaving gaps after cross-group
+        // drag-and-drop moves.
+        normalizeSiblingOrders(sourceSiblings);
+        if (targetSiblings != sourceSiblings) {
+            normalizeSiblingOrders(targetSiblings);
         }
     }
 
@@ -355,6 +359,17 @@ public class TutorialNodeService {
                 .mapToInt(n -> n.getSortOrder() == null ? 0 : n.getSortOrder())
                 .max()
                 .orElse(0) + 10;
+    }
+
+    private void normalizeSiblingOrders(List<TutorialNode> siblings) {
+        for (int index = 0; index < siblings.size(); index++) {
+            TutorialNode sibling = siblings.get(index);
+            int order = (index + 1) * 10;
+            if (!Integer.valueOf(order).equals(sibling.getSortOrder())) {
+                sibling.setSortOrder(order);
+                nodeMapper.updateById(sibling);
+            }
+        }
     }
 
     private AdminTreeNodeView toNodeView(TutorialNode node) {

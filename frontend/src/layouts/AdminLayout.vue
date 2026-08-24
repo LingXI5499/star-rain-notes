@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { useAuthStore } from '@/stores/auth'
 import { useThemeStore } from '@/stores/theme'
 import '@/styles/admin.css'
@@ -14,13 +14,7 @@ const collapsed = ref(false)
 
 const navItems = [
   { to: '/admin', label: '仪表盘', short: '盘', match: (path: string) => path === '/admin' },
-  { to: '/admin/tutorials', label: '教程管理', short: '教', match: (path: string) => path.startsWith('/admin/tutorials') },
-  {
-    to: '/admin/tutorials/categories',
-    label: '教程分类',
-    short: '类',
-    match: (path: string) => path.startsWith('/admin/tutorials/categories'),
-  },
+  { to: '/admin/tutorials', label: '教程工作台', short: '教', match: (path: string) => path.startsWith('/admin/tutorials') },
   { to: '/admin/blog', label: '博客管理', short: '博', match: (path: string) => path.startsWith('/admin/blog') },
   {
     to: '/admin/portfolio',

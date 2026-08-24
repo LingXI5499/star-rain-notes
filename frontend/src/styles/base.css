@@ -49,6 +49,14 @@ img {
   outline-offset: 2px;
 }
 
+/* Lightweight global busy state used by admin lists and forms. */
+.app-loading {
+  cursor: progress;
+  opacity: 0.58;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
 /* ---------------------------------------------------------------
    Layout system — unified page shell (wide), narrow prose and
    sidebar/aside column widths come from design tokens (tokens.css).

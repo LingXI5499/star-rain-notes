@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import type { ProblemDetail } from '@/api/http'

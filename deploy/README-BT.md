@@ -98,7 +98,7 @@ cd frontend && npm ci && npm run type-check && npm run build
 | 启动方式 | jar |
 | 端口 | `24680` |
 | JDK | 21 |
-| 启动参数 | `-Xms256m -Xmx512m -Dfile.encoding=UTF-8 --server.port=24680` |
+| 启动参数 | `-Xms128m -Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 --server.port=24680` |
 | 环境变量 | 见下方表格 |
 
 环境变量（宝塔 Java 项目支持自定义环境变量，等价于手工版的 `/etc/star-rain-notes/star-rain-notes.env`）：
@@ -107,8 +107,10 @@ cd frontend && npm ci && npm run type-check && npm run build
 MYSQL_HOST=127.0.0.1
 MYSQL_PORT=3306
 MYSQL_DATABASE=star_rain_notes
-MYSQL_USERNAME=star_rain
+MYSQL_USER=star_rain
 MYSQL_PASSWORD=<第3步的密码>
+DB_POOL_MAX_SIZE=6
+DB_POOL_MIN_IDLE=1
 APP_SETUP_TOKEN=<openssl rand -hex 32 生成的随机值>   # 首次初始化用，之后必须删除
 MEDIA_STORAGE_DIR=/www/wwwroot/yulanlin.cn/uploads
 SESSION_COOKIE_SECURE=true
@@ -149,6 +151,17 @@ server {
     ssl_session_cache shared:SSL:10m;
     ssl_session_timeout 10m;
 
+    sendfile on;
+    tcp_nopush on;
+    etag on;
+    gzip on;
+    gzip_vary on;
+    gzip_min_length 1024;
+    gzip_comp_level 5;
+    gzip_types application/javascript application/json application/manifest+json
+               application/problem+json application/xml image/svg+xml
+               text/css text/plain text/xml;
+
     client_max_body_size 25m;   # 媒体上传上限（图片10MB/PDF20MB/总25MB）
 
     # 安全头（06 §8: nosniff 必带）
@@ -164,8 +177,8 @@ server {
     # 带哈希的构建资源：immutable + 真正 404
     location /assets/ {
         try_files $uri =404;
-        expires 30d;
-        add_header Cache-Control "public, max-age=2592000, immutable";
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
     }
 
     # ---------- 后端 API 反向代理（Spring Boot :24680）----------
@@ -178,6 +191,9 @@ server {
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_set_header Connection "";
+        proxy_connect_timeout 3s;
+        proxy_send_timeout 30s;
+        proxy_read_timeout 30s;
     }
 
     # 健康检查（只暴露 {"status":"UP"}）
@@ -191,8 +207,13 @@ server {
     location /uploads/ {
         alias /www/wwwroot/yulanlin.cn/uploads/;
         try_files $uri =404;
-        expires 30d;
-        add_header Cache-Control "public, max-age=2592000";
+        expires 1y;
+        add_header Cache-Control "public, max-age=31536000, immutable";
+    }
+
+    location = /index.html {
+        try_files $uri =404;
+        add_header Cache-Control "no-cache";
     }
 
     # ---------- SPA history 路由回退 ----------
@@ -256,7 +277,7 @@ curl -fsS https://yulanlin.cn/actuator/health    # {"status":"UP"}
 
 ## 11. 2G 内存优化清单（重要）
 
-- JVM：`-Xms256m -Xmx512m`（第 5 步已含）。
+- JVM：`-Xms128m -Xmx512m`（第 5 步已含，降低常驻内存同时保留峰值空间）。
 - MySQL：宝塔「数据库 → MySQL → 设置 → 性能调整」：`innodb_buffer_pool_size=256M`、`max_connections=100`，保存并重启 MySQL。
 - 关闭不需要的进程：卸载 PHP、Redis 等未用软件；宝塔面板本身占用可接受。
 - 若内存仍紧张：`free -h` 观察，必要时把 JVM 降到 `-Xmx384m`。

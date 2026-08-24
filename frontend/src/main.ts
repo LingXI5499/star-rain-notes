@@ -3,7 +3,7 @@ import { createPinia } from 'pinia'
 
 import App from './App.vue'
 import router from './router'
-import { bindElementPlus } from './plugins/element-plus'
+import { bindApp } from './plugins/app-context'
 import { useThemeStore } from './stores/theme'
 
 import './styles/tokens.css'
@@ -11,9 +11,9 @@ import './styles/base.css'
 
 const app = createApp(App)
 
-// Element Plus is registered lazily (TASK-011) so the Admin bundle is not
-// part of the public initial load; see plugins/element-plus.ts.
-bindElementPlus(app)
+// Heavy admin UI components are registered lazily on the first route that
+// needs them. Only this tiny app reference bridge is part of the public shell.
+bindApp(app)
 app.use(createPinia())
 app.use(router)
 

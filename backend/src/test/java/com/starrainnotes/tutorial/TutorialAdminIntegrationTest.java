@@ -262,6 +262,28 @@ class TutorialAdminIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
+    void moveTutorialReordersWithinItsCategory() throws Exception {
+        MockHttpSession session = loginSession();
+        Long categoryId = createCategory("cat-move");
+        Long first = createTutorial(session, categoryId, "t-first");
+        Long second = createTutorial(session, categoryId, "t-second");
+        Long third = createTutorial(session, categoryId, "t-third");
+
+        mockMvc.perform(withCsrf(jsonPost("/api/v1/admin/tutorials/" + third + "/move",
+                        "{\"targetIndex\":0}"), csrf(session)).session(session))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/v1/admin/tutorials")
+                        .param("categoryId", String.valueOf(categoryId)).session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items[0].id").value(third))
+                .andExpect(jsonPath("$.items[1].id").value(first))
+                .andExpect(jsonPath("$.items[2].id").value(second));
+        assertThat(jdbc.queryForObject("SELECT sort_order FROM tutorial WHERE id = ?", Integer.class, third))
+                .isEqualTo(10);
+    }
+
+    @Test
     void detailReturnsFullView() throws Exception {
         MockHttpSession session = loginSession();
         Long categoryId = createCategory("cat");

@@ -10,6 +10,8 @@ public record AdminTutorialSummaryView(
         Long categoryId,
         String categoryName,
         String publishStatus,
+        Integer sortOrder,
+        long chapterCount,
         String publishedAt,
         String updatedAt) {
 }

@@ -2,6 +2,7 @@ package com.starrainnotes.tutorial.controller;
 
 import com.starrainnotes.tutorial.dto.CategoryNodeView;
 import com.starrainnotes.tutorial.dto.CreateCategoryRequest;
+import com.starrainnotes.tutorial.dto.MoveCategoryRequest;
 import com.starrainnotes.tutorial.dto.UpdateCategoryRequest;
 import com.starrainnotes.tutorial.service.TutorialCategoryService;
 import jakarta.validation.Valid;
@@ -46,6 +47,13 @@ public class TutorialCategoryAdminController {
     public CategoryNodeView update(@PathVariable Long categoryId,
                                    @Valid @RequestBody UpdateCategoryRequest request) {
         return categoryService.update(categoryId, request);
+    }
+
+    @PostMapping("/{categoryId}/move")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void move(@PathVariable Long categoryId,
+                     @Valid @RequestBody MoveCategoryRequest request) {
+        categoryService.move(categoryId, request);
     }
 
     @DeleteMapping("/{categoryId}")

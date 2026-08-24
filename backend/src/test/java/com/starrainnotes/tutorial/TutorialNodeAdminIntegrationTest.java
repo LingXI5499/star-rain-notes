@@ -362,6 +362,21 @@ class TutorialNodeAdminIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
+    void moveIntoGroupNormalizesTheFormerSiblingList() throws Exception {
+        MockHttpSession session = loginSession();
+        Long tutorialId = createTutorial("t-move-source", "DRAFT");
+        Long group = createGroup(session, tutorialId, "group", null);
+        Long c1 = createChapter(session, tutorialId, "c1", null, "body");
+        Long c2 = createChapter(session, tutorialId, "c2", null, "body");
+
+        // Root starts [group(10), c1(20), c2(30)]. Moving c1 into the
+        // group leaves c2 at root and must close the 10-point gap.
+        move(session, tutorialId, c1, group, 0);
+
+        assertThat(sortOrderOf(c2)).isEqualTo(20);
+    }
+
+    @Test
     void moveIndexClampedToEnd() throws Exception {
         MockHttpSession session = loginSession();
         Long tutorialId = createTutorial("t-move3", "DRAFT");

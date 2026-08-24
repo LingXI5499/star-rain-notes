@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
-import { ElMessage, ElMessageBox } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
+import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
 import {
   createCategory,
   deleteCategory,
   fetchCategoryTree,
+  moveCategory,
   updateCategory,
   type CategoryNode,
 } from '@/api/tutorial'
+import CategoryTreeNode, { type CategoryTreeDrop } from './CategoryTreeNode.vue'
 
 const tree = ref<CategoryNode[]>([])
 const loading = ref(true)
@@ -44,9 +47,24 @@ onMounted(load)
 
 const dialogVisible = ref(false)
 const editingId = ref<number | null>(null)
+const dragging = ref<CategoryNode | null>(null)
 const form = reactive({ name: '', slug: '', parentId: null as number | null })
 
-const groupOptions = computed(() => flatten(tree.value))
+function descendantIds(node: CategoryNode): Set<number> {
+  const ids = new Set<number>([node.id])
+  for (const child of node.children) {
+    for (const id of descendantIds(child)) ids.add(id)
+  }
+  return ids
+}
+
+const groupOptions = computed(() => {
+  const editingNode = editingId.value === null
+    ? undefined
+    : flatten(tree.value).find((node) => node.id === editingId.value)
+  const excluded = editingNode ? descendantIds(editingNode) : new Set<number>()
+  return flatten(tree.value).filter((node) => !excluded.has(node.id))
+})
 
 function openCreate(parentId: number | null = null) {
   editingId.value = null
@@ -70,7 +88,7 @@ async function save() {
     return
   }
   try {
-    const payload = { name: form.name, slug: form.slug, parentId: form.parentId, sortOrder: 0 }
+    const payload = { name: form.name.trim(), slug: form.slug.trim(), parentId: form.parentId }
     if (editingId.value === null) {
       await createCategory(payload)
       ElMessage.success('已创建。')
@@ -83,6 +101,44 @@ async function save() {
   } catch (error) {
     const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
     ElMessage.error(problem?.detail ?? '保存失败。')
+  }
+}
+
+function siblingList(parentId: number | null): CategoryNode[] {
+  if (parentId === null) return tree.value
+  return flatten(tree.value).find((node) => node.id === parentId)?.children ?? []
+}
+
+function isDescendant(ancestor: CategoryNode, possibleDescendantId: number | null): boolean {
+  return possibleDescendantId !== null && descendantIds(ancestor).has(possibleDescendantId)
+}
+
+async function handleDrop({ target, position }: CategoryTreeDrop) {
+  const source = dragging.value
+  dragging.value = null
+  if (!source || source.id === target.id) return
+
+  const targetParentId = position === 'inside' ? target.id : target.parentId
+  if (isDescendant(source, targetParentId)) {
+    ElMessage.warning('不能把分类移动到自身或其子分类中。')
+    return
+  }
+
+  const destination = siblingList(targetParentId)
+  const targetIndex = destination.findIndex((node) => node.id === target.id)
+  let index = position === 'inside' ? destination.length : targetIndex + (position === 'after' ? 1 : 0)
+  if (source.parentId === targetParentId) {
+    const sourceIndex = destination.findIndex((node) => node.id === source.id)
+    if (sourceIndex >= 0 && sourceIndex < index) index -= 1
+  }
+
+  try {
+    await moveCategory(source.id, { targetParentId, targetIndex: Math.max(index, 0) })
+    ElMessage.success('分类顺序已更新。')
+    await load()
+  } catch (error) {
+    const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
+    ElMessage.error(problem?.detail ?? '排序失败。')
   }
 }
 
@@ -107,31 +163,21 @@ async function remove(node: CategoryNode) {
 
     <div v-loading="loading" class="categories-admin__body">
       <p v-if="!loading && !tree.length" class="categories-admin__empty">暂无分类</p>
-      <ul v-else class="category-tree">
-        <li v-for="node in tree" :key="node.id" class="category-tree__item">
-          <div class="category-tree__row">
-            <span class="category-tree__name">{{ node.name }}</span>
-            <span class="category-tree__slug">{{ node.slug }}</span>
-            <span class="category-tree__actions">
-              <el-button link type="primary" @click="openCreate(node.id)">添加子分类</el-button>
-              <el-button link type="primary" @click="openEdit(node)">编辑</el-button>
-              <el-button link type="danger" @click="remove(node)">删除</el-button>
-            </span>
-          </div>
-          <ul v-if="node.children.length" class="category-tree__children">
-            <li v-for="child in node.children" :key="child.id" class="category-tree__item">
-              <div class="category-tree__row">
-                <span class="category-tree__name">{{ child.name }}</span>
-                <span class="category-tree__slug">{{ child.slug }}</span>
-                <span class="category-tree__actions">
-                  <el-button link type="primary" @click="openEdit(child)">编辑</el-button>
-                  <el-button link type="danger" @click="remove(child)">删除</el-button>
-                </span>
-              </div>
-            </li>
-          </ul>
-        </li>
-      </ul>
+      <template v-else-if="!loading">
+        <p class="categories-admin__hint">拖动整行可排序；放到分类中部可成为其子分类。</p>
+        <ul class="category-tree">
+          <CategoryTreeNode
+            v-for="node in tree"
+            :key="node.id"
+            :node="node"
+            @create-child="openCreate($event.id)"
+            @edit="openEdit"
+            @delete="remove"
+            @drag-start="dragging = $event"
+            @drop="handleDrop"
+          />
+        </ul>
+      </template>
     </div>
 
     <el-dialog v-model="dialogVisible" :title="editingId === null ? '新建分类' : '编辑分类'" width="420px">
@@ -174,34 +220,14 @@ async function remove(node: CategoryNode) {
   padding: var(--space-6) 0;
 }
 
+.categories-admin__hint {
+  margin-bottom: var(--space-3);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
 .category-tree {
   list-style: none;
 }
 
-.category-tree__children {
-  list-style: none;
-  padding-left: var(--space-8);
-}
-
-.category-tree__row {
-  display: flex;
-  align-items: center;
-  gap: var(--space-4);
-  padding: var(--space-3) 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.category-tree__name {
-  font-weight: 600;
-}
-
-.category-tree__slug {
-  font-size: 13px;
-  color: var(--text-muted);
-  font-family: monospace;
-}
-
-.category-tree__actions {
-  margin-left: auto;
-}
 </style>

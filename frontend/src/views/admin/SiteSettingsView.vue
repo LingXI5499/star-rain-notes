@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref } from 'vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import { fetchSiteSettings, updateSiteSettings, type AdminSiteSettings } from '@/api/site'
 import type { ProblemDetail } from '@/api/http'

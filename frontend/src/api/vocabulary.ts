@@ -57,8 +57,9 @@ export async function fetchVocabularyLayers(): Promise<VocabularyLayer[]> {
 export async function fetchThemeWords(
   themeId: number,
   params: { page?: number; pageSize?: number; remembered?: boolean },
+  signal?: AbortSignal,
 ): Promise<VocabularyPage> {
-  const { data } = await http.get<VocabularyPage>(`/public/vocabulary/themes/${themeId}/words`, { params })
+  const { data } = await http.get<VocabularyPage>(`/public/vocabulary/themes/${themeId}/words`, { params, signal })
   return data
 }
 

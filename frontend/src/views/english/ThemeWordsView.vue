@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
-import { RouterLink, useRoute } from 'vue-router'
+import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import {
   fetchThemeWords,
   fetchVocabularyLayers,
@@ -16,7 +16,9 @@ import {
  * record (count + last time, +1 button persisted server-side).
  */
 const route = useRoute()
-const themeId = Number(route.params.themeId)
+const router = useRouter()
+
+const themeId = computed(() => Number(route.params.themeId))
 
 const themeName = ref('')
 const themeLayer = ref('')
@@ -28,32 +30,69 @@ const loading = ref(true)
 const error = ref(false)
 const memorizing = ref<Set<number>>(new Set())
 const rememberedOnly = ref(false)
+const resultsTop = ref<HTMLElement | null>(null)
 const PAGE_SIZE = 24
 
-async function load() {
+let requestController: AbortController | null = null
+let requestVersion = 0
+
+function positiveInteger(value: unknown, fallback: number): number {
+  const parsed = Number(value)
+  return Number.isInteger(parsed) && parsed > 0 ? parsed : fallback
+}
+
+function readRouteState() {
+  page.value = positiveInteger(route.query.page, 1)
+  rememberedOnly.value = route.query.filter === 'remembered'
+}
+
+async function syncRoute(nextPage: number, remembered: boolean) {
+  const query = { ...route.query }
+  if (nextPage > 1) query.page = String(nextPage)
+  else delete query.page
+  if (remembered) query.filter = 'remembered'
+  else delete query.filter
+  await router.push({ query })
+}
+
+async function scrollToResults() {
+  await nextTick()
+  resultsTop.value?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+}
+
+async function load(scrollAfter = false) {
+  requestController?.abort()
+  const controller = new AbortController()
+  requestController = controller
+  const version = ++requestVersion
   loading.value = true
   try {
-    const result = await fetchThemeWords(themeId, {
+    const result = await fetchThemeWords(themeId.value, {
       page: page.value,
       pageSize: PAGE_SIZE,
       remembered: rememberedOnly.value || undefined,
-    })
+    }, controller.signal)
+    if (version !== requestVersion) return
     items.value = result.items
     total.value = result.total
     totalPages.value = result.totalPages
     error.value = false
-  } catch {
+    if (result.totalPages > 0 && page.value > result.totalPages) {
+      await syncRoute(result.totalPages, rememberedOnly.value)
+      return
+    }
+    if (scrollAfter) await scrollToResults()
+  } catch (loadError) {
+    if (controller.signal.aborted) return
     error.value = true
   } finally {
-    loading.value = false
+    if (version === requestVersion) loading.value = false
   }
 }
 
-function selectFilter(remembered: boolean) {
+async function selectFilter(remembered: boolean) {
   if (rememberedOnly.value === remembered) return
-  rememberedOnly.value = remembered
-  page.value = 1
-  void load()
+  await syncRoute(1, remembered)
 }
 
 async function remember(word: VocabularyWord) {
@@ -70,18 +109,18 @@ async function remember(word: VocabularyWord) {
   }
 }
 
-function goPage(next: number) {
+async function goPage(next: number) {
   if (next < 1 || next > totalPages.value) return
-  page.value = next
+  await syncRoute(next, rememberedOnly.value)
 }
 
-watch(page, () => void load())
-
-onMounted(async () => {
+async function loadThemeMeta() {
+  themeName.value = ''
+  themeLayer.value = ''
   try {
     const layers = await fetchVocabularyLayers()
     for (const layer of layers) {
-      const theme = layer.themes.find((t) => t.id === themeId)
+      const theme = layer.themes.find((t) => t.id === themeId.value)
       if (theme) {
         themeName.value = theme.name
         themeLayer.value = layer.layer
@@ -89,10 +128,22 @@ onMounted(async () => {
       }
     }
   } catch {
-    // theme name is decorative; the word list load below reports errors
+    // Theme metadata is decorative; the word list owns the error state.
   }
-  await load()
-})
+}
+
+watch(
+  () => [route.params.themeId, route.query.page, route.query.filter] as const,
+  async ([currentTheme], previous) => {
+    const themeChanged = !previous || currentTheme !== previous[0]
+    readRouteState()
+    if (themeChanged) await loadThemeMeta()
+    await load(!themeChanged || !!previous)
+  },
+  { immediate: true },
+)
+
+onBeforeUnmount(() => requestController?.abort())
 
 const pageLabel = computed(() => (total.value ? `${page.value} / ${totalPages.value} 页 · 共 ${total.value} 词` : ''))
 </script>
@@ -106,7 +157,7 @@ const pageLabel = computed(() => (total.value ? `${page.value} / ${totalPages.va
       <p v-if="!loading && !error" class="words__meta">{{ pageLabel }}</p>
     </header>
 
-    <div class="words__chips" role="group" aria-label="记忆筛选">
+    <div ref="resultsTop" class="words__chips" role="group" aria-label="记忆筛选">
       <button
         type="button"
         class="words__chip"
@@ -212,6 +263,7 @@ const pageLabel = computed(() => (total.value ? `${page.value} / ${totalPages.va
   display: flex;
   gap: var(--space-2);
   margin-bottom: var(--space-5);
+  scroll-margin-top: calc(var(--header-height) + var(--space-5));
 }
 
 .words__chip {

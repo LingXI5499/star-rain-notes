@@ -7,6 +7,8 @@
 #
 # Activate with:  --spring.profiles.active=prod  (SPRING_PROFILES_ACTIVE=prod)
 server:
+  # Respect X-Forwarded-* supplied by the local Nginx reverse proxy.
+  forward-headers-strategy: framework
   servlet:
     session:
       cookie:
@@ -14,8 +16,28 @@ server:
         # Override with SESSION_COOKIE_SECURE=false only for non-TLS smoke runs.
         secure: ${SESSION_COOKIE_SECURE:true}
 
+spring:
+  datasource:
+    hikari:
+      # A two-core personal ECS does not benefit from a large JDBC pool. A
+      # small bounded pool leaves memory and connections available to MySQL.
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:6}
+      minimum-idle: ${DB_POOL_MIN_IDLE:1}
+      connection-timeout: 3000
+      validation-timeout: 1000
+      idle-timeout: 300000
+      max-lifetime: 1500000
+
 app:
   media:
     # Absolute media directory served by Nginx at /uploads (06 §8); the DB
     # keeps only the relative storage key.
     storage-dir: ${MEDIA_STORAGE_DIR:/srv/star-rain-notes/uploads}
+
+# API documentation is useful locally but should not consume memory or expose
+# metadata on the public production host.
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

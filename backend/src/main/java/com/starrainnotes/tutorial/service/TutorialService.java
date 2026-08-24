@@ -12,6 +12,7 @@ import com.starrainnotes.tutorial.dto.CategoryPathView;
 import com.starrainnotes.tutorial.dto.CreateTutorialRequest;
 import com.starrainnotes.tutorial.dto.CurriculumNodeView;
 import com.starrainnotes.tutorial.dto.FirstChapterView;
+import com.starrainnotes.tutorial.dto.MoveTutorialRequest;
 import com.starrainnotes.tutorial.dto.PrevNextView;
 import com.starrainnotes.tutorial.dto.PublicChapterView;
 import com.starrainnotes.tutorial.dto.PublicTutorialDetailView;
@@ -26,6 +27,7 @@ import com.starrainnotes.tutorial.mapper.TutorialMapper;
 import com.starrainnotes.tutorial.mapper.TutorialNodeMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.Clock;
@@ -79,15 +81,19 @@ public class TutorialService {
     // admin
     // ---------------------------------------------------------------
 
-    public TutorialPageView adminList(int page, int pageSize, String status, String query) {
+    public TutorialPageView adminList(int page, int pageSize, String status, String query, Long categoryId) {
         int safePage = Math.max(page, 1);
         int safeSize = Math.min(Math.max(pageSize, 1), 50);
         LambdaQueryWrapper<Tutorial> wrapper = new LambdaQueryWrapper<Tutorial>()
                 .eq(status != null && !status.isBlank(), Tutorial::getPublishStatus, status)
+                .eq(categoryId != null, Tutorial::getCategoryId, categoryId)
                 .and(query != null && !query.isBlank(), w -> w
-                        .like(Tutorial::getTitle, query).or().like(Tutorial::getSlug, query))
-                .orderByDesc(Tutorial::getUpdatedAt)
-                .orderByDesc(Tutorial::getId);
+                        .like(Tutorial::getTitle, query).or().like(Tutorial::getSlug, query));
+        if (categoryId == null) {
+            wrapper.orderByDesc(Tutorial::getUpdatedAt).orderByDesc(Tutorial::getId);
+        } else {
+            wrapper.orderByAsc(Tutorial::getSortOrder).orderByAsc(Tutorial::getId);
+        }
 
         Long total = tutorialMapper.selectCount(wrapper);
         int offset = (safePage - 1) * safeSize;
@@ -95,10 +101,12 @@ public class TutorialService {
         List<Tutorial> rows = tutorialMapper.selectList(wrapper);
 
         Map<Long, String> categoryNames = categoryNameMap();
+        Map<Long, Long> chapterCounts = adminChapterCounts();
         List<AdminTutorialSummaryView> items = rows.stream()
                 .map(t -> new AdminTutorialSummaryView(
                         t.getId(), t.getTitle(), t.getSlug(), t.getCategoryId(),
-                        categoryNames.get(t.getCategoryId()), t.getPublishStatus(),
+                        categoryNames.get(t.getCategoryId()), t.getPublishStatus(), t.getSortOrder(),
+                        chapterCounts.getOrDefault(t.getId(), 0L),
                         formatUtc(t.getPublishedAt()), formatUtc(t.getUpdatedAt())))
                 .toList();
 
@@ -122,7 +130,7 @@ public class TutorialService {
         tutorial.setSlug(request.slug());
         tutorial.setSummary(request.summary());
         tutorial.setCoverMediaId(request.coverMediaId());
-        tutorial.setSortOrder(request.sortOrder() == null ? 0 : request.sortOrder());
+        tutorial.setSortOrder(request.sortOrder() == null ? nextTutorialOrder(request.categoryId()) : request.sortOrder());
         tutorial.setSeoTitle(request.seoTitle());
         tutorial.setSeoDescription(request.seoDescription());
         tutorial.setPublishStatus(DRAFT);
@@ -158,6 +166,17 @@ public class TutorialService {
                     "Tutorial has nodes", "A tutorial containing nodes cannot be deleted.");
         }
         tutorialMapper.deleteById(id);
+    }
+
+    /** Reorders tutorials within their current category without editing metadata. */
+    @Transactional
+    public void move(Long id, MoveTutorialRequest request) {
+        Tutorial tutorial = requireTutorial(id);
+        List<Tutorial> siblings = loadCategoryTutorials(tutorial.getCategoryId());
+        siblings.removeIf(item -> item.getId().equals(id));
+        int index = Math.min(Math.max(request.targetIndex(), 0), siblings.size());
+        siblings.add(index, tutorial);
+        normalizeTutorialOrder(siblings);
     }
 
     public AdminTutorialDetailView publish(Long id) {
@@ -201,6 +220,7 @@ public class TutorialService {
 
         Map<Long, String> categoryNames = categoryNameMap();
         Map<Long, Long> chapterCounts = publishedChapterCounts();
+        Map<Long, String> firstChapterSlugs = firstPublishedChapterSlugs(rows);
         Map<Long, String> mediaUrls = coverUrlMap(
                 rows.stream().map(Tutorial::getCoverMediaId).toList());
         // HashMap allows null cover values (Collectors.toMap would NPE)
@@ -215,7 +235,8 @@ public class TutorialService {
                         t.getId(), t.getTitle(), t.getSlug(), t.getSummary(),
                         coverByTutorial.get(t.getId()), t.getCategoryId(),
                         categoryNames.get(t.getCategoryId()),
-                        chapterCounts.getOrDefault(t.getId(), 0L)))
+                        chapterCounts.getOrDefault(t.getId(), 0L),
+                        firstChapterSlugs.get(t.getId())))
                 .toList();
     }
 
@@ -319,6 +340,31 @@ public class TutorialService {
         return tutorial;
     }
 
+    private List<Tutorial> loadCategoryTutorials(Long categoryId) {
+        return tutorialMapper.selectList(new LambdaQueryWrapper<Tutorial>()
+                .eq(Tutorial::getCategoryId, categoryId)
+                .orderByAsc(Tutorial::getSortOrder)
+                .orderByAsc(Tutorial::getId));
+    }
+
+    private int nextTutorialOrder(Long categoryId) {
+        return loadCategoryTutorials(categoryId).stream()
+                .mapToInt(item -> item.getSortOrder() == null ? 0 : item.getSortOrder())
+                .max()
+                .orElse(0) + 10;
+    }
+
+    private void normalizeTutorialOrder(List<Tutorial> tutorials) {
+        for (int index = 0; index < tutorials.size(); index++) {
+            Tutorial tutorial = tutorials.get(index);
+            int order = (index + 1) * 10;
+            if (!Integer.valueOf(order).equals(tutorial.getSortOrder())) {
+                tutorial.setSortOrder(order);
+                tutorialMapper.updateById(tutorial);
+            }
+        }
+    }
+
     private void requireCategory(Long categoryId) {
         if (categoryId == null || categoryMapper.selectById(categoryId) == null) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "TUTORIAL_CATEGORY_NOT_FOUND",
@@ -400,6 +446,34 @@ public class TutorialService {
         List<TutorialNode> chapters = nodeMapper.selectList(new LambdaQueryWrapper<TutorialNode>()
                 .eq(TutorialNode::getNodeType, "CHAPTER")
                 .eq(TutorialNode::getPublishStatus, PUBLISHED));
+        return chapters.stream().collect(Collectors.groupingBy(TutorialNode::getTutorialId, Collectors.counting()));
+    }
+
+    private Map<Long, String> firstPublishedChapterSlugs(List<Tutorial> tutorials) {
+        if (tutorials.isEmpty()) {
+            return Map.of();
+        }
+        List<Long> tutorialIds = tutorials.stream().map(Tutorial::getId).toList();
+        List<TutorialNode> allNodes = nodeMapper.selectList(new LambdaQueryWrapper<TutorialNode>()
+                .in(TutorialNode::getTutorialId, tutorialIds)
+                .orderByAsc(TutorialNode::getSortOrder)
+                .orderByAsc(TutorialNode::getId));
+        Map<Long, List<TutorialNode>> byTutorial = allNodes.stream()
+                .collect(Collectors.groupingBy(TutorialNode::getTutorialId));
+        Map<Long, String> result = new HashMap<>();
+        for (Tutorial tutorial : tutorials) {
+            List<TutorialNode> chapters = TutorialCurriculumBuilder.publicChaptersInPreorder(
+                    byTutorial.getOrDefault(tutorial.getId(), List.of()));
+            if (!chapters.isEmpty()) {
+                result.put(tutorial.getId(), chapters.getFirst().getSlug());
+            }
+        }
+        return result;
+    }
+
+    private Map<Long, Long> adminChapterCounts() {
+        List<TutorialNode> chapters = nodeMapper.selectList(new LambdaQueryWrapper<TutorialNode>()
+                .eq(TutorialNode::getNodeType, "CHAPTER"));
         return chapters.stream().collect(Collectors.groupingBy(TutorialNode::getTutorialId, Collectors.counting()));
     }
 

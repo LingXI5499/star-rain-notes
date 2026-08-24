@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
 import {
@@ -28,7 +28,7 @@ const form = reactive({
   slug: '',
   summary: '',
   coverMediaId: null as number | null,
-  sortOrder: 0,
+  sortOrder: null as number | null,
   seoTitle: '',
   seoDescription: '',
 })
@@ -60,6 +60,11 @@ onMounted(async () => {
         seoTitle: detail.seoTitle ?? '',
         seoDescription: detail.seoDescription ?? '',
       })
+    } else {
+      const requestedCategoryId = Number(route.query.categoryId)
+      if (Number.isInteger(requestedCategoryId) && categories.value.some((item) => item.id === requestedCategoryId)) {
+        form.categoryId = requestedCategoryId
+      }
     }
   } catch {
     ElMessage.error('加载失败。')
@@ -86,14 +91,15 @@ async function save() {
       seoTitle: form.seoTitle || null,
       seoDescription: form.seoDescription || null,
     }
-    if (isEdit.value) {
-      await updateTutorial(Number(route.params.id), payload)
-    } else {
-      await createTutorial(payload)
-    }
+    const saved = isEdit.value
+      ? await updateTutorial(Number(route.params.id), payload)
+      : await createTutorial(payload)
     capture()
     ElMessage.success('已保存。')
-    await router.push({ name: 'admin-tutorials' })
+    await router.push({
+      name: 'admin-tutorials',
+      query: { category: String(saved.categoryId), tutorial: String(saved.id) },
+    })
   } catch (error) {
     const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
     ElMessage.error(problem?.detail ?? '保存失败。')
@@ -122,9 +128,7 @@ async function save() {
       <el-form-item label="摘要">
         <el-input v-model="form.summary" type="textarea" :rows="3" maxlength="1000" />
       </el-form-item>
-      <el-form-item label="排序（数字，越小越靠前）">
-        <el-input-number v-model="form.sortOrder" :controls="false" />
-      </el-form-item>
+      <p class="tutorial-edit__sort-hint">教程顺序请在教程工作台中直接拖动调整。</p>
       <el-form-item label="SEO 标题">
         <el-input v-model="form.seoTitle" maxlength="200" />
       </el-form-item>
@@ -132,7 +136,7 @@ async function save() {
         <el-input v-model="form.seoDescription" type="textarea" :rows="2" maxlength="500" />
       </el-form-item>
       <el-button type="primary" :loading="saving" @click="save">保存</el-button>
-      <el-button @click="router.push({ name: 'admin-tutorials' })">取消</el-button>
+      <el-button @click="router.push({ name: 'admin-tutorials', query: form.categoryId ? { category: String(form.categoryId) } : undefined })">取消</el-button>
     </el-form>
   </section>
 </template>
@@ -146,5 +150,11 @@ async function save() {
 
 .tutorial-edit__form {
   max-width: 560px;
+}
+
+.tutorial-edit__sort-hint {
+  margin: 0 0 var(--space-5);
+  color: var(--text-muted);
+  font-size: 13px;
 }
 </style>

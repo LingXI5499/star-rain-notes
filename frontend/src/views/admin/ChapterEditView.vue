@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
 import {
@@ -76,6 +76,12 @@ onMounted(async () => {
       form.parentId = chapter.parentId
       form.summary = chapter.summary ?? ''
       form.bodyMarkdown = chapter.bodyMarkdown
+    } else {
+      const requestedParentId = Number(route.query.parentId)
+      if (Number.isInteger(requestedParentId)
+        && groupOptions.value.some((group) => group.id === requestedParentId)) {
+        form.parentId = requestedParentId
+      }
     }
   } catch {
     ElMessage.error('加载失败。')
@@ -111,13 +117,17 @@ async function save() {
     }
     capture()
     ElMessage.success('已保存。')
-    await router.push({ name: 'admin-tutorial-chapters', params: { id: String(tutorialId) } })
+    await backToWorkspace()
   } catch (error) {
     const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
     ElMessage.error(problem?.detail ?? '保存失败。')
   } finally {
     saving.value = false
   }
+}
+
+async function backToWorkspace() {
+  await router.push({ name: 'admin-tutorials', query: { tutorial: String(tutorialId) } })
 }
 </script>
 
@@ -131,7 +141,7 @@ async function save() {
           <el-button
             link
             type="primary"
-            @click="router.push({ name: 'admin-tutorial-chapters', params: { id: String(tutorialId) } })"
+            @click="backToWorkspace"
           >
             {{ tutorialTitle }} › 章节管理
           </el-button>
@@ -139,7 +149,7 @@ async function save() {
       </div>
       <div class="chapter-edit__topbar-actions">
         <el-button :loading="saving" type="primary" @click="save">保存</el-button>
-        <el-button @click="router.push({ name: 'admin-tutorial-chapters', params: { id: String(tutorialId) } })">
+        <el-button @click="backToWorkspace">
           取消
         </el-button>
       </div>
@@ -176,7 +186,7 @@ async function save() {
 
       <div class="chapter-edit__actions">
         <el-button type="primary" :loading="saving" @click="save">保存</el-button>
-        <el-button @click="router.push({ name: 'admin-tutorial-chapters', params: { id: String(tutorialId) } })">
+        <el-button @click="backToWorkspace">
           取消
         </el-button>
       </div>

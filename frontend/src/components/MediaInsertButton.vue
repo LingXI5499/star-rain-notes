@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import MediaPicker from './MediaPicker.vue'
-import { registerElementPlus } from '@/plugins/element-plus'
 import type { MediaAsset } from '@/api/media'
 
 /**
@@ -15,6 +14,7 @@ const emit = defineEmits<{
 const pickerVisible = ref(false)
 
 async function openPicker() {
+  const { registerElementPlus } = await import('@/plugins/element-plus')
   await registerElementPlus()
   pickerVisible.value = true
 }
