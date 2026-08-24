@@ -20,7 +20,7 @@ const directions = [
   { icon: '语', name: '语法', en: 'GRAMMAR', description: '10章42课，从词法到复杂句法建立完整语法框架。', to: '/english/grammar', cta: '开始课程' },
   { icon: '读', name: '阅读', en: 'READING', description: '分级精读材料，能力×主题×文体×CEFR 组织。', to: '/english/reading', cta: '开始阅读' },
   { icon: '写', name: '写作', en: 'WRITING', description: '以技术博客与文档为目标训练清晰表达。', status: '建设中' },
-  { icon: '听', name: '听力', en: 'LISTENING', description: '适应英文技术内容与日常交流的听力节奏。', status: '建设中' },
+  { icon: '听', name: '听力', en: 'LISTENING', description: '分层听力训练，逐句精听与语音规则。', to: '/english/listening', cta: '开始训练' },
 ]
 
 onMounted(async () => {

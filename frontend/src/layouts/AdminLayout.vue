@@ -44,8 +44,8 @@ const englishItems = [
   { to: '/admin/english/taxonomy', label: '标签管理', badge: '' },
   { to: '/admin/english/bundles', label: '学习组合', badge: '' },
   { to: '/admin/english/reading', label: '阅读管理', badge: '' },
+  { to: '/admin/english/listening', label: '听力管理', badge: '' },
   { to: '', label: '写作', badge: '待开发' },
-  { to: '', label: '听力', badge: '待开发' },
 ]
 
 const passwordDialogOpen = ref(false)

@@ -169,6 +169,36 @@ const router = createRouter({
       ],
     },
     {
+      path: '/english/listening',
+      component: WideLayout,
+      children: [
+        {
+          path: '',
+          name: 'english-listening',
+          component: () => import('@/views/english/ListeningView.vue'),
+          meta: { title: '听力中心', description: '分层听力训练：场景×形式×能力，逐句精听。', elementPlus: true },
+        },
+        {
+          path: ':slug',
+          name: 'english-listening-detail',
+          component: () => import('@/views/english/ListeningDetailView.vue'),
+          meta: { title: '精听材料', elementPlus: true },
+        },
+        {
+          path: 'pronunciation',
+          name: 'english-listening-pronunciation',
+          component: () => import('@/views/english/ListeningPronunciationView.vue'),
+          meta: { title: '语音规则', elementPlus: true },
+        },
+        {
+          path: 'pronunciation/:slug',
+          name: 'english-listening-pronunciation-detail',
+          component: () => import('@/views/english/ListeningPronunciationDetailView.vue'),
+          meta: { title: '语音规则', elementPlus: true },
+        },
+      ],
+    },
+    {
       path: '/admin/setup',
       name: 'admin-setup',
       component: () => import('@/views/admin/SetupView.vue'),
@@ -316,6 +346,41 @@ const router = createRouter({
           path: 'english/reading/articles/:articleId/exercises',
           name: 'admin-reading-exercises',
           component: () => import('@/views/admin/ReadingExerciseManageView.vue'),
+        },
+        {
+          path: 'english/listening',
+          name: 'admin-listening',
+          component: () => import('@/views/admin/ListeningManageView.vue'),
+        },
+        {
+          path: 'english/listening/items/new',
+          name: 'admin-listening-new',
+          component: () => import('@/views/admin/ListeningEditView.vue'),
+        },
+        {
+          path: 'english/listening/items/:id/edit',
+          name: 'admin-listening-edit',
+          component: () => import('@/views/admin/ListeningEditView.vue'),
+        },
+        {
+          path: 'english/listening/items/:id/exercises',
+          name: 'admin-listening-exercises',
+          component: () => import('@/views/admin/ListeningExerciseManageView.vue'),
+        },
+        {
+          path: 'english/listening/pronunciation',
+          name: 'admin-listening-pronunciation',
+          component: () => import('@/views/admin/ListeningPronunciationManageView.vue'),
+        },
+        {
+          path: 'english/listening/pronunciation/new',
+          name: 'admin-listening-pronunciation-new',
+          redirect: { name: 'admin-listening-pronunciation' },
+        },
+        {
+          path: 'english/listening/pronunciation/:id/edit',
+          name: 'admin-listening-pronunciation-edit',
+          component: () => import('@/views/admin/ListeningPronunciationManageView.vue'),
         },
         {
           path: 'english/grammar/lessons/new',

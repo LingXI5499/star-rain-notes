@@ -9,7 +9,7 @@ import { http } from './http'
  * the full /search page keeps using the raw page.
  */
 
-export type SearchResultType = 'TUTORIAL' | 'CHAPTER' | 'BLOG' | 'PORTFOLIO' | 'GRAMMAR' | 'READING'
+export type SearchResultType = 'TUTORIAL' | 'CHAPTER' | 'BLOG' | 'PORTFOLIO' | 'GRAMMAR' | 'READING' | 'LISTENING' | 'PRONUNCIATION'
 
 export interface SearchItem {
   type: SearchResultType
@@ -30,6 +30,7 @@ export interface SearchCounts {
   portfolio: number
   grammar: number
   reading: number
+  listening: number
 }
 
 export interface SearchPage {
@@ -65,10 +66,12 @@ export const SEARCH_TYPE_LABELS: Record<SearchResultType, string> = {
   PORTFOLIO: '作品',
   GRAMMAR: '英语语法',
   READING: '阅读',
+  LISTENING: '听力',
+  PRONUNCIATION: '语音规则',
 }
 
 /** Stable group order for the result panel (tutorials first, then the rest). */
-export const SEARCH_GROUP_ORDER: SearchResultType[] = ['TUTORIAL', 'CHAPTER', 'GRAMMAR', 'READING', 'BLOG', 'PORTFOLIO']
+export const SEARCH_GROUP_ORDER: SearchResultType[] = ['TUTORIAL', 'CHAPTER', 'GRAMMAR', 'READING', 'LISTENING', 'BLOG', 'PORTFOLIO']
 
 /**
  * Group a flat, server-ordered hit list into ordered, non-empty groups.
@@ -112,6 +115,10 @@ export function resolveSearchResultRoute(item: SearchItem): string {
       return `/english/grammar/${item.slug ?? ''}`
     case 'READING':
       return `/english/reading/${item.slug ?? ''}`
+    case 'LISTENING':
+      return `/english/listening/${item.slug ?? ''}`
+    case 'PRONUNCIATION':
+      return `/english/listening/pronunciation/${item.slug ?? ''}`
   }
 }
 
