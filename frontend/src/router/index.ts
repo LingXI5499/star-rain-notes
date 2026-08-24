@@ -133,6 +133,24 @@ const router = createRouter({
       ],
     },
     {
+      path: '/english/grammar',
+      component: DocumentationLayout,
+      children: [
+        {
+          path: '',
+          name: 'english-grammar',
+          component: () => import('@/views/english/GrammarView.vue'),
+          meta: { title: '英语语法完整教程', description: '从词法到复杂句法的系统英语语法课程。' },
+        },
+        {
+          path: ':lessonSlug',
+          name: 'english-grammar-lesson',
+          component: () => import('@/views/english/GrammarLessonView.vue'),
+          meta: { title: '英语语法课程' },
+        },
+      ],
+    },
+    {
       path: '/admin/setup',
       name: 'admin-setup',
       component: () => import('@/views/admin/SetupView.vue'),
@@ -229,12 +247,37 @@ const router = createRouter({
         {
           path: 'english',
           name: 'admin-english',
+          component: () => import('@/views/admin/EnglishWorkspaceView.vue'),
+        },
+        {
+          path: 'english/overview',
+          name: 'admin-english-overview',
           component: () => import('@/views/admin/EnglishEditView.vue'),
+        },
+        {
+          path: 'english/vocabulary',
+          name: 'admin-english-vocabulary',
+          component: () => import('@/views/admin/VocabularyAdminView.vue'),
+        },
+        {
+          path: 'english/grammar',
+          name: 'admin-english-grammar',
+          component: () => import('@/views/admin/GrammarManageView.vue'),
+        },
+        {
+          path: 'english/grammar/lessons/new',
+          name: 'admin-english-grammar-lesson-new',
+          component: () => import('@/views/admin/GrammarLessonEditView.vue'),
+        },
+        {
+          path: 'english/grammar/lessons/:lessonId/edit',
+          name: 'admin-english-grammar-lesson-edit',
+          component: () => import('@/views/admin/GrammarLessonEditView.vue'),
         },
         {
           path: 'vocabulary',
           name: 'admin-vocabulary',
-          component: () => import('@/views/admin/VocabularyAdminView.vue'),
+          redirect: { name: 'admin-english-vocabulary' },
         },
         {
           path: 'about',

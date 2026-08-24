@@ -16,11 +16,11 @@ const stageLabels: Record<string, string> = {
 }
 
 const directions = [
-  { name: '词汇', description: '系统积累常用词与高频表达，建立词汇网络。', to: '/english/vocabulary' },
-  { name: '语法', description: '掌握核心语法结构，正确理解长难句。' },
-  { name: '阅读', description: '阅读技术文档、论文与英文原著。' },
-  { name: '听力', description: '适应英文技术内容与日常交流的听力节奏。' },
-  { name: '写作', description: '以技术博客与文档为目标训练清晰表达。' },
+  { icon: '词', name: '单词', en: 'VOCABULARY', description: '按主题积累常用词与高频表达，建立可检索的词汇网络。', to: '/english/vocabulary', cta: '进入词库' },
+  { icon: '语', name: '语法', en: 'GRAMMAR', description: '10章42课，从词法到复杂句法建立完整语法框架。', to: '/english/grammar', cta: '开始课程' },
+  { icon: '读', name: '阅读', en: 'READING', description: '阅读技术文档、论文与英文原著。', status: '建设中' },
+  { icon: '写', name: '写作', en: 'WRITING', description: '以技术博客与文档为目标训练清晰表达。', status: '建设中' },
+  { icon: '听', name: '听力', en: 'LISTENING', description: '适应英文技术内容与日常交流的听力节奏。', status: '建设中' },
 ]
 
 onMounted(async () => {
@@ -58,13 +58,16 @@ onMounted(async () => {
             <div class="english__directions">
               <template v-for="direction in directions" :key="direction.name">
                 <RouterLink v-if="direction.to" :to="direction.to" class="english__direction english__direction--link">
+                  <div class="english__direction-head"><span>{{ direction.icon }}</span><small>{{ direction.en }}</small></div>
                   <h3 class="english__direction-name">{{ direction.name }}</h3>
                   <p class="english__direction-desc">{{ direction.description }}</p>
-                  <span class="english__direction-cta">进入词库 →</span>
+                  <span class="english__direction-cta">{{ direction.cta }} →</span>
                 </RouterLink>
                 <div v-else class="english__direction">
+                  <div class="english__direction-head"><span>{{ direction.icon }}</span><small>{{ direction.en }}</small></div>
                   <h3 class="english__direction-name">{{ direction.name }}</h3>
                   <p class="english__direction-desc">{{ direction.description }}</p>
+                  <span class="english__direction-status">{{ direction.status }}</span>
                 </div>
               </template>
             </div>
@@ -171,14 +174,17 @@ onMounted(async () => {
   flex-direction: column;
   gap: var(--space-2);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  padding: var(--space-5);
+  border-radius: 18px;
+  padding: var(--space-6);
+  min-height: 210px;
+  background: linear-gradient(145deg,var(--bg-surface),color-mix(in srgb,var(--primary) 3%,var(--bg-surface)));
   color: inherit;
   transition:
     transform 0.15s ease,
     box-shadow 0.15s ease,
     border-color 0.15s ease;
 }
+.english__direction-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.english__direction-head>span{display:grid;place-items:center;width:42px;height:42px;border-radius:13px;background:color-mix(in srgb,var(--primary) 12%,var(--bg-subtle));color:var(--primary);font-size:20px;font-weight:800}.english__direction-head small{color:var(--accent);font-size:10px;letter-spacing:.12em}.english__direction-status{margin-top:auto;color:var(--text-muted);font-size:12px}
 
 .english__direction--link:hover {
   transform: translateY(-2px);

@@ -11,6 +11,7 @@ const auth = useAuthStore()
 const theme = useThemeStore()
 
 const collapsed = ref(false)
+const englishOpen = ref(true)
 
 const navItems = [
   { to: '/admin', label: '仪表盘', short: '盘', match: (path: string) => path === '/admin' },
@@ -22,13 +23,9 @@ const navItems = [
     short: '品',
     match: (path: string) => path.startsWith('/admin/portfolio'),
   },
-  { to: '/admin/english', label: '英语管理', short: '英', match: (path: string) => path.startsWith('/admin/english') },
-  {
-    to: '/admin/vocabulary',
-    label: '词汇管理',
-    short: '词',
-    match: (path: string) => path.startsWith('/admin/vocabulary'),
-  },
+]
+
+const secondaryNavItems = [
   { to: '/admin/about', label: '关于管理', short: '关', match: (path: string) => path.startsWith('/admin/about') },
   { to: '/admin/media', label: '媒体库', short: '媒', match: (path: string) => path.startsWith('/admin/media') },
   {
@@ -37,6 +34,16 @@ const navItems = [
     short: '站',
     match: (path: string) => path.startsWith('/admin/settings'),
   },
+]
+
+const englishItems = [
+  { to: '/admin/english', label: '英语工作台', badge: '' },
+  { to: '/admin/english/overview', label: '总览设置', badge: '' },
+  { to: '/admin/english/vocabulary', label: '单词管理', badge: '' },
+  { to: '/admin/english/grammar', label: '语法教程', badge: '' },
+  { to: '', label: '阅读', badge: '待开发' },
+  { to: '', label: '写作', badge: '待开发' },
+  { to: '', label: '听力', badge: '待开发' },
 ]
 
 const passwordDialogOpen = ref(false)
@@ -85,6 +92,41 @@ async function changePassword() {
       <nav class="admin-shell__nav" aria-label="管理导航">
         <RouterLink
           v-for="item in navItems"
+          :key="item.to"
+          :to="item.to"
+          class="admin-shell__nav-item"
+          :class="{ 'admin-shell__nav-item--active': item.match($route.path) }"
+          :title="collapsed ? item.label : undefined"
+        >
+          <span class="admin-shell__nav-short">{{ item.short }}</span>
+          <span v-if="!collapsed" class="admin-shell__nav-label">{{ item.label }}</span>
+        </RouterLink>
+        <div class="admin-shell__nav-group">
+          <button
+            type="button"
+            class="admin-shell__nav-item admin-shell__nav-parent"
+            :class="{ 'admin-shell__nav-item--active': $route.path.startsWith('/admin/english') || $route.path.startsWith('/admin/vocabulary') }"
+            :title="collapsed ? '英语管理' : undefined"
+            @click="collapsed ? router.push('/admin/english') : (englishOpen = !englishOpen)"
+          >
+            <span class="admin-shell__nav-short">英</span>
+            <span v-if="!collapsed" class="admin-shell__nav-label">英语管理</span>
+            <span v-if="!collapsed" class="admin-shell__nav-chevron">{{ englishOpen ? '⌃' : '⌄' }}</span>
+          </button>
+          <div v-if="!collapsed && englishOpen" class="admin-shell__subnav">
+            <template v-for="item in englishItems" :key="item.label">
+              <RouterLink
+                v-if="item.to"
+                :to="item.to"
+                class="admin-shell__subnav-item"
+                :class="{ 'is-active': $route.path === item.to || (item.to.endsWith('/grammar') && $route.path.startsWith(`${item.to}/`)) }"
+              >{{ item.label }}</RouterLink>
+              <span v-else class="admin-shell__subnav-item is-disabled">{{ item.label }}<em>{{ item.badge }}</em></span>
+            </template>
+          </div>
+        </div>
+        <RouterLink
+          v-for="item in secondaryNavItems"
           :key="item.to"
           :to="item.to"
           class="admin-shell__nav-item"
@@ -221,6 +263,13 @@ async function changePassword() {
   text-align: center;
   font-weight: 600;
 }
+.admin-shell__nav-parent { width: 100%; border: 0; cursor: pointer; text-align: left; }
+.admin-shell__nav-chevron { margin-left: auto; font-size: 12px; }
+.admin-shell__subnav { margin: 3px 0 7px 42px; padding-left: 12px; border-left: 1px solid var(--border); display: grid; gap: 2px; }
+.admin-shell__subnav-item { padding: 7px 9px; border-radius: 7px; color: var(--text-muted); font-size: 13px; transition: color .16s ease, background-color .16s ease; }
+.admin-shell__subnav-item:hover,.admin-shell__subnav-item.is-active { color: var(--primary); background: color-mix(in srgb,var(--primary) 8%,transparent); }
+.admin-shell__subnav-item.is-disabled { display:flex; justify-content:space-between; cursor:not-allowed; opacity:.56; }
+.admin-shell__subnav-item em { font-style:normal; font-size:10px; }
 
 .admin-shell__collapse {
   margin: var(--space-4);

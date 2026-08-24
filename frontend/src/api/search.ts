@@ -9,7 +9,7 @@ import { http } from './http'
  * the full /search page keeps using the raw page.
  */
 
-export type SearchResultType = 'TUTORIAL' | 'CHAPTER' | 'BLOG' | 'PORTFOLIO'
+export type SearchResultType = 'TUTORIAL' | 'CHAPTER' | 'BLOG' | 'PORTFOLIO' | 'GRAMMAR'
 
 export interface SearchItem {
   type: SearchResultType
@@ -28,6 +28,7 @@ export interface SearchCounts {
   chapter: number
   blog: number
   portfolio: number
+  grammar: number
 }
 
 export interface SearchPage {
@@ -61,10 +62,11 @@ export const SEARCH_TYPE_LABELS: Record<SearchResultType, string> = {
   CHAPTER: '章节',
   BLOG: '博客',
   PORTFOLIO: '作品',
+  GRAMMAR: '英语语法',
 }
 
 /** Stable group order for the result panel (tutorials first, then the rest). */
-export const SEARCH_GROUP_ORDER: SearchResultType[] = ['TUTORIAL', 'CHAPTER', 'BLOG', 'PORTFOLIO']
+export const SEARCH_GROUP_ORDER: SearchResultType[] = ['TUTORIAL', 'CHAPTER', 'GRAMMAR', 'BLOG', 'PORTFOLIO']
 
 /**
  * Group a flat, server-ordered hit list into ordered, non-empty groups.
@@ -104,6 +106,8 @@ export function resolveSearchResultRoute(item: SearchItem): string {
       return `/blog/${item.slug ?? ''}`
     case 'PORTFOLIO':
       return `/portfolio/${item.slug ?? ''}`
+    case 'GRAMMAR':
+      return `/english/grammar/${item.slug ?? ''}`
   }
 }
 

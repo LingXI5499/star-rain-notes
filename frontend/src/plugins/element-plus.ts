@@ -2,6 +2,7 @@ import type { App, Directive } from 'vue'
 import { ElButton } from 'element-plus/es/components/button/index.mjs'
 import { ElDatePicker } from 'element-plus/es/components/date-picker/index.mjs'
 import { ElDialog } from 'element-plus/es/components/dialog/index.mjs'
+import { ElDrawer } from 'element-plus/es/components/drawer/index.mjs'
 import { ElDropdown, ElDropdownItem, ElDropdownMenu } from 'element-plus/es/components/dropdown/index.mjs'
 import { ElForm, ElFormItem } from 'element-plus/es/components/form/index.mjs'
 import { ElInput } from 'element-plus/es/components/input/index.mjs'
@@ -37,6 +38,7 @@ const components = [
   ElButton,
   ElDatePicker,
   ElDialog,
+  ElDrawer,
   ElDropdown,
   ElDropdownItem,
   ElDropdownMenu,

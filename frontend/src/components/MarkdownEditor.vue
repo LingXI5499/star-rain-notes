@@ -33,6 +33,7 @@ type VditorInstance = InstanceType<typeof import('vditor').default>
 
 let vditor: VditorInstance | null = null
 let suppressing = false
+let ready = false
 
 // ---------------------------------------------------------------
 // table-size picker (Vditor's built-in table button only inserts a
@@ -75,7 +76,7 @@ function insertTable() {
 }
 
 function syncTheme(): void {
-  if (!vditor) return
+  if (!vditor || !ready) return
   const dark = theme.resolved === 'dark'
   vditor.setTheme(dark ? 'dark' : 'classic', dark ? 'dark' : 'light')
 }
@@ -148,15 +149,22 @@ onMounted(async () => {
         emit('update:modelValue', value)
       }
     },
-    after: () => syncTheme(),
+    after: () => {
+      ready = true
+      if (vditor && vditor.getValue() !== props.modelValue) {
+        suppressing = true
+        vditor.setValue(props.modelValue ?? '')
+        suppressing = false
+      }
+      syncTheme()
+    },
   })
-  syncTheme()
 })
 
 watch(
   () => props.modelValue,
   (value) => {
-    if (!vditor) return
+    if (!vditor || !ready) return
     const current = vditor.getValue()
     if (value !== current) {
       suppressing = true
@@ -169,6 +177,7 @@ watch(
 watch(() => theme.resolved, syncTheme)
 
 onBeforeUnmount(() => {
+  ready = false
   vditor?.destroy()
   vditor = null
 })
