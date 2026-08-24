@@ -63,9 +63,10 @@ function resetForm() {
   })
 }
 
-function openCreate(dimension: TaxonomyDimension = 'TOPIC') {
+function openCreate(dimension: TaxonomyDimension = 'TOPIC', parentId: number | null = null) {
   resetForm()
   form.dimension = dimension
+  form.parentId = parentId
   dialogOpen.value = true
 }
 
@@ -154,7 +155,7 @@ onMounted(load)
             <div class="taxonomy-row__actions">
               <el-button link type="primary" @click="openEdit(root)">编辑</el-button>
               <el-button link type="danger" @click="remove(root)">删除</el-button>
-              <el-button v-if="root.children?.length" link @click="openCreate(dimension)">+ 子级</el-button>
+              <el-button link @click="openCreate(dimension, root.id)">+ 子级</el-button>
             </div>
             <div v-if="root.children?.length" class="taxonomy-row__children">
               <div v-for="child in childrenOf(root.id)" :key="child.id" class="taxonomy-row taxonomy-row--child">
@@ -211,17 +212,26 @@ onMounted(load)
 .taxonomy-manager__header p { color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: 0.14em; margin: 0; }
 .taxonomy-manager__header h1 { font-size: 28px; margin: 6px 0; }
 .taxonomy-manager__header span { color: var(--text-secondary); font-size: 13px; }
-.taxonomy-manager__body { display: grid; grid-template-columns: repeat(auto-fill, minmax(380px, 1fr)); gap: var(--space-4); }
-.taxonomy-panel { border: 1px solid var(--border); border-radius: 16px; padding: 18px; background: var(--bg-surface); }
+.taxonomy-manager__body { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr)); gap: var(--space-4); }
+.taxonomy-panel { min-width: 0; border: 1px solid var(--border); border-radius: 16px; padding: 18px; background: var(--bg-surface); }
 .taxonomy-panel__title { font-size: 15px; margin: 0 0 12px; color: var(--primary); }
 .taxonomy-panel__list { display: flex; flex-direction: column; gap: 8px; }
-.taxonomy-row { display: flex; align-items: flex-start; gap: 8px; padding: 8px; border-radius: 8px; }
+.taxonomy-row { display: grid; grid-template-columns: minmax(0, 1fr) max-content; align-items: flex-start; gap: 8px; padding: 8px; border-radius: 8px; }
 .taxonomy-row:hover { background: var(--bg-subtle); }
 .taxonomy-row--child { margin-left: 18px; }
 .taxonomy-row__main { display: flex; flex-direction: column; flex: 1; min-width: 0; }
 .taxonomy-row__name { font-weight: 600; font-size: 14px; }
-.taxonomy-row__slug { font-size: 11px; color: var(--text-muted); }
-.taxonomy-row__desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; }
-.taxonomy-row__actions { display: flex; gap: 4px; flex-shrink: 0; }
-.taxonomy-row__children { display: flex; flex-direction: column; gap: 4px; width: 100%; }
+.taxonomy-row__slug { font-size: 11px; color: var(--text-muted); overflow-wrap: anywhere; }
+.taxonomy-row__desc { font-size: 12px; color: var(--text-secondary); margin-top: 2px; overflow-wrap: anywhere; }
+.taxonomy-row__actions { display: flex; gap: 4px; align-items: center; white-space: nowrap; }
+.taxonomy-row__children { grid-column: 1 / -1; display: flex; flex-direction: column; gap: 4px; width: 100%; }
+@media (max-width: 720px) {
+  .taxonomy-manager__header { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .taxonomy-manager__header span { display: block; line-height: 1.6; }
+  .taxonomy-panel { padding: 14px; }
+  .taxonomy-row { grid-template-columns: minmax(0, 1fr); }
+  .taxonomy-row__actions, .taxonomy-row__children { grid-column: 1; }
+  .taxonomy-row__actions { justify-content: flex-start; }
+  .taxonomy-row--child { margin-left: 10px; }
+}
 </style>
