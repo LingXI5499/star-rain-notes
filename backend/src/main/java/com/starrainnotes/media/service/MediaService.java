@@ -50,32 +50,47 @@ public class MediaService {
     private static final Logger log = LoggerFactory.getLogger(MediaService.class);
     private static final long IMAGE_MAX_BYTES = 10L * 1024 * 1024;
     private static final long PDF_MAX_BYTES = 20L * 1024 * 1024;
-    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "webp", "pdf");
+    private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "webp", "pdf",
+            "mp3", "m4a", "ogg");
     private static final Set<String> IMAGE_EXTENSIONS = Set.of("jpg", "jpeg", "png", "webp");
+    private static final Set<String> AUDIO_EXTENSIONS = Set.of("mp3", "m4a", "ogg");
     private static final Map<String, String> EXT_MIME = Map.of(
             "jpg", "image/jpeg",
             "jpeg", "image/jpeg",
             "png", "image/png",
             "webp", "image/webp",
-            "pdf", "application/pdf");
+            "pdf", "application/pdf",
+            "mp3", "audio/mpeg",
+            "m4a", "audio/mp4",
+            "ogg", "audio/ogg");
+    private static final Map<String, java.util.Set<String>> EXT_ACCEPTED_MIME = Map.of(
+            "mp3", java.util.Set.of("audio/mpeg"),
+            "m4a", java.util.Set.of("audio/mp4", "audio/x-m4a"),
+            "ogg", java.util.Set.of("audio/ogg"));
 
     private static final byte[] PNG_MAGIC = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
     private static final byte[] JPEG_MAGIC = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
     private static final byte[] PDF_MAGIC = "%PDF-".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+    private static final byte[] ID3_MAGIC = "ID3".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+    private static final byte[] OGG_MAGIC = "OggS".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
+    private static final byte[] M4A_FTYP = "ftyp".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
 
     private final MediaAssetMapper mapper;
     private final SiteSettingsTimezone timezone;
     private final Path storageRoot;
     private final String publicBase;
+    private final long audioMaxBytes;
 
     public MediaService(MediaAssetMapper mapper,
                         SiteSettingsTimezone timezone,
                         @Value("${app.media.storage-dir:uploads}") String storageDir,
-                        @Value("${app.media.public-base:/uploads}") String publicBase) {
+                        @Value("${app.media.public-base:/uploads}") String publicBase,
+                        @Value("${app.media.audio-max-bytes:52428800}") long audioMaxBytes) {
         this.mapper = mapper;
         this.timezone = timezone;
         this.storageRoot = Path.of(storageDir).toAbsolutePath().normalize();
         this.publicBase = publicBase;
+        this.audioMaxBytes = audioMaxBytes;
     }
 
     // ---------------------------------------------------------------
@@ -92,19 +107,21 @@ public class MediaService {
         String extension = extensionOf(originalName);
         if (!ALLOWED_EXTENSIONS.contains(extension)) {
             throw new ApiException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "UNSUPPORTED_MEDIA_TYPE",
-                    "Unsupported file type", "Allowed types: jpg, jpeg, png, webp, pdf.");
+                    "Unsupported file type", "Allowed types: jpg, jpeg, png, webp, pdf, mp3, m4a, ogg.");
         }
         boolean image = IMAGE_EXTENSIONS.contains(extension);
-        long max = image ? IMAGE_MAX_BYTES : PDF_MAX_BYTES;
+        boolean audio = AUDIO_EXTENSIONS.contains(extension);
+        long max = image ? IMAGE_MAX_BYTES : (audio ? audioMaxBytes : PDF_MAX_BYTES);
         if (file.getSize() > max) {
+            String unit = audio ? audioMaxBytes / (1024 * 1024) + "MB" : (image ? "10MB" : "20MB");
             throw new ApiException(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_TOO_LARGE",
-                    "File too large", "Images must be ≤ 10MB and PDFs ≤ 20MB.");
+                    "File too large", "Media must be ≤ " + unit + ".");
         }
 
         // declared MIME must match the extension (never trusted blindly)
         String expectedMime = EXT_MIME.get(extension);
         String declaredMime = file.getContentType();
-        if (declaredMime == null || !normalizeMime(declaredMime).equals(expectedMime)) {
+        if (declaredMime == null || !declaredMimeMatches(extension, declaredMime)) {
             throw new ApiException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "UNSUPPORTED_MEDIA_TYPE",
                     "MIME mismatch", "The declared content type does not match the file extension.");
         }
@@ -121,6 +138,8 @@ public class MediaService {
         try {
             if (image) {
                 dimensions = readImage(bytes, extension);
+            } else if (audio) {
+                assertAudioSignature(bytes, extension);
             } else {
                 assertSignature(bytes, PDF_MAGIC, "PDF signature");
             }
@@ -144,7 +163,7 @@ public class MediaService {
         }
 
         MediaAsset asset = new MediaAsset();
-        asset.setAssetType(image ? "IMAGE" : "DOCUMENT");
+        asset.setAssetType(image ? "IMAGE" : (audio ? "AUDIO" : "DOCUMENT"));
         asset.setOriginalName(originalName);
         asset.setStoredName(storedName);
         asset.setMimeType(expectedMime);
@@ -241,6 +260,54 @@ public class MediaService {
                 throw new IOException(label + " mismatch");
             }
         }
+    }
+
+    /**
+     * Validate a declared audio container against its magic bytes. MP3 accepts
+     * an ID3 tag or an MPEG frame sync; M4A checks the ISO BMFF 'ftyp' box;
+     * OGG checks the 'OggS' capture pattern. This never trusts extension or
+     * browser MIME alone (方案 §13.1).
+     */
+    private void assertAudioSignature(byte[] bytes, String extension) throws IOException {
+        switch (extension) {
+            case "mp3" -> {
+                boolean id3 = startsWith(bytes, ID3_MAGIC);
+                boolean mpeg = bytes.length >= 2 && (bytes[0] & 0xFF) == 0xFF
+                        && (bytes[1] & 0xE0) == 0xE0;
+                if (!id3 && !mpeg) {
+                    throw new IOException("MP3 signature mismatch");
+                }
+            }
+            case "m4a" -> {
+                if (bytes.length < 12 || !startsWithAt(bytes, 4, M4A_FTYP)) {
+                    throw new IOException("M4A (ISO BMFF) signature mismatch");
+                }
+            }
+            case "ogg" -> {
+                if (!startsWith(bytes, OGG_MAGIC)) {
+                    throw new IOException("OGG signature mismatch");
+                }
+            }
+            default -> throw new IOException("unsupported audio extension");
+        }
+    }
+
+    private boolean startsWith(byte[] bytes, byte[] magic) {
+        return bytes.length >= magic.length && startsWithAt(bytes, 0, magic);
+    }
+
+    private boolean startsWithAt(byte[] bytes, int offset, byte[] magic) {
+        if (bytes.length < offset + magic.length) return false;
+        for (int i = 0; i < magic.length; i++) {
+            if (bytes[offset + i] != magic[i]) return false;
+        }
+        return true;
+    }
+
+    private boolean declaredMimeMatches(String extension, String declaredMime) {
+        String normalized = normalizeMime(declaredMime);
+        java.util.Set<String> accepted = EXT_ACCEPTED_MIME.get(extension);
+        return accepted != null ? accepted.contains(normalized) : normalized.equals(EXT_MIME.get(extension));
     }
 
     private String extensionOf(String filename) {

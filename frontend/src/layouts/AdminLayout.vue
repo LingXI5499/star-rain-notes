@@ -41,6 +41,8 @@ const englishItems = [
   { to: '/admin/english/overview', label: '总览设置', badge: '' },
   { to: '/admin/english/vocabulary', label: '单词管理', badge: '' },
   { to: '/admin/english/grammar', label: '语法教程', badge: '' },
+  { to: '/admin/english/taxonomy', label: '标签管理', badge: '' },
+  { to: '/admin/english/bundles', label: '学习组合', badge: '' },
   { to: '', label: '阅读', badge: '待开发' },
   { to: '', label: '写作', badge: '待开发' },
   { to: '', label: '听力', badge: '待开发' },

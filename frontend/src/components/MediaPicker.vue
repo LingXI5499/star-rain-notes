@@ -58,6 +58,7 @@ function select(asset: MediaAsset) {
       <el-select v-model="filters.assetType" placeholder="类型" clearable style="width: 130px" @change="load">
         <el-option label="图片" value="IMAGE" />
         <el-option label="文档" value="DOCUMENT" />
+        <el-option label="音频" value="AUDIO" />
       </el-select>
       <el-button @click="load">搜索</el-button>
     </div>
@@ -73,6 +74,7 @@ function select(asset: MediaAsset) {
       >
         <span class="media-picker__preview">
           <img v-if="asset.assetType === 'IMAGE'" :src="asset.publicUrl" :alt="asset.originalName" loading="lazy" />
+          <span v-else-if="asset.assetType === 'AUDIO'" class="media-picker__audio">♪ 音频</span>
           <span v-else class="media-picker__pdf">PDF</span>
         </span>
         <span class="media-picker__name" :title="asset.originalName">{{ asset.originalName }}</span>
@@ -137,6 +139,12 @@ function select(asset: MediaAsset) {
 .media-picker__pdf {
   font-weight: 700;
   color: var(--danger);
+  font-size: 13px;
+}
+
+.media-picker__audio {
+  font-weight: 700;
+  color: var(--primary);
   font-size: 13px;
 }
 

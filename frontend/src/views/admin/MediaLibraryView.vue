@@ -85,7 +85,7 @@ onMounted(load)
       <el-upload
         :show-file-list="false"
         :auto-upload="false"
-        accept=".jpg,.jpeg,.png,.webp,.pdf"
+        accept=".jpg,.jpeg,.png,.webp,.pdf,.mp3,.m4a,.ogg"
         :on-change="(file: any) => handleUpload(file.raw as File)"
       >
         <el-button type="primary" :loading="uploading">上传</el-button>
@@ -104,6 +104,7 @@ onMounted(load)
       <el-select v-model="filters.assetType" placeholder="类型" clearable style="width: 140px" @change="search">
         <el-option label="图片" value="IMAGE" />
         <el-option label="文档" value="DOCUMENT" />
+        <el-option label="音频" value="AUDIO" />
       </el-select>
       <el-button @click="search">搜索</el-button>
     </div>
@@ -113,6 +114,7 @@ onMounted(load)
       <div v-for="asset in items" :key="asset.id" class="media-card">
         <div class="media-card__preview">
           <img v-if="asset.assetType === 'IMAGE'" :src="asset.publicUrl" :alt="asset.originalName" loading="lazy" />
+          <audio v-else-if="asset.assetType === 'AUDIO'" :src="asset.publicUrl" controls preload="none" />
           <span v-else class="media-card__pdf">PDF</span>
         </div>
         <div class="media-card__body">

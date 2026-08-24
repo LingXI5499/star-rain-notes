@@ -27,12 +27,12 @@ spring:
   servlet:
     multipart:
       # Multipart parsing gate must be ≥ the largest business limit
-      # (MediaService: images ≤ 10MB, PDFs ≤ 20MB) so the service-level
-      # validation (clean 413 FILE_TOO_LARGE) is the real gate, not the
-      # Spring Boot 1MB default. Files above this cap are rejected by the
-      # MaxUploadSizeExceededException handler in GlobalExceptionHandler.
-      max-file-size: 25MB
-      max-request-size: 25MB
+      # (MediaService: images ≤ 10MB, PDFs ≤ 20MB, audio ≤ 50MB) so the
+      # service-level validation (clean 413 FILE_TOO_LARGE) is the real gate,
+      # not the Spring Boot 1MB default. Files above this cap are rejected by
+      # the MaxUploadSizeExceededException handler in GlobalExceptionHandler.
+      max-file-size: 55MB
+      max-request-size: 55MB
 
 server:
   # 本开发机 8080 被 Oracle TNS Listener (XDB) 占用；V1 后端默认端口使用不常见的 24680。
@@ -58,6 +58,8 @@ app:
     # 目录必须不可执行（06-testing-deployment.md §8）；数据库只保存相对 storage key。
     storage-dir: ${MEDIA_STORAGE_DIR:uploads}
     public-base: /uploads
+    # 音频大小上限（方案 §13.1，默认 50MB）。
+    audio-max-bytes: ${AUDIO_MAX_BYTES:52428800}
 
 management:
   endpoints:

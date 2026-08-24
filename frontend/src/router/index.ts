@@ -265,6 +265,16 @@ const router = createRouter({
           component: () => import('@/views/admin/GrammarManageView.vue'),
         },
         {
+          path: 'english/taxonomy',
+          name: 'admin-english-taxonomy',
+          component: () => import('@/views/admin/TaxonomyManagerView.vue'),
+        },
+        {
+          path: 'english/bundles',
+          name: 'admin-english-bundles',
+          component: () => import('@/views/admin/BundleManagerView.vue'),
+        },
+        {
           path: 'english/grammar/lessons/new',
           name: 'admin-english-grammar-lesson-new',
           component: () => import('@/views/admin/GrammarLessonEditView.vue'),
