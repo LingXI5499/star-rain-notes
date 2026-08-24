@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.web.servlet.MvcResult;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -255,6 +257,63 @@ class BlogAdminIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(jsonPath("$.code").value("TAG_NOT_FOUND"));
     }
 
+    @Test
+    void saveResolvesExistingAndCreatesNormalizedTagsInOneTransaction() throws Exception {
+        MockHttpSession session = loginSession();
+        Long java = createTag(session, "Java", "java");
+        String payload = objectMapper.writeValueAsString(Map.of(
+                "title", "Tag resolution", "slug", "tag-resolution", "summary", "Summary",
+                "bodyMarkdown", "## Body", "tagIds", List.of(java),
+                "tagNames", List.of(" java ", "Spring   Boot", "数据库")));
+
+        MvcResult result = mockMvc.perform(withCsrf(jsonPost("/api/v1/admin/blog/posts", payload), csrf(session))
+                        .session(session))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.tags.length()").value(3))
+                .andReturn();
+        long postId = objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
+
+        assertThat(tagNamesOf(postId)).containsExactly("Java", "Spring Boot", "数据库");
+        assertThat(jdbc.queryForObject("SELECT slug FROM blog_tag WHERE name = 'Spring Boot'", String.class))
+                .isEqualTo("spring-boot");
+        assertThat(jdbc.queryForObject("SELECT slug FROM blog_tag WHERE name = '数据库'", String.class))
+                .matches("tag-[0-9a-f]{12}");
+    }
+
+    @Test
+    void tooManyResolvedTagsRollsBackPostAndNewTags() throws Exception {
+        MockHttpSession session = loginSession();
+        List<String> names = IntStream.rangeClosed(1, 21).mapToObj(i -> "new-tag-" + i).toList();
+        String payload = objectMapper.writeValueAsString(Map.of(
+                "title", "Too many", "slug", "too-many", "summary", "Summary",
+                "bodyMarkdown", "Body", "tagIds", List.of(), "tagNames", names));
+
+        mockMvc.perform(withCsrf(jsonPost("/api/v1/admin/blog/posts", payload), csrf(session)).session(session))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code").value("TOO_MANY_TAGS"));
+
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM blog_post", Integer.class)).isZero();
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM blog_tag", Integer.class)).isZero();
+    }
+
+    @Test
+    void deletingUsedTagRequiresExplicitForce() throws Exception {
+        MockHttpSession session = loginSession();
+        Long java = createTag(session, "Java", "java");
+        createPost(session, "uses-java", List.of(java));
+
+        mockMvc.perform(get("/api/v1/admin/blog/tags").session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].postCount").value(1));
+        mockMvc.perform(withCsrf(delete("/api/v1/admin/blog/tags/" + java), csrf(session)).session(session))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("TAG_IN_USE"));
+        mockMvc.perform(withCsrf(delete("/api/v1/admin/blog/tags/" + java).param("force", "true"), csrf(session))
+                        .session(session))
+                .andExpect(status().isNoContent());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM blog_post_tag", Integer.class)).isZero();
+    }
+
     // ---------------------------------------------------------------
     // list / delete / auth
     // ---------------------------------------------------------------
@@ -262,7 +321,8 @@ class BlogAdminIntegrationTest extends AbstractAuthIntegrationTest {
     @Test
     void adminListFiltersAndPaginates() throws Exception {
         MockHttpSession session = loginSession();
-        Long postId = createPost(session, "p1", null);
+        Long java = createTag(session, "Java", "java");
+        Long postId = createPost(session, "p1", List.of(java));
         createPost(session, "p2", null);
         mockMvc.perform(withCsrf(post("/api/v1/admin/blog/posts/" + postId + "/publish"), csrf(session))
                         .session(session))
@@ -271,7 +331,15 @@ class BlogAdminIntegrationTest extends AbstractAuthIntegrationTest {
         mockMvc.perform(get("/api/v1/admin/blog/posts").session(session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(2))
-                .andExpect(jsonPath("$.items.length()").value(2));
+                .andExpect(jsonPath("$.items.length()").value(2))
+                .andExpect(jsonPath("$.items[0].summary").value("Summary"))
+                .andExpect(jsonPath("$.items[0].tags").isArray());
+
+        mockMvc.perform(get("/api/v1/admin/blog/posts").param("tag", "JAVA").session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(1))
+                .andExpect(jsonPath("$.items[0].slug").value("p1"))
+                .andExpect(jsonPath("$.items[0].tags[0].name").value("Java"));
 
         mockMvc.perform(get("/api/v1/admin/blog/posts").param("status", "PUBLISHED").session(session))
                 .andExpect(status().isOk())

@@ -1,6 +1,6 @@
 package com.starrainnotes.blog.controller;
 
-import com.starrainnotes.blog.dto.BlogTagView;
+import com.starrainnotes.blog.dto.AdminBlogTagView;
 import com.starrainnotes.blog.dto.CreateTagRequest;
 import com.starrainnotes.blog.dto.UpdateTagRequest;
 import com.starrainnotes.blog.service.BlogTagService;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -32,24 +33,25 @@ public class BlogTagAdminController {
     }
 
     @GetMapping
-    public List<BlogTagView> list() {
+    public List<AdminBlogTagView> list() {
         return tagService.listAll();
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public BlogTagView create(@Valid @RequestBody CreateTagRequest request) {
+    public AdminBlogTagView create(@Valid @RequestBody CreateTagRequest request) {
         return tagService.create(request);
     }
 
     @PutMapping("/{tagId}")
-    public BlogTagView update(@PathVariable Long tagId, @Valid @RequestBody UpdateTagRequest request) {
+    public AdminBlogTagView update(@PathVariable Long tagId, @Valid @RequestBody UpdateTagRequest request) {
         return tagService.update(tagId, request);
     }
 
     @DeleteMapping("/{tagId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long tagId) {
-        tagService.delete(tagId);
+    public void delete(@PathVariable Long tagId,
+                       @RequestParam(defaultValue = "false") boolean force) {
+        tagService.delete(tagId, force);
     }
 }

@@ -81,13 +81,20 @@ export interface BlogTag {
   slug: string
 }
 
+export interface AdminBlogTag extends BlogTag {
+  postCount: number
+}
+
 export interface AdminPostSummary {
   id: number
   title: string
   slug: string
+  summary: string
+  coverUrl: string | null
   publishStatus: string
   publishedAt: string | null
   updatedAt: string
+  tags: BlogTag[]
 }
 
 export interface AdminPostPage {
@@ -105,6 +112,7 @@ export interface AdminPostDetail {
   summary: string
   bodyMarkdown: string
   coverMediaId: number | null
+  coverUrl: string | null
   publishStatus: string
   seoTitle: string | null
   seoDescription: string | null
@@ -123,6 +131,7 @@ export interface PostPayload {
   seoTitle?: string | null
   seoDescription?: string | null
   tagIds: number[]
+  tagNames: string[]
 }
 
 // ---------------------------------------------------------------
@@ -168,6 +177,7 @@ export async function fetchAdminPosts(params: {
   page?: number
   pageSize?: number
   status?: string
+  tag?: string
   q?: string
 }): Promise<AdminPostPage> {
   const { data } = await http.get<AdminPostPage>('/admin/blog/posts', { params })
@@ -207,21 +217,21 @@ export async function withdrawPost(id: number): Promise<AdminPostDetail> {
 // admin tags
 // ---------------------------------------------------------------
 
-export async function fetchAdminTags(): Promise<BlogTag[]> {
-  const { data } = await http.get<BlogTag[]>('/admin/blog/tags')
+export async function fetchAdminTags(): Promise<AdminBlogTag[]> {
+  const { data } = await http.get<AdminBlogTag[]>('/admin/blog/tags')
   return data
 }
 
-export async function createTag(payload: { name: string; slug: string }): Promise<BlogTag> {
-  const { data } = await http.post<BlogTag>('/admin/blog/tags', payload)
+export async function createTag(payload: { name: string; slug: string }): Promise<AdminBlogTag> {
+  const { data } = await http.post<AdminBlogTag>('/admin/blog/tags', payload)
   return data
 }
 
-export async function updateTag(id: number, payload: { name: string; slug: string }): Promise<BlogTag> {
-  const { data } = await http.put<BlogTag>(`/admin/blog/tags/${id}`, payload)
+export async function updateTag(id: number, payload: { name: string; slug: string }): Promise<AdminBlogTag> {
+  const { data } = await http.put<AdminBlogTag>(`/admin/blog/tags/${id}`, payload)
   return data
 }
 
-export async function deleteTag(id: number): Promise<void> {
-  await http.delete(`/admin/blog/tags/${id}`)
+export async function deleteTag(id: number, force = false): Promise<void> {
+  await http.delete(`/admin/blog/tags/${id}`, { params: force ? { force: true } : undefined })
 }

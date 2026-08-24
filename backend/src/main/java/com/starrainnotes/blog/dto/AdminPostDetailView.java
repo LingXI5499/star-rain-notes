@@ -12,6 +12,7 @@ public record AdminPostDetailView(
         String summary,
         String bodyMarkdown,
         Long coverMediaId,
+        String coverUrl,
         String publishStatus,
         String seoTitle,
         String seoDescription,

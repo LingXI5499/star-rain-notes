@@ -38,6 +38,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,14 +65,16 @@ public class BlogService {
 
     private final BlogPostMapper postMapper;
     private final BlogTagMapper tagMapper;
+    private final BlogTagService tagService;
     private final MediaAssetMapper mediaAssetMapper;
     private final SiteSettingsTimezone timezone;
     private final JdbcTemplate jdbc;
 
-    public BlogService(BlogPostMapper postMapper, BlogTagMapper tagMapper,
+    public BlogService(BlogPostMapper postMapper, BlogTagMapper tagMapper, BlogTagService tagService,
                        MediaAssetMapper mediaAssetMapper, SiteSettingsTimezone timezone, JdbcTemplate jdbc) {
         this.postMapper = postMapper;
         this.tagMapper = tagMapper;
+        this.tagService = tagService;
         this.mediaAssetMapper = mediaAssetMapper;
         this.timezone = timezone;
         this.jdbc = jdbc;
@@ -81,7 +84,7 @@ public class BlogService {
     // admin
     // ---------------------------------------------------------------
 
-    public AdminPostPageView adminList(int page, int pageSize, String status, String query) {
+    public AdminPostPageView adminList(int page, int pageSize, String status, String tag, String query) {
         int safePage = Math.max(page, 1);
         int safeSize = Math.min(Math.max(pageSize, 1), 50);
         LambdaQueryWrapper<BlogPost> wrapper = new LambdaQueryWrapper<BlogPost>()
@@ -90,13 +93,26 @@ public class BlogService {
                         .like(BlogPost::getTitle, query).or().like(BlogPost::getSlug, query))
                 .orderByDesc(BlogPost::getUpdatedAt)
                 .orderByDesc(BlogPost::getId);
+        if (tag != null && !tag.isBlank()) {
+            List<Long> taggedPostIds = jdbc.query("""
+                    SELECT bt.blog_post_id FROM blog_post_tag bt
+                    JOIN blog_tag t ON t.id = bt.blog_tag_id
+                    WHERE t.slug = ?
+                    """, (rs, rowNum) -> rs.getLong(1), tag);
+            wrapper.in(BlogPost::getId, taggedPostIds.isEmpty() ? List.of(-1L) : taggedPostIds);
+        }
 
         Long total = postMapper.selectCount(wrapper);
         wrapper.last("LIMIT " + safeSize + " OFFSET " + ((safePage - 1) * safeSize));
-        List<AdminPostSummaryView> items = postMapper.selectList(wrapper).stream()
+        List<BlogPost> rows = postMapper.selectList(wrapper);
+        Map<Long, List<BlogTagView>> tagsByPost = tagsForAdminPosts(rows.stream().map(BlogPost::getId).toList());
+        Map<Long, String> covers = coverUrls(rows.stream().map(BlogPost::getCoverMediaId).toList());
+        List<AdminPostSummaryView> items = rows.stream()
                 .map(p -> new AdminPostSummaryView(
-                        p.getId(), p.getTitle(), p.getSlug(), p.getPublishStatus(),
-                        formatUtc(p.getPublishedAt()), formatUtc(p.getUpdatedAt())))
+                        p.getId(), p.getTitle(), p.getSlug(), p.getSummary(),
+                        p.getCoverMediaId() == null ? null : covers.get(p.getCoverMediaId()),
+                        p.getPublishStatus(), formatUtc(p.getPublishedAt()), formatUtc(p.getUpdatedAt()),
+                        tagsByPost.getOrDefault(p.getId(), List.of())))
                 .toList();
 
         long safeTotal = total == null ? 0 : total;
@@ -112,7 +128,7 @@ public class BlogService {
     @Transactional
     public AdminPostDetailView create(CreatePostRequest request) {
         assertSlugFree(request.slug(), null);
-        validateTags(request.tagIds());
+        List<Long> tagIds = resolveTagIds(request.tagIds(), request.tagNames());
 
         BlogPost post = new BlogPost();
         applyFields(post, request.title(), request.slug(), request.summary(), request.bodyMarkdown(),
@@ -120,7 +136,7 @@ public class BlogService {
         post.setPublishStatus(DRAFT);
         post.setPublishedAt(null);
         postMapper.insert(post);
-        replaceTags(post.getId(), request.tagIds());
+        replaceTags(post.getId(), tagIds);
         return toAdminDetail(post);
     }
 
@@ -128,13 +144,13 @@ public class BlogService {
     public AdminPostDetailView update(Long postId, UpdatePostRequest request) {
         BlogPost post = requirePost(postId);
         assertSlugFree(request.slug(), postId);
-        validateTags(request.tagIds());
+        List<Long> tagIds = resolveTagIds(request.tagIds(), request.tagNames());
 
         applyFields(post, request.title(), request.slug(), request.summary(), request.bodyMarkdown(),
                 request.coverMediaId(), request.seoTitle(), request.seoDescription());
         // publishStatus / publishedAt are never touched by a plain update
         postMapper.updateById(post);
-        replaceTags(post.getId(), request.tagIds());
+        replaceTags(post.getId(), tagIds);
         return toAdminDetail(post);
     }
 
@@ -211,7 +227,8 @@ public class BlogService {
         List<PublicPostSummaryView> items = rows.stream()
                 .map(p -> new PublicPostSummaryView(
                         p.getId(), p.getTitle(), p.getSlug(), p.getSummary(),
-                        covers.get(p.getId()), formatUtc(p.getPublishedAt()), formatUtc(p.getUpdatedAt()),
+                        p.getCoverMediaId() == null ? null : covers.get(p.getCoverMediaId()),
+                        formatUtc(p.getPublishedAt()), formatUtc(p.getUpdatedAt()),
                         tagsByPost.getOrDefault(p.getId(), List.of())))
                 .toList();
 
@@ -322,6 +339,20 @@ public class BlogService {
         }
     }
 
+    private List<Long> resolveTagIds(List<Long> tagIds, List<String> tagNames) {
+        LinkedHashSet<Long> resolved = new LinkedHashSet<>();
+        if (tagIds != null) {
+            tagIds.stream().filter(java.util.Objects::nonNull).forEach(resolved::add);
+        }
+        validateTags(new ArrayList<>(resolved));
+        resolved.addAll(tagService.resolveNames(tagNames));
+        if (resolved.size() > 20) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "TOO_MANY_TAGS",
+                    "Too many tags", "每篇文章最多选择 20 个标签。");
+        }
+        return new ArrayList<>(resolved);
+    }
+
     private void replaceTags(Long postId, List<Long> tagIds) {
         jdbc.update("DELETE FROM blog_post_tag WHERE blog_post_id = ?", postId);
         if (tagIds == null || tagIds.isEmpty()) {
@@ -342,6 +373,27 @@ public class BlogService {
                 postId);
     }
 
+    private Map<Long, List<BlogTagView>> tagsForAdminPosts(List<Long> postIds) {
+        if (postIds.isEmpty()) {
+            return Map.of();
+        }
+        String placeholders = postIds.stream().map(id -> "?").collect(Collectors.joining(", "));
+        Map<Long, List<BlogTagView>> result = new HashMap<>();
+        jdbc.query("""
+                SELECT bt.blog_post_id, t.id, t.name, t.slug FROM blog_post_tag bt
+                JOIN blog_tag t ON t.id = bt.blog_tag_id
+                WHERE bt.blog_post_id IN (%s)
+                ORDER BY t.name
+                """.formatted(placeholders),
+                (rs, rowNum) -> Map.entry(
+                        rs.getLong("blog_post_id"),
+                        new BlogTagView(rs.getLong("id"), rs.getString("name"), rs.getString("slug"))),
+                postIds.toArray()).forEach(entry -> result
+                        .computeIfAbsent(entry.getKey(), key -> new ArrayList<>())
+                        .add(entry.getValue()));
+        return result;
+    }
+
     private Map<Long, List<PublicTagView>> tagsForPosts(List<Long> postIds) {
         if (postIds.isEmpty()) {
             return Map.of();
@@ -354,13 +406,12 @@ public class BlogService {
                 WHERE bt.blog_post_id IN (%s)
                 ORDER BY t.name
                 """.formatted(placeholders),
-                rs -> {
-                    while (rs.next()) {
-                        result.computeIfAbsent(rs.getLong("blog_post_id"), k -> new ArrayList<>())
-                                .add(new PublicTagView(rs.getLong("id"), rs.getString("name"), rs.getString("slug")));
-                    }
-                },
-                postIds.toArray());
+                (rs, rowNum) -> Map.entry(
+                        rs.getLong("blog_post_id"),
+                        new PublicTagView(rs.getLong("id"), rs.getString("name"), rs.getString("slug"))),
+                postIds.toArray()).forEach(entry -> result
+                        .computeIfAbsent(entry.getKey(), key -> new ArrayList<>())
+                        .add(entry.getValue()));
         return result;
     }
 
@@ -446,7 +497,8 @@ public class BlogService {
     private AdminPostDetailView toAdminDetail(BlogPost post) {
         return new AdminPostDetailView(
                 post.getId(), post.getTitle(), post.getSlug(), post.getSummary(), post.getBodyMarkdown(),
-                post.getCoverMediaId(), post.getPublishStatus(), post.getSeoTitle(), post.getSeoDescription(),
+                post.getCoverMediaId(), coverUrl(post.getCoverMediaId()), post.getPublishStatus(),
+                post.getSeoTitle(), post.getSeoDescription(),
                 formatUtc(post.getPublishedAt()), formatUtc(post.getCreatedAt()), formatUtc(post.getUpdatedAt()),
                 tagsOf(post.getId()));
     }

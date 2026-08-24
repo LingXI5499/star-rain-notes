@@ -36,8 +36,9 @@ public class BlogAdminController {
     public AdminPostPageView list(@RequestParam(defaultValue = "1") int page,
                                   @RequestParam(defaultValue = "10") int pageSize,
                                   @RequestParam(required = false) String status,
+                                  @RequestParam(required = false) String tag,
                                   @RequestParam(required = false) String q) {
-        return blogService.adminList(page, pageSize, status, q);
+        return blogService.adminList(page, pageSize, status, tag, q);
     }
 
     @PostMapping

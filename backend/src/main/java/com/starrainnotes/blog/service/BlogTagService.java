@@ -1,9 +1,9 @@
 package com.starrainnotes.blog.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.starrainnotes.blog.dto.AdminBlogTagView;
 import com.starrainnotes.blog.dto.CreateTagRequest;
 import com.starrainnotes.blog.dto.UpdateTagRequest;
-import com.starrainnotes.blog.dto.BlogTagView;
 import com.starrainnotes.blog.dto.PublicTagViewWithCount;
 import com.starrainnotes.blog.entity.BlogTag;
 import com.starrainnotes.blog.mapper.BlogTagMapper;
@@ -13,6 +13,14 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.Normalizer;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Flat blog tag management (04 §11). Public tags only include tags linked to
@@ -29,35 +37,67 @@ public class BlogTagService {
         this.jdbc = jdbc;
     }
 
-    public List<BlogTagView> listAll() {
-        return tagMapper.selectList(new LambdaQueryWrapper<BlogTag>().orderByAsc(BlogTag::getName))
-                .stream()
-                .map(t -> new BlogTagView(t.getId(), t.getName(), t.getSlug()))
-                .toList();
+    public List<AdminBlogTagView> listAll() {
+        return jdbc.query("""
+                SELECT t.id, t.name, t.slug, COUNT(bt.blog_post_id) AS post_count
+                FROM blog_tag t
+                LEFT JOIN blog_post_tag bt ON bt.blog_tag_id = t.id
+                GROUP BY t.id, t.name, t.slug
+                ORDER BY t.name ASC
+                """, (rs, rowNum) -> new AdminBlogTagView(
+                rs.getLong("id"), rs.getString("name"), rs.getString("slug"), rs.getLong("post_count")));
     }
 
-    public BlogTagView create(CreateTagRequest request) {
-        assertUnique(request.name(), request.slug(), null);
+    public AdminBlogTagView create(CreateTagRequest request) {
+        String name = normalizeName(request.name());
+        String slug = request.slug().trim().toLowerCase(Locale.ROOT);
+        assertUnique(name, slug, null);
         BlogTag tag = new BlogTag();
-        tag.setName(request.name());
-        tag.setSlug(request.slug());
+        tag.setName(name);
+        tag.setSlug(slug);
         tagMapper.insert(tag);
-        return new BlogTagView(tag.getId(), tag.getName(), tag.getSlug());
+        return new AdminBlogTagView(tag.getId(), tag.getName(), tag.getSlug(), 0);
     }
 
-    public BlogTagView update(Long tagId, UpdateTagRequest request) {
+    public AdminBlogTagView update(Long tagId, UpdateTagRequest request) {
         BlogTag tag = requireTag(tagId);
-        assertUnique(request.name(), request.slug(), tagId);
-        tag.setName(request.name());
-        tag.setSlug(request.slug());
+        String name = normalizeName(request.name());
+        String slug = request.slug().trim().toLowerCase(Locale.ROOT);
+        assertUnique(name, slug, tagId);
+        tag.setName(name);
+        tag.setSlug(slug);
         tagMapper.updateById(tag);
-        return new BlogTagView(tag.getId(), tag.getName(), tag.getSlug());
+        return new AdminBlogTagView(tag.getId(), tag.getName(), tag.getSlug(), usageCount(tagId));
     }
 
-    public void delete(Long tagId) {
+    public void delete(Long tagId, boolean force) {
         requireTag(tagId);
+        long postCount = usageCount(tagId);
+        if (postCount > 0 && !force) {
+            throw new ApiException(HttpStatus.CONFLICT, "TAG_IN_USE",
+                    "Tag is in use", "该标签仍被 " + postCount + " 篇文章使用，请确认后强制删除。");
+        }
         // blog_post_tag relations cascade on delete (frozen FK)
         tagMapper.deleteById(tagId);
+    }
+
+    /** Resolve normalized names to existing tags or create them inside the caller transaction. */
+    public List<Long> resolveNames(List<String> names) {
+        if (names == null || names.isEmpty()) {
+            return List.of();
+        }
+        Map<String, String> unique = new LinkedHashMap<>();
+        for (String value : names) {
+            String name = normalizeName(value);
+            if (!name.isBlank()) {
+                unique.putIfAbsent(name.toLowerCase(Locale.ROOT), name);
+            }
+        }
+        List<Long> ids = new ArrayList<>();
+        for (String name : unique.values()) {
+            ids.add(resolveName(name));
+        }
+        return ids;
     }
 
     public List<PublicTagViewWithCount> publicTags() {
@@ -80,6 +120,68 @@ public class BlogTagService {
                     "Tag not found", "The blog tag does not exist.");
         }
         return tag;
+    }
+
+    private Long resolveName(String name) {
+        BlogTag existing = tagMapper.selectOne(new LambdaQueryWrapper<BlogTag>()
+                .eq(BlogTag::getName, name).last("LIMIT 1"));
+        if (existing != null) {
+            return existing.getId();
+        }
+        String base = automaticSlug(name);
+        for (int suffix = 1; suffix < 10_000; suffix++) {
+            String candidate = suffix == 1 ? base : withSuffix(base, suffix);
+            int inserted = jdbc.update("INSERT IGNORE INTO blog_tag (name, slug) VALUES (?, ?)", name, candidate);
+            BlogTag resolved = tagMapper.selectOne(new LambdaQueryWrapper<BlogTag>()
+                    .eq(BlogTag::getName, name).last("LIMIT 1"));
+            if (resolved != null) {
+                return resolved.getId();
+            }
+            if (inserted == 0) {
+                continue;
+            }
+        }
+        throw new ApiException(HttpStatus.CONFLICT, "TAG_SLUG_CONFLICT",
+                "Unable to create tag", "无法为新标签生成唯一 slug，请在标签管理中手动创建。");
+    }
+
+    private long usageCount(Long tagId) {
+        Long count = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM blog_post_tag WHERE blog_tag_id = ?", Long.class, tagId);
+        return count == null ? 0 : count;
+    }
+
+    private static String normalizeName(String value) {
+        if (value == null) return "";
+        return Normalizer.normalize(value, Normalizer.Form.NFKC).trim().replaceAll("\\s+", " ");
+    }
+
+    private static String automaticSlug(String name) {
+        String ascii = normalizeName(name).toLowerCase(Locale.ROOT)
+                .replaceAll("[^a-z0-9]+", "-")
+                .replaceAll("^-+|-+$", "");
+        if (ascii.isBlank()) {
+            ascii = "tag-" + sha256(name).substring(0, 12);
+        }
+        return ascii.length() <= 60 ? ascii : ascii.substring(0, 60).replaceAll("-+$", "");
+    }
+
+    private static String withSuffix(String base, int suffix) {
+        String tail = "-" + suffix;
+        String head = base.length() + tail.length() <= 60 ? base : base.substring(0, 60 - tail.length());
+        return head.replaceAll("-+$", "") + tail;
+    }
+
+    private static String sha256(String value) {
+        try {
+            byte[] digest = MessageDigest.getInstance("SHA-256")
+                    .digest(normalizeName(value).getBytes(StandardCharsets.UTF_8));
+            StringBuilder hex = new StringBuilder(digest.length * 2);
+            for (byte item : digest) hex.append(String.format("%02x", item));
+            return hex.toString();
+        } catch (NoSuchAlgorithmException impossible) {
+            throw new IllegalStateException("SHA-256 is unavailable", impossible);
+        }
     }
 
     private void assertUnique(String name, String slug, Long excludeId) {

@@ -22,5 +22,6 @@ public record CreatePostRequest(
         Long coverMediaId,
         @Size(max = 200) String seoTitle,
         @Size(max = 500) String seoDescription,
-        List<Long> tagIds) {
+        List<Long> tagIds,
+        List<@NotBlank @Size(max = 50) String> tagNames) {
 }
