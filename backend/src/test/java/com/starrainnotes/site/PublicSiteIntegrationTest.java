@@ -37,8 +37,8 @@ class PublicSiteIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     private void cleanTables() {
-        jdbc.update("UPDATE tutorial_node SET parent_id = NULL");
-        jdbc.update("DELETE FROM tutorial_node");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'CHAPTER'");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'GROUP'");
         jdbc.update("DELETE FROM tutorial");
         jdbc.update("UPDATE tutorial_category SET parent_id = NULL");
         jdbc.update("DELETE FROM tutorial_category");
@@ -76,10 +76,13 @@ class PublicSiteIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     private Long insertChapter(Long tutorialId, String slug, String status, LocalDateTime publishedAt) {
+        jdbc.update("INSERT INTO tutorial_node (tutorial_id, node_type, title) VALUES (?, 'GROUP', ?)",
+                tutorialId, slug + " group");
+        Long groupId = lastId();
         jdbc.update("""
-                INSERT INTO tutorial_node (tutorial_id, node_type, title, slug, body_markdown, publish_status, published_at)
-                VALUES (?, 'CHAPTER', ?, ?, 'body', ?, ?)
-                """, tutorialId, slug, slug, status, publishedAt);
+                INSERT INTO tutorial_node (tutorial_id, parent_id, node_type, title, slug, body_markdown, publish_status, published_at)
+                VALUES (?, ?, 'CHAPTER', ?, ?, 'body', ?, ?)
+                """, tutorialId, groupId, slug, slug, status, publishedAt);
         return lastId();
     }
 

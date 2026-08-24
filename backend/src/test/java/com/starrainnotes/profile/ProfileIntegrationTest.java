@@ -51,8 +51,8 @@ class ProfileIntegrationTest extends AbstractAuthIntegrationTest {
 
     private void cleanContent() {
         jdbc.update("DELETE FROM profile_selected_content");
-        jdbc.update("UPDATE tutorial_node SET parent_id = NULL");
-        jdbc.update("DELETE FROM tutorial_node");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'CHAPTER'");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'GROUP'");
         jdbc.update("DELETE FROM tutorial");
         jdbc.update("UPDATE tutorial_category SET parent_id = NULL");
         jdbc.update("DELETE FROM tutorial_category");

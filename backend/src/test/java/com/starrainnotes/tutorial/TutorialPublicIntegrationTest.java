@@ -16,8 +16,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * TASK-005A — public tutorial endpoints:
- * empty-branch pruning of the public category tree, published-only lists,
- * descendant categorySlug filtering, detail metadata/curriculum with existing
+ * empty-category pruning of the flat public knowledge-system list, published-only lists,
+ * categorySlug filtering, detail metadata/curriculum with existing
  * node data, 404 for Draft/Withdrawn, and zero-chapter tutorials.
  */
 class TutorialPublicIntegrationTest extends AbstractAuthIntegrationTest {
@@ -27,8 +27,8 @@ class TutorialPublicIntegrationTest extends AbstractAuthIntegrationTest {
 
     @BeforeEach
     void cleanContent() {
-        jdbc.update("UPDATE tutorial_node SET parent_id = NULL");
-        jdbc.update("DELETE FROM tutorial_node");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'CHAPTER'");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'GROUP'");
         jdbc.update("DELETE FROM tutorial");
         jdbc.update("UPDATE tutorial_category SET parent_id = NULL");
         jdbc.update("DELETE FROM tutorial_category");
@@ -36,16 +36,15 @@ class TutorialPublicIntegrationTest extends AbstractAuthIntegrationTest {
 
     @AfterEach
     void cleanUp() {
-        jdbc.update("UPDATE tutorial_node SET parent_id = NULL");
-        jdbc.update("DELETE FROM tutorial_node");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'CHAPTER'");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'GROUP'");
         jdbc.update("DELETE FROM tutorial");
         jdbc.update("UPDATE tutorial_category SET parent_id = NULL");
         jdbc.update("DELETE FROM tutorial_category");
     }
 
     private Long insertCategory(String slug, Long parentId) {
-        jdbc.update("INSERT INTO tutorial_category (name, slug, parent_id) VALUES (?, ?, ?)",
-                slug, slug, parentId);
+        jdbc.update("INSERT INTO tutorial_category (name, slug) VALUES (?, ?)", slug, slug);
         return lastId();
     }
 
@@ -61,12 +60,16 @@ class TutorialPublicIntegrationTest extends AbstractAuthIntegrationTest {
 
     private void insertGroup(Long tutorialId, Long parentId, String title) {
         jdbc.update("""
-                INSERT INTO tutorial_node (tutorial_id, parent_id, node_type, title)
-                VALUES (?, ?, 'GROUP', ?)
-                """, tutorialId, parentId, title);
+                INSERT INTO tutorial_node (tutorial_id, node_type, title)
+                VALUES (?, 'GROUP', ?)
+                """, tutorialId, title);
     }
 
     private void insertChapter(Long tutorialId, Long parentId, String slug, String status) {
+        if (parentId == null) {
+            insertGroup(tutorialId, null, slug + " 分组");
+            parentId = lastId();
+        }
         // PUBLISHED / WITHDRAWN require a non-null published_at (frozen CHECK)
         LocalDateTime publishedAt = status.equals("DRAFT") ? null : LocalDateTime.of(2026, 7, 1, 0, 0);
         jdbc.update("""
@@ -80,7 +83,7 @@ class TutorialPublicIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
-    void publicTreeKeepsOnlyBranchesWithPublishedContent() throws Exception {
+    void publicTreeKeepsOnlyFlatCategoriesWithPublishedContent() throws Exception {
         Long emptyRoot = insertCategory("empty-root", null);
         Long emptyChild = insertCategory("empty-child", emptyRoot);
         Long withPublished = insertCategory("has-published", emptyRoot);
@@ -93,9 +96,8 @@ class TutorialPublicIntegrationTest extends AbstractAuthIntegrationTest {
 
         String body = mockMvc.perform(get("/api/v1/public/tutorial-categories/tree"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].slug").value("empty-root"))
-                .andExpect(jsonPath("$[0].children.length()").value(1))
-                .andExpect(jsonPath("$[0].children[0].slug").value("has-published"))
+                .andExpect(jsonPath("$[0].slug").value("has-published"))
+                .andExpect(jsonPath("$[0].children").isEmpty())
                 .andExpect(jsonPath("$[1].slug").value("pub-root"))
                 .andReturn().getResponse().getContentAsString();
 
@@ -118,18 +120,16 @@ class TutorialPublicIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
-    void publicListCategorySlugIncludesDescendants() throws Exception {
+    void publicListCategorySlugMatchesOnlyThatKnowledgeSystem() throws Exception {
         Long root = insertCategory("root-cat", null);
         Long child = insertCategory("child-cat", root);
         Long other = insertCategory("other-cat", null);
         insertTutorial(child, "t-in-child", "PUBLISHED");
         insertTutorial(other, "t-in-other", "PUBLISHED");
 
-        // filter by root includes the descendant's tutorial
         mockMvc.perform(get("/api/v1/public/tutorials").param("categorySlug", "root-cat"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.length()").value(1))
-                .andExpect(jsonPath("$[0].slug").value("t-in-child"));
+                .andExpect(jsonPath("$.length()").value(0));
 
         mockMvc.perform(get("/api/v1/public/tutorials").param("categorySlug", "child-cat"))
                 .andExpect(status().isOk())

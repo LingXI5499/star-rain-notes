@@ -6,7 +6,7 @@ package com.starrainnotes.tutorial.dto;
 public record ChapterDetailView(
         Long id,
         Long tutorialId,
-        Long parentId,
+        Long groupId,
         String nodeType,
         String title,
         String slug,

@@ -13,9 +13,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 /**
  * TASK-002 (+ approved vocabulary spec change) — verifies Flyway executes the
- * frozen V1 schema on a fresh database: the core business tables (13 V1
- * tables + 2 approved vocabulary tables) with the frozen charset/collation,
- * and V1-V4 migrations recorded as successful.
+ * frozen schema on a fresh database: the core business tables plus the V5
+ * hierarchy audit backup, with the frozen charset/collation and every
+ * migration recorded as successful.
  */
 @SpringBootTest
 @ActiveProfiles("test")
@@ -36,13 +36,14 @@ class V1SchemaMigrationTest {
             "profile_selected_content",
             "english_overview",
             "vocabulary_theme",
-            "vocabulary_word");
+            "vocabulary_word",
+            "tutorial_node_hierarchy_backup_v5");
 
     @Autowired
     private JdbcTemplate jdbc;
 
     @Test
-    void createsAllFifteenCoreTables() {
+    void createsAllSixteenCoreTables() {
         Integer count = jdbc.queryForObject("""
                 SELECT COUNT(*)
                 FROM information_schema.tables
@@ -50,7 +51,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(15);
+        assertThat(count).isEqualTo(16);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -76,14 +77,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV4AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV6AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4')
+                WHERE version IN ('1', '2', '3', '4', '5', '6')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -91,6 +92,7 @@ class V1SchemaMigrationTest {
                 ORDER BY installed_rank
                 """, String.class);
         assertThat(descriptions).containsExactly(
-                "init schema", "seed system singletons", "create vocabulary", "seed vocabulary");
+                "init schema", "seed system singletons", "create vocabulary", "seed vocabulary",
+                "flatten tutorial hierarchy", "enforce curriculum parents");
     }
 }

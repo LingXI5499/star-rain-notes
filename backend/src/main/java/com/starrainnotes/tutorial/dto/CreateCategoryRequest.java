@@ -12,6 +12,5 @@ public record CreateCategoryRequest(
         @NotBlank @Size(max = 100)
         @Pattern(regexp = "^[a-z0-9]+(?:-[a-z0-9]+)*$", message = "slug must be lowercase kebab-case")
         String slug,
-        Long parentId,
         Integer sortOrder) {
 }

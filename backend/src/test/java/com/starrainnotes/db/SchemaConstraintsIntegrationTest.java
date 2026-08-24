@@ -63,10 +63,13 @@ class SchemaConstraintsIntegrationTest {
     }
 
     private Long insertChapter(Long tutorialId, String slug) {
+        jdbc.update("INSERT INTO tutorial_node (tutorial_id, node_type, title) VALUES (?, 'GROUP', ?)",
+                tutorialId, slug + " group");
+        Long groupId = lastId();
         jdbc.update("""
-                INSERT INTO tutorial_node (tutorial_id, node_type, title, slug, body_markdown, publish_status)
-                VALUES (?, 'CHAPTER', ?, ?, 'body', 'DRAFT')
-                """, tutorialId, slug, slug);
+                INSERT INTO tutorial_node (tutorial_id, parent_id, node_type, title, slug, body_markdown, publish_status)
+                VALUES (?, ?, 'CHAPTER', ?, ?, 'body', 'DRAFT')
+                """, tutorialId, groupId, slug, slug);
         return lastId();
     }
 
@@ -319,12 +322,41 @@ class SchemaConstraintsIntegrationTest {
     // ---------------------------------------------------------------
 
     @Test
-    void restrictsDeletingCategoryWithChildren() {
+    void rejectsNestedKnowledgeSystems() {
         Long parentId = insertCategory("restrict-parent");
         Long childId = insertCategory("restrict-child");
-        jdbc.update("UPDATE tutorial_category SET parent_id = ? WHERE id = ?", parentId, childId);
-        assertThatThrownBy(() -> jdbc.update("DELETE FROM tutorial_category WHERE id = ?", parentId))
+        assertThatThrownBy(() -> jdbc.update(
+                "UPDATE tutorial_category SET parent_id = ? WHERE id = ?", parentId, childId))
                 .isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    void rejectsRootChapterAndNestedGroup() {
+        Long categoryId = insertCategory("cat-flat-curriculum");
+        Long tutorialId = insertTutorial(categoryId, "t-flat-curriculum", "DRAFT", null);
+        assertThatThrownBy(() -> jdbc.update("""
+                INSERT INTO tutorial_node (tutorial_id, node_type, title, slug, body_markdown, publish_status)
+                VALUES (?, 'CHAPTER', 'root', 'root', 'body', 'DRAFT')
+                """, tutorialId)).isInstanceOf(DataAccessException.class);
+
+        jdbc.update("INSERT INTO tutorial_node (tutorial_id, node_type, title) VALUES (?, 'GROUP', 'root group')",
+                tutorialId);
+        Long groupId = lastId();
+        assertThatThrownBy(() -> jdbc.update("""
+                INSERT INTO tutorial_node (tutorial_id, parent_id, node_type, title)
+                VALUES (?, ?, 'GROUP', 'nested group')
+                """, tutorialId, groupId)).isInstanceOf(DataAccessException.class);
+    }
+
+    @Test
+    void rejectsChapterAsChapterParent() {
+        Long categoryId = insertCategory("cat-chapter-parent");
+        Long tutorialId = insertTutorial(categoryId, "t-chapter-parent", "DRAFT", null);
+        Long chapterId = insertChapter(tutorialId, "parent-chapter");
+        assertThatThrownBy(() -> jdbc.update("""
+                INSERT INTO tutorial_node (tutorial_id, parent_id, node_type, title, slug, body_markdown, publish_status)
+                VALUES (?, ?, 'CHAPTER', 'child', 'child', 'body', 'DRAFT')
+                """, tutorialId, chapterId)).isInstanceOf(DataAccessException.class);
     }
 
     @Test

@@ -1,10 +1,13 @@
 package com.starrainnotes.tutorial.controller;
 
+import com.starrainnotes.tutorial.dto.AdminCurriculumView;
 import com.starrainnotes.tutorial.dto.AdminTreeNodeView;
 import com.starrainnotes.tutorial.dto.ChapterDetailView;
 import com.starrainnotes.tutorial.dto.CreateChapterRequest;
 import com.starrainnotes.tutorial.dto.CreateGroupRequest;
+import com.starrainnotes.tutorial.dto.MoveIndexRequest;
 import com.starrainnotes.tutorial.dto.MoveNodeRequest;
+import com.starrainnotes.tutorial.dto.ReassignChapterRequest;
 import com.starrainnotes.tutorial.dto.UpdateChapterRequest;
 import com.starrainnotes.tutorial.dto.UpdateGroupRequest;
 import com.starrainnotes.tutorial.service.TutorialNodeService;
@@ -40,6 +43,11 @@ public class TutorialNodeAdminController {
         return nodeService.tree(tutorialId);
     }
 
+    @GetMapping("/curriculum")
+    public AdminCurriculumView curriculum(@PathVariable Long tutorialId) {
+        return nodeService.curriculum(tutorialId);
+    }
+
     // ---------------------------------------------------------------
     // groups
     // ---------------------------------------------------------------
@@ -62,6 +70,14 @@ public class TutorialNodeAdminController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteGroup(@PathVariable Long tutorialId, @PathVariable Long groupId) {
         nodeService.deleteGroup(tutorialId, groupId);
+    }
+
+    @PostMapping("/groups/{groupId}/move")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void moveGroup(@PathVariable Long tutorialId,
+                          @PathVariable Long groupId,
+                          @Valid @RequestBody MoveIndexRequest request) {
+        nodeService.moveGroup(tutorialId, groupId, request);
     }
 
     // ---------------------------------------------------------------
@@ -101,6 +117,22 @@ public class TutorialNodeAdminController {
     @PostMapping("/chapters/{chapterId}/withdraw")
     public ChapterDetailView withdrawChapter(@PathVariable Long tutorialId, @PathVariable Long chapterId) {
         return nodeService.withdrawChapter(tutorialId, chapterId);
+    }
+
+    @PostMapping("/chapters/{chapterId}/move")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void moveChapter(@PathVariable Long tutorialId,
+                            @PathVariable Long chapterId,
+                            @Valid @RequestBody MoveIndexRequest request) {
+        nodeService.moveChapter(tutorialId, chapterId, request);
+    }
+
+    @PostMapping("/chapters/{chapterId}/reassign")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void reassignChapter(@PathVariable Long tutorialId,
+                                @PathVariable Long chapterId,
+                                @Valid @RequestBody ReassignChapterRequest request) {
+        nodeService.reassignChapter(tutorialId, chapterId, request);
     }
 
     // ---------------------------------------------------------------

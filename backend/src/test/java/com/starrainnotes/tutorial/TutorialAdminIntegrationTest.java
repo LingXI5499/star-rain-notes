@@ -42,8 +42,8 @@ class TutorialAdminIntegrationTest extends AbstractAuthIntegrationTest {
         jdbc.update("DELETE FROM admin_user");
         jdbc.update("INSERT INTO admin_user (username, password_hash) VALUES (?, ?)",
                 USERNAME, passwordEncoder.encode(PASSWORD));
-        jdbc.update("UPDATE tutorial_node SET parent_id = NULL");
-        jdbc.update("DELETE FROM tutorial_node");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'CHAPTER'");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'GROUP'");
         jdbc.update("DELETE FROM tutorial");
         jdbc.update("UPDATE tutorial_category SET parent_id = NULL");
         jdbc.update("DELETE FROM tutorial_category");
@@ -52,8 +52,8 @@ class TutorialAdminIntegrationTest extends AbstractAuthIntegrationTest {
     @AfterEach
     void cleanUp() {
         jdbc.update("DELETE FROM admin_user");
-        jdbc.update("UPDATE tutorial_node SET parent_id = NULL");
-        jdbc.update("DELETE FROM tutorial_node");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'CHAPTER'");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'GROUP'");
         jdbc.update("DELETE FROM tutorial");
         jdbc.update("UPDATE tutorial_category SET parent_id = NULL");
         jdbc.update("DELETE FROM tutorial_category");

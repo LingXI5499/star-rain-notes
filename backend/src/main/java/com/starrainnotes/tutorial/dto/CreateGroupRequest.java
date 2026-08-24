@@ -7,6 +7,5 @@ import jakarta.validation.constraints.Size;
  * POST /api/v1/admin/tutorials/{tutorialId}/groups request body.
  */
 public record CreateGroupRequest(
-        @NotBlank @Size(max = 200) String title,
-        Long parentId) {
+        @NotBlank @Size(max = 200) String title) {
 }

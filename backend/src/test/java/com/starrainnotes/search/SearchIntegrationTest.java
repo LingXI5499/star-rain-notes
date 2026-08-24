@@ -27,8 +27,8 @@ class SearchIntegrationTest extends AbstractAuthIntegrationTest {
     @BeforeEach
     void cleanContent() {
         jdbc.update("DELETE FROM profile_selected_content");
-        jdbc.update("UPDATE tutorial_node SET parent_id = NULL");
-        jdbc.update("DELETE FROM tutorial_node");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'CHAPTER'");
+        jdbc.update("DELETE FROM tutorial_node WHERE node_type = 'GROUP'");
         jdbc.update("DELETE FROM tutorial");
         jdbc.update("UPDATE tutorial_category SET parent_id = NULL");
         jdbc.update("DELETE FROM tutorial_category");
@@ -55,11 +55,14 @@ class SearchIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     private void insertChapter(Long tutorialId, String slug, String title, String body, LocalDateTime updatedAt) {
+        jdbc.update("INSERT INTO tutorial_node (tutorial_id, node_type, title) VALUES (?, 'GROUP', ?)",
+                tutorialId, title + " 分组");
+        Long groupId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
         jdbc.update("""
-                INSERT INTO tutorial_node (tutorial_id, node_type, title, slug, summary, body_markdown,
+                INSERT INTO tutorial_node (tutorial_id, parent_id, node_type, title, slug, summary, body_markdown,
                                            publish_status, published_at, updated_at)
-                VALUES (?, 'CHAPTER', ?, ?, 'summary', ?, 'PUBLISHED', '2026-07-01 00:00:00', ?)
-                """, tutorialId, title, slug, body, updatedAt);
+                VALUES (?, ?, 'CHAPTER', ?, ?, 'summary', ?, 'PUBLISHED', '2026-07-01 00:00:00', ?)
+                """, tutorialId, groupId, title, slug, body, updatedAt);
     }
 
     private Long insertBlog(String slug, String title, String body, String status, LocalDateTime publishedAt) {

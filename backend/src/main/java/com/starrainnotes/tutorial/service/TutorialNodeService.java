@@ -3,15 +3,23 @@ package com.starrainnotes.tutorial.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
+import com.starrainnotes.tutorial.dto.AdminCurriculumChapterView;
+import com.starrainnotes.tutorial.dto.AdminCurriculumGroupView;
+import com.starrainnotes.tutorial.dto.AdminCurriculumTutorialView;
+import com.starrainnotes.tutorial.dto.AdminCurriculumView;
 import com.starrainnotes.tutorial.dto.AdminTreeNodeView;
 import com.starrainnotes.tutorial.dto.ChapterDetailView;
 import com.starrainnotes.tutorial.dto.CreateChapterRequest;
 import com.starrainnotes.tutorial.dto.CreateGroupRequest;
+import com.starrainnotes.tutorial.dto.MoveIndexRequest;
 import com.starrainnotes.tutorial.dto.MoveNodeRequest;
+import com.starrainnotes.tutorial.dto.ReassignChapterRequest;
 import com.starrainnotes.tutorial.dto.UpdateChapterRequest;
 import com.starrainnotes.tutorial.dto.UpdateGroupRequest;
 import com.starrainnotes.tutorial.entity.Tutorial;
+import com.starrainnotes.tutorial.entity.TutorialCategory;
 import com.starrainnotes.tutorial.entity.TutorialNode;
+import com.starrainnotes.tutorial.mapper.TutorialCategoryMapper;
 import com.starrainnotes.tutorial.mapper.TutorialMapper;
 import com.starrainnotes.tutorial.mapper.TutorialNodeMapper;
 import org.springframework.http.HttpStatus;
@@ -25,22 +33,13 @@ import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
- * Tutorial node tree + chapter management (04 §10):
- *
- * <ul>
- *   <li>GROUP may contain GROUP/CHAPTER; CHAPTER is always a leaf</li>
- *   <li>parent must belong to the same tutorial</li>
- *   <li>move is transactional, re-normalizes sibling sortOrder (i+1)*10,
- *       targetIndex is 0-based and clamped</li>
- *   <li>a GROUP cannot move into itself or its own descendant</li>
- *   <li>chapter publish requires the tutorial to be PUBLISHED first</li>
- *   <li>first publish stamps publishedAt; withdraw/republish keep it</li>
- * </ul>
+ * Fixed two-level curriculum management.
+ * GROUPs are root siblings; every CHAPTER belongs to exactly one GROUP.
  */
 @Service
 public class TutorialNodeService {
@@ -53,76 +52,89 @@ public class TutorialNodeService {
     private static final String WITHDRAWN = "WITHDRAWN";
 
     private final TutorialMapper tutorialMapper;
+    private final TutorialCategoryMapper categoryMapper;
     private final TutorialNodeMapper nodeMapper;
     private final SiteSettingsTimezone siteSettingsTimezone;
 
     public TutorialNodeService(TutorialMapper tutorialMapper,
+                               TutorialCategoryMapper categoryMapper,
                                TutorialNodeMapper nodeMapper,
                                SiteSettingsTimezone siteSettingsTimezone) {
         this.tutorialMapper = tutorialMapper;
+        this.categoryMapper = categoryMapper;
         this.nodeMapper = nodeMapper;
         this.siteSettingsTimezone = siteSettingsTimezone;
     }
 
-    // ---------------------------------------------------------------
-    // tree
-    // ---------------------------------------------------------------
-
+    /** Compatibility tree endpoint; V5 guarantees exactly two levels. */
     public List<AdminTreeNodeView> tree(Long tutorialId) {
         requireTutorial(tutorialId);
         return TutorialTreeBuilder.build(loadAll(tutorialId));
     }
 
-    // ---------------------------------------------------------------
-    // groups
-    // ---------------------------------------------------------------
+    public AdminCurriculumView curriculum(Long tutorialId) {
+        Tutorial tutorial = requireTutorial(tutorialId);
+        TutorialCategory category = categoryMapper.selectById(tutorial.getCategoryId());
+        List<TutorialNode> all = loadAll(tutorialId);
+        Map<Long, List<TutorialNode>> chapters = all.stream()
+                .filter(node -> CHAPTER.equals(node.getNodeType()))
+                .collect(Collectors.groupingBy(TutorialNode::getParentId));
+        List<AdminCurriculumGroupView> groups = all.stream()
+                .filter(node -> GROUP.equals(node.getNodeType()) && node.getParentId() == null)
+                .map(group -> {
+                    List<AdminCurriculumChapterView> rows = chapters.getOrDefault(group.getId(), List.of())
+                            .stream().map(this::toCurriculumChapter).toList();
+                    long published = rows.stream()
+                            .filter(row -> PUBLISHED.equals(row.publishStatus())).count();
+                    return new AdminCurriculumGroupView(group.getId(), group.getTitle(), group.getSortOrder(),
+                            rows.size(), published, rows);
+                }).toList();
+        return new AdminCurriculumView(
+                new AdminCurriculumTutorialView(tutorial.getId(), tutorial.getCategoryId(),
+                        category == null ? null : category.getName(), tutorial.getTitle(), tutorial.getSlug(),
+                        tutorial.getPublishStatus()),
+                groups);
+    }
 
     public AdminTreeNodeView createGroup(Long tutorialId, CreateGroupRequest request) {
         requireTutorial(tutorialId);
-        Long parentId = validateParent(tutorialId, request.parentId());
-
         TutorialNode group = new TutorialNode();
         group.setTutorialId(tutorialId);
-        group.setParentId(parentId);
+        group.setParentId(null);
         group.setNodeType(GROUP);
         group.setTitle(request.title());
-        group.setSortOrder(nextSiblingOrder(tutorialId, parentId));
+        group.setSortOrder(nextGroupOrder(tutorialId));
         nodeMapper.insert(group);
         return toNodeView(group);
     }
 
     public AdminTreeNodeView updateGroup(Long tutorialId, Long groupId, UpdateGroupRequest request) {
-        TutorialNode group = requireNode(tutorialId, groupId);
-        requireType(group, GROUP, "NODE_NOT_GROUP");
+        TutorialNode group = requireGroup(tutorialId, groupId);
         group.setTitle(request.title());
         nodeMapper.updateById(group);
         return toNodeView(group);
     }
 
+    @Transactional
     public void deleteGroup(Long tutorialId, Long groupId) {
-        TutorialNode group = requireNode(tutorialId, groupId);
-        requireType(group, GROUP, "NODE_NOT_GROUP");
-        Long children = nodeMapper.selectCount(
-                new LambdaQueryWrapper<TutorialNode>().eq(TutorialNode::getParentId, groupId));
+        requireGroup(tutorialId, groupId);
+        Long children = nodeMapper.selectCount(new LambdaQueryWrapper<TutorialNode>()
+                .eq(TutorialNode::getParentId, groupId));
         if (children != null && children > 0) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "GROUP_HAS_CHILDREN",
-                    "Group has children", "A group containing nodes cannot be deleted.");
+                    "Group has chapters", "A group containing chapters cannot be deleted.");
         }
         nodeMapper.deleteById(groupId);
+        normalizeOrders(loadGroups(tutorialId));
     }
-
-    // ---------------------------------------------------------------
-    // chapters
-    // ---------------------------------------------------------------
 
     public ChapterDetailView createChapter(Long tutorialId, CreateChapterRequest request) {
         requireTutorial(tutorialId);
-        Long parentId = validateParent(tutorialId, request.parentId());
+        TutorialNode group = requireTargetGroup(tutorialId, request.groupId());
         assertChapterSlugFree(tutorialId, request.slug(), null);
-
         TutorialNode chapter = new TutorialNode();
         chapter.setTutorialId(tutorialId);
-        chapter.setParentId(parentId);
+        chapter.setParentId(group.getId());
         chapter.setNodeType(CHAPTER);
         chapter.setTitle(request.title());
         chapter.setSlug(request.slug());
@@ -130,51 +142,43 @@ public class TutorialNodeService {
         chapter.setBodyMarkdown(request.bodyMarkdown());
         chapter.setPublishStatus(DRAFT);
         chapter.setPublishedAt(null);
-        chapter.setSortOrder(nextSiblingOrder(tutorialId, parentId));
+        chapter.setSortOrder(nextChapterOrder(tutorialId, group.getId()));
         nodeMapper.insert(chapter);
         return toChapterDetail(chapter);
     }
 
     public ChapterDetailView getChapter(Long tutorialId, Long chapterId) {
-        TutorialNode chapter = requireNode(tutorialId, chapterId);
-        requireType(chapter, CHAPTER, "NODE_NOT_CHAPTER");
-        return toChapterDetail(chapter);
+        return toChapterDetail(requireChapter(tutorialId, chapterId));
     }
 
     public ChapterDetailView updateChapter(Long tutorialId, Long chapterId, UpdateChapterRequest request) {
-        TutorialNode chapter = requireNode(tutorialId, chapterId);
-        requireType(chapter, CHAPTER, "NODE_NOT_CHAPTER");
+        TutorialNode chapter = requireChapter(tutorialId, chapterId);
         assertChapterSlugFree(tutorialId, request.slug(), chapterId);
-
         chapter.setTitle(request.title());
         chapter.setSlug(request.slug());
         chapter.setSummary(request.summary());
         chapter.setBodyMarkdown(request.bodyMarkdown());
-        // publishStatus / publishedAt are never touched by a plain update
         nodeMapper.updateById(chapter);
         return toChapterDetail(chapter);
     }
 
+    @Transactional
     public void deleteChapter(Long tutorialId, Long chapterId) {
-        TutorialNode chapter = requireNode(tutorialId, chapterId);
-        requireType(chapter, CHAPTER, "NODE_NOT_CHAPTER");
+        TutorialNode chapter = requireChapter(tutorialId, chapterId);
+        Long groupId = chapter.getParentId();
         nodeMapper.deleteById(chapterId);
+        normalizeOrders(loadChapters(tutorialId, groupId));
     }
 
     public ChapterDetailView publishChapter(Long tutorialId, Long chapterId) {
-        TutorialNode chapter = requireNode(tutorialId, chapterId);
-        requireType(chapter, CHAPTER, "NODE_NOT_CHAPTER");
-        requireTutorial(tutorialId);
-        Tutorial tutorial = tutorialMapper.selectById(tutorialId);
+        TutorialNode chapter = requireChapter(tutorialId, chapterId);
+        Tutorial tutorial = requireTutorial(tutorialId);
         if (!PUBLISHED.equals(tutorial.getPublishStatus())) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "TUTORIAL_NOT_PUBLISHED",
-                    "Tutorial not published",
-                    "Chapters can only be published while their tutorial is PUBLISHED.");
+                    "Tutorial not published", "Chapters can only be published while their tutorial is PUBLISHED.");
         }
         if (!PUBLISHED.equals(chapter.getPublishStatus())) {
-            if (chapter.getPublishedAt() == null) {
-                chapter.setPublishedAt(LocalDateTime.now(Clock.systemUTC()));
-            }
+            if (chapter.getPublishedAt() == null) chapter.setPublishedAt(LocalDateTime.now(Clock.systemUTC()));
             chapter.setPublishStatus(PUBLISHED);
             nodeMapper.updateById(chapter);
         }
@@ -182,77 +186,77 @@ public class TutorialNodeService {
     }
 
     public ChapterDetailView withdrawChapter(Long tutorialId, Long chapterId) {
-        TutorialNode chapter = requireNode(tutorialId, chapterId);
-        requireType(chapter, CHAPTER, "NODE_NOT_CHAPTER");
+        TutorialNode chapter = requireChapter(tutorialId, chapterId);
         if (DRAFT.equals(chapter.getPublishStatus())) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_PUBLISH_TRANSITION",
                     "Cannot withdraw a draft", "Only published chapters can be withdrawn.");
         }
         if (!WITHDRAWN.equals(chapter.getPublishStatus())) {
-            // publishedAt is the FIRST public publication time and stays unchanged
             chapter.setPublishStatus(WITHDRAWN);
             nodeMapper.updateById(chapter);
         }
         return toChapterDetail(chapter);
     }
 
-    // ---------------------------------------------------------------
-    // move
-    // ---------------------------------------------------------------
+    @Transactional
+    public void moveGroup(Long tutorialId, Long groupId, MoveIndexRequest request) {
+        TutorialNode group = requireGroup(tutorialId, groupId);
+        List<TutorialNode> groups = loadGroups(tutorialId);
+        groups.removeIf(item -> item.getId().equals(groupId));
+        groups.add(Math.min(Math.max(request.targetIndex(), 0), groups.size()), group);
+        normalizeOrders(groups);
+    }
 
+    @Transactional
+    public void moveChapter(Long tutorialId, Long chapterId, MoveIndexRequest request) {
+        TutorialNode chapter = requireChapter(tutorialId, chapterId);
+        List<TutorialNode> chapters = loadChapters(tutorialId, chapter.getParentId());
+        chapters.removeIf(item -> item.getId().equals(chapterId));
+        chapters.add(Math.min(Math.max(request.targetIndex(), 0), chapters.size()), chapter);
+        normalizeOrders(chapters);
+    }
+
+    @Transactional
+    public void reassignChapter(Long tutorialId, Long chapterId, ReassignChapterRequest request) {
+        TutorialNode chapter = requireChapter(tutorialId, chapterId);
+        TutorialNode targetGroup = requireTargetGroup(tutorialId, request.targetGroupId());
+        Long sourceGroupId = chapter.getParentId();
+        if (sourceGroupId.equals(targetGroup.getId())) return;
+
+        List<TutorialNode> source = loadChapters(tutorialId, sourceGroupId);
+        source.removeIf(item -> item.getId().equals(chapterId));
+        normalizeOrders(source);
+
+        List<TutorialNode> target = loadChapters(tutorialId, targetGroup.getId());
+        chapter.setParentId(targetGroup.getId());
+        chapter.setSortOrder((target.size() + 1) * 10);
+        nodeMapper.updateById(chapter);
+        target.add(chapter);
+        normalizeOrders(target);
+    }
+
+    /**
+     * Compatibility adapter for the old generic move route. It may only sort
+     * root groups or chapters inside their current group.
+     */
     @Transactional
     public void moveNode(Long tutorialId, Long nodeId, MoveNodeRequest request) {
         TutorialNode node = requireNode(tutorialId, nodeId);
-        Long newParentId = request.targetParentId();
-        if (newParentId != null) {
-            TutorialNode parent = nodeMapper.selectById(newParentId);
-            if (parent == null) {
-                throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_NOT_FOUND",
-                        "Target parent not found", "The target parent group does not exist.");
+        if (GROUP.equals(node.getNodeType())) {
+            if (request.targetParentId() != null) {
+                throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "GROUP_NESTING_FORBIDDEN",
+                        "Groups cannot be nested", "Curriculum groups are root-level siblings.");
             }
-            if (!tutorialId.equals(parent.getTutorialId())) {
-                throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_CROSS_TUTORIAL",
-                        "Target parent is in another tutorial",
-                        "A node can only be moved within its own tutorial.");
-            }
-            if (!GROUP.equals(parent.getNodeType())) {
-                throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_NOT_GROUP",
-                        "Target parent must be a group",
-                        "Chapters cannot be parents; only GROUPs or the root are valid targets.");
-            }
-            if (newParentId.equals(nodeId) || isDescendantOf(nodeId, newParentId)) {
-                throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "NODE_CYCLE",
-                        "Node cycle detected", "A node cannot be moved into itself or its own descendant.");
-            }
+            moveGroup(tutorialId, nodeId, new MoveIndexRequest(request.targetIndex()));
+            return;
         }
-
-        Long oldParentId = node.getParentId();
-        List<TutorialNode> sourceSiblings = loadChildren(tutorialId, oldParentId);
-        List<TutorialNode> targetSiblings = java.util.Objects.equals(oldParentId, newParentId)
-                ? sourceSiblings : loadChildren(tutorialId, newParentId);
-        sourceSiblings.removeIf(sibling -> sibling.getId().equals(nodeId));
-        if (targetSiblings != sourceSiblings) {
-            targetSiblings.removeIf(sibling -> sibling.getId().equals(nodeId));
+        if (!java.util.Objects.equals(node.getParentId(), request.targetParentId())) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "CROSS_GROUP_DRAG_FORBIDDEN",
+                    "Cross-group drag is not allowed",
+                    "Use the explicit chapter reassignment action to change a chapter's group.");
         }
-        int index = Math.min(Math.max(request.targetIndex(), 0), targetSiblings.size());
-        node.setParentId(newParentId);
-        // The reparent must be written even if the old and new numeric sort
-        // orders happen to coincide.
-        nodeMapper.updateById(node);
-        targetSiblings.add(index, node);
-
-        // Normalize both affected sibling sets.  The former implementation
-        // only normalized the destination, leaving gaps after cross-group
-        // drag-and-drop moves.
-        normalizeSiblingOrders(sourceSiblings);
-        if (targetSiblings != sourceSiblings) {
-            normalizeSiblingOrders(targetSiblings);
-        }
+        moveChapter(tutorialId, nodeId, new MoveIndexRequest(request.targetIndex()));
     }
-
-    // ---------------------------------------------------------------
-    // helpers
-    // ---------------------------------------------------------------
 
     private Tutorial requireTutorial(Long tutorialId) {
         Tutorial tutorial = tutorialMapper.selectById(tutorialId);
@@ -272,6 +276,47 @@ public class TutorialNodeService {
         return node;
     }
 
+    private TutorialNode requireGroup(Long tutorialId, Long groupId) {
+        TutorialNode group = requireNode(tutorialId, groupId);
+        requireType(group, GROUP, "NODE_NOT_GROUP");
+        if (group.getParentId() != null) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "GROUP_NESTING_FORBIDDEN",
+                    "Groups cannot be nested", "Curriculum groups must be root-level siblings.");
+        }
+        return group;
+    }
+
+    private TutorialNode requireTargetGroup(Long tutorialId, Long groupId) {
+        TutorialNode group = nodeMapper.selectById(groupId);
+        if (group == null) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_NOT_FOUND",
+                    "Group not found", "The target curriculum group does not exist.");
+        }
+        if (!tutorialId.equals(group.getTutorialId())) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_CROSS_TUTORIAL",
+                    "Group belongs to another tutorial", "A chapter and its group must belong to the same tutorial.");
+        }
+        if (!GROUP.equals(group.getNodeType())) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_NOT_GROUP",
+                    "Target is not a group", "Every chapter must belong to a curriculum group.");
+        }
+        if (group.getParentId() != null) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "GROUP_NESTING_FORBIDDEN",
+                    "Groups cannot be nested", "Curriculum groups must be root-level siblings.");
+        }
+        return group;
+    }
+
+    private TutorialNode requireChapter(Long tutorialId, Long chapterId) {
+        TutorialNode chapter = requireNode(tutorialId, chapterId);
+        requireType(chapter, CHAPTER, "NODE_NOT_CHAPTER");
+        if (chapter.getParentId() == null) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "CHAPTER_GROUP_REQUIRED",
+                    "Chapter group required", "Every chapter must belong to a curriculum group.");
+        }
+        return chapter;
+    }
+
     private void requireType(TutorialNode node, String expected, String code) {
         if (!expected.equals(node.getNodeType())) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, code,
@@ -279,35 +324,10 @@ public class TutorialNodeService {
         }
     }
 
-    private Long validateParent(Long tutorialId, Long parentId) {
-        if (parentId == null) {
-            return null;
-        }
-        TutorialNode parent = nodeMapper.selectById(parentId);
-        if (parent == null) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_NOT_FOUND",
-                    "Parent not found", "The parent node does not exist.");
-        }
-        if (!tutorialId.equals(parent.getTutorialId())) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_CROSS_TUTORIAL",
-                    "Parent is in another tutorial",
-                    "A node can only be created under a parent of the same tutorial.");
-        }
-        if (!GROUP.equals(parent.getNodeType())) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "PARENT_NOT_GROUP",
-                    "Parent must be a group",
-                    "Chapters cannot be parents; only GROUPs or the root are valid parents.");
-        }
-        return parentId;
-    }
-
     private void assertChapterSlugFree(Long tutorialId, String slug, Long excludeId) {
         LambdaQueryWrapper<TutorialNode> wrapper = new LambdaQueryWrapper<TutorialNode>()
-                .eq(TutorialNode::getTutorialId, tutorialId)
-                .eq(TutorialNode::getSlug, slug);
-        if (excludeId != null) {
-            wrapper.ne(TutorialNode::getId, excludeId);
-        }
+                .eq(TutorialNode::getTutorialId, tutorialId).eq(TutorialNode::getSlug, slug);
+        if (excludeId != null) wrapper.ne(TutorialNode::getId, excludeId);
         Long count = nodeMapper.selectCount(wrapper);
         if (count != null && count > 0) {
             throw new ApiException(HttpStatus.CONFLICT, "SLUG_CONFLICT",
@@ -315,59 +335,45 @@ public class TutorialNodeService {
         }
     }
 
-    private boolean isDescendantOf(Long ancestorId, Long nodeId) {
-        Set<Long> visited = new HashSet<>();
-        Long cursor = nodeId;
-        while (cursor != null) {
-            if (cursor.equals(ancestorId)) {
-                return true;
-            }
-            if (!visited.add(cursor)) {
-                return false;
-            }
-            TutorialNode node = nodeMapper.selectById(cursor);
-            if (node == null) {
-                return false;
-            }
-            cursor = node.getParentId();
-        }
-        return false;
-    }
-
     private List<TutorialNode> loadAll(Long tutorialId) {
         return nodeMapper.selectList(new LambdaQueryWrapper<TutorialNode>()
                 .eq(TutorialNode::getTutorialId, tutorialId)
-                .orderByAsc(TutorialNode::getSortOrder)
-                .orderByAsc(TutorialNode::getId));
+                .orderByAsc(TutorialNode::getSortOrder).orderByAsc(TutorialNode::getId));
     }
 
-    private List<TutorialNode> loadChildren(Long tutorialId, Long parentId) {
-        LambdaQueryWrapper<TutorialNode> wrapper = new LambdaQueryWrapper<TutorialNode>()
-                .eq(TutorialNode::getTutorialId, tutorialId);
-        if (parentId == null) {
-            wrapper.isNull(TutorialNode::getParentId);
-        } else {
-            wrapper.eq(TutorialNode::getParentId, parentId);
-        }
-        return nodeMapper.selectList(wrapper
-                .orderByAsc(TutorialNode::getSortOrder)
-                .orderByAsc(TutorialNode::getId));
+    private List<TutorialNode> loadGroups(Long tutorialId) {
+        return nodeMapper.selectList(new LambdaQueryWrapper<TutorialNode>()
+                .eq(TutorialNode::getTutorialId, tutorialId)
+                .eq(TutorialNode::getNodeType, GROUP)
+                .isNull(TutorialNode::getParentId)
+                .orderByAsc(TutorialNode::getSortOrder).orderByAsc(TutorialNode::getId));
     }
 
-    private int nextSiblingOrder(Long tutorialId, Long parentId) {
-        return loadChildren(tutorialId, parentId).stream()
-                .mapToInt(n -> n.getSortOrder() == null ? 0 : n.getSortOrder())
-                .max()
-                .orElse(0) + 10;
+    private List<TutorialNode> loadChapters(Long tutorialId, Long groupId) {
+        return nodeMapper.selectList(new LambdaQueryWrapper<TutorialNode>()
+                .eq(TutorialNode::getTutorialId, tutorialId)
+                .eq(TutorialNode::getNodeType, CHAPTER)
+                .eq(TutorialNode::getParentId, groupId)
+                .orderByAsc(TutorialNode::getSortOrder).orderByAsc(TutorialNode::getId));
     }
 
-    private void normalizeSiblingOrders(List<TutorialNode> siblings) {
-        for (int index = 0; index < siblings.size(); index++) {
-            TutorialNode sibling = siblings.get(index);
+    private int nextGroupOrder(Long tutorialId) {
+        return loadGroups(tutorialId).stream().mapToInt(n -> n.getSortOrder() == null ? 0 : n.getSortOrder())
+                .max().orElse(0) + 10;
+    }
+
+    private int nextChapterOrder(Long tutorialId, Long groupId) {
+        return loadChapters(tutorialId, groupId).stream()
+                .mapToInt(n -> n.getSortOrder() == null ? 0 : n.getSortOrder()).max().orElse(0) + 10;
+    }
+
+    private void normalizeOrders(List<TutorialNode> nodes) {
+        for (int index = 0; index < nodes.size(); index++) {
+            TutorialNode node = nodes.get(index);
             int order = (index + 1) * 10;
-            if (!Integer.valueOf(order).equals(sibling.getSortOrder())) {
-                sibling.setSortOrder(order);
-                nodeMapper.updateById(sibling);
+            if (!Integer.valueOf(order).equals(node.getSortOrder())) {
+                node.setSortOrder(order);
+                nodeMapper.updateById(node);
             }
         }
     }
@@ -377,20 +383,21 @@ public class TutorialNodeService {
                 node.getSlug(), node.getPublishStatus(), node.getSortOrder(), new ArrayList<>());
     }
 
+    private AdminCurriculumChapterView toCurriculumChapter(TutorialNode chapter) {
+        return new AdminCurriculumChapterView(chapter.getId(), chapter.getParentId(), chapter.getTitle(),
+                chapter.getSlug(), chapter.getPublishStatus(), chapter.getSortOrder(), formatUtc(chapter.getUpdatedAt()));
+    }
+
     private ChapterDetailView toChapterDetail(TutorialNode chapter) {
-        return new ChapterDetailView(
-                chapter.getId(), chapter.getTutorialId(), chapter.getParentId(), chapter.getNodeType(),
-                chapter.getTitle(), chapter.getSlug(), chapter.getSummary(), chapter.getBodyMarkdown(),
-                chapter.getPublishStatus(), chapter.getSortOrder(),
+        return new ChapterDetailView(chapter.getId(), chapter.getTutorialId(), chapter.getParentId(),
+                chapter.getNodeType(), chapter.getTitle(), chapter.getSlug(), chapter.getSummary(),
+                chapter.getBodyMarkdown(), chapter.getPublishStatus(), chapter.getSortOrder(),
                 formatUtc(chapter.getPublishedAt()), formatUtc(chapter.getUpdatedAt()));
     }
 
     private String formatUtc(LocalDateTime utc) {
-        if (utc == null) {
-            return null;
-        }
+        if (utc == null) return null;
         return ZonedDateTime.of(utc, ZoneOffset.UTC)
-                .withZoneSameInstant(ZoneId.of(siteSettingsTimezone.get()))
-                .format(ISO_OFFSET);
+                .withZoneSameInstant(ZoneId.of(siteSettingsTimezone.get())).format(ISO_OFFSET);
     }
 }
