@@ -14,6 +14,7 @@ import com.starrainnotes.english.reading.dto.ReadingExerciseRequest;
 import com.starrainnotes.english.reading.dto.ReadingExerciseView;
 import com.starrainnotes.english.shared.exercise.entity.EnglishExercise;
 import com.starrainnotes.english.shared.exercise.mapper.EnglishExerciseMapper;
+import com.starrainnotes.english.shared.exercise.service.EnglishExerciseSafety;
 import com.starrainnotes.english.shared.exercise.service.EnglishExerciseService;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.http.HttpStatus;
@@ -179,38 +180,8 @@ public class ReadingExerciseService {
     // ---------------------------------------------------------------
 
     private boolean isCorrect(EnglishExercise exercise, Object submitted) {
-        String kind = exerciseRules.kindOf(exercise.getQuestionType());
         JsonNode config = objectMapper.valueToTree(exercise.getConfigJson());
-        JsonNode answer = config.get("answer");
-        JsonNode answers = config.get("answers");
-        switch (kind == null ? "" : kind) {
-            case "CHOICE" -> {
-                return answer != null && answer.isTextual()
-                        && answer.asText().equals(String.valueOf(submitted));
-            }
-            case "TRUE_FALSE" -> {
-                return answer != null && answer.isBoolean()
-                        && answer.asBoolean() == Boolean.TRUE.equals(submitted);
-            }
-            case "FILL" -> {
-                return matchesFill(answer, answers, submitted);
-            }
-            case "ORDER" -> {
-                JsonNode correct = answer != null ? answer : config.get("items");
-                return correct != null && correct.equals(objectMapper.valueToTree(submitted));
-            }
-            case "MATCH" -> {
-                JsonNode correct = answer != null ? answer : config.get("pairs");
-                return correct != null && correct.equals(objectMapper.valueToTree(submitted));
-            }
-            case "STRUCTURE", "MINIMAL_PAIR" -> {
-                JsonNode correct = answer != null ? answer : expectedStructure(config);
-                return correct != null && correct.equals(objectMapper.valueToTree(submitted));
-            }
-            default -> {
-                return false;
-            }
-        }
+        return EnglishExerciseSafety.isCorrect(objectMapper, exercise.getQuestionType(), config, submitted);
     }
 
     private JsonNode expectedStructure(JsonNode config) {
@@ -247,27 +218,7 @@ public class ReadingExerciseService {
     }
 
     private Map<String, Object> sanitize(long exerciseId, String questionType, JsonNode config) {
-        ObjectNode safe = config.isObject()
-                ? (ObjectNode) sanitizeNode(config)
-                : objectMapper.createObjectNode();
-        String kind = exerciseRules.kindOf(questionType);
-        if ("ORDER".equals(kind) && safe.has("items") && safe.get("items").isArray()) {
-            safe.set("items", rotated((ArrayNode) safe.get("items"), exerciseId));
-        }
-        if ("MATCH".equals(kind) && config.has("pairs") && config.get("pairs").isArray()) {
-            ArrayNode left = objectMapper.createArrayNode();
-            ArrayNode right = objectMapper.createArrayNode();
-            for (JsonNode pair : config.get("pairs")) {
-                if (pair.isArray() && pair.size() == 2) {
-                    left.add(pair.get(0));
-                    right.add(pair.get(1));
-                }
-            }
-            safe.remove("pairs");
-            safe.set("leftItems", left);
-            safe.set("rightItems", rotated(right, exerciseId));
-        }
-        return objectMapper.convertValue(safe, new TypeReference<>() { });
+        return EnglishExerciseSafety.sanitize(objectMapper, questionType, config, exerciseId);
     }
 
     private boolean isAnswerBearing(String key) {
