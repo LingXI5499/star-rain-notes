@@ -96,14 +96,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV10AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV11AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -114,6 +114,6 @@ class V1SchemaMigrationTest {
                 "init schema", "seed system singletons", "create vocabulary", "seed vocabulary",
                 "flatten tutorial hierarchy", "enforce curriculum parents",
                 "restore authoritative tutorial taxonomy", "create english grammar",
-                "create english shared foundation", "create english reading");
+                "create english shared foundation", "create english reading", "harden english reading");
     }
 }

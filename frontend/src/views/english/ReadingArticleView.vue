@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/index.mjs'
-import { checkReadingAnswers, fetchPublicReading, fetchPublicReadingExercises, type ReadingArticle, type ReadingCheckResult, type ReadingExercisePublic } from '@/api/reading'
+import { checkReadingAnswers, fetchPublicReading, fetchPublicReadingExercises, fetchReading, type ReadingArticle, type ReadingCheckResult, type ReadingExercisePublic } from '@/api/reading'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import ArticleOutline from '@/components/ArticleOutline.vue'
 import CefrBadge from '@/components/english/CefrBadge.vue'
@@ -19,17 +19,24 @@ const notFound = ref(false)
 const result = ref<ReadingCheckResult | null>(null)
 
 const levelLabels: Record<number, string> = { 1: '基础阅读', 2: '结构阅读', 3: '深度阅读' }
-const outlineOpen = ref(false)
-const leftOpen = ref(false)
+const progress = ref(0)
+const isAdminPreview = computed(() => route.name === 'admin-reading-preview')
 
 const hasOutline = computed(() => outline.value.length > 0)
 
 async function load() {
   loading.value = true
   notFound.value = false
+  outline.value = []
+  article.value = null
   try {
-    article.value = await fetchPublicReading(String(route.params.slug))
-    exercises.value = await fetchPublicReadingExercises(String(route.params.slug))
+    if (isAdminPreview.value) {
+      article.value = await fetchReading(Number(route.params.articleId))
+      exercises.value = []
+    } else {
+      article.value = await fetchPublicReading(String(route.params.slug))
+      exercises.value = await fetchPublicReadingExercises(String(route.params.slug))
+    }
     result.value = null
   } catch {
     notFound.value = true
@@ -38,11 +45,23 @@ async function load() {
   }
 }
 
+function updateProgress() {
+  const max = document.documentElement.scrollHeight - window.innerHeight
+  progress.value = max <= 0 ? 100 : Math.min(100, Math.max(0, Math.round((window.scrollY / max) * 100)))
+}
+
 async function handleSubmit(index: number, answer: unknown) {
   if (!article.value) return
   try {
     const payload = exercises.value.map((e, i) => ({ exerciseId: e.id, answer: i === index ? answer : undefined }))
-    result.value = await checkReadingAnswers(article.value.slug, payload.filter((p) => p.answer !== undefined))
+    const latest = await checkReadingAnswers(article.value.slug, payload.filter((p) => p.answer !== undefined))
+    const previousItems = result.value?.items.filter((item) => !latest.items.some((next) => next.exerciseId === item.exerciseId)) ?? []
+    const items = [...previousItems, ...latest.items]
+    result.value = {
+      items,
+      score: items.reduce((total, item) => total + item.earned, 0),
+      total: items.reduce((total, item) => total + item.scoreValue, 0),
+    }
     ElMessage.success('已提交，查看结果与解析。')
   } catch {
     ElMessage.error('提交失败。')
@@ -53,13 +72,19 @@ function itemCorrect(id: number): boolean | undefined {
   return result.value?.items.find((i) => i.exerciseId === id)?.correct
 }
 
-onMounted(load)
+watch(() => [route.params.slug, route.params.articleId], () => { void load() })
+onMounted(() => { void load(); window.addEventListener('scroll', updateProgress, { passive: true }); updateProgress() })
+onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 </script>
 
 <template>
   <section v-if="loading" class="reading-detail__wrap"><p>加载中…</p></section>
   <section v-else-if="notFound" class="reading-detail__wrap"><p>文章不存在或未发布。</p></section>
   <section v-else-if="article" class="reading-detail">
+    <div v-if="isAdminPreview" class="reading-detail__preview-bar">
+      <span>管理端预览 · {{ article.publishStatus }}</span>
+      <RouterLink :to="{ name: 'admin-reading-edit', params: { articleId: article.id }, query: route.query }">返回编辑</RouterLink>
+    </div>
     <div class="reading-detail__layout">
       <!-- left: meta -->
       <aside class="reading-detail__left">
@@ -83,7 +108,19 @@ onMounted(load)
           <div class="reading-detail__meta"><CefrBadge :level="article.cefrLevel" /><span>{{ levelLabels[article.readingLevel] }}</span></div>
           <h1 class="reading-detail__h1">{{ article.title }}</h1>
           <p class="reading-detail__summary">{{ article.summary }}</p>
+          <img v-if="article.coverUrl" :src="article.coverUrl" :alt="article.title" class="reading-detail__cover" />
         </header>
+
+        <details class="reading-detail__mobile-panel">
+          <summary>文章信息</summary>
+          <p>{{ levelLabels[article.readingLevel] }} · {{ article.cefrLevel }} · {{ article.wordCount }} 词 · {{ article.estimatedMinutes }} 分钟</p>
+          <p>{{ article.tags.map((tag) => tag.name).join(' · ') }}</p>
+        </details>
+
+        <details v-if="hasOutline" class="reading-detail__mobile-panel reading-detail__mobile-outline">
+          <summary>页内目录</summary>
+          <ArticleOutline :items="outline" />
+        </details>
 
         <MarkdownRenderer :source="article.bodyMarkdown" @outline="outline = $event" />
 
@@ -109,6 +146,7 @@ onMounted(load)
 
       <!-- right: outline + progress -->
       <aside v-if="hasOutline" class="reading-detail__right">
+        <p class="reading-detail__progress">阅读进度 {{ progress }}%</p>
         <ArticleOutline :items="outline" />
       </aside>
     </div>
@@ -118,6 +156,7 @@ onMounted(load)
 <style scoped>
 .reading-detail__wrap { padding: var(--space-10) 0; text-align: center; color: var(--text-muted); }
 .reading-detail__layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 220px; gap: var(--layout-gap); align-items: start; }
+.reading-detail__preview-bar { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 18px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-subtle); color: var(--text-secondary); font-size: 13px; }
 .reading-detail__left, .reading-detail__right { position: sticky; top: calc(var(--header-height) + var(--space-6)); }
 .reading-detail__left dl { display: grid; gap: 8px; margin: 0; }
 .reading-detail__left dt { font-size: 12px; color: var(--text-muted); font-weight: 600; }
@@ -128,6 +167,11 @@ onMounted(load)
 .reading-detail__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .reading-detail__h1 { font-size: 34px; line-height: 1.25; margin: 0 0 12px; }
 .reading-detail__summary { font-size: 16px; color: var(--text-secondary); line-height: 1.7; }
+.reading-detail__cover { width: 100%; max-height: 420px; object-fit: cover; border-radius: 18px; margin-top: 18px; border: 1px solid var(--border); }
+.reading-detail__progress { font-size: 12px; color: var(--text-muted); margin: 0 0 12px; }
+.reading-detail__mobile-panel { display: none; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 16px; background: var(--bg-surface); }
+.reading-detail__mobile-panel summary { cursor: pointer; color: var(--primary); font-weight: 650; }
+.reading-detail__mobile-panel p { color: var(--text-secondary); font-size: 13px; }
 .reading-detail__nav { display: flex; justify-content: space-between; gap: 16px; margin: var(--space-8) 0; }
 .nav-link { color: var(--primary); font-size: 14px; flex: 1; }
 .nav-link.is-empty { color: transparent; }
@@ -138,5 +182,6 @@ onMounted(load)
 .reading-exercise__verdict.is-correct { color: var(--primary); }
 .reading-detail__score { font-size: 16px; font-weight: 700; color: var(--primary); }
 @media (max-width: 1024px) { .reading-detail__layout { grid-template-columns: 200px minmax(0, 1fr); } .reading-detail__right { display: none; } }
-@media (max-width: 720px) { .reading-detail__layout { grid-template-columns: 1fr; } .reading-detail__left { position: static; } }
+@media (max-width: 720px) { .reading-detail__layout { grid-template-columns: 1fr; } .reading-detail__left { display: none; } .reading-detail__mobile-panel { display: block; } .reading-detail__h1 { font-size: 28px; } }
+@media (prefers-reduced-motion: reduce) { .reading-detail :deep(*) { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
 </style>

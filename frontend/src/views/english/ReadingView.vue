@@ -152,4 +152,13 @@ onMounted(async () => {
 .article-card__tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 10px; }
 .article-card__tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--bg-subtle); border: 1px solid var(--border); color: var(--text-secondary); }
 .article-card__cta { font-size: 13px; color: var(--primary); }
+@media (max-width: 720px) {
+  .reading-center__hero { align-items: flex-start; flex-direction: column; gap: 16px; }
+  .reading-center__hero h1 { font-size: 28px; }
+  .reading-center__hero-stat { align-items: center; display: flex; gap: 10px; padding: 9px 14px; text-align: left; }
+  .reading-center__hero-stat b { font-size: 22px; }
+  .reading-center__filters :deep(.el-input), .reading-center__filters :deep(.el-select) { width: 100% !important; }
+  .reading-center__grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .article-card, .route-pill { transition: none; } .article-card:hover { transform: none; } }
 </style>

@@ -43,7 +43,7 @@ const englishItems = [
   { to: '/admin/english/grammar', label: '语法教程', badge: '' },
   { to: '/admin/english/taxonomy', label: '标签管理', badge: '' },
   { to: '/admin/english/bundles', label: '学习组合', badge: '' },
-  { to: '', label: '阅读', badge: '待开发' },
+  { to: '/admin/english/reading', label: '阅读管理', badge: '' },
   { to: '', label: '写作', badge: '待开发' },
   { to: '', label: '听力', badge: '待开发' },
 ]
@@ -121,7 +121,7 @@ async function changePassword() {
                 v-if="item.to"
                 :to="item.to"
                 class="admin-shell__subnav-item"
-                :class="{ 'is-active': $route.path === item.to || (item.to.endsWith('/grammar') && $route.path.startsWith(`${item.to}/`)) }"
+                :class="{ 'is-active': $route.path === item.to || (item.to !== '/admin/english' && $route.path.startsWith(`${item.to}/`)) }"
               >{{ item.label }}</RouterLink>
               <span v-else class="admin-shell__subnav-item is-disabled">{{ item.label }}<em>{{ item.badge }}</em></span>
             </template>
@@ -152,9 +152,15 @@ async function changePassword() {
 
     <div class="admin-shell__body">
       <header class="admin-shell__header">
-        <div class="admin-shell__header-title">星雨笔录 · 管理控制台</div>
+        <div class="admin-shell__header-title">
+          <span class="admin-shell__header-title-long">星雨笔录 · 管理控制台</span>
+          <span class="admin-shell__header-title-short">管理台</span>
+        </div>
         <div class="admin-shell__header-actions">
-          <RouterLink to="/" class="admin-shell__header-action" title="查看站点">查看站点</RouterLink>
+          <RouterLink to="/" class="admin-shell__header-action" title="查看站点">
+            <span class="admin-shell__header-action-long">查看站点</span>
+            <span class="admin-shell__header-action-short">站点</span>
+          </RouterLink>
           <button class="admin-shell__header-action" type="button" title="切换主题" @click="toggleTheme">
             主题
           </button>
@@ -312,6 +318,7 @@ async function changePassword() {
   font-weight: 600;
   color: var(--text-primary);
 }
+.admin-shell__header-title-short, .admin-shell__header-action-short { display: none; }
 
 .admin-shell__header-actions {
   display: flex;
@@ -327,6 +334,10 @@ async function changePassword() {
   cursor: pointer;
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius-sm);
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .admin-shell__header-action:hover {
@@ -337,5 +348,21 @@ async function changePassword() {
 .admin-shell__content {
   flex: 1;
   padding: var(--space-8);
+}
+@media (max-width: 720px) {
+  .admin-shell__sidebar { width: 62px; }
+  .admin-shell__brand { padding: 18px 10px; overflow: hidden; text-align: center; }
+  .admin-shell__brand-link { display: block; width: 22px; overflow: hidden; margin: 0 auto; }
+  .admin-shell__nav { padding: 12px 7px; }
+  .admin-shell__nav-item { justify-content: center; padding: 10px 7px; }
+  .admin-shell__nav-label, .admin-shell__nav-chevron, .admin-shell__subnav { display: none; }
+  .admin-shell__collapse { display: none; }
+  .admin-shell__header { padding-inline: 14px; }
+  .admin-shell__header-title { font-size: 13px; }
+  .admin-shell__header-title-long, .admin-shell__header-action-long { display: none; }
+  .admin-shell__header-title-short, .admin-shell__header-action-short { display: inline; }
+  .admin-shell__header-actions { gap: 2px; }
+  .admin-shell__header-action { max-width: 92px; padding: 7px 5px; font-size: 12px; }
+  .admin-shell__content { padding: 18px 14px; }
 }
 </style>

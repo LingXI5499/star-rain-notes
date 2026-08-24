@@ -302,11 +302,16 @@ const router = createRouter({
           name: 'admin-reading-new',
           component: () => import('@/views/admin/ReadingArticleEditView.vue'),
         },
-        {
-          path: 'english/reading/articles/:articleId/edit',
-          name: 'admin-reading-edit',
-          component: () => import('@/views/admin/ReadingArticleEditView.vue'),
-        },
+          {
+            path: 'english/reading/articles/:articleId/edit',
+            name: 'admin-reading-edit',
+            component: () => import('@/views/admin/ReadingArticleEditView.vue'),
+          },
+          {
+            path: 'english/reading/articles/:articleId/preview',
+            name: 'admin-reading-preview',
+            component: () => import('@/views/english/ReadingArticleView.vue'),
+          },
         {
           path: 'english/reading/articles/:articleId/exercises',
           name: 'admin-reading-exercises',

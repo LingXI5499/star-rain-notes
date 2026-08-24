@@ -23,6 +23,14 @@ const loading = ref(true)
 const dialogOpen = ref(false)
 const saving = ref(false)
 const editingId = ref<number | null>(null)
+const draggingIndex = ref<number | null>(null)
+
+const questionTypes = [
+  ['SINGLE_CHOICE', '单项选择'], ['TRUE_FALSE', '正误判断'], ['SENTENCE_MATCH', '句子匹配'],
+  ['PARAGRAPH_MATCH', '段落匹配'], ['ORDERING', '排序'], ['REFERENCE', '指代判断'],
+  ['CAUSE_EFFECT', '因果判断'], ['MAIN_IDEA', '主旨选择'], ['INFERENCE', '隐含推断'],
+  ['STRUCTURE_FILL', '结构图填充'],
+] as const
 
 const form = reactive({
   questionType: 'SINGLE_CHOICE',
@@ -106,10 +114,28 @@ async function remove(exercise: ReadingExercise) {
 
 async function moveUp(index: number) {
   if (index <= 0) return
-  const target = exercises.value[index - 1]
   await moveReadingExercise(articleId, exercises.value[index].id, index - 1)
   void load()
-  void target
+}
+
+function defaultConfig(type: string): string {
+  if (type === 'TRUE_FALSE') return '{"answer":true}'
+  if (['SENTENCE_MATCH', 'PARAGRAPH_MATCH'].includes(type)) return '{"pairs":[["左侧内容","右侧内容"]]}'
+  if (type === 'ORDERING') return '{"items":["第一项","第二项"]}'
+  if (type === 'STRUCTURE_FILL') return '{"structure":[{"label":"节点名称","answer":"标准答案"}]}'
+  return '{"options":[{"key":"a","text":""},{"key":"b","text":""}],"answer":"a"}'
+}
+
+function onQuestionTypeChange(type: string) {
+  form.configJson = defaultConfig(type)
+}
+
+async function dropAt(targetIndex: number) {
+  const from = draggingIndex.value
+  draggingIndex.value = null
+  if (from === null || from === targetIndex) return
+  await moveReadingExercise(articleId, exercises.value[from].id, targetIndex)
+  await load()
 }
 
 async function moveDown(index: number) {
@@ -129,14 +155,14 @@ onMounted(load)
         <h1>{{ title || '文章练习' }}</h1>
       </div>
       <div>
-        <el-button @click="router.push({ name: 'admin-reading' })">返回列表</el-button>
+        <el-button @click="router.push({ name: 'admin-reading', query: route.query })">返回列表</el-button>
         <el-button type="primary" @click="openCreate">新建练习</el-button>
       </div>
     </header>
 
     <div v-loading="loading" class="reading-exercise-manage__list">
       <p v-if="!loading && !exercises.length" class="reading-exercise-manage__empty">暂无练习，点击右上角新建。</p>
-      <article v-for="(exercise, index) in exercises" :key="exercise.id" class="exercise-card">
+      <article v-for="(exercise, index) in exercises" :key="exercise.id" class="exercise-card" draggable="true" @dragstart="draggingIndex = index" @dragover.prevent @drop="dropAt(index)">
         <div class="exercise-card__head">
           <span class="exercise-card__type">{{ exercise.questionType }}</span>
           <span class="exercise-card__status">{{ exercise.publishStatus }}</span>
@@ -159,8 +185,8 @@ onMounted(load)
     <el-dialog v-model="dialogOpen" :title="editingId ? '编辑练习' : '新建练习'" width="640px">
       <el-form label-position="top">
         <el-form-item label="题型">
-          <el-select v-model="form.questionType" style="width:100%">
-            <el-option v-for="t in ['SINGLE_CHOICE','TRUE_FALSE','SENTENCE_MATCH','PARAGRAPH_MATCH','ORDERING','REFERENCE','CAUSE_EFFECT','MAIN_IDEA','INFERENCE','STRUCTURE_FILL']" :key="t" :label="t" :value="t" />
+          <el-select v-model="form.questionType" style="width:100%" @change="onQuestionTypeChange">
+            <el-option v-for="t in questionTypes" :key="t[0]" :label="`${t[1]} · ${t[0]}`" :value="t[0]" />
           </el-select>
         </el-form-item>
         <el-form-item label="题干"><el-input v-model="form.promptMarkdown" type="textarea" :rows="2" /></el-form-item>
@@ -189,7 +215,7 @@ onMounted(load)
 .reading-exercise-manage__bar h1 { font-size: 26px; margin: 6px 0; }
 .reading-exercise-manage__list { display: flex; flex-direction: column; gap: var(--space-3); }
 .reading-exercise-manage__empty { color: var(--text-muted); padding: var(--space-6) 0; }
-.exercise-card { padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-surface); }
+.exercise-card { padding: 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-surface); cursor: grab; }
 .exercise-card__head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .exercise-card__type { font-weight: 700; color: var(--primary); font-size: 13px; }
 .exercise-card__status { font-size: 11px; color: var(--text-muted); }
@@ -199,4 +225,10 @@ onMounted(load)
 .exercise-card__config pre { font-size: 11px; background: var(--bg-subtle); padding: 8px; border-radius: 8px; overflow: auto; margin: 0; }
 .exercise-card__explain { font-size: 12px; color: var(--text-secondary); margin: 0 0 8px; }
 .exercise-card__actions { display: flex; gap: 4px; }
+@media (max-width: 720px) {
+  .reading-exercise-manage { padding: 18px 12px; }
+  .reading-exercise-manage__bar { align-items: flex-start; flex-direction: column; gap: 12px; }
+  .exercise-card__head { align-items: flex-start; flex-wrap: wrap; }
+}
+@media (prefers-reduced-motion: reduce) { .exercise-card { transition: none; } }
 </style>

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus/es/components/index.mjs'
 import type { ProblemDetail } from '@/api/http'
 import { deleteReading, fetchReadings, publishReading, withdrawReading, type ReadingArticleSummary, type ReadingPage } from '@/api/reading'
@@ -8,6 +8,7 @@ import { fetchTaxonomy, type TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 
 const router = useRouter()
+const route = useRoute()
 const page = ref<ReadingPage | null>(null)
 const loading = ref(true)
 const taxonomy = ref<TaxonomyTerm[]>([])
@@ -49,7 +50,33 @@ async function load() {
   }
 }
 
-function search() { filters.page = 1; void load() }
+function syncFromRoute() {
+  filters.page = Math.max(1, Number(route.query.page ?? 1))
+  filters.pageSize = Number(route.query.pageSize ?? 20) === 50 ? 50 : 20
+  filters.q = String(route.query.q ?? '')
+  filters.status = String(route.query.status ?? '')
+  filters.level = String(route.query.level ?? '')
+  filters.cefr = String(route.query.cefr ?? '')
+  filters.topic = String(route.query.topic ?? '')
+  filters.genre = String(route.query.genre ?? '')
+}
+
+function writeFilters(page = 1) {
+  void router.push({
+    query: {
+      page: page > 1 ? String(page) : undefined,
+      pageSize: filters.pageSize !== 20 ? String(filters.pageSize) : undefined,
+      q: filters.q || undefined,
+      status: filters.status || undefined,
+      level: filters.level || undefined,
+      cefr: filters.cefr || undefined,
+      topic: filters.topic || undefined,
+      genre: filters.genre || undefined,
+    },
+  })
+}
+
+function search() { filters.page = 1; writeFilters(1) }
 
 const topics = () => taxonomy.value.filter((t) => t.dimension === 'TOPIC' && t.parentId === null)
 const genres = () => taxonomy.value.filter((t) => t.dimension === 'GENRE' && t.parentId === null)
@@ -82,10 +109,23 @@ async function remove(article: ReadingArticleSummary) {
 }
 
 function duplicate(article: ReadingArticleSummary) {
-  router.push({ name: 'admin-reading-new', query: { clone: article.id } })
+  router.push({ name: 'admin-reading-new', query: { ...route.query, clone: article.id } })
+}
+
+function openEditor(articleId?: number) {
+  router.push({
+    name: articleId ? 'admin-reading-edit' : 'admin-reading-new',
+    params: articleId ? { articleId } : undefined,
+    query: { ...route.query },
+  })
+}
+
+function preview(article: ReadingArticleSummary) {
+  router.push({ name: 'admin-reading-preview', params: { articleId: article.id }, query: { ...route.query } })
 }
 
 onMounted(async () => {
+  syncFromRoute()
   try {
     taxonomy.value = await fetchTaxonomy('tree')
   } catch {
@@ -93,6 +133,8 @@ onMounted(async () => {
   }
   await load()
 })
+
+watch(() => route.query, () => { syncFromRoute(); void load() })
 </script>
 
 <template>
@@ -103,7 +145,7 @@ onMounted(async () => {
         <h1>阅读管理</h1>
         <span>能力×主题×文体×CEFR 四维组织文章，后端精确统计并约束发布。</span>
       </div>
-      <el-button type="primary" @click="router.push({ name: 'admin-reading-new' })">新建文章</el-button>
+      <el-button type="primary" @click="openEditor()">新建文章</el-button>
     </header>
 
     <div v-if="page?.stats" class="reading-manage__stats">
@@ -158,11 +200,11 @@ onMounted(async () => {
           </div>
           <p class="reading-card__metrics">{{ article.wordCount }} 词 · {{ article.estimatedMinutes }} 分钟 · {{ article.hasExercises ? '有练习' : '缺少练习' }}</p>
           <div class="reading-card__actions">
-            <el-button link type="primary" @click="router.push({ name: 'admin-reading-edit', params: { articleId: article.id } })">编辑</el-button>
-            <el-button link type="info" @click="router.push({ name: 'admin-reading', params: { slug: article.slug }, query: { preview: '1' } })">预览</el-button>
+            <el-button link type="primary" @click="openEditor(article.id)">编辑</el-button>
+            <el-button link type="info" @click="preview(article)">预览</el-button>
             <el-button v-if="article.publishStatus !== 'PUBLISHED'" link type="success" @click="setPublished(article, true)">发布</el-button>
             <el-button v-else link type="warning" @click="setPublished(article, false)">撤回</el-button>
-            <el-button link @click="router.push({ name: 'admin-reading-exercises', params: { articleId: article.id } })">练习</el-button>
+            <el-button link @click="router.push({ name: 'admin-reading-exercises', params: { articleId: article.id }, query: { ...route.query } })">练习</el-button>
             <el-button link @click="duplicate(article)">复制</el-button>
             <el-button link type="danger" @click="remove(article)">删除</el-button>
           </div>
@@ -178,7 +220,7 @@ onMounted(async () => {
       :page-sizes="[20, 50]"
       layout="total, sizes, prev, pager, next"
       style="margin-top: var(--space-6)"
-      @change="load"
+      @change="writeFilters(filters.page)"
     />
   </section>
 </template>
@@ -213,4 +255,13 @@ onMounted(async () => {
 .reading-card__tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--bg-subtle); border: 1px solid var(--border); color: var(--text-secondary); }
 .reading-card__metrics { font-size: 12px; color: var(--text-muted); margin: 0 0 8px; }
 .reading-card__actions { display: flex; flex-wrap: wrap; gap: 2px; }
+@media (max-width: 720px) {
+  .reading-manage__hero { align-items: flex-start; gap: 12px; }
+  .reading-manage__hero span { display: none; }
+  .reading-manage__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .reading-manage__filters > * { width: 100% !important; }
+  .reading-manage__grid { grid-template-columns: minmax(0, 1fr); }
+  .reading-card { flex-direction: column; }
+  .reading-card__cover { width: 100%; height: 120px; }
+}
 </style>

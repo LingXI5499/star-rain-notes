@@ -13,7 +13,9 @@ export interface ExerciseConfig {
   answers?: string[]
   items?: string[]
   pairs?: [string, string][]
-  structure?: { label: string; answer: string }[]
+  leftItems?: unknown[]
+  rightItems?: unknown[]
+  structure?: { label: string; answer?: string }[]
   pair?: [string, string]
   word?: string
 }
@@ -30,6 +32,6 @@ export interface Exercise {
   publishStatus: PublishStatus
 }
 
-export function isChoiceConfig(config: ExerciseConfig): config is ExerciseConfig & { options: { key: string; text: string }[]; answer: string } {
-  return Array.isArray(config.options) && config.options.length > 0 && typeof config.answer === 'string'
+export function isChoiceConfig(config: ExerciseConfig): config is ExerciseConfig & { options: { key: string; text: string }[] } {
+  return Array.isArray(config.options) && config.options.length > 0
 }

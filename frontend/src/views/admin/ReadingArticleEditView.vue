@@ -5,6 +5,8 @@ import { ElMessage } from 'element-plus/es/components/index.mjs'
 import type { ProblemDetail } from '@/api/http'
 import { createReading, fetchReading, updateReading, type ReadingArticle } from '@/api/reading'
 import { fetchTaxonomy, type TaxonomyTerm } from '@/api/englishMeta'
+import { fetchGrammarCurriculum, type GrammarLessonSummary } from '@/api/grammar'
+import type { MediaAsset } from '@/api/media'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import MediaPicker from '@/components/MediaPicker.vue'
 import SemanticTagPicker from '@/components/english/SemanticTagPicker.vue'
@@ -21,6 +23,8 @@ const loading = ref(true)
 const saving = ref(false)
 const mediaOpen = ref(false)
 const checkOpen = ref(false)
+const coverUrl = ref<string | null>(null)
+const grammarLessons = ref<GrammarLessonSummary[]>([])
 
 const form = reactive({
   title: '',
@@ -58,9 +62,11 @@ const abilities = () => taxonomy.value.filter((t) => t.dimension === 'ABILITY' &
 async function load() {
   loading.value = true
   try {
-    taxonomy.value = await fetchTaxonomy('tree')
-    if (articleId.value) {
-      const article: ReadingArticle = cloneFrom ? { ...(await fetchReading(cloneFrom)), id: articleId.value } : await fetchReading(articleId.value)
+    const [terms, curriculum] = await Promise.all([fetchTaxonomy('tree'), fetchGrammarCurriculum()])
+    taxonomy.value = terms
+    grammarLessons.value = curriculum.sections.flatMap((section) => section.lessons)
+    if (articleId.value || cloneFrom) {
+      const article: ReadingArticle = await fetchReading(cloneFrom || articleId.value)
       if (cloneFrom) {
         // clone: keep source fields, new slug hint
         Object.assign(form, {
@@ -73,6 +79,7 @@ async function load() {
           grammarLessonIds: article.grammarLessons.map(g=>g.id),
         })
         form.slug = `${article.slug}-copy`
+        coverUrl.value = article.coverUrl
       } else {
         Object.assign(form, {
           title: article.title, slug: article.slug, summary: article.summary, bodyMarkdown: article.bodyMarkdown,
@@ -83,6 +90,7 @@ async function load() {
           abilityTagIds: article.tags.filter(t=>t.dimension==='ABILITY').map(t=>t.id),
           grammarLessonIds: article.grammarLessons.map(g=>g.id),
         })
+        coverUrl.value = article.coverUrl
       }
     }
   } catch {
@@ -115,7 +123,7 @@ async function save() {
       router.replace({ name: 'admin-reading-edit', params: { articleId: created.id } })
       ElMessage.success('已创建。')
     }
-    await router.push({ name: 'admin-reading' })
+    await router.push({ name: 'admin-reading', query: listQuery() })
   } catch (error) {
     ElMessage.error((error as { response?: { data?: ProblemDetail } }).response?.data?.detail ?? '保存失败。')
   } finally {
@@ -123,8 +131,22 @@ async function save() {
   }
 }
 
-function onCoverSelect(asset: { id: number }) {
+function listQuery() {
+  const { clone: _clone, ...query } = route.query
+  return query
+}
+
+function cancel() {
+  void router.push({ name: 'admin-reading', query: listQuery() })
+}
+
+function onCoverSelect(asset: MediaAsset) {
+  if (asset.assetType !== 'IMAGE') {
+    ElMessage.warning('阅读封面只能选择图片。')
+    return
+  }
   form.coverMediaId = asset.id
+  coverUrl.value = asset.publicUrl
   mediaOpen.value = false
 }
 
@@ -141,7 +163,7 @@ onMounted(load)
       </div>
       <div class="reading-edit__actions">
         <el-button @click="checkOpen = true">发布检查</el-button>
-        <el-button @click="router.push({ name: 'admin-reading' })">取消</el-button>
+        <el-button @click="cancel">取消</el-button>
         <el-button type="primary" :loading="saving" @click="save">保存</el-button>
       </div>
     </header>
@@ -160,9 +182,10 @@ onMounted(load)
       <aside class="reading-edit__side">
         <div class="reading-edit__field"><label>封面</label>
           <div class="reading-edit__cover">
-            <img v-if="form.coverMediaId && form.coverMediaId" :src="`/uploads/${form.coverMediaId}`" alt="" />
+            <img v-if="coverUrl" :src="coverUrl" alt="当前封面" />
             <span v-else>无封面</span>
             <el-button size="small" @click="mediaOpen = true">选择封面</el-button>
+            <el-button v-if="form.coverMediaId" size="small" link @click="form.coverMediaId = null; coverUrl = null">移除封面</el-button>
           </div>
         </div>
         <div class="reading-edit__field"><label>能力层级</label>
@@ -178,6 +201,11 @@ onMounted(load)
         <div class="reading-edit__field"><label>来源名称</label><el-input v-model="form.sourceName" /></div>
         <div class="reading-edit__field"><label>来源 URL</label><el-input v-model="form.sourceUrl" /></div>
         <div class="reading-edit__field"><label>版权说明</label><el-input v-model="form.copyrightNote" /></div>
+        <div class="reading-edit__field"><label>相关语法课节</label>
+          <el-select v-model="form.grammarLessonIds" multiple filterable collapse-tags style="width:100%" placeholder="选择相关语法">
+            <el-option v-for="lesson in grammarLessons" :key="lesson.id" :label="lesson.title" :value="lesson.id" />
+          </el-select>
+        </div>
         <div class="reading-edit__field"><label>排序</label><el-input-number v-model="form.sortOrder" :min="1" :step="10" /></div>
       </aside>
     </div>
@@ -213,4 +241,5 @@ onMounted(load)
 .reading-edit__tags { margin-top: 24px; }
 .reading-edit__tags h2 { font-size: 15px; margin: 16px 0 8px; }
 @media (max-width: 860px) { .reading-edit__layout { grid-template-columns: 1fr; } .reading-edit__side { border-left: none; padding-left: 0; } }
+@media (max-width: 720px) { .reading-edit__bar { align-items: flex-start; flex-direction: column; gap: 10px; } .reading-edit__title { flex-wrap: wrap; } .reading-edit__title span { width: 100%; } .reading-edit__actions { width: 100%; flex-wrap: wrap; } }
 </style>

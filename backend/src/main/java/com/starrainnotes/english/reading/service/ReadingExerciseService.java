@@ -3,6 +3,8 @@ package com.starrainnotes.english.reading.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.reading.dto.ReadingCheckAnswerRequest;
 import com.starrainnotes.english.reading.dto.ReadingCheckItemView;
@@ -14,7 +16,6 @@ import com.starrainnotes.english.shared.exercise.entity.EnglishExercise;
 import com.starrainnotes.english.shared.exercise.mapper.EnglishExerciseMapper;
 import com.starrainnotes.english.shared.exercise.service.EnglishExerciseService;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -22,10 +23,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Set;
 
 /**
  * Reading exercises bound to a single article (方案 §6.3, §六, §9.3).
@@ -115,7 +116,7 @@ public class ReadingExerciseService {
                 WHERE ae.article_id=? ORDER BY e.sort_order, e.id
                 """, Long.class, articleId));
         ids.remove(exerciseId);
-        ids.add(Math.min(targetIndex, ids.size()), exerciseId);
+        ids.add(Math.min(Math.max(targetIndex, 0), ids.size()), exerciseId);
         if (ids.isEmpty()) return;
         jdbc.update("UPDATE english_exercise SET sort_order=100000 WHERE id IN ("
                 + joinIds(ids) + ")");
@@ -155,19 +156,14 @@ public class ReadingExerciseService {
     public ReadingCheckResultView check(Long articleId, ReadingCheckAnswerRequest request) {
         requirePublished(articleId);
         List<ReadingCheckItemView> items = new ArrayList<>();
+        Set<Long> submittedIds = new LinkedHashSet<>();
         int total = 0;
         int score = 0;
         for (ReadingCheckAnswerRequest.Submission submission : request.answers()) {
-            EnglishExercise exercise = requireExercise(submission.exerciseId());
-            Long boundArticle = jdbc.queryForObject(
-                    "SELECT article_id FROM english_reading_article_exercise WHERE exercise_id=?",
-                    Long.class, submission.exerciseId());
-            if (!Objects.equals(boundArticle, articleId) || !"PUBLISHED".equals(exercise.getPublishStatus())) {
-                items.add(new ReadingCheckItemView(submission.exerciseId(), false, 0,
-                        exercise.getScoreValue(), exercise.getExplanationMarkdown()));
-                total += exercise.getScoreValue();
-                continue;
+            if (!submittedIds.add(submission.exerciseId())) {
+                throw invalidAnswer("The same exercise cannot be submitted more than once.");
             }
+            EnglishExercise exercise = requirePublishedBinding(articleId, submission.exerciseId());
             boolean correct = isCorrect(exercise, submission.answer());
             int earned = correct ? exercise.getScoreValue() : 0;
             total += exercise.getScoreValue();
@@ -208,13 +204,25 @@ public class ReadingExerciseService {
                 return correct != null && correct.equals(objectMapper.valueToTree(submitted));
             }
             case "STRUCTURE", "MINIMAL_PAIR" -> {
-                JsonNode correct = answer != null ? answer : config.get("pair");
+                JsonNode correct = answer != null ? answer : expectedStructure(config);
                 return correct != null && correct.equals(objectMapper.valueToTree(submitted));
             }
             default -> {
                 return false;
             }
         }
+    }
+
+    private JsonNode expectedStructure(JsonNode config) {
+        JsonNode structure = config.get("structure");
+        if (structure == null || !structure.isArray()) return config.get("pair");
+        ObjectNode expected = objectMapper.createObjectNode();
+        for (JsonNode item : structure) {
+            if (item.hasNonNull("label") && item.has("answer")) {
+                expected.set(item.get("label").asText(), item.get("answer"));
+            }
+        }
+        return expected;
     }
 
     private boolean matchesFill(JsonNode answer, JsonNode answers, Object submitted) {
@@ -229,14 +237,6 @@ public class ReadingExerciseService {
         return false;
     }
 
-    private String submittedAsJson(Object submitted) {
-        try {
-            return objectMapper.writeValueAsString(submitted);
-        } catch (Exception ex) {
-            return "null";
-        }
-    }
-
     private Map<String, Object> parseConfig(String json) {
         try {
             return objectMapper.readValue(json, new TypeReference<>() { });
@@ -246,25 +246,74 @@ public class ReadingExerciseService {
         }
     }
 
-    private Map<String, Object> sanitize(JsonNode config) {
-        Map<String, Object> result = new LinkedHashMap<>();
-        config.fields().forEachRemaining(entry -> {
-            String key = entry.getKey();
-            if (isAnswerBearing(key)) return;
-            result.put(key, objectMapper.convertValue(entry.getValue(), Object.class));
-        });
-        return result;
+    private Map<String, Object> sanitize(long exerciseId, String questionType, JsonNode config) {
+        ObjectNode safe = config.isObject()
+                ? (ObjectNode) sanitizeNode(config)
+                : objectMapper.createObjectNode();
+        String kind = exerciseRules.kindOf(questionType);
+        if ("ORDER".equals(kind) && safe.has("items") && safe.get("items").isArray()) {
+            safe.set("items", rotated((ArrayNode) safe.get("items"), exerciseId));
+        }
+        if ("MATCH".equals(kind) && config.has("pairs") && config.get("pairs").isArray()) {
+            ArrayNode left = objectMapper.createArrayNode();
+            ArrayNode right = objectMapper.createArrayNode();
+            for (JsonNode pair : config.get("pairs")) {
+                if (pair.isArray() && pair.size() == 2) {
+                    left.add(pair.get(0));
+                    right.add(pair.get(1));
+                }
+            }
+            safe.remove("pairs");
+            safe.set("leftItems", left);
+            safe.set("rightItems", rotated(right, exerciseId));
+        }
+        return objectMapper.convertValue(safe, new TypeReference<>() { });
     }
 
     private boolean isAnswerBearing(String key) {
-        return key.equals("answer") || key.equals("answers") || key.equals("correctIndexes")
-                || key.equals("correctOrder") || key.equals("standardOrder") || key.equals("answerKeys");
+        String normalized = key.toLowerCase();
+        return normalized.equals("answer") || normalized.equals("answers") || normalized.equals("correct")
+                || normalized.equals("iscorrect") || normalized.equals("correctindexes")
+                || normalized.equals("correctorder") || normalized.equals("standardorder")
+                || normalized.equals("answerkeys") || normalized.equals("solution");
+    }
+
+    private JsonNode sanitizeNode(JsonNode node) {
+        if (node.isObject()) {
+            ObjectNode result = objectMapper.createObjectNode();
+            node.fields().forEachRemaining(entry -> {
+                if (!isAnswerBearing(entry.getKey())) {
+                    result.set(entry.getKey(), sanitizeNode(entry.getValue()));
+                }
+            });
+            return result;
+        }
+        if (node.isArray()) {
+            ArrayNode result = objectMapper.createArrayNode();
+            node.forEach(item -> result.add(sanitizeNode(item)));
+            return result;
+        }
+        return node.deepCopy();
+    }
+
+    private ArrayNode rotated(ArrayNode source, long seed) {
+        ArrayNode result = source.deepCopy();
+        int size = result.size();
+        if (size <= 1) return result;
+        int shift = (int) (Math.floorMod(seed, size - 1) + 1);
+        List<JsonNode> values = new ArrayList<>();
+        result.forEach(values::add);
+        result.removeAll();
+        for (int i = 0; i < size; i++) result.add(values.get((i + shift) % size));
+        return result;
     }
 
     private ReadingExercisePublicView toPublic(java.sql.ResultSet rs) throws java.sql.SQLException {
         JsonNode config = readConfig(rs.getString("config_json"));
-        return new ReadingExercisePublicView(rs.getLong("id"), rs.getString("question_type"),
-                rs.getString("prompt_markdown"), sanitize(config), rs.getInt("score_value"),
+        long id = rs.getLong("id");
+        String questionType = rs.getString("question_type");
+        return new ReadingExercisePublicView(id, questionType,
+                rs.getString("prompt_markdown"), sanitize(id, questionType, config), rs.getInt("score_value"),
                 rs.getInt("sort_order"));
     }
 
@@ -323,6 +372,24 @@ public class ReadingExerciseService {
                     "Exercise not found", "The exercise does not exist.");
         }
         return exercise;
+    }
+
+    private EnglishExercise requirePublishedBinding(Long articleId, Long exerciseId) {
+        List<Long> ids = jdbc.queryForList("""
+                SELECT e.id FROM english_reading_article_exercise ae
+                JOIN english_exercise e ON e.id=ae.exercise_id
+                WHERE ae.article_id=? AND e.id=? AND e.module_type='READING'
+                  AND e.publish_status='PUBLISHED'
+                """, Long.class, articleId, exerciseId);
+        if (ids.isEmpty()) {
+            throw invalidAnswer("The submitted exercise is not a published exercise of this article.");
+        }
+        return requireExercise(ids.get(0));
+    }
+
+    private ApiException invalidAnswer(String detail) {
+        return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_READING_ANSWER_INVALID",
+                "Invalid reading answer", detail);
     }
 
     private void requireArticle(Long articleId) {

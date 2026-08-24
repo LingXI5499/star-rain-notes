@@ -233,7 +233,11 @@ public class ReadingArticleService {
                     "Published article cannot be deleted",
                     "Withdraw the article before deleting it.");
         }
+        List<Long> exerciseIds = jdbc.queryForList(
+                "SELECT exercise_id FROM english_reading_article_exercise WHERE article_id=?",
+                Long.class, id);
         mapper.deleteById(id);
+        exerciseIds.forEach(exerciseId -> jdbc.update("DELETE FROM english_exercise WHERE id=?", exerciseId));
     }
 
     // ---------------------------------------------------------------
@@ -319,7 +323,8 @@ public class ReadingArticleService {
     }
 
     private List<Long> nonNull(List<Long> ids) {
-        return ids == null ? List.of() : ids;
+        if (ids == null) return List.of();
+        return ids.stream().filter(java.util.Objects::nonNull).distinct().toList();
     }
 
     private void requireGrammarLesson(Long lessonId) {

@@ -225,6 +225,37 @@ class ReadingIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
+    void complexExerciseConfigsDoNotLeakAnswersAndDuplicateSubmissionsAreRejected() throws Exception {
+        Auth auth = login();
+        long articleId = createArticle(auth, "test-complex-ex", "A structured reading text.", 2, "B1");
+        long ordering = createExercise(auth, articleId, "ORDERING",
+                "{\"items\":[\"first\",\"second\",\"third\"]}");
+        createExercise(auth, articleId, "SENTENCE_MATCH",
+                "{\"pairs\":[[\"left-a\",\"right-a\"],[\"left-b\",\"right-b\"]]}");
+        createExercise(auth, articleId, "STRUCTURE_FILL",
+                "{\"structure\":[{\"label\":\"cause\",\"answer\":\"rain\"}]}");
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/reading/articles/" + articleId + "/publish")
+                .session(auth.session()), auth.csrf())).andExpect(status().isOk());
+
+        JsonNode publicJson = objectMapper.readTree(mockMvc.perform(
+                        get("/api/v1/public/english/reading/articles/test-complex-ex/exercises"))
+                .andExpect(status().isOk()).andReturn().getResponse().getContentAsString());
+        assertThat(publicJson.toString()).doesNotContain("answer", "pairs");
+        assertThat(publicJson.get(0).get("config").get("items").toString())
+                .isNotEqualTo("[\"first\",\"second\",\"third\"]");
+        assertThat(publicJson.get(1).get("config").has("leftItems")).isTrue();
+        assertThat(publicJson.get(1).get("config").has("rightItems")).isTrue();
+
+        mockMvc.perform(withCsrf(post("/api/v1/public/english/reading/articles/test-complex-ex/check")
+                        .contentType("application/json")
+                        .content("{\"answers\":[{\"exerciseId\":" + ordering
+                                + ",\"answer\":[\"first\",\"second\",\"third\"]},{\"exerciseId\":"
+                                + ordering + ",\"answer\":[\"first\",\"second\",\"third\"]}]}"), auth.csrf()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code").value("ENGLISH_READING_ANSWER_INVALID"));
+    }
+
+    @Test
     void searchReturnsReadingTypeAndCount() throws Exception {
         Auth auth = login();
         long id = createArticle(auth, "test-search", "The moon is full and bright." , 1, "B1");
@@ -275,12 +306,17 @@ class ReadingIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     private long createExercise(Auth auth, long articleId, String configJson) throws Exception {
+        return createExercise(auth, articleId, "SINGLE_CHOICE", configJson);
+    }
+
+    private long createExercise(Auth auth, long articleId, String questionType, String configJson) throws Exception {
+        String payload = "{\"questionType\":\"" + questionType + "\",\"promptMarkdown\":\"prompt\","
+                + "\"configJson\":" + objectMapper.writeValueAsString(configJson)
+                + ",\"scoreValue\":1,\"publishStatus\":\"PUBLISHED\"}";
         MvcResult result = mockMvc.perform(withCsrf(post("/api/v1/admin/english/reading/articles/"
                         + articleId + "/exercises").session(auth.session())
                         .contentType("application/json")
-                        .content("{\"questionType\":\"SINGLE_CHOICE\",\"promptMarkdown\":\"prompt\","
-                                + "\"configJson\":" + objectMapper.writeValueAsString(configJson)
-                                + ",\"scoreValue\":1,\"publishStatus\":\"PUBLISHED\"}"), auth.csrf()))
+                        .content(payload), auth.csrf()))
                 .andExpect(status().isCreated()).andReturn();
         return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
     }
@@ -290,10 +326,6 @@ class ReadingIntegrationTest extends AbstractAuthIntegrationTest {
                 + "\"bodyMarkdown\":\"" + body + "\",\"readingLevel\":" + level
                 + ",\"cefrLevel\":\"" + cefr + "\",\"topicTagIds\":[1],\"genreTagIds\":[36],"
                 + "\"abilityTagIds\":[24]}";
-    }
-
-    private String json(String configJson) {
-        return configJson;
     }
 
     private record Auth(MockHttpSession session, String csrf) { }
