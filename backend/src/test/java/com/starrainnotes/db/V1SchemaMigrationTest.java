@@ -47,6 +47,11 @@ class V1SchemaMigrationTest {
             "vocabulary_word_family",
             "vocabulary_family_member",
             "vocabulary_word_family_link",
+            "english_reading_article",
+            "english_reading_article_tag",
+            "english_reading_article_exercise",
+            "english_learning_bundle_reading_item",
+            "english_reading_article_grammar_lesson",
             "tutorial_node_hierarchy_backup_v5",
             "tutorial_category_full_backup_v7",
             "tutorial_full_backup_v7",
@@ -65,7 +70,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(30);
+        assertThat(count).isEqualTo(35);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -91,14 +96,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV9AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV10AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -109,6 +114,6 @@ class V1SchemaMigrationTest {
                 "init schema", "seed system singletons", "create vocabulary", "seed vocabulary",
                 "flatten tutorial hierarchy", "enforce curriculum parents",
                 "restore authoritative tutorial taxonomy", "create english grammar",
-                "create english shared foundation");
+                "create english shared foundation", "create english reading");
     }
 }

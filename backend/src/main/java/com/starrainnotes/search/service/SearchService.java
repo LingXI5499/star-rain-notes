@@ -56,14 +56,17 @@ public class SearchService {
         List<Candidate> blogs = searchBlogs(pattern, query);
         List<Candidate> portfolios = searchPortfolios(pattern, query);
         List<Candidate> grammar = searchGrammar(pattern, query);
+        List<Candidate> reading = searchReading(pattern, query);
 
         SearchCountsView counts = new SearchCountsView(
-                tutorials.size(), chapters.size(), blogs.size(), portfolios.size(), grammar.size());
+                tutorials.size(), chapters.size(), blogs.size(), portfolios.size(), grammar.size(),
+                reading.size());
 
         boolean includeTutorial = type == null || type.isBlank() || "tutorial".equals(type);
         boolean includeBlog = type == null || type.isBlank() || "blog".equals(type);
         boolean includePortfolio = type == null || type.isBlank() || "portfolio".equals(type);
         boolean includeGrammar = type == null || type.isBlank() || "grammar".equals(type);
+        boolean includeReading = type == null || type.isBlank() || "reading".equals(type);
 
         List<Candidate> all = new ArrayList<>();
         if (includeTutorial) {
@@ -78,6 +81,9 @@ public class SearchService {
         }
         if (includeGrammar) {
             all.addAll(grammar);
+        }
+        if (includeReading) {
+            all.addAll(reading);
         }
 
         all.sort(Comparator.comparingInt(Candidate::score).reversed()
@@ -181,6 +187,22 @@ public class SearchService {
             String summary = rs.getString("summary");
             String body = rs.getString("body_markdown");
             return new Candidate("GRAMMAR", rs.getLong("id"), title, summary, rs.getString("slug"),
+                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
+                    score(query, title, summary, body));
+        }, pattern, pattern, pattern);
+    }
+
+    private List<Candidate> searchReading(String pattern, String query) {
+        return jdbc.query("""
+                SELECT id, title, summary, body_markdown, slug, updated_at
+                FROM english_reading_article
+                WHERE publish_status = 'PUBLISHED'
+                  AND (title LIKE ? OR summary LIKE ? OR body_markdown LIKE ?)
+                """, (rs, rowNum) -> {
+            String title = rs.getString("title");
+            String summary = rs.getString("summary");
+            String body = rs.getString("body_markdown");
+            return new Candidate("READING", rs.getLong("id"), title, summary, rs.getString("slug"),
                     null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
                     score(query, title, summary, body));
         }, pattern, pattern, pattern);

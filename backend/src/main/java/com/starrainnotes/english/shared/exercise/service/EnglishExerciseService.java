@@ -99,6 +99,11 @@ public class EnglishExerciseService {
         return MODULE_QUESTION_TYPES;
     }
 
+    /** The structural kind for a question type, or null when unknown. */
+    public String kindOf(String questionType) {
+        return QUESTION_KIND.get(questionType);
+    }
+
     private List<String> validateKind(String kind, JsonNode config) {
         List<String> problems = new ArrayList<>();
         switch (kind) {
