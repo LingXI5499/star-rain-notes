@@ -136,7 +136,7 @@ public class ListeningItemService {
             int idx = ids.indexOf(current.id());
             ListeningLinkView prev = idx > 0 ? link(ids.get(idx - 1)) : null;
             ListeningLinkView next = idx >= 0 && idx + 1 < ids.size() ? link(ids.get(idx + 1)) : null;
-            return current.withNav(prev, next);
+            return current.withReadingPairs(publishedReadingPairs(current.id())).withNav(prev, next);
         } catch (EmptyResultDataAccessException ex) {
             throw new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_CONTENT_NOT_PUBLISHED",
                     "Item not available", "The requested listening material is not published.");
@@ -324,11 +324,15 @@ public class ListeningItemService {
         Integer duration = jdbc.queryForObject(
                 "SELECT duration_seconds FROM english_listening_item WHERE id=?", Integer.class, itemId);
         if (requests.isEmpty()) return segments(itemId);
-        normalizeToTemp(itemId);
-        int order = 10;
         for (ListeningSegmentRequest req : requests) {
             assertSegmentRangeWithDuration(itemId, req.startMs(), req.endMs(),
                     duration == null ? null : duration);
+        }
+        // Batch save is a complete, ordered replacement. Validate every row first,
+        // then replace inside this transaction so a failed insert restores the old set.
+        jdbc.update("DELETE FROM english_listening_segment WHERE listening_item_id=?", itemId);
+        int order = 10;
+        for (ListeningSegmentRequest req : requests) {
             jdbc.update("INSERT INTO english_listening_segment"
                     + "(listening_item_id,start_ms,end_ms,transcript_text,translation_text,sort_order)"
                     + " VALUES (?,?,?,?,?,?)",
@@ -539,10 +543,6 @@ public class ListeningItemService {
         if (duration != null && duration > 0 && end > duration * 1000) {
             throw segmentInvalid("end_ms 不能超过音频时长");
         }
-    }
-
-    private void normalizeToTemp(Long itemId) {
-        jdbc.update("UPDATE english_listening_segment SET sort_order=100000 WHERE listening_item_id=?", itemId);
     }
 
     private ApiException segmentInvalid(String detail) {
@@ -800,6 +800,17 @@ public class ListeningItemService {
                 FROM english_reading_listening_pair rp
                 JOIN english_reading_article ar ON ar.id=rp.reading_article_id
                 WHERE rp.listening_item_id=? ORDER BY rp.sort_order, ar.id
+                """, (rs, row) -> new ReadingPairRef(rs.getLong("reading_article_id"),
+                rs.getString("title"), rs.getString("slug"), rs.getString("relation_type")), itemId);
+    }
+
+    private List<ReadingPairRef> publishedReadingPairs(Long itemId) {
+        return jdbc.query("""
+                SELECT rp.reading_article_id, ar.title, ar.slug, rp.relation_type
+                FROM english_reading_listening_pair rp
+                JOIN english_reading_article ar ON ar.id=rp.reading_article_id
+                WHERE rp.listening_item_id=? AND ar.publish_status='PUBLISHED'
+                ORDER BY rp.sort_order, ar.id
                 """, (rs, row) -> new ReadingPairRef(rs.getLong("reading_article_id"),
                 rs.getString("title"), rs.getString("slug"), rs.getString("relation_type")), itemId);
     }

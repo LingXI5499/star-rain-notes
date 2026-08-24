@@ -63,4 +63,6 @@ onMounted(async()=>{ sync(); try{ const meta=await fetchPublicMeta(); topics.val
 .lc-card__cover{height:120px;background:var(--bg-subtle);display:grid;place-items:center}.lc-card__cover img{width:100%;height:100%;object-fit:cover}.lc-card__fallback{font-size:40px;color:var(--primary)}
 .lc-card__body{padding:16px}.lc-card__meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}.lc-card__level{font-size:12px;color:var(--text-secondary)}.lc-card__title{font-size:18px;margin:0 0 6px}
 .lc-card__summary{font-size:13px;color:var(--text-secondary);margin:0 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.lc-card__tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}.lc-card__tag{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--bg-subtle);border:1px solid var(--border);color:var(--text-secondary)}.lc-card__cta{font-size:13px;color:var(--primary)}
+@media(max-width:600px){.l-center__filters>*{width:calc(50% - 6px)!important}.l-center__filters>*:first-child{width:100%!important}.l-center__grid{grid-template-columns:1fr}.l-center__route{display:grid;grid-template-columns:1fr}.route-pill{justify-content:space-between}}
+@media(prefers-reduced-motion:reduce){.route-pill,.lc-card{transition:none}.lc-card:hover{transform:none}}
 </style>

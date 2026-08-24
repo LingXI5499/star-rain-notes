@@ -272,4 +272,32 @@ onBeforeUnmount(() => {
 .markdown-editor__table-insert:hover {
   background: var(--primary-hover);
 }
+
+@media (max-width: 720px) {
+  .markdown-editor__host :deep(.vditor) {
+    min-height: 540px;
+  }
+
+  .markdown-editor__host :deep(.vditor-toolbar) {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    padding-left: 0 !important;
+  }
+
+  .markdown-editor__host :deep(.vditor-toolbar__item) {
+    flex: 0 0 auto;
+  }
+
+  .markdown-editor__host :deep(.vditor-outline) {
+    display: none !important;
+  }
+
+  .markdown-editor__host :deep(.vditor-content) {
+    max-height: 70vh;
+  }
+}
 </style>

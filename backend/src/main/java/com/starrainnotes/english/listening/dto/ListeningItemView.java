@@ -35,4 +35,11 @@ public record ListeningItemView(
                 copyrightNote, publishStatus, sortOrder, publishedAt, updatedAt, tags, segments, readingPairs,
                 prev, nxt);
     }
+
+    public ListeningItemView withReadingPairs(List<ReadingPairRef> pairs) {
+        return new ListeningItemView(id, title, slug, summary, transcriptMarkdown, cefrLevel, listeningLevel,
+                audioMediaId, audioUrl, coverMediaId, coverUrl, durationSeconds, sourceName, sourceUrl,
+                copyrightNote, publishStatus, sortOrder, publishedAt, updatedAt, tags, segments, pairs,
+                previous, next);
+    }
 }

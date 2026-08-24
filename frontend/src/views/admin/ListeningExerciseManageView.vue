@@ -34,7 +34,7 @@ onMounted(load)
 </script>
 
 <template>
-  <section class="l-ex-m"><header class="l-ex-m__bar"><div><p>EXERCISES · 听力练习</p><h1>{{ title||'材料练习' }}</h1></div><div><el-button @click="router.push({name:'admin-listening'})">返回</el-button><el-button type="primary" @click="openCreate">新建练习</el-button></div></header>
+  <section class="l-ex-m"><header class="l-ex-m__bar"><div><p>EXERCISES · 听力练习</p><h1>{{ title||'材料练习' }}</h1></div><div><el-button @click="router.push({name:'admin-listening',query:{...route.query}})">返回</el-button><el-button type="primary" @click="openCreate">新建练习</el-button></div></header>
     <div v-loading="loading" class="l-ex-m__list">
       <p v-if="!loading&&!exercises.length" class="l-ex-m__empty">暂无练习。</p>
       <article v-for="(ex,i) in exercises" :key="ex.id" class="lex-card">
@@ -45,7 +45,7 @@ onMounted(load)
     </div>
     <el-dialog v-model="dialogOpen" :title="editingId?'编辑练习':'新建练习'" width="620px">
       <el-form label-position="top">
-        <el-form-item label="题型"><el-select v-model="form.questionType" style="width:100%"><el-option v-for="t in ['PHONEME_WORD','MINIMAL_PAIR','LINKING_FILL','WEAK_FORM_FILL','INFO_FILL','NUMBER_FILL','TIME_FILL','LOCATION_FILL','TRUE_FALSE','SEGMENT_ORDERING','MAIN_IDEA','SPEAKER_ATTITUDE','LOGIC_JUDGE','DICTATION']" :key="t" :label="t" :value="t"/></el-select></el-form-item>
+        <el-form-item label="题型"><el-select v-model="form.questionType" style="width:100%"><el-option v-for="t in ['PHONEME_WORD','MINIMAL_PAIR','LINKING_FILL','WEAK_FORM_FILL','INFO_FILL','INFO_CHOICE','NUMBER_FILL','TIME_FILL','LOCATION_FILL','TRUE_FALSE','SEGMENT_ORDERING','MAIN_IDEA','SPEAKER_ATTITUDE','LOGIC_JUDGE','DICTATION']" :key="t" :label="t" :value="t"/></el-select></el-form-item>
         <el-form-item label="题干"><el-input v-model="form.promptMarkdown" type="textarea" :rows="2"/></el-form-item>
         <el-form-item label="配置 JSON"><el-input v-model="form.configJson" type="textarea" :rows="5" placeholder='如 MINIMAL_PAIR: {"pair":["ship","sheep"],"answer":"sheep"}; FILL: {"answer":"Tokyo"}'/></el-form-item>
         <el-form-item label="解析"><el-input v-model="form.explanationMarkdown" type="textarea" :rows="2"/></el-form-item>
@@ -61,4 +61,5 @@ onMounted(load)
 .l-ex-m__list{display:flex;flex-direction:column;gap:var(--space-3)}.l-ex-m__empty{color:var(--text-muted);padding:var(--space-6) 0}
 .lex-card{padding:16px;border:1px solid var(--border);border-radius:14px;background:var(--bg-surface)}.lex-card__head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
 .lex-card__type{font-weight:700;color:var(--primary);font-size:13px}.lex-card__status{font-size:11px;color:var(--text-muted)}.lex-card__prompt{font-size:14px;margin:0 0 8px}.lex-card__actions{display:flex;gap:4px}
+@media(max-width:720px){.l-ex-m__bar{align-items:flex-start;gap:12px}.l-ex-m__bar>div:last-child{display:flex;flex-direction:column;gap:8px}.lex-card__actions{flex-wrap:wrap}}
 </style>

@@ -12,6 +12,7 @@ const matchAnswers = ref<Record<string, unknown>>({})
 const structureAnswers = ref<Record<string, string>>({})
 
 const isChoice = computed(() => isChoiceConfig(props.exercise.config))
+const isMinimalPair = computed(() => props.exercise.questionType === 'MINIMAL_PAIR' && Array.isArray(props.exercise.config.pair))
 const isTrueFalse = computed(() => props.exercise.questionType === 'TRUE_FALSE')
 const isOrder = computed(() => props.exercise.questionType === 'ORDERING')
 const isMatch = computed(() => ['SENTENCE_MATCH', 'PARAGRAPH_MATCH'].includes(props.exercise.questionType))
@@ -20,7 +21,7 @@ const leftItems = computed(() => Array.isArray(props.exercise.config.leftItems) 
 const rightItems = computed(() => Array.isArray(props.exercise.config.rightItems) ? props.exercise.config.rightItems : [])
 const structure = computed(() => Array.isArray(props.exercise.config.structure) ? props.exercise.config.structure as Array<Record<string, unknown>> : [])
 const canSubmit = computed(() => {
-  if (isChoice.value || isTrueFalse.value) return selected.value !== ''
+  if (isChoice.value || isMinimalPair.value || isTrueFalse.value) return selected.value !== ''
   if (isOrder.value) return orderItems.value.length > 0
   if (isMatch.value) return leftItems.value.length > 0 && leftItems.value.every((item) => matchAnswers.value[String(item)] !== undefined)
   if (isStructure.value) return structure.value.length > 0 && structure.value.every((item) => structureAnswers.value[String(item.label)]?.trim())
@@ -42,6 +43,7 @@ function move(index: number, delta: number) {
 function submit() {
   let answer: unknown = textAnswer.value
   if (isChoice.value) answer = selected.value
+  else if (isMinimalPair.value) answer = selected.value
   else if (isTrueFalse.value) answer = selected.value === 'true'
   else if (isOrder.value) answer = orderItems.value
   else if (isMatch.value) answer = leftItems.value.map((left) => [left, matchAnswers.value[String(left)]])
@@ -65,6 +67,10 @@ function submit() {
       >
         {{ option.text }}
       </button>
+    </div>
+
+    <div v-else-if="isMinimalPair" class="exercise-runner__options">
+      <button v-for="option in props.exercise.config.pair" :key="String(option)" type="button" class="exercise-runner__option" :class="{ 'is-selected': selected === String(option) }" @click="selected = String(option)">{{ option }}</button>
     </div>
 
     <div v-else-if="isTrueFalse" class="exercise-runner__options">

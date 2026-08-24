@@ -92,6 +92,41 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
+    void batchSegmentsReplacesExistingRowsAndTaxonomyDetectsListeningUse() throws Exception {
+        Auth auth = login();
+        long audio = uploadAudio(auth);
+        long itemId = createItem(auth, itemJson("listen-batch", 1, audio, 60));
+
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/listening/items/" + itemId + "/segments")
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"startMs\":0,\"endMs\":1000,\"transcriptText\":\"old one\"}"), auth.csrf()))
+                .andExpect(status().isCreated());
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/listening/items/" + itemId + "/segments")
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"startMs\":1000,\"endMs\":2000,\"transcriptText\":\"old two\"}"), auth.csrf()))
+                .andExpect(status().isCreated());
+
+        mockMvc.perform(withCsrf(put("/api/v1/admin/english/listening/items/" + itemId + "/segments/batch")
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"segments\":["
+                                + "{\"startMs\":0,\"endMs\":1500,\"transcriptText\":\"new one\"},"
+                                + "{\"startMs\":1500,\"endMs\":3000,\"transcriptText\":\"new two\"}]}"), auth.csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].transcriptText").value("new one"))
+                .andExpect(jsonPath("$[0].sortOrder").value(10))
+                .andExpect(jsonPath("$[1].transcriptText").value("new two"))
+                .andExpect(jsonPath("$[1].sortOrder").value(20));
+        assertThat(jdbc.queryForObject(
+                "SELECT COUNT(*) FROM english_listening_segment WHERE listening_item_id=?",
+                Integer.class, itemId)).isEqualTo(2);
+
+        mockMvc.perform(withCsrf(delete("/api/v1/admin/english/taxonomy/41")
+                        .session(auth.session()), auth.csrf()))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("ENGLISH_TAXONOMY_IN_USE"));
+    }
+
+    @Test
     void publishLifecycleAndPublicVisibility() throws Exception {
         Auth auth = login();
         long audio = uploadAudio(auth);

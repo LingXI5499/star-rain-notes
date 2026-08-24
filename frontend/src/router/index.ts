@@ -375,7 +375,7 @@ const router = createRouter({
         {
           path: 'english/listening/pronunciation/new',
           name: 'admin-listening-pronunciation-new',
-          redirect: { name: 'admin-listening-pronunciation' },
+          component: () => import('@/views/admin/ListeningPronunciationManageView.vue'),
         },
         {
           path: 'english/listening/pronunciation/:id/edit',

@@ -31,7 +31,7 @@ watch(()=>route.params.slug,load); onMounted(load)
 
 <style scoped>
 .prd-wrap{padding:var(--space-10) 0;text-align:center;color:var(--text-muted)}.prd__layout{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:var(--layout-gap);align-items:start}
-.prd__right{position:sticky;top:calc(var(--header-height)+var(--space-6))}.prd__main{min-width:0}.prd__hero{margin-bottom:var(--space-5)}
+.prd__right{position:sticky;top:calc(var(--header-height) + var(--space-6))}.prd__main{min-width:0}.prd__hero{margin-bottom:var(--space-5)}
 .prd__type{color:var(--accent);font-size:12px;letter-spacing:.12em}.prd__h1{font-size:32px;margin:6px 0 10px}.prd__summary{font-size:16px;color:var(--text-secondary);line-height:1.7}.prd__audio{width:100%;margin:12px 0}
 .prd__nav{display:flex;justify-content:space-between;gap:16px;margin:var(--space-8) 0}.prd-nav{color:var(--primary);font-size:14px;flex:1}.prd-nav.is-empty{color:transparent}
 @media(max-width:900px){.prd__layout{grid-template-columns:1fr}.prd__right{display:none}}

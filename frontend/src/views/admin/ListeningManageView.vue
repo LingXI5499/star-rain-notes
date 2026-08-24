@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onMounted, reactive, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { onMounted, reactive, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus/es/components/index.mjs'
 import type { ProblemDetail } from '@/api/http'
 import { deleteListening, fetchListenings, publishListening, withdrawListening, type ListeningPage, type ListeningSummary } from '@/api/listening'
@@ -8,6 +8,7 @@ import { fetchTaxonomy, type TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 
 const router = useRouter()
+const route = useRoute()
 const page = ref<ListeningPage | null>(null)
 const loading = ref(true)
 const taxonomy = ref<TaxonomyTerm[]>([])
@@ -26,7 +27,28 @@ async function load() {
     })
   } catch { ElMessage.error('加载听力材料失败。') } finally { loading.value = false }
 }
-function search() { filters.page = 1; void load() }
+function syncFromRoute() {
+  filters.page = Math.max(1, Number(route.query.page ?? 1))
+  filters.pageSize = Number(route.query.pageSize ?? 20) === 50 ? 50 : 20
+  filters.q = String(route.query.q ?? '')
+  filters.status = String(route.query.status ?? '')
+  filters.level = String(route.query.level ?? '')
+  filters.cefr = String(route.query.cefr ?? '')
+  filters.topic = String(route.query.topic ?? '')
+  filters.scene = String(route.query.scene ?? '')
+  filters.format = String(route.query.format ?? '')
+}
+function writeFilters(pageNumber = 1) {
+  void router.push({ query: {
+    page: pageNumber > 1 ? String(pageNumber) : undefined,
+    pageSize: filters.pageSize !== 20 ? String(filters.pageSize) : undefined,
+    q: filters.q || undefined, status: filters.status || undefined,
+    level: filters.level || undefined, cefr: filters.cefr || undefined,
+    topic: filters.topic || undefined, scene: filters.scene || undefined,
+    format: filters.format || undefined,
+  } })
+}
+function search() { filters.page = 1; writeFilters(1) }
 const tags = (dim: string) => taxonomy.value.filter((t) => t.dimension === dim && t.parentId === null)
 
 async function setPublished(a: ListeningSummary, p: boolean) {
@@ -39,19 +61,27 @@ async function remove(a: ListeningSummary) {
     await deleteListening(a.id); ElMessage.success('已删除。'); await load()
   } catch (e) { const d = (e as { response?: { data?: ProblemDetail } }).response?.data?.detail; if (d) ElMessage.error(d) }
 }
-function dup(a: ListeningSummary) { router.push({ name: 'admin-listening-new', query: { clone: a.id } }) }
+function listQuery() { return { ...route.query } }
+function openEditor(id?: number) {
+  router.push({ name: id ? 'admin-listening-edit' : 'admin-listening-new', params: id ? { id } : undefined, query: listQuery() })
+}
+function openExercises(id: number) { router.push({ name: 'admin-listening-exercises', params: { id }, query: listQuery() }) }
+function dup(a: ListeningSummary) { router.push({ name: 'admin-listening-new', query: { ...route.query, clone: a.id } }) }
+function preview(a: ListeningSummary) { router.push(`/english/listening/${a.slug}`) }
 
 onMounted(async () => {
+  syncFromRoute()
   try { taxonomy.value = await fetchTaxonomy('tree') } catch { /* filters degrade */ }
   await load()
 })
+watch(() => route.query, () => { syncFromRoute(); void load() })
 </script>
 
 <template>
   <section class="listening-manage">
     <header class="listening-manage__hero">
       <div><p>ENGLISH LISTENING · 场景×形式×能力</p><h1>听力管理</h1><span>三段能力路线组织音频材料，逐句时间片段与安全练习。</span></div>
-      <el-button type="primary" @click="router.push({ name: 'admin-listening-new' })">新建材料</el-button>
+      <el-button type="primary" @click="openEditor()">新建材料</el-button>
     </header>
 
     <div v-if="page?.stats" class="listening-manage__stats">
@@ -99,8 +129,9 @@ onMounted(async () => {
           <div class="listen-card__tags"><span v-for="t in item.tags" :key="t.id" class="listen-card__tag">{{ t.name }}</span></div>
           <p class="listen-card__metrics">{{ formatTime(item.durationSeconds) }} · {{ item.exerciseCount }} 练习 · {{ item.segmentCount }} 片段</p>
           <div class="listen-card__actions">
-            <el-button link type="primary" @click="router.push({ name: 'admin-listening-edit', params: { id: item.id } })">编辑</el-button>
-            <el-button link @click="router.push({ name: 'admin-listening-exercises', params: { id: item.id } })">练习</el-button>
+            <el-button link type="primary" @click="openEditor(item.id)">编辑</el-button>
+            <el-button link @click="openExercises(item.id)">练习</el-button>
+            <el-button v-if="item.publishStatus === 'PUBLISHED'" link @click="preview(item)">预览</el-button>
             <el-button v-if="item.publishStatus !== 'PUBLISHED'" link type="success" @click="setPublished(item, true)">发布</el-button>
             <el-button v-else link type="warning" @click="setPublished(item, false)">撤回</el-button>
             <el-button link @click="dup(item)">复制</el-button>
@@ -110,7 +141,7 @@ onMounted(async () => {
       </article>
     </div>
 
-    <el-pagination v-if="page && page.total > 0" v-model:current-page="filters.page" v-model:page-size="filters.pageSize" :total="page.total" :page-sizes="[20,50]" layout="total, sizes, prev, pager, next" style="margin-top: var(--space-6)" @change="load"/>
+    <el-pagination v-if="page && page.total > 0" v-model:current-page="filters.page" v-model:page-size="filters.pageSize" :total="page.total" :page-sizes="[20,50]" layout="total, sizes, prev, pager, next" style="margin-top: var(--space-6)" @change="writeFilters(filters.page)"/>
   </section>
 </template>
 
@@ -133,4 +164,9 @@ onMounted(async () => {
 .listen-card__summary{font-size:13px;color:var(--text-secondary);margin:0 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .listen-card__tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}.listen-card__tag{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--bg-subtle);border:1px solid var(--border);color:var(--text-secondary)}
 .listen-card__metrics{font-size:12px;color:var(--text-muted);margin:0 0 8px}.listen-card__actions{display:flex;flex-wrap:wrap;gap:2px}
+@media(max-width:720px){
+  .listening-manage__hero{align-items:flex-start;gap:16px}.listening-manage__hero span{display:block}
+  .listening-manage__filters>*{width:100%!important}.listening-manage__grid{grid-template-columns:1fr}
+  .listen-card{flex-direction:column}.listen-card__cover{width:100%;height:140px}
+}
 </style>

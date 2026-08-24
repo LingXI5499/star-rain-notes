@@ -90,6 +90,9 @@ export async function updateSegment(id: number, segmentId: number, payload: List
 export async function deleteSegment(id: number, segmentId: number): Promise<void> { await http.delete(`/admin/english/listening/items/${id}/segments/${segmentId}`) }
 export async function moveSegment(id: number, segmentId: number, targetIndex: number): Promise<void> { await http.post(`/admin/english/listening/items/${id}/segments/${segmentId}/move`, { targetIndex }) }
 export async function batchSegments(id: number, segments: ListeningSegmentPayload[]): Promise<ListeningSegment[]> { return (await http.put<ListeningSegment[]>(`/admin/english/listening/items/${id}/segments/batch`, { segments })).data }
+export async function fetchReadingPairs(id: number): Promise<ReadingPairRef[]> { return (await http.get<ReadingPairRef[]>(`/admin/english/listening/items/${id}/reading-pairs`)).data }
+export async function addReadingPair(id: number, readingArticleId: number, relationType: string): Promise<void> { await http.post(`/admin/english/listening/items/${id}/reading-pairs`, { readingArticleId, relationType }) }
+export async function removeReadingPair(id: number, readingArticleId: number): Promise<void> { await http.delete(`/admin/english/listening/items/${id}/reading-pairs/${readingArticleId}`) }
 
 export async function fetchPublicListenings(params: Record<string, string | number | undefined>): Promise<ListeningPage> {
   return (await http.get<ListeningPage>('/public/english/listening/items', { params })).data
@@ -97,7 +100,8 @@ export async function fetchPublicListenings(params: Record<string, string | numb
 export async function fetchPublicListeningHome(): Promise<ListeningHome> { return (await http.get('/public/english/listening')).data }
 export async function fetchPublicListening(slug: string): Promise<ListeningItem> { return (await http.get<ListeningItem>(`/public/english/listening/items/${slug}`)).data }
 export async function fetchPublicListeningExercises(slug: string): Promise<ListeningExercisePublic[]> { return (await http.get<ListeningExercisePublic[]>(`/public/english/listening/items/${slug}/exercises`)).data }
-export async function checkListeningAnswers(slug: string, answers: { exerciseId: number; answer: unknown }[]): Promise<{ score: number; total: number; items: { correct: boolean; earned: number }[] }> {
+export interface ListeningCheckItem { exerciseId: number; correct: boolean; earned: number; scoreValue: number; explanationMarkdown: string | null }
+export async function checkListeningAnswers(slug: string, answers: { exerciseId: number; answer: unknown }[]): Promise<{ score: number; total: number; items: ListeningCheckItem[] }> {
   return (await http.post(`/public/english/listening/items/${slug}/check`, { answers })).data
 }
 
