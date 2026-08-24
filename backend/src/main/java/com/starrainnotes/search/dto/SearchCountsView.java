@@ -9,5 +9,6 @@ public record SearchCountsView(
         long blog,
         long portfolio,
         long grammar,
-        long reading) {
+        long reading,
+        long listening) {
 }

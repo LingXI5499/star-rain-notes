@@ -57,16 +57,19 @@ public class SearchService {
         List<Candidate> portfolios = searchPortfolios(pattern, query);
         List<Candidate> grammar = searchGrammar(pattern, query);
         List<Candidate> reading = searchReading(pattern, query);
+        List<Candidate> listening = searchListeningMaterials(pattern, query);
+        List<Candidate> pronunciation = searchPronunciationRules(pattern, query);
 
         SearchCountsView counts = new SearchCountsView(
                 tutorials.size(), chapters.size(), blogs.size(), portfolios.size(), grammar.size(),
-                reading.size());
+                reading.size(), listening.size() + pronunciation.size());
 
         boolean includeTutorial = type == null || type.isBlank() || "tutorial".equals(type);
         boolean includeBlog = type == null || type.isBlank() || "blog".equals(type);
         boolean includePortfolio = type == null || type.isBlank() || "portfolio".equals(type);
         boolean includeGrammar = type == null || type.isBlank() || "grammar".equals(type);
         boolean includeReading = type == null || type.isBlank() || "reading".equals(type);
+        boolean includeListening = type == null || type.isBlank() || "listening".equals(type);
 
         List<Candidate> all = new ArrayList<>();
         if (includeTutorial) {
@@ -84,6 +87,10 @@ public class SearchService {
         }
         if (includeReading) {
             all.addAll(reading);
+        }
+        if (includeListening) {
+            all.addAll(listening);
+            all.addAll(pronunciation);
         }
 
         all.sort(Comparator.comparingInt(Candidate::score).reversed()
@@ -203,6 +210,38 @@ public class SearchService {
             String summary = rs.getString("summary");
             String body = rs.getString("body_markdown");
             return new Candidate("READING", rs.getLong("id"), title, summary, rs.getString("slug"),
+                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
+                    score(query, title, summary, body));
+        }, pattern, pattern, pattern);
+    }
+
+    private List<Candidate> searchListeningMaterials(String pattern, String query) {
+        return jdbc.query("""
+                SELECT id, title, summary, transcript_markdown, slug, updated_at
+                FROM english_listening_item
+                WHERE publish_status = 'PUBLISHED'
+                  AND (title LIKE ? OR summary LIKE ? OR transcript_markdown LIKE ?)
+                """, (rs, rowNum) -> {
+            String title = rs.getString("title");
+            String summary = rs.getString("summary");
+            String body = rs.getString("transcript_markdown");
+            return new Candidate("LISTENING", rs.getLong("id"), title, summary, rs.getString("slug"),
+                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
+                    score(query, title, summary, body));
+        }, pattern, pattern, pattern);
+    }
+
+    private List<Candidate> searchPronunciationRules(String pattern, String query) {
+        return jdbc.query("""
+                SELECT id, title, summary, body_markdown, slug, updated_at
+                FROM english_listening_pronunciation_rule
+                WHERE publish_status = 'PUBLISHED'
+                  AND (title LIKE ? OR summary LIKE ? OR body_markdown LIKE ?)
+                """, (rs, rowNum) -> {
+            String title = rs.getString("title");
+            String summary = rs.getString("summary");
+            String body = rs.getString("body_markdown");
+            return new Candidate("PRONUNCIATION", rs.getLong("id"), title, summary, rs.getString("slug"),
                     null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
                     score(query, title, summary, body));
         }, pattern, pattern, pattern);

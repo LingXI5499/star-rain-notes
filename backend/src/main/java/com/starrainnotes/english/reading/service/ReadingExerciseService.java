@@ -3,8 +3,6 @@ package com.starrainnotes.english.reading.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.reading.dto.ReadingCheckAnswerRequest;
 import com.starrainnotes.english.reading.dto.ReadingCheckItemView;
@@ -47,16 +45,19 @@ public class ReadingExerciseService {
     private final JdbcTemplate jdbc;
     private final EnglishExerciseMapper exerciseMapper;
     private final EnglishExerciseService exerciseRules;
+    private final EnglishExerciseSafety safety;
     private final ReadingArticleService articleService;
     private final ObjectMapper objectMapper;
     private final SiteSettingsTimezone timezone;
 
     public ReadingExerciseService(JdbcTemplate jdbc, EnglishExerciseMapper exerciseMapper,
-                                  EnglishExerciseService exerciseRules, ReadingArticleService articleService,
+                                  EnglishExerciseService exerciseRules, EnglishExerciseSafety safety,
+                                  ReadingArticleService articleService,
                                   ObjectMapper objectMapper, SiteSettingsTimezone timezone) {
         this.jdbc = jdbc;
         this.exerciseMapper = exerciseMapper;
         this.exerciseRules = exerciseRules;
+        this.safety = safety;
         this.articleService = articleService;
         this.objectMapper = objectMapper;
         this.timezone = timezone;
@@ -181,31 +182,7 @@ public class ReadingExerciseService {
 
     private boolean isCorrect(EnglishExercise exercise, Object submitted) {
         JsonNode config = objectMapper.valueToTree(exercise.getConfigJson());
-        return EnglishExerciseSafety.isCorrect(objectMapper, exercise.getQuestionType(), config, submitted);
-    }
-
-    private JsonNode expectedStructure(JsonNode config) {
-        JsonNode structure = config.get("structure");
-        if (structure == null || !structure.isArray()) return config.get("pair");
-        ObjectNode expected = objectMapper.createObjectNode();
-        for (JsonNode item : structure) {
-            if (item.hasNonNull("label") && item.has("answer")) {
-                expected.set(item.get("label").asText(), item.get("answer"));
-            }
-        }
-        return expected;
-    }
-
-    private boolean matchesFill(JsonNode answer, JsonNode answers, Object submitted) {
-        if (submitted == null) return false;
-        String text = String.valueOf(submitted);
-        if (answer != null && answer.isTextual() && answer.asText().equalsIgnoreCase(text)) return true;
-        if (answers != null && answers.isArray()) {
-            for (JsonNode node : answers) {
-                if (node.isTextual() && node.asText().equalsIgnoreCase(text)) return true;
-            }
-        }
-        return false;
+        return safety.isCorrect(exercise.getQuestionType(), config, submitted);
     }
 
     private Map<String, Object> parseConfig(String json) {
@@ -218,45 +195,7 @@ public class ReadingExerciseService {
     }
 
     private Map<String, Object> sanitize(long exerciseId, String questionType, JsonNode config) {
-        return EnglishExerciseSafety.sanitize(objectMapper, questionType, config, exerciseId);
-    }
-
-    private boolean isAnswerBearing(String key) {
-        String normalized = key.toLowerCase();
-        return normalized.equals("answer") || normalized.equals("answers") || normalized.equals("correct")
-                || normalized.equals("iscorrect") || normalized.equals("correctindexes")
-                || normalized.equals("correctorder") || normalized.equals("standardorder")
-                || normalized.equals("answerkeys") || normalized.equals("solution");
-    }
-
-    private JsonNode sanitizeNode(JsonNode node) {
-        if (node.isObject()) {
-            ObjectNode result = objectMapper.createObjectNode();
-            node.fields().forEachRemaining(entry -> {
-                if (!isAnswerBearing(entry.getKey())) {
-                    result.set(entry.getKey(), sanitizeNode(entry.getValue()));
-                }
-            });
-            return result;
-        }
-        if (node.isArray()) {
-            ArrayNode result = objectMapper.createArrayNode();
-            node.forEach(item -> result.add(sanitizeNode(item)));
-            return result;
-        }
-        return node.deepCopy();
-    }
-
-    private ArrayNode rotated(ArrayNode source, long seed) {
-        ArrayNode result = source.deepCopy();
-        int size = result.size();
-        if (size <= 1) return result;
-        int shift = (int) (Math.floorMod(seed, size - 1) + 1);
-        List<JsonNode> values = new ArrayList<>();
-        result.forEach(values::add);
-        result.removeAll();
-        for (int i = 0; i < size; i++) result.add(values.get((i + shift) % size));
-        return result;
+        return safety.sanitize(questionType, config, exerciseId);
     }
 
     private ReadingExercisePublicView toPublic(java.sql.ResultSet rs) throws java.sql.SQLException {

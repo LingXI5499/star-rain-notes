@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,27 +12,38 @@ import java.util.Map;
 import java.util.Set;
 
 /**
- * Shared exercise safety primitives (阶段三 §七). Reading and listening both
- * use these so the answer-leak protections and server-side scoring behave
+ * Shared exercise safety primitives (阶段三 §二). Reading and listening both
+ * use this component so answer-leak protections and server-side scoring behave
  * identically and are tested once.
  *
- * <p>(1) {@link #sanitize} recursively strips any key that could expose the
- * answer, then re-shapes ORDERING (rotated display order) and MATCH (leftItems +
- * shuffled rightItems) so the public payload never equals the stored answer.
- * (2) {@link #isCorrect} reassembles the user's answer and compares it to the
- * stored answer server-side.</p>
+ * <p>{@link EnglishExerciseService} is the single source of truth for the
+ * questionType → kind mapping; this class asks for the kind and never keeps a
+ * private copy, so the two can't drift. All JSON work uses the injected
+ * Spring {@link ObjectMapper} (no ad-hoc mappers in recursion).</p>
+ *
+ * <p>(1) {@link #sanitize} recursively strips any answer-bearing key, then
+ * re-shapes ORDERING (rotated display order) and MATCH (leftItems + shuffled
+ * rightItems) so the public payload never equals the stored answer. MINIMAL_PAIR
+ * keeps {@code pair} (as options) but strips {@code answer}. (2) {@link #isCorrect}
+ * compares the user's answer to the stored answer server-side.</p>
  */
-public final class EnglishExerciseSafety {
+@Service
+public class EnglishExerciseSafety {
 
     private static final Set<String> ANSWER_KEYS = Set.of(
             "answer", "answers", "correct", "iscorrect", "correctindexes",
             "correctorder", "standardorder", "answerkeys", "solution");
 
-    private EnglishExerciseSafety() { }
+    private final ObjectMapper mapper;
+    private final EnglishExerciseService exerciseService;
+
+    public EnglishExerciseSafety(ObjectMapper mapper, EnglishExerciseService exerciseService) {
+        this.mapper = mapper;
+        this.exerciseService = exerciseService;
+    }
 
     /** Public, safe config for a client. Never returns the stored answer. */
-    public static Map<String, Object> sanitize(ObjectMapper mapper, String questionType,
-                                               JsonNode config, long seed) {
+    public Map<String, Object> sanitize(String questionType, JsonNode config, long seed) {
         ObjectNode safe = config.isObject()
                 ? (ObjectNode) sanitizeNode(config)
                 : mapper.createObjectNode();
@@ -56,8 +68,7 @@ public final class EnglishExerciseSafety {
     }
 
     /** Server-side scoring against the stored answer for a submitted answer. */
-    public static boolean isCorrect(ObjectMapper mapper, String questionType,
-                                    JsonNode config, Object submitted) {
+    public boolean isCorrect(String questionType, JsonNode config, Object submitted) {
         String kind = kindOf(questionType);
         JsonNode answer = config.get("answer");
         JsonNode answers = config.get("answers");
@@ -81,9 +92,13 @@ public final class EnglishExerciseSafety {
                 JsonNode correct = answer != null ? answer : config.get("pairs");
                 return correct != null && correct.equals(mapper.valueToTree(submitted));
             }
-            case "STRUCTURE", "MINIMAL_PAIR" -> {
-                JsonNode correct = answer != null ? answer : expectedStructure(mapper, config);
+            case "STRUCTURE" -> {
+                JsonNode correct = answer != null ? answer : expectedStructure(config);
                 return correct != null && correct.equals(mapper.valueToTree(submitted));
+            }
+            case "MINIMAL_PAIR" -> {
+                return answer != null && answer.isTextual()
+                        && answer.asText().equals(String.valueOf(submitted));
             }
             default -> {
                 return false;
@@ -91,24 +106,11 @@ public final class EnglishExerciseSafety {
         }
     }
 
-    /** Map a question type to its structural kind, or null when unknown. */
-    private static String kindOf(String questionType) {
-        if (questionType == null) return null;
-        if (questionType.endsWith("_CHOICE") || "MAIN_IDEA".equals(questionType)
-                || "INFERENCE".equals(questionType) || "CAUSE_EFFECT".equals(questionType)
-                || "REFERENCE".equals(questionType) || "INFO_CHOICE".equals(questionType)
-                || "SPEAKER_ATTITUDE".equals(questionType) || "LOGIC_JUDGE".equals(questionType)) {
-            return "CHOICE";
-        }
-        if ("TRUE_FALSE".equals(questionType)) return "TRUE_FALSE";
-        if (questionType.endsWith("_MATCH") || "PARAGRAPH_MATCH".equals(questionType)) return "MATCH";
-        if ("ORDERING".equals(questionType)) return "ORDER";
-        if ("STRUCTURE_FILL".equals(questionType)) return "STRUCTURE";
-        if ("MINIMAL_PAIR".equals(questionType)) return "MINIMAL_PAIR";
-        return "FILL";
+    private String kindOf(String questionType) {
+        return exerciseService.kindOf(questionType);
     }
 
-    private static JsonNode expectedStructure(ObjectMapper mapper, JsonNode config) {
+    private JsonNode expectedStructure(JsonNode config) {
         JsonNode structure = config.get("structure");
         if (structure == null || !structure.isArray()) return config.get("pair");
         ObjectNode expected = mapper.createObjectNode();
@@ -120,7 +122,7 @@ public final class EnglishExerciseSafety {
         return expected;
     }
 
-    private static boolean matchesFill(JsonNode answer, JsonNode answers, Object submitted) {
+    private boolean matchesFill(JsonNode answer, JsonNode answers, Object submitted) {
         if (submitted == null) return false;
         String text = String.valueOf(submitted);
         if (answer != null && answer.isTextual() && answer.asText().equalsIgnoreCase(text)) return true;
@@ -136,8 +138,7 @@ public final class EnglishExerciseSafety {
         return ANSWER_KEYS.contains(key.toLowerCase());
     }
 
-    private static JsonNode sanitizeNode(JsonNode node) {
-        ObjectMapper mapper = new ObjectMapper();
+    private JsonNode sanitizeNode(JsonNode node) {
         if (node.isObject()) {
             ObjectNode result = mapper.createObjectNode();
             node.fields().forEachRemaining(entry -> {
@@ -155,7 +156,7 @@ public final class EnglishExerciseSafety {
         return node.deepCopy();
     }
 
-    private static ArrayNode rotated(ArrayNode source, long seed) {
+    private ArrayNode rotated(ArrayNode source, long seed) {
         ArrayNode result = source.deepCopy();
         int size = result.size();
         if (size <= 1) return result;

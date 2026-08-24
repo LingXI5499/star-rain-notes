@@ -40,7 +40,8 @@ class EnglishExerciseServiceTest {
 
     @Test
     void moduleTypeMustMatchQuestionType() {
-        assertThatThrownBy(() -> service.validateConfig("LISTENING", "TRUE_FALSE", "{\"answer\":true}"))
+        // SENTENCE_REWRITE is a writing-only type; using it for LISTENING is rejected.
+        assertThatThrownBy(() -> service.validateConfig("LISTENING", "SENTENCE_REWRITE", "{\"answer\":\"x\"}"))
                 .isInstanceOf(ApiException.class)
                 .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((ApiException) ex).getCode())
                         .isEqualTo(CODE));

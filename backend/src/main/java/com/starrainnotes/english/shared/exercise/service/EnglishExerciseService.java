@@ -28,8 +28,9 @@ public class EnglishExerciseService {
     public static final Map<String, List<String>> MODULE_QUESTION_TYPES = Map.of(
             "READING", List.of("SINGLE_CHOICE", "TRUE_FALSE", "SENTENCE_MATCH", "PARAGRAPH_MATCH",
                     "ORDERING", "REFERENCE", "CAUSE_EFFECT", "MAIN_IDEA", "INFERENCE", "STRUCTURE_FILL"),
-            "LISTENING", List.of("PHONEME_WORD", "MINIMAL_PAIR", "LINKING_FILL", "INFO_FILL",
-                    "INFO_CHOICE", "MAIN_IDEA", "SPEAKER_ATTITUDE", "LOGIC_JUDGE", "DICTATION"),
+            "LISTENING", List.of("PHONEME_WORD", "MINIMAL_PAIR", "LINKING_FILL", "WEAK_FORM_FILL",
+                    "INFO_FILL", "INFO_CHOICE", "NUMBER_FILL", "TIME_FILL", "LOCATION_FILL", "TRUE_FALSE",
+                    "SEGMENT_ORDERING", "MAIN_IDEA", "SPEAKER_ATTITUDE", "LOGIC_JUDGE", "DICTATION"),
             "WRITING", List.of("SENTENCE_REWRITE", "SENTENCE_COMBINE", "COHESION_FILL", "STYLE_ANALYSIS"));
 
     private static final Map<String, String> QUESTION_KIND = Map.ofEntries(
@@ -45,11 +46,16 @@ public class EnglishExerciseService {
             Map.entry("INFERENCE", "CHOICE"),
             Map.entry("STRUCTURE_FILL", "STRUCTURE"),
             // listening
-            Map.entry("PHONEME_WORD", "FILL"),
+            Map.entry("PHONEME_WORD", "CHOICE"),
             Map.entry("MINIMAL_PAIR", "MINIMAL_PAIR"),
             Map.entry("LINKING_FILL", "FILL"),
+            Map.entry("WEAK_FORM_FILL", "FILL"),
             Map.entry("INFO_FILL", "FILL"),
             Map.entry("INFO_CHOICE", "CHOICE"),
+            Map.entry("NUMBER_FILL", "FILL"),
+            Map.entry("TIME_FILL", "FILL"),
+            Map.entry("LOCATION_FILL", "FILL"),
+            Map.entry("SEGMENT_ORDERING", "ORDER"),
             Map.entry("SPEAKER_ATTITUDE", "CHOICE"),
             Map.entry("LOGIC_JUDGE", "CHOICE"),
             Map.entry("DICTATION", "FILL"),
@@ -144,8 +150,17 @@ public class EnglishExerciseService {
             }
             case "MINIMAL_PAIR" -> {
                 JsonNode pair = config.get("pair");
-                if (pair == null || !pair.isArray() || pair.size() != 2) {
-                    problems.add("pair must be an array of exactly two strings.");
+                if (pair == null || !pair.isArray() || pair.size() != 2
+                        || !pair.get(0).isTextual() || !pair.get(1).isTextual()
+                        || pair.get(0).asText().isBlank() || pair.get(1).asText().isBlank()) {
+                    problems.add("pair must be an array of exactly two non-empty strings.");
+                } else {
+                    JsonNode answer = config.get("answer");
+                    if (answer == null || !answer.isTextual()
+                            || (!pair.get(0).asText().equals(answer.asText())
+                                && !pair.get(1).asText().equals(answer.asText()))) {
+                        problems.add("answer must be one of the two pair strings.");
+                    }
                 }
             }
             default -> problems.add("Unknown question type kind.");
