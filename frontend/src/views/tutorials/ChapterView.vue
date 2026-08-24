@@ -191,9 +191,9 @@ watch(() => route.params.chapterSlug, load)
 <style scoped>
 .reader {
   display: grid;
-  grid-template-columns: minmax(240px, 280px) minmax(0, 780px) minmax(190px, 230px);
+  grid-template-columns: minmax(210px, 260px) minmax(0, 780px) minmax(165px, 220px);
   justify-content: center;
-  gap: clamp(28px, 4vw, 64px);
+  gap: clamp(20px, 3vw, 48px);
   align-items: start;
 }
 
@@ -202,8 +202,11 @@ watch(() => route.params.chapterSlug, load)
   top: calc(var(--header-height) + var(--space-6));
   max-height: calc(100vh - var(--header-height) - var(--space-12));
   overflow-y: auto;
-  padding: 0 var(--space-5) var(--space-6) 0;
-  border-right: 1px solid var(--border);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: color-mix(in srgb,var(--bg-surface) 92%,var(--bg-subtle));
+  box-shadow: 0 10px 28px rgb(14 35 28/.045);
 }
 
 .reader__tutorial {
@@ -243,6 +246,7 @@ watch(() => route.params.chapterSlug, load)
 .reader__article {
   min-width: 0;
   width: 100%;
+  padding: 0 clamp(0px,1vw,12px);
 }
 
 .reader__breadcrumb {
@@ -359,8 +363,10 @@ watch(() => route.params.chapterSlug, load)
 }
 
 .reader__toc-card {
-  padding: var(--space-2) 0 var(--space-4) var(--space-5);
-  border-left: 1px solid var(--border);
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: color-mix(in srgb,var(--bg-surface) 91%,var(--bg-subtle));
 }
 
 .reader__toc-title {
@@ -405,7 +411,7 @@ watch(() => route.params.chapterSlug, load)
   padding: var(--space-8) 0;
 }
 
-@media (max-width: 1100px) {
+@media (max-width: 900px) {
   .reader {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -450,5 +456,10 @@ watch(() => route.params.chapterSlug, load)
     padding: var(--space-6);
     overflow-y: auto;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reader__progress-bar,
+  .reader__prevnext-link { transition: none; }
 }
 </style>

@@ -6,11 +6,10 @@ import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
 import {
   createChapter,
-  fetchAdminTutorial,
+  fetchAdminCurriculum,
   fetchChapter,
-  fetchTutorialNodes,
   updateChapter,
-  type AdminTreeNode,
+  type AdminCurriculumGroup,
 } from '@/api/tutorial'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import { useUnsavedGuard } from '@/composables/useUnsavedGuard'
@@ -22,8 +21,8 @@ import { useUnsavedGuard } from '@/composables/useUnsavedGuard'
  *
  * Routes: /admin/tutorials/:id/chapters/new  (create)
  *         /admin/tutorials/:id/chapters/:chapterId/edit (edit)
- * Parent group is chosen at creation only; moving chapters between groups
- * is handled by the chapter tree page (↑/↓ + tree structure).
+ * The group is chosen at creation only; moving chapters between groups is an
+ * explicit, confirmed action on the course structure page.
  */
 const route = useRoute()
 const router = useRouter()
@@ -35,12 +34,12 @@ const isEdit = computed(() => chapterId !== null)
 const loading = ref(true)
 const saving = ref(false)
 const tutorialTitle = ref('')
-const groups = ref<AdminTreeNode[]>([])
+const groups = ref<AdminCurriculumGroup[]>([])
 
 const form = reactive({
   title: '',
   slug: '',
-  parentId: null as number | null,
+  groupId: null as number | null,
   summary: '',
   bodyMarkdown: '',
 })
@@ -48,39 +47,30 @@ const form = reactive({
 // Unsaved-changes guard + Ctrl/Cmd+S (same as blog / portfolio editors).
 const { capture } = useUnsavedGuard(() => form, save)
 
-const groupOptions = computed(() => {
-  const out: { id: number; label: string }[] = []
-  const walk = (nodes: AdminTreeNode[], depth: number) => {
-    for (const node of nodes) {
-      if (node.type === 'GROUP') {
-        out.push({ id: node.id, label: `${'　'.repeat(depth)}${node.title}` })
-        walk(node.children, depth + 1)
-      } else {
-        walk(node.children, depth + 1)
-      }
-    }
-  }
-  walk(groups.value, 0)
-  return out
-})
+const groupOptions = computed(() => groups.value.map((group) => ({
+  id: group.id,
+  label: `${group.title}（${group.chapterCount} 章）`,
+})))
 
 onMounted(async () => {
   try {
-    const [detail, nodes] = await Promise.all([fetchAdminTutorial(tutorialId), fetchTutorialNodes(tutorialId)])
-    tutorialTitle.value = detail.title
-    groups.value = nodes
+    const curriculum = await fetchAdminCurriculum(tutorialId)
+    tutorialTitle.value = curriculum.tutorial.title
+    groups.value = curriculum.groups
     if (isEdit.value && chapterId !== null) {
       const chapter = await fetchChapter(tutorialId, chapterId)
       form.title = chapter.title
       form.slug = chapter.slug
-      form.parentId = chapter.parentId
+      form.groupId = chapter.groupId
       form.summary = chapter.summary ?? ''
       form.bodyMarkdown = chapter.bodyMarkdown
     } else {
-      const requestedParentId = Number(route.query.parentId)
-      if (Number.isInteger(requestedParentId)
-        && groupOptions.value.some((group) => group.id === requestedParentId)) {
-        form.parentId = requestedParentId
+      const requestedGroupId = Number(route.query.group)
+      if (Number.isInteger(requestedGroupId)
+        && groupOptions.value.some((group) => group.id === requestedGroupId)) {
+        form.groupId = requestedGroupId
+      } else {
+        form.groupId = groupOptions.value[0]?.id ?? null
       }
     }
   } catch {
@@ -92,14 +82,14 @@ onMounted(async () => {
 })
 
 async function save() {
-  if (!form.title.trim() || !form.slug.trim() || !form.bodyMarkdown.trim()) {
-    ElMessage.warning('请填写标题、slug 与正文。')
+  if (!form.title.trim() || !form.slug.trim() || !form.bodyMarkdown.trim() || !form.groupId) {
+    ElMessage.warning('请填写标题、slug、所属分组与正文。')
     return
   }
   saving.value = true
   try {
     if (isEdit.value && chapterId !== null) {
-      // parentId is only chosen at creation; tree moves handle regrouping.
+      // Group changes are handled by the explicit move action on the structure page.
       await updateChapter(tutorialId, chapterId, {
         title: form.title,
         slug: form.slug,
@@ -110,7 +100,7 @@ async function save() {
       await createChapter(tutorialId, {
         title: form.title,
         slug: form.slug,
-        parentId: form.parentId,
+        groupId: form.groupId,
         summary: form.summary || null,
         bodyMarkdown: form.bodyMarkdown,
       })
@@ -127,7 +117,11 @@ async function save() {
 }
 
 async function backToWorkspace() {
-  await router.push({ name: 'admin-tutorials', query: { tutorial: String(tutorialId) } })
+  await router.push({
+    name: 'admin-tutorial-chapters',
+    params: { id: String(tutorialId) },
+    query: form.groupId ? { group: String(form.groupId) } : undefined,
+  })
 }
 </script>
 
@@ -143,7 +137,7 @@ async function backToWorkspace() {
             type="primary"
             @click="backToWorkspace"
           >
-            {{ tutorialTitle }} › 章节管理
+            教程工作台 › {{ tutorialTitle }} › 课程结构
           </el-button>
         </p>
       </div>
@@ -173,10 +167,11 @@ async function backToWorkspace() {
           <el-form-item label="Slug（小写 kebab-case）">
             <el-input v-model="form.slug" maxlength="150" />
           </el-form-item>
-          <el-form-item v-if="!isEdit" label="父分组">
-            <el-select v-model="form.parentId" placeholder="无（根级）" clearable style="width: 100%">
+          <el-form-item label="所属分组">
+            <el-select v-model="form.groupId" placeholder="选择分组" style="width: 100%" :disabled="isEdit">
               <el-option v-for="option in groupOptions" :key="option.id" :label="option.label" :value="option.id" />
             </el-select>
+            <p v-if="isEdit" class="chapter-edit__field-hint">如需换组，请返回课程结构页使用“移动到分组”。</p>
           </el-form-item>
           <el-form-item label="摘要">
             <el-input v-model="form.summary" type="textarea" :rows="3" maxlength="1000" />
@@ -245,6 +240,8 @@ async function backToWorkspace() {
 .chapter-edit__actions {
   margin-top: var(--space-6);
 }
+
+.chapter-edit__field-hint { margin-top: 7px; color: var(--text-muted); font-size: 11px; }
 
 @media (max-width: 1100px) {
   .chapter-edit__meta-grid {

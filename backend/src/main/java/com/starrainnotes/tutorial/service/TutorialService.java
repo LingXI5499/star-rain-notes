@@ -38,7 +38,6 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -139,21 +138,29 @@ public class TutorialService {
         return toAdminDetail(tutorial);
     }
 
+    @Transactional
     public AdminTutorialDetailView update(Long id, UpdateTutorialRequest request) {
         Tutorial tutorial = requireTutorial(id);
         requireCategory(request.categoryId());
         assertSlugFree(request.slug(), id);
 
+        Long sourceCategoryId = tutorial.getCategoryId();
+        boolean changingCategory = !sourceCategoryId.equals(request.categoryId());
         tutorial.setCategoryId(request.categoryId());
         tutorial.setTitle(request.title());
         tutorial.setSlug(request.slug());
         tutorial.setSummary(request.summary());
         tutorial.setCoverMediaId(request.coverMediaId());
-        tutorial.setSortOrder(request.sortOrder() == null ? 0 : request.sortOrder());
+        tutorial.setSortOrder(changingCategory
+                ? nextTutorialOrder(request.categoryId())
+                : (request.sortOrder() == null ? tutorial.getSortOrder() : request.sortOrder()));
         tutorial.setSeoTitle(request.seoTitle());
         tutorial.setSeoDescription(request.seoDescription());
         // publishStatus / publishedAt are never touched by a plain update
         tutorialMapper.updateById(tutorial);
+        if (changingCategory) {
+            normalizeTutorialOrder(loadCategoryTutorials(sourceCategoryId));
+        }
         return toAdminDetail(tutorial);
     }
 
@@ -397,44 +404,13 @@ public class TutorialService {
             throw new ApiException(HttpStatus.NOT_FOUND, "CATEGORY_NOT_FOUND",
                     "Category not found", "The category slug does not exist.");
         }
-        return subtreeIds(category.getId());
-    }
-
-    private Set<Long> subtreeIds(Long rootId) {
-        Map<Long, List<Long>> children = new HashMap<>();
-        for (TutorialCategory category : categoryMapper.selectList(null)) {
-            if (category.getParentId() != null) {
-                children.computeIfAbsent(category.getParentId(), k -> new ArrayList<>()).add(category.getId());
-            }
-        }
-        Set<Long> result = new HashSet<>();
-        collect(rootId, children, result);
-        return result;
-    }
-
-    private void collect(Long id, Map<Long, List<Long>> children, Set<Long> result) {
-        if (!result.add(id)) {
-            return;
-        }
-        for (Long child : children.getOrDefault(id, List.of())) {
-            collect(child, children, result);
-        }
+        return Set.of(category.getId());
     }
 
     private List<CategoryPathView> categoryPath(Long categoryId) {
-        Map<Long, TutorialCategory> byId = categoryMapper.selectList(null).stream()
-                .collect(Collectors.toMap(TutorialCategory::getId, Function.identity()));
-        List<CategoryPathView> path = new ArrayList<>();
-        Long cursor = categoryId;
-        while (cursor != null) {
-            TutorialCategory category = byId.get(cursor);
-            if (category == null) {
-                break;
-            }
-            path.add(0, new CategoryPathView(category.getId(), category.getName(), category.getSlug()));
-            cursor = category.getParentId();
-        }
-        return path;
+        TutorialCategory category = categoryMapper.selectById(categoryId);
+        return category == null ? List.of()
+                : List.of(new CategoryPathView(category.getId(), category.getName(), category.getSlug()));
     }
 
     private Map<Long, String> categoryNameMap() {

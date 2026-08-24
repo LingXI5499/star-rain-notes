@@ -284,6 +284,40 @@ class TutorialAdminIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
+    void changingTutorialCategoryAppendsToTargetAndNormalizesSource() throws Exception {
+        MockHttpSession session = loginSession();
+        Long sourceCategoryId = createCategory("cat-source");
+        Long targetCategoryId = createCategory("cat-target");
+        Long first = createTutorial(session, sourceCategoryId, "t-source-first");
+        Long moving = createTutorial(session, sourceCategoryId, "t-source-moving");
+        Long last = createTutorial(session, sourceCategoryId, "t-source-last");
+        Long targetExisting = createTutorial(session, targetCategoryId, "t-target-existing");
+        jdbc.update("UPDATE tutorial SET sort_order = 10 WHERE id = ?", first);
+        jdbc.update("UPDATE tutorial SET sort_order = 20 WHERE id = ?", moving);
+        jdbc.update("UPDATE tutorial SET sort_order = 30 WHERE id = ?", last);
+        jdbc.update("UPDATE tutorial SET sort_order = 10 WHERE id = ?", targetExisting);
+
+        mockMvc.perform(withCsrf(put("/api/v1/admin/tutorials/" + moving)
+                        .contentType("application/json")
+                        .content("{\"categoryId\":" + targetCategoryId
+                                + ",\"title\":\"Moved tutorial\",\"slug\":\"t-source-moving\","
+                                + "\"summary\":\"Moved summary\"}"), csrf(session)).session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.categoryId").value(targetCategoryId))
+                .andExpect(jsonPath("$.sortOrder").value(20));
+
+        assertThat(jdbc.queryForList(
+                "SELECT id FROM tutorial WHERE category_id = ? ORDER BY sort_order, id",
+                Long.class, sourceCategoryId)).containsExactly(first, last);
+        assertThat(jdbc.queryForList(
+                "SELECT sort_order FROM tutorial WHERE category_id = ? ORDER BY sort_order, id",
+                Integer.class, sourceCategoryId)).containsExactly(10, 20);
+        assertThat(jdbc.queryForList(
+                "SELECT id FROM tutorial WHERE category_id = ? ORDER BY sort_order, id",
+                Long.class, targetCategoryId)).containsExactly(targetExisting, moving);
+    }
+
+    @Test
     void detailReturnsFullView() throws Exception {
         MockHttpSession session = loginSession();
         Long categoryId = createCategory("cat");

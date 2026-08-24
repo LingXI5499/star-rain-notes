@@ -12,6 +12,7 @@ import TutorialCategoryNav from '@/components/TutorialCategoryNav.vue'
 const route = useRoute()
 const router = useRouter()
 const categories = ref<PublicCategoryNode[]>([])
+const allTutorials = ref<PublicTutorialSummary[]>([])
 const tutorials = ref<PublicTutorialSummary[]>([])
 const loading = ref(true)
 const error = ref(false)
@@ -31,12 +32,15 @@ const displayed = computed(() => {
     : tutorials.value
 })
 
-async function loadTutorials() {
-  loading.value = true
-  error.value = false
-  try { tutorials.value = await fetchPublicTutorials(activeSlug.value || undefined) }
-  catch { error.value = true }
-  finally { loading.value = false }
+function applyCategory() {
+  const category = flatCategories.value.find((item) => item.slug === activeSlug.value)
+  tutorials.value = category
+    ? allTutorials.value.filter((item) => item.categoryId === category.id)
+    : allTutorials.value
+}
+
+function categoryCount(categoryId: number) {
+  return allTutorials.value.filter((item) => item.categoryId === categoryId).length
 }
 
 async function selectCategory(slug: string) {
@@ -44,19 +48,24 @@ async function selectCategory(slug: string) {
   activeSlug.value = slug
   query.value = ''
   await router.replace({ query: slug ? { categorySlug: slug } : {} })
-  await loadTutorials()
+  applyCategory()
 }
 
 onMounted(async () => {
-  try { categories.value = await fetchPublicCategoryTree() }
-  catch { /* Tutorial cards remain usable when category navigation fails. */ }
-  activeSlug.value = typeof route.query.categorySlug === 'string' ? route.query.categorySlug : ''
-  await loadTutorials()
+  loading.value = true
+  try {
+    const [categoryRows, tutorialRows] = await Promise.all([fetchPublicCategoryTree(), fetchPublicTutorials()])
+    categories.value = categoryRows
+    allTutorials.value = tutorialRows
+    activeSlug.value = typeof route.query.categorySlug === 'string' ? route.query.categorySlug : ''
+    applyCategory()
+  } catch { error.value = true }
+  finally { loading.value = false }
 })
 
 watch(() => route.query.categorySlug, (value) => {
   const slug = typeof value === 'string' ? value : ''
-  if (slug !== activeSlug.value) { activeSlug.value = slug; void loadTutorials() }
+  if (slug !== activeSlug.value) { activeSlug.value = slug; applyCategory() }
 })
 </script>
 
@@ -95,6 +104,7 @@ watch(() => route.query.categorySlug, (value) => {
               :key="category.id"
               :node="category"
               :active-slug="activeSlug"
+              :count="categoryCount(category.id)"
               @select="selectCategory"
             />
           </ul>
@@ -128,7 +138,7 @@ watch(() => route.query.categorySlug, (value) => {
               <img :src="tutorial.coverUrl" :alt="tutorial.title" loading="lazy" />
             </div>
             <div v-else class="tutorial-card__cover tutorial-card__cover--placeholder" aria-hidden="true">
-              <span>{{ tutorial.title.slice(0, 1) }}</span>
+              <span>{{ tutorial.title.replace(/[\s·_-]/g, '').slice(0, 2) }}</span>
             </div>
             <div class="tutorial-card__body">
               <p class="tutorial-card__category">{{ tutorial.categoryName }}</p>
@@ -159,17 +169,17 @@ watch(() => route.query.categorySlug, (value) => {
 .tutorial-catalog__eyebrow { margin-bottom: var(--space-3); color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .16em; }
 .tutorial-catalog__hero h1 { max-width: 760px; margin-bottom: var(--space-3); font-size: clamp(32px,4vw,48px); line-height: 1.16; letter-spacing: -.03em; }
 .tutorial-catalog__hero p:last-child { max-width: 720px; color: var(--text-secondary); font-size: 15px; line-height: 1.8; }
-.tutorial-catalog__summary { min-width: 130px; padding: var(--space-4) var(--space-5); border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface); text-align: center; }
+.tutorial-catalog__summary { min-width: 130px; padding: var(--space-4) var(--space-5); border: 1px solid var(--border); border-radius: 16px; background: var(--bg-surface); box-shadow: 0 10px 28px rgb(14 35 28/.05); text-align: center; }
 .tutorial-catalog__summary strong { display: block; color: var(--primary); font-size: 28px; }
 .tutorial-catalog__summary span { color: var(--text-muted); font-size: 12px; }
 .tutorial-catalog__layout { display: grid; grid-template-columns: 260px minmax(0,1fr); gap: var(--space-8); align-items: start; }
-.tutorial-catalog__sidebar { position: sticky; top: calc(var(--header-height) + var(--space-5)); max-height: calc(100vh - var(--header-height) - var(--space-10)); overflow: auto; border: 1px solid var(--border); border-radius: var(--radius-md); background: var(--bg-surface); }
+.tutorial-catalog__sidebar { position: sticky; top: calc(var(--header-height) + var(--space-5)); max-height: calc(100vh - var(--header-height) - var(--space-10)); overflow: auto; border: 1px solid var(--border); border-radius: 18px; background: var(--bg-surface); box-shadow: 0 12px 32px rgb(14 35 28/.055); }
 .tutorial-catalog__sidebar-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4); border-bottom: 1px solid var(--border); font-weight: 700; }
 .tutorial-catalog__sidebar-head small { color: var(--text-muted); font-weight: 400; }
 .tutorial-catalog__sidebar nav { padding: var(--space-3); }
-.tutorial-catalog__all { width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border: 0; border-radius: 7px; color: var(--text-secondary); background: none; font-size: 14px; text-align: left; cursor: pointer; }
-.tutorial-catalog__all:hover { background: var(--bg-subtle); color: var(--text-primary); }
-.tutorial-catalog__all--active { color: var(--primary); background: color-mix(in srgb,var(--primary) 11%,transparent); font-weight: 600; }
+.tutorial-catalog__all { width: 100%; min-height: 40px; display: flex; align-items: center; justify-content: space-between; padding: 7px 10px; border: 1px solid transparent; border-radius: 12px; color: var(--text-secondary); background: none; font-size: 14px; text-align: left; cursor: pointer; transition: transform 170ms ease,background-color 170ms ease,border-color 170ms ease; }
+.tutorial-catalog__all:hover { border-color: var(--border); background: var(--bg-subtle); color: var(--text-primary); transform: translateX(3px); }
+.tutorial-catalog__all--active { border-color: color-mix(in srgb,var(--primary) 22%,var(--border)); color: var(--primary); background: color-mix(in srgb,var(--primary) 11%,transparent); font-weight: 600; }
 .tutorial-catalog__category-tree { margin: 3px 0 0; padding: 0; list-style: none; }
 .tutorial-catalog__content { min-width: 0; }
 .tutorial-catalog__content-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--space-6); }
@@ -179,21 +189,23 @@ watch(() => route.query.categorySlug, (value) => {
 .tutorial-catalog__search { width: min(280px,38vw); height: 40px; display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: 8px; color: var(--text-muted); background: var(--bg-surface); }
 .tutorial-catalog__search:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb,var(--primary) 12%,transparent); }
 .tutorial-catalog__search input { min-width: 0; flex: 1; border: 0; outline: 0; color: var(--text-primary); background: none; }
-.tutorial-catalog__grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(290px,1fr)); gap: var(--space-5); }
-.tutorial-card { overflow: hidden; display: flex; flex-direction: column; min-height: 330px; border: 1px solid var(--border); border-radius: var(--radius-md); color: var(--text-primary); background: var(--bg-surface); transition: transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease; }
+.tutorial-catalog__grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(min(280px,100%),1fr)); gap: var(--space-5); }
+.tutorial-card { min-width: 0; overflow: hidden; display: flex; flex-direction: column; min-height: 330px; border: 1px solid var(--border); border-radius: 18px; color: var(--text-primary); background: var(--bg-surface); transition: transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease; }
 .tutorial-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb,var(--primary) 55%,var(--border)); box-shadow: 0 14px 35px rgb(0 0 0/.09); }
-.tutorial-card__cover { height: 128px; overflow: hidden; background: var(--bg-subtle); }
+.tutorial-card__cover { aspect-ratio: 16/6.8; min-height: 118px; overflow: hidden; background: var(--bg-subtle); }
 .tutorial-card__cover img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform 240ms ease; }
 .tutorial-card:hover .tutorial-card__cover img { transform: scale(1.03); }
 .tutorial-card__cover--placeholder { display: grid; place-items: center; background: linear-gradient(135deg,color-mix(in srgb,var(--primary) 18%,var(--bg-surface)),color-mix(in srgb,var(--accent) 11%,var(--bg-surface))); }
-.tutorial-card__cover--placeholder span { color: color-mix(in srgb,var(--primary) 80%,var(--text-primary)); font-size: 42px; font-weight: 800; opacity: .75; }
+.tutorial-card__cover--placeholder span { color: color-mix(in srgb,var(--primary) 80%,var(--text-primary)); font-size: 36px; font-weight: 800; letter-spacing: .08em; opacity: .75; }
 .tutorial-card__body { flex: 1; display: flex; flex-direction: column; padding: var(--space-5); }
 .tutorial-card__category { margin-bottom: var(--space-2); color: var(--accent); font-size: 12px; }
 .tutorial-card h3 { margin-bottom: var(--space-3); font-size: 19px; line-height: 1.45; }
 .tutorial-card__summary { display: -webkit-box; overflow: hidden; margin-bottom: var(--space-5); color: var(--text-secondary); font-size: 14px; line-height: 1.7; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
 .tutorial-card__footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px; }
 .tutorial-card__footer strong { color: var(--primary); font-size: 13px; }
+.tutorial-card__footer strong::first-letter { transition: transform 170ms ease; }
 .tutorial-catalog__empty { padding: var(--space-10); border: 1px dashed var(--border-strong); border-radius: var(--radius-md); color: var(--text-muted); text-align: center; }
+@media (prefers-reduced-motion: reduce) { .tutorial-catalog__all,.tutorial-card,.tutorial-card__cover img { transition: none; } }
 @media (max-width: 900px) { .tutorial-catalog__hero { align-items: flex-start; } .tutorial-catalog__summary { display: none; } .tutorial-catalog__layout { grid-template-columns: 1fr; } .tutorial-catalog__sidebar { position: static; max-height: none; } }
 @media (max-width: 620px) { .tutorial-catalog__content-head { align-items: stretch; flex-direction: column; } .tutorial-catalog__search { width: 100%; } .tutorial-catalog__grid { grid-template-columns: 1fr; } }
 </style>

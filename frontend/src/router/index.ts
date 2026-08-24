@@ -179,10 +179,7 @@ const router = createRouter({
         {
           path: 'tutorials/:id/chapters',
           name: 'admin-tutorial-chapters',
-          redirect: (to) => ({
-            name: 'admin-tutorials',
-            query: { tutorial: String(to.params.id) },
-          }),
+          component: () => import('@/views/admin/ChapterManageView.vue'),
         },
         {
           path: 'tutorials/:id/chapters/new',

@@ -2,84 +2,55 @@
 import { RouterLink } from 'vue-router'
 import type { CurriculumNode } from '@/api/tutorial'
 
-/**
- * Recursive public curriculum list used by the tutorial detail page and the
- * reader sidebar. The current chapter gets a 2px indicator.
- */
 const props = defineProps<{
   nodes: CurriculumNode[]
   tutorialSlug: string
   activeChapterSlug?: string | null
 }>()
 
-function chapterUrl(node: CurriculumNode): string {
-  return `/tutorials/${props.tutorialSlug}/${node.slug ?? ''}`
+function chapterUrl(chapter: CurriculumNode) {
+  return `/tutorials/${props.tutorialSlug}/${chapter.slug ?? ''}`
 }
 </script>
 
 <template>
   <ul class="curriculum">
-    <li v-for="node in nodes" :key="node.id" class="curriculum__item">
-      <template v-if="node.type === 'GROUP'">
-        <p class="curriculum__group">{{ node.title }}</p>
-        <TutorialCurriculumList
-          v-if="node.children.length"
-          :nodes="node.children"
-          :tutorial-slug="tutorialSlug"
-          :active-chapter-slug="activeChapterSlug"
-        />
-      </template>
-      <RouterLink
-        v-else
-        :to="chapterUrl(node)"
-        class="curriculum__chapter"
-        :class="{ 'curriculum__chapter--active': activeChapterSlug === node.slug }"
-      >
-        {{ node.title }}
-      </RouterLink>
+    <li v-for="group in nodes" :key="group.id" class="curriculum__group-card">
+      <div class="curriculum__group-head">
+        <span class="curriculum__group-dot" aria-hidden="true" />
+        <h3>{{ group.title }}</h3>
+        <span>{{ group.children.length }}</span>
+      </div>
+      <ol class="curriculum__chapters">
+        <li v-for="(chapter, index) in group.children" :key="chapter.id">
+          <RouterLink
+            :to="chapterUrl(chapter)"
+            class="curriculum__chapter"
+            :class="{ 'curriculum__chapter--active': activeChapterSlug === chapter.slug }"
+          >
+            <span class="curriculum__index">{{ String(index + 1).padStart(2, '0') }}</span>
+            <span class="curriculum__title">{{ chapter.title }}</span>
+            <span class="curriculum__arrow" aria-hidden="true">›</span>
+          </RouterLink>
+        </li>
+      </ol>
     </li>
   </ul>
 </template>
 
-<script lang="ts">
-// recursive self-reference is resolved by the SFC filename
-</script>
-
 <style scoped>
-.curriculum {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-}
-
-.curriculum__group {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-  margin: var(--space-4) 0 var(--space-2);
-  padding-left: var(--space-3);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.curriculum__chapter {
-  display: block;
-  padding: var(--space-2) var(--space-3);
-  border-left: 2px solid transparent;
-  color: var(--text-secondary);
-  font-size: 14px;
-  line-height: 22px;
-}
-
-.curriculum__chapter:hover {
-  color: var(--primary);
-  background: var(--bg-subtle);
-}
-
-.curriculum__chapter--active {
-  border-left-color: var(--primary);
-  color: var(--primary);
-  font-weight: 600;
-  background: var(--bg-subtle);
-}
+.curriculum { display: flex; flex-direction: column; gap: 12px; margin: 0; padding: 0; list-style: none; }
+.curriculum__group-card { overflow: hidden; border: 1px solid var(--border); border-radius: 14px; background: color-mix(in srgb,var(--bg-surface) 88%,var(--bg-subtle)); }
+.curriculum__group-head { display: grid; grid-template-columns: 8px minmax(0,1fr) auto; align-items: center; gap: 10px; padding: 11px 12px; border-bottom: 1px solid var(--border); background: color-mix(in srgb,var(--bg-subtle) 60%,transparent); }
+.curriculum__group-head h3 { overflow: hidden; color: var(--text-secondary); font-size: 12px; font-weight: 700; line-height: 1.4; text-overflow: ellipsis; white-space: nowrap; }
+.curriculum__group-head > span:last-child { min-width: 24px; padding: 2px 6px; border-radius: 999px; color: var(--text-muted); background: var(--bg-page); font-size: 9px; text-align: center; }
+.curriculum__group-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent); }
+.curriculum__chapters { display: flex; flex-direction: column; margin: 0; padding: 6px; list-style: none; }
+.curriculum__chapter { display: grid; grid-template-columns: 25px minmax(0,1fr) 10px; align-items: center; gap: 8px; min-height: 36px; padding: 7px 8px; border-radius: 9px; color: var(--text-secondary); font-size: 12px; line-height: 1.45; transition: transform 160ms ease,color 160ms ease,background-color 160ms ease; }
+.curriculum__chapter:hover { color: var(--primary); background: var(--bg-subtle); transform: translateX(2px); }
+.curriculum__chapter--active { color: var(--primary); background: color-mix(in srgb,var(--primary) 11%,transparent); font-weight: 650; }
+.curriculum__index { color: var(--text-muted); font: 600 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace; }
+.curriculum__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.curriculum__arrow { font-size: 15px; }
+@media (prefers-reduced-motion: reduce) { .curriculum__chapter { transition: none; } }
 </style>

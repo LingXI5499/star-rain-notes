@@ -154,7 +154,7 @@ export interface AdminTreeNode {
 export interface ChapterDetail {
   id: number
   tutorialId: number
-  parentId: number | null
+  groupId: number
   nodeType: string
   title: string
   slug: string
@@ -180,14 +180,13 @@ export interface TutorialPayload {
 export interface CategoryPayload {
   name: string
   slug: string
-  parentId?: number | null
   sortOrder?: number | null
 }
 
 export interface ChapterPayload {
   title: string
   slug: string
-  parentId?: number | null
+  groupId: number
   summary?: string | null
   bodyMarkdown: string
 }
@@ -195,6 +194,37 @@ export interface ChapterPayload {
 export interface MovePayload {
   targetParentId: number | null
   targetIndex: number
+}
+
+export interface AdminCurriculumChapter {
+  id: number
+  groupId: number
+  title: string
+  slug: string
+  publishStatus: string
+  sortOrder: number
+  updatedAt: string
+}
+
+export interface AdminCurriculumGroup {
+  id: number
+  title: string
+  sortOrder: number
+  chapterCount: number
+  publishedChapterCount: number
+  chapters: AdminCurriculumChapter[]
+}
+
+export interface AdminCurriculum {
+  tutorial: {
+    id: number
+    categoryId: number
+    categoryName: string | null
+    title: string
+    slug: string
+    publishStatus: string
+  }
+  groups: AdminCurriculumGroup[]
 }
 
 // ---------------------------------------------------------------
@@ -303,7 +333,7 @@ export async function deleteCategory(id: number): Promise<void> {
   await http.delete(`/admin/tutorial-categories/${id}`)
 }
 
-export async function moveCategory(id: number, payload: MovePayload): Promise<void> {
+export async function moveCategory(id: number, payload: { targetIndex: number }): Promise<void> {
   await http.post(`/admin/tutorial-categories/${id}/move`, payload)
 }
 
@@ -316,9 +346,14 @@ export async function fetchTutorialNodes(tutorialId: number): Promise<AdminTreeN
   return data
 }
 
+export async function fetchAdminCurriculum(tutorialId: number): Promise<AdminCurriculum> {
+  const { data } = await http.get<AdminCurriculum>(`/admin/tutorials/${tutorialId}/curriculum`)
+  return data
+}
+
 export async function createGroup(
   tutorialId: number,
-  payload: { title: string; parentId?: number | null },
+  payload: { title: string },
 ): Promise<AdminTreeNode> {
   const { data } = await http.post<AdminTreeNode>(`/admin/tutorials/${tutorialId}/groups`, payload)
   return data
@@ -350,7 +385,7 @@ export async function fetchChapter(tutorialId: number, chapterId: number): Promi
 export async function updateChapter(
   tutorialId: number,
   chapterId: number,
-  payload: Omit<ChapterPayload, 'parentId'>,
+  payload: Omit<ChapterPayload, 'groupId'>,
 ): Promise<ChapterDetail> {
   const { data } = await http.put<ChapterDetail>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}`, payload)
   return data
@@ -372,4 +407,20 @@ export async function withdrawChapter(tutorialId: number, chapterId: number): Pr
 
 export async function moveNode(tutorialId: number, nodeId: number, payload: MovePayload): Promise<void> {
   await http.post(`/admin/tutorials/${tutorialId}/nodes/${nodeId}/move`, payload)
+}
+
+export async function moveGroup(tutorialId: number, groupId: number, targetIndex: number): Promise<void> {
+  await http.post(`/admin/tutorials/${tutorialId}/groups/${groupId}/move`, { targetIndex })
+}
+
+export async function moveChapter(tutorialId: number, chapterId: number, targetIndex: number): Promise<void> {
+  await http.post(`/admin/tutorials/${tutorialId}/chapters/${chapterId}/move`, { targetIndex })
+}
+
+export async function reassignChapter(
+  tutorialId: number,
+  chapterId: number,
+  targetGroupId: number,
+): Promise<void> {
+  await http.post(`/admin/tutorials/${tutorialId}/chapters/${chapterId}/reassign`, { targetGroupId })
 }
