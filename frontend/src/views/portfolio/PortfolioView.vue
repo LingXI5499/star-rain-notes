@@ -3,185 +3,27 @@ import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { fetchPublicProjects, type PublicProjectSummary } from '@/api/portfolio'
 
-const projects = ref<PublicProjectSummary[]>([])
-const loading = ref(true)
-const error = ref(false)
-
-const featured = computed(() => projects.value.filter((p) => p.featured))
-const others = computed(() => projects.value.filter((p) => !p.featured))
-
-const statusLabels: Record<string, string> = {
-  DEVELOPING: '开发中',
-  COMPLETED: '已完成',
-  ONLINE: '已上线',
-}
-
-onMounted(async () => {
-  try {
-    projects.value = await fetchPublicProjects()
-  } catch {
-    error.value = true
-  } finally {
-    loading.value = false
-  }
-})
+const projects=ref<PublicProjectSummary[]>([]);const loading=ref(true);const error=ref(false)
+const featured= computed(()=>projects.value.filter(p=>p.featured));const primary=computed(()=>featured.value[0]??projects.value[0]??null);const grid=computed(()=>projects.value.filter(p=>p.id!==primary.value?.id))
+const statusLabels:Record<string,string>={DEVELOPING:'开发中',COMPLETED:'已完成',ONLINE:'已上线'}
+function glyph(title:string){return title.trim().slice(0,1)||'作'}
+onMounted(async()=>{try{projects.value=await fetchPublicProjects()}catch{error.value=true}finally{loading.value=false}})
 </script>
 
 <template>
   <section class="portfolio">
-    <header class="portfolio__hero">
-      <p class="portfolio__eyebrow">PORTFOLIO · ENGINEERING CASE STUDIES</p>
-      <h1 class="portfolio__title">作品</h1>
-      <p class="portfolio__intro">真实项目案例与工程实践：从需求分析、系统设计到开发落地，展示完整的软件工程能力。</p>
-    </header>
-
-    <div v-if="loading" class="portfolio__empty">加载中…</div>
-    <div v-else-if="error" class="portfolio__empty">加载失败，请稍后重试。</div>
-    <div v-else-if="!projects.length" class="portfolio__empty">暂无作品</div>
+    <header class="portfolio__hero"><div><p>PORTFOLIO · ENGINEERING CASE STUDIES</p><h1>把复杂问题，做成可靠的产品。</h1></div><span>从需求拆解、架构设计到上线复盘，记录每个项目背后的判断与工程过程。</span></header>
+    <div v-if="loading" class="portfolio__empty">正在加载作品…</div><div v-else-if="error" class="portfolio__empty">加载失败，请稍后重试。</div><div v-else-if="!projects.length" class="portfolio__empty">暂无作品</div>
     <template v-else>
-      <section v-if="featured.length" class="portfolio__section">
-        <h2 class="portfolio__section-title">精选作品</h2>
-        <div class="portfolio__grid">
-          <RouterLink
-            v-for="project in featured"
-            :key="project.id"
-            :to="`/portfolio/${project.slug}`"
-            class="project-card"
-          >
-            <div v-if="project.coverUrl" class="project-card__cover">
-              <img :src="project.coverUrl" :alt="project.title" loading="lazy" />
-            </div>
-            <div class="project-card__body">
-              <p class="project-card__status">{{ statusLabels[project.projectStatus] ?? project.projectStatus }}</p>
-              <h3 class="project-card__title">{{ project.title }}</h3>
-              <p class="project-card__summary">{{ project.summary }}</p>
-            </div>
-          </RouterLink>
-        </div>
-      </section>
-
-      <section v-if="others.length" class="portfolio__section">
-        <h2 class="portfolio__section-title">其他项目</h2>
-        <div class="portfolio__grid">
-          <RouterLink
-            v-for="project in others"
-            :key="project.id"
-            :to="`/portfolio/${project.slug}`"
-            class="project-card"
-          >
-            <div v-if="project.coverUrl" class="project-card__cover">
-              <img :src="project.coverUrl" :alt="project.title" loading="lazy" />
-            </div>
-            <div class="project-card__body">
-              <p class="project-card__status">{{ statusLabels[project.projectStatus] ?? project.projectStatus }}</p>
-              <h3 class="project-card__title">{{ project.title }}</h3>
-              <p class="project-card__summary">{{ project.summary }}</p>
-            </div>
-          </RouterLink>
-        </div>
-      </section>
+      <RouterLink v-if="primary" :to="`/portfolio/${primary.slug}`" class="portfolio-feature">
+        <div class="portfolio-feature__visual"><img v-if="primary.coverUrl" :src="primary.coverUrl" :alt="primary.title"/><span v-else>{{glyph(primary.title)}}</span></div>
+        <div class="portfolio-feature__body"><p><span>FEATURED CASE</span><em>{{statusLabels[primary.projectStatus]??primary.projectStatus}}</em></p><h2>{{primary.title}}</h2><strong v-if="primary.role">{{primary.role}}</strong><p>{{primary.summary}}</p><div class="portfolio-feature__stack"><span v-for="tech in primary.techStack.slice(0,6)" :key="tech">{{tech}}</span></div><b>查看完整案例 <i>→</i></b></div>
+      </RouterLink>
+      <section v-if="grid.length" class="portfolio__section"><div class="portfolio__section-head"><div><small>MORE WORK</small><h2>更多项目</h2></div><span>{{projects.length}} 个工程案例</span></div><div class="portfolio__grid"><RouterLink v-for="(project,index) in grid" :key="project.id" :to="`/portfolio/${project.slug}`" class="project-card" :class="{'project-card--wide':index===0&&grid.length>2}"><div class="project-card__visual"><img v-if="project.coverUrl" :src="project.coverUrl" :alt="project.title" loading="lazy"/><span v-else>{{glyph(project.title)}}</span><em>{{statusLabels[project.projectStatus]??project.projectStatus}}</em></div><div class="project-card__body"><p v-if="project.role">{{project.role}}</p><h3>{{project.title}}</h3><div class="project-card__stack"><span v-for="tech in project.techStack.slice(0,4)" :key="tech">{{tech}}</span></div><strong>探索案例 <i>→</i></strong></div></RouterLink></div></section>
     </template>
   </section>
 </template>
 
 <style scoped>
-.portfolio__hero {
-  margin-bottom: var(--space-9);
-}
-
-.portfolio__eyebrow {
-  font-size: 13px;
-  letter-spacing: 0.16em;
-  color: var(--accent);
-  margin-bottom: var(--space-3);
-}
-
-.portfolio__title {
-  font-size: 42px;
-  line-height: 50px;
-  margin-bottom: var(--space-3);
-}
-
-.portfolio__intro {
-  color: var(--text-secondary);
-  max-width: 560px;
-}
-
-.portfolio__section {
-  margin-bottom: var(--space-12);
-}
-
-.portfolio__section-title {
-  font-size: 24px;
-  line-height: 32px;
-  margin-bottom: var(--space-6);
-}
-
-.portfolio__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: var(--layout-gap);
-}
-
-.project-card {
-  display: flex;
-  flex-direction: column;
-  background: var(--bg-surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  color: var(--text-primary);
-  transition:
-    border-color 0.15s ease,
-    transform 0.15s ease,
-    box-shadow 0.15s ease;
-}
-
-.project-card:hover {
-  border-color: var(--primary);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgb(0 0 0 / 0.08);
-}
-
-.project-card__cover {
-  aspect-ratio: 16 / 9;
-  overflow: hidden;
-}
-
-.project-card__cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.project-card__body {
-  padding: var(--space-5);
-}
-
-.project-card__status {
-  font-size: 13px;
-  color: var(--accent);
-  margin-bottom: var(--space-2);
-}
-
-.project-card__title {
-  font-size: 20px;
-  line-height: 28px;
-  margin-bottom: var(--space-2);
-}
-
-.project-card__summary {
-  font-size: 14px;
-  line-height: 22px;
-  color: var(--text-secondary);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.portfolio__empty {
-  color: var(--text-muted);
-  padding: var(--space-8) 0;
-}
+.portfolio__hero{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,.65fr);align-items:end;gap:var(--space-9);margin-bottom:var(--space-10);padding-bottom:var(--space-8);border-bottom:1px solid var(--border)}.portfolio__hero>div>p{margin-bottom:12px;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.16em}.portfolio__hero h1{max-width:760px;font-size:clamp(38px,5vw,64px);line-height:1.08;letter-spacing:-.045em}.portfolio__hero>span{color:var(--text-secondary);font-size:15px;line-height:1.9}.portfolio-feature{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(320px,.7fr);min-height:440px;overflow:hidden;border:1px solid var(--border);border-radius:26px;color:var(--text-primary);background:var(--bg-surface);transition:transform 180ms ease,border-color 180ms ease,box-shadow 180ms ease}.portfolio-feature:hover{border-color:color-mix(in srgb,var(--primary) 42%,var(--border));transform:translateY(-3px);box-shadow:0 24px 55px rgb(0 0 0/.09)}.portfolio-feature__visual{display:grid;min-height:360px;overflow:hidden;place-items:center;background:radial-gradient(circle at 25% 20%,color-mix(in srgb,var(--primary) 24%,transparent),transparent 48%),linear-gradient(145deg,var(--bg-subtle),color-mix(in srgb,var(--accent) 12%,var(--bg-surface)))}.portfolio-feature__visual img{width:100%;height:100%;object-fit:cover;transition:transform 180ms ease}.portfolio-feature:hover img{transform:scale(1.018)}.portfolio-feature__visual>span{color:color-mix(in srgb,var(--primary) 63%,var(--text-muted));font:700 110px/1 Georgia,serif}.portfolio-feature__body{display:flex;flex-direction:column;justify-content:center;padding:clamp(28px,4vw,54px)}.portfolio-feature__body>p:first-child{display:flex;justify-content:space-between;gap:12px;margin-bottom:var(--space-5);color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.13em}.portfolio-feature__body em{padding:4px 8px;border-radius:999px;color:var(--primary);background:color-mix(in srgb,var(--primary) 9%,transparent);font-style:normal;letter-spacing:0}.portfolio-feature h2{margin-bottom:8px;font-size:clamp(28px,3vw,42px);line-height:1.15}.portfolio-feature__body>strong{margin-bottom:var(--space-4);color:var(--accent);font-size:12px}.portfolio-feature__body>p:nth-of-type(2){color:var(--text-secondary);font-size:14px;line-height:1.8}.portfolio-feature__stack,.project-card__stack{display:flex;flex-wrap:wrap;gap:6px;margin:var(--space-5) 0}.portfolio-feature__stack span,.project-card__stack span{padding:4px 9px;border:1px solid var(--border);border-radius:999px;color:var(--text-secondary);font-size:10px}.portfolio-feature b,.project-card__body>strong{margin-top:auto;color:var(--primary);font-size:13px}.portfolio-feature i,.project-card i{display:inline-grid;width:24px;height:24px;margin-left:6px;place-items:center;border-radius:50%;color:var(--on-primary);background:var(--primary);font-style:normal}.portfolio__section{margin-top:var(--space-12)}.portfolio__section-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:var(--space-5)}.portfolio__section-head small{color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.14em}.portfolio__section-head h2{font-size:26px}.portfolio__section-head>span{color:var(--text-muted);font-size:12px}.portfolio__grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:var(--space-5)}.project-card{display:grid;grid-template-columns:minmax(150px,.8fr) minmax(0,1.2fr);min-height:250px;overflow:hidden;border:1px solid var(--border);border-radius:20px;color:var(--text-primary);background:var(--bg-surface);transition:transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease}.project-card:hover{border-color:color-mix(in srgb,var(--primary) 38%,var(--border));transform:translateY(-2px);box-shadow:0 16px 36px rgb(0 0 0/.07)}.project-card--wide{grid-column:1/-1;grid-template-columns:minmax(260px,1fr) minmax(0,1fr)}.project-card__visual{position:relative;display:grid;overflow:hidden;place-items:center;background:linear-gradient(145deg,color-mix(in srgb,var(--primary) 14%,var(--bg-subtle)),color-mix(in srgb,var(--accent) 9%,var(--bg-surface)))}.project-card__visual img{width:100%;height:100%;object-fit:cover}.project-card__visual>span{color:color-mix(in srgb,var(--primary) 58%,var(--text-muted));font:700 64px/1 Georgia,serif}.project-card__visual em{position:absolute;top:12px;left:12px;padding:4px 8px;border-radius:999px;color:var(--primary);background:color-mix(in srgb,var(--bg-surface) 88%,transparent);backdrop-filter:blur(10px);font-size:10px;font-style:normal}.project-card__body{display:flex;min-width:0;flex-direction:column;padding:var(--space-5)}.project-card__body>p{margin-bottom:6px;color:var(--accent);font-size:10px}.project-card h3{font-size:21px;line-height:1.35}.portfolio__empty{padding:var(--space-10);border:1px dashed var(--border-strong);border-radius:20px;color:var(--text-muted);text-align:center}@media(prefers-reduced-motion:reduce){.portfolio-feature,.portfolio-feature img,.project-card{transition:none}}@media(max-width:960px){.portfolio__hero{grid-template-columns:1fr}.portfolio-feature{grid-template-columns:1fr}.portfolio-feature__visual{min-height:300px}.portfolio__grid{grid-template-columns:1fr}.project-card--wide{grid-column:auto}}@media(max-width:600px){.portfolio__hero{gap:var(--space-5)}.portfolio-feature{border-radius:20px}.portfolio-feature__visual{min-height:220px}.project-card,.project-card--wide{grid-template-columns:1fr}.project-card__visual{min-height:180px}}
 </style>

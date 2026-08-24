@@ -18,6 +18,7 @@ import typescript from 'highlight.js/lib/languages/typescript'
 import xml from 'highlight.js/lib/languages/xml'
 import yaml from 'highlight.js/lib/languages/yaml'
 import type { OutlineItem } from '@/types'
+import { headingText, OUTLINE_MAX_LEVEL, OUTLINE_MIN_LEVEL, uniqueHeadingId } from '@/lib/markdownOutline'
 
 // Import only the languages used by this technical knowledge base. Importing
 // highlight.js' default bundle pulls every grammar into each article route
@@ -88,31 +89,12 @@ const md = new MarkdownIt({
 const usedIds = new Map<string, number>()
 let collected: OutlineItem[] = []
 
-function slugify(text: string): string {
-  const base = text
-    .trim()
-    .toLowerCase()
-    .replace(/\s+/g, '-')
-    .replace(/[^\w\u4e00-\u9fa5-]/g, '')
-  return base || 'section'
-}
-
 md.renderer.rules.heading_open = (tokens, idx) => {
   const token = tokens[idx]
-  const inline = tokens[idx + 1]
-  const text =
-    inline && inline.type === 'inline'
-      ? (inline.children ?? [])
-          .filter((c) => c.type === 'text' || c.type === 'code_inline')
-          .map((c) => c.content)
-          .join('')
-      : ''
-  const base = slugify(text)
-  const count = usedIds.get(base) ?? 0
-  usedIds.set(base, count + 1)
-  const id = count === 0 ? base : `${base}-${count}`
+  const text = headingText(tokens[idx + 1])
+  const id = uniqueHeadingId(text, usedIds)
   const level = Number(token.tag.slice(1))
-  if (level >= 2 && level <= 4) {
+  if (level >= OUTLINE_MIN_LEVEL && level <= OUTLINE_MAX_LEVEL) {
     collected.push({ level, id, text })
   }
   return `<h${level} id="${id}">`

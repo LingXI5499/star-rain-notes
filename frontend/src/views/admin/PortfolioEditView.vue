@@ -5,7 +5,9 @@ import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
 import { createProject, fetchAdminProject, updateProject } from '@/api/portfolio'
+import type { MediaAsset } from '@/api/media'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
+import MediaPicker from '@/components/MediaPicker.vue'
 import { useUnsavedGuard } from '@/composables/useUnsavedGuard'
 
 const route = useRoute()
@@ -15,6 +17,8 @@ const isEdit = computed(() => typeof route.params.id === 'string')
 
 const loading = ref(true)
 const saving = ref(false)
+const mediaPickerOpen = ref(false)
+const coverUrl = ref<string | null>(null)
 
 const form = reactive({
   title: '',
@@ -32,18 +36,11 @@ const form = reactive({
   completedAt: null as string | null,
   seoTitle: '',
   seoDescription: '',
+  coverMediaId: null as number | null,
 })
 
 // Unsaved-changes guard + Ctrl/Cmd+S (TASK-011).
 const { capture } = useUnsavedGuard(() => form, save)
-
-function addTech() {
-  form.techStack.push('')
-}
-
-function removeTech(index: number) {
-  form.techStack.splice(index, 1)
-}
 
 onMounted(async () => {
   try {
@@ -65,7 +62,9 @@ onMounted(async () => {
         completedAt: detail.completedAt,
         seoTitle: detail.seoTitle ?? '',
         seoDescription: detail.seoDescription ?? '',
+        coverMediaId: detail.coverMediaId,
       })
+      coverUrl.value = detail.coverUrl
     } else {
       form.techStack = []
     }
@@ -100,6 +99,7 @@ async function save() {
       completedAt: form.completedAt,
       seoTitle: form.seoTitle || null,
       seoDescription: form.seoDescription || null,
+      coverMediaId: form.coverMediaId,
     }
     if (isEdit.value) {
       await updateProject(Number(route.params.id), payload)
@@ -116,33 +116,52 @@ async function save() {
     saving.value = false
   }
 }
+
+function selectCover(asset: MediaAsset) {
+  if (asset.assetType !== 'IMAGE') {
+    ElMessage.warning('封面只能选择图片。')
+    return
+  }
+  form.coverMediaId = asset.id
+  coverUrl.value = asset.publicUrl
+}
+
+function clearCover() {
+  form.coverMediaId = null
+  coverUrl.value = null
+}
 </script>
 
 <template>
   <section class="portfolio-edit">
     <!-- top action bar -->
     <div class="portfolio-edit__topbar">
-      <h1 class="portfolio-edit__title">{{ isEdit ? '编辑作品' : '新建作品' }}</h1>
+      <div>
+        <p class="portfolio-edit__eyebrow">CASE STUDY WORKSPACE · 作品</p>
+        <h1 class="portfolio-edit__title">{{ isEdit ? '编辑作品' : '新建作品' }}</h1>
+        <p>组织项目叙事、技术栈、封面与上线信息。</p>
+      </div>
       <div class="portfolio-edit__topbar-actions">
-        <el-button :loading="saving" type="primary" @click="save">保存</el-button>
         <el-button @click="router.push({ name: 'admin-portfolio' })">取消</el-button>
+        <el-button :loading="saving" type="primary" @click="save">保存作品</el-button>
       </div>
     </div>
 
     <el-form v-loading="loading" label-position="top" class="portfolio-edit__form" @submit.prevent="save">
-      <!-- center: big title + body editor (CSDN-style) -->
-      <el-input
-        v-model="form.title"
-        class="portfolio-edit__title-input"
-        placeholder="输入作品标题"
-        maxlength="200"
-      />
-
-      <MarkdownEditor v-model="form.bodyMarkdown" placeholder="Background / Goals / Architecture / Challenges / Results…" />
+      <section class="portfolio-edit__writing-card">
+        <el-input
+          v-model="form.title"
+          class="portfolio-edit__title-input"
+          placeholder="输入作品标题"
+          maxlength="200"
+        />
+        <p class="portfolio-edit__outline-note">正文请从 H2 开始；前台右侧目录固定收录 H2–H4。</p>
+        <MarkdownEditor v-model="form.bodyMarkdown" placeholder="Background / Goals / Architecture / Challenges / Results…" />
+      </section>
 
       <!-- bottom: other meta info (status / links / stack / SEO) -->
       <div class="portfolio-edit__meta">
-        <h2 class="portfolio-edit__meta-title">作品信息</h2>
+        <div class="portfolio-edit__section-head"><div><small>PROJECT SETTINGS</small><h2>作品信息</h2></div><span>用案例叙事呈现完整工程过程</span></div>
         <div class="portfolio-edit__meta-grid">
           <el-form-item label="Slug（小写 kebab-case）">
             <el-input v-model="form.slug" maxlength="150" />
@@ -176,12 +195,16 @@ async function save() {
             <el-input v-model="form.demoUrl" maxlength="500" />
           </el-form-item>
           <el-form-item label="技术栈（≤20 项）">
-            <div class="portfolio-edit__stack">
-              <div v-for="(_, index) in form.techStack" :key="index" class="portfolio-edit__stack-row">
-                <el-input v-model="form.techStack[index]" placeholder="例如：Java" />
-                <el-button @click="removeTech(index)">删除</el-button>
-              </div>
-              <el-button @click="addTech">添加技术</el-button>
+            <el-select v-model="form.techStack" multiple filterable allow-create default-first-option placeholder="输入技术名称后回车" style="width:100%" />
+          </el-form-item>
+          <el-form-item label="作品封面" class="portfolio-edit__cover-field">
+            <div class="portfolio-edit__cover" :class="{ 'portfolio-edit__cover--empty': !coverUrl }">
+              <img v-if="coverUrl" :src="coverUrl" alt="作品封面预览" />
+              <div v-else><strong>作</strong><span>建议使用 16:9 项目截图</span></div>
+            </div>
+            <div class="portfolio-edit__cover-actions">
+              <el-button @click="mediaPickerOpen = true">选择封面</el-button>
+              <el-button v-if="form.coverMediaId" type="danger" plain @click="clearCover">移除</el-button>
             </div>
           </el-form-item>
           <el-form-item label="摘要">
@@ -197,29 +220,42 @@ async function save() {
       </div>
 
       <div class="portfolio-edit__actions">
-        <el-button type="primary" :loading="saving" @click="save">保存</el-button>
         <el-button @click="router.push({ name: 'admin-portfolio' })">取消</el-button>
+        <el-button type="primary" :loading="saving" @click="save">保存作品</el-button>
       </div>
     </el-form>
+    <MediaPicker v-model="mediaPickerOpen" @select="selectCover" />
   </section>
 </template>
 
 <style scoped>
 .portfolio-edit__topbar {
+  position: sticky;
+  top: 0;
+  z-index: 12;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: var(--space-6);
+  gap: var(--space-5);
+  margin: -8px -12px var(--space-6);
+  padding: 14px 12px;
+  border-bottom: 1px solid color-mix(in srgb,var(--border) 78%,transparent);
+  background: color-mix(in srgb,var(--bg-page) 88%,transparent);
+  backdrop-filter: blur(16px);
 }
 
-.portfolio-edit__title {
-  font-size: 28px;
-  line-height: 36px;
-}
+.portfolio-edit__eyebrow { margin-bottom: 3px; color: var(--accent); font-size: 10px; font-weight: 750; letter-spacing: .15em; }
+.portfolio-edit__title { font-size: 26px; line-height: 32px; }
+.portfolio-edit__topbar p:last-child { color: var(--text-muted); font-size: 12px; }
+.portfolio-edit__topbar-actions { display:flex; flex-shrink:0; gap:var(--space-2); }
+.portfolio-edit__writing-card,.portfolio-edit__meta { border:1px solid var(--border); border-radius:20px; background:var(--bg-surface); box-shadow:0 18px 45px rgb(0 0 0/.035); }
+.portfolio-edit__writing-card { padding:var(--space-5); }
 
 .portfolio-edit__title-input {
-  margin-bottom: var(--space-5);
+  margin-bottom: var(--space-2);
 }
+
+.portfolio-edit__outline-note { margin-bottom:var(--space-4); color:var(--text-muted); font-size:12px; }
 
 .portfolio-edit__title-input :deep(.el-input__inner) {
   font-size: 26px;
@@ -231,16 +267,13 @@ async function save() {
 /* bottom meta section */
 .portfolio-edit__meta {
   margin-top: var(--space-8);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--border);
+  padding: var(--space-6);
 }
 
-.portfolio-edit__meta-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: var(--space-5);
-  color: var(--text-secondary);
-}
+.portfolio-edit__section-head { display:flex; align-items:end; justify-content:space-between; gap:var(--space-4); margin-bottom:var(--space-5); }
+.portfolio-edit__section-head small { color:var(--accent); font-size:10px; font-weight:750; letter-spacing:.14em; }
+.portfolio-edit__section-head h2 { font-size:22px; }
+.portfolio-edit__section-head > span { color:var(--text-muted); font-size:12px; }
 
 .portfolio-edit__meta-grid {
   display: grid;
@@ -248,19 +281,18 @@ async function save() {
   gap: 0 var(--space-6);
 }
 
-.portfolio-edit__stack {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.portfolio-edit__stack-row {
-  display: flex;
-  gap: var(--space-2);
-}
+.portfolio-edit__cover-field { grid-column:span 2; }
+.portfolio-edit__cover { width:100%; aspect-ratio:16/9; display:grid; overflow:hidden; place-items:center; border:1px solid var(--border); border-radius:14px; background:var(--bg-subtle); }
+.portfolio-edit__cover img { width:100%; height:100%; object-fit:cover; }
+.portfolio-edit__cover > div { display:grid; place-items:center; color:var(--text-muted); }
+.portfolio-edit__cover strong { color:var(--primary); font:700 42px/1 Georgia,serif; }
+.portfolio-edit__cover span { font-size:12px; }
+.portfolio-edit__cover-actions { display:flex; gap:var(--space-2); margin-top:var(--space-3); }
 
 .portfolio-edit__actions {
+  display:flex;
+  justify-content:flex-end;
+  gap:var(--space-2);
   margin-top: var(--space-6);
 }
 
@@ -269,4 +301,5 @@ async function save() {
     grid-template-columns: 1fr;
   }
 }
+@media (max-width: 640px) { .portfolio-edit__topbar { align-items:flex-start; } .portfolio-edit__topbar p:last-child,.portfolio-edit__section-head > span { display:none; } .portfolio-edit__topbar-actions { flex-direction:column-reverse; } .portfolio-edit__writing-card,.portfolio-edit__meta { padding:var(--space-4); border-radius:15px; } .portfolio-edit__cover-field { grid-column:auto; } }
 </style>

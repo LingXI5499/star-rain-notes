@@ -283,12 +283,22 @@ class PortfolioAdminIntegrationTest extends AbstractAuthIntegrationTest {
     @Test
     void listPaginatesAndDeleteSucceeds() throws Exception {
         MockHttpSession session = loginSession();
-        Long a = createProject(session, "p1", null);
-        createProject(session, "p2", null);
+        Long a = createProject(session, "p1", "\"projectStatus\":\"DEVELOPING\",\"role\":\"Backend\",\"techStack\":[\"Java\"]");
+        createProject(session, "p2", "\"projectStatus\":\"COMPLETED\"");
 
         mockMvc.perform(get("/api/v1/admin/portfolio/projects").session(session))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total").value(2));
+                .andExpect(jsonPath("$.total").value(2))
+                .andExpect(jsonPath("$.items[0].summary").value("Summary"))
+                .andExpect(jsonPath("$.items[0].techStack").isArray());
+
+        mockMvc.perform(get("/api/v1/admin/portfolio/projects")
+                        .param("projectStatus", "DEVELOPING").session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(1))
+                .andExpect(jsonPath("$.items[0].slug").value("p1"))
+                .andExpect(jsonPath("$.items[0].role").value("Backend"))
+                .andExpect(jsonPath("$.items[0].techStack[0]").value("Java"));
 
         mockMvc.perform(withCsrf(delete("/api/v1/admin/portfolio/projects/" + a), csrf(session)).session(session))
                 .andExpect(status().isNoContent());

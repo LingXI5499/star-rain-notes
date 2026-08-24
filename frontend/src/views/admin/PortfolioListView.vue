@@ -3,164 +3,39 @@ import { onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
-import {
-  deleteProject,
-  fetchAdminProjects,
-  publishProject,
-  withdrawProject,
-  type AdminProjectPage,
-  type AdminProjectSummary,
-} from '@/api/portfolio'
+import { deleteProject, fetchAdminProjects, publishProject, withdrawProject, type AdminProjectPage, type AdminProjectSummary } from '@/api/portfolio'
 
 const router = useRouter()
-
 const loading = ref(true)
 const page = ref<AdminProjectPage | null>(null)
-const filters = reactive({ page: 1, pageSize: 10, status: '', q: '' })
-
-async function load() {
-  loading.value = true
-  try {
-    page.value = await fetchAdminProjects({
-      page: filters.page,
-      pageSize: filters.pageSize,
-      status: filters.status || undefined,
-      q: filters.q || undefined,
-    })
-  } catch {
-    ElMessage.error('加载作品列表失败。')
-  } finally {
-    loading.value = false
-  }
-}
-
-function search() {
-  filters.page = 1
-  void load()
-}
-
-const publishLabels: Record<string, string> = { DRAFT: '草稿', PUBLISHED: '已发布', WITHDRAWN: '已撤回' }
-const projectLabels: Record<string, string> = { DEVELOPING: '开发中', COMPLETED: '已完成', ONLINE: '已上线' }
-
-function formatTime(iso: string | null): string {
-  if (!iso) return '—'
-  const date = new Date(iso)
-  return Number.isNaN(date.getTime()) ? iso : date.toLocaleString('zh-CN')
-}
-
-async function togglePublish(row: AdminProjectSummary) {
-  try {
-    if (row.publishStatus === 'PUBLISHED') {
-      await withdrawProject(row.id)
-      ElMessage.success('已撤回。')
-    } else {
-      await publishProject(row.id)
-      ElMessage.success('已发布。')
-    }
-    await load()
-  } catch {
-    ElMessage.error('操作失败。')
-  }
-}
-
-async function remove(row: AdminProjectSummary) {
-  try {
-    await ElMessageBox.confirm(`确定删除作品「${row.title}」？`, '删除确认', { type: 'warning' })
-    await deleteProject(row.id)
-    ElMessage.success('已删除。')
-    await load()
-  } catch {
-    // cancelled or failed
-  }
-}
-
+const filters = reactive({ page: 1, pageSize: 10, status: '', projectStatus: '', q: '' })
+const publishLabels: Record<string,string> = { DRAFT:'草稿', PUBLISHED:'已发布', WITHDRAWN:'已撤回' }
+const projectLabels: Record<string,string> = { DEVELOPING:'开发中', COMPLETED:'已完成', ONLINE:'已上线' }
+async function load(){ loading.value=true; try{ page.value=await fetchAdminProjects({page:filters.page,pageSize:filters.pageSize,status:filters.status||undefined,projectStatus:filters.projectStatus||undefined,q:filters.q||undefined}) }catch{ElMessage.error('加载作品列表失败。')}finally{loading.value=false} }
+function search(){filters.page=1;void load()}
+function formatTime(iso:string|null){if(!iso)return '—';const d=new Date(iso);return Number.isNaN(d.getTime())?iso:d.toLocaleString('zh-CN',{dateStyle:'medium',timeStyle:'short'})}
+function glyph(title:string){return title.trim().slice(0,1)||'作'}
+async function togglePublish(row:AdminProjectSummary){try{if(row.publishStatus==='PUBLISHED'){await withdrawProject(row.id);ElMessage.success('作品已撤回。')}else{await publishProject(row.id);ElMessage.success('作品已发布。')}await load()}catch{ElMessage.error('操作失败。')}}
+function preview(row:AdminProjectSummary){if(row.publishStatus!=='PUBLISHED'){ElMessage.info('作品发布后才能在前台预览。');return}window.open(`/portfolio/${row.slug}`,'_blank','noopener,noreferrer')}
+async function remove(row:AdminProjectSummary){try{await ElMessageBox.confirm(`确定删除作品「${row.title}」？此操作不可恢复。`,'删除确认',{type:'warning'});await deleteProject(row.id);ElMessage.success('作品已删除。');await load()}catch{/* cancel or failure */}}
 onMounted(load)
 </script>
 
 <template>
-  <section class="portfolio-admin">
-    <div class="portfolio-admin__header">
-      <h1 class="portfolio-admin__title">作品管理</h1>
-      <el-button type="primary" @click="router.push({ name: 'admin-portfolio-new' })">新建作品</el-button>
+  <section class="project-admin">
+    <header class="project-admin__hero"><div><p>CASE STUDY LIBRARY · 项目案例</p><h1>作品管理</h1><span>维护项目状态、技术栈和前台案例展示。</span></div><el-button type="primary" @click="router.push({name:'admin-portfolio-new'})">＋ 新建作品</el-button></header>
+    <div class="project-admin__toolbar"><el-input v-model="filters.q" placeholder="搜索标题 / slug" clearable @keyup.enter="search" @clear="search"/><el-select v-model="filters.status" placeholder="发布状态" clearable @change="search"><el-option label="草稿" value="DRAFT"/><el-option label="已发布" value="PUBLISHED"/><el-option label="已撤回" value="WITHDRAWN"/></el-select><el-select v-model="filters.projectStatus" placeholder="项目状态" clearable @change="search"><el-option label="开发中" value="DEVELOPING"/><el-option label="已完成" value="COMPLETED"/><el-option label="已上线" value="ONLINE"/></el-select><el-button @click="search">筛选</el-button><span>{{page?.total??0}} 个项目</span></div>
+    <div v-loading="loading" class="project-admin__list">
+      <article v-for="row in page?.items??[]" :key="row.id" class="project-card">
+        <div class="project-card__visual"><img v-if="row.coverUrl" :src="row.coverUrl" :alt="row.title" loading="lazy"/><span v-else>{{glyph(row.title)}}</span><strong v-if="row.featured">精选</strong></div>
+        <div class="project-card__body"><div class="project-card__top"><div><p>/{{row.slug}}</p><h2>{{row.title}}</h2></div><div><span>{{publishLabels[row.publishStatus]??row.publishStatus}}</span><span>{{projectLabels[row.projectStatus]??row.projectStatus}}</span></div></div><p class="project-card__summary">{{row.summary}}</p><p v-if="row.role" class="project-card__role">角色 · {{row.role}}</p><div class="project-card__stack"><span v-for="tech in row.techStack" :key="tech">{{tech}}</span><small v-if="!row.techStack.length">技术栈待补充</small></div><footer><time>更新 {{formatTime(row.updatedAt)}}</time><div><button @click="preview(row)">预览</button><button @click="router.push(`/admin/portfolio/${row.id}/edit`)">编辑</button><button @click="togglePublish(row)">{{row.publishStatus==='PUBLISHED'?'撤回':'发布'}}</button><button class="danger" @click="remove(row)">删除</button></div></footer></div>
+      </article>
+      <div v-if="!loading&&!(page?.items.length)" class="project-admin__empty"><strong>暂无作品</strong><span>创建项目案例，展示完整的工程过程。</span></div>
     </div>
-
-    <div class="portfolio-admin__filters">
-      <el-input
-        v-model="filters.q"
-        placeholder="搜索标题 / slug"
-        clearable
-        style="width: 260px"
-        @keyup.enter="search"
-        @clear="search"
-      />
-      <el-select v-model="filters.status" placeholder="发布状态" clearable style="width: 140px" @change="search">
-        <el-option label="草稿" value="DRAFT" />
-        <el-option label="已发布" value="PUBLISHED" />
-        <el-option label="已撤回" value="WITHDRAWN" />
-      </el-select>
-      <el-button @click="search">搜索</el-button>
-    </div>
-
-    <el-table v-loading="loading" :data="page?.items ?? []" empty-text="暂无作品">
-      <el-table-column prop="title" label="标题" min-width="200" />
-      <el-table-column label="发布状态" width="110">
-        <template #default="{ row }">
-          <el-tag
-            :type="row.publishStatus === 'PUBLISHED' ? 'success' : row.publishStatus === 'WITHDRAWN' ? 'info' : 'warning'"
-          >
-            {{ publishLabels[row.publishStatus] ?? row.publishStatus }}
-          </el-tag>
-        </template>
-      </el-table-column>
-      <el-table-column label="项目状态" width="100">
-        <template #default="{ row }">{{ projectLabels[row.projectStatus] ?? row.projectStatus }}</template>
-      </el-table-column>
-      <el-table-column label="精选" width="80">
-        <template #default="{ row }">{{ row.featured ? '是' : '—' }}</template>
-      </el-table-column>
-      <el-table-column label="更新时间" width="170">
-        <template #default="{ row }">{{ formatTime(row.updatedAt) }}</template>
-      </el-table-column>
-      <el-table-column label="操作" width="240" fixed="right">
-        <template #default="{ row }">
-          <el-button link type="primary" @click="router.push(`/admin/portfolio/${row.id}/edit`)">编辑</el-button>
-          <el-button link :type="row.publishStatus === 'PUBLISHED' ? 'warning' : 'success'" @click="togglePublish(row)">
-            {{ row.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}
-          </el-button>
-          <el-button link type="danger" @click="remove(row)">删除</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-
-    <el-pagination
-      v-if="page && page.total > 0"
-      v-model:current-page="filters.page"
-      v-model:page-size="filters.pageSize"
-      :total="page.total"
-      :page-sizes="[10, 20, 50]"
-      layout="total, sizes, prev, pager, next"
-      style="margin-top: var(--space-6)"
-      @change="load"
-    />
+    <el-pagination v-if="page&&page.total>0" v-model:current-page="filters.page" v-model:page-size="filters.pageSize" :total="page.total" :page-sizes="[10,20,50]" layout="total, sizes, prev, pager, next" class="project-admin__pagination" @change="load"/>
   </section>
 </template>
 
 <style scoped>
-.portfolio-admin__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--space-6);
-}
-
-.portfolio-admin__title {
-  font-size: 28px;
-  line-height: 36px;
-}
-
-.portfolio-admin__filters {
-  display: flex;
-  gap: var(--space-3);
-  margin-bottom: var(--space-5);
-}
+.project-admin__hero{display:flex;align-items:end;justify-content:space-between;gap:var(--space-5);margin-bottom:var(--space-6)}.project-admin__hero p{margin-bottom:8px;color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.16em}.project-admin__hero h1{margin-bottom:5px;font-size:34px;letter-spacing:-.03em}.project-admin__hero span{color:var(--text-muted);font-size:13px}.project-admin__toolbar{display:grid;grid-template-columns:minmax(220px,1fr) 150px 150px auto auto;align-items:center;gap:var(--space-3);margin-bottom:var(--space-5);padding:14px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.project-admin__toolbar>span{justify-self:end;color:var(--text-muted);font-size:12px}.project-admin__list{min-height:180px;display:grid;gap:var(--space-4)}.project-card{display:grid;grid-template-columns:230px minmax(0,1fr);overflow:hidden;border:1px solid var(--border);border-radius:18px;background:var(--bg-surface);transition:transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease}.project-card:hover{border-color:color-mix(in srgb,var(--primary) 38%,var(--border));transform:translateY(-2px);box-shadow:0 15px 34px rgb(0 0 0/.065)}.project-card__visual{position:relative;display:grid;min-height:205px;overflow:hidden;place-items:center;background:linear-gradient(145deg,color-mix(in srgb,var(--primary) 18%,var(--bg-subtle)),color-mix(in srgb,var(--accent) 13%,var(--bg-surface)))}.project-card__visual img{width:100%;height:100%;object-fit:cover}.project-card__visual>span{color:color-mix(in srgb,var(--primary) 58%,var(--text-muted));font:700 62px/1 Georgia,serif}.project-card__visual strong{position:absolute;top:12px;left:12px;padding:5px 10px;border-radius:999px;color:var(--on-primary);background:var(--primary);font-size:10px}.project-card__body{min-width:0;padding:var(--space-5)}.project-card__top{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4)}.project-card__top p{margin-bottom:4px;color:var(--accent);font:600 10px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace}.project-card__top h2{font-size:21px;line-height:1.4}.project-card__top>div:last-child{display:flex;gap:5px}.project-card__top>div:last-child span{padding:5px 9px;border-radius:999px;background:var(--bg-subtle);color:var(--text-secondary);font-size:10px}.project-card__summary{display:-webkit-box;overflow:hidden;margin:10px 0 5px;color:var(--text-secondary);font-size:13px;line-height:1.7;-webkit-box-orient:vertical;-webkit-line-clamp:2}.project-card__role{color:var(--text-muted);font-size:11px}.project-card__stack{display:flex;min-height:26px;flex-wrap:wrap;gap:6px;margin-top:10px}.project-card__stack span{padding:3px 9px;border-radius:999px;color:var(--primary);background:color-mix(in srgb,var(--primary) 9%,transparent);font-size:11px}.project-card__stack small{color:var(--text-muted)}.project-card footer{display:flex;align-items:end;justify-content:space-between;gap:var(--space-4);margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}.project-card time{color:var(--text-muted);font-size:11px}.project-card footer div{display:flex;gap:5px}.project-card button{padding:6px 10px;border:1px solid var(--border);border-radius:999px;color:var(--text-secondary);background:var(--bg-page);cursor:pointer;font-size:12px}.project-card button:hover{border-color:var(--primary);color:var(--primary)}.project-card button.danger:hover{border-color:var(--danger);color:var(--danger)}.project-admin__empty{display:grid;min-height:220px;place-content:center;gap:6px;border:1px dashed var(--border-strong);border-radius:18px;color:var(--text-muted);text-align:center}.project-admin__empty strong{color:var(--text-primary)}.project-admin__pagination{margin-top:var(--space-6)}@media(prefers-reduced-motion:reduce){.project-card{transition:none}}@media(max-width:900px){.project-admin__toolbar{grid-template-columns:1fr 1fr}.project-card{grid-template-columns:160px minmax(0,1fr)}.project-card footer{align-items:flex-start;flex-direction:column}}@media(max-width:620px){.project-admin__hero{align-items:flex-start}.project-admin__toolbar{grid-template-columns:1fr}.project-card{grid-template-columns:1fr}.project-card__visual{min-height:150px;aspect-ratio:16/7}.project-card__top{flex-direction:column}.project-card footer div{flex-wrap:wrap}}
 </style>

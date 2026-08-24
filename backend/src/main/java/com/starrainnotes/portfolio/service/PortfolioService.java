@@ -10,6 +10,7 @@ import com.starrainnotes.portfolio.dto.AdminProjectSummaryView;
 import com.starrainnotes.portfolio.dto.CreateProjectRequest;
 import com.starrainnotes.portfolio.dto.PublicProjectDetailView;
 import com.starrainnotes.portfolio.dto.PublicProjectSummaryView;
+import com.starrainnotes.portfolio.dto.PrevNextProjectView;
 import com.starrainnotes.portfolio.dto.UpdateProjectRequest;
 import com.starrainnotes.portfolio.entity.PortfolioProject;
 import com.starrainnotes.portfolio.mapper.PortfolioProjectMapper;
@@ -25,6 +26,9 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * Portfolio vertical slice (01 §4, 04 §12).
@@ -62,11 +66,12 @@ public class PortfolioService {
     // admin
     // ---------------------------------------------------------------
 
-    public AdminProjectPageView adminList(int page, int pageSize, String status, String query) {
+    public AdminProjectPageView adminList(int page, int pageSize, String status, String projectStatus, String query) {
         int safePage = Math.max(page, 1);
         int safeSize = Math.min(Math.max(pageSize, 1), 50);
         LambdaQueryWrapper<PortfolioProject> wrapper = new LambdaQueryWrapper<PortfolioProject>()
                 .eq(status != null && !status.isBlank(), PortfolioProject::getPublishStatus, status)
+                .eq(projectStatus != null && !projectStatus.isBlank(), PortfolioProject::getProjectStatus, projectStatus)
                 .and(query != null && !query.isBlank(), w -> w
                         .like(PortfolioProject::getTitle, query).or().like(PortfolioProject::getSlug, query))
                 .orderByDesc(PortfolioProject::getUpdatedAt)
@@ -74,9 +79,14 @@ public class PortfolioService {
 
         Long total = projectMapper.selectCount(wrapper);
         wrapper.last("LIMIT " + safeSize + " OFFSET " + ((safePage - 1) * safeSize));
-        List<AdminProjectSummaryView> items = projectMapper.selectList(wrapper).stream()
+        List<PortfolioProject> rows = projectMapper.selectList(wrapper);
+        Map<Long, String> covers = coverUrls(rows.stream().map(PortfolioProject::getCoverMediaId).toList());
+        List<AdminProjectSummaryView> items = rows.stream()
                 .map(p -> new AdminProjectSummaryView(
-                        p.getId(), p.getTitle(), p.getSlug(), p.getPublishStatus(), p.getProjectStatus(),
+                        p.getId(), p.getTitle(), p.getSlug(), p.getSummary(), p.getRole(),
+                        p.getTechStack() == null ? List.of() : p.getTechStack(),
+                        p.getCoverMediaId() == null ? null : covers.get(p.getCoverMediaId()),
+                        p.getPublishStatus(), p.getProjectStatus(),
                         Boolean.TRUE.equals(p.getFeatured()), p.getSortOrder(),
                         formatUtc(p.getPublishedAt()), formatUtc(p.getUpdatedAt())))
                 .toList();
@@ -163,10 +173,12 @@ public class PortfolioService {
                 .orderByDesc(PortfolioProject::getFeatured)
                 .orderByAsc(PortfolioProject::getSortOrder)
                 .orderByAsc(PortfolioProject::getId));
+        Map<Long, String> covers = coverUrls(rows.stream().map(PortfolioProject::getCoverMediaId).toList());
         return rows.stream()
                 .map(p -> new PublicProjectSummaryView(
-                        p.getId(), p.getTitle(), p.getSlug(), p.getSummary(),
-                        coverUrl(p.getCoverMediaId()), p.getProjectStatus(),
+                        p.getId(), p.getTitle(), p.getSlug(), p.getSummary(), p.getRole(),
+                        p.getTechStack() == null ? List.of() : p.getTechStack(),
+                        p.getCoverMediaId() == null ? null : covers.get(p.getCoverMediaId()), p.getProjectStatus(),
                         Boolean.TRUE.equals(p.getFeatured()), p.getSortOrder(),
                         formatUtc(p.getUpdatedAt())))
                 .toList();
@@ -180,13 +192,24 @@ public class PortfolioService {
                     "Project not found", "The project does not exist or is not public.");
         }
         List<String> techStack = project.getTechStack() == null ? List.of() : project.getTechStack();
+        List<PortfolioProject> ordered = projectMapper.selectList(new LambdaQueryWrapper<PortfolioProject>()
+                .eq(PortfolioProject::getPublishStatus, PUBLISHED)
+                .orderByDesc(PortfolioProject::getFeatured)
+                .orderByAsc(PortfolioProject::getSortOrder)
+                .orderByAsc(PortfolioProject::getId));
+        int currentIndex = java.util.stream.IntStream.range(0, ordered.size())
+                .filter(index -> ordered.get(index).getId().equals(project.getId()))
+                .findFirst().orElse(-1);
+        PrevNextProjectView previous = currentIndex > 0 ? toPrevNext(ordered.get(currentIndex - 1)) : null;
+        PrevNextProjectView next = currentIndex >= 0 && currentIndex + 1 < ordered.size()
+                ? toPrevNext(ordered.get(currentIndex + 1)) : null;
         return new PublicProjectDetailView(
                 project.getId(), project.getTitle(), project.getSlug(), project.getSummary(), project.getRole(),
                 techStack, project.getBodyMarkdown(), coverUrl(project.getCoverMediaId()),
                 project.getRepositoryUrl(), project.getDemoUrl(), project.getProjectStatus(),
                 project.getStartedAt(), project.getCompletedAt(),
                 project.getSeoTitle(), project.getSeoDescription(),
-                formatUtc(project.getPublishedAt()), formatUtc(project.getUpdatedAt()));
+                formatUtc(project.getPublishedAt()), formatUtc(project.getUpdatedAt()), previous, next);
     }
 
     // ---------------------------------------------------------------
@@ -304,14 +327,28 @@ public class PortfolioService {
         return media == null ? null : media.getPublicUrl();
     }
 
+    private Map<Long, String> coverUrls(List<Long> mediaIds) {
+        List<Long> distinct = mediaIds.stream().filter(Objects::nonNull).distinct().toList();
+        if (distinct.isEmpty()) {
+            return Map.of();
+        }
+        return mediaAssetMapper.selectBatchIds(distinct).stream()
+                .collect(Collectors.toMap(MediaAsset::getId, MediaAsset::getPublicUrl));
+    }
+
     private AdminProjectDetailView toAdminDetail(PortfolioProject p) {
         List<String> techStack = p.getTechStack() == null ? List.of() : p.getTechStack();
         return new AdminProjectDetailView(
                 p.getId(), p.getTitle(), p.getSlug(), p.getSummary(), p.getRole(), techStack,
-                p.getBodyMarkdown(), p.getCoverMediaId(), p.getRepositoryUrl(), p.getDemoUrl(),
+                p.getBodyMarkdown(), p.getCoverMediaId(), coverUrl(p.getCoverMediaId()),
+                p.getRepositoryUrl(), p.getDemoUrl(),
                 p.getPublishStatus(), p.getProjectStatus(), Boolean.TRUE.equals(p.getFeatured()),
                 p.getSortOrder(), p.getStartedAt(), p.getCompletedAt(), p.getSeoTitle(), p.getSeoDescription(),
                 formatUtc(p.getPublishedAt()), formatUtc(p.getCreatedAt()), formatUtc(p.getUpdatedAt()));
+    }
+
+    private PrevNextProjectView toPrevNext(PortfolioProject project) {
+        return new PrevNextProjectView(project.getId(), project.getSlug(), project.getTitle());
     }
 
     private String formatUtc(LocalDateTime utc) {

@@ -36,8 +36,9 @@ public class PortfolioAdminController {
     public AdminProjectPageView list(@RequestParam(defaultValue = "1") int page,
                                      @RequestParam(defaultValue = "10") int pageSize,
                                      @RequestParam(required = false) String status,
+                                     @RequestParam(required = false) String projectStatus,
                                      @RequestParam(required = false) String q) {
-        return portfolioService.adminList(page, pageSize, status, q);
+        return portfolioService.adminList(page, pageSize, status, projectStatus, q);
     }
 
     @PostMapping

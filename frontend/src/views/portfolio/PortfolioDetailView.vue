@@ -1,202 +1,31 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
 import { fetchPublicProject, type PublicProjectDetail } from '@/api/portfolio'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
+import ArticleOutline from '@/components/ArticleOutline.vue'
 import { applyPageMeta } from '@/lib/seo'
+import type { OutlineItem } from '@/types'
 
-const route = useRoute()
-const project = ref<PublicProjectDetail | null>(null)
-const notFound = ref(false)
-const loadFailed = ref(false)
-
-const statusLabels: Record<string, string> = {
-  DEVELOPING: '开发中',
-  COMPLETED: '已完成',
-  ONLINE: '已上线',
-}
-
-function formatDate(date: string | null): string {
-  if (!date) return '—'
-  return date
-}
-
-onMounted(async () => {
-  try {
-    project.value = await fetchPublicProject(route.params.slug as string)
-    if (project.value) {
-      applyPageMeta({
-        title: project.value.seoTitle ?? project.value.title,
-        description: project.value.seoDescription ?? project.value.summary,
-      })
-    }
-  } catch (error) {
-    if (error instanceof AxiosError && error.response?.status === 404) {
-      notFound.value = true
-      applyPageMeta({ title: '页面未找到', robots: 'noindex,nofollow' })
-    } else {
-      loadFailed.value = true
-      applyPageMeta({ title: '加载失败', robots: 'noindex,nofollow' })
-    }
-  }
-})
+const route=useRoute();const project=ref<PublicProjectDetail|null>(null);const outline=ref<OutlineItem[]>([]);const notFound=ref(false);const loadFailed=ref(false);const drawerOpen=ref(false)
+const statusLabels:Record<string,string>={DEVELOPING:'开发中',COMPLETED:'已完成',ONLINE:'已上线'}
+async function load(){project.value=null;outline.value=[];notFound.value=false;loadFailed.value=false;drawerOpen.value=false;try{project.value=await fetchPublicProject(route.params.slug as string);applyPageMeta({title:project.value.seoTitle??project.value.title,description:project.value.seoDescription??project.value.summary})}catch(error){if(error instanceof AxiosError&&error.response?.status===404){notFound.value=true;applyPageMeta({title:'页面未找到',robots:'noindex,nofollow'})}else{loadFailed.value=true;applyPageMeta({title:'加载失败',robots:'noindex,nofollow'})}}}
+onMounted(load);watch(()=>route.params.slug,load)
 </script>
 
 <template>
-  <section v-if="notFound" class="case-study">
-    <p class="case-study__empty">项目不存在或尚未公开。</p>
-    <RouterLink to="/portfolio" class="case-study__back">返回作品</RouterLink>
-  </section>
-
-  <section v-else-if="loadFailed" class="case-study">
-    <p class="case-study__empty">加载失败，请稍后重试。</p>
-    <RouterLink to="/portfolio" class="case-study__back">返回作品</RouterLink>
-  </section>
-
-  <section v-else-if="project" class="case-study">
-    <div v-if="project.coverUrl" class="case-study__cover">
-      <img :src="project.coverUrl" :alt="project.title" />
-    </div>
-
-    <header class="case-study__hero">
-      <p class="case-study__status">{{ statusLabels[project.projectStatus] ?? project.projectStatus }}</p>
-      <h1 class="case-study__title">{{ project.title }}</h1>
-      <p v-if="project.role" class="case-study__role">角色：{{ project.role }}</p>
-      <p class="case-study__summary">{{ project.summary }}</p>
-
-      <p class="case-study__dates">
-        <template v-if="project.startedAt">开始 <time :datetime="project.startedAt">{{ formatDate(project.startedAt) }}</time></template>
-        <template v-if="project.completedAt"> · 完成 <time :datetime="project.completedAt">{{ formatDate(project.completedAt) }}</time></template>
-      </p>
-
-      <div v-if="project.repositoryUrl || project.demoUrl" class="case-study__links">
-        <a
-          v-if="project.demoUrl"
-          :href="project.demoUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="case-study__link case-study__link--primary"
-        >
-          在线演示
-        </a>
-        <a
-          v-if="project.repositoryUrl"
-          :href="project.repositoryUrl"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="case-study__link"
-        >
-          代码仓库
-        </a>
-      </div>
-    </header>
-
-    <div v-if="project.techStack.length" class="case-study__stack">
-      <span v-for="tech in project.techStack" :key="tech" class="case-study__tech">{{ tech }}</span>
-    </div>
-
-    <MarkdownRenderer :source="project.bodyMarkdown" />
-  </section>
-
-  <section v-else class="case-study">
-    <p class="case-study__empty">加载中…</p>
-  </section>
+  <section v-if="notFound||loadFailed" class="case-state"><strong>{{notFound?'项目不存在或尚未公开':'加载失败，请稍后重试'}}</strong><RouterLink to="/portfolio">返回作品</RouterLink></section>
+  <article v-else-if="project" class="case-study" :class="{'case-study--no-toc':!outline.length}">
+    <header class="case-hero"><div class="case-hero__visual"><img v-if="project.coverUrl" :src="project.coverUrl" :alt="project.title"/><span v-else>{{project.title.slice(0,1)}}</span></div><div class="case-hero__content"><nav><RouterLink to="/portfolio">作品</RouterLink><span>/</span><span>案例详情</span></nav><p class="case-hero__eyebrow">{{statusLabels[project.projectStatus]??project.projectStatus}} · CASE STUDY</p><h1>{{project.title}}</h1><strong v-if="project.role">{{project.role}}</strong><p>{{project.summary}}</p><div class="case-hero__meta"><span v-if="project.startedAt">开始 {{project.startedAt}}</span><span v-if="project.completedAt">完成 {{project.completedAt}}</span><span>更新 {{new Date(project.updatedAt).toLocaleDateString('zh-CN')}}</span></div><div class="case-hero__links"><a v-if="project.demoUrl" :href="project.demoUrl" target="_blank" rel="noopener noreferrer" class="primary">在线演示 <i>↗</i></a><a v-if="project.repositoryUrl" :href="project.repositoryUrl" target="_blank" rel="noopener noreferrer">代码仓库 <i>↗</i></a></div></div></header>
+    <div class="case-stack"><span v-for="tech in project.techStack" :key="tech">{{tech}}</span></div>
+    <button v-if="outline.length" class="case-study__drawer-button" @click="drawerOpen=true">本页目录 · {{outline.length}}</button>
+    <div class="case-study__reading"><main class="case-study__body"><MarkdownRenderer :source="project.bodyMarkdown" @outline="outline=$event"/><nav class="case-nav"><RouterLink v-if="project.previous" :to="`/portfolio/${project.previous.slug}`"><small>上一个案例</small><strong>← {{project.previous.title}}</strong></RouterLink><span v-else/><RouterLink v-if="project.next" :to="`/portfolio/${project.next.slug}`" class="next"><small>下一个案例</small><strong>{{project.next.title}} →</strong></RouterLink></nav></main><aside v-if="outline.length" class="case-study__toc"><ArticleOutline :items="outline"/></aside></div>
+    <div v-if="drawerOpen" class="case-drawer" @click.self="drawerOpen=false"><div><header><strong>本页目录</strong><button @click="drawerOpen=false">×</button></header><ArticleOutline :items="outline"/></div></div>
+  </article>
+  <section v-else class="case-state">正在加载案例…</section>
 </template>
 
 <style scoped>
-.case-study {
-  max-width: 800px;
-}
-
-.case-study__cover {
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  margin-bottom: var(--space-8);
-  border: 1px solid var(--border);
-}
-
-.case-study__status {
-  font-size: 14px;
-  color: var(--accent);
-  margin-bottom: var(--space-2);
-}
-
-.case-study__title {
-  font-size: 40px;
-  line-height: 48px;
-  margin-bottom: var(--space-3);
-}
-
-.case-study__role {
-  font-size: 16px;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-3);
-}
-
-.case-study__summary {
-  font-size: 17px;
-  line-height: 30px;
-  color: var(--text-secondary);
-  margin-bottom: var(--space-3);
-}
-
-.case-study__dates {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin-bottom: var(--space-5);
-}
-
-.case-study__links {
-  display: flex;
-  gap: var(--space-4);
-  margin-bottom: var(--space-6);
-}
-
-.case-study__link {
-  display: inline-block;
-  padding: var(--space-2) var(--space-5);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  color: var(--primary);
-  font-size: 14px;
-}
-
-.case-study__link--primary {
-  background: var(--primary);
-  border-color: var(--primary);
-  color: var(--on-primary);
-}
-
-.case-study__link--primary:hover {
-  background: var(--primary-hover);
-  color: var(--on-primary);
-}
-
-.case-study__stack {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-bottom: var(--space-8);
-  padding-bottom: var(--space-6);
-  border-bottom: 1px solid var(--border);
-}
-
-.case-study__tech {
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  padding: 2px 12px;
-  font-size: 13px;
-  color: var(--text-secondary);
-}
-
-.case-study__empty {
-  color: var(--text-muted);
-  padding: var(--space-8) 0;
-}
-
-.case-study__back {
-  display: inline-block;
-  margin-top: var(--space-4);
-}
+.case-study{max-width:1180px;margin-inline:auto}.case-hero{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(360px,.9fr);min-height:440px;overflow:hidden;border:1px solid var(--border);border-radius:26px;background:var(--bg-surface)}.case-hero__visual{display:grid;overflow:hidden;place-items:center;background:radial-gradient(circle at 24% 18%,color-mix(in srgb,var(--primary) 24%,transparent),transparent 46%),linear-gradient(145deg,var(--bg-subtle),color-mix(in srgb,var(--accent) 12%,var(--bg-surface)))}.case-hero__visual img{width:100%;height:100%;object-fit:cover}.case-hero__visual span{color:color-mix(in srgb,var(--primary) 62%,var(--text-muted));font:700 112px/1 Georgia,serif}.case-hero__content{display:flex;flex-direction:column;justify-content:center;padding:clamp(30px,5vw,62px)}.case-hero nav{display:flex;gap:7px;margin-bottom:var(--space-6);color:var(--text-muted);font-size:11px}.case-hero nav a{color:var(--primary)}.case-hero__eyebrow{margin-bottom:10px;color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.14em}.case-hero h1{margin-bottom:10px;font-size:clamp(35px,4vw,54px);line-height:1.1;letter-spacing:-.04em}.case-hero__content>strong{margin-bottom:var(--space-4);color:var(--accent);font-size:12px}.case-hero__content>p:not(.case-hero__eyebrow){color:var(--text-secondary);font-size:15px;line-height:1.85}.case-hero__meta{display:flex;flex-wrap:wrap;gap:7px 14px;margin-top:var(--space-5);color:var(--text-muted);font-size:11px}.case-hero__links{display:flex;flex-wrap:wrap;gap:9px;margin-top:var(--space-6)}.case-hero__links a{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--border-strong);border-radius:999px;color:var(--primary);font-size:12px;font-weight:700}.case-hero__links a.primary{border-color:var(--primary);color:var(--on-primary);background:var(--primary);box-shadow:0 10px 24px color-mix(in srgb,var(--primary) 20%,transparent)}.case-hero__links i{font-style:normal}.case-stack{display:flex;flex-wrap:wrap;gap:7px;margin:var(--space-5) 0 var(--space-9);padding:0 var(--space-2)}.case-stack span{padding:6px 11px;border:1px solid var(--border);border-radius:999px;color:var(--text-secondary);background:var(--bg-surface);font-size:11px}.case-study__reading{display:grid;grid-template-columns:minmax(0,760px) 240px;justify-content:center;gap:var(--layout-gap);align-items:start}.case-study--no-toc .case-study__reading{grid-template-columns:minmax(0,800px)}.case-study__body{min-width:0}.case-study__toc{position:sticky;top:calc(var(--header-height) + var(--space-6));padding:var(--space-4);border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.case-nav{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-top:var(--space-10);padding-top:var(--space-6);border-top:1px solid var(--border)}.case-nav a{display:flex;min-height:90px;flex-direction:column;justify-content:center;padding:var(--space-4);border:1px solid var(--border);border-radius:15px;color:var(--text-primary);transition:transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease}.case-nav a:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 12px 28px rgb(0 0 0/.06)}.case-nav a.next{text-align:right}.case-nav small{margin-bottom:6px;color:var(--text-muted)}.case-study__drawer-button{display:none}.case-drawer{display:none}.case-state{display:grid;min-height:300px;place-content:center;gap:12px;color:var(--text-muted);text-align:center}.case-state a{color:var(--primary)}@media(prefers-reduced-motion:reduce){.case-nav a{transition:none}}@media(max-width:1000px){.case-hero{grid-template-columns:1fr}.case-hero__visual{min-height:300px}.case-study__reading{grid-template-columns:1fr}.case-study__toc{display:none}.case-study__drawer-button{display:inline-flex;margin-bottom:var(--space-5);padding:9px 14px;border:1px solid var(--border-strong);border-radius:999px;color:var(--primary);background:var(--bg-surface);cursor:pointer}.case-drawer{position:fixed;inset:0;z-index:80;display:grid;align-items:end;background:rgb(0 0 0/.45)}.case-drawer>div{max-height:75vh;overflow:auto;padding:var(--space-5);border-radius:20px 20px 0 0;background:var(--bg-surface)}.case-drawer header{display:flex;justify-content:space-between;margin-bottom:var(--space-4)}.case-drawer button{border:0;color:var(--text-primary);background:transparent;font-size:24px}}@media(max-width:600px){.case-hero{border-radius:20px}.case-hero__visual{min-height:220px}.case-hero__content{padding:var(--space-5)}.case-nav{grid-template-columns:1fr}}
 </style>

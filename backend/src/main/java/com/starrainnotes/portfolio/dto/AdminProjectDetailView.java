@@ -15,6 +15,7 @@ public record AdminProjectDetailView(
         List<String> techStack,
         String bodyMarkdown,
         Long coverMediaId,
+        String coverUrl,
         String repositoryUrl,
         String demoUrl,
         String publishStatus,

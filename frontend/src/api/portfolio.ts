@@ -5,6 +5,8 @@ export interface PublicProjectSummary {
   title: string
   slug: string
   summary: string
+  role: string | null
+  techStack: string[]
   coverUrl: string | null
   projectStatus: string
   featured: boolean
@@ -30,12 +32,24 @@ export interface PublicProjectDetail {
   seoDescription: string | null
   publishedAt: string
   updatedAt: string
+  previous: PrevNextProject | null
+  next: PrevNextProject | null
+}
+
+export interface PrevNextProject {
+  projectId: number
+  slug: string
+  title: string
 }
 
 export interface AdminProjectSummary {
   id: number
   title: string
   slug: string
+  summary: string
+  role: string | null
+  techStack: string[]
+  coverUrl: string | null
   publishStatus: string
   projectStatus: string
   featured: boolean
@@ -61,6 +75,7 @@ export interface AdminProjectDetail {
   techStack: string[]
   bodyMarkdown: string
   coverMediaId: number | null
+  coverUrl: string | null
   repositoryUrl: string | null
   demoUrl: string | null
   publishStatus: string
@@ -109,6 +124,7 @@ export async function fetchAdminProjects(params: {
   page?: number
   pageSize?: number
   status?: string
+  projectStatus?: string
   q?: string
 }): Promise<AdminProjectPage> {
   const { data } = await http.get<AdminProjectPage>('/admin/portfolio/projects', { params })

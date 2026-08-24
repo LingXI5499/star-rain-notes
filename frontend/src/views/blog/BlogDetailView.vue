@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
 import { fetchPublicPost, type PublicPostDetail } from '@/api/blog'
@@ -8,206 +8,24 @@ import ArticleOutline from '@/components/ArticleOutline.vue'
 import { applyPageMeta } from '@/lib/seo'
 import type { OutlineItem } from '@/types'
 
-const route = useRoute()
-const post = ref<PublicPostDetail | null>(null)
-const outline = ref<OutlineItem[]>([])
-const notFound = ref(false)
-const loadFailed = ref(false)
-
-// Real derived read time (approx. 400 chars/min for Chinese).
-const readMinutes = computed(() =>
-  post.value ? Math.max(1, Math.round((post.value.bodyMarkdown?.length ?? 0) / 400)) : 0,
-)
-
-function formatDate(iso: string): string {
-  const date = new Date(iso)
-  return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('zh-CN')
-}
-
-onMounted(async () => {
-  try {
-    post.value = await fetchPublicPost(route.params.slug as string)
-    if (post.value) {
-      applyPageMeta({
-        title: post.value.seoTitle ?? post.value.title,
-        description: post.value.seoDescription ?? post.value.summary,
-      })
-    }
-  } catch (error) {
-    if (error instanceof AxiosError && error.response?.status === 404) {
-      notFound.value = true
-      applyPageMeta({ title: '页面未找到', robots: 'noindex,nofollow' })
-    } else {
-      loadFailed.value = true
-      applyPageMeta({ title: '加载失败', robots: 'noindex,nofollow' })
-    }
-  }
-})
+const route=useRoute();const post=ref<PublicPostDetail|null>(null);const outline=ref<OutlineItem[]>([]);const notFound=ref(false);const loadFailed=ref(false);const drawerOpen=ref(false)
+const readMinutes=computed(()=>post.value?Math.max(1,Math.round((post.value.bodyMarkdown?.length??0)/400)):0)
+function formatDate(iso:string){const d=new Date(iso);return Number.isNaN(d.getTime())?iso:d.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'})}
+async function load(){post.value=null;outline.value=[];notFound.value=false;loadFailed.value=false;drawerOpen.value=false;try{post.value=await fetchPublicPost(route.params.slug as string);applyPageMeta({title:post.value.seoTitle??post.value.title,description:post.value.seoDescription??post.value.summary})}catch(error){if(error instanceof AxiosError&&error.response?.status===404){notFound.value=true;applyPageMeta({title:'页面未找到',robots:'noindex,nofollow'})}else{loadFailed.value=true;applyPageMeta({title:'加载失败',robots:'noindex,nofollow'})}}}
+onMounted(load);watch(()=>route.params.slug,load)
 </script>
 
 <template>
-  <section v-if="notFound" class="blog-detail">
-    <p class="blog-detail__empty">文章不存在或尚未公开。</p>
-    <RouterLink to="/blog" class="blog-detail__back">返回博客</RouterLink>
-  </section>
-
-  <section v-else-if="loadFailed" class="blog-detail">
-    <p class="blog-detail__empty">加载失败，请稍后重试。</p>
-    <RouterLink to="/blog" class="blog-detail__back">返回博客</RouterLink>
-  </section>
-
-  <section v-else-if="post" class="blog-detail">
-    <div class="blog-detail__body">
-      <nav class="blog-detail__crumbs" aria-label="面包屑">
-        <RouterLink to="/blog">博客</RouterLink>
-        <span aria-hidden="true"> / </span>
-        <span>{{ post.title }}</span>
-      </nav>
-
-      <h1 class="blog-detail__title">{{ post.title }}</h1>
-      <p class="blog-detail__meta">
-        约 {{ readMinutes }} 分钟 · 发布于 <time :datetime="post.publishedAt">{{ formatDate(post.publishedAt) }}</time>
-        <template v-if="post.updatedAt && post.updatedAt !== post.publishedAt">
-          · 更新于 <time :datetime="post.updatedAt">{{ formatDate(post.updatedAt) }}</time>
-        </template>
-      </p>
-      <p v-if="post.tags.length" class="blog-detail__tags">
-        <RouterLink
-          v-for="tag in post.tags"
-          :key="tag.id"
-          :to="{ path: '/blog', query: { tag: tag.slug } }"
-          class="blog-detail__tag"
-        >
-          #{{ tag.name }}
-        </RouterLink>
-      </p>
-
-      <MarkdownRenderer :source="post.bodyMarkdown" @outline="outline = $event" />
-
-      <nav class="blog-detail__prevnext" aria-label="文章导航">
-        <RouterLink
-          v-if="post.previous"
-          :to="`/blog/${post.previous.slug}`"
-          class="blog-detail__prevnext-link"
-        >
-          ← {{ post.previous.title }}
-        </RouterLink>
-        <span v-else />
-        <RouterLink
-          v-if="post.next"
-          :to="`/blog/${post.next.slug}`"
-          class="blog-detail__prevnext-link blog-detail__prevnext-link--next"
-        >
-          {{ post.next.title }} →
-        </RouterLink>
-      </nav>
-    </div>
-
-    <aside class="blog-detail__toc">
-      <ArticleOutline :items="outline" />
-    </aside>
-  </section>
-
-  <section v-else class="blog-detail">
-    <p class="blog-detail__empty">加载中…</p>
-  </section>
+  <section v-if="notFound||loadFailed" class="article-state"><strong>{{notFound?'文章不存在或尚未公开':'加载失败，请稍后重试'}}</strong><RouterLink to="/blog">返回博客</RouterLink></section>
+  <article v-else-if="post" class="article" :class="{'article--no-toc':!outline.length}">
+    <header class="article-hero"><nav><RouterLink to="/blog">博客时间线</RouterLink><span>/</span><span>文章详情</span></nav><div class="article-hero__tags"><RouterLink v-for="tag in post.tags" :key="tag.id" :to="{path:'/blog',query:{tag:tag.slug}}"># {{tag.name}}</RouterLink></div><h1>{{post.title}}</h1><p>{{post.summary}}</p><div class="article-hero__meta"><span>{{formatDate(post.publishedAt)}}</span><span>约 {{readMinutes}} 分钟阅读</span><span v-if="post.updatedAt!==post.publishedAt">更新于 {{formatDate(post.updatedAt)}}</span></div></header>
+    <div v-if="post.coverUrl" class="article__cover"><img :src="post.coverUrl" :alt="post.title"/></div>
+    <button v-if="outline.length" class="article__drawer-button" @click="drawerOpen=true">本页目录 · {{outline.length}}</button>
+    <div class="article__reading"><main class="article__body"><MarkdownRenderer :source="post.bodyMarkdown" @outline="outline=$event"/><nav class="article-nav"><RouterLink v-if="post.previous" :to="`/blog/${post.previous.slug}`"><small>上一篇</small><strong>← {{post.previous.title}}</strong></RouterLink><span v-else/><RouterLink v-if="post.next" :to="`/blog/${post.next.slug}`" class="next"><small>下一篇</small><strong>{{post.next.title}} →</strong></RouterLink></nav></main><aside v-if="outline.length" class="article__toc"><ArticleOutline :items="outline"/><div class="article__toc-meta"><span>READING TIME</span><strong>{{readMinutes}} MIN</strong></div></aside></div>
+    <div v-if="drawerOpen" class="article-drawer" @click.self="drawerOpen=false"><div><header><strong>本页目录</strong><button @click="drawerOpen=false">×</button></header><ArticleOutline :items="outline"/></div></div>
+  </article><section v-else class="article-state">正在加载文章…</section>
 </template>
 
 <style scoped>
-.blog-detail {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) var(--aside-width);
-  gap: var(--layout-gap);
-  align-items: start;
-}
-
-.blog-detail__body {
-  min-width: 0;
-  max-width: var(--content-max-width);
-  margin-inline: auto;
-  width: 100%;
-}
-
-.blog-detail__crumbs {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin-bottom: var(--space-6);
-}
-
-.blog-detail__crumbs a {
-  color: var(--primary);
-}
-
-.blog-detail__title {
-  font-size: 40px;
-  line-height: 48px;
-  margin-bottom: var(--space-4);
-}
-
-.blog-detail__meta {
-  font-size: 14px;
-  color: var(--text-muted);
-  margin-bottom: var(--space-3);
-}
-
-.blog-detail__tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--space-2);
-  margin-bottom: var(--space-8);
-}
-
-.blog-detail__tag {
-  color: var(--text-secondary);
-  font-size: 13px;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  padding: 2px 12px;
-}
-
-.blog-detail__tag:hover {
-  border-color: var(--primary);
-  color: var(--primary);
-}
-
-.blog-detail__prevnext {
-  display: flex;
-  justify-content: space-between;
-  gap: var(--space-4);
-  margin-top: var(--space-12);
-  padding-top: var(--space-6);
-  border-top: 1px solid var(--border);
-}
-
-.blog-detail__prevnext-link {
-  font-size: 15px;
-  color: var(--primary);
-  max-width: 45%;
-}
-
-.blog-detail__toc {
-  position: sticky;
-  top: calc(var(--header-height) + var(--space-6));
-  align-self: start;
-}
-
-.blog-detail__empty {
-  color: var(--text-muted);
-  padding: var(--space-8) 0;
-}
-
-.blog-detail__back {
-  display: inline-block;
-  margin-top: var(--space-4);
-}
-
-@media (max-width: 1100px) {
-  .blog-detail {
-    grid-template-columns: 1fr;
-  }
-
-  .blog-detail__toc {
-    display: none;
-  }
-}
+.article{max-width:1120px;margin-inline:auto}.article-hero{max-width:840px;margin:0 auto var(--space-8);text-align:center}.article-hero nav{display:flex;justify-content:center;gap:7px;margin-bottom:var(--space-7);color:var(--text-muted);font-size:11px}.article-hero nav a{color:var(--primary)}.article-hero__tags{display:flex;justify-content:center;flex-wrap:wrap;gap:7px;margin-bottom:var(--space-4)}.article-hero__tags a{padding:5px 10px;border-radius:999px;color:var(--accent);background:color-mix(in srgb,var(--accent) 8%,transparent);font-size:10px;font-weight:700}.article-hero h1{font-size:clamp(38px,5vw,62px);line-height:1.12;letter-spacing:-.045em}.article-hero>p{max-width:680px;margin:var(--space-5) auto;color:var(--text-secondary);font-size:16px;line-height:1.85}.article-hero__meta{display:flex;justify-content:center;flex-wrap:wrap;gap:7px 18px;color:var(--text-muted);font-size:11px}.article__cover{max-height:500px;overflow:hidden;margin-bottom:var(--space-9);border:1px solid var(--border);border-radius:24px;background:var(--bg-subtle)}.article__cover img{width:100%;max-height:500px;object-fit:cover}.article__reading{display:grid;grid-template-columns:minmax(0,760px) 230px;justify-content:center;align-items:start;gap:var(--layout-gap)}.article--no-toc .article__reading{grid-template-columns:minmax(0,800px)}.article__body{min-width:0}.article__toc{position:sticky;top:calc(var(--header-height) + var(--space-6));display:grid;gap:var(--space-4)}.article__toc>:first-child,.article__toc-meta{padding:var(--space-4);border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.article__toc-meta{display:flex;justify-content:space-between;color:var(--text-muted);font-size:9px;letter-spacing:.1em}.article__toc-meta strong{color:var(--primary)}.article-nav{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4);margin-top:var(--space-10);padding-top:var(--space-6);border-top:1px solid var(--border)}.article-nav a{display:flex;min-height:92px;flex-direction:column;justify-content:center;padding:var(--space-4);border:1px solid var(--border);border-radius:16px;color:var(--text-primary);background:var(--bg-surface);transition:transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease}.article-nav a:hover{border-color:var(--primary);transform:translateY(-2px);box-shadow:0 12px 28px rgb(0 0 0/.06)}.article-nav a.next{text-align:right}.article-nav small{margin-bottom:6px;color:var(--text-muted)}.article__drawer-button,.article-drawer{display:none}.article-state{display:grid;min-height:300px;place-content:center;gap:12px;color:var(--text-muted);text-align:center}.article-state a{color:var(--primary)}@media(prefers-reduced-motion:reduce){.article-nav a{transition:none}}@media(max-width:1000px){.article__reading{grid-template-columns:1fr}.article__toc{display:none}.article__drawer-button{display:inline-flex;margin-bottom:var(--space-5);padding:9px 14px;border:1px solid var(--border-strong);border-radius:999px;color:var(--primary);background:var(--bg-surface);cursor:pointer}.article-drawer{position:fixed;inset:0;z-index:80;display:grid;align-items:end;background:rgb(0 0 0/.45)}.article-drawer>div{max-height:75vh;overflow:auto;padding:var(--space-5);border-radius:20px 20px 0 0;background:var(--bg-surface)}.article-drawer header{display:flex;justify-content:space-between;margin-bottom:var(--space-4)}.article-drawer button{border:0;color:var(--text-primary);background:transparent;font-size:24px}}@media(max-width:600px){.article-hero{text-align:left}.article-hero nav,.article-hero__tags,.article-hero__meta{justify-content:flex-start}.article__cover{border-radius:17px}.article-nav{grid-template-columns:1fr}}
 </style>

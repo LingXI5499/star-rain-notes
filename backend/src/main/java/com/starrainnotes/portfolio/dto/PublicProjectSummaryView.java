@@ -8,6 +8,8 @@ public record PublicProjectSummaryView(
         String title,
         String slug,
         String summary,
+        String role,
+        java.util.List<String> techStack,
         String coverUrl,
         String projectStatus,
         boolean featured,

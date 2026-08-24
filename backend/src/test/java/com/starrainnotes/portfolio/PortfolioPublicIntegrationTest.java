@@ -9,14 +9,13 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import java.time.LocalDateTime;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 /**
  * TASK-007 — public portfolio list/detail: published only, featured first,
- * Draft/Withdrawn → 404, case-study detail without Prev/Next.
+ * Draft/Withdrawn → 404, case-study detail with adjacent project navigation.
  */
 class PortfolioPublicIntegrationTest extends AbstractAuthIntegrationTest {
 
@@ -63,19 +62,19 @@ class PortfolioPublicIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
-    void detailReturnsCaseStudyWithoutPrevNext() throws Exception {
+    void detailReturnsCaseStudyWithPrevNext() throws Exception {
         insertProject("case-1", "PUBLISHED", true, 1);
+        insertProject("case-2", "PUBLISHED", false, 1);
+        insertProject("case-3", "PUBLISHED", false, 2);
 
-        String body = mockMvc.perform(get("/api/v1/public/portfolio/projects/case-1"))
+        mockMvc.perform(get("/api/v1/public/portfolio/projects/case-2"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bodyMarkdown").value("case study body"))
                 .andExpect(jsonPath("$.techStack[0]").value("Java"))
                 .andExpect(jsonPath("$.projectStatus").value("DEVELOPING"))
                 .andExpect(jsonPath("$.publishedAt").value(org.hamcrest.Matchers.containsString("+08:00")))
-                .andReturn().getResponse().getContentAsString();
-
-        // no prev/next navigation for portfolio details
-        assertThat(body).doesNotContain("previous", "next");
+                .andExpect(jsonPath("$.previous.slug").value("case-1"))
+                .andExpect(jsonPath("$.next.slug").value("case-3"));
     }
 
     @Test
