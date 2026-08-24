@@ -46,11 +46,13 @@ function chapterUrl(chapter: CurriculumNode) {
 .curriculum__group-head > span:last-child { min-width: 24px; padding: 2px 6px; border-radius: 999px; color: var(--text-muted); background: var(--bg-page); font-size: 9px; text-align: center; }
 .curriculum__group-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 0 4px color-mix(in srgb,var(--accent) 12%,transparent); }
 .curriculum__chapters { display: flex; flex-direction: column; margin: 0; padding: 6px; list-style: none; }
-.curriculum__chapter { display: grid; grid-template-columns: 25px minmax(0,1fr) 10px; align-items: center; gap: 8px; min-height: 36px; padding: 7px 8px; border-radius: 9px; color: var(--text-secondary); font-size: 12px; line-height: 1.45; transition: transform 160ms ease,color 160ms ease,background-color 160ms ease; }
+.curriculum__chapter { display: grid; grid-template-columns: 25px minmax(0,1fr) 24px; align-items: center; gap: 8px; min-height: 40px; padding: 7px 8px; border: 1px solid transparent; border-radius: 10px; color: var(--text-secondary); font-size: 12px; line-height: 1.45; transition: transform 160ms ease,color 160ms ease,background-color 160ms ease,border-color 160ms ease; }
 .curriculum__chapter:hover { color: var(--primary); background: var(--bg-subtle); transform: translateX(2px); }
-.curriculum__chapter--active { color: var(--primary); background: color-mix(in srgb,var(--primary) 11%,transparent); font-weight: 650; }
+.curriculum__chapter--active { border-color: color-mix(in srgb,var(--primary) 18%,transparent); color: var(--primary); background: color-mix(in srgb,var(--primary) 11%,transparent); font-weight: 650; }
+.curriculum__chapter:focus-visible { outline: 3px solid color-mix(in srgb,var(--primary) 25%,transparent); outline-offset: 2px; }
 .curriculum__index { color: var(--text-muted); font: 600 9px/1 ui-monospace,SFMono-Regular,Menlo,monospace; }
 .curriculum__title { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.curriculum__arrow { font-size: 15px; }
+.curriculum__arrow { display: grid; width: 22px; height: 22px; place-items: center; border-radius: 50%; color: var(--primary); background: color-mix(in srgb,var(--primary) 8%,transparent); font-size: 15px; transition: transform 160ms ease,background-color 160ms ease; }
+.curriculum__chapter:hover .curriculum__arrow { background: color-mix(in srgb,var(--primary) 15%,transparent); transform: translateX(1px); }
 @media (prefers-reduced-motion: reduce) { .curriculum__chapter { transition: none; } }
 </style>

@@ -70,7 +70,7 @@ onMounted(async () => {
         :to="`/tutorials/${detail.slug}/${detail.firstChapter.slug}`"
         class="tutorial-detail__start"
       >
-        开始学习
+        <span>开始学习</span><span aria-hidden="true">→</span>
       </RouterLink>
       <p v-else class="tutorial-detail__wip">正在整理中</p>
 
@@ -109,7 +109,7 @@ onMounted(async () => {
         :to="`/tutorials/${detail.slug}/${detail.firstChapter.slug}`"
         class="tutorial-detail__aside-cta"
       >
-        开始学习 →
+        <span>开始学习</span><span aria-hidden="true">→</span>
       </RouterLink>
     </aside>
   </section>
@@ -165,21 +165,51 @@ onMounted(async () => {
 }
 
 .tutorial-detail__start {
-  display: inline-block;
-  padding: var(--space-3) var(--space-6);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 12px 14px 12px 20px;
   background: var(--primary);
   color: var(--on-primary);
-  border-radius: var(--radius-sm);
-  font-weight: 500;
+  border-radius: 999px;
+  box-shadow: 0 10px 24px color-mix(in srgb,var(--primary) 22%,transparent);
+  font-weight: 700;
   margin-bottom: var(--space-8);
+  transition: transform 170ms ease,background-color 170ms ease,box-shadow 170ms ease;
+}
+
+.tutorial-detail__start span:last-child,
+.tutorial-detail__aside-cta span:last-child {
+  display: grid;
+  width: 25px;
+  height: 25px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--primary);
+  background: var(--on-primary);
+  transition: transform 170ms ease;
 }
 
 .tutorial-detail__start:hover {
   background: var(--primary-hover);
   color: var(--on-primary);
+  transform: translateY(-2px);
+  box-shadow: 0 14px 30px color-mix(in srgb,var(--primary) 28%,transparent);
 }
 
+.tutorial-detail__start:hover span:last-child,
+.tutorial-detail__aside-cta:hover span:last-child { transform: translateX(2px); }
+
+.tutorial-detail__start:focus-visible,
+.tutorial-detail__aside-cta:focus-visible,
+.tutorial-detail__back:focus-visible { outline: 3px solid color-mix(in srgb,var(--primary) 28%,transparent); outline-offset: 3px; }
+
 .tutorial-detail__wip {
+  display: inline-flex;
+  padding: 9px 14px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: var(--bg-subtle);
   color: var(--text-muted);
   margin-bottom: var(--space-8);
 }
@@ -196,7 +226,14 @@ onMounted(async () => {
 }
 
 .tutorial-detail__back {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: var(--primary);
+  background: var(--bg-surface);
   margin-top: var(--space-4);
 }
 
@@ -243,18 +280,31 @@ onMounted(async () => {
 }
 
 .tutorial-detail__aside-cta {
-  display: block;
-  text-align: center;
-  padding: var(--space-3);
-  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 11px 11px 11px 15px;
+  border-radius: 999px;
   background: var(--primary);
   color: var(--on-primary);
-  font-weight: 500;
+  box-shadow: 0 8px 20px color-mix(in srgb,var(--primary) 18%,transparent);
+  font-weight: 700;
+  transition: transform 170ms ease,background-color 170ms ease,box-shadow 170ms ease;
 }
 
 .tutorial-detail__aside-cta:hover {
   background: var(--primary-hover);
   color: var(--on-primary);
+  transform: translateY(-1px);
+  box-shadow: 0 11px 24px color-mix(in srgb,var(--primary) 24%,transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tutorial-detail__start,
+  .tutorial-detail__start span:last-child,
+  .tutorial-detail__aside-cta,
+  .tutorial-detail__aside-cta span:last-child { transition: none; }
 }
 
 /* ---------- responsive ---------- */

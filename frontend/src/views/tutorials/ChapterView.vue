@@ -326,16 +326,22 @@ watch(() => route.params.chapterSlug, load)
   min-width: min(280px, 45%);
   padding: var(--space-4);
   border: 1px solid var(--border);
-  border-radius: var(--radius-md);
+  border-radius: 16px;
   color: var(--text-primary);
   max-width: 45%;
-  transition: border-color 140ms ease, background-color 140ms ease;
+  background: color-mix(in srgb,var(--bg-surface) 94%,var(--bg-subtle));
+  transition: transform 170ms ease,border-color 170ms ease,background-color 170ms ease,box-shadow 170ms ease;
 }
 
 .reader__prevnext-link:hover {
   border-color: var(--primary);
   background: color-mix(in srgb, var(--primary) 5%, transparent);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 24px color-mix(in srgb,var(--primary) 10%,transparent);
 }
+
+.reader__prevnext-link:focus-visible,
+.reader__drawer-toggle:focus-visible { outline: 3px solid color-mix(in srgb,var(--primary) 28%,transparent); outline-offset: 3px; }
 
 .reader__prevnext-link small {
   color: var(--text-muted);
@@ -425,15 +431,23 @@ watch(() => route.params.chapterSlug, load)
   }
 
   .reader__drawer-toggle {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 42px;
     margin-bottom: var(--space-4);
-    padding: var(--space-2) var(--space-4);
+    padding: 0 var(--space-5);
     border: 1px solid var(--border-strong);
-    border-radius: var(--radius-sm);
-    background: var(--bg-surface);
-    color: var(--text-secondary);
+    border-radius: 999px;
+    background: color-mix(in srgb,var(--primary) 9%,var(--bg-surface));
+    color: var(--primary);
+    box-shadow: 0 7px 18px color-mix(in srgb,var(--primary) 10%,transparent);
+    font-weight: 700;
     cursor: pointer;
+    transition: transform 170ms ease,border-color 170ms ease,background-color 170ms ease;
   }
+
+  .reader__drawer-toggle:hover { border-color: var(--primary); transform: translateY(-1px); }
 
   .reader__drawer-backdrop {
     display: block;
@@ -460,6 +474,7 @@ watch(() => route.params.chapterSlug, load)
 
 @media (prefers-reduced-motion: reduce) {
   .reader__progress-bar,
-  .reader__prevnext-link { transition: none; }
+  .reader__prevnext-link,
+  .reader__drawer-toggle { transition: none; }
 }
 </style>

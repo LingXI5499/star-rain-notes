@@ -60,9 +60,7 @@ async function load(preferredGroupId = activeGroupId.value ?? routeGroupId()) {
       : groups.value[0]?.id ?? null
     await syncGroupQuery()
   } catch (error) {
-    loadError.value = error instanceof AxiosError && error.response?.status === 404
-      ? '课程结构接口不可用，请确认后端已更新并重新启动。'
-      : '课程结构加载失败，请稍后重试。'
+    loadError.value = '课程结构加载失败，请稍后重试。'
     showError(error, '课程结构加载失败。')
   } finally {
     loading.value = false
@@ -188,7 +186,7 @@ async function dropChapter(target: AdminCurriculumChapter) {
   let nextIndex = targetIndex + (drop.after ? 1 : 0)
   if (sourceIndex < nextIndex) nextIndex -= 1
   try {
-    await moveChapter(tutorialId, sourceId, nextIndex)
+    await moveChapter(tutorialId, sourceId, nextIndex, activeGroupId.value ?? undefined)
     await load(activeGroupId.value)
   } catch (error) {
     showError(error, '章节排序失败。')

@@ -12,6 +12,7 @@ import {
   fetchAdminTutorial,
   fetchAdminTutorials,
   fetchCategoryTree,
+  fetchPublicTutorials,
   moveCategory,
   moveTutorial,
   publishTutorial,
@@ -25,6 +26,7 @@ import {
 const route = useRoute()
 const router = useRouter()
 const categories = ref<CategoryNode[]>([])
+const allTutorials = ref<AdminTutorialSummary[]>([])
 const tutorials = ref<AdminTutorialSummary[]>([])
 const categoryCounts = reactive<Record<number, number>>({})
 const activeCategoryId = ref<number | null>(null)
@@ -50,24 +52,31 @@ function showError(error: unknown, fallback = '操作失败，请稍后重试。
   ElMessage.error(problem?.detail ?? fallback)
 }
 
-async function fetchAllTutorials(categoryId: number) {
-  const first = await fetchAdminTutorials({ page: 1, pageSize: 50, categoryId })
+async function fetchAllTutorials() {
+  const first = await fetchAdminTutorials({ page: 1, pageSize: 50 })
   if (first.totalPages <= 1) return first.items
   const rest = await Promise.all(
     Array.from({ length: first.totalPages - 1 }, (_, index) =>
-      fetchAdminTutorials({ page: index + 2, pageSize: 50, categoryId }),
+      fetchAdminTutorials({ page: index + 2, pageSize: 50 }),
     ),
   )
   return [first, ...rest].flatMap((page) => page.items)
 }
 
-async function loadCategoryCounts() {
-  const results = await Promise.allSettled(
-    categories.value.map((category) => fetchAdminTutorials({ page: 1, pageSize: 1, categoryId: category.id })),
-  )
-  results.forEach((result, index) => {
-    if (result.status === 'fulfilled') categoryCounts[categories.value[index]!.id] = result.value.total
-  })
+function applyActiveCategory() {
+  const categoryId = activeCategoryId.value
+  tutorials.value = categoryId
+    ? allTutorials.value
+      .filter((tutorial) => tutorial.categoryId === categoryId)
+      .sort((left, right) => left.sortOrder - right.sortOrder || left.id - right.id)
+    : []
+}
+
+function applyCategoryCounts() {
+  for (const category of categories.value) categoryCounts[category.id] = 0
+  for (const tutorial of allTutorials.value) {
+    categoryCounts[tutorial.categoryId] = (categoryCounts[tutorial.categoryId] ?? 0) + 1
+  }
 }
 
 async function loadCategories(preferredId = activeCategoryId.value) {
@@ -78,7 +87,7 @@ async function loadCategories(preferredId = activeCategoryId.value) {
       ? preferredId
       : categories.value[0]?.id ?? null
     activeCategoryId.value = preferred
-    void loadCategoryCounts()
+    applyCategoryCounts()
   } catch (error) {
     showError(error, '知识体系加载失败。')
   } finally {
@@ -93,8 +102,19 @@ async function loadTutorials() {
   }
   loadingTutorials.value = true
   try {
-    tutorials.value = await fetchAllTutorials(activeCategoryId.value)
-    categoryCounts[activeCategoryId.value] = tutorials.value.length
+    const [adminRows, publicRows] = await Promise.all([
+      fetchAllTutorials(),
+      fetchPublicTutorials(),
+    ])
+    const publishedCounts = new Map(publicRows.map((tutorial) => [tutorial.id, tutorial.publishedChapterCount]))
+    allTutorials.value = adminRows.map((tutorial) => ({
+      ...tutorial,
+      chapterCount: Number.isFinite(tutorial.chapterCount)
+        ? tutorial.chapterCount
+        : publishedCounts.get(tutorial.id) ?? 0,
+    }))
+    applyCategoryCounts()
+    applyActiveCategory()
   } catch (error) {
     tutorials.value = []
     showError(error, '教程列表加载失败。')
@@ -108,7 +128,7 @@ async function selectCategory(category: CategoryNode) {
   activeCategoryId.value = category.id
   search.value = ''
   await router.replace({ name: 'admin-tutorials', query: { category: String(category.id) } })
-  await loadTutorials()
+  applyActiveCategory()
 }
 
 function enterCurriculum(tutorial: AdminTutorialSummary) {
@@ -235,7 +255,6 @@ async function removeTutorial(tutorial: AdminTutorialSummary) {
     await deleteTutorial(tutorial.id)
     ElMessage.success('教程已删除。')
     await loadTutorials()
-    void loadCategoryCounts()
   } catch (error) {
     if (error instanceof AxiosError) showError(error)
   }
@@ -278,7 +297,6 @@ async function confirmMoveTutorial() {
     moveDialog.value = false
     ElMessage.success('教程已移动到目标知识体系末尾。')
     await loadTutorials()
-    void loadCategoryCounts()
   } catch (error) {
     if (error instanceof AxiosError) showError(error)
   }
@@ -293,11 +311,11 @@ function coverGlyph(title: string) {
   return normalized.slice(0, 2) || '课'
 }
 
-watch(() => route.query.category, async (value) => {
+watch(() => route.query.category, (value) => {
   const id = routeId(value)
   if (id && id !== activeCategoryId.value && categories.value.some((item) => item.id === id)) {
     activeCategoryId.value = id
-    await loadTutorials()
+    applyActiveCategory()
   }
 })
 

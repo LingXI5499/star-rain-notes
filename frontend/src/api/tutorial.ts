@@ -1,4 +1,5 @@
 import { http } from './http'
+import { AxiosError } from 'axios'
 
 // ---------------------------------------------------------------
 // shared / public types
@@ -227,6 +228,20 @@ export interface AdminCurriculum {
   groups: AdminCurriculumGroup[]
 }
 
+type ChapterDetailWire = Omit<ChapterDetail, 'groupId'> & {
+  groupId?: number
+  parentId?: number
+}
+
+const legacyCurriculumTutorials = new Set<number>()
+
+function normalizeChapterDetail(chapter: ChapterDetailWire): ChapterDetail {
+  return {
+    ...chapter,
+    groupId: chapter.groupId ?? chapter.parentId ?? 0,
+  }
+}
+
 // ---------------------------------------------------------------
 // public API
 // ---------------------------------------------------------------
@@ -347,8 +362,56 @@ export async function fetchTutorialNodes(tutorialId: number): Promise<AdminTreeN
 }
 
 export async function fetchAdminCurriculum(tutorialId: number): Promise<AdminCurriculum> {
-  const { data } = await http.get<AdminCurriculum>(`/admin/tutorials/${tutorialId}/curriculum`)
-  return data
+  try {
+    const { data } = await http.get<AdminCurriculum>(`/admin/tutorials/${tutorialId}/curriculum`)
+    return data
+  } catch (error) {
+    if (!(error instanceof AxiosError) || error.response?.status !== 404) throw error
+    legacyCurriculumTutorials.add(tutorialId)
+
+    // Compatibility for a development backend that has not restarted yet.
+    // The legacy tree still contains enough data to render the fixed two-level UI.
+    const [tutorial, nodes] = await Promise.all([
+      fetchAdminTutorial(tutorialId),
+      fetchTutorialNodes(tutorialId),
+    ])
+    const groups = nodes
+      .filter((node) => node.type === 'GROUP' && node.parentId === null)
+      .sort((left, right) => left.sortOrder - right.sortOrder || left.id - right.id)
+      .map<AdminCurriculumGroup>((group) => {
+        const chapters = group.children
+          .filter((node) => node.type === 'CHAPTER')
+          .sort((left, right) => left.sortOrder - right.sortOrder || left.id - right.id)
+          .map<AdminCurriculumChapter>((chapter) => ({
+            id: chapter.id,
+            groupId: group.id,
+            title: chapter.title,
+            slug: chapter.slug ?? '',
+            publishStatus: chapter.publishStatus ?? 'DRAFT',
+            sortOrder: chapter.sortOrder,
+            updatedAt: '',
+          }))
+        return {
+          id: group.id,
+          title: group.title,
+          sortOrder: group.sortOrder,
+          chapterCount: chapters.length,
+          publishedChapterCount: chapters.filter((chapter) => chapter.publishStatus === 'PUBLISHED').length,
+          chapters,
+        }
+      })
+    return {
+      tutorial: {
+        id: tutorial.id,
+        categoryId: tutorial.categoryId,
+        categoryName: tutorial.categoryName,
+        title: tutorial.title,
+        slug: tutorial.slug,
+        publishStatus: tutorial.publishStatus,
+      },
+      groups,
+    }
+  }
 }
 
 export async function createGroup(
@@ -373,13 +436,22 @@ export async function deleteGroup(tutorialId: number, groupId: number): Promise<
 }
 
 export async function createChapter(tutorialId: number, payload: ChapterPayload): Promise<ChapterDetail> {
-  const { data } = await http.post<ChapterDetail>(`/admin/tutorials/${tutorialId}/chapters`, payload)
-  return data
+  const body = legacyCurriculumTutorials.has(tutorialId)
+    ? {
+        title: payload.title,
+        slug: payload.slug,
+        parentId: payload.groupId,
+        summary: payload.summary,
+        bodyMarkdown: payload.bodyMarkdown,
+      }
+    : payload
+  const { data } = await http.post<ChapterDetailWire>(`/admin/tutorials/${tutorialId}/chapters`, body)
+  return normalizeChapterDetail(data)
 }
 
 export async function fetchChapter(tutorialId: number, chapterId: number): Promise<ChapterDetail> {
-  const { data } = await http.get<ChapterDetail>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}`)
-  return data
+  const { data } = await http.get<ChapterDetailWire>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}`)
+  return normalizeChapterDetail(data)
 }
 
 export async function updateChapter(
@@ -387,8 +459,8 @@ export async function updateChapter(
   chapterId: number,
   payload: Omit<ChapterPayload, 'groupId'>,
 ): Promise<ChapterDetail> {
-  const { data } = await http.put<ChapterDetail>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}`, payload)
-  return data
+  const { data } = await http.put<ChapterDetailWire>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}`, payload)
+  return normalizeChapterDetail(data)
 }
 
 export async function deleteChapter(tutorialId: number, chapterId: number): Promise<void> {
@@ -396,13 +468,13 @@ export async function deleteChapter(tutorialId: number, chapterId: number): Prom
 }
 
 export async function publishChapter(tutorialId: number, chapterId: number): Promise<ChapterDetail> {
-  const { data } = await http.post<ChapterDetail>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}/publish`)
-  return data
+  const { data } = await http.post<ChapterDetailWire>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}/publish`)
+  return normalizeChapterDetail(data)
 }
 
 export async function withdrawChapter(tutorialId: number, chapterId: number): Promise<ChapterDetail> {
-  const { data } = await http.post<ChapterDetail>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}/withdraw`)
-  return data
+  const { data } = await http.post<ChapterDetailWire>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}/withdraw`)
+  return normalizeChapterDetail(data)
 }
 
 export async function moveNode(tutorialId: number, nodeId: number, payload: MovePayload): Promise<void> {
@@ -410,10 +482,23 @@ export async function moveNode(tutorialId: number, nodeId: number, payload: Move
 }
 
 export async function moveGroup(tutorialId: number, groupId: number, targetIndex: number): Promise<void> {
+  if (legacyCurriculumTutorials.has(tutorialId)) {
+    await moveNode(tutorialId, groupId, { targetParentId: null, targetIndex })
+    return
+  }
   await http.post(`/admin/tutorials/${tutorialId}/groups/${groupId}/move`, { targetIndex })
 }
 
-export async function moveChapter(tutorialId: number, chapterId: number, targetIndex: number): Promise<void> {
+export async function moveChapter(
+  tutorialId: number,
+  chapterId: number,
+  targetIndex: number,
+  groupId?: number,
+): Promise<void> {
+  if (legacyCurriculumTutorials.has(tutorialId) && groupId) {
+    await moveNode(tutorialId, chapterId, { targetParentId: groupId, targetIndex })
+    return
+  }
   await http.post(`/admin/tutorials/${tutorialId}/chapters/${chapterId}/move`, { targetIndex })
 }
 
@@ -422,5 +507,9 @@ export async function reassignChapter(
   chapterId: number,
   targetGroupId: number,
 ): Promise<void> {
+  if (legacyCurriculumTutorials.has(tutorialId)) {
+    await moveNode(tutorialId, chapterId, { targetParentId: targetGroupId, targetIndex: 1_000_000 })
+    return
+  }
   await http.post(`/admin/tutorials/${tutorialId}/chapters/${chapterId}/reassign`, { targetGroupId })
 }
