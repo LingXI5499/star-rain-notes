@@ -40,6 +40,13 @@ class V1SchemaMigrationTest {
             "english_grammar_course",
             "english_grammar_section",
             "english_grammar_lesson",
+            "english_taxonomy_term",
+            "english_cefr_standard",
+            "english_exercise",
+            "english_learning_bundle",
+            "vocabulary_word_family",
+            "vocabulary_family_member",
+            "vocabulary_word_family_link",
             "tutorial_node_hierarchy_backup_v5",
             "tutorial_category_full_backup_v7",
             "tutorial_full_backup_v7",
@@ -58,7 +65,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(23);
+        assertThat(count).isEqualTo(30);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -84,14 +91,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV8AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV9AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -101,6 +108,7 @@ class V1SchemaMigrationTest {
         assertThat(descriptions).containsExactly(
                 "init schema", "seed system singletons", "create vocabulary", "seed vocabulary",
                 "flatten tutorial hierarchy", "enforce curriculum parents",
-                "restore authoritative tutorial taxonomy", "create english grammar");
+                "restore authoritative tutorial taxonomy", "create english grammar",
+                "create english shared foundation");
     }
 }
