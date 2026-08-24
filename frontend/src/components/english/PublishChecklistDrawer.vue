@@ -1,11 +1,13 @@
-<script setup lang="ts">
+<script lang="ts">
 export interface PublishCheck {
   key: string
   label: string
   passed: boolean
   detail?: string
 }
+</script>
 
+<script setup lang="ts">
 defineProps<{ open: boolean; checks: PublishCheck[] }>()
 
 defineEmits<{ (e: 'close'): void }>()

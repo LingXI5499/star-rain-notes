@@ -151,6 +151,24 @@ const router = createRouter({
       ],
     },
     {
+      path: '/english/reading',
+      component: WideLayout,
+      children: [
+        {
+          path: '',
+          name: 'english-reading',
+          component: () => import('@/views/english/ReadingView.vue'),
+          meta: { title: '阅读中心', description: '分级精读：能力×主题×文体×CEFR 组织文章。', elementPlus: true },
+        },
+        {
+          path: ':slug',
+          name: 'english-reading-detail',
+          component: () => import('@/views/english/ReadingArticleView.vue'),
+          meta: { title: '精读文章', elementPlus: true },
+        },
+      ],
+    },
+    {
       path: '/admin/setup',
       name: 'admin-setup',
       component: () => import('@/views/admin/SetupView.vue'),
@@ -273,6 +291,26 @@ const router = createRouter({
           path: 'english/bundles',
           name: 'admin-english-bundles',
           component: () => import('@/views/admin/BundleManagerView.vue'),
+        },
+        {
+          path: 'english/reading',
+          name: 'admin-reading',
+          component: () => import('@/views/admin/ReadingManageView.vue'),
+        },
+        {
+          path: 'english/reading/articles/new',
+          name: 'admin-reading-new',
+          component: () => import('@/views/admin/ReadingArticleEditView.vue'),
+        },
+        {
+          path: 'english/reading/articles/:articleId/edit',
+          name: 'admin-reading-edit',
+          component: () => import('@/views/admin/ReadingArticleEditView.vue'),
+        },
+        {
+          path: 'english/reading/articles/:articleId/exercises',
+          name: 'admin-reading-exercises',
+          component: () => import('@/views/admin/ReadingExerciseManageView.vue'),
         },
         {
           path: 'english/grammar/lessons/new',
