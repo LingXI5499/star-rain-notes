@@ -330,6 +330,11 @@ const router = createRouter({
           component: () => import('@/views/admin/EnglishEditView.vue'),
         },
         {
+          path: 'english/analytics',
+          name: 'admin-english-analytics',
+          component: () => import('@/views/admin/EnglishAnalyticsView.vue'),
+        },
+        {
           path: 'english/vocabulary',
           name: 'admin-english-vocabulary',
           component: () => import('@/views/admin/VocabularyAdminView.vue'),

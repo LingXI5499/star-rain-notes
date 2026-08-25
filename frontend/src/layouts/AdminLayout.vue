@@ -38,6 +38,7 @@ const secondaryNavItems = [
 
 const englishItems = [
   { to: '/admin/english', label: '英语工作台', badge: '' },
+  { to: '/admin/english/analytics', label: '学习分析', badge: '' },
   { to: '/admin/english/overview', label: '总览设置', badge: '' },
   { to: '/admin/english/vocabulary', label: '单词管理', badge: '' },
   { to: '/admin/english/vocabulary/families', label: '词族管理', badge: '' },

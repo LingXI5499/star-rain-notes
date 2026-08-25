@@ -36,6 +36,9 @@ const modules = [
         <RouterLink to="/admin/english/bundles" class="shared-card">
           <p>LEARNING BUNDLES</p><h3>学习组合</h3><span>跨阅读、听力、写作的显式学习路径。</span>
         </RouterLink>
+        <RouterLink to="/admin/english/analytics" class="shared-card shared-card--analytics">
+          <p>LEARNING OPERATIONS</p><h3>学习分析</h3><span>聚合观察活跃趋势、模块完成率、热门内容与薄弱点。</span>
+        </RouterLink>
         <article class="shared-card is-future">
           <p>CEFR / EXERCISE</p><h3>CEFR 与练习</h3><span>六级标准与题型已在公共 meta 提供。</span>
         </article>
