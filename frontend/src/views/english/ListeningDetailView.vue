@@ -8,6 +8,7 @@ import ArticleOutline from '@/components/ArticleOutline.vue'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 import ExerciseRunner from '@/components/english/ExerciseRunner.vue'
 import type { OutlineItem } from '@/types'
+import { fetchLearningRecord, saveLearningRecord, type LearningRecord } from '@/api/englishLearning'
 
 const route = useRoute()
 const item = ref<ListeningItem | null>(null)
@@ -18,6 +19,7 @@ const audioEl = ref<HTMLAudioElement | null>(null)
 const currentTime = ref(0); const activeSegment = ref(-1)
 const showTranscript = ref(true); const showTranslation = ref(false)
 const results = ref<Record<number, ListeningCheckItem>>({})
+const learningRecord = ref<LearningRecord | null>(null)
 const levelLabels: Record<number,string> = {1:'语音识别',2:'信息捕获',3:'逻辑理解'}
 
 async function load() {
@@ -27,6 +29,7 @@ async function load() {
     item.value = await fetchPublicListening(String(route.params.slug))
     exercises.value = await fetchPublicListeningExercises(String(route.params.slug))
     outline.value = []; activeSegment.value = -1; results.value = {}; currentTime.value = 0
+    learningRecord.value = item.value ? await fetchLearningRecord('LISTENING', item.value.id).catch(() => null) : null
   } catch { notFound.value = true } finally { loading.value = false }
 }
 
@@ -46,9 +49,21 @@ async function submitAnswer(index: number, answer: unknown) {
     const res = await checkListeningAnswers(item.value.slug, answers)
     const result = res.items[0]
     if (result) results.value = { ...results.value, [result.exerciseId]: result }
+    const answered = Object.values(results.value)
+    const finished = answered.length === exercises.value.length
+    const total = answered.reduce((sum, value) => sum + value.scoreValue, 0)
+    const earned = answered.reduce((sum, value) => sum + value.earned, 0)
+    const score = total ? earned / total * 100 : null
+    learningRecord.value = await saveLearningRecord('LISTENING', item.value.id, {
+      status: finished ? 'COMPLETED' : 'IN_PROGRESS', score,
+      timeSpentSeconds: finished ? item.value.durationSeconds : 0,
+      mastery: score == null ? null : score / 100,
+      weakPoints: answered.filter((value) => !value.correct).map((value) => `exercise-${value.exerciseId}`),
+    })
     ElMessage.success(`得分 ${res.score} / ${res.total}`)
   } catch { ElMessage.error('提交失败。') }
 }
+async function completeListening(){if(!item.value)return;try{learningRecord.value=await saveLearningRecord('LISTENING',item.value.id,{status:'COMPLETED',timeSpentSeconds:item.value.durationSeconds,mastery:learningRecord.value?.mastery??.6,weakPoints:learningRecord.value?.weakPoints??[]});ElMessage.success('已完成本篇精听。')}catch{ElMessage.error('学习进度保存失败。')}}
 function itemCorrect(id: number): boolean | undefined {
   return results.value[id]?.correct
 }
@@ -83,6 +98,8 @@ onBeforeUnmount(() => { if (audioEl.value) { audioEl.value.pause(); audioEl.valu
         </div>
 
         <MarkdownRenderer :source="item.transcriptMarkdown ?? ''" @outline="outline = $event"/>
+
+        <section class="ld__complete"><div><small>LEARNING RECORD</small><strong>{{ learningRecord?.status==='COMPLETED'?'本篇已完成':'完成精听并记录进度' }}</strong><span>记录会用于生成复习建议与学习趋势。</span></div><button type="button" :disabled="learningRecord?.status==='COMPLETED'" @click="completeListening">{{ learningRecord?.status==='COMPLETED'?'已完成 ✓':'标记完成' }}</button></section>
 
         <section v-if="exercises.length" class="ld__exercises"><h2>练习</h2>
           <div v-for="(ex,i) in exercises" :key="ex.id" class="ld-ex"><p class="ld-ex__n">第 {{ i+1 }} 题</p>
@@ -120,6 +137,7 @@ onBeforeUnmount(() => { if (audioEl.value) { audioEl.value.pause(); audioEl.valu
 .ld__exercises{border-top:1px solid var(--border);padding-top:var(--space-6);margin-top:var(--space-6)}.ld-ex{margin-bottom:var(--space-5)}.ld-ex__n{font-size:13px;color:var(--text-muted);margin-bottom:8px}.ld__score{font-size:15px;font-weight:700;color:var(--primary)}
 .ld-ex__result{padding:12px 14px;border-radius:12px;margin-top:10px;border:1px solid}.ld-ex__result.is-correct{color:var(--success);background:color-mix(in srgb,var(--success) 8%,transparent)}.ld-ex__result.is-wrong{color:var(--danger);background:color-mix(in srgb,var(--danger) 8%,transparent)}
 .ld__nav{display:flex;justify-content:space-between;gap:16px;margin:var(--space-8) 0}.ld-nav{color:var(--primary);font-size:14px;flex:1}.ld-nav.is-empty{color:transparent}
-@media(max-width:1024px){.ld__layout{grid-template-columns:180px minmax(0,1fr)}.ld__right{display:none}}@media(max-width:720px){.ld__layout{grid-template-columns:1fr}.ld__left,.ld__right{position:static}.ld__right{display:block}.ld__left summary,.ld__right summary{display:list-item}.ld__left details:not([open]) dl,.ld__left details:not([open]) .ld__pairs,.ld__right details:not([open])>*:not(summary){display:none}.ld__left details,.ld__right details{padding:12px 14px;border:1px solid var(--border);border-radius:12px}.ld__h1{font-size:27px}.ld__nav{flex-direction:column}.ld__segment{align-items:flex-start}}
+.ld__complete{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:28px 0;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.ld__complete small,.ld__complete span{display:block;color:var(--text-muted);font-size:10px}.ld__complete strong{display:block;margin:5px 0}.ld__complete button{padding:9px 15px;border:0;border-radius:10px;background:var(--primary);color:white}.ld__complete button:disabled{background:var(--bg-subtle);color:var(--text-muted)}
+@media(max-width:1024px){.ld__layout{grid-template-columns:180px minmax(0,1fr)}.ld__right{display:none}}@media(max-width:720px){.ld__layout{grid-template-columns:1fr}.ld__left,.ld__right{position:static}.ld__right{display:block}.ld__left summary,.ld__right summary{display:list-item}.ld__left details:not([open]) dl,.ld__left details:not([open]) .ld__pairs,.ld__right details:not([open])>*:not(summary){display:none}.ld__left details,.ld__right details{padding:12px 14px;border:1px solid var(--border);border-radius:12px}.ld__h1{font-size:27px}.ld__nav{flex-direction:column}.ld__segment{align-items:flex-start}.ld__complete{align-items:flex-start;flex-direction:column}}
 @media(prefers-reduced-motion:reduce){.ld__segment{transition:none}}
 </style>

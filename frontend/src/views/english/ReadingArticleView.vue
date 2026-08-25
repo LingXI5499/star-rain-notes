@@ -8,6 +8,7 @@ import ArticleOutline from '@/components/ArticleOutline.vue'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 import ExerciseRunner from '@/components/english/ExerciseRunner.vue'
 import type { OutlineItem } from '@/types'
+import { fetchLearningRecord, saveLearningRecord, type LearningRecord } from '@/api/englishLearning'
 
 const route = useRoute()
 const router = useRouter()
@@ -17,6 +18,7 @@ const outline = ref<OutlineItem[]>([])
 const loading = ref(true)
 const notFound = ref(false)
 const result = ref<ReadingCheckResult | null>(null)
+const learningRecord = ref<LearningRecord | null>(null)
 
 const levelLabels: Record<number, string> = { 1: '基础阅读', 2: '结构阅读', 3: '深度阅读' }
 const progress = ref(0)
@@ -38,6 +40,8 @@ async function load() {
       exercises.value = await fetchPublicReadingExercises(String(route.params.slug))
     }
     result.value = null
+    learningRecord.value = article.value && !isAdminPreview.value
+      ? await fetchLearningRecord('READING', article.value.id).catch(() => null) : null
   } catch {
     notFound.value = true
   } finally {
@@ -62,10 +66,30 @@ async function handleSubmit(index: number, answer: unknown) {
       score: items.reduce((total, item) => total + item.earned, 0),
       total: items.reduce((total, item) => total + item.scoreValue, 0),
     }
+    const finished = items.length === exercises.value.length
+    const total = items.reduce((sum, item) => sum + item.scoreValue, 0)
+    const score = total ? items.reduce((sum, item) => sum + item.earned, 0) / total * 100 : null
+    learningRecord.value = await saveLearningRecord('READING', article.value.id, {
+      status: finished ? 'COMPLETED' : 'IN_PROGRESS', score,
+      timeSpentSeconds: finished ? article.value.estimatedMinutes * 60 : 0,
+      mastery: score == null ? null : score / 100,
+      weakPoints: items.filter((item) => !item.correct).map((item) => `exercise-${item.exerciseId}`),
+    })
     ElMessage.success('已提交，查看结果与解析。')
   } catch {
     ElMessage.error('提交失败。')
   }
+}
+
+async function completeReading() {
+  if (!article.value) return
+  try {
+    learningRecord.value = await saveLearningRecord('READING', article.value.id, {
+      status: 'COMPLETED', timeSpentSeconds: article.value.estimatedMinutes * 60,
+      mastery: learningRecord.value?.mastery ?? 0.6, weakPoints: learningRecord.value?.weakPoints ?? [],
+    })
+    ElMessage.success('已完成本篇，学习进度已更新。')
+  } catch { ElMessage.error('学习进度保存失败。') }
 }
 
 function itemCorrect(id: number): boolean | undefined {
@@ -124,6 +148,11 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 
         <MarkdownRenderer :source="article.bodyMarkdown" @outline="outline = $event" />
 
+        <section v-if="!isAdminPreview" class="reading-complete">
+          <div><small>LEARNING RECORD</small><strong>{{ learningRecord?.status === 'COMPLETED' ? '本篇已完成' : '读完后记录本次学习' }}</strong><span>完成状态会同步到学习组合与进度看板。</span></div>
+          <button type="button" :disabled="learningRecord?.status === 'COMPLETED'" @click="completeReading">{{ learningRecord?.status === 'COMPLETED' ? '已完成 ✓' : '标记完成' }}</button>
+        </section>
+
         <section v-if="article.previous || article.next" class="reading-detail__nav">
           <RouterLink v-if="article.previous" :to="`/english/reading/${article.previous.slug}`" class="nav-link">← {{ article.previous.title }}</RouterLink>
           <span v-else class="nav-link is-empty"></span>
@@ -181,7 +210,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 .reading-exercise__verdict { font-size: 14px; color: var(--danger); }
 .reading-exercise__verdict.is-correct { color: var(--primary); }
 .reading-detail__score { font-size: 16px; font-weight: 700; color: var(--primary); }
+.reading-complete{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:30px 0;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.reading-complete small,.reading-complete span{display:block;color:var(--text-muted);font-size:10px}.reading-complete strong{display:block;margin:5px 0;font-size:15px}.reading-complete button{flex:none;padding:9px 15px;border:0;border-radius:10px;background:var(--primary);color:white;cursor:pointer}.reading-complete button:disabled{background:var(--bg-subtle);color:var(--text-muted);cursor:default}
 @media (max-width: 1024px) { .reading-detail__layout { grid-template-columns: 200px minmax(0, 1fr); } .reading-detail__right { display: none; } }
-@media (max-width: 720px) { .reading-detail__layout { grid-template-columns: 1fr; } .reading-detail__left { display: none; } .reading-detail__mobile-panel { display: block; } .reading-detail__h1 { font-size: 28px; } }
+@media (max-width: 720px) { .reading-detail__layout { grid-template-columns: 1fr; } .reading-detail__left { display: none; } .reading-detail__mobile-panel { display: block; } .reading-detail__h1 { font-size: 28px; } .reading-complete{align-items:flex-start;flex-direction:column} }
 @media (prefers-reduced-motion: reduce) { .reading-detail :deep(*) { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
 </style>

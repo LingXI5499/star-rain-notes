@@ -60,6 +60,24 @@ const router = createRouter({
           meta: { title: '英语', description: '英语学习路线与资料整理。' },
         },
         {
+          path: 'english/progress',
+          name: 'english-progress',
+          component: () => import('@/views/english/EnglishProgressView.vue'),
+          meta: { title: '学习进度', description: '英语学习趋势、掌握度与复习建议。' },
+        },
+        {
+          path: 'english/bundles',
+          name: 'english-bundles',
+          component: () => import('@/views/english/EnglishBundlesView.vue'),
+          meta: { title: '学习组合', description: '串联阅读、听力与写作的主题学习路径。' },
+        },
+        {
+          path: 'english/bundles/:slug',
+          name: 'english-bundle-detail',
+          component: () => import('@/views/english/EnglishBundleDetailView.vue'),
+          meta: { title: '组合学习', description: '跨阅读、听力与写作的学习路径。' },
+        },
+        {
           path: 'english/vocabulary',
           name: 'english-vocabulary',
           component: () => import('@/views/english/VocabularyView.vue'),

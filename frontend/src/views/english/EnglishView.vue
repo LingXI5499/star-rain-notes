@@ -4,11 +4,14 @@ import { RouterLink } from 'vue-router'
 import { fetchPublicEnglish, type EnglishView } from '@/api/english'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import { fetchLearningSummary, type LearningSummary } from '@/api/englishLearning'
+import { fetchPublicBundles, type LearningBundle } from '@/api/englishBundle'
+import LearningBundleCards from '@/components/english/LearningBundleCards.vue'
 
 const english = ref<EnglishView | null>(null)
 const loading = ref(true)
 const error = ref(false)
 const progress = ref<LearningSummary | null>(null)
+const bundles = ref<LearningBundle[]>([])
 
 const stageLabels: Record<string, string> = {
   FOUNDATION: '基础阶段（FOUNDATION）',
@@ -27,9 +30,12 @@ const directions = [
 
 onMounted(async () => {
   try {
-    const [content, learning] = await Promise.all([fetchPublicEnglish(), fetchLearningSummary().catch(() => null)])
+    const [content, learning, paths] = await Promise.all([
+      fetchPublicEnglish(), fetchLearningSummary().catch(() => null), fetchPublicBundles().catch(() => []),
+    ])
     english.value = content
     progress.value = learning
+    bundles.value = paths
   } catch {
     error.value = true
   } finally {
@@ -55,6 +61,14 @@ onMounted(async () => {
           <section class="english__section">
             <h2 class="english__section-title">为什么学英语</h2>
             <p class="english__intro">{{ english?.introduction ?? '技术世界以英语为主，长期投资英语是职业与认知的复利。' }}</p>
+          </section>
+
+          <section class="english__section">
+            <div class="english__section-head">
+              <div><p>CONNECTED LEARNING</p><h2 class="english__section-title">跨模块学习组合</h2></div>
+              <RouterLink to="/english/bundles">查看全部 →</RouterLink>
+            </div>
+            <LearningBundleCards :bundles="bundles.slice(0, 3)" empty-hint="学习组合正在编排中。" />
           </section>
 
           <section class="english__section">
@@ -121,6 +135,7 @@ onMounted(async () => {
             <li>待复习 {{ progress?.dueForReview ?? 0 }}</li>
             <li>累计记录 {{ progress?.total ?? 0 }}</li>
           </ul>
+          <RouterLink to="/english/progress" class="english__progress-link">查看学习洞察 →</RouterLink>
         </div>
       </aside>
     </div>
@@ -170,6 +185,7 @@ onMounted(async () => {
   line-height: 32px;
   margin-bottom: var(--space-5);
 }
+.english__section-head{display:flex;align-items:end;justify-content:space-between;gap:20px;margin-bottom:var(--space-5)}.english__section-head .english__section-title{margin-bottom:0}.english__section-head p{margin-bottom:5px;color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.12em}.english__section-head>a{color:var(--primary);font-size:13px;white-space:nowrap}
 
 .english__intro {
   font-size: 16px;
@@ -319,6 +335,7 @@ onMounted(async () => {
   border-bottom: 1px solid var(--border);
   padding-bottom: var(--space-2);
 }
+.english__progress-link{display:block;margin-top:16px;padding-top:14px;border-top:1px solid var(--border);color:var(--primary);font-size:13px}
 
 /* ---------- responsive ---------- */
 @media (max-width: 1100px) {

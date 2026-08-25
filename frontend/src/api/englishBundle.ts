@@ -68,6 +68,10 @@ export async function fetchPublicBundle(slug: string): Promise<LearningBundle> {
   return (await http.get<LearningBundle>(`/public/english/bundles/${slug}`)).data
 }
 
+export async function fetchPublicBundles(): Promise<LearningBundle[]> {
+  return (await http.get<LearningBundle[]>('/public/english/bundles')).data
+}
+
 export async function fetchBundleItems(id: number): Promise<BundleItem[]> {
   return (await http.get<BundleItem[]>(`/admin/english/bundles/${id}/items`)).data
 }

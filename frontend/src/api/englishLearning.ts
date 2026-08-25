@@ -13,7 +13,7 @@ export interface LearningRecord {
   score: number | null
   timeSpentSeconds: number | null
   attemptCount: number
-  weakPoints: number[]
+  weakPoints: string[]
   mastery: number | null
   nextReviewAt: string | null
   updatedAt: string
@@ -28,6 +28,45 @@ export interface LearningSummary {
   recent: LearningRecord[]
 }
 
+export interface LearningActivityDay {
+  date: string
+  attempts: number
+  completed: number
+  timeSpentSeconds: number
+}
+
+export interface LearningModuleInsight {
+  contentType: 'GRAMMAR' | 'READING' | 'LISTENING' | 'WRITING'
+  total: number
+  completed: number
+  averageMastery: number | null
+  timeSpentSeconds: number
+}
+
+export interface LearningRecommendation {
+  contentType: LearningModuleInsight['contentType']
+  contentId: number
+  slug: string
+  title: string
+  route: string
+  reason: string
+  cefrLevel: string | null
+  mastery: number | null
+  nextReviewAt: string | null
+}
+
+export interface LearningInsights {
+  totalTimeSeconds: number
+  totalAttempts: number
+  activeDays14: number
+  currentStreak: number
+  averageScore: number | null
+  averageMastery: number | null
+  activity: LearningActivityDay[]
+  modules: LearningModuleInsight[]
+  recommendations: LearningRecommendation[]
+}
+
 export interface WritingSubmission {
   id: number
   promptId: number
@@ -40,15 +79,18 @@ export interface WritingSubmission {
 }
 
 const LEARNER_KEY = 'srn-english-learner-key-v1'
+let memoryLearnerKey: string | null = null
 
 export function learnerKey(): string {
-  let key = localStorage.getItem(LEARNER_KEY)
+  let key: string | null = memoryLearnerKey
+  try { key = localStorage.getItem(LEARNER_KEY) || key } catch { /* storage unavailable */ }
   if (!key) {
     key = typeof crypto.randomUUID === 'function'
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`
-    localStorage.setItem(LEARNER_KEY, key)
+    try { localStorage.setItem(LEARNER_KEY, key) } catch { /* use the in-memory identity */ }
   }
+  memoryLearnerKey = key
   return key
 }
 
@@ -58,6 +100,10 @@ function learnerHeaders() {
 
 export async function fetchLearningSummary(): Promise<LearningSummary> {
   return (await http.get<LearningSummary>('/public/english/learning/summary', { headers: learnerHeaders() })).data
+}
+
+export async function fetchLearningInsights(): Promise<LearningInsights> {
+  return (await http.get<LearningInsights>('/public/english/learning/insights', { headers: learnerHeaders() })).data
 }
 
 export async function fetchLearningRecord(contentType: string, contentId: number): Promise<LearningRecord | null> {

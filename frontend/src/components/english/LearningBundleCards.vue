@@ -14,9 +14,12 @@ const props = defineProps<{ bundles: LearningBundle[]; emptyHint?: string }>()
       :to="`/english/bundles/${bundle.slug}`"
       class="bundle-card"
     >
+      <div class="bundle-card__cover" :style="bundle.coverUrl ? { backgroundImage: `url(${bundle.coverUrl})` } : {}">
+        <span>{{ bundle.title.slice(0, 1) }}</span>
+      </div>
       <div class="bundle-card__top">
         <CefrBadge :level="bundle.primaryCefr" />
-        <span class="bundle-card__status">{{ bundle.publishStatus }}</span>
+        <span class="bundle-card__status">READ · LISTEN · WRITE</span>
       </div>
       <h3 class="bundle-card__title">{{ bundle.title }}</h3>
       <p class="bundle-card__summary">{{ bundle.summary || '跨阅读、听力与写作的学习组合。' }}</p>
@@ -39,6 +42,7 @@ const props = defineProps<{ bundles: LearningBundle[]; emptyHint?: string }>()
   color: var(--text-primary);
   transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
 }
+.bundle-card__cover{display:grid;height:112px;margin:-12px -12px 6px;place-items:center;border-radius:13px;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 18%,var(--bg-subtle)),color-mix(in srgb,var(--accent) 12%,var(--bg-surface)));background-position:center;background-size:cover;overflow:hidden}.bundle-card__cover span{font-size:38px;font-weight:800;color:color-mix(in srgb,var(--primary) 70%,white);text-shadow:0 2px 16px rgb(0 0 0/.12)}
 .bundle-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: 0 16px 36px rgb(16 49 39 / 0.09); }
 .bundle-card__top { display: flex; justify-content: space-between; align-items: center; }
 .bundle-card__status { font-size: 10px; color: var(--text-muted); }
@@ -46,4 +50,5 @@ const props = defineProps<{ bundles: LearningBundle[]; emptyHint?: string }>()
 .bundle-card__summary { font-size: 13px; color: var(--text-secondary); line-height: 1.6; flex: 1; }
 .bundle-card__cta { color: var(--primary); font-size: 13px; margin-top: auto; }
 .bundle-cards__empty { color: var(--text-muted); padding: var(--space-6) 0; }
+@media(prefers-reduced-motion:reduce){.bundle-card{transition:none}}
 </style>
