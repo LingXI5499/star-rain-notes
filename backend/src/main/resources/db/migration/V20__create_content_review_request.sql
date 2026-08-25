@@ -1,0 +1,22 @@
+CREATE TABLE content_review_request (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    content_type VARCHAR(40) NOT NULL,
+    content_id BIGINT NOT NULL,
+    action_type VARCHAR(40) NOT NULL,
+    title VARCHAR(220) NOT NULL,
+    payload_json JSON NOT NULL,
+    status VARCHAR(20) NOT NULL DEFAULT 'PENDING',
+    submitted_by BIGINT NULL,
+    reviewed_by BIGINT NULL,
+    review_note VARCHAR(500) NULL,
+    created_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6),
+    updated_at DATETIME(6) NOT NULL DEFAULT CURRENT_TIMESTAMP(6) ON UPDATE CURRENT_TIMESTAMP(6),
+    reviewed_at DATETIME(6) NULL,
+    CONSTRAINT chk_content_review_type CHECK (content_type IN ('BLOG_POST')),
+    CONSTRAINT chk_content_review_action CHECK (action_type IN ('UPDATE')),
+    CONSTRAINT chk_content_review_status CHECK (status IN ('PENDING','APPROVED','REJECTED')),
+    CONSTRAINT fk_content_review_submitted_by FOREIGN KEY (submitted_by) REFERENCES user_account(id) ON DELETE SET NULL,
+    CONSTRAINT fk_content_review_reviewed_by FOREIGN KEY (reviewed_by) REFERENCES user_account(id) ON DELETE SET NULL,
+    KEY idx_content_review_status_time (status, created_at, id),
+    KEY idx_content_review_content (content_type, content_id, status)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -73,6 +73,7 @@ class V1SchemaMigrationTest {
             "admin_invitation",
             "email_verification_challenge",
             "admin_audit_log",
+            "content_review_request",
             "tutorial_node_hierarchy_backup_v5",
             "tutorial_category_full_backup_v7",
             "tutorial_full_backup_v7",
@@ -91,7 +92,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(56);
+        assertThat(count).isEqualTo(57);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -117,14 +118,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV19AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV20AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -139,6 +140,6 @@ class V1SchemaMigrationTest {
                 "create english listening", "harden english listening", "create english writing",
                 "create english learning loop", "create english learning insights",
                 "add english learning analytics indexes", "create account collaboration",
-                "create admin audit log");
+                "create admin audit log", "create content review request");
     }
 }

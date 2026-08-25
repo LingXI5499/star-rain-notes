@@ -125,6 +125,10 @@ public class BlogService {
         return toAdminDetail(post);
     }
 
+    public String publishStatus(Long postId) {
+        return requirePost(postId).getPublishStatus();
+    }
+
     @Transactional
     public AdminPostDetailView create(CreatePostRequest request) {
         assertSlugFree(request.slug(), null);

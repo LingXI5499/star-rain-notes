@@ -82,6 +82,22 @@ export interface AuditLog {
   createdAt: string
 }
 
+export interface ContentReview {
+  id: number
+  contentType: string
+  contentId: number
+  actionType: string
+  title: string
+  payload: Record<string, unknown>
+  status: string
+  submittedBy: number | null
+  reviewedBy: number | null
+  reviewNote: string | null
+  createdAt: string
+  updatedAt: string
+  reviewedAt: string | null
+}
+
 export async function fetchSuperAdminUsers(): Promise<AccountUser[]> {
   return (await http.get<AccountUser[]>('/super-admin/users')).data
 }
@@ -112,4 +128,16 @@ export async function revokeInvitation(id: number): Promise<void> {
 
 export async function fetchAuditLogs(params: { page?: number; pageSize?: number; action?: string }): Promise<AuditLog[]> {
   return (await http.get<AuditLog[]>('/super-admin/audit-logs', { params })).data
+}
+
+export async function fetchContentReviews(params: { page?: number; pageSize?: number; status?: string }): Promise<ContentReview[]> {
+  return (await http.get<ContentReview[]>('/super-admin/content-reviews', { params })).data
+}
+
+export async function approveContentReview(id: number, note?: string): Promise<ContentReview> {
+  return (await http.post<ContentReview>(`/super-admin/content-reviews/${id}/approve`, { note: note || null })).data
+}
+
+export async function rejectContentReview(id: number, note?: string): Promise<ContentReview> {
+  return (await http.post<ContentReview>(`/super-admin/content-reviews/${id}/reject`, { note: note || null })).data
 }

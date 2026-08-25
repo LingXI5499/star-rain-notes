@@ -1,4 +1,5 @@
 import { http } from './http'
+import type { ContentReview } from './account'
 
 // ---------------------------------------------------------------
 // types
@@ -194,8 +195,8 @@ export async function createPost(payload: PostPayload): Promise<AdminPostDetail>
   return data
 }
 
-export async function updatePost(id: number, payload: PostPayload): Promise<AdminPostDetail> {
-  const { data } = await http.put<AdminPostDetail>(`/admin/blog/posts/${id}`, payload)
+export async function updatePost(id: number, payload: PostPayload): Promise<AdminPostDetail | ContentReview> {
+  const { data } = await http.put<AdminPostDetail | ContentReview>(`/admin/blog/posts/${id}`, payload)
   return data
 }
 

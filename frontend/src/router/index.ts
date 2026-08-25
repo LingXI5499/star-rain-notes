@@ -492,6 +492,12 @@ const router = createRouter({
           meta: { requiresSuperAdmin: true },
         },
         {
+          path: 'reviews',
+          name: 'admin-reviews',
+          component: () => import('@/views/admin/ContentReviewView.vue'),
+          meta: { requiresSuperAdmin: true },
+        },
+        {
           path: 'audit-logs',
           name: 'admin-audit-logs',
           component: () => import('@/views/admin/AuditLogView.vue'),

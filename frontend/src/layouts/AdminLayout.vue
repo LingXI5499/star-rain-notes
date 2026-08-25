@@ -29,6 +29,7 @@ const navItems = [
 const secondaryNavItems = [
   { to: '/admin/users', label: '用户管理', short: '用', match: (path: string) => path.startsWith('/admin/users'), superOnly: true },
   { to: '/admin/invites', label: '邀请管理', short: '邀', match: (path: string) => path.startsWith('/admin/invites'), superOnly: true },
+  { to: '/admin/reviews', label: '审核中心', short: '审', match: (path: string) => path.startsWith('/admin/reviews'), superOnly: true },
   { to: '/admin/audit-logs', label: '审计日志', short: '审', match: (path: string) => path.startsWith('/admin/audit-logs'), superOnly: true },
   { to: '/admin/about', label: '关于管理', short: '关', match: (path: string) => path.startsWith('/admin/about'), superOnly: true },
   { to: '/admin/media', label: '媒体库', short: '媒', match: (path: string) => path.startsWith('/admin/media') },

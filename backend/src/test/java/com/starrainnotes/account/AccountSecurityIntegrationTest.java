@@ -22,6 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -40,6 +41,7 @@ class AccountSecurityIntegrationTest {
 
     @BeforeEach
     void clean() {
+        jdbc.update("DELETE FROM content_review_request");
         jdbc.update("DELETE FROM admin_audit_log");
         jdbc.update("DELETE FROM email_verification_challenge");
         jdbc.update("DELETE FROM admin_invitation");
@@ -47,10 +49,12 @@ class AccountSecurityIntegrationTest {
     }
     @AfterEach
     void cleanUp() {
+        jdbc.update("DELETE FROM content_review_request");
         jdbc.update("DELETE FROM admin_audit_log");
         jdbc.update("DELETE FROM email_verification_challenge");
         jdbc.update("DELETE FROM admin_invitation");
         jdbc.update("DELETE FROM user_account");
+        jdbc.update("DELETE FROM blog_post WHERE slug LIKE 'review-%'");
     }
 
     private String csrf() throws Exception {
@@ -186,6 +190,45 @@ class AccountSecurityIntegrationTest {
                 .andExpect(jsonPath("$[0].action").value("INVITATION_CREATED"))
                 .andExpect(jsonPath("$[0].metadataJson.password").doesNotExist())
                 .andExpect(jsonPath("$[0].metadataJson.verificationCode").doesNotExist());
+    }
+
+    @Test
+    void adminBlogUpdateOnPublishedPostCreatesReviewAndSuperAdminApproves() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        insertAccount("admin@example.com", "admin-pass-1234", "ADMIN");
+        MockHttpSession superSession = loginAccount("super@example.com", "super-pass-1234");
+        MockHttpSession adminSession = loginAccount("admin@example.com", "admin-pass-1234");
+        jdbc.update("""
+                INSERT INTO blog_post(title,slug,summary,body_markdown,publish_status,published_at)
+                VALUES ('Review original','review-original','old summary','## Old','PUBLISHED',UTC_TIMESTAMP(6))
+                """);
+        Long postId = jdbc.queryForObject("SELECT id FROM blog_post WHERE slug='review-original'", Long.class);
+        String token = csrf();
+        String updateBody = """
+                {"title":"Review updated","slug":"review-updated","summary":"new summary",
+                "bodyMarkdown":"## New content","coverMediaId":null,"seoTitle":null,"seoDescription":null,
+                "tagIds":[],"tagNames":[]}
+                """;
+
+        mockMvc.perform(put("/api/v1/admin/blog/posts/" + postId).session(adminSession)
+                        .contentType("application/json").content(updateBody)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.status").value("PENDING"))
+                .andExpect(jsonPath("$.payload.bodyMarkdown").exists());
+        assertThat(jdbc.queryForObject("SELECT title FROM blog_post WHERE id=?", String.class, postId))
+                .isEqualTo("Review original");
+
+        Long reviewId = jdbc.queryForObject("SELECT id FROM content_review_request WHERE content_id=?", Long.class, postId);
+        mockMvc.perform(post("/api/v1/super-admin/content-reviews/" + reviewId + "/approve").session(superSession)
+                        .contentType("application/json").content("{\"note\":\"ok\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("APPROVED"));
+        assertThat(jdbc.queryForObject("SELECT title FROM blog_post WHERE id=?", String.class, postId))
+                .isEqualTo("Review updated");
     }
 
     private void insertAccount(String email, String password, String role) {

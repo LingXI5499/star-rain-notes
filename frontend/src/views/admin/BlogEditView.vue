@@ -81,7 +81,13 @@ async function save() {
       tagNames: form.tagValues.filter((value): value is string => typeof value === 'string'),
     }
     if (isEdit.value) {
-      await updatePost(Number(route.params.id), payload)
+      const result = await updatePost(Number(route.params.id), payload)
+      if ('contentType' in result && result.status === 'PENDING') {
+        capture()
+        ElMessage.success('已提交审核，超级管理员批准后会应用到线上文章。')
+        await router.push({ name: 'admin-blog' })
+        return
+      }
     } else {
       await createPost(payload)
     }

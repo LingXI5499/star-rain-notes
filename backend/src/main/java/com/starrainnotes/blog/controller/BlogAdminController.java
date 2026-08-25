@@ -5,8 +5,13 @@ import com.starrainnotes.blog.dto.AdminPostPageView;
 import com.starrainnotes.blog.dto.CreatePostRequest;
 import com.starrainnotes.blog.dto.UpdatePostRequest;
 import com.starrainnotes.blog.service.BlogService;
+import com.starrainnotes.account.review.dto.ContentReviewView;
+import com.starrainnotes.account.review.service.ContentReviewService;
+import com.starrainnotes.account.security.AccountPrincipal;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class BlogAdminController {
 
     private final BlogService blogService;
+    private final ContentReviewService reviewService;
 
-    public BlogAdminController(BlogService blogService) {
+    public BlogAdminController(BlogService blogService, ContentReviewService reviewService) {
         this.blogService = blogService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping
@@ -53,9 +60,14 @@ public class BlogAdminController {
     }
 
     @PutMapping("/{postId}")
-    public AdminPostDetailView update(@PathVariable Long postId,
-                                      @Valid @RequestBody UpdatePostRequest request) {
-        return blogService.update(postId, request);
+    public ResponseEntity<?> update(@PathVariable Long postId,
+                                    @Valid @RequestBody UpdatePostRequest request,
+                                    Authentication authentication) {
+        if (!isSuperAdmin(authentication) && "PUBLISHED".equals(blogService.publishStatus(postId))) {
+            ContentReviewView review = reviewService.submitBlogUpdate(actorId(authentication), postId, request);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body(review);
+        }
+        return ResponseEntity.ok(blogService.update(postId, request));
     }
 
     @DeleteMapping("/{postId}")
@@ -72,5 +84,15 @@ public class BlogAdminController {
     @PostMapping("/{postId}/withdraw")
     public AdminPostDetailView withdraw(@PathVariable Long postId) {
         return blogService.withdraw(postId);
+    }
+
+    private boolean isSuperAdmin(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_SUPER_ADMIN".equals(authority.getAuthority()));
+    }
+
+    private Long actorId(Authentication authentication) {
+        return authentication != null && authentication.getPrincipal() instanceof AccountPrincipal principal
+                ? principal.getId() : null;
     }
 }
