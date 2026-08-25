@@ -8,7 +8,9 @@ export type WritingPromptSummary = Omit<WritingPrompt,'backgroundMarkdown'|'requ
 export type WritingPage<T> = {items:T[];page:number;pageSize:number;total:number;totalPages:number}
 export type WritingResourcePayload = Omit<WritingResource,'id'|'coverUrl'|'publishStatus'|'sortOrder'|'publishedAt'|'updatedAt'|'tags'> & {sortOrder?:number;tagIds:number[]}
 export type WritingPromptPayload = Omit<WritingPrompt,'id'|'coverUrl'|'publishStatus'|'sortOrder'|'publishedAt'|'updatedAt'|'tags'> & {sortOrder?:number;tagIds:number[]}
-const admin='/api/v1/admin/english/writing'; const pub='/api/v1/public/english/writing'
+// `http` already has `/api/v1` as baseURL. Keeping these relative is crucial:
+// an absolute `/api/v1/...` here becomes `/api/v1/api/v1/...` in Axios.
+const admin='/admin/english/writing'; const pub='/public/english/writing'
 export const fetchWritingResources=(params:Record<string,unknown>)=>http.get<WritingPage<WritingResourceSummary>>(`${admin}/resources`,{params}).then(r=>r.data)
 export const getWritingResource=(id:number)=>http.get<WritingResource>(`${admin}/resources/${id}`).then(r=>r.data)
 export const createWritingResource=(data:WritingResourcePayload)=>http.post<WritingResource>(`${admin}/resources`,data).then(r=>r.data)
