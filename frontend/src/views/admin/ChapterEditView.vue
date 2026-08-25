@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
+import type { ContentReview } from '@/api/account'
 import {
   createChapter,
   fetchAdminCurriculum,
@@ -52,6 +53,10 @@ const groupOptions = computed(() => groups.value.map((group) => ({
   label: `${group.title}（${group.chapterCount} 章）`,
 })))
 
+function isContentReview(value: unknown): value is ContentReview {
+  return typeof value === 'object' && value !== null && 'contentType' in value && 'status' in value
+}
+
 onMounted(async () => {
   try {
     const curriculum = await fetchAdminCurriculum(tutorialId)
@@ -90,12 +95,18 @@ async function save() {
   try {
     if (isEdit.value && chapterId !== null) {
       // Group changes are handled by the explicit move action on the structure page.
-      await updateChapter(tutorialId, chapterId, {
+      const result = await updateChapter(tutorialId, chapterId, {
         title: form.title,
         slug: form.slug,
         summary: form.summary || null,
         bodyMarkdown: form.bodyMarkdown,
       })
+      if (isContentReview(result)) {
+        capture()
+        ElMessage.success('已提交审核，超级管理员批准后会应用到线上章节。')
+        await backToWorkspace()
+        return
+      }
     } else {
       await createChapter(tutorialId, {
         title: form.title,

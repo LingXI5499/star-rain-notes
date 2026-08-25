@@ -151,6 +151,10 @@ public class TutorialNodeService {
         return toChapterDetail(requireChapter(tutorialId, chapterId));
     }
 
+    public String chapterPublishStatus(Long tutorialId, Long chapterId) {
+        return requireChapter(tutorialId, chapterId).getPublishStatus();
+    }
+
     public ChapterDetailView updateChapter(Long tutorialId, Long chapterId, UpdateChapterRequest request) {
         TutorialNode chapter = requireChapter(tutorialId, chapterId);
         assertChapterSlugFree(tutorialId, request.slug(), chapterId);

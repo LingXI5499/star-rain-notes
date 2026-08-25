@@ -1,5 +1,6 @@
 import { http } from './http'
 import { AxiosError } from 'axios'
+import type { ContentReview } from './account'
 
 // ---------------------------------------------------------------
 // shared / public types
@@ -458,8 +459,9 @@ export async function updateChapter(
   tutorialId: number,
   chapterId: number,
   payload: Omit<ChapterPayload, 'groupId'>,
-): Promise<ChapterDetail> {
+): Promise<ChapterDetail | ContentReview> {
   const { data } = await http.put<ChapterDetailWire>(`/admin/tutorials/${tutorialId}/chapters/${chapterId}`, payload)
+  if ('contentType' in data) return data as unknown as ContentReview
   return normalizeChapterDetail(data)
 }
 

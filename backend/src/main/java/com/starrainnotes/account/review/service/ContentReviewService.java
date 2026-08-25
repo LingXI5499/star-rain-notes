@@ -8,6 +8,8 @@ import com.starrainnotes.blog.dto.UpdatePostRequest;
 import com.starrainnotes.blog.service.BlogService;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
+import com.starrainnotes.tutorial.dto.UpdateChapterRequest;
+import com.starrainnotes.tutorial.service.TutorialNodeService;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -26,14 +28,17 @@ public class ContentReviewService {
     private final JdbcTemplate jdbc;
     private final ObjectMapper json;
     private final BlogService blogService;
+    private final TutorialNodeService tutorialNodeService;
     private final AuditLogService auditLogService;
     private final SiteSettingsTimezone timezone;
 
     public ContentReviewService(JdbcTemplate jdbc, ObjectMapper json, BlogService blogService,
+                                TutorialNodeService tutorialNodeService,
                                 AuditLogService auditLogService, SiteSettingsTimezone timezone) {
         this.jdbc = jdbc;
         this.json = json;
         this.blogService = blogService;
+        this.tutorialNodeService = tutorialNodeService;
         this.auditLogService = auditLogService;
         this.timezone = timezone;
     }
@@ -70,12 +75,40 @@ public class ContentReviewService {
     }
 
     @Transactional
+    public ContentReviewView submitTutorialChapterUpdate(Long actorId, Long tutorialId, Long chapterId,
+                                                         UpdateChapterRequest request) {
+        Integer pending = jdbc.queryForObject("""
+                SELECT COUNT(*) FROM content_review_request
+                WHERE content_type='TUTORIAL_CHAPTER' AND content_id=? AND status='PENDING'
+                """, Integer.class, chapterId);
+        if (pending != null && pending > 0) {
+            throw new ApiException(HttpStatus.CONFLICT, "CONTENT_REVIEW_PENDING",
+                    "Review already pending", "这个章节已有待审核版本，请等待超级管理员处理。");
+        }
+        jdbc.update("""
+                INSERT INTO content_review_request(content_type,content_id,action_type,title,payload_json,submitted_by)
+                VALUES ('TUTORIAL_CHAPTER',?,'UPDATE',?,?,?)
+                """, chapterId, request.title(), json.valueToTree(Map.of(
+                        "tutorialId", tutorialId,
+                        "request", request
+                )).toString(), actorId);
+        Long id = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        auditLogService.record(actorId, "CONTENT_REVIEW_SUBMITTED", "TUTORIAL_CHAPTER", chapterId, "SUCCESS", null, null,
+                Map.of("reviewId", id, "action", "UPDATE"));
+        return get(id);
+    }
+
+    @Transactional
     public ContentReviewView approve(Long id, Long reviewerId, String note) {
         ContentReviewView review = get(id);
         ensurePending(review);
         if ("BLOG_POST".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
             UpdatePostRequest request = json.convertValue(review.payload(), UpdatePostRequest.class);
             blogService.update(review.contentId(), request);
+        } else if ("TUTORIAL_CHAPTER".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
+            Long tutorialId = json.convertValue(review.payload().get("tutorialId"), Long.class);
+            UpdateChapterRequest request = json.convertValue(review.payload().get("request"), UpdateChapterRequest.class);
+            tutorialNodeService.updateChapter(tutorialId, review.contentId(), request);
         }
         jdbc.update("""
                 UPDATE content_review_request
