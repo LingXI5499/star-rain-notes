@@ -2,10 +2,13 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import {
-  fetchThemeWords,
+  fetchAllThemeWords,
   fetchVocabularyLayers,
+  fetchVocabularyMemory,
+  incrementVocabularyMemory,
+  overlayVocabularyMemory,
   formatMemoryTime,
-  incrementMemory,
+  type VocabularyMemoryEntry,
   type VocabularyWord,
 } from '@/api/vocabulary'
 
@@ -13,7 +16,8 @@ import {
  * Theme vocabulary cards: responsive grid (mobile = one card per row).
  * Each card shows part of speech, word, US phonetic, translation,
  * inflections/derivatives, user-added examples and the personal memory
- * record (count + last time, +1 button persisted server-side).
+ * record (count + last time, +1 button persisted per 登录状态分流:
+ * 游客 localStorage / 登录账号 API —— 阶段四).
  */
 const route = useRoute()
 const router = useRouter()
@@ -22,16 +26,26 @@ const themeId = computed(() => Number(route.params.themeId))
 
 const themeName = ref('')
 const themeLayer = ref('')
-const items = ref<VocabularyWord[]>([])
-const total = ref(0)
+const allWords = ref<VocabularyWord[]>([])
+const memory = ref<Record<number, VocabularyMemoryEntry>>({})
 const page = ref(1)
-const totalPages = ref(0)
 const loading = ref(true)
 const error = ref(false)
 const memorizing = ref<Set<number>>(new Set())
 const rememberedOnly = ref(false)
 const resultsTop = ref<HTMLElement | null>(null)
 const PAGE_SIZE = 24
+
+const plainWords = computed(() =>
+  rememberedOnly.value ? allWords.value.filter((w) => (memory.value[w.id]?.count ?? 0) > 0) : allWords.value,
+)
+const total = computed(() => plainWords.value.length)
+const totalPages = computed(() => (total.value === 0 ? 0 : Math.ceil(total.value / PAGE_SIZE)))
+const items = computed(() => {
+  const start = (page.value - 1) * PAGE_SIZE
+  return plainWords.value.slice(start, start + PAGE_SIZE)
+})
+const pageLabel = computed(() => (total.value ? `${page.value} / ${totalPages.value} 页 · 共 ${total.value} 词` : ''))
 
 let requestController: AbortController | null = null
 let requestVersion = 0
@@ -67,20 +81,15 @@ async function load(scrollAfter = false) {
   const version = ++requestVersion
   loading.value = true
   try {
-    const result = await fetchThemeWords(themeId.value, {
-      page: page.value,
-      pageSize: PAGE_SIZE,
-      remembered: rememberedOnly.value || undefined,
-    }, controller.signal)
+    const [words, mem] = await Promise.all([
+      fetchAllThemeWords(themeId.value, controller.signal),
+      fetchVocabularyMemory(),
+    ])
     if (version !== requestVersion) return
-    items.value = result.items
-    total.value = result.total
-    totalPages.value = result.totalPages
+    allWords.value = overlayVocabularyMemory(words, mem)
+    memory.value = mem
+    if (totalPages.value > 0 && page.value > totalPages.value) page.value = totalPages.value
     error.value = false
-    if (result.totalPages > 0 && page.value > result.totalPages) {
-      await syncRoute(result.totalPages, rememberedOnly.value)
-      return
-    }
     if (scrollAfter) await scrollToResults()
   } catch (loadError) {
     if (controller.signal.aborted) return
@@ -99,9 +108,14 @@ async function remember(word: VocabularyWord) {
   if (memorizing.value.has(word.id)) return
   memorizing.value.add(word.id)
   try {
-    const updated = await incrementMemory(word.id)
-    const index = items.value.findIndex((w) => w.id === word.id)
-    if (index >= 0) items.value[index] = updated
+    const updated = await incrementVocabularyMemory(word)
+    const index = allWords.value.findIndex((w) => w.id === word.id)
+    if (index >= 0) allWords.value[index] = updated
+    const prev = memory.value[word.id] ?? { count: 0, at: '' }
+    memory.value = {
+      ...memory.value,
+      [word.id]: { count: prev.count + 1, at: updated.lastMemoryAt ?? '' },
+    }
   } catch {
     // keep the old count; the card stays usable
   } finally {
@@ -138,14 +152,16 @@ watch(
     const themeChanged = !previous || currentTheme !== previous[0]
     readRouteState()
     if (themeChanged) await loadThemeMeta()
-    await load(!themeChanged || !!previous)
+    if (themeChanged) {
+      await load(!themeChanged || !!previous)
+    } else if (totalPages.value > 0 && page.value > totalPages.value) {
+      page.value = totalPages.value
+    }
   },
   { immediate: true },
 )
 
 onBeforeUnmount(() => requestController?.abort())
-
-const pageLabel = computed(() => (total.value ? `${page.value} / ${totalPages.value} 页 · 共 ${total.value} 词` : ''))
 </script>
 
 <template>
