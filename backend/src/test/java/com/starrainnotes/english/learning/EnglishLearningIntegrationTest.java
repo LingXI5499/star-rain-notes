@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -28,6 +29,7 @@ class EnglishLearningIntegrationTest extends AbstractAuthIntegrationTest {
     }
     @AfterEach void cleanup(){
         jdbc.update("DELETE FROM english_writing_submission");
+        jdbc.update("DELETE FROM english_learning_attempt");
         jdbc.update("DELETE FROM english_learning_record");
         jdbc.update("DELETE FROM english_learner_profile");
         jdbc.update("DELETE FROM english_writing_prompt WHERE slug='learning-prompt'");
@@ -41,10 +43,20 @@ class EnglishLearningIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(jsonPath("$.attemptCount").value(1))
                 .andExpect(jsonPath("$.status").value("COMPLETED"))
                 .andExpect(jsonPath("$.nextReviewAt").isNotEmpty());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM english_learning_attempt",Integer.class)).isEqualTo(1);
         mockMvc.perform(get("/api/v1/public/english/learning/summary").header("X-Learner-Key",KEY))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.completed").value(1))
                 .andExpect(jsonPath("$.completedByType.WRITING").value(1));
+        jdbc.update("UPDATE english_learning_record SET next_review_at=UTC_TIMESTAMP(6)-INTERVAL 1 DAY");
+        mockMvc.perform(get("/api/v1/public/english/learning/insights").header("X-Learner-Key",KEY))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.totalTimeSeconds").value(300))
+                .andExpect(jsonPath("$.totalAttempts").value(1))
+                .andExpect(jsonPath("$.activeDays14").value(1))
+                .andExpect(jsonPath("$.modules[?(@.contentType=='WRITING')].completed").value(1))
+                .andExpect(jsonPath("$.recommendations[0].reason").value("到期复习"))
+                .andExpect(jsonPath("$.recommendations[0].route").value("/english/writing/practice/learning-prompt"));
     }
 
     @Test void writingDraftIsUpsertedAndSubmitted() throws Exception {

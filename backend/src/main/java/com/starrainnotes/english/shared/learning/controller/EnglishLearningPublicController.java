@@ -17,6 +17,8 @@ public class EnglishLearningPublicController {
     public LearningRecordView save(@RequestHeader("X-Learner-Key")String key,@PathVariable String contentType,@PathVariable Long contentId,@Valid @RequestBody LearningRecordRequest request){return service.save(key,contentType,contentId,request);}
     @GetMapping("/summary")
     public LearningSummaryView summary(@RequestHeader("X-Learner-Key")String key){return service.summary(key);}
+    @GetMapping("/insights")
+    public LearningInsightsView insights(@RequestHeader("X-Learner-Key")String key){return service.insights(key);}
     @GetMapping("/writing-submissions/{promptId}")
     public WritingSubmissionView submission(@RequestHeader("X-Learner-Key")String key,@PathVariable Long promptId){return service.getSubmission(key,promptId);}
     @PutMapping("/writing-submissions/{promptId}")

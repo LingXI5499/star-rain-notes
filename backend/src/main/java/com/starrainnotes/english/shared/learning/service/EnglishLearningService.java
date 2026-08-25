@@ -16,6 +16,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -47,6 +48,13 @@ public class EnglishLearningService {
           next_review_at=VALUES(next_review_at),last_attempt_at=UTC_TIMESTAMP(6)
           """,learner,type,contentId,content.slug(),content.cefr(),request.status(),request.score(),seconds,
                 weakJson,request.mastery(),next);
+        jdbc.update("""
+          INSERT INTO english_learning_attempt
+          (learner_id,content_type,content_id,content_slug,cefr_level,completion_status,
+           score,time_spent_seconds,weak_points_json,mastery_level)
+          VALUES (?,?,?,?,?,?,?,?,?,?)
+          """,learner,type,contentId,content.slug(),content.cefr(),request.status(),request.score(),seconds,
+                weakJson,request.mastery());
         return getRequired(learner,type,contentId);
     }
 
@@ -68,6 +76,23 @@ public class EnglishLearningService {
                 rs->{while(rs.next())byType.put(rs.getString(1),rs.getLong(2));return null;},learner);
         List<LearningRecordView> recent=jdbc.query(select()+" WHERE learner_id=? ORDER BY updated_at DESC LIMIT 8",this::map,learner);
         return new LearningSummaryView(orZero(total),orZero(progress),orZero(completed),orZero(due),byType,recent);
+    }
+
+    public LearningInsightsView insights(String learnerKey){
+        long learner=learner(learnerKey);
+        Map<String,Object> totals=jdbc.queryForMap("""
+          SELECT COALESCE(SUM(time_spent_seconds),0) total_time,
+                 COALESCE(SUM(attempts),0) total_attempts,
+                 ROUND(AVG(score),2) average_score,
+                 ROUND(AVG(mastery_level),4) average_mastery
+          FROM english_learning_record WHERE learner_id=?
+          """,learner);
+        List<LearningActivityDayView> activity=activity(learner);
+        return new LearningInsightsView(
+                number(totals.get("total_time")),number(totals.get("total_attempts")),
+                (int)activity.stream().filter(x->x.attempts()>0).count(),streak(activity),
+                decimal(totals.get("average_score")),decimal(totals.get("average_mastery")),
+                activity,modules(learner),recommendations(learner));
     }
 
     @Transactional
@@ -115,6 +140,99 @@ public class EnglishLearningService {
         catch(EmptyResultDataAccessException e){throw new ApiException(HttpStatus.NOT_FOUND,"ENGLISH_LEARNING_RECORD_NOT_FOUND","Record not found","No learning record exists.");}
     }
     private String select(){return "SELECT * FROM english_learning_record";}
+
+    private List<LearningActivityDayView> activity(long learner){
+        LocalDate today=LocalDate.now(timezone.zone());LocalDate first=today.minusDays(13);
+        Map<LocalDate,int[]> grouped=new HashMap<>();
+        jdbc.query("""
+          SELECT attempted_at,completion_status,time_spent_seconds
+          FROM english_learning_attempt
+          WHERE learner_id=? AND attempted_at>=?
+          ORDER BY attempted_at
+          """,rs->{
+            while(rs.next()){
+                LocalDate day=timezone.atSite(rs.getTimestamp("attempted_at").toLocalDateTime()).toLocalDate();
+                int[] value=grouped.computeIfAbsent(day,x->new int[3]);value[0]++;
+                if("COMPLETED".equals(rs.getString("completion_status")))value[1]++;
+                value[2]+=rs.getInt("time_spent_seconds");
+            }return null;
+        },learner,first.atStartOfDay(timezone.zone()).withZoneSameInstant(java.time.ZoneOffset.UTC).toLocalDateTime());
+        List<LearningActivityDayView> result=new ArrayList<>();
+        for(int i=0;i<14;i++){LocalDate day=first.plusDays(i);int[] v=grouped.getOrDefault(day,new int[3]);result.add(new LearningActivityDayView(day.toString(),v[0],v[1],v[2]));}
+        return result;
+    }
+
+    private int streak(List<LearningActivityDayView> activity){
+        int index=activity.size()-1;if(index<0)return 0;
+        if(activity.get(index).attempts()==0)index--;
+        int value=0;for(;index>=0&&activity.get(index).attempts()>0;index--)value++;return value;
+    }
+
+    private List<LearningModuleInsightView> modules(long learner){
+        Map<String,LearningModuleInsightView> values=new LinkedHashMap<>();
+        for(String type:List.of("GRAMMAR","READING","LISTENING","WRITING"))
+            values.put(type,new LearningModuleInsightView(type,0,0,null,0));
+        jdbc.query("""
+          SELECT content_type,COUNT(*) total,
+                 SUM(completion_status='COMPLETED') completed,
+                 ROUND(AVG(mastery_level),4) average_mastery,
+                 SUM(time_spent_seconds) time_spent
+          FROM english_learning_record WHERE learner_id=? GROUP BY content_type
+          """,rs->{while(rs.next()){String type=rs.getString("content_type");values.put(type,
+                    new LearningModuleInsightView(type,rs.getLong("total"),rs.getLong("completed"),
+                            rs.getBigDecimal("average_mastery"),rs.getLong("time_spent")));}return null;},learner);
+        return List.copyOf(values.values());
+    }
+
+    private List<LearningRecommendationView> recommendations(long learner){
+        List<LearningRecordView> records=jdbc.query(select()+" "+"""
+          WHERE learner_id=? AND (completion_status='IN_PROGRESS' OR next_review_at<=UTC_TIMESTAMP(6))
+          ORDER BY (next_review_at<=UTC_TIMESTAMP(6)) DESC,next_review_at,mastery_level LIMIT 6
+          """,this::map,learner);
+        List<LearningRecommendationView> result=new ArrayList<>();
+        for(LearningRecordView record:records){
+            ContentLabel label=contentLabel(record.contentType(),record.contentId(),record.contentSlug());
+            String reason=record.nextReviewAt()!=null?"到期复习":"继续学习";
+            result.add(new LearningRecommendationView(record.contentType(),record.contentId(),record.contentSlug(),
+                    label.title(),label.route(),reason,record.cefrLevel(),record.mastery(),record.nextReviewAt()));
+        }
+        if(result.isEmpty())result.addAll(starterRecommendations(learner));
+        return result;
+    }
+
+    private List<LearningRecommendationView> starterRecommendations(long learner){
+        List<LearningRecommendationView> result=new ArrayList<>();
+        starter(result,learner,"GRAMMAR","""
+          SELECT l.id,l.slug,l.title,NULL cefr FROM english_grammar_lesson l
+          JOIN english_grammar_course c ON c.id=l.course_id
+          WHERE l.publish_status='PUBLISHED' AND c.publish_status='PUBLISHED'
+          AND NOT EXISTS(SELECT 1 FROM english_learning_record r WHERE r.learner_id=? AND r.content_type='GRAMMAR' AND r.content_id=l.id)
+          ORDER BY l.sort_order,l.id LIMIT 1
+          """);
+        starter(result,learner,"READING","SELECT id,slug,title,cefr_level cefr FROM english_reading_article a WHERE publish_status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM english_learning_record r WHERE r.learner_id=? AND r.content_type='READING' AND r.content_id=a.id) ORDER BY sort_order,id LIMIT 1");
+        starter(result,learner,"LISTENING","SELECT id,slug,title,cefr_level cefr FROM english_listening_item a WHERE publish_status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM english_learning_record r WHERE r.learner_id=? AND r.content_type='LISTENING' AND r.content_id=a.id) ORDER BY sort_order,id LIMIT 1");
+        starter(result,learner,"WRITING","SELECT id,slug,title,cefr_level cefr FROM english_writing_prompt a WHERE publish_status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM english_learning_record r WHERE r.learner_id=? AND r.content_type='WRITING' AND r.content_id=a.id) ORDER BY sort_order,id LIMIT 1");
+        return result;
+    }
+
+    private void starter(List<LearningRecommendationView> result,long learner,String type,String sql){
+        jdbc.query(sql,rs->{if(rs.next())result.add(new LearningRecommendationView(type,rs.getLong("id"),
+                rs.getString("slug"),rs.getString("title"),route(type,rs.getString("slug")),"建议开始",
+                rs.getString("cefr"),null,null));return null;},learner);
+    }
+
+    private ContentLabel contentLabel(String type,Long id,String fallbackSlug){
+        String sql=switch(type){
+            case "GRAMMAR"->"SELECT title,slug FROM english_grammar_lesson WHERE id=?";
+            case "READING"->"SELECT title,slug FROM english_reading_article WHERE id=?";
+            case "LISTENING"->"SELECT title,slug FROM english_listening_item WHERE id=?";
+            default->"SELECT title,slug FROM english_writing_prompt WHERE id=?";
+        };
+        List<ContentLabel> labels=jdbc.query(sql,(rs,n)->new ContentLabel(rs.getString("title"),route(type,rs.getString("slug"))),id);
+        return labels.isEmpty()?new ContentLabel(fallbackSlug,route(type,fallbackSlug)):labels.getFirst();
+    }
+
+    private String route(String type,String slug){return switch(type){case"GRAMMAR"->"/english/grammar/"+slug;case"READING"->"/english/reading/"+slug;case"LISTENING"->"/english/listening/"+slug;default->"/english/writing/practice/"+slug;};}
     private LearningRecordView map(ResultSet r,int n)throws SQLException{return new LearningRecordView(r.getLong("id"),r.getString("content_type"),r.getLong("content_id"),r.getString("content_slug"),r.getString("cefr_level"),r.getString("completion_status"),r.getBigDecimal("score"),r.getInt("time_spent_seconds"),r.getInt("attempts"),readWeak(r.getString("weak_points_json")),r.getBigDecimal("mastery_level"),date(r,"next_review_at"),date(r,"updated_at"));}
     private WritingSubmissionView submission(long learner,Long prompt)throws EmptyResultDataAccessException{return jdbc.queryForObject("SELECT * FROM english_writing_submission WHERE learner_id=? AND prompt_id=?",(r,n)->new WritingSubmissionView(r.getLong("id"),r.getLong("prompt_id"),r.getString("body_text"),r.getInt("word_count"),r.getString("submission_status"),r.getBigDecimal("self_score"),date(r,"submitted_at"),date(r,"updated_at")),learner,prompt);}
     private LocalDateTime nextReview(String status,BigDecimal mastery){if(!"COMPLETED".equals(status))return null;double m=mastery==null?0:mastery.doubleValue();return LocalDateTime.now().plusDays(m>=.8?7:m>=.6?3:1);}
@@ -124,8 +242,11 @@ public class EnglishLearningService {
     private int countWords(String value){String v=value==null?"":value.trim();return v.isBlank()?0:v.split("\\s+").length;}
     private String sha256(String value){try{byte[] bytes=MessageDigest.getInstance("SHA-256").digest(value.getBytes(StandardCharsets.UTF_8));return HexFormat.of().formatHex(bytes);}catch(Exception e){throw new IllegalStateException(e);}}
     private Long count(String sql,Object... args){return jdbc.queryForObject(sql,Long.class,args);}private long orZero(Long v){return v==null?0:v;}
+    private long number(Object value){return value instanceof Number n?n.longValue():0;}
+    private BigDecimal decimal(Object value){return value instanceof BigDecimal d?d:value instanceof Number n?BigDecimal.valueOf(n.doubleValue()):null;}
     private String date(ResultSet r,String c)throws SQLException{var t=r.getTimestamp(c);return t==null?null:timezone.atSite(t.toLocalDateTime()).format(ISO);}
     private void bad(String detail){throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,"ENGLISH_LEARNING_RECORD_INVALID","Invalid learning record",detail);}
     private ApiException unavailable(){return new ApiException(HttpStatus.NOT_FOUND,"ENGLISH_CONTENT_NOT_PUBLISHED","Content unavailable","The selected English content is not published.");}
     private record Content(String slug,String cefr){}
+    private record ContentLabel(String title,String route){}
 }

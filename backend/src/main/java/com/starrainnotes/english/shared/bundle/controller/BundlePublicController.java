@@ -22,6 +22,11 @@ public class BundlePublicController {
         this.items = items;
     }
 
+    @GetMapping
+    public java.util.List<BundleView> list() {
+        return service.publicList();
+    }
+
     @GetMapping("/{slug}")
     public BundleView get(@PathVariable String slug) {
         return service.publicGet(slug);

@@ -100,11 +100,10 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
         long hidden = createBundle(auth, "test-bundle-hidden", "test-bundle-hidden", null);
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/" + id + "/publish")
                 .session(auth.session()), auth.csrf())).andExpect(status().isOk());
-        // no public list endpoint in §10.6; verify via admin list statuses instead
-        mockMvc.perform(get("/api/v1/admin/english/bundles").session(auth.session()))
+        mockMvc.perform(get("/api/v1/public/english/bundles"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.slug=='test-bundle-live')].publishStatus").value("PUBLISHED"))
-                .andExpect(jsonPath("$[?(@.slug=='test-bundle-hidden')].publishStatus").value("DRAFT"));
+                .andExpect(jsonPath("$[?(@.slug=='test-bundle-hidden')]").isEmpty());
     }
 
     @Test
