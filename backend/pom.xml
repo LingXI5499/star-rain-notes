@@ -37,6 +37,12 @@
             <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
+        <!-- SMTP mail (163 授权码)，用于发送邮箱验证码/邀请 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
         <!-- Jakarta Validation -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

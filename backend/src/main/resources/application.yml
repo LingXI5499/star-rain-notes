@@ -53,6 +53,17 @@ app:
   # 首次 Setup 需要：APP_SETUP_TOKEN 已配置 + X-Setup-Token constant-time match + CSRF。
   # 生产部署时通过环境变量 APP_SETUP_TOKEN 注入，初始化后从生产环境移除（06-testing-deployment.md §10）。
   setup-token: ${APP_SETUP_TOKEN:}
+  account:
+    # 固定超级管理员邮箱（接收激活验证码）
+    super-admin-email: ${APP_SUPER_ADMIN_EMAIL:}
+    mail:
+      host: ${MAIL_HOST:}
+      port: ${MAIL_PORT:465}
+      username: ${MAIL_USERNAME:}
+      auth-code: ${MAIL_AUTH_CODE:}
+      from: ${MAIL_FROM:}
+      ssl-enabled: ${MAIL_SSL_ENABLED:true}
+      base-url: ${MAIL_BASE_URL:http://localhost:24680}
   media:
     # 本地媒体存储目录（相对路径，gitignored）。生产由 Nginx 以静态资源方式提供 /uploads，
     # 目录必须不可执行（06-testing-deployment.md §8）；数据库只保存相对 storage key。

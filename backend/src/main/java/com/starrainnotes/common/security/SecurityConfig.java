@@ -111,6 +111,10 @@ public class SecurityConfig {
                         .requestMatchers("/api/v1/auth/csrf",
                                 "/api/v1/auth/session",
                                 "/api/v1/auth/login").permitAll()
+                        .requestMatchers("/api/v1/auth/super-admin-activation/**",
+                                "/api/v1/auth/invitations/**",
+                                "/api/v1/auth/password-reset/**",
+                                "/api/v1/auth/account/login").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
                         .requestMatchers("/api/v1/auth/**", "/api/v1/admin/**").authenticated()
                         .anyRequest().authenticated())
