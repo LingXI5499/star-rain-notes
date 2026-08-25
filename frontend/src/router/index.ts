@@ -199,6 +199,15 @@ const router = createRouter({
       ],
     },
     {
+      path: '/english/writing',
+      component: WideLayout,
+      children: [
+        { path: '', name: 'english-writing', component: () => import('@/views/english/WritingView.vue'), meta: { title: '写作中心', description: '表达训练、范文、模板与结构化写作任务。', elementPlus: true } },
+        { path: 'resources/:slug', name: 'english-writing-resource', component: () => import('@/views/english/WritingDetailView.vue'), meta: { title: '写作资源', elementPlus: true } },
+        { path: 'practice/:slug', name: 'english-writing-practice', component: () => import('@/views/english/WritingDetailView.vue'), meta: { title: '写作练习', elementPlus: true } },
+      ],
+    },
+    {
       path: '/admin/setup',
       name: 'admin-setup',
       component: () => import('@/views/admin/SetupView.vue'),
@@ -382,6 +391,11 @@ const router = createRouter({
           name: 'admin-listening-pronunciation-edit',
           component: () => import('@/views/admin/ListeningPronunciationManageView.vue'),
         },
+        { path: 'english/writing', name: 'admin-writing', component: () => import('@/views/admin/WritingManageView.vue') },
+        { path: 'english/writing/resources/new', name: 'admin-writing-resource-new', component: () => import('@/views/admin/WritingEditView.vue'), meta: { kind: 'resource' } },
+        { path: 'english/writing/resources/:id/edit', name: 'admin-writing-resource-edit', component: () => import('@/views/admin/WritingEditView.vue'), meta: { kind: 'resource' } },
+        { path: 'english/writing/prompts/new', name: 'admin-writing-prompt-new', component: () => import('@/views/admin/WritingEditView.vue'), meta: { kind: 'prompt' } },
+        { path: 'english/writing/prompts/:id/edit', name: 'admin-writing-prompt-edit', component: () => import('@/views/admin/WritingEditView.vue'), meta: { kind: 'prompt' } },
         {
           path: 'english/grammar/lessons/new',
           name: 'admin-english-grammar-lesson-new',

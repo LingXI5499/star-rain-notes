@@ -234,7 +234,8 @@ public class EnglishTaxonomyService {
     private List<String> contentReferenceTables() {
         return List.of("english_reading_article_tag",
                 "english_listening_item_tag",
-                "english_writing_resource_tag");
+                "english_writing_resource_tag",
+                "english_writing_prompt_tag");
     }
 
     private boolean tableExists(String table) {

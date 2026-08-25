@@ -5,7 +5,7 @@ const modules = [
   { key: '词', title: '单词', en: 'VOCABULARY', desc: '主题词库、词形、例句与记忆状态。', to: '/admin/english/vocabulary', status: '可管理' },
   { key: '语', title: '语法', en: 'GRAMMAR', desc: '独立的英语语法完整教程与42个课节。', to: '/admin/english/grammar', status: '可管理' },
   { key: '读', title: '阅读', en: 'READING', desc: '分级阅读材料与精读训练。', to: '/admin/english/reading', status: '可管理' },
-  { key: '写', title: '写作', en: 'WRITING', desc: '结构化写作与表达训练。', status: '待开发' },
+  { key: '写', title: '写作', en: 'WRITING', desc: '结构化写作与表达训练。', to: '/admin/english/writing', status: '可管理' },
   { key: '听', title: '听力', en: 'LISTENING', desc: '分层听力材料、逐句片段与语音规则。', to: '/admin/english/listening', status: '可管理' },
 ]
 </script>
