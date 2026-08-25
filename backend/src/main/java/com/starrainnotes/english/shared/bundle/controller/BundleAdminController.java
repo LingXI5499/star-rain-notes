@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -73,6 +74,23 @@ public class BundleAdminController {
     @GetMapping("/{id}/items")
     public java.util.List<com.starrainnotes.english.shared.bundle.dto.BundleItemView> items(@PathVariable Long id) {
         return items.list(id, false);
+    }
+
+    @GetMapping("/{id}/catalog")
+    public com.starrainnotes.english.shared.bundle.dto.BundleCatalogPageView catalog(
+            @PathVariable Long id,
+            @RequestParam(required = false) String type,
+            @RequestParam(required = false) String q,
+            @RequestParam(defaultValue = "PUBLISHED") String status,
+            @RequestParam(required = false) String cefr,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "12") int pageSize) {
+        return items.catalog(id, type, q, status, cefr, page, pageSize);
+    }
+
+    @GetMapping("/{id}/readiness")
+    public com.starrainnotes.english.shared.bundle.dto.BundleReadinessView readiness(@PathVariable Long id) {
+        return items.readiness(id);
     }
 
     @PostMapping("/{id}/items")

@@ -41,13 +41,16 @@ public class LearningBundleService {
     private final EnglishLearningBundleMapper mapper;
     private final JdbcTemplate jdbc;
     private final SiteSettingsTimezone timezone;
+    private final LearningBundleItemService items;
 
     public LearningBundleService(EnglishLearningBundleMapper mapper,
                                  JdbcTemplate jdbc,
-                                 SiteSettingsTimezone timezone) {
+                                 SiteSettingsTimezone timezone,
+                                 LearningBundleItemService items) {
         this.mapper = mapper;
         this.jdbc = jdbc;
         this.timezone = timezone;
+        this.items = items;
     }
 
     public List<BundleView> list() {
@@ -56,7 +59,9 @@ public class LearningBundleService {
 
     public List<BundleView> publicList() {
         return jdbc.query(BUNDLE_SELECT + " WHERE b.publish_status='PUBLISHED' ORDER BY b.sort_order, b.id",
-                this::mapView);
+                        this::mapView).stream()
+                .filter(bundle -> items.readiness(bundle.id()).ready())
+                .toList();
     }
 
     public BundleView get(Long id) {
@@ -65,11 +70,14 @@ public class LearningBundleService {
 
     public BundleView publicGet(String slug) {
         try {
-            return jdbc.queryForObject(BUNDLE_SELECT + " WHERE b.slug=? AND b.publish_status='PUBLISHED'",
+            BundleView bundle = jdbc.queryForObject(BUNDLE_SELECT + " WHERE b.slug=? AND b.publish_status='PUBLISHED'",
                     this::mapView, slug);
+            if (bundle == null || !items.readiness(bundle.id()).ready()) {
+                throw contentNotPublished();
+            }
+            return bundle;
         } catch (EmptyResultDataAccessException ex) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_CONTENT_NOT_PUBLISHED",
-                    "Bundle not available", "The requested learning bundle is not published.");
+            throw contentNotPublished();
         }
     }
 
@@ -121,6 +129,7 @@ public class LearningBundleService {
     @Transactional
     public BundleView publish(Long id) {
         requireEntity(id);
+        items.assertPublishable(id);
         jdbc.update("""
                 UPDATE english_learning_bundle
                 SET publish_status='PUBLISHED', published_at=COALESCE(published_at, UTC_TIMESTAMP(6))
@@ -205,6 +214,11 @@ public class LearningBundleService {
     private ApiException slugConflict() {
         return new ApiException(HttpStatus.CONFLICT, "ENGLISH_CONTENT_SLUG_CONFLICT",
                 "Slug already in use", "Choose another stable slug.");
+    }
+
+    private ApiException contentNotPublished() {
+        return new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_CONTENT_NOT_PUBLISHED",
+                "Bundle not available", "The requested learning bundle is not published or is incomplete.");
     }
 
     private String clean(String value) {

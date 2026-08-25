@@ -36,7 +36,8 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
     @AfterEach
     void cleanup() {
         jdbc.update("DELETE FROM english_learning_bundle WHERE slug LIKE 'test-bundle-%'");
-        jdbc.update("DELETE FROM english_reading_article WHERE slug='test-bundle-reading'");
+        jdbc.update("DELETE FROM english_reading_article WHERE slug LIKE 'test-bundle-reading%'");
+        jdbc.update("DELETE FROM english_listening_item WHERE slug LIKE 'test-bundle-listening%'");
         jdbc.update("DELETE FROM admin_user");
     }
 
@@ -44,6 +45,7 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
     void createPublishAndServePublicly() throws Exception {
         Auth auth = login();
         long id = createBundle(auth, "test-bundle-pub", "test-bundle-pub", "A1");
+        seedReadyItems(auth, id);
 
         // draft not public yet
         mockMvc.perform(get("/api/v1/public/english/bundles/test-bundle-pub"))
@@ -96,8 +98,9 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
     @Test
     void publicListOnlyReturnsPublished() throws Exception {
         Auth auth = login();
-        long id = createBundle(auth, "test-bundle-live", "test-bundle-live", null);
+        long id = createBundle(auth, "test-bundle-live", "test-bundle-live", "A1");
         long hidden = createBundle(auth, "test-bundle-hidden", "test-bundle-hidden", null);
+        seedReadyItems(auth, id);
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/" + id + "/publish")
                 .session(auth.session()), auth.csrf())).andExpect(status().isOk());
         mockMvc.perform(get("/api/v1/public/english/bundles"))
@@ -121,6 +124,8 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
                         .content("{\"contentType\":\"READING\",\"contentId\":"+reading+"}"),auth.csrf()))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.contentType").value("READING"));
+        Long listening = insertListening("test-bundle-listening-items", "PUBLISHED");
+        addItem(auth, bundle, "LISTENING", listening);
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/"+bundle+"/publish")
                 .session(auth.session()),auth.csrf())).andExpect(status().isOk());
         mockMvc.perform(get("/api/v1/public/english/bundles/test-bundle-items/items"))
@@ -128,7 +133,46 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(jsonPath("$[0].slug").value("test-bundle-reading"));
         jdbc.update("UPDATE english_reading_article SET publish_status='WITHDRAWN' WHERE id=?",reading);
         mockMvc.perform(get("/api/v1/public/english/bundles/test-bundle-items/items"))
-                .andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.code").value("ENGLISH_CONTENT_NOT_PUBLISHED"));
+    }
+
+    @Test
+    void readinessCatalogAndPublishedPathLockAreEnforced() throws Exception {
+        Auth auth = login();
+        long bundle = createBundle(auth, "test-bundle-operations", "test-bundle-operations", "B1");
+
+        mockMvc.perform(get("/api/v1/admin/english/bundles/" + bundle + "/readiness").session(auth.session()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ready").value(false))
+                .andExpect(jsonPath("$.issues[?(@=='MINIMUM_ITEMS_REQUIRED')]").exists());
+
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/" + bundle + "/publish")
+                        .session(auth.session()), auth.csrf()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code").value("ENGLISH_BUNDLE_NOT_READY"));
+
+        seedReadyItems(auth, bundle);
+        mockMvc.perform(get("/api/v1/admin/english/bundles/" + bundle + "/catalog")
+                        .session(auth.session()).param("status", "PUBLISHED").param("q", "test-bundle"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(2))
+                .andExpect(jsonPath("$.items[0].selected").value(true));
+        mockMvc.perform(get("/api/v1/admin/english/bundles/" + bundle + "/readiness").session(auth.session()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.ready").value(true))
+                .andExpect(jsonPath("$.moduleCount").value(2));
+
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/" + bundle + "/publish")
+                        .session(auth.session()), auth.csrf())).andExpect(status().isOk());
+        Long reading = jdbc.queryForObject(
+                "SELECT id FROM english_reading_article WHERE slug=?", Long.class,
+                "test-bundle-reading-" + bundle);
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/" + bundle + "/items/READING/"
+                        + reading + "/move").session(auth.session()).contentType("application/json")
+                        .content("{\"targetIndex\":1}"), auth.csrf()))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("ENGLISH_BUNDLE_PUBLISHED_LOCKED"));
     }
 
     private long createBundle(Auth auth, String title, String slug, String cefr) throws Exception {
@@ -136,10 +180,40 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
         MvcResult result = mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles")
                         .session(auth.session()).contentType("application/json")
                         .content("{\"title\":\"" + title + "\",\"slug\":\"" + slug
-                                + "\",\"primaryCefr\":" + cefrJson + "}"), auth.csrf()))
+                                + "\",\"summary\":\"summary\",\"primaryCefr\":" + cefrJson + "}"), auth.csrf()))
                 .andExpect(status().isCreated()).andReturn();
         JsonNode json = objectMapper.readTree(result.getResponse().getContentAsString());
         return json.get("id").asLong();
+    }
+
+    private void seedReadyItems(Auth auth, long bundle) throws Exception {
+        String readingSlug = "test-bundle-reading-" + bundle;
+        jdbc.update("""
+                INSERT INTO english_reading_article(title,slug,summary,body_markdown,reading_level,cefr_level,
+                publish_status,sort_order,published_at)
+                VALUES (?,?,?,'body',1,'B1','PUBLISHED',10,UTC_TIMESTAMP(6))
+                """, "Bundle reading " + bundle, readingSlug, "summary");
+        Long reading = jdbc.queryForObject(
+                "SELECT id FROM english_reading_article WHERE slug=?", Long.class, readingSlug);
+        Long listening = insertListening("test-bundle-listening-" + bundle, "PUBLISHED");
+        addItem(auth, bundle, "READING", reading);
+        addItem(auth, bundle, "LISTENING", listening);
+    }
+
+    private Long insertListening(String slug, String status) {
+        jdbc.update("""
+                INSERT INTO english_listening_item(title,slug,summary,transcript_markdown,cefr_level,
+                listening_level,duration_seconds,publish_status,sort_order,published_at)
+                VALUES (?,?,?,'transcript','B1',1,60,?,10,UTC_TIMESTAMP(6))
+                """, "Bundle listening " + slug, slug, "summary", status);
+        return jdbc.queryForObject("SELECT id FROM english_listening_item WHERE slug=?", Long.class, slug);
+    }
+
+    private void addItem(Auth auth, long bundle, String type, Long contentId) throws Exception {
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/" + bundle + "/items")
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"contentType\":\"" + type + "\",\"contentId\":" + contentId + "}"),
+                auth.csrf())).andExpect(status().isCreated());
     }
 
     private Auth login() throws Exception {
