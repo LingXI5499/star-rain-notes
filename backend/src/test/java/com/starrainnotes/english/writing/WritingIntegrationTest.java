@@ -37,6 +37,20 @@ class WritingIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(jsonPath("$.total").value(0));
     }
 
+    @Test void globalSearchReturnsPublishedWritingResource() throws Exception {
+        jdbc.update("""
+                INSERT INTO english_writing_resource
+                (resource_kind,title,slug,summary,body_markdown,cefr_level,estimated_minutes,publish_status,sort_order,published_at)
+                VALUES ('GENRE_LESSON','Writing search guide','writing-search-guide','Searchable writing summary',
+                '## Search writing practice','B1',5,'PUBLISHED',10,UTC_TIMESTAMP(6))
+                """);
+        mockMvc.perform(get("/api/v1/public/search?q=writing&type=writing"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.counts.writing").value(1))
+                .andExpect(jsonPath("$.items[0].type").value("WRITING"))
+                .andExpect(jsonPath("$.items[0].tutorialSlug").value("resource"));
+    }
+
     private MockHttpSession login() throws Exception {
         var result = mockMvc.perform(withCsrf(post("/api/v1/auth/login")
                         .contentType("application/json")
