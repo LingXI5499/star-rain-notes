@@ -24,6 +24,18 @@ export interface BundlePayload {
   sortOrder?: number | null
 }
 
+export interface BundleItem {
+  contentType: 'READING' | 'LISTENING' | 'WRITING'
+  contentId: number
+  title: string
+  slug: string
+  summary: string | null
+  cefrLevel: string | null
+  coverUrl: string | null
+  publishStatus: PublishStatus
+  sortOrder: number
+}
+
 export async function fetchBundles(): Promise<LearningBundle[]> {
   return (await http.get<LearningBundle[]>('/admin/english/bundles')).data
 }
@@ -54,4 +66,20 @@ export async function withdrawBundle(id: number): Promise<LearningBundle> {
 
 export async function fetchPublicBundle(slug: string): Promise<LearningBundle> {
   return (await http.get<LearningBundle>(`/public/english/bundles/${slug}`)).data
+}
+
+export async function fetchBundleItems(id: number): Promise<BundleItem[]> {
+  return (await http.get<BundleItem[]>(`/admin/english/bundles/${id}/items`)).data
+}
+export async function addBundleItem(id: number, contentType: BundleItem['contentType'], contentId: number): Promise<BundleItem> {
+  return (await http.post<BundleItem>(`/admin/english/bundles/${id}/items`, { contentType, contentId })).data
+}
+export async function moveBundleItem(id: number, item: BundleItem, targetIndex: number): Promise<void> {
+  await http.post(`/admin/english/bundles/${id}/items/${item.contentType}/${item.contentId}/move`, { targetIndex })
+}
+export async function removeBundleItem(id: number, item: BundleItem): Promise<void> {
+  await http.delete(`/admin/english/bundles/${id}/items/${item.contentType}/${item.contentId}`)
+}
+export async function fetchPublicBundleItems(slug: string): Promise<BundleItem[]> {
+  return (await http.get<BundleItem[]>(`/public/english/bundles/${slug}/items`)).data
 }

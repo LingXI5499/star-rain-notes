@@ -40,6 +40,7 @@ const englishItems = [
   { to: '/admin/english', label: '英语工作台', badge: '' },
   { to: '/admin/english/overview', label: '总览设置', badge: '' },
   { to: '/admin/english/vocabulary', label: '单词管理', badge: '' },
+  { to: '/admin/english/vocabulary/families', label: '词族管理', badge: '' },
   { to: '/admin/english/grammar', label: '语法教程', badge: '' },
   { to: '/admin/english/taxonomy', label: '标签管理', badge: '' },
   { to: '/admin/english/bundles', label: '学习组合', badge: '' },
@@ -121,7 +122,7 @@ async function changePassword() {
                 v-if="item.to"
                 :to="item.to"
                 class="admin-shell__subnav-item"
-                :class="{ 'is-active': $route.path === item.to || (item.to !== '/admin/english' && $route.path.startsWith(`${item.to}/`)) }"
+                :class="{ 'is-active': $route.path === item.to || (item.to !== '/admin/english' && !englishItems.some(other => other.to !== item.to && other.to.startsWith(`${item.to}/`) && $route.path.startsWith(other.to)) && $route.path.startsWith(`${item.to}/`)) }"
               >{{ item.label }}</RouterLink>
               <span v-else class="admin-shell__subnav-item is-disabled">{{ item.label }}<em>{{ item.badge }}</em></span>
             </template>

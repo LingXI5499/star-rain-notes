@@ -10,15 +10,28 @@ import {
   publishBundle,
   updateBundle,
   withdrawBundle,
+  addBundleItem,
+  fetchBundleItems,
+  moveBundleItem,
+  removeBundleItem,
   type BundlePayload,
+  type BundleItem,
   type LearningBundle,
 } from '@/api/englishBundle'
+import { fetchReadings } from '@/api/reading'
+import { fetchListenings } from '@/api/listening'
+import { fetchWritingPrompts } from '@/api/writing'
 
 const bundles = ref<LearningBundle[]>([])
 const loading = ref(true)
 const dialogOpen = ref(false)
 const saving = ref(false)
 const editingId = ref<number | null>(null)
+const itemDrawerOpen = ref(false)
+const activeBundle = ref<LearningBundle | null>(null)
+const bundleItems = ref<BundleItem[]>([])
+const candidate = ref('')
+const candidates = ref<Array<{value:string;label:string}>>([])
 
 const form = reactive({
   title: '',
@@ -118,6 +131,41 @@ async function remove(bundle: LearningBundle) {
   }
 }
 
+async function manageItems(bundle: LearningBundle) {
+  activeBundle.value = bundle
+  itemDrawerOpen.value = true
+  const [items, readings, listenings, writings] = await Promise.all([
+    fetchBundleItems(bundle.id),
+    fetchReadings({ page: 1, pageSize: 50 }),
+    fetchListenings({ page: 1, pageSize: 50 }),
+    fetchWritingPrompts({ page: 1, pageSize: 50 }),
+  ])
+  bundleItems.value = items
+  const used = new Set(items.map(x => `${x.contentType}:${x.contentId}`))
+  candidates.value = [
+    ...readings.items.map(x => ({ value: `READING:${x.id}`, label: `阅读 · ${x.title}（${x.publishStatus}）` })),
+    ...listenings.items.map(x => ({ value: `LISTENING:${x.id}`, label: `听力 · ${x.title}（${x.publishStatus}）` })),
+    ...writings.items.map(x => ({ value: `WRITING:${x.id}`, label: `写作 · ${x.title}（${x.publishStatus}）` })),
+  ].filter(x => !used.has(x.value))
+}
+async function addItem() {
+  if (!activeBundle.value || !candidate.value) return
+  const [type, rawId] = candidate.value.split(':')
+  await addBundleItem(activeBundle.value.id, type as BundleItem['contentType'], Number(rawId))
+  candidate.value = ''
+  await manageItems(activeBundle.value)
+}
+async function moveItem(item: BundleItem, target: number) {
+  if (!activeBundle.value) return
+  await moveBundleItem(activeBundle.value.id, item, target)
+  bundleItems.value = await fetchBundleItems(activeBundle.value.id)
+}
+async function deleteItem(item: BundleItem) {
+  if (!activeBundle.value) return
+  await removeBundleItem(activeBundle.value.id, item)
+  await manageItems(activeBundle.value)
+}
+
 onMounted(load)
 </script>
 
@@ -144,6 +192,7 @@ onMounted(load)
           <p v-if="bundle.summary" class="bundle-row__summary">{{ bundle.summary }}</p>
         </div>
         <div class="bundle-row__actions">
+          <el-button link type="primary" @click="manageItems(bundle)">编排内容</el-button>
           <el-button link type="primary" @click="openEdit(bundle)">编辑</el-button>
           <el-button v-if="bundle.publishStatus === 'PUBLISHED'" link type="warning" @click="setPublished(bundle, false)">撤回</el-button>
           <el-button v-else link type="success" @click="setPublished(bundle, true)">发布</el-button>
@@ -151,6 +200,28 @@ onMounted(load)
         </div>
       </div>
     </div>
+
+    <el-drawer v-model="itemDrawerOpen" :title="`编排 · ${activeBundle?.title ?? ''}`" size="620px">
+      <div class="bundle-items__add">
+        <el-select v-model="candidate" filterable placeholder="选择阅读、听力或写作任务">
+          <el-option v-for="item in candidates" :key="item.value" :label="item.label" :value="item.value" />
+        </el-select>
+        <el-button type="primary" :disabled="!candidate" @click="addItem">加入组合</el-button>
+      </div>
+      <div v-if="bundleItems.length" class="bundle-items">
+        <article v-for="(item,index) in bundleItems" :key="`${item.contentType}-${item.contentId}`">
+          <span>{{ item.contentType }} · {{ item.cefrLevel || '—' }} · {{ item.publishStatus }}</span>
+          <strong>{{ item.title }}</strong>
+          <p>{{ item.summary }}</p>
+          <nav>
+            <el-button link :disabled="index===0" @click="moveItem(item,index-1)">上移</el-button>
+            <el-button link :disabled="index===bundleItems.length-1" @click="moveItem(item,index+1)">下移</el-button>
+            <el-button link type="danger" @click="deleteItem(item)">移除</el-button>
+          </nav>
+        </article>
+      </div>
+      <div v-else class="drawer-empty">当前组合还没有内容</div>
+    </el-drawer>
 
     <el-dialog v-model="dialogOpen" :title="editingId ? '编辑组合' : '新建组合'" width="520px">
       <el-form label-position="top">
@@ -187,4 +258,7 @@ onMounted(load)
 .bundle-row__summary { font-size: 13px; color: var(--text-secondary); margin: 8px 0 0; }
 .bundle-row__actions { display: flex; gap: 4px; flex-shrink: 0; }
 .bundle-manager__empty { color: var(--text-muted); padding: var(--space-6) 0; }
+.bundle-items__add{display:grid;grid-template-columns:1fr auto;gap:10px;margin-bottom:18px}.bundle-items{display:flex;flex-direction:column;gap:10px}.bundle-items article{padding:15px;border:1px solid var(--border);border-radius:14px;background:var(--bg-subtle)}.bundle-items article span{display:block;color:var(--accent);font-size:10px;font-weight:700;letter-spacing:.08em}.bundle-items article strong{display:block;margin-top:5px}.bundle-items article p{color:var(--text-secondary);font-size:12px}.bundle-items nav{display:flex;justify-content:flex-end}
+.drawer-empty{display:grid;min-height:240px;place-items:center;color:var(--text-muted)}
+@media(max-width:720px){.bundle-manager__header{align-items:stretch;flex-direction:column;gap:16px}.bundle-manager__header>button{align-self:flex-start}.bundle-row{flex-direction:column}.bundle-row__actions{flex-wrap:wrap}.bundle-items__add{grid-template-columns:1fr}}
 </style>

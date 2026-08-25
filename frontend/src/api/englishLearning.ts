@@ -1,4 +1,5 @@
 import type { PublishStatus } from './englishMeta'
+import { http } from './http'
 
 /**
  * Learning-record types (方案 §9.7). The full learning-record slice lands in a
@@ -16,6 +17,69 @@ export interface LearningRecord {
   mastery: number | null
   nextReviewAt: string | null
   updatedAt: string
+}
+
+export interface LearningSummary {
+  total: number
+  inProgress: number
+  completed: number
+  dueForReview: number
+  completedByType: Record<string, number>
+  recent: LearningRecord[]
+}
+
+export interface WritingSubmission {
+  id: number
+  promptId: number
+  bodyText: string
+  wordCount: number
+  status: 'DRAFT' | 'SUBMITTED'
+  selfScore: number | null
+  submittedAt: string | null
+  updatedAt: string
+}
+
+const LEARNER_KEY = 'srn-english-learner-key-v1'
+
+export function learnerKey(): string {
+  let key = localStorage.getItem(LEARNER_KEY)
+  if (!key) {
+    key = typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.random().toString(36).slice(2)}-${Math.random().toString(36).slice(2)}`
+    localStorage.setItem(LEARNER_KEY, key)
+  }
+  return key
+}
+
+function learnerHeaders() {
+  return { 'X-Learner-Key': learnerKey() }
+}
+
+export async function fetchLearningSummary(): Promise<LearningSummary> {
+  return (await http.get<LearningSummary>('/public/english/learning/summary', { headers: learnerHeaders() })).data
+}
+
+export async function fetchLearningRecord(contentType: string, contentId: number): Promise<LearningRecord | null> {
+  return (await http.get<LearningRecord | null>(`/public/english/learning/records/${contentType}/${contentId}`, { headers: learnerHeaders() })).data || null
+}
+
+export async function saveLearningRecord(contentType: string, contentId: number, payload: {
+  status: LearningStatus
+  score?: number | null
+  timeSpentSeconds?: number
+  weakPoints?: string[]
+  mastery?: number | null
+}): Promise<LearningRecord> {
+  return (await http.put<LearningRecord>(`/public/english/learning/records/${contentType}/${contentId}`, payload, { headers: learnerHeaders() })).data
+}
+
+export async function fetchWritingSubmission(promptId: number): Promise<WritingSubmission | null> {
+  return (await http.get<WritingSubmission | null>(`/public/english/learning/writing-submissions/${promptId}`, { headers: learnerHeaders() })).data || null
+}
+
+export async function saveWritingSubmission(promptId: number, bodyText: string, status: 'DRAFT' | 'SUBMITTED', selfScore?: number | null): Promise<WritingSubmission> {
+  return (await http.put<WritingSubmission>(`/public/english/learning/writing-submissions/${promptId}`, { bodyText, status, selfScore }, { headers: learnerHeaders() })).data
 }
 
 export interface WritingSubmissionDraft {

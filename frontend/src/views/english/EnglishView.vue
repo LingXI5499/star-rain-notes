@@ -3,10 +3,12 @@ import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { fetchPublicEnglish, type EnglishView } from '@/api/english'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
+import { fetchLearningSummary, type LearningSummary } from '@/api/englishLearning'
 
 const english = ref<EnglishView | null>(null)
 const loading = ref(true)
 const error = ref(false)
+const progress = ref<LearningSummary | null>(null)
 
 const stageLabels: Record<string, string> = {
   FOUNDATION: '基础阶段（FOUNDATION）',
@@ -25,7 +27,9 @@ const directions = [
 
 onMounted(async () => {
   try {
-    english.value = await fetchPublicEnglish()
+    const [content, learning] = await Promise.all([fetchPublicEnglish(), fetchLearningSummary().catch(() => null)])
+    english.value = content
+    progress.value = learning
   } catch {
     error.value = true
   } finally {
@@ -106,6 +110,16 @@ onMounted(async () => {
           <p class="english__card-title">学习模块</p>
           <ul class="english__modules">
             <li v-for="direction in directions" :key="direction.name">{{ direction.name }}</li>
+          </ul>
+        </div>
+
+        <div class="english__card">
+          <p class="english__card-title">我的学习进度</p>
+          <p class="english__stage">{{ progress?.completed ?? 0 }} 项已完成</p>
+          <ul class="english__modules">
+            <li>学习中 {{ progress?.inProgress ?? 0 }}</li>
+            <li>待复习 {{ progress?.dueForReview ?? 0 }}</li>
+            <li>累计记录 {{ progress?.total ?? 0 }}</li>
           </ul>
         </div>
       </aside>

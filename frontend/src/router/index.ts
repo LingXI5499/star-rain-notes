@@ -391,6 +391,11 @@ const router = createRouter({
           name: 'admin-listening-pronunciation-edit',
           component: () => import('@/views/admin/ListeningPronunciationManageView.vue'),
         },
+        {
+          path: 'english/vocabulary/families',
+          name: 'admin-english-word-families',
+          component: () => import('@/views/admin/WordFamilyManageView.vue'),
+        },
         { path: 'english/writing', name: 'admin-writing', component: () => import('@/views/admin/WritingManageView.vue') },
         { path: 'english/writing/resources/new', name: 'admin-writing-resource-new', component: () => import('@/views/admin/WritingEditView.vue'), meta: { kind: 'resource' } },
         { path: 'english/writing/resources/:id/edit', name: 'admin-writing-resource-edit', component: () => import('@/views/admin/WritingEditView.vue'), meta: { kind: 'resource' } },

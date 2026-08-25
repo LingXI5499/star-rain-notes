@@ -6,7 +6,8 @@ const props = withDefaults(defineProps<{ record: LearningRecord; compact?: boole
 
 const percent = computed(() => {
   if (props.record.mastery == null) return 0
-  return Math.max(0, Math.min(100, Math.round(props.record.mastery)))
+  const raw = props.record.mastery
+  return Math.max(0, Math.min(100, Math.round(raw <= 1 ? raw * 100 : raw)))
 })
 </script>
 
