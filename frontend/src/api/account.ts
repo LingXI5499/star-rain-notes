@@ -142,3 +142,6 @@ export async function approveContentReview(id: number, note?: string): Promise<C
 export async function rejectContentReview(id: number, note?: string): Promise<ContentReview> {
   return (await http.post<ContentReview>(`/super-admin/content-reviews/${id}/reject`, { note: note || null })).data
 }
+export async function importLocalProgress(payload: Record<string, unknown>): Promise<void> {
+  await http.post('/account/english/import-local-progress', payload)
+}

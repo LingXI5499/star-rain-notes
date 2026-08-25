@@ -8,9 +8,30 @@ import { fetchPublicBundles, type LearningBundle } from '@/api/englishBundle'
 import LearningBundleCards from '@/components/english/LearningBundleCards.vue'
 import EnglishLearningModeHint from '@/components/english/EnglishLearningModeHint.vue'
 import { useAuthStore } from '@/stores/auth'
+import { guestLearning } from '@/lib/learning-storage'
+import { importLocalProgress } from '@/api/account'
+import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 
 const auth = useAuthStore()
 const isAuthenticated = computed(() => auth.isAuthenticated)
+const hasGuestData = computed(() => guestLearning.rememberedWordIds().length > 0)
+
+async function importGuestProgress() {
+  try {
+    const payload = {
+      vocabulary: Object.fromEntries(
+        guestLearning.rememberedWordIds().map((id) => [String(id), guestLearning.readVocabularyMemory(id)]),
+      ),
+      learningRecords: {},
+      writingDrafts: {},
+    }
+    await importLocalProgress(payload as unknown as Record<string, unknown>)
+    guestLearning.clearAll()
+    ElMessage.success('已导入本机英语进度。')
+  } catch {
+    ElMessage.error('导入失败，请稍后重试。')
+  }
+}
 
 const english = ref<EnglishView | null>(null)
 const loading = ref(true)
@@ -61,6 +82,9 @@ onMounted(async () => {
         </header>
 
         <EnglishLearningModeHint :is-authenticated="isAuthenticated" :email="auth.username" />
+        <button v-if="isAuthenticated && hasGuestData" type="button" class="english__import" @click="importGuestProgress">
+          检测到本机游客英语进度，点击导入到账号
+        </button>
 
         <div v-if="loading" class="english__empty">加载中…</div>
         <div v-else-if="error" class="english__empty">加载失败，请稍后重试。</div>
@@ -293,6 +317,16 @@ onMounted(async () => {
 .english__empty {
   color: var(--text-muted);
   padding: var(--space-8) 0;
+}
+.english__import {
+  margin: 6px 0 0;
+  padding: 8px 14px;
+  border: 1px solid var(--primary);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  color: var(--primary);
+  font-size: 13px;
+  cursor: pointer;
 }
 
 /* ---------- aside dashboard ---------- */
