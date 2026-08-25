@@ -36,6 +36,7 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
     @AfterEach
     void cleanup() {
         jdbc.update("DELETE FROM english_learning_bundle WHERE slug LIKE 'test-bundle-%'");
+        jdbc.update("DELETE FROM english_reading_article WHERE slug='test-bundle-reading'");
         jdbc.update("DELETE FROM admin_user");
     }
 
@@ -104,6 +105,31 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[?(@.slug=='test-bundle-live')].publishStatus").value("PUBLISHED"))
                 .andExpect(jsonPath("$[?(@.slug=='test-bundle-hidden')].publishStatus").value("DRAFT"));
+    }
+
+    @Test
+    void bundleItemsSupportAddMoveAndPublishedFiltering() throws Exception {
+        Auth auth=login();
+        long bundle=createBundle(auth,"test-bundle-items","test-bundle-items","B1");
+        jdbc.update("""
+          INSERT INTO english_reading_article(title,slug,summary,body_markdown,reading_level,cefr_level,
+          publish_status,sort_order,published_at)
+          VALUES ('Bundle reading','test-bundle-reading','summary','body',1,'B1','PUBLISHED',10,UTC_TIMESTAMP(6))
+          """);
+        Long reading=jdbc.queryForObject("SELECT id FROM english_reading_article WHERE slug='test-bundle-reading'",Long.class);
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/"+bundle+"/items")
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"contentType\":\"READING\",\"contentId\":"+reading+"}"),auth.csrf()))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.contentType").value("READING"));
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/"+bundle+"/publish")
+                .session(auth.session()),auth.csrf())).andExpect(status().isOk());
+        mockMvc.perform(get("/api/v1/public/english/bundles/test-bundle-items/items"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].slug").value("test-bundle-reading"));
+        jdbc.update("UPDATE english_reading_article SET publish_status='WITHDRAWN' WHERE id=?",reading);
+        mockMvc.perform(get("/api/v1/public/english/bundles/test-bundle-items/items"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$").isEmpty());
     }
 
     private long createBundle(Auth auth, String title, String slug, String cefr) throws Exception {

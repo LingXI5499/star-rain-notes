@@ -65,6 +65,9 @@ class V1SchemaMigrationTest {
             "english_writing_prompt_tag",
             "english_writing_prompt_exercise",
             "english_learning_bundle_writing_item",
+            "english_learner_profile",
+            "english_learning_record",
+            "english_writing_submission",
             "tutorial_node_hierarchy_backup_v5",
             "tutorial_category_full_backup_v7",
             "tutorial_full_backup_v7",
@@ -83,7 +86,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(48);
+        assertThat(count).isEqualTo(51);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -109,14 +112,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV14AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV15AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -128,6 +131,7 @@ class V1SchemaMigrationTest {
                 "flatten tutorial hierarchy", "enforce curriculum parents",
                 "restore authoritative tutorial taxonomy", "create english grammar",
                 "create english shared foundation", "create english reading", "harden english reading",
-                "create english listening", "harden english listening", "create english writing");
+                "create english listening", "harden english listening", "create english writing",
+                "create english learning loop");
     }
 }

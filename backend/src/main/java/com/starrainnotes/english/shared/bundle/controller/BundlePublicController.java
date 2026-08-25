@@ -15,13 +15,20 @@ import org.springframework.web.bind.annotation.RestController;
 public class BundlePublicController {
 
     private final LearningBundleService service;
+    private final com.starrainnotes.english.shared.bundle.service.LearningBundleItemService items;
 
-    public BundlePublicController(LearningBundleService service) {
+    public BundlePublicController(LearningBundleService service, com.starrainnotes.english.shared.bundle.service.LearningBundleItemService items) {
         this.service = service;
+        this.items = items;
     }
 
     @GetMapping("/{slug}")
     public BundleView get(@PathVariable String slug) {
         return service.publicGet(slug);
+    }
+
+    @GetMapping("/{slug}/items")
+    public java.util.List<com.starrainnotes.english.shared.bundle.dto.BundleItemView> items(@PathVariable String slug) {
+        return items.publicList(slug);
     }
 }

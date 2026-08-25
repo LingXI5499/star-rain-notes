@@ -26,9 +26,11 @@ import java.util.List;
 public class BundleAdminController {
 
     private final LearningBundleService service;
+    private final com.starrainnotes.english.shared.bundle.service.LearningBundleItemService items;
 
-    public BundleAdminController(LearningBundleService service) {
+    public BundleAdminController(LearningBundleService service, com.starrainnotes.english.shared.bundle.service.LearningBundleItemService items) {
         this.service = service;
+        this.items = items;
     }
 
     @GetMapping
@@ -66,5 +68,30 @@ public class BundleAdminController {
     @PostMapping("/{id}/withdraw")
     public BundleView withdraw(@PathVariable Long id) {
         return service.withdraw(id);
+    }
+
+    @GetMapping("/{id}/items")
+    public java.util.List<com.starrainnotes.english.shared.bundle.dto.BundleItemView> items(@PathVariable Long id) {
+        return items.list(id, false);
+    }
+
+    @PostMapping("/{id}/items")
+    @ResponseStatus(HttpStatus.CREATED)
+    public com.starrainnotes.english.shared.bundle.dto.BundleItemView addItem(
+            @PathVariable Long id, @Valid @RequestBody com.starrainnotes.english.shared.bundle.dto.BundleItemRequest request) {
+        return items.add(id, request.contentType(), request.contentId());
+    }
+
+    @PostMapping("/{id}/items/{contentType}/{contentId}/move")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void moveItem(@PathVariable Long id, @PathVariable String contentType, @PathVariable Long contentId,
+                         @Valid @RequestBody com.starrainnotes.english.shared.bundle.dto.BundleItemMoveRequest request) {
+        items.move(id, contentType, contentId, request.targetIndex());
+    }
+
+    @DeleteMapping("/{id}/items/{contentType}/{contentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeItem(@PathVariable Long id, @PathVariable String contentType, @PathVariable Long contentId) {
+        items.remove(id, contentType, contentId);
     }
 }
