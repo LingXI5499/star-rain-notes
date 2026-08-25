@@ -69,6 +69,9 @@ class V1SchemaMigrationTest {
             "english_learning_record",
             "english_learning_attempt",
             "english_writing_submission",
+            "user_account",
+            "admin_invitation",
+            "email_verification_challenge",
             "tutorial_node_hierarchy_backup_v5",
             "tutorial_category_full_backup_v7",
             "tutorial_full_backup_v7",
@@ -87,7 +90,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(52);
+        assertThat(count).isEqualTo(55);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -113,14 +116,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV17AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV18AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -134,6 +137,6 @@ class V1SchemaMigrationTest {
                 "create english shared foundation", "create english reading", "harden english reading",
                 "create english listening", "harden english listening", "create english writing",
                 "create english learning loop", "create english learning insights",
-                "add english learning analytics indexes");
+                "add english learning analytics indexes", "create account collaboration");
     }
 }
