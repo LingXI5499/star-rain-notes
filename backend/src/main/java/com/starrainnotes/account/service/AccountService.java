@@ -365,4 +365,7 @@ public class AccountService {
         return userMapper.selectList(new LambdaQueryWrapper<AccountUser>()
                 .orderByDesc(AccountUser::getId));
     }
+    public AccountUser findByEmailPublic(String email) {
+        return findByEmail(normalize(email));
+    }
 }

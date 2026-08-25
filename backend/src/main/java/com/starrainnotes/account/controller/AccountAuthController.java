@@ -1,5 +1,6 @@
 package com.starrainnotes.account.controller;
 
+import com.starrainnotes.account.audit.AuditLogService;
 import com.starrainnotes.account.dto.AccountLoginRequest;
 import com.starrainnotes.account.dto.AccountSessionView;
 import com.starrainnotes.account.dto.ChangePasswordRequest;
@@ -29,16 +30,28 @@ public class AccountAuthController {
 
     private final AccountService accountService;
     private final SecurityContextRepository securityContextRepository;
+    private final AuditLogService auditLog;
 
-    public AccountAuthController(AccountService accountService, SecurityContextRepository securityContextRepository) {
+    public AccountAuthController(AccountService accountService, SecurityContextRepository securityContextRepository,
+                                 AuditLogService auditLog) {
         this.accountService = accountService;
         this.securityContextRepository = securityContextRepository;
+        this.auditLog = auditLog;
     }
 
     @PostMapping("/login")
     public AccountSessionView login(@RequestBody AccountLoginRequest body,
                                     HttpServletRequest request, HttpServletResponse response) {
-        AccountUser user = accountService.authenticate(body.email(), body.password());
+        AccountUser user;
+        try {
+            user = accountService.authenticate(body.email(), body.password());
+        } catch (RuntimeException ex) {
+            auditLog.record(null, "LOGIN", "ACCOUNT", null, "FAILURE", clientIp(request),
+                    request.getHeader("User-Agent"), null);
+            throw ex;
+        }
+        auditLog.record(user.getId(), "LOGIN", "ACCOUNT", user.getId(), "SUCCESS",
+                clientIp(request), request.getHeader("User-Agent"), null);
         AccountPrincipal principal = new AccountPrincipal(user.getId(), user.getEmail(), user.getRole());
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 principal, null,
@@ -55,7 +68,22 @@ public class AccountAuthController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void changePassword(@Valid @RequestBody ChangePasswordRequest body, HttpServletRequest request) {
         accountService.changePassword(body.email(), body.currentPassword(), body.newPassword());
+        auditLog.record(accountUserIdOrNull(body.email()), "CHANGE_PASSWORD", "ACCOUNT", null, "SUCCESS",
+                clientIp(request), request.getHeader("User-Agent"), null);
         HttpSession session = request.getSession(false);
         if (session != null) session.invalidate();
+    }
+
+    private Long accountUserIdOrNull(String email) {
+        try {
+            return accountService.findByEmailPublic(email).getId();
+        } catch (RuntimeException ex) {
+            return null;
+        }
+    }
+
+    static String clientIp(HttpServletRequest request) {
+        String xff = request.getHeader("X-Forwarded-For");
+        return xff != null && !xff.isBlank() ? xff.split(",")[0].trim() : request.getRemoteAddr();
     }
 }
