@@ -27,7 +27,11 @@ public class EnglishLearningService {
     private static final Set<String> STATUSES=Set.of("NOT_STARTED","IN_PROGRESS","COMPLETED");
     private static final DateTimeFormatter ISO=DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private final JdbcTemplate jdbc; private final ObjectMapper json; private final SiteSettingsTimezone timezone;
-    public EnglishLearningService(JdbcTemplate jdbc,ObjectMapper json,SiteSettingsTimezone timezone){this.jdbc=jdbc;this.json=json;this.timezone=timezone;}
+    private final EnglishRecommendationService recommendationService;
+    public EnglishLearningService(JdbcTemplate jdbc,ObjectMapper json,SiteSettingsTimezone timezone,
+                                  EnglishRecommendationService recommendationService){
+        this.jdbc=jdbc;this.json=json;this.timezone=timezone;this.recommendationService=recommendationService;
+    }
 
     @Transactional
     public LearningRecordView save(String learnerKey,String rawType,Long contentId,LearningRecordRequest request){
@@ -65,6 +69,29 @@ public class EnglishLearningService {
         return rows.isEmpty()?null:rows.getFirst();
     }
 
+    public Map<String, LearningRecordView> batch(String learnerKey, List<String> refs){
+        long learner=learner(learnerKey);
+        if(refs==null||refs.isEmpty())return Map.of();
+        if(refs.size()>100)bad("At most 100 learning records can be requested at once.");
+        LinkedHashSet<ContentRef> normalized=new LinkedHashSet<>();
+        for(String ref:refs){
+            String[] parts=ref==null?new String[0]:ref.split(":",2);
+            if(parts.length!=2)bad("Invalid learning record reference.");
+            String contentType=type(parts[0]);
+            long contentId;
+            try{contentId=Long.parseLong(parts[1]);}catch(NumberFormatException ex){bad("Invalid learning record reference.");return Map.of();}
+            if(contentId<=0)bad("Invalid learning record reference.");
+            normalized.add(new ContentRef(contentType,contentId));
+        }
+        StringBuilder where=new StringBuilder();List<Object> args=new ArrayList<>();args.add(learner);
+        for(ContentRef ref:normalized){if(!where.isEmpty())where.append(" OR ");where.append("(content_type=? AND content_id=?)");args.add(ref.type());args.add(ref.id());}
+        LinkedHashMap<String,LearningRecordView> result=new LinkedHashMap<>();
+        jdbc.query(select()+" WHERE learner_id=? AND ("+where+") ORDER BY updated_at DESC",rs->{
+            while(rs.next()){LearningRecordView value=map(rs,0);result.put(value.contentType()+":"+value.contentId(),value);}return null;
+        },args.toArray());
+        return result;
+    }
+
     public LearningSummaryView summary(String learnerKey){
         long learner=learner(learnerKey);
         Long total=count("SELECT COUNT(*) FROM english_learning_record WHERE learner_id=?",learner);
@@ -92,7 +119,7 @@ public class EnglishLearningService {
                 number(totals.get("total_time")),number(totals.get("total_attempts")),
                 (int)activity.stream().filter(x->x.attempts()>0).count(),streak(activity),
                 decimal(totals.get("average_score")),decimal(totals.get("average_mastery")),
-                activity,modules(learner),recommendations(learner));
+                activity,modules(learner),recommendationService.recommendations(learner));
     }
 
     @Transactional
@@ -184,55 +211,6 @@ public class EnglishLearningService {
         return List.copyOf(values.values());
     }
 
-    private List<LearningRecommendationView> recommendations(long learner){
-        List<LearningRecordView> records=jdbc.query(select()+" "+"""
-          WHERE learner_id=? AND (completion_status='IN_PROGRESS' OR next_review_at<=UTC_TIMESTAMP(6))
-          ORDER BY (next_review_at<=UTC_TIMESTAMP(6)) DESC,next_review_at,mastery_level LIMIT 6
-          """,this::map,learner);
-        List<LearningRecommendationView> result=new ArrayList<>();
-        for(LearningRecordView record:records){
-            ContentLabel label=contentLabel(record.contentType(),record.contentId(),record.contentSlug());
-            String reason=record.nextReviewAt()!=null?"到期复习":"继续学习";
-            result.add(new LearningRecommendationView(record.contentType(),record.contentId(),record.contentSlug(),
-                    label.title(),label.route(),reason,record.cefrLevel(),record.mastery(),record.nextReviewAt()));
-        }
-        if(result.isEmpty())result.addAll(starterRecommendations(learner));
-        return result;
-    }
-
-    private List<LearningRecommendationView> starterRecommendations(long learner){
-        List<LearningRecommendationView> result=new ArrayList<>();
-        starter(result,learner,"GRAMMAR","""
-          SELECT l.id,l.slug,l.title,NULL cefr FROM english_grammar_lesson l
-          JOIN english_grammar_course c ON c.id=l.course_id
-          WHERE l.publish_status='PUBLISHED' AND c.publish_status='PUBLISHED'
-          AND NOT EXISTS(SELECT 1 FROM english_learning_record r WHERE r.learner_id=? AND r.content_type='GRAMMAR' AND r.content_id=l.id)
-          ORDER BY l.sort_order,l.id LIMIT 1
-          """);
-        starter(result,learner,"READING","SELECT id,slug,title,cefr_level cefr FROM english_reading_article a WHERE publish_status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM english_learning_record r WHERE r.learner_id=? AND r.content_type='READING' AND r.content_id=a.id) ORDER BY sort_order,id LIMIT 1");
-        starter(result,learner,"LISTENING","SELECT id,slug,title,cefr_level cefr FROM english_listening_item a WHERE publish_status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM english_learning_record r WHERE r.learner_id=? AND r.content_type='LISTENING' AND r.content_id=a.id) ORDER BY sort_order,id LIMIT 1");
-        starter(result,learner,"WRITING","SELECT id,slug,title,cefr_level cefr FROM english_writing_prompt a WHERE publish_status='PUBLISHED' AND NOT EXISTS(SELECT 1 FROM english_learning_record r WHERE r.learner_id=? AND r.content_type='WRITING' AND r.content_id=a.id) ORDER BY sort_order,id LIMIT 1");
-        return result;
-    }
-
-    private void starter(List<LearningRecommendationView> result,long learner,String type,String sql){
-        jdbc.query(sql,rs->{if(rs.next())result.add(new LearningRecommendationView(type,rs.getLong("id"),
-                rs.getString("slug"),rs.getString("title"),route(type,rs.getString("slug")),"建议开始",
-                rs.getString("cefr"),null,null));return null;},learner);
-    }
-
-    private ContentLabel contentLabel(String type,Long id,String fallbackSlug){
-        String sql=switch(type){
-            case "GRAMMAR"->"SELECT title,slug FROM english_grammar_lesson WHERE id=?";
-            case "READING"->"SELECT title,slug FROM english_reading_article WHERE id=?";
-            case "LISTENING"->"SELECT title,slug FROM english_listening_item WHERE id=?";
-            default->"SELECT title,slug FROM english_writing_prompt WHERE id=?";
-        };
-        List<ContentLabel> labels=jdbc.query(sql,(rs,n)->new ContentLabel(rs.getString("title"),route(type,rs.getString("slug"))),id);
-        return labels.isEmpty()?new ContentLabel(fallbackSlug,route(type,fallbackSlug)):labels.getFirst();
-    }
-
-    private String route(String type,String slug){return switch(type){case"GRAMMAR"->"/english/grammar/"+slug;case"READING"->"/english/reading/"+slug;case"LISTENING"->"/english/listening/"+slug;default->"/english/writing/practice/"+slug;};}
     private LearningRecordView map(ResultSet r,int n)throws SQLException{return new LearningRecordView(r.getLong("id"),r.getString("content_type"),r.getLong("content_id"),r.getString("content_slug"),r.getString("cefr_level"),r.getString("completion_status"),r.getBigDecimal("score"),r.getInt("time_spent_seconds"),r.getInt("attempts"),readWeak(r.getString("weak_points_json")),r.getBigDecimal("mastery_level"),date(r,"next_review_at"),date(r,"updated_at"));}
     private WritingSubmissionView submission(long learner,Long prompt)throws EmptyResultDataAccessException{return jdbc.queryForObject("SELECT * FROM english_writing_submission WHERE learner_id=? AND prompt_id=?",(r,n)->new WritingSubmissionView(r.getLong("id"),r.getLong("prompt_id"),r.getString("body_text"),r.getInt("word_count"),r.getString("submission_status"),r.getBigDecimal("self_score"),date(r,"submitted_at"),date(r,"updated_at")),learner,prompt);}
     private LocalDateTime nextReview(String status,BigDecimal mastery){if(!"COMPLETED".equals(status))return null;double m=mastery==null?0:mastery.doubleValue();return LocalDateTime.now().plusDays(m>=.8?7:m>=.6?3:1);}
@@ -248,5 +226,5 @@ public class EnglishLearningService {
     private void bad(String detail){throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,"ENGLISH_LEARNING_RECORD_INVALID","Invalid learning record",detail);}
     private ApiException unavailable(){return new ApiException(HttpStatus.NOT_FOUND,"ENGLISH_CONTENT_NOT_PUBLISHED","Content unavailable","The selected English content is not published.");}
     private record Content(String slug,String cefr){}
-    private record ContentLabel(String title,String route){}
+    private record ContentRef(String type,long id){}
 }

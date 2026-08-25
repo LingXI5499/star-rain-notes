@@ -13,6 +13,9 @@ public class EnglishLearningPublicController {
 
     @GetMapping("/records/{contentType}/{contentId}")
     public LearningRecordView get(@RequestHeader("X-Learner-Key")String key,@PathVariable String contentType,@PathVariable Long contentId){return service.get(key,contentType,contentId);}
+    @GetMapping("/records/batch")
+    public java.util.Map<String,LearningRecordView> batch(@RequestHeader("X-Learner-Key")String key,
+                                                          @RequestParam("ref") java.util.List<String> refs){return service.batch(key,refs);}
     @PutMapping("/records/{contentType}/{contentId}")
     public LearningRecordView save(@RequestHeader("X-Learner-Key")String key,@PathVariable String contentType,@PathVariable Long contentId,@Valid @RequestBody LearningRecordRequest request){return service.save(key,contentType,contentId,request);}
     @GetMapping("/summary")
