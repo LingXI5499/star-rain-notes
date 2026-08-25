@@ -112,7 +112,6 @@ public class AccountService {
         inv.setStatus("PENDING");
         inv.setInvitedBy(invitedByAccountId);
         inv.setExpiresAt(now().plusHours(72));
-        inv.setSentAt(now());
         invitationMapper.insert(inv);
         String link = props.getMail().getBaseUrl() + "/admin/invitations/" + rawToken;
         mailGateway.sendInvitationLink(inv.getEmail(), link);
@@ -278,5 +277,88 @@ public class AccountService {
     private LocalDateTime now() { return LocalDateTime.now(Clock.systemUTC()); }
     static ApiException fail(String code, HttpStatus status, String title, String detail) {
         return new ApiException(status, code, title, detail);
+    }
+    @Transactional
+    public void changePassword(String email, String currentPassword, String newPassword) {
+        AccountUser user = findByEmail(normalize(email));
+        if (user == null || user.getPasswordHash() == null
+                || !passwordEncoder.matches(currentPassword, user.getPasswordHash())) {
+            throw fail("INVALID_CURRENT_PASSWORD", HttpStatus.UNPROCESSABLE_ENTITY,
+                    "Current password incorrect", "The current password does not match.");
+        }
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        user.setPasswordChangedAt(now());
+        user.setAuthVersion(user.getAuthVersion() + 1);
+        userMapper.updateById(user);
+    }
+
+    @Transactional
+    public void requestPasswordReset(String email, String ip) {
+        String normalized = normalize(email);
+        // anti-enumeration: identical response whether or not the email exists
+        if (normValidEmail(normalized) && findByEmail(normalized) != null) {
+            codeService.issue(normalized, "PASSWORD_RESET", null, ip);
+        }
+    }
+
+    @Transactional
+    public void confirmPasswordReset(String email, String code, String newPassword) {
+        String normalized = normalize(email);
+        codeService.verify(normalized, "PASSWORD_RESET", code, null);
+        AccountUser user = requireByEmail(normalized);
+        user.setPasswordHash(passwordEncoder.encode(newPassword));
+        user.setPasswordChangedAt(now());
+        user.setAuthVersion(user.getAuthVersion() + 1);
+        userMapper.updateById(user);
+    }
+
+    @Transactional
+    public void resendInvitation(Long invitationId) {
+        AdminInvitation inv = requireInvitation(invitationId);
+        if (!"PENDING".equals(inv.getStatus())) {
+            throw fail("INVITATION_INVALID", HttpStatus.CONFLICT, "Invitation not pending",
+                    "Only a pending invitation can be resent.");
+        }
+        String rawToken = UUID.randomUUID().toString().replace("-", "");
+        inv.setTokenHash(VerificationCodeService.sha256(rawToken));
+        inv.setSentAt(now());
+        invitationMapper.updateById(inv);
+        mailGateway.sendInvitationLink(inv.getEmail(),
+                props.getMail().getBaseUrl() + "/admin/invitations/" + rawToken);
+    }
+
+    @Transactional
+    public void revokeInvitation(Long invitationId) {
+        AdminInvitation inv = requireInvitation(invitationId);
+        if ("ACCEPTED".equals(inv.getStatus())) {
+            throw fail("INVITATION_INVALID", HttpStatus.CONFLICT, "Invitation already accepted",
+                    "An accepted invitation cannot be revoked.");
+        }
+        inv.setStatus("REVOKED");
+        inv.setRevokedAt(now());
+        invitationMapper.updateById(inv);
+    }
+
+    public java.util.List<AdminInvitation> listInvitations() {
+        return invitationMapper.selectList(new LambdaQueryWrapper<AdminInvitation>()
+                .orderByDesc(AdminInvitation::getCreatedAt));
+    }
+
+    private AdminInvitation requireInvitation(Long id) {
+        AdminInvitation inv = invitationMapper.selectById(id);
+        if (inv == null) throw fail("INVITATION_INVALID", HttpStatus.NOT_FOUND, "Invalid invitation",
+                "The invitation does not exist.");
+        return inv;
+    }
+
+    private boolean normValidEmail(String email) {
+        return email != null && email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
+    }
+    public void requireSuperAdminOr401(Long actorId) {
+        if (actorId == null) {
+            throw fail("UNAUTHENTICATED", HttpStatus.UNAUTHORIZED, "Not authenticated",
+                    "Super-admin authentication is required.");
+        }
+        requireSuperAdmin(actorId, "Super-admin authentication is required.");
     }
 }
