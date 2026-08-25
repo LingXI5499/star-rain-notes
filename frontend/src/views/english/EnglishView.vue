@@ -1,11 +1,16 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { fetchPublicEnglish, type EnglishView } from '@/api/english'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import { fetchLearningSummary, type LearningSummary } from '@/api/englishLearning'
 import { fetchPublicBundles, type LearningBundle } from '@/api/englishBundle'
 import LearningBundleCards from '@/components/english/LearningBundleCards.vue'
+import EnglishLearningModeHint from '@/components/english/EnglishLearningModeHint.vue'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+const isAuthenticated = computed(() => auth.isAuthenticated)
 
 const english = ref<EnglishView | null>(null)
 const loading = ref(true)
@@ -54,6 +59,8 @@ onMounted(async () => {
           <h1 class="english__title">{{ english?.title ?? 'English' }}</h1>
           <p class="english__subtitle">{{ english?.subtitle ?? 'Build English as a long-term skill.' }}</p>
         </header>
+
+        <EnglishLearningModeHint :is-authenticated="isAuthenticated" :email="auth.username" />
 
         <div v-if="loading" class="english__empty">加载中…</div>
         <div v-else-if="error" class="english__empty">加载失败，请稍后重试。</div>
