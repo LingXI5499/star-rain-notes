@@ -1,6 +1,10 @@
 # 本地开发 profile（gitignored —— 含真实凭据，严禁提交）
 # 由 application.yml 的 spring.profiles.default=local 自动激活。
 spring:
+  config:
+    # 本机真实邮箱/授权码等私密配置写到 backend/application-local-secret.yml。
+    # 该文件被 .gitignore 忽略：本机直接填真实值，但不会提交到仓库。
+    import: optional:file:./application-local-secret.yml
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/star_rain_notes?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&sslMode=DISABLED&allowPublicKeyRetrieval=true
     username: root
@@ -8,3 +12,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 app:
   setup-token: dev-setup-token-123
+  account:
+    # 本机固定超级管理员邮箱；真实发信参数请填 backend/application-local-secret.yml。
+    super-admin-email: 14717895499@163.com
