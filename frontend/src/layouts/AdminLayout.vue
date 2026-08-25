@@ -12,9 +12,13 @@ const theme = useThemeStore()
 
 const collapsed = ref(false)
 const englishOpen = ref(true)
+const accountOpen = ref(true)
 
-const navItems = [
+const mainNavItems = [
   { to: '/admin', label: '仪表盘', short: '盘', match: (path: string) => path === '/admin' },
+]
+
+const contentNavItems = [
   { to: '/admin/tutorials', label: '教程工作台', short: '教', match: (path: string) => path.startsWith('/admin/tutorials') },
   { to: '/admin/blog', label: '博客管理', short: '博', match: (path: string) => path.startsWith('/admin/blog') },
   {
@@ -26,11 +30,14 @@ const navItems = [
   },
 ]
 
+const accountItems = [
+  { to: '/admin/users', label: '用户管理', badge: '', match: (path: string) => path.startsWith('/admin/users') },
+  { to: '/admin/invites', label: '邀请管理', badge: '', match: (path: string) => path.startsWith('/admin/invites') },
+  { to: '/admin/reviews', label: '审核中心', badge: '', match: (path: string) => path.startsWith('/admin/reviews') },
+  { to: '/admin/audit-logs', label: '审计日志', badge: '', match: (path: string) => path.startsWith('/admin/audit-logs') },
+]
+
 const secondaryNavItems = [
-  { to: '/admin/users', label: '用户管理', short: '用', match: (path: string) => path.startsWith('/admin/users'), superOnly: true },
-  { to: '/admin/invites', label: '邀请管理', short: '邀', match: (path: string) => path.startsWith('/admin/invites'), superOnly: true },
-  { to: '/admin/reviews', label: '审核中心', short: '审', match: (path: string) => path.startsWith('/admin/reviews'), superOnly: true },
-  { to: '/admin/audit-logs', label: '审计日志', short: '审', match: (path: string) => path.startsWith('/admin/audit-logs'), superOnly: true },
   { to: '/admin/about', label: '关于管理', short: '关', match: (path: string) => path.startsWith('/admin/about'), superOnly: true },
   { to: '/admin/media', label: '媒体库', short: '媒', match: (path: string) => path.startsWith('/admin/media') },
   {
@@ -56,7 +63,8 @@ const englishItems = [
   { to: '/admin/english/writing', label: '写作管理', badge: '' },
 ]
 
-const visibleNavItems = computed(() => navItems.filter((item) => !item.superOnly || auth.isSuperAdmin))
+const visibleMainNavItems = computed(() => mainNavItems)
+const visibleContentNavItems = computed(() => contentNavItems.filter((item) => !item.superOnly || auth.isSuperAdmin))
 const visibleSecondaryNavItems = computed(() => secondaryNavItems.filter((item) => !item.superOnly || auth.isSuperAdmin))
 const visibleEnglishItems = computed(() => englishItems.filter((item) => !item.superOnly || auth.isSuperAdmin))
 
@@ -105,7 +113,7 @@ async function changePassword() {
 
       <nav class="admin-shell__nav" aria-label="管理导航">
         <RouterLink
-          v-for="item in visibleNavItems"
+          v-for="item in visibleMainNavItems"
           :key="item.to"
           :to="item.to"
           class="admin-shell__nav-item"
@@ -115,6 +123,42 @@ async function changePassword() {
           <span class="admin-shell__nav-short">{{ item.short }}</span>
           <span v-if="!collapsed" class="admin-shell__nav-label">{{ item.label }}</span>
         </RouterLink>
+
+        <div v-if="auth.isSuperAdmin" class="admin-shell__nav-group">
+          <button
+            type="button"
+            class="admin-shell__nav-item admin-shell__nav-parent"
+            :class="{ 'admin-shell__nav-item--active': ['/admin/users', '/admin/invites', '/admin/reviews', '/admin/audit-logs'].some(prefix => $route.path.startsWith(prefix)) }"
+            :title="collapsed ? '账号协作' : undefined"
+            @click="collapsed ? router.push('/admin/users') : (accountOpen = !accountOpen)"
+          >
+            <span class="admin-shell__nav-short">账</span>
+            <span v-if="!collapsed" class="admin-shell__nav-label">账号协作</span>
+            <span v-if="!collapsed" class="admin-shell__nav-chevron">{{ accountOpen ? '⌃' : '⌄' }}</span>
+          </button>
+          <div v-if="!collapsed && accountOpen" class="admin-shell__subnav">
+            <RouterLink
+              v-for="item in accountItems"
+              :key="item.to"
+              :to="item.to"
+              class="admin-shell__subnav-item"
+              :class="{ 'is-active': item.match($route.path) }"
+            >{{ item.label }}</RouterLink>
+          </div>
+        </div>
+
+        <RouterLink
+          v-for="item in visibleContentNavItems"
+          :key="item.to"
+          :to="item.to"
+          class="admin-shell__nav-item"
+          :class="{ 'admin-shell__nav-item--active': item.match($route.path) }"
+          :title="collapsed ? item.label : undefined"
+        >
+          <span class="admin-shell__nav-short">{{ item.short }}</span>
+          <span v-if="!collapsed" class="admin-shell__nav-label">{{ item.label }}</span>
+        </RouterLink>
+
         <div class="admin-shell__nav-group">
           <button
             type="button"
