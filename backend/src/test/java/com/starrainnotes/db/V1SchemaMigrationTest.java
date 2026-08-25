@@ -74,6 +74,7 @@ class V1SchemaMigrationTest {
             "email_verification_challenge",
             "admin_audit_log",
             "content_review_request",
+            "account_vocabulary_memory",
             "tutorial_node_hierarchy_backup_v5",
             "tutorial_category_full_backup_v7",
             "tutorial_full_backup_v7",
@@ -92,7 +93,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(57);
+        assertThat(count).isEqualTo(58);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -118,14 +119,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV22AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV23AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -141,6 +142,7 @@ class V1SchemaMigrationTest {
                 "create english learning loop", "create english learning insights",
                 "add english learning analytics indexes", "create account collaboration",
                 "create admin audit log", "create content review request",
-                "expand content review types", "expand english content review types");
+                "expand content review types", "expand english content review types",
+                "create account personal learning");
     }
 }
