@@ -134,4 +134,39 @@ public class AccountEnglishService {
     private ApiException fail(String code) {
         return new ApiException(HttpStatus.NOT_FOUND, code, "Not found", "The requested data does not exist.");
     }
+    @Transactional
+    public void importLocalProgress(Long accountId, Map<String, Object> payload) {
+        Long profile = ensureAccountProfile(accountId);
+        Object vocab = payload == null ? null : payload.get("vocabulary");
+        if (vocab instanceof Map<?, ?> vm) {
+            for (Map.Entry<?, ?> e : vm.entrySet()) {
+                Long wordId;
+                try { wordId = Long.valueOf(String.valueOf(e.getKey())); } catch (NumberFormatException ex) { continue; }
+                Object mem = e.getValue();
+                if (mem instanceof Map<?, ?> m) {
+                    Object count = m.get("memoryCount");
+                    int n = count instanceof Number ? ((Number) count).intValue() : 1;
+                    putVocabularyMemory(accountId, wordId, Math.max(0, n));
+                }
+            }
+        }
+        Object records = payload == null ? null : payload.get("learningRecords");
+        if (records instanceof Map<?, ?> rm) {
+            for (Map.Entry<?, ?> e : rm.entrySet()) {
+                String key = String.valueOf(e.getKey()); // e.g. "reading/12"
+                String[] parts = key.split("/");
+                if (parts.length != 2) continue;
+                Long contentId;
+                try { contentId = Long.valueOf(parts[1]); } catch (NumberFormatException ex) { continue; }
+                Object v = e.getValue();
+                if (v instanceof Map<?, ?> r) {
+                    Object status = r.get("completionStatus");
+                    putRecord(accountId, parts[0], contentId,
+                            status == null ? "IN_PROGRESS" : String.valueOf(status),
+                            r.get("timeSpentSeconds") instanceof Number n ? n.intValue() : null);
+                    profile = profileId(accountId);
+                }
+            }
+        }
+    }
 }
