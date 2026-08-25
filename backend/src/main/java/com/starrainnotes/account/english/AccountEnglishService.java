@@ -1,6 +1,12 @@
 package com.starrainnotes.account.english;
 
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.shared.learning.dto.LearningInsightsView;
+import com.starrainnotes.english.shared.learning.dto.LearningRecordView;
+import com.starrainnotes.english.shared.learning.dto.LearningSummaryView;
+import com.starrainnotes.english.shared.learning.dto.WritingSubmissionView;
+import com.starrainnotes.english.shared.learning.dto.WritingSubmissionRequest;
+import com.starrainnotes.english.shared.learning.service.EnglishLearningService;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -20,18 +26,22 @@ import java.util.Map;
 public class AccountEnglishService {
 
     private final JdbcTemplate jdbc;
+    private final EnglishLearningService learning;
 
-    public AccountEnglishService(JdbcTemplate jdbc) { this.jdbc = jdbc; }
+    public AccountEnglishService(JdbcTemplate jdbc, EnglishLearningService learning) {
+        this.jdbc = jdbc;
+        this.learning = learning;
+    }
 
     @Transactional
     public long ensureAccountProfile(Long accountId) {
-        Long existing = jdbc.queryForObject(
-                "SELECT id FROM english_learner_profile WHERE account_id=? LIMIT 1", Long.class, accountId);
+        Long existing = profileId(accountId);
         if (existing != null) return existing;
         jdbc.update("INSERT INTO english_learner_profile(learner_key_hash,account_id,profile_type,claimed_at)"
                 + " VALUES (NULL,?, 'ACCOUNT', UTC_TIMESTAMP(6))", accountId);
-        return jdbc.queryForObject(
-                "SELECT id FROM english_learner_profile WHERE account_id=? LIMIT 1", Long.class, accountId);
+        Long id = profileId(accountId);
+        if (id == null) throw new IllegalStateException("Failed to create account learner profile for " + accountId);
+        return id;
     }
 
     public Long profileId(Long accountId) {
@@ -117,6 +127,32 @@ public class AccountEnglishService {
         } catch (EmptyResultDataAccessException ex) {
             throw fail("WRITING_SUBMISSION_NOT_FOUND");
         }
+    }
+
+    public LearningSummaryView summary(Long accountId) {
+        Long profile = profileId(accountId);
+        return profile == null
+                ? new LearningSummaryView(0, 0, 0, 0, Map.of(), List.of())
+                : learning.summaryForLearner(profile);
+    }
+
+    public LearningInsightsView insights(Long accountId) {
+        Long profile = profileId(accountId);
+        return profile == null
+                ? new LearningInsightsView(0, 0, 0, 0, null, null, List.of(), List.of(), List.of())
+                : learning.insightsForLearner(profile);
+    }
+
+    public Map<String, LearningRecordView> batchRecords(Long accountId, List<String> refs) {
+        Long profile = profileId(accountId);
+        return profile == null ? Map.of() : learning.batchForLearner(profile, refs);
+    }
+
+    @Transactional
+    public WritingSubmissionView saveSubmission(Long accountId, Long promptId, WritingSubmissionRequest request) {
+        Long profile = profileId(accountId);
+        if (profile == null) profile = ensureAccountProfile(accountId);
+        return learning.saveSubmissionForLearner(profile, promptId, request);
     }
 
     @Transactional

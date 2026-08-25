@@ -2,6 +2,8 @@ package com.starrainnotes.account.english.controller;
 
 import com.starrainnotes.account.english.AccountEnglishService;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.shared.learning.dto.WritingSubmissionRequest;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -41,6 +43,22 @@ public class AccountEnglishController {
         return service.records(accountId(), page, pageSize);
     }
 
+    @GetMapping("/learning/records/batch")
+    public java.util.Map<String, com.starrainnotes.english.shared.learning.dto.LearningRecordView> batchRecords(
+            @RequestParam("ref") java.util.List<String> refs) {
+        return service.batchRecords(accountId(), refs);
+    }
+
+    @GetMapping("/learning/summary")
+    public com.starrainnotes.english.shared.learning.dto.LearningSummaryView summary() {
+        return service.summary(accountId());
+    }
+
+    @GetMapping("/learning/insights")
+    public com.starrainnotes.english.shared.learning.dto.LearningInsightsView insights() {
+        return service.insights(accountId());
+    }
+
     @GetMapping("/learning/records/{type}/{contentId}")
     public Map<String, Object> record(@PathVariable String type, @PathVariable Long contentId) {
         return service.record(accountId(), type, contentId);
@@ -70,6 +88,13 @@ public class AccountEnglishController {
     @GetMapping("/writing-submissions/{promptId}")
     public Map<String, Object> writingSubmission(@PathVariable Long promptId) {
         return service.writingSubmission(accountId(), promptId);
+    }
+
+    @PutMapping("/writing-submissions/{promptId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void saveWritingSubmission(@PathVariable Long promptId,
+                                      @Valid @RequestBody WritingSubmissionRequest request) {
+        service.saveSubmission(accountId(), promptId, request);
     }
 
     @PostMapping("/import-local-progress")

@@ -71,7 +71,10 @@ public class EnglishLearningService {
     }
 
     public Map<String, LearningRecordView> batch(String learnerKey, List<String> refs){
-        long learner=learner(learnerKey);
+        return batchForLearner(learner(learnerKey),refs);
+    }
+
+    public Map<String, LearningRecordView> batchForLearner(long learner, List<String> refs){
         if(refs==null||refs.isEmpty())return Map.of();
         if(refs.size()>100)bad("At most 100 learning records can be requested at once.");
         LinkedHashSet<ContentRef> normalized=new LinkedHashSet<>();
@@ -94,7 +97,10 @@ public class EnglishLearningService {
     }
 
     public LearningSummaryView summary(String learnerKey){
-        long learner=learner(learnerKey);
+        return summaryForLearner(learner(learnerKey));
+    }
+
+    public LearningSummaryView summaryForLearner(long learner){
         Long total=count("SELECT COUNT(*) FROM english_learning_record WHERE learner_id=?",learner);
         Long progress=count("SELECT COUNT(*) FROM english_learning_record WHERE learner_id=? AND completion_status='IN_PROGRESS'",learner);
         Long completed=count("SELECT COUNT(*) FROM english_learning_record WHERE learner_id=? AND completion_status='COMPLETED'",learner);
@@ -107,7 +113,10 @@ public class EnglishLearningService {
     }
 
     public LearningInsightsView insights(String learnerKey){
-        long learner=learner(learnerKey);
+        return insightsForLearner(learner(learnerKey));
+    }
+
+    public LearningInsightsView insightsForLearner(long learner){
         Map<String,Object> totals=jdbc.queryForMap("""
           SELECT COALESCE(SUM(time_spent_seconds),0) total_time,
                  COALESCE(SUM(attempts),0) total_attempts,
@@ -125,10 +134,15 @@ public class EnglishLearningService {
 
     @Transactional
     public WritingSubmissionView saveSubmission(String learnerKey,Long promptId,WritingSubmissionRequest request){
+        requirePublishedPrompt(promptId);
+        return saveSubmissionForLearner(learner(learnerKey),promptId,request);
+    }
+
+    @Transactional
+    public WritingSubmissionView saveSubmissionForLearner(long learner,Long promptId,WritingSubmissionRequest request){
         if(!Set.of("DRAFT","SUBMITTED").contains(request.status()))bad("Unknown submission status.");
-        Integer exists=jdbc.queryForObject("SELECT COUNT(*) FROM english_writing_prompt WHERE id=? AND publish_status='PUBLISHED'",Integer.class,promptId);
-        if(exists==null||exists==0)throw unavailable();
-        long learner=learner(learnerKey);int words=countWords(request.bodyText());
+        requirePublishedPrompt(promptId);
+        int words=countWords(request.bodyText());
         LocalDateTime submitted="SUBMITTED".equals(request.status())?LocalDateTime.now(ZoneOffset.UTC):null;
         jdbc.update("""
           INSERT INTO english_writing_submission(learner_id,prompt_id,body_text,word_count,submission_status,self_score,submitted_at)
@@ -140,8 +154,16 @@ public class EnglishLearningService {
     }
 
     public WritingSubmissionView getSubmission(String learnerKey,Long promptId){
-        long learner=learner(learnerKey);
+        return getSubmissionForLearner(learner(learnerKey),promptId);
+    }
+
+    public WritingSubmissionView getSubmissionForLearner(long learner,Long promptId){
         try{return submission(learner,promptId);}catch(EmptyResultDataAccessException e){return null;}
+    }
+
+    private void requirePublishedPrompt(Long promptId){
+        Integer exists=jdbc.queryForObject("SELECT COUNT(*) FROM english_writing_prompt WHERE id=? AND publish_status='PUBLISHED'",Integer.class,promptId);
+        if(exists==null||exists==0)throw unavailable();
     }
 
     private long learner(String key){

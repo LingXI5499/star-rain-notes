@@ -22,6 +22,7 @@ export interface LearningProgressRepository {
   rememberedWordIds(): number[]
   readRecord(key: string): unknown
   writeRecord(key: string, value: unknown): void
+  readAllRecords(): Record<string, unknown>
   readDraft(promptId: number): { content: string; updatedAt: string } | null
   writeDraft(promptId: number, content: string): void
   clearAll(): void
@@ -75,6 +76,9 @@ export class GuestLocalLearningRepository implements LearningProgressRepository 
     data.learningRecords[key] = value
     this.save(data)
   }
+  readAllRecords(): Record<string, unknown> {
+    return this.load().learningRecords
+  }
   readDraft(promptId: number): { content: string; updatedAt: string } | null {
     const d = this.load().writingDrafts[String(promptId)]
     return d ? { content: d.content, updatedAt: d.updatedAt } : null
@@ -106,6 +110,7 @@ export const accountLearning: LearningProgressRepository = {
   writeRecord: () => {
     throw new Error('账号型学习记录需经 /api/v1/account/english 同步')
   },
+  readAllRecords: () => ({}),
   readDraft: () => null,
   writeDraft: () => {
     throw new Error('账号型写作草稿需经 /api/v1/account/english 同步')
