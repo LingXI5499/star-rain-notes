@@ -361,4 +361,8 @@ public class AccountService {
         }
         requireSuperAdmin(actorId, "Super-admin authentication is required.");
     }
+    public java.util.List<AccountUser> listUsers() {
+        return userMapper.selectList(new LambdaQueryWrapper<AccountUser>()
+                .orderByDesc(AccountUser::getId));
+    }
 }

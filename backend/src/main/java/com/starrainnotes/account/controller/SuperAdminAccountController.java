@@ -26,6 +26,10 @@ public class SuperAdminAccountController {
 
     public SuperAdminAccountController(AccountService accountService) { this.accountService = accountService; }
 
+    @GetMapping("/users")
+    public java.util.List<com.starrainnotes.account.entity.AccountUser> users() {
+        return accountService.listUsers();
+    }
     @GetMapping("/invitations")
     public List<AdminInvitation> invitations() {
         return accountService.listInvitations();

@@ -127,7 +127,7 @@ public class VerificationCodeService {
         return mapper.selectCount(w);
     }
 
-    static String sha256(String value) {
+    public static String sha256(String value) {
         try {
             MessageDigest md = MessageDigest.getInstance("SHA-256");
             return HexFormat.of().formatHex(md.digest(value.getBytes(StandardCharsets.UTF_8)));
