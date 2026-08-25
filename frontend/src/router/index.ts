@@ -238,6 +238,24 @@ const router = createRouter({
       meta: { title: '登录', robots: 'noindex,nofollow', elementPlus: true },
     },
     {
+      path: '/admin/activate',
+      name: 'admin-activate',
+      component: () => import('@/views/admin/ActivateSuperAdminView.vue'),
+      meta: { title: '激活超级管理员', robots: 'noindex,nofollow', elementPlus: true },
+    },
+    {
+      path: '/admin/forgot-password',
+      name: 'admin-forgot-password',
+      component: () => import('@/views/admin/ForgotPasswordView.vue'),
+      meta: { title: '找回密码', robots: 'noindex,nofollow', elementPlus: true },
+    },
+    {
+      path: '/admin/invitations/:token',
+      name: 'admin-invitation-register',
+      component: () => import('@/views/admin/InvitationRegisterView.vue'),
+      meta: { title: '接受管理员邀请', robots: 'noindex,nofollow', elementPlus: true },
+    },
+    {
       path: '/admin',
       // Lazy so the Admin shell (and its Element Plus import) stays out of
       // the public initial bundle.
@@ -490,8 +508,10 @@ router.beforeEach(async (to) => {
     return true
   }
   const auth = useAuthStore()
-  if (to.name === 'admin-setup' || to.name === 'admin-login') {
-    if (auth.isAuthenticated) {
+  if (to.name === 'admin-setup' || to.name === 'admin-login'
+      || to.name === 'admin-activate' || to.name === 'admin-forgot-password'
+      || to.name === 'admin-invitation-register') {
+    if (auth.isAuthenticated && (to.name === 'admin-setup' || to.name === 'admin-login')) {
       return { name: 'admin' }
     }
     return true
