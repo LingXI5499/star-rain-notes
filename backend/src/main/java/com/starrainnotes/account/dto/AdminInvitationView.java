@@ -15,12 +15,17 @@ public record AdminInvitationView(
         LocalDateTime acceptedAt,
         LocalDateTime revokedAt,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt) {
+        LocalDateTime updatedAt,
+        String inviteLink) {
 
     public static AdminInvitationView from(AdminInvitation invitation) {
+        return from(invitation, null);
+    }
+
+    public static AdminInvitationView from(AdminInvitation invitation, String inviteLink) {
         return new AdminInvitationView(invitation.getId(), invitation.getEmail(), invitation.getStatus(),
                 invitation.getInvitedBy(), invitation.getAcceptedAccountId(), invitation.getExpiresAt(),
                 invitation.getSentAt(), invitation.getAcceptedAt(), invitation.getRevokedAt(),
-                invitation.getCreatedAt(), invitation.getUpdatedAt());
+                invitation.getCreatedAt(), invitation.getUpdatedAt(), inviteLink);
     }
 }

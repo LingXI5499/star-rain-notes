@@ -1,4 +1,5 @@
 import { http } from './http'
+import type { ContentReview } from './account'
 import type { PublishStatus } from './englishMeta'
 
 export interface ListeningTagRef { id: number; name: string; slug: string; dimension: string; role: string }
@@ -77,8 +78,8 @@ export async function fetchListening(id: number): Promise<ListeningItem> {
 export async function createListening(payload: ListeningItemPayload): Promise<ListeningItem> {
   return (await http.post<ListeningItem>('/admin/english/listening/items', payload)).data
 }
-export async function updateListening(id: number, payload: ListeningItemPayload): Promise<ListeningItem> {
-  return (await http.put<ListeningItem>(`/admin/english/listening/items/${id}`, payload)).data
+export async function updateListening(id: number, payload: ListeningItemPayload): Promise<ListeningItem | ContentReview> {
+  return (await http.put<ListeningItem | ContentReview>(`/admin/english/listening/items/${id}`, payload)).data
 }
 export async function deleteListening(id: number): Promise<void> { await http.delete(`/admin/english/listening/items/${id}`) }
 export async function publishListening(id: number): Promise<ListeningItem> { return (await http.post<ListeningItem>(`/admin/english/listening/items/${id}/publish`)).data }
@@ -107,7 +108,7 @@ export async function checkListeningAnswers(slug: string, answers: { exerciseId:
 
 export async function fetchPronunciationRules(): Promise<PronunciationRule[]> { return (await http.get<PronunciationRule[]>('/admin/english/listening/pronunciation')).data }
 export async function createPronunciationRule(payload: Record<string, unknown>): Promise<PronunciationRule> { return (await http.post('/admin/english/listening/pronunciation', payload)).data }
-export async function updatePronunciationRule(id: number, payload: Record<string, unknown>): Promise<PronunciationRule> { return (await http.put(`/admin/english/listening/pronunciation/${id}`, payload)).data }
+export async function updatePronunciationRule(id: number, payload: Record<string, unknown>): Promise<PronunciationRule | ContentReview> { return (await http.put(`/admin/english/listening/pronunciation/${id}`, payload)).data }
 export async function deletePronunciationRule(id: number): Promise<void> { await http.delete(`/admin/english/listening/pronunciation/${id}`) }
 export async function publishPronunciationRule(id: number): Promise<PronunciationRule> { return (await http.post(`/admin/english/listening/pronunciation/${id}/publish`)).data }
 export async function withdrawPronunciationRule(id: number): Promise<PronunciationRule> { return (await http.post(`/admin/english/listening/pronunciation/${id}/withdraw`)).data }

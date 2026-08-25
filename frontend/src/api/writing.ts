@@ -1,4 +1,5 @@
 import { http } from '@/api/http'
+import type { ContentReview } from '@/api/account'
 
 export type WritingTag = { id:number; name:string; slug:string; dimension:string }
 export type WritingResource = { id:number; resourceKind:string; expressionLevel?:string|null; title:string; slug:string; summary:string; bodyMarkdown:string; coverMediaId?:number|null; coverUrl?:string|null; cefrLevel:string; wordMin?:number|null; wordMax?:number|null; estimatedMinutes:number; templateSchemaJson?:string|null; publishStatus:string; sortOrder:number; publishedAt?:string|null; updatedAt?:string|null; tags:WritingTag[] }
@@ -14,7 +15,7 @@ const admin='/admin/english/writing'; const pub='/public/english/writing'
 export const fetchWritingResources=(params:Record<string,unknown>)=>http.get<WritingPage<WritingResourceSummary>>(`${admin}/resources`,{params}).then(r=>r.data)
 export const getWritingResource=(id:number)=>http.get<WritingResource>(`${admin}/resources/${id}`).then(r=>r.data)
 export const createWritingResource=(data:WritingResourcePayload)=>http.post<WritingResource>(`${admin}/resources`,data).then(r=>r.data)
-export const updateWritingResource=(id:number,data:WritingResourcePayload)=>http.put<WritingResource>(`${admin}/resources/${id}`,data).then(r=>r.data)
+export const updateWritingResource=(id:number,data:WritingResourcePayload)=>http.put<WritingResource|ContentReview>(`${admin}/resources/${id}`,data).then(r=>r.data)
 export const deleteWritingResource=(id:number)=>http.delete(`${admin}/resources/${id}`)
 export const publishWritingResource=(id:number)=>http.post<WritingResource>(`${admin}/resources/${id}/publish`).then(r=>r.data)
 export const withdrawWritingResource=(id:number)=>http.post<WritingResource>(`${admin}/resources/${id}/withdraw`).then(r=>r.data)
@@ -22,7 +23,7 @@ export const moveWritingResource=(id:number,targetIndex:number)=>http.post(`${ad
 export const fetchWritingPrompts=(params:Record<string,unknown>)=>http.get<WritingPage<WritingPromptSummary>>(`${admin}/prompts`,{params}).then(r=>r.data)
 export const getWritingPrompt=(id:number)=>http.get<WritingPrompt>(`${admin}/prompts/${id}`).then(r=>r.data)
 export const createWritingPrompt=(data:WritingPromptPayload)=>http.post<WritingPrompt>(`${admin}/prompts`,data).then(r=>r.data)
-export const updateWritingPrompt=(id:number,data:WritingPromptPayload)=>http.put<WritingPrompt>(`${admin}/prompts/${id}`,data).then(r=>r.data)
+export const updateWritingPrompt=(id:number,data:WritingPromptPayload)=>http.put<WritingPrompt|ContentReview>(`${admin}/prompts/${id}`,data).then(r=>r.data)
 export const deleteWritingPrompt=(id:number)=>http.delete(`${admin}/prompts/${id}`)
 export const publishWritingPrompt=(id:number)=>http.post<WritingPrompt>(`${admin}/prompts/${id}/publish`).then(r=>r.data)
 export const withdrawWritingPrompt=(id:number)=>http.post<WritingPrompt>(`${admin}/prompts/${id}/withdraw`).then(r=>r.data)

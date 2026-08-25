@@ -99,7 +99,7 @@ public class AccountService {
         return account;
     }
 
-    public AdminInvitation createInvitation(String email, Long invitedByAccountId) {
+    public IssuedInvitation createInvitation(String email, Long invitedByAccountId) {
         requireSuperAdmin(invitedByAccountId, "Only a super administrator can invite.");
         String normalized = normalize(email);
         if (!validEmail(normalized)) {
@@ -121,11 +121,11 @@ public class AccountService {
         inv.setInvitedBy(invitedByAccountId);
         inv.setExpiresAt(now().plusHours(72));
         invitationMapper.insert(inv);
-        String link = props.getMail().getBaseUrl() + "/admin/invitations/" + rawToken;
+        String link = invitationLink(rawToken);
         mailGateway.sendInvitationLink(inv.getEmail(), link);
         auditLog.record(invitedByAccountId, "INVITATION_CREATED", "INVITATION", inv.getId(), "SUCCESS",
                 null, null, Map.of("email", mask(inv.getEmail())));
-        return inv;
+        return new IssuedInvitation(inv, link);
     }
 
     public AdminInvitation invitationByToken(String rawToken) {
@@ -154,7 +154,8 @@ public class AccountService {
     @Transactional
     public AccountUser register(String rawToken, String email, String code, String password) {
         AdminInvitation inv = invitationByToken(rawToken);
-        if (!normalize(email).equals(inv.getEmail())) {
+        String normalizedEmail = normalize(email);
+        if (normalizedEmail != null && !normalizedEmail.isBlank() && !normalizedEmail.equals(inv.getEmail())) {
             throw fail("INVITATION_INVALID", HttpStatus.UNPROCESSABLE_ENTITY, "Email mismatch",
                     "The email must match the invitation.");
         }
@@ -338,7 +339,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void resendInvitation(Long invitationId) {
+    public IssuedInvitation resendInvitation(Long invitationId) {
         AdminInvitation inv = requireInvitation(invitationId);
         if (!"PENDING".equals(inv.getStatus())) {
             throw fail("INVITATION_INVALID", HttpStatus.CONFLICT, "Invitation not pending",
@@ -348,10 +349,11 @@ public class AccountService {
         inv.setTokenHash(VerificationCodeService.sha256(rawToken));
         inv.setSentAt(now());
         invitationMapper.updateById(inv);
-        mailGateway.sendInvitationLink(inv.getEmail(),
-                props.getMail().getBaseUrl() + "/admin/invitations/" + rawToken);
+        String link = invitationLink(rawToken);
+        mailGateway.sendInvitationLink(inv.getEmail(), link);
         auditLog.record(inv.getInvitedBy(), "INVITATION_RESENT", "INVITATION", inv.getId(), "SUCCESS",
                 null, null, Map.of("email", mask(inv.getEmail())));
+        return new IssuedInvitation(inv, link);
     }
 
     @Transactional
@@ -379,6 +381,16 @@ public class AccountService {
                 "The invitation does not exist.");
         return inv;
     }
+
+    private String invitationLink(String rawToken) {
+        String base = props.getMail().getBaseUrl();
+        if (base == null || base.isBlank()) {
+            base = "http://localhost:5173";
+        }
+        return base.replaceAll("/+$", "") + "/admin/invitations/" + rawToken;
+    }
+
+    public record IssuedInvitation(AdminInvitation invitation, String inviteLink) {}
 
     private boolean normValidEmail(String email) {
         return email != null && email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");

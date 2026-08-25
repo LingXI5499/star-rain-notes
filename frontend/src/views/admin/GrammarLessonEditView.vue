@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AxiosError } from 'axios'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
+import type { ContentReview } from '@/api/account'
 import type { ProblemDetail } from '@/api/http'
 import { createGrammarLesson, fetchGrammarCurriculum, fetchGrammarLesson, updateGrammarLesson, type GrammarSection } from '@/api/grammar'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
@@ -13,8 +14,9 @@ const editing=computed(()=>lessonId!==null);const loading=ref(true);const saving
 const form=reactive({sectionId:null as number|null,title:'',slug:'',summary:'',bodyMarkdown:'## 学习内容\n\n'})
 const {capture}=useUnsavedGuard(()=>form,save)
 function back(){void router.push({name:'admin-english-grammar',query:form.sectionId?{section:String(form.sectionId)}:undefined})}
+function isReview(value: unknown): value is ContentReview { return typeof value === 'object' && value !== null && 'contentType' in value }
 onMounted(async()=>{try{const curriculum=await fetchGrammarCurriculum();sections.value=curriculum.sections;if(editing.value&&lessonId){const item=await fetchGrammarLesson(lessonId);Object.assign(form,{sectionId:item.sectionId,title:item.title,slug:item.slug,summary:item.summary??'',bodyMarkdown:item.bodyMarkdown})}else{const id=Number(route.query.section);form.sectionId=sections.value.some(s=>s.id===id)?id:sections.value[0]?.id??null}}catch{ElMessage.error('课节加载失败。')}finally{loading.value=false;capture()}})
-async function save(){if(!form.sectionId||!form.title.trim()||!/^\d+-\d+$/.test(form.slug)||!form.bodyMarkdown.trim()){ElMessage.warning('请填写章节、标题、数字编号和正文。');return}saving.value=true;try{const payload={sectionId:form.sectionId,title:form.title.trim(),slug:form.slug,summary:form.summary||null,bodyMarkdown:form.bodyMarkdown};if(editing.value&&lessonId)await updateGrammarLesson(lessonId,payload);else await createGrammarLesson(payload);capture();ElMessage.success('课节已保存。');back()}catch(error){const p=error instanceof AxiosError?error.response?.data as ProblemDetail:null;ElMessage.error(p?.detail??'保存失败。')}finally{saving.value=false}}
+async function save(){if(!form.sectionId||!form.title.trim()||!/^\d+-\d+$/.test(form.slug)||!form.bodyMarkdown.trim()){ElMessage.warning('请填写章节、标题、数字编号和正文。');return}saving.value=true;try{const payload={sectionId:form.sectionId,title:form.title.trim(),slug:form.slug,summary:form.summary||null,bodyMarkdown:form.bodyMarkdown};const result=editing.value&&lessonId?await updateGrammarLesson(lessonId,payload):await createGrammarLesson(payload);capture();ElMessage.success(isReview(result)?'已提交审核，超级管理员批准后会应用到线上课节。':'课节已保存。');back()}catch(error){const p=error instanceof AxiosError?error.response?.data as ProblemDetail:null;ElMessage.error(p?.detail??'保存失败。')}finally{saving.value=false}}
 </script>
 
 <template>

@@ -1,4 +1,5 @@
 import { http } from './http'
+import type { ContentReview } from './account'
 import type { PublishStatus, TaxonomyTerm } from './englishMeta'
 
 export interface ReadingTagRef {
@@ -133,8 +134,8 @@ export async function fetchReading(id: number): Promise<ReadingArticle> {
 export async function createReading(payload: ReadingArticlePayload): Promise<ReadingArticle> {
   return (await http.post<ReadingArticle>('/admin/english/reading/articles', payload)).data
 }
-export async function updateReading(id: number, payload: ReadingArticlePayload): Promise<ReadingArticle> {
-  return (await http.put<ReadingArticle>(`/admin/english/reading/articles/${id}`, payload)).data
+export async function updateReading(id: number, payload: ReadingArticlePayload): Promise<ReadingArticle | ContentReview> {
+  return (await http.put<ReadingArticle | ContentReview>(`/admin/english/reading/articles/${id}`, payload)).data
 }
 export async function deleteReading(id: number): Promise<void> {
   await http.delete(`/admin/english/reading/articles/${id}`)

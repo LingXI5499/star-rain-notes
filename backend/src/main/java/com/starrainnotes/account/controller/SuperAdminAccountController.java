@@ -48,13 +48,14 @@ public class SuperAdminAccountController {
     @PostMapping("/invitations")
     @ResponseStatus(HttpStatus.CREATED)
     public AdminInvitationView invite(@Valid @RequestBody InviteRequest body, Authentication authentication) {
-        return AdminInvitationView.from(accountService.createInvitation(body.email(), actorId(authentication)));
+        var issued = accountService.createInvitation(body.email(), actorId(authentication));
+        return AdminInvitationView.from(issued.invitation(), issued.inviteLink());
     }
 
     @PostMapping("/invitations/{id}/resend")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void resend(@PathVariable Long id) {
-        accountService.resendInvitation(id);
+    public AdminInvitationView resend(@PathVariable Long id) {
+        var issued = accountService.resendInvitation(id);
+        return AdminInvitationView.from(issued.invitation(), issued.inviteLink());
     }
 
     @PostMapping("/invitations/{id}/revoke")

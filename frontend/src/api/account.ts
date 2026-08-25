@@ -27,8 +27,8 @@ export async function fetchInvitationStatus(token: string): Promise<InvitationSt
 export async function sendInvitationCode(token: string): Promise<void> {
   await http.post(`/auth/invitations/${token}/verification-codes`, {})
 }
-export async function registerByInvitation(token: string, email: string, verificationCode: string, password: string): Promise<void> {
-  await http.post(`/auth/invitations/${token}/register`, { email, verificationCode, password })
+export async function registerByInvitation(token: string, verificationCode: string, password: string): Promise<void> {
+  await http.post(`/auth/invitations/${token}/register`, { verificationCode, password })
 }
 
 export async function sendPasswordResetCode(email: string): Promise<void> {
@@ -67,6 +67,7 @@ export interface AdminInvitation {
   revokedAt: string | null
   createdAt: string
   updatedAt: string
+  inviteLink: string | null
 }
 
 export interface AuditLog {
@@ -118,8 +119,8 @@ export async function createInvitation(email: string): Promise<AdminInvitation> 
   return (await http.post<AdminInvitation>('/super-admin/invitations', { email })).data
 }
 
-export async function resendInvitation(id: number): Promise<void> {
-  await http.post(`/super-admin/invitations/${id}/resend`)
+export async function resendInvitation(id: number): Promise<AdminInvitation> {
+  return (await http.post<AdminInvitation>(`/super-admin/invitations/${id}/resend`)).data
 }
 
 export async function revokeInvitation(id: number): Promise<void> {

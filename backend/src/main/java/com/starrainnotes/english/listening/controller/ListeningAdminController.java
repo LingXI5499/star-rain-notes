@@ -1,5 +1,8 @@
 package com.starrainnotes.english.listening.controller;
 
+import com.starrainnotes.account.review.dto.ContentReviewView;
+import com.starrainnotes.account.review.service.ContentReviewService;
+import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.english.listening.dto.ListeningItemRequest;
 import com.starrainnotes.english.listening.dto.ListeningItemView;
 import com.starrainnotes.english.listening.dto.ListeningMoveRequest;
@@ -21,6 +24,8 @@ import com.starrainnotes.english.reading.dto.ReadingExerciseRequest;
 import com.starrainnotes.english.reading.dto.ReadingExerciseView;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -43,10 +48,13 @@ public class ListeningAdminController {
 
     private final ListeningItemService itemService;
     private final ListeningExerciseService exerciseService;
+    private final ContentReviewService reviewService;
 
-    public ListeningAdminController(ListeningItemService itemService, ListeningExerciseService exerciseService) {
+    public ListeningAdminController(ListeningItemService itemService, ListeningExerciseService exerciseService,
+                                    ContentReviewService reviewService) {
         this.itemService = itemService;
         this.exerciseService = exerciseService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/items")
@@ -74,8 +82,14 @@ public class ListeningAdminController {
     }
 
     @PutMapping("/items/{id}")
-    public ListeningItemView update(@PathVariable Long id, @Valid @RequestBody ListeningItemRequest request) {
-        return itemService.update(id, request);
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody ListeningItemRequest request,
+                                    Authentication authentication) {
+        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_LISTENING_ITEM", id)) {
+            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
+                    "ENGLISH_LISTENING_ITEM", id, request.title(), request);
+            return ResponseEntity.accepted().body(review);
+        }
+        return ResponseEntity.ok(itemService.update(id, request));
     }
 
     @DeleteMapping("/items/{id}")
@@ -199,8 +213,14 @@ public class ListeningAdminController {
     }
 
     @PutMapping("/pronunciation/{id}")
-    public PronunciationRuleView updateRule(@PathVariable Long id, @Valid @RequestBody PronunciationRuleRequest request) {
-        return itemService.updateRule(id, request);
+    public ResponseEntity<?> updateRule(@PathVariable Long id, @Valid @RequestBody PronunciationRuleRequest request,
+                                        Authentication authentication) {
+        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_PRONUNCIATION_RULE", id)) {
+            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
+                    "ENGLISH_PRONUNCIATION_RULE", id, request.title(), request);
+            return ResponseEntity.accepted().body(review);
+        }
+        return ResponseEntity.ok(itemService.updateRule(id, request));
     }
 
     @DeleteMapping("/pronunciation/{id}")
@@ -223,5 +243,15 @@ public class ListeningAdminController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void moveRule(@PathVariable Long id, @RequestBody ListeningMoveRequest request) {
         itemService.moveRule(id, request.targetIndex() == null ? 0 : request.targetIndex());
+    }
+
+    private boolean isSuperAdmin(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_SUPER_ADMIN".equals(authority.getAuthority()));
+    }
+
+    private Long actorId(Authentication authentication) {
+        Object principal = authentication == null ? null : authentication.getPrincipal();
+        return principal instanceof AccountPrincipal account ? account.getId() : null;
     }
 }

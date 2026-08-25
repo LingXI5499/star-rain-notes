@@ -1,5 +1,8 @@
 package com.starrainnotes.english.grammar.controller;
 
+import com.starrainnotes.account.review.dto.ContentReviewView;
+import com.starrainnotes.account.review.service.ContentReviewService;
+import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.english.grammar.dto.GrammarCourseView;
 import com.starrainnotes.english.grammar.dto.GrammarCurriculumView;
 import com.starrainnotes.english.grammar.dto.GrammarLessonDetailView;
@@ -12,6 +15,8 @@ import com.starrainnotes.english.grammar.dto.UpdateGrammarCourseRequest;
 import com.starrainnotes.english.grammar.service.EnglishGrammarService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,9 +32,11 @@ import org.springframework.web.bind.annotation.RestController;
 public class EnglishGrammarAdminController {
 
     private final EnglishGrammarService service;
+    private final ContentReviewService reviewService;
 
-    public EnglishGrammarAdminController(EnglishGrammarService service) {
+    public EnglishGrammarAdminController(EnglishGrammarService service, ContentReviewService reviewService) {
         this.service = service;
+        this.reviewService = reviewService;
     }
 
     @GetMapping
@@ -81,9 +88,15 @@ public class EnglishGrammarAdminController {
     public GrammarLessonDetailView lesson(@PathVariable long lessonId) { return service.lesson(lessonId); }
 
     @PutMapping("/lessons/{lessonId}")
-    public GrammarLessonDetailView updateLesson(@PathVariable long lessonId,
-                                                @Valid @RequestBody GrammarLessonRequest request) {
-        return service.updateLesson(lessonId, request);
+    public ResponseEntity<?> updateLesson(@PathVariable long lessonId,
+                                          @Valid @RequestBody GrammarLessonRequest request,
+                                          Authentication authentication) {
+        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_GRAMMAR_LESSON", lessonId)) {
+            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
+                    "ENGLISH_GRAMMAR_LESSON", lessonId, request.title(), request);
+            return ResponseEntity.accepted().body(review);
+        }
+        return ResponseEntity.ok(service.updateLesson(lessonId, request));
     }
 
     @DeleteMapping("/lessons/{lessonId}")
@@ -111,5 +124,15 @@ public class EnglishGrammarAdminController {
     public void reassignLesson(@PathVariable long lessonId,
                                @Valid @RequestBody GrammarReassignRequest request) {
         service.reassignLesson(lessonId, request);
+    }
+
+    private boolean isSuperAdmin(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_SUPER_ADMIN".equals(authority.getAuthority()));
+    }
+
+    private Long actorId(Authentication authentication) {
+        Object principal = authentication == null ? null : authentication.getPrincipal();
+        return principal instanceof AccountPrincipal account ? account.getId() : null;
     }
 }

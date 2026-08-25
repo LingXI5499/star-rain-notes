@@ -7,6 +7,17 @@ import com.starrainnotes.account.review.dto.ContentReviewView;
 import com.starrainnotes.blog.dto.UpdatePostRequest;
 import com.starrainnotes.blog.service.BlogService;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.grammar.dto.GrammarLessonRequest;
+import com.starrainnotes.english.grammar.service.EnglishGrammarService;
+import com.starrainnotes.english.listening.dto.ListeningItemRequest;
+import com.starrainnotes.english.listening.dto.PronunciationRuleRequest;
+import com.starrainnotes.english.listening.service.ListeningItemService;
+import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
+import com.starrainnotes.english.reading.service.ReadingArticleService;
+import com.starrainnotes.english.writing.dto.WritingPromptRequest;
+import com.starrainnotes.english.writing.dto.WritingResourceRequest;
+import com.starrainnotes.english.writing.service.WritingPromptService;
+import com.starrainnotes.english.writing.service.WritingResourceService;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import com.starrainnotes.tutorial.dto.UpdateChapterRequest;
 import com.starrainnotes.tutorial.service.TutorialNodeService;
@@ -29,16 +40,31 @@ public class ContentReviewService {
     private final ObjectMapper json;
     private final BlogService blogService;
     private final TutorialNodeService tutorialNodeService;
+    private final EnglishGrammarService grammarService;
+    private final ReadingArticleService readingService;
+    private final ListeningItemService listeningService;
+    private final WritingResourceService writingResourceService;
+    private final WritingPromptService writingPromptService;
     private final AuditLogService auditLogService;
     private final SiteSettingsTimezone timezone;
 
     public ContentReviewService(JdbcTemplate jdbc, ObjectMapper json, BlogService blogService,
                                 TutorialNodeService tutorialNodeService,
+                                EnglishGrammarService grammarService,
+                                ReadingArticleService readingService,
+                                ListeningItemService listeningService,
+                                WritingResourceService writingResourceService,
+                                WritingPromptService writingPromptService,
                                 AuditLogService auditLogService, SiteSettingsTimezone timezone) {
         this.jdbc = jdbc;
         this.json = json;
         this.blogService = blogService;
         this.tutorialNodeService = tutorialNodeService;
+        this.grammarService = grammarService;
+        this.readingService = readingService;
+        this.listeningService = listeningService;
+        this.writingResourceService = writingResourceService;
+        this.writingPromptService = writingPromptService;
         this.auditLogService = auditLogService;
         this.timezone = timezone;
     }
@@ -70,6 +96,47 @@ public class ContentReviewService {
                 """, postId, request.title(), json.valueToTree(request).toString(), actorId);
         Long id = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
         auditLogService.record(actorId, "CONTENT_REVIEW_SUBMITTED", "BLOG_POST", postId, "SUCCESS", null, null,
+                Map.of("reviewId", id, "action", "UPDATE"));
+        return get(id);
+    }
+
+    public boolean isPublished(String contentType, Long contentId) {
+        String table = switch (contentType) {
+            case "ENGLISH_GRAMMAR_LESSON" -> "english_grammar_lesson";
+            case "ENGLISH_READING_ARTICLE" -> "english_reading_article";
+            case "ENGLISH_LISTENING_ITEM" -> "english_listening_item";
+            case "ENGLISH_PRONUNCIATION_RULE" -> "english_listening_pronunciation_rule";
+            case "ENGLISH_WRITING_RESOURCE" -> "english_writing_resource";
+            case "ENGLISH_WRITING_PROMPT" -> "english_writing_prompt";
+            default -> throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "CONTENT_REVIEW_TYPE_INVALID",
+                    "Invalid review type", "Unsupported review content type.");
+        };
+        try {
+            String status = jdbc.queryForObject("SELECT publish_status FROM " + table + " WHERE id=?", String.class, contentId);
+            return "PUBLISHED".equals(status);
+        } catch (EmptyResultDataAccessException e) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "CONTENT_REVIEW_TARGET_NOT_FOUND",
+                    "Review target not found", "The content to review does not exist.");
+        }
+    }
+
+    @Transactional
+    public ContentReviewView submitEnglishUpdate(Long actorId, String contentType, Long contentId,
+                                                 String title, Object request) {
+        Integer pending = jdbc.queryForObject("""
+                SELECT COUNT(*) FROM content_review_request
+                WHERE content_type=? AND content_id=? AND status='PENDING'
+                """, Integer.class, contentType, contentId);
+        if (pending != null && pending > 0) {
+            throw new ApiException(HttpStatus.CONFLICT, "CONTENT_REVIEW_PENDING",
+                    "Review already pending", "这条内容已有待审核版本，请等待超级管理员处理。");
+        }
+        jdbc.update("""
+                INSERT INTO content_review_request(content_type,content_id,action_type,title,payload_json,submitted_by)
+                VALUES (?,?,'UPDATE',?,?,?)
+                """, contentType, contentId, title, json.valueToTree(request).toString(), actorId);
+        Long id = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        auditLogService.record(actorId, "CONTENT_REVIEW_SUBMITTED", contentType, contentId, "SUCCESS", null, null,
                 Map.of("reviewId", id, "action", "UPDATE"));
         return get(id);
     }
@@ -109,6 +176,18 @@ public class ContentReviewService {
             Long tutorialId = json.convertValue(review.payload().get("tutorialId"), Long.class);
             UpdateChapterRequest request = json.convertValue(review.payload().get("request"), UpdateChapterRequest.class);
             tutorialNodeService.updateChapter(tutorialId, review.contentId(), request);
+        } else if ("ENGLISH_GRAMMAR_LESSON".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
+            grammarService.updateLesson(review.contentId(), json.convertValue(review.payload(), GrammarLessonRequest.class));
+        } else if ("ENGLISH_READING_ARTICLE".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
+            readingService.update(review.contentId(), json.convertValue(review.payload(), ReadingArticleRequest.class));
+        } else if ("ENGLISH_LISTENING_ITEM".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
+            listeningService.update(review.contentId(), json.convertValue(review.payload(), ListeningItemRequest.class));
+        } else if ("ENGLISH_PRONUNCIATION_RULE".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
+            listeningService.updateRule(review.contentId(), json.convertValue(review.payload(), PronunciationRuleRequest.class));
+        } else if ("ENGLISH_WRITING_RESOURCE".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
+            writingResourceService.update(review.contentId(), json.convertValue(review.payload(), WritingResourceRequest.class));
+        } else if ("ENGLISH_WRITING_PROMPT".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
+            writingPromptService.update(review.contentId(), json.convertValue(review.payload(), WritingPromptRequest.class));
         }
         jdbc.update("""
                 UPDATE content_review_request

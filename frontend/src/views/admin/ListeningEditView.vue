@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/index.mjs'
+import type { ContentReview } from '@/api/account'
 import type { ProblemDetail } from '@/api/http'
 import { addReadingPair, batchSegments, createListening, createSegment, deleteSegment, fetchListening, removeReadingPair, updateListening, type ListeningItem, type ListeningSegment, type ReadingPairRef } from '@/api/listening'
 import { fetchReadings, type ReadingArticleSummary } from '@/api/reading'
@@ -44,6 +45,7 @@ const checks = computed<PublishCheck[]>(() => [
 ])
 
 const tags = (dim: string) => taxonomy.value.filter((t) => t.dimension === dim && t.parentId === null)
+function isReview(value: unknown): value is ContentReview { return typeof value === 'object' && value !== null && 'contentType' in value }
 
 async function load() {
   loading.value = true
@@ -84,7 +86,10 @@ async function save() {
     sceneTagIds: form.sceneTagIds, formatTagIds: form.formatTagIds, abilityTagIds: form.abilityTagIds, functionTagIds: form.functionTagIds,
   }
   try {
-    if (itemId.value) { await updateListening(itemId.value, payload); ElMessage.success('已更新。') }
+    if (itemId.value) {
+      const result = await updateListening(itemId.value, payload)
+      ElMessage.success(isReview(result) ? '已提交审核，超级管理员批准后会应用到线上听力材料。' : '已更新。')
+    }
     else { await createListening(payload); ElMessage.success('已创建。') }
     await router.push({ name: 'admin-listening', query: listQuery() })
   } catch (e) { ElMessage.error((e as { response?: { data?: ProblemDetail } }).response?.data?.detail ?? '保存失败。') }

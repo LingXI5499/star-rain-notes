@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus/es/components/index.mjs'
+import type { ContentReview } from '@/api/account'
 import type { ProblemDetail } from '@/api/http'
 import { createPronunciationRule, deletePronunciationRule, fetchPronunciationRules, publishPronunciationRule, updatePronunciationRule, withdrawPronunciationRule, type PronunciationRule } from '@/api/listening'
 import type { MediaAsset } from '@/api/media'
@@ -16,6 +17,7 @@ const form = reactive({ ruleType: 'LINKING', title: '', slug: '', summary: '', b
 const ruleTypes = ['LINKING','WEAK_FORM','ASSIMILATION','ELISION','STRESS','INTONATION']
 const ruleLabel: Record<string,string> = { LINKING:'连读', WEAK_FORM:'弱读', ASSIMILATION:'同化', ELISION:'省音', STRESS:'重音', INTONATION:'语调' }
 const grouped = computed(() => ruleTypes.map((t) => ({ type: t, items: rules.value.filter((r) => r.ruleType === t) })))
+function isReview(value: unknown): value is ContentReview { return typeof value === 'object' && value !== null && 'contentType' in value }
 
 async function load(){ loading.value=true; try{rules.value=await fetchPronunciationRules(); openRouteEditor()}catch{ElMessage.error('加载语音规则失败。')}finally{loading.value=false} }
 function reset(){ editingId.value=null; Object.assign(form,{ruleType:'LINKING',title:'',slug:'',summary:'',bodyMarkdown:'',audioMediaId:null,audioUrl:null,sortOrder:10}) }
@@ -30,7 +32,7 @@ function openRouteEditor(){
 }
 function closeDialog(){dialogOpen.value=false;return router.push({name:'admin-listening-pronunciation'})}
 function onAudio(asset:MediaAsset){if(asset.assetType!=='AUDIO'){ElMessage.warning('示例媒体只能选择音频。');return}form.audioMediaId=asset.id;form.audioUrl=asset.publicUrl;mediaOpen.value=false}
-async function save(){ if(!form.title.trim()||!form.slug.trim()){ElMessage.warning('请填写标题与slug。');return} saving.value=true; const {audioUrl:_audioUrl,...p}=form; try{ editingId.value?await updatePronunciationRule(editingId.value,p):await createPronunciationRule(p); ElMessage.success('已保存。'); await closeDialog() }catch(e){ ElMessage.error((e as {response?:{data?:ProblemDetail}}).response?.data?.detail??'保存失败。') }finally{saving.value=false} }
+async function save(){ if(!form.title.trim()||!form.slug.trim()){ElMessage.warning('请填写标题与slug。');return} saving.value=true; const {audioUrl:_audioUrl,...p}=form; try{ const result=editingId.value?await updatePronunciationRule(editingId.value,p):await createPronunciationRule(p); ElMessage.success(isReview(result)?'已提交审核，超级管理员批准后会应用到线上语音规则。':'已保存。'); await closeDialog() }catch(e){ ElMessage.error((e as {response?:{data?:ProblemDetail}}).response?.data?.detail??'保存失败。') }finally{saving.value=false} }
 async function setPub(r:PronunciationRule, pub:boolean){ try{ pub?await publishPronunciationRule(r.id):await withdrawPronunciationRule(r.id); await load() }catch(e){ ElMessage.error((e as {response?:{data?:ProblemDetail}}).response?.data?.detail??'操作失败。') } }
 async function remove(r:PronunciationRule){ try{ await ElMessageBox.confirm(`确定删除「${r.title}」？`,'删除确认',{type:'warning'}); await deletePronunciationRule(r.id); ElMessage.success('已删除。'); await load() }catch(e){ const d=(e as {response?:{data?:ProblemDetail}}).response?.data?.detail; if(d)ElMessage.error(d) } }
 onMounted(load)

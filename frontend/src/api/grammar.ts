@@ -1,4 +1,5 @@
 import { http } from './http'
+import type { ContentReview } from './account'
 
 export type PublishStatus = 'DRAFT' | 'PUBLISHED' | 'WITHDRAWN'
 
@@ -92,8 +93,8 @@ export async function fetchGrammarLesson(id: number): Promise<GrammarLessonDetai
 export async function createGrammarLesson(payload: GrammarLessonPayload): Promise<GrammarLessonDetail> {
   return (await http.post<GrammarLessonDetail>('/admin/english/grammar/lessons', payload)).data
 }
-export async function updateGrammarLesson(id: number, payload: GrammarLessonPayload): Promise<GrammarLessonDetail> {
-  return (await http.put<GrammarLessonDetail>(`/admin/english/grammar/lessons/${id}`, payload)).data
+export async function updateGrammarLesson(id: number, payload: GrammarLessonPayload): Promise<GrammarLessonDetail | ContentReview> {
+  return (await http.put<GrammarLessonDetail | ContentReview>(`/admin/english/grammar/lessons/${id}`, payload)).data
 }
 export async function deleteGrammarLesson(id: number): Promise<void> {
   await http.delete(`/admin/english/grammar/lessons/${id}`)

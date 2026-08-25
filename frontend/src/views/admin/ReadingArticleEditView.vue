@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/index.mjs'
+import type { ContentReview } from '@/api/account'
 import type { ProblemDetail } from '@/api/http'
 import { createReading, fetchReading, updateReading, type ReadingArticle } from '@/api/reading'
 import { fetchTaxonomy, type TaxonomyTerm } from '@/api/englishMeta'
@@ -58,6 +59,7 @@ const checks = computed<PublishCheck[]>(() => [
 const topics = () => taxonomy.value.filter((t) => t.dimension === 'TOPIC' && t.parentId === null)
 const genres = () => taxonomy.value.filter((t) => t.dimension === 'GENRE' && t.parentId === null)
 const abilities = () => taxonomy.value.filter((t) => t.dimension === 'ABILITY' && t.parentId === null)
+function isReview(value: unknown): value is ContentReview { return typeof value === 'object' && value !== null && 'contentType' in value }
 
 async function load() {
   loading.value = true
@@ -116,8 +118,8 @@ async function save() {
   }
   try {
     if (articleId.value) {
-      await updateReading(articleId.value, payload)
-      ElMessage.success('已更新。')
+      const result = await updateReading(articleId.value, payload)
+      ElMessage.success(isReview(result) ? '已提交审核，超级管理员批准后会应用到线上阅读。' : '已更新。')
     } else {
       const created = await createReading(payload)
       router.replace({ name: 'admin-reading-edit', params: { articleId: created.id } })

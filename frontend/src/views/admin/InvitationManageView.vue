@@ -8,6 +8,7 @@ const invitations = ref<AdminInvitation[]>([])
 const email = ref('')
 const loading = ref(false)
 const creating = ref(false)
+const latestInviteLink = ref('')
 
 async function load() {
   loading.value = true
@@ -25,9 +26,10 @@ async function submit() {
   }
   creating.value = true
   try {
-    await createInvitation(email.value)
+    const created = await createInvitation(email.value)
     email.value = ''
-    ElMessage.success('邀请已发送。')
+    latestInviteLink.value = created.inviteLink ?? ''
+    ElMessage.success(latestInviteLink.value ? '邀请已创建，可复制注册链接。' : '邀请已创建。')
     await load()
   } finally {
     creating.value = false
@@ -35,9 +37,16 @@ async function submit() {
 }
 
 async function resend(item: AdminInvitation) {
-  await resendInvitation(item.id)
-  ElMessage.success('邀请已重发。')
+  const updated = await resendInvitation(item.id)
+  latestInviteLink.value = updated.inviteLink ?? ''
+  ElMessage.success(latestInviteLink.value ? '邀请已重发，可复制新的注册链接。' : '邀请已重发。')
   await load()
+}
+
+async function copyLatestLink() {
+  if (!latestInviteLink.value) return
+  await navigator.clipboard.writeText(latestInviteLink.value)
+  ElMessage.success('注册链接已复制。')
 }
 
 async function revoke(item: AdminInvitation) {
@@ -64,6 +73,22 @@ onMounted(() => void load())
       </form>
     </header>
 
+    <el-alert
+      v-if="latestInviteLink"
+      class="invite-link-alert"
+      type="success"
+      :closable="false"
+      show-icon
+    >
+      <template #title>
+        邀请链接已生成。真实邮箱未配置或发送失败时，也可以复制此链接发给协作者。
+      </template>
+      <div class="invite-link-alert__body">
+        <code>{{ latestInviteLink }}</code>
+        <el-button size="small" type="primary" @click="copyLatestLink">复制链接</el-button>
+      </div>
+    </el-alert>
+
     <div v-loading="loading" class="account-admin__list">
       <article v-for="item in invitations" :key="item.id" class="account-card">
         <div>
@@ -87,6 +112,9 @@ onMounted(() => void load())
 .account-admin__header h1 { margin: 6px 0; font-size: 32px; line-height: 1.18; }
 .account-admin__header span { color: var(--text-secondary); }
 .invite-form { display: flex; align-items: center; gap: 10px; min-width: 420px; }
+.invite-link-alert { max-width: 980px; margin: 0 0 18px; }
+.invite-link-alert__body { display: flex; align-items: center; gap: 10px; margin-top: 8px; }
+.invite-link-alert__body code { flex: 1; overflow-wrap: anywhere; padding: 8px 10px; border-radius: 8px; background: var(--bg-page); color: var(--text-primary); }
 .account-admin__list { display: grid; gap: 12px; max-width: 980px; }
 .account-card { display: flex; justify-content: space-between; gap: 16px; padding: 16px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-surface); }
 .account-card strong, .account-card span, .account-card small { display: block; }

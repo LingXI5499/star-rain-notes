@@ -1,5 +1,8 @@
 package com.starrainnotes.english.reading.controller;
 
+import com.starrainnotes.account.review.dto.ContentReviewView;
+import com.starrainnotes.account.review.service.ContentReviewService;
+import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
 import com.starrainnotes.english.reading.dto.ReadingArticleView;
 import com.starrainnotes.english.reading.dto.ReadingExerciseMoveRequest;
@@ -10,6 +13,8 @@ import com.starrainnotes.english.reading.service.ReadingArticleService;
 import com.starrainnotes.english.reading.service.ReadingExerciseService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,11 +38,14 @@ public class ReadingAdminController {
 
     private final ReadingArticleService articleService;
     private final ReadingExerciseService exerciseService;
+    private final ContentReviewService reviewService;
 
     public ReadingAdminController(ReadingArticleService articleService,
-                                  ReadingExerciseService exerciseService) {
+                                  ReadingExerciseService exerciseService,
+                                  ContentReviewService reviewService) {
         this.articleService = articleService;
         this.exerciseService = exerciseService;
+        this.reviewService = reviewService;
     }
 
     @GetMapping("/articles")
@@ -64,8 +72,14 @@ public class ReadingAdminController {
     }
 
     @PutMapping("/articles/{id}")
-    public ReadingArticleView update(@PathVariable Long id, @Valid @RequestBody ReadingArticleRequest request) {
-        return articleService.update(id, request);
+    public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody ReadingArticleRequest request,
+                                    Authentication authentication) {
+        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_READING_ARTICLE", id)) {
+            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
+                    "ENGLISH_READING_ARTICLE", id, request.title(), request);
+            return ResponseEntity.accepted().body(review);
+        }
+        return ResponseEntity.ok(articleService.update(id, request));
     }
 
     @DeleteMapping("/articles/{id}")
@@ -114,5 +128,15 @@ public class ReadingAdminController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteExercise(@PathVariable Long id, @PathVariable Long exerciseId) {
         exerciseService.delete(id, exerciseId);
+    }
+
+    private boolean isSuperAdmin(Authentication authentication) {
+        return authentication != null && authentication.getAuthorities().stream()
+                .anyMatch(authority -> "ROLE_SUPER_ADMIN".equals(authority.getAuthority()));
+    }
+
+    private Long actorId(Authentication authentication) {
+        Object principal = authentication == null ? null : authentication.getPrincipal();
+        return principal instanceof AccountPrincipal account ? account.getId() : null;
     }
 }

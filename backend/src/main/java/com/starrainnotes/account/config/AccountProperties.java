@@ -20,7 +20,7 @@ public class AccountProperties {
         private String authCode;
         private String from;
         private boolean sslEnabled = true;
-        private String baseUrl = "http://localhost:24680";
+        private String baseUrl = "http://localhost:5173";
 
         public String getHost() { return host; }
         public void setHost(String v) { this.host = v; }

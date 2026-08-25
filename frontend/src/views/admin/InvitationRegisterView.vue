@@ -26,7 +26,7 @@ async function send() {
 async function register() {
   if (!canSubmit.value) { ElMessage.warning('请填写验证码并保证两次密码一致。'); return }
   submitting.value = true
-  try { await registerByInvitation(token, '', code.value, password.value); ElMessage.success('注册成功，请登录。'); await router.push({ name: 'admin-login' }) }
+  try { await registerByInvitation(token, code.value, password.value); ElMessage.success('注册成功，请登录。'); await router.push({ name: 'admin-login' }) }
   catch (e) { ElMessage.error((e as { response?: { data?: { detail?: string } } }).response?.data?.detail ?? '注册失败。') }
   finally { submitting.value = false }
 }
