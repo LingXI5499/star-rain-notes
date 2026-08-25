@@ -5,35 +5,45 @@ import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import { useAuthStore } from '@/stores/auth'
 import type { ProblemDetail } from '@/api/http'
+import { fetchActivationStatus } from '@/api/account'
 
 const router = useRouter()
 const route = useRoute()
 const auth = useAuthStore()
 
-const username = ref('')
+const email = ref('')
 const password = ref('')
 const loading = ref(false)
 
 onMounted(async () => {
-  // If no admin exists yet, direct the visitor to setup first.
+  // Account system takes precedence over the legacy setup-token flow.
+  try {
+    const activation = await fetchActivationStatus()
+    if (activation.configured && !activation.activated) {
+      router.replace({ name: 'admin-activate' })
+      return
+    }
+  } catch {
+    // Keep the legacy setup fallback available if the account activation endpoint is unavailable.
+  }
   if (await auth.fetchSetupRequired()) {
     router.replace({ name: 'admin-setup' })
   }
 })
 
 async function submit() {
-  if (!username.value || !password.value) {
-    ElMessage.warning('请输入用户名和密码。')
+  if (!email.value || !password.value) {
+    ElMessage.warning('请输入邮箱和密码。')
     return
   }
   loading.value = true
   try {
-    await auth.login(username.value, password.value)
+    await auth.login(email.value, password.value)
     const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/admin'
     await router.push(redirect)
   } catch (error) {
     const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
-    ElMessage.error(problem?.detail ?? '登录失败，请检查用户名和密码。')
+    ElMessage.error(problem?.detail ?? '登录失败，请检查邮箱和密码。')
   } finally {
     loading.value = false
   }
@@ -45,8 +55,8 @@ async function submit() {
     <div class="auth-card">
       <h1 class="auth-card__title">星雨笔录 · 管理登录</h1>
       <el-form label-position="top" class="auth-card__form" @submit.prevent="submit">
-        <el-form-item label="用户名">
-          <el-input v-model="username" autocomplete="username" />
+        <el-form-item label="邮箱">
+          <el-input v-model="email" autocomplete="username" />
         </el-form-item>
         <el-form-item label="密码">
           <el-input

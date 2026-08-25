@@ -6,9 +6,11 @@ import type { ProblemDetail } from '@/api/http'
 import { deleteReading, fetchReadings, publishReading, withdrawReading, type ReadingArticleSummary, type ReadingPage } from '@/api/reading'
 import { fetchTaxonomy, type TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const route = useRoute()
+const auth = useAuthStore()
 const page = ref<ReadingPage | null>(null)
 const loading = ref(true)
 const taxonomy = ref<TaxonomyTerm[]>([])
@@ -202,11 +204,11 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
           <div class="reading-card__actions">
             <el-button link type="primary" @click="openEditor(article.id)">编辑</el-button>
             <el-button link type="info" @click="preview(article)">预览</el-button>
-            <el-button v-if="article.publishStatus !== 'PUBLISHED'" link type="success" @click="setPublished(article, true)">发布</el-button>
-            <el-button v-else link type="warning" @click="setPublished(article, false)">撤回</el-button>
+            <el-button v-if="auth.isSuperAdmin && article.publishStatus !== 'PUBLISHED'" link type="success" @click="setPublished(article, true)">发布</el-button>
+            <el-button v-else-if="auth.isSuperAdmin" link type="warning" @click="setPublished(article, false)">撤回</el-button>
             <el-button link @click="router.push({ name: 'admin-reading-exercises', params: { articleId: article.id }, query: { ...route.query } })">练习</el-button>
             <el-button link @click="duplicate(article)">复制</el-button>
-            <el-button link type="danger" @click="remove(article)">删除</el-button>
+            <el-button v-if="auth.isSuperAdmin" link type="danger" @click="remove(article)">删除</el-button>
           </div>
         </div>
       </article>

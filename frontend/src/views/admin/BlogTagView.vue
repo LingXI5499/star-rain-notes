@@ -5,6 +5,7 @@ import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
 import { createTag, deleteTag, fetchAdminTags, updateTag, type AdminBlogTag } from '@/api/blog'
+import { useAuthStore } from '@/stores/auth'
 
 const tags = ref<AdminBlogTag[]>([])
 const loading = ref(true)
@@ -12,6 +13,7 @@ const search = ref('')
 const dialogVisible = ref(false)
 const editingId = ref<number | null>(null)
 const form = reactive({ name: '', slug: '' })
+const auth = useAuthStore()
 const filtered = computed(() => { const q=search.value.trim().toLocaleLowerCase(); return q?tags.value.filter(t=>t.name.toLocaleLowerCase().includes(q)||t.slug.includes(q)):tags.value })
 const totalRelations = computed(()=>tags.value.reduce((sum,tag)=>sum+tag.postCount,0))
 
@@ -30,7 +32,7 @@ onMounted(load)
     <header class="tag-admin__hero"><div><p>TAG LIBRARY · 内容索引</p><h1>博客标签</h1><span>统一维护标签命名、链接与文章关联。</span></div><el-button type="primary" @click="openCreate">＋ 新建标签</el-button></header>
     <div class="tag-admin__stats"><div><strong>{{tags.length}}</strong><span>标签总数</span></div><div><strong>{{totalRelations}}</strong><span>文章关联</span></div><el-input v-model="search" placeholder="搜索名称或 slug" clearable /></div>
     <div v-loading="loading" class="tag-admin__grid">
-      <article v-for="tag in filtered" :key="tag.id" class="tag-card"><div class="tag-card__top"><span>#</span><strong>{{tag.name}}</strong><em>{{tag.postCount}}</em></div><code>{{tag.slug}}</code><footer><span>{{tag.postCount?'已关联文章':'暂未使用'}}</span><div><button @click="openEdit(tag)">编辑</button><button class="danger" @click="remove(tag)">删除</button></div></footer></article>
+      <article v-for="tag in filtered" :key="tag.id" class="tag-card"><div class="tag-card__top"><span>#</span><strong>{{tag.name}}</strong><em>{{tag.postCount}}</em></div><code>{{tag.slug}}</code><footer><span>{{tag.postCount?'已关联文章':'暂未使用'}}</span><div><button @click="openEdit(tag)">编辑</button><button v-if="auth.isSuperAdmin" class="danger" @click="remove(tag)">删除</button></div></footer></article>
       <div v-if="!loading&&!filtered.length" class="tag-admin__empty">{{search?'没有匹配的标签':'暂无标签'}}</div>
     </div>
     <el-dialog v-model="dialogVisible" :title="editingId===null?'新建标签':'编辑标签'" width="440px"><el-form label-position="top" @submit.prevent="save"><el-form-item label="名称"><el-input v-model="form.name" maxlength="50" placeholder="例如：Spring Boot"/></el-form-item><el-form-item label="Slug（小写 kebab-case）"><el-input v-model="form.slug" maxlength="60" placeholder="spring-boot"/></el-form-item></el-form><template #footer><el-button @click="dialogVisible=false">取消</el-button><el-button type="primary" @click="save">保存</el-button></template></el-dialog>

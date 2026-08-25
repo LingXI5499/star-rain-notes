@@ -54,7 +54,8 @@ function isStateChanging(method?: string): boolean {
 }
 
 function isAuthUrl(url?: string): boolean {
-  return !!url && (url.includes('/auth/login') || url.includes('/auth/session') || url.includes('/auth/csrf'))
+  return !!url && (url.includes('/auth/login') || url.includes('/auth/account/login')
+    || url.includes('/auth/session') || url.includes('/auth/csrf'))
 }
 
 http.interceptors.request.use((config) => {
@@ -98,6 +99,11 @@ http.interceptors.response.use(
       if (!window.location.pathname.startsWith('/admin/login')) {
         window.location.assign('/admin/login')
       }
+    }
+
+    if (status === 403 && code === 'FORBIDDEN' && window.location.pathname.startsWith('/admin')
+        && !window.location.pathname.startsWith('/admin/403')) {
+      window.location.assign('/admin/403')
     }
 
     return Promise.reject(error)

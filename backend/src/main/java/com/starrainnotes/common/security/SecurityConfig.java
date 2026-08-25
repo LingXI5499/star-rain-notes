@@ -21,6 +21,7 @@ import org.springframework.security.web.context.HttpSessionSecurityContextReposi
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * V1 frozen authentication design (04-api-design.md §7, AGENTS.md):
@@ -116,6 +117,15 @@ public class SecurityConfig {
                                 "/api/v1/auth/password-reset/**",
                                 "/api/v1/auth/account/login").permitAll()
                         .requestMatchers("/api/v1/public/**").permitAll()
+                        .requestMatchers("/api/v1/super-admin/**").hasRole("SUPER_ADMIN")
+                        .requestMatchers("/api/v1/admin/portfolio/**",
+                                "/api/v1/admin/about/**",
+                                "/api/v1/admin/site-settings/**",
+                                "/api/v1/admin/english/analytics/**").hasRole("SUPER_ADMIN")
+                        .requestMatchers(new AntPathRequestMatcher("/api/v1/admin/**/publish", "POST"),
+                                new AntPathRequestMatcher("/api/v1/admin/**/withdraw", "POST"),
+                                new AntPathRequestMatcher("/api/v1/admin/**", "DELETE"))
+                        .hasRole("SUPER_ADMIN")
                         .requestMatchers("/api/v1/auth/**", "/api/v1/admin/**").authenticated()
                         .anyRequest().authenticated())
                 .exceptionHandling(exceptions -> exceptions

@@ -326,16 +326,19 @@ const router = createRouter({
           path: 'portfolio',
           name: 'admin-portfolio',
           component: () => import('@/views/admin/PortfolioListView.vue'),
+          meta: { requiresSuperAdmin: true },
         },
         {
           path: 'portfolio/new',
           name: 'admin-portfolio-new',
           component: () => import('@/views/admin/PortfolioEditView.vue'),
+          meta: { requiresSuperAdmin: true },
         },
         {
           path: 'portfolio/:id/edit',
           name: 'admin-portfolio-edit',
           component: () => import('@/views/admin/PortfolioEditView.vue'),
+          meta: { requiresSuperAdmin: true },
         },
         {
           path: 'english',
@@ -351,6 +354,7 @@ const router = createRouter({
           path: 'english/analytics',
           name: 'admin-english-analytics',
           component: () => import('@/views/admin/EnglishAnalyticsView.vue'),
+          meta: { requiresSuperAdmin: true },
         },
         {
           path: 'english/vocabulary',
@@ -462,6 +466,7 @@ const router = createRouter({
           path: 'about',
           name: 'admin-about',
           component: () => import('@/views/admin/AboutEditView.vue'),
+          meta: { requiresSuperAdmin: true },
         },
         {
           path: 'media',
@@ -472,6 +477,30 @@ const router = createRouter({
           path: 'settings',
           name: 'admin-settings',
           component: () => import('@/views/admin/SiteSettingsView.vue'),
+          meta: { requiresSuperAdmin: true },
+        },
+        {
+          path: 'users',
+          name: 'admin-users',
+          component: () => import('@/views/admin/UserManageView.vue'),
+          meta: { requiresSuperAdmin: true },
+        },
+        {
+          path: 'invites',
+          name: 'admin-invites',
+          component: () => import('@/views/admin/InvitationManageView.vue'),
+          meta: { requiresSuperAdmin: true },
+        },
+        {
+          path: 'audit-logs',
+          name: 'admin-audit-logs',
+          component: () => import('@/views/admin/AuditLogView.vue'),
+          meta: { requiresSuperAdmin: true },
+        },
+        {
+          path: '403',
+          name: 'admin-forbidden',
+          component: () => import('@/views/admin/ForbiddenView.vue'),
         },
       ],
     },
@@ -523,6 +552,9 @@ router.beforeEach(async (to) => {
     if (!auth.isAuthenticated) {
       return { name: 'admin-login', query: { redirect: to.fullPath } }
     }
+  }
+  if (to.meta.requiresSuperAdmin && !auth.isSuperAdmin) {
+    return { name: 'admin-forbidden' }
   }
   return true
 })

@@ -5,6 +5,7 @@ import { AxiosError } from 'axios'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import type { ProblemDetail } from '@/api/http'
+import { useAuthStore } from '@/stores/auth'
 import {
   createGroup,
   deleteChapter,
@@ -23,6 +24,7 @@ import {
 
 const route = useRoute()
 const router = useRouter()
+const auth = useAuthStore()
 const tutorialId = Number(route.params.id)
 const curriculum = ref<AdminCurriculum | null>(null)
 const activeGroupId = ref<number | null>(null)
@@ -321,7 +323,7 @@ onMounted(() => load(routeGroupId()))
             <span class="group-item__arrow">›</span>
             <div class="group-item__actions">
               <button type="button" @click.stop="openGroupDialog(group)">重命名</button>
-              <button type="button" class="danger" :disabled="group.chapterCount > 0" @click.stop="removeGroup(group)">删除</button>
+              <button v-if="auth.isSuperAdmin" type="button" class="danger" :disabled="group.chapterCount > 0" @click.stop="removeGroup(group)">删除</button>
             </div>
           </article>
         </div>
@@ -364,9 +366,9 @@ onMounted(() => load(routeGroupId()))
               <span class="status-pill" :class="`status-pill--${chapter.publishStatus.toLowerCase()}`">{{ statusLabel(chapter.publishStatus) }}</span>
               <div class="chapter-row__actions">
                 <button type="button" @click="editChapter(chapter)">编辑</button>
-                <button type="button" @click="togglePublish(chapter)">{{ chapter.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button>
+                <button v-if="auth.isSuperAdmin" type="button" @click="togglePublish(chapter)">{{ chapter.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button>
                 <button type="button" @click="openMoveDialog(chapter)">移动到分组</button>
-                <button type="button" class="danger" @click="removeChapter(chapter)">删除</button>
+                <button v-if="auth.isSuperAdmin" type="button" class="danger" @click="removeChapter(chapter)">删除</button>
               </div>
             </article>
           </div>

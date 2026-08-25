@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterLink, RouterView, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { useAuthStore } from '@/stores/auth'
@@ -22,23 +22,28 @@ const navItems = [
     label: '作品管理',
     short: '品',
     match: (path: string) => path.startsWith('/admin/portfolio'),
+    superOnly: true,
   },
 ]
 
 const secondaryNavItems = [
-  { to: '/admin/about', label: '关于管理', short: '关', match: (path: string) => path.startsWith('/admin/about') },
+  { to: '/admin/users', label: '用户管理', short: '用', match: (path: string) => path.startsWith('/admin/users'), superOnly: true },
+  { to: '/admin/invites', label: '邀请管理', short: '邀', match: (path: string) => path.startsWith('/admin/invites'), superOnly: true },
+  { to: '/admin/audit-logs', label: '审计日志', short: '审', match: (path: string) => path.startsWith('/admin/audit-logs'), superOnly: true },
+  { to: '/admin/about', label: '关于管理', short: '关', match: (path: string) => path.startsWith('/admin/about'), superOnly: true },
   { to: '/admin/media', label: '媒体库', short: '媒', match: (path: string) => path.startsWith('/admin/media') },
   {
     to: '/admin/settings',
     label: '站点设置',
     short: '站',
     match: (path: string) => path.startsWith('/admin/settings'),
+    superOnly: true,
   },
 ]
 
 const englishItems = [
   { to: '/admin/english', label: '英语工作台', badge: '' },
-  { to: '/admin/english/analytics', label: '学习分析', badge: '' },
+  { to: '/admin/english/analytics', label: '学习分析', badge: '', superOnly: true },
   { to: '/admin/english/overview', label: '总览设置', badge: '' },
   { to: '/admin/english/vocabulary', label: '单词管理', badge: '' },
   { to: '/admin/english/vocabulary/families', label: '词族管理', badge: '' },
@@ -49,6 +54,10 @@ const englishItems = [
   { to: '/admin/english/listening', label: '听力管理', badge: '' },
   { to: '/admin/english/writing', label: '写作管理', badge: '' },
 ]
+
+const visibleNavItems = computed(() => navItems.filter((item) => !item.superOnly || auth.isSuperAdmin))
+const visibleSecondaryNavItems = computed(() => secondaryNavItems.filter((item) => !item.superOnly || auth.isSuperAdmin))
+const visibleEnglishItems = computed(() => englishItems.filter((item) => !item.superOnly || auth.isSuperAdmin))
 
 const passwordDialogOpen = ref(false)
 const currentPassword = ref('')
@@ -95,7 +104,7 @@ async function changePassword() {
 
       <nav class="admin-shell__nav" aria-label="管理导航">
         <RouterLink
-          v-for="item in navItems"
+          v-for="item in visibleNavItems"
           :key="item.to"
           :to="item.to"
           class="admin-shell__nav-item"
@@ -118,19 +127,19 @@ async function changePassword() {
             <span v-if="!collapsed" class="admin-shell__nav-chevron">{{ englishOpen ? '⌃' : '⌄' }}</span>
           </button>
           <div v-if="!collapsed && englishOpen" class="admin-shell__subnav">
-            <template v-for="item in englishItems" :key="item.label">
+            <template v-for="item in visibleEnglishItems" :key="item.label">
               <RouterLink
                 v-if="item.to"
                 :to="item.to"
                 class="admin-shell__subnav-item"
-                :class="{ 'is-active': $route.path === item.to || (item.to !== '/admin/english' && !englishItems.some(other => other.to !== item.to && other.to.startsWith(`${item.to}/`) && $route.path.startsWith(other.to)) && $route.path.startsWith(`${item.to}/`)) }"
+                :class="{ 'is-active': $route.path === item.to || (item.to !== '/admin/english' && !visibleEnglishItems.some(other => other.to !== item.to && other.to.startsWith(`${item.to}/`) && $route.path.startsWith(other.to)) && $route.path.startsWith(`${item.to}/`)) }"
               >{{ item.label }}</RouterLink>
               <span v-else class="admin-shell__subnav-item is-disabled">{{ item.label }}<em>{{ item.badge }}</em></span>
             </template>
           </div>
         </div>
         <RouterLink
-          v-for="item in secondaryNavItems"
+          v-for="item in visibleSecondaryNavItems"
           :key="item.to"
           :to="item.to"
           class="admin-shell__nav-item"

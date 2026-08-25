@@ -1,6 +1,7 @@
 package com.starrainnotes.auth.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.auth.dto.AuthSessionView;
 import com.starrainnotes.auth.entity.AdminUser;
 import com.starrainnotes.auth.mapper.AdminUserMapper;
@@ -40,6 +41,9 @@ public class AuthService {
                 || !authentication.isAuthenticated()
                 || authentication instanceof AnonymousAuthenticationToken) {
             return AuthSessionView.anonymous();
+        }
+        if (authentication.getPrincipal() instanceof AccountPrincipal principal) {
+            return AuthSessionView.authenticated(principal.getEmail(), "ROLE_" + principal.getRole());
         }
         String role = authentication.getAuthorities().stream()
                 .map(GrantedAuthority::getAuthority)

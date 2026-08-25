@@ -1,5 +1,6 @@
 package com.starrainnotes.account.controller;
 
+import com.starrainnotes.account.audit.AuditLogService;
 import com.starrainnotes.account.dto.PasswordResetRequest;
 import com.starrainnotes.account.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -16,18 +17,26 @@ import org.springframework.web.bind.annotation.RestController;
 public class PasswordResetController {
 
     private final AccountService accountService;
+    private final AuditLogService auditLogService;
 
-    public PasswordResetController(AccountService accountService) { this.accountService = accountService; }
+    public PasswordResetController(AccountService accountService, AuditLogService auditLogService) {
+        this.accountService = accountService;
+        this.auditLogService = auditLogService;
+    }
 
     @PostMapping("/verification-codes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void sendCode(@RequestBody PasswordResetRequest.EmailOnly body, HttpServletRequest request) {
         accountService.requestPasswordReset(body.email(), AccountActivationController.clientIp(request));
+        auditLogService.record(null, "PASSWORD_RESET_CODE", "ACCOUNT", null, "SUCCESS",
+                AccountActivationController.clientIp(request), request.getHeader("User-Agent"), null);
     }
 
     @PostMapping("/confirm")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void confirm(@Valid @RequestBody PasswordResetRequest body) {
+    public void confirm(@Valid @RequestBody PasswordResetRequest body, HttpServletRequest request) {
         accountService.confirmPasswordReset(body.email(), body.verificationCode(), body.newPassword());
+        auditLogService.record(null, "PASSWORD_RESET_CONFIRMED", "ACCOUNT", null, "SUCCESS",
+                AccountActivationController.clientIp(request), request.getHeader("User-Agent"), null);
     }
 }

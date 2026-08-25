@@ -13,8 +13,10 @@ import {
   setGrammarLessonPublished, updateGrammarCourse, updateGrammarSection, withdrawGrammarCourse,
   type GrammarCurriculum, type GrammarLessonSummary, type GrammarSection,
 } from '@/api/grammar'
+import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute(); const router = useRouter()
+const auth = useAuthStore()
 const data = ref<GrammarCurriculum | null>(null); const activeId = ref<number | null>(null)
 const loading = ref(true); const search = ref('')
 const sections = computed(() => data.value?.sections ?? [])
@@ -55,14 +57,14 @@ onMounted(()=>load(querySection()))
 <template>
   <section class="grammar-admin">
     <nav class="breadcrumb"><RouterLink to="/admin/english">英语工作台</RouterLink><span>/</span><strong>语法教程</strong></nav>
-    <header class="grammar-admin__hero"><div><p>GRAMMAR CURRICULUM · 固定单课程</p><h1>{{ data?.course.title ?? '英语语法完整教程' }}</h1><span>左侧为一级章节，右侧只显示该章节直属课节；换组必须使用明确操作。</span></div><div><el-button @click="openCourse">课程信息</el-button><el-button @click="toggleCourse">{{ data?.course.publishStatus==='PUBLISHED'?'撤回课程':'发布课程' }}</el-button><el-button type="primary" :disabled="!activeId" @click="newLesson">新建课节</el-button></div></header>
+    <header class="grammar-admin__hero"><div><p>GRAMMAR CURRICULUM · 固定单课程</p><h1>{{ data?.course.title ?? '英语语法完整教程' }}</h1><span>左侧为一级章节，右侧只显示该章节直属课节；换组必须使用明确操作。</span></div><div><el-button @click="openCourse">课程信息</el-button><el-button v-if="auth.isSuperAdmin" @click="toggleCourse">{{ data?.course.publishStatus==='PUBLISHED'?'撤回课程':'发布课程' }}</el-button><el-button type="primary" :disabled="!activeId" @click="newLesson">新建课节</el-button></div></header>
     <div v-loading="loading" class="grammar-layout">
       <aside class="section-panel"><header><div><small>01 · SECTIONS</small><h2>课程章节</h2></div><button @click="openSection()">＋</button></header><p class="hint">仅一级并列，可拖拽排序</p>
-        <article v-for="(item,index) in sections" :key="item.id" draggable="true" :class="{active:item.id===activeId}" @click="selectSection(item)" @dragstart="dragSection=item.id" @dragover.prevent @drop.prevent="dropSection(index)"><i>⠿</i><div><h3>{{ item.title }}</h3><p>{{ item.publishedCount }} / {{ item.lessonCount }} 课已发布</p><span><button @click.stop="openSection(item)">重命名</button><button :disabled="item.lessonCount>0" @click.stop="removeSection(item)">删除</button></span></div><b>{{ item.lessonCount }}</b></article>
+        <article v-for="(item,index) in sections" :key="item.id" draggable="true" :class="{active:item.id===activeId}" @click="selectSection(item)" @dragstart="dragSection=item.id" @dragover.prevent @drop.prevent="dropSection(index)"><i>⠿</i><div><h3>{{ item.title }}</h3><p>{{ item.publishedCount }} / {{ item.lessonCount }} 课已发布</p><span><button @click.stop="openSection(item)">重命名</button><button v-if="auth.isSuperAdmin" :disabled="item.lessonCount>0" @click.stop="removeSection(item)">删除</button></span></div><b>{{ item.lessonCount }}</b></article>
       </aside>
       <main class="lesson-panel"><header><div><small>02 · LESSONS</small><h2>{{ active?.title ?? '请选择章节' }}</h2></div><div><el-input v-model="search" clearable placeholder="搜索当前章节课节"/><el-button type="primary" :disabled="!active" @click="newLesson">新建课节</el-button></div></header><p class="hint">课节仅可在本章节内排序，跨章节使用“移动”</p>
         <div v-if="!active" class="empty">← 先选择左侧章节</div><div v-else-if="!lessons.length" class="empty">当前章节暂无课节</div>
-        <article v-for="(item,index) in lessons" v-else :key="item.id" :draggable="!search" @dragstart="dragLesson=item.id" @dragover.prevent @drop.prevent="dropLesson(index)" @dblclick="editLesson(item)"><i>⠿</i><b>{{ item.slug }}</b><div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p></div><em :class="item.publishStatus.toLowerCase()">{{ item.publishStatus==='PUBLISHED'?'已发布':item.publishStatus==='WITHDRAWN'?'已撤回':'草稿' }}</em><span><button @click="editLesson(item)">编辑</button><button @click="toggleLesson(item)">{{ item.publishStatus==='PUBLISHED'?'撤回':'发布' }}</button><button @click="openMove(item)">移动</button><button class="danger" @click="removeLesson(item)">删除</button></span></article>
+        <article v-for="(item,index) in lessons" v-else :key="item.id" :draggable="!search" @dragstart="dragLesson=item.id" @dragover.prevent @drop.prevent="dropLesson(index)" @dblclick="editLesson(item)"><i>⠿</i><b>{{ item.slug }}</b><div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p></div><em :class="item.publishStatus.toLowerCase()">{{ item.publishStatus==='PUBLISHED'?'已发布':item.publishStatus==='WITHDRAWN'?'已撤回':'草稿' }}</em><span><button @click="editLesson(item)">编辑</button><button v-if="auth.isSuperAdmin" @click="toggleLesson(item)">{{ item.publishStatus==='PUBLISHED'?'撤回':'发布' }}</button><button @click="openMove(item)">移动</button><button v-if="auth.isSuperAdmin" class="danger" @click="removeLesson(item)">删除</button></span></article>
       </main>
     </div>
     <el-dialog v-model="sectionDialog" :title="editingSection?'重命名章节':'新建章节'" width="440px"><el-input v-model="sectionTitle" maxlength="200" @keyup.enter="saveSection"/><template #footer><el-button @click="sectionDialog=false">取消</el-button><el-button type="primary" @click="saveSection">保存</el-button></template></el-dialog>

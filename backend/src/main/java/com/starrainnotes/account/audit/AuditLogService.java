@@ -27,10 +27,17 @@ public class AuditLogService {
     }
 
     public java.util.List<AuditLog> list(int page, int pageSize) {
+        return list(page, pageSize, null);
+    }
+
+    public java.util.List<AuditLog> list(int page, int pageSize, String action) {
         int size = Math.min(Math.max(pageSize, 1), 50);
         int offset = (Math.max(page, 1) - 1) * size;
-        return mapper.selectList(new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<AuditLog>()
-                .orderByDesc(AuditLog::getId).last("LIMIT " + size + " OFFSET " + offset));
+        var query = new com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper<AuditLog>();
+        if (action != null && !action.isBlank()) {
+            query.eq(AuditLog::getAction, action.trim());
+        }
+        return mapper.selectList(query.orderByDesc(AuditLog::getId).last("LIMIT " + size + " OFFSET " + offset));
     }
 
     private static String truncate(String value, int max) {

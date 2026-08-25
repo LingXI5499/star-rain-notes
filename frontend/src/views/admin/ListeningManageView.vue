@@ -6,9 +6,11 @@ import type { ProblemDetail } from '@/api/http'
 import { deleteListening, fetchListenings, publishListening, withdrawListening, type ListeningPage, type ListeningSummary } from '@/api/listening'
 import { fetchTaxonomy, type TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
 const route = useRoute()
+const auth = useAuthStore()
 const page = ref<ListeningPage | null>(null)
 const loading = ref(true)
 const taxonomy = ref<TaxonomyTerm[]>([])
@@ -132,10 +134,10 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
             <el-button link type="primary" @click="openEditor(item.id)">编辑</el-button>
             <el-button link @click="openExercises(item.id)">练习</el-button>
             <el-button v-if="item.publishStatus === 'PUBLISHED'" link @click="preview(item)">预览</el-button>
-            <el-button v-if="item.publishStatus !== 'PUBLISHED'" link type="success" @click="setPublished(item, true)">发布</el-button>
-            <el-button v-else link type="warning" @click="setPublished(item, false)">撤回</el-button>
+            <el-button v-if="auth.isSuperAdmin && item.publishStatus !== 'PUBLISHED'" link type="success" @click="setPublished(item, true)">发布</el-button>
+            <el-button v-else-if="auth.isSuperAdmin" link type="warning" @click="setPublished(item, false)">撤回</el-button>
             <el-button link @click="dup(item)">复制</el-button>
-            <el-button link type="danger" @click="remove(item)">删除</el-button>
+            <el-button v-if="auth.isSuperAdmin" link type="danger" @click="remove(item)">删除</el-button>
           </div>
         </div>
       </article>

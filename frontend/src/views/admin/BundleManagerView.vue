@@ -5,6 +5,7 @@ import type { ProblemDetail } from '@/api/http'
 import type { MediaAsset } from '@/api/media'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 import MediaPicker from '@/components/MediaPicker.vue'
+import { useAuthStore } from '@/stores/auth'
 import {
   addBundleItem,
   createBundle,
@@ -54,6 +55,7 @@ const readiness = ref<BundleReadiness | null>(null)
 const catalog = ref<BundleCatalogPage>({ items: [], page: 1, pageSize: 12, total: 0, totalPages: 0 })
 const dragging = ref<string | null>(null)
 const filters = reactive({ q: '', type: '', status: 'PUBLISHED', cefr: '', page: 1 })
+const auth = useAuthStore()
 
 const form = reactive({
   title: '', slug: '', summary: '', primaryCefr: '', coverMediaId: null as number | null,
@@ -312,10 +314,10 @@ onMounted(load)
           <nav>
             <el-button type="primary" @click="manageItems(bundle)">编排路径</el-button>
             <el-button @click="openEdit(bundle)">编辑信息</el-button>
-            <el-button v-if="bundle.publishStatus === 'PUBLISHED'" type="warning" @click="setPublished(bundle, false)">撤回</el-button>
-            <el-button v-else type="success" @click="setPublished(bundle, true)">发布</el-button>
+            <el-button v-if="auth.isSuperAdmin && bundle.publishStatus === 'PUBLISHED'" type="warning" @click="setPublished(bundle, false)">撤回</el-button>
+            <el-button v-else-if="auth.isSuperAdmin" type="success" @click="setPublished(bundle, true)">发布</el-button>
             <RouterLink v-if="bundle.publishStatus === 'PUBLISHED'" :to="`/english/bundles/${bundle.slug}`" target="_blank">预览 ↗</RouterLink>
-            <el-button link type="danger" @click="remove(bundle)">删除</el-button>
+            <el-button v-if="auth.isSuperAdmin" link type="danger" @click="remove(bundle)">删除</el-button>
           </nav>
         </div>
       </article>
@@ -327,8 +329,8 @@ onMounted(load)
           <div><button type="button" @click="workspaceOpen = false">← 返回</button><p>PATH BUILDER · {{ activeBundle.slug }}</p><h2>{{ activeBundle.title }}</h2></div>
           <div class="workspace__header-actions">
             <span v-if="workspaceLocked" class="locked">已发布 · 路径已锁定</span>
-            <el-button v-if="workspaceLocked" type="warning" @click="withdrawWorkspace">撤回后编辑</el-button>
-            <el-button v-else :disabled="!readiness?.ready" type="success" @click="setPublished(activeBundle, true)">发布路径</el-button>
+            <el-button v-if="auth.isSuperAdmin && workspaceLocked" type="warning" @click="withdrawWorkspace">撤回后编辑</el-button>
+            <el-button v-else-if="auth.isSuperAdmin" :disabled="!readiness?.ready" type="success" @click="setPublished(activeBundle, true)">发布路径</el-button>
           </div>
         </header>
 

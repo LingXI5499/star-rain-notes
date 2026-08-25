@@ -1,6 +1,7 @@
 package com.starrainnotes.account.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.starrainnotes.account.audit.AuditLogService;
 import com.starrainnotes.account.config.AccountProperties;
 import com.starrainnotes.account.entity.AccountUser;
 import com.starrainnotes.account.entity.AdminInvitation;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
@@ -34,16 +36,18 @@ public class AccountService {
     private final PasswordEncoder passwordEncoder;
     private final MailGateway mailGateway;
     private final AccountProperties props;
+    private final AuditLogService auditLog;
 
     public AccountService(AccountUserMapper userMapper, AdminInvitationMapper invitationMapper,
                           VerificationCodeService codeService, PasswordEncoder passwordEncoder,
-                          MailGateway mailGateway, AccountProperties props) {
+                          MailGateway mailGateway, AccountProperties props, AuditLogService auditLog) {
         this.userMapper = userMapper;
         this.invitationMapper = invitationMapper;
         this.codeService = codeService;
         this.passwordEncoder = passwordEncoder;
         this.mailGateway = mailGateway;
         this.props = props;
+        this.auditLog = auditLog;
     }
 
     public boolean superAdminActivated() {
@@ -67,6 +71,8 @@ public class AccountService {
         }
         ensurePendingSuperAdmin(email);
         codeService.issue(email, "SUPER_ADMIN_ACTIVATION", null, ip);
+        auditLog.record(null, "SUPER_ADMIN_ACTIVATION_CODE", "ACCOUNT", null, "SUCCESS",
+                ip, null, Map.of("email", mask(email)));
     }
 
     @Transactional
@@ -88,10 +94,12 @@ public class AccountService {
         account.setActivatedAt(now());
         account.setAuthVersion(account.getAuthVersion() + 1);
         userMapper.updateById(account);
+        auditLog.record(account.getId(), "SUPER_ADMIN_ACTIVATED", "ACCOUNT", account.getId(), "SUCCESS",
+                null, null, null);
         return account;
     }
 
-    public void createInvitation(String email, Long invitedByAccountId) {
+    public AdminInvitation createInvitation(String email, Long invitedByAccountId) {
         requireSuperAdmin(invitedByAccountId, "Only a super administrator can invite.");
         String normalized = normalize(email);
         if (!validEmail(normalized)) {
@@ -115,6 +123,9 @@ public class AccountService {
         invitationMapper.insert(inv);
         String link = props.getMail().getBaseUrl() + "/admin/invitations/" + rawToken;
         mailGateway.sendInvitationLink(inv.getEmail(), link);
+        auditLog.record(invitedByAccountId, "INVITATION_CREATED", "INVITATION", inv.getId(), "SUCCESS",
+                null, null, Map.of("email", mask(inv.getEmail())));
+        return inv;
     }
 
     public AdminInvitation invitationByToken(String rawToken) {
@@ -160,6 +171,8 @@ public class AccountService {
         inv.setAcceptedAccountId(account.getId());
         inv.setAcceptedAt(now());
         invitationMapper.updateById(inv);
+        auditLog.record(account.getId(), "ADMIN_REGISTERED", "ACCOUNT", account.getId(), "SUCCESS",
+                null, null, Map.of("invitationId", inv.getId()));
         return account;
     }
 
@@ -176,15 +189,21 @@ public class AccountService {
         target.setDisabledReason(reason);
         target.setAuthVersion(target.getAuthVersion() + 1);
         userMapper.updateById(target);
+        auditLog.record(operatorId, "ACCOUNT_DISABLED", "ACCOUNT", target.getId(), "SUCCESS",
+                null, null, Map.of("email", mask(target.getEmail())));
     }
 
     @Transactional
-    public void enable(Long targetId) {
+    public void enable(Long targetId, Long operatorId) {
         AccountUser target = requireById(targetId);
         target.setAccountStatus(ACTIVE);
         target.setDisabledAt(null);
+        target.setDisabledBy(null);
+        target.setDisabledReason(null);
         target.setAuthVersion(target.getAuthVersion() + 1);
         userMapper.updateById(target);
+        auditLog.record(operatorId, "ACCOUNT_ENABLED", "ACCOUNT", target.getId(), "SUCCESS",
+                null, null, Map.of("email", mask(target.getEmail())));
     }
 
     public AccountUser authenticate(String email, String password) {
@@ -203,11 +222,17 @@ public class AccountService {
         if (user.getPasswordHash() == null || !passwordEncoder.matches(password, user.getPasswordHash())) {
             int failed = (user.getFailedLoginCount() == null ? 0 : user.getFailedLoginCount()) + 1;
             user.setFailedLoginCount(failed);
+            boolean locked = false;
             if (failed >= LOCK_AFTER_FAILURES) {
                 user.setLockedUntil(now().plusMinutes(LOCK_MINUTES));
                 user.setFailedLoginCount(0);
+                locked = true;
             }
             userMapper.updateById(user);
+            if (locked) {
+                auditLog.record(user.getId(), "ACCOUNT_LOCKED", "ACCOUNT", user.getId(), "FAILURE",
+                        null, null, null);
+            }
             throw fail("INVALID_CREDENTIALS", HttpStatus.UNAUTHORIZED, "Invalid credentials",
                     "Invalid email or password.");
         }
@@ -325,10 +350,12 @@ public class AccountService {
         invitationMapper.updateById(inv);
         mailGateway.sendInvitationLink(inv.getEmail(),
                 props.getMail().getBaseUrl() + "/admin/invitations/" + rawToken);
+        auditLog.record(inv.getInvitedBy(), "INVITATION_RESENT", "INVITATION", inv.getId(), "SUCCESS",
+                null, null, Map.of("email", mask(inv.getEmail())));
     }
 
     @Transactional
-    public void revokeInvitation(Long invitationId) {
+    public void revokeInvitation(Long invitationId, Long operatorId) {
         AdminInvitation inv = requireInvitation(invitationId);
         if ("ACCEPTED".equals(inv.getStatus())) {
             throw fail("INVITATION_INVALID", HttpStatus.CONFLICT, "Invitation already accepted",
@@ -337,6 +364,8 @@ public class AccountService {
         inv.setStatus("REVOKED");
         inv.setRevokedAt(now());
         invitationMapper.updateById(inv);
+        auditLog.record(operatorId, "INVITATION_REVOKED", "INVITATION", inv.getId(), "SUCCESS",
+                null, null, Map.of("email", mask(inv.getEmail())));
     }
 
     public java.util.List<AdminInvitation> listInvitations() {

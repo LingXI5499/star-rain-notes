@@ -30,7 +30,7 @@ public class AdminUserDetailsService implements UserDetailsService {
         }
         return User.withUsername(admin.getUsername())
                 .password(admin.getPasswordHash())
-                .roles("ADMIN")
+                .roles("SUPER_ADMIN")
                 .build();
     }
 }

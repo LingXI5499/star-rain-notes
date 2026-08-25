@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
@@ -128,7 +129,7 @@ public class EnglishLearningService {
         Integer exists=jdbc.queryForObject("SELECT COUNT(*) FROM english_writing_prompt WHERE id=? AND publish_status='PUBLISHED'",Integer.class,promptId);
         if(exists==null||exists==0)throw unavailable();
         long learner=learner(learnerKey);int words=countWords(request.bodyText());
-        LocalDateTime submitted="SUBMITTED".equals(request.status())?LocalDateTime.now():null;
+        LocalDateTime submitted="SUBMITTED".equals(request.status())?LocalDateTime.now(ZoneOffset.UTC):null;
         jdbc.update("""
           INSERT INTO english_writing_submission(learner_id,prompt_id,body_text,word_count,submission_status,self_score,submitted_at)
           VALUES (?,?,?,?,?,?,?)
@@ -178,12 +179,12 @@ public class EnglishLearningService {
           ORDER BY attempted_at
           """,rs->{
             while(rs.next()){
-                LocalDate day=timezone.atSite(rs.getTimestamp("attempted_at").toLocalDateTime()).toLocalDate();
+                LocalDate day=rs.getTimestamp("attempted_at").toLocalDateTime().toLocalDate();
                 int[] value=grouped.computeIfAbsent(day,x->new int[3]);value[0]++;
                 if("COMPLETED".equals(rs.getString("completion_status")))value[1]++;
                 value[2]+=rs.getInt("time_spent_seconds");
             }return null;
-        },learner,first.atStartOfDay(timezone.zone()).withZoneSameInstant(java.time.ZoneOffset.UTC).toLocalDateTime());
+        },learner,first.atStartOfDay(timezone.zone()).withZoneSameInstant(ZoneOffset.UTC).toLocalDateTime());
         List<LearningActivityDayView> result=new ArrayList<>();
         for(int i=0;i<14;i++){LocalDate day=first.plusDays(i);int[] v=grouped.getOrDefault(day,new int[3]);result.add(new LearningActivityDayView(day.toString(),v[0],v[1],v[2]));}
         return result;
@@ -213,7 +214,7 @@ public class EnglishLearningService {
 
     private LearningRecordView map(ResultSet r,int n)throws SQLException{return new LearningRecordView(r.getLong("id"),r.getString("content_type"),r.getLong("content_id"),r.getString("content_slug"),r.getString("cefr_level"),r.getString("completion_status"),r.getBigDecimal("score"),r.getInt("time_spent_seconds"),r.getInt("attempts"),readWeak(r.getString("weak_points_json")),r.getBigDecimal("mastery_level"),date(r,"next_review_at"),date(r,"updated_at"));}
     private WritingSubmissionView submission(long learner,Long prompt)throws EmptyResultDataAccessException{return jdbc.queryForObject("SELECT * FROM english_writing_submission WHERE learner_id=? AND prompt_id=?",(r,n)->new WritingSubmissionView(r.getLong("id"),r.getLong("prompt_id"),r.getString("body_text"),r.getInt("word_count"),r.getString("submission_status"),r.getBigDecimal("self_score"),date(r,"submitted_at"),date(r,"updated_at")),learner,prompt);}
-    private LocalDateTime nextReview(String status,BigDecimal mastery){if(!"COMPLETED".equals(status))return null;double m=mastery==null?0:mastery.doubleValue();return LocalDateTime.now().plusDays(m>=.8?7:m>=.6?3:1);}
+    private LocalDateTime nextReview(String status,BigDecimal mastery){if(!"COMPLETED".equals(status))return null;double m=mastery==null?0:mastery.doubleValue();return LocalDateTime.now(ZoneOffset.UTC).plusDays(m>=.8?7:m>=.6?3:1);}
     private List<String> normalizeWeak(List<String> values){if(values==null)return List.of();return values.stream().filter(Objects::nonNull).map(String::trim).filter(x->!x.isBlank()).distinct().limit(20).toList();}
     private String write(Object value){try{return json.writeValueAsString(value);}catch(Exception e){throw new IllegalStateException(e);}}
     private List<String> readWeak(String value){try{return json.readValue(value,new TypeReference<>(){});}catch(Exception e){return List.of();}}

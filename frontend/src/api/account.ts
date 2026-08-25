@@ -37,3 +37,79 @@ export async function sendPasswordResetCode(email: string): Promise<void> {
 export async function confirmPasswordReset(email: string, verificationCode: string, newPassword: string): Promise<void> {
   await http.post('/auth/password-reset/confirm', { email, verificationCode, newPassword })
 }
+
+export interface AccountUser {
+  id: number
+  email: string
+  role: string
+  accountStatus: string
+  emailVerifiedAt: string | null
+  activatedAt: string | null
+  lockedUntil: string | null
+  lastLoginAt: string | null
+  passwordChangedAt: string | null
+  disabledAt: string | null
+  disabledBy: number | null
+  disabledReason: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AdminInvitation {
+  id: number
+  email: string
+  status: string
+  invitedBy: number
+  acceptedAccountId: number | null
+  expiresAt: string
+  sentAt: string | null
+  acceptedAt: string | null
+  revokedAt: string | null
+  createdAt: string
+  updatedAt: string
+}
+
+export interface AuditLog {
+  id: number
+  actorId: number | null
+  action: string
+  targetType: string | null
+  targetId: number | null
+  result: string
+  requestIpHash: string | null
+  userAgentSummary: string | null
+  metadataJson: Record<string, unknown> | null
+  createdAt: string
+}
+
+export async function fetchSuperAdminUsers(): Promise<AccountUser[]> {
+  return (await http.get<AccountUser[]>('/super-admin/users')).data
+}
+
+export async function disableAccount(id: number, reason?: string): Promise<void> {
+  await http.post(`/super-admin/users/${id}/disable`, { reason: reason || null })
+}
+
+export async function enableAccount(id: number): Promise<void> {
+  await http.post(`/super-admin/users/${id}/enable`)
+}
+
+export async function fetchInvitations(): Promise<AdminInvitation[]> {
+  return (await http.get<AdminInvitation[]>('/super-admin/invitations')).data
+}
+
+export async function createInvitation(email: string): Promise<AdminInvitation> {
+  return (await http.post<AdminInvitation>('/super-admin/invitations', { email })).data
+}
+
+export async function resendInvitation(id: number): Promise<void> {
+  await http.post(`/super-admin/invitations/${id}/resend`)
+}
+
+export async function revokeInvitation(id: number): Promise<void> {
+  await http.post(`/super-admin/invitations/${id}/revoke`)
+}
+
+export async function fetchAuditLogs(params: { page?: number; pageSize?: number; action?: string }): Promise<AuditLog[]> {
+  return (await http.get<AuditLog[]>('/super-admin/audit-logs', { params })).data
+}

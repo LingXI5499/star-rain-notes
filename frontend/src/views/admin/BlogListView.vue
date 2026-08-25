@@ -4,8 +4,10 @@ import { useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { deletePost, fetchAdminPosts, fetchAdminTags, publishPost, withdrawPost, type AdminBlogTag, type AdminPostPage, type AdminPostSummary } from '@/api/blog'
+import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
+const auth = useAuthStore()
 const loading = ref(true)
 const page = ref<AdminPostPage | null>(null)
 const tags = ref<AdminBlogTag[]>([])
@@ -46,7 +48,7 @@ onMounted(async () => { const result = await Promise.allSettled([fetchAdminTags(
           <div class="content-card__heading"><div><p class="content-card__slug">/{{ row.slug }}</p><h2>{{ row.title }}</h2></div><span class="status-pill" :class="`status-pill--${row.publishStatus.toLowerCase()}`">{{ statusLabels[row.publishStatus] ?? row.publishStatus }}</span></div>
           <p class="content-card__summary">{{ row.summary }}</p>
           <div class="content-card__tags"><span v-for="tag in row.tags" :key="tag.id"># {{ tag.name }}</span><small v-if="!row.tags.length">暂无标签</small></div>
-          <div class="content-card__foot"><div><span>发布 {{ formatTime(row.publishedAt) }}</span><span>更新 {{ formatTime(row.updatedAt) }}</span></div><div class="content-card__actions"><button type="button" @click="preview(row)">预览</button><button type="button" @click="router.push(`/admin/blog/${row.id}/edit`)">编辑</button><button type="button" @click="togglePublish(row)">{{ row.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button type="button" class="is-danger" @click="remove(row)">删除</button></div></div>
+          <div class="content-card__foot"><div><span>发布 {{ formatTime(row.publishedAt) }}</span><span>更新 {{ formatTime(row.updatedAt) }}</span></div><div class="content-card__actions"><button type="button" @click="preview(row)">预览</button><button type="button" @click="router.push(`/admin/blog/${row.id}/edit`)">编辑</button><button v-if="auth.isSuperAdmin" type="button" @click="togglePublish(row)">{{ row.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button v-if="auth.isSuperAdmin" type="button" class="is-danger" @click="remove(row)">删除</button></div></div>
         </div>
       </article>
       <div v-if="!loading && !(page?.items.length)" class="content-admin__empty"><strong>暂无文章</strong><span>新建第一篇内容，开始记录你的技术时间线。</span></div>

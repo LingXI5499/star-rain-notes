@@ -5,6 +5,7 @@ import { AxiosError } from 'axios'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import type { ProblemDetail } from '@/api/http'
+import { useAuthStore } from '@/stores/auth'
 import {
   createCategory,
   deleteCategory,
@@ -25,6 +26,7 @@ import {
 
 const route = useRoute()
 const router = useRouter()
+const auth = useAuthStore()
 const categories = ref<CategoryNode[]>([])
 const allTutorials = ref<AdminTutorialSummary[]>([])
 const tutorials = ref<AdminTutorialSummary[]>([])
@@ -346,7 +348,7 @@ onMounted(async () => {
             <span>01 · KNOWLEDGE SYSTEMS</span>
             <h2>知识体系</h2>
           </div>
-          <button type="button" class="icon-button" title="新建知识体系" @click="openCategoryDialog()">＋</button>
+          <button v-if="auth.isSuperAdmin" type="button" class="icon-button" title="新建知识体系" @click="openCategoryDialog()">＋</button>
         </header>
         <p class="system-panel__hint">拖动左侧手柄调整同级顺序</p>
         <div v-loading="loadingCategories" class="system-panel__body">
@@ -367,7 +369,7 @@ onMounted(async () => {
             <span class="system-item__name">{{ category.name }}</span>
             <span class="system-item__count">{{ categoryCounts[category.id] ?? '…' }}</span>
             <span class="system-item__arrow" aria-hidden="true">›</span>
-            <div class="system-item__actions">
+            <div v-if="auth.isSuperAdmin" class="system-item__actions">
               <button type="button" @click.stop="openCategoryDialog(category)">编辑</button>
               <button type="button" class="danger" @click.stop="removeCategory(category)">删除</button>
             </div>
@@ -429,9 +431,9 @@ onMounted(async () => {
                     <template #dropdown>
                       <el-dropdown-menu>
                         <el-dropdown-item @click="router.push({ name: 'admin-tutorial-edit', params: { id: tutorial.id } })">编辑教程信息</el-dropdown-item>
-                        <el-dropdown-item @click="togglePublish(tutorial)">{{ tutorial.publishStatus === 'PUBLISHED' ? '撤回教程' : '发布教程' }}</el-dropdown-item>
+                        <el-dropdown-item v-if="auth.isSuperAdmin" @click="togglePublish(tutorial)">{{ tutorial.publishStatus === 'PUBLISHED' ? '撤回教程' : '发布教程' }}</el-dropdown-item>
                         <el-dropdown-item @click="openMoveDialog(tutorial)">更换知识体系</el-dropdown-item>
-                        <el-dropdown-item divided @click="removeTutorial(tutorial)">删除教程</el-dropdown-item>
+                        <el-dropdown-item v-if="auth.isSuperAdmin" divided @click="removeTutorial(tutorial)">删除教程</el-dropdown-item>
                       </el-dropdown-menu>
                     </template>
                   </el-dropdown>

@@ -92,7 +92,7 @@ class AuthSessionIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.authenticated").value(true))
                 .andExpect(jsonPath("$.username").value(USERNAME))
-                .andExpect(jsonPath("$.role").value("ROLE_ADMIN"));
+                .andExpect(jsonPath("$.role").value("ROLE_SUPER_ADMIN"));
 
         // authenticated request passes the security filter chain (200, not 401)
         mockMvc.perform(get("/api/v1/admin/dashboard").session((MockHttpSession) result.getRequest().getSession(false)))

@@ -5,6 +5,7 @@ import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
 import { deleteMedia, fetchMediaAssets, formatSize, uploadMedia, type MediaAsset } from '@/api/media'
+import { useAuthStore } from '@/stores/auth'
 
 const items = ref<MediaAsset[]>([])
 const total = ref(0)
@@ -12,6 +13,7 @@ const loading = ref(true)
 const uploading = ref(false)
 
 const filters = reactive({ page: 1, pageSize: 20, q: '', assetType: '' })
+const auth = useAuthStore()
 
 async function load() {
   loading.value = true
@@ -126,7 +128,7 @@ onMounted(load)
           </p>
           <div class="media-card__actions">
             <el-button link type="primary" @click="copyUrl(asset)">复制 URL</el-button>
-            <el-button link type="danger" @click="remove(asset)">删除</el-button>
+            <el-button v-if="auth.isSuperAdmin" link type="danger" @click="remove(asset)">删除</el-button>
           </div>
         </div>
       </div>
