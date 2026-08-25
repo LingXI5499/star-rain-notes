@@ -59,10 +59,11 @@ public class SearchService {
         List<Candidate> reading = searchReading(pattern, query);
         List<Candidate> listening = searchListeningMaterials(pattern, query);
         List<Candidate> pronunciation = searchPronunciationRules(pattern, query);
+        List<Candidate> writing = searchWriting(pattern, query);
 
         SearchCountsView counts = new SearchCountsView(
                 tutorials.size(), chapters.size(), blogs.size(), portfolios.size(), grammar.size(),
-                reading.size(), listening.size() + pronunciation.size());
+                reading.size(), listening.size() + pronunciation.size(), writing.size());
 
         boolean includeTutorial = type == null || type.isBlank() || "tutorial".equals(type);
         boolean includeBlog = type == null || type.isBlank() || "blog".equals(type);
@@ -70,6 +71,7 @@ public class SearchService {
         boolean includeGrammar = type == null || type.isBlank() || "grammar".equals(type);
         boolean includeReading = type == null || type.isBlank() || "reading".equals(type);
         boolean includeListening = type == null || type.isBlank() || "listening".equals(type);
+        boolean includeWriting = type == null || type.isBlank() || "writing".equals(type);
 
         List<Candidate> all = new ArrayList<>();
         if (includeTutorial) {
@@ -91,6 +93,9 @@ public class SearchService {
         if (includeListening) {
             all.addAll(listening);
             all.addAll(pronunciation);
+        }
+        if (includeWriting) {
+            all.addAll(writing);
         }
 
         all.sort(Comparator.comparingInt(Candidate::score).reversed()
@@ -245,6 +250,32 @@ public class SearchService {
                     null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
                     score(query, title, summary, body));
         }, pattern, pattern, pattern);
+    }
+
+    private List<Candidate> searchWriting(String pattern, String query) {
+        List<Candidate> resources = jdbc.query("""
+                SELECT id, title, summary, body_markdown, slug, updated_at
+                FROM english_writing_resource
+                WHERE publish_status = 'PUBLISHED'
+                  AND (title LIKE ? OR summary LIKE ? OR body_markdown LIKE ?)
+                """, (rs, rowNum) -> writingCandidate(rs.getLong("id"), rs.getString("title"),
+                rs.getString("summary"), rs.getString("body_markdown"), rs.getString("slug"),
+                rs.getTimestamp("updated_at").toLocalDateTime(), query, "resource"), pattern, pattern, pattern);
+        resources.addAll(jdbc.query("""
+                SELECT id, title, summary, CONCAT(background_markdown, '\n', requirements_markdown) AS body_markdown, slug, updated_at
+                FROM english_writing_prompt
+                WHERE publish_status = 'PUBLISHED'
+                  AND (title LIKE ? OR summary LIKE ? OR background_markdown LIKE ? OR requirements_markdown LIKE ?)
+                """, (rs, rowNum) -> writingCandidate(rs.getLong("id"), rs.getString("title"),
+                rs.getString("summary"), rs.getString("body_markdown"), rs.getString("slug"),
+                rs.getTimestamp("updated_at").toLocalDateTime(), query, "practice"), pattern, pattern, pattern, pattern));
+        return resources;
+    }
+
+    private Candidate writingCandidate(Long id, String title, String summary, String body, String slug,
+                                       LocalDateTime updatedAt, String query, String kind) {
+        return new Candidate("WRITING", id, title, summary, slug, kind, null, updatedAt,
+                score(query, title, summary, body));
     }
 
     // ---------------------------------------------------------------
