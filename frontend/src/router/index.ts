@@ -396,6 +396,7 @@ const router = createRouter({
         { path: 'english/writing/resources/:id/edit', name: 'admin-writing-resource-edit', component: () => import('@/views/admin/WritingEditView.vue'), meta: { kind: 'resource' } },
         { path: 'english/writing/prompts/new', name: 'admin-writing-prompt-new', component: () => import('@/views/admin/WritingEditView.vue'), meta: { kind: 'prompt' } },
         { path: 'english/writing/prompts/:id/edit', name: 'admin-writing-prompt-edit', component: () => import('@/views/admin/WritingEditView.vue'), meta: { kind: 'prompt' } },
+        { path: 'english/writing/prompts/:id/exercises', name: 'admin-writing-exercises', component: () => import('@/views/admin/WritingExerciseManageView.vue') },
         {
           path: 'english/grammar/lessons/new',
           name: 'admin-english-grammar-lesson-new',

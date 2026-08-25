@@ -26,7 +26,16 @@ export const updateWritingPrompt=(id:number,data:WritingPromptPayload)=>http.put
 export const deleteWritingPrompt=(id:number)=>http.delete(`${admin}/prompts/${id}`)
 export const publishWritingPrompt=(id:number)=>http.post<WritingPrompt>(`${admin}/prompts/${id}/publish`).then(r=>r.data)
 export const withdrawWritingPrompt=(id:number)=>http.post<WritingPrompt>(`${admin}/prompts/${id}/withdraw`).then(r=>r.data)
+export type WritingExercise = {id:number;articleId:number;questionType:string;promptMarkdown:string;config:Record<string,unknown>;explanationMarkdown?:string|null;scoreValue:number;sortOrder:number;publishStatus:string;updatedAt:string}
+export type WritingExercisePayload = {questionType:string;promptMarkdown:string;configJson:string;explanationMarkdown?:string|null;scoreValue:number;publishStatus?:string}
+export const fetchWritingExercises=(promptId:number)=>http.get<WritingExercise[]>(`${admin}/prompts/${promptId}/exercises`).then(r=>r.data)
+export const createWritingExercise=(promptId:number,data:WritingExercisePayload)=>http.post<WritingExercise>(`${admin}/prompts/${promptId}/exercises`,data).then(r=>r.data)
+export const updateWritingExercise=(promptId:number,id:number,data:WritingExercisePayload)=>http.put<WritingExercise>(`${admin}/prompts/${promptId}/exercises/${id}`,data).then(r=>r.data)
+export const deleteWritingExercise=(promptId:number,id:number)=>http.delete(`${admin}/prompts/${promptId}/exercises/${id}`)
+export const moveWritingExercise=(promptId:number,id:number,targetIndex:number)=>http.post(`${admin}/prompts/${promptId}/exercises/${id}/move`,{targetIndex})
 export const fetchPublicWritingResources=(params:Record<string,unknown>)=>http.get<WritingPage<WritingResourceSummary>>(`${pub}/resources`,{params}).then(r=>r.data)
 export const fetchPublicWritingResource=(slug:string)=>http.get<WritingResource>(`${pub}/resources/${slug}`).then(r=>r.data)
 export const fetchPublicWritingPrompts=(params:Record<string,unknown>)=>http.get<WritingPage<WritingPromptSummary>>(`${pub}/prompts`,{params}).then(r=>r.data)
 export const fetchPublicWritingPrompt=(slug:string)=>http.get<WritingPrompt>(`${pub}/prompts/${slug}`).then(r=>r.data)
+export const fetchPublicWritingExercises=(slug:string)=>http.get<Array<{id:number;questionType:string;promptMarkdown:string;config:Record<string,unknown>;scoreValue:number;sortOrder:number}>>(`${pub}/prompts/${slug}/exercises`).then(r=>r.data)
+export const checkWritingExercises=(slug:string,answers:Array<{exerciseId:number;answer:unknown}>)=>http.post<{score:number;total:number;items:Array<{exerciseId:number;correct:boolean;earned:number;possible:number;explanationMarkdown?:string|null}>}>(`${pub}/prompts/${slug}/check`,{answers}).then(r=>r.data)
