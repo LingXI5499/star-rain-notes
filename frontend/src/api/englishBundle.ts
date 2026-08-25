@@ -36,6 +36,27 @@ export interface BundleItem {
   sortOrder: number
 }
 
+export interface BundleCatalogItem extends BundleItem {
+  selected: boolean
+}
+
+export interface BundleCatalogPage {
+  items: BundleCatalogItem[]
+  page: number
+  pageSize: number
+  total: number
+  totalPages: number
+}
+
+export interface BundleReadiness {
+  totalItems: number
+  publishedItems: number
+  moduleCount: number
+  moduleCounts: Record<BundleItem['contentType'], number>
+  ready: boolean
+  issues: Array<'SUMMARY_REQUIRED' | 'CEFR_REQUIRED' | 'MINIMUM_ITEMS_REQUIRED' | 'MULTIPLE_MODULES_REQUIRED' | 'UNPUBLISHED_ITEMS_PRESENT'>
+}
+
 export async function fetchBundles(): Promise<LearningBundle[]> {
   return (await http.get<LearningBundle[]>('/admin/english/bundles')).data
 }
@@ -74,6 +95,12 @@ export async function fetchPublicBundles(): Promise<LearningBundle[]> {
 
 export async function fetchBundleItems(id: number): Promise<BundleItem[]> {
   return (await http.get<BundleItem[]>(`/admin/english/bundles/${id}/items`)).data
+}
+export async function fetchBundleCatalog(id: number, params: Record<string, string | number | undefined>): Promise<BundleCatalogPage> {
+  return (await http.get<BundleCatalogPage>(`/admin/english/bundles/${id}/catalog`, { params })).data
+}
+export async function fetchBundleReadiness(id: number): Promise<BundleReadiness> {
+  return (await http.get<BundleReadiness>(`/admin/english/bundles/${id}/readiness`)).data
 }
 export async function addBundleItem(id: number, contentType: BundleItem['contentType'], contentId: number): Promise<BundleItem> {
   return (await http.post<BundleItem>(`/admin/english/bundles/${id}/items`, { contentType, contentId })).data
