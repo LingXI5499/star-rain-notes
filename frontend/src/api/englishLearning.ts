@@ -53,6 +53,9 @@ export interface LearningRecommendation {
   cefrLevel: string | null
   mastery: number | null
   nextReviewAt: string | null
+  recommendationType: 'REVIEW' | 'CONTINUE' | 'BUNDLE_NEXT' | 'PAIRED' | 'TAG_MATCH' | 'STARTER'
+  priority: number
+  sourceTitle: string | null
 }
 
 export interface LearningInsights {
@@ -108,6 +111,15 @@ export async function fetchLearningInsights(): Promise<LearningInsights> {
 
 export async function fetchLearningRecord(contentType: string, contentId: number): Promise<LearningRecord | null> {
   return (await http.get<LearningRecord | null>(`/public/english/learning/records/${contentType}/${contentId}`, { headers: learnerHeaders() })).data || null
+}
+
+export async function fetchLearningRecords(refs: Array<{ contentType: string; contentId: number }>): Promise<Record<string, LearningRecord>> {
+  if (!refs.length) return {}
+  const params = new URLSearchParams()
+  refs.slice(0, 100).forEach(item => params.append('ref', `${item.contentType.toUpperCase()}:${item.contentId}`))
+  return (await http.get<Record<string, LearningRecord>>(`/public/english/learning/records/batch?${params.toString()}`, {
+    headers: learnerHeaders(),
+  })).data
 }
 
 export async function saveLearningRecord(contentType: string, contentId: number, payload: {
