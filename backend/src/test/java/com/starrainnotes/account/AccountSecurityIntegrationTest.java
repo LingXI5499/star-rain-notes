@@ -17,6 +17,7 @@ import org.springframework.mock.web.MockHttpSession;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -200,6 +201,56 @@ class AccountSecurityIntegrationTest {
                 .andExpect(jsonPath("$[0].action").value("INVITATION_CREATED"))
                 .andExpect(jsonPath("$[0].metadataJson.password").doesNotExist())
                 .andExpect(jsonPath("$[0].metadataJson.verificationCode").doesNotExist());
+    }
+
+    @Test
+    void invitedAdministratorCanVerifyRegisterAndLoginWithoutSubmittingEmailAgain() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        MockHttpSession superSession = loginAccount("super@example.com", "super-pass-1234");
+        String token = csrf();
+
+        String invitationJson = mockMvc.perform(post("/api/v1/super-admin/invitations").session(superSession)
+                        .contentType("application/json")
+                        .content("{\"email\":\"collab@example.com\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.inviteLink").isNotEmpty())
+                .andReturn().getResponse().getContentAsString();
+        String inviteLink = new com.fasterxml.jackson.databind.ObjectMapper()
+                .readTree(invitationJson).get("inviteLink").asText();
+        String rawToken = inviteLink.substring(inviteLink.lastIndexOf('/') + 1);
+        assertThat(inviteLink).startsWith("http://localhost/admin/invitations/");
+        verify(mailGateway).sendInvitationLink(eq("collab@example.com"), eq(inviteLink));
+
+        mockMvc.perform(get("/api/v1/auth/invitations/" + rawToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("PENDING"))
+                .andExpect(jsonPath("$.email").value("co***@example.com"));
+
+        mockMvc.perform(post("/api/v1/auth/invitations/" + rawToken + "/verification-codes")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+        ArgumentCaptor<String> codeCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mailGateway).sendVerificationCode(eq("collab@example.com"),
+                eq("ADMIN_REGISTRATION"), codeCaptor.capture());
+
+        mockMvc.perform(post("/api/v1/auth/invitations/" + rawToken + "/register")
+                        .contentType("application/json")
+                        .content("{\"verificationCode\":\"" + codeCaptor.getValue()
+                                + "\",\"password\":\"collab-pass-1234\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+
+        loginAccount("collab@example.com", "collab-pass-1234");
+        assertThat(jdbc.queryForObject(
+                "SELECT role FROM user_account WHERE email='collab@example.com'", String.class))
+                .isEqualTo("ADMIN");
+        assertThat(jdbc.queryForObject(
+                "SELECT status FROM admin_invitation WHERE email='collab@example.com'", String.class))
+                .isEqualTo("ACCEPTED");
     }
 
     @Test

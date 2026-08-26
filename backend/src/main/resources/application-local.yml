@@ -4,7 +4,11 @@ spring:
   config:
     # 本机真实邮箱/授权码等私密配置写到 backend/application-local-secret.yml。
     # 该文件被 .gitignore 忽略：本机直接填真实值，但不会提交到仓库。
-    import: optional:file:./application-local-secret.yml
+    import:
+      # 从 backend 目录启动（IDEA 常见配置）。
+      - optional:file:./application-local-secret.yml
+      # 从仓库根目录使用 mvn -f backend/pom.xml 启动。
+      - optional:file:./backend/application-local-secret.yml
   datasource:
     url: jdbc:mysql://127.0.0.1:3306/star_rain_notes?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&sslMode=DISABLED&allowPublicKeyRetrieval=true
     username: root

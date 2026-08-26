@@ -99,6 +99,7 @@ public class AccountService {
         return account;
     }
 
+    @Transactional
     public IssuedInvitation createInvitation(String email, Long invitedByAccountId) {
         requireSuperAdmin(invitedByAccountId, "Only a super administrator can invite.");
         String normalized = normalize(email);
@@ -120,6 +121,7 @@ public class AccountService {
         inv.setStatus("PENDING");
         inv.setInvitedBy(invitedByAccountId);
         inv.setExpiresAt(now().plusHours(72));
+        inv.setSentAt(now());
         invitationMapper.insert(inv);
         String link = invitationLink(rawToken);
         mailGateway.sendInvitationLink(inv.getEmail(), link);

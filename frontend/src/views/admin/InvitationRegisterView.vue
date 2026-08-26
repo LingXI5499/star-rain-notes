@@ -21,7 +21,7 @@ async function load() {
 async function send() {
   sending.value = true
   try { await sendInvitationCode(token); ElMessage.success('验证码已发送。'); cooldown.value = 60; const t = setInterval(() => { cooldown.value--; if (cooldown.value <= 0) clearInterval(t) }, 1000) }
-  catch { ElMessage.error('发送失败。') } finally { sending.value = false }
+  catch (e) { ElMessage.error((e as { response?: { data?: { detail?: string } } }).response?.data?.detail ?? '验证码发送失败。') } finally { sending.value = false }
 }
 async function register() {
   if (!canSubmit.value) { ElMessage.warning('请填写验证码并保证两次密码一致。'); return }

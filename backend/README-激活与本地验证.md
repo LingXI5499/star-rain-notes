@@ -12,16 +12,16 @@
 1. **准备一个全新数据库**（确保没有已激活的超级管理员）：
    - 可用独立库名，例如：`CREATE DATABASE star_rain_notes_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;`
    - 并把 `backend/src/main/resources/application-local.yml` 的 `spring.datasource.url` 指向它（开发用）。
-2. **配置真实 SMTP**：写入 gitignored 的 `backend/application-local-secret.yml`（后端通过 `spring.config.import: optional:file:./application-local-secret.yml` 读取）：
+2. **配置真实 SMTP**：写入 gitignored 的 `backend/application-local-secret.yml`。项目同时兼容从仓库根目录或 `backend` 目录启动：
    ```yaml
    app:
      account:
        mail:
          host: smtp.163.com
          port: 465
-         username: 19735023257@163.com   # 发码邮箱
+         username: 你的发码邮箱@163.com
          auth-code: 你的163授权码         # 不是登录密码；只写这里/环境变量，不进 Git/日志
-         from: 19735023257@163.com
+         from: 你的发码邮箱@163.com
          ssl-enabled: true
          base-url: http://localhost:5173
    ```
@@ -33,7 +33,17 @@
    - 输入验证码 + 设置首次密码（≥10 位）+ 确认 → 激活成功 → 跳转登录。
 6. **登录**：`http://localhost:5173/admin/login` 用 `14717895499@163.com` + 该密码。
 
-## 三、重新完整测试激活
+## 三、邀请管理员并验证真实注册
+
+1. 使用超级管理员登录，进入「账号协作 → 邀请管理」。
+2. 输入协作者的真实邮箱并发送邀请。系统会发送注册链接；页面也会显示同一链接，便于复制补发。
+3. 协作者打开 `http://localhost:5173/admin/invitations/{token}`，点击「发送验证码」。验证码只发送到被邀请邮箱，10 分钟有效。
+4. 协作者输入验证码并设置不少于 10 位的密码。注册请求不接受自行替换邮箱，账号邮箱完全由邀请令牌决定。
+5. 注册成功后，协作者在 `/admin/login` 使用受邀邮箱和新密码登录。角色固定为 `ADMIN`；不能发布、撤回、删除或进入超级管理员功能。
+
+如果 SMTP 未配置，验证码接口会返回 `503 MAIL_NOT_CONFIGURED`，不会再显示虚假的“发送成功”；如果 SMTP 发送失败，会返回 `502 MAIL_SEND_FAILED`。邀请邮件发送失败时数据库事务会回滚，不会残留无法重建的待处理邀请。
+
+## 四、重新完整测试激活
 如果某个库**已经激活**了超管，激活页会显示"已激活"，后续激活接口返回 `410 SUPER_ADMIN_ALREADY_ACTIVATED`（符合设计）。要重测，请对**全新库**操作，或先清空：
 ```sql
 USE star_rain_notes_dev;
@@ -43,20 +53,20 @@ DELETE FROM admin_audit_log;
 DELETE FROM user_account;
 ```
 
-## 四、生产环境（部署到服务器）
+## 五、生产环境（部署到服务器）
 - 不使用 local 文件；用**环境变量**注入，例如：
   ```
   APP_SUPER_ADMIN_EMAIL=14717895499@163.com
   MAIL_HOST=smtp.163.com
   MAIL_PORT=465
-  MAIL_USERNAME=19735023257@163.com
+  MAIL_USERNAME=你的发码邮箱@163.com
   MAIL_AUTH_CODE=你的163授权码
-  MAIL_FROM=19735023257@163.com
+  MAIL_FROM=你的发码邮箱@163.com
   MAIL_SSL_ENABLED=true
   MAIL_BASE_URL=https://你的域名
   ```
 - 首次访问 `https://你的域名/admin/activate` 完成激活；之后初始化入口永久关闭。
 - 授权码/密码/验证码永不出现在日志、API 响应或 Git。
 
-## 五、测试与 CI（无需真实 SMTP）
+## 六、测试与 CI（无需真实 SMTP）
 集成测试用 `@MockBean MailGateway` 捕获验证码，**不连真实 SMTP**；因此 `mvn test`、CI 不依赖授权码。

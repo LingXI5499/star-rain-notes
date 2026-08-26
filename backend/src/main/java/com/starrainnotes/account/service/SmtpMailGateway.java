@@ -1,18 +1,21 @@
 package com.starrainnotes.account.service;
 
 import com.starrainnotes.account.config.AccountProperties;
+import com.starrainnotes.common.error.ApiException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Properties;
 
 /**
- * SMTP gateway via the 163 authorized-code mailbox. Credentials are read only
- * from env-backed config; never logged or echoed to clients.
+ * SMTP gateway via the 163 authorized-code mailbox. Credentials come from
+ * externalized configuration (local ignored file or production environment)
+ * and are never logged or echoed to clients.
  */
 @Service
 public class SmtpMailGateway implements MailGateway {
@@ -51,8 +54,10 @@ public class SmtpMailGateway implements MailGateway {
     public void sendVerificationCode(String to, String purpose, String code) {
         AccountProperties.Mail mail = props.getMail();
         if (mail.getHost() == null || mail.getHost().isBlank() || mail.getAuthCode() == null || mail.getAuthCode().isBlank()) {
-            log.warn("SMTP not configured; skipping verification-code email to {}", mask(to));
-            return;
+            log.warn("SMTP not configured; verification-code email was not sent to {}", mask(to));
+            throw new ApiException(HttpStatus.SERVICE_UNAVAILABLE, "MAIL_NOT_CONFIGURED",
+                    "Mail service not configured",
+                    "The verification email service is not configured. Please contact the site administrator.");
         }
         try {
             SimpleMailMessage message = new SimpleMailMessage();
@@ -63,7 +68,8 @@ public class SmtpMailGateway implements MailGateway {
             sender.send(message);
         } catch (Exception ex) {
             log.error("SMTP send failed to {}", mask(to), ex);
-            throw new IllegalStateException("MAIL_SEND_FAILED");
+            throw new ApiException(HttpStatus.BAD_GATEWAY, "MAIL_SEND_FAILED", "Mail delivery failed",
+                    "The verification email could not be delivered. Please try again later.");
         }
     }
 
@@ -83,7 +89,8 @@ public class SmtpMailGateway implements MailGateway {
             sender.send(message);
         } catch (Exception ex) {
             log.error("SMTP send failed to {}", mask(to), ex);
-            throw new IllegalStateException("MAIL_SEND_FAILED");
+            throw new ApiException(HttpStatus.BAD_GATEWAY, "MAIL_SEND_FAILED", "Mail delivery failed",
+                    "The invitation email could not be delivered. Please try again later.");
         }
     }
 

@@ -22,7 +22,7 @@ async function load() {
 async function send() {
   sending.value = true
   try { await sendActivationCode(); ElMessage.success('验证码已发送。'); cooldown.value = 60; const t = setInterval(() => { cooldown.value--; if (cooldown.value <= 0) clearInterval(t) }, 1000) }
-  catch { ElMessage.error('发送失败，请检查 APP_SUPER_ADMIN_EMAIL 配置。') }
+  catch (e) { ElMessage.error((e as { response?: { data?: { detail?: string } } }).response?.data?.detail ?? '发送失败，请检查本机私密邮箱配置。') }
   finally { sending.value = false }
 }
 async function activate() {

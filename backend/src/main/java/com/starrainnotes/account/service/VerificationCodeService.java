@@ -6,6 +6,7 @@ import com.starrainnotes.account.mapper.EmailVerificationChallengeMapper;
 import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -38,6 +39,7 @@ public class VerificationCodeService {
         this.mailGateway = mailGateway;
     }
 
+    @Transactional
     public void issue(String email, String purpose, Long invitationId, String ip) {
         LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
         checkRateLimits(email, purpose, ip, now);
