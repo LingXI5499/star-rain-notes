@@ -127,6 +127,10 @@ export async function revokeInvitation(id: number): Promise<void> {
   await http.post(`/super-admin/invitations/${id}/revoke`)
 }
 
+export async function deleteInvitation(id: number): Promise<void> {
+  await http.delete(`/super-admin/invitations/${id}`)
+}
+
 export async function fetchAuditLogs(params: { page?: number; pageSize?: number; action?: string }): Promise<AuditLog[]> {
   return (await http.get<AuditLog[]>('/super-admin/audit-logs', { params })).data
 }

@@ -2,7 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
-import { createInvitation, fetchInvitations, resendInvitation, revokeInvitation, type AdminInvitation } from '@/api/account'
+import { createInvitation, deleteInvitation, fetchInvitations, resendInvitation, revokeInvitation, type AdminInvitation } from '@/api/account'
 
 const invitations = ref<AdminInvitation[]>([])
 const email = ref('')
@@ -56,6 +56,20 @@ async function revoke(item: AdminInvitation) {
   await load()
 }
 
+async function remove(item: AdminInvitation) {
+  await ElMessageBox.confirm(`删除 ${item.email} 的这条邀请记录？审计日志仍会保留。`, '删除邀请记录', { type: 'warning' })
+  await deleteInvitation(item.id)
+  ElMessage.success('邀请记录已删除。')
+  await load()
+}
+
+async function reinvite(item: AdminInvitation) {
+  const created = await createInvitation(item.email)
+  latestInviteLink.value = created.inviteLink ?? ''
+  ElMessage.success('已生成新的邀请并重新发送。')
+  await load()
+}
+
 onMounted(() => void load())
 </script>
 
@@ -96,9 +110,15 @@ onMounted(() => void load())
           <span>{{ item.status }} · 过期于 {{ item.expiresAt }}</span>
           <small v-if="item.acceptedAt">接受时间：{{ item.acceptedAt }}</small>
         </div>
-        <footer v-if="item.status === 'PENDING'">
-          <el-button link type="primary" @click="resend(item)">重发</el-button>
-          <el-button link type="danger" @click="revoke(item)">撤销</el-button>
+        <footer>
+          <template v-if="item.status === 'PENDING'">
+            <el-button link type="primary" @click="resend(item)">重发</el-button>
+            <el-button link type="danger" @click="revoke(item)">撤销</el-button>
+          </template>
+          <template v-if="item.status === 'REVOKED' || item.status === 'EXPIRED'">
+            <el-button link type="primary" @click="reinvite(item)">重新邀请</el-button>
+            <el-button link type="danger" @click="remove(item)">删除记录</el-button>
+          </template>
         </footer>
       </article>
       <p v-if="!loading && !invitations.length" class="empty">暂无邀请。</p>

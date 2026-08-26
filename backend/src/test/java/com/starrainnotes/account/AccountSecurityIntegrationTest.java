@@ -254,6 +254,42 @@ class AccountSecurityIntegrationTest {
     }
 
     @Test
+    void revokedInvitationCanBeCreatedAgainAndItsHistoryCanBeDeleted() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        MockHttpSession superSession = loginAccount("super@example.com", "super-pass-1234");
+        String token = csrf();
+
+        String firstJson = mockMvc.perform(post("/api/v1/super-admin/invitations").session(superSession)
+                        .contentType("application/json").content("{\"email\":\"retry@example.com\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+        long firstId = new com.fasterxml.jackson.databind.ObjectMapper().readTree(firstJson).get("id").asLong();
+
+        mockMvc.perform(post("/api/v1/super-admin/invitations/" + firstId + "/revoke").session(superSession)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(post("/api/v1/super-admin/invitations").session(superSession)
+                        .contentType("application/json").content("{\"email\":\"retry@example.com\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(org.hamcrest.Matchers.not(firstId)));
+
+        mockMvc.perform(delete("/api/v1/super-admin/invitations/" + firstId).session(superSession)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM admin_invitation WHERE id=?", Integer.class, firstId))
+                .isZero();
+        assertThat(jdbc.queryForObject(
+                "SELECT COUNT(*) FROM admin_audit_log WHERE action='INVITATION_DELETED' AND target_id=?",
+                Integer.class, firstId)).isEqualTo(1);
+    }
+
+    @Test
     void adminBlogUpdateOnPublishedPostCreatesReviewAndSuperAdminApproves() throws Exception {
         insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
         insertAccount("admin@example.com", "admin-pass-1234", "ADMIN");

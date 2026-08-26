@@ -143,6 +143,8 @@ public class AccountService {
             throw fail("INVITATION_EXPIRED", HttpStatus.GONE, "Already used", "The invitation was already used.");
         }
         if (inv.getExpiresAt().isBefore(now())) {
+            inv.setStatus("EXPIRED");
+            invitationMapper.updateById(inv);
             throw fail("INVITATION_EXPIRED", HttpStatus.GONE, "Invitation expired", "The invitation has expired.");
         }
         return inv;
@@ -290,7 +292,9 @@ public class AccountService {
     private boolean existsByEmail(String email) { return findByEmail(email) != null; }
     private boolean hasPendingInvitation(String email) {
         Long c = invitationMapper.selectCount(new LambdaQueryWrapper<AdminInvitation>()
-                .eq(AdminInvitation::getEmail, email).eq(AdminInvitation::getStatus, "PENDING"));
+                .eq(AdminInvitation::getEmail, email)
+                .eq(AdminInvitation::getStatus, "PENDING")
+                .gt(AdminInvitation::getExpiresAt, now()));
         return c != null && c > 0;
     }
     public static String normalize(String email) { return email == null ? null : email.trim().toLowerCase(); }
@@ -350,6 +354,7 @@ public class AccountService {
         String rawToken = UUID.randomUUID().toString().replace("-", "");
         inv.setTokenHash(VerificationCodeService.sha256(rawToken));
         inv.setSentAt(now());
+        inv.setExpiresAt(now().plusHours(72));
         invitationMapper.updateById(inv);
         String link = invitationLink(rawToken);
         mailGateway.sendInvitationLink(inv.getEmail(), link);
@@ -372,9 +377,33 @@ public class AccountService {
                 null, null, Map.of("email", mask(inv.getEmail())));
     }
 
+    @Transactional
+    public void deleteInvitation(Long invitationId, Long operatorId) {
+        AdminInvitation inv = requireInvitation(invitationId);
+        boolean expired = inv.getExpiresAt().isBefore(now());
+        if (!"REVOKED".equals(inv.getStatus()) && !"EXPIRED".equals(inv.getStatus()) && !expired) {
+            throw fail("INVITATION_DELETE_FORBIDDEN", HttpStatus.CONFLICT,
+                    "Invitation cannot be deleted",
+                    "Only revoked or expired invitations can be deleted.");
+        }
+        String email = mask(inv.getEmail());
+        invitationMapper.deleteById(invitationId);
+        auditLog.record(operatorId, "INVITATION_DELETED", "INVITATION", invitationId, "SUCCESS",
+                null, null, Map.of("email", email));
+    }
+
+    @Transactional
     public java.util.List<AdminInvitation> listInvitations() {
-        return invitationMapper.selectList(new LambdaQueryWrapper<AdminInvitation>()
+        var invitations = invitationMapper.selectList(new LambdaQueryWrapper<AdminInvitation>()
                 .orderByDesc(AdminInvitation::getCreatedAt));
+        LocalDateTime current = now();
+        invitations.stream()
+                .filter(inv -> "PENDING".equals(inv.getStatus()) && inv.getExpiresAt().isBefore(current))
+                .forEach(inv -> {
+                    inv.setStatus("EXPIRED");
+                    invitationMapper.updateById(inv);
+                });
+        return invitations;
     }
 
     private AdminInvitation requireInvitation(Long id) {

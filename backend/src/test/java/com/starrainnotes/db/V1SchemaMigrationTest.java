@@ -119,14 +119,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV24AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV25AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -143,6 +143,7 @@ class V1SchemaMigrationTest {
                 "add english learning analytics indexes", "create account collaboration",
                 "create admin audit log", "create content review request",
                 "expand content review types", "expand english content review types",
-                "create account personal learning", "account learner profile association");
+                "create account personal learning", "account learner profile association",
+                "allow reinvitation and invitation cleanup");
     }
 }
