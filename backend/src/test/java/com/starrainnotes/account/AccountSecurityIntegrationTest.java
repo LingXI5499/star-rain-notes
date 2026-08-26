@@ -55,6 +55,7 @@ class AccountSecurityIntegrationTest {
         jdbc.update("DELETE FROM admin_invitation");
         jdbc.update("DELETE FROM user_account");
         jdbc.update("DELETE FROM blog_post WHERE slug LIKE 'review-%'");
+        jdbc.update("DELETE FROM english_writing_prompt WHERE slug LIKE 'review-%'");
     }
 
     private String csrf() throws Exception {
@@ -169,6 +170,15 @@ class AccountSecurityIntegrationTest {
                 .andExpect(status().isForbidden());
         mockMvc.perform(get("/api/v1/admin/english/analytics").session(session))
                 .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/admin/about").session(session))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/admin/site-settings").session(session))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/super-admin/users").session(session))
+                .andExpect(status().isForbidden());
+        // 超级管理员才能批准/驳回内容审核
+        mockMvc.perform(get("/api/v1/super-admin/content-reviews").session(session))
+                .andExpect(status().isForbidden());
     }
 
     @Test
@@ -229,6 +239,51 @@ class AccountSecurityIntegrationTest {
                 .andExpect(jsonPath("$.status").value("APPROVED"));
         assertThat(jdbc.queryForObject("SELECT title FROM blog_post WHERE id=?", String.class, postId))
                 .isEqualTo("Review updated");
+    }
+
+    @Test
+    void englishWritingPromptUpdateOnPublishedContentCreatesReviewAndSuperAdminApproves() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        insertAccount("admin@example.com", "admin-pass-1234", "ADMIN");
+        MockHttpSession superSession = loginAccount("super@example.com", "super-pass-1234");
+        MockHttpSession adminSession = loginAccount("admin@example.com", "admin-pass-1234");
+        jdbc.update("""
+                INSERT INTO english_writing_prompt(title,slug,summary,background_markdown,requirements_markdown,
+                    cefr_level,word_min,word_max,estimated_minutes,publish_status,sort_order,published_at)
+                VALUES ('Review prompt original','review-prompt','old summary','## bg','## req',
+                    'B1',100,180,15,'PUBLISHED',10,UTC_TIMESTAMP(6))
+                """);
+        Long promptId = jdbc.queryForObject(
+                "SELECT id FROM english_writing_prompt WHERE slug='review-prompt'", Long.class);
+        String token = csrf();
+        String updateBody = """
+                {"title":"Review prompt updated","slug":"review-prompt","summary":"new summary",
+                "backgroundMarkdown":"## new bg","requirementsMarkdown":"## new req","cefrLevel":"B1",
+                "wordMin":120,"wordMax":200,"estimatedMinutes":20,"sortOrder":12,"tagIds":[]}
+                """;
+
+        mockMvc.perform(put("/api/v1/admin/english/writing/prompts/" + promptId).session(adminSession)
+                        .contentType("application/json").content(updateBody)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.status").value("PENDING"))
+                .andExpect(jsonPath("$.contentType").value("ENGLISH_WRITING_PROMPT"))
+                .andExpect(jsonPath("$.payload.title").value("Review prompt updated"));
+        assertThat(jdbc.queryForObject("SELECT title FROM english_writing_prompt WHERE id=?", String.class, promptId))
+                .isEqualTo("Review prompt original");
+
+        Long reviewId = jdbc.queryForObject(
+                "SELECT id FROM content_review_request WHERE content_type='ENGLISH_WRITING_PROMPT' AND content_id=?",
+                Long.class, promptId);
+        mockMvc.perform(post("/api/v1/super-admin/content-reviews/" + reviewId + "/approve").session(superSession)
+                        .contentType("application/json").content("{\"note\":\"ok\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("APPROVED"));
+        assertThat(jdbc.queryForObject("SELECT title FROM english_writing_prompt WHERE id=?", String.class, promptId))
+                .isEqualTo("Review prompt updated");
     }
 
     private void insertAccount(String email, String password, String role) {
