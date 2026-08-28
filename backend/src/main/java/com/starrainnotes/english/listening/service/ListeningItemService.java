@@ -518,6 +518,13 @@ public class ListeningItemService {
         return problems;
     }
 
+    /** Lightweight ownership check for child-resource endpoints. */
+    public void requireExists(Long id) {
+        Integer count = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM english_listening_item WHERE id=?", Integer.class, id);
+        if (count == null || count == 0) throw itemNotFound();
+    }
+
     private boolean segmentsValid(Long itemId) {
         Integer duration = jdbc.queryForObject(
                 "SELECT duration_seconds FROM english_listening_item WHERE id=?", Integer.class, itemId);

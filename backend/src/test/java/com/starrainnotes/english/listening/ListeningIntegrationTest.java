@@ -228,6 +228,22 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
                         .session(auth.session()).contentType("application/json").content(exBody), auth.csrf()))
                 .andExpect(status().isCreated()).andReturn();
         long exerciseId = objectMapper.readTree(ex.getResponse().getContentAsString()).get("id").asLong();
+
+        // The admin page depends on this contract: existing exercises must be
+        // returned with their complete config and an empty sibling item must
+        // return [] instead of failing the whole management screen.
+        mockMvc.perform(get("/api/v1/admin/english/listening/items/" + id + "/exercises")
+                        .session(auth.session()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].id").value(exerciseId))
+                .andExpect(jsonPath("$[0].questionType").value("MINIMAL_PAIR"))
+                .andExpect(jsonPath("$[0].config.answer").value("sheep"));
+        long emptyItemId = createItem(auth, itemJson("listen-empty-exercises", 1, audio, 60));
+        mockMvc.perform(get("/api/v1/admin/english/listening/items/" + emptyItemId + "/exercises")
+                .session(auth.session()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isArray())
+                .andExpect(jsonPath("$").isEmpty());
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/listening/items/" + id + "/publish")
                 .session(auth.session()), auth.csrf())).andExpect(status().isOk());
 
@@ -279,8 +295,12 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
         mockMvc.perform(get("/api/v1/public/english/listening/pronunciation/rule-1"))
                 .andExpect(status().isNotFound());
         MvcResult list = mockMvc.perform(get("/api/v1/admin/english/listening/pronunciation")
-                        .session(auth.session())).andExpect(status().isOk()).andReturn();
+                .session(auth.session())).andExpect(status().isOk()).andReturn();
         long ruleId = objectMapper.readTree(list.getResponse().getContentAsString()).get(0).get("id").asLong();
+        mockMvc.perform(get("/api/v1/admin/english/listening/pronunciation/" + ruleId)
+                        .session(auth.session()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Rule"));
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/listening/pronunciation/" + ruleId + "/publish")
                 .session(auth.session()), auth.csrf())).andExpect(status().isOk());
         mockMvc.perform(get("/api/v1/public/english/listening/pronunciation/rule-1"))

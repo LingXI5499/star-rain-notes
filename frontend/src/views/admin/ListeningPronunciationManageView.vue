@@ -1,78 +1,32 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { computed, onMounted, ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { ElMessage, ElMessageBox } from 'element-plus/es/components/index.mjs'
-import type { ContentReview } from '@/api/account'
 import type { ProblemDetail } from '@/api/http'
-import { createPronunciationRule, deletePronunciationRule, fetchPronunciationRules, publishPronunciationRule, updatePronunciationRule, withdrawPronunciationRule, type PronunciationRule } from '@/api/listening'
-import type { MediaAsset } from '@/api/media'
-import MarkdownEditor from '@/components/MarkdownEditor.vue'
-import MediaPicker from '@/components/MediaPicker.vue'
-import PublishChecklistDrawer, { type PublishCheck } from '@/components/english/PublishChecklistDrawer.vue'
+import { deletePronunciationRule, fetchPronunciationRules, publishPronunciationRule, withdrawPronunciationRule, type PronunciationRule } from '@/api/listening'
+import AdminContentActions from '@/components/admin/AdminContentActions.vue'
+import PublishStatusBadge from '@/components/admin/PublishStatusBadge.vue'
 import { useAuthStore } from '@/stores/auth'
 
-const router = useRouter()
-const route = useRoute()
-const auth = useAuthStore()
-const rules = ref<PronunciationRule[]>([]); const loading = ref(true)
-const dialogOpen = ref(false); const saving = ref(false); const editingId = ref<number | null>(null); const mediaOpen = ref(false); const checkOpen = ref(false); const audioError = ref('')
-const form = reactive({ ruleType: 'LINKING', title: '', summary: '', bodyMarkdown: '', audioMediaId: null as number|null, audioUrl: null as string|null, sortOrder: null as number|null })
+const router = useRouter(); const auth = useAuthStore(); const rules = ref<PronunciationRule[]>([]); const loading = ref(true)
 const ruleTypes = ['LINKING','WEAK_FORM','ASSIMILATION','ELISION','STRESS','INTONATION']
 const ruleLabel: Record<string,string> = { LINKING:'连读', WEAK_FORM:'弱读', ASSIMILATION:'同化', ELISION:'省音', STRESS:'重音', INTONATION:'语调' }
-const grouped = computed(() => ruleTypes.map((t) => ({ type: t, items: rules.value.filter((r) => r.ruleType === t) })))
-const checks = computed<PublishCheck[]>(() => [
-  { key: 'title', label: '标题完整', passed: !!form.title.trim() },
-  { key: 'summary', label: '摘要完整', passed: !!form.summary.trim() },
-  { key: 'body', label: '课程正文完整', passed: !!form.bodyMarkdown.trim() },
-  { key: 'audio', label: audioError.value || '示例音频可选；选择后必须能够播放', passed: !form.audioMediaId || !audioError.value },
-])
-function isReview(value: unknown): value is ContentReview { return typeof value === 'object' && value !== null && 'contentType' in value }
-
-async function load(){ loading.value=true; try{rules.value=await fetchPronunciationRules(); openRouteEditor()}catch{ElMessage.error('加载语音规则失败。')}finally{loading.value=false} }
-function reset(){ editingId.value=null; audioError.value=''; Object.assign(form,{ruleType:'LINKING',title:'',summary:'',bodyMarkdown:'',audioMediaId:null,audioUrl:null,sortOrder:null}) }
-function openCreate(){ void router.push({name:'admin-listening-pronunciation-new'}) }
-function openEdit(r:PronunciationRule){ void router.push({name:'admin-listening-pronunciation-edit',params:{id:r.id}}) }
-function openRouteEditor(){
-  if(route.name==='admin-listening-pronunciation-new'){reset();dialogOpen.value=true;return}
-  if(route.name==='admin-listening-pronunciation-edit'){
-    const r=rules.value.find((item)=>item.id===Number(route.params.id)); if(!r){ElMessage.error('规则不存在。');void closeDialog();return}
-    editingId.value=r.id; Object.assign(form,{ruleType:r.ruleType,title:r.title,summary:r.summary,bodyMarkdown:r.bodyMarkdown,audioMediaId:r.audioMediaId,audioUrl:r.audioUrl,sortOrder:r.sortOrder}); dialogOpen.value=true
-  }
-}
-function closeDialog(){dialogOpen.value=false;return router.push({name:'admin-listening-pronunciation'})}
-function onAudio(asset:MediaAsset){if(asset.assetType!=='AUDIO'){ElMessage.warning('示例媒体只能选择音频。');return}form.audioMediaId=asset.id;form.audioUrl=asset.publicUrl;audioError.value='';mediaOpen.value=false}
-async function save(){ if(!form.title.trim()){ElMessage.warning('请填写标题。');return} saving.value=true; const {audioUrl:_audioUrl,...p}=form; try{ const result=editingId.value?await updatePronunciationRule(editingId.value,p):await createPronunciationRule(p); ElMessage.success(isReview(result)?'已提交审核，超级管理员批准后会应用到线上语音规则。':'已保存。'); await closeDialog() }catch(e){ ElMessage.error((e as {response?:{data?:ProblemDetail}}).response?.data?.detail??'保存失败。') }finally{saving.value=false} }
-async function setPub(r:PronunciationRule, pub:boolean){ try{ pub?await publishPronunciationRule(r.id):await withdrawPronunciationRule(r.id); await load() }catch(e){ ElMessage.error((e as {response?:{data?:ProblemDetail}}).response?.data?.detail??'操作失败。') } }
-async function remove(r:PronunciationRule){ try{ await ElMessageBox.confirm(`确定删除「${r.title}」？`,'删除确认',{type:'warning'}); await deletePronunciationRule(r.id); ElMessage.success('已删除。'); await load() }catch(e){ const d=(e as {response?:{data?:ProblemDetail}}).response?.data?.detail; if(d)ElMessage.error(d) } }
+const grouped = computed(() => ruleTypes.map((type) => ({ type, items: rules.value.filter((rule) => rule.ruleType === type) })))
+function detailOf(error: unknown, fallback: string) { return (error as {response?:{data?:ProblemDetail}}).response?.data?.detail ?? fallback }
+async function load() { loading.value = true; try { rules.value = await fetchPronunciationRules() } catch (error) { ElMessage.error(detailOf(error, '加载语音规则失败。')) } finally { loading.value = false } }
+function openCreate() { void router.push({ name: 'admin-listening-pronunciation-new' }) }
+function openEdit(rule: PronunciationRule) { void router.push({ name: 'admin-listening-pronunciation-edit', params: { id: rule.id } }) }
+async function setPublished(rule: PronunciationRule, publish: boolean) { try { publish ? await publishPronunciationRule(rule.id) : await withdrawPronunciationRule(rule.id); ElMessage.success(publish ? '规则已发布。' : '规则已撤回。'); await load() } catch (error) { ElMessage.error(detailOf(error, '操作失败。')) } }
+async function remove(rule: PronunciationRule) { try { await ElMessageBox.confirm(`确定删除「${rule.title}」？`, '删除语音规则', { type: 'warning' }); await deletePronunciationRule(rule.id); ElMessage.success('规则已删除。'); await load() } catch (error) { const detail = (error as {response?:{data?:ProblemDetail}}).response?.data?.detail; if (detail) ElMessage.error(detail) } }
 onMounted(load)
 </script>
 
 <template>
-  <section class="pr-m"><header class="pr-m__hero"><div><p>PRONUNCIATION · 语音规则</p><h1>语音规则</h1><span>连读、弱读、同化、省音、重音、语调六类独立教学。</span></div><div class="pr-m__hero-actions"><el-button @click="router.push({ name: 'admin-listening' })">听力材料</el-button><el-button type="primary" @click="openCreate">新建规则</el-button></div></header>
-    <div v-loading="loading" class="pr-m__groups">
-      <div v-for="g in grouped" :key="g.type" class="pr-group"><h2>{{ ruleLabel[g.type] }} <small>{{ g.type }}</small></h2>
-        <p v-if="!g.items.length" class="pr-group__empty">暂无规则。</p>
-        <article v-for="r in g.items" :key="r.id" class="pr-card"><div class="pr-card__head"><h3>{{ r.title }}</h3><span class="pr-card__status">{{ r.publishStatus }}</span></div><p class="pr-card__summary">{{ r.summary }}</p>
-          <div class="pr-card__actions"><el-button link type="primary" @click="openEdit(r)">编辑</el-button><el-button v-if="r.publishStatus==='PUBLISHED'" link @click="router.push(`/english/listening/pronunciation/${r.slug}`)">预览</el-button><el-button v-if="auth.isSuperAdmin && r.publishStatus!=='PUBLISHED'" link type="success" @click="setPub(r,true)">发布</el-button><el-button v-else-if="auth.isSuperAdmin" link type="warning" @click="setPub(r,false)">撤回</el-button><el-button v-if="auth.isSuperAdmin" link type="danger" @click="remove(r)">删除</el-button><small v-if="!auth.isSuperAdmin">发布和删除由超级管理员操作</small></div>
-        </article>
-      </div>
-    </div>
-    <el-dialog v-model="dialogOpen" :title="editingId?'编辑规则':'新建规则'" width="min(860px, calc(100vw - 32px))" :close-on-click-modal="false" @closed="route.name!=='admin-listening-pronunciation'&&closeDialog()"><el-form label-position="top">
-      <el-form-item label="规则类型"><el-select v-model="form.ruleType" style="width:100%"><el-option v-for="t in ruleTypes" :key="t" :label="`${ruleLabel[t]} (${t})`" :value="t"/></el-select></el-form-item>
-      <el-form-item label="标题"><el-input v-model="form.title"/></el-form-item>
-      <el-form-item label="摘要"><el-input v-model="form.summary" type="textarea" :rows="2"/></el-form-item>
-      <el-form-item label="正文（Markdown，前台目录收录 H2–H4）"><MarkdownEditor v-model="form.bodyMarkdown" placeholder="## 规则说明&#10;正文…"/></el-form-item>
-      <el-form-item label="示例音频（可选）"><audio v-if="form.audioUrl" :src="form.audioUrl" controls preload="metadata" class="pr-m__audio" @loadedmetadata="audioError=''" @error="audioError='示例音频无法播放，请检查 /uploads/ 映射、权限和格式'"/><el-alert v-if="audioError" :title="audioError" type="error" :closable="false"/><div><el-button @click="mediaOpen=true">上传或选择音频</el-button><el-button v-if="form.audioMediaId" @click="form.audioMediaId=null;form.audioUrl=null;audioError=''">移除</el-button></div></el-form-item>
-      <el-form-item label="排序"><el-input-number v-model="form.sortOrder" :min="1" :step="10"/></el-form-item>
-    </el-form><template #footer><el-button @click="checkOpen=true">发布检查</el-button><el-button @click="closeDialog">取消</el-button><el-button type="primary" :loading="saving" @click="save">保存</el-button></template></el-dialog>
-    <MediaPicker v-model="mediaOpen" asset-type="AUDIO" allow-upload title="上传或选择语音示例音频" @select="onAudio"/>
-    <PublishChecklistDrawer :open="checkOpen" :checks="checks" @close="checkOpen=false"/>
+  <section class="pronunciation-manage"><header class="pronunciation-manage__hero"><div><p>PRONUNCIATION · 语音规则</p><h1>语音规则</h1><span>连读、弱读、同化、省音、重音与语调，按真实语流组织课程。</span></div><div><el-button @click="router.push({ name: 'admin-listening' })">听力材料</el-button><el-button type="primary" @click="openCreate">新建规则</el-button></div></header>
+    <div v-loading="loading" class="pronunciation-manage__groups"><section v-for="group in grouped" :key="group.type" class="rule-group"><header><span>{{ group.type }}</span><h2>{{ ruleLabel[group.type] }}</h2><b>{{ group.items.length }}</b></header><p v-if="!group.items.length" class="rule-group__empty">暂无{{ ruleLabel[group.type] }}课程。</p><article v-for="rule in group.items" :key="rule.id" class="rule-card"><div class="rule-card__head"><h3>{{ rule.title }}</h3><PublishStatusBadge :status="rule.publishStatus" /></div><p>{{ rule.summary }}</p><AdminContentActions :permission-note="auth.isSuperAdmin ? '' : '发布和删除由超级管理员操作'"><el-button type="primary" plain @click="openEdit(rule)">编辑</el-button><el-button v-if="rule.publishStatus === 'PUBLISHED'" @click="router.push(`/english/listening/pronunciation/${rule.slug}`)">预览</el-button><el-button v-if="auth.isSuperAdmin && rule.publishStatus !== 'PUBLISHED'" type="success" plain @click="setPublished(rule, true)">{{ rule.publishStatus === 'WITHDRAWN' ? '重新发布' : '发布' }}</el-button><el-button v-else-if="auth.isSuperAdmin" type="warning" plain @click="setPublished(rule, false)">撤回</el-button><template v-if="auth.isSuperAdmin" #more><el-dropdown-item class="is-danger" @click="remove(rule)">删除</el-dropdown-item></template></AdminContentActions></article></section></div>
   </section>
 </template>
+
 <style scoped>
-.pr-m__hero{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px}.pr-m__hero-actions{display:flex;gap:8px}.pr-m__hero p{color:var(--accent);font-size:11px;font-weight:750;letter-spacing:.14em;margin:0}.pr-m__hero h1{font-size:28px;margin:6px 0}.pr-m__hero span{color:var(--text-secondary);font-size:13px}
-.pr-m__groups{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:var(--space-4)}.pr-group{border:1px solid var(--border);border-radius:16px;padding:16px;background:var(--bg-surface)}
-.pr-group h2{font-size:16px;margin:0 0 12px}.pr-group h2 small{font-size:11px;color:var(--text-muted);font-weight:400}.pr-group__empty{font-size:12px;color:var(--text-muted)}
-.pr-card{padding:12px;border:1px solid var(--border);border-radius:12px;margin-bottom:8px}.pr-card__head{display:flex;justify-content:space-between;align-items:center}.pr-card__head h3{font-size:15px;margin:0}.pr-card__status{font-size:11px;color:var(--text-muted)}.pr-card__summary{font-size:12px;color:var(--text-secondary);margin:6px 0}.pr-card__actions{display:flex;gap:4px}
-.pr-m__audio{width:100%;margin-bottom:8px}@media(max-width:720px){.pr-m__hero{align-items:flex-start;gap:14px}.pr-m__groups{grid-template-columns:1fr}.pr-card__actions{flex-wrap:wrap}}
+.pronunciation-manage{max-width:1240px;margin:0 auto}.pronunciation-manage__hero{display:flex;align-items:flex-end;justify-content:space-between;gap:20px;margin-bottom:24px}.pronunciation-manage__hero>div:last-child{display:flex;gap:8px}.pronunciation-manage__hero p{margin:0;color:var(--accent);font-size:11px;font-weight:750;letter-spacing:.15em}.pronunciation-manage__hero h1{margin:6px 0;font-size:clamp(28px,3vw,40px)}.pronunciation-manage__hero span{color:var(--text-secondary);font-size:13px}.pronunciation-manage__groups{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.rule-group{padding:18px;border:1px solid var(--border);border-radius:18px;background:var(--bg-surface)}.rule-group>header{display:grid;grid-template-columns:1fr auto;align-items:end;margin-bottom:14px}.rule-group>header span{grid-column:1/-1;color:var(--accent);font-size:10px;letter-spacing:.13em}.rule-group h2{margin:4px 0 0;font-size:18px}.rule-group>header b{color:var(--text-muted);font:600 13px var(--font-mono)}.rule-group__empty{color:var(--text-muted);font-size:13px}.rule-card{padding:15px 0;border-top:1px solid var(--border)}.rule-card:first-of-type{border-top:0}.rule-card__head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.rule-card h3{margin:0;font-size:16px}.rule-card>p{margin:7px 0 13px;color:var(--text-secondary);font-size:13px;line-height:1.65}@media(max-width:860px){.pronunciation-manage__groups{grid-template-columns:1fr}}@media(max-width:620px){.pronunciation-manage__hero{align-items:flex-start;flex-direction:column}.pronunciation-manage__hero>div:last-child{width:100%}.pronunciation-manage__hero :deep(.el-button){flex:1}}
 </style>

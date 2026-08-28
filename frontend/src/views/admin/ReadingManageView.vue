@@ -6,6 +6,7 @@ import type { ProblemDetail } from '@/api/http'
 import { deleteReading, fetchReadings, publishReading, withdrawReading, type ReadingArticleSummary, type ReadingPage } from '@/api/reading'
 import { fetchTaxonomy, type TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
+import AdminContentActions from '@/components/admin/AdminContentActions.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
@@ -193,7 +194,7 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
           <div class="reading-card__meta">
             <CefrBadge :level="article.cefrLevel" />
             <span class="reading-card__level">{{ levelLabels[article.readingLevel] }}</span>
-            <span class="reading-card__status" :class="`is-${article.publishStatus.toLowerCase()}`">{{ article.publishStatus }}</span>
+            <span class="reading-card__status" :class="`is-${article.publishStatus.toLowerCase()}`">{{ article.publishStatus === 'PUBLISHED' ? '已发布' : article.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</span>
           </div>
           <h2 class="reading-card__title">{{ article.title }}</h2>
           <p class="reading-card__summary">{{ article.summary }}</p>
@@ -201,15 +202,11 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
             <span v-for="t in article.tags" :key="t.id" class="reading-card__tag">{{ t.name }}</span>
           </div>
           <p class="reading-card__metrics">{{ article.wordCount }} 词 · {{ article.estimatedMinutes }} 分钟 · {{ article.hasExercises ? '有练习' : '缺少练习' }}</p>
-          <div class="reading-card__actions">
-            <el-button link type="primary" @click="openEditor(article.id)">编辑</el-button>
-            <el-button link type="info" @click="preview(article)">预览</el-button>
-            <el-button v-if="auth.isSuperAdmin && article.publishStatus !== 'PUBLISHED'" link type="success" @click="setPublished(article, true)">发布</el-button>
-            <el-button v-else-if="auth.isSuperAdmin" link type="warning" @click="setPublished(article, false)">撤回</el-button>
-            <el-button link @click="router.push({ name: 'admin-reading-exercises', params: { articleId: article.id }, query: { ...route.query } })">练习</el-button>
-            <el-button link @click="duplicate(article)">复制</el-button>
-            <el-button v-if="auth.isSuperAdmin" link type="danger" @click="remove(article)">删除</el-button>
-          </div>
+          <AdminContentActions :permission-note="auth.isSuperAdmin ? '' : '发布和删除由超级管理员操作'">
+            <el-button type="primary" plain @click="openEditor(article.id)">编辑</el-button><el-button @click="preview(article)">预览</el-button><el-button @click="router.push({ name: 'admin-reading-exercises', params: { articleId: article.id }, query: { ...route.query } })">练习</el-button>
+            <el-button v-if="auth.isSuperAdmin && article.publishStatus !== 'PUBLISHED'" type="success" plain @click="setPublished(article, true)">{{ article.publishStatus === 'WITHDRAWN' ? '重新发布' : '发布' }}</el-button><el-button v-else-if="auth.isSuperAdmin" type="warning" plain @click="setPublished(article, false)">撤回</el-button>
+            <template #more><el-dropdown-item @click="duplicate(article)">复制</el-dropdown-item><el-dropdown-item v-if="auth.isSuperAdmin" class="is-danger" @click="remove(article)">删除</el-dropdown-item></template>
+          </AdminContentActions>
         </div>
       </article>
     </div>
@@ -256,7 +253,6 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
 .reading-card__tags { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
 .reading-card__tag { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: var(--bg-subtle); border: 1px solid var(--border); color: var(--text-secondary); }
 .reading-card__metrics { font-size: 12px; color: var(--text-muted); margin: 0 0 8px; }
-.reading-card__actions { display: flex; flex-wrap: wrap; gap: 2px; }
 @media (max-width: 720px) {
   .reading-manage__hero { align-items: flex-start; gap: 12px; }
   .reading-manage__hero span { display: none; }

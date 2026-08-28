@@ -6,6 +6,7 @@ import type { ProblemDetail } from '@/api/http'
 import { deleteListening, fetchListenings, publishListening, withdrawListening, type ListeningPage, type ListeningSummary } from '@/api/listening'
 import { fetchTaxonomy, type TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
+import AdminContentActions from '@/components/admin/AdminContentActions.vue'
 import { useAuthStore } from '@/stores/auth'
 
 const router = useRouter()
@@ -67,7 +68,13 @@ function listQuery() { return { ...route.query } }
 function openEditor(id?: number) {
   router.push({ name: id ? 'admin-listening-edit' : 'admin-listening-new', params: id ? { id } : undefined, query: listQuery() })
 }
-function openExercises(id: number) { router.push({ name: 'admin-listening-exercises', params: { id }, query: listQuery() }) }
+function openExercises(item: ListeningSummary) {
+  router.push({
+    name: 'admin-listening-exercises',
+    params: { id: item.id },
+    query: { ...listQuery(), materialTitle: item.title },
+  })
+}
 function dup(a: ListeningSummary) { router.push({ name: 'admin-listening-new', query: { ...route.query, clone: a.id } }) }
 function preview(a: ListeningSummary) { router.push(`/english/listening/${a.slug}`) }
 
@@ -125,20 +132,16 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
           <span v-else class="listen-card__fallback">听</span>
         </div>
         <div class="listen-card__body">
-          <div class="listen-card__meta"><CefrBadge :level="item.cefrLevel"/><span class="listen-card__level">{{ levelLabels[item.listeningLevel] }}</span><span class="listen-card__status">{{ item.publishStatus }}</span></div>
+          <div class="listen-card__meta"><CefrBadge :level="item.cefrLevel"/><span class="listen-card__level">{{ levelLabels[item.listeningLevel] }}</span><span class="listen-card__status">{{ item.publishStatus === 'PUBLISHED' ? '已发布' : item.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</span></div>
           <h2 class="listen-card__title">{{ item.title }}</h2>
           <p class="listen-card__summary">{{ item.summary }}</p>
           <div class="listen-card__tags"><span v-for="t in item.tags" :key="t.id" class="listen-card__tag">{{ t.name }}</span></div>
           <p class="listen-card__metrics">{{ formatTime(item.durationSeconds) }} · {{ item.exerciseCount }} 练习 · {{ item.segmentCount }} 片段</p>
-          <div class="listen-card__actions">
-            <el-button link type="primary" @click="openEditor(item.id)">编辑</el-button>
-            <el-button link @click="openExercises(item.id)">练习</el-button>
-            <el-button v-if="item.publishStatus === 'PUBLISHED'" link @click="preview(item)">预览</el-button>
-            <el-button v-if="auth.isSuperAdmin && item.publishStatus !== 'PUBLISHED'" link type="success" @click="setPublished(item, true)">发布</el-button>
-            <el-button v-else-if="auth.isSuperAdmin" link type="warning" @click="setPublished(item, false)">撤回</el-button>
-            <el-button link @click="dup(item)">复制</el-button>
-            <el-button v-if="auth.isSuperAdmin" link type="danger" @click="remove(item)">删除</el-button>
-          </div>
+          <AdminContentActions :permission-note="auth.isSuperAdmin ? '' : '发布和删除由超级管理员操作'">
+            <el-button type="primary" plain @click="openEditor(item.id)">编辑</el-button><el-button @click="openExercises(item)">练习</el-button><el-button v-if="item.publishStatus === 'PUBLISHED'" @click="preview(item)">预览</el-button>
+            <el-button v-if="auth.isSuperAdmin && item.publishStatus !== 'PUBLISHED'" type="success" plain @click="setPublished(item, true)">{{ item.publishStatus === 'WITHDRAWN' ? '重新发布' : '发布' }}</el-button><el-button v-else-if="auth.isSuperAdmin" type="warning" plain @click="setPublished(item, false)">撤回</el-button>
+            <template #more><el-dropdown-item @click="dup(item)">复制</el-dropdown-item><el-dropdown-item v-if="auth.isSuperAdmin" class="is-danger" @click="remove(item)">删除</el-dropdown-item></template>
+          </AdminContentActions>
         </div>
       </article>
     </div>
@@ -166,7 +169,7 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
 .listen-card__status{font-size:11px;color:var(--text-muted)}.listen-card__title{font-size:17px;margin:0 0 6px}
 .listen-card__summary{font-size:13px;color:var(--text-secondary);margin:0 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .listen-card__tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:8px}.listen-card__tag{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--bg-subtle);border:1px solid var(--border);color:var(--text-secondary)}
-.listen-card__metrics{font-size:12px;color:var(--text-muted);margin:0 0 8px}.listen-card__actions{display:flex;flex-wrap:wrap;gap:2px}
+.listen-card__metrics{font-size:12px;color:var(--text-muted);margin:0 0 12px}
 @media(max-width:720px){
   .listening-manage__hero{align-items:flex-start;gap:16px}.listening-manage__hero span{display:block}
   .listening-manage__filters>*{width:100%!important}.listening-manage__grid{grid-template-columns:1fr}

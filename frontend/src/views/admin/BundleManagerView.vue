@@ -5,6 +5,7 @@ import type { ProblemDetail } from '@/api/http'
 import type { MediaAsset } from '@/api/media'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 import MediaPicker from '@/components/MediaPicker.vue'
+import AdminContentActions from '@/components/admin/AdminContentActions.vue'
 import { useAuthStore } from '@/stores/auth'
 import {
   addBundleItem,
@@ -312,14 +313,11 @@ onMounted(load)
             <span><b>{{ readinessMap[bundle.id].moduleCount }}</b> 个模块</span>
             <span :class="{ ready: readinessMap[bundle.id].ready }">{{ readinessMap[bundle.id].ready ? '可发布' : (bundle.publishStatus === 'PUBLISHED' ? '历史组合待补全' : `${readinessMap[bundle.id].issues.length} 项待完善`) }}</span>
           </div>
-          <nav>
-            <el-button type="primary" @click="manageItems(bundle)">编排路径</el-button>
-            <el-button @click="openEdit(bundle)">编辑信息</el-button>
-            <el-button v-if="auth.isSuperAdmin && bundle.publishStatus === 'PUBLISHED'" type="warning" @click="setPublished(bundle, false)">撤回</el-button>
-            <el-button v-else-if="auth.isSuperAdmin" type="success" @click="setPublished(bundle, true)">发布</el-button>
-            <RouterLink v-if="bundle.publishStatus === 'PUBLISHED'" :to="`/english/bundles/${bundle.slug}`" target="_blank">预览 ↗</RouterLink>
-            <el-button v-if="auth.isSuperAdmin" link type="danger" @click="remove(bundle)">删除</el-button>
-          </nav>
+          <AdminContentActions :permission-note="auth.isSuperAdmin ? '' : '发布和删除由超级管理员操作'">
+            <el-button type="primary" @click="manageItems(bundle)">编排路径</el-button><el-button @click="openEdit(bundle)">编辑</el-button><el-button v-if="bundle.publishStatus === 'PUBLISHED'" @click="$router.push(`/english/bundles/${bundle.slug}`)">预览</el-button>
+            <el-button v-if="auth.isSuperAdmin && bundle.publishStatus === 'PUBLISHED'" type="warning" plain @click="setPublished(bundle, false)">撤回</el-button><el-button v-else-if="auth.isSuperAdmin" type="success" plain @click="setPublished(bundle, true)">{{ bundle.publishStatus === 'WITHDRAWN' ? '重新发布' : '发布' }}</el-button>
+            <template v-if="auth.isSuperAdmin" #more><el-dropdown-item class="is-danger" @click="remove(bundle)">删除</el-dropdown-item></template>
+          </AdminContentActions>
         </div>
       </article>
     </div>

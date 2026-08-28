@@ -1,18 +1,51 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
-import { RouterLink, RouterView, useRouter } from 'vue-router'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { useAuthStore } from '@/stores/auth'
 import { useThemeStore } from '@/stores/theme'
 import '@/styles/admin.css'
 
 const router = useRouter()
+const route = useRoute()
 const auth = useAuthStore()
 const theme = useThemeStore()
 
-const collapsed = ref(false)
-const englishOpen = ref(true)
-const accountOpen = ref(true)
+const collapsed = ref(localStorage.getItem('admin-sidebar-collapsed') === 'true')
+const englishOpen = ref(localStorage.getItem('admin-english-open') !== 'false')
+const accountOpen = ref(localStorage.getItem('admin-account-open') !== 'false')
+const mobileOpen = ref(false)
+const navRef = ref<HTMLElement | null>(null)
+const contentRef = ref<HTMLElement | null>(null)
+
+function persistNavigation() {
+  localStorage.setItem('admin-sidebar-collapsed', String(collapsed.value))
+  localStorage.setItem('admin-english-open', String(englishOpen.value))
+  localStorage.setItem('admin-account-open', String(accountOpen.value))
+}
+
+function rememberNavScroll() {
+  if (navRef.value) sessionStorage.setItem('admin-nav-scroll', String(navRef.value.scrollTop))
+}
+
+async function revealActiveNavigation() {
+  await nextTick()
+  const active = navRef.value?.querySelector<HTMLElement>('.is-active, .admin-shell__nav-item--active')
+  active?.scrollIntoView({ block: 'nearest' })
+}
+
+watch([collapsed, englishOpen, accountOpen], persistNavigation)
+watch(() => route.fullPath, async () => {
+  mobileOpen.value = false
+  contentRef.value?.scrollTo({ top: 0, behavior: 'auto' })
+  await revealActiveNavigation()
+})
+
+onMounted(async () => {
+  await nextTick()
+  if (navRef.value) navRef.value.scrollTop = Number(sessionStorage.getItem('admin-nav-scroll') || 0)
+  await revealActiveNavigation()
+})
 
 const mainNavItems = [
   { to: '/admin', label: '仪表盘', short: '盘', match: (path: string) => path === '/admin' },
@@ -104,7 +137,8 @@ async function changePassword() {
 
 <template>
   <div class="admin-shell">
-    <aside class="admin-shell__sidebar" :class="{ 'admin-shell__sidebar--collapsed': collapsed }">
+    <button v-if="mobileOpen" class="admin-shell__scrim" type="button" aria-label="关闭导航" @click="mobileOpen = false" />
+    <aside class="admin-shell__sidebar" :class="{ 'admin-shell__sidebar--collapsed': collapsed, 'is-mobile-open': mobileOpen }">
       <div class="admin-shell__brand">
         <RouterLink to="/admin" class="admin-shell__brand-link">
           <span v-if="!collapsed">星雨笔录</span>
@@ -112,7 +146,7 @@ async function changePassword() {
         </RouterLink>
       </div>
 
-      <nav class="admin-shell__nav" aria-label="管理导航">
+      <nav ref="navRef" class="admin-shell__nav" aria-label="管理导航" @scroll.passive="rememberNavScroll">
         <RouterLink
           v-for="item in visibleMainNavItems"
           :key="item.to"
@@ -210,6 +244,7 @@ async function changePassword() {
     <div class="admin-shell__body">
       <header class="admin-shell__header">
         <div class="admin-shell__header-title">
+          <button class="admin-shell__mobile-menu" type="button" aria-label="打开管理导航" @click="mobileOpen = true">☰</button>
           <span class="admin-shell__header-title-long">星雨笔录 · 管理控制台</span>
           <span class="admin-shell__header-title-short">管理台</span>
         </div>
@@ -235,7 +270,7 @@ async function changePassword() {
         </div>
       </header>
 
-      <main class="admin-shell__content">
+      <main ref="contentRef" class="admin-shell__content">
         <RouterView />
       </main>
     </div>
@@ -260,7 +295,9 @@ async function changePassword() {
 <style scoped>
 .admin-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
   background: var(--bg-page);
 }
 
@@ -272,6 +309,9 @@ async function changePassword() {
   display: flex;
   flex-direction: column;
   transition: width 0.2s ease;
+  height: 100%;
+  position: relative;
+  z-index: 30;
 }
 
 .admin-shell__sidebar--collapsed {
@@ -296,6 +336,10 @@ async function changePassword() {
   display: flex;
   flex-direction: column;
   gap: var(--space-1);
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
 
 .admin-shell__nav-item {
@@ -359,6 +403,8 @@ async function changePassword() {
   min-width: 0;
   display: flex;
   flex-direction: column;
+  height: 100%;
+  overflow: hidden;
 }
 
 .admin-shell__header {
@@ -369,6 +415,9 @@ async function changePassword() {
   padding-inline: var(--space-6);
   background: var(--bg-surface);
   border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+  position: relative;
+  z-index: 10;
 }
 
 .admin-shell__header-title {
@@ -405,15 +454,25 @@ async function changePassword() {
 .admin-shell__content {
   flex: 1;
   padding: var(--space-8);
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
 }
+.admin-shell__mobile-menu,.admin-shell__scrim { display: none; }
 @media (max-width: 720px) {
-  .admin-shell__sidebar { width: 62px; }
-  .admin-shell__brand { padding: 18px 10px; overflow: hidden; text-align: center; }
-  .admin-shell__brand-link { display: block; width: 22px; overflow: hidden; margin: 0 auto; }
-  .admin-shell__nav { padding: 12px 7px; }
-  .admin-shell__nav-item { justify-content: center; padding: 10px 7px; }
-  .admin-shell__nav-label, .admin-shell__nav-chevron, .admin-shell__subnav { display: none; }
+  .admin-shell__sidebar { position:fixed;inset:0 auto 0 0;width:min(310px,86vw);transform:translateX(-102%);box-shadow:0 24px 70px rgba(0,0,0,.28);transition:transform .2s ease; }
+  .admin-shell__sidebar.is-mobile-open { transform:translateX(0); }
+  .admin-shell__sidebar--collapsed { width:min(310px,86vw); }
+  .admin-shell__brand { padding: 18px 20px; }
+  .admin-shell__nav { padding: 12px; }
+  .admin-shell__nav-item { justify-content: flex-start; padding: 10px 12px; }
+  .admin-shell__nav-label, .admin-shell__nav-chevron { display: inline; }
+  .admin-shell__subnav { display:grid; }
   .admin-shell__collapse { display: none; }
+  .admin-shell__scrim { display:block;position:fixed;inset:0;z-index:20;border:0;background:rgba(5,12,10,.48);backdrop-filter:blur(2px); }
+  .admin-shell__mobile-menu { display:inline-grid;place-items:center;width:34px;height:34px;margin-right:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg-subtle);color:var(--text-primary); }
+  .admin-shell__header-title { display:flex;align-items:center; }
   .admin-shell__header { padding-inline: 14px; }
   .admin-shell__header-title { font-size: 13px; }
   .admin-shell__header-title-long, .admin-shell__header-action-long { display: none; }

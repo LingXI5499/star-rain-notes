@@ -63,7 +63,7 @@ public class ListeningExerciseService {
     }
 
     public List<ReadingExerciseView> listByItem(Long itemId) {
-        itemService.get(itemId);
+        itemService.requireExists(itemId);
         return jdbc.query("""
                 SELECT e.id,e.question_type,e.prompt_markdown,e.config_json,e.explanation_markdown,
                        e.score_value,e.sort_order,e.publish_status,e.updated_at
@@ -75,7 +75,7 @@ public class ListeningExerciseService {
 
     @Transactional
     public ReadingExerciseView create(Long itemId, ReadingExerciseRequest request) {
-        itemService.get(itemId);
+        itemService.requireExists(itemId);
         exerciseRules.validateConfig(LISTENING, request.questionType(), request.configJson());
         Long order = (long) (nextSort(itemId) * 10);
         EnglishExercise exercise = new EnglishExercise();

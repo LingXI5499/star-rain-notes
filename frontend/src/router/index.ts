@@ -422,12 +422,12 @@ const router = createRouter({
         {
           path: 'english/listening/pronunciation/new',
           name: 'admin-listening-pronunciation-new',
-          component: () => import('@/views/admin/ListeningPronunciationManageView.vue'),
+          component: () => import('@/views/admin/ListeningPronunciationEditView.vue'),
         },
         {
           path: 'english/listening/pronunciation/:id/edit',
           name: 'admin-listening-pronunciation-edit',
-          component: () => import('@/views/admin/ListeningPronunciationManageView.vue'),
+          component: () => import('@/views/admin/ListeningPronunciationEditView.vue'),
         },
         {
           path: 'english/vocabulary/families',

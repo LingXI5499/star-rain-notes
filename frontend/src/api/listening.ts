@@ -69,6 +69,19 @@ export interface PronunciationRule {
 
 export type ListeningExercisePublic = { id: number; questionType: string; promptMarkdown: string; config: Record<string, unknown>; scoreValue: number; sortOrder: number }
 
+export interface ListeningExercise {
+  id: number
+  articleId: number
+  questionType: string
+  promptMarkdown: string
+  config: Record<string, unknown>
+  explanationMarkdown: string | null
+  scoreValue: number
+  sortOrder: number
+  publishStatus: PublishStatus
+  updatedAt: string | null
+}
+
 export async function fetchListenings(params: Record<string, string | number | undefined>): Promise<ListeningPage> {
   return (await http.get<ListeningPage>('/admin/english/listening/items', { params })).data
 }
@@ -107,6 +120,7 @@ export async function checkListeningAnswers(slug: string, answers: { exerciseId:
 }
 
 export async function fetchPronunciationRules(): Promise<PronunciationRule[]> { return (await http.get<PronunciationRule[]>('/admin/english/listening/pronunciation')).data }
+export async function fetchPronunciationRule(id: number): Promise<PronunciationRule> { return (await http.get<PronunciationRule>(`/admin/english/listening/pronunciation/${id}`)).data }
 export async function createPronunciationRule(payload: Record<string, unknown>): Promise<PronunciationRule> { return (await http.post('/admin/english/listening/pronunciation', payload)).data }
 export async function updatePronunciationRule(id: number, payload: Record<string, unknown>): Promise<PronunciationRule | ContentReview> { return (await http.put(`/admin/english/listening/pronunciation/${id}`, payload)).data }
 export async function deletePronunciationRule(id: number): Promise<void> { await http.delete(`/admin/english/listening/pronunciation/${id}`) }
@@ -116,14 +130,14 @@ export async function fetchPublicPronunciationRules(): Promise<PronunciationRule
 export async function fetchPublicPronunciationRule(slug: string): Promise<PronunciationRule> { return (await http.get<PronunciationRule>(`/public/english/listening/pronunciation/${slug}`)).data }
 
 export interface ListeningExercisePayload { questionType: string; promptMarkdown: string; configJson: string; explanationMarkdown?: string | null; scoreValue: number; publishStatus?: PublishStatus }
-export async function fetchListeningExercises(itemId: number): Promise<import('@/api/reading').ReadingExercise[]> {
-  return (await http.get<import('@/api/reading').ReadingExercise[]>(`/admin/english/listening/items/${itemId}/exercises`)).data
+export async function fetchListeningExercises(itemId: number): Promise<ListeningExercise[]> {
+  return (await http.get<ListeningExercise[]>(`/admin/english/listening/items/${itemId}/exercises`)).data
 }
-export async function createListeningExercise(itemId: number, payload: ListeningExercisePayload): Promise<import('@/api/reading').ReadingExercise> {
-  return (await http.post<import('@/api/reading').ReadingExercise>(`/admin/english/listening/items/${itemId}/exercises`, payload)).data
+export async function createListeningExercise(itemId: number, payload: ListeningExercisePayload): Promise<ListeningExercise> {
+  return (await http.post<ListeningExercise>(`/admin/english/listening/items/${itemId}/exercises`, payload)).data
 }
-export async function updateListeningExercise(itemId: number, exerciseId: number, payload: ListeningExercisePayload): Promise<import('@/api/reading').ReadingExercise> {
-  return (await http.put<import('@/api/reading').ReadingExercise>(`/admin/english/listening/items/${itemId}/exercises/${exerciseId}`, payload)).data
+export async function updateListeningExercise(itemId: number, exerciseId: number, payload: ListeningExercisePayload): Promise<ListeningExercise> {
+  return (await http.put<ListeningExercise>(`/admin/english/listening/items/${itemId}/exercises/${exerciseId}`, payload)).data
 }
 export async function deleteListeningExercise(itemId: number, exerciseId: number): Promise<void> {
   await http.delete(`/admin/english/listening/items/${itemId}/exercises/${exerciseId}`)
