@@ -2,6 +2,7 @@ package com.starrainnotes.english.reading.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.english.reading.dto.ReadingAdminStats;
 import com.starrainnotes.english.reading.dto.ReadingArticleLinkView;
 import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
@@ -75,12 +76,13 @@ public class ReadingArticleService {
     @Transactional
     public ReadingArticleView create(ReadingArticleRequest request) {
         ReadingTextStatistics.Stats stats = ReadingTextStatistics.analyze(request.bodyMarkdown());
-        assertSlugFree(request.slug().trim(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
+        assertSlugFree(slug, null);
         validateCefr(request.cefrLevel());
         validateReadingLevel(request.readingLevel());
         validateCover(request.coverMediaId());
         ReadingArticle article = new ReadingArticle();
-        applyFields(article, request, stats);
+        applyFields(article, request, stats, slug);
         article.setPublishStatus(DRAFT);
         if (article.getSortOrder() == null) {
             article.setSortOrder(nextSortOrder());
@@ -96,14 +98,14 @@ public class ReadingArticleService {
 
     @Transactional
     public ReadingArticleView update(Long id, ReadingArticleRequest request) {
-        require(id);
+        ReadingArticle article = require(id);
         ReadingTextStatistics.Stats stats = ReadingTextStatistics.analyze(request.bodyMarkdown());
-        assertSlugFree(request.slug().trim(), id);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), article.getSlug());
+        assertSlugFree(slug, id);
         validateCefr(request.cefrLevel());
         validateReadingLevel(request.readingLevel());
         validateCover(request.coverMediaId());
-        ReadingArticle article = mapper.selectById(id);
-        applyFields(article, request, stats);
+        applyFields(article, request, stats, slug);
         try {
             mapper.updateById(article);
         } catch (DuplicateKeyException ex) {
@@ -376,9 +378,9 @@ public class ReadingArticleService {
     }
 
     private void applyFields(ReadingArticle article, ReadingArticleRequest request,
-                             ReadingTextStatistics.Stats stats) {
+                             ReadingTextStatistics.Stats stats, String slug) {
         article.setTitle(request.title().trim());
-        article.setSlug(request.slug().trim());
+        article.setSlug(slug);
         article.setSummary(request.summary().trim());
         article.setBodyMarkdown(request.bodyMarkdown());
         article.setCoverMediaId(request.coverMediaId());
@@ -399,6 +401,14 @@ public class ReadingArticleService {
         Integer max = jdbc.queryForObject(
                 "SELECT COALESCE(MAX(sort_order),0) FROM english_reading_article", Integer.class);
         return (max == null ? 0 : max) + 10;
+    }
+
+    private boolean slugExists(String slug, Long excludedId) {
+        LambdaQueryWrapper<ReadingArticle> wrapper =
+                new LambdaQueryWrapper<ReadingArticle>().eq(ReadingArticle::getSlug, slug);
+        if (excludedId != null) wrapper.ne(ReadingArticle::getId, excludedId);
+        Long count = mapper.selectCount(wrapper);
+        return count != null && count > 0;
     }
 
     // ---------------------------------------------------------------

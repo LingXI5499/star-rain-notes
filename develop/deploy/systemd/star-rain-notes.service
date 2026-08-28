@@ -5,14 +5,14 @@
 #   sudo systemctl daemon-reload
 #   sudo systemctl enable --now star-rain-notes
 #
-# Secrets come from /etc/star-rain-notes/star-rain-notes.env (chmod 600,
+# Secrets come from /etc/star-rain-notes/star-rain-notes.env (root:starrain, chmod 640,
 # template: deploy/env/star-rain-notes.env.example) — never from the unit file.
 
 [Unit]
 Description=Star Rain Notes V1 (Spring Boot)
 Documentation=https://gitee.com/linglingxixixi/yulanlin-blog
-After=network.target mysql.service
-Wants=mysql.service
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
@@ -23,10 +23,9 @@ WorkingDirectory=/opt/star-rain-notes
 # Environment only contains non-secret defaults; secrets live in the env file
 Environment=SPRING_PROFILES_ACTIVE=prod
 Environment=SERVER_PORT=24680
-EnvironmentFile=-/etc/star-rain-notes/star-rain-notes.env
+EnvironmentFile=/etc/star-rain-notes/star-rain-notes.env
 
 ExecStart=/usr/bin/java -Xms128m -Xmx512m -XX:+UseG1GC -XX:+UseStringDeduplication -Dfile.encoding=UTF-8 -jar /opt/star-rain-notes/app.jar
-ExecReload=/bin/kill -s HUP $MAINPID
 Restart=on-failure
 RestartSec=5
 TimeoutStopSec=30
@@ -40,8 +39,15 @@ StandardError=append:/var/log/star-rain-notes/star-rain-notes.log
 # Hardening
 NoNewPrivileges=true
 PrivateTmp=true
+PrivateDevices=true
 ProtectSystem=full
 ProtectHome=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+UMask=0027
 ReadWritePaths=/srv/star-rain-notes/uploads /var/log/star-rain-notes
 RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
 

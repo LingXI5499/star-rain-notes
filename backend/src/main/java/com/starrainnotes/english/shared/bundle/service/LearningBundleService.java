@@ -2,6 +2,7 @@ package com.starrainnotes.english.shared.bundle.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.english.shared.bundle.dto.BundleRequest;
 import com.starrainnotes.english.shared.bundle.dto.BundleView;
 import com.starrainnotes.english.shared.bundle.entity.EnglishLearningBundle;
@@ -58,9 +59,12 @@ public class LearningBundleService {
     }
 
     public List<BundleView> publicList() {
+        // Published legacy bundles remain visible even when they predate the
+        // three-module readiness rule. The stricter rule is enforced only on
+        // future publish/re-publish actions.
         return jdbc.query(BUNDLE_SELECT + " WHERE b.publish_status='PUBLISHED' ORDER BY b.sort_order, b.id",
                         this::mapView).stream()
-                .filter(bundle -> items.readiness(bundle.id()).ready())
+                .filter(bundle -> items.publiclyAccessible(bundle.id()))
                 .toList();
     }
 
@@ -72,7 +76,7 @@ public class LearningBundleService {
         try {
             BundleView bundle = jdbc.queryForObject(BUNDLE_SELECT + " WHERE b.slug=? AND b.publish_status='PUBLISHED'",
                     this::mapView, slug);
-            if (bundle == null || !items.readiness(bundle.id()).ready()) {
+            if (bundle == null || !items.publiclyAccessible(bundle.id())) {
                 throw contentNotPublished();
             }
             return bundle;
@@ -83,13 +87,14 @@ public class LearningBundleService {
 
     @Transactional
     public BundleView create(BundleRequest request) {
-        validateSlugFree(request.slug().trim(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
+        validateSlugFree(slug, null);
         validateCefr(request.primaryCefr());
         validateCover(request.coverMediaId());
         Integer order = request.sortOrder() == null ? nextOrder() : request.sortOrder();
         EnglishLearningBundle bundle = new EnglishLearningBundle();
         bundle.setTitle(request.title().trim());
-        bundle.setSlug(request.slug().trim());
+        bundle.setSlug(slug);
         bundle.setSummary(clean(request.summary()));
         bundle.setPrimaryCefr(request.primaryCefr());
         bundle.setCoverMediaId(request.coverMediaId());
@@ -105,13 +110,13 @@ public class LearningBundleService {
 
     @Transactional
     public BundleView update(Long id, BundleRequest request) {
-        requireEntity(id);
-        validateSlugFree(request.slug().trim(), id);
+        EnglishLearningBundle bundle = requireEntity(id);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), bundle.getSlug());
+        validateSlugFree(slug, id);
         validateCefr(request.primaryCefr());
         validateCover(request.coverMediaId());
-        EnglishLearningBundle bundle = mapper.selectById(id);
         bundle.setTitle(request.title().trim());
-        bundle.setSlug(request.slug().trim());
+        bundle.setSlug(slug);
         bundle.setSummary(clean(request.summary()));
         bundle.setPrimaryCefr(request.primaryCefr());
         bundle.setCoverMediaId(request.coverMediaId());
@@ -159,6 +164,14 @@ public class LearningBundleService {
         Integer max = jdbc.queryForObject(
                 "SELECT COALESCE(MAX(sort_order),0) FROM english_learning_bundle", Integer.class);
         return (max == null ? 0 : max) + 10;
+    }
+
+    private boolean slugExists(String slug, Long excludedId) {
+        LambdaQueryWrapper<EnglishLearningBundle> wrapper =
+                new LambdaQueryWrapper<EnglishLearningBundle>().eq(EnglishLearningBundle::getSlug, slug);
+        if (excludedId != null) wrapper.ne(EnglishLearningBundle::getId, excludedId);
+        Long count = mapper.selectCount(wrapper);
+        return count != null && count > 0;
     }
 
     private void validateSlugFree(String slug, Long excludedId) {

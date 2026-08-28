@@ -75,7 +75,7 @@ export interface ReadingPage {
 
 export interface ReadingArticlePayload {
   title: string
-  slug: string
+  slug?: string
   summary: string
   bodyMarkdown: string
   coverMediaId?: number | null

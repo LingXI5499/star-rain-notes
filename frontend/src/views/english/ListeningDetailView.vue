@@ -9,6 +9,7 @@ import CefrBadge from '@/components/english/CefrBadge.vue'
 import ExerciseRunner from '@/components/english/ExerciseRunner.vue'
 import type { OutlineItem } from '@/types'
 import { fetchLearningRecord, saveLearningRecord, type LearningRecord } from '@/api/englishLearning'
+import { applyPageMeta } from '@/lib/seo'
 
 const route = useRoute()
 const item = ref<ListeningItem | null>(null)
@@ -30,6 +31,7 @@ async function load() {
     exercises.value = await fetchPublicListeningExercises(String(route.params.slug))
     outline.value = []; activeSegment.value = -1; results.value = {}; currentTime.value = 0
     learningRecord.value = item.value ? await fetchLearningRecord('LISTENING', item.value.id).catch(() => null) : null
+    if (item.value) applyPageMeta({ title: item.value.title, description: item.value.summary })
   } catch { notFound.value = true } finally { loading.value = false }
 }
 

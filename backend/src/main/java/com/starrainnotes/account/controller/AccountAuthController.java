@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -52,7 +53,8 @@ public class AccountAuthController {
         }
         auditLog.record(user.getId(), "LOGIN", "ACCOUNT", user.getId(), "SUCCESS",
                 clientIp(request), request.getHeader("User-Agent"), null);
-        AccountPrincipal principal = new AccountPrincipal(user.getId(), user.getEmail(), user.getRole());
+        AccountPrincipal principal = new AccountPrincipal(user.getId(), user.getEmail(), user.getRole(),
+                user.getAuthVersion());
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 principal, null,
                 principal.authorities().stream().map(SimpleGrantedAuthority::new).toList());
@@ -60,26 +62,25 @@ public class AccountAuthController {
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
         securityContextRepository.saveContext(context, request, response);
+        request.changeSessionId();
         return new AccountSessionView(true, user.getEmail(), user.getRole(), user.getAccountStatus(),
                 accountService.capabilities(user.getRole()));
     }
 
     @PutMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void changePassword(@Valid @RequestBody ChangePasswordRequest body, HttpServletRequest request) {
-        accountService.changePassword(body.email(), body.currentPassword(), body.newPassword());
-        auditLog.record(accountUserIdOrNull(body.email()), "CHANGE_PASSWORD", "ACCOUNT", null, "SUCCESS",
+    public void changePassword(@Valid @RequestBody ChangePasswordRequest body, HttpServletRequest request,
+                               Authentication authentication) {
+        if (!(authentication.getPrincipal() instanceof AccountPrincipal principal)
+                || !principal.getEmail().equalsIgnoreCase(body.email().trim())) {
+            throw AccountService.fail("ACCOUNT_IDENTITY_MISMATCH", HttpStatus.FORBIDDEN,
+                    "Forbidden", "The password can only be changed for the current account.");
+        }
+        accountService.changePassword(principal.getEmail(), body.currentPassword(), body.newPassword());
+        auditLog.record(principal.getId(), "CHANGE_PASSWORD", "ACCOUNT", principal.getId(), "SUCCESS",
                 clientIp(request), request.getHeader("User-Agent"), null);
         HttpSession session = request.getSession(false);
         if (session != null) session.invalidate();
-    }
-
-    private Long accountUserIdOrNull(String email) {
-        try {
-            return accountService.findByEmailPublic(email).getId();
-        } catch (RuntimeException ex) {
-            return null;
-        }
     }
 
     static String clientIp(HttpServletRequest request) {

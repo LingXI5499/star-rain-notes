@@ -1,6 +1,8 @@
 package com.starrainnotes.common.security;
 
 import com.starrainnotes.auth.security.AdminUserDetailsService;
+import com.starrainnotes.account.security.AccountSessionValidationFilter;
+import com.starrainnotes.account.service.AccountService;
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
@@ -18,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRepository;
 import org.springframework.security.web.csrf.CsrfTokenRequestAttributeHandler;
@@ -85,11 +88,17 @@ public class SecurityConfig {
     }
 
     @Bean
+    public AccountSessionValidationFilter accountSessionValidationFilter(AccountService accountService) {
+        return new AccountSessionValidationFilter(accountService);
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    RestAuthenticationEntryPoint authenticationEntryPoint,
                                                    RestAccessDeniedHandler accessDeniedHandler,
                                                    HttpSessionSecurityContextRepository securityContextRepository,
-                                                   CsrfTokenRepository csrfTokenRepository)
+                                                   CsrfTokenRepository csrfTokenRepository,
+                                                   AccountSessionValidationFilter accountSessionValidationFilter)
             throws Exception {
         http
                 .csrf(csrf -> csrf
@@ -99,6 +108,7 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .securityContext(context -> context
                         .securityContextRepository(securityContextRepository))
+                .addFilterAfter(accountSessionValidationFilter, SecurityContextHolderFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health",
                                 "/v3/api-docs/**",

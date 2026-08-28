@@ -8,8 +8,8 @@ import jakarta.validation.constraints.Size;
 public record GrammarLessonRequest(
         @NotNull Long sectionId,
         @NotBlank @Size(max = 200) String title,
-        @NotBlank @Size(max = 50)
-        @Pattern(regexp = "^[0-9]+-[0-9]+$", message = "slug must use a stable numeric lesson number, for example 2-3")
+        @Size(max = 50)
+        @Pattern(regexp = "^\\s*$|^[a-z0-9]+(?:-[a-z0-9]+)*$", message = "slug must be lowercase kebab-case")
         String slug,
         @Size(max = 1000) String summary,
         @NotBlank String bodyMarkdown) {

@@ -21,6 +21,7 @@ import com.starrainnotes.blog.entity.BlogTag;
 import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.blog.mapper.BlogTagMapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
@@ -131,12 +132,12 @@ public class BlogService {
 
     @Transactional
     public AdminPostDetailView create(CreatePostRequest request) {
-        assertSlugFree(request.slug(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
+        assertSlugFree(slug, null);
         List<Long> tagIds = resolveTagIds(request.tagIds(), request.tagNames());
 
         BlogPost post = new BlogPost();
-        applyFields(post, request.title(), request.slug(), request.summary(), request.bodyMarkdown(),
-                request.coverMediaId(), request.seoTitle(), request.seoDescription());
+        applyFields(post, request.title(), slug, request.summary(), request.bodyMarkdown(), request.coverMediaId());
         post.setPublishStatus(DRAFT);
         post.setPublishedAt(null);
         postMapper.insert(post);
@@ -147,11 +148,11 @@ public class BlogService {
     @Transactional
     public AdminPostDetailView update(Long postId, UpdatePostRequest request) {
         BlogPost post = requirePost(postId);
-        assertSlugFree(request.slug(), postId);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), post.getSlug());
+        assertSlugFree(slug, postId);
         List<Long> tagIds = resolveTagIds(request.tagIds(), request.tagNames());
 
-        applyFields(post, request.title(), request.slug(), request.summary(), request.bodyMarkdown(),
-                request.coverMediaId(), request.seoTitle(), request.seoDescription());
+        applyFields(post, request.title(), slug, request.summary(), request.bodyMarkdown(), request.coverMediaId());
         // publishStatus / publishedAt are never touched by a plain update
         postMapper.updateById(post);
         replaceTags(post.getId(), tagIds);
@@ -301,14 +302,12 @@ public class BlogService {
     // ---------------------------------------------------------------
 
     private void applyFields(BlogPost post, String title, String slug, String summary, String bodyMarkdown,
-                             Long coverMediaId, String seoTitle, String seoDescription) {
+                             Long coverMediaId) {
         post.setTitle(title);
         post.setSlug(slug);
         post.setSummary(summary);
         post.setBodyMarkdown(bodyMarkdown);
         post.setCoverMediaId(coverMediaId);
-        post.setSeoTitle(seoTitle);
-        post.setSeoDescription(seoDescription);
     }
 
     private BlogPost requirePost(Long postId) {
@@ -329,6 +328,13 @@ public class BlogService {
             throw new ApiException(HttpStatus.CONFLICT, "SLUG_CONFLICT",
                     "Slug already exists", "A post with this slug already exists.");
         }
+    }
+
+    private boolean slugExists(String slug, Long excludeId) {
+        LambdaQueryWrapper<BlogPost> wrapper = new LambdaQueryWrapper<BlogPost>().eq(BlogPost::getSlug, slug);
+        if (excludeId != null) wrapper.ne(BlogPost::getId, excludeId);
+        Long count = postMapper.selectCount(wrapper);
+        return count != null && count > 0;
     }
 
     private void validateTags(List<Long> tagIds) {

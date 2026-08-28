@@ -39,7 +39,6 @@ const groups = ref<AdminCurriculumGroup[]>([])
 
 const form = reactive({
   title: '',
-  slug: '',
   groupId: null as number | null,
   summary: '',
   bodyMarkdown: '',
@@ -65,7 +64,6 @@ onMounted(async () => {
     if (isEdit.value && chapterId !== null) {
       const chapter = await fetchChapter(tutorialId, chapterId)
       form.title = chapter.title
-      form.slug = chapter.slug
       form.groupId = chapter.groupId
       form.summary = chapter.summary ?? ''
       form.bodyMarkdown = chapter.bodyMarkdown
@@ -87,8 +85,8 @@ onMounted(async () => {
 })
 
 async function save() {
-  if (!form.title.trim() || !form.slug.trim() || !form.bodyMarkdown.trim() || !form.groupId) {
-    ElMessage.warning('请填写标题、slug、所属分组与正文。')
+  if (!form.title.trim() || !form.bodyMarkdown.trim() || !form.groupId) {
+    ElMessage.warning('请填写标题、所属分组与正文。')
     return
   }
   saving.value = true
@@ -97,7 +95,6 @@ async function save() {
       // Group changes are handled by the explicit move action on the structure page.
       const result = await updateChapter(tutorialId, chapterId, {
         title: form.title,
-        slug: form.slug,
         summary: form.summary || null,
         bodyMarkdown: form.bodyMarkdown,
       })
@@ -110,7 +107,6 @@ async function save() {
     } else {
       await createChapter(tutorialId, {
         title: form.title,
-        slug: form.slug,
         groupId: form.groupId,
         summary: form.summary || null,
         bodyMarkdown: form.bodyMarkdown,
@@ -171,13 +167,10 @@ async function backToWorkspace() {
 
       <MarkdownEditor v-model="form.bodyMarkdown" placeholder="从 H2 开始撰写正文…" />
 
-      <!-- bottom: other meta info (slug / parent / summary) -->
+      <!-- bottom: other meta info (parent / summary) -->
       <div class="chapter-edit__meta">
         <h2 class="chapter-edit__meta-title">章节信息</h2>
         <div class="chapter-edit__meta-grid">
-          <el-form-item label="Slug（小写 kebab-case）">
-            <el-input v-model="form.slug" maxlength="150" />
-          </el-form-item>
           <el-form-item label="所属分组">
             <el-select v-model="form.groupId" placeholder="选择分组" style="width: 100%" :disabled="isEdit">
               <el-option v-for="option in groupOptions" :key="option.id" :label="option.label" :value="option.id" />

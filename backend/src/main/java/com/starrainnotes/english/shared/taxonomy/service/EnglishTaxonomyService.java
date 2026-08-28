@@ -2,6 +2,7 @@ package com.starrainnotes.english.shared.taxonomy.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.english.shared.taxonomy.dto.TaxonomyMoveRequest;
 import com.starrainnotes.english.shared.taxonomy.dto.TaxonomyRequest;
 import com.starrainnotes.english.shared.taxonomy.dto.TaxonomyTermView;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -98,7 +100,8 @@ public class EnglishTaxonomyService {
                 throw depthInvalid("A taxonomy term can be at most two levels deep.");
             }
         }
-        assertSlugFree(request.slug().trim(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
+        assertSlugFree(slug, null);
         Integer order = request.sortOrder() == null ? nextOrder(dimension, parentId) : request.sortOrder();
         if (order < 1) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_TAXONOMY_DEPTH_INVALID",
@@ -108,7 +111,7 @@ public class EnglishTaxonomyService {
         term.setDimension(dimension);
         term.setParentId(parentId);
         term.setName(request.name().trim());
-        term.setSlug(request.slug().trim());
+        term.setSlug(slug);
         term.setDescription(clean(request.description()));
         term.setSortOrder(order);
         term.setEnabled(request.enabled() == null || request.enabled());
@@ -140,7 +143,8 @@ public class EnglishTaxonomyService {
                 throw depthInvalid("A taxonomy term can be at most two levels deep.");
             }
         }
-        assertSlugFree(request.slug().trim(), id);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), term.getSlug());
+        assertSlugFree(slug, id);
         if (request.sortOrder() != null && request.sortOrder() < 1) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_TAXONOMY_DEPTH_INVALID",
                     "Invalid sort order", "Sort order must be a positive integer.");
@@ -149,7 +153,7 @@ public class EnglishTaxonomyService {
         term.setDimension(dimension);
         term.setParentId(parentId);
         term.setName(request.name().trim());
-        term.setSlug(request.slug().trim());
+        term.setSlug(slug);
         term.setDescription(clean(request.description()));
         if (request.sortOrder() != null) {
             term.setSortOrder(request.sortOrder());
@@ -256,8 +260,15 @@ public class EnglishTaxonomyService {
     }
 
     private Integer nextOrder(String dimension, Long parentId) {
-        long size = siblingIds(dimension, parentId).size();
-        return ((int) size) * 10 + 10;
+        LambdaQueryWrapper<EnglishTaxonomyTerm> wrapper = new LambdaQueryWrapper<EnglishTaxonomyTerm>()
+                .eq(EnglishTaxonomyTerm::getDimension, dimension);
+        if (parentId == null) wrapper.isNull(EnglishTaxonomyTerm::getParentId);
+        else wrapper.eq(EnglishTaxonomyTerm::getParentId, parentId);
+        return mapper.selectList(wrapper).stream()
+                .map(EnglishTaxonomyTerm::getSortOrder)
+                .filter(Objects::nonNull)
+                .max(Integer::compareTo)
+                .orElse(0) + 10;
     }
 
     private List<Long> siblingIds(String dimension, Long parentId) {
@@ -295,6 +306,14 @@ public class EnglishTaxonomyService {
             throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_CONTENT_SLUG_CONFLICT",
                     "Slug already in use", "Choose another stable slug.");
         }
+    }
+
+    private boolean slugExists(String slug, Long excludedId) {
+        LambdaQueryWrapper<EnglishTaxonomyTerm> wrapper = new LambdaQueryWrapper<EnglishTaxonomyTerm>()
+                .eq(EnglishTaxonomyTerm::getSlug, slug);
+        if (excludedId != null) wrapper.ne(EnglishTaxonomyTerm::getId, excludedId);
+        Long count = mapper.selectCount(wrapper);
+        return count != null && count > 0;
     }
 
     private String requireDimension(String dimension) {

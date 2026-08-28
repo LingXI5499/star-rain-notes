@@ -8,92 +8,140 @@ const props = withDefaults(
     modelValue: number[]
     dimension?: TaxonomyDimension | 'ALL'
     multiple?: boolean
+    placeholder?: string
   }>(),
-  { dimension: 'ALL', multiple: true },
+  { dimension: 'ALL', multiple: true, placeholder: '搜索并选择标签…' },
 )
 
 const emit = defineEmits<{ (e: 'update:modelValue', value: number[]): void }>()
-
 const query = ref('')
 
-const filtered = computed<TaxonomyTerm[]>(() => {
-  const q = query.value.trim()
-  return props.terms
-    .filter((t) => props.dimension === 'ALL' || t.dimension === props.dimension)
-    .filter((t) => (t.parentId === null || true) && (q ? t.name.includes(q) || t.slug.includes(q) : true))
+interface FlatTerm {
+  term: TaxonomyTerm
+  depth: number
+  parentName: string | null
+}
+
+function flatten(terms: TaxonomyTerm[], depth = 0, parentName: string | null = null): FlatTerm[] {
+  return terms.flatMap((term) => [
+    { term, depth, parentName },
+    ...flatten(term.children ?? [], depth + 1, term.name),
+  ])
+}
+
+const allTerms = computed(() => flatten(props.terms)
+  .filter(({ term }) => props.dimension === 'ALL' || term.dimension === props.dimension))
+
+const selectedTerms = computed(() => {
+  const byId = new Map(allTerms.value.map(({ term }) => [term.id, term]))
+  return [...new Set(props.modelValue)].map((id) => byId.get(id)).filter((term): term is TaxonomyTerm => !!term)
 })
 
-function toggle(termId: number) {
+const filtered = computed(() => {
+  const q = query.value.trim().toLocaleLowerCase()
+  const selected = new Set(props.modelValue)
+  return allTerms.value.filter(({ term }) => {
+    if (selected.has(term.id) || !term.enabled) return false
+    if (!q) return true
+    return term.name.toLocaleLowerCase().includes(q) || term.slug.toLocaleLowerCase().includes(q)
+  })
+})
+
+function select(termId: number) {
   if (props.multiple) {
-    const next = props.modelValue.includes(termId)
-      ? props.modelValue.filter((id) => id !== termId)
-      : [...props.modelValue, termId]
-    emit('update:modelValue', next)
+    emit('update:modelValue', [...new Set([...props.modelValue, termId])])
   } else {
-    emit('update:modelValue', props.modelValue[0] === termId ? [] : [termId])
+    emit('update:modelValue', [termId])
   }
+  query.value = ''
+}
+
+function remove(termId: number) {
+  emit('update:modelValue', props.modelValue.filter((id) => id !== termId))
+}
+
+function selectFirst() {
+  const first = filtered.value[0]
+  if (first) select(first.term.id)
 }
 </script>
 
 <template>
   <div class="tag-picker">
+    <div v-if="selectedTerms.length" class="tag-picker__selected" aria-label="已选择标签">
+      <button
+        v-for="term in selectedTerms"
+        :key="term.id"
+        type="button"
+        class="tag-picker__chip"
+        :aria-label="`移除标签 ${term.name}`"
+        @click="remove(term.id)"
+      >
+        <span>{{ term.name }}</span>
+        <small>{{ term.dimension }}</small>
+        <b aria-hidden="true">×</b>
+      </button>
+    </div>
+
     <div class="tag-picker__tools">
-      <input v-model="query" class="tag-picker__search" placeholder="搜索标签…" type="text" />
-      <span class="tag-picker__count">已选 {{ modelValue.length }}</span>
+      <input
+        v-model="query"
+        class="tag-picker__search"
+        :placeholder="placeholder"
+        type="search"
+        autocomplete="off"
+        @keydown.enter.prevent="selectFirst"
+      />
+      <span class="tag-picker__count">已选 {{ selectedTerms.length }}</span>
     </div>
-    <div class="tag-picker__groups">
-      <div v-for="term in filtered" :key="term.id" class="tag-picker__group">
-        <button
-          type="button"
-          class="tag-picker__item"
-          :class="{ 'is-active': modelValue.includes(term.id) }"
-          @click="toggle(term.id)"
-        >
-          {{ term.name }}
-          <span class="tag-picker__dimension">{{ term.dimension }}</span>
-        </button>
-        <div v-if="term.children?.length" class="tag-picker__children">
-          <button
-            v-for="child in term.children"
-            :key="child.id"
-            type="button"
-            class="tag-picker__item tag-picker__item--child"
-            :class="{ 'is-active': modelValue.includes(child.id) }"
-            @click="toggle(child.id)"
-          >
-            {{ child.name }}
-          </button>
-        </div>
-      </div>
+
+    <div v-if="filtered.length" class="tag-picker__results">
+      <button
+        v-for="entry in filtered"
+        :key="entry.term.id"
+        type="button"
+        class="tag-picker__item"
+        :class="{ 'tag-picker__item--child': entry.depth > 0 }"
+        :style="{ '--tag-depth': String(Math.min(entry.depth, 3)) }"
+        @click="select(entry.term.id)"
+      >
+        <span>{{ entry.term.name }}</span>
+        <small v-if="entry.parentName">{{ entry.parentName }}</small>
+        <em>{{ entry.term.dimension }}</em>
+      </button>
     </div>
+    <p v-else class="tag-picker__empty">{{ query.trim() ? '没有匹配的可选标签' : '所有可用标签均已选择' }}</p>
   </div>
 </template>
 
 <style scoped>
-.tag-picker__tools { display: flex; align-items: center; gap: var(--space-3); margin-bottom: var(--space-3); }
+.tag-picker { display: flex; flex-direction: column; gap: var(--space-3); }
+.tag-picker__selected { display: flex; flex-wrap: wrap; gap: 8px; }
+.tag-picker__chip {
+  display: inline-flex; min-height: 34px; align-items: center; gap: 7px; padding: 5px 9px 5px 12px;
+  border: 1px solid var(--primary); border-radius: 999px;
+  background: color-mix(in srgb, var(--primary) 12%, var(--bg-surface)); color: var(--primary); cursor: pointer;
+}
+.tag-picker__chip small { font-size: 9px; opacity: .65; }
+.tag-picker__chip b { display: grid; width: 18px; height: 18px; place-items: center; border-radius: 50%; background: color-mix(in srgb, var(--primary) 14%, transparent); }
+.tag-picker__tools { display: flex; align-items: center; gap: var(--space-3); }
 .tag-picker__search {
-  flex: 1;
-  padding: 8px 12px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--bg-surface);
-  color: var(--text-primary);
+  min-width: 0; flex: 1; padding: 9px 12px; border: 1px solid var(--border); border-radius: 8px;
+  background: var(--bg-surface); color: var(--text-primary);
 }
-.tag-picker__count { font-size: 12px; color: var(--text-muted); }
-.tag-picker__groups { display: flex; flex-wrap: wrap; gap: var(--space-2); }
-.tag-picker__group { display: flex; flex-direction: column; gap: 4px; }
-.tag-picker__children { display: flex; flex-wrap: wrap; gap: 4px; padding-left: 12px; }
+.tag-picker__search:focus { border-color: var(--primary); outline: 2px solid color-mix(in srgb, var(--primary) 14%, transparent); }
+.tag-picker__count { flex: none; font-size: 12px; color: var(--text-muted); }
+.tag-picker__results { display: flex; max-height: 230px; flex-wrap: wrap; gap: var(--space-2); overflow: auto; padding: 2px; }
 .tag-picker__item {
-  padding: 4px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: var(--bg-subtle);
-  color: var(--text-secondary);
-  font-size: 12px;
-  cursor: pointer;
-  transition: all 0.15s ease;
+  display: inline-flex; min-height: 34px; align-items: center; gap: 7px;
+  margin-left: calc(var(--tag-depth, 0) * 10px); padding: 5px 10px;
+  border: 1px solid var(--border); border-radius: 999px; background: var(--bg-subtle);
+  color: var(--text-secondary); font-size: 12px; cursor: pointer; transition: border-color .15s ease, color .15s ease;
 }
-.tag-picker__item--child { font-size: 11px; }
-.tag-picker__item.is-active { background: color-mix(in srgb, var(--primary) 14%, transparent); border-color: var(--primary); color: var(--primary); }
-.tag-picker__dimension { font-size: 9px; opacity: 0.6; margin-left: 4px; }
+.tag-picker__item:hover { border-color: var(--primary); color: var(--primary); }
+.tag-picker__item--child::before { content: '↳'; color: var(--text-muted); }
+.tag-picker__item small { color: var(--text-muted); font-size: 10px; }
+.tag-picker__item em { font-size: 9px; font-style: normal; opacity: .6; }
+.tag-picker__empty { margin: 0; color: var(--text-muted); font-size: 12px; }
+@media (max-width: 640px) { .tag-picker__tools { align-items: stretch; flex-direction: column; gap: 6px; } }
 </style>

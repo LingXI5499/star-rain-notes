@@ -51,10 +51,10 @@ export interface GrammarLessonDetail extends GrammarLessonSummary {
 
 export interface GrammarCoursePayload {
   title: string; subtitle: string | null; summary: string | null; introduction: string | null
-  roadmapMarkdown: string | null; coverMediaId: number | null; seoTitle: string | null; seoDescription: string | null
+  roadmapMarkdown: string | null; coverMediaId: number | null; seoTitle?: string | null; seoDescription?: string | null
 }
 export interface GrammarLessonPayload {
-  sectionId: number; title: string; slug: string; summary: string | null; bodyMarkdown: string
+  sectionId: number; title: string; slug?: string; summary: string | null; bodyMarkdown: string
 }
 
 export async function fetchPublicGrammar(): Promise<GrammarCurriculum> {

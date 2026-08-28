@@ -22,7 +22,6 @@ const coverUrl = ref<string | null>(null)
 
 const form = reactive({
   title: '',
-  slug: '',
   summary: '',
   role: '',
   techStack: [] as string[],
@@ -34,8 +33,6 @@ const form = reactive({
   sortOrder: 0,
   startedAt: null as string | null,
   completedAt: null as string | null,
-  seoTitle: '',
-  seoDescription: '',
   coverMediaId: null as number | null,
 })
 
@@ -48,7 +45,6 @@ onMounted(async () => {
       const detail = await fetchAdminProject(Number(route.params.id))
       Object.assign(form, {
         title: detail.title,
-        slug: detail.slug,
         summary: detail.summary,
         role: detail.role ?? '',
         techStack: [...detail.techStack],
@@ -60,8 +56,6 @@ onMounted(async () => {
         sortOrder: detail.sortOrder,
         startedAt: detail.startedAt,
         completedAt: detail.completedAt,
-        seoTitle: detail.seoTitle ?? '',
-        seoDescription: detail.seoDescription ?? '',
         coverMediaId: detail.coverMediaId,
       })
       coverUrl.value = detail.coverUrl
@@ -77,15 +71,14 @@ onMounted(async () => {
 })
 
 async function save() {
-  if (!form.title.trim() || !form.slug.trim() || !form.summary.trim() || !form.bodyMarkdown.trim()) {
-    ElMessage.warning('请填写标题、slug、摘要与正文。')
+  if (!form.title.trim() || !form.summary.trim() || !form.bodyMarkdown.trim()) {
+    ElMessage.warning('请填写标题、摘要与正文。')
     return
   }
   saving.value = true
   try {
     const payload = {
       title: form.title,
-      slug: form.slug,
       summary: form.summary,
       role: form.role || null,
       techStack: form.techStack.filter((t) => t.trim()),
@@ -97,8 +90,6 @@ async function save() {
       sortOrder: form.sortOrder,
       startedAt: form.startedAt,
       completedAt: form.completedAt,
-      seoTitle: form.seoTitle || null,
-      seoDescription: form.seoDescription || null,
       coverMediaId: form.coverMediaId,
     }
     if (isEdit.value) {
@@ -159,13 +150,10 @@ function clearCover() {
         <MarkdownEditor v-model="form.bodyMarkdown" placeholder="Background / Goals / Architecture / Challenges / Results…" />
       </section>
 
-      <!-- bottom: other meta info (status / links / stack / SEO) -->
+      <!-- bottom: project details -->
       <div class="portfolio-edit__meta">
         <div class="portfolio-edit__section-head"><div><small>PROJECT SETTINGS</small><h2>作品信息</h2></div><span>用案例叙事呈现完整工程过程</span></div>
         <div class="portfolio-edit__meta-grid">
-          <el-form-item label="Slug（小写 kebab-case）">
-            <el-input v-model="form.slug" maxlength="150" />
-          </el-form-item>
           <el-form-item label="项目状态">
             <el-select v-model="form.projectStatus" style="width: 100%">
               <el-option label="开发中" value="DEVELOPING" />
@@ -209,12 +197,6 @@ function clearCover() {
           </el-form-item>
           <el-form-item label="摘要">
             <el-input v-model="form.summary" type="textarea" :rows="3" maxlength="1000" />
-          </el-form-item>
-          <el-form-item label="SEO 标题">
-            <el-input v-model="form.seoTitle" maxlength="200" />
-          </el-form-item>
-          <el-form-item label="SEO 描述">
-            <el-input v-model="form.seoDescription" type="textarea" :rows="2" maxlength="500" />
           </el-form-item>
         </div>
       </div>

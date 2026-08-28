@@ -5,12 +5,13 @@ import { fetchPublicPronunciationRule, type PronunciationRule } from '@/api/list
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import ArticleOutline from '@/components/ArticleOutline.vue'
 import type { OutlineItem } from '@/types'
+import { applyPageMeta } from '@/lib/seo'
 
 const route = useRoute()
 const rule = ref<PronunciationRule | null>(null)
 const outline = ref<OutlineItem[]>([]); const loading = ref(true); const notFound = ref(false)
 const ruleLabel: Record<string,string> = { LINKING:'连读', WEAK_FORM:'弱读', ASSIMILATION:'同化', ELISION:'省音', STRESS:'重音', INTONATION:'语调' }
-async function load(){ loading.value=true; notFound.value=false; try{ rule.value=await fetchPublicPronunciationRule(String(route.params.slug)); outline.value=[] }catch{notFound.value=true}finally{loading.value=false} }
+async function load(){ loading.value=true; notFound.value=false; try{ rule.value=await fetchPublicPronunciationRule(String(route.params.slug)); outline.value=[]; applyPageMeta({title:rule.value.title,description:rule.value.summary}) }catch{notFound.value=true}finally{loading.value=false} }
 watch(()=>route.params.slug,load); onMounted(load)
 </script>
 

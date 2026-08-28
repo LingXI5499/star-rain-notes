@@ -93,7 +93,7 @@ export interface AdminProjectDetail {
 
 export interface ProjectPayload {
   title: string
-  slug: string
+  slug?: string
   summary: string
   role?: string | null
   techStack?: string[]

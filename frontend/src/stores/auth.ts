@@ -47,10 +47,6 @@ export const useAuthStore = defineStore('auth', {
         this.reset()
       }
     },
-    async fetchSetupRequired(): Promise<boolean> {
-      const { data } = await http.get<{ setupRequired: boolean }>('/setup/status')
-      return data.setupRequired
-    },
     async login(email: string, password: string) {
       await http.post('/auth/account/login', { email, password })
       await refreshCsrf()

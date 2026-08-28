@@ -13,7 +13,7 @@ public record TaxonomyRequest(
         @NotBlank @Size(max = 20) String dimension,
         Long parentId,
         @NotBlank @Size(max = 100) String name,
-        @NotBlank @Size(max = 100) String slug,
+        @Size(max = 100) String slug,
         @Size(max = 500) String description,
         @Min(1) Integer sortOrder,
         Boolean enabled) {

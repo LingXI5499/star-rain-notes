@@ -2,6 +2,7 @@
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { fetchPublicSite } from '@/api/site'
+import { setSeoTagline } from '@/lib/seo'
 
 const siteName = ref('星雨笔录')
 const footerText = ref('Personal Knowledge System')
@@ -19,6 +20,7 @@ const navItems = [
 onMounted(async () => {
   try {
     const site = await fetchPublicSite()
+    setSeoTagline(site.tagline)
     siteName.value = site.siteName
     footerText.value = site.footerText ?? 'Personal Knowledge System'
     githubUrl.value = site.githubUrl

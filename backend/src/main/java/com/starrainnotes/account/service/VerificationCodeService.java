@@ -71,7 +71,7 @@ public class VerificationCodeService {
 
     public void verify(String email, String purpose, String code, Long invitationId) {
         LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
-        EmailVerificationChallenge challenge = latestUnconsumed(email, purpose);
+        EmailVerificationChallenge challenge = latestUnconsumed(email, purpose, invitationId);
         if (challenge == null) {
             throw fail("VERIFICATION_CODE_INVALID", HttpStatus.UNPROCESSABLE_ENTITY,
                     "Verification code invalid", "No active verification code.");
@@ -95,10 +95,16 @@ public class VerificationCodeService {
     }
 
     public EmailVerificationChallenge latestUnconsumed(String email, String purpose) {
-        List<EmailVerificationChallenge> list = mapper.selectList(new LambdaQueryWrapper<EmailVerificationChallenge>()
+        return latestUnconsumed(email, purpose, null);
+    }
+
+    private EmailVerificationChallenge latestUnconsumed(String email, String purpose, Long invitationId) {
+        LambdaQueryWrapper<EmailVerificationChallenge> query = new LambdaQueryWrapper<EmailVerificationChallenge>()
                 .eq(EmailVerificationChallenge::getEmail, email)
                 .eq(EmailVerificationChallenge::getPurpose, purpose)
-                .isNull(EmailVerificationChallenge::getConsumedAt)
+                .eq(invitationId != null, EmailVerificationChallenge::getInvitationId, invitationId)
+                .isNull(EmailVerificationChallenge::getConsumedAt);
+        List<EmailVerificationChallenge> list = mapper.selectList(query
                 .orderByDesc(EmailVerificationChallenge::getCreatedAt)
                 .last("LIMIT 1"));
         return list.isEmpty() ? null : list.get(0);

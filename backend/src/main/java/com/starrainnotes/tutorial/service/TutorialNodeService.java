@@ -2,6 +2,7 @@ package com.starrainnotes.tutorial.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import com.starrainnotes.tutorial.dto.AdminCurriculumChapterView;
 import com.starrainnotes.tutorial.dto.AdminCurriculumGroupView;
@@ -131,13 +132,15 @@ public class TutorialNodeService {
     public ChapterDetailView createChapter(Long tutorialId, CreateChapterRequest request) {
         requireTutorial(tutorialId);
         TutorialNode group = requireTargetGroup(tutorialId, request.groupId());
-        assertChapterSlugFree(tutorialId, request.slug(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(),
+                candidate -> chapterSlugExists(tutorialId, candidate, null));
+        assertChapterSlugFree(tutorialId, slug, null);
         TutorialNode chapter = new TutorialNode();
         chapter.setTutorialId(tutorialId);
         chapter.setParentId(group.getId());
         chapter.setNodeType(CHAPTER);
         chapter.setTitle(request.title());
-        chapter.setSlug(request.slug());
+        chapter.setSlug(slug);
         chapter.setSummary(request.summary());
         chapter.setBodyMarkdown(request.bodyMarkdown());
         chapter.setPublishStatus(DRAFT);
@@ -157,9 +160,10 @@ public class TutorialNodeService {
 
     public ChapterDetailView updateChapter(Long tutorialId, Long chapterId, UpdateChapterRequest request) {
         TutorialNode chapter = requireChapter(tutorialId, chapterId);
-        assertChapterSlugFree(tutorialId, request.slug(), chapterId);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), chapter.getSlug());
+        assertChapterSlugFree(tutorialId, slug, chapterId);
         chapter.setTitle(request.title());
-        chapter.setSlug(request.slug());
+        chapter.setSlug(slug);
         chapter.setSummary(request.summary());
         chapter.setBodyMarkdown(request.bodyMarkdown());
         nodeMapper.updateById(chapter);
@@ -337,6 +341,14 @@ public class TutorialNodeService {
             throw new ApiException(HttpStatus.CONFLICT, "SLUG_CONFLICT",
                     "Slug already exists", "A chapter with this slug already exists in the tutorial.");
         }
+    }
+
+    private boolean chapterSlugExists(Long tutorialId, String slug, Long excludeId) {
+        LambdaQueryWrapper<TutorialNode> wrapper = new LambdaQueryWrapper<TutorialNode>()
+                .eq(TutorialNode::getTutorialId, tutorialId).eq(TutorialNode::getSlug, slug);
+        if (excludeId != null) wrapper.ne(TutorialNode::getId, excludeId);
+        Long count = nodeMapper.selectCount(wrapper);
+        return count != null && count > 0;
     }
 
     private List<TutorialNode> loadAll(Long tutorialId) {

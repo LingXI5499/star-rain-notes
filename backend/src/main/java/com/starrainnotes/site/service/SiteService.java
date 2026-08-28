@@ -198,7 +198,9 @@ public class SiteService {
         setting.setSiteUrl(request.siteUrl());
         setting.setFooterText(request.footerText());
         setting.setGithubUrl(request.githubUrl());
-        setting.setDefaultSeoDescription(request.defaultSeoDescription());
+        if (request.defaultSeoDescription() != null) {
+            setting.setDefaultSeoDescription(request.defaultSeoDescription());
+        }
         setting.setTimezone(request.timezone());
         setting.setLogoMediaId(request.logoMediaId());
         setting.setFaviconMediaId(request.faviconMediaId());

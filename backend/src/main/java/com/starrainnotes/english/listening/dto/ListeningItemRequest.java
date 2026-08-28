@@ -8,7 +8,7 @@ import java.util.List;
 
 public record ListeningItemRequest(
         @NotBlank @Size(max = 200) String title,
-        @NotBlank @Size(max = 150) String slug,
+        @Size(max = 150) String slug,
         @NotBlank @Size(max = 1000) String summary,
         String transcriptMarkdown,
         @NotBlank @Size(max = 2) String cefrLevel,

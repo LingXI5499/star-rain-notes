@@ -373,6 +373,26 @@ class AccountSecurityIntegrationTest {
                 .isEqualTo("Review prompt updated");
     }
 
+    @Test
+    void disablingAdministratorImmediatelyInvalidatesExistingSession() throws Exception {
+        insertAccount("super-session@example.com", "super-pass-1234", "SUPER_ADMIN");
+        insertAccount("admin-session@example.com", "admin-pass-1234", "ADMIN");
+        MockHttpSession superSession = loginAccount("super-session@example.com", "super-pass-1234");
+        MockHttpSession adminSession = loginAccount("admin-session@example.com", "admin-pass-1234");
+        Long adminId = jdbc.queryForObject("SELECT id FROM user_account WHERE email=?", Long.class,
+                "admin-session@example.com");
+        String token = csrf();
+
+        mockMvc.perform(post("/api/v1/super-admin/users/" + adminId + "/disable").session(superSession)
+                        .contentType("application/json").content("{\"reason\":\"security test\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/v1/admin/blog/posts").session(adminSession))
+                .andExpect(status().isUnauthorized());
+    }
+
     private void insertAccount(String email, String password, String role) {
         jdbc.update("INSERT INTO user_account(email,password_hash,role,account_status,email_verified_at,activated_at,auth_version)"
                         + " VALUES (?,?,?,'ACTIVE',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),1)",

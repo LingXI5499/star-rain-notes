@@ -150,12 +150,9 @@ public class LearningBundleItemService {
         if (metadata.get("primary_cefr") == null) {
             issues.add("CEFR_REQUIRED");
         }
-        if (items.size() < 2) {
-            issues.add("MINIMUM_ITEMS_REQUIRED");
-        }
-        if (modules < 2) {
-            issues.add("MULTIPLE_MODULES_REQUIRED");
-        }
+        if (counts.getOrDefault("READING", 0) < 1) issues.add("READING_REQUIRED");
+        if (counts.getOrDefault("LISTENING", 0) < 1) issues.add("LISTENING_REQUIRED");
+        if (counts.getOrDefault("WRITING", 0) < 1) issues.add("WRITING_REQUIRED");
         if (published != items.size()) {
             issues.add("UNPUBLISHED_ITEMS_PRESENT");
         }
@@ -168,6 +165,15 @@ public class LearningBundleItemService {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_BUNDLE_NOT_READY",
                     "Bundle is not ready", "Complete the bundle publishing checklist before publishing.");
         }
+    }
+
+    /**
+     * Keeps already-published two-module bundles readable while still hiding
+     * bundles whose metadata or referenced content has become invalid.
+     */
+    public boolean publiclyAccessible(Long bundleId) {
+        Set<String> legacyModuleIssues = Set.of("READING_REQUIRED", "LISTENING_REQUIRED", "WRITING_REQUIRED");
+        return readiness(bundleId).issues().stream().allMatch(legacyModuleIssues::contains);
     }
 
     @Transactional
@@ -220,7 +226,7 @@ public class LearningBundleItemService {
         } catch (Exception ex) {
             throw unavailable();
         }
-        if (!readiness(id).ready()) throw unavailable();
+        if (!publiclyAccessible(id)) throw unavailable();
         return list(id, true);
     }
 

@@ -2,6 +2,7 @@ package com.starrainnotes.tutorial.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.tutorial.dto.CategoryNodeView;
 import com.starrainnotes.tutorial.dto.CreateCategoryRequest;
 import com.starrainnotes.tutorial.dto.MoveCategoryRequest;
@@ -48,10 +49,11 @@ public class TutorialCategoryService {
 
     @Transactional
     public CategoryNodeView create(CreateCategoryRequest request) {
-        assertSlugFree(request.slug(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
+        assertSlugFree(slug, null);
         TutorialCategory category = new TutorialCategory();
         category.setName(request.name());
-        category.setSlug(request.slug());
+        category.setSlug(slug);
         category.setParentId(null);
         category.setSortOrder(request.sortOrder() == null ? nextOrder() : request.sortOrder());
         categoryMapper.insert(category);
@@ -61,9 +63,10 @@ public class TutorialCategoryService {
     @Transactional
     public CategoryNodeView update(Long categoryId, UpdateCategoryRequest request) {
         TutorialCategory category = requireCategory(categoryId);
-        assertSlugFree(request.slug(), categoryId);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), category.getSlug());
+        assertSlugFree(slug, categoryId);
         category.setName(request.name());
-        category.setSlug(request.slug());
+        category.setSlug(slug);
         category.setParentId(null);
         if (request.sortOrder() != null) {
             category.setSortOrder(request.sortOrder());
@@ -136,6 +139,14 @@ public class TutorialCategoryService {
             throw new ApiException(HttpStatus.CONFLICT, "SLUG_CONFLICT",
                     "Slug already exists", "A knowledge system with this slug already exists.");
         }
+    }
+
+    private boolean slugExists(String slug, Long excludeId) {
+        LambdaQueryWrapper<TutorialCategory> wrapper =
+                new LambdaQueryWrapper<TutorialCategory>().eq(TutorialCategory::getSlug, slug);
+        if (excludeId != null) wrapper.ne(TutorialCategory::getId, excludeId);
+        Long count = categoryMapper.selectCount(wrapper);
+        return count != null && count > 0;
     }
 
     private CategoryNodeView toAdminNode(TutorialCategory category) {

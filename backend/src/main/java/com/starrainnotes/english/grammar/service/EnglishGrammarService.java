@@ -1,6 +1,7 @@
 package com.starrainnotes.english.grammar.service;
 
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.english.grammar.dto.GrammarCourseView;
 import com.starrainnotes.english.grammar.dto.GrammarCurriculumView;
 import com.starrainnotes.english.grammar.dto.GrammarLessonDetailView;
@@ -63,12 +64,10 @@ public class EnglishGrammarService {
         validateCover(request.coverMediaId());
         jdbc.update("""
                 UPDATE english_grammar_course
-                SET title=?, subtitle=?, summary=?, introduction=?, roadmap_markdown=?, cover_media_id=?,
-                    seo_title=?, seo_description=?
+                SET title=?, subtitle=?, summary=?, introduction=?, roadmap_markdown=?, cover_media_id=?
                 WHERE id=1
                 """, request.title().trim(), clean(request.subtitle()), clean(request.summary()),
-                clean(request.introduction()), clean(request.roadmapMarkdown()), request.coverMediaId(),
-                clean(request.seoTitle()), clean(request.seoDescription()));
+                clean(request.introduction()), clean(request.roadmapMarkdown()), request.coverMediaId());
         return requireCourse(false);
     }
 
@@ -152,7 +151,8 @@ public class EnglishGrammarService {
     @Transactional
     public GrammarLessonDetailView createLesson(GrammarLessonRequest request) {
         requireSection(request.sectionId());
-        assertSlugFree(request.slug(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
+        assertSlugFree(slug, null);
         Integer order = jdbc.queryForObject(
                 "SELECT COALESCE(MAX(sort_order),0)+10 FROM english_grammar_lesson WHERE section_id=?",
                 Integer.class, request.sectionId());
@@ -166,7 +166,7 @@ public class EnglishGrammarService {
                         """, Statement.RETURN_GENERATED_KEYS);
                 statement.setLong(1, request.sectionId());
                 statement.setString(2, request.title().trim());
-                statement.setString(3, request.slug().trim());
+                statement.setString(3, slug);
                 statement.setString(4, clean(request.summary()));
                 statement.setString(5, request.bodyMarkdown());
                 statement.setInt(6, order == null ? 10 : order);
@@ -189,13 +189,14 @@ public class EnglishGrammarService {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "GRAMMAR_CROSS_SECTION_EDIT_FORBIDDEN",
                     "Use the move action", "A lesson can change sections only through the explicit reassign endpoint.");
         }
-        assertSlugFree(request.slug(), lessonId);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), current.slug());
+        assertSlugFree(slug, lessonId);
         try {
             jdbc.update("""
                     UPDATE english_grammar_lesson
                     SET title=?, slug=?, summary=?, body_markdown=?
                     WHERE id=? AND course_id=1
-                    """, request.title().trim(), request.slug().trim(), clean(request.summary()),
+                    """, request.title().trim(), slug, clean(request.summary()),
                     request.bodyMarkdown(), lessonId);
         } catch (DuplicateKeyException ex) {
             throw slugConflict();
@@ -359,6 +360,14 @@ public class EnglishGrammarService {
                 : jdbc.queryForObject("SELECT COUNT(*) FROM english_grammar_lesson WHERE slug=? AND id<>?",
                 Long.class, slug, excludedId);
         if (count != null && count > 0) throw slugConflict();
+    }
+
+    private boolean slugExists(String slug, Long excludedId) {
+        Long count = excludedId == null
+                ? jdbc.queryForObject("SELECT COUNT(*) FROM english_grammar_lesson WHERE slug=?", Long.class, slug)
+                : jdbc.queryForObject("SELECT COUNT(*) FROM english_grammar_lesson WHERE slug=? AND id<>?",
+                Long.class, slug, excludedId);
+        return count != null && count > 0;
     }
 
     private void validateCover(Long mediaId) {

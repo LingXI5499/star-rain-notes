@@ -24,9 +24,8 @@ const form = reactive({
   dimension: 'TOPIC' as TaxonomyDimension,
   parentId: null as number | null,
   name: '',
-  slug: '',
   description: '',
-  sortOrder: 10,
+  sortOrder: null as number | null,
   enabled: true,
 })
 
@@ -56,9 +55,8 @@ function resetForm() {
     dimension: 'TOPIC',
     parentId: null,
     name: '',
-    slug: '',
     description: '',
-    sortOrder: 10,
+    sortOrder: null,
     enabled: true,
   })
 }
@@ -76,7 +74,6 @@ function openEdit(term: TaxonomyTerm) {
     dimension: term.dimension,
     parentId: term.parentId,
     name: term.name,
-    slug: term.slug,
     description: term.description ?? '',
     sortOrder: term.sortOrder,
     enabled: term.enabled,
@@ -85,8 +82,8 @@ function openEdit(term: TaxonomyTerm) {
 }
 
 async function save() {
-  if (!form.name.trim() || !form.slug.trim()) {
-    ElMessage.warning('请填写名称与稳定 slug。')
+  if (!form.name.trim()) {
+    ElMessage.warning('请填写名称。')
     return
   }
   saving.value = true
@@ -94,7 +91,6 @@ async function save() {
     dimension: form.dimension,
     parentId: form.parentId,
     name: form.name.trim(),
-    slug: form.slug.trim(),
     description: form.description.trim() || null,
     sortOrder: form.sortOrder,
     enabled: form.enabled,
@@ -149,7 +145,7 @@ onMounted(load)
           <div v-for="root in roots.filter((t) => t.dimension === dimension)" :key="root.id" class="taxonomy-row">
             <div class="taxonomy-row__main">
               <span class="taxonomy-row__name">{{ root.name }}</span>
-              <span class="taxonomy-row__slug">{{ root.slug }}</span>
+              <span class="taxonomy-row__slug">编号 {{ root.slug }}</span>
               <span v-if="root.description" class="taxonomy-row__desc">{{ root.description }}</span>
             </div>
             <div class="taxonomy-row__actions">
@@ -161,7 +157,7 @@ onMounted(load)
               <div v-for="child in childrenOf(root.id)" :key="child.id" class="taxonomy-row taxonomy-row--child">
                 <div class="taxonomy-row__main">
                   <span class="taxonomy-row__name">{{ child.name }}</span>
-                  <span class="taxonomy-row__slug">{{ child.slug }}</span>
+                  <span class="taxonomy-row__slug">编号 {{ child.slug }}</span>
                 </div>
                 <div class="taxonomy-row__actions">
                   <el-button link type="primary" @click="openEdit(child)">编辑</el-button>
@@ -187,7 +183,6 @@ onMounted(load)
           </el-select>
         </el-form-item>
         <el-form-item label="名称"><el-input v-model="form.name" /></el-form-item>
-        <el-form-item label="Slug"><el-input v-model="form.slug" /></el-form-item>
         <el-form-item label="说明"><el-input v-model="form.description" type="textarea" :rows="2" /></el-form-item>
         <el-form-item label="排序">
           <el-input-number v-model="form.sortOrder" :min="1" :step="10" />

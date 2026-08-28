@@ -1,7 +1,7 @@
 import { http } from './http'
 export interface WordFamilyMember { id:number;spelling:string;partOfSpeech:string|null;phoneticUs:string|null;translation:string|null;cefrLevel:string|null;exampleSentence:string|null;exampleTranslation:string|null;sortOrder:number }
 export interface WordFamily { id:number;headWord:string;slug:string;description:string|null;wordIds:number[];members:WordFamilyMember[];updatedAt:string }
-export interface WordFamilyPayload { headWord:string;slug:string;description?:string|null;wordIds:number[] }
+export interface WordFamilyPayload { headWord:string;slug?:string;description?:string|null;wordIds:number[] }
 export type WordFamilyMemberPayload = Omit<WordFamilyMember,'id'|'sortOrder'> & {sortOrder?:number}
 const root='/admin/english/vocabulary/families'
 export const fetchWordFamilies=(q='')=>http.get<WordFamily[]>(root,{params:{q:q||undefined}}).then(r=>r.data)

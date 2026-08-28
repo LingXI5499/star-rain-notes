@@ -171,7 +171,7 @@ export interface ChapterDetail {
 export interface TutorialPayload {
   categoryId: number
   title: string
-  slug: string
+  slug?: string
   summary: string
   coverMediaId?: number | null
   sortOrder?: number | null
@@ -181,13 +181,13 @@ export interface TutorialPayload {
 
 export interface CategoryPayload {
   name: string
-  slug: string
+  slug?: string
   sortOrder?: number | null
 }
 
 export interface ChapterPayload {
   title: string
-  slug: string
+  slug?: string
   groupId: number
   summary?: string | null
   bodyMarkdown: string
@@ -440,7 +440,7 @@ export async function createChapter(tutorialId: number, payload: ChapterPayload)
   const body = legacyCurriculumTutorials.has(tutorialId)
     ? {
         title: payload.title,
-        slug: payload.slug,
+        ...(payload.slug ? { slug: payload.slug } : {}),
         parentId: payload.groupId,
         summary: payload.summary,
         bodyMarkdown: payload.bodyMarkdown,

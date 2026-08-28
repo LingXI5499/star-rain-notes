@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref, watch } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { AxiosError } from 'axios'
@@ -12,17 +12,15 @@ const loading = ref(true)
 const search = ref('')
 const dialogVisible = ref(false)
 const editingId = ref<number | null>(null)
-const form = reactive({ name: '', slug: '' })
+const form = reactive({ name: '' })
 const auth = useAuthStore()
 const filtered = computed(() => { const q=search.value.trim().toLocaleLowerCase(); return q?tags.value.filter(t=>t.name.toLocaleLowerCase().includes(q)||t.slug.includes(q)):tags.value })
 const totalRelations = computed(()=>tags.value.reduce((sum,tag)=>sum+tag.postCount,0))
 
 async function load(){loading.value=true;try{tags.value=await fetchAdminTags()}catch{ElMessage.error('加载标签失败。')}finally{loading.value=false}}
-function slugSuggestion(name:string){return name.normalize('NFKC').toLocaleLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,60)}
-watch(()=>form.name,(name)=>{if(editingId.value===null&&!form.slug)form.slug=slugSuggestion(name)})
-function openCreate(){editingId.value=null;form.name='';form.slug='';dialogVisible.value=true}
-function openEdit(tag:AdminBlogTag){editingId.value=tag.id;form.name=tag.name;form.slug=tag.slug;dialogVisible.value=true}
-async function save(){if(!form.name.trim()||!form.slug.trim()){ElMessage.warning('请填写名称与 slug。');return}try{if(editingId.value===null){await createTag({name:form.name,slug:form.slug});ElMessage.success('标签已创建。')}else{await updateTag(editingId.value,{name:form.name,slug:form.slug});ElMessage.success('标签已保存。')}dialogVisible.value=false;await load()}catch(error){const problem=error instanceof AxiosError?(error.response?.data as ProblemDetail|undefined):undefined;ElMessage.error(problem?.detail??'保存失败。')}}
+function openCreate(){editingId.value=null;form.name='';dialogVisible.value=true}
+function openEdit(tag:AdminBlogTag){editingId.value=tag.id;form.name=tag.name;dialogVisible.value=true}
+async function save(){if(!form.name.trim()){ElMessage.warning('请填写名称。');return}try{if(editingId.value===null){await createTag({name:form.name});ElMessage.success('标签已创建。')}else{await updateTag(editingId.value,{name:form.name});ElMessage.success('标签已保存。')}dialogVisible.value=false;await load()}catch(error){const problem=error instanceof AxiosError?(error.response?.data as ProblemDetail|undefined):undefined;ElMessage.error(problem?.detail??'保存失败。')}}
 async function remove(tag:AdminBlogTag){try{const inUse=tag.postCount>0;await ElMessageBox.confirm(inUse?`标签「${tag.name}」正在被 ${tag.postCount} 篇文章使用。继续将解除这些关联并删除标签，确定吗？`:`确定删除标签「${tag.name}」？`,inUse?'删除使用中的标签':'删除确认',{type:'warning',confirmButtonText:inUse?'解除关联并删除':'删除'});await deleteTag(tag.id,inUse);ElMessage.success('标签已删除。');await load()}catch{/* cancel or failure */}}
 onMounted(load)
 </script>
@@ -30,12 +28,12 @@ onMounted(load)
 <template>
   <section class="tag-admin">
     <header class="tag-admin__hero"><div><p>TAG LIBRARY · 内容索引</p><h1>博客标签</h1><span>统一维护标签命名、链接与文章关联。</span></div><el-button type="primary" @click="openCreate">＋ 新建标签</el-button></header>
-    <div class="tag-admin__stats"><div><strong>{{tags.length}}</strong><span>标签总数</span></div><div><strong>{{totalRelations}}</strong><span>文章关联</span></div><el-input v-model="search" placeholder="搜索名称或 slug" clearable /></div>
+    <div class="tag-admin__stats"><div><strong>{{tags.length}}</strong><span>标签总数</span></div><div><strong>{{totalRelations}}</strong><span>文章关联</span></div><el-input v-model="search" placeholder="搜索名称或编号" clearable /></div>
     <div v-loading="loading" class="tag-admin__grid">
-      <article v-for="tag in filtered" :key="tag.id" class="tag-card"><div class="tag-card__top"><span>#</span><strong>{{tag.name}}</strong><em>{{tag.postCount}}</em></div><code>{{tag.slug}}</code><footer><span>{{tag.postCount?'已关联文章':'暂未使用'}}</span><div><button @click="openEdit(tag)">编辑</button><button v-if="auth.isSuperAdmin" class="danger" @click="remove(tag)">删除</button></div></footer></article>
+      <article v-for="tag in filtered" :key="tag.id" class="tag-card"><div class="tag-card__top"><span>#</span><strong>{{tag.name}}</strong><em>{{tag.postCount}}</em></div><code>编号 {{tag.slug}}</code><footer><span>{{tag.postCount?'已关联文章':'暂未使用'}}</span><div><button @click="openEdit(tag)">编辑</button><button v-if="auth.isSuperAdmin" class="danger" @click="remove(tag)">删除</button></div></footer></article>
       <div v-if="!loading&&!filtered.length" class="tag-admin__empty">{{search?'没有匹配的标签':'暂无标签'}}</div>
     </div>
-    <el-dialog v-model="dialogVisible" :title="editingId===null?'新建标签':'编辑标签'" width="440px"><el-form label-position="top" @submit.prevent="save"><el-form-item label="名称"><el-input v-model="form.name" maxlength="50" placeholder="例如：Spring Boot"/></el-form-item><el-form-item label="Slug（小写 kebab-case）"><el-input v-model="form.slug" maxlength="60" placeholder="spring-boot"/></el-form-item></el-form><template #footer><el-button @click="dialogVisible=false">取消</el-button><el-button type="primary" @click="save">保存</el-button></template></el-dialog>
+    <el-dialog v-model="dialogVisible" :title="editingId===null?'新建标签':'编辑标签'" width="440px"><el-form label-position="top" @submit.prevent="save"><el-form-item label="名称"><el-input v-model="form.name" maxlength="50" placeholder="例如：Spring Boot"/></el-form-item><p class="tag-dialog__hint">内容编号由系统自动生成，修改名称不会改变原编号。</p></el-form><template #footer><el-button @click="dialogVisible=false">取消</el-button><el-button type="primary" @click="save">保存</el-button></template></el-dialog>
   </section>
 </template>
 

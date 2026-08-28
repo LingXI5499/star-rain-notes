@@ -83,7 +83,7 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
   <section class="listening-manage">
     <header class="listening-manage__hero">
       <div><p>ENGLISH LISTENING · 场景×形式×能力</p><h1>听力管理</h1><span>三段能力路线组织音频材料，逐句时间片段与安全练习。</span></div>
-      <el-button type="primary" @click="openEditor()">新建材料</el-button>
+      <div class="listening-manage__hero-actions"><el-button @click="router.push({ name: 'admin-listening-pronunciation' })">语音规则</el-button><el-button type="primary" @click="openEditor()">新建材料</el-button></div>
     </header>
 
     <div v-if="page?.stats" class="listening-manage__stats">
@@ -149,6 +149,7 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
 
 <style scoped>
 .listening-manage__hero{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px}
+.listening-manage__hero-actions{display:flex;gap:8px}
 .listening-manage__hero p{color:var(--accent);font-size:11px;font-weight:750;letter-spacing:.14em;margin:0}
 .listening-manage__hero h1{font-size:28px;margin:6px 0}.listening-manage__hero span{color:var(--text-secondary);font-size:13px}
 .listening-manage__stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:var(--space-3);margin-bottom:20px}

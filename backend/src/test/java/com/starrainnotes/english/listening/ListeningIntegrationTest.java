@@ -120,6 +120,25 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
                 "SELECT COUNT(*) FROM english_listening_segment WHERE listening_item_id=?",
                 Integer.class, itemId)).isEqualTo(2);
 
+        // Invalid replacements are rejected before deletion, preserving the old rows.
+        mockMvc.perform(withCsrf(put("/api/v1/admin/english/listening/items/" + itemId + "/segments/batch")
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"segments\":["
+                                + "{\"startMs\":0,\"endMs\":2000,\"transcriptText\":\"one\"},"
+                                + "{\"startMs\":1500,\"endMs\":3000,\"transcriptText\":\"two\"}]}"), auth.csrf()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code").value("ENGLISH_LISTENING_SEGMENT_OVERLAP"));
+        assertThat(jdbc.queryForObject(
+                "SELECT COUNT(*) FROM english_listening_segment WHERE listening_item_id=?",
+                Integer.class, itemId)).isEqualTo(2);
+
+        // An empty complete replacement intentionally clears every segment.
+        mockMvc.perform(withCsrf(put("/api/v1/admin/english/listening/items/" + itemId + "/segments/batch")
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"segments\":[]}"), auth.csrf()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$").isEmpty());
+
         mockMvc.perform(withCsrf(delete("/api/v1/admin/english/taxonomy/41")
                         .session(auth.session()), auth.csrf()))
                 .andExpect(status().isConflict())
@@ -131,6 +150,7 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
         Auth auth = login();
         long audio = uploadAudio(auth);
         long id = createItem(auth, itemJson("listen-live", 1, audio, 60));
+        makePublishable(auth, id);
         // public 404 while draft
         mockMvc.perform(get("/api/v1/public/english/listening/items/listen-live"))
                 .andExpect(status().isNotFound());
@@ -161,6 +181,7 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
 
         // proper item -> publish -> delete forbidden
         long id2 = createItem(auth, itemJson("listen-del", 1, audio, 60));
+        makePublishable(auth, id2);
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/listening/items/" + id2 + "/publish")
                 .session(auth.session()), auth.csrf())).andExpect(status().isOk());
         mockMvc.perform(withCsrf(delete("/api/v1/admin/english/listening/items/" + id2)
@@ -196,8 +217,7 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
         Auth auth = login();
         long audio = uploadAudio(auth);
         long id = createItem(auth, itemJson("listen-ex", 1, audio, 60));
-        mockMvc.perform(withCsrf(post("/api/v1/admin/english/listening/items/" + id + "/publish")
-                .session(auth.session()), auth.csrf())).andExpect(status().isOk());
+        addValidSegment(auth, id);
 
         // MINIMAL_PAIR config must be valid and published
         String exBody = "{\"questionType\":\"MINIMAL_PAIR\",\"promptMarkdown\":\"p\","
@@ -208,6 +228,8 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
                         .session(auth.session()).contentType("application/json").content(exBody), auth.csrf()))
                 .andExpect(status().isCreated()).andReturn();
         long exerciseId = objectMapper.readTree(ex.getResponse().getContentAsString()).get("id").asLong();
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/listening/items/" + id + "/publish")
+                .session(auth.session()), auth.csrf())).andExpect(status().isOk());
 
         // public payload must expose pair but not answer
         String pub = mockMvc.perform(get("/api/v1/public/english/listening/items/listen-ex/exercises"))
@@ -270,6 +292,7 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
         Auth auth = login();
         long audio = uploadAudio(auth);
         long id = createItem(auth, itemJson("listen-search", 1, audio, 60));
+        makePublishable(auth, id);
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/listening/items/" + id + "/publish")
                 .session(auth.session()), auth.csrf())).andExpect(status().isOk());
         mockMvc.perform(get("/api/v1/public/search").param("q", "transcript").param("type", "listening"))
@@ -304,6 +327,29 @@ class ListeningIntegrationTest extends AbstractAuthIntegrationTest {
                         .session(auth.session()).contentType("application/json").content(json), auth.csrf()))
                 .andExpect(status().isCreated()).andReturn();
         return objectMapper.readTree(result.getResponse().getContentAsString()).get("id").asLong();
+    }
+
+    private void makePublishable(Auth auth, long itemId) throws Exception {
+        addValidSegment(auth, itemId);
+        addPublishedExercise(auth, itemId);
+    }
+
+    private void addValidSegment(Auth auth, long itemId) throws Exception {
+        mockMvc.perform(withCsrf(put("/api/v1/admin/english/listening/items/" + itemId + "/segments/batch")
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"segments\":[{\"startMs\":0,\"endMs\":1000,"
+                                + "\"transcriptText\":\"A complete sentence.\"}]}"), auth.csrf()))
+                .andExpect(status().isOk());
+    }
+
+    private void addPublishedExercise(Auth auth, long itemId) throws Exception {
+        String body = "{\"questionType\":\"MINIMAL_PAIR\",\"promptMarkdown\":\"Choose the word\","
+                + "\"configJson\":" + objectMapper.writeValueAsString(
+                        "{\"pair\":[\"ship\",\"sheep\"],\"answer\":\"sheep\"}")
+                + ",\"scoreValue\":1,\"publishStatus\":\"PUBLISHED\"}";
+        mockMvc.perform(withCsrf(post("/api/v1/admin/english/listening/items/" + itemId + "/exercises")
+                        .session(auth.session()).contentType("application/json").content(body), auth.csrf()))
+                .andExpect(status().isCreated());
     }
 
     private String itemJson(String slug, int level, Long audioId, int duration) {

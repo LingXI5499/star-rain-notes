@@ -7,7 +7,7 @@ import { applyPageMeta } from '@/lib/seo'
 
 const data=ref<GrammarCurriculum|null>(null);const loading=ref(true);const failed=ref(false)
 const steps=computed(()=>data.value?.course.roadmapMarkdown?.split('\n').map(s=>s.replace(/^\d+\.\s*/, '').trim()).filter(Boolean)??[])
-onMounted(async()=>{try{data.value=await fetchPublicGrammar();applyPageMeta({title:data.value.course.seoTitle||data.value.course.title,description:data.value.course.seoDescription||data.value.course.summary||undefined})}catch{failed.value=true}finally{loading.value=false}})
+onMounted(async()=>{try{data.value=await fetchPublicGrammar();applyPageMeta({title:data.value.course.title,description:data.value.course.summary||undefined})}catch{failed.value=true}finally{loading.value=false}})
 </script>
 
 <template>

@@ -1,2 +1,46 @@
 application-local-secret.yml
 backend/application-local-secret.yml
+
+# Local secrets
+.env
+.env.*
+!.env.example
+backend/.env.local
+
+# Java / Maven build and IDE state
+backend/target/
+backend-deploy-build/
+backend/.idea/
+*.iml
+
+# Frontend dependencies and build output
+frontend/node_modules/
+frontend/dist/
+
+# Runtime-generated media and logs
+backend/uploads/
+*.log
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Local Codex/Maven bootstrap file
+.codex-maven-settings.xml
+
+# Local archives, generated deployment packages and historical work copies
+*.jar
+*.zip
+backend/backend/
+develop/backend-deploy-build/
+develop/project-clean/
+develop/resource/
+develop/tmp/
+develop/yulanlin/
+develop/release/README-上传说明.md
+develop/release/SHA256SUMS.txt
+develop/release/*.sha256.txt
+develop/release/english-management-upgrade/
+develop/release/upgrade-*/
+develop/release/verify-upgrade-*/

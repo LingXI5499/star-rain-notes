@@ -29,7 +29,6 @@ const grammarLessons = ref<GrammarLessonSummary[]>([])
 
 const form = reactive({
   title: '',
-  slug: '',
   summary: '',
   bodyMarkdown: '',
   coverMediaId: null as number | null,
@@ -38,7 +37,7 @@ const form = reactive({
   sourceName: '',
   sourceUrl: '',
   copyrightNote: '',
-  sortOrder: 10,
+  sortOrder: null as number | null,
   topicTagIds: [] as number[],
   genreTagIds: [] as number[],
   abilityTagIds: [] as number[],
@@ -47,7 +46,7 @@ const form = reactive({
 
 const checks = computed<PublishCheck[]>(() => [
   { key: 'title', label: '标题完整', passed: !!form.title.trim() },
-  { key: 'slug', label: 'slug 稳定', passed: !!form.slug.trim() },
+  { key: 'slug', label: '内容编号自动生成', passed: true },
   { key: 'summary', label: '摘要完整', passed: !!form.summary.trim() },
   { key: 'body', label: '正文完整', passed: !!form.bodyMarkdown.trim() },
   { key: 'level', label: '能力层级合法', passed: [1, 2, 3].includes(form.readingLevel) },
@@ -70,7 +69,7 @@ async function load() {
     if (articleId.value || cloneFrom) {
       const article: ReadingArticle = await fetchReading(cloneFrom || articleId.value)
       if (cloneFrom) {
-        // clone: keep source fields, new slug hint
+        // Copy content without its address; the backend assigns a new numeric identifier.
         Object.assign(form, {
           title: article.title, summary: article.summary, bodyMarkdown: article.bodyMarkdown,
           coverMediaId: article.coverMediaId, readingLevel: article.readingLevel, cefrLevel: article.cefrLevel,
@@ -80,11 +79,10 @@ async function load() {
           abilityTagIds: article.tags.filter(t=>t.dimension==='ABILITY').map(t=>t.id),
           grammarLessonIds: article.grammarLessons.map(g=>g.id),
         })
-        form.slug = `${article.slug}-copy`
         coverUrl.value = article.coverUrl
       } else {
         Object.assign(form, {
-          title: article.title, slug: article.slug, summary: article.summary, bodyMarkdown: article.bodyMarkdown,
+          title: article.title, summary: article.summary, bodyMarkdown: article.bodyMarkdown,
           coverMediaId: article.coverMediaId, readingLevel: article.readingLevel, cefrLevel: article.cefrLevel,
           sourceName: article.sourceName, sourceUrl: article.sourceUrl, copyrightNote: article.copyrightNote,
           sortOrder: article.sortOrder, topicTagIds: article.tags.filter(t=>t.dimension==='TOPIC').map(t=>t.id),
@@ -103,13 +101,13 @@ async function load() {
 }
 
 async function save() {
-  if (!form.title.trim() || !form.slug.trim()) {
-    ElMessage.warning('请填写标题与 slug。')
+  if (!form.title.trim()) {
+    ElMessage.warning('请填写标题。')
     return
   }
   saving.value = true
   const payload = {
-    title: form.title.trim(), slug: form.slug.trim(), summary: form.summary.trim(),
+    title: form.title.trim(), summary: form.summary.trim(),
     bodyMarkdown: form.bodyMarkdown, coverMediaId: form.coverMediaId, readingLevel: form.readingLevel,
     cefrLevel: form.cefrLevel, sourceName: form.sourceName || null, sourceUrl: form.sourceUrl || null,
     copyrightNote: form.copyrightNote || null, sortOrder: form.sortOrder,
@@ -173,7 +171,6 @@ onMounted(load)
     <div class="reading-edit__layout">
       <div class="reading-edit__main">
         <div class="reading-edit__field"><label>标题</label><el-input v-model="form.title" /></div>
-        <div class="reading-edit__field"><label>Slug</label><el-input v-model="form.slug" /></div>
         <div class="reading-edit__field"><label>摘要</label><el-input v-model="form.summary" type="textarea" :rows="2" /></div>
         <div class="reading-edit__field">
           <label>正文（Markdown）</label>

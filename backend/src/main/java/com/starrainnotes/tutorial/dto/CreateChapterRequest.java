@@ -11,8 +11,8 @@ import jakarta.validation.constraints.Size;
  */
 public record CreateChapterRequest(
         @NotBlank @Size(max = 200) String title,
-        @NotBlank @Size(max = 150)
-        @Pattern(regexp = "^[a-z0-9]+(?:-[a-z0-9]+)*$", message = "slug must be lowercase kebab-case")
+        @Size(max = 150)
+        @Pattern(regexp = "^\\s*$|^[a-z0-9]+(?:-[a-z0-9]+)*$", message = "slug must be lowercase kebab-case")
         String slug,
         @NotNull Long groupId,
         @Size(max = 1000) String summary,

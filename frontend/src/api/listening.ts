@@ -54,7 +54,7 @@ export interface ListeningPage { items: ListeningSummary[]; page: number; pageSi
 export interface ListeningHome { total: number; byLevel: Record<number, number>; byCefr: Record<string, number>; topics: ListeningTagRef[]; scenes: ListeningTagRef[]; formats: ListeningTagRef[] }
 
 export interface ListeningItemPayload {
-  title: string; slug: string; summary: string; transcriptMarkdown?: string | null
+  title: string; slug?: string; summary: string; transcriptMarkdown?: string | null
   cefrLevel: string; listeningLevel: number; audioMediaId?: number | null; coverMediaId?: number | null
   durationSeconds?: number; sourceName?: string | null; sourceUrl?: string | null; copyrightNote?: string | null
   sortOrder?: number | null; topicTagIds?: number[] | null; sceneTagIds?: number[] | null; formatTagIds?: number[] | null

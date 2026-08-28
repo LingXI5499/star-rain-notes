@@ -25,12 +25,9 @@ const saving = ref(false)
 const form = reactive({
   categoryId: null as number | null,
   title: '',
-  slug: '',
   summary: '',
   coverMediaId: null as number | null,
   sortOrder: null as number | null,
-  seoTitle: '',
-  seoDescription: '',
 })
 
 // Unsaved-changes guard + Ctrl/Cmd+S (TASK-011).
@@ -53,12 +50,9 @@ onMounted(async () => {
       Object.assign(form, {
         categoryId: detail.categoryId,
         title: detail.title,
-        slug: detail.slug,
         summary: detail.summary,
         coverMediaId: detail.coverMediaId,
         sortOrder: detail.sortOrder,
-        seoTitle: detail.seoTitle ?? '',
-        seoDescription: detail.seoDescription ?? '',
       })
     } else {
       const requestedCategoryId = Number(route.query.categoryId)
@@ -75,8 +69,8 @@ onMounted(async () => {
 })
 
 async function save() {
-  if (!form.categoryId || !form.title.trim() || !form.slug.trim() || !form.summary.trim()) {
-    ElMessage.warning('请填写分类、标题、slug 与摘要。')
+  if (!form.categoryId || !form.title.trim() || !form.summary.trim()) {
+    ElMessage.warning('请填写分类、标题与摘要。')
     return
   }
   saving.value = true
@@ -84,12 +78,9 @@ async function save() {
     const payload = {
       categoryId: form.categoryId,
       title: form.title,
-      slug: form.slug,
       summary: form.summary,
       coverMediaId: form.coverMediaId,
       sortOrder: form.sortOrder,
-      seoTitle: form.seoTitle || null,
-      seoDescription: form.seoDescription || null,
     }
     const saved = isEdit.value
       ? await updateTutorial(Number(route.params.id), payload)
@@ -122,19 +113,10 @@ async function save() {
       <el-form-item label="标题">
         <el-input v-model="form.title" maxlength="200" />
       </el-form-item>
-      <el-form-item label="Slug（小写 kebab-case）">
-        <el-input v-model="form.slug" maxlength="150" />
-      </el-form-item>
       <el-form-item label="摘要">
         <el-input v-model="form.summary" type="textarea" :rows="3" maxlength="1000" />
       </el-form-item>
       <p class="tutorial-edit__sort-hint">教程顺序请在教程工作台中直接拖动调整。</p>
-      <el-form-item label="SEO 标题">
-        <el-input v-model="form.seoTitle" maxlength="200" />
-      </el-form-item>
-      <el-form-item label="SEO 描述">
-        <el-input v-model="form.seoDescription" type="textarea" :rows="2" maxlength="500" />
-      </el-form-item>
       <el-button type="primary" :loading="saving" @click="save">保存</el-button>
       <el-button @click="router.push({ name: 'admin-tutorials', query: form.categoryId ? { category: String(form.categoryId) } : undefined })">取消</el-button>
     </el-form>

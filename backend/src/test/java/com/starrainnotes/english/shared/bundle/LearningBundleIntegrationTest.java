@@ -38,6 +38,7 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
         jdbc.update("DELETE FROM english_learning_bundle WHERE slug LIKE 'test-bundle-%'");
         jdbc.update("DELETE FROM english_reading_article WHERE slug LIKE 'test-bundle-reading%'");
         jdbc.update("DELETE FROM english_listening_item WHERE slug LIKE 'test-bundle-listening%'");
+        jdbc.update("DELETE FROM english_writing_prompt WHERE slug LIKE 'test-bundle-writing%'");
         jdbc.update("DELETE FROM admin_user");
     }
 
@@ -126,6 +127,8 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(jsonPath("$.contentType").value("READING"));
         Long listening = insertListening("test-bundle-listening-items", "PUBLISHED");
         addItem(auth, bundle, "LISTENING", listening);
+        Long writing = insertWriting("test-bundle-writing-items", "PUBLISHED");
+        addItem(auth, bundle, "WRITING", writing);
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/"+bundle+"/publish")
                 .session(auth.session()),auth.csrf())).andExpect(status().isOk());
         mockMvc.perform(get("/api/v1/public/english/bundles/test-bundle-items/items"))
@@ -145,7 +148,9 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
         mockMvc.perform(get("/api/v1/admin/english/bundles/" + bundle + "/readiness").session(auth.session()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.ready").value(false))
-                .andExpect(jsonPath("$.issues[?(@=='MINIMUM_ITEMS_REQUIRED')]").exists());
+                .andExpect(jsonPath("$.issues[?(@=='READING_REQUIRED')]").exists())
+                .andExpect(jsonPath("$.issues[?(@=='LISTENING_REQUIRED')]").exists())
+                .andExpect(jsonPath("$.issues[?(@=='WRITING_REQUIRED')]").exists());
 
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/" + bundle + "/publish")
                         .session(auth.session()), auth.csrf()))
@@ -156,12 +161,12 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
         mockMvc.perform(get("/api/v1/admin/english/bundles/" + bundle + "/catalog")
                         .session(auth.session()).param("status", "PUBLISHED").param("q", "test-bundle"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.total").value(2))
+                .andExpect(jsonPath("$.total").value(3))
                 .andExpect(jsonPath("$.items[0].selected").value(true));
         mockMvc.perform(get("/api/v1/admin/english/bundles/" + bundle + "/readiness").session(auth.session()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.ready").value(true))
-                .andExpect(jsonPath("$.moduleCount").value(2));
+                .andExpect(jsonPath("$.moduleCount").value(3));
 
         mockMvc.perform(withCsrf(post("/api/v1/admin/english/bundles/" + bundle + "/publish")
                         .session(auth.session()), auth.csrf())).andExpect(status().isOk());
@@ -196,8 +201,10 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
         Long reading = jdbc.queryForObject(
                 "SELECT id FROM english_reading_article WHERE slug=?", Long.class, readingSlug);
         Long listening = insertListening("test-bundle-listening-" + bundle, "PUBLISHED");
+        Long writing = insertWriting("test-bundle-writing-" + bundle, "PUBLISHED");
         addItem(auth, bundle, "READING", reading);
         addItem(auth, bundle, "LISTENING", listening);
+        addItem(auth, bundle, "WRITING", writing);
     }
 
     private Long insertListening(String slug, String status) {
@@ -207,6 +214,15 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
                 VALUES (?,?,?,'transcript','B1',1,60,?,10,UTC_TIMESTAMP(6))
                 """, "Bundle listening " + slug, slug, "summary", status);
         return jdbc.queryForObject("SELECT id FROM english_listening_item WHERE slug=?", Long.class, slug);
+    }
+
+    private Long insertWriting(String slug, String status) {
+        jdbc.update("""
+                INSERT INTO english_writing_prompt(title,slug,summary,background_markdown,requirements_markdown,
+                cefr_level,word_min,word_max,estimated_minutes,publish_status,sort_order,published_at)
+                VALUES (?,?,?,'background','requirements','B1',120,200,30,?,10,UTC_TIMESTAMP(6))
+                """, "Bundle writing " + slug, slug, "summary", status);
+        return jdbc.queryForObject("SELECT id FROM english_writing_prompt WHERE slug=?", Long.class, slug);
     }
 
     private void addItem(Auth auth, long bundle, String type, Long contentId) throws Exception {

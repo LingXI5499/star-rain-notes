@@ -9,6 +9,7 @@ import CefrBadge from '@/components/english/CefrBadge.vue'
 import ExerciseRunner from '@/components/english/ExerciseRunner.vue'
 import type { OutlineItem } from '@/types'
 import { fetchLearningRecord, saveLearningRecord, type LearningRecord } from '@/api/englishLearning'
+import { applyPageMeta } from '@/lib/seo'
 
 const route = useRoute()
 const router = useRouter()
@@ -42,6 +43,7 @@ async function load() {
     result.value = null
     learningRecord.value = article.value && !isAdminPreview.value
       ? await fetchLearningRecord('READING', article.value.id).catch(() => null) : null
+    if (article.value) applyPageMeta({ title: article.value.title, description: article.value.summary })
   } catch {
     notFound.value = true
   } finally {

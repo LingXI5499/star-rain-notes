@@ -39,7 +39,7 @@ export interface TaxonomyPayload {
   dimension: TaxonomyDimension
   parentId?: number | null
   name: string
-  slug: string
+  slug?: string
   description?: string | null
   sortOrder?: number | null
   enabled?: boolean | null

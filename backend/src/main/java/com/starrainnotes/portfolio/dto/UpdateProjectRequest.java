@@ -13,8 +13,8 @@ import java.util.List;
  */
 public record UpdateProjectRequest(
         @NotBlank @Size(max = 200) String title,
-        @NotBlank @Size(max = 150)
-        @Pattern(regexp = "^[a-z0-9]+(?:-[a-z0-9]+)*$", message = "slug must be lowercase kebab-case")
+        @Size(max = 150)
+        @Pattern(regexp = "^\\s*$|^[a-z0-9]+(?:-[a-z0-9]+)*$", message = "slug must be lowercase kebab-case")
         String slug,
         @NotBlank @Size(max = 1000) String summary,
         @Size(max = 200) String role,

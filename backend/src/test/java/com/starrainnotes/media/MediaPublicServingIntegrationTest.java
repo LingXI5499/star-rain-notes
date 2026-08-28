@@ -37,6 +37,7 @@ class MediaPublicServingIntegrationTest extends AbstractAuthIntegrationTest {
 
     private static final byte[] PNG_BYTES = java.util.Base64.getDecoder().decode(
             "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==");
+    private static final byte[] MP3_BYTES = {0x49, 0x44, 0x33, 0x04, 0, 0, 0, 0, 0, 0};
 
     @Autowired
     private JdbcTemplate jdbc;
@@ -97,6 +98,15 @@ class MediaPublicServingIntegrationTest extends AbstractAuthIntegrationTest {
         return new ObjectMapper().readTree(result.getResponse().getContentAsString()).get("publicUrl").asText();
     }
 
+    private String uploadAudio(MockHttpSession session) throws Exception {
+        MockMultipartHttpServletRequestBuilder builder = multipart("/api/v1/admin/media-assets")
+                .file(new MockMultipartFile("file", "range.mp3", "audio/mpeg", MP3_BYTES));
+        MvcResult result = mockMvc.perform(withCsrf(builder, csrf(session)).session(session))
+                .andExpect(status().isCreated())
+                .andReturn();
+        return new ObjectMapper().readTree(result.getResponse().getContentAsString()).get("publicUrl").asText();
+    }
+
     @Test
     void publicMediaUrlIsReadableAnonymously() throws Exception {
         MockHttpSession session = loginSession();
@@ -117,6 +127,19 @@ class MediaPublicServingIntegrationTest extends AbstractAuthIntegrationTest {
         mockMvc.perform(get(publicUrl))
                 .andExpect(status().isOk())
                 .andExpect(header().string("Cache-Control", "max-age=2592000"));
+    }
+
+    @Test
+    void audioSupportsAnonymousByteRangeRequests() throws Exception {
+        MockHttpSession session = loginSession();
+        String publicUrl = uploadAudio(session);
+
+        mockMvc.perform(get(publicUrl).header("Range", "bytes=0-3"))
+                .andExpect(status().isPartialContent())
+                .andExpect(header().string("Accept-Ranges", "bytes"))
+                .andExpect(header().string("Content-Range", "bytes 0-3/10"))
+                .andExpect(content().contentType("audio/mpeg"))
+                .andExpect(content().bytes(new byte[]{0x49, 0x44, 0x33, 0x04}));
     }
 
     @Test

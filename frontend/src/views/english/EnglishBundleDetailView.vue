@@ -4,6 +4,7 @@ import { RouterLink, useRoute } from 'vue-router'
 import { fetchPublicBundle, fetchPublicBundleItems, type BundleItem, type LearningBundle } from '@/api/englishBundle'
 import { fetchLearningRecords, type LearningRecord } from '@/api/englishLearning'
 import CefrBadge from '@/components/english/CefrBadge.vue'
+import { applyPageMeta } from '@/lib/seo'
 
 const route=useRoute();const bundle=ref<LearningBundle|null>(null);const items=ref<BundleItem[]>([]);const records=ref<Record<string,LearningRecord|null>>({});const loading=ref(true);const failed=ref(false)
 const labels={READING:'阅读输入',LISTENING:'听力理解',WRITING:'写作输出'} as const
@@ -13,7 +14,7 @@ const nextItem=computed(()=>items.value.find(item=>records.value[key(item)]?.sta
 const moduleCounts=computed(()=>items.value.reduce((counts,item)=>{counts[item.contentType]=(counts[item.contentType]??0)+1;return counts},{READING:0,LISTENING:0,WRITING:0} as Record<BundleItem['contentType'],number>))
 function key(item:BundleItem){return `${item.contentType}-${item.contentId}`}
 function target(item:BundleItem){return item.contentType==='READING'?`/english/reading/${item.slug}`:item.contentType==='LISTENING'?`/english/listening/${item.slug}`:`/english/writing/practice/${item.slug}`}
-async function load(){loading.value=true;failed.value=false;try{const slug=String(route.params.slug);const [meta,list]=await Promise.all([fetchPublicBundle(slug),fetchPublicBundleItems(slug)]);bundle.value=meta;items.value=list;const batch=await fetchLearningRecords(list.map(item=>({contentType:item.contentType,contentId:item.contentId}))).catch(()=>({} as Record<string,LearningRecord>));records.value=Object.fromEntries(list.map(item=>[key(item),batch[`${item.contentType}:${item.contentId}`]??null]))}catch{failed.value=true}finally{loading.value=false}}
+async function load(){loading.value=true;failed.value=false;try{const slug=String(route.params.slug);const [meta,list]=await Promise.all([fetchPublicBundle(slug),fetchPublicBundleItems(slug)]);bundle.value=meta;items.value=list;applyPageMeta({title:meta.title,description:meta.summary||undefined});const batch=await fetchLearningRecords(list.map(item=>({contentType:item.contentType,contentId:item.contentId}))).catch(()=>({} as Record<string,LearningRecord>));records.value=Object.fromEntries(list.map(item=>[key(item),batch[`${item.contentType}:${item.contentId}`]??null]))}catch{failed.value=true}finally{loading.value=false}}
 watch(()=>route.params.slug,load,{immediate:true})
 </script>
 

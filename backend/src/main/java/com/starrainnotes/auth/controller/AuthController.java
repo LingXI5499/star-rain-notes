@@ -5,10 +5,12 @@ import com.starrainnotes.auth.dto.ChangePasswordRequest;
 import com.starrainnotes.auth.dto.CsrfView;
 import com.starrainnotes.auth.dto.LoginRequest;
 import com.starrainnotes.auth.service.AuthService;
+import com.starrainnotes.common.error.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -42,15 +44,18 @@ public class AuthController {
     private final HttpSessionSecurityContextRepository securityContextRepository;
     private final CsrfTokenRepository csrfTokenRepository;
     private final AuthService authService;
+    private final boolean legacyAdminLoginEnabled;
 
     public AuthController(AuthenticationManager authenticationManager,
                           HttpSessionSecurityContextRepository securityContextRepository,
                           CsrfTokenRepository csrfTokenRepository,
-                          AuthService authService) {
+                          AuthService authService,
+                          @Value("${app.legacy-admin-login-enabled:true}") boolean legacyAdminLoginEnabled) {
         this.authenticationManager = authenticationManager;
         this.securityContextRepository = securityContextRepository;
         this.csrfTokenRepository = csrfTokenRepository;
         this.authService = authService;
+        this.legacyAdminLoginEnabled = legacyAdminLoginEnabled;
     }
 
     @GetMapping("/csrf")
@@ -72,6 +77,10 @@ public class AuthController {
     public AuthSessionView login(@Valid @RequestBody LoginRequest loginRequest,
                                  HttpServletRequest httpRequest,
                                  HttpServletResponse httpResponse) {
+        if (!legacyAdminLoginEnabled) {
+            throw new ApiException(HttpStatus.GONE, "LEGACY_LOGIN_DISABLED", "Login disabled",
+                    "Use the email account login endpoint.");
+        }
         Authentication authentication = authenticationManager.authenticate(
                 UsernamePasswordAuthenticationToken.unauthenticated(
                         loginRequest.username(), loginRequest.password()));

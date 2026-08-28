@@ -15,7 +15,6 @@ const form = reactive({
   siteUrl: '',
   footerText: '',
   githubUrl: '',
-  defaultSeoDescription: '',
   timezone: 'Asia/Shanghai',
   logoMediaId: null as number | null,
   faviconMediaId: null as number | null,
@@ -33,7 +32,6 @@ onMounted(async () => {
       siteUrl: settings.siteUrl ?? '',
       footerText: settings.footerText ?? '',
       githubUrl: settings.githubUrl ?? '',
-      defaultSeoDescription: settings.defaultSeoDescription ?? '',
       timezone: settings.timezone,
       logoMediaId: settings.logoMediaId,
       faviconMediaId: settings.faviconMediaId,
@@ -84,9 +82,6 @@ async function save() {
       </el-form-item>
       <el-form-item label="GitHub URL">
         <el-input v-model="form.githubUrl" maxlength="500" />
-      </el-form-item>
-      <el-form-item label="默认 SEO 描述">
-        <el-input v-model="form.defaultSeoDescription" type="textarea" maxlength="500" />
       </el-form-item>
       <el-form-item label="时区（IANA）">
         <el-input v-model="form.timezone" maxlength="64" placeholder="Asia/Shanghai" />

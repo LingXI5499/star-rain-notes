@@ -2,6 +2,7 @@ package com.starrainnotes.english.listening.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.english.listening.dto.ListeningAdminStats;
 import com.starrainnotes.english.listening.dto.ListeningHomeView;
 import com.starrainnotes.english.listening.dto.ListeningItemRequest;
@@ -77,13 +78,14 @@ public class ListeningItemService {
 
     @Transactional
     public ListeningItemView create(ListeningItemRequest request) {
-        assertSlugFree(request.slug().trim(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> itemSlugExists(candidate, null));
+        assertSlugFree(slug, null);
         validateCefr(request.cefrLevel());
         validateLevel(request.listeningLevel());
         validateAudio(request.audioMediaId());
         validateCover(request.coverMediaId());
         ListeningItem item = new ListeningItem();
-        applyFields(item, request);
+        applyFields(item, request, slug);
         item.setPublishStatus(DRAFT);
         if (item.getSortOrder() == null) item.setSortOrder(nextSort());
         item.setDurationSeconds(request.durationSeconds() == null ? 0 : request.durationSeconds());
@@ -98,14 +100,14 @@ public class ListeningItemService {
 
     @Transactional
     public ListeningItemView update(Long id, ListeningItemRequest request) {
-        require(id);
-        assertSlugFree(request.slug().trim(), id);
+        ListeningItem item = require(id);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), item.getSlug());
+        assertSlugFree(slug, id);
         validateCefr(request.cefrLevel());
         validateLevel(request.listeningLevel());
         validateAudio(request.audioMediaId());
         validateCover(request.coverMediaId());
-        ListeningItem item = mapper.selectById(id);
-        applyFields(item, request);
+        applyFields(item, request, slug);
         if (request.durationSeconds() != null) item.setDurationSeconds(request.durationSeconds());
         try {
             mapper.updateById(item);
@@ -323,10 +325,19 @@ public class ListeningItemService {
         require(itemId);
         Integer duration = jdbc.queryForObject(
                 "SELECT duration_seconds FROM english_listening_item WHERE id=?", Integer.class, itemId);
-        if (requests.isEmpty()) return segments(itemId);
+        int previousEnd = -1;
         for (ListeningSegmentRequest req : requests) {
             assertSegmentRangeWithDuration(itemId, req.startMs(), req.endMs(),
                     duration == null ? null : duration);
+            if (isBlank(req.transcriptText())) {
+                throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_SEGMENT_TEXT_REQUIRED",
+                        "Segment transcript required", "Each listening segment must contain transcript text.");
+            }
+            if (previousEnd > req.startMs()) {
+                throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_SEGMENT_OVERLAP",
+                        "Segments overlap", "Listening segments must be ordered and cannot overlap.");
+            }
+            previousEnd = req.endMs();
         }
         // Batch save is a complete, ordered replacement. Validate every row first,
         // then replace inside this transaction so a failed insert restores the old set.
@@ -361,28 +372,31 @@ public class ListeningItemService {
     @Transactional
     public com.starrainnotes.english.listening.dto.PronunciationRuleView createRule(
             com.starrainnotes.english.listening.dto.PronunciationRuleRequest request) {
-        assertRuleSlugFree(request.slug().trim(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> ruleSlugExists(candidate, null));
+        assertRuleSlugFree(slug, null);
         validateRuleType(request.ruleType());
         validateAudio(request.audioMediaId());
         jdbc.update("INSERT INTO english_listening_pronunciation_rule"
                 + "(rule_type,title,slug,summary,body_markdown,audio_media_id,publish_status,sort_order)"
                 + " VALUES (?,?,?,?,?,?,'DRAFT',?)",
-                request.ruleType(), request.title().trim(), request.slug().trim(), request.summary().trim(),
-                request.bodyMarkdown(), request.audioMediaId(), nextRuleSort());
-        return ruleBySlug(request.slug().trim(), false);
+                request.ruleType(), request.title().trim(), slug, request.summary().trim(),
+                request.bodyMarkdown(), request.audioMediaId(),
+                request.sortOrder() == null ? nextRuleSort() : request.sortOrder());
+        return ruleBySlug(slug, false);
     }
 
     @Transactional
     public com.starrainnotes.english.listening.dto.PronunciationRuleView updateRule(Long id,
             com.starrainnotes.english.listening.dto.PronunciationRuleRequest request) {
-        requireRule(id);
-        assertRuleSlugFree(request.slug().trim(), id);
+        var current = requireRule(id);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), current.slug());
+        assertRuleSlugFree(slug, id);
         validateRuleType(request.ruleType());
         validateAudio(request.audioMediaId());
         jdbc.update("UPDATE english_listening_pronunciation_rule SET rule_type=?,title=?,slug=?,summary=?,"
-                + " body_markdown=?,audio_media_id=? WHERE id=?",
-                request.ruleType(), request.title().trim(), request.slug().trim(), request.summary().trim(),
-                request.bodyMarkdown(), request.audioMediaId(), id);
+                + " body_markdown=?,audio_media_id=?,sort_order=COALESCE(?,sort_order) WHERE id=?",
+                request.ruleType(), request.title().trim(), slug, request.summary().trim(),
+                request.bodyMarkdown(), request.audioMediaId(), request.sortOrder(), id);
         return ruleById(id, false);
     }
 
@@ -493,24 +507,44 @@ public class ListeningItemService {
         if (!hasDimensionTag(item.getId() == null ? 0L : item.getId(), "FORMAT")) {
             problems.add("至少需要一个形式(FORMAT)标签");
         }
-        if (!segmentsWithinDuration(item.getId() == null ? 0L : item.getId())) {
-            problems.add("存在非法时间片段");
+        if (!segmentsValid(item.getId() == null ? 0L : item.getId())) {
+            problems.add("至少需要一个包含原文、时间有效且互不重叠的片段");
         }
-        if (!publishedExercisesValid(item.getId() == null ? 0L : item.getId())) {
+        if (!hasPublishedExercise(item.getId() == null ? 0L : item.getId())) {
+            problems.add("至少需要一道已发布听力练习");
+        } else if (!publishedExercisesValid(item.getId() == null ? 0L : item.getId())) {
             problems.add("存在配置不合法的已发布练习");
         }
         return problems;
     }
 
-    private boolean segmentsWithinDuration(Long itemId) {
+    private boolean segmentsValid(Long itemId) {
         Integer duration = jdbc.queryForObject(
                 "SELECT duration_seconds FROM english_listening_item WHERE id=?", Integer.class, itemId);
-        List<Integer> ranges = jdbc.query("SELECT end_ms FROM english_listening_segment WHERE listening_item_id=?",
-                (rs, row) -> rs.getInt(1), itemId);
-        for (int end : ranges) {
-            if (duration != null && duration > 0 && end > duration * 1000) return false;
+        List<ListeningSegmentView> ranges = jdbc.query("""
+                SELECT id,listening_item_id,start_ms,end_ms,transcript_text,translation_text,sort_order,updated_at
+                FROM english_listening_segment WHERE listening_item_id=? ORDER BY sort_order,id
+                """, (rs, row) -> mapSegment(rs), itemId);
+        if (ranges.isEmpty()) return false;
+        int previousEnd = -1;
+        for (ListeningSegmentView segment : ranges) {
+            if (isBlank(segment.transcriptText()) || segment.startMs() < 0 || segment.endMs() <= segment.startMs()) {
+                return false;
+            }
+            if (previousEnd > segment.startMs()) return false;
+            if (duration != null && duration > 0 && segment.endMs() > duration * 1000) return false;
+            previousEnd = segment.endMs();
         }
         return true;
+    }
+
+    private boolean hasPublishedExercise(Long itemId) {
+        Integer count = jdbc.queryForObject("""
+                SELECT COUNT(*) FROM english_listening_item_exercise lie
+                JOIN english_exercise e ON e.id=lie.exercise_id
+                WHERE lie.listening_item_id=? AND e.publish_status='PUBLISHED'
+                """, Integer.class, itemId);
+        return count != null && count > 0;
     }
 
     private boolean publishedExercisesValid(Long itemId) {
@@ -679,9 +713,26 @@ public class ListeningItemService {
                 "Slug already in use", "Choose another stable slug.");
     }
 
-    private void applyFields(ListeningItem item, ListeningItemRequest request) {
+    private boolean itemSlugExists(String slug, Long excludedId) {
+        LambdaQueryWrapper<ListeningItem> wrapper =
+                new LambdaQueryWrapper<ListeningItem>().eq(ListeningItem::getSlug, slug);
+        if (excludedId != null) wrapper.ne(ListeningItem::getId, excludedId);
+        Long count = mapper.selectCount(wrapper);
+        return count != null && count > 0;
+    }
+
+    private boolean ruleSlugExists(String slug, Long excludedId) {
+        Integer count = excludedId == null
+                ? jdbc.queryForObject("SELECT COUNT(*) FROM english_listening_pronunciation_rule WHERE slug=?",
+                Integer.class, slug)
+                : jdbc.queryForObject("SELECT COUNT(*) FROM english_listening_pronunciation_rule WHERE slug=? AND id<>?",
+                Integer.class, slug, excludedId);
+        return count != null && count > 0;
+    }
+
+    private void applyFields(ListeningItem item, ListeningItemRequest request, String slug) {
         item.setTitle(request.title().trim());
-        item.setSlug(request.slug().trim());
+        item.setSlug(slug);
         item.setSummary(request.summary().trim());
         item.setTranscriptMarkdown(clean(request.transcriptMarkdown()));
         item.setCefrLevel(request.cefrLevel());

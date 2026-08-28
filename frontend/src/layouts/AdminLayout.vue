@@ -60,6 +60,7 @@ const englishItems = [
   { to: '/admin/english/bundles', label: '学习组合', badge: '' },
   { to: '/admin/english/reading', label: '阅读管理', badge: '' },
   { to: '/admin/english/listening', label: '听力管理', badge: '' },
+  { to: '/admin/english/listening/pronunciation', label: '语音规则', badge: '' },
   { to: '/admin/english/writing', label: '写作管理', badge: '' },
 ]
 

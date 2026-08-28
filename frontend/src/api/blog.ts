@@ -125,7 +125,7 @@ export interface AdminPostDetail {
 
 export interface PostPayload {
   title: string
-  slug: string
+  slug?: string
   summary: string
   bodyMarkdown: string
   coverMediaId?: number | null
@@ -223,12 +223,12 @@ export async function fetchAdminTags(): Promise<AdminBlogTag[]> {
   return data
 }
 
-export async function createTag(payload: { name: string; slug: string }): Promise<AdminBlogTag> {
+export async function createTag(payload: { name: string; slug?: string }): Promise<AdminBlogTag> {
   const { data } = await http.post<AdminBlogTag>('/admin/blog/tags', payload)
   return data
 }
 
-export async function updateTag(id: number, payload: { name: string; slug: string }): Promise<AdminBlogTag> {
+export async function updateTag(id: number, payload: { name: string; slug?: string }): Promise<AdminBlogTag> {
   const { data } = await http.put<AdminBlogTag>(`/admin/blog/tags/${id}`, payload)
   return data
 }

@@ -7,8 +7,17 @@
 
 const SITE_NAME = '星雨笔录 · Star Rain Notes'
 
-export const DEFAULT_DESCRIPTION =
-  '星雨笔录 · Star Rain Notes — 个人知识系统：系统整理技术，记录思考，用真实项目验证学习与成长。'
+export const DEFAULT_DESCRIPTION = '建立自己的知识世界'
+let siteTagline = DEFAULT_DESCRIPTION
+let pageUsesFallbackDescription = true
+
+export function setSeoTagline(tagline?: string | null): void {
+  siteTagline = tagline?.trim() || DEFAULT_DESCRIPTION
+  if (pageUsesFallbackDescription) {
+    upsertMeta('name', 'description', siteTagline)
+    upsertMeta('property', 'og:description', siteTagline)
+  }
+}
 
 export interface PageMeta {
   title?: string
@@ -39,7 +48,9 @@ function upsertLink(rel: string, href: string): void {
 
 export function applyPageMeta(meta: PageMeta, path?: string): void {
   const title = meta.title ? `${meta.title} · ${SITE_NAME}` : SITE_NAME
-  const description = meta.description ?? DEFAULT_DESCRIPTION
+  const explicitDescription = meta.description?.trim()
+  pageUsesFallbackDescription = !explicitDescription
+  const description = explicitDescription || siteTagline
   const url = new URL(path ?? window.location.pathname, window.location.origin)
 
   document.title = title

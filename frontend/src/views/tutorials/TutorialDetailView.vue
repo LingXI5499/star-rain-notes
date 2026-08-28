@@ -21,8 +21,8 @@ onMounted(async () => {
     detail.value = await fetchPublicTutorialDetail(route.params.tutorialSlug as string)
     if (detail.value) {
       applyPageMeta({
-        title: detail.value.seoTitle ?? detail.value.title,
-        description: detail.value.seoDescription ?? detail.value.summary,
+        title: detail.value.title,
+        description: detail.value.summary,
       })
     }
   } catch (error) {

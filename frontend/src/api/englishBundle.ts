@@ -17,7 +17,7 @@ export interface LearningBundle {
 
 export interface BundlePayload {
   title: string
-  slug: string
+  slug?: string
   summary?: string | null
   primaryCefr?: string | null
   coverMediaId?: number | null
@@ -54,7 +54,7 @@ export interface BundleReadiness {
   moduleCount: number
   moduleCounts: Record<BundleItem['contentType'], number>
   ready: boolean
-  issues: Array<'SUMMARY_REQUIRED' | 'CEFR_REQUIRED' | 'MINIMUM_ITEMS_REQUIRED' | 'MULTIPLE_MODULES_REQUIRED' | 'UNPUBLISHED_ITEMS_PRESENT'>
+  issues: Array<'SUMMARY_REQUIRED' | 'CEFR_REQUIRED' | 'READING_REQUIRED' | 'LISTENING_REQUIRED' | 'WRITING_REQUIRED' | 'UNPUBLISHED_ITEMS_PRESENT'>
 }
 
 export async function fetchBundles(): Promise<LearningBundle[]> {

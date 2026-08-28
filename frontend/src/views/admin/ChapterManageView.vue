@@ -41,6 +41,7 @@ const visibleChapters = computed(() => {
     ? chapters.value.filter((item) => `${item.title} ${item.slug}`.toLowerCase().includes(query))
     : chapters.value
 })
+const tutorialPublished = computed(() => curriculum.value?.tutorial.publishStatus === 'PUBLISHED')
 
 function routeGroupId() {
   const id = Number(route.query.group)
@@ -196,6 +197,10 @@ async function dropChapter(target: AdminCurriculumChapter) {
 }
 
 async function togglePublish(chapter: AdminCurriculumChapter) {
+  if (chapter.publishStatus !== 'PUBLISHED' && !tutorialPublished.value) {
+    ElMessage.warning('请先发布父教程，再发布章节。')
+    return
+  }
   try {
     if (chapter.publishStatus === 'PUBLISHED') await withdrawChapter(tutorialId, chapter.id)
     else await publishChapter(tutorialId, chapter.id)
@@ -278,13 +283,22 @@ onMounted(() => load(routeGroupId()))
       <div>
         <p class="curriculum-admin__eyebrow">CURRICULUM STRUCTURE · 固定两级结构</p>
         <h1>{{ curriculum?.tutorial.title ?? '课程结构' }}</h1>
-        <p>左侧只管理并列分组，右侧只显示当前分组直属章节。</p>
+        <p>左侧只管理并列分组，右侧只显示当前分组直属章节。父教程状态：{{ statusLabel(curriculum?.tutorial.publishStatus ?? 'DRAFT') }}</p>
       </div>
       <div class="curriculum-admin__hero-actions">
         <el-button @click="backToWorkspace">返回教程工作台</el-button>
         <el-button type="primary" :disabled="!activeGroupId" @click="newChapter">新建章节</el-button>
       </div>
     </header>
+
+    <el-alert
+      v-if="curriculum && !tutorialPublished"
+      title="父教程尚未发布，章节发布功能已禁用；请先返回教程工作台发布教程。"
+      type="warning"
+      :closable="false"
+      show-icon
+      class="curriculum-admin__notice"
+    />
 
     <div v-if="loadError && !loading" class="load-error">
       <span aria-hidden="true">!</span>
@@ -361,12 +375,12 @@ onMounted(() => load(routeGroupId()))
               <span class="chapter-row__grip" aria-hidden="true">⠿</span>
               <span class="chapter-row__index">{{ String(chapter.sortOrder / 10).padStart(2, '0') }}</span>
               <div class="chapter-row__copy">
-                <h3>{{ chapter.title }}</h3><p>{{ chapter.slug }} · 更新于 {{ chapter.updatedAt?.slice(0, 16).replace('T', ' ') }}</p>
+                <h3>{{ chapter.title }}</h3><p>编号 {{ chapter.slug }} · 更新于 {{ chapter.updatedAt?.slice(0, 16).replace('T', ' ') }}</p>
               </div>
               <span class="status-pill" :class="`status-pill--${chapter.publishStatus.toLowerCase()}`">{{ statusLabel(chapter.publishStatus) }}</span>
               <div class="chapter-row__actions">
                 <button type="button" @click="editChapter(chapter)">编辑</button>
-                <button v-if="auth.isSuperAdmin" type="button" @click="togglePublish(chapter)">{{ chapter.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button>
+                <button v-if="auth.isSuperAdmin" type="button" :disabled="chapter.publishStatus !== 'PUBLISHED' && !tutorialPublished" :title="chapter.publishStatus !== 'PUBLISHED' && !tutorialPublished ? '请先发布父教程' : undefined" @click="togglePublish(chapter)">{{ chapter.publishStatus === 'PUBLISHED' ? '撤回' : chapter.publishStatus === 'WITHDRAWN' ? '重新发布' : '发布' }}</button>
                 <button type="button" @click="openMoveDialog(chapter)">移动到分组</button>
                 <button v-if="auth.isSuperAdmin" type="button" class="danger" @click="removeChapter(chapter)">删除</button>
               </div>
@@ -405,6 +419,7 @@ onMounted(() => load(routeGroupId()))
 .curriculum-admin__hero > div > p:last-child { color: var(--text-secondary); font-size: 14px; }
 .curriculum-admin__eyebrow { color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: .15em; }
 .curriculum-admin__hero-actions { display: flex; gap: 10px; }
+.curriculum-admin__notice { margin: -8px 0 20px; }
 .curriculum-layout { display: grid; grid-template-columns: minmax(260px,330px) minmax(0,1fr); gap: 20px; min-height: calc(100vh - 220px); }
 .group-panel,.chapter-panel { min-width: 0; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 18px; background: var(--bg-surface); box-shadow: 0 12px 36px rgb(17 35 29/.055); overflow: hidden; }
 .panel-header { min-height: 84px; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 20px; border-bottom: 1px solid var(--border); background: color-mix(in srgb,var(--bg-subtle) 52%,transparent); }

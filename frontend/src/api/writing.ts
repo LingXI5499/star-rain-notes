@@ -7,8 +7,8 @@ export type WritingResourceSummary = Omit<WritingResource,'bodyMarkdown'|'coverM
 export type WritingPrompt = { id:number; title:string; slug:string; summary:string; backgroundMarkdown:string; requirementsMarkdown:string; cefrLevel:string; wordMin:number; wordMax:number; estimatedMinutes:number; rubricJson?:string|null; checklistJson?:string|null; templateResourceId?:number|null; modelResourceId?:number|null; coverMediaId?:number|null; coverUrl?:string|null; publishStatus:string; sortOrder:number; publishedAt?:string|null; updatedAt?:string|null; tags:WritingTag[] }
 export type WritingPromptSummary = Omit<WritingPrompt,'backgroundMarkdown'|'requirementsMarkdown'|'rubricJson'|'checklistJson'|'templateResourceId'|'modelResourceId'|'coverMediaId'|'publishedAt'>
 export type WritingPage<T> = {items:T[];page:number;pageSize:number;total:number;totalPages:number}
-export type WritingResourcePayload = Omit<WritingResource,'id'|'coverUrl'|'publishStatus'|'sortOrder'|'publishedAt'|'updatedAt'|'tags'> & {sortOrder?:number;tagIds:number[]}
-export type WritingPromptPayload = Omit<WritingPrompt,'id'|'coverUrl'|'publishStatus'|'sortOrder'|'publishedAt'|'updatedAt'|'tags'> & {sortOrder?:number;tagIds:number[]}
+export type WritingResourcePayload = Omit<WritingResource,'id'|'slug'|'coverUrl'|'publishStatus'|'sortOrder'|'publishedAt'|'updatedAt'|'tags'> & {slug?:string;sortOrder?:number;tagIds:number[]}
+export type WritingPromptPayload = Omit<WritingPrompt,'id'|'slug'|'coverUrl'|'publishStatus'|'sortOrder'|'publishedAt'|'updatedAt'|'tags'> & {slug?:string;sortOrder?:number;tagIds:number[]}
 // `http` already has `/api/v1` as baseURL. Keeping these relative is crucial:
 // an absolute `/api/v1/...` here becomes `/api/v1/api/v1/...` in Axios.
 const admin='/admin/english/writing'; const pub='/public/english/writing'

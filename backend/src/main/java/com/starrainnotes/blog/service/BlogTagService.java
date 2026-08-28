@@ -8,6 +8,7 @@ import com.starrainnotes.blog.dto.PublicTagViewWithCount;
 import com.starrainnotes.blog.entity.BlogTag;
 import com.starrainnotes.blog.mapper.BlogTagMapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -50,7 +51,8 @@ public class BlogTagService {
 
     public AdminBlogTagView create(CreateTagRequest request) {
         String name = normalizeName(request.name());
-        String slug = request.slug().trim().toLowerCase(Locale.ROOT);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
+        slug = slug.toLowerCase(Locale.ROOT);
         assertUnique(name, slug, null);
         BlogTag tag = new BlogTag();
         tag.setName(name);
@@ -62,7 +64,7 @@ public class BlogTagService {
     public AdminBlogTagView update(Long tagId, UpdateTagRequest request) {
         BlogTag tag = requireTag(tagId);
         String name = normalizeName(request.name());
-        String slug = request.slug().trim().toLowerCase(Locale.ROOT);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), tag.getSlug()).toLowerCase(Locale.ROOT);
         assertUnique(name, slug, tagId);
         tag.setName(name);
         tag.setSlug(slug);
@@ -199,5 +201,12 @@ public class BlogTagService {
             throw new ApiException(HttpStatus.CONFLICT, "SLUG_CONFLICT",
                     "Slug already exists", "A tag with this slug already exists.");
         }
+    }
+
+    private boolean slugExists(String slug, Long excludeId) {
+        LambdaQueryWrapper<BlogTag> wrapper = new LambdaQueryWrapper<BlogTag>().eq(BlogTag::getSlug, slug);
+        if (excludeId != null) wrapper.ne(BlogTag::getId, excludeId);
+        Long count = tagMapper.selectCount(wrapper);
+        return count != null && count > 0;
     }
 }

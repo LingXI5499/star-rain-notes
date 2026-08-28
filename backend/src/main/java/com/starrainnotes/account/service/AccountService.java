@@ -307,7 +307,7 @@ public class AccountService {
         return at <= 0 ? "***" : email.substring(0, 2) + "***" + email.substring(at);
     }
     private LocalDateTime now() { return LocalDateTime.now(Clock.systemUTC()); }
-    static ApiException fail(String code, HttpStatus status, String title, String detail) {
+    public static ApiException fail(String code, HttpStatus status, String title, String detail) {
         return new ApiException(status, code, title, detail);
     }
     @Transactional
@@ -436,6 +436,15 @@ public class AccountService {
     public java.util.List<AccountUser> listUsers() {
         return userMapper.selectList(new LambdaQueryWrapper<AccountUser>()
                 .orderByDesc(AccountUser::getId));
+    }
+    public boolean isSessionValid(Long accountId, int authVersion) {
+        AccountUser user = accountId == null ? null : userMapper.selectOne(
+                new LambdaQueryWrapper<AccountUser>()
+                        .select(AccountUser::getAccountStatus, AccountUser::getAuthVersion)
+                        .eq(AccountUser::getId, accountId)
+                        .last("LIMIT 1"));
+        return user != null && ACTIVE.equals(user.getAccountStatus())
+                && user.getAuthVersion() != null && user.getAuthVersion() == authVersion;
     }
     public AccountUser findByEmailPublic(String email) {
         return findByEmail(normalize(email));

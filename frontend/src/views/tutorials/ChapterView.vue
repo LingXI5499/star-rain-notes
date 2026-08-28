@@ -59,7 +59,7 @@ async function load() {
     chapter.value = ch
     detail.value = det
     applyPageMeta({
-      title: `${ch.chapterTitle} · ${det.title}`,
+      title: ch.chapterTitle,
       description: ch.summary ?? det.summary,
     })
   } catch (error) {

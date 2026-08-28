@@ -11,11 +11,17 @@
 ## 二、本地开发环境激活（全新库）
 1. **准备一个全新数据库**（确保没有已激活的超级管理员）：
    - 可用独立库名，例如：`CREATE DATABASE star_rain_notes_dev CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;`
-   - 并把 `backend/src/main/resources/application-local.yml` 的 `spring.datasource.url` 指向它（开发用）。
+   - 通过本机环境变量 `MYSQL_DATABASE=star_rain_notes_dev` 指向它；不要把本机密码写进已跟踪配置。
 2. **配置真实 SMTP**：写入 gitignored 的 `backend/application-local-secret.yml`。项目同时兼容从仓库根目录或 `backend` 目录启动：
    ```yaml
+   spring:
+     datasource:
+       username: root
+       password: 你的本机 MySQL 密码
+
    app:
      account:
+       super-admin-email: 你的超级管理员邮箱
        mail:
          host: smtp.163.com
          port: 465
@@ -25,13 +31,15 @@
          ssl-enabled: true
          base-url: http://localhost:5173
    ```
-   固定超管邮箱已在 `application-local.yml` 设为 `14717895499@163.com`。
+   如果日志出现 `Access denied ... (using password: NO)`，说明这个文件没有配置
+   `spring.datasource.password`，或者 IDEA 的工作目录没有设置为项目根目录/`backend`。
+   超级管理员邮箱必须由本机密钥文件或 `APP_SUPER_ADMIN_EMAIL` 提供，仓库不内置个人邮箱。
 3. **启动后端**：`cd backend && mvn spring-boot:run`（24680；首次启动 Flyway 会把空库迁移到最新版本）。
 4. **启动前端**：`cd frontend && npm run dev`（5173）。
 5. **浏览器打开** `http://localhost:5173/admin/activate`。
-   - 「发送验证码」→ 163 会发 6 位验证码到 `14717895499@163.com`（10 分钟有效、每邮箱每 60 秒一次、每小时最多 5 次）。
+   - 「发送验证码」→ 163 会向配置的超级管理员邮箱发送 6 位验证码（10 分钟有效、每邮箱每 60 秒一次、每小时最多 5 次）。
    - 输入验证码 + 设置首次密码（≥10 位）+ 确认 → 激活成功 → 跳转登录。
-6. **登录**：`http://localhost:5173/admin/login` 用 `14717895499@163.com` + 该密码。
+6. **登录**：`http://localhost:5173/admin/login` 使用配置的超级管理员邮箱和该密码。
 
 ## 三、邀请管理员并验证真实注册
 
@@ -56,7 +64,7 @@ DELETE FROM user_account;
 ## 五、生产环境（部署到服务器）
 - 不使用 local 文件；用**环境变量**注入，例如：
   ```
-  APP_SUPER_ADMIN_EMAIL=14717895499@163.com
+  APP_SUPER_ADMIN_EMAIL=owner@example.com
   MAIL_HOST=smtp.163.com
   MAIL_PORT=465
   MAIL_USERNAME=你的发码邮箱@163.com

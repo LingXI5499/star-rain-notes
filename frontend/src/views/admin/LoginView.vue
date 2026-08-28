@@ -16,18 +16,13 @@ const password = ref('')
 const loading = ref(false)
 
 onMounted(async () => {
-  // Account system takes precedence over the legacy setup-token flow.
   try {
     const activation = await fetchActivationStatus()
-    if (activation.configured && !activation.activated) {
+    if (!activation.activated) {
       router.replace({ name: 'admin-activate' })
-      return
     }
   } catch {
-    // Keep the legacy setup fallback available if the account activation endpoint is unavailable.
-  }
-  if (await auth.fetchSetupRequired()) {
-    router.replace({ name: 'admin-setup' })
+    ElMessage.error('暂时无法检查账号状态，请确认后端服务已启动。')
   }
 })
 

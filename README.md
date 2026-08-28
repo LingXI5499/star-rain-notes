@@ -13,7 +13,7 @@
 ```
 backend/   Spring Boot 后端（业务模块：auth/blog/english/media/portfolio/profile/search/site/tutorial/vocabulary）
 frontend/  Vue 3 前端（public 前台 + admin 后台）
-deploy/    Nginx/systemd/环境变量/备份脚本（部署配置）
+develop/   部署配置、开发文档、内容资料、发布产物与辅助脚本
 ```
 
 ## 本地运行
@@ -34,7 +34,7 @@ npm install
 npm run dev                  # http://localhost:5173，代理 /api 到 24680
 ```
 
-首次访问 `http://localhost:5173/admin/setup` 用 `APP_SETUP_TOKEN` 创建管理员。
+首次访问 `http://localhost:5173/admin/activate`，通过配置的超级管理员邮箱验证码完成激活。
 
 ### 验证
 
@@ -45,7 +45,7 @@ cd backend  && mvn test
 
 ## 文档索引
 
-- `deploy/README-BT.md`：宝塔面板部署指南
-- `deploy/README.md`：手工 Nginx + systemd 部署指南
+- `develop/deploy/README-BT.md`：宝塔面板部署指南
+- `develop/deploy/README.md`：手工 Nginx + systemd 部署指南
 
-> 本包为纯净源码导出：仅含源代码、构建配置与部署脚本，不含开发规格文档与内容源数据。
+> 根目录保留当前前后端源码与主说明文档，其余开发、部署和发布资料统一收纳在 `develop/`。

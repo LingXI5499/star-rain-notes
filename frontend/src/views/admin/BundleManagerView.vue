@@ -33,8 +33,9 @@ const moduleLabels: Record<BundleItem['contentType'], string> = {
 const issueLabels: Record<string, string> = {
   SUMMARY_REQUIRED: '补充组合摘要',
   CEFR_REQUIRED: '选择主 CEFR 等级',
-  MINIMUM_ITEMS_REQUIRED: '至少加入 2 项内容',
-  MULTIPLE_MODULES_REQUIRED: '至少覆盖 2 个不同模块',
+  READING_REQUIRED: '至少加入 1 篇已发布阅读',
+  LISTENING_REQUIRED: '至少加入 1 个已发布听力',
+  WRITING_REQUIRED: '至少加入 1 个已发布写作任务',
   UNPUBLISHED_ITEMS_PRESENT: '组合中的所有内容必须已发布',
 }
 
@@ -58,8 +59,8 @@ const filters = reactive({ q: '', type: '', status: 'PUBLISHED', cefr: '', page:
 const auth = useAuthStore()
 
 const form = reactive({
-  title: '', slug: '', summary: '', primaryCefr: '', coverMediaId: null as number | null,
-  coverUrl: '', sortOrder: 10,
+  title: '', summary: '', primaryCefr: '', coverMediaId: null as number | null,
+  coverUrl: '', sortOrder: null as number | null,
 })
 
 const workspaceLocked = computed(() => activeBundle.value?.publishStatus === 'PUBLISHED')
@@ -90,7 +91,7 @@ async function load() {
 
 function resetForm() {
   editingId.value = null
-  Object.assign(form, { title: '', slug: '', summary: '', primaryCefr: '', coverMediaId: null, coverUrl: '', sortOrder: 10 })
+  Object.assign(form, { title: '', summary: '', primaryCefr: '', coverMediaId: null, coverUrl: '', sortOrder: null })
 }
 
 function openCreate() {
@@ -101,7 +102,7 @@ function openCreate() {
 function openEdit(bundle: LearningBundle) {
   editingId.value = bundle.id
   Object.assign(form, {
-    title: bundle.title, slug: bundle.slug, summary: bundle.summary ?? '', primaryCefr: bundle.primaryCefr ?? '',
+    title: bundle.title, summary: bundle.summary ?? '', primaryCefr: bundle.primaryCefr ?? '',
     coverMediaId: bundle.coverMediaId, coverUrl: bundle.coverUrl ?? '', sortOrder: bundle.sortOrder,
   })
   dialogOpen.value = true
@@ -117,13 +118,13 @@ function selectCover(asset: MediaAsset) {
 }
 
 async function save() {
-  if (!form.title.trim() || !form.slug.trim()) {
-    ElMessage.warning('请填写标题与 slug。')
+  if (!form.title.trim()) {
+    ElMessage.warning('请填写标题。')
     return
   }
   saving.value = true
   const payload: BundlePayload = {
-    title: form.title.trim(), slug: form.slug.trim(), summary: form.summary.trim() || null,
+    title: form.title.trim(), summary: form.summary.trim() || null,
     primaryCefr: form.primaryCefr || null, coverMediaId: form.coverMediaId, sortOrder: form.sortOrder,
   }
   try {
@@ -304,12 +305,12 @@ onMounted(load)
         </div>
         <div class="bundle-card__body">
           <div class="bundle-card__title"><h2>{{ bundle.title }}</h2><CefrBadge :level="bundle.primaryCefr" /></div>
-          <code>{{ bundle.slug }}</code>
+          <code>编号 {{ bundle.slug }}</code>
           <p>{{ bundle.summary || '尚未填写摘要，发布前需要补充学习目标。' }}</p>
           <div v-if="readinessMap[bundle.id]" class="bundle-card__stats">
             <span><b>{{ readinessMap[bundle.id].totalItems }}</b> 项内容</span>
             <span><b>{{ readinessMap[bundle.id].moduleCount }}</b> 个模块</span>
-            <span :class="{ ready: readinessMap[bundle.id].ready }">{{ readinessMap[bundle.id].ready ? '可发布' : `${readinessMap[bundle.id].issues.length} 项待完善` }}</span>
+            <span :class="{ ready: readinessMap[bundle.id].ready }">{{ readinessMap[bundle.id].ready ? '可发布' : (bundle.publishStatus === 'PUBLISHED' ? '历史组合待补全' : `${readinessMap[bundle.id].issues.length} 项待完善`) }}</span>
           </div>
           <nav>
             <el-button type="primary" @click="manageItems(bundle)">编排路径</el-button>
@@ -326,7 +327,7 @@ onMounted(load)
     <el-drawer v-model="workspaceOpen" size="92%" :with-header="false" class="bundle-workspace-drawer">
       <div v-if="activeBundle" v-loading="workspaceLoading" class="workspace">
         <header class="workspace__header">
-          <div><button type="button" @click="workspaceOpen = false">← 返回</button><p>PATH BUILDER · {{ activeBundle.slug }}</p><h2>{{ activeBundle.title }}</h2></div>
+          <div><button type="button" @click="workspaceOpen = false">← 返回</button><p>PATH BUILDER · 编号 {{ activeBundle.slug }}</p><h2>{{ activeBundle.title }}</h2></div>
           <div class="workspace__header-actions">
             <span v-if="workspaceLocked" class="locked">已发布 · 路径已锁定</span>
             <el-button v-if="auth.isSuperAdmin && workspaceLocked" type="warning" @click="withdrawWorkspace">撤回后编辑</el-button>
@@ -345,7 +346,7 @@ onMounted(load)
           <section class="catalog-panel">
             <header><div><p>CONTENT LIBRARY</p><h3>内容库</h3></div><span>共 {{ catalog.total }} 项</span></header>
             <div class="catalog-filters">
-              <el-input v-model="filters.q" clearable placeholder="搜索标题、slug 或摘要" @keyup.enter="loadCatalog(true)" />
+              <el-input v-model="filters.q" clearable placeholder="搜索标题、编号或摘要" @keyup.enter="loadCatalog(true)" />
               <el-select v-model="filters.type" placeholder="全部模块" clearable @change="loadCatalog(true)">
                 <el-option label="阅读" value="READING" /><el-option label="听力" value="LISTENING" /><el-option label="写作" value="WRITING" />
               </el-select>
@@ -386,7 +387,6 @@ onMounted(load)
     <el-dialog v-model="dialogOpen" :title="editingId ? '编辑组合信息' : '新建学习组合'" width="560px">
       <el-form label-position="top">
         <el-form-item label="标题"><el-input v-model="form.title" maxlength="200" show-word-limit /></el-form-item>
-        <el-form-item label="稳定 Slug"><el-input v-model="form.slug" placeholder="climate-input-to-output" /></el-form-item>
         <el-form-item label="学习目标摘要"><el-input v-model="form.summary" type="textarea" :rows="3" maxlength="1000" show-word-limit /></el-form-item>
         <div class="form-grid"><el-form-item label="主 CEFR 等级"><el-select v-model="form.primaryCefr" clearable style="width:100%"><el-option v-for="level in ['A1','A2','B1','B2','C1','C2']" :key="level" :label="level" :value="level" /></el-select></el-form-item><el-form-item label="排序"><el-input-number v-model="form.sortOrder" :min="1" :step="10" /></el-form-item></div>
         <el-form-item label="封面">

@@ -24,11 +24,8 @@ const coverUrl = ref<string | null>(null)
 
 const form = reactive({
   title: '',
-  slug: '',
   summary: '',
   bodyMarkdown: '',
-  seoTitle: '',
-  seoDescription: '',
   coverMediaId: null as number | null,
   tagValues: [] as Array<number | string>,
 })
@@ -44,11 +41,8 @@ onMounted(async () => {
       const detail = await fetchAdminPost(Number(route.params.id))
       Object.assign(form, {
         title: detail.title,
-        slug: detail.slug,
         summary: detail.summary,
         bodyMarkdown: detail.bodyMarkdown,
-        seoTitle: detail.seoTitle ?? '',
-        seoDescription: detail.seoDescription ?? '',
         coverMediaId: detail.coverMediaId,
         tagValues: detail.tags.map((t) => t.id),
       })
@@ -63,19 +57,16 @@ onMounted(async () => {
 })
 
 async function save() {
-  if (!form.title.trim() || !form.slug.trim() || !form.summary.trim() || !form.bodyMarkdown.trim()) {
-    ElMessage.warning('请填写标题、slug、摘要与正文。')
+  if (!form.title.trim() || !form.summary.trim() || !form.bodyMarkdown.trim()) {
+    ElMessage.warning('请填写标题、摘要与正文。')
     return
   }
   saving.value = true
   try {
     const payload = {
       title: form.title,
-      slug: form.slug,
       summary: form.summary,
       bodyMarkdown: form.bodyMarkdown,
-      seoTitle: form.seoTitle || null,
-      seoDescription: form.seoDescription || null,
       coverMediaId: form.coverMediaId,
       tagIds: form.tagValues.filter((value): value is number => typeof value === 'number'),
       tagNames: form.tagValues.filter((value): value is string => typeof value === 'string'),
@@ -151,9 +142,6 @@ function clearCover() {
         <div class="blog-edit__meta-grid">
           <div class="blog-edit__panel">
             <h3>发布信息</h3>
-          <el-form-item label="Slug（小写 kebab-case）">
-            <el-input v-model="form.slug" maxlength="150" />
-          </el-form-item>
           <el-form-item label="标签">
               <BlogTagPicker v-model="form.tagValues" :tags="tags" />
           </el-form-item>
@@ -174,15 +162,6 @@ function clearCover() {
             </div>
           </div>
 
-          <div class="blog-edit__panel">
-            <h3>搜索展示</h3>
-          <el-form-item label="SEO 标题">
-            <el-input v-model="form.seoTitle" maxlength="200" />
-          </el-form-item>
-          <el-form-item label="SEO 描述">
-              <el-input v-model="form.seoDescription" type="textarea" :rows="4" maxlength="500" />
-          </el-form-item>
-          </div>
         </div>
       </section>
 

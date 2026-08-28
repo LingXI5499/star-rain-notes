@@ -194,22 +194,21 @@ async function dropTutorial(target: AdminTutorialSummary) {
 
 const categoryDialog = ref(false)
 const editingCategoryId = ref<number | null>(null)
-const categoryForm = reactive({ name: '', slug: '' })
+const categoryForm = reactive({ name: '' })
 
 function openCategoryDialog(category?: CategoryNode) {
   editingCategoryId.value = category?.id ?? null
   categoryForm.name = category?.name ?? ''
-  categoryForm.slug = category?.slug ?? ''
   categoryDialog.value = true
 }
 
 async function saveCategory() {
-  if (!categoryForm.name.trim() || !categoryForm.slug.trim()) {
-    ElMessage.warning('请填写知识体系名称和 slug。')
+  if (!categoryForm.name.trim()) {
+    ElMessage.warning('请填写知识体系名称。')
     return
   }
   try {
-    const payload = { name: categoryForm.name.trim(), slug: categoryForm.slug.trim() }
+    const payload = { name: categoryForm.name.trim() }
     const saved = editingCategoryId.value
       ? await updateCategory(editingCategoryId.value, payload)
       : await createCategory(payload)
@@ -289,12 +288,9 @@ async function confirmMoveTutorial() {
     await updateTutorial(tutorial.id, {
       categoryId: targetCategory.id,
       title: detail.title,
-      slug: detail.slug,
       summary: detail.summary,
       coverMediaId: detail.coverMediaId,
       sortOrder: null,
-      seoTitle: detail.seoTitle,
-      seoDescription: detail.seoDescription,
     })
     moveDialog.value = false
     ElMessage.success('教程已移动到目标知识体系末尾。')
@@ -306,6 +302,10 @@ async function confirmMoveTutorial() {
 
 function statusLabel(status: string) {
   return status === 'PUBLISHED' ? '已发布' : status === 'WITHDRAWN' ? '已撤回' : '草稿'
+}
+
+function statusActionLabel(status: string) {
+  return status === 'PUBLISHED' ? '撤回' : status === 'WITHDRAWN' ? '重新发布' : '发布'
 }
 
 function coverGlyph(title: string) {
@@ -403,7 +403,6 @@ onMounted(async () => {
               class="course-card"
               :class="tutorialDrop?.id === tutorial.id ? `course-card--drop-${tutorialDrop.after ? 'after' : 'before'}` : undefined"
               :draggable="!search.trim()"
-              @click="enterCurriculum(tutorial)"
               @dragstart="draggingTutorialId = tutorial.id"
               @dragend="draggingTutorialId = null; tutorialDrop = null"
               @dragover.prevent="tutorialDragOver($event, tutorial)"
@@ -419,25 +418,21 @@ onMounted(async () => {
               <div class="course-card__content">
                 <p class="course-card__category">{{ activeCategory?.name }}</p>
                 <h3>{{ tutorial.title }}</h3>
-                <p class="course-card__slug">{{ tutorial.slug }}</p>
+                <p class="course-card__slug">编号 {{ tutorial.slug }}</p>
                 <div class="course-card__meta">
                   <span>{{ tutorial.chapterCount ?? 0 }} 章</span>
                   <span>更新 {{ tutorial.updatedAt?.slice(0, 10) }}</span>
                 </div>
                 <div class="course-card__footer">
                   <button type="button" class="course-card__enter" @click.stop="enterCurriculum(tutorial)">管理课程结构 <span>→</span></button>
-                  <el-dropdown trigger="click" @click.stop>
-                    <button type="button" class="course-card__more" aria-label="更多操作">•••</button>
-                    <template #dropdown>
-                      <el-dropdown-menu>
-                        <el-dropdown-item @click="router.push({ name: 'admin-tutorial-edit', params: { id: tutorial.id } })">编辑教程信息</el-dropdown-item>
-                        <el-dropdown-item v-if="auth.isSuperAdmin" @click="togglePublish(tutorial)">{{ tutorial.publishStatus === 'PUBLISHED' ? '撤回教程' : '发布教程' }}</el-dropdown-item>
-                        <el-dropdown-item @click="openMoveDialog(tutorial)">更换知识体系</el-dropdown-item>
-                        <el-dropdown-item v-if="auth.isSuperAdmin" divided @click="removeTutorial(tutorial)">删除教程</el-dropdown-item>
-                      </el-dropdown-menu>
-                    </template>
-                  </el-dropdown>
+                  <div class="course-card__actions">
+                    <button type="button" @click.stop="router.push({ name: 'admin-tutorial-edit', params: { id: tutorial.id } })">编辑</button>
+                    <button type="button" @click.stop="openMoveDialog(tutorial)">更换体系</button>
+                    <button v-if="auth.isSuperAdmin" type="button" @click.stop="togglePublish(tutorial)">{{ statusActionLabel(tutorial.publishStatus) }}</button>
+                    <button v-if="auth.isSuperAdmin" type="button" class="danger" @click.stop="removeTutorial(tutorial)">删除</button>
+                  </div>
                 </div>
+                <p v-if="!auth.isSuperAdmin" class="course-card__permission">发布和删除由超级管理员操作</p>
               </div>
             </article>
           </div>
@@ -448,7 +443,7 @@ onMounted(async () => {
     <el-dialog v-model="categoryDialog" :title="editingCategoryId ? '编辑知识体系' : '新建知识体系'" width="440px">
       <el-form label-position="top" @submit.prevent="saveCategory">
         <el-form-item label="名称"><el-input v-model="categoryForm.name" maxlength="100" autofocus /></el-form-item>
-        <el-form-item label="Slug（小写 kebab-case）"><el-input v-model="categoryForm.slug" maxlength="100" /></el-form-item>
+        <p class="dialog-tip">内容编号由系统自动生成，修改名称不会改变原编号。</p>
         <p class="dialog-tip">知识体系固定为一级，不再设置父分类。</p>
       </el-form>
       <template #footer>
@@ -508,7 +503,7 @@ onMounted(async () => {
 .course-panel__tools .el-input { min-width: 160px; }
 .course-panel__body { min-height: 360px; flex: 1; padding: 20px; }
 .course-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(260px,1fr)); gap: 16px; }
-.course-card { min-width: 0; border: 1px solid var(--border); border-radius: 16px; background: var(--bg-surface); overflow: hidden; cursor: pointer; transition: transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease; }
+.course-card { min-width: 0; border: 1px solid var(--border); border-radius: 16px; background: var(--bg-surface); overflow: hidden; transition: transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease; }
 .course-card:hover { border-color: color-mix(in srgb,var(--primary) 35%,var(--border)); box-shadow: 0 16px 34px rgb(14 35 28/.09); transform: translateY(-3px); }
 .course-card--drop-before { box-shadow: inset 0 3px 0 var(--primary); }
 .course-card--drop-after { box-shadow: inset 0 -3px 0 var(--primary); }
@@ -525,11 +520,14 @@ onMounted(async () => {
 .course-card h3 { margin: 7px 0 4px; font-size: 17px; line-height: 1.4; }
 .course-card__slug { overflow: hidden; color: var(--text-muted); font: 10px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; text-overflow: ellipsis; white-space: nowrap; }
 .course-card__meta { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 10px; }
-.course-card__footer { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 14px; }
-.course-card__enter,.course-card__more { padding: 0; border: 0; color: var(--primary); background: none; font-size: 12px; font-weight: 650; cursor: pointer; }
+.course-card__footer { display: flex; align-items: flex-start; flex-direction: column; gap: 8px; margin-top: 14px; }
+.course-card__enter,.course-card__actions button { min-height: 36px; padding: 7px 10px; border: 1px solid var(--border); border-radius: 9px; color: var(--primary); background: var(--bg-surface); font-size: 12px; font-weight: 650; cursor: pointer; }
 .course-card__enter span { display: inline-block; transition: transform 160ms ease; }
 .course-card:hover .course-card__enter span { transform: translateX(3px); }
-.course-card__more { padding: 4px 6px; color: var(--text-muted); letter-spacing: 1px; }
+.course-card__actions { display: flex; flex-wrap: wrap; gap: 7px; }
+.course-card__actions button:hover,.course-card__enter:hover { border-color: var(--primary); background: color-mix(in srgb,var(--primary) 7%,var(--bg-surface)); }
+.course-card__actions .danger { color: var(--danger); }
+.course-card__permission { margin-top: 8px; color: var(--text-muted); font-size: 11px; }
 .course-empty,.empty-state { color: var(--text-muted); text-align: center; }
 .course-empty { min-height: 360px; display: grid; place-content: center; gap: 7px; }
 .course-empty span { color: var(--primary); font-size: 32px; }

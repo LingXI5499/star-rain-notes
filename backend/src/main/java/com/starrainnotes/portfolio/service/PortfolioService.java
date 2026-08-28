@@ -2,6 +2,7 @@ package com.starrainnotes.portfolio.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
 import com.starrainnotes.portfolio.dto.AdminProjectDetailView;
@@ -101,16 +102,18 @@ public class PortfolioService {
     }
 
     public AdminProjectDetailView create(CreateProjectRequest request) {
-        assertSlugFree(request.slug(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
+        assertSlugFree(slug, null);
         validateRules(request.demoUrl(), request.projectStatus(), request.featured(), null,
                 request.startedAt(), request.completedAt(), request.coverMediaId());
         List<String> techStack = normalizeTechStack(request.techStack());
 
         PortfolioProject project = new PortfolioProject();
-        applyFields(project, request.title(), request.slug(), request.summary(), request.role(), techStack,
+        applyFields(project, request.title(), slug, request.summary(), request.role(), techStack,
                 request.bodyMarkdown(), request.coverMediaId(), request.repositoryUrl(), request.demoUrl(),
                 request.projectStatus(), request.featured(), request.sortOrder(),
-                request.startedAt(), request.completedAt(), request.seoTitle(), request.seoDescription());
+                request.startedAt(), request.completedAt());
+        if (project.getSortOrder() == null) project.setSortOrder(nextProjectOrder());
         project.setPublishStatus(DRAFT);
         project.setPublishedAt(null);
         projectMapper.insert(project);
@@ -119,15 +122,16 @@ public class PortfolioService {
 
     public AdminProjectDetailView update(Long projectId, UpdateProjectRequest request) {
         PortfolioProject project = requireProject(projectId);
-        assertSlugFree(request.slug(), projectId);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), project.getSlug());
+        assertSlugFree(slug, projectId);
         validateRules(request.demoUrl(), request.projectStatus(), request.featured(), projectId,
                 request.startedAt(), request.completedAt(), request.coverMediaId());
         List<String> techStack = normalizeTechStack(request.techStack());
 
-        applyFields(project, request.title(), request.slug(), request.summary(), request.role(), techStack,
+        applyFields(project, request.title(), slug, request.summary(), request.role(), techStack,
                 request.bodyMarkdown(), request.coverMediaId(), request.repositoryUrl(), request.demoUrl(),
                 request.projectStatus(), request.featured(), request.sortOrder(),
-                request.startedAt(), request.completedAt(), request.seoTitle(), request.seoDescription());
+                request.startedAt(), request.completedAt());
         // publishStatus / publishedAt are never touched by a plain update
         projectMapper.updateById(project);
         return toAdminDetail(project);
@@ -278,8 +282,8 @@ public class PortfolioService {
     private void applyFields(PortfolioProject p, String title, String slug, String summary, String role,
                              List<String> techStack, String bodyMarkdown, Long coverMediaId,
                              String repositoryUrl, String demoUrl, String projectStatus, Boolean featured,
-                             Integer sortOrder, java.time.LocalDate startedAt, java.time.LocalDate completedAt,
-                             String seoTitle, String seoDescription) {
+                             Integer sortOrder, java.time.LocalDate startedAt,
+                             java.time.LocalDate completedAt) {
         p.setTitle(title);
         p.setSlug(slug);
         p.setSummary(summary);
@@ -291,11 +295,9 @@ public class PortfolioService {
         p.setDemoUrl(demoUrl);
         p.setProjectStatus(projectStatus == null ? DEVELOPING : projectStatus);
         p.setFeatured(Boolean.TRUE.equals(featured));
-        p.setSortOrder(sortOrder == null ? 0 : sortOrder);
+        if (sortOrder != null) p.setSortOrder(sortOrder);
         p.setStartedAt(startedAt);
         p.setCompletedAt(completedAt);
-        p.setSeoTitle(seoTitle);
-        p.setSeoDescription(seoDescription);
     }
 
     private PortfolioProject requireProject(Long projectId) {
@@ -317,6 +319,20 @@ public class PortfolioService {
             throw new ApiException(HttpStatus.CONFLICT, "SLUG_CONFLICT",
                     "Slug already exists", "A project with this slug already exists.");
         }
+    }
+
+    private boolean slugExists(String slug, Long excludeId) {
+        LambdaQueryWrapper<PortfolioProject> wrapper =
+                new LambdaQueryWrapper<PortfolioProject>().eq(PortfolioProject::getSlug, slug);
+        if (excludeId != null) wrapper.ne(PortfolioProject::getId, excludeId);
+        Long count = projectMapper.selectCount(wrapper);
+        return count != null && count > 0;
+    }
+
+    private int nextProjectOrder() {
+        return projectMapper.selectList(null).stream()
+                .mapToInt(project -> project.getSortOrder() == null ? 0 : project.getSortOrder())
+                .max().orElse(0) + 10;
     }
 
     private String coverUrl(Long mediaId) {

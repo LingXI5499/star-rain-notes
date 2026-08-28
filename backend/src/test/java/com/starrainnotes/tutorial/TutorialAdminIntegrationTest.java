@@ -157,6 +157,23 @@ class TutorialAdminIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
+    void updateTutorialWithoutSlugPreservesExistingSlug() throws Exception {
+        MockHttpSession session = loginSession();
+        Long categoryId = createCategory("cat");
+        Long tutorialId = createTutorial(session, categoryId, "existing-slug");
+
+        mockMvc.perform(withCsrf(put("/api/v1/admin/tutorials/" + tutorialId)
+                        .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                        .content("{\"categoryId\":" + categoryId + ",\"title\":\"Java\","
+                                + "\"summary\":\"javaSE\",\"coverMediaId\":null,\"sortOrder\":0}"), csrf(session))
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Java"))
+                .andExpect(jsonPath("$.summary").value("javaSE"))
+                .andExpect(jsonPath("$.slug").value("existing-slug"));
+    }
+
+    @Test
     void updateTutorialCannotCarryPublishStatusField() throws Exception {
         MockHttpSession session = loginSession();
         Long categoryId = createCategory("cat");

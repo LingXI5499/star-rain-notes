@@ -9,7 +9,7 @@ import jakarta.validation.constraints.Size;
  */
 public record UpdateTagRequest(
         @NotBlank @Size(max = 50) String name,
-        @NotBlank @Size(max = 60)
-        @Pattern(regexp = "^[a-z0-9]+(?:-[a-z0-9]+)*$", message = "slug must be lowercase kebab-case")
+        @Size(max = 60)
+        @Pattern(regexp = "^\\s*$|^[a-z0-9]+(?:-[a-z0-9]+)*$", message = "slug must be lowercase kebab-case")
         String slug) {
 }

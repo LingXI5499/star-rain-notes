@@ -36,7 +36,7 @@ onMounted(async () => { const result = await Promise.allSettled([fetchAdminTags(
       <el-button type="primary" @click="router.push({ name: 'admin-blog-new' })">＋ 新建文章</el-button>
     </header>
     <div class="content-admin__toolbar">
-      <el-input v-model="filters.q" placeholder="搜索标题 / slug" clearable @keyup.enter="search" @clear="search" />
+      <el-input v-model="filters.q" placeholder="搜索标题 / 编号" clearable @keyup.enter="search" @clear="search" />
       <el-select v-model="filters.status" placeholder="发布状态" clearable @change="search"><el-option label="草稿" value="DRAFT" /><el-option label="已发布" value="PUBLISHED" /><el-option label="已撤回" value="WITHDRAWN" /></el-select>
       <el-select v-model="filters.tag" placeholder="标签" filterable clearable @change="search"><el-option v-for="tag in tags" :key="tag.id" :label="`${tag.name} · ${tag.postCount}`" :value="tag.slug" /></el-select>
       <el-button @click="search">筛选</el-button><span class="content-admin__total">{{ page?.total ?? 0 }} 篇内容</span>
@@ -45,7 +45,7 @@ onMounted(async () => { const result = await Promise.allSettled([fetchAdminTags(
       <article v-for="row in page?.items ?? []" :key="row.id" class="content-card">
         <div class="content-card__cover"><img v-if="row.coverUrl" :src="row.coverUrl" :alt="row.title" loading="lazy" /><span v-else>{{ coverGlyph(row.title) }}</span></div>
         <div class="content-card__body">
-          <div class="content-card__heading"><div><p class="content-card__slug">/{{ row.slug }}</p><h2>{{ row.title }}</h2></div><span class="status-pill" :class="`status-pill--${row.publishStatus.toLowerCase()}`">{{ statusLabels[row.publishStatus] ?? row.publishStatus }}</span></div>
+          <div class="content-card__heading"><div><p class="content-card__slug">编号 {{ row.slug }}</p><h2>{{ row.title }}</h2></div><span class="status-pill" :class="`status-pill--${row.publishStatus.toLowerCase()}`">{{ statusLabels[row.publishStatus] ?? row.publishStatus }}</span></div>
           <p class="content-card__summary">{{ row.summary }}</p>
           <div class="content-card__tags"><span v-for="tag in row.tags" :key="tag.id"># {{ tag.name }}</span><small v-if="!row.tags.length">暂无标签</small></div>
           <div class="content-card__foot"><div><span>发布 {{ formatTime(row.publishedAt) }}</span><span>更新 {{ formatTime(row.updatedAt) }}</span></div><div class="content-card__actions"><button type="button" @click="preview(row)">预览</button><button type="button" @click="router.push(`/admin/blog/${row.id}/edit`)">编辑</button><button v-if="auth.isSuperAdmin" type="button" @click="togglePublish(row)">{{ row.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button v-if="auth.isSuperAdmin" type="button" class="is-danger" @click="remove(row)">删除</button></div></div>

@@ -3,7 +3,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import WideLayout from '@/layouts/WideLayout.vue'
 import ProseLayout from '@/layouts/ProseLayout.vue'
 import DocumentationLayout from '@/layouts/DocumentationLayout.vue'
-import { useAuthStore } from '@/stores/auth'
 import { hasUnsavedChanges } from '@/composables/useUnsavedGuard'
 import { applyPageMeta } from '@/lib/seo'
 
@@ -13,7 +12,7 @@ import { applyPageMeta } from '@/lib/seo'
  * - public pages share WideLayout (shell 1400, unified layout tokens)
  * - blog/portfolio article detail uses WideLayout/ProseLayout (narrow prose)
  * - tutorial routes use DocumentationLayout (Sidebar | Content | TOC)
- * - /admin/** uses AdminLayout; /admin/setup and /admin/login are
+ * - /admin/** uses AdminLayout; account activation and login are
  *   standalone full-screen pages protected by the auth guard below
  *
  * Business pages are placeholders until their vertical slices land
@@ -224,12 +223,6 @@ const router = createRouter({
         { path: 'resources/:slug', name: 'english-writing-resource', component: () => import('@/views/english/WritingDetailView.vue'), meta: { title: '写作资源', elementPlus: true } },
         { path: 'practice/:slug', name: 'english-writing-practice', component: () => import('@/views/english/WritingDetailView.vue'), meta: { title: '写作练习', elementPlus: true } },
       ],
-    },
-    {
-      path: '/admin/setup',
-      name: 'admin-setup',
-      component: () => import('@/views/admin/SetupView.vue'),
-      meta: { title: '初始化', robots: 'noindex,nofollow', elementPlus: true },
     },
     {
       path: '/admin/login',
@@ -526,7 +519,7 @@ const router = createRouter({
  * Global guards (TASK-011):
  * 1. unsaved-changes confirmation for admin editors
  * 2. lazy Element Plus registration for routes that use EP components
- * 3. admin auth guard (setup/login are anonymous; the rest needs a session)
+ * 3. admin auth guard (activation/login are anonymous; the rest needs a session)
  */
 router.beforeEach(async (to) => {
   if (hasUnsavedChanges()) {
@@ -542,11 +535,14 @@ router.beforeEach(async (to) => {
   if (!to.path.startsWith('/admin')) {
     return true
   }
+  // Keep Axios and account-session code out of the public shell. Visitors
+  // only pay for authentication when entering an admin route.
+  const { useAuthStore } = await import('@/stores/auth')
   const auth = useAuthStore()
-  if (to.name === 'admin-setup' || to.name === 'admin-login'
+  if (to.name === 'admin-login'
       || to.name === 'admin-activate' || to.name === 'admin-forgot-password'
       || to.name === 'admin-invitation-register') {
-    if (auth.isAuthenticated && (to.name === 'admin-setup' || to.name === 'admin-login')) {
+    if (auth.isAuthenticated && to.name === 'admin-login') {
       return { name: 'admin' }
     }
     return true

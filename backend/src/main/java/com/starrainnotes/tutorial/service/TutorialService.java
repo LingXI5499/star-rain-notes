@@ -2,6 +2,7 @@ package com.starrainnotes.tutorial.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
@@ -121,17 +122,16 @@ public class TutorialService {
 
     public AdminTutorialDetailView create(CreateTutorialRequest request) {
         requireCategory(request.categoryId());
-        assertSlugFree(request.slug(), null);
+        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
+        assertSlugFree(slug, null);
 
         Tutorial tutorial = new Tutorial();
         tutorial.setCategoryId(request.categoryId());
         tutorial.setTitle(request.title());
-        tutorial.setSlug(request.slug());
+        tutorial.setSlug(slug);
         tutorial.setSummary(request.summary());
         tutorial.setCoverMediaId(request.coverMediaId());
         tutorial.setSortOrder(request.sortOrder() == null ? nextTutorialOrder(request.categoryId()) : request.sortOrder());
-        tutorial.setSeoTitle(request.seoTitle());
-        tutorial.setSeoDescription(request.seoDescription());
         tutorial.setPublishStatus(DRAFT);
         tutorial.setPublishedAt(null);
         tutorialMapper.insert(tutorial);
@@ -142,20 +142,19 @@ public class TutorialService {
     public AdminTutorialDetailView update(Long id, UpdateTutorialRequest request) {
         Tutorial tutorial = requireTutorial(id);
         requireCategory(request.categoryId());
-        assertSlugFree(request.slug(), id);
+        String slug = NumericSlugGenerator.forUpdate(request.slug(), tutorial.getSlug());
+        assertSlugFree(slug, id);
 
         Long sourceCategoryId = tutorial.getCategoryId();
         boolean changingCategory = !sourceCategoryId.equals(request.categoryId());
         tutorial.setCategoryId(request.categoryId());
         tutorial.setTitle(request.title());
-        tutorial.setSlug(request.slug());
+        tutorial.setSlug(slug);
         tutorial.setSummary(request.summary());
         tutorial.setCoverMediaId(request.coverMediaId());
         tutorial.setSortOrder(changingCategory
                 ? nextTutorialOrder(request.categoryId())
                 : (request.sortOrder() == null ? tutorial.getSortOrder() : request.sortOrder()));
-        tutorial.setSeoTitle(request.seoTitle());
-        tutorial.setSeoDescription(request.seoDescription());
         // publishStatus / publishedAt are never touched by a plain update
         tutorialMapper.updateById(tutorial);
         if (changingCategory) {
@@ -390,6 +389,14 @@ public class TutorialService {
             throw new ApiException(HttpStatus.CONFLICT, "SLUG_CONFLICT",
                     "Slug already exists", "A tutorial with this slug already exists.");
         }
+    }
+
+    private boolean slugExists(String slug, Long excludeId) {
+        LambdaQueryWrapper<Tutorial> wrapper =
+                new LambdaQueryWrapper<Tutorial>().eq(Tutorial::getSlug, slug);
+        if (excludeId != null) wrapper.ne(Tutorial::getId, excludeId);
+        Long count = tutorialMapper.selectCount(wrapper);
+        return count != null && count > 0;
     }
 
     private Set<Long> resolveCategoryFilter(String categorySlug) {
