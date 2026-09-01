@@ -1,0 +1,289 @@
+/* Base styles for 星雨笔录 · Star Rain Notes (墨境 · Inkspace) */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--text-primary);
+  background-color: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--primary-hover);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* Lightweight global busy state used by admin lists and forms. */
+.app-loading {
+  cursor: progress;
+  opacity: 0.58;
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+/* ---------------------------------------------------------------
+   Layout system — unified page shell (wide), narrow prose and
+   sidebar/aside column widths come from design tokens (tokens.css).
+   --------------------------------------------------------------- */
+
+.layout-shell {
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding-inline: var(--page-padding-x);
+}
+
+.layout-prose {
+  max-width: var(--content-max-width);
+  margin-inline: auto;
+  width: 100%;
+}
+
+.container-marketing {
+  max-width: var(--container-marketing);
+  margin-inline: auto;
+  padding-inline: var(--page-padding-x);
+}
+
+.container-content {
+  max-width: var(--container-content);
+  margin-inline: auto;
+  padding-inline: var(--page-padding-x);
+}
+
+.container-docs {
+  max-width: var(--container-docs);
+  margin-inline: auto;
+  padding-inline: var(--page-padding-x);
+}
+
+/* ---------------------------------------------------------------
+   Markdown prose (shared renderer pipeline)
+   --------------------------------------------------------------- */
+
+.markdown-body {
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--text-primary);
+}
+
+.markdown-body h2,
+.markdown-body h3,
+.markdown-body h4 {
+  margin-top: var(--space-9);
+  margin-bottom: var(--space-4);
+  scroll-margin-top: calc(var(--header-height) + var(--space-4));
+}
+
+.markdown-body h2 {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+.markdown-body h3 {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.markdown-body h4 {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.markdown-body p {
+  margin-bottom: var(--space-5);
+}
+
+.markdown-body ul,
+.markdown-body ol {
+  margin: 0 0 var(--space-5) var(--space-6);
+}
+
+.markdown-body li {
+  margin-bottom: var(--space-2);
+}
+
+.markdown-body blockquote {
+  position: relative;
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4) var(--space-5) var(--space-4) var(--space-4);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  color: var(--text-secondary);
+}
+
+.markdown-body blockquote::before {
+  content: '💡';
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-5);
+  font-size: 16px;
+}
+
+.markdown-body a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.markdown-body code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--bg-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.markdown-body pre {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  overflow-x: auto;
+  margin: 0 0 var(--space-5);
+}
+
+.markdown-body pre code {
+  background: none;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.markdown-body img {
+  border-radius: var(--radius-md);
+  margin: var(--space-5) 0;
+}
+
+.markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--space-9) 0;
+}
+
+.markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-5);
+}
+
+.markdown-body th,
+.markdown-body td {
+  border: 1px solid var(--border);
+  padding: var(--space-2) var(--space-4);
+  text-align: left;
+}
+
+.markdown-body th {
+  background: var(--bg-subtle);
+}
+
+/* highlight.js classes styled with design tokens (dark-mode aware) */
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal {
+  color: var(--primary);
+}
+
+.hljs-string,
+.hljs-attr,
+.hljs-template-variable {
+  color: var(--accent);
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet {
+  color: var(--warning);
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name {
+  color: var(--primary-hover);
+}
+
+.hljs-built_in,
+.hljs-type,
+.hljs-class .hljs-title {
+  color: var(--warning);
+}
+
+.hljs-meta,
+.hljs-keyword,
+.hljs-params {
+  color: var(--text-secondary);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+
+/* Reduce horizontal padding on small screens (shared --page-padding-x). */
+@media (max-width: 768px) {
+  :root {
+    --page-padding-x: 20px;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Accessibility: respect the user's reduced-motion preference
+   (WCAG 2.3.3). Smooth scrolling is also gated in JS (ArticleOutline).
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

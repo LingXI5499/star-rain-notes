@@ -1,0 +1,98 @@
+spring:
+  application:
+    name: star-rain-notes
+  jackson:
+    deserialization:
+      # 冻结契约保证：未知字段（如 PUT 里的 publishStatus/publishedAt）直接拒绝，
+      # 防止绕过 Action 端点修改发布状态。
+      fail-on-unknown-properties: true
+  # 默认 profile 为 local：开发机直接 `mvn spring-boot:run` 即可读取
+  # gitignored 的 application-local.yml（真实开发凭据，不入 Git）。
+  # 测试使用 @ActiveProfiles("test") → gitignored 的 application-test.yml。
+  # 生产环境通过环境变量 MYSQL_* / SPRING_DATASOURCE_* 注入（06-testing-deployment.md §9）。
+  profiles:
+    default: local
+  datasource:
+    # V1 约定：数据库会话 UTC 存储（03-database-design.md §1），API 按站点 timezone 转换。
+    # sslMode=DISABLED + allowPublicKeyRetrieval 用于本机 caching_sha2_password 非 SSL 开发连接。
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DATABASE:star_rain_notes}?useUnicode=true&characterEncoding=utf8&connectionTimeZone=UTC&forceConnectionTimeZoneToSession=true&sslMode=DISABLED&allowPublicKeyRetrieval=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      # Multipart parsing gate must be ≥ the largest business limit
+      # (MediaService: images ≤ 10MB, PDFs ≤ 20MB, audio ≤ 50MB) so the
+      # service-level validation (clean 413 FILE_TOO_LARGE) is the real gate,
+      # not the Spring Boot 1MB default. Files above this cap are rejected by
+      # the MaxUploadSizeExceededException handler in GlobalExceptionHandler.
+      max-file-size: 55MB
+      max-request-size: 55MB
+
+server:
+  # 本开发机 8080 被 Oracle TNS Listener (XDB) 占用；V1 后端默认端口使用不常见的 24680。
+  # 端口属于部署配置而非冻结契约，生产环境由 Nginx 反代决定（见 06-testing-deployment.md）。
+  port: 24680
+  servlet:
+    session:
+      # Session inactivity timeout ≈ 8h（04-api-design.md §7）。
+      timeout: 8h
+      cookie:
+        # HttpOnly + Path=/ 恒定；SameSite=Lax 由 SameSiteCookieFilter 附加。
+        http-only: true
+        # 生产环境必须设置 SESSION_COOKIE_SECURE=true（HTTPS，06-testing-deployment.md）。
+        secure: ${SESSION_COOKIE_SECURE:false}
+        path: /
+
+app:
+  seo:
+    site-origin: ${SEO_SITE_ORIGIN:http://localhost:5173}
+    frontend-index-path: ${SEO_FRONTEND_INDEX_PATH:}
+    default-share-image: ${SEO_DEFAULT_SHARE_IMAGE:/og-default.svg}
+    index-now-enabled: ${SEO_INDEXNOW_ENABLED:false}
+    index-now-key: ${SEO_INDEXNOW_KEY:}
+    baidu-enabled: ${SEO_BAIDU_ENABLED:false}
+    baidu-token: ${SEO_BAIDU_TOKEN:}
+    baidu-site: ${SEO_BAIDU_SITE:http://localhost:5173}
+  # 首次 Setup 需要：APP_SETUP_TOKEN 已配置 + X-Setup-Token constant-time match + CSRF。
+  # 生产部署时通过环境变量 APP_SETUP_TOKEN 注入，初始化后从生产环境移除（06-testing-deployment.md §10）。
+  setup-token: ${APP_SETUP_TOKEN:}
+  account:
+    # 固定超级管理员邮箱（接收激活验证码）
+    super-admin-email: ${APP_SUPER_ADMIN_EMAIL:}
+    mail:
+      host: ${MAIL_HOST:}
+      port: ${MAIL_PORT:465}
+      username: ${MAIL_USERNAME:}
+      auth-code: ${MAIL_AUTH_CODE:}
+      from: ${MAIL_FROM:}
+      ssl-enabled: ${MAIL_SSL_ENABLED:true}
+      # 必须是浏览器访问的前端根地址，邀请链接由此生成。
+      base-url: ${MAIL_BASE_URL:http://localhost:5173}
+  media:
+    # 本地媒体存储目录（相对路径，gitignored）。生产由 Nginx 以静态资源方式提供 /uploads，
+    # 目录必须不可执行（06-testing-deployment.md §8）；数据库只保存相对 storage key。
+    storage-dir: ${MEDIA_STORAGE_DIR:uploads}
+    public-base: /uploads
+    # 音频大小上限（方案 §13.1，默认 50MB）。
+    audio-max-bytes: ${AUDIO_MAX_BYTES:52428800}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html

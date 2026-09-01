@@ -1,0 +1,36 @@
+# Local secrets and environment overrides
+.env
+.env.*
+!.env.example
+application-local-secret.yml
+backend/application-local-secret.yml
+backend/.env.local
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+
+# Build output and dependencies
+backend/target/
+frontend/node_modules/
+frontend/dist/
+backend/uploads/
+uploads/
+*.jar
+*.zip
+*.log
+
+# Database exports (the reviewed public baseline is the only exception)
+*.sql
+!database/V1__baseline.sql
+
+# IDE and operating-system files
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+

@@ -1,0 +1,52 @@
+# Optional production profile. All machine-specific paths and secrets must be
+# supplied by the deployment environment; this repository contains none.
+#
+# Activate with:  --spring.profiles.active=prod  (SPRING_PROFILES_ACTIVE=prod)
+server:
+  address: ${SERVER_ADDRESS:127.0.0.1}
+  shutdown: graceful
+  # Respect X-Forwarded-* supplied by the local Nginx reverse proxy.
+  forward-headers-strategy: framework
+  tomcat:
+    threads:
+      max: ${TOMCAT_MAX_THREADS:32}
+      min-spare: ${TOMCAT_MIN_SPARE_THREADS:4}
+    max-connections: ${TOMCAT_MAX_CONNECTIONS:200}
+    accept-count: ${TOMCAT_ACCEPT_COUNT:50}
+    connection-timeout: ${TOMCAT_CONNECTION_TIMEOUT:10s}
+  servlet:
+    session:
+      cookie:
+        # Production runs behind HTTPS: the session cookie must be Secure.
+        # Override with SESSION_COOKIE_SECURE=false only for non-TLS smoke runs.
+        secure: ${SESSION_COOKIE_SECURE:true}
+
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:4}
+      minimum-idle: ${DB_POOL_MIN_IDLE:1}
+      connection-timeout: 3000
+      validation-timeout: 1000
+      idle-timeout: 300000
+      max-lifetime: 1500000
+  lifecycle:
+    timeout-per-shutdown-phase: 25s
+
+app:
+  seo:
+    frontend-index-path: ${SEO_FRONTEND_INDEX_PATH:}
+  # The pre-account username login granted ROLE_SUPER_ADMIN and is retained
+  # only for local compatibility. It must never be an alternate production login.
+  legacy-admin-login-enabled: false
+  legacy-setup-enabled: false
+  media:
+    storage-dir: ${MEDIA_STORAGE_DIR:uploads}
+
+# API documentation is useful locally but should not consume memory or expose
+# metadata on the public production host.
+springdoc:
+  api-docs:
+    enabled: false
+  swagger-ui:
+    enabled: false

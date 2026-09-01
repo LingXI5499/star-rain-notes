@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">星雨笔录</title><desc id="desc">Java 全栈、计算机基础与技术学习笔记</desc>
+  <defs><linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0d1714"/><stop offset="1" stop-color="#19241f"/></linearGradient><radialGradient id="glow"><stop stop-color="#c87545" stop-opacity=".35"/><stop offset="1" stop-color="#c87545" stop-opacity="0"/></radialGradient></defs>
+  <rect width="1200" height="630" fill="url(#bg)"/><circle cx="960" cy="110" r="360" fill="url(#glow)"/>
+  <g fill="#7fb8aa" opacity=".8"><circle cx="890" cy="120" r="3"/><circle cx="1030" cy="205" r="2"/><circle cx="760" cy="82" r="2"/></g>
+  <text x="110" y="190" fill="#c87545" font-size="25" letter-spacing="8" font-family="Arial, sans-serif">KNOWLEDGE · CODE · GROWTH</text>
+  <text x="110" y="330" fill="#f4f1e8" font-size="92" font-weight="700" font-family="Arial, 'Microsoft YaHei', sans-serif">星雨笔录</text>
+  <text x="114" y="390" fill="#7fb8aa" font-size="34" font-family="Arial, sans-serif">Star Rain Notes</text>
+  <text x="114" y="485" fill="#c8cec9" font-size="30" font-family="Arial, 'Microsoft YaHei', sans-serif">Java 全栈 · 计算机基础 · 软件工程 · 英语学习</text>
+</svg>

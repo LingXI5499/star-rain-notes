@@ -1,0 +1,412 @@
+package com.starrainnotes.account;
+
+import com.starrainnotes.account.service.MailGateway;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.mock.web.MockHttpSession;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+@SpringBootTest(properties = {
+        "app.account.super-admin-email=super@example.com",
+        "app.account.mail.base-url=http://localhost"
+})
+@AutoConfigureMockMvc
+@ActiveProfiles("test")
+class AccountSecurityIntegrationTest {
+
+    @Autowired MockMvc mockMvc;
+    @Autowired JdbcTemplate jdbc;
+    @Autowired PasswordEncoder passwordEncoder;
+    @MockBean MailGateway mailGateway;
+
+    @BeforeEach
+    void clean() {
+        jdbc.update("DELETE FROM content_review_request");
+        jdbc.update("DELETE FROM admin_audit_log");
+        jdbc.update("DELETE FROM email_verification_challenge");
+        jdbc.update("DELETE FROM admin_invitation");
+        jdbc.update("DELETE FROM user_account");
+    }
+    @AfterEach
+    void cleanUp() {
+        jdbc.update("DELETE FROM content_review_request");
+        jdbc.update("DELETE FROM admin_audit_log");
+        jdbc.update("DELETE FROM email_verification_challenge");
+        jdbc.update("DELETE FROM admin_invitation");
+        jdbc.update("DELETE FROM user_account");
+        jdbc.update("DELETE FROM blog_post WHERE slug LIKE 'review-%'");
+        jdbc.update("DELETE FROM english_writing_prompt WHERE slug LIKE 'review-%'");
+    }
+
+    private String csrf() throws Exception {
+        return mockMvc.perform(get("/api/v1/auth/csrf")).andReturn()
+                .getResponse().getCookie("XSRF-TOKEN").getValue();
+    }
+
+    private void doPost(String url, String body, String token) throws Exception {
+        mockMvc.perform(post(url).contentType("application/json").content(body)
+                .header("X-XSRF-TOKEN", token)
+                .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)));
+    }
+
+    @Test
+    void activationFlowAndAlreadyActivated() throws Exception {
+        String token = csrf();
+        mockMvc.perform(get("/api/v1/auth/super-admin-activation/status"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.configured").value(true))
+                .andExpect(jsonPath("$.activated").value(false))
+                .andExpect(jsonPath("$.emailMasked").value("su***@example.com"));
+
+        doPost("/api/v1/auth/super-admin-activation/verification-codes", "{}", token);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(mailGateway, atLeastOnce()).sendVerificationCode(anyString(), anyString(), captor.capture());
+        String code = captor.getValue();
+        assertThat(code).matches("\\d{6}");
+
+        // wrong code consumed an attempt; correct code still works
+        doPost("/api/v1/auth/super-admin-activation/confirm",
+                "{\"verificationCode\":\"000000\",\"password\":\"pass1234567\"}", token);
+        doPost("/api/v1/auth/super-admin-activation/confirm",
+                "{\"verificationCode\":\"" + code + "\",\"password\":\"pass1234567\"}", token);
+
+        mockMvc.perform(get("/api/v1/auth/super-admin-activation/status"))
+                .andExpect(jsonPath("$.activated").value(true));
+        Integer count = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM user_account WHERE role='SUPER_ADMIN' AND account_status='ACTIVE'", Integer.class);
+        assertThat(count).isEqualTo(1);
+    }
+
+    @Test
+    void secondSuperAdminCannotBeActivated() throws Exception {
+        String token = csrf();
+        doPost("/api/v1/auth/super-admin-activation/verification-codes", "{}", token);
+        ArgumentCaptor<String> captor = ArgumentCaptor.forClass(String.class);
+        verify(mailGateway, atLeastOnce()).sendVerificationCode(anyString(), anyString(), captor.capture());
+        doPost("/api/v1/auth/super-admin-activation/confirm",
+                "{\"verificationCode\":\"" + captor.getValue() + "\",\"password\":\"pass1234567\"}", token);
+
+        mockMvc.perform(post("/api/v1/auth/super-admin-activation/verification-codes")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isGone())
+                .andExpect(jsonPath("$.code").value("SUPER_ADMIN_ALREADY_ACTIVATED"));
+    }
+
+    @Test
+    void loginIsLockedAfterFiveFailures() throws Exception {
+        jdbc.update("INSERT INTO user_account(email,password_hash,role,account_status,email_verified_at,activated_at,auth_version)"
+                + " VALUES ('admin@example.com',?,'ADMIN','ACTIVE',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),1)",
+                passwordEncoder.encode("realpass123"));
+        String token = csrf();
+        for (int i = 0; i < 5; i++) {
+            mockMvc.perform(post("/api/v1/auth/account/login")
+                            .contentType("application/json")
+                            .content("{\"email\":\"admin@example.com\",\"password\":\"wrong\"}")
+                            .header("X-XSRF-TOKEN", token).cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                    .andExpect(status().isUnauthorized());
+        }
+        mockMvc.perform(post("/api/v1/auth/account/login")
+                        .contentType("application/json")
+                        .content("{\"email\":\"admin@example.com\",\"password\":\"wrong\"}")
+                        .header("X-XSRF-TOKEN", token).cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isLocked())
+                .andExpect(jsonPath("$.code").value("ACCOUNT_TEMPORARILY_LOCKED"));
+    }
+
+    @Test
+    void superAdminEndpointsRequireSuperAdminRole() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        insertAccount("admin@example.com", "admin-pass-1234", "ADMIN");
+        MockHttpSession superSession = loginAccount("super@example.com", "super-pass-1234");
+        MockHttpSession adminSession = loginAccount("admin@example.com", "admin-pass-1234");
+
+        mockMvc.perform(get("/api/v1/super-admin/users").session(superSession))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].passwordHash").doesNotExist());
+        mockMvc.perform(get("/api/v1/super-admin/users").session(adminSession))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/super-admin/users"))
+                .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void collaboratorCanOpenContentButCannotPublishDeleteOrUseOwnerModules() throws Exception {
+        insertAccount("admin@example.com", "admin-pass-1234", "ADMIN");
+        MockHttpSession session = loginAccount("admin@example.com", "admin-pass-1234");
+        String token = csrf();
+
+        mockMvc.perform(get("/api/v1/admin/blog/posts").session(session))
+                .andExpect(status().isOk());
+        mockMvc.perform(post("/api/v1/admin/blog/posts/1/publish").session(session)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(delete("/api/v1/admin/blog/posts/1").session(session)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/admin/portfolio/projects").session(session))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/admin/english/analytics").session(session))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/admin/about").session(session))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/admin/site-settings").session(session))
+                .andExpect(status().isForbidden());
+        mockMvc.perform(get("/api/v1/super-admin/users").session(session))
+                .andExpect(status().isForbidden());
+        // 超级管理员才能批准/驳回内容审核
+        mockMvc.perform(get("/api/v1/super-admin/content-reviews").session(session))
+                .andExpect(status().isForbidden());
+    }
+
+    @Test
+    void accountEventsAreAuditedWithoutSecrets() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        MockHttpSession session = loginAccount("super@example.com", "super-pass-1234");
+        String token = csrf();
+
+        mockMvc.perform(post("/api/v1/super-admin/invitations").session(session)
+                        .contentType("application/json")
+                        .content("{\"email\":\"collab@example.com\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.tokenHash").doesNotExist());
+
+        mockMvc.perform(get("/api/v1/super-admin/audit-logs").session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].action").value("INVITATION_CREATED"))
+                .andExpect(jsonPath("$[0].metadataJson.password").doesNotExist())
+                .andExpect(jsonPath("$[0].metadataJson.verificationCode").doesNotExist());
+    }
+
+    @Test
+    void invitedAdministratorCanVerifyRegisterAndLoginWithoutSubmittingEmailAgain() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        MockHttpSession superSession = loginAccount("super@example.com", "super-pass-1234");
+        String token = csrf();
+
+        String invitationJson = mockMvc.perform(post("/api/v1/super-admin/invitations").session(superSession)
+                        .contentType("application/json")
+                        .content("{\"email\":\"collab@example.com\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.inviteLink").isNotEmpty())
+                .andReturn().getResponse().getContentAsString();
+        String inviteLink = new com.fasterxml.jackson.databind.ObjectMapper()
+                .readTree(invitationJson).get("inviteLink").asText();
+        String rawToken = inviteLink.substring(inviteLink.lastIndexOf('/') + 1);
+        assertThat(inviteLink).startsWith("http://localhost/admin/invitations/");
+        verify(mailGateway).sendInvitationLink(eq("collab@example.com"), eq(inviteLink));
+
+        mockMvc.perform(get("/api/v1/auth/invitations/" + rawToken))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("PENDING"))
+                .andExpect(jsonPath("$.email").value("co***@example.com"));
+
+        mockMvc.perform(post("/api/v1/auth/invitations/" + rawToken + "/verification-codes")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+        ArgumentCaptor<String> codeCaptor = ArgumentCaptor.forClass(String.class);
+        verify(mailGateway).sendVerificationCode(eq("collab@example.com"),
+                eq("ADMIN_REGISTRATION"), codeCaptor.capture());
+
+        mockMvc.perform(post("/api/v1/auth/invitations/" + rawToken + "/register")
+                        .contentType("application/json")
+                        .content("{\"verificationCode\":\"" + codeCaptor.getValue()
+                                + "\",\"password\":\"collab-pass-1234\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+
+        loginAccount("collab@example.com", "collab-pass-1234");
+        assertThat(jdbc.queryForObject(
+                "SELECT role FROM user_account WHERE email='collab@example.com'", String.class))
+                .isEqualTo("ADMIN");
+        assertThat(jdbc.queryForObject(
+                "SELECT status FROM admin_invitation WHERE email='collab@example.com'", String.class))
+                .isEqualTo("ACCEPTED");
+    }
+
+    @Test
+    void revokedInvitationCanBeCreatedAgainAndItsHistoryCanBeDeleted() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        MockHttpSession superSession = loginAccount("super@example.com", "super-pass-1234");
+        String token = csrf();
+
+        String firstJson = mockMvc.perform(post("/api/v1/super-admin/invitations").session(superSession)
+                        .contentType("application/json").content("{\"email\":\"retry@example.com\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isCreated()).andReturn().getResponse().getContentAsString();
+        long firstId = new com.fasterxml.jackson.databind.ObjectMapper().readTree(firstJson).get("id").asLong();
+
+        mockMvc.perform(post("/api/v1/super-admin/invitations/" + firstId + "/revoke").session(superSession)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(post("/api/v1/super-admin/invitations").session(superSession)
+                        .contentType("application/json").content("{\"email\":\"retry@example.com\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.id").value(org.hamcrest.Matchers.not(firstId)));
+
+        mockMvc.perform(delete("/api/v1/super-admin/invitations/" + firstId).session(superSession)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+        assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM admin_invitation WHERE id=?", Integer.class, firstId))
+                .isZero();
+        assertThat(jdbc.queryForObject(
+                "SELECT COUNT(*) FROM admin_audit_log WHERE action='INVITATION_DELETED' AND target_id=?",
+                Integer.class, firstId)).isEqualTo(1);
+    }
+
+    @Test
+    void adminBlogUpdateOnPublishedPostCreatesReviewAndSuperAdminApproves() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        insertAccount("admin@example.com", "admin-pass-1234", "ADMIN");
+        MockHttpSession superSession = loginAccount("super@example.com", "super-pass-1234");
+        MockHttpSession adminSession = loginAccount("admin@example.com", "admin-pass-1234");
+        jdbc.update("""
+                INSERT INTO blog_post(title,slug,summary,body_markdown,publish_status,published_at)
+                VALUES ('Review original','review-original','old summary','## Old','PUBLISHED',UTC_TIMESTAMP(6))
+                """);
+        Long postId = jdbc.queryForObject("SELECT id FROM blog_post WHERE slug='review-original'", Long.class);
+        String token = csrf();
+        String updateBody = """
+                {"title":"Review updated","slug":"review-updated","summary":"new summary",
+                "bodyMarkdown":"## New content","coverMediaId":null,"seoTitle":null,"seoDescription":null,
+                "tagIds":[],"tagNames":[]}
+                """;
+
+        mockMvc.perform(put("/api/v1/admin/blog/posts/" + postId).session(adminSession)
+                        .contentType("application/json").content(updateBody)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.status").value("PENDING"))
+                .andExpect(jsonPath("$.payload.bodyMarkdown").exists());
+        assertThat(jdbc.queryForObject("SELECT title FROM blog_post WHERE id=?", String.class, postId))
+                .isEqualTo("Review original");
+
+        Long reviewId = jdbc.queryForObject("SELECT id FROM content_review_request WHERE content_id=?", Long.class, postId);
+        mockMvc.perform(post("/api/v1/super-admin/content-reviews/" + reviewId + "/approve").session(superSession)
+                        .contentType("application/json").content("{\"note\":\"ok\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("APPROVED"));
+        assertThat(jdbc.queryForObject("SELECT title FROM blog_post WHERE id=?", String.class, postId))
+                .isEqualTo("Review updated");
+    }
+
+    @Test
+    void englishWritingPromptUpdateOnPublishedContentCreatesReviewAndSuperAdminApproves() throws Exception {
+        insertAccount("super@example.com", "super-pass-1234", "SUPER_ADMIN");
+        insertAccount("admin@example.com", "admin-pass-1234", "ADMIN");
+        MockHttpSession superSession = loginAccount("super@example.com", "super-pass-1234");
+        MockHttpSession adminSession = loginAccount("admin@example.com", "admin-pass-1234");
+        jdbc.update("""
+                INSERT INTO english_writing_prompt(title,slug,summary,background_markdown,requirements_markdown,
+                    cefr_level,word_min,word_max,estimated_minutes,publish_status,sort_order,published_at)
+                VALUES ('Review prompt original','review-prompt','old summary','## bg','## req',
+                    'B1',100,180,15,'PUBLISHED',10,UTC_TIMESTAMP(6))
+                """);
+        Long promptId = jdbc.queryForObject(
+                "SELECT id FROM english_writing_prompt WHERE slug='review-prompt'", Long.class);
+        String token = csrf();
+        String updateBody = """
+                {"title":"Review prompt updated","slug":"review-prompt","summary":"new summary",
+                "backgroundMarkdown":"## new bg","requirementsMarkdown":"## new req","cefrLevel":"B1",
+                "wordMin":120,"wordMax":200,"estimatedMinutes":20,"sortOrder":12,"tagIds":[]}
+                """;
+
+        mockMvc.perform(put("/api/v1/admin/english/writing/prompts/" + promptId).session(adminSession)
+                        .contentType("application/json").content(updateBody)
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isAccepted())
+                .andExpect(jsonPath("$.status").value("PENDING"))
+                .andExpect(jsonPath("$.contentType").value("ENGLISH_WRITING_PROMPT"))
+                .andExpect(jsonPath("$.payload.title").value("Review prompt updated"));
+        assertThat(jdbc.queryForObject("SELECT title FROM english_writing_prompt WHERE id=?", String.class, promptId))
+                .isEqualTo("Review prompt original");
+
+        Long reviewId = jdbc.queryForObject(
+                "SELECT id FROM content_review_request WHERE content_type='ENGLISH_WRITING_PROMPT' AND content_id=?",
+                Long.class, promptId);
+        mockMvc.perform(post("/api/v1/super-admin/content-reviews/" + reviewId + "/approve").session(superSession)
+                        .contentType("application/json").content("{\"note\":\"ok\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.status").value("APPROVED"));
+        assertThat(jdbc.queryForObject("SELECT title FROM english_writing_prompt WHERE id=?", String.class, promptId))
+                .isEqualTo("Review prompt updated");
+    }
+
+    @Test
+    void disablingAdministratorImmediatelyInvalidatesExistingSession() throws Exception {
+        insertAccount("super-session@example.com", "super-pass-1234", "SUPER_ADMIN");
+        insertAccount("admin-session@example.com", "admin-pass-1234", "ADMIN");
+        MockHttpSession superSession = loginAccount("super-session@example.com", "super-pass-1234");
+        MockHttpSession adminSession = loginAccount("admin-session@example.com", "admin-pass-1234");
+        Long adminId = jdbc.queryForObject("SELECT id FROM user_account WHERE email=?", Long.class,
+                "admin-session@example.com");
+        String token = csrf();
+
+        mockMvc.perform(post("/api/v1/super-admin/users/" + adminId + "/disable").session(superSession)
+                        .contentType("application/json").content("{\"reason\":\"security test\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/v1/admin/blog/posts").session(adminSession))
+                .andExpect(status().isUnauthorized());
+    }
+
+    private void insertAccount(String email, String password, String role) {
+        jdbc.update("INSERT INTO user_account(email,password_hash,role,account_status,email_verified_at,activated_at,auth_version)"
+                        + " VALUES (?,?,?,'ACTIVE',UTC_TIMESTAMP(6),UTC_TIMESTAMP(6),1)",
+                email, passwordEncoder.encode(password), role);
+    }
+
+    private MockHttpSession loginAccount(String email, String password) throws Exception {
+        String token = csrf();
+        return (MockHttpSession) mockMvc.perform(post("/api/v1/auth/account/login")
+                        .contentType("application/json")
+                        .content("{\"email\":\"" + email + "\",\"password\":\"" + password + "\"}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isOk())
+                .andReturn().getRequest().getSession(false);
+    }
+}
