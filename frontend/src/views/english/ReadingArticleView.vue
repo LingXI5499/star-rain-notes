@@ -43,7 +43,7 @@ async function load() {
     result.value = null
     learningRecord.value = article.value && !isAdminPreview.value
       ? await fetchLearningRecord('READING', article.value.id).catch(() => null) : null
-    if (article.value) applyPageMeta({ title: article.value.title, description: article.value.summary })
+    if (article.value) applyPageMeta({ title: article.value.title, description: article.value.summary, type: 'article', image: article.value.coverUrl, publishedAt: article.value.publishedAt, modifiedAt: article.value.updatedAt })
   } catch {
     notFound.value = true
   } finally {

@@ -31,7 +31,7 @@ async function load() {
     exercises.value = await fetchPublicListeningExercises(String(route.params.slug))
     outline.value = []; activeSegment.value = -1; results.value = {}; currentTime.value = 0
     learningRecord.value = item.value ? await fetchLearningRecord('LISTENING', item.value.id).catch(() => null) : null
-    if (item.value) applyPageMeta({ title: item.value.title, description: item.value.summary })
+    if (item.value) applyPageMeta({ title: item.value.title, description: item.value.summary, type: 'article', image: item.value.coverUrl, publishedAt: item.value.publishedAt, modifiedAt: item.value.updatedAt })
   } catch { notFound.value = true } finally { loading.value = false }
 }
 

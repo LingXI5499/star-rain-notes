@@ -61,6 +61,9 @@ async function load() {
     applyPageMeta({
       title: ch.chapterTitle,
       description: ch.summary ?? det.summary,
+      type: 'article',
+      publishedAt: ch.publishedAt,
+      modifiedAt: ch.updatedAt,
     })
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 404) {

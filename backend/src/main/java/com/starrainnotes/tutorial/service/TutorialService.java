@@ -5,6 +5,7 @@ import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
+import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import com.starrainnotes.tutorial.dto.AdminTutorialDetailView;
 import com.starrainnotes.tutorial.dto.AdminTutorialSummaryView;
@@ -139,6 +140,7 @@ public class TutorialService {
     }
 
     @Transactional
+    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
     public AdminTutorialDetailView update(Long id, UpdateTutorialRequest request) {
         Tutorial tutorial = requireTutorial(id);
         requireCategory(request.categoryId());
@@ -163,6 +165,7 @@ public class TutorialService {
         return toAdminDetail(tutorial);
     }
 
+    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
     public void delete(Long id) {
         requireTutorial(id);
         Long nodes = nodeMapper.selectCount(
@@ -185,6 +188,7 @@ public class TutorialService {
         normalizeTutorialOrder(siblings);
     }
 
+    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
     public AdminTutorialDetailView publish(Long id) {
         Tutorial tutorial = requireTutorial(id);
         if (!PUBLISHED.equals(tutorial.getPublishStatus())) {
@@ -197,6 +201,7 @@ public class TutorialService {
         return toAdminDetail(tutorial);
     }
 
+    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
     public AdminTutorialDetailView withdraw(Long id) {
         Tutorial tutorial = requireTutorial(id);
         if (DRAFT.equals(tutorial.getPublishStatus())) {

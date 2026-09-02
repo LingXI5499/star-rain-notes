@@ -15,6 +15,7 @@ import com.starrainnotes.portfolio.dto.PrevNextProjectView;
 import com.starrainnotes.portfolio.dto.UpdateProjectRequest;
 import com.starrainnotes.portfolio.entity.PortfolioProject;
 import com.starrainnotes.portfolio.mapper.PortfolioProjectMapper;
+import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -120,6 +121,7 @@ public class PortfolioService {
         return toAdminDetail(project);
     }
 
+    @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
     public AdminProjectDetailView update(Long projectId, UpdateProjectRequest request) {
         PortfolioProject project = requireProject(projectId);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), project.getSlug());
@@ -137,11 +139,13 @@ public class PortfolioService {
         return toAdminDetail(project);
     }
 
+    @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
     public void delete(Long projectId) {
         requireProject(projectId);
         projectMapper.deleteById(projectId);
     }
 
+    @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
     public AdminProjectDetailView publish(Long projectId) {
         PortfolioProject project = requireProject(projectId);
         if (!PUBLISHED.equals(project.getPublishStatus())) {
@@ -154,6 +158,7 @@ public class PortfolioService {
         return toAdminDetail(project);
     }
 
+    @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
     public AdminProjectDetailView withdraw(Long projectId) {
         PortfolioProject project = requireProject(projectId);
         if (DRAFT.equals(project.getPublishStatus())) {

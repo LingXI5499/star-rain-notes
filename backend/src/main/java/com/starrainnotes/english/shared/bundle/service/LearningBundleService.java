@@ -3,6 +3,7 @@ package com.starrainnotes.english.shared.bundle.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
+import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.english.shared.bundle.dto.BundleRequest;
 import com.starrainnotes.english.shared.bundle.dto.BundleView;
 import com.starrainnotes.english.shared.bundle.entity.EnglishLearningBundle;
@@ -109,6 +110,7 @@ public class LearningBundleService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_learning_bundle", pathPrefix = "/english/bundles/")
     public BundleView update(Long id, BundleRequest request) {
         EnglishLearningBundle bundle = requireEntity(id);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), bundle.getSlug());
@@ -132,6 +134,7 @@ public class LearningBundleService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_learning_bundle", pathPrefix = "/english/bundles/")
     public BundleView publish(Long id) {
         requireEntity(id);
         items.assertPublishable(id);
@@ -144,6 +147,7 @@ public class LearningBundleService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_learning_bundle", pathPrefix = "/english/bundles/")
     public BundleView withdraw(Long id) {
         String status = requireEntity(id).getPublishStatus();
         if (DRAFT.equals(status)) {

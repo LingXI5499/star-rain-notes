@@ -24,6 +24,7 @@ import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
+import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -146,6 +147,7 @@ public class BlogService {
     }
 
     @Transactional
+    @SeoContentChange(table = "blog_post", pathPrefix = "/blog/")
     public AdminPostDetailView update(Long postId, UpdatePostRequest request) {
         BlogPost post = requirePost(postId);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), post.getSlug());
@@ -159,12 +161,14 @@ public class BlogService {
         return toAdminDetail(post);
     }
 
+    @SeoContentChange(table = "blog_post", pathPrefix = "/blog/")
     public void delete(Long postId) {
         requirePost(postId);
         // blog_post_tag relations cascade on delete (frozen FK)
         postMapper.deleteById(postId);
     }
 
+    @SeoContentChange(table = "blog_post", pathPrefix = "/blog/")
     public AdminPostDetailView publish(Long postId) {
         BlogPost post = requirePost(postId);
         if (!PUBLISHED.equals(post.getPublishStatus())) {
@@ -177,6 +181,7 @@ public class BlogService {
         return toAdminDetail(post);
     }
 
+    @SeoContentChange(table = "blog_post", pathPrefix = "/blog/")
     public AdminPostDetailView withdraw(Long postId) {
         BlogPost post = requirePost(postId);
         if (DRAFT.equals(post.getPublishStatus())) {

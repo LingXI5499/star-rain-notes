@@ -3,6 +3,7 @@ package com.starrainnotes.english.listening.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
+import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.english.listening.dto.ListeningAdminStats;
 import com.starrainnotes.english.listening.dto.ListeningHomeView;
 import com.starrainnotes.english.listening.dto.ListeningItemRequest;
@@ -99,6 +100,7 @@ public class ListeningItemService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_listening_item", pathPrefix = "/english/listening/")
     public ListeningItemView update(Long id, ListeningItemRequest request) {
         ListeningItem item = require(id);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), item.getSlug());
@@ -196,6 +198,7 @@ public class ListeningItemService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_listening_item", pathPrefix = "/english/listening/")
     public ListeningItemView publish(Long id) {
         ListeningItem item = require(id);
         List<String> problems = publishProblems(item);
@@ -209,6 +212,7 @@ public class ListeningItemService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_listening_item", pathPrefix = "/english/listening/")
     public ListeningItemView withdraw(Long id) {
         ListeningItem item = require(id);
         if (DRAFT.equals(item.getPublishStatus())) {
@@ -386,6 +390,7 @@ public class ListeningItemService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_listening_pronunciation_rule", pathPrefix = "/english/listening/pronunciation/")
     public com.starrainnotes.english.listening.dto.PronunciationRuleView updateRule(Long id,
             com.starrainnotes.english.listening.dto.PronunciationRuleRequest request) {
         var current = requireRule(id);
@@ -411,6 +416,7 @@ public class ListeningItemService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_listening_pronunciation_rule", pathPrefix = "/english/listening/pronunciation/")
     public com.starrainnotes.english.listening.dto.PronunciationRuleView publishRule(Long id) {
         requireRule(id);
         jdbc.update("UPDATE english_listening_pronunciation_rule SET publish_status='PUBLISHED',"
@@ -419,6 +425,7 @@ public class ListeningItemService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_listening_pronunciation_rule", pathPrefix = "/english/listening/pronunciation/")
     public com.starrainnotes.english.listening.dto.PronunciationRuleView withdrawRule(Long id) {
         String status = requireRule(id).publishStatus();
         if (DRAFT.equals(status)) {

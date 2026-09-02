@@ -10,7 +10,7 @@ import type { OutlineItem } from '@/types'
 
 const route=useRoute();const project=ref<PublicProjectDetail|null>(null);const outline=ref<OutlineItem[]>([]);const notFound=ref(false);const loadFailed=ref(false);const drawerOpen=ref(false)
 const statusLabels:Record<string,string>={DEVELOPING:'开发中',COMPLETED:'已完成',ONLINE:'已上线'}
-async function load(){project.value=null;outline.value=[];notFound.value=false;loadFailed.value=false;drawerOpen.value=false;try{project.value=await fetchPublicProject(route.params.slug as string);applyPageMeta({title:project.value.title,description:project.value.summary})}catch(error){if(error instanceof AxiosError&&error.response?.status===404){notFound.value=true;applyPageMeta({title:'页面未找到',robots:'noindex,nofollow'})}else{loadFailed.value=true;applyPageMeta({title:'加载失败',robots:'noindex,nofollow'})}}}
+async function load(){project.value=null;outline.value=[];notFound.value=false;loadFailed.value=false;drawerOpen.value=false;try{project.value=await fetchPublicProject(route.params.slug as string);applyPageMeta({title:project.value.title,description:project.value.summary,type:'article',image:project.value.coverUrl,publishedAt:project.value.publishedAt,modifiedAt:project.value.updatedAt})}catch(error){if(error instanceof AxiosError&&error.response?.status===404){notFound.value=true;applyPageMeta({title:'页面未找到',robots:'noindex,nofollow'})}else{loadFailed.value=true;applyPageMeta({title:'加载失败',robots:'noindex,nofollow'})}}}
 onMounted(load);watch(()=>route.params.slug,load)
 </script>
 

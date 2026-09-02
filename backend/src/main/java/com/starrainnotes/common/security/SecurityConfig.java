@@ -4,6 +4,7 @@ import com.starrainnotes.auth.security.AdminUserDetailsService;
 import com.starrainnotes.account.security.AccountSessionValidationFilter;
 import com.starrainnotes.account.service.AccountService;
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
+import org.springframework.http.HttpMethod;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.annotation.Bean;
@@ -110,6 +111,16 @@ public class SecurityConfig {
                         .securityContextRepository(securityContextRepository))
                 .addFilterAfter(accountSessionValidationFilter, SecurityContextHolderFilter.class)
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers(HttpMethod.GET,
+                                "/", "/tutorials", "/tutorials/**", "/blog", "/blog/**",
+                                "/portfolio", "/portfolio/**", "/english", "/english/**",
+                                "/about", "/search", "/robots.txt", "/sitemap.xml",
+                                "/indexnow-key.txt").permitAll()
+                        .requestMatchers(HttpMethod.HEAD,
+                                "/", "/tutorials", "/tutorials/**", "/blog", "/blog/**",
+                                "/portfolio", "/portfolio/**", "/english", "/english/**",
+                                "/about", "/search", "/robots.txt", "/sitemap.xml",
+                                "/indexnow-key.txt").permitAll()
                         .requestMatchers("/actuator/health",
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",

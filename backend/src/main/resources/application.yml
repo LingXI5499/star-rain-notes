@@ -50,6 +50,15 @@ server:
         path: /
 
 app:
+  seo:
+    site-origin: ${SEO_SITE_ORIGIN:https://yulanlin.cn}
+    frontend-index-path: ${SEO_FRONTEND_INDEX_PATH:}
+    default-share-image: ${SEO_DEFAULT_SHARE_IMAGE:/og-default.svg}
+    index-now-enabled: ${SEO_INDEXNOW_ENABLED:false}
+    index-now-key: ${SEO_INDEXNOW_KEY:}
+    baidu-enabled: ${SEO_BAIDU_ENABLED:false}
+    baidu-token: ${SEO_BAIDU_TOKEN:}
+    baidu-site: ${SEO_BAIDU_SITE:https://yulanlin.cn}
   # 首次 Setup 需要：APP_SETUP_TOKEN 已配置 + X-Setup-Token constant-time match + CSRF。
   # 生产部署时通过环境变量 APP_SETUP_TOKEN 注入，初始化后从生产环境移除（06-testing-deployment.md §10）。
   setup-token: ${APP_SETUP_TOKEN:}

@@ -176,9 +176,15 @@ function clearCover() {
 
 <style scoped>
 .blog-edit__topbar {
-  position: sticky;
-  top: 0;
-  z-index: 12;
+  /*
+   * AdminLayout already owns the page scroll container and Vditor owns an
+   * internal editor scroll area. Keeping this bar sticky makes it float over
+   * Vditor's toolbar while editing long articles, hiding formatting actions.
+   * The form also has a complete save/cancel action row at the bottom, so the
+   * page header should participate in normal document flow.
+   */
+  position: relative;
+  z-index: 1;
   display: flex;
   justify-content: space-between;
   align-items: center;

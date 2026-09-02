@@ -11,7 +11,7 @@ import type { OutlineItem } from '@/types'
 const route=useRoute();const post=ref<PublicPostDetail|null>(null);const outline=ref<OutlineItem[]>([]);const notFound=ref(false);const loadFailed=ref(false);const drawerOpen=ref(false)
 const readMinutes=computed(()=>post.value?Math.max(1,Math.round((post.value.bodyMarkdown?.length??0)/400)):0)
 function formatDate(iso:string){const d=new Date(iso);return Number.isNaN(d.getTime())?iso:d.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'})}
-async function load(){post.value=null;outline.value=[];notFound.value=false;loadFailed.value=false;drawerOpen.value=false;try{post.value=await fetchPublicPost(route.params.slug as string);applyPageMeta({title:post.value.title,description:post.value.summary})}catch(error){if(error instanceof AxiosError&&error.response?.status===404){notFound.value=true;applyPageMeta({title:'页面未找到',robots:'noindex,nofollow'})}else{loadFailed.value=true;applyPageMeta({title:'加载失败',robots:'noindex,nofollow'})}}}
+async function load(){post.value=null;outline.value=[];notFound.value=false;loadFailed.value=false;drawerOpen.value=false;try{post.value=await fetchPublicPost(route.params.slug as string);applyPageMeta({title:post.value.title,description:post.value.summary,type:'article',image:post.value.coverUrl,publishedAt:post.value.publishedAt,modifiedAt:post.value.updatedAt})}catch(error){if(error instanceof AxiosError&&error.response?.status===404){notFound.value=true;applyPageMeta({title:'页面未找到',robots:'noindex,nofollow'})}else{loadFailed.value=true;applyPageMeta({title:'加载失败',robots:'noindex,nofollow'})}}}
 onMounted(load);watch(()=>route.params.slug,load)
 </script>
 

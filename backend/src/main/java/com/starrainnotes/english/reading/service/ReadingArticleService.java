@@ -3,6 +3,7 @@ package com.starrainnotes.english.reading.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
+import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.english.reading.dto.ReadingAdminStats;
 import com.starrainnotes.english.reading.dto.ReadingArticleLinkView;
 import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
@@ -97,6 +98,7 @@ public class ReadingArticleService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_reading_article", pathPrefix = "/english/reading/")
     public ReadingArticleView update(Long id, ReadingArticleRequest request) {
         ReadingArticle article = require(id);
         ReadingTextStatistics.Stats stats = ReadingTextStatistics.analyze(request.bodyMarkdown());
@@ -201,6 +203,7 @@ public class ReadingArticleService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_reading_article", pathPrefix = "/english/reading/")
     public ReadingArticleView publish(Long id) {
         ReadingArticle article = require(id);
         List<String> problems = publishProblems(article);
@@ -217,6 +220,7 @@ public class ReadingArticleService {
     }
 
     @Transactional
+    @SeoContentChange(table = "english_reading_article", pathPrefix = "/english/reading/")
     public ReadingArticleView withdraw(Long id) {
         ReadingArticle article = require(id);
         if (DRAFT.equals(article.getPublishStatus())) {
