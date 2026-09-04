@@ -39,12 +39,14 @@ class VocabularyIntegrationTest extends AbstractAuthIntegrationTest {
                 USERNAME, passwordEncoder.encode(PASSWORD));
         jdbc.update("DELETE FROM vocabulary_word");
         jdbc.update("DELETE FROM vocabulary_theme");
+        jdbc.update("DELETE FROM media_asset WHERE stored_name LIKE 'vocabulary-test-%'");
     }
 
     @AfterEach
     void cleanUp() {
         jdbc.update("DELETE FROM vocabulary_word");
         jdbc.update("DELETE FROM vocabulary_theme");
+        jdbc.update("DELETE FROM media_asset WHERE stored_name LIKE 'vocabulary-test-%'");
         jdbc.update("DELETE FROM admin_user");
     }
 
@@ -177,6 +179,23 @@ class VocabularyIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(jsonPath("$.code").value("VOCABULARY_WORD_NOT_FOUND"));
     }
 
+    @Test
+    void publicStudyAndBatchEndpointsReturnRequestedWordsInOrder() throws Exception {
+        long theme = insertTheme("基础通用词层A", 1, "批量读取");
+        long first = insertWord(theme, "firstword", "第一个词");
+        long second = insertWord(theme, "secondword", "第二个词");
+
+        mockMvc.perform(get("/api/v1/public/vocabulary/words/" + first + "/study"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.word").value("firstword"));
+        mockMvc.perform(get("/api/v1/public/vocabulary/words/batch")
+                        .param("ids", second + "," + first + "," + second))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.length()").value(2))
+                .andExpect(jsonPath("$[0].id").value(second))
+                .andExpect(jsonPath("$[1].id").value(first));
+    }
+
     // ---------------------------------------------------------------
     // admin
     // ---------------------------------------------------------------
@@ -221,6 +240,42 @@ class VocabularyIntegrationTest extends AbstractAuthIntegrationTest {
                         .content("{\"memoryCount\":5}"), csrf).session(session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.memoryCount").value(5));
+    }
+
+    @Test
+    void adminAudioLifecycleIsVisibleOnPublicStudyCard() throws Exception {
+        MockHttpSession session = loginSession();
+        String csrf = csrf(session);
+        long theme = insertTheme("基础通用词层A", 1, "发音测试");
+        long wordId = insertWord(theme, "voice", "声音");
+        jdbc.update("""
+                INSERT INTO media_asset(asset_type,original_name,stored_name,mime_type,extension,
+                    size_bytes,storage_path,public_url)
+                VALUES ('AUDIO','voice.mp3','vocabulary-test-voice.mp3','audio/mpeg','mp3',128,
+                    'test/voice.mp3','/uploads/test/voice.mp3')
+                """);
+        long mediaId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+
+        MvcResult created = mockMvc.perform(withCsrf(post("/api/v1/admin/vocabulary/words/" + wordId + "/audio")
+                        .session(session).contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                        .content("{\"mediaAssetId\":" + mediaId + ",\"accent\":\"US\",\"provider\":\"UPLOADED\"," +
+                                "\"licenseNote\":\"本站授权测试音频\",\"primary\":true}"), csrf))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.primary").value(true))
+                .andReturn();
+        long audioId = new com.fasterxml.jackson.databind.ObjectMapper().readTree(
+                created.getResponse().getContentAsString()).get("id").asLong();
+
+        mockMvc.perform(get("/api/v1/public/vocabulary/words/" + wordId + "/study"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.audios[0].publicUrl").value("/uploads/test/voice.mp3"))
+                .andExpect(jsonPath("$.audios[0].licenseNote").value("本站授权测试音频"));
+
+        mockMvc.perform(withCsrf(delete("/api/v1/admin/vocabulary/words/" + wordId + "/audio/" + audioId)
+                        .session(session), csrf))
+                .andExpect(status().isNoContent());
+        mockMvc.perform(get("/api/v1/public/vocabulary/words/" + wordId + "/study"))
+                .andExpect(status().isOk()).andExpect(jsonPath("$.audios").isEmpty());
     }
 
     @Test

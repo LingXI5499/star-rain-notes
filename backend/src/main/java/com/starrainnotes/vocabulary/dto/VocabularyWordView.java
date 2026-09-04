@@ -14,9 +14,12 @@ public record VocabularyWordView(
         String partOfSpeech,
         String word,
         String phoneticUs,
+        String phoneticUk,
         String translation,
         String inflections,
         List<VocabularyExample> examples,
         int memoryCount,
-        String lastMemoryAt) {
+        String lastMemoryAt,
+        List<VocabularyAudioView> audios,
+        List<VocabularyFamilyView> wordFamilies) {
 }

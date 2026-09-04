@@ -75,6 +75,10 @@ class V1SchemaMigrationTest {
             "admin_audit_log",
             "content_review_request",
             "account_vocabulary_memory",
+            "account_vocabulary_review_log",
+            "account_vocabulary_study_setting",
+            "account_vocabulary_card_preference",
+            "vocabulary_word_audio",
             "tutorial_node_hierarchy_backup_v5",
             "tutorial_category_full_backup_v7",
             "tutorial_full_backup_v7",
@@ -93,7 +97,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(58);
+        assertThat(count).isEqualTo(62);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -119,14 +123,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV25AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV27AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsExactly(1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L);
+        assertThat(successful).containsOnly(1L).hasSize(27);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -144,6 +148,7 @@ class V1SchemaMigrationTest {
                 "create admin audit log", "create content review request",
                 "expand content review types", "expand english content review types",
                 "create account personal learning", "account learner profile association",
-                "allow reinvitation and invitation cleanup");
+                "allow reinvitation and invitation cleanup", "upgrade vocabulary review system",
+                "add vocabulary pronunciation sources");
     }
 }
