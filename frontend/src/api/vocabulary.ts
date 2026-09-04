@@ -1,6 +1,14 @@
 import { http } from './http'
 import { useAuthStore } from '@/stores/auth'
 import { guestLearning } from '@/lib/learning-storage'
+import {
+  vocabularyStudyStorage,
+  type LocalVocabularyMemory,
+  type VocabularyDisplayMode,
+  type VocabularyReviewDirection,
+  type VocabularyStudySettings,
+} from '@/lib/vocabulary-study-storage'
+import { stableReviewDirection } from '@/lib/vocabulary-display'
 
 /**
  * Vocabulary API (approved English vocabulary module): public browsing by
@@ -34,11 +42,65 @@ export interface VocabularyWord {
   partOfSpeech: string
   word: string
   phoneticUs: string | null
+  phoneticUk: string | null
   translation: string
   inflections: string | null
   examples: VocabularyExample[]
   memoryCount: number
   lastMemoryAt: string | null
+  audios: VocabularyAudio[]
+  wordFamilies: Array<{ id: number; headWord: string; slug: string }>
+}
+
+export interface VocabularyAudio {
+  id: number
+  accent: 'UK' | 'US' | string
+  mediaAssetId: number
+  publicUrl: string
+  provider: string
+  sourceUrl?: string | null
+  licenseNote: string
+  primary: boolean
+}
+
+export interface VocabularyMemoryState extends LocalVocabularyMemory {
+  displayMode?: VocabularyDisplayMode | null
+}
+
+export interface VocabularyStudyCard {
+  word: VocabularyWord
+  memory: VocabularyMemoryState
+  direction: Exclude<VocabularyReviewDirection, 'MIXED'>
+  newWord: boolean
+}
+
+export interface VocabularyQueue {
+  items: VocabularyStudyCard[]
+  dueCount: number
+  newCount: number
+  generatedAt: string
+}
+
+export interface VocabularyReviewHistory {
+  id?: number
+  reviewSessionId?: string
+  wordId: number
+  word?: string
+  reviewNumber: number
+  direction: string
+  scheduledAt: string | null
+  reviewedAt: string
+  intervalSeconds: number
+  timingStatus: string
+}
+
+export interface VocabularyProgressSummary {
+  activeWords: number
+  dueWords: number
+  completedToday: number
+  totalReviews: number
+  totalMemoryCount: number
+  recentReviews: VocabularyReviewHistory[]
 }
 
 export interface VocabularyPage {
@@ -52,7 +114,136 @@ export interface VocabularyPage {
 export interface UpdateVocabularyWordPayload {
   translation: string
   phoneticUs?: string | null
+  phoneticUk?: string | null
   inflections?: string | null
+}
+
+export function vocabularyUsesAccount(): boolean {
+  return isAuthenticated()
+}
+
+export async function fetchVocabularySettings(): Promise<VocabularyStudySettings> {
+  if (!isAuthenticated()) return vocabularyStudyStorage.settings()
+  const { data } = await http.get<VocabularyStudySettings>('/account/english/vocabulary/settings')
+  return data
+}
+
+export async function saveVocabularySettings(settings: VocabularyStudySettings): Promise<VocabularyStudySettings> {
+  if (!settings.showEnglish && !settings.showChinese) throw new Error('英文和中文至少保留一组。')
+  if (!isAuthenticated()) {
+    await vocabularyStudyStorage.saveSettings(settings)
+    return settings
+  }
+  const { data } = await http.put<VocabularyStudySettings>('/account/english/vocabulary/settings', settings)
+  return data
+}
+
+export async function fetchVocabularyStates(wordIds: number[]): Promise<Record<number, VocabularyMemoryState>> {
+  if (!wordIds.length) return {}
+  if (!isAuthenticated()) {
+    const memories = await vocabularyStudyStorage.memories()
+    const wanted = new Set(wordIds)
+    const displays = await vocabularyStudyStorage.displays(wordIds)
+    const memoryById = new Map(memories.filter((m) => wanted.has(m.wordId)).map((m) => [m.wordId, m]))
+    return Object.fromEntries(wordIds.map((wordId) => [wordId, {
+      ...(memoryById.get(wordId) ?? { wordId, memoryCount: 0, reviewStep: 0, reviewCount: 0, firstLearnedAt: null, lastReviewedAt: null, nextReviewAt: null, learningStatus: 'NEW' as const }),
+      displayMode: displays[wordId],
+    }]))
+  }
+  const { data } = await http.get<VocabularyMemoryState[]>('/account/english/vocabulary/states', { params: { wordId: wordIds } })
+  return Object.fromEntries(data.map((m) => [m.wordId, m]))
+}
+
+export async function startVocabularyWord(wordId: number): Promise<VocabularyMemoryState> {
+  if (!isAuthenticated()) return vocabularyStudyStorage.start(wordId)
+  const { data } = await http.post<VocabularyMemoryState>(`/account/english/vocabulary/words/${wordId}/start`)
+  return data
+}
+
+export async function setVocabularyDisplay(wordId: number, displayMode: VocabularyDisplayMode): Promise<void> {
+  if (!isAuthenticated()) return vocabularyStudyStorage.saveDisplay(wordId, displayMode)
+  if (displayMode === 'FOLLOW_GLOBAL') await http.delete(`/account/english/vocabulary/words/${wordId}/display`)
+  else await http.put(`/account/english/vocabulary/words/${wordId}/display`, { displayMode })
+}
+
+export async function fetchVocabularyWordsByIds(ids: number[]): Promise<VocabularyWord[]> {
+  if (!ids.length) return []
+  const { data } = await http.get<VocabularyWord[]>('/public/vocabulary/words/batch', { params: { ids: ids.join(',') } })
+  return data
+}
+
+export async function fetchVocabularyReviewQueue(themeId?: number): Promise<VocabularyQueue> {
+  if (isAuthenticated()) {
+    const { data } = await http.get<VocabularyQueue>('/account/english/vocabulary/review-queue', { params: { themeId } })
+    return data
+  }
+  const [settings, allMemory] = await Promise.all([vocabularyStudyStorage.settings(), vocabularyStudyStorage.memories()])
+  const now = Date.now()
+  const due = allMemory.filter((m) => m.learningStatus === 'ACTIVE' && !!m.nextReviewAt && new Date(m.nextReviewAt).getTime() <= now)
+    .sort((a, b) => (a.nextReviewAt ?? '').localeCompare(b.nextReviewAt ?? '')).slice(0, settings.dailyReviewLimit)
+  const ids = due.map((m) => m.wordId)
+  let newIds: number[] = []
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+  const introducedToday = allMemory.filter((memory) => memory.firstLearnedAt
+    && new Date(memory.firstLearnedAt).getTime() >= today.getTime()).length
+  const remainingNewLimit = Math.max(0, settings.dailyNewLimit - introducedToday)
+  if (themeId && remainingNewLimit > 0) {
+    const existing = new Set(allMemory.map((m) => m.wordId))
+    let candidatePage = 1
+    while (newIds.length < remainingNewLimit) {
+      const result = await fetchThemeWords(themeId, { page: candidatePage, pageSize: 50 })
+      newIds.push(...result.items.map((w) => w.id).filter((id) => !existing.has(id)).slice(0, remainingNewLimit - newIds.length))
+      if (candidatePage >= result.totalPages) break
+      candidatePage += 1
+    }
+    ids.push(...newIds.filter((id) => !ids.includes(id)))
+  }
+  const words = await fetchVocabularyWordsByIds(ids)
+  const memoryById = new Map(allMemory.map((m) => [m.wordId, m]))
+  return {
+    items: words.map((word) => ({
+      word,
+      memory: memoryById.get(word.id) ?? { wordId: word.id, memoryCount: 0, reviewStep: 0, reviewCount: 0, firstLearnedAt: null, lastReviewedAt: null, nextReviewAt: null, learningStatus: 'NEW' },
+      direction: stableReviewDirection(word.id, settings.reviewDirection, Math.floor(Date.now() / 86_400_000)),
+      newWord: !memoryById.has(word.id),
+    })),
+    dueCount: due.length, newCount: newIds.length, generatedAt: new Date().toISOString(),
+  }
+}
+
+export async function completeVocabularyReview(wordId: number, reviewSessionId: string, direction: 'EN_TO_ZH' | 'ZH_TO_EN') {
+  if (!isAuthenticated()) return vocabularyStudyStorage.complete(wordId, reviewSessionId, direction)
+  const { data } = await http.post(`/account/english/vocabulary/words/${wordId}/reviews`, { reviewSessionId, direction })
+  return data
+}
+
+export async function resetVocabularyProgress(wordId: number): Promise<void> {
+  if (!isAuthenticated()) return vocabularyStudyStorage.reset(wordId)
+  await http.delete(`/account/english/vocabulary/words/${wordId}/progress`)
+}
+
+export async function fetchVocabularyProgress(): Promise<VocabularyProgressSummary> {
+  if (isAuthenticated()) {
+    const { data } = await http.get<VocabularyProgressSummary>('/account/english/vocabulary/statistics')
+    return data
+  }
+  const [memory, reviews] = await Promise.all([vocabularyStudyStorage.memories(), vocabularyStudyStorage.reviews()])
+  const now = Date.now()
+  const today = new Date(); today.setHours(0, 0, 0, 0)
+  return {
+    activeWords: memory.filter((m) => m.learningStatus === 'ACTIVE').length,
+    dueWords: memory.filter((m) => m.learningStatus === 'ACTIVE' && !!m.nextReviewAt && new Date(m.nextReviewAt).getTime() <= now).length,
+    completedToday: reviews.filter((r) => new Date(r.reviewedAt).getTime() >= today.getTime()).length,
+    totalReviews: reviews.length,
+    totalMemoryCount: memory.reduce((sum, m) => sum + m.memoryCount, 0),
+    recentReviews: reviews.slice(0, 100),
+  }
+}
+
+export async function importLocalVocabularyProgress(payload: Record<string, unknown>): Promise<void> {
+  if (!isAuthenticated()) throw new Error('登录后才能把本机进度合并到账号。')
+  await http.post('/account/english/vocabulary/import-local', payload)
 }
 
 export interface VocabularyMemoryEntry {
@@ -104,9 +295,8 @@ export async function fetchVocabularyMemory(): Promise<Record<number, Vocabulary
     return out
   }
   const out: Record<number, VocabularyMemoryEntry> = {}
-  for (const id of guestLearning.rememberedWordIds()) {
-    const m = guestLearning.readVocabularyMemory(id)
-    if (m) out[id] = { count: m.memoryCount, at: m.lastMemoryAt }
+  for (const memory of await vocabularyStudyStorage.memories()) {
+    if (memory.learningStatus === 'ACTIVE') out[memory.wordId] = { count: memory.memoryCount, at: memory.lastReviewedAt ?? '' }
   }
   return out
 }
@@ -164,6 +354,22 @@ export async function removeAdminExample(wordId: number, index: number): Promise
 
 export async function setAdminMemory(wordId: number, memoryCount: number): Promise<VocabularyWord> {
   const { data } = await http.put<VocabularyWord>(`/admin/vocabulary/words/${wordId}/memory`, { memoryCount })
+  return data
+}
+
+export async function addAdminWordAudio(wordId: number, payload: {
+  accent: 'UK' | 'US'; mediaAssetId: number; provider: 'UPLOADED'; licenseNote: string; primary: boolean
+}): Promise<VocabularyAudio> {
+  const { data } = await http.post<VocabularyAudio>(`/admin/vocabulary/words/${wordId}/audio`, payload)
+  return data
+}
+
+export async function deleteAdminWordAudio(wordId: number, audioId: number): Promise<void> {
+  await http.delete(`/admin/vocabulary/words/${wordId}/audio/${audioId}`)
+}
+
+export async function setAdminWordPrimaryAudio(wordId: number, audioId: number): Promise<VocabularyAudio> {
+  const { data } = await http.put<VocabularyAudio>(`/admin/vocabulary/words/${wordId}/audio/${audioId}/primary`)
   return data
 }
 
