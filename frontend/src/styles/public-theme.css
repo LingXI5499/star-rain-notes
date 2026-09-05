@@ -105,3 +105,9 @@
   line-height: var(--prose-line-height);
   max-width: var(--prose-max-width);
 }
+
+/* About Tech Flow 条 */
+.base-layout .about-techflow {
+  padding: var(--space-7) 0 var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
