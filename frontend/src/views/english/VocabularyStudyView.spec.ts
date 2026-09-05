@@ -3,6 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import VocabularyStudyView from './VocabularyStudyView.vue'
 
 const completeReview = vi.fn()
+const saveSettings = vi.fn(async (value) => value)
 
 vi.mock('vue-router', () => ({
   useRoute: () => ({ query: { themeId: '1' } }),
@@ -11,7 +12,7 @@ vi.mock('vue-router', () => ({
 
 vi.mock('@/api/vocabulary', () => ({
   fetchVocabularySettings: vi.fn(async () => ({ showEnglish: true, showChinese: true, reviewDirection: 'MIXED', dailyNewLimit: 20, dailyReviewLimit: 200 })),
-  saveVocabularySettings: vi.fn(async (value) => value),
+  saveVocabularySettings: (value: unknown) => saveSettings(value),
   fetchVocabularyReviewQueue: vi.fn(async () => ({
     dueCount: 1, newCount: 0, generatedAt: new Date().toISOString(),
     items: [{
@@ -24,7 +25,23 @@ vi.mock('@/api/vocabulary', () => ({
 }))
 
 describe('VocabularyStudyView', () => {
-  beforeEach(() => { completeReview.mockReset().mockResolvedValue({ intervalSeconds: 1800 }) })
+  beforeEach(() => {
+    completeReview.mockReset().mockResolvedValue({ intervalSeconds: 1800 })
+    saveSettings.mockClear()
+  })
+
+  it('uses direct buttons instead of a select for the review direction', async () => {
+    const wrapper = mount(VocabularyStudyView)
+    await flushPromises()
+
+    expect(wrapper.find('.study__direction select').exists()).toBe(false)
+    const directionButtons = wrapper.findAll('.study__direction button')
+    expect(directionButtons.map((button) => button.text())).toEqual(['随机混合', '英译中', '中译英'])
+
+    await directionButtons[1].trigger('click')
+    await flushPromises()
+    expect(saveSettings).toHaveBeenCalledWith(expect.objectContaining({ reviewDirection: 'EN_TO_ZH' }))
+  })
 
   it('does not expose completion before the answer is revealed and saves only once on rapid clicks', async () => {
     const wrapper = mount(VocabularyStudyView)

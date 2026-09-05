@@ -6,6 +6,7 @@ import type { VocabularyReviewDirection, VocabularyStudySettings } from '@/lib/v
 
 const route = useRoute(); const queue = ref<VocabularyQueue | null>(null); const index = ref(0); const revealed = ref(false)
 const loading = ref(true); const saving = ref(false); const error = ref(''); const notice = ref('')
+const directionSaving = ref(false)
 const settings = ref<VocabularyStudySettings>({ showEnglish: true, showChinese: true, reviewDirection: 'MIXED', dailyNewLimit: 20, dailyReviewLimit: 200 })
 const sessionIds = new Map<number, string>()
 const current = computed<VocabularyStudyCard | null>(() => queue.value?.items[index.value] ?? null)
@@ -19,9 +20,19 @@ async function load() {
   catch (cause) { error.value = cause instanceof Error ? cause.message : '复习队列读取失败。' }
   finally { loading.value = false }
 }
-async function changeDirection(event: Event) {
-  settings.value = await saveVocabularySettings({ ...settings.value, reviewDirection: (event.target as HTMLSelectElement).value as VocabularyReviewDirection })
-  await load()
+const directionOptions: Array<{ value: VocabularyReviewDirection; label: string }> = [
+  { value: 'MIXED', label: '随机混合' },
+  { value: 'EN_TO_ZH', label: '英译中' },
+  { value: 'ZH_TO_EN', label: '中译英' },
+]
+async function changeDirection(direction: VocabularyReviewDirection) {
+  if (directionSaving.value || direction === settings.value.reviewDirection) return
+  directionSaving.value = true; error.value = ''
+  try {
+    settings.value = await saveVocabularySettings({ ...settings.value, reviewDirection: direction })
+    await load()
+  } catch (cause) { error.value = cause instanceof Error ? cause.message : '复习方向保存失败。' }
+  finally { directionSaving.value = false }
 }
 function reveal() { revealed.value = true }
 async function complete() {
@@ -54,7 +65,7 @@ onMounted(load)
 <template>
   <section class="study">
     <header class="study__header"><div><p class="study__eyebrow">VOCABULARY REVIEW</p><h1>今日单词</h1><p>先回忆，再揭晓；只有完成按钮会写入一次复习。</p></div><div class="study__nav"><RouterLink to="/english/vocabulary/progress">学习进度</RouterLink><RouterLink to="/english/vocabulary">退出复习</RouterLink></div></header>
-    <div class="study__controls"><span>进度 {{ progress }}</span><label>复习方向 <select :value="settings.reviewDirection" @change="changeDirection"><option value="MIXED">随机混合</option><option value="EN_TO_ZH">英译中</option><option value="ZH_TO_EN">中译英</option></select></label><span v-if="queue">到期 {{ queue.dueCount }} · 新词 {{ queue.newCount }}</span></div>
+    <div class="study__controls"><span>进度 {{ progress }}</span><div class="study__direction"><strong>复习方向</strong><div role="group" aria-label="选择复习方向"><button v-for="option in directionOptions" :key="option.value" type="button" :class="{ active: settings.reviewDirection === option.value }" :aria-pressed="settings.reviewDirection === option.value" :disabled="loading || directionSaving" @click="changeDirection(option.value)">{{ option.label }}</button></div></div><span v-if="queue">到期 {{ queue.dueCount }} · 新词 {{ queue.newCount }}</span></div>
     <div v-if="loading" class="study__state">正在生成稳定复习队列…</div>
     <div v-else-if="error && !current" class="study__state study__state--error">{{ error }} <button @click="load">重新加载</button></div>
     <div v-else-if="!current" class="study__done"><span>✓</span><h2>本轮学习完成</h2><p>{{ notice || '当前没有到期单词。进入一个主题即可加入新词。' }}</p><div><RouterLink to="/english/vocabulary">选择主题</RouterLink><RouterLink to="/english/vocabulary/progress">查看进度</RouterLink></div></div>
@@ -68,7 +79,7 @@ onMounted(load)
 </template>
 
 <style scoped>
-.study{max-width:980px;margin:0 auto;padding-bottom:60px}.study__header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:26px}.study__eyebrow{color:var(--accent);letter-spacing:.16em;font-size:13px}.study__header h1{font-size:42px;margin:6px 0}.study__header p{color:var(--text-secondary)}.study__nav{display:flex;gap:10px}.study__nav a,.study__done a{padding:9px 14px;border:1px solid var(--border);border-radius:9px;color:var(--text-secondary)}.study__controls{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:12px 16px;border:1px solid var(--border);border-radius:12px;color:var(--text-muted)}.study__controls select{margin-left:8px;padding:6px 8px;border:1px solid var(--border);border-radius:7px;background:var(--bg-surface);color:var(--text-primary)}.study__state,.study__done{padding:100px 20px;text-align:center;color:var(--text-muted)}.study__done span{font-size:52px;color:var(--primary)}.study__done h2{font-size:28px;color:var(--text-primary);margin:10px}.study__done div{display:flex;justify-content:center;gap:10px;margin-top:22px}
+.study{max-width:980px;margin:0 auto;padding-bottom:60px}.study__header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:26px}.study__eyebrow{color:var(--accent);letter-spacing:.16em;font-size:13px}.study__header h1{font-size:42px;margin:6px 0}.study__header p{color:var(--text-secondary)}.study__nav{display:flex;gap:10px}.study__nav a,.study__done a{padding:9px 14px;border:1px solid var(--border);border-radius:9px;color:var(--text-secondary)}.study__controls{display:flex;justify-content:space-between;align-items:center;gap:18px;padding:10px 16px;border:1px solid var(--border);border-radius:12px;color:var(--text-muted)}.study__direction{display:flex;align-items:center;gap:10px}.study__direction strong{font-size:13px;font-weight:500;white-space:nowrap}.study__direction>div{display:inline-flex;padding:3px;border:1px solid var(--border);border-radius:10px;background:var(--bg-subtle)}.study__direction button{min-height:32px;padding:5px 12px;border:0;border-radius:7px;background:transparent;color:var(--text-muted);cursor:pointer}.study__direction button.active{background:var(--primary);color:var(--on-primary);box-shadow:0 2px 8px rgb(0 0 0/.08)}.study__direction button:focus-visible{outline:2px solid var(--primary);outline-offset:1px}.study__direction button:disabled{cursor:wait;opacity:.68}.study__state,.study__done{padding:100px 20px;text-align:center;color:var(--text-muted)}.study__done span{font-size:52px;color:var(--primary)}.study__done h2{font-size:28px;color:var(--text-primary);margin:10px}.study__done div{display:flex;justify-content:center;gap:10px;margin-top:22px}
 .review-card{margin-top:22px;padding:28px;border:1px solid var(--border);border-radius:22px;background:var(--bg-surface);box-shadow:0 24px 70px rgb(0 0 0/.07)}.review-card__meta{display:flex;justify-content:space-between;color:var(--accent);font-size:13px}.review-card__group{min-height:190px;padding:30px 10px;text-align:center}.review-card__group+.review-card__group{border-top:1px dashed var(--border)}.review-card__label{font-size:12px;letter-spacing:.18em;color:var(--text-muted)}.review-card__group h2{font-size:38px;line-height:1.3;margin:12px 0}.review-card__phonetic{display:flex;justify-content:center;gap:16px;color:var(--text-secondary)}.review-card__group>button{margin-top:12px;border:0;background:transparent;color:var(--primary);cursor:pointer}.review-card__examples{display:grid;gap:6px;margin-top:20px;color:var(--text-secondary)}.review-card__action{display:grid;justify-items:center;gap:8px;padding-top:18px}.review-card__action .primary{min-width:220px;min-height:44px;border:0;border-radius:11px;background:var(--primary);color:var(--on-primary);font-weight:600;cursor:pointer}.review-card__action small{color:var(--text-muted)}.study__inline-error,.study__state--error{color:var(--accent)}
-@media(max-width:640px){.study__header{align-items:flex-start;flex-direction:column}.study__controls{align-items:flex-start;flex-direction:column}.review-card{padding:18px}.review-card__group h2{font-size:30px}}
+@media(max-width:640px){.study__header{align-items:flex-start;flex-direction:column}.study__controls{align-items:flex-start;flex-direction:column}.study__direction{width:100%;align-items:flex-start;flex-direction:column}.study__direction>div{width:100%}.study__direction button{flex:1;padding-inline:6px}.review-card{padding:18px}.review-card__group h2{font-size:30px}}
 </style>

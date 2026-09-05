@@ -160,6 +160,33 @@ export async function startVocabularyWord(wordId: number): Promise<VocabularyMem
   return data
 }
 
+export async function startVocabularyWords(
+  wordIds: number[],
+  onProgress?: (completed: number, total: number) => void,
+): Promise<number> {
+  const uniqueIds = [...new Set(wordIds.filter((wordId) => Number.isInteger(wordId) && wordId > 0))]
+  if (!uniqueIds.length) return 0
+  if (!isAuthenticated()) {
+    const completed = await vocabularyStudyStorage.startMany(uniqueIds)
+    onProgress?.(completed, uniqueIds.length)
+    return completed
+  }
+
+  let completed = 0
+  const pending = [...uniqueIds]
+  const workers = Array.from({ length: Math.min(6, pending.length) }, async () => {
+    while (pending.length) {
+      const wordId = pending.shift()
+      if (wordId === undefined) return
+      await startVocabularyWord(wordId)
+      completed += 1
+      onProgress?.(completed, uniqueIds.length)
+    }
+  })
+  await Promise.all(workers)
+  return completed
+}
+
 export async function setVocabularyDisplay(wordId: number, displayMode: VocabularyDisplayMode): Promise<void> {
   if (!isAuthenticated()) return vocabularyStudyStorage.saveDisplay(wordId, displayMode)
   if (displayMode === 'FOLLOW_GLOBAL') await http.delete(`/account/english/vocabulary/words/${wordId}/display`)

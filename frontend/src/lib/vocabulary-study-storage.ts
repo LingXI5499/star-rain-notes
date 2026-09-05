@@ -162,6 +162,40 @@ class VocabularyStudyStorage {
     return value
   }
 
+  async startMany(wordIds: number[]): Promise<number> {
+    await this.initialize()
+    const uniqueIds = [...new Set(wordIds.filter((wordId) => Number.isInteger(wordId) && wordId > 0))]
+    if (!uniqueIds.length) return 0
+
+    const existingById = new Map((await this.memories()).map((memory) => [memory.wordId, memory]))
+    const now = new Date().toISOString()
+    const db = await this.database()
+    const transaction = db.transaction('memory', 'readwrite')
+    const store = transaction.objectStore('memory')
+    for (const wordId of uniqueIds) {
+      const existing = existingById.get(wordId)
+      store.put(existing
+        ? {
+            ...existing,
+            learningStatus: 'ACTIVE',
+            firstLearnedAt: existing.firstLearnedAt ?? now,
+            nextReviewAt: existing.nextReviewAt ?? now,
+          }
+        : {
+            wordId,
+            memoryCount: 0,
+            reviewStep: 0,
+            reviewCount: 0,
+            firstLearnedAt: now,
+            lastReviewedAt: null,
+            nextReviewAt: now,
+            learningStatus: 'ACTIVE',
+          } satisfies LocalVocabularyMemory)
+    }
+    await transactionDone(transaction)
+    return uniqueIds.length
+  }
+
   async complete(wordId: number, reviewSessionId: string, direction: 'EN_TO_ZH' | 'ZH_TO_EN'):
   Promise<{ memory: LocalVocabularyMemory; review: LocalVocabularyReview; duplicate: boolean }> {
     await this.initialize()
