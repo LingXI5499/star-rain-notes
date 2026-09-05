@@ -8,6 +8,7 @@ import { useThemeStore } from './stores/theme'
 
 import './styles/tokens.css'
 import './styles/base.css'
+import './styles/public-theme.css'
 
 const app = createApp(App)
 

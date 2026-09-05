@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, onBeforeMount, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { useThemeStore, type ThemeMode } from '@/stores/theme'
 import GlobalSearch from './search/GlobalSearch.vue'
+import ThemeControl from './ui/ThemeControl.vue'
 
-const theme = useThemeStore()
 const route = useRoute()
 const mobileMenuOpen = ref(false)
+const scrolled = ref(false)
+let ticking = false
 
 const navItems = [
   { to: '/tutorials', label: '教程' },
@@ -15,17 +16,6 @@ const navItems = [
   { to: '/english', label: '英语' },
   { to: '/about', label: '关于' },
 ]
-
-const themeLabels: Record<ThemeMode, string> = {
-  light: '浅色',
-  dark: '深色',
-  system: '跟随系统',
-}
-
-function cycleTheme() {
-  const next: ThemeMode = theme.mode === 'light' ? 'dark' : theme.mode === 'dark' ? 'system' : 'light'
-  theme.setMode(next)
-}
 
 function isActive(path: string): boolean {
   return route.path === path || route.path.startsWith(`${path}/`)
@@ -39,13 +29,29 @@ function onKeydown(event: KeyboardEvent) {
   if (event.key === 'Escape') closeMobileMenu()
 }
 
+function onScroll() {
+  if (ticking) return
+  ticking = true
+  requestAnimationFrame(() => {
+    scrolled.value = window.scrollY > 16
+    ticking = false
+  })
+}
+
 watch(() => route.fullPath, closeMobileMenu)
-onMounted(() => window.addEventListener('keydown', onKeydown))
-onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
+onBeforeMount(onScroll)
+onMounted(() => {
+  window.addEventListener('scroll', onScroll, { passive: true })
+  window.addEventListener('keydown', onKeydown)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', onScroll)
+  window.removeEventListener('keydown', onKeydown)
+})
 </script>
 
 <template>
-  <header class="site-header">
+  <header class="site-header" :class="{ 'site-header--scrolled': scrolled }">
     <div class="site-header__inner">
       <RouterLink to="/" class="site-header__brand">星雨笔录</RouterLink>
 
@@ -77,9 +83,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
       <GlobalSearch class="site-header__search" />
 
-      <button class="site-header__action" type="button" title="主题" @click="cycleTheme">
-        主题 · {{ themeLabels[theme.mode] }}
-      </button>
+      <ThemeControl class="site-header__theme" />
     </div>
 
     <Transition name="mobile-menu">
@@ -94,9 +98,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
         >
           {{ item.label }}
         </RouterLink>
-        <button class="site-header__mobile-theme" type="button" @click="cycleTheme">
-          主题：{{ themeLabels[theme.mode] }}
-        </button>
+        <ThemeControl class="site-header__mobile-theme-control" />
       </nav>
     </Transition>
   </header>
@@ -108,9 +110,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
   top: 0;
   z-index: var(--z-header, 20);
   height: var(--header-height);
-  background: color-mix(in srgb, var(--bg-page) 82%, transparent);
-  backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--bg-page) 72%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: height var(--motion-base) var(--ease-standard), background-color var(--motion-base) var(--ease-standard), border-color var(--motion-base) var(--ease-standard), backdrop-filter var(--motion-base) var(--ease-standard);
+}
+
+.site-header--scrolled {
+  height: 56px;
+  background: color-mix(in srgb, var(--bg-page) 88%, transparent);
+  backdrop-filter: blur(16px);
+  border-bottom-color: var(--border);
 }
 
 .site-header__inner {
@@ -211,8 +221,11 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
     margin-left: auto;
   }
 
-  .site-header__action {
-    display: none;
+  .site-header__mobile-theme-control {
+    grid-column: 1 / -1;
+    display: flex;
+    justify-content: center;
+    padding: var(--space-2);
   }
 
   .site-header__mobile-menu {
@@ -230,8 +243,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
     box-shadow: var(--shadow-sm);
   }
 
-  .site-header__mobile-link,
-  .site-header__mobile-theme {
+  .site-header__mobile-link {
     min-height: 42px;
     display: flex;
     align-items: center;
@@ -246,12 +258,6 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
   .site-header__mobile-link--active {
     color: var(--primary);
     border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
-  }
-
-  .site-header__mobile-theme {
-    grid-column: 1 / -1;
-    justify-content: center;
-    cursor: pointer;
   }
 
   .mobile-menu-enter-active,

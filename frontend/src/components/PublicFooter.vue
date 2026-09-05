@@ -5,7 +5,7 @@ import { fetchPublicSite } from '@/api/site'
 import { setSeoTagline } from '@/lib/seo'
 
 const siteName = ref('星雨笔录')
-const footerText = ref('Personal Knowledge System')
+const footerText = ref('Knowledge · Code · Growth')
 const githubUrl = ref<string | null>(null)
 const domain = ref('yulanlin.cn')
 
