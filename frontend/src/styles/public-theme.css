@@ -111,3 +111,26 @@
   padding: var(--space-7) 0 var(--space-3);
   border-bottom: 1px solid var(--border);
 }
+
+/* About Career Snapshot / Evidence */
+.base-layout .about-career {
+  padding: var(--space-7) 0 var(--space-2);
+}
+.base-layout .about-evidence {
+  padding: var(--space-8) 0;
+}
+.base-layout .about-evidence > header span {
+  color: var(--accent);
+  font: 700 10px var(--font-mono, monospace);
+  letter-spacing: .16em;
+}
+.base-layout .about-evidence > header h2 {
+  margin: var(--space-2) 0 var(--space-1);
+  font-size: 28px;
+  letter-spacing: -.02em;
+}
+.base-layout .about-evidence > header p {
+  margin: 0 0 var(--space-6);
+  color: var(--text-secondary);
+  font-size: 13px;
+}
