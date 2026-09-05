@@ -117,6 +117,44 @@
   scroll-margin-top: calc(var(--header-height) + var(--space-6));
 }
 
+/* 代码块（§10.4）：语言标签 + copy 按钮 */
+.base-layout .code-block {
+  position: relative;
+  margin: 0 0 var(--space-5);
+}
+.base-layout .code-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: 6px 12px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-bottom: 0;
+  border-radius: var(--radius-md) var(--radius-md) 0 0;
+  color: var(--text-muted);
+}
+.base-layout .code-block__label {
+  font: 600 11px var(--font-mono, monospace);
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.base-layout .code-block__copy {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 12px;
+}
+.base-layout .code-block__copy:hover {
+  color: var(--primary);
+}
+.base-layout .code-block pre {
+  margin: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
 /* About Tech Flow 条 */
 .base-layout .about-techflow {
   padding: var(--space-7) 0 var(--space-3);

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { nextTick, ref, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/core'
@@ -69,6 +69,41 @@ const emit = defineEmits<{
 }>()
 
 const html = ref('')
+const root = ref<HTMLElement | null>(null)
+
+/** Post-process the sanitized markdown to add a language label + copy button to each code block. */
+async function enhanceCodeBlocks() {
+  await nextTick()
+  const container = root.value
+  if (!container) return
+  container.querySelectorAll<HTMLElement>('pre').forEach((pre) => {
+    if (pre.dataset.enhanced) return
+    const code = pre.querySelector('code')
+    const lang = (code?.className.match(/language-([\w-]+)/)?.[1]) ?? 'code'
+    const label = document.createElement('span')
+    label.className = 'code-block__label'
+    label.textContent = lang
+    const btn = document.createElement('button')
+    btn.className = 'code-block__copy'
+    btn.type = 'button'
+    btn.textContent = '复制'
+    btn.setAttribute('aria-label', '复制代码')
+    btn.addEventListener('click', () => {
+      void navigator.clipboard.writeText(code?.textContent ?? '').then(() => {
+        btn.textContent = '已复制'
+        setTimeout(() => { btn.textContent = '复制' }, 1600)
+      })
+    })
+    const head = document.createElement('div')
+    head.className = 'code-block__head'
+    head.append(label, btn)
+    const wrap = document.createElement('div')
+    wrap.className = 'code-block'
+    wrap.dataset.enhanced = 'true'
+    pre.replaceWith(wrap)
+    wrap.append(head, pre)
+  })
+}
 
 const md = new MarkdownIt({
   html: false,
@@ -102,17 +137,18 @@ md.renderer.rules.heading_open = (tokens, idx) => {
 
 watch(
   () => props.source,
-  (source) => {
+  async (source) => {
     usedIds.clear()
     collected = []
     const rendered = md.render(source ?? '')
     html.value = DOMPurify.sanitize(rendered, { USE_PROFILES: { html: true } })
     emit('outline', collected)
+    await enhanceCodeBlocks()
   },
   { immediate: true },
 )
 </script>
 
 <template>
-  <div class="markdown-body" v-html="html" />
+  <div ref="root" class="markdown-body" v-html="html" />
 </template>
