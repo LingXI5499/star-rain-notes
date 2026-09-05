@@ -12,18 +12,24 @@ const props = defineProps<{
 
 const activeId = ref('')
 const sections = ref<HTMLElement[]>([])
+let ticking = false
 
 function onScroll() {
-  const offset = 104
-  let current = ''
-  for (const el of sections.value) {
-    if (el.getBoundingClientRect().top <= offset) {
-      current = el.id
-    } else {
-      break
+  if (ticking) return
+  ticking = true
+  requestAnimationFrame(() => {
+    const offset = 104
+    let current = ''
+    for (const el of sections.value) {
+      if (el.getBoundingClientRect().top <= offset) {
+        current = el.id
+      } else {
+        break
+      }
     }
-  }
-  activeId.value = current
+    activeId.value = current
+    ticking = false
+  })
 }
 
 async function refresh() {
