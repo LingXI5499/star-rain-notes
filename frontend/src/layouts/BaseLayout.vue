@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import PublicHeader from '@/components/PublicHeader.vue'
 import PublicFooter from '@/components/PublicFooter.vue'
+import ReadingProgress from '@/components/ui/ReadingProgress.vue'
 </script>
 
 <template>
   <div class="base-layout">
+    <ReadingProgress />
     <PublicHeader />
     <main class="layout-shell base-layout__main">
       <slot />
