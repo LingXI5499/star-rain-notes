@@ -106,6 +106,17 @@
   max-width: var(--prose-max-width);
 }
 
+/* 阅读品质（§10.4 / §31）：段落节奏 + H2 上边距 + 适度分隔线 */
+.base-layout .markdown-body p {
+  margin-bottom: var(--space-5);
+}
+.base-layout .markdown-body h2 {
+  margin-top: calc(var(--space-9) * 1.2);
+  padding-bottom: var(--space-2);
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: calc(var(--header-height) + var(--space-6));
+}
+
 /* About Tech Flow 条 */
 .base-layout .about-techflow {
   padding: var(--space-7) 0 var(--space-3);
