@@ -3,6 +3,7 @@ import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { completeVocabularyReview, fetchVocabularyReviewQueue, fetchVocabularySettings, saveVocabularySettings, type VocabularyQueue, type VocabularyStudyCard } from '@/api/vocabulary'
 import type { VocabularyReviewDirection, VocabularyStudySettings } from '@/lib/vocabulary-study-storage'
+import { playBrowserSpeech, playProfessionalPronunciation } from '@/lib/vocabulary-pronunciation'
 
 const route = useRoute(); const queue = ref<VocabularyQueue | null>(null); const index = ref(0); const revealed = ref(false)
 const loading = ref(true); const saving = ref(false); const error = ref(''); const notice = ref('')
@@ -56,8 +57,9 @@ async function pronounce() {
     try { await new Audio(uploaded.publicUrl).play(); return }
     catch { notice.value = '真人发音暂时无法播放，已切换为系统朗读。' }
   }
-  if (!('speechSynthesis' in window)) { error.value = '当前浏览器不支持系统朗读。'; return }
-  speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(current.value.word.word); u.lang = 'en-US'; speechSynthesis.speak(u)
+  const started = await playProfessionalPronunciation(current.value.word.word, () => {})
+  if (started) return
+  playBrowserSpeech(current.value.word.word, () => {})
 }
 onMounted(load)
 </script>
@@ -71,7 +73,7 @@ onMounted(load)
     <div v-else-if="!current" class="study__done"><span>✓</span><h2>本轮学习完成</h2><p>{{ notice || '当前没有到期单词。进入一个主题即可加入新词。' }}</p><div><RouterLink to="/english/vocabulary">选择主题</RouterLink><RouterLink to="/english/vocabulary/progress">查看进度</RouterLink></div></div>
     <article v-else class="review-card">
       <div class="review-card__meta"><span>{{ current.newWord ? '新词' : `第 ${current.memory.reviewCount + 1} 次复习` }}</span><span>{{ current.direction === 'EN_TO_ZH' ? '英译中' : '中译英' }}</span></div>
-      <section v-if="frontIsEnglish || revealed" class="review-card__group review-card__english"><p class="review-card__label">英文</p><h2>{{ current.word.word }}</h2><p class="review-card__phonetic"><span v-if="current.word.phoneticUk">英 {{ current.word.phoneticUk }}</span><span v-if="current.word.phoneticUs">美 {{ current.word.phoneticUs }}</span></p><p>{{ current.word.partOfSpeech }}<span v-if="current.word.inflections"> · {{ current.word.inflections }}</span></p><button type="button" @click="pronounce">{{ current.word.audios.length ? '播放真人发音' : '系统朗读' }}</button><div v-if="revealed && current.word.examples.length" class="review-card__examples"><p v-for="(item, i) in current.word.examples" :key="i">{{ item.sentence }}</p></div></section>
+      <section v-if="frontIsEnglish || revealed" class="review-card__group review-card__english"><p class="review-card__label">英文</p><h2>{{ current.word.word }}</h2><p class="review-card__phonetic"><span v-if="current.word.phoneticUk">英 {{ current.word.phoneticUk }}</span><span v-if="current.word.phoneticUs">美 {{ current.word.phoneticUs }}</span></p><p>{{ current.word.partOfSpeech }}<span v-if="current.word.inflections"> · {{ current.word.inflections }}</span></p><button type="button" @click="pronounce">{{ current.word.audios.length ? '播放真人发音' : '有道发音' }}</button><div v-if="revealed && current.word.examples.length" class="review-card__examples"><p v-for="(item, i) in current.word.examples" :key="i">{{ item.sentence }}</p></div></section>
       <section v-if="!frontIsEnglish || revealed" class="review-card__group review-card__chinese"><p class="review-card__label">中文</p><h2>{{ current.word.translation }}</h2><div v-if="revealed" class="review-card__examples"><p v-for="(item, i) in current.word.examples" :key="i">{{ item.translation }}</p></div></section>
       <div class="review-card__action"><p v-if="error" class="study__inline-error">{{ error }}</p><button v-if="!revealed" class="primary" @click="reveal">查看答案</button><button v-else class="primary" :disabled="saving" @click="complete">{{ saving ? '正在保存…' : '完成本次记忆' }}</button><small v-if="!revealed">未查看答案前不能完成</small></div>
     </article>

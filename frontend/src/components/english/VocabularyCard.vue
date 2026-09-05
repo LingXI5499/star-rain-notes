@@ -3,6 +3,7 @@ import { computed, ref } from 'vue'
 import type { VocabularyMemoryState, VocabularyWord } from '@/api/vocabulary'
 import type { VocabularyDisplayMode, VocabularyStudySettings } from '@/lib/vocabulary-study-storage'
 import { resolveVocabularyVisibility } from '@/lib/vocabulary-display'
+import { playBrowserSpeech, playProfessionalPronunciation } from '@/lib/vocabulary-pronunciation'
 
 const props = defineProps<{
   word: VocabularyWord
@@ -39,14 +40,10 @@ async function pronounce() {
     await audio.play().catch(() => { speaking.value = false })
     return
   }
-  if (!('speechSynthesis' in window)) return
-  speechSynthesis.cancel()
-  const utterance = new SpeechSynthesisUtterance(props.word.word)
-  utterance.lang = 'en-US'
-  utterance.onend = () => { speaking.value = false }
-  utterance.onerror = () => { speaking.value = false }
   speaking.value = true
-  speechSynthesis.speak(utterance)
+  const started = await playProfessionalPronunciation(props.word.word, () => { speaking.value = false })
+  if (started) return
+  playBrowserSpeech(props.word.word, () => { speaking.value = false })
 }
 </script>
 
@@ -75,7 +72,7 @@ async function pronounce() {
         <span class="vocabulary-card__pos">{{ word.partOfSpeech }}</span>
         <h2>{{ word.word }}</h2>
         <button type="button" class="vocabulary-card__speak" :disabled="speaking" @click="pronounce">
-          {{ speaking ? '播放中' : word.audios?.length ? '播放发音' : '系统朗读' }}
+          {{ speaking ? '播放中' : word.audios?.length ? '播放发音' : '有道发音' }}
         </button>
       </div>
       <p v-if="word.phoneticUk || word.phoneticUs" class="vocabulary-card__phonetics">

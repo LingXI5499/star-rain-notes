@@ -81,6 +81,19 @@ app:
     public-base: /uploads
     # 音频大小上限（方案 §13.1，默认 50MB）。
     audio-max-bytes: ${AUDIO_MAX_BYTES:52428800}
+  vocabulary:
+    providers:
+      # 单词发音来源：youdao = 有道词典真人发音（后端代理+磁盘缓存）；disabled = 关闭（浏览器系统朗读）。
+      # 生产可用环境变量 APP_VOCABULARY_PROVIDERS_PRONUNCIATION 切换；无密钥。
+      pronunciation: ${APP_VOCABULARY_PROVIDERS_PRONUNCIATION:disabled}
+    youdao:
+      dict-voice-base-url: ${APP_VOCABULARY_YOUDAO_DICT_VOICE_BASE_URL:https://dict.youdao.com/dictvoice}
+      us-type: ${APP_VOCABULARY_YOUDAO_US_TYPE:0}
+      uk-type: ${APP_VOCABULARY_YOUDAO_UK_TYPE:1}
+    pronunciation:
+      default-accent: ${APP_VOCABULARY_PRONUNCIATION_DEFAULT_ACCENT:US}
+      # 运行时可写缓存目录（生产建议配到站点外可写路径；不进入升级包）。
+      cache-dir: ${APP_VOCABULARY_PRONUNCIATION_CACHE_DIR:./data/pronunciation-cache}
 
 management:
   endpoints:
