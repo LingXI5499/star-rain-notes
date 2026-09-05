@@ -13,9 +13,9 @@
 
     <groupId>com.starrainnotes</groupId>
     <artifactId>star-rain-notes-backend</artifactId>
-    <version>0.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
     <name>star-rain-notes-backend</name>
-    <description>Star Rain Notes V1 backend (modular monolith)</description>
+    <description>Star Rain Notes V1.1 backend (modular monolith)</description>
 
     <properties>
         <java.version>21</java.version>
