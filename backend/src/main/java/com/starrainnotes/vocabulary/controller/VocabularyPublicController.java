@@ -3,7 +3,11 @@ package com.starrainnotes.vocabulary.controller;
 import com.starrainnotes.vocabulary.dto.VocabularyLayerView;
 import com.starrainnotes.vocabulary.dto.VocabularyPageView;
 import com.starrainnotes.vocabulary.dto.VocabularyWordView;
+import com.starrainnotes.vocabulary.service.VocabularyPronunciationService;
 import com.starrainnotes.vocabulary.service.VocabularyService;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,9 +26,12 @@ import java.util.Arrays;
 public class VocabularyPublicController {
 
     private final VocabularyService vocabularyService;
+    private final VocabularyPronunciationService pronunciationService;
 
-    public VocabularyPublicController(VocabularyService vocabularyService) {
+    public VocabularyPublicController(VocabularyService vocabularyService,
+                                      VocabularyPronunciationService pronunciationService) {
         this.vocabularyService = vocabularyService;
+        this.pronunciationService = pronunciationService;
     }
 
     @GetMapping("/themes")
@@ -43,6 +50,22 @@ public class VocabularyPublicController {
     @GetMapping("/words/{wordId}/study")
     public VocabularyWordView studyWord(@PathVariable long wordId) {
         return vocabularyService.getWord(wordId);
+    }
+
+    /**
+     * Serves a professional pronunciation audio clip proxied from the
+     * configured provider (e.g. Youdao dictvoice). Bytes are cached on disk and
+     * long-cached by the browser. Returns 404 when the provider is disabled or
+     * the upstream is unavailable, so the client falls back to browser speech.
+     */
+    @GetMapping("/pronunciation")
+    public ResponseEntity<byte[]> pronunciation(@RequestParam String word,
+                                                @RequestParam(required = false) String accent) {
+        byte[] bytes = pronunciationService.audio(word, accent);
+        return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType("audio/mpeg"))
+                .header(HttpHeaders.CACHE_CONTROL, "public, max-age=2592000, immutable")
+                .body(bytes);
     }
 
     @GetMapping("/words/batch")
