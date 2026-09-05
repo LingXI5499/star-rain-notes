@@ -10,5 +10,6 @@ import jakarta.validation.constraints.Size;
 public record UpdateVocabularyWordRequest(
         @NotBlank @Size(max = 1000) String translation,
         @Size(max = 100) String phoneticUs,
+        @Size(max = 100) String phoneticUk,
         @Size(max = 1000) String inflections) {
 }

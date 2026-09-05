@@ -8,26 +8,20 @@ import { fetchPublicBundles, type LearningBundle } from '@/api/englishBundle'
 import LearningBundleCards from '@/components/english/LearningBundleCards.vue'
 import EnglishLearningModeHint from '@/components/english/EnglishLearningModeHint.vue'
 import { useAuthStore } from '@/stores/auth'
-import { guestLearning } from '@/lib/learning-storage'
-import { importLocalProgress } from '@/api/account'
+import { vocabularyStudyStorage } from '@/lib/vocabulary-study-storage'
+import { importLocalVocabularyProgress } from '@/api/vocabulary'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 
 const auth = useAuthStore()
 const isAuthenticated = computed(() => auth.isAuthenticated)
-const hasGuestData = computed(() => guestLearning.rememberedWordIds().length > 0)
+const hasGuestData = ref(false)
 
 async function importGuestProgress() {
   try {
-    const payload = {
-      vocabulary: Object.fromEntries(
-        guestLearning.rememberedWordIds().map((id) => [String(id), guestLearning.readVocabularyMemory(id)]),
-      ),
-      learningRecords: {},
-      writingDrafts: {},
-    }
-    await importLocalProgress(payload as unknown as Record<string, unknown>)
-    guestLearning.clearAll()
-    ElMessage.success('已导入本机英语进度。')
+    const [memory, reviewLog] = await Promise.all([vocabularyStudyStorage.memories(), vocabularyStudyStorage.reviews()])
+    await importLocalVocabularyProgress({ memory, reviewLog })
+    hasGuestData.value = false
+    ElMessage.success('本机单词进度已合并到账号；本机备份仍然保留。')
   } catch {
     ElMessage.error('导入失败，请稍后重试。')
   }
@@ -55,6 +49,7 @@ const directions = [
 ]
 
 onMounted(async () => {
+  hasGuestData.value = (await vocabularyStudyStorage.memories().catch(() => [])).length > 0
   try {
     const [content, learning, paths] = await Promise.all([
       fetchPublicEnglish(), fetchLearningSummary().catch(() => null), fetchPublicBundles().catch(() => []),

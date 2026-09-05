@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Arrays;
 
 /**
  * Public vocabulary (approved English vocabulary module).
@@ -37,6 +38,24 @@ public class VocabularyPublicController {
                                          @RequestParam(defaultValue = "20") int pageSize,
                                          @RequestParam(defaultValue = "false") boolean remembered) {
         return vocabularyService.listThemeWords(themeId, page, pageSize, remembered);
+    }
+
+    @GetMapping("/words/{wordId}/study")
+    public VocabularyWordView studyWord(@PathVariable long wordId) {
+        return vocabularyService.getWord(wordId);
+    }
+
+    @GetMapping("/words/batch")
+    public List<VocabularyWordView> wordsByIds(@RequestParam String ids) {
+        List<Long> parsed;
+        try {
+            parsed = Arrays.stream(ids.split(","))
+                    .map(String::trim).filter(value -> !value.isEmpty()).map(Long::valueOf).distinct().limit(100).toList();
+        } catch (NumberFormatException ex) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.BAD_REQUEST, "ids must contain numeric word ids");
+        }
+        return vocabularyService.getWords(parsed);
     }
 
     /**

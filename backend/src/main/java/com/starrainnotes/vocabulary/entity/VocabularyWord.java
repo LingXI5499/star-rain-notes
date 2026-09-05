@@ -28,6 +28,7 @@ public class VocabularyWord {
     private String partOfSpeech;
     private String word;
     private String phoneticUs;
+    private String phoneticUk;
     private String translation;
     private String inflections;
     @TableField(typeHandler = JacksonTypeHandler.class)
@@ -78,6 +79,14 @@ public class VocabularyWord {
 
     public void setPhoneticUs(String phoneticUs) {
         this.phoneticUs = phoneticUs;
+    }
+
+    public String getPhoneticUk() {
+        return phoneticUk;
+    }
+
+    public void setPhoneticUk(String phoneticUk) {
+        this.phoneticUk = phoneticUk;
     }
 
     public String getTranslation() {

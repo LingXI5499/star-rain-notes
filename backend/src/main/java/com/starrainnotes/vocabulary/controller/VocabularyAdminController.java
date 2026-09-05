@@ -5,7 +5,11 @@ import com.starrainnotes.vocabulary.dto.SetMemoryRequest;
 import com.starrainnotes.vocabulary.dto.UpdateVocabularyWordRequest;
 import com.starrainnotes.vocabulary.dto.VocabularyPageView;
 import com.starrainnotes.vocabulary.dto.VocabularyWordView;
+import com.starrainnotes.vocabulary.dto.VocabularyAudioRequest;
+import com.starrainnotes.vocabulary.dto.VocabularyAudioView;
 import com.starrainnotes.vocabulary.service.VocabularyService;
+import com.starrainnotes.vocabulary.provider.DictionaryPreview;
+import com.starrainnotes.vocabulary.provider.DictionaryProvider;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
  * Admin vocabulary management: word correction, example sentences and the
@@ -26,9 +31,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class VocabularyAdminController {
 
     private final VocabularyService vocabularyService;
+    private final DictionaryProvider dictionaryProvider;
 
-    public VocabularyAdminController(VocabularyService vocabularyService) {
+    public VocabularyAdminController(VocabularyService vocabularyService, DictionaryProvider dictionaryProvider) {
         this.vocabularyService = vocabularyService;
+        this.dictionaryProvider = dictionaryProvider;
+    }
+
+    @GetMapping("/words/{wordId}/dictionary-preview")
+    public DictionaryPreview dictionaryPreview(@PathVariable long wordId) {
+        return dictionaryProvider.preview(vocabularyService.getWord(wordId).word());
     }
 
     @GetMapping("/words")
@@ -60,5 +72,22 @@ public class VocabularyAdminController {
     public VocabularyWordView setMemory(@PathVariable long wordId,
                                         @Valid @RequestBody SetMemoryRequest request) {
         return vocabularyService.setMemory(wordId, request);
+    }
+
+    @PostMapping("/words/{wordId}/audio")
+    public VocabularyAudioView addAudio(@PathVariable long wordId,
+                                        @Valid @RequestBody VocabularyAudioRequest request) {
+        return vocabularyService.addAudio(wordId, request);
+    }
+
+    @DeleteMapping("/words/{wordId}/audio/{audioId}")
+    @ResponseStatus(org.springframework.http.HttpStatus.NO_CONTENT)
+    public void deleteAudio(@PathVariable long wordId, @PathVariable long audioId) {
+        vocabularyService.deleteAudio(wordId, audioId);
+    }
+
+    @PutMapping("/words/{wordId}/audio/{audioId}/primary")
+    public VocabularyAudioView setPrimaryAudio(@PathVariable long wordId, @PathVariable long audioId) {
+        return vocabularyService.setPrimaryAudio(wordId, audioId);
     }
 }

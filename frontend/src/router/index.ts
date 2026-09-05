@@ -83,6 +83,18 @@ const router = createRouter({
           meta: { title: '词汇', description: '按主题分类的英语词汇库。' },
         },
         {
+          path: 'english/vocabulary/study',
+          name: 'english-vocabulary-study',
+          component: () => import('@/views/english/VocabularyStudyView.vue'),
+          meta: { title: '今日单词', description: '按固定复习间隔完成今日单词学习。', robots: 'noindex,follow' },
+        },
+        {
+          path: 'english/vocabulary/progress',
+          name: 'english-vocabulary-progress',
+          component: () => import('@/views/english/VocabularyProgressView.vue'),
+          meta: { title: '单词学习进度', description: '查看单词复习计划与真实完成记录。', robots: 'noindex,follow' },
+        },
+        {
           path: 'english/vocabulary/:themeId',
           name: 'english-vocabulary-theme',
           component: () => import('@/views/english/ThemeWordsView.vue'),

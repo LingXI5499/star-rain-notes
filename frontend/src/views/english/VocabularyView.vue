@@ -41,6 +41,11 @@ onMounted(async () => {
       </p>
     </header>
 
+    <nav class="vocab__study-nav" aria-label="单词学习工具">
+      <RouterLink to="/english/vocabulary/study"><strong>今日学习</strong><span>复习到期单词，或从主题开始新词</span></RouterLink>
+      <RouterLink to="/english/vocabulary/progress"><strong>学习进度</strong><span>查看复习间隔与真实完成记录</span></RouterLink>
+    </nav>
+
     <div v-if="loading" class="vocab__empty">加载中…</div>
     <div v-else-if="error" class="vocab__empty">加载失败，请稍后重试。</div>
     <template v-else>
@@ -111,6 +116,7 @@ onMounted(async () => {
   color: var(--text-muted);
   padding: var(--space-8) 0;
 }
+.vocab__study-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:-12px 0 28px}.vocab__study-nav a{display:grid;gap:4px;padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--bg-surface)}.vocab__study-nav a:hover{border-color:var(--primary)}.vocab__study-nav strong{font-size:17px;color:var(--text-primary)}.vocab__study-nav span{font-size:13px;color:var(--text-muted)}
 
 /* layer filter chips */
 .vocab__chips {
@@ -199,4 +205,5 @@ onMounted(async () => {
   font-size: 13px;
   color: var(--primary);
 }
+@media(max-width:640px){.vocab__study-nav{grid-template-columns:1fr}}
 </style>

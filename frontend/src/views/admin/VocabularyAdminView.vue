@@ -3,12 +3,17 @@ import { onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
+import MediaPicker from '@/components/MediaPicker.vue'
+import type { MediaAsset } from '@/api/media'
 import {
   addAdminExample,
+  addAdminWordAudio,
+  deleteAdminWordAudio,
   fetchAdminWords,
   fetchVocabularyLayers,
   removeAdminExample,
   setAdminMemory,
+  setAdminWordPrimaryAudio,
   updateAdminWord,
   formatMemoryTime,
   type VocabularyExample,
@@ -38,11 +43,15 @@ const editForm = reactive({
   partOfSpeech: '',
   translation: '',
   phoneticUs: '',
+  phoneticUk: '',
   inflections: '',
   examples: [] as VocabularyExample[],
   memoryCount: 0,
+  audios: [] as VocabularyWord['audios'],
 })
 const exampleInput = reactive({ sentence: '', translation: '' })
+const mediaVisible = ref(false)
+const audioAccent = ref<'UK' | 'US'>('US')
 
 async function load() {
   loading.value = true
@@ -85,9 +94,11 @@ function openEdit(word: VocabularyWord) {
   editForm.partOfSpeech = word.partOfSpeech
   editForm.translation = word.translation
   editForm.phoneticUs = word.phoneticUs ?? ''
+  editForm.phoneticUk = word.phoneticUk ?? ''
   editForm.inflections = word.inflections ?? ''
   editForm.examples = word.examples.map((e) => ({ ...e }))
   editForm.memoryCount = word.memoryCount
+  editForm.audios = word.audios ?? []
   exampleInput.sentence = ''
   exampleInput.translation = ''
   editVisible.value = true
@@ -108,6 +119,7 @@ async function saveWord() {
     await updateAdminWord(editForm.id, {
       translation: editForm.translation,
       phoneticUs: editForm.phoneticUs || null,
+      phoneticUk: editForm.phoneticUk || null,
       inflections: editForm.inflections || null,
     })
     ElMessage.success('已保存。')
@@ -118,6 +130,32 @@ async function saveWord() {
   } finally {
     saving.value = false
   }
+}
+
+async function selectAudio(asset: MediaAsset) {
+  if (asset.assetType !== 'AUDIO') return
+  try {
+    await addAdminWordAudio(editForm.id, {
+      accent: audioAccent.value, mediaAssetId: asset.id, provider: 'UPLOADED',
+      licenseNote: '本站上传且确认具有使用权的真人发音。', primary: !editForm.audios.some((item) => item.accent === audioAccent.value),
+    })
+    const refreshed = await fetchAdminWords({ q: editForm.word, page: 1, pageSize: 20 })
+    const word = refreshed.items.find((item) => item.id === editForm.id)
+    if (word) editForm.audios = word.audios
+    ElMessage.success('发音已关联。')
+  } catch (error) { showError(error) }
+}
+
+async function removeAudio(audioId: number) {
+  try { await deleteAdminWordAudio(editForm.id, audioId); editForm.audios = editForm.audios.filter((item) => item.id !== audioId) }
+  catch (error) { showError(error) }
+}
+
+async function makePrimary(audioId: number) {
+  try {
+    const selected = await setAdminWordPrimaryAudio(editForm.id, audioId)
+    editForm.audios = editForm.audios.map((item) => item.accent === selected.accent ? { ...item, primary: item.id === audioId } : item)
+  } catch (error) { showError(error) }
 }
 
 async function addExample() {
@@ -196,6 +234,7 @@ onMounted(async () => {
       <el-table-column prop="partOfSpeech" label="词性" width="120" />
       <el-table-column prop="word" label="英文原词" min-width="140" />
       <el-table-column prop="phoneticUs" label="美式音标" min-width="130" />
+      <el-table-column prop="phoneticUk" label="英式音标" min-width="130" />
       <el-table-column prop="translation" label="中文翻译" min-width="200" show-overflow-tooltip />
       <el-table-column prop="memoryCount" label="记忆次数" width="100" />
       <el-table-column label="最近记忆" width="130">
@@ -232,9 +271,25 @@ onMounted(async () => {
           <el-form-item label="美式音标">
             <el-input v-model="editForm.phoneticUs" maxlength="100" />
           </el-form-item>
+          <el-form-item label="英式音标">
+            <el-input v-model="editForm.phoneticUk" maxlength="100" />
+          </el-form-item>
         </div>
         <el-form-item label="词形变化 / 派生词">
           <el-input v-model="editForm.inflections" type="textarea" :rows="2" maxlength="1000" />
+        </el-form-item>
+
+        <el-form-item label="真人发音（仅关联具有使用权的音频）">
+          <div class="vocab-admin__audio-list">
+            <article v-for="audio in editForm.audios" :key="audio.id">
+              <b>{{ audio.accent === 'UK' ? '英音' : '美音' }}</b>
+              <audio :src="audio.publicUrl" controls preload="none" />
+              <el-tag v-if="audio.primary" type="success">主音频</el-tag>
+              <el-button v-else link @click="makePrimary(audio.id)">设为主音频</el-button>
+              <el-button link type="danger" @click="removeAudio(audio.id)">移除关联</el-button>
+            </article>
+            <div class="vocab-admin__audio-add"><el-select v-model="audioAccent" style="width:110px"><el-option label="美音" value="US"/><el-option label="英音" value="UK"/></el-select><el-button @click="mediaVisible = true">上传或选择音频</el-button></div>
+          </div>
         </el-form-item>
 
         <el-form-item label="例句（用户自加）">
@@ -265,6 +320,7 @@ onMounted(async () => {
         <el-button type="primary" :loading="saving" @click="saveWord">保存</el-button>
       </template>
     </el-dialog>
+    <MediaPicker v-model="mediaVisible" asset-type="AUDIO" allow-upload title="选择单词真人发音" @select="selectAudio" />
   </section>
 </template>
 
@@ -343,6 +399,7 @@ onMounted(async () => {
   gap: var(--space-3);
   width: 100%;
 }
+.vocab-admin__audio-list{display:grid;width:100%;gap:10px}.vocab-admin__audio-list article{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid var(--border);border-radius:10px}.vocab-admin__audio-list audio{width:250px;max-width:45%}.vocab-admin__audio-add{display:flex;gap:10px}
 
 @media (max-width: 900px) {
   .vocab-admin__edit-grid,
