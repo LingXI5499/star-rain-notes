@@ -170,3 +170,21 @@
 .base-layout .home-hero__intro { animation: home-fade-up .5s var(--ease-out) .22s both; }
 .base-layout .home-hero__actions { animation: home-fade-up .5s var(--ease-out) .28s both; }
 .base-layout .home-hero__note { animation: home-fade-up .5s var(--ease-out) .34s both; }
+
+/* 首页 Hero ambient（§8.1）：柔和光晕 + 极淡 grid，透明度低、不污染文字 */
+.base-layout .home-hero {
+  overflow: hidden;
+}
+.base-layout .home-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: .14;
+  background-image:
+    radial-gradient(52% 42% at 14% 34%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
+    radial-gradient(46% 40% at 86% 20%, color-mix(in srgb, var(--primary) 26%, transparent), transparent 72%),
+    linear-gradient(color-mix(in srgb, var(--text-primary) 5%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--text-primary) 5%, transparent) 1px, transparent 1px);
+  background-size: auto, auto, 42px 42px, 42px 42px;
+}
