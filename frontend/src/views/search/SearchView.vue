@@ -129,7 +129,11 @@ onBeforeUnmount(() => {
 
 <template>
   <section class="search-page">
-    <h1 class="search-page__title">搜索</h1>
+    <header class="search-page__hero">
+      <p class="public-eyebrow">DISCOVER · KNOWLEDGE INDEX</p>
+      <h1 class="search-page__title">搜索知识坐标</h1>
+      <p>在教程、英语学习、博客与作品之间，快速找到已经沉淀的内容。</p>
+    </header>
 
     <div class="search-page__bar">
       <el-input
@@ -155,9 +159,10 @@ onBeforeUnmount(() => {
       </button>
     </div>
 
-    <div v-if="loading" class="search-page__state">加载中…</div>
-    <div v-else-if="error" class="search-page__state">搜索失败，请稍后重试。</div>
-    <div v-else-if="searched && total === 0" class="search-page__state">未找到相关内容</div>
+    <div v-if="loading" class="search-page__state"><span aria-hidden="true">✦</span><strong>正在搜索知识库…</strong></div>
+    <div v-else-if="error" class="search-page__state"><span aria-hidden="true">!</span><strong>搜索失败，请稍后重试。</strong></div>
+    <div v-else-if="searched && total === 0" class="search-page__state"><span aria-hidden="true">○</span><strong>没有找到相关内容</strong><small>尝试缩短关键词或切换内容类型。</small></div>
+    <div v-else-if="!searched" class="search-page__guide"><span>⌘ K</span><div><strong>从一个关键词开始</strong><p>支持标题与摘要检索，至少输入两个字符。</p></div></div>
     <template v-else-if="searched">
       <p class="search-page__meta">
         共 {{ total }} 条结果
@@ -187,22 +192,35 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
+.search-page{max-width:1000px;margin:auto;padding:34px 0 90px}.search-page__hero{position:relative;padding:44px 0 38px;border-bottom:1px solid var(--border)}.search-page__hero::after{position:absolute;right:2%;bottom:25px;width:140px;height:70px;border-top:1px solid color-mix(in srgb,var(--primary) 42%,transparent);border-radius:50%;content:''}.search-page__hero>p:last-child{max-width:650px;color:var(--text-secondary);font-size:14px;line-height:1.8}
 .search-page__title {
-  font-size: 42px;
-  line-height: 50px;
-  margin-bottom: var(--space-8);
+  margin: 10px 0 12px;
+  font-size: clamp(38px,6vw,66px);
+  line-height: 1.08;
+  letter-spacing: -.055em;
 }
 
 .search-page__bar {
-  max-width: 640px;
-  margin-bottom: var(--space-5);
+  max-width: 760px;
+  margin: 30px 0 var(--space-5);
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-sm);
 }
+.search-page__bar :deep(.el-input__wrapper){min-height:48px;border-radius:11px;background:var(--bg-elevated);box-shadow:none!important}.search-page__bar :deep(.el-input__inner){font-size:15px}
 
 .search-page__filters {
   display: flex;
   gap: var(--space-2);
   margin-bottom: var(--space-6);
+  overflow-x:auto;
+  padding-bottom:2px;
+  scrollbar-width:none;
+  -ms-overflow-style:none;
 }
+.search-page__filters::-webkit-scrollbar{display:none}
 
 .search-page__chip {
   padding: var(--space-2) var(--space-4);
@@ -221,9 +239,14 @@ onBeforeUnmount(() => {
 }
 
 .search-page__state {
-  color: var(--text-muted);
-  padding: var(--space-8) 0;
+  display:grid;
+  min-height:260px;
+  place-content:center;
+  gap:7px;
+  color:var(--text-muted);
+  text-align:center;
 }
+.search-page__state>span{color:var(--accent);font:700 34px var(--font-mono)}.search-page__state>strong{color:var(--text-primary);font-size:17px}.search-page__state>small{font-size:12px}.search-page__guide{display:flex;align-items:center;gap:18px;min-height:180px;padding:24px;border:1px dashed var(--border-strong);border-radius:18px;background:color-mix(in srgb,var(--bg-surface) 50%,transparent)}.search-page__guide>span{display:grid;width:64px;height:52px;place-items:center;border:1px solid var(--border);border-radius:12px;color:var(--primary);background:var(--bg-surface);font:700 13px var(--font-mono);box-shadow:var(--shadow-xs)}.search-page__guide strong{font-size:17px}.search-page__guide p{color:var(--text-muted);font-size:12px}
 
 .search-page__meta {
   font-size: 14px;
@@ -234,17 +257,22 @@ onBeforeUnmount(() => {
 .search-page__results {
   list-style: none;
   display: flex;
-  flex-direction: column;
+  flex-direction:column;
+  gap:10px;
 }
 
 .search-result__link {
   display: flex;
   flex-direction: column;
   gap: 2px;
-  padding: var(--space-4) 0;
-  border-bottom: 1px solid var(--border);
+  padding:18px;
+  border:1px solid var(--border);
+  border-radius:15px;
   color: var(--text-primary);
+  background:var(--bg-surface);
+  transition:transform 160ms ease,border-color 160ms ease,box-shadow 160ms ease;
 }
+.search-result__link:hover{transform:translateY(-2px);border-color:var(--primary);box-shadow:var(--shadow-sm)}
 
 .search-result__type {
   font-size: 12px;
@@ -263,4 +291,5 @@ onBeforeUnmount(() => {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+@media(max-width:600px){.search-page{padding-top:10px}.search-page__hero{padding-top:24px}.search-page__hero::after{display:none}.search-page__filters{margin-inline:-20px;padding-inline:20px}.search-page__chip{flex:none}.search-page__guide{align-items:flex-start}.search-result__summary{white-space:normal;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2}}
 </style>

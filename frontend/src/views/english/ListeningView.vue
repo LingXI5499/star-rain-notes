@@ -5,6 +5,7 @@ import { fetchPublicListeningHome, fetchPublicListenings, type ListeningHome, ty
 import { fetchPublicMeta, type TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 import EnglishModuleHero from '@/components/english/EnglishModuleHero.vue'
+import EditorialMotif from '@/components/visual/EditorialMotif.vue'
 
 const route = useRoute(); const router = useRouter()
 const page = ref<ListeningPage | null>(null); const home = ref<ListeningHome | null>(null)
@@ -43,7 +44,7 @@ onMounted(async()=>{ sync(); try{ const meta=await fetchPublicMeta(); topics.val
     <div v-else v-loading="loading" class="l-center__grid">
       <p v-if="!loading && !page?.items.length" class="l-center__empty">暂无材料。</p>
       <RouterLink v-for="item in page?.items" :key="item.id" :to="`/english/listening/${item.slug}`" class="lc-card">
-        <div class="lc-card__cover"><img v-if="item.coverUrl" :src="item.coverUrl" :alt="item.title" loading="lazy"/><span v-else class="lc-card__fallback">♪</span></div>
+        <div class="lc-card__cover"><img v-if="item.coverUrl" :src="item.coverUrl" :alt="item.title" loading="lazy"/><EditorialMotif v-else kind="english" :seed="`listen-${item.title}`" :label="`${item.title} 的听力封面`" /></div>
         <div class="lc-card__body"><div class="lc-card__meta"><CefrBadge :level="item.cefrLevel"/><span class="lc-card__level">{{levelLabels[item.listeningLevel]}}</span></div>
           <h2 class="lc-card__title">{{item.title}}</h2><p class="lc-card__summary">{{item.summary}}</p>
           <div class="lc-card__tags"><span v-for="t in item.tags" :key="t.id" class="lc-card__tag">{{t.name}}</span></div>

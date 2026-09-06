@@ -4,6 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { fetchPublicReadings, fetchPublicReadingHome, type ReadingPage } from '@/api/reading'
 import { fetchPublicMeta, type CefrLevel, type TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
+import EditorialMotif from '@/components/visual/EditorialMotif.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -106,7 +107,7 @@ onMounted(async () => {
       <RouterLink v-for="article in page?.items" :key="article.id" :to="`/english/reading/${article.slug}`" class="article-card">
         <div class="article-card__cover">
           <img v-if="article.coverUrl" :src="article.coverUrl" :alt="article.title" loading="lazy" />
-          <span v-else class="article-card__cover-fallback"><i>{{ levelLabels[article.readingLevel]?.[0] ?? '读' }}</i><em>{{ article.cefrLevel }}</em></span>
+          <EditorialMotif v-else kind="english" :seed="article.title" :label="`${article.title} 的阅读封面`" />
         </div>
         <div class="article-card__body">
           <div class="article-card__meta"><CefrBadge :level="article.cefrLevel" /><span class="article-card__level">{{ levelLabels[article.readingLevel] }}</span></div>
