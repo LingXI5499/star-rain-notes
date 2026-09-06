@@ -5,13 +5,13 @@ const props = defineProps<{ items: string[] }>()
 
 /** Split the list into 2-3 rows, rotating the start so rows read differently. */
 const rows = computed(() => {
-  const list = props.items.length ? props.items : ['JAVA', 'SPRING BOOT', 'MYSQL', 'VUE 3', 'TYPESCRIPT', 'LINUX']
-  const rowCount = list.length > 8 ? 3 : 2
-  const size = Math.ceil(list.length / rowCount)
-  return Array.from({ length: rowCount }, (_, i) => {
-    const rotated = [...list.slice(i), ...list.slice(0, i)]
-    return rotated.slice(0, size)
-  }).filter((row) => row.length)
+  const list = props.items.filter(Boolean)
+  if (!list.length) return []
+  const rowCount = list.length > 8 ? 3 : Math.min(2, list.length)
+  return Array.from({ length: rowCount }, (_, index) => [
+    ...list.slice(index),
+    ...list.slice(0, index),
+  ])
 })
 </script>
 

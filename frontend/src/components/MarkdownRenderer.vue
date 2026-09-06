@@ -70,6 +70,27 @@ const emit = defineEmits<{
 
 const html = ref('')
 const root = ref<HTMLElement | null>(null)
+let copyResetTimer: number | undefined
+
+async function copyCode(button: HTMLButtonElement, content: string) {
+  if (copyResetTimer) window.clearTimeout(copyResetTimer)
+  try {
+    if (!navigator.clipboard?.writeText) throw new Error('clipboard unavailable')
+    await navigator.clipboard.writeText(content)
+    button.textContent = '已复制'
+    button.dataset.state = 'success'
+    button.setAttribute('aria-label', '代码已复制')
+  } catch {
+    button.textContent = '复制失败'
+    button.dataset.state = 'error'
+    button.setAttribute('aria-label', '复制失败，请手动选择代码')
+  }
+  copyResetTimer = window.setTimeout(() => {
+    button.textContent = '复制'
+    delete button.dataset.state
+    button.setAttribute('aria-label', '复制代码')
+  }, 1800)
+}
 
 /** Post-process the sanitized markdown to add a language label + copy button to each code block. */
 async function enhanceCodeBlocks() {
@@ -88,12 +109,7 @@ async function enhanceCodeBlocks() {
     btn.type = 'button'
     btn.textContent = '复制'
     btn.setAttribute('aria-label', '复制代码')
-    btn.addEventListener('click', () => {
-      void navigator.clipboard.writeText(code?.textContent ?? '').then(() => {
-        btn.textContent = '已复制'
-        setTimeout(() => { btn.textContent = '复制' }, 1600)
-      })
-    })
+    btn.addEventListener('click', () => void copyCode(btn, code?.textContent ?? ''))
     const head = document.createElement('div')
     head.className = 'code-block__head'
     head.append(label, btn)

@@ -1,10 +1,12 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useThemeStore, type ThemeMode } from '@/stores/theme'
 
 const theme = useThemeStore()
 const open = ref(false)
 const root = ref<HTMLElement | null>(null)
+const trigger = ref<HTMLButtonElement | null>(null)
+const optionButtons = ref<HTMLButtonElement[]>([])
 
 const options: Array<{ value: ThemeMode; label: string; hint: string }> = [
   { value: 'system', label: '自动', hint: '跟随系统' },
@@ -12,13 +14,41 @@ const options: Array<{ value: ThemeMode; label: string; hint: string }> = [
   { value: 'dark', label: '夜间', hint: '' },
 ]
 
-function toggle() { open.value = !open.value }
-function select(mode: ThemeMode) { theme.setMode(mode); open.value = false }
+async function toggle() {
+  open.value = !open.value
+  if (open.value) {
+    await nextTick()
+    const activeIndex = options.findIndex((option) => option.value === theme.mode)
+    optionButtons.value[activeIndex]?.focus()
+  }
+}
+function close(restoreFocus = false) {
+  open.value = false
+  if (restoreFocus) nextTick(() => trigger.value?.focus())
+}
+function select(mode: ThemeMode) { theme.setMode(mode); close(true) }
+function setOptionRef(element: unknown, index: number) {
+  if (element instanceof HTMLButtonElement) optionButtons.value[index] = element
+}
 function onClickOutside(event: MouseEvent) {
-  if (root.value && !root.value.contains(event.target as Node)) open.value = false
+  if (root.value && !root.value.contains(event.target as Node)) close()
 }
 function onKeydown(event: KeyboardEvent) {
-  if (event.key === 'Escape') open.value = false
+  if (!open.value) return
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    close(true)
+    return
+  }
+  if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp' && event.key !== 'Home' && event.key !== 'End') return
+  event.preventDefault()
+  const focused = optionButtons.value.indexOf(document.activeElement as HTMLButtonElement)
+  let next = focused
+  if (event.key === 'Home') next = 0
+  else if (event.key === 'End') next = options.length - 1
+  else if (event.key === 'ArrowDown') next = (focused + 1 + options.length) % options.length
+  else next = (focused - 1 + options.length) % options.length
+  optionButtons.value[next]?.focus()
 }
 onMounted(() => {
   document.addEventListener('click', onClickOutside)
@@ -33,6 +63,7 @@ onBeforeUnmount(() => {
 <template>
   <div ref="root" class="theme-control">
     <button
+      ref="trigger"
       class="theme-control__trigger"
       type="button"
       :aria-label="open ? '关闭主题选择' : '切换主题'"
@@ -52,8 +83,9 @@ onBeforeUnmount(() => {
       <div v-if="open" class="theme-control__pop" role="menu" aria-label="主题">
         <span class="theme-control__title">主题</span>
         <button
-          v-for="option in options"
+          v-for="(option, index) in options"
           :key="option.value"
+          :ref="(element) => setOptionRef(element, index)"
           role="menuitemradio"
           type="button"
           class="theme-control__item"

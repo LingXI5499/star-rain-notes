@@ -1,239 +1,143 @@
 /**
- * 公开前台 V2 主题层 —— 星轨纸境 · Starfall Editorial
- *
- * 与全局 `tokens.css` 解耦：这些 token 只作用于公开前台根容器 `.base-layout`，
- * 从而在「公开前台 → V2 / 后台 Admin → 保持当前视觉」之间划清边界。
- * 不删除、不改写 `tokens.css`。
- *
- * 视觉主题只有 DAY / NIGHT 两套；用户偏好仍保留 light/dark/system，
- * system 仅解析到两套之一。
+ * 星轨纸境 · Starfall Editorial
+ * Public-only theme layer. Every visual token is scoped to `.base-layout`
+ * so the admin application continues to use the frozen Inkspace tokens.
  */
-
-/* ---------------------- DAY ---------------------- */
 .base-layout {
-  min-height: 100vh;
-  background: var(--bg-page);
-  color: var(--text-primary);
-
-  /* 纸张 · 柔和自然光 */
-  --bg-page: #f6f7f3;
-  --bg-surface: #ffffff;
-  --bg-elevated: #fcfcfa;
-  --bg-subtle: #eef1ec;
-
-  --text-primary: #111513;
-  --text-secondary: #4f5853;
-  --text-muted: #68716c;
-
-  --primary: #285a50;
-  --primary-hover: #204b43;
-  --primary-soft: #dce8e3;
-
-  --accent: #9f5734;
-  --accent-soft: #f3e5dc;
-
-  --border: #dde2dd;
-  --border-strong: #c4ccc6;
-
-  --shadow-xs: 0 1px 2px rgb(19 35 29 / 0.04);
-  --shadow-sm: 0 8px 24px rgb(19 35 29 / 0.06);
-  --shadow-md: 0 18px 48px rgb(19 35 29 / 0.09);
-  --shadow-floating: 0 28px 80px rgb(19 35 29 / 0.12);
-
-  /* Motion */
+  --bg-page: #f4f3ed;
+  --bg-surface: #fffefa;
+  --bg-elevated: #faf9f4;
+  --bg-subtle: #ebece6;
+  --text-primary: #111814;
+  --text-secondary: #4e5b55;
+  --text-muted: #707a75;
+  --primary: #24584d;
+  --primary-hover: #18463d;
+  --primary-soft: #dde9e3;
+  --accent: #a85831;
+  --accent-soft: #f1dfd4;
+  --border: #daddd6;
+  --border-strong: #bfc7c0;
+  --paper-line: color-mix(in srgb,var(--primary) 8%,transparent);
+  --shadow-xs: 0 1px 2px rgb(20 38 31 / .04);
+  --shadow-sm: 0 10px 28px rgb(20 38 31 / .07);
+  --shadow-md: 0 20px 54px rgb(20 38 31 / .10);
+  --shadow-floating: 0 28px 80px rgb(20 38 31 / .15);
+  --shadow-hero: 0 34px 90px rgb(20 38 31 / .13);
+  --radius-card: 20px;
+  --radius-hero: 30px;
   --motion-fast: 140ms;
   --motion-base: 220ms;
-  --motion-slow: 420ms;
-  --ease-standard: cubic-bezier(.2, .8, .2, 1);
-  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --motion-slow: 480ms;
+  --ease-standard: cubic-bezier(.2,.8,.2,1);
+  --ease-out: cubic-bezier(.16,1,.3,1);
+  --font-mono: 'SFMono-Regular',Consolas,'Liberation Mono',monospace;
+  min-height: 100vh;
+  color: var(--text-primary);
+  background:
+    linear-gradient(90deg,transparent calc(50% - 1px),var(--paper-line) 50%,transparent calc(50% + 1px)) 50% 0/100% 100%,
+    radial-gradient(70% 42% at 82% 4%,rgb(168 88 49 / .075),transparent 68%),
+    var(--bg-page);
 }
 
-/* ---------------------- NIGHT ---------------------- */
 [data-theme='dark'] .base-layout {
-  /* 深色夜空 · 极淡星轨 */
-  --bg-page: #0e1110;
-  --bg-surface: #151918;
-  --bg-elevated: #191e1c;
-  --bg-subtle: #1e2421;
-
-  --text-primary: #f2f4f1;
-  --text-secondary: #b7bfb9;
-  --text-muted: #8d9891;
-
-  --primary: #7eb2a3;
-  --primary-hover: #98c4b7;
-  --primary-soft: #1f342e;
-
-  --accent: #d48a62;
-  --accent-soft: #34241d;
-
-  --border: #29302c;
-  --border-strong: #3b4540;
-
-  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.15);
-  --shadow-sm: 0 8px 24px rgb(0 0 0 / 0.18);
-  --shadow-md: 0 18px 48px rgb(0 0 0 / 0.24);
-  --shadow-floating: 0 28px 80px rgb(0 0 0 / 0.34);
+  --bg-page: #0c1210;
+  --bg-surface: #131a17;
+  --bg-elevated: #18211d;
+  --bg-subtle: #1d2823;
+  --text-primary: #f0f4f1;
+  --text-secondary: #b1bbb5;
+  --text-muted: #8b9790;
+  --primary: #82b8a8;
+  --primary-hover: #9acbbb;
+  --primary-soft: #1d3830;
+  --accent: #d68b62;
+  --accent-soft: #36241c;
+  --border: #2a3530;
+  --border-strong: #435149;
+  --paper-line: rgb(130 184 168 / .045);
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / .18);
+  --shadow-sm: 0 10px 28px rgb(0 0 0 / .22);
+  --shadow-md: 0 20px 54px rgb(0 0 0 / .30);
+  --shadow-floating: 0 28px 80px rgb(0 0 0 / .42);
+  --shadow-hero: 0 34px 100px rgb(0 0 0 / .38);
+  background:
+    linear-gradient(90deg,transparent calc(50% - 1px),var(--paper-line) 50%,transparent calc(50% + 1px)) 50% 0/100% 100%,
+    radial-gradient(65% 40% at 83% 2%,rgb(126 178 163 / .085),transparent 70%),
+    var(--bg-page);
 }
 
-/* ---------------------- Prose token（阅读区 V2） ---------------------- */
-.base-layout,
-[data-theme='dark'] .base-layout {
-  --prose-font-size: 17px;
-  --prose-line-height: 1.85;
-  --prose-max-width: 780px;
-  --prose-heading-weight: 650;
-}
+.base-layout__main { position: relative; }
+.base-layout :where(a,button,input,select,textarea):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+.base-layout :where(.public-interactive,.editorial-card,.public-button) { transition: color var(--motion-fast) var(--ease-standard),background-color var(--motion-fast) var(--ease-standard),border-color var(--motion-fast) var(--ease-standard),box-shadow var(--motion-base) var(--ease-standard),transform var(--motion-base) var(--ease-out); }
+.base-layout .public-eyebrow { margin: 0; color: var(--accent); font: 750 10px/1.5 var(--font-mono); letter-spacing: .18em; text-transform: uppercase; }
+.base-layout .public-display { font-size: clamp(44px,7vw,92px); line-height: .98; letter-spacing: -.065em; }
+.base-layout .public-section-title { font-size: clamp(28px,3.8vw,48px); line-height: 1.14; letter-spacing: -.045em; }
 
-/* ---------------------- 轻量交互反馈（微位移 / opacity / border / shadow） ---------------------- */
-.base-layout button,
-.base-layout a,
-.base-layout .interactive {
-  transition:
-    color var(--motion-fast) var(--ease-standard),
-    background-color var(--motion-fast) var(--ease-standard),
-    border-color var(--motion-fast) var(--ease-standard),
-    opacity var(--motion-fast) var(--ease-standard),
-    box-shadow var(--motion-base) var(--ease-standard),
-    transform var(--motion-base) var(--ease-out);
-}
+.base-layout .markdown-body { max-width: 780px; font-size: 17px; line-height: 1.88; }
+.base-layout .markdown-body p { margin-bottom: 1.45em; }
+.base-layout .markdown-body h2 { margin-top: 2.8em; padding-bottom: .32em; border-bottom: 1px solid var(--border); scroll-margin-top: calc(var(--header-height) + 26px); }
+.base-layout .markdown-body h3 { margin-top: 2.15em; scroll-margin-top: calc(var(--header-height) + 26px); }
+.base-layout .markdown-body img { height: auto; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
+.base-layout .markdown-body table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+.base-layout .markdown-body blockquote { border-left-color: var(--accent); background: color-mix(in srgb,var(--accent-soft) 52%,transparent); }
 
-/* 阅读区保持安静：正文容器不强加进入动画 */
-.base-layout .markdown-body,
-.base-layout .prose {
-  font-size: var(--prose-font-size);
-  line-height: var(--prose-line-height);
-  max-width: var(--prose-max-width);
-}
+.base-layout .code-block { position: relative; margin: 0 0 var(--space-6); }
+.base-layout .code-block__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; padding: 6px 11px 6px 14px; border: 1px solid var(--border); border-bottom: 0; border-radius: 13px 13px 0 0; color: var(--text-muted); background: var(--bg-elevated); }
+.base-layout .code-block__label { font: 650 10px/1 var(--font-mono); letter-spacing: .09em; text-transform: uppercase; }
+.base-layout .code-block__copy { min-height: 28px; padding: 3px 9px; border: 1px solid transparent; border-radius: 8px; color: var(--text-secondary); background: transparent; cursor: pointer; font-size: 11px; }
+.base-layout .code-block__copy:hover { border-color: var(--border); color: var(--primary); background: var(--bg-subtle); }
+.base-layout .code-block__copy[data-state='success'] { color: var(--primary); background: var(--primary-soft); }
+.base-layout .code-block__copy[data-state='error'] { color: var(--accent); background: var(--accent-soft); }
+.base-layout .code-block pre { margin: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
 
-/* 阅读品质（§10.4 / §31）：段落节奏 + H2 上边距 + 适度分隔线 */
-.base-layout .markdown-body p {
-  margin-bottom: var(--space-5);
+/* English is one product family: each tool keeps its own metaphor while
+   sharing the same editorial rhythm, controls and quiet paper surfaces. */
+.base-layout :where(.english-hub,.vocab,.words,.study,.grammar-home,.reading-center,.l-center,.writing,.bundles-page,.insights-page) {
+  width: 100%;
+  min-width: 0;
 }
-.base-layout .markdown-body h2 {
-  margin-top: calc(var(--space-9) * 1.2);
-  padding-bottom: var(--space-2);
-  border-bottom: 1px solid var(--border);
-  scroll-margin-top: calc(var(--header-height) + var(--space-6));
-}
-
-/* 代码块（§10.4）：语言标签 + copy 按钮 */
-.base-layout .code-block {
+.base-layout :where(.vocab__hero,.words__header,.study__header,.grammar-hero,.reading-center__hero,.writing>header,.bundles-page>header,.insights-hero) {
   position: relative;
-  margin: 0 0 var(--space-5);
 }
-.base-layout .code-block__head {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--space-3);
-  padding: 6px 12px;
-  background: var(--bg-subtle);
-  border: 1px solid var(--border);
-  border-bottom: 0;
-  border-radius: var(--radius-md) var(--radius-md) 0 0;
-  color: var(--text-muted);
+.base-layout :where(.vocab__hero,.reading-center__hero,.writing>header,.bundles-page>header,.insights-hero)::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: clamp(84px,18vw,240px);
+  height: 1px;
+  background: linear-gradient(90deg,transparent,var(--accent));
 }
-.base-layout .code-block__label {
-  font: 600 11px var(--font-mono, monospace);
-  letter-spacing: .06em;
-  text-transform: uppercase;
+.base-layout :where(.vocab__card,.article-card,.lc-card,.writing .card,.pr-public-card,.metrics article,.panel) {
+  box-shadow: var(--shadow-xs);
+  transition: transform var(--motion-base) var(--ease-out),border-color var(--motion-fast) var(--ease-standard),box-shadow var(--motion-base) var(--ease-standard);
 }
-.base-layout .code-block__copy {
-  border: 0;
-  background: transparent;
-  color: var(--text-secondary);
-  cursor: pointer;
-  font-size: 12px;
+.base-layout :where(.vocab__card,.article-card,.lc-card,.writing .card,.pr-public-card):hover {
+  transform: translateY(-4px);
+  border-color: color-mix(in srgb,var(--primary) 48%,var(--border));
+  box-shadow: var(--shadow-sm);
 }
-.base-layout .code-block__copy:hover {
-  color: var(--primary);
+.base-layout :where(.article-card__cover,.lc-card__cover) .editorial-motif { width: 100%; height: 100%; min-height: 168px; border: 0; border-radius: 0; }
+.base-layout :where(.reading-detail__main,.ld__main,.prd__main,.writing-detail main,.grammar-reader>article) {
+  min-width: 0;
 }
-.base-layout .code-block pre {
-  margin: 0;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+.base-layout audio { accent-color: var(--primary); }
+.base-layout :where(.reading-detail__left,.reading-detail__right,.ld__left,.ld__right,.prd__right,.course-nav,.page-outline) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
-/* About Tech Flow 条 */
-.base-layout .about-techflow {
-  padding: var(--space-7) 0 var(--space-3);
-  border-bottom: 1px solid var(--border);
+[data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity var(--motion-slow) var(--ease-out),transform var(--motion-slow) var(--ease-out); }
+[data-reveal].is-revealed { opacity: 1; transform: none; }
+
+@media (max-width: 768px) {
+  .base-layout { background: var(--bg-page); }
+  .base-layout .markdown-body { font-size: 16px; line-height: 1.82; }
+  .base-layout .markdown-body h2 { font-size: 27px; }
+  .base-layout :where(.vocab__card,.article-card,.lc-card,.writing .card,.pr-public-card):hover { transform: none; }
 }
 
-/* About Career Snapshot / Evidence */
-.base-layout .about-career {
-  padding: var(--space-7) 0 var(--space-2);
-}
-.base-layout .about-evidence {
-  padding: var(--space-8) 0;
-}
-.base-layout .about-evidence > header span {
-  color: var(--accent);
-  font: 700 10px var(--font-mono, monospace);
-  letter-spacing: .16em;
-}
-.base-layout .about-evidence > header h2 {
-  margin: var(--space-2) 0 var(--space-1);
-  font-size: 28px;
-  letter-spacing: -.02em;
-}
-.base-layout .about-evidence > header p {
-  margin: 0 0 var(--space-6);
-  color: var(--text-secondary);
-  font-size: 13px;
-}
-
-/* 公开前台无障碍（A11y §23.2 / §23.3） */
-.base-layout :focus-visible {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
-@media (prefers-reduced-motion: reduce) {
-  .base-layout { scroll-behavior: auto; }
-}
-
-/* Section reveal（§7.3 / §7.4）：仅用于列表/外壳，不用于阅读正文 */
-[data-reveal] {
-  opacity: 0;
-  transform: translateY(12px);
-  transition: opacity var(--motion-slow, 420ms) var(--ease-out), transform var(--motion-slow, 420ms) var(--ease-out);
-}
-[data-reveal].is-revealed {
-  opacity: 1;
-  transform: none;
-}
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; transition: none; }
-}
-
-/* 首页 Hero 加载序列（§8.2）：仅首屏，reduced-motion 由全局规则静音 */
-@keyframes home-fade-up {
-  from { opacity: 0; transform: translateY(14px); }
-  to { opacity: 1; transform: none; }
-}
-.base-layout .home-hero .home-kicker { animation: home-fade-up .5s var(--ease-out) .0s both; }
-.base-layout .home-hero h1 { animation: home-fade-up .5s var(--ease-out) .07s both; }
-.base-layout .home-hero__english { animation: home-fade-up .5s var(--ease-out) .12s both; }
-.base-layout .home-hero h2 { animation: home-fade-up .5s var(--ease-out) .17s both; }
-.base-layout .home-hero__intro { animation: home-fade-up .5s var(--ease-out) .22s both; }
-.base-layout .home-hero__actions { animation: home-fade-up .5s var(--ease-out) .28s both; }
-.base-layout .home-hero__note { animation: home-fade-up .5s var(--ease-out) .34s both; }
-
-/* 首页 Hero ambient（§8.1）：柔和光晕 + 极淡 grid，透明度低、不污染文字 */
-.base-layout .home-hero {
-  overflow: hidden;
-}
-.base-layout .home-hero::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: .14;
-  background-image:
-    radial-gradient(52% 42% at 14% 34%, color-mix(in srgb, var(--accent) 22%, transparent), transparent 70%),
-    radial-gradient(46% 40% at 86% 20%, color-mix(in srgb, var(--primary) 26%, transparent), transparent 72%),
-    linear-gradient(color-mix(in srgb, var(--text-primary) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in srgb, var(--text-primary) 5%, transparent) 1px, transparent 1px);
-  background-size: auto, auto, 42px 42px, 42px 42px;
 }

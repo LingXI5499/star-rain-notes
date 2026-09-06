@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 
-const props = defineProps<{ seed?: string; label?: string }>()
+const props = withDefaults(defineProps<{ seed?: string; label?: string; kind?: 'tutorial' | 'blog' | 'portfolio' | 'english' | 'general' }>(), { kind: 'general' })
 
 const motif = computed(() => {
-  const key = props.seed || props.label || 'general'
+  const key = `${props.kind}:${props.seed || props.label || 'general'}`
   let h = 0
   for (const ch of key) h = (h * 31 + ch.charCodeAt(0)) >>> 0
   const variants = ['grid', 'network', 'constellation', 'editorial', 'matrix'] as const
@@ -15,7 +15,7 @@ const picked = computed(() => motif.value)
 </script>
 
 <template>
-  <div class="editorial-motif" :data-motif="picked" role="img" :aria-label="label || '知识封面'">
+  <div class="editorial-motif" :data-motif="picked" :data-kind="kind" role="img" :aria-label="label || '知识封面'">
     <svg viewBox="0 0 220 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
       <!-- Grid -->
       <template v-if="picked === 'grid'">
@@ -58,6 +58,8 @@ const picked = computed(() => motif.value)
         </g>
       </template>
     </svg>
+    <span class="editorial-motif__kind" aria-hidden="true">{{ kind.toUpperCase() }}</span>
+    <span class="editorial-motif__mark" aria-hidden="true">✦</span>
   </div>
 </template>
 
@@ -66,9 +68,7 @@ const picked = computed(() => motif.value)
   position: relative;
   overflow: hidden;
   height: 100%;
-  background:
-    radial-gradient(120% 90% at 15% 10%, color-mix(in srgb, var(--primary) 14%, transparent), transparent 55%),
-    linear-gradient(160deg, var(--bg-elevated), var(--bg-subtle));
+  background: radial-gradient(110% 85% at 15% 8%,color-mix(in srgb,var(--motif-accent,var(--primary)) 22%,transparent),transparent 56%),linear-gradient(155deg,var(--bg-elevated),var(--bg-subtle));
 }
 .editorial-motif svg {
   position: absolute;
@@ -76,4 +76,11 @@ const picked = computed(() => motif.value)
   width: 100%;
   height: 100%;
 }
+.editorial-motif[data-kind='tutorial'] { --motif-accent: var(--primary); --motif-node: var(--primary); }
+.editorial-motif[data-kind='blog'] { --motif-accent: var(--accent); --motif-node: var(--accent); }
+.editorial-motif[data-kind='portfolio'] { --motif-accent: color-mix(in srgb,var(--primary) 62%,var(--accent)); }
+.editorial-motif[data-kind='english'] { --motif-accent: color-mix(in srgb,var(--accent) 65%,var(--primary)); }
+.editorial-motif::after { content:""; position:absolute; inset:0; background:linear-gradient(115deg,transparent 48%,color-mix(in srgb,var(--bg-surface) 30%,transparent)); pointer-events:none; }
+.editorial-motif__kind { position:absolute; left:14px; bottom:12px; z-index:1; color:var(--text-secondary); font:700 9px/1 var(--font-mono,monospace); letter-spacing:.16em; }
+.editorial-motif__mark { position:absolute; top:12px; right:14px; z-index:1; color:var(--motif-accent,var(--accent)); font-size:14px; }
 </style>
