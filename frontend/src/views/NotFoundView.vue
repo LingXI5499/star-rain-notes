@@ -1,24 +1,34 @@
 <script setup lang="ts">
 import { RouterLink } from 'vue-router'
+import StarfallScene from '@/components/visual/StarfallScene.vue'
 </script>
 
 <template>
   <section class="not-found">
-    <div class="not-found__ambient" aria-hidden="true"></div>
-    <p class="not-found__eyebrow">LOST IN THE STARS</p>
-    <h1 class="not-found__code">404</h1>
-    <p class="not-found__body">这颗知识星还没有被记录。</p>
-    <RouterLink class="not-found__link" to="/">返回首页 <span aria-hidden="true">→</span></RouterLink>
+    <div class="not-found__scene"><StarfallScene label="未找到页面的星雨远山场景" /></div>
+    <div class="not-found__copy">
+      <p class="not-found__eyebrow">LOST IN THE STARS</p>
+      <h1 class="not-found__code">404</h1>
+      <p class="not-found__body">这颗知识星还没有被记录。</p>
+      <p class="not-found__hint">地址可能已经改变，也可能只是暂时偏离了知识轨道。</p>
+      <RouterLink class="not-found__link" to="/">返回首页 <span aria-hidden="true">→</span></RouterLink>
+    </div>
   </section>
 </template>
 
 <style scoped>
 .not-found {
   position: relative;
-  padding-block: var(--space-13);
-  text-align: center;
+  min-height: min(700px, calc(100vh - var(--header-height) - 120px));
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(300px, .85fr);
+  align-items: center;
+  gap: clamp(28px, 6vw, 88px);
+  padding-block: clamp(28px, 7vw, 80px);
   overflow: hidden;
 }
+.not-found__scene { min-width: 0; }
+.not-found__copy { position: relative; z-index: 1; }
 .not-found__eyebrow {
   margin: 0 0 var(--space-3);
   color: var(--accent);
@@ -33,9 +43,12 @@ import { RouterLink } from 'vue-router'
   margin-bottom: var(--space-4);
 }
 .not-found__body {
+  font-size: clamp(20px, 2.4vw, 30px);
+  font-weight: 680;
   color: var(--text-secondary);
-  margin-bottom: var(--space-6);
+  margin-bottom: 8px;
 }
+.not-found__hint { margin: 0 0 28px; color: var(--text-muted); line-height: 1.7; }
 .not-found__link {
   display: inline-flex;
   align-items: center;
@@ -51,31 +64,8 @@ import { RouterLink } from 'vue-router'
   background: var(--primary);
   color: var(--bg-page);
 }
-/* 低强度星点 ambient（§22），透明度低、Day/Night 自适应 */
-.not-found__ambient {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: .5;
-  background-image:
-    radial-gradient(1.5px 1.5px at 12% 28%, color-mix(in srgb, var(--text-primary) 55%, transparent), transparent),
-    radial-gradient(1px 1px at 24% 64%, color-mix(in srgb, var(--accent) 55%, transparent), transparent),
-    radial-gradient(2px 2px at 40% 35%, color-mix(in srgb, var(--text-primary) 45%, transparent), transparent),
-    radial-gradient(1px 1px at 58% 72%, color-mix(in srgb, var(--text-primary) 40%, transparent), transparent),
-    radial-gradient(1.5px 1.5px at 70% 30%, color-mix(in srgb, var(--accent) 45%, transparent), transparent),
-    radial-gradient(1px 1px at 84% 58%, color-mix(in srgb, var(--text-primary) 50%, transparent), transparent),
-    radial-gradient(2px 2px at 92% 84%, color-mix(in srgb, var(--primary) 42%, transparent), transparent);
-}
-@media (prefers-reduced-motion: no-preference) {
-  .not-found__ambient {
-    animation: not-found-drift 26s linear infinite alternate;
-  }
-}
-@keyframes not-found-drift {
-  from { transform: translateY(-6px); }
-  to { transform: translateY(10px); }
-}
-@media (prefers-reduced-motion: reduce) {
-  .not-found__ambient { animation: none; }
+@media (max-width: 720px) {
+  .not-found { grid-template-columns: 1fr; text-align: center; }
+  .not-found__scene { order: 2; }
 }
 </style>

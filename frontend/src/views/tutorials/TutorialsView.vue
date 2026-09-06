@@ -8,6 +8,7 @@ import {
   type PublicTutorialSummary,
 } from '@/api/tutorial'
 import TutorialCategoryNav from '@/components/TutorialCategoryNav.vue'
+import EditorialMotif from '@/components/visual/EditorialMotif.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -139,8 +140,8 @@ watch(() => route.query.categorySlug, (value) => {
             <div v-if="tutorial.coverUrl" class="tutorial-card__cover">
               <img :src="tutorial.coverUrl" :alt="tutorial.title" loading="lazy" />
             </div>
-            <div v-else class="tutorial-card__cover tutorial-card__cover--placeholder" aria-hidden="true">
-              <span>{{ tutorial.title.replace(/[\s·_-]/g, '').slice(0, 2) }}</span>
+            <div v-else class="tutorial-card__cover tutorial-card__cover--placeholder">
+              <EditorialMotif kind="tutorial" :seed="`${tutorial.categoryName}:${tutorial.title}`" :label="tutorial.title" />
             </div>
             <div class="tutorial-card__body">
               <p class="tutorial-card__category">{{ tutorial.categoryName }}</p>
