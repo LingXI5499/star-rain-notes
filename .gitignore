@@ -30,6 +30,7 @@ Thumbs.db
 .codex-maven-settings.xml
 
 # Local archives, generated deployment packages and historical work copies
+/develop/
 *.jar
 *.zip
 backend/backend/

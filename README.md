@@ -45,9 +45,6 @@ cd frontend && npm run type-check && npm run build
 cd backend  && mvn test
 ```
 
-## 文档索引
+## 本地资料
 
-- `develop/deploy/README-BT.md`：宝塔面板部署指南
-- `develop/deploy/README.md`：手工 Nginx + systemd 部署指南
-
-> 根目录保留当前前后端源码与主说明文档，其余开发、部署和发布资料统一收纳在 `develop/`。
+`develop/` 用于存放本机开发资料、历史版本、部署产物与临时验证文件，已从 Git 提交中排除。根目录只保留当前前后端源码与主说明文档，方便 IDEA 和 VS Code 直接打开运行。
