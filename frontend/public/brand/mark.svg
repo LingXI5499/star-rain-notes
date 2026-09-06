@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" role="img" aria-label="星雨笔录品牌标记：星轨与纸页">
+  <defs>
+    <radialGradient id="focalGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#b86f47" stop-opacity=".38"/>
+      <stop offset="1" stop-color="#b86f47" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+
+  <!-- paper page with folded corner -->
+  <path d="M29 14 H64 L80 30 V80 Q80 88 72 88 H29 Q21 88 21 80 V22 Q21 14 29 14 Z" fill="#fbf7ee"/>
+  <path d="M21 22 C 21 17.6, 24.6 14, 29 14 H64 L80 30" fill="none" stroke="#2a584e" stroke-opacity=".55" stroke-width="1.6" stroke-linejoin="round"/>
+  <path d="M64 14 L80 30 L64 30 Z" fill="#ece2cf"/>
+  <path d="M64 14 L80 30" fill="none" stroke="#2a584e" stroke-opacity=".4" stroke-width="1.2"/>
+  <!-- text rules -->
+  <g stroke="#2a584e" stroke-opacity=".32" stroke-width="1.6" stroke-linecap="round">
+    <path d="M31 46 H63"/>
+    <path d="M31 57 H69"/>
+    <path d="M31 68 H58"/>
+  </g>
+
+  <!-- star trail crossing the page -->
+  <path d="M6 58 C 20 82, 48 84, 62 64 C 72 48, 74 30, 81 16" fill="none" stroke="#b86f47" stroke-opacity=".2" stroke-width="9" stroke-linecap="round"/>
+  <path d="M6 58 C 20 82, 48 84, 62 64 C 72 48, 74 30, 81 16" fill="none" stroke="#b86f47" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- knowledge nodes on the trail -->
+  <g fill="#b86f47" fill-opacity=".55">
+    <circle cx="31.5" cy="76.5" r="2.4"/>
+    <circle cx="49" cy="74.5" r="2.4"/>
+    <circle cx="71" cy="40" r="2.4"/>
+  </g>
+
+  <!-- single warm focal point -->
+  <circle cx="82" cy="17" r="12" fill="url(#focalGlow)"/>
+  <path d="M82 5 L85.4 13.6 L94 17 L85.4 20.4 L82 29 L78.6 20.4 L70 17 L78.6 13.6 Z" fill="#b86f47"/>
+
+  <!-- ambient glints -->
+  <g fill="#b86f47" fill-opacity=".45">
+    <path d="M12 24 L13.4 27.6 L17 29 L13.4 30.4 L12 34 L10.6 30.4 L7 29 L10.6 27.6 Z"/>
+    <path d="M90 52 L91 55 L94 56 L91 57 L90 60 L89 57 L86 56 L89 55 Z"/>
+  </g>
+</svg>

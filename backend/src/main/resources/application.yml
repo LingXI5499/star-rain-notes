@@ -53,7 +53,7 @@ app:
   seo:
     site-origin: ${SEO_SITE_ORIGIN:https://yulanlin.cn}
     frontend-index-path: ${SEO_FRONTEND_INDEX_PATH:}
-    default-share-image: ${SEO_DEFAULT_SHARE_IMAGE:/og-default.svg}
+    default-share-image: ${SEO_DEFAULT_SHARE_IMAGE:/brand/og-default.png}
     index-now-enabled: ${SEO_INDEXNOW_ENABLED:false}
     index-now-key: ${SEO_INDEXNOW_KEY:}
     baidu-enabled: ${SEO_BAIDU_ENABLED:false}

@@ -1,7 +1,9 @@
 /** Central SEO manager for both static route metadata and async content. */
 const SITE_NAME = '星雨笔录'
 const SITE_ORIGIN = 'https://yulanlin.cn'
-const DEFAULT_IMAGE = `${SITE_ORIGIN}/og-default.svg`
+const DEFAULT_IMAGE = `${SITE_ORIGIN}/brand/og-default.png`
+const DEFAULT_FAVICON = '/brand/favicon.svg'
+const DEFAULT_MANIFEST = '/brand/site.webmanifest'
 
 export const DEFAULT_DESCRIPTION = '建立自己的知识世界'
 let siteTagline = DEFAULT_DESCRIPTION
@@ -43,6 +45,29 @@ function upsertMeta(attr: 'name' | 'property', key: string, content: string): vo
 
 function removeMeta(attr: 'name' | 'property', key: string): void {
   document.head.querySelectorAll(`meta[${attr}="${key}"]`).forEach((element) => element.remove())
+}
+
+function upsertHeadLink(rel: string, href: string, marker: string): void {
+  const selector = `link[rel="${rel}"][${marker}]`
+  const matches = Array.from(document.head.querySelectorAll<HTMLLinkElement>(selector))
+  const element = matches.shift() ?? document.createElement('link')
+  if (!element.parentNode) {
+    element.rel = rel
+    element.setAttribute(marker, 'true')
+    document.head.appendChild(element)
+  }
+  element.href = href
+  matches.forEach((duplicate) => duplicate.remove())
+}
+
+/**
+ * Keeps exactly one primary favicon link and one manifest in <head>.
+ * Static `/brand/*` assets are the fallback; a configured favicon media URL
+ * (from `/public/site`) overrides the primary icon link at runtime.
+ */
+export function applyBrandAssets(faviconUrl?: string | null): void {
+  upsertHeadLink('icon', faviconUrl?.trim() || DEFAULT_FAVICON, 'data-brand-icon')
+  upsertHeadLink('manifest', DEFAULT_MANIFEST, 'data-brand-manifest')
 }
 
 function upsertCanonical(href: string): void {

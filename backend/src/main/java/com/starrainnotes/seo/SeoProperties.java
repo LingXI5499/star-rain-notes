@@ -15,7 +15,7 @@ public record SeoProperties(
 
     public SeoProperties {
         siteOrigin = cleanOrigin(siteOrigin);
-        defaultShareImage = blank(defaultShareImage) ? "/og-default.svg" : defaultShareImage.trim();
+        defaultShareImage = blank(defaultShareImage) ? "/brand/og-default.png" : defaultShareImage.trim();
         baiduSite = blank(baiduSite) ? siteOrigin : cleanOrigin(baiduSite);
     }
 

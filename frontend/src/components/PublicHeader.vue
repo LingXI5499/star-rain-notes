@@ -1,10 +1,15 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, onBeforeMount, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
+import { storeToRefs } from 'pinia'
+import { useAppStore } from '@/stores/app'
+import BrandMark from './brand/BrandMark.vue'
 import GlobalSearch from './search/GlobalSearch.vue'
 import ThemeControl from './ui/ThemeControl.vue'
 
 const route = useRoute()
+const appStore = useAppStore()
+const { name, logoUrl } = storeToRefs(appStore)
 const scrolled = ref(false)
 let ticking = false
 
@@ -32,6 +37,7 @@ function onScroll() {
 onBeforeMount(onScroll)
 onMounted(() => {
   window.addEventListener('scroll', onScroll, { passive: true })
+  void appStore.loadBranding()
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', onScroll)
@@ -41,7 +47,11 @@ onBeforeUnmount(() => {
 <template>
   <header class="site-header" :class="{ 'site-header--scrolled': scrolled }">
     <div class="site-header__inner">
-      <RouterLink to="/" class="site-header__brand">星雨笔录</RouterLink>
+      <RouterLink to="/" class="site-header__brand">
+        <img v-if="logoUrl" class="site-header__logo" :src="logoUrl" alt="" aria-hidden="true" />
+        <BrandMark v-else :size="26" decorative />
+        <span>{{ name }}</span>
+      </RouterLink>
 
       <nav class="site-header__nav" aria-label="主导航">
         <RouterLink
@@ -93,10 +103,20 @@ onBeforeUnmount(() => {
 }
 
 .site-header__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
   font-size: 18px;
   font-weight: 700;
   color: var(--text-primary);
   white-space: nowrap;
+}
+
+.site-header__logo {
+  width: 26px;
+  height: 26px;
+  display: block;
+  object-fit: contain;
 }
 
 .site-header__nav {

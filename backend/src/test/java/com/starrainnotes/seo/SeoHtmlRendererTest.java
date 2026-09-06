@@ -16,7 +16,7 @@ class SeoHtmlRendererTest {
     void rendersCanonicalMetadataSemanticBodyAndJsonLd() {
         SeoContentRepository content = mock(SeoContentRepository.class);
         when(content.site()).thenReturn(new SeoContentRepository.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
-        SeoProperties properties = new SeoProperties("https://yulanlin.cn", "", "/og-default.svg", false, "", false, "", "https://yulanlin.cn");
+        SeoProperties properties = new SeoProperties("https://yulanlin.cn", "", "/brand/og-default.png", false, "", false, "", "https://yulanlin.cn");
         SeoHtmlRenderer renderer = new SeoHtmlRenderer(properties, content, new ObjectMapper());
         SeoPage page = new SeoPage("/blog/123", "真实文章", "真实摘要", "index,follow", "article", "Article", null,
                 LocalDateTime.of(2026, 1, 1, 0, 0), LocalDateTime.of(2026, 1, 2, 0, 0),
@@ -36,5 +36,21 @@ class SeoHtmlRendererTest {
         when(content.site()).thenReturn(new SeoContentRepository.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
         SeoHtmlRenderer renderer = new SeoHtmlRenderer(new SeoProperties(null, null, null, false, null, false, null, null), content, new ObjectMapper());
         assertThat(renderer.renderNotFound("/missing")).contains("noindex,nofollow", "页面不存在", "返回首页");
+    }
+
+    @Test
+    void shellBrandAssetsPassThroughToCrawlerHtml() {
+        SeoContentRepository content = mock(SeoContentRepository.class);
+        when(content.site()).thenReturn(new SeoContentRepository.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
+        SeoHtmlRenderer renderer = new SeoHtmlRenderer(new SeoProperties("https://yulanlin.cn", "", null, false, null, false, null, null), content, new ObjectMapper());
+        String html = renderer.render(new SeoPage("/", "星雨笔录", "建立自己的知识世界", "index,follow", "website", "WebSite", null, null, null,
+                "<p>首页</p>", List.of(), Map.of()));
+
+        // Crawler HTML keeps the favicon / manifest brand links from the shell.
+        assertThat(html).contains("rel=\"icon\"", "/brand/favicon");
+        assertThat(html).contains("rel=\"apple-touch-icon\"");
+        assertThat(html).contains("rel=\"manifest\"");
+        // and the default share image migrates to the platform-friendly format
+        assertThat(html).contains("property=\"og:image\" content=\"https://yulanlin.cn/brand/og-default.png\"");
     }
 }

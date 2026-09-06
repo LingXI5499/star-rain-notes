@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import { fetchSiteSettings, updateSiteSettings, type AdminSiteSettings } from '@/api/site'
 import type { ProblemDetail } from '@/api/http'
+import MediaField from '@/components/ui/MediaField.vue'
 import { useUnsavedGuard } from '@/composables/useUnsavedGuard'
 
 const loading = ref(true)
@@ -86,11 +87,11 @@ async function save() {
       <el-form-item label="时区（IANA）">
         <el-input v-model="form.timezone" maxlength="64" placeholder="Asia/Shanghai" />
       </el-form-item>
-      <el-form-item label="Logo 媒体 ID">
-        <el-input-number v-model="form.logoMediaId" :min="1" :controls="false" placeholder="媒体库将在后续任务提供" />
+      <el-form-item label="Logo（从媒体库选择或上传，仅限图片）">
+        <MediaField v-model="form.logoMediaId" asset-type="IMAGE" empty-text="使用默认品牌标记" />
       </el-form-item>
-      <el-form-item label="Favicon 媒体 ID">
-        <el-input-number v-model="form.faviconMediaId" :min="1" :controls="false" placeholder="媒体库将在后续任务提供" />
+      <el-form-item label="Favicon（从媒体库选择或上传，仅限图片）">
+        <MediaField v-model="form.faviconMediaId" asset-type="IMAGE" empty-text="使用默认品牌图标" />
       </el-form-item>
       <el-button type="primary" :loading="saving" @click="save">保存</el-button>
     </el-form>

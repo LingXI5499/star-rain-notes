@@ -12,6 +12,7 @@ import {
 import { fetchAdminTutorials } from '@/api/tutorial'
 import { fetchAdminPosts } from '@/api/blog'
 import { fetchAdminProjects } from '@/api/portfolio'
+import MediaField from '@/components/ui/MediaField.vue'
 import { useUnsavedGuard } from '@/composables/useUnsavedGuard'
 
 interface Option {
@@ -157,8 +158,8 @@ function showError(error: unknown) {
           <el-form-item label="一句话介绍（Headline）">
             <el-input v-model="form.headline" maxlength="255" />
           </el-form-item>
-          <el-form-item label="头像媒体 ID（必须 IMAGE）">
-            <el-input-number v-model="form.avatarMediaId" :min="1" :controls="false" placeholder="媒体库将在后续任务提供" />
+          <el-form-item label="头像（从媒体库选择或上传，仅限图片）">
+            <MediaField v-model="form.avatarMediaId" asset-type="IMAGE" empty-text="未设置头像" />
           </el-form-item>
           <el-form-item label="GitHub URL">
             <el-input v-model="form.githubUrl" maxlength="500" />
