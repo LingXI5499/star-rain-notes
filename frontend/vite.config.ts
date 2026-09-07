@@ -37,6 +37,47 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
       sourcemap: false,
+      rollupOptions: {
+        output: {
+          /**
+           * Keep frequently-changing app code out of heavy vendor buckets so
+           * browser caches survive feature deploys. Element Plus / markdown
+           * stay on their own chunks (admin vs reading routes).
+           */
+          manualChunks(id) {
+            if (!id.includes('node_modules')) return
+            if (
+              id.includes('element-plus') ||
+              id.includes('@element-plus') ||
+              id.includes('@popperjs') ||
+              id.includes('@floating-ui') ||
+              id.includes('@ctrl/tinycolor') ||
+              id.includes('async-validator') ||
+              id.includes('lodash-unified') ||
+              id.includes('memoize-one') ||
+              id.includes('normalize-wheel-es')
+            ) {
+              return 'element-plus'
+            }
+            if (id.includes('vditor')) return 'vditor'
+            if (
+              id.includes('markdown-it') ||
+              id.includes('highlight.js') ||
+              id.includes('dompurify')
+            ) {
+              return 'markdown'
+            }
+            if (
+              id.includes('/vue/') ||
+              id.includes('/vue-router/') ||
+              id.includes('/pinia/') ||
+              id.includes('/axios/')
+            ) {
+              return 'vue-vendor'
+            }
+          },
+        },
+      },
     },
   }
 })

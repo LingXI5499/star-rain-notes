@@ -19,6 +19,18 @@
 .base-layout .article--no-toc.reading-surface .article__reading,.base-layout .reading-focus .article__reading{grid-template-columns:minmax(0,var(--reading-width))}
 .base-layout .reading-focus .article__toc,.base-layout .reading-focus .reader__toc{display:none}
 .base-layout .reading-focus .article__cover,.base-layout .reading-focus .article-hero__tags{display:none}
+.base-layout .reading-focus {
+  --reading-focus-veil: color-mix(in srgb, var(--bg-page) 92%, transparent);
+}
+.base-layout:has(.reading-focus) {
+  background:
+    radial-gradient(55% 40% at 50% 0%, color-mix(in srgb, var(--primary) 6%, transparent), transparent 70%),
+    var(--bg-page);
+}
+.base-layout .reading-focus .reader__sidebar,
+.base-layout .reading-focus .reader__tutorial {
+  opacity: 0.72;
+}
 .base-layout .reader.reading-surface{grid-template-columns:210px minmax(0,var(--reading-width)) 170px;gap:28px}
 .base-layout .reader.reading-focus{grid-template-columns:190px minmax(0,var(--reading-width))}
 .base-layout .reading-surface .reader__sidebar,.base-layout .reading-surface .reader__toc-card,.base-layout .reading-surface .article__toc>:first-child{border:0;border-radius:0;box-shadow:none;background:transparent}

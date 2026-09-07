@@ -131,13 +131,47 @@
 [data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity var(--motion-slow) var(--ease-out),transform var(--motion-slow) var(--ease-out); }
 [data-reveal].is-revealed { opacity: 1; transform: none; }
 
+/* Soft page enter/leave for public RouterView transitions (key = route.name). */
+.page-view-enter-active,
+.page-view-leave-active {
+  transition: opacity var(--motion-base) var(--ease-standard), transform var(--motion-base) var(--ease-out);
+}
+.page-view-enter-from {
+  opacity: 0;
+  transform: translateY(6px);
+}
+.page-view-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
+}
+
+/* Markdown heading anchors: quiet affordance on hover/focus. */
+.base-layout .markdown-body :is(h2, h3, h4) {
+  position: relative;
+}
+.base-layout .markdown-body :is(h2, h3, h4):hover::before,
+.base-layout .markdown-body :is(h2, h3, h4):focus-within::before {
+  content: '#';
+  position: absolute;
+  left: -0.95em;
+  color: var(--accent);
+  font-weight: 600;
+  opacity: 0.55;
+}
+
 @media (max-width: 768px) {
   .base-layout { background: var(--bg-page); }
   .base-layout .markdown-body { font-size: 16px; line-height: 1.82; }
   .base-layout .markdown-body h2 { font-size: 27px; }
+  .base-layout .markdown-body :is(h2, h3, h4):hover::before,
+  .base-layout .markdown-body :is(h2, h3, h4):focus-within::before { content: none; }
   .base-layout :where(.vocab__card,.article-card,.lc-card,.writing .card,.pr-public-card):hover { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
   [data-reveal] { opacity: 1; transform: none; transition: none; }
+  .page-view-enter-active,
+  .page-view-leave-active { transition: none; }
+  .page-view-enter-from,
+  .page-view-leave-to { opacity: 1; transform: none; }
 }
