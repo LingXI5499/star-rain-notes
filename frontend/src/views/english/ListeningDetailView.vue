@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/index.mjs'
 import { checkListeningAnswers, fetchPublicListening, fetchPublicListeningExercises, type ListeningCheckItem, type ListeningExercisePublic, type ListeningItem } from '@/api/listening'
@@ -10,29 +10,40 @@ import ExerciseRunner from '@/components/english/ExerciseRunner.vue'
 import type { OutlineItem } from '@/types'
 import { fetchLearningRecord, saveLearningRecord, type LearningRecord } from '@/api/englishLearning'
 import { applyPageMeta } from '@/lib/seo'
+import { useStableContentSwap } from '@/composables/useStableContentSwap'
 
 const route = useRoute()
 const item = ref<ListeningItem | null>(null)
 const exercises = ref<ListeningExercisePublic[]>([])
 const outline = ref<OutlineItem[]>([])
-const loading = ref(true); const notFound = ref(false)
+const notFound = ref(false)
 const audioEl = ref<HTMLAudioElement | null>(null)
 const currentTime = ref(0); const activeSegment = ref(-1)
 const showTranscript = ref(true); const showTranslation = ref(false)
 const results = ref<Record<number, ListeningCheckItem>>({})
 const learningRecord = ref<LearningRecord | null>(null)
 const levelLabels: Record<number,string> = {1:'语音识别',2:'信息捕获',3:'逻辑理解'}
+const { initialLoading, swapping, begin, isCurrent, finish } = useStableContentSwap()
 
 async function load() {
-  loading.value = true; notFound.value = false
+  const { version } = begin()
+  notFound.value = false
   if (audioEl.value) { audioEl.value.pause(); audioEl.value.currentTime = 0 }
   try {
-    item.value = await fetchPublicListening(String(route.params.slug))
-    exercises.value = await fetchPublicListeningExercises(String(route.params.slug))
+    const next = await fetchPublicListening(String(route.params.slug))
+    const nextExercises = await fetchPublicListeningExercises(String(route.params.slug))
+    if (!isCurrent(version)) return
+    item.value = next
+    exercises.value = nextExercises
     outline.value = []; activeSegment.value = -1; results.value = {}; currentTime.value = 0
-    learningRecord.value = item.value ? await fetchLearningRecord('LISTENING', item.value.id).catch(() => null) : null
-    if (item.value) applyPageMeta({ title: item.value.title, description: item.value.summary, type: 'article', image: item.value.coverUrl, publishedAt: item.value.publishedAt, modifiedAt: item.value.updatedAt })
-  } catch { notFound.value = true } finally { loading.value = false }
+    learningRecord.value = await fetchLearningRecord('LISTENING', next.id).catch(() => null)
+    applyPageMeta({ title: next.title, description: next.summary, type: 'article', image: next.coverUrl, publishedAt: next.publishedAt, modifiedAt: next.updatedAt })
+  } catch {
+    if (!isCurrent(version)) return
+    notFound.value = true
+  } finally {
+    finish(version)
+  }
 }
 
 function seek(seg: { startMs: number }, i: number) {
@@ -76,14 +87,14 @@ onBeforeUnmount(() => { if (audioEl.value) { audioEl.value.pause(); audioEl.valu
 </script>
 
 <template>
-  <section v-if="loading" class="ld-wrap"><p>加载中…</p></section>
-  <section v-else-if="notFound" class="ld-wrap"><p>材料不存在或未发布。</p></section>
-  <section v-else-if="item" class="ld">
+  <section v-if="initialLoading && !item" class="ld-wrap"><p>加载中…</p></section>
+  <section v-else-if="notFound && !item" class="ld-wrap"><p>材料不存在或未发布。</p></section>
+  <section v-else-if="item" class="ld" :class="{ 'is-swapping': swapping }" :aria-busy="swapping">
     <div class="ld__layout">
       <aside class="ld__left"><details open><summary>学习信息</summary><dl><dt>能力目标</dt><dd>{{ levelLabels[item.listeningLevel] }}</dd><dt>CEFR</dt><dd><CefrBadge :level="item.cefrLevel" show-label/></dd><dt>场景</dt><dd>{{ item.tags.filter(t=>t.dimension==='SCENE').map(t=>t.name).join('、')||'—' }}</dd><dt>形式</dt><dd>{{ item.tags.filter(t=>t.dimension==='FORMAT').map(t=>t.name).join('、')||'—' }}</dd><dt>时长</dt><dd>{{ Math.floor(item.durationSeconds/60) }}:{{ String(item.durationSeconds%60).padStart(2,'0') }}</dd><dt v-if="item.sourceName">来源</dt><dd v-if="item.sourceName">{{ item.sourceName }}</dd></dl><div v-if="item.readingPairs.length" class="ld__pairs"><b>配对精读</b><RouterLink v-for="pair in item.readingPairs" :key="pair.readingArticleId" :to="`/english/reading/${pair.readingSlug}`">{{ pair.readingTitle }} →</RouterLink></div></details></aside>
 
       <main class="ld__main">
-        <header class="ld__hero"><img v-if="item.coverUrl" class="ld__cover" :src="item.coverUrl" :alt="item.title"/><div class="ld__meta"><CefrBadge :level="item.cefrLevel"/><span>{{ levelLabels[item.listeningLevel] }}</span></div><h1 class="ld__h1">{{ item.title }}</h1><p class="ld__summary">{{ item.summary }}</p></header>
+        <header class="ld__hero"><img v-if="item.coverUrl" class="ld__cover" :src="item.coverUrl" :alt="item.title" loading="lazy" decoding="async"/><div class="ld__meta"><CefrBadge :level="item.cefrLevel"/><span>{{ levelLabels[item.listeningLevel] }}</span></div><h1 class="ld__h1">{{ item.title }}</h1><p class="ld__summary">{{ item.summary }}</p></header>
 
         <audio ref="audioEl" class="ld__audio" controls preload="metadata" :src="item.audioUrl ?? ''" @timeupdate="onTimeUpdate" @ended="activeSegment = -1"/>
 
@@ -131,7 +142,7 @@ onBeforeUnmount(() => { if (audioEl.value) { audioEl.value.pause(); audioEl.valu
 .ld__layout{display:grid;grid-template-columns:200px minmax(0,1fr) 200px;gap:var(--layout-gap);align-items:start}.ld__left,.ld__right{position:sticky;top:calc(var(--header-height) + var(--space-6))}
 .ld__left dl{display:grid;gap:8px;margin:0}.ld__left dt{font-size:12px;color:var(--text-muted);font-weight:600}.ld__left dd{font-size:13px;color:var(--text-secondary);margin:0}
 .ld__left summary,.ld__right summary{display:none;font-weight:700;cursor:pointer}.ld__pairs{display:grid;gap:7px;margin-top:18px;font-size:12px}.ld__pairs a{color:var(--primary)}
-.ld__main{min-width:0}.ld__hero{margin-bottom:var(--space-5)}.ld__cover{width:100%;max-height:320px;object-fit:cover;border-radius:18px;margin-bottom:18px}.ld__meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}.ld__h1{font-size:32px;margin:0 0 10px}.ld__summary{font-size:16px;color:var(--text-secondary);line-height:1.7}
+.ld__main{min-width:0;transition:opacity var(--motion-fast,140ms) var(--ease-standard,ease)}.ld.is-swapping .ld__main{opacity:.45;pointer-events:none}.ld__hero{margin-bottom:var(--space-5)}.ld__cover{width:100%;max-height:320px;object-fit:cover;border-radius:18px;margin-bottom:18px}.ld__meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}.ld__h1{font-size:32px;margin:0 0 10px}.ld__summary{font-size:16px;color:var(--text-secondary);line-height:1.7}
 .ld__audio{width:100%;margin-bottom:12px}
 .ld__segment-toggles{display:flex;gap:8px;margin-bottom:12px}.ld__segment-toggles button{padding:6px 12px;border:1px solid var(--border);border-radius:999px;background:var(--bg-surface);color:var(--text-secondary);cursor:pointer}
 .ld__segments{display:flex;flex-direction:column;gap:6px;margin-bottom:16px}.ld__segment{display:flex;gap:10px;padding:10px;border:1px solid var(--border);border-radius:10px;cursor:pointer;transition:border-color .15s ease,background-color .15s ease}
@@ -141,5 +152,5 @@ onBeforeUnmount(() => { if (audioEl.value) { audioEl.value.pause(); audioEl.valu
 .ld__nav{display:flex;justify-content:space-between;gap:16px;margin:var(--space-8) 0}.ld-nav{color:var(--primary);font-size:14px;flex:1}.ld-nav.is-empty{color:transparent}
 .ld__complete{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:28px 0;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.ld__complete small,.ld__complete span{display:block;color:var(--text-muted);font-size:10px}.ld__complete strong{display:block;margin:5px 0}.ld__complete button{padding:9px 15px;border:0;border-radius:10px;background:var(--primary);color:white}.ld__complete button:disabled{background:var(--bg-subtle);color:var(--text-muted)}
 @media(max-width:1024px){.ld__layout{grid-template-columns:180px minmax(0,1fr)}.ld__right{display:none}}@media(max-width:720px){.ld__layout{grid-template-columns:1fr}.ld__left,.ld__right{position:static}.ld__right{display:block}.ld__left summary,.ld__right summary{display:list-item}.ld__left details:not([open]) dl,.ld__left details:not([open]) .ld__pairs,.ld__right details:not([open])>*:not(summary){display:none}.ld__left details,.ld__right details{padding:12px 14px;border:1px solid var(--border);border-radius:12px}.ld__h1{font-size:27px}.ld__nav{flex-direction:column}.ld__segment{align-items:flex-start}.ld__complete{align-items:flex-start;flex-direction:column}}
-@media(prefers-reduced-motion:reduce){.ld__segment{transition:none}}
+@media(prefers-reduced-motion:reduce){.ld__segment{transition:none}.ld.is-swapping .ld__main{opacity:1}}
 </style>
