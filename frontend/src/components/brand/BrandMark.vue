@@ -59,16 +59,16 @@ withDefaults(defineProps<{
  * Footer, About placeholder, admin previews) shows one consistent brand.
  */
 .brand-mark {
-  --brand-page: #fdfbf3;
-  --brand-fold: #f0e7d4;
-  --brand-ink: #2a584e;
-  --brand-crease: rgb(42 88 78 / 0.4);
-  --brand-rule: rgb(42 88 78 / 0.32);
-  --brand-outline: rgb(42 88 78 / 0.55);
-  --brand-copper: #b86f47;
-  --brand-trail-glow: rgb(184 111 71 / 0.2);
-  --brand-node: rgb(184 111 71 / 0.55);
-  --brand-glint: rgb(184 111 71 / 0.45);
+  --brand-page: #f8f6f1;
+  --brand-fold: #e8e0d4;
+  --brand-ink: #0f3d36;
+  --brand-crease: rgb(15 61 54 / 0.4);
+  --brand-rule: rgb(15 61 54 / 0.32);
+  --brand-outline: rgb(15 61 54 / 0.55);
+  --brand-copper: #c46f4e;
+  --brand-trail-glow: rgb(196 111 78 / 0.2);
+  --brand-node: rgb(196 111 78 / 0.55);
+  --brand-glint: rgb(196 111 78 / 0.45);
   display: inline-flex;
   flex: none;
   align-items: center;
@@ -76,16 +76,16 @@ withDefaults(defineProps<{
 }
 
 [data-theme='dark'] .brand-mark {
-  --brand-page: #22312b;
-  --brand-fold: #18251f;
-  --brand-ink: #9cc4b6;
-  --brand-crease: rgb(156 196 182 / 0.4);
-  --brand-rule: rgb(156 196 182 / 0.32);
-  --brand-outline: rgb(156 196 182 / 0.5);
-  --brand-copper: #d18b64;
-  --brand-trail-glow: rgb(209 139 100 / 0.18);
-  --brand-node: rgb(209 139 100 / 0.6);
-  --brand-glint: rgb(209 139 100 / 0.45);
+  --brand-page: #1a3a41;
+  --brand-fold: #102c31;
+  --brand-ink: #7a9c8f;
+  --brand-crease: rgb(122 156 143 / 0.4);
+  --brand-rule: rgb(122 156 143 / 0.32);
+  --brand-outline: rgb(122 156 143 / 0.5);
+  --brand-copper: #c46f4e;
+  --brand-trail-glow: rgb(196 111 78 / 0.18);
+  --brand-node: rgb(196 111 78 / 0.6);
+  --brand-glint: rgb(196 111 78 / 0.45);
 }
 
 .brand-mark svg {
