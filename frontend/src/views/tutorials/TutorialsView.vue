@@ -9,6 +9,7 @@ import {
 } from '@/api/tutorial'
 import TutorialCategoryNav from '@/components/TutorialCategoryNav.vue'
 import EditorialMotif from '@/components/visual/EditorialMotif.vue'
+import ContentSkeleton from '@/components/ui/ContentSkeleton.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -127,10 +128,10 @@ watch(() => route.query.categorySlug, (value) => {
           </label>
         </div>
 
-        <div v-if="loading" class="tutorial-catalog__empty">正在加载教程…</div>
+        <div v-if="loading" class="tutorial-catalog__empty"><ContentSkeleton :rows="5" label="正在加载教程" /></div>
         <div v-else-if="error" class="tutorial-catalog__empty">加载失败，请稍后重试。</div>
         <div v-else-if="!displayed.length" class="tutorial-catalog__empty">当前分类暂无匹配教程。</div>
-        <div v-else class="tutorial-catalog__grid">
+        <div v-else class="tutorial-catalog__grid" data-stagger>
           <RouterLink
             v-for="tutorial in displayed"
             :key="tutorial.id"
@@ -138,7 +139,7 @@ watch(() => route.query.categorySlug, (value) => {
             class="tutorial-card"
           >
             <div v-if="tutorial.coverUrl" class="tutorial-card__cover">
-              <img :src="tutorial.coverUrl" :alt="tutorial.title" loading="lazy" />
+              <img :src="tutorial.coverUrl" :alt="tutorial.title" loading="lazy" decoding="async" />
             </div>
             <div v-else class="tutorial-card__cover tutorial-card__cover--placeholder">
               <EditorialMotif kind="tutorial" :seed="`${tutorial.categoryName}:${tutorial.title}`" :label="tutorial.title" />

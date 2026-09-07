@@ -118,6 +118,25 @@
   border-color: color-mix(in srgb,var(--primary) 48%,var(--border));
   box-shadow: var(--shadow-sm);
 }
+
+/* Staggered enter for public list cards (tutorials / blog / english / portfolio). */
+.base-layout [data-stagger] > * {
+  opacity: 0;
+  transform: translateY(10px);
+  animation: public-stagger-in var(--motion-slow) var(--ease-out) forwards;
+}
+.base-layout [data-stagger] > *:nth-child(1) { animation-delay: 40ms; }
+.base-layout [data-stagger] > *:nth-child(2) { animation-delay: 80ms; }
+.base-layout [data-stagger] > *:nth-child(3) { animation-delay: 120ms; }
+.base-layout [data-stagger] > *:nth-child(4) { animation-delay: 160ms; }
+.base-layout [data-stagger] > *:nth-child(5) { animation-delay: 200ms; }
+.base-layout [data-stagger] > *:nth-child(6) { animation-delay: 240ms; }
+.base-layout [data-stagger] > *:nth-child(7) { animation-delay: 280ms; }
+.base-layout [data-stagger] > *:nth-child(8) { animation-delay: 320ms; }
+.base-layout [data-stagger] > *:nth-child(n+9) { animation-delay: 360ms; }
+@keyframes public-stagger-in {
+  to { opacity: 1; transform: none; }
+}
 .base-layout :where(.article-card__cover,.lc-card__cover) .editorial-motif { width: 100%; height: 100%; min-height: 168px; border: 0; border-radius: 0; }
 .base-layout :where(.reading-detail__main,.ld__main,.prd__main,.writing-detail main,.grammar-reader>article) {
   min-width: 0;
@@ -174,4 +193,9 @@
   .page-view-leave-active { transition: none; }
   .page-view-enter-from,
   .page-view-leave-to { opacity: 1; transform: none; }
+  .base-layout [data-stagger] > * {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
 }
