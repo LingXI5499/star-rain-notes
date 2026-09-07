@@ -39,6 +39,14 @@ public class SeoContentChangeAspect {
         return jdbc.query("SELECT slug,publish_status FROM " + table + " WHERE id=?",
                 rs -> rs.next() ? new ContentState(rs.getString(1), "PUBLISHED".equals(rs.getString(2))) : null, id);
     }
+
+    @Around("execution(* com.starrainnotes.site.service.SiteService.updateAdminSettings(..)) || execution(* com.starrainnotes.profile.service.ProfileService.update(..)) || execution(* com.starrainnotes.profile.service.ProfileService.updateSelectedContent(..))")
+    public Object identityChanged(ProceedingJoinPoint invocation) throws Throwable {
+        Object result = invocation.proceed();
+        events.publishEvent(new SeoContentChangedEvent(properties.siteOrigin() + "/about"));
+        events.publishEvent(new SeoContentChangedEvent(properties.siteOrigin() + "/"));
+        return result;
+    }
     private Long firstLong(Object[] args) { for (Object arg : args) if (arg instanceof Long value) return value; return null; }
     private record ContentState(String slug, boolean published) {}
 }

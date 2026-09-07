@@ -85,14 +85,26 @@ export interface AdminSiteSettings {
 }
 
 let publicSiteCache: PublicSite | null = null
+let publicSiteExpiresAt = 0
+let publicSiteRequest: Promise<PublicSite> | null = null
+let publicSiteGeneration = 0
 
 export async function fetchPublicSite(force = false): Promise<PublicSite> {
-  if (!force && publicSiteCache) {
+  if (force) { publicSiteGeneration++; publicSiteCache = null; publicSiteRequest = null }
+  if (publicSiteCache && Date.now() < publicSiteExpiresAt) {
     return publicSiteCache
   }
-  const { data } = await http.get<PublicSite>('/public/site')
-  publicSiteCache = data
-  return data
+  if (publicSiteRequest) return publicSiteRequest
+  const generation = publicSiteGeneration
+  const request = http.get<PublicSite>('/public/site').then(({ data }) => {
+    if (generation === publicSiteGeneration) {
+      publicSiteCache = data
+      publicSiteExpiresAt = Date.now() + 60_000
+    }
+    return data
+  }).finally(() => { if (publicSiteRequest === request) publicSiteRequest = null })
+  publicSiteRequest = request
+  return request
 }
 
 export async function fetchHome(): Promise<PublicHome> {
@@ -114,5 +126,8 @@ export async function updateSiteSettings(
   payload: Partial<Omit<AdminSiteSettings, 'id'>>,
 ): Promise<AdminSiteSettings> {
   const { data } = await http.put<AdminSiteSettings>('/admin/site-settings', payload)
+  publicSiteGeneration++
+  publicSiteCache = null
+  publicSiteRequest = null
   return data
 }

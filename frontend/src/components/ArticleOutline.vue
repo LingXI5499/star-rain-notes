@@ -67,7 +67,7 @@ onUnmounted(() => {
         class="article-outline__item"
         :class="[`article-outline__item--h${item.level}`, { 'is-active': activeId === item.id }]"
       >
-        <a href="#" @click.prevent="scrollTo(item.id)">{{ item.text }}</a>
+        <a :href="`#${item.id}`" :aria-current="activeId === item.id ? 'location' : undefined" @click.prevent="scrollTo(item.id)">{{ item.text }}</a>
       </li>
     </ul>
   </nav>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/core'
@@ -70,10 +70,16 @@ const emit = defineEmits<{
 
 const html = ref('')
 const root = ref<HTMLElement | null>(null)
-let copyResetTimer: number | undefined
+const copyResetTimers = new Map<HTMLButtonElement, number>()
+function clearCopyTimers() {
+  copyResetTimers.forEach(timer => window.clearTimeout(timer))
+  copyResetTimers.clear()
+}
+onBeforeUnmount(clearCopyTimers)
 
 async function copyCode(button: HTMLButtonElement, content: string) {
-  if (copyResetTimer) window.clearTimeout(copyResetTimer)
+  const previous = copyResetTimers.get(button)
+  if (previous) window.clearTimeout(previous)
   try {
     if (!navigator.clipboard?.writeText) throw new Error('clipboard unavailable')
     await navigator.clipboard.writeText(content)
@@ -85,11 +91,13 @@ async function copyCode(button: HTMLButtonElement, content: string) {
     button.dataset.state = 'error'
     button.setAttribute('aria-label', '复制失败，请手动选择代码')
   }
-  copyResetTimer = window.setTimeout(() => {
+  if (!button.isConnected) return
+  copyResetTimers.set(button, window.setTimeout(() => {
     button.textContent = '复制'
     delete button.dataset.state
     button.setAttribute('aria-label', '复制代码')
-  }, 1800)
+    copyResetTimers.delete(button)
+  }, 1800))
 }
 
 /** Post-process the sanitized markdown to add a language label + copy button to each code block. */
@@ -99,6 +107,7 @@ async function enhanceCodeBlocks() {
   if (!container) return
   container.querySelectorAll<HTMLElement>('pre').forEach((pre) => {
     if (pre.dataset.enhanced) return
+    pre.dataset.enhanced = 'true'
     const code = pre.querySelector('code')
     const lang = (code?.className.match(/language-([\w-]+)/)?.[1]) ?? 'code'
     const label = document.createElement('span')
@@ -138,6 +147,12 @@ const md = new MarkdownIt({
 })
 
 const usedIds = new Map<string, number>()
+const renderImage = md.renderer.rules.image!
+md.renderer.rules.image = (tokens, idx, options, env, self) => {
+  tokens[idx].attrSet('loading', 'lazy')
+  tokens[idx].attrSet('decoding', 'async')
+  return renderImage(tokens, idx, options, env, self)
+}
 let collected: OutlineItem[] = []
 
 md.renderer.rules.heading_open = (tokens, idx) => {
@@ -154,6 +169,7 @@ md.renderer.rules.heading_open = (tokens, idx) => {
 watch(
   () => props.source,
   async (source) => {
+    clearCopyTimers()
     usedIds.clear()
     collected = []
     const rendered = md.render(source ?? '')
