@@ -14,7 +14,7 @@ const router = useRouter()
 
 const input = ref('')
 const items = ref<SearchItem[]>([])
-const counts = ref({ tutorial: 0, chapter: 0, blog: 0, portfolio: 0, grammar: 0, reading: 0, listening: 0, writing: 0 })
+const counts = ref({ tutorial: 0, chapter: 0, blog: 0, portfolio: 0, grammar: 0, reading: 0, listening: 0, writing: 0, word: 0 })
 const total = ref(0)
 const page = ref(1)
 const totalPages = ref(0)
@@ -30,6 +30,7 @@ const typeLabels: Record<string, string> = SEARCH_TYPE_LABELS
 const filterOptions = [
   { value: '', label: '全部' },
   { value: 'tutorial', label: '教程' },
+  { value: 'word', label: '单词' },
   { value: 'grammar', label: '英语语法' },
   { value: 'reading', label: '英语阅读' },
   { value: 'listening', label: '英语听力' },
@@ -166,7 +167,7 @@ onBeforeUnmount(() => {
     <template v-else-if="searched">
       <p class="search-page__meta">
         共 {{ total }} 条结果
-        <span v-if="currentType()">（教程 {{ counts.tutorial }} · 章节 {{ counts.chapter }} · 语法 {{ counts.grammar }} · 阅读 {{ counts.reading }} · 听力 {{ counts.listening }} · 写作 {{ counts.writing }} · 博客 {{ counts.blog }} · 作品 {{ counts.portfolio }}）</span>
+        <span v-if="currentType()">（教程 {{ counts.tutorial }} · 章节 {{ counts.chapter }} · 单词 {{ counts.word }} · 语法 {{ counts.grammar }} · 阅读 {{ counts.reading }} · 听力 {{ counts.listening }} · 写作 {{ counts.writing }} · 博客 {{ counts.blog }} · 作品 {{ counts.portfolio }}）</span>
       </p>
 
       <ul class="search-page__results">

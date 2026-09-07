@@ -235,4 +235,35 @@ class SearchIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(jsonPath("$.items.length()").value(1))
                 .andExpect(jsonPath("$.items[0].slug").value("p1"));
     }
+
+    @Test
+    void searchFindsVocabularyWordsByEnglishAndChinese() throws Exception {
+        jdbc.update("DELETE FROM vocabulary_word");
+        jdbc.update("DELETE FROM vocabulary_theme");
+        jdbc.update("""
+                INSERT INTO vocabulary_theme (layer, layer_order, name, sort_order)
+                VALUES ('基础', 1, '天气', 0)
+                """);
+        Long themeId = jdbc.queryForObject("SELECT LAST_INSERT_ID()", Long.class);
+        jdbc.update("""
+                INSERT INTO vocabulary_word (theme_id, part_of_speech, word, translation, inflections, examples, sort_order)
+                VALUES (?, 'n.', 'apple', '苹果', 'apples', '[]', 0)
+                """, themeId);
+        jdbc.update("""
+                INSERT INTO vocabulary_word (theme_id, part_of_speech, word, translation, inflections, examples, sort_order)
+                VALUES (?, 'n.', 'orange', '橙子', 'oranges', '[]', 1)
+                """, themeId);
+
+        mockMvc.perform(get("/api/v1/public/search").param("q", "apple"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.counts.word").value(1))
+                .andExpect(jsonPath("$.items[0].type").value("WORD"))
+                .andExpect(jsonPath("$.items[0].title").value("apple"))
+                .andExpect(jsonPath("$.items[0].tutorialSlug").value(String.valueOf(themeId)));
+
+        mockMvc.perform(get("/api/v1/public/search").param("q", "苹果").param("type", "word"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(1))
+                .andExpect(jsonPath("$.items[0].title").value("apple"));
+    }
 }

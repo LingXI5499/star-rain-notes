@@ -3,13 +3,13 @@ import { http } from './http'
 /**
  * Global search API client (04 §15).
  *
- * The backend serves a flat, score-ordered hit list over the four published
- * sources: TUTORIAL, CHAPTER, BLOG, PORTFOLIO. Grouping and URL resolution
- * are client-side concerns so the panel can render a grouped listbox while
- * the full /search page keeps using the raw page.
+ * The backend serves a flat, score-ordered hit list over published sources
+ * (tutorials, chapters, blogs, portfolios, English modules, vocabulary).
+ * Grouping and URL resolution are client-side concerns so the panel can
+ * render a grouped listbox while the full /search page keeps using the raw page.
  */
 
-export type SearchResultType = 'TUTORIAL' | 'CHAPTER' | 'BLOG' | 'PORTFOLIO' | 'GRAMMAR' | 'READING' | 'LISTENING' | 'PRONUNCIATION' | 'WRITING'
+export type SearchResultType = 'TUTORIAL' | 'CHAPTER' | 'BLOG' | 'PORTFOLIO' | 'GRAMMAR' | 'READING' | 'LISTENING' | 'PRONUNCIATION' | 'WRITING' | 'WORD'
 
 export interface SearchItem {
   type: SearchResultType
@@ -32,6 +32,7 @@ export interface SearchCounts {
   reading: number
   listening: number
   writing: number
+  word: number
 }
 
 export interface SearchPage {
@@ -70,10 +71,22 @@ export const SEARCH_TYPE_LABELS: Record<SearchResultType, string> = {
   LISTENING: '听力',
   PRONUNCIATION: '语音规则',
   WRITING: '写作',
+  WORD: '单词',
 }
 
 /** Stable group order for the result panel (tutorials first, then the rest). */
-export const SEARCH_GROUP_ORDER: SearchResultType[] = ['TUTORIAL', 'CHAPTER', 'GRAMMAR', 'READING', 'LISTENING', 'WRITING', 'BLOG', 'PORTFOLIO']
+export const SEARCH_GROUP_ORDER: SearchResultType[] = [
+  'TUTORIAL',
+  'CHAPTER',
+  'WORD',
+  'GRAMMAR',
+  'READING',
+  'LISTENING',
+  'PRONUNCIATION',
+  'WRITING',
+  'BLOG',
+  'PORTFOLIO',
+]
 
 /**
  * Group a flat, server-ordered hit list into ordered, non-empty groups.
@@ -125,6 +138,9 @@ export function resolveSearchResultRoute(item: SearchItem): string {
       return item.tutorialSlug === 'practice'
         ? `/english/writing/practice/${item.slug ?? ''}`
         : `/english/writing/resources/${item.slug ?? ''}`
+    case 'WORD':
+      // tutorialSlug carries themeId from the backend; open the theme page.
+      return `/english/vocabulary/${item.tutorialSlug ?? ''}`
   }
 }
 

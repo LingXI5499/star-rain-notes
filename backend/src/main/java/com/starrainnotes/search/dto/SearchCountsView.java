@@ -11,5 +11,6 @@ public record SearchCountsView(
         long grammar,
         long reading,
         long listening,
-        long writing) {
+        long writing,
+        long word) {
 }
