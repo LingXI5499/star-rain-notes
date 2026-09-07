@@ -73,6 +73,6 @@ describe('PublicHeader brand', () => {
     await mountHeader()
     await flushPromises()
     const icon = document.querySelector<HTMLLinkElement>('link[data-brand-icon]')
-    expect(icon?.getAttribute('href')).toBe('/brand/favicon.svg')
+    expect(icon?.getAttribute('href')).toBe('/brand/favicon.png')
   })
 })

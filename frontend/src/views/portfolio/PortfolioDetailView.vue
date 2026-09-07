@@ -6,19 +6,15 @@ import { type PublicProjectDetail } from '@/api/portfolio'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import ArticleOutline from '@/components/ArticleOutline.vue'
 import ReadingAside from '@/components/ReadingAside.vue'
-import EditorialMotif from '@/components/visual/EditorialMotif.vue'
 import ProjectGallery from '@/components/portfolio/ProjectGallery.vue'
 import { applyPageMeta, caseStudySchema } from '@/lib/seo'
 import { estimateReadingStats } from '@/lib/readingStats'
-import { categorizeTechStack } from '@/lib/techStack'
-import { imageSizes } from '@/lib/imageSizes'
 import { portfolioDetailCache } from '@/lib/publicContentCache'
 import type { OutlineItem } from '@/types'
 
 /**
  * Portfolio Case Study detail (V2):
- * text hero → large cover → meta strip → categorized stack →
- * gallery → readable body + sticky TOC → CTA / next.
+ * concise hero → gallery → readable body + sticky TOC → CTA / next.
  */
 const route = useRoute()
 const project = ref<PublicProjectDetail | null>(null)
@@ -26,7 +22,6 @@ const outline = ref<OutlineItem[]>([])
 const notFound = ref(false)
 const loadFailed = ref(false)
 const drawerOpen = ref(false)
-const coverBroken = ref(false)
 
 const readingStats = computed(() => estimateReadingStats(project.value?.bodyMarkdown))
 const charCount = computed(() => readingStats.value.charCount)
@@ -34,9 +29,7 @@ const readMinutes = computed(() => readingStats.value.readMinutes)
 const galleryItems = computed(() =>
   (project.value?.gallery ?? []).filter((item) => Boolean(item.url)),
 )
-const techGroups = computed(() => categorizeTechStack(project.value?.techStack))
 const heroStack = computed(() => (project.value?.techStack ?? []).slice(0, 4).join(' · '))
-const showCoverImage = computed(() => Boolean(project.value?.coverUrl) && !coverBroken.value)
 
 const statusLabels: Record<string, string> = {
   DEVELOPING: '开发中',
@@ -53,19 +46,12 @@ function formatPeriod(item: PublicProjectDetail): string {
   return ''
 }
 
-function formatUpdated(iso: string): string {
-  const d = new Date(iso)
-  if (Number.isNaN(d.getTime())) return iso
-  return `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}`
-}
-
 async function load() {
   project.value = null
   outline.value = []
   notFound.value = false
   loadFailed.value = false
   drawerOpen.value = false
-  coverBroken.value = false
   try {
     const detail = await portfolioDetailCache.load(route.params.slug as string)
     project.value = { ...detail, gallery: detail.gallery ?? [] }
@@ -132,56 +118,7 @@ watch(() => route.params.slug, load)
       </div>
     </header>
 
-    <!-- 02 Cover -->
-    <div class="case-cover">
-      <img
-        v-if="showCoverImage"
-        :src="project.coverUrl!"
-        :srcset="project.coverSrcSet || undefined"
-        :sizes="imageSizes('hero')"
-        :alt="project.title"
-        :width="project.coverWidth || undefined"
-        :height="project.coverHeight || undefined"
-        loading="eager"
-        fetchpriority="high"
-        decoding="async"
-        @error="coverBroken = true"
-      />
-      <EditorialMotif v-else kind="portfolio" :seed="project.title" :label="project.title" />
-    </div>
-
-    <!-- 03 Meta strip (no cards) -->
-    <dl class="case-meta">
-      <div v-if="project.role">
-        <dt>Role</dt>
-        <dd>{{ project.role }}</dd>
-      </div>
-      <div>
-        <dt>Status</dt>
-        <dd>{{ statusLabels[project.projectStatus] ?? project.projectStatus }}</dd>
-      </div>
-      <div v-if="formatPeriod(project)">
-        <dt>Period</dt>
-        <dd>{{ formatPeriod(project) }}</dd>
-      </div>
-      <div>
-        <dt>Updated</dt>
-        <dd>{{ formatUpdated(project.updatedAt) }}</dd>
-      </div>
-    </dl>
-
-    <!-- Tech stack by layer -->
-    <section v-if="techGroups.length" class="case-tech" aria-label="技术栈">
-      <h2 class="case-tech__title">Tech Stack</h2>
-      <div class="case-tech__grid">
-        <div v-for="group in techGroups" :key="group.label" class="case-tech__group">
-          <h3>{{ group.label }}</h3>
-          <p>{{ group.items.join(' · ') }}</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- 05 Gallery -->
+    <!-- Project preview remains the single visual evidence block. -->
     <ProjectGallery :items="galleryItems" />
 
     <button v-if="outline.length" class="case-study__drawer-button" type="button" @click="drawerOpen = true">
@@ -194,7 +131,7 @@ watch(() => route.params.slug, load)
         <MarkdownRenderer :source="project.bodyMarkdown" @outline="outline = $event" />
 
         <section class="case-cta">
-          <p>星雨笔录仍在持续迭代。</p>
+          <p>项目仍在持续迭代。</p>
           <div class="case-hero__actions">
             <a v-if="project.demoUrl" :href="project.demoUrl" target="_blank" rel="noopener noreferrer" class="is-primary">在线访问 <i>↗</i></a>
             <a v-if="project.repositoryUrl" :href="project.repositoryUrl" target="_blank" rel="noopener noreferrer">查看源代码 <i>↗</i></a>
@@ -335,89 +272,11 @@ watch(() => route.params.slug, load)
 
 .case-hero__actions i { font-style: normal; }
 
-.case-cover {
-  width: 100%;
-  margin: 0 0 36px;
-  overflow: hidden;
-  border-radius: 22px;
-  border: 1px solid var(--border);
-  background:
-    radial-gradient(circle at 24% 18%, color-mix(in srgb, var(--primary) 22%, transparent), transparent 46%),
-    linear-gradient(145deg, var(--bg-subtle), color-mix(in srgb, var(--accent) 10%, var(--bg-surface)));
-}
-
-.case-cover img,
-.case-cover :deep(.editorial-motif) {
-  display: block;
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  object-fit: contain;
-}
-
-.case-meta {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px;
-  margin: 0 0 40px;
-  padding: 22px 0;
-  border-block: 1px solid var(--border);
-}
-
-.case-meta dt {
-  margin-bottom: 6px;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-}
-
-.case-meta dd {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: 15px;
-}
-
-.case-tech {
-  margin: 0 0 8px;
-}
-
-.case-tech__title {
-  margin: 0 0 18px;
-  color: var(--text-muted);
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-}
-
-.case-tech__grid {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 18px 28px;
-}
-
-.case-tech__group h3 {
-  margin: 0 0 8px;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-}
-
-.case-tech__group p {
-  margin: 0;
-  color: var(--text-primary);
-  font-size: 14px;
-  line-height: 1.6;
-}
-
 .case-study__reading {
   display: grid;
-  grid-template-columns: minmax(0, 820px) 240px;
+  grid-template-columns: minmax(0, 900px) 220px;
   justify-content: center;
-  gap: 64px;
+  gap: 48px;
   align-items: start;
   margin-top: 48px;
 }
@@ -425,7 +284,7 @@ watch(() => route.params.slug, load)
 .case-study__body { min-width: 0; }
 
 .case-study__body :deep(.markdown-body) {
-  max-width: 820px;
+  max-width: 900px;
   font-size: 17px;
   line-height: 1.85;
 }
@@ -500,14 +359,11 @@ watch(() => route.params.slug, load)
 .case-state a { color: var(--primary); }
 
 @media (max-width: 1100px) {
-  .case-meta,
-  .case-tech__grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
   .case-study__reading {
     grid-template-columns: minmax(0, 1fr);
     gap: 0;
+    max-width: 900px;
+    margin-inline: auto;
   }
 
   .case-study__toc { display: none; }
@@ -561,15 +417,6 @@ watch(() => route.params.slug, load)
 }
 
 @media (max-width: 640px) {
-  .case-meta,
-  .case-tech__grid {
-    grid-template-columns: 1fr;
-  }
-
-  .case-cover {
-    border-radius: 16px;
-  }
-
   .case-nav {
     grid-template-columns: 1fr;
   }

@@ -12,17 +12,17 @@ describe('categorizeTechStack', () => {
       'Flyway',
       'Nginx',
     ])).toEqual([
-      { label: 'Backend', items: ['Java 21', 'Spring Boot 3.5'] },
-      { label: 'Frontend', items: ['Vue 3', 'TypeScript'] },
-      { label: 'Data', items: ['MySQL 8', 'Flyway'] },
-      { label: 'Infrastructure', items: ['Nginx'] },
+      { label: '后端', items: ['Java 21', 'Spring Boot 3.5'] },
+      { label: '前端', items: ['Vue 3', 'TypeScript'] },
+      { label: '数据', items: ['MySQL 8', 'Flyway'] },
+      { label: '基础设施', items: ['Nginx'] },
     ])
   })
 
-  it('puts unknown items into Other and skips empties', () => {
+  it('puts unknown items into 其他 and skips empties', () => {
     expect(categorizeTechStack(['', ' Redis ', 'Custom Widget'])).toEqual([
-      { label: 'Data', items: ['Redis'] },
-      { label: 'Other', items: ['Custom Widget'] },
+      { label: '数据', items: ['Redis'] },
+      { label: '其他', items: ['Custom Widget'] },
     ])
   })
 })

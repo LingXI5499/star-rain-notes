@@ -47,7 +47,8 @@ class SeoHtmlRendererTest {
                 "<p>首页</p>", List.of(), Map.of()));
 
         // Crawler HTML keeps the favicon / manifest brand links from the shell.
-        assertThat(html).contains("rel=\"icon\"", "/brand/favicon");
+        assertThat(html).contains("rel=\"icon\"", "/brand/favicon.png");
+        assertThat(html).doesNotContain("favicon.svg");
         assertThat(html).contains("rel=\"apple-touch-icon\"");
         assertThat(html).contains("rel=\"manifest\"");
         // and the default share image migrates to the platform-friendly format
