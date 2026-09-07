@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import ReadingControls from '@/components/ui/ReadingControls.vue'
-import { useReadingPreferences } from '@/composables/useReadingPreferences'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
 import {
@@ -25,7 +23,6 @@ import type { OutlineItem } from '@/types'
 const detailCache = createFetchCache<PublicTutorialDetail>((slug) => fetchPublicTutorialDetail(slug))
 
 const route = useRoute()
-const { classes: readingClasses } = useReadingPreferences()
 let loadVersion = 0
 onBeforeUnmount(() => { loadVersion++ })
 const chapter = ref<PublicChapter | null>(null)
@@ -117,7 +114,7 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
     <p class="reader__empty">加载失败，请稍后重试。</p>
   </section>
 
-  <section v-else-if="chapter && detail" class="reader" :class="readingClasses">
+  <section v-else-if="chapter && detail" class="reader">
     <button
       type="button"
       class="reader__drawer-toggle"
@@ -169,7 +166,6 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
         </div>
       </header>
 
-      <ReadingControls />
       <div id="reader-body" class="reader__body">
         <MarkdownRenderer :source="chapter.bodyMarkdown" @outline="outline = $event" />
       </div>
@@ -232,11 +228,10 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
   top: calc(var(--header-height) + var(--space-6));
   max-height: calc(100vh - var(--header-height) - var(--space-12));
   overflow-y: auto;
-  padding: var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: color-mix(in srgb,var(--bg-surface) 92%,var(--bg-subtle));
-  box-shadow: 0 10px 28px rgb(14 35 28/.045);
+  padding: var(--space-2) var(--space-4) var(--space-6) 0;
+  border-right: 1px solid var(--border);
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
 .reader__tutorial {
@@ -331,7 +326,6 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
 }
 
 .reader__body :deep(.markdown-body) {
-  font-size: 16px;
   line-height: 1.85;
 }
 
@@ -406,10 +400,7 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
 }
 
 .reader__toc-card {
-  padding: var(--space-4);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  background: color-mix(in srgb,var(--bg-surface) 91%,var(--bg-subtle));
+  padding: 0 0 var(--space-4);
 }
 
 .reader__toc-title {
@@ -506,8 +497,7 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
     border-right: 1px solid var(--border);
     padding: var(--space-6);
     overflow-y: auto;
-  }
-}
+  }}
 
 @media (prefers-reduced-motion: reduce) {
   .reader__progress-bar,
