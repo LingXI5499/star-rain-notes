@@ -28,5 +28,6 @@ public record AdminProjectDetailView(
         String seoDescription,
         String publishedAt,
         String createdAt,
-        String updatedAt) {
+        String updatedAt,
+        List<ProjectMediaView> gallery) {
 }

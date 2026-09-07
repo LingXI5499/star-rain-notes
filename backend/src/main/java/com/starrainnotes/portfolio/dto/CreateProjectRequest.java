@@ -1,5 +1,6 @@
 package com.starrainnotes.portfolio.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -9,10 +10,6 @@ import java.util.List;
 
 /**
  * POST /api/v1/admin/portfolio/projects request body.
- *
- * <p>publishStatus is absent (always starts DRAFT, changed only via
- * /publish and /withdraw). projectStatus is an independent, editable property
- * (DEVELOPING / COMPLETED / ONLINE).</p>
  */
 public record CreateProjectRequest(
         @NotBlank @Size(max = 200) String title,
@@ -33,5 +30,6 @@ public record CreateProjectRequest(
         LocalDate startedAt,
         LocalDate completedAt,
         @Size(max = 200) String seoTitle,
-        @Size(max = 500) String seoDescription) {
+        @Size(max = 500) String seoDescription,
+        @Valid List<ProjectMediaItemRequest> gallery) {
 }

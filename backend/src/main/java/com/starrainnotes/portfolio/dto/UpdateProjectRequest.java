@@ -1,5 +1,6 @@
 package com.starrainnotes.portfolio.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -9,7 +10,6 @@ import java.util.List;
 
 /**
  * PUT /api/v1/admin/portfolio/projects/{projectId} request body.
- * publishStatus / publishedAt can never be changed through a plain update.
  */
 public record UpdateProjectRequest(
         @NotBlank @Size(max = 200) String title,
@@ -30,5 +30,6 @@ public record UpdateProjectRequest(
         LocalDate startedAt,
         LocalDate completedAt,
         @Size(max = 200) String seoTitle,
-        @Size(max = 500) String seoDescription) {
+        @Size(max = 500) String seoDescription,
+        @Valid List<ProjectMediaItemRequest> gallery) {
 }

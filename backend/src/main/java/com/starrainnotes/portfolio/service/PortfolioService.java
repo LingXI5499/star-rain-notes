@@ -9,16 +9,21 @@ import com.starrainnotes.portfolio.dto.AdminProjectDetailView;
 import com.starrainnotes.portfolio.dto.AdminProjectPageView;
 import com.starrainnotes.portfolio.dto.AdminProjectSummaryView;
 import com.starrainnotes.portfolio.dto.CreateProjectRequest;
+import com.starrainnotes.portfolio.dto.ProjectMediaItemRequest;
+import com.starrainnotes.portfolio.dto.ProjectMediaView;
 import com.starrainnotes.portfolio.dto.PublicProjectDetailView;
 import com.starrainnotes.portfolio.dto.PublicProjectSummaryView;
 import com.starrainnotes.portfolio.dto.PrevNextProjectView;
 import com.starrainnotes.portfolio.dto.UpdateProjectRequest;
 import com.starrainnotes.portfolio.entity.PortfolioProject;
+import com.starrainnotes.portfolio.entity.PortfolioProjectMedia;
 import com.starrainnotes.portfolio.mapper.PortfolioProjectMapper;
+import com.starrainnotes.portfolio.mapper.PortfolioProjectMediaMapper;
 import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.Clock;
@@ -26,10 +31,12 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -52,14 +59,19 @@ public class PortfolioService {
     private static final String ONLINE = "ONLINE";
     private static final String DEVELOPING = "DEVELOPING";
 
+    private static final int MAX_GALLERY = 24;
+
     private final PortfolioProjectMapper projectMapper;
+    private final PortfolioProjectMediaMapper mediaMapper;
     private final MediaAssetMapper mediaAssetMapper;
     private final SiteSettingsTimezone timezone;
 
     public PortfolioService(PortfolioProjectMapper projectMapper,
+                            PortfolioProjectMediaMapper mediaMapper,
                             MediaAssetMapper mediaAssetMapper,
                             SiteSettingsTimezone timezone) {
         this.projectMapper = projectMapper;
+        this.mediaMapper = mediaMapper;
         this.mediaAssetMapper = mediaAssetMapper;
         this.timezone = timezone;
     }
@@ -102,6 +114,7 @@ public class PortfolioService {
         return toAdminDetail(requireProject(projectId));
     }
 
+    @Transactional
     public AdminProjectDetailView create(CreateProjectRequest request) {
         String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
         assertSlugFree(slug, null);
@@ -118,9 +131,11 @@ public class PortfolioService {
         project.setPublishStatus(DRAFT);
         project.setPublishedAt(null);
         projectMapper.insert(project);
+        replaceGallery(project.getId(), request.gallery());
         return toAdminDetail(project);
     }
 
+    @Transactional
     @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
     public AdminProjectDetailView update(Long projectId, UpdateProjectRequest request) {
         PortfolioProject project = requireProject(projectId);
@@ -136,6 +151,7 @@ public class PortfolioService {
                 request.startedAt(), request.completedAt());
         // publishStatus / publishedAt are never touched by a plain update
         projectMapper.updateById(project);
+        replaceGallery(projectId, request.gallery());
         return toAdminDetail(project);
     }
 
@@ -218,7 +234,8 @@ public class PortfolioService {
                 project.getRepositoryUrl(), project.getDemoUrl(), project.getProjectStatus(),
                 project.getStartedAt(), project.getCompletedAt(),
                 project.getSeoTitle(), project.getSeoDescription(),
-                formatUtc(project.getPublishedAt()), formatUtc(project.getUpdatedAt()), previous, next);
+                formatUtc(project.getPublishedAt()), formatUtc(project.getUpdatedAt()), previous, next,
+                listGallery(project.getId()));
     }
 
     // ---------------------------------------------------------------
@@ -365,7 +382,86 @@ public class PortfolioService {
                 p.getRepositoryUrl(), p.getDemoUrl(),
                 p.getPublishStatus(), p.getProjectStatus(), Boolean.TRUE.equals(p.getFeatured()),
                 p.getSortOrder(), p.getStartedAt(), p.getCompletedAt(), p.getSeoTitle(), p.getSeoDescription(),
-                formatUtc(p.getPublishedAt()), formatUtc(p.getCreatedAt()), formatUtc(p.getUpdatedAt()));
+                formatUtc(p.getPublishedAt()), formatUtc(p.getCreatedAt()), formatUtc(p.getUpdatedAt()),
+                listGallery(p.getId()));
+    }
+
+    private List<ProjectMediaView> listGallery(Long projectId) {
+        List<PortfolioProjectMedia> rows = mediaMapper.selectList(new LambdaQueryWrapper<PortfolioProjectMedia>()
+                .eq(PortfolioProjectMedia::getProjectId, projectId)
+                .orderByAsc(PortfolioProjectMedia::getSortOrder)
+                .orderByAsc(PortfolioProjectMedia::getId));
+        if (rows.isEmpty()) {
+            return List.of();
+        }
+        Map<Long, String> urls = coverUrls(rows.stream().map(PortfolioProjectMedia::getMediaAssetId).toList());
+        return rows.stream()
+                .map(row -> new ProjectMediaView(
+                        row.getId(),
+                        row.getMediaAssetId(),
+                        urls.get(row.getMediaAssetId()),
+                        row.getTitle(),
+                        row.getDescription(),
+                        row.getAltText(),
+                        row.getDeviceType(),
+                        row.getSortOrder()))
+                .toList();
+    }
+
+    private void replaceGallery(Long projectId, List<ProjectMediaItemRequest> gallery) {
+        List<ProjectMediaItemRequest> items = gallery == null ? List.of() : gallery;
+        if (items.size() > MAX_GALLERY) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "GALLERY_TOO_LARGE",
+                    "Gallery too large", "At most " + MAX_GALLERY + " gallery images are allowed.");
+        }
+        for (ProjectMediaItemRequest item : items) {
+            validateImageMedia(item.mediaAssetId());
+        }
+
+        List<PortfolioProjectMedia> existing = mediaMapper.selectList(new LambdaQueryWrapper<PortfolioProjectMedia>()
+                .eq(PortfolioProjectMedia::getProjectId, projectId));
+        Map<Long, PortfolioProjectMedia> existingById = existing.stream()
+                .collect(Collectors.toMap(PortfolioProjectMedia::getId, row -> row));
+        Set<Long> keepIds = new HashSet<>();
+
+        int index = 0;
+        for (ProjectMediaItemRequest item : items) {
+            int sort = item.sortOrder() != null ? item.sortOrder() : index * 10;
+            String device = StringUtils.hasText(item.deviceType()) ? item.deviceType() : "DESKTOP";
+            if (item.id() != null && existingById.containsKey(item.id())) {
+                PortfolioProjectMedia row = existingById.get(item.id());
+                row.setMediaAssetId(item.mediaAssetId());
+                row.setTitle(blankToNull(item.title()));
+                row.setDescription(blankToNull(item.description()));
+                row.setAltText(blankToNull(item.altText()));
+                row.setDeviceType(device);
+                row.setSortOrder(sort);
+                mediaMapper.updateById(row);
+                keepIds.add(row.getId());
+            } else {
+                PortfolioProjectMedia row = new PortfolioProjectMedia();
+                row.setProjectId(projectId);
+                row.setMediaAssetId(item.mediaAssetId());
+                row.setTitle(blankToNull(item.title()));
+                row.setDescription(blankToNull(item.description()));
+                row.setAltText(blankToNull(item.altText()));
+                row.setDeviceType(device);
+                row.setSortOrder(sort);
+                mediaMapper.insert(row);
+                keepIds.add(row.getId());
+            }
+            index++;
+        }
+
+        for (PortfolioProjectMedia row : existing) {
+            if (!keepIds.contains(row.getId())) {
+                mediaMapper.deleteById(row.getId());
+            }
+        }
+    }
+
+    private static String blankToNull(String value) {
+        return StringUtils.hasText(value) ? value.trim() : null;
     }
 
     private PrevNextProjectView toPrevNext(PortfolioProject project) {
