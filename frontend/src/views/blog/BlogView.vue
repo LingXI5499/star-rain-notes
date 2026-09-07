@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { fetchArchive, fetchCalendar, fetchPublicPosts, fetchPublicTags, type ArchiveYear, type Calendar, type PublicPostPage, type PublicTagWithCount } from '@/api/blog'
 import EditorialMotif from '@/components/visual/EditorialMotif.vue'
+import ContentSkeleton from '@/components/ui/ContentSkeleton.vue'
 
 const route=useRoute();const router=useRouter();const posts=ref<PublicPostPage|null>(null);const tags=ref<PublicTagWithCount[]>([]);const calendar=ref<Calendar|null>(null);const archive=ref<ArchiveYear[]>([]);const loading=ref(true);const error=ref(false);const filters=reactive({tag:'',date:'',month:'',page:1});const activeMonth=computed(()=>filters.month)
 const timeline=computed(()=>{let previous='';return(posts.value?.items??[]).map(post=>{const d=new Date(post.publishedAt);const year=Number.isNaN(d.getTime())?'':String(d.getFullYear());const monthDay=Number.isNaN(d.getTime())?post.publishedAt:d.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'}).replace('/','.');const showYear=year!==previous;previous=year;return{post,year,monthDay,showYear}})})
@@ -20,8 +21,8 @@ watch(()=>route.query,()=>{syncFromQuery();void loadPosts()});watch(activeMonth,
     <header class="blog__hero"><div><p>JOURNAL · THINKING &amp; PRACTICE</p><h1>沿时间沉淀思考，<br>让经验持续生长。</h1></div><aside><strong>{{posts?.total??0}}</strong><span>篇公开文章</span><p>技术实践、学习路径与系统复盘。</p></aside></header>
     <div class="blog__layout"><main class="blog__main">
       <div v-if="filters.tag||filters.date||filters.month" class="blog__active"><span>当前视图</span><button v-if="filters.tag" @click="selectTag(filters.tag)"># {{filters.tag}} ×</button><button v-if="filters.date" @click="selectDate(filters.date)">{{filters.date}} ×</button><button v-if="filters.month" @click="selectMonth(filters.month)">{{filters.month}} ×</button></div>
-      <div v-if="loading" class="blog__empty">正在读取时间线…</div><div v-else-if="error" class="blog__empty">加载失败，请稍后重试。</div><div v-else-if="!timeline.length" class="blog__empty">{{filters.tag||filters.date||filters.month?'没有符合条件的文章':'暂无文章'}}</div>
-      <ol v-else class="timeline">
+      <div v-if="loading" class="blog__empty"><ContentSkeleton :rows="4" label="正在读取时间线" /></div><div v-else-if="error" class="blog__empty">加载失败，请稍后重试。</div><div v-else-if="!timeline.length" class="blog__empty">{{filters.tag||filters.date||filters.month?'没有符合条件的文章':'暂无文章'}}</div>
+      <ol v-else class="timeline" data-stagger>
         <li v-for="item in timeline" :key="item.post.id" class="timeline__item"><div class="timeline__date"><strong v-if="item.showYear">{{item.year}}</strong><span>{{item.monthDay}}</span></div><i class="timeline__node"/><RouterLink :to="`/blog/${item.post.slug}`" class="timeline-card"><div class="timeline-card__content"><div class="timeline-card__tags"><span v-for="tag in item.post.tags" :key="tag.id">{{tag.name}}</span></div><h2>{{item.post.title}}</h2><p>{{item.post.summary}}</p><footer><time>更新于 {{new Date(item.post.updatedAt).toLocaleDateString('zh-CN')}}</time><strong>阅读全文 <i>→</i></strong></footer></div><div class="timeline-card__cover"><img v-if="item.post.coverUrl" :src="item.post.coverUrl" :alt="item.post.title" loading="lazy"/><EditorialMotif v-else kind="blog" :seed="item.post.title" :label="item.post.title"/></div></RouterLink></li>
       </ol>
       <el-pagination v-if="posts&&posts.total>0" :current-page="filters.page" :page-size="10" :total="posts.total" layout="prev, pager, next" class="blog__pagination" @current-change="goPage"/>
