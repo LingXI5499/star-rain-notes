@@ -6,7 +6,11 @@ import BaseLayout from './BaseLayout.vue'
 <template>
   <BaseLayout>
     <div class="layout-prose">
-      <RouterView />
+      <RouterView v-slot="{ Component, route }">
+        <Transition name="page-view" mode="out-in">
+          <component :is="Component" :key="String(route.name ?? route.path)" />
+        </Transition>
+      </RouterView>
     </div>
   </BaseLayout>
 </template>
