@@ -161,7 +161,7 @@ watch(() => route.params.slug, load)
     </section>
 
     <!-- 05 Gallery -->
-    <ProjectGallery :items="project.gallery ?? []" />
+    <ProjectGallery :items="galleryItems" />
 
     <button v-if="outline.length" class="case-study__drawer-button" type="button" @click="drawerOpen = true">
       本页目录 · {{ outline.length }}
