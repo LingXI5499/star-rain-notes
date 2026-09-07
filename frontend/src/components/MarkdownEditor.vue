@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { uploadMedia } from '@/api/media'
+import { resolveVditorEditorHeight, setVditorFullscreenActive } from '@/lib/markdownEditorChrome'
 import { useThemeStore } from '@/stores/theme'
 
 /**
@@ -8,13 +9,18 @@ import { useThemeStore } from '@/stores/theme'
  * the blog / portfolio / chapter admin editors.
  *
  * - mode "ir": real-time inline preview — markdown renders as you type
- *   (Typora-style), the most intuitive writing experience
  * - stores plain Markdown — the public render pipeline is untouched
  * - image upload goes through the existing media library API
  * - left-side document outline (like the reading-page TOC)
  * - dark theme follows the app theme store
  * - Vditor itself is dynamically imported so the ~1MB library stays in a
  *   lazy chunk loaded only when an editor page opens
+ *
+ * Admin shell notes:
+ * - height MUST be numeric (not "auto"): with "auto", outline clicks call
+ *   window.scrollTo, but the admin page scrolls .admin-shell__content.
+ * - fullscreen must toggle html.is-vditor-fullscreen so CSS can hide the
+ *   sidebar/header stacking context that otherwise covers the editor.
  */
 const props = defineProps<{
   modelValue: string
@@ -34,6 +40,7 @@ type VditorInstance = InstanceType<typeof import('vditor').default>
 let vditor: VditorInstance | null = null
 let suppressing = false
 let ready = false
+let fullscreenObserver: MutationObserver | null = null
 
 // ---------------------------------------------------------------
 // table-size picker (Vditor's built-in table button only inserts a
@@ -81,16 +88,30 @@ function syncTheme(): void {
   vditor.setTheme(dark ? 'dark' : 'classic', dark ? 'dark' : 'light')
 }
 
+function syncFullscreenFlag(element: Element): void {
+  setVditorFullscreenActive(element.classList.contains('vditor--fullscreen'))
+}
+
+function watchFullscreen(element: Element): void {
+  fullscreenObserver?.disconnect()
+  syncFullscreenFlag(element)
+  fullscreenObserver = new MutationObserver(() => syncFullscreenFlag(element))
+  fullscreenObserver.observe(element, { attributes: true, attributeFilter: ['class'] })
+}
+
 onMounted(async () => {
   const { default: Vditor } = await import('vditor')
   await import('vditor/dist/index.css')
   if (!host.value) return
 
+  const editorHeight = resolveVditorEditorHeight(window.innerHeight)
+
   vditor = new Vditor(host.value, {
     mode: 'ir',
     value: props.modelValue ?? '',
     placeholder: props.placeholder ?? '',
-    height: 'auto',
+    // Numeric height: outline sets scrollTop on .vditor-ir (not window).
+    height: editorHeight,
     lang: 'zh_CN',
     theme: 'classic',
     // Keep the frozen "no raw HTML" rule in the editor preview too.
@@ -98,9 +119,7 @@ onMounted(async () => {
     preview: { math: false as never, markdown: { sanitize: true } },
     cache: { enable: false },
     counter: { enable: false },
-    // Fullscreen must float above the admin shell (sidebar/header create
-    // stacking contexts with z-index 10/30); Vditor's default index is 90.
-    fullscreen: { index: 2000 },
+    fullscreen: { index: 10000 },
     // Left-side document outline, like the article TOC on the reading pages.
     outline: { enable: true, position: 'left' },
     toolbar: [
@@ -160,6 +179,7 @@ onMounted(async () => {
         suppressing = false
       }
       syncTheme()
+      if (host.value) watchFullscreen(host.value)
     },
   })
 })
@@ -181,6 +201,9 @@ watch(() => theme.resolved, syncTheme)
 
 onBeforeUnmount(() => {
   ready = false
+  fullscreenObserver?.disconnect()
+  fullscreenObserver = null
+  setVditorFullscreenActive(false)
   vditor?.destroy()
   vditor = null
 })
@@ -204,42 +227,23 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-/* Fill most of the viewport: long on large screens, floored on small.
-   Vditor keeps its own internal scroll inside .vditor-content. */
 .markdown-editor {
   position: relative;
 }
 
-.markdown-editor__host :deep(.vditor) {
-  min-height: max(700px, calc(100vh - 300px));
-}
-
 /*
- * The scroll container MUST be the edit-mode element (.vditor-ir/.vditor-wysiwyg/
- * .vditor-sv), not .vditor-content: Vditor's outline click sets scrollTop on the
- * mode element, so scrolling anywhere else breaks outline navigation.
+ * Numeric Vditor height owns the scroll container (.vditor-ir etc.).
+ * Do not put overflow on .vditor-content — outline click sets scrollTop
+ * on the mode element only.
  */
 .markdown-editor__host :deep(.vditor-content) {
-  max-height: none;
+  overflow: hidden;
 }
 
 .markdown-editor__host :deep(.vditor-ir),
 .markdown-editor__host :deep(.vditor-wysiwyg),
 .markdown-editor__host :deep(.vditor-sv) {
-  max-height: max(780px, calc(100vh - 240px));
   overflow-y: auto;
-}
-
-/* Fullscreen: hand the layout back to Vditor entirely (it sizes the modes
-   itself); our viewport-based caps would leave dead zones and misalign. */
-.markdown-editor__host :deep(.vditor--fullscreen) {
-  min-height: 0;
-}
-
-.markdown-editor__host :deep(.vditor--fullscreen .vditor-ir),
-.markdown-editor__host :deep(.vditor--fullscreen .vditor-wysiwyg),
-.markdown-editor__host :deep(.vditor--fullscreen .vditor-sv) {
-  max-height: none;
 }
 
 /* ---------------------------------------------------------------
@@ -300,10 +304,6 @@ onBeforeUnmount(() => {
 }
 
 @media (max-width: 720px) {
-  .markdown-editor__host :deep(.vditor) {
-    min-height: 540px;
-  }
-
   .markdown-editor__host :deep(.vditor-toolbar) {
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -320,12 +320,6 @@ onBeforeUnmount(() => {
 
   .markdown-editor__host :deep(.vditor-outline) {
     display: none !important;
-  }
-
-  .markdown-editor__host :deep(.vditor-ir),
-  .markdown-editor__host :deep(.vditor-wysiwyg),
-  .markdown-editor__host :deep(.vditor-sv) {
-    max-height: 70vh;
   }
 }
 </style>
