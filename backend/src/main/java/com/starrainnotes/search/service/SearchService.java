@@ -19,15 +19,15 @@ import java.util.List;
 import java.util.Locale;
 
 /**
- * Global search over published tutorials, chapters, blogs, portfolios and
- * the independent English grammar course.
+ * Global search over published tutorials, chapters, blogs, portfolios,
+ * English learning content, and vocabulary words.
  *
  * <p>No ES / Redis / search table — plain indexed LIKE with parameter binding
  * and escaped %/_ wildcards. Ranking: title exact +100, title prefix +80,
  * title contains +60, summary +30, body +10; ties break by activityAt DESC
  * then id DESC. activityAt: Tutorial/Chapter/Portfolio = updatedAt,
  * Blog = publishedAt. `counts` ignores the type filter; `total` applies it.
- * type=tutorial includes Tutorial + Chapter.</p>
+ * type=tutorial includes Tutorial + Chapter; type=word includes vocabulary.</p>
  */
 @Service
 public class SearchService {
@@ -60,10 +60,11 @@ public class SearchService {
         List<Candidate> listening = searchListeningMaterials(pattern, query);
         List<Candidate> pronunciation = searchPronunciationRules(pattern, query);
         List<Candidate> writing = searchWriting(pattern, query);
+        List<Candidate> words = searchVocabulary(pattern, query);
 
         SearchCountsView counts = new SearchCountsView(
                 tutorials.size(), chapters.size(), blogs.size(), portfolios.size(), grammar.size(),
-                reading.size(), listening.size() + pronunciation.size(), writing.size());
+                reading.size(), listening.size() + pronunciation.size(), writing.size(), words.size());
 
         boolean includeTutorial = type == null || type.isBlank() || "tutorial".equals(type);
         boolean includeBlog = type == null || type.isBlank() || "blog".equals(type);
@@ -72,6 +73,7 @@ public class SearchService {
         boolean includeReading = type == null || type.isBlank() || "reading".equals(type);
         boolean includeListening = type == null || type.isBlank() || "listening".equals(type);
         boolean includeWriting = type == null || type.isBlank() || "writing".equals(type);
+        boolean includeWord = type == null || type.isBlank() || "word".equals(type);
 
         List<Candidate> all = new ArrayList<>();
         if (includeTutorial) {
@@ -96,6 +98,9 @@ public class SearchService {
         }
         if (includeWriting) {
             all.addAll(writing);
+        }
+        if (includeWord) {
+            all.addAll(words);
         }
 
         all.sort(Comparator.comparingInt(Candidate::score).reversed()
@@ -276,6 +281,27 @@ public class SearchService {
                                        LocalDateTime updatedAt, String query, String kind) {
         return new Candidate("WRITING", id, title, summary, slug, kind, null, updatedAt,
                 score(query, title, summary, body));
+    }
+
+    private List<Candidate> searchVocabulary(String pattern, String query) {
+        return jdbc.query("""
+                SELECT w.id, w.word, w.translation, w.inflections, w.theme_id, t.name AS theme_name, w.updated_at
+                FROM vocabulary_word w
+                JOIN vocabulary_theme t ON t.id = w.theme_id
+                WHERE w.word LIKE ? OR w.translation LIKE ? OR IFNULL(w.inflections, '') LIKE ?
+                """, (rs, rowNum) -> {
+            String word = rs.getString("word");
+            String translation = rs.getString("translation");
+            String themeName = rs.getString("theme_name");
+            String summary = themeName == null || themeName.isBlank()
+                    ? translation
+                    : translation + " · " + themeName;
+            // tutorialSlug carries themeId so the client can open the theme page.
+            return new Candidate("WORD", rs.getLong("id"), word, summary, null,
+                    String.valueOf(rs.getLong("theme_id")), null,
+                    rs.getTimestamp("updated_at").toLocalDateTime(),
+                    score(query, word, translation, rs.getString("inflections")));
+        }, pattern, pattern, pattern);
     }
 
     // ---------------------------------------------------------------
