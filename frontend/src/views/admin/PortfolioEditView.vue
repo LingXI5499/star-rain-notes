@@ -4,11 +4,22 @@ import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
-import { createProject, fetchAdminProject, updateProject } from '@/api/portfolio'
+import { createProject, fetchAdminProject, updateProject, type ProjectMediaItem } from '@/api/portfolio'
 import type { MediaAsset } from '@/api/media'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import MediaPicker from '@/components/MediaPicker.vue'
 import { useUnsavedGuard } from '@/composables/useUnsavedGuard'
+
+type GalleryDraft = {
+  id: number | null
+  mediaAssetId: number
+  url: string
+  title: string
+  description: string
+  altText: string
+  deviceType: string
+  sortOrder: number
+}
 
 const route = useRoute()
 const router = useRouter()
@@ -18,7 +29,9 @@ const isEdit = computed(() => typeof route.params.id === 'string')
 const loading = ref(true)
 const saving = ref(false)
 const mediaPickerOpen = ref(false)
+const pickerMode = ref<'cover' | 'gallery'>('cover')
 const coverUrl = ref<string | null>(null)
+const gallery = ref<GalleryDraft[]>([])
 
 const form = reactive({
   title: '',
@@ -36,8 +49,20 @@ const form = reactive({
   coverMediaId: null as number | null,
 })
 
-// Unsaved-changes guard + Ctrl/Cmd+S (TASK-011).
-const { capture } = useUnsavedGuard(() => form, save)
+const { capture } = useUnsavedGuard(() => ({ ...form, gallery: gallery.value }), save)
+
+function toDraft(item: ProjectMediaItem): GalleryDraft {
+  return {
+    id: item.id,
+    mediaAssetId: item.mediaAssetId,
+    url: item.url,
+    title: item.title ?? '',
+    description: item.description ?? '',
+    altText: item.altText ?? '',
+    deviceType: item.deviceType || 'DESKTOP',
+    sortOrder: item.sortOrder ?? 0,
+  }
+}
 
 onMounted(async () => {
   try {
@@ -59,8 +84,10 @@ onMounted(async () => {
         coverMediaId: detail.coverMediaId,
       })
       coverUrl.value = detail.coverUrl
+      gallery.value = (detail.gallery ?? []).map(toDraft)
     } else {
       form.techStack = []
+      gallery.value = []
     }
   } catch {
     ElMessage.error('加载失败。')
@@ -91,6 +118,15 @@ async function save() {
       startedAt: form.startedAt,
       completedAt: form.completedAt,
       coverMediaId: form.coverMediaId,
+      gallery: gallery.value.map((item, index) => ({
+        id: item.id,
+        mediaAssetId: item.mediaAssetId,
+        title: item.title || null,
+        description: item.description || null,
+        altText: item.altText || null,
+        deviceType: item.deviceType || 'DESKTOP',
+        sortOrder: index * 10,
+      })),
     }
     if (isEdit.value) {
       await updateProject(Number(route.params.id), payload)
@@ -108,18 +144,54 @@ async function save() {
   }
 }
 
-function selectCover(asset: MediaAsset) {
+function openCoverPicker() {
+  pickerMode.value = 'cover'
+  mediaPickerOpen.value = true
+}
+
+function openGalleryPicker() {
+  pickerMode.value = 'gallery'
+  mediaPickerOpen.value = true
+}
+
+function selectMedia(asset: MediaAsset) {
   if (asset.assetType !== 'IMAGE') {
-    ElMessage.warning('封面只能选择图片。')
+    ElMessage.warning('只能选择图片。')
     return
   }
-  form.coverMediaId = asset.id
-  coverUrl.value = asset.publicUrl
+  if (pickerMode.value === 'cover') {
+    form.coverMediaId = asset.id
+    coverUrl.value = asset.publicUrl
+    return
+  }
+  gallery.value.push({
+    id: null,
+    mediaAssetId: asset.id,
+    url: asset.publicUrl,
+    title: '',
+    description: '',
+    altText: '',
+    deviceType: 'DESKTOP',
+    sortOrder: gallery.value.length * 10,
+  })
 }
 
 function clearCover() {
   form.coverMediaId = null
   coverUrl.value = null
+}
+
+function removeGalleryItem(index: number) {
+  gallery.value.splice(index, 1)
+}
+
+function moveGalleryItem(index: number, delta: number) {
+  const target = index + delta
+  if (target < 0 || target >= gallery.value.length) return
+  const copy = [...gallery.value]
+  const [row] = copy.splice(index, 1)
+  copy.splice(target, 0, row)
+  gallery.value = copy
 }
 </script>
 
@@ -191,7 +263,7 @@ function clearCover() {
               <div v-else><strong>作</strong><span>建议使用 16:9 项目截图</span></div>
             </div>
             <div class="portfolio-edit__cover-actions">
-              <el-button @click="mediaPickerOpen = true">选择封面</el-button>
+              <el-button @click="openCoverPicker">选择封面</el-button>
               <el-button v-if="form.coverMediaId" type="danger" plain @click="clearCover">移除</el-button>
             </div>
           </el-form-item>
@@ -201,12 +273,39 @@ function clearCover() {
         </div>
       </div>
 
+      <div class="portfolio-edit__meta portfolio-edit__gallery">
+        <div class="portfolio-edit__section-head">
+          <div><small>PROJECT GALLERY</small><h2>项目截图</h2></div>
+          <el-button type="primary" plain @click="openGalleryPicker">添加截图</el-button>
+        </div>
+        <p class="portfolio-edit__outline-note">手动切换、不自动播放。可为每张图填写标题与说明。</p>
+        <div v-if="!gallery.length" class="portfolio-edit__gallery-empty">尚未添加截图。</div>
+        <div v-for="(item, index) in gallery" :key="`${item.mediaAssetId}-${index}`" class="portfolio-edit__gallery-item">
+          <img :src="item.url" :alt="item.altText || item.title || `截图 ${index + 1}`" />
+          <div class="portfolio-edit__gallery-fields">
+            <el-input v-model="item.title" placeholder="标题，如：教程阅读页" maxlength="200" />
+            <el-input v-model="item.description" type="textarea" :rows="2" placeholder="说明" maxlength="1000" />
+            <el-input v-model="item.altText" placeholder="ALT 文本" maxlength="300" />
+            <div class="portfolio-edit__gallery-actions">
+              <el-select v-model="item.deviceType" style="width: 140px">
+                <el-option label="Desktop" value="DESKTOP" />
+                <el-option label="Mobile" value="MOBILE" />
+                <el-option label="Tablet" value="TABLET" />
+              </el-select>
+              <el-button @click="moveGalleryItem(index, -1)" :disabled="index === 0">上移</el-button>
+              <el-button @click="moveGalleryItem(index, 1)" :disabled="index === gallery.length - 1">下移</el-button>
+              <el-button type="danger" plain @click="removeGalleryItem(index)">删除</el-button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div class="portfolio-edit__actions">
         <el-button @click="router.push({ name: 'admin-portfolio' })">取消</el-button>
         <el-button type="primary" :loading="saving" @click="save">保存作品</el-button>
       </div>
     </el-form>
-    <MediaPicker v-model="mediaPickerOpen" @select="selectCover" />
+    <MediaPicker v-model="mediaPickerOpen" @select="selectMedia" />
   </section>
 </template>
 
@@ -270,6 +369,25 @@ function clearCover() {
 .portfolio-edit__cover strong { color:var(--primary); font:700 42px/1 Georgia,serif; }
 .portfolio-edit__cover span { font-size:12px; }
 .portfolio-edit__cover-actions { display:flex; gap:var(--space-2); margin-top:var(--space-3); }
+
+.portfolio-edit__gallery { margin-top: var(--space-6); }
+.portfolio-edit__gallery-empty { color: var(--text-muted); font-size: 13px; padding: 12px 0; }
+.portfolio-edit__gallery-item {
+  display: grid;
+  grid-template-columns: 180px minmax(0, 1fr);
+  gap: var(--space-4);
+  padding: 14px 0;
+  border-top: 1px solid var(--border);
+}
+.portfolio-edit__gallery-item img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.portfolio-edit__gallery-fields { display: grid; gap: 8px; }
+.portfolio-edit__gallery-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 
 .portfolio-edit__actions {
   display:flex;

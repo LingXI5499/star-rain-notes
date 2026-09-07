@@ -34,6 +34,28 @@ export interface PublicProjectDetail {
   updatedAt: string
   previous: PrevNextProject | null
   next: PrevNextProject | null
+  gallery: ProjectMediaItem[]
+}
+
+export interface ProjectMediaItem {
+  id: number | null
+  mediaAssetId: number
+  url: string
+  title: string | null
+  description: string | null
+  altText: string | null
+  deviceType: string
+  sortOrder: number
+}
+
+export interface ProjectMediaPayload {
+  id?: number | null
+  mediaAssetId: number
+  title?: string | null
+  description?: string | null
+  altText?: string | null
+  deviceType?: string
+  sortOrder?: number
 }
 
 export interface PrevNextProject {
@@ -89,6 +111,7 @@ export interface AdminProjectDetail {
   publishedAt: string | null
   createdAt: string
   updatedAt: string
+  gallery: ProjectMediaItem[]
 }
 
 export interface ProjectPayload {
@@ -108,6 +131,7 @@ export interface ProjectPayload {
   completedAt?: string | null
   seoTitle?: string | null
   seoDescription?: string | null
+  gallery?: ProjectMediaPayload[]
 }
 
 export async function fetchPublicProjects(): Promise<PublicProjectSummary[]> {

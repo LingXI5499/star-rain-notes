@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 /**
- * Public portfolio case-study detail with adjacent published projects.
+ * Public portfolio case-study detail with adjacent published projects and gallery.
  */
 public record PublicProjectDetailView(
         Long id,
@@ -25,5 +25,6 @@ public record PublicProjectDetailView(
         String publishedAt,
         String updatedAt,
         PrevNextProjectView previous,
-        PrevNextProjectView next) {
+        PrevNextProjectView next,
+        List<ProjectMediaView> gallery) {
 }

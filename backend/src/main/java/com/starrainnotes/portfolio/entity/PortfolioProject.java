@@ -16,8 +16,8 @@ import java.util.List;
  *
  * <p>publish_status (DRAFT/PUBLISHED/WITHDRAWN) and project_status
  * (DEVELOPING/COMPLETED/ONLINE) are fully independent states — never merged
- * (AGENTS.md). The case-study body plus screenshots live in body_markdown;
- * there is no gallery table.</p>
+ * (AGENTS.md). Cover uses cover_media_id; multi-image gallery lives in
+ * portfolio_project_media.</p>
  */
 @TableName(value = "portfolio_project", autoResultMap = true)
 public class PortfolioProject {
