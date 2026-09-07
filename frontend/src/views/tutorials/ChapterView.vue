@@ -14,7 +14,15 @@ import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import ArticleOutline from '@/components/ArticleOutline.vue'
 import TutorialCurriculumList from '@/components/TutorialCurriculumList.vue'
 import { applyPageMeta } from '@/lib/seo'
+import { createFetchCache } from '@/lib/fetch-cache'
 import type { OutlineItem } from '@/types'
+
+/**
+ * Session-lived curriculum cache: switching chapters inside one tutorial must
+ * NOT refetch (nor re-render) the whole navigation tree, so the sidebar keeps
+ * its scroll position (导航稳定性, upgrade plan §3).
+ */
+const detailCache = createFetchCache<PublicTutorialDetail>((slug) => fetchPublicTutorialDetail(slug))
 
 const route = useRoute()
 const { classes: readingClasses } = useReadingPreferences()
@@ -26,6 +34,8 @@ const outline = ref<OutlineItem[]>([])
 const drawerOpen = ref(false)
 const notFound = ref(false)
 const loadFailed = ref(false)
+/** True while a sibling chapter is being fetched with the layout kept mounted. */
+const chapterLoading = ref(false)
 
 // Real, derived reading stats (no fabricated metrics).
 const charCount = computed(() => (chapter.value?.bodyMarkdown ?? '').length)
@@ -55,15 +65,22 @@ async function load() {
   const chapterSlug = route.params.chapterSlug as string
   notFound.value = false
   loadFailed.value = false
-  outline.value = []
   drawerOpen.value = false
-  chapter.value = null
+  // Same tutorial → keep the whole layout (sidebar included) mounted and only
+  // swap the article body; a different tutorial starts from a clean slate.
+  if (detail.value?.slug !== tutorialSlug) {
+    chapter.value = null
+    detail.value = detailCache.peek(tutorialSlug) ?? null
+    outline.value = []
+  }
+  chapterLoading.value = true
   try {
     const [ch, det] = await Promise.all([
       fetchPublicChapter(tutorialSlug, chapterSlug),
-      fetchPublicTutorialDetail(tutorialSlug),
+      detailCache.load(tutorialSlug),
     ])
     if (version !== loadVersion) return
+    outline.value = []
     chapter.value = ch
     detail.value = det
     applyPageMeta({
@@ -82,6 +99,8 @@ async function load() {
       loadFailed.value = true
       applyPageMeta({ title: '加载失败', robots: 'noindex,nofollow' })
     }
+  } finally {
+    if (version === loadVersion) chapterLoading.value = false
   }
 }
 
@@ -130,7 +149,7 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
     </aside>
 
     <!-- article -->
-    <article class="reader__article">
+    <article class="reader__article" :class="{ 'is-loading': chapterLoading }" :aria-busy="chapterLoading">
       <nav class="reader__breadcrumb" aria-label="面包屑">
         <RouterLink :to="`/tutorials/${detail.slug}`">{{ chapter.tutorialTitle }}</RouterLink>
         <template v-for="crumb in chapter.breadcrumbs" :key="`${crumb.type}-${crumb.id}`">
@@ -258,6 +277,13 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
   min-width: 0;
   width: 100%;
   padding: 0 clamp(0px,1vw,12px);
+  transition: opacity 160ms ease;
+}
+
+/* Sibling-chapter swap: dim only the article; sidebar + TOC stay put. */
+.reader__article.is-loading {
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .reader__breadcrumb {
@@ -486,6 +512,7 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
 @media (prefers-reduced-motion: reduce) {
   .reader__progress-bar,
   .reader__prevnext-link,
+  .reader__article,
   .reader__drawer-toggle { transition: none; }
 }
 </style>
