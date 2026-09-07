@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import type { CurriculumNode } from '@/api/tutorial'
 
@@ -11,10 +12,28 @@ const props = defineProps<{
 function chapterUrl(chapter: CurriculumNode) {
   return `/tutorials/${props.tutorialSlug}/${chapter.slug ?? ''}`
 }
+
+const rootRef = ref<HTMLElement | null>(null)
+
+/**
+ * Keep the active chapter visible inside the (scrollable) sidebar: on deep
+ * links it brings the current chapter into view, and after prev/next
+ * navigation it follows along. `block: 'nearest'` is a no-op when the item
+ * is already visible, so it never fights the user's own scrolling.
+ */
+async function revealActive() {
+  await nextTick()
+  rootRef.value
+    ?.querySelector('.curriculum__chapter--active')
+    ?.scrollIntoView({ block: 'nearest' })
+}
+
+onMounted(revealActive)
+watch(() => props.activeChapterSlug, revealActive)
 </script>
 
 <template>
-  <ul class="curriculum">
+  <ul ref="rootRef" class="curriculum">
     <li v-for="group in nodes" :key="group.id" class="curriculum__group-card">
       <div class="curriculum__group-head">
         <span class="curriculum__group-dot" aria-hidden="true" />
