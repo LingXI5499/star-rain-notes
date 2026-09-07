@@ -17,6 +17,8 @@ import java.util.Map;
 public class SeoContentRepository {
     private final JdbcTemplate jdbc;
     private final SeoMarkdownRenderer markdown;
+    private final BoundedSeoCache<SiteIdentity> identity = new BoundedSeoCache<>(1, 300_000L, System::currentTimeMillis);
+    private final BoundedSeoCache<String> author = new BoundedSeoCache<>(1, 300_000L, System::currentTimeMillis);
 
     public SeoContentRepository(JdbcTemplate jdbc, SeoMarkdownRenderer markdown) {
         this.jdbc = jdbc;
@@ -24,13 +26,20 @@ public class SeoContentRepository {
     }
 
     public SiteIdentity site() {
-        return jdbc.query("SELECT site_name,tagline,default_seo_description,github_url FROM site_setting WHERE id=1",
+        return identity.get("site", () -> jdbc.query("SELECT site_name,tagline,default_seo_description,github_url FROM site_setting WHERE id=1",
                 rs -> rs.next() ? new SiteIdentity(rs.getString(1), first(rs.getString(2), rs.getString(3), "建立自己的知识世界"), rs.getString(4))
-                        : new SiteIdentity("星雨笔录", "建立自己的知识世界", null));
+                        : new SiteIdentity("星雨笔录", "建立自己的知识世界", null)));
     }
 
     public String authorName() {
-        return jdbc.query("SELECT display_name FROM profile WHERE id=1", rs -> rs.next() ? first(rs.getString(1), "零燨") : "零燨");
+        return author.get("author", () -> jdbc.query("SELECT display_name FROM profile WHERE id=1", rs -> rs.next() ? first(rs.getString(1), "零燨") : "零燨"));
+    }
+
+    @org.springframework.transaction.event.TransactionalEventListener(phase = org.springframework.transaction.event.TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
+    @org.springframework.core.annotation.Order(-100)
+    public void contentChanged(SeoContentChangedEvent ignored) {
+        identity.clear();
+        author.clear();
     }
 
     public SeoPage resolve(String rawPath) {

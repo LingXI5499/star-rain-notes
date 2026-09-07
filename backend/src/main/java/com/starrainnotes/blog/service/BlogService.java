@@ -105,6 +105,8 @@ public class BlogService {
         }
 
         Long total = postMapper.selectCount(wrapper);
+        wrapper.select(BlogPost::getId, BlogPost::getTitle, BlogPost::getSlug, BlogPost::getSummary,
+                BlogPost::getCoverMediaId, BlogPost::getPublishStatus, BlogPost::getPublishedAt, BlogPost::getUpdatedAt);
         wrapper.last("LIMIT " + safeSize + " OFFSET " + ((safePage - 1) * safeSize));
         List<BlogPost> rows = postMapper.selectList(wrapper);
         Map<Long, List<BlogTagView>> tagsByPost = tagsForAdminPosts(rows.stream().map(BlogPost::getId).toList());
@@ -228,6 +230,8 @@ public class BlogService {
         wrapper.orderByDesc(BlogPost::getPublishedAt).orderByDesc(BlogPost::getId);
 
         Long total = postMapper.selectCount(wrapper);
+        wrapper.select(BlogPost::getId, BlogPost::getTitle, BlogPost::getSlug, BlogPost::getSummary,
+                BlogPost::getCoverMediaId, BlogPost::getPublishedAt, BlogPost::getUpdatedAt);
         wrapper.last("LIMIT " + safeSize + " OFFSET " + ((safePage - 1) * safeSize));
         List<BlogPost> rows = postMapper.selectList(wrapper);
 
@@ -268,6 +272,7 @@ public class BlogService {
         YearMonth yearMonth = parseMonth(month);
         LocalDateTime[] bounds = monthBounds(yearMonth);
         List<BlogPost> posts = postMapper.selectList(new LambdaQueryWrapper<BlogPost>()
+                .select(BlogPost::getPublishedAt)
                 .eq(BlogPost::getPublishStatus, PUBLISHED)
                 .ge(BlogPost::getPublishedAt, bounds[0])
                 .lt(BlogPost::getPublishedAt, bounds[1]));
@@ -282,6 +287,7 @@ public class BlogService {
 
     public List<ArchiveYearView> archive() {
         List<BlogPost> posts = postMapper.selectList(new LambdaQueryWrapper<BlogPost>()
+                .select(BlogPost::getPublishedAt)
                 .eq(BlogPost::getPublishStatus, PUBLISHED));
         Map<Integer, Map<YearMonth, Long>> byYear = new TreeMapDesc();
         for (BlogPost post : posts) {
@@ -373,9 +379,8 @@ public class BlogService {
         if (tagIds == null || tagIds.isEmpty()) {
             return;
         }
-        for (Long tagId : tagIds.stream().distinct().toList()) {
-            jdbc.update("INSERT INTO blog_post_tag (blog_post_id, blog_tag_id) VALUES (?, ?)", postId, tagId);
-        }
+        jdbc.batchUpdate("INSERT INTO blog_post_tag (blog_post_id, blog_tag_id) VALUES (?, ?)",
+                tagIds.stream().distinct().map(tagId -> new Object[]{postId, tagId}).toList());
     }
 
     private List<BlogTagView> tagsOf(Long postId) {

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import ReadingControls from '@/components/ui/ReadingControls.vue'
+import { useReadingPreferences } from '@/composables/useReadingPreferences'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
 import { fetchPublicPost, type PublicPostDetail } from '@/api/blog'
@@ -9,18 +11,40 @@ import { applyPageMeta } from '@/lib/seo'
 import type { OutlineItem } from '@/types'
 
 const route=useRoute();const post=ref<PublicPostDetail|null>(null);const outline=ref<OutlineItem[]>([]);const notFound=ref(false);const loadFailed=ref(false);const drawerOpen=ref(false)
+const { classes: readingClasses } = useReadingPreferences()
+let loadVersion = 0
+onBeforeUnmount(() => { loadVersion++ })
 const readMinutes=computed(()=>post.value?Math.max(1,Math.round((post.value.bodyMarkdown?.length??0)/400)):0)
 watch(post,(current)=>{if(current)current.summary=current.summary.replace(/[`*_~>#\[\]]/g,'').replace(/\s+/g,' ').trim()},{flush:'sync'})
 function formatDate(iso:string){const d=new Date(iso);return Number.isNaN(d.getTime())?iso:d.toLocaleDateString('zh-CN',{year:'numeric',month:'long',day:'numeric'})}
-async function load(){post.value=null;outline.value=[];notFound.value=false;loadFailed.value=false;drawerOpen.value=false;try{post.value=await fetchPublicPost(route.params.slug as string);applyPageMeta({title:post.value.title,description:post.value.summary,type:'article',image:post.value.coverUrl,publishedAt:post.value.publishedAt,modifiedAt:post.value.updatedAt})}catch(error){if(error instanceof AxiosError&&error.response?.status===404){notFound.value=true;applyPageMeta({title:'页面未找到',robots:'noindex,nofollow'})}else{loadFailed.value=true;applyPageMeta({title:'加载失败',robots:'noindex,nofollow'})}}}
-onMounted(load);watch(()=>route.params.slug,load)
+async function load() {
+  const version = ++loadVersion
+  post.value = null
+  outline.value = []
+  notFound.value = false
+  loadFailed.value = false
+  drawerOpen.value = false
+  try {
+    const result = await fetchPublicPost(route.params.slug as string)
+    if (version !== loadVersion) return
+    post.value = result
+    applyPageMeta({ title: result.title, description: result.summary, type: 'article', image: result.coverUrl, publishedAt: result.publishedAt, modifiedAt: result.updatedAt })
+  } catch (error) {
+    if (version !== loadVersion) return
+    notFound.value = error instanceof AxiosError && error.response?.status === 404
+    loadFailed.value = !notFound.value
+    applyPageMeta({ title: notFound.value ? '页面未找到' : '加载失败', robots: 'noindex,nofollow' })
+  }
+}
+watch(() => route.params.slug, load, { immediate: true })
 </script>
 
 <template>
   <section v-if="notFound||loadFailed" class="article-state"><strong>{{notFound?'文章不存在或尚未公开':'加载失败，请稍后重试'}}</strong><RouterLink to="/blog">返回博客</RouterLink></section>
-  <article v-else-if="post" class="article" :class="{'article--no-toc':!outline.length}">
+  <article v-else-if="post" class="article" :class="[readingClasses, {'article--no-toc':!outline.length}]">
     <header class="article-hero"><nav><RouterLink to="/blog">博客时间线</RouterLink><span>/</span><span>文章详情</span></nav><div class="article-hero__tags"><RouterLink v-for="tag in post.tags" :key="tag.id" :to="{path:'/blog',query:{tag:tag.slug}}"># {{tag.name}}</RouterLink></div><h1>{{post.title}}</h1><p>{{post.summary}}</p><div class="article-hero__meta"><span>{{formatDate(post.publishedAt)}}</span><span>约 {{readMinutes}} 分钟阅读</span><span v-if="post.updatedAt!==post.publishedAt">更新于 {{formatDate(post.updatedAt)}}</span></div></header>
-    <div v-if="post.coverUrl" class="article__cover"><img :src="post.coverUrl" :alt="post.title"/></div>
+    <div v-if="post.coverUrl" class="article__cover"><img :src="post.coverUrl" :alt="post.title" fetchpriority="high" decoding="async"/></div>
+    <ReadingControls />
     <button v-if="outline.length" class="article__drawer-button" @click="drawerOpen=true">本页目录 · {{outline.length}}</button>
     <div class="article__reading"><main class="article__body"><MarkdownRenderer :source="post.bodyMarkdown" @outline="outline=$event"/><nav class="article-nav"><RouterLink v-if="post.previous" :to="`/blog/${post.previous.slug}`"><small>上一篇</small><strong>← {{post.previous.title}}</strong></RouterLink><span v-else/><RouterLink v-if="post.next" :to="`/blog/${post.next.slug}`" class="next"><small>下一篇</small><strong>{{post.next.title}} →</strong></RouterLink></nav></main><aside v-if="outline.length" class="article__toc"><ArticleOutline :items="outline"/><div class="article__toc-meta"><span>READING TIME</span><strong>{{readMinutes}} MIN</strong></div></aside></div>
     <div v-if="drawerOpen" class="article-drawer" @click.self="drawerOpen=false"><div><header><strong>本页目录</strong><button @click="drawerOpen=false">×</button></header><ArticleOutline :items="outline"/></div></div>

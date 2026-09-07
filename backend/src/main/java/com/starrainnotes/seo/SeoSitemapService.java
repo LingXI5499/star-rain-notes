@@ -17,7 +17,7 @@ public class SeoSitemapService {
     private static final long CACHE_MILLIS = 300_000L;
     private final JdbcTemplate jdbc;
     private final SeoProperties properties;
-    private volatile CachedSitemap cached;
+    private final BoundedSeoCache<String> cache = new BoundedSeoCache<>(1, CACHE_MILLIS, System::currentTimeMillis);
 
     public SeoSitemapService(JdbcTemplate jdbc, SeoProperties properties) {
         this.jdbc = jdbc;
@@ -25,12 +25,7 @@ public class SeoSitemapService {
     }
 
     public String sitemap() {
-        long now = System.currentTimeMillis();
-        CachedSitemap current = cached;
-        if (current != null && current.expiresAt() > now) return current.xml();
-        String xml = buildSitemap();
-        cached = new CachedSitemap(xml, now + CACHE_MILLIS);
-        return xml;
+        return cache.get("sitemap", this::buildSitemap);
     }
 
     private String buildSitemap() {
@@ -59,7 +54,7 @@ public class SeoSitemapService {
 
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, fallbackExecution = true)
     public void contentChanged(SeoContentChangedEvent ignored) {
-        cached = null;
+        cache.clear();
     }
 
     private void add(List<Entry> entries, String sql) {
@@ -68,5 +63,4 @@ public class SeoSitemapService {
     }
     private String escape(String value) { return HtmlUtils.htmlEscape(value); }
     private record Entry(String path, Timestamp updatedAt) {}
-    private record CachedSitemap(String xml, long expiresAt) {}
 }

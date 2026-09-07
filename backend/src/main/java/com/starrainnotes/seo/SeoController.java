@@ -40,7 +40,7 @@ public class SeoController {
 
     @GetMapping(value = "/sitemap.xml", produces = MediaType.APPLICATION_XML_VALUE)
     public ResponseEntity<String> sitemap() {
-        return ResponseEntity.ok().cacheControl(CacheControl.maxAge(5, TimeUnit.MINUTES).cachePublic()).body(sitemap.sitemap());
+        return ResponseEntity.ok().cacheControl(CacheControl.noCache()).body(sitemap.sitemap());
     }
 
     @GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)

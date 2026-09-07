@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import ReadingControls from '@/components/ui/ReadingControls.vue'
+import { useReadingPreferences } from '@/composables/useReadingPreferences'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
 import {
@@ -15,6 +17,9 @@ import { applyPageMeta } from '@/lib/seo'
 import type { OutlineItem } from '@/types'
 
 const route = useRoute()
+const { classes: readingClasses } = useReadingPreferences()
+let loadVersion = 0
+onBeforeUnmount(() => { loadVersion++ })
 const chapter = ref<PublicChapter | null>(null)
 const detail = ref<PublicTutorialDetail | null>(null)
 const outline = ref<OutlineItem[]>([])
@@ -45,17 +50,20 @@ function formatDate(iso: string): string {
 }
 
 async function load() {
+  const version = ++loadVersion
   const tutorialSlug = route.params.tutorialSlug as string
   const chapterSlug = route.params.chapterSlug as string
   notFound.value = false
   loadFailed.value = false
   outline.value = []
   drawerOpen.value = false
+  chapter.value = null
   try {
     const [ch, det] = await Promise.all([
       fetchPublicChapter(tutorialSlug, chapterSlug),
       fetchPublicTutorialDetail(tutorialSlug),
     ])
+    if (version !== loadVersion) return
     chapter.value = ch
     detail.value = det
     applyPageMeta({
@@ -66,6 +74,7 @@ async function load() {
       modifiedAt: ch.updatedAt,
     })
   } catch (error) {
+    if (version !== loadVersion) return
     if (error instanceof AxiosError && error.response?.status === 404) {
       notFound.value = true
       applyPageMeta({ title: '页面未找到', robots: 'noindex,nofollow' })
@@ -76,9 +85,7 @@ async function load() {
   }
 }
 
-onMounted(load)
-watch(() => route.params.tutorialSlug, load)
-watch(() => route.params.chapterSlug, load)
+watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immediate: true })
 
 </script>
 
@@ -91,7 +98,7 @@ watch(() => route.params.chapterSlug, load)
     <p class="reader__empty">加载失败，请稍后重试。</p>
   </section>
 
-  <section v-else-if="chapter && detail" class="reader">
+  <section v-else-if="chapter && detail" class="reader" :class="readingClasses">
     <button
       type="button"
       class="reader__drawer-toggle"
@@ -143,6 +150,7 @@ watch(() => route.params.chapterSlug, load)
         </div>
       </header>
 
+      <ReadingControls />
       <div id="reader-body" class="reader__body">
         <MarkdownRenderer :source="chapter.bodyMarkdown" @outline="outline = $event" />
       </div>
