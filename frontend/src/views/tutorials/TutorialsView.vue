@@ -8,7 +8,6 @@ import {
   type PublicTutorialSummary,
 } from '@/api/tutorial'
 import TutorialCategoryNav from '@/components/TutorialCategoryNav.vue'
-import EditorialMotif from '@/components/visual/EditorialMotif.vue'
 import ContentSkeleton from '@/components/ui/ContentSkeleton.vue'
 
 const route = useRoute()
@@ -138,12 +137,6 @@ watch(() => route.query.categorySlug, (value) => {
             :to="tutorial.firstChapterSlug ? `/tutorials/${tutorial.slug}/${tutorial.firstChapterSlug}` : `/tutorials/${tutorial.slug}`"
             class="tutorial-card"
           >
-            <div v-if="tutorial.coverUrl" class="tutorial-card__cover">
-              <img :src="tutorial.coverUrl" :alt="tutorial.title" loading="lazy" decoding="async" />
-            </div>
-            <div v-else class="tutorial-card__cover tutorial-card__cover--placeholder">
-              <EditorialMotif kind="tutorial" :seed="`${tutorial.categoryName}:${tutorial.title}`" :label="tutorial.title" />
-            </div>
             <div class="tutorial-card__body">
               <p class="tutorial-card__category">{{ tutorial.categoryName }}</p>
               <h3>{{ tutorial.title }}</h3>
@@ -203,13 +196,10 @@ watch(() => route.query.categorySlug, (value) => {
 .tutorial-catalog__search:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb,var(--primary) 12%,transparent); }
 .tutorial-catalog__search input { min-width: 0; flex: 1; border: 0; outline: 0; color: var(--text-primary); background: none; }
 .tutorial-catalog__grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(min(280px,100%),1fr)); gap: var(--space-5); }
-.tutorial-card { min-width: 0; overflow: hidden; display: flex; flex-direction: column; min-height: 330px; border: 1px solid var(--border); border-radius: 18px; color: var(--text-primary); background: var(--bg-surface); transition: transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease; }
+.tutorial-card { min-width: 0; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 16px; color: var(--text-primary); background: var(--bg-surface); transition: transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease; }
 .tutorial-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb,var(--primary) 55%,var(--border)); box-shadow: 0 14px 35px rgb(0 0 0/.09); }
-.tutorial-card__cover { aspect-ratio: 16/6.8; min-height: 118px; overflow: hidden; background: var(--bg-subtle); }
-.tutorial-card__cover img { width: 100%; height: 100%; display: block; object-fit: cover; transition: transform 240ms ease; }
-.tutorial-card:hover .tutorial-card__cover img { transform: scale(1.03); }
-.tutorial-card__cover--placeholder { display: grid; place-items: center; background: linear-gradient(135deg,color-mix(in srgb,var(--primary) 18%,var(--bg-surface)),color-mix(in srgb,var(--accent) 11%,var(--bg-surface))); }
-.tutorial-card__cover--placeholder span { color: color-mix(in srgb,var(--primary) 80%,var(--text-primary)); font-size: 36px; font-weight: 800; letter-spacing: .08em; opacity: .75; }
+.tutorial-card::before { content: ''; display: block; height: 3px; background: linear-gradient(90deg, color-mix(in srgb,var(--primary) 55%,transparent), color-mix(in srgb,var(--accent) 35%,transparent) 65%, transparent); opacity: .55; }
+.tutorial-card:hover::before { opacity: 1; }
 .tutorial-card__body { flex: 1; display: flex; flex-direction: column; padding: var(--space-5); }
 .tutorial-card__category { margin-bottom: var(--space-2); color: var(--accent); font-size: 12px; }
 .tutorial-card h3 { margin-bottom: var(--space-3); font-size: 19px; line-height: 1.45; }
@@ -221,7 +211,7 @@ watch(() => route.query.categorySlug, (value) => {
 .tutorial-card:hover .tutorial-card__cta { color: var(--on-primary); background: var(--primary); box-shadow: 0 8px 20px color-mix(in srgb,var(--primary) 22%,transparent); }
 .tutorial-card:hover .tutorial-card__cta span { color: var(--primary); background: var(--on-primary); transform: translateX(2px); }
 .tutorial-catalog__empty { padding: var(--space-10); border: 1px dashed var(--border-strong); border-radius: var(--radius-md); color: var(--text-muted); text-align: center; }
-@media (prefers-reduced-motion: reduce) { .tutorial-catalog__all,.tutorial-catalog__search,.tutorial-card,.tutorial-card__cover img,.tutorial-card__cta,.tutorial-card__cta span { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .tutorial-catalog__all,.tutorial-catalog__search,.tutorial-card,.tutorial-card__cta,.tutorial-card__cta span { transition: none; } }
 @media (max-width: 900px) { .tutorial-catalog__hero { align-items: flex-start; } .tutorial-catalog__summary { display: none; } .tutorial-catalog__layout { grid-template-columns: 1fr; } .tutorial-catalog__sidebar { position: static; max-height: none; } }
 @media (max-width: 620px) { .tutorial-catalog__content-head { align-items: stretch; flex-direction: column; } .tutorial-catalog__search { width: 100%; } .tutorial-catalog__grid { grid-template-columns: 1fr; } }
 </style>

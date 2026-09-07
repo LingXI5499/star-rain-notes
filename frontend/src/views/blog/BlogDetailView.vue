@@ -1,7 +1,5 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, watch } from 'vue'
-import ReadingControls from '@/components/ui/ReadingControls.vue'
-import { useReadingPreferences } from '@/composables/useReadingPreferences'
+import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
 import { fetchPublicPost, type PublicPostDetail } from '@/api/blog'
@@ -17,7 +15,6 @@ const outline = ref<OutlineItem[]>([])
 const notFound = ref(false)
 const loadFailed = ref(false)
 const drawerOpen = ref(false)
-const { classes: readingClasses } = useReadingPreferences()
 const { swapping, begin, isCurrent, finish } = useStableContentSwap()
 const readMinutes = computed(() => (post.value ? Math.max(1, Math.round((post.value.bodyMarkdown?.length ?? 0) / 400)) : 0))
 watch(post, (current) => {
@@ -57,15 +54,13 @@ async function load() {
   }
 }
 watch(() => route.params.slug, load, { immediate: true })
-onBeforeUnmount(() => { /* swap version invalidated via unmount of composable refs */ })
 </script>
 
 <template>
   <section v-if="(notFound || loadFailed) && !post" class="article-state"><strong>{{ notFound ? '文章不存在或尚未公开' : '加载失败，请稍后重试' }}</strong><RouterLink to="/blog">返回博客</RouterLink></section>
-  <article v-else-if="post" class="article" :class="[readingClasses, { 'article--no-toc': !outline.length, 'is-swapping': swapping }]" :aria-busy="swapping">
+  <article v-else-if="post" class="article" :class="{ 'article--no-toc': !outline.length, 'is-swapping': swapping }" :aria-busy="swapping">
     <header class="article-hero"><nav><RouterLink to="/blog">博客时间线</RouterLink><span>/</span><span>文章详情</span></nav><div class="article-hero__tags"><RouterLink v-for="tag in post.tags" :key="tag.id" :to="{ path: '/blog', query: { tag: tag.slug } }"># {{ tag.name }}</RouterLink></div><h1>{{ post.title }}</h1><p>{{ post.summary }}</p><div class="article-hero__meta"><span>{{ formatDate(post.publishedAt) }}</span><span>约 {{ readMinutes }} 分钟阅读</span><span v-if="post.updatedAt !== post.publishedAt">更新于 {{ formatDate(post.updatedAt) }}</span></div></header>
     <div v-if="post.coverUrl" class="article__cover"><img :src="post.coverUrl" :alt="post.title" fetchpriority="high" decoding="async" /></div>
-    <ReadingControls />
     <button v-if="outline.length" class="article__drawer-button" @click="drawerOpen = true">本页目录 · {{ outline.length }}</button>
     <div class="article__reading"><main class="article__body"><MarkdownRenderer :source="post.bodyMarkdown" @outline="outline = $event" /><nav class="article-nav"><RouterLink v-if="post.previous" :to="`/blog/${post.previous.slug}`"><small>上一篇</small><strong>← {{ post.previous.title }}</strong></RouterLink><span v-else /><RouterLink v-if="post.next" :to="`/blog/${post.next.slug}`" class="next"><small>下一篇</small><strong>{{ post.next.title }} →</strong></RouterLink></nav></main><aside v-if="outline.length" class="article__toc"><ArticleOutline :items="outline" /><div class="article__toc-meta"><span>READING TIME</span><strong>{{ readMinutes }} MIN</strong></div></aside></div>
     <div v-if="drawerOpen" class="article-drawer" @click.self="drawerOpen = false"><div><header><strong>本页目录</strong><button @click="drawerOpen = false">×</button></header><ArticleOutline :items="outline" /></div></div>
