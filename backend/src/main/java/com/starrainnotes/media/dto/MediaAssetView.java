@@ -15,5 +15,6 @@ public record MediaAssetView(
         Integer width,
         Integer height,
         String publicUrl,
+        String srcSet,
         LocalDateTime createdAt) {
 }

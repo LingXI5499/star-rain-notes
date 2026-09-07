@@ -8,9 +8,10 @@ import ArticleOutline from '@/components/ArticleOutline.vue'
 import ReadingAside from '@/components/ReadingAside.vue'
 import EditorialMotif from '@/components/visual/EditorialMotif.vue'
 import ProjectGallery from '@/components/portfolio/ProjectGallery.vue'
-import { applyPageMeta } from '@/lib/seo'
+import { applyPageMeta, caseStudySchema } from '@/lib/seo'
 import { estimateReadingStats } from '@/lib/readingStats'
 import { categorizeTechStack } from '@/lib/techStack'
+import { imageSizes } from '@/lib/imageSizes'
 import type { OutlineItem } from '@/types'
 
 /**
@@ -32,6 +33,9 @@ const readMinutes = computed(() => readingStats.value.readMinutes)
 const galleryItems = computed(() =>
   (project.value?.gallery ?? []).filter((item) => Boolean(item.url)),
 )
+const techGroups = computed(() => categorizeTechStack(project.value?.techStack))
+const heroStack = computed(() => (project.value?.techStack ?? []).slice(0, 4).join(' · '))
+const showCoverImage = computed(() => Boolean(project.value?.coverUrl) && !coverBroken.value)
 
 const statusLabels: Record<string, string> = {
   DEVELOPING: '开发中',
@@ -65,12 +69,23 @@ async function load() {
     const detail = await fetchPublicProject(route.params.slug as string)
     project.value = { ...detail, gallery: detail.gallery ?? [] }
     applyPageMeta({
-      title: detail.title,
-      description: detail.summary,
+      title: detail.seoTitle || detail.title,
+      description: detail.seoDescription || detail.summary,
       type: 'article',
       image: detail.coverUrl,
       publishedAt: detail.publishedAt,
       modifiedAt: detail.updatedAt,
+      jsonLd: caseStudySchema({
+        title: detail.title,
+        description: detail.summary,
+        path: `/portfolio/${detail.slug}`,
+        image: detail.coverUrl,
+        publishedAt: detail.publishedAt,
+        modifiedAt: detail.updatedAt,
+        demoUrl: detail.demoUrl,
+        repositoryUrl: detail.repositoryUrl,
+        techStack: detail.techStack,
+      }),
     })
   } catch (error) {
     if (error instanceof AxiosError && error.response?.status === 404) {
@@ -121,9 +136,14 @@ watch(() => route.params.slug, load)
       <img
         v-if="showCoverImage"
         :src="project.coverUrl!"
+        :srcset="project.coverSrcSet || undefined"
+        :sizes="imageSizes('hero')"
         :alt="project.title"
+        :width="project.coverWidth || undefined"
+        :height="project.coverHeight || undefined"
         loading="eager"
         fetchpriority="high"
+        decoding="async"
         @error="coverBroken = true"
       />
       <EditorialMotif v-else kind="portfolio" :seed="project.title" :label="project.title" />
@@ -225,6 +245,18 @@ watch(() => route.params.slug, load)
   max-width: 1360px;
   margin-inline: auto;
   padding-block: 24px 96px;
+  animation: case-enter var(--motion-slow) var(--ease-out);
+}
+
+@keyframes case-enter {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .case-hero {
@@ -397,11 +429,27 @@ watch(() => route.params.slug, load)
   line-height: 1.85;
 }
 
-.case-study__body :deep(.markdown-body img) {
+.case-study__body :deep(.markdown-body img),
+.case-study__body :deep(.markdown-img--normal) {
+  max-width: 100%;
+  width: 100%;
+  height: auto;
+  margin-inline: 0;
+  border-radius: 14px;
+}
+
+.case-study__body :deep(.markdown-img--wide) {
   max-width: none;
   width: min(1100px, 100vw - 48px);
   margin-inline: calc((min(1100px, 100vw - 48px) - 100%) / -2);
   border-radius: 16px;
+}
+
+.case-study__body :deep(.markdown-img--full) {
+  max-width: none;
+  width: min(1360px, 100vw - 24px);
+  margin-inline: calc((min(1360px, 100vw - 24px) - 100%) / -2);
+  border-radius: 18px;
 }
 
 .case-cta {
@@ -504,7 +552,8 @@ watch(() => route.params.slug, load)
     font-size: 24px;
   }
 
-  .case-study__body :deep(.markdown-body img) {
+  .case-study__body :deep(.markdown-img--wide),
+  .case-study__body :deep(.markdown-img--full) {
     width: 100%;
     margin-inline: 0;
   }
@@ -522,6 +571,16 @@ watch(() => route.params.slug, load)
 
   .case-nav {
     grid-template-columns: 1fr;
+  }
+
+  .case-hero__title {
+    font-size: clamp(34px, 9vw, 44px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .case-study {
+    animation: none;
   }
 }
 </style>

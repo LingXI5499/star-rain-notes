@@ -5,6 +5,7 @@ import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
+import com.starrainnotes.media.service.MediaService;
 import com.starrainnotes.portfolio.dto.AdminProjectDetailView;
 import com.starrainnotes.portfolio.dto.AdminProjectPageView;
 import com.starrainnotes.portfolio.dto.AdminProjectSummaryView;
@@ -64,15 +65,18 @@ public class PortfolioService {
     private final PortfolioProjectMapper projectMapper;
     private final PortfolioProjectMediaMapper mediaMapper;
     private final MediaAssetMapper mediaAssetMapper;
+    private final MediaService mediaService;
     private final SiteSettingsTimezone timezone;
 
     public PortfolioService(PortfolioProjectMapper projectMapper,
                             PortfolioProjectMediaMapper mediaMapper,
                             MediaAssetMapper mediaAssetMapper,
+                            MediaService mediaService,
                             SiteSettingsTimezone timezone) {
         this.projectMapper = projectMapper;
         this.mediaMapper = mediaMapper;
         this.mediaAssetMapper = mediaAssetMapper;
+        this.mediaService = mediaService;
         this.timezone = timezone;
     }
 
@@ -198,14 +202,21 @@ public class PortfolioService {
                 .orderByDesc(PortfolioProject::getFeatured)
                 .orderByAsc(PortfolioProject::getSortOrder)
                 .orderByAsc(PortfolioProject::getId));
-        Map<Long, String> covers = coverUrls(rows.stream().map(PortfolioProject::getCoverMediaId).toList());
+        Map<Long, MediaLink> covers = mediaLinks(rows.stream().map(PortfolioProject::getCoverMediaId).toList());
         return rows.stream()
-                .map(p -> new PublicProjectSummaryView(
-                        p.getId(), p.getTitle(), p.getSlug(), p.getSummary(), p.getRole(),
-                        p.getTechStack() == null ? List.of() : p.getTechStack(),
-                        p.getCoverMediaId() == null ? null : covers.get(p.getCoverMediaId()), p.getProjectStatus(),
-                        Boolean.TRUE.equals(p.getFeatured()), p.getSortOrder(),
-                        formatUtc(p.getUpdatedAt())))
+                .map(p -> {
+                    MediaLink cover = p.getCoverMediaId() == null ? null : covers.get(p.getCoverMediaId());
+                    return new PublicProjectSummaryView(
+                            p.getId(), p.getTitle(), p.getSlug(), p.getSummary(), p.getRole(),
+                            p.getTechStack() == null ? List.of() : p.getTechStack(),
+                            cover == null ? null : cover.url(),
+                            cover == null ? null : cover.srcSet(),
+                            cover == null ? null : cover.width(),
+                            cover == null ? null : cover.height(),
+                            p.getProjectStatus(),
+                            Boolean.TRUE.equals(p.getFeatured()), p.getSortOrder(),
+                            formatUtc(p.getUpdatedAt()));
+                })
                 .toList();
     }
 
@@ -228,9 +239,14 @@ public class PortfolioService {
         PrevNextProjectView previous = currentIndex > 0 ? toPrevNext(ordered.get(currentIndex - 1)) : null;
         PrevNextProjectView next = currentIndex >= 0 && currentIndex + 1 < ordered.size()
                 ? toPrevNext(ordered.get(currentIndex + 1)) : null;
+        MediaLink cover = mediaLink(project.getCoverMediaId());
         return new PublicProjectDetailView(
                 project.getId(), project.getTitle(), project.getSlug(), project.getSummary(), project.getRole(),
-                techStack, project.getBodyMarkdown(), coverUrl(project.getCoverMediaId()),
+                techStack, project.getBodyMarkdown(),
+                cover == null ? null : cover.url(),
+                cover == null ? null : cover.width(),
+                cover == null ? null : cover.height(),
+                cover == null ? null : cover.srcSet(),
                 project.getRepositoryUrl(), project.getDemoUrl(), project.getProjectStatus(),
                 project.getStartedAt(), project.getCompletedAt(),
                 project.getSeoTitle(), project.getSeoDescription(),
@@ -358,27 +374,53 @@ public class PortfolioService {
     }
 
     private String coverUrl(Long mediaId) {
+        MediaLink link = mediaLink(mediaId);
+        return link == null ? null : link.url();
+    }
+
+    private MediaLink mediaLink(Long mediaId) {
         if (mediaId == null) {
             return null;
         }
         MediaAsset media = mediaAssetMapper.selectById(mediaId);
-        return media == null ? null : media.getPublicUrl();
+        if (media == null) {
+            return null;
+        }
+        return toMediaLink(media);
     }
 
     private Map<Long, String> coverUrls(List<Long> mediaIds) {
+        return mediaLinks(mediaIds).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().url()));
+    }
+
+    private Map<Long, MediaLink> mediaLinks(List<Long> mediaIds) {
         List<Long> distinct = mediaIds.stream().filter(Objects::nonNull).distinct().toList();
         if (distinct.isEmpty()) {
             return Map.of();
         }
         return mediaAssetMapper.selectBatchIds(distinct).stream()
-                .collect(Collectors.toMap(MediaAsset::getId, MediaAsset::getPublicUrl));
+                .collect(Collectors.toMap(MediaAsset::getId, this::toMediaLink));
+    }
+
+    private MediaLink toMediaLink(MediaAsset media) {
+        return new MediaLink(
+                media.getPublicUrl(),
+                media.getWidth(),
+                media.getHeight(),
+                mediaService.srcSetOf(media));
     }
 
     private AdminProjectDetailView toAdminDetail(PortfolioProject p) {
         List<String> techStack = p.getTechStack() == null ? List.of() : p.getTechStack();
+        MediaLink cover = mediaLink(p.getCoverMediaId());
         return new AdminProjectDetailView(
                 p.getId(), p.getTitle(), p.getSlug(), p.getSummary(), p.getRole(), techStack,
-                p.getBodyMarkdown(), p.getCoverMediaId(), coverUrl(p.getCoverMediaId()),
+                p.getBodyMarkdown(), p.getCoverMediaId(),
+                cover == null ? null : cover.url(),
+                cover == null ? null : cover.width(),
+                cover == null ? null : cover.height(),
+                cover == null ? null : cover.srcSet(),
                 p.getRepositoryUrl(), p.getDemoUrl(),
                 p.getPublishStatus(), p.getProjectStatus(), Boolean.TRUE.equals(p.getFeatured()),
                 p.getSortOrder(), p.getStartedAt(), p.getCompletedAt(), p.getSeoTitle(), p.getSeoDescription(),
@@ -394,18 +436,27 @@ public class PortfolioService {
         if (rows.isEmpty()) {
             return List.of();
         }
-        Map<Long, String> urls = coverUrls(rows.stream().map(PortfolioProjectMedia::getMediaAssetId).toList());
+        Map<Long, MediaLink> links = mediaLinks(rows.stream().map(PortfolioProjectMedia::getMediaAssetId).toList());
         return rows.stream()
-                .map(row -> new ProjectMediaView(
-                        row.getId(),
-                        row.getMediaAssetId(),
-                        urls.get(row.getMediaAssetId()),
-                        row.getTitle(),
-                        row.getDescription(),
-                        row.getAltText(),
-                        row.getDeviceType(),
-                        row.getSortOrder()))
+                .map(row -> {
+                    MediaLink link = links.get(row.getMediaAssetId());
+                    return new ProjectMediaView(
+                            row.getId(),
+                            row.getMediaAssetId(),
+                            link == null ? null : link.url(),
+                            row.getTitle(),
+                            row.getDescription(),
+                            row.getAltText(),
+                            row.getDeviceType(),
+                            row.getSortOrder(),
+                            link == null ? null : link.width(),
+                            link == null ? null : link.height(),
+                            link == null ? null : link.srcSet());
+                })
                 .toList();
+    }
+
+    private record MediaLink(String url, Integer width, Integer height, String srcSet) {
     }
 
     private void replaceGallery(Long projectId, List<ProjectMediaItemRequest> gallery) {

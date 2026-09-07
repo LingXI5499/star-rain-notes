@@ -10,6 +10,7 @@ export interface MediaAsset {
   width: number | null
   height: number | null
   publicUrl: string
+  srcSet: string | null
   createdAt: string
 }
 

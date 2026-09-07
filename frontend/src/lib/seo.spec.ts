@@ -1,6 +1,6 @@
 // @vitest-environment happy-dom
 import { beforeEach, describe, expect, it } from 'vitest'
-import { applyBrandAssets, applyPageMeta, canonicalUrl } from './seo'
+import { applyBrandAssets, applyPageMeta, canonicalUrl, caseStudySchema } from './seo'
 
 describe('SEO manager', () => {
   beforeEach(() => {
@@ -42,6 +42,19 @@ describe('SEO manager', () => {
       .toBe('https://yulanlin.cn/brand/og-default.png')
     expect(document.querySelector('meta[name="twitter:image"]')?.getAttribute('content'))
       .toBe('https://yulanlin.cn/brand/og-default.png')
+  })
+
+  it('builds CreativeWork JSON-LD for portfolio case studies', () => {
+    const schema = caseStudySchema({
+      title: '星雨笔录',
+      description: '全栈知识站',
+      path: '/portfolio/demo',
+      demoUrl: 'https://yulanlin.cn',
+      techStack: ['Vue 3', 'Spring Boot'],
+    })
+    expect(schema['@type']).toBe('CreativeWork')
+    expect(schema.url).toBe('https://yulanlin.cn')
+    expect(schema.keywords).toBe('Vue 3, Spring Boot')
   })
 })
 

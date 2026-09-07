@@ -8,6 +8,9 @@ export interface PublicProjectSummary {
   role: string | null
   techStack: string[]
   coverUrl: string | null
+  coverSrcSet: string | null
+  coverWidth: number | null
+  coverHeight: number | null
   projectStatus: string
   featured: boolean
   sortOrder: number
@@ -23,6 +26,9 @@ export interface PublicProjectDetail {
   techStack: string[]
   bodyMarkdown: string
   coverUrl: string | null
+  coverWidth: number | null
+  coverHeight: number | null
+  coverSrcSet: string | null
   repositoryUrl: string | null
   demoUrl: string | null
   projectStatus: string
@@ -46,6 +52,9 @@ export interface ProjectMediaItem {
   altText: string | null
   deviceType: string
   sortOrder: number
+  width: number | null
+  height: number | null
+  srcSet: string | null
 }
 
 export interface ProjectMediaPayload {
@@ -98,6 +107,9 @@ export interface AdminProjectDetail {
   bodyMarkdown: string
   coverMediaId: number | null
   coverUrl: string | null
+  coverWidth: number | null
+  coverHeight: number | null
+  coverSrcSet: string | null
   repositoryUrl: string | null
   demoUrl: string | null
   publishStatus: string
