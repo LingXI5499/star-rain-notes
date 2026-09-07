@@ -147,3 +147,32 @@ export function articleSchema(input: { title: string; description: string; path:
   if (input.modifiedAt) schema.dateModified = input.modifiedAt
   return schema
 }
+
+export function caseStudySchema(input: {
+  title: string
+  description: string
+  path: string
+  image?: string | null
+  publishedAt?: string | null
+  modifiedAt?: string | null
+  demoUrl?: string | null
+  repositoryUrl?: string | null
+  techStack?: string[]
+}): Record<string, unknown> {
+  const schema: Record<string, unknown> = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: input.title,
+    headline: input.title,
+    description: input.description,
+    mainEntityOfPage: canonicalUrl(input.path),
+    image: absoluteUrl(input.image),
+    author: { '@type': 'Person', name: SITE_NAME },
+  }
+  if (input.publishedAt) schema.datePublished = input.publishedAt
+  if (input.modifiedAt) schema.dateModified = input.modifiedAt
+  if (input.demoUrl) schema.url = input.demoUrl
+  if (input.repositoryUrl) schema.codeRepository = input.repositoryUrl
+  if (input.techStack?.length) schema.keywords = input.techStack.join(', ')
+  return schema
+}

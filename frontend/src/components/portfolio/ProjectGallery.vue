@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import type { ProjectMediaItem } from '@/api/portfolio'
+import { imageSizes } from '@/lib/imageSizes'
 
 /**
- * Manual Project Gallery — no autoplay. Prev/next, keyboard, swipe, lightbox.
+ * Manual Project Gallery — no autoplay.
+ * Prev/next, keyboard, swipe, lightbox; thumbs hidden on narrow screens.
  */
 const props = defineProps<{
   items: ProjectMediaItem[]
@@ -12,13 +14,25 @@ const props = defineProps<{
 const index = ref(0)
 const lightboxOpen = ref(false)
 const touchStartX = ref<number | null>(null)
+const closeButton = ref<HTMLButtonElement | null>(null)
 
 const current = computed(() => props.items[index.value] ?? null)
 const total = computed(() => props.items.length)
+const statusLabel = computed(
+  () => `${String(index.value + 1).padStart(2, '0')} / ${String(total.value).padStart(2, '0')}`,
+)
 
 watch(() => props.items, () => {
   index.value = 0
   lightboxOpen.value = false
+})
+
+watch(lightboxOpen, async (open) => {
+  document.body.style.overflow = open ? 'hidden' : ''
+  if (open) {
+    await nextTick()
+    closeButton.value?.focus()
+  }
 })
 
 function go(delta: number) {
@@ -58,14 +72,17 @@ function onTouchEnd(event: TouchEvent) {
 }
 
 onMounted(() => window.addEventListener('keydown', onKey))
-onUnmounted(() => window.removeEventListener('keydown', onKey))
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKey)
+  document.body.style.overflow = ''
+})
 </script>
 
 <template>
-  <section v-if="items.length" class="project-gallery" aria-label="项目预览">
+  <section v-if="items.length" class="project-gallery" aria-roledescription="carousel" aria-label="项目预览">
     <header class="project-gallery__head">
       <h2 class="project-gallery__heading">项目预览</h2>
-      <span class="project-gallery__count">{{ String(index + 1).padStart(2, '0') }} / {{ String(total).padStart(2, '0') }}</span>
+      <span class="project-gallery__count" aria-live="polite">{{ statusLabel }}</span>
     </header>
 
     <div
@@ -73,17 +90,37 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
       @touchstart.passive="onTouchStart"
       @touchend.passive="onTouchEnd"
     >
-      <button type="button" class="project-gallery__nav project-gallery__nav--prev" aria-label="上一张" @click="go(-1)">←</button>
-      <button type="button" class="project-gallery__frame" @click="lightboxOpen = true">
+      <button
+        type="button"
+        class="project-gallery__nav project-gallery__nav--prev"
+        aria-label="上一张"
+        @click="go(-1)"
+      >←</button>
+      <button
+        type="button"
+        class="project-gallery__frame"
+        :aria-label="current?.title ? `放大查看：${current.title}` : '放大查看当前截图'"
+        @click="lightboxOpen = true"
+      >
         <img
           v-if="current"
           :src="current.url"
+          :srcset="current.srcSet || undefined"
+          :sizes="imageSizes('gallery')"
           :alt="current.altText || current.title || '项目截图'"
+          :width="current.width || undefined"
+          :height="current.height || undefined"
           :loading="index === 0 ? 'eager' : 'lazy'"
           :fetchpriority="index === 0 ? 'high' : undefined"
+          decoding="async"
         />
       </button>
-      <button type="button" class="project-gallery__nav project-gallery__nav--next" aria-label="下一张" @click="go(1)">→</button>
+      <button
+        type="button"
+        class="project-gallery__nav project-gallery__nav--next"
+        aria-label="下一张"
+        @click="go(1)"
+      >→</button>
     </div>
 
     <div v-if="current" class="project-gallery__caption">
@@ -96,19 +133,48 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
         v-for="(item, i) in items"
         :key="item.id ?? `${item.mediaAssetId}-${i}`"
         type="button"
+        role="tab"
         class="project-gallery__thumb"
         :class="{ 'is-active': i === index }"
         :aria-selected="i === index"
+        :aria-label="item.title || `截图 ${i + 1}`"
         @click="select(i)"
       >
-        <img :src="item.url" :alt="item.altText || item.title || `截图 ${i + 1}`" loading="lazy" />
+        <img
+          :src="item.url"
+          :srcset="item.srcSet || undefined"
+          :sizes="imageSizes('thumb')"
+          :alt="item.altText || item.title || `截图 ${i + 1}`"
+          :width="item.width || undefined"
+          :height="item.height || undefined"
+          loading="lazy"
+          decoding="async"
+        />
       </button>
     </div>
 
-    <div v-if="lightboxOpen && current" class="project-gallery__lightbox" @click.self="lightboxOpen = false">
-      <button type="button" class="project-gallery__lightbox-close" aria-label="关闭" @click="lightboxOpen = false">×</button>
-      <img :src="current.url" :alt="current.altText || current.title || '项目截图'" />
-      <span>{{ String(index + 1).padStart(2, '0') }} / {{ String(total).padStart(2, '0') }}</span>
+    <div
+      v-if="lightboxOpen && current"
+      class="project-gallery__lightbox"
+      role="dialog"
+      aria-modal="true"
+      :aria-label="current.title || '截图预览'"
+      @click.self="lightboxOpen = false"
+    >
+      <button
+        ref="closeButton"
+        type="button"
+        class="project-gallery__lightbox-close"
+        aria-label="关闭"
+        @click="lightboxOpen = false"
+      >×</button>
+      <img
+        :src="current.url"
+        :alt="current.altText || current.title || '项目截图'"
+        :width="current.width || undefined"
+        :height="current.height || undefined"
+      />
+      <span>{{ statusLabel }}</span>
     </div>
   </section>
 </template>
@@ -157,11 +223,19 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
     radial-gradient(circle at 20% 10%, color-mix(in srgb, var(--primary) 16%, transparent), transparent 42%),
     var(--bg-subtle);
   cursor: zoom-in;
+  transition: border-color var(--motion-fast) var(--ease-standard);
+}
+
+.project-gallery__frame:hover,
+.project-gallery__frame:focus-visible {
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
+  outline: none;
 }
 
 .project-gallery__frame img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 16 / 9;
   object-fit: contain;
   background: transparent;
@@ -179,6 +253,13 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   background: color-mix(in srgb, var(--bg-surface) 92%, transparent);
   color: var(--text-primary);
   cursor: pointer;
+  transition: transform var(--motion-fast) var(--ease-out), background-color var(--motion-fast) var(--ease-standard);
+}
+
+.project-gallery__nav:hover,
+.project-gallery__nav:focus-visible {
+  background: var(--bg-surface);
+  outline: none;
 }
 
 .project-gallery__nav--prev { left: 12px; }
@@ -219,15 +300,19 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   overflow: hidden;
   background: var(--bg-subtle);
   cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease-standard);
 }
 
-.project-gallery__thumb.is-active {
+.project-gallery__thumb.is-active,
+.project-gallery__thumb:focus-visible {
   border-color: var(--primary);
+  outline: none;
 }
 
 .project-gallery__thumb img {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 4 / 3;
   object-fit: cover;
 }
@@ -241,11 +326,14 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   gap: 12px;
   padding: 24px;
   background: rgb(0 0 0 / 0.72);
+  animation: gallery-fade-in var(--motion-base) var(--ease-out);
 }
 
 .project-gallery__lightbox img {
   max-width: min(1280px, 96vw);
   max-height: 82vh;
+  width: auto;
+  height: auto;
   object-fit: contain;
   border-radius: 12px;
 }
@@ -266,6 +354,11 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
   cursor: pointer;
 }
 
+@keyframes gallery-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @media (max-width: 720px) {
   .project-gallery__nav {
     width: 36px;
@@ -283,8 +376,11 @@ onUnmounted(() => window.removeEventListener('keydown', onKey))
 
 @media (prefers-reduced-motion: reduce) {
   .project-gallery__nav,
-  .project-gallery__thumb {
+  .project-gallery__thumb,
+  .project-gallery__frame,
+  .project-gallery__lightbox {
     transition: none;
+    animation: none;
   }
 }
 </style>

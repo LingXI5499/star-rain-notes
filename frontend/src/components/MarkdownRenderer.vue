@@ -19,6 +19,7 @@ import xml from 'highlight.js/lib/languages/xml'
 import yaml from 'highlight.js/lib/languages/yaml'
 import type { OutlineItem } from '@/types'
 import { headingText, OUTLINE_MAX_LEVEL, OUTLINE_MIN_LEVEL, uniqueHeadingId } from '@/lib/markdownOutline'
+import { resolveMarkdownImageSize, stripMarkdownImageSizeToken } from '@/lib/markdownImageSize'
 
 // Import only the languages used by this technical knowledge base. Importing
 // highlight.js' default bundle pulls every grammar into each article route
@@ -149,8 +150,19 @@ const md = new MarkdownIt({
 const usedIds = new Map<string, number>()
 const renderImage = md.renderer.rules.image!
 md.renderer.rules.image = (tokens, idx, options, env, self) => {
-  tokens[idx].attrSet('loading', 'lazy')
-  tokens[idx].attrSet('decoding', 'async')
+  const token = tokens[idx]
+  token.attrSet('loading', 'lazy')
+  token.attrSet('decoding', 'async')
+  const titleAttr = token.attrGet('title')
+  const title = typeof titleAttr === 'string' ? titleAttr : titleAttr == null ? null : String(titleAttr)
+  const size = resolveMarkdownImageSize(title)
+  const className = `markdown-img markdown-img--${size}`
+  const existing = token.attrGet('class')
+  const existingClass = typeof existing === 'string' ? existing : existing == null ? '' : String(existing)
+  token.attrSet('class', existingClass ? `${existingClass} ${className}` : className)
+  const cleaned = stripMarkdownImageSizeToken(title)
+  if (cleaned) token.attrSet('title', cleaned)
+  else token.attrs = (token.attrs ?? []).filter(([name]) => name !== 'title')
   return renderImage(tokens, idx, options, env, self)
 }
 let collected: OutlineItem[] = []

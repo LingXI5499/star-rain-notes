@@ -9,6 +9,7 @@ import type { MediaAsset } from '@/api/media'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import MediaPicker from '@/components/MediaPicker.vue'
 import { useUnsavedGuard } from '@/composables/useUnsavedGuard'
+import { CASE_STUDY_BODY_TEMPLATE, isBlankMarkdown } from '@/lib/caseStudyTemplate'
 
 type GalleryDraft = {
   id: number | null
@@ -32,6 +33,7 @@ const mediaPickerOpen = ref(false)
 const pickerMode = ref<'cover' | 'gallery'>('cover')
 const coverUrl = ref<string | null>(null)
 const gallery = ref<GalleryDraft[]>([])
+const dragIndex = ref<number | null>(null)
 
 const form = reactive({
   title: '',
@@ -193,6 +195,31 @@ function moveGalleryItem(index: number, delta: number) {
   copy.splice(target, 0, row)
   gallery.value = copy
 }
+
+function onGalleryDragStart(index: number) {
+  dragIndex.value = index
+}
+
+function onGalleryDrop(index: number) {
+  if (dragIndex.value == null || dragIndex.value === index) {
+    dragIndex.value = null
+    return
+  }
+  const copy = [...gallery.value]
+  const [row] = copy.splice(dragIndex.value, 1)
+  copy.splice(index, 0, row)
+  gallery.value = copy
+  dragIndex.value = null
+}
+
+function insertCaseStudyTemplate() {
+  if (!isBlankMarkdown(form.bodyMarkdown)) {
+    ElMessage.warning('正文已有内容，请先清空后再插入大纲。')
+    return
+  }
+  form.bodyMarkdown = CASE_STUDY_BODY_TEMPLATE
+  ElMessage.success('已插入 Case Study 大纲。')
+}
 </script>
 
 <template>
@@ -218,7 +245,10 @@ function moveGalleryItem(index: number, delta: number) {
           placeholder="输入作品标题"
           maxlength="200"
         />
-        <p class="portfolio-edit__outline-note">正文请从 H2 开始；前台右侧目录固定收录 H2–H4。</p>
+        <div class="portfolio-edit__outline-row">
+          <p class="portfolio-edit__outline-note">正文请从 H2 开始；图片可用标题标记尺寸，例如 <code>![说明](url &quot;wide&quot;)</code> / <code>full</code>。</p>
+          <el-button plain @click="insertCaseStudyTemplate">插入 Case Study 大纲</el-button>
+        </div>
         <MarkdownEditor v-model="form.bodyMarkdown" placeholder="Background / Goals / Architecture / Challenges / Results…" />
       </section>
 
@@ -280,7 +310,16 @@ function moveGalleryItem(index: number, delta: number) {
         </div>
         <p class="portfolio-edit__outline-note">手动切换、不自动播放。可为每张图填写标题与说明。</p>
         <div v-if="!gallery.length" class="portfolio-edit__gallery-empty">尚未添加截图。</div>
-        <div v-for="(item, index) in gallery" :key="`${item.mediaAssetId}-${index}`" class="portfolio-edit__gallery-item">
+        <div
+          v-for="(item, index) in gallery"
+          :key="`${item.mediaAssetId}-${index}`"
+          class="portfolio-edit__gallery-item"
+          :class="{ 'is-dragging': dragIndex === index }"
+          draggable="true"
+          @dragstart="onGalleryDragStart(index)"
+          @dragover.prevent
+          @drop.prevent="onGalleryDrop(index)"
+        >
           <img :src="item.url" :alt="item.altText || item.title || `截图 ${index + 1}`" />
           <div class="portfolio-edit__gallery-fields">
             <el-input v-model="item.title" placeholder="标题，如：教程阅读页" maxlength="200" />
@@ -296,6 +335,7 @@ function moveGalleryItem(index: number, delta: number) {
               <el-button @click="moveGalleryItem(index, 1)" :disabled="index === gallery.length - 1">下移</el-button>
               <el-button type="danger" plain @click="removeGalleryItem(index)">删除</el-button>
             </div>
+            <p class="portfolio-edit__drag-hint">可拖拽调整顺序</p>
           </div>
         </div>
       </div>
@@ -336,7 +376,15 @@ function moveGalleryItem(index: number, delta: number) {
   margin-bottom: var(--space-2);
 }
 
-.portfolio-edit__outline-note { margin-bottom:var(--space-4); color:var(--text-muted); font-size:12px; }
+.portfolio-edit__outline-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: var(--space-4);
+}
+
+.portfolio-edit__outline-note { margin: 0; color: var(--text-muted); font-size: 12px; }
 
 .portfolio-edit__title-input :deep(.el-input__inner) {
   font-size: 26px;
@@ -378,6 +426,10 @@ function moveGalleryItem(index: number, delta: number) {
   gap: var(--space-4);
   padding: 14px 0;
   border-top: 1px solid var(--border);
+  cursor: grab;
+}
+.portfolio-edit__gallery-item.is-dragging {
+  opacity: 0.55;
 }
 .portfolio-edit__gallery-item img {
   width: 100%;
@@ -388,6 +440,7 @@ function moveGalleryItem(index: number, delta: number) {
 }
 .portfolio-edit__gallery-fields { display: grid; gap: 8px; }
 .portfolio-edit__gallery-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.portfolio-edit__drag-hint { margin: 0; color: var(--text-muted); font-size: 11px; }
 
 .portfolio-edit__actions {
   display:flex;

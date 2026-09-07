@@ -11,5 +11,8 @@ public record ProjectMediaView(
         String description,
         String altText,
         String deviceType,
-        Integer sortOrder) {
+        Integer sortOrder,
+        Integer width,
+        Integer height,
+        String srcSet) {
 }

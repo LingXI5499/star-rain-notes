@@ -157,6 +157,9 @@ public class MediaService {
         try {
             Files.createDirectories(target.getParent());
             Files.write(target, bytes);
+            if (image && dimensions != null) {
+                ImageVariantSupport.writeVariants(target, bytes, extension, dimensions[0]);
+            }
         } catch (IOException ex) {
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR",
                     "Storage unavailable", "The media file could not be stored.");
@@ -184,6 +187,7 @@ public class MediaService {
             } catch (IOException cleanupEx) {
                 log.warn("Failed to clean up media file after DB error: {}", target, cleanupEx);
             }
+            ImageVariantSupport.deleteVariants(target);
             log.error("Media DB insert failed after file write; cleaned up {}", target, ex);
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR",
                     "Internal server error", "The media asset could not be recorded.");
@@ -228,7 +232,16 @@ public class MediaService {
             } catch (IOException ex) {
                 log.warn("Failed to delete media file {} (row already removed)", target, ex);
             }
+            ImageVariantSupport.deleteVariants(target);
         }
+    }
+
+    public String srcSetOf(MediaAsset asset) {
+        if (asset == null || !"IMAGE".equals(asset.getAssetType())) {
+            return null;
+        }
+        return ImageVariantSupport.buildSrcSet(
+                storageRoot, asset.getStoragePath(), asset.getPublicUrl(), asset.getWidth());
     }
 
     // ---------------------------------------------------------------
@@ -334,6 +347,6 @@ public class MediaService {
         return new MediaAssetView(
                 asset.getId(), asset.getAssetType(), asset.getOriginalName(), asset.getMimeType(),
                 asset.getExtension(), asset.getSizeBytes(), asset.getWidth(), asset.getHeight(),
-                asset.getPublicUrl(), asset.getCreatedAt());
+                asset.getPublicUrl(), srcSetOf(asset), asset.getCreatedAt());
     }
 }
