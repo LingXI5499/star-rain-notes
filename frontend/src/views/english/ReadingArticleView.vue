@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/index.mjs'
 import { checkReadingAnswers, fetchPublicReading, fetchPublicReadingExercises, fetchReading, type ReadingArticle, type ReadingCheckResult, type ReadingExercisePublic } from '@/api/reading'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
@@ -10,16 +10,16 @@ import ExerciseRunner from '@/components/english/ExerciseRunner.vue'
 import type { OutlineItem } from '@/types'
 import { fetchLearningRecord, saveLearningRecord, type LearningRecord } from '@/api/englishLearning'
 import { applyPageMeta } from '@/lib/seo'
+import { useStableContentSwap } from '@/composables/useStableContentSwap'
 
 const route = useRoute()
-const router = useRouter()
 const article = ref<ReadingArticle | null>(null)
 const exercises = ref<ReadingExercisePublic[]>([])
 const outline = ref<OutlineItem[]>([])
-const loading = ref(true)
 const notFound = ref(false)
 const result = ref<ReadingCheckResult | null>(null)
 const learningRecord = ref<LearningRecord | null>(null)
+const { initialLoading, swapping, begin, isCurrent, finish } = useStableContentSwap()
 
 const levelLabels: Record<number, string> = { 1: '基础阅读', 2: '结构阅读', 3: '深度阅读' }
 const progress = ref(0)
@@ -28,26 +28,39 @@ const isAdminPreview = computed(() => route.name === 'admin-reading-preview')
 const hasOutline = computed(() => outline.value.length > 0)
 
 async function load() {
-  loading.value = true
+  const { version } = begin()
   notFound.value = false
-  outline.value = []
-  article.value = null
   try {
+    let next: ReadingArticle
+    let nextExercises: ReadingExercisePublic[] = []
     if (isAdminPreview.value) {
-      article.value = await fetchReading(Number(route.params.articleId))
-      exercises.value = []
+      next = await fetchReading(Number(route.params.articleId))
     } else {
-      article.value = await fetchPublicReading(String(route.params.slug))
-      exercises.value = await fetchPublicReadingExercises(String(route.params.slug))
+      next = await fetchPublicReading(String(route.params.slug))
+      nextExercises = await fetchPublicReadingExercises(String(route.params.slug))
     }
+    if (!isCurrent(version)) return
+    outline.value = []
     result.value = null
-    learningRecord.value = article.value && !isAdminPreview.value
-      ? await fetchLearningRecord('READING', article.value.id).catch(() => null) : null
-    if (article.value) applyPageMeta({ title: article.value.title, description: article.value.summary, type: 'article', image: article.value.coverUrl, publishedAt: article.value.publishedAt, modifiedAt: article.value.updatedAt })
+    article.value = next
+    exercises.value = nextExercises
+    learningRecord.value = !isAdminPreview.value
+      ? await fetchLearningRecord('READING', next.id).catch(() => null)
+      : null
+    applyPageMeta({
+      title: next.title,
+      description: next.summary,
+      type: 'article',
+      image: next.coverUrl,
+      publishedAt: next.publishedAt,
+      modifiedAt: next.updatedAt,
+    })
   } catch {
+    if (!isCurrent(version)) return
     notFound.value = true
+    if (!article.value) article.value = null
   } finally {
-    loading.value = false
+    finish(version)
   }
 }
 
@@ -104,9 +117,9 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 </script>
 
 <template>
-  <section v-if="loading" class="reading-detail__wrap"><p>加载中…</p></section>
-  <section v-else-if="notFound" class="reading-detail__wrap"><p>文章不存在或未发布。</p></section>
-  <section v-else-if="article" class="reading-detail">
+  <section v-if="initialLoading && !article" class="reading-detail__wrap"><p>加载中…</p></section>
+  <section v-else-if="notFound && !article" class="reading-detail__wrap"><p>文章不存在或未发布。</p></section>
+  <section v-else-if="article" class="reading-detail" :class="{ 'is-swapping': swapping }" :aria-busy="swapping">
     <div v-if="isAdminPreview" class="reading-detail__preview-bar">
       <span>管理端预览 · {{ article.publishStatus }}</span>
       <RouterLink :to="{ name: 'admin-reading-edit', params: { articleId: article.id }, query: route.query }">返回编辑</RouterLink>
@@ -134,7 +147,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
           <div class="reading-detail__meta"><CefrBadge :level="article.cefrLevel" /><span>{{ levelLabels[article.readingLevel] }}</span></div>
           <h1 class="reading-detail__h1">{{ article.title }}</h1>
           <p class="reading-detail__summary">{{ article.summary }}</p>
-          <img v-if="article.coverUrl" :src="article.coverUrl" :alt="article.title" class="reading-detail__cover" />
+          <img v-if="article.coverUrl" :src="article.coverUrl" :alt="article.title" class="reading-detail__cover" loading="lazy" decoding="async" />
         </header>
 
         <details class="reading-detail__mobile-panel">
@@ -193,7 +206,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 .reading-detail__left dt { font-size: 12px; color: var(--text-muted); font-weight: 600; }
 .reading-detail__left dd { font-size: 13px; color: var(--text-secondary); margin: 0; }
 .grammar-link { display: block; color: var(--primary); margin: 2px 0; }
-.reading-detail__main { min-width: 0; }
+.reading-detail__main { min-width: 0; transition: opacity var(--motion-fast, 140ms) var(--ease-standard, ease); }
+.reading-detail.is-swapping .reading-detail__main { opacity: 0.45; pointer-events: none; }
 .reading-detail__hero { margin-bottom: var(--space-6); }
 .reading-detail__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .reading-detail__h1 { font-size: 34px; line-height: 1.25; margin: 0 0 12px; }
@@ -215,5 +229,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 .reading-complete{display:flex;align-items:center;justify-content:space-between;gap:18px;margin:30px 0;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.reading-complete small,.reading-complete span{display:block;color:var(--text-muted);font-size:10px}.reading-complete strong{display:block;margin:5px 0;font-size:15px}.reading-complete button{flex:none;padding:9px 15px;border:0;border-radius:10px;background:var(--primary);color:white;cursor:pointer}.reading-complete button:disabled{background:var(--bg-subtle);color:var(--text-muted);cursor:default}
 @media (max-width: 1024px) { .reading-detail__layout { grid-template-columns: 200px minmax(0, 1fr); } .reading-detail__right { display: none; } }
 @media (max-width: 720px) { .reading-detail__layout { grid-template-columns: 1fr; } .reading-detail__left { display: none; } .reading-detail__mobile-panel { display: block; } .reading-detail__h1 { font-size: 28px; } .reading-complete{align-items:flex-start;flex-direction:column} }
-@media (prefers-reduced-motion: reduce) { .reading-detail :deep(*) { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; } }
+@media (prefers-reduced-motion: reduce) {
+  .reading-detail :deep(*) { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  .reading-detail.is-swapping .reading-detail__main { opacity: 1; }
+}
 </style>
