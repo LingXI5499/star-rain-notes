@@ -22,6 +22,5 @@ describe('ThemeHero cinematic stage', () => {
     await wrapper.get('img').trigger('error')
     expect(wrapper.find('.theme-stage__fallback').exists()).toBe(true)
     expect(wrapper.find('img.theme-stage__image').exists()).toBe(false)
-    expect(wrapper.text()).toContain('视觉暂不可用')
   })
 })

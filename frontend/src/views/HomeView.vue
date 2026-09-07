@@ -9,7 +9,7 @@ import ThemeHero from '@/components/visual/ThemeHero.vue'
 import { useReveal } from '@/composables/useReveal'
 
 const appStore = useAppStore()
-const { name, englishName, tagline } = storeToRefs(appStore)
+const { name, tagline } = storeToRefs(appStore)
 const home = ref<PublicHome | null>(null)
 const leadProject = computed(() => home.value?.featuredProjects[0])
 const otherProjects = computed(() => home.value?.featuredProjects.slice(1) ?? [])
@@ -52,11 +52,10 @@ onMounted(async () => {
 <template>
   <div ref="pageRoot" class="home-page">
     <section class="home-hero" aria-labelledby="home-title">
-      <ThemeHero focus="center" src="/brand/themes/home-hero.webp" alt="星雨笔录世界观主视觉" />
+      <ThemeHero src="/brand/themes/home-hero.webp" alt="星雨笔录世界观主视觉" />
       <div class="home-hero__copy">
         <p class="public-eyebrow home-hero__kicker">STAR RAIN NOTES</p>
         <h1 id="home-title" class="public-display">{{ name }}</h1>
-        <p class="home-hero__english">{{ englishName }}</p>
         <h2>{{ tagline || '用文字记录星光，用知识照亮远方' }}</h2>
         <p class="home-hero__intro">系统整理技术，认真记录思考，在真实项目中验证学习，也为下一次出发留下清晰的路径。</p>
         <div class="home-hero__actions">
