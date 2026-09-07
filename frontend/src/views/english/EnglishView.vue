@@ -2,7 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
-import { fetchPublicEnglish, type EnglishView } from '@/api/english'
+import { type EnglishView } from '@/api/english'
 import { fetchLearningSummary, type LearningSummary } from '@/api/englishLearning'
 import { fetchPublicBundles, type LearningBundle } from '@/api/englishBundle'
 import { importLocalVocabularyProgress } from '@/api/vocabulary'
@@ -12,6 +12,7 @@ import EnglishLearningModeHint from '@/components/english/EnglishLearningModeHin
 import StarfallScene from '@/components/visual/StarfallScene.vue'
 import { useAuthStore } from '@/stores/auth'
 import { vocabularyStudyStorage } from '@/lib/vocabulary-study-storage'
+import { englishHubCache } from '@/lib/publicContentCache'
 
 const auth = useAuthStore()
 const isAuthenticated = computed(() => auth.isAuthenticated)
@@ -43,7 +44,7 @@ async function importGuestProgress() {
 onMounted(async () => {
   hasGuestData.value = (await vocabularyStudyStorage.memories().catch(() => [])).length > 0
   try {
-    const [content,learning,paths] = await Promise.all([fetchPublicEnglish(),fetchLearningSummary().catch(() => null),fetchPublicBundles().catch(() => [])])
+    const [content,learning,paths] = await Promise.all([englishHubCache.load('hub'),fetchLearningSummary().catch(() => null),fetchPublicBundles().catch(() => [])])
     english.value = content; progress.value = learning; bundles.value = paths
   } catch { error.value = true }
   finally { loading.value = false }

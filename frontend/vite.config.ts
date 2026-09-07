@@ -2,14 +2,26 @@ import { fileURLToPath, URL } from 'node:url'
 
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { visualizer } from 'rollup-plugin-visualizer'
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const apiTarget = env.VITE_API_TARGET || 'http://localhost:24680'
+  const analyze = mode === 'analyze' || env.ANALYZE === '1'
 
   return {
-    plugins: [vue()],
+    plugins: [
+      vue(),
+      analyze
+        ? visualizer({
+            filename: 'dist/stats.html',
+            gzipSize: true,
+            brotliSize: true,
+            open: false,
+          })
+        : null,
+    ].filter(Boolean),
     resolve: {
       alias: {
         '@': fileURLToPath(new URL('./src', import.meta.url)),
@@ -37,8 +49,13 @@ export default defineConfig(({ mode }) => {
     build: {
       outDir: 'dist',
       sourcemap: false,
+      cssCodeSplit: true,
+      modulePreload: { polyfill: true },
       rollupOptions: {
         output: {
+          chunkFileNames: 'assets/[name]-[hash].js',
+          entryFileNames: 'assets/[name]-[hash].js',
+          assetFileNames: 'assets/[name]-[hash][extname]',
           /**
            * Keep frequently-changing app code out of heavy vendor buckets so
            * browser caches survive feature deploys. Element Plus / markdown

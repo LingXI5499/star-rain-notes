@@ -2,13 +2,12 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import {
-  fetchPublicCategoryTree,
-  fetchPublicTutorials,
   type PublicCategoryNode,
   type PublicTutorialSummary,
 } from '@/api/tutorial'
 import TutorialCategoryNav from '@/components/TutorialCategoryNav.vue'
 import ContentSkeleton from '@/components/ui/ContentSkeleton.vue'
+import { tutorialCategoriesCache, tutorialsListCache } from '@/lib/publicContentCache'
 
 const route = useRoute()
 const router = useRouter()
@@ -55,7 +54,10 @@ async function selectCategory(slug: string) {
 onMounted(async () => {
   loading.value = true
   try {
-    const [categoryRows, tutorialRows] = await Promise.all([fetchPublicCategoryTree(), fetchPublicTutorials()])
+    const [categoryRows, tutorialRows] = await Promise.all([
+      tutorialCategoriesCache.load('tree'),
+      tutorialsListCache.load('all'),
+    ])
     categories.value = categoryRows
     allTutorials.value = tutorialRows
     activeSlug.value = typeof route.query.categorySlug === 'string' ? route.query.categorySlug : ''

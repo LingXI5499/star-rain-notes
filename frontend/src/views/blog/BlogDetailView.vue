@@ -2,7 +2,7 @@
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
-import { fetchPublicPost, type PublicPostDetail } from '@/api/blog'
+import { type PublicPostDetail } from '@/api/blog'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import ArticleOutline from '@/components/ArticleOutline.vue'
 import ReadingAside from '@/components/ReadingAside.vue'
@@ -10,6 +10,7 @@ import { applyPageMeta } from '@/lib/seo'
 import { estimateReadingStats } from '@/lib/readingStats'
 import type { OutlineItem } from '@/types'
 import { useStableContentSwap } from '@/composables/useStableContentSwap'
+import { blogPostDetailCache } from '@/lib/publicContentCache'
 
 const route = useRoute()
 const post = ref<PublicPostDetail | null>(null)
@@ -38,7 +39,7 @@ async function load() {
   loadFailed.value = false
   drawerOpen.value = false
   try {
-    const result = await fetchPublicPost(route.params.slug as string)
+    const result = await blogPostDetailCache.load(route.params.slug as string)
     if (!isCurrent(version)) return
     post.value = result
     applyPageMeta({

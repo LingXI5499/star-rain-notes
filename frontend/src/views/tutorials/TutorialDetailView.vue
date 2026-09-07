@@ -2,9 +2,10 @@
 import { onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
-import { fetchPublicTutorialDetail, type PublicTutorialDetail } from '@/api/tutorial'
+import type { PublicTutorialDetail } from '@/api/tutorial'
 import TutorialCurriculumList from '@/components/TutorialCurriculumList.vue'
 import { applyPageMeta } from '@/lib/seo'
+import { tutorialDetailCache } from '@/lib/publicContentCache'
 
 const route = useRoute()
 const detail = ref<PublicTutorialDetail | null>(null)
@@ -18,7 +19,7 @@ function formatDate(iso: string): string {
 
 onMounted(async () => {
   try {
-    detail.value = await fetchPublicTutorialDetail(route.params.tutorialSlug as string)
+    detail.value = await tutorialDetailCache.load(route.params.tutorialSlug as string)
     if (detail.value) {
       applyPageMeta({
         title: detail.value.title,

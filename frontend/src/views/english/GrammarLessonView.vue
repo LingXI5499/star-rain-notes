@@ -2,18 +2,16 @@
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
-import { fetchPublicGrammar, fetchPublicGrammarLesson, type GrammarCurriculum, type GrammarLessonDetail } from '@/api/grammar'
+import { fetchPublicGrammarLesson, type GrammarCurriculum, type GrammarLessonDetail } from '@/api/grammar'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import ReadingAside from '@/components/ReadingAside.vue'
 import type { OutlineItem } from '@/types'
 import { applyPageMeta } from '@/lib/seo'
-import { createFetchCache } from '@/lib/fetch-cache'
+import { grammarCurriculumCache } from '@/lib/publicContentCache'
 import { estimateReadingStats } from '@/lib/readingStats'
 import { fetchLearningRecord, saveLearningRecord, type LearningRecord } from '@/api/englishLearning'
 
-/** Course tree cache — switching lessons must not refetch / remount the sidebar (导航稳定性). */
-const curriculumCache = createFetchCache<GrammarCurriculum>(() => fetchPublicGrammar())
-
+/** Shared course-tree cache with GrammarView — switching lessons keeps the sidebar. */
 const route=useRoute();const curriculum=ref<GrammarCurriculum|null>(null);const lesson=ref<GrammarLessonDetail|null>(null);const outline=ref<OutlineItem[]>([]);const loading=ref(true);const notFound=ref(false);const courseOpen=ref(false);const outlineOpen=ref(false)
 /** True while a sibling lesson is being swapped in with the layout kept mounted. */
 const lessonLoading=ref(false)
@@ -32,7 +30,7 @@ async function load(){
   notFound.value=false;courseOpen.value=false;outlineOpen.value=false;lessonLoading.value=true
   try{
     const slug=String(route.params.lessonSlug)
-    const [cur,les]=await Promise.all([curriculumCache.load('grammar'),fetchPublicGrammarLesson(slug)])
+    const [cur,les]=await Promise.all([grammarCurriculumCache.load('grammar'),fetchPublicGrammarLesson(slug)])
     if(version!==loadVersion)return
     outline.value=[];curriculum.value=cur;lesson.value=les
     applyPageMeta({title:les.title,description:les.summary||undefined})

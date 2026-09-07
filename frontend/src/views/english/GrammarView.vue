@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { fetchPublicGrammar, type GrammarCurriculum } from '@/api/grammar'
+import type { GrammarCurriculum } from '@/api/grammar'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import { applyPageMeta } from '@/lib/seo'
+import { grammarCurriculumCache } from '@/lib/publicContentCache'
 
 const data=ref<GrammarCurriculum|null>(null);const loading=ref(true);const failed=ref(false)
 const steps=computed(()=>data.value?.course.roadmapMarkdown?.split('\n').map(s=>s.replace(/^\d+\.\s*/, '').trim()).filter(Boolean)??[])
-onMounted(async()=>{try{data.value=await fetchPublicGrammar();applyPageMeta({title:data.value.course.title,description:data.value.course.summary||undefined})}catch{failed.value=true}finally{loading.value=false}})
+onMounted(async()=>{try{data.value=await grammarCurriculumCache.load('grammar');applyPageMeta({title:data.value.course.title,description:data.value.course.summary||undefined})}catch{failed.value=true}finally{loading.value=false}})
 </script>
 
 <template>

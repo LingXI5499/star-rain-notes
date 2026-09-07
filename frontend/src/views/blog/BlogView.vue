@@ -1,18 +1,25 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { fetchArchive, fetchCalendar, fetchPublicPosts, fetchPublicTags, type ArchiveYear, type Calendar, type PublicPostPage, type PublicTagWithCount } from '@/api/blog'
+import type { ArchiveYear, Calendar, PublicPostPage, PublicTagWithCount } from '@/api/blog'
 import ContentSkeleton from '@/components/ui/ContentSkeleton.vue'
+import {
+  blogArchiveCache,
+  blogCalendarCache,
+  blogPostsCache,
+  blogPostsCacheKey,
+  blogTagsCache,
+} from '@/lib/publicContentCache'
 
 const route=useRoute();const router=useRouter();const posts=ref<PublicPostPage|null>(null);const tags=ref<PublicTagWithCount[]>([]);const calendar=ref<Calendar|null>(null);const archive=ref<ArchiveYear[]>([]);const loading=ref(true);const error=ref(false);const filters=reactive({tag:'',date:'',month:'',page:1});const activeMonth=computed(()=>filters.month)
 const timeline=computed(()=>{let previous='';return(posts.value?.items??[]).map(post=>{const d=new Date(post.publishedAt);const year=Number.isNaN(d.getTime())?'':String(d.getFullYear());const monthDay=Number.isNaN(d.getTime())?post.publishedAt:d.toLocaleDateString('zh-CN',{month:'2-digit',day:'2-digit'}).replace('/','.');const showYear=year!==previous;previous=year;return{post,year,monthDay,showYear}})})
-async function loadPosts(){loading.value=true;error.value=false;try{posts.value=await fetchPublicPosts({tag:filters.tag||undefined,date:filters.date||undefined,month:filters.month||undefined,page:filters.page,pageSize:10})}catch{error.value=true}finally{loading.value=false}}
+async function loadPosts(){loading.value=true;error.value=false;try{posts.value=await blogPostsCache.load(blogPostsCacheKey({tag:filters.tag||undefined,date:filters.date||undefined,month:filters.month||undefined,page:filters.page,pageSize:10}))}catch{error.value=true}finally{loading.value=false}}
 function syncFromQuery(){filters.tag=typeof route.query.tag==='string'?route.query.tag:'';filters.date=typeof route.query.date==='string'?route.query.date:'';filters.month=typeof route.query.month==='string'?route.query.month:'';filters.page=typeof route.query.page==='string'?Math.max(Number(route.query.page)||1,1):1}
 function applyFilters(patch:Partial<typeof filters>){Object.assign(filters,patch,{page:1});const query:Record<string,string>={};if(filters.tag)query.tag=filters.tag;if(filters.date)query.date=filters.date;if(filters.month)query.month=filters.month;router.replace({query})}
 function selectTag(slug:string){applyFilters({tag:filters.tag===slug?'':slug,date:'',month:''})}function selectDate(date:string){applyFilters({date:filters.date===date?'':date,month:''})}function selectMonth(month:string){applyFilters({month:filters.month===month?'':month,date:''})}
 function goPage(page:number){filters.page=page;const query:Record<string,string>={...(route.query as Record<string,string>)};if(page>1)query.page=String(page);else delete query.page;router.replace({query});window.scrollTo({top:0,behavior:window.matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'})}
-onMounted(async()=>{syncFromQuery();[tags.value,calendar.value,archive.value]=await Promise.all([fetchPublicTags(),fetchCalendar(filters.month||new Date().toISOString().slice(0,7)),fetchArchive()]);await loadPosts()})
-watch(()=>route.query,()=>{syncFromQuery();void loadPosts()});watch(activeMonth,async month=>{calendar.value=await fetchCalendar(month||new Date().toISOString().slice(0,7))})
+onMounted(async()=>{syncFromQuery();[tags.value,calendar.value,archive.value]=await Promise.all([blogTagsCache.load('tags'),blogCalendarCache.load(filters.month||new Date().toISOString().slice(0,7)),blogArchiveCache.load('archive')]);await loadPosts()})
+watch(()=>route.query,()=>{syncFromQuery();void loadPosts()});watch(activeMonth,async month=>{calendar.value=await blogCalendarCache.load(month||new Date().toISOString().slice(0,7))})
 </script>
 
 <template>

@@ -2,7 +2,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
-import { fetchPublicProject, type PublicProjectDetail } from '@/api/portfolio'
+import { type PublicProjectDetail } from '@/api/portfolio'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import ArticleOutline from '@/components/ArticleOutline.vue'
 import ReadingAside from '@/components/ReadingAside.vue'
@@ -12,6 +12,7 @@ import { applyPageMeta, caseStudySchema } from '@/lib/seo'
 import { estimateReadingStats } from '@/lib/readingStats'
 import { categorizeTechStack } from '@/lib/techStack'
 import { imageSizes } from '@/lib/imageSizes'
+import { portfolioDetailCache } from '@/lib/publicContentCache'
 import type { OutlineItem } from '@/types'
 
 /**
@@ -66,7 +67,7 @@ async function load() {
   drawerOpen.value = false
   coverBroken.value = false
   try {
-    const detail = await fetchPublicProject(route.params.slug as string)
+    const detail = await portfolioDetailCache.load(route.params.slug as string)
     project.value = { ...detail, gallery: detail.gallery ?? [] }
     applyPageMeta({
       title: detail.seoTitle || detail.title,
