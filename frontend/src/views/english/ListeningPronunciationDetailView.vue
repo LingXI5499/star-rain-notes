@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { fetchPublicPronunciationRule, type PronunciationRule } from '@/api/listening'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
-import ArticleOutline from '@/components/ArticleOutline.vue'
+import ReadingAside from '@/components/ReadingAside.vue'
 import type { OutlineItem } from '@/types'
 import { applyPageMeta } from '@/lib/seo'
+import { estimateReadingStats } from '@/lib/readingStats'
 import { useStableContentSwap } from '@/composables/useStableContentSwap'
 
 const route = useRoute()
@@ -13,6 +14,7 @@ const rule = ref<PronunciationRule | null>(null)
 const outline = ref<OutlineItem[]>([])
 const notFound = ref(false)
 const { initialLoading, swapping, begin, isCurrent, finish } = useStableContentSwap()
+const readingStats = computed(() => estimateReadingStats(rule.value?.bodyMarkdown))
 const ruleLabel: Record<string, string> = {
   LINKING: '连读',
   WEAK_FORM: '弱读',
@@ -63,15 +65,21 @@ onMounted(load)
           <span v-else class="prd-nav is-empty" />
         </div>
       </main>
-      <aside v-if="outline.length" class="prd__right"><ArticleOutline :items="outline" /></aside>
+      <ReadingAside
+        class="prd__right"
+        :items="outline"
+        :char-count="readingStats.charCount"
+        :read-minutes="readingStats.readMinutes"
+        :extra-info="[{ label: '规则类型', value: ruleLabel[rule.ruleType] ?? rule.ruleType }]"
+      />
     </div>
   </section>
 </template>
 
 <style scoped>
 .prd-wrap{padding:var(--space-10) 0;text-align:center;color:var(--text-muted)}
-.prd__layout{display:grid;grid-template-columns:minmax(0,1fr) 220px;gap:var(--layout-gap);align-items:start}
-.prd__right{position:sticky;top:calc(var(--header-height) + var(--space-6))}
+.prd__layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(165px,220px);gap:var(--layout-gap);align-items:start}
+.prd__right{min-width:0}
 .prd__main{min-width:0;transition:opacity var(--motion-fast,140ms) var(--ease-standard,ease)}
 .prd.is-swapping .prd__main{opacity:.45;pointer-events:none}
 .prd__hero{margin-bottom:var(--space-5)}

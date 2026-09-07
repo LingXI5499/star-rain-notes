@@ -132,7 +132,7 @@ onBeforeUnmount(() => { if (audioEl.value) { audioEl.value.pause(); audioEl.valu
         </div>
       </main>
 
-      <aside v-if="outline.length" class="ld__right"><details open><summary>页内目录</summary><ArticleOutline :items="outline"/></details></aside>
+      <aside v-if="outline.length" class="ld__right"><details open><summary>本页导航</summary><ArticleOutline :items="outline" hide-title embedded/></details></aside>
     </div>
   </section>
 </template>

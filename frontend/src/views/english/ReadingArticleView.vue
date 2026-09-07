@@ -190,8 +190,9 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 
       <!-- right: outline + progress -->
       <aside v-if="hasOutline" class="reading-detail__right">
+        <p class="reading-detail__aside-title">本页导航</p>
+        <ArticleOutline :items="outline" hide-title embedded />
         <p class="reading-detail__progress">阅读进度 {{ progress }}%</p>
-        <ArticleOutline :items="outline" />
       </aside>
     </div>
   </section>
@@ -213,7 +214,15 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 .reading-detail__h1 { font-size: 34px; line-height: 1.25; margin: 0 0 12px; }
 .reading-detail__summary { font-size: 16px; color: var(--text-secondary); line-height: 1.7; }
 .reading-detail__cover { width: 100%; max-height: 420px; object-fit: cover; border-radius: 18px; margin-top: 18px; border: 1px solid var(--border); }
-.reading-detail__progress { font-size: 12px; color: var(--text-muted); margin: 0 0 12px; }
+.reading-detail__aside-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 var(--space-4);
+}
+.reading-detail__progress { font-size: 12px; color: var(--text-muted); margin: 16px 0 0; }
 .reading-detail__mobile-panel { display: none; border: 1px solid var(--border); border-radius: 12px; padding: 10px 12px; margin-bottom: 16px; background: var(--bg-surface); }
 .reading-detail__mobile-panel summary { cursor: pointer; color: var(--primary); font-weight: 650; }
 .reading-detail__mobile-panel p { color: var(--text-secondary); font-size: 13px; }

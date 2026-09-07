@@ -6,9 +6,16 @@ import type { OutlineItem } from '@/types'
  * Client-side article outline (TOC) with scroll-position tracking.
  * Sticky in the wide-screen reader column; hidden on narrow screens.
  */
-const props = defineProps<{
+const props = withDefaults(defineProps<{
   items: OutlineItem[]
-}>()
+  /** Hide the built-in「目录」label when a parent already titles the section. */
+  hideTitle?: boolean
+  /** Nested inside a sticky parent — drop own sticky so only the rail sticks. */
+  embedded?: boolean
+}>(), {
+  hideTitle: false,
+  embedded: false,
+})
 
 const activeId = ref('')
 const sections = ref<HTMLElement[]>([])
@@ -58,8 +65,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <nav v-if="items.length" class="article-outline" aria-label="文章目录">
-    <p class="article-outline__title">目录</p>
+  <nav
+    v-if="items.length"
+    class="article-outline"
+    :class="{ 'article-outline--embedded': embedded }"
+    aria-label="文章目录"
+  >
+    <p v-if="!hideTitle" class="article-outline__title">目录</p>
     <ul class="article-outline__list">
       <li
         v-for="item in items"
@@ -80,6 +92,35 @@ onUnmounted(() => {
   max-height: calc(100vh - var(--header-height) - var(--space-12));
   overflow-y: auto;
   font-size: 13px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.article-outline::-webkit-scrollbar {
+  width: 8px;
+}
+
+.article-outline::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.article-outline::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.article-outline::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+.article-outline--embedded {
+  position: static;
+  top: auto;
+  max-height: min(52vh, 420px);
 }
 
 .article-outline__title {

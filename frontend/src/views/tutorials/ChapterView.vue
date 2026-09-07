@@ -9,10 +9,11 @@ import {
   type PublicTutorialDetail,
 } from '@/api/tutorial'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
-import ArticleOutline from '@/components/ArticleOutline.vue'
+import ReadingAside from '@/components/ReadingAside.vue'
 import TutorialCurriculumList from '@/components/TutorialCurriculumList.vue'
 import { applyPageMeta } from '@/lib/seo'
 import { createFetchCache } from '@/lib/fetch-cache'
+import { estimateReadingStats } from '@/lib/readingStats'
 import type { OutlineItem } from '@/types'
 
 /**
@@ -34,9 +35,9 @@ const loadFailed = ref(false)
 /** True while a sibling chapter is being fetched with the layout kept mounted. */
 const chapterLoading = ref(false)
 
-// Real, derived reading stats (no fabricated metrics).
-const charCount = computed(() => (chapter.value?.bodyMarkdown ?? '').length)
-const readMinutes = computed(() => Math.max(1, Math.round(charCount.value / 400)))
+const readingStats = computed(() => estimateReadingStats(chapter.value?.bodyMarkdown))
+const charCount = computed(() => readingStats.value.charCount)
+const readMinutes = computed(() => readingStats.value.readMinutes)
 const progressPercent = computed(() => {
   if (!detail.value || !chapter.value) return 0
   const flat: { slug: string }[] = []
@@ -192,21 +193,16 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
     </article>
 
     <!-- TOC + reading info (wide screens only) -->
-    <aside class="reader__toc">
-      <div class="reader__toc-card">
-        <p class="reader__toc-title">本页导航</p>
-        <ArticleOutline :items="outline" />
-      </div>
-      <div class="reader__toc-card">
-        <p class="reader__toc-title">学习信息</p>
-        <dl class="reader__info">
-          <div><dt>字数</dt><dd>{{ charCount }}</dd></div>
-          <div><dt>预计阅读</dt><dd>{{ readMinutes }} 分钟</dd></div>
-          <div><dt>阅读进度</dt><dd>{{ progressPercent }}%</dd></div>
-          <div><dt>所属教程</dt><dd>{{ chapter.tutorialTitle }}</dd></div>
-        </dl>
-      </div>
-    </aside>
+    <ReadingAside
+      class="reader__toc"
+      :items="outline"
+      :char-count="charCount"
+      :read-minutes="readMinutes"
+      :extra-info="[
+        { label: '阅读进度', value: `${progressPercent}%` },
+        { label: '所属教程', value: chapter.tutorialTitle },
+      ]"
+    />
   </section>
 
   <section v-else class="reader">
@@ -388,48 +384,6 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
 .reader__prevnext-link--next {
   margin-left: auto;
   text-align: right;
-}
-
-.reader__toc {
-  position: sticky;
-  top: calc(var(--header-height) + var(--space-6));
-  align-self: start;
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-4);
-}
-
-.reader__toc-card {
-  padding: 0 0 var(--space-4);
-}
-
-.reader__toc-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  margin-bottom: var(--space-4);
-}
-
-.reader__info {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
-.reader__info div {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13px;
-}
-
-.reader__info dt {
-  color: var(--text-muted);
-}
-
-.reader__info dd {
-  color: var(--text-primary);
 }
 
 .reader__drawer-toggle {

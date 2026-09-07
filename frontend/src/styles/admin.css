@@ -166,6 +166,34 @@
 }
 
 /* ============================================================
+   Vditor fullscreen escapes admin shell stacking.
+   Sidebar (z-index 30) would otherwise paint over position:fixed
+   descendants of .admin-shell__body.
+   ============================================================ */
+html.is-vditor-fullscreen,
+html.is-vditor-fullscreen body {
+  overflow: hidden !important;
+}
+
+html.is-vditor-fullscreen .admin-shell__sidebar,
+html.is-vditor-fullscreen .admin-shell__header,
+html.is-vditor-fullscreen .admin-shell__scrim,
+html.is-vditor-fullscreen .admin-shell__mobile-menu {
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html.is-vditor-fullscreen .vditor--fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100vh !important;
+  z-index: 10000 !important;
+  border-radius: 0 !important;
+  background: var(--bg-page);
+}
+
+/* ============================================================
    Vditor 编辑器 chrome（仅后台编辑器，前缀 .markdown-editor
    提高优先级以覆盖运行时加载的 Vditor 样式）
    ============================================================ */
