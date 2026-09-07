@@ -45,3 +45,7 @@ develop/release/*.sha256.txt
 develop/release/english-management-upgrade/
 develop/release/upgrade-*/
 develop/release/verify-upgrade-*/
+
+# Local brainstorm / tooling
+.superpowers/
+frontend/.vite/
