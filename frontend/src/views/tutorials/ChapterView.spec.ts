@@ -2,6 +2,7 @@ import { flushPromises, shallowMount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { reactive } from 'vue'
 import ChapterView from './ChapterView.vue'
+import { tutorialChapterCache, tutorialDetailCache } from '@/lib/publicContentCache'
 
 /**
  * 导航稳定性 (upgrade plan §3): switching to a sibling chapter must keep the
@@ -76,6 +77,8 @@ const detail = {
 
 describe('ChapterView 导航稳定性', () => {
   beforeEach(() => {
+    tutorialChapterCache.invalidate()
+    tutorialDetailCache.invalidate()
     mocks.route = reactive({ params: { tutorialSlug: 'java', chapterSlug: 'ch-1' } })
     mocks.fetchPublicChapter
       .mockReset()

@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { fetchPublicReadings, fetchPublicReadingHome, type ReadingPage } from '@/api/reading'
-import { fetchPublicMeta, type CefrLevel, type TaxonomyTerm } from '@/api/englishMeta'
+import { fetchPublicReadings, type ReadingPage } from '@/api/reading'
+import type { CefrLevel, TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 import EditorialMotif from '@/components/visual/EditorialMotif.vue'
+import { englishMetaCache, readingHomeCache } from '@/lib/publicContentCache'
 
 const route = useRoute()
 const router = useRouter()
@@ -59,11 +60,11 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
 onMounted(async () => {
   syncFromRoute()
   try {
-    const meta = await fetchPublicMeta()
+    const meta = await englishMetaCache.load('meta')
     topics.value = meta.taxonomy.filter((t) => t.dimension === 'TOPIC' && t.parentId === null)
     genres.value = meta.taxonomy.filter((t) => t.dimension === 'GENRE' && t.parentId === null)
     cefrList.value = meta.cefr
-    home.value = await fetchPublicReadingHome()
+    home.value = await readingHomeCache.load('home')
   } catch {
     // meta failure shouldn't block the list
   }

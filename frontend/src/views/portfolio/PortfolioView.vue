@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { fetchPublicProjects, type PublicProjectSummary } from '@/api/portfolio'
+import { type PublicProjectSummary } from '@/api/portfolio'
 import EditorialMotif from '@/components/visual/EditorialMotif.vue'
 import { imageSizes } from '@/lib/imageSizes'
+import { portfolioListCache } from '@/lib/publicContentCache'
 
 const projects = ref<PublicProjectSummary[]>([])
 const loading = ref(true)
@@ -21,7 +22,7 @@ const statusLabels: Record<string, string> = {
 
 onMounted(async () => {
   try {
-    projects.value = await fetchPublicProjects()
+    projects.value = await portfolioListCache.load('list')
   } catch {
     error.value = true
   } finally {

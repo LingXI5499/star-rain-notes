@@ -37,7 +37,9 @@ public class PublicApiCacheHeadersFilter extends OncePerRequestFilter {
         if (path.contains("/account") || path.contains("/learning") || path.contains("/vocabulary/memory")) {
             return;
         }
-        if (response.getHeader("Cache-Control") == null && response.getStatus() >= 200 && response.getStatus() < 400) {
+        if (response.getStatus() >= 200 && response.getStatus() < 400) {
+            // Prefer short shared caching for anonymous public GETs even when the
+            // security stack stamped a default no-store for authenticated apps.
             response.setHeader("Cache-Control", PUBLIC_CACHE);
         }
     }

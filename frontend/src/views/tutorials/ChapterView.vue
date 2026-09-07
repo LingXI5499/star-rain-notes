@@ -3,8 +3,6 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
 import {
-  fetchPublicChapter,
-  fetchPublicTutorialDetail,
   type PublicChapter,
   type PublicTutorialDetail,
 } from '@/api/tutorial'
@@ -12,17 +10,18 @@ import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import ReadingAside from '@/components/ReadingAside.vue'
 import TutorialCurriculumList from '@/components/TutorialCurriculumList.vue'
 import { applyPageMeta } from '@/lib/seo'
-import { createFetchCache } from '@/lib/fetch-cache'
+import {
+  tutorialChapterCache,
+  tutorialChapterCacheKey,
+  tutorialDetailCache,
+} from '@/lib/publicContentCache'
 import { estimateReadingStats } from '@/lib/readingStats'
 import type { OutlineItem } from '@/types'
 
 /**
- * Session-lived curriculum cache: switching chapters inside one tutorial must
- * NOT refetch (nor re-render) the whole navigation tree, so the sidebar keeps
- * its scroll position (导航稳定性, upgrade plan §3).
+ * Session-lived curriculum + chapter caches: switching chapters inside one
+ * tutorial must keep the sidebar mounted and avoid cold refetches.
  */
-const detailCache = createFetchCache<PublicTutorialDetail>((slug) => fetchPublicTutorialDetail(slug))
-
 const route = useRoute()
 let loadVersion = 0
 onBeforeUnmount(() => { loadVersion++ })
@@ -68,14 +67,14 @@ async function load() {
   // swap the article body; a different tutorial starts from a clean slate.
   if (detail.value?.slug !== tutorialSlug) {
     chapter.value = null
-    detail.value = detailCache.peek(tutorialSlug) ?? null
+    detail.value = tutorialDetailCache.peek(tutorialSlug) ?? null
     outline.value = []
   }
   chapterLoading.value = true
   try {
     const [ch, det] = await Promise.all([
-      fetchPublicChapter(tutorialSlug, chapterSlug),
-      detailCache.load(tutorialSlug),
+      tutorialChapterCache.load(tutorialChapterCacheKey(tutorialSlug, chapterSlug)),
+      tutorialDetailCache.load(tutorialSlug),
     ])
     if (version !== loadVersion) return
     outline.value = []

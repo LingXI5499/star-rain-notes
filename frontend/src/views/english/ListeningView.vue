@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { fetchPublicListeningHome, fetchPublicListenings, type ListeningHome, type ListeningPage } from '@/api/listening'
-import { fetchPublicMeta, type TaxonomyTerm } from '@/api/englishMeta'
+import { fetchPublicListenings, type ListeningHome, type ListeningPage } from '@/api/listening'
+import type { TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 import EnglishModuleHero from '@/components/english/EnglishModuleHero.vue'
 import EditorialMotif from '@/components/visual/EditorialMotif.vue'
+import { englishMetaCache, listeningHomeCache } from '@/lib/publicContentCache'
 
 const route = useRoute(); const router = useRouter()
 const page = ref<ListeningPage | null>(null); const home = ref<ListeningHome | null>(null)
@@ -19,7 +20,7 @@ async function load(){ loading.value=true;error.value=false; try{ page.value=awa
 function apply(){ router.push({ query:{ q:filters.q||undefined,level:filters.level||undefined,cefr:filters.cefr||undefined,topic:filters.topic||undefined,scene:filters.scene||undefined,format:filters.format||undefined} }) }
 function goPage(p:number){ router.push({ query:{...route.query,page:String(p)} }) }
 watch(()=>route.query,()=>{sync();void load()})
-onMounted(async()=>{ sync(); try{ const meta=await fetchPublicMeta(); topics.value=meta.taxonomy.filter(t=>t.dimension==='TOPIC'&&t.parentId===null); scenes.value=meta.taxonomy.filter(t=>t.dimension==='SCENE'&&t.parentId===null); formats.value=meta.taxonomy.filter(t=>t.dimension==='FORMAT'&&t.parentId===null); home.value=await fetchPublicListeningHome() }catch{}; await load() })
+onMounted(async()=>{ sync(); try{ const meta=await englishMetaCache.load('meta'); topics.value=meta.taxonomy.filter(t=>t.dimension==='TOPIC'&&t.parentId===null); scenes.value=meta.taxonomy.filter(t=>t.dimension==='SCENE'&&t.parentId===null); formats.value=meta.taxonomy.filter(t=>t.dimension==='FORMAT'&&t.parentId===null); home.value=await listeningHomeCache.load('home') }catch{}; await load() })
 </script>
 
 <template>
