@@ -98,6 +98,9 @@ onMounted(async () => {
     preview: { math: false as never, markdown: { sanitize: true } },
     cache: { enable: false },
     counter: { enable: false },
+    // Fullscreen must float above the admin shell (sidebar/header create
+    // stacking contexts with z-index 10/30); Vditor's default index is 90.
+    fullscreen: { index: 2000 },
     // Left-side document outline, like the article TOC on the reading pages.
     outline: { enable: true, position: 'left' },
     toolbar: [
@@ -211,9 +214,32 @@ onBeforeUnmount(() => {
   min-height: max(700px, calc(100vh - 300px));
 }
 
+/*
+ * The scroll container MUST be the edit-mode element (.vditor-ir/.vditor-wysiwyg/
+ * .vditor-sv), not .vditor-content: Vditor's outline click sets scrollTop on the
+ * mode element, so scrolling anywhere else breaks outline navigation.
+ */
 .markdown-editor__host :deep(.vditor-content) {
+  max-height: none;
+}
+
+.markdown-editor__host :deep(.vditor-ir),
+.markdown-editor__host :deep(.vditor-wysiwyg),
+.markdown-editor__host :deep(.vditor-sv) {
   max-height: max(780px, calc(100vh - 240px));
   overflow-y: auto;
+}
+
+/* Fullscreen: hand the layout back to Vditor entirely (it sizes the modes
+   itself); our viewport-based caps would leave dead zones and misalign. */
+.markdown-editor__host :deep(.vditor--fullscreen) {
+  min-height: 0;
+}
+
+.markdown-editor__host :deep(.vditor--fullscreen .vditor-ir),
+.markdown-editor__host :deep(.vditor--fullscreen .vditor-wysiwyg),
+.markdown-editor__host :deep(.vditor--fullscreen .vditor-sv) {
+  max-height: none;
 }
 
 /* ---------------------------------------------------------------
@@ -296,7 +322,9 @@ onBeforeUnmount(() => {
     display: none !important;
   }
 
-  .markdown-editor__host :deep(.vditor-content) {
+  .markdown-editor__host :deep(.vditor-ir),
+  .markdown-editor__host :deep(.vditor-wysiwyg),
+  .markdown-editor__host :deep(.vditor-sv) {
     max-height: 70vh;
   }
 }
