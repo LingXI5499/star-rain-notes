@@ -218,7 +218,7 @@ function insertCaseStudyTemplate() {
     return
   }
   form.bodyMarkdown = CASE_STUDY_BODY_TEMPLATE
-  ElMessage.success('已插入 Case Study 大纲。')
+  ElMessage.success('已插入 README 五章大纲。')
 }
 </script>
 
@@ -246,10 +246,13 @@ function insertCaseStudyTemplate() {
           maxlength="200"
         />
         <div class="portfolio-edit__outline-row">
-          <p class="portfolio-edit__outline-note">正文请从 H2 开始；图片可用标题标记尺寸，例如 <code>![说明](url &quot;wide&quot;)</code> / <code>full</code>。</p>
-          <el-button plain @click="insertCaseStudyTemplate">插入 Case Study 大纲</el-button>
+          <p class="portfolio-edit__outline-note">正文按五章 README 大纲写（背景 → 页面导览 → 用户流程 → 功能清单 → 技术架构）。图片可用 <code>wide</code> / <code>full</code> 标记宽度。</p>
+          <el-button plain @click="insertCaseStudyTemplate">插入 README 大纲</el-button>
         </div>
-        <MarkdownEditor v-model="form.bodyMarkdown" placeholder="Background / Goals / Architecture / Challenges / Results…" />
+        <MarkdownEditor
+          v-model="form.bodyMarkdown"
+          placeholder="01 一句话与背景 / 02 页面导览 / 03 核心用户流程 / 04 功能清单 / 05 技术架构…"
+        />
       </section>
 
       <!-- bottom: project details -->

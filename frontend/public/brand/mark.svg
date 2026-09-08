@@ -1,41 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100" role="img" aria-label="星雨笔录品牌标记：星轨与纸页">
-  <defs>
-    <radialGradient id="focalGlow" cx="50%" cy="50%" r="50%">
-      <stop offset="0" stop-color="#b86f47" stop-opacity=".38"/>
-      <stop offset="1" stop-color="#b86f47" stop-opacity="0"/>
-    </radialGradient>
-  </defs>
-
-  <!-- paper page with folded corner -->
-  <path d="M29 14 H64 L80 30 V80 Q80 88 72 88 H29 Q21 88 21 80 V22 Q21 14 29 14 Z" fill="#fbf7ee"/>
-  <path d="M21 22 C 21 17.6, 24.6 14, 29 14 H64 L80 30" fill="none" stroke="#2a584e" stroke-opacity=".55" stroke-width="1.6" stroke-linejoin="round"/>
-  <path d="M64 14 L80 30 L64 30 Z" fill="#ece2cf"/>
-  <path d="M64 14 L80 30" fill="none" stroke="#2a584e" stroke-opacity=".4" stroke-width="1.2"/>
-  <!-- text rules -->
-  <g stroke="#2a584e" stroke-opacity=".32" stroke-width="1.6" stroke-linecap="round">
-    <path d="M31 46 H63"/>
-    <path d="M31 57 H69"/>
-    <path d="M31 68 H58"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128" role="img" aria-label="星雨笔录">
+  <!-- notepad -->
+  <rect x="34" y="30" width="52" height="66" rx="7" fill="none" stroke="#B9B3AA" stroke-width="3.2"/>
+  <g stroke="#B9B3AA" stroke-width="2.4" stroke-linecap="round">
+    <path d="M44 50 H74"/>
+    <path d="M44 62 H78"/>
+    <path d="M44 74 H68"/>
   </g>
-
-  <!-- star trail crossing the page -->
-  <path d="M6 58 C 20 82, 48 84, 62 64 C 72 48, 74 30, 81 16" fill="none" stroke="#b86f47" stroke-opacity=".2" stroke-width="9" stroke-linecap="round"/>
-  <path d="M6 58 C 20 82, 48 84, 62 64 C 72 48, 74 30, 81 16" fill="none" stroke="#b86f47" stroke-width="3" stroke-linecap="round"/>
-
-  <!-- knowledge nodes on the trail -->
-  <g fill="#b86f47" fill-opacity=".55">
-    <circle cx="31.5" cy="76.5" r="2.4"/>
-    <circle cx="49" cy="74.5" r="2.4"/>
-    <circle cx="71" cy="40" r="2.4"/>
-  </g>
-
-  <!-- single warm focal point -->
-  <circle cx="82" cy="17" r="12" fill="url(#focalGlow)"/>
-  <path d="M82 5 L85.4 13.6 L94 17 L85.4 20.4 L82 29 L78.6 20.4 L70 17 L78.6 13.6 Z" fill="#b86f47"/>
-
-  <!-- ambient glints -->
-  <g fill="#b86f47" fill-opacity=".45">
-    <path d="M12 24 L13.4 27.6 L17 29 L13.4 30.4 L12 34 L10.6 30.4 L7 29 L10.6 27.6 Z"/>
-    <path d="M90 52 L91 55 L94 56 L91 57 L90 60 L89 57 L86 56 L89 55 Z"/>
-  </g>
+  <!-- orange trail -->
+  <path d="M28 98 C 36 114, 78 112, 94 70 C 102 48, 100 32, 96 20" fill="none" stroke="#E07A4C" stroke-width="8.5" stroke-linecap="round"/>
+  <!-- star -->
+  <path d="M96 8 L100.2 18.2 L111 22.4 L100.2 26.6 L96 36.8 L91.8 26.6 L81 22.4 L91.8 18.2 Z" fill="#E07A4C"/>
+  <circle cx="36" cy="28" r="2.2" fill="#E07A4C"/>
+  <circle cx="46" cy="22" r="1.5" fill="#E07A4C"/>
 </svg>

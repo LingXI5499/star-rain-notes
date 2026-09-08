@@ -45,3 +45,27 @@ develop/release/*.sha256.txt
 develop/release/english-management-upgrade/
 develop/release/upgrade-*/
 develop/release/verify-upgrade-*/
+
+# Local brainstorm / tooling
+.superpowers/
+frontend/.vite/
+
+# Private material and internal project notes
+/docs/
+/*.png
+/*.jpg
+/*.webp
+/*.sql
+/*.sql.*
+/*.md
+!/README.md
+**/application-*-secret.yml
+**/application-*-secret.yaml
+*.pem
+*.key
+*.p12
+*.pfx
+*.dump
+*.bak
+**/uploads/
+**/data/pronunciation-cache/

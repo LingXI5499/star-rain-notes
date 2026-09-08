@@ -2,7 +2,7 @@
 const SITE_NAME = '星雨笔录'
 const SITE_ORIGIN = 'https://yulanlin.cn'
 const DEFAULT_IMAGE = `${SITE_ORIGIN}/brand/og-default.png`
-const DEFAULT_FAVICON = '/brand/favicon.svg'
+const DEFAULT_FAVICON = '/brand/favicon.png'
 const DEFAULT_MANIFEST = '/brand/site.webmanifest'
 
 export const DEFAULT_DESCRIPTION = '建立自己的知识世界'
