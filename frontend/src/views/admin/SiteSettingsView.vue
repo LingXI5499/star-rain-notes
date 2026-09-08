@@ -87,11 +87,17 @@ async function save() {
       <el-form-item label="时区（IANA）">
         <el-input v-model="form.timezone" maxlength="64" placeholder="Asia/Shanghai" />
       </el-form-item>
-      <el-form-item label="Logo（从媒体库选择或上传，仅限图片）">
-        <MediaField v-model="form.logoMediaId" asset-type="IMAGE" empty-text="使用默认品牌标记" />
+      <el-form-item label="Logo（留空 = 使用默认品牌标记）">
+        <div class="settings__media-field">
+          <MediaField v-model="form.logoMediaId" asset-type="IMAGE" empty-text="使用默认品牌标记" />
+          <p>选择或上传图片会覆盖 Header 的内置品牌标；移除自定义图片并保存后恢复默认标记。</p>
+        </div>
       </el-form-item>
-      <el-form-item label="Favicon（从媒体库选择或上传，仅限图片）">
-        <MediaField v-model="form.faviconMediaId" asset-type="IMAGE" empty-text="使用默认品牌图标" />
+      <el-form-item label="Favicon（留空 = 使用默认品牌图标）">
+        <div class="settings__media-field">
+          <MediaField v-model="form.faviconMediaId" asset-type="IMAGE" empty-text="使用默认品牌图标" />
+          <p>选择或上传图片会覆盖标签页图标；移除自定义图片并保存后恢复 <code>/brand/favicon.png</code>。</p>
+        </div>
       </el-form-item>
       <el-button type="primary" :loading="saving" @click="save">保存</el-button>
     </el-form>
@@ -107,5 +113,20 @@ async function save() {
 
 .settings__form {
   max-width: 560px;
+}
+
+.settings__media-field {
+  width: 100%;
+}
+
+.settings__media-field p {
+  margin: var(--space-2) 0 0;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.settings__media-field code {
+  color: var(--text-secondary);
 }
 </style>

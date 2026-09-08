@@ -12,7 +12,6 @@ import {
 import { fetchAdminTutorials } from '@/api/tutorial'
 import { fetchAdminPosts } from '@/api/blog'
 import { fetchAdminProjects } from '@/api/portfolio'
-import MediaField from '@/components/ui/MediaField.vue'
 import { useUnsavedGuard } from '@/composables/useUnsavedGuard'
 
 interface Option {
@@ -24,14 +23,16 @@ const loading = ref(true)
 const saving = ref(false)
 const stageSaving = ref(false)
 
+// Kept only to re-submit unchanged values: backend PUT replaces the whole profile.
+const avatarMediaId = ref<number | null>(null)
+const resumeMediaId = ref<number | null>(null)
+
 const form = reactive({
   displayName: '',
   headline: '',
   bio: '',
-  avatarMediaId: null as number | null,
   githubUrl: '',
   publicEmail: '',
-  resumeMediaId: null as number | null,
   currentFocus: [] as string[],
   technicalDirectionMarkdown: '',
   journeyMarkdown: '',
@@ -78,10 +79,10 @@ onMounted(async () => {
     form.displayName = data.displayName ?? ''
     form.headline = data.headline ?? ''
     form.bio = data.bio ?? ''
-    form.avatarMediaId = data.avatarMediaId
+    avatarMediaId.value = data.avatarMediaId
     form.githubUrl = data.githubUrl ?? ''
     form.publicEmail = data.publicEmail ?? ''
-    form.resumeMediaId = data.resumeMediaId
+    resumeMediaId.value = data.resumeMediaId
     form.currentFocus = [...data.currentFocus]
     form.technicalDirectionMarkdown = data.technicalDirectionMarkdown ?? ''
     form.journeyMarkdown = data.journeyMarkdown ?? ''
@@ -104,10 +105,10 @@ async function saveProfile() {
       displayName: form.displayName || null,
       headline: form.headline || null,
       bio: form.bio || null,
-      avatarMediaId: form.avatarMediaId,
+      avatarMediaId: avatarMediaId.value,
       githubUrl: form.githubUrl || null,
       publicEmail: form.publicEmail || null,
-      resumeMediaId: form.resumeMediaId,
+      resumeMediaId: resumeMediaId.value,
       currentFocus: form.currentFocus.filter((f) => f.trim()),
       technicalDirectionMarkdown: form.technicalDirectionMarkdown || null,
       journeyMarkdown: form.journeyMarkdown || null,
@@ -158,9 +159,6 @@ function showError(error: unknown) {
           <el-form-item label="一句话介绍（Headline）">
             <el-input v-model="form.headline" maxlength="255" />
           </el-form-item>
-          <el-form-item label="头像（从媒体库选择或上传，仅限图片）">
-            <MediaField v-model="form.avatarMediaId" asset-type="IMAGE" empty-text="未设置头像" />
-          </el-form-item>
           <el-form-item label="GitHub URL">
             <el-input v-model="form.githubUrl" maxlength="500" />
           </el-form-item>
@@ -168,9 +166,6 @@ function showError(error: unknown) {
         <div>
           <el-form-item label="公开邮箱">
             <el-input v-model="form.publicEmail" maxlength="255" />
-          </el-form-item>
-          <el-form-item label="简历媒体 ID（必须 PDF DOCUMENT）">
-            <el-input-number v-model="form.resumeMediaId" :min="1" :controls="false" placeholder="媒体库将在后续任务提供" />
           </el-form-item>
           <el-form-item label="当前关注">
             <div class="about-admin__focus">
