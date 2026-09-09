@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
+import { katex } from '@mdit/plugin-katex'
+import 'katex/dist/katex.min.css'
+import '@/styles/math.css'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/core'
 import bash from 'highlight.js/lib/languages/bash'
@@ -20,6 +23,7 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import type { OutlineItem } from '@/types'
 import { headingText, OUTLINE_MAX_LEVEL, OUTLINE_MIN_LEVEL, uniqueHeadingId } from '@/lib/markdownOutline'
 import { resolveMarkdownImageSize, stripMarkdownImageSizeToken } from '@/lib/markdownImageSize'
+import { mathOptions } from '@/lib/mathOptions'
 
 // Import only the languages used by this technical knowledge base. Importing
 // highlight.js' default bundle pulls every grammar into each article route
@@ -148,6 +152,12 @@ const md = new MarkdownIt({
 })
 
 const usedIds = new Map<string, number>()
+md.use(katex, {
+  ...mathOptions,
+  delimiters: 'dollars',
+  mathFence: true,
+})
+
 const renderImage = md.renderer.rules.image!
 md.renderer.rules.image = (tokens, idx, options, env, self) => {
   const token = tokens[idx]
@@ -185,7 +195,11 @@ watch(
     usedIds.clear()
     collected = []
     const rendered = md.render(source ?? '')
-    html.value = DOMPurify.sanitize(rendered, { USE_PROFILES: { html: true } })
+    // KaTeX uses MathML for accessibility and SVG for stretchy math symbols.
+    // Raw author HTML remains disabled in markdown-it above.
+    html.value = DOMPurify.sanitize(rendered, {
+      USE_PROFILES: { html: true, mathMl: true, svg: true },
+    })
     emit('outline', collected)
     await enhanceCodeBlocks()
   },

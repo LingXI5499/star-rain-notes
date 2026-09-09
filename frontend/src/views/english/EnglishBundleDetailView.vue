@@ -69,7 +69,7 @@ watch(() => route.params.slug, load, { immediate: true })
     <p v-else-if="failed && !bundle" class="state">该学习组合暂不可用。</p>
     <template v-else-if="bundle">
       <div :class="{ 'is-swapping': swapping }" :aria-busy="swapping">
-      <header class="hero" :style="bundle.coverUrl?{backgroundImage:`linear-gradient(90deg,var(--bg-surface) 30%,transparent),url(${bundle.coverUrl})`}:{}">
+      <header class="hero">
         <div><RouterLink to="/english/bundles" class="breadcrumb">学习组合 /</RouterLink><CefrBadge :level="bundle.primaryCefr"/><h1>{{ bundle.title }}</h1><p>{{ bundle.summary || '跨阅读、听力与写作完成一次主题学习闭环。' }}</p></div>
         <aside><strong>{{ progress }}%</strong><span>{{ completeCount }} / {{ items.length }} 已完成</span><div><i :style="{width:`${progress}%`}"/></div><RouterLink v-if="nextItem" :to="target(nextItem)">{{ completeCount ? '继续下一步' : '开始这条路径' }} →</RouterLink><b v-else>路径已完成</b></aside>
       </header>

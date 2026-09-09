@@ -2,9 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus/es/components/index.mjs'
 import type { ProblemDetail } from '@/api/http'
-import type { MediaAsset } from '@/api/media'
 import CefrBadge from '@/components/english/CefrBadge.vue'
-import MediaPicker from '@/components/MediaPicker.vue'
 import AdminContentActions from '@/components/admin/AdminContentActions.vue'
 import { useAuthStore } from '@/stores/auth'
 import {
@@ -46,7 +44,6 @@ const loading = ref(true)
 const dialogOpen = ref(false)
 const saving = ref(false)
 const editingId = ref<number | null>(null)
-const mediaPickerOpen = ref(false)
 const workspaceOpen = ref(false)
 const workspaceLoading = ref(false)
 const catalogLoading = ref(false)
@@ -61,7 +58,7 @@ const auth = useAuthStore()
 
 const form = reactive({
   title: '', summary: '', primaryCefr: '', coverMediaId: null as number | null,
-  coverUrl: '', sortOrder: null as number | null,
+  sortOrder: null as number | null,
 })
 
 const workspaceLocked = computed(() => activeBundle.value?.publishStatus === 'PUBLISHED')
@@ -92,7 +89,7 @@ async function load() {
 
 function resetForm() {
   editingId.value = null
-  Object.assign(form, { title: '', summary: '', primaryCefr: '', coverMediaId: null, coverUrl: '', sortOrder: null })
+  Object.assign(form, { title: '', summary: '', primaryCefr: '', coverMediaId: null, sortOrder: null })
 }
 
 function openCreate() {
@@ -104,18 +101,9 @@ function openEdit(bundle: LearningBundle) {
   editingId.value = bundle.id
   Object.assign(form, {
     title: bundle.title, summary: bundle.summary ?? '', primaryCefr: bundle.primaryCefr ?? '',
-    coverMediaId: bundle.coverMediaId, coverUrl: bundle.coverUrl ?? '', sortOrder: bundle.sortOrder,
+    coverMediaId: bundle.coverMediaId, sortOrder: bundle.sortOrder,
   })
   dialogOpen.value = true
-}
-
-function selectCover(asset: MediaAsset) {
-  if (asset.assetType !== 'IMAGE') {
-    ElMessage.warning('学习组合封面必须使用图片。')
-    return
-  }
-  form.coverMediaId = asset.id
-  form.coverUrl = asset.publicUrl
 }
 
 async function save() {
@@ -288,7 +276,6 @@ onMounted(load)
   <section class="bundle-manager">
     <header class="bundle-manager__header">
       <div>
-        <p>LEARNING BUNDLES · 内容运营</p>
         <h1>跨模块学习路径</h1>
         <span>从完整内容库检索阅读、听力与写作任务，按明确顺序编排并通过质量检查后发布。</span>
       </div>
@@ -300,12 +287,14 @@ onMounted(load)
         <b>还没有学习组合</b><span>先创建一个主题路径，再加入至少两个模块的已发布内容。</span>
       </div>
       <article v-for="bundle in bundles" :key="bundle.id" class="bundle-card">
-        <div class="bundle-card__cover" :style="bundle.coverUrl ? { backgroundImage: `url(${bundle.coverUrl})` } : undefined">
-          <span>{{ bundle.title.slice(0, 1) }}</span>
-          <em :class="bundle.publishStatus.toLowerCase()">{{ bundle.publishStatus === 'PUBLISHED' ? '已发布' : bundle.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</em>
-        </div>
         <div class="bundle-card__body">
-          <div class="bundle-card__title"><h2>{{ bundle.title }}</h2><CefrBadge :level="bundle.primaryCefr" /></div>
+          <div class="bundle-card__title">
+            <h2>{{ bundle.title }}</h2>
+            <div class="bundle-card__title-meta">
+              <CefrBadge :level="bundle.primaryCefr" />
+              <em :class="bundle.publishStatus.toLowerCase()">{{ bundle.publishStatus === 'PUBLISHED' ? '已发布' : bundle.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</em>
+            </div>
+          </div>
           <code>编号 {{ bundle.slug }}</code>
           <p>{{ bundle.summary || '尚未填写摘要，发布前需要补充学习目标。' }}</p>
           <div v-if="readinessMap[bundle.id]" class="bundle-card__stats">
@@ -325,7 +314,7 @@ onMounted(load)
     <el-drawer v-model="workspaceOpen" size="92%" :with-header="false" class="bundle-workspace-drawer">
       <div v-if="activeBundle" v-loading="workspaceLoading" class="workspace">
         <header class="workspace__header">
-          <div><button type="button" @click="workspaceOpen = false">← 返回</button><p>PATH BUILDER · 编号 {{ activeBundle.slug }}</p><h2>{{ activeBundle.title }}</h2></div>
+          <div><button type="button" @click="workspaceOpen = false">← 返回</button><h2>{{ activeBundle.title }}</h2><p>编号 {{ activeBundle.slug }}</p></div>
           <div class="workspace__header-actions">
             <span v-if="workspaceLocked" class="locked">已发布 · 路径已锁定</span>
             <el-button v-if="auth.isSuperAdmin && workspaceLocked" type="warning" @click="withdrawWorkspace">撤回后编辑</el-button>
@@ -342,7 +331,7 @@ onMounted(load)
 
         <div class="workspace__columns">
           <section class="catalog-panel">
-            <header><div><p>CONTENT LIBRARY</p><h3>内容库</h3></div><span>共 {{ catalog.total }} 项</span></header>
+            <header><div><h3>内容库</h3></div><span>共 {{ catalog.total }} 项</span></header>
             <div class="catalog-filters">
               <el-input v-model="filters.q" clearable placeholder="搜索标题、编号或摘要" @keyup.enter="loadCatalog(true)" />
               <el-select v-model="filters.type" placeholder="全部模块" clearable @change="loadCatalog(true)">
@@ -358,7 +347,6 @@ onMounted(load)
             </div>
             <div v-loading="catalogLoading" class="catalog-list">
               <article v-for="item in catalog.items" :key="itemKey(item)" :class="{ selected: item.selected }">
-                <div class="catalog-cover" :style="item.coverUrl ? { backgroundImage: `url(${item.coverUrl})` } : undefined">{{ moduleLabels[item.contentType].slice(0, 1) }}</div>
                 <div><span>{{ moduleLabels[item.contentType] }} · {{ item.cefrLevel || '—' }} · {{ item.publishStatus }}</span><h4>{{ item.title }}</h4><p>{{ item.summary || item.slug }}</p></div>
                 <el-button :disabled="item.selected || workspaceLocked || mutating" :type="item.selected ? 'info' : 'primary'" @click="addItem(item)">{{ item.selected ? '已加入' : '加入' }}</el-button>
               </article>
@@ -368,7 +356,7 @@ onMounted(load)
           </section>
 
           <section class="path-panel">
-            <header><div><p>LEARNING PATH</p><h3>学习顺序</h3></div><span>{{ bundleItems.length }} 个步骤</span></header>
+            <header><div><h3>学习顺序</h3></div><span>{{ bundleItems.length }} 个步骤</span></header>
             <div class="path-list">
               <article v-for="(item,index) in bundleItems" :key="itemKey(item)" :draggable="!workspaceLocked" @dragstart="dragging = itemKey(item)" @dragover.prevent @drop.prevent="dropItem(index)">
                 <i>{{ index + 1 }}</i><b class="handle">⠿</b>
@@ -387,16 +375,12 @@ onMounted(load)
         <el-form-item label="标题"><el-input v-model="form.title" maxlength="200" show-word-limit /></el-form-item>
         <el-form-item label="学习目标摘要"><el-input v-model="form.summary" type="textarea" :rows="3" maxlength="1000" show-word-limit /></el-form-item>
         <div class="form-grid"><el-form-item label="主 CEFR 等级"><el-select v-model="form.primaryCefr" clearable style="width:100%"><el-option v-for="level in ['A1','A2','B1','B2','C1','C2']" :key="level" :label="level" :value="level" /></el-select></el-form-item><el-form-item label="排序"><el-input-number v-model="form.sortOrder" :min="1" :step="10" /></el-form-item></div>
-        <el-form-item label="封面">
-          <div class="cover-field"><img v-if="form.coverUrl" :src="form.coverUrl" alt="组合封面" /><div v-else>暂无封面</div><span><el-button @click="mediaPickerOpen = true">选择图片</el-button><el-button v-if="form.coverMediaId" @click="form.coverMediaId = null; form.coverUrl = ''">移除</el-button></span></div>
-        </el-form-item>
       </el-form>
       <template #footer><el-button @click="dialogOpen = false">取消</el-button><el-button type="primary" :loading="saving" @click="save">保存</el-button></template>
     </el-dialog>
-    <MediaPicker v-model="mediaPickerOpen" @select="selectCover" />
   </section>
 </template>
 
 <style scoped>
-.bundle-manager__header{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:26px}.bundle-manager__header p,.workspace p,.catalog-panel header p,.path-panel header p{margin:0;color:var(--accent);font-size:10px;font-weight:800;letter-spacing:.15em}.bundle-manager__header h1{margin:7px 0;font-size:32px}.bundle-manager__header span{color:var(--text-secondary);font-size:13px}.bundle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px;min-height:180px}.bundle-manager__empty{grid-column:1/-1;display:grid;min-height:260px;place-items:center;align-content:center;gap:8px;border:1px dashed var(--border);border-radius:20px;color:var(--text-muted)}.bundle-manager__empty b{color:var(--text-primary);font-size:18px}.bundle-card{overflow:hidden;border:1px solid var(--border);border-radius:20px;background:var(--bg-surface);transition:transform .16s ease,border-color .16s ease}.bundle-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--primary) 45%,var(--border))}.bundle-card__cover{position:relative;display:flex;height:125px;align-items:center;justify-content:center;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 18%,var(--bg-subtle)),color-mix(in srgb,var(--accent) 13%,var(--bg-surface)));background-position:center;background-size:cover}.bundle-card__cover>span{color:var(--primary);font-size:42px;font-weight:900}.bundle-card__cover em{position:absolute;top:14px;right:14px;padding:6px 10px;border-radius:999px;background:var(--bg-surface);font-size:10px;font-style:normal}.bundle-card__cover em.published{color:var(--success)}.bundle-card__cover em.withdrawn{color:var(--warning)}.bundle-card__body{padding:20px}.bundle-card__title{display:flex;align-items:center;justify-content:space-between;gap:12px}.bundle-card h2{margin:0;font-size:20px}.bundle-card code{display:block;margin-top:5px;color:var(--text-muted);font-size:11px}.bundle-card p{min-height:42px;color:var(--text-secondary);font-size:13px;line-height:1.6}.bundle-card__stats{display:flex;gap:8px;margin:16px 0;padding:11px;border-radius:12px;background:var(--bg-subtle);font-size:11px}.bundle-card__stats span{color:var(--text-muted)}.bundle-card__stats b{margin-right:3px;color:var(--text-primary)}.bundle-card__stats span:last-child{margin-left:auto;color:var(--warning)}.bundle-card__stats span.ready{color:var(--success)}.bundle-card nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.bundle-card nav>a{margin-left:auto;color:var(--primary);font-size:12px}.workspace{min-height:100vh;padding:26px;background:var(--bg-page)}.workspace__header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}.workspace__header button{border:0;background:none;color:var(--text-muted);cursor:pointer}.workspace__header h2{margin:7px 0 0;font-size:28px}.workspace__header-actions{display:flex;align-items:center;gap:12px}.locked{padding:8px 12px;border-radius:999px;background:color-mix(in srgb,var(--warning) 12%,var(--bg-surface));color:var(--warning);font-size:11px}.readiness{display:grid;grid-template-columns:auto auto minmax(240px,1fr);gap:24px;align-items:center;margin:20px 0;padding:18px;border:1px solid color-mix(in srgb,var(--warning) 45%,var(--border));border-radius:18px;background:color-mix(in srgb,var(--warning) 5%,var(--bg-surface))}.readiness.ready{border-color:color-mix(in srgb,var(--success) 45%,var(--border));background:color-mix(in srgb,var(--success) 5%,var(--bg-surface))}.readiness__score{display:flex;align-items:center;gap:10px}.readiness__score b{display:grid;width:40px;height:40px;place-items:center;border-radius:12px;background:var(--warning);color:white;font-size:20px}.ready .readiness__score b{background:var(--success)}.readiness__score span{font-size:12px}.readiness__modules{display:flex;gap:8px}.readiness__modules span{padding:8px 10px;border-radius:10px;background:var(--bg-surface);color:var(--text-muted);font-size:11px}.readiness__modules b{margin-right:4px;color:var(--text-primary)}.readiness ul{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap;margin:0;padding:0;list-style:none}.readiness li{padding:5px 8px;border-radius:999px;background:var(--bg-surface);color:var(--warning);font-size:10px}.readiness>p{margin:0;text-align:right;color:var(--success);font-size:12px}.workspace__columns{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:18px}.catalog-panel,.path-panel{min-width:0;padding:20px;border:1px solid var(--border);border-radius:20px;background:var(--bg-surface)}.catalog-panel>header,.path-panel>header{display:flex;align-items:end;justify-content:space-between;margin-bottom:16px}.catalog-panel h3,.path-panel h3{margin:5px 0 0;font-size:20px}.catalog-panel header>span,.path-panel header>span{color:var(--text-muted);font-size:11px}.catalog-filters{display:grid;grid-template-columns:minmax(180px,1fr) 110px 110px 105px auto;gap:8px;margin-bottom:14px}.catalog-list{display:flex;min-height:260px;flex-direction:column;gap:9px}.catalog-list article{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:13px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:14px;transition:border-color .16s ease,opacity .16s ease}.catalog-list article.selected{opacity:.58}.catalog-cover{display:grid;width:64px;height:56px;place-items:center;border-radius:10px;background:linear-gradient(135deg,var(--bg-subtle),color-mix(in srgb,var(--primary) 10%,var(--bg-subtle)));color:var(--primary);font-weight:900;background-size:cover;background-position:center}.catalog-list span,.path-list span{color:var(--accent);font-size:9px;font-weight:750;letter-spacing:.08em}.catalog-list h4,.path-list h4{overflow:hidden;margin:4px 0;white-space:nowrap;text-overflow:ellipsis}.catalog-list p{overflow:hidden;margin:0;color:var(--text-muted);font-size:11px;white-space:nowrap;text-overflow:ellipsis}.catalog-list .empty{padding:80px 0;text-align:center;color:var(--text-muted)}.catalog-panel :deep(.el-pagination){justify-content:center;margin-top:14px}.path-list{display:flex;flex-direction:column;gap:9px}.path-list article{display:grid;grid-template-columns:32px 20px minmax(0,1fr) auto;gap:8px;align-items:center;padding:13px;border:1px solid var(--border);border-radius:14px;background:var(--bg-subtle)}.path-list article>i{display:grid;width:30px;height:30px;place-items:center;border-radius:9px;background:var(--primary);color:white;font-size:11px;font-style:normal}.handle{color:var(--text-muted);cursor:grab}.path-list small{font-size:9px}.path-list small.published{color:var(--success)}.path-list small.draft{color:var(--text-muted)}.path-list small.withdrawn{color:var(--warning)}.path-list nav{display:flex;gap:3px}.path-list nav button{border:0;border-radius:7px;padding:5px 7px;background:var(--bg-surface);color:var(--text-secondary);cursor:pointer}.path-list nav button:disabled{opacity:.35;cursor:not-allowed}.path-list nav .danger{color:var(--danger)}.path-empty{display:grid;min-height:260px;place-items:center;align-content:center;gap:8px;color:var(--text-muted)}.path-empty b{color:var(--text-primary)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.cover-field{display:flex;width:100%;align-items:center;gap:12px}.cover-field>img,.cover-field>div{display:grid;width:120px;aspect-ratio:16/9;place-items:center;border-radius:10px;background:var(--bg-subtle);object-fit:cover;color:var(--text-muted);font-size:11px}.cover-field>span{display:flex;gap:6px}@media(max-width:1080px){.workspace__columns{grid-template-columns:1fr}.catalog-filters{grid-template-columns:1fr 1fr 1fr}.catalog-filters>button{width:max-content}.readiness{grid-template-columns:1fr 1fr}.readiness ul,.readiness>p{grid-column:1/-1;justify-content:flex-start;text-align:left}}@media(max-width:720px){.bundle-manager__header,.workspace__header{align-items:flex-start;flex-direction:column}.bundle-grid{grid-template-columns:1fr}.workspace{padding:16px}.workspace__header-actions{flex-wrap:wrap}.readiness{grid-template-columns:1fr}.readiness ul,.readiness>p{grid-column:auto}.catalog-filters{grid-template-columns:1fr 1fr}.catalog-filters>:first-child{grid-column:1/-1}.catalog-list article{grid-template-columns:48px minmax(0,1fr)}.catalog-cover{width:48px;height:48px}.catalog-list article>button{grid-column:2;justify-self:start}.path-list article{grid-template-columns:30px 16px minmax(0,1fr)}.path-list nav{grid-column:3}.form-grid{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){.bundle-card,.catalog-list article{transition:none}}
+.bundle-manager__header{display:flex;justify-content:space-between;align-items:flex-end;gap:30px;margin-bottom:26px}.bundle-manager__header h1{margin:0 0 7px;font-size:32px}.bundle-manager__header span{color:var(--text-secondary);font-size:13px}.bundle-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:18px;min-height:180px}.bundle-manager__empty{grid-column:1/-1;display:grid;min-height:260px;place-items:center;align-content:center;gap:8px;border:1px dashed var(--border);border-radius:20px;color:var(--text-muted)}.bundle-manager__empty b{color:var(--text-primary);font-size:18px}.bundle-card{overflow:hidden;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface);transition:transform .16s ease,border-color .16s ease}.bundle-card:hover{transform:translateY(-2px);border-color:color-mix(in srgb,var(--primary) 45%,var(--border))}.bundle-card::before{content:'';display:block;height:3px;background:linear-gradient(90deg,color-mix(in srgb,var(--primary) 55%,transparent),color-mix(in srgb,var(--accent) 35%,transparent) 65%,transparent);opacity:.55}.bundle-card:hover::before{opacity:1}.bundle-card__body{padding:20px}.bundle-card__title{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}.bundle-card__title-meta{display:flex;align-items:center;gap:8px;flex-shrink:0}.bundle-card__title-meta em{padding:4px 8px;border-radius:999px;background:var(--bg-subtle);font-size:10px;font-style:normal}.bundle-card__title-meta em.published{color:var(--success);background:color-mix(in srgb,var(--success) 12%,var(--bg-surface))}.bundle-card__title-meta em.withdrawn{color:var(--warning);background:color-mix(in srgb,var(--warning) 12%,var(--bg-surface))}.bundle-card h2{margin:0;font-size:20px}.bundle-card code{display:block;margin-top:5px;color:var(--text-muted);font-size:11px}.bundle-card p{min-height:42px;color:var(--text-secondary);font-size:13px;line-height:1.6}.bundle-card__stats{display:flex;gap:8px;margin:16px 0;padding:11px;border-radius:12px;background:var(--bg-subtle);font-size:11px}.bundle-card__stats span{color:var(--text-muted)}.bundle-card__stats b{margin-right:3px;color:var(--text-primary)}.bundle-card__stats span:last-child{margin-left:auto;color:var(--warning)}.bundle-card__stats span.ready{color:var(--success)}.bundle-card nav{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.bundle-card nav>a{margin-left:auto;color:var(--primary);font-size:12px}.workspace{min-height:100vh;padding:26px;background:var(--bg-page)}.workspace__header{display:flex;align-items:flex-end;justify-content:space-between;gap:24px;padding-bottom:20px;border-bottom:1px solid var(--border)}.workspace__header button{border:0;background:none;color:var(--text-muted);cursor:pointer}.workspace__header h2{margin:7px 0 0;font-size:28px}.workspace__header p{margin:6px 0 0;color:var(--text-muted);font-size:12px}.workspace__header-actions{display:flex;align-items:center;gap:12px}.locked{padding:8px 12px;border-radius:999px;background:color-mix(in srgb,var(--warning) 12%,var(--bg-surface));color:var(--warning);font-size:11px}.readiness{display:grid;grid-template-columns:auto auto minmax(240px,1fr);gap:24px;align-items:center;margin:20px 0;padding:18px;border:1px solid color-mix(in srgb,var(--warning) 45%,var(--border));border-radius:18px;background:color-mix(in srgb,var(--warning) 5%,var(--bg-surface))}.readiness.ready{border-color:color-mix(in srgb,var(--success) 45%,var(--border));background:color-mix(in srgb,var(--success) 5%,var(--bg-surface))}.readiness__score{display:flex;align-items:center;gap:10px}.readiness__score b{display:grid;width:40px;height:40px;place-items:center;border-radius:12px;background:var(--warning);color:white;font-size:20px}.ready .readiness__score b{background:var(--success)}.readiness__score span{font-size:12px}.readiness__modules{display:flex;gap:8px}.readiness__modules span{padding:8px 10px;border-radius:10px;background:var(--bg-surface);color:var(--text-muted);font-size:11px}.readiness__modules b{margin-right:4px;color:var(--text-primary)}.readiness ul{display:flex;justify-content:flex-end;gap:6px;flex-wrap:wrap;margin:0;padding:0;list-style:none}.readiness li{padding:5px 8px;border-radius:999px;background:var(--bg-surface);color:var(--warning);font-size:10px}.readiness>p{margin:0;text-align:right;color:var(--success);font-size:12px}.workspace__columns{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);gap:18px}.catalog-panel,.path-panel{min-width:0;padding:20px;border:1px solid var(--border);border-radius:20px;background:var(--bg-surface)}.catalog-panel>header,.path-panel>header{display:flex;align-items:end;justify-content:space-between;margin-bottom:16px}.catalog-panel h3,.path-panel h3{margin:0;font-size:20px}.catalog-panel header>span,.path-panel header>span{color:var(--text-muted);font-size:11px}.catalog-filters{display:grid;grid-template-columns:minmax(180px,1fr) 110px 110px 105px auto;gap:8px;margin-bottom:14px}.catalog-list{display:flex;min-height:260px;flex-direction:column;gap:9px}.catalog-list article{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:13px;align-items:center;padding:10px;border:1px solid var(--border);border-radius:14px;transition:border-color .16s ease,opacity .16s ease}.catalog-list article.selected{opacity:.58}.catalog-list span,.path-list span{color:var(--accent);font-size:9px;font-weight:750;letter-spacing:.08em}.catalog-list h4,.path-list h4{overflow:hidden;margin:4px 0;white-space:nowrap;text-overflow:ellipsis}.catalog-list p{overflow:hidden;margin:0;color:var(--text-muted);font-size:11px;white-space:nowrap;text-overflow:ellipsis}.catalog-list .empty{padding:80px 0;text-align:center;color:var(--text-muted)}.catalog-panel :deep(.el-pagination){justify-content:center;margin-top:14px}.path-list{display:flex;flex-direction:column;gap:9px}.path-list article{display:grid;grid-template-columns:32px 20px minmax(0,1fr) auto;gap:8px;align-items:center;padding:13px;border:1px solid var(--border);border-radius:14px;background:var(--bg-subtle)}.path-list article>i{display:grid;width:30px;height:30px;place-items:center;border-radius:9px;background:var(--primary);color:white;font-size:11px;font-style:normal}.handle{color:var(--text-muted);cursor:grab}.path-list small{font-size:9px}.path-list small.published{color:var(--success)}.path-list small.draft{color:var(--text-muted)}.path-list small.withdrawn{color:var(--warning)}.path-list nav{display:flex;gap:3px}.path-list nav button{border:0;border-radius:7px;padding:5px 7px;background:var(--bg-surface);color:var(--text-secondary);cursor:pointer}.path-list nav button:disabled{opacity:.35;cursor:not-allowed}.path-list nav .danger{color:var(--danger)}.path-empty{display:grid;min-height:260px;place-items:center;align-content:center;gap:8px;color:var(--text-muted)}.path-empty b{color:var(--text-primary)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}@media(max-width:1080px){.workspace__columns{grid-template-columns:1fr}.catalog-filters{grid-template-columns:1fr 1fr 1fr}.catalog-filters>button{width:max-content}.readiness{grid-template-columns:1fr 1fr}.readiness ul,.readiness>p{grid-column:1/-1;justify-content:flex-start;text-align:left}}@media(max-width:720px){.bundle-manager__header,.workspace__header{align-items:flex-start;flex-direction:column}.bundle-grid{grid-template-columns:1fr}.workspace{padding:16px}.workspace__header-actions{flex-wrap:wrap}.readiness{grid-template-columns:1fr}.readiness ul,.readiness>p{grid-column:auto}.catalog-filters{grid-template-columns:1fr 1fr}.catalog-filters>:first-child{grid-column:1/-1}.path-list article{grid-template-columns:30px 16px minmax(0,1fr)}.path-list nav{grid-column:3}.form-grid{grid-template-columns:1fr}}@media(prefers-reduced-motion:reduce){.bundle-card,.catalog-list article{transition:none}}
 </style>
