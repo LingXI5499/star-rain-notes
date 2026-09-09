@@ -13,7 +13,7 @@
 
     <groupId>com.starrainnotes</groupId>
     <artifactId>star-rain-notes-backend</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.0</version>
     <name>star-rain-notes-backend</name>
     <description>Star Rain Notes backend (modular monolith)</description>
 
