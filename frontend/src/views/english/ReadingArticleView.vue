@@ -147,7 +147,6 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
           <div class="reading-detail__meta"><CefrBadge :level="article.cefrLevel" /><span>{{ levelLabels[article.readingLevel] }}</span></div>
           <h1 class="reading-detail__h1">{{ article.title }}</h1>
           <p class="reading-detail__summary">{{ article.summary }}</p>
-          <img v-if="article.coverUrl" :src="article.coverUrl" :alt="article.title" class="reading-detail__cover" loading="lazy" decoding="async" />
         </header>
 
         <details class="reading-detail__mobile-panel">
@@ -213,7 +212,6 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 .reading-detail__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .reading-detail__h1 { font-size: 34px; line-height: 1.25; margin: 0 0 12px; }
 .reading-detail__summary { font-size: 16px; color: var(--text-secondary); line-height: 1.7; }
-.reading-detail__cover { width: 100%; max-height: 420px; object-fit: cover; border-radius: 18px; margin-top: 18px; border: 1px solid var(--border); }
 .reading-detail__aside-title {
   font-size: 13px;
   font-weight: 600;

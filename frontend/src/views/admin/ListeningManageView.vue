@@ -89,7 +89,7 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
 <template>
   <section class="listening-manage">
     <header class="listening-manage__hero">
-      <div><p>ENGLISH LISTENING · 场景×形式×能力</p><h1>听力管理</h1><span>三段能力路线组织音频材料，逐句时间片段与安全练习。</span></div>
+      <div><h1>听力管理</h1><span>三段能力路线组织音频材料，逐句时间片段与安全练习。</span></div>
       <div class="listening-manage__hero-actions"><el-button @click="router.push({ name: 'admin-listening-pronunciation' })">语音规则</el-button><el-button type="primary" @click="openEditor()">新建材料</el-button></div>
     </header>
 
@@ -127,10 +127,6 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
     <div v-loading="loading" class="listening-manage__grid">
       <p v-if="!loading && !page?.items.length" class="listening-manage__empty">暂无材料。</p>
       <article v-for="item in page?.items" :key="item.id" class="listen-card">
-        <div class="listen-card__cover">
-          <img v-if="item.coverUrl" :src="item.coverUrl" :alt="item.title" loading="lazy"/>
-          <span v-else class="listen-card__fallback">听</span>
-        </div>
         <div class="listen-card__body">
           <div class="listen-card__meta"><CefrBadge :level="item.cefrLevel"/><span class="listen-card__level">{{ levelLabels[item.listeningLevel] }}</span><span class="listen-card__status">{{ item.publishStatus === 'PUBLISHED' ? '已发布' : item.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</span></div>
           <h2 class="listen-card__title">{{ item.title }}</h2>
@@ -153,17 +149,14 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
 <style scoped>
 .listening-manage__hero{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:24px}
 .listening-manage__hero-actions{display:flex;gap:8px}
-.listening-manage__hero p{color:var(--accent);font-size:11px;font-weight:750;letter-spacing:.14em;margin:0}
-.listening-manage__hero h1{font-size:28px;margin:6px 0}.listening-manage__hero span{color:var(--text-secondary);font-size:13px}
+.listening-manage__hero h1{font-size:28px;margin:0 0 6px}.listening-manage__hero span{color:var(--text-secondary);font-size:13px}
 .listening-manage__stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:var(--space-3);margin-bottom:20px}
 .lis-stat{padding:12px 14px;border:1px solid var(--border);border-radius:14px;background:var(--bg-surface);display:flex;flex-direction:column;gap:2px}
 .lis-stat b{font-size:22px;color:var(--primary)}.lis-stat span{font-size:12px;color:var(--text-muted)}
 .listening-manage__filters{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:20px}
 .listening-manage__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:var(--space-4);min-height:100px}
 .listening-manage__empty{color:var(--text-muted);padding:var(--space-6) 0;grid-column:1/-1}
-.listen-card{display:flex;border:1px solid var(--border);border-radius:18px;overflow:hidden;background:var(--bg-surface)}
-.listen-card__cover{width:110px;flex-shrink:0;background:var(--bg-subtle);display:grid;place-items:center}
-.listen-card__cover img{width:100%;height:100%;object-fit:cover}.listen-card__fallback{font-size:32px;font-weight:800;color:var(--primary)}
+.listen-card{display:flex;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--bg-surface)}
 .listen-card__body{padding:16px;flex:1;min-width:0}
 .listen-card__meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}.listen-card__level{font-size:12px;color:var(--text-secondary)}
 .listen-card__status{font-size:11px;color:var(--text-muted)}.listen-card__title{font-size:17px;margin:0 0 6px}
@@ -173,6 +166,5 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
 @media(max-width:720px){
   .listening-manage__hero{align-items:flex-start;gap:16px}.listening-manage__hero span{display:block}
   .listening-manage__filters>*{width:100%!important}.listening-manage__grid{grid-template-columns:1fr}
-  .listen-card{flex-direction:column}.listen-card__cover{width:100%;height:140px}
 }
 </style>

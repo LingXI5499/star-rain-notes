@@ -308,11 +308,6 @@ function statusActionLabel(status: string) {
   return status === 'PUBLISHED' ? '撤回' : status === 'WITHDRAWN' ? '重新发布' : '发布'
 }
 
-function coverGlyph(title: string) {
-  const normalized = title.replace(/[\s·_-]/g, '')
-  return normalized.slice(0, 2) || '课'
-}
-
 watch(() => route.query.category, (value) => {
   const id = routeId(value)
   if (id && id !== activeCategoryId.value && categories.value.some((item) => item.id === id)) {
@@ -334,7 +329,6 @@ onMounted(async () => {
   <section class="catalog-admin">
     <header class="catalog-admin__hero">
       <div>
-        <p class="catalog-admin__eyebrow">CONTENT ARCHITECTURE · 教程体系</p>
         <h1>教程工作台</h1>
         <p>先选择知识体系，再管理其中的教程；课程分组与章节进入独立结构页维护。</p>
       </div>
@@ -345,7 +339,6 @@ onMounted(async () => {
       <aside class="system-panel">
         <header class="system-panel__header">
           <div>
-            <span>01 · KNOWLEDGE SYSTEMS</span>
             <h2>知识体系</h2>
           </div>
           <button v-if="auth.isSuperAdmin" type="button" class="icon-button" title="新建知识体系" @click="openCategoryDialog()">＋</button>
@@ -408,15 +401,14 @@ onMounted(async () => {
               @dragover.prevent="tutorialDragOver($event, tutorial)"
               @drop.prevent="dropTutorial(tutorial)"
             >
-              <div class="course-card__cover">
-                <span class="course-card__grip" aria-hidden="true">⠿</span>
-                <span class="course-card__glyph">{{ coverGlyph(tutorial.title) }}</span>
-                <span class="status-pill" :class="`status-pill--${tutorial.publishStatus.toLowerCase()}`">
-                  {{ statusLabel(tutorial.publishStatus) }}
-                </span>
-              </div>
               <div class="course-card__content">
-                <p class="course-card__category">{{ activeCategory?.name }}</p>
+                <div class="course-card__topline">
+                  <span class="course-card__grip" aria-hidden="true">⠿</span>
+                  <p class="course-card__category">{{ activeCategory?.name }}</p>
+                  <span class="status-pill" :class="`status-pill--${tutorial.publishStatus.toLowerCase()}`">
+                    {{ statusLabel(tutorial.publishStatus) }}
+                  </span>
+                </div>
                 <h3>{{ tutorial.title }}</h3>
                 <p class="course-card__slug">编号 {{ tutorial.slug }}</p>
                 <div class="course-card__meta">
@@ -471,7 +463,6 @@ onMounted(async () => {
 .catalog-admin__hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
 .catalog-admin__hero h1 { margin: 4px 0 8px; font-size: clamp(28px,3vw,38px); line-height: 1.15; letter-spacing: -.035em; }
 .catalog-admin__hero > div > p:last-child { color: var(--text-secondary); font-size: 14px; }
-.catalog-admin__eyebrow { color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: .16em; }
 .catalog-admin__layout { display: grid; grid-template-columns: 288px minmax(0,1fr); gap: 20px; min-height: calc(100vh - 190px); }
 .system-panel,.course-panel { min-width: 0; border: 1px solid var(--border); border-radius: 18px; background: var(--bg-surface); box-shadow: 0 12px 36px rgb(17 35 29/.055); overflow: hidden; }
 .system-panel { display: flex; flex-direction: column; }
@@ -507,16 +498,14 @@ onMounted(async () => {
 .course-card:hover { border-color: color-mix(in srgb,var(--primary) 35%,var(--border)); box-shadow: 0 16px 34px rgb(14 35 28/.09); transform: translateY(-3px); }
 .course-card--drop-before { box-shadow: inset 0 3px 0 var(--primary); }
 .course-card--drop-after { box-shadow: inset 0 -3px 0 var(--primary); }
-.course-card__cover { position: relative; height: 112px; display: grid; place-items: center; overflow: hidden; background: linear-gradient(135deg,color-mix(in srgb,var(--primary) 17%,var(--bg-subtle)),color-mix(in srgb,var(--accent) 12%,var(--bg-subtle))); }
-.course-card__cover::after { content: ''; position: absolute; inset: auto -28px -54px auto; width: 130px; height: 130px; border: 1px solid color-mix(in srgb,var(--primary) 22%,transparent); border-radius: 50%; }
-.course-card__glyph { color: color-mix(in srgb,var(--primary) 72%,var(--text-primary)); font-size: 31px; font-weight: 780; letter-spacing: .08em; }
-.course-card__grip { position: absolute; top: 13px; left: 14px; color: var(--text-muted); letter-spacing: -4px; cursor: grab; }
-.status-pill { position: absolute; top: 12px; right: 12px; padding: 4px 8px; border-radius: 999px; font-size: 10px; font-weight: 650; backdrop-filter: blur(6px); }
+.course-card__topline { display: flex; align-items: center; gap: 8px; margin-bottom: 2px; }
+.course-card__grip { color: var(--text-muted); letter-spacing: -4px; cursor: grab; flex-shrink: 0; }
+.status-pill { margin-left: auto; padding: 4px 8px; border-radius: 999px; font-size: 10px; font-weight: 650; flex-shrink: 0; }
 .status-pill--published { color: var(--success); background: color-mix(in srgb,var(--success) 13%,var(--bg-surface)); }
 .status-pill--draft { color: var(--warning); background: color-mix(in srgb,var(--warning) 14%,var(--bg-surface)); }
 .status-pill--withdrawn { color: var(--text-muted); background: color-mix(in srgb,var(--bg-surface) 78%,transparent); }
 .course-card__content { padding: 17px; }
-.course-card__category { color: var(--accent); font-size: 10px; font-weight: 650; }
+.course-card__category { margin: 0; color: var(--accent); font-size: 10px; font-weight: 650; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .course-card h3 { margin: 7px 0 4px; font-size: 17px; line-height: 1.4; }
 .course-card__slug { overflow: hidden; color: var(--text-muted); font: 10px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; text-overflow: ellipsis; white-space: nowrap; }
 .course-card__meta { display: flex; justify-content: space-between; gap: 10px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 10px; }
