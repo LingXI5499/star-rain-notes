@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
-import { katex } from '@mdit/plugin-katex'
 import 'katex/dist/katex.min.css'
 import '@/styles/math.css'
 import DOMPurify from 'dompurify'
@@ -23,7 +22,8 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import type { OutlineItem } from '@/types'
 import { headingText, OUTLINE_MAX_LEVEL, OUTLINE_MIN_LEVEL, uniqueHeadingId } from '@/lib/markdownOutline'
 import { resolveMarkdownImageSize, stripMarkdownImageSizeToken } from '@/lib/markdownImageSize'
-import { mathOptions } from '@/lib/mathOptions'
+import { languageLabel, useMarkdownCodeGroup } from '@/lib/markdownCodeGroup'
+import { useMarkdownMath } from '@/lib/markdownMath'
 
 // Import only the languages used by this technical knowledge base. Importing
 // highlight.js' default bundle pulls every grammar into each article route
@@ -64,6 +64,7 @@ hljs.registerAliases(['yml'], { languageName: 'yaml' })
  * - code highlighting via highlight.js (no external theme; .hljs colors use tokens)
  * - headings get stable ids; H2-H4 are emitted as a client-side outline (TOC)
  *   and are never part of any API response
+ * - `::: code-group` fences become LeetCode-style language tabs on the client
  */
 const props = defineProps<{
   source: string
@@ -76,11 +77,21 @@ const emit = defineEmits<{
 const html = ref('')
 const root = ref<HTMLElement | null>(null)
 const copyResetTimers = new Map<HTMLButtonElement, number>()
+const groupCleanups: Array<() => void> = []
+
 function clearCopyTimers() {
   copyResetTimers.forEach(timer => window.clearTimeout(timer))
   copyResetTimers.clear()
 }
-onBeforeUnmount(clearCopyTimers)
+
+function clearGroupListeners() {
+  groupCleanups.splice(0).forEach((dispose) => dispose())
+}
+
+onBeforeUnmount(() => {
+  clearCopyTimers()
+  clearGroupListeners()
+})
 
 async function copyCode(button: HTMLButtonElement, content: string) {
   const previous = copyResetTimers.get(button)
@@ -105,19 +116,22 @@ async function copyCode(button: HTMLButtonElement, content: string) {
   }, 1800))
 }
 
-/** Post-process the sanitized markdown to add a language label + copy button to each code block. */
-async function enhanceCodeBlocks() {
-  await nextTick()
-  const container = root.value
-  if (!container) return
+function fenceLanguage(pre: HTMLElement): string {
+  const code = pre.querySelector('code')
+  return (code?.className.match(/language-([\w+-]+)/)?.[1]) ?? 'code'
+}
+
+/** Wrap standalone fences with the existing language label + copy chrome. */
+function enhanceStandaloneCodeBlocks(container: HTMLElement) {
   container.querySelectorAll<HTMLElement>('pre').forEach((pre) => {
     if (pre.dataset.enhanced) return
+    if (pre.closest('[data-code-group]')) return
     pre.dataset.enhanced = 'true'
     const code = pre.querySelector('code')
-    const lang = (code?.className.match(/language-([\w-]+)/)?.[1]) ?? 'code'
+    const lang = fenceLanguage(pre)
     const label = document.createElement('span')
     label.className = 'code-block__label'
-    label.textContent = lang
+    label.textContent = languageLabel(lang)
     const btn = document.createElement('button')
     btn.className = 'code-block__copy'
     btn.type = 'button'
@@ -133,6 +147,92 @@ async function enhanceCodeBlocks() {
     pre.replaceWith(wrap)
     wrap.append(head, pre)
   })
+}
+
+/** Upgrade `::: code-group` wrappers into LeetCode-style language tabs. */
+function enhanceCodeGroups(container: HTMLElement) {
+  container.querySelectorAll<HTMLElement>('[data-code-group="true"]').forEach((group) => {
+    if (group.dataset.enhanced === 'true') return
+    const panels = Array.from(group.querySelectorAll<HTMLElement>(':scope > pre'))
+    if (panels.length === 0) {
+      group.dataset.enhanced = 'true'
+      return
+    }
+
+    group.dataset.enhanced = 'true'
+    group.classList.add('code-group--tabs')
+    group.replaceChildren()
+
+    const toolbar = document.createElement('div')
+    toolbar.className = 'code-group__toolbar'
+    const tabs = document.createElement('div')
+    tabs.className = 'code-group__tabs'
+    tabs.setAttribute('role', 'tablist')
+    tabs.setAttribute('aria-label', '代码语言')
+    const copyBtn = document.createElement('button')
+    copyBtn.className = 'code-block__copy code-group__copy'
+    copyBtn.type = 'button'
+    copyBtn.textContent = '复制'
+    copyBtn.setAttribute('aria-label', '复制当前语言代码')
+
+    const panelHost = document.createElement('div')
+    panelHost.className = 'code-group__panels'
+
+    let active = 0
+    const tabButtons: HTMLButtonElement[] = []
+
+    const setActive = (index: number) => {
+      active = index
+      tabButtons.forEach((tab, i) => {
+        const selected = i === index
+        tab.classList.toggle('is-active', selected)
+        tab.setAttribute('aria-selected', selected ? 'true' : 'false')
+        tab.tabIndex = selected ? 0 : -1
+      })
+      panels.forEach((panel, i) => {
+        panel.hidden = i !== index
+      })
+    }
+
+    panels.forEach((pre, index) => {
+      pre.dataset.enhanced = 'true'
+      pre.hidden = index !== 0
+      const lang = fenceLanguage(pre)
+      const tab = document.createElement('button')
+      tab.type = 'button'
+      tab.className = 'code-group__tab'
+      tab.setAttribute('role', 'tab')
+      tab.textContent = languageLabel(lang)
+      tab.dataset.lang = lang
+      const onClick = () => setActive(index)
+      tab.addEventListener('click', onClick)
+      groupCleanups.push(() => tab.removeEventListener('click', onClick))
+      tabButtons.push(tab)
+      tabs.append(tab)
+      panelHost.append(pre)
+    })
+
+    const onCopy = () => {
+      const current = panels[active]
+      const text = current?.querySelector('code')?.textContent ?? ''
+      void copyCode(copyBtn, text)
+    }
+    copyBtn.addEventListener('click', onCopy)
+    groupCleanups.push(() => copyBtn.removeEventListener('click', onCopy))
+
+    toolbar.append(tabs, copyBtn)
+    group.append(toolbar, panelHost)
+    setActive(0)
+  })
+}
+
+async function enhanceCodeBlocks() {
+  await nextTick()
+  const container = root.value
+  if (!container) return
+  clearGroupListeners()
+  enhanceCodeGroups(container)
+  enhanceStandaloneCodeBlocks(container)
 }
 
 const md = new MarkdownIt({
@@ -152,11 +252,8 @@ const md = new MarkdownIt({
 })
 
 const usedIds = new Map<string, number>()
-md.use(katex, {
-  ...mathOptions,
-  delimiters: 'dollars',
-  mathFence: true,
-})
+useMarkdownMath(md)
+useMarkdownCodeGroup(md)
 
 const renderImage = md.renderer.rules.image!
 md.renderer.rules.image = (tokens, idx, options, env, self) => {
@@ -192,6 +289,7 @@ watch(
   () => props.source,
   async (source) => {
     clearCopyTimers()
+    clearGroupListeners()
     usedIds.clear()
     collected = []
     const rendered = md.render(source ?? '')
@@ -199,6 +297,7 @@ watch(
     // Raw author HTML remains disabled in markdown-it above.
     html.value = DOMPurify.sanitize(rendered, {
       USE_PROFILES: { html: true, mathMl: true, svg: true },
+      ADD_ATTR: ['data-code-group', 'hidden'],
     })
     emit('outline', collected)
     await enhanceCodeBlocks()
