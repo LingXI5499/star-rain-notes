@@ -3,6 +3,8 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { uploadMedia } from '@/api/media'
 import { resolveVditorEditorHeight, setVditorFullscreenActive } from '@/lib/markdownEditorChrome'
 import { useThemeStore } from '@/stores/theme'
+import { prepareVditorMath } from '@/lib/vditorMath'
+import '@/styles/math.css'
 
 /**
  * CSDN-style Markdown editor (Vditor, IR instant-rendering mode) shared by
@@ -34,6 +36,7 @@ const emit = defineEmits<{
 const theme = useThemeStore()
 
 const host = ref<HTMLDivElement | null>(null)
+const loadingError = ref('')
 
 type VditorInstance = InstanceType<typeof import('vditor').default>
 
@@ -102,6 +105,12 @@ function watchFullscreen(element: Element): void {
 onMounted(async () => {
   const { default: Vditor } = await import('vditor')
   await import('vditor/dist/index.css')
+  try {
+    await prepareVditorMath()
+  } catch {
+    loadingError.value = '公式预览资源加载失败，请刷新页面重试。未保存的正文不会因此被修改。'
+    return
+  }
   if (!host.value) return
 
   const editorHeight = resolveVditorEditorHeight(window.innerHeight)
@@ -116,7 +125,10 @@ onMounted(async () => {
     theme: 'classic',
     // Keep the frozen "no raw HTML" rule in the editor preview too.
     // (Vditor's IMarkdownConfig has no html toggle; sanitize is the XSS gate.)
-    preview: { math: false as never, markdown: { sanitize: true } },
+    preview: {
+      math: { engine: 'KaTeX', inlineDigit: true },
+      markdown: { sanitize: true, mathBlockPreview: true },
+    },
     cache: { enable: false },
     counter: { enable: false },
     fullscreen: { index: 10000 },
@@ -132,6 +144,12 @@ onMounted(async () => {
       'strike',
       'code',
       'inline-code',
+      {
+        name: 'math-formula',
+        icon: '<span aria-hidden="true">∑</span>',
+        tip: '插入数学公式',
+        click: () => vditor?.insertValue('\n$$\n\\frac{a}{b}\n$$\n'),
+      },
       '|',
       'list',
       'ordered-list',
@@ -212,6 +230,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="markdown-editor">
     <div ref="host" class="markdown-editor__host" />
+    <p v-if="loadingError" role="alert">{{ loadingError }}</p>
     <div v-if="tablePickerOpen" ref="tablePickerRef" class="markdown-editor__table-picker">
       <label class="markdown-editor__table-field">
         <span>列数</span>

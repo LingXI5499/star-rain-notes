@@ -144,7 +144,6 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
   <section class="reading-manage">
     <header class="reading-manage__hero">
       <div>
-        <p>ENGLISH READING · 分级精读</p>
         <h1>阅读管理</h1>
         <span>能力×主题×文体×CEFR 四维组织文章，后端精确统计并约束发布。</span>
       </div>
@@ -186,10 +185,6 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
     <div v-loading="loading" class="reading-manage__grid">
       <p v-if="!loading && !page?.items.length" class="reading-manage__empty">暂无文章。</p>
       <article v-for="article in page?.items" :key="article.id" class="reading-card">
-        <div class="reading-card__cover">
-          <img v-if="article.coverUrl" :src="article.coverUrl" :alt="article.title" loading="lazy" />
-          <span v-else class="reading-card__cover-fallback">{{ levelLabels[article.readingLevel]?.[0] ?? '读' }}</span>
-        </div>
         <div class="reading-card__body">
           <div class="reading-card__meta">
             <CefrBadge :level="article.cefrLevel" />
@@ -226,8 +221,7 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
 
 <style scoped>
 .reading-manage__hero { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; }
-.reading-manage__hero p { color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: .14em; margin: 0; }
-.reading-manage__hero h1 { font-size: 28px; margin: 6px 0; }
+.reading-manage__hero h1 { font-size: 28px; margin: 0 0 6px; }
 .reading-manage__hero span { color: var(--text-secondary); font-size: 13px; }
 .reading-manage__stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: var(--space-3); margin-bottom: 20px; }
 .reading-stat { padding: 14px 16px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-surface); display: flex; flex-direction: column; gap: 2px; }
@@ -237,10 +231,7 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
 .reading-manage__filters { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-bottom: 20px; }
 .reading-manage__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: var(--space-4); min-height: 100px; }
 .reading-manage__empty { color: var(--text-muted); padding: var(--space-6) 0; grid-column: 1 / -1; }
-.reading-card { display: flex; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; background: var(--bg-surface); }
-.reading-card__cover { width: 120px; flex-shrink: 0; background: var(--bg-subtle); display: grid; place-items: center; }
-.reading-card__cover img { width: 100%; height: 100%; object-fit: cover; }
-.reading-card__cover-fallback { font-size: 32px; font-weight: 800; color: var(--primary); }
+.reading-card { display: flex; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--bg-surface); }
 .reading-card__body { padding: 16px; flex: 1; min-width: 0; }
 .reading-card__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .reading-card__level { font-size: 12px; color: var(--text-secondary); }
@@ -259,7 +250,5 @@ watch(() => route.query, () => { syncFromRoute(); void load() })
   .reading-manage__stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .reading-manage__filters > * { width: 100% !important; }
   .reading-manage__grid { grid-template-columns: minmax(0, 1fr); }
-  .reading-card { flex-direction: column; }
-  .reading-card__cover { width: 100%; height: 120px; }
 }
 </style>

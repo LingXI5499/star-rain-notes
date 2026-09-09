@@ -87,9 +87,6 @@ watch(() => route.params.slug, load, { immediate: true })
         <span v-if="post.updatedAt !== post.publishedAt">更新于 {{ formatDate(post.updatedAt) }}</span>
       </div>
     </header>
-    <div v-if="post.coverUrl" class="article__cover">
-      <img :src="post.coverUrl" :alt="post.title" fetchpriority="high" decoding="async" />
-    </div>
     <button v-if="outline.length" class="article__drawer-button" @click="drawerOpen = true">
       本页目录 · {{ outline.length }}
     </button>
@@ -197,21 +194,6 @@ watch(() => route.params.slug, load, { immediate: true })
   gap: 7px 18px;
   color: var(--text-muted);
   font-size: 11px;
-}
-
-.article__cover {
-  max-height: 500px;
-  overflow: hidden;
-  margin-bottom: var(--space-9);
-  border: 1px solid var(--border);
-  border-radius: 24px;
-  background: var(--bg-subtle);
-}
-
-.article__cover img {
-  width: 100%;
-  max-height: 500px;
-  object-fit: cover;
 }
 
 .article__reading {
@@ -347,10 +329,6 @@ watch(() => route.params.slug, load, { immediate: true })
   .article-hero__tags,
   .article-hero__meta {
     justify-content: flex-start;
-  }
-
-  .article__cover {
-    border-radius: 17px;
   }
 
   .article-nav {

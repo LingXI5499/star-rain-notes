@@ -7,9 +7,7 @@ import type { ProblemDetail } from '@/api/http'
 import { createReading, fetchReading, updateReading, type ReadingArticle } from '@/api/reading'
 import { fetchTaxonomy, type TaxonomyTerm } from '@/api/englishMeta'
 import { fetchGrammarCurriculum, type GrammarLessonSummary } from '@/api/grammar'
-import type { MediaAsset } from '@/api/media'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
-import MediaPicker from '@/components/MediaPicker.vue'
 import SemanticTagPicker from '@/components/english/SemanticTagPicker.vue'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 import PublishChecklistDrawer, { type PublishCheck } from '@/components/english/PublishChecklistDrawer.vue'
@@ -22,9 +20,7 @@ const cloneFrom = Number(route.query.clone ?? 0)
 const taxonomy = ref<TaxonomyTerm[]>([])
 const loading = ref(true)
 const saving = ref(false)
-const mediaOpen = ref(false)
 const checkOpen = ref(false)
-const coverUrl = ref<string | null>(null)
 const grammarLessons = ref<GrammarLessonSummary[]>([])
 
 const form = reactive({
@@ -79,7 +75,6 @@ async function load() {
           abilityTagIds: article.tags.filter(t=>t.dimension==='ABILITY').map(t=>t.id),
           grammarLessonIds: article.grammarLessons.map(g=>g.id),
         })
-        coverUrl.value = article.coverUrl
       } else {
         Object.assign(form, {
           title: article.title, summary: article.summary, bodyMarkdown: article.bodyMarkdown,
@@ -90,7 +85,6 @@ async function load() {
           abilityTagIds: article.tags.filter(t=>t.dimension==='ABILITY').map(t=>t.id),
           grammarLessonIds: article.grammarLessons.map(g=>g.id),
         })
-        coverUrl.value = article.coverUrl
       }
     }
   } catch {
@@ -140,16 +134,6 @@ function cancel() {
   void router.push({ name: 'admin-reading', query: listQuery() })
 }
 
-function onCoverSelect(asset: MediaAsset) {
-  if (asset.assetType !== 'IMAGE') {
-    ElMessage.warning('阅读封面只能选择图片。')
-    return
-  }
-  form.coverMediaId = asset.id
-  coverUrl.value = asset.publicUrl
-  mediaOpen.value = false
-}
-
 onMounted(load)
 </script>
 
@@ -179,14 +163,6 @@ onMounted(load)
       </div>
 
       <aside class="reading-edit__side">
-        <div class="reading-edit__field"><label>封面</label>
-          <div class="reading-edit__cover">
-            <img v-if="coverUrl" :src="coverUrl" alt="当前封面" />
-            <span v-else>无封面</span>
-            <el-button size="small" @click="mediaOpen = true">选择封面</el-button>
-            <el-button v-if="form.coverMediaId" size="small" link @click="form.coverMediaId = null; coverUrl = null">移除封面</el-button>
-          </div>
-        </div>
         <div class="reading-edit__field"><label>能力层级</label>
           <el-select v-model="form.readingLevel" style="width:100%">
             <el-option :value="1" label="基础阅读" /><el-option :value="2" label="结构阅读" /><el-option :value="3" label="深度阅读" />
@@ -218,7 +194,6 @@ onMounted(load)
       <SemanticTagPicker v-model="form.abilityTagIds" :terms="abilities()" dimension="ABILITY" />
     </section>
 
-    <MediaPicker v-model="mediaOpen" @select="onCoverSelect" />
     <PublishChecklistDrawer :open="checkOpen" :checks="checks" @close="checkOpen = false" />
   </section>
 </template>
@@ -234,9 +209,6 @@ onMounted(load)
 .reading-edit__side { display: flex; flex-direction: column; gap: 14px; border-left: 1px solid var(--border); padding-left: 24px; }
 .reading-edit__field { display: flex; flex-direction: column; gap: 6px; }
 .reading-edit__field label { font-size: 13px; font-weight: 600; color: var(--text-primary); }
-.reading-edit__cover { display: flex; flex-direction: column; gap: 8px; }
-.reading-edit__cover img { width: 100%; height: 130px; object-fit: cover; border-radius: 12px; }
-.reading-edit__cover span { color: var(--text-muted); font-size: 13px; }
 .reading-edit__tags { margin-top: 24px; }
 .reading-edit__tags h2 { font-size: 15px; margin: 16px 0 8px; }
 @media (max-width: 860px) { .reading-edit__layout { grid-template-columns: 1fr; } .reading-edit__side { border-left: none; padding-left: 0; } }
