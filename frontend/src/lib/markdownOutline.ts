@@ -6,7 +6,7 @@ export const OUTLINE_MAX_LEVEL = 4
 export function headingText(inline: Token | undefined): string {
   if (!inline || inline.type !== 'inline') return ''
   return (inline.children ?? [])
-    .filter((child) => child.type === 'text' || child.type === 'code_inline')
+    .filter((child) => ['text', 'code_inline', 'math_inline'].includes(child.type))
     .map((child) => child.content)
     .join('')
     .trim()

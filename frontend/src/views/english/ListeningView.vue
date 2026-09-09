@@ -5,7 +5,6 @@ import { fetchPublicListenings, type ListeningHome, type ListeningPage } from '@
 import type { TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
 import EnglishModuleHero from '@/components/english/EnglishModuleHero.vue'
-import EditorialMotif from '@/components/visual/EditorialMotif.vue'
 import { englishMetaCache, listeningHomeCache } from '@/lib/publicContentCache'
 
 const route = useRoute(); const router = useRouter()
@@ -45,7 +44,6 @@ onMounted(async()=>{ sync(); try{ const meta=await englishMetaCache.load('meta')
     <div v-else v-loading="loading" class="l-center__grid">
       <p v-if="!loading && !page?.items.length" class="l-center__empty">暂无材料。</p>
       <RouterLink v-for="item in page?.items" :key="item.id" :to="`/english/listening/${item.slug}`" class="lc-card">
-        <div class="lc-card__cover"><img v-if="item.coverUrl" :src="item.coverUrl" :alt="item.title" loading="lazy"/><EditorialMotif v-else kind="english" :seed="`listen-${item.title}`" :label="`${item.title} 的听力封面`" /></div>
         <div class="lc-card__body"><div class="lc-card__meta"><CefrBadge :level="item.cefrLevel"/><span class="lc-card__level">{{levelLabels[item.listeningLevel]}}</span></div>
           <h2 class="lc-card__title">{{item.title}}</h2><p class="lc-card__summary">{{item.summary}}</p>
           <div class="lc-card__tags"><span v-for="t in item.tags" :key="t.id" class="lc-card__tag">{{t.name}}</span></div>
@@ -61,8 +59,8 @@ onMounted(async()=>{ sync(); try{ const meta=await englishMetaCache.load('meta')
 .l-center__stat{text-align:center;padding:14px 22px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.l-center__stat b{display:block;font-size:30px;color:var(--primary)}.l-center__stat span{font-size:12px;color:var(--text-muted)}
 .l-center__route{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}.route-pill{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--border);border-radius:999px;color:var(--text-secondary);transition:all .15s ease}.route-pill:hover{border-color:var(--primary);color:var(--primary)}.route-pill b{color:var(--primary)}
 .l-center__filters{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:20px}.l-center__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-4);min-height:100px}.l-center__empty{color:var(--text-muted);padding:var(--space-6) 0;grid-column:1/-1}
-.lc-card{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:18px;overflow:hidden;background:var(--bg-surface);color:inherit;transition:transform .16s ease,border-color .16s ease}.lc-card:hover{transform:translateY(-3px);border-color:var(--primary)}
-.lc-card__cover{height:120px;background:var(--bg-subtle);display:grid;place-items:center}.lc-card__cover img{width:100%;height:100%;object-fit:cover}.lc-card__fallback{font-size:40px;color:var(--primary)}
+.lc-card{display:flex;flex-direction:column;border:1px solid var(--border);border-radius:16px;overflow:hidden;background:var(--bg-surface);color:inherit;transition:transform .16s ease,border-color .16s ease}.lc-card:hover{transform:translateY(-3px);border-color:var(--primary)}
+.lc-card::before{content:'';display:block;height:3px;background:linear-gradient(90deg,color-mix(in srgb,var(--primary) 55%,transparent),color-mix(in srgb,var(--accent) 35%,transparent) 65%,transparent);opacity:.55}.lc-card:hover::before{opacity:1}
 .lc-card__body{padding:16px}.lc-card__meta{display:flex;align-items:center;gap:8px;margin-bottom:8px}.lc-card__level{font-size:12px;color:var(--text-secondary)}.lc-card__title{font-size:18px;margin:0 0 6px}
 .lc-card__summary{font-size:13px;color:var(--text-secondary);margin:0 0 8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}.lc-card__tags{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px}.lc-card__tag{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--bg-subtle);border:1px solid var(--border);color:var(--text-secondary)}.lc-card__cta{font-size:13px;color:var(--primary)}
 @media(max-width:600px){.l-center__filters>*{width:calc(50% - 6px)!important}.l-center__filters>*:first-child{width:100%!important}.l-center__grid{grid-template-columns:1fr}.l-center__route{display:grid;grid-template-columns:1fr}.route-pill{justify-content:space-between}}

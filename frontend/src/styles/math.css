@@ -1,0 +1,26 @@
+/* KaTeX inherits the surrounding text color in both site themes. */
+:is(.markdown-body, .markdown-editor) .katex {
+  font-size: 1.1em;
+  text-align: initial;
+}
+
+:is(.markdown-body, .markdown-editor) .katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.3em 0.2em;
+  scrollbar-width: thin;
+}
+
+/* Keep the beginning of oversized, centered formulas reachable on mobile. */
+:is(.markdown-body, .markdown-editor) .katex-display > .katex {
+  width: max-content;
+  min-width: 100%;
+  text-align: center;
+}
+
+:is(.markdown-body, .markdown-editor) .katex-error {
+  color: var(--danger) !important;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}

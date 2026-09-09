@@ -4,7 +4,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { fetchPublicReadings, type ReadingPage } from '@/api/reading'
 import type { CefrLevel, TaxonomyTerm } from '@/api/englishMeta'
 import CefrBadge from '@/components/english/CefrBadge.vue'
-import EditorialMotif from '@/components/visual/EditorialMotif.vue'
 import { englishMetaCache, readingHomeCache } from '@/lib/publicContentCache'
 
 const route = useRoute()
@@ -106,10 +105,6 @@ onMounted(async () => {
     <div v-else v-loading="loading" class="reading-center__grid">
       <p v-if="!loading && !page?.items.length" class="reading-center__empty">暂无文章。</p>
       <RouterLink v-for="article in page?.items" :key="article.id" :to="`/english/reading/${article.slug}`" class="article-card">
-        <div class="article-card__cover">
-          <img v-if="article.coverUrl" :src="article.coverUrl" :alt="article.title" loading="lazy" />
-          <EditorialMotif v-else kind="english" :seed="article.title" :label="`${article.title} 的阅读封面`" />
-        </div>
         <div class="article-card__body">
           <div class="article-card__meta"><CefrBadge :level="article.cefrLevel" /><span class="article-card__level">{{ levelLabels[article.readingLevel] }}</span></div>
           <h2 class="article-card__title">{{ article.title }}</h2>
@@ -139,13 +134,10 @@ onMounted(async () => {
 .reading-center__filters { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-bottom: 20px; }
 .reading-center__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: var(--space-4); min-height: 100px; }
 .reading-center__empty { color: var(--text-muted); padding: var(--space-6) 0; grid-column: 1 / -1; }
-.article-card { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 18px; overflow: hidden; background: var(--bg-surface); color: inherit; transition: transform .16s ease, border-color .16s ease; }
+.article-card { display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; background: var(--bg-surface); color: inherit; transition: transform .16s ease, border-color .16s ease; }
 .article-card:hover { transform: translateY(-3px); border-color: var(--primary); }
-.article-card__cover { height: 140px; background: var(--bg-subtle); position: relative; }
-.article-card__cover img { width: 100%; height: 100%; object-fit: cover; }
-.article-card__cover-fallback { display: grid; place-items: center; height: 100%; background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 18%, var(--bg-surface)), var(--bg-surface)); }
-.article-card__cover-fallback i { font-size: 42px; font-style: normal; font-weight: 800; color: var(--primary); }
-.article-card__cover-fallback em { position: absolute; bottom: 10px; right: 12px; font-style: normal; font-size: 11px; color: var(--text-secondary); }
+.article-card::before { content: ''; display: block; height: 3px; background: linear-gradient(90deg, color-mix(in srgb,var(--primary) 55%,transparent), color-mix(in srgb,var(--accent) 35%,transparent) 65%, transparent); opacity: .55; }
+.article-card:hover::before { opacity: 1; }
 .article-card__body { padding: 16px; }
 .article-card__meta { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
 .article-card__level { font-size: 12px; color: var(--text-secondary); }

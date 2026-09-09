@@ -35,10 +35,8 @@ const loading = ref(true)
 const saving = ref(false)
 const segmentSaving = ref(false)
 const mediaOpen = ref(false)
-const coverOpen = ref(false)
 const checkOpen = ref(false)
 const audioUrl = ref<string | null>(null)
-const coverUrl = ref<string | null>(null)
 const audioPlayer = ref<HTMLAudioElement | null>(null)
 const audioReady = ref(false)
 const audioError = ref('')
@@ -112,7 +110,6 @@ function applyItem(item: ListeningItem, cloned: boolean) {
     functionTagIds: item.tags.filter((tag) => tag.dimension === 'FUNCTION').map((tag) => tag.id),
   })
   audioUrl.value = item.audioUrl
-  coverUrl.value = item.coverUrl
   segments.value = cloned ? [] : item.segments.map((segment) => ({ ...segment }))
   readingPairs.value = cloned ? [] : item.readingPairs
 }
@@ -344,10 +341,6 @@ function listQuery() {
 function cancel() {
   void router.push({ name: 'admin-listening', query: listQuery() })
 }
-function onCover(asset: MediaAsset) {
-  form.coverMediaId = asset.id
-  coverUrl.value = asset.publicUrl
-}
 function onAudio(asset: MediaAsset) {
   form.audioMediaId = asset.id
   audioUrl.value = asset.publicUrl
@@ -360,10 +353,6 @@ function removeAudio() {
   audioUrl.value = null
   audioReady.value = false
   audioError.value = ''
-}
-function removeCover() {
-  form.coverMediaId = null
-  coverUrl.value = null
 }
 
 onMounted(load)
@@ -462,16 +451,6 @@ onMounted(load)
             </div>
           </div>
         </div>
-        <div class="le-field"><label>封面</label>
-          <div class="le-media">
-            <img v-if="coverUrl" :src="coverUrl" alt="" />
-            <span v-else>无封面</span>
-            <div>
-              <el-button size="small" @click="coverOpen = true">{{ coverUrl ? '重新选择' : '选择封面' }}</el-button>
-              <el-button v-if="coverUrl" size="small" @click="removeCover">移除</el-button>
-            </div>
-          </div>
-        </div>
         <div class="le-field"><label>能力层级</label><el-select v-model="form.listeningLevel" style="width:100%"><el-option :value="1" label="语音识别" /><el-option :value="2" label="信息捕获" /><el-option :value="3" label="逻辑理解" /></el-select></div>
         <div class="le-field"><label>CEFR</label><el-select v-model="form.cefrLevel" style="width:100%"><el-option v-for="level in ['A1','A2','B1','B2','C1','C2']" :key="level" :label="level" :value="level" /></el-select></div>
         <div class="le-field"><label>完整音频时长（秒，加载音频后自动填写）</label><el-input-number v-model="form.durationSeconds" :min="0" /></div>
@@ -499,7 +478,6 @@ onMounted(load)
     </section>
 
     <MediaPicker v-model="mediaOpen" asset-type="AUDIO" allow-upload title="上传或选择完整听力音频" @select="onAudio" />
-    <MediaPicker v-model="coverOpen" asset-type="IMAGE" allow-upload title="上传或选择封面" @select="onCover" />
     <PublishChecklistDrawer :open="checkOpen" :checks="checks" @close="checkOpen = false" />
   </section>
 </template>

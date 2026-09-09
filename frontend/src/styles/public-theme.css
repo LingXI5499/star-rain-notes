@@ -91,6 +91,17 @@
 .base-layout .code-block__copy[data-state='error'] { color: var(--accent); background: var(--accent-soft); }
 .base-layout .code-block pre { margin: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
 
+/* LeetCode-style multi-language code group */
+.base-layout .code-group { margin: 0 0 var(--space-6); border: 1px solid var(--border); border-radius: 13px; overflow: hidden; background: var(--bg-surface); }
+.base-layout .code-group__toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 42px; padding: 0 10px 0 8px; border-bottom: 1px solid var(--border); background: var(--bg-elevated); }
+.base-layout .code-group__tabs { display: flex; align-items: stretch; gap: 2px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
+.base-layout .code-group__tab { appearance: none; flex: 0 0 auto; min-height: 42px; padding: 0 12px; border: 0; border-bottom: 2px solid transparent; color: var(--text-secondary); background: transparent; cursor: pointer; font: 650 13px/1 var(--font-sans, inherit); white-space: nowrap; }
+.base-layout .code-group__tab:hover { color: var(--text-primary); }
+.base-layout .code-group__tab.is-active { color: var(--primary); border-bottom-color: var(--primary); }
+.base-layout .code-group__copy { flex-shrink: 0; }
+.base-layout .code-group__panels pre { margin: 0; border: 0; border-radius: 0; }
+.base-layout .code-group__panels pre[hidden] { display: none; }
+
 /* English is one product family: each tool keeps its own metaphor while
    sharing the same editorial rhythm, controls and quiet paper surfaces. */
 .base-layout :where(.english-hub,.vocab,.words,.study,.grammar-home,.reading-center,.l-center,.writing,.bundles-page,.insights-page) {

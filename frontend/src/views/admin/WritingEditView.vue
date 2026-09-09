@@ -3,12 +3,10 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/index.mjs'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
-import MediaPicker from '@/components/MediaPicker.vue'
 import SemanticTagPicker from '@/components/english/SemanticTagPicker.vue'
 import PublishChecklistDrawer, { type PublishCheck } from '@/components/english/PublishChecklistDrawer.vue'
 import type { ContentReview } from '@/api/account'
 import type { ProblemDetail } from '@/api/http'
-import type { MediaAsset } from '@/api/media'
 import { fetchTaxonomy, type TaxonomyDimension, type TaxonomyTerm } from '@/api/englishMeta'
 import {
   createWritingPrompt,
@@ -39,9 +37,7 @@ const isPrompt = computed(() => String(route.meta.kind) === 'prompt')
 const id = computed(() => Number(route.params.id || 0))
 const saving = ref(false)
 const loading = ref(true)
-const coverOpen = ref(false)
 const checklistOpen = ref(false)
-const coverUrl = ref<string | null>(null)
 const taxonomy = ref<TaxonomyTerm[]>([])
 const templateOptions = ref<WritingResourceSummary[]>([])
 const modelOptions = ref<WritingResourceSummary[]>([])
@@ -176,7 +172,6 @@ async function load() {
           coverMediaId: item.coverMediaId ?? null,
           sortOrder: item.sortOrder,
         })
-        coverUrl.value = item.coverUrl ?? null
         assignTags(item.tags)
         parseRubric(item.rubricJson)
         parseChecklist(item.checklistJson)
@@ -195,7 +190,6 @@ async function load() {
           coverMediaId: item.coverMediaId ?? null,
           sortOrder: item.sortOrder,
         })
-        coverUrl.value = item.coverUrl ?? null
         assignTags(item.tags)
         parseTemplate(item.templateSchemaJson)
       }
@@ -291,14 +285,6 @@ function addTemplateBlock() {
 function addRubricItem() {
   rubricItems.value.push({ name: '', maxScore: 10 })
 }
-function onCover(asset: MediaAsset) {
-  form.coverMediaId = asset.id
-  coverUrl.value = asset.publicUrl
-}
-function removeCover() {
-  form.coverMediaId = null
-  coverUrl.value = null
-}
 
 onMounted(load)
 </script>
@@ -374,17 +360,13 @@ onMounted(load)
         <label>最多词数<el-input-number v-model="form.wordMax" :min="0" /></label>
         <label>预计分钟<el-input-number v-model="form.estimatedMinutes" :min="0" /></label>
         <label>排序<el-input-number v-model="form.sortOrder" :min="0" :step="10" placeholder="留空自动追加" /></label>
-        <label>封面
-          <span class="cover-field"><img v-if="coverUrl" :src="coverUrl" alt="" /><i v-else>未选择封面</i><span><el-button size="small" @click="coverOpen = true">{{ coverUrl ? '重新选择' : '上传或选择' }}</el-button><el-button v-if="coverUrl" size="small" @click="removeCover">移除</el-button></span></span>
-        </label>
       </aside>
     </div>
 
-    <MediaPicker v-model="coverOpen" asset-type="IMAGE" allow-upload title="上传或选择写作封面" @select="onCover" />
     <PublishChecklistDrawer :open="checklistOpen" :checks="checks" @close="checklistOpen = false" />
   </section>
 </template>
 
 <style scoped>
-.writing-edit{max-width:1380px;margin:auto}header{position:sticky;z-index:4;top:0;display:flex;align-items:end;justify-content:space-between;gap:16px;padding:18px 0;background:var(--bg-page)}header p{margin:0;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.14em}h1{margin:6px 0;font-size:28px}header span{color:var(--text-secondary);font-size:13px}header nav{display:flex;gap:8px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px}.layout main,.layout aside{display:flex;min-width:0;flex-direction:column;gap:18px}.layout aside{height:max-content;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}label{display:flex;flex-direction:column;gap:7px;color:var(--text-secondary);font-size:13px;font-weight:700}.editor-card,.tag-section{padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.editor-card__title{display:flex;align-items:center;justify-content:space-between;gap:12px}.editor-card h2,.tag-section h2{margin:0 0 7px;font-size:16px}.editor-card p{margin:0 0 12px;color:var(--text-muted);font-size:12px}.row-editor{display:grid;grid-template-columns:1fr 1fr 150px auto auto;gap:8px;align-items:center;margin-top:9px}.row-editor--rubric{grid-template-columns:1fr 160px auto}.row-editor--checklist{grid-template-columns:1fr auto}.editor-card details{margin-top:14px;color:var(--text-muted);font-size:12px}.editor-card pre{max-height:240px;overflow:auto;padding:12px;border-radius:10px;background:var(--bg-subtle);white-space:pre-wrap}.tag-section{display:flex;flex-direction:column;gap:10px}.tag-section h2:not(:first-child){margin-top:12px}.cover-field{display:flex;flex-direction:column;gap:8px}.cover-field img,.cover-field i{display:grid;width:100%;height:130px;place-items:center;border-radius:10px;background:var(--bg-subtle);object-fit:cover;color:var(--text-muted);font-style:normal}.cover-field>span{display:flex;gap:6px}@media(max-width:980px){.layout{grid-template-columns:1fr}.layout aside{order:-1}.row-editor{grid-template-columns:1fr 1fr}.row-editor>*:last-child{justify-self:start}}@media(max-width:620px){header{align-items:flex-start;flex-direction:column}header span{display:none}.row-editor,.row-editor--rubric,.row-editor--checklist{grid-template-columns:1fr}}
+.writing-edit{max-width:1380px;margin:auto}header{position:sticky;z-index:4;top:0;display:flex;align-items:end;justify-content:space-between;gap:16px;padding:18px 0;background:var(--bg-page)}header p{margin:0;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.14em}h1{margin:6px 0;font-size:28px}header span{color:var(--text-secondary);font-size:13px}header nav{display:flex;gap:8px}.layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:24px}.layout main,.layout aside{display:flex;min-width:0;flex-direction:column;gap:18px}.layout aside{height:max-content;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}label{display:flex;flex-direction:column;gap:7px;color:var(--text-secondary);font-size:13px;font-weight:700}.editor-card,.tag-section{padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.editor-card__title{display:flex;align-items:center;justify-content:space-between;gap:12px}.editor-card h2,.tag-section h2{margin:0 0 7px;font-size:16px}.editor-card p{margin:0 0 12px;color:var(--text-muted);font-size:12px}.row-editor{display:grid;grid-template-columns:1fr 1fr 150px auto auto;gap:8px;align-items:center;margin-top:9px}.row-editor--rubric{grid-template-columns:1fr 160px auto}.row-editor--checklist{grid-template-columns:1fr auto}.editor-card details{margin-top:14px;color:var(--text-muted);font-size:12px}.editor-card pre{max-height:240px;overflow:auto;padding:12px;border-radius:10px;background:var(--bg-subtle);white-space:pre-wrap}.tag-section{display:flex;flex-direction:column;gap:10px}.tag-section h2:not(:first-child){margin-top:12px}@media(max-width:980px){.layout{grid-template-columns:1fr}.layout aside{order:-1}.row-editor{grid-template-columns:1fr 1fr}.row-editor>*:last-child{justify-self:start}}@media(max-width:620px){header{align-items:flex-start;flex-direction:column}header span{display:none}.row-editor,.row-editor--rubric,.row-editor--checklist{grid-template-columns:1fr}}
 </style>
