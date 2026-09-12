@@ -165,16 +165,34 @@ onUnmounted(() => {
         ref="closeButton"
         type="button"
         class="project-gallery__lightbox-close"
-        aria-label="关闭"
+        aria-label="关闭项目截图预览"
         @click="lightboxOpen = false"
       >×</button>
+      <button
+        v-if="total > 1"
+        type="button"
+        class="project-gallery__lightbox-nav project-gallery__lightbox-nav--prev"
+        aria-label="查看上一张截图"
+        @click="go(-1)"
+      >
+        <span aria-hidden="true">‹</span>
+      </button>
       <img
         :src="current.url"
         :alt="current.altText || current.title || '项目截图'"
         :width="current.width || undefined"
         :height="current.height || undefined"
       />
-      <span>{{ statusLabel }}</span>
+      <button
+        v-if="total > 1"
+        type="button"
+        class="project-gallery__lightbox-nav project-gallery__lightbox-nav--next"
+        aria-label="查看下一张截图"
+        @click="go(1)"
+      >
+        <span aria-hidden="true">›</span>
+      </button>
+      <span class="project-gallery__lightbox-count" aria-live="polite">{{ statusLabel }}</span>
     </div>
   </section>
 </template>
@@ -338,7 +356,7 @@ onUnmounted(() => {
   border-radius: 12px;
 }
 
-.project-gallery__lightbox span {
+.project-gallery__lightbox-count {
   color: #fff;
   font: 600 12px/1 var(--font-mono);
 }
@@ -347,12 +365,56 @@ onUnmounted(() => {
   position: absolute;
   top: 18px;
   right: 22px;
+  z-index: 2;
+  width: 44px;
+  height: 44px;
   border: 0;
+  border-radius: 999px;
   background: transparent;
   color: #fff;
   font-size: 32px;
+  line-height: 1;
   cursor: pointer;
 }
+
+.project-gallery__lightbox-close:hover,
+.project-gallery__lightbox-close:focus-visible {
+  background: rgb(255 255 255 / 0.16);
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.project-gallery__lightbox-nav {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border: 1px solid rgb(255 255 255 / 0.42);
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.42);
+  color: #fff;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background-color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-out);
+}
+
+.project-gallery__lightbox-nav span {
+  color: inherit;
+  font: 400 46px/0.8 sans-serif;
+}
+
+.project-gallery__lightbox-nav:hover,
+.project-gallery__lightbox-nav:focus-visible {
+  background: rgb(0 0 0 / 0.72);
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.project-gallery__lightbox-nav--prev { left: max(18px, env(safe-area-inset-left)); }
+.project-gallery__lightbox-nav--next { right: max(18px, env(safe-area-inset-right)); }
 
 @keyframes gallery-fade-in {
   from { opacity: 0; }
@@ -372,6 +434,27 @@ onUnmounted(() => {
   .project-gallery__frame img {
     aspect-ratio: 16 / 10;
   }
+
+  .project-gallery__lightbox {
+    padding: 16px;
+  }
+
+  .project-gallery__lightbox img {
+    max-width: calc(100vw - 88px);
+    max-height: 78vh;
+  }
+
+  .project-gallery__lightbox-nav {
+    width: 44px;
+    height: 44px;
+  }
+
+  .project-gallery__lightbox-nav span {
+    font-size: 40px;
+  }
+
+  .project-gallery__lightbox-nav--prev { left: 8px; }
+  .project-gallery__lightbox-nav--next { right: 8px; }
 }
 
 @media (prefers-reduced-motion: reduce) {
