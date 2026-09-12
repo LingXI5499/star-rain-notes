@@ -3,7 +3,9 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { uploadMedia } from '@/api/media'
 import { resolveVditorEditorHeight, setVditorFullscreenActive } from '@/lib/markdownEditorChrome'
 import { useThemeStore } from '@/stores/theme'
-import { prepareVditorMath } from '@/lib/vditorMath'
+import { createCodeGroupMarkdown, type CodeGroupBlock, validateCodeGroupBlocks } from '@/lib/markdownCodeGroup'
+import { normalizePastedMath } from '@/lib/markdownMath'
+import { prepareMathJax } from '@/lib/mathJax'
 import '@/styles/math.css'
 
 /**
@@ -44,6 +46,7 @@ let vditor: VditorInstance | null = null
 let suppressing = false
 let ready = false
 let fullscreenObserver: MutationObserver | null = null
+let pasteHost: HTMLElement | null = null
 
 // ---------------------------------------------------------------
 // table-size picker (Vditor's built-in table button only inserts a
@@ -55,6 +58,42 @@ const tablePickerOpen = ref(false)
 const tableCols = ref(3)
 const tableRows = ref(3)
 const tablePickerRef = ref<HTMLElement | null>(null)
+
+// ---------------------------------------------------------------
+// code-group creator — source remains ordinary portable Markdown
+// ---------------------------------------------------------------
+const codeGroupOpen = ref(false)
+const codeGroupError = ref('')
+const codeGroupBlocks = ref<CodeGroupBlock[]>([])
+
+function newCodeGroupBlock(index: number): CodeGroupBlock {
+  return { label: `方案 ${index}`, language: 'typescript', content: '' }
+}
+
+function openCodeGroupCreator() {
+  codeGroupError.value = ''
+  codeGroupBlocks.value = [newCodeGroupBlock(1), newCodeGroupBlock(2)]
+  codeGroupOpen.value = true
+}
+
+function addCodeGroupBlock() {
+  codeGroupBlocks.value.push(newCodeGroupBlock(codeGroupBlocks.value.length + 1))
+}
+
+function removeCodeGroupBlock(index: number) {
+  if (codeGroupBlocks.value.length <= 1) return
+  codeGroupBlocks.value.splice(index, 1)
+}
+
+function insertCodeGroup() {
+  const error = validateCodeGroupBlocks(codeGroupBlocks.value)
+  if (error) {
+    codeGroupError.value = error
+    return
+  }
+  vditor?.insertValue(`\n${createCodeGroupMarkdown(codeGroupBlocks.value)}\n`)
+  codeGroupOpen.value = false
+}
 
 function openTablePicker() {
   tablePickerOpen.value = true
@@ -102,11 +141,27 @@ function watchFullscreen(element: Element): void {
   fullscreenObserver.observe(element, { attributes: true, attributeFilter: ['class'] })
 }
 
+function onEditorPaste(event: ClipboardEvent): void {
+  const pasted = event.clipboardData?.getData('text/plain')
+  if (!pasted) return
+  const normalized = normalizePastedMath(pasted)
+  if (normalized == null) return
+  event.preventDefault()
+  vditor?.insertValue(normalized)
+}
+
+function watchFormulaPaste(element: HTMLElement): void {
+  pasteHost?.removeEventListener('paste', onEditorPaste, true)
+  pasteHost = element
+  // Capture phase runs before Vditor turns a formula into editor HTML.
+  pasteHost.addEventListener('paste', onEditorPaste, true)
+}
+
 onMounted(async () => {
   const { default: Vditor } = await import('vditor')
   await import('vditor/dist/index.css')
   try {
-    await prepareVditorMath()
+    await prepareMathJax()
   } catch {
     loadingError.value = '公式预览资源加载失败，请刷新页面重试。未保存的正文不会因此被修改。'
     return
@@ -126,7 +181,7 @@ onMounted(async () => {
     // Keep the frozen "no raw HTML" rule in the editor preview too.
     // (Vditor's IMarkdownConfig has no html toggle; sanitize is the XSS gate.)
     preview: {
-      math: { engine: 'KaTeX', inlineDigit: true },
+      math: { engine: 'MathJax', inlineDigit: true },
       markdown: { sanitize: true, mathBlockPreview: true },
     },
     cache: { enable: false },
@@ -149,6 +204,12 @@ onMounted(async () => {
         icon: '<span aria-hidden="true">∑</span>',
         tip: '插入数学公式',
         click: () => vditor?.insertValue('\n$$\n\\frac{a}{b}\n$$\n'),
+      },
+      {
+        name: 'code-group',
+        icon: '<span aria-hidden="true">&lt;/&gt;</span>',
+        tip: '插入可切换代码组',
+        click: () => openCodeGroupCreator(),
       },
       '|',
       'list',
@@ -197,7 +258,10 @@ onMounted(async () => {
         suppressing = false
       }
       syncTheme()
-      if (host.value) watchFullscreen(host.value)
+      if (host.value) {
+        watchFullscreen(host.value)
+        watchFormulaPaste(host.value)
+      }
     },
   })
 })
@@ -221,6 +285,8 @@ onBeforeUnmount(() => {
   ready = false
   fullscreenObserver?.disconnect()
   fullscreenObserver = null
+  pasteHost?.removeEventListener('paste', onEditorPaste, true)
+  pasteHost = null
   setVditorFullscreenActive(false)
   vditor?.destroy()
   vditor = null
@@ -241,6 +307,35 @@ onBeforeUnmount(() => {
         <input v-model.number="tableRows" type="number" min="1" :max="TABLE_MAX_ROWS" @keydown.enter.prevent="insertTable()" />
       </label>
       <button type="button" class="markdown-editor__table-insert" @click="insertTable()">插入</button>
+    </div>
+    <div v-if="codeGroupOpen" class="markdown-editor__code-dialog-backdrop" @click.self="codeGroupOpen = false">
+      <section class="markdown-editor__code-dialog" role="dialog" aria-modal="true" aria-labelledby="code-group-title">
+        <header>
+          <div>
+            <h2 id="code-group-title">创建代码组</h2>
+            <p>名称会成为前台切换标签；可添加任意数量的代码块。</p>
+          </div>
+          <button type="button" class="markdown-editor__dialog-close" aria-label="关闭" @click="codeGroupOpen = false">×</button>
+        </header>
+        <p v-if="codeGroupError" class="markdown-editor__code-error" role="alert">{{ codeGroupError }}</p>
+        <div class="markdown-editor__code-list">
+          <article v-for="(block, index) in codeGroupBlocks" :key="index" class="markdown-editor__code-row">
+            <div class="markdown-editor__code-row-head">
+              <strong>代码块 {{ index + 1 }}</strong>
+              <button type="button" :disabled="codeGroupBlocks.length === 1" @click="removeCodeGroupBlock(index)">移除</button>
+            </div>
+            <label><span>显示名称</span><input v-model="block.label" maxlength="80" placeholder="例如：迭代写法" /></label>
+            <label><span>语言</span><input v-model="block.language" maxlength="32" placeholder="例如：typescript" /></label>
+            <label><span>代码</span><textarea v-model="block.content" rows="5" spellcheck="false" /></label>
+          </article>
+        </div>
+        <footer>
+          <button type="button" class="markdown-editor__dialog-secondary" @click="addCodeGroupBlock()">添加代码块</button>
+          <span />
+          <button type="button" class="markdown-editor__dialog-secondary" @click="codeGroupOpen = false">取消</button>
+          <button type="button" class="markdown-editor__table-insert" @click="insertCodeGroup()">插入代码组</button>
+        </footer>
+      </section>
     </div>
   </div>
 </template>
@@ -322,6 +417,55 @@ onBeforeUnmount(() => {
   background: var(--primary-hover);
 }
 
+.markdown-editor__code-dialog-backdrop {
+  position: fixed;
+  z-index: 10020;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: rgb(0 0 0 / 0.42);
+}
+
+.markdown-editor__code-dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  max-height: min(800px, calc(100vh - 32px));
+  padding: var(--space-5);
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: 0 20px 48px rgb(0 0 0 / 0.28);
+}
+
+.markdown-editor__code-dialog header,
+.markdown-editor__code-row-head,
+.markdown-editor__code-dialog footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.markdown-editor__code-dialog header { justify-content: space-between; }
+.markdown-editor__code-dialog h2 { margin: 0; font-size: 18px; }
+.markdown-editor__code-dialog header p { margin: 4px 0 0; color: var(--text-muted); font-size: 13px; }
+.markdown-editor__dialog-close { border: 0; background: transparent; color: var(--text-secondary); font-size: 24px; cursor: pointer; }
+.markdown-editor__code-error { margin: var(--space-3) 0 0; color: var(--danger); }
+.markdown-editor__code-list { display: grid; gap: var(--space-3); margin: var(--space-4) 0; overflow-y: auto; }
+.markdown-editor__code-row { display: grid; grid-template-columns: 1fr 150px; gap: var(--space-3); padding: var(--space-3); border: 1px solid var(--border); border-radius: var(--radius-sm); }
+.markdown-editor__code-row-head { grid-column: 1 / -1; justify-content: space-between; }
+.markdown-editor__code-row-head button,
+.markdown-editor__dialog-secondary { border: 1px solid var(--border-strong); border-radius: 4px; background: var(--bg-page); color: var(--text-primary); padding: 6px 10px; cursor: pointer; }
+.markdown-editor__code-row label { display: grid; gap: 4px; color: var(--text-muted); font-size: 12px; }
+.markdown-editor__code-row label:last-child { grid-column: 1 / -1; }
+.markdown-editor__code-row input,
+.markdown-editor__code-row textarea { width: 100%; box-sizing: border-box; border: 1px solid var(--border-strong); border-radius: 4px; background: var(--bg-page); color: var(--text-primary); font: 13px var(--font-mono, monospace); padding: var(--space-2); }
+.markdown-editor__code-row textarea { resize: vertical; }
+.markdown-editor__code-dialog footer { justify-content: flex-end; }
+.markdown-editor__code-dialog footer > span { flex: 1; }
+
 @media (max-width: 720px) {
   .markdown-editor__host :deep(.vditor-toolbar) {
     display: flex !important;
@@ -340,5 +484,7 @@ onBeforeUnmount(() => {
   .markdown-editor__host :deep(.vditor-outline) {
     display: none !important;
   }
+
+  .markdown-editor__code-row { grid-template-columns: 1fr; }
 }
 </style>

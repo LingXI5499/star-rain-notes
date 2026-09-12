@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import MarkdownIt from 'markdown-it'
-import 'katex/dist/katex.min.css'
 import '@/styles/math.css'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/core'
@@ -24,6 +23,7 @@ import { headingText, OUTLINE_MAX_LEVEL, OUTLINE_MIN_LEVEL, uniqueHeadingId } fr
 import { resolveMarkdownImageSize, stripMarkdownImageSizeToken } from '@/lib/markdownImageSize'
 import { languageLabel, useMarkdownCodeGroup } from '@/lib/markdownCodeGroup'
 import { useMarkdownMath } from '@/lib/markdownMath'
+import { typesetMath } from '@/lib/mathJax'
 
 // Import only the languages used by this technical knowledge base. Importing
 // highlight.js' default bundle pulls every grammar into each article route
@@ -78,6 +78,7 @@ const html = ref('')
 const root = ref<HTMLElement | null>(null)
 const copyResetTimers = new Map<HTMLButtonElement, number>()
 const groupCleanups: Array<() => void> = []
+let codeGroupId = 0
 
 function clearCopyTimers() {
   copyResetTimers.forEach(timer => window.clearTimeout(timer))
@@ -118,7 +119,28 @@ async function copyCode(button: HTMLButtonElement, content: string) {
 
 function fenceLanguage(pre: HTMLElement): string {
   const code = pre.querySelector('code')
-  return (code?.className.match(/language-([\w+-]+)/)?.[1]) ?? 'code'
+  const fromClass = code?.className.match(/language-([\w+-]+)/)?.[1]
+  if (fromClass) return fromClass
+  // highlight.js may put the language class on <pre> instead of <code>
+  return (pre.className.match(/language-([\w+-]+)/)?.[1]) ?? 'code'
+}
+
+function codeGroupLabels(group: HTMLElement): string[] {
+  const encoded = group.dataset.codeLabels
+  if (encoded) {
+    try {
+      const labels: unknown = JSON.parse(encoded)
+      if (Array.isArray(labels) && labels.every((label) => typeof label === 'string')) {
+        return labels.map((label) => label.trim()).filter(Boolean)
+      }
+    } catch {
+      // Fall through to old comma-delimited content.
+    }
+  }
+  return (group.dataset.codeLangs ?? '')
+    .split(',')
+    .map((part) => part.trim())
+    .filter(Boolean)
 }
 
 /** Wrap standalone fences with the existing language label + copy chrome. */
@@ -177,6 +199,7 @@ function enhanceCodeGroups(container: HTMLElement) {
 
     const panelHost = document.createElement('div')
     panelHost.className = 'code-group__panels'
+    const instanceId = `code-group-${codeGroupId++}`
 
     let active = 0
     const tabButtons: HTMLButtonElement[] = []
@@ -194,21 +217,43 @@ function enhanceCodeGroups(container: HTMLElement) {
       })
     }
 
+    const groupLabels = codeGroupLabels(group)
+
     panels.forEach((pre, index) => {
       pre.dataset.enhanced = 'true'
       pre.hidden = index !== 0
-      const lang = fenceLanguage(pre)
+      // Prefer explicit ::: code-group labels — fence langs may be stripped by the editor.
+      const label = groupLabels[index] || languageLabel(fenceLanguage(pre))
       const tab = document.createElement('button')
       tab.type = 'button'
       tab.className = 'code-group__tab'
       tab.setAttribute('role', 'tab')
-      tab.textContent = languageLabel(lang)
-      tab.dataset.lang = lang
+      tab.id = `${instanceId}-tab-${index}`
+      tab.setAttribute('aria-controls', `${instanceId}-panel-${index}`)
+      tab.textContent = label
       const onClick = () => setActive(index)
+      const onKeydown = (event: KeyboardEvent) => {
+        let next: number | null = null
+        if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (index + 1) % panels.length
+        if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (index - 1 + panels.length) % panels.length
+        if (event.key === 'Home') next = 0
+        if (event.key === 'End') next = panels.length - 1
+        if (next == null) return
+        event.preventDefault()
+        setActive(next)
+        tabButtons[next]?.focus()
+      }
       tab.addEventListener('click', onClick)
-      groupCleanups.push(() => tab.removeEventListener('click', onClick))
+      tab.addEventListener('keydown', onKeydown)
+      groupCleanups.push(() => {
+        tab.removeEventListener('click', onClick)
+        tab.removeEventListener('keydown', onKeydown)
+      })
       tabButtons.push(tab)
       tabs.append(tab)
+      pre.id = `${instanceId}-panel-${index}`
+      pre.setAttribute('role', 'tabpanel')
+      pre.setAttribute('aria-labelledby', tab.id)
       panelHost.append(pre)
     })
 
@@ -293,14 +338,29 @@ watch(
     usedIds.clear()
     collected = []
     const rendered = md.render(source ?? '')
-    // KaTeX uses MathML for accessibility and SVG for stretchy math symbols.
+    // Formula source is escaped before sanitization; MathJax later supplies
+    // the accessible SVG/MathML representation from the local bundle.
     // Raw author HTML remains disabled in markdown-it above.
-    html.value = DOMPurify.sanitize(rendered, {
+    // DOMPurify normalizes a sole top-level block to its children. Give every
+    // Markdown document a disposable parent so a document consisting only of
+    // one code group keeps that group's wrapper and data attributes.
+    html.value = DOMPurify.sanitize(`<div data-markdown-sandbox="true">${rendered}</div>`, {
       USE_PROFILES: { html: true, mathMl: true, svg: true },
-      ADD_ATTR: ['data-code-group', 'hidden'],
+      // html profile intentionally keeps the surface small; code-group and
+      // MathJax placeholders are generated by our parser, never raw author HTML.
+      ADD_TAGS: ['div', 'span'],
+      ADD_ATTR: ['data-markdown-sandbox', 'data-code-group', 'data-code-labels', 'data-code-langs', 'data-display', 'hidden'],
     })
     emit('outline', collected)
     await enhanceCodeBlocks()
+    if (root.value) {
+      try {
+        await typesetMath(root.value)
+      } catch {
+        // Each individual formula already has a source-text fallback. A failed
+        // runtime load must never discard the surrounding Markdown content.
+      }
+    }
   },
   { immediate: true },
 )

@@ -1,6 +1,5 @@
 import MarkdownIt from 'markdown-it'
-import { katex } from '@mdit/plugin-katex'
-import { mathOptions } from './mathOptions'
+import { tex } from '@mdit/plugin-tex'
 
 function isWordChar(code: number | undefined): boolean {
   if (code == null) return false
@@ -51,6 +50,19 @@ function countTrailingBackslashes(src: string, pos: number, minPos: number): num
     i -= 1
   }
   return count
+}
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+}
+
+function renderMathPlaceholder(source: string, display: boolean): string {
+  const className = display ? 'math-source math-source--display' : 'math-source math-source--inline'
+  const tag = display ? 'div' : 'span'
+  return `<${tag} class="${className}" data-display="${display}">${escapeHtml(source)}</${tag}>`
 }
 
 type InlineState = {
@@ -111,14 +123,42 @@ function mathInlineDollar(state: InlineState, silent: boolean): boolean {
   return true
 }
 
-/** Attach KaTeX to a markdown-it instance with blog-friendly dollar rules. */
+const EXPLICIT_FORMULA = /^(?:\$\$[\s\S]*\$\$|\$[^\n$]+\$|\\\([\s\S]*\\\)|\\\[[\s\S]*\\\]|```(?:math|latex)\s*\n[\s\S]*\n```)$/i
+
+/**
+ * Preserve explicit Markdown formulas and turn a whole pasted TeX expression
+ * into a display formula. Prose, currency and source code are intentionally
+ * left to Vditor's normal paste path.
+ */
+export function normalizePastedMath(value: string): string | null {
+  const source = value.replace(/\r\n/g, '\n').replace(/\r/g, '\n')
+  const trimmed = source.trim()
+  if (!trimmed) return null
+  if (EXPLICIT_FORMULA.test(trimmed)) return source
+  const looksLikeWholeTex = /\\[a-zA-Z]+|\\[{}()[\]]/.test(trimmed)
+    && !/[`]/.test(trimmed)
+    && !/^\s*(?:[-*+]\s|\d+\.\s)/m.test(trimmed)
+  return looksLikeWholeTex ? `$$\n${trimmed}\n$$` : null
+}
+
+/** Attach MathJax placeholders to MarkdownIt with blog-friendly dollar rules. */
 export function useMarkdownMath(md: InstanceType<typeof MarkdownIt>): void {
-  md.use(katex, {
-    ...mathOptions,
+  md.use(tex, {
     // Keep `$...$` / `$$...$$`, and also accept `\(...\)` / `\[...\]`.
     delimiters: 'all',
     mathFence: true,
+    render: renderMathPlaceholder,
   })
-  // Replace the stock dollar inline rule after katex/tex registers it.
+  const originalFence = md.renderer.rules.fence
+  md.renderer.rules.fence = (tokens, idx, options, env, self) => {
+    const token = tokens[idx]
+    if (token.info.trim().toLowerCase() === 'latex') {
+      return renderMathPlaceholder(token.content, true)
+    }
+    return originalFence ? originalFence(tokens, idx, options, env, self) : self.renderToken(tokens, idx, options)
+  }
+  // Replace the stock dollar inline rule after the TeX parser registers it.
   md.inline.ruler.at('math_inline_dollar', mathInlineDollar as never)
+  md.renderer.rules.math_inline = (tokens, idx) => renderMathPlaceholder(tokens[idx].content, false)
+  md.renderer.rules.math_block = (tokens, idx) => renderMathPlaceholder(tokens[idx].content, true)
 }

@@ -1,10 +1,11 @@
-/* KaTeX inherits the surrounding text color in both site themes. */
-:is(.markdown-body, .markdown-editor) .katex {
-  font-size: 1.1em;
-  text-align: initial;
+/* MathJax SVG output inherits the surrounding text color in both themes. */
+:is(.markdown-body, .markdown-editor) .math-source--inline,
+:is(.markdown-body, .markdown-editor) mjx-container {
+  color: currentcolor;
 }
 
-:is(.markdown-body, .markdown-editor) .katex-display {
+:is(.markdown-body, .markdown-editor) .math-source--display,
+:is(.markdown-body, .markdown-editor) .language-math {
   max-width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
@@ -13,13 +14,15 @@
 }
 
 /* Keep the beginning of oversized, centered formulas reachable on mobile. */
-:is(.markdown-body, .markdown-editor) .katex-display > .katex {
+:is(.markdown-body, .markdown-editor) .math-source--display > mjx-container,
+:is(.markdown-body, .markdown-editor) .language-math > mjx-container {
   width: max-content;
   min-width: 100%;
   text-align: center;
 }
 
-:is(.markdown-body, .markdown-editor) .katex-error {
+:is(.markdown-body, .markdown-editor) .math-source--error,
+:is(.markdown-body, .markdown-editor) .vditor-reset--error {
   color: var(--danger) !important;
   white-space: pre-wrap;
   overflow-wrap: anywhere;
