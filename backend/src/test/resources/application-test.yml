@@ -16,3 +16,6 @@ app:
     # 测试专用存储目录（target/ 下，mvn clean 自动清理，与开发 uploads 隔离）
     storage-dir: target/test-uploads
     public-base: /uploads
+  portfolio-prototype:
+    private-root: target/test-prototypes-private
+    public-root: target/test-uploads/prototypes

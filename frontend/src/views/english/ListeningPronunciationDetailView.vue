@@ -47,11 +47,15 @@ onMounted(load)
 
 <template>
   <section v-if="initialLoading && !rule" class="prd-wrap"><p>加载中…</p></section>
-  <section v-else-if="notFound && !rule" class="prd-wrap"><p>规则不存在或未发布。</p></section>
+  <section v-else-if="notFound && !rule" class="prd-wrap">
+    <RouterLink to="/english/listening/pronunciation" class="english-back" data-testid="english-page-back">← 语音规则</RouterLink>
+    <p>规则不存在或未发布。</p>
+  </section>
   <section v-else-if="rule" class="prd" :class="{ 'is-swapping': swapping }" :aria-busy="swapping">
     <div class="prd__layout">
       <main class="prd__main">
         <header class="prd__hero">
+          <RouterLink to="/english/listening/pronunciation" class="english-back" data-testid="english-page-back">← 语音规则</RouterLink>
           <span class="prd__type">{{ ruleLabel[rule.ruleType] }} · {{ rule.ruleType }}</span>
           <h1 class="prd__h1">{{ rule.title }}</h1>
           <p class="prd__summary">{{ rule.summary }}</p>
@@ -78,6 +82,8 @@ onMounted(load)
 
 <style scoped>
 .prd-wrap{padding:var(--space-10) 0;text-align:center;color:var(--text-muted)}
+.english-back{display:inline-block;margin-bottom:10px;color:var(--primary);font-size:13px}
+.prd-wrap .english-back{display:block;margin-bottom:16px}
 .prd__layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(165px,220px);gap:var(--layout-gap);align-items:start}
 .prd__right{min-width:0}
 .prd__main{min-width:0;transition:opacity var(--motion-fast,140ms) var(--ease-standard,ease)}

@@ -34,7 +34,9 @@ public class PublicApiCacheHeadersFilter extends OncePerRequestFilter {
             return;
         }
         // Auth/session-sensitive public endpoints must stay private.
-        if (path.contains("/account") || path.contains("/learning") || path.contains("/vocabulary/memory")) {
+        // Pronunciation audio sets its own long immutable Cache-Control.
+        if (path.contains("/account") || path.contains("/learning") || path.contains("/vocabulary/memory")
+                || path.contains("/vocabulary/pronunciation")) {
             return;
         }
         if (response.getStatus() >= 200 && response.getStatus() < 400) {

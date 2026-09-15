@@ -3,6 +3,8 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { AxiosError } from 'axios'
 import {
+  type Breadcrumb,
+  type CurriculumNode,
   type PublicChapter,
   type PublicTutorialDetail,
 } from '@/api/tutorial'
@@ -54,6 +56,38 @@ const progressPercent = computed(() => {
 function formatDate(iso: string): string {
   const date = new Date(iso)
   return Number.isNaN(date.getTime()) ? iso : date.toLocaleDateString('zh-CN')
+}
+
+function firstChapterSlugUnderGroup(nodes: CurriculumNode[], groupId: number): string | null {
+  for (const node of nodes) {
+    if (node.id === groupId && node.type === 'GROUP') {
+      const stack = [...(node.children ?? [])]
+      while (stack.length) {
+        const current = stack.shift()!
+        if (current.type === 'CHAPTER' && current.slug) return current.slug
+        if (current.children?.length) stack.unshift(...current.children)
+      }
+      return null
+    }
+    if (node.children?.length) {
+      const nested = firstChapterSlugUnderGroup(node.children, groupId)
+      if (nested) return nested
+    }
+  }
+  return null
+}
+
+/** Intermediate crumbs are links; the current CHAPTER stays plain text. */
+function breadcrumbTo(crumb: Breadcrumb): string | null {
+  if (!chapter.value) return null
+  if (crumb.type === 'TUTORIAL' && crumb.slug) return `/tutorials/${crumb.slug}`
+  if (crumb.type === 'GROUP' && detail.value) {
+    const first = firstChapterSlugUnderGroup(detail.value.curriculum, crumb.id)
+    return first
+      ? `/tutorials/${chapter.value.tutorialSlug}/${first}`
+      : `/tutorials/${chapter.value.tutorialSlug}`
+  }
+  return null
 }
 
 async function load() {
@@ -148,10 +182,12 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
     <!-- article -->
     <article class="reader__article" :class="{ 'is-loading': chapterLoading }" :aria-busy="chapterLoading">
       <nav class="reader__breadcrumb" aria-label="面包屑">
-        <RouterLink :to="`/tutorials/${detail.slug}`">{{ chapter.tutorialTitle }}</RouterLink>
-        <template v-for="crumb in chapter.breadcrumbs" :key="`${crumb.type}-${crumb.id}`">
-          <span aria-hidden="true"> / </span>
-          <span v-if="crumb.type !== 'CHAPTER'">{{ crumb.title }}</span>
+        <template v-for="(crumb, index) in chapter.breadcrumbs" :key="`${crumb.type}-${crumb.id}`">
+          <span v-if="index > 0" aria-hidden="true"> / </span>
+          <RouterLink
+            v-if="breadcrumbTo(crumb)"
+            :to="breadcrumbTo(crumb) ?? ''"
+          >{{ crumb.title }}</RouterLink>
           <span v-else class="reader__breadcrumb-current">{{ crumb.title }}</span>
         </template>
       </nav>

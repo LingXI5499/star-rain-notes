@@ -116,7 +116,7 @@ onMounted(load)
 
 <template>
   <section class="study">
-    <header class="study__header"><div><p class="study__eyebrow">VOCABULARY REVIEW</p><h1>今日单词</h1><p>先回忆，再揭晓；只有完成按钮会写入一次复习。</p></div><div class="study__nav"><RouterLink to="/english/vocabulary/progress">学习进度</RouterLink><RouterLink to="/english/vocabulary">退出复习</RouterLink></div></header>
+    <header class="study__header"><div><p class="study__eyebrow">VOCABULARY REVIEW</p><h1>今日单词</h1><p>先回忆，再揭晓；只有完成按钮会写入一次复习。</p></div><div class="study__nav"><RouterLink to="/english/vocabulary/progress">学习进度</RouterLink><RouterLink to="/english/vocabulary" data-testid="english-page-back">退出复习</RouterLink></div></header>
     <div class="study__controls">
       <span class="study__progress">进度 {{ progress }}</span>
       <div class="study__direction"><strong>复习方向</strong><div role="group" aria-label="选择复习方向"><button v-for="option in directionOptions" :key="option.value" type="button" :class="{ active: settings.reviewDirection === option.value }" :aria-pressed="settings.reviewDirection === option.value" :disabled="loading || directionSaving" @click="changeDirection(option.value)">{{ option.label }}</button></div></div>

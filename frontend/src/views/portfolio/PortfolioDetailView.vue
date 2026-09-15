@@ -6,10 +6,10 @@ import { type PublicProjectDetail } from '@/api/portfolio'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
 import ArticleOutline from '@/components/ArticleOutline.vue'
 import ReadingAside from '@/components/ReadingAside.vue'
-import ProjectGallery from '@/components/portfolio/ProjectGallery.vue'
 import { applyPageMeta, caseStudySchema } from '@/lib/seo'
 import { estimateReadingStats } from '@/lib/readingStats'
 import { portfolioDetailCache } from '@/lib/publicContentCache'
+import { resolvePortfolioLinks } from '@/lib/portfolioLinks'
 import type { OutlineItem } from '@/types'
 
 /**
@@ -22,14 +22,13 @@ const outline = ref<OutlineItem[]>([])
 const notFound = ref(false)
 const loadFailed = ref(false)
 const drawerOpen = ref(false)
+const liveNotice = ref(false)
 
 const readingStats = computed(() => estimateReadingStats(project.value?.bodyMarkdown))
 const charCount = computed(() => readingStats.value.charCount)
 const readMinutes = computed(() => readingStats.value.readMinutes)
-const galleryItems = computed(() =>
-  (project.value?.gallery ?? []).filter((item) => Boolean(item.url)),
-)
 const heroStack = computed(() => (project.value?.techStack ?? []).slice(0, 4).join(' · '))
+const projectLinks = computed(() => resolvePortfolioLinks(project.value ?? {}))
 
 const statusLabels: Record<string, string> = {
   DEVELOPING: '开发中',
@@ -45,6 +44,8 @@ function formatPeriod(item: PublicProjectDetail): string {
   if (item.completedAt) return `— ${item.completedAt.slice(0, 7).replace('-', '.')}`
   return ''
 }
+
+function unavailable() { liveNotice.value = true }
 
 async function load() {
   project.value = null
@@ -112,14 +113,14 @@ watch(() => route.params.slug, load)
         <span v-if="!project.role">独立开发</span>
         <span v-if="heroStack">{{ heroStack }}</span>
       </p>
-      <div v-if="project.demoUrl || project.repositoryUrl" class="case-hero__actions">
-        <a v-if="project.demoUrl" :href="project.demoUrl" target="_blank" rel="noopener noreferrer" class="is-primary">在线访问 <i>↗</i></a>
-        <a v-if="project.repositoryUrl" :href="project.repositoryUrl" target="_blank" rel="noopener noreferrer">查看源代码 <i>↗</i></a>
+      <div v-if="project.coverUrl" class="case-hero__cover"><img :src="project.coverUrl" :srcset="project.coverSrcSet || undefined" :width="project.coverWidth || undefined" :height="project.coverHeight || undefined" :alt="`${project.title} 项目主题封面`" fetchpriority="high" /></div>
+      <div class="case-hero__actions">
+        <a v-if="projectLinks.onlineAccessUrl" :href="projectLinks.onlineAccessUrl" target="_blank" rel="noopener noreferrer" class="is-primary">在线访问 <i>↗</i></a>
+        <button v-else type="button" class="is-primary" @click="unavailable">在线访问 <i>↗</i></button>
+        <a v-if="projectLinks.repositoryUrl" :href="projectLinks.repositoryUrl" target="_blank" rel="noopener noreferrer">查看源代码 <i>↗</i></a>
       </div>
+      <p v-if="liveNotice" class="case-hero__notice" role="status">暂时未提供在线访问。</p>
     </header>
-
-    <!-- Project preview remains the single visual evidence block. -->
-    <ProjectGallery :items="galleryItems" />
 
     <button v-if="outline.length" class="case-study__drawer-button" type="button" @click="drawerOpen = true">
       本页目录 · {{ outline.length }}
@@ -133,8 +134,9 @@ watch(() => route.params.slug, load)
         <section class="case-cta">
           <p>项目仍在持续迭代。</p>
           <div class="case-hero__actions">
-            <a v-if="project.demoUrl" :href="project.demoUrl" target="_blank" rel="noopener noreferrer" class="is-primary">在线访问 <i>↗</i></a>
-            <a v-if="project.repositoryUrl" :href="project.repositoryUrl" target="_blank" rel="noopener noreferrer">查看源代码 <i>↗</i></a>
+            <a v-if="projectLinks.onlineAccessUrl" :href="projectLinks.onlineAccessUrl" target="_blank" rel="noopener noreferrer" class="is-primary">在线访问 <i>↗</i></a>
+            <button v-else type="button" class="is-primary" @click="unavailable">在线访问 <i>↗</i></button>
+            <a v-if="projectLinks.repositoryUrl" :href="projectLinks.repositoryUrl" target="_blank" rel="noopener noreferrer">查看源代码 <i>↗</i></a>
           </div>
         </section>
 
@@ -252,7 +254,7 @@ watch(() => route.params.slug, load)
   margin-top: 28px;
 }
 
-.case-hero__actions a {
+.case-hero__actions :is(a,button) {
   display: inline-flex;
   align-items: center;
   gap: 8px;
@@ -263,6 +265,10 @@ watch(() => route.params.slug, load)
   font-size: 13px;
   font-weight: 700;
 }
+.case-hero__actions button { font:inherit; cursor:pointer; }
+.case-hero__cover { margin-top: 30px; overflow:hidden; border:1px solid var(--border); border-radius:20px; background:var(--bg-subtle); }
+.case-hero__cover img { width:100%; max-height:460px; object-fit:cover; }
+.case-hero__notice { margin-top:12px; color:var(--text-muted); font-size:13px; }
 
 .case-hero__actions a.is-primary {
   border-color: var(--primary);

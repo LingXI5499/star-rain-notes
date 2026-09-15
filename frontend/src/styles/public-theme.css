@@ -14,6 +14,7 @@
   --primary: #24584d;
   --primary-hover: #0a2e28;
   --primary-soft: #dce8e3;
+  --on-primary: #fffefa;
   --accent: #a85831;
   --accent-soft: #f1dfd4;
   --border: #daddd6;
@@ -274,4 +275,99 @@
     transform: none;
     animation: none;
   }
+}
+
+/* ------------------------------------------------------------
+   Element Plus on public pages — match teal brand, not default blue
+   ------------------------------------------------------------ */
+.base-layout {
+  --el-color-primary: var(--primary);
+  --el-color-primary-light-3: color-mix(in srgb, var(--primary) 70%, white);
+  --el-color-primary-light-5: color-mix(in srgb, var(--primary) 50%, white);
+  --el-color-primary-light-7: color-mix(in srgb, var(--primary) 30%, white);
+  --el-color-primary-light-8: color-mix(in srgb, var(--primary) 20%, white);
+  --el-color-primary-light-9: color-mix(in srgb, var(--primary) 12%, white);
+  --el-color-primary-dark-2: var(--primary-hover);
+  --el-border-radius-base: 10px;
+}
+
+.base-layout .el-input__wrapper,
+.base-layout .el-select__wrapper {
+  border-radius: 10px;
+  background-color: var(--bg-surface);
+  box-shadow: 0 0 0 1px var(--border) inset;
+  transition: box-shadow 0.15s ease, background-color 0.15s ease;
+}
+
+.base-layout .el-input__wrapper:hover,
+.base-layout .el-select__wrapper:hover {
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 35%, var(--border)) inset;
+}
+
+.base-layout .el-input__wrapper.is-focus,
+.base-layout .el-select__wrapper.is-focused {
+  box-shadow:
+    0 0 0 1px var(--primary) inset,
+    0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent) !important;
+}
+
+.base-layout .el-pagination {
+  --el-pagination-button-bg-color: var(--bg-surface);
+  --el-pagination-hover-color: var(--primary);
+  font-weight: 500;
+}
+
+.base-layout .el-pagination .el-pager li,
+.base-layout .el-pagination button {
+  border-radius: 8px;
+  background: var(--bg-surface);
+  color: var(--text-secondary);
+  min-width: 32px;
+}
+
+.base-layout .el-pagination .el-pager li.is-active {
+  background: var(--primary) !important;
+  color: var(--on-primary, #fff) !important;
+}
+
+.base-layout .el-pagination button:hover:not(:disabled),
+.base-layout .el-pagination .el-pager li:hover {
+  color: var(--primary);
+}
+
+.base-layout .el-button--primary {
+  --el-button-bg-color: var(--primary);
+  --el-button-border-color: var(--primary);
+  --el-button-hover-bg-color: var(--primary-hover);
+  --el-button-hover-border-color: var(--primary-hover);
+  --el-button-active-bg-color: var(--primary-hover);
+  --el-button-active-border-color: var(--primary-hover);
+  border-radius: 10px;
+}
+
+.base-layout .el-button:not(.el-button--primary) {
+  border-radius: 10px;
+  border-color: var(--border);
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+}
+
+.base-layout .el-button:not(.el-button--primary):hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: var(--primary-soft);
+}
+
+/* Teleported Element poppers (select dropdown) inherit brand primary */
+.el-select-dropdown__item.is-selected,
+.el-select-dropdown__item.is-hovering {
+  color: #24584d;
+}
+
+.el-select-dropdown__item.is-selected {
+  font-weight: 600;
+}
+
+.el-popper.is-light .el-select-dropdown__item.is-hovering {
+  background-color: #dce8e3;
 }

@@ -21,6 +21,7 @@ public record AdminProjectDetailView(
         String coverSrcSet,
         String repositoryUrl,
         String demoUrl,
+        ProjectPrototypeView prototype,
         String publishStatus,
         String projectStatus,
         boolean featured,

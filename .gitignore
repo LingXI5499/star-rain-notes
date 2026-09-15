@@ -69,3 +69,10 @@ frontend/.vite/
 *.bak
 **/uploads/
 **/data/pronunciation-cache/
+
+flyway-local.conf
+backend/flyway-local.conf
+
+# Playwright
+frontend/test-results/
+frontend/playwright-report/

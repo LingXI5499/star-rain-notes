@@ -7,8 +7,10 @@
     "dev": "vite",
     "type-check": "vue-tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
+    "test:e2e": "playwright test",
     "build": "vite build",
     "build:analyze": "vite build --mode analyze",
+    "check:bundle": "node scripts/check-bundle-budget.mjs",
     "preview": "vite preview"
   },
   "dependencies": {
@@ -26,6 +28,7 @@
     "vue-router": "4.6.4"
   },
   "devDependencies": {
+    "@playwright/test": "^1.51.0",
     "@types/markdown-it-container": "^2.0.4",
     "@types/node": "24.13.3",
     "@vitejs/plugin-vue": "6.0.8",

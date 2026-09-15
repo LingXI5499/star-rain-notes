@@ -22,6 +22,19 @@ export interface MediaPage {
   totalPages: number
 }
 
+export interface MediaSummary {
+  total: number
+  images: number
+  audio: number
+  documents: number
+  archives: number
+}
+
+export async function fetchMediaSummary(): Promise<MediaSummary> {
+  const { data } = await http.get<MediaSummary>('/admin/media-assets/summary')
+  return data
+}
+
 export async function fetchMediaAssets(params: {
   page?: number
   pageSize?: number
@@ -35,7 +48,7 @@ export async function fetchMediaAssets(params: {
 export async function uploadMedia(file: File): Promise<MediaAsset> {
   const form = new FormData()
   form.append('file', file)
-  const { data } = await http.post<MediaAsset>('/admin/media-assets', form)
+  const { data } = await http.post<MediaAsset>('/admin/media-assets', form, { timeout: 60000 })
   return data
 }
 

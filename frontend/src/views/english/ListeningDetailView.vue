@@ -88,13 +88,21 @@ onBeforeUnmount(() => { if (audioEl.value) { audioEl.value.pause(); audioEl.valu
 
 <template>
   <section v-if="initialLoading && !item" class="ld-wrap"><p>加载中…</p></section>
-  <section v-else-if="notFound && !item" class="ld-wrap"><p>材料不存在或未发布。</p></section>
+  <section v-else-if="notFound && !item" class="ld-wrap">
+    <RouterLink to="/english/listening" class="english-back" data-testid="english-page-back">← 听力中心</RouterLink>
+    <p>材料不存在或未发布。</p>
+  </section>
   <section v-else-if="item" class="ld" :class="{ 'is-swapping': swapping }" :aria-busy="swapping">
     <div class="ld__layout">
       <aside class="ld__left"><details open><summary>学习信息</summary><dl><dt>能力目标</dt><dd>{{ levelLabels[item.listeningLevel] }}</dd><dt>CEFR</dt><dd><CefrBadge :level="item.cefrLevel" show-label/></dd><dt>场景</dt><dd>{{ item.tags.filter(t=>t.dimension==='SCENE').map(t=>t.name).join('、')||'—' }}</dd><dt>形式</dt><dd>{{ item.tags.filter(t=>t.dimension==='FORMAT').map(t=>t.name).join('、')||'—' }}</dd><dt>时长</dt><dd>{{ Math.floor(item.durationSeconds/60) }}:{{ String(item.durationSeconds%60).padStart(2,'0') }}</dd><dt v-if="item.sourceName">来源</dt><dd v-if="item.sourceName">{{ item.sourceName }}</dd></dl><div v-if="item.readingPairs.length" class="ld__pairs"><b>配对精读</b><RouterLink v-for="pair in item.readingPairs" :key="pair.readingArticleId" :to="`/english/reading/${pair.readingSlug}`">{{ pair.readingTitle }} →</RouterLink></div></details></aside>
 
       <main class="ld__main">
-        <header class="ld__hero"><div class="ld__meta"><CefrBadge :level="item.cefrLevel"/><span>{{ levelLabels[item.listeningLevel] }}</span></div><h1 class="ld__h1">{{ item.title }}</h1><p class="ld__summary">{{ item.summary }}</p></header>
+        <header class="ld__hero">
+          <RouterLink to="/english/listening" class="english-back" data-testid="english-page-back">← 听力中心</RouterLink>
+          <div class="ld__meta"><CefrBadge :level="item.cefrLevel"/><span>{{ levelLabels[item.listeningLevel] }}</span></div>
+          <h1 class="ld__h1">{{ item.title }}</h1>
+          <p class="ld__summary">{{ item.summary }}</p>
+        </header>
 
         <audio ref="audioEl" class="ld__audio" controls preload="metadata" :src="item.audioUrl ?? ''" @timeupdate="onTimeUpdate" @ended="activeSegment = -1"/>
 
@@ -139,6 +147,8 @@ onBeforeUnmount(() => { if (audioEl.value) { audioEl.value.pause(); audioEl.valu
 
 <style scoped>
 .ld-wrap{padding:var(--space-10) 0;text-align:center;color:var(--text-muted)}
+.english-back{display:inline-block;margin-bottom:10px;color:var(--primary);font-size:13px}
+.ld-wrap .english-back{display:block;margin-bottom:16px}
 .ld__layout{display:grid;grid-template-columns:200px minmax(0,1fr) 200px;gap:var(--layout-gap);align-items:start}.ld__left,.ld__right{position:sticky;top:calc(var(--header-height) + var(--space-6))}
 .ld__left dl{display:grid;gap:8px;margin:0}.ld__left dt{font-size:12px;color:var(--text-muted);font-weight:600}.ld__left dd{font-size:13px;color:var(--text-secondary);margin:0}
 .ld__left summary,.ld__right summary{display:none;font-weight:700;cursor:pointer}.ld__pairs{display:grid;gap:7px;margin-top:18px;font-size:12px}.ld__pairs a{color:var(--primary)}

@@ -12,6 +12,7 @@ onMounted(async () => { try { rules.value = await fetchPublicPronunciationRules(
 
 <template>
   <section>
+    <RouterLink to="/english/listening" class="english-back" data-testid="english-page-back">← 听力中心</RouterLink>
     <EnglishModuleHero tag="PRONUNCIATION · 语音规则" title="语音规则" subtitle="连读、弱读、同化、省音、重音、语调。" description="独立语音规则教学支线，含示例音频与讲解。"/>
     <div v-if="error" class="pr-empty">加载失败，请稍后重试。</div>
     <div v-else v-loading="loading" class="pr-list">
@@ -24,6 +25,7 @@ onMounted(async () => { try { rules.value = await fetchPublicPronunciationRules(
 </template>
 
 <style scoped>
+.english-back{display:inline-block;margin-bottom:12px;color:var(--primary);font-size:13px}
 .pr-list{display:flex;flex-direction:column;gap:var(--space-8)}.pr-public-group h2{font-size:20px;margin:0 0 12px}.pr-public-group h2 small{font-size:11px;color:var(--text-muted);font-weight:400}.pr-public-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:var(--space-4)}
 .pr-public-card{display:flex;flex-direction:column;gap:8px;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface);color:inherit;transition:transform .16s ease,border-color .16s ease}.pr-public-card:hover{transform:translateY(-3px);border-color:var(--primary)}
 .pr-public-card h3{font-size:17px;margin:0}.pr-public-card p{font-size:13px;color:var(--text-secondary);margin:0}.pr-public-card span{color:var(--primary);font-size:13px;margin-top:auto}.pr-empty{color:var(--text-muted);padding:var(--space-4) 0}

@@ -83,7 +83,7 @@ onMounted(async () => {
       </div>
 
       <section class="panel module-panel">
-        <header><div><small>MODULE MASTERY</small><h2>模块掌握情况</h2></div><RouterLink to="/english/bundles">查看学习组合 →</RouterLink></header>
+        <header><div><small>MODULE MASTERY</small><h2>模块掌握情况</h2></div><RouterLink to="/english/vocabulary">浏览词库 →</RouterLink></header>
         <div class="modules">
           <article v-for="item in insights.modules" :key="item.contentType">
             <div><strong>{{ moduleLabels[item.contentType] }}</strong><span>{{ item.completed }} / {{ item.total }} 已完成</span></div>

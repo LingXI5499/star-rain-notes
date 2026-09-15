@@ -38,6 +38,17 @@
     transform 0.1s ease;
 }
 
+.admin-shell :where(button, a, input, select, textarea):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (max-width: 768px) {
+  .admin-shell .el-button { min-height: 40px; }
+  .admin-shell .el-table { min-width: 640px; }
+  .admin-shell .el-table__body-wrapper { overflow-x: auto; }
+}
+
 .admin-shell .el-button:active {
   transform: translateY(1px);
 }

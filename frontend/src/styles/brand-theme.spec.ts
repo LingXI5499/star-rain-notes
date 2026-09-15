@@ -56,9 +56,10 @@ describe('theme hero page wiring', () => {
 })
 
 describe('case study README outline shell', () => {
-  it('keeps the gallery and generic CTA without repeating cover, meta, or stack blocks', () => {
+  it('uses the cover and online-access CTA without a screenshot gallery', () => {
     const source = readFileSync(portfolioDetail, 'utf8')
-    expect(source).toContain('ProjectGallery')
+    expect(source).not.toContain('ProjectGallery')
+    expect(source).toContain('onlineAccessUrl')
     expect(source).toContain('项目仍在持续迭代。')
     expect(source).not.toContain('星雨笔录仍在')
     expect(source).not.toContain('class="case-cover"')

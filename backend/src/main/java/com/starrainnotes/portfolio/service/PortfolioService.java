@@ -31,6 +31,8 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -44,9 +46,10 @@ import java.util.stream.Collectors;
  * Portfolio vertical slice (01 §4, 04 §12).
  *
  * <p>publish_status and project_status are fully independent; PUBLISHED +
- * DEVELOPING is legal. Service-enforced rules: ONLINE requires demoUrl,
- * featured ≤ 3, completedAt ≥ startedAt, techStack 0-20 items normalized
- * (trim / drop blanks / dedupe / preserve order), cover must be IMAGE.</p>
+ * DEVELOPING is legal. Service-enforced rules: ONLINE requires demoUrl
+ * (aligned with ck_portfolio_online_demo), featured ≤ 3, completedAt ≥ startedAt,
+ * techStack 0-20 items normalized (trim / drop blanks / dedupe / preserve order),
+ * cover must be IMAGE; publishing also requires a cover image.</p>
  */
 @Service
 public class PortfolioService {
@@ -66,17 +69,20 @@ public class PortfolioService {
     private final PortfolioProjectMediaMapper mediaMapper;
     private final MediaAssetMapper mediaAssetMapper;
     private final MediaService mediaService;
+    private final PortfolioPrototypeService prototypeService;
     private final SiteSettingsTimezone timezone;
 
     public PortfolioService(PortfolioProjectMapper projectMapper,
                             PortfolioProjectMediaMapper mediaMapper,
                             MediaAssetMapper mediaAssetMapper,
                             MediaService mediaService,
+                            PortfolioPrototypeService prototypeService,
                             SiteSettingsTimezone timezone) {
         this.projectMapper = projectMapper;
         this.mediaMapper = mediaMapper;
         this.mediaAssetMapper = mediaAssetMapper;
         this.mediaService = mediaService;
+        this.prototypeService = prototypeService;
         this.timezone = timezone;
     }
 
@@ -122,7 +128,7 @@ public class PortfolioService {
     public AdminProjectDetailView create(CreateProjectRequest request) {
         String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
         assertSlugFree(slug, null);
-        validateRules(request.demoUrl(), request.projectStatus(), request.featured(), null,
+        validateRules(request.repositoryUrl(), request.demoUrl(), request.projectStatus(), request.featured(), null,
                 request.startedAt(), request.completedAt(), request.coverMediaId());
         List<String> techStack = normalizeTechStack(request.techStack());
 
@@ -145,7 +151,7 @@ public class PortfolioService {
         PortfolioProject project = requireProject(projectId);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), project.getSlug());
         assertSlugFree(slug, projectId);
-        validateRules(request.demoUrl(), request.projectStatus(), request.featured(), projectId,
+        validateRules(request.repositoryUrl(), request.demoUrl(), request.projectStatus(), request.featured(), projectId,
                 request.startedAt(), request.completedAt(), request.coverMediaId());
         List<String> techStack = normalizeTechStack(request.techStack());
 
@@ -162,12 +168,14 @@ public class PortfolioService {
     @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
     public void delete(Long projectId) {
         requireProject(projectId);
+        prototypeService.delete(projectId);
         projectMapper.deleteById(projectId);
     }
 
     @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
     public AdminProjectDetailView publish(Long projectId) {
         PortfolioProject project = requireProject(projectId);
+        validatePublishable(project);
         if (!PUBLISHED.equals(project.getPublishStatus())) {
             if (project.getPublishedAt() == null) {
                 project.setPublishedAt(LocalDateTime.now(Clock.systemUTC()));
@@ -175,6 +183,7 @@ public class PortfolioService {
             project.setPublishStatus(PUBLISHED);
             projectMapper.updateById(project);
         }
+        prototypeService.publish(projectId);
         return toAdminDetail(project);
     }
 
@@ -247,7 +256,8 @@ public class PortfolioService {
                 cover == null ? null : cover.width(),
                 cover == null ? null : cover.height(),
                 cover == null ? null : cover.srcSet(),
-                project.getRepositoryUrl(), project.getDemoUrl(), project.getProjectStatus(),
+                normalizeHttpUrl(project.getRepositoryUrl()), usableDemoUrl(project.getDemoUrl(), project.getRepositoryUrl()),
+                prototypeService.publicEntry(project.getId(), true), project.getProjectStatus(),
                 project.getStartedAt(), project.getCompletedAt(),
                 project.getSeoTitle(), project.getSeoDescription(),
                 formatUtc(project.getPublishedAt()), formatUtc(project.getUpdatedAt()), previous, next,
@@ -258,12 +268,14 @@ public class PortfolioService {
     // rules
     // ---------------------------------------------------------------
 
-    private void validateRules(String demoUrl, String projectStatus, Boolean featured, Long excludeId,
+    private void validateRules(String repositoryUrl, String demoUrl, String projectStatus, Boolean featured, Long excludeId,
                                java.time.LocalDate startedAt, java.time.LocalDate completedAt, Long coverMediaId) {
-        String effectiveStatus = projectStatus == null ? DEVELOPING : projectStatus;
-        if (ONLINE.equals(effectiveStatus) && !StringUtils.hasText(demoUrl)) {
+        normalizeHttpUrl(repositoryUrl);
+        String normalizedDemoUrl = usableDemoUrl(demoUrl, repositoryUrl);
+        // Matches ck_portfolio_online_demo: ONLINE rows must persist a non-null demo_url.
+        if (ONLINE.equals(projectStatus) && !StringUtils.hasText(normalizedDemoUrl)) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "DEMO_URL_REQUIRED",
-                    "Demo URL required", "An ONLINE project must provide a demoUrl.");
+                    "Demo URL required", "An ONLINE project requires a demoUrl.");
         }
         if (startedAt != null && completedAt != null && completedAt.isBefore(startedAt)) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE",
@@ -279,6 +291,19 @@ public class PortfolioService {
             }
         }
         validateImageMedia(coverMediaId);
+    }
+
+    private void validatePublishable(PortfolioProject project) {
+        if (project.getCoverMediaId() == null) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "COVER_REQUIRED", "Cover required", "Published projects must have a theme cover image.");
+        }
+        validateImageMedia(project.getCoverMediaId());
+        if (ONLINE.equals(project.getProjectStatus())
+                && !StringUtils.hasText(project.getDemoUrl())
+                && !StringUtils.hasText(project.getRepositoryUrl())) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "DEMO_REQUIRED", "Online access required",
+                    "An ONLINE project needs a live URL or a code repository URL.");
+        }
     }
 
     private List<String> normalizeTechStack(List<String> raw) {
@@ -329,13 +354,51 @@ public class PortfolioService {
         p.setTechStack(techStack);
         p.setBodyMarkdown(bodyMarkdown);
         p.setCoverMediaId(coverMediaId);
-        p.setRepositoryUrl(repositoryUrl);
-        p.setDemoUrl(demoUrl);
+        p.setRepositoryUrl(normalizeHttpUrl(repositoryUrl));
+        p.setDemoUrl(usableDemoUrl(demoUrl, repositoryUrl));
         p.setProjectStatus(projectStatus == null ? DEVELOPING : projectStatus);
         p.setFeatured(Boolean.TRUE.equals(featured));
         if (sortOrder != null) p.setSortOrder(sortOrder);
         p.setStartedAt(startedAt);
         p.setCompletedAt(completedAt);
+    }
+
+    private String usableDemoUrl(String rawDemoUrl, String rawRepositoryUrl) {
+        String demoUrl = normalizeHttpUrl(rawDemoUrl);
+        if (demoUrl == null) return null;
+        String repositoryUrl = normalizeHttpUrl(rawRepositoryUrl);
+        String host = URI.create(demoUrl).getHost().toLowerCase();
+        if ("github.com".equals(host) || "www.github.com".equals(host)
+                || (repositoryUrl != null && withoutTrailingSlash(demoUrl).equalsIgnoreCase(withoutTrailingSlash(repositoryUrl)))) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "DEMO_URL_IS_REPOSITORY",
+                    "Live URL cannot be a repository", "The online URL must point to a deployed site. Put GitHub links in the repository URL field.");
+        }
+        return demoUrl;
+    }
+
+    private String normalizeHttpUrl(String rawUrl) {
+        if (!StringUtils.hasText(rawUrl)) return null;
+        String value = rawUrl.trim();
+        if (!value.matches("^[a-zA-Z][a-zA-Z0-9+.-]*://.*$")) value = "https://" + value;
+        try {
+            URI uri = new URI(value);
+            if (!("http".equalsIgnoreCase(uri.getScheme()) || "https".equalsIgnoreCase(uri.getScheme()))
+                    || !StringUtils.hasText(uri.getHost())) {
+                throw invalidExternalUrl();
+            }
+            return uri.toString();
+        } catch (URISyntaxException ex) {
+            throw invalidExternalUrl();
+        }
+    }
+
+    private static String withoutTrailingSlash(String value) {
+        return value.endsWith("/") ? value.substring(0, value.length() - 1) : value;
+    }
+
+    private static ApiException invalidExternalUrl() {
+        return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_EXTERNAL_URL",
+                "Invalid external URL", "Repository and online URLs must be valid HTTP or HTTPS addresses.");
     }
 
     private PortfolioProject requireProject(Long projectId) {
@@ -421,7 +484,7 @@ public class PortfolioService {
                 cover == null ? null : cover.width(),
                 cover == null ? null : cover.height(),
                 cover == null ? null : cover.srcSet(),
-                p.getRepositoryUrl(), p.getDemoUrl(),
+                p.getRepositoryUrl(), p.getDemoUrl(), prototypeService.view(p.getId(), PUBLISHED.equals(p.getPublishStatus())),
                 p.getPublishStatus(), p.getProjectStatus(), Boolean.TRUE.equals(p.getFeatured()),
                 p.getSortOrder(), p.getStartedAt(), p.getCompletedAt(), p.getSeoTitle(), p.getSeoDescription(),
                 formatUtc(p.getPublishedAt()), formatUtc(p.getCreatedAt()), formatUtc(p.getUpdatedAt()),

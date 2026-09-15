@@ -2,6 +2,7 @@ package com.starrainnotes.media.controller;
 
 import com.starrainnotes.media.dto.MediaAssetView;
 import com.starrainnotes.media.dto.MediaPageView;
+import com.starrainnotes.media.dto.MediaSummaryView;
 import com.starrainnotes.media.service.MediaService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -35,6 +36,11 @@ public class MediaAdminController {
                               @RequestParam(required = false) String q,
                               @RequestParam(required = false) String assetType) {
         return mediaService.list(page, pageSize, q, assetType);
+    }
+
+    @GetMapping("/summary")
+    public MediaSummaryView summary() {
+        return mediaService.summary();
     }
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

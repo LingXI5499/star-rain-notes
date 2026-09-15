@@ -4,12 +4,15 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.media.dto.MediaAssetView;
 import com.starrainnotes.media.dto.MediaPageView;
+import com.starrainnotes.media.dto.MediaSummaryView;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
+import com.starrainnotes.portfolio.service.PortfolioPrototypeService;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -75,19 +78,24 @@ public class MediaService {
     private static final byte[] OGG_MAGIC = "OggS".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
     private static final byte[] M4A_FTYP = "ftyp".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
 
+    private static final long ARCHIVE_MAX_BYTES = 10L * 1024 * 1024;
+
     private final MediaAssetMapper mapper;
     private final SiteSettingsTimezone timezone;
+    private final PortfolioPrototypeService prototypeService;
     private final Path storageRoot;
     private final String publicBase;
     private final long audioMaxBytes;
 
     public MediaService(MediaAssetMapper mapper,
                         SiteSettingsTimezone timezone,
+                        @Lazy PortfolioPrototypeService prototypeService,
                         @Value("${app.media.storage-dir:uploads}") String storageDir,
                         @Value("${app.media.public-base:/uploads}") String publicBase,
                         @Value("${app.media.audio-max-bytes:52428800}") long audioMaxBytes) {
         this.mapper = mapper;
         this.timezone = timezone;
+        this.prototypeService = prototypeService;
         this.storageRoot = Path.of(storageDir).toAbsolutePath().normalize();
         this.publicBase = publicBase;
         this.audioMaxBytes = audioMaxBytes;
@@ -215,16 +223,103 @@ public class MediaService {
         return new MediaPageView(items, safePage, safeSize, safeTotal, totalPages);
     }
 
+    public MediaSummaryView summary() {
+        return new MediaSummaryView(
+                countByType(null),
+                countByType("IMAGE"),
+                countByType("AUDIO"),
+                countByType("DOCUMENT"),
+                countByType("ARCHIVE"));
+    }
+
+    /**
+     * Creates an ARCHIVE media asset from an already-validated ZIP payload.
+     * Used by portfolio prototype upload; the admin media upload endpoint still rejects ZIP.
+     */
+    public MediaAsset createArchiveAsset(String originalName, byte[] bytes) {
+        if (bytes == null || bytes.length == 0) {
+            throw new ApiException(HttpStatus.BAD_REQUEST, "EMPTY_FILE",
+                    "Empty file", "The uploaded file is empty.");
+        }
+        if (bytes.length > ARCHIVE_MAX_BYTES) {
+            throw new ApiException(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_TOO_LARGE",
+                    "File too large", "Media must be ≤ 10MB.");
+        }
+        if (bytes.length < 2 || bytes[0] != 'P' || bytes[1] != 'K') {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_PROTOTYPE_ARCHIVE",
+                    "Invalid prototype archive", "Upload a ZIP package no larger than 10MB.");
+        }
+        String cleaned = StringUtils.cleanPath(originalName == null || originalName.isBlank() ? "prototype.zip" : originalName);
+        if (!cleaned.toLowerCase().endsWith(".zip")) {
+            cleaned = cleaned + ".zip";
+        }
+        String storedName = UUID.randomUUID() + ".zip";
+        String yearMonth = timezone.atSite(LocalDateTime.now(ZoneOffset.UTC))
+                .toLocalDate().format(DateTimeFormatter.ofPattern("yyyy/MM"));
+        String storagePath = yearMonth + "/" + storedName;
+        Path target = storageRoot.resolve(yearMonth).resolve(storedName).normalize();
+        assertWithinRoot(target);
+        try {
+            Files.createDirectories(target.getParent());
+            Files.write(target, bytes);
+        } catch (IOException ex) {
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR",
+                    "Storage unavailable", "The media file could not be stored.");
+        }
+        MediaAsset asset = new MediaAsset();
+        asset.setAssetType("ARCHIVE");
+        asset.setOriginalName(cleaned);
+        asset.setStoredName(storedName);
+        asset.setMimeType("application/zip");
+        asset.setExtension("zip");
+        asset.setSizeBytes((long) bytes.length);
+        asset.setStoragePath(storagePath);
+        asset.setPublicUrl(publicBase + "/" + storagePath);
+        try {
+            mapper.insert(asset);
+        } catch (RuntimeException ex) {
+            try {
+                Files.deleteIfExists(target);
+            } catch (IOException cleanupEx) {
+                log.warn("Failed to clean up archive file after DB error: {}", target, cleanupEx);
+            }
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR",
+                    "Internal server error", "The media asset could not be recorded.");
+        }
+        return asset;
+    }
+
+    public MediaAsset requireAsset(Long mediaId) {
+        MediaAsset asset = mapper.selectById(mediaId);
+        if (asset == null) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "MEDIA_NOT_FOUND",
+                    "Media not found", "The media asset does not exist.");
+        }
+        return asset;
+    }
+
+    public Path resolveStoragePath(String storagePath) {
+        Path target = storageRoot.resolve(storagePath).normalize();
+        assertWithinRoot(target);
+        return target;
+    }
+
+    private long countByType(String assetType) {
+        Long count = mapper.selectCount(new LambdaQueryWrapper<MediaAsset>()
+                .eq(assetType != null, MediaAsset::getAssetType, assetType));
+        return count == null ? 0 : count;
+    }
+
     public void delete(Long mediaId) {
         MediaAsset asset = mapper.selectById(mediaId);
         if (asset == null) {
             throw new ApiException(HttpStatus.NOT_FOUND, "MEDIA_NOT_FOUND",
                     "Media not found", "The media asset does not exist.");
         }
-        // DB row first: covers/avatars/logos/resumes reference it with ON DELETE
-        // SET NULL (frozen FKs), so removing the row clears those references.
+        if ("ARCHIVE".equals(asset.getAssetType())) {
+            prototypeService.cleanupExtractedByMediaAssetId(mediaId);
+        }
         mapper.deleteById(mediaId);
-        // best-effort disk file removal; markdown references are the UI's concern
         Path target = storageRoot.resolve(asset.getStoragePath()).normalize();
         if (target.startsWith(storageRoot)) {
             try {

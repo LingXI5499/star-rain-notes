@@ -4,10 +4,8 @@ import { RouterLink } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { type EnglishView } from '@/api/english'
 import { fetchLearningSummary, type LearningSummary } from '@/api/englishLearning'
-import { fetchPublicBundles, type LearningBundle } from '@/api/englishBundle'
 import { importLocalVocabularyProgress } from '@/api/vocabulary'
 import MarkdownRenderer from '@/components/MarkdownRenderer.vue'
-import LearningBundleCards from '@/components/english/LearningBundleCards.vue'
 import EnglishLearningModeHint from '@/components/english/EnglishLearningModeHint.vue'
 import ThemeHero from '@/components/visual/ThemeHero.vue'
 import { useAuthStore } from '@/stores/auth'
@@ -21,7 +19,6 @@ const english = ref<EnglishView | null>(null)
 const loading = ref(true)
 const error = ref(false)
 const progress = ref<LearningSummary | null>(null)
-const bundles = ref<LearningBundle[]>([])
 const levels = ['A1','A2','B1','B2','C1','C2']
 const stageLabels: Record<string,string> = { FOUNDATION:'基础阶段',WORD_MEMORY:'词汇记忆',READING:'阅读训练',ANALYTICS:'高阶分析' }
 const heroTraits = [
@@ -50,8 +47,8 @@ async function importGuestProgress() {
 onMounted(async () => {
   hasGuestData.value = (await vocabularyStudyStorage.memories().catch(() => [])).length > 0
   try {
-    const [content,learning,paths] = await Promise.all([englishHubCache.load('hub'),fetchLearningSummary().catch(() => null),fetchPublicBundles().catch(() => [])])
-    english.value = content; progress.value = learning; bundles.value = paths
+    const [content,learning] = await Promise.all([englishHubCache.load('hub'),fetchLearningSummary().catch(() => null)])
+    english.value = content; progress.value = learning
   } catch { error.value = true }
   finally { loading.value = false }
 })
@@ -66,8 +63,8 @@ onMounted(async () => {
         <h1>{{ english?.title ?? '英语能力成长路径' }}</h1>
         <p class="english-hero__lead">{{ english?.subtitle ?? '从可理解输入到清晰表达，按 CEFR 建立阅读、听力与写作的长期学习闭环。' }}</p>
         <div class="english-hero__actions">
-          <RouterLink class="is-primary" to="/english/vocabulary/study">开启英语学习 <span aria-hidden="true">→</span></RouterLink>
-          <RouterLink to="/english/bundles">学习组合 <span aria-hidden="true">↗</span></RouterLink>
+          <RouterLink class="is-primary" to="/english/vocabulary/study">今日背单词 <span aria-hidden="true">→</span></RouterLink>
+          <RouterLink to="/english/vocabulary">浏览词库 <span aria-hidden="true">↗</span></RouterLink>
         </div>
         <p class="english-hero__quote">Knowledge leaves a trail.</p>
         <ul class="english-hero__traits" aria-label="英语学习方向">
@@ -95,8 +92,6 @@ onMounted(async () => {
       </section>
 
       <section class="english-section"><header><div><p class="public-eyebrow">FIVE DIRECTIONS</p><h2 class="public-section-title">五条学习方向</h2></div><RouterLink to="/english/progress">查看学习洞察 →</RouterLink></header><div class="direction-grid"><RouterLink v-for="direction in directions" :key="direction.name" :to="direction.to" class="direction-card public-interactive" :data-kind="direction.kind"><div><span>{{ direction.icon }}</span><small>{{ direction.en }}</small></div><h3>{{ direction.name }}</h3><p>{{ direction.description }}</p><strong>{{ direction.cta }} →</strong></RouterLink></div></section>
-
-      <section class="english-section"><header><div><p class="public-eyebrow">CONNECTED LEARNING</p><h2 class="public-section-title">跨模块学习组合</h2></div><RouterLink to="/english/bundles">查看全部 →</RouterLink></header><LearningBundleCards :bundles="bundles.slice(0,3)" empty-hint="学习组合正在编排中。" /></section>
 
       <section class="vocab-gateway"><div><p class="public-eyebrow">VOCABULARY MEMORY</p><h2>把单词放进可以持续复习的系统</h2><p>按主题浏览词汇，通过英译中、中译英与随机混合完成固定间隔复习。</p><div><RouterLink to="/english/vocabulary">浏览主题</RouterLink><RouterLink to="/english/vocabulary/study">开始今日学习 →</RouterLink></div></div><span aria-hidden="true">Aa</span></section>
 
