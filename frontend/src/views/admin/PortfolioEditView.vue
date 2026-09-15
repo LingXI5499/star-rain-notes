@@ -34,7 +34,6 @@ const pickerMode = ref<'cover' | 'gallery'>('cover')
 const coverUrl = ref<string | null>(null)
 const gallery = ref<GalleryDraft[]>([])
 const dragIndex = ref<number | null>(null)
-
 const form = reactive({
   title: '',
   summary: '',
@@ -281,16 +280,16 @@ function insertCaseStudyTemplate() {
           <el-form-item label="完成日期">
             <el-date-picker v-model="form.completedAt" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
           </el-form-item>
-          <el-form-item label="代码仓库 URL">
-            <el-input v-model="form.repositoryUrl" maxlength="500" />
+          <el-form-item label="代码仓库 URL（查看源代码；无线上域名时在线访问也跳这里）">
+            <el-input v-model="form.repositoryUrl" maxlength="500" placeholder="例如 https://github.com/org/repo" />
           </el-form-item>
-          <el-form-item label="在线演示 URL（ONLINE 必填）">
-            <el-input v-model="form.demoUrl" maxlength="500" />
+          <el-form-item label="真实线上 URL（有值时在线访问优先跳转这里）">
+            <el-input v-model="form.demoUrl" maxlength="500" placeholder="例如 https://example.com；不要填写 GitHub 仓库地址" />
           </el-form-item>
           <el-form-item label="技术栈（≤20 项）">
             <el-select v-model="form.techStack" multiple filterable allow-create default-first-option placeholder="输入技术名称后回车" style="width:100%" />
           </el-form-item>
-          <el-form-item label="作品封面" class="portfolio-edit__cover-field">
+          <el-form-item label="项目主题封面（发布必填，不是项目页面截图）" class="portfolio-edit__cover-field">
             <div class="portfolio-edit__cover" :class="{ 'portfolio-edit__cover--empty': !coverUrl }">
               <img v-if="coverUrl" :src="coverUrl" alt="作品封面预览" />
               <div v-else><strong>作</strong><span>建议使用 16:9 项目截图</span></div>
@@ -306,7 +305,7 @@ function insertCaseStudyTemplate() {
         </div>
       </div>
 
-      <div class="portfolio-edit__meta portfolio-edit__gallery">
+      <div v-if="false" class="portfolio-edit__meta portfolio-edit__gallery">
         <div class="portfolio-edit__section-head">
           <div><small>PROJECT GALLERY</small><h2>项目截图</h2></div>
           <el-button type="primary" plain @click="openGalleryPicker">添加截图</el-button>

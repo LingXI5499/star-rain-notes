@@ -20,6 +20,7 @@ public record PublicProjectDetailView(
         String coverSrcSet,
         String repositoryUrl,
         String demoUrl,
+        String prototypeEntryUrl,
         String projectStatus,
         LocalDate startedAt,
         LocalDate completedAt,

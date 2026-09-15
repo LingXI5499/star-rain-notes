@@ -112,7 +112,9 @@ class PortfolioAdminIntegrationTest extends AbstractAuthIntegrationTest {
     @Test
     void publishedWhileDevelopingIsLegal() throws Exception {
         MockHttpSession session = loginSession();
-        Long projectId = createProject(session, "p-dev", "\"projectStatus\":\"DEVELOPING\"");
+        Long coverId = insertMedia("cover-dev", "IMAGE");
+        Long projectId = createProject(session, "p-dev",
+                "\"projectStatus\":\"DEVELOPING\",\"coverMediaId\":" + coverId);
         mockMvc.perform(withCsrf(post("/api/v1/admin/portfolio/projects/" + projectId + "/publish"), csrf(session))
                         .session(session))
                 .andExpect(status().isOk())
@@ -242,7 +244,8 @@ class PortfolioAdminIntegrationTest extends AbstractAuthIntegrationTest {
     @Test
     void publishWithdrawKeepsPublishedAt() throws Exception {
         MockHttpSession session = loginSession();
-        Long projectId = createProject(session, "p-lifecycle", null);
+        Long coverId = insertMedia("cover-lifecycle", "IMAGE");
+        Long projectId = createProject(session, "p-lifecycle", "\"coverMediaId\":" + coverId);
 
         mockMvc.perform(withCsrf(post("/api/v1/admin/portfolio/projects/" + projectId + "/withdraw"), csrf(session))
                         .session(session))

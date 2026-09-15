@@ -49,6 +49,22 @@ img {
   outline-offset: 2px;
 }
 
+/* Shared interaction floor: pointer controls remain comfortably usable on
+   touch devices without forcing large desktop-only controls. */
+button,
+[role='button'],
+input[type='checkbox'],
+input[type='radio'] { touch-action: manipulation; }
+
+@media (max-width: 768px) {
+  button:not(.el-button),
+  a.public-button { min-height: 44px; }
+  .layout-shell,
+  .container-marketing,
+  .container-content,
+  .container-docs { padding-inline: max(16px, env(safe-area-inset-left)); }
+}
+
 /* Lightweight global busy state used by admin lists and forms. */
 .app-loading {
   cursor: progress;

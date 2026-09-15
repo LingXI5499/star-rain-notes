@@ -90,7 +90,6 @@ const englishItems = [
   { to: '/admin/english/vocabulary/families', label: '词族管理', badge: '' },
   { to: '/admin/english/grammar', label: '语法教程', badge: '' },
   { to: '/admin/english/taxonomy', label: '标签管理', badge: '' },
-  { to: '/admin/english/bundles', label: '学习组合', badge: '' },
   { to: '/admin/english/reading', label: '阅读管理', badge: '' },
   { to: '/admin/english/listening', label: '听力管理', badge: '' },
   { to: '/admin/english/listening/pronunciation', label: '语音规则', badge: '' },

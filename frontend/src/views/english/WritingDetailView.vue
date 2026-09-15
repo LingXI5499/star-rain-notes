@@ -121,6 +121,7 @@ onBeforeUnmount(() => window.clearTimeout(draftTimer))
 <template>
   <section v-if="item" class="writing-detail" :class="{ 'is-swapping': swapping }" :aria-busy="swapping">
     <header>
+      <RouterLink to="/english/writing" class="english-back" data-testid="english-page-back">← 写作中心</RouterLink>
       <p>ENGLISH WRITING · {{ prompt ? 'PRACTICE' : 'LEARNING' }}</p>
       <h1>{{ item.title }}</h1>
       <span>{{ item.summary }}</span>
@@ -175,13 +176,17 @@ onBeforeUnmount(() => window.clearTimeout(draftTimer))
       />
     </div>
   </section>
-  <section v-else class="missing">内容不存在或尚未发布。</section>
+  <section v-else class="missing">
+    <RouterLink to="/english/writing" class="english-back" data-testid="english-page-back">← 写作中心</RouterLink>
+    <p>内容不存在或尚未发布。</p>
+  </section>
 </template>
 
 <style scoped>
 .writing-detail{max-width:1120px;margin:auto}
 .writing-detail.is-swapping .reading{opacity:.45;pointer-events:none}
 .writing-detail header{padding:34px 0 28px;border-bottom:1px solid var(--border)}
+.english-back{display:inline-block;margin-bottom:10px;color:var(--primary);font-size:13px}
 header p{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--accent);margin:0}
 header h1{font-size:38px;margin:8px 0}
 header span{color:var(--text-secondary);line-height:1.6}
@@ -199,6 +204,7 @@ header span{color:var(--text-secondary);line-height:1.6}
 .exercise-section article{padding:16px;margin-top:12px;border:1px solid var(--border);border-radius:14px;background:var(--bg-surface)}
 .score{color:var(--primary);font-size:13px}
 .missing{padding:60px;text-align:center;color:var(--text-muted)}
+.missing .english-back{display:block;margin-bottom:16px}
 @media(max-width:1024px){.reading{grid-template-columns:minmax(0,760px)}.outline{display:none}}
 @media(max-width:720px){header h1{font-size:30px}.practice{grid-template-columns:1fr}.practice aside{order:-1}.editor textarea{min-height:280px}}
 @media(prefers-reduced-motion:reduce){.writing-detail.is-swapping .reading{opacity:1}}

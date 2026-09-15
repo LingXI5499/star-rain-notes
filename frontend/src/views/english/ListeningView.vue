@@ -24,9 +24,14 @@ onMounted(async()=>{ sync(); try{ const meta=await englishMetaCache.load('meta')
 
 <template>
   <section class="l-center">
+    <RouterLink to="/english" class="english-back" data-testid="english-page-back">← 英语</RouterLink>
     <EnglishModuleHero tag="ENGLISH LISTENING · 场景×形式×能力" title="听力中心" subtitle="三段能力路线，逐句时间片段与安全练习。" :description="home ? `${home.total} 篇已发布材料` : '加载中…'">
       <div v-if="home" class="l-center__stat"><b>{{ home.total }}</b><span>篇精听</span></div>
     </EnglishModuleHero>
+
+    <div class="l-center__tools">
+      <RouterLink to="/english/listening/pronunciation" class="l-center__tool">语音规则 →</RouterLink>
+    </div>
 
     <div v-if="home" class="l-center__route">
       <RouterLink v-for="(count,lv) in home.byLevel" :key="lv" :to="{query:{level:String(lv)}}" class="route-pill"><b>{{count}}</b><span>{{levelLabels[Number(lv)]}}</span></RouterLink>
@@ -56,6 +61,10 @@ onMounted(async()=>{ sync(); try{ const meta=await englishMetaCache.load('meta')
 </template>
 
 <style scoped>
+.english-back{display:inline-block;margin-bottom:12px;color:var(--primary);font-size:13px}
+.l-center__tools{margin:-8px 0 18px}
+.l-center__tool{display:inline-flex;align-items:center;padding:8px 14px;border:1px solid var(--border);border-radius:999px;color:var(--primary);font-size:13px;transition:border-color .15s ease,background-color .15s ease}
+.l-center__tool:hover{border-color:var(--primary);background:color-mix(in srgb,var(--primary) 8%,transparent)}
 .l-center__stat{text-align:center;padding:14px 22px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.l-center__stat b{display:block;font-size:30px;color:var(--primary)}.l-center__stat span{font-size:12px;color:var(--text-muted)}
 .l-center__route{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px}.route-pill{display:flex;align-items:center;gap:8px;padding:8px 14px;border:1px solid var(--border);border-radius:999px;color:var(--text-secondary);transition:all .15s ease}.route-pill:hover{border-color:var(--primary);color:var(--primary)}.route-pill b{color:var(--primary)}
 .l-center__filters{display:flex;flex-wrap:wrap;gap:var(--space-3);margin-bottom:20px}.l-center__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:var(--space-4);min-height:100px}.l-center__empty{color:var(--text-muted);padding:var(--space-6) 0;grid-column:1/-1}

@@ -93,8 +93,11 @@ public class SiteService {
                        m.public_url AS cover_url
                 FROM portfolio_project p
                 LEFT JOIN media_asset m ON m.id = p.cover_media_id
-                WHERE p.publish_status = 'PUBLISHED' AND p.featured = 1
-                ORDER BY p.sort_order ASC, p.id ASC
+                WHERE p.publish_status = 'PUBLISHED'
+                ORDER BY p.featured DESC,
+                         CASE WHEN p.featured = 1 THEN p.sort_order ELSE 0 END ASC,
+                         CASE WHEN p.featured = 0 THEN p.updated_at END DESC,
+                         p.id DESC
                 LIMIT 3
                 """, (rs, rowNum) -> new FeaturedProjectView(
                 rs.getLong("id"),

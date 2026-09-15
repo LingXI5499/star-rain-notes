@@ -56,7 +56,11 @@ onMounted(async () => {
         <RouterLink to="/tutorials">教程</RouterLink>
         <template v-for="item in detail.categoryPath" :key="item.id">
           <span aria-hidden="true"> / </span>
-          <span>{{ item.name }}</span>
+          <RouterLink
+            v-if="item.slug"
+            :to="{ path: '/tutorials', query: { categorySlug: item.slug } }"
+          >{{ item.name }}</RouterLink>
+          <span v-else>{{ item.name }}</span>
         </template>
       </nav>
 

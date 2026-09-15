@@ -73,6 +73,7 @@ onMounted(async () => {
 
 <template>
   <section class="reading-center">
+    <RouterLink to="/english" class="english-back" data-testid="english-page-back">← 英语</RouterLink>
     <header class="reading-center__hero">
       <div>
         <p>ENGLISH READING · 分级精读</p>
@@ -120,6 +121,7 @@ onMounted(async () => {
 </template>
 
 <style scoped>
+.english-back { display: inline-block; margin-bottom: 12px; color: var(--primary); font-size: 13px; }
 .reading-center__hero { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 20px; }
 .reading-center__hero p { color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: .14em; margin: 0; }
 .reading-center__hero h1 { font-size: 34px; margin: 7px 0; }

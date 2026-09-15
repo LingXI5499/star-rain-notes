@@ -27,14 +27,11 @@ const modules = [
     <section class="english-workspace__shared">
       <div class="english-workspace__shared-head">
         <h2>共享底座</h2>
-        <span>统一标签、CEFR、练习与学习组合 —— 阅读、听力、写作在此基础上构建。</span>
+        <span>统一标签与 CEFR —— 阅读、听力、写作在此基础上构建。</span>
       </div>
       <div class="english-workspace__shared-grid">
         <RouterLink to="/admin/english/taxonomy" class="shared-card">
           <p>TAXONOMY</p><h3>标签管理</h3><span>六类语义标签，两级同维、无循环。</span>
-        </RouterLink>
-        <RouterLink to="/admin/english/bundles" class="shared-card">
-          <p>LEARNING BUNDLES</p><h3>学习组合</h3><span>跨阅读、听力、写作的显式学习路径。</span>
         </RouterLink>
         <RouterLink to="/admin/english/analytics" class="shared-card shared-card--analytics">
           <p>LEARNING OPERATIONS</p><h3>学习分析</h3><span>聚合观察活跃趋势、模块完成率、热门内容与薄弱点。</span>

@@ -31,6 +31,7 @@ export interface PublicProjectDetail {
   coverSrcSet: string | null
   repositoryUrl: string | null
   demoUrl: string | null
+  prototypeEntryUrl: string | null
   projectStatus: string
   startedAt: string | null
   completedAt: string | null
@@ -112,6 +113,7 @@ export interface AdminProjectDetail {
   coverSrcSet: string | null
   repositoryUrl: string | null
   demoUrl: string | null
+  prototype: ProjectPrototype | null
   publishStatus: string
   projectStatus: string
   featured: boolean
@@ -124,6 +126,18 @@ export interface AdminProjectDetail {
   createdAt: string
   updatedAt: string
   gallery: ProjectMediaItem[]
+}
+
+export interface ProjectPrototype {
+  mediaAssetId: number
+  sourceName: string
+  sizeBytes: number
+  validationStatus: string
+  revision: string
+  fileCount: number
+  totalBytes: number
+  previewUrl: string | null
+  publicEntryUrl: string | null
 }
 
 export interface ProjectPayload {
@@ -190,6 +204,14 @@ export async function publishProject(id: number): Promise<AdminProjectDetail> {
   const { data } = await http.post<AdminProjectDetail>(`/admin/portfolio/projects/${id}/publish`)
   return data
 }
+
+export async function uploadProjectPrototype(id: number, file: File): Promise<ProjectPrototype> {
+  const form = new FormData(); form.append('file', file)
+  const { data } = await http.post<ProjectPrototype>(`/admin/portfolio/projects/${id}/prototype`, form, { timeout: 60000 })
+  return data
+}
+
+export async function deleteProjectPrototype(id: number): Promise<void> { await http.delete(`/admin/portfolio/projects/${id}/prototype`) }
 
 export async function withdrawProject(id: number): Promise<AdminProjectDetail> {
   const { data } = await http.post<AdminProjectDetail>(`/admin/portfolio/projects/${id}/withdraw`)

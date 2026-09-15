@@ -118,7 +118,10 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 
 <template>
   <section v-if="initialLoading && !article" class="reading-detail__wrap"><p>加载中…</p></section>
-  <section v-else-if="notFound && !article" class="reading-detail__wrap"><p>文章不存在或未发布。</p></section>
+  <section v-else-if="notFound && !article" class="reading-detail__wrap">
+    <RouterLink to="/english/reading" class="english-back" data-testid="english-page-back">← 阅读中心</RouterLink>
+    <p>文章不存在或未发布。</p>
+  </section>
   <section v-else-if="article" class="reading-detail" :class="{ 'is-swapping': swapping }" :aria-busy="swapping">
     <div v-if="isAdminPreview" class="reading-detail__preview-bar">
       <span>管理端预览 · {{ article.publishStatus }}</span>
@@ -144,6 +147,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
       <!-- middle: content -->
       <main class="reading-detail__main">
         <header class="reading-detail__hero">
+          <RouterLink to="/english/reading" class="english-back" data-testid="english-page-back">← 阅读中心</RouterLink>
           <div class="reading-detail__meta"><CefrBadge :level="article.cefrLevel" /><span>{{ levelLabels[article.readingLevel] }}</span></div>
           <h1 class="reading-detail__h1">{{ article.title }}</h1>
           <p class="reading-detail__summary">{{ article.summary }}</p>
@@ -163,7 +167,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
         <MarkdownRenderer :source="article.bodyMarkdown" @outline="outline = $event" />
 
         <section v-if="!isAdminPreview" class="reading-complete">
-          <div><small>LEARNING RECORD</small><strong>{{ learningRecord?.status === 'COMPLETED' ? '本篇已完成' : '读完后记录本次学习' }}</strong><span>完成状态会同步到学习组合与进度看板。</span></div>
+          <div><small>LEARNING RECORD</small><strong>{{ learningRecord?.status === 'COMPLETED' ? '本篇已完成' : '读完后记录本次学习' }}</strong><span>完成状态会同步到学习进度看板。</span></div>
           <button type="button" :disabled="learningRecord?.status === 'COMPLETED'" @click="completeReading">{{ learningRecord?.status === 'COMPLETED' ? '已完成 ✓' : '标记完成' }}</button>
         </section>
 
@@ -199,6 +203,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', updateProgress))
 
 <style scoped>
 .reading-detail__wrap { padding: var(--space-10) 0; text-align: center; color: var(--text-muted); }
+.english-back { display: inline-block; margin-bottom: 10px; color: var(--primary); font-size: 13px; }
+.reading-detail__wrap .english-back { display: block; margin-bottom: 16px; }
 .reading-detail__layout { display: grid; grid-template-columns: 220px minmax(0, 1fr) 220px; gap: var(--layout-gap); align-items: start; }
 .reading-detail__preview-bar { display: flex; justify-content: space-between; gap: 16px; margin-bottom: 18px; padding: 10px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-subtle); color: var(--text-secondary); font-size: 13px; }
 .reading-detail__left, .reading-detail__right { position: sticky; top: calc(var(--header-height) + var(--space-6)); }

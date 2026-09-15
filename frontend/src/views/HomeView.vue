@@ -11,8 +11,7 @@ import { useReveal } from '@/composables/useReveal'
 const appStore = useAppStore()
 const { name, tagline } = storeToRefs(appStore)
 const home = ref<PublicHome | null>(null)
-const leadProject = computed(() => home.value?.featuredProjects[0])
-const otherProjects = computed(() => home.value?.featuredProjects.slice(1) ?? [])
+const projects = computed(() => home.value?.featuredProjects ?? [])
 const loading = ref(true)
 const error = ref(false)
 const pageRoot = ref<HTMLElement | null>(null)
@@ -99,13 +98,12 @@ onMounted(async () => {
 
       <section class="home-section home-projects">
         <header><div><p class="public-eyebrow">SELECTED WORK</p><h2 class="public-section-title">把学习做成作品</h2></div><RouterLink to="/portfolio">全部作品 <span aria-hidden="true">→</span></RouterLink></header>
-        <div v-if="otherProjects.length" class="home-projects__grid">
-          <RouterLink v-for="(project,index) in otherProjects" :key="project.id" :to="`/portfolio/${project.slug}`" class="home-project editorial-card public-interactive" :class="{ 'is-featured': index === 0 }">
+        <div v-if="projects.length" class="home-projects__grid">
+          <RouterLink v-for="(project,index) in projects" :key="project.id" :to="`/portfolio/${project.slug}`" class="home-project editorial-card public-interactive" :class="{ 'is-featured': index === 0 }">
             <div class="home-project__cover"><img v-if="project.coverUrl" :src="project.coverUrl" :alt="project.title" :loading="index ? 'lazy' : 'eager'"><EditorialMotif v-else kind="portfolio" :seed="project.title" :label="project.title" /></div>
             <div class="home-project__body"><small>{{ statusLabels[project.projectStatus] ?? project.projectStatus }} · PROJECT {{ String(index + 1).padStart(2,'0') }}</small><h3>{{ project.title }}</h3><p>{{ project.summary }}</p><strong>阅读项目复盘 →</strong></div>
           </RouterLink>
         </div>
-        <RouterLink v-else-if="leadProject" class="home-project-index" to="/portfolio"><span>从问题出发，到实现与复盘。</span><strong>打开作品档案 ↗</strong></RouterLink>
         <div v-else class="home-state">作品资料正在整理，可先从教程与博客了解项目脉络。</div>
       </section>
 

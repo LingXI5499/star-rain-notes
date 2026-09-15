@@ -79,6 +79,8 @@ class V1SchemaMigrationTest {
             "account_vocabulary_study_setting",
             "account_vocabulary_card_preference",
             "vocabulary_word_audio",
+            "portfolio_project_media",
+            "portfolio_project_prototype",
             "tutorial_node_hierarchy_backup_v5",
             "tutorial_category_full_backup_v7",
             "tutorial_full_backup_v7",
@@ -97,7 +99,7 @@ class V1SchemaMigrationTest {
                   AND table_type = 'BASE TABLE'
                   AND table_name <> 'flyway_schema_history'
                 """, Integer.class);
-        assertThat(count).isEqualTo(62);
+        assertThat(count).isEqualTo(64);
 
         List<String> names = jdbc.queryForList("""
                 SELECT table_name
@@ -123,14 +125,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV27AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV32AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsOnly(1L).hasSize(27);
+        assertThat(successful).containsOnly(1L).hasSize(32);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -149,6 +151,8 @@ class V1SchemaMigrationTest {
                 "expand content review types", "expand english content review types",
                 "create account personal learning", "account learner profile association",
                 "allow reinvitation and invitation cleanup", "upgrade vocabulary review system",
-                "add vocabulary pronunciation sources");
+                "add vocabulary pronunciation sources", "add vocabulary word search index",
+                "create portfolio project media", "create portfolio project prototype",
+                "repair portfolio demo urls", "archive media and prototype media fk");
     }
 }
