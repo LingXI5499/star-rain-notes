@@ -3,7 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { apiErrorMessage } from '@/api/http'
-import { deleteMedia, fetchMediaAssets, fetchMediaSummary, formatSize, uploadMedia, type MediaAsset, type MediaSummary } from '@/api/media'
+import { deleteMedia, fetchMediaAssets, fetchMediaSummary, formatSize, prototypeArchiveFileError, uploadMedia, type MediaAsset, type MediaSummary } from '@/api/media'
 import { useAuthStore } from '@/stores/auth'
 
 const items = ref<MediaAsset[]>([])
@@ -66,6 +66,13 @@ function setViewMode(mode: 'grid' | 'list') {
 }
 
 async function handleUpload(file: File) {
+  if (file.name.toLowerCase().endsWith('.zip')) {
+    const validationError = prototypeArchiveFileError(file)
+    if (validationError) {
+      ElMessage.error(validationError)
+      return
+    }
+  }
   uploading.value = true
   try {
     const asset = await uploadMedia(file)

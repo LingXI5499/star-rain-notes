@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
-import { fetchMediaAssets, formatSize, uploadMedia, type MediaAsset } from '@/api/media'
+import { fetchMediaAssets, formatSize, prototypeArchiveFileError, uploadMedia, type MediaAsset } from '@/api/media'
 
 type AssetType = 'IMAGE' | 'DOCUMENT' | 'AUDIO' | 'ARCHIVE'
 
@@ -76,6 +76,13 @@ async function upload(event: Event) {
   const file = input.files?.[0]
   input.value = ''
   if (!file) return
+  if (file.name.toLowerCase().endsWith('.zip')) {
+    const validationError = prototypeArchiveFileError(file)
+    if (validationError) {
+      ElMessage.error(validationError)
+      return
+    }
+  }
   uploading.value = true
   try {
     const asset = await uploadMedia(file)
