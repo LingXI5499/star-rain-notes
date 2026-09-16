@@ -373,7 +373,7 @@ function insertCaseStudyTemplate() {
           <div><small>STATIC PROTOTYPE</small><h2>静态原型包</h2></div>
           <span>真实域名优先；否则发布后的 ZIP 原型用于“在线访问”</span>
         </div>
-        <p class="portfolio-edit__outline-note">ZIP 根目录必须包含 index.html，仅支持 HTML、CSS、原生 JavaScript、图片和字体；最大 10MB、解压后最大 40MB、最多 200 个文件，禁止外部网络请求。</p>
+        <p class="portfolio-edit__outline-note">ZIP 根目录或单层项目目录内必须包含 index.html，仅支持 HTML、CSS、原生 JavaScript、图片和字体；最大 25MB、解压后最大 100MB、最多 500 个文件，禁止外部网络请求。</p>
         <div v-if="prototype" class="portfolio-edit__prototype-current">
           <div>
             <strong>{{ prototype.sourceName }}</strong>

@@ -1,11 +1,11 @@
 import { http } from './http'
 
-export const PROTOTYPE_ARCHIVE_MAX_BYTES = 10 * 1024 * 1024
+export const PROTOTYPE_ARCHIVE_MAX_BYTES = 25 * 1024 * 1024
 
 export function prototypeArchiveFileError(file: File): string | null {
   if (!file.name.toLowerCase().endsWith('.zip')) return '请选择 ZIP 压缩包。'
   if (file.size > PROTOTYPE_ARCHIVE_MAX_BYTES) {
-    return `ZIP 原型包最大 10 MB；当前文件为 ${formatSize(file.size)}。请只压缩项目运行所需的 HTML、CSS、JavaScript、图片与字体。`
+    return `ZIP 原型包最大 25 MB；当前文件为 ${formatSize(file.size)}。请只压缩项目运行所需的 HTML、CSS、JavaScript、图片与字体。`
   }
   return null
 }
