@@ -30,9 +30,9 @@ import java.util.zip.ZipInputStream;
 @Service
 public class PortfolioPrototypeService {
 
-    private static final long MAX_ARCHIVE_BYTES = 10L * 1024 * 1024;
-    private static final long MAX_UNPACKED_BYTES = 40L * 1024 * 1024;
-    private static final int MAX_FILES = 200;
+    private static final long MAX_ARCHIVE_BYTES = 25L * 1024 * 1024;
+    private static final long MAX_UNPACKED_BYTES = 100L * 1024 * 1024;
+    private static final int MAX_FILES = 500;
     private static final int UNIX_SYMLINK_MASK = 0120000;
     private static final Set<String> ALLOWED = Set.of(
             "html", "htm", "css", "js", "json", "svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "woff", "woff2", "ttf");
@@ -54,7 +54,7 @@ public class PortfolioPrototypeService {
 
     public ProjectPrototypeView upload(Long projectId, MultipartFile archive, boolean published) {
         if (archive == null || archive.isEmpty() || archive.getSize() > MAX_ARCHIVE_BYTES || !isZip(archive)) {
-            throw invalid("Upload a ZIP package no larger than 10MB.");
+            throw invalid("Upload a ZIP package no larger than 25MB.");
         }
 
         byte[] bytes;
@@ -108,7 +108,7 @@ public class PortfolioPrototypeService {
     public void validateArchive(byte[] bytes) {
         if (bytes == null || bytes.length < 2 || bytes.length > MAX_ARCHIVE_BYTES
                 || bytes[0] != 'P' || bytes[1] != 'K') {
-            throw invalid("Upload a ZIP package no larger than 10MB.");
+            throw invalid("Upload a ZIP package no larger than 25MB.");
         }
         Path validationStage = privateRoot.resolve(".validation")
                 .resolve(UUID.randomUUID().toString().replace("-", ""));
@@ -123,7 +123,7 @@ public class PortfolioPrototypeService {
 
     private ProjectPrototypeView bind(Long projectId, MediaAsset mediaAsset, byte[] bytes, boolean published) {
         if (bytes.length < 2 || bytes.length > MAX_ARCHIVE_BYTES || bytes[0] != 'P' || bytes[1] != 'K') {
-            throw invalid("Upload a ZIP package no larger than 10MB.");
+            throw invalid("Upload a ZIP package no larger than 25MB.");
         }
         PortfolioProjectPrototype previous = find(projectId);
         String previousStorageKey = previous == null ? null : previous.getStorageKey();
@@ -296,7 +296,7 @@ public class PortfolioPrototypeService {
                     throw invalid("Unsupported files are not allowed in a prototype package.");
                 }
                 if (++files > MAX_FILES) {
-                    throw invalid("A prototype package may contain at most 200 files.");
+                    throw invalid("A prototype package may contain at most 500 files.");
                 }
                 Path target = stage.resolve(relative).normalize();
                 if (!target.startsWith(stage)) {
@@ -306,7 +306,7 @@ public class PortfolioPrototypeService {
                 long copied = copyLimited(zip, target, totalBytes);
                 totalBytes += copied;
                 if (totalBytes > MAX_UNPACKED_BYTES) {
-                    throw invalid("Unpacked prototype files may not exceed 40MB.");
+                    throw invalid("Unpacked prototype files may not exceed 100MB.");
                 }
                 String normalizedName = relative.toString().replace('\\', '/');
                 if (normalizedName.equals("index.html")
@@ -331,7 +331,7 @@ public class PortfolioPrototypeService {
     private static long copyLimited(InputStream in, Path target, long already) throws IOException {
         long remaining = MAX_UNPACKED_BYTES - already;
         if (remaining <= 0) {
-            throw invalid("Unpacked prototype files may not exceed 40MB.");
+            throw invalid("Unpacked prototype files may not exceed 100MB.");
         }
         long copied = 0L;
         byte[] buffer = new byte[8192];
@@ -340,7 +340,7 @@ public class PortfolioPrototypeService {
             while ((read = in.read(buffer)) >= 0) {
                 copied += read;
                 if (copied > remaining) {
-                    throw invalid("Unpacked prototype files may not exceed 40MB.");
+                    throw invalid("Unpacked prototype files may not exceed 100MB.");
                 }
                 out.write(buffer, 0, read);
             }

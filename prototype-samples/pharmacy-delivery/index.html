@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>速安药房 · 即时送药</title>
+  <link rel="stylesheet" href="assets/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="index.html"><span class="brand-mark">S</span><span>速安药房<small>安心用药 · 快速送达</small></span></a>
+    <button class="menu-toggle" data-menu aria-label="打开导航">☰</button>
+    <nav class="main-nav" data-nav>
+      <a class="active" href="index.html">首页</a><a href="catalog.html">药品</a><a href="orders.html">订单</a><a href="admin.html">经营看板</a>
+    </nav>
+    <a class="cart-link" href="cart.html">购物车 <b data-cart-count>2</b></a>
+  </header>
+
+  <main>
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="eyebrow">24H PHARMACY DELIVERY</p>
+        <h1>附近好药，<br><em>30 分钟</em>送到家</h1>
+        <p>专业药师在线值守，常用药、家庭护理和健康用品快速送达。夜间急需，也能从容应对。</p>
+        <div class="hero-actions"><a class="button primary" href="catalog.html">立即选药</a><button class="button ghost" data-toast="已为你接通在线药师">咨询药师</button></div>
+        <dl class="hero-stats"><div><dt>30min</dt><dd>平均送达</dd></div><div><dt>2,000+</dt><dd>常备商品</dd></div><div><dt>7×24h</dt><dd>药师值守</dd></div></dl>
+      </div>
+      <div class="hero-visual">
+        <div class="delivery-card"><span class="status-dot"></span><div><small>订单配送中</small><strong>骑手距你 1.2 km</strong></div><b>12:28</b></div>
+        <div class="medicine-box box-a"><span>家庭常备</span><strong>退热止痛</strong><small>药师推荐用药</small></div>
+        <div class="medicine-box box-b"><span>安心护理</span><strong>创口护理包</strong><small>便携 · 无菌</small></div>
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="cross">+</div>
+      </div>
+    </section>
+
+    <section class="service-strip"><div class="shell service-grid"><article><b>01</b><div><strong>正品保障</strong><span>正规渠道，全程可追溯</span></div></article><article><b>02</b><div><strong>药师审方</strong><span>专业指导，合理用药</span></div></article><article><b>03</b><div><strong>隐私配送</strong><span>专用包装，信息保护</span></div></article></div></section>
+
+    <section class="section shell">
+      <div class="section-head"><div><p class="eyebrow">QUICK ACCESS</p><h2>按需求快速找药</h2></div><a href="catalog.html">查看全部 →</a></div>
+      <div class="category-grid">
+        <a href="catalog.html#cold"><span class="category-icon">温</span><strong>感冒发热</strong><small>退热 · 止咳 · 鼻塞</small></a>
+        <a href="catalog.html#stomach"><span class="category-icon">胃</span><strong>肠胃不适</strong><small>胃痛 · 腹泻 · 消化</small></a>
+        <a href="catalog.html#care"><span class="category-icon">护</span><strong>家庭护理</strong><small>消毒 · 创口 · 测量</small></a>
+        <a href="catalog.html#daily"><span class="category-icon">养</span><strong>营养保健</strong><small>维生素 · 钙片 · 滋补</small></a>
+      </div>
+    </section>
+
+    <section class="section shell soft-panel">
+      <div><p class="eyebrow">HEALTH REMINDER</p><h2>今天，也要照顾好自己</h2><p>用药前请仔细阅读说明书；症状持续或加重时，请及时线下就医。</p></div>
+      <button class="button primary" data-toast="健康提醒已加入今日计划">设置用药提醒</button>
+    </section>
+  </main>
+  <footer><div class="shell"><span>© 2026 速安药房 · 页面交互原型</span><span>互联网药品信息服务仅作界面演示</span></div></footer>
+  <div class="toast" data-toast-box></div>
+  <script src="assets/app.js"></script>
+</body>
+</html>

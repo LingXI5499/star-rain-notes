@@ -82,7 +82,7 @@ public class MediaService {
     private static final byte[] OGG_MAGIC = "OggS".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
     private static final byte[] M4A_FTYP = "ftyp".getBytes(java.nio.charset.StandardCharsets.US_ASCII);
 
-    private static final long ARCHIVE_MAX_BYTES = 10L * 1024 * 1024;
+    private static final long ARCHIVE_MAX_BYTES = 25L * 1024 * 1024;
 
     private final MediaAssetMapper mapper;
     private final SiteSettingsTimezone timezone;
@@ -129,7 +129,7 @@ public class MediaService {
         boolean archive = "zip".equals(extension);
         long max = archive ? ARCHIVE_MAX_BYTES : (image ? IMAGE_MAX_BYTES : (audio ? audioMaxBytes : PDF_MAX_BYTES));
         if (file.getSize() > max) {
-            String unit = audio ? audioMaxBytes / (1024 * 1024) + "MB" : (archive || image ? "10MB" : "20MB");
+            String unit = audio ? audioMaxBytes / (1024 * 1024) + "MB" : (archive ? "25MB" : (image ? "10MB" : "20MB"));
             throw new ApiException(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_TOO_LARGE",
                     "File too large", "Media must be ≤ " + unit + ".");
         }
@@ -255,11 +255,11 @@ public class MediaService {
         }
         if (bytes.length > ARCHIVE_MAX_BYTES) {
             throw new ApiException(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_TOO_LARGE",
-                    "File too large", "Media must be ≤ 10MB.");
+                    "File too large", "Prototype ZIP must be ≤ 25MB.");
         }
         if (bytes.length < 2 || bytes[0] != 'P' || bytes[1] != 'K') {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_PROTOTYPE_ARCHIVE",
-                    "Invalid prototype archive", "Upload a ZIP package no larger than 10MB.");
+                    "Invalid prototype archive", "Upload a ZIP package no larger than 25MB.");
         }
         String cleaned = StringUtils.cleanPath(originalName == null || originalName.isBlank() ? "prototype.zip" : originalName);
         if (!cleaned.toLowerCase().endsWith(".zip")) {
