@@ -14,7 +14,7 @@ import {
   type ProjectMediaItem,
   type ProjectPrototype,
 } from '@/api/portfolio'
-import { formatSize } from '@/api/media'
+import { formatSize, prototypeArchiveFileError } from '@/api/media'
 import type { MediaAsset } from '@/api/media'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import MediaPicker from '@/components/MediaPicker.vue'
@@ -164,8 +164,9 @@ async function uploadPrototype(file: File) {
     ElMessage.warning('请先保存作品，再上传静态原型包。')
     return
   }
-  if (!file.name.toLowerCase().endsWith('.zip')) {
-    ElMessage.warning('请选择 ZIP 压缩包。')
+  const validationError = prototypeArchiveFileError(file)
+  if (validationError) {
+    ElMessage.error(validationError)
     return
   }
   prototypeUploading.value = true
