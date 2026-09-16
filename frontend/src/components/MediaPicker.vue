@@ -3,7 +3,7 @@ import { computed, reactive, ref, watch } from 'vue'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { fetchMediaAssets, formatSize, uploadMedia, type MediaAsset } from '@/api/media'
 
-type AssetType = 'IMAGE' | 'DOCUMENT' | 'AUDIO'
+type AssetType = 'IMAGE' | 'DOCUMENT' | 'AUDIO' | 'ARCHIVE'
 
 const props = withDefaults(defineProps<{
   modelValue: boolean
@@ -31,7 +31,8 @@ const accept = computed(() => {
   if (props.assetType === 'AUDIO') return '.mp3,.m4a,.ogg,audio/mpeg,audio/mp4,audio/ogg'
   if (props.assetType === 'IMAGE') return '.jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp'
   if (props.assetType === 'DOCUMENT') return '.pdf,application/pdf'
-  return '.jpg,.jpeg,.png,.webp,.pdf,.mp3,.m4a,.ogg'
+  if (props.assetType === 'ARCHIVE') return '.zip,application/zip,application/x-zip-compressed'
+  return '.jpg,.jpeg,.png,.webp,.pdf,.mp3,.m4a,.ogg,.zip'
 })
 
 async function load() {
@@ -102,6 +103,7 @@ async function upload(event: Event) {
         <el-option label="图片" value="IMAGE" />
         <el-option label="文档" value="DOCUMENT" />
         <el-option label="音频" value="AUDIO" />
+        <el-option label="压缩包" value="ARCHIVE" />
       </el-select>
       <el-button @click="load">搜索</el-button>
       <el-button v-if="allowUpload" type="primary" :loading="uploading" @click="fileInput?.click()">上传并选择</el-button>
@@ -120,7 +122,7 @@ async function upload(event: Event) {
             preload="metadata"
             @error="ElMessage.warning(`音频“${asset.originalName}”暂时无法播放，请检查 /uploads/ 配置。`)"
           />
-          <span v-else class="media-picker__pdf">PDF</span>
+          <span v-else class="media-picker__pdf">{{ asset.assetType === 'ARCHIVE' ? 'ZIP' : 'PDF' }}</span>
         </span>
         <span class="media-picker__name" :title="asset.originalName">{{ asset.originalName }}</span>
         <span class="media-picker__meta">{{ formatSize(asset.sizeBytes) }} · {{ asset.mimeType }}</span>

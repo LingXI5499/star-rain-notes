@@ -272,10 +272,10 @@ public class PortfolioService {
                                java.time.LocalDate startedAt, java.time.LocalDate completedAt, Long coverMediaId) {
         normalizeHttpUrl(repositoryUrl);
         String normalizedDemoUrl = usableDemoUrl(demoUrl, repositoryUrl);
-        // Matches ck_portfolio_online_demo: ONLINE rows must persist a non-null demo_url.
-        if (ONLINE.equals(projectStatus) && !StringUtils.hasText(normalizedDemoUrl)) {
+        if (ONLINE.equals(projectStatus) && !StringUtils.hasText(normalizedDemoUrl)
+                && (excludeId == null || !prototypeService.exists(excludeId))) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "DEMO_URL_REQUIRED",
-                    "Demo URL required", "An ONLINE project requires a demoUrl.");
+                    "Online access required", "An ONLINE project requires a live URL or an uploaded static prototype.");
         }
         if (startedAt != null && completedAt != null && completedAt.isBefore(startedAt)) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_DATE_RANGE",
@@ -300,9 +300,9 @@ public class PortfolioService {
         validateImageMedia(project.getCoverMediaId());
         if (ONLINE.equals(project.getProjectStatus())
                 && !StringUtils.hasText(project.getDemoUrl())
-                && !StringUtils.hasText(project.getRepositoryUrl())) {
+                && !prototypeService.exists(project.getId())) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "DEMO_REQUIRED", "Online access required",
-                    "An ONLINE project needs a live URL or a code repository URL.");
+                    "An ONLINE project needs a live URL or an uploaded static prototype.");
         }
     }
 

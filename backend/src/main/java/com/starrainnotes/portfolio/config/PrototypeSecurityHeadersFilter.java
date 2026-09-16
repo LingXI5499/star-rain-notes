@@ -15,6 +15,7 @@ public class PrototypeSecurityHeadersFilter extends OncePerRequestFilter {
         if (request.getRequestURI().startsWith("/uploads/prototypes/")) {
             response.setHeader("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'");
             response.setHeader("X-Content-Type-Options", "nosniff");
+            response.setHeader("Cache-Control", "public, max-age=31536000, immutable");
         }
         chain.doFilter(request, response);
     }

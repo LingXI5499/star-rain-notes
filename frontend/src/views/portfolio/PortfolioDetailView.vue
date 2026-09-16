@@ -115,7 +115,8 @@ watch(() => route.params.slug, load)
       </p>
       <div v-if="project.coverUrl" class="case-hero__cover"><img :src="project.coverUrl" :srcset="project.coverSrcSet || undefined" :width="project.coverWidth || undefined" :height="project.coverHeight || undefined" :alt="`${project.title} 项目主题封面`" fetchpriority="high" /></div>
       <div class="case-hero__actions">
-        <a v-if="projectLinks.onlineAccessUrl" :href="projectLinks.onlineAccessUrl" target="_blank" rel="noopener noreferrer" class="is-primary">在线访问 <i>↗</i></a>
+        <a v-if="projectLinks.demoUrl" :href="projectLinks.demoUrl" target="_blank" rel="noopener noreferrer" class="is-primary">在线访问 <i>↗</i></a>
+        <RouterLink v-else-if="projectLinks.prototypeEntryUrl" :to="{ name: 'portfolio-live', params: { slug: project.slug } }" target="_blank" class="is-primary">在线访问 <i>↗</i></RouterLink>
         <button v-else type="button" class="is-primary" @click="unavailable">在线访问 <i>↗</i></button>
         <a v-if="projectLinks.repositoryUrl" :href="projectLinks.repositoryUrl" target="_blank" rel="noopener noreferrer">查看源代码 <i>↗</i></a>
       </div>
@@ -134,7 +135,8 @@ watch(() => route.params.slug, load)
         <section class="case-cta">
           <p>项目仍在持续迭代。</p>
           <div class="case-hero__actions">
-            <a v-if="projectLinks.onlineAccessUrl" :href="projectLinks.onlineAccessUrl" target="_blank" rel="noopener noreferrer" class="is-primary">在线访问 <i>↗</i></a>
+            <a v-if="projectLinks.demoUrl" :href="projectLinks.demoUrl" target="_blank" rel="noopener noreferrer" class="is-primary">在线访问 <i>↗</i></a>
+            <RouterLink v-else-if="projectLinks.prototypeEntryUrl" :to="{ name: 'portfolio-live', params: { slug: project.slug } }" target="_blank" class="is-primary">在线访问 <i>↗</i></RouterLink>
             <button v-else type="button" class="is-primary" @click="unavailable">在线访问 <i>↗</i></button>
             <a v-if="projectLinks.repositoryUrl" :href="projectLinks.repositoryUrl" target="_blank" rel="noopener noreferrer">查看源代码 <i>↗</i></a>
           </div>

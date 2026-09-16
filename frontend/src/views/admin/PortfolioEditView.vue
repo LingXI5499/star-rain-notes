@@ -2,9 +2,20 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
+import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
 import { AxiosError } from 'axios'
 import type { ProblemDetail } from '@/api/http'
-import { createProject, fetchAdminProject, updateProject, type ProjectMediaItem } from '@/api/portfolio'
+import {
+  attachProjectPrototype,
+  createProject,
+  deleteProjectPrototype,
+  fetchAdminProject,
+  updateProject,
+  uploadProjectPrototype,
+  type ProjectMediaItem,
+  type ProjectPrototype,
+} from '@/api/portfolio'
+import { formatSize } from '@/api/media'
 import type { MediaAsset } from '@/api/media'
 import MarkdownEditor from '@/components/MarkdownEditor.vue'
 import MediaPicker from '@/components/MediaPicker.vue'
@@ -30,6 +41,10 @@ const isEdit = computed(() => typeof route.params.id === 'string')
 const loading = ref(true)
 const saving = ref(false)
 const mediaPickerOpen = ref(false)
+const prototypePickerOpen = ref(false)
+const prototypeUploading = ref(false)
+const prototypePreviewOpen = ref(false)
+const prototype = ref<ProjectPrototype | null>(null)
 const pickerMode = ref<'cover' | 'gallery'>('cover')
 const coverUrl = ref<string | null>(null)
 const gallery = ref<GalleryDraft[]>([])
@@ -85,6 +100,7 @@ onMounted(async () => {
         coverMediaId: detail.coverMediaId,
       })
       coverUrl.value = detail.coverUrl
+      prototype.value = detail.prototype
       gallery.value = (detail.gallery ?? []).map(toDraft)
     } else {
       form.techStack = []
@@ -142,6 +158,56 @@ async function save() {
     ElMessage.error(problem?.detail ?? '保存失败。')
   } finally {
     saving.value = false
+  }
+}
+
+async function uploadPrototype(file: File) {
+  if (!isEdit.value) {
+    ElMessage.warning('请先保存作品，再上传静态原型包。')
+    return
+  }
+  if (!file.name.toLowerCase().endsWith('.zip')) {
+    ElMessage.warning('请选择 ZIP 压缩包。')
+    return
+  }
+  prototypeUploading.value = true
+  try {
+    prototype.value = await uploadProjectPrototype(Number(route.params.id), file)
+    prototypePreviewOpen.value = false
+    ElMessage.success('静态原型已校验并绑定；若作品已发布，公开版本已同步更新。')
+  } catch (error) {
+    const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
+    ElMessage.error(problem?.detail ?? '原型包上传失败。')
+  } finally {
+    prototypeUploading.value = false
+  }
+}
+
+async function selectPrototypeArchive(asset: MediaAsset) {
+  if (asset.assetType !== 'ARCHIVE' || !isEdit.value) return
+  prototypeUploading.value = true
+  try {
+    prototype.value = await attachProjectPrototype(Number(route.params.id), asset.id)
+    prototypePreviewOpen.value = false
+    ElMessage.success('已从媒体库绑定静态原型。')
+  } catch (error) {
+    const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
+    ElMessage.error(problem?.detail ?? '绑定静态原型失败。')
+  } finally {
+    prototypeUploading.value = false
+  }
+}
+
+async function removePrototype() {
+  if (!isEdit.value || !prototype.value) return
+  try {
+    await ElMessageBox.confirm('删除后，已发布的站内原型将立即停止访问，ZIP 也会从媒体库移除。', '删除静态原型', { type: 'warning' })
+    await deleteProjectPrototype(Number(route.params.id))
+    prototype.value = null
+    prototypePreviewOpen.value = false
+    ElMessage.success('静态原型已删除。')
+  } catch {
+    // cancelled or already reported
   }
 }
 
@@ -280,7 +346,7 @@ function insertCaseStudyTemplate() {
           <el-form-item label="完成日期">
             <el-date-picker v-model="form.completedAt" type="date" value-format="YYYY-MM-DD" style="width: 100%" />
           </el-form-item>
-          <el-form-item label="代码仓库 URL（查看源代码；无线上域名时在线访问也跳这里）">
+          <el-form-item label="代码仓库 URL（仅用于“查看源代码”）">
             <el-input v-model="form.repositoryUrl" maxlength="500" placeholder="例如 https://github.com/org/repo" />
           </el-form-item>
           <el-form-item label="真实线上 URL（有值时在线访问优先跳转这里）">
@@ -304,6 +370,39 @@ function insertCaseStudyTemplate() {
           </el-form-item>
         </div>
       </div>
+
+      <section class="portfolio-edit__meta portfolio-edit__prototype">
+        <div class="portfolio-edit__section-head">
+          <div><small>STATIC PROTOTYPE</small><h2>静态原型包</h2></div>
+          <span>真实域名优先；否则发布后的 ZIP 原型用于“在线访问”</span>
+        </div>
+        <p class="portfolio-edit__outline-note">ZIP 根目录必须包含 index.html，仅支持 HTML、CSS、原生 JavaScript、图片和字体；最大 10MB、解压后最大 40MB、最多 200 个文件，禁止外部网络请求。</p>
+        <div v-if="prototype" class="portfolio-edit__prototype-current">
+          <div>
+            <strong>{{ prototype.sourceName }}</strong>
+            <span>{{ prototype.fileCount }} 个文件 · ZIP {{ formatSize(prototype.sizeBytes) }} · 解压 {{ formatSize(prototype.totalBytes) }}</span>
+            <small>{{ prototype.publicEntryUrl ? '已生成公开版本' : '仅管理员可预览，发布作品后生成公开版本' }}</small>
+          </div>
+          <div class="portfolio-edit__prototype-actions">
+            <el-button v-if="prototype.previewUrl" @click="prototypePreviewOpen = !prototypePreviewOpen">{{ prototypePreviewOpen ? '收起预览' : '安全预览' }}</el-button>
+            <el-upload :show-file-list="false" :auto-upload="false" accept=".zip,application/zip,application/x-zip-compressed" :on-change="(file: any) => uploadPrototype(file.raw as File)">
+              <el-button :loading="prototypeUploading">替换 ZIP</el-button>
+            </el-upload>
+            <el-button @click="prototypePickerOpen = true">从媒体库替换</el-button>
+            <el-button type="danger" plain @click="removePrototype">删除</el-button>
+          </div>
+        </div>
+        <div v-else class="portfolio-edit__prototype-empty">
+          <span>{{ isEdit ? '尚未绑定静态原型。' : '保存作品后即可上传静态原型。' }}</span>
+          <template v-if="isEdit">
+            <el-upload :show-file-list="false" :auto-upload="false" accept=".zip,application/zip,application/x-zip-compressed" :on-change="(file: any) => uploadPrototype(file.raw as File)">
+              <el-button type="primary" :loading="prototypeUploading">上传 ZIP</el-button>
+            </el-upload>
+            <el-button @click="prototypePickerOpen = true">从媒体库选择</el-button>
+          </template>
+        </div>
+        <iframe v-if="prototypePreviewOpen && prototype?.previewUrl" class="portfolio-edit__prototype-frame" :src="prototype.previewUrl" :title="`${form.title} 原型预览`" sandbox="allow-scripts" referrerpolicy="no-referrer" />
+      </section>
 
       <div v-if="false" class="portfolio-edit__meta portfolio-edit__gallery">
         <div class="portfolio-edit__section-head">
@@ -348,6 +447,7 @@ function insertCaseStudyTemplate() {
       </div>
     </el-form>
     <MediaPicker v-model="mediaPickerOpen" @select="selectMedia" />
+    <MediaPicker v-model="prototypePickerOpen" asset-type="ARCHIVE" allow-upload title="选择作品原型 ZIP" @select="selectPrototypeArchive" />
   </section>
 </template>
 
@@ -419,6 +519,12 @@ function insertCaseStudyTemplate() {
 .portfolio-edit__cover strong { color:var(--primary); font:700 42px/1 Georgia,serif; }
 .portfolio-edit__cover span { font-size:12px; }
 .portfolio-edit__cover-actions { display:flex; gap:var(--space-2); margin-top:var(--space-3); }
+.portfolio-edit__prototype { display:grid; gap:var(--space-4); }
+.portfolio-edit__prototype-current,.portfolio-edit__prototype-empty { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:var(--space-4); padding:var(--space-4); border:1px solid var(--border); border-radius:14px; background:var(--bg-subtle); }
+.portfolio-edit__prototype-current > div:first-child { display:grid; gap:5px; }
+.portfolio-edit__prototype-current span,.portfolio-edit__prototype-current small,.portfolio-edit__prototype-empty > span { color:var(--text-muted); font-size:12px; }
+.portfolio-edit__prototype-actions { display:flex; align-items:center; flex-wrap:wrap; gap:var(--space-2); }
+.portfolio-edit__prototype-frame { width:100%; min-height:560px; border:1px solid var(--border); border-radius:14px; background:#fff; }
 
 .portfolio-edit__gallery { margin-top: var(--space-6); }
 .portfolio-edit__gallery-empty { color: var(--text-muted); font-size: 13px; padding: 12px 0; }

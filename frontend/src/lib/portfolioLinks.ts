@@ -32,8 +32,8 @@ export function resolvePortfolioLinks(input: {
   return {
     demoUrl,
     repositoryUrl,
-    /** 有真实线上域名优先；否则与「查看源代码」相同，跳仓库（多为 GitHub）。 */
-    onlineAccessUrl: demoUrl ?? repositoryUrl,
     prototypeEntryUrl: input.prototypeEntryUrl?.trim() || null,
+    /** 在线访问与源代码严格分离：真实域名 → 站内静态原型 → 不可用。 */
+    onlineAccessUrl: demoUrl ?? input.prototypeEntryUrl?.trim() ?? null,
   }
 }

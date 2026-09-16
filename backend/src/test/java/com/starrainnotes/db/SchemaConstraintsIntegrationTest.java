@@ -143,13 +143,13 @@ class SchemaConstraintsIntegrationTest {
     }
 
     @Test
-    void rejectsOnlineProjectWithoutDemoUrl() {
-        assertThatThrownBy(() -> jdbc.update("""
+    void allowsOnlineProjectWithoutDemoUrlForCrossTablePrototypeValidation() {
+        assertThatCode(() -> jdbc.update("""
                 INSERT INTO portfolio_project
                     (title, slug, summary, tech_stack, body_markdown, project_status, demo_url)
                 VALUES ('p', 'p-online-no-demo', 's', '[]', 'b', 'ONLINE', NULL)
                 """))
-                .isInstanceOf(DataAccessException.class);
+                .doesNotThrowAnyException();
     }
 
     @Test
