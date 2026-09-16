@@ -18,7 +18,8 @@ onMounted(async () => {
       return
     }
     if (links.prototypeEntryUrl) {
-      prototypeUrl.value = links.prototypeEntryUrl
+      const separator = links.prototypeEntryUrl.includes('?') ? '&' : '?'
+      prototypeUrl.value = `${links.prototypeEntryUrl}${separator}sandbox=v1`
       return
     }
     error.value = '此作品暂未提供在线访问。'

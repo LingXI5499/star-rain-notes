@@ -12,10 +12,16 @@ import java.io.IOException;
 @Component
 public class PrototypeSecurityHeadersFilter extends OncePerRequestFilter {
     @Override protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
-        if (request.getRequestURI().startsWith("/uploads/prototypes/")) {
-            response.setHeader("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'");
+        String uri = request.getRequestURI();
+        boolean publicPrototype = uri.startsWith("/uploads/prototypes/");
+        boolean adminPreview = uri.startsWith("/api/v1/admin/portfolio/projects/")
+                && uri.contains("/prototype-preview/");
+        if (publicPrototype || adminPreview) {
+            response.setHeader("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'self'");
             response.setHeader("X-Content-Type-Options", "nosniff");
-            response.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+            response.setHeader("Cache-Control", publicPrototype
+                    ? "public, max-age=31536000, immutable"
+                    : "no-store");
         }
         chain.doFilter(request, response);
     }

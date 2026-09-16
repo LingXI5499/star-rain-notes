@@ -107,7 +107,6 @@ public class PortfolioAdminController {
         String name = file.getFilename() == null ? "" : file.getFilename();
         MediaType type = MediaTypeFactory.getMediaType(name).orElse(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntity.ok().contentType(type).cacheControl(CacheControl.noStore())
-                .header("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'")
                 .header("X-Content-Type-Options", "nosniff").body(file);
     }
 }
