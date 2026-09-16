@@ -78,6 +78,8 @@ app:
     # 本地媒体存储目录（相对路径，gitignored）。生产由 Nginx 以静态资源方式提供 /uploads，
     # 目录必须不可执行（06-testing-deployment.md §8）；数据库只保存相对 storage key。
     storage-dir: ${MEDIA_STORAGE_DIR:uploads}
+    # ZIP 原型源包只允许后台下载，不能落在 Nginx 的公开 /uploads 根目录。
+    private-storage-dir: ${MEDIA_PRIVATE_STORAGE_DIR:./data/private-media}
     public-base: /uploads
     # 音频大小上限（方案 §13.1，默认 50MB）。
     audio-max-bytes: ${AUDIO_MAX_BYTES:52428800}

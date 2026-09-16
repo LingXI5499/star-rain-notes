@@ -17,6 +17,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -54,22 +56,24 @@ public class MediaService {
     private static final long IMAGE_MAX_BYTES = 10L * 1024 * 1024;
     private static final long PDF_MAX_BYTES = 20L * 1024 * 1024;
     private static final Set<String> ALLOWED_EXTENSIONS = Set.of("jpg", "jpeg", "png", "webp", "pdf",
-            "mp3", "m4a", "ogg");
+            "mp3", "m4a", "ogg", "zip");
     private static final Set<String> IMAGE_EXTENSIONS = Set.of("jpg", "jpeg", "png", "webp");
     private static final Set<String> AUDIO_EXTENSIONS = Set.of("mp3", "m4a", "ogg");
-    private static final Map<String, String> EXT_MIME = Map.of(
-            "jpg", "image/jpeg",
-            "jpeg", "image/jpeg",
-            "png", "image/png",
-            "webp", "image/webp",
-            "pdf", "application/pdf",
-            "mp3", "audio/mpeg",
-            "m4a", "audio/mp4",
-            "ogg", "audio/ogg");
+    private static final Map<String, String> EXT_MIME = Map.ofEntries(
+            Map.entry("jpg", "image/jpeg"),
+            Map.entry("jpeg", "image/jpeg"),
+            Map.entry("png", "image/png"),
+            Map.entry("webp", "image/webp"),
+            Map.entry("pdf", "application/pdf"),
+            Map.entry("mp3", "audio/mpeg"),
+            Map.entry("m4a", "audio/mp4"),
+            Map.entry("ogg", "audio/ogg"),
+            Map.entry("zip", "application/zip"));
     private static final Map<String, java.util.Set<String>> EXT_ACCEPTED_MIME = Map.of(
             "mp3", java.util.Set.of("audio/mpeg"),
             "m4a", java.util.Set.of("audio/mp4", "audio/x-m4a"),
-            "ogg", java.util.Set.of("audio/ogg"));
+            "ogg", java.util.Set.of("audio/ogg"),
+            "zip", java.util.Set.of("application/zip", "application/x-zip-compressed", "application/octet-stream"));
 
     private static final byte[] PNG_MAGIC = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
     private static final byte[] JPEG_MAGIC = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
@@ -84,6 +88,7 @@ public class MediaService {
     private final SiteSettingsTimezone timezone;
     private final PortfolioPrototypeService prototypeService;
     private final Path storageRoot;
+    private final Path privateStorageRoot;
     private final String publicBase;
     private final long audioMaxBytes;
 
@@ -91,12 +96,14 @@ public class MediaService {
                         SiteSettingsTimezone timezone,
                         @Lazy PortfolioPrototypeService prototypeService,
                         @Value("${app.media.storage-dir:uploads}") String storageDir,
+                        @Value("${app.media.private-storage-dir:./data/private-media}") String privateStorageDir,
                         @Value("${app.media.public-base:/uploads}") String publicBase,
                         @Value("${app.media.audio-max-bytes:52428800}") long audioMaxBytes) {
         this.mapper = mapper;
         this.timezone = timezone;
         this.prototypeService = prototypeService;
         this.storageRoot = Path.of(storageDir).toAbsolutePath().normalize();
+        this.privateStorageRoot = Path.of(privateStorageDir).toAbsolutePath().normalize();
         this.publicBase = publicBase;
         this.audioMaxBytes = audioMaxBytes;
     }
@@ -119,9 +126,10 @@ public class MediaService {
         }
         boolean image = IMAGE_EXTENSIONS.contains(extension);
         boolean audio = AUDIO_EXTENSIONS.contains(extension);
-        long max = image ? IMAGE_MAX_BYTES : (audio ? audioMaxBytes : PDF_MAX_BYTES);
+        boolean archive = "zip".equals(extension);
+        long max = archive ? ARCHIVE_MAX_BYTES : (image ? IMAGE_MAX_BYTES : (audio ? audioMaxBytes : PDF_MAX_BYTES));
         if (file.getSize() > max) {
-            String unit = audio ? audioMaxBytes / (1024 * 1024) + "MB" : (image ? "10MB" : "20MB");
+            String unit = audio ? audioMaxBytes / (1024 * 1024) + "MB" : (archive || image ? "10MB" : "20MB");
             throw new ApiException(HttpStatus.PAYLOAD_TOO_LARGE, "FILE_TOO_LARGE",
                     "File too large", "Media must be ≤ " + unit + ".");
         }
@@ -141,6 +149,10 @@ public class MediaService {
         } catch (IOException ex) {
             throw new ApiException(HttpStatus.UNSUPPORTED_MEDIA_TYPE, "UNSUPPORTED_MEDIA_TYPE",
                     "Unreadable file", "The uploaded file could not be read.");
+        }
+        if (archive) {
+            prototypeService.validateArchive(bytes);
+            return toView(createArchiveAsset(originalName, bytes));
         }
         int[] dimensions = null;
         try {
@@ -234,7 +246,7 @@ public class MediaService {
 
     /**
      * Creates an ARCHIVE media asset from an already-validated ZIP payload.
-     * Used by portfolio prototype upload; the admin media upload endpoint still rejects ZIP.
+     * Used by both portfolio prototype upload and the admin media-library ZIP workflow.
      */
     public MediaAsset createArchiveAsset(String originalName, byte[] bytes) {
         if (bytes == null || bytes.length == 0) {
@@ -257,8 +269,8 @@ public class MediaService {
         String yearMonth = timezone.atSite(LocalDateTime.now(ZoneOffset.UTC))
                 .toLocalDate().format(DateTimeFormatter.ofPattern("yyyy/MM"));
         String storagePath = yearMonth + "/" + storedName;
-        Path target = storageRoot.resolve(yearMonth).resolve(storedName).normalize();
-        assertWithinRoot(target);
+        Path target = privateStorageRoot.resolve(yearMonth).resolve(storedName).normalize();
+        assertWithinRoot(target, privateStorageRoot);
         try {
             Files.createDirectories(target.getParent());
             Files.write(target, bytes);
@@ -274,9 +286,11 @@ public class MediaService {
         asset.setExtension("zip");
         asset.setSizeBytes((long) bytes.length);
         asset.setStoragePath(storagePath);
-        asset.setPublicUrl(publicBase + "/" + storagePath);
+        asset.setPublicUrl("/api/v1/admin/media-assets/archive/pending");
         try {
             mapper.insert(asset);
+            asset.setPublicUrl("/api/v1/admin/media-assets/" + asset.getId() + "/download");
+            mapper.updateById(asset);
         } catch (RuntimeException ex) {
             try {
                 Files.deleteIfExists(target);
@@ -298,10 +312,25 @@ public class MediaService {
         return asset;
     }
 
-    public Path resolveStoragePath(String storagePath) {
-        Path target = storageRoot.resolve(storagePath).normalize();
-        assertWithinRoot(target);
+    public Path resolveStoragePath(MediaAsset asset) {
+        Path root = "ARCHIVE".equals(asset.getAssetType()) ? privateStorageRoot : storageRoot;
+        Path target = root.resolve(asset.getStoragePath()).normalize();
+        assertWithinRoot(target, root);
         return target;
+    }
+
+    public Resource downloadArchive(Long mediaId) {
+        MediaAsset asset = requireAsset(mediaId);
+        if (!"ARCHIVE".equals(asset.getAssetType())) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "ARCHIVE_NOT_FOUND",
+                    "Archive not found", "The requested media asset is not an archive.");
+        }
+        Path path = resolveStoragePath(asset);
+        if (!Files.isRegularFile(path)) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "ARCHIVE_NOT_FOUND",
+                    "Archive not found", "The archive file is unavailable.");
+        }
+        return new FileSystemResource(path);
     }
 
     private long countByType(String assetType) {
@@ -320,8 +349,9 @@ public class MediaService {
             prototypeService.cleanupExtractedByMediaAssetId(mediaId);
         }
         mapper.deleteById(mediaId);
-        Path target = storageRoot.resolve(asset.getStoragePath()).normalize();
-        if (target.startsWith(storageRoot)) {
+        Path root = "ARCHIVE".equals(asset.getAssetType()) ? privateStorageRoot : storageRoot;
+        Path target = root.resolve(asset.getStoragePath()).normalize();
+        if (target.startsWith(root)) {
             try {
                 Files.deleteIfExists(target);
             } catch (IOException ex) {
@@ -432,7 +462,11 @@ public class MediaService {
     }
 
     private void assertWithinRoot(Path target) {
-        if (!target.startsWith(storageRoot)) {
+        assertWithinRoot(target, storageRoot);
+    }
+
+    private static void assertWithinRoot(Path target, Path root) {
+        if (!target.startsWith(root)) {
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR",
                     "Storage error", "Resolved path escapes the media root.");
         }

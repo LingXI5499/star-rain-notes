@@ -15,6 +15,7 @@ app:
   media:
     # 测试专用存储目录（target/ 下，mvn clean 自动清理，与开发 uploads 隔离）
     storage-dir: target/test-uploads
+    private-storage-dir: target/test-private-media
     public-base: /uploads
   portfolio-prototype:
     private-root: target/test-prototypes-private

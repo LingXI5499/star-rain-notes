@@ -211,6 +211,11 @@ export async function uploadProjectPrototype(id: number, file: File): Promise<Pr
   return data
 }
 
+export async function attachProjectPrototype(id: number, mediaId: number): Promise<ProjectPrototype> {
+  const { data } = await http.post<ProjectPrototype>(`/admin/portfolio/projects/${id}/prototype/media/${mediaId}`)
+  return data
+}
+
 export async function deleteProjectPrototype(id: number): Promise<void> { await http.delete(`/admin/portfolio/projects/${id}/prototype`) }
 
 export async function withdrawProject(id: number): Promise<AdminProjectDetail> {

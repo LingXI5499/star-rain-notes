@@ -10,7 +10,7 @@ describe('portfolio links', () => {
     const repositoryUrl = 'https://github.com/example/project'
     const links = resolvePortfolioLinks({ demoUrl: repositoryUrl, repositoryUrl })
     expect(links.demoUrl).toBeNull()
-    expect(links.onlineAccessUrl).toBe(repositoryUrl)
+    expect(links.onlineAccessUrl).toBeNull()
   })
 
   it('keeps GitHub Pages deployments available as demos', () => {
@@ -18,11 +18,19 @@ describe('portfolio links', () => {
       .toBe('https://example.github.io/project')
   })
 
-  it('falls back online access to the repository when no live domain exists', () => {
+  it('never falls back online access to the repository', () => {
     const repositoryUrl = 'https://github.com/LingXI5499/pharmacy-delivery-system'
     const links = resolvePortfolioLinks({ demoUrl: null, repositoryUrl })
     expect(links.demoUrl).toBeNull()
-    expect(links.onlineAccessUrl).toBe(repositoryUrl)
+    expect(links.onlineAccessUrl).toBeNull()
+  })
+
+  it('falls back from a live domain to the published static prototype', () => {
+    const links = resolvePortfolioLinks({
+      repositoryUrl: 'https://github.com/example/project',
+      prototypeEntryUrl: '/uploads/prototypes/1/revision/index.html',
+    })
+    expect(links.onlineAccessUrl).toBe('/uploads/prototypes/1/revision/index.html')
   })
 
   it('prefers the live domain over the repository for online access', () => {

@@ -21,6 +21,7 @@ const categories = computed(() => [
   { value: 'IMAGE', label: '图片', note: '封面与正文配图', count: summary.value.images, mark: 'IMG' },
   { value: 'AUDIO', label: '音频', note: '听力与发音素材', count: summary.value.audio, mark: 'AUD' },
   { value: 'DOCUMENT', label: '文档', note: 'PDF 公开资料', count: summary.value.documents, mark: 'PDF' },
+  { value: 'ARCHIVE', label: '压缩包', note: '作品静态原型包', count: summary.value.archives, mark: 'ZIP' },
 ])
 
 async function load() {
@@ -66,10 +67,6 @@ function setViewMode(mode: 'grid' | 'list') {
 }
 
 async function handleUpload(file: File) {
-  if (file.name.toLowerCase().endsWith('.zip')) {
-    ElMessage.warning('压缩包上传已暂停，请使用作品的线上域名或 GitHub 仓库。')
-    return
-  }
   uploading.value = true
   try {
     const asset = await uploadMedia(file)
@@ -140,12 +137,12 @@ onMounted(() => {
       <div>
         <p>ASSET LIBRARY</p>
         <h1>媒体库</h1>
-        <span>集中管理图片、音频与 PDF。</span>
+        <span>集中管理图片、音频、PDF 与作品静态原型 ZIP。</span>
       </div>
       <el-upload
         :show-file-list="false"
         :auto-upload="false"
-        accept=".jpg,.jpeg,.png,.webp,.pdf,.mp3,.m4a,.ogg"
+        accept=".jpg,.jpeg,.png,.webp,.pdf,.mp3,.m4a,.ogg,.zip"
         :on-change="(file: any) => handleUpload(file.raw as File)"
       >
         <el-button type="primary" :loading="uploading">上传媒体</el-button>

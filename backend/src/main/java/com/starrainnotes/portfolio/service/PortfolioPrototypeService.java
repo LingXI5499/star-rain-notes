@@ -52,10 +52,6 @@ public class PortfolioPrototypeService {
     }
 
     public ProjectPrototypeView upload(Long projectId, MultipartFile archive, boolean published) {
-        if (find(projectId) != null) {
-            throw new ApiException(HttpStatus.CONFLICT, "PROTOTYPE_ALREADY_BOUND",
-                    "Prototype already bound", "Delete the existing ZIP before uploading a new one.");
-        }
         if (archive == null || archive.isEmpty() || archive.getSize() > MAX_ARCHIVE_BYTES || !isZip(archive)) {
             throw invalid("Upload a ZIP package no larger than 10MB.");
         }
@@ -68,46 +64,122 @@ public class PortfolioPrototypeService {
                     "Prototype storage failed", "The prototype package could not be stored.");
         }
 
+        try {
+            String sourceName = archive.getOriginalFilename() == null ? "prototype.zip" : archive.getOriginalFilename();
+            MediaAsset mediaAsset = mediaService.createArchiveAsset(sourceName, bytes);
+            try {
+                return bind(projectId, mediaAsset, bytes, published);
+            } catch (RuntimeException ex) {
+                try {
+                    mediaService.delete(mediaAsset.getId());
+                } catch (RuntimeException ignored) {
+                    // best-effort compensation
+                }
+                throw ex;
+            }
+        } catch (ApiException ex) {
+            throw ex;
+        }
+    }
+
+    public ProjectPrototypeView attach(Long projectId, Long mediaAssetId, boolean published) {
+        MediaAsset mediaAsset = mediaService.requireAsset(mediaAssetId);
+        if (!"ARCHIVE".equals(mediaAsset.getAssetType())) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "MEDIA_TYPE_INVALID",
+                    "Archive required", "The selected media asset must be a ZIP archive.");
+        }
+        PortfolioProjectPrototype bound = mapper.selectOne(new LambdaQueryWrapper<PortfolioProjectPrototype>()
+                .eq(PortfolioProjectPrototype::getMediaAssetId, mediaAssetId));
+        if (bound != null && !projectId.equals(bound.getProjectId())) {
+            throw new ApiException(HttpStatus.CONFLICT, "PROTOTYPE_MEDIA_ALREADY_BOUND",
+                    "Archive already bound", "This ZIP archive is already attached to another project.");
+        }
+        try {
+            byte[] bytes = Files.readAllBytes(mediaService.resolveStoragePath(mediaAsset));
+            return bind(projectId, mediaAsset, bytes, published);
+        } catch (IOException ex) {
+            throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "PROTOTYPE_STORAGE_FAILED",
+                    "Prototype storage failed", "The selected ZIP archive could not be read.");
+        }
+    }
+
+    /** Validates a media-library ZIP before it is persisted as an unbound archive. */
+    public void validateArchive(byte[] bytes) {
+        if (bytes == null || bytes.length < 2 || bytes.length > MAX_ARCHIVE_BYTES
+                || bytes[0] != 'P' || bytes[1] != 'K') {
+            throw invalid("Upload a ZIP package no larger than 10MB.");
+        }
+        Path validationStage = privateRoot.resolve(".validation")
+                .resolve(UUID.randomUUID().toString().replace("-", ""));
+        try {
+            unpack(bytes, validationStage);
+        } catch (IOException ex) {
+            throw invalid("The ZIP package could not be read.");
+        } finally {
+            deleteTree(validationStage);
+        }
+    }
+
+    private ProjectPrototypeView bind(Long projectId, MediaAsset mediaAsset, byte[] bytes, boolean published) {
+        if (bytes.length < 2 || bytes.length > MAX_ARCHIVE_BYTES || bytes[0] != 'P' || bytes[1] != 'K') {
+            throw invalid("Upload a ZIP package no larger than 10MB.");
+        }
+        PortfolioProjectPrototype previous = find(projectId);
+        String previousStorageKey = previous == null ? null : previous.getStorageKey();
+        Long previousMediaAssetId = previous == null ? null : previous.getMediaAssetId();
         String revision = UUID.randomUUID().toString().replace("-", "");
+        String storageKey = projectId + "/" + revision;
         Path stage = privateRoot.resolve(".staging").resolve(revision);
-        Path destination = privateRoot.resolve(String.valueOf(projectId)).resolve(revision);
-        MediaAsset mediaAsset = null;
+        Path destination = privateRoot.resolve(storageKey);
+        Path publicDestination = publicRoot.resolve(storageKey);
         try {
             UnpackStats stats = unpack(bytes, stage);
             Files.createDirectories(destination.getParent());
-            Files.move(stage, destination, StandardCopyOption.ATOMIC_MOVE);
+            try {
+                Files.move(stage, destination, StandardCopyOption.ATOMIC_MOVE);
+            } catch (java.nio.file.AtomicMoveNotSupportedException ignored) {
+                Files.move(stage, destination);
+            }
+            if (published) {
+                copyTree(destination, publicDestination);
+            }
 
-            String sourceName = archive.getOriginalFilename() == null ? "prototype.zip" : archive.getOriginalFilename();
-            mediaAsset = mediaService.createArchiveAsset(sourceName, bytes);
-
-            PortfolioProjectPrototype row = new PortfolioProjectPrototype();
+            PortfolioProjectPrototype row = previous == null ? new PortfolioProjectPrototype() : previous;
             row.setProjectId(projectId);
             row.setMediaAssetId(mediaAsset.getId());
             row.setRevision(revision);
             row.setEntryPath("index.html");
-            row.setStorageKey(projectId + "/" + revision);
-            row.setSourceName(sourceName);
+            row.setStorageKey(storageKey);
+            row.setSourceName(mediaAsset.getOriginalName());
             row.setFileCount(stats.files());
             row.setTotalBytes(stats.bytes());
-            mapper.insert(row);
+            if (previous == null) {
+                mapper.insert(row);
+            } else {
+                mapper.updateById(row);
+            }
 
-            if (published) {
-                publish(projectId);
+            if (previousStorageKey != null && !storageKey.equals(previousStorageKey)) {
+                deleteTree(privateRoot.resolve(previousStorageKey));
+                deleteTree(publicRoot.resolve(previousStorageKey));
+                if (!mediaAsset.getId().equals(previousMediaAssetId)) {
+                    try {
+                        mediaService.delete(previousMediaAssetId);
+                    } catch (RuntimeException ignored) {
+                        // The new binding is already valid; old media cleanup is best-effort.
+                    }
+                }
             }
             return view(row, mediaAsset.getSizeBytes(), true, published);
         } catch (ApiException ex) {
             deleteTree(stage);
             deleteTree(destination);
-            if (mediaAsset != null) {
-                mediaService.delete(mediaAsset.getId());
-            }
+            deleteTree(publicDestination);
             throw ex;
         } catch (IOException ex) {
             deleteTree(stage);
             deleteTree(destination);
-            if (mediaAsset != null) {
-                mediaService.delete(mediaAsset.getId());
-            }
+            deleteTree(publicDestination);
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "PROTOTYPE_STORAGE_FAILED",
                     "Prototype storage failed", "The prototype package could not be stored.");
         }

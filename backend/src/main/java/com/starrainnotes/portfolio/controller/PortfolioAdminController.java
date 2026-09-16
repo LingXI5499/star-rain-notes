@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.core.io.Resource;
 import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
+import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 
@@ -85,8 +86,15 @@ public class PortfolioAdminController {
 
     @PostMapping(value = "/{projectId}/prototype", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public com.starrainnotes.portfolio.dto.ProjectPrototypeView uploadPrototype(@PathVariable Long projectId, @RequestParam("file") MultipartFile file) {
-        throw new com.starrainnotes.common.error.ApiException(HttpStatus.GONE, "PROTOTYPE_UPLOAD_DISABLED",
-                "Prototype upload paused", "Static ZIP prototype upload is paused. Use the live URL or repository URL for online access.");
+        AdminProjectDetailView project = portfolioService.adminDetail(projectId);
+        return prototypeService.upload(projectId, file, "PUBLISHED".equals(project.publishStatus()));
+    }
+
+    @PostMapping("/{projectId}/prototype/media/{mediaId}")
+    public com.starrainnotes.portfolio.dto.ProjectPrototypeView attachPrototype(@PathVariable Long projectId,
+                                                                                @PathVariable Long mediaId) {
+        AdminProjectDetailView project = portfolioService.adminDetail(projectId);
+        return prototypeService.attach(projectId, mediaId, "PUBLISHED".equals(project.publishStatus()));
     }
 
     @DeleteMapping("/{projectId}/prototype")
@@ -97,7 +105,7 @@ public class PortfolioAdminController {
     public ResponseEntity<Resource> previewPrototype(@PathVariable Long projectId, @PathVariable String path) {
         Resource file = prototypeService.previewResource(projectId, path);
         String name = file.getFilename() == null ? "" : file.getFilename();
-        MediaType type = name.endsWith(".css") ? MediaType.valueOf("text/css") : name.endsWith(".js") ? MediaType.valueOf("text/javascript") : name.endsWith(".html") ? MediaType.TEXT_HTML : MediaType.APPLICATION_OCTET_STREAM;
+        MediaType type = MediaTypeFactory.getMediaType(name).orElse(MediaType.APPLICATION_OCTET_STREAM);
         return ResponseEntity.ok().contentType(type).cacheControl(CacheControl.noStore())
                 .header("Content-Security-Policy", "default-src 'self' data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'")
                 .header("X-Content-Type-Options", "nosniff").body(file);

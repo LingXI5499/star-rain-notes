@@ -59,7 +59,8 @@ describe('case study README outline shell', () => {
   it('uses the cover and online-access CTA without a screenshot gallery', () => {
     const source = readFileSync(portfolioDetail, 'utf8')
     expect(source).not.toContain('ProjectGallery')
-    expect(source).toContain('onlineAccessUrl')
+    expect(source).toContain('projectLinks.demoUrl')
+    expect(source).toContain('projectLinks.prototypeEntryUrl')
     expect(source).toContain('项目仍在持续迭代。')
     expect(source).not.toContain('星雨笔录仍在')
     expect(source).not.toContain('class="case-cover"')
