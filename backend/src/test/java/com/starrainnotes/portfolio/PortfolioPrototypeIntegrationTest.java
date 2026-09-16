@@ -18,7 +18,9 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -62,12 +64,20 @@ class PortfolioPrototypeIntegrationTest extends AbstractAuthIntegrationTest {
         Long projectId = createProject(session, "prototype-upload");
         MockMultipartFile file = new MockMultipartFile(
                 "file", "demo.zip", "application/zip", zip("index.html", "<h1>Demo</h1>", "assets/app.js", "document.body.dataset.ready='1'"));
-        mockMvc.perform(withCsrf(multipart("/api/v1/admin/portfolio/projects/" + projectId + "/prototype").file(file), fetchCsrfToken())
+        MvcResult uploaded = mockMvc.perform(withCsrf(multipart("/api/v1/admin/portfolio/projects/" + projectId + "/prototype").file(file), fetchCsrfToken())
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.sourceName").value("demo.zip"))
                 .andExpect(jsonPath("$.fileCount").value(2))
-                .andExpect(jsonPath("$.previewUrl").isNotEmpty());
+                .andExpect(jsonPath("$.previewUrl").isNotEmpty())
+                .andReturn();
+        String previewUrl = objectMapper.readTree(uploaded.getResponse().getContentAsString())
+                .get("previewUrl").asText();
+        mockMvc.perform(get(previewUrl).session(session))
+                .andExpect(status().isOk())
+                .andExpect(header().doesNotExist("X-Frame-Options"))
+                .andExpect(header().string("Content-Security-Policy",
+                        org.hamcrest.Matchers.containsString("frame-ancestors 'self'")));
 
         mockMvc.perform(withCsrf(put("/api/v1/admin/portfolio/projects/" + projectId)
                         .contentType(org.springframework.http.MediaType.APPLICATION_JSON)

@@ -19,6 +19,7 @@ frontend/dist/
 
 # Runtime-generated media and logs
 backend/uploads/
+backend/data/
 *.log
 
 # OS/editor noise
