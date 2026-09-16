@@ -99,11 +99,27 @@ class PortfolioPrototypeIntegrationTest extends AbstractAuthIntegrationTest {
     }
 
     @Test
-    void rejectsPrototypeWithoutRootIndex() throws Exception {
+    void acceptsACommonSingleProjectFolderWrapper() throws Exception {
         MockHttpSession session = loginSession();
-        Long projectId = createProject(session, "prototype-invalid");
+        Long projectId = createProject(session, "prototype-wrapper");
         MockMultipartFile file = new MockMultipartFile(
-                "file", "invalid.zip", "application/zip", zip("nested/index.html", "<h1>Nested</h1>"));
+                "file", "wrapped.zip", "application/x-zip-compressed",
+                zip("five-page-site/index.html", "<h1>Wrapped</h1>",
+                        "five-page-site/assets/app.js", "document.body.dataset.ready='1'"));
+        mockMvc.perform(withCsrf(multipart("/api/v1/admin/portfolio/projects/" + projectId + "/prototype").file(file), fetchCsrfToken())
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.fileCount").value(2))
+                .andExpect(jsonPath("$.previewUrl").value(org.hamcrest.Matchers.endsWith("/five-page-site/index.html")));
+    }
+
+    @Test
+    void rejectsArchiveWithMultipleTopLevelEntryPages() throws Exception {
+        MockHttpSession session = loginSession();
+        Long projectId = createProject(session, "prototype-ambiguous");
+        MockMultipartFile file = new MockMultipartFile(
+                "file", "ambiguous.zip", "application/zip",
+                zip("site-a/index.html", "<h1>A</h1>", "site-b/index.html", "<h1>B</h1>"));
         mockMvc.perform(withCsrf(multipart("/api/v1/admin/portfolio/projects/" + projectId + "/prototype").file(file), fetchCsrfToken())
                         .session(session))
                 .andExpect(status().isUnprocessableEntity())

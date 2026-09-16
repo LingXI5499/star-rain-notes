@@ -15,6 +15,16 @@ export interface ProblemDetail {
   violations?: { field: string; message: string }[]
 }
 
+export function apiErrorMessage(error: unknown, fallback: string): string {
+  if (!axios.isAxiosError<ProblemDetail>(error)) return fallback
+  const detail = error.response?.data?.detail
+  if (typeof detail === 'string' && detail.trim()) return detail
+  if (error.code === 'ECONNABORTED') return '请求超时，请稍后重试。'
+  if (error.response?.status === 413) return '文件超过服务器允许的大小。'
+  if (error.response?.status) return `${fallback}（HTTP ${error.response.status}）`
+  return `${fallback}（无法连接服务器）`
+}
+
 /**
  * Shared Axios client for the V1 REST API.
  *
