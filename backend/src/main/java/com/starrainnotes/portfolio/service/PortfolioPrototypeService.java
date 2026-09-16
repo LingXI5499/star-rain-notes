@@ -21,6 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.util.Set;
+import java.util.LinkedHashSet;
 import java.util.UUID;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -148,7 +149,7 @@ public class PortfolioPrototypeService {
             row.setProjectId(projectId);
             row.setMediaAssetId(mediaAsset.getId());
             row.setRevision(revision);
-            row.setEntryPath("index.html");
+            row.setEntryPath(stats.entryPath());
             row.setStorageKey(storageKey);
             row.setSourceName(mediaAsset.getOriginalName());
             row.setFileCount(stats.files());
@@ -282,7 +283,7 @@ public class PortfolioPrototypeService {
         Files.createDirectories(stage);
         int files = 0;
         long totalBytes = 0L;
-        boolean entryFound = false;
+        Set<String> entryCandidates = new LinkedHashSet<>();
         try (ZipInputStream zip = new ZipInputStream(new java.io.ByteArrayInputStream(bytes))) {
             ZipEntry entry;
             while ((entry = zip.getNextEntry()) != null) {
@@ -307,15 +308,24 @@ public class PortfolioPrototypeService {
                 if (totalBytes > MAX_UNPACKED_BYTES) {
                     throw invalid("Unpacked prototype files may not exceed 40MB.");
                 }
-                if (relative.toString().replace('\\', '/').equals("index.html")) {
-                    entryFound = true;
+                String normalizedName = relative.toString().replace('\\', '/');
+                if (normalizedName.equals("index.html")
+                        || (relative.getNameCount() == 2 && relative.getFileName().toString().equalsIgnoreCase("index.html"))) {
+                    entryCandidates.add(normalizedName);
                 }
             }
         }
-        if (!entryFound) {
-            throw invalid("The archive must contain index.html at its root.");
+        String entryPath;
+        if (entryCandidates.contains("index.html")) {
+            entryPath = "index.html";
+        } else if (entryCandidates.size() == 1) {
+            entryPath = entryCandidates.iterator().next();
+        } else if (entryCandidates.isEmpty()) {
+            throw invalid("The archive must contain index.html at its root or inside one top-level project folder.");
+        } else {
+            throw invalid("The archive contains multiple possible project entry pages.");
         }
-        return new UnpackStats(files, totalBytes);
+        return new UnpackStats(files, totalBytes, entryPath);
     }
 
     private static long copyLimited(InputStream in, Path target, long already) throws IOException {
@@ -439,6 +449,6 @@ public class PortfolioPrototypeService {
         }
     }
 
-    private record UnpackStats(int files, long bytes) {
+    private record UnpackStats(int files, long bytes, String entryPath) {
     }
 }

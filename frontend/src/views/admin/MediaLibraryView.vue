@@ -2,8 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
-import { AxiosError } from 'axios'
-import type { ProblemDetail } from '@/api/http'
+import { apiErrorMessage } from '@/api/http'
 import { deleteMedia, fetchMediaAssets, fetchMediaSummary, formatSize, uploadMedia, type MediaAsset, type MediaSummary } from '@/api/media'
 import { useAuthStore } from '@/stores/auth'
 
@@ -74,8 +73,7 @@ async function handleUpload(file: File) {
     filters.page = 1
     await Promise.all([load(), loadSummary()])
   } catch (error) {
-    const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
-    ElMessage.error(problem?.detail ?? (error instanceof AxiosError && error.code === 'ECONNABORTED' ? '上传超时，请稍后重试。' : '上传失败。'))
+    ElMessage.error(apiErrorMessage(error, '上传失败。'))
   } finally {
     uploading.value = false
   }

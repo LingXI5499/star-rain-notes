@@ -3,8 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus/es/components/message/index.mjs'
 import { ElMessageBox } from 'element-plus/es/components/message-box/index.mjs'
-import { AxiosError } from 'axios'
-import type { ProblemDetail } from '@/api/http'
+import { apiErrorMessage } from '@/api/http'
 import {
   attachProjectPrototype,
   createProject,
@@ -154,8 +153,7 @@ async function save() {
     ElMessage.success('已保存。')
     await router.push({ name: 'admin-portfolio' })
   } catch (error) {
-    const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
-    ElMessage.error(problem?.detail ?? '保存失败。')
+    ElMessage.error(apiErrorMessage(error, '保存失败。'))
   } finally {
     saving.value = false
   }
@@ -176,8 +174,7 @@ async function uploadPrototype(file: File) {
     prototypePreviewOpen.value = false
     ElMessage.success('静态原型已校验并绑定；若作品已发布，公开版本已同步更新。')
   } catch (error) {
-    const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
-    ElMessage.error(problem?.detail ?? '原型包上传失败。')
+    ElMessage.error(apiErrorMessage(error, '原型包上传失败。'))
   } finally {
     prototypeUploading.value = false
   }
@@ -191,8 +188,7 @@ async function selectPrototypeArchive(asset: MediaAsset) {
     prototypePreviewOpen.value = false
     ElMessage.success('已从媒体库绑定静态原型。')
   } catch (error) {
-    const problem = error instanceof AxiosError ? (error.response?.data as ProblemDetail | undefined) : undefined
-    ElMessage.error(problem?.detail ?? '绑定静态原型失败。')
+    ElMessage.error(apiErrorMessage(error, '绑定静态原型失败。'))
   } finally {
     prototypeUploading.value = false
   }
