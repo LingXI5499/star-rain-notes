@@ -3,7 +3,7 @@ package com.starrainnotes.tutorial.controller;
 import com.starrainnotes.tutorial.dto.PublicCategoryNodeView;
 import com.starrainnotes.tutorial.dto.PublicTutorialDetailView;
 import com.starrainnotes.tutorial.dto.PublicTutorialSummaryView;
-import com.starrainnotes.tutorial.service.TutorialCategoryService;
+import com.starrainnotes.tutorial.service.TutorialCategoryQueryService;
 import com.starrainnotes.tutorial.service.TutorialQueryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,12 +22,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class TutorialPublicController {
 
-    private final TutorialCategoryService categoryService;
+    private final TutorialCategoryQueryService categoryQueryService;
     private final TutorialQueryService queryService;
 
     @GetMapping("/tutorial-categories/tree")
     public List<PublicCategoryNodeView> categoryTree() {
-        return categoryService.publicTree();
+        return categoryQueryService.publicTree();
     }
 
     @GetMapping("/tutorials")
