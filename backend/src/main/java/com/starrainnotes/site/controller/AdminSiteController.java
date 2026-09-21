@@ -3,7 +3,7 @@ package com.starrainnotes.site.controller;
 import com.starrainnotes.site.dto.AdminSiteSettingsView;
 import com.starrainnotes.site.dto.DashboardView;
 import com.starrainnotes.site.dto.UpdateSiteSettingsRequest;
-import com.starrainnotes.site.service.DashboardService;
+import com.starrainnotes.site.service.DashboardQueryService;
 import com.starrainnotes.site.service.SiteCommandService;
 import com.starrainnotes.site.service.SiteQueryService;
 import jakarta.validation.Valid;
@@ -25,7 +25,7 @@ public class AdminSiteController {
 
     private final SiteCommandService commandService;
     private final SiteQueryService queryService;
-    private final DashboardService dashboardService;
+    private final DashboardQueryService dashboardService;
 
     @GetMapping("/dashboard")
     public DashboardView dashboard() {
