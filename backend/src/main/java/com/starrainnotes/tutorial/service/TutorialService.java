@@ -1,6 +1,7 @@
 package com.starrainnotes.tutorial.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.media.entity.MediaAsset;
@@ -96,10 +97,8 @@ public class TutorialService {
             wrapper.orderByAsc(Tutorial::getSortOrder).orderByAsc(Tutorial::getId);
         }
 
-        Long total = tutorialMapper.selectCount(wrapper);
-        int offset = (safePage - 1) * safeSize;
-        wrapper.last("LIMIT " + safeSize + " OFFSET " + offset);
-        List<Tutorial> rows = tutorialMapper.selectList(wrapper);
+        Page<Tutorial> result = tutorialMapper.selectPage(new Page<>(safePage, safeSize), wrapper);
+        List<Tutorial> rows = result.getRecords();
 
         Map<Long, String> categoryNames = categoryNameMap();
         Map<Long, Long> chapterCounts = adminChapterCounts();
@@ -111,7 +110,7 @@ public class TutorialService {
                         formatUtc(t.getPublishedAt()), formatUtc(t.getUpdatedAt())))
                 .toList();
 
-        long safeTotal = total == null ? 0 : total;
+        long safeTotal = result.getTotal();
         int totalPages = safeTotal == 0 ? 0 : (int) ((safeTotal + safeSize - 1) / safeSize);
         return new TutorialPageView(items, safePage, safeSize, safeTotal, totalPages);
     }
