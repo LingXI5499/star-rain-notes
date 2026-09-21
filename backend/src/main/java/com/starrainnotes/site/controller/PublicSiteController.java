@@ -2,7 +2,8 @@ package com.starrainnotes.site.controller;
 
 import com.starrainnotes.site.dto.PublicHomeView;
 import com.starrainnotes.site.dto.PublicSiteView;
-import com.starrainnotes.site.service.SiteService;
+import com.starrainnotes.site.service.SiteQueryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,21 +14,18 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/public")
+@RequiredArgsConstructor
 public class PublicSiteController {
 
-    private final SiteService siteService;
-
-    public PublicSiteController(SiteService siteService) {
-        this.siteService = siteService;
-    }
+    private final SiteQueryService queryService;
 
     @GetMapping("/site")
     public PublicSiteView site() {
-        return siteService.getPublicSite();
+        return queryService.getPublicSite();
     }
 
     @GetMapping("/home")
     public PublicHomeView home() {
-        return siteService.getHome();
+        return queryService.getHome();
     }
 }
