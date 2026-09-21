@@ -1,10 +1,7 @@
 package com.starrainnotes.media.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.media.dto.MediaAssetView;
-import com.starrainnotes.media.dto.MediaPageView;
-import com.starrainnotes.media.dto.MediaSummaryView;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
 import com.starrainnotes.portfolio.service.PortfolioPrototypeService;
@@ -29,7 +26,6 @@ import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -216,33 +212,8 @@ public class MediaService {
     }
 
     // ---------------------------------------------------------------
-    // list / delete
+    // archive support / deletion
     // ---------------------------------------------------------------
-
-    public MediaPageView list(int page, int pageSize, String query, String assetType) {
-        int safePage = Math.max(page, 1);
-        int safeSize = Math.min(Math.max(pageSize, 1), 50);
-        LambdaQueryWrapper<MediaAsset> wrapper = new LambdaQueryWrapper<MediaAsset>()
-                .eq(assetType != null && !assetType.isBlank(), MediaAsset::getAssetType, assetType)
-                .like(query != null && !query.isBlank(), MediaAsset::getOriginalName, query)
-                .orderByDesc(MediaAsset::getId);
-
-        Long total = mapper.selectCount(wrapper);
-        wrapper.last("LIMIT " + safeSize + " OFFSET " + ((safePage - 1) * safeSize));
-        List<MediaAssetView> items = mapper.selectList(wrapper).stream().map(this::toView).toList();
-        long safeTotal = total == null ? 0 : total;
-        int totalPages = safeTotal == 0 ? 0 : (int) ((safeTotal + safeSize - 1) / safeSize);
-        return new MediaPageView(items, safePage, safeSize, safeTotal, totalPages);
-    }
-
-    public MediaSummaryView summary() {
-        return new MediaSummaryView(
-                countByType(null),
-                countByType("IMAGE"),
-                countByType("AUDIO"),
-                countByType("DOCUMENT"),
-                countByType("ARCHIVE"));
-    }
 
     /**
      * Creates an ARCHIVE media asset from an already-validated ZIP payload.
@@ -331,12 +302,6 @@ public class MediaService {
                     "Archive not found", "The archive file is unavailable.");
         }
         return new FileSystemResource(path);
-    }
-
-    private long countByType(String assetType) {
-        Long count = mapper.selectCount(new LambdaQueryWrapper<MediaAsset>()
-                .eq(assetType != null, MediaAsset::getAssetType, assetType));
-        return count == null ? 0 : count;
     }
 
     public void delete(Long mediaId) {

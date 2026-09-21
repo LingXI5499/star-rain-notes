@@ -3,7 +3,9 @@ package com.starrainnotes.media.controller;
 import com.starrainnotes.media.dto.MediaAssetView;
 import com.starrainnotes.media.dto.MediaPageView;
 import com.starrainnotes.media.dto.MediaSummaryView;
+import com.starrainnotes.media.service.MediaQueryService;
 import com.starrainnotes.media.service.MediaService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.CacheControl;
@@ -26,25 +28,23 @@ import org.springframework.web.multipart.MultipartFile;
  */
 @RestController
 @RequestMapping("/api/v1/admin/media-assets")
+@RequiredArgsConstructor
 public class MediaAdminController {
 
     private final MediaService mediaService;
-
-    public MediaAdminController(MediaService mediaService) {
-        this.mediaService = mediaService;
-    }
+    private final MediaQueryService queryService;
 
     @GetMapping
     public MediaPageView list(@RequestParam(defaultValue = "1") int page,
                               @RequestParam(defaultValue = "20") int pageSize,
                               @RequestParam(required = false) String q,
                               @RequestParam(required = false) String assetType) {
-        return mediaService.list(page, pageSize, q, assetType);
+        return queryService.list(page, pageSize, q, assetType);
     }
 
     @GetMapping("/summary")
     public MediaSummaryView summary() {
-        return mediaService.summary();
+        return queryService.summary();
     }
 
     @GetMapping("/{mediaId}/download")
