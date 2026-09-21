@@ -1,18 +1,12 @@
 package com.starrainnotes.account.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.starrainnotes.account.audit.AuditLogService;
 import com.starrainnotes.account.entity.AccountUser;
 import com.starrainnotes.account.mapper.AccountUserMapper;
 import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.Clock;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class AccountService {
@@ -24,41 +18,9 @@ public class AccountService {
     public static final String DISABLED = "DISABLED";
 
     private final AccountUserMapper userMapper;
-    private final AuditLogService auditLog;
 
-    public AccountService(AccountUserMapper userMapper, AuditLogService auditLog) {
+    public AccountService(AccountUserMapper userMapper) {
         this.userMapper = userMapper;
-        this.auditLog = auditLog;
-    }
-
-    @Transactional
-    public void disable(Long targetId, String reason, Long operatorId) {
-        AccountUser target = requireById(targetId);
-        if (SUPER_ADMIN.equals(target.getRole())) {
-            throw fail("SUPER_ADMIN_PROTECTED", HttpStatus.FORBIDDEN, "Protected",
-                    "The super administrator cannot be disabled.");
-        }
-        target.setAccountStatus(DISABLED);
-        target.setDisabledAt(now());
-        target.setDisabledBy(operatorId);
-        target.setDisabledReason(reason);
-        target.setAuthVersion(target.getAuthVersion() + 1);
-        userMapper.updateById(target);
-        auditLog.record(operatorId, "ACCOUNT_DISABLED", "ACCOUNT", target.getId(), "SUCCESS",
-                null, null, Map.of("email", mask(target.getEmail())));
-    }
-
-    @Transactional
-    public void enable(Long targetId, Long operatorId) {
-        AccountUser target = requireById(targetId);
-        target.setAccountStatus(ACTIVE);
-        target.setDisabledAt(null);
-        target.setDisabledBy(null);
-        target.setDisabledReason(null);
-        target.setAuthVersion(target.getAuthVersion() + 1);
-        userMapper.updateById(target);
-        auditLog.record(operatorId, "ACCOUNT_ENABLED", "ACCOUNT", target.getId(), "SUCCESS",
-                null, null, Map.of("email", mask(target.getEmail())));
     }
 
     public List<String> capabilities(String role) {
@@ -94,7 +56,6 @@ public class AccountService {
         int at = email.indexOf('@');
         return at <= 0 ? "***" : email.substring(0, 2) + "***" + email.substring(at);
     }
-    private LocalDateTime now() { return LocalDateTime.now(Clock.systemUTC()); }
     public static ApiException fail(String code, HttpStatus status, String title, String detail) {
         return new ApiException(status, code, title, detail);
     }
