@@ -4,9 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.account.audit.AuditLogService;
 import com.starrainnotes.account.config.AccountProperties;
 import com.starrainnotes.account.entity.AccountUser;
-import com.starrainnotes.account.entity.AdminInvitation;
 import com.starrainnotes.account.mapper.AccountUserMapper;
-import com.starrainnotes.account.mapper.AdminInvitationMapper;
 import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,7 +15,6 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 @Service
 public class AccountService {
@@ -31,23 +28,18 @@ public class AccountService {
     static final long LOCK_MINUTES = 15;
 
     private final AccountUserMapper userMapper;
-    private final AdminInvitationMapper invitationMapper;
     private final VerificationCodeService codeService;
     private final PasswordEncoder passwordEncoder;
-    private final MailGateway mailGateway;
     private final AccountProperties props;
     private final AuditLogService auditLog;
     private final AccountQueryService queries;
 
-    public AccountService(AccountUserMapper userMapper, AdminInvitationMapper invitationMapper,
-                          VerificationCodeService codeService, PasswordEncoder passwordEncoder,
-                          MailGateway mailGateway, AccountProperties props, AuditLogService auditLog,
+    public AccountService(AccountUserMapper userMapper, VerificationCodeService codeService,
+                          PasswordEncoder passwordEncoder, AccountProperties props, AuditLogService auditLog,
                           AccountQueryService queries) {
         this.userMapper = userMapper;
-        this.invitationMapper = invitationMapper;
         this.codeService = codeService;
         this.passwordEncoder = passwordEncoder;
-        this.mailGateway = mailGateway;
         this.props = props;
         this.auditLog = auditLog;
         this.queries = queries;
@@ -92,88 +84,6 @@ public class AccountService {
         userMapper.updateById(account);
         auditLog.record(account.getId(), "SUPER_ADMIN_ACTIVATED", "ACCOUNT", account.getId(), "SUCCESS",
                 null, null, null);
-        return account;
-    }
-
-    @Transactional
-    public IssuedInvitation createInvitation(String email, Long invitedByAccountId) {
-        requireSuperAdmin(invitedByAccountId, "Only a super administrator can invite.");
-        String normalized = normalize(email);
-        if (!validEmail(normalized)) {
-            throw fail("INVALID_EMAIL", HttpStatus.UNPROCESSABLE_ENTITY, "Invalid email", "Invalid email address.");
-        }
-        if (existsByEmail(normalized)) {
-            throw fail("EMAIL_ALREADY_REGISTERED", HttpStatus.CONFLICT, "Already registered",
-                    "This email already has an account.");
-        }
-        if (hasPendingInvitation(normalized)) {
-            throw fail("INVITATION_INVALID", HttpStatus.CONFLICT, "Already invited",
-                    "This email already has a pending invitation.");
-        }
-        String rawToken = UUID.randomUUID().toString().replace("-", "");
-        AdminInvitation inv = new AdminInvitation();
-        inv.setEmail(normalized);
-        inv.setTokenHash(VerificationCodeService.sha256(rawToken));
-        inv.setStatus("PENDING");
-        inv.setInvitedBy(invitedByAccountId);
-        inv.setExpiresAt(now().plusHours(72));
-        inv.setSentAt(now());
-        invitationMapper.insert(inv);
-        String link = invitationLink(rawToken);
-        mailGateway.sendInvitationLink(inv.getEmail(), link);
-        auditLog.record(invitedByAccountId, "INVITATION_CREATED", "INVITATION", inv.getId(), "SUCCESS",
-                null, null, Map.of("email", mask(inv.getEmail())));
-        return new IssuedInvitation(inv, link);
-    }
-
-    public AdminInvitation invitationByToken(String rawToken) {
-        AdminInvitation inv = invitationMapper.selectOne(new LambdaQueryWrapper<AdminInvitation>()
-                .eq(AdminInvitation::getTokenHash, VerificationCodeService.sha256(rawToken)).last("LIMIT 1"));
-        if (inv == null) {
-            throw fail("INVITATION_INVALID", HttpStatus.NOT_FOUND, "Invalid invitation", "The invitation does not exist.");
-        }
-        if ("REVOKED".equals(inv.getStatus())) {
-            throw fail("INVITATION_REVOKED", HttpStatus.GONE, "Invitation revoked", "The invitation was revoked.");
-        }
-        if ("ACCEPTED".equals(inv.getStatus())) {
-            throw fail("INVITATION_EXPIRED", HttpStatus.GONE, "Already used", "The invitation was already used.");
-        }
-        if (inv.getExpiresAt().isBefore(now())) {
-            inv.setStatus("EXPIRED");
-            invitationMapper.updateById(inv);
-            throw fail("INVITATION_EXPIRED", HttpStatus.GONE, "Invitation expired", "The invitation has expired.");
-        }
-        return inv;
-    }
-
-    public void requestInvitationCode(String rawToken, String ip) {
-        AdminInvitation inv = invitationByToken(rawToken);
-        codeService.issue(inv.getEmail(), "ADMIN_REGISTRATION", inv.getId(), ip);
-    }
-
-    @Transactional
-    public AccountUser register(String rawToken, String email, String code, String password) {
-        AdminInvitation inv = invitationByToken(rawToken);
-        String normalizedEmail = normalize(email);
-        if (normalizedEmail != null && !normalizedEmail.isBlank() && !normalizedEmail.equals(inv.getEmail())) {
-            throw fail("INVITATION_INVALID", HttpStatus.UNPROCESSABLE_ENTITY, "Email mismatch",
-                    "The email must match the invitation.");
-        }
-        codeService.verify(inv.getEmail(), "ADMIN_REGISTRATION", code, inv.getId());
-        AccountUser account = new AccountUser();
-        account.setEmail(inv.getEmail());
-        account.setPasswordHash(passwordEncoder.encode(password));
-        account.setRole(ADMIN);
-        account.setAccountStatus(ACTIVE);
-        account.setEmailVerifiedAt(now());
-        account.setActivatedAt(now());
-        userMapper.insert(account);
-        inv.setStatus("ACCEPTED");
-        inv.setAcceptedAccountId(account.getId());
-        inv.setAcceptedAt(now());
-        invitationMapper.updateById(inv);
-        auditLog.record(account.getId(), "ADMIN_REGISTERED", "ACCOUNT", account.getId(), "SUCCESS",
-                null, null, Map.of("invitationId", inv.getId()));
         return account;
     }
 
@@ -285,14 +195,6 @@ public class AccountService {
         return userMapper.selectOne(new LambdaQueryWrapper<AccountUser>().eq(AccountUser::getEmail, email)
                 .last("LIMIT 1"));
     }
-    private boolean existsByEmail(String email) { return findByEmail(email) != null; }
-    private boolean hasPendingInvitation(String email) {
-        Long c = invitationMapper.selectCount(new LambdaQueryWrapper<AdminInvitation>()
-                .eq(AdminInvitation::getEmail, email)
-                .eq(AdminInvitation::getStatus, "PENDING")
-                .gt(AdminInvitation::getExpiresAt, now()));
-        return c != null && c > 0;
-    }
     public static String normalize(String email) { return email == null ? null : email.trim().toLowerCase(); }
     public static boolean validEmail(String email) {
         return email != null && email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
@@ -339,85 +241,6 @@ public class AccountService {
         user.setAuthVersion(user.getAuthVersion() + 1);
         userMapper.updateById(user);
     }
-
-    @Transactional
-    public IssuedInvitation resendInvitation(Long invitationId) {
-        AdminInvitation inv = requireInvitation(invitationId);
-        if (!"PENDING".equals(inv.getStatus())) {
-            throw fail("INVITATION_INVALID", HttpStatus.CONFLICT, "Invitation not pending",
-                    "Only a pending invitation can be resent.");
-        }
-        String rawToken = UUID.randomUUID().toString().replace("-", "");
-        inv.setTokenHash(VerificationCodeService.sha256(rawToken));
-        inv.setSentAt(now());
-        inv.setExpiresAt(now().plusHours(72));
-        invitationMapper.updateById(inv);
-        String link = invitationLink(rawToken);
-        mailGateway.sendInvitationLink(inv.getEmail(), link);
-        auditLog.record(inv.getInvitedBy(), "INVITATION_RESENT", "INVITATION", inv.getId(), "SUCCESS",
-                null, null, Map.of("email", mask(inv.getEmail())));
-        return new IssuedInvitation(inv, link);
-    }
-
-    @Transactional
-    public void revokeInvitation(Long invitationId, Long operatorId) {
-        AdminInvitation inv = requireInvitation(invitationId);
-        if ("ACCEPTED".equals(inv.getStatus())) {
-            throw fail("INVITATION_INVALID", HttpStatus.CONFLICT, "Invitation already accepted",
-                    "An accepted invitation cannot be revoked.");
-        }
-        inv.setStatus("REVOKED");
-        inv.setRevokedAt(now());
-        invitationMapper.updateById(inv);
-        auditLog.record(operatorId, "INVITATION_REVOKED", "INVITATION", inv.getId(), "SUCCESS",
-                null, null, Map.of("email", mask(inv.getEmail())));
-    }
-
-    @Transactional
-    public void deleteInvitation(Long invitationId, Long operatorId) {
-        AdminInvitation inv = requireInvitation(invitationId);
-        boolean expired = inv.getExpiresAt().isBefore(now());
-        if (!"REVOKED".equals(inv.getStatus()) && !"EXPIRED".equals(inv.getStatus()) && !expired) {
-            throw fail("INVITATION_DELETE_FORBIDDEN", HttpStatus.CONFLICT,
-                    "Invitation cannot be deleted",
-                    "Only revoked or expired invitations can be deleted.");
-        }
-        String email = mask(inv.getEmail());
-        invitationMapper.deleteById(invitationId);
-        auditLog.record(operatorId, "INVITATION_DELETED", "INVITATION", invitationId, "SUCCESS",
-                null, null, Map.of("email", email));
-    }
-
-    @Transactional
-    public java.util.List<AdminInvitation> listInvitations() {
-        var invitations = invitationMapper.selectList(new LambdaQueryWrapper<AdminInvitation>()
-                .orderByDesc(AdminInvitation::getCreatedAt));
-        LocalDateTime current = now();
-        invitations.stream()
-                .filter(inv -> "PENDING".equals(inv.getStatus()) && inv.getExpiresAt().isBefore(current))
-                .forEach(inv -> {
-                    inv.setStatus("EXPIRED");
-                    invitationMapper.updateById(inv);
-                });
-        return invitations;
-    }
-
-    private AdminInvitation requireInvitation(Long id) {
-        AdminInvitation inv = invitationMapper.selectById(id);
-        if (inv == null) throw fail("INVITATION_INVALID", HttpStatus.NOT_FOUND, "Invalid invitation",
-                "The invitation does not exist.");
-        return inv;
-    }
-
-    private String invitationLink(String rawToken) {
-        String base = props.getMail().getBaseUrl();
-        if (base == null || base.isBlank()) {
-            base = "http://localhost:5173";
-        }
-        return base.replaceAll("/+$", "") + "/admin/invitations/" + rawToken;
-    }
-
-    public record IssuedInvitation(AdminInvitation invitation, String inviteLink) {}
 
     private boolean normValidEmail(String email) {
         return email != null && email.matches("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");

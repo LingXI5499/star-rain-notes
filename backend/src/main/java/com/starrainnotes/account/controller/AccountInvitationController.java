@@ -3,6 +3,7 @@ package com.starrainnotes.account.controller;
 import com.starrainnotes.account.dto.InvitationStatusView;
 import com.starrainnotes.account.dto.RegisterRequest;
 import com.starrainnotes.account.entity.AdminInvitation;
+import com.starrainnotes.account.service.AccountInvitationService;
 import com.starrainnotes.account.service.AccountService;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import jakarta.servlet.http.HttpServletRequest;
@@ -22,17 +23,17 @@ import java.time.format.DateTimeFormatter;
 @RequestMapping("/api/v1/auth/invitations")
 public class AccountInvitationController {
 
-    private final AccountService accountService;
+    private final AccountInvitationService invitations;
     private final SiteSettingsTimezone timezone;
 
-    public AccountInvitationController(AccountService accountService, SiteSettingsTimezone timezone) {
-        this.accountService = accountService;
+    public AccountInvitationController(AccountInvitationService invitations, SiteSettingsTimezone timezone) {
+        this.invitations = invitations;
         this.timezone = timezone;
     }
 
     @GetMapping("/{token}")
     public InvitationStatusView status(@PathVariable String token) {
-        AdminInvitation inv = accountService.invitationByToken(token);
+        AdminInvitation inv = invitations.byToken(token);
         return new InvitationStatusView(AccountService.mask(inv.getEmail()), inv.getStatus(),
                 timezone.atSite(inv.getExpiresAt()).format(DateTimeFormatter.ISO_OFFSET_DATE_TIME));
     }
@@ -40,12 +41,12 @@ public class AccountInvitationController {
     @PostMapping("/{token}/verification-codes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void sendCode(@PathVariable String token, HttpServletRequest request) {
-        accountService.requestInvitationCode(token, AccountActivationController.clientIp(request));
+        invitations.requestCode(token, AccountActivationController.clientIp(request));
     }
 
     @PostMapping("/{token}/register")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void register(@PathVariable String token, @Valid @RequestBody RegisterRequest body) {
-        accountService.register(token, body.email(), body.verificationCode(), body.password());
+        invitations.register(token, body.email(), body.verificationCode(), body.password());
     }
 }
