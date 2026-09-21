@@ -15,10 +15,11 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class TutorialChapterUpdateWorkflowService {
     private final TutorialNodeService nodeService;
+    private final TutorialNodeQueryService queryService;
     private final ContentReviewService reviewService;
 
     public Outcome update(Authentication actor, Long tutorialId, Long chapterId, UpdateChapterRequest request) {
-        if (!isSuperAdmin(actor) && "PUBLISHED".equals(nodeService.chapterPublishStatus(tutorialId, chapterId))) {
+        if (!isSuperAdmin(actor) && "PUBLISHED".equals(queryService.chapterPublishStatus(tutorialId, chapterId))) {
             return new ReviewSubmitted(reviewService.submitTutorialChapterUpdate(actorId(actor), tutorialId, chapterId, request));
         }
         return new Updated(nodeService.updateChapter(tutorialId, chapterId, request));
