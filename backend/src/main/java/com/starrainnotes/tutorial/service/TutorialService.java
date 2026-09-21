@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
+import com.starrainnotes.tutorial.assembler.TutorialAssembler;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
 import com.starrainnotes.seo.SeoContentChange;
@@ -68,6 +69,7 @@ public class TutorialService {
     private final TutorialNodeMapper nodeMapper;
     private final MediaAssetMapper mediaAssetMapper;
     private final SiteSettingsTimezone siteSettingsTimezone;
+    private final TutorialAssembler tutorialAssembler;
 
     // ---------------------------------------------------------------
     // admin
@@ -110,6 +112,7 @@ public class TutorialService {
         return toAdminDetail(tutorial);
     }
 
+    @Transactional
     public AdminTutorialDetailView create(CreateTutorialRequest request) {
         requireCategory(request.categoryId());
         String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
@@ -154,6 +157,7 @@ public class TutorialService {
         return toAdminDetail(tutorial);
     }
 
+    @Transactional
     @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
     public void delete(Long id) {
         requireTutorial(id);
@@ -177,6 +181,7 @@ public class TutorialService {
         normalizeTutorialOrder(siblings);
     }
 
+    @Transactional
     @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
     public AdminTutorialDetailView publish(Long id) {
         Tutorial tutorial = requireTutorial(id);
@@ -190,6 +195,7 @@ public class TutorialService {
         return toAdminDetail(tutorial);
     }
 
+    @Transactional
     @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
     public AdminTutorialDetailView withdraw(Long id) {
         Tutorial tutorial = requireTutorial(id);
@@ -473,13 +479,7 @@ public class TutorialService {
 
     private AdminTutorialDetailView toAdminDetail(Tutorial tutorial) {
         Map<Long, String> names = categoryNameMap();
-        return new AdminTutorialDetailView(
-                tutorial.getId(), tutorial.getCategoryId(), names.get(tutorial.getCategoryId()),
-                tutorial.getTitle(), tutorial.getSlug(), tutorial.getSummary(),
-                tutorial.getCoverMediaId(), tutorial.getPublishStatus(), tutorial.getSortOrder(),
-                tutorial.getSeoTitle(), tutorial.getSeoDescription(),
-                formatUtc(tutorial.getPublishedAt()), formatUtc(tutorial.getCreatedAt()),
-                formatUtc(tutorial.getUpdatedAt()));
+        return tutorialAssembler.toAdminDetail(tutorial, names.get(tutorial.getCategoryId()));
     }
 
     private String formatUtc(LocalDateTime utc) {
