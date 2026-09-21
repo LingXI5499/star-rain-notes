@@ -1,6 +1,7 @@
 package com.starrainnotes.portfolio.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.media.entity.MediaAsset;
@@ -22,6 +23,7 @@ import com.starrainnotes.portfolio.mapper.PortfolioProjectMapper;
 import com.starrainnotes.portfolio.mapper.PortfolioProjectMediaMapper;
 import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,7 @@ import java.util.stream.Collectors;
  * cover must be IMAGE; publishing also requires a cover image.</p>
  */
 @Service
+@RequiredArgsConstructor
 public class PortfolioService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -72,20 +75,6 @@ public class PortfolioService {
     private final PortfolioPrototypeService prototypeService;
     private final SiteSettingsTimezone timezone;
 
-    public PortfolioService(PortfolioProjectMapper projectMapper,
-                            PortfolioProjectMediaMapper mediaMapper,
-                            MediaAssetMapper mediaAssetMapper,
-                            MediaService mediaService,
-                            PortfolioPrototypeService prototypeService,
-                            SiteSettingsTimezone timezone) {
-        this.projectMapper = projectMapper;
-        this.mediaMapper = mediaMapper;
-        this.mediaAssetMapper = mediaAssetMapper;
-        this.mediaService = mediaService;
-        this.prototypeService = prototypeService;
-        this.timezone = timezone;
-    }
-
     // ---------------------------------------------------------------
     // admin
     // ---------------------------------------------------------------
@@ -101,9 +90,8 @@ public class PortfolioService {
                 .orderByDesc(PortfolioProject::getUpdatedAt)
                 .orderByDesc(PortfolioProject::getId);
 
-        Long total = projectMapper.selectCount(wrapper);
-        wrapper.last("LIMIT " + safeSize + " OFFSET " + ((safePage - 1) * safeSize));
-        List<PortfolioProject> rows = projectMapper.selectList(wrapper);
+        Page<PortfolioProject> result = projectMapper.selectPage(new Page<>(safePage, safeSize), wrapper);
+        List<PortfolioProject> rows = result.getRecords();
         Map<Long, String> covers = coverUrls(rows.stream().map(PortfolioProject::getCoverMediaId).toList());
         List<AdminProjectSummaryView> items = rows.stream()
                 .map(p -> new AdminProjectSummaryView(
@@ -115,7 +103,7 @@ public class PortfolioService {
                         formatUtc(p.getPublishedAt()), formatUtc(p.getUpdatedAt())))
                 .toList();
 
-        long safeTotal = total == null ? 0 : total;
+        long safeTotal = result.getTotal();
         int totalPages = safeTotal == 0 ? 0 : (int) ((safeTotal + safeSize - 1) / safeSize);
         return new AdminProjectPageView(items, safePage, safeSize, safeTotal, totalPages);
     }

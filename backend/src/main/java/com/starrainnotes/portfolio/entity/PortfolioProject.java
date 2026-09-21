@@ -6,6 +6,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.handlers.JacksonTypeHandler;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -15,10 +18,12 @@ import java.util.List;
  * Portfolio project (frozen table {@code portfolio_project}).
  *
  * <p>publish_status (DRAFT/PUBLISHED/WITHDRAWN) and project_status
- * (DEVELOPING/COMPLETED/ONLINE) are fully independent states — never merged
- * (AGENTS.md). Cover uses cover_media_id; multi-image gallery lives in
- * portfolio_project_media.</p>
+ * (DEVELOPING/COMPLETED/ONLINE) are independent states. Cover uses
+ * cover_media_id; gallery rows live in portfolio_project_media.</p>
  */
+@Getter
+@Setter
+@NoArgsConstructor
 @TableName(value = "portfolio_project", autoResultMap = true)
 public class PortfolioProject {
 
@@ -47,172 +52,4 @@ public class PortfolioProject {
     private LocalDateTime createdAt;
     @TableField(updateStrategy = FieldStrategy.NEVER)
     private LocalDateTime updatedAt;
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public List<String> getTechStack() {
-        return techStack;
-    }
-
-    public void setTechStack(List<String> techStack) {
-        this.techStack = techStack;
-    }
-
-    public String getBodyMarkdown() {
-        return bodyMarkdown;
-    }
-
-    public void setBodyMarkdown(String bodyMarkdown) {
-        this.bodyMarkdown = bodyMarkdown;
-    }
-
-    public Long getCoverMediaId() {
-        return coverMediaId;
-    }
-
-    public void setCoverMediaId(Long coverMediaId) {
-        this.coverMediaId = coverMediaId;
-    }
-
-    public String getRepositoryUrl() {
-        return repositoryUrl;
-    }
-
-    public void setRepositoryUrl(String repositoryUrl) {
-        this.repositoryUrl = repositoryUrl;
-    }
-
-    public String getDemoUrl() {
-        return demoUrl;
-    }
-
-    public void setDemoUrl(String demoUrl) {
-        this.demoUrl = demoUrl;
-    }
-
-    public String getPublishStatus() {
-        return publishStatus;
-    }
-
-    public void setPublishStatus(String publishStatus) {
-        this.publishStatus = publishStatus;
-    }
-
-    public String getProjectStatus() {
-        return projectStatus;
-    }
-
-    public void setProjectStatus(String projectStatus) {
-        this.projectStatus = projectStatus;
-    }
-
-    public Boolean getFeatured() {
-        return featured;
-    }
-
-    public void setFeatured(Boolean featured) {
-        this.featured = featured;
-    }
-
-    public Integer getSortOrder() {
-        return sortOrder;
-    }
-
-    public void setSortOrder(Integer sortOrder) {
-        this.sortOrder = sortOrder;
-    }
-
-    public LocalDate getStartedAt() {
-        return startedAt;
-    }
-
-    public void setStartedAt(LocalDate startedAt) {
-        this.startedAt = startedAt;
-    }
-
-    public LocalDate getCompletedAt() {
-        return completedAt;
-    }
-
-    public void setCompletedAt(LocalDate completedAt) {
-        this.completedAt = completedAt;
-    }
-
-    public String getSeoTitle() {
-        return seoTitle;
-    }
-
-    public void setSeoTitle(String seoTitle) {
-        this.seoTitle = seoTitle;
-    }
-
-    public String getSeoDescription() {
-        return seoDescription;
-    }
-
-    public void setSeoDescription(String seoDescription) {
-        this.seoDescription = seoDescription;
-    }
-
-    public LocalDateTime getPublishedAt() {
-        return publishedAt;
-    }
-
-    public void setPublishedAt(LocalDateTime publishedAt) {
-        this.publishedAt = publishedAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }
