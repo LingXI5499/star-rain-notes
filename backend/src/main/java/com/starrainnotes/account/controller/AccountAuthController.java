@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -70,8 +70,8 @@ public class AccountAuthController {
     @PutMapping("/password")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void changePassword(@Valid @RequestBody ChangePasswordRequest body, HttpServletRequest request,
-                               Authentication authentication) {
-        if (!(authentication.getPrincipal() instanceof AccountPrincipal principal)
+                               @AuthenticationPrincipal AccountPrincipal principal) {
+        if (principal == null
                 || !principal.getEmail().equalsIgnoreCase(body.email().trim())) {
             throw AccountService.fail("ACCOUNT_IDENTITY_MISMATCH", HttpStatus.FORBIDDEN,
                     "Forbidden", "The password can only be changed for the current account.");
