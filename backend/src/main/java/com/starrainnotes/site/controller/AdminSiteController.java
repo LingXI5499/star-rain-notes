@@ -4,8 +4,10 @@ import com.starrainnotes.site.dto.AdminSiteSettingsView;
 import com.starrainnotes.site.dto.DashboardView;
 import com.starrainnotes.site.dto.UpdateSiteSettingsRequest;
 import com.starrainnotes.site.service.DashboardService;
-import com.starrainnotes.site.service.SiteService;
+import com.starrainnotes.site.service.SiteCommandService;
+import com.starrainnotes.site.service.SiteQueryService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,15 +20,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/admin")
+@RequiredArgsConstructor
 public class AdminSiteController {
 
-    private final SiteService siteService;
+    private final SiteCommandService commandService;
+    private final SiteQueryService queryService;
     private final DashboardService dashboardService;
-
-    public AdminSiteController(SiteService siteService, DashboardService dashboardService) {
-        this.siteService = siteService;
-        this.dashboardService = dashboardService;
-    }
 
     @GetMapping("/dashboard")
     public DashboardView dashboard() {
@@ -35,11 +34,11 @@ public class AdminSiteController {
 
     @GetMapping("/site-settings")
     public AdminSiteSettingsView getSiteSettings() {
-        return siteService.getAdminSettings();
+        return queryService.getAdminSettings();
     }
 
     @PutMapping("/site-settings")
     public AdminSiteSettingsView updateSiteSettings(@Valid @RequestBody UpdateSiteSettingsRequest request) {
-        return siteService.updateAdminSettings(request);
+        return commandService.updateAdminSettings(request);
     }
 }

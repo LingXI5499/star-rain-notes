@@ -3,7 +3,6 @@ package com.starrainnotes.seo;
 import com.starrainnotes.blog.dto.UpdatePostRequest;
 import com.starrainnotes.blog.service.BlogCommandService;
 import com.starrainnotes.blog.service.BlogQueryService;
-import com.starrainnotes.site.service.SiteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +32,6 @@ class ExperiencePerformanceTest {
     @Autowired JdbcTemplate jdbc;
     @Autowired BlogCommandService blogCommands;
     @Autowired BlogQueryService blogQueries;
-    @Autowired SiteService sites;
     @Autowired SeoContentRepository content;
     @Autowired SeoDocumentCache pages;
     @Autowired SeoHtmlRenderer renderer;

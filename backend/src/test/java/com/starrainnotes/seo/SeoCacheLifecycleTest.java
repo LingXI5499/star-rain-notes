@@ -7,7 +7,8 @@ import com.starrainnotes.profile.dto.UpdateAboutRequest;
 import com.starrainnotes.profile.service.ProfileCommandService;
 import com.starrainnotes.profile.service.ProfileQueryService;
 import com.starrainnotes.site.dto.UpdateSiteSettingsRequest;
-import com.starrainnotes.site.service.SiteService;
+import com.starrainnotes.site.service.SiteCommandService;
+import com.starrainnotes.site.service.SiteQueryService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,7 +23,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 @ActiveProfiles("test")
 class SeoCacheLifecycleTest {
     @Autowired BlogCommandService blogs;
-    @Autowired SiteService sites;
+    @Autowired SiteCommandService siteCommands;
+    @Autowired SiteQueryService siteQueries;
     @Autowired ProfileCommandService profileCommands;
     @Autowired ProfileQueryService profileQueries;
     @Autowired SeoDocumentCache pages;
@@ -65,16 +67,16 @@ class SeoCacheLifecycleTest {
     }
 
     @Test void siteAndAuthorEditsInvalidateCachedIdentity() {
-        var site = sites.getAdminSettings();
+        var site = siteQueries.getAdminSettings();
         var profile = profileQueries.getAdmin();
         try {
             content.site(); content.authorName(); page("/about");
-            sites.updateAdminSettings(new UpdateSiteSettingsRequest("Updated identity", site.tagline(), site.siteUrl(), site.footerText(), site.githubUrl(), site.defaultSeoDescription(), site.timezone(), site.logoMediaId(), site.faviconMediaId()));
+            siteCommands.updateAdminSettings(new UpdateSiteSettingsRequest("Updated identity", site.tagline(), site.siteUrl(), site.footerText(), site.githubUrl(), site.defaultSeoDescription(), site.timezone(), site.logoMediaId(), site.faviconMediaId()));
             assertThat(content.site().name()).isEqualTo("Updated identity");
             profileCommands.update(new UpdateAboutRequest("Updated author", profile.headline(), profile.bio(), profile.avatarMediaId(), profile.githubUrl(), profile.publicEmail(), profile.resumeMediaId(), profile.currentFocus(), profile.technicalDirectionMarkdown(), profile.journeyMarkdown()));
             assertThat(content.authorName()).isEqualTo("Updated author");
         } finally {
-            sites.updateAdminSettings(new UpdateSiteSettingsRequest(site.siteName(), site.tagline(), site.siteUrl(), site.footerText(), site.githubUrl(), site.defaultSeoDescription(), site.timezone(), site.logoMediaId(), site.faviconMediaId()));
+            siteCommands.updateAdminSettings(new UpdateSiteSettingsRequest(site.siteName(), site.tagline(), site.siteUrl(), site.footerText(), site.githubUrl(), site.defaultSeoDescription(), site.timezone(), site.logoMediaId(), site.faviconMediaId()));
             profileCommands.update(new UpdateAboutRequest(profile.displayName(), profile.headline(), profile.bio(), profile.avatarMediaId(), profile.githubUrl(), profile.publicEmail(), profile.resumeMediaId(), profile.currentFocus(), profile.technicalDirectionMarkdown(), profile.journeyMarkdown()));
         }
     }
