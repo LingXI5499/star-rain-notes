@@ -1,8 +1,5 @@
 package com.starrainnotes.tutorial.controller;
 
-import com.starrainnotes.account.review.dto.ContentReviewView;
-import com.starrainnotes.account.review.service.ContentReviewService;
-import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.tutorial.dto.AdminCurriculumView;
 import com.starrainnotes.tutorial.dto.AdminTreeNodeView;
 import com.starrainnotes.tutorial.dto.ChapterDetailView;
@@ -14,7 +11,9 @@ import com.starrainnotes.tutorial.dto.ReassignChapterRequest;
 import com.starrainnotes.tutorial.dto.UpdateChapterRequest;
 import com.starrainnotes.tutorial.dto.UpdateGroupRequest;
 import com.starrainnotes.tutorial.service.TutorialNodeService;
+import com.starrainnotes.tutorial.service.TutorialChapterUpdateWorkflowService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -35,15 +34,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/v1/admin/tutorials/{tutorialId}")
+@RequiredArgsConstructor
 public class TutorialNodeAdminController {
 
     private final TutorialNodeService nodeService;
-    private final ContentReviewService reviewService;
-
-    public TutorialNodeAdminController(TutorialNodeService nodeService, ContentReviewService reviewService) {
-        this.nodeService = nodeService;
-        this.reviewService = reviewService;
-    }
+    private final TutorialChapterUpdateWorkflowService updateWorkflowService;
 
     @GetMapping("/nodes")
     public List<AdminTreeNodeView> tree(@PathVariable Long tutorialId) {
@@ -108,13 +103,8 @@ public class TutorialNodeAdminController {
                                            @PathVariable Long chapterId,
                                            @Valid @RequestBody UpdateChapterRequest request,
                                            Authentication authentication) {
-        if (!isSuperAdmin(authentication)
-                && "PUBLISHED".equals(nodeService.chapterPublishStatus(tutorialId, chapterId))) {
-            ContentReviewView review = reviewService.submitTutorialChapterUpdate(
-                    actorId(authentication), tutorialId, chapterId, request);
-            return ResponseEntity.accepted().body(review);
-        }
-        return ResponseEntity.ok(nodeService.updateChapter(tutorialId, chapterId, request));
+        TutorialChapterUpdateWorkflowService.Outcome outcome = updateWorkflowService.update(authentication, tutorialId, chapterId, request);
+        return ResponseEntity.status(outcome.status()).body(outcome.body());
     }
 
     @DeleteMapping("/chapters/{chapterId}")
@@ -161,13 +151,4 @@ public class TutorialNodeAdminController {
         nodeService.moveNode(tutorialId, nodeId, request);
     }
 
-    private boolean isSuperAdmin(Authentication authentication) {
-        return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> "ROLE_SUPER_ADMIN".equals(authority.getAuthority()));
-    }
-
-    private Long actorId(Authentication authentication) {
-        Object principal = authentication == null ? null : authentication.getPrincipal();
-        return principal instanceof AccountPrincipal account ? account.getId() : null;
-    }
 }

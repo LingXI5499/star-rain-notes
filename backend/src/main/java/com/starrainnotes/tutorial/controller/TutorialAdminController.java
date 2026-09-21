@@ -5,8 +5,10 @@ import com.starrainnotes.tutorial.dto.CreateTutorialRequest;
 import com.starrainnotes.tutorial.dto.MoveTutorialRequest;
 import com.starrainnotes.tutorial.dto.TutorialPageView;
 import com.starrainnotes.tutorial.dto.UpdateTutorialRequest;
-import com.starrainnotes.tutorial.service.TutorialService;
+import com.starrainnotes.tutorial.service.TutorialCommandService;
+import com.starrainnotes.tutorial.service.TutorialQueryService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,13 +27,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/admin/tutorials")
+@RequiredArgsConstructor
 public class TutorialAdminController {
-
-    private final TutorialService tutorialService;
-
-    public TutorialAdminController(TutorialService tutorialService) {
-        this.tutorialService = tutorialService;
-    }
+    private final TutorialCommandService commandService;
+    private final TutorialQueryService queryService;
 
     @GetMapping
     public TutorialPageView list(@RequestParam(defaultValue = "1") int page,
@@ -39,47 +38,47 @@ public class TutorialAdminController {
                                  @RequestParam(required = false) String status,
                                  @RequestParam(required = false) String q,
                                  @RequestParam(required = false) Long categoryId) {
-        return tutorialService.adminList(page, pageSize, status, q, categoryId);
+        return queryService.adminList(page, pageSize, status, q, categoryId);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AdminTutorialDetailView create(@Valid @RequestBody CreateTutorialRequest request) {
-        return tutorialService.create(request);
+        return commandService.create(request);
     }
 
     @GetMapping("/{tutorialId}")
     public AdminTutorialDetailView detail(@PathVariable Long tutorialId) {
-        return tutorialService.adminDetail(tutorialId);
+        return queryService.adminDetail(tutorialId);
     }
 
     @PutMapping("/{tutorialId}")
     public AdminTutorialDetailView update(@PathVariable Long tutorialId,
                                           @Valid @RequestBody UpdateTutorialRequest request) {
-        return tutorialService.update(tutorialId, request);
+        return commandService.update(tutorialId, request);
     }
 
     @DeleteMapping("/{tutorialId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long tutorialId) {
-        tutorialService.delete(tutorialId);
+        commandService.delete(tutorialId);
     }
 
     @PostMapping("/{tutorialId}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void move(@PathVariable Long tutorialId,
                      @Valid @RequestBody MoveTutorialRequest request) {
-        tutorialService.move(tutorialId, request);
+        commandService.move(tutorialId, request);
     }
 
     @PostMapping("/{tutorialId}/publish")
     public AdminTutorialDetailView publish(@PathVariable Long tutorialId) {
-        return tutorialService.publish(tutorialId);
+        return commandService.publish(tutorialId);
     }
 
     @PostMapping("/{tutorialId}/withdraw")
     public AdminTutorialDetailView withdraw(@PathVariable Long tutorialId) {
-        return tutorialService.withdraw(tutorialId);
+        return commandService.withdraw(tutorialId);
     }
 }
 
