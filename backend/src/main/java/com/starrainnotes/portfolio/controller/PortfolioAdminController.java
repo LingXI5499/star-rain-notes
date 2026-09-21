@@ -4,8 +4,9 @@ import com.starrainnotes.portfolio.dto.AdminProjectDetailView;
 import com.starrainnotes.portfolio.dto.AdminProjectPageView;
 import com.starrainnotes.portfolio.dto.CreateProjectRequest;
 import com.starrainnotes.portfolio.dto.UpdateProjectRequest;
-import com.starrainnotes.portfolio.service.PortfolioService;
+import com.starrainnotes.portfolio.service.PortfolioCommandService;
 import com.starrainnotes.portfolio.service.PortfolioPrototypeService;
+import com.starrainnotes.portfolio.service.PortfolioQueryService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +36,8 @@ import org.springframework.http.ResponseEntity;
 @RequiredArgsConstructor
 public class PortfolioAdminController {
 
-    private final PortfolioService portfolioService;
+    private final PortfolioCommandService commandService;
+    private final PortfolioQueryService queryService;
     private final PortfolioPrototypeService prototypeService;
 
     @GetMapping
@@ -44,58 +46,58 @@ public class PortfolioAdminController {
                                      @RequestParam(required = false) String status,
                                      @RequestParam(required = false) String projectStatus,
                                      @RequestParam(required = false) String q) {
-        return portfolioService.adminList(page, pageSize, status, projectStatus, q);
+        return queryService.adminList(page, pageSize, status, projectStatus, q);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public AdminProjectDetailView create(@Valid @RequestBody CreateProjectRequest request) {
-        return portfolioService.create(request);
+        return commandService.create(request);
     }
 
     @GetMapping("/{projectId}")
     public AdminProjectDetailView detail(@PathVariable Long projectId) {
-        return portfolioService.adminDetail(projectId);
+        return queryService.adminDetail(projectId);
     }
 
     @PutMapping("/{projectId}")
     public AdminProjectDetailView update(@PathVariable Long projectId,
                                          @Valid @RequestBody UpdateProjectRequest request) {
-        return portfolioService.update(projectId, request);
+        return commandService.update(projectId, request);
     }
 
     @DeleteMapping("/{projectId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long projectId) {
-        portfolioService.delete(projectId);
+        commandService.delete(projectId);
     }
 
     @PostMapping("/{projectId}/publish")
     public AdminProjectDetailView publish(@PathVariable Long projectId) {
-        return portfolioService.publish(projectId);
+        return commandService.publish(projectId);
     }
 
     @PostMapping("/{projectId}/withdraw")
     public AdminProjectDetailView withdraw(@PathVariable Long projectId) {
-        return portfolioService.withdraw(projectId);
+        return commandService.withdraw(projectId);
     }
 
     @PostMapping(value = "/{projectId}/prototype", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public com.starrainnotes.portfolio.dto.ProjectPrototypeView uploadPrototype(@PathVariable Long projectId, @RequestParam("file") MultipartFile file) {
-        AdminProjectDetailView project = portfolioService.adminDetail(projectId);
+        AdminProjectDetailView project = queryService.adminDetail(projectId);
         return prototypeService.upload(projectId, file, "PUBLISHED".equals(project.publishStatus()));
     }
 
     @PostMapping("/{projectId}/prototype/media/{mediaId}")
     public com.starrainnotes.portfolio.dto.ProjectPrototypeView attachPrototype(@PathVariable Long projectId,
                                                                                 @PathVariable Long mediaId) {
-        AdminProjectDetailView project = portfolioService.adminDetail(projectId);
+        AdminProjectDetailView project = queryService.adminDetail(projectId);
         return prototypeService.attach(projectId, mediaId, "PUBLISHED".equals(project.publishStatus()));
     }
 
     @DeleteMapping("/{projectId}/prototype")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deletePrototype(@PathVariable Long projectId) { portfolioService.adminDetail(projectId); prototypeService.delete(projectId); }
+    public void deletePrototype(@PathVariable Long projectId) { queryService.adminDetail(projectId); prototypeService.delete(projectId); }
 
     @GetMapping("/{projectId}/prototype-preview/{*path}")
     public ResponseEntity<Resource> previewPrototype(@PathVariable Long projectId, @PathVariable String path) {
