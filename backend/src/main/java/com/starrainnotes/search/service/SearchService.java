@@ -4,44 +4,30 @@ import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.search.dto.SearchCountsView;
 import com.starrainnotes.search.dto.SearchItemView;
 import com.starrainnotes.search.dto.SearchPageView;
+import com.starrainnotes.search.repository.SearchDocument;
+import com.starrainnotes.search.repository.SearchRepository;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 
-/**
- * Global search over published tutorials, chapters, blogs, portfolios,
- * English learning content, and vocabulary words.
- *
- * <p>No ES / Redis / search table — plain indexed LIKE with parameter binding
- * and escaped %/_ wildcards. Ranking: title exact +100, title prefix +80,
- * title contains +60, summary +30, body +10; ties break by activityAt DESC
- * then id DESC. activityAt: Tutorial/Chapter/Portfolio = updatedAt,
- * Blog = publishedAt. `counts` ignores the type filter; `total` applies it.
- * type=tutorial includes Tutorial + Chapter; type=word includes vocabulary.</p>
- */
+/** Global-search validation, ranking, type filtering, pagination and response assembly. */
 @Service
+@RequiredArgsConstructor
 public class SearchService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final int MAX_PAGE_SIZE = 50;
 
-    private final JdbcTemplate jdbc;
+    private final SearchRepository repository;
     private final SiteSettingsTimezone timezone;
-
-    public SearchService(JdbcTemplate jdbc, SiteSettingsTimezone timezone) {
-        this.jdbc = jdbc;
-        this.timezone = timezone;
-    }
 
     public SearchPageView search(String rawQuery, String type, int page, int pageSize) {
         String query = rawQuery == null ? "" : rawQuery.trim();
@@ -50,59 +36,22 @@ public class SearchService {
                     "Invalid search query", "q must be between 2 and 100 characters after trimming.");
         }
         String pattern = "%" + escapeLike(query) + "%";
-
-        List<Candidate> tutorials = searchTutorials(pattern, query);
-        List<Candidate> chapters = searchChapters(pattern, query);
-        List<Candidate> blogs = searchBlogs(pattern, query);
-        List<Candidate> portfolios = searchPortfolios(pattern, query);
-        List<Candidate> grammar = searchGrammar(pattern, query);
-        List<Candidate> reading = searchReading(pattern, query);
-        List<Candidate> listening = searchListeningMaterials(pattern, query);
-        List<Candidate> pronunciation = searchPronunciationRules(pattern, query);
-        List<Candidate> writing = searchWriting(pattern, query);
-        List<Candidate> words = searchVocabulary(pattern, query);
+        List<Candidate> tutorials = candidates(repository.tutorials(pattern), query);
+        List<Candidate> chapters = candidates(repository.chapters(pattern), query);
+        List<Candidate> blogs = candidates(repository.blogs(pattern), query);
+        List<Candidate> portfolios = candidates(repository.portfolios(pattern), query);
+        List<Candidate> grammar = candidates(repository.grammar(pattern), query);
+        List<Candidate> reading = candidates(repository.reading(pattern), query);
+        List<Candidate> listening = candidates(repository.listeningMaterials(pattern), query);
+        List<Candidate> pronunciation = candidates(repository.pronunciationRules(pattern), query);
+        List<Candidate> writing = candidates(repository.writing(pattern), query);
+        List<Candidate> words = candidates(repository.vocabulary(pattern), query);
 
         SearchCountsView counts = new SearchCountsView(
-                tutorials.size(), chapters.size(), blogs.size(), portfolios.size(), grammar.size(),
-                reading.size(), listening.size() + pronunciation.size(), writing.size(), words.size());
-
-        boolean includeTutorial = type == null || type.isBlank() || "tutorial".equals(type);
-        boolean includeBlog = type == null || type.isBlank() || "blog".equals(type);
-        boolean includePortfolio = type == null || type.isBlank() || "portfolio".equals(type);
-        boolean includeGrammar = type == null || type.isBlank() || "grammar".equals(type);
-        boolean includeReading = type == null || type.isBlank() || "reading".equals(type);
-        boolean includeListening = type == null || type.isBlank() || "listening".equals(type);
-        boolean includeWriting = type == null || type.isBlank() || "writing".equals(type);
-        boolean includeWord = type == null || type.isBlank() || "word".equals(type);
-
-        List<Candidate> all = new ArrayList<>();
-        if (includeTutorial) {
-            all.addAll(tutorials);
-            all.addAll(chapters);
-        }
-        if (includeBlog) {
-            all.addAll(blogs);
-        }
-        if (includePortfolio) {
-            all.addAll(portfolios);
-        }
-        if (includeGrammar) {
-            all.addAll(grammar);
-        }
-        if (includeReading) {
-            all.addAll(reading);
-        }
-        if (includeListening) {
-            all.addAll(listening);
-            all.addAll(pronunciation);
-        }
-        if (includeWriting) {
-            all.addAll(writing);
-        }
-        if (includeWord) {
-            all.addAll(words);
-        }
-
+                tutorials.size(), chapters.size(), blogs.size(), portfolios.size(), grammar.size(), reading.size(),
+                listening.size() + pronunciation.size(), writing.size(), words.size());
+        List<Candidate> all = selectedCandidates(type, tutorials, chapters, blogs, portfolios, grammar, reading,
+                listening, pronunciation, writing, words);
         all.sort(Comparator.comparingInt(Candidate::score).reversed()
                 .thenComparing(Candidate::activityAt, Comparator.reverseOrder())
                 .thenComparing(Candidate::id, Comparator.reverseOrder()));
@@ -110,239 +59,57 @@ public class SearchService {
         int safePage = Math.max(page, 1);
         int safeSize = Math.min(Math.max(pageSize, 1), MAX_PAGE_SIZE);
         int total = all.size();
-        int from = (safePage - 1) * safeSize;
-        List<SearchItemView> items = all.stream()
-                .skip(from)
-                .limit(safeSize)
-                .map(this::toView)
-                .toList();
+        List<SearchItemView> items = all.stream().skip((long) (safePage - 1) * safeSize).limit(safeSize)
+                .map(this::toView).toList();
         int totalPages = total == 0 ? 0 : (int) Math.ceil((double) total / safeSize);
         return new SearchPageView(items, counts, total, safePage, safeSize, totalPages);
     }
 
-    // ---------------------------------------------------------------
-    // sources (parameter-bound LIKE with escaped wildcards)
-    // ---------------------------------------------------------------
-
-    private List<Candidate> searchTutorials(String pattern, String query) {
-        return jdbc.query("""
-                SELECT id, title, summary, slug, updated_at
-                FROM tutorial
-                WHERE publish_status = 'PUBLISHED'
-                  AND (title LIKE ? OR summary LIKE ?)
-                """, (rs, rowNum) -> {
-            String title = rs.getString("title");
-            String summary = rs.getString("summary");
-            return new Candidate("TUTORIAL", rs.getLong("id"), title, summary, rs.getString("slug"),
-                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
-                    score(query, title, summary, null));
-        }, pattern, pattern);
+    private List<Candidate> selectedCandidates(String type, List<Candidate> tutorials, List<Candidate> chapters,
+                                               List<Candidate> blogs, List<Candidate> portfolios, List<Candidate> grammar,
+                                               List<Candidate> reading, List<Candidate> listening, List<Candidate> pronunciation,
+                                               List<Candidate> writing, List<Candidate> words) {
+        boolean allTypes = type == null || type.isBlank();
+        List<Candidate> result = new ArrayList<>();
+        if (allTypes || "tutorial".equals(type)) { result.addAll(tutorials); result.addAll(chapters); }
+        if (allTypes || "blog".equals(type)) result.addAll(blogs);
+        if (allTypes || "portfolio".equals(type)) result.addAll(portfolios);
+        if (allTypes || "grammar".equals(type)) result.addAll(grammar);
+        if (allTypes || "reading".equals(type)) result.addAll(reading);
+        if (allTypes || "listening".equals(type)) { result.addAll(listening); result.addAll(pronunciation); }
+        if (allTypes || "writing".equals(type)) result.addAll(writing);
+        if (allTypes || "word".equals(type)) result.addAll(words);
+        return result;
     }
 
-    private List<Candidate> searchChapters(String pattern, String query) {
-        return jdbc.query("""
-                SELECT n.id, n.title, n.summary, n.body_markdown, n.slug AS chapter_slug,
-                       t.slug AS tutorial_slug, n.updated_at
-                FROM tutorial_node n
-                JOIN tutorial t ON t.id = n.tutorial_id
-                WHERE t.publish_status = 'PUBLISHED'
-                  AND n.node_type = 'CHAPTER'
-                  AND n.publish_status = 'PUBLISHED'
-                  AND (n.title LIKE ? OR n.summary LIKE ? OR n.body_markdown LIKE ?)
-                """, (rs, rowNum) -> {
-            String title = rs.getString("title");
-            String summary = rs.getString("summary");
-            String body = rs.getString("body_markdown");
-            return new Candidate("CHAPTER", rs.getLong("id"), title, summary, null,
-                    rs.getString("tutorial_slug"), rs.getString("chapter_slug"),
-                    rs.getTimestamp("updated_at").toLocalDateTime(),
-                    score(query, title, summary, body));
-        }, pattern, pattern, pattern);
+    private List<Candidate> candidates(List<SearchDocument> documents, String query) {
+        return documents.stream().map(document -> new Candidate(
+                document.type(), document.id(), document.title(), document.summary(), document.slug(),
+                document.tutorialSlug(), document.chapterSlug(), document.activityAt(),
+                score(query, document.title(), document.summary(), document.body()))).toList();
     }
-
-    private List<Candidate> searchBlogs(String pattern, String query) {
-        return jdbc.query("""
-                SELECT id, title, summary, body_markdown, slug, published_at
-                FROM blog_post
-                WHERE publish_status = 'PUBLISHED'
-                  AND (title LIKE ? OR summary LIKE ? OR body_markdown LIKE ?)
-                """, (rs, rowNum) -> {
-            String title = rs.getString("title");
-            String summary = rs.getString("summary");
-            String body = rs.getString("body_markdown");
-            return new Candidate("BLOG", rs.getLong("id"), title, summary, rs.getString("slug"),
-                    null, null, rs.getTimestamp("published_at").toLocalDateTime(),
-                    score(query, title, summary, body));
-        }, pattern, pattern, pattern);
-    }
-
-    private List<Candidate> searchPortfolios(String pattern, String query) {
-        return jdbc.query("""
-                SELECT id, title, summary, body_markdown, slug, updated_at
-                FROM portfolio_project
-                WHERE publish_status = 'PUBLISHED'
-                  AND (title LIKE ? OR summary LIKE ? OR body_markdown LIKE ?)
-                """, (rs, rowNum) -> {
-            String title = rs.getString("title");
-            String summary = rs.getString("summary");
-            String body = rs.getString("body_markdown");
-            return new Candidate("PORTFOLIO", rs.getLong("id"), title, summary, rs.getString("slug"),
-                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
-                    score(query, title, summary, body));
-        }, pattern, pattern, pattern);
-    }
-
-    private List<Candidate> searchGrammar(String pattern, String query) {
-        return jdbc.query("""
-                SELECT l.id, l.title, l.summary, l.body_markdown, l.slug, l.updated_at
-                FROM english_grammar_lesson l
-                JOIN english_grammar_course c ON c.id=l.course_id
-                WHERE c.publish_status='PUBLISHED' AND l.publish_status='PUBLISHED'
-                  AND (l.title LIKE ? OR l.summary LIKE ? OR l.body_markdown LIKE ?)
-                """, (rs, rowNum) -> {
-            String title = rs.getString("title");
-            String summary = rs.getString("summary");
-            String body = rs.getString("body_markdown");
-            return new Candidate("GRAMMAR", rs.getLong("id"), title, summary, rs.getString("slug"),
-                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
-                    score(query, title, summary, body));
-        }, pattern, pattern, pattern);
-    }
-
-    private List<Candidate> searchReading(String pattern, String query) {
-        return jdbc.query("""
-                SELECT id, title, summary, body_markdown, slug, updated_at
-                FROM english_reading_article
-                WHERE publish_status = 'PUBLISHED'
-                  AND (title LIKE ? OR summary LIKE ? OR body_markdown LIKE ?)
-                """, (rs, rowNum) -> {
-            String title = rs.getString("title");
-            String summary = rs.getString("summary");
-            String body = rs.getString("body_markdown");
-            return new Candidate("READING", rs.getLong("id"), title, summary, rs.getString("slug"),
-                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
-                    score(query, title, summary, body));
-        }, pattern, pattern, pattern);
-    }
-
-    private List<Candidate> searchListeningMaterials(String pattern, String query) {
-        return jdbc.query("""
-                SELECT id, title, summary, transcript_markdown, slug, updated_at
-                FROM english_listening_item
-                WHERE publish_status = 'PUBLISHED'
-                  AND (title LIKE ? OR summary LIKE ? OR transcript_markdown LIKE ?)
-                """, (rs, rowNum) -> {
-            String title = rs.getString("title");
-            String summary = rs.getString("summary");
-            String body = rs.getString("transcript_markdown");
-            return new Candidate("LISTENING", rs.getLong("id"), title, summary, rs.getString("slug"),
-                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
-                    score(query, title, summary, body));
-        }, pattern, pattern, pattern);
-    }
-
-    private List<Candidate> searchPronunciationRules(String pattern, String query) {
-        return jdbc.query("""
-                SELECT id, title, summary, body_markdown, slug, updated_at
-                FROM english_listening_pronunciation_rule
-                WHERE publish_status = 'PUBLISHED'
-                  AND (title LIKE ? OR summary LIKE ? OR body_markdown LIKE ?)
-                """, (rs, rowNum) -> {
-            String title = rs.getString("title");
-            String summary = rs.getString("summary");
-            String body = rs.getString("body_markdown");
-            return new Candidate("PRONUNCIATION", rs.getLong("id"), title, summary, rs.getString("slug"),
-                    null, null, rs.getTimestamp("updated_at").toLocalDateTime(),
-                    score(query, title, summary, body));
-        }, pattern, pattern, pattern);
-    }
-
-    private List<Candidate> searchWriting(String pattern, String query) {
-        List<Candidate> resources = jdbc.query("""
-                SELECT id, title, summary, body_markdown, slug, updated_at
-                FROM english_writing_resource
-                WHERE publish_status = 'PUBLISHED'
-                  AND (title LIKE ? OR summary LIKE ? OR body_markdown LIKE ?)
-                """, (rs, rowNum) -> writingCandidate(rs.getLong("id"), rs.getString("title"),
-                rs.getString("summary"), rs.getString("body_markdown"), rs.getString("slug"),
-                rs.getTimestamp("updated_at").toLocalDateTime(), query, "resource"), pattern, pattern, pattern);
-        resources.addAll(jdbc.query("""
-                SELECT id, title, summary, CONCAT(background_markdown, '\n', requirements_markdown) AS body_markdown, slug, updated_at
-                FROM english_writing_prompt
-                WHERE publish_status = 'PUBLISHED'
-                  AND (title LIKE ? OR summary LIKE ? OR background_markdown LIKE ? OR requirements_markdown LIKE ?)
-                """, (rs, rowNum) -> writingCandidate(rs.getLong("id"), rs.getString("title"),
-                rs.getString("summary"), rs.getString("body_markdown"), rs.getString("slug"),
-                rs.getTimestamp("updated_at").toLocalDateTime(), query, "practice"), pattern, pattern, pattern, pattern));
-        return resources;
-    }
-
-    private Candidate writingCandidate(Long id, String title, String summary, String body, String slug,
-                                       LocalDateTime updatedAt, String query, String kind) {
-        return new Candidate("WRITING", id, title, summary, slug, kind, null, updatedAt,
-                score(query, title, summary, body));
-    }
-
-    private List<Candidate> searchVocabulary(String pattern, String query) {
-        return jdbc.query("""
-                SELECT w.id, w.word, w.translation, w.inflections, w.theme_id, t.name AS theme_name, w.updated_at
-                FROM vocabulary_word w
-                JOIN vocabulary_theme t ON t.id = w.theme_id
-                WHERE w.word LIKE ? OR w.translation LIKE ? OR IFNULL(w.inflections, '') LIKE ?
-                """, (rs, rowNum) -> {
-            String word = rs.getString("word");
-            String translation = rs.getString("translation");
-            String themeName = rs.getString("theme_name");
-            String summary = themeName == null || themeName.isBlank()
-                    ? translation
-                    : translation + " · " + themeName;
-            // tutorialSlug carries themeId so the client can open the theme page.
-            return new Candidate("WORD", rs.getLong("id"), word, summary, null,
-                    String.valueOf(rs.getLong("theme_id")), null,
-                    rs.getTimestamp("updated_at").toLocalDateTime(),
-                    score(query, word, translation, rs.getString("inflections")));
-        }, pattern, pattern, pattern);
-    }
-
-    // ---------------------------------------------------------------
-    // ranking / helpers
-    // ---------------------------------------------------------------
 
     private int score(String query, String title, String summary, String body) {
-        String q = query.toLowerCase(Locale.ROOT);
-        String t = title == null ? "" : title.toLowerCase(Locale.ROOT);
-        String s = summary == null ? "" : summary.toLowerCase(Locale.ROOT);
-        String b = body == null ? "" : body.toLowerCase(Locale.ROOT);
-        int score = 0;
-        if (t.equals(q)) {
-            score += 100;
-        } else if (t.startsWith(q)) {
-            score += 80;
-        } else if (t.contains(q)) {
-            score += 60;
-        }
-        if (s.contains(q)) {
-            score += 30;
-        }
-        if (b.contains(q)) {
-            score += 10;
-        }
+        String normalizedQuery = query.toLowerCase(Locale.ROOT);
+        String normalizedTitle = title == null ? "" : title.toLowerCase(Locale.ROOT);
+        String normalizedSummary = summary == null ? "" : summary.toLowerCase(Locale.ROOT);
+        String normalizedBody = body == null ? "" : body.toLowerCase(Locale.ROOT);
+        int score = normalizedTitle.equals(normalizedQuery) ? 100
+                : normalizedTitle.startsWith(normalizedQuery) ? 80
+                : normalizedTitle.contains(normalizedQuery) ? 60 : 0;
+        if (normalizedSummary.contains(normalizedQuery)) score += 30;
+        if (normalizedBody.contains(normalizedQuery)) score += 10;
         return score;
     }
 
     private String escapeLike(String value) {
-        return value.replace("\\", "\\\\")
-                .replace("%", "\\%")
-                .replace("_", "\\_");
+        return value.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
     }
 
-    private SearchItemView toView(Candidate c) {
-        return new SearchItemView(c.type(), c.id(), c.title(), c.summary(), c.slug(),
-                c.tutorialSlug(), c.chapterSlug(), formatUtc(c.activityAt()), c.score());
-    }
-
-    private String formatUtc(LocalDateTime utc) {
-        return timezone.atSite(utc).format(ISO_OFFSET);
+    private SearchItemView toView(Candidate candidate) {
+        return new SearchItemView(candidate.type(), candidate.id(), candidate.title(), candidate.summary(), candidate.slug(),
+                candidate.tutorialSlug(), candidate.chapterSlug(), timezone.atSite(candidate.activityAt()).format(ISO_OFFSET),
+                candidate.score());
     }
 
     private record Candidate(String type, Long id, String title, String summary, String slug,
