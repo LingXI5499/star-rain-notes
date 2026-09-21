@@ -3,7 +3,7 @@ package com.starrainnotes.tutorial.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
-import com.starrainnotes.site.service.SiteSettingsTimezone;
+import com.starrainnotes.tutorial.assembler.TutorialNodeAssembler;
 import com.starrainnotes.tutorial.dto.AdminCurriculumChapterView;
 import com.starrainnotes.tutorial.dto.AdminCurriculumGroupView;
 import com.starrainnotes.tutorial.dto.AdminCurriculumTutorialView;
@@ -30,11 +30,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -47,7 +42,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class TutorialNodeService {
 
-    private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final String GROUP = "GROUP";
     private static final String CHAPTER = "CHAPTER";
     private static final String PUBLISHED = "PUBLISHED";
@@ -57,7 +51,7 @@ public class TutorialNodeService {
     private final TutorialMapper tutorialMapper;
     private final TutorialCategoryMapper categoryMapper;
     private final TutorialNodeMapper nodeMapper;
-    private final SiteSettingsTimezone siteSettingsTimezone;
+    private final TutorialNodeAssembler nodeAssembler;
 
     public AdminTreeNodeView createGroup(Long tutorialId, CreateGroupRequest request) {
         requireTutorial(tutorialId);
@@ -68,14 +62,14 @@ public class TutorialNodeService {
         group.setTitle(request.title());
         group.setSortOrder(nextGroupOrder(tutorialId));
         nodeMapper.insert(group);
-        return toNodeView(group);
+        return nodeAssembler.toTreeNode(group);
     }
 
     public AdminTreeNodeView updateGroup(Long tutorialId, Long groupId, UpdateGroupRequest request) {
         TutorialNode group = requireGroup(tutorialId, groupId);
         group.setTitle(request.title());
         nodeMapper.updateById(group);
-        return toNodeView(group);
+        return nodeAssembler.toTreeNode(group);
     }
 
     @Transactional
@@ -109,7 +103,7 @@ public class TutorialNodeService {
         chapter.setPublishedAt(null);
         chapter.setSortOrder(nextChapterOrder(tutorialId, group.getId()));
         nodeMapper.insert(chapter);
-        return toChapterDetail(chapter);
+        return nodeAssembler.toChapterDetail(chapter);
     }
 
     public ChapterDetailView updateChapter(Long tutorialId, Long chapterId, UpdateChapterRequest request) {
@@ -121,7 +115,7 @@ public class TutorialNodeService {
         chapter.setSummary(request.summary());
         chapter.setBodyMarkdown(request.bodyMarkdown());
         nodeMapper.updateById(chapter);
-        return toChapterDetail(chapter);
+        return nodeAssembler.toChapterDetail(chapter);
     }
 
     @Transactional
@@ -144,7 +138,7 @@ public class TutorialNodeService {
             chapter.setPublishStatus(PUBLISHED);
             nodeMapper.updateById(chapter);
         }
-        return toChapterDetail(chapter);
+        return nodeAssembler.toChapterDetail(chapter);
     }
 
     public ChapterDetailView withdrawChapter(Long tutorialId, Long chapterId) {
@@ -157,7 +151,7 @@ public class TutorialNodeService {
             chapter.setPublishStatus(WITHDRAWN);
             nodeMapper.updateById(chapter);
         }
-        return toChapterDetail(chapter);
+        return nodeAssembler.toChapterDetail(chapter);
     }
 
     @Transactional
@@ -348,26 +342,4 @@ public class TutorialNodeService {
         }
     }
 
-    private AdminTreeNodeView toNodeView(TutorialNode node) {
-        return new AdminTreeNodeView(node.getId(), node.getParentId(), node.getNodeType(), node.getTitle(),
-                node.getSlug(), node.getPublishStatus(), node.getSortOrder(), new ArrayList<>());
-    }
-
-    private AdminCurriculumChapterView toCurriculumChapter(TutorialNode chapter) {
-        return new AdminCurriculumChapterView(chapter.getId(), chapter.getParentId(), chapter.getTitle(),
-                chapter.getSlug(), chapter.getPublishStatus(), chapter.getSortOrder(), formatUtc(chapter.getUpdatedAt()));
-    }
-
-    private ChapterDetailView toChapterDetail(TutorialNode chapter) {
-        return new ChapterDetailView(chapter.getId(), chapter.getTutorialId(), chapter.getParentId(),
-                chapter.getNodeType(), chapter.getTitle(), chapter.getSlug(), chapter.getSummary(),
-                chapter.getBodyMarkdown(), chapter.getPublishStatus(), chapter.getSortOrder(),
-                formatUtc(chapter.getPublishedAt()), formatUtc(chapter.getUpdatedAt()));
-    }
-
-    private String formatUtc(LocalDateTime utc) {
-        if (utc == null) return null;
-        return ZonedDateTime.of(utc, ZoneOffset.UTC)
-                .withZoneSameInstant(ZoneId.of(siteSettingsTimezone.get())).format(ISO_OFFSET);
-    }
 }

@@ -2,7 +2,7 @@ package com.starrainnotes.tutorial.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.site.service.SiteSettingsTimezone;
+import com.starrainnotes.tutorial.assembler.TutorialNodeAssembler;
 import com.starrainnotes.tutorial.dto.AdminCurriculumChapterView;
 import com.starrainnotes.tutorial.dto.AdminCurriculumGroupView;
 import com.starrainnotes.tutorial.dto.AdminCurriculumTutorialView;
@@ -19,9 +19,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -33,12 +30,11 @@ public class TutorialNodeQueryService {
     private static final String GROUP = "GROUP";
     private static final String CHAPTER = "CHAPTER";
     private static final String PUBLISHED = "PUBLISHED";
-    private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     private final TutorialMapper tutorialMapper;
     private final TutorialCategoryMapper categoryMapper;
     private final TutorialNodeMapper nodeMapper;
-    private final SiteSettingsTimezone siteSettingsTimezone;
+    private final TutorialNodeAssembler nodeAssembler;
 
     public List<AdminTreeNodeView> tree(Long tutorialId) {
         requireTutorial(tutorialId);
@@ -53,7 +49,7 @@ public class TutorialNodeQueryService {
                 .collect(Collectors.groupingBy(TutorialNode::getParentId));
         List<AdminCurriculumGroupView> groups = all.stream().filter(node -> GROUP.equals(node.getNodeType()) && node.getParentId() == null)
                 .map(group -> {
-                    List<AdminCurriculumChapterView> rows = chapters.getOrDefault(group.getId(), List.of()).stream().map(this::toCurriculumChapter).toList();
+                    List<AdminCurriculumChapterView> rows = chapters.getOrDefault(group.getId(), List.of()).stream().map(nodeAssembler::toCurriculumChapter).toList();
                     long published = rows.stream().filter(row -> PUBLISHED.equals(row.publishStatus())).count();
                     return new AdminCurriculumGroupView(group.getId(), group.getTitle(), group.getSortOrder(), rows.size(), published, rows);
                 }).toList();
@@ -61,7 +57,7 @@ public class TutorialNodeQueryService {
                 category == null ? null : category.getName(), tutorial.getTitle(), tutorial.getSlug(), tutorial.getPublishStatus()), groups);
     }
 
-    public ChapterDetailView chapter(Long tutorialId, Long chapterId) { return toChapterDetail(requireChapter(tutorialId, chapterId)); }
+    public ChapterDetailView chapter(Long tutorialId, Long chapterId) { return nodeAssembler.toChapterDetail(requireChapter(tutorialId, chapterId)); }
     public String chapterPublishStatus(Long tutorialId, Long chapterId) { return requireChapter(tutorialId, chapterId).getPublishStatus(); }
 
     private Tutorial requireTutorial(Long tutorialId) {
@@ -83,18 +79,4 @@ public class TutorialNodeQueryService {
                 .orderByAsc(TutorialNode::getSortOrder).orderByAsc(TutorialNode::getId));
     }
 
-    private AdminCurriculumChapterView toCurriculumChapter(TutorialNode chapter) {
-        return new AdminCurriculumChapterView(chapter.getId(), chapter.getParentId(), chapter.getTitle(), chapter.getSlug(),
-                chapter.getPublishStatus(), chapter.getSortOrder(), formatUtc(chapter.getUpdatedAt()));
-    }
-
-    private ChapterDetailView toChapterDetail(TutorialNode chapter) {
-        return new ChapterDetailView(chapter.getId(), chapter.getTutorialId(), chapter.getParentId(), chapter.getNodeType(),
-                chapter.getTitle(), chapter.getSlug(), chapter.getSummary(), chapter.getBodyMarkdown(), chapter.getPublishStatus(),
-                chapter.getSortOrder(), formatUtc(chapter.getPublishedAt()), formatUtc(chapter.getUpdatedAt()));
-    }
-
-    private String formatUtc(LocalDateTime utc) {
-        return utc == null ? null : siteSettingsTimezone.atSite(utc).format(ISO_OFFSET);
-    }
 }
