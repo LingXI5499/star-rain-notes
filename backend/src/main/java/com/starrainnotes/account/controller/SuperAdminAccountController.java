@@ -7,6 +7,7 @@ import com.starrainnotes.account.dto.AdminInvitationView;
 import com.starrainnotes.account.dto.DisableAccountRequest;
 import com.starrainnotes.account.dto.InviteRequest;
 import com.starrainnotes.account.security.AccountPrincipal;
+import com.starrainnotes.account.service.AccountAdministrationService;
 import com.starrainnotes.account.service.AccountInvitationService;
 import com.starrainnotes.account.service.AccountQueryService;
 import com.starrainnotes.account.service.AccountService;
@@ -31,13 +32,16 @@ import java.util.List;
 public class SuperAdminAccountController {
 
     private final AccountService accountService;
+    private final AccountAdministrationService administration;
     private final AccountInvitationService invitations;
     private final AccountQueryService accountQueries;
     private final AuditLogService auditLogService;
 
-    public SuperAdminAccountController(AccountService accountService, AccountInvitationService invitations,
-                                       AccountQueryService accountQueries, AuditLogService auditLogService) {
+    public SuperAdminAccountController(AccountService accountService, AccountAdministrationService administration,
+                                       AccountInvitationService invitations, AccountQueryService accountQueries,
+                                       AuditLogService auditLogService) {
         this.accountService = accountService;
+        this.administration = administration;
         this.invitations = invitations;
         this.accountQueries = accountQueries;
         this.auditLogService = auditLogService;
@@ -83,13 +87,13 @@ public class SuperAdminAccountController {
     public void disable(@PathVariable Long id, @Valid @RequestBody(required = false) DisableAccountRequest body,
                         @AuthenticationPrincipal AccountPrincipal principal) {
         String reason = body == null || body.reason() == null || body.reason().isBlank() ? null : body.reason();
-        accountService.disable(id, reason, actorId(principal));
+        administration.disable(id, reason, actorId(principal));
     }
 
     @PostMapping("/users/{id}/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void enable(@PathVariable Long id, @AuthenticationPrincipal AccountPrincipal principal) {
-        accountService.enable(id, actorId(principal));
+        administration.enable(id, actorId(principal));
     }
 
     @GetMapping("/audit-logs")
