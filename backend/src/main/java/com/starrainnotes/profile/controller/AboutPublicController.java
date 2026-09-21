@@ -1,7 +1,8 @@
 package com.starrainnotes.profile.controller;
 
 import com.starrainnotes.profile.dto.PublicAboutView;
-import com.starrainnotes.profile.service.ProfileService;
+import com.starrainnotes.profile.service.ProfileQueryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -11,16 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/public/about")
+@RequiredArgsConstructor
 public class AboutPublicController {
 
-    private final ProfileService profileService;
-
-    public AboutPublicController(ProfileService profileService) {
-        this.profileService = profileService;
-    }
+    private final ProfileQueryService queryService;
 
     @GetMapping
     public PublicAboutView get() {
-        return profileService.getPublic();
+        return queryService.getPublic();
     }
 }
