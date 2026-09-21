@@ -23,6 +23,7 @@ import com.starrainnotes.tutorial.entity.TutorialNode;
 import com.starrainnotes.tutorial.mapper.TutorialCategoryMapper;
 import com.starrainnotes.tutorial.mapper.TutorialMapper;
 import com.starrainnotes.tutorial.mapper.TutorialNodeMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +44,7 @@ import java.util.stream.Collectors;
  * GROUPs are root siblings; every CHAPTER belongs to exactly one GROUP.
  */
 @Service
+@RequiredArgsConstructor
 public class TutorialNodeService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -56,16 +58,6 @@ public class TutorialNodeService {
     private final TutorialCategoryMapper categoryMapper;
     private final TutorialNodeMapper nodeMapper;
     private final SiteSettingsTimezone siteSettingsTimezone;
-
-    public TutorialNodeService(TutorialMapper tutorialMapper,
-                               TutorialCategoryMapper categoryMapper,
-                               TutorialNodeMapper nodeMapper,
-                               SiteSettingsTimezone siteSettingsTimezone) {
-        this.tutorialMapper = tutorialMapper;
-        this.categoryMapper = categoryMapper;
-        this.nodeMapper = nodeMapper;
-        this.siteSettingsTimezone = siteSettingsTimezone;
-    }
 
     /** Compatibility tree endpoint; V5 guarantees exactly two levels. */
     public List<AdminTreeNodeView> tree(Long tutorialId) {
