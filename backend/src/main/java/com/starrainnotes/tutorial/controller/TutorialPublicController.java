@@ -4,7 +4,8 @@ import com.starrainnotes.tutorial.dto.PublicCategoryNodeView;
 import com.starrainnotes.tutorial.dto.PublicTutorialDetailView;
 import com.starrainnotes.tutorial.dto.PublicTutorialSummaryView;
 import com.starrainnotes.tutorial.service.TutorialCategoryService;
-import com.starrainnotes.tutorial.service.TutorialService;
+import com.starrainnotes.tutorial.service.TutorialQueryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,15 +19,11 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/api/v1/public")
+@RequiredArgsConstructor
 public class TutorialPublicController {
 
     private final TutorialCategoryService categoryService;
-    private final TutorialService tutorialService;
-
-    public TutorialPublicController(TutorialCategoryService categoryService, TutorialService tutorialService) {
-        this.categoryService = categoryService;
-        this.tutorialService = tutorialService;
-    }
+    private final TutorialQueryService queryService;
 
     @GetMapping("/tutorial-categories/tree")
     public List<PublicCategoryNodeView> categoryTree() {
@@ -36,17 +33,17 @@ public class TutorialPublicController {
     @GetMapping("/tutorials")
     public List<PublicTutorialSummaryView> tutorials(
             @RequestParam(required = false) String categorySlug) {
-        return tutorialService.publicList(categorySlug);
+        return queryService.publicList(categorySlug);
     }
 
     @GetMapping("/tutorials/{tutorialSlug}")
     public PublicTutorialDetailView tutorialDetail(@PathVariable String tutorialSlug) {
-        return tutorialService.publicDetail(tutorialSlug);
+        return queryService.publicDetail(tutorialSlug);
     }
 
     @GetMapping("/tutorials/{tutorialSlug}/chapters/{chapterSlug}")
     public com.starrainnotes.tutorial.dto.PublicChapterView chapterDetail(@PathVariable String tutorialSlug,
                                                                           @PathVariable String chapterSlug) {
-        return tutorialService.publicChapter(tutorialSlug, chapterSlug);
+        return queryService.publicChapter(tutorialSlug, chapterSlug);
     }
 }
