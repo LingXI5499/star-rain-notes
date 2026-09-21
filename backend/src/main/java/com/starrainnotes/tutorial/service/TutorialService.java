@@ -28,6 +28,7 @@ import com.starrainnotes.tutorial.entity.TutorialNode;
 import com.starrainnotes.tutorial.mapper.TutorialCategoryMapper;
 import com.starrainnotes.tutorial.mapper.TutorialMapper;
 import com.starrainnotes.tutorial.mapper.TutorialNodeMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -54,6 +55,7 @@ import java.util.stream.Collectors;
  * republish keep it (AGENTS.md).
  */
 @Service
+@RequiredArgsConstructor
 public class TutorialService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -66,18 +68,6 @@ public class TutorialService {
     private final TutorialNodeMapper nodeMapper;
     private final MediaAssetMapper mediaAssetMapper;
     private final SiteSettingsTimezone siteSettingsTimezone;
-
-    public TutorialService(TutorialMapper tutorialMapper,
-                           TutorialCategoryMapper categoryMapper,
-                           TutorialNodeMapper nodeMapper,
-                           MediaAssetMapper mediaAssetMapper,
-                           SiteSettingsTimezone siteSettingsTimezone) {
-        this.tutorialMapper = tutorialMapper;
-        this.categoryMapper = categoryMapper;
-        this.nodeMapper = nodeMapper;
-        this.mediaAssetMapper = mediaAssetMapper;
-        this.siteSettingsTimezone = siteSettingsTimezone;
-    }
 
     // ---------------------------------------------------------------
     // admin

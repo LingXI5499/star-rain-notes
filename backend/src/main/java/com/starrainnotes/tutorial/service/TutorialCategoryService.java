@@ -12,6 +12,7 @@ import com.starrainnotes.tutorial.entity.Tutorial;
 import com.starrainnotes.tutorial.entity.TutorialCategory;
 import com.starrainnotes.tutorial.mapper.TutorialCategoryMapper;
 import com.starrainnotes.tutorial.mapper.TutorialMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,15 +23,11 @@ import java.util.stream.Collectors;
 
 /** Flat knowledge-system management for the tutorial catalog. */
 @Service
+@RequiredArgsConstructor
 public class TutorialCategoryService {
 
     private final TutorialCategoryMapper categoryMapper;
     private final TutorialMapper tutorialMapper;
-
-    public TutorialCategoryService(TutorialCategoryMapper categoryMapper, TutorialMapper tutorialMapper) {
-        this.categoryMapper = categoryMapper;
-        this.tutorialMapper = tutorialMapper;
-    }
 
     public List<CategoryNodeView> adminTree() {
         return loadAll().stream().map(this::toAdminNode).toList();
