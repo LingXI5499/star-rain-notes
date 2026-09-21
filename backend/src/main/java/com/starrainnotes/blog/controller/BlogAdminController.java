@@ -1,14 +1,16 @@
 package com.starrainnotes.blog.controller;
 
-import com.starrainnotes.blog.dto.AdminPostDetailView;
-import com.starrainnotes.blog.dto.AdminPostPageView;
 import com.starrainnotes.blog.dto.CreatePostRequest;
 import com.starrainnotes.blog.dto.UpdatePostRequest;
-import com.starrainnotes.blog.service.BlogService;
-import com.starrainnotes.account.review.dto.ContentReviewView;
-import com.starrainnotes.account.review.service.ContentReviewService;
-import com.starrainnotes.account.security.AccountPrincipal;
+import com.starrainnotes.blog.service.BlogCommandService;
+import com.starrainnotes.blog.service.BlogQueryService;
+import com.starrainnotes.blog.service.BlogUpdateWorkflowService;
+import com.starrainnotes.blog.vo.BlogPostAdminDetailVO;
+import com.starrainnotes.blog.vo.BlogPostAdminPageVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -23,76 +25,53 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- * Admin blog post management (04 §11). Lifecycle only via /publish and
- * /withdraw actions.
- */
+/** Admin blog post management; lifecycle remains limited to action endpoints. */
 @RestController
 @RequestMapping("/api/v1/admin/blog/posts")
+@RequiredArgsConstructor
+@Tag(name = "后台博客管理")
 public class BlogAdminController {
-
-    private final BlogService blogService;
-    private final ContentReviewService reviewService;
-
-    public BlogAdminController(BlogService blogService, ContentReviewService reviewService) {
-        this.blogService = blogService;
-        this.reviewService = reviewService;
-    }
+    private final BlogCommandService commandService;
+    private final BlogQueryService queryService;
+    private final BlogUpdateWorkflowService updateWorkflowService;
 
     @GetMapping
-    public AdminPostPageView list(@RequestParam(defaultValue = "1") int page,
-                                  @RequestParam(defaultValue = "10") int pageSize,
-                                  @RequestParam(required = false) String status,
-                                  @RequestParam(required = false) String tag,
-                                  @RequestParam(required = false) String q) {
-        return blogService.adminList(page, pageSize, status, tag, q);
+    @Operation(summary = "查询博客文章")
+    public BlogPostAdminPageVO list(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "10") int pageSize,
+                                    @RequestParam(required = false) String status, @RequestParam(required = false) String tag,
+                                    @RequestParam(required = false) String q) {
+        return queryService.adminList(page, pageSize, status, tag, q);
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AdminPostDetailView create(@Valid @RequestBody CreatePostRequest request) {
-        return blogService.create(request);
+    @Operation(summary = "创建博客文章")
+    public BlogPostAdminDetailVO create(@Valid @RequestBody CreatePostRequest request) {
+        return commandService.create(request);
     }
 
     @GetMapping("/{postId}")
-    public AdminPostDetailView detail(@PathVariable Long postId) {
-        return blogService.adminDetail(postId);
-    }
+    @Operation(summary = "查询博客文章详情")
+    public BlogPostAdminDetailVO detail(@PathVariable Long postId) { return queryService.adminDetail(postId); }
 
     @PutMapping("/{postId}")
-    public ResponseEntity<?> update(@PathVariable Long postId,
-                                    @Valid @RequestBody UpdatePostRequest request,
+    @Operation(summary = "更新博客文章")
+    public ResponseEntity<?> update(@PathVariable Long postId, @Valid @RequestBody UpdatePostRequest request,
                                     Authentication authentication) {
-        if (!isSuperAdmin(authentication) && "PUBLISHED".equals(blogService.publishStatus(postId))) {
-            ContentReviewView review = reviewService.submitBlogUpdate(actorId(authentication), postId, request);
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body(review);
-        }
-        return ResponseEntity.ok(blogService.update(postId, request));
+        BlogUpdateWorkflowService.BlogUpdateOutcome outcome = updateWorkflowService.update(authentication, postId, request);
+        return ResponseEntity.status(outcome.status()).body(outcome.body());
     }
 
     @DeleteMapping("/{postId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long postId) {
-        blogService.delete(postId);
-    }
+    @Operation(summary = "删除博客文章")
+    public void delete(@PathVariable Long postId) { commandService.delete(postId); }
 
     @PostMapping("/{postId}/publish")
-    public AdminPostDetailView publish(@PathVariable Long postId) {
-        return blogService.publish(postId);
-    }
+    @Operation(summary = "发布博客文章")
+    public BlogPostAdminDetailVO publish(@PathVariable Long postId) { return commandService.publish(postId); }
 
     @PostMapping("/{postId}/withdraw")
-    public AdminPostDetailView withdraw(@PathVariable Long postId) {
-        return blogService.withdraw(postId);
-    }
-
-    private boolean isSuperAdmin(Authentication authentication) {
-        return authentication != null && authentication.getAuthorities().stream()
-                .anyMatch(authority -> "ROLE_SUPER_ADMIN".equals(authority.getAuthority()));
-    }
-
-    private Long actorId(Authentication authentication) {
-        return authentication != null && authentication.getPrincipal() instanceof AccountPrincipal principal
-                ? principal.getId() : null;
-    }
+    @Operation(summary = "撤回博客文章")
+    public BlogPostAdminDetailVO withdraw(@PathVariable Long postId) { return commandService.withdraw(postId); }
 }

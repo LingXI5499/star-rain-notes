@@ -2,7 +2,7 @@ package com.starrainnotes.seo;
 
 import com.starrainnotes.blog.dto.CreatePostRequest;
 import com.starrainnotes.blog.dto.UpdatePostRequest;
-import com.starrainnotes.blog.service.BlogService;
+import com.starrainnotes.blog.service.BlogCommandService;
 import com.starrainnotes.profile.dto.UpdateAboutRequest;
 import com.starrainnotes.profile.service.ProfileService;
 import com.starrainnotes.site.dto.UpdateSiteSettingsRequest;
@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @SpringBootTest
 @ActiveProfiles("test")
 class SeoCacheLifecycleTest {
-    @Autowired BlogService blogs;
+    @Autowired BlogCommandService blogs;
     @Autowired SiteService sites;
     @Autowired ProfileService profiles;
     @Autowired SeoDocumentCache pages;

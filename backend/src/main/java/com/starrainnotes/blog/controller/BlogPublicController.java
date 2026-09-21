@@ -1,12 +1,15 @@
 package com.starrainnotes.blog.controller;
 
-import com.starrainnotes.blog.dto.ArchiveYearView;
-import com.starrainnotes.blog.dto.CalendarView;
-import com.starrainnotes.blog.dto.PublicPostDetailView;
-import com.starrainnotes.blog.dto.PublicPostPageView;
-import com.starrainnotes.blog.dto.PublicTagViewWithCount;
-import com.starrainnotes.blog.service.BlogService;
+import com.starrainnotes.blog.service.BlogQueryService;
 import com.starrainnotes.blog.service.BlogTagService;
+import com.starrainnotes.blog.vo.BlogArchiveYearVO;
+import com.starrainnotes.blog.vo.BlogCalendarVO;
+import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
+import com.starrainnotes.blog.vo.BlogPostPublicPageVO;
+import com.starrainnotes.blog.vo.BlogTagWithPostCountVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,47 +18,36 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Public blog endpoints (04 §11). Draft/Withdrawn posts return 404.
- */
+/** Public blog endpoints; draft and withdrawn posts stay invisible. */
 @RestController
 @RequestMapping("/api/v1/public/blog")
+@RequiredArgsConstructor
+@Tag(name = "公开博客")
 public class BlogPublicController {
-
-    private final BlogService blogService;
+    private final BlogQueryService queryService;
     private final BlogTagService tagService;
 
-    public BlogPublicController(BlogService blogService, BlogTagService tagService) {
-        this.blogService = blogService;
-        this.tagService = tagService;
-    }
-
     @GetMapping("/posts")
-    public PublicPostPageView posts(@RequestParam(required = false) String tag,
-                                    @RequestParam(required = false) String date,
-                                    @RequestParam(required = false) String month,
-                                    @RequestParam(defaultValue = "1") int page,
-                                    @RequestParam(defaultValue = "10") int pageSize) {
-        return blogService.publicList(tag, date, month, page, pageSize);
+    @Operation(summary = "查询公开博客文章")
+    public BlogPostPublicPageVO posts(@RequestParam(required = false) String tag, @RequestParam(required = false) String date,
+                                      @RequestParam(required = false) String month, @RequestParam(defaultValue = "1") int page,
+                                      @RequestParam(defaultValue = "10") int pageSize) {
+        return queryService.publicList(tag, date, month, page, pageSize);
     }
 
     @GetMapping("/posts/{slug}")
-    public PublicPostDetailView postDetail(@PathVariable String slug) {
-        return blogService.publicDetail(slug);
-    }
+    @Operation(summary = "查询公开博客文章详情")
+    public BlogPostPublicDetailVO postDetail(@PathVariable String slug) { return queryService.publicDetail(slug); }
 
     @GetMapping("/tags")
-    public List<PublicTagViewWithCount> tags() {
-        return tagService.publicTags();
-    }
+    @Operation(summary = "查询公开博客标签")
+    public List<BlogTagWithPostCountVO> tags() { return tagService.publicTags(); }
 
     @GetMapping("/calendar")
-    public CalendarView calendar(@RequestParam String month) {
-        return blogService.calendar(month);
-    }
+    @Operation(summary = "查询博客日历")
+    public BlogCalendarVO calendar(@RequestParam String month) { return queryService.calendar(month); }
 
     @GetMapping("/archive")
-    public List<ArchiveYearView> archive() {
-        return blogService.archive();
-    }
+    @Operation(summary = "查询博客归档")
+    public List<BlogArchiveYearVO> archive() { return queryService.archive(); }
 }

@@ -5,6 +5,11 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -14,6 +19,11 @@ import java.time.LocalDateTime;
  * changes on edit/withdraw/republish); updated_at = last modification.
  */
 @TableName("blog_post")
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BlogPost {
 
     @TableId(type = IdType.AUTO)
@@ -32,99 +42,4 @@ public class BlogPost {
     @TableField(updateStrategy = FieldStrategy.NEVER)
     private LocalDateTime updatedAt;
 
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getSlug() {
-        return slug;
-    }
-
-    public void setSlug(String slug) {
-        this.slug = slug;
-    }
-
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(String summary) {
-        this.summary = summary;
-    }
-
-    public String getBodyMarkdown() {
-        return bodyMarkdown;
-    }
-
-    public void setBodyMarkdown(String bodyMarkdown) {
-        this.bodyMarkdown = bodyMarkdown;
-    }
-
-    public Long getCoverMediaId() {
-        return coverMediaId;
-    }
-
-    public void setCoverMediaId(Long coverMediaId) {
-        this.coverMediaId = coverMediaId;
-    }
-
-    public String getPublishStatus() {
-        return publishStatus;
-    }
-
-    public void setPublishStatus(String publishStatus) {
-        this.publishStatus = publishStatus;
-    }
-
-    public String getSeoTitle() {
-        return seoTitle;
-    }
-
-    public void setSeoTitle(String seoTitle) {
-        this.seoTitle = seoTitle;
-    }
-
-    public String getSeoDescription() {
-        return seoDescription;
-    }
-
-    public void setSeoDescription(String seoDescription) {
-        this.seoDescription = seoDescription;
-    }
-
-    public LocalDateTime getPublishedAt() {
-        return publishedAt;
-    }
-
-    public void setPublishedAt(LocalDateTime publishedAt) {
-        this.publishedAt = publishedAt;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public void setCreatedAt(LocalDateTime createdAt) {
-        this.createdAt = createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
-
-    public void setUpdatedAt(LocalDateTime updatedAt) {
-        this.updatedAt = updatedAt;
-    }
 }

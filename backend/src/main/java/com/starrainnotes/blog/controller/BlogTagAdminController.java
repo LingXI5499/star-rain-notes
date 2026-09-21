@@ -1,10 +1,13 @@
 package com.starrainnotes.blog.controller;
 
-import com.starrainnotes.blog.dto.AdminBlogTagView;
 import com.starrainnotes.blog.dto.CreateTagRequest;
 import com.starrainnotes.blog.dto.UpdateTagRequest;
 import com.starrainnotes.blog.service.BlogTagService;
+import com.starrainnotes.blog.vo.BlogTagWithPostCountVO;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,39 +22,30 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
-/**
- * Admin flat blog tag management (04 §11).
- */
 @RestController
 @RequestMapping("/api/v1/admin/blog/tags")
+@RequiredArgsConstructor
+@Tag(name = "后台博客标签管理")
 public class BlogTagAdminController {
-
     private final BlogTagService tagService;
 
-    public BlogTagAdminController(BlogTagService tagService) {
-        this.tagService = tagService;
-    }
-
     @GetMapping
-    public List<AdminBlogTagView> list() {
-        return tagService.listAll();
-    }
+    @Operation(summary = "查询博客标签")
+    public List<BlogTagWithPostCountVO> list() { return tagService.listAll(); }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public AdminBlogTagView create(@Valid @RequestBody CreateTagRequest request) {
-        return tagService.create(request);
-    }
+    @Operation(summary = "创建博客标签")
+    public BlogTagWithPostCountVO create(@Valid @RequestBody CreateTagRequest request) { return tagService.create(request); }
 
     @PutMapping("/{tagId}")
-    public AdminBlogTagView update(@PathVariable Long tagId, @Valid @RequestBody UpdateTagRequest request) {
+    @Operation(summary = "更新博客标签")
+    public BlogTagWithPostCountVO update(@PathVariable Long tagId, @Valid @RequestBody UpdateTagRequest request) {
         return tagService.update(tagId, request);
     }
 
     @DeleteMapping("/{tagId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long tagId,
-                       @RequestParam(defaultValue = "false") boolean force) {
-        tagService.delete(tagId, force);
-    }
+    @Operation(summary = "删除博客标签")
+    public void delete(@PathVariable Long tagId, @RequestParam(defaultValue = "false") boolean force) { tagService.delete(tagId, force); }
 }
