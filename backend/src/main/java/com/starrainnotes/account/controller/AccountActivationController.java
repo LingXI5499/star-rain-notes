@@ -2,6 +2,7 @@ package com.starrainnotes.account.controller;
 
 import com.starrainnotes.account.dto.ActivationConfirmRequest;
 import com.starrainnotes.account.dto.ActivationStatusView;
+import com.starrainnotes.account.service.AccountQueryService;
 import com.starrainnotes.account.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -18,14 +19,18 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountActivationController {
 
     private final AccountService accountService;
+    private final AccountQueryService accountQueries;
 
-    public AccountActivationController(AccountService accountService) { this.accountService = accountService; }
+    public AccountActivationController(AccountService accountService, AccountQueryService accountQueries) {
+        this.accountService = accountService;
+        this.accountQueries = accountQueries;
+    }
 
     @GetMapping("/status")
     public ActivationStatusView status() {
-        String email = accountService.configuredSuperAdminEmail();
+        String email = accountQueries.configuredSuperAdminEmail();
         boolean configured = email != null && !email.isBlank() && AccountService.validEmail(email);
-        return new ActivationStatusView(configured, accountService.superAdminActivated(),
+        return new ActivationStatusView(configured, accountQueries.superAdminActivated(),
                 AccountService.mask(email));
     }
 

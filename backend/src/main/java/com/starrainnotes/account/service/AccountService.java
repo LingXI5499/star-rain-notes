@@ -37,10 +37,12 @@ public class AccountService {
     private final MailGateway mailGateway;
     private final AccountProperties props;
     private final AuditLogService auditLog;
+    private final AccountQueryService queries;
 
     public AccountService(AccountUserMapper userMapper, AdminInvitationMapper invitationMapper,
                           VerificationCodeService codeService, PasswordEncoder passwordEncoder,
-                          MailGateway mailGateway, AccountProperties props, AuditLogService auditLog) {
+                          MailGateway mailGateway, AccountProperties props, AuditLogService auditLog,
+                          AccountQueryService queries) {
         this.userMapper = userMapper;
         this.invitationMapper = invitationMapper;
         this.codeService = codeService;
@@ -48,19 +50,13 @@ public class AccountService {
         this.mailGateway = mailGateway;
         this.props = props;
         this.auditLog = auditLog;
-    }
-
-    public boolean superAdminActivated() {
-        Long c = userMapper.selectCount(new LambdaQueryWrapper<AccountUser>()
-                .eq(AccountUser::getRole, SUPER_ADMIN).eq(AccountUser::getAccountStatus, ACTIVE));
-        return c != null && c > 0;
+        this.queries = queries;
     }
 
     public String maskedSuperAdminEmail() { return mask(props.getSuperAdminEmail()); }
-    public String configuredSuperAdminEmail() { return props.getSuperAdminEmail(); }
 
     public void requestActivationCode(String ip) {
-        if (superAdminActivated()) {
+        if (queries.superAdminActivated()) {
             throw fail("SUPER_ADMIN_ALREADY_ACTIVATED", HttpStatus.GONE, "Already activated",
                     "A super administrator is already active.");
         }
@@ -77,7 +73,7 @@ public class AccountService {
 
     @Transactional
     public AccountUser confirmActivation(String code, String password) {
-        if (superAdminActivated()) {
+        if (queries.superAdminActivated()) {
             throw fail("SUPER_ADMIN_ALREADY_ACTIVATED", HttpStatus.GONE, "Already activated",
                     "A super administrator is already active.");
         }
@@ -432,19 +428,6 @@ public class AccountService {
                     "Super-admin authentication is required.");
         }
         requireSuperAdmin(actorId, "Super-admin authentication is required.");
-    }
-    public java.util.List<AccountUser> listUsers() {
-        return userMapper.selectList(new LambdaQueryWrapper<AccountUser>()
-                .orderByDesc(AccountUser::getId));
-    }
-    public boolean isSessionValid(Long accountId, int authVersion) {
-        AccountUser user = accountId == null ? null : userMapper.selectOne(
-                new LambdaQueryWrapper<AccountUser>()
-                        .select(AccountUser::getAccountStatus, AccountUser::getAuthVersion)
-                        .eq(AccountUser::getId, accountId)
-                        .last("LIMIT 1"));
-        return user != null && ACTIVE.equals(user.getAccountStatus())
-                && user.getAuthVersion() != null && user.getAuthVersion() == authVersion;
     }
     public AccountUser findByEmailPublic(String email) {
         return findByEmail(normalize(email));

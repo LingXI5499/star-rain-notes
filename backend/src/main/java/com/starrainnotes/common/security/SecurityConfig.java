@@ -2,7 +2,7 @@ package com.starrainnotes.common.security;
 
 import com.starrainnotes.auth.security.AdminUserDetailsService;
 import com.starrainnotes.account.security.AccountSessionValidationFilter;
-import com.starrainnotes.account.service.AccountService;
+import com.starrainnotes.account.service.AccountQueryService;
 import org.apache.tomcat.util.http.Rfc6265CookieProcessor;
 import org.springframework.http.HttpMethod;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
@@ -92,8 +92,8 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AccountSessionValidationFilter accountSessionValidationFilter(AccountService accountService) {
-        return new AccountSessionValidationFilter(accountService);
+    public AccountSessionValidationFilter accountSessionValidationFilter(AccountQueryService accountQueries) {
+        return new AccountSessionValidationFilter(accountQueries);
     }
 
     @Bean
