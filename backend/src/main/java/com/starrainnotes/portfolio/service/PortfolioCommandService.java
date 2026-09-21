@@ -1,28 +1,19 @@
 package com.starrainnotes.portfolio.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
-import com.starrainnotes.media.service.MediaService;
 import com.starrainnotes.portfolio.dto.AdminProjectDetailView;
-import com.starrainnotes.portfolio.dto.AdminProjectPageView;
-import com.starrainnotes.portfolio.dto.AdminProjectSummaryView;
 import com.starrainnotes.portfolio.dto.CreateProjectRequest;
 import com.starrainnotes.portfolio.dto.ProjectMediaItemRequest;
-import com.starrainnotes.portfolio.dto.ProjectMediaView;
-import com.starrainnotes.portfolio.dto.PublicProjectDetailView;
-import com.starrainnotes.portfolio.dto.PublicProjectSummaryView;
-import com.starrainnotes.portfolio.dto.PrevNextProjectView;
 import com.starrainnotes.portfolio.dto.UpdateProjectRequest;
 import com.starrainnotes.portfolio.entity.PortfolioProject;
 import com.starrainnotes.portfolio.entity.PortfolioProjectMedia;
 import com.starrainnotes.portfolio.mapper.PortfolioProjectMapper;
 import com.starrainnotes.portfolio.mapper.PortfolioProjectMediaMapper;
 import com.starrainnotes.seo.SeoContentChange;
-import com.starrainnotes.site.service.SiteSettingsTimezone;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -31,8 +22,6 @@ import org.springframework.util.StringUtils;
 
 import java.time.Clock;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.format.DateTimeFormatter;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
@@ -40,7 +29,6 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -55,9 +43,8 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
-public class PortfolioService {
+public class PortfolioCommandService {
 
-    private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final int MAX_FEATURED = 3;
     private static final int MAX_TECH_STACK = 20;
     private static final String PUBLISHED = "PUBLISHED";
@@ -71,46 +58,8 @@ public class PortfolioService {
     private final PortfolioProjectMapper projectMapper;
     private final PortfolioProjectMediaMapper mediaMapper;
     private final MediaAssetMapper mediaAssetMapper;
-    private final MediaService mediaService;
     private final PortfolioPrototypeService prototypeService;
-    private final SiteSettingsTimezone timezone;
-
-    // ---------------------------------------------------------------
-    // admin
-    // ---------------------------------------------------------------
-
-    public AdminProjectPageView adminList(int page, int pageSize, String status, String projectStatus, String query) {
-        int safePage = Math.max(page, 1);
-        int safeSize = Math.min(Math.max(pageSize, 1), 50);
-        LambdaQueryWrapper<PortfolioProject> wrapper = new LambdaQueryWrapper<PortfolioProject>()
-                .eq(status != null && !status.isBlank(), PortfolioProject::getPublishStatus, status)
-                .eq(projectStatus != null && !projectStatus.isBlank(), PortfolioProject::getProjectStatus, projectStatus)
-                .and(query != null && !query.isBlank(), w -> w
-                        .like(PortfolioProject::getTitle, query).or().like(PortfolioProject::getSlug, query))
-                .orderByDesc(PortfolioProject::getUpdatedAt)
-                .orderByDesc(PortfolioProject::getId);
-
-        Page<PortfolioProject> result = projectMapper.selectPage(new Page<>(safePage, safeSize), wrapper);
-        List<PortfolioProject> rows = result.getRecords();
-        Map<Long, String> covers = coverUrls(rows.stream().map(PortfolioProject::getCoverMediaId).toList());
-        List<AdminProjectSummaryView> items = rows.stream()
-                .map(p -> new AdminProjectSummaryView(
-                        p.getId(), p.getTitle(), p.getSlug(), p.getSummary(), p.getRole(),
-                        p.getTechStack() == null ? List.of() : p.getTechStack(),
-                        p.getCoverMediaId() == null ? null : covers.get(p.getCoverMediaId()),
-                        p.getPublishStatus(), p.getProjectStatus(),
-                        Boolean.TRUE.equals(p.getFeatured()), p.getSortOrder(),
-                        formatUtc(p.getPublishedAt()), formatUtc(p.getUpdatedAt())))
-                .toList();
-
-        long safeTotal = result.getTotal();
-        int totalPages = safeTotal == 0 ? 0 : (int) ((safeTotal + safeSize - 1) / safeSize);
-        return new AdminProjectPageView(items, safePage, safeSize, safeTotal, totalPages);
-    }
-
-    public AdminProjectDetailView adminDetail(Long projectId) {
-        return toAdminDetail(requireProject(projectId));
-    }
+    private final PortfolioQueryService queryService;
 
     @Transactional
     public AdminProjectDetailView create(CreateProjectRequest request) {
@@ -130,7 +79,7 @@ public class PortfolioService {
         project.setPublishedAt(null);
         projectMapper.insert(project);
         replaceGallery(project.getId(), request.gallery());
-        return toAdminDetail(project);
+        return queryService.adminDetail(project.getId());
     }
 
     @Transactional
@@ -150,7 +99,7 @@ public class PortfolioService {
         // publishStatus / publishedAt are never touched by a plain update
         projectMapper.updateById(project);
         replaceGallery(projectId, request.gallery());
-        return toAdminDetail(project);
+        return queryService.adminDetail(projectId);
     }
 
     @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
@@ -172,7 +121,7 @@ public class PortfolioService {
             projectMapper.updateById(project);
         }
         prototypeService.publish(projectId);
-        return toAdminDetail(project);
+        return queryService.adminDetail(projectId);
     }
 
     @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
@@ -186,70 +135,7 @@ public class PortfolioService {
             project.setPublishStatus(WITHDRAWN);
             projectMapper.updateById(project);
         }
-        return toAdminDetail(project);
-    }
-
-    // ---------------------------------------------------------------
-    // public (no pagination; featured first)
-    // ---------------------------------------------------------------
-
-    public List<PublicProjectSummaryView> publicList() {
-        List<PortfolioProject> rows = projectMapper.selectList(new LambdaQueryWrapper<PortfolioProject>()
-                .eq(PortfolioProject::getPublishStatus, PUBLISHED)
-                .orderByDesc(PortfolioProject::getFeatured)
-                .orderByAsc(PortfolioProject::getSortOrder)
-                .orderByAsc(PortfolioProject::getId));
-        Map<Long, MediaLink> covers = mediaLinks(rows.stream().map(PortfolioProject::getCoverMediaId).toList());
-        return rows.stream()
-                .map(p -> {
-                    MediaLink cover = p.getCoverMediaId() == null ? null : covers.get(p.getCoverMediaId());
-                    return new PublicProjectSummaryView(
-                            p.getId(), p.getTitle(), p.getSlug(), p.getSummary(), p.getRole(),
-                            p.getTechStack() == null ? List.of() : p.getTechStack(),
-                            cover == null ? null : cover.url(),
-                            cover == null ? null : cover.srcSet(),
-                            cover == null ? null : cover.width(),
-                            cover == null ? null : cover.height(),
-                            p.getProjectStatus(),
-                            Boolean.TRUE.equals(p.getFeatured()), p.getSortOrder(),
-                            formatUtc(p.getUpdatedAt()));
-                })
-                .toList();
-    }
-
-    public PublicProjectDetailView publicDetail(String slug) {
-        PortfolioProject project = projectMapper.selectOne(
-                new LambdaQueryWrapper<PortfolioProject>().eq(PortfolioProject::getSlug, slug));
-        if (project == null || !PUBLISHED.equals(project.getPublishStatus())) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "PROJECT_NOT_FOUND",
-                    "Project not found", "The project does not exist or is not public.");
-        }
-        List<String> techStack = project.getTechStack() == null ? List.of() : project.getTechStack();
-        List<PortfolioProject> ordered = projectMapper.selectList(new LambdaQueryWrapper<PortfolioProject>()
-                .eq(PortfolioProject::getPublishStatus, PUBLISHED)
-                .orderByDesc(PortfolioProject::getFeatured)
-                .orderByAsc(PortfolioProject::getSortOrder)
-                .orderByAsc(PortfolioProject::getId));
-        int currentIndex = java.util.stream.IntStream.range(0, ordered.size())
-                .filter(index -> ordered.get(index).getId().equals(project.getId()))
-                .findFirst().orElse(-1);
-        PrevNextProjectView previous = currentIndex > 0 ? toPrevNext(ordered.get(currentIndex - 1)) : null;
-        PrevNextProjectView next = currentIndex >= 0 && currentIndex + 1 < ordered.size()
-                ? toPrevNext(ordered.get(currentIndex + 1)) : null;
-        MediaLink cover = mediaLink(project.getCoverMediaId());
-        return new PublicProjectDetailView(
-                project.getId(), project.getTitle(), project.getSlug(), project.getSummary(), project.getRole(),
-                techStack, project.getBodyMarkdown(),
-                cover == null ? null : cover.url(),
-                cover == null ? null : cover.width(),
-                cover == null ? null : cover.height(),
-                cover == null ? null : cover.srcSet(),
-                normalizeHttpUrl(project.getRepositoryUrl()), usableDemoUrl(project.getDemoUrl(), project.getRepositoryUrl()),
-                prototypeService.publicEntry(project.getId(), true), project.getProjectStatus(),
-                project.getStartedAt(), project.getCompletedAt(),
-                project.getSeoTitle(), project.getSeoDescription(),
-                formatUtc(project.getPublishedAt()), formatUtc(project.getUpdatedAt()), previous, next,
-                listGallery(project.getId()));
+        return queryService.adminDetail(projectId);
     }
 
     // ---------------------------------------------------------------
@@ -424,92 +310,6 @@ public class PortfolioService {
                 .max().orElse(0) + 10;
     }
 
-    private String coverUrl(Long mediaId) {
-        MediaLink link = mediaLink(mediaId);
-        return link == null ? null : link.url();
-    }
-
-    private MediaLink mediaLink(Long mediaId) {
-        if (mediaId == null) {
-            return null;
-        }
-        MediaAsset media = mediaAssetMapper.selectById(mediaId);
-        if (media == null) {
-            return null;
-        }
-        return toMediaLink(media);
-    }
-
-    private Map<Long, String> coverUrls(List<Long> mediaIds) {
-        return mediaLinks(mediaIds).entrySet().stream()
-                .collect(Collectors.toMap(Map.Entry::getKey, entry -> entry.getValue().url()));
-    }
-
-    private Map<Long, MediaLink> mediaLinks(List<Long> mediaIds) {
-        List<Long> distinct = mediaIds.stream().filter(Objects::nonNull).distinct().toList();
-        if (distinct.isEmpty()) {
-            return Map.of();
-        }
-        return mediaAssetMapper.selectBatchIds(distinct).stream()
-                .collect(Collectors.toMap(MediaAsset::getId, this::toMediaLink));
-    }
-
-    private MediaLink toMediaLink(MediaAsset media) {
-        return new MediaLink(
-                media.getPublicUrl(),
-                media.getWidth(),
-                media.getHeight(),
-                mediaService.srcSetOf(media));
-    }
-
-    private AdminProjectDetailView toAdminDetail(PortfolioProject p) {
-        List<String> techStack = p.getTechStack() == null ? List.of() : p.getTechStack();
-        MediaLink cover = mediaLink(p.getCoverMediaId());
-        return new AdminProjectDetailView(
-                p.getId(), p.getTitle(), p.getSlug(), p.getSummary(), p.getRole(), techStack,
-                p.getBodyMarkdown(), p.getCoverMediaId(),
-                cover == null ? null : cover.url(),
-                cover == null ? null : cover.width(),
-                cover == null ? null : cover.height(),
-                cover == null ? null : cover.srcSet(),
-                p.getRepositoryUrl(), p.getDemoUrl(), prototypeService.view(p.getId(), PUBLISHED.equals(p.getPublishStatus())),
-                p.getPublishStatus(), p.getProjectStatus(), Boolean.TRUE.equals(p.getFeatured()),
-                p.getSortOrder(), p.getStartedAt(), p.getCompletedAt(), p.getSeoTitle(), p.getSeoDescription(),
-                formatUtc(p.getPublishedAt()), formatUtc(p.getCreatedAt()), formatUtc(p.getUpdatedAt()),
-                listGallery(p.getId()));
-    }
-
-    private List<ProjectMediaView> listGallery(Long projectId) {
-        List<PortfolioProjectMedia> rows = mediaMapper.selectList(new LambdaQueryWrapper<PortfolioProjectMedia>()
-                .eq(PortfolioProjectMedia::getProjectId, projectId)
-                .orderByAsc(PortfolioProjectMedia::getSortOrder)
-                .orderByAsc(PortfolioProjectMedia::getId));
-        if (rows.isEmpty()) {
-            return List.of();
-        }
-        Map<Long, MediaLink> links = mediaLinks(rows.stream().map(PortfolioProjectMedia::getMediaAssetId).toList());
-        return rows.stream()
-                .map(row -> {
-                    MediaLink link = links.get(row.getMediaAssetId());
-                    return new ProjectMediaView(
-                            row.getId(),
-                            row.getMediaAssetId(),
-                            link == null ? null : link.url(),
-                            row.getTitle(),
-                            row.getDescription(),
-                            row.getAltText(),
-                            row.getDeviceType(),
-                            row.getSortOrder(),
-                            link == null ? null : link.width(),
-                            link == null ? null : link.height(),
-                            link == null ? null : link.srcSet());
-                })
-                .toList();
-    }
-
-    private record MediaLink(String url, Integer width, Integer height, String srcSet) {
-    }
-
     private void replaceGallery(Long projectId, List<ProjectMediaItemRequest> gallery) {
         List<ProjectMediaItemRequest> items = gallery == null ? List.of() : gallery;
         if (items.size() > MAX_GALLERY) {
@@ -566,14 +366,4 @@ public class PortfolioService {
         return StringUtils.hasText(value) ? value.trim() : null;
     }
 
-    private PrevNextProjectView toPrevNext(PortfolioProject project) {
-        return new PrevNextProjectView(project.getId(), project.getSlug(), project.getTitle());
-    }
-
-    private String formatUtc(LocalDateTime utc) {
-        if (utc == null) {
-            return null;
-        }
-        return timezone.atSite(utc).format(ISO_OFFSET);
-    }
 }
