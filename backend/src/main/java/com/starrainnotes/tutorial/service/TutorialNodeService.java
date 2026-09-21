@@ -53,6 +53,7 @@ public class TutorialNodeService {
     private final TutorialNodeMapper nodeMapper;
     private final TutorialNodeAssembler nodeAssembler;
 
+    @Transactional
     public AdminTreeNodeView createGroup(Long tutorialId, CreateGroupRequest request) {
         requireTutorial(tutorialId);
         TutorialNode group = new TutorialNode();
@@ -65,6 +66,7 @@ public class TutorialNodeService {
         return nodeAssembler.toTreeNode(group);
     }
 
+    @Transactional
     public AdminTreeNodeView updateGroup(Long tutorialId, Long groupId, UpdateGroupRequest request) {
         TutorialNode group = requireGroup(tutorialId, groupId);
         group.setTitle(request.title());
@@ -85,6 +87,7 @@ public class TutorialNodeService {
         normalizeOrders(loadGroups(tutorialId));
     }
 
+    @Transactional
     public ChapterDetailView createChapter(Long tutorialId, CreateChapterRequest request) {
         requireTutorial(tutorialId);
         TutorialNode group = requireTargetGroup(tutorialId, request.groupId());
@@ -106,6 +109,7 @@ public class TutorialNodeService {
         return nodeAssembler.toChapterDetail(chapter);
     }
 
+    @Transactional
     public ChapterDetailView updateChapter(Long tutorialId, Long chapterId, UpdateChapterRequest request) {
         TutorialNode chapter = requireChapter(tutorialId, chapterId);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), chapter.getSlug());
@@ -126,6 +130,7 @@ public class TutorialNodeService {
         normalizeOrders(loadChapters(tutorialId, groupId));
     }
 
+    @Transactional
     public ChapterDetailView publishChapter(Long tutorialId, Long chapterId) {
         TutorialNode chapter = requireChapter(tutorialId, chapterId);
         Tutorial tutorial = requireTutorial(tutorialId);
@@ -141,6 +146,7 @@ public class TutorialNodeService {
         return nodeAssembler.toChapterDetail(chapter);
     }
 
+    @Transactional
     public ChapterDetailView withdrawChapter(Long tutorialId, Long chapterId) {
         TutorialNode chapter = requireChapter(tutorialId, chapterId);
         if (DRAFT.equals(chapter.getPublishStatus())) {
