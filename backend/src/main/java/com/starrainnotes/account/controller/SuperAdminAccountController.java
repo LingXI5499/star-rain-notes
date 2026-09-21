@@ -10,7 +10,7 @@ import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.account.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,8 +48,8 @@ public class SuperAdminAccountController {
 
     @PostMapping("/invitations")
     @ResponseStatus(HttpStatus.CREATED)
-    public AdminInvitationView invite(@Valid @RequestBody InviteRequest body, Authentication authentication) {
-        var issued = accountService.createInvitation(body.email(), actorId(authentication));
+    public AdminInvitationView invite(@Valid @RequestBody InviteRequest body, @AuthenticationPrincipal AccountPrincipal principal) {
+        var issued = accountService.createInvitation(body.email(), actorId(principal));
         return AdminInvitationView.from(issued.invitation(), issued.inviteLink());
     }
 
@@ -61,28 +61,28 @@ public class SuperAdminAccountController {
 
     @PostMapping("/invitations/{id}/revoke")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void revoke(@PathVariable Long id, Authentication authentication) {
-        accountService.revokeInvitation(id, actorId(authentication));
+    public void revoke(@PathVariable Long id, @AuthenticationPrincipal AccountPrincipal principal) {
+        accountService.revokeInvitation(id, actorId(principal));
     }
 
     @DeleteMapping("/invitations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void deleteInvitation(@PathVariable Long id, Authentication authentication) {
-        accountService.deleteInvitation(id, actorId(authentication));
+    public void deleteInvitation(@PathVariable Long id, @AuthenticationPrincipal AccountPrincipal principal) {
+        accountService.deleteInvitation(id, actorId(principal));
     }
 
     @PostMapping("/users/{id}/disable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void disable(@PathVariable Long id, @Valid @RequestBody(required = false) DisableAccountRequest body,
-                        Authentication authentication) {
+                        @AuthenticationPrincipal AccountPrincipal principal) {
         String reason = body == null || body.reason() == null || body.reason().isBlank() ? null : body.reason();
-        accountService.disable(id, reason, actorId(authentication));
+        accountService.disable(id, reason, actorId(principal));
     }
 
     @PostMapping("/users/{id}/enable")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void enable(@PathVariable Long id, Authentication authentication) {
-        accountService.enable(id, actorId(authentication));
+    public void enable(@PathVariable Long id, @AuthenticationPrincipal AccountPrincipal principal) {
+        accountService.enable(id, actorId(principal));
     }
 
     @GetMapping("/audit-logs")
@@ -92,10 +92,7 @@ public class SuperAdminAccountController {
         return auditLogService.list(page, pageSize, action);
     }
 
-    private Long actorId(Authentication authentication) {
-        if (authentication != null && authentication.getPrincipal() instanceof AccountPrincipal principal) {
-            return principal.getId();
-        }
-        return null;
+    private Long actorId(AccountPrincipal principal) {
+        return principal == null ? null : principal.getId();
     }
 }

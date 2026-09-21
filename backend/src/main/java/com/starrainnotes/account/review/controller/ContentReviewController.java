@@ -5,7 +5,7 @@ import com.starrainnotes.account.review.dto.ReviewDecisionRequest;
 import com.starrainnotes.account.review.service.ContentReviewService;
 import com.starrainnotes.account.security.AccountPrincipal;
 import jakarta.validation.Valid;
-import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,18 +34,17 @@ public class ContentReviewController {
 
     @PostMapping("/{id}/approve")
     public ContentReviewView approve(@PathVariable Long id, @Valid @RequestBody(required = false) ReviewDecisionRequest request,
-                                     Authentication authentication) {
-        return service.approve(id, actor(authentication), request == null ? null : request.note());
+                                     @AuthenticationPrincipal AccountPrincipal principal) {
+        return service.approve(id, actor(principal), request == null ? null : request.note());
     }
 
     @PostMapping("/{id}/reject")
     public ContentReviewView reject(@PathVariable Long id, @Valid @RequestBody(required = false) ReviewDecisionRequest request,
-                                    Authentication authentication) {
-        return service.reject(id, actor(authentication), request == null ? null : request.note());
+                                    @AuthenticationPrincipal AccountPrincipal principal) {
+        return service.reject(id, actor(principal), request == null ? null : request.note());
     }
 
-    private Long actor(Authentication authentication) {
-        return authentication != null && authentication.getPrincipal() instanceof AccountPrincipal principal
-                ? principal.getId() : null;
+    private Long actor(AccountPrincipal principal) {
+        return principal == null ? null : principal.getId();
     }
 }
