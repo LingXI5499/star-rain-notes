@@ -40,7 +40,7 @@ public class SeoContentChangeAspect {
                 rs -> rs.next() ? new ContentState(rs.getString(1), "PUBLISHED".equals(rs.getString(2))) : null, id);
     }
 
-    @Around("execution(* com.starrainnotes.site.service.SiteService.updateAdminSettings(..)) || execution(* com.starrainnotes.profile.service.ProfileService.update(..)) || execution(* com.starrainnotes.profile.service.ProfileService.updateSelectedContent(..))")
+    @Around("execution(* com.starrainnotes.site.service.SiteService.updateAdminSettings(..)) || execution(* com.starrainnotes.profile.service.ProfileCommandService.update(..)) || execution(* com.starrainnotes.profile.service.ProfileCommandService.updateSelectedContent(..))")
     public Object identityChanged(ProceedingJoinPoint invocation) throws Throwable {
         Object result = invocation.proceed();
         events.publishEvent(new SeoContentChangedEvent(properties.siteOrigin() + "/about"));

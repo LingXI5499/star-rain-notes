@@ -3,8 +3,10 @@ package com.starrainnotes.profile.controller;
 import com.starrainnotes.profile.dto.AdminAboutView;
 import com.starrainnotes.profile.dto.UpdateAboutRequest;
 import com.starrainnotes.profile.dto.UpdateSelectedContentRequest;
-import com.starrainnotes.profile.service.ProfileService;
+import com.starrainnotes.profile.service.ProfileCommandService;
+import com.starrainnotes.profile.service.ProfileQueryService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,26 +18,24 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/admin/about")
+@RequiredArgsConstructor
 public class AboutAdminController {
 
-    private final ProfileService profileService;
-
-    public AboutAdminController(ProfileService profileService) {
-        this.profileService = profileService;
-    }
+    private final ProfileCommandService commandService;
+    private final ProfileQueryService queryService;
 
     @GetMapping
     public AdminAboutView get() {
-        return profileService.getAdmin();
+        return queryService.getAdmin();
     }
 
     @PutMapping
     public AdminAboutView update(@Valid @RequestBody UpdateAboutRequest request) {
-        return profileService.update(request);
+        return commandService.update(request);
     }
 
     @PutMapping("/selected-content")
     public AdminAboutView updateSelectedContent(@Valid @RequestBody UpdateSelectedContentRequest request) {
-        return profileService.updateSelectedContent(request);
+        return commandService.updateSelectedContent(request);
     }
 }
