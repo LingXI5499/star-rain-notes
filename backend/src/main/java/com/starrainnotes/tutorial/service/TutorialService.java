@@ -3,26 +3,21 @@ package com.starrainnotes.tutorial.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.tutorial.assembler.TutorialAssembler;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
-import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import com.starrainnotes.tutorial.dto.AdminTutorialDetailView;
 import com.starrainnotes.tutorial.dto.AdminTutorialSummaryView;
 import com.starrainnotes.tutorial.dto.BreadcrumbView;
 import com.starrainnotes.tutorial.dto.CategoryPathView;
-import com.starrainnotes.tutorial.dto.CreateTutorialRequest;
 import com.starrainnotes.tutorial.dto.CurriculumNodeView;
 import com.starrainnotes.tutorial.dto.FirstChapterView;
-import com.starrainnotes.tutorial.dto.MoveTutorialRequest;
 import com.starrainnotes.tutorial.dto.PrevNextView;
 import com.starrainnotes.tutorial.dto.PublicChapterView;
 import com.starrainnotes.tutorial.dto.PublicTutorialDetailView;
 import com.starrainnotes.tutorial.dto.PublicTutorialSummaryView;
 import com.starrainnotes.tutorial.dto.TutorialPageView;
-import com.starrainnotes.tutorial.dto.UpdateTutorialRequest;
 import com.starrainnotes.tutorial.entity.Tutorial;
 import com.starrainnotes.tutorial.entity.TutorialCategory;
 import com.starrainnotes.tutorial.entity.TutorialNode;
@@ -32,10 +27,8 @@ import com.starrainnotes.tutorial.mapper.TutorialNodeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.Clock;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -50,10 +43,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * Tutorial management: admin CRUD + publish lifecycle (04 §10) and public
- * queries. PublishStatus/publishedAt are only changed by the /publish and
- * /withdraw actions; the first publish stamps publishedAt and withdraw /
- * republish keep it (AGENTS.md).
+ * Tutorial read model for admin and public tutorial views.
  */
 @Service
 @RequiredArgsConstructor
@@ -61,8 +51,6 @@ public class TutorialService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final String PUBLISHED = "PUBLISHED";
-    private static final String DRAFT = "DRAFT";
-    private static final String WITHDRAWN = "WITHDRAWN";
 
     private final TutorialMapper tutorialMapper;
     private final TutorialCategoryMapper categoryMapper;
@@ -109,105 +97,6 @@ public class TutorialService {
 
     public AdminTutorialDetailView adminDetail(Long id) {
         Tutorial tutorial = requireTutorial(id);
-        return toAdminDetail(tutorial);
-    }
-
-    @Transactional
-    public AdminTutorialDetailView create(CreateTutorialRequest request) {
-        requireCategory(request.categoryId());
-        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
-        assertSlugFree(slug, null);
-
-        Tutorial tutorial = new Tutorial();
-        tutorial.setCategoryId(request.categoryId());
-        tutorial.setTitle(request.title());
-        tutorial.setSlug(slug);
-        tutorial.setSummary(request.summary());
-        tutorial.setCoverMediaId(request.coverMediaId());
-        tutorial.setSortOrder(request.sortOrder() == null ? nextTutorialOrder(request.categoryId()) : request.sortOrder());
-        tutorial.setPublishStatus(DRAFT);
-        tutorial.setPublishedAt(null);
-        tutorialMapper.insert(tutorial);
-        return toAdminDetail(tutorial);
-    }
-
-    @Transactional
-    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
-    public AdminTutorialDetailView update(Long id, UpdateTutorialRequest request) {
-        Tutorial tutorial = requireTutorial(id);
-        requireCategory(request.categoryId());
-        String slug = NumericSlugGenerator.forUpdate(request.slug(), tutorial.getSlug());
-        assertSlugFree(slug, id);
-
-        Long sourceCategoryId = tutorial.getCategoryId();
-        boolean changingCategory = !sourceCategoryId.equals(request.categoryId());
-        tutorial.setCategoryId(request.categoryId());
-        tutorial.setTitle(request.title());
-        tutorial.setSlug(slug);
-        tutorial.setSummary(request.summary());
-        tutorial.setCoverMediaId(request.coverMediaId());
-        tutorial.setSortOrder(changingCategory
-                ? nextTutorialOrder(request.categoryId())
-                : (request.sortOrder() == null ? tutorial.getSortOrder() : request.sortOrder()));
-        // publishStatus / publishedAt are never touched by a plain update
-        tutorialMapper.updateById(tutorial);
-        if (changingCategory) {
-            normalizeTutorialOrder(loadCategoryTutorials(sourceCategoryId));
-        }
-        return toAdminDetail(tutorial);
-    }
-
-    @Transactional
-    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
-    public void delete(Long id) {
-        requireTutorial(id);
-        Long nodes = nodeMapper.selectCount(
-                new LambdaQueryWrapper<TutorialNode>().eq(TutorialNode::getTutorialId, id));
-        if (nodes != null && nodes > 0) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "TUTORIAL_HAS_NODES",
-                    "Tutorial has nodes", "A tutorial containing nodes cannot be deleted.");
-        }
-        tutorialMapper.deleteById(id);
-    }
-
-    /** Reorders tutorials within their current category without editing metadata. */
-    @Transactional
-    public void move(Long id, MoveTutorialRequest request) {
-        Tutorial tutorial = requireTutorial(id);
-        List<Tutorial> siblings = loadCategoryTutorials(tutorial.getCategoryId());
-        siblings.removeIf(item -> item.getId().equals(id));
-        int index = Math.min(Math.max(request.targetIndex(), 0), siblings.size());
-        siblings.add(index, tutorial);
-        normalizeTutorialOrder(siblings);
-    }
-
-    @Transactional
-    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
-    public AdminTutorialDetailView publish(Long id) {
-        Tutorial tutorial = requireTutorial(id);
-        if (!PUBLISHED.equals(tutorial.getPublishStatus())) {
-            if (tutorial.getPublishedAt() == null) {
-                tutorial.setPublishedAt(LocalDateTime.now(Clock.systemUTC()));
-            }
-            tutorial.setPublishStatus(PUBLISHED);
-            tutorialMapper.updateById(tutorial);
-        }
-        return toAdminDetail(tutorial);
-    }
-
-    @Transactional
-    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
-    public AdminTutorialDetailView withdraw(Long id) {
-        Tutorial tutorial = requireTutorial(id);
-        if (DRAFT.equals(tutorial.getPublishStatus())) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_PUBLISH_TRANSITION",
-                    "Cannot withdraw a draft", "Only published tutorials can be withdrawn.");
-        }
-        if (!WITHDRAWN.equals(tutorial.getPublishStatus())) {
-            // publishedAt is preserved: it is the FIRST public publication time
-            tutorial.setPublishStatus(WITHDRAWN);
-            tutorialMapper.updateById(tutorial);
-        }
         return toAdminDetail(tutorial);
     }
 
@@ -344,59 +233,6 @@ public class TutorialService {
                     "Tutorial not found", "The tutorial does not exist.");
         }
         return tutorial;
-    }
-
-    private List<Tutorial> loadCategoryTutorials(Long categoryId) {
-        return tutorialMapper.selectList(new LambdaQueryWrapper<Tutorial>()
-                .eq(Tutorial::getCategoryId, categoryId)
-                .orderByAsc(Tutorial::getSortOrder)
-                .orderByAsc(Tutorial::getId));
-    }
-
-    private int nextTutorialOrder(Long categoryId) {
-        return loadCategoryTutorials(categoryId).stream()
-                .mapToInt(item -> item.getSortOrder() == null ? 0 : item.getSortOrder())
-                .max()
-                .orElse(0) + 10;
-    }
-
-    private void normalizeTutorialOrder(List<Tutorial> tutorials) {
-        for (int index = 0; index < tutorials.size(); index++) {
-            Tutorial tutorial = tutorials.get(index);
-            int order = (index + 1) * 10;
-            if (!Integer.valueOf(order).equals(tutorial.getSortOrder())) {
-                tutorial.setSortOrder(order);
-                tutorialMapper.updateById(tutorial);
-            }
-        }
-    }
-
-    private void requireCategory(Long categoryId) {
-        if (categoryId == null || categoryMapper.selectById(categoryId) == null) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "TUTORIAL_CATEGORY_NOT_FOUND",
-                    "Tutorial category not found", "The referenced category does not exist.");
-        }
-    }
-
-    private void assertSlugFree(String slug, Long excludeId) {
-        LambdaQueryWrapper<Tutorial> wrapper =
-                new LambdaQueryWrapper<Tutorial>().eq(Tutorial::getSlug, slug);
-        if (excludeId != null) {
-            wrapper.ne(Tutorial::getId, excludeId);
-        }
-        Long count = tutorialMapper.selectCount(wrapper);
-        if (count != null && count > 0) {
-            throw new ApiException(HttpStatus.CONFLICT, "SLUG_CONFLICT",
-                    "Slug already exists", "A tutorial with this slug already exists.");
-        }
-    }
-
-    private boolean slugExists(String slug, Long excludeId) {
-        LambdaQueryWrapper<Tutorial> wrapper =
-                new LambdaQueryWrapper<Tutorial>().eq(Tutorial::getSlug, slug);
-        if (excludeId != null) wrapper.ne(Tutorial::getId, excludeId);
-        Long count = tutorialMapper.selectCount(wrapper);
-        return count != null && count > 0;
     }
 
     private Set<Long> resolveCategoryFilter(String categorySlug) {
