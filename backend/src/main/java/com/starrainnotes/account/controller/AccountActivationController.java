@@ -2,6 +2,7 @@ package com.starrainnotes.account.controller;
 
 import com.starrainnotes.account.dto.ActivationConfirmRequest;
 import com.starrainnotes.account.dto.ActivationStatusView;
+import com.starrainnotes.account.service.AccountActivationService;
 import com.starrainnotes.account.service.AccountQueryService;
 import com.starrainnotes.account.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,11 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/auth/super-admin-activation")
 public class AccountActivationController {
 
-    private final AccountService accountService;
+    private final AccountActivationService activationService;
     private final AccountQueryService accountQueries;
 
-    public AccountActivationController(AccountService accountService, AccountQueryService accountQueries) {
-        this.accountService = accountService;
+    public AccountActivationController(AccountActivationService activationService, AccountQueryService accountQueries) {
+        this.activationService = activationService;
         this.accountQueries = accountQueries;
     }
 
@@ -37,13 +38,13 @@ public class AccountActivationController {
     @PostMapping("/verification-codes")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void sendCode(HttpServletRequest request) {
-        accountService.requestActivationCode(clientIp(request));
+        activationService.requestCode(clientIp(request));
     }
 
     @PostMapping("/confirm")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void confirm(@Valid @RequestBody ActivationConfirmRequest body) {
-        accountService.confirmActivation(body.verificationCode(), body.password());
+        activationService.confirm(body.verificationCode(), body.password());
     }
 
     static String clientIp(HttpServletRequest request) {

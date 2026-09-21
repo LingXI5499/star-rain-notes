@@ -2,12 +2,10 @@ package com.starrainnotes.account.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.account.audit.AuditLogService;
-import com.starrainnotes.account.config.AccountProperties;
 import com.starrainnotes.account.entity.AccountUser;
 import com.starrainnotes.account.mapper.AccountUserMapper;
 import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,63 +24,11 @@ public class AccountService {
     public static final String DISABLED = "DISABLED";
 
     private final AccountUserMapper userMapper;
-    private final VerificationCodeService codeService;
-    private final PasswordEncoder passwordEncoder;
-    private final AccountProperties props;
     private final AuditLogService auditLog;
-    private final AccountQueryService queries;
 
-    public AccountService(AccountUserMapper userMapper, VerificationCodeService codeService,
-                          PasswordEncoder passwordEncoder, AccountProperties props, AuditLogService auditLog,
-                          AccountQueryService queries) {
+    public AccountService(AccountUserMapper userMapper, AuditLogService auditLog) {
         this.userMapper = userMapper;
-        this.codeService = codeService;
-        this.passwordEncoder = passwordEncoder;
-        this.props = props;
         this.auditLog = auditLog;
-        this.queries = queries;
-    }
-
-    public String maskedSuperAdminEmail() { return mask(props.getSuperAdminEmail()); }
-
-    public void requestActivationCode(String ip) {
-        if (queries.superAdminActivated()) {
-            throw fail("SUPER_ADMIN_ALREADY_ACTIVATED", HttpStatus.GONE, "Already activated",
-                    "A super administrator is already active.");
-        }
-        String email = props.getSuperAdminEmail();
-        if (!validEmail(email)) {
-            throw fail("SUPER_ADMIN_EMAIL_NOT_CONFIGURED", HttpStatus.PRECONDITION_FAILED,
-                    "Email not configured", "APP_SUPER_ADMIN_EMAIL is missing or invalid.");
-        }
-        ensurePendingSuperAdmin(email);
-        codeService.issue(email, "SUPER_ADMIN_ACTIVATION", null, ip);
-        auditLog.record(null, "SUPER_ADMIN_ACTIVATION_CODE", "ACCOUNT", null, "SUCCESS",
-                ip, null, Map.of("email", mask(email)));
-    }
-
-    @Transactional
-    public AccountUser confirmActivation(String code, String password) {
-        if (queries.superAdminActivated()) {
-            throw fail("SUPER_ADMIN_ALREADY_ACTIVATED", HttpStatus.GONE, "Already activated",
-                    "A super administrator is already active.");
-        }
-        String email = props.getSuperAdminEmail();
-        if (!validEmail(email)) {
-            throw fail("SUPER_ADMIN_EMAIL_NOT_CONFIGURED", HttpStatus.PRECONDITION_FAILED,
-                    "Email not configured", "APP_SUPER_ADMIN_EMAIL is missing.");
-        }
-        codeService.verify(email, "SUPER_ADMIN_ACTIVATION", code, null);
-        AccountUser account = requireByEmail(email);
-        account.setPasswordHash(passwordEncoder.encode(password));
-        account.setAccountStatus(ACTIVE);
-        account.setEmailVerifiedAt(now());
-        account.setActivatedAt(now());
-        account.setAuthVersion(account.getAuthVersion() + 1);
-        userMapper.updateById(account);
-        auditLog.record(account.getId(), "SUPER_ADMIN_ACTIVATED", "ACCOUNT", account.getId(), "SUCCESS",
-                null, null, null);
-        return account;
     }
 
     @Transactional
@@ -123,18 +69,6 @@ public class AccountService {
         return List.of("TUTORIAL_COLLABORATE", "BLOG_COLLABORATE", "ENGLISH_COLLABORATE");
     }
 
-    private void ensurePendingSuperAdmin(String email) {
-        AccountUser existing = findByEmail(email);
-        if (existing == null) {
-            AccountUser account = new AccountUser();
-            account.setEmail(email);
-            account.setRole(SUPER_ADMIN);
-            account.setAccountStatus(PENDING);
-            account.setAuthVersion(1);
-            userMapper.insert(account);
-        }
-    }
-
     private void requireSuperAdmin(Long accountId, String detail) {
         AccountUser user = requireById(accountId);
         if (!SUPER_ADMIN.equals(user.getRole())) {
@@ -144,11 +78,6 @@ public class AccountService {
 
     private AccountUser requireById(Long id) {
         AccountUser user = userMapper.selectById(id);
-        if (user == null) throw fail("USER_NOT_FOUND", HttpStatus.NOT_FOUND, "User not found", "No such account.");
-        return user;
-    }
-    private AccountUser requireByEmail(String email) {
-        AccountUser user = findByEmail(email);
         if (user == null) throw fail("USER_NOT_FOUND", HttpStatus.NOT_FOUND, "User not found", "No such account.");
         return user;
     }
