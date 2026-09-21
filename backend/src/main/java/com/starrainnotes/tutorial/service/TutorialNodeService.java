@@ -59,36 +59,6 @@ public class TutorialNodeService {
     private final TutorialNodeMapper nodeMapper;
     private final SiteSettingsTimezone siteSettingsTimezone;
 
-    /** Compatibility tree endpoint; V5 guarantees exactly two levels. */
-    public List<AdminTreeNodeView> tree(Long tutorialId) {
-        requireTutorial(tutorialId);
-        return TutorialTreeBuilder.build(loadAll(tutorialId));
-    }
-
-    public AdminCurriculumView curriculum(Long tutorialId) {
-        Tutorial tutorial = requireTutorial(tutorialId);
-        TutorialCategory category = categoryMapper.selectById(tutorial.getCategoryId());
-        List<TutorialNode> all = loadAll(tutorialId);
-        Map<Long, List<TutorialNode>> chapters = all.stream()
-                .filter(node -> CHAPTER.equals(node.getNodeType()))
-                .collect(Collectors.groupingBy(TutorialNode::getParentId));
-        List<AdminCurriculumGroupView> groups = all.stream()
-                .filter(node -> GROUP.equals(node.getNodeType()) && node.getParentId() == null)
-                .map(group -> {
-                    List<AdminCurriculumChapterView> rows = chapters.getOrDefault(group.getId(), List.of())
-                            .stream().map(this::toCurriculumChapter).toList();
-                    long published = rows.stream()
-                            .filter(row -> PUBLISHED.equals(row.publishStatus())).count();
-                    return new AdminCurriculumGroupView(group.getId(), group.getTitle(), group.getSortOrder(),
-                            rows.size(), published, rows);
-                }).toList();
-        return new AdminCurriculumView(
-                new AdminCurriculumTutorialView(tutorial.getId(), tutorial.getCategoryId(),
-                        category == null ? null : category.getName(), tutorial.getTitle(), tutorial.getSlug(),
-                        tutorial.getPublishStatus()),
-                groups);
-    }
-
     public AdminTreeNodeView createGroup(Long tutorialId, CreateGroupRequest request) {
         requireTutorial(tutorialId);
         TutorialNode group = new TutorialNode();
@@ -140,14 +110,6 @@ public class TutorialNodeService {
         chapter.setSortOrder(nextChapterOrder(tutorialId, group.getId()));
         nodeMapper.insert(chapter);
         return toChapterDetail(chapter);
-    }
-
-    public ChapterDetailView getChapter(Long tutorialId, Long chapterId) {
-        return toChapterDetail(requireChapter(tutorialId, chapterId));
-    }
-
-    public String chapterPublishStatus(Long tutorialId, Long chapterId) {
-        return requireChapter(tutorialId, chapterId).getPublishStatus();
     }
 
     public ChapterDetailView updateChapter(Long tutorialId, Long chapterId, UpdateChapterRequest request) {

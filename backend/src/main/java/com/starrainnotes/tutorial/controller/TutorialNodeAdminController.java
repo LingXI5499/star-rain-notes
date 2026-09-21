@@ -11,6 +11,7 @@ import com.starrainnotes.tutorial.dto.ReassignChapterRequest;
 import com.starrainnotes.tutorial.dto.UpdateChapterRequest;
 import com.starrainnotes.tutorial.dto.UpdateGroupRequest;
 import com.starrainnotes.tutorial.service.TutorialNodeService;
+import com.starrainnotes.tutorial.service.TutorialNodeQueryService;
 import com.starrainnotes.tutorial.service.TutorialChapterUpdateWorkflowService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -38,16 +39,17 @@ import java.util.List;
 public class TutorialNodeAdminController {
 
     private final TutorialNodeService nodeService;
+    private final TutorialNodeQueryService queryService;
     private final TutorialChapterUpdateWorkflowService updateWorkflowService;
 
     @GetMapping("/nodes")
     public List<AdminTreeNodeView> tree(@PathVariable Long tutorialId) {
-        return nodeService.tree(tutorialId);
+        return queryService.tree(tutorialId);
     }
 
     @GetMapping("/curriculum")
     public AdminCurriculumView curriculum(@PathVariable Long tutorialId) {
-        return nodeService.curriculum(tutorialId);
+        return queryService.curriculum(tutorialId);
     }
 
     // ---------------------------------------------------------------
@@ -95,7 +97,7 @@ public class TutorialNodeAdminController {
 
     @GetMapping("/chapters/{chapterId}")
     public ChapterDetailView getChapter(@PathVariable Long tutorialId, @PathVariable Long chapterId) {
-        return nodeService.getChapter(tutorialId, chapterId);
+        return queryService.chapter(tutorialId, chapterId);
     }
 
     @PutMapping("/chapters/{chapterId}")
