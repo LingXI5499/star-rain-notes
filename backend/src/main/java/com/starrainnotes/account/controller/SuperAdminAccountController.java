@@ -7,6 +7,7 @@ import com.starrainnotes.account.dto.AdminInvitationView;
 import com.starrainnotes.account.dto.DisableAccountRequest;
 import com.starrainnotes.account.dto.InviteRequest;
 import com.starrainnotes.account.security.AccountPrincipal;
+import com.starrainnotes.account.service.AccountInvitationService;
 import com.starrainnotes.account.service.AccountQueryService;
 import com.starrainnotes.account.service.AccountService;
 import jakarta.validation.Valid;
@@ -30,12 +31,14 @@ import java.util.List;
 public class SuperAdminAccountController {
 
     private final AccountService accountService;
+    private final AccountInvitationService invitations;
     private final AccountQueryService accountQueries;
     private final AuditLogService auditLogService;
 
-    public SuperAdminAccountController(AccountService accountService, AccountQueryService accountQueries,
-                                       AuditLogService auditLogService) {
+    public SuperAdminAccountController(AccountService accountService, AccountInvitationService invitations,
+                                       AccountQueryService accountQueries, AuditLogService auditLogService) {
         this.accountService = accountService;
+        this.invitations = invitations;
         this.accountQueries = accountQueries;
         this.auditLogService = auditLogService;
     }
@@ -47,32 +50,32 @@ public class SuperAdminAccountController {
 
     @GetMapping("/invitations")
     public List<AdminInvitationView> invitations() {
-        return accountService.listInvitations().stream().map(AdminInvitationView::from).toList();
+        return invitations.list().stream().map(AdminInvitationView::from).toList();
     }
 
     @PostMapping("/invitations")
     @ResponseStatus(HttpStatus.CREATED)
     public AdminInvitationView invite(@Valid @RequestBody InviteRequest body, @AuthenticationPrincipal AccountPrincipal principal) {
-        var issued = accountService.createInvitation(body.email(), actorId(principal));
+        var issued = invitations.create(body.email(), actorId(principal));
         return AdminInvitationView.from(issued.invitation(), issued.inviteLink());
     }
 
     @PostMapping("/invitations/{id}/resend")
     public AdminInvitationView resend(@PathVariable Long id) {
-        var issued = accountService.resendInvitation(id);
+        var issued = invitations.resend(id);
         return AdminInvitationView.from(issued.invitation(), issued.inviteLink());
     }
 
     @PostMapping("/invitations/{id}/revoke")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void revoke(@PathVariable Long id, @AuthenticationPrincipal AccountPrincipal principal) {
-        accountService.revokeInvitation(id, actorId(principal));
+        invitations.revoke(id, actorId(principal));
     }
 
     @DeleteMapping("/invitations/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteInvitation(@PathVariable Long id, @AuthenticationPrincipal AccountPrincipal principal) {
-        accountService.deleteInvitation(id, actorId(principal));
+        invitations.delete(id, actorId(principal));
     }
 
     @PostMapping("/users/{id}/disable")
