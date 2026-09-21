@@ -6,6 +6,7 @@ import com.starrainnotes.account.dto.AccountSessionView;
 import com.starrainnotes.account.dto.ChangePasswordRequest;
 import com.starrainnotes.account.entity.AccountUser;
 import com.starrainnotes.account.security.AccountPrincipal;
+import com.starrainnotes.account.service.AccountCredentialService;
 import com.starrainnotes.account.service.AccountService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -30,12 +31,14 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountAuthController {
 
     private final AccountService accountService;
+    private final AccountCredentialService credentials;
     private final SecurityContextRepository securityContextRepository;
     private final AuditLogService auditLog;
 
-    public AccountAuthController(AccountService accountService, SecurityContextRepository securityContextRepository,
-                                 AuditLogService auditLog) {
+    public AccountAuthController(AccountService accountService, AccountCredentialService credentials,
+                                 SecurityContextRepository securityContextRepository, AuditLogService auditLog) {
         this.accountService = accountService;
+        this.credentials = credentials;
         this.securityContextRepository = securityContextRepository;
         this.auditLog = auditLog;
     }
@@ -45,7 +48,7 @@ public class AccountAuthController {
                                     HttpServletRequest request, HttpServletResponse response) {
         AccountUser user;
         try {
-            user = accountService.authenticate(body.email(), body.password());
+            user = credentials.authenticate(body.email(), body.password());
         } catch (RuntimeException ex) {
             auditLog.record(null, "LOGIN", "ACCOUNT", null, "FAILURE", clientIp(request),
                     request.getHeader("User-Agent"), null);
@@ -76,7 +79,7 @@ public class AccountAuthController {
             throw AccountService.fail("ACCOUNT_IDENTITY_MISMATCH", HttpStatus.FORBIDDEN,
                     "Forbidden", "The password can only be changed for the current account.");
         }
-        accountService.changePassword(principal.getEmail(), body.currentPassword(), body.newPassword());
+        credentials.changePassword(principal.getEmail(), body.currentPassword(), body.newPassword());
         auditLog.record(principal.getId(), "CHANGE_PASSWORD", "ACCOUNT", principal.getId(), "SUCCESS",
                 clientIp(request), request.getHeader("User-Agent"), null);
         HttpSession session = request.getSession(false);
