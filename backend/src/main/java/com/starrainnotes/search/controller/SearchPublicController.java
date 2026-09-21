@@ -2,6 +2,7 @@ package com.starrainnotes.search.controller;
 
 import com.starrainnotes.search.dto.SearchPageView;
 import com.starrainnotes.search.service.SearchService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -13,13 +14,10 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api/v1/public/search")
+@RequiredArgsConstructor
 public class SearchPublicController {
 
     private final SearchService searchService;
-
-    public SearchPublicController(SearchService searchService) {
-        this.searchService = searchService;
-    }
 
     @GetMapping
     public SearchPageView search(@RequestParam String q,
