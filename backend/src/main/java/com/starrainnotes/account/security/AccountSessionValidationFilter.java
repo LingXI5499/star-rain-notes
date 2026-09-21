@@ -1,6 +1,6 @@
 package com.starrainnotes.account.security;
 
-import com.starrainnotes.account.service.AccountService;
+import com.starrainnotes.account.service.AccountQueryService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,10 +15,10 @@ import java.io.IOException;
 /** Invalidates an account session immediately after disablement or credential changes. */
 public final class AccountSessionValidationFilter extends OncePerRequestFilter {
 
-    private final AccountService accountService;
+    private final AccountQueryService accountQueries;
 
-    public AccountSessionValidationFilter(AccountService accountService) {
-        this.accountService = accountService;
+    public AccountSessionValidationFilter(AccountQueryService accountQueries) {
+        this.accountQueries = accountQueries;
     }
 
     @Override
@@ -31,7 +31,7 @@ public final class AccountSessionValidationFilter extends OncePerRequestFilter {
                                     FilterChain filterChain) throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof AccountPrincipal principal
-                && !accountService.isSessionValid(principal.getId(), principal.getAuthVersion())) {
+                && !accountQueries.isSessionValid(principal.getId(), principal.getAuthVersion())) {
             SecurityContextHolder.clearContext();
             HttpSession session = request.getSession(false);
             if (session != null) {

@@ -7,6 +7,7 @@ import com.starrainnotes.account.dto.AdminInvitationView;
 import com.starrainnotes.account.dto.DisableAccountRequest;
 import com.starrainnotes.account.dto.InviteRequest;
 import com.starrainnotes.account.security.AccountPrincipal;
+import com.starrainnotes.account.service.AccountQueryService;
 import com.starrainnotes.account.service.AccountService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -29,16 +30,19 @@ import java.util.List;
 public class SuperAdminAccountController {
 
     private final AccountService accountService;
+    private final AccountQueryService accountQueries;
     private final AuditLogService auditLogService;
 
-    public SuperAdminAccountController(AccountService accountService, AuditLogService auditLogService) {
+    public SuperAdminAccountController(AccountService accountService, AccountQueryService accountQueries,
+                                       AuditLogService auditLogService) {
         this.accountService = accountService;
+        this.accountQueries = accountQueries;
         this.auditLogService = auditLogService;
     }
 
     @GetMapping("/users")
     public List<AccountUserView> users() {
-        return accountService.listUsers().stream().map(AccountUserView::from).toList();
+        return accountQueries.listUsers().stream().map(AccountUserView::from).toList();
     }
 
     @GetMapping("/invitations")
