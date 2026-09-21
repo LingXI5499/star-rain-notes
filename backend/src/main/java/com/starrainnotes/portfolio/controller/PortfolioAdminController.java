@@ -7,6 +7,7 @@ import com.starrainnotes.portfolio.dto.UpdateProjectRequest;
 import com.starrainnotes.portfolio.service.PortfolioService;
 import com.starrainnotes.portfolio.service.PortfolioPrototypeService;
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -24,7 +25,6 @@ import org.springframework.http.CacheControl;
 import org.springframework.http.MediaType;
 import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.HttpHeaders;
 
 /**
  * Admin portfolio project management (04 §12). Lifecycle only via /publish
@@ -32,15 +32,11 @@ import org.springframework.http.HttpHeaders;
  */
 @RestController
 @RequestMapping("/api/v1/admin/portfolio/projects")
+@RequiredArgsConstructor
 public class PortfolioAdminController {
 
     private final PortfolioService portfolioService;
     private final PortfolioPrototypeService prototypeService;
-
-    public PortfolioAdminController(PortfolioService portfolioService, PortfolioPrototypeService prototypeService) {
-        this.portfolioService = portfolioService;
-        this.prototypeService = prototypeService;
-    }
 
     @GetMapping
     public AdminProjectPageView list(@RequestParam(defaultValue = "1") int page,
