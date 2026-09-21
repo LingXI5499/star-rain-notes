@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.blog.mapper.BlogTagMapper">
+    <select id="selectAllWithPostCount" resultType="com.starrainnotes.blog.mapper.BlogTagMapper$BlogTagWithCountRow">
+        SELECT t.id, t.name, t.slug, COUNT(bt.blog_post_id) AS postCount
+        FROM blog_tag t
+        LEFT JOIN blog_post_tag bt ON bt.blog_tag_id = t.id
+        GROUP BY t.id, t.name, t.slug
+        ORDER BY t.name ASC
+    </select>
+
+    <select id="selectPublishedWithPostCount" resultType="com.starrainnotes.blog.mapper.BlogTagMapper$BlogTagWithCountRow">
+        SELECT t.id, t.name, t.slug, COUNT(*) AS postCount
+        FROM blog_tag t
+        JOIN blog_post_tag bt ON bt.blog_tag_id = t.id
+        JOIN blog_post p ON p.id = bt.blog_post_id
+        WHERE p.publish_status = 'PUBLISHED'
+        GROUP BY t.id, t.name, t.slug
+        ORDER BY postCount DESC, t.name ASC
+    </select>
+
+    <insert id="insertIgnore" useGeneratedKeys="true" keyProperty="tag.id">
+        INSERT IGNORE INTO blog_tag (name, slug) VALUES (#{tag.name}, #{tag.slug})
+    </insert>
+</mapper>

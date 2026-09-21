@@ -1,7 +1,8 @@
 package com.starrainnotes.seo;
 
 import com.starrainnotes.blog.dto.UpdatePostRequest;
-import com.starrainnotes.blog.service.BlogService;
+import com.starrainnotes.blog.service.BlogCommandService;
+import com.starrainnotes.blog.service.BlogQueryService;
 import com.starrainnotes.site.service.SiteService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledIfSystemProperty;
@@ -30,7 +31,8 @@ import java.util.function.Supplier;
 class ExperiencePerformanceTest {
     static final ThreadLocal<Integer> statements = ThreadLocal.withInitial(() -> 0);
     @Autowired JdbcTemplate jdbc;
-    @Autowired BlogService blogs;
+    @Autowired BlogCommandService blogCommands;
+    @Autowired BlogQueryService blogQueries;
     @Autowired SiteService sites;
     @Autowired SeoContentRepository content;
     @Autowired SeoDocumentCache pages;
@@ -43,11 +45,11 @@ class ExperiencePerformanceTest {
         jdbc.batchUpdate("INSERT INTO blog_post(title,slug,summary,body_markdown,publish_status,published_at) VALUES (?,?,'Benchmark fixture',?,'PUBLISHED','2026-09-01 00:00:00')", rows);
         Long id = jdbc.queryForObject("SELECT id FROM blog_post WHERE slug='perf-fixture-0'", Long.class);
         pages.contentChanged(new SeoContentChangedEvent("https://yulanlin.cn/blog"));
-        measure("public-blog-list", () -> blogs.publicList(null, null, null, 1, 20));
-        measure("blog-calendar", () -> blogs.calendar("2026-09"));
-        measure("blog-archive", blogs::archive);
-        measure("admin-blog-list-service", () -> blogs.adminList(1, 20, null, null, null));
-        measure("admin-blog-save-service", () -> blogs.update(id, new UpdatePostRequest("Performance fixture 0", "perf-fixture-0", "Benchmark fixture", body, null, null, null, List.of(), List.of())));
+        measure("public-blog-list", () -> blogQueries.publicList(null, null, null, 1, 20));
+        measure("blog-calendar", () -> blogQueries.calendar("2026-09"));
+        measure("blog-archive", blogQueries::archive);
+        measure("admin-blog-list-service", () -> blogQueries.adminList(1, 20, null, null, null));
+        measure("admin-blog-save-service", () -> blogCommands.update(id, new UpdatePostRequest("Performance fixture 0", "perf-fixture-0", "Benchmark fixture", body, null, null, null, List.of(), List.of())));
         measure("seo-document", () -> renderer.render(pages.page("/blog/perf-fixture-0", () -> content.resolve("/blog/perf-fixture-0"))));
         var explain = jdbc.queryForList("EXPLAIN SELECT id,title,slug,summary,cover_media_id,published_at,updated_at FROM blog_post WHERE publish_status='PUBLISHED' ORDER BY published_at DESC,id DESC LIMIT 20");
         System.out.println("EXPERIENCE_EXPLAIN " + explain);

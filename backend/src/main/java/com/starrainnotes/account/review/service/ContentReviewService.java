@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.account.audit.AuditLogService;
 import com.starrainnotes.account.review.dto.ContentReviewView;
 import com.starrainnotes.blog.dto.UpdatePostRequest;
-import com.starrainnotes.blog.service.BlogService;
+import com.starrainnotes.blog.service.BlogCommandService;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.grammar.dto.GrammarLessonRequest;
 import com.starrainnotes.english.grammar.service.EnglishGrammarService;
@@ -38,7 +38,7 @@ public class ContentReviewService {
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private final JdbcTemplate jdbc;
     private final ObjectMapper json;
-    private final BlogService blogService;
+    private final BlogCommandService blogService;
     private final TutorialNodeService tutorialNodeService;
     private final EnglishGrammarService grammarService;
     private final ReadingArticleService readingService;
@@ -48,7 +48,7 @@ public class ContentReviewService {
     private final AuditLogService auditLogService;
     private final SiteSettingsTimezone timezone;
 
-    public ContentReviewService(JdbcTemplate jdbc, ObjectMapper json, BlogService blogService,
+    public ContentReviewService(JdbcTemplate jdbc, ObjectMapper json, BlogCommandService blogService,
                                 TutorialNodeService tutorialNodeService,
                                 EnglishGrammarService grammarService,
                                 ReadingArticleService readingService,

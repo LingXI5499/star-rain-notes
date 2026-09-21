@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.blog.mapper.BlogPostTagMapper">
+    <select id="selectPostIdsByTagSlug" resultType="java.lang.Long">
+        SELECT bt.blog_post_id
+        FROM blog_post_tag bt
+        JOIN blog_tag t ON t.id = bt.blog_tag_id
+        WHERE t.slug = #{tagSlug}
+    </select>
+
+    <delete id="deleteByPostId">
+        DELETE FROM blog_post_tag WHERE blog_post_id = #{postId}
+    </delete>
+
+    <insert id="insertBatch">
+        INSERT INTO blog_post_tag (blog_post_id, blog_tag_id) VALUES
+        <foreach collection="tagIds" item="tagId" separator=",">
+            (#{postId}, #{tagId})
+        </foreach>
+    </insert>
+
+    <select id="selectTagsByPostId" resultType="com.starrainnotes.blog.entity.BlogTag">
+        SELECT t.id, t.name, t.slug, t.created_at, t.updated_at
+        FROM blog_post_tag bt
+        JOIN blog_tag t ON t.id = bt.blog_tag_id
+        WHERE bt.blog_post_id = #{postId}
+        ORDER BY t.name
+    </select>
+
+    <select id="selectTagsByPostIds" resultType="com.starrainnotes.blog.mapper.BlogPostTagMapper$BlogPostTagRow">
+        SELECT bt.blog_post_id AS postId, t.id AS tagId, t.name, t.slug
+        FROM blog_post_tag bt
+        JOIN blog_tag t ON t.id = bt.blog_tag_id
+        WHERE bt.blog_post_id IN
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">#{postId}</foreach>
+        ORDER BY t.name
+    </select>
+
+    <select id="countByTagId" resultType="long">
+        SELECT COUNT(*) FROM blog_post_tag WHERE blog_tag_id = #{tagId}
+    </select>
+</mapper>
