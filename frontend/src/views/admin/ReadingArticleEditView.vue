@@ -143,7 +143,7 @@ onMounted(load)
       <div class="reading-edit__title">
         <CefrBadge :level="form.cefrLevel" />
         <h1>{{ articleId ? '编辑文章' : '新建文章' }}</h1>
-        <span>页面唯一 H1 为文章标题，正文目录收录 H2–H4。</span>
+        <span>页面标题独立展示；正文 H1–H6 均会进入前台目录。</span>
       </div>
       <div class="reading-edit__actions">
         <el-button @click="checkOpen = true">发布检查</el-button>

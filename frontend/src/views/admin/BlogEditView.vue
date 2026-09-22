@@ -110,8 +110,8 @@ async function save() {
           placeholder="输入文章标题"
           maxlength="200"
         />
-        <p class="blog-edit__outline-note">正文请从 H2 开始；前台右侧目录固定收录 H2–H4。</p>
-        <MarkdownEditor v-model="form.bodyMarkdown" placeholder="从 H2 开始撰写正文…" />
+        <p class="blog-edit__outline-note">页面标题独立展示；正文可从 H1 开始，前台目录收录 H1–H6。</p>
+        <MarkdownEditor v-model="form.bodyMarkdown" placeholder="从 H1 开始撰写正文…" />
       </section>
 
       <section class="blog-edit__meta">

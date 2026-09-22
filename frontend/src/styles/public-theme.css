@@ -77,6 +77,8 @@
 
 .base-layout .markdown-body { max-width: 780px; font-size: 17px; line-height: 1.88; }
 .base-layout .markdown-body p { margin-bottom: 1.45em; }
+.base-layout .markdown-body h1 { margin-top: 3.2em; font-size:clamp(30px,3.3vw,40px); }
+.base-layout .markdown-body h1:first-child { margin-top: 0; }
 .base-layout .markdown-body h2 { margin-top: 2.8em; padding-bottom: .32em; border-bottom: 1px solid var(--border); scroll-margin-top: calc(var(--header-height) + 26px); }
 .base-layout .markdown-body h3 { margin-top: 2.15em; scroll-margin-top: calc(var(--header-height) + 26px); }
 .base-layout .markdown-body img { height: auto; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
@@ -242,11 +244,11 @@
 }
 
 /* Markdown heading anchors: quiet affordance on hover/focus. */
-.base-layout .markdown-body :is(h2, h3, h4) {
+.base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6) {
   position: relative;
 }
-.base-layout .markdown-body :is(h2, h3, h4):hover::before,
-.base-layout .markdown-body :is(h2, h3, h4):focus-within::before {
+.base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before,
+.base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before {
   content: '#';
   position: absolute;
   left: -0.95em;
@@ -258,9 +260,10 @@
 @media (max-width: 768px) {
   .base-layout { background: var(--bg-page); }
   .base-layout .markdown-body { font-size: 16px; line-height: 1.82; }
+  .base-layout .markdown-body h1 { font-size: 29px; }
   .base-layout .markdown-body h2 { font-size: 27px; }
-  .base-layout .markdown-body :is(h2, h3, h4):hover::before,
-  .base-layout .markdown-body :is(h2, h3, h4):focus-within::before { content: none; }
+  .base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before,
+  .base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before { content: none; }
   .base-layout :where(.vocab__card,.article-card,.lc-card,.writing .card,.pr-public-card):hover { transform: none; }
 }
 

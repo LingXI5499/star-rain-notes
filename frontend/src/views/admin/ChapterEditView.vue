@@ -165,7 +165,7 @@ async function backToWorkspace() {
         maxlength="200"
       />
 
-      <MarkdownEditor v-model="form.bodyMarkdown" placeholder="从 H2 开始撰写正文…" />
+      <MarkdownEditor v-model="form.bodyMarkdown" placeholder="从 H1 开始撰写正文…" />
 
       <!-- bottom: other meta info (parent / summary) -->
       <div class="chapter-edit__meta">

@@ -62,7 +62,7 @@ hljs.registerAliases(['yml'], { languageName: 'yaml' })
  *
  * - no raw HTML (markdown-it html:false + DOMPurify sanitize as defense in depth)
  * - code highlighting via highlight.js (no external theme; .hljs colors use tokens)
- * - headings get stable ids; H2-H4 are emitted as a client-side outline (TOC)
+ * - headings get stable ids; H1-H6 are emitted as a client-side outline (TOC)
  *   and are never part of any API response
  * - `::: code-group` fences become LeetCode-style language tabs on the client
  */
