@@ -1,7 +1,8 @@
 import type { Token } from 'markdown-it'
 
-export const OUTLINE_MIN_LEVEL = 2
-export const OUTLINE_MAX_LEVEL = 4
+/** Every Markdown heading level is navigable in the public document outline. */
+export const OUTLINE_MIN_LEVEL = 1
+export const OUTLINE_MAX_LEVEL = 6
 
 export function headingText(inline: Token | undefined): string {
   if (!inline || inline.type !== 'inline') return ''

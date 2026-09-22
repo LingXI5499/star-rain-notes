@@ -154,15 +154,29 @@ onUnmounted(() => {
   border-left-color: var(--primary);
 }
 
+.article-outline__item--h1 a {
+  font-weight: 700;
+}
+
 .article-outline__item--h2 a {
   font-weight: 600;
+  padding-left: calc(var(--space-4) + 12px);
 }
 
 .article-outline__item--h3 a {
-  padding-left: var(--space-7);
+  padding-left: calc(var(--space-4) + 24px);
 }
 
 .article-outline__item--h4 a {
-  padding-left: var(--space-10);
+  padding-left: calc(var(--space-4) + 36px);
+}
+
+.article-outline__item--h5 a {
+  padding-left: calc(var(--space-4) + 48px);
+}
+
+.article-outline__item--h6 a {
+  padding-left: calc(var(--space-4) + 60px);
+  color: var(--text-muted);
 }
 </style>

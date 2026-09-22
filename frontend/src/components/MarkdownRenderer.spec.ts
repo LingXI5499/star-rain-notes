@@ -56,4 +56,31 @@ const recurse = () => 1
     expect(mocks.typesetMath).toHaveBeenCalled()
     wrapper.unmount()
   })
+
+  it('emits every heading level with stable unique anchors', async () => {
+    const wrapper = await render(`# 第一章
+## 第二章
+### 第三章
+#### 第四章
+##### 第五章
+###### 第六章
+# 第一章`)
+
+    const headings = wrapper.findAll(':is(h1, h2, h3, h4, h5, h6)')
+    expect(headings.map((heading) => heading.attributes('id'))).toEqual([
+      '第一章', '第二章', '第三章', '第四章', '第五章', '第六章', '第一章-1',
+    ])
+
+    const outlines = wrapper.emitted('outline')
+    expect(outlines?.at(-1)?.[0]).toEqual([
+      { level: 1, id: '第一章', text: '第一章' },
+      { level: 2, id: '第二章', text: '第二章' },
+      { level: 3, id: '第三章', text: '第三章' },
+      { level: 4, id: '第四章', text: '第四章' },
+      { level: 5, id: '第五章', text: '第五章' },
+      { level: 6, id: '第六章', text: '第六章' },
+      { level: 1, id: '第一章-1', text: '第一章' },
+    ])
+    wrapper.unmount()
+  })
 })
