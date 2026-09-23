@@ -1,6 +1,6 @@
 package com.starrainnotes.account.english.vocabulary;
 
-import com.starrainnotes.vocabulary.dto.VocabularyWordView;
+import com.starrainnotes.english.vocabulary.dto.VocabularyWordView;
 
 public record VocabularyStudyCardView(
         VocabularyWordView word,

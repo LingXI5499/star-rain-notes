@@ -2,8 +2,8 @@ package com.starrainnotes.account.english.vocabulary;
 
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
-import com.starrainnotes.vocabulary.dto.VocabularyWordView;
-import com.starrainnotes.vocabulary.service.VocabularyService;
+import com.starrainnotes.english.vocabulary.dto.VocabularyWordView;
+import com.starrainnotes.english.vocabulary.application.VocabularyQueryService;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -32,10 +32,10 @@ public class VocabularyStudyService {
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 
     private final JdbcTemplate jdbc;
-    private final VocabularyService vocabulary;
+    private final VocabularyQueryService vocabulary;
     private final SiteSettingsTimezone timezone;
 
-    public VocabularyStudyService(JdbcTemplate jdbc, VocabularyService vocabulary, SiteSettingsTimezone timezone) {
+    public VocabularyStudyService(JdbcTemplate jdbc, VocabularyQueryService vocabulary, SiteSettingsTimezone timezone) {
         this.jdbc = jdbc;
         this.vocabulary = vocabulary;
         this.timezone = timezone;
