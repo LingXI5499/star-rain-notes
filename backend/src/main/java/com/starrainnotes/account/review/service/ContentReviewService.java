@@ -13,7 +13,7 @@ import com.starrainnotes.english.listening.dto.ListeningItemRequest;
 import com.starrainnotes.english.listening.dto.PronunciationRuleRequest;
 import com.starrainnotes.english.listening.service.ListeningItemService;
 import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
-import com.starrainnotes.english.reading.service.ReadingArticleService;
+import com.starrainnotes.english.reading.application.ReadingCommandService;
 import com.starrainnotes.english.writing.dto.WritingPromptRequest;
 import com.starrainnotes.english.writing.dto.WritingResourceRequest;
 import com.starrainnotes.english.writing.service.WritingPromptService;
@@ -41,7 +41,7 @@ public class ContentReviewService {
     private final BlogCommandService blogService;
     private final TutorialNodeService tutorialNodeService;
     private final EnglishGrammarService grammarService;
-    private final ReadingArticleService readingService;
+    private final ReadingCommandService readingService;
     private final ListeningItemService listeningService;
     private final WritingResourceService writingResourceService;
     private final WritingPromptService writingPromptService;
@@ -51,7 +51,7 @@ public class ContentReviewService {
     public ContentReviewService(JdbcTemplate jdbc, ObjectMapper json, BlogCommandService blogService,
                                 TutorialNodeService tutorialNodeService,
                                 EnglishGrammarService grammarService,
-                                ReadingArticleService readingService,
+                                ReadingCommandService readingService,
                                 ListeningItemService listeningService,
                                 WritingResourceService writingResourceService,
                                 WritingPromptService writingPromptService,

@@ -29,4 +29,9 @@ public record ReadingArticleSummaryView(
         return new ReadingArticleSummaryView(id, title, slug, summary, coverUrl, readingLevel, cefrLevel,
                 wordCount, estimatedMinutes, publishStatus, hasExercises, updatedAt, tags);
     }
+
+    public ReadingArticleSummaryView withCoverUrl(String coverUrl) {
+        return new ReadingArticleSummaryView(id, title, slug, summary, coverUrl, readingLevel, cefrLevel,
+                wordCount, estimatedMinutes, publishStatus, hasExercises, updatedAt, tags);
+    }
 }

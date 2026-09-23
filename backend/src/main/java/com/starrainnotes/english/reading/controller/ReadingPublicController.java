@@ -6,8 +6,8 @@ import com.starrainnotes.english.reading.dto.ReadingCheckResultView;
 import com.starrainnotes.english.reading.dto.ReadingExercisePublicView;
 import com.starrainnotes.english.reading.dto.ReadingHomeView;
 import com.starrainnotes.english.reading.dto.ReadingPageView;
-import com.starrainnotes.english.reading.service.ReadingArticleService;
-import com.starrainnotes.english.reading.service.ReadingExerciseService;
+import com.starrainnotes.english.reading.application.ReadingQueryService;
+import com.starrainnotes.english.reading.application.ReadingExerciseApplicationService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,11 +27,11 @@ import java.util.List;
 @RequestMapping("/api/v1/public/english/reading")
 public class ReadingPublicController {
 
-    private final ReadingArticleService articleService;
-    private final ReadingExerciseService exerciseService;
+    private final ReadingQueryService articleService;
+    private final ReadingExerciseApplicationService exerciseService;
 
-    public ReadingPublicController(ReadingArticleService articleService,
-                                   ReadingExerciseService exerciseService) {
+    public ReadingPublicController(ReadingQueryService articleService,
+                                   ReadingExerciseApplicationService exerciseService) {
         this.articleService = articleService;
         this.exerciseService = exerciseService;
     }

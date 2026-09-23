@@ -27,6 +27,12 @@ Public prefix: `/api/v1/public/english/reading`.
 
 `ContentReviewService` intercepts non-SUPER_ADMIN edits of published articles and returns `202` with a review; direct updates retain the SEO change annotation. Public reads require `PUBLISHED`.
 
+## Other English route families
+
+The remaining domain's current controller prefixes are `/api/v1/public/english`, `/api/v1/admin/english`, `/api/v1/{public,admin}/english/grammar`, `/api/v1/{public,admin}/english/listening`, `/api/v1/{public,admin}/english/writing`, `/api/v1/{public,admin}/english/bundles`, `/api/v1/admin/english/taxonomy`, `/api/v1/public/english/learning`, `/api/v1/admin/english/analytics`, `/api/v1/{public,admin}/english/vocabulary/families`, `/api/v1/{public,admin}/vocabulary`, and `/api/v1/account/english`. Their individual method mappings remain in the corresponding controllers and are outside E01's production changes.
+
+The plan calls the account route `/api/v1/account/me/english/**`, but the checked-in `AccountEnglishController` currently maps `/api/v1/account/english/**` (for example `/learning/records` and `/learning/summary`). The implementation must preserve the live route during any later account-domain work; the discrepancy needs a separate API decision.
+
 ## DTO and frontend contract
 
 `ReadingArticleRequest` fields: `title`, `slug`, `summary`, `bodyMarkdown`, `coverMediaId`, `readingLevel`, `cefrLevel`, `sourceName`, `sourceUrl`, `copyrightNote`, `sortOrder`, `topicTagIds`, `genreTagIds`, `abilityTagIds`, `grammarLessonIds`. Statistics are computed on the server. `ReadingArticleView` additionally returns `id`, `coverUrl`, `wordCount`, `uniqueWordCount`, `averageSentenceWords`, `maxSentenceWords`, `estimatedMinutes`, `publishStatus`, `publishedAt`, `updatedAt`, `tags`, `grammarLessons`, `previous`, `next`. Lists use `ReadingPageView`; exercises retain the existing admin, public, check and move DTOs. `frontend/src/api/reading.ts` calls all routes above and expects these response shapes.

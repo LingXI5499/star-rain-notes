@@ -9,8 +9,9 @@ import com.starrainnotes.english.reading.dto.ReadingExerciseMoveRequest;
 import com.starrainnotes.english.reading.dto.ReadingExerciseRequest;
 import com.starrainnotes.english.reading.dto.ReadingExerciseView;
 import com.starrainnotes.english.reading.dto.ReadingPageView;
-import com.starrainnotes.english.reading.service.ReadingArticleService;
-import com.starrainnotes.english.reading.service.ReadingExerciseService;
+import com.starrainnotes.english.reading.application.ReadingCommandService;
+import com.starrainnotes.english.reading.application.ReadingQueryService;
+import com.starrainnotes.english.reading.application.ReadingExerciseApplicationService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,14 +37,16 @@ import java.util.List;
 @RequestMapping("/api/v1/admin/english/reading")
 public class ReadingAdminController {
 
-    private final ReadingArticleService articleService;
-    private final ReadingExerciseService exerciseService;
+    private final ReadingCommandService articleService;
+    private final ReadingQueryService queries;
+    private final ReadingExerciseApplicationService exerciseService;
     private final ContentReviewService reviewService;
 
-    public ReadingAdminController(ReadingArticleService articleService,
-                                  ReadingExerciseService exerciseService,
+    public ReadingAdminController(ReadingCommandService articleService, ReadingQueryService queries,
+                                  ReadingExerciseApplicationService exerciseService,
                                   ContentReviewService reviewService) {
         this.articleService = articleService;
+        this.queries = queries;
         this.exerciseService = exerciseService;
         this.reviewService = reviewService;
     }
@@ -57,7 +60,7 @@ public class ReadingAdminController {
                                 @RequestParam(required = false) String cefr,
                                 @RequestParam(required = false) Long topic,
                                 @RequestParam(required = false) Long genre) {
-        return articleService.list(page, pageSize, q, status, level, cefr, topic, genre);
+        return queries.list(page, pageSize, q, status, level, cefr, topic, genre);
     }
 
     @PostMapping("/articles")
@@ -68,7 +71,7 @@ public class ReadingAdminController {
 
     @GetMapping("/articles/{id}")
     public ReadingArticleView get(@PathVariable Long id) {
-        return articleService.get(id);
+        return queries.get(id);
     }
 
     @PutMapping("/articles/{id}")
