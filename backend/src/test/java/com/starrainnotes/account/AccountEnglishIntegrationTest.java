@@ -154,6 +154,28 @@ class AccountEnglishIntegrationTest {
     }
 
     @Test
+    void importLocalProgressDefaultsMissingMemoryCount() throws Exception {
+        insertAccount("import@example.com", "import-pass-1234", "ADMIN");
+        MockHttpSession session = loginAccount("import@example.com", "import-pass-1234");
+        String token = csrf();
+        insertAccountVocabularyThemeAndWord();
+
+        mockMvc.perform(post("/api/v1/account/english/import-local-progress").session(session)
+                        .contentType("application/json")
+                        .content("{\"vocabulary\":{\"" + vocabWordId + "\":{}},\"learningRecords\":{\"reading/12\":{\"completionStatus\":\"COMPLETED\"}}}")
+                        .header("X-XSRF-TOKEN", token)
+                        .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN", token)))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/v1/account/english/vocabulary/memory").session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].memory_count").value(1));
+        mockMvc.perform(get("/api/v1/account/english/learning/records/reading/12").session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.completion_status").value("COMPLETED"));
+    }
+
+    @Test
     void vocabularyReviewSettingsQueueAndIdempotency() throws Exception {
         insertAccount("review@example.com", "review-pass-1234", "ADMIN");
         MockHttpSession session = loginAccount("review@example.com", "review-pass-1234");
