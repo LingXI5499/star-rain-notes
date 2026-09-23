@@ -1,7 +1,7 @@
 package com.starrainnotes.english.learning.application;
 
 import com.starrainnotes.english.learning.dto.*;
-import com.starrainnotes.english.learning.vocabulary.*;
+import com.starrainnotes.english.vocabulary.learning.*;
 import java.util.List;
 import java.util.Map;
 

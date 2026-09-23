@@ -1,6 +1,8 @@
 package com.starrainnotes.account;
 
 import com.starrainnotes.account.service.MailGateway;
+import com.starrainnotes.english.vocabulary.learning.VocabularyReviewRequest;
+import com.starrainnotes.english.vocabulary.learning.application.VocabularyStudyCommandService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,6 +16,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -33,6 +39,7 @@ class AccountEnglishIntegrationTest {
     @Autowired MockMvc mockMvc;
     @Autowired JdbcTemplate jdbc;
     @Autowired PasswordEncoder passwordEncoder;
+    @Autowired VocabularyStudyCommandService vocabularyStudyCommands;
     @MockBean MailGateway mailGateway;
 
     private Long vocabThemeId;
@@ -176,6 +183,28 @@ class AccountEnglishIntegrationTest {
     }
 
     @Test
+    void vocabularyLocalImportMergesMemoryAndDeduplicatesReviewLog() throws Exception {
+        insertAccount("vocabimport@example.com", "vocabimport-pass-1234", "ADMIN");
+        MockHttpSession session=loginAccount("vocabimport@example.com","vocabimport-pass-1234");
+        String token=csrf();
+        insertAccountVocabularyThemeAndWord();
+        String payload="{\"memory\":{\""+vocabWordId+"\":{\"memoryCount\":2,\"reviewCount\":1}},"
+                +"\"reviewLog\":[{\"wordId\":"+vocabWordId+",\"reviewSessionId\":\"87654321-4321-4321-8321-123456789abe\","
+                +"\"direction\":\"EN_TO_ZH\",\"reviewNumber\":1,\"intervalSeconds\":300,\"timingStatus\":\"NEW\"}]}";
+        for(int attempt=0;attempt<2;attempt++) {
+            mockMvc.perform(post("/api/v1/account/english/vocabulary/import-local").session(session)
+                            .contentType("application/json").content(payload)
+                            .header("X-XSRF-TOKEN",token)
+                            .cookie(new jakarta.servlet.http.Cookie("XSRF-TOKEN",token)))
+                    .andExpect(status().isNoContent());
+        }
+        org.assertj.core.api.Assertions.assertThat(jdbc.queryForObject(
+                "SELECT memory_count FROM account_vocabulary_memory WHERE word_id=?",Integer.class,vocabWordId)).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(jdbc.queryForObject(
+                "SELECT COUNT(*) FROM account_vocabulary_review_log WHERE word_id=?",Integer.class,vocabWordId)).isEqualTo(1);
+    }
+
+    @Test
     void vocabularyReviewSettingsQueueAndIdempotency() throws Exception {
         insertAccount("review@example.com", "review-pass-1234", "ADMIN");
         MockHttpSession session = loginAccount("review@example.com", "review-pass-1234");
@@ -212,6 +241,39 @@ class AccountEnglishIntegrationTest {
                 .andExpect(status().isNoContent());
         org.assertj.core.api.Assertions.assertThat(jdbc.queryForObject(
                 "SELECT COUNT(*) FROM account_vocabulary_review_log WHERE word_id=?", Integer.class, vocabWordId)).isEqualTo(1);
+    }
+
+    @Test
+    void concurrentReviewsAdvanceOneWordWithoutLostUpdates() throws Exception {
+        insertAccount("concurrent@example.com", "concurrent-pass-1234", "ADMIN");
+        long accountId=jdbc.queryForObject("SELECT id FROM user_account WHERE email=?",Long.class,"concurrent@example.com");
+        insertAccountVocabularyThemeAndWord();
+        vocabularyStudyCommands.start(accountId,vocabWordId);
+        CountDownLatch ready=new CountDownLatch(2);
+        CountDownLatch start=new CountDownLatch(1);
+        try(var workers=Executors.newFixedThreadPool(2)) {
+            var first=CompletableFuture.supplyAsync(()->reviewAfterGate(accountId,"87654321-4321-4321-8321-123456789abc",ready,start),workers);
+            var second=CompletableFuture.supplyAsync(()->reviewAfterGate(accountId,"87654321-4321-4321-8321-123456789abd",ready,start),workers);
+            org.assertj.core.api.Assertions.assertThat(ready.await(5,TimeUnit.SECONDS)).isTrue();
+            start.countDown();
+            org.assertj.core.api.Assertions.assertThat(first.get(10,TimeUnit.SECONDS).reviewNumber()).isIn(1,2);
+            org.assertj.core.api.Assertions.assertThat(second.get(10,TimeUnit.SECONDS).reviewNumber()).isIn(1,2);
+        }
+        org.assertj.core.api.Assertions.assertThat(jdbc.queryForObject(
+                "SELECT review_count FROM account_vocabulary_memory WHERE account_id=? AND word_id=?",
+                Integer.class,accountId,vocabWordId)).isEqualTo(2);
+        org.assertj.core.api.Assertions.assertThat(jdbc.queryForObject(
+                "SELECT COUNT(*) FROM account_vocabulary_review_log WHERE account_id=? AND word_id=?",
+                Integer.class,accountId,vocabWordId)).isEqualTo(2);
+    }
+
+    private com.starrainnotes.english.vocabulary.learning.VocabularyReviewResultView reviewAfterGate(
+            long accountId,String sessionId,CountDownLatch ready,CountDownLatch start) {
+        ready.countDown();
+        try { start.await(); }
+        catch(InterruptedException ex) { Thread.currentThread().interrupt(); throw new RuntimeException(ex); }
+        return vocabularyStudyCommands.completeReview(accountId,vocabWordId,
+                new VocabularyReviewRequest(sessionId,"EN_TO_ZH"));
     }
 
     @Test

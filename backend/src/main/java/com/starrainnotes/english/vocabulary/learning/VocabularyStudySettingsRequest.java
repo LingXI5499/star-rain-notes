@@ -1,4 +1,4 @@
-package com.starrainnotes.english.learning.vocabulary;
+package com.starrainnotes.english.vocabulary.learning;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
