@@ -12,6 +12,10 @@ import com.starrainnotes.english.reading.dto.ReadingPageView;
 import com.starrainnotes.english.reading.dto.ReadingTagRef;
 import com.starrainnotes.english.reading.entity.ReadingArticle;
 import com.starrainnotes.english.reading.domain.ReadingContentPort;
+import com.starrainnotes.english.shared.content.ContentDescriptor;
+import com.starrainnotes.english.shared.content.ContentCatalogFilter;
+import com.starrainnotes.english.shared.content.ContentCatalogSlice;
+import com.starrainnotes.english.shared.content.EnglishContentType;
 import com.starrainnotes.english.reading.mapper.ReadingArticleMapper;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -67,6 +71,40 @@ public class ReadingRepository implements ReadingContentPort {
         } catch (EmptyResultDataAccessException ex) {
             throw articleNotFound();
         }
+    }
+
+    public ContentCatalogSlice catalogDescriptors(ContentCatalogFilter filter, int limit) {
+        List<Object> args = new ArrayList<>();
+        StringBuilder where = new StringBuilder(" WHERE 1=1");
+        if (filter.status() != null) {
+            where.append(" AND a.publish_status=?");
+            args.add(filter.status());
+        }
+        if (filter.cefr() != null) {
+            where.append(" AND a.cefr_level=?");
+            args.add(filter.cefr());
+        }
+        if (filter.term() != null) {
+            where.append(" AND (LOWER(a.title) LIKE ? OR LOWER(a.slug) LIKE ? OR LOWER(a.summary) LIKE ?)");
+            String term = "%" + filter.term() + "%";
+            args.add(term);
+            args.add(term);
+            args.add(term);
+        }
+        Long total = jdbc.queryForObject("SELECT COUNT(*) FROM english_reading_article a" + where,
+                Long.class, args.toArray());
+        List<Object> pageArgs = new ArrayList<>(args);
+        pageArgs.add(limit);
+        List<ContentDescriptor> items = jdbc.query("""
+                SELECT a.id,a.slug,a.title,a.summary,a.cefr_level,m.public_url cover_url,
+                       a.publish_status,a.sort_order
+                FROM english_reading_article a LEFT JOIN media_asset m ON m.id=a.cover_media_id
+                """ + where + " ORDER BY FIELD(a.publish_status,'PUBLISHED','DRAFT','WITHDRAWN'),a.sort_order,a.id LIMIT ?",
+                (rs, row) -> new ContentDescriptor(EnglishContentType.READING,
+                rs.getLong("id"), rs.getString("slug"), rs.getString("title"), rs.getString("summary"),
+                rs.getString("cefr_level"), rs.getString("cover_url"), rs.getString("publish_status"),
+                rs.getInt("sort_order")), pageArgs.toArray());
+        return new ContentCatalogSlice(total == null ? 0 : total, items);
     }
 
     public ReadingArticleView publicGet(String slug) {

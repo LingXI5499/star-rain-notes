@@ -5,76 +5,49 @@ import com.starrainnotes.english.shared.bundle.dto.BundleCatalogItemView;
 import com.starrainnotes.english.shared.bundle.dto.BundleCatalogPageView;
 import com.starrainnotes.english.shared.bundle.dto.BundleItemView;
 import com.starrainnotes.english.shared.bundle.dto.BundleReadinessView;
+import com.starrainnotes.english.shared.bundle.infrastructure.LearningBundleItemRepository;
+import com.starrainnotes.english.shared.content.ContentCatalogFilter;
+import com.starrainnotes.english.shared.content.ContentCatalogSlice;
+import com.starrainnotes.english.shared.content.ContentDescriptor;
+import com.starrainnotes.english.shared.content.EnglishContentRegistry;
+import com.starrainnotes.english.shared.content.EnglishContentType;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class LearningBundleItemService {
-
     private static final List<String> CONTENT_TYPES = List.of("READING", "LISTENING", "WRITING");
     private static final List<String> PUBLISH_STATUSES = List.of("DRAFT", "PUBLISHED", "WITHDRAWN");
-    private static final String CATALOG_SOURCE = """
-            SELECT 'READING' content_type,a.id content_id,a.title,a.slug,a.summary,a.cefr_level,
-                   m.public_url cover_url,a.publish_status,a.sort_order
-            FROM english_reading_article a LEFT JOIN media_asset m ON m.id=a.cover_media_id
-            UNION ALL
-            SELECT 'LISTENING',a.id,a.title,a.slug,a.summary,a.cefr_level,
-                   m.public_url,a.publish_status,a.sort_order
-            FROM english_listening_item a LEFT JOIN media_asset m ON m.id=a.cover_media_id
-            UNION ALL
-            SELECT 'WRITING',a.id,a.title,a.slug,a.summary,a.cefr_level,
-                   m.public_url,a.publish_status,a.sort_order
-            FROM english_writing_prompt a LEFT JOIN media_asset m ON m.id=a.cover_media_id
-            """;
 
-    private final JdbcTemplate jdbc;
+    private final LearningBundleItemRepository repository;
+    private final EnglishContentRegistry content;
 
-    public LearningBundleItemService(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+    public LearningBundleItemService(LearningBundleItemRepository repository, EnglishContentRegistry content) {
+        this.repository = repository;
+        this.content = content;
     }
 
     public List<BundleItemView> list(Long bundleId, boolean publishedOnly) {
         requireBundle(bundleId, publishedOnly);
-        String status = publishedOnly ? " AND a.publish_status='PUBLISHED'" : "";
         List<BundleItemView> items = new ArrayList<>();
-        items.addAll(jdbc.query("""
-                SELECT 'READING' content_type,a.id content_id,a.title,a.slug,a.summary,a.cefr_level,
-                       m.public_url cover_url,a.publish_status,x.sort_order
-                FROM english_learning_bundle_reading_item x
-                JOIN english_reading_article a ON a.id=x.article_id
-                LEFT JOIN media_asset m ON m.id=a.cover_media_id
-                WHERE x.bundle_id=?
-                """ + status, this::mapItem, bundleId));
-        items.addAll(jdbc.query("""
-                SELECT 'LISTENING' content_type,a.id content_id,a.title,a.slug,a.summary,a.cefr_level,
-                       m.public_url cover_url,a.publish_status,x.sort_order
-                FROM english_learning_bundle_listening_item x
-                JOIN english_listening_item a ON a.id=x.listening_item_id
-                LEFT JOIN media_asset m ON m.id=a.cover_media_id
-                WHERE x.bundle_id=?
-                """ + status, this::mapItem, bundleId));
-        items.addAll(jdbc.query("""
-                SELECT 'WRITING' content_type,a.id content_id,a.title,a.slug,a.summary,a.cefr_level,
-                       m.public_url cover_url,a.publish_status,x.sort_order
-                FROM english_learning_bundle_writing_item x
-                JOIN english_writing_prompt a ON a.id=x.prompt_id
-                LEFT JOIN media_asset m ON m.id=a.cover_media_id
-                WHERE x.bundle_id=?
-                """ + status, this::mapItem, bundleId));
-        items.sort(java.util.Comparator.comparingInt(BundleItemView::sortOrder)
-                .thenComparing(BundleItemView::contentType)
-                .thenComparing(BundleItemView::contentId));
+        for (LearningBundleItemRepository.Member member : repository.members(bundleId)) {
+            ContentDescriptor descriptor = content.require(EnglishContentType.valueOf(member.type()), member.contentId());
+            if (!publishedOnly || descriptor.published()) {
+                items.add(toItem(descriptor, member.sortOrder()));
+            }
+        }
         return items;
     }
 
@@ -83,52 +56,39 @@ public class LearningBundleItemService {
         requireBundle(bundleId, false);
         String type = optionalType(rawType);
         String status = optionalStatus(rawStatus);
+        String level = cefr == null || cefr.isBlank() ? null : cefr.trim().toUpperCase(Locale.ROOT);
+        String term = q == null || q.isBlank() ? null : q.trim().toLowerCase(Locale.ROOT);
         int safePage = Math.max(1, page);
         int safePageSize = Math.min(50, Math.max(1, pageSize));
 
-        StringBuilder where = new StringBuilder(" WHERE 1=1");
-        List<Object> args = new ArrayList<>();
-        if (type != null) {
-            where.append(" AND c.content_type=?");
-            args.add(type);
+        List<ContentDescriptor> matches = new ArrayList<>();
+        long total = 0;
+        int candidateLimit = (int) Math.min(Integer.MAX_VALUE, (long) safePage * safePageSize);
+        ContentCatalogFilter filter = new ContentCatalogFilter(status, level, term);
+        for (String candidate : CONTENT_TYPES) {
+            if (type != null && !type.equals(candidate)) continue;
+            ContentCatalogSlice slice = content.catalog(EnglishContentType.valueOf(candidate), filter, candidateLimit);
+            total += slice.total();
+            matches.addAll(slice.items());
         }
-        if (status != null) {
-            where.append(" AND c.publish_status=?");
-            args.add(status);
-        }
-        if (cefr != null && !cefr.isBlank()) {
-            where.append(" AND c.cefr_level=?");
-            args.add(cefr.trim().toUpperCase(Locale.ROOT));
-        }
-        if (q != null && !q.isBlank()) {
-            where.append(" AND (LOWER(c.title) LIKE ? OR LOWER(c.slug) LIKE ? OR LOWER(c.summary) LIKE ?)");
-            String term = "%" + q.trim().toLowerCase(Locale.ROOT) + "%";
-            args.add(term);
-            args.add(term);
-            args.add(term);
-        }
+        matches.sort(Comparator.comparingInt((ContentDescriptor descriptor) -> statusOrder(descriptor.publishStatus()))
+                .thenComparing(descriptor -> descriptor.type().name())
+                .thenComparingInt(ContentDescriptor::sortOrder)
+                .thenComparingLong(ContentDescriptor::id));
 
-        String from = " FROM (" + CATALOG_SOURCE + ") c" + where;
-        Long totalValue = jdbc.queryForObject("SELECT COUNT(*)" + from, Long.class, args.toArray());
-        long total = totalValue == null ? 0 : totalValue;
-        int offset = (safePage - 1) * safePageSize;
-        List<Object> pageArgs = new ArrayList<>(args);
-        pageArgs.add(safePageSize);
-        pageArgs.add(offset);
-
-        Set<Key> selected = list(bundleId, false).stream()
-                .map(item -> new Key(item.contentType(), item.contentId()))
-                .collect(java.util.stream.Collectors.toSet());
-        List<BundleCatalogItemView> items = jdbc.query(
-                "SELECT c.*" + from + " ORDER BY FIELD(c.publish_status,'PUBLISHED','DRAFT','WITHDRAWN'),"
-                        + " c.content_type,c.sort_order,c.content_id LIMIT ? OFFSET ?",
-                (rs, row) -> new BundleCatalogItemView(
-                        rs.getString("content_type"), rs.getLong("content_id"), rs.getString("title"),
-                        rs.getString("slug"), rs.getString("summary"), rs.getString("cefr_level"),
-                        rs.getString("cover_url"), rs.getString("publish_status"), rs.getInt("sort_order"),
-                        selected.contains(new Key(rs.getString("content_type"), rs.getLong("content_id")))),
-                pageArgs.toArray());
-        int totalPages = total == 0 ? 0 : (int) Math.ceil((double) total / safePageSize);
+        Set<Key> selected = repository.members(bundleId).stream()
+                .map(member -> new Key(member.type(), member.contentId()))
+                .collect(Collectors.toSet());
+        long offset = ((long) safePage - 1) * safePageSize;
+        List<BundleCatalogItemView> items = offset >= matches.size() ? List.of()
+                : matches.subList((int) offset, (int) Math.min(matches.size(), offset + safePageSize)).stream()
+                .map(descriptor -> new BundleCatalogItemView(
+                        descriptor.type().name(), descriptor.id(), descriptor.title(), descriptor.slug(),
+                        descriptor.summary(), descriptor.cefrLevel(), descriptor.coverUrl(),
+                        descriptor.publishStatus(), descriptor.sortOrder(),
+                        selected.contains(new Key(descriptor.type().name(), descriptor.id()))))
+                .toList();
+        int totalPages = total == 0 ? 0 : (int) ((total + safePageSize - 1) / safePageSize);
         return new BundleCatalogPageView(items, safePage, safePageSize, total, totalPages);
     }
 
@@ -140,22 +100,15 @@ public class LearningBundleItemService {
         items.forEach(item -> counts.computeIfPresent(item.contentType(), (key, count) -> count + 1));
         int published = (int) items.stream().filter(item -> "PUBLISHED".equals(item.publishStatus())).count();
         int modules = (int) counts.values().stream().filter(count -> count > 0).count();
-        Map<String, Object> metadata = jdbc.queryForMap(
-                "SELECT summary,primary_cefr FROM english_learning_bundle WHERE id=?", bundleId);
+        LearningBundleItemRepository.Metadata metadata = repository.metadata(bundleId);
 
         Set<String> issues = new LinkedHashSet<>();
-        if (metadata.get("summary") == null || metadata.get("summary").toString().isBlank()) {
-            issues.add("SUMMARY_REQUIRED");
-        }
-        if (metadata.get("primary_cefr") == null) {
-            issues.add("CEFR_REQUIRED");
-        }
+        if (metadata.summary() == null || metadata.summary().isBlank()) issues.add("SUMMARY_REQUIRED");
+        if (metadata.primaryCefr() == null) issues.add("CEFR_REQUIRED");
         if (counts.getOrDefault("READING", 0) < 1) issues.add("READING_REQUIRED");
         if (counts.getOrDefault("LISTENING", 0) < 1) issues.add("LISTENING_REQUIRED");
         if (counts.getOrDefault("WRITING", 0) < 1) issues.add("WRITING_REQUIRED");
-        if (published != items.size()) {
-            issues.add("UNPUBLISHED_ITEMS_PRESENT");
-        }
+        if (published != items.size()) issues.add("UNPUBLISHED_ITEMS_PRESENT");
         return new BundleReadinessView(items.size(), published, modules, counts,
                 issues.isEmpty(), List.copyOf(issues));
     }
@@ -167,10 +120,7 @@ public class LearningBundleItemService {
         }
     }
 
-    /**
-     * Keeps already-published two-module bundles readable while still hiding
-     * bundles whose metadata or referenced content has become invalid.
-     */
+    /** Keeps already-published two-module bundles readable while enforcing current content validity. */
     public boolean publiclyAccessible(Long bundleId) {
         Set<String> legacyModuleIssues = Set.of("READING_REQUIRED", "LISTENING_REQUIRED", "WRITING_REQUIRED");
         return readiness(bundleId).issues().stream().allMatch(legacyModuleIssues::contains);
@@ -183,8 +133,7 @@ public class LearningBundleItemService {
         requireContent(type, contentId);
         int order = nextOrder(bundleId);
         try {
-            jdbc.update("INSERT INTO " + table(type) + "(" + bundleColumn(type) + "," + idColumn(type)
-                    + ",sort_order) VALUES (?,?,?)", bundleId, contentId, order);
+            repository.add(bundleId, type, contentId, order);
         } catch (DuplicateKeyException ex) {
             throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_BUNDLE_ITEM_DUPLICATE",
                     "Item already exists", "The content is already in this bundle.");
@@ -198,9 +147,7 @@ public class LearningBundleItemService {
     public void remove(Long bundleId, String rawType, Long contentId) {
         requireMutableBundle(bundleId);
         String type = type(rawType);
-        int changed = jdbc.update("DELETE FROM " + table(type) + " WHERE " + bundleColumn(type)
-                + "=? AND " + idColumn(type) + "=?", bundleId, contentId);
-        if (changed == 0) notFound();
+        if (repository.remove(bundleId, type, contentId) == 0) notFound();
         normalize(bundleId);
     }
 
@@ -208,9 +155,9 @@ public class LearningBundleItemService {
     public void move(Long bundleId, String rawType, Long contentId, int target) {
         requireMutableBundle(bundleId);
         String type = type(rawType);
-        List<Key> keys = list(bundleId, false).stream()
-                .map(item -> new Key(item.contentType(), item.contentId()))
-                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
+        List<Key> keys = repository.members(bundleId).stream()
+                .map(member -> new Key(member.type(), member.contentId()))
+                .collect(Collectors.toCollection(ArrayList::new));
         Key selected = new Key(type, contentId);
         if (!keys.remove(selected)) notFound();
         keys.add(Math.min(Math.max(target, 0), keys.size()), selected);
@@ -220,9 +167,7 @@ public class LearningBundleItemService {
     public List<BundleItemView> publicList(String slug) {
         Long id;
         try {
-            id = jdbc.queryForObject(
-                    "SELECT id FROM english_learning_bundle WHERE slug=? AND publish_status='PUBLISHED'",
-                    Long.class, slug);
+            id = repository.publishedIdBySlug(slug);
         } catch (Exception ex) {
             throw unavailable();
         }
@@ -231,23 +176,19 @@ public class LearningBundleItemService {
     }
 
     private void normalize(Long bundleId) {
-        List<Key> keys = list(bundleId, false).stream()
-                .map(item -> new Key(item.contentType(), item.contentId())).toList();
-        updateOrder(bundleId, keys);
+        updateOrder(bundleId, repository.members(bundleId).stream()
+                .map(member -> new Key(member.type(), member.contentId())).toList());
     }
 
     private void updateOrder(Long bundleId, List<Key> keys) {
         for (int index = 0; index < keys.size(); index++) {
             Key key = keys.get(index);
-            jdbc.update("UPDATE " + table(key.type()) + " SET sort_order=? WHERE " + bundleColumn(key.type())
-                    + "=? AND " + idColumn(key.type()) + "=?", (index + 1) * 10, bundleId, key.id());
+            repository.updateOrder(bundleId, key.type(), key.id(), (index + 1) * 10);
         }
     }
 
     private void requireBundle(Long id, boolean published) {
-        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM english_learning_bundle WHERE id=?"
-                + (published ? " AND publish_status='PUBLISHED'" : ""), Integer.class, id);
-        if (count == null || count == 0) {
+        if (!repository.exists(id, published)) {
             throw new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_BUNDLE_NOT_FOUND",
                     "Bundle not found", "The learning bundle does not exist.");
         }
@@ -255,25 +196,33 @@ public class LearningBundleItemService {
 
     private void requireMutableBundle(Long id) {
         requireBundle(id, false);
-        String status = jdbc.queryForObject(
-                "SELECT publish_status FROM english_learning_bundle WHERE id=?", String.class, id);
-        if ("PUBLISHED".equals(status)) {
+        if ("PUBLISHED".equals(repository.publishStatus(id))) {
             throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_BUNDLE_PUBLISHED_LOCKED",
                     "Published bundle is locked", "Withdraw the bundle before changing its learning path.");
         }
     }
 
     private void requireContent(String type, Long id) {
-        Integer count = jdbc.queryForObject(
-                "SELECT COUNT(*) FROM " + contentTable(type) + " WHERE id=?", Integer.class, id);
-        if (count == null || count == 0) {
+        try {
+            content.require(EnglishContentType.valueOf(type), id);
+        } catch (ApiException ex) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_BUNDLE_ITEM_INVALID",
                     "Invalid bundle item", "The selected content does not exist.");
         }
     }
 
     private int nextOrder(Long bundleId) {
-        return list(bundleId, false).stream().mapToInt(BundleItemView::sortOrder).max().orElse(0) + 10;
+        return repository.members(bundleId).stream().mapToInt(LearningBundleItemRepository.Member::sortOrder)
+                .max().orElse(0) + 10;
+    }
+
+    private int statusOrder(String status) {
+        return switch (status) {
+            case "PUBLISHED" -> 1;
+            case "DRAFT" -> 2;
+            case "WITHDRAWN" -> 3;
+            default -> 0;
+        };
     }
 
     private String optionalType(String raw) {
@@ -300,39 +249,10 @@ public class LearningBundleItemService {
         return type;
     }
 
-    private String table(String type) {
-        return switch (type) {
-            case "READING" -> "english_learning_bundle_reading_item";
-            case "LISTENING" -> "english_learning_bundle_listening_item";
-            default -> "english_learning_bundle_writing_item";
-        };
-    }
-
-    private String contentTable(String type) {
-        return switch (type) {
-            case "READING" -> "english_reading_article";
-            case "LISTENING" -> "english_listening_item";
-            default -> "english_writing_prompt";
-        };
-    }
-
-    private String bundleColumn(String type) {
-        return "bundle_id";
-    }
-
-    private String idColumn(String type) {
-        return switch (type) {
-            case "READING" -> "article_id";
-            case "LISTENING" -> "listening_item_id";
-            default -> "prompt_id";
-        };
-    }
-
-    private BundleItemView mapItem(java.sql.ResultSet rs, int row) throws java.sql.SQLException {
-        return new BundleItemView(rs.getString("content_type"), rs.getLong("content_id"),
-                rs.getString("title"), rs.getString("slug"), rs.getString("summary"),
-                rs.getString("cefr_level"), rs.getString("cover_url"), rs.getString("publish_status"),
-                rs.getInt("sort_order"));
+    private BundleItemView toItem(ContentDescriptor descriptor, int sortOrder) {
+        return new BundleItemView(descriptor.type().name(), descriptor.id(), descriptor.title(), descriptor.slug(),
+                descriptor.summary(), descriptor.cefrLevel(), descriptor.coverUrl(),
+                descriptor.publishStatus(), sortOrder);
     }
 
     private void notFound() {
@@ -345,6 +265,5 @@ public class LearningBundleItemService {
                 "Bundle unavailable", "The learning bundle is not ready for public access.");
     }
 
-    private record Key(String type, Long id) {
-    }
+    private record Key(String type, long id) { }
 }
