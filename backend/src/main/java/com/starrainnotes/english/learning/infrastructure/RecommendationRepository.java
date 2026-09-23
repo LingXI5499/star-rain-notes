@@ -1,22 +1,20 @@
-package com.starrainnotes.english.learning.service;
+package com.starrainnotes.english.learning.infrastructure;
 
 import com.starrainnotes.english.learning.dto.LearningRecommendationView;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-@Service
-public class EnglishRecommendationService {
-    private static final int LIMIT = 8;
+@Repository
+public class RecommendationRepository {
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final String CONTENT_CATALOG = """
             SELECT 'GRAMMAR' content_type,l.id content_id,l.slug,l.title,NULL cefr_level
@@ -33,25 +31,12 @@ public class EnglishRecommendationService {
     private final JdbcTemplate jdbc;
     private final SiteSettingsTimezone timezone;
 
-    public EnglishRecommendationService(JdbcTemplate jdbc, SiteSettingsTimezone timezone) {
+    public RecommendationRepository(JdbcTemplate jdbc, SiteSettingsTimezone timezone) {
         this.jdbc = jdbc;
         this.timezone = timezone;
     }
 
-    public List<LearningRecommendationView> recommendations(long learnerId) {
-        LinkedHashMap<Key, LearningRecommendationView> result = new LinkedHashMap<>();
-        add(result, reviewAndContinue(learnerId));
-        add(result, bundleNextSteps(learnerId));
-        add(result, pairedContent(learnerId));
-        add(result, tagMatches(learnerId));
-        if (result.size() < 4) add(result, starters(learnerId));
-        return result.values().stream()
-                .sorted(Comparator.comparingInt(LearningRecommendationView::priority))
-                .limit(LIMIT)
-                .toList();
-    }
-
-    private List<LearningRecommendationView> reviewAndContinue(long learnerId) {
+    public List<LearningRecommendationView> reviewAndContinue(long learnerId) {
         return jdbc.query("""
                 SELECT r.content_type,r.content_id,c.slug,c.title,c.cefr_level,r.mastery_level,r.next_review_at,
                        CASE WHEN r.next_review_at<=UTC_TIMESTAMP(6) THEN 'REVIEW' ELSE 'CONTINUE' END recommendation_type,
@@ -70,7 +55,7 @@ public class EnglishRecommendationService {
                 rs.getString("recommendation_type"), rs.getInt("priority"), null), learnerId);
     }
 
-    private List<LearningRecommendationView> bundleNextSteps(long learnerId) {
+    public List<LearningRecommendationView> bundleNextSteps(long learnerId) {
         List<BundleRow> rows = jdbc.query("""
                 SELECT x.bundle_id,x.bundle_title,x.content_type,x.content_id,x.slug,x.title,x.cefr_level,x.sort_order,
                        r.completion_status
@@ -109,7 +94,7 @@ public class EnglishRecommendationService {
         return result;
     }
 
-    private List<LearningRecommendationView> pairedContent(long learnerId) {
+    public List<LearningRecommendationView> pairedContent(long learnerId) {
         return jdbc.query("""
                 SELECT target.* ,source.title source_title FROM (
                   SELECT 'LISTENING' content_type,l.id content_id,l.slug,l.title,l.cefr_level,
@@ -139,7 +124,7 @@ public class EnglishRecommendationService {
                 rs.getString("source_title")), learnerId, learnerId);
     }
 
-    private List<LearningRecommendationView> tagMatches(long learnerId) {
+    public List<LearningRecommendationView> tagMatches(long learnerId) {
         List<Long> terms = jdbc.query("""
                 SELECT tags.term_id FROM (
                   SELECT t.term_id,r.updated_at FROM english_learning_record r
@@ -194,7 +179,7 @@ public class EnglishRecommendationService {
                 """, (rs, row) -> view(candidate(rs), "同主题跨模块练习", "TAG_MATCH", 50, null), args.toArray());
     }
 
-    private List<LearningRecommendationView> starters(long learnerId) {
+    public List<LearningRecommendationView> starters(long learnerId) {
         return jdbc.query("""
                 SELECT c.* FROM (
                 """ + CONTENT_CATALOG + """
@@ -230,13 +215,6 @@ public class EnglishRecommendationService {
                 rs.getString("title"), rs.getString("cefr_level"));
     }
 
-    private void add(Map<Key, LearningRecommendationView> result, List<LearningRecommendationView> candidates) {
-        for (LearningRecommendationView candidate : candidates) {
-            result.putIfAbsent(new Key(candidate.contentType(), candidate.contentId()), candidate);
-            if (result.size() >= LIMIT) return;
-        }
-    }
-
     private String route(String type, String slug) {
         return switch (type) {
             case "GRAMMAR" -> "/english/grammar/" + slug;
@@ -246,7 +224,6 @@ public class EnglishRecommendationService {
         };
     }
 
-    private record Key(String type, Long id) {}
     private record Candidate(String type, Long id, String slug, String title, String cefr) {}
     private record BundleRow(Long bundleId, String bundleTitle, Candidate candidate, String status) {}
 }

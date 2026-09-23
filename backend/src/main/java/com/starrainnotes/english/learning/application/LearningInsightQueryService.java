@@ -4,7 +4,6 @@ import com.starrainnotes.english.learning.dto.LearningInsightsView;
 import com.starrainnotes.english.learning.dto.LearningActivityDayView;
 import com.starrainnotes.english.learning.dto.LearningSummaryView;
 import com.starrainnotes.english.learning.infrastructure.LearningInsightRepository;
-import com.starrainnotes.english.learning.service.EnglishRecommendationService;
 import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.List;
@@ -14,9 +13,9 @@ import java.util.Map;
 public class LearningInsightQueryService {
     private final LearnerProfileService profiles;
     private final LearningInsightRepository repository;
-    private final EnglishRecommendationService recommendations;
+    private final RecommendationQueryService recommendations;
     public LearningInsightQueryService(LearnerProfileService profiles,LearningInsightRepository repository,
-                                       EnglishRecommendationService recommendations) {
+                                       RecommendationQueryService recommendations) {
         this.profiles=profiles; this.repository=repository; this.recommendations=recommendations;
     }
     public LearningSummaryView summary(long accountId) {
