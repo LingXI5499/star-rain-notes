@@ -3,6 +3,7 @@ package com.starrainnotes.english.shared.exercise.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.shared.exercise.domain.EnglishExercisePolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +17,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class EnglishExerciseSafetyTest {
 
     private final ObjectMapper mapper = new ObjectMapper();
-    private final EnglishExerciseService exerciseService = new EnglishExerciseService(mapper);
+    private final EnglishExercisePolicy exerciseService = new EnglishExercisePolicy(mapper);
     private final EnglishExerciseSafety safety = new EnglishExerciseSafety(mapper, exerciseService);
 
     private JsonNode parse(String json) {

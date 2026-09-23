@@ -2,17 +2,17 @@ package com.starrainnotes.english.shared.exercise;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.english.shared.exercise.service.EnglishExerciseService;
+import com.starrainnotes.english.shared.exercise.domain.EnglishExercisePolicy;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class EnglishExerciseServiceTest {
+class EnglishExercisePolicyTest {
 
     private static final String CODE = "ENGLISH_EXERCISE_CONFIG_INVALID";
 
-    private final EnglishExerciseService service = new EnglishExerciseService(new ObjectMapper());
+    private final EnglishExercisePolicy service = new EnglishExercisePolicy(new ObjectMapper());
 
     @Test
     void validSingleChoiceConfigPasses() {
