@@ -13,9 +13,11 @@ import com.starrainnotes.english.writing.dto.WritingPromptView;
 import com.starrainnotes.english.writing.dto.WritingResourceRequest;
 import com.starrainnotes.english.writing.dto.WritingResourceSummaryView;
 import com.starrainnotes.english.writing.dto.WritingResourceView;
-import com.starrainnotes.english.writing.service.WritingExerciseService;
-import com.starrainnotes.english.writing.service.WritingPromptService;
-import com.starrainnotes.english.writing.service.WritingResourceService;
+import com.starrainnotes.english.writing.application.WritingExerciseApplicationService;
+import com.starrainnotes.english.writing.application.WritingPromptCommandService;
+import com.starrainnotes.english.writing.application.WritingPromptQueryService;
+import com.starrainnotes.english.writing.application.WritingResourceCommandService;
+import com.starrainnotes.english.writing.application.WritingResourceQueryService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -37,15 +39,20 @@ import java.util.List;
 @RequestMapping("/api/v1/admin/english/writing")
 public class WritingAdminController {
 
-    private final WritingResourceService resources;
-    private final WritingPromptService prompts;
-    private final WritingExerciseService exercises;
+    private final WritingResourceQueryService resources;
+    private final WritingResourceCommandService resourceCommands;
+    private final WritingPromptQueryService prompts;
+    private final WritingPromptCommandService promptCommands;
+    private final WritingExerciseApplicationService exercises;
     private final ContentReviewService reviewService;
 
-    public WritingAdminController(WritingResourceService resources, WritingPromptService prompts,
-                                  WritingExerciseService exercises, ContentReviewService reviewService) {
+    public WritingAdminController(WritingResourceQueryService resources, WritingResourceCommandService resourceCommands,
+                                  WritingPromptQueryService prompts, WritingPromptCommandService promptCommands,
+                                  WritingExerciseApplicationService exercises, ContentReviewService reviewService) {
         this.resources = resources;
+        this.resourceCommands = resourceCommands;
         this.prompts = prompts;
+        this.promptCommands = promptCommands;
         this.exercises = exercises;
         this.reviewService = reviewService;
     }
@@ -66,7 +73,7 @@ public class WritingAdminController {
     @PostMapping("/resources")
     @ResponseStatus(HttpStatus.CREATED)
     public WritingResourceView createResource(@Valid @RequestBody WritingResourceRequest request) {
-        return resources.create(request);
+        return resourceCommands.create(request);
     }
 
     @GetMapping("/resources/{id}")
@@ -83,29 +90,29 @@ public class WritingAdminController {
                     "ENGLISH_WRITING_RESOURCE", id, request.title(), request);
             return ResponseEntity.accepted().body(review);
         }
-        return ResponseEntity.ok(resources.update(id, request));
+        return ResponseEntity.ok(resourceCommands.update(id, request));
     }
 
     @DeleteMapping("/resources/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteResource(@PathVariable Long id) {
-        resources.delete(id);
+        resourceCommands.delete(id);
     }
 
     @PostMapping("/resources/{id}/publish")
     public WritingResourceView publishResource(@PathVariable Long id) {
-        return resources.publish(id);
+        return resourceCommands.publish(id);
     }
 
     @PostMapping("/resources/{id}/withdraw")
     public WritingResourceView withdrawResource(@PathVariable Long id) {
-        return resources.withdraw(id);
+        return resourceCommands.withdraw(id);
     }
 
     @PostMapping("/resources/{id}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void moveResource(@PathVariable Long id, @RequestBody WritingMoveRequest request) {
-        resources.move(id, request.targetIndex() == null ? 0 : request.targetIndex());
+        resourceCommands.move(id, request.targetIndex() == null ? 0 : request.targetIndex());
     }
 
     @GetMapping("/prompts")
@@ -122,7 +129,7 @@ public class WritingAdminController {
     @PostMapping("/prompts")
     @ResponseStatus(HttpStatus.CREATED)
     public WritingPromptView createPrompt(@Valid @RequestBody WritingPromptRequest request) {
-        return prompts.create(request);
+        return promptCommands.create(request);
     }
 
     @GetMapping("/prompts/{id}")
@@ -139,29 +146,29 @@ public class WritingAdminController {
                     "ENGLISH_WRITING_PROMPT", id, request.title(), request);
             return ResponseEntity.accepted().body(review);
         }
-        return ResponseEntity.ok(prompts.update(id, request));
+        return ResponseEntity.ok(promptCommands.update(id, request));
     }
 
     @DeleteMapping("/prompts/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deletePrompt(@PathVariable Long id) {
-        prompts.delete(id);
+        promptCommands.delete(id);
     }
 
     @PostMapping("/prompts/{id}/publish")
     public WritingPromptView publishPrompt(@PathVariable Long id) {
-        return prompts.publish(id);
+        return promptCommands.publish(id);
     }
 
     @PostMapping("/prompts/{id}/withdraw")
     public WritingPromptView withdrawPrompt(@PathVariable Long id) {
-        return prompts.withdraw(id);
+        return promptCommands.withdraw(id);
     }
 
     @PostMapping("/prompts/{id}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void movePrompt(@PathVariable Long id, @RequestBody WritingMoveRequest request) {
-        prompts.move(id, request.targetIndex() == null ? 0 : request.targetIndex());
+        promptCommands.move(id, request.targetIndex() == null ? 0 : request.targetIndex());
     }
 
     @GetMapping("/prompts/{id}/exercises")
