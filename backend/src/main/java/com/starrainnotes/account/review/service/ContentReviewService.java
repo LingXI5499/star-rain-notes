@@ -17,8 +17,8 @@ import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
 import com.starrainnotes.english.reading.application.ReadingCommandService;
 import com.starrainnotes.english.writing.dto.WritingPromptRequest;
 import com.starrainnotes.english.writing.dto.WritingResourceRequest;
-import com.starrainnotes.english.writing.service.WritingPromptService;
-import com.starrainnotes.english.writing.service.WritingResourceService;
+import com.starrainnotes.english.writing.application.WritingPromptCommandService;
+import com.starrainnotes.english.writing.application.WritingResourceCommandService;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import com.starrainnotes.tutorial.dto.UpdateChapterRequest;
 import com.starrainnotes.tutorial.service.TutorialNodeService;
@@ -45,8 +45,8 @@ public class ContentReviewService {
     private final ReadingCommandService readingService;
     private final ListeningCommandService listeningService;
     private final PronunciationRuleCommandService pronunciationRuleCommands;
-    private final WritingResourceService writingResourceService;
-    private final WritingPromptService writingPromptService;
+    private final WritingResourceCommandService writingResourceService;
+    private final WritingPromptCommandService writingPromptService;
     private final AuditLogService auditLogService;
     private final SiteSettingsTimezone timezone;
 
@@ -56,8 +56,8 @@ public class ContentReviewService {
                                 ReadingCommandService readingService,
                                 ListeningCommandService listeningService,
                                 PronunciationRuleCommandService pronunciationRuleCommands,
-                                WritingResourceService writingResourceService,
-                                WritingPromptService writingPromptService,
+                                WritingResourceCommandService writingResourceService,
+                                WritingPromptCommandService writingPromptService,
                                 AuditLogService auditLogService, SiteSettingsTimezone timezone) {
         this.jdbc = jdbc;
         this.json = json;
