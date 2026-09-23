@@ -5,11 +5,13 @@ import com.starrainnotes.english.listening.dto.ListeningItemView;
 import com.starrainnotes.english.listening.dto.ListeningPageView;
 import com.starrainnotes.english.listening.dto.ListeningSegmentView;
 import com.starrainnotes.english.listening.dto.PronunciationRuleView;
-import com.starrainnotes.english.listening.service.ListeningExerciseService;
-import com.starrainnotes.english.listening.service.ListeningItemService;
-import com.starrainnotes.english.reading.dto.ReadingCheckAnswerRequest;
-import com.starrainnotes.english.reading.dto.ReadingCheckResultView;
-import com.starrainnotes.english.reading.dto.ReadingExercisePublicView;
+import com.starrainnotes.english.listening.application.ListeningQueryService;
+import com.starrainnotes.english.listening.application.ListeningSegmentService;
+import com.starrainnotes.english.listening.application.PronunciationRuleQueryService;
+import com.starrainnotes.english.listening.application.ListeningExerciseApplicationService;
+import com.starrainnotes.english.shared.exercise.dto.CheckAnswerRequest;
+import com.starrainnotes.english.shared.exercise.dto.CheckResultView;
+import com.starrainnotes.english.shared.exercise.dto.ExercisePublicView;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -29,17 +31,23 @@ import java.util.List;
 @RequestMapping("/api/v1/public/english/listening")
 public class ListeningPublicController {
 
-    private final ListeningItemService itemService;
-    private final ListeningExerciseService exerciseService;
+    private final ListeningQueryService queries;
+    private final ListeningSegmentService segments;
+    private final PronunciationRuleQueryService pronunciationQueries;
+    private final ListeningExerciseApplicationService exerciseService;
 
-    public ListeningPublicController(ListeningItemService itemService, ListeningExerciseService exerciseService) {
-        this.itemService = itemService;
+    public ListeningPublicController(ListeningQueryService queries, ListeningSegmentService segments,
+            PronunciationRuleQueryService pronunciationQueries,
+            ListeningExerciseApplicationService exerciseService) {
+        this.queries = queries;
+        this.segments = segments;
+        this.pronunciationQueries = pronunciationQueries;
         this.exerciseService = exerciseService;
     }
 
     @GetMapping
     public ListeningHomeView home() {
-        return itemService.home();
+        return queries.home();
     }
 
     @GetMapping("/items")
@@ -51,37 +59,37 @@ public class ListeningPublicController {
                                   @RequestParam(required = false) Long topic,
                                   @RequestParam(required = false) Long scene,
                                   @RequestParam(required = false) Long format) {
-        return itemService.publicList(page, pageSize, q, level, cefr, topic, scene, format);
+        return queries.publicList(page, pageSize, q, level, cefr, topic, scene, format);
     }
 
     @GetMapping("/items/{slug}")
     public ListeningItemView detail(@PathVariable String slug) {
-        return itemService.publicGet(slug);
+        return queries.publicGet(slug);
     }
 
     @GetMapping("/items/{slug}/segments")
     public List<ListeningSegmentView> segments(@PathVariable String slug) {
-        return itemService.publicSegments(itemService.publicGet(slug).id());
+        return segments.publicList(queries.publicGet(slug).id());
     }
 
     @GetMapping("/items/{slug}/exercises")
-    public List<ReadingExercisePublicView> exercises(@PathVariable String slug) {
-        return exerciseService.publicListPublished(itemService.publicGet(slug).id());
+    public List<ExercisePublicView> exercises(@PathVariable String slug) {
+        return exerciseService.publicListPublished(queries.publicGet(slug).id());
     }
 
     @PostMapping("/items/{slug}/check")
-    public ReadingCheckResultView check(@PathVariable String slug,
-                                        @Valid @RequestBody ReadingCheckAnswerRequest request) {
-        return exerciseService.check(itemService.publicGet(slug).id(), request);
+    public CheckResultView check(@PathVariable String slug,
+                                        @Valid @RequestBody CheckAnswerRequest request) {
+        return exerciseService.check(queries.publicGet(slug).id(), request);
     }
 
     @GetMapping("/pronunciation")
     public List<PronunciationRuleView> rules() {
-        return itemService.pronunciationRules(true);
+        return pronunciationQueries.list(true);
     }
 
     @GetMapping("/pronunciation/{slug}")
     public PronunciationRuleView rule(@PathVariable String slug) {
-        return itemService.publicRule(slug);
+        return pronunciationQueries.publicGet(slug);
     }
 }

@@ -1,15 +1,16 @@
-package com.starrainnotes.english.listening.service;
+package com.starrainnotes.english.listening.infrastructure;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.english.reading.dto.ReadingCheckAnswerRequest;
-import com.starrainnotes.english.reading.dto.ReadingCheckItemView;
-import com.starrainnotes.english.reading.dto.ReadingCheckResultView;
-import com.starrainnotes.english.reading.dto.ReadingExercisePublicView;
-import com.starrainnotes.english.reading.dto.ReadingExerciseRequest;
-import com.starrainnotes.english.reading.dto.ReadingExerciseView;
+import com.starrainnotes.english.listening.domain.ListeningContentPort;
+import com.starrainnotes.english.shared.exercise.dto.CheckAnswerRequest;
+import com.starrainnotes.english.shared.exercise.dto.CheckItemView;
+import com.starrainnotes.english.shared.exercise.dto.CheckResultView;
+import com.starrainnotes.english.shared.exercise.dto.ExercisePublicView;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseRequest;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
 import com.starrainnotes.english.shared.exercise.entity.EnglishExercise;
 import com.starrainnotes.english.shared.exercise.mapper.EnglishExerciseMapper;
 import com.starrainnotes.english.shared.exercise.service.EnglishExerciseSafety;
@@ -17,7 +18,7 @@ import com.starrainnotes.english.shared.exercise.service.EnglishExerciseService;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
@@ -35,8 +36,8 @@ import java.util.Set;
  * ownership is enforced server-side per 归属安全 rules: unbound / cross-item /
  * unpublished / duplicate exercise ids all return 422, never 500.</p>
  */
-@Service
-public class ListeningExerciseService {
+@Repository
+public class ListeningExerciseRepository {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final String LISTENING = "LISTENING";
@@ -45,13 +46,13 @@ public class ListeningExerciseService {
     private final EnglishExerciseMapper exerciseMapper;
     private final EnglishExerciseService exerciseRules;
     private final EnglishExerciseSafety safety;
-    private final ListeningItemService itemService;
+    private final ListeningContentPort itemService;
     private final ObjectMapper objectMapper;
     private final SiteSettingsTimezone timezone;
 
-    public ListeningExerciseService(JdbcTemplate jdbc, EnglishExerciseMapper exerciseMapper,
+    public ListeningExerciseRepository(JdbcTemplate jdbc, EnglishExerciseMapper exerciseMapper,
                                     EnglishExerciseService exerciseRules, EnglishExerciseSafety safety,
-                                    ListeningItemService itemService, ObjectMapper objectMapper,
+                                    ListeningContentPort itemService, ObjectMapper objectMapper,
                                     SiteSettingsTimezone timezone) {
         this.jdbc = jdbc;
         this.exerciseMapper = exerciseMapper;
@@ -62,7 +63,7 @@ public class ListeningExerciseService {
         this.timezone = timezone;
     }
 
-    public List<ReadingExerciseView> listByItem(Long itemId) {
+    public List<ExerciseView> listByItem(Long itemId) {
         itemService.requireExists(itemId);
         return jdbc.query("""
                 SELECT e.id,e.question_type,e.prompt_markdown,e.config_json,e.explanation_markdown,
@@ -74,7 +75,7 @@ public class ListeningExerciseService {
     }
 
     @Transactional
-    public ReadingExerciseView create(Long itemId, ReadingExerciseRequest request) {
+    public ExerciseView create(Long itemId, ExerciseRequest request) {
         itemService.requireExists(itemId);
         exerciseRules.validateConfig(LISTENING, request.questionType(), request.configJson());
         Long order = (long) (nextSort(itemId) * 10);
@@ -94,7 +95,7 @@ public class ListeningExerciseService {
     }
 
     @Transactional
-    public ReadingExerciseView update(Long itemId, Long exerciseId, ReadingExerciseRequest request) {
+    public ExerciseView update(Long itemId, Long exerciseId, ExerciseRequest request) {
         requireBinding(itemId, exerciseId);
         exerciseRules.validateConfig(LISTENING, request.questionType(), request.configJson());
         EnglishExercise exercise = requireExercise(exerciseId);
@@ -133,7 +134,7 @@ public class ListeningExerciseService {
         exerciseMapper.deleteById(exerciseId);
     }
 
-    public List<ReadingExercisePublicView> publicListPublished(Long itemId) {
+    public List<ExercisePublicView> publicListPublished(Long itemId) {
         itemService.requirePublished(itemId);
         return jdbc.query("""
                 SELECT e.id,e.question_type,e.prompt_markdown,e.config_json,e.score_value,e.sort_order
@@ -145,13 +146,13 @@ public class ListeningExerciseService {
     }
 
     @Transactional
-    public ReadingCheckResultView check(Long itemId, ReadingCheckAnswerRequest request) {
+    public CheckResultView check(Long itemId, CheckAnswerRequest request) {
         itemService.requirePublished(itemId);
-        List<ReadingCheckItemView> items = new ArrayList<>();
+        List<CheckItemView> items = new ArrayList<>();
         Set<Long> seen = new LinkedHashSet<>();
         int total = 0;
         int score = 0;
-        for (ReadingCheckAnswerRequest.Submission submission : request.answers()) {
+        for (CheckAnswerRequest.Submission submission : request.answers()) {
             if (!seen.add(submission.exerciseId())) {
                 throw invalidAnswer("The same exercise cannot be submitted more than once.");
             }
@@ -161,10 +162,10 @@ public class ListeningExerciseService {
             int earned = correct ? exercise.getScoreValue() : 0;
             total += exercise.getScoreValue();
             score += earned;
-            items.add(new ReadingCheckItemView(submission.exerciseId(), correct, earned,
+            items.add(new CheckItemView(submission.exerciseId(), correct, earned,
                     exercise.getScoreValue(), exercise.getExplanationMarkdown()));
         }
-        return new ReadingCheckResultView(score, total, items);
+        return new CheckResultView(score, total, items);
     }
 
     // ---------------------------------------------------------------
@@ -220,17 +221,17 @@ public class ListeningExerciseService {
         }
     }
 
-    private ReadingExercisePublicView toPublic(java.sql.ResultSet rs) throws java.sql.SQLException {
+    private ExercisePublicView toPublic(java.sql.ResultSet rs) throws java.sql.SQLException {
         JsonNode config = readConfig(rs.getString("config_json"));
         long id = rs.getLong("id");
         String q = rs.getString("question_type");
-        return new ReadingExercisePublicView(id, q, rs.getString("prompt_markdown"),
+        return new ExercisePublicView(id, q, rs.getString("prompt_markdown"),
                 safety.sanitize(q, config, id), rs.getInt("score_value"), rs.getInt("sort_order"));
     }
 
-    private ReadingExerciseView mapAdmin(java.sql.ResultSet rs, Long itemId) throws java.sql.SQLException {
+    private ExerciseView mapAdmin(java.sql.ResultSet rs, Long itemId) throws java.sql.SQLException {
         JsonNode config = readConfig(rs.getString("config_json"));
-        return new ReadingExerciseView(rs.getLong("id"), itemId, rs.getString("question_type"),
+        return new ExerciseView(rs.getLong("id"), itemId, rs.getString("question_type"),
                 rs.getString("prompt_markdown"), objectMapper.convertValue(config, new TypeReference<>() { }),
                 rs.getString("explanation_markdown"), rs.getInt("score_value"), rs.getInt("sort_order"),
                 rs.getString("publish_status"), format(rs.getTimestamp("updated_at")));
@@ -244,7 +245,7 @@ public class ListeningExerciseService {
         }
     }
 
-    private ReadingExerciseView adminView(Long exerciseId, Long itemId) {
+    private ExerciseView adminView(Long exerciseId, Long itemId) {
         return jdbc.queryForObject("""
                 SELECT e.id,e.question_type,e.prompt_markdown,e.config_json,e.explanation_markdown,
                        e.score_value,e.sort_order,e.publish_status,e.updated_at

@@ -1,4 +1,4 @@
-package com.starrainnotes.english.reading.dto;
+package com.starrainnotes.english.shared.exercise.dto;
 
 import java.util.Map;
 
@@ -6,8 +6,7 @@ import java.util.Map;
  * Admin reading-exercise view. Includes the full config (with the correct
  * answer) because it is only served on authenticated admin endpoints.
  */
-@Deprecated
-public record ReadingExerciseView(
+public record ExerciseView(
         Long id,
         Long articleId,
         String questionType,

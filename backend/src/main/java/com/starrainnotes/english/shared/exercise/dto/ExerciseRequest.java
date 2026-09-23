@@ -1,4 +1,4 @@
-package com.starrainnotes.english.reading.dto;
+package com.starrainnotes.english.shared.exercise.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -9,8 +9,7 @@ import jakarta.validation.constraints.Size;
  * {@code configJson} is validated by the shared exercise service per question
  * type before persistence.
  */
-@Deprecated
-public record ReadingExerciseRequest(
+public record ExerciseRequest(
         @NotBlank @Size(max = 50) String questionType,
         @NotBlank String promptMarkdown,
         @NotBlank String configJson,

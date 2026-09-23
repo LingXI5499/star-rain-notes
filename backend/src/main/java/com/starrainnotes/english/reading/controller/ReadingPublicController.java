@@ -1,9 +1,9 @@
 package com.starrainnotes.english.reading.controller;
 
 import com.starrainnotes.english.reading.dto.ReadingArticleView;
-import com.starrainnotes.english.reading.dto.ReadingCheckAnswerRequest;
-import com.starrainnotes.english.reading.dto.ReadingCheckResultView;
-import com.starrainnotes.english.reading.dto.ReadingExercisePublicView;
+import com.starrainnotes.english.shared.exercise.dto.CheckAnswerRequest;
+import com.starrainnotes.english.shared.exercise.dto.CheckResultView;
+import com.starrainnotes.english.shared.exercise.dto.ExercisePublicView;
 import com.starrainnotes.english.reading.dto.ReadingHomeView;
 import com.starrainnotes.english.reading.dto.ReadingPageView;
 import com.starrainnotes.english.reading.application.ReadingQueryService;
@@ -58,14 +58,14 @@ public class ReadingPublicController {
     }
 
     @GetMapping("/articles/{slug}/exercises")
-    public List<ReadingExercisePublicView> exercises(@PathVariable String slug) {
+    public List<ExercisePublicView> exercises(@PathVariable String slug) {
         ReadingArticleView article = articleService.publicGet(slug);
         return exerciseService.publicListPublished(article.id());
     }
 
     @PostMapping("/articles/{slug}/check")
-    public ReadingCheckResultView check(@PathVariable String slug,
-                                        @Valid @RequestBody ReadingCheckAnswerRequest request) {
+    public CheckResultView check(@PathVariable String slug,
+                                        @Valid @RequestBody CheckAnswerRequest request) {
         ReadingArticleView article = articleService.publicGet(slug);
         return exerciseService.check(article.id(), request);
     }

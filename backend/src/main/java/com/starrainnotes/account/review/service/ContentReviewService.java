@@ -11,7 +11,8 @@ import com.starrainnotes.english.grammar.dto.GrammarLessonRequest;
 import com.starrainnotes.english.grammar.service.EnglishGrammarService;
 import com.starrainnotes.english.listening.dto.ListeningItemRequest;
 import com.starrainnotes.english.listening.dto.PronunciationRuleRequest;
-import com.starrainnotes.english.listening.service.ListeningItemService;
+import com.starrainnotes.english.listening.application.ListeningCommandService;
+import com.starrainnotes.english.listening.application.PronunciationRuleCommandService;
 import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
 import com.starrainnotes.english.reading.application.ReadingCommandService;
 import com.starrainnotes.english.writing.dto.WritingPromptRequest;
@@ -42,7 +43,8 @@ public class ContentReviewService {
     private final TutorialNodeService tutorialNodeService;
     private final EnglishGrammarService grammarService;
     private final ReadingCommandService readingService;
-    private final ListeningItemService listeningService;
+    private final ListeningCommandService listeningService;
+    private final PronunciationRuleCommandService pronunciationRuleCommands;
     private final WritingResourceService writingResourceService;
     private final WritingPromptService writingPromptService;
     private final AuditLogService auditLogService;
@@ -52,7 +54,8 @@ public class ContentReviewService {
                                 TutorialNodeService tutorialNodeService,
                                 EnglishGrammarService grammarService,
                                 ReadingCommandService readingService,
-                                ListeningItemService listeningService,
+                                ListeningCommandService listeningService,
+                                PronunciationRuleCommandService pronunciationRuleCommands,
                                 WritingResourceService writingResourceService,
                                 WritingPromptService writingPromptService,
                                 AuditLogService auditLogService, SiteSettingsTimezone timezone) {
@@ -63,6 +66,7 @@ public class ContentReviewService {
         this.grammarService = grammarService;
         this.readingService = readingService;
         this.listeningService = listeningService;
+        this.pronunciationRuleCommands = pronunciationRuleCommands;
         this.writingResourceService = writingResourceService;
         this.writingPromptService = writingPromptService;
         this.auditLogService = auditLogService;
@@ -183,7 +187,8 @@ public class ContentReviewService {
         } else if ("ENGLISH_LISTENING_ITEM".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
             listeningService.update(review.contentId(), json.convertValue(review.payload(), ListeningItemRequest.class));
         } else if ("ENGLISH_PRONUNCIATION_RULE".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
-            listeningService.updateRule(review.contentId(), json.convertValue(review.payload(), PronunciationRuleRequest.class));
+            pronunciationRuleCommands.update(review.contentId(),
+                    json.convertValue(review.payload(), PronunciationRuleRequest.class));
         } else if ("ENGLISH_WRITING_RESOURCE".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {
             writingResourceService.update(review.contentId(), json.convertValue(review.payload(), WritingResourceRequest.class));
         } else if ("ENGLISH_WRITING_PROMPT".equals(review.contentType()) && "UPDATE".equals(review.actionType())) {

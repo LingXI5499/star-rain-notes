@@ -20,6 +20,12 @@ public class MediaAssetPort {
                 .eq(MediaAsset::getId, id).eq(MediaAsset::getAssetType, "IMAGE"));
         return count != null && count > 0;
     }
+    public boolean isType(Long id, String type) {
+        if (id == null || type == null) return false;
+        Long count = mapper.selectCount(new LambdaQueryWrapper<MediaAsset>()
+                .eq(MediaAsset::getId, id).eq(MediaAsset::getAssetType, type));
+        return count != null && count > 0;
+    }
     public String publicUrl(Long id) {
         if (id == null) return null;
         MediaAsset asset = mapper.selectById(id);
