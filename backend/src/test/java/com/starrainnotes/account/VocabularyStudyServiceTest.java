@@ -1,6 +1,6 @@
 package com.starrainnotes.account;
 
-import com.starrainnotes.account.english.vocabulary.VocabularyStudyService;
+import com.starrainnotes.english.learning.vocabulary.VocabularyStudyService;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
