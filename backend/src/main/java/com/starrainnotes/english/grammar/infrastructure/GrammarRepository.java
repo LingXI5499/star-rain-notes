@@ -1,7 +1,8 @@
-package com.starrainnotes.english.grammar.service;
+package com.starrainnotes.english.grammar.infrastructure;
 
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
+import com.starrainnotes.english.grammar.domain.GrammarPublishPolicy;
 import com.starrainnotes.english.grammar.dto.GrammarCourseView;
 import com.starrainnotes.english.grammar.dto.GrammarCurriculumView;
 import com.starrainnotes.english.grammar.dto.GrammarLessonDetailView;
@@ -14,6 +15,7 @@ import com.starrainnotes.english.grammar.dto.GrammarSectionRequest;
 import com.starrainnotes.english.grammar.dto.GrammarSectionView;
 import com.starrainnotes.english.grammar.dto.UpdateGrammarCourseRequest;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
+import com.starrainnotes.media.api.MediaAssetPort;
 import com.starrainnotes.seo.SeoContentChange;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -21,7 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.PreparedStatement;
@@ -34,9 +36,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-@Service
+@Repository
 @Transactional(readOnly = true)
-public class EnglishGrammarService {
+public class GrammarRepository {
 
     private static final long COURSE_ID = 1L;
     private static final String PUBLISHED = "PUBLISHED";
@@ -47,9 +49,15 @@ public class EnglishGrammarService {
     private final JdbcTemplate jdbc;
     private final SiteSettingsTimezone timezone;
 
-    public EnglishGrammarService(JdbcTemplate jdbc, SiteSettingsTimezone timezone) {
+    private final MediaAssetPort mediaAssets;
+    private final GrammarPublishPolicy publishPolicy;
+
+    public GrammarRepository(JdbcTemplate jdbc, SiteSettingsTimezone timezone,
+                             MediaAssetPort mediaAssets, GrammarPublishPolicy publishPolicy) {
         this.jdbc = jdbc;
         this.timezone = timezone;
+        this.mediaAssets = mediaAssets;
+        this.publishPolicy = publishPolicy;
     }
 
     public GrammarCourseView course() {
@@ -87,9 +95,7 @@ public class EnglishGrammarService {
     @Transactional
     public GrammarCourseView withdrawCourse() {
         GrammarCourseView course = requireCourse(false);
-        if (DRAFT.equals(course.publishStatus())) {
-            throw invalidTransition("A draft grammar course cannot be withdrawn.");
-        }
+        publishPolicy.validateCourseWithdrawal(course.publishStatus());
         jdbc.update("UPDATE english_grammar_course SET publish_status='WITHDRAWN' WHERE id=1");
         return requireCourse(false);
     }
@@ -141,14 +147,6 @@ public class EnglishGrammarService {
         normalizeSections(loadSectionIds());
     }
 
-    @Transactional
-    public void moveSection(long sectionId, GrammarMoveRequest request) {
-        requireSection(sectionId);
-        List<Long> ids = loadSectionIds();
-        ids.remove(sectionId);
-        ids.add(Math.min(request.targetIndex(), ids.size()), sectionId);
-        normalizeSections(ids);
-    }
 
     @Transactional
     public GrammarLessonDetailView createLesson(GrammarLessonRequest request) {
@@ -231,39 +229,11 @@ public class EnglishGrammarService {
     @SeoContentChange(table = "english_grammar_lesson", pathPrefix = "/english/grammar/")
     public GrammarLessonDetailView withdrawLesson(long lessonId) {
         LessonRow lesson = lessonRow(lessonId, false);
-        if (DRAFT.equals(lesson.publishStatus())) {
-            throw invalidTransition("A draft grammar lesson cannot be withdrawn.");
-        }
+        publishPolicy.validateLessonWithdrawal(lesson.publishStatus());
         jdbc.update("UPDATE english_grammar_lesson SET publish_status='WITHDRAWN' WHERE id=?", lessonId);
         return this.lesson(lessonId);
     }
 
-    @Transactional
-    public void moveLesson(long lessonId, GrammarMoveRequest request) {
-        LessonRow lesson = lessonRow(lessonId, false);
-        List<Long> ids = loadLessonIds(lesson.sectionId());
-        ids.remove(lessonId);
-        ids.add(Math.min(request.targetIndex(), ids.size()), lessonId);
-        normalizeLessons(lesson.sectionId(), ids);
-    }
-
-    @Transactional
-    public void reassignLesson(long lessonId, GrammarReassignRequest request) {
-        LessonRow lesson = lessonRow(lessonId, false);
-        requireSection(request.targetSectionId());
-        if (lesson.sectionId().equals(request.targetSectionId())) return;
-
-        long sourceId = lesson.sectionId();
-        List<Long> source = loadLessonIds(sourceId);
-        source.remove(lessonId);
-        normalizeLessons(sourceId, source);
-
-        List<Long> target = loadLessonIds(request.targetSectionId());
-        jdbc.update("UPDATE english_grammar_lesson SET section_id=?, sort_order=? WHERE id=?",
-                request.targetSectionId(), (target.size() + 1) * 10, lessonId);
-        target.add(lessonId);
-        normalizeLessons(request.targetSectionId(), target);
-    }
 
     public GrammarLessonDetailView publicLesson(String slug) {
         requireCourse(true);
@@ -332,25 +302,24 @@ public class EnglishGrammarService {
     private GrammarCourseView requireCourse(boolean publishedOnly) {
         try {
             String status = publishedOnly ? " AND c.publish_status='PUBLISHED'" : "";
-            return jdbc.queryForObject("""
-                    SELECT c.*,m.public_url AS cover_url FROM english_grammar_course c
-                    LEFT JOIN media_asset m ON m.id=c.cover_media_id
-                    WHERE c.id=1
-                    """ + status, (rs, row) -> new GrammarCourseView(
+            return jdbc.queryForObject("SELECT c.* FROM english_grammar_course c WHERE c.id=1" + status, (rs, row) -> {
+                Long coverMediaId = nullableLong(rs, "cover_media_id");
+                return new GrammarCourseView(
                     rs.getLong("id"), rs.getString("title"), rs.getString("subtitle"),
                     rs.getString("summary"), rs.getString("introduction"), rs.getString("roadmap_markdown"),
-                    nullableLong(rs, "cover_media_id"), rs.getString("cover_url"), rs.getString("seo_title"),
+                    coverMediaId, mediaAssets.publicUrl(coverMediaId), rs.getString("seo_title"),
                     rs.getString("seo_description"), rs.getString("publish_status"),
-                    format(rs.getTimestamp("published_at")), format(rs.getTimestamp("updated_at"))));
+                    format(rs.getTimestamp("published_at")), format(rs.getTimestamp("updated_at")));
+            });
         } catch (EmptyResultDataAccessException ex) {
             throw new ApiException(HttpStatus.NOT_FOUND, "GRAMMAR_COURSE_NOT_FOUND",
                     "Grammar course not found", "The published English grammar course is not available.");
         }
     }
 
-    private SectionRow requireSection(long sectionId) {
+    public void requireSection(long sectionId) {
         try {
-            return jdbc.queryForObject("""
+            jdbc.queryForObject("""
                     SELECT id,title,sort_order FROM english_grammar_section WHERE id=? AND course_id=1
                     """, (rs, row) -> new SectionRow(rs.getLong("id"), rs.getString("title"),
                     rs.getInt("sort_order")), sectionId);
@@ -377,27 +346,25 @@ public class EnglishGrammarService {
 
     private void validateCover(Long mediaId) {
         if (mediaId == null) return;
-        Long count = jdbc.queryForObject(
-                "SELECT COUNT(*) FROM media_asset WHERE id=? AND asset_type='IMAGE'", Long.class, mediaId);
-        if (count == null || count == 0) {
+        if (!mediaAssets.isType(mediaId, "IMAGE")) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_COVER_MEDIA",
                     "Invalid grammar cover", "The selected cover must be an existing image asset.");
         }
     }
 
-    private List<Long> loadSectionIds() {
+    public List<Long> loadSectionIds() {
         return jdbc.queryForList("""
                 SELECT id FROM english_grammar_section WHERE course_id=1 ORDER BY sort_order,id
                 """, Long.class);
     }
 
-    private List<Long> loadLessonIds(long sectionId) {
+    public List<Long> loadLessonIds(long sectionId) {
         return jdbc.queryForList("""
                 SELECT id FROM english_grammar_lesson WHERE section_id=? ORDER BY sort_order,id
                 """, Long.class, sectionId);
     }
 
-    private void normalizeSections(List<Long> ids) {
+    public void normalizeSections(List<Long> ids) {
         if (ids.isEmpty()) return;
         jdbc.update("UPDATE english_grammar_section SET sort_order=100000+id WHERE course_id=1");
         for (int index = 0; index < ids.size(); index++) {
@@ -406,13 +373,18 @@ public class EnglishGrammarService {
         }
     }
 
-    private void normalizeLessons(long sectionId, List<Long> ids) {
+    public void normalizeLessons(long sectionId, List<Long> ids) {
         if (ids.isEmpty()) return;
         jdbc.update("UPDATE english_grammar_lesson SET sort_order=100000+id WHERE section_id=?", sectionId);
         for (int index = 0; index < ids.size(); index++) {
             jdbc.update("UPDATE english_grammar_lesson SET sort_order=? WHERE id=? AND section_id=?",
                     (index + 1) * 10, ids.get(index), sectionId);
         }
+    }
+
+    public void assignLessonSection(long lessonId, long sectionId, int sortOrder) {
+        jdbc.update("UPDATE english_grammar_lesson SET section_id=?, sort_order=? WHERE id=? AND course_id=1",
+                sectionId, sortOrder, lessonId);
     }
 
     private LessonRow mapLesson(java.sql.ResultSet rs, int row) throws java.sql.SQLException {
@@ -467,11 +439,6 @@ public class EnglishGrammarService {
     private ApiException slugConflict() {
         return new ApiException(HttpStatus.CONFLICT, "GRAMMAR_LESSON_SLUG_CONFLICT",
                 "Grammar lesson slug already exists", "Choose another stable lesson number.");
-    }
-
-    private ApiException invalidTransition(String detail) {
-        return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_PUBLISH_TRANSITION",
-                "Invalid publish transition", detail);
     }
 
     private static final String LESSON_SELECT = """
