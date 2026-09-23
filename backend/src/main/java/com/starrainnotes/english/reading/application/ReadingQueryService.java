@@ -2,6 +2,8 @@ package com.starrainnotes.english.reading.application;
 
 import com.starrainnotes.english.reading.dto.*;
 import com.starrainnotes.english.reading.infrastructure.ReadingRepository;
+import com.starrainnotes.english.shared.content.ContentCatalogFilter;
+import com.starrainnotes.english.shared.content.ContentCatalogSlice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,4 +24,7 @@ public class ReadingQueryService {
         return repository.publicList(page, pageSize, q, level, cefr, topic, genre);
     }
     public ReadingHomeView home() { return repository.home(); }
+    public ContentCatalogSlice catalogDescriptors(ContentCatalogFilter filter, int limit) {
+        return repository.catalogDescriptors(filter, limit);
+    }
 }

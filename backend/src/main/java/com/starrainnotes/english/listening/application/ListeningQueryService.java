@@ -4,6 +4,8 @@ import com.starrainnotes.english.listening.dto.ListeningHomeView;
 import com.starrainnotes.english.listening.dto.ListeningItemView;
 import com.starrainnotes.english.listening.dto.ListeningPageView;
 import com.starrainnotes.english.listening.infrastructure.ListeningRepository;
+import com.starrainnotes.english.shared.content.ContentCatalogFilter;
+import com.starrainnotes.english.shared.content.ContentCatalogSlice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,4 +26,7 @@ public class ListeningQueryService {
         return repository.publicList(page, pageSize, q, level, cefr, topic, scene, format);
     }
     public ListeningHomeView home() { return repository.home(); }
+    public ContentCatalogSlice catalogDescriptors(ContentCatalogFilter filter, int limit) {
+        return repository.catalogDescriptors(filter, limit);
+    }
 }

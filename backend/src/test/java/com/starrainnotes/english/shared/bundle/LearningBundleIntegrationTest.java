@@ -163,6 +163,20 @@ class LearningBundleIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(3))
                 .andExpect(jsonPath("$.items[0].selected").value(true));
+        mockMvc.perform(get("/api/v1/admin/english/bundles/" + bundle + "/catalog")
+                        .session(auth.session()).param("status", "PUBLISHED").param("q", "test-bundle")
+                        .param("page", "2").param("pageSize", "1"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(3))
+                .andExpect(jsonPath("$.totalPages").value(3))
+                .andExpect(jsonPath("$.items[0].contentType").value("READING"))
+                .andExpect(jsonPath("$.items[0].selected").value(true));
+        mockMvc.perform(get("/api/v1/admin/english/bundles/" + bundle + "/catalog")
+                        .session(auth.session()).param("type", "WRITING").param("cefr", "b1")
+                        .param("status", "PUBLISHED").param("q", "test-bundle"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(1))
+                .andExpect(jsonPath("$.items[0].contentType").value("WRITING"));
         mockMvc.perform(get("/api/v1/admin/english/bundles/" + bundle + "/readiness").session(auth.session()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.ready").value(true))

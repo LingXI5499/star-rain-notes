@@ -18,6 +18,10 @@ import com.starrainnotes.english.listening.dto.ReadingPairRef;
 import com.starrainnotes.english.listening.dto.ReadingPairRequest;
 import com.starrainnotes.english.listening.entity.ListeningItem;
 import com.starrainnotes.english.listening.domain.ListeningContentPort;
+import com.starrainnotes.english.shared.content.ContentDescriptor;
+import com.starrainnotes.english.shared.content.ContentCatalogFilter;
+import com.starrainnotes.english.shared.content.ContentCatalogSlice;
+import com.starrainnotes.english.shared.content.EnglishContentType;
 import com.starrainnotes.english.listening.domain.ListeningPublishPolicy;
 import com.starrainnotes.english.listening.domain.SegmentTimelinePolicy;
 import com.starrainnotes.english.listening.mapper.ListeningItemMapper;
@@ -69,6 +73,40 @@ public class ListeningRepository implements ListeningContentPort {
             LEFT JOIN media_asset a ON a.id=i.audio_media_id
             LEFT JOIN media_asset c ON c.id=i.cover_media_id
             """;
+
+    public ContentCatalogSlice catalogDescriptors(ContentCatalogFilter filter, int limit) {
+        List<Object> args = new ArrayList<>();
+        StringBuilder where = new StringBuilder(" WHERE 1=1");
+        if (filter.status() != null) {
+            where.append(" AND a.publish_status=?");
+            args.add(filter.status());
+        }
+        if (filter.cefr() != null) {
+            where.append(" AND a.cefr_level=?");
+            args.add(filter.cefr());
+        }
+        if (filter.term() != null) {
+            where.append(" AND (LOWER(a.title) LIKE ? OR LOWER(a.slug) LIKE ? OR LOWER(a.summary) LIKE ?)");
+            String term = "%" + filter.term() + "%";
+            args.add(term);
+            args.add(term);
+            args.add(term);
+        }
+        Long total = jdbc.queryForObject("SELECT COUNT(*) FROM english_listening_item a" + where,
+                Long.class, args.toArray());
+        List<Object> pageArgs = new ArrayList<>(args);
+        pageArgs.add(limit);
+        List<ContentDescriptor> items = jdbc.query("""
+                SELECT a.id,a.slug,a.title,a.summary,a.cefr_level,m.public_url cover_url,
+                       a.publish_status,a.sort_order
+                FROM english_listening_item a LEFT JOIN media_asset m ON m.id=a.cover_media_id
+                """ + where + " ORDER BY FIELD(a.publish_status,'PUBLISHED','DRAFT','WITHDRAWN'),a.sort_order,a.id LIMIT ?",
+                (rs, row) -> new ContentDescriptor(EnglishContentType.LISTENING,
+                rs.getLong("id"), rs.getString("slug"), rs.getString("title"), rs.getString("summary"),
+                rs.getString("cefr_level"), rs.getString("cover_url"), rs.getString("publish_status"),
+                rs.getInt("sort_order")), pageArgs.toArray());
+        return new ContentCatalogSlice(total == null ? 0 : total, items);
+    }
 
     private final ListeningItemMapper mapper;
     private final JdbcTemplate jdbc;
