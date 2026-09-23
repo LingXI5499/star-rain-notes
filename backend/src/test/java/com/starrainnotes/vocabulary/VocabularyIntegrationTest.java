@@ -86,15 +86,15 @@ class VocabularyIntegrationTest extends AbstractAuthIntegrationTest {
 
     @Test
     void publicThemesReturnLayersWithWordCounts() throws Exception {
-        long themeA = insertTheme("基础通用词层A", 1, "人体与感官");
-        long themeB = insertTheme("基础通用词层A", 1, "时间与日期");
+        long themeA = insertTheme("基础通用词层", 1, "人体与感官");
+        long themeB = insertTheme("基础通用词层", 1, "时间与日期");
         insertWord(themeA, "body", "身体");
         insertWord(themeA, "head", "头");
         insertWord(themeB, "time", "时间");
 
         mockMvc.perform(get("/api/v1/public/vocabulary/themes"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].layer").value("基础通用词层A"))
+                .andExpect(jsonPath("$[0].layer").value("基础通用词层"))
                 .andExpect(jsonPath("$[0].themes.length()").value(2))
                 .andExpect(jsonPath("$[0].themes[0].id").value(themeA))
                 .andExpect(jsonPath("$[0].themes[0].name").value("人体与感官"))
@@ -282,11 +282,18 @@ class VocabularyIntegrationTest extends AbstractAuthIntegrationTest {
     void adminListSupportsThemeAndQueryFilter() throws Exception {
         MockHttpSession session = loginSession();
         String csrf = csrf(session);
-        long theme = insertTheme("学习与工作主干层A", 6, "学校与教室");
+        long theme = insertTheme("学习与工作主干层", 3, "学校与教室");
         insertWord(theme, "blackboard", "黑板");
         insertWord(theme, "chalk", "粉笔");
+        long otherTheme = insertTheme("基础通用词层", 1, "人体与感官");
+        insertWord(otherTheme, "body", "身体");
 
         mockMvc.perform(withCsrf(get("/api/v1/admin/vocabulary/words").param("themeId", String.valueOf(theme)), csrf)
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.total").value(2));
+
+        mockMvc.perform(withCsrf(get("/api/v1/admin/vocabulary/words").param("layerOrder", "3"), csrf)
                         .session(session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(2));
@@ -295,6 +302,50 @@ class VocabularyIntegrationTest extends AbstractAuthIntegrationTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.total").value(1))
                 .andExpect(jsonPath("$.items[0].word").value("chalk"));
+    }
+
+    @Test
+    void adminCanCreateMoveAndDeleteVocabularyContent() throws Exception {
+        MockHttpSession session = loginSession();
+        String csrf = csrf(session);
+
+        mockMvc.perform(withCsrf(jsonPost("/api/v1/admin/vocabulary/themes",
+                        "{\"layerOrder\":1,\"name\":\"测试主题\"}"), csrf).session(session))
+                .andExpect(status().isCreated());
+        long sourceTheme = jdbc.queryForObject(
+                "SELECT id FROM vocabulary_theme WHERE name='测试主题'", Long.class);
+
+        mockMvc.perform(withCsrf(jsonPost("/api/v1/admin/vocabulary/themes",
+                        "{\"layerOrder\":2,\"name\":\"目标主题\"}"), csrf).session(session))
+                .andExpect(status().isCreated());
+        long targetTheme = jdbc.queryForObject(
+                "SELECT id FROM vocabulary_theme WHERE name='目标主题'", Long.class);
+
+        mockMvc.perform(withCsrf(jsonPost("/api/v1/admin/vocabulary/words",
+                        "{\"themeId\":" + sourceTheme + ",\"word\":\"sample\",\"translation\":\"样本\"}"), csrf)
+                        .session(session))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.word").value("sample"));
+        long wordId = jdbc.queryForObject(
+                "SELECT id FROM vocabulary_word WHERE theme_id=? AND word='sample'", Long.class, sourceTheme);
+
+        mockMvc.perform(withCsrf(delete("/api/v1/admin/vocabulary/themes/" + sourceTheme), csrf).session(session))
+                .andExpect(status().isConflict());
+
+        mockMvc.perform(withCsrf(put("/api/v1/admin/vocabulary/words/" + wordId)
+                        .contentType("application/json")
+                        .content("{\"themeId\":" + targetTheme + ",\"word\":\"sample\",\"translation\":\"示例\"}"), csrf)
+                        .session(session))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.themeId").value(targetTheme))
+                .andExpect(jsonPath("$.translation").value("示例"));
+
+        mockMvc.perform(withCsrf(delete("/api/v1/admin/vocabulary/words/" + wordId), csrf).session(session))
+                .andExpect(status().isNoContent());
+        mockMvc.perform(withCsrf(delete("/api/v1/admin/vocabulary/themes/" + sourceTheme), csrf).session(session))
+                .andExpect(status().isNoContent());
+        mockMvc.perform(withCsrf(delete("/api/v1/admin/vocabulary/themes/" + targetTheme), csrf).session(session))
+                .andExpect(status().isNoContent());
     }
 
     @Test

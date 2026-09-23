@@ -125,14 +125,14 @@ class V1SchemaMigrationTest {
     }
 
     @Test
-    void flywayHistoryRecordsV1ThroughV33AsSuccessful() {
+    void flywayHistoryRecordsV1ThroughV35AsSuccessful() {
         List<Long> successful = jdbc.queryForList("""
                 SELECT success
                 FROM flyway_schema_history
-                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33')
+                WHERE version IN ('1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '17', '18', '19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31', '32', '33', '34', '35')
                 ORDER BY installed_rank
                 """, Long.class);
-        assertThat(successful).containsOnly(1L).hasSize(33);
+        assertThat(successful).containsOnly(1L).hasSize(35);
 
         List<String> descriptions = jdbc.queryForList("""
                 SELECT description
@@ -154,6 +154,7 @@ class V1SchemaMigrationTest {
                 "add vocabulary pronunciation sources", "add vocabulary word search index",
                 "create portfolio project media", "create portfolio project prototype",
                 "repair portfolio demo urls", "archive media and prototype media fk",
-                "allow online portfolio prototype");
+                "allow online portfolio prototype", "add vocabulary scene meaning",
+                "replace vocabulary with cet4");
     }
 }

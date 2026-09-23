@@ -46,6 +46,7 @@ import java.util.Set;
  * the only thing reachable through public endpoints.</p>
  */
 @Service
+@Transactional(readOnly = true)
 public class ReadingArticleService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;

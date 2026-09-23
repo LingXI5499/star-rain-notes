@@ -87,6 +87,9 @@ async function pronounce() {
 
     <section v-if="showChinese" class="vocabulary-card__chinese" aria-label="中文信息">
       <p class="vocabulary-card__translation">{{ word.translation }}</p>
+      <p v-if="word.sceneMeaning && word.sceneMeaning !== word.translation" class="vocabulary-card__scene-meaning">
+        <span>本主题用法</span>{{ word.sceneMeaning }}
+      </p>
       <div v-if="word.examples?.some((item) => item.translation)" class="vocabulary-card__translations">
         <p v-for="(example, index) in word.examples" :key="index">
           {{ example.translation }}
@@ -127,6 +130,7 @@ async function pronounce() {
 .vocabulary-card__phonetics{flex-wrap:wrap;color:var(--text-secondary);font-family:serif}.vocabulary-card__muted{font-size:13px;color:var(--text-muted)}
 .vocabulary-card__examples,.vocabulary-card__translations{display:grid;gap:6px;margin-top:12px;font-size:14px;line-height:1.65;color:var(--text-secondary)}
 .vocabulary-card__chinese{padding-top:14px;border-top:1px dashed var(--border)}.vocabulary-card__translation{font-size:17px;line-height:1.7;color:var(--text-primary)}
+.vocabulary-card__scene-meaning{display:grid;gap:4px;margin-top:10px;font-size:14px;line-height:1.6;color:var(--text-secondary)}.vocabulary-card__scene-meaning span{font-size:11px;color:var(--text-muted);letter-spacing:.06em}
 .vocabulary-card__families{flex-wrap:wrap;font-size:12px;color:var(--text-muted)}.vocabulary-card__families span:not(:first-child){padding:3px 8px;border:1px solid var(--border);border-radius:999px}
 .vocabulary-card__footer{align-items:flex-end;margin-top:auto;padding-top:14px;border-top:1px solid var(--border)}
 .vocabulary-card__progress{display:grid;gap:3px;font-size:12px;color:var(--text-muted)}.vocabulary-card__progress strong{color:var(--text-primary);font-size:20px}
