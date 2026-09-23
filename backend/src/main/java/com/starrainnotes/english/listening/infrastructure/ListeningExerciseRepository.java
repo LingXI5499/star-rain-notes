@@ -14,7 +14,7 @@ import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
 import com.starrainnotes.english.shared.exercise.entity.EnglishExercise;
 import com.starrainnotes.english.shared.exercise.mapper.EnglishExerciseMapper;
 import com.starrainnotes.english.shared.exercise.service.EnglishExerciseSafety;
-import com.starrainnotes.english.shared.exercise.service.EnglishExerciseService;
+import com.starrainnotes.english.shared.exercise.domain.EnglishExercisePolicy;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -44,14 +44,14 @@ public class ListeningExerciseRepository {
 
     private final JdbcTemplate jdbc;
     private final EnglishExerciseMapper exerciseMapper;
-    private final EnglishExerciseService exerciseRules;
+    private final EnglishExercisePolicy exerciseRules;
     private final EnglishExerciseSafety safety;
     private final ListeningContentPort itemService;
     private final ObjectMapper objectMapper;
     private final SiteSettingsTimezone timezone;
 
     public ListeningExerciseRepository(JdbcTemplate jdbc, EnglishExerciseMapper exerciseMapper,
-                                    EnglishExerciseService exerciseRules, EnglishExerciseSafety safety,
+                                    EnglishExercisePolicy exerciseRules, EnglishExerciseSafety safety,
                                     ListeningContentPort itemService, ObjectMapper objectMapper,
                                     SiteSettingsTimezone timezone) {
         this.jdbc = jdbc;

@@ -1,10 +1,10 @@
-package com.starrainnotes.english.shared.exercise.service;
+package com.starrainnotes.english.shared.exercise.domain;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +20,8 @@ import java.util.Set;
  * {@code ENGLISH_EXERCISE_CONFIG_INVALID} so the admin UI can show field-level
  * problems instead of a generic "operation failed".</p>
  */
-@Service
-public class EnglishExerciseService {
+@Component
+public class EnglishExercisePolicy {
 
     public static final Set<String> MODULE_TYPES = Set.of("READING", "LISTENING", "WRITING");
 
@@ -67,7 +67,7 @@ public class EnglishExerciseService {
 
     private final ObjectMapper objectMapper;
 
-    public EnglishExerciseService(ObjectMapper objectMapper) {
+    public EnglishExercisePolicy(ObjectMapper objectMapper) {
         this.objectMapper = objectMapper;
     }
 

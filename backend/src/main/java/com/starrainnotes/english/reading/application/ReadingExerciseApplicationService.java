@@ -13,7 +13,7 @@ import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
 import com.starrainnotes.english.reading.infrastructure.ReadingExerciseRepository;
 import com.starrainnotes.english.shared.exercise.entity.EnglishExercise;
 import com.starrainnotes.english.shared.exercise.service.EnglishExerciseSafety;
-import com.starrainnotes.english.shared.exercise.service.EnglishExerciseService;
+import com.starrainnotes.english.shared.exercise.domain.EnglishExercisePolicy;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,11 +29,11 @@ import java.util.Set;
 public class ReadingExerciseApplicationService {
     private static final String READING = "READING";
     private final ReadingExerciseRepository repository;
-    private final EnglishExerciseService exerciseRules;
+    private final EnglishExercisePolicy exerciseRules;
     private final EnglishExerciseSafety safety;
     private final ObjectMapper objectMapper;
     public ReadingExerciseApplicationService(ReadingExerciseRepository repository,
-            EnglishExerciseService exerciseRules, EnglishExerciseSafety safety, ObjectMapper objectMapper) {
+            EnglishExercisePolicy exerciseRules, EnglishExerciseSafety safety, ObjectMapper objectMapper) {
         this.repository = repository;
         this.exerciseRules = exerciseRules;
         this.safety = safety;

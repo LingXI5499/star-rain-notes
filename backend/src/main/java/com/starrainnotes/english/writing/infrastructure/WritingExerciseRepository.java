@@ -13,7 +13,7 @@ import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
 import com.starrainnotes.english.shared.exercise.entity.EnglishExercise;
 import com.starrainnotes.english.shared.exercise.mapper.EnglishExerciseMapper;
 import com.starrainnotes.english.shared.exercise.service.EnglishExerciseSafety;
-import com.starrainnotes.english.shared.exercise.service.EnglishExerciseService;
+import com.starrainnotes.english.shared.exercise.domain.EnglishExercisePolicy;
 import com.starrainnotes.english.writing.domain.WritingPromptPort;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.http.HttpStatus;
@@ -30,9 +30,9 @@ import java.util.*;
 public class WritingExerciseRepository {
     private static final String MODULE = "WRITING";
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
-    private final JdbcTemplate jdbc; private final EnglishExerciseMapper mapper; private final EnglishExerciseService rules;
+    private final JdbcTemplate jdbc; private final EnglishExerciseMapper mapper; private final EnglishExercisePolicy rules;
     private final EnglishExerciseSafety safety; private final WritingPromptPort prompts; private final ObjectMapper json; private final SiteSettingsTimezone timezone;
-    public WritingExerciseRepository(JdbcTemplate jdbc, EnglishExerciseMapper mapper, EnglishExerciseService rules, EnglishExerciseSafety safety, WritingPromptPort prompts, ObjectMapper json, SiteSettingsTimezone timezone){this.jdbc=jdbc;this.mapper=mapper;this.rules=rules;this.safety=safety;this.prompts=prompts;this.json=json;this.timezone=timezone;}
+    public WritingExerciseRepository(JdbcTemplate jdbc, EnglishExerciseMapper mapper, EnglishExercisePolicy rules, EnglishExerciseSafety safety, WritingPromptPort prompts, ObjectMapper json, SiteSettingsTimezone timezone){this.jdbc=jdbc;this.mapper=mapper;this.rules=rules;this.safety=safety;this.prompts=prompts;this.json=json;this.timezone=timezone;}
     public List<ExerciseView> list(Long promptId){prompts.requireExists(promptId);return jdbc.query(sql("WHERE pe.prompt_id=? ORDER BY e.sort_order,e.id"),(rs,n)->admin(rs,promptId),promptId);}
     @Transactional public ExerciseView create(Long promptId,ExerciseRequest request){prompts.requireExists(promptId);rules.validateConfig(MODULE,request.questionType(),request.configJson());EnglishExercise e=new EnglishExercise();e.setModuleType(MODULE);e.setQuestionType(request.questionType());e.setPromptMarkdown(request.promptMarkdown());e.setConfigJson(parse(request.configJson()));e.setExplanationMarkdown(clean(request.explanationMarkdown()));e.setScoreValue(requireScore(request.scoreValue()));e.setSortOrder(next(promptId));e.setPublishStatus(status(request.publishStatus()));mapper.insert(e);jdbc.update("INSERT INTO english_writing_prompt_exercise(prompt_id,exercise_id) VALUES (?,?)",promptId,e.getId());return get(promptId,e.getId());}
     @Transactional public ExerciseView update(Long promptId,Long exerciseId,ExerciseRequest request){binding(promptId,exerciseId);rules.validateConfig(MODULE,request.questionType(),request.configJson());EnglishExercise e=exercise(exerciseId);e.setQuestionType(request.questionType());e.setPromptMarkdown(request.promptMarkdown());e.setConfigJson(parse(request.configJson()));e.setExplanationMarkdown(clean(request.explanationMarkdown()));e.setScoreValue(requireScore(request.scoreValue()));if(request.publishStatus()!=null)e.setPublishStatus(status(request.publishStatus()));mapper.updateById(e);return get(promptId,exerciseId);}

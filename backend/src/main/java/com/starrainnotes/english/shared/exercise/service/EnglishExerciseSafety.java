@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.starrainnotes.english.shared.exercise.domain.EnglishExercisePolicy;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ import java.util.Set;
  * use this component so answer-leak protections and server-side scoring behave
  * identically and are tested once.
  *
- * <p>{@link EnglishExerciseService} is the single source of truth for the
+ * <p>{@link EnglishExercisePolicy} is the single source of truth for the
  * questionType → kind mapping; this class asks for the kind and never keeps a
  * private copy, so the two can't drift. All JSON work uses the injected
  * Spring {@link ObjectMapper} (no ad-hoc mappers in recursion).</p>
@@ -35,9 +36,9 @@ public class EnglishExerciseSafety {
             "correctorder", "standardorder", "answerkeys", "solution");
 
     private final ObjectMapper mapper;
-    private final EnglishExerciseService exerciseService;
+    private final EnglishExercisePolicy exerciseService;
 
-    public EnglishExerciseSafety(ObjectMapper mapper, EnglishExerciseService exerciseService) {
+    public EnglishExerciseSafety(ObjectMapper mapper, EnglishExercisePolicy exerciseService) {
         this.mapper = mapper;
         this.exerciseService = exerciseService;
     }
