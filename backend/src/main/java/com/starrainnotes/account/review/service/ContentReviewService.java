@@ -8,7 +8,7 @@ import com.starrainnotes.blog.dto.UpdatePostRequest;
 import com.starrainnotes.blog.service.BlogCommandService;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.grammar.dto.GrammarLessonRequest;
-import com.starrainnotes.english.grammar.service.EnglishGrammarService;
+import com.starrainnotes.english.grammar.application.GrammarCommandService;
 import com.starrainnotes.english.listening.dto.ListeningItemRequest;
 import com.starrainnotes.english.listening.dto.PronunciationRuleRequest;
 import com.starrainnotes.english.listening.application.ListeningCommandService;
@@ -41,7 +41,7 @@ public class ContentReviewService {
     private final ObjectMapper json;
     private final BlogCommandService blogService;
     private final TutorialNodeService tutorialNodeService;
-    private final EnglishGrammarService grammarService;
+    private final GrammarCommandService grammarService;
     private final ReadingCommandService readingService;
     private final ListeningCommandService listeningService;
     private final PronunciationRuleCommandService pronunciationRuleCommands;
@@ -52,7 +52,7 @@ public class ContentReviewService {
 
     public ContentReviewService(JdbcTemplate jdbc, ObjectMapper json, BlogCommandService blogService,
                                 TutorialNodeService tutorialNodeService,
-                                EnglishGrammarService grammarService,
+                                GrammarCommandService grammarService,
                                 ReadingCommandService readingService,
                                 ListeningCommandService listeningService,
                                 PronunciationRuleCommandService pronunciationRuleCommands,
