@@ -21,4 +21,7 @@ public class WritingContentDescriptorProvider implements EnglishContentDescripto
     @Override public ContentCatalogSlice catalog(ContentCatalogFilter filter, int limit) {
         return writing.catalogDescriptors(filter, limit);
     }
+    @Override public long publishedCount() {
+        return catalog(new ContentCatalogFilter("PUBLISHED", null, null), 0).total();
+    }
 }

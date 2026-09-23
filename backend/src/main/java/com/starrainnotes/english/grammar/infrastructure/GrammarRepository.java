@@ -64,6 +64,15 @@ public class GrammarRepository {
         return requireCourse(false);
     }
 
+    public long publishedCount() {
+        Long count = jdbc.queryForObject("""
+                SELECT COUNT(*) FROM english_grammar_lesson l
+                JOIN english_grammar_course c ON c.id=l.course_id
+                WHERE l.publish_status='PUBLISHED' AND c.publish_status='PUBLISHED'
+                """, Long.class);
+        return count == null ? 0 : count;
+    }
+
     public GrammarCourseView publicCourse() {
         return requireCourse(true);
     }

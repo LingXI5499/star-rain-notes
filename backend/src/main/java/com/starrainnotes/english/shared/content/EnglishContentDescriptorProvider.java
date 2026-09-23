@@ -7,4 +7,5 @@ public interface EnglishContentDescriptorProvider {
     default ContentCatalogSlice catalog(ContentCatalogFilter filter, int limit) {
         throw new UnsupportedOperationException("Catalog is unavailable for " + type());
     }
+    long publishedCount();
 }

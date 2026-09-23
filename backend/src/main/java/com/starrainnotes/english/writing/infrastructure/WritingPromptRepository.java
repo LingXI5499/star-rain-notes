@@ -38,6 +38,7 @@ public class WritingPromptRepository implements WritingPromptPort {
          args.add(term);args.add(term);args.add(term);
      }
      Long total=jdbc.queryForObject("SELECT COUNT(*) FROM english_writing_prompt a"+where,Long.class,args.toArray());
+     if(limit<=0)return new ContentCatalogSlice(total==null?0:total,List.of());
      List<Object> pageArgs=new ArrayList<>(args);pageArgs.add(limit);
      List<ContentDescriptor> items=jdbc.query("""
              SELECT a.id,a.slug,a.title,a.summary,a.cefr_level,m.public_url cover_url,

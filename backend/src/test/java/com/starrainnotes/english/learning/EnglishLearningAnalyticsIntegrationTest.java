@@ -74,6 +74,12 @@ class EnglishLearningAnalyticsIntegrationTest extends AbstractAuthIntegrationTes
     @Test
     void returnsAggregateTrendsAndModulesWithoutPrivateData() throws Exception {
         MockHttpSession session = login();
+        Long publishedReading = jdbc.queryForObject(
+                "SELECT COUNT(*) FROM english_reading_article WHERE publish_status='PUBLISHED'", Long.class);
+        Long publishedGrammar = jdbc.queryForObject("""
+                SELECT COUNT(*) FROM english_grammar_lesson l JOIN english_grammar_course c ON c.id=l.course_id
+                WHERE l.publish_status='PUBLISHED' AND c.publish_status='PUBLISHED'
+                """, Long.class);
         MvcResult result = mockMvc.perform(get("/api/v1/admin/english/analytics").session(session))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.days").value(30))
@@ -87,6 +93,8 @@ class EnglishLearningAnalyticsIntegrationTest extends AbstractAuthIntegrationTes
                 .andExpect(jsonPath("$.modules", hasSize(4)))
                 .andExpect(jsonPath("$.modules[?(@.contentType=='READING')].attempts").value(2))
                 .andExpect(jsonPath("$.modules[?(@.contentType=='READING')].engagedContent").value(1))
+                .andExpect(jsonPath("$.modules[?(@.contentType=='READING')].publishedContent").value(publishedReading.intValue()))
+                .andExpect(jsonPath("$.modules[?(@.contentType=='GRAMMAR')].publishedContent").value(publishedGrammar.intValue()))
                 .andExpect(jsonPath("$.topContent").doesNotExist())
                 .andExpect(jsonPath("$.weakPoints").doesNotExist())
                 .andReturn();
