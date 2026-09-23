@@ -17,4 +17,5 @@ public class GrammarQueryService {
     public GrammarCurriculumView publicCurriculum() { return repository.publicCurriculum(); }
     public GrammarLessonDetailView lesson(long id) { return repository.lesson(id); }
     public GrammarLessonDetailView publicLesson(String slug) { return repository.publicLesson(slug); }
+    public long publishedCount() { return repository.publishedCount(); }
 }

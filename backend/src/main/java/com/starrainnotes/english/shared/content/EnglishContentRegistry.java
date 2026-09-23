@@ -39,4 +39,10 @@ public class EnglishContentRegistry {
         if (provider == null) throw new IllegalArgumentException("Unsupported English content type: " + type);
         return provider.catalog(filter, limit);
     }
+
+    public long publishedCount(EnglishContentType type) {
+        EnglishContentDescriptorProvider provider = providers.get(type);
+        if (provider == null) throw new IllegalArgumentException("Unsupported English content type: " + type);
+        return provider.publishedCount();
+    }
 }

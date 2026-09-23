@@ -16,4 +16,5 @@ public class GrammarContentDescriptorProvider implements EnglishContentDescripto
         return new ContentDescriptor(type(),item.id(),item.slug(),item.title(),item.summary(),
                 null,null,item.publishStatus(),item.sortOrder()==null?0:item.sortOrder());
     }
+    @Override public long publishedCount() { return grammar.publishedCount(); }
 }

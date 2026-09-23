@@ -21,4 +21,7 @@ public class ReadingContentDescriptorProvider implements EnglishContentDescripto
     @Override public ContentCatalogSlice catalog(ContentCatalogFilter filter, int limit) {
         return reading.catalogDescriptors(filter, limit);
     }
+    @Override public long publishedCount() {
+        return catalog(new ContentCatalogFilter("PUBLISHED", null, null), 0).total();
+    }
 }

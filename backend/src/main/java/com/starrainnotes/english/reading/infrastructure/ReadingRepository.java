@@ -93,6 +93,7 @@ public class ReadingRepository implements ReadingContentPort {
         }
         Long total = jdbc.queryForObject("SELECT COUNT(*) FROM english_reading_article a" + where,
                 Long.class, args.toArray());
+        if (limit <= 0) return new ContentCatalogSlice(total == null ? 0 : total, List.of());
         List<Object> pageArgs = new ArrayList<>(args);
         pageArgs.add(limit);
         List<ContentDescriptor> items = jdbc.query("""

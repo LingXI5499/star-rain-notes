@@ -21,4 +21,7 @@ public class ListeningContentDescriptorProvider implements EnglishContentDescrip
     @Override public ContentCatalogSlice catalog(ContentCatalogFilter filter, int limit) {
         return listening.catalogDescriptors(filter, limit);
     }
+    @Override public long publishedCount() {
+        return catalog(new ContentCatalogFilter("PUBLISHED", null, null), 0).total();
+    }
 }
