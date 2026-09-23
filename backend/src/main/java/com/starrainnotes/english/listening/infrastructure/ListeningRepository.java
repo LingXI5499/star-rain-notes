@@ -1,4 +1,4 @@
-package com.starrainnotes.english.listening.service;
+package com.starrainnotes.english.listening.infrastructure;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
@@ -17,14 +17,19 @@ import com.starrainnotes.english.listening.dto.ListeningTagRef;
 import com.starrainnotes.english.listening.dto.ReadingPairRef;
 import com.starrainnotes.english.listening.dto.ReadingPairRequest;
 import com.starrainnotes.english.listening.entity.ListeningItem;
+import com.starrainnotes.english.listening.domain.ListeningContentPort;
+import com.starrainnotes.english.listening.domain.ListeningPublishPolicy;
+import com.starrainnotes.english.listening.domain.SegmentTimelinePolicy;
 import com.starrainnotes.english.listening.mapper.ListeningItemMapper;
 import com.starrainnotes.english.shared.exercise.mapper.EnglishExerciseMapper;
+import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.listening.infrastructure.ListeningRelationRepository;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.ResultSet;
@@ -45,9 +50,9 @@ import java.util.Set;
  * are time-range validated (end &gt; start, end ≤ audio duration unless 0) and
  * normalized to 10/20/30 via a two-phase temporary value.</p>
  */
-@Service
+@Repository
 @Transactional(readOnly = true)
-public class ListeningItemService {
+public class ListeningRepository implements ListeningContentPort {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final String DRAFT = "DRAFT";
@@ -69,13 +74,26 @@ public class ListeningItemService {
     private final JdbcTemplate jdbc;
     private final EnglishExerciseMapper exerciseMapper;
     private final SiteSettingsTimezone timezone;
+    private final ListeningSegmentRepository segmentRepository;
+    private final MediaAssetPort mediaAssets;
+    private final ListeningRelationRepository relations;
+    private final ListeningPublishPolicy publishPolicy;
+    private final SegmentTimelinePolicy timelinePolicy;
 
-    public ListeningItemService(ListeningItemMapper mapper, JdbcTemplate jdbc,
-                                EnglishExerciseMapper exerciseMapper, SiteSettingsTimezone timezone) {
+    public ListeningRepository(ListeningItemMapper mapper, JdbcTemplate jdbc,
+                                EnglishExerciseMapper exerciseMapper, SiteSettingsTimezone timezone,
+                                ListeningSegmentRepository segmentRepository, MediaAssetPort mediaAssets,
+                                ListeningRelationRepository relations, ListeningPublishPolicy publishPolicy,
+                                SegmentTimelinePolicy timelinePolicy) {
         this.mapper = mapper;
         this.jdbc = jdbc;
         this.exerciseMapper = exerciseMapper;
         this.timezone = timezone;
+        this.segmentRepository = segmentRepository;
+        this.mediaAssets = mediaAssets;
+        this.relations = relations;
+        this.publishPolicy = publishPolicy;
+        this.timelinePolicy = timelinePolicy;
     }
 
     @Transactional
@@ -141,7 +159,7 @@ public class ListeningItemService {
             int idx = ids.indexOf(current.id());
             ListeningLinkView prev = idx > 0 ? link(ids.get(idx - 1)) : null;
             ListeningLinkView next = idx >= 0 && idx + 1 < ids.size() ? link(ids.get(idx + 1)) : null;
-            return current.withReadingPairs(publishedReadingPairs(current.id())).withNav(prev, next);
+            return current.withReadingPairs(relations.publishedReadingPairs(current.id())).withNav(prev, next);
         } catch (EmptyResultDataAccessException ex) {
             throw new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_CONTENT_NOT_PUBLISHED",
                     "Item not available", "The requested listening material is not published.");
@@ -202,7 +220,9 @@ public class ListeningItemService {
     @SeoContentChange(table = "english_listening_item", pathPrefix = "/english/listening/")
     public ListeningItemView publish(Long id) {
         ListeningItem item = require(id);
-        List<String> problems = publishProblems(item);
+        List<String> problems = publishPolicy.problems(item,
+                hasDimensionTag(id, "SCENE"), hasDimensionTag(id, "FORMAT"), segmentsValid(id),
+                hasPublishedExercise(id), publishedExercisesValid(id));
         if (!problems.isEmpty()) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_PUBLISH_INVALID",
                     "Cannot publish", String.join("; ", problems));
@@ -238,220 +258,23 @@ public class ListeningItemService {
         for (Long exId : exerciseIds) exerciseMapper.deleteById(exId);
     }
 
-    @Transactional
-    public void addReadingPair(Long itemId, ReadingPairRequest request) {
-        require(itemId);
-        requireReading(request.readingArticleId());
-        validateRelationType(request.relationType());
-        try {
-            jdbc.update("INSERT INTO english_reading_listening_pair"
-                    + "(reading_article_id,listening_item_id,relation_type,sort_order) VALUES (?,?,?,?)",
-                    request.readingArticleId(), itemId, request.relationType(), 10);
-        } catch (DuplicateKeyException ex) {
-            throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_READING_LISTENING_PAIR_DUPLICATE",
-                    "Pair already exists", "This reading–listening pair is already linked.");
-        }
-    }
-
-    @Transactional
-    public void removeReadingPair(Long itemId, Long readingId) {
-        jdbc.update("DELETE FROM english_reading_listening_pair WHERE listening_item_id=? AND reading_article_id=?",
-                itemId, readingId);
-    }
-
     // ---------------------------------------------------------------
-    // segments
+    // item relations and query helpers
     // ---------------------------------------------------------------
 
-    public List<ListeningSegmentView> segments(Long itemId) {
-        require(itemId);
-        return jdbc.query("""
-                SELECT id,listening_item_id,start_ms,end_ms,transcript_text,translation_text,sort_order,updated_at
-                FROM english_listening_segment WHERE listening_item_id=? ORDER BY sort_order,id
-                """, (rs, row) -> mapSegment(rs), itemId);
-    }
 
-    public List<ListeningSegmentView> publicSegments(Long itemId) {
-        requirePublished(itemId);
-        return segments(itemId);
-    }
 
-    @Transactional
-    public ListeningSegmentView createSegment(Long itemId, ListeningSegmentRequest request) {
-        require(itemId);
-        assertSegmentRange(itemId, request.startMs(), request.endMs());
-        Integer max = jdbc.queryForObject(
-                "SELECT COALESCE(MAX(sort_order),0) FROM english_listening_segment WHERE listening_item_id=?",
-                Integer.class, itemId);
-        int order = (max == null ? 0 : max) + 10;
-        jdbc.update("INSERT INTO english_listening_segment"
-                + "(listening_item_id,start_ms,end_ms,transcript_text,translation_text,sort_order)"
-                + " VALUES (?,?,?,?,?,?)",
-                itemId, request.startMs(), request.endMs(), request.transcriptText(),
-                clean(request.translationText()), order);
-        return segmentById(itemId, order);
-    }
 
-    @Transactional
-    public ListeningSegmentView updateSegment(Long itemId, Long segmentId, ListeningSegmentRequest request) {
-        requireSegment(itemId, segmentId);
-        assertSegmentRange(itemId, request.startMs(), request.endMs());
-        jdbc.update("UPDATE english_listening_segment SET start_ms=?, end_ms=?, transcript_text=?,"
-                + " translation_text=? WHERE id=? AND listening_item_id=?",
-                request.startMs(), request.endMs(), request.transcriptText(),
-                clean(request.translationText()), segmentId, itemId);
-        return segmentById(itemId, segmentSort(itemId, segmentId));
-    }
 
-    @Transactional
-    public void deleteSegment(Long itemId, Long segmentId) {
-        requireSegment(itemId, segmentId);
-        jdbc.update("DELETE FROM english_listening_segment WHERE id=? AND listening_item_id=?", segmentId, itemId);
-    }
 
-    @Transactional
-    public void moveSegment(Long itemId, Long segmentId, int targetIndex) {
-        requireSegment(itemId, segmentId);
-        List<Long> ids = new ArrayList<>(jdbc.queryForList(
-                "SELECT id FROM english_listening_segment WHERE listening_item_id=? ORDER BY sort_order,id",
-                Long.class, itemId));
-        ids.remove(segmentId);
-        ids.add(Math.min(Math.max(targetIndex, 0), ids.size()), segmentId);
-        if (ids.isEmpty()) return;
-        jdbc.update("UPDATE english_listening_segment SET sort_order=100000 WHERE listening_item_id=?", itemId);
-        for (int i = 0; i < ids.size(); i++) {
-            jdbc.update("UPDATE english_listening_segment SET sort_order=? WHERE id=?",
-                    (i + 1) * 10, ids.get(i));
-        }
-    }
 
-    @Transactional
-    public List<ListeningSegmentView> batchSegments(Long itemId, List<ListeningSegmentRequest> requests) {
-        require(itemId);
-        Integer duration = jdbc.queryForObject(
-                "SELECT duration_seconds FROM english_listening_item WHERE id=?", Integer.class, itemId);
-        int previousEnd = -1;
-        for (ListeningSegmentRequest req : requests) {
-            assertSegmentRangeWithDuration(itemId, req.startMs(), req.endMs(),
-                    duration == null ? null : duration);
-            if (isBlank(req.transcriptText())) {
-                throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_SEGMENT_TEXT_REQUIRED",
-                        "Segment transcript required", "Each listening segment must contain transcript text.");
-            }
-            if (previousEnd > req.startMs()) {
-                throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_SEGMENT_OVERLAP",
-                        "Segments overlap", "Listening segments must be ordered and cannot overlap.");
-            }
-            previousEnd = req.endMs();
-        }
-        // Batch save is a complete, ordered replacement. Validate every row first,
-        // then replace inside this transaction so a failed insert restores the old set.
-        jdbc.update("DELETE FROM english_listening_segment WHERE listening_item_id=?", itemId);
-        int order = 10;
-        for (ListeningSegmentRequest req : requests) {
-            jdbc.update("INSERT INTO english_listening_segment"
-                    + "(listening_item_id,start_ms,end_ms,transcript_text,translation_text,sort_order)"
-                    + " VALUES (?,?,?,?,?,?)",
-                    itemId, req.startMs(), req.endMs(), req.transcriptText(),
-                    clean(req.translationText()), order);
-            order += 10;
-        }
-        return segments(itemId);
-    }
 
-    // ---------------------------------------------------------------
-    // pronunciation rules
-    // ---------------------------------------------------------------
 
-    public List<com.starrainnotes.english.listening.dto.PronunciationRuleView> pronunciationRules(boolean publishedOnly) {
-        String status = publishedOnly ? " WHERE publish_status='PUBLISHED'" : "";
-        return jdbc.query("""
-                SELECT r.id,r.rule_type,r.title,r.slug,r.summary,r.body_markdown,r.audio_media_id,
-                       a.public_url AS audio_url,r.publish_status,r.sort_order,r.published_at,r.updated_at
-                FROM english_listening_pronunciation_rule r
-                LEFT JOIN media_asset a ON a.id=r.audio_media_id
-                """ + status + " ORDER BY r.rule_type, r.sort_order, r.id",
-                (rs, row) -> mapRule(rs));
-    }
 
-    @Transactional
-    public com.starrainnotes.english.listening.dto.PronunciationRuleView createRule(
-            com.starrainnotes.english.listening.dto.PronunciationRuleRequest request) {
-        String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> ruleSlugExists(candidate, null));
-        assertRuleSlugFree(slug, null);
-        validateRuleType(request.ruleType());
-        validateAudio(request.audioMediaId());
-        jdbc.update("INSERT INTO english_listening_pronunciation_rule"
-                + "(rule_type,title,slug,summary,body_markdown,audio_media_id,publish_status,sort_order)"
-                + " VALUES (?,?,?,?,?,?,'DRAFT',?)",
-                request.ruleType(), request.title().trim(), slug, request.summary().trim(),
-                request.bodyMarkdown(), request.audioMediaId(),
-                request.sortOrder() == null ? nextRuleSort() : request.sortOrder());
-        return ruleBySlug(slug, false);
-    }
 
-    @Transactional
-    @SeoContentChange(table = "english_listening_pronunciation_rule", pathPrefix = "/english/listening/pronunciation/")
-    public com.starrainnotes.english.listening.dto.PronunciationRuleView updateRule(Long id,
-            com.starrainnotes.english.listening.dto.PronunciationRuleRequest request) {
-        var current = requireRule(id);
-        String slug = NumericSlugGenerator.forUpdate(request.slug(), current.slug());
-        assertRuleSlugFree(slug, id);
-        validateRuleType(request.ruleType());
-        validateAudio(request.audioMediaId());
-        jdbc.update("UPDATE english_listening_pronunciation_rule SET rule_type=?,title=?,slug=?,summary=?,"
-                + " body_markdown=?,audio_media_id=?,sort_order=COALESCE(?,sort_order) WHERE id=?",
-                request.ruleType(), request.title().trim(), slug, request.summary().trim(),
-                request.bodyMarkdown(), request.audioMediaId(), request.sortOrder(), id);
-        return ruleById(id, false);
-    }
 
-    @Transactional
-    public void deleteRule(Long id) {
-        String status = requireRule(id).publishStatus();
-        if (PUBLISHED.equals(status)) {
-            throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_LISTENING_RULE_PUBLISHED_DELETE_FORBIDDEN",
-                    "Published rule cannot be deleted", "Withdraw the rule before deleting it.");
-        }
-        jdbc.update("DELETE FROM english_listening_pronunciation_rule WHERE id=?", id);
-    }
 
-    @Transactional
-    @SeoContentChange(table = "english_listening_pronunciation_rule", pathPrefix = "/english/listening/pronunciation/")
-    public com.starrainnotes.english.listening.dto.PronunciationRuleView publishRule(Long id) {
-        requireRule(id);
-        jdbc.update("UPDATE english_listening_pronunciation_rule SET publish_status='PUBLISHED',"
-                + " published_at=COALESCE(published_at, UTC_TIMESTAMP(6)) WHERE id=?", id);
-        return ruleById(id, false);
-    }
 
-    @Transactional
-    @SeoContentChange(table = "english_listening_pronunciation_rule", pathPrefix = "/english/listening/pronunciation/")
-    public com.starrainnotes.english.listening.dto.PronunciationRuleView withdrawRule(Long id) {
-        String status = requireRule(id).publishStatus();
-        if (DRAFT.equals(status)) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_INVALID_PUBLISH_TRANSITION",
-                    "Invalid publish transition", "A draft rule cannot be withdrawn.");
-        }
-        jdbc.update("UPDATE english_listening_pronunciation_rule SET publish_status='WITHDRAWN' WHERE id=?", id);
-        return ruleById(id, false);
-    }
-
-    @Transactional
-    public void moveRule(Long id, int targetIndex) {
-        requireRule(id);
-        List<Long> ids = new ArrayList<>(jdbc.queryForList(
-                "SELECT id FROM english_listening_pronunciation_rule ORDER BY rule_type, sort_order, id",
-                Long.class));
-        ids.remove(id);
-        ids.add(Math.min(Math.max(targetIndex, 0), ids.size()), id);
-        if (ids.isEmpty()) return;
-        jdbc.update("UPDATE english_listening_pronunciation_rule SET sort_order=100000");
-        for (int i = 0; i < ids.size(); i++) {
-            jdbc.update("UPDATE english_listening_pronunciation_rule SET sort_order=? WHERE id=?",
-                    (i + 1) * 10, ids.get(i));
-        }
-    }
 
     // ---------------------------------------------------------------
     // helpers
@@ -499,34 +322,9 @@ public class ListeningItemService {
                 "A " + dimension + " tag cannot reference the '" + found.get(0) + "' dimension.");
     }
 
-    private List<String> publishProblems(ListeningItem item) {
-        List<String> problems = new ArrayList<>();
-        if (isBlank(item.getTitle())) problems.add("标题不能为空");
-        if (isBlank(item.getSlug())) problems.add("slug 不能为空");
-        if (isBlank(item.getSummary())) problems.add("摘要不能为空");
-        if (item.getCefrLevel() == null) problems.add("CEFR 等级不能为空");
-        if (item.getListeningLevel() == null || item.getListeningLevel() < 1 || item.getListeningLevel() > 3) {
-            problems.add("能力层级必须为1/2/3");
-        }
-        if (item.getAudioMediaId() == null) problems.add("音频资源不能为空");
-        if (!hasDimensionTag(item.getId() == null ? 0L : item.getId(), "SCENE")) {
-            problems.add("至少需要一个场景(SCENE)标签");
-        }
-        if (!hasDimensionTag(item.getId() == null ? 0L : item.getId(), "FORMAT")) {
-            problems.add("至少需要一个形式(FORMAT)标签");
-        }
-        if (!segmentsValid(item.getId() == null ? 0L : item.getId())) {
-            problems.add("至少需要一个包含原文、时间有效且互不重叠的片段");
-        }
-        if (!hasPublishedExercise(item.getId() == null ? 0L : item.getId())) {
-            problems.add("至少需要一道已发布听力练习");
-        } else if (!publishedExercisesValid(item.getId() == null ? 0L : item.getId())) {
-            problems.add("存在配置不合法的已发布练习");
-        }
-        return problems;
-    }
 
     /** Lightweight ownership check for child-resource endpoints. */
+    @Override
     public void requireExists(Long id) {
         Integer count = jdbc.queryForObject(
                 "SELECT COUNT(*) FROM english_listening_item WHERE id=?", Integer.class, id);
@@ -536,22 +334,9 @@ public class ListeningItemService {
     private boolean segmentsValid(Long itemId) {
         Integer duration = jdbc.queryForObject(
                 "SELECT duration_seconds FROM english_listening_item WHERE id=?", Integer.class, itemId);
-        List<ListeningSegmentView> ranges = jdbc.query("""
-                SELECT id,listening_item_id,start_ms,end_ms,transcript_text,translation_text,sort_order,updated_at
-                FROM english_listening_segment WHERE listening_item_id=? ORDER BY sort_order,id
-                """, (rs, row) -> mapSegment(rs), itemId);
-        if (ranges.isEmpty()) return false;
-        int previousEnd = -1;
-        for (ListeningSegmentView segment : ranges) {
-            if (isBlank(segment.transcriptText()) || segment.startMs() < 0 || segment.endMs() <= segment.startMs()) {
-                return false;
-            }
-            if (previousEnd > segment.startMs()) return false;
-            if (duration != null && duration > 0 && segment.endMs() > duration * 1000) return false;
-            previousEnd = segment.endMs();
-        }
-        return true;
+        return timelinePolicy.isValid(segmentRepository.list(itemId), duration);
     }
+
 
     private boolean hasPublishedExercise(Long itemId) {
         Integer count = jdbc.queryForObject("""
@@ -580,24 +365,8 @@ public class ListeningItemService {
         return count != null && count > 0;
     }
 
-    private void assertSegmentRange(Long itemId, Integer start, Integer end) {
-        Integer duration = jdbc.queryForObject(
-                "SELECT duration_seconds FROM english_listening_item WHERE id=?", Integer.class, itemId);
-        assertSegmentRangeWithDuration(itemId, start, end, duration);
-    }
 
-    private void assertSegmentRangeWithDuration(Long itemId, Integer start, Integer end, Integer duration) {
-        if (start == null || start < 0) throw segmentInvalid("start_ms 必须为非负");
-        if (end == null || end <= start) throw segmentInvalid("end_ms 必须大于 start_ms");
-        if (duration != null && duration > 0 && end > duration * 1000) {
-            throw segmentInvalid("end_ms 不能超过音频时长");
-        }
-    }
 
-    private ApiException segmentInvalid(String detail) {
-        return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_SEGMENT_INVALID",
-                "Invalid segment", detail);
-    }
 
     private ListeningItem require(Long id) {
         ListeningItem item = mapper.selectById(id);
@@ -605,43 +374,15 @@ public class ListeningItemService {
         return item;
     }
 
-    private com.starrainnotes.english.listening.dto.PronunciationRuleView requireRule(Long id) {
-        try {
-            return jdbc.queryForObject("""
-                    SELECT r.id,r.rule_type,r.title,r.slug,r.summary,r.body_markdown,r.audio_media_id,
-                           a.public_url AS audio_url,r.publish_status,r.sort_order,r.published_at,r.updated_at
-                    FROM english_listening_pronunciation_rule r
-                    LEFT JOIN media_asset a ON a.id=r.audio_media_id WHERE r.id=?
-                    """, (rs, row) -> mapRule(rs), id);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_LISTENING_RULE_NOT_FOUND",
-                    "Rule not found", "The pronunciation rule does not exist.");
-        }
-    }
 
-    public com.starrainnotes.english.listening.dto.PronunciationRuleView ruleById(Long id, boolean publishedOnly) {
-        return requireRule(id);
-    }
 
-    private com.starrainnotes.english.listening.dto.PronunciationRuleView ruleBySlug(String slug, boolean publishedOnly) {
-        String status = publishedOnly ? " AND r.publish_status='PUBLISHED'" : "";
-        try {
-            return jdbc.queryForObject("""
-                    SELECT r.id,r.rule_type,r.title,r.slug,r.summary,r.body_markdown,r.audio_media_id,
-                           a.public_url AS audio_url,r.publish_status,r.sort_order,r.published_at,r.updated_at
-                    FROM english_listening_pronunciation_rule r
-                    LEFT JOIN media_asset a ON a.id=r.audio_media_id WHERE r.slug=?
-                    """ + status, (rs, row) -> mapRule(rs), slug);
-        } catch (EmptyResultDataAccessException ex) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_CONTENT_NOT_PUBLISHED",
-                    "Rule not available", "The pronunciation rule is not published.");
-        }
-    }
 
-    public com.starrainnotes.english.listening.dto.PronunciationRuleView publicRule(String slug) {
-        return ruleBySlug(slug, true);
-    }
 
+
+
+
+
+    @Override
     public void requirePublished(Long itemId) {
         String status = jdbc.queryForObject(
                 "SELECT publish_status FROM english_listening_item WHERE id=?", String.class, itemId);
@@ -651,21 +392,7 @@ public class ListeningItemService {
         }
     }
 
-    private void requireReading(Long readingId) {
-        Integer count = jdbc.queryForObject(
-                "SELECT COUNT(*) FROM english_reading_article WHERE id=?", Integer.class, readingId);
-        if (count == null || count == 0) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_PAIR_READING_INVALID",
-                    "Invalid reading article", "The reading article does not exist.");
-        }
-    }
 
-    private void requireSegment(Long itemId, Long segmentId) {
-        Integer count = jdbc.queryForObject(
-                "SELECT COUNT(*) FROM english_listening_segment WHERE id=? AND listening_item_id=?",
-                Integer.class, segmentId, itemId);
-        if (count == null || count == 0) throw segmentNotFound();
-    }
 
     private void validateCefr(String cefr) {
         if (cefr == null) return;
@@ -693,23 +420,11 @@ public class ListeningItemService {
     }
 
     private boolean isMediaType(Long mediaId, String type) {
-        Integer count = jdbc.queryForObject(
-                "SELECT COUNT(*) FROM media_asset WHERE id=? AND asset_type=?", Integer.class, mediaId, type);
-        return count != null && count > 0;
+        return mediaAssets.isType(mediaId, type);
     }
 
-    private void validateRelationType(String type) {
-        Set<String> allowed = Set.of("SAME_CONTENT", "SAME_TOPIC", "EXTENDED_TRAINING");
-        if (!allowed.contains(type)) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-                "ENGLISH_LISTENING_PAIR_TYPE_INVALID", "Invalid relation type",
-                "relationType must be one of SAME_CONTENT/SAME_TOPIC/EXTENDED_TRAINING.");
-    }
 
-    private void validateRuleType(String type) {
-        Set<String> allowed = Set.of("LINKING", "WEAK_FORM", "ASSIMILATION", "ELISION", "STRESS", "INTONATION");
-        if (!allowed.contains(type)) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-                "ENGLISH_LISTENING_RULE_TYPE_INVALID", "Invalid rule type", "Unknown pronunciation rule type.");
-    }
+
 
     private void assertSlugFree(String slug, Long excludedId) {
         LambdaQueryWrapper<ListeningItem> w = new LambdaQueryWrapper<ListeningItem>().eq(ListeningItem::getSlug, slug);
@@ -718,15 +433,7 @@ public class ListeningItemService {
         if (c != null && c > 0) throw slugConflict();
     }
 
-    private void assertRuleSlugFree(String slug, Long excludedId) {
-        Integer c = excludedId == null
-                ? jdbc.queryForObject("SELECT COUNT(*) FROM english_listening_pronunciation_rule WHERE slug=?",
-                        Integer.class, slug)
-                : jdbc.queryForObject("SELECT COUNT(*) FROM english_listening_pronunciation_rule WHERE slug=? AND id<>?",
-                        Integer.class, slug, excludedId);
-        if (c != null && c > 0) throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_CONTENT_SLUG_CONFLICT",
-                "Slug already in use", "Choose another stable slug.");
-    }
+
 
     private boolean itemSlugExists(String slug, Long excludedId) {
         LambdaQueryWrapper<ListeningItem> wrapper =
@@ -736,14 +443,7 @@ public class ListeningItemService {
         return count != null && count > 0;
     }
 
-    private boolean ruleSlugExists(String slug, Long excludedId) {
-        Integer count = excludedId == null
-                ? jdbc.queryForObject("SELECT COUNT(*) FROM english_listening_pronunciation_rule WHERE slug=?",
-                Integer.class, slug)
-                : jdbc.queryForObject("SELECT COUNT(*) FROM english_listening_pronunciation_rule WHERE slug=? AND id<>?",
-                Integer.class, slug, excludedId);
-        return count != null && count > 0;
-    }
+
 
     private void applyFields(ListeningItem item, ListeningItemRequest request, String slug) {
         item.setTitle(request.title().trim());
@@ -765,11 +465,7 @@ public class ListeningItemService {
         return (max == null ? 0 : max) + 10;
     }
 
-    private Integer nextRuleSort() {
-        Integer max = jdbc.queryForObject(
-                "SELECT COALESCE(MAX(sort_order),0) FROM english_listening_pronunciation_rule", Integer.class);
-        return (max == null ? 0 : max) + 10;
-    }
+
 
     private ListeningAdminStats adminStats() {
         Long total = jdbc.queryForObject("SELECT COUNT(*) FROM english_listening_item", Long.class);
@@ -849,7 +545,7 @@ public class ListeningItemService {
 
     private ListeningItemView mapView(ResultSet rs, int row) throws SQLException {
         Long id = rs.getLong("id");
-        List<ListeningSegmentView> segs = id == null ? List.of() : segments(id);
+        List<ListeningSegmentView> segs = id == null ? List.of() : segmentRepository.list(id);
         return new ListeningItemView(id, rs.getString("title"), rs.getString("slug"), rs.getString("summary"),
                 rs.getString("transcript_markdown"), rs.getString("cefr_level"), rs.getInt("listening_level"),
                 nullableLong(rs, "audio_media_id"), rs.getString("audio_url"),
@@ -857,58 +553,15 @@ public class ListeningItemService {
                 rs.getString("source_name"), rs.getString("source_url"), rs.getString("copyright_note"),
                 rs.getString("publish_status"), rs.getInt("sort_order"),
                 format(rs.getTimestamp("published_at")), format(rs.getTimestamp("updated_at")),
-                loadTags(List.of(id)).getOrDefault(id, List.of()), segs, readingPairs(id), null, null);
+                loadTags(List.of(id)).getOrDefault(id, List.of()), segs, relations.readingPairs(id), null, null);
     }
 
-    public List<ReadingPairRef> readingPairs(Long itemId) {
-        return jdbc.query("""
-                SELECT rp.reading_article_id, ar.title, ar.slug, rp.relation_type
-                FROM english_reading_listening_pair rp
-                JOIN english_reading_article ar ON ar.id=rp.reading_article_id
-                WHERE rp.listening_item_id=? ORDER BY rp.sort_order, ar.id
-                """, (rs, row) -> new ReadingPairRef(rs.getLong("reading_article_id"),
-                rs.getString("title"), rs.getString("slug"), rs.getString("relation_type")), itemId);
-    }
 
-    private List<ReadingPairRef> publishedReadingPairs(Long itemId) {
-        return jdbc.query("""
-                SELECT rp.reading_article_id, ar.title, ar.slug, rp.relation_type
-                FROM english_reading_listening_pair rp
-                JOIN english_reading_article ar ON ar.id=rp.reading_article_id
-                WHERE rp.listening_item_id=? AND ar.publish_status='PUBLISHED'
-                ORDER BY rp.sort_order, ar.id
-                """, (rs, row) -> new ReadingPairRef(rs.getLong("reading_article_id"),
-                rs.getString("title"), rs.getString("slug"), rs.getString("relation_type")), itemId);
-    }
 
-    private ListeningSegmentView segmentById(Long itemId, int sortOrder) {
-        return jdbc.queryForObject("""
-                SELECT id,listening_item_id,start_ms,end_ms,transcript_text,translation_text,sort_order,updated_at
-                FROM english_listening_segment WHERE listening_item_id=? AND sort_order=?
-                """, (rs, row) -> mapSegment(rs), itemId, sortOrder);
-    }
 
-    private Integer segmentSort(Long itemId, Long segmentId) {
-        return jdbc.queryForObject(
-                "SELECT sort_order FROM english_listening_segment WHERE id=? AND listening_item_id=?",
-                Integer.class, segmentId, itemId);
-    }
 
-    private ListeningSegmentView mapSegment(ResultSet rs) throws SQLException {
-        return new ListeningSegmentView(rs.getLong("id"), rs.getLong("listening_item_id"),
-                rs.getInt("start_ms"), rs.getInt("end_ms"), rs.getString("transcript_text"),
-                rs.getString("translation_text"), rs.getInt("sort_order"),
-                format(rs.getTimestamp("updated_at")));
-    }
 
-    private com.starrainnotes.english.listening.dto.PronunciationRuleView mapRule(ResultSet rs) throws SQLException {
-        Long id = rs.getLong("id");
-        return new com.starrainnotes.english.listening.dto.PronunciationRuleView(id,
-                rs.getString("rule_type"), rs.getString("title"), rs.getString("slug"), rs.getString("summary"),
-                rs.getString("body_markdown"), nullableLong(rs, "audio_media_id"), rs.getString("audio_url"),
-                rs.getString("publish_status"), rs.getInt("sort_order"),
-                format(rs.getTimestamp("published_at")), format(rs.getTimestamp("updated_at")), null, null);
-    }
+
 
     private ListeningLinkView link(Long id) {
         return jdbc.queryForObject("SELECT title, slug FROM english_listening_item WHERE id=?",
@@ -936,10 +589,6 @@ public class ListeningItemService {
     private ApiException itemNotFound() {
         return new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_LISTENING_ITEM_NOT_FOUND",
                 "Item not found", "The listening material does not exist.");
-    }
-    private ApiException segmentNotFound() {
-        return new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_LISTENING_SEGMENT_NOT_FOUND",
-                "Segment not found", "The segment does not exist for this item.");
     }
     private ApiException slugConflict() {
         return new ApiException(HttpStatus.CONFLICT, "ENGLISH_CONTENT_SLUG_CONFLICT",

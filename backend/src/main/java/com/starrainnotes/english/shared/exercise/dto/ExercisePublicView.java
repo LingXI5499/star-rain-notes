@@ -1,4 +1,4 @@
-package com.starrainnotes.english.reading.dto;
+package com.starrainnotes.english.shared.exercise.dto;
 
 import java.util.Map;
 
@@ -8,8 +8,7 @@ import java.util.Map;
  * ordering / fill answers) is stripped before it reaches an unauthenticated
  * client. Scoring happens server-side against the stored answer.
  */
-@Deprecated
-public record ReadingExercisePublicView(
+public record ExercisePublicView(
         Long id,
         String questionType,
         String promptMarkdown,

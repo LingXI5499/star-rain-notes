@@ -5,9 +5,9 @@ import com.starrainnotes.account.review.service.ContentReviewService;
 import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
 import com.starrainnotes.english.reading.dto.ReadingArticleView;
-import com.starrainnotes.english.reading.dto.ReadingExerciseMoveRequest;
-import com.starrainnotes.english.reading.dto.ReadingExerciseRequest;
-import com.starrainnotes.english.reading.dto.ReadingExerciseView;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseMoveRequest;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseRequest;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
 import com.starrainnotes.english.reading.dto.ReadingPageView;
 import com.starrainnotes.english.reading.application.ReadingCommandService;
 import com.starrainnotes.english.reading.application.ReadingQueryService;
@@ -102,27 +102,27 @@ public class ReadingAdminController {
     }
 
     @GetMapping("/articles/{id}/exercises")
-    public List<ReadingExerciseView> exercises(@PathVariable Long id) {
+    public List<ExerciseView> exercises(@PathVariable Long id) {
         return exerciseService.listByArticle(id);
     }
 
     @PostMapping("/articles/{id}/exercises")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReadingExerciseView createExercise(@PathVariable Long id,
-                                              @Valid @RequestBody ReadingExerciseRequest request) {
+    public ExerciseView createExercise(@PathVariable Long id,
+                                              @Valid @RequestBody ExerciseRequest request) {
         return exerciseService.create(id, request);
     }
 
     @PutMapping("/articles/{id}/exercises/{exerciseId}")
-    public ReadingExerciseView updateExercise(@PathVariable Long id, @PathVariable Long exerciseId,
-                                              @Valid @RequestBody ReadingExerciseRequest request) {
+    public ExerciseView updateExercise(@PathVariable Long id, @PathVariable Long exerciseId,
+                                              @Valid @RequestBody ExerciseRequest request) {
         return exerciseService.update(id, exerciseId, request);
     }
 
     @PostMapping("/articles/{id}/exercises/{exerciseId}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void moveExercise(@PathVariable Long id, @PathVariable Long exerciseId,
-                             @RequestBody ReadingExerciseMoveRequest request) {
+                             @RequestBody ExerciseMoveRequest request) {
         exerciseService.move(id, exerciseId,
                 request.targetIndex() == null ? 0 : request.targetIndex());
     }

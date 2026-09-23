@@ -14,14 +14,19 @@ import com.starrainnotes.english.listening.dto.PronunciationRuleRequest;
 import com.starrainnotes.english.listening.dto.PronunciationRuleView;
 import com.starrainnotes.english.listening.dto.ReadingPairRef;
 import com.starrainnotes.english.listening.dto.ReadingPairRequest;
-import com.starrainnotes.english.listening.service.ListeningExerciseService;
-import com.starrainnotes.english.listening.service.ListeningItemService;
-import com.starrainnotes.english.reading.dto.ReadingCheckAnswerRequest;
-import com.starrainnotes.english.reading.dto.ReadingCheckResultView;
-import com.starrainnotes.english.reading.dto.ReadingExerciseMoveRequest;
-import com.starrainnotes.english.reading.dto.ReadingExercisePublicView;
-import com.starrainnotes.english.reading.dto.ReadingExerciseRequest;
-import com.starrainnotes.english.reading.dto.ReadingExerciseView;
+import com.starrainnotes.english.listening.application.ListeningQueryService;
+import com.starrainnotes.english.listening.application.ListeningCommandService;
+import com.starrainnotes.english.listening.application.ListeningSegmentService;
+import com.starrainnotes.english.listening.application.ListeningRelationService;
+import com.starrainnotes.english.listening.application.PronunciationRuleQueryService;
+import com.starrainnotes.english.listening.application.PronunciationRuleCommandService;
+import com.starrainnotes.english.listening.application.ListeningExerciseApplicationService;
+import com.starrainnotes.english.shared.exercise.dto.CheckAnswerRequest;
+import com.starrainnotes.english.shared.exercise.dto.CheckResultView;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseMoveRequest;
+import com.starrainnotes.english.shared.exercise.dto.ExercisePublicView;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseRequest;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -46,13 +51,26 @@ import java.util.List;
 @RequestMapping("/api/v1/admin/english/listening")
 public class ListeningAdminController {
 
-    private final ListeningItemService itemService;
-    private final ListeningExerciseService exerciseService;
+    private final ListeningQueryService queries;
+    private final ListeningCommandService commands;
+    private final ListeningSegmentService segments;
+    private final ListeningRelationService relations;
+    private final PronunciationRuleQueryService pronunciationQueries;
+    private final PronunciationRuleCommandService pronunciationCommands;
+    private final ListeningExerciseApplicationService exerciseService;
     private final ContentReviewService reviewService;
 
-    public ListeningAdminController(ListeningItemService itemService, ListeningExerciseService exerciseService,
-                                    ContentReviewService reviewService) {
-        this.itemService = itemService;
+    public ListeningAdminController(ListeningQueryService queries, ListeningCommandService commands,
+            ListeningSegmentService segments, ListeningRelationService relations,
+            PronunciationRuleQueryService pronunciationQueries,
+            PronunciationRuleCommandService pronunciationCommands,
+            ListeningExerciseApplicationService exerciseService, ContentReviewService reviewService) {
+        this.queries = queries;
+        this.commands = commands;
+        this.segments = segments;
+        this.relations = relations;
+        this.pronunciationQueries = pronunciationQueries;
+        this.pronunciationCommands = pronunciationCommands;
         this.exerciseService = exerciseService;
         this.reviewService = reviewService;
     }
@@ -67,18 +85,18 @@ public class ListeningAdminController {
                                   @RequestParam(required = false) Long topic,
                                   @RequestParam(required = false) Long scene,
                                   @RequestParam(required = false) Long format) {
-        return itemService.list(page, pageSize, q, status, level, cefr, topic, scene, format);
+        return queries.list(page, pageSize, q, status, level, cefr, topic, scene, format);
     }
 
     @PostMapping("/items")
     @ResponseStatus(HttpStatus.CREATED)
     public ListeningItemView create(@Valid @RequestBody ListeningItemRequest request) {
-        return itemService.create(request);
+        return commands.create(request);
     }
 
     @GetMapping("/items/{id}")
     public ListeningItemView get(@PathVariable Long id) {
-        return itemService.get(id);
+        return queries.get(id);
     }
 
     @PutMapping("/items/{id}")
@@ -89,78 +107,78 @@ public class ListeningAdminController {
                     "ENGLISH_LISTENING_ITEM", id, request.title(), request);
             return ResponseEntity.accepted().body(review);
         }
-        return ResponseEntity.ok(itemService.update(id, request));
+        return ResponseEntity.ok(commands.update(id, request));
     }
 
     @DeleteMapping("/items/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        itemService.delete(id);
+        commands.delete(id);
     }
 
     @PostMapping("/items/{id}/publish")
     public ListeningItemView publish(@PathVariable Long id) {
-        return itemService.publish(id);
+        return commands.publish(id);
     }
 
     @PostMapping("/items/{id}/withdraw")
     public ListeningItemView withdraw(@PathVariable Long id) {
-        return itemService.withdraw(id);
+        return commands.withdraw(id);
     }
 
     // segments
     @GetMapping("/items/{id}/segments")
     public List<ListeningSegmentView> segments(@PathVariable Long id) {
-        return itemService.segments(id);
+        return segments.list(id);
     }
 
     @PostMapping("/items/{id}/segments")
     @ResponseStatus(HttpStatus.CREATED)
     public ListeningSegmentView createSegment(@PathVariable Long id, @Valid @RequestBody ListeningSegmentRequest request) {
-        return itemService.createSegment(id, request);
+        return segments.create(id, request);
     }
 
     @PutMapping("/items/{id}/segments/{segmentId}")
     public ListeningSegmentView updateSegment(@PathVariable Long id, @PathVariable Long segmentId,
                                               @Valid @RequestBody ListeningSegmentRequest request) {
-        return itemService.updateSegment(id, segmentId, request);
+        return segments.update(id, segmentId, request);
     }
 
     @DeleteMapping("/items/{id}/segments/{segmentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteSegment(@PathVariable Long id, @PathVariable Long segmentId) {
-        itemService.deleteSegment(id, segmentId);
+        segments.delete(id, segmentId);
     }
 
     @PostMapping("/items/{id}/segments/{segmentId}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void moveSegment(@PathVariable Long id, @PathVariable Long segmentId,
                             @RequestBody ListeningMoveRequest request) {
-        itemService.moveSegment(id, segmentId,
+        segments.move(id, segmentId,
                 request.targetIndex() == null ? 0 : request.targetIndex());
     }
 
     @PutMapping("/items/{id}/segments/batch")
     public List<ListeningSegmentView> batchSegments(@PathVariable Long id,
                                                     @RequestBody ListeningSegmentBatchRequest request) {
-        return itemService.batchSegments(id, request.segments());
+        return segments.replaceBatch(id, request.segments());
     }
 
     // exercises
     @GetMapping("/items/{id}/exercises")
-    public List<ReadingExerciseView> exercises(@PathVariable Long id) {
+    public List<ExerciseView> exercises(@PathVariable Long id) {
         return exerciseService.listByItem(id);
     }
 
     @PostMapping("/items/{id}/exercises")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReadingExerciseView createExercise(@PathVariable Long id, @Valid @RequestBody ReadingExerciseRequest request) {
+    public ExerciseView createExercise(@PathVariable Long id, @Valid @RequestBody ExerciseRequest request) {
         return exerciseService.create(id, request);
     }
 
     @PutMapping("/items/{id}/exercises/{exerciseId}")
-    public ReadingExerciseView updateExercise(@PathVariable Long id, @PathVariable Long exerciseId,
-                                              @Valid @RequestBody ReadingExerciseRequest request) {
+    public ExerciseView updateExercise(@PathVariable Long id, @PathVariable Long exerciseId,
+                                              @Valid @RequestBody ExerciseRequest request) {
         return exerciseService.update(id, exerciseId, request);
     }
 
@@ -173,43 +191,43 @@ public class ListeningAdminController {
     @PostMapping("/items/{id}/exercises/{exerciseId}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void moveExercise(@PathVariable Long id, @PathVariable Long exerciseId,
-                             @RequestBody ReadingExerciseMoveRequest request) {
+                             @RequestBody ExerciseMoveRequest request) {
         exerciseService.move(id, exerciseId, request.targetIndex() == null ? 0 : request.targetIndex());
     }
 
     // reading pairs
     @GetMapping("/items/{id}/reading-pairs")
     public List<ReadingPairRef> readingPairs(@PathVariable Long id) {
-        return itemService.readingPairs(id);
+        return relations.readingPairs(id);
     }
 
     @PostMapping("/items/{id}/reading-pairs")
     @ResponseStatus(HttpStatus.CREATED)
     public void addReadingPair(@PathVariable Long id, @Valid @RequestBody ReadingPairRequest request) {
-        itemService.addReadingPair(id, request);
+        relations.addReadingPair(id, request);
     }
 
     @DeleteMapping("/items/{id}/reading-pairs/{readingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeReadingPair(@PathVariable Long id, @PathVariable Long readingId) {
-        itemService.removeReadingPair(id, readingId);
+        relations.removeReadingPair(id, readingId);
     }
 
     // pronunciation rules
     @GetMapping("/pronunciation")
     public List<PronunciationRuleView> rules() {
-        return itemService.pronunciationRules(false);
+        return pronunciationQueries.list(false);
     }
 
     @PostMapping("/pronunciation")
     @ResponseStatus(HttpStatus.CREATED)
     public PronunciationRuleView createRule(@Valid @RequestBody PronunciationRuleRequest request) {
-        return itemService.createRule(request);
+        return pronunciationCommands.create(request);
     }
 
     @GetMapping("/pronunciation/{id}")
     public PronunciationRuleView rule(@PathVariable Long id) {
-        return itemService.ruleById(id, false);
+        return pronunciationQueries.get(id);
     }
 
     @PutMapping("/pronunciation/{id}")
@@ -220,29 +238,29 @@ public class ListeningAdminController {
                     "ENGLISH_PRONUNCIATION_RULE", id, request.title(), request);
             return ResponseEntity.accepted().body(review);
         }
-        return ResponseEntity.ok(itemService.updateRule(id, request));
+        return ResponseEntity.ok(pronunciationCommands.update(id, request));
     }
 
     @DeleteMapping("/pronunciation/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteRule(@PathVariable Long id) {
-        itemService.deleteRule(id);
+        pronunciationCommands.delete(id);
     }
 
     @PostMapping("/pronunciation/{id}/publish")
     public PronunciationRuleView publishRule(@PathVariable Long id) {
-        return itemService.publishRule(id);
+        return pronunciationCommands.publish(id);
     }
 
     @PostMapping("/pronunciation/{id}/withdraw")
     public PronunciationRuleView withdrawRule(@PathVariable Long id) {
-        return itemService.withdrawRule(id);
+        return pronunciationCommands.withdraw(id);
     }
 
     @PostMapping("/pronunciation/{id}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void moveRule(@PathVariable Long id, @RequestBody ListeningMoveRequest request) {
-        itemService.moveRule(id, request.targetIndex() == null ? 0 : request.targetIndex());
+        pronunciationCommands.move(id, request.targetIndex() == null ? 0 : request.targetIndex());
     }
 
     private boolean isSuperAdmin(Authentication authentication) {

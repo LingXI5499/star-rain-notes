@@ -3,8 +3,8 @@ package com.starrainnotes.english.writing.controller;
 import com.starrainnotes.account.review.dto.ContentReviewView;
 import com.starrainnotes.account.review.service.ContentReviewService;
 import com.starrainnotes.account.security.AccountPrincipal;
-import com.starrainnotes.english.reading.dto.ReadingExerciseRequest;
-import com.starrainnotes.english.reading.dto.ReadingExerciseView;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseRequest;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
 import com.starrainnotes.english.writing.dto.WritingMoveRequest;
 import com.starrainnotes.english.writing.dto.WritingPageView;
 import com.starrainnotes.english.writing.dto.WritingPromptRequest;
@@ -165,21 +165,21 @@ public class WritingAdminController {
     }
 
     @GetMapping("/prompts/{id}/exercises")
-    public List<ReadingExerciseView> exercises(@PathVariable Long id) {
+    public List<ExerciseView> exercises(@PathVariable Long id) {
         return exercises.list(id);
     }
 
     @PostMapping("/prompts/{id}/exercises")
     @ResponseStatus(HttpStatus.CREATED)
-    public ReadingExerciseView createExercise(@PathVariable Long id,
-                                              @Valid @RequestBody ReadingExerciseRequest request) {
+    public ExerciseView createExercise(@PathVariable Long id,
+                                              @Valid @RequestBody ExerciseRequest request) {
         return exercises.create(id, request);
     }
 
     @PutMapping("/prompts/{id}/exercises/{exerciseId}")
-    public ReadingExerciseView updateExercise(@PathVariable Long id,
+    public ExerciseView updateExercise(@PathVariable Long id,
                                               @PathVariable Long exerciseId,
-                                              @Valid @RequestBody ReadingExerciseRequest request) {
+                                              @Valid @RequestBody ExerciseRequest request) {
         return exercises.update(id, exerciseId, request);
     }
 

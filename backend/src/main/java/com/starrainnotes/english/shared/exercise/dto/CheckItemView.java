@@ -1,7 +1,6 @@
-package com.starrainnotes.english.reading.dto;
+package com.starrainnotes.english.shared.exercise.dto;
 
-@Deprecated
-public record ReadingCheckItemView(
+public record CheckItemView(
         Long exerciseId,
         boolean correct,
         int earned,

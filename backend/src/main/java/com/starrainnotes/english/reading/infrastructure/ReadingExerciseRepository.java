@@ -4,8 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.english.reading.dto.ReadingExercisePublicView;
-import com.starrainnotes.english.reading.dto.ReadingExerciseView;
+import com.starrainnotes.english.shared.exercise.dto.ExercisePublicView;
+import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
 import com.starrainnotes.english.reading.domain.ReadingContentPort;
 import com.starrainnotes.english.shared.exercise.entity.EnglishExercise;
 import com.starrainnotes.english.shared.exercise.mapper.EnglishExerciseMapper;
@@ -49,7 +49,7 @@ public class ReadingExerciseRepository {
         jdbc.update("DELETE FROM english_reading_article_exercise WHERE article_id=? AND exercise_id=?",
                 articleId, exerciseId);
     }
-    public List<ReadingExerciseView> listByArticle(Long articleId) {
+    public List<ExerciseView> listByArticle(Long articleId) {
         return jdbc.query("""
                 SELECT e.id,e.question_type,e.prompt_markdown,e.config_json,e.explanation_markdown,
                        e.score_value,e.sort_order,e.publish_status,e.updated_at
@@ -76,7 +76,7 @@ public class ReadingExerciseRepository {
         }
     }
 
-    public List<ReadingExercisePublicView> publicListPublished(Long articleId) {
+    public List<ExercisePublicView> publicListPublished(Long articleId) {
         return jdbc.query("""
                 SELECT e.id,e.question_type,e.prompt_markdown,e.config_json,e.score_value,e.sort_order
                 FROM english_reading_article_exercise ae
@@ -90,18 +90,18 @@ public class ReadingExerciseRepository {
         return safety.sanitize(questionType, config, exerciseId);
     }
 
-    private ReadingExercisePublicView toPublic(java.sql.ResultSet rs) throws java.sql.SQLException {
+    private ExercisePublicView toPublic(java.sql.ResultSet rs) throws java.sql.SQLException {
         JsonNode config = readConfig(rs.getString("config_json"));
         long id = rs.getLong("id");
         String questionType = rs.getString("question_type");
-        return new ReadingExercisePublicView(id, questionType,
+        return new ExercisePublicView(id, questionType,
                 rs.getString("prompt_markdown"), sanitize(id, questionType, config), rs.getInt("score_value"),
                 rs.getInt("sort_order"));
     }
 
-    private ReadingExerciseView mapAdmin(java.sql.ResultSet rs, Long articleId) throws java.sql.SQLException {
+    private ExerciseView mapAdmin(java.sql.ResultSet rs, Long articleId) throws java.sql.SQLException {
         JsonNode config = readConfig(rs.getString("config_json"));
-        return new ReadingExerciseView(rs.getLong("id"), articleId, rs.getString("question_type"),
+        return new ExerciseView(rs.getLong("id"), articleId, rs.getString("question_type"),
                 rs.getString("prompt_markdown"), objectMapper.convertValue(config,
                 new TypeReference<>() { }), rs.getString("explanation_markdown"), rs.getInt("score_value"),
                 rs.getInt("sort_order"), rs.getString("publish_status"),
@@ -116,7 +116,7 @@ public class ReadingExerciseRepository {
         }
     }
 
-    public ReadingExerciseView adminView(Long exerciseId, Long articleId) {
+    public ExerciseView adminView(Long exerciseId, Long articleId) {
         return jdbc.queryForObject("""
                 SELECT e.id,e.question_type,e.prompt_markdown,e.config_json,e.explanation_markdown,
                        e.score_value,e.sort_order,e.publish_status,e.updated_at
