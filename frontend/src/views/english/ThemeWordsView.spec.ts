@@ -22,7 +22,7 @@ const word = (id: number) => ({
 })
 
 vi.mock('@/api/vocabulary', () => ({
-  fetchVocabularyLayers: vi.fn(async () => [{ layer: '基础通用词层B', layerOrder: 1, themes: [{ id: 8, name: '天气', wordCount: 2 }] }]),
+  fetchVocabularyLayers: vi.fn(async () => [{ layer: '基础通用词层', layerOrder: 1, themes: [{ id: 8, name: '天气', wordCount: 2 }] }]),
   fetchThemeWords: vi.fn(async () => ({ items: [word(1), word(2)], total: 2, page: 1, pageSize: 24, totalPages: 1 })),
   fetchVocabularyStates: vi.fn(async () => ({})),
   fetchVocabularySettings: vi.fn(async () => ({ showEnglish: true, showChinese: true, reviewDirection: 'MIXED', dailyNewLimit: 20, dailyReviewLimit: 200 })),

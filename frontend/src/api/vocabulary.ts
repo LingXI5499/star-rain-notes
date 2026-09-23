@@ -44,6 +44,7 @@ export interface VocabularyWord {
   phoneticUs: string | null
   phoneticUk: string | null
   translation: string
+  sceneMeaning?: string | null
   inflections: string | null
   examples: VocabularyExample[]
   memoryCount: number
@@ -112,7 +113,11 @@ export interface VocabularyPage {
 }
 
 export interface UpdateVocabularyWordPayload {
+  themeId?: number
+  partOfSpeech?: string
+  word?: string
   translation: string
+  sceneMeaning?: string | null
   phoneticUs?: string | null
   phoneticUk?: string | null
   inflections?: string | null
@@ -353,6 +358,7 @@ export function overlayVocabularyMemory(words: VocabularyWord[], memory: Record<
 
 export async function fetchAdminWords(params: {
   themeId?: number
+  layerOrder?: number
   q?: string
   page?: number
   pageSize?: number
@@ -361,9 +367,49 @@ export async function fetchAdminWords(params: {
   return data
 }
 
+export interface VocabularyThemePayload {
+  layerOrder: number
+  name: string
+  sortOrder?: number | null
+}
+
+export async function createAdminTheme(payload: VocabularyThemePayload): Promise<VocabularyTheme> {
+  const { data } = await http.post<VocabularyTheme>('/admin/vocabulary/themes', payload)
+  return data
+}
+
+export async function updateAdminTheme(themeId: number, payload: VocabularyThemePayload): Promise<VocabularyTheme> {
+  const { data } = await http.put<VocabularyTheme>(`/admin/vocabulary/themes/${themeId}`, payload)
+  return data
+}
+
+export async function deleteAdminTheme(themeId: number): Promise<void> {
+  await http.delete(`/admin/vocabulary/themes/${themeId}`)
+}
+
+export interface CreateVocabularyWordPayload {
+  themeId: number
+  partOfSpeech?: string | null
+  word: string
+  phoneticUs?: string | null
+  phoneticUk?: string | null
+  translation: string
+  sceneMeaning?: string | null
+  inflections?: string | null
+}
+
+export async function createAdminWord(payload: CreateVocabularyWordPayload): Promise<VocabularyWord> {
+  const { data } = await http.post<VocabularyWord>('/admin/vocabulary/words', payload)
+  return data
+}
+
 export async function updateAdminWord(wordId: number, payload: UpdateVocabularyWordPayload): Promise<VocabularyWord> {
   const { data } = await http.put<VocabularyWord>(`/admin/vocabulary/words/${wordId}`, payload)
   return data
+}
+
+export async function deleteAdminWord(wordId: number): Promise<void> {
+  await http.delete(`/admin/vocabulary/words/${wordId}`)
 }
 
 export async function addAdminExample(

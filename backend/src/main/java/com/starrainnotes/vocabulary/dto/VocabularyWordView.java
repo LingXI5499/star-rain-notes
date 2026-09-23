@@ -16,6 +16,7 @@ public record VocabularyWordView(
         String phoneticUs,
         String phoneticUk,
         String translation,
+        String sceneMeaning,
         String inflections,
         List<VocabularyExample> examples,
         int memoryCount,

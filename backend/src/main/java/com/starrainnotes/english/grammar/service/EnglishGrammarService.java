@@ -35,6 +35,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Transactional(readOnly = true)
 public class EnglishGrammarService {
 
     private static final long COURSE_ID = 1L;

@@ -2,58 +2,40 @@
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { fetchVocabularyLayers, type VocabularyLayer } from '@/api/vocabulary'
-import { vocabularyFamilyName, vocabularyLayerTag } from '@/lib/vocabularyLayers'
+import { vocabularyGroupName } from '@/lib/vocabularyLayers'
 
 interface ThemeCard {
   id: number
   name: string
   wordCount: number
-  layer: string
-  layerTag: string
 }
 
-interface FamilyGroup {
-  family: string
-  order: number
+interface VocabularyGroup {
+  name: string
   themes: ThemeCard[]
 }
 
 /**
- * Vocabulary catalog: parent-family chips (ABC layers merged) + themed card grid.
+ * Vocabulary catalog: six canonical taxonomy groups and their themed cards.
  */
 const layers = ref<VocabularyLayer[]>([])
 const loading = ref(true)
 const error = ref(false)
-const activeFamily = ref('')
+const activeGroup = ref('')
 
-const families = computed((): FamilyGroup[] => {
-  const map = new Map<string, FamilyGroup>()
-  for (const layer of layers.value) {
-    const family = vocabularyFamilyName(layer.layer)
-    const existing = map.get(family)
-    const themes = layer.themes.map((theme) => ({
-      id: theme.id,
-      name: theme.name,
-      wordCount: theme.wordCount,
-      layer: layer.layer,
-      layerTag: vocabularyLayerTag(layer.layer),
-    }))
-    if (existing) {
-      existing.order = Math.min(existing.order, layer.layerOrder)
-      existing.themes.push(...themes)
-    } else {
-      map.set(family, { family, order: layer.layerOrder, themes: [...themes] })
-    }
-  }
-  return [...map.values()].sort((a, b) => a.order - b.order || a.family.localeCompare(b.family, 'zh'))
+const groups = computed((): VocabularyGroup[] => {
+  return layers.value.map((layer) => ({
+    name: vocabularyGroupName(layer.layer),
+    themes: layer.themes.map(({ id, name, wordCount }) => ({ id, name, wordCount })),
+  }))
 })
 
-const visibleFamilies = computed(() =>
-  activeFamily.value ? families.value.filter((item) => item.family === activeFamily.value) : families.value,
+const visibleGroups = computed(() =>
+  activeGroup.value ? groups.value.filter((item) => item.name === activeGroup.value) : groups.value,
 )
 
 const totalWords = computed(() =>
-  families.value.reduce((sum, family) => sum + family.themes.reduce((n, theme) => n + theme.wordCount, 0), 0),
+  groups.value.reduce((sum, group) => sum + group.themes.reduce((n, theme) => n + theme.wordCount, 0), 0),
 )
 
 onMounted(async () => {
@@ -73,7 +55,7 @@ onMounted(async () => {
       <p class="vocab__eyebrow">VOCABULARY · THEMED</p>
       <h1 class="vocab__title">词汇</h1>
       <p class="vocab__subtitle">
-        按主题分类的英语词汇库 · {{ families.length }} 个词类 / {{ totalWords }} 词
+        按主题分类的英语词汇库 · {{ groups.length }} 个分类组 / {{ totalWords.toLocaleString() }} 条分类词汇
       </p>
     </header>
 
@@ -89,33 +71,32 @@ onMounted(async () => {
         <button
           type="button"
           class="vocab__chip"
-          :class="{ 'vocab__chip--active': activeFamily === '' }"
-          @click="activeFamily = ''"
+          :class="{ 'vocab__chip--active': activeGroup === '' }"
+          @click="activeGroup = ''"
         >
           全部
         </button>
         <button
-          v-for="family in families"
-          :key="family.family"
+          v-for="group in groups"
+          :key="group.name"
           type="button"
           class="vocab__chip"
-          :class="{ 'vocab__chip--active': activeFamily === family.family }"
-          @click="activeFamily = family.family"
+          :class="{ 'vocab__chip--active': activeGroup === group.name }"
+          @click="activeGroup = group.name"
         >
-          {{ family.family }}
+          {{ group.name }}
         </button>
       </div>
 
-      <div v-for="family in visibleFamilies" :key="family.family" class="vocab__group">
-        <h2 v-if="visibleFamilies.length > 1" class="vocab__group-title">{{ family.family }}</h2>
+      <div v-for="group in visibleGroups" :key="group.name" class="vocab__group">
+        <h2 v-if="visibleGroups.length > 1" class="vocab__group-title">{{ group.name }}</h2>
         <div class="vocab__grid">
           <RouterLink
-            v-for="theme in family.themes"
+            v-for="theme in group.themes"
             :key="theme.id"
             :to="`/english/vocabulary/${theme.id}`"
             class="vocab__card"
           >
-            <span class="vocab__card-layer">{{ theme.layerTag }}</span>
             <span class="vocab__card-name">{{ theme.name }}</span>
             <span class="vocab__card-count">{{ theme.wordCount }} 词</span>
           </RouterLink>
@@ -235,12 +216,6 @@ onMounted(async () => {
 
 .vocab__card:hover {
   border-color: var(--primary);
-}
-
-.vocab__card-layer {
-  font-size: 12px;
-  color: var(--accent);
-  letter-spacing: 0.06em;
 }
 
 .vocab__card-name {

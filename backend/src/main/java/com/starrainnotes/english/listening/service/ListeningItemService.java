@@ -46,6 +46,7 @@ import java.util.Set;
  * normalized to 10/20/30 via a two-phase temporary value.</p>
  */
 @Service
+@Transactional(readOnly = true)
 public class ListeningItemService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;

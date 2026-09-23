@@ -15,9 +15,8 @@ import java.util.List;
  * One vocabulary entry (approved table {@code vocabulary_word}).
  *
  * <p>{@code examples} is a JSON array of {@link VocabularyExample} added by
- * the admin; {@code memory_count} / {@code last_memory_at} are the personal
- * memory record — incremented manually from the public card (+1) and
- * correctable from the admin panel.</p>
+ * the admin. The legacy {@code memory_count} and {@code last_memory_at}
+ * columns are distinct from account and browser-local study progress.</p>
  */
 @TableName(value = "vocabulary_word", autoResultMap = true)
 public class VocabularyWord {
@@ -27,9 +26,14 @@ public class VocabularyWord {
     private Long themeId;
     private String partOfSpeech;
     private String word;
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String phoneticUs;
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String phoneticUk;
     private String translation;
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
+    private String sceneMeaning;
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String inflections;
     @TableField(typeHandler = JacksonTypeHandler.class)
     private List<VocabularyExample> examples = new ArrayList<>();
@@ -95,6 +99,14 @@ public class VocabularyWord {
 
     public void setTranslation(String translation) {
         this.translation = translation;
+    }
+
+    public String getSceneMeaning() {
+        return sceneMeaning;
+    }
+
+    public void setSceneMeaning(String sceneMeaning) {
+        this.sceneMeaning = sceneMeaning;
     }
 
     public String getInflections() {
