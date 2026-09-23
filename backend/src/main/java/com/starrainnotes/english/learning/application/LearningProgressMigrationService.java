@@ -1,6 +1,7 @@
 package com.starrainnotes.english.learning.application;
 
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.vocabulary.learning.application.VocabularyStudyCommandService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +25,7 @@ public class LearningProgressMigrationService {
             long wordId=longValue(entry.getKey()); Object memory=entry.getValue();
             if(wordId>0&&memory instanceof Map<?,?> values) {
                 Object count = values.get("memoryCount");
-                vocabulary.putMemory(accountId,wordId,Math.max(0,count instanceof Number n?n.intValue():1));
+                vocabulary.putMemoryCount(accountId,wordId,Math.max(0,count instanceof Number n?n.intValue():1));
             }
         }
         Object rawRecords=payload==null?null:payload.get("learningRecords");

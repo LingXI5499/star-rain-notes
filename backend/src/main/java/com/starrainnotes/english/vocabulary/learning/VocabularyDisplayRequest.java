@@ -1,4 +1,4 @@
-package com.starrainnotes.english.learning.vocabulary;
+package com.starrainnotes.english.vocabulary.learning;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;

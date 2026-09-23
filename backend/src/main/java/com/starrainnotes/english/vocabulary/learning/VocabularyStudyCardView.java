@@ -1,4 +1,4 @@
-package com.starrainnotes.english.learning.vocabulary;
+package com.starrainnotes.english.vocabulary.learning;
 
 import com.starrainnotes.english.vocabulary.dto.VocabularyWordView;
 
