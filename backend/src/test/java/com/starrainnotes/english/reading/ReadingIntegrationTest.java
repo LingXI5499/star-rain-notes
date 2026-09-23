@@ -37,6 +37,7 @@ class ReadingIntegrationTest extends AbstractAuthIntegrationTest {
     void cleanup() {
         jdbc.update("DELETE FROM english_reading_article");
         jdbc.update("DELETE FROM english_exercise WHERE module_type='READING'");
+        jdbc.update("DELETE FROM media_asset WHERE stored_name LIKE 'reading-test-%'");
         jdbc.update("DELETE FROM admin_user");
     }
 
@@ -61,6 +62,28 @@ class ReadingIntegrationTest extends AbstractAuthIntegrationTest {
         assertThat(body.get("wordCount").asInt()).isEqualTo(8);
         assertThat(body.get("estimatedMinutes").asInt()).isEqualTo(1);
         assertThat(body.get("publishStatus").asText()).isEqualTo("DRAFT");
+    }
+
+    @Test
+    void coverUrlStillAppearsInDetailAndList() throws Exception {
+        Auth auth = login();
+        jdbc.update("""
+                INSERT INTO media_asset(asset_type,original_name,stored_name,mime_type,extension,
+                                        size_bytes,storage_path,public_url)
+                VALUES('IMAGE','cover.png','reading-test-cover','image/png','png',1,
+                       'reading-test-cover.png','/media/reading-test-cover.png')
+                """);
+        long coverId = jdbc.queryForObject(
+                "SELECT id FROM media_asset WHERE stored_name='reading-test-cover'", Long.class);
+        String payload = articleJson("test-cover", "A covered article.", 1, "A1")
+                .replace("\"abilityTagIds\":[24]}", "\"abilityTagIds\":[24],\"coverMediaId\":" + coverId + "}");
+        long articleId = createArticleRaw(auth, payload);
+        mockMvc.perform(get("/api/v1/admin/english/reading/articles/" + articleId).session(auth.session()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.coverUrl").value("/media/reading-test-cover.png"));
+        mockMvc.perform(get("/api/v1/admin/english/reading/articles").session(auth.session()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.items[0].coverUrl").value("/media/reading-test-cover.png"));
     }
 
     @Test
@@ -132,6 +155,26 @@ class ReadingIntegrationTest extends AbstractAuthIntegrationTest {
                 .session(auth.session()), auth.csrf())).andExpect(status().isOk());
         mockMvc.perform(get("/api/v1/public/english/reading/articles/test-live"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void publicDetailKeepsNavigationLimitedToPublishedArticles() throws Exception {
+        Auth auth = login();
+        long first = createArticle(auth, "test-nav-first", "First article.", 1, "A1");
+        createArticle(auth, "test-nav-draft", "Draft article.", 1, "A1");
+        long last = createArticle(auth, "test-nav-last", "Last article.", 1, "A1");
+        for (long id : new long[]{first, last}) {
+            mockMvc.perform(withCsrf(post("/api/v1/admin/english/reading/articles/" + id + "/publish")
+                    .session(auth.session()), auth.csrf())).andExpect(status().isOk());
+        }
+        mockMvc.perform(get("/api/v1/public/english/reading/articles/test-nav-first"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.previous").doesNotExist())
+                .andExpect(jsonPath("$.next.slug").value("test-nav-last"));
+        mockMvc.perform(get("/api/v1/public/english/reading/articles/test-nav-last"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.previous.slug").value("test-nav-first"))
+                .andExpect(jsonPath("$.next").doesNotExist());
     }
 
     @Test
