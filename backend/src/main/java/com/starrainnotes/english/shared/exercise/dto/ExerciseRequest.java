@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
- * Create/update payload for a reading exercise bound to one article.
+ * Create/update payload for an exercise bound to one content item.
  * {@code configJson} is validated by the shared exercise service per question
  * type before persistence.
  */

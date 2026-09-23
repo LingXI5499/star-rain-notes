@@ -7,7 +7,7 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 /**
- * Public answer submission for one article's exercises. Only published
+ * Public answer submission for one content item's exercises. Only published
  * exercises are scored; the result is returned with per-item explanations.
  */
 public record CheckAnswerRequest(
