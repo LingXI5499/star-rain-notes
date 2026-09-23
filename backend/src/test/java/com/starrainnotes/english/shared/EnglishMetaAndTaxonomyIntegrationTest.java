@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -91,6 +92,31 @@ class EnglishMetaAndTaxonomyIntegrationTest extends AbstractAuthIntegrationTest 
                                 + ",\"name\":\"test-fn\",\"slug\":\"test-fn\"}"), auth.csrf()))
                 .andExpect(status().isUnprocessableEntity())
                 .andExpect(jsonPath("$.code").value("ENGLISH_TAXONOMY_DEPTH_INVALID"));
+    }
+
+    @Test
+    void updatePreservesHierarchyAndSlugRules() throws Exception {
+        Auth auth = login();
+        long root = createTerm(auth, "TOPIC", null, "test-root", "test-root");
+        createTerm(auth, "TOPIC", root, "test-child", "test-child");
+        createTerm(auth, "TOPIC", null, "test-other", "test-other");
+
+        mockMvc.perform(withCsrf(put("/api/v1/admin/english/taxonomy/" + root)
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"dimension\":\"FUNCTION\",\"name\":\"test-root\",\"slug\":\"test-root\"}"), auth.csrf()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code").value("ENGLISH_TAXONOMY_DEPTH_INVALID"));
+        mockMvc.perform(withCsrf(put("/api/v1/admin/english/taxonomy/" + root)
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"dimension\":\"TOPIC\",\"parentId\":" + root
+                                + ",\"name\":\"test-root\",\"slug\":\"test-root\"}"), auth.csrf()))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(jsonPath("$.code").value("ENGLISH_TAXONOMY_DEPTH_INVALID"));
+        mockMvc.perform(withCsrf(put("/api/v1/admin/english/taxonomy/" + root)
+                        .session(auth.session()).contentType("application/json")
+                        .content("{\"dimension\":\"TOPIC\",\"name\":\"test-root\",\"slug\":\"test-other\"}"), auth.csrf()))
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.code").value("ENGLISH_CONTENT_SLUG_CONFLICT"));
     }
 
     @Test
