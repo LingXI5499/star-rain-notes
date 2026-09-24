@@ -1,7 +1,8 @@
 package com.starrainnotes.account.english.controller;
 
 import com.starrainnotes.account.service.AccountSessionService;
-import com.starrainnotes.english.learning.application.EnglishLearningFacade;
+import com.starrainnotes.english.api.EnglishLearningFacade;
+import com.starrainnotes.english.api.EnglishVocabularyFacade;
 import com.starrainnotes.english.vocabulary.learning.VocabularyDisplayRequest;
 import com.starrainnotes.english.vocabulary.learning.VocabularyMemoryView;
 import com.starrainnotes.english.vocabulary.learning.VocabularyProgressView;
@@ -32,10 +33,13 @@ import java.util.Map;
 public class AccountEnglishController {
 
     private final EnglishLearningFacade english;
+    private final EnglishVocabularyFacade vocabulary;
     private final AccountSessionService sessions;
 
-    public AccountEnglishController(EnglishLearningFacade english, AccountSessionService sessions) {
+    public AccountEnglishController(EnglishLearningFacade english, EnglishVocabularyFacade vocabulary,
+                                    AccountSessionService sessions) {
         this.english = english;
+        this.vocabulary = vocabulary;
         this.sessions = sessions;
     }
 
@@ -81,75 +85,75 @@ public class AccountEnglishController {
 
     @GetMapping("/vocabulary/memory")
     public List<Map<String, Object>> vocabularyMemory() {
-        return english.vocabularyMemory(accountId());
+        return vocabulary.memorySnapshot(accountId());
     }
 
     @PutMapping("/vocabulary/words/{wordId}/memory")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void putMemory(@PathVariable Long wordId, @RequestBody Map<String, Object> body) {
-        english.putVocabularyMemory(accountId(), wordId,
+        vocabulary.putMemoryCount(accountId(), wordId,
                 body.get("memoryCount") == null ? 1 : ((Number) body.get("memoryCount")).intValue());
     }
 
     @GetMapping("/vocabulary/settings")
     public VocabularyStudySettingsView vocabularySettings() {
-        return english.vocabularySettings(accountId());
+        return vocabulary.settings(accountId());
     }
 
     @PutMapping("/vocabulary/settings")
     public VocabularyStudySettingsView updateVocabularySettings(
             @Valid @RequestBody VocabularyStudySettingsRequest request) {
-        return english.updateVocabularySettings(accountId(), request);
+        return vocabulary.updateSettings(accountId(), request);
     }
 
     @GetMapping("/vocabulary/states")
     public List<VocabularyMemoryView> vocabularyStates(@RequestParam("wordId") List<Long> wordIds) {
-        return english.vocabularyStates(accountId(), wordIds);
+        return vocabulary.memories(accountId(), wordIds);
     }
 
     @GetMapping("/vocabulary/review-queue")
     public VocabularyQueueView vocabularyReviewQueue(@RequestParam(required = false) Long themeId) {
-        return english.vocabularyReviewQueue(accountId(), themeId);
+        return vocabulary.queue(accountId(), themeId);
     }
 
     @PostMapping("/vocabulary/words/{wordId}/start")
     public VocabularyMemoryView startVocabularyWord(@PathVariable long wordId) {
-        return english.startVocabularyWord(accountId(), wordId);
+        return vocabulary.start(accountId(), wordId);
     }
 
     @PostMapping("/vocabulary/words/{wordId}/reviews")
     public VocabularyReviewResultView reviewVocabularyWord(
             @PathVariable long wordId, @Valid @RequestBody VocabularyReviewRequest request) {
-        return english.reviewVocabularyWord(accountId(), wordId, request);
+        return vocabulary.completeReview(accountId(), wordId, request);
     }
 
     @DeleteMapping("/vocabulary/words/{wordId}/progress")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void resetVocabularyWord(@PathVariable long wordId) {
-        english.resetVocabularyWord(accountId(), wordId);
+        vocabulary.reset(accountId(), wordId);
     }
 
     @PutMapping("/vocabulary/words/{wordId}/display")
     public VocabularyMemoryView setVocabularyDisplay(
             @PathVariable long wordId, @Valid @RequestBody VocabularyDisplayRequest request) {
-        return english.setVocabularyDisplay(accountId(), wordId, request);
+        return vocabulary.setDisplay(accountId(), wordId, request);
     }
 
     @DeleteMapping("/vocabulary/words/{wordId}/display")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void clearVocabularyDisplay(@PathVariable long wordId) {
-        english.clearVocabularyDisplay(accountId(), wordId);
+        vocabulary.clearDisplay(accountId(), wordId);
     }
 
     @GetMapping("/vocabulary/statistics")
     public VocabularyProgressView vocabularyStatistics() {
-        return english.vocabularyStatistics(accountId());
+        return vocabulary.progress(accountId());
     }
 
     @PostMapping("/vocabulary/import-local")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void importLocalVocabulary(@RequestBody Map<String, Object> body) {
-        english.importLocalVocabulary(accountId(), body);
+        vocabulary.importLocal(accountId(), body);
     }
 
     @GetMapping("/writing-submissions/{promptId}")

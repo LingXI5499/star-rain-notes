@@ -35,6 +35,16 @@ public class LearningRecordRepository {
                 """,profileId,type,contentId); }
         catch(EmptyResultDataAccessException ex) { throw missing(); }
     }
+    public LearningRecordView getView(long profileId, String type, Long contentId) {
+        try {
+            return jdbc.queryForObject("""
+                    SELECT * FROM english_learning_record
+                    WHERE learner_id=? AND content_type=? AND content_id=?
+                    """, mapper::map, profileId, type, contentId);
+        } catch (EmptyResultDataAccessException ex) {
+            throw missing();
+        }
+    }
     public void saveSimple(long profileId,String type,Long contentId,String status,Integer seconds) {
         int time=seconds==null?0:seconds;
         int updated=jdbc.update("""

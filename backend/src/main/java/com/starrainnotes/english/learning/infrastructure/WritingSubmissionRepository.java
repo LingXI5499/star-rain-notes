@@ -26,6 +26,17 @@ public class WritingSubmissionRepository {
         try { return jdbc.queryForMap("SELECT * FROM english_writing_submission WHERE learner_id=? AND prompt_id=? LIMIT 1",learnerId,promptId); }
         catch(EmptyResultDataAccessException ex) { throw new ApiException(HttpStatus.NOT_FOUND,"WRITING_SUBMISSION_NOT_FOUND","Not found","The requested data does not exist."); }
     }
+    public WritingSubmissionView getView(long learnerId, long promptId) {
+        try {
+            return jdbc.queryForObject("""
+                    SELECT * FROM english_writing_submission
+                    WHERE learner_id=? AND prompt_id=? LIMIT 1
+                    """, this::view, learnerId, promptId);
+        } catch (EmptyResultDataAccessException ex) {
+            throw new ApiException(HttpStatus.NOT_FOUND, "WRITING_SUBMISSION_NOT_FOUND",
+                    "Not found", "The requested data does not exist.");
+        }
+    }
     public void requirePublishedPrompt(long promptId) {
         Integer exists=jdbc.queryForObject("SELECT COUNT(*) FROM english_writing_prompt WHERE id=? AND publish_status='PUBLISHED'",Integer.class,promptId);
         if(exists==null||exists==0) throw new ApiException(HttpStatus.NOT_FOUND,"ENGLISH_CONTENT_NOT_PUBLISHED","Content unavailable","The selected English content is not published.");
