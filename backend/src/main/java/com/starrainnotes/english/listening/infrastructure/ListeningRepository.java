@@ -3,7 +3,6 @@ package com.starrainnotes.english.listening.infrastructure;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
-import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.english.listening.dto.ListeningAdminStats;
 import com.starrainnotes.english.listening.dto.ListeningHomeView;
 import com.starrainnotes.english.listening.dto.ListeningItemRequest;
@@ -158,7 +157,6 @@ public class ListeningRepository implements ListeningContentPort {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_listening_item", pathPrefix = "/english/listening/")
     public ListeningItemView update(Long id, ListeningItemRequest request) {
         ListeningItem item = require(id);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), item.getSlug());
@@ -256,7 +254,6 @@ public class ListeningRepository implements ListeningContentPort {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_listening_item", pathPrefix = "/english/listening/")
     public ListeningItemView publish(Long id) {
         ListeningItem item = require(id);
         List<String> problems = publishPolicy.problems(item,
@@ -272,7 +269,6 @@ public class ListeningRepository implements ListeningContentPort {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_listening_item", pathPrefix = "/english/listening/")
     public ListeningItemView withdraw(Long id) {
         ListeningItem item = require(id);
         if (DRAFT.equals(item.getPublishStatus())) {

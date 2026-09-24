@@ -2,7 +2,9 @@ package com.starrainnotes.english.reading.application;
 
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
-import com.starrainnotes.seo.SeoContentChange;
+import com.starrainnotes.english.shared.events.EnglishContentChange;
+import com.starrainnotes.english.shared.events.EnglishContentChangeType;
+import com.starrainnotes.english.shared.events.EnglishContentKind;
 import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
 import com.starrainnotes.english.reading.dto.ReadingArticleView;
 import com.starrainnotes.english.reading.entity.ReadingArticle;
@@ -52,7 +54,7 @@ public class ReadingCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_reading_article", pathPrefix = "/english/reading/")
+    @EnglishContentChange(kind = EnglishContentKind.READING, changeType = EnglishContentChangeType.UPDATED)
     public ReadingArticleView update(Long id, ReadingArticleRequest request) {
         ReadingArticle article = repository.require(id);
         ReadingTextStatistics.Stats stats = ReadingTextStatistics.analyze(request.bodyMarkdown());
@@ -68,7 +70,7 @@ public class ReadingCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_reading_article", pathPrefix = "/english/reading/")
+    @EnglishContentChange(kind = EnglishContentKind.READING, changeType = EnglishContentChangeType.PUBLISHED)
     public ReadingArticleView publish(Long id) {
         ReadingArticle article = repository.require(id);
         List<String> problems = policy.violations(article);
@@ -81,7 +83,7 @@ public class ReadingCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_reading_article", pathPrefix = "/english/reading/")
+    @EnglishContentChange(kind = EnglishContentKind.READING, changeType = EnglishContentChangeType.WITHDRAWN)
     public ReadingArticleView withdraw(Long id) {
         ReadingArticle article = repository.require(id);
         if (DRAFT.equals(article.getPublishStatus())) {

@@ -5,7 +5,6 @@ import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.english.listening.dto.PronunciationRuleRequest;
 import com.starrainnotes.english.listening.dto.PronunciationRuleView;
 import com.starrainnotes.media.api.MediaAssetPort;
-import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -80,7 +79,6 @@ public class PronunciationRuleRepository {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_listening_pronunciation_rule", pathPrefix = "/english/listening/pronunciation/")
     public PronunciationRuleView updateRule(Long id,
             PronunciationRuleRequest request) {
         var current = requireRule(id);
@@ -106,7 +104,6 @@ public class PronunciationRuleRepository {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_listening_pronunciation_rule", pathPrefix = "/english/listening/pronunciation/")
     public PronunciationRuleView publishRule(Long id) {
         requireRule(id);
         jdbc.update("UPDATE english_listening_pronunciation_rule SET publish_status='PUBLISHED',"
@@ -115,7 +112,6 @@ public class PronunciationRuleRepository {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_listening_pronunciation_rule", pathPrefix = "/english/listening/pronunciation/")
     public PronunciationRuleView withdrawRule(Long id) {
         String status = requireRule(id).publishStatus();
         if (DRAFT.equals(status)) {
