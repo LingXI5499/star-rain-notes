@@ -5,6 +5,7 @@ import com.starrainnotes.english.shared.bundle.dto.BundleView;
 import com.starrainnotes.english.shared.bundle.entity.EnglishLearningBundle;
 import com.starrainnotes.english.shared.bundle.mapper.EnglishLearningBundleMapper;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
+import com.starrainnotes.english.api.MediaPort;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
@@ -17,20 +18,21 @@ public class LearningBundleRepository {
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final String BUNDLE_SELECT = """
             SELECT b.id,b.title,b.slug,b.summary,b.primary_cefr,b.cover_media_id,
-                   m.public_url AS cover_url,b.publish_status,b.sort_order,b.published_at,b.updated_at
+                   b.publish_status,b.sort_order,b.published_at,b.updated_at
             FROM english_learning_bundle b
-            LEFT JOIN media_asset m ON m.id=b.cover_media_id
             """;
 
     private final EnglishLearningBundleMapper mapper;
     private final JdbcTemplate jdbc;
     private final SiteSettingsTimezone timezone;
+    private final MediaPort media;
 
     public LearningBundleRepository(EnglishLearningBundleMapper mapper, JdbcTemplate jdbc,
-                                    SiteSettingsTimezone timezone) {
+                                    SiteSettingsTimezone timezone, MediaPort media) {
         this.mapper = mapper;
         this.jdbc = jdbc;
         this.timezone = timezone;
+        this.media = media;
     }
 
     public List<BundleView> list() {
@@ -96,16 +98,11 @@ public class LearningBundleRepository {
         return count != null && count > 0;
     }
 
-    public boolean coverIsImage(Long mediaId) {
-        Long count = jdbc.queryForObject("SELECT COUNT(*) FROM media_asset WHERE id=? AND asset_type='IMAGE'",
-                Long.class, mediaId);
-        return count != null && count > 0;
-    }
-
     private BundleView mapView(java.sql.ResultSet rs, int row) throws java.sql.SQLException {
         return new BundleView(rs.getLong("id"), rs.getString("title"), rs.getString("slug"),
                 rs.getString("summary"), rs.getString("primary_cefr"),
-                nullableLong(rs, "cover_media_id"), rs.getString("cover_url"), rs.getString("publish_status"),
+                nullableLong(rs, "cover_media_id"), media.publicUrl(nullableLong(rs, "cover_media_id")),
+                rs.getString("publish_status"),
                 rs.getInt("sort_order"), format(rs.getTimestamp("published_at")),
                 format(rs.getTimestamp("updated_at")));
     }

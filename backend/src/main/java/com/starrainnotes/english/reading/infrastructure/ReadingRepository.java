@@ -2,7 +2,7 @@ package com.starrainnotes.english.reading.infrastructure;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.api.MediaPort;
 import com.starrainnotes.english.reading.dto.ReadingAdminStats;
 import com.starrainnotes.english.reading.dto.ReadingArticleLinkView;
 import com.starrainnotes.english.reading.dto.ReadingArticleSummaryView;
@@ -52,11 +52,11 @@ public class ReadingRepository implements ReadingContentPort {
     private final ReadingArticleMapper mapper;
     private final JdbcTemplate jdbc;
     private final SiteSettingsTimezone timezone;
-    private final MediaAssetPort media;
+    private final MediaPort media;
     private final ReadingRelationRepository relations;
 
     public ReadingRepository(ReadingArticleMapper mapper, JdbcTemplate jdbc,
-                             SiteSettingsTimezone timezone, MediaAssetPort media,
+                             SiteSettingsTimezone timezone, MediaPort media,
                              ReadingRelationRepository relations) {
         this.mapper = mapper;
         this.jdbc = jdbc;
@@ -96,16 +96,25 @@ public class ReadingRepository implements ReadingContentPort {
         if (limit <= 0) return new ContentCatalogSlice(total == null ? 0 : total, List.of());
         List<Object> pageArgs = new ArrayList<>(args);
         pageArgs.add(limit);
+        Map<Long, Long> coverIds = new HashMap<>();
         List<ContentDescriptor> items = jdbc.query("""
-                SELECT a.id,a.slug,a.title,a.summary,a.cefr_level,m.public_url cover_url,
+                SELECT a.id,a.slug,a.title,a.summary,a.cefr_level,a.cover_media_id,
                        a.publish_status,a.sort_order
-                FROM english_reading_article a LEFT JOIN media_asset m ON m.id=a.cover_media_id
+                FROM english_reading_article a
                 """ + where + " ORDER BY FIELD(a.publish_status,'PUBLISHED','DRAFT','WITHDRAWN'),a.sort_order,a.id LIMIT ?",
-                (rs, row) -> new ContentDescriptor(EnglishContentType.READING,
-                rs.getLong("id"), rs.getString("slug"), rs.getString("title"), rs.getString("summary"),
-                rs.getString("cefr_level"), rs.getString("cover_url"), rs.getString("publish_status"),
-                rs.getInt("sort_order")), pageArgs.toArray());
-        return new ContentCatalogSlice(total == null ? 0 : total, items);
+                (rs, row) -> {
+                    long id = rs.getLong("id");
+                    long coverId = rs.getLong("cover_media_id");
+                    if (!rs.wasNull()) coverIds.put(id, coverId);
+                    return new ContentDescriptor(EnglishContentType.READING,
+                            id, rs.getString("slug"), rs.getString("title"), rs.getString("summary"),
+                            rs.getString("cefr_level"), null, rs.getString("publish_status"),
+                            rs.getInt("sort_order"));
+                }, pageArgs.toArray());
+        Map<Long, String> coverUrls = media.publicUrls(coverIds.values());
+        return new ContentCatalogSlice(total == null ? 0 : total, items.stream()
+                .map(item -> item.withCoverUrl(coverIds.containsKey(item.id())
+                        ? coverUrls.get(coverIds.get(item.id())) : null)).toList());
     }
 
     public ReadingArticleView publicGet(String slug) {

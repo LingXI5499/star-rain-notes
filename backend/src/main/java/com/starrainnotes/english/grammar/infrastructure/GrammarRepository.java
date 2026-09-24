@@ -17,7 +17,7 @@ import com.starrainnotes.english.grammar.dto.GrammarSectionRequest;
 import com.starrainnotes.english.grammar.dto.GrammarSectionView;
 import com.starrainnotes.english.grammar.dto.UpdateGrammarCourseRequest;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
-import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.api.MediaPort;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -50,11 +50,11 @@ public class GrammarRepository {
     private final JdbcTemplate jdbc;
     private final SiteSettingsTimezone timezone;
 
-    private final MediaAssetPort mediaAssets;
+    private final MediaPort mediaAssets;
     private final GrammarPublishPolicy publishPolicy;
 
     public GrammarRepository(JdbcTemplate jdbc, SiteSettingsTimezone timezone,
-                             MediaAssetPort mediaAssets, GrammarPublishPolicy publishPolicy) {
+                             MediaPort mediaAssets, GrammarPublishPolicy publishPolicy) {
         this.jdbc = jdbc;
         this.timezone = timezone;
         this.mediaAssets = mediaAssets;

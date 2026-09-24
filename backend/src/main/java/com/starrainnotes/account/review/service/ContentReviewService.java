@@ -7,6 +7,7 @@ import com.starrainnotes.account.review.dto.ContentReviewView;
 import com.starrainnotes.blog.dto.UpdatePostRequest;
 import com.starrainnotes.blog.service.BlogCommandService;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.api.EnglishReviewContentPort;
 import com.starrainnotes.english.grammar.dto.GrammarLessonRequest;
 import com.starrainnotes.english.grammar.application.GrammarCommandService;
 import com.starrainnotes.english.listening.dto.ListeningItemRequest;
@@ -49,6 +50,7 @@ public class ContentReviewService {
     private final WritingPromptCommandService writingPromptService;
     private final AuditLogService auditLogService;
     private final SiteSettingsTimezone timezone;
+    private final EnglishReviewContentPort englishContent;
 
     public ContentReviewService(JdbcTemplate jdbc, ObjectMapper json, BlogCommandService blogService,
                                 TutorialNodeService tutorialNodeService,
@@ -58,7 +60,8 @@ public class ContentReviewService {
                                 PronunciationRuleCommandService pronunciationRuleCommands,
                                 WritingResourceCommandService writingResourceService,
                                 WritingPromptCommandService writingPromptService,
-                                AuditLogService auditLogService, SiteSettingsTimezone timezone) {
+                                AuditLogService auditLogService, SiteSettingsTimezone timezone,
+                                EnglishReviewContentPort englishContent) {
         this.jdbc = jdbc;
         this.json = json;
         this.blogService = blogService;
@@ -71,6 +74,7 @@ public class ContentReviewService {
         this.writingPromptService = writingPromptService;
         this.auditLogService = auditLogService;
         this.timezone = timezone;
+        this.englishContent = englishContent;
     }
 
     public List<ContentReviewView> list(String status, int page, int pageSize) {
@@ -105,23 +109,7 @@ public class ContentReviewService {
     }
 
     public boolean isPublished(String contentType, Long contentId) {
-        String table = switch (contentType) {
-            case "ENGLISH_GRAMMAR_LESSON" -> "english_grammar_lesson";
-            case "ENGLISH_READING_ARTICLE" -> "english_reading_article";
-            case "ENGLISH_LISTENING_ITEM" -> "english_listening_item";
-            case "ENGLISH_PRONUNCIATION_RULE" -> "english_listening_pronunciation_rule";
-            case "ENGLISH_WRITING_RESOURCE" -> "english_writing_resource";
-            case "ENGLISH_WRITING_PROMPT" -> "english_writing_prompt";
-            default -> throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "CONTENT_REVIEW_TYPE_INVALID",
-                    "Invalid review type", "Unsupported review content type.");
-        };
-        try {
-            String status = jdbc.queryForObject("SELECT publish_status FROM " + table + " WHERE id=?", String.class, contentId);
-            return "PUBLISHED".equals(status);
-        } catch (EmptyResultDataAccessException e) {
-            throw new ApiException(HttpStatus.NOT_FOUND, "CONTENT_REVIEW_TARGET_NOT_FOUND",
-                    "Review target not found", "The content to review does not exist.");
-        }
+        return englishContent.isPublished(contentType, contentId);
     }
 
     @Transactional

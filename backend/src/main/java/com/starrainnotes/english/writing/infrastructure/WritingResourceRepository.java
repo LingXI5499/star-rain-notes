@@ -5,7 +5,7 @@ import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.english.writing.dto.*;
 import com.starrainnotes.english.writing.domain.WritingResourcePolicy;
-import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.api.MediaPort;
 import com.starrainnotes.english.writing.entity.WritingResource;
 import com.starrainnotes.english.writing.mapper.WritingResourceMapper;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
@@ -28,8 +28,8 @@ public class WritingResourceRepository {
     private static final Set<String> LEVELS=Set.of("SENTENCE","PARAGRAPH","COHESION","STYLE");
     private static final DateTimeFormatter ISO=DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private static final String BASE="SELECT r.* FROM english_writing_resource r ";
-    private final WritingResourceMapper mapper; private final JdbcTemplate jdbc; private final SiteSettingsTimezone timezone; private final MediaAssetPort mediaAssets; private final WritingResourcePolicy policy;
-    public WritingResourceRepository(WritingResourceMapper mapper,JdbcTemplate jdbc,SiteSettingsTimezone timezone,MediaAssetPort mediaAssets,WritingResourcePolicy policy){this.mapper=mapper;this.jdbc=jdbc;this.timezone=timezone;this.mediaAssets=mediaAssets;this.policy=policy;}
+    private final WritingResourceMapper mapper; private final JdbcTemplate jdbc; private final SiteSettingsTimezone timezone; private final MediaPort mediaAssets; private final WritingResourcePolicy policy;
+    public WritingResourceRepository(WritingResourceMapper mapper,JdbcTemplate jdbc,SiteSettingsTimezone timezone,MediaPort mediaAssets,WritingResourcePolicy policy){this.mapper=mapper;this.jdbc=jdbc;this.timezone=timezone;this.mediaAssets=mediaAssets;this.policy=policy;}
 
     @Transactional public WritingResourceView create(WritingResourceRequest r){
         validateRequest(r); String slug=NumericSlugGenerator.forCreate(r.slug(),this::slugExists); WritingResource e=new WritingResource(); apply(e,r,slug); e.setPublishStatus("DRAFT"); e.setSortOrder(r.sortOrder()==null?nextOrder():r.sortOrder());

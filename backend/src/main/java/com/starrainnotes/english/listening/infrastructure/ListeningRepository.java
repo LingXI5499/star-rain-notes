@@ -25,7 +25,7 @@ import com.starrainnotes.english.listening.domain.ListeningPublishPolicy;
 import com.starrainnotes.english.listening.domain.SegmentTimelinePolicy;
 import com.starrainnotes.english.listening.mapper.ListeningItemMapper;
 import com.starrainnotes.english.shared.exercise.mapper.EnglishExerciseMapper;
-import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.api.MediaPort;
 import com.starrainnotes.english.listening.infrastructure.ListeningRelationRepository;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.dao.DuplicateKeyException;
@@ -40,6 +40,7 @@ import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,12 +66,10 @@ public class ListeningRepository implements ListeningContentPort {
 
     private static final String ITEM_SELECT = """
             SELECT i.id,i.title,i.slug,i.summary,i.transcript_markdown,i.cefr_level,i.listening_level,
-                   i.audio_media_id,a.public_url AS audio_url,i.cover_media_id,c.public_url AS cover_url,
+                   i.audio_media_id,i.cover_media_id,
                    i.duration_seconds,i.source_name,i.source_url,i.copyright_note,i.publish_status,
                    i.sort_order,i.published_at,i.updated_at
             FROM english_listening_item i
-            LEFT JOIN media_asset a ON a.id=i.audio_media_id
-            LEFT JOIN media_asset c ON c.id=i.cover_media_id
             """;
 
     public ContentCatalogSlice catalogDescriptors(ContentCatalogFilter filter, int limit) {
@@ -96,16 +95,25 @@ public class ListeningRepository implements ListeningContentPort {
         if (limit <= 0) return new ContentCatalogSlice(total == null ? 0 : total, List.of());
         List<Object> pageArgs = new ArrayList<>(args);
         pageArgs.add(limit);
+        Map<Long, Long> coverIds = new HashMap<>();
         List<ContentDescriptor> items = jdbc.query("""
-                SELECT a.id,a.slug,a.title,a.summary,a.cefr_level,m.public_url cover_url,
+                SELECT a.id,a.slug,a.title,a.summary,a.cefr_level,a.cover_media_id,
                        a.publish_status,a.sort_order
-                FROM english_listening_item a LEFT JOIN media_asset m ON m.id=a.cover_media_id
+                FROM english_listening_item a
                 """ + where + " ORDER BY FIELD(a.publish_status,'PUBLISHED','DRAFT','WITHDRAWN'),a.sort_order,a.id LIMIT ?",
-                (rs, row) -> new ContentDescriptor(EnglishContentType.LISTENING,
-                rs.getLong("id"), rs.getString("slug"), rs.getString("title"), rs.getString("summary"),
-                rs.getString("cefr_level"), rs.getString("cover_url"), rs.getString("publish_status"),
-                rs.getInt("sort_order")), pageArgs.toArray());
-        return new ContentCatalogSlice(total == null ? 0 : total, items);
+                (rs, row) -> {
+                    long id = rs.getLong("id");
+                    long coverId = rs.getLong("cover_media_id");
+                    if (!rs.wasNull()) coverIds.put(id, coverId);
+                    return new ContentDescriptor(EnglishContentType.LISTENING,
+                            id, rs.getString("slug"), rs.getString("title"), rs.getString("summary"),
+                            rs.getString("cefr_level"), null, rs.getString("publish_status"),
+                            rs.getInt("sort_order"));
+                }, pageArgs.toArray());
+        Map<Long, String> coverUrls = mediaAssets.publicUrls(coverIds.values());
+        return new ContentCatalogSlice(total == null ? 0 : total, items.stream()
+                .map(item -> item.withCoverUrl(coverIds.containsKey(item.id())
+                        ? coverUrls.get(coverIds.get(item.id())) : null)).toList());
     }
 
     private final ListeningItemMapper mapper;
@@ -113,14 +121,14 @@ public class ListeningRepository implements ListeningContentPort {
     private final EnglishExerciseMapper exerciseMapper;
     private final SiteSettingsTimezone timezone;
     private final ListeningSegmentRepository segmentRepository;
-    private final MediaAssetPort mediaAssets;
+    private final MediaPort mediaAssets;
     private final ListeningRelationRepository relations;
     private final ListeningPublishPolicy publishPolicy;
     private final SegmentTimelinePolicy timelinePolicy;
 
     public ListeningRepository(ListeningItemMapper mapper, JdbcTemplate jdbc,
                                 EnglishExerciseMapper exerciseMapper, SiteSettingsTimezone timezone,
-                                ListeningSegmentRepository segmentRepository, MediaAssetPort mediaAssets,
+                                ListeningSegmentRepository segmentRepository, MediaPort mediaAssets,
                                 ListeningRelationRepository relations, ListeningPublishPolicy publishPolicy,
                                 SegmentTimelinePolicy timelinePolicy) {
         this.mapper = mapper;
@@ -225,13 +233,21 @@ public class ListeningRepository implements ListeningContentPort {
         int safeSize = Math.min(Math.max(pageSize, 1), MAX_PAGE_SIZE);
         String sql = ITEM_SELECT + where + " ORDER BY i.sort_order, i.id LIMIT " + safeSize + " OFFSET "
                 + ((safePage - 1) * safeSize);
-        List<ListeningItemSummaryView> rows = jdbc.query(sql, params.toArray(), (rs, row) -> mapSummary(rs));
+        Map<Long, Long> coverIds = new HashMap<>();
+        List<ListeningItemSummaryView> rows = jdbc.query(sql, params.toArray(), (rs, row) -> {
+            long coverId = rs.getLong("cover_media_id");
+            if (!rs.wasNull()) coverIds.put(rs.getLong("id"), coverId);
+            return mapSummary(rs);
+        });
+        Map<Long, String> coverUrls = mediaAssets.publicUrls(coverIds.values());
         List<Long> ids = rows.stream().map(ListeningItemSummaryView::id).toList();
         Map<Long, List<ListeningTagRef>> tags = loadTags(ids);
         Map<Long, Long> exCounts = countBy(ids, "english_listening_item_exercise", "listening_item_id");
         Map<Long, Long> segCounts = countBy(ids, "english_listening_segment", "listening_item_id");
         List<ListeningItemSummaryView> items = rows.stream()
-                .map(r -> r.withTags(tags.getOrDefault(r.id(), List.of()))
+                .map(r -> r.withCoverUrl(coverIds.containsKey(r.id())
+                                ? coverUrls.get(coverIds.get(r.id())) : null)
+                        .withTags(tags.getOrDefault(r.id(), List.of()))
                         .withCounts(exCounts.getOrDefault(r.id(), 0L), segCounts.getOrDefault(r.id(), 0L)))
                 .toList();
         int totalPages = total == 0 ? 0 : (int) ((total + safeSize - 1) / safeSize);
@@ -573,7 +589,7 @@ public class ListeningRepository implements ListeningContentPort {
 
     private ListeningItemSummaryView mapSummary(ResultSet rs) throws SQLException {
         return new ListeningItemSummaryView(rs.getLong("id"), rs.getString("title"), rs.getString("slug"),
-                rs.getString("summary"), rs.getString("cover_url"), rs.getString("cefr_level"),
+                rs.getString("summary"), null, rs.getString("cefr_level"),
                 rs.getInt("listening_level"), rs.getInt("duration_seconds"), rs.getString("publish_status"),
                 0, 0, format(rs.getTimestamp("updated_at")), List.of());
     }
@@ -583,8 +599,9 @@ public class ListeningRepository implements ListeningContentPort {
         List<ListeningSegmentView> segs = id == null ? List.of() : segmentRepository.list(id);
         return new ListeningItemView(id, rs.getString("title"), rs.getString("slug"), rs.getString("summary"),
                 rs.getString("transcript_markdown"), rs.getString("cefr_level"), rs.getInt("listening_level"),
-                nullableLong(rs, "audio_media_id"), rs.getString("audio_url"),
-                nullableLong(rs, "cover_media_id"), rs.getString("cover_url"), rs.getInt("duration_seconds"),
+                nullableLong(rs, "audio_media_id"), mediaAssets.publicUrl(nullableLong(rs, "audio_media_id")),
+                nullableLong(rs, "cover_media_id"), mediaAssets.publicUrl(nullableLong(rs, "cover_media_id")),
+                rs.getInt("duration_seconds"),
                 rs.getString("source_name"), rs.getString("source_url"), rs.getString("copyright_note"),
                 rs.getString("publish_status"), rs.getInt("sort_order"),
                 format(rs.getTimestamp("published_at")), format(rs.getTimestamp("updated_at")),

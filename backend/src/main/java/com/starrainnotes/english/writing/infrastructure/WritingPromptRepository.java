@@ -10,7 +10,7 @@ import com.starrainnotes.english.shared.content.ContentDescriptor;
 import com.starrainnotes.english.shared.content.ContentCatalogFilter;
 import com.starrainnotes.english.shared.content.ContentCatalogSlice;
 import com.starrainnotes.english.shared.content.EnglishContentType;
-import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.api.MediaPort;
 import com.starrainnotes.english.writing.entity.WritingPrompt;
 import com.starrainnotes.english.writing.mapper.WritingPromptMapper;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
@@ -39,19 +39,27 @@ public class WritingPromptRepository implements WritingPromptPort {
      Long total=jdbc.queryForObject("SELECT COUNT(*) FROM english_writing_prompt a"+where,Long.class,args.toArray());
      if(limit<=0)return new ContentCatalogSlice(total==null?0:total,List.of());
      List<Object> pageArgs=new ArrayList<>(args);pageArgs.add(limit);
+     Map<Long,Long> coverIds=new HashMap<>();
      List<ContentDescriptor> items=jdbc.query("""
-             SELECT a.id,a.slug,a.title,a.summary,a.cefr_level,m.public_url cover_url,
+             SELECT a.id,a.slug,a.title,a.summary,a.cefr_level,a.cover_media_id,
                     a.publish_status,a.sort_order
-             FROM english_writing_prompt a LEFT JOIN media_asset m ON m.id=a.cover_media_id
+             FROM english_writing_prompt a
              """+where+" ORDER BY FIELD(a.publish_status,'PUBLISHED','DRAFT','WITHDRAWN'),a.sort_order,a.id LIMIT ?",
-             (rs,row)->new ContentDescriptor(EnglishContentType.WRITING,
-                     rs.getLong("id"),rs.getString("slug"),rs.getString("title"),rs.getString("summary"),
-                     rs.getString("cefr_level"),rs.getString("cover_url"),rs.getString("publish_status"),
-                     rs.getInt("sort_order")),pageArgs.toArray());
-     return new ContentCatalogSlice(total==null?0:total,items);
+             (rs,row)->{
+                 long id=rs.getLong("id"),coverId=rs.getLong("cover_media_id");
+                 if(!rs.wasNull())coverIds.put(id,coverId);
+                 return new ContentDescriptor(EnglishContentType.WRITING,
+                         id,rs.getString("slug"),rs.getString("title"),rs.getString("summary"),
+                         rs.getString("cefr_level"),null,rs.getString("publish_status"),
+                         rs.getInt("sort_order"));
+             },pageArgs.toArray());
+     Map<Long,String> coverUrls=mediaAssets.publicUrls(coverIds.values());
+     return new ContentCatalogSlice(total==null?0:total,items.stream()
+             .map(item->item.withCoverUrl(coverIds.containsKey(item.id())
+                     ?coverUrls.get(coverIds.get(item.id())):null)).toList());
  }
- private final WritingPromptMapper mapper; private final JdbcTemplate jdbc; private final SiteSettingsTimezone timezone; private final MediaAssetPort mediaAssets; private final WritingPromptPolicy policy;
- public WritingPromptRepository(WritingPromptMapper mapper,JdbcTemplate jdbc,SiteSettingsTimezone timezone,MediaAssetPort mediaAssets,WritingPromptPolicy policy){this.mapper=mapper;this.jdbc=jdbc;this.timezone=timezone;this.mediaAssets=mediaAssets;this.policy=policy;}
+ private final WritingPromptMapper mapper; private final JdbcTemplate jdbc; private final SiteSettingsTimezone timezone; private final MediaPort mediaAssets; private final WritingPromptPolicy policy;
+ public WritingPromptRepository(WritingPromptMapper mapper,JdbcTemplate jdbc,SiteSettingsTimezone timezone,MediaPort mediaAssets,WritingPromptPolicy policy){this.mapper=mapper;this.jdbc=jdbc;this.timezone=timezone;this.mediaAssets=mediaAssets;this.policy=policy;}
  @Transactional public WritingPromptView create(WritingPromptRequest r){validate(r);String slug=NumericSlugGenerator.forCreate(r.slug(),this::slugExists);WritingPrompt p=new WritingPrompt();apply(p,r,slug);p.setPublishStatus("DRAFT");p.setSortOrder(r.sortOrder()==null?next():r.sortOrder());try{mapper.insert(p);}catch(DuplicateKeyException e){throw conflict();}tags(p.getId(),r.tagIds());return get(p.getId());}
  @Transactional public WritingPromptView update(Long id,WritingPromptRequest r){WritingPrompt p=require(id);validate(r);String slug=NumericSlugGenerator.forUpdate(r.slug(),p.getSlug());slug(slug,id);apply(p,r,slug);try{mapper.updateById(p);}catch(DuplicateKeyException e){throw conflict();}tags(id,r.tagIds());return get(id);}
  public WritingPromptView get(Long id){require(id);return jdbc.queryForObject(BASE+" WHERE p.id=?",this::view,id);}

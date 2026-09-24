@@ -2,7 +2,7 @@ package com.starrainnotes.english.reading.domain;
 
 import com.starrainnotes.english.reading.entity.ReadingArticle;
 import com.starrainnotes.english.reading.infrastructure.ReadingRelationRepository;
-import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.api.MediaPort;
 import org.springframework.stereotype.Component;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,8 +11,8 @@ import java.util.List;
 @Component
 public class ReadingPublishPolicy {
     private final ReadingRelationRepository relations;
-    private final MediaAssetPort media;
-    public ReadingPublishPolicy(ReadingRelationRepository relations, MediaAssetPort media) {
+    private final MediaPort media;
+    public ReadingPublishPolicy(ReadingRelationRepository relations, MediaPort media) {
         this.relations = relations;
         this.media = media;
     }

@@ -4,7 +4,7 @@ import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.english.listening.dto.PronunciationRuleRequest;
 import com.starrainnotes.english.listening.dto.PronunciationRuleView;
-import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.api.MediaPort;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -26,10 +26,10 @@ public class PronunciationRuleRepository {
     private static final String DRAFT = "DRAFT";
     private static final String PUBLISHED = "PUBLISHED";
     private final JdbcTemplate jdbc;
-    private final MediaAssetPort mediaAssets;
+    private final MediaPort mediaAssets;
     private final SiteSettingsTimezone timezone;
 
-    public PronunciationRuleRepository(JdbcTemplate jdbc, MediaAssetPort mediaAssets, SiteSettingsTimezone timezone) {
+    public PronunciationRuleRepository(JdbcTemplate jdbc, MediaPort mediaAssets, SiteSettingsTimezone timezone) {
         this.jdbc = jdbc;
         this.mediaAssets = mediaAssets;
         this.timezone = timezone;
@@ -55,9 +55,8 @@ public class PronunciationRuleRepository {
         String status = publishedOnly ? " WHERE publish_status='PUBLISHED'" : "";
         return jdbc.query("""
                 SELECT r.id,r.rule_type,r.title,r.slug,r.summary,r.body_markdown,r.audio_media_id,
-                       a.public_url AS audio_url,r.publish_status,r.sort_order,r.published_at,r.updated_at
+                       r.publish_status,r.sort_order,r.published_at,r.updated_at
                 FROM english_listening_pronunciation_rule r
-                LEFT JOIN media_asset a ON a.id=r.audio_media_id
                 """ + status + " ORDER BY r.rule_type, r.sort_order, r.id",
                 (rs, row) -> mapRule(rs));
     }
@@ -142,9 +141,9 @@ public class PronunciationRuleRepository {
         try {
             return jdbc.queryForObject("""
                     SELECT r.id,r.rule_type,r.title,r.slug,r.summary,r.body_markdown,r.audio_media_id,
-                           a.public_url AS audio_url,r.publish_status,r.sort_order,r.published_at,r.updated_at
+                           r.publish_status,r.sort_order,r.published_at,r.updated_at
                     FROM english_listening_pronunciation_rule r
-                    LEFT JOIN media_asset a ON a.id=r.audio_media_id WHERE r.id=?
+                    WHERE r.id=?
                     """, (rs, row) -> mapRule(rs), id);
         } catch (EmptyResultDataAccessException ex) {
             throw new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_LISTENING_RULE_NOT_FOUND",
@@ -161,9 +160,9 @@ public class PronunciationRuleRepository {
         try {
             return jdbc.queryForObject("""
                     SELECT r.id,r.rule_type,r.title,r.slug,r.summary,r.body_markdown,r.audio_media_id,
-                           a.public_url AS audio_url,r.publish_status,r.sort_order,r.published_at,r.updated_at
+                           r.publish_status,r.sort_order,r.published_at,r.updated_at
                     FROM english_listening_pronunciation_rule r
-                    LEFT JOIN media_asset a ON a.id=r.audio_media_id WHERE r.slug=?
+                    WHERE r.slug=?
                     """ + status, (rs, row) -> mapRule(rs), slug);
         } catch (EmptyResultDataAccessException ex) {
             throw new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_CONTENT_NOT_PUBLISHED",
@@ -210,7 +209,8 @@ public class PronunciationRuleRepository {
         Long id = rs.getLong("id");
         return new PronunciationRuleView(id,
                 rs.getString("rule_type"), rs.getString("title"), rs.getString("slug"), rs.getString("summary"),
-                rs.getString("body_markdown"), nullableLong(rs, "audio_media_id"), rs.getString("audio_url"),
+                rs.getString("body_markdown"), nullableLong(rs, "audio_media_id"),
+                mediaAssets.publicUrl(nullableLong(rs, "audio_media_id")),
                 rs.getString("publish_status"), rs.getInt("sort_order"),
                 format(rs.getTimestamp("published_at")), format(rs.getTimestamp("updated_at")), null, null);
     }
