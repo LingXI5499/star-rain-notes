@@ -1,5 +1,9 @@
 package com.starrainnotes.english.reading.application;
 
+import com.starrainnotes.english.reading.infrastructure.ReadingRecommendationTagRepository;
+import com.starrainnotes.english.shared.content.TagMatchCandidate;
+import java.util.List;
+
 import com.starrainnotes.english.reading.dto.*;
 import com.starrainnotes.english.reading.infrastructure.ReadingRepository;
 import com.starrainnotes.english.shared.content.ContentCatalogFilter;
@@ -11,8 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class ReadingQueryService {
+    private final ReadingRecommendationTagRepository recommendationTags;
     private final ReadingRepository repository;
-    public ReadingQueryService(ReadingRepository repository) { this.repository = repository; }
+    public ReadingQueryService(ReadingRepository repository,
+                          ReadingRecommendationTagRepository recommendationTags) {
+        this.repository = repository;
+        this.recommendationTags = recommendationTags;
+    }
+    public List<Long> tagIds(long contentId) { return recommendationTags.tagIds(contentId); }
+    public List<TagMatchCandidate> tagMatches(List<Long> termIds) { return recommendationTags.matches(termIds); }
     public ReadingArticleView get(Long id) { return repository.get(id); }
     public ReadingArticleView publicGet(String slug) { return repository.publicGet(slug); }
     public ReadingPageView list(int page, int pageSize, String q, String status,

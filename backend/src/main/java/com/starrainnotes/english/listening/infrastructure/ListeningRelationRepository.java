@@ -45,6 +45,20 @@ public class ListeningRelationRepository {
     public List<ReadingPairRef> readingPairs(Long itemId) { return query(itemId, false); }
     public List<ReadingPairRef> publishedReadingPairs(Long itemId) { return query(itemId, true); }
 
+    public List<Long> listeningIdsForReading(long readingId) {
+        return jdbc.queryForList("""
+                SELECT listening_item_id FROM english_reading_listening_pair
+                WHERE reading_article_id=? ORDER BY sort_order,listening_item_id
+                """, Long.class, readingId);
+    }
+
+    public List<Long> readingIdsForListening(long listeningId) {
+        return jdbc.queryForList("""
+                SELECT reading_article_id FROM english_reading_listening_pair
+                WHERE listening_item_id=? ORDER BY sort_order,reading_article_id
+                """, Long.class, listeningId);
+    }
+
     private List<ReadingPairRef> query(Long itemId, boolean publishedOnly) {
         return jdbc.query("""
                 SELECT rp.reading_article_id, ar.title, ar.slug, rp.relation_type

@@ -3,6 +3,8 @@ package com.starrainnotes.english.grammar.infrastructure;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
 import com.starrainnotes.english.grammar.domain.GrammarPublishPolicy;
+import com.starrainnotes.english.shared.content.ContentDescriptor;
+import com.starrainnotes.english.shared.content.EnglishContentType;
 import com.starrainnotes.english.grammar.dto.GrammarCourseView;
 import com.starrainnotes.english.grammar.dto.GrammarCurriculumView;
 import com.starrainnotes.english.grammar.dto.GrammarLessonDetailView;
@@ -71,6 +73,18 @@ public class GrammarRepository {
                 WHERE l.publish_status='PUBLISHED' AND c.publish_status='PUBLISHED'
                 """, Long.class);
         return count == null ? 0 : count;
+    }
+
+    public List<ContentDescriptor> publishedDescriptors() {
+        return jdbc.query("""
+                SELECT l.id,l.slug,l.title,l.summary,l.sort_order
+                FROM english_grammar_lesson l
+                JOIN english_grammar_course c ON c.id=l.course_id
+                WHERE l.publish_status='PUBLISHED' AND c.publish_status='PUBLISHED'
+                ORDER BY l.id
+                """, (rs, row) -> new ContentDescriptor(EnglishContentType.GRAMMAR,
+                rs.getLong("id"), rs.getString("slug"), rs.getString("title"),
+                rs.getString("summary"), null, null, "PUBLISHED", rs.getInt("sort_order")));
     }
 
     public GrammarCourseView publicCourse() {

@@ -1,7 +1,5 @@
 package com.starrainnotes.english.shared.content;
 
-import com.starrainnotes.common.error.ApiException;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.EnumMap;
@@ -28,10 +26,9 @@ public class EnglishContentRegistry {
     }
 
     public ContentDescriptor requirePublished(EnglishContentType type,long id) {
-        ContentDescriptor content=require(type,id);
-        if(!content.published()) throw new ApiException(HttpStatus.NOT_FOUND,"ENGLISH_CONTENT_NOT_PUBLISHED",
-                "Content unavailable","The selected English content is not published.");
-        return content;
+        EnglishContentDescriptorProvider provider=providers.get(type);
+        if(provider==null) throw new IllegalArgumentException("Unsupported English content type: "+type);
+        return provider.requirePublished(id);
     }
 
     public ContentCatalogSlice catalog(EnglishContentType type, ContentCatalogFilter filter, int limit) {
@@ -44,5 +41,23 @@ public class EnglishContentRegistry {
         EnglishContentDescriptorProvider provider = providers.get(type);
         if (provider == null) throw new IllegalArgumentException("Unsupported English content type: " + type);
         return provider.publishedCount();
+    }
+
+    public List<ContentDescriptor> publishedCandidates(EnglishContentType type) {
+        EnglishContentDescriptorProvider provider = providers.get(type);
+        if (provider == null) throw new IllegalArgumentException("Unsupported English content type: " + type);
+        return provider.publishedCandidates();
+    }
+
+    public List<Long> tagIds(EnglishContentType type, long contentId) {
+        EnglishContentDescriptorProvider provider = providers.get(type);
+        if (provider == null) throw new IllegalArgumentException("Unsupported English content type: " + type);
+        return provider.tagIds(contentId);
+    }
+
+    public List<TagMatchCandidate> tagMatches(EnglishContentType type, List<Long> termIds) {
+        EnglishContentDescriptorProvider provider = providers.get(type);
+        if (provider == null) throw new IllegalArgumentException("Unsupported English content type: " + type);
+        return provider.tagMatches(termIds);
     }
 }

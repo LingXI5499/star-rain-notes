@@ -4,6 +4,8 @@ import com.starrainnotes.english.grammar.dto.GrammarCourseView;
 import com.starrainnotes.english.grammar.dto.GrammarCurriculumView;
 import com.starrainnotes.english.grammar.dto.GrammarLessonDetailView;
 import com.starrainnotes.english.grammar.infrastructure.GrammarRepository;
+import com.starrainnotes.english.shared.content.ContentDescriptor;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 /** Read use cases for the singleton Grammar course and its curriculum. */
@@ -18,4 +20,5 @@ public class GrammarQueryService {
     public GrammarLessonDetailView lesson(long id) { return repository.lesson(id); }
     public GrammarLessonDetailView publicLesson(String slug) { return repository.publicLesson(slug); }
     public long publishedCount() { return repository.publishedCount(); }
+    public List<ContentDescriptor> publishedDescriptors() { return repository.publishedDescriptors(); }
 }

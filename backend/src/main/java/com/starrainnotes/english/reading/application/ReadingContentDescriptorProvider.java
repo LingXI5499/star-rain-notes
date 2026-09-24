@@ -1,5 +1,8 @@
 package com.starrainnotes.english.reading.application;
 
+import com.starrainnotes.english.shared.content.TagMatchCandidate;
+import java.util.List;
+
 import com.starrainnotes.english.reading.dto.ReadingArticleView;
 import com.starrainnotes.english.shared.content.ContentDescriptor;
 import com.starrainnotes.english.shared.content.ContentCatalogFilter;
@@ -13,6 +16,8 @@ public class ReadingContentDescriptorProvider implements EnglishContentDescripto
     private final ReadingQueryService reading;
     public ReadingContentDescriptorProvider(ReadingQueryService reading) { this.reading=reading; }
     @Override public EnglishContentType type() { return EnglishContentType.READING; }
+    @Override public List<Long> tagIds(long contentId) { return reading.tagIds(contentId); }
+    @Override public List<TagMatchCandidate> tagMatches(List<Long> termIds) { return reading.tagMatches(termIds); }
     @Override public ContentDescriptor require(long id) {
         ReadingArticleView item=reading.get(id);
         return new ContentDescriptor(type(),item.id(),item.slug(),item.title(),item.summary(),
