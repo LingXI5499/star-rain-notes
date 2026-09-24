@@ -11,7 +11,7 @@ import com.starrainnotes.english.reading.entity.ReadingArticle;
 import com.starrainnotes.english.reading.support.ReadingTextStatistics;
 import com.starrainnotes.english.reading.infrastructure.ReadingRepository;
 import com.starrainnotes.english.reading.domain.ReadingPublishPolicy;
-import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.api.MediaPort;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -27,9 +27,9 @@ public class ReadingCommandService {
     private final ReadingRepository repository;
     private final ReadingRelationService relations;
     private final ReadingPublishPolicy policy;
-    private final MediaAssetPort media;
+    private final MediaPort media;
     public ReadingCommandService(ReadingRepository repository, ReadingRelationService relations,
-                                 ReadingPublishPolicy policy, MediaAssetPort media) {
+                                 ReadingPublishPolicy policy, MediaPort media) {
         this.repository = repository;
         this.relations = relations;
         this.policy = policy;

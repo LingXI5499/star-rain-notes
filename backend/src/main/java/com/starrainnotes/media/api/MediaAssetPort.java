@@ -26,6 +26,11 @@ public class MediaAssetPort {
                 .eq(MediaAsset::getId, id).eq(MediaAsset::getAssetType, type));
         return count != null && count > 0;
     }
+    public String assetType(Long id) {
+        if (id == null) return null;
+        MediaAsset asset = mapper.selectById(id);
+        return asset == null ? null : asset.getAssetType();
+    }
     public String publicUrl(Long id) {
         if (id == null) return null;
         MediaAsset asset = mapper.selectById(id);

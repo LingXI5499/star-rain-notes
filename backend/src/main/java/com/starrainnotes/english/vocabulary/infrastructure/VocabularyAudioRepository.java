@@ -4,6 +4,7 @@ import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.vocabulary.dto.VocabularyAudioRequest;
 import com.starrainnotes.english.vocabulary.dto.VocabularyAudioView;
 import com.starrainnotes.english.vocabulary.mapper.VocabularyWordMapper;
+import com.starrainnotes.english.api.MediaPort;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -15,17 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 public class VocabularyAudioRepository {
     private final JdbcTemplate jdbc;
     private final VocabularyWordMapper words;
-    public VocabularyAudioRepository(JdbcTemplate jdbc,VocabularyWordMapper words) { this.jdbc=jdbc; this.words=words; }
+    private final MediaPort media;
+    public VocabularyAudioRepository(JdbcTemplate jdbc,VocabularyWordMapper words, MediaPort media) {
+        this.jdbc=jdbc; this.words=words; this.media=media;
+    }
 
     @Transactional
     public VocabularyAudioView add(long wordId,VocabularyAudioRequest request) {
         requireWord(wordId);
-        try {
-            String type=jdbc.queryForObject("SELECT asset_type FROM media_asset WHERE id=?",String.class,request.mediaAssetId());
-            if(!"AUDIO".equals(type)) throw audioRequired();
-        } catch(EmptyResultDataAccessException ex) {
+        String type=media.assetType(request.mediaAssetId());
+        if(type==null) {
             throw new ApiException(HttpStatus.NOT_FOUND,"MEDIA_NOT_FOUND","Media not found","The selected media asset does not exist.");
         }
+        if(!"AUDIO".equals(type)) throw audioRequired();
         if(request.primary()) jdbc.update("UPDATE vocabulary_word_audio SET is_primary=FALSE WHERE word_id=? AND accent=?",wordId,request.accent());
         jdbc.update("INSERT INTO vocabulary_word_audio(word_id,accent,media_asset_id,provider,source_url,license_note,is_primary) VALUES (?,?,?,?,?,?,?)",
                 wordId,request.accent(),request.mediaAssetId(),request.provider()==null?"UPLOADED":request.provider(),clean(request.sourceUrl()),request.licenseNote().trim(),request.primary());
@@ -50,9 +53,9 @@ public class VocabularyAudioRepository {
 
     private VocabularyAudioView audio(long id) {
         try { return jdbc.queryForObject("""
-                SELECT a.id,a.accent,a.media_asset_id,m.public_url,a.provider,a.source_url,a.license_note,a.is_primary
-                FROM vocabulary_word_audio a JOIN media_asset m ON m.id=a.media_asset_id WHERE a.id=?
-                """,(rs,n)->new VocabularyAudioView(rs.getLong("id"),rs.getString("accent"),rs.getLong("media_asset_id"),rs.getString("public_url"),rs.getString("provider"),rs.getString("source_url"),rs.getString("license_note"),rs.getBoolean("is_primary")),id); }
+                SELECT a.id,a.accent,a.media_asset_id,a.provider,a.source_url,a.license_note,a.is_primary
+                FROM vocabulary_word_audio a WHERE a.id=?
+                """,(rs,n)->new VocabularyAudioView(rs.getLong("id"),rs.getString("accent"),rs.getLong("media_asset_id"),media.publicUrl(rs.getLong("media_asset_id")),rs.getString("provider"),rs.getString("source_url"),rs.getString("license_note"),rs.getBoolean("is_primary")),id); }
         catch(EmptyResultDataAccessException ex) { throw audioNotFound(); }
     }
     private void requireWord(long id) {

@@ -26,4 +26,8 @@ public record ListeningItemSummaryView(
         return new ListeningItemSummaryView(id, title, slug, summary, coverUrl, cefrLevel, listeningLevel,
                 durationSeconds, publishStatus, exerciseCount, segmentCount, updatedAt, tags);
     }
+    public ListeningItemSummaryView withCoverUrl(String url) {
+        return new ListeningItemSummaryView(id, title, slug, summary, url, cefrLevel, listeningLevel,
+                durationSeconds, publishStatus, exerciseCount, segmentCount, updatedAt, tags);
+    }
 }

@@ -4,7 +4,7 @@ import com.starrainnotes.english.shared.events.EnglishContentKind;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
-/** Published-state lookup used only when a content command emits an event. */
+/** Published-state lookup shared by content events and review capability. */
 @Repository
 public class EnglishContentStateRepository {
     private final JdbcTemplate jdbc;

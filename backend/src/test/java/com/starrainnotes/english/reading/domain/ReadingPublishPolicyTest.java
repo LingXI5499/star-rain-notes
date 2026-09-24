@@ -3,7 +3,7 @@ package com.starrainnotes.english.reading.domain;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.reading.entity.ReadingArticle;
 import com.starrainnotes.english.reading.infrastructure.ReadingRelationRepository;
-import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.english.api.MediaPort;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.when;
 class ReadingPublishPolicyTest {
 
     private final ReadingRelationRepository relations = mock(ReadingRelationRepository.class);
-    private final MediaAssetPort media = mock(MediaAssetPort.class);
+    private final MediaPort media = mock(MediaPort.class);
     private final ReadingPublishPolicy policy = new ReadingPublishPolicy(relations, media);
 
     @Test

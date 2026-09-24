@@ -6,6 +6,7 @@ import com.starrainnotes.english.shared.bundle.dto.BundleRequest;
 import com.starrainnotes.english.shared.bundle.dto.BundleView;
 import com.starrainnotes.english.shared.bundle.entity.EnglishLearningBundle;
 import com.starrainnotes.english.shared.bundle.infrastructure.LearningBundleRepository;
+import com.starrainnotes.english.api.MediaPort;
 import com.starrainnotes.english.shared.events.EnglishContentChange;
 import com.starrainnotes.english.shared.events.EnglishContentChangeType;
 import com.starrainnotes.english.shared.events.EnglishContentKind;
@@ -22,10 +23,13 @@ public class LearningBundleService {
     private static final String DRAFT = "DRAFT";
     private final LearningBundleRepository repository;
     private final LearningBundleItemService items;
+    private final MediaPort media;
 
-    public LearningBundleService(LearningBundleRepository repository, LearningBundleItemService items) {
+    public LearningBundleService(LearningBundleRepository repository, LearningBundleItemService items,
+                                 MediaPort media) {
         this.repository = repository;
         this.items = items;
+        this.media = media;
     }
 
     public List<BundleView> list() { return repository.list(); }
@@ -126,7 +130,7 @@ public class LearningBundleService {
     }
 
     private void validateCover(Long mediaId) {
-        if (mediaId != null && !repository.coverIsImage(mediaId)) {
+        if (mediaId != null && !media.isImage(mediaId)) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_COVER_MEDIA",
                     "Invalid cover", "The selected cover must be an existing image asset.");
         }
