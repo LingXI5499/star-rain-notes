@@ -6,7 +6,9 @@ import com.starrainnotes.english.shared.bundle.dto.BundleRequest;
 import com.starrainnotes.english.shared.bundle.dto.BundleView;
 import com.starrainnotes.english.shared.bundle.entity.EnglishLearningBundle;
 import com.starrainnotes.english.shared.bundle.infrastructure.LearningBundleRepository;
-import com.starrainnotes.seo.SeoContentChange;
+import com.starrainnotes.english.shared.events.EnglishContentChange;
+import com.starrainnotes.english.shared.events.EnglishContentChangeType;
+import com.starrainnotes.english.shared.events.EnglishContentKind;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -65,7 +67,7 @@ public class LearningBundleService {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_learning_bundle", pathPrefix = "/english/bundles/")
+    @EnglishContentChange(kind = EnglishContentKind.BUNDLE, changeType = EnglishContentChangeType.UPDATED)
     public BundleView update(Long id, BundleRequest request) {
         EnglishLearningBundle bundle = requireEntity(id);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), bundle.getSlug());
@@ -87,7 +89,7 @@ public class LearningBundleService {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_learning_bundle", pathPrefix = "/english/bundles/")
+    @EnglishContentChange(kind = EnglishContentKind.BUNDLE, changeType = EnglishContentChangeType.PUBLISHED)
     public BundleView publish(Long id) {
         requireEntity(id);
         items.assertPublishable(id);
@@ -96,7 +98,7 @@ public class LearningBundleService {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_learning_bundle", pathPrefix = "/english/bundles/")
+    @EnglishContentChange(kind = EnglishContentKind.BUNDLE, changeType = EnglishContentChangeType.WITHDRAWN)
     public BundleView withdraw(Long id) {
         if (DRAFT.equals(requireEntity(id).getPublishStatus())) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_INVALID_PUBLISH_TRANSITION",

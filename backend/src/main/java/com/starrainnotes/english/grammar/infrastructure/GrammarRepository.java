@@ -18,7 +18,6 @@ import com.starrainnotes.english.grammar.dto.GrammarSectionView;
 import com.starrainnotes.english.grammar.dto.UpdateGrammarCourseRequest;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import com.starrainnotes.media.api.MediaAssetPort;
-import com.starrainnotes.seo.SeoContentChange;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
@@ -206,7 +205,6 @@ public class GrammarRepository {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_grammar_lesson", pathPrefix = "/english/grammar/")
     public GrammarLessonDetailView updateLesson(long lessonId, GrammarLessonRequest request) {
         LessonRow current = lessonRow(lessonId, false);
         if (!current.sectionId().equals(request.sectionId())) {
@@ -236,7 +234,6 @@ public class GrammarRepository {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_grammar_lesson", pathPrefix = "/english/grammar/")
     public GrammarLessonDetailView publishLesson(long lessonId) {
         requireCourse(false);
         lessonRow(lessonId, false);
@@ -249,7 +246,6 @@ public class GrammarRepository {
     }
 
     @Transactional
-    @SeoContentChange(table = "english_grammar_lesson", pathPrefix = "/english/grammar/")
     public GrammarLessonDetailView withdrawLesson(long lessonId) {
         LessonRow lesson = lessonRow(lessonId, false);
         publishPolicy.validateLessonWithdrawal(lesson.publishStatus());
