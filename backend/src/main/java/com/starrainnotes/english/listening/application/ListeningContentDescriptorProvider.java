@@ -1,5 +1,8 @@
 package com.starrainnotes.english.listening.application;
 
+import com.starrainnotes.english.shared.content.TagMatchCandidate;
+import java.util.List;
+
 import com.starrainnotes.english.listening.dto.ListeningItemView;
 import com.starrainnotes.english.shared.content.ContentDescriptor;
 import com.starrainnotes.english.shared.content.ContentCatalogFilter;
@@ -13,6 +16,8 @@ public class ListeningContentDescriptorProvider implements EnglishContentDescrip
     private final ListeningQueryService listening;
     public ListeningContentDescriptorProvider(ListeningQueryService listening) { this.listening=listening; }
     @Override public EnglishContentType type() { return EnglishContentType.LISTENING; }
+    @Override public List<Long> tagIds(long contentId) { return listening.tagIds(contentId); }
+    @Override public List<TagMatchCandidate> tagMatches(List<Long> termIds) { return listening.tagMatches(termIds); }
     @Override public ContentDescriptor require(long id) {
         ListeningItemView item=listening.get(id);
         return new ContentDescriptor(type(),item.id(),item.slug(),item.title(),item.summary(),

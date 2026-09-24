@@ -16,6 +16,7 @@ public class LearningBundleItemRepository {
     }
 
     public record Member(String type, long contentId, int sortOrder) { }
+    public record PathMember(long bundleId, String bundleTitle, String type, long contentId, int sortOrder) { }
     public record Metadata(String summary, String primaryCefr) { }
 
     public List<Member> members(Long bundleId) {
@@ -29,6 +30,29 @@ public class LearningBundleItemRepository {
         members.sort(java.util.Comparator.comparingInt(Member::sortOrder)
                 .thenComparing(Member::type).thenComparingLong(Member::contentId));
         return members;
+    }
+
+    public List<PathMember> publishedPathMembers() {
+        return jdbc.query("""
+                SELECT x.bundle_id,x.bundle_title,x.content_type,x.content_id,x.sort_order FROM (
+                    SELECT b.id bundle_id,b.title bundle_title,'READING' content_type,
+                           i.article_id content_id,i.sort_order
+                    FROM english_learning_bundle b
+                    JOIN english_learning_bundle_reading_item i ON i.bundle_id=b.id
+                    WHERE b.publish_status='PUBLISHED'
+                    UNION ALL
+                    SELECT b.id,b.title,'LISTENING',i.listening_item_id,i.sort_order
+                    FROM english_learning_bundle b
+                    JOIN english_learning_bundle_listening_item i ON i.bundle_id=b.id
+                    WHERE b.publish_status='PUBLISHED'
+                    UNION ALL
+                    SELECT b.id,b.title,'WRITING',i.prompt_id,i.sort_order
+                    FROM english_learning_bundle b
+                    JOIN english_learning_bundle_writing_item i ON i.bundle_id=b.id
+                    WHERE b.publish_status='PUBLISHED'
+                ) x ORDER BY x.bundle_id,x.sort_order,x.content_type,x.content_id
+                """, (rs, row) -> new PathMember(rs.getLong("bundle_id"), rs.getString("bundle_title"),
+                rs.getString("content_type"), rs.getLong("content_id"), rs.getInt("sort_order")));
     }
 
     public Metadata metadata(Long bundleId) {
