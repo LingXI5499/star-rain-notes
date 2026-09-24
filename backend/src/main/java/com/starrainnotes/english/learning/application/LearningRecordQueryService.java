@@ -19,6 +19,11 @@ public class LearningRecordQueryService {
     public LearningRecordQueryService(LearnerProfileService profiles,LearningRecordRepository records) { this.profiles=profiles; this.records=records; }
     public List<Map<String,Object>> list(long accountId,int page,int size) { Long profile=profiles.profileId(accountId); return profile==null?List.of():records.list(profile,page,size); }
     public Map<String,Object> get(long accountId,String type,long contentId) { Long profile=profiles.profileId(accountId); if(profile==null) throw notFound(); return records.get(profile,type,contentId); }
+    public LearningRecordView getView(long accountId, String type, long contentId) {
+        Long profile = profiles.profileId(accountId);
+        if (profile == null) throw notFound();
+        return records.getView(profile, type, contentId);
+    }
     public Map<String,LearningRecordView> batch(long accountId,List<String> refs) {
         Long profile=profiles.profileId(accountId);
         if(profile==null||refs==null||refs.isEmpty()) return Map.of();

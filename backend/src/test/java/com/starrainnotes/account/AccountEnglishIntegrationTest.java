@@ -1,6 +1,7 @@
 package com.starrainnotes.account;
 
 import com.starrainnotes.account.service.MailGateway;
+import com.starrainnotes.english.api.EnglishLearningFacade;
 import com.starrainnotes.english.vocabulary.learning.VocabularyReviewRequest;
 import com.starrainnotes.english.vocabulary.learning.application.VocabularyStudyCommandService;
 import org.junit.jupiter.api.AfterEach;
@@ -40,6 +41,7 @@ class AccountEnglishIntegrationTest {
     @Autowired JdbcTemplate jdbc;
     @Autowired PasswordEncoder passwordEncoder;
     @Autowired VocabularyStudyCommandService vocabularyStudyCommands;
+    @Autowired EnglishLearningFacade learningFacade;
     @MockBean MailGateway mailGateway;
 
     private Long vocabThemeId;
@@ -119,6 +121,10 @@ class AccountEnglishIntegrationTest {
                 "{\"completionStatus\":\"COMPLETED\",\"timeSpentSeconds\":120}", session, token);
         doPut("/api/v1/account/english/learning/records/READING/2",
                 "{\"completionStatus\":\"IN_PROGRESS\",\"timeSpentSeconds\":60}", session, token);
+        long accountId = jdbc.queryForObject(
+                "SELECT id FROM user_account WHERE email='learn@example.com'", Long.class);
+        org.assertj.core.api.Assertions.assertThat(
+                learningFacade.getRecord(accountId, "GRAMMAR", 1).status()).isEqualTo("COMPLETED");
 
         mockMvc.perform(get("/api/v1/account/english/learning/records/GRAMMAR/1").session(session))
                 .andExpect(status().isOk())
@@ -331,6 +337,10 @@ class AccountEnglishIntegrationTest {
         doPut("/api/v1/account/english/writing-submissions/" + promptId,
                 "{\"bodyText\":\"Hello world from the account author.\",\"status\":\"DRAFT\",\"selfScore\":80}",
                 session, token);
+        long accountId = jdbc.queryForObject(
+                "SELECT id FROM user_account WHERE email='learn@example.com'", Long.class);
+        org.assertj.core.api.Assertions.assertThat(
+                learningFacade.getWritingSubmission(accountId, promptId).status()).isEqualTo("DRAFT");
 
         MvcResult result = mockMvc.perform(get("/api/v1/account/english/writing-submissions/" + promptId).session(session))
                 .andExpect(status().isOk())
