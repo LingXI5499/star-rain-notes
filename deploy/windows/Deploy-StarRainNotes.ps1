@@ -9,7 +9,7 @@ Add-Type -AssemblyName System.Drawing
 [System.Windows.Forms.Application]::EnableVisualStyles()
 
 $script:PayloadRoot = Join-Path $PSScriptRoot 'payload'
-$script:Version = '1.5.0'
+$script:Version = '1.7.0'
 
 function Quote-Yaml([string]$Value) {
     return "'" + ($Value -replace "'", "''") + "'"
@@ -35,7 +35,7 @@ function Add-Field($Form, [string]$Label, [int]$Top, [string]$Default = '', [boo
 
 function Write-DeploymentFiles($Values) {
     $target = [System.IO.Path]::GetFullPath($Values.InstallPath)
-    if (-not (Test-Path (Join-Path $script:PayloadRoot 'backend\star-rain-notes-backend-1.5.0.jar'))) {
+    if (-not (Test-Path (Join-Path $script:PayloadRoot 'backend\star-rain-notes-backend-1.7.0.jar'))) {
         throw '部署包不完整：未找到后端 JAR。请重新解压完整发布包。'
     }
     if (-not (Test-Path (Join-Path $script:PayloadRoot 'frontend\index.html'))) {
@@ -56,8 +56,8 @@ function Write-DeploymentFiles($Values) {
         New-Item -ItemType Directory -Path $directory -Force | Out-Null
     }
 
-    Copy-Item (Join-Path $script:PayloadRoot 'backend\star-rain-notes-backend-1.5.0.jar') `
-        (Join-Path $target 'app\backend\star-rain-notes-backend-1.5.0.jar') -Force
+    Copy-Item (Join-Path $script:PayloadRoot 'backend\star-rain-notes-backend-1.7.0.jar') `
+        (Join-Path $target 'app\backend\star-rain-notes-backend-1.7.0.jar') -Force
     Copy-Item (Join-Path $script:PayloadRoot 'frontend\*') (Join-Path $target 'app\frontend') -Recurse -Force
 
     $normalizedTarget = $target.Replace('\', '/')
@@ -147,7 +147,7 @@ server {
 
     $startScript = @"
 `$root = Split-Path -Parent `$MyInvocation.MyCommand.Path
-`$jar = Join-Path `$root 'app\backend\star-rain-notes-backend-1.5.0.jar'
+`$jar = Join-Path `$root 'app\backend\star-rain-notes-backend-1.7.0.jar'
 `$config = (Join-Path `$root 'config\application-deploy.yml').Replace('\', '/')
 `$stdout = Join-Path `$root 'logs\backend.out.log'
 `$stderr = Join-Path `$root 'logs\backend.err.log'
@@ -165,7 +165,7 @@ Write-Host '请将 config\nginx-star-rain-notes.conf 加入 Nginx 配置并重�
 if (-not (Test-Path `$pidFile)) { Write-Host '未找到运行中的后端 PID。'; exit 0 }
 `$backendPid = [int](Get-Content -LiteralPath `$pidFile -Raw)
 `$process = Get-CimInstance Win32_Process -Filter "ProcessId=`$backendPid" -ErrorAction SilentlyContinue
-if (`$process -and `$process.CommandLine -like '*star-rain-notes-backend-1.5.0.jar*') {
+if (`$process -and `$process.CommandLine -like '*star-rain-notes-backend-1.7.0.jar*') {
     Stop-Process -Id `$backendPid
     Write-Host "后端已停止，PID: `$backendPid"
 } else {
@@ -177,7 +177,7 @@ Remove-Item -LiteralPath `$pidFile -Force -ErrorAction SilentlyContinue
     Set-Content -LiteralPath (Join-Path $target '停止服务.cmd') -Value "@echo off`r`npowershell.exe -NoProfile -ExecutionPolicy Bypass -File `"%~dp0stop-service.ps1`"`r`npause`r`n" -Encoding ASCII
 
     $notes = @"
-星雨笔录 v1.5.0 已部署到：$target
+星雨笔录 v1.7.0 已部署到：$target
 
 1. 确保 Java 21、MySQL 8.0 与 Nginx 已安装。
 2. 数据库必须已创建；后端首次启动会自动执行 Flyway 迁移。
@@ -197,7 +197,7 @@ Remove-Item -LiteralPath `$pidFile -Force -ErrorAction SilentlyContinue
 }
 
 if ($ValidateOnly) {
-    $jar = Join-Path $script:PayloadRoot 'backend\star-rain-notes-backend-1.5.0.jar'
+    $jar = Join-Path $script:PayloadRoot 'backend\star-rain-notes-backend-1.7.0.jar'
     $index = Join-Path $script:PayloadRoot 'frontend\index.html'
     if (-not (Test-Path $jar) -or -not (Test-Path $index)) {
         throw '部署包校验失败：缺少后端 JAR 或前端 index.html。'
@@ -231,7 +231,7 @@ if (-not [string]::IsNullOrWhiteSpace($HeadlessInstallPath)) {
 }
 
 $form = New-Object System.Windows.Forms.Form
-$form.Text = '星雨笔录 v1.5.0 · 图形化部署向导'
+$form.Text = '星雨笔录 v1.7.0 · 图形化部署向导'
 $form.StartPosition = 'CenterScreen'
 $form.Size = New-Object System.Drawing.Size(650, 690)
 $form.MinimumSize = $form.Size
