@@ -1,7 +1,5 @@
 package com.starrainnotes.english.grammar.controller;
 
-import com.starrainnotes.account.review.dto.ContentReviewView;
-import com.starrainnotes.account.review.service.ContentReviewService;
 import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.english.grammar.dto.GrammarCourseView;
 import com.starrainnotes.english.grammar.dto.GrammarCurriculumView;
@@ -34,12 +32,10 @@ public class EnglishGrammarAdminController {
 
     private final GrammarQueryService queries;
     private final GrammarCommandService commands;
-    private final ContentReviewService reviewService;
 
-    public EnglishGrammarAdminController(GrammarQueryService queries, GrammarCommandService commands, ContentReviewService reviewService) {
+    public EnglishGrammarAdminController(GrammarQueryService queries, GrammarCommandService commands) {
         this.queries = queries;
         this.commands = commands;
-        this.reviewService = reviewService;
     }
 
     @GetMapping
@@ -94,12 +90,8 @@ public class EnglishGrammarAdminController {
     public ResponseEntity<?> updateLesson(@PathVariable long lessonId,
                                           @Valid @RequestBody GrammarLessonRequest request,
                                           Authentication authentication) {
-        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_GRAMMAR_LESSON", lessonId)) {
-            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
-                    "ENGLISH_GRAMMAR_LESSON", lessonId, request.title(), request);
-            return ResponseEntity.accepted().body(review);
-        }
-        return ResponseEntity.ok(commands.updateLesson(lessonId, request));
+        var result = commands.updateLessonForEditor(actorId(authentication), isSuperAdmin(authentication), lessonId, request);
+        return ResponseEntity.status(result.submitted() ? HttpStatus.ACCEPTED : HttpStatus.OK).body(result.body());
     }
 
     @DeleteMapping("/lessons/{lessonId}")

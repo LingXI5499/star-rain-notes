@@ -12,6 +12,7 @@ import com.starrainnotes.common.slug.NumericSlugGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -34,6 +35,7 @@ public class BlogTagService {
         return tagMapper.selectAllWithPostCount().stream().map(this::toCountVO).toList();
     }
 
+    @Transactional
     public BlogTagWithPostCountVO create(CreateTagRequest request) {
         String name = normalizeName(request.name());
         String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null)).toLowerCase(Locale.ROOT);
@@ -43,6 +45,7 @@ public class BlogTagService {
         return new BlogTagWithPostCountVO(tag.getId(), tag.getName(), tag.getSlug(), 0);
     }
 
+    @Transactional
     public BlogTagWithPostCountVO update(Long tagId, UpdateTagRequest request) {
         BlogTag tag = requireTag(tagId);
         String name = normalizeName(request.name());
@@ -54,6 +57,7 @@ public class BlogTagService {
         return new BlogTagWithPostCountVO(tag.getId(), tag.getName(), tag.getSlug(), postTagMapper.countByTagId(tagId));
     }
 
+    @Transactional
     public void delete(Long tagId, boolean force) {
         requireTag(tagId);
         long postCount = postTagMapper.countByTagId(tagId);

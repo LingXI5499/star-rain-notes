@@ -3,8 +3,7 @@ package com.starrainnotes.portfolio.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
-import com.starrainnotes.media.entity.MediaAsset;
-import com.starrainnotes.media.mapper.MediaAssetMapper;
+import com.starrainnotes.media.api.MediaAssetPort;
 import com.starrainnotes.portfolio.dto.AdminProjectDetailView;
 import com.starrainnotes.portfolio.dto.CreateProjectRequest;
 import com.starrainnotes.portfolio.dto.ProjectMediaItemRequest;
@@ -57,7 +56,7 @@ public class PortfolioCommandService {
 
     private final PortfolioProjectMapper projectMapper;
     private final PortfolioProjectMediaMapper mediaMapper;
-    private final MediaAssetMapper mediaAssetMapper;
+    private final MediaAssetPort media;
     private final PortfolioPrototypeService prototypeService;
     private final PortfolioQueryService queryService;
 
@@ -83,7 +82,7 @@ public class PortfolioCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
+    @SeoContentChange(kind = "portfolio", pathPrefix = "/portfolio/")
     public AdminProjectDetailView update(Long projectId, UpdateProjectRequest request) {
         PortfolioProject project = requireProject(projectId);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), project.getSlug());
@@ -102,14 +101,16 @@ public class PortfolioCommandService {
         return queryService.adminDetail(projectId);
     }
 
-    @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
+    @Transactional
+    @SeoContentChange(kind = "portfolio", pathPrefix = "/portfolio/")
     public void delete(Long projectId) {
         requireProject(projectId);
         prototypeService.delete(projectId);
         projectMapper.deleteById(projectId);
     }
 
-    @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
+    @Transactional
+    @SeoContentChange(kind = "portfolio", pathPrefix = "/portfolio/")
     public AdminProjectDetailView publish(Long projectId) {
         PortfolioProject project = requireProject(projectId);
         validatePublishable(project);
@@ -124,7 +125,8 @@ public class PortfolioCommandService {
         return queryService.adminDetail(projectId);
     }
 
-    @SeoContentChange(table = "portfolio_project", pathPrefix = "/portfolio/")
+    @Transactional
+    @SeoContentChange(kind = "portfolio", pathPrefix = "/portfolio/")
     public AdminProjectDetailView withdraw(Long projectId) {
         PortfolioProject project = requireProject(projectId);
         if (DRAFT.equals(project.getPublishStatus())) {
@@ -202,18 +204,7 @@ public class PortfolioCommandService {
     }
 
     private void validateImageMedia(Long mediaId) {
-        if (mediaId == null) {
-            return;
-        }
-        MediaAsset media = mediaAssetMapper.selectById(mediaId);
-        if (media == null) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "MEDIA_NOT_FOUND",
-                    "Media not found", "The referenced cover media asset does not exist.");
-        }
-        if (!"IMAGE".equals(media.getAssetType())) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "MEDIA_TYPE_INVALID",
-                    "Only IMAGE media allowed", "The cover must reference an IMAGE asset.");
-        }
+        media.requireImageIfPresent(mediaId);
     }
 
     private void applyFields(PortfolioProject p, String title, String slug, String summary, String role,

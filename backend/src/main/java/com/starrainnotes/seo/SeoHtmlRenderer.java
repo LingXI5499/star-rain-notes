@@ -21,19 +21,19 @@ import java.util.Map;
 public class SeoHtmlRenderer {
     private static final DateTimeFormatter ISO = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private final SeoProperties properties;
-    private final SeoContentRepository content;
+    private final SeoIdentityService identity;
     private final ObjectMapper json;
     private volatile CachedShell cachedShell;
 
-    public SeoHtmlRenderer(SeoProperties properties, SeoContentRepository content, ObjectMapper json) {
+    public SeoHtmlRenderer(SeoProperties properties, SeoIdentityService identity, ObjectMapper json) {
         this.properties = properties;
-        this.content = content;
+        this.identity = identity;
         this.json = json;
     }
 
     public String render(SeoPage page) {
         String shell = shell();
-        String siteName = content.site().name();
+        String siteName = identity.site().name();
         String title = page.path().equals("/") ? page.title() : page.title() + " | " + siteName;
         String canonical = absolute(page.path());
         String image = absolute(page.imageUrl() == null ? properties.defaultShareImage() : page.imageUrl());
@@ -98,13 +98,13 @@ public class SeoHtmlRenderer {
         if (page.updatedAt() != null) value.put("dateModified", format(page.updatedAt()));
         value.putAll(page.schemaExtras());
         if ("Article".equals(page.schemaType())) {
-            String author = content.authorName();
+            String author = identity.authorName();
             value.put("author", Map.of("@type", "Person", "name", SeoProperties.blank(author) ? "零燨" : author));
         }
         if ("ProfilePage".equals(page.schemaType())) {
             Map<String, Object> person = new LinkedHashMap<>();
             person.put("@type", "Person");
-            person.put("name", page.schemaExtras().getOrDefault("name", content.authorName()));
+            person.put("name", page.schemaExtras().getOrDefault("name", identity.authorName()));
             if (page.schemaExtras().containsKey("sameAs")) person.put("sameAs", page.schemaExtras().get("sameAs"));
             value.put("mainEntity", person);
         }
@@ -119,7 +119,9 @@ public class SeoHtmlRenderer {
             graph.add(Map.of("@type", "BreadcrumbList", "itemListElement", items));
         }
         try {
-            return json.writeValueAsString(Map.of("@context", "https://schema.org", "@graph", graph));
+            // JSON-LD is inside a script element; escaped markup must not close that element.
+            return json.writeValueAsString(Map.of("@context", "https://schema.org", "@graph", graph))
+                    .replace("&", "\\u0026").replace("<", "\\u003c").replace(">", "\\u003e");
         } catch (JsonProcessingException e) {
             throw new IllegalStateException("Cannot render SEO structured data", e);
         }

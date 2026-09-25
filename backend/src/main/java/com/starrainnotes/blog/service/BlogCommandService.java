@@ -11,6 +11,7 @@ import com.starrainnotes.blog.mapper.BlogTagMapper;
 import com.starrainnotes.blog.vo.BlogPostAdminDetailVO;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
+import com.starrainnotes.media.api.MediaAssetPort;
 import com.starrainnotes.seo.SeoContentChange;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -36,11 +37,13 @@ public class BlogCommandService {
     private final BlogPostTagMapper postTagMapper;
     private final BlogTagService tagService;
     private final BlogQueryService queryService;
+    private final MediaAssetPort media;
 
     @Transactional
     public BlogPostAdminDetailVO create(CreatePostRequest request) {
         String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
         assertSlugFree(slug, null);
+        media.requireImageIfPresent(request.coverMediaId());
         List<Long> tagIds = resolveTagIds(request.tagIds(), request.tagNames());
         BlogPost post = BlogPost.builder().title(request.title()).slug(slug).summary(request.summary())
                 .bodyMarkdown(request.bodyMarkdown()).coverMediaId(request.coverMediaId()).publishStatus(DRAFT).build();
@@ -50,11 +53,12 @@ public class BlogCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "blog_post", pathPrefix = "/blog/")
+    @SeoContentChange(kind = "blog", pathPrefix = "/blog/")
     public BlogPostAdminDetailVO update(Long postId, UpdatePostRequest request) {
         BlogPost post = requirePost(postId);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), post.getSlug());
         assertSlugFree(slug, postId);
+        media.requireImageIfPresent(request.coverMediaId());
         List<Long> tagIds = resolveTagIds(request.tagIds(), request.tagNames());
         post.setTitle(request.title());
         post.setSlug(slug);
@@ -67,14 +71,14 @@ public class BlogCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "blog_post", pathPrefix = "/blog/")
+    @SeoContentChange(kind = "blog", pathPrefix = "/blog/")
     public void delete(Long postId) {
         requirePost(postId);
         postMapper.deleteById(postId);
     }
 
     @Transactional
-    @SeoContentChange(table = "blog_post", pathPrefix = "/blog/")
+    @SeoContentChange(kind = "blog", pathPrefix = "/blog/")
     public BlogPostAdminDetailVO publish(Long postId) {
         BlogPost post = requirePost(postId);
         if (!PUBLISHED.equals(post.getPublishStatus())) {
@@ -86,7 +90,7 @@ public class BlogCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "blog_post", pathPrefix = "/blog/")
+    @SeoContentChange(kind = "blog", pathPrefix = "/blog/")
     public BlogPostAdminDetailVO withdraw(Long postId) {
         BlogPost post = requirePost(postId);
         if (DRAFT.equals(post.getPublishStatus())) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,

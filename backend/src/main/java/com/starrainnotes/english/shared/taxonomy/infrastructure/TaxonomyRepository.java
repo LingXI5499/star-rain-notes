@@ -3,7 +3,6 @@ package com.starrainnotes.english.shared.taxonomy.infrastructure;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.english.shared.taxonomy.entity.EnglishTaxonomyTerm;
 import com.starrainnotes.english.shared.taxonomy.mapper.EnglishTaxonomyTermMapper;
-import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -14,10 +13,6 @@ import java.util.Objects;
 /** Persistence and reference checks for the shared taxonomy. */
 @Repository
 public class TaxonomyRepository {
-    private static final List<String> CONTENT_REFERENCE_TABLES = List.of(
-            "english_reading_article_tag", "english_listening_item_tag",
-            "english_writing_resource_tag", "english_writing_prompt_tag");
-
     private final EnglishTaxonomyTermMapper mapper;
     private final JdbcTemplate jdbc;
 
@@ -90,36 +85,6 @@ public class TaxonomyRepository {
         if (excludedId != null) wrapper.ne(EnglishTaxonomyTerm::getId, excludedId);
         Long count = mapper.selectCount(wrapper);
         return count != null && count > 0;
-    }
-
-    public boolean referencedByContent(Long termId) {
-        return usageCount(termId) > 0;
-    }
-
-    public long usageCount(Long termId) {
-        long total = 0;
-        for (String table : CONTENT_REFERENCE_TABLES) {
-            if (!tableExists(table)) continue;
-            try {
-                Long count = jdbc.queryForObject("SELECT COUNT(*) FROM " + table + " WHERE term_id=?",
-                        Long.class, termId);
-                if (count != null) total += count;
-            } catch (DataAccessException ignored) {
-                // Earlier schema revisions may lack this mapping column.
-            }
-        }
-        return total;
-    }
-
-    private boolean tableExists(String table) {
-        try {
-            Long count = jdbc.queryForObject(
-                    "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema=DATABASE() AND table_name=?",
-                    Long.class, table);
-            return count != null && count > 0;
-        } catch (DataAccessException ex) {
-            return false;
-        }
     }
 
     private LambdaQueryWrapper<EnglishTaxonomyTerm> siblingsQuery(String dimension, Long parentId) {

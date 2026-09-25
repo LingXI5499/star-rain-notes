@@ -3,8 +3,10 @@ package com.starrainnotes.english.writing.application;
 import com.starrainnotes.english.writing.dto.*;
 import com.starrainnotes.english.writing.infrastructure.WritingResourceRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class WritingResourceQueryService {
     private final WritingResourceRepository repository;
     public WritingResourceQueryService(WritingResourceRepository repository) { this.repository = repository; }

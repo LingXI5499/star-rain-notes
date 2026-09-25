@@ -1,13 +1,14 @@
 package com.starrainnotes.site.service;
 
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.media.entity.MediaAsset;
-import com.starrainnotes.media.mapper.MediaAssetMapper;
+import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.site.SiteSettingsChangedEvent;
 import com.starrainnotes.site.dto.AdminSiteSettingsView;
 import com.starrainnotes.site.dto.UpdateSiteSettingsRequest;
 import com.starrainnotes.site.entity.SiteSetting;
 import com.starrainnotes.site.mapper.SiteSettingMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,14 +21,15 @@ import java.time.ZoneId;
 public class SiteCommandService {
 
     private final SiteSettingMapper siteSettingMapper;
-    private final MediaAssetMapper mediaAssetMapper;
+    private final MediaAssetPort media;
     private final SiteQueryService queryService;
+    private final ApplicationEventPublisher events;
 
     @Transactional
     public AdminSiteSettingsView updateAdminSettings(UpdateSiteSettingsRequest request) {
         validateTimezone(request.timezone());
-        validateImageMedia(request.logoMediaId(), "logo");
-        validateImageMedia(request.faviconMediaId(), "favicon");
+        media.requireImageIfPresent(request.logoMediaId());
+        media.requireImageIfPresent(request.faviconMediaId());
         SiteSetting setting = requireSetting();
         setting.setSiteName(request.siteName());
         setting.setTagline(request.tagline());
@@ -39,6 +41,7 @@ public class SiteCommandService {
         setting.setLogoMediaId(request.logoMediaId());
         setting.setFaviconMediaId(request.faviconMediaId());
         siteSettingMapper.updateById(setting);
+        events.publishEvent(new SiteSettingsChangedEvent());
         return queryService.getAdminSettings();
     }
 
@@ -60,16 +63,4 @@ public class SiteCommandService {
         }
     }
 
-    private void validateImageMedia(Long mediaId, String field) {
-        if (mediaId == null) return;
-        MediaAsset media = mediaAssetMapper.selectById(mediaId);
-        if (media == null) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "MEDIA_NOT_FOUND",
-                    "Media not found", "The referenced media asset does not exist.");
-        }
-        if (!"IMAGE".equals(media.getAssetType())) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "MEDIA_TYPE_INVALID", "Only IMAGE media allowed",
-                    "The " + field + " media id must reference an IMAGE asset, got " + media.getAssetType() + ".");
-        }
-    }
 }

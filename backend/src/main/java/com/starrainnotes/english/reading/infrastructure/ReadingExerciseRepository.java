@@ -69,8 +69,8 @@ public class ReadingExerciseRepository {
         ids.remove(exerciseId);
         ids.add(Math.min(Math.max(targetIndex, 0), ids.size()), exerciseId);
         if (ids.isEmpty()) return;
-        jdbc.update("UPDATE english_exercise SET sort_order=100000 WHERE id IN ("
-                + joinIds(ids) + ")");
+        String placeholders = String.join(",", java.util.Collections.nCopies(ids.size(), "?"));
+        jdbc.update("UPDATE english_exercise SET sort_order=100000 WHERE id IN (" + placeholders + ")", ids.toArray());
         for (int i = 0; i < ids.size(); i++) {
             jdbc.update("UPDATE english_exercise SET sort_order=? WHERE id=?", (i + 1) * 10, ids.get(i));
         }
@@ -167,10 +167,6 @@ public class ReadingExerciseRepository {
             throw invalidAnswer("The submitted exercise is not a published exercise of this article.");
         }
         return requireExercise(ids.get(0));
-    }
-
-    private String joinIds(List<Long> ids) {
-        return String.join(",", ids.stream().map(String::valueOf).toList());
     }
 
     private String format(java.sql.Timestamp ts) {

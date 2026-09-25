@@ -1,8 +1,7 @@
 package com.starrainnotes.english.shared.taxonomy.domain;
 
-import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.shared.domain.EnglishRuleViolation;
 import com.starrainnotes.english.shared.taxonomy.entity.EnglishTaxonomyTerm;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Set;
@@ -15,7 +14,7 @@ public class TaxonomyPolicy {
 
     public String requireDimension(String dimension) {
         if (dimension == null || !DIMENSIONS.contains(dimension.trim())) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_TAXONOMY_DEPTH_INVALID",
+            throw new EnglishRuleViolation("ENGLISH_TAXONOMY_DEPTH_INVALID",
                     "Invalid dimension", "Dimension must be one of TOPIC/SCENE/FUNCTION/ABILITY/GENRE/FORMAT.");
         }
         return dimension.trim();
@@ -32,7 +31,7 @@ public class TaxonomyPolicy {
 
     public void validateParent(String dimension, EnglishTaxonomyTerm parent) {
         if (!parent.getDimension().equals(dimension)) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_TAXONOMY_DEPTH_INVALID",
+            throw new EnglishRuleViolation("ENGLISH_TAXONOMY_DEPTH_INVALID",
                     "Cross-dimension parent", "A child term must share its parent's dimension.");
         }
         if (parent.getParentId() != null) {
@@ -48,7 +47,7 @@ public class TaxonomyPolicy {
 
     public void validateSortOrder(Integer sortOrder) {
         if (sortOrder != null && sortOrder < 1) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_TAXONOMY_DEPTH_INVALID",
+            throw new EnglishRuleViolation("ENGLISH_TAXONOMY_DEPTH_INVALID",
                     "Invalid sort order", "Sort order must be a positive integer.");
         }
     }
@@ -57,25 +56,25 @@ public class TaxonomyPolicy {
         if (exists) throw slugConflict();
     }
 
-    public ApiException slugConflict() {
-        return new ApiException(HttpStatus.CONFLICT, "ENGLISH_CONTENT_SLUG_CONFLICT",
+    public EnglishRuleViolation slugConflict() {
+        return new EnglishRuleViolation("ENGLISH_CONTENT_SLUG_CONFLICT",
                 "Slug already in use", "Choose another stable slug.");
     }
 
     public void assertDeletable(boolean hasChildren, boolean referenced) {
         if (hasChildren) {
-            throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_TAXONOMY_IN_USE",
+            throw new EnglishRuleViolation("ENGLISH_TAXONOMY_IN_USE",
                     "Taxonomy term in use", "This term still has children. Move or delete them first.");
         }
         if (referenced) {
-            throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_TAXONOMY_IN_USE",
+            throw new EnglishRuleViolation("ENGLISH_TAXONOMY_IN_USE",
                     "Taxonomy term in use",
                     "This term is referenced by published content and cannot be deleted.");
         }
     }
 
-    private ApiException depthInvalid(String detail) {
-        return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_TAXONOMY_DEPTH_INVALID",
+    private EnglishRuleViolation depthInvalid(String detail) {
+        return new EnglishRuleViolation("ENGLISH_TAXONOMY_DEPTH_INVALID",
                 "Invalid taxonomy hierarchy", detail);
     }
 }

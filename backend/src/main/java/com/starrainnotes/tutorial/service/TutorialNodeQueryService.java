@@ -18,6 +18,7 @@ import com.starrainnotes.tutorial.mapper.TutorialNodeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
 /** Read-side tree, curriculum and chapter projections for tutorial administration. */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TutorialNodeQueryService {
     private static final String GROUP = "GROUP";
     private static final String CHAPTER = "CHAPTER";

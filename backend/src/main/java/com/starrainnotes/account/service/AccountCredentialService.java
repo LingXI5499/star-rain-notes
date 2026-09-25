@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.account.audit.AuditLogService;
 import com.starrainnotes.account.entity.AccountUser;
 import com.starrainnotes.account.mapper.AccountUserMapper;
+import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,8 @@ public class AccountCredentialService {
         this.auditLog = auditLog;
     }
 
+    /** Failure count must commit when credentials are rejected. */
+    @Transactional(noRollbackFor = ApiException.class)
     public AccountUser authenticate(String email, String password) {
         AccountUser user = findByEmail(AccountService.normalize(email));
         if (user == null) {

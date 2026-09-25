@@ -1,6 +1,11 @@
 package com.starrainnotes.site.service;
 
+import com.starrainnotes.blog.api.BlogPublishedPort;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.portfolio.api.PortfolioPublishedPort;
+import com.starrainnotes.profile.api.ProfilePreviewPort;
+import com.starrainnotes.site.assembler.SiteViewAssembler;
 import com.starrainnotes.site.dto.AboutPreviewView;
 import com.starrainnotes.site.dto.AdminSiteSettingsView;
 import com.starrainnotes.site.dto.FeaturedProjectView;
@@ -8,17 +13,15 @@ import com.starrainnotes.site.dto.LatestUpdateView;
 import com.starrainnotes.site.dto.PublicHomeView;
 import com.starrainnotes.site.dto.PublicSiteView;
 import com.starrainnotes.site.entity.SiteSetting;
-import com.starrainnotes.site.mapper.SiteSettingMapper;
+import com.starrainnotes.site.repository.SiteSettingRepository;
+import com.starrainnotes.tutorial.api.TutorialPublishedPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -36,170 +39,74 @@ import java.util.Map;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SiteQueryService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
+    private static final int LATEST_LIMIT = 6;
+    private static final int FEATURED_LIMIT = 3;
 
-    private final JdbcTemplate jdbc;
-    private final SiteSettingMapper siteSettingMapper;
+    private final SiteSettingRepository settings;
     private final SiteSettingsTimezone siteSettingsTimezone;
-
-    // ---------------------------------------------------------------
-    // public
-    // ---------------------------------------------------------------
+    private final MediaAssetPort media;
+    private final TutorialPublishedPort tutorials;
+    private final BlogPublishedPort blogs;
+    private final PortfolioPublishedPort projects;
+    private final ProfilePreviewPort profiles;
 
     public PublicSiteView getPublicSite() {
-        Map<String, Object> row = jdbc.queryForMap("""
-                SELECT s.site_name, s.tagline, s.site_url, s.footer_text, s.github_url,
-                       s.default_seo_description, s.timezone,
-                       m_logo.public_url AS logo_url, m_fav.public_url AS favicon_url
-                FROM site_setting s
-                LEFT JOIN media_asset m_logo ON m_logo.id = s.logo_media_id
-                LEFT JOIN media_asset m_fav  ON m_fav.id  = s.favicon_media_id
-                WHERE s.id = 1
-                """);
-        return new PublicSiteView(
-                str(row, "site_name"),
-                str(row, "tagline"),
-                str(row, "site_url"),
-                str(row, "footer_text"),
-                str(row, "github_url"),
-                str(row, "default_seo_description"),
-                str(row, "timezone"),
-                str(row, "logo_url"),
-                str(row, "favicon_url"));
+        SiteSetting setting = settings.findSingleton();
+        if (setting == null) {
+            throw new EmptyResultDataAccessException(1);
+        }
+        return SiteViewAssembler.publicSite(setting, media.publicUrl(setting.getLogoMediaId()),
+                media.publicUrl(setting.getFaviconMediaId()));
     }
 
     public PublicHomeView getHome() {
         List<LatestUpdateView> updates = new ArrayList<>();
-        updates.addAll(publishedChapters());
-        updates.addAll(publishedBlogs());
-        updates.addAll(publishedPortfolio());
+        for (TutorialPublishedPort.Chapter chapter : tutorials.latestPublishedChapters(LATEST_LIMIT)) {
+            updates.add(new LatestUpdateView(
+                    "TUTORIAL", chapter.id(), chapter.title(), null,
+                    chapter.tutorialSlug(), chapter.chapterSlug(), formatUtc(chapter.updatedAt())));
+        }
+        for (BlogPublishedPort.Post post : blogs.latestPublished(LATEST_LIMIT)) {
+            updates.add(new LatestUpdateView(
+                    "BLOG", post.id(), post.title(), post.slug(), null, null, formatUtc(post.publishedAt())));
+        }
+        for (PortfolioPublishedPort.Project project : projects.latestPublished(LATEST_LIMIT)) {
+            updates.add(new LatestUpdateView(
+                    "PORTFOLIO", project.id(), project.title(), project.slug(), null, null, formatUtc(project.updatedAt())));
+        }
         updates.sort(Comparator.comparing(LatestUpdateView::activityAt).reversed());
-        List<LatestUpdateView> latest = updates.size() > 6 ? new ArrayList<>(updates.subList(0, 6)) : updates;
+        List<LatestUpdateView> latest = updates.size() > LATEST_LIMIT
+                ? new ArrayList<>(updates.subList(0, LATEST_LIMIT)) : updates;
 
-        List<FeaturedProjectView> featured = jdbc.query("""
-                SELECT p.id, p.title, p.slug, p.summary, p.project_status,
-                       m.public_url AS cover_url
-                FROM portfolio_project p
-                LEFT JOIN media_asset m ON m.id = p.cover_media_id
-                WHERE p.publish_status = 'PUBLISHED'
-                ORDER BY p.featured DESC,
-                         CASE WHEN p.featured = 1 THEN p.sort_order ELSE 0 END ASC,
-                         CASE WHEN p.featured = 0 THEN p.updated_at END DESC,
-                         p.id DESC
-                LIMIT 3
-                """, (rs, rowNum) -> new FeaturedProjectView(
-                rs.getLong("id"),
-                rs.getString("title"),
-                rs.getString("slug"),
-                rs.getString("summary"),
-                rs.getString("cover_url"),
-                rs.getString("project_status")));
+        List<PortfolioPublishedPort.Featured> featuredRows = projects.featured(FEATURED_LIMIT);
+        Map<Long, String> covers = media.publicUrls(featuredRows.stream()
+                .map(PortfolioPublishedPort.Featured::coverMediaId).toList());
+        List<FeaturedProjectView> featured = featuredRows.stream()
+                .map(row -> new FeaturedProjectView(
+                        row.id(), row.title(), row.slug(), row.summary(),
+                        row.coverMediaId() == null ? null : covers.get(row.coverMediaId()),
+                        row.projectStatus()))
+                .toList();
 
-        AboutPreviewView preview = jdbc.query("""
-                SELECT display_name, headline, bio
-                FROM profile
-                WHERE id = 1
-                """, rs -> rs.next()
-                ? new AboutPreviewView(rs.getString("display_name"), rs.getString("headline"), rs.getString("bio"))
-                : new AboutPreviewView(null, null, null));
-
-        return new PublicHomeView(latest, featured, preview);
+        ProfilePreviewPort.Preview preview = profiles.preview();
+        return SiteViewAssembler.home(latest, featured,
+                new AboutPreviewView(preview.displayName(), preview.headline(), preview.bio()));
     }
-
-    private List<LatestUpdateView> publishedChapters() {
-        return jdbc.query("""
-                SELECT n.id, n.title, n.slug AS chapter_slug, n.updated_at,
-                       t.slug AS tutorial_slug
-                FROM tutorial_node n
-                JOIN tutorial t ON t.id = n.tutorial_id
-                WHERE t.publish_status = 'PUBLISHED'
-                  AND n.node_type = 'CHAPTER'
-                  AND n.publish_status = 'PUBLISHED'
-                ORDER BY n.updated_at DESC
-                LIMIT 6
-                """, (rs, rowNum) -> new LatestUpdateView(
-                "TUTORIAL",
-                rs.getLong("id"),
-                rs.getString("title"),
-                null,
-                rs.getString("tutorial_slug"),
-                rs.getString("chapter_slug"),
-                formatUtc(rs.getTimestamp("updated_at"))));
-    }
-
-    private List<LatestUpdateView> publishedBlogs() {
-        return jdbc.query("""
-                SELECT id, title, slug, published_at
-                FROM blog_post
-                WHERE publish_status = 'PUBLISHED'
-                ORDER BY published_at DESC
-                LIMIT 6
-                """, (rs, rowNum) -> new LatestUpdateView(
-                "BLOG",
-                rs.getLong("id"),
-                rs.getString("title"),
-                rs.getString("slug"),
-                null,
-                null,
-                formatUtc(rs.getTimestamp("published_at"))));
-    }
-
-    private List<LatestUpdateView> publishedPortfolio() {
-        return jdbc.query("""
-                SELECT id, title, slug, updated_at
-                FROM portfolio_project
-                WHERE publish_status = 'PUBLISHED'
-                ORDER BY updated_at DESC
-                LIMIT 6
-                """, (rs, rowNum) -> new LatestUpdateView(
-                "PORTFOLIO",
-                rs.getLong("id"),
-                rs.getString("title"),
-                rs.getString("slug"),
-                null,
-                null,
-                formatUtc(rs.getTimestamp("updated_at"))));
-    }
-
-    // ---------------------------------------------------------------
-    // admin
-    // ---------------------------------------------------------------
 
     public AdminSiteSettingsView getAdminSettings() {
-        SiteSetting setting = siteSettingMapper.selectById(1);
+        SiteSetting setting = settings.findSingleton();
         if (setting == null) {
             throw new ApiException(HttpStatus.NOT_FOUND, "SITE_SETTING_NOT_FOUND",
                     "Site settings not found", "The singleton site settings row is missing.");
         }
-        return toView(setting);
+        return SiteViewAssembler.admin(setting);
     }
 
-    private AdminSiteSettingsView toView(SiteSetting s) {
-        return new AdminSiteSettingsView(
-                s.getId(), s.getSiteName(), s.getTagline(), s.getSiteUrl(), s.getFooterText(),
-                s.getGithubUrl(), s.getDefaultSeoDescription(), s.getTimezone(),
-                s.getLogoMediaId(), s.getFaviconMediaId());
-    }
-
-    // ---------------------------------------------------------------
-    // helpers
-    // ---------------------------------------------------------------
-
-    private ZoneId siteZone() {
-        return ZoneId.of(siteSettingsTimezone.get());
-    }
-
-    private String formatUtc(Timestamp utcTimestamp) {
-        LocalDateTime utc = utcTimestamp.toLocalDateTime();
-        return ZonedDateTime.of(utc, ZoneOffset.UTC)
-                .withZoneSameInstant(siteZone())
-                .format(ISO_OFFSET);
-    }
-
-    private String str(Map<String, Object> row, String key) {
-        Object value = row.get(key);
-        return value == null ? null : value.toString();
+    private String formatUtc(LocalDateTime utc) {
+        return siteSettingsTimezone.atSite(utc).format(ISO_OFFSET);
     }
 }

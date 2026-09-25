@@ -28,7 +28,8 @@ class SeoCacheLifecycleTest {
     @Autowired ProfileCommandService profileCommands;
     @Autowired ProfileQueryService profileQueries;
     @Autowired SeoDocumentCache pages;
-    @Autowired SeoContentRepository content;
+    @Autowired SeoPageService content;
+    @Autowired SeoIdentityService identity;
     @Autowired SeoSitemapService sitemap;
     @Autowired PlatformTransactionManager transactions;
 
@@ -70,11 +71,11 @@ class SeoCacheLifecycleTest {
         var site = siteQueries.getAdminSettings();
         var profile = profileQueries.getAdmin();
         try {
-            content.site(); content.authorName(); page("/about");
+            identity.site(); identity.authorName(); page("/about");
             siteCommands.updateAdminSettings(new UpdateSiteSettingsRequest("Updated identity", site.tagline(), site.siteUrl(), site.footerText(), site.githubUrl(), site.defaultSeoDescription(), site.timezone(), site.logoMediaId(), site.faviconMediaId()));
-            assertThat(content.site().name()).isEqualTo("Updated identity");
+            assertThat(identity.site().name()).isEqualTo("Updated identity");
             profileCommands.update(new UpdateAboutRequest("Updated author", profile.headline(), profile.bio(), profile.avatarMediaId(), profile.githubUrl(), profile.publicEmail(), profile.resumeMediaId(), profile.currentFocus(), profile.technicalDirectionMarkdown(), profile.journeyMarkdown()));
-            assertThat(content.authorName()).isEqualTo("Updated author");
+            assertThat(identity.authorName()).isEqualTo("Updated author");
         } finally {
             siteCommands.updateAdminSettings(new UpdateSiteSettingsRequest(site.siteName(), site.tagline(), site.siteUrl(), site.footerText(), site.githubUrl(), site.defaultSeoDescription(), site.timezone(), site.logoMediaId(), site.faviconMediaId()));
             profileCommands.update(new UpdateAboutRequest(profile.displayName(), profile.headline(), profile.bio(), profile.avatarMediaId(), profile.githubUrl(), profile.publicEmail(), profile.resumeMediaId(), profile.currentFocus(), profile.technicalDirectionMarkdown(), profile.journeyMarkdown()));

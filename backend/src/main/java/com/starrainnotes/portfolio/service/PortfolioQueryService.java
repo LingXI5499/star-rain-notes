@@ -3,9 +3,9 @@ package com.starrainnotes.portfolio.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.media.entity.MediaAsset;
-import com.starrainnotes.media.mapper.MediaAssetMapper;
-import com.starrainnotes.media.service.MediaService;
+import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.media.api.MediaAssetPort.MediaImageView;
+import com.starrainnotes.portfolio.assembler.PortfolioViewAssembler;
 import com.starrainnotes.portfolio.dto.AdminProjectDetailView;
 import com.starrainnotes.portfolio.dto.AdminProjectPageView;
 import com.starrainnotes.portfolio.dto.AdminProjectSummaryView;
@@ -21,6 +21,7 @@ import com.starrainnotes.site.service.SiteSettingsTimezone;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.net.URI;
@@ -29,12 +30,12 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /** Read-side portfolio projections for admin pages, public pages and command responses. */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class PortfolioQueryService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -42,8 +43,7 @@ public class PortfolioQueryService {
 
     private final PortfolioProjectMapper projectMapper;
     private final PortfolioProjectMediaMapper mediaMapper;
-    private final MediaAssetMapper mediaAssetMapper;
-    private final MediaService mediaService;
+    private final MediaAssetPort media;
     private final PortfolioPrototypeService prototypeService;
     private final SiteSettingsTimezone timezone;
 
@@ -60,31 +60,24 @@ public class PortfolioQueryService {
         Page<PortfolioProject> result = projectMapper.selectPage(new Page<>(safePage, safeSize), wrapper);
         Map<Long, String> covers = coverUrls(result.getRecords().stream().map(PortfolioProject::getCoverMediaId).toList());
         List<AdminProjectSummaryView> items = result.getRecords().stream()
-                .map(project -> new AdminProjectSummaryView(
-                        project.getId(), project.getTitle(), project.getSlug(), project.getSummary(), project.getRole(),
-                        project.getTechStack() == null ? List.of() : project.getTechStack(),
+                .map(project -> PortfolioViewAssembler.adminSummary(
+                        project,
                         project.getCoverMediaId() == null ? null : covers.get(project.getCoverMediaId()),
-                        project.getPublishStatus(), project.getProjectStatus(), Boolean.TRUE.equals(project.getFeatured()),
-                        project.getSortOrder(), formatUtc(project.getPublishedAt()), formatUtc(project.getUpdatedAt())))
+                        formatUtc(project.getPublishedAt()), formatUtc(project.getUpdatedAt())))
                 .toList();
         long total = result.getTotal();
         int totalPages = total == 0 ? 0 : (int) ((total + safeSize - 1) / safeSize);
-        return new AdminProjectPageView(items, safePage, safeSize, total, totalPages);
+        return PortfolioViewAssembler.adminPage(items, safePage, safeSize, total, totalPages);
     }
 
     public AdminProjectDetailView adminDetail(Long projectId) {
         PortfolioProject project = requireProject(projectId);
-        List<String> techStack = project.getTechStack() == null ? List.of() : project.getTechStack();
         MediaLink cover = mediaLink(project.getCoverMediaId());
-        return new AdminProjectDetailView(
-                project.getId(), project.getTitle(), project.getSlug(), project.getSummary(), project.getRole(), techStack,
-                project.getBodyMarkdown(), project.getCoverMediaId(),
+        return PortfolioViewAssembler.adminDetail(
+                project,
                 cover == null ? null : cover.url(), cover == null ? null : cover.width(),
                 cover == null ? null : cover.height(), cover == null ? null : cover.srcSet(),
-                project.getRepositoryUrl(), project.getDemoUrl(),
                 prototypeService.view(project.getId(), PUBLISHED.equals(project.getPublishStatus())),
-                project.getPublishStatus(), project.getProjectStatus(), Boolean.TRUE.equals(project.getFeatured()),
-                project.getSortOrder(), project.getStartedAt(), project.getCompletedAt(), project.getSeoTitle(), project.getSeoDescription(),
                 formatUtc(project.getPublishedAt()), formatUtc(project.getCreatedAt()), formatUtc(project.getUpdatedAt()),
                 listGallery(project.getId()));
     }
@@ -94,12 +87,10 @@ public class PortfolioQueryService {
         Map<Long, MediaLink> covers = mediaLinks(rows.stream().map(PortfolioProject::getCoverMediaId).toList());
         return rows.stream().map(project -> {
             MediaLink cover = project.getCoverMediaId() == null ? null : covers.get(project.getCoverMediaId());
-            return new PublicProjectSummaryView(
-                    project.getId(), project.getTitle(), project.getSlug(), project.getSummary(), project.getRole(),
-                    project.getTechStack() == null ? List.of() : project.getTechStack(),
+            return PortfolioViewAssembler.publicSummary(
+                    project,
                     cover == null ? null : cover.url(), cover == null ? null : cover.srcSet(),
                     cover == null ? null : cover.width(), cover == null ? null : cover.height(),
-                    project.getProjectStatus(), Boolean.TRUE.equals(project.getFeatured()), project.getSortOrder(),
                     formatUtc(project.getUpdatedAt()));
         }).toList();
     }
@@ -115,18 +106,16 @@ public class PortfolioQueryService {
         int currentIndex = java.util.stream.IntStream.range(0, ordered.size())
                 .filter(index -> ordered.get(index).getId().equals(project.getId()))
                 .findFirst().orElse(-1);
-        PrevNextProjectView previous = currentIndex > 0 ? toPrevNext(ordered.get(currentIndex - 1)) : null;
+        PrevNextProjectView previous = currentIndex > 0 ? PortfolioViewAssembler.prevNext(ordered.get(currentIndex - 1)) : null;
         PrevNextProjectView next = currentIndex >= 0 && currentIndex + 1 < ordered.size()
-                ? toPrevNext(ordered.get(currentIndex + 1)) : null;
+                ? PortfolioViewAssembler.prevNext(ordered.get(currentIndex + 1)) : null;
         MediaLink cover = mediaLink(project.getCoverMediaId());
-        return new PublicProjectDetailView(
-                project.getId(), project.getTitle(), project.getSlug(), project.getSummary(), project.getRole(),
-                project.getTechStack() == null ? List.of() : project.getTechStack(), project.getBodyMarkdown(),
+        return PortfolioViewAssembler.publicDetail(
+                project,
                 cover == null ? null : cover.url(), cover == null ? null : cover.width(),
                 cover == null ? null : cover.height(), cover == null ? null : cover.srcSet(),
                 normalizeHttpUrl(project.getRepositoryUrl()), usableDemoUrl(project.getDemoUrl(), project.getRepositoryUrl()),
-                prototypeService.publicEntry(project.getId(), true), project.getProjectStatus(),
-                project.getStartedAt(), project.getCompletedAt(), project.getSeoTitle(), project.getSeoDescription(),
+                prototypeService.publicEntry(project.getId(), true),
                 formatUtc(project.getPublishedAt()), formatUtc(project.getUpdatedAt()), previous, next, listGallery(project.getId()));
     }
 
@@ -148,9 +137,8 @@ public class PortfolioQueryService {
     }
 
     private MediaLink mediaLink(Long mediaId) {
-        if (mediaId == null) return null;
-        MediaAsset media = mediaAssetMapper.selectById(mediaId);
-        return media == null ? null : toMediaLink(media);
+        MediaImageView image = media.image(mediaId);
+        return image == null ? null : toMediaLink(image);
     }
 
     private Map<Long, String> coverUrls(List<Long> mediaIds) {
@@ -159,14 +147,12 @@ public class PortfolioQueryService {
     }
 
     private Map<Long, MediaLink> mediaLinks(List<Long> mediaIds) {
-        List<Long> distinct = mediaIds.stream().filter(Objects::nonNull).distinct().toList();
-        if (distinct.isEmpty()) return Map.of();
-        return mediaAssetMapper.selectBatchIds(distinct).stream()
-                .collect(Collectors.toMap(MediaAsset::getId, this::toMediaLink));
+        return media.images(mediaIds).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> toMediaLink(entry.getValue())));
     }
 
-    private MediaLink toMediaLink(MediaAsset media) {
-        return new MediaLink(media.getPublicUrl(), media.getWidth(), media.getHeight(), mediaService.srcSetOf(media));
+    private MediaLink toMediaLink(MediaImageView image) {
+        return new MediaLink(image.url(), image.width(), image.height(), image.srcSet());
     }
 
     private List<ProjectMediaView> listGallery(Long projectId) {
@@ -178,9 +164,8 @@ public class PortfolioQueryService {
         Map<Long, MediaLink> links = mediaLinks(rows.stream().map(PortfolioProjectMedia::getMediaAssetId).toList());
         return rows.stream().map(row -> {
             MediaLink link = links.get(row.getMediaAssetId());
-            return new ProjectMediaView(
-                    row.getId(), row.getMediaAssetId(), link == null ? null : link.url(), row.getTitle(),
-                    row.getDescription(), row.getAltText(), row.getDeviceType(), row.getSortOrder(),
+            return PortfolioViewAssembler.galleryItem(
+                    row, link == null ? null : link.url(),
                     link == null ? null : link.width(), link == null ? null : link.height(),
                     link == null ? null : link.srcSet());
         }).toList();
@@ -220,10 +205,6 @@ public class PortfolioQueryService {
     private static ApiException invalidExternalUrl() {
         return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_EXTERNAL_URL",
                 "Invalid external URL", "Repository and online URLs must be valid HTTP or HTTPS addresses.");
-    }
-
-    private PrevNextProjectView toPrevNext(PortfolioProject project) {
-        return new PrevNextProjectView(project.getId(), project.getSlug(), project.getTitle());
     }
 
     private String formatUtc(LocalDateTime utc) {

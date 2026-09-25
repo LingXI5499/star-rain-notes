@@ -34,6 +34,7 @@ public class AccountActivationService {
         this.queries = queries;
     }
 
+    @Transactional
     public void requestCode(String ip) {
         if (queries.superAdminActivated()) {
             throw AccountService.fail("SUPER_ADMIN_ALREADY_ACTIVATED", HttpStatus.GONE, "Already activated",

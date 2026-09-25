@@ -5,7 +5,8 @@ import com.starrainnotes.english.learning.domain.RecommendationEngine;
 import com.starrainnotes.english.learning.dto.LearningRecommendationView;
 import com.starrainnotes.english.learning.infrastructure.RecommendationRepository;
 import com.starrainnotes.english.listening.application.ListeningPairQueryService;
-import com.starrainnotes.english.shared.bundle.infrastructure.LearningBundleItemRepository;
+import com.starrainnotes.english.shared.bundle.api.PublishedPathMember;
+import com.starrainnotes.english.shared.bundle.service.LearningBundleItemService;
 import com.starrainnotes.english.shared.content.ContentDescriptor;
 import com.starrainnotes.english.shared.content.EnglishContentRegistry;
 import com.starrainnotes.english.shared.content.EnglishContentType;
@@ -32,12 +33,12 @@ public class RecommendationQueryService {
     private final RecommendationRepository repository;
     private final RecommendationEngine engine;
     private final EnglishContentRegistry content;
-    private final LearningBundleItemRepository bundles;
+    private final LearningBundleItemService bundles;
     private final ListeningPairQueryService pairs;
     private final SiteSettingsTimezone timezone;
 
     public RecommendationQueryService(RecommendationRepository repository, RecommendationEngine engine,
-                                      EnglishContentRegistry content, LearningBundleItemRepository bundles,
+                                      EnglishContentRegistry content, LearningBundleItemService bundles,
                                       ListeningPairQueryService pairs, SiteSettingsTimezone timezone) {
         this.repository = repository;
         this.engine = engine;
@@ -112,7 +113,7 @@ public class RecommendationQueryService {
     private List<LearningRecommendationView> bundleNextSteps(long learnerId) {
         Map<RecommendationRepository.ContentKey, String> statuses = repository.completionStatuses(learnerId);
         Map<Long, List<PathRow>> grouped = new LinkedHashMap<>();
-        for (LearningBundleItemRepository.PathMember member : bundles.publishedPathMembers()) {
+        for (PublishedPathMember member : bundles.publishedPathMembers()) {
             ContentDescriptor descriptor;
             try {
                 descriptor = content.requirePublished(

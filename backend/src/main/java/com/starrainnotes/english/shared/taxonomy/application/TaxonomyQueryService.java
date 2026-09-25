@@ -3,6 +3,7 @@ package com.starrainnotes.english.shared.taxonomy.application;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.shared.taxonomy.dto.TaxonomyTermView;
 import com.starrainnotes.english.shared.taxonomy.entity.EnglishTaxonomyTerm;
+import com.starrainnotes.english.shared.taxonomy.api.TaxonomyTermReferencePort;
 import com.starrainnotes.english.shared.taxonomy.infrastructure.TaxonomyRepository;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import org.springframework.http.HttpStatus;
@@ -22,10 +23,13 @@ import java.util.Objects;
 public class TaxonomyQueryService {
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
     private final TaxonomyRepository repository;
+    private final List<TaxonomyTermReferencePort> references;
     private final SiteSettingsTimezone timezone;
 
-    public TaxonomyQueryService(TaxonomyRepository repository, SiteSettingsTimezone timezone) {
+    public TaxonomyQueryService(TaxonomyRepository repository, List<TaxonomyTermReferencePort> references,
+                                SiteSettingsTimezone timezone) {
         this.repository = repository;
+        this.references = references;
         this.timezone = timezone;
     }
 
@@ -89,7 +93,9 @@ public class TaxonomyQueryService {
 
     public long usageCount(Long id) {
         require(id);
-        return repository.usageCount(id);
+        long total = 0;
+        for (TaxonomyTermReferencePort port : references) total += port.countReferences(id);
+        return total;
     }
 
     public TaxonomyTermView view(EnglishTaxonomyTerm term) {

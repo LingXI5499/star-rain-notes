@@ -24,6 +24,13 @@ public class WritingPromptPolicy {
         validateChecklist(request.checklistJson());
     }
 
+    public void requireTagDimension(String dimension) {
+        if (dimension == null || !(dimension.equals("TOPIC") || dimension.equals("GENRE")
+                || dimension.equals("FUNCTION") || dimension.equals("ABILITY"))) {
+            invalid("Invalid writing tag");
+        }
+    }
+
     public void validatePublication(String background, String requirements, boolean hasTopicOrGenre,
                                     boolean templatePublished, boolean modelPublished,
                                     Long templateId, Long modelId) {

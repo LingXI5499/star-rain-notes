@@ -1,5 +1,10 @@
 package com.starrainnotes.account.english.controller;
 
+import com.starrainnotes.account.english.dto.ClaimLegacyProgressRequest;
+import com.starrainnotes.account.english.dto.LearningRecordUpdateRequest;
+import com.starrainnotes.account.english.dto.LocalProgressImportRequest;
+import com.starrainnotes.account.english.dto.LocalVocabularyImportRequest;
+import com.starrainnotes.account.english.dto.VocabularyMemoryCountRequest;
 import com.starrainnotes.account.service.AccountSessionService;
 import com.starrainnotes.english.api.EnglishLearningFacade;
 import com.starrainnotes.english.api.EnglishVocabularyFacade;
@@ -25,6 +30,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,10 +83,10 @@ public class AccountEnglishController {
     @PutMapping("/learning/records/{type}/{contentId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void putRecord(@PathVariable String type, @PathVariable Long contentId,
-                          @RequestBody Map<String, Object> body) {
+                          @RequestBody LearningRecordUpdateRequest body) {
         english.saveRecord(accountId(), type, contentId,
-                body.get("completionStatus") == null ? "IN_PROGRESS" : String.valueOf(body.get("completionStatus")),
-                body.get("timeSpentSeconds") == null ? null : ((Number) body.get("timeSpentSeconds")).intValue());
+                body.completionStatus() == null ? "IN_PROGRESS" : body.completionStatus(),
+                body.timeSpentSeconds());
     }
 
     @GetMapping("/vocabulary/memory")
@@ -90,9 +96,8 @@ public class AccountEnglishController {
 
     @PutMapping("/vocabulary/words/{wordId}/memory")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void putMemory(@PathVariable Long wordId, @RequestBody Map<String, Object> body) {
-        vocabulary.putMemoryCount(accountId(), wordId,
-                body.get("memoryCount") == null ? 1 : ((Number) body.get("memoryCount")).intValue());
+    public void putMemory(@PathVariable Long wordId, @RequestBody VocabularyMemoryCountRequest body) {
+        vocabulary.putMemoryCount(accountId(), wordId, body.memoryCount() == null ? 1 : body.memoryCount());
     }
 
     @GetMapping("/vocabulary/settings")
@@ -152,8 +157,12 @@ public class AccountEnglishController {
 
     @PostMapping("/vocabulary/import-local")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void importLocalVocabulary(@RequestBody Map<String, Object> body) {
-        vocabulary.importLocal(accountId(), body);
+    public void importLocalVocabulary(@RequestBody LocalVocabularyImportRequest body) {
+        Map<String, Object> payload = new LinkedHashMap<>();
+        if (body.memory() != null) payload.put("memory", body.memory());
+        if (body.vocabulary() != null) payload.put("vocabulary", body.vocabulary());
+        if (body.reviewLog() != null) payload.put("reviewLog", body.reviewLog());
+        vocabulary.importLocal(accountId(), payload);
     }
 
     @GetMapping("/writing-submissions/{promptId}")
@@ -170,12 +179,15 @@ public class AccountEnglishController {
 
     @PostMapping("/import-local-progress")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void importLocal(@RequestBody Map<String, Object> body) {
-        english.importLocalProgress(accountId(), body);
+    public void importLocal(@RequestBody LocalProgressImportRequest body) {
+        Map<String, Object> payload = new LinkedHashMap<>();
+        if (body.vocabulary() != null) payload.put("vocabulary", body.vocabulary());
+        if (body.learningRecords() != null) payload.put("learningRecords", body.learningRecords());
+        english.importLocalProgress(accountId(), payload);
     }
 
     @PostMapping("/claim-legacy-progress")
-    public void claimLegacy(@RequestBody Map<String, Object> body) {
-        english.claimLegacyProgress(accountId(), String.valueOf(body.get("learnerKeyHash")));
+    public void claimLegacy(@RequestBody ClaimLegacyProgressRequest body) {
+        english.claimLegacyProgress(accountId(), String.valueOf(body.learnerKeyHash()));
     }
 }

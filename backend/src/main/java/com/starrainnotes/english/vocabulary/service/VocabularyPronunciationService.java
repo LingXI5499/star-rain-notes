@@ -35,7 +35,9 @@ import java.util.regex.Pattern;
 @Service
 public class VocabularyPronunciationService {
 
-    /** A single English token: letters plus internal apostrophes/hyphens. */
+    /**
+     * A single English token: letters plus internal apostrophes/hyphens.
+     */
     private static final Pattern WORD_PATTERN = Pattern.compile("[A-Za-z][A-Za-z'\\-]*");
     private static final int MAX_WORD_LENGTH = 64;
     private static final String ACCENT_US = "US";
@@ -53,7 +55,9 @@ public class VocabularyPronunciationService {
         this.http = http;
     }
 
-    /** Resolves, fetches (and caches on disk) the pronunciation audio bytes. */
+    /**
+     * Resolves, fetches (and caches on disk) the pronunciation audio bytes.
+     */
     public byte[] audio(String word, String accent) {
         String clean = normalizeWord(word);
         String acc = normalizeAccent(accent);
@@ -130,23 +134,29 @@ public class VocabularyPronunciationService {
             throw new ApiException(HttpStatus.BAD_REQUEST, "WORD_TOO_LONG", "word too long",
                     "The word must be at most " + MAX_WORD_LENGTH + " characters.");
         }
+
         if (!WORD_PATTERN.matcher(trimmed).matches()) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "WORD_INVALID", "word invalid",
                     "The word must be a single English word.");
         }
+
         return trimmed;
+
     }
 
     private String normalizeAccent(String accent) {
         if (accent == null || accent.isBlank()) {
             return props.pronunciation().defaultAccent();
         }
+
         String upper = accent.toUpperCase(Locale.ROOT);
         if (!upper.equals(ACCENT_US) && !upper.equals(ACCENT_UK)) {
             throw new ApiException(HttpStatus.BAD_REQUEST, "ACCENT_INVALID", "accent invalid",
                     "The accent must be US or UK.");
         }
+
         return upper;
+
     }
 
     private static String sha256(String value) {

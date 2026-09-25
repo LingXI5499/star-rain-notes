@@ -233,7 +233,7 @@ class PortfolioAdminIntegrationTest extends AbstractAuthIntegrationTest {
                         "{\"title\":\"P\",\"slug\":\"p-cover-bad\",\"summary\":\"S\",\"bodyMarkdown\":\"B\","
                                 + "\"coverMediaId\":" + documentId + "}"), csrf(session)).session(session))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.code").value("MEDIA_TYPE_INVALID"));
+                .andExpect(jsonPath("$.code").value("INVALID_COVER_MEDIA"));
 
         mockMvc.perform(withCsrf(jsonPost("/api/v1/admin/portfolio/projects",
                         "{\"title\":\"P\",\"slug\":\"p-cover-ok\",\"summary\":\"S\",\"bodyMarkdown\":\"B\","

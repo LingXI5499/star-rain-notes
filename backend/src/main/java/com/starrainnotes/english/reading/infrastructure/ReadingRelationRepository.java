@@ -1,10 +1,13 @@
 package com.starrainnotes.english.reading.infrastructure;
 
+import com.starrainnotes.english.grammar.domain.GrammarLessonPort;
+import com.starrainnotes.english.grammar.domain.GrammarLessonRef;
 import com.starrainnotes.english.reading.dto.ReadingGrammarRef;
 import com.starrainnotes.english.reading.dto.ReadingTagRef;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -13,7 +16,11 @@ import java.util.Map;
 @Repository
 public class ReadingRelationRepository {
     private final JdbcTemplate jdbc;
-    public ReadingRelationRepository(JdbcTemplate jdbc) { this.jdbc = jdbc; }
+    private final GrammarLessonPort grammar;
+    public ReadingRelationRepository(JdbcTemplate jdbc, GrammarLessonPort grammar) {
+        this.jdbc = jdbc;
+        this.grammar = grammar;
+    }
 
     public boolean hasEnabledDimension(Long articleId, String dimension) {
         Integer count = jdbc.queryForObject("""
@@ -39,12 +46,6 @@ public class ReadingRelationRepository {
         return jdbc.query("SELECT dimension FROM english_taxonomy_term WHERE id=? AND enabled=1",
                 (rs, row) -> rs.getString("dimension"), termId);
     }
-    public boolean grammarLessonExists(Long lessonId) {
-        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM english_grammar_lesson WHERE id=?",
-                Integer.class, lessonId);
-        return count != null && count > 0;
-    }
-
     public List<ReadingTagRef> findRootTagsByDimension(String dimension) {
         return jdbc.query("""
                 SELECT id,name,slug,dimension,'TAG' AS tag_role FROM english_taxonomy_term
@@ -55,13 +56,13 @@ public class ReadingRelationRepository {
 
     public Map<Long, List<ReadingTagRef>> findTagsByArticleIds(List<Long> articleIds) {
         if (articleIds.isEmpty()) return Map.of();
-        String ids = String.join(",", articleIds.stream().map(String::valueOf).toList());
+        String placeholders = String.join(",", java.util.Collections.nCopies(articleIds.size(), "?"));
         Map<Long, List<ReadingTagRef>> result = new LinkedHashMap<>();
         jdbc.query("""
                 SELECT at.article_id, t.id, t.name, t.slug, t.dimension, at.tag_role
                 FROM english_reading_article_tag at
                 JOIN english_taxonomy_term t ON t.id=at.term_id
-                WHERE at.article_id IN (""" + ids + ") ORDER BY t.dimension, t.sort_order, t.id",
+                WHERE at.article_id IN (""" + placeholders + ") ORDER BY t.dimension, t.sort_order, t.id",
                 rs -> {
                     while (rs.next()) {
                         result.computeIfAbsent(rs.getLong("article_id"), k -> new ArrayList<>())
@@ -69,16 +70,20 @@ public class ReadingRelationRepository {
                                         rs.getString("dimension"), rs.getString("tag_role")));
                     }
                     return null;
-                });
+                }, articleIds.toArray());
         return result;
     }
 
     public List<ReadingGrammarRef> findGrammarRefs(Long articleId) {
-        return jdbc.query("""
-                SELECT gl.id, gl.title, gl.slug FROM english_reading_article_grammar_lesson agl
-                JOIN english_grammar_lesson gl ON gl.id=agl.lesson_id
-                WHERE agl.article_id=? ORDER BY gl.sort_order, gl.id
-                """, (rs, row) -> new ReadingGrammarRef(rs.getLong("id"), rs.getString("title"),
-                rs.getString("slug")), articleId);
+        List<Long> lessonIds = jdbc.queryForList("""
+                SELECT lesson_id FROM english_reading_article_grammar_lesson WHERE article_id=?
+                """, Long.class, articleId);
+        List<GrammarLessonRef> lessons = new ArrayList<>();
+        for (Long lessonId : lessonIds) {
+            if (lessonId == null) continue;
+            grammar.findRef(lessonId).ifPresent(lessons::add);
+        }
+        lessons.sort(Comparator.comparingInt(GrammarLessonRef::sortOrder).thenComparingLong(GrammarLessonRef::id));
+        return lessons.stream().map(lesson -> new ReadingGrammarRef(lesson.id(), lesson.title(), lesson.slug())).toList();
     }
 }

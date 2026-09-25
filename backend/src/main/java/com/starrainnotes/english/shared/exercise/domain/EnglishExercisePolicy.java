@@ -2,8 +2,7 @@ package com.starrainnotes.english.shared.exercise.domain;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.starrainnotes.common.error.ApiException;
-import org.springframework.http.HttpStatus;
+import com.starrainnotes.english.shared.domain.EnglishRuleViolation;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -203,8 +202,7 @@ public class EnglishExercisePolicy {
         }
     }
 
-    private ApiException invalid(String detail) {
-        return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_EXERCISE_CONFIG_INVALID",
-                "Invalid exercise config", detail);
+    private EnglishRuleViolation invalid(String detail) {
+        return new EnglishRuleViolation("ENGLISH_EXERCISE_CONFIG_INVALID", "Invalid exercise config", detail);
     }
 }

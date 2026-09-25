@@ -6,8 +6,6 @@ import com.starrainnotes.auth.dto.AuthSessionView;
 import com.starrainnotes.auth.entity.AdminUser;
 import com.starrainnotes.auth.mapper.AdminUserMapper;
 import com.starrainnotes.common.error.ApiException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -61,15 +59,7 @@ public class AuthService {
         }
     }
 
-    public void logout(HttpServletRequest request) {
-        SecurityContextHolder.clearContext();
-        HttpSession session = request.getSession(false);
-        if (session != null) {
-            session.invalidate();
-        }
-    }
-
-    public void changePassword(String currentPassword, String newPassword, HttpServletRequest request) {
+    public void changePassword(String currentPassword, String newPassword) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         AdminUser admin = adminUserMapper.selectOne(new LambdaQueryWrapper<AdminUser>()
                 .eq(AdminUser::getUsername, authentication.getName()));
@@ -80,6 +70,5 @@ public class AuthService {
         }
         admin.setPasswordHash(passwordEncoder.encode(newPassword));
         adminUserMapper.updateById(admin);
-        logout(request);
     }
 }

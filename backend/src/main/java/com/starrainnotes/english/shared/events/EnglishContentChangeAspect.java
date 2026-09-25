@@ -1,7 +1,6 @@
 package com.starrainnotes.english.shared.events;
 
 import com.starrainnotes.english.shared.events.infrastructure.EnglishContentStateRepository;
-import com.starrainnotes.english.shared.events.infrastructure.EnglishContentStateRepository.ContentState;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -23,10 +22,10 @@ public class EnglishContentChangeAspect {
     public Object publishAfterChange(ProceedingJoinPoint invocation, EnglishContentChange change) throws Throwable {
         Long id = firstLong(invocation.getArgs());
         if (id == null) throw new IllegalStateException("Content change requires a content ID");
-        ContentState before = repository.state(change.kind(), id);
+        EnglishContentState before = repository.state(change.kind(), id);
         Object result = invocation.proceed();
-        ContentState after = repository.state(change.kind(), id);
-        ContentState visible = after != null && after.published() ? after
+        EnglishContentState after = repository.state(change.kind(), id);
+        EnglishContentState visible = after != null && after.published() ? after
                 : before != null && before.published() ? before : null;
         if (visible != null) {
             events.publishEvent(new EnglishContentChangedEvent(change.kind(), id,
@@ -35,6 +34,7 @@ public class EnglishContentChangeAspect {
         return result;
     }
 
+    /** TODO(W2-16b): declare the id parameter on {@link EnglishContentChange} instead of scanning arguments. */
     private Long firstLong(Object[] args) {
         for (Object arg : args) if (arg instanceof Long value) return value;
         return null;

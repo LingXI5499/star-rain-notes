@@ -21,12 +21,12 @@ import com.starrainnotes.blog.vo.BlogPostPublicPageVO;
 import com.starrainnotes.blog.vo.BlogPostPublicSummaryVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.media.entity.MediaAsset;
-import com.starrainnotes.media.mapper.MediaAssetMapper;
+import com.starrainnotes.media.api.MediaAssetPort;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,10 +43,11 @@ import java.util.stream.Collectors;
 /** Read-side blog queries, pagination and response assembly. */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class BlogQueryService {
     private final BlogPostMapper postMapper;
     private final BlogPostTagMapper postTagMapper;
-    private final MediaAssetMapper mediaAssetMapper;
+    private final MediaAssetPort media;
     private final BlogPostAssembler assembler;
     private final SiteSettingsTimezone timezone;
 
@@ -156,9 +157,7 @@ public class BlogQueryService {
     }
 
     private Map<Long, String> coverUrls(List<Long> mediaIds) {
-        List<Long> distinct = mediaIds.stream().filter(java.util.Objects::nonNull).distinct().toList();
-        if (distinct.isEmpty()) return Map.of();
-        return mediaAssetMapper.selectBatchIds(distinct).stream().collect(Collectors.toMap(MediaAsset::getId, MediaAsset::getPublicUrl));
+        return media.publicUrls(mediaIds);
     }
 
     private String cover(BlogPost post, Map<Long, String> covers) {
@@ -166,9 +165,7 @@ public class BlogQueryService {
     }
 
     private String coverUrl(Long mediaId) {
-        if (mediaId == null) return null;
-        MediaAsset media = mediaAssetMapper.selectById(mediaId);
-        return media == null ? null : media.getPublicUrl();
+        return media.publicUrl(mediaId);
     }
 
     private BlogPost previousOf(BlogPost post) {

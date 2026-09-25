@@ -1,5 +1,7 @@
 package com.starrainnotes.auth.dto;
 
+import com.starrainnotes.account.security.AccountCapabilities;
+
 import java.util.List;
 
 /**
@@ -17,13 +19,8 @@ public record AuthSessionView(boolean authenticated, String username, String rol
     }
 
     private static List<String> capabilities(String role) {
-        if ("ROLE_SUPER_ADMIN".equals(role) || "SUPER_ADMIN".equals(role)) {
-            return List.of("TUTORIAL_COLLABORATE", "BLOG_COLLABORATE", "ENGLISH_COLLABORATE",
-                    "SUPER_ADMIN", "REVIEW");
-        }
-        if ("ROLE_ADMIN".equals(role) || "ADMIN".equals(role)) {
-            return List.of("TUTORIAL_COLLABORATE", "BLOG_COLLABORATE", "ENGLISH_COLLABORATE");
-        }
+        if ("ROLE_SUPER_ADMIN".equals(role) || "SUPER_ADMIN".equals(role)) return AccountCapabilities.superAdmin();
+        if ("ROLE_ADMIN".equals(role) || "ADMIN".equals(role)) return AccountCapabilities.collaborate();
         return List.of();
     }
 }

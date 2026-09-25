@@ -2,7 +2,7 @@ package com.starrainnotes.english.shared.exercise.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.shared.domain.EnglishRuleViolation;
 import com.starrainnotes.english.shared.exercise.domain.EnglishExercisePolicy;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -120,7 +120,7 @@ class EnglishExerciseSafetyTest {
     @Test
     void unsupportedListeningTypeRejectedByRegistry() {
         assertThatCode(() -> exerciseService.validateConfig("LISTENING", "SENTENCE_REWRITE", "{\"answer\":\"x\"}"))
-                .isInstanceOf(ApiException.class);
+                .isInstanceOf(EnglishRuleViolation.class);
         assertThatCode(() -> exerciseService.validateConfig("LISTENING", "MINIMAL_PAIR",
                 "{\"pair\":[\"a\",\"b\"],\"answer\":\"a\"}")).doesNotThrowAnyException();
     }

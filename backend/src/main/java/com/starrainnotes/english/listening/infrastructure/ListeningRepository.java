@@ -39,11 +39,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Listening material domain (方案 §7, 阶段三 §四, §五).
@@ -146,10 +146,6 @@ public class ListeningRepository implements ListeningContentPort {
     public ListeningItemView create(ListeningItemRequest request) {
         String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> itemSlugExists(candidate, null));
         assertSlugFree(slug, null);
-        validateCefr(request.cefrLevel());
-        validateLevel(request.listeningLevel());
-        validateAudio(request.audioMediaId());
-        validateCover(request.coverMediaId());
         ListeningItem item = new ListeningItem();
         applyFields(item, request, slug);
         item.setPublishStatus(DRAFT);
@@ -169,10 +165,6 @@ public class ListeningRepository implements ListeningContentPort {
         ListeningItem item = require(id);
         String slug = NumericSlugGenerator.forUpdate(request.slug(), item.getSlug());
         assertSlugFree(slug, id);
-        validateCefr(request.cefrLevel());
-        validateLevel(request.listeningLevel());
-        validateAudio(request.audioMediaId());
-        validateCover(request.coverMediaId());
         applyFields(item, request, slug);
         if (request.durationSeconds() != null) item.setDurationSeconds(request.durationSeconds());
         try {
@@ -286,22 +278,14 @@ public class ListeningRepository implements ListeningContentPort {
 
     @Transactional
     public ListeningItemView withdraw(Long id) {
-        ListeningItem item = require(id);
-        if (DRAFT.equals(item.getPublishStatus())) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_INVALID_PUBLISH_TRANSITION",
-                    "Invalid publish transition", "A draft item cannot be withdrawn.");
-        }
+        require(id);
         jdbc.update("UPDATE english_listening_item SET publish_status='WITHDRAWN' WHERE id=?", id);
         return get(id);
     }
 
     @Transactional
     public void delete(Long id) {
-        ListeningItem item = require(id);
-        if (PUBLISHED.equals(item.getPublishStatus())) {
-            throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_LISTENING_PUBLISHED_DELETE_FORBIDDEN",
-                    "Published item cannot be deleted", "Withdraw the item before deleting it.");
-        }
+        require(id);
         // listening_item_exercise + segment cascade via FK; exercise rows themselves are removed explicitly
         List<Long> exerciseIds = jdbc.queryForList(
                 "SELECT exercise_id FROM english_listening_item_exercise WHERE listening_item_id=?", Long.class, id);
@@ -366,11 +350,7 @@ public class ListeningRepository implements ListeningContentPort {
         List<String> found = jdbc.query(
                 "SELECT dimension FROM english_taxonomy_term WHERE id=? AND enabled=1",
                 (rs, row) -> rs.getString("dimension"), termId);
-        if (found.isEmpty()) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_TAXONOMY_NOT_FOUND",
-                "Invalid taxonomy term", "The selected tag does not exist or is disabled.");
-        if (!dimension.equals(found.get(0))) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-                "ENGLISH_TAXONOMY_DEPTH_INVALID", "Invalid tag dimension",
-                "A " + dimension + " tag cannot reference the '" + found.get(0) + "' dimension.");
+        publishPolicy.requireEnabledDimension(dimension, found.isEmpty() ? null : found.get(0));
     }
 
 
@@ -445,33 +425,11 @@ public class ListeningRepository implements ListeningContentPort {
 
 
 
-    private void validateCefr(String cefr) {
-        if (cefr == null) return;
+    public boolean cefrExists(String cefr) {
+        if (cefr == null) return true;
         Integer count = jdbc.queryForObject(
                 "SELECT COUNT(*) FROM english_cefr_standard WHERE level=?", Integer.class, cefr);
-        if (count == null || count == 0) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-                "ENGLISH_CEFR_INVALID", "Invalid CEFR level", "The selected CEFR level does not exist.");
-    }
-
-    private void validateLevel(Integer level) {
-        if (level == null || level < 1 || level > 3) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-                "ENGLISH_LISTENING_LEVEL_INVALID", "Invalid listening level", "Level must be 1, 2 or 3.");
-    }
-
-    private void validateAudio(Long mediaId) {
-        if (mediaId == null) return;
-        if (!isMediaType(mediaId, "AUDIO")) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-                "ENGLISH_AUDIO_MEDIA_INVALID", "Invalid audio", "The selected audio must be an AUDIO asset.");
-    }
-
-    private void validateCover(Long mediaId) {
-        if (mediaId == null) return;
-        if (!isMediaType(mediaId, "IMAGE")) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-                "INVALID_COVER_MEDIA", "Invalid cover", "The selected cover must be an IMAGE asset.");
-    }
-
-    private boolean isMediaType(Long mediaId, String type) {
-        return mediaAssets.isType(mediaId, type);
+        return count != null && count > 0;
     }
 
 
@@ -537,30 +495,40 @@ public class ListeningRepository implements ListeningContentPort {
 
     private Map<Long, List<ListeningTagRef>> loadTags(List<Long> ids) {
         if (ids.isEmpty()) return Map.of();
-        String in = String.join(",", ids.stream().map(String::valueOf).toList());
+        String placeholders = String.join(",", Collections.nCopies(ids.size(), "?"));
         Map<Long, List<ListeningTagRef>> result = new LinkedHashMap<>();
         jdbc.query("""
                 SELECT it.listening_item_id, t.id, t.name, t.slug, t.dimension, it.tag_role
                 FROM english_listening_item_tag it
                 JOIN english_taxonomy_term t ON t.id=it.term_id
-                WHERE it.listening_item_id IN (""" + in + ") ORDER BY t.dimension, t.sort_order, t.id",
+                WHERE it.listening_item_id IN (""" + placeholders + ") ORDER BY t.dimension, t.sort_order, t.id",
                 rs -> {
                     while (rs.next()) result.computeIfAbsent(rs.getLong("listening_item_id"),
                             k -> new ArrayList<>()).add(new ListeningTagRef(rs.getLong("id"),
                             rs.getString("name"), rs.getString("slug"), rs.getString("dimension"),
                             rs.getString("tag_role")));
                     return null;
-                });
+                }, ids.toArray());
         return result;
     }
 
     private Map<Long, Long> countBy(List<Long> ids, String table, String column) {
         if (ids.isEmpty()) return Map.of();
-        String in = String.join(",", ids.stream().map(String::valueOf).toList());
+        String counted = switch (table + "." + column) {
+            case "english_listening_item_exercise.listening_item_id" -> """
+                    SELECT listening_item_id, COUNT(*) FROM english_listening_item_exercise
+                    WHERE listening_item_id IN (%s) GROUP BY listening_item_id""";
+            case "english_listening_segment.listening_item_id" -> """
+                    SELECT listening_item_id, COUNT(*) FROM english_listening_segment
+                    WHERE listening_item_id IN (%s) GROUP BY listening_item_id""";
+            default -> throw new IllegalArgumentException("Unsupported count: " + table + "." + column);
+        };
+        String placeholders = String.join(",", Collections.nCopies(ids.size(), "?"));
         Map<Long, Long> result = new LinkedHashMap<>();
-        jdbc.query("SELECT " + column + ", COUNT(*) FROM " + table + " WHERE " + column + " IN (" + in
-                + ") GROUP BY " + column,
-                rs -> { while (rs.next()) result.put(rs.getLong(1), rs.getLong(2)); return null; });
+        jdbc.query(counted.formatted(placeholders), rs -> {
+            while (rs.next()) result.put(rs.getLong(1), rs.getLong(2));
+            return null;
+        }, ids.toArray());
         return result;
     }
 
@@ -583,8 +551,9 @@ public class ListeningRepository implements ListeningContentPort {
 
     private String tagExists(String dim, Long termId, List<Object> params) {
         params.add(termId);
+        params.add(dim);
         return " AND EXISTS (SELECT 1 FROM english_listening_item_tag it JOIN english_taxonomy_term tt"
-                + " ON tt.id=it.term_id WHERE it.listening_item_id=i.id AND it.term_id=? AND tt.dimension='" + dim + "')";
+                + " ON tt.id=it.term_id WHERE it.listening_item_id=i.id AND it.term_id=? AND tt.dimension=?)";
     }
 
     private ListeningItemSummaryView mapSummary(ResultSet rs) throws SQLException {

@@ -1,23 +1,21 @@
 package com.starrainnotes.profile.service;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.starrainnotes.blog.entity.BlogPost;
-import com.starrainnotes.blog.mapper.BlogPostMapper;
+import com.starrainnotes.blog.api.BlogLookupPort;
 import com.starrainnotes.common.error.ApiException;
-import com.starrainnotes.media.entity.MediaAsset;
-import com.starrainnotes.media.mapper.MediaAssetMapper;
-import com.starrainnotes.portfolio.entity.PortfolioProject;
-import com.starrainnotes.portfolio.mapper.PortfolioProjectMapper;
+import com.starrainnotes.media.api.MediaAssetPort;
+import com.starrainnotes.media.api.MediaAssetPort.MediaFile;
+import com.starrainnotes.portfolio.api.PortfolioLookupPort;
+import com.starrainnotes.profile.ProfileChangedEvent;
 import com.starrainnotes.profile.dto.AdminAboutView;
 import com.starrainnotes.profile.dto.UpdateAboutRequest;
 import com.starrainnotes.profile.dto.UpdateSelectedContentRequest;
 import com.starrainnotes.profile.entity.Profile;
+import com.starrainnotes.profile.entity.ProfileSelectedContent;
 import com.starrainnotes.profile.mapper.ProfileMapper;
-import com.starrainnotes.tutorial.entity.Tutorial;
-import com.starrainnotes.tutorial.mapper.TutorialMapper;
+import com.starrainnotes.tutorial.api.TutorialLookupPort;
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
-import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,12 +33,13 @@ public class ProfileCommandService {
     private static final int MAX_SELECTED_PER_TYPE = 3;
 
     private final ProfileMapper profileMapper;
-    private final MediaAssetMapper mediaAssetMapper;
-    private final TutorialMapper tutorialMapper;
-    private final BlogPostMapper blogPostMapper;
-    private final PortfolioProjectMapper portfolioProjectMapper;
-    private final JdbcTemplate jdbc;
+    private final MediaAssetPort media;
+    private final TutorialLookupPort tutorials;
+    private final BlogLookupPort blogs;
+    private final PortfolioLookupPort projects;
+    private final ProfileSelectedContentRepository selected;
     private final ProfileQueryService queryService;
+    private final ApplicationEventPublisher events;
 
     // ---------------------------------------------------------------
     // updates
@@ -62,41 +61,41 @@ public class ProfileCommandService {
         profile.setTechnicalDirectionMarkdown(request.technicalDirectionMarkdown());
         profile.setJourneyMarkdown(request.journeyMarkdown());
         profileMapper.updateById(profile);
+        events.publishEvent(new ProfileChangedEvent());
         return queryService.getAdmin();
     }
 
     @Transactional
     public AdminAboutView updateSelectedContent(UpdateSelectedContentRequest request) {
-        List<Long> tutorials = dedupe(request.tutorialIds());
-        List<Long> blogs = dedupe(request.blogPostIds());
-        List<Long> projects = dedupe(request.portfolioProjectIds());
-        if (tutorials.size() > MAX_SELECTED_PER_TYPE
-                || blogs.size() > MAX_SELECTED_PER_TYPE
-                || projects.size() > MAX_SELECTED_PER_TYPE) {
+        List<Long> tutorialIds = dedupe(request.tutorialIds());
+        List<Long> blogIds = dedupe(request.blogPostIds());
+        List<Long> projectIds = dedupe(request.portfolioProjectIds());
+        if (tutorialIds.size() > MAX_SELECTED_PER_TYPE
+                || blogIds.size() > MAX_SELECTED_PER_TYPE
+                || projectIds.size() > MAX_SELECTED_PER_TYPE) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "SELECTED_LIMIT_EXCEEDED",
                     "Selected limit exceeded", "At most " + MAX_SELECTED_PER_TYPE + " items per type can be selected.");
         }
-        validateExist(tutorials, tutorialMapper);
-        validateExist(blogs, blogPostMapper);
-        validateExist(projects, portfolioProjectMapper);
-
-        jdbc.update("DELETE FROM profile_selected_content WHERE profile_id = 1");
+        if (!tutorials.containsAll(tutorialIds) || !blogs.containsAll(blogIds) || !projects.containsAll(projectIds)) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "CONTENT_NOT_FOUND",
+                    "Selected content not found", "One or more selected content ids do not exist.");
+        }
+        List<ProfileSelectedContent> rows = new ArrayList<>();
         int order = 10;
-        for (Long id : tutorials) {
-            jdbc.update("INSERT INTO profile_selected_content (profile_id, tutorial_id, sort_order) VALUES (1, ?, ?)",
-                    id, order);
+        for (Long id : tutorialIds) {
+            rows.add(selectedRow(id, null, null, order));
             order += 10;
         }
-        for (Long id : blogs) {
-            jdbc.update("INSERT INTO profile_selected_content (profile_id, blog_post_id, sort_order) VALUES (1, ?, ?)",
-                    id, order);
+        for (Long id : blogIds) {
+            rows.add(selectedRow(null, id, null, order));
             order += 10;
         }
-        for (Long id : projects) {
-            jdbc.update("INSERT INTO profile_selected_content (profile_id, portfolio_project_id, sort_order) VALUES (1, ?, ?)",
-                    id, order);
+        for (Long id : projectIds) {
+            rows.add(selectedRow(null, null, id, order));
             order += 10;
         }
+        selected.replace(rows);
+        events.publishEvent(new ProfileChangedEvent());
         return queryService.getAdmin();
     }
 
@@ -117,20 +116,20 @@ public class ProfileCommandService {
         if (mediaId == null) {
             return;
         }
-        MediaAsset media = mediaAssetMapper.selectById(mediaId);
-        if (media == null) {
+        MediaFile file = media.file(mediaId);
+        if (file == null) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "MEDIA_NOT_FOUND",
                     "Media not found", "The referenced media asset does not exist.");
         }
-        if ("avatar".equals(field) && !"IMAGE".equals(media.getAssetType())) {
+        if ("avatar".equals(field) && !"IMAGE".equals(file.assetType())) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "MEDIA_TYPE_INVALID",
                     "Avatar must be an image", "The avatar must reference an IMAGE asset.");
         }
         if ("resume".equals(field)) {
-            boolean pdf = "DOCUMENT".equals(media.getAssetType())
-                    && "pdf".equalsIgnoreCase(media.getExtension())
-                    && media.getMimeType() != null
-                    && media.getMimeType().toLowerCase().contains("pdf");
+            boolean pdf = "DOCUMENT".equals(file.assetType())
+                    && "pdf".equalsIgnoreCase(file.extension())
+                    && file.mimeType() != null
+                    && file.mimeType().toLowerCase().contains("pdf");
             if (!pdf) {
                 throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "MEDIA_TYPE_INVALID",
                         "Resume must be a PDF document", "The resume must reference a PDF DOCUMENT asset.");
@@ -138,14 +137,14 @@ public class ProfileCommandService {
         }
     }
 
-    private void validateExist(List<Long> ids, BaseMapper<?> mapper) {
-        if (ids.isEmpty()) {
-            return;
-        }
-        if (mapper.selectBatchIds(ids).size() != ids.size()) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "CONTENT_NOT_FOUND",
-                    "Selected content not found", "One or more selected content ids do not exist.");
-        }
+    private ProfileSelectedContent selectedRow(Long tutorialId, Long blogId, Long projectId, int order) {
+        ProfileSelectedContent row = new ProfileSelectedContent();
+        row.setProfileId(1);
+        row.setTutorialId(tutorialId);
+        row.setBlogPostId(blogId);
+        row.setPortfolioProjectId(projectId);
+        row.setSortOrder(order);
+        return row;
     }
 
     private List<Long> dedupe(List<Long> ids) {

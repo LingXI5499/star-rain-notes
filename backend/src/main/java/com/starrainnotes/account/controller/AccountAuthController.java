@@ -8,6 +8,7 @@ import com.starrainnotes.account.entity.AccountUser;
 import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.account.service.AccountCredentialService;
 import com.starrainnotes.account.service.AccountService;
+import com.starrainnotes.auth.service.SessionEstablishment;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -16,9 +17,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -32,14 +30,14 @@ public class AccountAuthController {
 
     private final AccountService accountService;
     private final AccountCredentialService credentials;
-    private final SecurityContextRepository securityContextRepository;
+    private final SessionEstablishment sessions;
     private final AuditLogService auditLog;
 
     public AccountAuthController(AccountService accountService, AccountCredentialService credentials,
-                                 SecurityContextRepository securityContextRepository, AuditLogService auditLog) {
+                                 SessionEstablishment sessions, AuditLogService auditLog) {
         this.accountService = accountService;
         this.credentials = credentials;
-        this.securityContextRepository = securityContextRepository;
+        this.sessions = sessions;
         this.auditLog = auditLog;
     }
 
@@ -61,11 +59,7 @@ public class AccountAuthController {
         UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
                 principal, null,
                 principal.authorities().stream().map(SimpleGrantedAuthority::new).toList());
-        SecurityContext context = SecurityContextHolder.createEmptyContext();
-        context.setAuthentication(authentication);
-        SecurityContextHolder.setContext(context);
-        securityContextRepository.saveContext(context, request, response);
-        request.changeSessionId();
+        sessions.establish(authentication, request, response);
         return new AccountSessionView(true, user.getEmail(), user.getRole(), user.getAccountStatus(),
                 accountService.capabilities(user.getRole()));
     }

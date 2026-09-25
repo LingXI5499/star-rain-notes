@@ -9,6 +9,7 @@ import com.starrainnotes.tutorial.mapper.TutorialCategoryMapper;
 import com.starrainnotes.tutorial.mapper.TutorialMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.stream.Collectors;
 /** Read model for the flat tutorial-category catalogue. */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TutorialCategoryQueryService {
     private final TutorialCategoryMapper categoryMapper;
     private final TutorialMapper tutorialMapper;

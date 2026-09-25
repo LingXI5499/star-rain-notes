@@ -6,7 +6,10 @@ import com.starrainnotes.account.mapper.EmailVerificationChallengeMapper;
 import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
@@ -33,10 +36,14 @@ public class VerificationCodeService {
 
     private final EmailVerificationChallengeMapper mapper;
     private final MailGateway mailGateway;
+    private final TransactionTemplate failedAttemptTx;
 
-    public VerificationCodeService(EmailVerificationChallengeMapper mapper, MailGateway mailGateway) {
+    public VerificationCodeService(EmailVerificationChallengeMapper mapper, MailGateway mailGateway,
+                                   PlatformTransactionManager transactionManager) {
         this.mapper = mapper;
         this.mailGateway = mailGateway;
+        this.failedAttemptTx = new TransactionTemplate(transactionManager);
+        this.failedAttemptTx.setPropagationBehavior(TransactionDefinition.PROPAGATION_REQUIRES_NEW);
     }
 
     @Transactional
@@ -66,9 +73,10 @@ public class VerificationCodeService {
             mapper.updateById(latest);
         }
         mapper.insert(challenge);
-        mailGateway.sendVerificationCode(email, purpose, code);
+        AfterCommit.run("Verification code mail", () -> mailGateway.sendVerificationCode(email, purpose, code));
     }
 
+    @Transactional
     public void verify(String email, String purpose, String code, Long invitationId) {
         LocalDateTime now = LocalDateTime.now(Clock.systemUTC());
         EmailVerificationChallenge challenge = latestUnconsumed(email, purpose, invitationId);
@@ -85,8 +93,10 @@ public class VerificationCodeService {
                     "Too many attempts", "Too many attempts; request a new code.");
         }
         if (!sha256(code).equals(challenge.getCodeHash())) {
-            challenge.setAttemptCount(challenge.getAttemptCount() + 1);
-            mapper.updateById(challenge);
+            failedAttemptTx.executeWithoutResult(status -> {
+                challenge.setAttemptCount(challenge.getAttemptCount() + 1);
+                mapper.updateById(challenge);
+            });
             throw fail("VERIFICATION_CODE_INVALID", HttpStatus.UNPROCESSABLE_ENTITY,
                     "Verification code invalid", "The code does not match.");
         }

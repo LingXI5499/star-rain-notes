@@ -7,6 +7,7 @@ import com.starrainnotes.site.dto.RecentContentView;
 import com.starrainnotes.site.repository.DashboardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 /** Administrative dashboard query orchestration and site-timezone formatting. */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class DashboardQueryService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;

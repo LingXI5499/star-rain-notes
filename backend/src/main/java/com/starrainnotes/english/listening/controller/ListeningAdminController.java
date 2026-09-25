@@ -1,7 +1,5 @@
 package com.starrainnotes.english.listening.controller;
 
-import com.starrainnotes.account.review.dto.ContentReviewView;
-import com.starrainnotes.account.review.service.ContentReviewService;
 import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.english.listening.dto.ListeningItemRequest;
 import com.starrainnotes.english.listening.dto.ListeningItemView;
@@ -58,13 +56,12 @@ public class ListeningAdminController {
     private final PronunciationRuleQueryService pronunciationQueries;
     private final PronunciationRuleCommandService pronunciationCommands;
     private final ListeningExerciseApplicationService exerciseService;
-    private final ContentReviewService reviewService;
 
     public ListeningAdminController(ListeningQueryService queries, ListeningCommandService commands,
             ListeningSegmentService segments, ListeningRelationService relations,
             PronunciationRuleQueryService pronunciationQueries,
             PronunciationRuleCommandService pronunciationCommands,
-            ListeningExerciseApplicationService exerciseService, ContentReviewService reviewService) {
+            ListeningExerciseApplicationService exerciseService) {
         this.queries = queries;
         this.commands = commands;
         this.segments = segments;
@@ -72,7 +69,6 @@ public class ListeningAdminController {
         this.pronunciationQueries = pronunciationQueries;
         this.pronunciationCommands = pronunciationCommands;
         this.exerciseService = exerciseService;
-        this.reviewService = reviewService;
     }
 
     @GetMapping("/items")
@@ -102,12 +98,8 @@ public class ListeningAdminController {
     @PutMapping("/items/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody ListeningItemRequest request,
                                     Authentication authentication) {
-        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_LISTENING_ITEM", id)) {
-            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
-                    "ENGLISH_LISTENING_ITEM", id, request.title(), request);
-            return ResponseEntity.accepted().body(review);
-        }
-        return ResponseEntity.ok(commands.update(id, request));
+        var result = commands.updateForEditor(actorId(authentication), isSuperAdmin(authentication), id, request);
+        return ResponseEntity.status(result.submitted() ? HttpStatus.ACCEPTED : HttpStatus.OK).body(result.body());
     }
 
     @DeleteMapping("/items/{id}")
@@ -233,12 +225,8 @@ public class ListeningAdminController {
     @PutMapping("/pronunciation/{id}")
     public ResponseEntity<?> updateRule(@PathVariable Long id, @Valid @RequestBody PronunciationRuleRequest request,
                                         Authentication authentication) {
-        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_PRONUNCIATION_RULE", id)) {
-            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
-                    "ENGLISH_PRONUNCIATION_RULE", id, request.title(), request);
-            return ResponseEntity.accepted().body(review);
-        }
-        return ResponseEntity.ok(pronunciationCommands.update(id, request));
+        var result = pronunciationCommands.updateForEditor(actorId(authentication), isSuperAdmin(authentication), id, request);
+        return ResponseEntity.status(result.submitted() ? HttpStatus.ACCEPTED : HttpStatus.OK).body(result.body());
     }
 
     @DeleteMapping("/pronunciation/{id}")

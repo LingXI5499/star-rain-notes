@@ -2,7 +2,6 @@ package com.starrainnotes.english.reading.domain;
 
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.reading.entity.ReadingArticle;
-import com.starrainnotes.english.reading.infrastructure.ReadingRelationRepository;
 import com.starrainnotes.english.api.MediaPort;
 import org.junit.jupiter.api.Test;
 
@@ -15,9 +14,8 @@ import static org.mockito.Mockito.when;
 
 class ReadingPublishPolicyTest {
 
-    private final ReadingRelationRepository relations = mock(ReadingRelationRepository.class);
     private final MediaPort media = mock(MediaPort.class);
-    private final ReadingPublishPolicy policy = new ReadingPublishPolicy(relations, media);
+    private final ReadingPublishPolicy policy = new ReadingPublishPolicy(media);
 
     @Test
     void preservesAllPublishViolationsAndTheirOrder() {
@@ -25,7 +23,7 @@ class ReadingPublishPolicyTest {
         article.setId(12L);
         article.setReadingLevel(4);
         article.setCoverMediaId(34L);
-        assertThat(policy.violations(article)).isEqualTo(List.of(
+        assertThat(policy.violations(article, false, false)).isEqualTo(List.of(
                 "标题不能为空", "slug 不能为空", "摘要不能为空", "正文不能为空",
                 "能力层级必须为1/2/3", "CEFR 等级不能为空",
                 "至少需要一个主题(TOPIC)标签", "至少需要一个文体(GENRE)标签", "封面必须为图片"));
@@ -42,10 +40,8 @@ class ReadingPublishPolicyTest {
         article.setReadingLevel(2);
         article.setCefrLevel("B1");
         article.setCoverMediaId(34L);
-        when(relations.hasEnabledDimension(12L, "TOPIC")).thenReturn(true);
-        when(relations.hasEnabledDimension(12L, "GENRE")).thenReturn(true);
         when(media.isImage(34L)).thenReturn(true);
-        assertThat(policy.violations(article)).isEmpty();
+        assertThat(policy.violations(article, true, true)).isEmpty();
     }
 
     @Test

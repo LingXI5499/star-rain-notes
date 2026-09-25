@@ -8,6 +8,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface SeoContentChange {
-    String table();
+    String kind();
     String pathPrefix();
+    /** Zero-based position of the content id in the annotated method. */
+    int idParameter() default 0;
 }

@@ -31,6 +31,20 @@ public class WritingResourcePolicy {
         if ("TEMPLATE".equals(request.resourceKind())) validateTemplate(request.templateSchemaJson());
     }
 
+    public void requireTagDimension(String dimension) {
+        if (dimension == null || !(dimension.equals("TOPIC") || dimension.equals("GENRE")
+                || dimension.equals("FUNCTION") || dimension.equals("ABILITY"))) {
+            invalid("Invalid writing tag");
+        }
+    }
+
+    public void requireUnused(int promptReferences) {
+        if (promptReferences > 0) {
+            throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_WRITING_RESOURCE_IN_USE",
+                    "Resource is in use", "Remove prompt references first.");
+        }
+    }
+
     public void validatePublication(String title, String body, boolean hasTopicOrGenre, String resourceKind, String schema) {
         if (title == null || title.isBlank()) publishInvalid("标题不能为空");
         if (body == null || body.isBlank()) publishInvalid("正文不能为空");

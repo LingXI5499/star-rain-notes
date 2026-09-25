@@ -95,7 +95,7 @@ public class TaxonomyCommandService {
     public void delete(Long id) {
         queries.require(id);
         boolean hasChildren = repository.countChildren(id) > 0;
-        policy.assertDeletable(hasChildren, !hasChildren && repository.referencedByContent(id));
+        policy.assertDeletable(hasChildren, !hasChildren && queries.usageCount(id) > 0);
         repository.delete(id);
     }
 

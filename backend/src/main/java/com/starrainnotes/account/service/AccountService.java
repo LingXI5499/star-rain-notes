@@ -2,6 +2,7 @@ package com.starrainnotes.account.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.account.entity.AccountUser;
+import com.starrainnotes.account.security.AccountCapabilities;
 import com.starrainnotes.account.mapper.AccountUserMapper;
 import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
@@ -24,11 +25,8 @@ public class AccountService {
     }
 
     public List<String> capabilities(String role) {
-        if (SUPER_ADMIN.equals(role)) {
-            return List.of("TUTORIAL_COLLABORATE", "BLOG_COLLABORATE", "ENGLISH_COLLABORATE",
-                    "SUPER_ADMIN", "REVIEW");
-        }
-        return List.of("TUTORIAL_COLLABORATE", "BLOG_COLLABORATE", "ENGLISH_COLLABORATE");
+        if (SUPER_ADMIN.equals(role)) return AccountCapabilities.superAdmin();
+        return AccountCapabilities.collaborate();
     }
 
     private void requireSuperAdmin(Long accountId, String detail) {

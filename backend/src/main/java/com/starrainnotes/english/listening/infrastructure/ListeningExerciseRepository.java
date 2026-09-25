@@ -5,9 +5,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.listening.domain.ListeningContentPort;
-import com.starrainnotes.english.shared.exercise.dto.CheckAnswerRequest;
-import com.starrainnotes.english.shared.exercise.dto.CheckItemView;
-import com.starrainnotes.english.shared.exercise.dto.CheckResultView;
 import com.starrainnotes.english.shared.exercise.dto.ExercisePublicView;
 import com.starrainnotes.english.shared.exercise.dto.ExerciseRequest;
 import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
@@ -23,10 +20,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Listening exercises bound to a single item (阶段三 §四.3).
@@ -120,7 +115,8 @@ public class ListeningExerciseRepository {
         ids.remove(exerciseId);
         ids.add(Math.min(Math.max(targetIndex, 0), ids.size()), exerciseId);
         if (ids.isEmpty()) return;
-        jdbc.update("UPDATE english_exercise SET sort_order=100000 WHERE id IN (" + joinIds(ids) + ")");
+        String placeholders = String.join(",", java.util.Collections.nCopies(ids.size(), "?"));
+        jdbc.update("UPDATE english_exercise SET sort_order=100000 WHERE id IN (" + placeholders + ")", ids.toArray());
         for (int i = 0; i < ids.size(); i++) {
             jdbc.update("UPDATE english_exercise SET sort_order=? WHERE id=?", (i + 1) * 10, ids.get(i));
         }
@@ -145,34 +141,11 @@ public class ListeningExerciseRepository {
                 """, (rs, row) -> toPublic(rs), itemId);
     }
 
-    @Transactional
-    public CheckResultView check(Long itemId, CheckAnswerRequest request) {
+    public void requirePublishedItem(Long itemId) {
         itemService.requirePublished(itemId);
-        List<CheckItemView> items = new ArrayList<>();
-        Set<Long> seen = new LinkedHashSet<>();
-        int total = 0;
-        int score = 0;
-        for (CheckAnswerRequest.Submission submission : request.answers()) {
-            if (!seen.add(submission.exerciseId())) {
-                throw invalidAnswer("The same exercise cannot be submitted more than once.");
-            }
-            EnglishExercise exercise = requireOwnedPublished(itemId, submission.exerciseId());
-            boolean correct = safety.isCorrect(exercise.getQuestionType(),
-                    objectMapper.valueToTree(exercise.getConfigJson()), submission.answer());
-            int earned = correct ? exercise.getScoreValue() : 0;
-            total += exercise.getScoreValue();
-            score += earned;
-            items.add(new CheckItemView(submission.exerciseId(), correct, earned,
-                    exercise.getScoreValue(), exercise.getExplanationMarkdown()));
-        }
-        return new CheckResultView(score, total, items);
     }
 
-    // ---------------------------------------------------------------
-    // helpers
-    // ---------------------------------------------------------------
-
-    private EnglishExercise requireOwnedPublished(Long itemId, Long exerciseId) {
+    public EnglishExercise requireOwnedPublished(Long itemId, Long exerciseId) {
         List<Long> ids = jdbc.queryForList("""
                 SELECT e.id FROM english_listening_item_exercise ie
                 JOIN english_exercise e ON e.id=ie.exercise_id
@@ -256,10 +229,6 @@ public class ListeningExerciseRepository {
     private ApiException invalidAnswer(String detail) {
         return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_ANSWER_INVALID",
                 "Invalid listening answer", detail);
-    }
-
-    private String joinIds(List<Long> ids) {
-        return String.join(",", ids.stream().map(String::valueOf).toList());
     }
 
     private String format(java.sql.Timestamp ts) {

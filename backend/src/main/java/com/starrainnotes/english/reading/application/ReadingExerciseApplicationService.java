@@ -32,12 +32,15 @@ public class ReadingExerciseApplicationService {
     private final EnglishExercisePolicy exerciseRules;
     private final EnglishExerciseSafety safety;
     private final ObjectMapper objectMapper;
+    private final ReadingQueryService articles;
     public ReadingExerciseApplicationService(ReadingExerciseRepository repository,
-            EnglishExercisePolicy exerciseRules, EnglishExerciseSafety safety, ObjectMapper objectMapper) {
+            EnglishExercisePolicy exerciseRules, EnglishExerciseSafety safety, ObjectMapper objectMapper,
+            ReadingQueryService articles) {
         this.repository = repository;
         this.exerciseRules = exerciseRules;
         this.safety = safety;
         this.objectMapper = objectMapper;
+        this.articles = articles;
     }
 
     public List<ExerciseView> listByArticle(Long articleId) {
@@ -100,6 +103,10 @@ public class ReadingExerciseApplicationService {
         return repository.publicListPublished(articleId);
     }
 
+    public List<ExercisePublicView> publicListBySlug(String slug) {
+        return publicListPublished(articles.publicGet(slug).id());
+    }
+
     @Transactional
     public CheckResultView check(Long articleId, CheckAnswerRequest request) {
         repository.requirePublished(articleId);
@@ -120,6 +127,11 @@ public class ReadingExerciseApplicationService {
                     exercise.getScoreValue(), exercise.getExplanationMarkdown()));
         }
         return new CheckResultView(score, total, items);
+    }
+
+    @Transactional
+    public CheckResultView checkBySlug(String slug, CheckAnswerRequest request) {
+        return check(articles.publicGet(slug).id(), request);
     }
 
     // ---------------------------------------------------------------

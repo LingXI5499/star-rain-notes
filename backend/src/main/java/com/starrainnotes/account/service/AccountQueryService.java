@@ -5,10 +5,12 @@ import com.starrainnotes.account.config.AccountProperties;
 import com.starrainnotes.account.entity.AccountUser;
 import com.starrainnotes.account.mapper.AccountUserMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
+@Transactional(readOnly = true)
 public class AccountQueryService {
     private final AccountUserMapper userMapper;
     private final AccountProperties properties;

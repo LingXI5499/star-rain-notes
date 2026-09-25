@@ -1,7 +1,7 @@
 package com.starrainnotes.tutorial.service;
 
+import com.starrainnotes.account.review.api.ReviewSubmissionPort;
 import com.starrainnotes.account.review.dto.ContentReviewView;
-import com.starrainnotes.account.review.service.ContentReviewService;
 import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.tutorial.dto.ChapterDetailView;
 import com.starrainnotes.tutorial.dto.UpdateChapterRequest;
@@ -14,15 +14,15 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class TutorialChapterUpdateWorkflowService {
-    private final TutorialNodeService nodeService;
+    private final TutorialChapterCommandService chapters;
     private final TutorialNodeQueryService queryService;
-    private final ContentReviewService reviewService;
+    private final ReviewSubmissionPort reviewService;
 
     public Outcome update(Authentication actor, Long tutorialId, Long chapterId, UpdateChapterRequest request) {
         if (!isSuperAdmin(actor) && "PUBLISHED".equals(queryService.chapterPublishStatus(tutorialId, chapterId))) {
             return new ReviewSubmitted(reviewService.submitTutorialChapterUpdate(actorId(actor), tutorialId, chapterId, request));
         }
-        return new Updated(nodeService.updateChapter(tutorialId, chapterId, request));
+        return new Updated(chapters.updateChapter(tutorialId, chapterId, request));
     }
 
     private boolean isSuperAdmin(Authentication actor) {

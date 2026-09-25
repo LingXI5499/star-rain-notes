@@ -14,13 +14,13 @@ import java.util.concurrent.TimeUnit;
 
 @RestController
 public class SeoController {
-    private final SeoContentRepository content;
+    private final SeoPageService content;
     private final SeoHtmlRenderer renderer;
     private final SeoSitemapService sitemap;
     private final SeoProperties properties;
     private final SeoDocumentCache cache;
 
-    public SeoController(SeoContentRepository content, SeoHtmlRenderer renderer, SeoSitemapService sitemap, SeoProperties properties, SeoDocumentCache cache) {
+    public SeoController(SeoPageService content, SeoHtmlRenderer renderer, SeoSitemapService sitemap, SeoProperties properties, SeoDocumentCache cache) {
         this.content = content;
         this.renderer = renderer;
         this.sitemap = sitemap;
