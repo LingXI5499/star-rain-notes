@@ -11,6 +11,7 @@ backend/.env.local
 backend/target/
 backend-deploy-build/
 backend/.idea/
+.idea/
 *.iml
 
 # Frontend dependencies and build output
@@ -32,6 +33,8 @@ Thumbs.db
 
 # Local archives, generated deployment packages and historical work copies
 /develop/
+/release/
+/backend/docs/audit-tmp/
 *.jar
 *.zip
 backend/backend/
