@@ -29,13 +29,16 @@ public class VocabularyStudyRepository {
     }
 
     public VocabularyStudySettingsView settings(long accountId) {
-        jdbc.update("INSERT IGNORE INTO account_vocabulary_study_setting(account_id) VALUES (?)", accountId);
-        return jdbc.queryForObject("""
+        java.util.List<VocabularyStudySettingsView> rows = jdbc.query("""
                 SELECT show_english,show_chinese,review_direction,daily_new_limit,daily_review_limit
                 FROM account_vocabulary_study_setting WHERE account_id=?
                 """, (rs, ignored) -> new VocabularyStudySettingsView(rs.getBoolean("show_english"),
-                rs.getBoolean("show_chinese"),rs.getString("review_direction"),rs.getInt("daily_new_limit"),
-                rs.getInt("daily_review_limit")),accountId);
+                rs.getBoolean("show_chinese"), rs.getString("review_direction"), rs.getInt("daily_new_limit"),
+                rs.getInt("daily_review_limit")), accountId);
+        if (rows.isEmpty()) {
+            return new VocabularyStudySettingsView(true, true, "MIXED", 20, 200);
+        }
+        return rows.get(0);
     }
 
     public List<Map<String,Object>> memorySnapshot(long accountId) {

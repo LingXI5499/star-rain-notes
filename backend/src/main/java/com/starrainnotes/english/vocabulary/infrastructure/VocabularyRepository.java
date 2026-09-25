@@ -15,7 +15,6 @@ import com.starrainnotes.english.vocabulary.service.VocabularyWordViewAssembler;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +24,6 @@ import java.util.Map;
 @Repository
 public class VocabularyRepository {
 
-    private static final int MAX_PAGE_SIZE = 50;
     private final VocabularyThemeRepository themeRepository;
     private final VocabularyWordMapper wordMapper;
     private final JdbcTemplate jdbc;
@@ -41,22 +39,15 @@ public class VocabularyRepository {
         this.wordViewAssembler = wordViewAssembler;
     }
 
-    @Transactional(readOnly = true)
     public VocabularyPageView listWords(Long themeId, Integer layerOrder, String query, int page, int pageSize) {
-        int safePage = Math.max(page, 1);
-        int safeSize = Math.min(Math.max(pageSize, 1), MAX_PAGE_SIZE);
         QueryWrapper<VocabularyWord> wrapper = new QueryWrapper<>();
         if (themeId != null) {
             requireTheme(themeId);
             wrapper.eq("theme_id", themeId);
         } else if (layerOrder != null) {
-            if (layerOrder < 1 || layerOrder > 6) {
-                throw new ApiException(HttpStatus.BAD_REQUEST, "VOCABULARY_LAYER_INVALID",
-                        "Invalid vocabulary layer", "Layer order must be between 1 and 6.");
-            }
             List<Long> themeIds = themeRepository.idsForLayer(layerOrder);
             if (themeIds.isEmpty()) {
-                return new VocabularyPageView(List.of(), 0, safePage, safeSize, 0);
+                return new VocabularyPageView(List.of(), 0, page, pageSize, 0);
             }
             wrapper.in("theme_id", themeIds);
         }
@@ -68,14 +59,13 @@ public class VocabularyRepository {
         }
         wrapper.orderByAsc("theme_id").orderByAsc("sort_order").orderByAsc("id");
         long total = wordMapper.selectCount(wrapper);
-        wrapper.last("LIMIT " + safeSize + " OFFSET " + ((safePage - 1) * safeSize));
+        wrapper.last("LIMIT " + pageSize + " OFFSET " + ((page - 1) * pageSize));
         List<VocabularyWord> words = wordMapper.selectList(wrapper);
         List<VocabularyWordView> items = wordViewAssembler.toViews(words);
-        int totalPages = total == 0 ? 0 : (int) ((total + safeSize - 1) / safeSize);
-        return new VocabularyPageView(items, total, safePage, safeSize, totalPages);
+        int totalPages = total == 0 ? 0 : (int) ((total + pageSize - 1) / pageSize);
+        return new VocabularyPageView(items, total, page, pageSize, totalPages);
     }
 
-    @Transactional
     public VocabularyWordView createWord(CreateVocabularyWordRequest request) {
         requireTheme(request.themeId());
         VocabularyWord word = new VocabularyWord();
@@ -94,7 +84,6 @@ public class VocabularyRepository {
         return wordViewAssembler.toView(word);
     }
 
-    @Transactional
     public VocabularyWordView updateWord(long wordId, UpdateVocabularyWordRequest request) {
         VocabularyWord word = requireWord(wordId);
         if (request.themeId() != null) {
@@ -106,10 +95,6 @@ public class VocabularyRepository {
         }
         if (request.partOfSpeech() != null) word.setPartOfSpeech(defaultEmpty(request.partOfSpeech()));
         if (request.word() != null) {
-            if (request.word().isBlank()) {
-                throw new ApiException(HttpStatus.BAD_REQUEST, "VOCABULARY_WORD_REQUIRED", "Word required",
-                        "The English word cannot be blank.");
-            }
             word.setWord(request.word().trim());
         }
         word.setTranslation(request.translation().trim());
@@ -121,13 +106,15 @@ public class VocabularyRepository {
         return wordViewAssembler.toView(word);
     }
 
-    @Transactional
     public void deleteWord(long wordId) {
         requireWord(wordId);
         wordMapper.deleteById(wordId);
     }
 
-    @Transactional
+    public int exampleCount(long wordId) {
+        return requireWord(wordId).getExamples().size();
+    }
+
     public VocabularyWordView addExample(long wordId, AddExampleRequest request) {
         VocabularyWord word = requireWord(wordId);
         List<VocabularyExample> examples = new ArrayList<>(word.getExamples());
@@ -137,21 +124,15 @@ public class VocabularyRepository {
         return wordViewAssembler.toView(word);
     }
 
-    @Transactional
     public VocabularyWordView removeExample(long wordId, int index) {
         VocabularyWord word = requireWord(wordId);
         List<VocabularyExample> examples = new ArrayList<>(word.getExamples());
-        if (index < 0 || index >= examples.size()) {
-            throw new ApiException(HttpStatus.BAD_REQUEST, "EXAMPLE_INDEX_OUT_OF_RANGE",
-                    "Invalid example index", "Example index must be within the word's example list.");
-        }
         examples.remove(index);
         word.setExamples(examples);
         wordMapper.updateById(word);
         return wordViewAssembler.toView(word);
     }
 
-    @Transactional
     public VocabularyWordView setMemory(long wordId, SetMemoryRequest request) {
         VocabularyWord word = requireWord(wordId);
         word.setMemoryCount(request.memoryCount());

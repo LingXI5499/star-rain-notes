@@ -32,7 +32,7 @@ class ExperiencePerformanceTest {
     @Autowired JdbcTemplate jdbc;
     @Autowired BlogCommandService blogCommands;
     @Autowired BlogQueryService blogQueries;
-    @Autowired SeoContentRepository content;
+    @Autowired SeoPageService content;
     @Autowired SeoDocumentCache pages;
     @Autowired SeoHtmlRenderer renderer;
 

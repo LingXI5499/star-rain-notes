@@ -9,6 +9,7 @@ import com.starrainnotes.english.vocabulary.learning.infrastructure.VocabularySt
 import com.starrainnotes.english.vocabulary.learning.infrastructure.VocabularyReviewLogRepository;
 import com.starrainnotes.english.vocabulary.learning.domain.StudyDirectionPolicy;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@Transactional(readOnly = true)
 public class VocabularyStudyQueryService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;

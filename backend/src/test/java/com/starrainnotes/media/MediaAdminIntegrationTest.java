@@ -284,7 +284,7 @@ class MediaAdminIntegrationTest extends AbstractAuthIntegrationTest {
                         .content("{\"siteName\":\"星雨笔录\",\"timezone\":\"Asia/Shanghai\",\"logoMediaId\":" + pdfId + "}"),
                         csrf(session)).session(session))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.code").value("MEDIA_TYPE_INVALID"));
+                .andExpect(jsonPath("$.code").value("INVALID_COVER_MEDIA"));
 
         mockMvc.perform(withCsrf(put("/api/v1/admin/about")
                         .contentType(org.springframework.http.MediaType.APPLICATION_JSON)

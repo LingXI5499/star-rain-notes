@@ -275,7 +275,7 @@ class AdminSiteIntegrationTest extends AbstractAuthIntegrationTest {
                         .content("{\"siteName\":\"星雨笔录\",\"timezone\":\"Asia/Shanghai\",\"logoMediaId\":" + documentId + "}"), csrf)
                         .session(session))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.code").value("MEDIA_TYPE_INVALID"));
+                .andExpect(jsonPath("$.code").value("INVALID_COVER_MEDIA"));
 
         // IMAGE as favicon accepted
         mockMvc.perform(withCsrf(put("/api/v1/admin/site-settings")
@@ -295,7 +295,7 @@ class AdminSiteIntegrationTest extends AbstractAuthIntegrationTest {
                         .content("{\"siteName\":\"星雨笔录\",\"timezone\":\"Asia/Shanghai\",\"logoMediaId\":999999}"), csrf)
                         .session(session))
                 .andExpect(status().isUnprocessableEntity())
-                .andExpect(jsonPath("$.code").value("MEDIA_NOT_FOUND"));
+                .andExpect(jsonPath("$.code").value("INVALID_COVER_MEDIA"));
     }
 
     @Test

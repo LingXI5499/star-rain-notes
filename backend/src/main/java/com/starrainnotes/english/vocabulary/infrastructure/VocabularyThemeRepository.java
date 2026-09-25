@@ -35,7 +35,6 @@ public class VocabularyThemeRepository {
                 .stream().map(VocabularyTheme::getId).toList();
     }
 
-    @Transactional
     public VocabularyThemeView create(VocabularyThemeRequest request) {
         VocabularyTheme theme=new VocabularyTheme();
         theme.setLayer(VocabularyLayer.fromOrder(request.layerOrder()).label());
@@ -44,7 +43,6 @@ public class VocabularyThemeRepository {
         return new VocabularyThemeView(theme.getId(),theme.getName(),0);
     }
 
-    @Transactional
     public VocabularyThemeView update(long id,VocabularyThemeRequest request) {
         VocabularyTheme theme=themes.selectById(id); requireTheme(id);
         theme.setLayer(VocabularyLayer.fromOrder(request.layerOrder()).label());
@@ -55,12 +53,13 @@ public class VocabularyThemeRepository {
         return new VocabularyThemeView(theme.getId(),theme.getName(),count);
     }
 
-    @Transactional
+    public long wordCount(long id) {
+        Long count = words.selectCount(new QueryWrapper<VocabularyWord>().eq("theme_id", id));
+        return count == null ? 0L : count;
+    }
+
     public void delete(long id) {
         requireTheme(id);
-        long count=words.selectCount(new QueryWrapper<VocabularyWord>().eq("theme_id",id));
-        if(count>0) throw new ApiException(HttpStatus.CONFLICT,"VOCABULARY_THEME_NOT_EMPTY","Theme is not empty",
-                "Move or delete the theme's vocabulary words before deleting this category.");
         themes.deleteById(id);
     }
 

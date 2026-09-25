@@ -14,10 +14,10 @@ import static org.mockito.Mockito.when;
 class SeoHtmlRendererTest {
     @Test
     void rendersCanonicalMetadataSemanticBodyAndJsonLd() {
-        SeoContentRepository content = mock(SeoContentRepository.class);
-        when(content.site()).thenReturn(new SeoContentRepository.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
+        SeoIdentityService identity = mock(SeoIdentityService.class);
+        when(identity.site()).thenReturn(new SeoIdentityService.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
         SeoProperties properties = new SeoProperties("https://yulanlin.cn", "", "/brand/og-default.png", false, "", false, "", "https://yulanlin.cn");
-        SeoHtmlRenderer renderer = new SeoHtmlRenderer(properties, content, new ObjectMapper());
+        SeoHtmlRenderer renderer = new SeoHtmlRenderer(properties, identity, new ObjectMapper());
         SeoPage page = new SeoPage("/blog/123", "真实文章", "真实摘要", "index,follow", "article", "Article", null,
                 LocalDateTime.of(2026, 1, 1, 0, 0), LocalDateTime.of(2026, 1, 2, 0, 0),
                 "<h2>正文</h2><p>内容</p>", List.of(new SeoBreadcrumb("博客", "/blog")), Map.of());
@@ -32,17 +32,17 @@ class SeoHtmlRendererTest {
 
     @Test
     void notFoundIsNoIndex() {
-        SeoContentRepository content = mock(SeoContentRepository.class);
-        when(content.site()).thenReturn(new SeoContentRepository.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
-        SeoHtmlRenderer renderer = new SeoHtmlRenderer(new SeoProperties(null, null, null, false, null, false, null, null), content, new ObjectMapper());
+        SeoIdentityService identity = mock(SeoIdentityService.class);
+        when(identity.site()).thenReturn(new SeoIdentityService.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
+        SeoHtmlRenderer renderer = new SeoHtmlRenderer(new SeoProperties(null, null, null, false, null, false, null, null), identity, new ObjectMapper());
         assertThat(renderer.renderNotFound("/missing")).contains("noindex,nofollow", "页面不存在", "返回首页");
     }
 
     @Test
     void shellBrandAssetsPassThroughToCrawlerHtml() {
-        SeoContentRepository content = mock(SeoContentRepository.class);
-        when(content.site()).thenReturn(new SeoContentRepository.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
-        SeoHtmlRenderer renderer = new SeoHtmlRenderer(new SeoProperties("https://yulanlin.cn", "", null, false, null, false, null, null), content, new ObjectMapper());
+        SeoIdentityService identity = mock(SeoIdentityService.class);
+        when(identity.site()).thenReturn(new SeoIdentityService.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
+        SeoHtmlRenderer renderer = new SeoHtmlRenderer(new SeoProperties("https://yulanlin.cn", "", null, false, null, false, null, null), identity, new ObjectMapper());
         String html = renderer.render(new SeoPage("/", "星雨笔录", "建立自己的知识世界", "index,follow", "website", "WebSite", null, null, null,
                 "<p>首页</p>", List.of(), Map.of()));
 
@@ -53,5 +53,26 @@ class SeoHtmlRendererTest {
         assertThat(html).contains("rel=\"manifest\"");
         // and the default share image migrates to the platform-friendly format
         assertThat(html).contains("property=\"og:image\" content=\"https://yulanlin.cn/brand/og-default.png\"");
+    }
+
+    @Test
+    void jsonLdEscapesScriptTerminatorsWithoutChangingStructuredData() throws Exception {
+        String hostileTitle = "</script><script>alert(1)</script>";
+        SeoIdentityService identity = mock(SeoIdentityService.class);
+        when(identity.site()).thenReturn(new SeoIdentityService.SiteIdentity("星雨笔录", "建立自己的知识世界", null));
+        ObjectMapper json = new ObjectMapper();
+        SeoHtmlRenderer renderer = new SeoHtmlRenderer(
+                new SeoProperties("https://yulanlin.cn", "", null, false, null, false, null, null), identity, json);
+
+        String html = renderer.render(new SeoPage("/blog/123", hostileTitle, "Summary", "index,follow",
+                "article", "Article", null, null, null, "<p>Content</p>", List.of(), Map.of()));
+        String marker = "<script type=\"application/ld+json\" data-seo-schema>\n";
+        int start = html.indexOf(marker) + marker.length();
+        int end = html.indexOf("\n</script>", start);
+
+        assertThat(html).doesNotContain("</script><script>alert(1)");
+        assertThat(html.substring(start, end)).contains("\\u003c/script\\u003e");
+        assertThat(json.readTree(html.substring(start, end)).path("@graph").get(0).path("name").asText())
+                .isEqualTo(hostileTitle);
     }
 }

@@ -2,6 +2,7 @@ package com.starrainnotes.portfolio.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.media.api.PrototypeArchivePolicy;
 import com.starrainnotes.media.entity.MediaAsset;
 import com.starrainnotes.media.service.MediaService;
 import com.starrainnotes.portfolio.dto.ProjectPrototypeView;
@@ -16,44 +17,35 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.Set;
-import java.util.LinkedHashSet;
 import java.util.UUID;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
 
 /** Stores a small static-site package per project, backed by an ARCHIVE media asset. */
 @Service
 public class PortfolioPrototypeService {
 
-    private static final long MAX_ARCHIVE_BYTES = 25L * 1024 * 1024;
-    private static final long MAX_UNPACKED_BYTES = 100L * 1024 * 1024;
-    private static final int MAX_FILES = 500;
-    private static final int UNIX_SYMLINK_MASK = 0120000;
-    private static final Set<String> ALLOWED = Set.of(
-            "html", "htm", "css", "js", "json", "svg", "png", "jpg", "jpeg", "webp", "gif", "ico", "woff", "woff2", "ttf");
-
     private final PortfolioProjectPrototypeMapper mapper;
     private final MediaService mediaService;
+    private final PortfolioPrototypeCleanup packages;
     private final Path privateRoot;
     private final Path publicRoot;
 
     public PortfolioPrototypeService(PortfolioProjectPrototypeMapper mapper,
                                      MediaService mediaService,
+                                     PortfolioPrototypeCleanup packages,
                                      @Value("${app.portfolio-prototype.private-root:./data/portfolio-prototypes}") String privateDir,
                                      @Value("${app.portfolio-prototype.public-root:${MEDIA_STORAGE_DIR:uploads}/prototypes}") String publicDir) {
         this.mapper = mapper;
         this.mediaService = mediaService;
+        this.packages = packages;
         this.privateRoot = Path.of(privateDir).toAbsolutePath().normalize();
         this.publicRoot = Path.of(publicDir).toAbsolutePath().normalize();
     }
 
     public ProjectPrototypeView upload(Long projectId, MultipartFile archive, boolean published) {
-        if (archive == null || archive.isEmpty() || archive.getSize() > MAX_ARCHIVE_BYTES || !isZip(archive)) {
+        if (archive == null || archive.isEmpty() || archive.getSize() > PrototypeArchivePolicy.MAX_BYTES || !isZip(archive)) {
             throw invalid("Upload a ZIP package no larger than 25MB.");
         }
 
@@ -106,23 +98,11 @@ public class PortfolioPrototypeService {
 
     /** Validates a media-library ZIP before it is persisted as an unbound archive. */
     public void validateArchive(byte[] bytes) {
-        if (bytes == null || bytes.length < 2 || bytes.length > MAX_ARCHIVE_BYTES
-                || bytes[0] != 'P' || bytes[1] != 'K') {
-            throw invalid("Upload a ZIP package no larger than 25MB.");
-        }
-        Path validationStage = privateRoot.resolve(".validation")
-                .resolve(UUID.randomUUID().toString().replace("-", ""));
-        try {
-            unpack(bytes, validationStage);
-        } catch (IOException ex) {
-            throw invalid("The ZIP package could not be read.");
-        } finally {
-            deleteTree(validationStage);
-        }
+        packages.validateArchive(bytes);
     }
 
     private ProjectPrototypeView bind(Long projectId, MediaAsset mediaAsset, byte[] bytes, boolean published) {
-        if (bytes.length < 2 || bytes.length > MAX_ARCHIVE_BYTES || bytes[0] != 'P' || bytes[1] != 'K') {
+        if (!PrototypeArchivePolicy.withinLimit(bytes) || !PrototypeArchivePolicy.hasZipMagic(bytes)) {
             throw invalid("Upload a ZIP package no larger than 25MB.");
         }
         PortfolioProjectPrototype previous = find(projectId);
@@ -134,7 +114,7 @@ public class PortfolioPrototypeService {
         Path destination = privateRoot.resolve(storageKey);
         Path publicDestination = publicRoot.resolve(storageKey);
         try {
-            UnpackStats stats = unpack(bytes, stage);
+            PortfolioPrototypeCleanup.UnpackStats stats = packages.unpack(bytes, stage);
             Files.createDirectories(destination.getParent());
             try {
                 Files.move(stage, destination, StandardCopyOption.ATOMIC_MOVE);
@@ -142,7 +122,7 @@ public class PortfolioPrototypeService {
                 Files.move(stage, destination);
             }
             if (published) {
-                copyTree(destination, publicDestination);
+                PortfolioPrototypeFiles.copyTree(destination, publicDestination);
             }
 
             PortfolioProjectPrototype row = previous == null ? new PortfolioProjectPrototype() : previous;
@@ -161,8 +141,8 @@ public class PortfolioPrototypeService {
             }
 
             if (previousStorageKey != null && !storageKey.equals(previousStorageKey)) {
-                deleteTree(privateRoot.resolve(previousStorageKey));
-                deleteTree(publicRoot.resolve(previousStorageKey));
+                PortfolioPrototypeFiles.deleteTree(privateRoot.resolve(previousStorageKey));
+                PortfolioPrototypeFiles.deleteTree(publicRoot.resolve(previousStorageKey));
                 if (!mediaAsset.getId().equals(previousMediaAssetId)) {
                     try {
                         mediaService.delete(previousMediaAssetId);
@@ -173,14 +153,19 @@ public class PortfolioPrototypeService {
             }
             return view(row, mediaAsset.getSizeBytes(), true, published);
         } catch (ApiException ex) {
-            deleteTree(stage);
-            deleteTree(destination);
-            deleteTree(publicDestination);
+            PortfolioPrototypeFiles.deleteTree(stage);
+            PortfolioPrototypeFiles.deleteTree(destination);
+            PortfolioPrototypeFiles.deleteTree(publicDestination);
+            throw ex;
+        } catch (RuntimeException ex) {
+            PortfolioPrototypeFiles.deleteTree(stage);
+            PortfolioPrototypeFiles.deleteTree(destination);
+            PortfolioPrototypeFiles.deleteTree(publicDestination);
             throw ex;
         } catch (IOException ex) {
-            deleteTree(stage);
-            deleteTree(destination);
-            deleteTree(publicDestination);
+            PortfolioPrototypeFiles.deleteTree(stage);
+            PortfolioPrototypeFiles.deleteTree(destination);
+            PortfolioPrototypeFiles.deleteTree(publicDestination);
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "PROTOTYPE_STORAGE_FAILED",
                     "Prototype storage failed", "The prototype package could not be stored.");
         }
@@ -197,7 +182,7 @@ public class PortfolioPrototypeService {
             throw invalid("Invalid prototype storage path.");
         }
         try {
-            copyTree(source, target);
+            PortfolioPrototypeFiles.copyTree(source, target);
         } catch (IOException ex) {
             throw new ApiException(HttpStatus.INTERNAL_SERVER_ERROR, "PROTOTYPE_PUBLICATION_FAILED",
                     "Prototype publication failed", "The public prototype files could not be prepared.");
@@ -270,7 +255,7 @@ public class PortfolioPrototypeService {
         String path = requestedPath == null || requestedPath.isBlank()
                 ? prototype.getEntryPath()
                 : requestedPath.replaceFirst("^/", "");
-        Path file = privateRoot.resolve(prototype.getStorageKey()).resolve(safeRelative(path)).normalize();
+        Path file = privateRoot.resolve(prototype.getStorageKey()).resolve(PortfolioPrototypeFiles.safeRelative(path)).normalize();
         if (!file.startsWith(privateRoot) || !Files.isRegularFile(file)) {
             throw new ApiException(HttpStatus.NOT_FOUND, "PROTOTYPE_FILE_NOT_FOUND",
                     "Prototype file not found", "The requested prototype file does not exist.");
@@ -278,79 +263,9 @@ public class PortfolioPrototypeService {
         return new FileSystemResource(file);
     }
 
-    private UnpackStats unpack(byte[] bytes, Path stage) throws IOException {
-        assertNoUnixSymlinks(bytes);
-        Files.createDirectories(stage);
-        int files = 0;
-        long totalBytes = 0L;
-        Set<String> entryCandidates = new LinkedHashSet<>();
-        try (ZipInputStream zip = new ZipInputStream(new java.io.ByteArrayInputStream(bytes))) {
-            ZipEntry entry;
-            while ((entry = zip.getNextEntry()) != null) {
-                if (entry.isDirectory()) {
-                    continue;
-                }
-                Path relative = safeRelative(entry.getName());
-                String ext = extension(relative.getFileName().toString());
-                if (!ALLOWED.contains(ext)) {
-                    throw invalid("Unsupported files are not allowed in a prototype package.");
-                }
-                if (++files > MAX_FILES) {
-                    throw invalid("A prototype package may contain at most 500 files.");
-                }
-                Path target = stage.resolve(relative).normalize();
-                if (!target.startsWith(stage)) {
-                    throw invalid("Archive path escapes its package.");
-                }
-                Files.createDirectories(target.getParent());
-                long copied = copyLimited(zip, target, totalBytes);
-                totalBytes += copied;
-                if (totalBytes > MAX_UNPACKED_BYTES) {
-                    throw invalid("Unpacked prototype files may not exceed 100MB.");
-                }
-                String normalizedName = relative.toString().replace('\\', '/');
-                if (normalizedName.equals("index.html")
-                        || (relative.getNameCount() == 2 && relative.getFileName().toString().equalsIgnoreCase("index.html"))) {
-                    entryCandidates.add(normalizedName);
-                }
-            }
-        }
-        String entryPath;
-        if (entryCandidates.contains("index.html")) {
-            entryPath = "index.html";
-        } else if (entryCandidates.size() == 1) {
-            entryPath = entryCandidates.iterator().next();
-        } else if (entryCandidates.isEmpty()) {
-            throw invalid("The archive must contain index.html at its root or inside one top-level project folder.");
-        } else {
-            throw invalid("The archive contains multiple possible project entry pages.");
-        }
-        return new UnpackStats(files, totalBytes, entryPath);
-    }
-
-    private static long copyLimited(InputStream in, Path target, long already) throws IOException {
-        long remaining = MAX_UNPACKED_BYTES - already;
-        if (remaining <= 0) {
-            throw invalid("Unpacked prototype files may not exceed 100MB.");
-        }
-        long copied = 0L;
-        byte[] buffer = new byte[8192];
-        try (OutputStream out = Files.newOutputStream(target)) {
-            int read;
-            while ((read = in.read(buffer)) >= 0) {
-                copied += read;
-                if (copied > remaining) {
-                    throw invalid("Unpacked prototype files may not exceed 100MB.");
-                }
-                out.write(buffer, 0, read);
-            }
-        }
-        return copied;
-    }
-
     private void cleanupExtracted(PortfolioProjectPrototype prototype) {
-        deleteTree(privateRoot.resolve(prototype.getStorageKey()));
-        deleteTree(publicRoot.resolve(prototype.getStorageKey()));
+        PortfolioPrototypeFiles.deleteTree(privateRoot.resolve(prototype.getStorageKey()));
+        PortfolioPrototypeFiles.deleteTree(publicRoot.resolve(prototype.getStorageKey()));
     }
 
     private ProjectPrototypeView view(PortfolioProjectPrototype prototype, long sizeBytes, boolean preview, boolean published) {
@@ -380,75 +295,9 @@ public class PortfolioPrototypeService {
         }
     }
 
-    private static void assertNoUnixSymlinks(byte[] zipBytes) {
-        // Central directory signature PK\x01\x02; external attrs at +38.
-        for (int i = 0; i < zipBytes.length - 42; i++) {
-            if (zipBytes[i] == 0x50 && zipBytes[i + 1] == 0x4B && zipBytes[i + 2] == 0x01 && zipBytes[i + 3] == 0x02) {
-                long attrs = (zipBytes[i + 38] & 0xFFL)
-                        | ((zipBytes[i + 39] & 0xFFL) << 8)
-                        | ((zipBytes[i + 40] & 0xFFL) << 16)
-                        | ((zipBytes[i + 41] & 0xFFL) << 24);
-                if (((attrs >> 16) & UNIX_SYMLINK_MASK) == UNIX_SYMLINK_MASK) {
-                    throw invalid("Symbolic links are not allowed in a prototype package.");
-                }
-            }
-        }
-    }
-
-    private static Path safeRelative(String name) {
-        if (name == null || name.contains("\\") || name.startsWith("/") || name.contains(":")) {
-            throw invalid("Invalid archive path.");
-        }
-        Path path = Path.of(name).normalize();
-        if (path.isAbsolute() || path.startsWith("..") || path.toString().contains("..")) {
-            throw invalid("Invalid archive path.");
-        }
-        return path;
-    }
-
-    private static String extension(String name) {
-        int index = name.lastIndexOf('.');
-        return index < 1 ? "" : name.substring(index + 1).toLowerCase();
-    }
-
     private static ApiException invalid(String detail) {
         return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "INVALID_PROTOTYPE_ARCHIVE",
                 "Invalid prototype archive", detail);
     }
 
-    private static void copyTree(Path source, Path target) throws IOException {
-        try (var paths = Files.walk(source)) {
-            for (Path from : paths.toList()) {
-                Path to = target.resolve(source.relativize(from));
-                if (Files.isDirectory(from)) {
-                    Files.createDirectories(to);
-                } else {
-                    Files.createDirectories(to.getParent());
-                    Files.copy(from, to, StandardCopyOption.REPLACE_EXISTING);
-                }
-            }
-        }
-    }
-
-    private static void deleteTree(Path root) {
-        try {
-            if (!Files.exists(root)) {
-                return;
-            }
-            try (var paths = Files.walk(root)) {
-                paths.sorted(java.util.Comparator.reverseOrder()).forEach(path -> {
-                    try {
-                        Files.deleteIfExists(path);
-                    } catch (IOException ignored) {
-                        // best effort
-                    }
-                });
-            }
-        } catch (IOException ignored) {
-            // best effort
-        }
-    }
-
-    private record UnpackStats(int files, long bytes, String entryPath) {
-    }
 }

@@ -1,7 +1,5 @@
 package com.starrainnotes.english.writing.controller;
 
-import com.starrainnotes.account.review.dto.ContentReviewView;
-import com.starrainnotes.account.review.service.ContentReviewService;
 import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.english.shared.exercise.dto.ExerciseRequest;
 import com.starrainnotes.english.shared.exercise.dto.ExerciseView;
@@ -44,17 +42,15 @@ public class WritingAdminController {
     private final WritingPromptQueryService prompts;
     private final WritingPromptCommandService promptCommands;
     private final WritingExerciseApplicationService exercises;
-    private final ContentReviewService reviewService;
 
     public WritingAdminController(WritingResourceQueryService resources, WritingResourceCommandService resourceCommands,
                                   WritingPromptQueryService prompts, WritingPromptCommandService promptCommands,
-                                  WritingExerciseApplicationService exercises, ContentReviewService reviewService) {
+                                  WritingExerciseApplicationService exercises) {
         this.resources = resources;
         this.resourceCommands = resourceCommands;
         this.prompts = prompts;
         this.promptCommands = promptCommands;
         this.exercises = exercises;
-        this.reviewService = reviewService;
     }
 
     @GetMapping("/resources")
@@ -85,12 +81,8 @@ public class WritingAdminController {
     public ResponseEntity<?> updateResource(@PathVariable Long id,
                                             @Valid @RequestBody WritingResourceRequest request,
                                             Authentication authentication) {
-        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_WRITING_RESOURCE", id)) {
-            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
-                    "ENGLISH_WRITING_RESOURCE", id, request.title(), request);
-            return ResponseEntity.accepted().body(review);
-        }
-        return ResponseEntity.ok(resourceCommands.update(id, request));
+        var result = resourceCommands.updateForEditor(actorId(authentication), isSuperAdmin(authentication), id, request);
+        return ResponseEntity.status(result.submitted() ? HttpStatus.ACCEPTED : HttpStatus.OK).body(result.body());
     }
 
     @DeleteMapping("/resources/{id}")
@@ -111,8 +103,8 @@ public class WritingAdminController {
 
     @PostMapping("/resources/{id}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void moveResource(@PathVariable Long id, @RequestBody WritingMoveRequest request) {
-        resourceCommands.move(id, request.targetIndex() == null ? 0 : request.targetIndex());
+    public void moveResource(@PathVariable Long id, @Valid @RequestBody WritingMoveRequest request) {
+        resourceCommands.move(id, request.targetIndex());
     }
 
     @GetMapping("/prompts")
@@ -141,12 +133,8 @@ public class WritingAdminController {
     public ResponseEntity<?> updatePrompt(@PathVariable Long id,
                                           @Valid @RequestBody WritingPromptRequest request,
                                           Authentication authentication) {
-        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_WRITING_PROMPT", id)) {
-            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
-                    "ENGLISH_WRITING_PROMPT", id, request.title(), request);
-            return ResponseEntity.accepted().body(review);
-        }
-        return ResponseEntity.ok(promptCommands.update(id, request));
+        var result = promptCommands.updateForEditor(actorId(authentication), isSuperAdmin(authentication), id, request);
+        return ResponseEntity.status(result.submitted() ? HttpStatus.ACCEPTED : HttpStatus.OK).body(result.body());
     }
 
     @DeleteMapping("/prompts/{id}")
@@ -167,8 +155,8 @@ public class WritingAdminController {
 
     @PostMapping("/prompts/{id}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void movePrompt(@PathVariable Long id, @RequestBody WritingMoveRequest request) {
-        promptCommands.move(id, request.targetIndex() == null ? 0 : request.targetIndex());
+    public void movePrompt(@PathVariable Long id, @Valid @RequestBody WritingMoveRequest request) {
+        promptCommands.move(id, request.targetIndex());
     }
 
     @GetMapping("/prompts/{id}/exercises")
@@ -193,8 +181,8 @@ public class WritingAdminController {
     @PostMapping("/prompts/{id}/exercises/{exerciseId}/move")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void moveExercise(@PathVariable Long id, @PathVariable Long exerciseId,
-                             @RequestBody WritingMoveRequest request) {
-        exercises.move(id, exerciseId, request.targetIndex() == null ? 0 : request.targetIndex());
+                             @Valid @RequestBody WritingMoveRequest request) {
+        exercises.move(id, exerciseId, request.targetIndex());
     }
 
     @DeleteMapping("/prompts/{id}/exercises/{exerciseId}")

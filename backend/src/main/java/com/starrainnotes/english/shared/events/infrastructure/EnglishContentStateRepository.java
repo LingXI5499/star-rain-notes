@@ -1,33 +1,33 @@
 package com.starrainnotes.english.shared.events.infrastructure;
 
 import com.starrainnotes.english.shared.events.EnglishContentKind;
-import org.springframework.jdbc.core.JdbcTemplate;
+import com.starrainnotes.english.shared.events.EnglishContentState;
+import com.starrainnotes.english.shared.events.EnglishContentStateSource;
 import org.springframework.stereotype.Repository;
+
+import java.util.EnumMap;
+import java.util.List;
+import java.util.Map;
 
 /** Published-state lookup shared by content events and review capability. */
 @Repository
 public class EnglishContentStateRepository {
-    private final JdbcTemplate jdbc;
+    private final Map<EnglishContentKind, EnglishContentStateSource> sources;
 
-    public EnglishContentStateRepository(JdbcTemplate jdbc) {
-        this.jdbc = jdbc;
+    public EnglishContentStateRepository(List<EnglishContentStateSource> sources) {
+        Map<EnglishContentKind, EnglishContentStateSource> selected = new EnumMap<>(EnglishContentKind.class);
+        for (EnglishContentStateSource source : sources) {
+            if (selected.putIfAbsent(source.kind(), source) != null) {
+                throw new IllegalStateException("Duplicate English content state source: " + source.kind());
+            }
+        }
+        if (selected.size() != EnglishContentKind.values().length) {
+            throw new IllegalStateException("Missing English content state source");
+        }
+        this.sources = Map.copyOf(selected);
     }
 
-    public ContentState state(EnglishContentKind kind, long id) {
-        String table = switch (kind) {
-            case READING -> "english_reading_article";
-            case LISTENING -> "english_listening_item";
-            case GRAMMAR_LESSON -> "english_grammar_lesson";
-            case WRITING_PROMPT -> "english_writing_prompt";
-            case WRITING_RESOURCE -> "english_writing_resource";
-            case PRONUNCIATION_RULE -> "english_listening_pronunciation_rule";
-            case BUNDLE -> "english_learning_bundle";
-        };
-        return jdbc.query("SELECT slug,publish_status FROM " + table + " WHERE id=?",
-                rs -> rs.next()
-                        ? new ContentState(rs.getString(1), "PUBLISHED".equals(rs.getString(2)))
-                        : null, id);
+    public EnglishContentState state(EnglishContentKind kind, long id) {
+        return sources.get(kind).find(id);
     }
-
-    public record ContentState(String slug, boolean published) { }
 }

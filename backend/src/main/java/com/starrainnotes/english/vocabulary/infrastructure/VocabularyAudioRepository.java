@@ -21,27 +21,19 @@ public class VocabularyAudioRepository {
         this.jdbc=jdbc; this.words=words; this.media=media;
     }
 
-    @Transactional
     public VocabularyAudioView add(long wordId,VocabularyAudioRequest request) {
         requireWord(wordId);
-        String type=media.assetType(request.mediaAssetId());
-        if(type==null) {
-            throw new ApiException(HttpStatus.NOT_FOUND,"MEDIA_NOT_FOUND","Media not found","The selected media asset does not exist.");
-        }
-        if(!"AUDIO".equals(type)) throw audioRequired();
         if(request.primary()) jdbc.update("UPDATE vocabulary_word_audio SET is_primary=FALSE WHERE word_id=? AND accent=?",wordId,request.accent());
         jdbc.update("INSERT INTO vocabulary_word_audio(word_id,accent,media_asset_id,provider,source_url,license_note,is_primary) VALUES (?,?,?,?,?,?,?)",
                 wordId,request.accent(),request.mediaAssetId(),request.provider()==null?"UPLOADED":request.provider(),clean(request.sourceUrl()),request.licenseNote().trim(),request.primary());
         return audio(jdbc.queryForObject("SELECT LAST_INSERT_ID()",Long.class));
     }
 
-    @Transactional
     public void delete(long wordId,long audioId) {
         requireWord(wordId);
         if(jdbc.update("DELETE FROM vocabulary_word_audio WHERE id=? AND word_id=?",audioId,wordId)==0) throw audioNotFound();
     }
 
-    @Transactional
     public VocabularyAudioView setPrimary(long wordId,long audioId) {
         requireWord(wordId); String accent;
         try { accent=jdbc.queryForObject("SELECT accent FROM vocabulary_word_audio WHERE id=? AND word_id=?",String.class,audioId,wordId); }
@@ -63,5 +55,4 @@ public class VocabularyAudioRepository {
     }
     private String clean(String value) { return value==null||value.isBlank()?null:value.trim(); }
     private ApiException audioNotFound() { return new ApiException(HttpStatus.NOT_FOUND,"VOCABULARY_AUDIO_NOT_FOUND","Audio not found","The pronunciation audio relation does not exist."); }
-    private ApiException audioRequired() { return new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,"VOCABULARY_AUDIO_REQUIRED","Audio required","The selected media asset must be an audio file."); }
 }

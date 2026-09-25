@@ -1,7 +1,7 @@
 package com.starrainnotes.blog.service;
 
+import com.starrainnotes.account.review.api.ReviewSubmissionPort;
 import com.starrainnotes.account.review.dto.ContentReviewView;
-import com.starrainnotes.account.review.service.ContentReviewService;
 import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.blog.dto.UpdatePostRequest;
 import com.starrainnotes.blog.vo.BlogPostAdminDetailVO;
@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 public class BlogUpdateWorkflowService {
     private final BlogQueryService queryService;
     private final BlogCommandService commandService;
-    private final ContentReviewService reviewService;
+    private final ReviewSubmissionPort reviewService;
 
     public BlogUpdateOutcome update(Authentication actor, Long postId, UpdatePostRequest request) {
         if (!isSuperAdmin(actor) && BlogCommandService.PUBLISHED.equals(queryService.publishStatus(postId))) {

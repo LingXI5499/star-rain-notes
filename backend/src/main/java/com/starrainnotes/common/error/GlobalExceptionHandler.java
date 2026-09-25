@@ -1,5 +1,6 @@
 package com.starrainnotes.common.error;
 
+import com.starrainnotes.english.shared.domain.EnglishRuleViolation;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -36,6 +37,15 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(ApiException.class)
     public ProblemDetail handleApiException(ApiException ex, HttpServletRequest request) {
         return ApiProblem.create(ex.getStatus(), ex.getCode(), ex.getTitle(), ex.getMessage(), request);
+    }
+
+    @ExceptionHandler(EnglishRuleViolation.class)
+    public ProblemDetail handleEnglishRule(EnglishRuleViolation ex, HttpServletRequest request) {
+        HttpStatus status = switch (ex.getCode()) {
+            case "ENGLISH_CONTENT_SLUG_CONFLICT", "ENGLISH_TAXONOMY_IN_USE" -> HttpStatus.CONFLICT;
+            default -> HttpStatus.UNPROCESSABLE_ENTITY;
+        };
+        return ApiProblem.create(status, ex.getCode(), ex.getTitle(), ex.getMessage(), request);
     }
 
     @ExceptionHandler(BadCredentialsException.class)

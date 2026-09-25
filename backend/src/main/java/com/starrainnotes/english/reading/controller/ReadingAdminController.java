@@ -1,7 +1,5 @@
 package com.starrainnotes.english.reading.controller;
 
-import com.starrainnotes.account.review.dto.ContentReviewView;
-import com.starrainnotes.account.review.service.ContentReviewService;
 import com.starrainnotes.account.security.AccountPrincipal;
 import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
 import com.starrainnotes.english.reading.dto.ReadingArticleView;
@@ -40,15 +38,12 @@ public class ReadingAdminController {
     private final ReadingCommandService articleService;
     private final ReadingQueryService queries;
     private final ReadingExerciseApplicationService exerciseService;
-    private final ContentReviewService reviewService;
 
     public ReadingAdminController(ReadingCommandService articleService, ReadingQueryService queries,
-                                  ReadingExerciseApplicationService exerciseService,
-                                  ContentReviewService reviewService) {
+                                  ReadingExerciseApplicationService exerciseService) {
         this.articleService = articleService;
         this.queries = queries;
         this.exerciseService = exerciseService;
-        this.reviewService = reviewService;
     }
 
     @GetMapping("/articles")
@@ -77,12 +72,8 @@ public class ReadingAdminController {
     @PutMapping("/articles/{id}")
     public ResponseEntity<?> update(@PathVariable Long id, @Valid @RequestBody ReadingArticleRequest request,
                                     Authentication authentication) {
-        if (!isSuperAdmin(authentication) && reviewService.isPublished("ENGLISH_READING_ARTICLE", id)) {
-            ContentReviewView review = reviewService.submitEnglishUpdate(actorId(authentication),
-                    "ENGLISH_READING_ARTICLE", id, request.title(), request);
-            return ResponseEntity.accepted().body(review);
-        }
-        return ResponseEntity.ok(articleService.update(id, request));
+        var result = articleService.updateForEditor(actorId(authentication), isSuperAdmin(authentication), id, request);
+        return ResponseEntity.status(result.submitted() ? HttpStatus.ACCEPTED : HttpStatus.OK).body(result.body());
     }
 
     @DeleteMapping("/articles/{id}")

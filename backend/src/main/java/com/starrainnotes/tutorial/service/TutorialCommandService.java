@@ -3,6 +3,7 @@ package com.starrainnotes.tutorial.service;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.common.slug.NumericSlugGenerator;
+import com.starrainnotes.media.api.MediaAssetPort;
 import com.starrainnotes.seo.SeoContentChange;
 import com.starrainnotes.tutorial.dto.AdminTutorialDetailView;
 import com.starrainnotes.tutorial.dto.CreateTutorialRequest;
@@ -33,10 +34,12 @@ public class TutorialCommandService {
     private final TutorialCategoryMapper categoryMapper;
     private final TutorialNodeMapper nodeMapper;
     private final TutorialQueryService queryService;
+    private final MediaAssetPort media;
 
     @Transactional
     public AdminTutorialDetailView create(CreateTutorialRequest request) {
         requireCategory(request.categoryId());
+        media.requireImageIfPresent(request.coverMediaId());
         String slug = NumericSlugGenerator.forCreate(request.slug(), candidate -> slugExists(candidate, null));
         assertSlugFree(slug, null);
         Tutorial tutorial = Tutorial.builder().categoryId(request.categoryId()).title(request.title()).slug(slug)
@@ -48,10 +51,11 @@ public class TutorialCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
+    @SeoContentChange(kind = "tutorial", pathPrefix = "/tutorials/")
     public AdminTutorialDetailView update(Long tutorialId, UpdateTutorialRequest request) {
         Tutorial tutorial = requireTutorial(tutorialId);
         requireCategory(request.categoryId());
+        media.requireImageIfPresent(request.coverMediaId());
         String slug = NumericSlugGenerator.forUpdate(request.slug(), tutorial.getSlug());
         assertSlugFree(slug, tutorialId);
         Long previousCategoryId = tutorial.getCategoryId();
@@ -69,7 +73,7 @@ public class TutorialCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
+    @SeoContentChange(kind = "tutorial", pathPrefix = "/tutorials/")
     public void delete(Long tutorialId) {
         requireTutorial(tutorialId);
         Long nodes = nodeMapper.selectCount(new LambdaQueryWrapper<TutorialNode>().eq(TutorialNode::getTutorialId, tutorialId));
@@ -88,7 +92,7 @@ public class TutorialCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
+    @SeoContentChange(kind = "tutorial", pathPrefix = "/tutorials/")
     public AdminTutorialDetailView publish(Long tutorialId) {
         Tutorial tutorial = requireTutorial(tutorialId);
         if (!PUBLISHED.equals(tutorial.getPublishStatus())) {
@@ -100,7 +104,7 @@ public class TutorialCommandService {
     }
 
     @Transactional
-    @SeoContentChange(table = "tutorial", pathPrefix = "/tutorials/")
+    @SeoContentChange(kind = "tutorial", pathPrefix = "/tutorials/")
     public AdminTutorialDetailView withdraw(Long tutorialId) {
         Tutorial tutorial = requireTutorial(tutorialId);
         if (DRAFT.equals(tutorial.getPublishStatus())) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,

@@ -4,8 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.tutorial.assembler.TutorialAssembler;
-import com.starrainnotes.media.entity.MediaAsset;
-import com.starrainnotes.media.mapper.MediaAssetMapper;
+import com.starrainnotes.media.api.MediaAssetPort;
 import com.starrainnotes.site.service.SiteSettingsTimezone;
 import com.starrainnotes.tutorial.dto.AdminTutorialDetailView;
 import com.starrainnotes.tutorial.dto.AdminTutorialSummaryView;
@@ -27,6 +26,7 @@ import com.starrainnotes.tutorial.mapper.TutorialNodeMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -47,6 +47,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TutorialQueryService {
 
     private static final DateTimeFormatter ISO_OFFSET = DateTimeFormatter.ISO_OFFSET_DATE_TIME;
@@ -55,7 +56,7 @@ public class TutorialQueryService {
     private final TutorialMapper tutorialMapper;
     private final TutorialCategoryMapper categoryMapper;
     private final TutorialNodeMapper nodeMapper;
-    private final MediaAssetMapper mediaAssetMapper;
+    private final MediaAssetPort media;
     private final SiteSettingsTimezone siteSettingsTimezone;
     private final TutorialAssembler tutorialAssembler;
 
@@ -297,20 +298,11 @@ public class TutorialQueryService {
     }
 
     private Map<Long, String> coverUrlMap(List<Long> mediaIds) {
-        List<Long> distinct = mediaIds.stream().filter(java.util.Objects::nonNull).distinct().toList();
-        if (distinct.isEmpty()) {
-            return Map.of();
-        }
-        return mediaAssetMapper.selectBatchIds(distinct).stream()
-                .collect(Collectors.toMap(MediaAsset::getId, MediaAsset::getPublicUrl));
+        return media.publicUrls(mediaIds);
     }
 
     private String coverUrl(Long mediaId) {
-        if (mediaId == null) {
-            return null;
-        }
-        MediaAsset media = mediaAssetMapper.selectById(mediaId);
-        return media == null ? null : media.getPublicUrl();
+        return media.publicUrl(mediaId);
     }
 
     private AdminTutorialDetailView toAdminDetail(Tutorial tutorial) {

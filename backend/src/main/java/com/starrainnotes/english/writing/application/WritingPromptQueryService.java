@@ -9,8 +9,10 @@ import com.starrainnotes.english.writing.infrastructure.WritingPromptRepository;
 import com.starrainnotes.english.shared.content.ContentCatalogFilter;
 import com.starrainnotes.english.shared.content.ContentCatalogSlice;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class WritingPromptQueryService {
     private final WritingRecommendationTagRepository recommendationTags;
     private final WritingPromptRepository repository;

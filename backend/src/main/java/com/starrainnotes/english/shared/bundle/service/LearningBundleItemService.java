@@ -5,6 +5,7 @@ import com.starrainnotes.english.shared.bundle.dto.BundleCatalogItemView;
 import com.starrainnotes.english.shared.bundle.dto.BundleCatalogPageView;
 import com.starrainnotes.english.shared.bundle.dto.BundleItemView;
 import com.starrainnotes.english.shared.bundle.dto.BundleReadinessView;
+import com.starrainnotes.english.shared.bundle.api.PublishedPathMember;
 import com.starrainnotes.english.shared.bundle.infrastructure.LearningBundleItemRepository;
 import com.starrainnotes.english.shared.content.ContentCatalogFilter;
 import com.starrainnotes.english.shared.content.ContentCatalogSlice;
@@ -37,6 +38,13 @@ public class LearningBundleItemService {
     public LearningBundleItemService(LearningBundleItemRepository repository, EnglishContentRegistry content) {
         this.repository = repository;
         this.content = content;
+    }
+
+    public List<PublishedPathMember> publishedPathMembers() {
+        return repository.publishedPathMembers().stream()
+                .map(member -> new PublishedPathMember(member.bundleId(), member.bundleTitle(),
+                        member.type(), member.contentId(), member.sortOrder()))
+                .toList();
     }
 
     public List<BundleItemView> list(Long bundleId, boolean publishedOnly) {

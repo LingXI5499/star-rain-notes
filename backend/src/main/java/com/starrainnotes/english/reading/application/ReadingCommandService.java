@@ -11,7 +11,10 @@ import com.starrainnotes.english.reading.entity.ReadingArticle;
 import com.starrainnotes.english.reading.support.ReadingTextStatistics;
 import com.starrainnotes.english.reading.infrastructure.ReadingRepository;
 import com.starrainnotes.english.reading.domain.ReadingPublishPolicy;
+import com.starrainnotes.account.review.api.ReviewSubmissionResult;
 import com.starrainnotes.english.api.MediaPort;
+import com.starrainnotes.english.shared.exercise.api.EnglishExerciseRemovalPort;
+import com.starrainnotes.english.shared.review.EnglishUpdateReview;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -28,12 +31,17 @@ public class ReadingCommandService {
     private final ReadingRelationService relations;
     private final ReadingPublishPolicy policy;
     private final MediaPort media;
+    private final EnglishExerciseRemovalPort exerciseRemoval;
+    private final EnglishUpdateReview reviews;
     public ReadingCommandService(ReadingRepository repository, ReadingRelationService relations,
-                                 ReadingPublishPolicy policy, MediaPort media) {
+                                 ReadingPublishPolicy policy, MediaPort media,
+                                 EnglishExerciseRemovalPort exerciseRemoval, EnglishUpdateReview reviews) {
         this.repository = repository;
         this.relations = relations;
         this.policy = policy;
         this.media = media;
+        this.exerciseRemoval = exerciseRemoval;
+        this.reviews = reviews;
     }
 
     @Transactional
@@ -51,6 +59,11 @@ public class ReadingCommandService {
         try { repository.insert(article); } catch (DuplicateKeyException ex) { throw slugConflict(); }
         relations.replaceRelations(article.getId(), request);
         return repository.get(article.getId());
+    }
+
+    public ReviewSubmissionResult updateForEditor(Long actorId, boolean superAdmin, Long id, ReadingArticleRequest request) {
+        return reviews.decide(superAdmin, "ENGLISH_READING_ARTICLE", id, request.title(), request, actorId,
+                () -> update(id, request));
     }
 
     @Transactional
@@ -73,7 +86,8 @@ public class ReadingCommandService {
     @EnglishContentChange(kind = EnglishContentKind.READING, changeType = EnglishContentChangeType.PUBLISHED)
     public ReadingArticleView publish(Long id) {
         ReadingArticle article = repository.require(id);
-        List<String> problems = policy.violations(article);
+        List<String> problems = policy.violations(article,
+                relations.hasEnabledDimension(id, "TOPIC"), relations.hasEnabledDimension(id, "GENRE"));
         if (!problems.isEmpty()) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_READING_PUBLISH_INVALID",
                     "Cannot publish", String.join("; ", problems));
@@ -101,7 +115,9 @@ public class ReadingCommandService {
             throw new ApiException(HttpStatus.CONFLICT, "ENGLISH_READING_PUBLISHED_DELETE_FORBIDDEN",
                     "Published article cannot be deleted", "Withdraw the article before deleting it.");
         }
+        List<Long> exerciseIds = repository.boundExerciseIds(id);
         repository.delete(id);
+        exerciseRemoval.deleteAll(exerciseIds);
     }
 
     private void validateCefr(String cefr) {

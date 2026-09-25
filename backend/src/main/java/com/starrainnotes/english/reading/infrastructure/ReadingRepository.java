@@ -302,15 +302,16 @@ public class ReadingRepository implements ReadingContentPort {
 
     private Set<Long> loadArticleIdsWithExercises(List<Long> articleIds) {
         if (articleIds.isEmpty()) return Set.of();
-        String ids = String.join(",", articleIds.stream().map(String::valueOf).toList());
+        String placeholders = String.join(",", java.util.Collections.nCopies(articleIds.size(), "?"));
         Set<Long> result = new LinkedHashSet<>();
-        jdbc.query("SELECT DISTINCT article_id FROM english_reading_article_exercise WHERE article_id IN (" + ids + ")",
+        jdbc.query("SELECT DISTINCT article_id FROM english_reading_article_exercise WHERE article_id IN ("
+                        + placeholders + ")",
                 rs -> {
                     while (rs.next()) {
                         result.add(rs.getLong("article_id"));
                     }
                     return null;
-                });
+                }, articleIds.toArray());
         return result;
     }
 
@@ -377,11 +378,12 @@ public class ReadingRepository implements ReadingContentPort {
     public void withdraw(Long id) {
         jdbc.update("UPDATE english_reading_article SET publish_status='WITHDRAWN' WHERE id=?", id);
     }
+    public List<Long> boundExerciseIds(Long articleId) {
+        return jdbc.queryForList(
+                "SELECT exercise_id FROM english_reading_article_exercise WHERE article_id=?", Long.class, articleId);
+    }
     public void delete(Long id) {
-        List<Long> exerciseIds = jdbc.queryForList(
-                "SELECT exercise_id FROM english_reading_article_exercise WHERE article_id=?", Long.class, id);
         mapper.deleteById(id);
-        exerciseIds.forEach(exerciseId -> jdbc.update("DELETE FROM english_exercise WHERE id=?", exerciseId));
     }
     public boolean cefrExists(String cefr) {
         Integer count = jdbc.queryForObject(
@@ -401,5 +403,14 @@ public class ReadingRepository implements ReadingContentPort {
             throw new ApiException(HttpStatus.NOT_FOUND, "ENGLISH_CONTENT_NOT_PUBLISHED",
                     "Article not available", "The article is not published.");
         }
+    }
+    @Override
+    public java.util.Optional<com.starrainnotes.english.reading.domain.ReadingArticleRef> findRef(long articleId) {
+        java.util.List<com.starrainnotes.english.reading.domain.ReadingArticleRef> rows = jdbc.query("""
+                SELECT id, title, slug, publish_status FROM english_reading_article WHERE id=?
+                """, (rs, row) -> new com.starrainnotes.english.reading.domain.ReadingArticleRef(
+                rs.getLong("id"), rs.getString("title"), rs.getString("slug"),
+                "PUBLISHED".equals(rs.getString("publish_status"))), articleId);
+        return rows.stream().findFirst();
     }
 }

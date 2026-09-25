@@ -3,21 +3,25 @@ package com.starrainnotes.english.listening.infrastructure;
 import com.starrainnotes.common.error.ApiException;
 import com.starrainnotes.english.listening.dto.ReadingPairRef;
 import com.starrainnotes.english.listening.dto.ReadingPairRequest;
+import com.starrainnotes.english.reading.domain.ReadingArticleRef;
+import com.starrainnotes.english.reading.domain.ReadingContentPort;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 /** Persists cross-module Reading ↔ Listening links. */
 @Repository
 public class ListeningRelationRepository {
     private final JdbcTemplate jdbc;
-    public ListeningRelationRepository(JdbcTemplate jdbc) {
+    private final ReadingContentPort reading;
+    public ListeningRelationRepository(JdbcTemplate jdbc, ReadingContentPort reading) {
         this.jdbc = jdbc;
+        this.reading = reading;
     }
 
     @Transactional
@@ -26,7 +30,6 @@ public class ListeningRelationRepository {
         if (itemCount == null || itemCount == 0) throw new ApiException(HttpStatus.NOT_FOUND,
                 "ENGLISH_LISTENING_ITEM_NOT_FOUND", "Item not found", "The listening material does not exist.");
         requireReading(request.readingArticleId());
-        validateRelationType(request.relationType());
         try {
             jdbc.update("INSERT INTO english_reading_listening_pair(reading_article_id,listening_item_id,relation_type,sort_order) VALUES (?,?,?,?)",
                     request.readingArticleId(), itemId, request.relationType(), 10);
@@ -60,26 +63,30 @@ public class ListeningRelationRepository {
     }
 
     private List<ReadingPairRef> query(Long itemId, boolean publishedOnly) {
-        return jdbc.query("""
-                SELECT rp.reading_article_id, ar.title, ar.slug, rp.relation_type
-                FROM english_reading_listening_pair rp
-                JOIN english_reading_article ar ON ar.id=rp.reading_article_id
-                WHERE rp.listening_item_id=?
-                """ + (publishedOnly ? " AND ar.publish_status='PUBLISHED'" : "")
-                + " ORDER BY rp.sort_order, ar.id", (rs, row) -> new ReadingPairRef(rs.getLong("reading_article_id"),
-                rs.getString("title"), rs.getString("slug"), rs.getString("relation_type")), itemId);
+        List<PairRow> rows = jdbc.query("""
+                SELECT reading_article_id, relation_type
+                FROM english_reading_listening_pair
+                WHERE listening_item_id=?
+                ORDER BY sort_order, reading_article_id
+                """, (rs, row) -> new PairRow(rs.getLong("reading_article_id"), rs.getString("relation_type")), itemId);
+        List<ReadingPairRef> result = new ArrayList<>();
+        for (PairRow row : rows) {
+            ReadingArticleRef article = reading.findRef(row.articleId()).orElse(null);
+            if (article == null || (publishedOnly && !article.published())) {
+                continue;
+            }
+            result.add(new ReadingPairRef(article.id(), article.title(), article.slug(), row.relationType()));
+        }
+        return result;
     }
 
     private void requireReading(Long readingId) {
-        Integer count = jdbc.queryForObject("SELECT COUNT(*) FROM english_reading_article WHERE id=?", Integer.class, readingId);
-        if (count == null || count == 0) throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY,
-                "ENGLISH_LISTENING_PAIR_READING_INVALID", "Invalid reading article", "The reading article does not exist.");
+        if (readingId == null || reading.findRef(readingId).isEmpty()) {
+            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_PAIR_READING_INVALID",
+                    "Invalid reading article", "The reading article does not exist.");
+        }
     }
 
-    private void validateRelationType(String type) {
-        if (!Set.of("SAME_CONTENT", "SAME_TOPIC", "EXTENDED_TRAINING").contains(type)) {
-            throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_LISTENING_PAIR_TYPE_INVALID",
-                    "Invalid relation type", "relationType must be one of SAME_CONTENT/SAME_TOPIC/EXTENDED_TRAINING.");
-        }
+    private record PairRow(long articleId, String relationType) {
     }
 }

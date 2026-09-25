@@ -1,7 +1,7 @@
 package com.starrainnotes.english.shared.exercise;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.shared.domain.EnglishRuleViolation;
 import com.starrainnotes.english.shared.exercise.domain.EnglishExercisePolicy;
 import org.junit.jupiter.api.Test;
 
@@ -25,16 +25,16 @@ class EnglishExercisePolicyTest {
     void singleChoiceMissingValidAnswerIsRejected() {
         String config = "{\"options\":[{\"key\":\"a\",\"text\":\"A\"}],\"answer\":\"z\"}";
         assertThatThrownBy(() -> service.validateConfig("READING", "SINGLE_CHOICE", config))
-                .isInstanceOf(ApiException.class)
-                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((ApiException) ex).getCode())
+                .isInstanceOf(EnglishRuleViolation.class)
+                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((EnglishRuleViolation) ex).getCode())
                         .isEqualTo(CODE));
     }
 
     @Test
     void unknownQuestionTypeIsRejected() {
         assertThatThrownBy(() -> service.validateConfig("READING", "NOT_A_TYPE", "{}"))
-                .isInstanceOf(ApiException.class)
-                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((ApiException) ex).getCode())
+                .isInstanceOf(EnglishRuleViolation.class)
+                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((EnglishRuleViolation) ex).getCode())
                         .isEqualTo(CODE));
     }
 
@@ -42,24 +42,24 @@ class EnglishExercisePolicyTest {
     void moduleTypeMustMatchQuestionType() {
         // SENTENCE_REWRITE is a writing-only type; using it for LISTENING is rejected.
         assertThatThrownBy(() -> service.validateConfig("LISTENING", "SENTENCE_REWRITE", "{\"answer\":\"x\"}"))
-                .isInstanceOf(ApiException.class)
-                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((ApiException) ex).getCode())
+                .isInstanceOf(EnglishRuleViolation.class)
+                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((EnglishRuleViolation) ex).getCode())
                         .isEqualTo(CODE));
     }
 
     @Test
     void invalidJsonIsRejected() {
         assertThatThrownBy(() -> service.validateConfig("READING", "SINGLE_CHOICE", "{not-json"))
-                .isInstanceOf(ApiException.class)
-                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((ApiException) ex).getCode())
+                .isInstanceOf(EnglishRuleViolation.class)
+                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((EnglishRuleViolation) ex).getCode())
                         .isEqualTo(CODE));
     }
 
     @Test
     void booleanAnswerMustBeBoolean() {
         assertThatThrownBy(() -> service.validateConfig("READING", "TRUE_FALSE", "{\"answer\":\"yes\"}"))
-                .isInstanceOf(ApiException.class)
-                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((ApiException) ex).getCode())
+                .isInstanceOf(EnglishRuleViolation.class)
+                .satisfies(ex -> org.assertj.core.api.Assertions.assertThat(((EnglishRuleViolation) ex).getCode())
                         .isEqualTo(CODE));
     }
 
@@ -68,7 +68,7 @@ class EnglishExercisePolicyTest {
         assertThatCode(() -> service.validateConfig("READING", "ORDERING",
                 "{\"items\":[\"first\",\"second\"]}")).doesNotThrowAnyException();
         assertThatThrownBy(() -> service.validateConfig("READING", "ORDERING", "{\"items\":[]}"))
-                .isInstanceOf(ApiException.class);
+                .isInstanceOf(EnglishRuleViolation.class);
     }
 
     @Test
@@ -76,6 +76,6 @@ class EnglishExercisePolicyTest {
         assertThatCode(() -> service.validateConfig("LISTENING", "INFO_FILL", "{\"answer\":\"Tokyo\"}"))
                 .doesNotThrowAnyException();
         assertThatThrownBy(() -> service.validateConfig("LISTENING", "INFO_FILL", "{}"))
-                .isInstanceOf(ApiException.class);
+                .isInstanceOf(EnglishRuleViolation.class);
     }
 }

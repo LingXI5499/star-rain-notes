@@ -59,14 +59,12 @@ public class ReadingPublicController {
 
     @GetMapping("/articles/{slug}/exercises")
     public List<ExercisePublicView> exercises(@PathVariable String slug) {
-        ReadingArticleView article = articleService.publicGet(slug);
-        return exerciseService.publicListPublished(article.id());
+        return exerciseService.publicListBySlug(slug);
     }
 
     @PostMapping("/articles/{slug}/check")
     public CheckResultView check(@PathVariable String slug,
                                         @Valid @RequestBody CheckAnswerRequest request) {
-        ReadingArticleView article = articleService.publicGet(slug);
-        return exerciseService.check(article.id(), request);
+        return exerciseService.checkBySlug(slug, request);
     }
 }

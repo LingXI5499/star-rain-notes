@@ -1,6 +1,7 @@
 package com.starrainnotes.english.reading.application;
 
 import com.starrainnotes.common.error.ApiException;
+import com.starrainnotes.english.grammar.domain.GrammarLessonPort;
 import com.starrainnotes.english.reading.dto.ReadingArticleRequest;
 import com.starrainnotes.english.reading.infrastructure.ReadingRelationRepository;
 import org.springframework.http.HttpStatus;
@@ -11,7 +12,15 @@ import java.util.List;
 @Service
 public class ReadingRelationService {
     private final ReadingRelationRepository repository;
-    public ReadingRelationService(ReadingRelationRepository repository) { this.repository = repository; }
+    private final GrammarLessonPort grammar;
+    public ReadingRelationService(ReadingRelationRepository repository, GrammarLessonPort grammar) {
+        this.repository = repository;
+        this.grammar = grammar;
+    }
+
+    public boolean hasEnabledDimension(Long articleId, String dimension) {
+        return repository.hasEnabledDimension(articleId, dimension);
+    }
 
     public void replaceRelations(Long articleId, ReadingArticleRequest request) {
         repository.clear(articleId);
@@ -52,7 +61,7 @@ public class ReadingRelationService {
         return ids.stream().filter(java.util.Objects::nonNull).distinct().toList();
     }
     private void requireGrammarLesson(Long lessonId) {
-        if (!repository.grammarLessonExists(lessonId)) {
+        if (grammar.findRef(lessonId).isEmpty()) {
             throw new ApiException(HttpStatus.UNPROCESSABLE_ENTITY, "ENGLISH_READING_GRAMMAR_LESSON_INVALID",
                     "Invalid grammar lesson", "The selected grammar lesson does not exist.");
         }

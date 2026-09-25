@@ -3,12 +3,8 @@ package com.starrainnotes.english.learning.controller;
 import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -31,46 +27,37 @@ public class EnglishLearningPublicController {
     }
 
     @GetMapping("/records/{contentType}/{contentId}")
-    public Object get(@RequestHeader(value = "X-Learner-Key", required = false) String key,
-                      @PathVariable String contentType,
-                      @PathVariable Long contentId) {
+    public Object get() {
         throw gone();
     }
 
     @GetMapping("/records/batch")
-    public Object batch(@RequestHeader(value = "X-Learner-Key", required = false) String key,
-                        @RequestParam(value = "ref", required = false) java.util.List<String> refs) {
+    public Object batch() {
         throw gone();
     }
 
     @PutMapping("/records/{contentType}/{contentId}")
-    public Object save(@RequestHeader(value = "X-Learner-Key", required = false) String key,
-                       @PathVariable String contentType,
-                       @PathVariable Long contentId,
-                       @RequestBody(required = false) Object request) {
+    public Object save() {
         throw gone();
     }
 
     @GetMapping("/summary")
-    public Object summary(@RequestHeader(value = "X-Learner-Key", required = false) String key) {
+    public Object summary() {
         throw gone();
     }
 
     @GetMapping("/insights")
-    public Object insights(@RequestHeader(value = "X-Learner-Key", required = false) String key) {
+    public Object insights() {
         throw gone();
     }
 
     @GetMapping("/writing-submissions/{promptId}")
-    public Object submission(@RequestHeader(value = "X-Learner-Key", required = false) String key,
-                             @PathVariable Long promptId) {
+    public Object submission() {
         throw gone();
     }
 
     @PutMapping("/writing-submissions/{promptId}")
-    public Object saveSubmission(@RequestHeader(value = "X-Learner-Key", required = false) String key,
-                                 @PathVariable Long promptId,
-                                 @RequestBody(required = false) Object request) {
+    public Object saveSubmission() {
         throw gone();
     }
 }

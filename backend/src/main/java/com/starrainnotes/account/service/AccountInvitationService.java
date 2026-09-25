@@ -7,6 +7,7 @@ import com.starrainnotes.account.entity.AccountUser;
 import com.starrainnotes.account.entity.AdminInvitation;
 import com.starrainnotes.account.mapper.AccountUserMapper;
 import com.starrainnotes.account.mapper.AdminInvitationMapper;
+import com.starrainnotes.common.error.ApiException;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -65,7 +66,7 @@ public class AccountInvitationService {
         invitation.setSentAt(now());
         invitationMapper.insert(invitation);
         String link = invitationLink(rawToken);
-        mailGateway.sendInvitationLink(invitation.getEmail(), link);
+        AfterCommit.run("Invitation mail", () -> mailGateway.sendInvitationLink(invitation.getEmail(), link));
         auditLog.record(invitedByAccountId, "INVITATION_CREATED", "INVITATION", invitation.getId(), "SUCCESS",
                 null, null, Map.of("email", AccountService.mask(invitation.getEmail())));
         return new IssuedInvitation(invitation, link);
@@ -91,6 +92,8 @@ public class AccountInvitationService {
         return invitation;
     }
 
+    /** Expired invitations are marked inside byToken before it throws. */
+    @Transactional(noRollbackFor = ApiException.class)
     public void requestCode(String rawToken, String ip) {
         AdminInvitation invitation = byToken(rawToken);
         codeService.issue(invitation.getEmail(), "ADMIN_REGISTRATION", invitation.getId(), ip);
@@ -135,7 +138,7 @@ public class AccountInvitationService {
         invitation.setExpiresAt(now().plusHours(72));
         invitationMapper.updateById(invitation);
         String link = invitationLink(rawToken);
-        mailGateway.sendInvitationLink(invitation.getEmail(), link);
+        AfterCommit.run("Invitation mail", () -> mailGateway.sendInvitationLink(invitation.getEmail(), link));
         auditLog.record(invitation.getInvitedBy(), "INVITATION_RESENT", "INVITATION", invitation.getId(), "SUCCESS",
                 null, null, Map.of("email", AccountService.mask(invitation.getEmail())));
         return new IssuedInvitation(invitation, link);
