@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -49,6 +50,19 @@ public class GlobalApiExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ApiResponse<Void>> forbidden(AccessDeniedException exception) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(new ApiResponse<>("FORBIDDEN", "没有操作权限", null));
+    }
+
+    /*
+     * Spring Security 6 的 @PreAuthorize 拒绝抛出的是 AuthorizationDeniedException，
+     * 它是 AccessDeniedException 的子类，但方法级安全发生在 DispatcherServlet 之外，
+     * 由 ExceptionHandlerExceptionResolver 直接解析，因此必须显式声明这个更具体的类型。
+     * 漏掉它会让「没有权限」变成 500，前端就无法区分越权与服务器故障。
+     * 只有确实被声明过的 URL 访问边界才需要这里兜底：URL 层的 403 由安全链自己输出。
+     */
+    @ExceptionHandler(AuthorizationDeniedException.class)
+    public ResponseEntity<ApiResponse<Void>> authorizationDenied(AuthorizationDeniedException exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(new ApiResponse<>("FORBIDDEN", "没有操作权限", null));
     }
