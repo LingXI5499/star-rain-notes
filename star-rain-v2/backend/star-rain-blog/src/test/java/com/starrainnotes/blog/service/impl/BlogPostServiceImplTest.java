@@ -25,6 +25,7 @@ import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.blog.mapper.BlogTagMapper;
 import com.starrainnotes.blog.mapper.BlogTopicMapper;
 import com.starrainnotes.blog.service.BlogViewAssembler;
+import com.starrainnotes.blog.utils.BlogPostSlugDeriver;
 import com.starrainnotes.blog.vo.BlogPostAdminVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
 import com.starrainnotes.blog.vo.BlogTopicVO;
@@ -42,6 +43,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.dao.DuplicateKeyException;
 
 /*
  * BLOG-003 文章编辑测试。
@@ -133,6 +135,49 @@ class BlogPostServiceImplTest {
                 .extracting(ex -> ((ApiException) ex).getCode())
                 .isEqualTo("BLOG_POST_SLUG_CONFLICT");
         verify(postMapper, never()).insertPost(any());
+    }
+
+    @Test
+    @DisplayName("不填 slug 时从中文标题派生，重复标题使用递增后缀")
+    void createDerivesChineseSlugAndResolvesExistingCollision() {
+        BlogPostCreateDTO request = new BlogPostCreateDTO();
+        request.setTitle("纯中文标题");
+        String base = BlogPostSlugDeriver.derive(request.getTitle());
+        when(postMapper.countBySlug(base, null)).thenReturn(1L);
+        when(postMapper.countBySlug(base + "-2", null)).thenReturn(0L);
+        doAnswer(invocation -> {
+            invocation.<BlogPostEntity>getArgument(0).setId(9L);
+            return null;
+        }).when(postMapper).insertPost(any());
+        when(postMapper.postById(9L)).thenReturn(post(9L, "DRAFT", 1L));
+        when(assembler.toAdminVO(any())).thenReturn(BlogPostAdminVO.builder().id(9L).slug(base + "-2").build());
+
+        BlogPostAdminVO created = service.create(request);
+
+        assertThat(created.getSlug()).isEqualTo(base + "-2");
+        verify(postMapper).insertPost(argThat(post -> (base + "-2").equals(post.getSlug())));
+    }
+
+    @Test
+    @DisplayName("预检后被并发创建抢占 slug 时重试，不能回 500")
+    void createRetriesDerivedSlugAfterUniqueKeyRace() {
+        BlogPostCreateDTO request = new BlogPostCreateDTO();
+        request.setTitle("Race Test");
+        final int[] attempts = {0};
+        doAnswer(invocation -> {
+            if (attempts[0]++ == 0) {
+                throw new DuplicateKeyException("simulated slug race");
+            }
+            invocation.<BlogPostEntity>getArgument(0).setId(9L);
+            return null;
+        }).when(postMapper).insertPost(any());
+        when(postMapper.postById(9L)).thenReturn(post(9L, "DRAFT", 1L));
+        when(assembler.toAdminVO(any())).thenReturn(BlogPostAdminVO.builder().id(9L).slug("race-test-2").build());
+
+        BlogPostAdminVO created = service.create(request);
+
+        assertThat(created.getSlug()).isEqualTo("race-test-2");
+        verify(postMapper, times(2)).insertPost(any());
     }
 
     @Test

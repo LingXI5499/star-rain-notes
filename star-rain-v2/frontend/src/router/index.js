@@ -17,14 +17,8 @@ import MediaLibraryPage from '../modules/media/pages/MediaLibraryPage.vue'
 import MediaDetailPage from '../modules/media/pages/MediaDetailPage.vue'
 import ReviewCenterPage from '../modules/review/pages/ReviewCenterPage.vue'
 import ReviewDetailPage from '../modules/review/pages/ReviewDetailPage.vue'
-import BlogListPage from '../modules/blog/pages/BlogListPage.vue'
-import BlogPostPage from '../modules/blog/pages/BlogPostPage.vue'
-import BlogArchivePage from '../modules/blog/pages/BlogArchivePage.vue'
 import HomePage from '../modules/site/pages/HomePage.vue'
 import PendingPage from '../modules/site/pages/PendingPage.vue'
-import BlogManagePage from '../modules/blog/pages/admin/BlogManagePage.vue'
-import BlogEditorPage from '../modules/blog/pages/admin/BlogEditorPage.vue'
-import BlogTaxonomyPage from '../modules/blog/pages/admin/BlogTaxonomyPage.vue'
 import DashboardPage from '../modules/site/pages/DashboardPage.vue'
 
 /*
@@ -65,9 +59,9 @@ const routeDeclarations = [
    * 两个入口各自有首页，因此 '/' 这条记录在两棵树上都生成。
    */
   { path: '/', component: HomePage },
-  { path: '/blog', component: BlogListPage, meta: { publicPage: true } },
-  { path: '/blog/archive', component: BlogArchivePage, meta: { publicPage: true } },
-  { path: '/blog/posts/:slug', component: BlogPostPage, meta: { publicPage: true } },
+  { path: '/blog', component: () => import('../modules/blog/pages/BlogListPage.vue'), meta: { publicPage: true } },
+  { path: '/blog/archive', component: () => import('../modules/blog/pages/BlogArchivePage.vue'), meta: { publicPage: true } },
+  { path: '/blog/posts/:slug', component: () => import('../modules/blog/pages/BlogPostPage.vue'), meta: { publicPage: true } },
 
   /*
    * 教程 / 作品 / 关于 / 搜索：后端模块还没做，页面只有「建设中」占位。
@@ -129,11 +123,11 @@ const routeDeclarations = [
     meta: { console: true, requiresAuth: true, permission: 'review:read' } },
   { path: '/reviews/:reviewId', component: ReviewDetailPage, tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'review:read' } },
-  { path: '/blog/manage', component: BlogManagePage, tree: ROUTE_TREE.ACCOUNT,
+  { path: '/blog/manage', component: () => import('../modules/blog/pages/admin/BlogManagePage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'blog:read-admin' } },
-  { path: '/blog/taxonomy', component: BlogTaxonomyPage, tree: ROUTE_TREE.ACCOUNT,
+  { path: '/blog/taxonomy', component: () => import('../modules/blog/pages/admin/BlogTaxonomyPage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'blog:taxonomy-manage' } },
-  { path: '/blog/editor/:postId', component: BlogEditorPage, tree: ROUTE_TREE.ACCOUNT,
+  { path: '/blog/editor/:postId', component: () => import('../modules/blog/pages/admin/BlogEditorPage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'blog:edit' } },
 ]
 
