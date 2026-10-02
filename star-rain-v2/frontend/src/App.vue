@@ -43,9 +43,15 @@ async function logout() {
         <RouterLink v-if="auth.canManage('account:audit-read')" to="/admin/audits">账户审计</RouterLink>
       </nav>
       <!-- media:* 权限同时授予 ADMIN 与 SUPER_ADMIN，故这里用 hasPermission 而不是 canManage -->
-      <p v-if="auth.hasPermission('media:read')" class="sidebar-caption">内容工作区</p>
-      <nav v-if="auth.hasPermission('media:read')" aria-label="内容导航" @click="menuOpen = false">
-        <RouterLink to="/admin/media">媒体库</RouterLink>
+      <p v-if="auth.hasPermission('media:read') || auth.hasPermission('review:read')" class="sidebar-caption">内容工作区</p>
+      <nav
+        v-if="auth.hasPermission('media:read') || auth.hasPermission('review:read')"
+        aria-label="内容导航"
+        @click="menuOpen = false"
+      >
+        <RouterLink v-if="auth.hasPermission('media:read')" to="/admin/media">媒体库</RouterLink>
+        <!-- 审核查看权限同样授予 ADMIN；审批按钮是否出现由详情页按后端返回的 canApprove/canReject 决定 -->
+        <RouterLink v-if="auth.hasPermission('review:read')" to="/admin/reviews">审核中心</RouterLink>
       </nav>
     </aside>
     <div :class="showShell ? 'app-body' : ''">
