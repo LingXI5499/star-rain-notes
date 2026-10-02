@@ -39,15 +39,6 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 
 star-rain:
-  platform:
-    # 三入口按域名隔离。匹配忽略端口与大小写，支持 "*.yulanlin.cn" 形式的通配后缀，
-    # 未列出的 Host 一律解析为公开站（权限最小的一侧），因此新增域名必须显式登记。
-    # 公开站：匿名只读，不暴露注册
-    public-hosts: ${STAR_RAIN_PUBLIC_HOSTS:yulanlin.cn,www.yulanlin.cn,127.0.0.1,localhost}
-    # 用户站：USER 与 ADMIN 共用
-    user-hosts: ${STAR_RAIN_USER_HOSTS:user.yulanlin.cn,user.localhost}
-    # 管理站：SUPER_ADMIN
-    admin-hosts: ${STAR_RAIN_ADMIN_HOSTS:admin.yulanlin.cn,admin.localhost}
   account:
     smtp-enabled: ${STAR_RAIN_SMTP_ENABLED:false}
     mail-from: ${STAR_RAIN_MAIL_FROM:}

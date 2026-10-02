@@ -86,7 +86,7 @@ async function savePassword() {
     auth.currentUser = null
     auth.initialized = false
     clearCsrf()
-    await router.replace({ path: '/login', query: { passwordChanged: '1' } })
+    await router.replace({ path: '/useradmin/login', query: { passwordChanged: '1' } })
   } catch (error) {
     passwordError.value = errorMessage(error)
   } finally {

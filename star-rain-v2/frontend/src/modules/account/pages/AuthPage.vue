@@ -65,14 +65,14 @@ async function submit() {
     if (props.mode === 'login') {
       await auth.login(form.identifier, form.password)
       const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : ''
-      await router.replace(redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/account')
+      await router.replace(redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/useradmin/center')
     } else if (props.mode === 'register') {
       await api.register({
         username: form.username, email: form.email, password: form.password,
         confirmPassword: form.confirmPassword,
         verificationCode: form.verificationCode,
       })
-      await router.replace({ path: '/login', query: { registered: '1' } })
+      await router.replace({ path: '/useradmin/login', query: { registered: '1' } })
     } else if (props.mode === 'forgot') {
       await api.requestReset(form.email)
       notice.value = '如果邮箱对应有效账户，重置邮件会发送到该邮箱。'
@@ -82,14 +82,14 @@ async function submit() {
         token, newPassword: form.newPassword, confirmPassword: form.confirmPassword,
       })
       clearCsrf()
-      await router.replace({ path: '/login', query: { reset: '1' } })
+      await router.replace({ path: '/useradmin/login', query: { reset: '1' } })
     } else if (props.mode === 'invite') {
       const token = typeof route.query.token === 'string' ? route.query.token : form.token
       await api.acceptInvitation(token)
       auth.currentUser = null
       auth.initialized = true
       clearCsrf()
-      await router.replace({ path: '/login', query: { invited: '1' } })
+      await router.replace({ path: '/useradmin/login', query: { invited: '1' } })
     }
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -103,7 +103,7 @@ async function switchInvitationAccount() {
   try {
     await auth.logout()
     auth.initialized = true
-    await router.replace({ path: '/login', query: { redirect: route.fullPath } })
+    await router.replace({ path: '/useradmin/login', query: { redirect: route.fullPath } })
   } catch (cause) { error.value = errorMessage(cause) }
 }
 </script>
@@ -111,7 +111,7 @@ async function switchInvitationAccount() {
 <template>
   <main class="auth-page">
     <section class="auth-story" aria-label="星雨笔录介绍">
-      <RouterLink to="/account" class="auth-brand">
+      <RouterLink to="/useradmin/center" class="auth-brand">
         <img src="/brand/mark.svg" alt="" width="34" height="34" />
         <span>星雨笔录</span>
       </RouterLink>
@@ -151,8 +151,8 @@ async function switchInvitationAccount() {
             <label>用户名或邮箱<input v-model.trim="form.identifier" autocomplete="username" required /></label>
             <label>密码<span class="password-field"><input v-model="form.password" :type="showPassword ? 'text' : 'password'" autocomplete="current-password" required /><button type="button" :aria-pressed="showPassword" @click="showPassword = !showPassword">{{ showPassword ? '隐藏' : '显示' }}</button></span></label>
             <div class="form-assist">
-              <RouterLink to="/register">创建账户</RouterLink>
-              <RouterLink to="/forgot-password">忘记密码？</RouterLink>
+              <RouterLink to="/useradmin/register">创建账户</RouterLink>
+              <RouterLink to="/useradmin/forgot-password">忘记密码？</RouterLink>
             </div>
           </template>
           <template v-else-if="mode === 'register'">
@@ -182,7 +182,7 @@ async function switchInvitationAccount() {
             {{ busy ? '处理中…' : title }} <span aria-hidden="true">→</span>
           </button>
         </form>
-        <footer><RouterLink to="/login">← 返回登录</RouterLink><span>连接受安全会话保护</span></footer>
+        <footer><RouterLink to="/useradmin/login">← 返回登录</RouterLink><span>连接受安全会话保护</span></footer>
       </div>
     </section>
   </main>

@@ -1,5 +1,7 @@
 <script setup>
+import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useViewMode } from '../../../shared/viewMode'
 
 /*
  * 公开站页脚 —— 对齐 V1 `components/PublicFooter.vue` 的信息架构：
@@ -13,18 +15,22 @@ import { RouterLink } from 'vue-router'
  *   3. V1 的导航比 V2 多一项语言学习模块；V2 本轮只保留「教程 / 博客 / 作品 / 关于」，
  *      未实现的三项渲染成不可点的占位而不是死链。
  *
+ * 导航目标与顶栏同一口径，按当前路径树生成（公开树 /blog、账号树 /useradmin/blog）：
+ * 页脚是同一套内容在两条树上复用，链接必须跟着树走，否则页脚会把账号外壳点掉。
+ *
  * 硬约束：本文件不出现任何账号入口字样。
  */
+const { contentPath } = useViewMode()
 const siteName = '星雨笔录'
 const tagline = 'Knowledge · Code · Growth'
 const year = new Date().getFullYear()
 
-const navItems = [
+const navItems = computed(() => [
   { label: '教程', to: null, pending: '教程模块建设中' },
-  { label: '博客', to: '/blog' },
+  { label: '博客', to: contentPath('/blog') },
   { label: '作品', to: null, pending: '作品模块建设中' },
   { label: '关于', to: null, pending: '关于页面建设中' },
-]
+])
 
 function scrollToTop() {
   const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
@@ -77,21 +83,10 @@ function scrollToTop() {
 
 <style scoped>
 /*
- * entry.css 里还有一条上一版骨架用的 `.site-footer { padding: 28px 32px; font-size: 12px }`
- * 与 `.site-footer p { margin: 0 0 6px }`。entry.css 不在本轮的改动范围内，
- * 因此在组件内用同名前缀覆盖回来：scoped 会给选择器加上 `[data-v-*]`，
- * 特异性高于 entry.css 的裸类名与元素选择器。
+ * 上一版外壳骨架里那组 `.site-footer { padding / font-size }` 与 `.site-footer p { margin }`
+ * 已随域名方案（styles/entry.css）一并删除，这里不需要再写覆盖规则把排版拉回来。
+ * `.public-shell *` 的 margin/padding 归零仍在 styles/base.css 里，页脚排版由下面自己声明。
  */
-.site-footer {
-  padding: 0;
-  font-size: inherit;
-}
-
-.site-footer p { margin: 0; }
-
-.site-footer__statement { margin-top: 22px; }
-.site-footer__label { margin-bottom: 14px; }
-
 .site-footer {
   border-top: 1px solid var(--border);
   background:

@@ -67,7 +67,7 @@ function toggleCategory(value) {
 }
 
 function openDetail(asset) {
-  router.push(`/admin/media/${asset.id}`)
+  router.push(`/useradmin/media/${asset.id}`)
 }
 
 function onUploaded(asset) {

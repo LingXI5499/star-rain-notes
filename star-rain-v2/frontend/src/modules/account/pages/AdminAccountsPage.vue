@@ -101,7 +101,7 @@ onMounted(load)
 <template>
   <main class="page-container">
     <div class="page-heading"><p class="eyebrow">ACCOUNT MANAGEMENT</p><h1>账户管理</h1><p>查询账户、管理状态与角色，并发出管理员邀请。</p><p>邀请流程：用户先注册 → 点击用户行中的“邀请管理员” → 用户登录“我的账户”查看待处理邀请 → 接受后重新登录。</p></div>
-    <p><RouterLink to="/admin/invitations">查看邀请记录、重发或撤销邀请 →</RouterLink></p>
+    <p><RouterLink to="/useradmin/invitations">查看邀请记录、重发或撤销邀请 →</RouterLink></p>
     <section class="surface-card">
       <form class="toolbar" @submit.prevent="search">
         <label>关键词<input v-model.trim="filters.keyword" maxlength="100" placeholder="用户名或邮箱" /></label>

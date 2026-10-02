@@ -2,37 +2,23 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 /*
- * 允许访问 dev server 的 Host。
- *
- * 三入口按域名分流，本地用 user.localhost / admin.localhost 验证分流，
- * 浏览器会把 *.localhost 解析到 127.0.0.1，因此这里必须显式放行；
- * 正式域名一起列上，方便用 Host 头直接测。
+ * 单域名 + 两条路径树之后，dev server 不再需要按 Host 分流：
+ *   - server.allowedHosts 已删除：它原本是为 user.localhost / admin.localhost 这类
+ *     多域名本地验证放行的，现在只有 localhost / 127.0.0.1，Vite 默认就允许；
+ *   - proxy.changeOrigin 恢复为 true（引入域名方案之前的值）：
+ *     它当时被改成 false，是为了让原始 Host 透传到后端做入口判定；
+ *     路径方案下后端完全不读 Host，透传原始 Host 只会让后端日志与 Spring 的
+ *     host/baseUrl 推导里出现前端 dev server 的端口，没有收益。
  */
-const allowedHosts = [
-  'localhost',
-  'user.localhost',
-  'admin.localhost',
-  'yulanlin.cn',
-  'www.yulanlin.cn',
-  'user.yulanlin.cn',
-  'admin.yulanlin.cn',
-]
-
 export default defineConfig({
   plugins: [vue()],
   server: {
     port: 5174,
     strictPort: true,
-    allowedHosts,
     proxy: {
       '/api': {
         target: process.env.STAR_RAIN_API_TARGET || 'http://127.0.0.1:8088',
-        /*
-         * changeOrigin 必须是 false：后端按 Host 判定入口，
-         * 改写 Host 会让所有本地请求都变成 127.0.0.1（公开站），
-         * 于是在 user.localhost 下连注册都会被 403，本地开发直接不可用。
-         */
-        changeOrigin: false,
+        changeOrigin: true,
       },
     },
   },

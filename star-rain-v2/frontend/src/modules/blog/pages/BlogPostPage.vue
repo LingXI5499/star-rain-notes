@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { getPublicPost } from '../api/blogApi'
 import { errorMessage } from '../../../shared/http'
+import { useViewMode } from '../../../shared/viewMode'
 import BlogProse from '../components/BlogProse.vue'
 import ArticleOutline from '../components/ArticleOutline.vue'
 import ReadingAside from '../components/ReadingAside.vue'
@@ -18,7 +19,11 @@ import { estimateReadingStats, fullDate } from '../support/display'
  *
  * 按 slug 读取：后端对草稿、已撤回与不存在的 slug 一律返回 BLOG_POST_NOT_FOUND，
  * 因此这里只需要区分「404」与「其它错误」，不去猜文章状态。
+ *
+ * 这一页在两条路径树上复用（/blog/posts/:slug 与 /useradmin/blog/posts/:slug），
+ * 因此返回列表 / 按标签跳转的地址用 contentPath() 按当前模式取。
  */
+const { contentPath } = useViewMode()
 const route = useRoute()
 
 const post = ref(null)
@@ -62,19 +67,19 @@ watch(() => route.params.slug, load)
     <div v-else-if="errorText" class="article-state" role="alert">
       <strong>加载失败</strong>
       <span>{{ errorText }}</span>
-      <RouterLink to="/blog">返回博客列表</RouterLink>
+      <RouterLink :to="contentPath('/blog')">返回博客列表</RouterLink>
     </div>
 
     <div v-else-if="notFound" class="article-state">
       <strong>文章不存在或尚未公开</strong>
       <span>已撤回的文章对外与「不存在」完全一致，因此无法区分。</span>
-      <RouterLink to="/blog">返回博客列表</RouterLink>
+      <RouterLink :to="contentPath('/blog')">返回博客列表</RouterLink>
     </div>
 
     <article v-else-if="post" class="article">
       <header class="article-hero">
         <nav>
-          <RouterLink to="/blog">博客时间线</RouterLink>
+          <RouterLink :to="contentPath('/blog')">博客时间线</RouterLink>
           <span aria-hidden="true">/</span>
           <span>文章详情</span>
         </nav>
@@ -82,7 +87,7 @@ watch(() => route.params.slug, load)
           <RouterLink
             v-for="tag in post.tags"
             :key="tag.id || tag.slug"
-            :to="{ path: '/blog', query: { tag: tag.slug } }"
+            :to="{ path: contentPath('/blog'), query: { tag: tag.slug } }"
           ># {{ tag.name }}</RouterLink>
         </div>
         <h1>{{ post.title }}</h1>
@@ -103,7 +108,7 @@ watch(() => route.params.slug, load)
           <img v-if="post.coverUrl" class="article__cover" :src="post.coverUrl" :alt="post.title" />
           <BlogProse :markdown="post.bodyMarkdown" @outline="outline = $event" />
           <p class="article__back">
-            <RouterLink to="/blog">← 返回博客时间线</RouterLink>
+            <RouterLink :to="contentPath('/blog')">← 返回博客时间线</RouterLink>
           </p>
         </main>
 

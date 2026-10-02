@@ -127,7 +127,7 @@ function resetHistory() {
 }
 
 function openDetail(item) {
-  router.push(`/admin/reviews/${item.reviewId}`)
+  router.push(`/useradmin/reviews/${item.reviewId}`)
 }
 
 /*
