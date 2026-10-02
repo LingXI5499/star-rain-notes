@@ -1,7 +1,7 @@
-package com.starrainnotes.common.web;
+package com.starrainnotes.common.handler;
 
-import com.starrainnotes.common.ApiException;
-import com.starrainnotes.common.ApiResponse;
+import com.starrainnotes.common.exception.ApiException;
+import com.starrainnotes.common.result.ApiResponse;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 @RestControllerAdvice
 public class GlobalApiExceptionHandler {
@@ -37,6 +38,13 @@ public class GlobalApiExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> unauthorized(AuthenticationException exception) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ApiResponse<>("UNAUTHORIZED", "请先登录", null));
+    }
+
+    // 触发 multipart 硬上限时抛出，位置早于业务模块自己的上传校验
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    public ResponseEntity<ApiResponse<Void>> payloadTooLarge(MaxUploadSizeExceededException exception) {
+        return ResponseEntity.status(HttpStatus.PAYLOAD_TOO_LARGE)
+                .body(new ApiResponse<>("PAYLOAD_TOO_LARGE", "上传内容超过服务器允许的最大体积", null));
     }
 
     @ExceptionHandler(AccessDeniedException.class)
