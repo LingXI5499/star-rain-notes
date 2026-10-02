@@ -44,3 +44,39 @@ export function monthLabel(year, month) {
 export const summaryText = (post) => post?.summary || '（暂无摘要，发布时会按正文自动生成）'
 
 export const postCountText = (value) => `${Number(value) || 0} 篇`
+
+/*
+ * 阅读信息（字数 / 预计阅读）。
+ * 公式照搬 V1 `lib/readingStats.ts`：按字符数估算，400 字/分钟 ——
+ * 中文按字符计比按词计准确，且与教程阅读页用同一口径。
+ */
+export function estimateReadingStats(markdown) {
+  const charCount = markdown?.length ?? 0
+  return { charCount, readMinutes: Math.max(1, Math.round(charCount / 400)) }
+}
+
+// 长日期：2026年10月2日（详情页元信息用）
+export function fullDate(value) {
+  if (!value) return '—'
+  const date = new Date(value.endsWith('Z') ? value : `${value}Z`)
+  return Number.isNaN(date.getTime()) ? value : date.toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' })
+}
+
+/*
+ * 时间线分组：把按发布时间倒序的文章列表转成「年份只显示一次 + 月.日」的结构，
+ * 供左侧时间轴使用。无效日期不让整条时间线崩掉，退化成原样字符串。
+ */
+export function timelineGroups(items) {
+  let previousYear = ''
+  return (items || []).map((post) => {
+    const date = post.publishedAt ? new Date(post.publishedAt.endsWith('Z') ? post.publishedAt : `${post.publishedAt}Z`) : null
+    const valid = date && !Number.isNaN(date.getTime())
+    const year = valid ? String(date.getFullYear()) : ''
+    const monthDay = valid
+      ? `${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`
+      : (post.publishedAt || '—')
+    const showYear = year !== '' && year !== previousYear
+    if (year !== '') previousYear = year
+    return { post, year, monthDay, showYear }
+  })
+}
