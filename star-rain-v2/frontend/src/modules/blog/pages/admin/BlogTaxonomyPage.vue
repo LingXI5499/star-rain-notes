@@ -1,22 +1,24 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, nextTick, onMounted, reactive, ref } from 'vue'
 import {
   addTopicPost, createTag, createTopic, disableTag, disableTopic, enableTag, enableTopic,
   listAdminPosts, listAdminTags, listAdminTopics, listTopicMembers, removeTopicPost,
   reorderTopicPosts, updateTag, updateTopic,
 } from '../../api/blogApi'
 import { errorMessage } from '../../../../shared/http'
+import { derivedSlug } from '../../components/admin/tagSlug'
 import { postStatusLabel, taxonomyStatusLabel } from '../../support/display'
 
 /*
- * 分类与专题管理（BLOG-004 / BLOG-005 / BLOG-006 / BLOG-007）。
+ * 分类与专题管理（BLOG-004 ~ BLOG-007），组织方式对齐 V1 views/admin/BlogTagView.vue：
+ * 标题区 + 计数 + 卡片网格。
  *
- * 这个页面把 Tag 与 Topic 的语义差异摆在明面上：
- * - 左栏 Tag：只有名字与说明，没有任何顺序概念；停用只是不再接受新绑定；
- * - 右栏 Topic：除了名字与说明，还有成员列表与人工顺序，顺序用上下移动调整后整体提交。
+ * 这里仍然把 Tag 与 Topic 的语义差异摆在明面上：
+ * - Tag：只有名字与说明，没有任何顺序概念；停用只是不再接受新绑定；
+ * - Topic：除了名字与说明，还有成员列表与人工顺序，顺序用上下移动调整后整体提交。
  *
- * 两边都只有启用/停用，没有删除：已被文章使用的分类或专题一旦被物理删除，
- * 历史文章就会指向不存在的分类。
+ * 两边都只有启用 / 停用，没有物理删除：已被文章使用的分类或专题一旦被删除，
+ * 历史文章就会指向不存在的分类（后端也不提供删除接口）。
  */
 const tags = ref([])
 const topics = ref([])
@@ -24,10 +26,14 @@ const members = ref([])
 const postOptions = ref([])
 const selectedTopicId = ref(null)
 const pendingPostId = ref('')
+const tagKeyword = ref('')
+const topicKeyword = ref('')
 const loading = ref(false)
 const saving = ref(false)
 const error = ref('')
 const notice = ref('')
+const tagDialog = ref(null)
+const topicDialog = ref(null)
 
 const tagForm = reactive({ id: null, slug: '', name: '', description: '' })
 const topicForm = reactive({ id: null, slug: '', name: '', description: '' })
@@ -36,6 +42,17 @@ const selectedTopic = computed(() => topics.value.find((topic) => topic.id === s
 const addablePosts = computed(() => {
   const taken = new Set(members.value.map((member) => member.postId))
   return postOptions.value.filter((post) => !taken.has(post.id))
+})
+const totalRelations = computed(() => tags.value.reduce((sum, tag) => sum + (tag.postCount || 0), 0))
+const filteredTags = computed(() => {
+  const keyword = tagKeyword.value.trim().toLowerCase()
+  if (!keyword) return tags.value
+  return tags.value.filter((tag) => tag.name.toLowerCase().includes(keyword) || tag.slug.includes(keyword))
+})
+const filteredTopics = computed(() => {
+  const keyword = topicKeyword.value.trim().toLowerCase()
+  if (!keyword) return topics.value
+  return topics.value.filter((topic) => topic.name.toLowerCase().includes(keyword) || topic.slug.includes(keyword))
 })
 
 async function loadTags() {
@@ -49,6 +66,7 @@ async function loadTopics() {
 }
 
 async function loadPosts() {
+  // 专题成员只从已有的文章里挑，草稿也能加入（发布时顺序不变）
   const page = await listAdminPosts({ page: 1, pageSize: 100 })
   postOptions.value = page.items
 }
@@ -82,22 +100,38 @@ async function refresh() {
 // Tag
 // ---------------------------------------------------------------------
 
-function editTag(tag) {
-  Object.assign(tagForm, {
-    id: tag.id, slug: tag.slug, name: tag.name, description: tag.description || '',
-  })
+/*
+ * 编号（slug）在后端是必填且唯一，只允许小写字母、数字与中划线。
+ * 名称里没有 ASCII 字符时（纯中文标签）由 tagSlug.js 给出稳定散列编号，
+ * 所以这个字段可以留空；只有名称本身也为空时才拦下。
+ */
+function slugFromName(name, prefix) {
+  return derivedSlug(name, prefix, 100)
 }
 
-function resetTagForm() {
-  Object.assign(tagForm, { id: null, slug: '', name: '', description: '' })
+async function openTagDialog(tag = null) {
+  Object.assign(tagForm, tag
+    ? { id: tag.id, slug: tag.slug, name: tag.name, description: tag.description || '' }
+    : { id: null, slug: '', name: '', description: '' })
+  await nextTick()
+  tagDialog.value?.showModal()
 }
 
 async function submitTag() {
+  if (!tagForm.name.trim()) {
+    error.value = '请填写标签名称。'
+    return
+  }
+  const slug = tagForm.slug.trim() || slugFromName(tagForm.name, 'tag')
+  if (!slug) {
+    error.value = '请填写名称或编号（slug）。'
+    return
+  }
   saving.value = true
   error.value = ''
   notice.value = ''
   try {
-    const payload = { slug: tagForm.slug, name: tagForm.name, description: tagForm.description }
+    const payload = { slug, name: tagForm.name, description: tagForm.description }
     if (tagForm.id) {
       await updateTag(tagForm.id, payload)
       notice.value = `标签「${tagForm.name}」已更新。`
@@ -105,7 +139,7 @@ async function submitTag() {
       await createTag(payload)
       notice.value = `标签「${tagForm.name}」已创建。`
     }
-    resetTagForm()
+    tagDialog.value?.close()
     await loadTags()
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -138,22 +172,29 @@ async function toggleTagStatus(tag) {
 // Topic
 // ---------------------------------------------------------------------
 
-function editTopic(topic) {
-  Object.assign(topicForm, {
-    id: topic.id, slug: topic.slug, name: topic.name, description: topic.description || '',
-  })
-}
-
-function resetTopicForm() {
-  Object.assign(topicForm, { id: null, slug: '', name: '', description: '' })
+async function openTopicDialog(topic = null) {
+  Object.assign(topicForm, topic
+    ? { id: topic.id, slug: topic.slug, name: topic.name, description: topic.description || '' }
+    : { id: null, slug: '', name: '', description: '' })
+  await nextTick()
+  topicDialog.value?.showModal()
 }
 
 async function submitTopic() {
+  if (!topicForm.name.trim()) {
+    error.value = '请填写专题名称。'
+    return
+  }
+  const slug = topicForm.slug.trim() || slugFromName(topicForm.name, 'topic')
+  if (!slug) {
+    error.value = '请填写名称或编号（slug）。'
+    return
+  }
   saving.value = true
   error.value = ''
   notice.value = ''
   try {
-    const payload = { slug: topicForm.slug, name: topicForm.name, description: topicForm.description }
+    const payload = { slug, name: topicForm.name, description: topicForm.description }
     if (topicForm.id) {
       await updateTopic(topicForm.id, payload)
       notice.value = `专题「${topicForm.name}」已更新。`
@@ -161,7 +202,7 @@ async function submitTopic() {
       await createTopic(payload)
       notice.value = `专题「${topicForm.name}」已创建。`
     }
-    resetTopicForm()
+    topicDialog.value?.close()
     await loadTopics()
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -195,7 +236,7 @@ async function toggleTopicStatus(topic) {
 // ---------------------------------------------------------------------
 
 async function selectTopic(topic) {
-  selectedTopicId.value = topic.id
+  selectedTopicId.value = selectedTopicId.value === topic.id ? null : topic.id
   error.value = ''
   try {
     await loadMembers()
@@ -268,129 +309,159 @@ onMounted(refresh)
 </script>
 
 <template>
-  <main class="page-container">
-    <div class="page-heading">
-      <p class="eyebrow">BLOG TAXONOMY</p>
-      <h1>分类与专题</h1>
-      <p>
-        Tag 是<b>多维分类</b>：一篇文章可以有多个，彼此无序。Topic 是<b>人工策展的有序专题</b>：
-        成员有明确顺序，顺序本身也是内容的一部分。两者不互相替代。
-      </p>
+  <section class="tag-admin">
+    <header class="tag-admin__hero">
+      <div>
+        <p>TAG LIBRARY · 内容索引</p>
+        <h1>分类与专题</h1>
+        <span>Tag 是多维分类（无序，可多选）；Topic 是人工策展的有序专题，顺序也是内容的一部分。</span>
+      </div>
+      <div class="content-admin__hero-actions">
+        <button type="button" @click="openTopicDialog()">＋ 新建专题</button>
+        <button class="primary-button" type="button" @click="openTagDialog()">＋ 新建标签</button>
+      </div>
+    </header>
+
+    <div class="tag-admin__stats">
+      <div><strong>{{ tags.length }}</strong><span>标签总数</span></div>
+      <div><strong>{{ totalRelations }}</strong><span>文章关联</span></div>
+      <label>搜索名称或编号<input v-model="tagKeyword" placeholder="输入标签名或 slug" /></label>
     </div>
 
     <p v-if="error" class="error" role="alert">{{ error }}</p>
     <p v-if="notice" class="notice" role="status">{{ notice }}</p>
     <p v-if="loading" class="loading" role="status">正在加载分类数据…</p>
 
-    <div class="blog-taxonomy-layout">
-      <section class="surface-card">
-        <h2 class="section-heading">标签（Tag）</h2>
-        <form class="field-grid" @submit.prevent="submitTag">
-          <label>slug<input v-model.trim="tagForm.slug" maxlength="100" placeholder="java" /></label>
-          <label>名称<input v-model.trim="tagForm.name" maxlength="100" placeholder="Java" /></label>
-          <label class="field-grid__wide">说明<input v-model.trim="tagForm.description" maxlength="500" placeholder="可选" /></label>
-          <div class="field-grid__wide blog-editor__actions">
-            <button class="primary-button" type="submit" :disabled="saving">{{ tagForm.id ? '保存标签' : '新增标签' }}</button>
-            <button v-if="tagForm.id" type="button" @click="resetTagForm">取消编辑</button>
-          </div>
-        </form>
-
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>名称</th><th>slug</th><th>状态</th><th>绑定文章</th><th>操作</th></tr></thead>
-            <tbody>
-              <tr v-for="tag in tags" :key="tag.id">
-                <td><strong>{{ tag.name }}</strong><small>{{ tag.description || '—' }}</small></td>
-                <td>{{ tag.slug }}</td>
-                <td><span :class="['status-chip', tag.status === 'DISABLED' && 'status-chip--danger']">{{ taxonomyStatusLabel(tag.status) }}</span></td>
-                <td>{{ tag.postCount || 0 }}</td>
-                <td class="table-actions">
-                  <button class="link-button" type="button" @click="editTag(tag)">编辑</button>
-                  <button class="link-button" type="button" :disabled="saving" @click="toggleTagStatus(tag)">
-                    {{ tag.status === 'DISABLED' ? '启用' : '停用' }}
-                  </button>
-                </td>
-              </tr>
-              <tr v-if="!tags.length"><td colspan="5" class="empty-state">还没有标签。</td></tr>
-            </tbody>
-          </table>
+    <div class="tag-grid">
+      <article v-for="tag in filteredTags" :key="tag.id" class="tag-card">
+        <div class="tag-card__top">
+          <span>#</span>
+          <strong>{{ tag.name }}</strong>
+          <em>{{ tag.postCount || 0 }}</em>
         </div>
-      </section>
-
-      <section class="surface-card">
-        <h2 class="section-heading">专题（Topic）</h2>
-        <form class="field-grid" @submit.prevent="submitTopic">
-          <label>slug<input v-model.trim="topicForm.slug" maxlength="120" placeholder="java-roadmap" /></label>
-          <label>名称<input v-model.trim="topicForm.name" maxlength="160" placeholder="Java 学习路线" /></label>
-          <label class="field-grid__wide">说明<input v-model.trim="topicForm.description" maxlength="1000" placeholder="可选（专题名允许重复，slug 唯一）" /></label>
-          <div class="field-grid__wide blog-editor__actions">
-            <button class="primary-button" type="submit" :disabled="saving">{{ topicForm.id ? '保存专题' : '新增专题' }}</button>
-            <button v-if="topicForm.id" type="button" @click="resetTopicForm">取消编辑</button>
+        <code>编号 {{ tag.slug }}{{ tag.description ? ` · ${tag.description}` : '' }}</code>
+        <footer>
+          <span :class="['status-chip', tag.status === 'DISABLED' && 'status-chip--danger']">{{ taxonomyStatusLabel(tag.status) }}</span>
+          <div>
+            <button type="button" @click="openTagDialog(tag)">编辑</button>
+            <button type="button" :disabled="saving" @click="toggleTagStatus(tag)">
+              {{ tag.status === 'DISABLED' ? '启用' : '停用' }}
+            </button>
           </div>
-        </form>
-
-        <div class="table-scroll">
-          <table>
-            <thead><tr><th>名称</th><th>slug</th><th>状态</th><th>成员</th><th>操作</th></tr></thead>
-            <tbody>
-              <tr v-for="topic in topics" :key="topic.id" :class="selectedTopicId === topic.id && 'is-selected'">
-                <td><strong>{{ topic.name }}</strong><small>{{ topic.description || '—' }}</small></td>
-                <td>{{ topic.slug }}</td>
-                <td><span :class="['status-chip', topic.status === 'DISABLED' && 'status-chip--danger']">{{ taxonomyStatusLabel(topic.status) }}</span></td>
-                <td>{{ topic.memberCount || 0 }}</td>
-                <td class="table-actions">
-                  <button class="link-button" type="button" @click="selectTopic(topic)">管理文章</button>
-                  <button class="link-button" type="button" @click="editTopic(topic)">编辑</button>
-                  <button class="link-button" type="button" :disabled="saving" @click="toggleTopicStatus(topic)">
-                    {{ topic.status === 'DISABLED' ? '启用' : '停用' }}
-                  </button>
-                </td>
-              </tr>
-              <tr v-if="!topics.length"><td colspan="5" class="empty-state">还没有专题。</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </section>
-
-      <aside class="surface-card blog-taxonomy-aside">
-        <h2 class="blog-aside__title">专题内文章顺序</h2>
-        <p v-if="!selectedTopic" class="muted">先在左侧专题表里点「管理文章」。</p>
-        <template v-else>
-          <p class="muted">当前专题：<strong>{{ selectedTopic.name }}</strong>（{{ taxonomyStatusLabel(selectedTopic.status) }}）</p>
-
-          <ol class="blog-member-list">
-            <li v-for="(member, index) in members" :key="member.postId">
-              <span class="blog-member-list__order">{{ index + 1 }}</span>
-              <span class="blog-member-list__title">
-                {{ member.title }}
-                <small>{{ postStatusLabel(member.status) }}</small>
-              </span>
-              <span class="blog-member-list__actions">
-                <button class="link-button" type="button" :disabled="index === 0" @click="move(index, -1)">上移</button>
-                <button class="link-button" type="button" :disabled="index === members.length - 1" @click="move(index, 1)">下移</button>
-                <button class="link-button blog-danger" type="button" :disabled="saving" @click="removeMember(member)">移出</button>
-              </span>
-            </li>
-            <li v-if="!members.length" class="muted">该专题还没有文章。</li>
-          </ol>
-
-          <div class="blog-editor__actions">
-            <button class="primary-button" type="button" :disabled="saving || !members.length" @click="saveOrder">保存顺序</button>
-          </div>
-
-          <h3 class="blog-editor__subheading">加入文章</h3>
-          <div class="blog-editor__actions">
-            <select v-model="pendingPostId">
-              <option value="">选择一篇文章</option>
-              <option v-for="post in addablePosts" :key="post.id" :value="post.id">
-                {{ post.title }}（{{ postStatusLabel(post.status) }}）
-              </option>
-            </select>
-            <button type="button" :disabled="saving || !pendingPostId" @click="addMember">追加到末尾</button>
-          </div>
-          <p class="muted">停用的专题不能加入新文章；已停用专题的成员与顺序仍然保留。</p>
-        </template>
-      </aside>
+        </footer>
+      </article>
+      <div v-if="!loading && !filteredTags.length" class="tag-admin__empty">
+        {{ tagKeyword ? '没有匹配的标签' : '暂无标签' }}
+      </div>
     </div>
-  </main>
+
+    <div class="tag-admin__section-head">
+      <h2>专题（有序策展）</h2>
+      <label class="tag-admin__search">搜索专题<input v-model="topicKeyword" placeholder="输入专题名或 slug" /></label>
+    </div>
+
+    <div class="tag-grid">
+      <article
+        v-for="topic in filteredTopics"
+        :key="topic.id"
+        :class="['tag-card', selectedTopicId === topic.id && 'is-selected']"
+      >
+        <div class="tag-card__top">
+          <span>专</span>
+          <strong>{{ topic.name }}</strong>
+          <em>{{ topic.memberCount || 0 }}</em>
+        </div>
+        <code>编号 {{ topic.slug }}{{ topic.description ? ` · ${topic.description}` : '' }}</code>
+        <footer>
+          <span :class="['status-chip', topic.status === 'DISABLED' && 'status-chip--danger']">{{ taxonomyStatusLabel(topic.status) }}</span>
+          <div>
+            <button type="button" :disabled="saving" @click="selectTopic(topic)">
+              {{ selectedTopicId === topic.id ? '收起顺序' : '管理顺序' }}
+            </button>
+            <button type="button" @click="openTopicDialog(topic)">编辑</button>
+            <button type="button" :disabled="saving" @click="toggleTopicStatus(topic)">
+              {{ topic.status === 'DISABLED' ? '启用' : '停用' }}
+            </button>
+          </div>
+        </footer>
+      </article>
+      <div v-if="!loading && !filteredTopics.length" class="tag-admin__empty">
+        {{ topicKeyword ? '没有匹配的专题' : '暂无专题' }}
+      </div>
+    </div>
+
+    <section v-if="selectedTopic" class="surface-card tag-admin__members">
+      <div class="section-heading">
+        <div>
+          <h2>专题内文章顺序 · {{ selectedTopic.name }}</h2>
+          <p class="muted">上下移动只改本地顺序，点「保存顺序」才整体提交。</p>
+        </div>
+        <button class="text-button" type="button" @click="selectedTopicId = null">关闭</button>
+      </div>
+
+      <ol class="blog-member-list">
+        <li v-for="(member, index) in members" :key="member.postId">
+          <span class="blog-member-list__order">{{ index + 1 }}</span>
+          <span class="blog-member-list__title">
+            {{ member.title }}
+            <small>{{ postStatusLabel(member.status) }}</small>
+          </span>
+          <span class="blog-member-list__actions">
+            <button class="link-button" type="button" :disabled="index === 0" @click="move(index, -1)">上移</button>
+            <button class="link-button" type="button" :disabled="index === members.length - 1" @click="move(index, 1)">下移</button>
+            <button class="link-button blog-danger" type="button" :disabled="saving" @click="removeMember(member)">移出</button>
+          </span>
+        </li>
+        <li v-if="!members.length" class="muted">该专题还没有文章。</li>
+      </ol>
+
+      <div class="blog-edit__actions blog-edit__actions--split">
+        <div class="blog-edit__actions-group">
+          <select v-model="pendingPostId" class="tag-admin__post-select">
+            <option value="">选择一篇文章</option>
+            <option v-for="post in addablePosts" :key="post.id" :value="post.id">
+              {{ post.title }}（{{ postStatusLabel(post.status) }}）
+            </option>
+          </select>
+          <button type="button" :disabled="saving || !pendingPostId" @click="addMember">追加到末尾</button>
+        </div>
+        <div class="blog-edit__actions-group">
+          <button class="primary-button" type="button" :disabled="saving || !members.length" @click="saveOrder">保存顺序</button>
+        </div>
+      </div>
+      <p class="tag-admin__note">停用的专题不能加入新文章；已停用专题的成员与顺序仍然保留。</p>
+    </section>
+
+    <p class="tag-admin__note">
+      标签与专题都不提供物理删除：已被文章使用的分类一旦删除，历史文章就会指向不存在的分类。
+      需要下架时用「停用」，历史绑定保留。
+    </p>
+
+    <dialog ref="tagDialog" aria-labelledby="tag-dialog-title" @cancel.prevent="tagDialog?.close()">
+      <h2 id="tag-dialog-title">{{ tagForm.id ? '编辑标签' : '新建标签' }}</h2>
+      <form class="form-stack" @submit.prevent="submitTag">
+        <label>名称<input v-model="tagForm.name" maxlength="100" placeholder="例如：Spring Boot" /></label>
+        <label>编号 slug<input v-model="tagForm.slug" maxlength="100" placeholder="spring-boot（留空时按名称推导）" /></label>
+        <label>说明（可选）<input v-model="tagForm.description" maxlength="500" placeholder="会显示在标签悬浮提示里" /></label>
+        <p class="form-hint">修改名称不会改变编号（slug）与已有关联。</p>
+        <div class="dialog-actions">
+          <button type="button" @click="tagDialog?.close()">取消</button>
+          <button class="primary-button" type="submit" :disabled="saving">{{ tagForm.id ? '保存' : '创建' }}</button>
+        </div>
+      </form>
+    </dialog>
+
+    <dialog ref="topicDialog" aria-labelledby="topic-dialog-title" @cancel.prevent="topicDialog?.close()">
+      <h2 id="topic-dialog-title">{{ topicForm.id ? '编辑专题' : '新建专题' }}</h2>
+      <form class="form-stack" @submit.prevent="submitTopic">
+        <label>名称<input v-model="topicForm.name" maxlength="160" placeholder="例如：Java 学习路线" /></label>
+        <label>编号 slug<input v-model="topicForm.slug" maxlength="120" placeholder="java-roadmap（留空时按名称推导）" /></label>
+        <label>说明（可选）<input v-model="topicForm.description" maxlength="1000" placeholder="专题允许重名，slug 必须唯一" /></label>
+        <div class="dialog-actions">
+          <button type="button" @click="topicDialog?.close()">取消</button>
+          <button class="primary-button" type="submit" :disabled="saving">{{ topicForm.id ? '保存' : '创建' }}</button>
+        </div>
+      </form>
+    </dialog>
+  </section>
 </template>

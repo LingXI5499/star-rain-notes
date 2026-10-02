@@ -5,6 +5,8 @@
 @import './styles/review.css';
 @import './styles/blog.css';
 @import './styles/entry.css';
+/* 后台控制台视觉：只作用于 .admin-shell 内部，公开站与用户站不受影响。 */
+@import './styles/admin.css';
 /* 验证码字段在注册页与账户安全页共用。 */
 .verification-field { display: flex; align-items: stretch; gap: 8px; }
 .verification-field input { min-width: 0; flex: 1; width: 0; }
