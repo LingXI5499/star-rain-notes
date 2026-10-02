@@ -1,6 +1,6 @@
 package com.starrainnotes.account.service;
 
-import com.starrainnotes.common.ApiException;
+import com.starrainnotes.common.exception.ApiException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.MailException;
 import jakarta.mail.MessagingException;

@@ -1,5 +1,6 @@
-package com.starrainnotes.account.security;
+package com.starrainnotes.account.interceptor;
 
+import com.starrainnotes.account.context.AccountPrincipal;
 import com.starrainnotes.account.entity.AccountEntity;
 import com.starrainnotes.account.mapper.AccountMapper;
 import jakarta.servlet.FilterChain;
@@ -24,9 +25,9 @@ public class AccountSessionValidationFilter extends OncePerRequestFilter {
                                     FilterChain chain) throws ServletException, IOException {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof AccountPrincipal principal) {
-            AccountEntity account = mapper.accountById(principal.accountId());
+            AccountEntity account = mapper.accountById(principal.getAccountId());
             if (account == null || !"ACTIVE".equals(account.getStatus())
-                    || account.getAuthVersion() == null || account.getAuthVersion() != principal.authVersion()) {
+                    || account.getAuthVersion() == null || account.getAuthVersion() != principal.getAuthVersion()) {
                 SecurityContextHolder.clearContext();
                 if (request.getSession(false) != null) {
                     request.getSession(false).invalidate();

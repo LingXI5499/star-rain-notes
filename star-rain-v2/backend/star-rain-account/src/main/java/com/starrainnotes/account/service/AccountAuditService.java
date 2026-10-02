@@ -17,14 +17,14 @@ public class AccountAuditService {
     }
 
     public void success(Long actor, Long target, String action) {
-        record(actor, target, action, "SUCCESS");
+        writeAudit(actor, target, action, "SUCCESS");
     }
 
     public void failed(Long actor, Long target, String action) {
-        record(actor, target, action, "FAILED");
+        writeAudit(actor, target, action, "FAILED");
     }
 
-    private void record(Long actor, Long target, String action, String result) {
+    private void writeAudit(Long actor, Long target, String action, String result) {
         AccountAuditEntity row = new AccountAuditEntity();
         row.setActorAccountId(actor);
         row.setTargetAccountId(target);
@@ -42,4 +42,3 @@ public class AccountAuditService {
         return value == null ? null : value.substring(0, Math.min(value.length(), maxLength));
     }
 }
-

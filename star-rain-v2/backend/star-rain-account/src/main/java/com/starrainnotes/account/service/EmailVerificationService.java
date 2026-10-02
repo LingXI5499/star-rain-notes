@@ -4,9 +4,9 @@ import com.starrainnotes.account.entity.EmailVerificationEntity;
 import com.starrainnotes.account.entity.AccountEntity;
 import com.starrainnotes.account.mapper.AccountMapper;
 import com.starrainnotes.account.mapper.EmailVerificationMapper;
-import com.starrainnotes.account.support.AccountRules;
+import com.starrainnotes.account.utils.AccountRules;
 import com.starrainnotes.account.vo.EmailVerificationCodeVO;
-import com.starrainnotes.common.ApiException;
+import com.starrainnotes.common.exception.ApiException;
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -54,7 +54,7 @@ public class EmailVerificationService {
 
     @Transactional
     public EmailVerificationCodeVO sendForCurrentAccount(String ip) {
-        AccountEntity account = accounts.accountByIdForUpdate(identity.principal().accountId());
+        AccountEntity account = accounts.accountByIdForUpdate(identity.principal().getAccountId());
         if (account == null || !"ACTIVE".equals(account.getStatus())) {
             throw new ApiException("ACCOUNT_DISABLED", "账户不可用", 403);
         }
