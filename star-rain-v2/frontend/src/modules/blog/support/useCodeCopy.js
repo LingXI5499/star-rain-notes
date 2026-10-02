@@ -1,16 +1,34 @@
 import { onBeforeUnmount, onMounted } from 'vue'
 
 /*
- * 代码块「复制」按钮的行为。
+ * 正文内部的交互接管：代码块复制 + 代码组页签切换。
  *
- * 正文是 v-html 渲染出来的，没法用 @click 绑定到里面的按钮上，
- * 因此用事件委托：监听正文容器的 click，命中 `[data-code-copy]` 才处理。
- * 容器元素本身不会被 v-html 替换（只有它的子节点会），所以监听器一直有效，
- * 不需要每次重新渲染后重新绑定。
+ * 为什么不是一个按钮一个监听器：正文是 v-html 渲染出来的，只要源文变化（后台预览每次
+ * 编辑都会变），子节点会被整棵替换，挂在子节点上的监听器随之失效，必须重新绑一遍，
+ * 还得记着解绑。委托到正文容器上就绕开了这件事 —— 容器元素本身从不被替换，
+ * 监听器生命周期与组件一致。文件名沿用 useCodeCopy（它与调用点一起出现，
+ * 改名的收益小于改动面），但它现在确实管两件事。
  *
- * 复制结果写在按钮自己的文案与 data-state 上：样式只认 data-state，
- * 这样「已复制 / 复制失败」的视觉反馈与 markup 里生成的按钮天然一致。
+ * 页签切换只改 DOM 状态（hidden / aria-selected / is-active），不碰渲染结果：
+ * 正文是只读的，切页签不该触发任何重新渲染或数据变更。
  */
+
+/* 切到某一组的第 index 个面板 */
+function selectTab(container, groupId, index) {
+  const tabs = container.querySelectorAll(`[data-code-group-tab][data-group="${groupId}"]`)
+  const panels = container.querySelectorAll(`[data-code-group-panel][data-group="${groupId}"]`)
+  tabs.forEach((tab) => {
+    const selected = Number(tab.dataset.index) === index
+    tab.classList.toggle('is-active', selected)
+    tab.setAttribute('aria-selected', selected ? 'true' : 'false')
+    /* roving tabindex：整组只有一个可 Tab 进入的项，方向键在组内移动 */
+    tab.tabIndex = selected ? 0 : -1
+  })
+  panels.forEach((panel) => {
+    panel.hidden = Number(panel.dataset.index) !== index
+  })
+}
+
 export function useCodeCopy(rootRef) {
   const timers = new Map()
 
@@ -28,6 +46,7 @@ export function useCodeCopy(rootRef) {
       button.dataset.state = 'error'
       button.setAttribute('aria-label', '复制失败，请手动选择代码')
     }
+    /* 组件可能已经卸载（按钮脱离文档），此时不必再排定时器 */
     if (!button.isConnected) return
     timers.set(button, window.setTimeout(() => {
       button.textContent = '复制'
@@ -37,13 +56,44 @@ export function useCodeCopy(rootRef) {
     }, 1800))
   }
 
+  /* 取按钮要复制的代码：代码组按钮复制「当前可见的那一块」，独立代码块复制自己那一块 */
+  function copyTarget(container, button) {
+    const groupId = button.dataset.copyGroup
+    if (!groupId) return button.closest('.code-block')?.querySelector('code')
+    const visible = Array.from(
+      container.querySelectorAll(`[data-code-group-panel][data-group="${groupId}"]`),
+    ).find((panel) => !panel.hidden)
+    return (visible ?? container.querySelector(`[data-code-group-panel][data-group="${groupId}"]`))
+      ?.querySelector('code')
+  }
+
   function onClick(event) {
     const container = rootRef.value
     if (!container) return
     const target = event.target instanceof Element ? event.target.closest('[data-code-copy]') : null
     if (!target || !container.contains(target)) return
-    const code = target.closest('.code-block')?.querySelector('code')
-    void copy(target, code?.textContent ?? '')
+    void copy(target, copyTarget(container, target)?.textContent ?? '')
+  }
+
+  /* 方向键 / Home / End 在页签之间移动，符合 role=tablist 的键盘约定 */
+  function onKeydown(event) {
+    const container = rootRef.value
+    if (!container) return
+    const tab = event.target instanceof Element ? event.target.closest('[data-code-group-tab]') : null
+    if (!tab || !container.contains(tab)) return
+    const groupId = tab.dataset.codeGroupTab
+    const total = container.querySelectorAll(`[data-code-group-tab][data-group="${groupId}"]`).length
+    if (total === 0) return
+    const current = Number(tab.dataset.index)
+    let next = null
+    if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (current + 1) % total
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (current - 1 + total) % total
+    if (event.key === 'Home') next = 0
+    if (event.key === 'End') next = total - 1
+    if (next == null) return
+    event.preventDefault()
+    selectTab(container, groupId, next)
+    container.querySelector(`[data-code-group-tab][data-group="${groupId}"][data-index="${next}"]`)?.focus()
   }
 
   function clearTimers() {
@@ -51,10 +101,14 @@ export function useCodeCopy(rootRef) {
     timers.clear()
   }
 
-  onMounted(() => rootRef.value?.addEventListener('click', onClick))
+  onMounted(() => {
+    rootRef.value?.addEventListener('click', onClick)
+    rootRef.value?.addEventListener('keydown', onKeydown)
+  })
 
   onBeforeUnmount(() => {
     rootRef.value?.removeEventListener('click', onClick)
+    rootRef.value?.removeEventListener('keydown', onKeydown)
     clearTimers()
   })
 }

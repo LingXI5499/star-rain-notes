@@ -4,6 +4,8 @@
 @import './styles/media.css';
 @import './styles/review.css';
 @import './styles/blog.css';
+/* Markdown 正文里由渲染器产出的元素（公式占位 / MathJax 产物 / 图片尺寸标记）。 */
+@import './styles/markdown.css';
 /* 后台控制台视觉：只作用于 .admin-shell 内部，前台两棵树都不受影响。 */
 @import './styles/admin.css';
 /* 验证码字段在注册页与账户安全页共用。 */

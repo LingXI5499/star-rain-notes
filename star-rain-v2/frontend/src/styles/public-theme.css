@@ -6,8 +6,8 @@
  *   1. V1 用 `.base-layout` 作用域，V2 公开站外壳的根类名是 `.public-shell`，逐条改名；
  *   2. V1 有 Element Plus 的配色桥接段（`.el-input` / `.el-pagination` / `.el-button`…），
  *      V2 没有 Element Plus，整段不移植；
- *   3. V1 的 `::: code-group` 多语言代码页签在 V2 的 Markdown 渲染器里没有实现，
- *      相关样式不移植；`.code-block`（语言标签 + 复制按钮）保留并复用；
+ *   3. `::: code-group` 多语言代码页签的样式已随渲染器一起补齐（本文件底部），
+ *      `.code-block`（语言标签 + 复制按钮）继续复用；
  *   4. V1 的 `[data-reveal]` 与 `.page-view-*` 依赖 V1 的 useReveal / 路由过渡组件，
  *      V2 没有这两套机制，留着就是不会被命中的死样式，因此不移植。
  * 所有视觉令牌都收敛在 `.public-shell` 之下，后台与用户站的既有令牌不受影响。
@@ -260,6 +260,74 @@
   margin: 0;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
+}
+
+/* LeetCode 风格多语言代码组：外壳与页签由 support/markdown.js 的 enhanceMarkdownDom
+   在渲染后构建（内容来自 `::: code-group` 容器），切换行为由 useCodeCopy 事件委托。 */
+.public-shell .code-group {
+  margin: 0 0 var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+
+.public-shell .code-group__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 10px 0 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.public-shell .code-group__tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.public-shell .code-group__tab {
+  appearance: none;
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  background: transparent;
+  cursor: pointer;
+  font: 650 13px/1 var(--font-family);
+  white-space: nowrap;
+}
+
+.public-shell .code-group__tab:hover {
+  color: var(--text-primary);
+}
+
+.public-shell .code-group__tab.is-active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.public-shell .code-group__copy {
+  flex-shrink: 0;
+}
+
+.public-shell .code-group__panels pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* hidden 属性必须显式生效：panelHost 内的 pre 有自己的 display 规则会盖过它 */
+.public-shell .code-group__panels pre[hidden] {
+  display: none;
 }
 
 /*

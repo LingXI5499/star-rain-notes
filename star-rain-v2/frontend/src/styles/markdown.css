@@ -1,0 +1,74 @@
+/*
+ * Markdown 正文里「渲染器自己产出的元素」的样式。
+ *
+ * 合并了 V1 的两处：
+ *   - `styles/math.css`（公式占位与 MathJax 产物）—— 原样移植；
+ *   - 博客正文的图片尺寸标记 `.markdown-img--*` —— V1 的渲染器会产出这三个类名，
+ *     但视觉规则只写在作品集页（PortfolioDetailView 的 .case-study__body）里，
+ *     博客侧一直只有基线的 max-width。V2 在这里把标记补成有效规则（见文末说明）。
+ *
+ * 作用域：`.markdown-body`（前台阅读页正文）与 `.markdown-editor`（后台 Vditor 编辑区）。
+ * 刻意不写成全局选择器 —— `mjx-container` 这种名字太通用，全局命中会波及第三方组件。
+ */
+
+/* ---------------------------------------------------------------
+   公式
+   --------------------------------------------------------------- */
+
+/* MathJax 输出的是 SVG，颜色跟随外层文字色，深色主题下才不会是黑块 */
+:is(.markdown-body, .blog-prose, .markdown-editor) .math-source--inline,
+:is(.markdown-body, .blog-prose, .markdown-editor) mjx-container {
+  color: currentcolor;
+}
+
+/* 块级公式可能很宽：横向滚动而不是撑破正文列（撑破会把整页推歪） */
+:is(.markdown-body, .blog-prose, .markdown-editor) .math-source--display,
+:is(.markdown-body, .blog-prose, .markdown-editor) .language-math {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.3em 0.2em;
+  scrollbar-width: thin;
+}
+
+/* 超宽公式居中时左侧会被裁掉，这里让它从左边开始可见 */
+:is(.markdown-body, .blog-prose, .markdown-editor) .math-source--display > mjx-container,
+:is(.markdown-body, .blog-prose, .markdown-editor) .language-math > mjx-container {
+  width: max-content;
+  min-width: 100%;
+  text-align: center;
+}
+
+/* 解析失败的公式：显示原始 TeX 并标红，绝不静默变成空白 */
+:is(.markdown-body, .blog-prose, .markdown-editor) .math-source--error,
+:is(.markdown-body, .blog-prose, .markdown-editor) .vditor-reset--error {
+  color: var(--danger) !important;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+/* ---------------------------------------------------------------
+   图片尺寸标记
+   --------------------------------------------------------------- */
+
+.markdown-body .markdown-img {
+  height: auto;
+  border-radius: 10px;
+}
+
+/* 标记类名本身不影响 src，只影响排版宽度；`normal` 是显式写出的默认值 */
+.markdown-body .markdown-img--normal {
+  max-width: 100%;
+}
+
+/*
+ * wide / full 都按「占满正文栏宽」处理。
+ *
+ * 为什么不做得更花：V1 的博客正文里这两个类名并没有配套布局规则（只有作品集页
+ * 用 :deep() 给它们做过版式），凭空给博客列加 breakout 会改变现有阅读版式，
+ * 属于超出迁移范围的改动。这里只保证「标记不是死的」——写了 wide/full 的图确实会更宽。
+ */
+.markdown-body .markdown-img--wide,
+.markdown-body .markdown-img--full {
+  width: 100%;
+}

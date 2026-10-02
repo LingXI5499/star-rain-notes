@@ -6,8 +6,9 @@
  * 直接全局套用会顺手改掉后台的间距。因此这里统一收敛到 `.public-shell` 之下，
  * 公开站的排版与 V1 一致，其它入口的既有视觉不受影响。
  *
- * highlight.js 的 `.hljs-*` 配色刻意没有移植：V2 的 Markdown 渲染器自己写，
- * 不引入高亮库，留着那些类名就是不会被命中的死代码。
+ * highlight.js 的 `.hljs-*` 配色随渲染器一起补齐（见本文件末尾）。
+ * 那一段刻意**不带 .public-shell 前缀**：后台 Vditor 编辑区的代码块也用同一套
+ * hljs 类名，跟着主题令牌走才能深色/浅色都读得清。
  */
 
 .public-shell *,
@@ -238,6 +239,62 @@
 
 .public-shell .markdown-body .blog-prose__empty {
   color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------------
+   highlight.js 令牌配色（从 V1 base.css 原样移植）
+   用设计令牌而不是某个 hljs 主题：前后台两套主题（data-theme）都自动生效，
+   也不需要额外引一份第三方主题 CSS。
+   --------------------------------------------------------------- */
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal {
+  color: var(--primary);
+}
+
+.hljs-string,
+.hljs-attr,
+.hljs-template-variable {
+  color: var(--accent);
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet {
+  color: var(--warning);
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name {
+  color: var(--primary-hover);
+}
+
+.hljs-built_in,
+.hljs-type,
+.hljs-class .hljs-title {
+  color: var(--warning);
+}
+
+.hljs-meta,
+.hljs-keyword,
+.hljs-params {
+  color: var(--text-secondary);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
 }
 
 /* 小屏收窄横向内边距（只影响公开站） */

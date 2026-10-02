@@ -1,213 +1,118 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { resolveVditorEditorHeight, setVditorFullscreenActive } from '../../support/markdownEditorChrome'
+import { createCodeGroupMarkdown, validateCodeGroupBlocks } from '../../support/markdownCodeGroup'
+import { normalizePastedMath } from '../../support/markdownMath'
+import { prepareMathJax } from '../../support/mathJax'
 
 /*
- * 后台 Markdown 编辑器（对标 V1 components/MarkdownEditor.vue 的工具栏 + 大纲面板）。
+ * 博客正文编辑器 —— 对标 V1 `components/MarkdownEditor.vue`（Vditor，IR 即时渲染）。
  *
- * V1 用的是 Vditor（IR 所见即所得），V2 不引入富文本/编辑器依赖，
- * 因此这里是「原生 textarea + 工具栏插入片段 + H1–H6 大纲」：
+ * 为什么必须是 Vditor 而不是「textarea + 预览按钮」：V1 里正文的所见即所得**就是**预览，
+ * 没有第二个预览区。IR 模式边写边排版（标题、代码块、表格、公式当场成形），
+ * 作者不需要在「源码」和「效果」之间来回切换。
  *
- * 1. 插入一律走 document.execCommand('insertText')。
- *    这样插入会进入浏览器自己的撤销栈，工具栏的撤销/重做与 Ctrl+Z 是同一套历史，
- *    不会出现「按了撤销却把工具栏插入的内容留下」这种两套历史打架的情况。
- *    execCommand 已标记为废弃，但它是当前无依赖方案里唯一能做到这一点的 API；
- *    返回 false 时（浏览器不再支持）退回到直接改写 value 的手工插入。
- * 2. 大纲从正文里按 H1–H6 解析，跳过 ``` 围栏代码块内的「#」注释，
- *    点击大纲把光标移到该标题所在行（选区覆盖标题文字，浏览器会把选区滚进可视区），
- *    当前章节按光标位置高亮。
- * 3. 图片按钮不自己实现上传：由父页面通过 pickImage 注入媒体库选择器，
- *    与本模块既有的封面选择共用同一个 MediaPicker。
+ * 与 V1 逐条对齐的能力：
+ *   - IR 即时渲染，存的是普通 Markdown（前台渲染管线完全不感知编辑器）
+ *   - 左侧文档大纲（Vditor 自带），跟随正文标题实时更新，点击跳转并高亮当前项
+ *   - 代码块：语言选择、语言标签、复制按钮
+ *   - 代码组：一次插入多个可切换的代码块，源码仍是普通 Markdown（见 markdownCodeGroup.js）
+ *   - 数学公式：$...$ / $$...$$，MathJax 排版；粘贴外部公式时做归一化
+ *   - 表格：自定义行列数的尺寸选择器（Vditor 自带按钮只会插固定 3x3）
+ *   - 图片：走媒体库选择器（由父页面注入 pickImage）
+ *   - 全屏
+ *
+ * 两个必须遵守的约束（V1 注释里写明的坑）：
+ *   1. 高度必须是**数值**，不能用 'auto'。用 auto 时 Vditor 的大纲点击会去滚动 window，
+ *      而控制台的可滚动容器是 `.admin-shell__content`，点了大纲不会有任何反应。
+ *   2. 全屏要切 `html.is-vditor-fullscreen`。侧栏 z-index 是 30，全屏的编辑器仍是它的
+ *      后代节点，不藏外壳就会被侧栏盖住。
+ *
+ * 懒加载：Vditor（含样式）与 MathJax 全部是动态 import / 运行时注入 script，
+ * 主包只多出「什么时候去加载」的几行代码。
  */
 const props = defineProps({
   modelValue: { type: String, default: '' },
   placeholder: { type: String, default: '' },
+  // 编辑器高度下限（像素）。真实高度取「窗口高度 - 280」，但不低于这个值和 640
   minHeight: { type: Number, default: 460 },
-  // () => Promise<{ url, name } | null>，为空时不显示图片按钮
+  // () => Promise<{ url, name } | null>；为空时图片按钮退化为插入占位语法
   pickImage: { type: Function, default: null },
 })
 
 const emit = defineEmits(['update:modelValue'])
 
-const wrapRef = ref(null)
-const textareaRef = ref(null)
-const caret = ref(0)
-const outlineVisible = ref(true)
-const fullscreen = ref(false)
+const host = ref(null)
+const loadingError = ref('')
+
+/* Vditor 实例。类型不上 TS，这里刻意保留为普通变量，JS 项目里加 JSDoc 类型反而更难维护 */
+let vditor = null
+/* 程序化写入（初始化 / 外部改值）期间不回发 update:modelValue，避免与 v-model 互相打环 */
+let suppressing = false
+let ready = false
+let fullscreenObserver = null
+let themeObserver = null
+let pasteHost = null
+
+/* ---------------------------------------------------------------
+   表格尺寸选择器（替换 Vditor 自带的固定 3x3 插入）
+   --------------------------------------------------------------- */
+const TABLE_MAX_COLS = 20
+const TABLE_MAX_ROWS = 50
 const tablePickerOpen = ref(false)
 const tableCols = ref(3)
 const tableRows = ref(3)
+const tablePickerRef = ref(null)
 
-const TABLE_MAX_COLS = 20
-const TABLE_MAX_ROWS = 50
+/* ---------------------------------------------------------------
+   代码组创建器 —— 产出的是可移植的普通 Markdown
+   --------------------------------------------------------------- */
+const codeGroupOpen = ref(false)
+const codeGroupError = ref('')
+const codeGroupBlocks = ref([])
 
-// ---------------------------------------------------------------------
-// 大纲
-// ---------------------------------------------------------------------
-
-/*
- * 从 Markdown 源文解析标题。
- * 逐行扫描而不是用全局正则：只有这样才能知道每个标题在源文里的字符偏移量，
- * 点击跳转与「当前章节」都依赖这个偏移量。
- * 围栏代码块（``` / ~~~）内的 # 是注释而不是标题，必须跳过。
- */
-function parseHeadings(markdown) {
-  const lines = String(markdown ?? '').split('\n')
-  const result = []
-  let offset = 0
-  let fence = ''
-  for (const line of lines) {
-    const trimmed = line.trim()
-    const fenceMatch = /^(```+|~~~+)/.exec(trimmed)
-    if (fenceMatch) {
-      if (!fence) fence = fenceMatch[1][0]
-      else if (fence === fenceMatch[1][0]) fence = ''
-    } else if (!fence) {
-      const match = /^(#{1,6})\s+(.+?)\s*#*\s*$/.exec(trimmed)
-      if (match) {
-        const indent = line.length - line.trimStart().length
-        result.push({ level: match[1].length, text: match[2], offset: offset + indent })
-      }
-    }
-    offset += line.length + 1
-  }
-  return result
+function newCodeGroupBlock(index) {
+  return { label: `方案 ${index}`, language: 'typescript', content: '' }
 }
 
-const headings = computed(() => parseHeadings(props.modelValue))
+function openCodeGroupCreator() {
+  codeGroupError.value = ''
+  codeGroupBlocks.value = [newCodeGroupBlock(1), newCodeGroupBlock(2)]
+  codeGroupOpen.value = true
+}
 
-const currentHeadingIndex = computed(() => {
-  const list = headings.value
-  let index = -1
-  for (let i = 0; i < list.length; i += 1) {
-    if (list[i].offset <= caret.value) index = i
-    else break
+function addCodeGroupBlock() {
+  codeGroupBlocks.value.push(newCodeGroupBlock(codeGroupBlocks.value.length + 1))
+}
+
+function removeCodeGroupBlock(index) {
+  /* 至少留一个：空代码组是非法输入，与其让用户删到 0 再报错，不如禁止删到 0 */
+  if (codeGroupBlocks.value.length <= 1) return
+  codeGroupBlocks.value.splice(index, 1)
+}
+
+function insertCodeGroup() {
+  const error = validateCodeGroupBlocks(codeGroupBlocks.value)
+  if (error) {
+    codeGroupError.value = error
+    return
   }
-  return index
+  vditor?.insertValue(`\n${createCodeGroupMarkdown(codeGroupBlocks.value)}\n`)
+  codeGroupOpen.value = false
+}
+
+function openTablePicker() {
+  tablePickerOpen.value = true
+}
+
+/* 点空白处关闭表格选择器（与 V2 原来的行为一致，避免弹层留在页面上挡住正文） */
+watch(tablePickerOpen, (open) => {
+  const onOutside = (event) => {
+    if (!tablePickerRef.value?.contains(event.target)) tablePickerOpen.value = false
+  }
+  if (open) document.addEventListener('pointerdown', onOutside)
+  else document.removeEventListener('pointerdown', onOutside)
 })
-
-function syncCaret() {
-  const textarea = textareaRef.value
-  if (textarea && document.activeElement === textarea) caret.value = textarea.selectionStart
-}
-
-function jumpToHeading(heading) {
-  const textarea = textareaRef.value
-  if (!textarea) return
-  textarea.focus()
-  textarea.setSelectionRange(heading.offset, heading.offset + heading.text.length)
-  caret.value = heading.offset
-}
-
-// ---------------------------------------------------------------------
-// 文本操作
-// ---------------------------------------------------------------------
-
-function currentText() {
-  return textareaRef.value ? textareaRef.value.value : (props.modelValue ?? '')
-}
-
-function notify(value) {
-  emit('update:modelValue', value)
-}
-
-/*
- * 用替换选区的方式写入文本。
- * selection 给出替换后要保留的选区（例如把光标放在 **粗体** 中间）。
- */
-function replaceRange(start, end, text, selection) {
-  const textarea = textareaRef.value
-  if (!textarea) return
-  textarea.focus()
-  textarea.setSelectionRange(start, end)
-  let inserted = false
-  if (typeof document.execCommand === 'function') {
-    try {
-      inserted = document.execCommand('insertText', false, text)
-    } catch {
-      inserted = false
-    }
-  }
-  if (!inserted) {
-    // 退路：直接改写 value 并手工广播，保证功能可用（代价是不进浏览器撤销栈）
-    const next = `${currentText().slice(0, start)}${text}${currentText().slice(end)}`
-    textarea.value = next
-    notify(next)
-  }
-  const [selStart, selEnd] = selection || [start + text.length, start + text.length]
-  nextTick(() => {
-    textarea.setSelectionRange(selStart, selEnd)
-    caret.value = selStart
-  })
-}
-
-// 行内包裹：加粗 / 斜体 / 删除线 / 行内代码 / 链接
-function wrapSelection(prefix, suffix, placeholder) {
-  const textarea = textareaRef.value
-  if (!textarea) return
-  const start = textarea.selectionStart
-  const end = textarea.selectionEnd
-  const selected = currentText().slice(start, end)
-  const inner = selected || placeholder
-  replaceRange(start, end, `${prefix}${inner}${suffix}`, [
-    start + prefix.length,
-    start + prefix.length + inner.length,
-  ])
-}
-
-// 行块包裹：引用 / 代码块 —— 选中多行时逐行处理
-function prefixLines(marker) {
-  const textarea = textareaRef.value
-  if (!textarea) return
-  const text = currentText()
-  const start = text.lastIndexOf('\n', Math.max(0, textarea.selectionStart - 1)) + 1
-  let end = text.indexOf('\n', textarea.selectionEnd)
-  if (end < 0) end = text.length
-  const block = text.slice(start, end)
-  const lines = block.split('\n')
-  const allMarked = lines.every((line) => line.trim() === '' || line.startsWith(marker))
-  const next = lines
-    .map((line) => {
-      if (allMarked) return line.startsWith(marker) ? line.slice(marker.length) : line
-      return line.trim() === '' ? line : `${marker}${line}`
-    })
-    .join('\n')
-  replaceRange(start, end, next, [start, start + next.length])
-}
-
-// 列表：无序 / 任务列表（同一前缀再次点击即取消，走 prefixLines 的开关语义）
-function orderedList() {
-  const textarea = textareaRef.value
-  if (!textarea) return
-  const text = currentText()
-  const start = text.lastIndexOf('\n', Math.max(0, textarea.selectionStart - 1)) + 1
-  let end = text.indexOf('\n', textarea.selectionEnd)
-  if (end < 0) end = text.length
-  const lines = text.slice(start, end).split('\n')
-  const numbered = lines.some((line) => /^\d+\.\s/.test(line))
-  let counter = 0
-  const next = lines
-    .map((line) => {
-      const stripped = line.replace(/^\d+\.\s/, '')
-      if (line.trim() === '') return line
-      if (numbered) return stripped
-      counter += 1
-      return `${counter}. ${stripped}`
-    })
-    .join('\n')
-  replaceRange(start, end, next, [start, start + next.length])
-}
-
-// 独立成块插入（分割线 / 表格 / 图片）：前后补空行，避免和相邻段落粘连
-function insertBlock(text) {
-  const textarea = textareaRef.value
-  if (!textarea) return
-  const value = currentText()
-  const start = textarea.selectionStart
-  const needLeading = start > 0 && value[start - 1] !== '\n'
-  const needTrailing = value[start] && value[start] !== '\n'
-  const payload = `${needLeading ? '\n' : ''}${text}${needTrailing ? '\n' : ''}`
-  replaceRange(start, textarea.selectionEnd, payload)
-}
 
 function insertTable() {
   const cols = Math.min(TABLE_MAX_COLS, Math.max(1, Math.round(tableCols.value) || 3))
@@ -217,108 +122,258 @@ function insertTable() {
   const separator = `|${Array.from({ length: cols }, () => cell('---')).join('|')}|`
   const body = Array.from({ length: rows }, () => `|${Array.from({ length: cols }, () => cell('')).join('|')}|`)
   tablePickerOpen.value = false
-  insertBlock([header, separator, ...body].join('\n'))
+  /* 与 V1 一致：表格不加前后换行。加换行会在「行内插入」时把当前段落切断 */
+  vditor?.insertValue([header, separator, ...body].join('\n'))
 }
 
-function insertLink() {
-  wrapSelection('[', '](https://)', '链接文字')
-}
-
+/* 图片：走父页面注入的媒体库选择器；没有注入时插入一段可手填的占位语法 */
 async function insertImage() {
   if (!props.pickImage) {
-    wrapSelection('![', '](https://)', '图片说明')
+    vditor?.insertValue('![图片说明](https://)')
     return
   }
   const asset = await props.pickImage()
   if (!asset?.url) return
-  insertBlock(`![${asset.name || '图片'}](${asset.url})`)
+  /* alt 里的方括号/换行会把 Markdown 图片语法拆坏，插入前先抹平 */
+  const alt = String(asset.name || '图片').replace(/[[\]\r\n]/g, ' ').trim() || '图片'
+  vditor?.insertValue(`![${alt}](${asset.url})`)
 }
 
-function historyStep(direction) {
-  const textarea = textareaRef.value
-  if (!textarea) return
-  textarea.focus()
-  if (typeof document.execCommand === 'function') document.execCommand(direction)
-  nextTick(syncCaret)
+/* ---------------------------------------------------------------
+   主题 / 全屏
+   --------------------------------------------------------------- */
+
+function isDarkTheme() {
+  return document.documentElement.dataset.theme === 'dark'
 }
 
-async function toggleFullscreen() {
-  const element = wrapRef.value
-  if (!element) return
+/*
+ * Vditor 的编辑器与内容主题是两个参数：编辑器（工具栏/边框）用 classic/dark，
+ * 正文排版用 light/dark。两者必须同时切，否则深色下会出现白底工具栏配深色代码块。
+ */
+function syncTheme() {
+  if (!vditor || !ready) return
+  const dark = isDarkTheme()
+  vditor.setTheme(dark ? 'dark' : 'classic', dark ? 'dark' : 'light')
+}
+
+function syncFullscreenFlag(element) {
+  setVditorFullscreenActive(element.classList.contains('vditor--fullscreen'))
+}
+
+/* Vditor 全屏只是给它自己加 class，没有事件回调，因此用 MutationObserver 盯 class */
+function watchFullscreen(element) {
+  fullscreenObserver?.disconnect()
+  syncFullscreenFlag(element)
+  fullscreenObserver = new MutationObserver(() => syncFullscreenFlag(element))
+  fullscreenObserver.observe(element, { attributes: true, attributeFilter: ['class'] })
+}
+
+/* 控制台的主题开关写的是 <html data-theme>，这里跟着它走，不额外引主题 store */
+function watchTheme() {
+  themeObserver?.disconnect()
+  themeObserver = new MutationObserver(syncTheme)
+  themeObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] })
+}
+
+/* ---------------------------------------------------------------
+   粘贴归一化：从网页 / 其它编辑器复制来的公式要能变成合法语法
+   --------------------------------------------------------------- */
+
+function onEditorPaste(event) {
+  const pasted = event.clipboardData?.getData('text/plain')
+  if (!pasted) return
+  const normalized = normalizePastedMath(pasted)
+  /* null 表示「不是公式」，原样交给 Vditor 的默认粘贴流程 */
+  if (normalized == null) return
+  event.preventDefault()
+  vditor?.insertValue(normalized)
+}
+
+/*
+ * 用捕获阶段监听：必须先于 Vditor 自己的 paste 处理拿到事件，
+ * 否则（WYSIWYG 模式下）它已经把内容落进 DOM 了，再 preventDefault 也来不及。
+ */
+function watchFormulaPaste(element) {
+  pasteHost?.removeEventListener('paste', onEditorPaste, true)
+  pasteHost = element
+  pasteHost.addEventListener('paste', onEditorPaste, true)
+}
+
+/* ---------------------------------------------------------------
+   工具栏
+   --------------------------------------------------------------- */
+
+/*
+ * 自定义按钮用**自包含的内联 SVG**，不引用 Vditor 的图标雪碧图：
+ * 雪碧图是 Vditor 按 options.icon 从 CDN 动态加载的，离线环境下会缺图标，
+ * 自定义按钮如果依赖它就会变成空白方块。
+ */
+const ICON_MATH = '<span aria-hidden="true" style="font:600 15px/1 var(--font-family);">∑</span>'
+const ICON_CODE_GROUP = '<span aria-hidden="true" style="font:600 12px/1 var(--font-family);">&lt;/&gt;</span>'
+const ICON_TABLE = '<svg viewBox="0 0 16 16" aria-hidden="true" style="width:16px;height:16px;"><rect x="1.6" y="2.6" width="12.8" height="10.8" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.6 6.2h12.8M1.6 9.8h12.8M6.2 2.6v10.8" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>'
+const ICON_IMAGE = '<svg viewBox="0 0 16 16" aria-hidden="true" style="width:16px;height:16px;"><rect x="1.6" y="3" width="12.8" height="10" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2.4 11.4 5.6 8.2l2.4 2.2 1.9-1.7 2.9 2.6" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="5.7" cy="5.9" r="1" fill="currentColor"/></svg>'
+
+function buildToolbar() {
+  return [
+    'undo',
+    'redo',
+    '|',
+    'headings',
+    'bold',
+    'italic',
+    'strike',
+    'code',
+    'inline-code',
+    {
+      name: 'math-formula',
+      icon: ICON_MATH,
+      tip: '插入数学公式',
+      click: () => vditor?.insertValue('\n$$\n\\frac{a}{b}\n$$\n'),
+    },
+    {
+      name: 'code-group',
+      icon: ICON_CODE_GROUP,
+      tip: '插入可切换代码组',
+      click: () => openCodeGroupCreator(),
+    },
+    '|',
+    'list',
+    'ordered-list',
+    'check',
+    'quote',
+    'line',
+    {
+      name: 'table-size',
+      icon: ICON_TABLE,
+      tip: '表格（自定义行列）',
+      click: () => openTablePicker(),
+    },
+    {
+      name: 'image-library',
+      icon: ICON_IMAGE,
+      tip: '插入图片（媒体库）',
+      click: () => { void insertImage() },
+    },
+    'link',
+    '|',
+    'edit-mode',
+    'outline',
+    'fullscreen',
+  ]
+}
+
+/* 工具栏按钮数量（'|' 是分隔符，不算按钮）：验收脚本读它确认工具栏没有被裁掉过 */
+const TOOLBAR_ITEM_COUNT = buildToolbar().filter((item) => item !== '|').length
+defineExpose({ TOOLBAR_ITEM_COUNT })
+
+/* ---------------------------------------------------------------
+   生命周期
+   --------------------------------------------------------------- */
+
+async function mountEditor() {
+  /* Vditor 与它的样式表都是动态加载：~1MB 的库不进主包，只有打开编辑器页才下载 */
+  const { default: Vditor } = await import('vditor')
+  await import('vditor/dist/index.css')
   try {
-    if (!document.fullscreenElement) await element.requestFullscreen()
-    else await document.exitFullscreen()
+    /* MathJax 也要先就绪：Vditor 认 protyleMathJaxScript 这个 id，就不再自己去请求 CDN */
+    await prepareMathJax()
   } catch {
-    // 浏览器拒绝（iframe 限制等）时保持原状，不弹错误打断写作
+    /*
+     * V1 的取舍：公式资源加载不了就不开编辑器，并明确告诉作者正文没有被修改。
+     * 这里保留同样的取舍 —— 一个「公式位置全是原始 TeX」的编辑器比打不开更容易让人误存。
+     */
+    loadingError.value = '公式资源加载失败，编辑器未启动。请刷新页面重试；未保存的正文不会因此被修改。'
+    return
   }
+  if (!host.value) return
+
+  /* 数值高度：见文件头约束 1 */
+  const editorHeight = Math.max(resolveVditorEditorHeight(window.innerHeight), props.minHeight || 0)
+
+  vditor = new Vditor(host.value, {
+    mode: 'ir',
+    value: props.modelValue ?? '',
+    placeholder: props.placeholder ?? '',
+    height: editorHeight,
+    lang: 'zh_CN',
+    theme: isDarkTheme() ? 'dark' : 'classic',
+    /*
+     * sanitize: true 是编辑器侧的 XSS 闸门。
+     * Vditor 的 IMarkdownConfig 没有 html 开关，无法像 markdown-it 那样直接关掉原生 HTML，
+     * 因此编辑器预览里的原生 HTML 靠这里过滤（前台渲染则连解析都不做，见 support/markdown.js）。
+     */
+    preview: {
+      math: { engine: 'MathJax', inlineDigit: true },
+      markdown: { sanitize: true, mathBlockPreview: true },
+    },
+    /* 不用 Vditor 的本地草稿缓存：正文的唯一真源是后端的 bodyMarkdown */
+    cache: { enable: false },
+    counter: { enable: false },
+    fullscreen: { index: 10000 },
+    /* 左侧文档大纲（V1 的「像阅读页目录一样」） */
+    outline: { enable: true, position: 'left' },
+    toolbar: buildToolbar(),
+    input: (value) => {
+      if (!suppressing) emit('update:modelValue', value)
+    },
+    after: () => {
+      ready = true
+      /* 初始化期间 Vditor 可能规范化过正文（例如补上结尾换行），以组件收到的值为准再对齐一次 */
+      if (vditor && vditor.getValue() !== props.modelValue) {
+        suppressing = true
+        vditor.setValue(props.modelValue ?? '')
+        suppressing = false
+      }
+      syncTheme()
+      if (host.value) {
+        watchFullscreen(host.value)
+        watchFormulaPaste(host.value)
+      }
+    },
+  })
 }
 
-function onFullscreenChange() {
-  fullscreen.value = document.fullscreenElement === wrapRef.value
-}
+onMounted(() => {
+  watchTheme()
+  void mountEditor()
+})
 
-onMounted(() => document.addEventListener('fullscreenchange', onFullscreenChange))
-onBeforeUnmount(() => document.removeEventListener('fullscreenchange', onFullscreenChange))
+/* 外部改值（加载文章、切换文章）→ 写回编辑器，写回期间不回发事件 */
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (!vditor || !ready) return
+    const current = vditor.getValue()
+    if (value !== current) {
+      suppressing = true
+      vditor.setValue(value ?? '')
+      suppressing = false
+    }
+  },
+)
 
-function onInput(event) {
-  caret.value = event.target.selectionStart ?? 0
-  notify(event.target.value)
-}
+onBeforeUnmount(() => {
+  ready = false
+  fullscreenObserver?.disconnect()
+  fullscreenObserver = null
+  themeObserver?.disconnect()
+  themeObserver = null
+  pasteHost?.removeEventListener('paste', onEditorPaste, true)
+  pasteHost = null
+  setVditorFullscreenActive(false)
+  vditor?.destroy()
+  vditor = null
+})
 
-function closeTablePicker(event) {
-  if (!tablePickerOpen.value) return
-  if (!wrapRef.value?.contains(event.target)) tablePickerOpen.value = false
-}
-
-document.addEventListener('pointerdown', closeTablePicker)
-onBeforeUnmount(() => document.removeEventListener('pointerdown', closeTablePicker))
-
-// ---------------------------------------------------------------------
-// 工具栏定义（图标为内联 SVG，颜色跟随 currentColor）
-// ---------------------------------------------------------------------
-
-const ICONS = {
-  undo: '<path d="M6 5 3 8l3 3"/><path d="M3 8h6.5a3.5 3.5 0 1 1 0 7H6"/>',
-  redo: '<path d="M10 5l3 3-3 3"/><path d="M13 8H6.5a3.5 3.5 0 1 0 0 7H10"/>',
-  bold: '<path d="M5 3h3.8a2.4 2.4 0 0 1 0 4.8H5z"/><path d="M5 7.8h4.4a2.6 2.6 0 0 1 0 5.2H5z"/>',
-  italic: '<path d="M6.5 3h5"/><path d="M4.5 13h5"/><path d="M9.5 3 6.5 13"/>',
-  strike: '<path d="M3 8h10"/><path d="M5.5 5.6C5.9 4.3 6.9 3.5 8.4 3.5c1.5 0 2.4.7 2.6 1.9"/><path d="M10.6 10.4c-.4 1.3-1.4 2.1-2.9 2.1-1.5 0-2.4-.7-2.6-1.9"/>',
-  quote: '<path d="M3.5 4v8"/><path d="M6.5 6h6.5"/><path d="M6.5 10h4.5"/>',
-  code: '<path d="M6 5 3 8l3 3"/><path d="M10 5l3 3-3 3"/>',
-  link: '<path d="M6.8 9.2 9.2 6.8"/><path d="M7.6 4.6 9 3.2a2.6 2.6 0 0 1 3.7 3.7l-1.4 1.4"/><path d="M8.4 11.4 7 12.8a2.6 2.6 0 0 1-3.7-3.7l1.4-1.4"/>',
-  list: '<path d="M6 4.5h7"/><path d="M6 8h7"/><path d="M6 11.5h7"/><circle cx="3.4" cy="4.5" r=".9"/><circle cx="3.4" cy="8" r=".9"/><circle cx="3.4" cy="11.5" r=".9"/>',
-  ordered: '<path d="M6.5 4.5H13"/><path d="M6.5 8H13"/><path d="M6.5 11.5H13"/><path d="M3 3.2l1-.7v3.1"/><path d="M2.7 7.4c.2-.5.7-.8 1.2-.7.6.1.9.7.6 1.2L2.8 11h2"/>',
-  task: '<rect x="2.4" y="2.6" width="11.2" height="10.8" rx="2"/><path d="M5.4 8.2l1.6 1.6 3.4-3.6"/>',
-  divider: '<path d="M2.5 8h11"/>',
-  image: '<rect x="2.4" y="3.4" width="11.2" height="9.2" rx="2"/><path d="M2.8 10.6 6 7.6l2.4 2.2 2-1.8 2.8 2.6"/><circle cx="6" cy="6" r="1"/>',
-  table: '<rect x="2.4" y="3" width="11.2" height="10" rx="1.6"/><path d="M2.4 6.4h11.2"/><path d="M2.4 9.8h11.2"/><path d="M6.6 3v10"/><path d="M9.8 3v10"/>',
-  outline: '<path d="M3 4h2"/><path d="M7 4h6"/><path d="M5 8h2"/><path d="M9 8h4"/><path d="M7 12h2"/><path d="M11 12h2"/>',
-  fullscreen: '<path d="M6 2.6H2.6V6"/><path d="M10 2.6h3.4V6"/><path d="M6 13.4H2.6V10"/><path d="M10 13.4h3.4V10"/>',
-}
-
-const tools = computed(() => [
-  { key: 'undo', label: '撤销', run: () => historyStep('undo') },
-  { key: 'redo', label: '重做', run: () => historyStep('redo') },
-  { divider: true },
-  { key: 'bold', label: '加粗', run: () => wrapSelection('**', '**', '粗体文字') },
-  { key: 'italic', label: '斜体', run: () => wrapSelection('*', '*', '斜体文字') },
-  { key: 'strike', label: '删除线', run: () => wrapSelection('~~', '~~', '删除线文字') },
-  { key: 'quote', label: '引用', run: () => prefixLines('> ') },
-  { key: 'code', label: '行内代码', run: () => wrapSelection('`', '`', 'code') },
-  { key: 'link', label: '链接', run: insertLink },
-  { divider: true },
-  { key: 'list', label: '无序列表', run: () => prefixLines('- ') },
-  { key: 'ordered', label: '有序列表', run: orderedList },
-  { key: 'task', label: '任务列表', run: () => prefixLines('- [ ] ') },
-  { key: 'divider', label: '分割线', run: () => insertBlock('---') },
-  { key: 'image', label: '图片', run: insertImage },
-  { key: 'table', label: '表格', run: () => { tablePickerOpen.value = !tablePickerOpen.value } },
-])
-
+/* ---------------------------------------------------------------
+   底部字数统计（V2 既有能力，保留）
+   标题数不在这里算：左侧大纲就是标题清单，再解析一遍正文只会多出一份会漂移的实现。
+   --------------------------------------------------------------- */
 const wordCount = computed(() => {
   const text = String(props.modelValue ?? '').trim()
   if (!text) return 0
-  // 中日韩字符按字计，其余按空白分词计 —— 与前台阅读页的字数口径一致
+  /* 中日韩字符按字计，其余按空白分词计 —— 与前台阅读页的字数口径一致 */
   const cjk = (text.match(/[\u4e00-\u9fff\u3400-\u4dbf]/g) || []).length
   const words = (text.replace(/[\u4e00-\u9fff\u3400-\u4dbf]/g, ' ').match(/[A-Za-z0-9_'-]+/g) || []).length
   return cjk + words
@@ -328,98 +383,252 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
 </script>
 
 <template>
-  <div ref="wrapRef" class="markdown-editor" :class="{ 'markdown-editor--no-outline': !outlineVisible }">
-    <aside v-if="outlineVisible" class="markdown-editor__outline" aria-label="正文大纲">
-      <p class="markdown-editor__outline-head">大纲</p>
-      <template v-if="headings.length">
-        <button
-          v-for="(heading, index) in headings"
-          :key="`${heading.offset}-${heading.text}`"
-          type="button"
-          class="markdown-editor__outline-item"
-          :class="{ 'is-current': index === currentHeadingIndex }"
-          :style="{ paddingLeft: `${8 + (heading.level - 1) * 12}px` }"
-          :title="`H${heading.level} ${heading.text}`"
-          @click="jumpToHeading(heading)"
-        >{{ heading.text }}</button>
-      </template>
-      <p v-else class="markdown-editor__outline-empty">正文里还没有 H1–H6 标题。<br />用 ## 二级标题开始分节。</p>
-    </aside>
+  <div class="markdown-editor">
+    <div ref="host" class="markdown-editor__host" />
+    <p v-if="loadingError" class="markdown-editor__error" role="alert">{{ loadingError }}</p>
 
-    <div class="markdown-editor__main">
-      <div class="markdown-editor__toolbar" role="toolbar" aria-label="Markdown 工具栏">
-        <template v-for="(tool, index) in tools" :key="tool.key || `divider-${index}`">
-          <span v-if="tool.divider" class="markdown-editor__divider" />
-          <button
-            v-else
-            type="button"
-            class="markdown-editor__tool"
-            :class="{ 'is-active': tool.key === 'table' && tablePickerOpen }"
-            :title="tool.label"
-            :aria-label="tool.label"
-            @click="tool.run()"
-          >
-            <svg viewBox="0 0 16 16" aria-hidden="true" v-html="ICONS[tool.key]" />
-          </button>
-        </template>
-
-        <span class="markdown-editor__toolbar-spacer" />
-
-        <button
-          type="button"
-          class="markdown-editor__tool"
-          :class="{ 'is-active': outlineVisible }"
-          title="显示 / 隐藏大纲"
-          aria-label="显示或隐藏大纲"
-          @click="outlineVisible = !outlineVisible"
-        >
-          <svg viewBox="0 0 16 16" aria-hidden="true" v-html="ICONS.outline" />
-        </button>
-        <button
-          type="button"
-          class="markdown-editor__tool"
-          :class="{ 'is-active': fullscreen }"
-          :title="fullscreen ? '退出全屏' : '全屏编辑'"
-          aria-label="全屏编辑"
-          @click="toggleFullscreen()"
-        >
-          <svg viewBox="0 0 16 16" aria-hidden="true" v-html="ICONS.fullscreen" />
-        </button>
-      </div>
-
-      <textarea
-        ref="textareaRef"
-        class="markdown-editor__textarea"
-        :value="modelValue"
-        :placeholder="placeholder"
-        :style="{ minHeight: `${minHeight}px` }"
-        spellcheck="false"
-        aria-label="Markdown 正文"
-        @input="onInput"
-        @keyup="syncCaret"
-        @mouseup="syncCaret"
-        @select="syncCaret"
-        @click="syncCaret"
-      />
-
-      <div class="markdown-editor__footer">
-        <span>{{ wordCount }} 字</span>
-        <span>{{ lineCount }} 行</span>
-        <span>{{ headings.length }} 个标题</span>
-        <span v-if="currentHeadingIndex >= 0">当前：{{ headings[currentHeadingIndex].text }}</span>
-      </div>
-    </div>
-
-    <div v-if="tablePickerOpen" class="markdown-editor__table-popover">
-      <label class="markdown-editor__table-field">
+    <div v-if="tablePickerOpen" ref="tablePickerRef" class="markdown-editor__popover">
+      <label class="markdown-editor__popover-field">
         <span>列数</span>
         <input v-model.number="tableCols" type="number" min="1" :max="TABLE_MAX_COLS" @keydown.enter.prevent="insertTable()" />
       </label>
-      <label class="markdown-editor__table-field">
+      <label class="markdown-editor__popover-field">
         <span>行数（数据行）</span>
         <input v-model.number="tableRows" type="number" min="1" :max="TABLE_MAX_ROWS" @keydown.enter.prevent="insertTable()" />
       </label>
       <button type="button" class="primary-button" @click="insertTable()">插入</button>
     </div>
+
+    <div v-if="codeGroupOpen" class="markdown-editor__dialog-backdrop" @click.self="codeGroupOpen = false">
+      <section class="markdown-editor__dialog" role="dialog" aria-modal="true" aria-labelledby="code-group-title">
+        <header>
+          <div>
+            <h2 id="code-group-title">创建代码组</h2>
+            <p>名称会成为前台切换标签；可添加任意数量的代码块，源码仍是普通 Markdown。</p>
+          </div>
+          <button type="button" class="markdown-editor__dialog-close" aria-label="关闭" @click="codeGroupOpen = false">×</button>
+        </header>
+
+        <p v-if="codeGroupError" class="error" role="alert">{{ codeGroupError }}</p>
+
+        <div class="markdown-editor__code-list">
+          <article v-for="(block, index) in codeGroupBlocks" :key="index" class="markdown-editor__code-row">
+            <div class="markdown-editor__code-row-head">
+              <strong>代码块 {{ index + 1 }}</strong>
+              <button type="button" :disabled="codeGroupBlocks.length === 1" @click="removeCodeGroupBlock(index)">移除</button>
+            </div>
+            <label><span>显示名称</span><input v-model="block.label" maxlength="80" placeholder="例如：迭代写法" /></label>
+            <label><span>语言</span><input v-model="block.language" maxlength="32" placeholder="例如：typescript" /></label>
+            <label><span>代码</span><textarea v-model="block.content" rows="5" spellcheck="false" /></label>
+          </article>
+        </div>
+
+        <footer>
+          <button type="button" class="markdown-editor__dialog-secondary" @click="addCodeGroupBlock()">添加代码块</button>
+          <span class="markdown-editor__dialog-spacer" />
+          <button type="button" class="markdown-editor__dialog-secondary" @click="codeGroupOpen = false">取消</button>
+          <button type="button" class="primary-button" @click="insertCodeGroup()">插入代码组</button>
+        </footer>
+      </section>
+    </div>
+
+    <div v-if="!loadingError" class="markdown-editor__footer">
+      <span>{{ wordCount }} 字</span>
+      <span>{{ lineCount }} 行</span>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.markdown-editor {
+  position: relative;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+
+/*
+ * 数值高度由 Vditor 自己持有，滚动条归它内部的模式元素（.vditor-ir / .vditor-wysiwyg / .vditor-sv）。
+ * 因此外层不能加 overflow-y —— 否则大纲点击设置的 scrollTop 会落在一个不滚动的元素上。
+ */
+.markdown-editor__host :deep(.vditor-content) {
+  overflow: hidden;
+}
+
+.markdown-editor__host :deep(.vditor-ir),
+.markdown-editor__host :deep(.vditor-wysiwyg),
+.markdown-editor__host :deep(.vditor-sv) {
+  overflow-y: auto;
+}
+
+.markdown-editor__error {
+  padding: var(--space-3) var(--space-4);
+  color: var(--danger);
+  font-size: 13px;
+}
+
+.markdown-editor__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 12px;
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+/* --- 表格尺寸选择器（替换 Vditor 的固定 3x3） --- */
+.markdown-editor__popover {
+  position: absolute;
+  top: 44px;
+  left: 8px;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 0.14);
+  white-space: nowrap;
+}
+
+.markdown-editor__popover-field {
+  display: grid;
+  gap: 2px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.markdown-editor__popover-field input {
+  width: 64px;
+  min-height: 26px;
+  padding-inline: var(--space-2);
+  border-radius: 4px;
+  background: var(--bg-page);
+  font-size: 13px;
+}
+
+/* --- 代码组创建器 --- */
+.markdown-editor__dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  /* 必须高于 Vditor 全屏的 10000：全屏状态下也要能弹出创建器 */
+  z-index: 10020;
+  display: grid;
+  place-items: center;
+  padding: var(--space-4);
+  background: rgb(0 0 0 / 0.42);
+}
+
+.markdown-editor__dialog {
+  display: flex;
+  flex-direction: column;
+  width: min(760px, 100%);
+  max-height: min(800px, calc(100vh - 32px));
+  padding: var(--space-5);
+  overflow: hidden;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  box-shadow: 0 20px 48px rgb(0 0 0 / 0.28);
+}
+
+.markdown-editor__dialog header,
+.markdown-editor__code-row-head,
+.markdown-editor__dialog footer {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.markdown-editor__dialog header { justify-content: space-between; }
+.markdown-editor__dialog h2 { margin: 0; font-size: 18px; }
+.markdown-editor__dialog header p { margin: 4px 0 0; color: var(--text-muted); font-size: 13px; }
+
+.markdown-editor__dialog-close {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.markdown-editor__code-list {
+  display: grid;
+  gap: var(--space-3);
+  margin: var(--space-4) 0;
+  overflow-y: auto;
+}
+
+.markdown-editor__code-row {
+  display: grid;
+  grid-template-columns: 1fr 150px;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+}
+
+.markdown-editor__code-row-head { grid-column: 1 / -1; justify-content: space-between; }
+
+.markdown-editor__code-row-head button,
+.markdown-editor__dialog-secondary {
+  padding: 6px 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.markdown-editor__code-row-head button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.markdown-editor__code-row label {
+  display: grid;
+  gap: 4px;
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+/* 代码输入框横跨整行：代码要宽，名称与语言各占一列即可 */
+.markdown-editor__code-row label:last-child { grid-column: 1 / -1; }
+
+.markdown-editor__code-row input,
+.markdown-editor__code-row textarea {
+  width: 100%;
+  box-sizing: border-box;
+  padding: var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-page);
+  color: var(--text-primary);
+  font: 13px / 1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+.markdown-editor__code-row textarea { resize: vertical; }
+
+.markdown-editor__dialog footer { justify-content: flex-end; }
+.markdown-editor__dialog-spacer { flex: 1; }
+
+/* 窄屏：工具栏横向滚动（不换行，避免吃掉正文高度），大纲收起 */
+@media (max-width: 720px) {
+  .markdown-editor__host :deep(.vditor-toolbar) {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    justify-content: flex-start;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: thin;
+    padding-left: 0 !important;
+  }
+
+  .markdown-editor__host :deep(.vditor-toolbar__item) { flex: 0 0 auto; }
+  .markdown-editor__host :deep(.vditor-outline) { display: none !important; }
+  .markdown-editor__code-row { grid-template-columns: 1fr; }
+}
+</style>
