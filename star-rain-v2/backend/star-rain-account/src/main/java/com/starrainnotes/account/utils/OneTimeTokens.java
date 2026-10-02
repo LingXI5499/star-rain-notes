@@ -1,4 +1,4 @@
-package com.starrainnotes.account.support;
+package com.starrainnotes.account.utils;
 
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;

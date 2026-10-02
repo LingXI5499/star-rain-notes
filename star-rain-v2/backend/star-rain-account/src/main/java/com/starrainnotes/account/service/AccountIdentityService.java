@@ -6,8 +6,8 @@ import com.starrainnotes.account.api.AccountReferenceApi;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.account.api.PermissionQueryApi;
 import com.starrainnotes.account.mapper.AccountMapper;
-import com.starrainnotes.account.security.AccountPrincipal;
-import com.starrainnotes.common.ApiException;
+import com.starrainnotes.account.context.AccountPrincipal;
+import com.starrainnotes.common.exception.ApiException;
 import java.util.Optional;
 import java.util.Set;
 import org.springframework.security.core.Authentication;
@@ -34,7 +34,7 @@ public class AccountIdentityService implements CurrentActorApi, AccountReference
 
     @Transactional(readOnly = true)
     public CurrentAccountVO currentView() {
-        return view(principal().accountId());
+        return view(principal().getAccountId());
     }
 
     @Transactional(readOnly = true)
@@ -51,15 +51,15 @@ public class AccountIdentityService implements CurrentActorApi, AccountReference
     @Override
     public CurrentActor current() {
         AccountPrincipal principal = principal();
-        return new CurrentActor(principal.accountId(), principal.roles(), principal.permissions());
+        return new CurrentActor(principal.getAccountId(), principal.getRoles(), principal.getPermissions());
     }
 
     @Override
     public Optional<CurrentActor> currentOptional() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof AccountPrincipal principal) {
-            return Optional.of(new CurrentActor(principal.accountId(), principal.roles(),
-                    principal.permissions()));
+            return Optional.of(new CurrentActor(principal.getAccountId(), principal.getRoles(),
+                    principal.getPermissions()));
         }
         return Optional.empty();
     }

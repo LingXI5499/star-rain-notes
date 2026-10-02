@@ -1,8 +1,8 @@
 package com.starrainnotes.account.service;
 
 import com.starrainnotes.account.entity.AccountEntity;
-import com.starrainnotes.account.support.AccountRules;
-import com.starrainnotes.account.support.OneTimeTokens;
+import com.starrainnotes.account.utils.AccountRules;
+import com.starrainnotes.account.utils.OneTimeTokens;
 import com.starrainnotes.account.entity.RoleEntity;
 import com.starrainnotes.account.entity.AdminInvitationEntity;
 import com.starrainnotes.account.entity.AccountAuditEntity;
@@ -14,8 +14,8 @@ import com.starrainnotes.account.vo.AccountAuditVO;
 import com.starrainnotes.account.vo.AdminInvitationVO;
 import com.starrainnotes.account.vo.InvitationRecordVO;
 import com.starrainnotes.account.mapper.AccountMapper;
-import com.starrainnotes.common.ApiException;
-import com.starrainnotes.common.PageResult;
+import com.starrainnotes.common.exception.ApiException;
+import com.starrainnotes.common.result.PageResult;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
@@ -60,30 +60,30 @@ public class AdminAccountService {
     @Transactional
     public void changeStatus(String targetId, AccountStatusDTO request) {
         long id = AccountRules.id(targetId);
-        if (!Set.of("ACTIVE", "DISABLED").contains(request.status())) {
+        if (!Set.of("ACTIVE", "DISABLED").contains(request.getStatus())) {
             throw new ApiException("INVALID_STATUS", "账户状态无效", 400);
         }
         mapper.lockSuperAdminRole();
         AccountEntity target = requireAccountForUpdate(id);
-        if (target.getStatus().equals(request.status())) {
+        if (target.getStatus().equals(request.getStatus())) {
             return;
         }
-        if ("DISABLED".equals(request.status())
+        if ("DISABLED".equals(request.getStatus())
                 && mapper.roleCodes(id).contains("SUPER_ADMIN")
                 && mapper.activeSuperAdminCount() <= 1) {
             throw new ApiException("LAST_SUPER_ADMIN_PROTECTED", "不能停用最后一位超级管理员", 409);
         }
-        mapper.updateStatus(id, request.status());
-        if ("DISABLED".equals(request.status())) {
+        mapper.updateStatus(id, request.getStatus());
+        if ("DISABLED".equals(request.getStatus())) {
             mapper.revokePendingInvitations(id);
         }
-        audit.success(identity.principal().accountId(), id,
-                "ACTIVE".equals(request.status()) ? "ACCOUNT_ENABLED" : "ACCOUNT_DISABLED");
+        audit.success(identity.principal().getAccountId(), id,
+                "ACTIVE".equals(request.getStatus()) ? "ACCOUNT_ENABLED" : "ACCOUNT_DISABLED");
     }
 
     @Transactional
     public AdminInvitationVO createInvitation(CreateAdminInvitationDTO request) {
-        long targetId = AccountRules.id(request.targetAccountId());
+        long targetId = AccountRules.id(request.getTargetAccountId());
         AccountEntity target = requireAccountForUpdate(targetId);
         if (!"ACTIVE".equals(target.getStatus())) {
             throw new ApiException("ACCOUNT_DISABLED", "目标账户不可用", 409);
@@ -102,7 +102,7 @@ public class AdminAccountService {
         invitation.setTargetRoleCode("ADMIN");
         invitation.setTokenHash(OneTimeTokens.hash(token));
         invitation.setStatus("PENDING");
-        invitation.setInvitedBy(identity.principal().accountId());
+        invitation.setInvitedBy(identity.principal().getAccountId());
         invitation.setExpiresAt(LocalDateTime.now(ZoneOffset.UTC).plusHours(48));
         mapper.insertInvitation(invitation);
         deliverInvitation(invitation, token);
@@ -113,19 +113,19 @@ public class AdminAccountService {
 
     @Transactional
     public void acceptInvitation(AcceptAdminInvitationDTO request) {
-        long actorId = identity.principal().accountId();
-        AdminInvitationEntity reference = mapper.invitationByHash(OneTimeTokens.hash(request.token()));
+        long actorId = identity.principal().getAccountId();
+        AdminInvitationEntity reference = mapper.invitationByHash(OneTimeTokens.hash(request.getToken()));
         if (reference == null) {
             throw new ApiException("INVALID_ADMIN_INVITATION", "邀请链接无效", 400);
         }
         requireAccountForUpdate(reference.getTargetAccountId());
-        AdminInvitationEntity invitation = mapper.invitationByHashForUpdate(OneTimeTokens.hash(request.token()));
+        AdminInvitationEntity invitation = mapper.invitationByHashForUpdate(OneTimeTokens.hash(request.getToken()));
         accept(invitation, actorId);
     }
 
     @Transactional
     public void acceptInvitationById(String invitationId) {
-        long actorId = identity.principal().accountId();
+        long actorId = identity.principal().getAccountId();
         requireAccountForUpdate(actorId);
         AdminInvitationEntity invitation = mapper.invitationByIdForUpdate(AccountRules.id(invitationId));
         accept(invitation, actorId);
@@ -173,7 +173,7 @@ public class AdminAccountService {
 
     @Transactional(readOnly = true)
     public List<InvitationRecordVO> myInvitations() {
-        return mapper.pendingInvitationsForAccount(identity.principal().accountId()).stream()
+        return mapper.pendingInvitationsForAccount(identity.principal().getAccountId()).stream()
                 .map(this::invitationView).toList();
     }
 
@@ -194,14 +194,14 @@ public class AdminAccountService {
         if (previous.plusMinutes(1).isAfter(now)) {
             throw new ApiException("INVITATION_SEND_COOLDOWN", "请等待 60 秒后再重发", 429);
         }
-        if (mapper.pendingInvitationCount(target.getId()) > 0 && !"PENDING".equals(invitationView(invitation).status())) {
+        if (mapper.pendingInvitationCount(target.getId()) > 0 && !"PENDING".equals(invitationView(invitation).getStatus())) {
             throw new ApiException("ADMIN_INVITATION_EXISTS", "该账户已有另一条待处理邀请，请处理最新邀请", 409);
         }
         String token = OneTimeTokens.create();
         invitation.setTokenHash(OneTimeTokens.hash(token));
         invitation.setExpiresAt(now.plusHours(48));
         deliverInvitation(invitation, token);
-        audit.success(identity.principal().accountId(), target.getId(), "ADMIN_INVITATION_RESENT");
+        audit.success(identity.principal().getAccountId(), target.getId(), "ADMIN_INVITATION_RESENT");
         return new AdminInvitationVO(String.valueOf(invitation.getId()), String.valueOf(target.getId()),
                 invitation.getExpiresAt(), mail.invitationUrl(token), target.getEmail(), "SUBMITTED");
     }
@@ -213,7 +213,7 @@ public class AdminAccountService {
             throw new ApiException("ADMIN_INVITATION_USED", "此邀请已经处理", 409);
         }
         mapper.revokeInvitation(invitation.getId());
-        audit.success(identity.principal().accountId(), invitation.getTargetAccountId(), "ADMIN_INVITATION_REVOKED");
+        audit.success(identity.principal().getAccountId(), invitation.getTargetAccountId(), "ADMIN_INVITATION_REVOKED");
     }
 
     @Transactional
@@ -231,7 +231,7 @@ public class AdminAccountService {
         mapper.deleteAccountRole(id, mapper.roleByCode("ADMIN").getId());
         mapper.revokePendingInvitations(id);
         mapper.incrementAuthVersion(id);
-        audit.success(identity.principal().accountId(), id, "ADMIN_ROLE_REVOKED");
+        audit.success(identity.principal().getAccountId(), id, "ADMIN_ROLE_REVOKED");
     }
 
     private AdminInvitationEntity lockedInvitation(String invitationId) {

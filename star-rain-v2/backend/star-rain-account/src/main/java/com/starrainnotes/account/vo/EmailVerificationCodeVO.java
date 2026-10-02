@@ -1,4 +1,17 @@
 package com.starrainnotes.account.vo;
 
-public record EmailVerificationCodeVO(int expiresInSeconds, int resendAfterSeconds, boolean existingAccount) {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class EmailVerificationCodeVO {
+
+    private int expiresInSeconds;
+    private int resendAfterSeconds;
+    private boolean existingAccount;
 }
