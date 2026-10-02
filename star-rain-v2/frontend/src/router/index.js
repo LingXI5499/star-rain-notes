@@ -5,7 +5,16 @@ import AccountPage from '../modules/account/pages/AccountPage.vue'
 import AdminAccountsPage from '../modules/account/pages/AdminAccountsPage.vue'
 import AdminInvitationsPage from '../modules/account/pages/AdminInvitationsPage.vue'
 import AccountAuditsPage from '../modules/account/pages/AccountAuditsPage.vue'
+import MediaLibraryPage from '../modules/media/pages/MediaLibraryPage.vue'
+import MediaDetailPage from '../modules/media/pages/MediaDetailPage.vue'
 
+/*
+ * 路由表。
+ *
+ * meta.permission      —— 只要求「具备该权限」，ADMIN 与 SUPER_ADMIN 都可通过
+ * meta.superAdminOnly  —— 账户治理类页面，必须是 SUPER_ADMIN
+ * 两者分开是因为 media:* 权限同时授予了 ADMIN，而 account 治理权限只属于 SUPER_ADMIN。
+ */
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -18,12 +27,16 @@ const router = createRouter({
       meta: { authPage: true, requiresAuth: true } },
     { path: '/account', component: AccountPage, meta: { requiresAuth: true } },
     { path: '/admin/accounts', component: AdminAccountsPage,
-      meta: { requiresAuth: true, permission: 'account:read' } },
+      meta: { requiresAuth: true, permission: 'account:read', superAdminOnly: true } },
     { path: '/admin/permissions', redirect: '/admin/accounts' },
     { path: '/admin/invitations', component: AdminInvitationsPage,
-      meta: { requiresAuth: true, permission: 'account:invite-admin' } },
+      meta: { requiresAuth: true, permission: 'account:invite-admin', superAdminOnly: true } },
     { path: '/admin/audits', component: AccountAuditsPage,
-      meta: { requiresAuth: true, permission: 'account:audit-read' } },
+      meta: { requiresAuth: true, permission: 'account:audit-read', superAdminOnly: true } },
+    { path: '/admin/media', component: MediaLibraryPage,
+      meta: { requiresAuth: true, permission: 'media:read' } },
+    { path: '/admin/media/:mediaAssetId', component: MediaDetailPage,
+      meta: { requiresAuth: true, permission: 'media:read' } },
     { path: '/:pathMatch(.*)*', redirect: '/account' },
   ],
 })
@@ -36,10 +49,12 @@ router.beforeEach(async (to) => {
   if (to.meta.requiresAuth && !auth.currentUser) {
     return { path: '/login', query: { redirect: to.fullPath } }
   }
-  if (to.meta.permission && !auth.canManage(to.meta.permission)) {
-    return { path: '/account' }
+  if (to.meta.permission) {
+    const allowed = to.meta.superAdminOnly
+      ? auth.canManage(to.meta.permission)
+      : auth.hasPermission(to.meta.permission)
+    if (!allowed) return { path: '/account' }
   }
 })
 
 export default router
-

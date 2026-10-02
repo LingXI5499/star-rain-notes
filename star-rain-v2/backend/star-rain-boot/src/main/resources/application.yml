@@ -14,6 +14,13 @@ spring:
       connection-init-sql: "SET time_zone = '+00:00'"
   flyway:
     enabled: true
+  servlet:
+    multipart:
+      # 硬上限，兜住异常请求。各类型的精确上限由 star-rain.media.upload 决定，
+      # 正常超限会先被 MediaUploadValidator 以 MEDIA_FILE_TOO_LARGE 拒绝。
+      # 视频放在最宽的一档，因此这里必须不小于 max-video-bytes。
+      max-file-size: 512MB
+      max-request-size: 520MB
   mail:
     host: ${STAR_RAIN_SMTP_HOST:localhost}
     port: ${STAR_RAIN_SMTP_PORT:25}
@@ -36,6 +43,24 @@ star-rain:
     smtp-enabled: ${STAR_RAIN_SMTP_ENABLED:false}
     mail-from: ${STAR_RAIN_MAIL_FROM:}
     frontend-origin: ${STAR_RAIN_FRONTEND_ORIGIN:http://127.0.0.1:5174}
+  media:
+    # 本地存储根目录：与 star-rain-v2/frontend、star-rain-v2/backend 同级（backend 的工作目录是 backend/）。
+    storage-root: ${STAR_RAIN_MEDIA_ROOT:../media}
+    storage-provider: LOCAL
+    upload:
+      # 允许的扩展名与真实内容格式登记在 MediaFileType（代码里的技术事实）。
+      # 这里刻意不再配置 allowed-extensions：白名单只保留一处真源，
+      # 否则 yml 会覆盖代码默认值，导致新增类型在 yml 里被悄悄挡掉。
+      max-image-bytes: 20971520
+      max-document-bytes: 52428800
+      max-audio-bytes: 104857600
+      max-video-bytes: 524288000
+      max-archive-bytes: 209715200
+    orphan-cleanup:
+      enabled: ${STAR_RAIN_MEDIA_ORPHAN_CLEANUP:true}
+      cron: "0 30 3 * * *"
+      # 宽限期：避免误删“刚落盘、还没写库”的正常上传文件
+      grace-hours: 24
 
 server:
   port: 8088
