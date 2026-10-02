@@ -5,6 +5,8 @@ import { useAuthStore } from '../stores/authStore'
 import * as api from '../api/accountApi'
 import { clearCsrf, errorMessage } from '../api/http'
 import { useEmailCode } from '../support/useEmailCode'
+// 认证页全部落在账号树，路径一律由 viewMode 的 accountPath() 推出来，不写死 '/useradmin' 字面量
+import { accountPath } from '../../../shared/viewMode'
 
 const props = defineProps({ mode: { type: String, required: true } })
 const route = useRoute()
@@ -64,15 +66,23 @@ async function submit() {
   try {
     if (props.mode === 'login') {
       await auth.login(form.identifier, form.password)
+      /*
+       * 登录成功后的落点分两种，这是本轮刻意改的地方：
+       *   1. 守卫送来的（URL 带 redirect，例如未登录访问 /useradmin/center）——
+       *      按 redirect 回到他原本要去的那一页，不能把人丢到别处；
+       *   2. 自己点「登录」进来的 —— 留在 / 回到账号树前台（/useradmin），**不进后台**。
+       *      后台是管理动作，绝大多数登录只是来看内容；直接弹进控制台会让人一进来
+       *      就要先找「怎么回去」。进后台改由右上角用户菜单里的「进入后台」自己决定。
+       */
       const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : ''
-      await router.replace(redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : '/useradmin/center')
+      await router.replace(redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : accountPath('/'))
     } else if (props.mode === 'register') {
       await api.register({
         username: form.username, email: form.email, password: form.password,
         confirmPassword: form.confirmPassword,
         verificationCode: form.verificationCode,
       })
-      await router.replace({ path: '/useradmin/login', query: { registered: '1' } })
+      await router.replace({ path: accountPath('/login'), query: { registered: '1' } })
     } else if (props.mode === 'forgot') {
       await api.requestReset(form.email)
       notice.value = '如果邮箱对应有效账户，重置邮件会发送到该邮箱。'
@@ -82,14 +92,14 @@ async function submit() {
         token, newPassword: form.newPassword, confirmPassword: form.confirmPassword,
       })
       clearCsrf()
-      await router.replace({ path: '/useradmin/login', query: { reset: '1' } })
+      await router.replace({ path: accountPath('/login'), query: { reset: '1' } })
     } else if (props.mode === 'invite') {
       const token = typeof route.query.token === 'string' ? route.query.token : form.token
       await api.acceptInvitation(token)
       auth.currentUser = null
       auth.initialized = true
       clearCsrf()
-      await router.replace({ path: '/useradmin/login', query: { invited: '1' } })
+      await router.replace({ path: accountPath('/login'), query: { invited: '1' } })
     }
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -103,7 +113,7 @@ async function switchInvitationAccount() {
   try {
     await auth.logout()
     auth.initialized = true
-    await router.replace({ path: '/useradmin/login', query: { redirect: route.fullPath } })
+    await router.replace({ path: accountPath('/login'), query: { redirect: route.fullPath } })
   } catch (cause) { error.value = errorMessage(cause) }
 }
 </script>
@@ -111,7 +121,7 @@ async function switchInvitationAccount() {
 <template>
   <main class="auth-page">
     <section class="auth-story" aria-label="星雨笔录介绍">
-      <RouterLink to="/useradmin/center" class="auth-brand">
+      <RouterLink :to="accountPath('/center')" class="auth-brand">
         <img src="/brand/mark.svg" alt="" width="34" height="34" />
         <span>星雨笔录</span>
       </RouterLink>
@@ -151,8 +161,7 @@ async function switchInvitationAccount() {
             <label>用户名或邮箱<input v-model.trim="form.identifier" autocomplete="username" required /></label>
             <label>密码<span class="password-field"><input v-model="form.password" :type="showPassword ? 'text' : 'password'" autocomplete="current-password" required /><button type="button" :aria-pressed="showPassword" @click="showPassword = !showPassword">{{ showPassword ? '隐藏' : '显示' }}</button></span></label>
             <div class="form-assist">
-              <RouterLink to="/useradmin/register">创建账户</RouterLink>
-              <RouterLink to="/useradmin/forgot-password">忘记密码？</RouterLink>
+              <RouterLink :to="accountPath('/forgot-password')">忘记密码？</RouterLink>
             </div>
           </template>
           <template v-else-if="mode === 'register'">
@@ -182,7 +191,17 @@ async function switchInvitationAccount() {
             {{ busy ? '处理中…' : title }} <span aria-hidden="true">→</span>
           </button>
         </form>
-        <footer><RouterLink to="/useradmin/login">← 返回登录</RouterLink><span>连接受安全会话保护</span></footer>
+        <!--
+          注册入口按所有者口径收在登录页底部这一行：顶栏不再并列「登录 / 注册」
+          （见 modules/account/components/AccountEntry.vue），但注册页本身保留，
+          未注册的访客在登录页就能看到这条路。其他认证模式（注册 / 找回 / 重置 / 邀请）
+          仍然给「返回登录」，避免在它们身上出现指向自己的注册链接。
+        -->
+        <footer>
+          <RouterLink v-if="mode === 'login'" :to="accountPath('/register')">还没有账号？注册</RouterLink>
+          <RouterLink v-else :to="accountPath('/login')">← 返回登录</RouterLink>
+          <span>连接受安全会话保护</span>
+        </footer>
       </div>
     </section>
   </main>
