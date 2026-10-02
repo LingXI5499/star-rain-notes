@@ -4,6 +4,7 @@
 @import './styles/media.css';
 @import './styles/review.css';
 @import './styles/blog.css';
+@import './styles/entry.css';
 /* 验证码字段在注册页与账户安全页共用。 */
 .verification-field { display: flex; align-items: stretch; gap: 8px; }
 .verification-field input { min-width: 0; flex: 1; width: 0; }
