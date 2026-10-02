@@ -19,6 +19,7 @@ import com.starrainnotes.blog.entity.BlogPostEntity;
 import com.starrainnotes.blog.entity.BlogTopicEntity;
 import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.blog.mapper.BlogTopicMapper;
+import com.starrainnotes.blog.utils.BlogSlugDeriver;
 import com.starrainnotes.blog.vo.BlogTopicVO;
 import com.starrainnotes.common.exception.ApiException;
 import java.lang.reflect.Method;
@@ -76,6 +77,27 @@ class BlogTopicServiceImplTest {
         assertThat(Arrays.stream(com.starrainnotes.blog.mapper.BlogTagMapper.class.getDeclaredMethods())
                 .map(Method::getName).toList())
                 .anyMatch(name -> name.toLowerCase().contains("byname"));
+    }
+
+    @Test
+    @DisplayName("同名专题自动分配不同 slug，仍允许相同显示名称")
+    void createDerivesUniqueSlugForDuplicateTopicNames() {
+        String base = BlogSlugDeriver.derive("学习路线", "topic", 120);
+        when(topicMapper.countBySlug(base, null)).thenReturn(1L);
+        doAnswer(invocation -> {
+            invocation.<BlogTopicEntity>getArgument(0).setId(3L);
+            return null;
+        }).when(topicMapper).insertTopic(any());
+        when(topicMapper.topicById(3L)).thenReturn(topic(3L, "ENABLED"));
+
+        BlogTopicDTO request = new BlogTopicDTO();
+        request.setName("学习路线");
+        service.create(request);
+
+        org.mockito.ArgumentCaptor<BlogTopicEntity> captor =
+                org.mockito.ArgumentCaptor.forClass(BlogTopicEntity.class);
+        verify(topicMapper).insertTopic(captor.capture());
+        assertThat(captor.getValue().getSlug()).isEqualTo(base + "-2");
     }
 
     @Test

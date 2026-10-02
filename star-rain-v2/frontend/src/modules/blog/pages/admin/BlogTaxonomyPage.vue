@@ -6,7 +6,6 @@ import {
   reorderTopicPosts, updateTag, updateTopic,
 } from '../../api/blogApi'
 import { errorMessage } from '../../../../shared/http'
-import { derivedSlug } from '../../components/admin/tagSlug'
 import { postStatusLabel, taxonomyStatusLabel } from '../../support/display'
 
 /*
@@ -14,8 +13,8 @@ import { postStatusLabel, taxonomyStatusLabel } from '../../support/display'
  * 标题区 + 计数 + 卡片网格。
  *
  * 这里仍然把 Tag 与 Topic 的语义差异摆在明面上：
- * - Tag：只有名字与说明，没有任何顺序概念；停用只是不再接受新绑定；
- * - Topic：除了名字与说明，还有成员列表与人工顺序，顺序用上下移动调整后整体提交。
+ * - Tag：只有名称，没有任何顺序概念；停用只是不再接受新绑定；
+ * - Topic：除了名称，还有成员列表与人工顺序，顺序用上下移动调整后整体提交。
  *
  * 两边都只有启用 / 停用，没有物理删除：已被文章使用的分类或专题一旦被删除，
  * 历史文章就会指向不存在的分类（后端也不提供删除接口）。
@@ -35,8 +34,8 @@ const notice = ref('')
 const tagDialog = ref(null)
 const topicDialog = ref(null)
 
-const tagForm = reactive({ id: null, slug: '', name: '', description: '' })
-const topicForm = reactive({ id: null, slug: '', name: '', description: '' })
+const tagForm = reactive({ id: null, name: '' })
+const topicForm = reactive({ id: null, name: '' })
 
 const selectedTopic = computed(() => topics.value.find((topic) => topic.id === selectedTopicId.value) || null)
 const addablePosts = computed(() => {
@@ -47,12 +46,12 @@ const totalRelations = computed(() => tags.value.reduce((sum, tag) => sum + (tag
 const filteredTags = computed(() => {
   const keyword = tagKeyword.value.trim().toLowerCase()
   if (!keyword) return tags.value
-  return tags.value.filter((tag) => tag.name.toLowerCase().includes(keyword) || tag.slug.includes(keyword))
+  return tags.value.filter((tag) => tag.name.toLowerCase().includes(keyword))
 })
 const filteredTopics = computed(() => {
   const keyword = topicKeyword.value.trim().toLowerCase()
   if (!keyword) return topics.value
-  return topics.value.filter((topic) => topic.name.toLowerCase().includes(keyword) || topic.slug.includes(keyword))
+  return topics.value.filter((topic) => topic.name.toLowerCase().includes(keyword))
 })
 
 async function loadTags() {
@@ -100,19 +99,10 @@ async function refresh() {
 // Tag
 // ---------------------------------------------------------------------
 
-/*
- * 编号（slug）在后端是必填且唯一，只允许小写字母、数字与中划线。
- * 名称里没有 ASCII 字符时（纯中文标签）由 tagSlug.js 给出稳定散列编号，
- * 所以这个字段可以留空；只有名称本身也为空时才拦下。
- */
-function slugFromName(name, prefix) {
-  return derivedSlug(name, prefix, 100)
-}
-
 async function openTagDialog(tag = null) {
   Object.assign(tagForm, tag
-    ? { id: tag.id, slug: tag.slug, name: tag.name, description: tag.description || '' }
-    : { id: null, slug: '', name: '', description: '' })
+    ? { id: tag.id, name: tag.name }
+    : { id: null, name: '' })
   await nextTick()
   tagDialog.value?.showModal()
 }
@@ -122,16 +112,12 @@ async function submitTag() {
     error.value = '请填写标签名称。'
     return
   }
-  const slug = tagForm.slug.trim() || slugFromName(tagForm.name, 'tag')
-  if (!slug) {
-    error.value = '请填写名称或编号（slug）。'
-    return
-  }
   saving.value = true
   error.value = ''
   notice.value = ''
   try {
-    const payload = { slug, name: tagForm.name, description: tagForm.description }
+    // 创建时由服务端派生唯一地址；改名时不传 slug，已有公开链接保持不变。
+    const payload = { name: tagForm.name.trim() }
     if (tagForm.id) {
       await updateTag(tagForm.id, payload)
       notice.value = `标签「${tagForm.name}」已更新。`
@@ -174,8 +160,8 @@ async function toggleTagStatus(tag) {
 
 async function openTopicDialog(topic = null) {
   Object.assign(topicForm, topic
-    ? { id: topic.id, slug: topic.slug, name: topic.name, description: topic.description || '' }
-    : { id: null, slug: '', name: '', description: '' })
+    ? { id: topic.id, name: topic.name }
+    : { id: null, name: '' })
   await nextTick()
   topicDialog.value?.showModal()
 }
@@ -185,16 +171,11 @@ async function submitTopic() {
     error.value = '请填写专题名称。'
     return
   }
-  const slug = topicForm.slug.trim() || slugFromName(topicForm.name, 'topic')
-  if (!slug) {
-    error.value = '请填写名称或编号（slug）。'
-    return
-  }
   saving.value = true
   error.value = ''
   notice.value = ''
   try {
-    const payload = { slug, name: topicForm.name, description: topicForm.description }
+    const payload = { name: topicForm.name.trim() }
     if (topicForm.id) {
       await updateTopic(topicForm.id, payload)
       notice.value = `专题「${topicForm.name}」已更新。`
@@ -314,7 +295,6 @@ onMounted(refresh)
       <div>
         <p>TAG LIBRARY · 内容索引</p>
         <h1>分类与专题</h1>
-        <span>Tag 是多维分类（无序，可多选）；Topic 是人工策展的有序专题，顺序也是内容的一部分。</span>
       </div>
       <div class="content-admin__hero-actions">
         <button type="button" @click="openTopicDialog()">＋ 新建专题</button>
@@ -325,7 +305,7 @@ onMounted(refresh)
     <div class="tag-admin__stats">
       <div><strong>{{ tags.length }}</strong><span>标签总数</span></div>
       <div><strong>{{ totalRelations }}</strong><span>文章关联</span></div>
-      <label>搜索名称或编号<input v-model="tagKeyword" placeholder="输入标签名或 slug" /></label>
+      <label>搜索标签<input v-model="tagKeyword" placeholder="输入标签名称" /></label>
     </div>
 
     <p v-if="error" class="error" role="alert">{{ error }}</p>
@@ -339,7 +319,6 @@ onMounted(refresh)
           <strong>{{ tag.name }}</strong>
           <em>{{ tag.postCount || 0 }}</em>
         </div>
-        <code>编号 {{ tag.slug }}{{ tag.description ? ` · ${tag.description}` : '' }}</code>
         <footer>
           <span :class="['status-chip', tag.status === 'DISABLED' && 'status-chip--danger']">{{ taxonomyStatusLabel(tag.status) }}</span>
           <div>
@@ -357,7 +336,7 @@ onMounted(refresh)
 
     <div class="tag-admin__section-head">
       <h2>专题（有序策展）</h2>
-      <label class="tag-admin__search">搜索专题<input v-model="topicKeyword" placeholder="输入专题名或 slug" /></label>
+      <label class="tag-admin__search">搜索专题<input v-model="topicKeyword" placeholder="输入专题名称" /></label>
     </div>
 
     <div class="tag-grid">
@@ -371,7 +350,6 @@ onMounted(refresh)
           <strong>{{ topic.name }}</strong>
           <em>{{ topic.memberCount || 0 }}</em>
         </div>
-        <code>编号 {{ topic.slug }}{{ topic.description ? ` · ${topic.description}` : '' }}</code>
         <footer>
           <span :class="['status-chip', topic.status === 'DISABLED' && 'status-chip--danger']">{{ taxonomyStatusLabel(topic.status) }}</span>
           <div>
@@ -441,9 +419,6 @@ onMounted(refresh)
       <h2 id="tag-dialog-title">{{ tagForm.id ? '编辑标签' : '新建标签' }}</h2>
       <form class="form-stack" @submit.prevent="submitTag">
         <label>名称<input v-model="tagForm.name" maxlength="100" placeholder="例如：Spring Boot" /></label>
-        <label>编号 slug<input v-model="tagForm.slug" maxlength="100" placeholder="spring-boot（留空时按名称推导）" /></label>
-        <label>说明（可选）<input v-model="tagForm.description" maxlength="500" placeholder="会显示在标签悬浮提示里" /></label>
-        <p class="form-hint">修改名称不会改变编号（slug）与已有关联。</p>
         <div class="dialog-actions">
           <button type="button" @click="tagDialog?.close()">取消</button>
           <button class="primary-button" type="submit" :disabled="saving">{{ tagForm.id ? '保存' : '创建' }}</button>
@@ -455,8 +430,6 @@ onMounted(refresh)
       <h2 id="topic-dialog-title">{{ topicForm.id ? '编辑专题' : '新建专题' }}</h2>
       <form class="form-stack" @submit.prevent="submitTopic">
         <label>名称<input v-model="topicForm.name" maxlength="160" placeholder="例如：Java 学习路线" /></label>
-        <label>编号 slug<input v-model="topicForm.slug" maxlength="120" placeholder="java-roadmap（留空时按名称推导）" /></label>
-        <label>说明（可选）<input v-model="topicForm.description" maxlength="1000" placeholder="专题允许重名，slug 必须唯一" /></label>
         <div class="dialog-actions">
           <button type="button" @click="topicDialog?.close()">取消</button>
           <button class="primary-button" type="submit" :disabled="saving">{{ topicForm.id ? '保存' : '创建' }}</button>

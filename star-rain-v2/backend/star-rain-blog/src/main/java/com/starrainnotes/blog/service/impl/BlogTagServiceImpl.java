@@ -15,6 +15,7 @@ import com.starrainnotes.blog.mapper.BlogTagMapper;
 import com.starrainnotes.blog.service.BlogTagService;
 import com.starrainnotes.blog.service.BlogViewAssembler;
 import com.starrainnotes.blog.utils.BlogQueryRules;
+import com.starrainnotes.blog.utils.BlogSlugDeriver;
 import com.starrainnotes.blog.utils.BlogSlugRules;
 import com.starrainnotes.blog.utils.BlogTextRules;
 import com.starrainnotes.blog.vo.BlogTagVO;
@@ -72,24 +73,39 @@ public class BlogTagServiceImpl implements BlogTagService {
     @Override
     @Transactional
     public BlogTagVO create(BlogTagDTO request) {
-        String slug = requireSlug(request.getSlug());
         String name = requireName(request.getName());
         String description = requireDescription(request.getDescription());
-        assertSlugFree(slug, null);
+        boolean automatic = request.getSlug() == null || request.getSlug().isBlank();
+        String base = automatic
+                ? BlogSlugDeriver.derive(name, "tag", BlogLimits.TAG_SLUG_MAX_LENGTH)
+                : requireSlug(request.getSlug());
+        if (!automatic) {
+            assertSlugFree(base, null);
+        }
         assertNameFree(name, null);
 
-        BlogTagEntity entity = new BlogTagEntity();
-        entity.setSlug(slug);
-        entity.setName(name);
-        entity.setDescription(description);
-        entity.setStatus(BlogTaxonomyStatus.ENABLED_CODE);
-        try {
-            tagMapper.insertTag(entity);
-        } catch (DuplicateKeyException ex) {
-            // 并发创建：唯一键兜住，这里还原成具体是 slug 还是 name 冲突
-            throw duplicateReason(slug, name, null);
+        for (int ordinal = 1; ordinal <= (automatic ? 1000 : 1); ordinal++) {
+            String slug = BlogSlugDeriver.withSuffix(base, ordinal, BlogLimits.TAG_SLUG_MAX_LENGTH);
+            if (automatic && tagMapper.countBySlug(slug, null) > 0) {
+                continue;
+            }
+            BlogTagEntity entity = new BlogTagEntity();
+            entity.setSlug(slug);
+            entity.setName(name);
+            entity.setDescription(description);
+            entity.setStatus(BlogTaxonomyStatus.ENABLED_CODE);
+            try {
+                tagMapper.insertTag(entity);
+                return assembler.toTagVO(requireTag(entity.getId()));
+            } catch (DuplicateKeyException ex) {
+                // 并发创建同名标签仍报名称冲突；仅自动生成的 slug 才换后缀重试。
+                if (!automatic) {
+                    throw duplicateReason(slug, name, null);
+                }
+                assertNameFree(name, null);
+            }
         }
-        return assembler.toTagVO(requireTag(entity.getId()));
+        throw new BlogTagSlugConflictException();
     }
 
     @Override
