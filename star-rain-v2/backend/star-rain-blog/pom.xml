@@ -19,20 +19,53 @@
             <artifactId>star-rain-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!-- 只允许使用 star-rain-account 的 api 包（CurrentActorApi / PermissionQueryApi）。 -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-account</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+            只通过 MediaAssetApi / MediaReferenceApi 使用媒体能力；
+            禁止直接访问 Media 的 Mapper、Entity 与数据表。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-media</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.starrainnotes</groupId>
-            <artifactId>star-rain-review</artifactId>
-            <version>${project.version}</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-spring-boot3-starter</artifactId>
+            <version>3.5.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.42</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-test</artifactId>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>

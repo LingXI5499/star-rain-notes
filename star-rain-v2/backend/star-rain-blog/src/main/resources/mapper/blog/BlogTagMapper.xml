@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.blog.mapper.BlogTagMapper">
+
+    <sql id="tagColumns">
+        t.id, t.slug, t.name, t.description, t.status, t.created_at, t.updated_at
+    </sql>
+
+    <sql id="adminFilters">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (LOWER(t.name) LIKE CONCAT('%', #{keyword}, '%')
+                     OR LOWER(t.slug) LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="status != null and status != ''">
+                AND t.status = #{status}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertTag" parameterType="com.starrainnotes.blog.entity.BlogTagEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_blog_tag (slug, name, description, status)
+        VALUES (#{slug}, #{name}, #{description}, #{status})
+    </insert>
+
+    <select id="tagById" resultType="com.starrainnotes.blog.entity.BlogTagEntity">
+        SELECT <include refid="tagColumns"/> FROM sr_blog_tag t WHERE t.id = #{id}
+    </select>
+
+    <select id="tagByIdForUpdate" resultType="com.starrainnotes.blog.entity.BlogTagEntity">
+        SELECT <include refid="tagColumns"/> FROM sr_blog_tag t WHERE t.id = #{id} FOR UPDATE
+    </select>
+
+    <select id="countBySlug" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_tag WHERE slug = #{slug}
+        <if test="excludeId != null">
+            AND id &lt;&gt; #{excludeId}
+        </if>
+    </select>
+
+    <select id="countByName" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_tag WHERE name = #{name}
+        <if test="excludeId != null">
+            AND id &lt;&gt; #{excludeId}
+        </if>
+    </select>
+
+    <!-- 合并后的值由 Service 计算：这样 description 传空字符串是“清空”，传 null 是“不改” -->
+    <update id="updateTag">
+        UPDATE sr_blog_tag
+        SET slug = #{slug},
+            name = #{name},
+            description = #{description}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE sr_blog_tag SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <select id="adminPageCount" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_tag t
+        <include refid="adminFilters"/>
+    </select>
+
+    <!-- post_count 统计全部绑定关系（含草稿），用于判断标签是否还在被使用 -->
+    <select id="adminPage" resultType="com.starrainnotes.blog.vo.BlogTagVO">
+        SELECT <include refid="tagColumns"/>, COUNT(pt.id) AS post_count
+        FROM sr_blog_tag t
+        LEFT JOIN sr_blog_post_tag pt ON pt.tag_id = t.id
+        <include refid="adminFilters"/>
+        GROUP BY t.id, t.slug, t.name, t.description, t.status, t.created_at, t.updated_at
+        ORDER BY t.name ASC, t.id ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!-- 前台筛选项：只统计已发布文章，0 篇的标签不出现，避免点进去是空列表 -->
+    <select id="publishedTags" resultType="com.starrainnotes.blog.vo.BlogTagVO">
+        SELECT t.id, t.slug, t.name, t.description, t.status, COUNT(p.id) AS post_count
+        FROM sr_blog_tag t
+        LEFT JOIN sr_blog_post_tag pt ON pt.tag_id = t.id
+        LEFT JOIN sr_blog_post p ON p.id = pt.post_id AND p.status = 'PUBLISHED'
+        WHERE t.status = 'ENABLED'
+        GROUP BY t.id, t.slug, t.name, t.description, t.status
+        HAVING COUNT(p.id) &gt; 0
+        ORDER BY t.name ASC, t.id ASC
+    </select>
+
+    <select id="tagsByPostId" resultType="com.starrainnotes.blog.vo.BlogTagVO">
+        SELECT t.id, t.slug, t.name, t.description, t.status
+        FROM sr_blog_post_tag pt
+        JOIN sr_blog_tag t ON t.id = pt.tag_id
+        WHERE pt.post_id = #{postId}
+        ORDER BY t.name ASC, t.id ASC
+    </select>
+
+    <select id="tagsByPostIds" resultType="com.starrainnotes.blog.dto.BlogPostTagRow">
+        SELECT pt.post_id AS post_id, t.id AS tag_id, t.slug AS slug, t.name AS name
+        FROM sr_blog_post_tag pt
+        JOIN sr_blog_tag t ON t.id = pt.tag_id
+        WHERE pt.post_id IN
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+        ORDER BY t.name ASC, t.id ASC
+    </select>
+
+    <select id="tagsByIds" resultType="com.starrainnotes.blog.entity.BlogTagEntity">
+        SELECT id, slug, name, description, status, created_at, updated_at
+        FROM sr_blog_tag
+        WHERE id IN
+        <foreach collection="ids" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <insert id="insertPostTag">
+        INSERT INTO sr_blog_post_tag (post_id, tag_id)
+        VALUES (#{postId}, #{tagId})
+    </insert>
+
+    <delete id="deletePostTag">
+        DELETE FROM sr_blog_post_tag WHERE post_id = #{postId} AND tag_id = #{tagId}
+    </delete>
+
+    <delete id="deletePostTagsByPostId">
+        DELETE FROM sr_blog_post_tag WHERE post_id = #{postId}
+    </delete>
+
+    <select id="countPostTag" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_post_tag WHERE post_id = #{postId} AND tag_id = #{tagId}
+    </select>
+
+    <select id="countDisabledTagsByPostId" resultType="long">
+        SELECT COUNT(*)
+        FROM sr_blog_post_tag pt
+        JOIN sr_blog_tag t ON t.id = pt.tag_id
+        WHERE pt.post_id = #{postId} AND t.status = 'DISABLED'
+    </select>
+</mapper>
