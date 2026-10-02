@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-/**
+/*
  * 其他模块获取当前认证主体的唯一入口。
  */
 public interface CurrentActorApi {
