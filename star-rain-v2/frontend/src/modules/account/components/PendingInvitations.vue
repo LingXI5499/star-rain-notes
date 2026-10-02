@@ -28,7 +28,7 @@ async function accept(item) {
     auth.currentUser = null
     auth.initialized = true
     clearCsrf()
-    await router.replace({ path: '/login', query: { invited: '1' } })
+    await router.replace({ path: '/useradmin/login', query: { invited: '1' } })
   } catch (cause) { error.value = errorMessage(cause) }
   finally { busy.value = false }
 }

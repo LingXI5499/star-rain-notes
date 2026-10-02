@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { listArchive, listArchiveMonths, listPublicTags, listPublicTopics } from '../api/blogApi'
 import { errorMessage } from '../../../shared/http'
+import { useViewMode } from '../../../shared/viewMode'
 import BlogArchiveFilter from '../components/BlogArchiveFilter.vue'
 import BlogSidebar from '../components/BlogSidebar.vue'
 import BlogPagination from '../components/BlogPagination.vue'
@@ -19,7 +20,11 @@ import { monthLabel } from '../support/display'
  *
  * 时间筛选依据 publishedAt 而不是 createdAt：草稿可能去年写的、今年才发布，
  * 按创建时间归档会让读者在「今年」里找不到刚发的文章（这条语义由后端 SQL 保证）。
+ *
+ * 这一页在两条路径树上复用（/blog/archive 与 /useradmin/blog/archive），
+ * 因此写回 URL 时用 contentPath() 按当前模式取地址。
  */
+const { contentPath } = useViewMode()
 const route = useRoute()
 const router = useRouter()
 
@@ -96,7 +101,7 @@ async function loadOptions() {
 }
 
 function applyQuery() {
-  router.replace({ path: '/blog/archive', query: queryOf() })
+  router.replace({ path: contentPath('/blog/archive'), query: queryOf() })
 }
 
 function applyFilters(next) {

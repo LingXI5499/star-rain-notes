@@ -1,12 +1,15 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import { useViewMode } from '../../../shared/viewMode'
 
 /*
  * 专题面板。
  *
  * Topic 是有序策展，所以这里按顺序渲染并显示序号 —— 序号就是专题的意义所在。
- * linkable=true 时链到按专题筛选的归档页。
+ * linkable=true 时链到按专题筛选的归档页；归档页地址按当前路径树生成
+ * （公开树 /blog/archive，账号树 /useradmin/blog/archive）。
  */
+const { contentPath } = useViewMode()
 defineProps({
   topics: { type: Array, default: () => [] },
   linkable: { type: Boolean, default: false },
@@ -21,7 +24,7 @@ defineProps({
       <RouterLink
         v-if="linkable"
         class="blog-topic"
-        :to="{ path: '/blog/archive', query: { topic: topic.slug } }"
+        :to="{ path: contentPath('/blog/archive'), query: { topic: topic.slug } }"
       ><span class="blog-topic__order">{{ index + 1 }}</span>{{ topic.name }}</RouterLink>
       <span v-else class="blog-topic" :class="topic.status === 'DISABLED' && 'blog-topic--disabled'">
         <span class="blog-topic__order">{{ index + 1 }}</span>{{ topic.name }}

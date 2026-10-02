@@ -74,7 +74,7 @@ onMounted(load)
     <div class="page-heading">
       <p class="eyebrow">REVIEW DETAIL</p>
       <h1>{{ detail ? targetLabel(detail) : '审核详情' }}</h1>
-      <p><RouterLink to="/admin/reviews">← 返回审核中心</RouterLink></p>
+      <p><RouterLink to="/useradmin/reviews">← 返回审核中心</RouterLink></p>
     </div>
 
     <p v-if="error" class="error" role="alert">{{ error }}</p>

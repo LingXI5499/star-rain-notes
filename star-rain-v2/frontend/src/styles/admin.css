@@ -267,6 +267,23 @@
   font-size: 12px;
 }
 
+/*
+ * 侧栏分层的小标题（内容编辑 / 站点治理）。
+ * 折叠态下侧栏只有 20px 宽的短标，标题也退化成单字，避免把侧栏撑开。
+ */
+.admin-shell__nav-caption {
+  margin: 14px 0 4px;
+  padding-inline: 10px;
+  color: var(--text-muted);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+}
+
+.admin-shell__sidebar--collapsed .admin-shell__nav-caption {
+  padding-inline: 0;
+  text-align: center;
+}
+
 /* 建设中的模块（教程工作台 / 作品管理）：保留侧栏位置但明确不可点 */
 .admin-shell__nav-item--pending {
   cursor: not-allowed;

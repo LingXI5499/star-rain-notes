@@ -53,7 +53,7 @@ onMounted(load)
 
 <template>
   <main class="page-container">
-    <div class="page-heading"><p class="eyebrow">ADMIN INVITATIONS</p><h1>管理员邀请</h1><p>查看邀请状态，重发通知或撤销待处理邀请。</p><RouterLink to="/admin/accounts">到“账户管理”选择普通用户并发出邀请 →</RouterLink></div>
+    <div class="page-heading"><p class="eyebrow">ADMIN INVITATIONS</p><h1>管理员邀请</h1><p>查看邀请状态，重发通知或撤销待处理邀请。</p><RouterLink to="/useradmin/accounts">到“账户管理”选择普通用户并发出邀请 →</RouterLink></div>
     <section class="surface-card">
       <div class="section-heading"><h2>邀请记录</h2><button class="secondary-button" type="button" :disabled="loading || busy" @click="load">刷新</button></div>
       <p class="muted">邮件状态表示是否已提交发送，不能证明收件箱已收到。受邀用户可直接登录“我的账户”处理邀请。</p>

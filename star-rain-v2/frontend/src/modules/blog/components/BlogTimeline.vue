@@ -1,6 +1,7 @@
 <script setup>
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useViewMode } from '../../../shared/viewMode'
 import { dateOnly, summaryText, timelineGroups } from '../support/display'
 
 /*
@@ -13,7 +14,11 @@ import { dateOnly, summaryText, timelineGroups } from '../support/display'
  * 时间显示用 publishedAt 兜底：公开列表 VO（BlogPostPublicVO）目前只有发布时间，
  * 只有详情 VO 才有 updatedAt，因此「更新于」只在确实拿到更新时间的场景出现 ——
  * 宁可少一行，也不把发布时间标成更新时间。
+ *
+ * 卡片链接按当前路径树生成：账号模式下必须落在 /useradmin/blog/posts/:slug，
+ * 否则列表里点开一篇就掉回公开树、把账号外壳丢了。
  */
+const { contentPath } = useViewMode()
 const props = defineProps({
   items: { type: Array, default: () => [] },
   loading: { type: Boolean, default: false },
@@ -40,7 +45,7 @@ function timeLabel(post) {
         <span>{{ item.monthDay }}</span>
       </div>
       <i class="timeline__node" aria-hidden="true" />
-      <RouterLink :to="`/blog/posts/${item.post.slug}`" class="timeline-card public-interactive">
+      <RouterLink :to="contentPath(`/blog/posts/${item.post.slug}`)" class="timeline-card public-interactive">
         <div class="timeline-card__content">
           <div class="timeline-card__tags">
             <span v-for="tag in item.post.tags" :key="tag.id || tag.slug">{{ tag.name }}</span>

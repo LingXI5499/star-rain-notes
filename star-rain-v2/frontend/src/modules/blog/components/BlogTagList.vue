@@ -1,12 +1,15 @@
 <script setup>
 import { RouterLink } from 'vue-router'
+import { useViewMode } from '../../../shared/viewMode'
 
 /*
  * 标签列表。
  *
  * Tag 是无序的多维分类，所以这里只渲染一排标签，没有序号、没有排序操作。
- * linkable=true 时每个标签链到按标签筛选的归档页。
+ * linkable=true 时每个标签链到按标签筛选的归档页；归档页地址按当前路径树生成
+ * （公开树 /blog/archive，账号树 /useradmin/blog/archive）。
  */
+const { contentPath } = useViewMode()
 defineProps({
   tags: { type: Array, default: () => [] },
   linkable: { type: Boolean, default: false },
@@ -21,7 +24,7 @@ defineProps({
       <RouterLink
         v-if="linkable"
         class="blog-tag"
-        :to="{ path: '/blog/archive', query: { tag: tag.slug } }"
+        :to="{ path: contentPath('/blog/archive'), query: { tag: tag.slug } }"
         :title="tag.description || tag.name"
       >{{ tag.name }}<small v-if="tag.postCount">{{ tag.postCount }}</small></RouterLink>
       <span v-else class="blog-tag" :class="tag.status === 'DISABLED' && 'blog-tag--disabled'">

@@ -3,6 +3,7 @@ import { onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { listArchiveMonths, listPublicPosts, listPublicTags } from '../../blog/api/blogApi'
 import { errorMessage } from '../../../shared/http'
+import { useViewMode } from '../../../shared/viewMode'
 import BlogTimeline from '../../blog/components/BlogTimeline.vue'
 
 /*
@@ -19,7 +20,11 @@ import BlogTimeline from '../../blog/components/BlogTimeline.vue'
  * V1 首页还有「精选知识体系」「把学习做成作品」「关于作者」三块，
  * 分别依赖教程、作品与站点设置接口；V2 这三个模块都还没有后端，
  * 因此本轮只做「博客 + 导航占位」，等模块落地后再补，而不是放静态假数据。
+ *
+ * 这一页在两条路径树上都渲染（/ 与 /useradmin 各一次），因此页内链接一律写**中性路径**，
+ * 由 contentPath() 按当前模式决定落在 /blog 还是 /useradmin/blog。
  */
+const { contentPath } = useViewMode()
 const state = reactive({ total: 0, tagCount: 0, monthCount: 0 })
 const latest = ref([])
 const loading = ref(true)
@@ -62,8 +67,8 @@ onMounted(async () => {
           让下一次出发有迹可循。
         </p>
         <div class="home-hero__actions">
-          <RouterLink class="public-button primary" to="/blog">进入博客时间线 <span aria-hidden="true">↗</span></RouterLink>
-          <RouterLink class="public-button" to="/blog/archive">按时间归档 <span aria-hidden="true">→</span></RouterLink>
+          <RouterLink class="public-button primary" :to="contentPath('/blog')">进入博客时间线 <span aria-hidden="true">↗</span></RouterLink>
+          <RouterLink class="public-button" :to="contentPath('/blog/archive')">按时间归档 <span aria-hidden="true">→</span></RouterLink>
         </div>
       </div>
 
@@ -86,7 +91,7 @@ onMounted(async () => {
 
     <nav class="home-rail" aria-label="站点主要内容">
       <template v-for="item in modules" :key="item.index">
-        <RouterLink v-if="item.to" :to="item.to" class="public-interactive">
+        <RouterLink v-if="item.to" :to="contentPath(item.to)" class="public-interactive">
           <span>{{ item.index }}</span>
           <div><small>{{ item.en }}</small><strong>{{ item.label }}</strong><p>{{ item.desc }}</p></div>
           <i aria-hidden="true">→</i>
@@ -105,7 +110,7 @@ onMounted(async () => {
           <p class="public-eyebrow">LATEST NOTES</p>
           <h2 class="public-section-title">最近更新</h2>
         </div>
-        <RouterLink to="/blog">浏览全部 <span aria-hidden="true">→</span></RouterLink>
+        <RouterLink :to="contentPath('/blog')">浏览全部 <span aria-hidden="true">→</span></RouterLink>
       </header>
 
       <BlogTimeline
