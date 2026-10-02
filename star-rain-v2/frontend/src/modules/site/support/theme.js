@@ -3,8 +3,8 @@ import { computed, ref } from 'vue'
 /*
  * 公开站主题（明 / 暗 / 跟随系统）。
  *
- * 放在 site 模块里而不是全站 store：V2 目前只有公开站需要主题切换，
- * 而 AdminShell / UserShell 归另外的改动范围，这里不替它们做决定。
+ * 放在 site 模块里而不是全站 store：V2 目前只有前台需要主题切换（AdminShell 有自己的
+ * `admin-theme` 键，见 shared/shells/AdminShell.vue），这里不替控制台做决定。
  * 主题落在 <html data-theme="..."> 上，与 tokens.css 和 public-theme.css 的
  * `[data-theme='dark']` 选择器对齐；localStorage 只存"用户选了什么"，
  * 存的是 'system' | 'light' | 'dark' 本身，而不是解析后的明暗结果 ——

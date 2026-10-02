@@ -114,13 +114,13 @@ onMounted(load)
         <tbody>
           <tr v-for="item in recentContent" :key="`${item.type}-${item.id}`">
             <td>博客</td>
-            <td><RouterLink :to="`/admin/blog/posts/${item.id}`">{{ item.title }}</RouterLink></td>
+            <td><RouterLink :to="`/useradmin/blog/editor/${item.id}`">{{ item.title }}</RouterLink></td>
             <td><span class="status-chip">{{ item.publishStatus }}</span></td>
             <td>{{ dateLabel(item.updatedAt) }}</td>
           </tr>
           <tr v-if="!loading && !recentContent.length">
             <td colspan="4" class="empty-state">
-              还没有内容。<RouterLink to="/admin/blog/posts/new">新建第一篇博客草稿</RouterLink>
+              还没有内容。<RouterLink to="/useradmin/blog/editor/new">新建第一篇博客草稿</RouterLink>
             </td>
           </tr>
         </tbody>

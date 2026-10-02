@@ -1,33 +1,39 @@
 <script setup>
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import SearchLauncher from './SearchLauncher.vue'
 import ThemeControl from './ThemeControl.vue'
+import { useViewMode } from '../../../shared/viewMode'
 
 /*
- * 公开站顶部导航 —— 对齐 V1 `components/PublicHeader.vue`：
- * 粘性、滚动后收窄并加下边框，品牌 + 内容导航 + 搜索 + 主题。
+ * 前台顶部导航 —— 对齐 V1 `components/PublicHeader.vue`：
+ * 粘性、滚动后收窄并加下边框，品牌 + 内容导航 + 搜索 + 主题 + 账号区。
  *
- * 两处刻意的差别：
+ * 三处刻意的差别：
  *   1. V1 导航比 V2 多一项语言学习模块；V2 本轮只保留「教程 / 博客 / 作品 / 关于」四项，
  *      并且教程 / 作品 / 关于在对应页面实现前是**不可点的占位**（span + title 提示），不放死链；
  *   2. V1 的品牌名与 logo 来自站点设置接口（appStore.loadBranding），
  *      `star-rain-site` 后端在 V2 还是空模块，因此这里用本地常量与 `/brand/mark.svg`。
  *      接入站点设置后改这里一处即可。
+ *   3. 导航目标按**当前路径树**生成：公开树指向 /blog，账号树指向 /useradmin/blog。
+ *      写死 /blog 的话，在 /useradmin 里点「博客」会掉回公开树、把账号外壳丢掉。
  *
- * 硬约束：本文件不出现任何账号入口字样，也不引用 auth store。
+ * 账号区不在这里实现：它由 PublicShell 通过 `account` 插槽传进来，且只在账号模式挂载。
+ * 本文件因此不出现任何账号相关的链接或状态，也不引用 auth store。
  */
 const route = useRoute()
+const { contentPath } = useViewMode()
 const scrolled = ref(false)
 let ticking = false
 
 const siteName = '星雨笔录'
-const navItems = [
+const navItems = computed(() => [
   { label: '教程', to: null, pending: '教程模块建设中' },
-  { label: '博客', to: '/blog' },
+  { label: '博客', to: contentPath('/blog') },
   { label: '作品', to: null, pending: '作品模块建设中' },
   { label: '关于', to: null, pending: '关于页面建设中' },
-]
+])
+const brandPath = computed(() => contentPath('/'))
 
 function isActive(path) {
   return route.path === path || route.path.startsWith(`${path}/`)
@@ -53,7 +59,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 <template>
   <header class="site-header" :class="{ 'site-header--scrolled': scrolled }">
     <div class="site-header__inner">
-      <RouterLink to="/" class="site-header__brand">
+      <RouterLink :to="brandPath" class="site-header__brand">
         <img class="site-header__logo" src="/brand/mark.svg" alt="" aria-hidden="true" width="26" height="26" />
         <span>{{ siteName }}</span>
       </RouterLink>
@@ -73,6 +79,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
       <div class="site-header__actions">
         <SearchLauncher class="site-header__search" />
         <ThemeControl class="site-header__theme" />
+        <!-- 账号区：公开模式下插槽为空，右上角不可能出现账号入口 -->
+        <slot name="account" />
       </div>
     </div>
   </header>

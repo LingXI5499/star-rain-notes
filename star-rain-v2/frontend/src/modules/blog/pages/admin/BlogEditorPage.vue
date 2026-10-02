@@ -165,7 +165,7 @@ function suggestSlug() {
 // 离开编辑器：有未保存改动时先问一次（对应 V1 的 useUnsavedGuard 路由离开提醒）
 async function leaveEditor() {
   if (dirty.value && !await confirmDialog.value.ask('正文或文章信息还没保存，离开后改动会丢失。确定返回列表吗？')) return
-  await router.push('/admin/blog')
+  await router.push('/useradmin/blog/manage')
 }
 
 
@@ -224,7 +224,7 @@ async function saveMeta({ silent = false } = {}) {
       const created = await createPost(payload)
       markSaved()
       notice.value = '草稿已创建，可以继续写正文了。'
-      await router.replace(`/admin/blog/posts/${created.id}`)
+      await router.replace(`/useradmin/blog/editor/${created.id}`)
       return true
     }
     const updated = await updatePost(postId.value, payload)
@@ -306,7 +306,7 @@ async function act(action) {
     if (action === 'restore') await restorePost(postId.value)
     if (action === 'delete') {
       await deletePost(postId.value)
-      await router.replace('/admin/blog')
+      await router.replace('/useradmin/blog/manage')
       return
     }
     notice.value = '状态已更新。'

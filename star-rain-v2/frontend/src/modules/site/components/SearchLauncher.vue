@@ -1,6 +1,7 @@
 <script setup>
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
+import { useViewMode } from '../../../shared/viewMode'
 
 /*
  * 站内搜索入口 —— 只做外壳。
@@ -11,7 +12,13 @@ import { RouterLink } from 'vue-router'
  *
  * 交互对齐 V1 的 GlobalSearch：点击或 Ctrl/⌘ + K 打开，Esc 关闭并把焦点还给入口按钮，
  * 点击面板外部关闭；打开后焦点自动进入面板。
+ *
+ * 面板里的两条指路链接按当前路径树生成：账号模式下必须落在 /useradmin/blog 上，
+ * 否则点一下就把账号外壳丢了。
  */
+const { contentPath } = useViewMode()
+const blogPath = computed(() => contentPath('/blog'))
+const archivePath = computed(() => contentPath('/blog/archive'))
 const open = ref(false)
 const root = ref(null)
 const trigger = ref(null)
@@ -103,8 +110,8 @@ onBeforeUnmount(() => {
             全文检索还没接入，这里不会返回任何结果。现在可以先按标签或归档浏览已发布的文章。
           </p>
           <ul class="search-launcher__links">
-            <li><RouterLink to="/blog" @click="close()">博客时间线</RouterLink></li>
-            <li><RouterLink to="/blog/archive" @click="close()">归档浏览</RouterLink></li>
+            <li><RouterLink :to="blogPath" @click="close()">博客时间线</RouterLink></li>
+            <li><RouterLink :to="archivePath" @click="close()">归档浏览</RouterLink></li>
           </ul>
         </div>
         <button class="search-launcher__close" type="button" @click="close(true)">关闭</button>
