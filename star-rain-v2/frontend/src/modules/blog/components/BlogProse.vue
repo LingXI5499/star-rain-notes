@@ -1,17 +1,18 @@
 <script setup>
-import { ref, watch } from 'vue'
-import { renderMarkdownDocument } from '../support/markdown'
+import { ref } from 'vue'
 import { useCodeCopy } from '../support/useCodeCopy'
+import { useMarkdownDocument } from '../support/useMarkdownDocument'
 
 /*
- * 文章正文渲染。
+ * 文章正文渲染（公开阅读页）。
  *
- * 与后台预览的区别只有外层的类名与是否上报大纲：渲染逻辑完全走
- * `support/markdown.js` 同一套函数，因此「作者看到的预览」=「读者看到的正文」。
+ * 渲染管线全部在 support/markdown.js，与后台预览是**同一份实现**：
+ * Markdown → markdown-it → DOMPurify 消毒 → v-html → 建代码页签 / 排版 MathJax。
+ * 因此「作者在后台看到的预览」与「读者看到的正文」不可能不一致。
  *
- * 安全：renderMarkdownDocument 采用「先整体转义、再做结构替换」，
- * 结果可以安全地 v-html（详见 support/markdown.js 的文件头注释）。
- * 代码块的复制按钮由 useCodeCopy 用事件委托接管。
+ * 安全：消毒在 v-html 之前完成，且 markdown-it 关闭了原生 HTML 解析，
+ * 详见 support/markdown.js 的文件头三条底线。
+ * 复制按钮与代码组页签由 useCodeCopy 用事件委托接管（按钮本身在渲染时生成）。
  */
 const props = defineProps({
   markdown: { type: String, default: '' },
@@ -20,13 +21,9 @@ const props = defineProps({
 const emit = defineEmits(['outline'])
 
 const root = ref(null)
-const html = ref('')
-
-watch(() => props.markdown, (value) => {
-  const rendered = renderMarkdownDocument(value)
-  html.value = rendered.html
-  emit('outline', rendered.outline)
-}, { immediate: true })
+const { html } = useMarkdownDocument(root, () => props.markdown, {
+  onOutline: (items) => emit('outline', items),
+})
 
 useCodeCopy(root)
 </script>

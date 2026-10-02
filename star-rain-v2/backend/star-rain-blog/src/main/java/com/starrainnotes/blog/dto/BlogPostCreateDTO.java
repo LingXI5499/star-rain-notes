@@ -1,7 +1,10 @@
 package com.starrainnotes.blog.dto;
 
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /*
  * BLOG-003 创建文章请求。
@@ -12,9 +15,13 @@ import lombok.Data;
  * 错误码才能稳定为 BLOG_* 而不是笼统的 INVALID_REQUEST。
  */
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class BlogPostCreateDTO {
 
     private String title;
+    // 可选：不填时从标题派生，中文标题使用确定性回退值。
     private String slug;
     private String summary;
 

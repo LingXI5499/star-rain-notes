@@ -90,6 +90,30 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
   max-height: calc(100vh - var(--header-height) - var(--space-12));
   overflow-y: auto;
   font-size: 13px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+/* 滚动条按 V1 收细：目录列只有 165–220px 宽，系统默认滚动条会挡住标题文字 */
+.article-outline::-webkit-scrollbar {
+  width: 8px;
+}
+
+.article-outline::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.article-outline::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.article-outline::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 .article-outline--embedded {
