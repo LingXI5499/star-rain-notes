@@ -1,39 +1,45 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, provide, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../modules/account/stores/authStore'
 import { errorMessage } from '../../modules/account/api/http'
 import * as accountApi from '../../modules/account/api/accountApi'
+import { accountPath } from '../viewMode'
 
 /*
- * 管理站外壳（控制台）：对齐 V1 layouts/AdminLayout.vue 的信息架构。
+ * 控制台外壳（唯一带侧栏的外壳），由账号树的 /useradmin/center 用户中心进入。
  *
- * 侧栏按分组组织：仪表盘 / 账户协作（用户管理·邀请管理·审核中心·审计日志）/
- * 教程工作台 / 博客管理 / 作品管理。
+ * 侧栏分三层，按角色隐藏 —— 是「看不见」，不是「点了报 403」：
+ *   通用        我的账户（/useradmin/center）、学习记录（占位，后续开发）
+ *   内容编辑    ADMIN 及以上：教程编辑（占位）、博客管理、媒体库、作品管理（占位）、审核中心
+ *   站点治理    SUPER_ADMIN：仪表盘、账户管理、管理员邀请、账户审计
  *
  * 三处刻意的取舍：
  * 1. 没有「英语管理」—— english 模块在 V2 仍为 PAUSED，导航里不出现，
  *    避免给出一个点进去什么也没有的入口。
- * 2. 教程工作台、作品管理只有位置、不能点：对应的后端模块还没做，
- *    做成 RouterLink 会直接落到 404 兜底重定向，比「不可点」更糟。
- * 3. 审核中心属于用户站入口（entryRoutes.js 里 /admin/reviews/** 归 user），
- *    管理站域名下直接跳过去会被入口守卫挡回本入口首页，因此这里给出的是
- *    用户站的绝对地址。会话 Cookie 按域名隔离，跨站过去需要重新登录——
- *    这是三入口设计的既有行为，不是本页的缺陷。
+ * 2. 教程编辑 / 作品管理只有位置、不能点：对应的后端模块还没做，
+ *    做成 RouterLink 会直接落到兜底重定向，比「不可点 + 建设中」更糟。
+ * 3. 内容编辑这一层的可见性用角色判断（ADMIN / SUPER_ADMIN），而不是逐个权限码：
+ *    这一层里有教程编辑 / 作品管理两个占位项，它们没有权限码可判，
+ *    角色正好表达「内容编辑者」这个层级；层内每个真实链接仍然各自再判一次权限，
+ *    因此「有角色但缺某个权限」时不会看到进不去的入口。
+ *
+ * 返回前台是一个普通的整页链接（<a href="/">），不是前端路由跳转：
+ * 这是唯一需要从账号树跨回公开树的方向，整页加载顺带保证公开树不会带着账号态渲染。
  */
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 
 const collapsed = ref(localStorage.getItem('admin-sidebar-collapsed') === 'true')
-const accountGroupOpen = ref(localStorage.getItem('admin-account-group-open') !== 'false')
+const governanceOpen = ref(localStorage.getItem('admin-governance-group-open') !== 'false')
 const mobileOpen = ref(false)
 const navRef = ref(null)
 const contentRef = ref(null)
 
-watch([collapsed, accountGroupOpen], () => {
+watch([collapsed, governanceOpen], () => {
   localStorage.setItem('admin-sidebar-collapsed', String(collapsed.value))
-  localStorage.setItem('admin-account-group-open', String(accountGroupOpen.value))
+  localStorage.setItem('admin-governance-group-open', String(governanceOpen.value))
 })
 
 function rememberNavScroll() {
@@ -58,78 +64,48 @@ onMounted(async () => {
 })
 
 // ---------------------------------------------------------------------
-// 导航
+// 导航（按角色分层）
 // ---------------------------------------------------------------------
 
-const dashboardItem = { to: '/admin/dashboard', label: '仪表盘', short: '盘' }
-
-/*
- * 账户协作分组：前三项是本入口的页面，第四项「审核中心」在用户站，
- * 用 external 标记渲染成普通 a 标签（见文件头第 3 条）。
- */
-const accountItems = [
-  { label: '用户管理', short: '用', to: '/admin/accounts', permission: 'account:read' },
-  { label: '邀请管理', short: '邀', to: '/admin/invitations', permission: 'account:invite-admin' },
-  { label: '审核中心', short: '审', permission: 'review:read', external: true },
-  { label: '审计日志', short: '计', to: '/admin/audits', permission: 'account:audit-read' },
+const personalItems = [
+  { label: '我的账户', short: '我', to: accountPath('/center') },
+  // 学习记录属于后续开发：留位置但不做成死链
+  { label: '学习记录', short: '学', pending: '学习记录后续开发' },
 ]
 
-const visibleAccountItems = computed(() =>
-  accountItems.filter((item) => (item.external ? auth.hasPermission(item.permission) : auth.canManage(item.permission))),
-)
+// 内容编辑层：ADMIN 与 SUPER_ADMIN。角色只决定「这一层出现不出现」，
+// 层内每一项再各自按权限判断，避免出现「看得见但进不去」的入口。
+const CONTENT_EDITOR_ROLES = ['ADMIN', 'SUPER_ADMIN']
+const isContentEditor = computed(() =>
+  Boolean(auth.currentUser?.roles?.some((role) => CONTENT_EDITOR_ROLES.includes(role))))
+const isSuperAdmin = computed(() => Boolean(auth.currentUser?.roles?.includes('SUPER_ADMIN')))
 
-const contentItems = [
-  // 后端模块未实现：保留侧栏位置，明确标注建设中且不可点
-  { label: '教程工作台', short: '教', pending: true },
-  { label: '博客管理', short: '博', to: '/admin/blog', permission: 'blog:read-admin' },
-  { label: '作品管理', short: '品', pending: true },
-]
+const contentItems = computed(() => [
+  { label: '教程编辑', short: '教', pending: '教程模块后端未实现' },
+  { label: '博客管理', short: '博', to: accountPath('/blog/manage'), visible: auth.hasPermission('blog:read-admin') },
+  { label: '媒体库', short: '媒', to: accountPath('/media'), visible: auth.hasPermission('media:read') },
+  { label: '作品管理', short: '品', pending: '作品模块后端未实现' },
+  // 审核中心不在所有者给的侧栏清单里，但 review 模块已交付且 ADMIN 持有 review:read；
+  // 漏掉它会让整个审核模块在控制台没有入口。见验收文档的偏差记录。
+  { label: '审核中心', short: '审', to: accountPath('/reviews'), visible: auth.hasPermission('review:read') },
+])
+const visibleContentItems = computed(() => contentItems.value.filter((item) => item.pending || item.visible))
 
-const visibleContentItems = computed(() =>
-  contentItems.filter((item) => (item.pending ? true : auth.hasPermission(item.permission))),
-)
+// 站点治理层：只有 SUPER_ADMIN。每一项仍按账户治理权限判断（canManage 要求既是超管又有该权限）
+const governanceItems = computed(() => [
+  { label: '仪表盘', short: '盘', to: accountPath('/dashboard'), visible: auth.canManage('account:read') },
+  { label: '账户管理', short: '用', to: accountPath('/accounts'), visible: auth.canManage('account:read') },
+  { label: '管理员邀请', short: '邀', to: accountPath('/invitations'), visible: auth.canManage('account:invite-admin') },
+  { label: '账户审计', short: '计', to: accountPath('/audits'), visible: auth.canManage('account:audit-read') },
+].filter((item) => item.visible))
 
-const accountGroupActive = computed(() =>
-  ['/admin/accounts', '/admin/invitations', '/admin/audits', '/admin/reviews']
-    .some((prefix) => route.path.startsWith(prefix)),
-)
-const blogActive = computed(() => route.path.startsWith('/admin/blog'))
+const governanceActive = computed(() =>
+  ['/dashboard', '/accounts', '/invitations', '/audits']
+    .some((suffix) => route.path.startsWith(accountPath(suffix))))
 
-// ---------------------------------------------------------------------
-// 站点地址：管理站域名换掉前缀就是公开站 / 用户站
-// ---------------------------------------------------------------------
-
-function siblingOrigin(prefix) {
-  const { protocol, hostname, port } = window.location
-  const suffix = port ? `:${port}` : ''
-  // admin.localhost → localhost（公开站）；admin.yulanlin.cn → user.yulanlin.cn（用户站）
-  if (hostname.startsWith('admin.')) {
-    const rest = hostname.slice('admin.'.length)
-    return `${protocol}//${prefix ? `${prefix}.` : ''}${rest}${suffix}`
-  }
-  // 已经在公开站域名下（例如 127.0.0.1 直连）时，用户站没有独立域名，退回同源
-  return `${protocol}//${prefix ? `${prefix}.` : ''}${hostname}${suffix}`
+function isActive(target) {
+  return route.path === target || route.path.startsWith(`${target}/`)
 }
-
-const publicSiteUrl = computed(() => {
-  const configured = import.meta.env.VITE_PUBLIC_SITE_ORIGIN
-  return typeof configured === 'string' && configured.trim() !== '' ? configured.trim() : siblingOrigin('')
-})
-
-/*
- * 页面需要「跳到公开站」的地方（例如列表里的文章预览）从外壳取同一个地址，
- * 避免每个页面各写一份域名推导。注入的是 computed，模板里会自动解包。
- */
-provide('adminPublicSiteUrl', publicSiteUrl)
-
-// 审核中心在用户站入口，这里给绝对地址（见文件头第 3 条）
-const reviewCenterUrl = computed(() => {
-  const configured = import.meta.env.VITE_USER_SITE_ORIGIN
-  const origin = typeof configured === 'string' && configured.trim() !== ''
-    ? configured.trim().replace(/\/$/, '')
-    : siblingOrigin('user')
-  return `${origin}/admin/reviews`
-})
 
 // ---------------------------------------------------------------------
 // 主题
@@ -191,7 +167,7 @@ async function logout() {
     auth.currentUser = null
   } finally {
     logoutBusy.value = false
-    await router.replace('/login')
+    await router.replace(accountPath('/login'))
   }
 }
 
@@ -224,7 +200,7 @@ async function submitPassword() {
     // 后端在修改密码后立即失效会话，这里引导重新登录
     passwordDialog.value?.close()
     auth.currentUser = null
-    await router.replace({ path: '/login', query: { redirect: '/admin/dashboard' } })
+    await router.replace({ path: accountPath('/login'), query: { redirect: accountPath('/dashboard') } })
   } catch (cause) {
     passwordError.value = errorMessage(cause)
   } finally {
@@ -245,77 +221,29 @@ async function submitPassword() {
 
     <aside :class="['admin-shell__sidebar', collapsed && 'admin-shell__sidebar--collapsed', mobileOpen && 'is-mobile-open']">
       <div class="admin-shell__brand">
-        <RouterLink to="/admin/dashboard" class="admin-shell__brand-link">
+        <RouterLink :to="accountPath('/center')" class="admin-shell__brand-link">
           <span v-if="!collapsed">星雨笔录</span>
           <span v-else>星</span>
         </RouterLink>
       </div>
 
-      <nav ref="navRef" class="admin-shell__nav" aria-label="管理导航" @scroll.passive="rememberNavScroll">
-        <RouterLink
-          :to="dashboardItem.to"
-          class="admin-shell__nav-item"
-          :class="{ 'admin-shell__nav-item--active': route.path === dashboardItem.to }"
-          :title="collapsed ? dashboardItem.label : undefined"
-        >
-          <span class="admin-shell__nav-short">{{ dashboardItem.short }}</span>
-          <span v-if="!collapsed" class="admin-shell__nav-label">{{ dashboardItem.label }}</span>
-        </RouterLink>
-
-        <div v-if="visibleAccountItems.length" class="admin-shell__nav-group">
-          <button
-            type="button"
+      <nav ref="navRef" class="admin-shell__nav" aria-label="控制台导航" @scroll.passive="rememberNavScroll">
+        <!-- 通用：所有登录用户 -->
+        <template v-for="item in personalItems" :key="item.label">
+          <RouterLink
+            v-if="item.to"
+            :to="item.to"
             class="admin-shell__nav-item"
-            :class="{ 'admin-shell__nav-item--active': accountGroupActive }"
-            :title="collapsed ? '账户协作' : undefined"
-            @click="collapsed ? router.push('/admin/accounts') : (accountGroupOpen = !accountGroupOpen)"
+            :class="{ 'admin-shell__nav-item--active': isActive(item.to) }"
+            :title="collapsed ? item.label : undefined"
           >
-            <span class="admin-shell__nav-short">账</span>
-            <span v-if="!collapsed" class="admin-shell__nav-label">账户协作</span>
-            <span v-if="!collapsed" class="admin-shell__nav-chevron">{{ accountGroupOpen ? '⌃' : '⌄' }}</span>
-          </button>
-
-          <!-- 折叠态：子项退化成单字图标，避免侧栏被撑开 -->
-          <div v-if="collapsed" class="admin-shell__collapsed-subnav">
-            <template v-for="item in visibleAccountItems" :key="item.label">
-              <RouterLink
-                v-if="item.to"
-                :to="item.to"
-                class="admin-shell__nav-item"
-                :class="{ 'admin-shell__nav-item--active': route.path.startsWith(item.to) }"
-                :title="item.label"
-              >
-                <span class="admin-shell__nav-short">{{ item.short }}</span>
-              </RouterLink>
-              <a v-else :href="reviewCenterUrl" class="admin-shell__nav-item" title="审核中心（用户站）">
-                <span class="admin-shell__nav-short">{{ item.short }}</span>
-              </a>
-            </template>
-          </div>
-
-          <div v-else-if="accountGroupOpen" class="admin-shell__subnav">
-            <template v-for="item in visibleAccountItems" :key="item.label">
-              <RouterLink
-                v-if="item.to"
-                :to="item.to"
-                class="admin-shell__subnav-item"
-                :class="{ 'is-active': route.path.startsWith(item.to) }"
-              >{{ item.label }}</RouterLink>
-              <a
-                v-else
-                :href="reviewCenterUrl"
-                class="admin-shell__subnav-item admin-shell__subnav-item--external"
-                title="审核中心在用户站入口；会话 Cookie 按域名隔离，过去需要重新登录"
-              >{{ item.label }} ↗</a>
-            </template>
-          </div>
-        </div>
-
-        <template v-for="item in visibleContentItems" :key="item.label">
+            <span class="admin-shell__nav-short">{{ item.short }}</span>
+            <span v-if="!collapsed" class="admin-shell__nav-label">{{ item.label }}</span>
+          </RouterLink>
           <span
-            v-if="item.pending"
+            v-else
             class="admin-shell__nav-item admin-shell__nav-item--pending"
-            :title="collapsed ? `${item.label}（建设中）` : '模块建设中，暂未开放'"
+            :title="collapsed ? `${item.label}（建设中）` : item.pending"
             aria-disabled="true"
           >
             <span class="admin-shell__nav-short">{{ item.short }}</span>
@@ -324,16 +252,77 @@ async function submitPassword() {
               <em class="admin-shell__nav-badge">建设中</em>
             </template>
           </span>
-          <RouterLink
-            v-else
-            :to="item.to"
-            class="admin-shell__nav-item"
-            :class="{ 'admin-shell__nav-item--active': item.to === '/admin/blog' && blogActive }"
-            :title="collapsed ? item.label : undefined"
-          >
-            <span class="admin-shell__nav-short">{{ item.short }}</span>
-            <span v-if="!collapsed" class="admin-shell__nav-label">{{ item.label }}</span>
-          </RouterLink>
+        </template>
+
+        <!-- 内容编辑：ADMIN 及以上 -->
+        <template v-if="isContentEditor && visibleContentItems.length">
+          <p class="admin-shell__nav-caption">{{ collapsed ? '内' : '内容编辑' }}</p>
+          <template v-for="item in visibleContentItems" :key="item.label">
+            <span
+              v-if="item.pending"
+              class="admin-shell__nav-item admin-shell__nav-item--pending"
+              :title="collapsed ? `${item.label}（建设中）` : '模块建设中，暂未开放'"
+              aria-disabled="true"
+            >
+              <span class="admin-shell__nav-short">{{ item.short }}</span>
+              <template v-if="!collapsed">
+                <span class="admin-shell__nav-label">{{ item.label }}</span>
+                <em class="admin-shell__nav-badge">建设中</em>
+              </template>
+            </span>
+            <RouterLink
+              v-else
+              :to="item.to"
+              class="admin-shell__nav-item"
+              :class="{ 'admin-shell__nav-item--active': isActive(item.to) }"
+              :title="collapsed ? item.label : undefined"
+            >
+              <span class="admin-shell__nav-short">{{ item.short }}</span>
+              <span v-if="!collapsed" class="admin-shell__nav-label">{{ item.label }}</span>
+            </RouterLink>
+          </template>
+        </template>
+
+        <!-- 站点治理：只有 SUPER_ADMIN -->
+        <template v-if="isSuperAdmin && governanceItems.length">
+          <p class="admin-shell__nav-caption">{{ collapsed ? '治' : '站点治理' }}</p>
+
+          <!-- 折叠态：子项退化成单字图标，避免侧栏被撑开 -->
+          <div v-if="collapsed" class="admin-shell__collapsed-subnav">
+            <RouterLink
+              v-for="item in governanceItems"
+              :key="item.label"
+              :to="item.to"
+              class="admin-shell__nav-item"
+              :class="{ 'admin-shell__nav-item--active': isActive(item.to) }"
+              :title="item.label"
+            >
+              <span class="admin-shell__nav-short">{{ item.short }}</span>
+            </RouterLink>
+          </div>
+
+          <template v-else>
+            <button
+              type="button"
+              class="admin-shell__nav-item"
+              :class="{ 'admin-shell__nav-item--active': governanceActive }"
+              :aria-expanded="governanceOpen"
+              @click="governanceOpen = !governanceOpen"
+            >
+              <span class="admin-shell__nav-short">治</span>
+              <span class="admin-shell__nav-label">治理操作</span>
+              <span class="admin-shell__nav-chevron">{{ governanceOpen ? '⌃' : '⌄' }}</span>
+            </button>
+            <div v-if="governanceOpen" class="admin-shell__subnav">
+              <RouterLink
+                v-for="item in governanceItems"
+                :key="item.label"
+                :to="item.to"
+                class="admin-shell__subnav-item"
+                :class="{ 'is-active': isActive(item.to) }"
+              >{{ item.label }}</RouterLink>
+            </div>
+          </template>
         </template>
       </nav>
 
@@ -350,14 +339,15 @@ async function submitPassword() {
     <div class="admin-shell__body">
       <header class="admin-shell__header">
         <div class="admin-shell__header-title">
-          <button class="admin-shell__mobile-menu" type="button" aria-label="打开管理导航" @click="mobileOpen = true">☰</button>
-          <span class="admin-shell__header-title-long">星雨笔录 · 管理控制台</span>
-          <span class="admin-shell__header-title-short">管理台</span>
+          <button class="admin-shell__mobile-menu" type="button" aria-label="打开控制台导航" @click="mobileOpen = true">☰</button>
+          <span class="admin-shell__header-title-long">星雨笔录 · 用户中心</span>
+          <span class="admin-shell__header-title-short">用户中心</span>
         </div>
         <div class="admin-shell__header-actions">
-          <a class="admin-shell__header-action" :href="publicSiteUrl" title="查看站点（公开站）">
-            <span class="admin-shell__header-action-long">查看站点</span>
-            <span class="admin-shell__header-action-short">站点</span>
+          <!-- 返回前台是整页跳转：账号树 → 公开树是跨树切换，整页加载保证公开树不带账号态 -->
+          <a class="admin-shell__header-action" href="/" title="返回前台（公开站首页）">
+            <span class="admin-shell__header-action-long">返回前台</span>
+            <span class="admin-shell__header-action-short">前台</span>
           </a>
           <button
             class="admin-shell__header-action"

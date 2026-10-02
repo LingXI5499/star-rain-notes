@@ -75,7 +75,7 @@ onMounted(load)
     <div class="page-heading">
       <p class="eyebrow">MEDIA DETAIL</p>
       <h1>{{ asset?.originalName || '媒体详情' }}</h1>
-      <p><RouterLink to="/admin/media">← 返回媒体库</RouterLink></p>
+      <p><RouterLink to="/useradmin/media">← 返回媒体库</RouterLink></p>
     </div>
 
     <p v-if="error" class="error" role="alert">{{ error }}</p>

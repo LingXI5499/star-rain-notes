@@ -1,5 +1,5 @@
 <script setup>
-import { computed, inject, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink, useRouter } from 'vue-router'
 import {
   deletePost, listAdminPosts, listAdminTags, publishPost, restorePost, withdrawPost,
@@ -18,12 +18,11 @@ import {
  * 行内操作按后端状态机给出：每个状态只显示它能做的事，
  * 让「先撤回再删除」这类规则在界面上就能看出来。
  *
- * 预览跳到的是公开站的文章地址（/blog 属公开站入口，在管理站域名下会被守卫挡回），
- * 因此这里用公开站的绝对地址，只对已发布文章开放。
- * 该地址由 AdminShell 通过 provide 给出（管理站域名去掉 admin. 前缀就是公开站）。
+ * 预览打开的是**公开树**的文章地址（/blog/posts/:slug，同域同源）。
+ * 为什么不用账号树的镜像地址：预览要看的就是匿名访客看到的那一页，
+ * 账号树那份带着登录态与账号外壳，不是公开发布后的样子。
+ * 地址直接用当前 origin 拼：入口改成路径方案后不再有域名推导，后台与公开站同一个来源。
  */
-const publicSiteUrl = inject('adminPublicSiteUrl', '')
-
 const router = useRouter()
 
 const filters = reactive({ keyword: '', status: '', tagId: '' })
@@ -49,9 +48,8 @@ const pageNumbers = computed(() => {
 })
 
 function previewUrl(post) {
-  const origin = typeof publicSiteUrl === 'string' ? publicSiteUrl : publicSiteUrl.value
-  if (!origin || !post.slug) return ''
-  return `${origin.replace(/\/$/, '')}/blog/posts/${post.slug}`
+  if (!post.slug) return ''
+  return `${window.location.origin}/blog/posts/${post.slug}`
 }
 
 async function load() {
@@ -111,7 +109,7 @@ function preview(post) {
   }
   const url = previewUrl(post)
   if (!url) {
-    error.value = '无法推导公开站地址，请在环境变量 VITE_PUBLIC_SITE_ORIGIN 里显式指定。'
+    error.value = '这篇文章还没有 slug，无法生成公开地址。'
     return
   }
   window.open(url, '_blank', 'noopener,noreferrer')
@@ -155,8 +153,8 @@ onMounted(() => {
         <p>管理文章生命周期、标签与前台时间线展示。</p>
       </div>
       <div class="content-admin__hero-actions">
-        <RouterLink to="/admin/blog/taxonomy">分类与专题</RouterLink>
-        <RouterLink to="/admin/blog/posts/new" class="is-primary">＋ 新建文章</RouterLink>
+        <RouterLink to="/useradmin/blog/taxonomy">分类与专题</RouterLink>
+        <RouterLink to="/useradmin/blog/editor/new" class="is-primary">＋ 新建文章</RouterLink>
       </div>
     </header>
 
@@ -210,7 +208,7 @@ onMounted(() => {
             </div>
             <div class="content-card__actions">
               <button type="button" @click="preview(post)">预览</button>
-              <button type="button" @click="router.push(`/admin/blog/posts/${post.id}`)">编辑</button>
+              <button type="button" @click="router.push(`/useradmin/blog/editor/${post.id}`)">编辑</button>
               <button v-if="canPublish(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'publish')">发布</button>
               <button v-if="canWithdraw(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'withdraw')">撤回</button>
               <button v-if="canRestore(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'restore')">恢复</button>

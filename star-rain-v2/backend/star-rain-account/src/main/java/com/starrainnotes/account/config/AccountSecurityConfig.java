@@ -1,11 +1,9 @@
 package com.starrainnotes.account.config;
 
 import com.starrainnotes.account.security.AccountAuthenticator;
-import com.starrainnotes.account.security.RegistrationEntryRequestMatcher;
 import com.starrainnotes.account.interceptor.AccountSessionValidationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import com.starrainnotes.account.mapper.AccountMapper;
-import com.starrainnotes.common.context.HostEntryResolver;
 import com.starrainnotes.common.security.ModuleSecurityContributor;
 import java.util.Comparator;
 import java.util.List;
@@ -33,8 +31,10 @@ import org.springframework.security.web.csrf.CsrfException;
  * 各业务模块通过 ModuleSecurityContributor 声明自己的 URL 边界，
  * 因此业务模块既不重复这套配置，也不会绕过 AccountSessionValidationFilter 的账户停用校验。
  *
- * 三入口隔离也落在这条链上：认证 API 只有一套，但注册类端点只对用户站开放，
- * 由 RegistrationEntryRequestMatcher 按 Host 判定（见下方规则顺序说明）。
+ * 入口隔离不再由这条链承担：入口已经从「按域名」改成「按路径」（同一个域名 + 公开树 / 账号树），
+ * 服务端拿不到任何可用于区分两条路径树的请求特征——同一个域名下 / 与 /useradmin 的
+ * 请求头、Cookie、方法完全一样，因此「公开站不暴露注册登录」退化为前端路由级保证。
+ * 注册接口恢复为普通公开接口，其既有业务约束（邮箱验证码、参数校验、用户名唯一）不变。
  */
 @Configuration
 @EnableMethodSecurity
@@ -59,7 +59,6 @@ public class AccountSecurityConfig {
     SecurityFilterChain securityFilterChain(HttpSecurity http,
                                             SecurityContextRepository contextRepository,
                                             AccountMapper mapper,
-                                            HostEntryResolver hostEntryResolver,
                                             List<ModuleSecurityContributor> contributors) throws Exception {
         HttpSessionCsrfTokenRepository csrfRepository = new HttpSessionCsrfTokenRepository();
         csrfRepository.setHeaderName("X-XSRF-TOKEN");
@@ -67,9 +66,6 @@ public class AccountSecurityConfig {
         List<ModuleSecurityContributor> ordered = contributors.stream()
                 .sorted(Comparator.comparingInt(ModuleSecurityContributor::order))
                 .toList();
-        // 同一条入口规则既用于授权判定，也用于决定「拒绝时回 401 还是 403」，因此只构造一份
-        RegistrationEntryRequestMatcher registrationEntryMatcher =
-                new RegistrationEntryRequestMatcher(hostEntryResolver);
         http
                 .csrf(csrf -> csrf.csrfTokenRepository(csrfRepository)
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
@@ -83,13 +79,12 @@ public class AccountSecurityConfig {
                         }
                     }
                     /*
-                     * 入口收窄：注册类端点只在用户站开放。
+                     * 入口收窄规则已随「三入口按域名」方案一并移除。
                      *
-                     * 必须放在下面那批 permitAll 之前——/api/auth/register 也在 publicPatterns 里，
-                     * 顺序反了就等于没写这条规则。
-                     * 判定依赖 Host，而 requestMatchers 不支持按 Host 匹配，所以用自定义 RequestMatcher。
+                     * 路径方案下注册接口是普通公开接口：同一个域名上无法从请求里分辨
+                     * 调用方来自公开树还是账号树。少了这一层的后果与补偿见
+                     * docs/开发文档/路径入口返工验收.md 的「已知缺口」。
                      */
-                    authorize.requestMatchers(registrationEntryMatcher).denyAll();
                     for (ModuleSecurityContributor contributor : ordered) {
                         if (!contributor.publicPatterns().isEmpty()) {
                             authorize.requestMatchers(contributor.publicPatterns().toArray(String[]::new)).permitAll();
@@ -105,21 +100,8 @@ public class AccountSecurityConfig {
                     authorize.anyRequest().denyAll();
                 })
                 .exceptionHandling(exceptions -> exceptions
-                        .authenticationEntryPoint((request, response, failure) -> {
-                            /*
-                             * 匿名请求命中入口收窄规则时必须回 403，不能回 401。
-                             *
-                             * ExceptionTranslationFilter 对「匿名 + 授权被拒」的默认处理是发起认证挑战，
-                             * 但那对这里恰好是错的答案：注册在公开站与管理站是本就不存在的能力，
-                             * 不是登录态问题。回 401 会误导调用方去登录，而且在公开站根本没有登录入口。
-                             * 其它 URL 的 401「请先登录」语义完全不变。
-                             */
-                            if (registrationEntryMatcher.matches(request)) {
-                                writeSecurityError(response, 403, "FORBIDDEN", "没有操作权限");
-                                return;
-                            }
-                            writeSecurityError(response, 401, "UNAUTHORIZED", "请先登录");
-                        })
+                        .authenticationEntryPoint((request, response, failure) ->
+                                writeSecurityError(response, 401, "UNAUTHORIZED", "请先登录"))
                         .accessDeniedHandler((request, response, failure) ->
                                 writeSecurityError(response, 403,
                                         failure instanceof CsrfException ? "CSRF_INVALID" : "FORBIDDEN",

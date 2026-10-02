@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { listArchive, listPublicPosts, listArchiveMonths, listPublicTags } from '../api/blogApi'
 import { errorMessage } from '../../../shared/http'
+import { useViewMode } from '../../../shared/viewMode'
 import BlogTimeline from '../components/BlogTimeline.vue'
 import BlogSidebar from '../components/BlogSidebar.vue'
 import BlogPagination from '../components/BlogPagination.vue'
@@ -20,7 +21,11 @@ import BlogPagination from '../components/BlogPagination.vue'
  * 因此这里按「有没有选月份」在两个接口之间切换，而不是把参数丢给一个会静默忽略它的接口。
  *
  * 匿名可读：这条路由没有 requiresAuth，后端 URL 边界也把 /api/public/blog/** 放行。
+ *
+ * 这一页在两条路径树上复用（/blog 与 /useradmin/blog），因此写回 URL 时用 contentPath()
+ * 按当前模式取地址，而不是写死 /blog —— 写死会让账号模式下的筛选操作把人踢回公开树。
  */
+const { contentPath } = useViewMode()
 const route = useRoute()
 const router = useRouter()
 
@@ -100,7 +105,7 @@ async function loadAside() {
 }
 
 function applyQuery() {
-  router.replace({ path: '/blog', query: queryOf() })
+  router.replace({ path: contentPath('/blog'), query: queryOf() })
 }
 
 function selectTag(slug) {
