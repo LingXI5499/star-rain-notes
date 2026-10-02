@@ -17,6 +17,7 @@ import BlogArchivePage from '../modules/blog/pages/BlogArchivePage.vue'
 import BlogManagePage from '../modules/blog/pages/admin/BlogManagePage.vue'
 import BlogEditorPage from '../modules/blog/pages/admin/BlogEditorPage.vue'
 import BlogTaxonomyPage from '../modules/blog/pages/admin/BlogTaxonomyPage.vue'
+import DashboardPage from '../modules/site/pages/DashboardPage.vue'
 
 /*
  * 路由表。
@@ -47,6 +48,9 @@ const router = createRouter({
       meta: { authPage: true, requiresAuth: true } },
     { path: '/account', component: AccountPage, meta: { requiresAuth: true } },
     { path: '/admin/accounts', component: AdminAccountsPage,
+      meta: { requiresAuth: true, permission: 'account:read', superAdminOnly: true } },
+    // 控制台仪表盘：管理站首页入口，只读博客接口，不新增后端接口
+    { path: '/admin/dashboard', component: DashboardPage,
       meta: { requiresAuth: true, permission: 'account:read', superAdminOnly: true } },
     { path: '/admin/permissions', redirect: '/admin/accounts' },
     { path: '/admin/invitations', component: AdminInvitationsPage,
