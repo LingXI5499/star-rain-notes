@@ -7,6 +7,17 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record AcceptAdminInvitationDTO(@NotBlank String token) {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AcceptAdminInvitationDTO {
+
+    @NotBlank
+    private String token;
 }

@@ -2,7 +2,22 @@ package com.starrainnotes.account.vo;
 
 import java.time.LocalDateTime;
 import java.util.Set;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record AccountAuditVO(String id, String actorAccountId, String targetAccountId,
-        String actionCode, String result, String ipAddress, LocalDateTime createdAt) {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class AccountAuditVO {
+
+    private String id;
+    private String actorAccountId;
+    private String targetAccountId;
+    private String actionCode;
+    private String result;
+    private String ipAddress;
+    private LocalDateTime createdAt;
 }

@@ -7,6 +7,19 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record LoginDTO(@NotBlank String identifier, @NotBlank String password) {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class LoginDTO {
+
+    @NotBlank
+    private String identifier;
+    @NotBlank
+    private String password;
 }

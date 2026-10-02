@@ -1,8 +1,8 @@
 package com.starrainnotes.account.service;
 
 import com.starrainnotes.account.entity.AccountEntity;
-import com.starrainnotes.account.support.AccountRules;
-import com.starrainnotes.account.support.OneTimeTokens;
+import com.starrainnotes.account.utils.AccountRules;
+import com.starrainnotes.account.utils.OneTimeTokens;
 import com.starrainnotes.account.entity.RoleEntity;
 import com.starrainnotes.account.entity.PasswordResetEntity;
 import com.starrainnotes.account.dto.RegisterDTO;
@@ -14,8 +14,8 @@ import com.starrainnotes.account.dto.PasswordResetRequestDTO;
 import com.starrainnotes.account.dto.PasswordResetConfirmDTO;
 import com.starrainnotes.account.vo.CurrentAccountVO;
 import com.starrainnotes.account.mapper.AccountMapper;
-import com.starrainnotes.account.security.AccountPrincipal;
-import com.starrainnotes.common.ApiException;
+import com.starrainnotes.account.context.AccountPrincipal;
+import com.starrainnotes.common.exception.ApiException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -64,9 +64,9 @@ public class AccountAuthService {
 
     @Transactional
     public CurrentAccountVO register(RegisterDTO request) {
-        AccountRules.password(request.password(), request.confirmPassword());
-        String username = request.username().trim();
-        String email = AccountRules.email(request.email());
+        AccountRules.password(request.getPassword(), request.getConfirmPassword());
+        String username = request.getUsername().trim();
+        String email = AccountRules.email(request.getEmail());
         if (mapper.usernameCount(username) > 0) {
             throw new ApiException("USERNAME_ALREADY_EXISTS", "用户名已被使用", 409);
         }
@@ -74,7 +74,7 @@ public class AccountAuthService {
             throw new ApiException("EMAIL_ALREADY_EXISTS", "邮箱已被使用", 409);
         }
         RoleEntity userRole = requiredRole("USER");
-        String codeHash = emailVerification.verify(email, request.verificationCode());
+        String codeHash = emailVerification.verify(email, request.getVerificationCode());
         emailVerification.consume(email, codeHash);
         AccountEntity account = new AccountEntity();
         account.setUsername(username);
@@ -87,7 +87,7 @@ public class AccountAuthService {
         } catch (DuplicateKeyException exception) {
             throw new ApiException("ACCOUNT_ALREADY_EXISTS", "用户名或邮箱已被使用", 409);
         }
-        mapper.insertCredential(account.getId(), encoder.encode(request.password()));
+        mapper.insertCredential(account.getId(), encoder.encode(request.getPassword()));
         mapper.insertAccountRole(account.getId(), userRole.getId(), null);
         audit.success(account.getId(), account.getId(), "REGISTER_SUCCESS");
         return identity.view(account.getId());
@@ -104,26 +104,26 @@ public class AccountAuthService {
         try {
             authentication = authenticationManager.authenticate(
                     UsernamePasswordAuthenticationToken.unauthenticated(
-                            request.identifier().trim(), request.password()));
+                            request.getIdentifier().trim(), request.getPassword()));
         } catch (AuthenticationException exception) {
             audit.failed(null, null, "LOGIN_FAILED");
             throw new ApiException("INVALID_CREDENTIALS", "身份信息无效", 401);
         }
         AccountPrincipal principal = (AccountPrincipal) authentication.getPrincipal();
-        mapper.updateLastLogin(principal.accountId());
-        audit.success(principal.accountId(), principal.accountId(), "LOGIN_SUCCESS");
+        mapper.updateLastLogin(principal.getAccountId());
+        audit.success(principal.getAccountId(), principal.getAccountId(), "LOGIN_SUCCESS");
         servletRequest.getSession(true);
         servletRequest.changeSessionId();
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authentication);
         SecurityContextHolder.setContext(context);
         contextRepository.saveContext(context, servletRequest, servletResponse);
-        return identity.view(principal.accountId());
+        return identity.view(principal.getAccountId());
     }
 
     @Transactional
     public CurrentAccountVO confirmEmail(ConfirmEmailDTO request) {
-        long id = identity.principal().accountId();
+        long id = identity.principal().getAccountId();
         AccountEntity account = mapper.accountByIdForUpdate(id);
         if (account == null || !"ACTIVE".equals(account.getStatus())) {
             throw new ApiException("ACCOUNT_DISABLED", "账户不可用", 403);
@@ -131,7 +131,7 @@ public class AccountAuthService {
         if (account.getEmailVerifiedAt() != null) {
             throw new ApiException("EMAIL_ALREADY_VERIFIED", "邮箱已经验证", 409);
         }
-        String codeHash = emailVerification.verify(account.getEmail(), request.verificationCode());
+        String codeHash = emailVerification.verify(account.getEmail(), request.getVerificationCode());
         emailVerification.consume(account.getEmail(), codeHash);
         mapper.verifyEmail(id);
         audit.success(id, id, "EMAIL_VERIFIED");
@@ -140,7 +140,7 @@ public class AccountAuthService {
 
     public void logout(HttpServletRequest request) {
         identity.currentOptional().ifPresent(actor ->
-                audit.success(actor.accountId(), actor.accountId(), "LOGOUT"));
+                audit.success(actor.getAccountId(), actor.getAccountId(), "LOGOUT"));
         HttpSession session = request.getSession(false);
         SecurityContextHolder.clearContext();
         if (session != null) {
@@ -150,27 +150,27 @@ public class AccountAuthService {
 
     @Transactional
     public CurrentAccountVO updateMe(UpdateMyAccountDTO request) {
-        long accountId = identity.principal().accountId();
-        mapper.updateDisplayName(accountId, request.displayName().trim());
+        long accountId = identity.principal().getAccountId();
+        mapper.updateDisplayName(accountId, request.getDisplayName().trim());
         return identity.view(accountId);
     }
 
     @Transactional
     public void changePassword(ChangePasswordDTO request) {
-        AccountRules.password(request.newPassword(), request.confirmPassword());
-        long accountId = identity.principal().accountId();
+        AccountRules.password(request.getNewPassword(), request.getConfirmPassword());
+        long accountId = identity.principal().getAccountId();
         AccountEntity account = mapper.accountByIdForUpdate(accountId);
         if (account == null || !"ACTIVE".equals(account.getStatus())) {
             throw new ApiException("ACCOUNT_DISABLED", "账户不可用", 403);
         }
         String hash = mapper.passwordHash(accountId);
-        if (hash == null || !encoder.matches(request.currentPassword(), hash)) {
+        if (hash == null || !encoder.matches(request.getCurrentPassword(), hash)) {
             throw new ApiException("INVALID_CURRENT_PASSWORD", "当前密码不正确", 400);
         }
-        if (encoder.matches(request.newPassword(), hash)) {
+        if (encoder.matches(request.getNewPassword(), hash)) {
             throw new ApiException("PASSWORD_POLICY_VIOLATION", "新密码不能与当前密码相同", 400);
         }
-        mapper.updatePassword(accountId, encoder.encode(request.newPassword()));
+        mapper.updatePassword(accountId, encoder.encode(request.getNewPassword()));
         mapper.incrementAuthVersion(accountId);
         audit.success(accountId, accountId, "PASSWORD_CHANGED");
     }
@@ -183,7 +183,7 @@ public class AccountAuthService {
                 LocalDateTime.now(ZoneOffset.UTC).minusHours(1)) >= 5) {
             throw new ApiException("PASSWORD_RESET_RATE_LIMITED", "请求过于频繁，请稍后再试", 429);
         }
-        AccountEntity account = mapper.accountByEmail(AccountRules.email(request.email()));
+        AccountEntity account = mapper.accountByEmail(AccountRules.email(request.getEmail()));
         if (account != null && "ACTIVE".equals(account.getStatus())) {
             mapper.expirePendingResets(account.getId());
             String token = OneTimeTokens.create();
@@ -200,8 +200,8 @@ public class AccountAuthService {
 
     @Transactional
     public void confirmPasswordReset(PasswordResetConfirmDTO request) {
-        AccountRules.password(request.newPassword(), request.confirmPassword());
-        PasswordResetEntity reset = mapper.resetByHashForUpdate(OneTimeTokens.hash(request.token()));
+        AccountRules.password(request.getNewPassword(), request.getConfirmPassword());
+        PasswordResetEntity reset = mapper.resetByHashForUpdate(OneTimeTokens.hash(request.getToken()));
         if (reset == null) {
             throw new ApiException("INVALID_PASSWORD_RESET_TOKEN", "重置链接无效", 400);
         }
@@ -218,7 +218,7 @@ public class AccountAuthService {
         if (mapper.useReset(reset.getId()) != 1) {
             throw new ApiException("PASSWORD_RESET_TOKEN_USED", "重置链接已使用", 409);
         }
-        mapper.updatePassword(account.getId(), encoder.encode(request.newPassword()));
+        mapper.updatePassword(account.getId(), encoder.encode(request.getNewPassword()));
         mapper.expirePendingResets(account.getId());
         mapper.incrementAuthVersion(account.getId());
         audit.success(account.getId(), account.getId(), "PASSWORD_RESET_SUCCESS");

@@ -5,7 +5,7 @@ import com.starrainnotes.account.dto.ConfirmEmailDTO;
 import com.starrainnotes.account.vo.EmailVerificationCodeVO;
 import com.starrainnotes.account.service.EmailVerificationService;
 import com.starrainnotes.account.service.AccountAuditService;
-import com.starrainnotes.common.ApiException;
+import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.account.dto.ChangePasswordDTO;
 import com.starrainnotes.account.dto.AcceptAdminInvitationDTO;
 import com.starrainnotes.account.vo.CurrentAccountVO;
@@ -14,7 +14,7 @@ import java.util.List;
 import com.starrainnotes.account.service.AccountAuthService;
 import com.starrainnotes.account.service.AccountIdentityService;
 import com.starrainnotes.account.service.AdminAccountService;
-import com.starrainnotes.common.ApiResponse;
+import com.starrainnotes.common.result.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -62,7 +62,7 @@ public class AccountController {
             return ApiResponse.ok(verification.sendForCurrentAccount(request.getRemoteAddr()));
         } catch (ApiException exception) {
             if ("MAIL_DELIVERY_FAILED".equals(exception.getCode())) {
-                audit.failed(identity.principal().accountId(), null, "EMAIL_CODE_DELIVERY_FAILED");
+                audit.failed(identity.principal().getAccountId(), null, "EMAIL_CODE_DELIVERY_FAILED");
             }
             throw exception;
         }

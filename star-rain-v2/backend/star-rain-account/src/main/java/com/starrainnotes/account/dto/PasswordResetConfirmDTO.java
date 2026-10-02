@@ -7,8 +7,21 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record PasswordResetConfirmDTO(@NotBlank String token,
-        @NotBlank String newPassword,
-        @NotBlank String confirmPassword) {
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PasswordResetConfirmDTO {
+
+    @NotBlank
+    private String token;
+    @NotBlank
+    private String newPassword;
+    @NotBlank
+    private String confirmPassword;
 }

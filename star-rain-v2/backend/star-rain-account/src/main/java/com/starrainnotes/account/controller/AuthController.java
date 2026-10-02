@@ -5,13 +5,13 @@ import com.starrainnotes.account.dto.RegistrationCodeRequestDTO;
 import com.starrainnotes.account.vo.EmailVerificationCodeVO;
 import com.starrainnotes.account.service.EmailVerificationService;
 import com.starrainnotes.account.service.AccountAuditService;
-import com.starrainnotes.common.ApiException;
+import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.account.dto.LoginDTO;
 import com.starrainnotes.account.dto.PasswordResetRequestDTO;
 import com.starrainnotes.account.dto.PasswordResetConfirmDTO;
 import com.starrainnotes.account.vo.CurrentAccountVO;
 import com.starrainnotes.account.service.AccountAuthService;
-import com.starrainnotes.common.ApiResponse;
+import com.starrainnotes.common.result.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -55,7 +55,7 @@ public class AuthController {
     public ApiResponse<EmailVerificationCodeVO> sendEmailVerificationCode(
             @Valid @RequestBody RegistrationCodeRequestDTO request, HttpServletRequest servletRequest) {
         try {
-            return ApiResponse.ok(verification.send(request.email(), servletRequest.getRemoteAddr()));
+            return ApiResponse.ok(verification.send(request.getEmail(), servletRequest.getRemoteAddr()));
         } catch (ApiException exception) {
             if ("MAIL_DELIVERY_FAILED".equals(exception.getCode())) {
                 audit.failed(null, null, "EMAIL_CODE_DELIVERY_FAILED");
