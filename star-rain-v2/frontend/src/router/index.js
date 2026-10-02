@@ -7,13 +7,19 @@ import AdminInvitationsPage from '../modules/account/pages/AdminInvitationsPage.
 import AccountAuditsPage from '../modules/account/pages/AccountAuditsPage.vue'
 import MediaLibraryPage from '../modules/media/pages/MediaLibraryPage.vue'
 import MediaDetailPage from '../modules/media/pages/MediaDetailPage.vue'
+import ReviewCenterPage from '../modules/review/pages/ReviewCenterPage.vue'
+import ReviewDetailPage from '../modules/review/pages/ReviewDetailPage.vue'
 
 /*
  * 路由表。
  *
  * meta.permission      —— 只要求「具备该权限」，ADMIN 与 SUPER_ADMIN 都可通过
  * meta.superAdminOnly  —— 账户治理类页面，必须是 SUPER_ADMIN
- * 两者分开是因为 media:* 权限同时授予了 ADMIN，而 account 治理权限只属于 SUPER_ADMIN。
+ * 两者分开是因为 media:* 与 review:read 权限同时授予了 ADMIN，而 account 治理权限只属于 SUPER_ADMIN。
+ *
+ * 审核模块的审批权限（review:approve / review:reject）只授予 SUPER_ADMIN，
+ * 但那是「能否执行动作」的判断，由详情页按后端返回的 canApprove / canReject 渲染按钮，
+ * 页面本身只要求 review:read —— 普通 ADMIN 依然应该能看待审列表与详情。
  */
 const router = createRouter({
   history: createWebHistory(),
@@ -37,6 +43,10 @@ const router = createRouter({
       meta: { requiresAuth: true, permission: 'media:read' } },
     { path: '/admin/media/:mediaAssetId', component: MediaDetailPage,
       meta: { requiresAuth: true, permission: 'media:read' } },
+    { path: '/admin/reviews', component: ReviewCenterPage,
+      meta: { requiresAuth: true, permission: 'review:read' } },
+    { path: '/admin/reviews/:reviewId', component: ReviewDetailPage,
+      meta: { requiresAuth: true, permission: 'review:read' } },
     { path: '/:pathMatch(.*)*', redirect: '/account' },
   ],
 })
