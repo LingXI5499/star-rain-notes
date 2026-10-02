@@ -42,10 +42,15 @@ async function logout() {
         <RouterLink v-if="auth.canManage('account:invite-admin')" to="/admin/invitations">管理员邀请</RouterLink>
         <RouterLink v-if="auth.canManage('account:audit-read')" to="/admin/audits">账户审计</RouterLink>
       </nav>
+      <!-- media:* 权限同时授予 ADMIN 与 SUPER_ADMIN，故这里用 hasPermission 而不是 canManage -->
+      <p v-if="auth.hasPermission('media:read')" class="sidebar-caption">内容工作区</p>
+      <nav v-if="auth.hasPermission('media:read')" aria-label="内容导航" @click="menuOpen = false">
+        <RouterLink to="/admin/media">媒体库</RouterLink>
+      </nav>
     </aside>
     <div :class="showShell ? 'app-body' : ''">
       <header v-if="showShell" class="site-header">
-        <div><button class="mobile-menu" type="button" :aria-expanded="menuOpen" aria-label="展开导航" @click="menuOpen = !menuOpen">☰</button> 星雨笔录 · 账户中心</div>
+        <div><button class="mobile-menu" type="button" :aria-expanded="menuOpen" aria-label="展开导航" @click="menuOpen = !menuOpen">☰</button> 星雨笔录 · 内容中心</div>
         <div class="header-actions"><span>{{ auth.currentUser?.displayName }}</span><button v-if="auth.currentUser" class="text-button" type="button" :disabled="logoutBusy" @click="logout">{{ logoutBusy ? '退出中…' : '退出登录' }}</button><RouterLink v-else to="/login">登录</RouterLink></div>
       </header>
       <p v-if="logoutError" class="error" role="alert">{{ logoutError }}</p>

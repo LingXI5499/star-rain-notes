@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.media.mapper.MediaAssetMapper">
+
+    <sql id="assetColumns">
+        id, original_name, media_type, mime_type, file_extension, size_bytes, sha256,
+        storage_provider, storage_key, width, height, access_level, status,
+        uploaded_by_account_id, archived_at, created_at, updated_at
+    </sql>
+
+    <sql id="assetFilters">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                original_name LIKE CONCAT('%', #{keyword}, '%')
+            </if>
+            <if test="mediaType != null and mediaType != ''">
+                AND media_type = #{mediaType}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="accessLevel != null and accessLevel != ''">
+                AND access_level = #{accessLevel}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertAsset" parameterType="com.starrainnotes.media.entity.MediaAssetEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_media_asset (
+            original_name, media_type, mime_type, file_extension, size_bytes, sha256,
+            storage_provider, storage_key, width, height, access_level, status,
+            uploaded_by_account_id
+        ) VALUES (
+            #{originalName}, #{mediaType}, #{mimeType}, #{fileExtension}, #{sizeBytes}, #{sha256},
+            #{storageProvider}, #{storageKey}, #{width}, #{height}, #{accessLevel}, #{status},
+            #{uploadedByAccountId}
+        )
+    </insert>
+
+    <select id="assetById" resultType="com.starrainnotes.media.entity.MediaAssetEntity">
+        SELECT <include refid="assetColumns"/> FROM sr_media_asset WHERE id = #{id}
+    </select>
+
+    <select id="assetByIdForUpdate" resultType="com.starrainnotes.media.entity.MediaAssetEntity">
+        SELECT <include refid="assetColumns"/> FROM sr_media_asset WHERE id = #{id} FOR UPDATE
+    </select>
+
+    <select id="assetPageCount" resultType="long">
+        SELECT COUNT(*) FROM sr_media_asset
+        <include refid="assetFilters"/>
+    </select>
+
+    <select id="assetPage" resultType="com.starrainnotes.media.entity.MediaAssetEntity">
+        SELECT <include refid="assetColumns"/> FROM sr_media_asset
+        <include refid="assetFilters"/>
+        ORDER BY created_at DESC, id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="countBySha256" resultType="long">
+        SELECT COUNT(*) FROM sr_media_asset WHERE sha256 = #{sha256}
+    </select>
+
+    <update id="archiveAsset">
+        UPDATE sr_media_asset
+        SET status = 'ARCHIVED', archived_at = #{archivedAt}
+        WHERE id = #{id} AND status = 'ACTIVE'
+    </update>
+
+    <update id="restoreAsset">
+        UPDATE sr_media_asset
+        SET status = 'ACTIVE', archived_at = NULL
+        WHERE id = #{id} AND status = 'ARCHIVED'
+    </update>
+
+    <update id="updateAccessLevel">
+        UPDATE sr_media_asset
+        SET access_level = #{accessLevel}
+        WHERE id = #{id}
+    </update>
+
+    <select id="allStorageKeys" resultType="string">
+        SELECT storage_key FROM sr_media_asset
+    </select>
+</mapper>

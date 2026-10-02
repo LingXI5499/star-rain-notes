@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.media.mapper.MediaReferenceMapper">
+
+    <sql id="referenceColumns">
+        id, media_asset_id, source_module, source_type, source_id, usage_code, created_at
+    </sql>
+
+    <insert id="insertReference" parameterType="com.starrainnotes.media.entity.MediaReferenceEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_media_reference (
+            media_asset_id, source_module, source_type, source_id, usage_code
+        ) VALUES (
+            #{mediaAssetId}, #{sourceModule}, #{sourceType}, #{sourceId}, #{usageCode}
+        )
+    </insert>
+
+    <select id="countByMediaAssetId" resultType="long">
+        SELECT COUNT(*) FROM sr_media_reference WHERE media_asset_id = #{mediaAssetId}
+    </select>
+
+    <select id="selectByMediaAssetId" resultType="com.starrainnotes.media.entity.MediaReferenceEntity">
+        SELECT <include refid="referenceColumns"/> FROM sr_media_reference
+        WHERE media_asset_id = #{mediaAssetId}
+        ORDER BY created_at ASC, id ASC
+    </select>
+
+    <delete id="deleteReference">
+        DELETE FROM sr_media_reference
+        WHERE media_asset_id = #{mediaAssetId}
+          AND source_module = #{sourceModule}
+          AND source_type = #{sourceType}
+          AND source_id = #{sourceId}
+          AND usage_code = #{usageCode}
+    </delete>
+
+    <delete id="deleteAllBySource">
+        DELETE FROM sr_media_reference
+        WHERE source_module = #{sourceModule}
+          AND source_type = #{sourceType}
+          AND source_id = #{sourceId}
+    </delete>
+</mapper>

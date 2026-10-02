@@ -30,3 +30,78 @@ V2 使用独立目录、独立数据库 `star_rain_v2`、独立会话 Cookie `ST
 2026-10-02 前后端构建通过；本轮 45 项邀请与固定 RBAC 的 HTTP、数据库及本地 SMTP 检查通过，浏览器完成接受邀请、重新登录与记录回显。收件人已确认真实验证码邮件和新版邀请通知均收到。检查结果仅说明已验证场景，不代表整个模块已获人工验收。回归使用独立临时数据库，人工验收继续使用 `star_rain_v2`。
 
 `docs/`、`.local/`、真实配置、构建输出不进入版本库。
+
+## 后端分层与包命名规范（强制）
+
+依据《Java开发手册（嵩山版）》第 44–45 页的分层原则，以及本项目多模块垂直切分的既有约束。
+
+### 两条铁律
+
+1. **一个包只放一类东西**。同一种角色不允许散落在不同深度。
+2. **接口与实现必须分开**：接口放在层包下，实现放在同层的 `impl` 子包
+   （`service/` + `service/impl/`、`storage/` + `storage/impl/`、`api/` + `api/impl/`）。
+   没有接口时不要为了对称硬造接口。
+
+禁止使用 `support`、`misc` 这类没有标准语义的包名。
+
+### common 模块
+
+| 包 | 放什么 |
+| --- | --- |
+| constant | 常量类 |
+| context | 上下文类 |
+| enumeration | 枚举 |
+| exception | 自定义异常 |
+| handler | 处理器（全局异常处理器等） |
+| json | JSON 转换 |
+| properties | `@ConfigurationProperties` 配置属性类 |
+| result | 返回结果封装 |
+| security | 跨模块安全契约 |
+| utils | 工具类 |
+
+### 业务模块（account / media / tutorial / ...）
+
+| 包 | 放什么 |
+| --- | --- |
+| api (+dto) | 模块对外契约：只有接口 + 契约 DTO，不放实现 |
+| config | `@Configuration` 配置类 |
+| constant | 常量类（权限码、usageCode 等） |
+| context | 上下文与主体对象 |
+| controller | Controller |
+| dto | 请求 DTO 与层间传输对象 |
+| entity | 数据库实体 |
+| enumeration | 枚举 |
+| exception | 自定义异常与错误码 |
+| handler | 处理器 |
+| interceptor | 拦截器 / 过滤器 |
+| mapper | MyBatis Mapper 接口 |
+| properties | `@ConfigurationProperties` |
+| security | 安全声明（URL 边界、权限码语义） |
+| service (+impl) | 服务接口 + 实现 |
+| storage (+impl) | 可替换的基础设施抽象 |
+| utils | 无状态工具类 |
+| vo | 视图对象 |
+
+按需建包，不创建空层。新增类别必须先补进本规范再建包。
+
+### 注释约定（用户约定优先）
+
+《Java开发手册》要求类与接口方法使用 Javadoc，本项目按用户明确要求执行：
+**使用 `//` 与 `/* */`，不写文档注释**；注释解释业务原因与不明显约束。
+
+### 编码时须一并遵守的嵩山手册条目
+
+- 对象级权限检查；外部输入校验类型、范围、长度与业务约束；SQL 参数绑定，无法绑定的标识符用允许列表。
+- 消耗资源的操作（邮件、上传等）设置频率或数量限制。
+- 日志用 SLF4J 占位符，不拼接字符串，不输出敏感信息。
+- 业务唯一性在数据库建唯一索引；查询明确列名，避免 `SELECT *`。
+- 单元测试遵循 AIR（自动化、独立、可重复），核心增量代码必须有测试。
+### 硬性编码约定（强制）
+
+- **禁止使用 Java `record`**。VO / DTO / 值对象一律用 Lombok POJO：
+  `@Data` + `@Builder` + `@NoArgsConstructor` + `@AllArgsConstructor`，
+  访问器统一为 JavaBean 的 `getXxx()`。原因：record 的 `x()` 访问器不符合本项目的 POJO 约定，
+  也无法与按 JavaBean 约定工作的库配合。
+- **业务异常使用继承体系**：公共基类持有 `code / message / httpStatus`，每个业务错误一个子类放在 `exception` 包；
+  不再新增「集中式静态工厂 + 通用 ApiException」写法。
+- Entity 用 `@Data`（MyBatis-Plus 需要可变对象）。

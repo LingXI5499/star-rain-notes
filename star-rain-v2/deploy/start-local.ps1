@@ -18,7 +18,7 @@ if (!(Test-Path (Join-Path $projectRoot 'backend/application-local-secret.yml'))
 }
 if ($Build) {
     Push-Location (Join-Path $projectRoot 'backend')
-    try { & mvn.cmd -B -pl star-rain-boot -am -DskipTests package; if ($LASTEXITCODE) { throw 'Backend build failed' } } finally { Pop-Location }
+    try { & mvn.cmd -B -pl star-rain-boot -am -DskipTests clean package; if ($LASTEXITCODE) { throw 'Backend build failed' } } finally { Pop-Location }
     Push-Location (Join-Path $projectRoot 'frontend')
     try { & npm.cmd ci --ignore-scripts --cache (Join-Path $runtimeRoot 'npm-cache'); if ($LASTEXITCODE) { throw 'Dependency install failed' }; & npm.cmd run build; if ($LASTEXITCODE) { throw 'Frontend build failed' } } finally { Pop-Location }
 }
