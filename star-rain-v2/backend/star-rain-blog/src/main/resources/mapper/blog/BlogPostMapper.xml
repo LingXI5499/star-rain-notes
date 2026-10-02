@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.blog.mapper.BlogPostMapper">
+
+    <sql id="postColumns">
+        p.id, p.slug, p.title, p.summary, p.body_markdown, p.cover_media_asset_id, p.status,
+        p.published_at, p.withdrawn_at, p.created_by_account_id, p.updated_by_account_id,
+        p.created_at, p.updated_at
+    </sql>
+
+    <!-- 后台筛选：关键词命中标题或 slug，标签与专题走 EXISTS 避免 JOIN 造成重复行 -->
+    <sql id="adminFilters">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (LOWER(p.title) LIKE CONCAT('%', #{keyword}, '%')
+                     OR LOWER(p.slug) LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="status != null and status != ''">
+                AND p.status = #{status}
+            </if>
+            <if test="tagId != null">
+                AND EXISTS (SELECT 1 FROM sr_blog_post_tag pt
+                            WHERE pt.post_id = p.id AND pt.tag_id = #{tagId})
+            </if>
+            <if test="topicId != null">
+                AND EXISTS (SELECT 1 FROM sr_blog_topic_post tp
+                            WHERE tp.post_id = p.id AND tp.topic_id = #{topicId})
+            </if>
+        </where>
+    </sql>
+
+    <!--
+      公开筛选：status 写死在 SQL 里而不是靠传参。
+      参数可以被伪造，SQL 里的常量不行 —— 这是“草稿不进公开接口”的最后一道防线。
+    -->
+    <sql id="publishedFilters">
+        <where>
+            p.status = 'PUBLISHED'
+            <if test="tagSlug != null and tagSlug != ''">
+                AND EXISTS (SELECT 1 FROM sr_blog_post_tag pt
+                            JOIN sr_blog_tag t ON t.id = pt.tag_id
+                            WHERE pt.post_id = p.id AND t.slug = #{tagSlug})
+            </if>
+            <if test="topicSlug != null and topicSlug != ''">
+                AND EXISTS (SELECT 1 FROM sr_blog_topic_post tp
+                            JOIN sr_blog_topic top ON top.id = tp.topic_id
+                            WHERE tp.post_id = p.id AND top.slug = #{topicSlug})
+            </if>
+            <!-- 时间归档按 published_at 的范围比较，不用 YEAR()/MONTH()，索引才能生效 -->
+            <if test="publishedFrom != null">
+                AND p.published_at &gt;= #{publishedFrom}
+            </if>
+            <if test="publishedTo != null">
+                AND p.published_at &lt; #{publishedTo}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertPost" parameterType="com.starrainnotes.blog.entity.BlogPostEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_blog_post (
+            slug, title, summary, body_markdown, cover_media_asset_id, status,
+            published_at, withdrawn_at, created_by_account_id, updated_by_account_id
+        ) VALUES (
+            #{slug}, #{title}, #{summary}, #{bodyMarkdown}, #{coverMediaAssetId}, #{status},
+            #{publishedAt}, #{withdrawnAt}, #{createdByAccountId}, #{updatedByAccountId}
+        )
+    </insert>
+
+    <select id="postById" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/> FROM sr_blog_post p WHERE p.id = #{id}
+    </select>
+
+    <select id="postByIdForUpdate" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/> FROM sr_blog_post p WHERE p.id = #{id} FOR UPDATE
+    </select>
+
+    <select id="publishedPostBySlug" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        WHERE p.slug = #{slug} AND p.status = 'PUBLISHED'
+    </select>
+
+    <select id="publishedPostById" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        WHERE p.id = #{id} AND p.status = 'PUBLISHED'
+    </select>
+
+    <select id="countBySlug" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_post
+        WHERE slug = #{slug}
+        <if test="excludeId != null">
+            AND id &lt;&gt; #{excludeId}
+        </if>
+    </select>
+
+    <select id="adminPageCount" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_post p
+        <include refid="adminFilters"/>
+    </select>
+
+    <select id="adminPage" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        <include refid="adminFilters"/>
+        ORDER BY p.updated_at DESC, p.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!--
+      元数据整体写回：合并后的值由 Service 计算（未提供的字段沿用原值）。
+      刻意不用动态 SET：动态 SET 在全空时会生成没有 SET 子句的非法 SQL，
+      而“哪些字段算改动”这种判断放在 Java 里可读、可测。
+    -->
+    <update id="updatePostMeta">
+        UPDATE sr_blog_post
+        SET slug = #{slug},
+            title = #{title},
+            summary = #{summary},
+            updated_by_account_id = #{updatedByAccountId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePostCover">
+        UPDATE sr_blog_post
+        SET cover_media_asset_id = #{coverMediaAssetId},
+            updated_by_account_id = #{updatedByAccountId}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updatePostBody">
+        UPDATE sr_blog_post
+        SET body_markdown = #{bodyMarkdown},
+            updated_by_account_id = #{updatedByAccountId}
+        WHERE id = #{id}
+    </update>
+
+    <!-- COALESCE 保住首次发布时间：撤回后恢复不该把文章重新排到列表最前面 -->
+    <update id="publishPost">
+        UPDATE sr_blog_post
+        SET status = 'PUBLISHED',
+            published_at = COALESCE(published_at, #{publishedAt}),
+            withdrawn_at = NULL,
+            updated_by_account_id = #{updatedByAccountId}
+        WHERE id = #{id} AND status IN ('DRAFT', 'WITHDRAWN')
+    </update>
+
+    <update id="withdrawPost">
+        UPDATE sr_blog_post
+        SET status = 'WITHDRAWN',
+            withdrawn_at = #{withdrawnAt},
+            updated_by_account_id = #{updatedByAccountId}
+        WHERE id = #{id} AND status = 'PUBLISHED'
+    </update>
+
+    <!-- 公开内容删不掉：WHERE 里的状态条件会让 PUBLISHED 的影响行数为 0 -->
+    <update id="deletePost">
+        DELETE FROM sr_blog_post
+        WHERE id = #{id} AND status IN ('DRAFT', 'WITHDRAWN')
+    </update>
+
+    <select id="publishedPageCount" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_post p
+        <include refid="publishedFilters"/>
+    </select>
+
+    <select id="publishedPage" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        <include refid="publishedFilters"/>
+        ORDER BY p.published_at DESC, p.id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="archiveMonths" resultType="com.starrainnotes.blog.vo.BlogArchiveMonthVO">
+        SELECT YEAR(published_at) AS `year`,
+               MONTH(published_at) AS `month`,
+               COUNT(*) AS post_count
+        FROM sr_blog_post
+        WHERE status = 'PUBLISHED' AND published_at IS NOT NULL
+        GROUP BY YEAR(published_at), MONTH(published_at)
+        ORDER BY `year` DESC, `month` DESC
+    </select>
+
+    <select id="latestPublished" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        WHERE p.status = 'PUBLISHED'
+        ORDER BY p.published_at DESC, p.id DESC
+        LIMIT #{limit}
+    </select>
+
+    <select id="publishedByTopicSlug" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        WHERE p.status = 'PUBLISHED'
+          AND EXISTS (SELECT 1 FROM sr_blog_topic_post tp
+                      JOIN sr_blog_topic top ON top.id = tp.topic_id
+                      WHERE tp.post_id = p.id AND top.slug = #{topicSlug})
+        ORDER BY p.published_at DESC, p.id DESC
+        LIMIT #{limit}
+    </select>
+
+    <!-- 游标用主键而不是 offset：增量重建索引时不依赖上次查到的位置 -->
+    <select id="publishedAfterCursor" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        WHERE p.status = 'PUBLISHED'
+        <if test="cursorId != null">
+            AND p.id &gt; #{cursorId}
+        </if>
+        ORDER BY p.id ASC
+        LIMIT #{limit}
+    </select>
+</mapper>
