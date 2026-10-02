@@ -1169,28 +1169,6 @@
   gap: var(--space-2);
 }
 
-.blog-edit__subheading {
-  margin: 24px 0 10px;
-  color: var(--text-secondary);
-}
-
-.blog-edit__slug-field {
-  display: flex;
-  align-items: stretch;
-  gap: 8px;
-}
-
-.blog-edit__slug-field input {
-  min-width: 0;
-  flex: 1;
-}
-
-.blog-edit__slug-field button {
-  flex-shrink: 0;
-  white-space: nowrap;
-  font-size: 13px;
-}
-
 .blog-ref-chip {
   display: inline-block;
   margin-right: 6px;
@@ -1200,210 +1178,35 @@
   font-size: 12px;
 }
 
-/* --- 编辑器本体：左大纲 + 右正文 --- */
+/* --- 编辑器本体：Vditor（IR 即时渲染）自己持有 DOM，这里只留外壳与全屏规则 --- */
 
-.markdown-editor {
-  position: relative;
-  display: grid;
-  grid-template-columns: 236px minmax(0, 1fr);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  background: var(--bg-surface);
-  box-shadow: 0 2px 14px rgb(0 0 0 / 0.04);
-  overflow: hidden;
+/*
+ * Vditor 全屏要逃出控制台的堆叠上下文。
+ * 侧栏 z-index 是 30，而全屏的编辑器仍然是 .admin-shell__body 的后代节点——
+ * position: fixed 不会让元素跳出祖先的堆叠上下文，因此必须把外壳藏起来。
+ * 标记由 support/markdownEditorChrome.js 的 setVditorFullscreenActive 打在 <html> 上。
+ */
+html.is-vditor-fullscreen,
+html.is-vditor-fullscreen body {
+  overflow: hidden !important;
 }
 
-.markdown-editor--no-outline {
-  grid-template-columns: minmax(0, 1fr);
+html.is-vditor-fullscreen .admin-shell__sidebar,
+html.is-vditor-fullscreen .admin-shell__header,
+html.is-vditor-fullscreen .admin-shell__scrim,
+html.is-vditor-fullscreen .admin-shell__mobile-menu {
+  visibility: hidden !important;
+  pointer-events: none !important;
 }
 
-.markdown-editor__outline {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  padding: 10px 6px;
-  border-right: 1px solid var(--border);
-  overflow-y: auto;
-}
-
-.markdown-editor__outline-head {
-  padding: 4px 8px 10px;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-}
-
-.markdown-editor__outline-item {
-  display: block;
-  width: 100%;
-  padding: 5px 8px;
-  border: 0;
-  border-radius: 6px;
-  margin: 1px 0;
-  background: none;
-  color: var(--text-secondary);
-  font-size: 12px;
-  line-height: 1.5;
-  text-align: left;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.markdown-editor__outline-item:hover {
-  background: var(--bg-subtle);
-  color: var(--text-primary);
-}
-
-.markdown-editor__outline-item.is-current {
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 10%, transparent);
-  font-weight: 600;
-}
-
-.markdown-editor__outline-empty {
-  padding: 4px 8px;
-  color: var(--text-muted);
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.markdown-editor__main {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.markdown-editor__toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 2px;
-  padding: 6px 8px;
-  border-bottom: 1px solid var(--border);
-}
-
-.markdown-editor__tool {
-  display: grid;
-  width: 30px;
-  height: 30px;
-  place-items: center;
-  padding: 0;
-  border: 0;
-  border-radius: 7px;
-  background: none;
-  color: var(--text-secondary);
-  transition: background-color 0.15s ease, color 0.15s ease;
-}
-
-.markdown-editor__tool:hover:not(:disabled) {
-  background: var(--bg-subtle);
-  color: var(--primary);
-}
-
-.markdown-editor__tool.is-active {
-  color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 12%, transparent);
-}
-
-.markdown-editor__tool svg {
-  width: 16px;
-  height: 16px;
-  fill: none;
-  stroke: currentColor;
-  stroke-width: 1.7;
-  stroke-linecap: round;
-  stroke-linejoin: round;
-}
-
-.markdown-editor__divider {
-  width: 1px;
-  height: 20px;
-  margin: 0 5px;
-  background: var(--border);
-}
-
-.markdown-editor__toolbar-spacer {
-  flex: 1;
-}
-
-.markdown-editor__textarea {
-  width: 100%;
-  min-height: 460px;
-  padding: 18px 20px;
-  border: 0;
-  border-radius: 0;
-  background: transparent;
-  color: var(--text-primary);
-  font: 16px/1.8 ui-monospace, SFMono-Regular, Menlo, monospace;
-  resize: vertical;
-}
-
-.markdown-editor__textarea:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.markdown-editor__footer {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 12px;
-  padding: 7px 12px;
-  border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  font-size: 11px;
-}
-
-/* 全屏编辑：铺满整屏，正文列吃掉剩余高度（否则 textarea 的 min-height 会撑出滚动条） */
-.markdown-editor:fullscreen {
-  border: 0;
-  border-radius: 0;
+html.is-vditor-fullscreen .vditor--fullscreen {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100vh !important;
+  z-index: 10000 !important;
+  border-radius: 0 !important;
   background: var(--bg-page);
-}
-
-.markdown-editor:fullscreen .markdown-editor__main {
-  height: 100%;
-}
-
-.markdown-editor:fullscreen .markdown-editor__textarea {
-  flex: 1;
-  min-height: 0;
-}
-
-.markdown-editor__table-popover {
-  position: absolute;
-  top: 44px;
-  left: 8px;
-  z-index: 30;
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: var(--space-3);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-sm);
-  background: var(--bg-surface);
-  box-shadow: 0 8px 24px rgb(0 0 0 / 0.14);
-  white-space: nowrap;
-}
-
-.markdown-editor__table-field {
-  display: grid;
-  gap: 2px;
-  color: var(--text-muted);
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.markdown-editor__table-field input {
-  width: 64px;
-  min-height: 26px;
-  padding-inline: var(--space-2);
-  border-radius: 4px;
-  background: var(--bg-page);
-  font-size: 13px;
 }
 
 /* --- 标签选择：已选 chips + 输入新标签 --- */
@@ -1473,17 +1276,7 @@
    13. 响应式
    ============================================================ */
 
-@media (max-width: 1100px) {
-  .markdown-editor {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .markdown-editor__outline {
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
-    max-height: 210px;
-  }
-}
+/* 编辑器自身的窄屏适配（工具栏横向滚动、收起大纲）写在 MarkdownEditor.vue 的 scoped 样式里 */
 
 @media (max-width: 900px) {
   .content-admin__toolbar {

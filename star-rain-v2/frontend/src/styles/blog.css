@@ -266,11 +266,9 @@
 
 .blog-editor__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
 
-.blog-cover-editor { display: flex; flex-wrap: wrap; gap: 16px; align-items: center; }
+/* 封面输入项已按 V1 字段集从编辑页移除（后端仍支持封面媒体引用），相关样式一并删除 */
 
-.blog-cover-editor img { width: 220px; aspect-ratio: 16 / 10; object-fit: cover; border-radius: 10px; }
 
-.blog-cover-editor__actions { display: flex; gap: 10px; }
 
 .blog-tag-picker { display: flex; flex-wrap: wrap; gap: 10px; }
 
