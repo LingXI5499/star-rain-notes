@@ -61,6 +61,9 @@ export const ENTRY_ROUTE_RULES = [
   { path: '/admin/reviews/**', entry: 'user' },
 
   // 管理站：账户治理与博客后台
+  // 仪表盘是本轮新增的控制台首页；它必须在表里显式登记，否则会被兜底成 public
+  // （表里没有的路径一律归公开站），守卫会在管理站域名下把它挡回入口首页。
+  { path: '/admin/dashboard', entry: 'admin' },
   { path: '/admin/accounts', entry: 'admin' },
   { path: '/admin/invitations', entry: 'admin' },
   { path: '/admin/audits', entry: 'admin' },
