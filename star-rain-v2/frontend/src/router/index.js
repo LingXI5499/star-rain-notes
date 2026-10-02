@@ -14,6 +14,7 @@ import ReviewDetailPage from '../modules/review/pages/ReviewDetailPage.vue'
 import BlogListPage from '../modules/blog/pages/BlogListPage.vue'
 import BlogPostPage from '../modules/blog/pages/BlogPostPage.vue'
 import BlogArchivePage from '../modules/blog/pages/BlogArchivePage.vue'
+import HomePage from '../modules/site/pages/HomePage.vue'
 import BlogManagePage from '../modules/blog/pages/admin/BlogManagePage.vue'
 import BlogEditorPage from '../modules/blog/pages/admin/BlogEditorPage.vue'
 import BlogTaxonomyPage from '../modules/blog/pages/admin/BlogTaxonomyPage.vue'
@@ -37,8 +38,14 @@ import BlogTaxonomyPage from '../modules/blog/pages/admin/BlogTaxonomyPage.vue'
 const router = createRouter({
   history: createWebHistory(),
   routes: withEntryMeta([
-    // 落地页按入口决定：公开站去博客，用户站去个人中心，管理站去账户治理
-    { path: '/', redirect: () => entryHomePath() },
+    /*
+     * 公开站首页：`/` 在公开站渲染真正的首页（hero + 统计 + 最近更新），
+     * 不再重定向到 /blog。用户站与管理站仍然落到本入口首页 ——
+     * 那一步由下面的守卫按 entryHomePath() 完成，因此这里不再写 redirect：
+     * `/` 的入口归属在 shared/entryRoutes.js 里是 public，非公开入口命中时
+     * 守卫会先把导航改到本入口首页，页面组件根本不会挂载。
+     */
+    { path: '/', component: HomePage },
     { path: '/login', component: AuthPage, props: { mode: 'login' }, meta: { authPage: true } },
     { path: '/register', component: AuthPage, props: { mode: 'register' }, meta: { authPage: true } },
     { path: '/forgot-password', component: AuthPage, props: { mode: 'forgot' }, meta: { authPage: true } },
