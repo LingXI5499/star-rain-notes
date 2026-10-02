@@ -1,43 +1,48 @@
 <script setup>
-import { RouterLink } from 'vue-router'
+import PublicHeader from '../../modules/site/components/PublicHeader.vue'
+import PublicFooter from '../../modules/site/components/PublicFooter.vue'
+import '../../styles/base.css'
+import '../../styles/public-theme.css'
 
 /*
  * 公开站外壳：匿名只读。
  *
- * 硬约束：这个文件里不允许出现任何账号入口——没有链接、没有按钮、没有表单，
- * 也没有指向认证页的路由目标。验收时直接对本文件检索账号入口关键字，命中即视为回归。
- * 服务端另有兜底：AccountSecurityConfig 会让非用户站的账号开通请求直接 403。
+ * 硬约束：这个外壳以及它渲染的全部公开站页面里不允许出现任何账号入口——
+ * 没有链接、没有按钮、没有表单，也不引用 auth store；公开站是匿名只读的。
+ * 验收时对公开站源码检索账号入口关键字（命令见 `docs/开发文档/公开站与用户中心验收.md` §4），
+ * 命中即视为回归。服务端另有兜底：非用户站的账号开通请求会被 AccountSecurityConfig 直接 403。
  *
- * 顶部只保留内容导航、搜索占位与主题占位；视觉细节等对齐 V1 时再补，
- * 本阶段只要求骨架与「不暴露账号入口」这条硬线。
+ * 样式从 V1 移植：
+ *   - `styles/base.css`   —— V1 的公开站基础排版（作用域收敛到 `.public-shell`）
+ *   - `styles/public-theme.css` —— V1 的「星轨纸境」主题层（同样收敛到 `.public-shell`）
+ * 两份 CSS 在这里静态引入，PublicShell 又被 App.vue 静态引入，因此它们随主包加载，
+ * 公开站首屏不会出现样式闪烁。
+ *
+ * 结构对齐 V1 `layouts/BaseLayout.vue`：Header → main（layout-shell）→ Footer。
  */
 </script>
 
 <template>
-  <div class="entry-shell">
-    <header class="site-header public-header">
-      <RouterLink to="/blog" class="site-brand">
-        <img src="/brand/mark.svg" alt="" width="30" height="30" />
-        <span>星雨笔录 <small>公开站</small></span>
-      </RouterLink>
-      <nav class="public-nav" aria-label="公开站导航">
-        <!-- 教程 / 作品 / 关于的页面尚未实现，先占位，避免死链 -->
-        <span class="nav-pending" title="教程模块建设中">教程</span>
-        <RouterLink to="/blog">博客</RouterLink>
-        <span class="nav-pending" title="作品模块建设中">作品</span>
-        <span class="nav-pending" title="关于页面建设中">关于</span>
-      </nav>
-      <div class="public-actions">
-        <input class="public-search" type="search" placeholder="搜索（待接入）" aria-label="站内搜索" disabled />
-        <button class="text-button" type="button" disabled title="主题切换待接入">主题</button>
-      </div>
-    </header>
-    <main class="entry-main">
+  <div class="public-shell">
+    <PublicHeader />
+    <main class="public-main layout-shell">
+      <!-- 页面由 App.vue 以插槽传入（与 AdminShell / UserShell 同一约定，外壳不自己渲染 RouterView） -->
       <slot />
     </main>
-    <footer class="site-footer">
-      <p>星雨笔录 · 公开站</p>
-      <p class="muted">备案号占位：待备案完成后填写（例如 粤ICP备00000000号-1）</p>
-    </footer>
+    <PublicFooter />
   </div>
 </template>
+
+<style scoped>
+.public-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+.public-main {
+  flex: 1;
+  width: 100%;
+  padding-block: var(--space-10);
+}
+</style>
