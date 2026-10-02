@@ -9,6 +9,12 @@ import MediaLibraryPage from '../modules/media/pages/MediaLibraryPage.vue'
 import MediaDetailPage from '../modules/media/pages/MediaDetailPage.vue'
 import ReviewCenterPage from '../modules/review/pages/ReviewCenterPage.vue'
 import ReviewDetailPage from '../modules/review/pages/ReviewDetailPage.vue'
+import BlogListPage from '../modules/blog/pages/BlogListPage.vue'
+import BlogPostPage from '../modules/blog/pages/BlogPostPage.vue'
+import BlogArchivePage from '../modules/blog/pages/BlogArchivePage.vue'
+import BlogManagePage from '../modules/blog/pages/admin/BlogManagePage.vue'
+import BlogEditorPage from '../modules/blog/pages/admin/BlogEditorPage.vue'
+import BlogTaxonomyPage from '../modules/blog/pages/admin/BlogTaxonomyPage.vue'
 
 /*
  * 路由表。
@@ -20,6 +26,12 @@ import ReviewDetailPage from '../modules/review/pages/ReviewDetailPage.vue'
  * 审核模块的审批权限（review:approve / review:reject）只授予 SUPER_ADMIN，
  * 但那是「能否执行动作」的判断，由详情页按后端返回的 canApprove / canReject 渲染按钮，
  * 页面本身只要求 review:read —— 普通 ADMIN 依然应该能看待审列表与详情。
+ * meta.publicPage      —— 前台公开页面（博客列表 / 阅读 / 归档），匿名可读，不套后台侧栏
+ *
+ * 三种分开是因为它们的判定口径不同：media:* 同时授予了 ADMIN，
+ * account 治理权限只属于 SUPER_ADMIN，而博客前台根本不需要登录。
+ * 博客权限当前只授予 SUPER_ADMIN，因此后台博客页面用 meta.permission 即可，
+ * 再叠一层 superAdminOnly 只会把「权限模型」和「角色模型」混成一句话。
  */
 const router = createRouter({
   history: createWebHistory(),
@@ -47,6 +59,17 @@ const router = createRouter({
       meta: { requiresAuth: true, permission: 'review:read' } },
     { path: '/admin/reviews/:reviewId', component: ReviewDetailPage,
       meta: { requiresAuth: true, permission: 'review:read' } },
+    // 前台博客：匿名可读，meta.publicPage 让外壳不渲染后台侧栏
+    { path: '/blog', component: BlogListPage, meta: { publicPage: true } },
+    { path: '/blog/archive', component: BlogArchivePage, meta: { publicPage: true } },
+    { path: '/blog/posts/:slug', component: BlogPostPage, meta: { publicPage: true } },
+    // 后台博客：权限码只授予 SUPER_ADMIN，见 V2_007__blog.sql
+    { path: '/admin/blog', component: BlogManagePage,
+      meta: { requiresAuth: true, permission: 'blog:read-admin' } },
+    { path: '/admin/blog/taxonomy', component: BlogTaxonomyPage,
+      meta: { requiresAuth: true, permission: 'blog:taxonomy-manage' } },
+    { path: '/admin/blog/posts/:postId', component: BlogEditorPage,
+      meta: { requiresAuth: true, permission: 'blog:edit' } },
     { path: '/:pathMatch(.*)*', redirect: '/account' },
   ],
 })

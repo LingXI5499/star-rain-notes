@@ -7,7 +7,8 @@ import { errorMessage } from './modules/account/api/http'
 const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
-const showShell = computed(() => !route.meta.authPage)
+// 登录/注册页与前台公开页都不套后台侧栏；前台页另有一套极简页头
+const showShell = computed(() => !route.meta.authPage && !route.meta.publicPage)
 const menuOpen = ref(false)
 const logoutBusy = ref(false)
 const logoutError = ref('')
@@ -53,11 +54,33 @@ async function logout() {
         <!-- 审核查看权限同样授予 ADMIN；审批按钮是否出现由详情页按后端返回的 canApprove/canReject 决定 -->
         <RouterLink v-if="auth.hasPermission('review:read')" to="/admin/reviews">审核中心</RouterLink>
       </nav>
+      <!--
+        博客权限当前只授予 SUPER_ADMIN，但仍用 hasPermission：
+        页面该不该显示由「有没有这个权限」决定，角色只是当前唯一的授权来源。
+      -->
+      <nav v-if="auth.hasPermission('blog:read-admin')" aria-label="博客导航" @click="menuOpen = false">
+        <RouterLink to="/admin/blog">博客文章</RouterLink>
+        <RouterLink v-if="auth.hasPermission('blog:taxonomy-manage')" to="/admin/blog/taxonomy">分类与专题</RouterLink>
+      </nav>
+      <nav aria-label="前台入口" @click="menuOpen = false">
+        <RouterLink to="/blog">博客前台</RouterLink>
+        <RouterLink to="/blog/archive">归档浏览</RouterLink>
+      </nav>
     </aside>
     <div :class="showShell ? 'app-body' : ''">
       <header v-if="showShell" class="site-header">
         <div><button class="mobile-menu" type="button" :aria-expanded="menuOpen" aria-label="展开导航" @click="menuOpen = !menuOpen">☰</button> 星雨笔录 · 内容中心</div>
         <div class="header-actions"><span>{{ auth.currentUser?.displayName }}</span><button v-if="auth.currentUser" class="text-button" type="button" :disabled="logoutBusy" @click="logout">{{ logoutBusy ? '退出中…' : '退出登录' }}</button><RouterLink v-else to="/login">登录</RouterLink></div>
+      </header>
+      <!-- 前台公开页面的极简页头：匿名读者也能在博客与归档之间切换 -->
+      <header v-else-if="route.meta.publicPage" class="site-header public-header">
+        <RouterLink to="/blog" class="site-brand">星雨笔录 <small>博客</small></RouterLink>
+        <nav class="public-nav">
+          <RouterLink to="/blog">文章</RouterLink>
+          <RouterLink to="/blog/archive">归档</RouterLink>
+          <RouterLink v-if="auth.hasPermission('blog:read-admin')" to="/admin/blog">后台</RouterLink>
+          <RouterLink v-else-if="!auth.currentUser" to="/login">登录</RouterLink>
+        </nav>
       </header>
       <p v-if="logoutError" class="error" role="alert">{{ logoutError }}</p>
       <RouterView />
