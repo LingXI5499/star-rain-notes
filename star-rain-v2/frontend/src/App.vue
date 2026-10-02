@@ -1,53 +1,55 @@
 <script setup>
-import { ref } from 'vue'
+import { computed, ref, watch } from 'vue'
+import { RouterLink, RouterView, useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from './modules/account/stores/authStore'
+import { errorMessage } from './modules/account/api/http'
 
-const message = ref('你好，星雨笔录 V2')
-const result = ref('')
-const error = ref('')
-const sending = ref(false)
+const route = useRoute()
+const router = useRouter()
+const auth = useAuthStore()
+const showShell = computed(() => !route.meta.authPage)
+const menuOpen = ref(false)
+const logoutBusy = ref(false)
+const logoutError = ref('')
+watch(() => route.fullPath, () => { menuOpen.value = false })
 
-async function sendEcho() {
-  result.value = ''
-  error.value = ''
-  sending.value = true
-
+async function logout() {
+  if (logoutBusy.value) return
+  logoutBusy.value = true
+  logoutError.value = ''
   try {
-    const response = await fetch('/api/v2/echo', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: message.value }),
-    })
-
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`)
-    }
-
-    const data = await response.json()
-    result.value = `后端 V${data.version} 回传：${data.message}`
-  } catch (cause) {
-    error.value = `请求失败：${cause instanceof Error ? cause.message : String(cause)}`
+    await auth.logout()
+    await router.replace('/login')
+  } catch (error) {
+    logoutError.value = errorMessage(error)
   } finally {
-    sending.value = false
+    logoutBusy.value = false
   }
 }
 </script>
 
 <template>
-  <main class="panel">
-    <p class="eyebrow">STAR RAIN NOTES · V2.0</p>
-    <h1>前后端 HTTP 联调</h1>
-    <p class="description">输入一段文字，发送到 V2 后端，再查看回传结果。</p>
-
-    <form @submit.prevent="sendEcho">
-      <label for="echo-message">发送内容</label>
-      <input id="echo-message" v-model="message" type="text" />
-      <button type="submit" :disabled="sending">
-        {{ sending ? '发送中…' : '发送 HTTP 请求' }}
-      </button>
-    </form>
-
-    <p v-if="result" class="result" role="status">{{ result }}</p>
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
-  </main>
+  <div :class="showShell ? 'app-shell' : ''">
+    <aside v-if="showShell" :class="['app-sidebar', menuOpen && 'is-open']">
+      <RouterLink to="/account" class="site-brand">
+        <img src="/brand/mark.svg" alt="" width="34" height="34" />
+        <span>星雨笔录 <small>V2</small></span>
+      </RouterLink>
+      <p class="sidebar-caption">账户工作区</p>
+      <nav aria-label="账户导航" @click="menuOpen = false">
+        <RouterLink to="/account">我的账户</RouterLink>
+        <RouterLink v-if="auth.canManage('account:read')" to="/admin/accounts">账户管理</RouterLink>
+        <RouterLink v-if="auth.canManage('account:invite-admin')" to="/admin/invitations">管理员邀请</RouterLink>
+        <RouterLink v-if="auth.canManage('account:audit-read')" to="/admin/audits">账户审计</RouterLink>
+      </nav>
+    </aside>
+    <div :class="showShell ? 'app-body' : ''">
+      <header v-if="showShell" class="site-header">
+        <div><button class="mobile-menu" type="button" :aria-expanded="menuOpen" aria-label="展开导航" @click="menuOpen = !menuOpen">☰</button> 星雨笔录 · 账户中心</div>
+        <div class="header-actions"><span>{{ auth.currentUser?.displayName }}</span><button v-if="auth.currentUser" class="text-button" type="button" :disabled="logoutBusy" @click="logout">{{ logoutBusy ? '退出中…' : '退出登录' }}</button><RouterLink v-else to="/login">登录</RouterLink></div>
+      </header>
+      <p v-if="logoutError" class="error" role="alert">{{ logoutError }}</p>
+      <RouterView />
+    </div>
+  </div>
 </template>
-

@@ -10,4 +10,3 @@ public class StarRainV2Application {
         SpringApplication.run(StarRainV2Application.class, args);
     }
 }
-

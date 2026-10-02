@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.account.mapper.EmailVerificationMapper">
+    <insert id="ensureEmail">
+        INSERT INTO sr_email_verification(email) VALUES (#{email})
+        ON DUPLICATE KEY UPDATE email = #{email}
+    </insert>
+    <select id="findForUpdate" resultType="com.starrainnotes.account.entity.EmailVerificationEntity">
+        SELECT email, code_hash, expires_at, consumed_at, sent_at, window_started_at, send_count, failed_attempts
+        FROM sr_email_verification WHERE email = #{email} FOR UPDATE
+    </select>
+    <update id="saveCode">
+        UPDATE sr_email_verification
+        SET code_hash = #{codeHash}, expires_at = #{expiresAt}, consumed_at = NULL,
+            sent_at = #{sentAt}, window_started_at = #{windowStartedAt},
+            send_count = #{sendCount}, failed_attempts = 0
+        WHERE email = #{email}
+    </update>
+    <update id="incrementFailures">
+        UPDATE sr_email_verification SET failed_attempts = failed_attempts + 1 WHERE email = #{email}
+    </update>
+    <update id="consume">
+        UPDATE sr_email_verification SET consumed_at = UTC_TIMESTAMP(6)
+        WHERE email = #{email} AND code_hash = #{codeHash} AND consumed_at IS NULL
+          AND expires_at &gt; UTC_TIMESTAMP(6) AND failed_attempts &lt; 5
+    </update>
+</mapper>
