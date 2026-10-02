@@ -28,6 +28,7 @@ import com.starrainnotes.blog.service.BlogPostService;
 import com.starrainnotes.blog.service.BlogViewAssembler;
 import com.starrainnotes.blog.utils.BlogContentMediaParser;
 import com.starrainnotes.blog.utils.BlogMediaReferenceCommands;
+import com.starrainnotes.blog.utils.BlogPostSlugDeriver;
 import com.starrainnotes.blog.utils.BlogQueryRules;
 import com.starrainnotes.blog.utils.BlogSlugRules;
 import com.starrainnotes.blog.utils.BlogTextRules;
@@ -117,15 +118,12 @@ public class BlogPostServiceImpl implements BlogPostService {
     @Transactional
     public BlogPostAdminVO create(BlogPostCreateDTO request) {
         Long actorId = currentAccountId();
-        String slug = requireSlug(request.getSlug());
         String title = requireTitle(request.getTitle());
         String summary = normalizeSummary(request.getSummary());
-        if (postMapper.countBySlug(slug, null) > 0) {
-            throw new BlogPostSlugConflictException();
-        }
+        boolean derived = request.getSlug() == null || request.getSlug().isBlank();
+        String baseSlug = derived ? BlogPostSlugDeriver.derive(title) : requireSlug(request.getSlug());
 
         BlogPostEntity entity = new BlogPostEntity();
-        entity.setSlug(slug);
         entity.setTitle(title);
         entity.setSummary(summary);
         // 正文允许暂时为空：草稿先建出来，正文走 PUT /body 单独提交
@@ -134,10 +132,29 @@ public class BlogPostServiceImpl implements BlogPostService {
         entity.setStatus(BlogPostStatus.DRAFT_CODE);
         entity.setCreatedByAccountId(actorId);
         entity.setUpdatedByAccountId(actorId);
-        try {
-            postMapper.insertPost(entity);
-        } catch (DuplicateKeyException ex) {
-            // 并发创建同一 slug：唯一键是最终防线，这里把它转成可预期的业务错误
+        for (int ordinal = 1; ordinal <= 1000; ordinal++) {
+            String candidate = derived ? BlogPostSlugDeriver.withSuffix(baseSlug, ordinal) : baseSlug;
+            if (postMapper.countBySlug(candidate, null) > 0) {
+                if (!derived) {
+                    throw new BlogPostSlugConflictException();
+                }
+                continue;
+            }
+            entity.setSlug(candidate);
+            try {
+                postMapper.insertPost(entity);
+                break;
+            } catch (DuplicateKeyException exception) {
+                // 并发创建可能在预检后抢占唯一键；自动 slug 换确定性后缀重试。
+                if (!derived) {
+                    throw new BlogPostSlugConflictException();
+                }
+            }
+            if (ordinal == 1000) {
+                throw new BlogPostSlugConflictException();
+            }
+        }
+        if (entity.getId() == null) {
             throw new BlogPostSlugConflictException();
         }
 

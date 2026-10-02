@@ -70,6 +70,11 @@ export function useCodeCopy(rootRef) {
   function onClick(event) {
     const container = rootRef.value
     if (!container) return
+    const tab = event.target instanceof Element ? event.target.closest('[data-code-group-tab]') : null
+    if (tab && container.contains(tab)) {
+      selectTab(container, tab.dataset.codeGroupTab, Number(tab.dataset.index))
+      return
+    }
     const target = event.target instanceof Element ? event.target.closest('[data-code-copy]') : null
     if (!target || !container.contains(target)) return
     void copy(target, copyTarget(container, target)?.textContent ?? '')

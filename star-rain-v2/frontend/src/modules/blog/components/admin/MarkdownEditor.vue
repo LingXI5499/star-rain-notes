@@ -257,7 +257,6 @@ function buildToolbar() {
     },
     'link',
     '|',
-    'edit-mode',
     'outline',
     'fullscreen',
   ]
@@ -265,7 +264,10 @@ function buildToolbar() {
 
 /* 工具栏按钮数量（'|' 是分隔符，不算按钮）：验收脚本读它确认工具栏没有被裁掉过 */
 const TOOLBAR_ITEM_COUNT = buildToolbar().filter((item) => item !== '|').length
-defineExpose({ TOOLBAR_ITEM_COUNT })
+defineExpose({
+  TOOLBAR_ITEM_COUNT,
+  getMarkdown: () => (ready && vditor ? vditor.getValue() : props.modelValue),
+})
 
 /* ---------------------------------------------------------------
    生命周期

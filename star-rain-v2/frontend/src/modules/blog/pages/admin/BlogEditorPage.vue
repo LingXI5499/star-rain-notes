@@ -50,6 +50,8 @@ const error = ref('')
 const notice = ref('')
 /* 加载文章时递增，用来强制重建编辑器（Vditor 需要拿到新的初始值，而不是被 setValue 追着改） */
 const editorKey = ref(0)
+const editorRef = ref(null)
+let keepEditorOnNextRoute = false
 const confirmDialog = ref(null)
 
 /*
@@ -70,6 +72,16 @@ function snapshot() {
 const dirty = computed(() => savedSnapshot.value !== '' && savedSnapshot.value !== snapshot())
 function markSaved() {
   savedSnapshot.value = snapshot()
+}
+function markMetaSaved(savedBody) {
+  savedSnapshot.value = JSON.stringify({
+    title: form.title, summary: form.summary, tagValues: [...form.tagValues], body: savedBody ?? '',
+  })
+}
+function syncEditorBody() {
+  // Vditor 的 input 回调可能晚于紧接着的保存点击；提交前直接读取当前正文。
+  const current = editorRef.value?.getMarkdown?.()
+  if (typeof current === 'string') body.value = current
 }
 
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
@@ -121,6 +133,7 @@ async function pickBodyImage() {
 
 // 离开编辑器：有未保存改动时先问一次（对应 V1 的 useUnsavedGuard 路由离开提醒）
 async function leaveEditor() {
+  syncEditorBody()
   if (dirty.value && !await confirmDialog.value.ask('正文或文章信息还没保存，离开后改动会丢失。确定返回列表吗？')) return
   await router.push('/useradmin/blog/manage')
 }
@@ -151,6 +164,7 @@ async function resolveTagIds() {
 }
 
 async function saveMeta({ silent = false } = {}) {
+  syncEditorBody()
   if (!form.title.trim()) {
     error.value = '请先填写文章标题。'
     return false
@@ -173,8 +187,11 @@ async function saveMeta({ silent = false } = {}) {
 
     if (isCreate.value) {
       const created = await createPost(payload)
-      markSaved()
+      detail.value = { ...created, bodyMarkdown: '' }
+      // 创建草稿只保存了元数据；正文还在编辑器里，必须保持为未保存状态。
+      markMetaSaved('')
       notice.value = `草稿已创建（地址 ${created.slug}），可以继续写正文了。`
+      keepEditorOnNextRoute = true
       await router.replace(`/useradmin/blog/editor/${created.id}`)
       return true
     }
@@ -183,10 +200,11 @@ async function saveMeta({ silent = false } = {}) {
     // 否则正在编辑的正文与引用面板会被清空
     detail.value = { ...detail.value, ...updated }
     form.tagValues = (updated.tags || []).map((tag) => tag.id)
-    markSaved()
+    markMetaSaved(detail.value?.bodyMarkdown)
     notice.value = '文章信息已保存。'
     return true
   } catch (cause) {
+    keepEditorOnNextRoute = false
     error.value = errorMessage(cause)
     return false
   } finally {
@@ -195,6 +213,7 @@ async function saveMeta({ silent = false } = {}) {
 }
 
 async function saveBody() {
+  syncEditorBody()
   saving.value = true
   error.value = ''
   notice.value = ''
@@ -213,11 +232,11 @@ async function saveBody() {
 
 // 顶部「保存文章」：一次把元数据与正文都落库，新文章先建草稿再写正文
 async function saveAll() {
+  const wasCreate = isCreate.value
   const ok = await saveMeta({ silent: true })
   if (!ok) return
-  if (isCreate.value) {
-    // 新建后路由已切到 /posts/{id}，由路由监听重新加载，交给用户继续写正文
-    notice.value = '草稿已创建，可以继续写正文并再次保存。'
+  if (wasCreate && !body.value.trim()) {
+    notice.value = '草稿已创建，可以继续写正文。'
     return
   }
   await saveBody()
@@ -254,6 +273,7 @@ async function act(action) {
 
 // 未保存提醒：正文与元数据都算改动（V1 由 useUnsavedGuard 负责，这里用等价的最小实现）
 function onBeforeUnload(event) {
+  syncEditorBody()
   if (!dirty.value) return
   event.preventDefault()
   event.returnValue = ''
@@ -268,6 +288,10 @@ onMounted(() => {
 onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload))
 
 watch(() => route.params.postId, () => {
+  if (keepEditorOnNextRoute) {
+    keepEditorOnNextRoute = false
+    return
+  }
   editorKey.value += 1
   loadPost()
 })
@@ -312,6 +336,7 @@ watch(() => route.params.postId, () => {
       </p>
 
       <MarkdownEditor
+        ref="editorRef"
         :key="editorKey"
         v-model="body"
         placeholder="从 H1 开始撰写正文…"
