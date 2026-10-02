@@ -6,6 +6,7 @@ import {
   reorderTopicPosts, updateTag, updateTopic,
 } from '../../api/blogApi'
 import { errorMessage } from '../../../../shared/http'
+import { createTaxonomy } from '../../components/admin/tagSlug'
 import { postStatusLabel, taxonomyStatusLabel } from '../../support/display'
 
 /*
@@ -100,6 +101,7 @@ async function refresh() {
 // ---------------------------------------------------------------------
 
 async function openTagDialog(tag = null) {
+  error.value = ''
   Object.assign(tagForm, tag
     ? { id: tag.id, name: tag.name }
     : { id: null, name: '' })
@@ -122,7 +124,7 @@ async function submitTag() {
       await updateTag(tagForm.id, payload)
       notice.value = `标签「${tagForm.name}」已更新。`
     } else {
-      await createTag(payload)
+      await createTaxonomy(createTag, payload.name, 'tag', 100)
       notice.value = `标签「${tagForm.name}」已创建。`
     }
     tagDialog.value?.close()
@@ -159,6 +161,7 @@ async function toggleTagStatus(tag) {
 // ---------------------------------------------------------------------
 
 async function openTopicDialog(topic = null) {
+  error.value = ''
   Object.assign(topicForm, topic
     ? { id: topic.id, name: topic.name }
     : { id: null, name: '' })
@@ -180,7 +183,7 @@ async function submitTopic() {
       await updateTopic(topicForm.id, payload)
       notice.value = `专题「${topicForm.name}」已更新。`
     } else {
-      await createTopic(payload)
+      await createTaxonomy(createTopic, payload.name, 'topic', 120)
       notice.value = `专题「${topicForm.name}」已创建。`
     }
     topicDialog.value?.close()
@@ -308,7 +311,7 @@ onMounted(refresh)
       <label>搜索标签<input v-model="tagKeyword" placeholder="输入标签名称" /></label>
     </div>
 
-    <p v-if="error" class="error" role="alert">{{ error }}</p>
+    <p v-if="error && !tagDialog?.open && !topicDialog?.open" class="error" role="alert">{{ error }}</p>
     <p v-if="notice" class="notice" role="status">{{ notice }}</p>
     <p v-if="loading" class="loading" role="status">正在加载分类数据…</p>
 
@@ -418,6 +421,7 @@ onMounted(refresh)
     <dialog ref="tagDialog" aria-labelledby="tag-dialog-title" @cancel.prevent="tagDialog?.close()">
       <h2 id="tag-dialog-title">{{ tagForm.id ? '编辑标签' : '新建标签' }}</h2>
       <form class="form-stack" @submit.prevent="submitTag">
+        <p v-if="error" class="error" role="alert">{{ error }}</p>
         <label>名称<input v-model="tagForm.name" maxlength="100" placeholder="例如：Spring Boot" /></label>
         <div class="dialog-actions">
           <button type="button" @click="tagDialog?.close()">取消</button>
@@ -429,6 +433,7 @@ onMounted(refresh)
     <dialog ref="topicDialog" aria-labelledby="topic-dialog-title" @cancel.prevent="topicDialog?.close()">
       <h2 id="topic-dialog-title">{{ topicForm.id ? '编辑专题' : '新建专题' }}</h2>
       <form class="form-stack" @submit.prevent="submitTopic">
+        <p v-if="error" class="error" role="alert">{{ error }}</p>
         <label>名称<input v-model="topicForm.name" maxlength="160" placeholder="例如：Java 学习路线" /></label>
         <div class="dialog-actions">
           <button type="button" @click="topicDialog?.close()">取消</button>
