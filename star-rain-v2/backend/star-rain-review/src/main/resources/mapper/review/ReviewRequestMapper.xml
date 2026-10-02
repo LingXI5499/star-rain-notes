@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.review.mapper.ReviewRequestMapper">
+
+    <sql id="requestColumns">
+        id, review_type, target_module, target_type, target_id,
+        target_revision_ref, target_display_name,
+        applicant_account_id, applicant_display_name, submission_note,
+        status, reviewer_account_id, decision_reason,
+        submitted_at, decided_at, canceled_at, created_at, updated_at
+    </sql>
+
+    <sql id="pendingFilters">
+        <where>
+            status = 'PENDING'
+            <if test="targetModule != null and targetModule != ''">
+                AND target_module = #{targetModule}
+            </if>
+            <if test="reviewType != null and reviewType != ''">
+                AND review_type = #{reviewType}
+            </if>
+            <!-- 关键字只匹配提交时冻结的两个显示名快照，不跨模块查标题 -->
+            <if test="keyword != null and keyword != ''">
+                AND (
+                    target_display_name LIKE CONCAT('%', #{keyword}, '%')
+                    OR applicant_display_name LIKE CONCAT('%', #{keyword}, '%')
+                )
+            </if>
+        </where>
+    </sql>
+
+    <sql id="historyFilters">
+        <where>
+            <if test="targetModule != null and targetModule != ''">
+                AND target_module = #{targetModule}
+            </if>
+            <if test="targetType != null and targetType != ''">
+                AND target_type = #{targetType}
+            </if>
+            <if test="targetId != null">
+                AND target_id = #{targetId}
+            </if>
+            <if test="reviewType != null and reviewType != ''">
+                AND review_type = #{reviewType}
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+            <if test="applicantAccountId != null">
+                AND applicant_account_id = #{applicantAccountId}
+            </if>
+            <if test="reviewerAccountId != null">
+                AND reviewer_account_id = #{reviewerAccountId}
+            </if>
+            <if test="startTime != null">
+                AND submitted_at &gt;= #{startTime}
+            </if>
+            <if test="endTime != null">
+                AND submitted_at &lt;= #{endTime}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertRequest" parameterType="com.starrainnotes.review.entity.ReviewRequestEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_review_request (
+            review_type, target_module, target_type, target_id,
+            target_revision_ref, target_display_name,
+            applicant_account_id, applicant_display_name, submission_note,
+            status, submitted_at
+        ) VALUES (
+            #{reviewType}, #{targetModule}, #{targetType}, #{targetId},
+            #{targetRevisionRef}, #{targetDisplayName},
+            #{applicantAccountId}, #{applicantDisplayName}, #{submissionNote},
+            #{status}, #{submittedAt}
+        )
+    </insert>
+
+    <select id="requestById" resultType="com.starrainnotes.review.entity.ReviewRequestEntity">
+        SELECT <include refid="requestColumns"/> FROM sr_review_request WHERE id = #{id}
+    </select>
+
+    <select id="selectPending" resultType="com.starrainnotes.review.entity.ReviewRequestEntity">
+        SELECT <include refid="requestColumns"/> FROM sr_review_request
+        WHERE target_module = #{targetModule}
+          AND target_type = #{targetType}
+          AND target_id = #{targetId}
+          AND review_type = #{reviewType}
+          AND status = 'PENDING'
+        ORDER BY id DESC
+        LIMIT 1
+    </select>
+
+    <select id="pendingCount" resultType="long">
+        SELECT COUNT(*) FROM sr_review_request
+        <include refid="pendingFilters"/>
+    </select>
+
+    <select id="pendingPage" resultType="com.starrainnotes.review.entity.ReviewRequestEntity">
+        SELECT <include refid="requestColumns"/> FROM sr_review_request
+        <include refid="pendingFilters"/>
+        <!-- 待办按提交时间正序：先来先审，避免老请求被一直压在后面 -->
+        ORDER BY submitted_at ASC, id ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="historyCount" resultType="long">
+        SELECT COUNT(*) FROM sr_review_request
+        <include refid="historyFilters"/>
+    </select>
+
+    <select id="historyPage" resultType="com.starrainnotes.review.entity.ReviewRequestEntity">
+        SELECT <include refid="requestColumns"/> FROM sr_review_request
+        <include refid="historyFilters"/>
+        ORDER BY submitted_at DESC, id DESC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <update id="approveIfPending">
+        UPDATE sr_review_request
+        SET status = 'APPROVED',
+            reviewer_account_id = #{reviewerAccountId},
+            decision_reason = #{reason},
+            decided_at = #{decidedAt}
+        WHERE id = #{id}
+          AND status = 'PENDING'
+    </update>
+
+    <update id="rejectIfPending">
+        UPDATE sr_review_request
+        SET status = 'REJECTED',
+            reviewer_account_id = #{reviewerAccountId},
+            decision_reason = #{reason},
+            decided_at = #{decidedAt}
+        WHERE id = #{id}
+          AND status = 'PENDING'
+    </update>
+
+    <update id="cancelIfPending">
+        UPDATE sr_review_request
+        SET status = 'CANCELED',
+            canceled_at = #{canceledAt},
+            -- 取消是申请人自己的动作，此时还没有决策人；清空决策字段避免留下半截状态
+            reviewer_account_id = NULL,
+            decision_reason = NULL,
+            decided_at = NULL
+        WHERE id = #{id}
+          AND status = 'PENDING'
+    </update>
+
+    <select id="acquireTargetLock" resultType="int">
+        SELECT GET_LOCK(#{lockName}, #{timeoutSeconds})
+    </select>
+
+    <select id="releaseTargetLock" resultType="int">
+        SELECT RELEASE_LOCK(#{lockName})
+    </select>
+</mapper>
