@@ -1,0 +1,25 @@
+/*
+ * 三入口外壳的骨架样式。
+ *
+ * 本阶段只保证「能用、不串位」：公开站的顶部导航/页脚、用户站与管理站沿用既有 app-shell 布局。
+ * 视觉细节留给对齐 V1 外壳的那一阶段，这里不引入新的设计变量。
+ */
+.entry-shell { display: flex; flex-direction: column; min-height: 100dvh; }
+.entry-main { flex: 1; min-width: 0; }
+
+/* 公开站顶部：品牌 / 内容导航 / 搜索与主题占位 */
+.public-header { gap: 24px; }
+.public-actions { display: flex; align-items: center; gap: 10px; }
+.public-search { width: 200px; min-height: 36px; padding: 0 12px; }
+/* 尚未实现的导航项：明确不可点，避免产生死链 */
+.nav-pending { color: var(--text-muted); cursor: not-allowed; }
+
+.site-footer { padding: 28px 32px; border-top: 1px solid var(--border); background: var(--bg-surface); font-size: 12px; }
+.site-footer p { margin: 0 0 6px; }
+
+@media (max-width: 720px) {
+  .public-header { flex-wrap: wrap; height: auto; padding: 12px 14px; gap: 12px; }
+  .public-nav { flex-wrap: wrap; gap: 12px; }
+  .public-search { width: 140px; }
+  .site-footer { padding: 20px 14px; }
+}
