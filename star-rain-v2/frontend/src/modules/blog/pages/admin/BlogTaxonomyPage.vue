@@ -1,5 +1,6 @@
 <script setup>
 import { computed, nextTick, onMounted, reactive, ref } from 'vue'
+import { RouterLink } from 'vue-router'
 import {
   addTopicPost, createTag, createTopic, disableTag, disableTopic, enableTag, enableTopic,
   listAdminPosts, listAdminTags, listAdminTopics, listTopicMembers, removeTopicPost,
@@ -300,6 +301,7 @@ onMounted(refresh)
         <h1>分类与专题</h1>
       </div>
       <div class="content-admin__hero-actions">
+        <RouterLink to="/useradmin/blog/manage">← 返回博客管理</RouterLink>
         <button type="button" @click="openTopicDialog()">＋ 新建专题</button>
         <button class="primary-button" type="button" @click="openTagDialog()">＋ 新建标签</button>
       </div>
