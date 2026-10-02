@@ -940,20 +940,8 @@
   text-align: center;
 }
 
-.tag-card code {
-  display: block;
-  overflow: hidden;
-  margin: 13px 0;
-  padding: 8px 10px;
-  border-radius: 9px;
-  color: var(--accent);
-  background: var(--bg-subtle);
-  font-size: 11px;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .tag-card footer {
+  margin-top: var(--space-4);
   display: flex;
   align-items: center;
   justify-content: space-between;

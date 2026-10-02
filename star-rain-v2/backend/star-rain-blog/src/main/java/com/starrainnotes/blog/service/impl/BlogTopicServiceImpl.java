@@ -22,6 +22,7 @@ import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.blog.mapper.BlogTopicMapper;
 import com.starrainnotes.blog.service.BlogTopicService;
 import com.starrainnotes.blog.utils.BlogQueryRules;
+import com.starrainnotes.blog.utils.BlogSlugDeriver;
 import com.starrainnotes.blog.utils.BlogSlugRules;
 import com.starrainnotes.blog.utils.BlogTextRules;
 import com.starrainnotes.blog.vo.BlogTopicVO;
@@ -86,24 +87,36 @@ public class BlogTopicServiceImpl implements BlogTopicService {
     @Override
     @Transactional
     public BlogTopicVO create(BlogTopicDTO request) {
-        String slug = requireSlug(request.getSlug());
         String name = requireName(request.getName());
         String description = requireDescription(request.getDescription());
-        if (topicMapper.countBySlug(slug, null) > 0) {
-            throw new BlogTopicSlugConflictException();
-        }
+        boolean automatic = request.getSlug() == null || request.getSlug().isBlank();
+        String base = automatic
+                ? BlogSlugDeriver.derive(name, "topic", BlogLimits.TOPIC_SLUG_MAX_LENGTH)
+                : requireSlug(request.getSlug());
 
-        BlogTopicEntity entity = new BlogTopicEntity();
-        entity.setSlug(slug);
-        entity.setName(name);
-        entity.setDescription(description);
-        entity.setStatus(BlogTaxonomyStatus.ENABLED_CODE);
-        try {
-            topicMapper.insertTopic(entity);
-        } catch (DuplicateKeyException ex) {
-            throw new BlogTopicSlugConflictException();
+        for (int ordinal = 1; ordinal <= (automatic ? 1000 : 1); ordinal++) {
+            String slug = BlogSlugDeriver.withSuffix(base, ordinal, BlogLimits.TOPIC_SLUG_MAX_LENGTH);
+            if (topicMapper.countBySlug(slug, null) > 0) {
+                if (automatic) {
+                    continue;
+                }
+                throw new BlogTopicSlugConflictException();
+            }
+            BlogTopicEntity entity = new BlogTopicEntity();
+            entity.setSlug(slug);
+            entity.setName(name);
+            entity.setDescription(description);
+            entity.setStatus(BlogTaxonomyStatus.ENABLED_CODE);
+            try {
+                topicMapper.insertTopic(entity);
+                return toTopicVO(requireTopic(entity.getId()));
+            } catch (DuplicateKeyException ex) {
+                if (!automatic) {
+                    throw new BlogTopicSlugConflictException();
+                }
+            }
         }
-        return toTopicVO(requireTopic(entity.getId()));
+        throw new BlogTopicSlugConflictException();
     }
 
     @Override

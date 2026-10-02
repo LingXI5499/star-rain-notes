@@ -12,7 +12,6 @@ import AdminConfirmDialog from '../../components/admin/AdminConfirmDialog.vue'
 import BlogStatusPill from '../../components/admin/BlogStatusPill.vue'
 import BlogTagPicker from '../../components/admin/BlogTagPicker.vue'
 import MarkdownEditor from '../../components/admin/MarkdownEditor.vue'
-import { derivedSlug } from '../../components/admin/tagSlug'
 import { canDelete, canPublish, canRestore, canWithdraw, dateLabel } from '../../support/display'
 
 /*
@@ -152,11 +151,7 @@ async function resolveTagIds() {
       ids.push(existing.id)
       continue
     }
-    const created = await createTag({
-      // 编号按名称推导；纯中文名用稳定散列，避免每次保存都生成不同的 slug
-      slug: derivedSlug(name, 'tag', 100),
-      name,
-    })
+    const created = await createTag({ name })
     ids.push(created.id)
     tagOptions.value = [...tagOptions.value, created]
   }

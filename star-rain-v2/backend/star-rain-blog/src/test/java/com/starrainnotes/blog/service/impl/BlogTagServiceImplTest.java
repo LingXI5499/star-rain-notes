@@ -16,6 +16,7 @@ import com.starrainnotes.blog.entity.BlogTagEntity;
 import com.starrainnotes.blog.mapper.BlogTagMapper;
 import com.starrainnotes.blog.service.BlogTagService;
 import com.starrainnotes.blog.service.BlogViewAssembler;
+import com.starrainnotes.blog.utils.BlogSlugDeriver;
 import com.starrainnotes.blog.vo.BlogTagVO;
 import com.starrainnotes.common.exception.ApiException;
 import java.lang.reflect.Method;
@@ -92,6 +93,27 @@ class BlogTagServiceImplTest {
         assertThat(captor.getValue().getSlug()).isEqualTo("java");
         assertThat(captor.getValue().getName()).isEqualTo("Java");
         assertThat(captor.getValue().getStatus()).isEqualTo("ENABLED");
+    }
+
+    @Test
+    @DisplayName("只提交中文标签名称时自动生成 slug，冲突后追加序号")
+    void createDerivesSlugFromNameAndRetriesCollision() {
+        String base = BlogSlugDeriver.derive("学习笔记", "tag", 100);
+        when(tagMapper.countBySlug(base, null)).thenReturn(1L);
+        doAnswer(invocation -> {
+            invocation.<BlogTagEntity>getArgument(0).setId(5L);
+            return null;
+        }).when(tagMapper).insertTag(any());
+        when(tagMapper.tagById(5L)).thenReturn(tag(5L, "ENABLED"));
+        when(assembler.toTagVO(any())).thenReturn(BlogTagVO.builder().id(5L).build());
+
+        BlogTagDTO request = new BlogTagDTO();
+        request.setName("学习笔记");
+        service.create(request);
+
+        ArgumentCaptor<BlogTagEntity> captor = ArgumentCaptor.forClass(BlogTagEntity.class);
+        verify(tagMapper).insertTag(captor.capture());
+        assertThat(captor.getValue().getSlug()).isEqualTo(base + "-2");
     }
 
     @Test
