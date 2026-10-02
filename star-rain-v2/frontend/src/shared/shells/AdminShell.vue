@@ -24,8 +24,13 @@ import { accountPath } from '../viewMode'
  *    角色正好表达「内容编辑者」这个层级；层内每个真实链接仍然各自再判一次权限，
  *    因此「有角色但缺某个权限」时不会看到进不去的入口。
  *
- * 返回前台是一个普通的整页链接（<a href="/">），不是前端路由跳转：
- * 这是唯一需要从账号树跨回公开树的方向，整页加载顺带保证公开树不会带着账号态渲染。
+ * 返回前台指向**账号树前台**（accountPath('/') = /useradmin），不是裸 '/'：
+ *   裸 '/' 是公开树首页，那是给大众的匿名站，一进去右上角账号区就整个消失了
+ *   （公开树按设计永远匿名）。控制台里的「返回前台」是「从后台回到我刚才浏览内容的地方」，
+ *   那个地方是账号树前台，因此必须用 accountPath('/') 带上前缀，不能写裸 '/'。
+ *   路径由 viewMode.js 的工具函数生成，账号树的字面量只在 viewMode.js 里存在一处。
+ * 仍然用整页链接（<a>）而不是 RouterLink：离开控制台时整页重载会顺带丢掉控制台自己的
+ *   运行态（侧栏折叠、导航滚动位置、已挂载的各控制台 store），比 SPA 内跳更干净。
  */
 const route = useRoute()
 const router = useRouter()
@@ -167,7 +172,10 @@ async function logout() {
     auth.currentUser = null
   } finally {
     logoutBusy.value = false
-    await router.replace(accountPath('/login'))
+    // 退出后回账号树前台（accountPath('/') = /useradmin），与前台账号菜单的退出落点统一。
+    // 之前这里落 /useradmin/login：同在账号树内，但「我刚退出了」被送到登录页，
+    // 与前台菜单的行为不一致；前台首页本来就不需要登录态，停在那里右上角自然变回「登录」。
+    await router.replace(accountPath('/'))
   }
 }
 
@@ -344,8 +352,8 @@ async function submitPassword() {
           <span class="admin-shell__header-title-short">用户中心</span>
         </div>
         <div class="admin-shell__header-actions">
-          <!-- 返回前台是整页跳转：账号树 → 公开树是跨树切换，整页加载保证公开树不带账号态 -->
-          <a class="admin-shell__header-action" href="/" title="返回前台（公开站首页）">
+          <!-- 返回前台 = 回账号树前台 /useradmin（accountPath('/')），不是公开树 '/'，理由见文件头注释 -->
+          <a class="admin-shell__header-action" :href="accountPath('/')" title="返回前台（账号树首页）">
             <span class="admin-shell__header-action-long">返回前台</span>
             <span class="admin-shell__header-action-short">前台</span>
           </a>
