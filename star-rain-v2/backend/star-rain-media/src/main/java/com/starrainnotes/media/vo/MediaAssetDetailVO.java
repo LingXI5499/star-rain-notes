@@ -1,5 +1,7 @@
 package com.starrainnotes.media.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.starrainnotes.media.entity.MediaAssetEntity;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -19,6 +21,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MediaAssetDetailVO {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
     private String originalName;
     private String mediaType;
@@ -31,6 +34,7 @@ public class MediaAssetDetailVO {
     private String accessLevel;
     private String status;
     private String storageProvider;
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long uploadedByAccountId;
     private LocalDateTime archivedAt;
     private LocalDateTime createdAt;

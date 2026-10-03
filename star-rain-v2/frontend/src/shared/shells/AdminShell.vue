@@ -11,8 +11,9 @@ import { accountPath } from '../viewMode'
  *
  * 侧栏分三层，按角色隐藏 —— 是「看不见」，不是「点了报 403」：
  *   通用        我的账户（/useradmin/center）、学习记录（占位，后续开发）
+ *   统计总览    SUPER_ADMIN：仪表盘（导航第一项）
  *   内容编辑    ADMIN 及以上：教程编辑（占位）、博客管理、媒体库、作品管理（占位）、审核中心
- *   站点治理    SUPER_ADMIN：仪表盘、账户管理、管理员邀请、账户审计
+ *   站点治理    SUPER_ADMIN：账户管理、管理员邀请、账户审计
  *
  * 三处刻意的取舍：
  * 1. 没有「英语管理」—— english 模块在 V2 仍为 PAUSED，导航里不出现，
@@ -90,22 +91,20 @@ const contentItems = computed(() => [
   { label: '博客管理', short: '博', to: accountPath('/blog/manage'), visible: auth.hasPermission('blog:read-admin') },
   { label: '媒体库', short: '媒', to: accountPath('/media'), visible: auth.hasPermission('media:read') },
   { label: '作品管理', short: '品', pending: '作品模块后端未实现' },
-  // 审核中心不在所有者给的侧栏清单里，但 review 模块已交付且 ADMIN 持有 review:read；
-  // 漏掉它会让整个审核模块在控制台没有入口。见验收文档的偏差记录。
+  // 审核中心处理内容发布前的审核，放在内容编辑区末尾，按 review:read 控制可见性。
   { label: '审核中心', short: '审', to: accountPath('/reviews'), visible: auth.hasPermission('review:read') },
 ])
 const visibleContentItems = computed(() => contentItems.value.filter((item) => item.pending || item.visible))
 
 // 站点治理层：只有 SUPER_ADMIN。每一项仍按账户治理权限判断（canManage 要求既是超管又有该权限）
 const governanceItems = computed(() => [
-  { label: '仪表盘', short: '盘', to: accountPath('/dashboard'), visible: auth.canManage('account:read') },
   { label: '账户管理', short: '用', to: accountPath('/accounts'), visible: auth.canManage('account:read') },
   { label: '管理员邀请', short: '邀', to: accountPath('/invitations'), visible: auth.canManage('account:invite-admin') },
   { label: '账户审计', short: '计', to: accountPath('/audits'), visible: auth.canManage('account:audit-read') },
 ].filter((item) => item.visible))
 
 const governanceActive = computed(() =>
-  ['/dashboard', '/accounts', '/invitations', '/audits']
+  ['/accounts', '/invitations', '/audits']
     .some((suffix) => route.path.startsWith(accountPath(suffix))))
 
 function isActive(target) {
@@ -236,6 +235,16 @@ async function submitPassword() {
       </div>
 
       <nav ref="navRef" class="admin-shell__nav" aria-label="控制台导航" @scroll.passive="rememberNavScroll">
+        <RouterLink
+          v-if="auth.canManage('account:read')"
+          :to="accountPath('/dashboard')"
+          class="admin-shell__nav-item"
+          :class="{ 'admin-shell__nav-item--active': isActive(accountPath('/dashboard')) }"
+          :title="collapsed ? '仪表盘' : undefined"
+        >
+          <span class="admin-shell__nav-short">盘</span>
+          <span v-if="!collapsed" class="admin-shell__nav-label">仪表盘</span>
+        </RouterLink>
         <!-- 通用：所有登录用户 -->
         <template v-for="item in personalItems" :key="item.label">
           <RouterLink

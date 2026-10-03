@@ -54,7 +54,6 @@
    前台：公开页头（不套后台侧栏时的极简导航）
    ------------------------------------------------------------------ */
 
-.public-header { background: var(--bg-surface); }
 
 .public-nav { display: flex; gap: 18px; font-size: 14px; }
 

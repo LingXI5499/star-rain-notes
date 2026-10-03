@@ -21,4 +21,5 @@ public class BlogPublicQueryDTO {
     // 归档时间维度，依据 publishedAt 而不是 createdAt
     private Integer year;
     private Integer month;
+    private Integer day;
 }

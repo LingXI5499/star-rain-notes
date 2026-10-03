@@ -1,5 +1,7 @@
 package com.starrainnotes.media.vo;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import com.starrainnotes.media.entity.MediaReferenceEntity;
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
@@ -17,10 +19,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MediaReferenceVO {
 
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long id;
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long mediaAssetId;
     private String sourceModule;
     private String sourceType;
+    @JsonSerialize(using = ToStringSerializer.class)
     private Long sourceId;
     private String usageCode;
     private LocalDateTime createdAt;

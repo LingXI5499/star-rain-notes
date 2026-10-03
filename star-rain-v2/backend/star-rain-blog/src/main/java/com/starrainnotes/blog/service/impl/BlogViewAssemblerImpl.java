@@ -227,6 +227,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
                 .coverMediaAssetId(post.getCoverMediaAssetId())
                 .coverUrl(coverUrl(post.getCoverMediaAssetId()))
                 .publishedAt(post.getPublishedAt())
+                .updatedAt(post.getUpdatedAt())
                 .tags(tags)
                 .topics(topics)
                 .build();

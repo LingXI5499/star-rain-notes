@@ -2,6 +2,7 @@ package com.starrainnotes.blog.service;
 
 import com.starrainnotes.blog.dto.BlogPublicQueryDTO;
 import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
+import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
@@ -28,6 +29,8 @@ public interface BlogPublicService {
 
     // 归档侧栏的月份桶
     List<BlogArchiveMonthVO> archiveMonths();
+
+    List<BlogArchiveDayVO> archiveDays(Integer year, Integer month);
 
     // 前台筛选项
     List<BlogTagVO> listPublishedTags();
