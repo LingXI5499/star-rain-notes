@@ -6,6 +6,7 @@ button { cursor: pointer; padding: 9px 16px; border: 1px solid var(--border-stro
 button:disabled { cursor: not-allowed; opacity: .55; }
 button:hover:not(:disabled) { background: var(--bg-subtle); }
 input, select { width: 100%; min-height: 44px; padding: 10px 12px; color: var(--text-primary); background: var(--bg-surface); border: 1px solid var(--border-strong); }
+input[type="datetime-local"] { cursor: pointer; }
 input:focus, select:focus, button:focus-visible, a:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
 input[readonly] { background: var(--bg-subtle); }
 label { display: grid; gap: 7px; color: var(--text-secondary); font-size: 13px; font-weight: 600; }
