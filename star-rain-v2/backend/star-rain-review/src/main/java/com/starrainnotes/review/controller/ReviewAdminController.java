@@ -2,15 +2,12 @@ package com.starrainnotes.review.controller;
 
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.common.result.PageResult;
-import com.starrainnotes.review.api.dto.ReviewSubmissionResult;
 import com.starrainnotes.review.dto.ReviewApproveCommand;
-import com.starrainnotes.review.dto.ReviewDemoSubmissionDTO;
 import com.starrainnotes.review.dto.ReviewHistoryQueryDTO;
 import com.starrainnotes.review.dto.ReviewQueryDTO;
 import com.starrainnotes.review.dto.ReviewRejectCommand;
 import com.starrainnotes.review.interceptor.CurrentReviewerId;
 import com.starrainnotes.review.service.ReviewDecisionService;
-import com.starrainnotes.review.service.ReviewDemoSubmissionService;
 import com.starrainnotes.review.service.ReviewQueryService;
 import com.starrainnotes.review.service.ReviewSubmissionService;
 import com.starrainnotes.review.service.ReviewViewerProvider;
@@ -18,14 +15,12 @@ import com.starrainnotes.review.vo.ReviewDetailVO;
 import com.starrainnotes.review.vo.ReviewHistoryVO;
 import com.starrainnotes.review.vo.ReviewListItemVO;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 /*
@@ -48,18 +43,15 @@ public class ReviewAdminController {
     private final ReviewQueryService queryService;
     private final ReviewDecisionService decisionService;
     private final ReviewSubmissionService submissionService;
-    private final ReviewDemoSubmissionService demoSubmissionService;
     private final ReviewViewerProvider viewerProvider;
 
     public ReviewAdminController(ReviewQueryService queryService,
                                  ReviewDecisionService decisionService,
                                  ReviewSubmissionService submissionService,
-                                 ReviewDemoSubmissionService demoSubmissionService,
                                  ReviewViewerProvider viewerProvider) {
         this.queryService = queryService;
         this.decisionService = decisionService;
         this.submissionService = submissionService;
-        this.demoSubmissionService = demoSubmissionService;
         this.viewerProvider = viewerProvider;
     }
 
@@ -120,19 +112,4 @@ public class ReviewAdminController {
         return ApiResponse.ok(null);
     }
 
-    /*
-     * 演示用提交入口（脚手架）。
-     *
-     * 正式边界是业务模块内部调用 ReviewSubmissionApi，浏览器不指定 targetModule/targetId。
-     * Tutorial 模块落地前，这里让 REV-001 以及「重复提交被拒」可以被端到端验证；
-     * 只放行 ReviewDemoTargetHandler 登记的目标，申请人取自认证上下文。
-     * Tutorial 接入后本端点随 ReviewDemoSubmissionService 一起删除。
-     */
-    @PostMapping("/demo-submissions")
-    @ResponseStatus(HttpStatus.CREATED)
-    @PreAuthorize("hasAuthority('review:read')")
-    public ApiResponse<ReviewSubmissionResult> demoSubmit(@Valid @RequestBody ReviewDemoSubmissionDTO request,
-                                                          @CurrentReviewerId Long applicantAccountId) {
-        return ApiResponse.ok(demoSubmissionService.submit(request, applicantAccountId));
-    }
 }

@@ -87,7 +87,7 @@ const isContentEditor = computed(() =>
 const isSuperAdmin = computed(() => Boolean(auth.currentUser?.roles?.includes('SUPER_ADMIN')))
 
 const contentItems = computed(() => [
-  { label: '教程编辑', short: '教', pending: '教程模块后端未实现' },
+  { label: '教程编辑', short: '教', to: accountPath('/tutorials/manage'), visible: auth.hasPermission('tutorial:read-admin') },
   { label: '博客管理', short: '博', to: accountPath('/blog/manage'), visible: auth.hasPermission('blog:read-admin') },
   { label: '媒体库', short: '媒', to: accountPath('/media'), visible: auth.hasPermission('media:read') },
   { label: '作品管理', short: '品', pending: '作品模块后端未实现' },
