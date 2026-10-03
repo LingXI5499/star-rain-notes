@@ -1,5 +1,8 @@
 <script setup>
 import { dateLabel } from '../support/display'
+import { defineAsyncComponent } from 'vue'
+
+const BlogProse = defineAsyncComponent(() => import('../../blog/components/BlogProse.vue'))
 
 /*
  * 目标冻结版本预览（REV-003 的核心）。
@@ -32,7 +35,19 @@ const extraEntries = () => {
     <div v-if="view" class="review-target__body">
       <p v-if="view.title" class="review-target__title">{{ view.title }}</p>
       <p v-if="view.summary" class="review-target__summary">{{ view.summary }}</p>
-      <pre v-if="view.contentSnapshot" class="review-target__content">{{ view.contentSnapshot }}</pre>
+      <div v-if="view.viewType === 'TUTORIAL_SNAPSHOT' && view.contentSnapshot?.groups" class="review-target__tutorial">
+        <p>{{ view.contentSnapshot.summary }}</p>
+        <section v-for="group in view.contentSnapshot.groups" :key="group.id">
+          <h3>{{ group.title }}</h3>
+          <article v-for="chapter in group.chapters" :key="chapter.id">
+            <h4>{{ chapter.title }}</h4>
+            <BlogProse :markdown="chapter.bodyMarkdown" />
+            <p v-if="chapter.cards?.length">知识卡片 {{ chapter.cards.length }} 张</p>
+            <p v-if="chapter.questions?.length">章节问题 {{ chapter.questions.length }} 题</p>
+          </article>
+        </section>
+      </div>
+      <pre v-else-if="view.contentSnapshot" class="review-target__content">{{ view.contentSnapshot }}</pre>
 
       <dl class="detail-list review-target__meta">
         <div><dt>视图类型</dt><dd>{{ view.viewType }}</dd></div>
@@ -46,3 +61,7 @@ const extraEntries = () => {
     </p>
   </div>
 </template>
+
+<style scoped>
+.review-target__tutorial{display:grid;gap:20px;min-width:0}.review-target__tutorial section{display:grid;gap:14px}.review-target__tutorial article{padding:18px;border:1px solid var(--border);border-radius:12px}.review-target__tutorial h3{font-size:20px}.review-target__tutorial h4{font-size:17px;margin-bottom:14px}.review-target__tutorial p{color:var(--text-secondary)}
+</style>

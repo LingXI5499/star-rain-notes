@@ -2,11 +2,11 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../account/stores/authStore'
-import { cancelReview, listPendingReviews, listReviewHistory, submitDemoReview } from '../api/reviewApi'
+import { cancelReview, listPendingReviews, listReviewHistory } from '../api/reviewApi'
 import { errorMessage } from '../../../shared/http'
 import { openDateTimePicker } from '../../../shared/dateTimePicker'
 import ReviewPendingTable from '../components/ReviewPendingTable.vue'
-import { REVIEW_STATUSES, dateLabel, demoSubmissionPayload, targetLabel } from '../support/display'
+import { REVIEW_STATUSES, dateLabel, targetLabel } from '../support/display'
 
 /*
  * 审核中心（REV-002 待办 + REV-007 历史）。
@@ -39,9 +39,6 @@ const historyPage = ref(1)
 const historySize = 20
 const history = ref({ items: [], total: 0, page: 1, pageSize: historySize })
 
-const demoOpen = ref(false)
-const demoBusy = ref(false)
-const demoForm = reactive({ targetId: '', displayName: '', note: '' })
 
 const canRead = computed(() => auth.hasPermission('review:read'))
 const canHistory = computed(() => auth.hasPermission('review:history-read'))
@@ -163,43 +160,6 @@ function isMine(item) {
   return item.applicantAccountId != null && String(item.applicantAccountId) === String(currentId)
 }
 
-/*
- * 演示提交（脚手架）：Tutorial 模块还没有实现，
- * 这里让「提交审核 → 待办出现 → 同一目标重复提交被拒」这条链路可以被手工验证。
- * 目标ID 与版本引用都由这里生成，浏览器不参与 targetModule 的选择。
- */
-async function submitDemo() {
-  if (demoBusy.value) return
-  const targetId = Number(demoForm.targetId)
-  if (!Number.isInteger(targetId) || targetId <= 0) {
-    error.value = '演示目标ID 必须是正整数。'
-    return
-  }
-  if (!demoForm.displayName.trim()) {
-    error.value = '请填写演示目标名称。'
-    return
-  }
-  demoBusy.value = true
-  error.value = ''
-  notice.value = ''
-  try {
-    const result = await submitDemoReview(
-      demoSubmissionPayload(targetId, demoForm.displayName.trim(), demoForm.note.trim()))
-    notice.value = `已提交审核请求 #${result.reviewRequestId}（${result.status}）。`
-    demoOpen.value = false
-    demoForm.targetId = ''
-    demoForm.displayName = ''
-    demoForm.note = ''
-    tab.value = 'pending'
-    pendingPage.value = 1
-    await loadPending()
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  } finally {
-    demoBusy.value = false
-  }
-}
-
 onMounted(() => {
   if (canRead.value) loadPending()
   else if (canHistory.value) switchTab('history')
@@ -230,35 +190,12 @@ onMounted(() => {
         :class="['review-tab', tab === 'history' && 'is-active']"
         @click="switchTab('history')"
       >审核历史</button>
-      <button v-if="canRead" class="review-demo-toggle" type="button" @click="demoOpen = !demoOpen">
-        {{ demoOpen ? '收起演示提交' : '演示提交（脚手架）' }}
-      </button>
     </nav>
-
-    <section v-if="demoOpen && canRead" class="surface-card review-demo">
-      <div class="section-heading">
-        <div>
-          <p class="eyebrow">DEMO SUBMISSION</p>
-          <h2>演示提交审核</h2>
-        </div>
-      </div>
-      <p class="form-hint">
-        Tutorial 模块尚未实现，REV-001 在这里用演示目标验证：提交后出现在待办，
-        同一目标重复提交会被后端以 REVIEW_ALREADY_PENDING 拒绝。
-        申请人取自当前登录账户，浏览器无法伪造。
-      </p>
-      <form class="toolbar toolbar--wrap" @submit.prevent="submitDemo">
-        <label>演示目标ID<input v-model="demoForm.targetId" inputmode="numeric" placeholder="例如 1001" /></label>
-        <label>目标名称<input v-model.trim="demoForm.displayName" maxlength="255" placeholder="例如 《Java 程序设计》" /></label>
-        <label>申请说明<input v-model.trim="demoForm.note" maxlength="1000" placeholder="可选" /></label>
-        <button class="primary-button" type="submit" :disabled="demoBusy">{{ demoBusy ? '提交中…' : '提交审核' }}</button>
-      </form>
-    </section>
 
     <section v-if="tab === 'pending' && canRead" class="surface-card">
       <form class="toolbar toolbar--wrap" @submit.prevent="searchPending">
-        <label>目标模块<input v-model.trim="pendingFilters.targetModule" maxlength="50" placeholder="例如 DEMO / TUTORIAL" /></label>
-        <label>审核类型<input v-model.trim="pendingFilters.reviewType" maxlength="100" placeholder="例如 demo.publish" /></label>
+        <label>目标模块<input v-model.trim="pendingFilters.targetModule" maxlength="50" placeholder="例如 TUTORIAL" /></label>
+        <label>审核类型<input v-model.trim="pendingFilters.reviewType" maxlength="100" placeholder="例如 tutorial.publish" /></label>
         <label>关键字<input v-model.trim="pendingFilters.keyword" maxlength="100" placeholder="目标名称或申请人" /></label>
         <button class="primary-button" type="submit">查询</button>
       </form>

@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  * 同一个 revisionRef 永远得到同一份快照，符合「不可变审核版本」的语义，
  * 也让演示行为可复现、可断言。
  *
- * Tutorial 接入后本类随 ReviewDemoTargetHandler 一起删除。
+ * 本类只在测试源码中存在。
  */
 public final class ReviewDemoRevisions {
 
