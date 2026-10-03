@@ -13,7 +13,7 @@ import { useViewMode } from '../../../shared/viewMode'
  *   2. V1 写的是已备案的真实备案号；本轮交付要求**备案号占位**，
  *      因此这里保留占位文案与工信部备案查询入口，等备案完成后再替换真实号码；
  *   3. V1 的导航比 V2 多一项语言学习模块；V2 本轮只保留「教程 / 博客 / 作品 / 关于」，
- *      未实现的三项渲染成不可点的占位而不是死链。
+ *      未实现的作品 / 关于渲染成不可点的占位而不是死链。
  *
  * 导航目标与顶栏同一口径，按当前路径树生成（公开树 /blog、账号树 /useradmin/blog）：
  * 页脚是同一套内容在两条树上复用，链接必须跟着树走，否则页脚会把账号外壳点掉。
@@ -26,7 +26,7 @@ const tagline = 'Knowledge · Code · Growth'
 const year = new Date().getFullYear()
 
 const navItems = computed(() => [
-  { label: '教程', to: null, pending: '教程模块建设中' },
+  { label: '教程', to: contentPath('/tutorials') },
   { label: '博客', to: contentPath('/blog') },
   { label: '作品', to: null, pending: '作品模块建设中' },
   { label: '关于', to: null, pending: '关于页面建设中' },

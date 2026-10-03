@@ -2,20 +2,18 @@
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { listAdminPosts } from '../../blog/api/blogApi'
+import { listAdminTutorials } from '../../tutorial/api/tutorialApi'
 import { errorMessage } from '../../../shared/http'
 import { dateLabel, postStatusLabel } from '../../blog/support/display'
 
 /*
  * 仪表盘（对齐 V1 views/admin/DashboardView.vue 的信息结构）。
  *
- * 数据来源刻意只有一处是真的：
- * - 博客的总数与草稿数取自 GET /api/admin/blog/posts 的 total（pageSize=1，只要计数），
- *   最近内容用同一接口按 updated_at DESC 的前几条代替，不新建后端接口；
- * - 教程 / 章节 / 作品的后端模块还没做，一律显示 0 并标注「模块建设中」，
- *   不伪造数字。
+ * 博客计数取自博客管理接口，教程与章节计数取自教程工作区。
+ * 作品尚未实现，继续保留建设中占位。
  *
  * V1 的仪表盘有 fetchDashboard() 一个聚合接口，V2 没有（也不该为了这个页面新造一个），
- * 所以这里只复用博客模块已有的列表接口。
+ * 所以这里只复用已有模块的列表接口。
  */
 const loading = ref(false)
 const error = ref('')
@@ -25,27 +23,57 @@ const contentCounts = ref({ tutorials: 0, chapters: 0, blogPosts: 0, portfolioPr
 const draftCounts = ref({ tutorials: 0, chapters: 0, blogPosts: 0, portfolioProjects: 0 })
 const recentContent = ref([])
 
-// 后端还没有对应模块的四类：卡片照 V1 位置保留，只标注来源
+// 作品尚未实现：卡片照 V1 位置保留，只标注来源。
 const PENDING_NOTE = '模块建设中'
 
 async function load() {
   loading.value = true
   error.value = ''
   try {
-    const [allPosts, draftPosts, recentPosts] = await Promise.all([
+    const [allPosts, draftPosts, recentPosts, firstTutorials] = await Promise.all([
       listAdminPosts({ page: 1, pageSize: 1 }),
       listAdminPosts({ page: 1, pageSize: 1, status: 'DRAFT' }),
       listAdminPosts({ page: 1, pageSize: 8 }),
+      listAdminTutorials({ page: 1, pageSize: 100 }),
     ])
-    contentCounts.value = { ...contentCounts.value, blogPosts: allPosts.total }
-    draftCounts.value = { ...draftCounts.value, blogPosts: draftPosts.total }
-    recentContent.value = recentPosts.items.map((post) => ({
+    const tutorials = [...(firstTutorials.items || [])]
+    const tutorialPages = Math.ceil((firstTutorials.total || 0) / 100)
+    for (let page = 2; page <= tutorialPages; page += 1) {
+      const next = await listAdminTutorials({ page, pageSize: 100 })
+      tutorials.push(...(next.items || []))
+    }
+    const unpublished = tutorials.filter((item) => item.publicationStatus === 'NEVER_PUBLISHED')
+    contentCounts.value = {
+      ...contentCounts.value,
+      tutorials: firstTutorials.total || 0,
+      chapters: tutorials.reduce((count, item) => count + (item.chapterCount || 0), 0),
+      blogPosts: allPosts.total || 0,
+    }
+    draftCounts.value = {
+      ...draftCounts.value,
+      tutorials: unpublished.length,
+      chapters: unpublished.reduce((count, item) => count + (item.chapterCount || 0), 0),
+      blogPosts: draftPosts.total || 0,
+    }
+    const blogRecent = (recentPosts.items || []).map((post) => ({
       id: post.id,
       type: 'BLOG',
       title: post.title,
       publishStatus: postStatusLabel(post.status),
       updatedAt: post.updatedAt,
     }))
+    const tutorialRecent = tutorials.map((item) => ({
+      id: item.id,
+      type: 'TUTORIAL',
+      title: item.title,
+      publishStatus: item.editingStatus === 'IN_REVIEW' ? '审核中'
+        : item.publicationStatus === 'PUBLISHED' ? '已发布'
+          : item.publicationStatus === 'WITHDRAWN' ? '已撤回' : '草稿',
+      updatedAt: item.updatedAt,
+    }))
+    recentContent.value = [...blogRecent, ...tutorialRecent]
+      .sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')))
+      .slice(0, 8)
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -67,12 +95,12 @@ onMounted(load)
       <div class="dashboard__card">
         <p class="dashboard__card-value">{{ contentCounts.tutorials }}</p>
         <p class="dashboard__card-label">教程</p>
-        <p class="dashboard__card-note">{{ PENDING_NOTE }}</p>
+        <p class="dashboard__card-note">来自教程工作区</p>
       </div>
       <div class="dashboard__card">
         <p class="dashboard__card-value">{{ contentCounts.chapters }}</p>
         <p class="dashboard__card-label">章节</p>
-        <p class="dashboard__card-note">{{ PENDING_NOTE }}</p>
+        <p class="dashboard__card-note">来自教程工作区</p>
       </div>
       <div class="dashboard__card">
         <p class="dashboard__card-value">{{ contentCounts.blogPosts }}</p>
@@ -89,11 +117,11 @@ onMounted(load)
     <div class="dashboard__cards dashboard__cards--drafts">
       <div class="dashboard__card dashboard__card--subtle">
         <p class="dashboard__card-value">{{ draftCounts.tutorials }}</p>
-        <p class="dashboard__card-label">教程草稿</p>
+        <p class="dashboard__card-label">未公开教程</p>
       </div>
       <div class="dashboard__card dashboard__card--subtle">
         <p class="dashboard__card-value">{{ draftCounts.chapters }}</p>
-        <p class="dashboard__card-label">章节草稿</p>
+        <p class="dashboard__card-label">未公开教程中的章节</p>
       </div>
       <div class="dashboard__card dashboard__card--subtle">
         <p class="dashboard__card-value">{{ draftCounts.blogPosts }}</p>
@@ -113,8 +141,8 @@ onMounted(load)
         </thead>
         <tbody>
           <tr v-for="item in recentContent" :key="`${item.type}-${item.id}`">
-            <td>博客</td>
-            <td><RouterLink :to="`/useradmin/blog/editor/${item.id}`">{{ item.title }}</RouterLink></td>
+            <td>{{ item.type === 'TUTORIAL' ? '教程' : '博客' }}</td>
+            <td><RouterLink :to="item.type === 'TUTORIAL' ? `/useradmin/tutorials/editor/${item.id}` : `/useradmin/blog/editor/${item.id}`">{{ item.title }}</RouterLink></td>
             <td><span class="status-chip">{{ item.publishStatus }}</span></td>
             <td>{{ dateLabel(item.updatedAt) }}</td>
           </tr>
@@ -128,7 +156,7 @@ onMounted(load)
     </div>
 
     <p class="tag-admin__note">
-      教程、章节、作品的后端模块尚未实现，对应计数固定为 0；本站不显示占位数字以外的推断值。
+      教程和章节计数来自教程工作区；作品模块仍在建设中。
     </p>
   </section>
 </template>
