@@ -2,6 +2,8 @@ package com.starrainnotes.blog.mapper;
 
 import com.starrainnotes.blog.entity.BlogPostEntity;
 import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
+import com.starrainnotes.blog.vo.BlogArchiveDayVO;
+import com.starrainnotes.blog.vo.BlogPostNeighborVO;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -22,6 +24,12 @@ public interface BlogPostMapper {
 
     // 公开详情只认 PUBLISHED：草稿与已撤回文章在 SQL 层就被排除
     BlogPostEntity publishedPostBySlug(@Param("slug") String slug);
+
+    BlogPostNeighborVO publishedPrevious(@Param("publishedAt") LocalDateTime publishedAt,
+                                         @Param("id") Long id);
+
+    BlogPostNeighborVO publishedNext(@Param("publishedAt") LocalDateTime publishedAt,
+                                     @Param("id") Long id);
 
     // slug 唯一性检查；excludeId 用于“改自己不算冲突”
     long countBySlug(@Param("slug") String slug, @Param("excludeId") Long excludeId);
@@ -83,6 +91,9 @@ public interface BlogPostMapper {
 
     // 归档月份桶：给前台时间归档的侧栏，依据 published_at 分组
     List<BlogArchiveMonthVO> archiveMonths();
+
+    List<BlogArchiveDayVO> archiveDays(@Param("publishedFrom") LocalDateTime publishedFrom,
+                                       @Param("publishedTo") LocalDateTime publishedTo);
 
     // 模块间读取：Site 首页用
     List<BlogPostEntity> latestPublished(@Param("limit") int limit);

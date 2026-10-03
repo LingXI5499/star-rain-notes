@@ -26,6 +26,9 @@ public class BlogPostPublicDetailVO {
     private LocalDateTime publishedAt;
     private LocalDateTime updatedAt;
 
+    private BlogPostNeighborVO previous;
+    private BlogPostNeighborVO next;
+
     private List<BlogTagVO> tags;
     private List<BlogTopicVO> topics;
 }

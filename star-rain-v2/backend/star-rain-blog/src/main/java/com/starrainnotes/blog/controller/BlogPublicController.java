@@ -3,6 +3,7 @@ package com.starrainnotes.blog.controller;
 import com.starrainnotes.blog.dto.BlogPublicQueryDTO;
 import com.starrainnotes.blog.service.BlogPublicService;
 import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
+import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
@@ -12,6 +13,7 @@ import com.starrainnotes.common.result.PageResult;
 import java.util.List;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -54,6 +56,12 @@ public class BlogPublicController {
     @GetMapping("/archive/months")
     public ApiResponse<List<BlogArchiveMonthVO>> archiveMonths() {
         return ApiResponse.ok(publicService.archiveMonths());
+    }
+
+    @GetMapping("/archive/days")
+    public ApiResponse<List<BlogArchiveDayVO>> archiveDays(@RequestParam Integer year,
+                                                            @RequestParam Integer month) {
+        return ApiResponse.ok(publicService.archiveDays(year, month));
     }
 
     // 前台筛选项：禁用标签与停用专题、以及 0 篇已发布文章的项都不会出现

@@ -107,6 +107,17 @@ watch(() => route.params.slug, load)
         <main class="article__body">
           <img v-if="post.coverUrl" class="article__cover" :src="post.coverUrl" :alt="post.title" />
           <BlogProse :markdown="post.bodyMarkdown" @outline="outline = $event" />
+          <nav v-if="post.previous || post.next" class="article__neighbors" aria-label="相邻文章">
+            <RouterLink v-if="post.previous" :to="contentPath(`/blog/posts/${post.previous.slug}`)">
+              <small>上一篇</small>
+              <strong>← {{ post.previous.title }}</strong>
+            </RouterLink>
+            <span v-else />
+            <RouterLink v-if="post.next" :to="contentPath(`/blog/posts/${post.next.slug}`)" class="article__neighbors-next">
+              <small>下一篇</small>
+              <strong>{{ post.next.title }} →</strong>
+            </RouterLink>
+          </nav>
           <p class="article__back">
             <RouterLink :to="contentPath('/blog')">← 返回博客时间线</RouterLink>
           </p>
@@ -219,6 +230,26 @@ watch(() => route.params.slug, load)
   border-top: 1px solid var(--border);
   font-size: 13px;
 }
+
+.article__neighbors {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin-top: var(--space-9);
+}
+
+.article__neighbors a {
+  display: grid;
+  gap: 5px;
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  background: var(--bg-surface);
+}
+
+.article__neighbors small { color: var(--text-muted); }
+.article__neighbors-next { text-align: right; }
 
 .article-state {
   display: grid;
