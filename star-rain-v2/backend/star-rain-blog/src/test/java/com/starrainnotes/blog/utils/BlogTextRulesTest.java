@@ -44,6 +44,40 @@ class BlogTextRulesTest {
     }
 
     @Test
+    @DisplayName("含公式的正文派生纯文字摘要，旧摘要即使截断在公式中也能安全展示")
+    void mathDoesNotLeakIntoSummary() {
+        String body = """
+                ## 排序
+
+                给定长度为 \\(n\\) 的序列：
+                \\[
+                A = (a_0, a_1, \\ldots)
+                \\]
+                第二个式子保证排序只改变位置、不增加元素。
+                这也适用于其他排序算法。
+                """;
+
+        String plain = "第二个式子保证排序只改变位置、不增加元素。 这也适用于其他排序算法。";
+        assertThat(BlogTextRules.deriveSummary(body)).isEqualTo(plain);
+        assertThat(BlogTextRules.publicSummary("给定 \\(n\\) 且 \\[ A =", body)).isEqualTo(plain);
+        assertThat(BlogTextRules.publicSummary("作者手写的普通摘要", body)).isEqualTo("作者手写的普通摘要");
+    }
+
+    @Test
+    @DisplayName("公式文章的长摘要优先在完整句子处结束")
+    void mathSummaryEndsAtSentenceBoundary() {
+        String body = """
+                公式是 \\(x\\)。
+                %s。
+                %s。
+                """.formatted("甲".repeat(110), "乙".repeat(110));
+
+        String summary = BlogTextRules.deriveSummary(body);
+
+        assertThat(summary).isEqualTo("甲".repeat(110) + "。");
+    }
+
+    @Test
     @DisplayName("摘要长度收敛到 200 字符，符合数据库列之外的产品约定")
     void truncatesLongSummary() {
         String body = "字".repeat(500);
