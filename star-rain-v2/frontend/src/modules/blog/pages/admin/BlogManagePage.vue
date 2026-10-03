@@ -211,7 +211,7 @@ onMounted(() => {
               <button type="button" @click="router.push(`/useradmin/blog/editor/${post.id}`)">编辑</button>
               <button v-if="canPublish(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'publish')">发布</button>
               <button v-if="canWithdraw(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'withdraw')">撤回</button>
-              <button v-if="canRestore(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'restore')">恢复</button>
+              <button v-if="canRestore(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'restore')">重新公开</button>
               <button v-if="canDelete(post.status)" type="button" class="is-danger" :disabled="busyId === post.id" @click="act(post, 'delete')">删除</button>
             </div>
           </div>

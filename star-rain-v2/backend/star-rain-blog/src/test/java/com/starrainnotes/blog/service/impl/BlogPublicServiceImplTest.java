@@ -17,7 +17,9 @@ import com.starrainnotes.blog.mapper.BlogTagMapper;
 import com.starrainnotes.blog.mapper.BlogTopicMapper;
 import com.starrainnotes.blog.service.BlogViewAssembler;
 import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
+import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
+import com.starrainnotes.blog.vo.BlogPostNeighborVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
 import com.starrainnotes.blog.vo.BlogTopicVO;
@@ -134,6 +136,23 @@ class BlogPublicServiceImplTest {
     }
 
     @Test
+    @DisplayName("相邻导航只取已发布文章，按发布时间和 ID 定位")
+    void postBySlugAddsPublishedNeighbors() {
+        BlogPostEntity post = post(9L);
+        BlogPostNeighborVO previous = BlogPostNeighborVO.builder().slug("older").title("上一篇").build();
+        BlogPostNeighborVO next = BlogPostNeighborVO.builder().slug("newer").title("下一篇").build();
+        when(postMapper.publishedPostBySlug("first-post")).thenReturn(post);
+        when(assembler.toPublicDetailVO(post)).thenReturn(BlogPostPublicDetailVO.builder().id(9L).build());
+        when(postMapper.publishedPrevious(post.getPublishedAt(), 9L)).thenReturn(previous);
+        when(postMapper.publishedNext(post.getPublishedAt(), 9L)).thenReturn(next);
+
+        BlogPostPublicDetailVO result = service.postBySlug("first-post");
+
+        assertThat(result.getPrevious()).isEqualTo(previous);
+        assertThat(result.getNext()).isEqualTo(next);
+    }
+
+    @Test
     @DisplayName("草稿与已撤回文章对外一律 404：不区分“不存在”和“未公开”")
     void postBySlugHidesUnpublished() {
         when(postMapper.publishedPostBySlug("draft-post")).thenReturn(null);
@@ -198,6 +217,35 @@ class BlogPublicServiceImplTest {
         when(postMapper.publishedPageCount(isNull(), isNull(), eq(from), eq(to))).thenReturn(0L);
 
         assertThat(service.archive(query).getItems()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("按天归档只查询当日的半开时间范围")
+    void archiveDayComputesHalfOpenRange() {
+        BlogPublicQueryDTO query = new BlogPublicQueryDTO();
+        query.setYear(2026);
+        query.setMonth(2);
+        query.setDay(28);
+        LocalDateTime from = LocalDateTime.of(2026, 2, 28, 0, 0);
+        LocalDateTime to = LocalDateTime.of(2026, 3, 1, 0, 0);
+        when(postMapper.publishedPageCount(null, null, from, to)).thenReturn(0L);
+
+        assertThat(service.archive(query).getItems()).isEmpty();
+    }
+
+    @Test
+    @DisplayName("指定月份的日历只读取该月的发布日桶")
+    void archiveDaysQueriesMonth() {
+        LocalDateTime from = LocalDateTime.of(2026, 2, 1, 0, 0);
+        LocalDateTime to = LocalDateTime.of(2026, 3, 1, 0, 0);
+        when(postMapper.archiveDays(from, to)).thenReturn(List.of(
+                BlogArchiveDayVO.builder().day(28).postCount(2L).build()));
+
+        assertThat(service.archiveDays(2026, 2)).extracting(BlogArchiveDayVO::getDay).containsExactly(28);
+        assertThatThrownBy(() -> service.archiveDays(2026, null))
+                .isInstanceOf(ApiException.class)
+                .extracting(ex -> ((ApiException) ex).getCode())
+                .isEqualTo("BLOG_QUERY_INVALID");
     }
 
     @Test

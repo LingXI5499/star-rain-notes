@@ -1,10 +1,11 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { listArchive, listArchiveMonths, listPublicTags, listPublicTopics } from '../api/blogApi'
+import { listArchive, listArchiveDays, listArchiveMonths, listPublicTags, listPublicTopics } from '../api/blogApi'
 import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import BlogArchiveFilter from '../components/BlogArchiveFilter.vue'
+import BlogArchiveCalendar from '../components/BlogArchiveCalendar.vue'
 import BlogSidebar from '../components/BlogSidebar.vue'
 import BlogPagination from '../components/BlogPagination.vue'
 import BlogTimeline from '../components/BlogTimeline.vue'
@@ -29,17 +30,31 @@ const route = useRoute()
 const router = useRouter()
 
 const pageSize = 10
-const filters = reactive({ tag: '', topic: '', year: null, month: null })
+const filters = reactive({ tag: '', topic: '', year: null, month: null, day: null })
 const state = reactive({ items: [], total: 0, page: 1 })
 const tags = ref([])
 const topics = ref([])
 const months = ref([])
+const days = ref([])
+const daysLoading = ref(false)
 const loading = ref(false)
 const errorText = ref('')
 
 const totalPages = computed(() => Math.max(1, Math.ceil(state.total / pageSize)))
 const activeMonth = computed(() => (filters.year ? `${filters.year}-${String(filters.month || 1).padStart(2, '0')}` : ''))
-const rangeLabel = computed(() => monthLabel(filters.year, filters.month))
+const rangeLabel = computed(() => filters.day
+  ? `${monthLabel(filters.year, filters.month)} ${filters.day} 日`
+  : monthLabel(filters.year, filters.month))
+const calendarMonth = computed(() => {
+  const selected = filters.year && filters.month
+    ? { year: filters.year, month: filters.month }
+    : months.value.find((item) => item.year === filters.year) || months.value[0]
+  return selected ? `${selected.year}-${String(selected.month).padStart(2, '0')}` : ''
+})
+const calendarParts = computed(() => {
+  const [year, month] = calendarMonth.value.split('-').map(Number)
+  return { year, month }
+})
 
 function queryOf() {
   return {
@@ -47,6 +62,7 @@ function queryOf() {
     ...(filters.topic ? { topic: filters.topic } : {}),
     ...(filters.year ? { year: String(filters.year) } : {}),
     ...(filters.month ? { month: String(filters.month) } : {}),
+    ...(filters.day ? { day: String(filters.day) } : {}),
     ...(state.page > 1 ? { page: String(state.page) } : {}),
   }
 }
@@ -56,8 +72,10 @@ function syncFromQuery() {
   filters.topic = typeof route.query.topic === 'string' ? route.query.topic : ''
   const year = Number(route.query.year)
   const month = Number(route.query.month)
+  const day = Number(route.query.day)
   filters.year = Number.isInteger(year) && year > 0 ? year : null
   filters.month = filters.year && Number.isInteger(month) && month >= 1 && month <= 12 ? month : null
+  filters.day = filters.month && Number.isInteger(day) && day >= 1 && day <= 31 ? day : null
   state.page = Math.max(Number(route.query.page) || 1, 1)
 }
 
@@ -72,6 +90,7 @@ async function loadPosts() {
       topic: filters.topic || undefined,
       year: filters.year || undefined,
       month: filters.month || undefined,
+      day: filters.day || undefined,
     })
     state.items = result.items || []
     state.total = result.total || 0
@@ -100,11 +119,30 @@ async function loadOptions() {
   }
 }
 
+let dayRequest = 0
+async function loadDays(monthKey) {
+  const request = ++dayRequest
+  days.value = []
+  if (!monthKey) return
+  const [year, month] = monthKey.split('-').map(Number)
+  daysLoading.value = true
+  try {
+    const result = await listArchiveDays({ year, month })
+    if (request === dayRequest) days.value = result || []
+  } catch {
+    // 日历加载失败时文章时间线仍可浏览，月份筛选也仍然可用。
+  } finally {
+    if (request === dayRequest) daysLoading.value = false
+  }
+}
+
 function applyQuery() {
   router.replace({ path: contentPath('/blog/archive'), query: queryOf() })
+  void loadPosts()
 }
 
 function applyFilters(next) {
+  if (next.year !== filters.year || next.month !== filters.month) filters.day = null
   Object.assign(filters, next)
   state.page = 1
   applyQuery()
@@ -119,6 +157,15 @@ function selectTag(slug) {
 function selectMonth(month) {
   filters.year = month ? month.year : null
   filters.month = month ? month.month : null
+  filters.day = null
+  state.page = 1
+  applyQuery()
+}
+
+function selectDay(day) {
+  filters.year = calendarParts.value.year
+  filters.month = calendarParts.value.month
+  filters.day = filters.day === day ? null : day
   state.page = 1
   applyQuery()
 }
@@ -128,6 +175,7 @@ function clearAll() {
   filters.topic = ''
   filters.year = null
   filters.month = null
+  filters.day = null
   state.page = 1
   applyQuery()
 }
@@ -146,11 +194,13 @@ onMounted(() => {
 })
 
 // URL 是筛选条件的唯一出口：浏览器前进/后退也能正确回到当时的归档视图
-watch(() => [route.query.tag, route.query.topic, route.query.year, route.query.month, route.query.page],
+watch(calendarMonth, loadDays)
+
+watch(() => [route.query.tag, route.query.topic, route.query.year, route.query.month, route.query.day, route.query.page],
   () => {
-    const before = JSON.stringify([filters.tag, filters.topic, filters.year, filters.month, state.page])
+    const before = JSON.stringify([filters.tag, filters.topic, filters.year, filters.month, filters.day, state.page])
     syncFromQuery()
-    const after = JSON.stringify([filters.tag, filters.topic, filters.year, filters.month, state.page])
+    const after = JSON.stringify([filters.tag, filters.topic, filters.year, filters.month, filters.day, state.page])
     if (before === after) return
     void loadPosts()
   })
@@ -183,6 +233,17 @@ watch(() => [route.query.tag, route.query.topic, route.query.year, route.query.m
 
     <div class="blog-layout">
       <main class="blog-main">
+        <BlogArchiveCalendar
+          v-if="calendarMonth"
+          :year="calendarParts.year"
+          :month="calendarParts.month"
+          :days="days"
+          :months="months"
+          :selected-day="filters.year === calendarParts.year && filters.month === calendarParts.month ? filters.day : null"
+          :loading="daysLoading"
+          @select-day="selectDay"
+          @select-month="selectMonth"
+        />
         <div v-if="filters.tag || filters.topic || filters.year" class="blog-active">
           <span>当前视图</span>
           <button v-if="filters.tag" type="button" @click="selectTag('')"># {{ filters.tag }} ×</button>

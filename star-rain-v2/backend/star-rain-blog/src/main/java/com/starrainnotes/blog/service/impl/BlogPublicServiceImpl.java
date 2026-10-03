@@ -13,6 +13,7 @@ import com.starrainnotes.blog.service.BlogViewAssembler;
 import com.starrainnotes.blog.utils.BlogQueryRules;
 import com.starrainnotes.blog.utils.BlogSlugRules;
 import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
+import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
@@ -70,7 +71,12 @@ public class BlogPublicServiceImpl implements BlogPublicService {
             // 草稿与已撤回文章同样走这里：对外不能区分“不存在”和“未公开”
             throw new BlogPostNotFoundException();
         }
-        return assembler.toPublicDetailVO(post);
+        BlogPostPublicDetailVO detail = assembler.toPublicDetailVO(post);
+        if (post.getPublishedAt() != null) {
+            detail.setPrevious(postMapper.publishedPrevious(post.getPublishedAt(), post.getId()));
+            detail.setNext(postMapper.publishedNext(post.getPublishedAt(), post.getId()));
+        }
+        return detail;
     }
 
     @Override
@@ -82,11 +88,12 @@ public class BlogPublicServiceImpl implements BlogPublicService {
 
         Integer year = BlogQueryRules.archiveYear(query.getYear());
         Integer month = BlogQueryRules.archiveMonth(year, query.getMonth());
+        Integer day = BlogQueryRules.archiveDay(year, month, query.getDay());
         LocalDateTime from = null;
         LocalDateTime to = null;
         if (year != null) {
-            from = LocalDateTime.of(year, month == null ? 1 : month, 1, 0, 0);
-            to = month == null ? from.plusYears(1) : from.plusMonths(1);
+            from = LocalDateTime.of(year, month == null ? 1 : month, day == null ? 1 : day, 0, 0);
+            to = day != null ? from.plusDays(1) : month == null ? from.plusYears(1) : from.plusMonths(1);
         }
         return page(query, tagSlug, topicSlug, from, to);
     }
@@ -95,6 +102,18 @@ public class BlogPublicServiceImpl implements BlogPublicService {
     @Transactional(readOnly = true)
     public List<BlogArchiveMonthVO> archiveMonths() {
         return postMapper.archiveMonths();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<BlogArchiveDayVO> archiveDays(Integer year, Integer month) {
+        Integer validYear = BlogQueryRules.archiveYear(year);
+        Integer validMonth = BlogQueryRules.archiveMonth(validYear, month);
+        if (validYear == null || validMonth == null) {
+            throw new BlogQueryInvalidException("按天查看日历必须给出 year 和 month");
+        }
+        LocalDateTime from = LocalDateTime.of(validYear, validMonth, 1, 0, 0);
+        return postMapper.archiveDays(from, from.plusMonths(1));
     }
 
     @Override

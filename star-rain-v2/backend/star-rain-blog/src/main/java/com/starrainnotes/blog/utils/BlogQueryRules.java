@@ -93,6 +93,19 @@ public final class BlogQueryRules {
         return month;
     }
 
+    public static Integer archiveDay(Integer year, Integer month, Integer day) {
+        if (day == null) {
+            return null;
+        }
+        if (year == null || month == null) {
+            throw new BlogQueryInvalidException("按天归档时必须同时给出 year 和 month");
+        }
+        if (day < 1 || day > java.time.YearMonth.of(year, month).lengthOfMonth()) {
+            throw new BlogQueryInvalidException("day 不在所选月份内");
+        }
+        return day;
+    }
+
     public static int offset(int page, int pageSize) {
         return (page - 1) * pageSize;
     }
