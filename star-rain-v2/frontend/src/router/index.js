@@ -63,12 +63,10 @@ const routeDeclarations = [
   { path: '/blog/archive', component: () => import('../modules/blog/pages/BlogArchivePage.vue'), meta: { publicPage: true } },
   { path: '/blog/posts/:slug', component: () => import('../modules/blog/pages/BlogPostPage.vue'), meta: { publicPage: true } },
 
-  /*
-   * 教程 / 作品 / 关于 / 搜索：后端模块还没做，页面只有「建设中」占位。
-   * 用 /** 形状登记，子路径也落在占位页上，而不是被兜底重定向弹回首页
-   * （用户从 /tutorials/xxx 进来时，看到「教程模块建设中」比看到一个首页更接近事实）。
-   */
-  { path: '/tutorials/:pathMatch(.*)*', component: PendingPage, props: { title: '教程' } },
+  // 教程已接入公开列表、详情与章节；其余内容模块仍使用建设中页面。
+  { path: '/tutorials', component: () => import('../modules/tutorial/pages/public/TutorialCatalogPage.vue'), meta: { publicPage: true } },
+  { path: '/tutorials/:tutorialSlug', component: () => import('../modules/tutorial/pages/public/TutorialDetailPage.vue'), meta: { publicPage: true } },
+  { path: '/tutorials/:tutorialSlug/:chapterSlug', component: () => import('../modules/tutorial/pages/public/TutorialChapterPage.vue'), meta: { publicPage: true } },
   { path: '/portfolio/:pathMatch(.*)*', component: PendingPage, props: { title: '作品' } },
   { path: '/about', component: PendingPage, props: { title: '关于' } },
   { path: '/search', component: PendingPage, props: { title: '搜索' } },
@@ -129,6 +127,16 @@ const routeDeclarations = [
     meta: { console: true, requiresAuth: true, permission: 'blog:taxonomy-manage' } },
   { path: '/blog/editor/:postId', component: () => import('../modules/blog/pages/admin/BlogEditorPage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'blog:edit' } },
+  { path: '/tutorials/manage', component: () => import('../modules/tutorial/pages/admin/TutorialManagePage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'tutorial:read-admin' } },
+  { path: '/tutorials/editor/:tutorialId', component: () => import('../modules/tutorial/pages/admin/TutorialEditPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'tutorial:edit' } },
+  { path: '/tutorials/:tutorialId/preview', component: () => import('../modules/tutorial/pages/admin/TutorialPreviewPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'tutorial:read-admin' } },
+  { path: '/tutorials/:tutorialId/curriculum', component: () => import('../modules/tutorial/pages/admin/TutorialCurriculumPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'tutorial:read-admin' } },
+  { path: '/tutorials/:tutorialId/chapters/:chapterId', component: () => import('../modules/tutorial/pages/admin/ChapterEditPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'tutorial:edit' } },
 ]
 
 const routes = buildTreeRoutes(routeDeclarations)

@@ -67,27 +67,3 @@ export function dateLabel(value) {
   const date = new Date(value.endsWith('Z') ? value : value + 'Z')
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString('zh-CN', { hour12: false })
 }
-
-/*
- * 演示目标（脚手架）。
- *
- * 后端 ReviewDemoTargetHandler 只放行 DEMO + DEMO_TARGET + demo.publish，
- * 这里与它保持一致；Tutorial 接入后本常量与演示提交面板一起删除。
- */
-export const DEMO_TARGET = {
-  reviewType: 'demo.publish',
-  targetModule: 'DEMO',
-  targetType: 'DEMO_TARGET',
-}
-
-// 演示提交时用时间戳生成唯一的目标ID与版本引用，避免自己和自己撞「已有待审」
-export function demoSubmissionPayload(targetId, displayName, note) {
-  const stamp = Date.now()
-  return {
-    ...DEMO_TARGET,
-    targetId,
-    targetRevisionRef: `revision:${stamp}`,
-    targetDisplayName: displayName,
-    submissionNote: note || undefined,
-  }
-}

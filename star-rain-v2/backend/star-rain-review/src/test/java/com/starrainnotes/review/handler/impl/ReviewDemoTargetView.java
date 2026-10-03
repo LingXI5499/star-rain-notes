@@ -10,9 +10,7 @@ import lombok.NoArgsConstructor;
 /*
  * 演示用目标视图。
  *
- * 存在的唯一理由是：Tutorial / Blog 模块还没有实现，REV-003 的
- * 「目标模块按 revisionRef 返回不可变审核视图」这条链路如果没有任何实现，
- * 就无法被端到端验证。Tutorial 接入后应当删除本类与 ReviewDemoTargetHandler。
+ * 仅供 Review 单元测试断言冻结视图；生产环境使用 Tutorial 的视图。
  *
  * 字段刻意保持业务无关：它证明 Review 只搬运视图、不解析业务字段。
  */

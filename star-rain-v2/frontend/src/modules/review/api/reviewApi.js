@@ -27,13 +27,3 @@ export const rejectReview = (reviewId, reason) =>
 // REV-006 取消待审请求：只有申请人本人能取消
 export const cancelReview = (reviewId) =>
   post(`/admin/reviews/${encodeURIComponent(reviewId)}/cancel`)
-
-/*
- * 演示用提交入口（脚手架）。
- *
- * 正式链路是业务模块（Tutorial）自己验证对象权限后内部调用 ReviewSubmissionApi，
- * 浏览器不应该指定 targetModule/targetId。Tutorial 落地前，审核中心用这个入口
- * 演示「提交审核 + 重复提交被拒」；后端只放行演示目标。
- */
-export const submitDemoReview = (payload) =>
-  post('/admin/reviews/demo-submissions', payload)

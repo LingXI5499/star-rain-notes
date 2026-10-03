@@ -17,9 +17,8 @@ import BlogTimeline from '../../blog/components/BlogTimeline.vue'
  *   归档月份 = `/public/blog/archive/months` 的条数（只统计已发布文章）
  * 拿不到数据时显示 0 并在时间线里给出错误文案，不编造数字。
  *
- * V1 首页还有「精选知识体系」「把学习做成作品」「关于作者」三块，
- * 分别依赖教程、作品与站点设置接口；V2 这三个模块都还没有后端，
- * 因此本轮只做「博客 + 导航占位」，等模块落地后再补，而不是放静态假数据。
+ * V1 首页还有「精选知识体系」「把学习做成作品」「关于作者」三块。
+ * 教程入口已接入教程中心；作品与站点设置仍待对应模块实现。
  *
  * 这一页在两条路径树上都渲染（/ 与 /useradmin 各一次），因此页内链接一律写**中性路径**，
  * 由 contentPath() 按当前模式决定落在 /blog 还是 /useradmin/blog。
@@ -31,7 +30,7 @@ const loading = ref(true)
 const errorText = ref('')
 
 const modules = [
-  { index: '01', label: '教程', en: 'LEARN', desc: '从知识体系进入系统课程', to: null, pending: '教程模块建设中' },
+  { index: '01', label: '教程', en: 'LEARN', desc: '从知识体系进入系统课程', to: '/tutorials' },
   { index: '02', label: '博客', en: 'THINK', desc: '记录判断、方法与复盘', to: '/blog' },
   { index: '03', label: '作品', en: 'BUILD', desc: '用真实项目验证学习', to: null, pending: '作品模块建设中' },
   { index: '04', label: '关于', en: 'ABOUT', desc: '认识作者与这套知识系统', to: null, pending: '关于页面建设中' },

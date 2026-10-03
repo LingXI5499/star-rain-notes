@@ -15,14 +15,11 @@ import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.common.handler.GlobalApiExceptionHandler;
 import com.starrainnotes.common.result.PageResult;
-import com.starrainnotes.review.api.dto.ReviewSubmissionResult;
 import com.starrainnotes.review.config.ReviewWebConfig;
 import com.starrainnotes.review.context.ReviewViewer;
 import com.starrainnotes.review.enumeration.ReviewStatus;
-import com.starrainnotes.review.handler.impl.ReviewDemoTargetHandler;
 import com.starrainnotes.review.interceptor.CurrentReviewerIdArgumentResolver;
 import com.starrainnotes.review.service.ReviewDecisionService;
-import com.starrainnotes.review.service.ReviewDemoSubmissionService;
 import com.starrainnotes.review.service.ReviewQueryService;
 import com.starrainnotes.review.service.ReviewSubmissionService;
 import com.starrainnotes.review.service.ReviewViewerProvider;
@@ -89,11 +86,6 @@ class ReviewAdminControllerTest {
         }
 
         @Bean
-        ReviewDemoSubmissionService demoSubmissionService() {
-            return mock(ReviewDemoSubmissionService.class);
-        }
-
-        @Bean
         CurrentActorApi currentActorApi() {
             return mock(CurrentActorApi.class);
         }
@@ -126,10 +118,9 @@ class ReviewAdminControllerTest {
         ReviewAdminController reviewAdminController(ReviewQueryService queryService,
                                                    ReviewDecisionService decisionService,
                                                    ReviewSubmissionService submissionService,
-                                                   ReviewDemoSubmissionService demoSubmissionService,
                                                    ReviewViewerProvider reviewViewerProvider) {
             return new ReviewAdminController(queryService, decisionService, submissionService,
-                    demoSubmissionService, reviewViewerProvider);
+                    reviewViewerProvider);
         }
 
         // 复用 common 的全局异常处理器，保证「业务错误码 → HTTP 状态」与生产一致
@@ -142,7 +133,6 @@ class ReviewAdminControllerTest {
     private final ReviewQueryService queryService;
     private final ReviewDecisionService decisionService;
     private final ReviewSubmissionService submissionService;
-    private final ReviewDemoSubmissionService demoSubmissionService;
     private final CurrentActorApi currentActorApi;
     private final MockMvc mockMvc;
 
@@ -151,14 +141,13 @@ class ReviewAdminControllerTest {
         this.queryService = context.getBean(ReviewQueryService.class);
         this.decisionService = context.getBean(ReviewDecisionService.class);
         this.submissionService = context.getBean(ReviewSubmissionService.class);
-        this.demoSubmissionService = context.getBean(ReviewDemoSubmissionService.class);
         this.currentActorApi = context.getBean(CurrentActorApi.class);
     }
 
     @BeforeEach
     void resetMocks() {
         org.mockito.Mockito.reset(queryService, decisionService, submissionService,
-                demoSubmissionService, currentActorApi);
+                currentActorApi);
     }
 
     private void authenticatedAs(long accountId, String... permissions) {
@@ -326,48 +315,4 @@ class ReviewAdminControllerTest {
         verify(submissionService).cancelByApplicant(500L, 9L);
     }
 
-    @Test
-    @WithMockUser(username = "super", authorities = "review:read")
-    @DisplayName("REV-001 演示提交入口：申请人取自认证上下文，返回 201")
-    void demoSubmissionUsesAuthenticatedApplicant() throws Exception {
-        authenticatedAs(9L, "review:read");
-        when(demoSubmissionService.submit(any(), eq(9L))).thenReturn(ReviewSubmissionResult.builder()
-                .reviewRequestId(500L)
-                .status(ReviewStatus.PENDING_CODE)
-                .reviewType(ReviewDemoTargetHandler.REVIEW_TYPE)
-                .build());
-
-        mockMvc.perform(post("/api/admin/reviews/demo-submissions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"reviewType\":\"demo.publish\",\"targetModule\":\"DEMO\","
-                                + "\"targetType\":\"DEMO_TARGET\",\"targetId\":100,"
-                                + "\"targetRevisionRef\":\"revision:7\","
-                                + "\"targetDisplayName\":\"演示目标\"}"))
-                .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.data.reviewRequestId").value(500))
-                .andExpect(jsonPath("$.data.status").value("PENDING"));
-
-        verify(demoSubmissionService).submit(any(), eq(9L));
-    }
-
-    @Test
-    @WithMockUser(username = "nobody", authorities = "media:read")
-    @DisplayName("REV-001 演示提交入口要求 review:read；无权时 Service 不会被调用")
-    void demoSubmissionDeniedWithoutReviewRead() throws Exception {
-        /*
-         * 本上下文只装配 Web MVC 层，没有 Spring Security 的方法级拦截器，
-         * 因此这里断言的是「请求没有抵达演示提交服务」；
-         * 「缺少 review:read 会被 403」由 ReviewAdminControllerSecurityTest 对
-         * @PreAuthorize 声明求值来精确证明。
-         */
-        mockMvc.perform(post("/api/admin/reviews/demo-submissions")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"reviewType\":\"demo.publish\",\"targetModule\":\"DEMO\","
-                                + "\"targetType\":\"DEMO_TARGET\",\"targetId\":100,"
-                                + "\"targetRevisionRef\":\"revision:7\","
-                                + "\"targetDisplayName\":\"演示目标\"}"))
-                .andExpect(status().isInternalServerError());
-
-        verify(demoSubmissionService, never()).submit(any(), any());
-    }
 }

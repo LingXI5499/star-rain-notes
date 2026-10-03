@@ -12,16 +12,16 @@ import { accountPath } from '../viewMode'
  * 侧栏分三层，按角色隐藏 —— 是「看不见」，不是「点了报 403」：
  *   通用        我的账户（/useradmin/center）、学习记录（占位，后续开发）
  *   统计总览    SUPER_ADMIN：仪表盘（导航第一项）
- *   内容编辑    ADMIN 及以上：教程编辑（占位）、博客管理、媒体库、作品管理（占位）、审核中心
+ *   内容编辑    ADMIN 及以上：教程编辑、博客管理、媒体库、作品管理（占位）、审核中心
  *   站点治理    SUPER_ADMIN：账户管理、管理员邀请、账户审计
  *
  * 三处刻意的取舍：
  * 1. 没有「英语管理」—— english 模块在 V2 仍为 PAUSED，导航里不出现，
  *    避免给出一个点进去什么也没有的入口。
- * 2. 教程编辑 / 作品管理只有位置、不能点：对应的后端模块还没做，
+ * 2. 作品管理只有位置、不能点：对应的后端模块还没做，
  *    做成 RouterLink 会直接落到兜底重定向，比「不可点 + 建设中」更糟。
  * 3. 内容编辑这一层的可见性用角色判断（ADMIN / SUPER_ADMIN），而不是逐个权限码：
- *    这一层里有教程编辑 / 作品管理两个占位项，它们没有权限码可判，
+ *    这一层里有作品管理占位项，它没有权限码可判，
  *    角色正好表达「内容编辑者」这个层级；层内每个真实链接仍然各自再判一次权限，
  *    因此「有角色但缺某个权限」时不会看到进不去的入口。
  *
@@ -87,7 +87,7 @@ const isContentEditor = computed(() =>
 const isSuperAdmin = computed(() => Boolean(auth.currentUser?.roles?.includes('SUPER_ADMIN')))
 
 const contentItems = computed(() => [
-  { label: '教程编辑', short: '教', pending: '教程模块后端未实现' },
+  { label: '教程编辑', short: '教', to: accountPath('/tutorials/manage'), visible: auth.hasPermission('tutorial:read-admin') },
   { label: '博客管理', short: '博', to: accountPath('/blog/manage'), visible: auth.hasPermission('blog:read-admin') },
   { label: '媒体库', short: '媒', to: accountPath('/media'), visible: auth.hasPermission('media:read') },
   { label: '作品管理', short: '品', pending: '作品模块后端未实现' },
