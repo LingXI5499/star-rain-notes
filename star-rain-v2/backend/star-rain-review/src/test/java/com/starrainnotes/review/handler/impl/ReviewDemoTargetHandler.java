@@ -4,19 +4,12 @@ import com.starrainnotes.review.api.ReviewDecisionContext;
 import com.starrainnotes.review.api.ReviewTargetHandler;
 import com.starrainnotes.review.api.ReviewTargetRef;
 import com.starrainnotes.review.api.ReviewTargetView;
-import com.starrainnotes.review.handler.impl.ReviewDemoTargetView;
 import com.starrainnotes.review.utils.ReviewDemoRevisions;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import org.springframework.stereotype.Component;
 
 /*
- * 演示用目标处理器（脚手架，Tutorial 接入后删除）。
- *
- * 为什么必须存在：
- *   SPI 的正确性只有「真的有一个业务模块实现它」才能验证。Tutorial / Blog 目前
- *   只有空 pom，如果不放这个实现，REV-001 提交会直接因为
- *   REVIEW_TARGET_NOT_SUPPORTED 失败，afterCommit 回调链路也无从验证。
+ * 审核 SPI 的测试夹具。仅供单元测试验证不可变视图与回调。
  *
  * 它同时是接入方的参考实现：
  *   1. targetModule / targetType 声明自己负责哪一类目标；
@@ -26,9 +19,8 @@ import org.springframework.stereotype.Component;
  *      不反向调用 Review 改状态。
  *
  * 版本内容由 ReviewDemoRevisions 按 revisionRef 确定性推导，
- * 真实业务模块应当读自己的版本表。
+ * 生产环境由 Tutorial 实现 SPI，本类不注册为 Bean。
  */
-@Component
 public class ReviewDemoTargetHandler implements ReviewTargetHandler {
 
     // 演示目标的模块与类型；正式接入方各自使用自己的常量

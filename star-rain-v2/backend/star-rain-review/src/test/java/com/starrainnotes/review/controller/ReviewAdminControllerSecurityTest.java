@@ -42,7 +42,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
  *   /approve 需要 review:approve       → 仅 SUPER_ADMIN
  *   /reject  需要 review:reject        → 仅 SUPER_ADMIN
  *   /cancel  需要 review:read + 申请人本人（身份判定在 Service 内）
- *   demo-submissions 需要 review:read
  */
 class ReviewAdminControllerSecurityTest {
 
@@ -117,16 +116,13 @@ class ReviewAdminControllerSecurityTest {
             "pending", method("pending", com.starrainnotes.review.dto.ReviewQueryDTO.class),
             "history", method("history", com.starrainnotes.review.dto.ReviewHistoryQueryDTO.class),
             "detail", method("detail", Long.class),
-            "cancel", method("cancel", Long.class, Long.class),
-            "demoSubmit", method("demoSubmit", com.starrainnotes.review.dto.ReviewDemoSubmissionDTO.class,
-                    Long.class));
+            "cancel", method("cancel", Long.class, Long.class));
 
     @ParameterizedTest
     @CsvSource({
             "pending,   review:read",
             "history,   review:history-read",
             "detail,    review:read",
-            "demoSubmit, review:read",
     })
     @DisplayName("查看类端点：ADMIN 与 SUPER_ADMIN 都能通过（权限同时授予两个角色），普通用户被拒")
     void viewEndpointsAllowBothAdminRoles(String endpoint, String permission) {
