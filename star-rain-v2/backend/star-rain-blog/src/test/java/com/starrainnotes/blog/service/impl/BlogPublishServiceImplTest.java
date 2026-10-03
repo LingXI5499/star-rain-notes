@@ -300,6 +300,20 @@ class BlogPublishServiceImplTest {
     }
 
     @Test
+    @DisplayName("已撤回文章内容被清空后不能直接重新公开")
+    void restoreRejectsEmptyBody() {
+        stubActor("SUPER_ADMIN");
+        when(postMapper.postByIdForUpdate(9L)).thenReturn(post(9L, "WITHDRAWN", "第一篇", "first-post",
+                "摘要", "", null));
+
+        assertThatThrownBy(() -> service.restore(9L))
+                .isInstanceOf(ApiException.class)
+                .extracting(ex -> ((ApiException) ex).getCode())
+                .isEqualTo("BLOG_POST_CONTENT_EMPTY");
+        verify(postMapper, never()).publishPost(anyLong(), any(), anyLong());
+    }
+
+    @Test
     @DisplayName("非 Super Admin 不能撤回")
     void withdrawRejectedForNonSuperAdmin() {
         when(currentActorApi.currentOptional()).thenReturn(Optional.of(actor("ADMIN")));

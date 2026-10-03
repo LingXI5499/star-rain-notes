@@ -378,7 +378,7 @@ watch(() => route.params.postId, () => {
           <template v-if="!isCreate">
             <button v-if="canPublish(detail?.status)" class="primary-button" type="button" :disabled="saving" @click="act('publish')">发布</button>
             <button v-if="canWithdraw(detail?.status)" type="button" :disabled="saving" @click="act('withdraw')">撤回</button>
-            <button v-if="canRestore(detail?.status)" type="button" :disabled="saving" @click="act('restore')">恢复</button>
+            <button v-if="canRestore(detail?.status)" type="button" :disabled="saving" @click="act('restore')">重新公开</button>
             <button v-if="canDelete(detail?.status)" class="blog-danger" type="button" :disabled="saving" @click="act('delete')">删除</button>
           </template>
         </div>
