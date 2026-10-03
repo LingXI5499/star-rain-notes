@@ -28,6 +28,7 @@ public class BlogPostPublicVO {
     private String coverUrl;
 
     private LocalDateTime publishedAt;
+    private LocalDateTime updatedAt;
 
     private List<BlogTagVO> tags;
     private List<BlogTopicVO> topics;

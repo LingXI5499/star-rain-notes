@@ -112,6 +112,7 @@ public class BlogPublishServiceImpl implements BlogPublishService {
         if (!BlogPostStatus.WITHDRAWN_CODE.equals(post.getStatus())) {
             throw new BlogPostStateInvalidException("只有已撤回文章可以恢复");
         }
+        validateForPublish(post, actorId);
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         int updated = postMapper.publishPost(postId, now, actorId);
         if (updated == 0) {

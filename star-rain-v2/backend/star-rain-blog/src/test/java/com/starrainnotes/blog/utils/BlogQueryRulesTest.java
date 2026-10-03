@@ -90,6 +90,19 @@ class BlogQueryRulesTest {
     }
 
     @Test
+    @DisplayName("归档日期需有效年月，闰年与平年二月按实际天数校验")
+    void validatesArchiveDay() {
+        assertThat(BlogQueryRules.archiveDay(2026, 2, null)).isNull();
+        assertThat(BlogQueryRules.archiveDay(2024, 2, 29)).isEqualTo(29);
+        assertThatThrownBy(() -> BlogQueryRules.archiveDay(2026, 2, 29))
+                .isInstanceOf(BlogQueryInvalidException.class);
+        assertThatThrownBy(() -> BlogQueryRules.archiveDay(null, 2, 1))
+                .isInstanceOf(BlogQueryInvalidException.class);
+        assertThatThrownBy(() -> BlogQueryRules.archiveDay(2026, null, 1))
+                .isInstanceOf(BlogQueryInvalidException.class);
+    }
+
+    @Test
     @DisplayName("slug 规范化：去空白、转小写，非法字符被识别")
     void slugRules() {
         assertThat(BlogSlugRules.normalize("  Hello-World  ")).isEqualTo("hello-world");

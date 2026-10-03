@@ -11,9 +11,8 @@ import { dateOnly, summaryText, timelineGroups } from '../support/display'
  * 右侧是卡片：标签行 / 标题 / 摘要 / 时间 / 「阅读全文 →」。
  * 首页、博客列表、归档页三处共用这一个组件，避免三份写法各自漂移。
  *
- * 时间显示用 publishedAt 兜底：公开列表 VO（BlogPostPublicVO）目前只有发布时间，
- * 只有详情 VO 才有 updatedAt，因此「更新于」只在确实拿到更新时间的场景出现 ——
- * 宁可少一行，也不把发布时间标成更新时间。
+ * 时间显示优先用更新日期；首次发布或缺少更新时间时显示发布时间，
+ * 不把发布时间误标成更新时间。
  *
  * 卡片链接按当前路径树生成：账号模式下必须落在 /useradmin/blog/posts/:slug，
  * 否则列表里点开一篇就掉回公开树、把账号外壳丢了。

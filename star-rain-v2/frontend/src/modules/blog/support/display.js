@@ -16,7 +16,7 @@ const statusLabels = Object.fromEntries(POST_STATUSES.map((item) => [item.value,
 export const postStatusLabel = (code) => statusLabels[code] || code || '未知'
 
 // 只有 PUBLISHED 能撤回，只有 DRAFT / WITHDRAWN 能删除 —— 与后端状态机保持一致
-export const canPublish = (status) => status === 'DRAFT' || status === 'WITHDRAWN'
+export const canPublish = (status) => status === 'DRAFT'
 export const canWithdraw = (status) => status === 'PUBLISHED'
 export const canRestore = (status) => status === 'WITHDRAWN'
 export const canDelete = (status) => status === 'DRAFT' || status === 'WITHDRAWN'
