@@ -207,7 +207,7 @@ onMounted(load)
               <button type="button" @click="router.push(`/useradmin/tutorials/editor/${item.id}`)">编辑</button>
               <button type="button" @click="router.push(`/useradmin/tutorials/${item.id}/preview`)">预览</button>
               <button type="button" @click="openMoveDialog(item)">更换体系</button>
-              <button v-if="item.editingStatus === 'DRAFT' && auth.hasPermission('tutorial:submit')" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'submit')">提交审核</button>
+              <button v-if="item.editingStatus === 'DRAFT' && auth.hasPermission('tutorial:submit') && !auth.hasPermission('tutorial:publish')" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'submit')">提交审核</button>
               <button v-if="auth.hasPermission('tutorial:publish') && item.publicationStatus !== 'WITHDRAWN' && item.editingStatus !== 'IN_REVIEW'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'publish')">{{ item.publicationStatus === 'PUBLISHED' ? '更新公开版本' : '发布' }}</button>
               <button v-if="auth.hasPermission('tutorial:withdraw') && item.publicationStatus === 'PUBLISHED'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'withdraw')">撤回</button>
               <button v-if="auth.hasPermission('tutorial:withdraw') && item.publicationStatus === 'WITHDRAWN'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'restore')">重新公开</button>
