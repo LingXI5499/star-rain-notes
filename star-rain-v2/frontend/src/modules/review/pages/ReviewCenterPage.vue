@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../account/stores/authStore'
 import { cancelReview, listPendingReviews, listReviewHistory, submitDemoReview } from '../api/reviewApi'
 import { errorMessage } from '../../../shared/http'
+import { openDateTimePicker } from '../../../shared/dateTimePicker'
 import ReviewPendingTable from '../components/ReviewPendingTable.vue'
 import { REVIEW_STATUSES, dateLabel, demoSubmissionPayload, targetLabel } from '../support/display'
 
@@ -297,8 +298,8 @@ onMounted(() => {
         </label>
         <label>申请人ID<input v-model="historyFilters.applicantAccountId" inputmode="numeric" /></label>
         <label>决策人ID<input v-model="historyFilters.reviewerAccountId" inputmode="numeric" /></label>
-        <label>起始时间<input v-model="historyFilters.startTime" type="datetime-local" /></label>
-        <label>结束时间<input v-model="historyFilters.endTime" type="datetime-local" /></label>
+        <label>起始时间<input v-model="historyFilters.startTime" type="datetime-local" @click="openDateTimePicker" /></label>
+        <label>结束时间<input v-model="historyFilters.endTime" type="datetime-local" @click="openDateTimePicker" /></label>
         <button class="primary-button" type="submit">查询</button>
         <button type="button" @click="resetHistory">重置</button>
       </form>

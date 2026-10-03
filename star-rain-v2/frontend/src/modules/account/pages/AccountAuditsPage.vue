@@ -3,6 +3,7 @@ import { computed, onMounted, reactive, ref } from 'vue'
 import { listAudits } from '../api/accountApi'
 import { errorMessage } from '../api/http'
 import { dateLabel, statusLabel, utcQueryTime, auditActions, actionLabel } from '../support/display'
+import { openDateTimePicker } from '../../../shared/dateTimePicker'
 
 const filters = reactive({ actorAccountId: '', targetAccountId: '', actionCode: '', result: '', startTime: '', endTime: '' })
 const page = ref(1)
@@ -40,8 +41,8 @@ onMounted(load)
         <label>目标账户 ID<input v-model.trim="filters.targetAccountId" inputmode="numeric" placeholder="全部" /></label>
         <label>动作<select v-model="filters.actionCode"><option value="">全部</option><option v-for="(label, code) in auditActions" :key="code" :value="code">{{ label }}</option></select></label>
         <label>结果<select v-model="filters.result"><option value="">全部</option><option value="SUCCESS">成功</option><option value="FAILED">失败</option></select></label>
-        <label>开始时间<input v-model="filters.startTime" type="datetime-local" /></label>
-        <label>结束时间<input v-model="filters.endTime" type="datetime-local" /></label>
+        <label>开始时间<input v-model="filters.startTime" type="datetime-local" @click="openDateTimePicker" /></label>
+        <label>结束时间<input v-model="filters.endTime" type="datetime-local" @click="openDateTimePicker" /></label>
         <button class="primary-button" type="submit">查询记录</button>
       </form>
       <p v-if="error" class="error" role="alert">{{ error }}</p>
