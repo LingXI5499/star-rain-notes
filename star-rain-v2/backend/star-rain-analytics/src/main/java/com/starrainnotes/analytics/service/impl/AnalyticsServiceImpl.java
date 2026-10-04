@@ -112,7 +112,8 @@ public class AnalyticsServiceImpl implements AnalyticsService {
     }
 
     private void validateDates(LocalDate start, LocalDate end) {
-        if (start == null || end == null || end.isBefore(start) || start.plusDays(366).isBefore(end)
+        if (start == null || end == null || end.isBefore(start)
+            || java.time.temporal.ChronoUnit.DAYS.between(start, end) > 366
             || end.isAfter(LocalDate.now(ZoneOffset.UTC))) {
             throw new AnalyticsDateRangeInvalidException();
         }

@@ -53,7 +53,7 @@ public interface AnalyticsMapper {
     @Insert("""
         INSERT INTO sr_analytics_daily_referrer(stat_date, referrer_category, view_count)
         SELECT #{date}, referrer_category, COUNT(*) FROM sr_analytics_event
-        WHERE occurred_at >= #{date} AND occurred_at < DATE_ADD(#{date}, INTERVAL 1 DAY)
+        WHERE event_type = 'PAGE_VIEW' AND occurred_at >= #{date} AND occurred_at < DATE_ADD(#{date}, INTERVAL 1 DAY)
         GROUP BY referrer_category
         """)
     int insertReferrerDay(@Param("date") LocalDate date);
@@ -105,7 +105,7 @@ public interface AnalyticsMapper {
           WHERE stat_date >= #{start} AND stat_date <= #{end} AND stat_date < #{today}
           UNION ALL
           SELECT referrer_category, COUNT(*) AS view_count FROM sr_analytics_event
-          WHERE #{today} BETWEEN #{start} AND #{end} AND occurred_at >= #{today}
+          WHERE event_type = 'PAGE_VIEW' AND #{today} BETWEEN #{start} AND #{end} AND occurred_at >= #{today}
             AND occurred_at < DATE_ADD(#{today}, INTERVAL 1 DAY)
           GROUP BY referrer_category
         ) counts GROUP BY referrer_category ORDER BY viewCount DESC

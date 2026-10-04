@@ -3,12 +3,16 @@ package com.starrainnotes.analytics.classifier;
 import java.net.URI;
 import java.util.Locale;
 import java.util.Set;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 @Component
 public class DefaultReferrerClassifier implements ReferrerClassifier {
     private static final Set<String> SEARCH = Set.of("google.com", "bing.com", "baidu.com", "sogou.com", "so.com");
     private static final Set<String> SOCIAL = Set.of("weibo.com", "zhihu.com", "x.com", "twitter.com", "facebook.com", "linkedin.com");
+
+    @Value("${star-rain.account.frontend-origin:}")
+    private String frontendOrigin;
 
     @Override
     public ReferrerClassification classify(String referrer) {
@@ -25,7 +29,7 @@ public class DefaultReferrerClassifier implements ReferrerClassifier {
                 return new ReferrerClassification("DIRECT", null);
             }
             host = host.toLowerCase(Locale.ROOT);
-            if (host.equals("localhost") || host.equals("127.0.0.1") || host.equals("starrainnotes.com") || host.endsWith(".starrainnotes.com")) {
+            if (host.equals("localhost") || host.equals("127.0.0.1") || host.equals(configuredHost())) {
                 return new ReferrerClassification("INTERNAL", host);
             }
             for (String domain : SEARCH) {
@@ -38,5 +42,13 @@ public class DefaultReferrerClassifier implements ReferrerClassifier {
         } catch (IllegalArgumentException ignored) {
             return new ReferrerClassification("DIRECT", null);
         }
+    }
+
+    private String configuredHost() {
+        try {
+            String host = frontendOrigin == null ? null : URI.create(frontendOrigin).getHost();
+            return host == null ? "" : host.toLowerCase(Locale.ROOT);
+        }
+        catch (IllegalArgumentException ignored) { return ""; }
     }
 }

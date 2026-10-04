@@ -5,12 +5,15 @@ const allowed = new Set(['/', '/blog', '/blog/archive', '/tutorials', '/portfoli
 export function installPublicTracking(router) {
   let first = true
   router.afterEach((to) => {
-    if (!allowed.has(to.path) || to.path.startsWith('/useradmin')) return
+    if (to.path.startsWith('/useradmin')) return
+    const isEntry = first
+    first = false
+    if (!allowed.has(to.path)) return
     let referrer = ''
-    if (first && document.referrer) {
+    if (isEntry && document.referrer) {
       try { referrer = new URL(document.referrer).origin } catch { /* 无效来源按直接访问处理 */ }
     }
-    first = false
+    else if (!isEntry) referrer = window.location.origin
     recordPageView(to.path, referrer).catch(() => {})
   })
 }

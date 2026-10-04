@@ -10,6 +10,7 @@ import com.starrainnotes.analytics.mapper.AnalyticsMapper;
 import com.starrainnotes.analytics.service.impl.AnalyticsServiceImpl;
 import java.time.LocalDate;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -28,6 +29,14 @@ class AnalyticsServiceTest {
         assertEquals("SEARCH", capture.getValue().getReferrerCategory());
         assertEquals("www.google.com", capture.getValue().getReferrerHost());
         assertFalse(capture.getValue().getReferrerHost().contains("secret"));
+    }
+
+    @Test
+    void configuredSiteHostIsInternal() {
+        DefaultReferrerClassifier classifier = new DefaultReferrerClassifier();
+        ReflectionTestUtils.setField(classifier, "frontendOrigin", "https://notes.example.com");
+        assertEquals("INTERNAL", classifier.classify("https://notes.example.com/post?private=1").getCategory());
+        assertEquals("notes.example.com", classifier.classify("https://notes.example.com/post?private=1").getHost());
     }
 
     @Test
