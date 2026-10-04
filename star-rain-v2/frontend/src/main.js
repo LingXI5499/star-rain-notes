@@ -5,8 +5,10 @@ import router from './router'
 import './style.css'
 import { useAuthStore } from './modules/account/stores/authStore'
 import { accountPath } from './shared/viewMode'
+import { installPublicTracking } from './modules/analytics/tracking/publicTracking'
 
 const pinia = createPinia()
+installPublicTracking(router)
 createApp(App).use(pinia).use(router).mount('#app')
 window.addEventListener('account-session-expired', () => {
   const auth = useAuthStore(pinia)

@@ -242,6 +242,16 @@ async function submitPassword() {
           <span class="admin-shell__nav-short">盘</span>
           <span v-if="!collapsed" class="admin-shell__nav-label">仪表盘</span>
         </RouterLink>
+        <RouterLink
+          v-if="auth.canManage('analytics:read')"
+          :to="accountPath('/analytics')"
+          class="admin-shell__nav-item"
+          :class="{ 'admin-shell__nav-item--active': isActive(accountPath('/analytics')) }"
+          :title="collapsed ? '访问统计' : undefined"
+        >
+          <span class="admin-shell__nav-short">统</span>
+          <span v-if="!collapsed" class="admin-shell__nav-label">访问统计</span>
+        </RouterLink>
         <!-- 通用：所有登录用户 -->
         <template v-for="item in personalItems" :key="item.label">
           <RouterLink
