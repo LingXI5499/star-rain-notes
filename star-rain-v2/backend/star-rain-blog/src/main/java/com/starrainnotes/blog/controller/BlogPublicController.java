@@ -1,5 +1,8 @@
 package com.starrainnotes.blog.controller;
 
+import com.starrainnotes.analytics.api.AnalyticsRecordApi;
+import com.starrainnotes.analytics.api.ContentViewEvent;
+
 import com.starrainnotes.blog.dto.BlogPublicQueryDTO;
 import com.starrainnotes.blog.service.BlogPublicService;
 import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
@@ -11,6 +14,7 @@ import com.starrainnotes.blog.vo.BlogTopicVO;
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.common.result.PageResult;
 import java.util.List;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,6 +32,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/public/blog")
 public class BlogPublicController {
 
+    @Autowired(required = false)
+    private AnalyticsRecordApi analytics;
+
     private final BlogPublicService publicService;
 
     public BlogPublicController(BlogPublicService publicService) {
@@ -43,7 +50,9 @@ public class BlogPublicController {
     // BLOG-002 阅读文章：按 slug 而不是 ID，公开 URL 不暴露内部主键
     @GetMapping("/posts/{slug}")
     public ApiResponse<BlogPostPublicDetailVO> post(@PathVariable String slug) {
-        return ApiResponse.ok(publicService.postBySlug(slug));
+        BlogPostPublicDetailVO detail = publicService.postBySlug(slug);
+        if (analytics != null) analytics.recordContentView(new ContentViewEvent("BLOG", detail.getId(), "/blog/posts/:slug"));
+        return ApiResponse.ok(detail);
     }
 
     // BLOG-010 归档浏览：tag / topic / year / month 可组合

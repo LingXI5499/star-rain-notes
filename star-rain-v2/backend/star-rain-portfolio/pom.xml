@@ -14,6 +14,7 @@
     <artifactId>star-rain-portfolio</artifactId>
 
     <dependencies>
+        <dependency><groupId>com.starrainnotes</groupId><artifactId>star-rain-analytics</artifactId><version>${project.version}</version></dependency>
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-common</artifactId>

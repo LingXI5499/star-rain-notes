@@ -117,6 +117,8 @@ const routeDeclarations = [
   // 控制台仪表盘：只读博客公开接口，不新增后端接口
   { path: '/dashboard', component: DashboardPage, tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'account:read', superAdminOnly: true } },
+  { path: '/analytics', component: () => import('../modules/analytics/pages/admin/AnalyticsDashboardPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'analytics:read', superAdminOnly: true } },
   { path: '/accounts', component: AdminAccountsPage, tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'account:read', superAdminOnly: true } },
   { path: '/invitations', component: AdminInvitationsPage, tree: ROUTE_TREE.ACCOUNT,
