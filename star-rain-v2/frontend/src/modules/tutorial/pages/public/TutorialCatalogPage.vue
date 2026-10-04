@@ -3,6 +3,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { listPublicCategories, listPublicTutorials } from '../../api/tutorialApi'
 import { errorMessage } from '../../../../shared/http'
+import { VIEW_MODE, accountPath, resolveViewMode } from '../../../../shared/viewMode'
 
 const route = useRoute()
 const router = useRouter()
@@ -12,6 +13,8 @@ const selectedSlug = ref('')
 const search = ref('')
 const loading = ref(true)
 const error = ref('')
+const tutorialPath = (slug) => resolveViewMode(route.path) === VIEW_MODE.ACCOUNT
+  ? accountPath(`/tutorials/${slug}`) : `/tutorials/${slug}`
 
 const selectedCategory = computed(() => categories.value.find((item) => item.slug === selectedSlug.value))
 const filtered = computed(() => tutorials.value.filter((item) => {
@@ -65,7 +68,7 @@ onMounted(load)
         <p v-if="loading" class="tutorial-catalog__empty">正在加载教程…</p>
         <p v-else-if="error" class="tutorial-catalog__empty" role="alert">{{ error }}</p>
         <p v-else-if="!filtered.length" class="tutorial-catalog__empty">当前分类暂无匹配教程。</p>
-        <div v-else class="tutorial-catalog__grid"><RouterLink v-for="tutorial in filtered" :key="tutorial.id" :to="`/tutorials/${tutorial.slug}`" class="tutorial-card"><small>{{ tutorial.categoryName }}</small><h3>{{ tutorial.title }}</h3><p>{{ tutorial.summary }}</p><div><span>{{ tutorial.chapterCount }} 个章节</span><strong>进入课程 →</strong></div></RouterLink></div>
+        <div v-else class="tutorial-catalog__grid"><RouterLink v-for="tutorial in filtered" :key="tutorial.id" :to="tutorialPath(tutorial.slug)" class="tutorial-card"><small>{{ tutorial.categoryName }}</small><h3>{{ tutorial.title }}</h3><p>{{ tutorial.summary }}</p><div><span>{{ tutorial.chapterCount }} 个章节</span><strong>进入课程 →</strong></div></RouterLink></div>
       </main>
     </div>
   </section>

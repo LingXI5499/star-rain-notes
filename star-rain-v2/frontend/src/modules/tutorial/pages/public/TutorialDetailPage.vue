@@ -3,11 +3,14 @@ import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { getPublicTutorial } from '../../api/tutorialApi'
 import { errorMessage } from '../../../../shared/http'
+import { VIEW_MODE, accountPath, resolveViewMode } from '../../../../shared/viewMode'
 
 const route = useRoute()
 const tutorial = ref(null)
 const error = ref('')
 const loading = ref(true)
+const tutorialPath = (suffix = '') => resolveViewMode(route.path) === VIEW_MODE.ACCOUNT
+  ? accountPath(`/tutorials${suffix}`) : `/tutorials${suffix}`
 const chapters = computed(() => tutorial.value?.groups?.flatMap((group) => group.chapters || []) || [])
 function formatDate(value) {
   if (!value) return '—'
@@ -27,15 +30,15 @@ watch(() => route.params.tutorialSlug, load, { immediate: true })
 <template>
   <section class="page-container tutorial-detail">
     <p v-if="loading">加载中…</p>
-    <div v-else-if="error" role="alert"><p>{{ error }}</p><RouterLink to="/tutorials">返回教程中心</RouterLink></div>
+    <div v-else-if="error" role="alert"><p>{{ error }}</p><RouterLink :to="tutorialPath()">返回教程中心</RouterLink></div>
     <template v-else-if="tutorial">
       <main class="tutorial-detail__main">
-        <nav class="tutorial-detail__breadcrumb" aria-label="面包屑"><RouterLink to="/tutorials">教程</RouterLink> / <RouterLink :to="{ path: '/tutorials', query: { categorySlug: tutorial.categorySlug } }">{{ tutorial.categoryName }}</RouterLink></nav>
+        <nav class="tutorial-detail__breadcrumb" aria-label="面包屑"><RouterLink :to="tutorialPath()">教程</RouterLink> / <RouterLink :to="{ path: tutorialPath(), query: { categorySlug: tutorial.categorySlug } }">{{ tutorial.categoryName }}</RouterLink></nav>
         <h1>{{ tutorial.title }}</h1><p class="tutorial-detail__summary">{{ tutorial.summary }}</p><p class="tutorial-detail__meta">发布于 {{ formatDate(tutorial.publishedAt) }} · {{ chapters.length }} 个公开章节</p>
-        <RouterLink v-if="chapters.length" :to="`/tutorials/${tutorial.slug}/${chapters[0].slug}`" class="tutorial-detail__start">开始学习 →</RouterLink>
-        <h2>课程目录</h2><div v-for="group in tutorial.groups" :key="group.id" class="tutorial-detail__group"><h3>{{ group.title }}</h3><RouterLink v-for="(chapter, index) in group.chapters" :key="chapter.id" :to="`/tutorials/${tutorial.slug}/${chapter.slug}`"><span>{{ index + 1 }}</span>{{ chapter.title }}<span>→</span></RouterLink></div>
+        <RouterLink v-if="chapters.length" :to="tutorialPath(`/${tutorial.slug}/${chapters[0].slug}`)" class="tutorial-detail__start">开始学习 →</RouterLink>
+        <h2>课程目录</h2><div v-for="group in tutorial.groups" :key="group.id" class="tutorial-detail__group"><h3>{{ group.title }}</h3><RouterLink v-for="(chapter, index) in group.chapters" :key="chapter.id" :to="tutorialPath(`/${tutorial.slug}/${chapter.slug}`)"><span>{{ index + 1 }}</span>{{ chapter.title }}<span>→</span></RouterLink></div>
       </main>
-      <aside class="tutorial-detail__aside"><h2>教程信息</h2><dl><dt>分类</dt><dd>{{ tutorial.categoryName }}</dd><dt>公开章节</dt><dd>{{ chapters.length }}</dd><dt>发布于</dt><dd>{{ formatDate(tutorial.publishedAt) }}</dd></dl><RouterLink v-if="chapters.length" :to="`/tutorials/${tutorial.slug}/${chapters[0].slug}`">开始学习 →</RouterLink></aside>
+      <aside class="tutorial-detail__aside"><h2>教程信息</h2><dl><dt>分类</dt><dd>{{ tutorial.categoryName }}</dd><dt>公开章节</dt><dd>{{ chapters.length }}</dd><dt>发布于</dt><dd>{{ formatDate(tutorial.publishedAt) }}</dd></dl><RouterLink v-if="chapters.length" :to="tutorialPath(`/${tutorial.slug}/${chapters[0].slug}`)">开始学习 →</RouterLink></aside>
     </template>
   </section>
 </template>

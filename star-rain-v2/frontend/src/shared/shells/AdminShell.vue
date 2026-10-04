@@ -10,7 +10,7 @@ import { accountPath } from '../viewMode'
  * 控制台外壳（唯一带侧栏的外壳），由账号树的 /useradmin/center 用户中心进入。
  *
  * 侧栏分三层，按角色隐藏 —— 是「看不见」，不是「点了报 403」：
- *   通用        我的账户（/useradmin/center）、学习记录（占位，后续开发）
+ *   通用        我的账户（/useradmin/center）、学习记录
  *   统计总览    SUPER_ADMIN：仪表盘（导航第一项）
  *   内容编辑    ADMIN 及以上：教程编辑、博客管理、媒体库、作品管理（占位）、审核中心
  *   站点治理    SUPER_ADMIN：账户管理、管理员邀请、账户审计
@@ -75,8 +75,7 @@ onMounted(async () => {
 
 const personalItems = [
   { label: '我的账户', short: '我', to: accountPath('/center') },
-  // 学习记录属于后续开发：留位置但不做成死链
-  { label: '学习记录', short: '学', pending: '学习记录后续开发' },
+  { label: '学习记录', short: '学', to: accountPath('/learning') },
 ]
 
 // 内容编辑层：ADMIN 与 SUPER_ADMIN。角色只决定「这一层出现不出现」，

@@ -102,6 +102,16 @@ const routeDeclarations = [
    */
   { path: '/center', component: AccountPage, tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true } },
+  { path: '/learning', component: () => import('../modules/tutorial/pages/learning/LearningCenterPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true } },
+  { path: '/learning/plans', component: () => import('../modules/tutorial/pages/learning/StudyPlanPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true } },
+  { path: '/learning/today', component: () => import('../modules/tutorial/pages/learning/TodayStudyPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true } },
+  { path: '/learning/review', component: () => import('../modules/tutorial/pages/learning/ReviewPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true } },
+  { path: '/learning/history', component: () => import('../modules/tutorial/pages/learning/LearningHistoryPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true } },
   // 控制台仪表盘：只读博客公开接口，不新增后端接口
   { path: '/dashboard', component: DashboardPage, tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'account:read', superAdminOnly: true } },

@@ -25,7 +25,8 @@ public class TutorialSecurityContributor implements ModuleSecurityContributor {
 
     @Override
     public List<String> authenticatedPatterns() {
-        return List.of("/api/admin/tutorials/**", "/api/admin/tutorials",
+        return List.of("/api/account/learning/**", "/api/account/learning",
+                "/api/admin/tutorials/**", "/api/admin/tutorials",
                 "/api/admin/tutorial-categories", "/api/admin/tutorial-categories/**",
                 "/api/admin/tutorial-groups/**", "/api/admin/tutorial-chapters/**",
                 "/api/admin/tutorial-cards/**", "/api/admin/tutorial-questions/**");

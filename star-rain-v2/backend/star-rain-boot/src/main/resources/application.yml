@@ -39,6 +39,9 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 
 star-rain:
+  learning:
+    review:
+      base-interval-days: [1, 3, 7, 14, 30, 60]
   account:
     smtp-enabled: ${STAR_RAIN_SMTP_ENABLED:false}
     mail-from: ${STAR_RAIN_MAIL_FROM:}

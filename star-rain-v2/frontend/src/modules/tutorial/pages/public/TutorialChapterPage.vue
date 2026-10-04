@@ -1,10 +1,13 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, onUnmounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import BlogProse from '../../../blog/components/BlogProse.vue'
 import ArticleOutline from '../../../blog/components/ArticleOutline.vue'
 import { getPublicTutorial, getPublicChapter, getPublicQuestionAnswer } from '../../api/tutorialApi'
 import { errorMessage } from '../../../../shared/http'
+import { VIEW_MODE, accountPath, resolveViewMode } from '../../../../shared/viewMode'
+import { completeChapter, getChapterProgress, getOwnAnswer, getOwnReferenceAnswer, saveChapterProgress, saveOwnAnswer } from '../../api/learningApi'
+import { useAuthStore } from '../../../account/stores/authStore'
 
 const route = useRoute()
 const tutorial = ref(null)
@@ -13,6 +16,19 @@ const loading = ref(true)
 const chapterLoading = ref(false)
 const error = ref('')
 const answers = ref({})
+const drafts = ref({})
+const reading = ref(null)
+const progressError = ref('')
+const answerError = ref({})
+const articleElement = ref(null)
+const auth = useAuthStore()
+const accountMode = computed(() => resolveViewMode(route.path) === VIEW_MODE.ACCOUNT)
+const signedIn = computed(() => accountMode.value && Boolean(auth.currentUser))
+const tutorialPath = (suffix = '') => accountMode.value ? accountPath(`/tutorials${suffix}`) : `/tutorials${suffix}`
+let progressTimer = null
+let lastSaveAt = Date.now()
+let currentChapterId = null
+let lastScrollRatio = 0
 const drawerOpen = ref(false)
 const outline = ref([])
 const chapters = computed(() => tutorial.value?.groups?.flatMap((group) => group.chapters || []) || [])
@@ -41,21 +57,103 @@ async function load() {
     tutorial.value = detail
     chapter.value = body
     answers.value = {}
+    drafts.value = {}
+    answerError.value = {}
+    progressError.value = ''
+    reading.value = null
+    currentChapterId = body.id
+    lastSaveAt = Date.now()
+    lastScrollRatio = 0
     outline.value = []
     drawerOpen.value = false
+    if (signedIn.value) {
+      try {
+        reading.value = await getChapterProgress(body.id)
+        lastScrollRatio = Number(reading.value?.progressRatio || 0)
+      }
+      catch (cause) { progressError.value = errorMessage(cause) }
+    }
   } catch (cause) { if (version === load.version) { chapter.value = null; error.value = errorMessage(cause) } }
   finally { if (version === load.version) { loading.value = false; chapterLoading.value = false } }
 }
 load.version = 0
-async function revealAnswer(event, question) {
-  if (!event.target.open || answers.value[question.id]) return
+function visitorKey(questionId) { return `star-rain:learning:answer:${questionId}` }
+async function openQuestion(event, question) {
+  if (!event.target.open) return
+  try {
+    if (signedIn.value) {
+      const saved = await getOwnAnswer(question.id)
+      drafts.value[question.id] = saved?.answerText || ''
+      if (saved?.referenceUnlockedAt) await revealReference(question)
+    } else {
+      const saved = localStorage.getItem(visitorKey(question.id))
+      drafts.value[question.id] = saved || ''
+      if (saved) await revealReference(question)
+    }
+  } catch (cause) { answerError.value[question.id] = errorMessage(cause) }
+}
+async function revealReference(question) {
   answers.value[question.id] = { loading: true, text: '' }
   try {
-    const result = await getPublicQuestionAnswer(route.params.tutorialSlug, route.params.chapterSlug, question.id)
+    const result = signedIn.value
+      ? await getOwnReferenceAnswer(question.id)
+      : await getPublicQuestionAnswer(route.params.tutorialSlug, route.params.chapterSlug, question.id)
     answers.value[question.id] = { loading: false, text: result.referenceAnswer }
-  } catch (cause) { answers.value[question.id] = { loading: false, text: errorMessage(cause) } }
+  } catch (cause) {
+    answers.value[question.id] = { loading: false, text: '' }
+    answerError.value[question.id] = errorMessage(cause)
+  }
 }
-watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immediate: true })
+async function submitAnswer(question) {
+  const answer = drafts.value[question.id]?.trim()
+  if (!answer) { answerError.value[question.id] = '请先填写自己的答案。'; return }
+  answerError.value[question.id] = ''
+  try {
+    if (signedIn.value) await saveOwnAnswer(question.id, answer)
+    else localStorage.setItem(visitorKey(question.id), answer)
+    await revealReference(question)
+  } catch (cause) { answerError.value[question.id] = errorMessage(cause) }
+}
+function readingRatio() {
+  const element = articleElement.value
+  if (!element) return 0
+  const rect = element.getBoundingClientRect()
+  return Math.max(0, Math.min(1, (window.innerHeight - rect.top) / Math.max(rect.height, 1)))
+}
+async function persistProgress() {
+  if (!signedIn.value || !currentChapterId) return
+  const elapsed = Math.max(0, Math.min(1800, Math.floor((Date.now() - lastSaveAt) / 1000)))
+  lastSaveAt = Date.now()
+  try {
+    reading.value = await saveChapterProgress(currentChapterId, {
+      progressRatio: lastScrollRatio, studySecondsDelta: elapsed,
+    })
+    progressError.value = ''
+  } catch (cause) { progressError.value = errorMessage(cause) }
+}
+function onScroll() {
+  if (!signedIn.value || !chapter.value) return
+  lastScrollRatio = readingRatio()
+  if (progressTimer) return
+  progressTimer = window.setTimeout(() => { progressTimer = null; persistProgress() }, 10000)
+}
+async function markCompleted() {
+  if (!chapter.value || !signedIn.value) return
+  progressError.value = ''
+  try { reading.value = await completeChapter(chapter.value.id) }
+  catch (cause) { progressError.value = errorMessage(cause) }
+}
+watch(() => [route.params.tutorialSlug, route.params.chapterSlug], async () => {
+  if (progressTimer) { window.clearTimeout(progressTimer); progressTimer = null }
+  if (currentChapterId) await persistProgress()
+  await load()
+}, { immediate: true })
+window.addEventListener('scroll', onScroll, { passive: true })
+onUnmounted(() => {
+  window.removeEventListener('scroll', onScroll)
+  if (progressTimer) window.clearTimeout(progressTimer)
+  persistProgress()
+})
 </script>
 
 <template>
@@ -67,17 +165,19 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
       <button class="tutorial-reader__drawer-toggle" type="button" :aria-expanded="drawerOpen" @click="drawerOpen = !drawerOpen">{{ drawerOpen ? '关闭目录' : '目录' }}</button>
       <div v-if="drawerOpen" class="tutorial-reader__backdrop" @click="drawerOpen = false"></div>
       <aside class="tutorial-reader__sidebar" :class="{ 'is-open': drawerOpen }">
-        <RouterLink :to="`/tutorials/${tutorial.slug}`" class="tutorial-reader__course">{{ tutorial.title }}</RouterLink>
-        <div class="tutorial-reader__progress"><span :style="{ width: `${progress}%` }"></span></div><p class="tutorial-reader__progress-label">阅读进度 {{ progress }}%</p>
-        <nav aria-label="课程目录"><section v-for="item in tutorial.groups" :key="item.id"><h2>{{ item.title }}</h2><RouterLink v-for="entry in item.chapters" :key="entry.id" :to="`/tutorials/${tutorial.slug}/${entry.slug}`" :class="{ active: entry.slug === chapter.slug }" @click="drawerOpen = false">{{ entry.title }}</RouterLink></section></nav>
+        <RouterLink :to="tutorialPath(`/${tutorial.slug}`)" class="tutorial-reader__course">{{ tutorial.title }}</RouterLink>
+        <div class="tutorial-reader__progress"><span :style="{ width: `${progress}%` }"></span></div><p class="tutorial-reader__progress-label">课程目录位置 {{ chapterIndex + 1 }} / {{ chapters.length }}</p>
+        <nav aria-label="课程目录"><section v-for="item in tutorial.groups" :key="item.id"><h2>{{ item.title }}</h2><RouterLink v-for="entry in item.chapters" :key="entry.id" :to="tutorialPath(`/${tutorial.slug}/${entry.slug}`)" :class="{ active: entry.slug === chapter.slug }" @click="drawerOpen = false">{{ entry.title }}</RouterLink></section></nav>
       </aside>
-      <article class="tutorial-reader__article" :aria-busy="chapterLoading">
-        <nav class="tutorial-reader__breadcrumb" aria-label="面包屑"><RouterLink to="/tutorials">教程</RouterLink> / <RouterLink :to="`/tutorials/${tutorial.slug}`">{{ tutorial.title }}</RouterLink> / {{ group?.title }} / {{ chapter.title }}</nav>
+      <article ref="articleElement" class="tutorial-reader__article" :aria-busy="chapterLoading">
+        <nav class="tutorial-reader__breadcrumb" aria-label="面包屑"><RouterLink :to="tutorialPath()">教程</RouterLink> / <RouterLink :to="tutorialPath(`/${tutorial.slug}`)">{{ tutorial.title }}</RouterLink> / {{ group?.title }} / {{ chapter.title }}</nav>
         <header><p>DOCUMENTATION · {{ tutorial.title }}</p><h1>{{ chapter.title }}</h1><small>字数 {{ charCount }} · 预计阅读 {{ readMinutes }} 分钟</small></header>
+        <div v-if="signedIn" class="tutorial-reader__learning"><span>{{ reading?.completedAt ? '已完成' : `阅读位置 ${Math.round(Number(reading?.progressRatio || 0) * 100)}%` }}</span><button type="button" :disabled="!!reading?.completedAt" @click="markCompleted">{{ reading?.completedAt ? '已完成本章' : '标记本章完成' }}</button><RouterLink :to="accountPath('/learning')">学习记录 →</RouterLink></div>
+        <p v-if="progressError" role="alert">{{ progressError }}</p>
         <BlogProse :key="chapter.id" :markdown="chapter.bodyMarkdown" @outline="outline = $event" />
         <section v-if="chapter.cards?.length" class="tutorial-reader__exercises"><h2>知识卡片</h2><details v-for="card in chapter.cards" :key="card.id"><summary>{{ card.frontText }}</summary><BlogProse :markdown="card.backMarkdown" /></details></section>
-        <section v-if="chapter.questions?.length" class="tutorial-reader__exercises"><h2>章节问题</h2><details v-for="question in chapter.questions" :key="question.id" @toggle="revealAnswer($event, question)"><summary>{{ question.questionText }}</summary><p v-if="answers[question.id]?.loading">正在加载参考答案…</p><BlogProse v-else-if="answers[question.id]?.text" :markdown="answers[question.id].text" /></details></section>
-        <nav class="tutorial-reader__prevnext" aria-label="章节导航"><RouterLink v-if="previous" :to="`/tutorials/${tutorial.slug}/${previous.slug}`"><small>上一篇</small><strong>← {{ previous.title }}</strong></RouterLink><span v-else></span><RouterLink v-if="next" :to="`/tutorials/${tutorial.slug}/${next.slug}`"><small>下一篇</small><strong>{{ next.title }} →</strong></RouterLink></nav>
+        <section v-if="chapter.questions?.length" class="tutorial-reader__exercises"><h2>章节问题</h2><details v-for="question in chapter.questions" :key="question.id" @toggle="openQuestion($event, question)"><summary>{{ question.questionText }}</summary><div class="tutorial-reader__answer"><label :for="`answer-${question.id}`">我的答案</label><textarea :id="`answer-${question.id}`" v-model="drafts[question.id]" rows="5" maxlength="10000" /><button type="button" @click="submitAnswer(question)">{{ answers[question.id]?.text ? '保存修改' : '提交并查看参考答案' }}</button><p v-if="answerError[question.id]" role="alert">{{ answerError[question.id] }}</p><p v-if="answers[question.id]?.loading">正在加载参考答案…</p><div v-else-if="answers[question.id]?.text"><h3>参考答案</h3><BlogProse :markdown="answers[question.id].text" /></div></div></details></section>
+        <nav class="tutorial-reader__prevnext" aria-label="章节导航"><RouterLink v-if="previous" :to="tutorialPath(`/${tutorial.slug}/${previous.slug}`)"><small>上一篇</small><strong>← {{ previous.title }}</strong></RouterLink><span v-else></span><RouterLink v-if="next" :to="tutorialPath(`/${tutorial.slug}/${next.slug}`)"><small>下一篇</small><strong>{{ next.title }} →</strong></RouterLink></nav>
       </article>
       <aside class="tutorial-reader__outline"><p>本页导航</p><ArticleOutline :items="outline" hide-title embedded /><small>字数 {{ charCount }} · 约 {{ readMinutes }} 分钟</small></aside>
     </template>
@@ -89,4 +189,5 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug], load, { immed
 @media(max-width:1100px){.tutorial-reader{grid-template-columns:minmax(200px,250px) minmax(0,780px)}.tutorial-reader__outline{display:none}}
 @media(max-width:720px){.tutorial-reader{display:block}.tutorial-reader__drawer-toggle{display:block;margin-bottom:20px;border:1px solid var(--border);border-radius:8px;padding:8px 16px;background:var(--bg-surface);color:var(--text-primary)}.tutorial-reader__sidebar{display:none}.tutorial-reader__sidebar.is-open{display:block;position:fixed;z-index:101;top:0;left:0;width:min(82vw,330px);height:100vh;max-height:none;background:var(--bg-surface);padding:24px;overflow:auto}.tutorial-reader__backdrop{display:block;position:fixed;z-index:100;inset:0;background:#0008}}
 .tutorial-reader__exercises{margin-top:44px;padding-top:24px;border-top:1px solid var(--border)}.tutorial-reader__exercises h2{font-size:24px;margin-bottom:16px}.tutorial-reader__exercises details{border:1px solid var(--border);border-radius:12px;background:var(--bg-surface);margin-bottom:12px;padding:14px 18px}.tutorial-reader__exercises summary{font-weight:650;cursor:pointer}.tutorial-reader__exercises details>div{margin-top:18px}
+.tutorial-reader__learning{display:flex;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:24px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--bg-subtle)}.tutorial-reader__learning span{margin-right:auto}.tutorial-reader__learning button,.tutorial-reader__answer button{border:0;border-radius:8px;padding:8px 14px;background:var(--primary);color:var(--on-primary);cursor:pointer}.tutorial-reader__learning button:disabled{opacity:.6;cursor:default}.tutorial-reader__learning a{color:var(--primary)}.tutorial-reader__answer{display:grid;gap:10px}.tutorial-reader__answer textarea{width:100%;border:1px solid var(--border);border-radius:8px;padding:12px;background:var(--bg-surface);color:var(--text-primary);font:inherit}.tutorial-reader__answer button{justify-self:start}
 </style>
