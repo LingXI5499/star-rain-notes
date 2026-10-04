@@ -31,6 +31,7 @@ const navItems = computed(() => [
   { label: '教程', to: contentPath('/tutorials') },
   { label: '博客', to: contentPath('/blog') },
   { label: '作品', to: contentPath('/portfolio') },
+  { label: '留言', to: contentPath('/messages') },
   { label: '关于', to: null, pending: '关于页面建设中' },
 ])
 const brandPath = computed(() => contentPath('/'))

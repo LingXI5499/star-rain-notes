@@ -88,6 +88,7 @@ const contentItems = computed(() => [
   { label: '作品管理', short: '品', to: accountPath('/portfolio/manage'), visible: auth.hasPermission('portfolio:read-admin') },
   // 审核中心处理内容发布前的审核，放在内容编辑区末尾，按 review:read 控制可见性。
   { label: '审核中心', short: '审', to: accountPath('/reviews'), visible: auth.hasPermission('review:read') },
+  { label: '留言管理', short: '言', to: accountPath('/messages/manage'), visible: auth.canManage('message:read-admin') },
 ])
 const visibleContentItems = computed(() => contentItems.value.filter((item) => item.visible))
 

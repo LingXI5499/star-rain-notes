@@ -69,6 +69,7 @@ const routeDeclarations = [
   { path: '/tutorials/:tutorialSlug/:chapterSlug', component: () => import('../modules/tutorial/pages/public/TutorialChapterPage.vue'), meta: { publicPage: true } },
   { path: '/portfolio', component: () => import('../modules/portfolio/pages/PortfolioListPage.vue'), meta: { publicPage: true } },
   { path: '/portfolio/:slug', component: () => import('../modules/portfolio/pages/WorkDetailPage.vue'), meta: { publicPage: true } },
+  { path: '/messages', component: () => import('../modules/message/pages/MessageBoardPage.vue'), meta: { publicPage: true } },
   { path: '/about', component: PendingPage, props: { title: '关于' } },
   { path: '/search', component: PendingPage, props: { title: '搜索' } },
 
@@ -152,6 +153,8 @@ const routeDeclarations = [
     meta: { console: true, requiresAuth: true, permission: 'portfolio:read-admin', superAdminOnly: true } },
   { path: '/portfolio/editor/:workId', component: () => import('../modules/portfolio/pages/admin/WorkEditorPage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'portfolio:edit', superAdminOnly: true } },
+  { path: '/messages/manage', component: () => import('../modules/message/pages/admin/MessageManagePage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'message:read-admin', superAdminOnly: true } },
 ]
 
 const routes = buildTreeRoutes(routeDeclarations)
