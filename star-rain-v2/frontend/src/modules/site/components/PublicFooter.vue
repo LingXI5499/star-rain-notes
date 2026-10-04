@@ -2,18 +2,14 @@
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
+import { useSiteBranding } from '../support/siteBranding'
 
 /*
  * 公开站页脚 —— 对齐 V1 `components/PublicFooter.vue` 的信息架构：
  * 品牌区（名称 + 标语 + 一句话）→ EXPLORE 导航 / CONNECT → 版权与返回顶部 → 备案信息。
  *
- * 与 V1 的差别：
- *   1. V1 的名称 / 标语 / GitHub 地址来自站点设置接口（`star-rain-site`）；
- *      V2 该模块还是空的，因此用常量兜底，GitHub 位置显示「公开链接待配置」而不是编一个地址；
- *   2. V1 写的是已备案的真实备案号；本轮交付要求**备案号占位**，
- *      因此这里保留占位文案与工信部备案查询入口，等备案完成后再替换真实号码；
- *   3. V1 的导航比 V2 多一项语言学习模块；V2 本轮只保留「教程 / 博客 / 作品 / 关于」，
- *      尚未实现的关于页面渲染成不可点的占位。
+ * 站点名称、页脚文字与 Logo 来自 Site 公共配置；未配置时使用默认值。
+ * GitHub 公开链接和备案号尚未配置，保留明确的占位文案。
  *
  * 导航目标与顶栏同一口径，按当前路径树生成（公开树 /blog、账号树 /useradmin/blog）：
  * 页脚是同一套内容在两条树上复用，链接必须跟着树走，否则页脚会把账号外壳点掉。
@@ -21,7 +17,7 @@ import { useViewMode } from '../../../shared/viewMode'
  * 硬约束：本文件不出现任何账号入口字样。
  */
 const { contentPath } = useViewMode()
-const siteName = '星雨笔录'
+const branding = useSiteBranding()
 const tagline = 'Knowledge · Code · Growth'
 const year = new Date().getFullYear()
 
@@ -44,13 +40,13 @@ function scrollToTop() {
     <div class="site-footer__inner">
       <section class="site-footer__lead" aria-labelledby="footer-brand">
         <div class="site-footer__brand">
-          <img class="site-footer__mark" src="/brand/mark.svg" alt="" aria-hidden="true" width="42" height="42" />
+          <img class="site-footer__mark" :src="branding.logoUrl || '/brand/mark.svg'" alt="" aria-hidden="true" width="42" height="42" />
           <div>
-            <p id="footer-brand" class="site-footer__name">{{ siteName }}</p>
+            <p id="footer-brand" class="site-footer__name">{{ branding.siteName }}</p>
             <p class="site-footer__tagline">{{ tagline }}</p>
           </div>
         </div>
-        <p class="site-footer__statement">在知识、代码与成长之间，留下可以回看的坐标。</p>
+        <p class="site-footer__statement">{{ branding.footerText || '在知识、代码与成长之间，留下可以回看的坐标。' }}</p>
       </section>
 
       <section class="site-footer__links">
@@ -70,7 +66,7 @@ function scrollToTop() {
       </section>
 
       <div class="site-footer__legal">
-        <p>© {{ year }} {{ siteName }} · Built with Java &amp; Vue</p>
+        <p>© {{ year }} {{ branding.siteName }} · Built with Java &amp; Vue</p>
         <button type="button" aria-label="返回页面顶部" @click="scrollToTop">返回顶部 <span aria-hidden="true">↑</span></button>
       </div>
 

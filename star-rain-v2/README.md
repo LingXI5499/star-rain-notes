@@ -15,7 +15,7 @@ V2 使用独立目录、独立数据库 `star_rain_v2`、独立会话 Cookie `ST
 
 ## 本次初始化
 
-当前开发机的本地配置已参考 V1 初始化。初始登录信息仅保存在本地 `.local/access.json`；若已修改密码，以本人当前密码为准。配置与运行输出均被 Git 忽略。数据库脚本位于 `backend/star-rain-boot/src/main/resources/db/migration/`，采用逻辑外键。当前迁移版本为 `2.016`。
+当前开发机的本地配置已参考 V1 初始化。初始登录信息仅保存在本地 `.local/access.json`；若已修改密码，以本人当前密码为准。配置与运行输出均被 Git 忽略。数据库脚本位于 `backend/star-rain-boot/src/main/resources/db/migration/`，采用逻辑外键。当前迁移版本为 `2.018`。
 
 ## 账户验收
 

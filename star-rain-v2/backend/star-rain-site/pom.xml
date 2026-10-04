@@ -14,11 +14,19 @@
     <artifactId>star-rain-site</artifactId>
 
     <dependencies>
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security</artifactId></dependency>
+        <dependency><groupId>com.baomidou</groupId><artifactId>mybatis-plus-spring-boot3-starter</artifactId><version>3.5.17</version></dependency>
+        <dependency><groupId>org.projectlombok</groupId><artifactId>lombok</artifactId><version>1.18.42</version><scope>provided</scope></dependency>
+        <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency><groupId>com.starrainnotes</groupId><artifactId>star-rain-account</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.starrainnotes</groupId><artifactId>star-rain-review</artifactId><version>${project.version}</version></dependency>
+        <dependency><groupId>com.starrainnotes</groupId><artifactId>star-rain-message</artifactId><version>${project.version}</version></dependency>
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-media</artifactId>

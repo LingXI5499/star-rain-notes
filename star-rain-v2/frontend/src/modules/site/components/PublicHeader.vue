@@ -4,18 +4,14 @@ import { RouterLink, useRoute } from 'vue-router'
 import SearchLauncher from './SearchLauncher.vue'
 import ThemeControl from './ThemeControl.vue'
 import { useViewMode } from '../../../shared/viewMode'
+import { useSiteBranding } from '../support/siteBranding'
 
 /*
  * 前台顶部导航 —— 对齐 V1 `components/PublicHeader.vue`：
  * 粘性、滚动后收窄并加下边框，品牌 + 内容导航 + 搜索 + 主题 + 账号区。
  *
- * 三处刻意的差别：
- *   1. V1 导航比 V2 多一项语言学习模块；V2 本轮只保留「教程 / 博客 / 作品 / 关于」四项，
- *      关于页面仍是不可点的占位；
- *   2. V1 的品牌名与 logo 来自站点设置接口（appStore.loadBranding），
- *      `star-rain-site` 后端在 V2 还是空模块，因此这里用本地常量与 `/brand/mark.svg`。
- *      接入站点设置后改这里一处即可。
- *   3. 导航目标按**当前路径树**生成：公开树指向 /blog，账号树指向 /useradmin/blog。
+ * 品牌名与 Logo 来自 Site 公共配置；尚未配置时显示本地默认标识。
+ * 导航目标按**当前路径树**生成：公开树指向 /blog，账号树指向 /useradmin/blog。
  *      写死 /blog 的话，在 /useradmin 里点「博客」会掉回公开树、把账号外壳丢掉。
  *
  * 账号区不在这里实现：它由 PublicShell 通过 `account` 插槽传进来，且只在账号模式挂载。
@@ -26,7 +22,7 @@ const { contentPath } = useViewMode()
 const scrolled = ref(false)
 let ticking = false
 
-const siteName = '星雨笔录'
+const branding = useSiteBranding()
 const navItems = computed(() => [
   { label: '教程', to: contentPath('/tutorials') },
   { label: '博客', to: contentPath('/blog') },
@@ -61,8 +57,8 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
   <header class="site-header" :class="{ 'site-header--scrolled': scrolled }">
     <div class="site-header__inner">
       <RouterLink :to="brandPath" class="site-header__brand">
-        <img class="site-header__logo" src="/brand/mark.svg" alt="" aria-hidden="true" width="26" height="26" />
-        <span>{{ siteName }}</span>
+        <img class="site-header__logo" :src="branding.logoUrl || '/brand/mark.svg'" alt="" aria-hidden="true" width="26" height="26" />
+        <span>{{ branding.siteName }}</span>
       </RouterLink>
 
       <nav class="site-header__nav" aria-label="主导航">
