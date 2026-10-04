@@ -39,6 +39,13 @@ mybatis-plus:
     map-underscore-to-camel-case: true
 
 star-rain:
+  seo:
+    public-base-url: ${STAR_RAIN_PUBLIC_BASE_URL:https://yulanlin.cn}
+    frontend-index-path: ${STAR_RAIN_FRONTEND_INDEX_PATH:../frontend/dist/index.html}
+    indexnow:
+      enabled: ${STAR_RAIN_INDEXNOW_ENABLED:false}
+      endpoint: ${STAR_RAIN_INDEXNOW_ENDPOINT:https://api.indexnow.org/indexnow}
+      key: ${STAR_RAIN_INDEXNOW_KEY:}
   learning:
     review:
       base-interval-days: [1, 3, 7, 14, 30, 60]

@@ -6,9 +6,11 @@ import './style.css'
 import { useAuthStore } from './modules/account/stores/authStore'
 import { accountPath } from './shared/viewMode'
 import { installPublicTracking } from './modules/analytics/tracking/publicTracking'
+import { installSeoMeta } from './modules/seo/seoMeta'
 
 const pinia = createPinia()
 installPublicTracking(router)
+installSeoMeta(router)
 createApp(App).use(pinia).use(router).mount('#app')
 window.addEventListener('account-session-expired', () => {
   const auth = useAuthStore(pinia)
