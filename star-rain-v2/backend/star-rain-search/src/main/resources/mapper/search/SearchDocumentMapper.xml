@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.search.mapper.SearchDocumentMapper">
+    <insert id="upsert" parameterType="com.starrainnotes.search.api.SearchableDocument">
+        INSERT INTO sr_search_document(content_type, content_id, document_key, title, summary,
+            searchable_text, route_path, published_at, source_updated_at, status)
+        VALUES (#{contentType}, #{contentId}, #{documentKey}, #{title}, #{summary},
+            #{searchableText}, #{routePath}, #{publishedAt}, #{sourceUpdatedAt}, 'ACTIVE')
+        ON DUPLICATE KEY UPDATE title = VALUES(title), summary = VALUES(summary),
+            searchable_text = VALUES(searchable_text), route_path = VALUES(route_path),
+            published_at = VALUES(published_at), source_updated_at = VALUES(source_updated_at),
+            status = 'ACTIVE', indexed_at = CURRENT_TIMESTAMP(3)
+    </insert>
+    <update id="remove">
+        UPDATE sr_search_document SET status = 'REMOVED' WHERE document_key = #{documentKey}
+    </update>
+    <update id="removeByContent">
+        UPDATE sr_search_document SET status = 'REMOVED'
+        WHERE content_type = #{contentType} AND content_id = #{contentId}
+    </update>
+    <update id="removeRoutePrefix">
+        UPDATE sr_search_document SET status = 'REMOVED'
+        WHERE content_type = 'CHAPTER' AND LEFT(route_path, CHAR_LENGTH(#{prefix})) = #{prefix}
+    </update>
+    <select id="activeKeys" resultType="string">
+        SELECT document_key FROM sr_search_document
+        WHERE content_type = #{contentType} AND status = 'ACTIVE'
+    </select>
+    <select id="activeCount" resultType="long">
+        SELECT COUNT(*) FROM sr_search_document WHERE status = 'ACTIVE'
+    </select>
+    <sql id="typeFilter">
+        <if test="types != null and types.size() &gt; 0">
+            AND content_type IN
+            <foreach collection="types" item="type" open="(" separator="," close=")">#{type}</foreach>
+        </if>
+    </sql>
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM sr_search_document
+        WHERE status = 'ACTIVE' AND (
+            MATCH(title, summary, searchable_text) AGAINST(#{query} IN NATURAL LANGUAGE MODE) &gt; 0
+            OR LOCATE(#{query}, title) &gt; 0
+            OR LOCATE(#{query}, COALESCE(summary, '')) &gt; 0)
+        <include refid="typeFilter"/>
+    </select>
+    <select id="search" resultType="com.starrainnotes.search.vo.SearchHitVO">
+        SELECT content_type AS contentType, CAST(content_id AS CHAR) AS contentId,
+            title, summary, route_path AS routePath, published_at AS publishedAt,
+            MATCH(title, summary, searchable_text)
+                AGAINST(#{query} IN NATURAL LANGUAGE MODE)
+                + CASE WHEN LOCATE(#{query}, title) &gt; 0 THEN 2 ELSE 0 END
+                + CASE WHEN LOCATE(#{query}, COALESCE(summary, '')) &gt; 0 THEN 0.5 ELSE 0 END AS score
+        FROM sr_search_document
+        WHERE status = 'ACTIVE' AND (
+            MATCH(title, summary, searchable_text) AGAINST(#{query} IN NATURAL LANGUAGE MODE) &gt; 0
+            OR LOCATE(#{query}, title) &gt; 0
+            OR LOCATE(#{query}, COALESCE(summary, '')) &gt; 0)
+        <include refid="typeFilter"/>
+        ORDER BY score DESC, published_at DESC, id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="suggestions" resultType="com.starrainnotes.search.vo.SearchSuggestionVO">
+        SELECT title AS text, content_type AS contentType, route_path AS routePath
+        FROM sr_search_document
+        WHERE status = 'ACTIVE' AND (LOCATE(#{query}, title) &gt; 0 OR LOCATE(#{query}, COALESCE(summary, '')) &gt; 0)
+        ORDER BY CASE WHEN LEFT(title, CHAR_LENGTH(#{query})) = #{query} THEN 0 ELSE 1 END,
+            published_at DESC, id DESC LIMIT #{limit}
+    </select>
+</mapper>

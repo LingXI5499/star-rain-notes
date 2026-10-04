@@ -1,29 +1,24 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { RouterLink, useRouter } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
+import { errorMessage } from '../../../shared/http'
+import { quickSearch, suggestions } from '../../search/api/searchApi'
 
-/*
- * 站内搜索入口 —— 只做外壳。
- *
- * 硬约束：`star-rain-search` 后端还不存在，这个组件**不产生任何搜索结果**，
- * 面板里只有一句「搜索模块建设中」和对当前可用浏览方式（按标签 / 归档）的指路。
- * 伪造结果比没有搜索更糟：用户会以为系统坏了，而不是功能没做。
- *
- * 交互对齐 V1 的 GlobalSearch：点击或 Ctrl/⌘ + K 打开，Esc 关闭并把焦点还给入口按钮，
- * 点击面板外部关闭；打开后焦点自动进入面板。
- *
- * 面板里的两条指路链接按当前路径树生成：账号模式下必须落在 /useradmin/blog 上，
- * 否则点一下就把账号外壳丢了。
- */
 const { contentPath } = useViewMode()
-const blogPath = computed(() => contentPath('/blog'))
-const archivePath = computed(() => contentPath('/blog/archive'))
+const router = useRouter()
 const open = ref(false)
 const root = ref(null)
 const trigger = ref(null)
 const panel = ref(null)
 const input = ref(null)
+const query = ref('')
+const hits = ref([])
+const prompts = ref([])
+const loading = ref(false)
+const failure = ref('')
+let debounce = null
+let request = null
 
 const shortcut = computed(() => (/Mac|iPhone|iPad/.test(navigator.userAgentData?.platform || navigator.platform || '') ? '⌘ K' : 'Ctrl K'))
 
@@ -35,8 +30,48 @@ async function openPanel() {
 
 function close(restoreFocus = false) {
   open.value = false
+  request?.abort()
   if (restoreFocus) nextTick(() => trigger.value?.focus())
 }
+
+function goSearch() {
+  const q = query.value.trim()
+  if (q.length < 2) {
+    input.value?.focus()
+    return
+  }
+  close()
+  router.push({ path: contentPath('/search'), query: { q } })
+}
+
+watch(query, (value) => {
+  clearTimeout(debounce)
+  request?.abort()
+  hits.value = []
+  prompts.value = []
+  failure.value = ''
+  loading.value = false
+  const q = value.trim()
+  if (!open.value || q.length < 2) return
+  loading.value = true
+  debounce = setTimeout(async () => {
+    const current = new AbortController()
+    request = current
+    try {
+      const [results, suggested] = await Promise.all([
+        quickSearch(q, current.signal), suggestions(q, current.signal),
+      ])
+      if (!current.signal.aborted) {
+        hits.value = results
+        prompts.value = suggested
+      }
+    } catch (error) {
+      if (!current.signal.aborted) failure.value = errorMessage(error)
+    } finally {
+      if (!current.signal.aborted) loading.value = false
+    }
+  }, 280)
+})
 
 function onDocumentKeydown(event) {
   const combo = (event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k'
@@ -62,6 +97,8 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  clearTimeout(debounce)
+  request?.abort()
   document.removeEventListener('keydown', onDocumentKeydown)
   document.removeEventListener('click', onClickOutside)
 })
@@ -95,24 +132,32 @@ onBeforeUnmount(() => {
         aria-modal="false"
         aria-label="站内搜索"
       >
-        <form class="search-launcher__field" @submit.prevent>
+        <form class="search-launcher__field" @submit.prevent="goSearch">
           <input
             ref="input"
+            v-model="query"
             type="search"
-            placeholder="搜索文章标题与正文…"
+            placeholder="搜索教程、博客、作品…"
             aria-label="搜索关键字"
             autocomplete="off"
           />
         </form>
         <div class="search-launcher__pending" role="status">
-          <p class="search-launcher__pending-title">搜索模块建设中</p>
-          <p class="search-launcher__pending-text">
-            全文检索还没接入，这里不会返回任何结果。现在可以先按标签或归档浏览已发布的文章。
-          </p>
-          <ul class="search-launcher__links">
-            <li><RouterLink :to="blogPath" @click="close()">博客时间线</RouterLink></li>
-            <li><RouterLink :to="archivePath" @click="close()">归档浏览</RouterLink></li>
+          <p v-if="query.trim().length < 2" class="search-launcher__pending-text">输入至少两个字符，搜索已公开的内容。</p>
+          <p v-else-if="loading" class="search-launcher__pending-text">正在搜索…</p>
+          <p v-else-if="failure" class="search-launcher__pending-text" role="alert">{{ failure }}</p>
+          <p v-else-if="!hits.length" class="search-launcher__pending-text">没有找到相关内容。</p>
+          <ul v-if="hits.length" class="search-launcher__links">
+            <li v-for="hit in hits" :key="hit.contentType + ':' + hit.contentId">
+              <RouterLink :to="contentPath(hit.routePath)" @click="close()">{{ hit.title }}</RouterLink>
+            </li>
           </ul>
+          <div v-if="prompts.length" class="search-launcher__suggestions">
+            <span>相关建议</span>
+            <RouterLink v-for="item in prompts" :key="item.contentType + ':' + item.routePath"
+              :to="contentPath(item.routePath)" @click="close()">{{ item.text }}</RouterLink>
+          </div>
+          <button v-if="query.trim().length >= 2" type="button" class="search-launcher__all" @click="goSearch">查看全部结果 →</button>
         </div>
         <button class="search-launcher__close" type="button" @click="close(true)">关闭</button>
       </div>
@@ -176,7 +221,12 @@ onBeforeUnmount(() => {
 }
 .search-launcher__pending-title { color: var(--text-primary); font-size: 14px; font-weight: 700; }
 .search-launcher__pending-text { margin-top: 6px; color: var(--text-secondary); font-size: 12px; line-height: 1.7; }
-.search-launcher__links { display: flex; gap: 14px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 12px; }
+.search-launcher__links { display: grid; gap: 10px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 13px; }
+.search-launcher__links a, .search-launcher__suggestions a { color: var(--text-primary); text-decoration: none; }
+.search-launcher__links a:hover, .search-launcher__suggestions a:hover { color: var(--primary); }
+.search-launcher__suggestions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; font-size: 12px; }
+.search-launcher__suggestions span { width: 100%; color: var(--text-muted); }
+.search-launcher__all { margin-top: 16px; padding: 0; border: 0; background: none; color: var(--primary); cursor: pointer; font: inherit; font-size: 13px; }
 .search-launcher__close {
   margin-top: var(--space-3);
   padding: 6px 10px;

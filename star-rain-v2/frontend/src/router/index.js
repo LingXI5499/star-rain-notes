@@ -71,7 +71,7 @@ const routeDeclarations = [
   { path: '/portfolio/:slug', component: () => import('../modules/portfolio/pages/WorkDetailPage.vue'), meta: { publicPage: true } },
   { path: '/messages', component: () => import('../modules/message/pages/MessageBoardPage.vue'), meta: { publicPage: true } },
   { path: '/about', component: () => import('../modules/profile/pages/ProfilePage.vue'), meta: { publicPage: true } },
-  { path: '/search', component: PendingPage, props: { title: '搜索' } },
+  { path: '/search', component: () => import('../modules/search/pages/SearchResultPage.vue'), meta: { publicPage: true } },
 
   /*
    * ---------- 只在账号树：认证页 ----------
