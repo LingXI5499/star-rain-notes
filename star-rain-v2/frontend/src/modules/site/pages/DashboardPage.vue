@@ -1,93 +1,55 @@
 <script setup>
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { listAdminPosts } from '../../blog/api/blogApi'
-import { listAdminTutorials } from '../../tutorial/api/tutorialApi'
-import { listAdminWorks } from '../../portfolio/api/portfolioApi'
-import { listPendingMessages } from '../../message/api/messageApi'
 import { errorMessage } from '../../../shared/http'
 import { dateLabel, postStatusLabel } from '../../blog/support/display'
+import { getAdminSiteDashboard } from '../api/siteApi'
 
-/*
- * 仪表盘（对齐 V1 views/admin/DashboardView.vue 的信息结构）。
- *
- * 博客计数取自博客管理接口，教程与章节计数取自教程工作区。
- * 作品计数与最近内容取自作品管理接口。
- *
- * V1 的仪表盘有 fetchDashboard() 一个聚合接口，V2 没有（也不该为了这个页面新造一个），
- * 所以这里只复用已有模块的列表接口。
- */
+// Site 汇总来自各模块 API 的统计，单个模块失败时保留其余数据。
 const loading = ref(false)
 const error = ref('')
-
-// V1 的 Dashboard.contentCounts / draftCounts 结构：4 类内容各自的「总数」与「草稿数」
 const contentCounts = ref({ tutorials: 0, chapters: 0, blogPosts: 0, portfolioProjects: 0 })
 const draftCounts = ref({ tutorials: 0, chapters: 0, blogPosts: 0, portfolioProjects: 0 })
 const recentContent = ref([])
 const pendingMessages = ref(0)
+const pendingReviews = ref(0)
+const accountTotal = ref(0)
+const pageViews = ref(0)
+const degradedModules = ref([])
+
+function statusLabel(item) {
+  if (item.type === 'BLOG') return postStatusLabel(item.status)
+  if (item.status === 'PUBLISHED') return '已发布'
+  if (item.status === 'WITHDRAWN') return '已撤回'
+  if (item.status === 'IN_REVIEW') return '审核中'
+  if (item.status === 'NEVER_PUBLISHED' || item.status === 'DRAFT') return '草稿'
+  return item.status || '未知'
+}
 
 async function load() {
   loading.value = true
   error.value = ''
   try {
-    const [allPosts, draftPosts, recentPosts, firstTutorials, allWorks, draftWorks, recentWorks, pending] = await Promise.all([
-      listAdminPosts({ page: 1, pageSize: 1 }),
-      listAdminPosts({ page: 1, pageSize: 1, status: 'DRAFT' }),
-      listAdminPosts({ page: 1, pageSize: 8 }),
-      listAdminTutorials({ page: 1, pageSize: 100 }),
-      listAdminWorks({ page: 1, pageSize: 1 }),
-      listAdminWorks({ page: 1, pageSize: 1, status: 'DRAFT' }),
-      listAdminWorks({ page: 1, pageSize: 8 }),
-      listPendingMessages({ page: 1, pageSize: 1 }),
-    ])
-    pendingMessages.value = pending.total || 0
-    const tutorials = [...(firstTutorials.items || [])]
-    const tutorialPages = Math.ceil((firstTutorials.total || 0) / 100)
-    for (let page = 2; page <= tutorialPages; page += 1) {
-      const next = await listAdminTutorials({ page, pageSize: 100 })
-      tutorials.push(...(next.items || []))
-    }
-    const unpublished = tutorials.filter((item) => item.publicationStatus === 'NEVER_PUBLISHED')
+    const dashboard = await getAdminSiteDashboard()
+    const metrics = (code) => dashboard.modules?.[code]?.metrics || {}
+    degradedModules.value = dashboard.degradedModules || []
     contentCounts.value = {
-      ...contentCounts.value,
-      tutorials: firstTutorials.total || 0,
-      chapters: tutorials.reduce((count, item) => count + (item.chapterCount || 0), 0),
-      blogPosts: allPosts.total || 0,
-      portfolioProjects: allWorks.total || 0,
+      tutorials: metrics('TUTORIAL').total || 0,
+      chapters: metrics('TUTORIAL').chapters || 0,
+      blogPosts: metrics('BLOG').total || 0,
+      portfolioProjects: metrics('PORTFOLIO').total || 0,
     }
     draftCounts.value = {
-      ...draftCounts.value,
-      tutorials: unpublished.length,
-      chapters: unpublished.reduce((count, item) => count + (item.chapterCount || 0), 0),
-      blogPosts: draftPosts.total || 0,
-      portfolioProjects: draftWorks.total || 0,
+      tutorials: metrics('TUTORIAL').drafts || 0,
+      chapters: metrics('TUTORIAL').draftChapters || 0,
+      blogPosts: metrics('BLOG').drafts || 0,
+      portfolioProjects: metrics('PORTFOLIO').drafts || 0,
     }
-    const blogRecent = (recentPosts.items || []).map((post) => ({
-      id: post.id,
-      type: 'BLOG',
-      title: post.title,
-      publishStatus: postStatusLabel(post.status),
-      updatedAt: post.updatedAt,
-    }))
-    const tutorialRecent = tutorials.map((item) => ({
-      id: item.id,
-      type: 'TUTORIAL',
-      title: item.title,
-      publishStatus: item.editingStatus === 'IN_REVIEW' ? '审核中'
-        : item.publicationStatus === 'PUBLISHED' ? '已发布'
-          : item.publicationStatus === 'WITHDRAWN' ? '已撤回' : '草稿',
-      updatedAt: item.updatedAt,
-    }))
-    const portfolioRecent = (recentWorks.items || []).map((item) => ({
-      id: item.id,
-      type: 'PORTFOLIO',
-      title: item.title,
-      publishStatus: { DRAFT: '草稿', PUBLISHED: '已发布', WITHDRAWN: '已撤回' }[item.status] || item.status,
-      updatedAt: item.updatedAt,
-    }))
-    recentContent.value = [...blogRecent, ...tutorialRecent, ...portfolioRecent]
-      .sort((a, b) => String(b.updatedAt || '').localeCompare(String(a.updatedAt || '')))
-      .slice(0, 8)
+    pendingMessages.value = metrics('MESSAGE').pending || 0
+    pendingReviews.value = metrics('REVIEW').pending || 0
+    accountTotal.value = metrics('ACCOUNT').total || 0
+    pageViews.value = metrics('ANALYTICS').totalPageViews || 0
+    recentContent.value = (dashboard.recentContent || []).map((item) => ({ ...item, publishStatus: statusLabel(item) }))
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -104,6 +66,7 @@ onMounted(load)
 
     <p v-if="error" class="error" role="alert">{{ error }}</p>
     <p v-if="loading" class="loading" role="status">正在加载仪表盘…</p>
+    <p v-if="degradedModules.length" class="tag-admin__note" role="status">部分统计暂时无法读取：{{ degradedModules.join('、') }}。其余数据仍可查看。</p>
 
     <div class="dashboard__cards">
       <div class="dashboard__card">
@@ -119,13 +82,20 @@ onMounted(load)
       <div class="dashboard__card">
         <p class="dashboard__card-value">{{ contentCounts.blogPosts }}</p>
         <p class="dashboard__card-label">博客</p>
-        <p class="dashboard__card-note">来自 /api/admin/blog/posts</p>
+        <p class="dashboard__card-note">全部文章</p>
       </div>
       <div class="dashboard__card">
         <p class="dashboard__card-value">{{ contentCounts.portfolioProjects }}</p>
         <p class="dashboard__card-label">作品</p>
         <p class="dashboard__card-note">来自作品工作区</p>
       </div>
+    </div>
+
+    <div class="dashboard__cards dashboard__cards--drafts">
+      <div class="dashboard__card dashboard__card--subtle"><p class="dashboard__card-value">{{ accountTotal }}</p><p class="dashboard__card-label">账户总数</p></div>
+      <div class="dashboard__card dashboard__card--subtle"><p class="dashboard__card-value">{{ pendingReviews }}</p><p class="dashboard__card-label">待审核申请</p></div>
+      <div class="dashboard__card dashboard__card--subtle"><p class="dashboard__card-value">{{ pendingMessages }}</p><p class="dashboard__card-label">待处理留言</p></div>
+      <div class="dashboard__card dashboard__card--subtle"><p class="dashboard__card-value">{{ pageViews }}</p><p class="dashboard__card-label">页面浏览量</p></div>
     </div>
 
     <div class="dashboard__cards dashboard__cards--drafts">
@@ -172,7 +142,7 @@ onMounted(load)
     </div>
 
     <p class="tag-admin__note">
-      教程、博客和作品计数来自各自的管理接口。
+      各项统计由所属模块提供，Site 统一汇总。
     </p>
   </section>
 </template>

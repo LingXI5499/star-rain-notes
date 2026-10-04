@@ -9,6 +9,7 @@ import com.starrainnotes.seo.api.SeoRefreshApi;
 import com.starrainnotes.seo.mapper.SeoPageMapper;
 import com.starrainnotes.seo.notify.SeoNotificationService;
 import com.starrainnotes.seo.rebuild.SeoTutorialRefreshService;
+import com.starrainnotes.site.event.SiteConfigChangedEvent;
 import com.starrainnotes.tutorial.content.event.TutorialPublicationChangedEvent;
 import java.util.HashSet;
 import java.util.List;
@@ -28,6 +29,11 @@ public class SeoContentEventConsumer {
     private final SeoPageMapper pages;
     private final SeoNotificationService notifications;
     private final ProfilePublicApi profiles;
+
+    @EventListener
+    public void onSiteConfigChanged(SiteConfigChangedEvent event) {
+        safe("SITE", null, () -> upsert("/"));
+    }
 
     @EventListener
     public void onBlogPublished(BlogPostPublishedEvent event) {

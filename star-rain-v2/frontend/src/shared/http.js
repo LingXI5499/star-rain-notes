@@ -74,4 +74,9 @@ export async function put(path, data) {
   return response.data.data
 }
 
+export async function del(path) {
+  const response = await http.delete(path)
+  return response.data.data
+}
+
 export default http

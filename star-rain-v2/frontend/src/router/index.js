@@ -114,9 +114,11 @@ const routeDeclarations = [
     meta: { console: true, requiresAuth: true } },
   { path: '/learning/history', component: () => import('../modules/tutorial/pages/learning/LearningHistoryPage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true } },
-  // 控制台仪表盘：只读博客公开接口，不新增后端接口
+  // 控制台仪表盘由 Site 汇总各模块的后台摘要。
   { path: '/dashboard', component: DashboardPage, tree: ROUTE_TREE.ACCOUNT,
-    meta: { console: true, requiresAuth: true, permission: 'account:read', superAdminOnly: true } },
+    meta: { console: true, requiresAuth: true, permission: 'site:dashboard-read', superAdminOnly: true } },
+  { path: '/site/settings', component: () => import('../modules/site/pages/admin/SiteSettingsPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'site:config-manage', superAdminOnly: true } },
   { path: '/analytics', component: () => import('../modules/analytics/pages/admin/AnalyticsDashboardPage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'analytics:read', superAdminOnly: true } },
   { path: '/accounts', component: AdminAccountsPage, tree: ROUTE_TREE.ACCOUNT,

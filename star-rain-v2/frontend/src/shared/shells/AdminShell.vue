@@ -13,7 +13,7 @@ import { accountPath } from '../viewMode'
  *   通用        我的账户（/useradmin/center）、学习记录
  *   统计总览    SUPER_ADMIN：仪表盘（导航第一项）
  *   内容编辑    ADMIN 及以上：教程编辑、博客管理、媒体库、审核中心；作品管理仅超管可见
- *   站点治理    SUPER_ADMIN：账户管理、管理员邀请、账户审计
+ *   站点治理    SUPER_ADMIN：站点设置、账户管理、管理员邀请、账户审计
  *
  * 三处刻意的取舍：
  * 1. 没有「英语管理」—— english 模块在 V2 仍为 PAUSED，导航里不出现，
@@ -95,13 +95,14 @@ const visibleContentItems = computed(() => contentItems.value.filter((item) => i
 
 // 站点治理层：只有 SUPER_ADMIN。每一项仍按账户治理权限判断（canManage 要求既是超管又有该权限）
 const governanceItems = computed(() => [
+  { label: '站点设置', short: '站', to: accountPath('/site/settings'), visible: auth.canManage('site:config-manage') },
   { label: '账户管理', short: '用', to: accountPath('/accounts'), visible: auth.canManage('account:read') },
   { label: '管理员邀请', short: '邀', to: accountPath('/invitations'), visible: auth.canManage('account:invite-admin') },
   { label: '账户审计', short: '计', to: accountPath('/audits'), visible: auth.canManage('account:audit-read') },
 ].filter((item) => item.visible))
 
 const governanceActive = computed(() =>
-  ['/accounts', '/invitations', '/audits']
+  ['/site/settings', '/accounts', '/invitations', '/audits']
     .some((suffix) => route.path.startsWith(accountPath(suffix))))
 
 function isActive(target) {
@@ -233,7 +234,7 @@ async function submitPassword() {
 
       <nav ref="navRef" class="admin-shell__nav" aria-label="控制台导航" @scroll.passive="rememberNavScroll">
         <RouterLink
-          v-if="auth.canManage('account:read')"
+          v-if="auth.canManage('site:dashboard-read')"
           :to="accountPath('/dashboard')"
           class="admin-shell__nav-item"
           :class="{ 'admin-shell__nav-item--active': isActive(accountPath('/dashboard')) }"
