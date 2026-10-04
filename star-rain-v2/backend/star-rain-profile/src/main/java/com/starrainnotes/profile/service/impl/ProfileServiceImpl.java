@@ -80,6 +80,13 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
 
     @Override
     @Transactional(readOnly = true)
+    public Long publicProfileId() {
+        ProfileEntity profile = owner();
+        return "PUBLIC".equals(profile.getStatus()) ? profile.getId() : null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public ProfileVO adminProfile() {
         return view(owner(), true);
     }
