@@ -11,7 +11,7 @@ import { useViewMode } from '../../../shared/viewMode'
  *
  * 三处刻意的差别：
  *   1. V1 导航比 V2 多一项语言学习模块；V2 本轮只保留「教程 / 博客 / 作品 / 关于」四项，
- *      作品 / 关于在对应页面实现前是**不可点的占位**（span + title 提示），不放死链；
+ *      关于页面仍是不可点的占位；
  *   2. V1 的品牌名与 logo 来自站点设置接口（appStore.loadBranding），
  *      `star-rain-site` 后端在 V2 还是空模块，因此这里用本地常量与 `/brand/mark.svg`。
  *      接入站点设置后改这里一处即可。
@@ -30,7 +30,7 @@ const siteName = '星雨笔录'
 const navItems = computed(() => [
   { label: '教程', to: contentPath('/tutorials') },
   { label: '博客', to: contentPath('/blog') },
-  { label: '作品', to: null, pending: '作品模块建设中' },
+  { label: '作品', to: contentPath('/portfolio') },
   { label: '关于', to: null, pending: '关于页面建设中' },
 ])
 const brandPath = computed(() => contentPath('/'))

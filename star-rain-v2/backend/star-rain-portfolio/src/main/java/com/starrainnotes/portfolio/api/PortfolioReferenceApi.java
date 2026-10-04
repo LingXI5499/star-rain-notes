@@ -1,0 +1,8 @@
+package com.starrainnotes.portfolio.api;
+
+import com.starrainnotes.portfolio.api.dto.PortfolioPublishedWork;
+import java.util.Optional;
+
+public interface PortfolioReferenceApi {
+    Optional<PortfolioPublishedWork> publishedWork(Long workId);
+}
