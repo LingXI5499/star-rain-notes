@@ -86,6 +86,7 @@ const contentItems = computed(() => [
   { label: '博客管理', short: '博', to: accountPath('/blog/manage'), visible: auth.hasPermission('blog:read-admin') },
   { label: '媒体库', short: '媒', to: accountPath('/media'), visible: auth.hasPermission('media:read') },
   { label: '作品管理', short: '品', to: accountPath('/portfolio/manage'), visible: auth.hasPermission('portfolio:read-admin') },
+  { label: '作者资料', short: '介', to: accountPath('/profile/manage'), visible: auth.canManage('profile:read-admin') },
   // 审核中心处理内容发布前的审核，放在内容编辑区末尾，按 review:read 控制可见性。
   { label: '审核中心', short: '审', to: accountPath('/reviews'), visible: auth.hasPermission('review:read') },
   { label: '留言管理', short: '言', to: accountPath('/messages/manage'), visible: auth.canManage('message:read-admin') },
