@@ -67,7 +67,8 @@ const routeDeclarations = [
   { path: '/tutorials', component: () => import('../modules/tutorial/pages/public/TutorialCatalogPage.vue'), meta: { publicPage: true } },
   { path: '/tutorials/:tutorialSlug', component: () => import('../modules/tutorial/pages/public/TutorialDetailPage.vue'), meta: { publicPage: true } },
   { path: '/tutorials/:tutorialSlug/:chapterSlug', component: () => import('../modules/tutorial/pages/public/TutorialChapterPage.vue'), meta: { publicPage: true } },
-  { path: '/portfolio/:pathMatch(.*)*', component: PendingPage, props: { title: '作品' } },
+  { path: '/portfolio', component: () => import('../modules/portfolio/pages/PortfolioListPage.vue'), meta: { publicPage: true } },
+  { path: '/portfolio/:slug', component: () => import('../modules/portfolio/pages/WorkDetailPage.vue'), meta: { publicPage: true } },
   { path: '/about', component: PendingPage, props: { title: '关于' } },
   { path: '/search', component: PendingPage, props: { title: '搜索' } },
 
@@ -147,6 +148,10 @@ const routeDeclarations = [
     meta: { console: true, requiresAuth: true, permission: 'tutorial:read-admin' } },
   { path: '/tutorials/:tutorialId/chapters/:chapterId', component: () => import('../modules/tutorial/pages/admin/ChapterEditPage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'tutorial:edit' } },
+  { path: '/portfolio/manage', component: () => import('../modules/portfolio/pages/admin/PortfolioManagePage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'portfolio:read-admin', superAdminOnly: true } },
+  { path: '/portfolio/editor/:workId', component: () => import('../modules/portfolio/pages/admin/WorkEditorPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'portfolio:edit', superAdminOnly: true } },
 ]
 
 const routes = buildTreeRoutes(routeDeclarations)
