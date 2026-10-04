@@ -79,6 +79,16 @@ public class AccountIdentityService implements CurrentActorApi, AccountReference
 
     @Override
     @Transactional(readOnly = true)
+    public String displayName(Long accountId) {
+        AccountEntity account = accountId == null ? null : mapper.accountById(accountId);
+        if (account == null || !"ACTIVE".equals(account.getStatus())) {
+            throw new ApiException("ACCOUNT_NOT_FOUND", "账户不可用", 404);
+        }
+        return account.getDisplayName();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public boolean hasPermission(Long accountId, String permissionCode) {
         return isActive(accountId) && mapper.permissionCodes(accountId).contains(permissionCode);
     }

@@ -4,6 +4,7 @@ import { RouterLink } from 'vue-router'
 import { listAdminPosts } from '../../blog/api/blogApi'
 import { listAdminTutorials } from '../../tutorial/api/tutorialApi'
 import { listAdminWorks } from '../../portfolio/api/portfolioApi'
+import { listPendingMessages } from '../../message/api/messageApi'
 import { errorMessage } from '../../../shared/http'
 import { dateLabel, postStatusLabel } from '../../blog/support/display'
 
@@ -23,12 +24,13 @@ const error = ref('')
 const contentCounts = ref({ tutorials: 0, chapters: 0, blogPosts: 0, portfolioProjects: 0 })
 const draftCounts = ref({ tutorials: 0, chapters: 0, blogPosts: 0, portfolioProjects: 0 })
 const recentContent = ref([])
+const pendingMessages = ref(0)
 
 async function load() {
   loading.value = true
   error.value = ''
   try {
-    const [allPosts, draftPosts, recentPosts, firstTutorials, allWorks, draftWorks, recentWorks] = await Promise.all([
+    const [allPosts, draftPosts, recentPosts, firstTutorials, allWorks, draftWorks, recentWorks, pending] = await Promise.all([
       listAdminPosts({ page: 1, pageSize: 1 }),
       listAdminPosts({ page: 1, pageSize: 1, status: 'DRAFT' }),
       listAdminPosts({ page: 1, pageSize: 8 }),
@@ -36,7 +38,9 @@ async function load() {
       listAdminWorks({ page: 1, pageSize: 1 }),
       listAdminWorks({ page: 1, pageSize: 1, status: 'DRAFT' }),
       listAdminWorks({ page: 1, pageSize: 8 }),
+      listPendingMessages({ page: 1, pageSize: 1 }),
     ])
+    pendingMessages.value = pending.total || 0
     const tutorials = [...(firstTutorials.items || [])]
     const tutorialPages = Math.ceil((firstTutorials.total || 0) / 100)
     for (let page = 2; page <= tutorialPages; page += 1) {
@@ -142,6 +146,8 @@ onMounted(load)
         <p class="dashboard__card-label">作品草稿</p>
       </div>
     </div>
+
+    <p class="tag-admin__note">待审核留言 {{ pendingMessages }} 条 · <RouterLink to="/useradmin/messages/manage">进入留言管理</RouterLink></p>
 
     <h2 class="dashboard__section">最近内容</h2>
     <div class="table-scroll">

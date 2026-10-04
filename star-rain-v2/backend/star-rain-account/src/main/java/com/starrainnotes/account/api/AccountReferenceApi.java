@@ -8,5 +8,7 @@ public interface AccountReferenceApi {
     boolean exists(Long accountId);
 
     boolean isActive(Long accountId);
+
+    String displayName(Long accountId);
 }
 
