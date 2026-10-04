@@ -21,6 +21,10 @@
 
 这些数值只是文件清点，不等同于 V2 工作量估算；共享接口与首页另计。
 
+2026-10-05 对本机 V1 库做只读计数：英语/词汇相关表共 38 张；`english_overview` 1 行、`vocabulary_theme` 60 行、`vocabulary_word` 7053 行、`english_grammar_course` 1 行、`english_grammar_lesson` 42 行、`english_reading_article` 6 行、`english_listening_item` 7 行、`english_writing_resource` 6 行、`english_writing_prompt` 6 行，`english_learning_record` 0 行。这些是本机数据快照，不代表线上库；迁移时应重新清点并逐表校验。
+
+`V2_019` 的概览行只是让全新 V2 库可启动的默认文案。本机 V1 的概览还包含非空介绍和路线图，不能把默认行当作历史数据迁移完成的证据；后续需单独导入并核对完整内容。
+
 ## 建议实施顺序
 
 1. **规范与数据核对**：逐项确认 V1 页面、接口、表、状态机、媒体引用及内容数量；将 V2 的内容模型与学习模型分别定稿。V2 标识符以字符串传给前端，文章正文沿用全站统一编辑器；名称自动派生 slug，不要求用户手填。
