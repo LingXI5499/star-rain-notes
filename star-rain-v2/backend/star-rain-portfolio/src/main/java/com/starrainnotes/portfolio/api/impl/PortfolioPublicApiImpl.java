@@ -27,6 +27,16 @@ public class PortfolioPublicApiImpl implements PortfolioPublicApi, PortfolioRefe
     }
 
     @Override
+    public boolean exists(Long workId) {
+        try {
+            works.adminWork(workId);
+            return true;
+        } catch (WorkNotFoundException exception) {
+            return false;
+        }
+    }
+
+    @Override
     public Optional<PortfolioPublishedWork> publishedWork(Long workId) {
         try {
             return Optional.of(published(works.publicWorkById(workId)));

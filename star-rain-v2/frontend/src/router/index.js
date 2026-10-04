@@ -70,7 +70,7 @@ const routeDeclarations = [
   { path: '/portfolio', component: () => import('../modules/portfolio/pages/PortfolioListPage.vue'), meta: { publicPage: true } },
   { path: '/portfolio/:slug', component: () => import('../modules/portfolio/pages/WorkDetailPage.vue'), meta: { publicPage: true } },
   { path: '/messages', component: () => import('../modules/message/pages/MessageBoardPage.vue'), meta: { publicPage: true } },
-  { path: '/about', component: PendingPage, props: { title: '关于' } },
+  { path: '/about', component: () => import('../modules/profile/pages/ProfilePage.vue'), meta: { publicPage: true } },
   { path: '/search', component: PendingPage, props: { title: '搜索' } },
 
   /*
@@ -155,6 +155,8 @@ const routeDeclarations = [
     meta: { console: true, requiresAuth: true, permission: 'portfolio:edit', superAdminOnly: true } },
   { path: '/messages/manage', component: () => import('../modules/message/pages/admin/MessageManagePage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'message:read-admin', superAdminOnly: true } },
+  { path: '/profile/manage', component: () => import('../modules/profile/pages/admin/ProfileEditorPage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'profile:read-admin', superAdminOnly: true } },
 ]
 
 const routes = buildTreeRoutes(routeDeclarations)
