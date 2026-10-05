@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.LearningProgressMapper">
+  <insert id="upsertReading">
+    INSERT INTO sr_learning_progress
+                (account_id, tutorial_id, group_id, chapter_id, scroll_anchor,
+                 progress_ratio, study_seconds_total, last_studied_at)
+            VALUES (#{accountId}, #{tutorialId}, #{groupId}, #{chapterId}, #{anchor},
+                    #{ratio}, #{seconds}, UTC_TIMESTAMP(3))
+            ON DUPLICATE KEY UPDATE
+                scroll_anchor = VALUES(scroll_anchor),
+                progress_ratio = VALUES(progress_ratio),
+                study_seconds_total = study_seconds_total + VALUES(study_seconds_total),
+                last_studied_at = VALUES(last_studied_at)
+  </insert>
+  <insert id="ensureRow">
+    INSERT IGNORE INTO sr_learning_progress
+                (account_id, tutorial_id, group_id, chapter_id,
+                 study_seconds_total, last_studied_at)
+            VALUES (#{accountId}, #{tutorialId}, #{groupId}, #{chapterId},
+                    0, UTC_TIMESTAMP(3))
+  </insert>
+  <update id="markCompleted">
+    UPDATE sr_learning_progress
+            SET completed_at = UTC_TIMESTAMP(3), last_studied_at = UTC_TIMESTAMP(3)
+            WHERE account_id = #{accountId} AND chapter_id = #{chapterId}
+              AND completed_at IS NULL
+  </update>
+</mapper>

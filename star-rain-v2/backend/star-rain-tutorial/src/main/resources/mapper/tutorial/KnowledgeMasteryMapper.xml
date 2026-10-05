@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.KnowledgeMasteryMapper">
+  <insert id="ensure">
+    INSERT IGNORE INTO sr_knowledge_mastery
+                (account_id, knowledge_card_id, system_suggested_level, evidence_count)
+            VALUES (#{accountId}, #{cardId}, 'L1', 0)
+  </insert>
+  <insert id="ensureLearned">
+    INSERT IGNORE INTO sr_knowledge_mastery
+                (account_id, knowledge_card_id, system_suggested_level, evidence_count, first_learned_at)
+            VALUES (#{accountId}, #{cardId}, 'L1', 0, UTC_TIMESTAMP(3))
+  </insert>
+  <update id="markLearned">
+    UPDATE sr_knowledge_mastery
+            SET first_learned_at = COALESCE(first_learned_at, UTC_TIMESTAMP(3))
+            WHERE account_id = #{accountId} AND knowledge_card_id = #{cardId}
+  </update>
+</mapper>

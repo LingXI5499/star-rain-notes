@@ -13,7 +13,6 @@ import static org.mockito.Mockito.when;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.blog.entity.BlogPostEntity;
 import com.starrainnotes.blog.api.event.BlogPostPublishedEvent;
-import com.starrainnotes.blog.event.BlogPostRestoredEvent;
 import com.starrainnotes.blog.api.event.BlogPostWithdrawnEvent;
 import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.common.exception.ApiException;
@@ -279,8 +278,8 @@ class BlogPublishServiceImplTest {
         service.restore(9L);
 
         Object event = capturedEvent();
-        assertThat(event).isInstanceOf(BlogPostRestoredEvent.class);
-        assertThat(((BlogPostRestoredEvent) event).getPublishedAt())
+        assertThat(event).isInstanceOf(BlogPostPublishedEvent.class);
+        assertThat(((BlogPostPublishedEvent) event).getPublishedAt())
                 .isEqualTo(LocalDateTime.of(2026, 1, 1, 0, 0));
         // 恢复不是重新发布：publishedAt 必须还是原来那一天
         assertThat(restored.getPublishedAt()).isEqualTo(LocalDateTime.of(2026, 1, 1, 0, 0));

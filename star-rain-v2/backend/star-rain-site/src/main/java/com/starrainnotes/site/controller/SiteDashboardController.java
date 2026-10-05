@@ -1,6 +1,6 @@
 package com.starrainnotes.site.controller;
 
-import com.starrainnotes.site.dto.SiteDashboardView;
+import com.starrainnotes.site.vo.SiteDashboardVO;
 import com.starrainnotes.site.service.DashboardAggregationService;
 
 import com.starrainnotes.common.result.ApiResponse;
@@ -18,5 +18,5 @@ public class SiteDashboardController {
     private final DashboardAggregationService service;
 
     @GetMapping("/dashboard")
-    public ApiResponse<SiteDashboardView> dashboard() { return ApiResponse.ok(service.dashboard()); }
+    public ApiResponse<SiteDashboardVO> dashboard() { return ApiResponse.ok(service.dashboard()); }
 }

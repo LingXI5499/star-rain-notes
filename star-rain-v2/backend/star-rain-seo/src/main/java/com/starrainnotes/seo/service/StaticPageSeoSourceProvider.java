@@ -3,7 +3,7 @@ package com.starrainnotes.seo.service;
 import com.starrainnotes.seo.dto.SeoSourceDocument;
 
 import com.starrainnotes.site.api.SitePublicApi;
-import com.starrainnotes.site.api.dto.SitePublicConfig;
+import com.starrainnotes.site.api.vo.SitePublicConfigVO;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class StaticPageSeoSourceProvider implements SeoSourceProvider {
     }
 
     private SeoSourceDocument home() {
-        SitePublicConfig config = site.config();
+        SitePublicConfigVO config = site.config();
         return page("/", config.getSiteTitle(), config.getSiteDescription(), config.getHomeIntro());
     }
 

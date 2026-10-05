@@ -1,7 +1,7 @@
 package com.starrainnotes.site.dashboard;
 
-import com.starrainnotes.site.dto.SiteDashboardView;
-import com.starrainnotes.site.service.DashboardAggregationService;
+import com.starrainnotes.site.vo.SiteDashboardVO;
+import com.starrainnotes.site.service.impl.DashboardAggregationServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -23,9 +23,9 @@ class DashboardAggregationServiceTest {
         when(blog.load()).thenReturn(new DashboardModuleData(Map.of("total", 5L), List.of()));
         when(analytics.moduleCode()).thenReturn("ANALYTICS");
         when(analytics.load()).thenThrow(new IllegalStateException("database unavailable"));
-        DashboardAggregationService service = new DashboardAggregationService(List.of(blog, analytics));
+        DashboardAggregationServiceImpl service = new DashboardAggregationServiceImpl(List.of(blog, analytics));
         try {
-            SiteDashboardView result = service.dashboard();
+            SiteDashboardVO result = service.dashboard();
             assertEquals(5L, result.getModules().get("BLOG").getMetrics().get("total"));
             assertTrue(result.getDegradedModules().contains("ANALYTICS"));
         } finally {

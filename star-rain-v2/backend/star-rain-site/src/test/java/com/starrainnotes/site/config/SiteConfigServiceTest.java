@@ -2,7 +2,7 @@ package com.starrainnotes.site.config;
 
 import com.starrainnotes.site.entity.SiteConfigEntity;
 import com.starrainnotes.site.mapper.SiteConfigMapper;
-import com.starrainnotes.site.service.SiteConfigService;
+import com.starrainnotes.site.service.impl.SiteConfigServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -28,16 +28,16 @@ class SiteConfigServiceTest {
         SiteConfigEntity row = new SiteConfigEntity();
         row.setId(1L);
         row.setConfigKey("PRIMARY");
-        when(mapper.selectOne(any())).thenReturn(row);
+        when(mapper.primary()).thenReturn(row);
         when(media.get(7L)).thenReturn(MediaAssetSummary.builder().id(7L).status("ACTIVE")
                 .mediaType("IMAGE").accessLevel("PRIVATE").build());
-        SiteConfigService service = new SiteConfigService(mapper, media, references,
+        SiteConfigServiceImpl service = new SiteConfigServiceImpl(mapper, media, references,
                 mock(ApplicationEventPublisher.class));
 
         SiteConfigException error = assertThrows(SiteConfigException.class, () -> service.setMedia("logo", 7L));
 
         assertEquals("SITE_MEDIA_NOT_PUBLIC", error.getCode());
-        verify(mapper, never()).updateById(any(SiteConfigEntity.class));
+        verify(mapper, never()).update(any(SiteConfigEntity.class));
         verify(references, never()).attach(any());
     }
 }

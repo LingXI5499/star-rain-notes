@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.ReviewTaskMapper">
+  <insert id="insertDue">
+    INSERT IGNORE INTO sr_review_task
+                (schedule_id, account_id, knowledge_card_id, due_at, status)
+            VALUES (#{scheduleId}, #{accountId}, #{cardId}, #{dueAt}, 'PENDING')
+  </insert>
+  <update id="markOverdue">
+    UPDATE sr_review_task SET status = 'OVERDUE'
+            WHERE account_id = #{accountId} AND due_at &lt; #{now} AND status = 'PENDING'
+  </update>
+  <update id="complete">
+    UPDATE sr_review_task SET status = 'COMPLETED', completed_at = UTC_TIMESTAMP(3)
+            WHERE id = #{taskId} AND account_id = #{accountId}
+              AND status IN ('PENDING', 'OVERDUE')
+  </update>
+</mapper>

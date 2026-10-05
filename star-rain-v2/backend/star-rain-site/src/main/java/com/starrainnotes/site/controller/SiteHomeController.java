@@ -1,6 +1,6 @@
 package com.starrainnotes.site.controller;
 
-import com.starrainnotes.site.dto.SiteHomeView;
+import com.starrainnotes.site.vo.SiteHomeVO;
 import com.starrainnotes.site.service.HomeAggregationService;
 
 import com.starrainnotes.common.result.ApiResponse;
@@ -16,5 +16,5 @@ public class SiteHomeController {
     private final HomeAggregationService service;
 
     @GetMapping("/home")
-    public ApiResponse<SiteHomeView> home() { return ApiResponse.ok(service.home()); }
+    public ApiResponse<SiteHomeVO> home() { return ApiResponse.ok(service.home()); }
 }

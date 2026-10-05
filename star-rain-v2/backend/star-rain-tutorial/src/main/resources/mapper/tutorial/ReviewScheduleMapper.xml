@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.ReviewScheduleMapper">
+  <insert id="ensure">
+    INSERT IGNORE INTO sr_review_schedule
+                (account_id, knowledge_card_id, step_index, current_interval_days,
+                 next_review_at, status)
+            VALUES (#{accountId}, #{cardId}, 0, #{days}, #{nextAt}, 'ACTIVE')
+  </insert>
+  <select id="dueUnqueued" resultType="com.starrainnotes.tutorial.learning.entity.ReviewScheduleEntity">
+    SELECT s.id, s.account_id, s.knowledge_card_id, s.step_index,
+                   s.current_interval_days, s.next_review_at, s.status,
+                   s.last_result_at, s.created_at, s.updated_at
+            FROM sr_review_schedule s
+            WHERE s.status = 'ACTIVE' AND s.next_review_at &lt;= #{now}
+              AND NOT EXISTS (SELECT 1 FROM sr_review_task t
+                  WHERE t.schedule_id = s.id AND t.due_at = s.next_review_at)
+            ORDER BY s.next_review_at, s.id LIMIT 500
+  </select>
+  <select id="dueUnqueuedForAccount" resultType="com.starrainnotes.tutorial.learning.entity.ReviewScheduleEntity">
+    SELECT s.id, s.account_id, s.knowledge_card_id, s.step_index,
+                   s.current_interval_days, s.next_review_at, s.status,
+                   s.last_result_at, s.created_at, s.updated_at
+            FROM sr_review_schedule s
+            WHERE s.account_id = #{accountId} AND s.status = 'ACTIVE'
+              AND s.next_review_at &lt;= #{now}
+              AND NOT EXISTS (SELECT 1 FROM sr_review_task t
+                  WHERE t.schedule_id = s.id AND t.due_at = s.next_review_at)
+            ORDER BY s.next_review_at, s.id LIMIT 500
+  </select>
+</mapper>

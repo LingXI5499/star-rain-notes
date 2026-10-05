@@ -1,7 +1,7 @@
 package com.starrainnotes.site.controller;
 
-import com.starrainnotes.site.dto.HomeSectionOrder;
-import com.starrainnotes.site.dto.HomeSectionPatch;
+import com.starrainnotes.site.dto.HomeSectionOrderDTO;
+import com.starrainnotes.site.dto.HomeSectionPatchDTO;
 import com.starrainnotes.site.entity.HomeSectionEntity;
 import com.starrainnotes.site.service.HomeSectionService;
 
@@ -28,12 +28,12 @@ public class HomeSectionAdminController {
     public ApiResponse<List<HomeSectionEntity>> all() { return ApiResponse.ok(service.all()); }
 
     @PutMapping("/order")
-    public ApiResponse<List<HomeSectionEntity>> order(@RequestBody HomeSectionOrder request) {
+    public ApiResponse<List<HomeSectionEntity>> order(@RequestBody HomeSectionOrderDTO request) {
         return ApiResponse.ok(service.reorder(request));
     }
 
     @PatchMapping("/{sectionCode}")
-    public ApiResponse<HomeSectionEntity> patch(@PathVariable String sectionCode, @RequestBody HomeSectionPatch request) {
+    public ApiResponse<HomeSectionEntity> patch(@PathVariable String sectionCode, @RequestBody HomeSectionPatchDTO request) {
         return ApiResponse.ok(service.patch(sectionCode, request));
     }
 }

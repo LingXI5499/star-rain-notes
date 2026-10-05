@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.portfolio.mapper.WorkMapper">
+  <select id="byIdForUpdate" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
+    SELECT id, slug, work_type, title, summary, body_markdown, status, published_at, withdrawn_at, created_by_account_id, updated_by_account_id, created_at, updated_at FROM sr_portfolio_work WHERE id = #{id} FOR UPDATE
+  </select>
+</mapper>

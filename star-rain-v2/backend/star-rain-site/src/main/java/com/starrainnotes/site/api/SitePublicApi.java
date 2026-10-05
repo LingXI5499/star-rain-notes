@@ -1,7 +1,7 @@
 package com.starrainnotes.site.api;
 
-import com.starrainnotes.site.api.dto.SitePublicConfig;
+import com.starrainnotes.site.api.vo.SitePublicConfigVO;
 
 public interface SitePublicApi {
-    SitePublicConfig config();
+    SitePublicConfigVO config();
 }

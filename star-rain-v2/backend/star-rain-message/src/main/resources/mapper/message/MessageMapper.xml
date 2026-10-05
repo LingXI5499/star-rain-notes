@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.message.mapper.MessageMapper">
+  <update id="decide">
+    UPDATE sr_message SET status=#{target}, moderated_by_account_id=#{actorId}, moderated_at=#{at}, reject_reason=#{reason} WHERE id=#{id} AND status='PENDING'
+  </update>
+  <update id="hide">
+    UPDATE sr_message SET status='HIDDEN', hidden_at=#{at} WHERE id=#{id} AND status='PUBLIC'
+  </update>
+  <update id="restore">
+    UPDATE sr_message SET status='PUBLIC', hidden_at=NULL WHERE id=#{id} AND status='HIDDEN'
+  </update>
+  <update id="softDelete">
+    UPDATE sr_message SET status='DELETED', deleted_at=#{at} WHERE id=#{id} AND status IN ('PUBLIC','HIDDEN')
+  </update>
+</mapper>

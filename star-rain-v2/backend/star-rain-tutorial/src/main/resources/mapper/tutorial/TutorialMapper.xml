@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialMapper">
+  <select id="byIdForUpdate" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    SELECT id, category_id, slug, title, summary, sort_order, cover_media_asset_id, publication_status, editing_status, published_revision_id, published_at, withdrawn_at, created_by_account_id, updated_by_account_id, created_at, updated_at FROM sr_tutorial WHERE id = #{id} FOR UPDATE
+  </select>
+</mapper>

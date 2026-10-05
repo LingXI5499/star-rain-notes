@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.analytics.mapper.AnalyticsMapper">
+  <insert id="insert">
+    INSERT INTO sr_analytics_event(event_type, route_key, content_type, content_id,
+            referrer_category, referrer_host)
+        VALUES (#{eventType}, #{routeKey}, #{contentType}, #{contentId},
+            #{referrerCategory}, #{referrerHost})
+  </insert>
+  <delete id="deleteSiteDay">
+    DELETE FROM sr_analytics_daily_site WHERE stat_date = #{date}
+  </delete>
+  <insert id="insertSiteDay">
+    INSERT INTO sr_analytics_daily_site(stat_date, page_view_count, content_view_count)
+        SELECT #{date},
+          SUM(CASE WHEN event_type = 'PAGE_VIEW' THEN 1 ELSE 0 END),
+          SUM(CASE WHEN event_type = 'CONTENT_VIEW' THEN 1 ELSE 0 END)
+        FROM sr_analytics_event
+        WHERE occurred_at &gt;= #{date} AND occurred_at &lt; DATE_ADD(#{date}, INTERVAL 1 DAY)
+        HAVING COUNT(*) &gt; 0
+  </insert>
+  <delete id="deleteContentDay">
+    DELETE FROM sr_analytics_daily_content WHERE stat_date = #{date}
+  </delete>
+  <insert id="insertContentDay">
+    INSERT INTO sr_analytics_daily_content(stat_date, content_type, content_id, view_count)
+        SELECT #{date}, content_type, content_id, COUNT(*)
+        FROM sr_analytics_event
+        WHERE event_type = 'CONTENT_VIEW' AND occurred_at &gt;= #{date}
+          AND occurred_at &lt; DATE_ADD(#{date}, INTERVAL 1 DAY)
+        GROUP BY content_type, content_id
+  </insert>
+  <delete id="deleteReferrerDay">
+    DELETE FROM sr_analytics_daily_referrer WHERE stat_date = #{date}
+  </delete>
+  <insert id="insertReferrerDay">
+    INSERT INTO sr_analytics_daily_referrer(stat_date, referrer_category, view_count)
+        SELECT #{date}, referrer_category, COUNT(*) FROM sr_analytics_event
+        WHERE event_type = 'PAGE_VIEW' AND occurred_at &gt;= #{date} AND occurred_at &lt; DATE_ADD(#{date}, INTERVAL 1 DAY)
+        GROUP BY referrer_category
+  </insert>
+  <select id="historicalTotals" resultType="map">
+    SELECT COALESCE(SUM(page_view_count),0) AS pageViews,
+          COALESCE(SUM(content_view_count),0) AS contentViews
+        FROM sr_analytics_daily_site WHERE stat_date &lt; #{today}
+  </select>
+  <select id="dayCounts" resultType="map">
+    SELECT COALESCE(SUM(event_type = 'PAGE_VIEW'),0) AS pageViews,
+          COALESCE(SUM(event_type = 'CONTENT_VIEW'),0) AS contentViews
+        FROM sr_analytics_event WHERE occurred_at &gt;= #{today}
+          AND occurred_at &lt; DATE_ADD(#{today}, INTERVAL 1 DAY)
+  </select>
+  <select id="dailyTrend" resultType="map">
+    SELECT stat_date AS statDate, page_view_count AS pageViews,
+          content_view_count AS contentViews FROM sr_analytics_daily_site
+        WHERE stat_date &gt;= #{start} AND stat_date &lt;= #{end} AND stat_date &lt; #{today}
+        ORDER BY stat_date
+  </select>
+  <select id="hotContent" resultType="map">
+    SELECT content_type AS contentType, content_id AS contentId,
+          SUM(view_count) AS viewCount FROM (
+          SELECT content_type, content_id, view_count FROM sr_analytics_daily_content
+          WHERE stat_date &gt;= #{start} AND stat_date &lt;= #{end} AND stat_date &lt; #{today}
+          UNION ALL
+          SELECT content_type, content_id, COUNT(*) AS view_count FROM sr_analytics_event
+          WHERE event_type = 'CONTENT_VIEW' AND #{today} BETWEEN #{start} AND #{end}
+            AND occurred_at &gt;= #{today} AND occurred_at &lt; DATE_ADD(#{today}, INTERVAL 1 DAY)
+          GROUP BY content_type, content_id
+        ) counts WHERE (#{type} IS NULL OR content_type = #{type})
+        GROUP BY content_type, content_id ORDER BY viewCount DESC LIMIT #{limit}
+  </select>
+  <select id="referrers" resultType="map">
+    SELECT referrer_category AS category, SUM(view_count) AS viewCount FROM (
+          SELECT referrer_category, view_count FROM sr_analytics_daily_referrer
+          WHERE stat_date &gt;= #{start} AND stat_date &lt;= #{end} AND stat_date &lt; #{today}
+          UNION ALL
+          SELECT referrer_category, COUNT(*) AS view_count FROM sr_analytics_event
+          WHERE event_type = 'PAGE_VIEW' AND #{today} BETWEEN #{start} AND #{end} AND occurred_at &gt;= #{today}
+            AND occurred_at &lt; DATE_ADD(#{today}, INTERVAL 1 DAY)
+          GROUP BY referrer_category
+        ) counts GROUP BY referrer_category ORDER BY viewCount DESC
+  </select>
+  <delete id="deleteRawBefore">
+    DELETE FROM sr_analytics_event WHERE occurred_at &lt; #{cutoff}
+  </delete>
+</mapper>

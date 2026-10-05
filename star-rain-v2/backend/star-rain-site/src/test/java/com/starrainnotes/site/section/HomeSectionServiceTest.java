@@ -1,10 +1,10 @@
 package com.starrainnotes.site.section;
 
-import com.starrainnotes.site.dto.HomeSectionOrder;
-import com.starrainnotes.site.dto.HomeSectionPatch;
+import com.starrainnotes.site.dto.HomeSectionOrderDTO;
+import com.starrainnotes.site.dto.HomeSectionPatchDTO;
 import com.starrainnotes.site.entity.HomeSectionEntity;
 import com.starrainnotes.site.mapper.HomeSectionMapper;
-import com.starrainnotes.site.service.HomeSectionService;
+import com.starrainnotes.site.service.impl.HomeSectionServiceImpl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,29 +23,29 @@ class HomeSectionServiceTest {
     @Test
     void malformedOrderDoesNotChangeAnySection() {
         HomeSectionMapper mapper = mock(HomeSectionMapper.class);
-        when(mapper.selectList(any())).thenReturn(List.of(section("HERO"), section("BLOG")));
-        HomeSectionOrder order = new HomeSectionOrder();
+        when(mapper.all()).thenReturn(List.of(section("HERO"), section("BLOG")));
+        HomeSectionOrderDTO order = new HomeSectionOrderDTO();
         order.setSectionCodes(List.of("HERO", "HERO"));
 
         SiteConfigException error = assertThrows(SiteConfigException.class,
-                () -> new HomeSectionService(mapper, new ObjectMapper()).reorder(order));
+                () -> new HomeSectionServiceImpl(mapper, new ObjectMapper()).reorder(order));
 
         assertEquals("SITE_SECTION_CONFIG_INVALID", error.getCode());
-        verify(mapper, never()).updateById(any(HomeSectionEntity.class));
+        verify(mapper, never()).update(any(HomeSectionEntity.class));
     }
 
     @Test
     void overflowingLimitCannotBecomeValidThroughIntegerConversion() throws Exception {
         HomeSectionMapper mapper = mock(HomeSectionMapper.class);
-        when(mapper.selectOne(any())).thenReturn(section("BLOG"));
-        HomeSectionPatch patch = new HomeSectionPatch();
+        when(mapper.byCode("BLOG")).thenReturn(section("BLOG"));
+        HomeSectionPatchDTO patch = new HomeSectionPatchDTO();
         patch.setConfig(new ObjectMapper().readTree("{\"limit\":4294967302}"));
 
         SiteConfigException error = assertThrows(SiteConfigException.class,
-                () -> new HomeSectionService(mapper, new ObjectMapper()).patch("BLOG", patch));
+                () -> new HomeSectionServiceImpl(mapper, new ObjectMapper()).patch("BLOG", patch));
 
         assertEquals("SITE_SECTION_CONFIG_INVALID", error.getCode());
-        verify(mapper, never()).updateById(any(HomeSectionEntity.class));
+        verify(mapper, never()).update(any(HomeSectionEntity.class));
     }
 
     private HomeSectionEntity section(String code) {

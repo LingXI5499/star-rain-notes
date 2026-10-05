@@ -1,5 +1,5 @@
 package com.starrainnotes.site.controller;
-import com.starrainnotes.site.api.dto.SitePublicConfig;
+import com.starrainnotes.site.api.vo.SitePublicConfigVO;
 
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.site.api.SitePublicApi;
@@ -15,5 +15,5 @@ public class SiteConfigPublicController {
     private final SitePublicApi site;
 
     @GetMapping("/config")
-    public ApiResponse<SitePublicConfig> config() { return ApiResponse.ok(site.config()); }
+    public ApiResponse<SitePublicConfigVO> config() { return ApiResponse.ok(site.config()); }
 }

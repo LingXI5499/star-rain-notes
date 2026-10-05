@@ -1,9 +1,9 @@
 package com.starrainnotes.site.controller;
 
-import com.starrainnotes.site.dto.SiteConfigPatch;
-import com.starrainnotes.site.dto.SiteMediaRequest;
+import com.starrainnotes.site.dto.SiteConfigPatchDTO;
+import com.starrainnotes.site.dto.SiteMediaRequestDTO;
 import com.starrainnotes.site.service.SiteConfigService;
-import com.starrainnotes.site.api.dto.SitePublicConfig;
+import com.starrainnotes.site.api.vo.SitePublicConfigVO;
 
 import com.starrainnotes.common.result.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,17 +24,17 @@ public class SiteConfigAdminController {
     private final SiteConfigService service;
 
     @PatchMapping("/config")
-    public ApiResponse<SitePublicConfig> patch(@RequestBody SiteConfigPatch request) {
+    public ApiResponse<SitePublicConfigVO> patch(@RequestBody SiteConfigPatchDTO request) {
         return ApiResponse.ok(service.patch(request));
     }
 
     @PutMapping("/{kind:logo|favicon}")
-    public ApiResponse<SitePublicConfig> setMedia(@PathVariable String kind, @RequestBody SiteMediaRequest request) {
+    public ApiResponse<SitePublicConfigVO> setMedia(@PathVariable String kind, @RequestBody SiteMediaRequestDTO request) {
         return ApiResponse.ok(service.setMediaRequired(kind, request));
     }
 
     @DeleteMapping("/{kind:logo|favicon}")
-    public ApiResponse<SitePublicConfig> clearMedia(@PathVariable String kind) {
+    public ApiResponse<SitePublicConfigVO> clearMedia(@PathVariable String kind) {
         return ApiResponse.ok(service.setMedia(kind, null));
     }
 }

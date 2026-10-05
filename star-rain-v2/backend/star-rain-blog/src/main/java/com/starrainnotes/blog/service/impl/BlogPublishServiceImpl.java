@@ -5,7 +5,6 @@ import com.starrainnotes.blog.constant.BlogLimits;
 import com.starrainnotes.blog.entity.BlogPostEntity;
 import com.starrainnotes.blog.enumeration.BlogPostStatus;
 import com.starrainnotes.blog.api.event.BlogPostPublishedEvent;
-import com.starrainnotes.blog.event.BlogPostRestoredEvent;
 import com.starrainnotes.blog.api.event.BlogPostWithdrawnEvent;
 import com.starrainnotes.blog.exception.BlogAccessDeniedException;
 import com.starrainnotes.blog.exception.BlogPostContentEmptyException;
@@ -119,9 +118,10 @@ public class BlogPublishServiceImpl implements BlogPublishService {
             throw new BlogPostStateInvalidException("文章状态已变化，恢复未生效");
         }
         BlogPostEntity restored = postMapper.postById(postId);
-        eventAfterCommit(BlogPostRestoredEvent.builder()
+        eventAfterCommit(BlogPostPublishedEvent.builder()
                 .postId(postId)
                 .slug(restored.getSlug())
+                .title(restored.getTitle())
                 .publishedAt(restored.getPublishedAt())
                 .build());
     }

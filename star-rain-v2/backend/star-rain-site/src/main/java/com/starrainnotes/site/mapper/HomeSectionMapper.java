@@ -2,9 +2,13 @@ package com.starrainnotes.site.mapper;
 
 import com.starrainnotes.site.entity.HomeSectionEntity;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import org.apache.ibatis.annotations.Mapper;
+import java.util.List;
+import org.apache.ibatis.annotations.Param;
 
-@Mapper
-public interface HomeSectionMapper extends BaseMapper<HomeSectionEntity> {
+public interface HomeSectionMapper {
+    List<HomeSectionEntity> all();
+
+    HomeSectionEntity byCode(@Param("code") String code);
+
+    int update(HomeSectionEntity section);
 }

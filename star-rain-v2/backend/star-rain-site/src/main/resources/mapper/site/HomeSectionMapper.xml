@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.site.mapper.HomeSectionMapper">
+    <select id="all" resultType="com.starrainnotes.site.entity.HomeSectionEntity">
+        SELECT id, section_code, display_name, enabled, sort_order, config_json,
+               created_at, updated_at
+        FROM sr_site_home_section
+        ORDER BY sort_order, id
+    </select>
+
+    <select id="byCode" resultType="com.starrainnotes.site.entity.HomeSectionEntity">
+        SELECT id, section_code, display_name, enabled, sort_order, config_json,
+               created_at, updated_at
+        FROM sr_site_home_section
+        WHERE section_code = #{code}
+    </select>
+
+    <update id="update">
+        UPDATE sr_site_home_section
+        SET display_name = #{displayName}, enabled = #{enabled}, sort_order = #{sortOrder},
+            config_json = #{configJson}, updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+</mapper>
