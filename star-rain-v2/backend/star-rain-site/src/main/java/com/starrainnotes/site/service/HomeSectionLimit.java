@@ -3,6 +3,7 @@ package com.starrainnotes.site.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.site.entity.HomeSectionEntity;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -23,7 +24,7 @@ public class HomeSectionLimit {
 
     public String layoutOf(HomeSectionEntity section) {
         String fallback = "HERO".equals(section.getSectionCode()) ? "hero"
-                : "BLOG".equals(section.getSectionCode()) ? "list" : "cards";
+                : Set.of("BLOG", "LATEST").contains(section.getSectionCode()) ? "list" : "cards";
         try {
             JsonNode config = json.readTree(section.getConfigJson());
             return config.path("layout").asText(fallback);

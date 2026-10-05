@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class HomeSectionService {
-    public static final Set<String> CODES = Set.of("HERO", "TUTORIALS", "BLOG", "PORTFOLIO", "PROFILE", "HOT_CONTENT");
+    public static final Set<String> CODES = Set.of("HERO", "LATEST", "TUTORIALS", "BLOG", "PORTFOLIO", "PROFILE", "HOT_CONTENT");
     private final HomeSectionMapper mapper;
     private final ObjectMapper json;
 

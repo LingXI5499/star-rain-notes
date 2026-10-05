@@ -8,6 +8,7 @@ import lombok.Data;
 public class SitePublicConfig {
     private String siteName;
     private String siteTitle;
+    private String tagline;
     private String siteDescription;
     private String homeIntro;
     private String footerText;

@@ -24,7 +24,7 @@ import com.starrainnotes.portfolio.enumeration.WorkMediaUsage;
 import com.starrainnotes.portfolio.enumeration.WorkStatus;
 import com.starrainnotes.portfolio.enumeration.WorkType;
 import com.starrainnotes.portfolio.event.WorkEventPublisher;
-import com.starrainnotes.portfolio.event.WorkPublicationChangedEvent;
+import com.starrainnotes.portfolio.api.event.WorkPublicationChangedEvent;
 import com.starrainnotes.portfolio.exception.WorkInvalidException;
 import com.starrainnotes.portfolio.exception.WorkLinkNotFoundException;
 import com.starrainnotes.portfolio.exception.WorkMediaConflictException;
@@ -484,16 +484,16 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
                 .workType(work.getWorkType()).title(work.getTitle()).summary(work.getSummary())
                 .status(work.getStatus()).coverUrl(coverUrl).publishedAt(work.getPublishedAt())
                 .updatedAt(work.getUpdatedAt()).build();
+        WorkDetailEntity detail = detailRow(work.getId());
+        if (detail != null) {
+            try {
+                result.setTypeDetail(objectMapper.readTree(detail.getDetailJson()));
+            } catch (JsonProcessingException exception) {
+                throw new IllegalStateException("Stored portfolio detail is invalid", exception);
+            }
+        }
         if (full) {
             result.setBodyMarkdown(work.getBodyMarkdown());
-            WorkDetailEntity detail = detailRow(work.getId());
-            if (detail != null) {
-                try {
-                    result.setTypeDetail(objectMapper.readTree(detail.getDetailJson()));
-                } catch (JsonProcessingException exception) {
-                    throw new IllegalStateException("Stored portfolio detail is invalid", exception);
-                }
-            }
             result.setMedia(attached.stream().map(this::mediaView).toList());
             result.setLinks(linkRows(work.getId()).stream()
                     .filter(row -> !publicOnly || "ENABLED".equals(row.getStatus()))

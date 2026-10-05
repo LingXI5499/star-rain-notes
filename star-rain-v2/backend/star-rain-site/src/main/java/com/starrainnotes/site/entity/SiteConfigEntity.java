@@ -15,6 +15,7 @@ public class SiteConfigEntity {
     private String configKey;
     private String siteName;
     private String siteTitle;
+    @TableField(updateStrategy = FieldStrategy.ALWAYS) private String tagline;
     @TableField(updateStrategy = FieldStrategy.ALWAYS) private String siteDescription;
     @TableField(updateStrategy = FieldStrategy.ALWAYS) private String homeIntro;
     @TableField(updateStrategy = FieldStrategy.ALWAYS) private String footerText;

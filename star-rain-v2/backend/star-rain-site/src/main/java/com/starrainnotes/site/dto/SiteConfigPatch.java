@@ -6,6 +6,7 @@ import lombok.Data;
 public class SiteConfigPatch {
     private String siteName;
     private String siteTitle;
+    private String tagline;
     private String siteDescription;
     private String homeIntro;
     private String footerText;
