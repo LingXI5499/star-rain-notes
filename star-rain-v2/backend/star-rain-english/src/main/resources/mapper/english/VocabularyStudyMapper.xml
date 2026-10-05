@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.english.vocabulary.mapper.VocabularyStudyMapper">
+
+    <resultMap id="memoryRowMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyMemoryRow">
+        <id property="wordId" column="word_id"/>
+        <result property="memoryCount" column="memory_count"/>
+        <result property="reviewStep" column="review_step"/>
+        <result property="reviewCount" column="review_count"/>
+        <result property="firstLearnedAt" column="first_learned_at"/>
+        <result property="lastReviewedAt" column="last_reviewed_at"/>
+        <result property="nextReviewAt" column="next_review_at"/>
+        <result property="learningStatus" column="learning_status"/>
+        <result property="displayMode" column="display_mode"/>
+    </resultMap>
+
+    <resultMap id="memoryEntryMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyMemoryEntryRow">
+        <id property="wordId" column="word_id"/>
+        <result property="memoryCount" column="memory_count"/>
+        <result property="lastMemoryAt" column="last_memory_at"/>
+    </resultMap>
+
+    <resultMap id="reviewHistoryMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyReviewHistoryRow">
+        <id property="id" column="id"/>
+        <result property="wordId" column="word_id"/>
+        <result property="word" column="word"/>
+        <result property="reviewNumber" column="review_number"/>
+        <result property="direction" column="direction"/>
+        <result property="scheduledAt" column="scheduled_at"/>
+        <result property="reviewedAt" column="reviewed_at"/>
+        <result property="intervalSeconds" column="interval_seconds"/>
+        <result property="timingStatus" column="timing_status"/>
+    </resultMap>
+
+    <resultMap id="reviewLogRowMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyReviewLogRow">
+        <id property="wordId" column="word_id"/>
+        <result property="reviewNumber" column="review_number"/>
+        <result property="intervalSeconds" column="interval_seconds"/>
+        <result property="timingStatus" column="timing_status"/>
+    </resultMap>
+
+    <!-- ==================== 学习设置 ==================== -->
+
+    <select id="settings" resultType="com.starrainnotes.english.vocabulary.vo.VocabularyStudySettingsVO">
+        SELECT show_english, show_chinese, review_direction, daily_new_limit, daily_review_limit
+        FROM sr_english_vocabulary_study_setting
+        WHERE account_id = #{accountId}
+    </select>
+
+    <insert id="upsertSettings">
+        INSERT INTO sr_english_vocabulary_study_setting
+            (account_id, show_english, show_chinese, review_direction, daily_new_limit, daily_review_limit)
+        VALUES (#{accountId}, #{settings.showEnglish}, #{settings.showChinese}, #{settings.reviewDirection},
+                #{settings.dailyNewLimit}, #{settings.dailyReviewLimit})
+        ON DUPLICATE KEY UPDATE
+            show_english = VALUES(show_english),
+            show_chinese = VALUES(show_chinese),
+            review_direction = VALUES(review_direction),
+            daily_new_limit = VALUES(daily_new_limit),
+            daily_review_limit = VALUES(daily_review_limit)
+    </insert>
+
+    <!-- ==================== 单卡显示偏好 ==================== -->
+
+    <select id="displayMode" resultType="java.lang.String">
+        SELECT display_mode FROM sr_english_vocabulary_card_preference
+        WHERE account_id = #{accountId} AND word_id = #{wordId}
+    </select>
+
+    <insert id="upsertDisplay">
+        INSERT INTO sr_english_vocabulary_card_preference (account_id, word_id, display_mode)
+        VALUES (#{accountId}, #{wordId}, #{displayMode})
+        ON DUPLICATE KEY UPDATE display_mode = VALUES(display_mode)
+    </insert>
+
+    <delete id="deleteDisplay">
+        DELETE FROM sr_english_vocabulary_card_preference
+        WHERE account_id = #{accountId} AND word_id = #{wordId}
+    </delete>
+
+    <!-- ==================== 记忆状态 ==================== -->
+
+    <select id="memories" resultMap="memoryRowMap">
+        SELECT w.id AS word_id,
+               COALESCE(m.memory_count, 0) AS memory_count,
+               COALESCE(m.review_step, 0) AS review_step,
+               COALESCE(m.review_count, 0) AS review_count,
+               m.first_learned_at, m.last_reviewed_at, m.next_review_at, m.learning_status,
+               p.display_mode
+        FROM sr_english_vocabulary_word w
+        LEFT JOIN sr_english_vocabulary_memory m
+            ON m.word_id = w.id AND m.account_id = #{accountId}
+        LEFT JOIN sr_english_vocabulary_card_preference p
+            ON p.word_id = w.id AND p.account_id = #{accountId}
+        WHERE w.id IN
+        <foreach collection="wordIds" item="id" open="(" separator="," close=")">#{id}</foreach>
+        ORDER BY w.id
+    </select>
+
+    <select id="memory" resultMap="memoryRowMap">
+        SELECT m.word_id, m.memory_count, m.review_step, m.review_count,
+               m.first_learned_at, m.last_reviewed_at, m.next_review_at, m.learning_status,
+               p.display_mode
+        FROM sr_english_vocabulary_memory m
+        LEFT JOIN sr_english_vocabulary_card_preference p
+            ON p.account_id = m.account_id AND p.word_id = m.word_id
+        WHERE m.account_id = #{accountId} AND m.word_id = #{wordId}
+    </select>
+
+    <select id="memorySnapshot" resultMap="memoryEntryMap">
+        SELECT word_id, memory_count, last_memory_at
+        FROM sr_english_vocabulary_memory
+        WHERE account_id = #{accountId}
+        ORDER BY word_id
+    </select>
+
+    <!--
+      英语首页四格统计。completed 的口径是「走完十档固定间隔」（review_step >= maxStep），
+      与学习记录域里 completion_status='COMPLETED' 的语义对齐：到终点才算完成。
+    -->
+    <select id="summary" resultType="com.starrainnotes.english.vocabulary.vo.VocabularySummaryVO">
+        SELECT COUNT(*) AS total,
+               COALESCE(SUM(CASE WHEN learning_status = 'ACTIVE' AND review_step >= #{maxStep}
+                                 THEN 1 ELSE 0 END), 0) AS completed,
+               COALESCE(SUM(CASE WHEN learning_status = 'ACTIVE' AND review_step &lt; #{maxStep}
+                                 THEN 1 ELSE 0 END), 0) AS in_progress,
+               COALESCE(SUM(CASE WHEN learning_status = 'ACTIVE' AND next_review_at IS NOT NULL
+                                  AND next_review_at &lt;= #{now}
+                                 THEN 1 ELSE 0 END), 0) AS due_for_review
+        FROM sr_english_vocabulary_memory
+        WHERE account_id = #{accountId}
+    </select>
+
+    <select id="dueCount" resultType="long">
+        SELECT COUNT(*) FROM sr_english_vocabulary_memory
+        WHERE account_id = #{accountId} AND learning_status = 'ACTIVE' AND next_review_at &lt;= #{now}
+    </select>
+
+    <select id="dueWordIds" resultType="long">
+        SELECT word_id FROM sr_english_vocabulary_memory
+        WHERE account_id = #{accountId} AND learning_status = 'ACTIVE' AND next_review_at &lt;= #{now}
+        ORDER BY next_review_at, word_id
+        LIMIT #{limit}
+    </select>
+
+    <select id="introducedSince" resultType="int">
+        SELECT COUNT(*) FROM sr_english_vocabulary_memory
+        WHERE account_id = #{accountId} AND first_learned_at IS NOT NULL AND first_learned_at &gt;= #{start}
+    </select>
+
+    <select id="newWordIds" resultType="long">
+        SELECT w.id FROM sr_english_vocabulary_word w
+        WHERE w.theme_id = #{themeId}
+          AND NOT EXISTS (
+              SELECT 1 FROM sr_english_vocabulary_memory m
+              WHERE m.account_id = #{accountId} AND m.word_id = w.id
+          )
+        ORDER BY w.sort_order, w.id
+        LIMIT #{limit}
+    </select>
+
+    <select id="totalMemoryCount" resultType="long">
+        SELECT COALESCE(SUM(memory_count), 0) FROM sr_english_vocabulary_memory
+        WHERE account_id = #{accountId}
+    </select>
+
+    <select id="activeCount" resultType="long">
+        SELECT COUNT(*) FROM sr_english_vocabulary_memory
+        WHERE account_id = #{accountId} AND learning_status = 'ACTIVE'
+    </select>
+
+    <!--
+      加入记忆计划：幂等。已存在的行只把状态推回 ACTIVE，并补齐缺失的首次学习时间与到期时间，
+      不覆盖已有的复习进度。
+    -->
+    <insert id="startMemory">
+        INSERT INTO sr_english_vocabulary_memory
+            (account_id, word_id, memory_count, review_step, review_count,
+             first_learned_at, last_reviewed_at, next_review_at, learning_status, last_memory_at)
+        VALUES (#{accountId}, #{wordId}, 0, 0, 0, #{now}, NULL, #{now}, 'ACTIVE', NULL)
+        ON DUPLICATE KEY UPDATE
+            learning_status = 'ACTIVE',
+            first_learned_at = COALESCE(first_learned_at, VALUES(first_learned_at)),
+            next_review_at = COALESCE(next_review_at, VALUES(next_review_at))
+    </insert>
+
+    <!--
+      首次复习时补建记忆行（此前没点过「加入记忆计划」也能直接复习）。
+      与 startMemory 分开，是为了让「复习落库」路径不依赖调用方先调 start。
+    -->
+    <insert id="initializeMemory">
+        INSERT INTO sr_english_vocabulary_memory
+            (account_id, word_id, memory_count, review_step, review_count,
+             first_learned_at, next_review_at, learning_status)
+        VALUES (#{accountId}, #{wordId}, 0, 0, 0, #{now}, NULL, 'ACTIVE')
+        ON DUPLICATE KEY UPDATE account_id = account_id
+    </insert>
+
+    <delete id="resetMemory">
+        DELETE FROM sr_english_vocabulary_memory
+        WHERE account_id = #{accountId} AND word_id = #{wordId}
+    </delete>
+
+    <select id="lockMemory" resultType="com.starrainnotes.english.vocabulary.dto.VocabularyMemoryLock">
+        SELECT memory_count, review_count, next_review_at
+        FROM sr_english_vocabulary_memory
+        WHERE account_id = #{accountId} AND word_id = #{wordId}
+        FOR UPDATE
+    </select>
+
+    <update id="advanceMemory">
+        UPDATE sr_english_vocabulary_memory
+        SET memory_count = memory_count + 1,
+            review_step = #{schedule.reviewStep},
+            review_count = #{schedule.reviewNumber},
+            first_learned_at = COALESCE(first_learned_at, #{schedule.reviewedAt}),
+            last_reviewed_at = #{schedule.reviewedAt},
+            last_memory_at = #{schedule.reviewedAt},
+            next_review_at = #{schedule.nextReviewAt},
+            learning_status = 'ACTIVE'
+        WHERE account_id = #{accountId} AND word_id = #{wordId}
+    </update>
+
+    <!--
+      导入本机进度：只增不减。memory_count / review_step / review_count 取较大值，
+      时间列取更晚的一个，避免用小号的本地进度把账号上已有的进度改小。
+    -->
+    <insert id="importMemory">
+        INSERT INTO sr_english_vocabulary_memory
+            (account_id, word_id, memory_count, review_step, review_count,
+             first_learned_at, last_reviewed_at, next_review_at, learning_status, last_memory_at)
+        VALUES (#{accountId}, #{wordId}, #{memoryCount}, #{reviewStep}, #{reviewCount},
+                #{firstLearnedAt}, #{lastReviewedAt}, #{nextReviewAt}, 'ACTIVE', #{lastMemoryAt})
+        ON DUPLICATE KEY UPDATE
+            memory_count = GREATEST(memory_count, VALUES(memory_count)),
+            review_step = GREATEST(review_step, VALUES(review_step)),
+            review_count = GREATEST(review_count, VALUES(review_count)),
+            learning_status = 'ACTIVE',
+            first_learned_at = CASE
+                WHEN VALUES(first_learned_at) IS NULL THEN first_learned_at
+                WHEN first_learned_at IS NULL OR VALUES(first_learned_at) &lt; first_learned_at
+                    THEN VALUES(first_learned_at)
+                ELSE first_learned_at END,
+            last_reviewed_at = CASE
+                WHEN VALUES(last_reviewed_at) IS NULL THEN last_reviewed_at
+                WHEN last_reviewed_at IS NULL OR VALUES(last_reviewed_at) &gt; last_reviewed_at
+                    THEN VALUES(last_reviewed_at)
+                ELSE last_reviewed_at END,
+            last_memory_at = CASE
+                WHEN VALUES(last_memory_at) IS NULL THEN last_memory_at
+                WHEN last_memory_at IS NULL OR VALUES(last_memory_at) &gt; last_memory_at
+                    THEN VALUES(last_memory_at)
+                ELSE last_memory_at END,
+            next_review_at = COALESCE(next_review_at, VALUES(next_review_at))
+    </insert>
+
+    <select id="wordExists" resultType="int">
+        SELECT COUNT(*) FROM sr_english_vocabulary_word WHERE id = #{wordId}
+    </select>
+
+    <!-- ==================== 复习日志 ==================== -->
+
+    <select id="findReviewBySession" resultMap="reviewLogRowMap">
+        SELECT word_id, review_number, interval_seconds, timing_status
+        FROM sr_english_vocabulary_review_log
+        WHERE account_id = #{accountId} AND review_session_id = #{reviewSessionId}
+        LIMIT 1
+    </select>
+
+    <insert id="insertReview">
+        INSERT IGNORE INTO sr_english_vocabulary_review_log
+            (account_id, word_id, review_session_id, direction, review_number,
+             scheduled_at, reviewed_at, interval_seconds, timing_status)
+        VALUES (#{accountId}, #{wordId}, #{reviewSessionId}, #{direction}, #{schedule.reviewNumber},
+                #{schedule.scheduledAt}, #{schedule.reviewedAt}, #{schedule.intervalSeconds},
+                #{schedule.timingStatus})
+    </insert>
+
+    <insert id="importReview">
+        INSERT IGNORE INTO sr_english_vocabulary_review_log
+            (account_id, word_id, review_session_id, direction, review_number,
+             scheduled_at, reviewed_at, interval_seconds, timing_status)
+        VALUES (#{accountId}, #{wordId}, #{reviewSessionId}, #{direction}, #{reviewNumber},
+                #{scheduledAt}, #{reviewedAt}, #{intervalSeconds}, #{timingStatus})
+    </insert>
+
+    <select id="countReviews" resultType="long">
+        SELECT COUNT(*) FROM sr_english_vocabulary_review_log WHERE account_id = #{accountId}
+    </select>
+
+    <select id="countReviewsSince" resultType="long">
+        SELECT COUNT(*) FROM sr_english_vocabulary_review_log
+        WHERE account_id = #{accountId} AND reviewed_at &gt;= #{start}
+    </select>
+
+    <select id="recentReviews" resultMap="reviewHistoryMap">
+        SELECT l.id, l.word_id, w.word, l.review_number, l.direction,
+               l.scheduled_at, l.reviewed_at, l.interval_seconds, l.timing_status
+        FROM sr_english_vocabulary_review_log l
+        JOIN sr_english_vocabulary_word w ON w.id = l.word_id
+        WHERE l.account_id = #{accountId}
+        ORDER BY l.reviewed_at DESC, l.id DESC
+        LIMIT #{limit}
+    </select>
+</mapper>
