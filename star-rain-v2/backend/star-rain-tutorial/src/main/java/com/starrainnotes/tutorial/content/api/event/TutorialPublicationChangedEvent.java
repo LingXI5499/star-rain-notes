@@ -1,4 +1,4 @@
-package com.starrainnotes.tutorial.content.event;
+package com.starrainnotes.tutorial.api.event;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;

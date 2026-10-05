@@ -1,5 +1,6 @@
 package com.starrainnotes.profile.event;
 
+import com.starrainnotes.profile.api.event.ProfileChangedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

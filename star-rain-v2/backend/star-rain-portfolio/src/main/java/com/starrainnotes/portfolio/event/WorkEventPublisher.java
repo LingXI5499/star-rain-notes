@@ -1,5 +1,6 @@
 package com.starrainnotes.portfolio.event;
 
+import com.starrainnotes.portfolio.api.event.WorkPublicationChangedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

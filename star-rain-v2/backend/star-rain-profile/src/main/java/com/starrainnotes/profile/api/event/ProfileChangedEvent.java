@@ -1,4 +1,4 @@
-package com.starrainnotes.profile.event;
+package com.starrainnotes.profile.api.event;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

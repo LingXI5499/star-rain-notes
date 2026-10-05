@@ -17,7 +17,7 @@ import com.starrainnotes.tutorial.content.entity.TutorialKnowledgeCardEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialQuestionEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity;
 import com.starrainnotes.tutorial.content.event.TutorialEventPublisher;
-import com.starrainnotes.tutorial.content.event.TutorialPublicationChangedEvent;
+import com.starrainnotes.tutorial.api.event.TutorialPublicationChangedEvent;
 import com.starrainnotes.tutorial.content.exception.TutorialInvalidRequestException;
 import com.starrainnotes.tutorial.content.exception.TutorialNotFoundException;
 import com.starrainnotes.tutorial.content.exception.TutorialStateException;

@@ -11,7 +11,7 @@ import com.starrainnotes.review.api.ReviewTargetView;
 import com.starrainnotes.tutorial.content.entity.TutorialEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity;
 import com.starrainnotes.tutorial.content.event.TutorialEventPublisher;
-import com.starrainnotes.tutorial.content.event.TutorialPublicationChangedEvent;
+import com.starrainnotes.tutorial.api.event.TutorialPublicationChangedEvent;
 import com.starrainnotes.tutorial.content.exception.TutorialStateException;
 import com.starrainnotes.tutorial.content.mapper.TutorialMapper;
 import com.starrainnotes.tutorial.content.mapper.TutorialRevisionMapper;

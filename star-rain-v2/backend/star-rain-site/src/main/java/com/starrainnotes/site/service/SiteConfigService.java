@@ -13,7 +13,7 @@ import com.starrainnotes.media.api.dto.MediaAssetSummary;
 import com.starrainnotes.media.api.dto.MediaReferenceCommand;
 import com.starrainnotes.media.api.constant.MediaUsageCodes;
 import com.starrainnotes.site.api.SitePublicApi;
-import com.starrainnotes.site.event.SiteConfigChangedEvent;
+import com.starrainnotes.site.api.event.SiteConfigChangedEvent;
 import com.starrainnotes.site.exception.SiteConfigException;
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -38,7 +38,7 @@ public class SiteConfigService implements SitePublicApi {
     public SitePublicConfig config() {
         SiteConfigEntity row = primary();
         return SitePublicConfig.builder()
-                .siteName(row.getSiteName()).siteTitle(row.getSiteTitle())
+                .siteName(row.getSiteName()).siteTitle(row.getSiteTitle()).tagline(row.getTagline())
                 .siteDescription(row.getSiteDescription()).homeIntro(row.getHomeIntro())
                 .footerText(row.getFooterText()).logoUrl(url(row.getLogoMediaAssetId()))
                 .faviconUrl(url(row.getFaviconMediaAssetId())).build();
@@ -50,6 +50,7 @@ public class SiteConfigService implements SitePublicApi {
         SiteConfigEntity row = primary();
         if (patch.getSiteName() != null) row.setSiteName(required(patch.getSiteName(), 120, "站点名称"));
         if (patch.getSiteTitle() != null) row.setSiteTitle(required(patch.getSiteTitle(), 255, "站点标题"));
+        if (patch.getTagline() != null) row.setTagline(optional(patch.getTagline(), 255, "首页副标题"));
         if (patch.getSiteDescription() != null) row.setSiteDescription(optional(patch.getSiteDescription(), 1000, "站点简介"));
         if (patch.getHomeIntro() != null) row.setHomeIntro(optional(patch.getHomeIntro(), 2000, "首页介绍"));
         if (patch.getFooterText() != null) row.setFooterText(optional(patch.getFooterText(), 1000, "页脚文字"));

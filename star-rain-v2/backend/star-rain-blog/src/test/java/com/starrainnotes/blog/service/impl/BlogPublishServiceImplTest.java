@@ -12,9 +12,9 @@ import static org.mockito.Mockito.when;
 
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.blog.entity.BlogPostEntity;
-import com.starrainnotes.blog.event.BlogPostPublishedEvent;
+import com.starrainnotes.blog.api.event.BlogPostPublishedEvent;
 import com.starrainnotes.blog.event.BlogPostRestoredEvent;
-import com.starrainnotes.blog.event.BlogPostWithdrawnEvent;
+import com.starrainnotes.blog.api.event.BlogPostWithdrawnEvent;
 import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.media.api.MediaAssetApi;

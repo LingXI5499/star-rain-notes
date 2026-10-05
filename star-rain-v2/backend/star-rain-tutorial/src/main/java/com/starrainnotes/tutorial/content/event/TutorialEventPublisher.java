@@ -1,5 +1,6 @@
 package com.starrainnotes.tutorial.content.event;
 
+import com.starrainnotes.tutorial.api.event.TutorialPublicationChangedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;

@@ -1,16 +1,16 @@
 package com.starrainnotes.seo.event;
 
-import com.starrainnotes.blog.event.BlogPostPublishedEvent;
-import com.starrainnotes.blog.event.BlogPostWithdrawnEvent;
-import com.starrainnotes.portfolio.event.WorkPublicationChangedEvent;
+import com.starrainnotes.blog.api.event.BlogPostPublishedEvent;
+import com.starrainnotes.blog.api.event.BlogPostWithdrawnEvent;
+import com.starrainnotes.portfolio.api.event.WorkPublicationChangedEvent;
 import com.starrainnotes.profile.api.ProfilePublicApi;
-import com.starrainnotes.profile.event.ProfileChangedEvent;
+import com.starrainnotes.profile.api.event.ProfileChangedEvent;
 import com.starrainnotes.seo.api.SeoRefreshApi;
 import com.starrainnotes.seo.mapper.SeoPageMapper;
 import com.starrainnotes.seo.service.SeoNotificationService;
 import com.starrainnotes.seo.service.SeoTutorialRefreshService;
-import com.starrainnotes.site.event.SiteConfigChangedEvent;
-import com.starrainnotes.tutorial.content.event.TutorialPublicationChangedEvent;
+import com.starrainnotes.site.api.event.SiteConfigChangedEvent;
+import com.starrainnotes.tutorial.api.event.TutorialPublicationChangedEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
