@@ -1,10 +1,11 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
-import { RouterLink, useRouter } from 'vue-router'
+import { computed, onMounted, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import {
   deletePost, listAdminPosts, listAdminTags, publishPost, restorePost, withdrawPost,
 } from '../../api/blogApi'
 import { errorMessage } from '../../../../shared/http'
+import { useListQuery } from '../../../../shared/composables/useListQuery'
 import AdminConfirmDialog from '../../components/admin/AdminConfirmDialog.vue'
 import BlogStatusPill from '../../components/admin/BlogStatusPill.vue'
 import {
@@ -24,10 +25,13 @@ import {
  * 地址直接用当前 origin 拼：入口改成路径方案后不再有域名推导，后台与公开站同一个来源。
  */
 const router = useRouter()
+const route = useRoute()
 
-const filters = reactive({ keyword: '', status: '', tagId: '' })
-const page = ref(1)
-const pageSize = ref(10)
+const { filters, page, pageSize, read: readQuery, write: writeQuery, reset: resetQuery } = useListQuery({
+  defaults: { keyword: '', status: '', tagId: '' },
+  defaultPageSize: 10,
+  pageSizes: [10, 20, 50],
+})
 const data = ref({ items: [], total: 0, page: 1, pageSize: 10 })
 const tags = ref([])
 const loading = ref(false)
@@ -79,27 +83,26 @@ async function loadTags() {
   }
 }
 
-function search() {
+async function search() {
   page.value = 1
-  load()
+  const previous = route.fullPath
+  await writeQuery()
+  if (route.fullPath === previous) await load()
 }
 
-function changePage(next) {
+async function changePage(next) {
   if (next < 1 || next > totalPages.value || next === page.value) return
   page.value = next
-  load()
+  await writeQuery()
 }
 
-function changePageSize() {
+async function changePageSize() {
   page.value = 1
-  load()
+  await writeQuery()
 }
 
 function resetFilters() {
-  filters.keyword = ''
-  filters.status = ''
-  filters.tagId = ''
-  search()
+  resetQuery()
 }
 
 function preview(post) {
@@ -141,8 +144,12 @@ async function act(post, action) {
 
 onMounted(() => {
   loadTags()
-  load()
 })
+
+watch(() => route.fullPath, () => {
+  readQuery()
+  load()
+}, { immediate: true })
 </script>
 
 <template>

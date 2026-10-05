@@ -1,17 +1,23 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { computed, ref, watch } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
 import { deleteWork, listAdminWorks, publishWork, restoreWork, withdrawWork } from '../../api/portfolioApi'
 import { errorMessage } from '../../../../shared/http'
+import { useListQuery } from '../../../../shared/composables/useListQuery'
+import AppConfirmDialog from '../../../../shared/ui/AppConfirmDialog.vue'
 import { accountPath } from '../../../../shared/viewMode'
 
-const filters = reactive({ type: '', status: '', q: '', page: 1 })
+const route = useRoute()
+const { filters, page, pageSize, read: readQuery, write: writeQuery, reset: resetQuery } = useListQuery({
+  defaults: { type: '', status: '', q: '' },
+})
 const result = ref({ items: [], total: 0, pageSize: 20 })
 const error = ref('')
 const notice = ref('')
 const loading = ref(false)
 const busyId = ref('')
-const pageCount = computed(() => Math.max(1, Math.ceil(result.value.total / 20)))
+const confirmDialog = ref(null)
+const pageCount = computed(() => Math.max(1, Math.ceil(result.value.total / pageSize.value)))
 const typeLabels = { SOFTWARE: '软件', VIDEO: '视频', MUSIC: '音乐', WRITING: '写作', OTHER: '其他' }
 const statusLabels = { DRAFT: '草稿', PUBLISHED: '已发布', WITHDRAWN: '已撤回' }
 
@@ -19,7 +25,7 @@ async function load() {
   loading.value = true
   error.value = ''
   try {
-    result.value = await listAdminWorks({ page: filters.page, pageSize: 20,
+    result.value = await listAdminWorks({ page: page.value, pageSize: pageSize.value,
       type: filters.type || undefined, status: filters.status || undefined, q: filters.q.trim() || undefined })
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -28,7 +34,19 @@ async function load() {
   }
 }
 
-function search() { filters.page = 1; load() }
+async function search() {
+  page.value = 1
+  const previous = route.fullPath
+  await writeQuery()
+  if (route.fullPath === previous) await load()
+}
+
+function changePage(next) {
+  if (next < 1 || next > pageCount.value || next === page.value) return
+  page.value = next
+  writeQuery()
+}
+
 async function changeStatus(work) {
   busyId.value = work.id
   error.value = ''
@@ -47,7 +65,10 @@ async function changeStatus(work) {
 }
 
 async function remove(work) {
-  if (!window.confirm(`确定删除作品「${work.title}」？此操作不可恢复。`)) return
+  if (!await confirmDialog.value.ask({
+    title: '删除作品', message: `删除「${work.title}」后无法恢复。`,
+    confirmText: '删除', danger: true, requireName: work.title,
+  })) return
   busyId.value = work.id
   error.value = ''
   try { await deleteWork(work.id); notice.value = '作品已删除。'; await load() }
@@ -55,7 +76,10 @@ async function remove(work) {
   finally { busyId.value = '' }
 }
 
-onMounted(load)
+watch(() => route.fullPath, () => {
+  readQuery()
+  load()
+}, { immediate: true })
 </script>
 
 <template>
@@ -73,7 +97,10 @@ onMounted(load)
     <p v-if="error" class="portfolio-admin__error" role="alert">{{ error }}</p>
     <p v-if="notice" class="portfolio-admin__notice" role="status">{{ notice }}</p>
     <p v-if="loading" class="portfolio-admin__empty">正在加载…</p>
-    <p v-else-if="!result.items.length" class="portfolio-admin__empty">还没有作品。点击“新建作品”开始。</p>
+    <p v-else-if="!result.items.length" class="portfolio-admin__empty">
+      <template v-if="filters.type || filters.status || filters.q">没有符合条件的作品。<button type="button" @click="resetQuery">清除筛选</button></template>
+      <template v-else>还没有作品。点击“新建作品”开始。</template>
+    </p>
     <div v-else class="portfolio-admin__list">
       <article v-for="work in result.items" :key="work.id" class="portfolio-admin__card">
         <div class="portfolio-admin__visual"><img v-if="work.coverUrl" :src="work.coverUrl" :alt="work.title" /><span v-else>{{ work.title.slice(0, 1) }}</span></div>
@@ -89,7 +116,8 @@ onMounted(load)
         </div>
       </article>
     </div>
-    <nav v-if="pageCount > 1" class="portfolio-admin__pages"><button type="button" :disabled="filters.page <= 1" @click="filters.page--; load()">上一页</button><span>{{ filters.page }} / {{ pageCount }}</span><button type="button" :disabled="filters.page >= pageCount" @click="filters.page++; load()">下一页</button></nav>
+    <nav v-if="pageCount > 1" class="portfolio-admin__pages"><button type="button" :disabled="page <= 1" @click="changePage(page - 1)">上一页</button><span>{{ page }} / {{ pageCount }}</span><button type="button" :disabled="page >= pageCount" @click="changePage(page + 1)">下一页</button></nav>
+    <AppConfirmDialog ref="confirmDialog" />
   </section>
 </template>
 
