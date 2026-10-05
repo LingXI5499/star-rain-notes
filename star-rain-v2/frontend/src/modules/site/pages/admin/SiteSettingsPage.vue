@@ -15,7 +15,7 @@ const error = ref('')
 const notice = ref('')
 const config = ref(null)
 const sections = ref([])
-const form = reactive({ siteName: '', siteTitle: '', siteDescription: '', homeIntro: '', footerText: '' })
+const form = reactive({ siteName: '', siteTitle: '', tagline: '', siteDescription: '', homeIntro: '', footerText: '' })
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
 
 function fillConfig(value) {
@@ -29,7 +29,7 @@ function fillSections(value) {
     let display = {}
     try { display = JSON.parse(section.configJson || '{}') } catch { /* 后端校验负责拦截无效配置 */ }
     return { ...section, limit: display.limit || 6,
-      layout: display.layout || (section.sectionCode === 'HERO' ? 'hero' : section.sectionCode === 'BLOG' ? 'list' : 'cards') }
+      layout: display.layout || (section.sectionCode === 'HERO' ? 'hero' : ['BLOG', 'LATEST'].includes(section.sectionCode) ? 'list' : 'cards') }
   })
 }
 
@@ -122,6 +122,7 @@ onMounted(load)
         <div class="site-settings__fields">
           <label>站点名称<input v-model.trim="form.siteName" required maxlength="120" /></label>
           <label>首页主标题<input v-model.trim="form.siteTitle" required maxlength="255" /></label>
+          <label>首页副标题<input v-model.trim="form.tagline" maxlength="255" placeholder="显示在主标题下方的一行绿色标语" /></label>
           <label class="site-settings__wide">站点描述<textarea v-model.trim="form.siteDescription" maxlength="1000" rows="2" /></label>
           <label class="site-settings__wide">首页介绍<textarea v-model.trim="form.homeIntro" maxlength="2000" rows="3" /></label>
           <label class="site-settings__wide">页脚文字<textarea v-model.trim="form.footerText" maxlength="1000" rows="2" /></label>

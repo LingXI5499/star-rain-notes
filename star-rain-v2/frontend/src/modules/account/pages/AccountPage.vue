@@ -1,11 +1,12 @@
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 import { changePassword, updateAccount, sendAccountEmailCode, confirmAccountEmail } from '../api/accountApi'
 import { useEmailCode } from '../support/useEmailCode'
 import { clearCsrf, errorMessage } from '../api/http'
 import { roleLabel, statusLabel } from '../support/display'
+import { accountPath } from '../../../shared/viewMode'
 import PendingInvitations from '../components/PendingInvitations.vue'
 
 /*
@@ -123,6 +124,8 @@ async function savePassword() {
       <a href="#password">登录密码</a>
       <a href="#email">邮箱验证</a>
       <a href="#invitations">待处理邀请</a>
+      <!-- 学习记录独立于控制台，是前台页面；这里给一个显式入口，不用先绕进后台侧栏 -->
+      <RouterLink :to="accountPath('/learning')">学习记录 →</RouterLink>
     </nav>
 
     <div class="content-grid">

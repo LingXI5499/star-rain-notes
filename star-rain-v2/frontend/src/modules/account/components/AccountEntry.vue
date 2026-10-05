@@ -140,6 +140,14 @@ async function logout() {
           <RouterLink class="account-entry__item" role="menuitem" :to="consolePath">
             进入后台
           </RouterLink>
+          <!--
+            学习记录是**前台页面**（/useradmin/learning，在公开外壳里渲染，不在控制台侧栏），
+            所以它是这个菜单里唯一一份「与后台无关、但我自己的数据」的入口。
+            放在「进入后台」之后，是因为它承接的是「我要继续学」这个高频动作。
+          -->
+          <RouterLink class="account-entry__item" role="menuitem" :to="accountPath('/learning')">
+            学习记录
+          </RouterLink>
           <RouterLink class="account-entry__item" role="menuitem" :to="accountPath('/center')">
             查看个人资料
           </RouterLink>

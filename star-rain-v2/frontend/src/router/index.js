@@ -62,6 +62,8 @@ const routeDeclarations = [
   { path: '/blog', component: () => import('../modules/blog/pages/BlogListPage.vue'), meta: { publicPage: true } },
   { path: '/blog/archive', component: () => import('../modules/blog/pages/BlogArchivePage.vue'), meta: { publicPage: true } },
   { path: '/blog/posts/:slug', component: () => import('../modules/blog/pages/BlogPostPage.vue'), meta: { publicPage: true } },
+  // 专题页：与 /blog/posts/:slug 并列，不占用文章 slug 的路径空间
+  { path: '/blog/topics/:slug', component: () => import('../modules/blog/pages/BlogTopicPage.vue'), meta: { publicPage: true } },
 
   // 教程已接入公开列表、详情与章节；其余内容模块仍使用建设中页面。
   { path: '/tutorials', component: () => import('../modules/tutorial/pages/public/TutorialCatalogPage.vue'), meta: { publicPage: true } },
@@ -74,6 +76,13 @@ const routeDeclarations = [
   { path: '/search', component: () => import('../modules/search/pages/SearchResultPage.vue'), meta: { publicPage: true } },
   { path: '/english', component: () => import('../modules/english/pages/public/EnglishHomePage.vue'), meta: { publicPage: true } },
   { path: '/english/vocabulary', component: () => import('../modules/english/pages/public/VocabularyPage.vue'), meta: { publicPage: true } },
+  /*
+   * 学习页与进度页必须排在 /english/vocabulary/:themeId 之前：
+   * 否则 study / progress 会被当成 themeId 吃掉，落到主题词卡页。
+   * （vue-router 4 的静态段本身优先于参数段，这里的顺序是显式声明意图，不依赖打分实现。）
+   */
+  { path: '/english/vocabulary/study', component: () => import('../modules/english/pages/public/VocabularyStudyPage.vue'), meta: { publicPage: true } },
+  { path: '/english/vocabulary/progress', component: () => import('../modules/english/pages/public/VocabularyProgressPage.vue'), meta: { publicPage: true } },
   { path: '/english/vocabulary/:themeId', component: () => import('../modules/english/pages/public/VocabularyThemePage.vue'), meta: { publicPage: true } },
   { path: '/english/grammar', component: () => import('../modules/english/pages/public/GrammarPage.vue'), meta: { publicPage: true } },
   { path: '/english/grammar/:slug', component: () => import('../modules/english/pages/public/GrammarLessonPage.vue'), meta: { publicPage: true } },
@@ -116,16 +125,23 @@ const routeDeclarations = [
    */
   { path: '/center', component: AccountPage, tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true } },
+  /*
+   * 学习记录**不属于控制台**：它是个人学习数据的独立视图，和站点治理、内容编辑没有关系。
+   * 因此这五条不带 meta.console —— 它们在 PublicShell 里渲染（带公开顶栏与页脚），
+   * 用页内的 LearningNav 在这几页之间切换。把它们塞进控制台侧栏会让「学习」和
+   * 「后台管理」看起来是同一件事，而学习者根本不需要侧栏里那一堆管理入口。
+   * 仍然 requiresAuth：学习记录是账户私有的。
+   */
   { path: '/learning', component: () => import('../modules/tutorial/pages/learning/LearningCenterPage.vue'), tree: ROUTE_TREE.ACCOUNT,
-    meta: { console: true, requiresAuth: true } },
+    meta: { requiresAuth: true } },
   { path: '/learning/plans', component: () => import('../modules/tutorial/pages/learning/StudyPlanPage.vue'), tree: ROUTE_TREE.ACCOUNT,
-    meta: { console: true, requiresAuth: true } },
+    meta: { requiresAuth: true } },
   { path: '/learning/today', component: () => import('../modules/tutorial/pages/learning/TodayStudyPage.vue'), tree: ROUTE_TREE.ACCOUNT,
-    meta: { console: true, requiresAuth: true } },
+    meta: { requiresAuth: true } },
   { path: '/learning/review', component: () => import('../modules/tutorial/pages/learning/ReviewPage.vue'), tree: ROUTE_TREE.ACCOUNT,
-    meta: { console: true, requiresAuth: true } },
+    meta: { requiresAuth: true } },
   { path: '/learning/history', component: () => import('../modules/tutorial/pages/learning/LearningHistoryPage.vue'), tree: ROUTE_TREE.ACCOUNT,
-    meta: { console: true, requiresAuth: true } },
+    meta: { requiresAuth: true } },
   // 控制台仪表盘由 Site 汇总各模块的后台摘要。
   { path: '/dashboard', component: DashboardPage, tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'site:dashboard-read', superAdminOnly: true } },

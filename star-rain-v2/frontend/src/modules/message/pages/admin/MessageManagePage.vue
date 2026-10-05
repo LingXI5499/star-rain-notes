@@ -88,7 +88,7 @@ onMounted(load)
 <template>
   <main class="message-admin">
     <header class="message-admin__header">
-      <p>MESSAGE MODERATION · 站点治理</p>
+      <p>MESSAGE MODERATION · 协作</p>
       <h1>留言管理</h1>
       <span>审核新留言，管理已公开内容。联系邮箱仅在后台显示。</span>
     </header>

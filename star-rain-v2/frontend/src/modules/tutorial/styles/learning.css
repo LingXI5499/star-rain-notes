@@ -24,3 +24,15 @@
 .learning-progress-track{height:7px;background:var(--bg-subtle);border-radius:99px;overflow:hidden}.learning-progress-track span{display:block;height:100%;background:var(--primary)}
 @media(max-width:950px){.learning-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.learning-columns{grid-template-columns:1fr}}
 @media(max-width:600px){.learning-page__heading{align-items:start;flex-direction:column}.learning-grid{gap:10px}.learning-stat{padding:16px}.learning-panel{padding:18px}.learning-form__row{grid-template-columns:1fr}.learning-list li{align-items:start;flex-direction:column}}
+
+/*
+ * 学习记录的按钮曾经只在控制台里渲染，控制台没有「所有 a 都是主色」这条全局规则，
+ * 所以单类名的 `.learning-button--primary{color:#fff}` 够用。
+ * 这五页搬到公开外壳（PublicShell）之后，`base.css` 里的 `.public-shell a`（0,2,0）
+ * 会盖掉单类名（0,1,0）的颜色声明 —— 于是主按钮变成「主色文字 + 主色背景」，
+ * 整颗按钮看起来是空的。这里用 `.learning-page a.xxx`（0,2,1）把按钮色收回来。
+ */
+.learning-page a.learning-button{color:var(--text-primary)}
+.learning-page a.learning-button:hover{border-color:var(--primary);color:var(--primary)}
+.learning-page a.learning-button--primary,
+.learning-page a.learning-button--primary:hover{background:var(--primary);border-color:var(--primary);color:#fff}

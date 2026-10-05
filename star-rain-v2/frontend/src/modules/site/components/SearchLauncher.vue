@@ -119,7 +119,7 @@ onBeforeUnmount(() => {
         <circle cx="11" cy="11" r="7" />
         <path d="m20 20-3.6-3.6" />
       </svg>
-      <span class="search-launcher__hint">搜索</span>
+      <span class="search-launcher__hint">搜索知识…</span>
       <kbd class="search-launcher__kbd">{{ shortcut }}</kbd>
     </button>
 
@@ -166,29 +166,43 @@ onBeforeUnmount(() => {
 </template>
 
 <style scoped>
-.search-launcher { position: relative; }
+.search-launcher { position: relative; display: flex; align-items: center; }
+/*
+ * 触发器外观对齐 V1 `components/search/GlobalSearch.vue` 的 `.global-search__input-wrap`：
+ * 同高（--search-input-height）、同宽（clamp(280px,22vw,340px)）、同内边距与圆角。
+ * V2 这里仍然是一个按钮而不是真实 input（面板里才是输入框），
+ * 但外形与 V1 一致，顶栏四种元素的水平位置才能和 V1 对齐。
+ */
 .search-launcher__trigger {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  min-height: 36px;
-  padding: 0 10px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  color: var(--text-secondary);
-  background: color-mix(in srgb, var(--bg-surface) 82%, transparent);
+  gap: var(--space-2);
+  height: var(--search-input-height, 38px);
+  width: clamp(280px, 22vw, 340px);
+  padding-inline: var(--space-3) var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  color: var(--text-muted);
+  background: var(--bg-surface);
   cursor: pointer;
+  transition: border-color var(--motion-fast) var(--ease-standard), box-shadow var(--motion-fast) var(--ease-standard);
 }
 .search-launcher__trigger:hover,
-.search-launcher__trigger[aria-expanded='true'] { border-color: var(--border-strong); color: var(--primary); }
-.search-launcher__hint { font-size: 13px; }
+.search-launcher__trigger[aria-expanded='true'] {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 16%, transparent);
+}
+.search-launcher__hint { flex: 1; min-width: 0; overflow: hidden; font-size: 14px; text-align: left; text-overflow: ellipsis; white-space: nowrap; }
 .search-launcher__kbd {
-  padding: 1px 6px;
+  flex: none;
+  padding: 3px 5px;
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-bottom-color: var(--border-strong);
+  border-radius: 4px;
   color: var(--text-muted);
-  background: var(--bg-subtle);
-  font: 600 10px/1.6 var(--font-mono);
+  background: var(--bg-surface);
+  font: 400 11px/1 var(--font-family);
+  white-space: nowrap;
 }
 .search-launcher__panel {
   position: absolute;
@@ -248,5 +262,4 @@ onBeforeUnmount(() => {
   .search-launcher__kbd { display: none; }
   .search-launcher__trigger { width: 36px; justify-content: center; padding: 0; }
   .search-launcher__panel { right: -8px; }
-}
-</style>
+}</style>

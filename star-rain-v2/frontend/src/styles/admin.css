@@ -262,14 +262,9 @@
   font-weight: 600;
 }
 
-.admin-shell__nav-chevron {
-  margin-left: auto;
-  font-size: 12px;
-}
-
 /*
- * 侧栏分层的小标题（内容编辑 / 站点治理）。
- * 折叠态下侧栏只有 20px 宽的短标，标题也退化成单字，避免把侧栏撑开。
+ * 侧栏分组标题（概览 / 内容 / 协作 / 站点 / 账户）。
+ * 展开态是一个可折叠的按钮；折叠态退化成单字，避免把 64px 宽的侧栏撑开。
  */
 .admin-shell__nav-caption {
   margin: 14px 0 4px;
@@ -279,32 +274,26 @@
   letter-spacing: 0.14em;
 }
 
+.admin-shell__nav-caption--toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  width: 100%;
+  border: 0;
+  background: none;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+}
+
+.admin-shell__nav-caption--toggle:hover {
+  color: var(--text-secondary);
+}
+
 .admin-shell__sidebar--collapsed .admin-shell__nav-caption {
   padding-inline: 0;
   text-align: center;
-}
-
-/* 建设中的模块（教程工作台 / 作品管理）：保留侧栏位置但明确不可点 */
-.admin-shell__nav-item--pending {
-  cursor: not-allowed;
-  color: var(--text-muted);
-  opacity: 0.62;
-}
-
-.admin-shell__nav-item--pending:hover {
-  background: none;
-  color: var(--text-muted);
-}
-
-.admin-shell__nav-badge {
-  margin-left: auto;
-  padding: 1px 6px;
-  border-radius: 999px;
-  background: var(--bg-subtle);
-  color: var(--text-muted);
-  font-size: 10px;
-  font-style: normal;
-  font-weight: 500;
 }
 
 .admin-shell__subnav {
@@ -327,19 +316,6 @@
 .admin-shell__subnav-item.is-active {
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 8%, transparent);
-}
-
-/* 跨入口项（审核中心在用户站）：用箭头与提示区分，避免被误认为本入口页面 */
-.admin-shell__subnav-item--external {
-  display: block;
-  color: var(--text-muted);
-  opacity: 0.86;
-}
-
-.admin-shell__collapsed-subnav {
-  display: grid;
-  gap: 2px;
-  padding-left: var(--space-2);
 }
 
 .admin-shell__collapse {
@@ -1434,4 +1410,21 @@ html.is-vditor-fullscreen .vditor--fullscreen {
 [data-theme='dark'] .tag-admin__stats strong,
 [data-theme='dark'] .dashboard__card-value {
   color: var(--primary);
+}
+
+
+/*
+ * 后台页面里有 9 处沿用了公开站的眉标类名 `.public-eyebrow`，
+ * 而它的样式只定义在公开外壳作用域下（`public-theme.css` 的 `.public-shell .public-eyebrow`），
+ * 后台不在那个作用域里，于是这些 <p> 一直退化成裸段落（没有字距、没有颜色、没有小字号）。
+ * 与其逐个改页面（那些页面属于别的模块），不如在这里补一份同口径的后台样式；
+ * 公开站那条带作用域的规则特异性更高，不受影响。
+ */
+.public-eyebrow {
+  margin: 0;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
 }

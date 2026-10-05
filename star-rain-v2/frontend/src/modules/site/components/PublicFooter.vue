@@ -3,13 +3,18 @@ import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
 import { useSiteBranding } from '../support/siteBranding'
+import { usePublicSocialLinks } from '../support/publicSocialLinks'
 
 /*
  * 公开站页脚 —— 对齐 V1 `components/PublicFooter.vue` 的信息架构：
  * 品牌区（名称 + 标语 + 一句话）→ EXPLORE 导航 / CONNECT → 版权与返回顶部 → 备案信息。
  *
- * 站点名称、页脚文字与 Logo 来自 Site 公共配置；未配置时使用默认值。
- * GitHub 公开链接和备案号尚未配置，保留明确的占位文案。
+ * 与 V1 的对应关系：
+ *   - 品牌名下的英文标语来自站点配置 `footerText`（V1 同一字段），品牌区那句话是固定文案；
+ *     两者在早期版本里被写反过，这里按住 V1 的位置摆回来。
+ *   - CONNECT 显示作者公开社交链接（V1 取的是公开站点配置里的 GitHub），
+ *     数据来自公开作者资料，整会话只请求一次。
+ *   - 备案信息是真实备案号，不是占位文案。
  *
  * 导航目标与顶栏同一口径，按当前路径树生成（公开树 /blog、账号树 /useradmin/blog）：
  * 页脚是同一套内容在两条树上复用，链接必须跟着树走，否则页脚会把账号外壳点掉。
@@ -18,16 +23,20 @@ import { useSiteBranding } from '../support/siteBranding'
  */
 const { contentPath } = useViewMode()
 const branding = useSiteBranding()
-const tagline = 'Knowledge · Code · Growth'
+const social = usePublicSocialLinks()
 const year = new Date().getFullYear()
 
+/* 生产公开域名。V2 站点配置尚未承载该字段，先作为部署身份常量放在这里。 */
+const publicDomain = 'yulanlin.cn'
+
+/* 与顶栏同一顺序：教程 → 博客 → 作品 → 英语 → 关于 → 留言 */
 const navItems = computed(() => [
   { label: '教程', to: contentPath('/tutorials') },
-  { label: '英语', to: contentPath('/english') },
   { label: '博客', to: contentPath('/blog') },
   { label: '作品', to: contentPath('/portfolio') },
-  { label: '留言', to: contentPath('/messages') },
+  { label: '英语', to: contentPath('/english') },
   { label: '关于', to: contentPath('/about') },
+  { label: '留言', to: contentPath('/messages') },
 ])
 
 function scrollToTop() {
@@ -44,10 +53,10 @@ function scrollToTop() {
           <img class="site-footer__mark" :src="branding.logoUrl || '/brand/mark.svg'" alt="" aria-hidden="true" width="42" height="42" />
           <div>
             <p id="footer-brand" class="site-footer__name">{{ branding.siteName }}</p>
-            <p class="site-footer__tagline">{{ tagline }}</p>
+            <p class="site-footer__tagline">{{ branding.footerText || 'Knowledge · Code · Growth' }}</p>
           </div>
         </div>
-        <p class="site-footer__statement">{{ branding.footerText || '在知识、代码与成长之间，留下可以回看的坐标。' }}</p>
+        <p class="site-footer__statement">在知识、代码与成长之间，留下可以回看的坐标。</p>
       </section>
 
       <section class="site-footer__links">
@@ -62,7 +71,12 @@ function scrollToTop() {
         </div>
         <div>
           <p class="site-footer__label">CONNECT</p>
-          <span class="site-footer__muted">公开链接待配置</span>
+          <nav v-if="social.links.length" class="site-footer__connect" aria-label="作者公开链接">
+            <a v-for="link in social.links" :key="link.id" class="site-footer__link"
+               :href="link.url" :target="link.url.startsWith('mailto:') ? undefined : '_blank'"
+               rel="noopener noreferrer">{{ link.label }} <span aria-hidden="true">↗</span></a>
+          </nav>
+          <span v-else class="site-footer__muted">公开链接待配置</span>
         </div>
       </section>
 
@@ -72,8 +86,9 @@ function scrollToTop() {
       </div>
 
       <div class="site-footer__icp" aria-label="网站备案信息">
-        <span>备案号占位：待备案完成后填写（例如 粤ICP备00000000号-1）</span>
-        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">工信部备案查询</a>
+        <span>© {{ year }} {{ branding.siteName }} · {{ publicDomain }}</span>
+        <a href="https://beian.miit.gov.cn/" target="_blank" rel="noopener noreferrer">晋ICP备2026008281号-1</a>
+        <a href="https://beian.mps.gov.cn/#/query/webSearch?code=14050002001992" target="_blank" rel="noopener noreferrer">晋公网安备14050002001992号</a>
       </div>
     </div>
   </footer>
@@ -146,6 +161,9 @@ function scrollToTop() {
   cursor: not-allowed;
   transform: none;
 }
+
+.site-footer__connect { display: grid; gap: 10px; justify-items: start; }
+.site-footer__connect .site-footer__link span { color: var(--accent); }
 
 .site-footer__muted { color: var(--text-muted); font-size: 13px; }
 

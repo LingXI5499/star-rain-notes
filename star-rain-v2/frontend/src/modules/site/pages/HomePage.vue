@@ -1,44 +1,83 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import { listArchiveMonths, listPublicPosts, listPublicTags } from '../../blog/api/blogApi'
 import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
-import BlogTimeline from '../../blog/components/BlogTimeline.vue'
 import { getPublicSiteHome } from '../api/siteApi'
+import ThemeHero from '../components/ThemeHero.vue'
 
-// 首页区块以 Site 的启停与排序为准，只渲染已注册代码。链接始终保留当前路径树。
+/*
+ * 公开站首页 —— 逐块对齐 V1 `views/HomeView.vue` 的信息架构：
+ *
+ *   主视觉（主题插画 + 站名 + 副标题 + 介绍 + 两个入口）
+ *   → 四个模块导轨（教程 / 博客 / 作品 / 英语）
+ *   → 最近更新（跨教程、博客、作品的混合列表）
+ *   → 精选知识体系
+ *   → 把学习做成作品
+ *   → 关于作者
+ *
+ * 与 V1 的差别只在数据来源：V1 的首页是一次 `fetchHome()` 拿到的定制聚合，
+ * V2 改成 Site 模块的「首页区块」模型 —— 区块的启停、顺序、展示条数由后台配置决定，
+ * 前端只负责按区块代码选渲染方式。因此这里**不硬编码区块顺序**，
+ * 但每个代码的视觉样式与 V1 一致（区块标题的英文眉标也按代码映射，而不是直接显示代码本身）。
+ *
+ * 链接一律走 `contentPath`：账号模式下同一个首页要落在 /useradmin 前缀下。
+ */
 const { contentPath } = useViewMode()
-const state = reactive({ total: null, tagCount: null, monthCount: null })
 const home = ref(null)
 const loading = ref(true)
 const errorText = ref('')
-const knownCodes = new Set(['HERO', 'TUTORIALS', 'BLOG', 'PORTFOLIO', 'PROFILE', 'HOT_CONTENT'])
+
+/* 首页只渲染自己认识的区块代码；后台配置了未知代码时不渲染，也不报错。 */
+const knownCodes = new Set(['HERO', 'LATEST', 'TUTORIALS', 'BLOG', 'PORTFOLIO', 'PROFILE', 'HOT_CONTENT'])
 const sections = computed(() => (home.value?.sections || []).filter((section) => knownCodes.has(section.code)))
 const siteConfig = computed(() => home.value?.config || {})
+const hero = computed(() => sections.value.find((section) => section.code === 'HERO') || null)
+const contentSections = computed(() => sections.value.filter((section) => section.code !== 'HERO'))
 
+/* 与 V1 相同的英文眉标，避免把 TUTORIALS 这类内部代码直接暴露到界面上。 */
+const eyebrows = {
+  LATEST: 'LATEST NOTES',
+  TUTORIALS: 'LEARNING MAP',
+  BLOG: 'JOURNAL',
+  PORTFOLIO: 'SELECTED WORK',
+  PROFILE: 'ABOUT THE AUTHOR',
+  HOT_CONTENT: 'POPULAR',
+}
+const sectionLinks = {
+  LATEST: { to: '/search', label: '浏览全部' },
+  TUTORIALS: { to: '/tutorials', label: '进入教程中心' },
+  BLOG: { to: '/blog', label: '浏览全部' },
+  PORTFOLIO: { to: '/portfolio', label: '全部作品' },
+  HOT_CONTENT: { to: '/search', label: '浏览全部' },
+}
+const typeLabels = { TUTORIAL: '教程章节', BLOG: '博客记录', PORTFOLIO: '项目作品' }
+
+/* 与顶栏同序：教程 → 博客 → 作品 → 英语。V1 第四格是英语（GROW），不是关于。 */
 const modules = [
   { index: '01', label: '教程', en: 'LEARN', desc: '从知识体系进入系统课程', to: '/tutorials' },
   { index: '02', label: '博客', en: 'THINK', desc: '记录判断、方法与复盘', to: '/blog' },
   { index: '03', label: '作品', en: 'BUILD', desc: '用真实项目验证学习', to: '/portfolio' },
-  { index: '04', label: '关于', en: 'ABOUT', desc: '认识作者与这套知识系统', to: '/about' },
+  { index: '04', label: '英语', en: 'GROW', desc: '长期积累语言能力', to: '/english' },
 ]
 
-function blogItems(section) {
-  return (section.data || []).map((post) => ({
-    ...post, updatedAt: post.publishedAt,
-    tags: (post.tagNames || []).map((name) => ({ name, slug: name })),
-  }))
+function itemsOf(section) {
+  return Array.isArray(section?.data) ? section.data : []
 }
 
-function sectionLink(code) {
-  return { TUTORIALS: '/tutorials', BLOG: '/blog', PORTFOLIO: '/portfolio', PROFILE: '/about' }[code]
-}
-
-function itemPath(code, item) {
+function pathOf(code, item) {
+  if (item.routePath) return item.routePath
   if (code === 'TUTORIALS') return `/tutorials/${item.slug}`
   if (code === 'PORTFOLIO') return `/portfolio/${item.slug}`
-  return item.path || '/'
+  return '/'
+}
+
+/* V1 首页的日期写法是 2026/09/26，跟随系统区域设置会变成「2026年9月26日」，因此固定格式。 */
+function dateOf(value) {
+  const date = new Date(value)
+  if (Number.isNaN(date.getTime())) return ''
+  const pad = (part) => String(part).padStart(2, '0')
+  return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())}`
 }
 
 onMounted(async () => {
@@ -46,19 +85,10 @@ onMounted(async () => {
     home.value = await getPublicSiteHome()
   } catch (cause) {
     errorText.value = errorMessage(cause)
+    loading.value = false
   } finally {
     loading.value = false
   }
-  try {
-    const [posts, tags, months] = await Promise.all([
-      listPublicPosts({ page: 1, pageSize: 5 }),
-      listPublicTags(),
-      listArchiveMonths(),
-    ])
-    state.total = posts.total || 0
-    state.tagCount = tags.length
-    state.monthCount = months.length
-  } catch { /* 首页区块仍可正常显示；统计值留空。 */ }
 })
 </script>
 
@@ -67,162 +97,181 @@ onMounted(async () => {
     <p v-if="loading" class="home-state" role="status">正在读取首页…</p>
     <p v-else-if="errorText" class="home-state" role="alert">{{ errorText }}</p>
 
-    <template v-for="(section, index) in sections" :key="section.code">
-      <section v-if="section.code === 'HERO'" class="home-hero" aria-labelledby="home-title">
+    <template v-else>
+      <section v-if="hero" class="home-hero" aria-labelledby="home-title">
+        <ThemeHero src="/brand/themes/home-hero.webp" alt="星雨笔录世界观主视觉" />
         <div class="home-hero__copy">
-          <p class="public-eyebrow">STAR RAIN NOTES</p>
-          <h1 id="home-title" class="public-display">{{ siteConfig.siteTitle }}</h1>
+          <p class="public-eyebrow home-hero__kicker">STAR RAIN NOTES</p>
+          <h1 id="home-title" class="public-display">{{ siteConfig.siteName }}</h1>
+          <h2 v-if="siteConfig.tagline">{{ siteConfig.tagline }}</h2>
           <p class="home-hero__intro">{{ siteConfig.homeIntro }}</p>
           <div class="home-hero__actions">
-            <RouterLink class="public-button primary" :to="contentPath('/blog')">进入博客时间线 <span aria-hidden="true">↗</span></RouterLink>
-            <RouterLink class="public-button" :to="contentPath('/blog/archive')">按时间归档 <span aria-hidden="true">→</span></RouterLink>
+            <RouterLink class="public-button primary" :to="contentPath('/tutorials')">开始学习 <span aria-hidden="true">↗</span></RouterLink>
+            <RouterLink class="public-button" :to="contentPath('/portfolio')">查看作品 <span aria-hidden="true">→</span></RouterLink>
           </div>
-        </div>
-        <aside class="home-stats" aria-label="站点内容统计">
-          <div class="home-stats__item"><strong>{{ state.total ?? '—' }}</strong><span>篇公开文章</span></div>
-          <div class="home-stats__item"><strong>{{ state.tagCount ?? '—' }}</strong><span>个主题标签</span></div>
-          <div class="home-stats__item"><strong>{{ state.monthCount ?? '—' }}</strong><span>个归档月份</span></div>
-          <p class="home-stats__note">只统计已发布内容。</p>
-        </aside>
-      </section>
-
-      <section v-else class="home-section" :aria-label="section.title">
-        <header>
-          <div>
-            <p class="public-eyebrow">{{ section.code }}</p>
-            <h2 class="public-section-title">{{ section.title }}</h2>
-          </div>
-          <RouterLink v-if="sectionLink(section.code)" :to="contentPath(sectionLink(section.code))">浏览全部 <span aria-hidden="true">→</span></RouterLink>
-        </header>
-        <p v-if="section.status === 'DEGRADED'" class="home-state">这一部分暂时无法加载。</p>
-        <BlogTimeline v-else-if="section.code === 'BLOG'" :items="blogItems(section)" empty-text="第一条更新正在路上。" />
-        <template v-else-if="section.code === 'PROFILE'">
-          <RouterLink v-if="section.data" class="home-profile public-interactive" :to="contentPath('/about')">
-            <img v-if="section.data.avatarUrl" :src="section.data.avatarUrl" alt="" />
-            <div><h3>{{ section.data.displayName }}</h3><p>{{ section.data.headline || '了解作者' }}</p></div>
-            <span aria-hidden="true">→</span>
-          </RouterLink>
-          <p v-else class="home-state">作者资料暂未公开。</p>
-        </template>
-        <div v-else class="home-cards" :class="{ 'home-cards--list': section.layout === 'list' }">
-          <RouterLink v-for="item in section.data || []" :key="item.id || item.path"
-            class="home-card public-interactive" :to="contentPath(itemPath(section.code, item))">
-            <img v-if="item.coverUrl" :src="item.coverUrl" alt="" loading="lazy" />
-            <div class="home-card__body">
-              <small>{{ section.code === 'HOT_CONTENT' ? `${item.viewCount} 次浏览` : section.title }}</small>
-              <h3>{{ item.title }}</h3>
-              <p v-if="item.summary">{{ item.summary }}</p>
-              <span>查看内容 →</span>
-            </div>
-          </RouterLink>
-          <p v-if="!section.data?.length" class="home-state">这里还没有公开内容。</p>
         </div>
       </section>
 
-      <nav v-if="index === 0" class="home-rail" aria-label="站点主要内容">
-        <RouterLink v-for="item in modules" :key="item.index" :to="contentPath(item.to)" class="public-interactive">
+      <nav class="home-rail" aria-label="站点主要内容">
+        <RouterLink v-for="item in modules" :key="item.to" :to="contentPath(item.to)" class="public-interactive">
           <span>{{ item.index }}</span>
           <div><small>{{ item.en }}</small><strong>{{ item.label }}</strong><p>{{ item.desc }}</p></div>
           <i aria-hidden="true">→</i>
         </RouterLink>
       </nav>
+
+      <main class="home-content">
+        <template v-for="section in contentSections" :key="section.code">
+          <!-- 关于作者：V1 是左右分栏的作者简介带，没有区块标题行 -->
+          <section v-if="section.code === 'PROFILE' && section.data" class="home-author">
+            <div>
+              <p class="public-eyebrow">{{ eyebrows.PROFILE }}</p>
+              <span aria-hidden="true">✦</span>
+            </div>
+            <div>
+              <h2>{{ section.data.displayName || '站点作者' }}</h2>
+              <p>{{ section.data.headline || '持续学习与构建中' }}</p>
+              <RouterLink :to="contentPath('/about')">认识作者与这套知识系统 →</RouterLink>
+            </div>
+          </section>
+
+          <section v-else class="home-section" :aria-label="section.title">
+            <header>
+              <div>
+                <p class="public-eyebrow">{{ eyebrows[section.code] || section.code }}</p>
+                <h2 class="public-section-title">{{ section.title }}</h2>
+              </div>
+              <RouterLink v-if="sectionLinks[section.code]" :to="contentPath(sectionLinks[section.code].to)">
+                {{ sectionLinks[section.code].label }} <span aria-hidden="true">→</span>
+              </RouterLink>
+            </header>
+
+            <p v-if="section.status === 'DEGRADED'" class="home-state">这一部分暂时无法加载。</p>
+
+            <!-- 最近更新：编号 + 类型 + 标题 + 日期 + 箭头的紧凑列表（V1 同款） -->
+            <ol v-else-if="section.code === 'LATEST'" class="home-updates">
+              <li v-for="(item, index) in itemsOf(section)" :key="`${item.type}-${item.id}`">
+                <RouterLink :to="contentPath(pathOf(section.code, item))" class="public-interactive">
+                  <span class="home-updates__index">{{ String(index + 1).padStart(2, '0') }}</span>
+                  <div>
+                    <small>{{ typeLabels[item.type] || item.type }}</small>
+                    <h3>{{ item.title }}</h3>
+                  </div>
+                  <time :datetime="item.publishedAt">{{ dateOf(item.publishedAt) }}</time>
+                  <i aria-hidden="true">↗</i>
+                </RouterLink>
+              </li>
+              <li v-if="!itemsOf(section).length" class="home-updates__empty">第一条更新正在路上。</li>
+            </ol>
+
+            <!-- 精选知识体系：三栏等宽、用发丝竖线分隔的体系卡片（V1 同款） -->
+            <div v-else-if="section.code === 'TUTORIALS'" class="home-systems">
+              <RouterLink v-for="(item, index) in itemsOf(section)" :key="item.id"
+                :to="contentPath(pathOf(section.code, item))" class="home-system public-interactive">
+                <div><span>{{ String(index + 1).padStart(2, '0') }}</span><i aria-hidden="true">✦</i></div>
+                <h3>{{ item.title }}</h3>
+                <p>{{ item.summary }}</p>
+                <strong>探索体系 →</strong>
+              </RouterLink>
+              <p v-if="!itemsOf(section).length" class="home-state">知识体系正在整理。</p>
+            </div>
+
+            <!-- 把学习做成作品：首项为大卡，其余为并排卡片（V1 同款） -->
+            <div v-else-if="section.code === 'PORTFOLIO'" class="home-projects">
+              <RouterLink v-for="(item, index) in itemsOf(section)" :key="item.id"
+                :to="contentPath(pathOf(section.code, item))" class="home-project public-interactive"
+                :class="{ 'is-featured': index === 0 }">
+                <div class="home-project__cover">
+                  <img v-if="item.coverUrl" :src="item.coverUrl" :alt="item.title" :loading="index ? 'lazy' : 'eager'" />
+                  <span v-else class="home-project__mark">{{ (item.title || '作品').slice(0, 1) }}</span>
+                </div>
+                <div class="home-project__body">
+                  <small>PROJECT {{ String(index + 1).padStart(2, '0') }}</small>
+                  <h3>{{ item.title }}</h3>
+                  <p>{{ item.summary }}</p>
+                  <strong>阅读项目复盘 →</strong>
+                </div>
+              </RouterLink>
+              <p v-if="!itemsOf(section).length" class="home-state">作品资料正在整理，可先从教程与博客了解项目脉络。</p>
+            </div>
+
+            <!-- 兜底：后台新开启的区块（博客时间线 / 热门内容）按通用卡片渲染，不白屏 -->
+            <div v-else class="home-cards" :class="{ 'home-cards--list': section.layout === 'list' }">
+              <RouterLink v-for="item in itemsOf(section)" :key="item.id || item.path"
+                class="home-card public-interactive" :to="contentPath(pathOf(section.code, item))">
+                <img v-if="item.coverUrl" :src="item.coverUrl" alt="" loading="lazy" />
+                <div class="home-card__body">
+                  <small>{{ eyebrows[section.code] || section.title }}</small>
+                  <h3>{{ item.title }}</h3>
+                  <p v-if="item.summary">{{ item.summary }}</p>
+                  <span>查看内容 →</span>
+                </div>
+              </RouterLink>
+              <p v-if="!itemsOf(section).length" class="home-state">这里还没有公开内容。</p>
+            </div>
+          </section>
+        </template>
+      </main>
     </template>
   </div>
 </template>
 
 <style scoped>
-.home-page {
-  padding-bottom: var(--space-12);
-}
+.home-page { padding-bottom: var(--space-12); }
 
+/* ---------------- 主视觉 ---------------- */
 .home-hero {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1.45fr) minmax(250px, 0.55fr);
-  align-items: center;
+  grid-template-columns: minmax(0, 0.88fr) minmax(0, 1.12fr);
   gap: clamp(28px, 5vw, 72px);
-  min-height: clamp(400px, 58vh, 560px);
-  padding-block: var(--space-9) var(--space-10);
+  align-items: center;
+  min-height: clamp(480px, 68vh, 660px);
+  margin: 0 0 8px;
+  padding: 48px 0 56px;
+  overflow: hidden;
 }
 
-.home-hero__copy { max-width: 660px; }
-.home-hero__copy .public-eyebrow { margin-bottom: 22px; }
+.home-hero__copy { position: relative; z-index: 2; max-width: 560px; }
+.home-hero__kicker { margin-bottom: 22px; }
 
-/*
- * 主标题是完整的一句话（比 V1 首页的短站名长得多），因此字号按 V1 博客列表页的
- * `clamp(38px,5vw,62px)` 取，而不是按超大字号的 display 档；否则 1440px 下会折成四行。
- */
 .home-hero h1 {
-  font-size: clamp(36px, 4.4vw, 62px);
-  line-height: 1.1;
-  letter-spacing: -0.045em;
+  margin: 0;
+  font-size: clamp(52px, 6.8vw, 94px);
+  line-height: 1.08;
+  letter-spacing: -0.07em;
   text-wrap: balance;
 }
 
-.home-hero__intro {
+.home-hero h2 {
   max-width: 520px;
-  margin-top: var(--space-6);
-  color: var(--text-secondary);
-  font-size: 16px;
-  line-height: 1.85;
-}
-
-.home-hero__actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: var(--space-7);
-}
-
-.home-stats {
-  display: grid;
-  gap: var(--space-4);
-  padding: clamp(22px, 3vw, 34px);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-hero);
-  background: linear-gradient(150deg, var(--bg-surface), color-mix(in srgb, var(--primary-soft) 55%, var(--bg-surface)));
-  box-shadow: var(--shadow-sm);
-}
-
-.home-stats__item {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: var(--space-4);
-  padding-bottom: var(--space-3);
-  border-bottom: 1px solid var(--border);
-}
-
-.home-stats__item:last-of-type { border-bottom: 0; padding-bottom: 0; }
-
-.home-stats__item strong {
+  margin: 0 0 16px;
   color: var(--primary);
-  font-size: clamp(30px, 3.4vw, 42px);
-  line-height: 1;
-  letter-spacing: -0.04em;
+  font-size: clamp(22px, 2.6vw, 34px);
+  line-height: 1.35;
+  letter-spacing: -0.035em;
 }
 
-.home-stats__item span {
-  color: var(--text-muted);
-  font-size: 11px;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+.home-hero__intro { max-width: 420px; color: var(--text-secondary); font-size: 16px; line-height: 1.85; }
+.home-hero__actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 28px; }
+
+/* V1 的入场动画：主视觉文字逐行上浮，避免整块内容同时闪现 */
+.home-hero__copy > * { animation: home-enter 520ms var(--ease-out) both; }
+.home-hero__copy > *:nth-child(2) { animation-delay: 70ms; }
+.home-hero__copy > *:nth-child(3) { animation-delay: 120ms; }
+.home-hero__copy > *:nth-child(4) { animation-delay: 170ms; }
+.home-hero__copy > *:nth-child(5) { animation-delay: 220ms; }
+.home-hero__copy > *:nth-child(6) { animation-delay: 280ms; }
+
+@keyframes home-enter {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
 }
 
-.home-stats__note {
-  margin-top: var(--space-2);
-  color: var(--text-muted);
-  font-size: 11px;
-  line-height: 1.7;
-}
+/* ---------------- 四个模块导轨 ---------------- */
+.home-rail { display: grid; grid-template-columns: repeat(4, 1fr); border-block: 1px solid var(--border); }
 
-.home-rail {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  border-block: 1px solid var(--border);
-}
-
-.home-rail > a,
-.home-rail__pending {
+.home-rail > a {
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 14px;
@@ -232,78 +281,133 @@ onMounted(async () => {
   color: var(--text-primary);
 }
 
-.home-rail > a + a,
-.home-rail > a + .home-rail__pending,
-.home-rail__pending + a,
-.home-rail__pending + .home-rail__pending {
-  border-left: 1px solid var(--border);
-}
-
-.home-rail > :first-child { padding-left: 0; }
-
-.home-rail > a > span,
-.home-rail__pending > span {
-  color: var(--accent);
-  font: 700 10px var(--font-mono);
-}
-
-.home-rail small {
-  color: var(--text-muted);
-  font: 700 9px var(--font-mono);
-  letter-spacing: 0.16em;
-}
-
-.home-rail strong {
-  display: block;
-  margin: 2px 0;
-  font-size: 16px;
-}
-
-.home-rail p {
-  color: var(--text-muted);
-  font-size: 12px;
-  line-height: 1.45;
-}
-
-.home-rail i {
-  color: var(--primary);
-  font-style: normal;
-}
-
+.home-rail > a + a { border-left: 1px solid var(--border); }
+.home-rail > a > span { color: var(--accent); font: 700 10px var(--font-mono); }
+.home-rail small { color: var(--text-muted); font: 700 9px var(--font-mono); letter-spacing: 0.16em; }
+.home-rail strong { display: block; margin: 2px 0; font-size: 16px; }
+.home-rail p { color: var(--text-muted); font-size: 12px; line-height: 1.45; }
+.home-rail i { color: var(--primary); font-style: normal; }
 .home-rail > a:hover { background: var(--bg-surface); }
 
-.home-rail__pending { cursor: not-allowed; }
-.home-rail__pending strong { color: var(--text-muted); }
-.home-rail__pending i { color: var(--text-muted); }
-
-.home-section {
-  padding: var(--space-10) 0 0;
-}
+/* ---------------- 区块通用 ---------------- */
+.home-content { padding-top: 8px; }
+.home-section { padding: 48px 0; border-bottom: 1px solid var(--border); }
 
 .home-section > header {
   display: flex;
   align-items: end;
   justify-content: space-between;
   gap: 20px;
-  margin-bottom: var(--space-7);
+  margin-bottom: 30px;
 }
 
 .home-section > header h2 { margin-top: 8px; }
-
-.home-section > header > a {
-  color: var(--text-secondary);
-  font-size: 12px;
-}
-
+.home-section > header > a { color: var(--text-secondary); font-size: 12px; }
 .home-section > header > a:hover { color: var(--primary); }
 
-.home-state { padding: var(--space-7) 0; color: var(--text-muted); }
-
-.home-cards {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: var(--space-5);
+.home-state {
+  padding: 34px;
+  border: 1px dashed var(--border-strong);
+  border-radius: 16px;
+  color: var(--text-muted);
+  background: color-mix(in srgb, var(--bg-surface) 45%, transparent);
 }
+
+/* ---------------- 最近更新 ---------------- */
+.home-updates { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--border); }
+.home-updates li { border-bottom: 1px solid var(--border); }
+.home-updates li:last-child { border-bottom: 0; }
+
+.home-updates a {
+  display: grid;
+  grid-template-columns: 50px 1fr auto 20px;
+  gap: 18px;
+  align-items: center;
+  padding: 24px 4px;
+  color: var(--text-primary);
+}
+
+.home-updates a:hover { padding-inline: 10px; background: var(--bg-surface); }
+.home-updates__index { color: var(--text-muted); font: 650 10px var(--font-mono); }
+.home-updates small { color: var(--accent); font-size: 9px; }
+.home-updates h3 { margin-top: 3px; font-size: clamp(17px, 2vw, 22px); line-height: 1.5; }
+.home-updates time { color: var(--text-muted); font-size: 10px; }
+.home-updates i { color: var(--primary); font-style: normal; }
+.home-updates__empty { padding: 24px 4px; color: var(--text-muted); }
+
+/* ---------------- 精选知识体系 ---------------- */
+.home-systems { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; }
+
+.home-system {
+  position: relative;
+  display: flex;
+  min-height: 240px;
+  flex-direction: column;
+  padding: 20px 26px;
+  color: var(--text-primary);
+}
+
+.home-system + .home-system { border-left: 1px solid var(--border); }
+.home-system > div { display: flex; justify-content: space-between; color: var(--accent); font: 700 10px var(--font-mono); }
+.home-system h3 { max-width: 260px; margin: 30px 0 13px; font-size: 22px; line-height: 1.34; }
+.home-system p { color: var(--text-secondary); line-height: 1.7; }
+.home-system strong { margin-top: auto; padding-top: 22px; color: var(--primary); font-size: 13px; }
+.home-system:hover { background: var(--bg-surface); }
+
+/* ---------------- 把学习做成作品 ---------------- */
+.home-projects { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+
+.home-project {
+  display: grid;
+  grid-template-columns: 42% 1fr;
+  min-height: 300px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-card);
+  color: var(--text-primary);
+  background: var(--bg-surface);
+}
+
+.home-project.is-featured { grid-column: 1 / -1; grid-template-columns: 48% 1fr; min-height: 380px; }
+.home-project:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: var(--shadow-md); }
+
+.home-project__cover {
+  display: grid;
+  place-items: center;
+  min-height: 230px;
+  overflow: hidden;
+  background: radial-gradient(circle at 25% 20%, color-mix(in srgb, var(--primary) 18%, transparent), transparent 52%),
+    linear-gradient(145deg, var(--bg-subtle), color-mix(in srgb, var(--accent) 12%, var(--bg-surface)));
+}
+
+.home-project__cover img { width: 100%; height: 100%; object-fit: cover; transition: transform var(--motion-slow) var(--ease-out); }
+.home-project:hover img { transform: scale(1.015); }
+.home-project__mark { color: var(--primary); font: 700 64px Georgia, serif; opacity: 0.5; }
+.home-project__body { display: flex; flex-direction: column; justify-content: center; padding: clamp(22px, 3vw, 38px); }
+.home-project__body small { color: var(--accent); font: 700 9px var(--font-mono); letter-spacing: 0.08em; }
+.home-project__body h3 { margin: 13px 0 10px; font-size: clamp(22px, 2.7vw, 36px); line-height: 1.2; }
+.home-project__body p { color: var(--text-secondary); font-size: 13px; line-height: 1.78; }
+.home-project__body strong { margin-top: auto; padding-top: 20px; color: var(--primary); font-size: 12px; }
+
+/* ---------------- 关于作者 ---------------- */
+.home-author { display: grid; grid-template-columns: 220px 1fr; gap: 55px; padding: 75px 0 0; }
+
+.home-author > div:first-child {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  border-top: 1px solid var(--border);
+  padding-top: 14px;
+}
+
+.home-author > div:first-child > span { color: var(--accent); }
+.home-author h2 { font-size: 32px; }
+.home-author div > p { max-width: 680px; margin: 8px 0; color: var(--text-secondary); line-height: 1.8; }
+.home-author a { color: var(--primary); font-size: 13px; font-weight: 700; }
+
+/* ---------------- 兜底卡片（后台新开启的区块） ---------------- */
+.home-cards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-5); }
+.home-cards--list { grid-template-columns: 1fr; }
 
 .home-card {
   overflow: hidden;
@@ -311,59 +415,53 @@ onMounted(async () => {
   border-radius: 18px;
   color: var(--text-primary);
   background: var(--bg-surface);
-  transition: transform 170ms ease, box-shadow 170ms ease;
 }
 
 .home-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-sm); }
-.home-cards--list { grid-template-columns: 1fr; }
-.home-cards--list .home-card { display: grid; grid-template-columns: minmax(130px, 230px) 1fr; }
-.home-cards--list .home-card:not(:has(> img)) { grid-template-columns: 1fr; }
-.home-cards--list .home-card > img { height: 100%; aspect-ratio: auto; }
 .home-card > img { width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
 .home-card__body { padding: var(--space-6); }
-.home-card__body small { color: var(--accent); font: 700 10px var(--font-mono); letter-spacing: .12em; }
+.home-card__body small { color: var(--accent); font: 700 10px var(--font-mono); letter-spacing: 0.12em; }
 .home-card__body h3 { margin: 12px 0; font-size: 20px; line-height: 1.35; }
 .home-card__body p { color: var(--text-secondary); line-height: 1.7; }
 .home-card__body span { display: block; margin-top: 18px; color: var(--primary); font-size: 12px; }
 
-.home-profile {
-  display: flex;
-  align-items: center;
-  gap: var(--space-6);
-  padding: var(--space-7);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  color: var(--text-primary);
-  background: var(--bg-surface);
+@media (max-width: 1024px) {
+  .home-hero { gap: 24px; }
+  .home-rail > a { padding: 14px 8px; gap: 8px; }
+  .home-rail p { display: none; }
 }
-.home-profile img { width: 70px; height: 70px; border-radius: 50%; object-fit: cover; }
-.home-profile h3 { margin: 0 0 6px; font-size: 20px; }
-.home-profile p { color: var(--text-secondary); }
-.home-profile > span { margin-left: auto; color: var(--primary); }
 
-@media (max-width: 980px) {
-  .home-hero {
-    grid-template-columns: 1fr;
-    min-height: 0;
-    padding-block: var(--space-8);
-  }
-
+@media (max-width: 900px) {
+  .home-hero { grid-template-columns: 1fr; min-height: 0; padding-top: 24px; gap: 24px; }
   .home-rail { grid-template-columns: repeat(2, 1fr); }
+  .home-rail > a:nth-child(3) { border-left: 0; }
+  .home-rail > a:nth-child(n + 3) { border-top: 1px solid var(--border); }
+  .home-systems { grid-template-columns: 1fr; }
+  .home-system { min-height: 0; padding: 24px 0; }
+  .home-system + .home-system { border-left: 0; border-top: 1px solid var(--border); }
+  .home-projects { grid-template-columns: 1fr; }
+  .home-project,
+  .home-project.is-featured { grid-column: auto; grid-template-columns: 1fr; min-height: 0; }
+  .home-project__cover { min-height: 220px; }
+  .home-author { grid-template-columns: 1fr; gap: 20px; padding: 50px 0 0; }
   .home-cards { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-
-  .home-rail > :nth-child(3) { border-left: 0; }
-  .home-rail > :nth-child(n + 3) { border-top: 1px solid var(--border); }
 }
 
 @media (max-width: 600px) {
-  .home-cards { grid-template-columns: 1fr; }
-  .home-cards--list .home-card { grid-template-columns: 1fr; }
+  .home-hero { padding: 20px 0 36px; }
+  .home-hero h1 { font-size: 48px; }
+  .home-hero__actions { display: grid; grid-template-columns: 1fr 1fr; }
   .home-rail { grid-template-columns: 1fr; }
-  .home-rail > :nth-child(n + 2) {
-    border-left: 0;
-    border-top: 1px solid var(--border);
-  }
-  .home-rail p { display: none; }
-  .home-section > header { align-items: flex-start; flex-direction: column; }
+  .home-rail > a:nth-child(n + 2) { border-left: 0; border-top: 1px solid var(--border); }
+  .home-section { padding: 36px 0; }
+  .home-section > header { align-items: flex-start; flex-direction: column; margin-bottom: 22px; }
+  .home-updates a { grid-template-columns: 32px 1fr 18px; }
+  .home-updates time { display: none; }
+  .home-cards { grid-template-columns: 1fr; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero__copy > * { animation: none; }
+  .home-project__cover img { transition: none; }
 }
 </style>

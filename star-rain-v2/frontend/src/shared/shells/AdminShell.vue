@@ -9,16 +9,28 @@ import { accountPath } from '../viewMode'
 /*
  * 控制台外壳（唯一带侧栏的外壳），由账号树的 /useradmin/center 用户中心进入。
  *
- * 侧栏分三层，按角色隐藏 —— 是「看不见」，不是「点了报 403」：
- *   通用        我的账户（/useradmin/center）、学习记录
- *   统计总览    SUPER_ADMIN：仪表盘（导航第一项）
- *   内容编辑    ADMIN 及以上：教程编辑、博客管理、媒体库、审核中心；作品管理仅超管可见
- *   站点治理    SUPER_ADMIN：站点设置、账户管理、管理员邀请、账户审计
+ * 侧栏是**数据驱动的五组导航**，每组一个标题、组内层级一致（一级项 + 一级子项），
+ * 按角色与权限隐藏 —— 是「看不见」，不是「点了报 403」：
  *
- * 三处刻意的取舍：
- * 1. 英语管理连接五个已经有真实内容接口的方向。
- * 2. 内容编辑这一层按角色显示，层内每个真实链接仍按权限判可见性；
- *    作品管理只向持有 portfolio:read-admin 的超管显示。
+ *   概览    仪表盘、访问统计                 仅 SUPER_ADMIN
+ *   内容    教程工作台、博客管理（+标签与专题）、英语内容（+五个方向）、
+ *           作品管理、媒体库、作者资料       ADMIN 及以上，逐项按权限
+ *   协作    审核中心、留言管理                按 review:read / message:read-admin
+ *   站点    站点设置                          仅 SUPER_ADMIN
+ *   账户    我的账户、学习记录（+今日/计划/复习/历史）、
+ *           账户管理、管理员邀请、审计日志    按各自权限
+ *
+ * 上一版有三个真实缺陷，这次一并修掉：
+ *   1. 「仪表盘 / 访问统计 / 我的账户 / 学习记录」四项裸露在标题之上 ——
+ *      注释里分了「通用 / 统计总览」两组，模板里却从来没渲染过那两行标题。
+ *   2. 同一块地方有两个名字：折叠态写「治理」，展开态写「站点治理」，
+ *      页面内部又自称「站点治理」。现在组名只有一处定义。
+ *   3. 分组深度不一致：内容编辑是平铺的 8 项，站点治理却是「折叠父项 + 子项」。
+ *      现在统一为「组标题 + 一级项」，只有真正存在子页面的项才挂子项。
+ *      同时删掉了 `item.pending` 那两条永不成立的「建设中」死分支。
+ *
+ * 子项（标签与专题、英语五个方向、学习四页）过去「有路由无入口」，
+ * 只能靠手输地址访问；现在挂在各自父项下，父项所在组展开时可见。
  *
  * 返回前台指向**账号树前台**（accountPath('/') = /useradmin），不是裸 '/'：
  *   裸 '/' 是公开树首页，那是给大众的匿名站，一进去右上角账号区就整个消失了
@@ -33,15 +45,39 @@ const router = useRouter()
 const auth = useAuthStore()
 
 const collapsed = ref(localStorage.getItem('admin-sidebar-collapsed') === 'true')
-const governanceOpen = ref(localStorage.getItem('admin-governance-group-open') !== 'false')
 const mobileOpen = ref(false)
 const navRef = ref(null)
 const contentRef = ref(null)
 
-watch([collapsed, governanceOpen], () => {
-  localStorage.setItem('admin-sidebar-collapsed', String(collapsed.value))
-  localStorage.setItem('admin-governance-group-open', String(governanceOpen.value))
-})
+/*
+ * 分组展开状态。默认全展开；用户折叠过的组记在 localStorage。
+ * 当前路由所在的组**永远强制展开** —— 否则「我明明在这个页面，侧栏里却找不到它」。
+ */
+const GROUP_STORAGE_KEY = 'admin-nav-groups'
+const closedGroups = ref(readClosedGroups())
+
+function readClosedGroups() {
+  try {
+    const stored = JSON.parse(localStorage.getItem(GROUP_STORAGE_KEY) || '[]')
+    return Array.isArray(stored) ? stored.filter((key) => typeof key === 'string') : []
+  } catch {
+    return []
+  }
+}
+
+function isGroupOpen(key) {
+  if (closedGroups.value.includes(key)) return false
+  return true
+}
+
+function toggleGroup(key) {
+  closedGroups.value = closedGroups.value.includes(key)
+    ? closedGroups.value.filter((item) => item !== key)
+    : [...closedGroups.value, key]
+  localStorage.setItem(GROUP_STORAGE_KEY, JSON.stringify(closedGroups.value))
+}
+
+watch(collapsed, (value) => localStorage.setItem('admin-sidebar-collapsed', String(value)))
 
 function rememberNavScroll() {
   if (navRef.value) sessionStorage.setItem('admin-nav-scroll', String(navRef.value.scrollTop))
@@ -65,48 +101,117 @@ onMounted(async () => {
 })
 
 // ---------------------------------------------------------------------
-// 导航（按角色分层）
+// 导航（按角色与权限过滤的五组结构）
+//
+// 角色只决定「这一层出现不出现」，组内每一项再各自按权限判断，
+// 避免出现「看得见但进不去」的入口。canManage = 既是超管又持有该权限，
+// hasPermission = 持有该权限即可（ADMIN 也能拿到 media:read / review:read）。
 // ---------------------------------------------------------------------
 
-const personalItems = [
-  { label: '我的账户', short: '我', to: accountPath('/center') },
-  { label: '学习记录', short: '学', to: accountPath('/learning') },
-]
+const navGroups = computed(() => {
+  const groups = [
+    {
+      key: 'overview',
+      label: '概览',
+      short: '览',
+      items: [
+        { label: '仪表盘', short: '盘', to: accountPath('/dashboard'), visible: auth.canManage('site:dashboard-read') },
+        { label: '访问统计', short: '统', to: accountPath('/analytics'), visible: auth.canManage('analytics:read') },
+      ],
+    },
+    {
+      key: 'content',
+      label: '内容',
+      short: '容',
+      items: [
+        {
+          label: '教程工作台', short: '教', to: accountPath('/tutorials/manage'),
+          visible: auth.hasPermission('tutorial:read-admin'),
+        },
+        {
+          label: '博客管理', short: '博', to: accountPath('/blog/manage'),
+          visible: auth.hasPermission('blog:read-admin'),
+          children: [
+            { label: '标签与专题', to: accountPath('/blog/taxonomy'), visible: auth.hasPermission('blog:taxonomy-manage') },
+          ],
+        },
+        {
+          label: '英语内容', short: '英', to: accountPath('/english/manage'),
+          visible: auth.hasPermission('english:content-read-admin'),
+          children: [
+            { label: '词汇', to: accountPath('/english/manage/vocabulary'), visible: auth.hasPermission('english:content-read-admin') },
+            { label: '语法', to: accountPath('/english/manage/grammar'), visible: auth.hasPermission('english:content-read-admin') },
+            { label: '阅读', to: accountPath('/english/manage/reading'), visible: auth.hasPermission('english:content-read-admin') },
+            { label: '听力', to: accountPath('/english/manage/listening'), visible: auth.hasPermission('english:content-read-admin') },
+            { label: '写作', to: accountPath('/english/manage/writing'), visible: auth.hasPermission('english:content-read-admin') },
+          ],
+        },
+        {
+          label: '作品管理', short: '品', to: accountPath('/portfolio/manage'),
+          visible: auth.canManage('portfolio:read-admin'),
+        },
+        { label: '媒体库', short: '媒', to: accountPath('/media'), visible: auth.hasPermission('media:read') },
+        {
+          label: '作者资料', short: '介', to: accountPath('/profile/manage'),
+          visible: auth.canManage('profile:read-admin'),
+        },
+      ],
+    },
+    {
+      key: 'collaboration',
+      label: '协作',
+      short: '协',
+      items: [
+        { label: '审核中心', short: '审', to: accountPath('/reviews'), visible: auth.hasPermission('review:read') },
+        {
+          label: '留言管理', short: '言', to: accountPath('/messages/manage'),
+          visible: auth.canManage('message:read-admin'),
+        },
+      ],
+    },
+    {
+      key: 'site',
+      label: '站点',
+      short: '站',
+      items: [
+        { label: '站点设置', short: '设', to: accountPath('/site/settings'), visible: auth.canManage('site:config-manage') },
+      ],
+    },
+    {
+      key: 'account',
+      label: '账户',
+      short: '户',
+      items: [
+        { label: '我的账户', short: '我', to: accountPath('/center'), visible: true },
+        { label: '账户管理', short: '用', to: accountPath('/accounts'), visible: auth.canManage('account:read') },
+        { label: '管理员邀请', short: '邀', to: accountPath('/invitations'), visible: auth.canManage('account:invite-admin') },
+        { label: '审计日志', short: '计', to: accountPath('/audits'), visible: auth.canManage('account:audit-read') },
+      ],
+    },
+  ]
 
-// 内容编辑层：ADMIN 与 SUPER_ADMIN。角色只决定「这一层出现不出现」，
-// 层内每一项再各自按权限判断，避免出现「看得见但进不去」的入口。
-const CONTENT_EDITOR_ROLES = ['ADMIN', 'SUPER_ADMIN']
-const isContentEditor = computed(() =>
-  Boolean(auth.currentUser?.roles?.some((role) => CONTENT_EDITOR_ROLES.includes(role))))
-const isSuperAdmin = computed(() => Boolean(auth.currentUser?.roles?.includes('SUPER_ADMIN')))
-
-const contentItems = computed(() => [
-  { label: '教程编辑', short: '教', to: accountPath('/tutorials/manage'), visible: auth.hasPermission('tutorial:read-admin') },
-  { label: '英语管理', short: '英', to: accountPath('/english/manage'), visible: auth.hasPermission('english:content-read-admin') },
-  { label: '博客管理', short: '博', to: accountPath('/blog/manage'), visible: auth.hasPermission('blog:read-admin') },
-  { label: '媒体库', short: '媒', to: accountPath('/media'), visible: auth.hasPermission('media:read') },
-  { label: '作品管理', short: '品', to: accountPath('/portfolio/manage'), visible: auth.hasPermission('portfolio:read-admin') },
-  { label: '作者资料', short: '介', to: accountPath('/profile/manage'), visible: auth.canManage('profile:read-admin') },
-  // 审核中心处理内容发布前的审核，放在内容编辑区末尾，按 review:read 控制可见性。
-  { label: '审核中心', short: '审', to: accountPath('/reviews'), visible: auth.hasPermission('review:read') },
-  { label: '留言管理', short: '言', to: accountPath('/messages/manage'), visible: auth.canManage('message:read-admin') },
-])
-const visibleContentItems = computed(() => contentItems.value.filter((item) => item.visible))
-
-// 站点治理层：只有 SUPER_ADMIN。每一项仍按账户治理权限判断（canManage 要求既是超管又有该权限）
-const governanceItems = computed(() => [
-  { label: '站点设置', short: '站', to: accountPath('/site/settings'), visible: auth.canManage('site:config-manage') },
-  { label: '账户管理', short: '用', to: accountPath('/accounts'), visible: auth.canManage('account:read') },
-  { label: '管理员邀请', short: '邀', to: accountPath('/invitations'), visible: auth.canManage('account:invite-admin') },
-  { label: '账户审计', short: '计', to: accountPath('/audits'), visible: auth.canManage('account:audit-read') },
-].filter((item) => item.visible))
-
-const governanceActive = computed(() =>
-  ['/site/settings', '/accounts', '/invitations', '/audits']
-    .some((suffix) => route.path.startsWith(accountPath(suffix))))
+  return groups
+    .map((group) => ({
+      ...group,
+      items: group.items
+        .filter((item) => item.visible)
+        .map((item) => ({ ...item, children: (item.children || []).filter((child) => child.visible) })),
+    }))
+    .filter((group) => group.items.length)
+})
 
 function isActive(target) {
   return route.path === target || route.path.startsWith(`${target}/`)
+}
+
+/*
+ * 父项自身的精确高亮：`/learning` 用 isActive 会把 `/learning/today` 也算进去，
+ * 于是父项和子项同时高亮。父项只在自己正好是当前页（或当前页不属于任何子项）时高亮。
+ */
+function isItemActive(item) {
+  if (!isActive(item.to)) return false
+  if (!item.children?.length) return true
+  return !item.children.some((child) => child.to !== item.to && route.path.startsWith(child.to))
 }
 
 // ---------------------------------------------------------------------
@@ -233,120 +338,43 @@ async function submitPassword() {
       </div>
 
       <nav ref="navRef" class="admin-shell__nav" aria-label="控制台导航" @scroll.passive="rememberNavScroll">
-        <RouterLink
-          v-if="auth.canManage('site:dashboard-read')"
-          :to="accountPath('/dashboard')"
-          class="admin-shell__nav-item"
-          :class="{ 'admin-shell__nav-item--active': isActive(accountPath('/dashboard')) }"
-          :title="collapsed ? '仪表盘' : undefined"
-        >
-          <span class="admin-shell__nav-short">盘</span>
-          <span v-if="!collapsed" class="admin-shell__nav-label">仪表盘</span>
-        </RouterLink>
-        <RouterLink
-          v-if="auth.canManage('analytics:read')"
-          :to="accountPath('/analytics')"
-          class="admin-shell__nav-item"
-          :class="{ 'admin-shell__nav-item--active': isActive(accountPath('/analytics')) }"
-          :title="collapsed ? '访问统计' : undefined"
-        >
-          <span class="admin-shell__nav-short">统</span>
-          <span v-if="!collapsed" class="admin-shell__nav-label">访问统计</span>
-        </RouterLink>
-        <!-- 通用：所有登录用户 -->
-        <template v-for="item in personalItems" :key="item.label">
-          <RouterLink
-            v-if="item.to"
-            :to="item.to"
-            class="admin-shell__nav-item"
-            :class="{ 'admin-shell__nav-item--active': isActive(item.to) }"
-            :title="collapsed ? item.label : undefined"
+        <template v-for="group in navGroups" :key="group.key">
+          <!-- 组标题。折叠态退化成单字，避免把 64px 宽的侧栏撑开 -->
+          <button
+            v-if="!collapsed"
+            type="button"
+            class="admin-shell__nav-caption admin-shell__nav-caption--toggle"
+            :aria-expanded="isGroupOpen(group.key)"
+            @click="toggleGroup(group.key)"
           >
-            <span class="admin-shell__nav-short">{{ item.short }}</span>
-            <span v-if="!collapsed" class="admin-shell__nav-label">{{ item.label }}</span>
-          </RouterLink>
-          <span
-            v-else
-            class="admin-shell__nav-item admin-shell__nav-item--pending"
-            :title="collapsed ? `${item.label}（建设中）` : item.pending"
-            aria-disabled="true"
-          >
-            <span class="admin-shell__nav-short">{{ item.short }}</span>
-            <template v-if="!collapsed">
-              <span class="admin-shell__nav-label">{{ item.label }}</span>
-              <em class="admin-shell__nav-badge">建设中</em>
-            </template>
-          </span>
-        </template>
+            <span>{{ group.label }}</span>
+            <span aria-hidden="true">{{ isGroupOpen(group.key) ? '▾' : '▸' }}</span>
+          </button>
+          <p v-else class="admin-shell__nav-caption">{{ group.short }}</p>
 
-        <!-- 内容编辑：ADMIN 及以上 -->
-        <template v-if="isContentEditor && visibleContentItems.length">
-          <p class="admin-shell__nav-caption">{{ collapsed ? '内' : '内容编辑' }}</p>
-          <template v-for="item in visibleContentItems" :key="item.label">
-            <span
-              v-if="item.pending"
-              class="admin-shell__nav-item admin-shell__nav-item--pending"
-              :title="collapsed ? `${item.label}（建设中）` : '模块建设中，暂未开放'"
-              aria-disabled="true"
-            >
-              <span class="admin-shell__nav-short">{{ item.short }}</span>
-              <template v-if="!collapsed">
-                <span class="admin-shell__nav-label">{{ item.label }}</span>
-                <em class="admin-shell__nav-badge">建设中</em>
-              </template>
-            </span>
-            <RouterLink
-              v-else
-              :to="item.to"
-              class="admin-shell__nav-item"
-              :class="{ 'admin-shell__nav-item--active': isActive(item.to) }"
-              :title="collapsed ? item.label : undefined"
-            >
-              <span class="admin-shell__nav-short">{{ item.short }}</span>
-              <span v-if="!collapsed" class="admin-shell__nav-label">{{ item.label }}</span>
-            </RouterLink>
-          </template>
-        </template>
-
-        <!-- 站点治理：只有 SUPER_ADMIN -->
-        <template v-if="isSuperAdmin && governanceItems.length">
-          <p class="admin-shell__nav-caption">{{ collapsed ? '治' : '站点治理' }}</p>
-
-          <!-- 折叠态：子项退化成单字图标，避免侧栏被撑开 -->
-          <div v-if="collapsed" class="admin-shell__collapsed-subnav">
-            <RouterLink
-              v-for="item in governanceItems"
-              :key="item.label"
-              :to="item.to"
-              class="admin-shell__nav-item"
-              :class="{ 'admin-shell__nav-item--active': isActive(item.to) }"
-              :title="item.label"
-            >
-              <span class="admin-shell__nav-short">{{ item.short }}</span>
-            </RouterLink>
-          </div>
-
-          <template v-else>
-            <button
-              type="button"
-              class="admin-shell__nav-item"
-              :class="{ 'admin-shell__nav-item--active': governanceActive }"
-              :aria-expanded="governanceOpen"
-              @click="governanceOpen = !governanceOpen"
-            >
-              <span class="admin-shell__nav-short">治</span>
-              <span class="admin-shell__nav-label">治理操作</span>
-              <span class="admin-shell__nav-chevron">{{ governanceOpen ? '⌃' : '⌄' }}</span>
-            </button>
-            <div v-if="governanceOpen" class="admin-shell__subnav">
+          <template v-if="collapsed || isGroupOpen(group.key)">
+            <template v-for="item in group.items" :key="item.label">
               <RouterLink
-                v-for="item in governanceItems"
-                :key="item.label"
                 :to="item.to"
-                class="admin-shell__subnav-item"
-                :class="{ 'is-active': isActive(item.to) }"
-              >{{ item.label }}</RouterLink>
-            </div>
+                class="admin-shell__nav-item"
+                :class="{ 'admin-shell__nav-item--active': isItemActive(item) }"
+                :title="collapsed ? `${group.label} · ${item.label}` : undefined"
+              >
+                <span class="admin-shell__nav-short">{{ item.short }}</span>
+                <span v-if="!collapsed" class="admin-shell__nav-label">{{ item.label }}</span>
+              </RouterLink>
+
+              <!-- 子项：仅在展开态显示，折叠态放不下（侧栏只有图标宽度） -->
+              <div v-if="!collapsed && item.children.length" class="admin-shell__subnav">
+                <RouterLink
+                  v-for="child in item.children"
+                  :key="child.label"
+                  :to="child.to"
+                  class="admin-shell__subnav-item"
+                  :class="{ 'is-active': route.path === child.to }"
+                >{{ child.label }}</RouterLink>
+              </div>
+            </template>
           </template>
         </template>
       </nav>
@@ -365,8 +393,8 @@ async function submitPassword() {
       <header class="admin-shell__header">
         <div class="admin-shell__header-title">
           <button class="admin-shell__mobile-menu" type="button" aria-label="打开控制台导航" @click="mobileOpen = true">☰</button>
-          <span class="admin-shell__header-title-long">星雨笔录 · 用户中心</span>
-          <span class="admin-shell__header-title-short">用户中心</span>
+          <span class="admin-shell__header-title-long">星雨笔录 · 管理控制台</span>
+          <span class="admin-shell__header-title-short">控制台</span>
         </div>
         <div class="admin-shell__header-actions">
           <!-- 返回前台 = 回账号树前台 /useradmin（accountPath('/')），不是公开树 '/'，理由见文件头注释 -->
