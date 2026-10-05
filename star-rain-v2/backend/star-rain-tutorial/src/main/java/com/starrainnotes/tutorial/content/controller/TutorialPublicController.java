@@ -1,15 +1,12 @@
 package com.starrainnotes.tutorial.content.controller;
 
-import com.starrainnotes.analytics.api.AnalyticsRecordApi;
-import com.starrainnotes.analytics.api.ContentViewEvent;
-
 import com.fasterxml.jackson.databind.JsonNode;
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.common.result.PageResult;
 import com.starrainnotes.tutorial.content.service.TutorialPublicationService;
+import com.starrainnotes.tutorial.content.service.TutorialPublicReadService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/public")
 public class TutorialPublicController {
     private final TutorialPublicationService publicationService;
-    @Autowired(required = false)
-    private AnalyticsRecordApi analytics;
+    private final TutorialPublicReadService reading;
 
     @GetMapping("/tutorial-categories/tree")
     public ApiResponse<List<JsonNode>> categories() {
@@ -40,16 +36,12 @@ public class TutorialPublicController {
 
     @GetMapping("/tutorials/{slug}")
     public ApiResponse<JsonNode> tutorial(@PathVariable String slug) {
-        JsonNode detail = publicationService.publicTutorial(slug);
-        if (analytics != null) analytics.recordContentView(new ContentViewEvent("TUTORIAL", detail.path("id").asLong(), "/tutorials/:slug"));
-        return ApiResponse.ok(detail);
+        return ApiResponse.ok(reading.tutorial(slug));
     }
 
     @GetMapping("/tutorials/{slug}/chapters/{chapterSlug}")
     public ApiResponse<JsonNode> chapter(@PathVariable String slug, @PathVariable String chapterSlug) {
-        JsonNode detail = publicationService.publicChapter(slug, chapterSlug);
-        if (analytics != null) analytics.recordContentView(new ContentViewEvent("CHAPTER", detail.path("id").asLong(), "/tutorials/:slug/:chapterSlug"));
-        return ApiResponse.ok(detail);
+        return ApiResponse.ok(reading.chapter(slug, chapterSlug));
     }
 
     @GetMapping("/tutorials/{slug}/chapters/{chapterSlug}/questions/{questionId}/answer")

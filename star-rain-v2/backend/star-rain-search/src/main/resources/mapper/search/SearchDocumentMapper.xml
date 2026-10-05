@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.search.mapper.SearchDocumentMapper">
-    <insert id="upsert" parameterType="com.starrainnotes.search.api.SearchableDocument">
+    <insert id="upsert" parameterType="com.starrainnotes.search.api.dto.SearchableDocument">
         INSERT INTO sr_search_document(content_type, content_id, document_key, title, summary,
             searchable_text, route_path, published_at, source_updated_at, status)
         VALUES (#{contentType}, #{contentId}, #{documentKey}, #{title}, #{summary},

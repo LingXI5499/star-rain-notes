@@ -1,8 +1,8 @@
 package com.starrainnotes.analytics;
 
-import com.starrainnotes.analytics.aggregate.AnalyticsAggregateService;
+import com.starrainnotes.analytics.service.AnalyticsAggregateService;
 import com.starrainnotes.analytics.api.ContentViewEvent;
-import com.starrainnotes.analytics.classifier.DefaultReferrerClassifier;
+import com.starrainnotes.analytics.service.ReferrerClassifier;
 import com.starrainnotes.analytics.entity.AnalyticsEventEntity;
 import com.starrainnotes.analytics.exception.AnalyticsDateRangeInvalidException;
 import com.starrainnotes.analytics.exception.AnalyticsRouteInvalidException;
@@ -17,7 +17,7 @@ import static org.mockito.Mockito.*;
 
 class AnalyticsServiceTest {
     private final AnalyticsMapper mapper = mock(AnalyticsMapper.class);
-    private final AnalyticsServiceImpl service = new AnalyticsServiceImpl(mapper, new DefaultReferrerClassifier());
+    private final AnalyticsServiceImpl service = new AnalyticsServiceImpl(mapper, new ReferrerClassifier());
 
     @Test
     void pageViewOnlyAcceptsKnownPublicRoutes() {
@@ -33,7 +33,7 @@ class AnalyticsServiceTest {
 
     @Test
     void configuredSiteHostIsInternal() {
-        DefaultReferrerClassifier classifier = new DefaultReferrerClassifier();
+        ReferrerClassifier classifier = new ReferrerClassifier();
         ReflectionTestUtils.setField(classifier, "frontendOrigin", "https://notes.example.com");
         assertEquals("INTERNAL", classifier.classify("https://notes.example.com/post?private=1").getCategory());
         assertEquals("notes.example.com", classifier.classify("https://notes.example.com/post?private=1").getHost());

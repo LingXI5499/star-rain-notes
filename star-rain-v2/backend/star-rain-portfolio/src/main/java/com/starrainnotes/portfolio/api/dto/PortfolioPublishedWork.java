@@ -17,5 +17,7 @@ public class PortfolioPublishedWork {
     private String title;
     private String summary;
     private String coverUrl;
+    private String bodyMarkdown;
     private LocalDateTime publishedAt;
+    private LocalDateTime updatedAt;
 }

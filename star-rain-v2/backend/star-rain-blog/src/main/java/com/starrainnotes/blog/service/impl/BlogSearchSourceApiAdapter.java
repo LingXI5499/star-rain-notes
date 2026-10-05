@@ -47,4 +47,10 @@ public class BlogSearchSourceApiAdapter implements BlogSearchSourceApi {
         BlogPostEntity post = postId == null ? null : postMapper.publishedPostById(postId);
         return post == null ? null : assembler.toDocument(post);
     }
+
+    @Override
+    public BlogPostDocument getPublishedDocumentBySlug(String slug) {
+        BlogPostEntity post = slug == null ? null : postMapper.publishedPostBySlug(slug);
+        return post == null ? null : assembler.toDocument(post);
+    }
 }

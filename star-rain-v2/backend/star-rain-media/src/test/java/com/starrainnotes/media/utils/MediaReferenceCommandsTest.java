@@ -5,7 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.starrainnotes.common.exception.ApiException;
-import com.starrainnotes.media.constant.MediaUsageCodes;
+import com.starrainnotes.media.api.constant.MediaUsageCodes;
 import com.starrainnotes.media.api.dto.MediaReferenceCommand;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -2,7 +2,7 @@ package com.starrainnotes.blog.utils;
 
 import com.starrainnotes.blog.constant.BlogMediaReference;
 import com.starrainnotes.media.api.dto.MediaReferenceCommand;
-import com.starrainnotes.media.constant.MediaUsageCodes;
+import com.starrainnotes.media.api.constant.MediaUsageCodes;
 
 /*
  * 构造 Blog 的媒体引用命令。

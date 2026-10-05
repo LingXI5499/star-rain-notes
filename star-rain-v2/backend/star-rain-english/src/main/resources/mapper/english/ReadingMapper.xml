@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.english.reading.mapper.ReadingMapper">
+    <resultMap id="articleMap" type="com.starrainnotes.english.reading.dto.ReadingDto$Article">
+        <id property="id" column="id"/>
+        <result property="slug" column="slug"/>
+        <result property="title" column="title"/>
+        <result property="summary" column="summary"/>
+        <result property="bodyMarkdown" column="body_markdown"/>
+        <result property="cefrLevel" column="cefr_level"/>
+        <result property="difficultyLevel" column="reading_level"/>
+        <result property="sourceName" column="source_name"/>
+        <result property="sourceUrl" column="source_url"/>
+        <result property="publishStatus" column="publish_status"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+    <sql id="columns">
+        id,slug,title,summary,body_markdown,cefr_level,reading_level,
+        source_name,source_url,publish_status,sort_order
+    </sql>
+    <sql id="filter">
+        <where>
+            <if test="publicOnly">publish_status='PUBLISHED'</if>
+            <if test="search != null and search != ''">AND title LIKE CONCAT('%',#{search},'%')</if>
+        </where>
+    </sql>
+    <select id="count" resultType="long">
+        SELECT COUNT(*) FROM sr_english_reading_article <include refid="filter"/>
+    </select>
+    <select id="list" resultMap="articleMap">
+        SELECT <include refid="columns"/> FROM sr_english_reading_article
+        <include refid="filter"/> ORDER BY sort_order,id LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="byId" resultMap="articleMap">
+        SELECT <include refid="columns"/> FROM sr_english_reading_article WHERE id=#{id}
+    </select>
+    <select id="publicBySlug" resultMap="articleMap">
+        SELECT <include refid="columns"/> FROM sr_english_reading_article
+        WHERE slug=#{slug} AND publish_status='PUBLISHED'
+    </select>
+    <insert id="insert" parameterType="com.starrainnotes.english.reading.dto.ReadingDto$Article"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_english_reading_article
+        (slug,title,summary,body_markdown,reading_level,cefr_level,source_name,source_url,sort_order)
+        VALUES (#{slug},#{title},#{summary},#{bodyMarkdown},#{difficultyLevel},
+                #{cefrLevel},#{sourceName},#{sourceUrl},#{sortOrder})
+    </insert>
+    <update id="update">
+        UPDATE sr_english_reading_article SET title=#{title},summary=#{summary},
+        body_markdown=#{bodyMarkdown},reading_level=#{difficultyLevel},cefr_level=#{cefrLevel},
+        source_name=#{sourceName},source_url=#{sourceUrl},sort_order=#{sortOrder},
+        slug=#{slug} WHERE id=#{id}
+    </update>
+    <update id="setStatus">
+        UPDATE sr_english_reading_article SET publish_status=#{status},
+        published_at=COALESCE(published_at,NOW(3)) WHERE id=#{id}
+    </update>
+    <delete id="delete">DELETE FROM sr_english_reading_article WHERE id=#{id}</delete>
+</mapper>

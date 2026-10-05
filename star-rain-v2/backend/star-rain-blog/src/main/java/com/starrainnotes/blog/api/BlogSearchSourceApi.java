@@ -16,4 +16,6 @@ public interface BlogSearchSourceApi {
 
     // 单篇文档；未发布或不存在返回 null
     BlogPostDocument getPublishedDocument(Long postId);
+
+    BlogPostDocument getPublishedDocumentBySlug(String slug);
 }

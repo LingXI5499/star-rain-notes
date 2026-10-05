@@ -16,8 +16,7 @@ import { accountPath } from '../viewMode'
  *   站点治理    SUPER_ADMIN：站点设置、账户管理、管理员邀请、账户审计
  *
  * 三处刻意的取舍：
- * 1. 没有「英语管理」—— english 模块在 V2 仍为 PAUSED，导航里不出现，
- *    避免给出一个点进去什么也没有的入口。
+ * 1. 英语管理连接五个已经有真实内容接口的方向。
  * 2. 内容编辑这一层按角色显示，层内每个真实链接仍按权限判可见性；
  *    作品管理只向持有 portfolio:read-admin 的超管显示。
  *
@@ -83,6 +82,7 @@ const isSuperAdmin = computed(() => Boolean(auth.currentUser?.roles?.includes('S
 
 const contentItems = computed(() => [
   { label: '教程编辑', short: '教', to: accountPath('/tutorials/manage'), visible: auth.hasPermission('tutorial:read-admin') },
+  { label: '英语管理', short: '英', to: accountPath('/english/manage'), visible: auth.hasPermission('english:content-read-admin') },
   { label: '博客管理', short: '博', to: accountPath('/blog/manage'), visible: auth.hasPermission('blog:read-admin') },
   { label: '媒体库', short: '媒', to: accountPath('/media'), visible: auth.hasPermission('media:read') },
   { label: '作品管理', short: '品', to: accountPath('/portfolio/manage'), visible: auth.hasPermission('portfolio:read-admin') },

@@ -1,6 +1,6 @@
 package com.starrainnotes.portfolio.enumeration;
 
-import com.starrainnotes.media.constant.MediaUsageCodes;
+import com.starrainnotes.media.api.constant.MediaUsageCodes;
 
 public enum WorkMediaUsage {
     COVER(MediaUsageCodes.PORTFOLIO_COVER),

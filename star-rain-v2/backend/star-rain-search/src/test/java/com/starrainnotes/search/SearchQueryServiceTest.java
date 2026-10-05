@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.search.mapper.SearchDocumentMapper;
-import com.starrainnotes.search.query.SearchQueryService;
+import com.starrainnotes.search.service.SearchQueryService;
 import com.starrainnotes.search.vo.SearchHitVO;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;

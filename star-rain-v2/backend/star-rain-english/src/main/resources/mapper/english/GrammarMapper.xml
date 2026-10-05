@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.english.grammar.mapper.GrammarMapper">
+    <resultMap id="courseMap" type="com.starrainnotes.english.grammar.dto.GrammarDto$Course">
+        <result property="title" column="title"/>
+        <result property="subtitle" column="subtitle"/>
+        <result property="summary" column="summary"/>
+        <result property="introduction" column="introduction"/>
+        <result property="roadmapMarkdown" column="roadmap_markdown"/>
+        <result property="publishStatus" column="publish_status"/>
+    </resultMap>
+    <resultMap id="sectionMap" type="com.starrainnotes.english.grammar.dto.GrammarDto$Section">
+        <id property="id" column="id"/>
+        <result property="title" column="title"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+    <resultMap id="lessonMap" type="com.starrainnotes.english.grammar.dto.GrammarDto$Lesson">
+        <id property="id" column="id"/>
+        <result property="sectionId" column="section_id"/>
+        <result property="title" column="title"/>
+        <result property="slug" column="slug"/>
+        <result property="summary" column="summary"/>
+        <result property="bodyMarkdown" column="body_markdown"/>
+        <result property="publishStatus" column="publish_status"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+    <sql id="lessonColumns">id,section_id,title,slug,summary,body_markdown,publish_status,sort_order</sql>
+    <select id="course" resultMap="courseMap">
+        SELECT title,subtitle,summary,introduction,roadmap_markdown,publish_status
+        FROM sr_english_grammar_course WHERE id=1
+    </select>
+    <select id="sections" resultMap="sectionMap">
+        SELECT id,title,sort_order FROM sr_english_grammar_section
+        WHERE course_id=1 ORDER BY sort_order,id
+    </select>
+    <select id="section" resultMap="sectionMap">
+        SELECT id,title,sort_order FROM sr_english_grammar_section WHERE id=#{id} AND course_id=1
+    </select>
+    <select id="lessons" resultMap="lessonMap">
+        SELECT <include refid="lessonColumns"/> FROM sr_english_grammar_lesson
+        WHERE section_id=#{sectionId}
+        <if test="publicOnly">AND publish_status='PUBLISHED'</if>
+        ORDER BY sort_order,id
+    </select>
+    <select id="lessonById" resultMap="lessonMap">
+        SELECT <include refid="lessonColumns"/> FROM sr_english_grammar_lesson WHERE id=#{id}
+    </select>
+    <select id="publicLesson" resultMap="lessonMap">
+        SELECT <include refid="lessonColumns"/> FROM sr_english_grammar_lesson
+        WHERE slug=#{slug} AND publish_status='PUBLISHED'
+    </select>
+    <update id="updateCourse">
+        UPDATE sr_english_grammar_course SET title=#{title},subtitle=#{subtitle},
+        summary=#{summary},introduction=#{introduction},roadmap_markdown=#{roadmapMarkdown}
+        WHERE id=1
+    </update>
+    <update id="setCourseStatus">
+        UPDATE sr_english_grammar_course SET publish_status=#{status},
+        published_at=COALESCE(published_at,NOW(3)) WHERE id=1
+    </update>
+    <insert id="insertSection" parameterType="com.starrainnotes.english.grammar.dto.GrammarDto$Section"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_english_grammar_section(course_id,title,sort_order)
+        VALUES (1,#{title},#{sortOrder})
+    </insert>
+    <update id="updateSection">
+        UPDATE sr_english_grammar_section SET title=#{title},sort_order=#{sortOrder}
+        WHERE id=#{id}
+    </update>
+    <delete id="deleteSection">DELETE FROM sr_english_grammar_section WHERE id=#{id}</delete>
+    <insert id="insertLesson" parameterType="com.starrainnotes.english.grammar.dto.GrammarDto$Lesson"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_english_grammar_lesson
+        (course_id,section_id,title,slug,summary,body_markdown,sort_order)
+        VALUES (1,#{sectionId},#{title},#{slug},#{summary},#{bodyMarkdown},#{sortOrder})
+    </insert>
+    <update id="updateLesson">
+        UPDATE sr_english_grammar_lesson SET section_id=#{sectionId},title=#{title},
+        slug=#{slug},summary=#{summary},body_markdown=#{bodyMarkdown},sort_order=#{sortOrder}
+        WHERE id=#{id}
+    </update>
+    <update id="setLessonStatus">
+        UPDATE sr_english_grammar_lesson SET publish_status=#{status},
+        published_at=COALESCE(published_at,NOW(3)) WHERE id=#{id}
+    </update>
+    <delete id="deleteLesson">DELETE FROM sr_english_grammar_lesson WHERE id=#{id}</delete>
+</mapper>

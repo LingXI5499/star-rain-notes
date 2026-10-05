@@ -7,13 +7,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.starrainnotes.seo.canonical.CanonicalService;
+import com.starrainnotes.seo.service.CanonicalService;
 import com.starrainnotes.seo.config.SeoProperties;
 import com.starrainnotes.seo.mapper.SeoPageMapper;
-import com.starrainnotes.seo.render.DefaultSeoHtmlRenderer;
-import com.starrainnotes.seo.render.SeoPageModel;
-import com.starrainnotes.seo.sitemap.SitemapService;
-import com.starrainnotes.seo.snapshot.SeoPageSnapshot;
+import com.starrainnotes.seo.service.SeoHtmlRenderer;
+import com.starrainnotes.seo.dto.SeoPageModel;
+import com.starrainnotes.seo.service.SitemapService;
+import com.starrainnotes.seo.api.dto.SeoPageSnapshot;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
@@ -30,7 +30,7 @@ class SeoCoreTest {
 
     @Test
     void htmlEscapesUntrustedContentAndKeepsCoreText() {
-        String html = new DefaultSeoHtmlRenderer().render(SeoPageModel.builder()
+        String html = new SeoHtmlRenderer().render(SeoPageModel.builder()
             .canonicalUrl("https://example.org/blog/posts/test")
             .title("<script>alert(1)</script>")
             .description("Java & Vue")

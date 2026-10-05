@@ -1,5 +1,9 @@
 package com.starrainnotes.site.home;
 
+import com.starrainnotes.site.dto.HomeSectionData;
+import com.starrainnotes.site.dto.SiteHomeView;
+import com.starrainnotes.site.service.HomeAggregationService;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
@@ -7,11 +11,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import com.starrainnotes.site.api.SitePublicApi;
-import com.starrainnotes.site.config.SitePublicConfig;
-import com.starrainnotes.site.home.provider.HomeSectionProvider;
-import com.starrainnotes.site.home.provider.HomeSectionLimit;
-import com.starrainnotes.site.section.HomeSectionEntity;
-import com.starrainnotes.site.section.HomeSectionService;
+import com.starrainnotes.site.api.dto.SitePublicConfig;
+import com.starrainnotes.site.service.HomeSectionProvider;
+import com.starrainnotes.site.service.HomeSectionLimit;
+import com.starrainnotes.site.entity.HomeSectionEntity;
+import com.starrainnotes.site.service.HomeSectionService;
 import java.util.List;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;

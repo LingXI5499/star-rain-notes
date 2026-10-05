@@ -1,6 +1,6 @@
 package com.starrainnotes.seo.mapper;
 
-import com.starrainnotes.seo.snapshot.SeoPageSnapshot;
+import com.starrainnotes.seo.api.dto.SeoPageSnapshot;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

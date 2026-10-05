@@ -44,6 +44,9 @@ public class AccountSecurityContributor implements ModuleSecurityContributor {
     // 自助账户操作与后台账户管理只要求已认证，具体权限由方法级 @PreAuthorize 判断
     @Override
     public List<String> authenticatedPatterns() {
-        return List.of("/api/auth/logout", "/api/account/**", "/api/admin/**");
+        return List.of("/api/auth/logout", "/api/account/**",
+                "/api/admin/accounts", "/api/admin/accounts/**",
+                "/api/admin/account-invitations", "/api/admin/account-invitations/**",
+                "/api/admin/account-audits", "/api/admin/account-audits/**");
     }
 }

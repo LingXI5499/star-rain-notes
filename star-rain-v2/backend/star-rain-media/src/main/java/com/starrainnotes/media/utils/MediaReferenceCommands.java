@@ -1,7 +1,7 @@
 package com.starrainnotes.media.utils;
 
 import com.starrainnotes.media.exception.MediaReferenceInvalidException;
-import com.starrainnotes.media.constant.MediaUsageCodes;
+import com.starrainnotes.media.api.constant.MediaUsageCodes;
 import com.starrainnotes.media.api.dto.MediaReferenceCommand;
 import java.util.Locale;
 

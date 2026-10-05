@@ -25,6 +25,7 @@ let ticking = false
 const branding = useSiteBranding()
 const navItems = computed(() => [
   { label: '教程', to: contentPath('/tutorials') },
+  { label: '英语', to: contentPath('/english') },
   { label: '博客', to: contentPath('/blog') },
   { label: '作品', to: contentPath('/portfolio') },
   { label: '留言', to: contentPath('/messages') },

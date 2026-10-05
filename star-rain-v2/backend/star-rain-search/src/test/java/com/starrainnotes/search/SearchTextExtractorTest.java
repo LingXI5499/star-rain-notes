@@ -3,7 +3,7 @@ package com.starrainnotes.search;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.starrainnotes.search.text.SearchTextExtractor;
+import com.starrainnotes.search.utils.SearchTextExtractor;
 import org.junit.jupiter.api.Test;
 
 class SearchTextExtractorTest {

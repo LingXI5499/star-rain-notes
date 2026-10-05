@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.seo.mapper.SeoPageMapper">
-    <insert id="upsert" parameterType="com.starrainnotes.seo.snapshot.SeoPageSnapshot">
+    <insert id="upsert" parameterType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         INSERT INTO sr_seo_page_snapshot(route_path, content_type, content_id, canonical_url,
             title, description, robots_directive, structured_data_json, html_snapshot,
             source_version_ref, status)
@@ -17,18 +17,18 @@
     <update id="remove">
         UPDATE sr_seo_page_snapshot SET status = 'REMOVED' WHERE route_path = #{routePath}
     </update>
-    <select id="active" resultType="com.starrainnotes.seo.snapshot.SeoPageSnapshot">
+    <select id="active" resultType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         SELECT route_path, content_type, content_id, canonical_url, title, description,
             robots_directive, structured_data_json, html_snapshot, source_version_ref,
             status, generated_at FROM sr_seo_page_snapshot
         WHERE route_path = #{routePath} AND status = 'ACTIVE'
     </select>
-    <select id="activePages" resultType="com.starrainnotes.seo.snapshot.SeoPageSnapshot">
+    <select id="activePages" resultType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         SELECT route_path, canonical_url, generated_at
         FROM sr_seo_page_snapshot WHERE status = 'ACTIVE'
         ORDER BY route_path
     </select>
-    <select id="activeMeta" resultType="com.starrainnotes.seo.snapshot.SeoPageSnapshot">
+    <select id="activeMeta" resultType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         SELECT route_path, canonical_url, title, description, robots_directive
         FROM sr_seo_page_snapshot WHERE route_path = #{routePath} AND status = 'ACTIVE'
     </select>

@@ -1,15 +1,12 @@
 package com.starrainnotes.portfolio.controller;
 
-import com.starrainnotes.analytics.api.AnalyticsRecordApi;
-import com.starrainnotes.analytics.api.ContentViewEvent;
-
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.common.result.PageResult;
 import com.starrainnotes.portfolio.enumeration.WorkType;
 import com.starrainnotes.portfolio.service.PortfolioWorkService;
+import com.starrainnotes.portfolio.service.PortfolioPublicReadService;
 import com.starrainnotes.portfolio.vo.WorkVO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,8 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/public/portfolio/works")
 public class PortfolioPublicController {
     private final PortfolioWorkService works;
-    @Autowired(required = false)
-    private AnalyticsRecordApi analytics;
+    private final PortfolioPublicReadService reading;
 
     @GetMapping
     public ApiResponse<PageResult<WorkVO>> works(@RequestParam(defaultValue = "1") int page,
@@ -33,8 +29,6 @@ public class PortfolioPublicController {
 
     @GetMapping("/{slug}")
     public ApiResponse<WorkVO> work(@PathVariable String slug) {
-        WorkVO detail = works.publicWork(slug);
-        if (analytics != null) analytics.recordContentView(new ContentViewEvent("PORTFOLIO", Long.valueOf(detail.getId()), "/portfolio/:slug"));
-        return ApiResponse.ok(detail);
+        return ApiResponse.ok(reading.read(slug));
     }
 }

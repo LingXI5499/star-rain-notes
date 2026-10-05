@@ -32,7 +32,7 @@ import com.starrainnotes.blog.vo.BlogTopicVO;
 import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.media.api.MediaReferenceApi;
 import com.starrainnotes.media.api.dto.MediaReferenceCommand;
-import com.starrainnotes.media.constant.MediaUsageCodes;
+import com.starrainnotes.media.api.constant.MediaUsageCodes;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;

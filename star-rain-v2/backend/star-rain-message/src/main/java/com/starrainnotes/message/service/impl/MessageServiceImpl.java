@@ -13,7 +13,7 @@ import com.starrainnotes.message.entity.MessageEntity;
 import com.starrainnotes.message.mapper.MessageActionMapper;
 import com.starrainnotes.message.mapper.MessageMapper;
 import com.starrainnotes.message.service.MessageService;
-import com.starrainnotes.message.submission.MessageSubmissionLimiter;
+import com.starrainnotes.message.service.MessageSubmissionLimiter;
 import com.starrainnotes.message.vo.AdminMessageVO;
 import com.starrainnotes.message.vo.MessageActionVO;
 import com.starrainnotes.message.vo.PublicMessageVO;

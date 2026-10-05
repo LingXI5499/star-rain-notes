@@ -9,10 +9,11 @@ import com.starrainnotes.media.api.MediaAssetApi;
 import com.starrainnotes.media.api.MediaReferenceApi;
 import com.starrainnotes.media.api.dto.MediaAssetSummary;
 import com.starrainnotes.media.api.dto.MediaReferenceCommand;
-import com.starrainnotes.media.constant.MediaUsageCodes;
+import com.starrainnotes.media.api.constant.MediaUsageCodes;
 import com.starrainnotes.portfolio.api.PortfolioReferenceApi;
 import com.starrainnotes.portfolio.api.dto.PortfolioPublishedWork;
 import com.starrainnotes.profile.api.ProfilePublicApi;
+import com.starrainnotes.profile.api.dto.ProfilePublishedDocument;
 import com.starrainnotes.profile.dto.ExperienceDTO;
 import com.starrainnotes.profile.dto.FeaturedContentDTO;
 import com.starrainnotes.profile.dto.ProfilePatchDTO;
@@ -30,7 +31,7 @@ import com.starrainnotes.profile.mapper.ProfileMapper;
 import com.starrainnotes.profile.mapper.SkillMapper;
 import com.starrainnotes.profile.mapper.SocialLinkMapper;
 import com.starrainnotes.profile.service.ProfileService;
-import com.starrainnotes.profile.vo.ProfileVO;
+import com.starrainnotes.profile.api.dto.ProfileVO;
 import com.starrainnotes.tutorial.content.api.PublishedTutorial;
 import com.starrainnotes.tutorial.content.api.TutorialReferenceApi;
 import java.net.URI;
@@ -83,6 +84,22 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
     public Long publicProfileId() {
         ProfileEntity profile = owner();
         return "PUBLIC".equals(profile.getStatus()) ? profile.getId() : null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProfilePublishedDocument publishedDocument() {
+        Long id = publicProfileId();
+        if (id == null) return null;
+        ProfileVO profile = summary();
+        StringBuilder body = new StringBuilder(profile.getBioMarkdown() == null ? "" : profile.getBioMarkdown());
+        if (profile.getExperiences() != null) profile.getExperiences().forEach(item -> {
+            body.append(' ').append(item.getTitle());
+            body.append(' ').append(item.getOrganization());
+            body.append(' ').append(item.getDescriptionMd());
+        });
+        if (profile.getSkills() != null) profile.getSkills().forEach(item -> body.append(' ').append(item.getName()));
+        return new ProfilePublishedDocument(id, profile.getDisplayName(), profile.getHeadline(), body.toString());
     }
 
     @Override

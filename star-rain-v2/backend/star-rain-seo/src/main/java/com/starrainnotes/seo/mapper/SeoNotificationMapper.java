@@ -1,6 +1,6 @@
 package com.starrainnotes.seo.mapper;
 
-import com.starrainnotes.seo.notify.SeoNotificationLog;
+import com.starrainnotes.seo.entity.SeoNotificationLog;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;

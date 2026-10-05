@@ -1,6 +1,6 @@
 package com.starrainnotes.search.mapper;
 
-import com.starrainnotes.search.api.SearchableDocument;
+import com.starrainnotes.search.api.dto.SearchableDocument;
 import com.starrainnotes.search.vo.SearchHitVO;
 import com.starrainnotes.search.vo.SearchSuggestionVO;
 import java.util.List;

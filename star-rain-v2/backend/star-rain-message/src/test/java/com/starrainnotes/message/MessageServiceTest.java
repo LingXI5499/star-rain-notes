@@ -10,7 +10,7 @@ import com.starrainnotes.message.entity.MessageEntity;
 import com.starrainnotes.message.mapper.MessageActionMapper;
 import com.starrainnotes.message.mapper.MessageMapper;
 import com.starrainnotes.message.service.impl.MessageServiceImpl;
-import com.starrainnotes.message.submission.MessageSubmissionLimiter;
+import com.starrainnotes.message.service.MessageSubmissionLimiter;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;

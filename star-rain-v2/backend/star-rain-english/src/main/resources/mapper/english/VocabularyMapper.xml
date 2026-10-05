@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.english.vocabulary.mapper.VocabularyMapper">
+    <resultMap id="themeMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyDto$Theme">
+        <id property="id" column="id"/>
+        <result property="layer" column="layer"/>
+        <result property="layerOrder" column="layer_order"/>
+        <result property="name" column="name"/>
+        <result property="sortOrder" column="sort_order"/>
+        <result property="wordCount" column="word_count"/>
+    </resultMap>
+    <resultMap id="wordMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyDto$Word">
+        <id property="id" column="id"/>
+        <result property="themeId" column="theme_id"/>
+        <result property="word" column="word"/>
+        <result property="partOfSpeech" column="part_of_speech"/>
+        <result property="phoneticUs" column="phonetic_us"/>
+        <result property="phoneticUk" column="phonetic_uk"/>
+        <result property="translation" column="translation"/>
+        <result property="examples" column="examples"/>
+        <result property="sortOrder" column="sort_order"/>
+    </resultMap>
+    <sql id="wordColumns">
+        id,theme_id,word,part_of_speech,phonetic_us,phonetic_uk,translation,
+        CAST(examples AS CHAR) AS examples,sort_order
+    </sql>
+    <sql id="wordFilter">
+        <where>
+            <if test="themeId != null">theme_id = #{themeId}</if>
+            <if test="search != null and search != ''">
+                AND (word LIKE CONCAT('%',#{search},'%') OR translation LIKE CONCAT('%',#{search},'%'))
+            </if>
+        </where>
+    </sql>
+    <select id="themes" resultMap="themeMap">
+        SELECT t.id,t.layer,t.layer_order,t.name,t.sort_order,COUNT(w.id) AS word_count
+        FROM sr_english_vocabulary_theme t
+        LEFT JOIN sr_english_vocabulary_word w ON w.theme_id=t.id
+        GROUP BY t.id,t.layer,t.layer_order,t.name,t.sort_order
+        ORDER BY t.layer_order,t.sort_order,t.id
+    </select>
+    <select id="theme" resultMap="themeMap">
+        SELECT t.id,t.layer,t.layer_order,t.name,t.sort_order,COUNT(w.id) AS word_count
+        FROM sr_english_vocabulary_theme t
+        LEFT JOIN sr_english_vocabulary_word w ON w.theme_id=t.id
+        WHERE t.id=#{id}
+        GROUP BY t.id,t.layer,t.layer_order,t.name,t.sort_order
+    </select>
+    <select id="countWords" resultType="long">
+        SELECT COUNT(*) FROM sr_english_vocabulary_word
+        <include refid="wordFilter"/>
+    </select>
+    <select id="words" resultMap="wordMap">
+        SELECT <include refid="wordColumns"/> FROM sr_english_vocabulary_word
+        <include refid="wordFilter"/>
+        ORDER BY sort_order,id LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="word" resultMap="wordMap">
+        SELECT <include refid="wordColumns"/> FROM sr_english_vocabulary_word WHERE id=#{id}
+    </select>
+    <insert id="insertTheme" parameterType="com.starrainnotes.english.vocabulary.dto.VocabularyDto$Theme"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_english_vocabulary_theme(layer,layer_order,name,sort_order)
+        VALUES (#{layer},#{layerOrder},#{name},#{sortOrder})
+    </insert>
+    <update id="updateTheme">
+        UPDATE sr_english_vocabulary_theme SET layer=#{layer},layer_order=#{layerOrder},
+        name=#{name},sort_order=#{sortOrder} WHERE id=#{id}
+    </update>
+    <delete id="deleteTheme">DELETE FROM sr_english_vocabulary_theme WHERE id=#{id}</delete>
+    <insert id="insertWord" parameterType="com.starrainnotes.english.vocabulary.dto.VocabularyDto$Word"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_english_vocabulary_word
+        (theme_id,word,part_of_speech,phonetic_us,phonetic_uk,translation,examples,sort_order)
+        VALUES (#{themeId},#{word},#{partOfSpeech},#{phoneticUs},#{phoneticUk},
+                #{translation},#{examples},#{sortOrder})
+    </insert>
+    <update id="updateWord">
+        UPDATE sr_english_vocabulary_word SET theme_id=#{themeId},word=#{word},
+        part_of_speech=#{partOfSpeech},phonetic_us=#{phoneticUs},phonetic_uk=#{phoneticUk},
+        translation=#{translation},examples=#{examples},sort_order=#{sortOrder}
+        WHERE id=#{id}
+    </update>
+    <delete id="deleteWord">DELETE FROM sr_english_vocabulary_word WHERE id=#{id}</delete>
+</mapper>

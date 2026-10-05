@@ -9,7 +9,7 @@ import com.starrainnotes.profile.dto.ProfilePatchDTO;
 import com.starrainnotes.profile.dto.SkillDTO;
 import com.starrainnotes.profile.dto.SocialLinkDTO;
 import com.starrainnotes.profile.service.ProfileService;
-import com.starrainnotes.profile.vo.ProfileVO;
+import com.starrainnotes.profile.api.dto.ProfileVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;

@@ -2,7 +2,7 @@ package com.starrainnotes.tutorial.content.media;
 
 import com.starrainnotes.media.api.MediaReferenceApi;
 import com.starrainnotes.media.api.dto.MediaReferenceCommand;
-import com.starrainnotes.media.constant.MediaUsageCodes;
+import com.starrainnotes.media.api.constant.MediaUsageCodes;
 import com.starrainnotes.tutorial.content.utils.TutorialContentMediaParser;
 import java.util.Collection;
 import java.util.LinkedHashSet;

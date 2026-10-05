@@ -1,0 +1,38 @@
+import { del, get, post, put } from '../../../shared/http'
+
+export const getEnglishOverview = () => get('/public/english/overview')
+export const getAdminEnglishOverview = () => get('/admin/english/overview')
+export const updateEnglishOverview = (payload) => put('/admin/english/overview', payload)
+
+export const getVocabularyThemes = () => get('/public/english/vocabulary/themes')
+export const getVocabularyWords = (params) => get('/public/english/vocabulary/words', params)
+export const createVocabularyTheme = (payload) => post('/admin/english/vocabulary/themes', payload)
+export const updateVocabularyTheme = (id, payload) => put(`/admin/english/vocabulary/themes/${id}`, payload)
+export const deleteVocabularyTheme = (id) => del(`/admin/english/vocabulary/themes/${id}`)
+export const createVocabularyWord = (payload) => post('/admin/english/vocabulary/words', payload)
+export const updateVocabularyWord = (id, payload) => put(`/admin/english/vocabulary/words/${id}`, payload)
+export const deleteVocabularyWord = (id) => del(`/admin/english/vocabulary/words/${id}`)
+
+export const getGrammarCurriculum = (admin = false) => get(`${admin ? '/admin' : '/public'}/english/grammar`)
+export const getGrammarLesson = (idOrSlug, admin = false) => get(`${admin ? '/admin' : '/public'}/english/grammar/lessons/${idOrSlug}`)
+export const updateGrammarCourse = (payload) => put('/admin/english/grammar', payload)
+export const setGrammarCoursePublished = (published) => post(`/admin/english/grammar/${published ? 'publish' : 'withdraw'}`)
+export const createGrammarSection = (payload) => post('/admin/english/grammar/sections', payload)
+export const updateGrammarSection = (id, payload) => put(`/admin/english/grammar/sections/${id}`, payload)
+export const deleteGrammarSection = (id) => del(`/admin/english/grammar/sections/${id}`)
+export const createGrammarLesson = (payload) => post('/admin/english/grammar/lessons', payload)
+export const updateGrammarLesson = (id, payload) => put(`/admin/english/grammar/lessons/${id}`, payload)
+export const setGrammarLessonPublished = (id, published) => post(`/admin/english/grammar/lessons/${id}/${published ? 'publish' : 'withdraw'}`)
+export const deleteGrammarLesson = (id) => del(`/admin/english/grammar/lessons/${id}`)
+
+export const listEnglishDocuments = (kind, params, admin = false) => get(`${admin ? '/admin' : '/public'}/english/content/${kind}`, params)
+export const getEnglishDocument = (kind, idOrSlug, admin = false) => get(`${admin ? '/admin' : '/public'}/english/content/${kind}/${idOrSlug}`)
+export const createEnglishDocument = (kind, payload) => post(`/admin/english/content/${kind}`, payload)
+export const updateEnglishDocument = (kind, id, payload) => put(`/admin/english/content/${kind}/${id}`, payload)
+export const setEnglishDocumentPublished = (kind, id, published) => post(`/admin/english/content/${kind}/${id}/${published ? 'publish' : 'withdraw'}`)
+export const deleteEnglishDocument = (kind, id) => del(`/admin/english/content/${kind}/${id}`)
+
+export const getListeningSegments = (idOrSlug, admin = false) => get(`${admin ? '/admin' : '/public'}/english/listening/${idOrSlug}/segments`)
+export const createListeningSegment = (id, payload) => post(`/admin/english/listening/${id}/segments`, payload)
+export const updateListeningSegment = (id, segmentId, payload) => put(`/admin/english/listening/${id}/segments/${segmentId}`, payload)
+export const deleteListeningSegment = (id, segmentId) => del(`/admin/english/listening/${id}/segments/${segmentId}`)

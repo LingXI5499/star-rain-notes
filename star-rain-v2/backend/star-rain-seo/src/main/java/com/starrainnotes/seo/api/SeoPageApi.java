@@ -1,6 +1,6 @@
 package com.starrainnotes.seo.api;
 
-import com.starrainnotes.seo.snapshot.SeoPageSnapshot;
+import com.starrainnotes.seo.api.dto.SeoPageSnapshot;
 import java.util.Optional;
 
 public interface SeoPageApi {

@@ -5,7 +5,7 @@ import com.starrainnotes.profile.dto.FeaturedContentDTO;
 import com.starrainnotes.profile.dto.ProfilePatchDTO;
 import com.starrainnotes.profile.dto.SkillDTO;
 import com.starrainnotes.profile.dto.SocialLinkDTO;
-import com.starrainnotes.profile.vo.ProfileVO;
+import com.starrainnotes.profile.api.dto.ProfileVO;
 import java.util.List;
 
 public interface ProfileService {

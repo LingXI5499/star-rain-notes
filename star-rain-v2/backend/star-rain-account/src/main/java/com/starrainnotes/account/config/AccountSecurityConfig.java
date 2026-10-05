@@ -1,6 +1,7 @@
 package com.starrainnotes.account.config;
 
 import com.starrainnotes.account.security.AccountAuthenticator;
+import com.starrainnotes.account.security.SecurityPatternValidator;
 import com.starrainnotes.account.interceptor.AccountSessionValidationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import com.starrainnotes.account.mapper.AccountMapper;
@@ -66,6 +67,7 @@ public class AccountSecurityConfig {
         List<ModuleSecurityContributor> ordered = contributors.stream()
                 .sorted(Comparator.comparingInt(ModuleSecurityContributor::order))
                 .toList();
+        SecurityPatternValidator.validate(ordered);
         http
                 .csrf(csrf -> csrf.csrfTokenRepository(csrfRepository)
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
