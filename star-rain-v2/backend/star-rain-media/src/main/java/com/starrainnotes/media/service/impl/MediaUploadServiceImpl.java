@@ -5,6 +5,7 @@ import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.media.entity.MediaAssetEntity;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
 import com.starrainnotes.media.service.MediaUploadService;
+import com.starrainnotes.media.service.MediaUploadLimiter;
 import com.starrainnotes.media.service.MediaUploadValidator;
 import com.starrainnotes.media.storage.MediaStorage;
 import com.starrainnotes.media.dto.StorageWriteCommand;
@@ -56,15 +57,18 @@ public class MediaUploadServiceImpl implements MediaUploadService {
     private final MediaStorage storage;
     private final MediaAssetMapper assetMapper;
     private final CurrentActorApi currentActorApi;
+    private final MediaUploadLimiter uploadLimiter;
 
     public MediaUploadServiceImpl(MediaUploadValidator validator,
                                   MediaStorage storage,
                                   MediaAssetMapper assetMapper,
-                                  CurrentActorApi currentActorApi) {
+                                  CurrentActorApi currentActorApi,
+                                  MediaUploadLimiter uploadLimiter) {
         this.validator = validator;
         this.storage = storage;
         this.assetMapper = assetMapper;
         this.currentActorApi = currentActorApi;
+        this.uploadLimiter = uploadLimiter;
     }
 
     @Override
@@ -72,6 +76,7 @@ public class MediaUploadServiceImpl implements MediaUploadService {
     public MediaAssetVO upload(MultipartFile file, MediaAccessLevel accessLevel) {
         // 上传人来自认证上下文，不接受前端提交，避免伪造归属
         Long uploaderAccountId = currentActorApi.current().getAccountId();
+        uploadLimiter.check(uploaderAccountId);
         UploadMetadata metadata = validator.validate(file);
         MediaAccessLevel level = accessLevel == null ? MediaAccessLevel.PUBLIC : accessLevel;
 

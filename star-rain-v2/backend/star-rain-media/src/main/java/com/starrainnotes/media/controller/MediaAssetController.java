@@ -1,6 +1,5 @@
 package com.starrainnotes.media.controller;
 
-import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.common.result.PageResult;
 import com.starrainnotes.media.enumeration.MediaAccessLevel;
@@ -12,7 +11,6 @@ import com.starrainnotes.media.vo.MediaAssetVO;
 import com.starrainnotes.media.service.MediaReferenceService;
 import com.starrainnotes.media.vo.MediaReferenceVO;
 import com.starrainnotes.media.service.MediaUploadService;
-import com.starrainnotes.media.upload.MediaUploadLimiter;
 import jakarta.validation.Valid;
 import java.util.List;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -41,19 +39,13 @@ public class MediaAssetController {
     private final MediaUploadService uploadService;
     private final MediaAssetService assetService;
     private final MediaReferenceService referenceService;
-    private final CurrentActorApi currentActor;
-    private final MediaUploadLimiter uploadLimiter;
 
     public MediaAssetController(MediaUploadService uploadService,
                                MediaAssetService assetService,
-                               MediaReferenceService referenceService,
-                               CurrentActorApi currentActor,
-                               MediaUploadLimiter uploadLimiter) {
+                               MediaReferenceService referenceService) {
         this.uploadService = uploadService;
         this.assetService = assetService;
         this.referenceService = referenceService;
-        this.currentActor = currentActor;
-        this.uploadLimiter = uploadLimiter;
     }
 
     // MED-001 上传媒体
@@ -64,7 +56,6 @@ public class MediaAssetController {
         MediaAccessLevel level = (accessLevel == null || accessLevel.isBlank())
                 ? null
                 : MediaAccessLevel.parse(accessLevel);
-        uploadLimiter.check(currentActor.current().getAccountId());
         return ApiResponse.ok(uploadService.upload(file, level));
     }
 

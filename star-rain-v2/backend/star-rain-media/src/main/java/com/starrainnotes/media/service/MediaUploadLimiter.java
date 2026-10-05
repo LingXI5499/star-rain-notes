@@ -1,4 +1,4 @@
-package com.starrainnotes.media.upload;
+package com.starrainnotes.media.service;
 
 import com.starrainnotes.media.exception.MediaUploadRateLimitedException;
 import java.time.Clock;

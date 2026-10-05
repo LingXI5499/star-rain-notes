@@ -17,6 +17,7 @@ import com.starrainnotes.media.entity.MediaAssetEntity;
 import com.starrainnotes.media.enumeration.MediaAccessLevel;
 import com.starrainnotes.media.enumeration.MediaStatus;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
+import com.starrainnotes.media.service.MediaUploadLimiter;
 import com.starrainnotes.media.storage.MediaStorage;
 import com.starrainnotes.media.dto.StorageWriteCommand;
 import com.starrainnotes.media.dto.StoredObject;
@@ -53,12 +54,15 @@ class MediaUploadServiceImplTest {
     @Mock
     private CurrentActorApi currentActorApi;
 
+    @Mock
+    private MediaUploadLimiter uploadLimiter;
+
     private MediaUploadServiceImpl service;
 
     @BeforeEach
     void setUp() {
         MediaUploadValidatorImpl validator = new MediaUploadValidatorImpl(new MediaProperties());
-        service = new MediaUploadServiceImpl(validator, storage, assetMapper, currentActorApi);
+        service = new MediaUploadServiceImpl(validator, storage, assetMapper, currentActorApi, uploadLimiter);
     }
 
     @Test
@@ -88,6 +92,7 @@ class MediaUploadServiceImplTest {
         assertThat(inserted.get().getHeight()).isEqualTo(80);
         assertThat(inserted.get().getSha256()).hasSize(64);
         assertThat(inserted.get().getUploadedByAccountId()).isEqualTo(42L);
+        verify(uploadLimiter).check(42L);
         verify(storage, never()).delete(any());
     }
 
