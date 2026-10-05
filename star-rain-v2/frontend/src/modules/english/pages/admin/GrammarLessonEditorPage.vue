@@ -1,7 +1,7 @@
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import MarkdownEditor from '../../../blog/components/admin/MarkdownEditor.vue'
+import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
 import { errorMessage } from '../../../../shared/http'

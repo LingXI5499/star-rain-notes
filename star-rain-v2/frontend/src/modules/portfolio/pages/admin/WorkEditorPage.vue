@@ -7,7 +7,7 @@ import {
 } from '../../api/portfolioApi'
 import { errorMessage } from '../../../../shared/http'
 import { accountPath } from '../../../../shared/viewMode'
-import MarkdownEditor from '../../../blog/components/admin/MarkdownEditor.vue'
+import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
 

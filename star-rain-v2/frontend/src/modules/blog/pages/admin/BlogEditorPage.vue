@@ -11,7 +11,7 @@ import { useMediaPicker } from '../../../media/support/useMediaPicker'
 import AdminConfirmDialog from '../../components/admin/AdminConfirmDialog.vue'
 import BlogStatusPill from '../../components/admin/BlogStatusPill.vue'
 import BlogTagPicker from '../../components/admin/BlogTagPicker.vue'
-import MarkdownEditor from '../../components/admin/MarkdownEditor.vue'
+import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import { createTaxonomy } from '../../components/admin/tagSlug'
 import { canDelete, canPublish, canRestore, canWithdraw, dateLabel } from '../../support/display'
 

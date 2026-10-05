@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import BlogProse from './BlogProse.vue'
 
 const mocks = vi.hoisted(() => ({ typesetMath: vi.fn().mockResolvedValue(undefined) }))
-vi.mock('../support/mathJax', () => ({ typesetMath: mocks.typesetMath }))
+vi.mock('../../../shared/markdown/mathJax', () => ({ typesetMath: mocks.typesetMath }))
 
 async function render(markdown) {
   const wrapper = mount(BlogProse, { props: { markdown }, attachTo: document.body })

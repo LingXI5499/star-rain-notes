@@ -1,7 +1,7 @@
 <script setup>
 import { computed, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import MarkdownEditor from '../../../blog/components/admin/MarkdownEditor.vue'
+import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import { errorMessage } from '../../../../shared/http'
 import { accountPath } from '../../../../shared/viewMode'
 import {

@@ -1148,7 +1148,7 @@
  * Vditor 全屏要逃出控制台的堆叠上下文。
  * 侧栏 z-index 是 30，而全屏的编辑器仍然是 .admin-shell__body 的后代节点——
  * position: fixed 不会让元素跳出祖先的堆叠上下文，因此必须把外壳藏起来。
- * 标记由 support/markdownEditorChrome.js 的 setVditorFullscreenActive 打在 <html> 上。
+ * 标记由 shared/markdown/markdownEditorChrome.js 的 setVditorFullscreenActive 打在 <html> 上。
  */
 html.is-vditor-fullscreen,
 html.is-vditor-fullscreen body {

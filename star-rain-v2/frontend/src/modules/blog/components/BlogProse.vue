@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
-import { useCodeCopy } from '../support/useCodeCopy'
-import { useMarkdownDocument } from '../support/useMarkdownDocument'
+import { useCodeCopy } from '../../../shared/markdown/useCodeCopy'
+import { useMarkdownDocument } from '../../../shared/markdown/useMarkdownDocument'
 
 /*
  * 文章正文渲染（公开阅读页）。

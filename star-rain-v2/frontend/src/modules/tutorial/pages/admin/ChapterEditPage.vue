@@ -5,7 +5,7 @@ import {
   createChapter, getAdminChapter, getAdminCurriculum, updateChapter, updateChapterBody,
 } from '../../api/tutorialApi'
 import { errorMessage } from '../../../../shared/http'
-import MarkdownEditor from '../../../blog/components/admin/MarkdownEditor.vue'
+import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'

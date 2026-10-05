@@ -2,8 +2,8 @@
 import { computed, ref } from 'vue'
 import BlogTagList from './BlogTagList.vue'
 import BlogTopicPanel from './BlogTopicPanel.vue'
-import { renderMarkdown } from '../support/markdown'
-import { useCodeCopy } from '../support/useCodeCopy'
+import { renderMarkdown } from '../../../shared/markdown/markdown'
+import { useCodeCopy } from '../../../shared/markdown/useCodeCopy'
 import { dateLabel, summaryText } from '../support/display'
 
 /*
