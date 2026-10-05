@@ -4,8 +4,6 @@ import com.starrainnotes.account.dto.RegisterDTO;
 import com.starrainnotes.account.dto.RegistrationCodeRequestDTO;
 import com.starrainnotes.account.vo.EmailVerificationCodeVO;
 import com.starrainnotes.account.service.EmailVerificationService;
-import com.starrainnotes.account.service.AccountAuditService;
-import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.account.dto.LoginDTO;
 import com.starrainnotes.account.dto.PasswordResetRequestDTO;
 import com.starrainnotes.account.dto.PasswordResetConfirmDTO;
@@ -31,13 +29,10 @@ public class AuthController {
 
     private final AccountAuthService service;
     private final EmailVerificationService verification;
-    private final AccountAuditService audit;
 
-    public AuthController(AccountAuthService service, EmailVerificationService verification,
-                          AccountAuditService audit) {
+    public AuthController(AccountAuthService service, EmailVerificationService verification) {
         this.service = service;
         this.verification = verification;
-        this.audit = audit;
     }
 
     @GetMapping("/csrf")
@@ -54,14 +49,8 @@ public class AuthController {
     @PostMapping("/register/verification-codes")
     public ApiResponse<EmailVerificationCodeVO> sendEmailVerificationCode(
             @Valid @RequestBody RegistrationCodeRequestDTO request, HttpServletRequest servletRequest) {
-        try {
-            return ApiResponse.ok(verification.send(request.getEmail(), servletRequest.getRemoteAddr()));
-        } catch (ApiException exception) {
-            if ("MAIL_DELIVERY_FAILED".equals(exception.getCode())) {
-                audit.failed(null, null, "EMAIL_CODE_DELIVERY_FAILED");
-            }
-            throw exception;
-        }
+        // 发信失败的审计由 EmailVerificationService 写到独立事务里，接入层不再拦异常。
+        return ApiResponse.ok(verification.send(request.getEmail(), servletRequest.getRemoteAddr()));
     }
 
     @PostMapping("/login")

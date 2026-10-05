@@ -169,9 +169,16 @@
     <delete id="deleteAccountRole">
         DELETE FROM sr_account_role WHERE account_id = #{accountId} AND role_id = #{roleId}
     </delete>
+    <!--
+        列清单必须覆盖实体上所有会被读的列。accepted_by 曾经漏在这里：
+        acceptInvitation 会把它写进去，但没有一条 SELECT 读它，
+        于是 AdminInvitationEntity.acceptedBy 恒为 null —— 同一份 XML 自己写、自己读不出来。
+        目前没有任何代码读这个字段，所以不是线上 bug；但它是「写进去读不出来」的隐患，
+        而是补一列、零行为风险，因此本轮补上（AccountMapperXmlTest 有回归断言）。
+    -->
     <sql id="invitationColumns">
         id, target_account_id, email_snapshot, target_role_code, token_hash,
-        status, invited_by, expires_at, created_at, accepted_at, revoked_at,
+        status, invited_by, expires_at, created_at, accepted_at, accepted_by, revoked_at,
         last_sent_at, mail_message_id, mail_submission_status
     </sql>
     <select id="invitationById" resultType="com.starrainnotes.account.entity.AdminInvitationEntity">

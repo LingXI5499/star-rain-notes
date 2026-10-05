@@ -1,6 +1,5 @@
 package com.starrainnotes.tutorial.content.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.result.PageResult;
 import com.starrainnotes.tutorial.content.dto.ChapterBodyDTO;
@@ -111,27 +110,19 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     private List<TutorialCategoryEntity> categoryRows() {
-        return categoryMapper.selectList(new LambdaQueryWrapper<TutorialCategoryEntity>()
-                .orderByAsc(TutorialCategoryEntity::getSortOrder, TutorialCategoryEntity::getId));
+        return categoryMapper.listOrdered();
     }
 
     private List<TutorialEntity> tutorialRows(Long categoryId) {
-        LambdaQueryWrapper<TutorialEntity> query = new LambdaQueryWrapper<TutorialEntity>()
-                .orderByAsc(TutorialEntity::getSortOrder, TutorialEntity::getId);
-        if (categoryId != null) query.eq(TutorialEntity::getCategoryId, categoryId);
-        return tutorialMapper.selectList(query);
+        return tutorialMapper.listOrdered(categoryId);
     }
 
     private List<TutorialGroupEntity> groupRows(Long tutorialId) {
-        return groupMapper.selectList(new LambdaQueryWrapper<TutorialGroupEntity>()
-                .eq(TutorialGroupEntity::getTutorialId, tutorialId)
-                .orderByAsc(TutorialGroupEntity::getSortOrder, TutorialGroupEntity::getId));
+        return groupMapper.listByTutorialId(tutorialId);
     }
 
     private List<TutorialChapterEntity> chapterRows(Long groupId) {
-        return chapterMapper.selectList(new LambdaQueryWrapper<TutorialChapterEntity>()
-                .eq(TutorialChapterEntity::getGroupId, groupId)
-                .orderByAsc(TutorialChapterEntity::getSortOrder, TutorialChapterEntity::getId));
+        return chapterMapper.listByGroupId(groupId);
     }
 
     private static int nextOrder(List<Integer> orders) {
@@ -153,8 +144,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
 
     private TutorialAdminVO tutorialView(TutorialEntity tutorial) {
         TutorialCategoryEntity category = categoryMapper.selectById(tutorial.getCategoryId());
-        long chapterCount = chapterMapper.selectCount(new LambdaQueryWrapper<TutorialChapterEntity>()
-                .eq(TutorialChapterEntity::getTutorialId, tutorial.getId()));
+        long chapterCount = chapterMapper.countByTutorialId(tutorial.getId());
         return TutorialAdminVO.builder().id(String.valueOf(tutorial.getId()))
                 .categoryId(String.valueOf(tutorial.getCategoryId()))
                 .categoryName(category == null ? null : category.getName())
@@ -200,8 +190,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         category.setSortOrder(nextOrder(categoryRows().stream().map(TutorialCategoryEntity::getSortOrder).toList()));
         for (int attempt = 1; attempt <= 8; attempt++) {
             String slug = attempt == 1 ? base : base + "-" + attempt;
-            if (categoryMapper.selectCount(new LambdaQueryWrapper<TutorialCategoryEntity>()
-                    .eq(TutorialCategoryEntity::getSlug, slug)) > 0) continue;
+            if (categoryMapper.countBySlug(slug) > 0) continue;
             category.setSlug(slug);
             try {
                 categoryMapper.insert(category);
@@ -220,7 +209,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         category.setName(text(name, "知识体系名称", 100));
         category.setUpdatedAt(now());
         // 公开地址保持稳定：改名不会破坏已有链接。
-        categoryMapper.updateById(category);
+        categoryMapper.updateName(category.getId(), category.getName(), category.getUpdatedAt());
         return categoryView(category);
     }
 
@@ -228,8 +217,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     @Transactional
     public void deleteCategory(Long id) {
         requireCategory(id);
-        if (tutorialMapper.selectCount(new LambdaQueryWrapper<TutorialEntity>()
-                .eq(TutorialEntity::getCategoryId, id)) > 0) {
+        if (tutorialMapper.countByCategoryId(id) > 0) {
             throw new TutorialStateException("知识体系仍有教程，不能删除");
         }
         categoryMapper.deleteById(id);
@@ -246,7 +234,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                     .findFirst().orElseThrow();
             row.setSortOrder((index + 1) * 10);
             row.setUpdatedAt(now());
-            categoryMapper.updateById(row);
+            categoryMapper.updateSortOrder(row.getId(), row.getSortOrder(), row.getUpdatedAt());
         }
     }
 
@@ -288,8 +276,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         tutorial.setUpdatedByAccountId(tutorial.getCreatedByAccountId());
         for (int attempt = 1; attempt <= 8; attempt++) {
             String slug = attempt == 1 ? base : base + "-" + attempt;
-            if (tutorialMapper.selectCount(new LambdaQueryWrapper<TutorialEntity>()
-                    .eq(TutorialEntity::getSlug, slug)) > 0) continue;
+            if (tutorialMapper.countBySlug(slug) > 0) continue;
             tutorial.setSlug(slug);
             try {
                 tutorialMapper.insert(tutorial);
@@ -315,7 +302,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         if (request.getSummary() != null) tutorial.setSummary(text(request.getSummary(), "教程摘要", 1000));
         tutorial.setUpdatedByAccountId(currentActorApi.current().getAccountId());
         tutorial.setUpdatedAt(now());
-        tutorialMapper.updateById(tutorial);
+        tutorialMapper.update(tutorial);
         return tutorialView(tutorial);
     }
 
@@ -324,8 +311,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     public void deleteTutorial(Long id) {
         TutorialEntity tutorial = lockTutorial(id);
         if (!"NEVER_PUBLISHED".equals(tutorial.getPublicationStatus())
-                || groupMapper.selectCount(new LambdaQueryWrapper<TutorialGroupEntity>()
-                        .eq(TutorialGroupEntity::getTutorialId, id)) > 0) {
+                || groupMapper.countByTutorialId(id) > 0) {
             throw new TutorialStateException("只有未发布且没有分组的教程可以删除");
         }
         tutorialMapper.deleteById(id);
@@ -342,7 +328,8 @@ public class TutorialContentServiceImpl implements TutorialContentService {
             TutorialEntity row = rows.stream().filter(item -> item.getId().equals(id)).findFirst().orElseThrow();
             row.setSortOrder((index + 1) * 10);
             row.setUpdatedAt(now());
-            tutorialMapper.updateById(row);
+            // 行来自 listOrdered 的完整结果，整行保存与原先 updateById 的字段范围一致
+            tutorialMapper.update(row);
         }
     }
 
@@ -374,7 +361,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         TutorialGroupEntity group = requireGroup(groupId);
         group.setTitle(text(title, "分组名称", 200));
         group.setUpdatedAt(now());
-        groupMapper.updateById(group);
+        groupMapper.updateTitle(group.getId(), group.getTitle(), group.getUpdatedAt());
         return groupView(group, chapterRows(groupId));
     }
 
@@ -382,14 +369,12 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     @Transactional
     public void archiveGroup(Long groupId) {
         TutorialGroupEntity group = requireGroup(groupId);
-        long activeChapters = chapterMapper.selectCount(new LambdaQueryWrapper<TutorialChapterEntity>()
-                .eq(TutorialChapterEntity::getGroupId, groupId)
-                .eq(TutorialChapterEntity::getStatus, "ACTIVE"));
+        long activeChapters = chapterMapper.countActiveByGroupId(groupId);
         if (activeChapters > 0) throw new TutorialGroupNotEmptyException();
         if (!"ACTIVE".equals(group.getStatus())) throw new TutorialStateException("分组已经归档");
         group.setStatus("ARCHIVED");
         group.setUpdatedAt(now());
-        groupMapper.updateById(group);
+        groupMapper.updateStatus(group.getId(), group.getStatus(), group.getUpdatedAt());
     }
 
     @Override
@@ -399,7 +384,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         if (!"ARCHIVED".equals(group.getStatus())) throw new TutorialStateException("只有已归档分组可以恢复");
         group.setStatus("ACTIVE");
         group.setUpdatedAt(now());
-        groupMapper.updateById(group);
+        groupMapper.updateStatus(group.getId(), group.getStatus(), group.getUpdatedAt());
     }
 
     @Override
@@ -414,7 +399,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                     .findFirst().orElseThrow();
             row.setSortOrder((index + 1) * 10);
             row.setUpdatedAt(now());
-            groupMapper.updateById(row);
+            groupMapper.updateSortOrder(row.getId(), row.getSortOrder(), row.getUpdatedAt());
         }
     }
 
@@ -443,9 +428,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         chapter.setStatus("ACTIVE");
         for (int attempt = 1; attempt <= 8; attempt++) {
             String slug = attempt == 1 ? base : base + "-" + attempt;
-            if (chapterMapper.selectCount(new LambdaQueryWrapper<TutorialChapterEntity>()
-                    .eq(TutorialChapterEntity::getTutorialId, group.getTutorialId())
-                    .eq(TutorialChapterEntity::getSlug, slug)) > 0) continue;
+            if (chapterMapper.countByTutorialIdAndSlug(group.getTutorialId(), slug) > 0) continue;
             chapter.setSlug(slug);
             try {
                 chapterMapper.insert(chapter);
@@ -466,7 +449,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         if (request.getTitle() != null) chapter.setTitle(text(request.getTitle(), "章节标题", 200));
         chapter.setSummary(optionalText(request.getSummary(), 1000));
         chapter.setUpdatedAt(now());
-        chapterMapper.updateById(chapter);
+        chapterMapper.updateContent(chapter.getId(), chapter.getTitle(), chapter.getSummary(), chapter.getUpdatedAt());
         return chapterView(chapter);
     }
 
@@ -476,7 +459,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         TutorialChapterEntity chapter = requireChapter(chapterId);
         chapter.setBodyMarkdown(bodyText(request.getBodyMarkdown()));
         chapter.setUpdatedAt(now());
-        chapterMapper.updateById(chapter);
+        chapterMapper.updateBody(chapter.getId(), chapter.getBodyMarkdown(), chapter.getUpdatedAt());
         mediaReferences.replaceChapter(chapterId, chapter.getBodyMarkdown());
         return chapterView(chapter);
     }
@@ -488,7 +471,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         if (!"ACTIVE".equals(chapter.getStatus())) throw new TutorialStateException("章节已经归档");
         chapter.setStatus("ARCHIVED");
         chapter.setUpdatedAt(now());
-        chapterMapper.updateById(chapter);
+        chapterMapper.updateStatus(chapter.getId(), chapter.getStatus(), chapter.getUpdatedAt());
     }
 
     @Override
@@ -501,7 +484,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         }
         chapter.setStatus("ACTIVE");
         chapter.setUpdatedAt(now());
-        chapterMapper.updateById(chapter);
+        chapterMapper.updateStatus(chapter.getId(), chapter.getStatus(), chapter.getUpdatedAt());
     }
 
     @Override
@@ -518,7 +501,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         chapter.setSortOrder(nextOrder(chapterRows(groupId).stream()
                 .map(TutorialChapterEntity::getSortOrder).toList()));
         chapter.setUpdatedAt(now());
-        chapterMapper.updateById(chapter);
+        chapterMapper.moveToGroup(chapter.getId(), chapter.getGroupId(), chapter.getSortOrder(), chapter.getUpdatedAt());
     }
 
     @Override
@@ -534,7 +517,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                     .findFirst().orElseThrow();
             row.setSortOrder((index + 1) * 10);
             row.setUpdatedAt(now());
-            chapterMapper.updateById(row);
+            chapterMapper.updateSortOrder(row.getId(), row.getSortOrder(), row.getUpdatedAt());
         }
     }
 }

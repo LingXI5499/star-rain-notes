@@ -8,7 +8,7 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class TutorialReviewView implements ReviewTargetView {
+public class TutorialReviewVO implements ReviewTargetView {
     private String revisionRef;
     private String title;
     private JsonNode contentSnapshot;

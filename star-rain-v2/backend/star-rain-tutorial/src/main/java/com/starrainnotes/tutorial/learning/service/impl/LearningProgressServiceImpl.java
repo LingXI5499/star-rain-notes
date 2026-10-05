@@ -1,6 +1,5 @@
 package com.starrainnotes.tutorial.learning.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.tutorial.learning.dto.LearningProgressDTO;
 import com.starrainnotes.tutorial.learning.entity.LearningProgressEntity;
@@ -34,9 +33,7 @@ public class LearningProgressServiceImpl implements LearningProgressService {
     }
 
     private LearningProgressEntity row(Long accountId, Long chapterId) {
-        return progressMapper.selectOne(new LambdaQueryWrapper<LearningProgressEntity>()
-                .eq(LearningProgressEntity::getAccountId, accountId)
-                .eq(LearningProgressEntity::getChapterId, chapterId));
+        return progressMapper.selectByAccountIdAndChapterId(accountId, chapterId);
     }
 
     private LearningProgressVO view(LearningContentAccess.ChapterRef chapter, LearningProgressEntity row) {
@@ -103,9 +100,7 @@ public class LearningProgressServiceImpl implements LearningProgressService {
         Long actor = accountId();
         List<LearningProgressVO> rows = new ArrayList<>();
         Map<Long, LearningProgressEntity> saved = new HashMap<>();
-        progressMapper.selectList(new LambdaQueryWrapper<LearningProgressEntity>()
-                .eq(LearningProgressEntity::getAccountId, actor)
-                .eq(LearningProgressEntity::getTutorialId, tutorialId))
+        progressMapper.listByAccountIdAndTutorialId(actor, tutorialId)
                 .forEach(item -> saved.put(item.getChapterId(), item));
         int completed = 0;
         for (LearningContentAccess.ChapterRef chapter : content.chapters(tutorialId)) {
@@ -123,9 +118,7 @@ public class LearningProgressServiceImpl implements LearningProgressService {
     public List<LearningProgressVO> recent() {
         Long actor = accountId();
         List<LearningProgressVO> result = new ArrayList<>();
-        List<LearningProgressEntity> rows = progressMapper.selectList(new LambdaQueryWrapper<LearningProgressEntity>()
-                .eq(LearningProgressEntity::getAccountId, actor)
-                .orderByDesc(LearningProgressEntity::getLastStudiedAt).last("LIMIT 20"));
+        List<LearningProgressEntity> rows = progressMapper.listRecentByAccountId(actor);
         for (LearningProgressEntity row : rows) {
             try {
                 result.add(view(content.chapter(row.getChapterId()), row));

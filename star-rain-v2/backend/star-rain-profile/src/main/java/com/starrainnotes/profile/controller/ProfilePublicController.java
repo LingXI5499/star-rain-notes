@@ -2,7 +2,7 @@ package com.starrainnotes.profile.controller;
 
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.profile.service.ProfileService;
-import com.starrainnotes.profile.api.dto.ProfileVO;
+import com.starrainnotes.profile.api.vo.ProfileVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

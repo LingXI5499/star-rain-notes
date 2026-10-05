@@ -1,6 +1,5 @@
 package com.starrainnotes.message;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.account.api.AccountReferenceApi;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.exception.ApiException;
@@ -53,8 +52,8 @@ class MessageServiceTest {
         entity.setContent("你好");
         entity.setStatus("PUBLIC");
         entity.setSubmittedAt(LocalDateTime.now());
-        when(messages.selectCount(any(LambdaQueryWrapper.class))).thenReturn(1L);
-        when(messages.selectList(any(LambdaQueryWrapper.class))).thenReturn(List.of(entity));
+        when(messages.countByStatus("PUBLIC")).thenReturn(1L);
+        when(messages.pageByStatus(eq("PUBLIC"), eq(20), eq(0L))).thenReturn(List.of(entity));
 
         var item = service.publicMessages(1, 20).getItems().get(0);
 

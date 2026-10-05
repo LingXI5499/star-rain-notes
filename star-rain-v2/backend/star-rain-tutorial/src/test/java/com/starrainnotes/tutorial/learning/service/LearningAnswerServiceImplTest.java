@@ -2,7 +2,6 @@ package com.starrainnotes.tutorial.learning.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
@@ -43,7 +42,7 @@ class LearningAnswerServiceImplTest {
 
     @Test
     void referenceAnswerRequiresThisAccountsSubmission() {
-        when(mapper.selectOne(any())).thenReturn(null);
+        when(mapper.selectByAccountIdAndQuestionId(42L, 9L)).thenReturn(null);
         assertThrows(LearningAnswerLockedException.class, () -> service.referenceAnswer(9L));
     }
 
@@ -54,7 +53,7 @@ class LearningAnswerServiceImplTest {
         saved.setQuestionId(9L);
         saved.setAnswerText("我的答案");
         saved.setReferenceUnlockedAt(LocalDateTime.now());
-        when(mapper.selectOne(any())).thenReturn(saved);
+        when(mapper.selectByAccountIdAndQuestionId(42L, 9L)).thenReturn(saved);
         assertEquals("正确答案", service.referenceAnswer(9L));
         LearningAnswerDTO request = new LearningAnswerDTO();
         request.setAnswerText(" 我的答案 ");

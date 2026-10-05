@@ -14,7 +14,7 @@ import lombok.Data;
  * 服务端只做「只增不减」的合并，不会因为导入把已有的更高进度改小。
  */
 @Data
-public class VocabularyLocalProgressRequest {
+public class VocabularyLocalProgressRequestDTO {
 
     private List<LocalMemoryPayload> memory;
 

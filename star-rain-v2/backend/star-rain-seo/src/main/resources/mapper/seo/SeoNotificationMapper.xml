@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.seo.mapper.SeoNotificationMapper">
-    <insert id="enqueue" parameterType="com.starrainnotes.seo.entity.SeoNotificationLog">
+    <!--
+        全项目其它 insert 都声明了 useGeneratedKeys，只有这条曾经漏掉，
+        导致入队后 SeoNotificationLog.id 恒为 null。当前唯一的调用方
+        （SeoNotificationService.enqueue）不读这个 id，所以没有线上影响；
+        但「enqueue 之后拿 log.getId() 去 claim」这种写法会静默失效（WHERE id = null → 0 行）。
+        补上属性即可，不改变任何现有行为。
+    -->
+    <insert id="enqueue" parameterType="com.starrainnotes.seo.entity.SeoNotificationLog"
+            useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_seo_notification_log(provider_code, route_path, canonical_url, change_type,
             status, next_retry_at)
         VALUES (#{providerCode}, #{routePath}, #{canonicalUrl}, #{changeType}, 'PENDING', CURRENT_TIMESTAMP(3))

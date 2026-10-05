@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.StudyPlanMapper">
+
+  <sql id="columns">
+    id, account_id, tutorial_id, name, scope_type, scope_id, start_date, end_date,
+    study_weekdays_json, daily_target_minutes, status, generated_version, created_at, updated_at
+  </sql>
+
+  <!-- end_date / daily_target_minutes 允许为空，显式写 NULL 与原先 insert 跳过 null 字段等价 -->
+  <insert id="insert" parameterType="com.starrainnotes.tutorial.learning.entity.StudyPlanEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_study_plan
+      (account_id, tutorial_id, name, scope_type, scope_id, start_date, end_date,
+       study_weekdays_json, daily_target_minutes, status, generated_version)
+    VALUES
+      (#{accountId}, #{tutorialId}, #{name}, #{scopeType}, #{scopeId}, #{startDate}, #{endDate},
+       #{studyWeekdaysJson}, #{dailyTargetMinutes}, #{status}, #{generatedVersion})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.tutorial.learning.entity.StudyPlanEntity">
+    SELECT <include refid="columns"/> FROM sr_study_plan WHERE id = #{id}
+  </select>
+
+  <select id="listRecentByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.StudyPlanEntity">
+    SELECT <include refid="columns"/> FROM sr_study_plan
+    WHERE account_id = #{accountId}
+    ORDER BY updated_at DESC
+    LIMIT 100
+  </select>
+
+  <select id="countActiveByAccountId" resultType="long">
+    SELECT COUNT(*) FROM sr_study_plan WHERE account_id = #{accountId} AND status = 'ACTIVE'
+  </select>
+
+  <!--
+    保存计划定义。end_date / daily_target_minutes 的 <if> 不是「把 Wrappers 搬进 XML」，而是把
+    原先 updateById 的 NOT_NULL 字段策略显式写出来：请求里没带这两个字段时保留库里的旧值。
+    无条件 SET 会把「没传」变成「清空」，属于业务行为改变。
+    updated_at 不写进 SET，由列上的 ON UPDATE CURRENT_TIMESTAMP(3) 维护，
+    与原先 updateById 不携带 updated_at 时由 MySQL 自动更新时间戳的行为一致。
+  -->
+  <update id="updateDefinition" parameterType="com.starrainnotes.tutorial.learning.entity.StudyPlanEntity">
+    UPDATE sr_study_plan
+    SET tutorial_id = #{tutorialId},
+        name = #{name},
+        scope_type = #{scopeType},
+        scope_id = #{scopeId},
+        start_date = #{startDate},
+        <if test="endDate != null">end_date = #{endDate},</if>
+        study_weekdays_json = #{studyWeekdaysJson},
+        <if test="dailyTargetMinutes != null">daily_target_minutes = #{dailyTargetMinutes},</if>
+        status = #{status},
+        generated_version = #{generatedVersion}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateStatus">
+    UPDATE sr_study_plan
+    SET status = #{status}, generated_version = #{generatedVersion}
+    WHERE id = #{id}
+  </update>
+</mapper>

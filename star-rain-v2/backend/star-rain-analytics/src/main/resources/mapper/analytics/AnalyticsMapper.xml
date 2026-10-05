@@ -1,11 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.analytics.mapper.AnalyticsMapper">
+  <!--
+    referrer_category 在库里是 NOT NULL DEFAULT 'DIRECT'。显式把这一列写进 INSERT 会**覆盖掉列默认值**：
+    一旦传 null，插入就不是「回落到 DIRECT」而是直接违反非空约束。
+    服务层目前总是给出非 null 值（ReferrerClassifier 的五条分支都返回具体分类），
+    但这条失败会被 AnalyticsServiceImpl.safelyInsert 吞掉并只记一条 warn 日志——
+    也就是「页面浏览被静默丢掉」。所以这里显式 COALESCE，让 XML 尊重库声明的默认值。
+  -->
   <insert id="insert">
     INSERT INTO sr_analytics_event(event_type, route_key, content_type, content_id,
             referrer_category, referrer_host)
         VALUES (#{eventType}, #{routeKey}, #{contentType}, #{contentId},
-            #{referrerCategory}, #{referrerHost})
+            COALESCE(#{referrerCategory}, 'DIRECT'), #{referrerHost})
   </insert>
   <delete id="deleteSiteDay">
     DELETE FROM sr_analytics_daily_site WHERE stat_date = #{date}

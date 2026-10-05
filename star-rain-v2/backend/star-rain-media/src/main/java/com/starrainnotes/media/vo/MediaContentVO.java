@@ -23,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MediaContent {
+public class MediaContentVO {
 
     private Long mediaAssetId;
     private MediaType mediaType;

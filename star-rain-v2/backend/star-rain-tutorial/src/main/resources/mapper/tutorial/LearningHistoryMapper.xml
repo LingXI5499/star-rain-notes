@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.LearningHistoryMapper">
+
+  <sql id="columns">
+    id, account_id, event_type, tutorial_id, group_id, chapter_id, knowledge_card_id,
+    study_task_id, review_task_id, detail_json, occurred_at, created_at
+  </sql>
+
+  <!-- occurred_at / created_at 交给列默认值；事件链上的外键允许为空（不同事件携带的上下文不同） -->
+  <insert id="insert" parameterType="com.starrainnotes.tutorial.learning.entity.LearningHistoryEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_learning_history
+      (account_id, event_type, tutorial_id, group_id, chapter_id, knowledge_card_id,
+       study_task_id, review_task_id, detail_json)
+    VALUES
+      (#{accountId}, #{eventType}, #{tutorialId}, #{groupId}, #{chapterId}, #{knowledgeCardId},
+       #{studyTaskId}, #{reviewTaskId}, #{detailJson})
+  </insert>
+
+  <select id="countByAccountId" resultType="long">
+    SELECT COUNT(*) FROM sr_learning_history WHERE account_id = #{accountId}
+  </select>
+
+  <select id="pageByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.LearningHistoryEntity">
+    SELECT <include refid="columns"/> FROM sr_learning_history
+    WHERE account_id = #{accountId}
+    ORDER BY occurred_at DESC, id DESC
+    LIMIT #{limit} OFFSET #{offset}
+  </select>
+</mapper>

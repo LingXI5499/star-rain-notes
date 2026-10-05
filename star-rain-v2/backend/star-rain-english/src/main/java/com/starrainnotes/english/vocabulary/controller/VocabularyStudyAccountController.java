@@ -2,10 +2,10 @@ package com.starrainnotes.english.vocabulary.controller;
 
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.result.ApiResponse;
-import com.starrainnotes.english.vocabulary.dto.VocabularyDisplayRequest;
-import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequest;
-import com.starrainnotes.english.vocabulary.dto.VocabularyReviewRequest;
-import com.starrainnotes.english.vocabulary.dto.VocabularyStudySettingsRequest;
+import com.starrainnotes.english.vocabulary.dto.VocabularyDisplayRequestDTO;
+import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequestDTO;
+import com.starrainnotes.english.vocabulary.dto.VocabularyReviewRequestDTO;
+import com.starrainnotes.english.vocabulary.dto.VocabularyStudySettingsRequestDTO;
 import com.starrainnotes.english.vocabulary.service.VocabularyProgressImportService;
 import com.starrainnotes.english.vocabulary.service.VocabularyStudyCommandService;
 import com.starrainnotes.english.vocabulary.service.VocabularyStudyQueryService;
@@ -60,7 +60,7 @@ public class VocabularyStudyAccountController {
 
     @PutMapping("/settings")
     public ApiResponse<VocabularyStudySettingsVO> updateSettings(
-            @Valid @RequestBody VocabularyStudySettingsRequest request) {
+            @Valid @RequestBody VocabularyStudySettingsRequestDTO request) {
         return ApiResponse.ok(commandService.updateSettings(accountId(), request));
     }
 
@@ -104,7 +104,7 @@ public class VocabularyStudyAccountController {
 
     @PostMapping("/words/{wordId}/reviews")
     public ApiResponse<VocabularyReviewResultVO> review(@PathVariable long wordId,
-                                                       @Valid @RequestBody VocabularyReviewRequest request) {
+                                                       @Valid @RequestBody VocabularyReviewRequestDTO request) {
         return ApiResponse.ok(commandService.completeReview(accountId(), wordId, request));
     }
 
@@ -116,7 +116,7 @@ public class VocabularyStudyAccountController {
 
     @PutMapping("/words/{wordId}/display")
     public ApiResponse<VocabularyMemoryVO> setDisplay(@PathVariable long wordId,
-                                                     @Valid @RequestBody VocabularyDisplayRequest request) {
+                                                     @Valid @RequestBody VocabularyDisplayRequestDTO request) {
         return ApiResponse.ok(commandService.setDisplay(accountId(), wordId, request));
     }
 
@@ -140,7 +140,7 @@ public class VocabularyStudyAccountController {
     /* 登录后把浏览器本地进度合并到账号；合并只增不减 */
     @PostMapping("/import-local")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void importLocal(@RequestBody VocabularyLocalProgressRequest request) {
+    public void importLocal(@RequestBody VocabularyLocalProgressRequestDTO request) {
         importService.importLocal(accountId(), request);
     }
 }

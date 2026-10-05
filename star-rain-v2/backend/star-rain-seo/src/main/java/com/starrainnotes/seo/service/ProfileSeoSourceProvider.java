@@ -23,8 +23,8 @@ public class ProfileSeoSourceProvider implements SeoSourceProvider {
         ProfilePublishedDocument profile = profiles.publishedDocument();
         if (profile == null) return Optional.empty();
         return Optional.of(SeoSourceDocument.builder().routePath("/about").contentType("PROFILE")
-            .contentId(profile.id()).title(profile.title())
-            .summary(profile.summary()).bodyMarkdown(profile.bodyMarkdown()).build());
+            .contentId(profile.getId()).title(profile.getTitle())
+            .summary(profile.getSummary()).bodyMarkdown(profile.getBodyMarkdown()).build());
     }
 
     @Override

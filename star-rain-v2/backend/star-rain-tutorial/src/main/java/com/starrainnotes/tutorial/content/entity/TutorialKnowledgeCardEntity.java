@@ -1,15 +1,14 @@
 package com.starrainnotes.tutorial.content.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import lombok.Data;
 
+/*
+ * 章节知识卡片实体。表名与列清单由 mapper/tutorial/TutorialKnowledgeCardMapper.xml 维护，
+ * 不再使用 MyBatis-Plus 的表注解。
+ */
 @Data
-@TableName("sr_tutorial_knowledge_card")
 public class TutorialKnowledgeCardEntity {
-    @TableId(type = IdType.AUTO)
     private Long id;
     private Long chapterId;
     private String frontText;

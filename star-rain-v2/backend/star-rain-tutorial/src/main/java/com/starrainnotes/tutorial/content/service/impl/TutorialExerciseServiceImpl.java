@@ -1,6 +1,5 @@
 package com.starrainnotes.tutorial.content.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.tutorial.content.dto.ChapterQuestionDTO;
 import com.starrainnotes.tutorial.content.dto.KnowledgeCardDTO;
 import com.starrainnotes.tutorial.content.entity.TutorialChapterEntity;
@@ -49,15 +48,11 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
     }
 
     private List<TutorialKnowledgeCardEntity> cardRows(Long chapterId) {
-        return cardMapper.selectList(new LambdaQueryWrapper<TutorialKnowledgeCardEntity>()
-                .eq(TutorialKnowledgeCardEntity::getChapterId, chapterId)
-                .orderByAsc(TutorialKnowledgeCardEntity::getSortOrder, TutorialKnowledgeCardEntity::getId));
+        return cardMapper.listByChapterId(chapterId);
     }
 
     private List<TutorialQuestionEntity> questionRows(Long chapterId) {
-        return questionMapper.selectList(new LambdaQueryWrapper<TutorialQuestionEntity>()
-                .eq(TutorialQuestionEntity::getChapterId, chapterId)
-                .orderByAsc(TutorialQuestionEntity::getSortOrder, TutorialQuestionEntity::getId));
+        return questionMapper.listByChapterId(chapterId);
     }
 
     private Map<String, Object> cardView(TutorialKnowledgeCardEntity row) {
@@ -118,7 +113,8 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         row.setBackMarkdown(text(request.getBackMarkdown(), "卡片背面", 100000));
         row.setStatus(status(request.getStatus()));
         row.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
-        cardMapper.updateById(row);
+        cardMapper.updateContent(row.getId(), row.getFrontText(), row.getBackMarkdown(),
+                row.getStatus(), row.getUpdatedAt());
         return cardView(row);
     }
 
@@ -139,7 +135,7 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
             Long id = ids.get(index);
             TutorialKnowledgeCardEntity row = rows.stream().filter(item -> item.getId().equals(id)).findFirst().orElseThrow();
             row.setSortOrder((index + 1) * 10);
-            cardMapper.updateById(row);
+            cardMapper.updateSortOrder(row.getId(), row.getSortOrder());
         }
     }
 
@@ -172,7 +168,8 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         row.setReferenceAnswer(text(request.getReferenceAnswer(), "参考答案", 100000));
         row.setStatus(status(request.getStatus()));
         row.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
-        questionMapper.updateById(row);
+        questionMapper.updateContent(row.getId(), row.getQuestionText(), row.getReferenceAnswer(),
+                row.getStatus(), row.getUpdatedAt());
         return questionView(row);
     }
 
@@ -193,7 +190,7 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
             Long id = ids.get(index);
             TutorialQuestionEntity row = rows.stream().filter(item -> item.getId().equals(id)).findFirst().orElseThrow();
             row.setSortOrder((index + 1) * 10);
-            questionMapper.updateById(row);
+            questionMapper.updateSortOrder(row.getId(), row.getSortOrder());
         }
     }
 }

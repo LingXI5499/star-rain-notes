@@ -26,7 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
  * 且锁顺序一致，因此不会出现“归档检查通过后又被 attach”，也不会两方互锁。
  *
  * 注意：对业务模块暴露的 MediaReferenceApi 由 service/impl 里的 MediaReferenceApiAdapter 转接。
- * 原因是模块间视图 MediaReferenceView 与模块内视图 MediaReferenceVO 返回类型不同，
+ * 原因是模块间视图 MediaReferenceVO（media.api.vo） 与模块内视图 MediaReferenceVO 返回类型不同，
  * Java 不允许同一个类用同一签名实现两个返回类型不同的方法。
  */
 @Service

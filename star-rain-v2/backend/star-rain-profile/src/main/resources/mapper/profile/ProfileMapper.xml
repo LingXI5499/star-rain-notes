@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.profile.mapper.ProfileMapper">
+
+  <!-- 列清单在一处维护：resultType 依赖 map-underscore-to-camel-case 做列名到属性名的映射 -->
+  <sql id="columns">
+    id, profile_key, display_name, headline, bio_markdown, location_text,
+    avatar_media_asset_id, resume_media_asset_id, status, created_at, updated_at
+  </sql>
+
+  <!-- profile_key 有唯一键，服务层一直只读 OWNER 这一行；没有 OWNER 行时返回 null 由服务层报 404 -->
+  <select id="selectOwner" resultType="com.starrainnotes.profile.entity.ProfileEntity">
+    SELECT <include refid="columns"/> FROM sr_profile WHERE profile_key = 'OWNER'
+  </select>
+
+  <!--
+    headline / bio_markdown / location_text 允许被清空：它们必须无条件出现在 SET 里，
+    null 表示「删除这段文案」。这与原先 @TableField(updateStrategy = FieldStrategy.ALWAYS)
+    的行为一致；写成 <if test="headline != null"> 会让「清空标题」这个已经支持的操作失效。
+    profile_key / status / 头像与简历引用不属于这条路径，不参与 SET。
+  -->
+  <update id="updateBasic" parameterType="com.starrainnotes.profile.entity.ProfileEntity">
+    UPDATE sr_profile
+    SET display_name = #{displayName},
+        headline = #{headline},
+        bio_markdown = #{bioMarkdown},
+        location_text = #{locationText},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <!--
+    头像与简历引用同样带 ALWAYS 语义：换其中一个时另一个也要写回（保持读出来的原值），
+    否则「清除简历」这类操作会被 NOT_NULL 策略吞掉。
+  -->
+  <update id="updateMediaAssets" parameterType="com.starrainnotes.profile.entity.ProfileEntity">
+    UPDATE sr_profile
+    SET avatar_media_asset_id = #{avatarMediaAssetId},
+        resume_media_asset_id = #{resumeMediaAssetId},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+</mapper>

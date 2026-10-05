@@ -1,7 +1,93 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialMapper">
-  <select id="byIdForUpdate" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
-    SELECT id, category_id, slug, title, summary, sort_order, cover_media_asset_id, publication_status, editing_status, published_revision_id, published_at, withdrawn_at, created_by_account_id, updated_by_account_id, created_at, updated_at FROM sr_tutorial WHERE id = #{id} FOR UPDATE
+
+  <!-- 列清单在一处维护：resultType 依赖 map-underscore-to-camel-case 做列名到属性名的映射 -->
+  <sql id="columns">
+    id, category_id, slug, title, summary, sort_order, cover_media_asset_id,
+    publication_status, editing_status, published_revision_id, published_at, withdrawn_at,
+    created_by_account_id, updated_by_account_id, created_at, updated_at
+  </sql>
+
+  <!-- id 自增回填给实体：发布/提交审核随后要把 id 写进版本与审核记录 -->
+  <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_tutorial
+      (category_id, slug, title, summary, sort_order,
+       publication_status, editing_status, created_by_account_id, updated_by_account_id)
+    VALUES
+      (#{categoryId}, #{slug}, #{title}, #{summary}, #{sortOrder},
+       #{publicationStatus}, #{editingStatus}, #{createdByAccountId}, #{updatedByAccountId})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial WHERE id = #{id}
   </select>
+
+  <select id="byIdForUpdate" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial WHERE id = #{id} FOR UPDATE
+  </select>
+
+  <select id="selectPublishedBySlug" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial
+    WHERE slug = #{slug} AND publication_status = 'PUBLISHED'
+  </select>
+
+  <!-- categoryId 为 null 表示「全部知识体系」，用于后台列表 -->
+  <select id="listOrdered" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial
+    <where>
+      <if test="categoryId != null">category_id = #{categoryId}</if>
+    </where>
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="listPublishedWithRevision" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial
+    WHERE publication_status = 'PUBLISHED' AND published_revision_id IS NOT NULL
+    ORDER BY category_id, sort_order, id
+  </select>
+
+  <select id="listPublished" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial
+    WHERE publication_status = 'PUBLISHED'
+    ORDER BY id
+  </select>
+
+  <select id="countBySlug" resultType="long">
+    SELECT COUNT(*) FROM sr_tutorial WHERE slug = #{slug}
+  </select>
+
+  <select id="countByCategoryId" resultType="long">
+    SELECT COUNT(*) FROM sr_tutorial WHERE category_id = #{categoryId}
+  </select>
+
+  <!--
+    整行保存工作区改动（发布、撤回、恢复、提交审核、改名都走这一条）。
+    withdrawn_at 必须无条件出现在 SET 里：null 表示「清除撤回时间」，这是原先
+    @TableField(updateStrategy = FieldStrategy.ALWAYS) 承担的唯一职责，漏掉它会让
+    重新发布后的教程仍带着旧的 withdrawn_at。
+    created_at / created_by_account_id 是不可变列，不参与 SET。
+  -->
+  <update id="update" parameterType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    UPDATE sr_tutorial SET
+      category_id = #{categoryId},
+      slug = #{slug},
+      title = #{title},
+      summary = #{summary},
+      sort_order = #{sortOrder},
+      cover_media_asset_id = #{coverMediaAssetId},
+      publication_status = #{publicationStatus},
+      editing_status = #{editingStatus},
+      published_revision_id = #{publishedRevisionId},
+      published_at = #{publishedAt},
+      withdrawn_at = #{withdrawnAt},
+      updated_by_account_id = #{updatedByAccountId},
+      updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sr_tutorial WHERE id = #{id}
+  </delete>
 </mapper>

@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.learning.mapper.LearningProgressMapper">
+
+  <sql id="columns">
+    id, account_id, tutorial_id, group_id, chapter_id, scroll_anchor, progress_ratio,
+    study_seconds_total, completed_at, last_studied_at, created_at, updated_at
+  </sql>
+
   <insert id="upsertReading">
     INSERT INTO sr_learning_progress
                 (account_id, tutorial_id, group_id, chapter_id, scroll_anchor,
@@ -13,6 +19,7 @@
                 study_seconds_total = study_seconds_total + VALUES(study_seconds_total),
                 last_studied_at = VALUES(last_studied_at)
   </insert>
+
   <insert id="ensureRow">
     INSERT IGNORE INTO sr_learning_progress
                 (account_id, tutorial_id, group_id, chapter_id,
@@ -20,10 +27,33 @@
             VALUES (#{accountId}, #{tutorialId}, #{groupId}, #{chapterId},
                     0, UTC_TIMESTAMP(3))
   </insert>
+
+  <!-- 只在第一次完成时返回 1：Service 用它决定要不要写完成事件 -->
   <update id="markCompleted">
     UPDATE sr_learning_progress
             SET completed_at = UTC_TIMESTAMP(3), last_studied_at = UTC_TIMESTAMP(3)
             WHERE account_id = #{accountId} AND chapter_id = #{chapterId}
               AND completed_at IS NULL
   </update>
+
+  <select id="selectByAccountIdAndChapterId" resultType="com.starrainnotes.tutorial.learning.entity.LearningProgressEntity">
+    SELECT <include refid="columns"/> FROM sr_learning_progress
+    WHERE account_id = #{accountId} AND chapter_id = #{chapterId}
+  </select>
+
+  <select id="listByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.LearningProgressEntity">
+    SELECT <include refid="columns"/> FROM sr_learning_progress WHERE account_id = #{accountId}
+  </select>
+
+  <select id="listByAccountIdAndTutorialId" resultType="com.starrainnotes.tutorial.learning.entity.LearningProgressEntity">
+    SELECT <include refid="columns"/> FROM sr_learning_progress
+    WHERE account_id = #{accountId} AND tutorial_id = #{tutorialId}
+  </select>
+
+  <select id="listRecentByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.LearningProgressEntity">
+    SELECT <include refid="columns"/> FROM sr_learning_progress
+    WHERE account_id = #{accountId}
+    ORDER BY last_studied_at DESC
+    LIMIT 20
+  </select>
 </mapper>

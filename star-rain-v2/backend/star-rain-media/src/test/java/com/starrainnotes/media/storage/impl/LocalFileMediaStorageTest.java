@@ -5,8 +5,8 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.media.properties.MediaProperties;
-import com.starrainnotes.media.dto.StorageWriteCommand;
-import com.starrainnotes.media.dto.StoredObject;
+import com.starrainnotes.media.storage.StorageWriteCommand;
+import com.starrainnotes.media.storage.StoredObject;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

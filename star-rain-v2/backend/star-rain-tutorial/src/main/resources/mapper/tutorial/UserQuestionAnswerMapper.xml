@@ -1,10 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.learning.mapper.UserQuestionAnswerMapper">
+
+  <sql id="columns">
+    id, account_id, question_id, answer_text, first_submitted_at,
+    reference_unlocked_at, created_at, updated_at
+  </sql>
+
+  <!-- 重复提交只覆盖 answer_text：首次提交时间与参考答案解锁时间保持第一次的值 -->
   <insert id="upsertAnswer">
     INSERT INTO sr_user_question_answer
                 (account_id, question_id, answer_text)
             VALUES (#{accountId}, #{questionId}, #{answerText})
             ON DUPLICATE KEY UPDATE answer_text = VALUES(answer_text)
   </insert>
+
+  <select id="selectByAccountIdAndQuestionId" resultType="com.starrainnotes.tutorial.learning.entity.UserQuestionAnswerEntity">
+    SELECT <include refid="columns"/> FROM sr_user_question_answer
+    WHERE account_id = #{accountId} AND question_id = #{questionId}
+  </select>
 </mapper>

@@ -10,7 +10,7 @@ import lombok.Data;
  * 学习设置写入请求。reviewDirection 取值与 V1 完全一致：EN_TO_ZH / ZH_TO_EN / MIXED。
  */
 @Data
-public class VocabularyStudySettingsRequest {
+public class VocabularyStudySettingsRequestDTO {
 
     private boolean showEnglish;
 

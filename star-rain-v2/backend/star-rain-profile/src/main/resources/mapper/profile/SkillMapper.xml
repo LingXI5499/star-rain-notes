@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.profile.mapper.SkillMapper">
+
+  <sql id="columns">
+    id, profile_id, category, name, description, proficiency, sort_order, status, created_at, updated_at
+  </sql>
+
+  <insert id="insert" parameterType="com.starrainnotes.profile.entity.SkillEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_profile_skill
+      (profile_id, category, name, description, proficiency, sort_order, status, created_at, updated_at)
+    VALUES
+      (#{profileId}, #{category}, #{name}, #{description}, #{proficiency}, #{sortOrder},
+       #{status}, #{createdAt}, #{updatedAt})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.profile.entity.SkillEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_skill WHERE id = #{id}
+  </select>
+
+  <select id="listByProfileId" resultType="com.starrainnotes.profile.entity.SkillEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_skill
+    WHERE profile_id = #{profileId}
+    ORDER BY category, sort_order, id
+  </select>
+
+  <select id="listEnabledByProfileId" resultType="com.starrainnotes.profile.entity.SkillEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_skill
+    WHERE profile_id = #{profileId} AND status = 'ENABLED'
+    ORDER BY category, sort_order, id
+  </select>
+
+  <select id="countByProfileId" resultType="long">
+    SELECT COUNT(*) FROM sr_profile_skill WHERE profile_id = #{profileId}
+  </select>
+
+  <!--
+    description / proficiency 允许被清空，无条件 SET 即原先的 FieldStrategy.ALWAYS 语义。
+    profile_id 是归属键，不在更新范围内（服务层已校验归属）。
+  -->
+  <update id="updateContent" parameterType="com.starrainnotes.profile.entity.SkillEntity">
+    UPDATE sr_profile_skill
+    SET category = #{category},
+        name = #{name},
+        description = #{description},
+        proficiency = #{proficiency},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateSortOrder" parameterType="com.starrainnotes.profile.entity.SkillEntity">
+    UPDATE sr_profile_skill
+    SET sort_order = #{sortOrder},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sr_profile_skill WHERE id = #{id}
+  </delete>
+</mapper>

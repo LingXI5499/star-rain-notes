@@ -1,6 +1,6 @@
 package com.starrainnotes.english.vocabulary.service;
 
-import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequest;
+import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequestDTO;
 
 /*
  * 游客本机进度导入。
@@ -10,5 +10,5 @@ import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequest;
  */
 public interface VocabularyProgressImportService {
 
-    void importLocal(long accountId, VocabularyLocalProgressRequest request);
+    void importLocal(long accountId, VocabularyLocalProgressRequestDTO request);
 }

@@ -1,15 +1,11 @@
 package com.starrainnotes.message.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import lombok.Data;
 
+/* 留言操作流水实体；表名与列名由 MessageActionMapper.xml 的语句写明，无需框架注解。 */
 @Data
-@TableName("sr_message_action")
 public class MessageActionEntity {
-    @TableId(type = IdType.AUTO)
     private Long id;
     private Long messageId;
     private String actionType;

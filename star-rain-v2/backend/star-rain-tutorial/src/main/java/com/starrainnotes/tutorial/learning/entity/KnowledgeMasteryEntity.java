@@ -1,15 +1,14 @@
 package com.starrainnotes.tutorial.learning.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+/*
+ * 知识掌握状态实体。表名与列清单由 mapper/tutorial/KnowledgeMasteryMapper.xml 维护，
+ * 不再使用 MyBatis-Plus 的表注解。
+ */
 @Data
-@TableName("sr_knowledge_mastery")
 public class KnowledgeMasteryEntity {
-    @TableId(type = IdType.AUTO)
     private Long id;
     private Long accountId;
     private Long knowledgeCardId;

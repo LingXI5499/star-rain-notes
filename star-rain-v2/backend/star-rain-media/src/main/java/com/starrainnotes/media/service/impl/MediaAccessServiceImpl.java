@@ -11,7 +11,7 @@ import com.starrainnotes.media.service.MediaAccessService;
 import com.starrainnotes.media.storage.MediaStorage;
 import com.starrainnotes.media.utils.HttpByteRange;
 import com.starrainnotes.media.enumeration.MediaAccessLevel;
-import com.starrainnotes.media.vo.MediaContent;
+import com.starrainnotes.media.vo.MediaContentVO;
 import com.starrainnotes.media.constant.MediaPermissions;
 import com.starrainnotes.media.enumeration.MediaStatus;
 import com.starrainnotes.media.enumeration.MediaType;
@@ -50,7 +50,7 @@ public class MediaAccessServiceImpl implements MediaAccessService {
 
     @Override
     @Transactional(readOnly = true)
-    public MediaContent open(Long mediaAssetId, String rangeHeader) {
+    public MediaContentVO open(Long mediaAssetId, String rangeHeader) {
         if (mediaAssetId == null || mediaAssetId <= 0) {
             throw new MediaAssetNotFoundException();
         }
@@ -72,7 +72,7 @@ public class MediaAccessServiceImpl implements MediaAccessService {
                 ? storage.open(asset.getStorageKey())
                 : storage.openRange(asset.getStorageKey(), range.getStart(), range.length());
 
-        return new MediaContent(
+        return new MediaContentVO(
                 asset.getId(),
                 MediaType.of(asset.getMediaType()),
                 asset.getMimeType(),

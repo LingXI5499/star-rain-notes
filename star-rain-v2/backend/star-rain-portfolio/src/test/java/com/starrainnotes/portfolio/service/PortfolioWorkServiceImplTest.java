@@ -55,9 +55,9 @@ class PortfolioWorkServiceImplTest {
         WorkDetailEntity detail = new WorkDetailEntity();
         detail.setDetailJson("{}");
         when(works.byIdForUpdate(9L)).thenReturn(work);
-        when(details.selectOne(any())).thenReturn(detail);
-        when(media.selectList(any())).thenReturn(List.of());
-        when(links.selectList(any())).thenReturn(List.of());
+        when(details.selectByWorkId(any())).thenReturn(detail);
+        when(media.listByWorkId(any())).thenReturn(List.of());
+        when(links.listByWorkId(any())).thenReturn(List.of());
 
         assertThat(service.restore(9L).getStatus()).isEqualTo("PUBLISHED");
         assertThat(work.getPublishedAt()).isEqualTo(firstPublished);

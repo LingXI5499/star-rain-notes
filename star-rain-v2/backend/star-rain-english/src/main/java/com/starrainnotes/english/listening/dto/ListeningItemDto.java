@@ -3,7 +3,10 @@ package com.starrainnotes.english.listening.dto;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public final class ListeningItemDto {
     private ListeningItemDto() { }
@@ -27,8 +30,31 @@ public final class ListeningItemDto {
         private int sortOrder;
     }
 
-    public record Page(List<Item> items, long total, int page, int size) { }
-    public record Request(String title, String summary, String bodyMarkdown, String cefrLevel,
-                          Integer difficultyLevel, String audioMediaId, Integer durationSeconds,
-                          String sourceName, String sourceUrl, Integer sortOrder) { }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Page {
+        private List<Item> items;
+        private long total;
+        private int page;
+        private int size;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Request {
+        private String title;
+        private String summary;
+        private String bodyMarkdown;
+        private String cefrLevel;
+        private Integer difficultyLevel;
+        private String audioMediaId;
+        private Integer durationSeconds;
+        private String sourceName;
+        private String sourceUrl;
+        private Integer sortOrder;
+    }
 }

@@ -10,7 +10,7 @@ import lombok.Data;
  * reviewSessionId 由前端生成（UUID），是幂等键：同一个会话重放只记一次复习。
  */
 @Data
-public class VocabularyReviewRequest {
+public class VocabularyReviewRequestDTO {
 
     @NotBlank
     @Pattern(regexp = "[0-9a-fA-F\\-]{36}", message = "复习会话标识必须是 UUID")

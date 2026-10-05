@@ -4,6 +4,10 @@ import com.starrainnotes.media.exception.MediaUploadRateLimitedException;
 import java.time.Clock;
 import java.time.Duration;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /** 单实例按账号限制上传次数，避免连续文件写入耗尽存储和处理资源。 */
@@ -39,5 +43,12 @@ public class MediaUploadLimiter {
         }
     }
 
-    private record Window(long startedAt, int count) { }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class Window {
+        private long startedAt;
+        private int count;
+    }
 }

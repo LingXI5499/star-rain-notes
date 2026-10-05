@@ -1,6 +1,6 @@
 package com.starrainnotes.media.service;
 
-import com.starrainnotes.media.vo.MediaContent;
+import com.starrainnotes.media.vo.MediaContentVO;
 
 /*
  * MED-005 获取公开 / 受保护访问资源。
@@ -17,5 +17,5 @@ public interface MediaAccessService {
      * 区间由实现按真实文件长度解析与裁剪，不可满足时抛 416。
      * 调用方负责关闭返回的流。
      */
-    MediaContent open(Long mediaAssetId, String rangeHeader);
+    MediaContentVO open(Long mediaAssetId, String rangeHeader);
 }

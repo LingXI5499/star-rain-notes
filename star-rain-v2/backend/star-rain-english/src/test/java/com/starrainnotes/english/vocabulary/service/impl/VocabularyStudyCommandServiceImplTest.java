@@ -14,9 +14,9 @@ import static org.mockito.Mockito.when;
 import com.starrainnotes.english.vocabulary.dto.VocabularyDto.Word;
 import com.starrainnotes.english.vocabulary.dto.VocabularyMemoryLock;
 import com.starrainnotes.english.vocabulary.dto.VocabularyReviewLogRow;
-import com.starrainnotes.english.vocabulary.dto.VocabularyReviewRequest;
+import com.starrainnotes.english.vocabulary.dto.VocabularyReviewRequestDTO;
 import com.starrainnotes.english.vocabulary.dto.VocabularyReviewSchedule;
-import com.starrainnotes.english.vocabulary.dto.VocabularyStudySettingsRequest;
+import com.starrainnotes.english.vocabulary.dto.VocabularyStudySettingsRequestDTO;
 import com.starrainnotes.english.vocabulary.enumeration.TimingStatus;
 import com.starrainnotes.english.vocabulary.exception.VocabularyReviewSessionConflictException;
 import com.starrainnotes.english.vocabulary.exception.VocabularySettingsInvalidException;
@@ -49,8 +49,8 @@ class VocabularyStudyCommandServiceImplTest {
         return VocabularyMemoryVO.builder().wordId(wordId).learningStatus("ACTIVE").build();
     }
 
-    private static VocabularyReviewRequest reviewRequest() {
-        VocabularyReviewRequest request = new VocabularyReviewRequest();
+    private static VocabularyReviewRequestDTO reviewRequest() {
+        VocabularyReviewRequestDTO request = new VocabularyReviewRequestDTO();
         request.setReviewSessionId(SESSION);
         request.setDirection("EN_TO_ZH");
         return request;
@@ -58,7 +58,7 @@ class VocabularyStudyCommandServiceImplTest {
 
     @Test
     void bothLanguagesHiddenIsRejectedWithoutTouchingStorage() {
-        VocabularyStudySettingsRequest request = new VocabularyStudySettingsRequest();
+        VocabularyStudySettingsRequestDTO request = new VocabularyStudySettingsRequestDTO();
         request.setShowEnglish(false);
         request.setShowChinese(false);
         request.setReviewDirection("MIXED");
@@ -72,7 +72,7 @@ class VocabularyStudyCommandServiceImplTest {
 
     @Test
     void settingsOutsideAllowedRangeAreRejected() {
-        VocabularyStudySettingsRequest request = new VocabularyStudySettingsRequest();
+        VocabularyStudySettingsRequestDTO request = new VocabularyStudySettingsRequestDTO();
         request.setShowEnglish(true);
         request.setShowChinese(true);
         request.setReviewDirection("MIXED");
@@ -86,7 +86,7 @@ class VocabularyStudyCommandServiceImplTest {
 
     @Test
     void settingsArePersistedThenReadBack() {
-        VocabularyStudySettingsRequest request = new VocabularyStudySettingsRequest();
+        VocabularyStudySettingsRequestDTO request = new VocabularyStudySettingsRequestDTO();
         request.setShowEnglish(true);
         request.setShowChinese(false);
         request.setReviewDirection("ZH_TO_EN");

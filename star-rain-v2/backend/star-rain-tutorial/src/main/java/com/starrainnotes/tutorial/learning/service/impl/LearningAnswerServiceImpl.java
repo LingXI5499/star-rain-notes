@@ -1,6 +1,5 @@
 package com.starrainnotes.tutorial.learning.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.tutorial.learning.dto.LearningAnswerDTO;
 import com.starrainnotes.tutorial.learning.entity.UserQuestionAnswerEntity;
@@ -22,9 +21,7 @@ public class LearningAnswerServiceImpl implements LearningAnswerService {
     private final LearningEventWriter events;
 
     private UserQuestionAnswerEntity row(Long accountId, Long questionId) {
-        return answerMapper.selectOne(new LambdaQueryWrapper<UserQuestionAnswerEntity>()
-                .eq(UserQuestionAnswerEntity::getAccountId, accountId)
-                .eq(UserQuestionAnswerEntity::getQuestionId, questionId));
+        return answerMapper.selectByAccountIdAndQuestionId(accountId, questionId);
     }
 
     private LearningAnswerVO view(Long questionId, UserQuestionAnswerEntity row) {

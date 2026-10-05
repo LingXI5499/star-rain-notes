@@ -1,4 +1,4 @@
-package com.starrainnotes.profile.api.dto;
+package com.starrainnotes.profile.api.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import java.time.LocalDate;

@@ -1,16 +1,15 @@
 package com.starrainnotes.tutorial.learning.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+/*
+ * 个人学习计划实体。表名与列清单由 mapper/tutorial/StudyPlanMapper.xml 维护，
+ * 不再使用 MyBatis-Plus 的表注解；「null 不覆盖已有值」的字段策略写在 XML 的 updateDefinition 里。
+ */
 @Data
-@TableName("sr_study_plan")
 public class StudyPlanEntity {
-    @TableId(type = IdType.AUTO)
     private Long id;
     private Long accountId;
     private Long tutorialId;

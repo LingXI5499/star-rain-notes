@@ -1,6 +1,6 @@
 package com.starrainnotes.english.overview.controller;
 
-import com.starrainnotes.english.overview.dto.EnglishOverviewView;
+import com.starrainnotes.english.overview.vo.EnglishOverviewVO;
 
 import com.starrainnotes.english.overview.service.EnglishOverviewService;
 
@@ -17,5 +17,5 @@ public class EnglishOverviewPublicController {
     private final EnglishOverviewService service;
 
     @GetMapping("/overview")
-    public ApiResponse<EnglishOverviewView> get() { return ApiResponse.ok(service.get()); }
+    public ApiResponse<EnglishOverviewVO> get() { return ApiResponse.ok(service.get()); }
 }

@@ -2,7 +2,10 @@ package com.starrainnotes.english.listening.dto;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public final class ListeningSegmentDto {
     private ListeningSegmentDto() { }
@@ -20,6 +23,15 @@ public final class ListeningSegmentDto {
         private int sortOrder;
     }
 
-    public record Request(Integer startMs, Integer endMs, String transcriptText,
-                          String translationText, Integer sortOrder) { }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Request {
+        private Integer startMs;
+        private Integer endMs;
+        private String transcriptText;
+        private String translationText;
+        private Integer sortOrder;
+    }
 }

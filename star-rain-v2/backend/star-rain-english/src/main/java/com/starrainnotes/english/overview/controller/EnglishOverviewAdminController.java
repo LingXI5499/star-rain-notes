@@ -1,10 +1,10 @@
 package com.starrainnotes.english.overview.controller;
 
-import com.starrainnotes.english.overview.dto.EnglishOverviewView;
+import com.starrainnotes.english.overview.vo.EnglishOverviewVO;
 
 import com.starrainnotes.english.overview.service.EnglishOverviewService;
 
-import com.starrainnotes.english.overview.dto.EnglishOverviewRequest;
+import com.starrainnotes.english.overview.dto.EnglishOverviewRequestDTO;
 
 import com.starrainnotes.common.result.ApiResponse;
 import jakarta.validation.Valid;
@@ -24,10 +24,10 @@ public class EnglishOverviewAdminController {
     private final EnglishOverviewService service;
 
     @GetMapping("/overview")
-    public ApiResponse<EnglishOverviewView> get() { return ApiResponse.ok(service.get()); }
+    public ApiResponse<EnglishOverviewVO> get() { return ApiResponse.ok(service.get()); }
 
     @PutMapping("/overview")
-    public ApiResponse<EnglishOverviewView> update(@Valid @RequestBody EnglishOverviewRequest request) {
+    public ApiResponse<EnglishOverviewVO> update(@Valid @RequestBody EnglishOverviewRequestDTO request) {
         return ApiResponse.ok(service.update(request));
     }
 }

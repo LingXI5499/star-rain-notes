@@ -1,7 +1,5 @@
 package com.starrainnotes.profile.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.starrainnotes.blog.api.BlogReferenceApi;
 import com.starrainnotes.blog.api.dto.BlogPostSummary;
 import com.starrainnotes.common.exception.ApiException;
@@ -31,7 +29,7 @@ import com.starrainnotes.profile.mapper.ProfileMapper;
 import com.starrainnotes.profile.mapper.SkillMapper;
 import com.starrainnotes.profile.mapper.SocialLinkMapper;
 import com.starrainnotes.profile.service.ProfileService;
-import com.starrainnotes.profile.api.dto.ProfileVO;
+import com.starrainnotes.profile.api.vo.ProfileVO;
 import com.starrainnotes.tutorial.content.api.PublishedTutorial;
 import com.starrainnotes.tutorial.content.api.TutorialReferenceApi;
 import java.net.URI;
@@ -118,7 +116,7 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         if (request.getBioMarkdown() != null) row.setBioMarkdown(optional(request.getBioMarkdown(), 30_000, "个人介绍"));
         if (request.getLocationText() != null) row.setLocationText(optional(request.getLocationText(), 120, "所在地"));
         row.setUpdatedAt(now());
-        profiles.updateById(row);
+        profiles.updateBasic(row);
         return changed(row);
     }
 
@@ -145,15 +143,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         row.setIsCurrent(Boolean.TRUE.equals(request.getIsCurrent()));
         row.setDescriptionMd(optional(request.getDescriptionMd(), 30_000, "经历说明"));
         if (id == null) {
-            row.setSortOrder(experiences.selectCount(Wrappers.<ExperienceEntity>lambdaQuery()
-                    .eq(ExperienceEntity::getProfileId, owner.getId())).intValue());
+            row.setSortOrder((int) experiences.countByProfileId(owner.getId()));
             row.setStatus("ENABLED");
             row.setCreatedAt(now());
             row.setUpdatedAt(now());
             experiences.insert(row);
         } else {
             row.setUpdatedAt(now());
-            experiences.updateById(row);
+            experiences.updateContent(row);
         }
         return changed(owner);
     }
@@ -170,12 +167,11 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
     @Transactional
     public ProfileVO orderExperiences(List<Long> ids) {
         ProfileEntity owner = owner();
-        List<ExperienceEntity> rows = experiences.selectList(Wrappers.<ExperienceEntity>lambdaQuery()
-                .eq(ExperienceEntity::getProfileId, owner.getId()));
+        List<ExperienceEntity> rows = experiences.listByProfileId(owner.getId());
         checkOrder(ids, rows.stream().map(ExperienceEntity::getId).toList());
         for (ExperienceEntity row : rows) {
             row.setSortOrder(ids.indexOf(row.getId()));
-            experiences.updateById(row);
+            experiences.updateSortOrder(row);
         }
         return changed(owner);
     }
@@ -196,15 +192,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         row.setProficiency(optional(request.getProficiency(), 30, "熟悉程度"));
         try {
             if (id == null) {
-                row.setSortOrder(skills.selectCount(Wrappers.<SkillEntity>lambdaQuery()
-                        .eq(SkillEntity::getProfileId, owner.getId())).intValue());
+                row.setSortOrder((int) skills.countByProfileId(owner.getId()));
                 row.setStatus("ENABLED");
                 row.setCreatedAt(now());
                 row.setUpdatedAt(now());
                 skills.insert(row);
             } else {
                 row.setUpdatedAt(now());
-                skills.updateById(row);
+                skills.updateContent(row);
             }
         } catch (DuplicateKeyException exception) {
             throw error("PROFILE_SKILL_CONFLICT", "同类别下已有同名条目", 409);
@@ -224,12 +219,11 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
     @Transactional
     public ProfileVO orderSkills(List<Long> ids) {
         ProfileEntity owner = owner();
-        List<SkillEntity> rows = skills.selectList(Wrappers.<SkillEntity>lambdaQuery()
-                .eq(SkillEntity::getProfileId, owner.getId()));
+        List<SkillEntity> rows = skills.listByProfileId(owner.getId());
         checkOrder(ids, rows.stream().map(SkillEntity::getId).toList());
         for (SkillEntity row : rows) {
             row.setSortOrder(ids.indexOf(row.getId()));
-            skills.updateById(row);
+            skills.updateSortOrder(row);
         }
         return changed(owner);
     }
@@ -250,15 +244,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         row.setUrl(url);
         try {
             if (id == null) {
-                row.setSortOrder(socials.selectCount(Wrappers.<SocialLinkEntity>lambdaQuery()
-                        .eq(SocialLinkEntity::getProfileId, owner.getId())).intValue());
+                row.setSortOrder((int) socials.countByProfileId(owner.getId()));
                 row.setStatus("ENABLED");
                 row.setCreatedAt(now());
                 row.setUpdatedAt(now());
                 socials.insert(row);
             } else {
                 row.setUpdatedAt(now());
-                socials.updateById(row);
+                socials.updateContent(row);
             }
         } catch (DuplicateKeyException exception) {
             throw error("PROFILE_SOCIAL_URL_INVALID", "同一平台只能添加一条链接", 409);
@@ -278,12 +271,11 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
     @Transactional
     public ProfileVO orderSocial(List<Long> ids) {
         ProfileEntity owner = owner();
-        List<SocialLinkEntity> rows = socials.selectList(Wrappers.<SocialLinkEntity>lambdaQuery()
-                .eq(SocialLinkEntity::getProfileId, owner.getId()));
+        List<SocialLinkEntity> rows = socials.listByProfileId(owner.getId());
         checkOrder(ids, rows.stream().map(SocialLinkEntity::getId).toList());
         for (SocialLinkEntity row : rows) {
             row.setSortOrder(ids.indexOf(row.getId()));
-            socials.updateById(row);
+            socials.updateSortOrder(row);
         }
         return changed(owner);
     }
@@ -308,7 +300,7 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         if (avatar) owner.setAvatarMediaAssetId(mediaAssetId);
         else owner.setResumeMediaAssetId(mediaAssetId);
         owner.setUpdatedAt(now());
-        profiles.updateById(owner);
+        profiles.updateMediaAssets(owner);
         String usage = avatar ? MediaUsageCodes.PROFILE_AVATAR : MediaUsageCodes.PROFILE_RESUME;
         if (mediaAssetId != null) mediaReferences.attach(reference(owner.getId(), mediaAssetId, usage));
         if (oldId != null) mediaReferences.detach(reference(owner.getId(), oldId, usage));
@@ -337,8 +329,7 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         row.setContentType(type);
         row.setContentId(request.getContentId());
         row.setTitleOverride(optional(request.getTitleOverride(), 255, "精选标题"));
-        row.setSortOrder(featured.selectCount(Wrappers.<FeaturedContentEntity>lambdaQuery()
-                .eq(FeaturedContentEntity::getProfileId, owner.getId())).intValue());
+        row.setSortOrder((int) featured.countByProfileId(owner.getId()));
         row.setStatus("ENABLED");
         row.setCreatedAt(now());
         row.setUpdatedAt(now());
@@ -362,12 +353,11 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
     @Transactional
     public ProfileVO orderFeatured(List<Long> ids) {
         ProfileEntity owner = owner();
-        List<FeaturedContentEntity> rows = featured.selectList(Wrappers.<FeaturedContentEntity>lambdaQuery()
-                .eq(FeaturedContentEntity::getProfileId, owner.getId()));
+        List<FeaturedContentEntity> rows = featured.listByProfileId(owner.getId());
         checkOrder(ids, rows.stream().map(FeaturedContentEntity::getId).toList());
         for (FeaturedContentEntity row : rows) {
             row.setSortOrder(ids.indexOf(row.getId()));
-            featured.updateById(row);
+            featured.updateSortOrder(row);
         }
         return changed(owner);
     }
@@ -379,26 +369,17 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
 
     private ProfileVO view(ProfileEntity profile, boolean admin) {
         Long profileId = profile.getId();
-        List<ProfileVO.Experience> experienceViews = experiences.selectList(Wrappers.<ExperienceEntity>lambdaQuery()
-                        .eq(ExperienceEntity::getProfileId, profileId).eq(ExperienceEntity::getStatus, "ENABLED")
-                        .orderByAsc(ExperienceEntity::getSortOrder, ExperienceEntity::getId))
+        List<ProfileVO.Experience> experienceViews = experiences.listEnabledByProfileId(profileId)
                 .stream().map(row -> new ProfileVO.Experience(String.valueOf(row.getId()), row.getExperienceType(),
                         row.getTitle(), row.getOrganization(), row.getStartDate(), row.getEndDate(),
                         row.getIsCurrent(), row.getDescriptionMd(), row.getSortOrder())).toList();
-        List<ProfileVO.Skill> skillViews = skills.selectList(Wrappers.<SkillEntity>lambdaQuery()
-                        .eq(SkillEntity::getProfileId, profileId).eq(SkillEntity::getStatus, "ENABLED")
-                        .orderByAsc(SkillEntity::getCategory, SkillEntity::getSortOrder, SkillEntity::getId))
+        List<ProfileVO.Skill> skillViews = skills.listEnabledByProfileId(profileId)
                 .stream().map(row -> new ProfileVO.Skill(String.valueOf(row.getId()), row.getCategory(),
                         row.getName(), row.getDescription(), row.getProficiency(), row.getSortOrder())).toList();
-        List<ProfileVO.SocialLink> socialViews = socials.selectList(Wrappers.<SocialLinkEntity>lambdaQuery()
-                        .eq(SocialLinkEntity::getProfileId, profileId).eq(SocialLinkEntity::getStatus, "ENABLED")
-                        .orderByAsc(SocialLinkEntity::getSortOrder, SocialLinkEntity::getId))
+        List<ProfileVO.SocialLink> socialViews = socials.listEnabledByProfileId(profileId)
                 .stream().map(row -> new ProfileVO.SocialLink(String.valueOf(row.getId()), row.getPlatformCode(),
                         row.getLabel(), row.getUrl(), row.getSortOrder())).toList();
-        List<ProfileVO.Featured> featuredViews = featured.selectList(Wrappers.<FeaturedContentEntity>lambdaQuery()
-                        .eq(FeaturedContentEntity::getProfileId, profileId)
-                        .eq(FeaturedContentEntity::getStatus, "ENABLED")
-                        .orderByAsc(FeaturedContentEntity::getSortOrder, FeaturedContentEntity::getId))
+        List<ProfileVO.Featured> featuredViews = featured.listEnabledByProfileId(profileId)
                 .stream().map(row -> {
                     ProfileVO.Featured target = resolved(row.getContentType(), row.getContentId(),
                             row.getId(), row.getSortOrder());
@@ -457,8 +438,7 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
     }
 
     private ProfileEntity owner() {
-        ProfileEntity row = profiles.selectOne(Wrappers.<ProfileEntity>lambdaQuery()
-                .eq(ProfileEntity::getProfileKey, "OWNER"));
+        ProfileEntity row = profiles.selectOwner();
         if (row == null) throw error("PROFILE_NOT_FOUND", "作者资料不存在", 404);
         return row;
     }

@@ -1,7 +1,6 @@
 package com.starrainnotes.tutorial.content.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +32,7 @@ class TutorialPublicationServiceImplTest {
         tutorial.setSlug("java");
         tutorial.setPublicationStatus("PUBLISHED");
         tutorial.setPublishedRevisionId(9L);
-        when(tutorialMapper.selectOne(any())).thenReturn(tutorial);
+        when(tutorialMapper.selectPublishedBySlug("java")).thenReturn(tutorial);
         TutorialRevisionEntity revision = new TutorialRevisionEntity();
         revision.setSnapshotJson("""
                 {"id":"7","slug":"java","title":"公开标题","groups":[{"id":"11","title":"第一部分","chapters":[{"id":"21","slug":"intro","title":"介绍","bodyMarkdown":"# 公开正文","cards":[{"id":"31","frontText":"正面","backMarkdown":"背面"}],"questions":[{"id":"41","questionText":"问题","referenceAnswer":"参考答案"}]}]}]}

@@ -1,6 +1,5 @@
 package com.starrainnotes.tutorial.content.handler;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -15,7 +14,7 @@ import com.starrainnotes.tutorial.api.event.TutorialPublicationChangedEvent;
 import com.starrainnotes.tutorial.content.exception.TutorialStateException;
 import com.starrainnotes.tutorial.content.mapper.TutorialMapper;
 import com.starrainnotes.tutorial.content.mapper.TutorialRevisionMapper;
-import com.starrainnotes.tutorial.content.vo.TutorialReviewView;
+import com.starrainnotes.tutorial.content.vo.TutorialReviewVO;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import lombok.RequiredArgsConstructor;
@@ -46,15 +45,11 @@ public class TutorialReviewTargetHandler implements ReviewTargetHandler {
         if (target == null || !supports(target.getTargetModule(), target.getTargetType(), "tutorial.publish")) {
             return null;
         }
-        return revisionMapper.selectOne(new LambdaQueryWrapper<TutorialRevisionEntity>()
-                .eq(TutorialRevisionEntity::getTutorialId, target.getTargetId())
-                .eq(TutorialRevisionEntity::getRevisionRef, target.getRevisionRef()));
+        return revisionMapper.selectByTutorialIdAndRef(target.getTargetId(), target.getRevisionRef());
     }
 
     private boolean isLatestRevision(TutorialRevisionEntity revision) {
-        TutorialRevisionEntity latest = revisionMapper.selectOne(new LambdaQueryWrapper<TutorialRevisionEntity>()
-                .eq(TutorialRevisionEntity::getTutorialId, revision.getTutorialId())
-                .orderByDesc(TutorialRevisionEntity::getRevisionNo).last("LIMIT 1"));
+        TutorialRevisionEntity latest = revisionMapper.selectLatestByTutorialId(revision.getTutorialId());
         return latest != null && latest.getId().equals(revision.getId());
     }
 
@@ -64,7 +59,7 @@ public class TutorialReviewTargetHandler implements ReviewTargetHandler {
         if (row == null) return null;
         try {
             JsonNode snapshot = objectMapper.readTree(row.getSnapshotJson());
-            return new TutorialReviewView(row.getRevisionRef(), snapshot.path("title").asText(), snapshot);
+            return new TutorialReviewVO(row.getRevisionRef(), snapshot.path("title").asText(), snapshot);
         } catch (JsonProcessingException exception) {
             throw new TutorialStateException("教程审核版本不可读取");
         }
@@ -87,7 +82,7 @@ public class TutorialReviewTargetHandler implements ReviewTargetHandler {
         tutorial.setEditingStatus("DRAFT");
         tutorial.setPublishedAt(LocalDateTime.now(ZoneOffset.UTC));
         tutorial.setWithdrawnAt(null);
-        tutorialMapper.updateById(tutorial);
+        tutorialMapper.update(tutorial);
         eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorial.getId(), tutorial.getSlug(),
                 tutorial.getTitle(), "PUBLISHED", tutorial.getPublishedAt()));
     }
@@ -111,6 +106,6 @@ public class TutorialReviewTargetHandler implements ReviewTargetHandler {
         if (tutorial == null || !"IN_REVIEW".equals(tutorial.getEditingStatus())
                 || !isLatestRevision(revision)) return;
         tutorial.setEditingStatus("DRAFT");
-        tutorialMapper.updateById(tutorial);
+        tutorialMapper.update(tutorial);
     }
 }

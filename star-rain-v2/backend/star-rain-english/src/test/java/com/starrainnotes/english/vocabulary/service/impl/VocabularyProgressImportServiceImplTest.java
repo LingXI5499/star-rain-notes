@@ -9,7 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequest;
+import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequestDTO;
 import com.starrainnotes.english.vocabulary.mapper.VocabularyStudyMapper;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +31,9 @@ class VocabularyProgressImportServiceImplTest {
 
     @InjectMocks VocabularyProgressImportServiceImpl service;
 
-    private static VocabularyLocalProgressRequest.LocalMemoryPayload memory(Long wordId, Integer memoryCount,
+    private static VocabularyLocalProgressRequestDTO.LocalMemoryPayload memory(Long wordId, Integer memoryCount,
                                                                            Integer reviewCount, String status) {
-        VocabularyLocalProgressRequest.LocalMemoryPayload payload = new VocabularyLocalProgressRequest.LocalMemoryPayload();
+        VocabularyLocalProgressRequestDTO.LocalMemoryPayload payload = new VocabularyLocalProgressRequestDTO.LocalMemoryPayload();
         payload.setWordId(wordId);
         payload.setMemoryCount(memoryCount);
         payload.setReviewCount(reviewCount);
@@ -44,7 +44,7 @@ class VocabularyProgressImportServiceImplTest {
     @Test
     void planMembershipWithoutAnyReviewStillImportsSoGuestPlansSurviveLogin() {
         when(mapper.wordExists(20717L)).thenReturn(1);
-        VocabularyLocalProgressRequest request = new VocabularyLocalProgressRequest();
+        VocabularyLocalProgressRequestDTO request = new VocabularyLocalProgressRequestDTO();
         request.setMemory(List.of(memory(20717L, 0, 0, "ACTIVE")));
 
         service.importLocal(1L, request);
@@ -54,7 +54,7 @@ class VocabularyProgressImportServiceImplTest {
 
     @Test
     void inactiveRowWithZeroCountsIsNotImported() {
-        VocabularyLocalProgressRequest request = new VocabularyLocalProgressRequest();
+        VocabularyLocalProgressRequestDTO request = new VocabularyLocalProgressRequestDTO();
         request.setMemory(List.of(memory(20717L, 0, 0, "NEW")));
 
         service.importLocal(1L, request);
@@ -67,7 +67,7 @@ class VocabularyProgressImportServiceImplTest {
     void unknownWordsAndBrokenRowsAreSkippedWithoutFailingTheBatch() {
         when(mapper.wordExists(20717L)).thenReturn(1);
         when(mapper.wordExists(99999L)).thenReturn(0);
-        VocabularyLocalProgressRequest request = new VocabularyLocalProgressRequest();
+        VocabularyLocalProgressRequestDTO request = new VocabularyLocalProgressRequestDTO();
         request.setMemory(List.of(
                 memory(99999L, 5, 5, "ACTIVE"),
                 memory(null, 5, 5, "ACTIVE"),
@@ -81,7 +81,7 @@ class VocabularyProgressImportServiceImplTest {
     @Test
     void legacyVocabularyMapIsAccepted() {
         when(mapper.wordExists(15560L)).thenReturn(1);
-        VocabularyLocalProgressRequest request = new VocabularyLocalProgressRequest();
+        VocabularyLocalProgressRequestDTO request = new VocabularyLocalProgressRequestDTO();
         request.setVocabulary(Map.of("15560", memory(null, 4, 0, "ACTIVE")));
 
         service.importLocal(1L, request);
@@ -93,7 +93,7 @@ class VocabularyProgressImportServiceImplTest {
     void reviewLogRowsAreClampedAndBadDirectionsDropped() {
         when(mapper.wordExists(20717L)).thenReturn(1);
         String session = UUID.randomUUID().toString();
-        VocabularyLocalProgressRequest.LocalReviewPayload good = new VocabularyLocalProgressRequest.LocalReviewPayload();
+        VocabularyLocalProgressRequestDTO.LocalReviewPayload good = new VocabularyLocalProgressRequestDTO.LocalReviewPayload();
         good.setWordId(20717L);
         good.setReviewSessionId(session);
         good.setDirection("EN_TO_ZH");
@@ -102,17 +102,17 @@ class VocabularyProgressImportServiceImplTest {
         good.setIntervalSeconds(1800L);
         good.setTimingStatus("ON_TIME");
 
-        VocabularyLocalProgressRequest.LocalReviewPayload badDirection = new VocabularyLocalProgressRequest.LocalReviewPayload();
+        VocabularyLocalProgressRequestDTO.LocalReviewPayload badDirection = new VocabularyLocalProgressRequestDTO.LocalReviewPayload();
         badDirection.setWordId(20717L);
         badDirection.setReviewSessionId(UUID.randomUUID().toString());
         badDirection.setDirection("MIXED");
 
-        VocabularyLocalProgressRequest.LocalReviewPayload badSession = new VocabularyLocalProgressRequest.LocalReviewPayload();
+        VocabularyLocalProgressRequestDTO.LocalReviewPayload badSession = new VocabularyLocalProgressRequestDTO.LocalReviewPayload();
         badSession.setWordId(20717L);
         badSession.setReviewSessionId("not-a-uuid");
         badSession.setDirection("EN_TO_ZH");
 
-        VocabularyLocalProgressRequest request = new VocabularyLocalProgressRequest();
+        VocabularyLocalProgressRequestDTO request = new VocabularyLocalProgressRequestDTO();
         request.setReviewLog(List.of(good, badDirection, badSession));
 
         service.importLocal(1L, request);

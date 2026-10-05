@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.profile.mapper.SocialLinkMapper">
+
+  <sql id="columns">
+    id, profile_id, platform_code, label, url, sort_order, status, created_at, updated_at
+  </sql>
+
+  <insert id="insert" parameterType="com.starrainnotes.profile.entity.SocialLinkEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_profile_social_link
+      (profile_id, platform_code, label, url, sort_order, status, created_at, updated_at)
+    VALUES
+      (#{profileId}, #{platformCode}, #{label}, #{url}, #{sortOrder}, #{status},
+       #{createdAt}, #{updatedAt})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.profile.entity.SocialLinkEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_social_link WHERE id = #{id}
+  </select>
+
+  <select id="listByProfileId" resultType="com.starrainnotes.profile.entity.SocialLinkEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_social_link
+    WHERE profile_id = #{profileId}
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="listEnabledByProfileId" resultType="com.starrainnotes.profile.entity.SocialLinkEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_social_link
+    WHERE profile_id = #{profileId} AND status = 'ENABLED'
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="countByProfileId" resultType="long">
+    SELECT COUNT(*) FROM sr_profile_social_link WHERE profile_id = #{profileId}
+  </select>
+
+  <!-- 三列都必填，不存在「清空」场景；profile_id 是归属键，不在更新范围内 -->
+  <update id="updateContent" parameterType="com.starrainnotes.profile.entity.SocialLinkEntity">
+    UPDATE sr_profile_social_link
+    SET platform_code = #{platformCode},
+        label = #{label},
+        url = #{url},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateSortOrder" parameterType="com.starrainnotes.profile.entity.SocialLinkEntity">
+    UPDATE sr_profile_social_link
+    SET sort_order = #{sortOrder},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sr_profile_social_link WHERE id = #{id}
+  </delete>
+</mapper>

@@ -1,7 +1,7 @@
 package com.starrainnotes.media.api;
 
 import com.starrainnotes.media.api.dto.MediaReferenceCommand;
-import com.starrainnotes.media.api.dto.MediaReferenceView;
+import com.starrainnotes.media.api.vo.MediaReferenceVO;
 import java.util.List;
 
 /*
@@ -24,7 +24,7 @@ public interface MediaReferenceApi {
     // 业务对象删除 / 归档时批量解除该来源的全部引用
     void detachAll(String sourceModule, String sourceType, Long sourceId);
 
-    List<MediaReferenceView> listByAsset(Long mediaAssetId);
+    List<MediaReferenceVO> listByAsset(Long mediaAssetId);
 
     long countByAsset(Long mediaAssetId);
 }

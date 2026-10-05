@@ -1,7 +1,5 @@
 package com.starrainnotes.portfolio.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -79,9 +77,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
     @Override
     @Transactional(readOnly = true)
     public WorkVO publicWork(String slug) {
-        WorkEntity work = works.selectOne(Wrappers.<WorkEntity>lambdaQuery()
-                .eq(WorkEntity::getSlug, slug)
-                .eq(WorkEntity::getStatus, WorkStatus.PUBLISHED.name()));
+        WorkEntity work = works.selectBySlugAndStatus(slug, WorkStatus.PUBLISHED.name());
         if (work == null) {
             throw new WorkNotFoundException();
         }
@@ -91,9 +87,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
     @Override
     @Transactional(readOnly = true)
     public WorkVO publicWorkById(Long id) {
-        WorkEntity work = id == null ? null : works.selectOne(Wrappers.<WorkEntity>lambdaQuery()
-                .eq(WorkEntity::getId, id)
-                .eq(WorkEntity::getStatus, WorkStatus.PUBLISHED.name()));
+        WorkEntity work = id == null ? null : works.selectByIdAndStatus(id, WorkStatus.PUBLISHED.name());
         if (work == null) {
             throw new WorkNotFoundException();
         }
@@ -163,7 +157,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         }
         touch(work);
         try {
-            works.updateById(work);
+            works.updateContent(work);
         } catch (DuplicateKeyException exception) {
             throw new WorkSlugConflictException();
         }
@@ -179,7 +173,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         }
         work.setBodyMarkdown(markdown);
         touch(work);
-        works.updateById(work);
+        works.updateBody(work);
         return view(work, true, false);
     }
 
@@ -197,10 +191,10 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             details.insert(row);
         } else {
             row.setDetailJson(detail.toString());
-            details.updateById(row);
+            details.updateDetailJson(row);
         }
         touch(work);
-        works.updateById(work);
+        works.touch(work);
         return view(work, true, false);
     }
 
@@ -222,7 +216,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         }
         attach(row);
         touch(work);
-        works.updateById(work);
+        works.touch(work);
         return view(work, true, false);
     }
 
@@ -245,7 +239,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         row.setCaption(optionalText(request.getCaption(), 500));
         row.setSortOrder(safeOrder(request.getSortOrder()));
         try {
-            media.updateById(row);
+            media.updateContent(row);
         } catch (DuplicateKeyException exception) {
             throw new WorkMediaConflictException();
         }
@@ -253,7 +247,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             attach(row);
         }
         touch(work);
-        works.updateById(work);
+        works.touch(work);
         return view(work, true, false);
     }
 
@@ -268,7 +262,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         media.deleteById(mediaId);
         detach(row);
         touch(work);
-        works.updateById(work);
+        works.touch(work);
     }
 
     @Override
@@ -282,10 +276,10 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             WorkMediaEntity row = rows.stream().filter(item -> item.getId().equals(target))
                     .findFirst().orElseThrow(WorkMediaNotFoundException::new);
             row.setSortOrder(index);
-            media.updateById(row);
+            media.updateSortOrder(row);
         }
         touch(work);
-        works.updateById(work);
+        works.touch(work);
         return view(work, true, false);
     }
 
@@ -298,7 +292,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         row.setWorkId(id);
         links.insert(row);
         touch(work);
-        works.updateById(work);
+        works.touch(work);
         return view(work, true, false);
     }
 
@@ -311,9 +305,9 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         }
         WorkEntity work = lock(row.getWorkId());
         fillLink(row, request);
-        links.updateById(row);
+        links.updateContent(row);
         touch(work);
-        works.updateById(work);
+        works.touch(work);
         return view(work, true, false);
     }
 
@@ -327,7 +321,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         WorkEntity work = lock(row.getWorkId());
         links.deleteById(linkId);
         touch(work);
-        works.updateById(work);
+        works.touch(work);
     }
 
     @Override
@@ -341,10 +335,10 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             WorkLinkEntity row = rows.stream().filter(item -> item.getId().equals(target))
                     .findFirst().orElseThrow(WorkLinkNotFoundException::new);
             row.setSortOrder(index);
-            links.updateById(row);
+            links.updateSortOrder(row);
         }
         touch(work);
-        works.updateById(work);
+        works.touch(work);
         return view(work, true, false);
     }
 
@@ -359,7 +353,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         work.setStatus(WorkStatus.PUBLISHED.name());
         work.setPublishedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         touch(work);
-        works.updateById(work);
+        works.publish(work);
         events.afterCommit(new WorkPublicationChangedEvent(work.getId(), work.getSlug(), true));
         return view(work, true, false);
     }
@@ -374,7 +368,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         work.setStatus(WorkStatus.WITHDRAWN.name());
         work.setWithdrawnAt(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         touch(work);
-        works.updateById(work);
+        works.withdraw(work);
         events.afterCommit(new WorkPublicationChangedEvent(work.getId(), work.getSlug(), false));
         return view(work, true, false);
     }
@@ -389,7 +383,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         validatePublish(work);
         work.setStatus(WorkStatus.PUBLISHED.name());
         touch(work);
-        works.updateById(work);
+        works.restore(work);
         events.afterCommit(new WorkPublicationChangedEvent(work.getId(), work.getSlug(), true));
         return view(work, true, false);
     }
@@ -421,19 +415,19 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         if (page < 1 || page > 100_000 || pageSize < 1 || pageSize > 100) {
             throw new WorkInvalidException("分页参数无效");
         }
-        LambdaQueryWrapper<WorkEntity> filter = Wrappers.<WorkEntity>lambdaQuery()
-                .eq(type != null, WorkEntity::getWorkType, type == null ? null : type.name())
-                .eq(status != null && !status.isBlank(), WorkEntity::getStatus, status);
+        String workType = type == null ? null : type.name();
+        String filterStatus = status == null || status.isBlank() ? null : status;
+        String filterKeyword = null;
         if (keyword != null && !keyword.isBlank()) {
             if (keyword.length() > 100) {
                 throw new WorkInvalidException("搜索词过长");
             }
-            filter.like(WorkEntity::getTitle, keyword.trim());
+            filterKeyword = keyword.trim();
         }
-        long total = works.selectCount(filter);
-        filter.orderByDesc(WorkEntity::getUpdatedAt).orderByDesc(WorkEntity::getId)
-                .last("LIMIT " + pageSize + " OFFSET " + ((long) (page - 1) * pageSize));
-        List<WorkVO> items = works.selectList(filter).stream()
+        long total = works.countByFilter(workType, filterStatus, filterKeyword);
+        List<WorkVO> items = works
+                .pageByFilter(workType, filterStatus, filterKeyword, pageSize, (long) (page - 1) * pageSize)
+                .stream()
                 .map(work -> view(work, false, publicOnly)).toList();
         return PageResult.<WorkVO>builder().items(items).total(total).page(page).pageSize(pageSize).build();
     }
@@ -455,22 +449,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
     }
 
     private WorkDetailEntity detailRow(Long workId) {
-        return details.selectOne(Wrappers.<WorkDetailEntity>lambdaQuery()
-                .eq(WorkDetailEntity::getWorkId, workId));
+        return details.selectByWorkId(workId);
     }
 
     private List<WorkMediaEntity> mediaRows(Long workId) {
-        return media.selectList(Wrappers.<WorkMediaEntity>lambdaQuery()
-                .eq(WorkMediaEntity::getWorkId, workId)
-                .orderByAsc(WorkMediaEntity::getSortOrder)
-                .orderByAsc(WorkMediaEntity::getId));
+        return media.listByWorkId(workId);
     }
 
     private List<WorkLinkEntity> linkRows(Long workId) {
-        return links.selectList(Wrappers.<WorkLinkEntity>lambdaQuery()
-                .eq(WorkLinkEntity::getWorkId, workId)
-                .orderByAsc(WorkLinkEntity::getSortOrder)
-                .orderByAsc(WorkLinkEntity::getId));
+        return links.listByWorkId(workId);
     }
 
     private WorkVO view(WorkEntity work, boolean full, boolean publicOnly) {
@@ -545,8 +532,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         String base = WorkSlugRules.fromTitle(title);
         for (int suffix = 1; suffix <= 100; suffix++) {
             String candidate = suffix == 1 ? base : base + "-" + suffix;
-            if (works.selectCount(Wrappers.<WorkEntity>lambdaQuery()
-                    .eq(WorkEntity::getSlug, candidate)) == 0) {
+            if (works.countBySlug(candidate) == 0) {
                 return candidate;
             }
         }

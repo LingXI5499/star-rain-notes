@@ -7,6 +7,10 @@ import java.security.SecureRandom;
 import java.time.Instant;
 import java.util.HexFormat;
 import java.util.concurrent.ConcurrentHashMap;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -41,5 +45,12 @@ public class AnalyticsSubmissionLimiter {
         }
     }
 
-    private record Window(long minute, int count) {}
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    private static class Window {
+        private long minute;
+        private int count;
+    }
 }

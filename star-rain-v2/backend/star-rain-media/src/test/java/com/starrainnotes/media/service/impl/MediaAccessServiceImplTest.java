@@ -15,7 +15,7 @@ import com.starrainnotes.media.enumeration.MediaStatus;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
 import com.starrainnotes.media.constant.MediaPermissions;
 import com.starrainnotes.media.storage.MediaStorage;
-import com.starrainnotes.media.vo.MediaContent;
+import com.starrainnotes.media.vo.MediaContentVO;
 import java.io.ByteArrayInputStream;
 import java.util.Optional;
 import java.util.Set;
@@ -58,7 +58,7 @@ class MediaAccessServiceImplTest {
         when(storage.size(KEY)).thenReturn(1000L);
         when(storage.open(KEY)).thenReturn(new ByteArrayInputStream(new byte[]{1, 2, 3}));
 
-        MediaContent content = service.open(1L, null);
+        MediaContentVO content = service.open(1L, null);
 
         assertThat(content.partial()).isFalse();
         assertThat(content.contentLength()).isEqualTo(1000L);
@@ -124,7 +124,7 @@ class MediaAccessServiceImplTest {
         when(storage.size(KEY)).thenReturn(1000L);
         when(storage.openRange(KEY, 100L, 100L)).thenReturn(new ByteArrayInputStream(new byte[100]));
 
-        MediaContent content = service.open(1L, "bytes=100-199");
+        MediaContentVO content = service.open(1L, "bytes=100-199");
 
         assertThat(content.partial()).isTrue();
         assertThat(content.contentLength()).isEqualTo(100L);
@@ -167,7 +167,7 @@ class MediaAccessServiceImplTest {
         assertThat(readType("ARCHIVE").inlineDisplay()).isFalse();
     }
 
-    private MediaContent readType(String mediaType) {
+    private MediaContentVO readType(String mediaType) {
         MediaAssetEntity asset = asset("PUBLIC", MediaStatus.ACTIVE_CODE, mediaType, KEY);
         when(assetMapper.assetById(1L)).thenReturn(asset);
         when(storage.size(KEY)).thenReturn(1L);

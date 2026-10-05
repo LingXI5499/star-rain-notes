@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import com.starrainnotes.english.vocabulary.dto.VocabularyDto.Page;
 import com.starrainnotes.english.vocabulary.dto.VocabularyDto.Word;
 import com.starrainnotes.english.vocabulary.mapper.VocabularyMapper;
+import com.starrainnotes.english.vocabulary.service.impl.VocabularyServiceImpl;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -31,7 +32,7 @@ class VocabularyServiceTest {
 
     @Mock VocabularyMapper mapper;
 
-    @InjectMocks VocabularyService service;
+    @InjectMocks VocabularyServiceImpl service;
 
     /* attachAudios 对空列表直接返回，因此只有真的取到词时才需要 stub audios */
     private void givenThemeHas(long total) {

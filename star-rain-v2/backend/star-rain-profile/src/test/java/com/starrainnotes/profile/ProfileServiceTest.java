@@ -1,6 +1,5 @@
 package com.starrainnotes.profile;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.blog.api.BlogReferenceApi;
 import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.media.api.MediaAssetApi;
@@ -59,7 +58,7 @@ class ProfileServiceTest {
         row.setId(1L);
         row.setProfileKey("OWNER");
         row.setStatus("PUBLIC");
-        when(profiles.selectOne(any(LambdaQueryWrapper.class))).thenReturn(row);
+        when(profiles.selectOwner()).thenReturn(row);
     }
 
     @Test
@@ -87,7 +86,7 @@ class ProfileServiceTest {
         ApiException error = assertThrows(ApiException.class, () -> service.setMedia("resume", 5L));
 
         assertEquals("PROFILE_MEDIA_NOT_PUBLIC", error.getCode());
-        verify(profiles, never()).updateById(any(ProfileEntity.class));
+        verify(profiles, never()).updateMediaAssets(any(ProfileEntity.class));
     }
 
     @Test

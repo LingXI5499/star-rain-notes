@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.profile.mapper.FeaturedContentMapper">
+
+  <sql id="columns">
+    id, profile_id, content_type, content_id, title_override, sort_order, status, created_at, updated_at
+  </sql>
+
+  <insert id="insert" parameterType="com.starrainnotes.profile.entity.FeaturedContentEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_profile_featured_content
+      (profile_id, content_type, content_id, title_override, sort_order, status, created_at, updated_at)
+    VALUES
+      (#{profileId}, #{contentType}, #{contentId}, #{titleOverride}, #{sortOrder}, #{status},
+       #{createdAt}, #{updatedAt})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.profile.entity.FeaturedContentEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_featured_content WHERE id = #{id}
+  </select>
+
+  <select id="listByProfileId" resultType="com.starrainnotes.profile.entity.FeaturedContentEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_featured_content
+    WHERE profile_id = #{profileId}
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="listEnabledByProfileId" resultType="com.starrainnotes.profile.entity.FeaturedContentEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_featured_content
+    WHERE profile_id = #{profileId} AND status = 'ENABLED'
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="countByProfileId" resultType="long">
+    SELECT COUNT(*) FROM sr_profile_featured_content WHERE profile_id = #{profileId}
+  </select>
+
+  <!--
+    精选引用只有排序会变：content_type / content_id 是引用的身份，改它等于换一条引用（唯一键会拦），
+    title_override 只在新增时写。因此这里只有 updateSortOrder，没有 updateContent。
+  -->
+  <update id="updateSortOrder" parameterType="com.starrainnotes.profile.entity.FeaturedContentEntity">
+    UPDATE sr_profile_featured_content
+    SET sort_order = #{sortOrder},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sr_profile_featured_content WHERE id = #{id}
+  </delete>
+</mapper>

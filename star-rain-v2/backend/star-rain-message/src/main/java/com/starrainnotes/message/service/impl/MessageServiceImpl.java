@@ -1,7 +1,5 @@
 package com.starrainnotes.message.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.starrainnotes.account.api.AccountReferenceApi;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.exception.ApiException;
@@ -76,12 +74,9 @@ public class MessageServiceImpl implements MessageService, MessageSummaryApi {
     @Transactional(readOnly = true)
     public PageResult<PublicMessageVO> publicMessages(int page, int pageSize) {
         validatePage(page, pageSize);
-        LambdaQueryWrapper<MessageEntity> filter = Wrappers.<MessageEntity>lambdaQuery()
-                .eq(MessageEntity::getStatus, "PUBLIC");
-        long total = messages.selectCount(filter);
-        List<PublicMessageVO> items = messages.selectList(filter.orderByDesc(MessageEntity::getSubmittedAt)
-                        .orderByDesc(MessageEntity::getId)
-                        .last("LIMIT " + pageSize + " OFFSET " + ((long) (page - 1) * pageSize)))
+        long total = messages.countByStatus("PUBLIC");
+        List<PublicMessageVO> items = messages
+                .pageByStatus("PUBLIC", pageSize, (long) (page - 1) * pageSize)
                 .stream().map(this::publicView).toList();
         return new PageResult<>(items, total, page, pageSize);
     }
@@ -93,12 +88,10 @@ public class MessageServiceImpl implements MessageService, MessageSummaryApi {
         if (status != null && !STATUSES.contains(status)) {
             throw invalid("MESSAGE_STATE_INVALID", "留言状态无效");
         }
-        LambdaQueryWrapper<MessageEntity> filter = Wrappers.<MessageEntity>lambdaQuery()
-                .eq(status != null, MessageEntity::getStatus, status);
-        long total = messages.selectCount(filter);
-        List<AdminMessageVO> items = messages.selectList(filter.orderByDesc(MessageEntity::getSubmittedAt)
-                        .orderByDesc(MessageEntity::getId)
-                        .last("LIMIT " + pageSize + " OFFSET " + ((long) (page - 1) * pageSize)))
+        // status 为 null 即「全部状态」，与原先 lambdaQuery 的 eq(condition, ...) 语义一致
+        long total = messages.countByStatus(status);
+        List<AdminMessageVO> items = messages
+                .pageByStatus(status, pageSize, (long) (page - 1) * pageSize)
                 .stream().map(this::adminView).toList();
         return new PageResult<>(items, total, page, pageSize);
     }
@@ -107,9 +100,7 @@ public class MessageServiceImpl implements MessageService, MessageSummaryApi {
     @Transactional(readOnly = true)
     public List<MessageActionVO> actions(long id) {
         require(id);
-        return actions.selectList(Wrappers.<MessageActionEntity>lambdaQuery()
-                        .eq(MessageActionEntity::getMessageId, id)
-                        .orderByAsc(MessageActionEntity::getCreatedAt, MessageActionEntity::getId))
+        return actions.listByMessage(id)
                 .stream().map(item -> new MessageActionVO(item.getActionType(), item.getActorType(),
                         item.getCreatedAt(), item.getNote())).toList();
     }
@@ -174,7 +165,7 @@ public class MessageServiceImpl implements MessageService, MessageSummaryApi {
     @Override
     @Transactional(readOnly = true)
     public long pendingCount() {
-        return messages.selectCount(Wrappers.<MessageEntity>lambdaQuery().eq(MessageEntity::getStatus, "PENDING"));
+        return messages.countByStatus("PENDING");
     }
 
     private void action(Long id, String type, Long actorId, String note) {

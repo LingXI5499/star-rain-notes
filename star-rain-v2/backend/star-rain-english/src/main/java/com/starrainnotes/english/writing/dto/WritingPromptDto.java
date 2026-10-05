@@ -3,7 +3,10 @@ package com.starrainnotes.english.writing.dto;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.List;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 public final class WritingPromptDto {
     private WritingPromptDto() { }
@@ -25,8 +28,30 @@ public final class WritingPromptDto {
         private int sortOrder;
     }
 
-    public record Page(List<Prompt> items, long total, int page, int size) { }
-    public record Request(String title, String summary, String bodyMarkdown, String requirementsMarkdown,
-                          String cefrLevel, Integer wordMin, Integer wordMax,
-                          Integer estimatedMinutes, Integer sortOrder) { }
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Page {
+        private List<Prompt> items;
+        private long total;
+        private int page;
+        private int size;
+    }
+
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Request {
+        private String title;
+        private String summary;
+        private String bodyMarkdown;
+        private String requirementsMarkdown;
+        private String cefrLevel;
+        private Integer wordMin;
+        private Integer wordMax;
+        private Integer estimatedMinutes;
+        private Integer sortOrder;
+    }
 }

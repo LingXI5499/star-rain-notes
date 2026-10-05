@@ -1,6 +1,5 @@
 package com.starrainnotes.tutorial.learning.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -149,11 +148,9 @@ public class StudyPlanServiceImpl implements StudyPlanService {
         apply(row, request);
         if (!"DRAFT".equals(row.getStatus())) {
             row.setGeneratedVersion(row.getGeneratedVersion() + 1);
-            taskMapper.delete(new LambdaQueryWrapper<StudyTaskEntity>()
-                    .eq(StudyTaskEntity::getPlanId, row.getId())
-                    .ne(StudyTaskEntity::getStatus, "COMPLETED"));
+            taskMapper.deleteUnfinishedByPlanId(row.getId());
         }
-        planMapper.updateById(row);
+        planMapper.updateDefinition(row);
         if ("ACTIVE".equals(row.getStatus())) {
             generate(row);
         }
@@ -163,9 +160,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
     private void generate(StudyPlanEntity plan) {
         List<Long> chapters = content.scopedChapterIds(plan.getTutorialId(), plan.getScopeType(), plan.getScopeId());
         Set<Long> completed = new HashSet<>();
-        taskMapper.selectList(new LambdaQueryWrapper<StudyTaskEntity>()
-                .eq(StudyTaskEntity::getPlanId, plan.getId())
-                .eq(StudyTaskEntity::getStatus, "COMPLETED"))
+        taskMapper.listCompletedByPlanId(plan.getId())
                 .forEach(row -> completed.add(row.getChapterId()));
         LocalDate day = plan.getStartDate().isAfter(todayDate()) ? plan.getStartDate() : todayDate();
         Set<Integer> studyDays = new HashSet<>(weekdays(plan));
@@ -211,14 +206,11 @@ public class StudyPlanServiceImpl implements StudyPlanService {
                     throw new LearningStateConflictException("只能结束已启动的计划");
                 }
                 row.setStatus("finish".equals(action) ? "COMPLETED" : "CANCELLED");
-                taskMapper.update(null, new com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper<StudyTaskEntity>()
-                        .eq(StudyTaskEntity::getPlanId, row.getId())
-                        .in(StudyTaskEntity::getStatus, "TODO", "IN_PROGRESS", "OVERDUE")
-                        .set(StudyTaskEntity::getStatus, "SKIPPED"));
+                taskMapper.skipUnfinishedByPlanId(row.getId());
             }
             default -> throw new LearningInvalidRequestException("不支持的计划操作");
         }
-        planMapper.updateById(row);
+        planMapper.updateStatus(row.getId(), row.getStatus(), row.getGeneratedVersion());
         if ("activate".equals(action)) {
             generate(row);
         }
@@ -232,9 +224,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
 
     @Override
     public List<StudyPlanVO> plans() {
-        return planMapper.selectList(new LambdaQueryWrapper<StudyPlanEntity>()
-                .eq(StudyPlanEntity::getAccountId, accountId())
-                .orderByDesc(StudyPlanEntity::getUpdatedAt).last("LIMIT 100"))
+        return planMapper.listRecentByAccountId(accountId())
                 .stream().map(this::view).toList();
     }
 
@@ -242,9 +232,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
     public List<StudyTaskVO> planTasks(Long planId) {
         ownPlan(planId);
         List<StudyTaskVO> result = new ArrayList<>();
-        for (StudyTaskEntity row : taskMapper.selectList(new LambdaQueryWrapper<StudyTaskEntity>()
-                .eq(StudyTaskEntity::getPlanId, planId)
-                .orderByAsc(StudyTaskEntity::getTaskDate, StudyTaskEntity::getSequenceNo).last("LIMIT 1000"))) {
+        for (StudyTaskEntity row : taskMapper.listByPlanId(planId)) {
             try { result.add(view(row)); } catch (LearningResourceNotFoundException ignored) { }
         }
         return result;
@@ -256,11 +244,7 @@ public class StudyPlanServiceImpl implements StudyPlanService {
         Long actor = accountId();
         taskMapper.markOverdue(actor, todayDate());
         List<StudyTaskVO> result = new ArrayList<>();
-        for (StudyTaskEntity row : taskMapper.selectList(new LambdaQueryWrapper<StudyTaskEntity>()
-                .eq(StudyTaskEntity::getAccountId, actor)
-                .le(StudyTaskEntity::getTaskDate, todayDate())
-                .in(StudyTaskEntity::getStatus, "TODO", "IN_PROGRESS", "OVERDUE")
-                .orderByAsc(StudyTaskEntity::getTaskDate, StudyTaskEntity::getSequenceNo).last("LIMIT 100"))) {
+        for (StudyTaskEntity row : taskMapper.listDueByAccountId(actor, todayDate())) {
             StudyPlanEntity plan = planMapper.selectById(row.getPlanId());
             if (plan != null && "ACTIVE".equals(plan.getStatus())) {
                 try { result.add(view(row)); } catch (LearningResourceNotFoundException ignored) { }

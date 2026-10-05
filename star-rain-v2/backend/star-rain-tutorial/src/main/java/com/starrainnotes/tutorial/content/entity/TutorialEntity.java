@@ -1,17 +1,18 @@
 package com.starrainnotes.tutorial.content.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.FieldStrategy;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import java.time.LocalDateTime;
 import lombok.Data;
 
+/*
+ * 教程工作区实体。列名到属性名的映射由 map-underscore-to-camel-case 完成，
+ * 表名由 TutorialMapper.xml 的语句写明；本模块 Mapper 已不继承 BaseMapper，
+ * 因此不保留 @TableName / @TableId / @TableField。
+ *
+ * withdrawn_at 原先靠 @TableField(updateStrategy = FieldStrategy.ALWAYS) 保证
+ * 「为 null 也写进 UPDATE」，这个语义已由 TutorialMapper.xml 的 update 语句显式承担。
+ */
 @Data
-@TableName("sr_tutorial")
 public class TutorialEntity {
-    @TableId(type = IdType.AUTO)
     private Long id;
     private Long categoryId;
     private String slug;
@@ -23,7 +24,6 @@ public class TutorialEntity {
     private String editingStatus;
     private Long publishedRevisionId;
     private LocalDateTime publishedAt;
-    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private LocalDateTime withdrawnAt;
     private Long createdByAccountId;
     private Long updatedByAccountId;

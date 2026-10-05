@@ -1,12 +1,12 @@
 package com.starrainnotes.english.vocabulary.service.impl;
 
 import com.starrainnotes.english.vocabulary.constant.VocabularyStudyConstants;
-import com.starrainnotes.english.vocabulary.dto.VocabularyDisplayRequest;
+import com.starrainnotes.english.vocabulary.dto.VocabularyDisplayRequestDTO;
 import com.starrainnotes.english.vocabulary.dto.VocabularyMemoryLock;
 import com.starrainnotes.english.vocabulary.dto.VocabularyReviewLogRow;
-import com.starrainnotes.english.vocabulary.dto.VocabularyReviewRequest;
+import com.starrainnotes.english.vocabulary.dto.VocabularyReviewRequestDTO;
 import com.starrainnotes.english.vocabulary.dto.VocabularyReviewSchedule;
-import com.starrainnotes.english.vocabulary.dto.VocabularyStudySettingsRequest;
+import com.starrainnotes.english.vocabulary.dto.VocabularyStudySettingsRequestDTO;
 import com.starrainnotes.english.vocabulary.enumeration.ReviewDirection;
 import com.starrainnotes.english.vocabulary.exception.VocabularyProgressNotFoundException;
 import com.starrainnotes.english.vocabulary.exception.VocabularyReviewSessionConflictException;
@@ -42,7 +42,7 @@ public class VocabularyStudyCommandServiceImpl implements VocabularyStudyCommand
 
     @Override
     @Transactional
-    public VocabularyStudySettingsVO updateSettings(long accountId, VocabularyStudySettingsRequest request) {
+    public VocabularyStudySettingsVO updateSettings(long accountId, VocabularyStudySettingsRequestDTO request) {
         if (!request.isShowEnglish() && !request.isShowChinese()) {
             throw new VocabularySettingsInvalidException("英文和中文至少保留一组");
         }
@@ -83,7 +83,7 @@ public class VocabularyStudyCommandServiceImpl implements VocabularyStudyCommand
 
     @Override
     @Transactional
-    public VocabularyReviewResultVO completeReview(long accountId, long wordId, VocabularyReviewRequest request) {
+    public VocabularyReviewResultVO completeReview(long accountId, long wordId, VocabularyReviewRequestDTO request) {
         vocabulary.word(String.valueOf(wordId));
         String sessionId = request.getReviewSessionId();
 
@@ -134,7 +134,7 @@ public class VocabularyStudyCommandServiceImpl implements VocabularyStudyCommand
 
     @Override
     @Transactional
-    public VocabularyMemoryVO setDisplay(long accountId, long wordId, VocabularyDisplayRequest request) {
+    public VocabularyMemoryVO setDisplay(long accountId, long wordId, VocabularyDisplayRequestDTO request) {
         vocabulary.word(String.valueOf(wordId));
         mapper.upsertDisplay(accountId, wordId, request.getDisplayMode());
         VocabularyMemoryVO memory = query.memoryOrDefault(accountId, wordId);

@@ -1,4 +1,17 @@
 package com.starrainnotes.profile.api.dto;
 
-public record ProfilePublishedDocument(Long id, String title, String summary, String bodyMarkdown) {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class ProfilePublishedDocument {
+    private Long id;
+    private String title;
+    private String summary;
+    private String bodyMarkdown;
 }

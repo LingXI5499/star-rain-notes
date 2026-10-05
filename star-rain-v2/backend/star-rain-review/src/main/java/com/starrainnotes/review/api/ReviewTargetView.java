@@ -7,7 +7,7 @@ package com.starrainnotes.review.api;
  * 放进审核详情响应里。业务模块自己决定暴露哪些字段用于审核，
  * Review 不解析也不校验其中的业务规则。
  *
- * 实现类示例：TutorialReviewView、BlogReviewView。
+ * 实现类示例：TutorialReviewVO、BlogReviewView。
  */
 public interface ReviewTargetView {
 

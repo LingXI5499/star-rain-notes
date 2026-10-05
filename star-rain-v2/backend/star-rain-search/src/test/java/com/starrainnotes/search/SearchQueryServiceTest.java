@@ -10,6 +10,7 @@ import static org.mockito.Mockito.when;
 import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.search.mapper.SearchDocumentMapper;
 import com.starrainnotes.search.service.SearchQueryService;
+import com.starrainnotes.search.service.impl.SearchQueryServiceImpl;
 import com.starrainnotes.search.vo.SearchHitVO;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ class SearchQueryServiceTest {
     @BeforeEach
     void setUp() {
         mapper = Mockito.mock(SearchDocumentMapper.class);
-        service = new SearchQueryService(mapper);
+        service = new SearchQueryServiceImpl(mapper);
     }
 
     @Test

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.portfolio.mapper.WorkMediaMapper">
+
+  <sql id="columns">
+    id, work_id, media_asset_id, usage_type, caption, sort_order, created_at, updated_at
+  </sql>
+
+  <insert id="insert" parameterType="com.starrainnotes.portfolio.entity.WorkMediaEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_portfolio_media (work_id, media_asset_id, usage_type, caption, sort_order)
+    VALUES (#{workId}, #{mediaAssetId}, #{usageType}, #{caption}, #{sortOrder})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.portfolio.entity.WorkMediaEntity">
+    SELECT <include refid="columns"/> FROM sr_portfolio_media WHERE id = #{id}
+  </select>
+
+  <!-- 作品的媒体按 sort_order 展示；id 兜底保证同序号时顺序稳定 -->
+  <select id="listByWorkId" resultType="com.starrainnotes.portfolio.entity.WorkMediaEntity">
+    SELECT <include refid="columns"/> FROM sr_portfolio_media
+    WHERE work_id = #{workId}
+    ORDER BY sort_order, id
+  </select>
+
+  <!--
+    caption 可空，<if> 表达的是原先 updateById 的 NOT_NULL 字段策略：
+    请求里没带 caption 时保留库里的旧值（要清空就传空串）。无条件 SET null 会把「没传」变成「清空」。
+    work_id 不参与更新：媒体的归属作品不可变。
+    updated_at 写回实体里读出来的值，与原先 updateById 一致（排序/编辑不推进该列）。
+  -->
+  <update id="updateContent" parameterType="com.starrainnotes.portfolio.entity.WorkMediaEntity">
+    UPDATE sr_portfolio_media
+    SET media_asset_id = #{mediaAssetId},
+        usage_type = #{usageType},
+        <if test="caption != null">caption = #{caption},</if>
+        sort_order = #{sortOrder},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <!-- 只改排序：caption / media_asset_id / usage_type 必须保持原值 -->
+  <update id="updateSortOrder" parameterType="com.starrainnotes.portfolio.entity.WorkMediaEntity">
+    UPDATE sr_portfolio_media
+    SET sort_order = #{sortOrder},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sr_portfolio_media WHERE id = #{id}
+  </delete>
+</mapper>

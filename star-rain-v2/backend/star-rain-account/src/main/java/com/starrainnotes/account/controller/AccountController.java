@@ -4,7 +4,6 @@ import com.starrainnotes.account.dto.UpdateMyAccountDTO;
 import com.starrainnotes.account.dto.ConfirmEmailDTO;
 import com.starrainnotes.account.vo.EmailVerificationCodeVO;
 import com.starrainnotes.account.service.EmailVerificationService;
-import com.starrainnotes.account.service.AccountAuditService;
 import com.starrainnotes.common.exception.ApiException;
 import com.starrainnotes.account.dto.ChangePasswordDTO;
 import com.starrainnotes.account.dto.AcceptAdminInvitationDTO;
@@ -34,16 +33,13 @@ public class AccountController {
     private final AccountAuthService auth;
     private final AdminAccountService admin;
     private final EmailVerificationService verification;
-    private final AccountAuditService audit;
 
     public AccountController(AccountIdentityService identity, AccountAuthService auth,
-                             AdminAccountService admin, EmailVerificationService verification,
-                             AccountAuditService audit) {
+                             AdminAccountService admin, EmailVerificationService verification) {
         this.identity = identity;
         this.auth = auth;
         this.admin = admin;
         this.verification = verification;
-        this.audit = audit;
     }
 
     @GetMapping("/me")
@@ -58,14 +54,9 @@ public class AccountController {
 
     @PostMapping("/me/email/verification-codes")
     public ApiResponse<EmailVerificationCodeVO> sendEmailCode(HttpServletRequest request) {
-        try {
-            return ApiResponse.ok(verification.sendForCurrentAccount(request.getRemoteAddr()));
-        } catch (ApiException exception) {
-            if ("MAIL_DELIVERY_FAILED".equals(exception.getCode())) {
-                audit.failed(identity.principal().getAccountId(), null, "EMAIL_CODE_DELIVERY_FAILED");
-            }
-            throw exception;
-        }
+        // 发信失败的审计由 EmailVerificationService 写到独立事务里（AccountAuditService.failedIndependently），
+        // 因此接入层不再需要 try/catch —— 那条规则已经回到服务层自己身上。
+        return ApiResponse.ok(verification.sendForCurrentAccount(request.getRemoteAddr()));
     }
 
     @PostMapping("/me/email/confirm")

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.message.mapper.MessageActionMapper">
+
+  <insert id="insert" parameterType="com.starrainnotes.message.entity.MessageActionEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_message_action
+      (message_id, action_type, actor_account_id, actor_type, note, created_at)
+    VALUES
+      (#{messageId}, #{actionType}, #{actorAccountId}, #{actorType}, #{note}, #{createdAt})
+  </insert>
+
+  <select id="listByMessage" resultType="com.starrainnotes.message.entity.MessageActionEntity">
+    SELECT id, message_id, action_type, actor_account_id, actor_type, note, created_at
+    FROM sr_message_action
+    WHERE message_id = #{messageId}
+    ORDER BY created_at ASC, id ASC
+  </select>
+</mapper>

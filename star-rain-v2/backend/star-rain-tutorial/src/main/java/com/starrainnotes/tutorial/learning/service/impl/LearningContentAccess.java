@@ -1,6 +1,5 @@
 package com.starrainnotes.tutorial.learning.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -76,9 +75,9 @@ public class LearningContentAccess {
         TutorialKnowledgeCardEntity row = cardId == null ? null : cardMapper.selectById(cardId);
         if (row == null) {
             PublishedChild published = publishedChild(cardId, "cards");
-            return CardRef.builder().cardId(cardId).chapter(published.chapter())
-                    .frontText(published.child().path("frontText").asText())
-                    .backMarkdown(published.child().path("backMarkdown").asText()).build();
+            return CardRef.builder().cardId(cardId).chapter(published.getChapter())
+                    .frontText(published.getChild().path("frontText").asText())
+                    .backMarkdown(published.getChild().path("backMarkdown").asText()).build();
         }
         ChapterRef chapter = chapter(row.getChapterId());
         for (JsonNode card : chapter.getSnapshot().path("cards")) {
@@ -95,8 +94,8 @@ public class LearningContentAccess {
         TutorialQuestionEntity row = questionId == null ? null : questionMapper.selectById(questionId);
         if (row == null) {
             PublishedChild published = publishedChild(questionId, "questions");
-            return QuestionRef.builder().questionId(questionId).chapter(published.chapter())
-                    .referenceAnswer(published.child().path("referenceAnswer").asText()).build();
+            return QuestionRef.builder().questionId(questionId).chapter(published.getChapter())
+                    .referenceAnswer(published.getChild().path("referenceAnswer").asText()).build();
         }
         ChapterRef chapter = chapter(row.getChapterId());
         for (JsonNode question : chapter.getSnapshot().path("questions")) {
@@ -108,7 +107,13 @@ public class LearningContentAccess {
         throw new LearningResourceNotFoundException();
     }
 
-    private record PublishedChild(ChapterRef chapter, JsonNode child) { }
+    /* 项目禁止 record，这里用 Lombok POJO 保持一致。 */
+    @Data
+    @AllArgsConstructor
+    private static class PublishedChild {
+        private ChapterRef chapter;
+        private JsonNode child;
+    }
 
     // 删除工作区卡片或题目不会改写已发布快照。仅在原始行已删除时扫描公开修订，
     // 让尚未重新发布的读者内容仍可答题和复习。
@@ -116,8 +121,7 @@ public class LearningContentAccess {
         if (childId == null) {
             throw new LearningResourceNotFoundException();
         }
-        List<TutorialEntity> tutorials = tutorialMapper.selectList(new LambdaQueryWrapper<TutorialEntity>()
-                .eq(TutorialEntity::getPublicationStatus, "PUBLISHED"));
+        List<TutorialEntity> tutorials = tutorialMapper.listPublished();
         for (TutorialEntity row : tutorials) {
             JsonNode snapshot = publishedTutorial(row.getId());
             for (JsonNode group : snapshot.path("groups")) {

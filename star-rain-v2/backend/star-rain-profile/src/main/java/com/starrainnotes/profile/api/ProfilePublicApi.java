@@ -1,6 +1,6 @@
 package com.starrainnotes.profile.api;
 
-import com.starrainnotes.profile.api.dto.ProfileVO;
+import com.starrainnotes.profile.api.vo.ProfileVO;
 import com.starrainnotes.profile.api.dto.ProfilePublishedDocument;
 
 public interface ProfilePublicApi {

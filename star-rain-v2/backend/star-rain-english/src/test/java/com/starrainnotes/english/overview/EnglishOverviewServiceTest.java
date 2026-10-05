@@ -4,13 +4,15 @@ import com.starrainnotes.english.overview.mapper.EnglishOverviewMapper;
 
 import com.starrainnotes.english.overview.entity.EnglishOverviewEntity;
 
-import com.starrainnotes.english.overview.dto.EnglishOverviewView;
+import com.starrainnotes.english.overview.vo.EnglishOverviewVO;
 
 import com.starrainnotes.english.overview.service.EnglishOverviewService;
 
+import com.starrainnotes.english.overview.service.impl.EnglishOverviewServiceImpl;
+
 import com.starrainnotes.english.overview.exception.EnglishOverviewInvalidException;
 
-import com.starrainnotes.english.overview.dto.EnglishOverviewRequest;
+import com.starrainnotes.english.overview.dto.EnglishOverviewRequestDTO;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -34,27 +36,31 @@ class EnglishOverviewServiceTest {
         row.setTitle("英语能力成长路径");
         row.setCurrentStage("FOUNDATION");
         when(mapper.updateContent("新标题", null, null, null)).thenReturn(1);
-        when(mapper.selectById(1)).thenReturn(row);
+        when(mapper.selectSingleton()).thenReturn(row);
 
-        EnglishOverviewView result = new EnglishOverviewService(mapper).update(
-                new EnglishOverviewRequest(" 新标题 ", " ", null, ""));
+        EnglishOverviewVO result = new EnglishOverviewServiceImpl(mapper).update(
+                EnglishOverviewRequestDTO.builder()
+                        .title(" 新标题 ")
+                        .subtitle(" ")
+                        .roadmapMarkdown("")
+                        .build());
 
         verify(mapper).updateContent("新标题", null, null, null);
-        assertThat(result.currentStage()).isEqualTo("FOUNDATION");
+        assertThat(result.getCurrentStage()).isEqualTo("FOUNDATION");
     }
 
     @Test
     void missingSingletonDoesNotPretendUpdateSucceeded() {
-        EnglishOverviewService service = new EnglishOverviewService(mapper);
-        assertThatThrownBy(() -> service.update(new EnglishOverviewRequest("标题", null, null, null)))
+        EnglishOverviewService service = new EnglishOverviewServiceImpl(mapper);
+        assertThatThrownBy(() -> service.update(EnglishOverviewRequestDTO.builder().title("标题").build()))
                 .isInstanceOf(ApiException.class)
                 .satisfies(error -> assertThat(((ApiException) error).getStatus()).isEqualTo(404));
     }
 
     @Test
     void rejectsInvalidTitleBeforeWriting() {
-        EnglishOverviewService service = new EnglishOverviewService(mapper);
-        assertThatThrownBy(() -> service.update(new EnglishOverviewRequest("  ", null, null, null)))
+        EnglishOverviewService service = new EnglishOverviewServiceImpl(mapper);
+        assertThatThrownBy(() -> service.update(EnglishOverviewRequestDTO.builder().title("  ").build()))
                 .isInstanceOf(EnglishOverviewInvalidException.class);
         org.mockito.Mockito.verifyNoInteractions(mapper);
     }

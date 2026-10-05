@@ -1,6 +1,5 @@
 package com.starrainnotes.tutorial.content.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,8 +12,6 @@ import com.starrainnotes.tutorial.content.entity.TutorialCategoryEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialChapterEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialGroupEntity;
-import com.starrainnotes.tutorial.content.entity.TutorialKnowledgeCardEntity;
-import com.starrainnotes.tutorial.content.entity.TutorialQuestionEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity;
 import com.starrainnotes.tutorial.content.event.TutorialEventPublisher;
 import com.starrainnotes.tutorial.api.event.TutorialPublicationChangedEvent;
@@ -70,8 +67,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     }
 
     private TutorialEntity publicRow(String slug) {
-        TutorialEntity row = tutorialMapper.selectOne(new LambdaQueryWrapper<TutorialEntity>()
-                .eq(TutorialEntity::getSlug, slug).eq(TutorialEntity::getPublicationStatus, "PUBLISHED"));
+        TutorialEntity row = tutorialMapper.selectPublishedBySlug(slug);
         if (row == null || row.getPublishedRevisionId() == null) throw new TutorialNotFoundException();
         return row;
     }
@@ -109,17 +105,11 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     private Map<String, Object> draftSnapshot(TutorialEntity tutorial, boolean requirePublishable) {
         TutorialCategoryEntity category = categoryMapper.selectById(tutorial.getCategoryId());
         if (category == null) throw new TutorialStateException("知识体系不存在");
-        List<TutorialGroupEntity> groups = groupMapper.selectList(new LambdaQueryWrapper<TutorialGroupEntity>()
-                .eq(TutorialGroupEntity::getTutorialId, tutorial.getId())
-                .eq(TutorialGroupEntity::getStatus, "ACTIVE")
-                .orderByAsc(TutorialGroupEntity::getSortOrder, TutorialGroupEntity::getId));
+        List<TutorialGroupEntity> groups = groupMapper.listActiveByTutorialId(tutorial.getId());
         List<Map<String, Object>> groupSnapshots = new ArrayList<>();
         int chapterCount = 0;
         for (TutorialGroupEntity group : groups) {
-            List<TutorialChapterEntity> chapters = chapterMapper.selectList(new LambdaQueryWrapper<TutorialChapterEntity>()
-                    .eq(TutorialChapterEntity::getGroupId, group.getId())
-                    .eq(TutorialChapterEntity::getStatus, "ACTIVE")
-                    .orderByAsc(TutorialChapterEntity::getSortOrder, TutorialChapterEntity::getId));
+            List<TutorialChapterEntity> chapters = chapterMapper.listActiveByGroupId(group.getId());
             List<Map<String, Object>> chapterSnapshots = new ArrayList<>();
             for (TutorialChapterEntity chapter : chapters) {
                 if (requirePublishable && (chapter.getBodyMarkdown() == null || chapter.getBodyMarkdown().isBlank())) {
@@ -131,16 +121,10 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
                 item.put("title", chapter.getTitle());
                 item.put("summary", chapter.getSummary());
                 item.put("bodyMarkdown", chapter.getBodyMarkdown());
-                item.put("cards", cardMapper.selectList(new LambdaQueryWrapper<TutorialKnowledgeCardEntity>()
-                        .eq(TutorialKnowledgeCardEntity::getChapterId, chapter.getId())
-                        .eq(TutorialKnowledgeCardEntity::getStatus, "ENABLED")
-                        .orderByAsc(TutorialKnowledgeCardEntity::getSortOrder, TutorialKnowledgeCardEntity::getId))
+                item.put("cards", cardMapper.listEnabledByChapterId(chapter.getId())
                         .stream().map(card -> Map.of("id", String.valueOf(card.getId()),
                                 "frontText", card.getFrontText(), "backMarkdown", card.getBackMarkdown())).toList());
-                item.put("questions", questionMapper.selectList(new LambdaQueryWrapper<TutorialQuestionEntity>()
-                        .eq(TutorialQuestionEntity::getChapterId, chapter.getId())
-                        .eq(TutorialQuestionEntity::getStatus, "ENABLED")
-                        .orderByAsc(TutorialQuestionEntity::getSortOrder, TutorialQuestionEntity::getId))
+                item.put("questions", questionMapper.listEnabledByChapterId(chapter.getId())
                         .stream().map(question -> Map.of("id", String.valueOf(question.getId()),
                                 "questionText", question.getQuestionText(),
                                 "referenceAnswer", question.getReferenceAnswer())).toList());
@@ -176,8 +160,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         } catch (JsonProcessingException exception) {
             throw new TutorialStateException("教程版本生成失败");
         }
-        int revisionNo = Math.toIntExact(revisionMapper.selectCount(new LambdaQueryWrapper<TutorialRevisionEntity>()
-                .eq(TutorialRevisionEntity::getTutorialId, tutorial.getId()))) + 1;
+        int revisionNo = Math.toIntExact(revisionMapper.countByTutorialId(tutorial.getId())) + 1;
         TutorialRevisionEntity revision = new TutorialRevisionEntity();
         revision.setTutorialId(tutorial.getId());
         revision.setRevisionNo(revisionNo);
@@ -214,7 +197,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         tutorial.setPublicationStatus("PUBLISHED");
         tutorial.setPublishedAt(LocalDateTime.now(ZoneOffset.UTC));
         tutorial.setWithdrawnAt(null);
-        tutorialMapper.updateById(tutorial);
+        tutorialMapper.update(tutorial);
         eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
                 tutorial.getTitle(), "PUBLISHED", tutorial.getPublishedAt()));
         return contentService.tutorial(tutorialId);
@@ -229,7 +212,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         }
         tutorial.setPublicationStatus("WITHDRAWN");
         tutorial.setWithdrawnAt(LocalDateTime.now(ZoneOffset.UTC));
-        tutorialMapper.updateById(tutorial);
+        tutorialMapper.update(tutorial);
         eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
                 tutorial.getTitle(), "WITHDRAWN", tutorial.getPublishedAt()));
         return contentService.tutorial(tutorialId);
@@ -244,7 +227,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         }
         tutorial.setPublicationStatus("PUBLISHED");
         tutorial.setWithdrawnAt(null);
-        tutorialMapper.updateById(tutorial);
+        tutorialMapper.update(tutorial);
         eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
                 tutorial.getTitle(), "RESTORED", tutorial.getPublishedAt()));
         return contentService.tutorial(tutorialId);
@@ -264,7 +247,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
                 .targetId(tutorialId).targetRevisionRef(revision.getRevisionRef())
                 .targetDisplayName(tutorial.getTitle()).applicantAccountId(actorId).build());
         tutorial.setEditingStatus("IN_REVIEW");
-        tutorialMapper.updateById(tutorial);
+        tutorialMapper.update(tutorial);
         return contentService.tutorial(tutorialId);
     }
 
@@ -291,16 +274,13 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     @Override
     public List<JsonNode> publicCategories() {
         Map<String, Long> publishedCounts = new LinkedHashMap<>();
-        tutorialMapper.selectList(new LambdaQueryWrapper<TutorialEntity>()
-                .eq(TutorialEntity::getPublicationStatus, "PUBLISHED")
-                .isNotNull(TutorialEntity::getPublishedRevisionId))
+        tutorialMapper.listPublishedWithRevision()
                 .forEach(tutorial -> {
                     String frozenCategoryId = snapshot(revisionMapper.selectById(tutorial.getPublishedRevisionId()))
                             .path("categoryId").asText();
                     publishedCounts.merge(frozenCategoryId, 1L, Long::sum);
                 });
-        return categoryMapper.selectList(new LambdaQueryWrapper<TutorialCategoryEntity>()
-                .orderByAsc(TutorialCategoryEntity::getSortOrder, TutorialCategoryEntity::getId))
+        return categoryMapper.listOrdered()
                 .stream().map(category -> {
                     long count = publishedCounts.getOrDefault(String.valueOf(category.getId()), 0L);
                     Map<String, Object> item = Map.of("id", String.valueOf(category.getId()),
@@ -312,11 +292,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     @Override
     public PageResult<JsonNode> publicTutorials(Long categoryId, String search, int page, int pageSize) {
         if (page < 1 || pageSize < 1 || pageSize > 100) throw new TutorialInvalidRequestException("分页参数不合法");
-        LambdaQueryWrapper<TutorialEntity> query = new LambdaQueryWrapper<TutorialEntity>()
-                .eq(TutorialEntity::getPublicationStatus, "PUBLISHED")
-                .isNotNull(TutorialEntity::getPublishedRevisionId)
-                .orderByAsc(TutorialEntity::getCategoryId, TutorialEntity::getSortOrder, TutorialEntity::getId);
-        List<JsonNode> rows = tutorialMapper.selectList(query).stream()
+        List<JsonNode> rows = tutorialMapper.listPublishedWithRevision().stream()
                 .map(row -> (JsonNode) publicSummary(row, snapshot(revisionMapper.selectById(row.getPublishedRevisionId()))))
                 .filter(item -> categoryId == null || String.valueOf(categoryId).equals(item.path("categoryId").asText()))
                 .filter(item -> search == null || search.isBlank()

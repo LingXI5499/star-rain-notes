@@ -5,6 +5,7 @@ import com.starrainnotes.site.dto.HomeSectionPatchDTO;
 import com.starrainnotes.site.entity.HomeSectionEntity;
 import com.starrainnotes.site.mapper.HomeSectionMapper;
 import com.starrainnotes.site.service.HomeSectionService;
+import com.starrainnotes.site.vo.HomeSectionSettingVO;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -27,20 +28,21 @@ public class HomeSectionServiceImpl implements HomeSectionService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<HomeSectionEntity> all() {
-        return mapper.all();
+    public List<HomeSectionSettingVO> all() {
+        return mapper.all().stream().map(HomeSectionSettingVO::from).toList();
     }
 
     @Override
     @Transactional(readOnly = true)
     public List<HomeSectionEntity> enabled() {
-        return all().stream().filter(HomeSectionEntity::getEnabled).toList();
+        // 内部聚合用：直接读实体，避免为了拿 config_json 再做一次 VO→实体的反向映射
+        return mapper.all().stream().filter(HomeSectionEntity::getEnabled).toList();
     }
 
     @Override
     @Transactional
-    public List<HomeSectionEntity> reorder(HomeSectionOrderDTO request) {
-        List<HomeSectionEntity> rows = all();
+    public List<HomeSectionSettingVO> reorder(HomeSectionOrderDTO request) {
+        List<HomeSectionEntity> rows = mapper.all();
         List<String> codes = request == null ? null : request.getSectionCodes();
         if (codes == null || codes.size() != rows.size() || codes.stream().anyMatch(Objects::isNull)
                 || !Set.copyOf(codes).equals(
@@ -56,7 +58,7 @@ public class HomeSectionServiceImpl implements HomeSectionService {
 
     @Override
     @Transactional
-    public HomeSectionEntity patch(String code, HomeSectionPatchDTO request) {
+    public HomeSectionSettingVO patch(String code, HomeSectionPatchDTO request) {
         if (!CODES.contains(code)) throw new SiteConfigException("SITE_SECTION_CODE_UNSUPPORTED", "不支持的首页区块", 400);
         if (request == null) throw invalid("区块配置不能为空");
         HomeSectionEntity row = mapper.byCode(code);
@@ -70,7 +72,7 @@ public class HomeSectionServiceImpl implements HomeSectionService {
         if (request.getConfig() != null) row.setConfigJson(validateConfig(request.getConfig()));
         row.setUpdatedAt(LocalDateTime.now());
         mapper.update(row);
-        return row;
+        return HomeSectionSettingVO.from(row);
     }
 
     private String validateConfig(JsonNode config) {

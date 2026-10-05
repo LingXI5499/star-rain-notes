@@ -13,6 +13,7 @@ import com.starrainnotes.seo.mapper.SeoPageMapper;
 import com.starrainnotes.seo.service.SeoHtmlRenderer;
 import com.starrainnotes.seo.dto.SeoPageModel;
 import com.starrainnotes.seo.service.SitemapService;
+import com.starrainnotes.seo.service.impl.SitemapServiceImpl;
 import com.starrainnotes.seo.api.dto.SeoPageSnapshot;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -50,7 +51,7 @@ class SeoCoreTest {
         SeoPageSnapshot page = new SeoPageSnapshot();
         page.setCanonicalUrl("https://example.org/blog?a=1&b=2");
         when(mapper.activePages()).thenReturn(List.of(page));
-        String xml = new SitemapService(mapper).xml();
+        String xml = new SitemapServiceImpl(mapper).xml();
         assertTrue(xml.contains("a=1&amp;b=2"));
         assertEquals(1, xml.split("<url>", -1).length - 1);
     }

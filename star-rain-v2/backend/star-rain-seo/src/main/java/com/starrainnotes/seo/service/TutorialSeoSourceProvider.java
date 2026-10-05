@@ -48,22 +48,22 @@ public class TutorialSeoSourceProvider implements SeoSourceProvider {
     private List<SeoSourceDocument> publishedTree(TutorialPublishedDocument detail) {
         List<SeoSourceDocument> result = new ArrayList<>();
         result.add(tutorial(detail));
-        detail.chapters().forEach(chapter -> result.add(chapter(detail.slug(), chapter)));
+        detail.getChapters().forEach(chapter -> result.add(chapter(detail.getSlug(), chapter)));
         return result;
     }
 
     private SeoSourceDocument tutorial(TutorialPublishedDocument detail) {
-        StringBuilder body = new StringBuilder(detail.summary() == null ? "" : detail.summary());
-        detail.chapters().forEach(chapter -> body.append('\n').append(chapter.title())
-            .append(' ').append(chapter.summary()));
-        return SeoSourceDocument.builder().routePath("/tutorials/" + detail.slug())
-            .contentType("TUTORIAL").contentId(detail.id()).title(detail.title())
-            .summary(detail.summary()).bodyMarkdown(body.toString()).build();
+        StringBuilder body = new StringBuilder(detail.getSummary() == null ? "" : detail.getSummary());
+        detail.getChapters().forEach(chapter -> body.append('\n').append(chapter.getTitle())
+            .append(' ').append(chapter.getSummary()));
+        return SeoSourceDocument.builder().routePath("/tutorials/" + detail.getSlug())
+            .contentType("TUTORIAL").contentId(detail.getId()).title(detail.getTitle())
+            .summary(detail.getSummary()).bodyMarkdown(body.toString()).build();
     }
 
     private SeoSourceDocument chapter(String tutorialSlug, TutorialChapterDocument detail) {
-        return SeoSourceDocument.builder().routePath("/tutorials/" + tutorialSlug + "/" + detail.slug())
-            .contentType("CHAPTER").contentId(detail.id()).title(detail.title())
-            .summary(detail.summary()).bodyMarkdown(detail.searchableText()).build();
+        return SeoSourceDocument.builder().routePath("/tutorials/" + tutorialSlug + "/" + detail.getSlug())
+            .contentType("CHAPTER").contentId(detail.getId()).title(detail.getTitle())
+            .summary(detail.getSummary()).bodyMarkdown(detail.getSearchableText()).build();
     }
 }

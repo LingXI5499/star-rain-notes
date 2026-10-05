@@ -1,6 +1,5 @@
 package com.starrainnotes.tutorial.learning.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.tutorial.learning.entity.KnowledgeMasteryEntity;
 import com.starrainnotes.tutorial.learning.entity.ReviewResultEntity;
@@ -61,9 +60,7 @@ public class LearningReviewServiceImpl implements LearningReviewService {
     }
 
     private KnowledgeMasteryEntity masteryRow(Long actor, Long cardId) {
-        return masteryMapper.selectOne(new LambdaQueryWrapper<KnowledgeMasteryEntity>()
-                .eq(KnowledgeMasteryEntity::getAccountId, actor)
-                .eq(KnowledgeMasteryEntity::getKnowledgeCardId, cardId));
+        return masteryMapper.selectByAccountIdAndCardId(actor, cardId);
     }
 
     private MasteryVO masteryView(KnowledgeMasteryEntity row) {
@@ -140,10 +137,7 @@ public class LearningReviewServiceImpl implements LearningReviewService {
         queueDue(actor);
         taskMapper.markOverdue(actor, now());
         List<ReviewTaskVO> result = new ArrayList<>();
-        for (ReviewTaskEntity row : taskMapper.selectList(new LambdaQueryWrapper<ReviewTaskEntity>()
-                .eq(ReviewTaskEntity::getAccountId, actor)
-                .in(ReviewTaskEntity::getStatus, "PENDING", "OVERDUE")
-                .orderByAsc(ReviewTaskEntity::getDueAt).last("LIMIT 100"))) {
+        for (ReviewTaskEntity row : taskMapper.listPendingByAccountId(actor)) {
             try { result.add(taskView(row)); } catch (LearningResourceNotFoundException ignored) { }
         }
         return result;
@@ -161,10 +155,7 @@ public class LearningReviewServiceImpl implements LearningReviewService {
     }
 
     private String suggestedLevel(Long actor, Long cardId, int evidence) {
-        long good = resultMapper.selectCount(new LambdaQueryWrapper<ReviewResultEntity>()
-                .eq(ReviewResultEntity::getAccountId, actor)
-                .eq(ReviewResultEntity::getKnowledgeCardId, cardId)
-                .in(ReviewResultEntity::getRecallRating, "NORMAL", "EASY"));
+        long good = resultMapper.countGoodByAccountIdAndCardId(actor, cardId);
         if (evidence >= 16 && good >= 12) return "L4";
         if (evidence >= 8 && good >= 6) return "L3";
         if (evidence >= 3 && good >= 3) return "L2";
@@ -205,7 +196,8 @@ public class LearningReviewServiceImpl implements LearningReviewService {
         schedule.setCurrentIntervalDays(decision.getIntervalDays());
         schedule.setNextReviewAt(nextAt);
         schedule.setLastResultAt(now());
-        scheduleMapper.updateById(schedule);
+        scheduleMapper.updateAfterReview(schedule.getId(), schedule.getStepIndex(),
+                schedule.getCurrentIntervalDays(), schedule.getNextReviewAt(), schedule.getLastResultAt());
         masteryMapper.ensureLearned(accountId(), task.getKnowledgeCardId());
         KnowledgeMasteryEntity mastery = masteryRow(accountId(), task.getKnowledgeCardId());
         int evidence = mastery.getEvidenceCount() + 1;
@@ -213,7 +205,8 @@ public class LearningReviewServiceImpl implements LearningReviewService {
         mastery.setLastRecallRating(rating.name());
         mastery.setLastEvidenceAt(now());
         mastery.setSystemSuggestedLevel(suggestedLevel(accountId(), task.getKnowledgeCardId(), evidence));
-        masteryMapper.updateById(mastery);
+        masteryMapper.updateEvidence(mastery.getId(), mastery.getEvidenceCount(),
+                mastery.getLastRecallRating(), mastery.getLastEvidenceAt(), mastery.getSystemSuggestedLevel());
         events.review(accountId(), card.getChapter().getTutorialId(), card.getChapter().getChapterId(),
                 task.getKnowledgeCardId(), taskId, "{\"rating\":\"" + rating.name() + "\"}");
         return ReviewResultVO.builder().taskId(String.valueOf(taskId))
@@ -226,9 +219,7 @@ public class LearningReviewServiceImpl implements LearningReviewService {
     @Override
     public List<MasteryVO> mastery() {
         List<MasteryVO> result = new ArrayList<>();
-        for (KnowledgeMasteryEntity row : masteryMapper.selectList(new LambdaQueryWrapper<KnowledgeMasteryEntity>()
-                .eq(KnowledgeMasteryEntity::getAccountId, accountId())
-                .orderByDesc(KnowledgeMasteryEntity::getUpdatedAt).last("LIMIT 1000"))) {
+        for (KnowledgeMasteryEntity row : masteryMapper.listByAccountId(accountId())) {
             try { result.add(masteryView(row)); } catch (LearningResourceNotFoundException ignored) { }
         }
         return result;
@@ -245,7 +236,7 @@ public class LearningReviewServiceImpl implements LearningReviewService {
         masteryMapper.ensure(actor, cardId);
         KnowledgeMasteryEntity row = masteryRow(actor, cardId);
         row.setUserSelfLevel(level);
-        masteryMapper.updateById(row);
+        masteryMapper.updateSelfLevel(row.getId(), row.getUserSelfLevel());
         events.chapter(actor, "MASTERY_SELF_RATED", card.getChapter());
         return masteryView(row);
     }

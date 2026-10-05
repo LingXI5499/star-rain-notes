@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialRevisionMapper">
+
+  <sql id="columns">
+    id, tutorial_id, revision_no, revision_ref, snapshot_json, content_sha256,
+    revision_reason, created_by_account_id, created_at
+  </sql>
+
+  <!-- snapshot_json 是 JSON 列，由 Service 生成合法 JSON 后写入；created_at 交给列默认值 -->
+  <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_tutorial_revision
+      (tutorial_id, revision_no, revision_ref, snapshot_json, content_sha256, created_by_account_id)
+    VALUES
+      (#{tutorialId}, #{revisionNo}, #{revisionRef}, #{snapshotJson}, #{contentSha256}, #{createdByAccountId})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_revision WHERE id = #{id}
+  </select>
+
+  <select id="selectByTutorialIdAndRef" resultType="com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_revision
+    WHERE tutorial_id = #{tutorialId} AND revision_ref = #{revisionRef}
+  </select>
+
+  <select id="selectLatestByTutorialId" resultType="com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_revision
+    WHERE tutorial_id = #{tutorialId}
+    ORDER BY revision_no DESC
+    LIMIT 1
+  </select>
+
+  <select id="countByTutorialId" resultType="long">
+    SELECT COUNT(*) FROM sr_tutorial_revision WHERE tutorial_id = #{tutorialId}
+  </select>
+</mapper>

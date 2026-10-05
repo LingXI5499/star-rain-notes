@@ -1,7 +1,7 @@
 package com.starrainnotes.media.storage;
 
-import com.starrainnotes.media.dto.StorageWriteCommand;
-import com.starrainnotes.media.dto.StoredObject;
+import com.starrainnotes.media.storage.StorageWriteCommand;
+import com.starrainnotes.media.storage.StoredObject;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;

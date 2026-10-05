@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.profile.mapper.ExperienceMapper">
+
+  <sql id="columns">
+    id, profile_id, experience_type, title, organization, start_date, end_date,
+    is_current, description_md, sort_order, status, created_at, updated_at
+  </sql>
+
+  <insert id="insert" parameterType="com.starrainnotes.profile.entity.ExperienceEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_profile_experience
+      (profile_id, experience_type, title, organization, start_date, end_date,
+       is_current, description_md, sort_order, status, created_at, updated_at)
+    VALUES
+      (#{profileId}, #{experienceType}, #{title}, #{organization}, #{startDate}, #{endDate},
+       #{isCurrent}, #{descriptionMd}, #{sortOrder}, #{status}, #{createdAt}, #{updatedAt})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.profile.entity.ExperienceEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_experience WHERE id = #{id}
+  </select>
+
+  <!-- 排序接口需要拿到该 profile 的全部条目（含 DISABLED），顺序固定便于核对 -->
+  <select id="listByProfileId" resultType="com.starrainnotes.profile.entity.ExperienceEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_experience
+    WHERE profile_id = #{profileId}
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="listEnabledByProfileId" resultType="com.starrainnotes.profile.entity.ExperienceEntity">
+    SELECT <include refid="columns"/> FROM sr_profile_experience
+    WHERE profile_id = #{profileId} AND status = 'ENABLED'
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="countByProfileId" resultType="long">
+    SELECT COUNT(*) FROM sr_profile_experience WHERE profile_id = #{profileId}
+  </select>
+
+  <!--
+    organization / start_date / end_date / description_md 允许被清空：它们必须无条件出现在 SET 里，
+    null 表示「删除这段内容」，这是原先 @TableField(updateStrategy = FieldStrategy.ALWAYS) 的语义。
+    profile_id 是归属键，服务层调用前已校验条目属于该 profile，不在更新范围内。
+    updated_at 由服务层 touch 后显式写入。
+  -->
+  <update id="updateContent" parameterType="com.starrainnotes.profile.entity.ExperienceEntity">
+    UPDATE sr_profile_experience
+    SET experience_type = #{experienceType},
+        title = #{title},
+        organization = #{organization},
+        start_date = #{startDate},
+        end_date = #{endDate},
+        is_current = #{isCurrent},
+        description_md = #{descriptionMd},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <!-- 只改排序：正文、日期、标题都必须保持原值 -->
+  <update id="updateSortOrder" parameterType="com.starrainnotes.profile.entity.ExperienceEntity">
+    UPDATE sr_profile_experience
+    SET sort_order = #{sortOrder},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sr_profile_experience WHERE id = #{id}
+  </delete>
+</mapper>

@@ -1,15 +1,14 @@
 package com.starrainnotes.tutorial.learning.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import java.time.LocalDateTime;
 
+/*
+ * 单次复习结果实体。表名与列清单由 mapper/tutorial/ReviewResultMapper.xml 维护，
+ * 不再使用 MyBatis-Plus 的表注解。
+ */
 @Data
-@TableName("sr_review_result")
 public class ReviewResultEntity {
-    @TableId(type = IdType.AUTO)
     private Long id;
     private Long reviewTaskId;
     private Long scheduleId;

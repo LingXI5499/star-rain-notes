@@ -1,7 +1,7 @@
 package com.starrainnotes.english.vocabulary.service.impl;
 
 import com.starrainnotes.english.vocabulary.constant.VocabularyStudyConstants;
-import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequest;
+import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequestDTO;
 import com.starrainnotes.english.vocabulary.enumeration.LearningStatus;
 import com.starrainnotes.english.vocabulary.enumeration.ReviewDirection;
 import com.starrainnotes.english.vocabulary.enumeration.TimingStatus;
@@ -38,7 +38,7 @@ public class VocabularyProgressImportServiceImpl implements VocabularyProgressIm
 
     @Override
     @Transactional
-    public void importLocal(long accountId, VocabularyLocalProgressRequest request) {
+    public void importLocal(long accountId, VocabularyLocalProgressRequestDTO request) {
         if (request == null) {
             return;
         }
@@ -48,12 +48,12 @@ public class VocabularyProgressImportServiceImpl implements VocabularyProgressIm
         importReviewLog(accountId, request.getReviewLog(), now);
     }
 
-    private void importMemoryList(long accountId, List<VocabularyLocalProgressRequest.LocalMemoryPayload> entries,
+    private void importMemoryList(long accountId, List<VocabularyLocalProgressRequestDTO.LocalMemoryPayload> entries,
                                   LocalDateTime now) {
         if (entries == null) {
             return;
         }
-        for (VocabularyLocalProgressRequest.LocalMemoryPayload entry : entries) {
+        for (VocabularyLocalProgressRequestDTO.LocalMemoryPayload entry : entries) {
             if (entry == null || entry.getWordId() == null) {
                 continue;
             }
@@ -65,12 +65,12 @@ public class VocabularyProgressImportServiceImpl implements VocabularyProgressIm
      * V1 更早的本机结构是 { wordId: { memoryCount, lastMemoryAt } }，
      * 迁移到结构化存储之前留下的数据仍然要能导进来。
      */
-    private void importLegacyVocabulary(long accountId, Map<String, VocabularyLocalProgressRequest.LocalMemoryPayload> entries,
+    private void importLegacyVocabulary(long accountId, Map<String, VocabularyLocalProgressRequestDTO.LocalMemoryPayload> entries,
                                         LocalDateTime now) {
         if (entries == null) {
             return;
         }
-        for (Map.Entry<String, VocabularyLocalProgressRequest.LocalMemoryPayload> entry : entries.entrySet()) {
+        for (Map.Entry<String, VocabularyLocalProgressRequestDTO.LocalMemoryPayload> entry : entries.entrySet()) {
             Long wordId = longValue(entry.getKey());
             if (wordId == null || entry.getValue() == null) {
                 continue;
@@ -80,7 +80,7 @@ public class VocabularyProgressImportServiceImpl implements VocabularyProgressIm
     }
 
     private void importMemory(long accountId, long wordId,
-                              VocabularyLocalProgressRequest.LocalMemoryPayload payload, LocalDateTime now) {
+                              VocabularyLocalProgressRequestDTO.LocalMemoryPayload payload, LocalDateTime now) {
         if (wordId <= 0 || mapper.wordExists(wordId) == 0) {
             return;
         }
@@ -111,12 +111,12 @@ public class VocabularyProgressImportServiceImpl implements VocabularyProgressIm
     }
 
     private void importReviewLog(long accountId,
-                                 List<VocabularyLocalProgressRequest.LocalReviewPayload> entries,
+                                 List<VocabularyLocalProgressRequestDTO.LocalReviewPayload> entries,
                                  LocalDateTime now) {
         if (entries == null) {
             return;
         }
-        for (VocabularyLocalProgressRequest.LocalReviewPayload entry : entries) {
+        for (VocabularyLocalProgressRequestDTO.LocalReviewPayload entry : entries) {
             if (entry == null || entry.getWordId() == null) {
                 continue;
             }
