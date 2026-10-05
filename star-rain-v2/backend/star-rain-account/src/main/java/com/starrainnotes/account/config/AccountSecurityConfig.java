@@ -2,6 +2,7 @@ package com.starrainnotes.account.config;
 
 import com.starrainnotes.account.security.AccountAuthenticator;
 import com.starrainnotes.account.security.SecurityPatternValidator;
+import com.starrainnotes.account.security.SecurityRulePlan;
 import com.starrainnotes.account.interceptor.AccountSessionValidationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import com.starrainnotes.account.mapper.AccountMapper;
@@ -74,28 +75,18 @@ public class AccountSecurityConfig {
                 .securityContext(context -> context.securityContextRepository(contextRepository))
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))
                 .authorizeHttpRequests(authorize -> {
-                    // 三段顺序即规则优先级：denied 先于 public，public 先于 authenticated
-                    for (ModuleSecurityContributor contributor : ordered) {
-                        if (!contributor.deniedPatterns().isEmpty()) {
-                            authorize.requestMatchers(contributor.deniedPatterns().toArray(String[]::new)).denyAll();
-                        }
-                    }
                     /*
-                     * 入口收窄规则已随「三入口按域名」方案一并移除。
-                     *
-                     * 路径方案下注册接口是普通公开接口：同一个域名上无法从请求里分辨
-                     * 调用方来自公开树还是账号树。少了这一层的后果与补偿见
-                     * docs/开发文档/路径入口返工验收.md 的「已知缺口」。
+                     * 规则顺序即优先级，且这个顺序**不在这里决定**：
+                     * SecurityRulePlan.of() 是唯一真源（denied → public → authenticated），
+                     * SecurityRulePlanTest 把它钉死。曾经这里是三段并列的 for 循环，
+                     * 谁先谁后只存在于阅读顺序里，而 Account 的
+                     * denied `/api/admin/accounts/* /roles` 正是靠「denied 先跑」才成立。
                      */
-                    for (ModuleSecurityContributor contributor : ordered) {
-                        if (!contributor.publicPatterns().isEmpty()) {
-                            authorize.requestMatchers(contributor.publicPatterns().toArray(String[]::new)).permitAll();
-                        }
-                    }
-                    for (ModuleSecurityContributor contributor : ordered) {
-                        if (!contributor.authenticatedPatterns().isEmpty()) {
-                            authorize.requestMatchers(contributor.authenticatedPatterns().toArray(String[]::new))
-                                    .authenticated();
+                    for (SecurityRulePlan.Rule rule : SecurityRulePlan.of(ordered)) {
+                        switch (rule.getAccess()) {
+                            case DENIED -> authorize.requestMatchers(rule.getPattern()).denyAll();
+                            case PUBLIC -> authorize.requestMatchers(rule.getPattern()).permitAll();
+                            case AUTHENTICATED -> authorize.requestMatchers(rule.getPattern()).authenticated();
                         }
                     }
                     // 默认拒绝：没有声明过的 URL 一律不可访问
