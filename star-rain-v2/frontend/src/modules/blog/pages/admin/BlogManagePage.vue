@@ -39,6 +39,7 @@ const error = ref('')
 const notice = ref('')
 const busyId = ref(null)
 const confirmDialog = ref(null)
+let loadVersion = 0
 
 const totalPages = computed(() => Math.max(1, Math.ceil(data.value.total / pageSize.value)))
 const activeTag = computed(() => tags.value.find((tag) => tag.id === Number(filters.tagId)) || null)
@@ -57,20 +58,22 @@ function previewUrl(post) {
 }
 
 async function load() {
+  const version = ++loadVersion
   loading.value = true
   error.value = ''
   try {
-    data.value = await listAdminPosts({
+    const result = await listAdminPosts({
       page: page.value,
       pageSize: pageSize.value,
       keyword: filters.keyword || undefined,
       status: filters.status || undefined,
       tagId: filters.tagId || undefined,
     })
+    if (version === loadVersion) data.value = result
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (version === loadVersion) error.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (version === loadVersion) loading.value = false
   }
 }
 
@@ -120,9 +123,13 @@ function preview(post) {
 
 async function act(post, action) {
   if (action === 'delete') {
-    const accepted = await confirmDialog.value.ask(
-      `确认删除《${post.title}》？该文章的标签、专题关系与媒体引用都会被解除，且不可恢复。`,
-    )
+    const accepted = await confirmDialog.value.ask({
+      title: '删除文章',
+      message: `删除《${post.title}》会解除标签、专题关系与媒体引用，且无法恢复。`,
+      confirmText: '删除',
+      danger: true,
+      requireName: post.title,
+    })
     if (!accepted) return
   }
   busyId.value = post.id

@@ -17,20 +17,23 @@ const notice = ref('')
 const loading = ref(false)
 const busyId = ref('')
 const confirmDialog = ref(null)
+let loadVersion = 0
 const pageCount = computed(() => Math.max(1, Math.ceil(result.value.total / pageSize.value)))
 const typeLabels = { SOFTWARE: '软件', VIDEO: '视频', MUSIC: '音乐', WRITING: '写作', OTHER: '其他' }
 const statusLabels = { DRAFT: '草稿', PUBLISHED: '已发布', WITHDRAWN: '已撤回' }
 
 async function load() {
+  const version = ++loadVersion
   loading.value = true
   error.value = ''
   try {
-    result.value = await listAdminWorks({ page: page.value, pageSize: pageSize.value,
+    const response = await listAdminWorks({ page: page.value, pageSize: pageSize.value,
       type: filters.type || undefined, status: filters.status || undefined, q: filters.q.trim() || undefined })
+    if (version === loadVersion) result.value = response
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (version === loadVersion) error.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (version === loadVersion) loading.value = false
   }
 }
 
