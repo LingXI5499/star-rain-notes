@@ -1,7 +1,7 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { listArchive, listPublicPosts, listArchiveMonths, listPublicTags } from '../api/blogApi'
+import { listArchive, listPublicPosts, listArchiveMonths, listPublicTags, listPublicTopics } from '../api/blogApi'
 import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import BlogTimeline from '../components/BlogTimeline.vue'
@@ -11,7 +11,7 @@ import BlogPagination from '../components/BlogPagination.vue'
 /*
  * BLOG-001 前台博客列表（对齐 V1 `views/blog/BlogView.vue`）。
  *
- * 视觉与信息架构：标题区（+ 公开文章总数）→ 左侧时间线轴 → 右侧 TOPICS / ARCHIVE 侧栏。
+ * 视觉与信息架构：标题区（+ 公开文章总数）→ 左侧时间线轴 → 右侧 TOPICS（专题）/ TAGS（标签）/ ARCHIVE 侧栏。
  *
  * 筛选条件写回 URL（`?tag=` / `?month=YYYY-MM` / `?page=`），
  * 「某标签下的文章」「某个月的文章」都是可直接分享的地址，前进后退也不会丢状态。
@@ -38,6 +38,7 @@ const state = reactive({
   items: [],
 })
 const tags = ref([])
+const topics = ref([])
 const months = ref([])
 const loading = ref(false)
 const errorText = ref('')
@@ -94,12 +95,17 @@ async function loadPosts() {
 
 async function loadAside() {
   try {
-    const [tagList, monthList] = await Promise.all([listPublicTags(), listArchiveMonths()])
+    // 专题与标签是两件不同的事，侧栏也分两块展示，因此两个接口都要拿
+    const [tagList, topicList, monthList] = await Promise.all([
+      listPublicTags(), listPublicTopics(), listArchiveMonths(),
+    ])
     tags.value = tagList
+    topics.value = topicList
     months.value = monthList
   } catch {
     // 侧栏拿不到不影响正文列表，静默降级为空侧栏（正文里也会有对应的错误提示）
     tags.value = []
+    topics.value = []
     months.value = []
   }
 }
@@ -195,6 +201,7 @@ const emptyText = computed(() => (state.tag || state.month ? '没有符合条件
       </main>
 
       <BlogSidebar
+        :topics="topics"
         :tags="tags"
         :months="months"
         :active-tag="state.tag"

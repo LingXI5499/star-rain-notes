@@ -1,18 +1,33 @@
 <script setup>
 import { computed } from 'vue'
+import { RouterLink } from 'vue-router'
+import { useViewMode } from '../../../shared/viewMode'
 
 /*
- * 博客列表 / 归档页的右侧栏 —— 对齐 V1 `views/blog/BlogView.vue` 的 aside：
- * 「TOPICS」标签云（每个标签带文章数）+「ARCHIVE」归档（年份 → 月份 + 数量）。
+ * 博客列表 / 归档页的右侧栏。
  *
- * 数据都来自公开接口：`/public/blog/tags` 的 postCount 只统计已发布文章，
- * `/public/blog/archive/months` 同样只统计已发布文章，因此侧栏数字与列表里能点开的内容一致。
+ * 三块内容，语义各不相同，因此分成三块而不是挤在一起：
+ *   TOPICS  专题 —— 人工策展的**有序**文章集合，点进去是专题页；
+ *   TAGS    标签 —— 无序的多维分类，点一下是按标签筛选当前列表；
+ *   ARCHIVE 归档 —— 年份 → 月份（带数量）。
  *
- * V1 还有一个「ACTIVE DAYS」日历块，它依赖 V1 的日历接口；V2 后端只有月份粒度
- * （`/archive/months`），没有按天的接口，也不允许为了前端去改后端业务逻辑，
- * 因此这一块没有移植，而不是用别处的数据凑出来。
+ * V1（`views/blog/BlogView.vue`）把标签云挂在「TOPICS / N 个主题」标题下，
+ * 于是界面上写着专题、列出来的却是标签 —— V2 不沿用这一点：
+ * TOPICS 只列专题，标签改由 TAGS 块承担。
+ *
+ * 数据都来自公开接口：`/public/blog/topics` 与 `/public/blog/tags` 的计数
+ * 都只统计已发布文章，`/public/blog/archive/months` 同样如此，
+ * 因此侧栏数字与列表里能点开的内容一致。
+ *
+ * V1 列表页还有一个「ACTIVE DAYS」按天日历块，这里没有移植。
+ * 不是后端缺接口 —— `/public/blog/archive/days` 就在，归档页的日历用的正是它；
+ * 而是列表页这一侧的筛选状态只有标签与月份（`?tag=` / `?month=`），
+ * 按天筛选的视图归归档页（`?day=`）。两处各摆一套日历反而更难解释。
+ * 这条差异记在 docs/开发文档/博客专题验收.md 的「有意不同」表里。
  */
+const { contentPath } = useViewMode()
 const props = defineProps({
+  topics: { type: Array, default: () => [] },
   tags: { type: Array, default: () => [] },
   months: { type: Array, default: () => [] },
   // 当前选中的标签 slug 与月份（'YYYY-MM' 形式）
@@ -46,12 +61,31 @@ function toggleMonth(item) {
 
 <template>
   <aside class="blog-sidebar">
-    <section v-if="tags.length" class="blog-panel">
+    <section class="blog-panel">
       <div class="blog-panel__head">
         <span>TOPICS</span>
-        <small>{{ tags.length }} 个主题</small>
+        <small>{{ topics.length }} 个专题</small>
       </div>
-      <div class="blog-panel__tags">
+      <p v-if="!topics.length" class="blog-panel__empty">
+        还没有对外公开的专题。专题是后台人工编排的文章合集，与标签不是一回事。
+      </p>
+      <ol v-else class="blog-panel__topics">
+        <li v-for="topic in topics" :key="topic.id || topic.slug">
+          <RouterLink :to="contentPath(`/blog/topics/${topic.slug}`)" :title="topic.description || topic.name">
+            <span class="blog-panel__topic-name">{{ topic.name }}</span>
+            <em>{{ topic.memberCount }} 篇</em>
+          </RouterLink>
+        </li>
+      </ol>
+    </section>
+
+    <section class="blog-panel">
+      <div class="blog-panel__head">
+        <span>TAGS</span>
+        <small>{{ tags.length }} 个标签</small>
+      </div>
+      <p v-if="!tags.length" class="blog-panel__empty">还没有可用标签。</p>
+      <div v-else class="blog-panel__tags">
         <button
           v-for="tag in tags"
           :key="tag.id || tag.slug"
@@ -122,6 +156,45 @@ function toggleMonth(item) {
   font-size: 10px;
 }
 
+.blog-panel__empty {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.7;
+}
+
+.blog-panel__topics {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.blog-panel__topics a {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.blog-panel__topics a:hover {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.blog-panel__topic-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .blog-panel__tags {
   display: flex;
   flex-wrap: wrap;
@@ -142,10 +215,12 @@ function toggleMonth(item) {
 }
 
 .blog-panel__tags em,
+.blog-panel__topics em,
 .blog-panel__year em {
   color: var(--text-muted);
   font-size: 9px;
   font-style: normal;
+  white-space: nowrap;
 }
 
 .blog-panel__tags button:hover,

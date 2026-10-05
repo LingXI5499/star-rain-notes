@@ -5,6 +5,7 @@ import com.starrainnotes.blog.dto.BlogPublicQueryDTO;
 import com.starrainnotes.blog.entity.BlogPostEntity;
 import com.starrainnotes.blog.exception.BlogPostNotFoundException;
 import com.starrainnotes.blog.exception.BlogQueryInvalidException;
+import com.starrainnotes.blog.exception.BlogTopicNotFoundException;
 import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.blog.mapper.BlogTagMapper;
 import com.starrainnotes.blog.mapper.BlogTopicMapper;
@@ -17,6 +18,7 @@ import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
+import com.starrainnotes.blog.vo.BlogTopicDetailVO;
 import com.starrainnotes.blog.vo.BlogTopicVO;
 import com.starrainnotes.common.result.PageResult;
 import java.time.LocalDateTime;
@@ -96,6 +98,32 @@ public class BlogPublicServiceImpl implements BlogPublicService {
             to = day != null ? from.plusDays(1) : month == null ? from.plusYears(1) : from.plusMonths(1);
         }
         return page(query, tagSlug, topicSlug, from, to);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BlogTopicDetailVO topicBySlug(String slug, int page, int pageSize) {
+        BlogQueryRules.validatePage(page, pageSize);
+        String topicSlug = publicSlug(slug, "topic", BlogLimits.TOPIC_SLUG_MAX_LENGTH);
+        BlogTopicVO topic = topicSlug == null ? null : topicMapper.publishedTopicBySlug(topicSlug);
+        if (topic == null) {
+            // 不存在、已停用、以及“成员全都没发布”的专题在对外表现上完全一致，不区分
+            throw new BlogTopicNotFoundException();
+        }
+        long total = postMapper.publishedTopicPageCount(topicSlug);
+        List<BlogPostPublicVO> items = total == 0
+                ? List.of()
+                : assembler.toPublicVOs(postMapper.publishedTopicPage(topicSlug,
+                        BlogQueryRules.offset(page, pageSize), pageSize));
+        return BlogTopicDetailVO.builder()
+                .topic(topic)
+                .posts(PageResult.<BlogPostPublicVO>builder()
+                        .items(items)
+                        .total(total)
+                        .page(page)
+                        .pageSize(pageSize)
+                        .build())
+                .build();
     }
 
     @Override

@@ -71,3 +71,5 @@ export const listArchiveMonths = () => get('/public/blog/archive/months')
 export const listArchiveDays = (params) => get('/public/blog/archive/days', params)
 export const listPublicTags = () => get('/public/blog/tags')
 export const listPublicTopics = () => get('/public/blog/topics')
+// 专题页：一次拿到专题本身与该专题下的文章（顺序是策展顺序，前端不要再排）
+export const getPublicTopic = (slug, params) => get(`/public/blog/topics/${encodeURIComponent(slug)}`, params)

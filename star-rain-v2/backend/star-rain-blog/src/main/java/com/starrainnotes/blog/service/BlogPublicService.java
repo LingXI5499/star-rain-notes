@@ -6,6 +6,7 @@ import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
+import com.starrainnotes.blog.vo.BlogTopicDetailVO;
 import com.starrainnotes.blog.vo.BlogTopicVO;
 import com.starrainnotes.common.result.PageResult;
 import java.util.List;
@@ -26,6 +27,12 @@ public interface BlogPublicService {
 
     // BLOG-010 归档：tag / topic / year / month 可组合
     PageResult<BlogPostPublicVO> archive(BlogPublicQueryDTO query);
+
+    /*
+     * 专题页：专题本身 + 该专题下的文章分页，顺序是策展顺序。
+     * 不可见（不存在 / 已停用 / 没有已发布成员）的专题一律 BLOG_TOPIC_NOT_FOUND。
+     */
+    BlogTopicDetailVO topicBySlug(String slug, int page, int pageSize);
 
     // 归档侧栏的月份桶
     List<BlogArchiveMonthVO> archiveMonths();

@@ -6,8 +6,9 @@ import { useViewMode } from '../../../shared/viewMode'
  * 专题面板。
  *
  * Topic 是有序策展，所以这里按顺序渲染并显示序号 —— 序号就是专题的意义所在。
- * linkable=true 时链到按专题筛选的归档页；归档页地址按当前路径树生成
- * （公开树 /blog/archive，账号树 /useradmin/blog/archive）。
+ * linkable=true 时链到**专题页**（/blog/topics/:slug，账号树 /useradmin/blog/topics/:slug），
+ * 而不是按专题筛选的归档页：专题页按策展顺序展示，归档页只会按发布时间倒序，
+ * 后者把专题降级成了一个筛选标签。
  */
 const { contentPath } = useViewMode()
 defineProps({
@@ -24,7 +25,7 @@ defineProps({
       <RouterLink
         v-if="linkable"
         class="blog-topic"
-        :to="{ path: contentPath('/blog/archive'), query: { topic: topic.slug } }"
+        :to="contentPath(`/blog/topics/${topic.slug}`)"
       ><span class="blog-topic__order">{{ index + 1 }}</span>{{ topic.name }}</RouterLink>
       <span v-else class="blog-topic" :class="topic.status === 'DISABLED' && 'blog-topic--disabled'">
         <span class="blog-topic__order">{{ index + 1 }}</span>{{ topic.name }}

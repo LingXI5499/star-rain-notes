@@ -80,6 +80,42 @@
         ORDER BY t.updated_at DESC, t.id DESC
     </select>
 
+    <!--
+      前台专题页的专题本身：可见性规则与 publishedTopics 完全一致
+      （ENABLED + 至少一篇已发布成员），member_count 复用同一个口径当文章数。
+    -->
+    <select id="publishedTopicBySlug" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
+        SELECT t.id, t.slug, t.name, t.description, t.status, COUNT(p.id) AS member_count
+        FROM sr_blog_topic t
+        LEFT JOIN sr_blog_topic_post tp ON tp.topic_id = t.id
+        LEFT JOIN sr_blog_post p ON p.id = tp.post_id AND p.status = 'PUBLISHED'
+        WHERE t.status = 'ENABLED' AND t.slug = #{slug}
+        GROUP BY t.id, t.slug, t.name, t.description, t.status
+        HAVING COUNT(p.id) &gt; 0
+    </select>
+
+    <!-- 公开页面上的专题标记：停用专题不出现 -->
+    <select id="publicTopicsByPostId" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
+        SELECT t.id, t.slug, t.name, t.description, t.status
+        FROM sr_blog_topic_post tp
+        JOIN sr_blog_topic t ON t.id = tp.topic_id
+        WHERE tp.post_id = #{postId} AND t.status = 'ENABLED'
+        ORDER BY tp.sort_order ASC, t.id ASC
+    </select>
+
+    <select id="publicTopicsByPostIds" resultType="com.starrainnotes.blog.dto.BlogPostTopicRow">
+        SELECT tp.post_id AS post_id, t.id AS topic_id, t.slug AS slug, t.name AS name,
+               tp.sort_order AS sort_order
+        FROM sr_blog_topic_post tp
+        JOIN sr_blog_topic t ON t.id = tp.topic_id
+        WHERE t.status = 'ENABLED'
+          AND tp.post_id IN
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+        ORDER BY tp.sort_order ASC, t.id ASC
+    </select>
+
     <select id="topicsByPostId" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
         SELECT t.id, t.slug, t.name, t.description, t.status
         FROM sr_blog_topic_post tp

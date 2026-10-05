@@ -57,6 +57,18 @@ function timeLabel(post) {
           </footer>
         </div>
       </RouterLink>
+      <!--
+        专题标记放在卡片之外：整张卡片本身已经是一个链接，
+        链接里再套链接会被浏览器拆开 DOM，所以专题只能与卡片并列，不能嵌套。
+      -->
+      <div v-if="item.post.topics?.length" class="timeline-topics">
+        <span>专题</span>
+        <RouterLink
+          v-for="topic in item.post.topics"
+          :key="topic.id || topic.slug"
+          :to="contentPath(`/blog/topics/${topic.slug}`)"
+        >{{ topic.name }}</RouterLink>
+      </div>
     </li>
   </ol>
 </template>
@@ -203,6 +215,34 @@ function timeLabel(post) {
   text-align: center;
 }
 
+.timeline-topics {
+  display: flex;
+  grid-column: 3;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-top: 8px;
+  font-size: 11px;
+}
+
+.timeline-topics > span {
+  color: var(--text-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.timeline-topics a {
+  padding: 4px 9px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, var(--border));
+  border-radius: 999px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+.timeline-topics a:hover {
+  border-color: var(--accent);
+}
+
 .timeline-state--error {
   color: var(--danger);
 }
@@ -239,6 +279,8 @@ function timeLabel(post) {
   }
 
   .timeline-card { grid-column: 2; }
+
+  .timeline-topics { grid-column: 2; }
 
   .timeline-state { margin-left: 26px; }
 }

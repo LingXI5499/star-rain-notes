@@ -89,6 +89,16 @@ public interface BlogPostMapper {
                                       @Param("offset") int offset,
                                       @Param("limit") int limit);
 
+    /*
+     * 前台专题页的成员分页：按 sr_blog_topic_post.sort_order 排，而不是时间倒序。
+     * 顺序是专题的意义所在（人工策展），按时间排会把它降级成一个标签。
+     */
+    long publishedTopicPageCount(@Param("topicSlug") String topicSlug);
+
+    List<BlogPostEntity> publishedTopicPage(@Param("topicSlug") String topicSlug,
+                                            @Param("offset") int offset,
+                                            @Param("limit") int limit);
+
     // 归档月份桶：给前台时间归档的侧栏，依据 published_at 分组
     List<BlogArchiveMonthVO> archiveMonths();
 

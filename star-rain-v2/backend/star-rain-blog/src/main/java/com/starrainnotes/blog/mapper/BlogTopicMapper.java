@@ -38,6 +38,22 @@ public interface BlogTopicMapper {
     // 前台专题入口：只展示 ENABLED 且至少有一篇已发布文章的专题
     List<BlogTopicVO> publishedTopics();
 
+    /*
+     * 前台专题页的专题本身。
+     *
+     * 与 publishedTopics 同一套可见性规则（ENABLED + 至少一篇已发布成员），
+     * 因此“侧栏里点得到”与“页面打得开”是同一个集合，不会一边列着一边 404。
+     */
+    BlogTopicVO publishedTopicBySlug(@Param("slug") String slug);
+
+    /*
+     * 公开页面上的专题标记：停用专题不出现在文章卡片与详情页上。
+     * 与 topicsByPostId 分开，是因为后台还要看到停用专题才能重新启用它。
+     */
+    List<BlogTopicVO> publicTopicsByPostId(@Param("postId") Long postId);
+
+    List<BlogPostTopicRow> publicTopicsByPostIds(@Param("postIds") List<Long> postIds);
+
     List<BlogTopicVO> topicsByPostId(@Param("postId") Long postId);
 
     List<BlogPostTopicRow> topicsByPostIds(@Param("postIds") List<Long> postIds);

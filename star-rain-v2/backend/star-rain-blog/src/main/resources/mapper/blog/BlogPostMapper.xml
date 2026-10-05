@@ -189,6 +189,29 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <!--
+      前台专题页的两条语句：JOIN 已经在 SQL 里锁死 t.status = 'ENABLED'，
+      停用专题的成员不会因为前端传对了 slug 就泄露出去。
+      顺序取 tp.sort_order（策展顺序），同一序号用 id 打破平局。
+    -->
+    <select id="publishedTopicPageCount" resultType="long">
+        SELECT COUNT(*)
+        FROM sr_blog_post p
+        JOIN sr_blog_topic_post tp ON tp.post_id = p.id
+        JOIN sr_blog_topic t ON t.id = tp.topic_id
+        WHERE p.status = 'PUBLISHED' AND t.status = 'ENABLED' AND t.slug = #{topicSlug}
+    </select>
+
+    <select id="publishedTopicPage" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
+        SELECT <include refid="postColumns"/>
+        FROM sr_blog_post p
+        JOIN sr_blog_topic_post tp ON tp.post_id = p.id
+        JOIN sr_blog_topic t ON t.id = tp.topic_id
+        WHERE p.status = 'PUBLISHED' AND t.status = 'ENABLED' AND t.slug = #{topicSlug}
+        ORDER BY tp.sort_order ASC, p.id ASC
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
     <select id="archiveMonths" resultType="com.starrainnotes.blog.vo.BlogArchiveMonthVO">
         SELECT YEAR(published_at) AS `year`,
                MONTH(published_at) AS `month`,

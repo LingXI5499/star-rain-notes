@@ -268,6 +268,7 @@ watch(() => [route.query.tag, route.query.topic, route.query.year, route.query.m
       </main>
 
       <BlogSidebar
+        :topics="topics"
         :tags="tags"
         :months="months"
         :active-tag="filters.tag"

@@ -90,6 +90,14 @@ watch(() => route.params.slug, load)
             :to="{ path: contentPath('/blog'), query: { tag: tag.slug } }"
           ># {{ tag.name }}</RouterLink>
         </div>
+        <div v-if="post.topics?.length" class="article-hero__topics">
+          <span>专题</span>
+          <RouterLink
+            v-for="topic in post.topics"
+            :key="topic.id || topic.slug"
+            :to="contentPath(`/blog/topics/${topic.slug}`)"
+          >{{ topic.name }}</RouterLink>
+        </div>
         <h1>{{ post.title }}</h1>
         <p v-if="post.summary" class="article-hero__summary">{{ post.summary }}</p>
         <div class="article-hero__meta">
@@ -181,6 +189,32 @@ watch(() => route.params.slug, load)
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 8%, transparent);
   font-size: 10px;
+  font-weight: 700;
+}
+
+.article-hero__topics {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: var(--space-4);
+  font-size: 11px;
+}
+
+.article-hero__topics > span {
+  color: var(--text-muted);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+}
+
+.article-hero__topics a {
+  padding: 5px 11px;
+  border: 1px solid color-mix(in srgb, var(--primary) 30%, var(--border));
+  border-radius: 999px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  font-size: 11px;
   font-weight: 700;
 }
 
@@ -319,6 +353,7 @@ watch(() => route.params.slug, load)
   .article-hero { text-align: left; }
   .article-hero nav,
   .article-hero__tags,
+  .article-hero__topics,
   .article-hero__meta { justify-content: flex-start; }
 }
 </style>

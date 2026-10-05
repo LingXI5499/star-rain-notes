@@ -8,6 +8,7 @@ import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
+import com.starrainnotes.blog.vo.BlogTopicDetailVO;
 import com.starrainnotes.blog.vo.BlogTopicVO;
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.common.result.PageResult;
@@ -76,5 +77,13 @@ public class BlogPublicController {
     @GetMapping("/topics")
     public ApiResponse<List<BlogTopicVO>> topics() {
         return ApiResponse.ok(publicService.listPublishedTopics());
+    }
+
+    // 专题页：专题 + 该专题下的文章，顺序是策展顺序（sort_order），不是发布时间
+    @GetMapping("/topics/{slug}")
+    public ApiResponse<BlogTopicDetailVO> topic(@PathVariable String slug,
+                                                @RequestParam(defaultValue = "1") int page,
+                                                @RequestParam(defaultValue = "10") int pageSize) {
+        return ApiResponse.ok(publicService.topicBySlug(slug, page, pageSize));
     }
 }

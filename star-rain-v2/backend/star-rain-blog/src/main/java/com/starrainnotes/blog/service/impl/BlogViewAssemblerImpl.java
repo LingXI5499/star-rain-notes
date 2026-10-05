@@ -129,7 +129,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
 
     @Override
     public BlogPostPublicVO toPublicVO(BlogPostEntity post) {
-        return publicVO(post, tagsOf(post.getId()), topicsOf(post.getId()));
+        return publicVO(post, tagsOf(post.getId()), publicTopicsOf(post.getId()));
     }
 
     @Override
@@ -139,7 +139,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
         }
         List<Long> postIds = posts.stream().map(BlogPostEntity::getId).toList();
         Map<Long, List<BlogTagVO>> tags = groupTags(tagMapper.tagsByPostIds(postIds));
-        Map<Long, List<BlogTopicVO>> topics = groupTopics(topicMapper.topicsByPostIds(postIds));
+        Map<Long, List<BlogTopicVO>> topics = groupTopics(topicMapper.publicTopicsByPostIds(postIds));
         List<BlogPostPublicVO> result = new ArrayList<>(posts.size());
         for (BlogPostEntity post : posts) {
             result.add(publicVO(post, tags.getOrDefault(post.getId(), List.of()),
@@ -161,7 +161,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
                 .publishedAt(post.getPublishedAt())
                 .updatedAt(post.getUpdatedAt())
                 .tags(tagsOf(post.getId()))
-                .topics(topicsOf(post.getId()))
+                .topics(publicTopicsOf(post.getId()))
                 .build();
     }
 
@@ -197,6 +197,14 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
                 .tagSlugs(tags.stream().map(BlogTagVO::getSlug).toList())
                 .topicSlugs(topics.stream().map(BlogTopicVO::getSlug).toList())
                 .build();
+    }
+
+    /*
+     * 公开页面专用的专题标记：走 publicTopicsByPostId* 而不是 topicsByPostId*。
+     * 停用专题不在前台展示，若仍留在卡片上，读者点进去只会拿到一个 404 页面。
+     */
+    private List<BlogTopicVO> publicTopicsOf(Long postId) {
+        return topicMapper.publicTopicsByPostId(postId);
     }
 
     private BlogPostAdminVO adminVO(BlogPostEntity post, List<BlogTagVO> tags, List<BlogTopicVO> topics) {
