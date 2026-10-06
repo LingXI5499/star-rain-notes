@@ -2,28 +2,32 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
 /*
- * 全部标签的悬浮卡片。
+ * 全部标签的悬浮卡片 —— 一个「先选条件、再确认」的筛选面板。
  *
- * 用户的要求：「点击全部标签给我跳转了一个新页面，不好，应该是给个悬浮在这个核心页面上的，
- * 然后也有这个搜索展示，完整的一个小卡片」。
- * 所以它不跳路由、不请求数据：标签列表由列表页一次性取好传进来，
- * 这里只负责搜索、展示与「点一个标签就原地筛选下方列表」。
+ * 用户原话：「点击全部标签给我跳转了一个新页面，不好，应该是给个悬浮在这个核心页面上的，
+ * 然后也有这个搜索展示，完整的一个小卡片，悬浮卡片」；
+ * 之后又要求：「现在一点击就直接跳转了，可以增加条件选择啊，多标签，或者单标签，
+ * 确定后再搜索，直接跳的话有点太突兀的」。
  *
- * 交互要点：
- *   - Teleport 到 body：卡片要盖在整页之上，不能被侧栏的 overflow 裁掉；
- *   - Esc / 点遮罩 / 点右上角关闭；
- *   - 打开时把焦点给搜索框，全站搜索之外再点一次就关；
- *   - 选中标签后由父组件关闭（父组件要负责换列表，卡片留着会挡住结果）。
+ * 所以卡片里的点击**只改本地勾选**，不立刻筛选：
+ *   - 单标签：点一个换一个（等价于原来的 ?tag=），选中后再点一次取消；
+ *   - 多标签：点一个加一个（?tags=a,b，命中任一），可以攒几个一起看；
+ *   - 「应用筛选」才真正 emit 出去，父组件换掉下方列表并收起卡片；
+ *   - 「清空」只清本地勾选，「全部（不筛选）」清空并立刻应用。
+ * 打开时会用当前生效的标签预填勾选，再次打开不会「忘掉」上次选了什么。
  */
 const props = defineProps({
   open: { type: Boolean, default: false },
   tags: { type: Array, default: () => [] },
-  activeTag: { type: String, default: '' },
+  // 当前生效的标签集合（来自 URL）
+  activeTags: { type: Array, default: () => [] },
 })
 
-const emit = defineEmits(['close', 'select-tag'])
+const emit = defineEmits(['close', 'apply'])
 
 const keyword = ref('')
+const mode = ref('single')
+const picked = ref([])
 const searchInput = ref(null)
 
 const matched = computed(() => {
@@ -34,13 +38,53 @@ const matched = computed(() => {
 
 // 总引用次数：卡片右上角显示「50 个标签 · 58 次引用」，与标签管理页的口径一致
 const totalRelations = computed(() => props.tags.reduce((sum, tag) => sum + (tag.postCount || 0), 0))
+const pickedNames = computed(() => picked.value.map((slug) => nameOf(slug)))
+
+function nameOf(slug) {
+  return props.tags.find((tag) => tag.slug === slug)?.name || slug
+}
+
+function isPicked(slug) {
+  return picked.value.includes(slug)
+}
+
+/*
+ * 勾选逻辑按模式分派：
+ *   单标签 = 换一个（再点自己就是取消）；多标签 = 逐个累加。
+ * 多标签没有上限，但后端对 IN 列表有 20 个的上限，这里也照同一个数拦住，
+ * 免得用户选到第 21 个才被后端拒绝。
+ */
+const PICK_MAX = 20
+
+function toggle(slug) {
+  if (mode.value === 'single') {
+    picked.value = isPicked(slug) ? [] : [slug]
+    return
+  }
+  if (isPicked(slug)) {
+    picked.value = picked.value.filter((item) => item !== slug)
+    return
+  }
+  if (picked.value.length >= PICK_MAX) return
+  picked.value = [...picked.value, slug]
+}
+
+function switchMode(next) {
+  mode.value = next
+  // 从多标签切回单标签时只留第一个，避免出现「单标签模式下选中了 3 个」的矛盾状态
+  if (next === 'single' && picked.value.length > 1) picked.value = picked.value.slice(0, 1)
+}
+
+function clearPicked() {
+  picked.value = []
+}
+
+function apply() {
+  emit('apply', [...picked.value])
+}
 
 function close() {
   emit('close')
-}
-
-function select(tag) {
-  emit('select-tag', props.activeTag === tag.slug ? '' : tag.slug)
 }
 
 function onKeydown(event) {
@@ -48,11 +92,13 @@ function onKeydown(event) {
 }
 
 watch(() => props.open, async (value) => {
-  if (value) {
-    keyword.value = ''
-    await nextTick()
-    searchInput.value?.focus()
-  }
+  if (!value) return
+  // 打开时用当前生效的标签预填；顺带把模式也定成与选择数量相符的那个
+  picked.value = [...props.activeTags]
+  if (props.activeTags.length > 1) mode.value = 'multi'
+  keyword.value = ''
+  await nextTick()
+  searchInput.value?.focus()
 })
 
 // 只在卡片打开期间挂 Esc：组件常驻在侧栏里，不能一直占着全局键盘事件
@@ -70,12 +116,23 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
       <section class="tag-overlay__card" role="dialog" aria-modal="true" aria-labelledby="tag-overlay-title">
         <header class="tag-overlay__head">
           <div>
-            <p class="tag-overlay__eyebrow">TAGS · 标签总览</p>
-            <h2 id="tag-overlay-title">全部标签</h2>
+            <p class="tag-overlay__eyebrow">TAGS · 标签筛选</p>
+            <h2 id="tag-overlay-title">按标签筛选</h2>
             <span>{{ tags.length }} 个标签 · {{ totalRelations }} 次文章引用</span>
           </div>
-          <button class="tag-overlay__close" type="button" aria-label="关闭全部标签" @click="close">×</button>
+          <button class="tag-overlay__close" type="button" aria-label="关闭标签筛选" @click="close">×</button>
         </header>
+
+        <div class="tag-overlay__modes" role="group" aria-label="标签组合方式">
+          <button type="button" :class="{ 'is-active': mode === 'single' }" @click="switchMode('single')">
+            单标签
+            <small>选一个，看这个标签下的文章</small>
+          </button>
+          <button type="button" :class="{ 'is-active': mode === 'multi' }" @click="switchMode('multi')">
+            多标签
+            <small>选多个，命中任一标签的文章</small>
+          </button>
+        </div>
 
         <div class="tag-overlay__search">
           <input
@@ -96,18 +153,32 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
               v-for="tag in matched"
               :key="tag.id || tag.slug"
               type="button"
-              :class="{ 'is-active': activeTag === tag.slug }"
-              @click="select(tag)"
+              :class="{ 'is-picked': isPicked(tag.slug) }"
+              :aria-pressed="isPicked(tag.slug)"
+              @click="toggle(tag.slug)"
             >
-              <span># {{ tag.name }}</span>
+              <span class="tag-overlay__mark" aria-hidden="true">{{ isPicked(tag.slug) ? '✓' : '#' }}</span>
+              <span class="tag-overlay__name">{{ tag.name }}</span>
               <em>{{ tag.postCount || 0 }}</em>
             </button>
           </div>
         </div>
 
         <footer class="tag-overlay__foot">
-          <button type="button" :class="{ 'is-active': !activeTag }" @click="emit('select-tag', '')">全部（不筛选）</button>
-          <span>点任意标签即在该标签下原地筛选，不会离开这一页。</span>
+          <div class="tag-overlay__picked">
+            <span v-if="!picked.length" class="tag-overlay__hint">还没有选择标签（选好后点「应用筛选」）。</span>
+            <template v-else>
+              <span>已选 {{ picked.length }} 个：</span>
+              <button v-for="slug in picked" :key="slug" type="button" class="tag-overlay__chip" @click="toggle(slug)">
+                {{ nameOf(slug) }} ×
+              </button>
+            </template>
+          </div>
+          <div class="tag-overlay__actions">
+            <button type="button" @click="clearPicked">清空</button>
+            <button type="button" @click="emit('apply', [])">全部（不筛选）</button>
+            <button class="primary-button" type="button" :disabled="!picked.length" @click="apply">应用筛选</button>
+          </div>
         </footer>
       </section>
     </div>
@@ -128,8 +199,8 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 
 .tag-overlay__card {
   display: flex;
-  width: min(720px, 100%);
-  max-height: min(78vh, 720px);
+  width: min(760px, 100%);
+  max-height: min(82vh, 760px);
   flex-direction: column;
   border: 1px solid var(--border);
   border-radius: 22px;
@@ -174,6 +245,37 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 
 .tag-overlay__close:hover { border-color: var(--primary); color: var(--primary); }
 
+.tag-overlay__modes {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  padding: 14px 22px 0;
+}
+
+.tag-overlay__modes button {
+  display: grid;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  font-size: 13px;
+  font-weight: 650;
+  cursor: pointer;
+  text-align: left;
+}
+
+.tag-overlay__modes button small { color: var(--text-muted); font-size: 10px; font-weight: 400; }
+
+.tag-overlay__modes button:hover { border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
+
+.tag-overlay__modes button.is-active {
+  border-color: var(--primary);
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
 .tag-overlay__search {
   display: flex;
   align-items: center;
@@ -187,18 +289,17 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 
 .tag-overlay__search > span { flex: none; color: var(--text-muted); font-size: 11px; }
 
-.tag-overlay__body { min-height: 160px; flex: 1; overflow: auto; padding: 16px 22px; }
+.tag-overlay__body { min-height: 150px; flex: 1; overflow: auto; padding: 16px 22px; }
 
 .tag-overlay__list {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(168px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
   gap: 8px;
 }
 
 .tag-overlay__list button {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 8px;
   min-width: 0;
   padding: 9px 11px;
@@ -211,16 +312,21 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
 }
 
-.tag-overlay__list button:hover,
-.tag-overlay__list button.is-active {
+.tag-overlay__list button:hover { border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
+
+.tag-overlay__list button.is-picked {
   border-color: var(--primary);
   color: var(--primary);
-  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
+  font-weight: 650;
 }
 
-.tag-overlay__list button > span {
+.tag-overlay__mark { flex: none; width: 12px; color: var(--accent); font-size: 11px; }
+
+.tag-overlay__name {
   overflow: hidden;
   min-width: 0;
+  flex: 1;
   font-size: 13px;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -231,42 +337,80 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 .tag-overlay__empty { padding: 40px 0; color: var(--text-muted); font-size: 13px; text-align: center; }
 
 .tag-overlay__foot {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 13px 22px;
+  display: grid;
+  gap: 10px;
+  padding: 14px 22px;
   border-top: 1px solid var(--border);
-  color: var(--text-muted);
-  font-size: 11px;
 }
 
-.tag-overlay__foot button {
-  padding: 7px 12px;
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  color: var(--text-secondary);
-  background: var(--bg-surface);
-  font-size: 12px;
+.tag-overlay__picked {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  min-height: 26px;
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.tag-overlay__chip {
+  padding: 3px 8px;
+  border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--border));
+  border-radius: 999px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  font-size: 11px;
   cursor: pointer;
 }
 
-.tag-overlay__foot button:hover,
-.tag-overlay__foot button.is-active { border-color: var(--primary); color: var(--primary); }
+.tag-overlay__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.tag-overlay__actions button {
+  padding: 8px 14px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.tag-overlay__actions button:hover { border-color: var(--primary); color: var(--primary); }
+
+.tag-overlay__actions .primary-button {
+  border-color: var(--primary);
+  color: var(--on-primary);
+  background: var(--primary);
+  font-weight: 650;
+}
+
+.tag-overlay__actions .primary-button:hover { background: var(--primary-hover); color: var(--on-primary); }
+
+.tag-overlay__actions .primary-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
 @media (max-width: 680px) {
   .tag-overlay { padding: 12px; }
 
-  .tag-overlay__card { max-height: 86vh; border-radius: 18px; }
+  .tag-overlay__card { max-height: 88vh; border-radius: 18px; }
 
   .tag-overlay__search,
   .tag-overlay__body,
   .tag-overlay__head,
-  .tag-overlay__foot { padding-left: 16px; padding-right: 16px; }
+  .tag-overlay__foot,
+  .tag-overlay__modes { padding-left: 16px; padding-right: 16px; }
+
+  .tag-overlay__modes { grid-template-columns: 1fr; }
 
   .tag-overlay__list { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 
-  /* 窄屏底部一行放不下「按钮 + 说明」，竖着排比挤成两行好看 */
-  .tag-overlay__foot { align-items: flex-start; flex-direction: column; }
+  .tag-overlay__actions { justify-content: stretch; }
+
+  .tag-overlay__actions button { flex: 1 1 40%; }
 }
 </style>

@@ -36,7 +36,9 @@ const router = useRouter()
 
 const pageSize = 10
 const state = reactive({
-  tag: '',
+  // 标签筛选统一存成数组：单标签就是一个元素的数组（URL 写 ?tag=），
+  // 多标签写 ?tags=a,b（后端「命中任一」），两者在页面内是同一条数据。
+  tags: [],
   topic: '',
   month: null, // { year, month } 或 null
   page: 1,
@@ -73,7 +75,7 @@ const activeColumn = computed(() => state.topic || 'home')
  * 切换专栏的手感就是「旧列表淡出、新列表逐条浮上来」，而不是硬替换。
  * 列表数据由本页持有，重挂不触发任何请求。
  */
-const listKey = computed(() => [state.topic, state.tag, activeMonth.value, state.page].join('|'))
+const listKey = computed(() => [[...state.tags].sort().join(','), state.topic, activeMonth.value, state.page].join('|'))
 
 // 月份 -> 'YYYY-MM'；非法值返回 null，避免把坏 URL 传给后端拿 400
 function parseMonth(value) {
@@ -85,10 +87,28 @@ function parseMonth(value) {
   return { year, month }
 }
 
+/*
+ * URL 里标签的两种写法：
+ *   单个标签 → `?tag=java`（短、好分享，与旧链接兼容）
+ *   多个标签 → `?tags=java,spring-boot`（后端按「命中任一」处理）
+ * 读的时候两种都认，写的时候按数量挑一种，链接不会随时间越写越长。
+ */
+function parseTagQuery() {
+  const single = typeof route.query.tag === 'string' ? route.query.tag.trim() : ''
+  const raw = typeof route.query.tags === 'string' ? route.query.tags : ''
+  const many = raw.split(',').map((item) => item.trim()).filter(Boolean)
+  const slugs = []
+  for (const slug of [single, ...many]) {
+    if (slug && !slugs.includes(slug)) slugs.push(slug)
+  }
+  return slugs
+}
+
 function queryOf() {
   return {
     ...(state.topic ? { topic: state.topic } : {}),
-    ...(state.tag ? { tag: state.tag } : {}),
+    ...(state.tags.length === 1 ? { tag: state.tags[0] } : {}),
+    ...(state.tags.length > 1 ? { tags: state.tags.join(',') } : {}),
     ...(activeMonth.value ? { month: activeMonth.value } : {}),
     ...(state.page > 1 ? { page: String(state.page) } : {}),
   }
@@ -107,7 +127,7 @@ let loadToken = 0
 
 function syncFromQuery() {
   state.topic = typeof route.query.topic === 'string' ? route.query.topic : ''
-  state.tag = typeof route.query.tag === 'string' ? route.query.tag : ''
+  state.tags = parseTagQuery()
   state.month = parseMonth(route.query.month)
   state.page = Math.max(Number(route.query.page) || 1, 1)
 }
@@ -122,7 +142,9 @@ async function loadPosts() {
       page: state.page,
       pageSize,
       topic: state.topic || undefined,
-      tag: state.tag || undefined,
+      // 单标签走 tag，多标签走 tags：与 URL 的写法保持一致，请求和地址栏对得上
+      tag: state.tags.length === 1 ? state.tags[0] : undefined,
+      tags: state.tags.length > 1 ? state.tags.join(',') : undefined,
     }
     const result = state.month
       ? await listArchive({ ...params, year: state.month.year, month: state.month.month })
@@ -167,8 +189,19 @@ function applyQuery() {
   router.replace({ path: contentPath('/blog'), query: queryOf() })
 }
 
+// 侧栏标签导航条点一行 = 单标签筛选（再点一次取消）
 function selectTag(slug) {
-  state.tag = slug
+  state.tags = slug ? [slug] : []
+  state.page = 1
+  applyQuery()
+}
+
+/*
+ * 悬浮标签卡片点「应用筛选」= 一次提交一组标签。
+ * 空数组表示「全部（不筛选）」，与 selectTag('') 等价。
+ */
+function applyTags(slugs) {
+  state.tags = [...slugs]
   state.page = 1
   applyQuery()
 }
@@ -179,9 +212,20 @@ function selectTopic(slug) {
   applyQuery()
 }
 
-// 「当前视图」胶囊上显示专栏名字，而不是 slug
+// 「当前视图」胶囊上显示专栏/标签名字，而不是 slug
 function columnLabel(slug) {
   return topics.value.find((item) => item.slug === slug)?.name || slug
+}
+
+function tagLabel(slug) {
+  return tags.value.find((item) => item.slug === slug)?.name || slug
+}
+
+// 胶囊上点某一个标签 = 只去掉这一个，其余保留
+function removeTag(slug) {
+  state.tags = state.tags.filter((item) => item !== slug)
+  state.page = 1
+  applyQuery()
 }
 
 function selectMonth(month) {
@@ -192,7 +236,7 @@ function selectMonth(month) {
 
 function clearAll() {
   state.topic = ''
-  state.tag = ''
+  state.tags = []
   state.month = null
   state.page = 1
   applyQuery()
@@ -219,7 +263,7 @@ watch(() => route.fullPath, () => {
 
 const emptyText = computed(() => {
   if (state.topic) return '这个专栏下还没有文章。'
-  if (state.tag || state.month) return '没有符合条件的文章。'
+  if (state.tags.length || state.month) return '没有符合条件的文章。'
   return '还没有已发布的文章。'
 })
 </script>
@@ -246,10 +290,11 @@ const emptyText = computed(() => {
           放在 grid 外面横跨整行的话，右栏会被顶到导航条下面，上半屏右侧空一大块。
         -->
         <BlogColumnNav :columns="columns" :active-key="activeColumn" aria-label="博客专栏" />
-        <div v-if="state.topic || state.tag || activeMonth" class="blog-active">
+        <div v-if="state.topic || state.tags.length || activeMonth" class="blog-active">
           <span>当前视图</span>
           <button v-if="state.topic" type="button" @click="selectTopic('')">{{ columnLabel(state.topic) }} ×</button>
-          <button v-if="state.tag" type="button" @click="selectTag('')"># {{ state.tag }} ×</button>
+          <!-- 多标签时每个标签一枚胶囊，点掉其中一个其余保留 -->
+          <button v-for="slug in state.tags" :key="slug" type="button" @click="removeTag(slug)"># {{ tagLabel(slug) }} ×</button>
           <button v-if="activeMonth" type="button" @click="selectMonth(null)">{{ activeMonth }} ×</button>
           <button type="button" class="blog-active__clear" @click="clearAll">清除全部</button>
         </div>
@@ -274,9 +319,10 @@ const emptyText = computed(() => {
         :tags="tags"
         :months="months"
         :stats="stats"
-        :active-tag="state.tag"
+        :active-tags="state.tags"
         :active-month="activeMonth"
         @select-tag="selectTag"
+        @apply-tags="applyTags"
         @select-month="selectMonth"
       />
     </div>

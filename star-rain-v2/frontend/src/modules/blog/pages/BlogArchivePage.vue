@@ -30,7 +30,12 @@ const route = useRoute()
 const router = useRouter()
 
 const pageSize = 10
-const filters = reactive({ tag: '', topic: '', year: null, month: null, day: null })
+/*
+ * tag  = 工具条那个单标签下拉（字符串）
+ * tags = 悬浮卡片多选出来的集合，是同一件事的两种写法：
+ *        一个元素时写 URL 的 ?tag=，多个元素时写 ?tags=a,b（后端「命中任一」）。
+ */
+const filters = reactive({ tag: '', tags: [], topic: '', year: null, month: null, day: null })
 const state = reactive({ items: [], total: 0, page: 1 })
 const tags = ref([])
 const topics = ref([])
@@ -58,7 +63,8 @@ const calendarParts = computed(() => {
 
 function queryOf() {
   return {
-    ...(filters.tag ? { tag: filters.tag } : {}),
+    ...(filters.tags.length === 1 ? { tag: filters.tags[0] } : {}),
+    ...(filters.tags.length > 1 ? { tags: filters.tags.join(',') } : {}),
     ...(filters.topic ? { topic: filters.topic } : {}),
     ...(filters.year ? { year: String(filters.year) } : {}),
     ...(filters.month ? { month: String(filters.month) } : {}),
@@ -68,7 +74,15 @@ function queryOf() {
 }
 
 function syncFromQuery() {
-  filters.tag = typeof route.query.tag === 'string' ? route.query.tag : ''
+  // 与列表页同一套写法：?tag= 与 ?tags=a,b 都认，合并去重
+  const single = typeof route.query.tag === 'string' ? route.query.tag.trim() : ''
+  const many = typeof route.query.tags === 'string' ? route.query.tags.split(',').map((item) => item.trim()).filter(Boolean) : []
+  const slugs = []
+  for (const slug of [single, ...many]) {
+    if (slug && !slugs.includes(slug)) slugs.push(slug)
+  }
+  filters.tags = slugs
+  filters.tag = slugs.length === 1 ? slugs[0] : ''
   filters.topic = typeof route.query.topic === 'string' ? route.query.topic : ''
   const year = Number(route.query.year)
   const month = Number(route.query.month)
@@ -86,7 +100,8 @@ async function loadPosts() {
     const result = await listArchive({
       page: state.page,
       pageSize,
-      tag: filters.tag || undefined,
+      tag: filters.tags.length === 1 ? filters.tags[0] : undefined,
+      tags: filters.tags.length > 1 ? filters.tags.join(',') : undefined,
       topic: filters.topic || undefined,
       year: filters.year || undefined,
       month: filters.month || undefined,
@@ -143,15 +158,41 @@ function applyQuery() {
 
 function applyFilters(next) {
   if (next.year !== filters.year || next.month !== filters.month) filters.day = null
+  /*
+   * 工具条里那个「标签」下拉选的是单标签，与悬浮卡片里多选出来的 tags 是互斥的：
+   * 谁最后被改动，就以谁为准，另一边清空 —— 否则会出现「下拉显示 Java、
+   * 实际按 Java+Spring Boot 两个标签筛选」这种自相矛盾的状态。
+   */
+  const changedTag = next.tag !== filters.tag
   Object.assign(filters, next)
+  if (changedTag) filters.tags = next.tag ? [next.tag] : []
   state.page = 1
   applyQuery()
 }
 
+// 导航条点一行 = 单标签筛选（再点一次取消）
 function selectTag(slug) {
+  filters.tags = slug ? [slug] : []
   filters.tag = slug
   state.page = 1
   applyQuery()
+}
+
+// 悬浮卡片「应用筛选」= 一次提交一组标签
+function applyTags(slugs) {
+  filters.tags = [...slugs]
+  filters.tag = slugs.length === 1 ? slugs[0] : ''
+  state.page = 1
+  applyQuery()
+}
+
+function removeTag(slug) {
+  const next = filters.tags.filter((item) => item !== slug)
+  applyTags(next)
+}
+
+function tagLabel(slug) {
+  return tags.value.find((item) => item.slug === slug)?.name || slug
 }
 
 function selectMonth(month) {
@@ -172,6 +213,7 @@ function selectDay(day) {
 
 function clearAll() {
   filters.tag = ''
+  filters.tags = []
   filters.topic = ''
   filters.year = null
   filters.month = null
@@ -213,7 +255,7 @@ watch(() => [route.query.tag, route.query.topic, route.query.year, route.query.m
         <p>ARCHIVE · BY TIME</p>
         <h1>归档浏览</h1>
         <p class="blog-hero__range">
-          当前范围：{{ rangeLabel }}<template v-if="filters.tag"> · 标签 {{ filters.tag }}</template><template v-if="filters.topic"> · 专题 {{ filters.topic }}</template>
+          当前范围：{{ rangeLabel }}<template v-if="filters.tags.length"> · 标签 {{ filters.tags.map(tagLabel).join('、') }}</template><template v-if="filters.topic"> · 专题 {{ filters.topic }}</template>
         </p>
       </div>
       <aside>
@@ -244,9 +286,9 @@ watch(() => [route.query.tag, route.query.topic, route.query.year, route.query.m
           @select-day="selectDay"
           @select-month="selectMonth"
         />
-        <div v-if="filters.tag || filters.topic || filters.year" class="blog-active">
+        <div v-if="filters.tags.length || filters.topic || filters.year" class="blog-active">
           <span>当前视图</span>
-          <button v-if="filters.tag" type="button" @click="selectTag('')"># {{ filters.tag }} ×</button>
+          <button v-for="slug in filters.tags" :key="slug" type="button" @click="removeTag(slug)"># {{ tagLabel(slug) }} ×</button>
           <button v-if="filters.topic" type="button" @click="applyFilters({ ...filters, topic: '' })">专题 {{ filters.topic }} ×</button>
           <button v-if="filters.year" type="button" @click="selectMonth(null)">{{ rangeLabel }} ×</button>
           <button type="button" class="blog-active__clear" @click="clearAll">清除全部</button>
@@ -271,9 +313,10 @@ watch(() => [route.query.tag, route.query.topic, route.query.year, route.query.m
         :topics="topics"
         :tags="tags"
         :months="months"
-        :active-tag="filters.tag"
+        :active-tags="filters.tags"
         :active-month="activeMonth"
         @select-tag="selectTag"
+        @apply-tags="applyTags"
         @select-month="selectMonth"
       />
     </div>

@@ -8,20 +8,20 @@ import BlogTagOverlay from './BlogTagOverlay.vue'
  * 博客列表 / 归档页的右侧固定栏。
  *
  * 三块，自上而下：
- *   TAGS    标签 —— 一条可以直接下滑的标签导航条；「全部标签」开悬浮卡片
+ *   TAGS    标签 —— 一条可以直接下滑的标签导航条；「标签筛选」开悬浮卡片（单/多标签 + 应用）
  *   ARCHIVE 归档 —— 按年月筛选
  *   STATS   写作统计 —— 篇数 / 总字数 / 开始写作（含「已写 N 天」）
  *
  * 专栏（专题）**不在这里**：它已经提到页面顶部的专栏导航条（BlogColumnNav），
  * 同一份列表在右侧再列一遍只会让人分不清「专栏」和「标签」。
  *
- * 标签块按用户要求改过两次形态：
+ * 标签块按用户要求改过三次形态：
  *   1. 最早是「实测能放几行就显示几个 + 更多 → /blog/tags」——
  *      需要一套探针测量，且点「更多」会离开当前页；
- *   2. 现在改成**固定高度、可滚动**的标签导航条：全部标签都在里面，往下滑就能看到，
- *      不再裁切、不再跳页；想看完整概览或搜索时，点「全部标签」在**当前页**开悬浮卡片
- *      （BlogTagOverlay），选中的标签原地筛选下方列表。
- *   去掉探针后也顺手消掉了「探针撑出横向滚动」这个隐患（见 git 历史里的 3797px 事故）。
+ *   2. 改成**固定高度、可滚动**的标签导航条：全部标签都在里面，往下滑就能看到；
+ *   3. 悬浮卡片从「点一下立刻筛选」改成「先选条件、点应用再筛选」（单标签 / 多标签两种模式）
+ *      —— 用户反馈「一点击就直接跳转了…太突兀」。
+ * 去掉探针后也顺手消掉了「探针撑出横向滚动」这个隐患（见 git 历史里的 3797px 事故）。
  *
  * 归档块仍是最多 6 个月 + 更多 → /blog/archive（用户没有对它提要求，保持原样）。
  */
@@ -31,11 +31,16 @@ const props = defineProps({
   months: { type: Array, default: () => [] },
   // { postCount, wordCount, firstPublishedAt }
   stats: { type: Object, default: null },
-  activeTag: { type: String, default: '' },
+  /*
+   * 当前生效的标签集合（数组）：单标签就是一个元素，多标签是多个。
+   * 导航条按它高亮，悬浮卡片按它预填勾选 —— 两处必须是同一份数据，
+   * 否则会出现「卡片里勾了三个、条上只亮一个」的不一致。
+   */
+  activeTags: { type: Array, default: () => [] },
   activeMonth: { type: String, default: '' },
 })
 
-const emit = defineEmits(['select-tag', 'select-month'])
+const emit = defineEmits(['select-tag', 'apply-tags', 'select-month'])
 
 const MONTH_LIMIT = 6
 
@@ -71,14 +76,19 @@ const wordCountText = computed(() => {
   return String(total)
 })
 
-function toggleTag(slug) {
-  emit('select-tag', props.activeTag === slug ? '' : slug)
+function isActiveTag(slug) {
+  return props.activeTags.includes(slug)
 }
 
-// 悬浮卡片里选了标签：先原地筛选，再把卡片收起来，否则结果被卡片挡着
-function selectTagFromOverlay(slug) {
+// 导航条：点一行 = 单标签筛选（再点同一行取消）
+function toggleTag(slug) {
+  emit('select-tag', isActiveTag(slug) ? '' : slug)
+}
+
+// 悬浮卡片：一次提交一组标签（空数组 = 全部不筛选）
+function applyTags(slugs) {
   tagsOpen.value = false
-  emit('select-tag', slug)
+  emit('apply-tags', slugs)
 }
 
 function toggleMonth(item) {
@@ -95,8 +105,8 @@ function toggleMonth(item) {
         <small>{{ tags.length }} 个标签</small>
       </div>
       <nav class="blog-panel__tag-nav" aria-label="博客标签导航">
-        <button type="button" :class="{ active: !activeTag }" @click="emit('select-tag', '')">全部</button>
-        <button type="button" class="blog-panel__tag-all" @click="tagsOpen = true">全部标签</button>
+        <button type="button" :class="{ active: !activeTags.length }" @click="emit('apply-tags', [])">全部</button>
+        <button type="button" class="blog-panel__tag-all" @click="tagsOpen = true">标签筛选</button>
       </nav>
       <p v-if="!tags.length" class="blog-panel__empty">还没有可用标签。</p>
       <!-- 可直接下滑的标签导航条：全部标签都在里面，高度固定，往下滑即可 -->
@@ -105,7 +115,7 @@ function toggleMonth(item) {
           v-for="tag in tags"
           :key="tag.id || tag.slug"
           type="button"
-          :class="{ active: activeTag === tag.slug }"
+          :class="{ active: isActiveTag(tag.slug) }"
           @click="toggleTag(tag.slug)"
         >
           <span class="blog-panel__tag-name"># {{ tag.name }}</span>
@@ -164,9 +174,9 @@ function toggleMonth(item) {
     <BlogTagOverlay
       :open="tagsOpen"
       :tags="tags"
-      :active-tag="activeTag"
+      :active-tags="activeTags"
       @close="tagsOpen = false"
-      @select-tag="selectTagFromOverlay"
+      @apply="applyTags"
     />
   </aside>
 </template>
