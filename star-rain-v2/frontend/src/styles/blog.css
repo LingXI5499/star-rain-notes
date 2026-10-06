@@ -328,6 +328,7 @@
   padding: 8px 0;
   border-bottom: 1px solid var(--border);
 }
+.blog-member-list li.muted { display: block; }
 
 .blog-member-list__order {
   display: inline-flex;

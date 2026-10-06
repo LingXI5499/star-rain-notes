@@ -40,7 +40,6 @@ const loading = ref(true)
 const error = ref('')
 
 /* V1 用的是 hero 里的「人像插画」，固定资源；V2 作者上传了头像就用它，否则退回同一张品牌图 */
-const AVATAR_FALLBACK = '/brand/author-avatar.webp'
 
 /* 眉标与说明文案 —— 与 V1 逐字一致，按章节 id 取用 */
 const eyebrows = {
@@ -225,9 +224,6 @@ const contactLinks = computed(() => {
       cards.push({ key: link.id, label: link.label || '公开主页', value: link.url.replace(/^https?:\/\//, ''), href: link.url, external: true, icon: '↗' })
     }
   }
-  if (profile.value?.resumeUrl) {
-    cards.push({ key: 'resume', label: '个人简历', value: '打开 PDF 文档', href: profile.value.resumeUrl, external: true, icon: '↓' })
-  }
   return cards
 })
 
@@ -242,7 +238,7 @@ const sections = computed(() => [
   { id: 'work', label: '代表作品', visible: !!featuredWork.value.length },
   { id: 'evidence', label: '工程证据', visible: !!evidence.value.length },
   { id: 'direction', label: '技术地图', visible: !!reading.value.direction },
-  { id: 'journey', label: '学习经历', visible: !!reading.value.journey || !!profile.value?.experiences?.length },
+  { id: 'journey', label: '学习与实践', visible: !!reading.value.journey },
   {
     id: 'knowledge',
     label: '知识内容',
@@ -285,17 +281,6 @@ onMounted(load)
       <header class="profile-page__hero">
         <ThemeHero src="/brand/themes/about-hero.webp" alt="关于页世界观视觉" />
         <div class="profile-page__identity">
-          <div class="profile-page__portrait">
-            <!-- 作者上传了头像就用它，否则退回 V1 的固定品牌插画（V1 就是这张） -->
-            <img
-              :src="profile.avatarUrl || AVATAR_FALLBACK"
-              :alt="`${profile.displayName || '作者'}的虚拟形象`"
-              width="180"
-              height="225"
-              decoding="async"
-              fetchpriority="high"
-            />
-          </div>
           <div>
             <p class="public-eyebrow">ABOUT · STAR RAIN NOTES</p>
             <h1>{{ profile.displayName || '个人开发者' }}</h1>
@@ -305,14 +290,6 @@ onMounted(load)
           <p class="profile-page__tagline">A wider world, a brighter you.</p>
           <p v-if="profile.locationText" class="profile-page__location">{{ profile.locationText }}</p>
           <div class="profile-page__hero-actions">
-            <!-- V1 的「查看简历」只在有简历资源时出现 -->
-            <a
-              v-if="profile.resumeUrl"
-              class="primary"
-              :href="profile.resumeUrl"
-              target="_blank"
-              rel="noopener noreferrer"
-            >查看简历 <span aria-hidden="true">↓</span></a>
             <a
               v-for="link in heroLinks"
               :key="link.id"
@@ -416,30 +393,16 @@ onMounted(load)
           </section>
 
           <!-- 学习经历：V1 的一段 prose；V2 另有 experiences 列表，两者共用 #journey 锚点 -->
-          <section v-if="reading.journey || profile.experiences?.length" id="journey" class="profile-page__section">
+          <section v-if="reading.journey" id="journey" class="profile-page__section">
             <header>
               <div>
                 <p class="public-eyebrow">JOURNEY</p>
-                <h2 class="public-section-title">学习经历</h2>
+                <h2 class="public-section-title">学习与实践</h2>
               </div>
               <p>{{ sectionNotes.journey }}</p>
             </header>
             <!-- 正文取自 bioMarkdown 里的「## 学习与实践」段落 -->
             <BlogProse v-if="reading.journey" :markdown="reading.journey" class="profile-page__prose-section" />
-            <!-- V2 的结构化经历（当前为空数组，有数据才出现） -->
-            <ol v-if="profile.experiences?.length" class="profile-page__timeline">
-              <li v-for="item in profile.experiences" :key="item.id">
-                <div class="profile-page__period">
-                  {{ item.startDate || '过去' }} — {{ item.isCurrent ? '现在' : item.endDate || '持续中' }}
-                </div>
-                <div>
-                  <span class="profile-page__type">{{ { EDUCATION: '教育', PROJECT: '项目', CAREER: '职业', GROWTH: '成长', OTHER: '其他' }[item.experienceType] || '经历' }}</span>
-                  <h3>{{ item.title }}</h3>
-                  <p v-if="item.organization">{{ item.organization }}</p>
-                  <BlogProse v-if="item.descriptionMd" :markdown="item.descriptionMd" />
-                </div>
-              </li>
-            </ol>
           </section>
 
           <!-- 知识内容：教程 / 思考两列（来源见 knowledgeColumns 的降级说明） -->
@@ -552,7 +515,7 @@ onMounted(load)
   position: relative;
   z-index: 2;
   display: grid;
-  grid-template-columns: minmax(148px, 196px) 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 18px 22px;
   align-items: center;
   max-width: 720px;
@@ -1016,7 +979,7 @@ onMounted(load)
 @media (max-width: 650px) {
   .profile-page { padding-bottom: 70px; }
   .profile-page__hero { min-height: 360px; padding: 28px 0 46px; }
-  .profile-page__identity { grid-template-columns: minmax(108px, 132px) 1fr; gap: 12px; }
+  .profile-page__identity { grid-template-columns: minmax(0, 1fr); gap: 12px; }
   .profile-page__portrait { width: 132px; height: 132px; }
   .profile-page__hero h1 { font-size: 42px; }
   /* 四格在窄屏收成两列（CareerSnapshot 自己的 768px 规则已覆盖，这里再压一层内边距） */

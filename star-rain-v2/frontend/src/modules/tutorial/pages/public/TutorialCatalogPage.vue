@@ -18,6 +18,11 @@ const tutorialPath = (slug) => resolveViewMode(route.path) === VIEW_MODE.ACCOUNT
   ? accountPath(`/tutorials/${slug}`) : `/tutorials/${slug}`
 
 const selectedCategory = computed(() => categories.value.find((item) => item.slug === selectedSlug.value))
+const catalogStats = computed(() => ({
+  tutorials: categoryTutorials.value.length,
+  chapters: categoryTutorials.value.reduce((sum, item) => sum + Number(item.chapterCount || 0), 0),
+  words: categoryTutorials.value.reduce((sum, item) => sum + Number(item.wordCount || 0), 0),
+}))
 
 /*
  * 与 V1 TutorialsView 一致地分成两层：
@@ -116,6 +121,14 @@ onMounted(load)
             </li>
           </ul>
         </nav>
+        <section class="tutorial-catalog__stats" aria-label="教程统计">
+          <h3>教程统计</h3>
+          <dl>
+            <div><dt>教程</dt><dd>{{ catalogStats.tutorials }} 门</dd></div>
+            <div><dt>公开章节</dt><dd>{{ catalogStats.chapters }} 章</dd></div>
+            <div><dt>正文总字数</dt><dd>{{ catalogStats.words.toLocaleString() }} 字</dd></div>
+          </dl>
+        </section>
       </aside>
 
       <main class="tutorial-catalog__content">
@@ -164,6 +177,11 @@ onMounted(load)
 </template>
 
 <style scoped>
+.tutorial-catalog__stats { margin-top: 20px; padding: 18px; border: 1px solid var(--border); border-radius: 14px; background: var(--bg-surface); }
+.tutorial-catalog__stats h3 { margin: 0 0 12px; font-size: 15px; }
+.tutorial-catalog__stats dl { display: grid; gap: 10px; margin: 0; }
+.tutorial-catalog__stats dl div { display: flex; justify-content: space-between; gap: 12px; color: var(--text-secondary); font-size: 13px; }
+.tutorial-catalog__stats dd { margin: 0; color: var(--primary); font-weight: 700; }
 /* 以下样式逐条照抄 V1 `frontend/src/views/tutorials/TutorialsView.vue`，
    只把侧栏的树组件展开成平铺按钮（V2 的公开分类接口本来就是平铺的）。 */
 .tutorial-catalog__hero {

@@ -4,6 +4,8 @@ import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
 import { errorMessage } from '../../../../shared/http'
 import { applySiteBranding } from '../../support/siteBranding'
+import { listPublicTutorials } from '../../../tutorial/api/tutorialApi'
+import { listPublicWorks } from '../../../portfolio/api/portfolioApi'
 import {
   clearSiteMedia, getPublicSiteConfig, listHomeSections, orderHomeSections,
   patchHomeSection, patchSiteConfig, setSiteMedia,
@@ -15,6 +17,7 @@ const error = ref('')
 const notice = ref('')
 const config = ref(null)
 const sections = ref([])
+const selectionOptions = reactive({ TUTORIALS: [], PORTFOLIO: [] })
 const form = reactive({ siteName: '', siteTitle: '', tagline: '', siteDescription: '', homeIntro: '', footerText: '' })
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
 
@@ -28,7 +31,8 @@ function fillSections(value) {
   sections.value = value.map((section) => {
     let display = {}
     try { display = JSON.parse(section.configJson || '{}') } catch { /* 后端校验负责拦截无效配置 */ }
-    return { ...section, limit: display.limit || 6,
+    return { ...section, limit: ['TUTORIALS', 'PORTFOLIO'].includes(section.sectionCode) ? 3 : display.limit || 6,
+      selectedIds: Array.isArray(display.selectedIds) ? display.selectedIds.map(String) : ['', '', ''],
       layout: display.layout || (section.sectionCode === 'HERO' ? 'hero' : ['BLOG', 'LATEST'].includes(section.sectionCode) ? 'list' : 'cards') }
   })
 }
@@ -37,9 +41,14 @@ async function load() {
   loading.value = true
   error.value = ''
   try {
-    const [site, order] = await Promise.all([getPublicSiteConfig(), listHomeSections()])
+    const [site, order, tutorialPage, workPage] = await Promise.all([
+      getPublicSiteConfig(), listHomeSections(),
+      listPublicTutorials({ page: 1, pageSize: 100 }), listPublicWorks({ page: 1, pageSize: 100 }),
+    ])
     fillConfig(site)
     fillSections(order)
+    selectionOptions.TUTORIALS = tutorialPage.items || []
+    selectionOptions.PORTFOLIO = workPage.items || []
   } catch (cause) { error.value = errorMessage(cause) }
   finally { loading.value = false }
 }
@@ -88,13 +97,21 @@ async function toggle(section) {
 }
 
 async function saveSection(section) {
+  const curated = ['TUTORIALS', 'PORTFOLIO'].includes(section.sectionCode)
+  const selectedIds = (section.selectedIds || []).map(Number)
+  if (curated && (selectedIds.length !== 3 || selectedIds.some((id) => !Number.isSafeInteger(id) || id <= 0)
+    || new Set(selectedIds).size !== 3)) {
+    error.value = '请为该区块选择三个不同的公开内容。'
+    return
+  }
   const limit = Number(section.limit)
   if (!Number.isInteger(limit) || limit < 1 || limit > 12) {
     error.value = '展示数量须在 1 到 12 之间。'
     return
   }
   const config = ['HERO', 'PROFILE'].includes(section.sectionCode) ? {}
-    : section.sectionCode === 'BLOG' ? { limit } : { limit, layout: section.layout }
+    : curated ? { limit: 3, layout: section.layout, selectedIds }
+      : section.sectionCode === 'BLOG' ? { limit } : { limit, layout: section.layout }
   await run(async () => {
     await patchHomeSection(section.sectionCode, {
       displayName: section.displayName,
@@ -164,8 +181,17 @@ onMounted(load)
             </div>
             <form class="site-settings__section-fields" @submit.prevent="saveSection(section)">
               <label>标题<input v-model.trim="section.displayName" maxlength="120" required /></label>
-              <label v-if="!['HERO', 'PROFILE'].includes(section.sectionCode)">展示数量<input v-model.number="section.limit" type="number" min="1" max="12" /></label>
+              <label v-if="!['HERO', 'PROFILE', 'TUTORIALS', 'PORTFOLIO'].includes(section.sectionCode)">展示数量<input v-model.number="section.limit" type="number" min="1" max="12" /></label>
               <label v-if="['TUTORIALS', 'PORTFOLIO', 'HOT_CONTENT'].includes(section.sectionCode)">布局<select v-model="section.layout"><option value="cards">卡片</option><option value="list">列表</option></select></label>
+              <div v-if="['TUTORIALS', 'PORTFOLIO'].includes(section.sectionCode)" class="site-settings__curated">
+                <p>按展示顺序选择三个已公开内容</p>
+                <label v-for="slot in 3" :key="slot">第 {{ slot }} 项
+                  <select v-model="section.selectedIds[slot - 1]" required>
+                    <option value="">请选择</option>
+                    <option v-for="item in selectionOptions[section.sectionCode]" :key="item.id" :value="String(item.id)">{{ item.title }}</option>
+                  </select>
+                </label>
+              </div>
               <button type="submit" :disabled="busy">保存区块</button>
             </form>
           </li>
@@ -203,5 +229,7 @@ onMounted(load)
 .site-settings__section-head strong { margin-right: auto; }
 .site-settings__section-head span { color: var(--text-muted); font-size: 12px; }
 .site-settings__section-fields { grid-template-columns: 2fr 1fr 1fr auto; align-items: end; }
+.site-settings__curated { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px; }
+.site-settings__curated p { grid-column: 1 / -1; margin: 0; color: var(--text-secondary); }
 @media (max-width: 720px) { .site-settings__fields, .site-settings__media, .site-settings__section-fields { grid-template-columns: 1fr; } }
 </style>

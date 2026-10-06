@@ -19,17 +19,14 @@ export const updateTutorial = (id, payload) => patch(`/admin/tutorials/${encoded
 export const deleteTutorial = (id) => del(`/admin/tutorials/${encoded(id)}`)
 export const reorderTutorials = (categoryId, ids) =>
   put(`/admin/tutorial-categories/${encoded(categoryId)}/tutorials/order`, { ids })
-export const submitTutorialReview = (id) => post(`/admin/tutorials/${encoded(id)}/submit-review`)
 export const publishTutorial = (id) => post(`/admin/tutorials/${encoded(id)}/publish`)
 export const withdrawTutorial = (id) => post(`/admin/tutorials/${encoded(id)}/withdraw`)
-export const restoreTutorial = (id) => post(`/admin/tutorials/${encoded(id)}/restore-publication`)
 
 export const getAdminCurriculum = (id) => get(`/admin/tutorials/${encoded(id)}/curriculum`)
 export const createGroup = (tutorialId, title) =>
   post(`/admin/tutorials/${encoded(tutorialId)}/groups`, { title })
 export const updateGroup = (groupId, title) => patch(`/admin/tutorial-groups/${encoded(groupId)}`, { title })
-export const archiveGroup = (groupId) => post(`/admin/tutorial-groups/${encoded(groupId)}/archive`)
-export const restoreGroup = (groupId) => post(`/admin/tutorial-groups/${encoded(groupId)}/restore`)
+export const deleteGroup = (groupId) => del(`/admin/tutorial-groups/${encoded(groupId)}`)
 export const reorderGroups = (tutorialId, ids) => put(`/admin/tutorials/${encoded(tutorialId)}/groups/order`, { ids })
 export const createChapter = (groupId, payload) =>
   post(`/admin/tutorial-groups/${encoded(groupId)}/chapters`, payload)
@@ -37,9 +34,9 @@ export const getAdminChapter = (chapterId) => get(`/admin/tutorial-chapters/${en
 export const updateChapter = (chapterId, payload) => patch(`/admin/tutorial-chapters/${encoded(chapterId)}`, payload)
 export const updateChapterBody = (chapterId, bodyMarkdown) =>
   put(`/admin/tutorial-chapters/${encoded(chapterId)}/body`, { bodyMarkdown })
-export const archiveChapter = (chapterId) => post(`/admin/tutorial-chapters/${encoded(chapterId)}/archive`)
-export const restoreChapter = (chapterId) => post(`/admin/tutorial-chapters/${encoded(chapterId)}/restore`)
-export const moveChapter = (chapterId, groupId) => post(`/admin/tutorial-chapters/${encoded(chapterId)}/move`, { groupId })
+export const deleteChapter = (chapterId) => del(`/admin/tutorial-chapters/${encoded(chapterId)}`)
+export const publishChapter = (chapterId) => post(`/admin/tutorial-chapters/${encoded(chapterId)}/publish`)
+export const withdrawChapter = (chapterId) => post(`/admin/tutorial-chapters/${encoded(chapterId)}/withdraw`)
 export const reorderChapters = (groupId, ids) =>
   put(`/admin/tutorial-groups/${encoded(groupId)}/chapters/order`, { ids })
 

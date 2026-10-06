@@ -307,8 +307,3 @@ export const createEnglishDocument = (kind, payload) => post(`/admin/english/con
 export const updateEnglishDocument = (kind, id, payload) => put(`/admin/english/content/${kind}/${id}`, payload)
 export const setEnglishDocumentPublished = (kind, id, published) => post(`/admin/english/content/${kind}/${id}/${published ? 'publish' : 'withdraw'}`)
 export const deleteEnglishDocument = (kind, id) => del(`/admin/english/content/${kind}/${id}`)
-
-export const getListeningSegments = (idOrSlug, admin = false) => get(`${admin ? '/admin' : '/public'}/english/listening/${idOrSlug}/segments`)
-export const createListeningSegment = (id, payload) => post(`/admin/english/listening/${id}/segments`, payload)
-export const updateListeningSegment = (id, segmentId, payload) => put(`/admin/english/listening/${id}/segments/${segmentId}`, payload)
-export const deleteListeningSegment = (id, segmentId) => del(`/admin/english/listening/${id}/segments/${segmentId}`)

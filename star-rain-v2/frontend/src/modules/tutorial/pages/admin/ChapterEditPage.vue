@@ -9,7 +9,6 @@ import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
-import ChapterExercises from '../../components/ChapterExercises.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -24,7 +23,6 @@ const saving = ref(false)
 const error = ref('')
 const notice = ref('')
 const editorRef = ref(null)
-const exercisesRef = ref(null)
 const confirmDialog = ref(null)
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
 let savedSnapshot = ''
@@ -36,7 +34,7 @@ function currentBody() {
 function snapshot() {
   return JSON.stringify({ ...form, bodyMarkdown: currentBody() })
 }
-function dirty() { return (savedSnapshot !== '' && savedSnapshot !== snapshot()) || exercisesRef.value?.isDirty?.() }
+function dirty() { return savedSnapshot !== '' && savedSnapshot !== snapshot() }
 function returnPath() {
   return `/useradmin/tutorials/${encodeURIComponent(tutorialId.value)}/curriculum`
 }
@@ -94,10 +92,6 @@ async function save() {
     }
     body.value = bodyMarkdown
     savedSnapshot = snapshot()
-    if (exercisesRef.value?.isDirty?.()) {
-      notice.value = '章节已保存。卡片或问题仍有未保存的改动。'
-      return
-    }
     savedAndLeaving = true
     await router.push({ path: returnPath(), query: { group: form.groupId } })
   } catch (cause) {
@@ -152,12 +146,11 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
             <select v-model="form.groupId" :disabled="!isCreate">
               <option v-for="group in groups" :key="group.id" :value="String(group.id)">{{ group.title }}</option>
             </select>
-            <small v-if="!isCreate">如需换组，请返回课程结构页使用“移动到分组”。</small>
+            <small v-if="!isCreate">章节所属分组在创建后保持固定。</small>
           </label>
           <label>摘要<textarea v-model="form.summary" rows="3" maxlength="1000" /></label>
         </div>
       </div>
-      <ChapterExercises v-if="!isCreate" ref="exercisesRef" :chapter-id="route.params.chapterId" />
       <div class="chapter-edit__actions chapter-edit__bottom-actions">
         <button class="primary-button" type="button" :disabled="saving" @click="save">保存</button>
         <button type="button" @click="router.push(returnPath())">取消</button>

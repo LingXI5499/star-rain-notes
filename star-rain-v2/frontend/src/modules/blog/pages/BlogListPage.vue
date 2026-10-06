@@ -63,6 +63,7 @@ const columns = computed(() => [
   ...topics.value.map((topic) => ({
     key: topic.slug,
     label: topic.name,
+    featured: topic.featured,
     to: { path: contentPath('/blog'), query: { topic: topic.slug } },
   })),
 ])

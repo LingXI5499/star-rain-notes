@@ -852,6 +852,22 @@
   gap: var(--space-4);
 }
 
+.tag-grid--topics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.tag-grid--topics .topic-card { min-width: 0; padding: 24px; border-radius: 20px; }
+.topic-card .tag-card__top { grid-template-columns: 40px minmax(0, 1fr) auto; gap: 14px; }
+.topic-card .tag-card__top > span { width: 40px; height: 40px; border-radius: 12px; font-size: 12px; }
+.topic-card .tag-card__top strong { font-size: 19px; }
+.topic-card .tag-card__top em { padding: 6px 10px; font-size: 12px; }
+.topic-card__meta { display: flex; gap: 10px; margin: 18px 0 0 54px; color: var(--text-muted); font-size: 12px; }
+.topic-card__featured { color: var(--primary); font-weight: 700; }
+.topic-card__description { min-height: 38px; margin: 8px 0 0 54px; color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+.tag-grid--topics .topic-card footer { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+.topic-card__actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; gap: 8px !important; }
+.topic-card .topic-card__actions button { padding: 7px 11px; border-radius: 9px; white-space: nowrap; font-size: 12px; }
+.topic-card__actions .topic-card__primary { margin-right: auto; border-color: var(--primary); color: var(--primary); font-weight: 700; }
+@media (max-width: 900px) { .tag-grid--topics { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 520px) { .tag-grid--topics .topic-card { padding: 18px; } .topic-card__meta, .topic-card__description { margin-left: 0; } }
+
 .tag-card {
   padding: var(--space-5);
   border: 1px solid var(--border);
@@ -1220,10 +1236,23 @@ html.is-vditor-fullscreen .vditor--fullscreen {
 }
 
 .blog-tag-picker__new input {
-  max-width: 260px;
+  width: min(100%, 520px);
   min-height: 38px;
   font-size: 13px;
 }
+
+.blog-tag-picker__suggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-subtle);
+}
+.blog-tag-picker__suggestions p { width: 100%; margin: 0; color: var(--text-muted); font-size: 12px; }
+.blog-tag-picker__suggestions button { padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg-surface); color: var(--text-secondary); cursor: pointer; }
+.blog-tag-picker__suggestions button:hover { border-color: var(--primary); color: var(--primary); }
 
 .blog-tag-picker__hint {
   color: var(--text-muted);

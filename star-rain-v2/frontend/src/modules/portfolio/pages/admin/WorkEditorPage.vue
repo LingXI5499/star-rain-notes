@@ -2,8 +2,8 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import {
-  addWorkLink, addWorkMedia, createWork, getAdminWork, orderWorkLinks, orderWorkMedia,
-  removeWorkLink, removeWorkMedia, updateWork, updateWorkBody, updateWorkDetail, updateWorkLink,
+  addWorkLink, addWorkMedia, createWork, getAdminWork, orderWorkLinks,
+  removeWorkLink, removeWorkMedia, updateWork, updateWorkBody, updateWorkLink,
 } from '../../api/portfolioApi'
 import { errorMessage } from '../../../../shared/http'
 import { accountPath } from '../../../../shared/viewMode'
@@ -22,37 +22,11 @@ const saving = ref(false)
 const error = ref('')
 const notice = ref('')
 const form = reactive({ workType: 'SOFTWARE', title: '', summary: '', bodyMarkdown: '' })
-const detail = reactive({ techStack: '', role: '', projectStage: 'DEVELOPING', platform: '', artistRole: '',
-  durationSeconds: '', publication: '', wordCount: '', description: '' })
 const link = reactive({ id: '', linkType: 'GITHUB', label: '', url: '' })
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
-const mediaUsage = ref('COVER')
-const mediaItems = computed(() => current.value?.media || [])
+const mediaItems = computed(() => current.value?.media?.filter((item) => item.usageType === 'COVER') || [])
 const linkItems = computed(() => current.value?.links || [])
 const typeLabels = { SOFTWARE: '软件', VIDEO: '视频', MUSIC: '音乐', WRITING: '写作', OTHER: '其他' }
-
-function detailPayload() {
-  if (form.workType === 'SOFTWARE') {
-    const techStack = detail.techStack.split(/[,，\n]/).map((item) => item.trim()).filter(Boolean)
-    return techStack.length || detail.role.trim() ? { techStack, role: detail.role.trim(), projectStage: detail.projectStage } : null
-  }
-  if (form.workType === 'VIDEO') return detail.platform.trim() || detail.durationSeconds ? { platform: detail.platform.trim(), durationSeconds: Number(detail.durationSeconds) } : null
-  if (form.workType === 'MUSIC') return detail.artistRole.trim() || detail.durationSeconds ? { artistRole: detail.artistRole.trim(), durationSeconds: Number(detail.durationSeconds) } : null
-  if (form.workType === 'WRITING') return detail.publication.trim() || detail.wordCount ? { publication: detail.publication.trim(), wordCount: Number(detail.wordCount) } : null
-  return detail.description.trim() ? { description: detail.description.trim() } : {}
-}
-
-function loadDetail(value = {}) {
-  detail.techStack = (value.techStack || []).join(', ')
-  detail.role = value.role || ''
-  detail.projectStage = value.projectStage || 'DEVELOPING'
-  detail.platform = value.platform || ''
-  detail.artistRole = value.artistRole || ''
-  detail.durationSeconds = value.durationSeconds || ''
-  detail.publication = value.publication || ''
-  detail.wordCount = value.wordCount || ''
-  detail.description = value.description || ''
-}
 
 async function load() {
   if (!workId.value) return
@@ -64,7 +38,6 @@ async function load() {
     form.title = current.value.title
     form.summary = current.value.summary || ''
     form.bodyMarkdown = current.value.bodyMarkdown || ''
-    loadDetail(current.value.typeDetail || {})
     editorKey.value += 1
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -89,8 +62,6 @@ async function save() {
       await updateWork(id, { title: form.title.trim(), summary: form.summary.trim() })
     }
     await updateWorkBody(id, form.bodyMarkdown)
-    const typed = detailPayload()
-    if (typed) await updateWorkDetail(id, typed)
     if (!workId.value) await router.replace(accountPath(`/portfolio/editor/${id}`))
     await load()
     notice.value = '作品已保存。'
@@ -106,28 +77,19 @@ async function pickBodyImage() {
   return asset ? { url: asset.contentUrl, name: asset.originalName } : null
 }
 
-async function addMedia(usage) {
-  if (!workId.value) { error.value = '请先保存作品，再添加媒体。'; return }
-  mediaUsage.value = usage
-  const asset = await pick(usage === 'AUDIO' ? 'AUDIO' : usage === 'ATTACHMENT' ? '' : 'IMAGE')
+async function addMedia() {
+  if (!workId.value) { error.value = '请先保存作品，再添加封面。'; return }
+  const asset = await pick('IMAGE')
   if (!asset) return
   error.value = ''
   try {
-    current.value = await addWorkMedia(workId.value, { mediaAssetId: asset.id, usageType: usage, caption: '', sortOrder: mediaItems.value.length })
+    current.value = await addWorkMedia(workId.value, { mediaAssetId: asset.id, usageType: 'COVER', caption: '', sortOrder: 0 })
   } catch (cause) { error.value = errorMessage(cause) }
 }
 
 async function removeMedia(item) {
   error.value = ''
   try { await removeWorkMedia(item.id); await load() } catch (cause) { error.value = errorMessage(cause) }
-}
-
-async function moveMedia(index, direction) {
-  const ids = mediaItems.value.map((item) => item.id)
-  const target = index + direction
-  if (target < 0 || target >= ids.length) return
-  ;[ids[index], ids[target]] = [ids[target], ids[index]]
-  try { current.value = await orderWorkMedia(workId.value, ids) } catch (cause) { error.value = errorMessage(cause) }
 }
 
 function editLink(item) {
@@ -176,17 +138,10 @@ onMounted(load)
         <label class="wide">摘要<textarea v-model="form.summary" maxlength="1000" rows="3" placeholder="简要介绍作品解决的问题" /></label>
       </section>
       <section class="work-editor__section"><h2>作品正文</h2><MarkdownEditor :key="editorKey" ref="editor" v-model="form.bodyMarkdown" :pick-image="pickBodyImage" /></section>
-      <section class="work-editor__section work-editor__panel"><div class="wide"><h2>类型详情</h2><p>根据作品类型填写对应内容；发布前会检查这些信息。</p></div>
-        <template v-if="form.workType === 'SOFTWARE'"><label>技术栈（逗号分隔）<input v-model="detail.techStack" placeholder="Java, Vue, MySQL" /></label><label>承担角色<input v-model="detail.role" placeholder="全栈开发" /></label><label>项目阶段<select v-model="detail.projectStage"><option value="DEVELOPING">开发中</option><option value="COMPLETED">已完成</option><option value="ONLINE">已上线</option></select></label></template>
-        <template v-else-if="form.workType === 'VIDEO'"><label>发布平台<input v-model="detail.platform" placeholder="Bilibili" /></label><label>时长（秒）<input v-model="detail.durationSeconds" type="number" min="1" /></label></template>
-        <template v-else-if="form.workType === 'MUSIC'"><label>创作角色<input v-model="detail.artistRole" placeholder="作曲" /></label><label>时长（秒）<input v-model="detail.durationSeconds" type="number" min="1" /></label></template>
-        <template v-else-if="form.workType === 'WRITING'"><label>发表平台<input v-model="detail.publication" placeholder="个人网站" /></label><label>字数<input v-model="detail.wordCount" type="number" min="1" /></label></template>
-        <label v-else class="wide">作品补充说明<input v-model="detail.description" placeholder="可选" /></label>
+      <section class="work-editor__section"><h2>作品封面</h2><p>从媒体库选择一张公开图片作为封面。</p><div class="work-editor__tools"><button v-if="!mediaItems.length" type="button" @click="addMedia">选择封面</button></div>
+        <div class="work-editor__rows"><div v-for="item in mediaItems" :key="item.id"><img v-if="item.url" :src="item.url" :alt="item.caption || '作品封面'" /><span>当前封面</span><button type="button" @click="removeMedia(item)">移除</button></div></div>
       </section>
-      <section class="work-editor__section"><h2>作品媒体</h2><p>封面、截图、音频和附件从媒体库选择，保存后可添加。</p><div class="work-editor__tools"><button v-for="usage in ['COVER','SCREENSHOT','AUDIO','ATTACHMENT']" :key="usage" type="button" @click="addMedia(usage)">＋ {{ { COVER:'封面', SCREENSHOT:'截图', AUDIO:'音频', ATTACHMENT:'附件' }[usage] }}</button></div>
-        <div class="work-editor__rows"><div v-for="(item,index) in mediaItems" :key="item.id"><img v-if="item.url && ['COVER','SCREENSHOT'].includes(item.usageType)" :src="item.url" :alt="item.caption || '作品媒体'" /><span>{{ item.usageType }} · {{ item.caption || item.mediaAssetId }}</span><button type="button" @click="moveMedia(index,-1)">↑</button><button type="button" @click="moveMedia(index,1)">↓</button><button type="button" @click="removeMedia(item)">移除</button></div></div>
-      </section>
-      <section class="work-editor__section"><h2>外部链接</h2><p>公开页会展示已启用的链接，点击后在新标签页安全打开。</p><form class="work-editor__link" @submit.prevent="saveLink"><select v-model="link.linkType"><option v-for="type in ['GITHUB','DEMO','VIDEO','ARTICLE','OTHER']" :key="type">{{ type }}</option></select><input v-model="link.label" required maxlength="100" placeholder="链接名称" /><input v-model="link.url" required maxlength="1000" type="url" placeholder="https://..." /><button type="submit">{{ link.id ? '保存修改' : '添加链接' }}</button></form>
+      <section class="work-editor__section"><h2>外部链接</h2><p>GitHub、哔哩哔哩或抖音链接会集中展示在作品标题下方。</p><form class="work-editor__link" @submit.prevent="saveLink"><select v-model="link.linkType"><option value="GITHUB">GitHub</option><option value="BILIBILI">哔哩哔哩</option><option value="DOUYIN">抖音</option><option value="OTHER">其他</option></select><input v-model="link.label" required maxlength="100" placeholder="链接名称" /><input v-model="link.url" required maxlength="1000" type="url" placeholder="https://..." /><button type="submit">{{ link.id ? '保存修改' : '添加链接' }}</button></form>
         <div class="work-editor__rows"><div v-for="(item,index) in linkItems" :key="item.id"><span>{{ item.label }} · {{ item.url }}</span><button type="button" @click="editLink(item)">编辑</button><button type="button" @click="moveLink(index,-1)">↑</button><button type="button" @click="moveLink(index,1)">↓</button><button type="button" @click="removeLink(item)">移除</button></div></div>
       </section>
       <footer><button type="button" :disabled="saving" @click="save">{{ saving ? '保存中…' : '保存作品' }}</button></footer>

@@ -4,8 +4,8 @@ import { useRoute, useRouter } from 'vue-router'
 import { errorMessage } from '../../../../shared/http'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 import {
-  archiveChapter, archiveGroup, createGroup, getAdminCurriculum, moveChapter,
-  reorderChapters, reorderGroups, restoreChapter, restoreGroup, updateGroup,
+  createGroup, deleteChapter, deleteGroup, getAdminCurriculum, publishChapter,
+  reorderChapters, reorderGroups, updateGroup, withdrawChapter,
 } from '../../api/tutorialApi'
 
 const route = useRoute()
@@ -19,9 +19,6 @@ const error = ref('')
 const notice = ref('')
 const groupDialog = ref(null)
 const groupForm = reactive({ id: '', title: '' })
-const moveDialog = ref(null)
-const movingChapter = ref(null)
-const targetGroupId = ref('')
 const confirmDialog = ref(null)
 let draggingGroupId = ''
 let draggingChapterId = ''
@@ -76,12 +73,10 @@ async function saveGroup() {
   }
 }
 
-async function toggleGroup(group) {
-  const label = group.status === 'ACTIVE' ? '归档' : '恢复'
-  if (!await confirmDialog.value.ask(`确定${label}分组「${group.title}」？归档前需移走或归档全部章节。`)) return
+async function removeGroup(group) {
+  if (!await confirmDialog.value.ask(`确定删除分组「${group.title}」及其全部章节？此操作无法撤销。`)) return
   try {
-    if (group.status === 'ACTIVE') await archiveGroup(group.id)
-    else await restoreGroup(group.id)
+    await deleteGroup(group.id)
     await load()
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -108,36 +103,23 @@ async function dropChapter(targetId) {
   catch (cause) { error.value = errorMessage(cause) }
 }
 
-function openMoveDialog(chapter) {
-  movingChapter.value = chapter
-  targetGroupId.value = ''
-  moveDialog.value.showModal()
-}
-
-async function confirmMove() {
-  if (!movingChapter.value || !targetGroupId.value) return
-  if (!await confirmDialog.value.ask(`确定将「${movingChapter.value.title}」移动到目标分组末尾？正文保持不变。`)) return
-  try {
-    await moveChapter(movingChapter.value.id, targetGroupId.value)
-    moveDialog.value.close()
-    activeGroupId.value = targetGroupId.value
-    notice.value = '章节已移动。'
-    await load()
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  }
-}
-
 async function toggleChapter(chapter) {
-  const label = chapter.status === 'ACTIVE' ? '归档' : '恢复'
+  const publish = chapter.status !== 'PUBLISHED'
+  const label = publish ? '公开' : '撤回'
   if (!await confirmDialog.value.ask(`确定${label}章节「${chapter.title}」？`)) return
   try {
-    if (chapter.status === 'ACTIVE') await archiveChapter(chapter.id)
-    else await restoreChapter(chapter.id)
+    if (publish) await publishChapter(chapter.id)
+    else await withdrawChapter(chapter.id)
     await load()
   } catch (cause) {
     error.value = errorMessage(cause)
   }
+}
+
+async function removeChapter(chapter) {
+  if (!await confirmDialog.value.ask(`确定删除章节「${chapter.title}」？此操作无法撤销。`)) return
+  try { await deleteChapter(chapter.id); await load() }
+  catch (cause) { error.value = errorMessage(cause) }
 }
 
 function newChapter() {
@@ -208,13 +190,13 @@ onMounted(load)
             <span class="curriculum-admin__grip" aria-hidden="true">⠿</span>
             <div class="curriculum-admin__group-copy">
               <h3>{{ group.title }}</h3>
-              <p>{{ group.chapterCount || 0 }} 个章节{{ group.status === 'ARCHIVED' ? ' · 已归档' : '' }}</p>
+              <p>{{ group.chapterCount || 0 }} 个章节</p>
             </div>
             <span class="curriculum-admin__count">{{ group.chapterCount || 0 }}</span>
             <span class="curriculum-admin__arrow" aria-hidden="true">›</span>
             <div class="curriculum-admin__group-actions">
               <button type="button" @click.stop="openGroupDialog(group)">重命名</button>
-              <button type="button" @click.stop="toggleGroup(group)">{{ group.status === 'ACTIVE' ? '归档' : '恢复' }}</button>
+              <button type="button" @click.stop="removeGroup(group)">删除</button>
             </div>
           </article>
         </div>
@@ -232,7 +214,7 @@ onMounted(load)
             <button class="primary-button curriculum-admin__create" type="button" :disabled="!activeGroup" @click="newChapter">新建章节</button>
           </div>
         </header>
-        <p class="curriculum-admin__hint">章节仅在当前分组内拖拽；跨组请使用“移动到分组”。</p>
+        <p class="curriculum-admin__hint">章节仅在当前分组内拖拽排序；新章节保存后先公开，再公开教程。</p>
         <div class="curriculum-admin__chapter-body">
           <div v-if="!activeGroup" class="curriculum-admin__empty">
             <span aria-hidden="true">←</span>
@@ -261,13 +243,13 @@ onMounted(load)
                 <h3>{{ chapter.title }}</h3>
                 <p>更新于 {{ chapter.updatedAt?.slice(0, 16).replace('T', ' ') }}</p>
               </div>
-              <span class="curriculum-admin__status" :class="chapter.status === 'ACTIVE' ? 'is-active' : 'is-archived'">
-                {{ chapter.status === 'ACTIVE' ? '使用中' : '已归档' }}
+              <span class="curriculum-admin__status" :class="chapter.status === 'PUBLISHED' ? 'is-active' : 'is-archived'">
+                {{ chapter.status === 'PUBLISHED' ? '已公开' : chapter.status === 'WITHDRAWN' ? '已撤回' : '草稿' }}
               </span>
               <div class="curriculum-admin__chapter-actions">
                 <button type="button" @click="editChapter(chapter)">编辑</button>
-                <button type="button" @click="openMoveDialog(chapter)">移动到分组</button>
-                <button type="button" @click="toggleChapter(chapter)">{{ chapter.status === 'ACTIVE' ? '归档' : '恢复' }}</button>
+                <button type="button" @click="toggleChapter(chapter)">{{ chapter.status === 'PUBLISHED' ? '撤回' : '公开' }}</button>
+                <button type="button" @click="removeChapter(chapter)">删除</button>
               </div>
             </article>
           </div>
@@ -285,22 +267,6 @@ onMounted(load)
           <button class="primary-button" type="submit">保存</button>
         </div>
       </form>
-    </dialog>
-
-    <dialog ref="moveDialog" class="curriculum-admin__dialog" @cancel.prevent="moveDialog.close()">
-      <h2>移动到其他分组</h2>
-      <p class="curriculum-admin__dialog-lead">{{ movingChapter?.title }}</p>
-      <label>目标分组
-        <select v-model="targetGroupId">
-          <option value="" disabled>选择目标分组</option>
-          <option v-for="group in groups.filter((item) => String(item.id) !== activeGroupId && item.status === 'ACTIVE')" :key="group.id" :value="String(group.id)">{{ group.title }}</option>
-        </select>
-      </label>
-      <p class="curriculum-admin__dialog-tip">章节会追加到目标分组末尾；正文保持不变。</p>
-      <div class="curriculum-admin__dialog-actions">
-        <button type="button" @click="moveDialog.close()">取消</button>
-        <button class="primary-button" type="button" :disabled="!targetGroupId" @click="confirmMove">确认移动</button>
-      </div>
     </dialog>
 
     <AdminConfirmDialog ref="confirmDialog" />

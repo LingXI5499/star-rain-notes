@@ -2,17 +2,15 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
-import MediaPicker from '../../../media/components/MediaPicker.vue'
-import { useMediaPicker } from '../../../media/support/useMediaPicker'
 import { listPublicTutorials } from '../../../tutorial/api/tutorialApi'
 import { listPublicPosts } from '../../../blog/api/blogApi'
 import { listPublicWorks } from '../../../portfolio/api/portfolioApi'
 import { errorMessage } from '../../../../shared/http'
 import { accountPath } from '../../../../shared/viewMode'
 import {
-  addFeatured, clearProfileMedia, getAdminProfile, orderExperiences, orderFeatured,
-  orderSkills, orderSocial, removeExperience, removeFeatured, removeSkill, removeSocial,
-  saveExperience, saveSkill, saveSocial, setProfileMedia, updateProfile,
+  addFeatured, getAdminProfile, orderFeatured,
+  orderSkills, orderSocial, removeFeatured, removeSkill, removeSocial,
+  saveSkill, saveSocial, updateProfile,
 } from '../../api/profileApi'
 
 const profile = ref(null)
@@ -21,9 +19,7 @@ const busy = ref(false)
 const error = ref('')
 const notice = ref('')
 const editorKey = ref(0)
-const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
 const basic = reactive({ displayName: '', headline: '', bioMarkdown: '', locationText: '' })
-const experience = reactive({ id: '', experienceType: 'EDUCATION', title: '', organization: '', startDate: '', endDate: '', isCurrent: false, descriptionMd: '' })
 const skill = reactive({ id: '', category: 'SKILL', name: '', description: '', proficiency: '' })
 const social = reactive({ id: '', platformCode: 'GITHUB', label: '', url: '' })
 const feature = reactive({ contentType: 'TUTORIAL', contentId: '', titleOverride: '' })
@@ -79,15 +75,6 @@ async function run(action, success = '已保存') {
   }
 }
 
-function resetExperience() { Object.assign(experience, { id: '', experienceType: 'EDUCATION', title: '', organization: '', startDate: '', endDate: '', isCurrent: false, descriptionMd: '' }) }
-function editExperience(item) { Object.assign(experience, { ...item, startDate: item.startDate || '', endDate: item.endDate || '', descriptionMd: item.descriptionMd || '' }); document.getElementById('profile-experience-form')?.scrollIntoView({ behavior: 'smooth' }) }
-async function submitExperience() {
-  const payload = { ...experience, startDate: experience.startDate || null, endDate: experience.isCurrent ? null : experience.endDate || null }
-  delete payload.id
-  if (await run(() => saveExperience(experience.id, payload))) resetExperience()
-}
-async function deleteExperience(id) { if (window.confirm('删除这条经历？')) await run(() => removeExperience(id), '经历已删除') }
-
 function resetSkill() { Object.assign(skill, { id: '', category: 'SKILL', name: '', description: '', proficiency: '' }) }
 function editSkill(item) { Object.assign(skill, item); document.getElementById('profile-skill-form')?.scrollIntoView({ behavior: 'smooth' }) }
 async function submitSkill() { const payload = { ...skill }; delete payload.id; if (await run(() => saveSkill(skill.id, payload))) resetSkill() }
@@ -97,12 +84,6 @@ function resetSocial() { Object.assign(social, { id: '', platformCode: 'GITHUB',
 function editSocial(item) { Object.assign(social, item); document.getElementById('profile-social-form')?.scrollIntoView({ behavior: 'smooth' }) }
 async function submitSocial() { const payload = { ...social }; delete payload.id; if (await run(() => saveSocial(social.id, payload))) resetSocial() }
 async function deleteSocial(id) { if (window.confirm('删除这个链接？')) await run(() => removeSocial(id), '链接已删除') }
-
-async function chooseMedia(kind) {
-  const asset = await pick(kind === 'avatar' ? 'IMAGE' : 'DOCUMENT')
-  if (asset) await run(() => setProfileMedia(kind, asset.id), kind === 'avatar' ? '头像已更新' : '简历已更新')
-}
-async function clearMedia(kind) { await run(() => clearProfileMedia(kind), '媒体引用已移除') }
 
 async function submitFeatured() {
   if (!feature.contentId) return
@@ -119,7 +100,7 @@ async function move(section, index, delta) {
   if (target < 0 || target >= items.length) return
   const ids = items.map((item) => item.id)
   ;[ids[index], ids[target]] = [ids[target], ids[index]]
-  const save = { experiences: orderExperiences, skills: orderSkills, socialLinks: orderSocial, featuredContents: orderFeatured }[section]
+  const save = { skills: orderSkills, socialLinks: orderSocial, featuredContents: orderFeatured }[section]
   await run(() => save(ids), '顺序已更新')
 }
 
@@ -128,7 +109,7 @@ onMounted(load)
 
 <template>
   <main class="profile-editor">
-    <header class="profile-editor__header"><p>AUTHOR PROFILE · 内容编辑</p><h1>作者资料</h1><span>管理公开介绍、经历、技能、社交链接与精选内容。</span><RouterLink :to="accountPath('/about')">查看公开页 ↗</RouterLink></header>
+    <header class="profile-editor__header"><p>AUTHOR PROFILE · 内容编辑</p><h1>作者资料</h1><span>管理公开介绍、技能、社交链接与精选内容。</span><RouterLink :to="accountPath('/about')">查看公开页 ↗</RouterLink></header>
     <p v-if="loading" class="profile-editor__state">正在加载作者资料…</p>
     <template v-else-if="profile">
       <p v-if="error" class="profile-editor__error" role="alert">{{ error }}</p>
@@ -139,16 +120,6 @@ onMounted(load)
           <div class="profile-editor__grid"><label>显示名称<input v-model.trim="basic.displayName" required maxlength="100" /></label><label>一句话介绍<input v-model.trim="basic.headline" maxlength="255" /></label><label>所在地<input v-model.trim="basic.locationText" maxlength="120" /></label></div>
           <label>个人介绍</label><MarkdownEditor :key="editorKey" v-model="basic.bioMarkdown" /><button type="submit" :disabled="busy">保存基础介绍</button>
         </form>
-      </section>
-
-      <section class="profile-editor__panel"><h2>头像与简历</h2><p class="profile-editor__hint">从媒体库选择公开资源。头像需为图片，简历需为 PDF。</p>
-        <div class="profile-editor__media"><div><img v-if="profile.avatarUrl" :src="profile.avatarUrl" alt="当前头像" /><p v-else>尚未设置头像</p><button type="button" :disabled="busy" @click="chooseMedia('avatar')">选择头像</button><button v-if="profile.avatarMediaAssetId" type="button" :disabled="busy" @click="clearMedia('avatar')">移除</button></div>
-          <div><a v-if="profile.resumeUrl" :href="profile.resumeUrl" target="_blank" rel="noopener noreferrer">查看当前简历 ↗</a><p v-else>尚未设置公开简历</p><button type="button" :disabled="busy" @click="chooseMedia('resume')">选择 PDF 简历</button><button v-if="profile.resumeMediaAssetId" type="button" :disabled="busy" @click="clearMedia('resume')">移除</button></div></div>
-      </section>
-
-      <section class="profile-editor__panel"><h2>教育与经历</h2>
-        <ol class="profile-editor__items"><li v-for="(item, index) in profile.experiences" :key="item.id"><div><strong>{{ item.title }}</strong><small>{{ item.experienceType }} · {{ item.organization || '—' }}</small></div><div class="profile-editor__actions"><button type="button" :disabled="index === 0 || busy" @click="move('experiences', index, -1)">↑</button><button type="button" :disabled="index === profile.experiences.length - 1 || busy" @click="move('experiences', index, 1)">↓</button><button type="button" @click="editExperience(item)">编辑</button><button type="button" @click="deleteExperience(item.id)">删除</button></div></li></ol>
-        <form id="profile-experience-form" @submit.prevent="submitExperience"><h3>{{ experience.id ? '编辑经历' : '添加经历' }}</h3><div class="profile-editor__grid"><label>类型<select v-model="experience.experienceType"><option v-for="type in ['EDUCATION','PROJECT','CAREER','GROWTH','OTHER']" :key="type">{{ type }}</option></select></label><label>标题<input v-model.trim="experience.title" required maxlength="255" /></label><label>机构 / 场景<input v-model.trim="experience.organization" maxlength="255" /></label><label>开始日期<input v-model="experience.startDate" type="date" @click="$event.target.showPicker?.()" /></label><label>结束日期<input v-model="experience.endDate" type="date" :disabled="experience.isCurrent" @click="$event.target.showPicker?.()" /></label><label class="profile-editor__checkbox"><input v-model="experience.isCurrent" type="checkbox" />进行中</label></div><label>经历说明<textarea v-model="experience.descriptionMd" rows="4" /></label><button type="submit" :disabled="busy">{{ experience.id ? '保存经历' : '添加经历' }}</button><button v-if="experience.id" type="button" @click="resetExperience">取消编辑</button></form>
       </section>
 
       <section class="profile-editor__panel"><h2>技能、方向与兴趣</h2>
@@ -167,7 +138,6 @@ onMounted(load)
       </section>
     </template>
     <p v-else-if="error" class="profile-editor__error" role="alert">{{ error }}</p>
-    <MediaPicker :open="pickerOpen" :media-type="pickerType" @update:open="settle(null)" @select="settle" />
   </main>
 </template>
 

@@ -14,9 +14,9 @@ const outline = ref([])
 const error = ref('')
 const loading = ref(false)
 const cover = computed(() => work.value?.media?.find((item) => item.usageType === 'COVER'))
-const gallery = computed(() => work.value?.media?.filter((item) => item.usageType === 'SCREENSHOT') || [])
-const links = computed(() => work.value?.links?.filter((item) => item.enabled) || [])
-const projectStage = computed(() => ({ DEVELOPING: '开发中', COMPLETED: '已完成', ONLINE: '已上线' }[work.value?.typeDetail?.projectStage] || '工程实践'))
+const links = computed(() => work.value?.links?.filter((item) => item.enabled
+  && ['GITHUB', 'BILIBILI', 'DOUYIN', 'OTHER'].includes(item.linkType)) || [])
+const typeLabel = computed(() => ({ SOFTWARE: '软件', VIDEO: '视频', MUSIC: '音乐', WRITING: '写作', OTHER: '作品' }[work.value?.workType] || '作品'))
 
 async function load() {
   loading.value = true
@@ -43,18 +43,14 @@ watch(() => route.params.slug, load)
     <template v-else-if="work">
       <header class="work-detail__hero">
         <RouterLink :to="contentPath('/portfolio')">← 全部作品</RouterLink>
-        <p class="public-eyebrow">CASE STUDY · {{ projectStage }}</p>
+        <p class="public-eyebrow">SELECTED WORK · {{ typeLabel }}</p>
         <h1 class="public-display">{{ work.title }}</h1>
         <p class="work-detail__summary">{{ work.summary }}</p>
-        <p v-if="work.typeDetail" class="work-detail__meta"><span v-if="work.typeDetail.role">{{ work.typeDetail.role }}</span><span v-for="tech in work.typeDetail.techStack?.slice(0, 4)" :key="tech">{{ tech }}</span></p>
         <div class="work-detail__links">
           <a v-for="link in links" :key="link.id" :href="link.url" target="_blank" rel="noopener noreferrer">{{ link.label }} ↗</a>
         </div>
       </header>
       <img v-if="cover?.url" class="work-detail__cover" :src="cover.url" :alt="cover.caption || work.title" />
-      <div v-if="gallery.length" class="work-detail__gallery">
-        <figure v-for="item in gallery" :key="item.id"><img :src="item.url" :alt="item.caption || work.title" /><figcaption>{{ item.caption }}</figcaption></figure>
-      </div>
       <div class="work-detail__reading">
         <main>
           <BlogProse :markdown="work.bodyMarkdown || ''" @outline="outline = $event" />

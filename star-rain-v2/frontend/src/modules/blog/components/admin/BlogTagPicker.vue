@@ -22,6 +22,8 @@ const props = defineProps({
 const emit = defineEmits(['update:modelValue'])
 
 const draftName = ref('')
+const focused = ref(false)
+const inputError = ref('')
 
 function normalizeName(value) {
   return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ')
@@ -52,6 +54,15 @@ function commit(values) {
 
 const selectedIds = computed(() => props.modelValue.filter((value) => typeof value === 'number'))
 const pendingNames = computed(() => props.modelValue.filter((value) => typeof value === 'string'))
+const selectedTags = computed(() => props.tags.filter((tag) => selectedIds.value.includes(tag.id)))
+const suggestions = computed(() => {
+  const term = normalizedKey(draftName.value.split(/[|｜,，、;；\n]/).at(-1))
+  return props.tags.filter((tag) => tag.status !== 'DISABLED'
+    && (!term || normalizedKey(tag.name).includes(term))
+    && !selectedIds.value.includes(tag.id))
+    .sort((a, b) => (b.postCount || 0) - (a.postCount || 0))
+    .slice(0, 8)
+})
 
 function toggle(tag) {
   if (props.disabled) return
@@ -61,9 +72,19 @@ function toggle(tag) {
 }
 
 function addDraft() {
-  const name = normalizeName(draftName.value)
-  if (!name) return
-  commit([...props.modelValue, name])
+  const names = draftName.value.split(/[|｜,，、;；\n]/).map(normalizeName).filter(Boolean)
+  if (!names.length) return
+  if (names.some((name) => name.length > 100)) {
+    inputError.value = '每个标签最多 100 个字符。'
+    return
+  }
+  inputError.value = ''
+  commit([...props.modelValue, ...names])
+  draftName.value = ''
+}
+
+function addSuggestion(tag) {
+  commit([...props.modelValue, tag.id])
   draftName.value = ''
 }
 
@@ -76,7 +97,7 @@ function removeValue(value) {
   <div class="blog-tag-picker">
     <div class="blog-tag-picker__chips">
       <button
-        v-for="tag in tags"
+        v-for="tag in selectedTags"
         :key="tag.id"
         type="button"
         :class="['blog-tag-picker__chip', selectedIds.includes(tag.id) && 'is-on', tag.status === 'DISABLED' && 'is-disabled']"
@@ -88,25 +109,34 @@ function removeValue(value) {
         # {{ tag.name }}
         <small>{{ tag.status === 'DISABLED' ? '已停用' : `${tag.postCount || 0} 篇` }}</small>
       </button>
-      <p v-if="!tags.length" class="muted">标签库还是空的，直接在下面输入新标签名即可。</p>
+      <p v-if="!selectedTags.length && !pendingNames.length" class="muted">暂未选择标签，可搜索已有标签或直接输入新名称。</p>
     </div>
 
     <div class="blog-tag-picker__new">
       <input
         v-model="draftName"
-        maxlength="100"
-        placeholder="输入新标签名，回车添加"
+        maxlength="500"
+        placeholder="搜索已有标签；用 | 分隔多个新标签"
         :disabled="disabled"
+        @focus="focused = true"
+        @blur="focused = false"
+        @input="inputError = ''"
         @keydown.enter.prevent="addDraft"
       />
       <button type="button" :disabled="disabled || !draftName.trim()" @click="addDraft">添加标签</button>
+    </div>
+    <p v-if="inputError" class="error" role="alert">{{ inputError }}</p>
+    <div v-if="focused && suggestions.length" class="blog-tag-picker__suggestions" aria-label="匹配的已有标签">
+      <p>{{ draftName.trim() ? '匹配的已有标签' : '常用标签' }}</p>
+      <button v-for="tag in suggestions" :key="tag.id" type="button" :disabled="disabled"
+        @mousedown.prevent="addSuggestion(tag)"># {{ tag.name }}</button>
     </div>
 
     <p class="blog-tag-picker__hint">
       <template v-if="pendingNames.length">
         保存文章时将新建：<strong>{{ pendingNames.join('、') }}</strong>
       </template>
-      <template v-else>不存在的标签会在保存文章时自动创建；已停用的标签不能新增绑定。</template>
+      <template v-else>输入时匹配已有标签；多个标签可用 | 分隔，回车后统一添加。新标签在保存文章时创建。</template>
     </p>
 
     <p v-if="pendingNames.length" class="blog-tag-picker__hint">

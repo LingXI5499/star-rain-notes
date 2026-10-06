@@ -29,12 +29,12 @@ const props = defineProps({
 
 const row = ref(null)
 const probe = ref(null)
-const fitCount = ref(0)
+const visibleKeys = ref(['home'])
 const open = ref(false)
 const pill = ref({ left: 0, top: 0, width: 0, height: 0, ready: false })
 
-const visible = computed(() => props.columns.slice(0, fitCount.value))
-const overflow = computed(() => props.columns.slice(fitCount.value))
+const visible = computed(() => props.columns.filter((item) => visibleKeys.value.includes(item.key)))
+const overflow = computed(() => props.columns.filter((item) => !visibleKeys.value.includes(item.key)))
 // 选中项被收进「更多」时，行内没有底片，改为照亮「更多」按钮
 const activeInOverflow = computed(() => overflow.value.some((item) => item.key === props.activeKey))
 
@@ -66,7 +66,7 @@ async function measure() {
   const probeEl = probe.value
   if (!rowEl || !probeEl || !props.columns.length) return
 
-  const available = rowEl.clientWidth
+  const available = rowEl.getBoundingClientRect().width || rowEl.parentElement?.clientWidth || window.innerWidth
   const itemEls = [...probeEl.querySelectorAll('[data-probe-item]')]
   const moreEl = probeEl.querySelector('[data-probe-more]')
   const widths = itemEls.map((el) => el.getBoundingClientRect().width)
@@ -75,7 +75,7 @@ async function measure() {
 
   // 全部放得下就不显示「更多」
   if (totalWidth <= available) {
-    fitCount.value = props.columns.length
+    visibleKeys.value = props.columns.map((item) => item.key)
     open.value = false
     await nextTick()
     placePill()
@@ -83,16 +83,23 @@ async function measure() {
   }
 
   const moreWidth = (moreEl ? moreEl.getBoundingClientRect().width : 0) + GAP
+  // 空间不足时优先保留精选专题；同级专题依然沿用后台保存的真实顺序。
+  // 首页固定在第一位，菜单里则保留所有未显示专题的真实顺序。
+  const prioritized = props.columns.map((column, index) => ({ column, index }))
+    .sort((a, b) => {
+      if (a.index === 0) return -1
+      if (b.index === 0) return 1
+      return Number(Boolean(b.column.featured)) - Number(Boolean(a.column.featured)) || a.index - b.index
+    })
   let used = 0
-  let count = 0
-  for (let index = 0; index < widths.length; index += 1) {
-    const next = used + widths[index] + (count > 0 ? GAP : 0)
-    // 留出「更多」按钮的位置，否则最后一个条目会顶着它
-    if (next + moreWidth > available) break
+  const chosen = []
+  for (const { column, index } of prioritized) {
+    const next = used + widths[index] + (chosen.length > 0 ? GAP : 0)
+    if (next + moreWidth > available && chosen.length > 0) continue
     used = next
-    count += 1
+    chosen.push(column.key)
   }
-  fitCount.value = Math.max(1, count)
+  visibleKeys.value = chosen
   if (overflow.value.length === 0) open.value = false
   await nextTick()
   placePill()
@@ -124,7 +131,7 @@ onBeforeUnmount(() => {
   document.removeEventListener('keydown', closeOnEscape)
 })
 
-watch(() => props.columns.map((item) => `${item.key}:${item.label}`).join('|'), () => { void measure() })
+watch(() => props.columns.map((item) => `${item.key}:${item.label}:${item.featured}`).join('|'), () => { void measure() })
 watch(() => props.activeKey, async () => { await nextTick(); placePill() })
 </script>
 

@@ -91,8 +91,13 @@ const pendingTagNames = computed(() => form.tagValues.filter((value) => typeof v
 
 async function loadTags() {
   try {
-    const page = await listAdminTags({ page: 1, pageSize: 100 })
-    tagOptions.value = page.items
+    const first = await listAdminTags({ page: 1, pageSize: 100 })
+    const rows = [...(first.items || [])]
+    for (let page = 2; page <= Math.ceil((first.total || 0) / 100); page += 1) {
+      const next = await listAdminTags({ page, pageSize: 100 })
+      rows.push(...(next.items || []))
+    }
+    tagOptions.value = rows
   } catch (cause) {
     error.value = errorMessage(cause)
   }

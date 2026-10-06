@@ -21,12 +21,12 @@ export function slugWithSuffix(base, ordinal, maxLength) {
   return `${base.slice(0, maxLength - suffix.length).replace(/-+$/g, '')}${suffix}`
 }
 
-export async function createTaxonomy(create, name, prefix, maxLength) {
+export async function createTaxonomy(create, name, prefix, maxLength, extra = {}) {
   const base = derivedSlug(name, prefix, maxLength)
   const conflictCode = `BLOG_${prefix.toUpperCase()}_SLUG_CONFLICT`
   for (let ordinal = 1; ordinal <= 1000; ordinal += 1) {
     try {
-      return await create({ name, slug: slugWithSuffix(base, ordinal, maxLength) })
+      return await create({ ...extra, name, slug: slugWithSuffix(base, ordinal, maxLength) })
     } catch (cause) {
       if (cause?.response?.data?.code !== conflictCode || ordinal === 1000) throw cause
     }

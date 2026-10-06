@@ -13,11 +13,11 @@ import { loadVocabularySummary } from '../../support/vocabularySummary'
  * 英语首页 —— 按 V1 `views/english/EnglishView.vue` 的信息架构逐块对齐：
  *
  *   整幅主题主视觉（左文案 / 右插画，插画自带 CURRENT STAGE 卡）
- *   → 四个方向胶囊（阅读 / 听力 / 写作 / 持续成长）
+ *   → 四个核心方向入口（单词 / 语法 / 阅读 / 写作）
  *   → A1–C2 长期能力轨道
  *   → 游客提示
  *   → 为什么学英语（含四格学习统计）
- *   → 五条学习方向
+ *   → 四条学习方向
  *   → 词汇记忆入口
  *   → 长期学习路线
  *
@@ -40,19 +40,18 @@ const stageLabels = {
   ANALYTICS: '高阶分析',
 }
 
-/* 主视觉下方的四个方向胶囊，与 V1 同名同序 */
+/* 主视觉下方的四个核心方向入口 */
 const heroTraits = [
+  { to: '/english/vocabulary', zh: '单词', en: 'Vocabulary' },
+  { to: '/english/grammar', zh: '语法', en: 'Grammar' },
   { to: '/english/reading', zh: '阅读', en: 'Reading' },
-  { to: '/english/listening', zh: '听力', en: 'Listening' },
   { to: '/english/writing', zh: '写作', en: 'Writing' },
-  { to: '/english/progress', zh: '持续成长', en: 'A Better Me' },
 ]
 
 const directions = [
   { glyph: '词', name: '单词', en: 'VOCABULARY', to: '/english/vocabulary', description: '主题词库、发音与固定间隔复习，建立可长期维护的词汇网络。', cta: '进入词库' },
   { glyph: '语', name: '语法', en: 'GRAMMAR', to: '/english/grammar', description: '沿章节和课程目录，从词法走向复杂句法与真实表达。', cta: '开始课程' },
   { glyph: '读', name: '阅读', en: 'READING', to: '/english/reading', description: '通过分级材料训练信息提取、结构理解和语言观察。', cta: '开始阅读' },
-  { glyph: '听', name: '听力', en: 'LISTENING', to: '/english/listening', description: '围绕完整音频、时间片段、练习与语音规则进行精听。', cta: '开始训练' },
   { glyph: '写', name: '写作', en: 'WRITING', to: '/english/writing', description: '从素材、范文和任务中练习结构清晰、意思准确的表达。', cta: '开始写作' },
 ]
 
@@ -89,7 +88,7 @@ onMounted(async () => {
       <div class="english-hero__copy">
         <p class="public-eyebrow">STAR RAIN NOTES · ENGLISH</p>
         <h1>{{ overview?.title || '英语能力成长路径' }}</h1>
-        <p class="english-hero__lead">{{ overview?.subtitle || '从可理解输入到清晰表达，按 CEFR 建立阅读、听力与写作的长期学习闭环。' }}</p>
+        <p class="english-hero__lead">{{ overview?.subtitle || '从单词和语法打好基础，通过阅读积累输入，再用写作练习清晰表达。' }}</p>
         <div class="english-hero__actions">
           <RouterLink class="is-primary" :to="contentPath('/english/vocabulary/study')">今日背单词 <span aria-hidden="true">→</span></RouterLink>
           <RouterLink :to="contentPath('/english/vocabulary')">浏览词库 <span aria-hidden="true">↗</span></RouterLink>
@@ -136,11 +135,11 @@ onMounted(async () => {
 
       <section class="english-section">
         <header>
-          <div><p class="public-eyebrow">FIVE DIRECTIONS</p><h2 class="public-section-title">五条学习方向</h2></div>
+          <div><p class="public-eyebrow">FOUR DIRECTIONS</p><h2 class="public-section-title">四条学习方向</h2></div>
           <RouterLink :to="contentPath('/english/progress')">查看学习洞察 <span aria-hidden="true">→</span></RouterLink>
         </header>
         <div class="direction-grid">
-          <RouterLink v-for="direction in directions" :key="direction.name" :to="contentPath(direction.to)" class="direction-card public-interactive">
+          <RouterLink v-for="direction in directions" :key="direction.name" :to="contentPath(direction.to)" class="direction-card public-interactive" :data-kind="direction.en.toLowerCase()">
             <div><span>{{ direction.glyph }}</span><small>{{ direction.en }}</small></div>
             <h3>{{ direction.name }}</h3>
             <p>{{ direction.description }}</p>
@@ -297,37 +296,41 @@ onMounted(async () => {
 .english-section > header > a { color: var(--text-secondary); font-size: 12px; }
 .english-section > header > a:hover { color: var(--primary); }
 
-/* ---------------- 五条学习方向 ---------------- */
-.direction-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 14px; }
+/* ---------------- 四条学习方向 ---------------- */
+.direction-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
 
 .direction-card {
+  position: relative;
   display: flex;
-  min-height: 250px;
+  min-height: 270px;
   flex-direction: column;
-  padding: 22px;
+  overflow: hidden;
+  padding: 18px;
   border: 1px solid var(--border);
-  border-radius: var(--radius-card);
+  border-radius: 18px;
   color: var(--text-primary);
   background: var(--bg-surface);
 }
 
+.direction-card::after { position: absolute; right: -48px; bottom: -60px; width: 130px; height: 130px; border: 1px solid color-mix(in srgb, var(--card-accent, var(--primary)) 25%, transparent); border-radius: 50%; content: ''; }
+.direction-card[data-kind='reading'], .direction-card[data-kind='writing'] { --card-accent: var(--accent); }
 .direction-card:hover { transform: translateY(-3px); border-color: var(--primary); box-shadow: var(--shadow-sm); }
 .direction-card > div { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
 
 .direction-card > div span {
   display: grid;
   place-items: center;
-  width: 42px;
-  height: 42px;
-  border-radius: 12px;
-  color: var(--primary);
-  background: var(--primary-soft);
-  font-size: 20px;
-  font-weight: 750;
+  width: 46px;
+  height: 46px;
+  border-radius: 14px;
+  color: var(--card-accent, var(--primary));
+  background: color-mix(in srgb, var(--card-accent, var(--primary)) 12%, transparent);
+  font-size: 22px;
+  font-weight: 800;
 }
 
 .direction-card small { color: var(--accent); font: 700 9px var(--font-mono); letter-spacing: 0.12em; }
-.direction-card h3 { margin: 20px 0 10px; font-size: 21px; }
+.direction-card h3 { margin: 30px 0 8px; font-size: 22px; }
 .direction-card p { color: var(--text-secondary); font-size: 13px; line-height: 1.78; }
 .direction-card strong { margin-top: auto; padding-top: 18px; color: var(--primary); font-size: 12px; }
 
@@ -357,7 +360,7 @@ onMounted(async () => {
 .english-roadmap :deep(.markdown-body) { max-width: 820px; }
 
 @media (max-width: 1100px) {
-  .direction-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .direction-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 
 @media (max-width: 900px) {
