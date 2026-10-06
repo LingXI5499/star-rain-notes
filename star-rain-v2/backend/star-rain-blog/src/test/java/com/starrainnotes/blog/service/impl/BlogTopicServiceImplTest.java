@@ -368,6 +368,51 @@ class BlogTopicServiceImplTest {
                 .isEqualTo("BLOG_QUERY_INVALID");
     }
 
+    // ------------------------------------------------------------------
+    // 删除（只对空专题开放）
+    // ------------------------------------------------------------------
+
+    @Test
+    @DisplayName("空专题可以删除：只删专题本身，不动成员关系表")
+    void deleteRemovesEmptyTopic() {
+        when(topicMapper.topicByIdForUpdate(3L)).thenReturn(topic(3L, "ENABLED"));
+        when(topicMapper.countTopicPosts(3L)).thenReturn(0L);
+
+        service.delete(3L);
+
+        verify(topicMapper).deleteTopic(3L);
+        // 空专题本来就没有关系行，级联删除不该出现（Mapper 也没有这个方法）
+        verify(topicMapper, never()).deleteTopicPost(anyLong(), anyLong());
+        verify(topicMapper, never()).deleteTopicPostsByPostId(anyLong());
+    }
+
+    @Test
+    @DisplayName("有成员的专题拒绝删除：报 BLOG_TOPIC_NOT_EMPTY，且绝不落库")
+    void deleteRejectsTopicWithPosts() {
+        when(topicMapper.topicByIdForUpdate(3L)).thenReturn(topic(3L, "ENABLED"));
+        when(topicMapper.countTopicPosts(3L)).thenReturn(2L);
+
+        assertThatThrownBy(() -> service.delete(3L))
+                .isInstanceOf(ApiException.class)
+                .extracting(ex -> ((ApiException) ex).getCode())
+                .isEqualTo("BLOG_TOPIC_NOT_EMPTY");
+
+        verify(topicMapper, never()).deleteTopic(anyLong());
+    }
+
+    @Test
+    @DisplayName("删除不存在的专题报 BLOG_TOPIC_NOT_FOUND")
+    void deleteMissingTopic() {
+        when(topicMapper.topicByIdForUpdate(404L)).thenReturn(null);
+
+        assertThatThrownBy(() -> service.delete(404L))
+                .isInstanceOf(ApiException.class)
+                .extracting(ex -> ((ApiException) ex).getCode())
+                .isEqualTo("BLOG_TOPIC_NOT_FOUND");
+
+        verify(topicMapper, never()).deleteTopic(anyLong());
+    }
+
     private static BlogTopicDTO dto(String slug, String name) {
         BlogTopicDTO dto = new BlogTopicDTO();
         dto.setSlug(slug);

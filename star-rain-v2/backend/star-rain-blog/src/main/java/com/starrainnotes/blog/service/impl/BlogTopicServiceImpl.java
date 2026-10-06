@@ -13,6 +13,7 @@ import com.starrainnotes.blog.exception.BlogQueryInvalidException;
 import com.starrainnotes.blog.exception.BlogTopicDescriptionInvalidException;
 import com.starrainnotes.blog.exception.BlogTopicDisabledException;
 import com.starrainnotes.blog.exception.BlogTopicNameInvalidException;
+import com.starrainnotes.blog.exception.BlogTopicNotEmptyException;
 import com.starrainnotes.blog.exception.BlogTopicNotFoundException;
 import com.starrainnotes.blog.exception.BlogTopicPostExistsException;
 import com.starrainnotes.blog.exception.BlogTopicPostNotFoundException;
@@ -138,6 +139,26 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             throw new BlogTopicSlugConflictException();
         }
         return toTopicVO(requireTopic(topicId));
+    }
+
+    /*
+     * 删除专题：只对空专题开放。
+     *
+     * 专题的价值主要在成员与顺序上，物理删除会连带毁掉策展结果，
+     * 所以这里先数成员而不是级联删除关系：有成员就报 BLOG_TOPIC_NOT_EMPTY，
+     * 由调用方显式走 removePost（那条路径会压缩序号，顺序仍然是 1..n）。
+     *
+     * 取行锁再数：与「同时给这个专题加文章」并发时，
+     * 否则可能删掉一个刚被加入成员、关系已经写进去的专题。
+     */
+    @Override
+    @Transactional
+    public void delete(Long topicId) {
+        BlogTopicEntity topic = requireTopicForUpdate(topicId);
+        if (topicMapper.countTopicPosts(topic.getId()) > 0) {
+            throw new BlogTopicNotEmptyException();
+        }
+        topicMapper.deleteTopic(topic.getId());
     }
 
     /*

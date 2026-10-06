@@ -52,6 +52,15 @@
         UPDATE sr_blog_topic SET status = #{status} WHERE id = #{id}
     </update>
 
+    <!--
+      删除专题本身。
+      刻意不在这里级联删 sr_blog_topic_post：删除只对空专题开放，
+      「有成员」必须在 Service 里报错，让调用方显式走移出接口（会压缩序号）。
+    -->
+    <delete id="deleteTopic">
+        DELETE FROM sr_blog_topic WHERE id = #{id}
+    </delete>
+
     <select id="adminPageCount" resultType="long">
         SELECT COUNT(*) FROM sr_blog_topic t
         <include refid="adminFilters"/>

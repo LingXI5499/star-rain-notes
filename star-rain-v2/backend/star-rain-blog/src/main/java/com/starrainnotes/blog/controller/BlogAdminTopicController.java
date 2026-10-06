@@ -24,8 +24,9 @@ import org.springframework.web.bind.annotation.RestController;
 /*
  * BLOG-005 / BLOG-006 / BLOG-007 专题接口。
  *
- * 同样没有 DELETE：专题承载成员与人工顺序，物理删除会连带毁掉策展结果，
- * 需要下架就 disable（成员与顺序会保留，恢复后照旧）。
+ * DELETE 只对**空专题**开放（成员数为 0），有成员返回 409 BLOG_TOPIC_NOT_EMPTY：
+ * 专题承载成员与人工顺序，物理删除会连带毁掉策展结果，所以要求调用方先显式移出文章。
+ * 只是想下架、还要保住成员与顺序时用 disable（恢复后照旧）。
  *
  * 排序端点放在 /posts/order，而不是给每个成员单独 PATCH 序号：
  * 前端拖拽产生的是一次完整的新顺序，逐个提交会产生中间态不一致。
@@ -56,6 +57,17 @@ public class BlogAdminTopicController {
     @PreAuthorize("hasAuthority('" + BlogPermissions.TAXONOMY_MANAGE + "')")
     public ApiResponse<BlogTopicVO> update(@PathVariable Long topicId, @RequestBody BlogTopicDTO request) {
         return ApiResponse.ok(topicService.update(topicId, request));
+    }
+
+    /*
+     * 删除专题：仅空专题可删，有成员返回 409 BLOG_TOPIC_NOT_EMPTY。
+     * 与 disable 的分工：删除是「这个专题不要了」，停用是「暂时不展示，成员与顺序留着」。
+     */
+    @DeleteMapping("/{topicId}")
+    @PreAuthorize("hasAuthority('" + BlogPermissions.TAXONOMY_MANAGE + "')")
+    public ApiResponse<Void> delete(@PathVariable Long topicId) {
+        topicService.delete(topicId);
+        return ApiResponse.ok(null);
     }
 
     @PostMapping("/{topicId}/disable")
