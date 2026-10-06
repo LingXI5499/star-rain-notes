@@ -1,111 +1,94 @@
 <script setup>
-import { computed, nextTick, onMounted, reactive, ref } from 'vue'
-import { RouterLink } from 'vue-router'
-import {
-  addTopicPost, createTag, createTopic, disableTag, disableTopic, enableTag, enableTopic,
-  listAdminPosts, listAdminTags, listAdminTopics, listTopicMembers, removeTopicPost,
-  reorderTopicPosts, updateTag, updateTopic,
-} from '../../api/blogApi'
+import { computed, nextTick, reactive, ref, watch } from 'vue'
+import { RouterLink, useRoute } from 'vue-router'
+import { createTag, disableTag, enableTag, listAdminTags, updateTag } from '../../api/blogApi'
 import { errorMessage } from '../../../../shared/http'
+import { useListQuery } from '../../../../shared/composables/useListQuery'
 import { createTaxonomy } from '../../components/admin/tagSlug'
-import { postStatusLabel, taxonomyStatusLabel } from '../../support/display'
+import { taxonomyStatusLabel } from '../../support/display'
 
 /*
- * 分类与专题管理（BLOG-004 ~ BLOG-007），组织方式对齐 V1 views/admin/BlogTagView.vue：
- * 标题区 + 计数 + 卡片网格。
+ * 标签管理（BLOG-004）。
  *
- * 这里仍然把 Tag 与 Topic 的语义差异摆在明面上：
- * - Tag：只有名称，没有任何顺序概念；停用只是不再接受新绑定；
- * - Topic：除了名称，还有成员列表与人工顺序，顺序用上下移动调整后整体提交。
+ * 原先标签与专题挤在同一页，用户要求拆开：
+ *   本页只做标签（`/useradmin/blog/taxonomy`，保留原路径，后台导航不用改），
+ *   专题搬到 `/useradmin/blog/topics`（BlogTopicManagePage），两页互相给入口。
  *
- * 两边都只有启用 / 停用，没有物理删除：已被文章使用的分类或专题一旦被删除，
- * 历史文章就会指向不存在的分类（后端也不提供删除接口）。
+ * 标签不像专题那样有成员与顺序，只有「名称 + 被引用次数 + 启用状态」，
+ * 所以这里是一张卡片网格 + 分页：50 多个标签一屏铺满要滚很久，翻页比滚动好找。
+ *
+ * 分页、搜索、状态筛选都走服务端（标签列表接口本来就支持 page/pageSize/keyword/status），
+ * 条件写回 URL，刷新与前进后退都不会丢状态。
+ *
+ * 视觉沿用 admin.css 里既有的 .tag-admin__* / .tag-card（那一套是按 V1 BlogTagView 定的），
+ * 本文件只补分页条与筛选行，避免同一套样式在全局与页面里各写一份后悄悄分叉。
+ *
+ * 仍然没有物理删除：后端 BlogAdminTagController 明确不提供 DELETE
+ * （已被文章使用的标签删掉，历史文章就会指向不存在的标签），下架请用停用。
  */
-const tags = ref([])
-const topics = ref([])
-const members = ref([])
-const postOptions = ref([])
-const selectedTopicId = ref(null)
-const pendingPostId = ref('')
-const tagKeyword = ref('')
-const topicKeyword = ref('')
+const route = useRoute()
+const { filters, page, pageSize, read: readQuery, write: writeQuery, reset: resetQuery } = useListQuery({
+  defaults: { keyword: '', status: '' },
+  defaultPageSize: 24,
+  pageSizes: [12, 24, 48],
+})
+
+const result = ref({ items: [], total: 0, page: 1, pageSize: 24 })
 const loading = ref(false)
 const saving = ref(false)
 const error = ref('')
 const notice = ref('')
 const tagDialog = ref(null)
-const topicDialog = ref(null)
-
 const tagForm = reactive({ id: null, name: '' })
-const topicForm = reactive({ id: null, name: '' })
+let loadVersion = 0
 
-const selectedTopic = computed(() => topics.value.find((topic) => topic.id === selectedTopicId.value) || null)
-const addablePosts = computed(() => {
-  const taken = new Set(members.value.map((member) => member.postId))
-  return postOptions.value.filter((post) => !taken.has(post.id))
-})
-const totalRelations = computed(() => tags.value.reduce((sum, tag) => sum + (tag.postCount || 0), 0))
-const filteredTags = computed(() => {
-  const keyword = tagKeyword.value.trim().toLowerCase()
-  if (!keyword) return tags.value
-  return tags.value.filter((tag) => tag.name.toLowerCase().includes(keyword))
-})
-const filteredTopics = computed(() => {
-  const keyword = topicKeyword.value.trim().toLowerCase()
-  if (!keyword) return topics.value
-  return topics.value.filter((topic) => topic.name.toLowerCase().includes(keyword))
-})
+const tags = computed(() => result.value.items || [])
+const totalPages = computed(() => Math.max(1, Math.ceil(result.value.total / pageSize.value)))
+// 「文章关联」只统计当前这一页：分页之后它不再是全站合计，标签就把口径写清楚
+const pageRelations = computed(() => tags.value.reduce((sum, tag) => sum + (tag.postCount || 0), 0))
+const isFiltered = computed(() => Boolean(filters.keyword.trim() || filters.status))
 
-async function loadTags() {
-  const page = await listAdminTags({ page: 1, pageSize: 100 })
-  tags.value = page.items
-}
-
-async function loadTopics() {
-  const page = await listAdminTopics({ page: 1, pageSize: 100 })
-  topics.value = page.items
-}
-
-async function loadPosts() {
-  // 专题成员只从已有的文章里挑，草稿也能加入（发布时顺序不变）
-  const page = await listAdminPosts({ page: 1, pageSize: 100 })
-  postOptions.value = page.items
-}
-
-async function loadMembers() {
-  if (!selectedTopicId.value) {
-    members.value = []
-    return
-  }
-  members.value = await listTopicMembers(selectedTopicId.value)
-}
-
-async function refresh() {
+async function load() {
+  const version = ++loadVersion
   loading.value = true
   error.value = ''
   try {
-    await Promise.all([loadTags(), loadTopics(), loadPosts()])
-    // 选中的专题可能已被别处改动，重新拉一次成员保持一致
-    if (selectedTopicId.value && !topics.value.some((topic) => topic.id === selectedTopicId.value)) {
-      selectedTopicId.value = null
-    }
-    await loadMembers()
+    const response = await listAdminTags({
+      page: page.value,
+      pageSize: pageSize.value,
+      keyword: filters.keyword.trim() || undefined,
+      status: filters.status || undefined,
+    })
+    if (version === loadVersion) result.value = response
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (version === loadVersion) error.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (version === loadVersion) loading.value = false
   }
 }
 
-// ---------------------------------------------------------------------
-// Tag
-// ---------------------------------------------------------------------
+async function search() {
+  page.value = 1
+  const previous = route.fullPath
+  await writeQuery()
+  if (route.fullPath === previous) await load()
+}
+
+function changePage(next) {
+  if (next < 1 || next > totalPages.value || next === page.value) return
+  page.value = next
+  writeQuery()
+}
+
+function changePageSize(event) {
+  pageSize.value = Number(event.target.value)
+  page.value = 1
+  writeQuery()
+}
 
 async function openTagDialog(tag = null) {
   error.value = ''
-  Object.assign(tagForm, tag
-    ? { id: tag.id, name: tag.name }
-    : { id: null, name: '' })
+  Object.assign(tagForm, tag ? { id: tag.id, name: tag.name } : { id: null, name: '' })
   await nextTick()
   tagDialog.value?.showModal()
 }
@@ -129,7 +112,7 @@ async function submitTag() {
       notice.value = `标签「${tagForm.name}」已创建。`
     }
     tagDialog.value?.close()
-    await loadTags()
+    await load()
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -149,7 +132,7 @@ async function toggleTagStatus(tag) {
       await disableTag(tag.id)
       notice.value = `标签「${tag.name}」已停用：历史绑定保留，但不能绑定到新文章。`
     }
-    await loadTags()
+    await load()
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -157,140 +140,11 @@ async function toggleTagStatus(tag) {
   }
 }
 
-// ---------------------------------------------------------------------
-// Topic
-// ---------------------------------------------------------------------
-
-async function openTopicDialog(topic = null) {
-  error.value = ''
-  Object.assign(topicForm, topic
-    ? { id: topic.id, name: topic.name }
-    : { id: null, name: '' })
-  await nextTick()
-  topicDialog.value?.showModal()
-}
-
-async function submitTopic() {
-  if (!topicForm.name.trim()) {
-    error.value = '请填写专题名称。'
-    return
-  }
-  saving.value = true
-  error.value = ''
-  notice.value = ''
-  try {
-    const payload = { name: topicForm.name.trim() }
-    if (topicForm.id) {
-      await updateTopic(topicForm.id, payload)
-      notice.value = `专题「${topicForm.name}」已更新。`
-    } else {
-      await createTaxonomy(createTopic, payload.name, 'topic', 120)
-      notice.value = `专题「${topicForm.name}」已创建。`
-    }
-    topicDialog.value?.close()
-    await loadTopics()
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  } finally {
-    saving.value = false
-  }
-}
-
-async function toggleTopicStatus(topic) {
-  saving.value = true
-  error.value = ''
-  notice.value = ''
-  try {
-    if (topic.status === 'DISABLED') {
-      await enableTopic(topic.id)
-      notice.value = `专题「${topic.name}」已启用，成员与顺序保持不变。`
-    } else {
-      await disableTopic(topic.id)
-      notice.value = `专题「${topic.name}」已停用：不在前台展示，也不能加入新文章。`
-    }
-    await loadTopics()
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  } finally {
-    saving.value = false
-  }
-}
-
-// ---------------------------------------------------------------------
-// 专题成员与顺序
-// ---------------------------------------------------------------------
-
-async function selectTopic(topic) {
-  selectedTopicId.value = selectedTopicId.value === topic.id ? null : topic.id
-  error.value = ''
-  try {
-    await loadMembers()
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  }
-}
-
-// 上下移动只改本地顺序，点「保存顺序」才整体提交，避免每按一次就写一次库
-function move(index, delta) {
-  const target = index + delta
-  if (target < 0 || target >= members.value.length) return
-  const items = [...members.value]
-  const [moved] = items.splice(index, 1)
-  items.splice(target, 0, moved)
-  members.value = items.map((item, position) => ({ ...item, sortOrder: position + 1 }))
-}
-
-async function saveOrder() {
-  saving.value = true
-  error.value = ''
-  notice.value = ''
-  try {
-    await reorderTopicPosts(selectedTopicId.value, members.value.map((item) => item.postId))
-    notice.value = '专题顺序已保存。'
-    await loadMembers()
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  } finally {
-    saving.value = false
-  }
-}
-
-async function addMember() {
-  if (!pendingPostId.value) return
-  saving.value = true
-  error.value = ''
-  notice.value = ''
-  try {
-    // 新成员一律追加到末尾：加入位置由「保存顺序」显式决定，而不是靠插入算法猜
-    await addTopicPost(selectedTopicId.value, pendingPostId.value)
-    pendingPostId.value = ''
-    notice.value = '已加入专题末尾。'
-    await loadMembers()
-    await loadTopics()
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  } finally {
-    saving.value = false
-  }
-}
-
-async function removeMember(member) {
-  saving.value = true
-  error.value = ''
-  notice.value = ''
-  try {
-    await removeTopicPost(selectedTopicId.value, member.postId)
-    notice.value = `已移出《${member.title}》，后面的文章序号自动前移。`
-    await loadMembers()
-    await loadTopics()
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  } finally {
-    saving.value = false
-  }
-}
-
-onMounted(refresh)
+// URL 是筛选与分页的唯一出口：手改地址栏、前进后退都会走到这里
+watch(() => route.fullPath, () => {
+  readQuery()
+  load()
+}, { immediate: true })
 </script>
 
 <template>
@@ -298,27 +152,39 @@ onMounted(refresh)
     <header class="tag-admin__hero">
       <div>
         <p>TAG LIBRARY · 内容索引</p>
-        <h1>分类与专题</h1>
+        <h1>标签管理</h1>
+        <span>标签只有名称与被引用次数，没有顺序；下架用停用，历史绑定会保留。</span>
       </div>
       <div class="content-admin__hero-actions">
         <RouterLink to="/useradmin/blog/manage">← 返回博客管理</RouterLink>
-        <button type="button" @click="openTopicDialog()">＋ 新建专题</button>
+        <RouterLink to="/useradmin/blog/topics">专题管理 →</RouterLink>
         <button class="primary-button" type="button" @click="openTagDialog()">＋ 新建标签</button>
       </div>
     </header>
 
-    <div class="tag-admin__stats">
-      <div><strong>{{ tags.length }}</strong><span>标签总数</span></div>
-      <div><strong>{{ totalRelations }}</strong><span>文章关联</span></div>
-      <label>搜索标签<input v-model="tagKeyword" placeholder="输入标签名称" /></label>
+    <div class="tag-admin__stats tag-admin__stats--tags">
+      <div><strong>{{ result.total }}</strong><span>{{ isFiltered ? '筛选结果' : '标签总数' }}</span></div>
+      <div><strong>{{ pageRelations }}</strong><span>本页文章关联</span></div>
+      <form class="tag-admin__filters" @submit.prevent="search">
+        <label>搜索标签<input v-model.trim="filters.keyword" maxlength="100" placeholder="输入标签名称或编号" /></label>
+        <label>状态
+          <select v-model="filters.status" @change="search">
+            <option value="">全部</option>
+            <option value="ENABLED">启用中</option>
+            <option value="DISABLED">已停用</option>
+          </select>
+        </label>
+        <button class="primary-button" type="submit">查询</button>
+        <button v-if="isFiltered" type="button" @click="resetQuery">清除筛选</button>
+      </form>
     </div>
 
-    <p v-if="error && !tagDialog?.open && !topicDialog?.open" class="error" role="alert">{{ error }}</p>
+    <p v-if="error && !tagDialog?.open" class="error" role="alert">{{ error }}</p>
     <p v-if="notice" class="notice" role="status">{{ notice }}</p>
-    <p v-if="loading" class="loading" role="status">正在加载分类数据…</p>
+    <p v-if="loading" class="loading" role="status">正在加载标签…</p>
 
     <div class="tag-grid">
-      <article v-for="tag in filteredTags" :key="tag.id" class="tag-card">
+      <article v-for="tag in tags" :key="tag.id" class="tag-card">
         <div class="tag-card__top">
           <span>#</span>
           <strong>{{ tag.name }}</strong>
@@ -334,90 +200,28 @@ onMounted(refresh)
           </div>
         </footer>
       </article>
-      <div v-if="!loading && !filteredTags.length" class="tag-admin__empty">
-        {{ tagKeyword ? '没有匹配的标签' : '暂无标签' }}
+      <div v-if="!loading && !tags.length" class="tag-admin__empty">
+        {{ isFiltered ? '没有匹配的标签' : '暂无标签' }}
       </div>
     </div>
 
-    <div class="tag-admin__section-head">
-      <h2>专题（有序策展）</h2>
-      <label class="tag-admin__search">搜索专题<input v-model="topicKeyword" placeholder="输入专题名称" /></label>
-    </div>
-
-    <div class="tag-grid">
-      <article
-        v-for="topic in filteredTopics"
-        :key="topic.id"
-        :class="['tag-card', selectedTopicId === topic.id && 'is-selected']"
-      >
-        <div class="tag-card__top">
-          <span>专</span>
-          <strong>{{ topic.name }}</strong>
-          <em>{{ topic.memberCount || 0 }}</em>
-        </div>
-        <footer>
-          <span :class="['status-chip', topic.status === 'DISABLED' && 'status-chip--danger']">{{ taxonomyStatusLabel(topic.status) }}</span>
-          <div>
-            <button type="button" :disabled="saving" @click="selectTopic(topic)">
-              {{ selectedTopicId === topic.id ? '收起顺序' : '管理顺序' }}
-            </button>
-            <button type="button" @click="openTopicDialog(topic)">编辑</button>
-            <button type="button" :disabled="saving" @click="toggleTopicStatus(topic)">
-              {{ topic.status === 'DISABLED' ? '启用' : '停用' }}
-            </button>
-          </div>
-        </footer>
-      </article>
-      <div v-if="!loading && !filteredTopics.length" class="tag-admin__empty">
-        {{ topicKeyword ? '没有匹配的专题' : '暂无专题' }}
+    <nav v-if="result.total > 0" class="tag-admin__pages" aria-label="标签分页">
+      <span>共 {{ result.total }} 个标签</span>
+      <label class="tag-admin__page-size">每页
+        <select :value="pageSize" @change="changePageSize">
+          <option v-for="size in [12, 24, 48]" :key="size" :value="size">{{ size }}</option>
+        </select>
+      </label>
+      <div class="tag-admin__page-jump">
+        <button type="button" :disabled="page <= 1 || loading" @click="changePage(page - 1)">上一页</button>
+        <span>{{ page }} / {{ totalPages }}</span>
+        <button type="button" :disabled="page >= totalPages || loading" @click="changePage(page + 1)">下一页</button>
       </div>
-    </div>
-
-    <section v-if="selectedTopic" class="surface-card tag-admin__members">
-      <div class="section-heading">
-        <div>
-          <h2>专题内文章顺序 · {{ selectedTopic.name }}</h2>
-          <p class="muted">上下移动只改本地顺序，点「保存顺序」才整体提交。</p>
-        </div>
-        <button class="text-button" type="button" @click="selectedTopicId = null">关闭</button>
-      </div>
-
-      <ol class="blog-member-list">
-        <li v-for="(member, index) in members" :key="member.postId">
-          <span class="blog-member-list__order">{{ index + 1 }}</span>
-          <span class="blog-member-list__title">
-            {{ member.title }}
-            <small>{{ postStatusLabel(member.status) }}</small>
-          </span>
-          <span class="blog-member-list__actions">
-            <button class="link-button" type="button" :disabled="index === 0" @click="move(index, -1)">上移</button>
-            <button class="link-button" type="button" :disabled="index === members.length - 1" @click="move(index, 1)">下移</button>
-            <button class="link-button blog-danger" type="button" :disabled="saving" @click="removeMember(member)">移出</button>
-          </span>
-        </li>
-        <li v-if="!members.length" class="muted">该专题还没有文章。</li>
-      </ol>
-
-      <div class="blog-edit__actions blog-edit__actions--split">
-        <div class="blog-edit__actions-group">
-          <select v-model="pendingPostId" class="tag-admin__post-select">
-            <option value="">选择一篇文章</option>
-            <option v-for="post in addablePosts" :key="post.id" :value="post.id">
-              {{ post.title }}（{{ postStatusLabel(post.status) }}）
-            </option>
-          </select>
-          <button type="button" :disabled="saving || !pendingPostId" @click="addMember">追加到末尾</button>
-        </div>
-        <div class="blog-edit__actions-group">
-          <button class="primary-button" type="button" :disabled="saving || !members.length" @click="saveOrder">保存顺序</button>
-        </div>
-      </div>
-      <p class="tag-admin__note">停用的专题不能加入新文章；已停用专题的成员与顺序仍然保留。</p>
-    </section>
+    </nav>
 
     <p class="tag-admin__note">
-      标签与专题都不提供物理删除：已被文章使用的分类一旦删除，历史文章就会指向不存在的分类。
-      需要下架时用「停用」，历史绑定保留。
+      标签不提供物理删除：已被文章使用的标签一旦删除，历史文章就会指向不存在的标签。
+      需要下架时用「停用」，历史绑定保留。专题在「专题管理」页，规则不同（专题有成员与顺序，空专题可以删除）。
     </p>
 
     <dialog ref="tagDialog" aria-labelledby="tag-dialog-title" @cancel.prevent="tagDialog?.close()">
@@ -431,17 +235,66 @@ onMounted(refresh)
         </div>
       </form>
     </dialog>
-
-    <dialog ref="topicDialog" aria-labelledby="topic-dialog-title" @cancel.prevent="topicDialog?.close()">
-      <h2 id="topic-dialog-title">{{ topicForm.id ? '编辑专题' : '新建专题' }}</h2>
-      <form class="form-stack" @submit.prevent="submitTopic">
-        <p v-if="error" class="error" role="alert">{{ error }}</p>
-        <label>名称<input v-model="topicForm.name" maxlength="160" placeholder="例如：Java 学习路线" /></label>
-        <div class="dialog-actions">
-          <button type="button" @click="topicDialog?.close()">取消</button>
-          <button class="primary-button" type="submit" :disabled="saving">{{ topicForm.id ? '保存' : '创建' }}</button>
-        </div>
-      </form>
-    </dialog>
   </section>
 </template>
+
+<style scoped>
+/* 第三格改成整行可换行的筛选条：全局那套是给单个搜索框定的宽度 */
+.tag-admin__stats--tags {
+  grid-template-columns: 150px 150px minmax(0, 1fr);
+  align-items: end;
+}
+
+.tag-admin__filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: 10px;
+}
+
+.tag-admin__filters label { flex: 1 1 160px; }
+
+.tag-admin__filters label:last-of-type { flex: 0 1 130px; }
+
+.tag-admin__filters button { white-space: nowrap; }
+
+.tag-admin__pages {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: var(--space-5);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.tag-admin__page-jump { display: flex; align-items: center; gap: 12px; }
+
+.tag-admin__pages button {
+  padding: 7px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--primary);
+  background: var(--bg-surface);
+  cursor: pointer;
+}
+
+.tag-admin__pages button:disabled { color: var(--text-muted); cursor: not-allowed; }
+
+.tag-admin__page-size { display: flex; align-items: center; gap: 8px; }
+
+.tag-admin__page-size select { width: auto; min-height: 34px; padding: 4px 8px; }
+
+@media (max-width: 900px) {
+  .tag-admin__stats--tags { grid-template-columns: 1fr 1fr; }
+
+  .tag-admin__filters { grid-column: 1 / -1; }
+}
+
+@media (max-width: 720px) {
+  .tag-admin__pages { align-items: flex-start; flex-direction: column; }
+}
+</style>

@@ -47,8 +47,14 @@ export const enableTag = (tagId) => post(`/admin/blog/tags/${encodeURIComponent(
 export const listAdminTopics = (params) => get('/admin/blog/topics', params)
 export const createTopic = (payload) => post('/admin/blog/topics', payload)
 export const updateTopic = (topicId, payload) => patch(`/admin/blog/topics/${encodeURIComponent(topicId)}`, payload)
+export const reorderTopics = (topicIds) => put('/admin/blog/topics/order', { topicIds })
 export const disableTopic = (topicId) => post(`/admin/blog/topics/${encodeURIComponent(topicId)}/disable`)
 export const enableTopic = (topicId) => post(`/admin/blog/topics/${encodeURIComponent(topicId)}/enable`)
+/*
+ * 删除专题：后端只对**空专题**开放，有成员时返回 409 BLOG_TOPIC_NOT_EMPTY。
+ * 前端在按钮上先一步禁用，让用户看到「先移出文章」的提示而不是一次失败请求。
+ */
+export const deleteTopic = (topicId) => del(`/admin/blog/topics/${encodeURIComponent(topicId)}`)
 
 export const listTopicMembers = (topicId) => get(`/admin/blog/topics/${encodeURIComponent(topicId)}/posts`)
 export const addTopicPost = (topicId, postId) =>

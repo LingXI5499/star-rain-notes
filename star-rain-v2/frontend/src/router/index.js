@@ -169,6 +169,9 @@ const routeDeclarations = [
     meta: { console: true, requiresAuth: true, permission: 'blog:read-admin' } },
   { path: '/blog/taxonomy', component: () => import('../modules/blog/pages/admin/BlogTaxonomyPage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'blog:taxonomy-manage' } },
+  // 标签与专题拆成两页：标签在 /blog/taxonomy（旧路径不改，后台导航不用动），专题搬到这里
+  { path: '/blog/topics', component: () => import('../modules/blog/pages/admin/BlogTopicManagePage.vue'), tree: ROUTE_TREE.ACCOUNT,
+    meta: { console: true, requiresAuth: true, permission: 'blog:taxonomy-manage' } },
   { path: '/blog/editor/:postId', component: () => import('../modules/blog/pages/admin/BlogEditorPage.vue'), tree: ROUTE_TREE.ACCOUNT,
     meta: { console: true, requiresAuth: true, permission: 'blog:edit' } },
   { path: '/tutorials/manage', component: () => import('../modules/tutorial/pages/admin/TutorialManagePage.vue'), tree: ROUTE_TREE.ACCOUNT,
