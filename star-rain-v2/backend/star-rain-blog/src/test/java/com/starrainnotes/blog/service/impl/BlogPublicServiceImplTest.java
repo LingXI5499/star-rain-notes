@@ -93,8 +93,8 @@ class BlogPublicServiceImplTest {
         BlogPublicQueryDTO query = new BlogPublicQueryDTO();
         query.setTag("  Java  ");
         query.setTopic("Roadmap");
-        when(postMapper.publishedPageCount("java", "roadmap", null, null)).thenReturn(1L);
-        when(postMapper.publishedPage("java", "roadmap", null, null, 0, 20)).thenReturn(List.of(post(9L)));
+        when(postMapper.publishedPageCount(List.of("java"), "roadmap", null, null)).thenReturn(1L);
+        when(postMapper.publishedPage(List.of("java"), "roadmap", null, null, 0, 20)).thenReturn(List.of(post(9L)));
         when(assembler.toPublicVOs(any())).thenReturn(List.of(BlogPostPublicVO.builder().id(9L).build()));
 
         var result = service.listPosts(query);
@@ -106,10 +106,49 @@ class BlogPublicServiceImplTest {
     }
 
     @Test
+    @DisplayName("多标签 ?tags=a,b：逗号拆成集合、去重、按「命中任一」交给 SQL")
+    void listPassesMultipleTagSlugs() {
+        BlogPublicQueryDTO query = new BlogPublicQueryDTO();
+        query.setTags(" Java , spring-boot ,java,");
+
+        when(postMapper.publishedPageCount(List.of("java", "spring-boot"), null, null, null)).thenReturn(0L);
+
+        assertThat(service.listPosts(query).getItems()).isEmpty();
+        // 首个参数是去重后的集合：重复的 java 只出现一次，空片段被丢掉
+        verify(postMapper).publishedPageCount(List.of("java", "spring-boot"), null, null, null);
+    }
+
+    @Test
+    @DisplayName("单标签 tag 与多标签 tags 同时给出时合并去重，不报错")
+    void listMergesSingleAndMultipleTags() {
+        BlogPublicQueryDTO query = new BlogPublicQueryDTO();
+        query.setTag("java");
+        query.setTags("spring-boot,java");
+
+        when(postMapper.publishedPageCount(List.of("java", "spring-boot"), null, null, null)).thenReturn(0L);
+
+        service.listPosts(query);
+
+        verify(postMapper).publishedPageCount(List.of("java", "spring-boot"), null, null, null);
+    }
+
+    @Test
+    @DisplayName("多标签里有一个非法 slug 同样报 BLOG_QUERY_INVALID")
+    void listRejectsInvalidSlugInsideTags() {
+        BlogPublicQueryDTO query = new BlogPublicQueryDTO();
+        query.setTags("java,不合法 slug");
+
+        assertThatThrownBy(() -> service.listPosts(query))
+                .isInstanceOf(ApiException.class)
+                .extracting(ex -> ((ApiException) ex).getCode())
+                .isEqualTo("BLOG_QUERY_INVALID");
+    }
+
+    @Test
     @DisplayName("空结果不触发第二次查询")
     void listSkipsSecondQueryWhenEmpty() {
         BlogPublicQueryDTO query = new BlogPublicQueryDTO();
-        when(postMapper.publishedPageCount(null, null, null, null)).thenReturn(0L);
+        when(postMapper.publishedPageCount(List.of(), null, null, null)).thenReturn(0L);
 
         var result = service.listPosts(query);
 
@@ -185,8 +224,8 @@ class BlogPublicServiceImplTest {
         query.setMonth(7);
         LocalDateTime from = LocalDateTime.of(2026, 7, 1, 0, 0);
         LocalDateTime to = LocalDateTime.of(2026, 8, 1, 0, 0);
-        when(postMapper.publishedPageCount(null, null, from, to)).thenReturn(1L);
-        when(postMapper.publishedPage(null, null, from, to, 0, 20)).thenReturn(List.of(post(9L)));
+        when(postMapper.publishedPageCount(List.of(), null, from, to)).thenReturn(1L);
+        when(postMapper.publishedPage(List.of(), null, from, to, 0, 20)).thenReturn(List.of(post(9L)));
         when(assembler.toPublicVOs(any())).thenReturn(List.of(BlogPostPublicVO.builder().id(9L).build()));
 
         var result = service.archive(query);
@@ -201,7 +240,7 @@ class BlogPublicServiceImplTest {
         query.setYear(2026);
         LocalDateTime from = LocalDateTime.of(2026, 1, 1, 0, 0);
         LocalDateTime to = LocalDateTime.of(2027, 1, 1, 0, 0);
-        when(postMapper.publishedPageCount(isNull(), isNull(), eq(from), eq(to))).thenReturn(0L);
+        when(postMapper.publishedPageCount(eq(List.of()), isNull(), eq(from), eq(to))).thenReturn(0L);
 
         assertThat(service.archive(query).getItems()).isEmpty();
     }
@@ -214,7 +253,7 @@ class BlogPublicServiceImplTest {
         query.setMonth(12);
         LocalDateTime from = LocalDateTime.of(2026, 12, 1, 0, 0);
         LocalDateTime to = LocalDateTime.of(2027, 1, 1, 0, 0);
-        when(postMapper.publishedPageCount(isNull(), isNull(), eq(from), eq(to))).thenReturn(0L);
+        when(postMapper.publishedPageCount(eq(List.of()), isNull(), eq(from), eq(to))).thenReturn(0L);
 
         assertThat(service.archive(query).getItems()).isEmpty();
     }
@@ -228,7 +267,7 @@ class BlogPublicServiceImplTest {
         query.setDay(28);
         LocalDateTime from = LocalDateTime.of(2026, 2, 28, 0, 0);
         LocalDateTime to = LocalDateTime.of(2026, 3, 1, 0, 0);
-        when(postMapper.publishedPageCount(null, null, from, to)).thenReturn(0L);
+        when(postMapper.publishedPageCount(List.of(), null, from, to)).thenReturn(0L);
 
         assertThat(service.archive(query).getItems()).isEmpty();
     }
@@ -289,7 +328,7 @@ class BlogPublicServiceImplTest {
         query.setMonth(7);
         LocalDateTime from = LocalDateTime.of(2026, 7, 1, 0, 0);
         LocalDateTime to = LocalDateTime.of(2026, 8, 1, 0, 0);
-        when(postMapper.publishedPageCount("java", "roadmap", from, to)).thenReturn(0L);
+        when(postMapper.publishedPageCount(List.of("java"), "roadmap", from, to)).thenReturn(0L);
 
         assertThat(service.archive(query).getItems()).isEmpty();
         verify(postMapper, never()).postById(anyLong());

@@ -37,10 +37,17 @@
     <sql id="publishedFilters">
         <where>
             p.status = 'PUBLISHED'
-            <if test="tagSlug != null and tagSlug != ''">
+            <!--
+              标签筛选：tagSlugs 命中任一即可。
+              多标签刻意用「或」而不是「且」：一个标签通常只有一两篇文章，
+              用「且」几乎永远返回空列表，用户会以为筛选坏了。
+              IN 列表交给 MyBatis 生成绑定参数，不做字符串拼接。
+            -->
+            <if test="tagSlugs != null and tagSlugs.size() > 0">
                 AND EXISTS (SELECT 1 FROM sr_blog_post_tag pt
                             JOIN sr_blog_tag t ON t.id = pt.tag_id
-                            WHERE pt.post_id = p.id AND t.slug = #{tagSlug})
+                            WHERE pt.post_id = p.id AND t.slug IN
+                            <foreach collection="tagSlugs" item="tagSlug" open="(" separator="," close=")">#{tagSlug}</foreach>)
             </if>
             <if test="topicSlug != null and topicSlug != ''">
                 AND EXISTS (SELECT 1 FROM sr_blog_topic_post tp

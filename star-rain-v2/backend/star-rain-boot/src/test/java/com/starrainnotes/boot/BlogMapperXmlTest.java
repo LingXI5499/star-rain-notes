@@ -261,6 +261,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         String topicSlug = unique("mapperxmltopic");
         BlogTagEntity tag = newTag(tagSlug, unique("mapperxmltagname"), "ENABLED");
         tags.insertTag(tag);
+        // 第二个标签只绑一篇：多标签筛选要能同时命中「绑了两篇的」和「只绑了一篇的」
+        String otherTagSlug = unique("mapperxmltag");
+        BlogTagEntity otherTag = newTag(otherTagSlug, unique("mapperxmltagname"), "ENABLED");
+        tags.insertTag(otherTag);
         BlogTopicEntity topic = newTopic(topicSlug, unique("mapperxmltopicname"), "ENABLED");
         topics.insertTopic(topic);
 
@@ -279,34 +283,44 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, tags.insertPostTag(first.getId(), tag.getId()));
         assertEquals(1, tags.insertPostTag(second.getId(), tag.getId()));
         assertEquals(1, tags.insertPostTag(draft.getId(), tag.getId()));
+        assertEquals(1, tags.insertPostTag(third.getId(), otherTag.getId()));
         // 专题成员按人工策展顺序：third 排在 second 前面，与发布时间相反
         assertEquals(1, topics.insertTopicPost(topic.getId(), second.getId(), 20));
         assertEquals(1, topics.insertTopicPost(topic.getId(), third.getId(), 10));
 
         LocalDateTime from = PROBE_BASE;
         LocalDateTime to = PROBE_BASE.plusDays(5);
-        assertEquals(3, posts.publishedPageCount(null, null, from, to),
+        assertEquals(3, posts.publishedPageCount(List.of(), null, from, to),
                 "时间窗内应当只有探针文章（草稿不算）");
-        assertEquals(0, posts.publishedPageCount(null, null, to, to.plusDays(1)),
+        assertEquals(0, posts.publishedPageCount(List.of(), null, to, to.plusDays(1)),
                 "publishedTo 是开区间，窗外的文章不该命中");
-        assertEquals(2, posts.publishedPageCount(tagSlug, null, from, to),
+        assertEquals(2, posts.publishedPageCount(List.of(tagSlug), null, from, to),
                 "tagSlug 过滤没生效（标签绑了两篇已发布文章，草稿那条不算）");
-        assertEquals(0, posts.publishedPageCount(unique("mapperxmltag-missing"), null, from, to));
-        assertEquals(2, posts.publishedPageCount(null, topicSlug, from, to), "topicSlug 过滤没生效");
-        assertEquals(0, posts.publishedPageCount(null, unique("mapperxmltopic-missing"), from, to));
+        assertEquals(0, posts.publishedPageCount(List.of(unique("mapperxmltag-missing")), null, from, to));
+        assertEquals(2, posts.publishedPageCount(List.of(), topicSlug, from, to), "topicSlug 过滤没生效");
+        assertEquals(0, posts.publishedPageCount(List.of(), unique("mapperxmltopic-missing"), from, to));
+        // 多标签是「命中任一」：tag 绑了 first/second，otherTag 绑了 third，合起来 3 篇
+        assertEquals(3, posts.publishedPageCount(List.of(tagSlug, otherTagSlug), null, from, to),
+                "多标签 IN 列表没生效（应当是两篇 + 一篇的并集）");
+        assertEquals(2, posts.publishedPageCount(List.of(tagSlug, tagSlug), null, from, to),
+                "重复标签不该改变结果集大小");
+        // 标签与专题是「且」的关系，两个条件都命中才返回
+        assertEquals(2, posts.publishedPageCount(List.of(tagSlug, otherTagSlug), topicSlug, from, to));
 
-        List<BlogPostEntity> page = posts.publishedPage(null, null, from, to, 0, 10);
+        List<BlogPostEntity> page = posts.publishedPage(List.of(), null, from, to, 0, 10);
         assertEquals(3, page.size());
         assertEquals(third.getId(), page.get(0).getId(), "公开列表按 published_at DESC, id DESC");
         assertEquals(first.getId(), page.get(2).getId());
-        assertEquals(1, posts.publishedPage(null, null, from, to, 0, 1).size(), "LIMIT 没生效");
-        assertEquals(second.getId(), posts.publishedPage(null, null, from, to, 1, 1).get(0).getId(),
+        assertEquals(1, posts.publishedPage(List.of(), null, from, to, 0, 1).size(), "LIMIT 没生效");
+        assertEquals(second.getId(), posts.publishedPage(List.of(), null, from, to, 1, 1).get(0).getId(),
                 "OFFSET 没生效");
         assertFalse(page.stream().anyMatch(item -> item.getId().equals(draft.getId())),
                 "草稿不应出现在公开列表里");
-        List<BlogPostEntity> tagged = posts.publishedPage(tagSlug, null, from, to, 0, 10);
+        List<BlogPostEntity> tagged = posts.publishedPage(List.of(tagSlug), null, from, to, 0, 10);
         assertEquals(2, tagged.size());
         assertEquals(second.getId(), tagged.get(0).getId(), "公开列表按 published_at DESC");
+        assertEquals(3, posts.publishedPage(List.of(tagSlug, otherTagSlug), null, from, to, 0, 10).size(),
+                "多标签公开列表与计数口径必须一致");
 
         assertEquals(2, posts.publishedTopicPageCount(topicSlug));
         List<BlogPostEntity> curated = posts.publishedTopicPage(topicSlug, 0, 10);

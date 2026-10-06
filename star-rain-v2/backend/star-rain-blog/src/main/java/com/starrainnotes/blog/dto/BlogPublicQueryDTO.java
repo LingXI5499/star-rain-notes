@@ -16,6 +16,12 @@ public class BlogPublicQueryDTO {
 
     // Tag slug 与 Topic slug，都走 slug 而不是 ID：公开 URL 不暴露内部主键
     private String tag;
+    /*
+     * 多标签筛选：逗号分隔，「命中任一」（`?tags=java,spring-boot`）。
+     * 与单标签参数 tag 是同一件事的两种写法：前端单标签写 tag（链接短、好分享），
+     * 多标签写 tags；两个都给时合并去重，不报错。
+     */
+    private String tags;
     private String topic;
 
     // 归档时间维度，依据 publishedAt 而不是 createdAt

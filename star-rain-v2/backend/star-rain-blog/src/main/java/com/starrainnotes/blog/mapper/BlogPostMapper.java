@@ -78,12 +78,17 @@ public interface BlogPostMapper {
     // 物理删除：WHERE 里带状态条件，公开内容无法被直接删除
     int deletePost(@Param("id") Long id);
 
-    long publishedPageCount(@Param("tagSlug") String tagSlug,
+    /*
+     * 公开列表 / 归档的分页查询。
+     * tagSlugs 是「命中任一」的集合（空集合表示不按标签筛选），
+     * 用集合而不是单个 slug：多标签筛选必须在 SQL 里完成，否则分页的 total 就是错的。
+     */
+    long publishedPageCount(@Param("tagSlugs") List<String> tagSlugs,
                             @Param("topicSlug") String topicSlug,
                             @Param("publishedFrom") LocalDateTime publishedFrom,
                             @Param("publishedTo") LocalDateTime publishedTo);
 
-    List<BlogPostEntity> publishedPage(@Param("tagSlug") String tagSlug,
+    List<BlogPostEntity> publishedPage(@Param("tagSlugs") List<String> tagSlugs,
                                       @Param("topicSlug") String topicSlug,
                                       @Param("publishedFrom") LocalDateTime publishedFrom,
                                       @Param("publishedTo") LocalDateTime publishedTo,

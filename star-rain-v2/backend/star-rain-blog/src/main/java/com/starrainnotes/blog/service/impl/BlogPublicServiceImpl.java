@@ -23,6 +23,7 @@ import com.starrainnotes.blog.vo.BlogTopicDetailVO;
 import com.starrainnotes.blog.vo.BlogTopicVO;
 import com.starrainnotes.common.result.PageResult;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,6 +41,9 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class BlogPublicServiceImpl implements BlogPublicService {
+
+    // 标签筛选的个数上限：再多就不是筛选，而是把 SQL 的 IN 列表撑大
+    private static final int TAG_FILTER_MAX = 20;
 
     private final BlogPostMapper postMapper;
     private final BlogTagMapper tagMapper;
@@ -60,9 +64,9 @@ public class BlogPublicServiceImpl implements BlogPublicService {
     @Transactional(readOnly = true)
     public PageResult<BlogPostPublicVO> listPosts(BlogPublicQueryDTO query) {
         BlogQueryRules.validatePage(query.getPage(), query.getPageSize());
-        String tagSlug = publicSlug(query.getTag(), "tag", BlogLimits.TAG_SLUG_MAX_LENGTH);
+        List<String> tagSlugs = tagSlugs(query);
         String topicSlug = publicSlug(query.getTopic(), "topic", BlogLimits.TOPIC_SLUG_MAX_LENGTH);
-        return page(query, tagSlug, topicSlug, null, null);
+        return page(query, tagSlugs, topicSlug, null, null);
     }
 
     @Override
@@ -86,7 +90,7 @@ public class BlogPublicServiceImpl implements BlogPublicService {
     @Transactional(readOnly = true)
     public PageResult<BlogPostPublicVO> archive(BlogPublicQueryDTO query) {
         BlogQueryRules.validatePage(query.getPage(), query.getPageSize());
-        String tagSlug = publicSlug(query.getTag(), "tag", BlogLimits.TAG_SLUG_MAX_LENGTH);
+        List<String> tagSlugs = tagSlugs(query);
         String topicSlug = publicSlug(query.getTopic(), "topic", BlogLimits.TOPIC_SLUG_MAX_LENGTH);
 
         Integer year = BlogQueryRules.archiveYear(query.getYear());
@@ -98,7 +102,7 @@ public class BlogPublicServiceImpl implements BlogPublicService {
             from = LocalDateTime.of(year, month == null ? 1 : month, day == null ? 1 : day, 0, 0);
             to = day != null ? from.plusDays(1) : month == null ? from.plusYears(1) : from.plusMonths(1);
         }
-        return page(query, tagSlug, topicSlug, from, to);
+        return page(query, tagSlugs, topicSlug, from, to);
     }
 
     @Override
@@ -164,12 +168,12 @@ public class BlogPublicServiceImpl implements BlogPublicService {
         return topicMapper.publishedTopics();
     }
 
-    private PageResult<BlogPostPublicVO> page(BlogPublicQueryDTO query, String tagSlug, String topicSlug,
+    private PageResult<BlogPostPublicVO> page(BlogPublicQueryDTO query, List<String> tagSlugs, String topicSlug,
                                               LocalDateTime publishedFrom, LocalDateTime publishedTo) {
-        long total = postMapper.publishedPageCount(tagSlug, topicSlug, publishedFrom, publishedTo);
+        long total = postMapper.publishedPageCount(tagSlugs, topicSlug, publishedFrom, publishedTo);
         List<BlogPostPublicVO> items = total == 0
                 ? List.of()
-                : assembler.toPublicVOs(postMapper.publishedPage(tagSlug, topicSlug, publishedFrom, publishedTo,
+                : assembler.toPublicVOs(postMapper.publishedPage(tagSlugs, topicSlug, publishedFrom, publishedTo,
                         BlogQueryRules.offset(query.getPage(), query.getPageSize()), query.getPageSize()));
         return PageResult.<BlogPostPublicVO>builder()
                 .items(items)
@@ -177,6 +181,36 @@ public class BlogPublicServiceImpl implements BlogPublicService {
                 .page(query.getPage())
                 .pageSize(query.getPageSize())
                 .build();
+    }
+
+    /*
+     * 标签筛选条件：单标签参数 tag 与多标签参数 tags（逗号分隔）合并去重。
+     *
+     * 两个都给时不报错，因为「分享出来的链接里 tag 与 tags 同时存在」是很自然的事，
+     * 为此报 400 只会让人困惑。数量上限 20：再多就不是筛选，而是把 SQL 的 IN 列表撑大。
+     */
+    private List<String> tagSlugs(BlogPublicQueryDTO query) {
+        List<String> slugs = new ArrayList<>(publicSlugs(query.getTag(), "tag", BlogLimits.TAG_SLUG_MAX_LENGTH));
+        for (String slug : publicSlugs(query.getTags(), "tags", BlogLimits.TAG_SLUG_MAX_LENGTH)) {
+            if (!slugs.contains(slug)) {
+                slugs.add(slug);
+            }
+        }
+        return slugs.size() > TAG_FILTER_MAX ? slugs.subList(0, TAG_FILTER_MAX) : slugs;
+    }
+
+    private List<String> publicSlugs(String raw, String fieldName, int maxLength) {
+        if (raw == null || raw.isBlank()) {
+            return List.of();
+        }
+        List<String> slugs = new ArrayList<>();
+        for (String part : raw.split(",")) {
+            String slug = publicSlug(part, fieldName, maxLength);
+            if (slug != null && !slugs.contains(slug)) {
+                slugs.add(slug);
+            }
+        }
+        return slugs;
     }
 
     /*
