@@ -17,15 +17,15 @@ import { dateOnly, summaryText, timelineGroups } from '../support/display'
  * 卡片链接按当前路径树生成：账号模式下必须落在 /useradmin/blog/posts/:slug，
  * 否则列表里点开一篇就掉回公开树、把账号外壳丢了。
  *
- * 「灵动」这一层（用户要求保留卡片结构、只加质感）分三处：
- *   1. 卡片左侧的封面块：有 coverUrl 用真图，没有就按 slug 稳定生成一张几何纹样
- *      （V1 `components/visual/EditorialMotif.vue` 的同一套五种纹样，这里按需内联，
- *      不再引入一层组件），首字压在纹样上，保证 11 篇都没有封面时卡片也不空；
- *   2. 悬停编排：卡片上浮 4px + 顶边主色细线展开 + 封面缓慢放大 + 标题转主色 + 箭头右移，
+ * 「灵动」这一层（用户要求保留卡片结构、只加质感）分两处：
+ *   1. 悬停编排：卡片上浮 4px + 顶边主色细线展开 + 标题转主色 + 箭头右移，
  *      圆点同时放大并加一圈光晕；
- *   3. 入场错峰沿用公开外壳的 `[data-stagger]`（见 styles/public-theme.css），
+ *   2. 入场错峰沿用公开外壳的 `[data-stagger]`（见 styles/public-theme.css），
  *      这里只负责把标记挂在列表根节点上。
  * 全部是观感层，不碰数据与路由。
+ *
+ * 卡片左侧曾试过一版几何纹样封面块，用户看过后明确「没必要」，已删除：
+ * 封面来源不稳定（现有文章都没有 coverUrl），生成纹样又只是装饰，反而压缩了正文宽度。
  */
 const { contentPath } = useViewMode()
 const props = defineProps({
@@ -41,24 +41,6 @@ function timeLabel(post) {
   if (post.updatedAt && post.updatedAt !== post.publishedAt) return `更新于 ${dateOnly(post.updatedAt)}`
   return `发布于 ${dateOnly(post.publishedAt)}`
 }
-
-/*
- * 纹样按「blog:slug」散列，同一篇文章每次渲染都落到同一张图上 ——
- * 用随机数会让每次筛选、翻页都换一张图，看起来像加载错了。
- */
-const MOTIFS = ['grid', 'network', 'constellation', 'editorial', 'matrix']
-
-function motifOf(post) {
-  let hash = 0
-  for (const char of `blog:${post?.slug || post?.title || ''}`) {
-    hash = (hash * 31 + char.charCodeAt(0)) >>> 0
-  }
-  return MOTIFS[hash % MOTIFS.length]
-}
-
-function initialOf(post) {
-  return (post?.title || '文').trim().slice(0, 1)
-}
 </script>
 
 <template>
@@ -73,65 +55,6 @@ function initialOf(post) {
       </div>
       <i class="timeline__node" aria-hidden="true" />
       <RouterLink :to="contentPath(`/blog/posts/${item.post.slug}`)" class="timeline-card public-interactive">
-        <!-- 封面块纯装饰：没有封面时用纹样 + 首字补视觉，因此整块对读屏隐藏 -->
-        <div class="timeline-card__visual" aria-hidden="true">
-          <img v-if="item.post.coverUrl" :src="item.post.coverUrl" alt="" loading="lazy" decoding="async" />
-          <template v-else>
-            <svg class="timeline-card__motif" viewBox="0 0 220 148" preserveAspectRatio="xMidYMid slice">
-              <template v-if="motifOf(item.post) === 'grid'">
-                <g stroke="color-mix(in srgb, var(--primary) 34%, transparent)" stroke-width="1">
-                  <line v-for="x in [26, 60, 94, 128, 162, 196]" :key="x" x1="0" y1="0" x2="0" y2="148" :style="{ transform: `translateX(${x}px)`, opacity: x % 68 === 0 ? 1 : 0.5 }" />
-                  <line v-for="y in [26, 74, 122]" :key="y" x1="0" y1="0" x2="220" y2="0" :style="{ transform: `translateY(${y}px)`, opacity: 0.35 }" />
-                </g>
-              </template>
-              <template v-else-if="motifOf(item.post) === 'network'">
-                <g fill="color-mix(in srgb, var(--accent) 70%, transparent)">
-                  <circle v-for="c in [[34, 40], [92, 88], [150, 44], [180, 106], [64, 122], [126, 22]]" :key="c.join('-')" :cx="c[0]" :cy="c[1]" r="4" />
-                </g>
-                <g stroke="color-mix(in srgb, var(--accent) 40%, transparent)" stroke-width="1" fill="none">
-                  <path d="M34 40 L92 88 M92 88 L150 44 M150 44 L126 22 M92 88 L64 122 M92 88 L180 106 M150 44 L180 106" />
-                </g>
-              </template>
-              <template v-else-if="motifOf(item.post) === 'constellation'">
-                <g fill="color-mix(in srgb, var(--accent) 62%, transparent)">
-                  <circle v-for="c in [[30, 42], [96, 28], [150, 72], [60, 114], [188, 100], [120, 146]]" :key="c.join('-')" :cx="c[0]" :cy="c[1]" r="3" />
-                </g>
-                <g stroke="color-mix(in srgb, var(--text-muted) 45%, transparent)" stroke-width="1" fill="none">
-                  <path d="M30 42 L96 28 L150 72 M96 28 L60 114 M150 72 L188 100 M60 114 L120 146" />
-                </g>
-              </template>
-              <template v-else-if="motifOf(item.post) === 'editorial'">
-                <g stroke="color-mix(in srgb, var(--primary) 32%, transparent)" stroke-width="2" stroke-linecap="round">
-                  <line x1="24" y1="36" x2="196" y2="36" />
-                  <line x1="24" y1="56" x2="150" y2="56" opacity="0.6" />
-                  <line x1="24" y1="76" x2="196" y2="76" opacity="0.35" />
-                  <line x1="24" y1="96" x2="120" y2="96" opacity="0.5" />
-                </g>
-              </template>
-              <template v-else>
-                <!--
-                  V1 的 matrix 纹样把 8 个字符摊在整幅横版封面上；这里封面是竖版窄条，
-                  「slice」裁切后只剩中间两三个大字，看着像渲染坏了。
-                  改成紧凑的等宽字符阵：裁剪任意一边都还是同一片纹理。
-                -->
-                <g font-family="var(--font-mono)" font-size="9" fill="color-mix(in srgb, var(--primary) 34%, transparent)">
-                  <text
-                    v-for="(text, index) in ['F', 'n', '{', '}', '0', '1', '<', '>', '=', '+', '*', '&', '|', '~', ';', '#']"
-                    :key="`${text}-${index}`"
-                    :x="26 + (index % 4) * 46"
-                    :y="30 + Math.floor(index / 4) * 30"
-                    :opacity="0.35 + (index % 3) * 0.22"
-                  >{{ text }}</text>
-                </g>
-                <g stroke="color-mix(in srgb, var(--primary) 16%, transparent)" stroke-width="1">
-                  <line v-for="y in [18, 48, 78, 108, 138]" :key="y" x1="0" y1="0" x2="220" y2="0" :style="{ transform: `translateY(${y}px)` }" />
-                </g>
-              </template>
-            </svg>
-            <b class="timeline-card__initial">{{ initialOf(item.post) }}</b>
-          </template>
-          <span class="timeline-card__kind">JOURNAL</span>
-        </div>
 
         <div class="timeline-card__content">
           <div class="timeline-card__tags">
@@ -228,7 +151,7 @@ function initialOf(post) {
 .timeline-card {
   position: relative;
   display: grid;
-  grid-template-columns: 200px minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   overflow: hidden;
   border: 1px solid var(--border);
   border-radius: 18px;
@@ -262,48 +185,6 @@ function initialOf(post) {
 }
 
 .timeline-card:hover::before { transform: scaleX(1); }
-
-.timeline-card__visual {
-  position: relative;
-  overflow: hidden;
-  border-right: 1px solid var(--border);
-  background:
-    radial-gradient(120% 90% at 18% 10%, color-mix(in srgb, var(--primary) 16%, transparent), transparent 58%),
-    linear-gradient(155deg, var(--bg-elevated, #faf9f4), var(--bg-subtle, #ebece6));
-}
-
-.timeline-card__visual img,
-.timeline-card__motif {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 520ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
-}
-
-.timeline-card:hover .timeline-card__visual img,
-.timeline-card:hover .timeline-card__motif { transform: scale(1.06); }
-
-.timeline-card__initial {
-  position: absolute;
-  right: 12px;
-  bottom: 2px;
-  color: color-mix(in srgb, var(--primary) 26%, transparent);
-  font-size: 62px;
-  font-weight: 800;
-  line-height: 1;
-  letter-spacing: -0.06em;
-}
-
-.timeline-card__kind {
-  position: absolute;
-  bottom: 12px;
-  left: 14px;
-  color: var(--text-muted);
-  font: 700 9px/1 var(--font-mono);
-  letter-spacing: 0.16em;
-}
 
 .timeline-card__content {
   display: flex;
@@ -417,16 +298,12 @@ function initialOf(post) {
 @media (prefers-reduced-motion: reduce) {
   .timeline-card,
   .timeline-card::before,
-  .timeline-card__visual img,
-  .timeline-card__motif,
   .timeline-card h2,
   .timeline-card footer i,
   .timeline__node { transition: none; }
 
   .timeline-card:hover { transform: none; }
   .timeline-card:hover::before { transform: none; }
-  .timeline-card:hover .timeline-card__visual img,
-  .timeline-card:hover .timeline-card__motif { transform: none; }
   .timeline__item:hover .timeline__node { transform: none; }
 }
 
@@ -461,9 +338,6 @@ function initialOf(post) {
     grid-column: 2;
     grid-template-columns: minmax(0, 1fr);
   }
-
-  /* 窄屏去掉装饰封面：一屏只放得下一张卡片，横向再切一半会挤没正文 */
-  .timeline-card__visual { display: none; }
 
   .timeline-card__content { padding: var(--space-4) var(--space-5); }
 
