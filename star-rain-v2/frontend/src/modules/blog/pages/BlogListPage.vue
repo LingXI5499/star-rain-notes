@@ -94,6 +94,17 @@ function queryOf() {
   }
 }
 
+/*
+ * 「这一份列表是按哪组筛选条件拉回来的」。
+ *
+ * 不能拿 state 与 URL 比较来判断要不要重新拉数据：点标签、点页码这些操作
+ * 都是**先改 state 再写 URL**，两边必然相等，于是判断成「没变化」而跳过加载 ——
+ * 表现就是地址栏和页码都变了、列表却还是旧的。改成和「上次加载时的快照」比较，
+ * 无论变化来自页内操作、地址栏还是前进后退，都恰好重新加载一次。
+ */
+const loadedKey = ref('')
+let loadToken = 0
+
 function syncFromQuery() {
   state.topic = typeof route.query.topic === 'string' ? route.query.topic : ''
   state.tag = typeof route.query.tag === 'string' ? route.query.tag : ''
@@ -102,6 +113,8 @@ function syncFromQuery() {
 }
 
 async function loadPosts() {
+  const token = ++loadToken
+  const key = listKey.value
   loading.value = true
   errorText.value = ''
   try {
@@ -114,14 +127,20 @@ async function loadPosts() {
     const result = state.month
       ? await listArchive({ ...params, year: state.month.year, month: state.month.month })
       : await listPublicPosts(params)
+    if (token !== loadToken) return
     state.items = result.items || []
     state.total = result.total || 0
   } catch (cause) {
+    if (token !== loadToken) return
     state.items = []
     state.total = 0
     errorText.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (token === loadToken) {
+      loading.value = false
+      // 失败也记下这一份快照：错误提示已经在页面上，不该因为「还差这份数据」无限重试
+      loadedKey.value = key
+    }
   }
 }
 
@@ -192,19 +211,10 @@ onMounted(() => {
   void loadPosts()
 })
 
-// URL 是筛选条件的唯一出口：手改地址栏、点顶部专栏栏、前进后退都会走到这里
-watch(() => [route.query.topic, route.query.tag, route.query.month, route.query.page], ([topic, tag, month, page]) => {
-  const nextTopic = typeof topic === 'string' ? topic : ''
-  const nextTag = typeof tag === 'string' ? tag : ''
-  const nextMonth = parseMonth(month)
-  const nextPage = Math.max(Number(page) || 1, 1)
-  const sameMonth = (nextMonth?.year === state.month?.year) && (nextMonth?.month === state.month?.month)
-  if (nextTopic === state.topic && nextTag === state.tag && sameMonth && nextPage === state.page) return
-  state.topic = nextTopic
-  state.tag = nextTag
-  state.month = nextMonth
-  state.page = nextPage
-  void loadPosts()
+// URL 是筛选条件的唯一出口：手改地址栏、点顶部专栏栏、点标签、翻页、前进后退都会走到这里
+watch(() => route.fullPath, () => {
+  syncFromQuery()
+  if (listKey.value !== loadedKey.value) void loadPosts()
 })
 
 const emptyText = computed(() => {
