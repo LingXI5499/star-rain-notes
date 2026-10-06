@@ -68,7 +68,13 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
-    <!-- 前台专题入口：停用专题不出现，没有已发布成员的专题也不出现 -->
+    <!--
+      前台专题入口（博客首页顶部的专栏导航条）。
+      只要有 ENABLED 就出现，**不再要求「至少有一篇已发布文章」**：
+      专栏是站点预先划定的内容骨架，新开的专栏在还没有文章时也必须显示，
+      否则导航条会随着发文进度时有时无。
+      顺序按 id 升序，即建栏先后 —— 表里没有策展列，用创建顺序最可预期。
+    -->
     <select id="publishedTopics" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
         SELECT t.id, t.slug, t.name, t.description, t.status, COUNT(p.id) AS member_count
         FROM sr_blog_topic t
@@ -76,13 +82,14 @@
         LEFT JOIN sr_blog_post p ON p.id = tp.post_id AND p.status = 'PUBLISHED'
         WHERE t.status = 'ENABLED'
         GROUP BY t.id, t.slug, t.name, t.description, t.status
-        HAVING COUNT(p.id) &gt; 0
-        ORDER BY t.updated_at DESC, t.id DESC
+        ORDER BY t.id
     </select>
 
     <!--
-      前台专题页的专题本身：可见性规则与 publishedTopics 完全一致
-      （ENABLED + 至少一篇已发布成员），member_count 复用同一个口径当文章数。
+      前台专题页的专题本身：可见性与 publishedTopics 一致（ENABLED 即可）。
+      空专栏不再 404，而是正常渲染一个「还没有文章」的空列表 ——
+      导航条里点得进来的入口却报 404 是说不通的。
+      停用（DISABLED）与不存在的 slug 仍然 404。
     -->
     <select id="publishedTopicBySlug" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
         SELECT t.id, t.slug, t.name, t.description, t.status, COUNT(p.id) AS member_count
@@ -91,7 +98,6 @@
         LEFT JOIN sr_blog_post p ON p.id = tp.post_id AND p.status = 'PUBLISHED'
         WHERE t.status = 'ENABLED' AND t.slug = #{slug}
         GROUP BY t.id, t.slug, t.name, t.description, t.status
-        HAVING COUNT(p.id) &gt; 0
     </select>
 
     <!-- 公开页面上的专题标记：停用专题不出现 -->

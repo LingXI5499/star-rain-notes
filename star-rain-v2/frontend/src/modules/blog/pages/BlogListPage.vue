@@ -1,11 +1,12 @@
 <script setup>
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { listArchive, listPublicPosts, listArchiveMonths, listPublicTags, listPublicTopics } from '../api/blogApi'
+import { listArchive, listPublicPosts, listArchiveMonths, listPublicTags, listPublicTopics, getPublicBlogStats } from '../api/blogApi'
 import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import BlogTimeline from '../components/BlogTimeline.vue'
 import BlogSidebar from '../components/BlogSidebar.vue'
+import BlogColumnNav from '../components/BlogColumnNav.vue'
 import BlogPagination from '../components/BlogPagination.vue'
 
 /*
@@ -40,8 +41,23 @@ const state = reactive({
 const tags = ref([])
 const topics = ref([])
 const months = ref([])
+const stats = ref(null)
 const loading = ref(false)
 const errorText = ref('')
+
+/*
+ * 顶部专栏导航：首页 + 各专题。
+ * 「首页」不是专题，它是本页的全部文章，所以在这里拼在最前面；
+ * 放不下的由 BlogColumnNav 收进「更多」（它按像素实测，不写死数量）。
+ */
+const columns = computed(() => [
+  { key: 'home', label: '首页', to: contentPath('/blog') },
+  ...topics.value.map((topic) => ({
+    key: topic.slug,
+    label: topic.name,
+    to: contentPath(`/blog/topics/${topic.slug}`),
+  })),
+])
 
 const totalPages = computed(() => Math.max(1, Math.ceil(state.total / pageSize)))
 const activeMonth = computed(() => (state.month ? `${state.month.year}-${String(state.month.month).padStart(2, '0')}` : ''))
@@ -96,17 +112,19 @@ async function loadPosts() {
 async function loadAside() {
   try {
     // 专题与标签是两件不同的事，侧栏也分两块展示，因此两个接口都要拿
-    const [tagList, topicList, monthList] = await Promise.all([
-      listPublicTags(), listPublicTopics(), listArchiveMonths(),
+    const [tagList, topicList, monthList, blogStats] = await Promise.all([
+      listPublicTags(), listPublicTopics(), listArchiveMonths(), getPublicBlogStats(),
     ])
     tags.value = tagList
     topics.value = topicList
     months.value = monthList
+    stats.value = blogStats
   } catch {
     // 侧栏拿不到不影响正文列表，静默降级为空侧栏（正文里也会有对应的错误提示）
     tags.value = []
     topics.value = []
     months.value = []
+    stats.value = null
   }
 }
 
@@ -178,6 +196,12 @@ const emptyText = computed(() => (state.tag || state.month ? '没有符合条件
 
     <div class="blog-layout">
       <main class="blog-main">
+        <!--
+          专栏栏放在**左栏内部**，与下方时间线同一列：
+          参照站的导航条右边缘与文章列表对齐，右侧栏从页面顶部就开始了。
+          放在 grid 外面横跨整行的话，右栏会被顶到导航条下面，上半屏右侧空一大块。
+        -->
+        <BlogColumnNav :columns="columns" active-key="home" />
         <div v-if="state.tag || activeMonth" class="blog-active">
           <span>当前视图</span>
           <button v-if="state.tag" type="button" @click="selectTag(state.tag)"># {{ state.tag }} ×</button>
@@ -201,9 +225,9 @@ const emptyText = computed(() => (state.tag || state.month ? '没有符合条件
       </main>
 
       <BlogSidebar
-        :topics="topics"
         :tags="tags"
         :months="months"
+        :stats="stats"
         :active-tag="state.tag"
         :active-month="activeMonth"
         @select-tag="selectTag"

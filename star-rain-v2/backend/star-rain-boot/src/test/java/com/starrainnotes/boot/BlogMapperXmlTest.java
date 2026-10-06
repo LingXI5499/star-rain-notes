@@ -639,14 +639,28 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(topics.publishedTopics().stream()
                         .filter(item -> disabled.getId().equals(item.getId())).findFirst().orElse(null),
                 "停用专题不应出现在前台入口");
-        assertNull(topics.publishedTopics().stream()
-                        .filter(item -> draftOnly.getId().equals(item.getId())).findFirst().orElse(null),
-                "只有草稿成员的专题不应出现在前台入口（HAVING COUNT(p.id) > 0 丢失）");
+        /*
+         * 0 篇已发布成员的 ENABLED 专题**必须**出现在前台入口。
+         * 这条断言原先要求它不出现（HAVING COUNT(p.id) > 0）；后来按要求改成
+         * 「专栏是站点预先划定的内容骨架，新开的专栏还没有文章时也要显示在顶部专栏栏」，
+         * 因此期望值反转 —— 这是需求变更，不是放宽断言。
+         */
+        BlogTopicVO draftOnlyTopic = topics.publishedTopics().stream()
+                .filter(item -> draftOnly.getId().equals(item.getId())).findFirst().orElse(null);
+        assertNotNull(draftOnlyTopic,
+                "ENABLED 的空专题也要出现在前台入口（博客顶部专栏栏靠它列出新专栏）");
+        assertEquals(0L, draftOnlyTopic.getMemberCount().longValue(),
+                "空专题的 memberCount 应当是 0，而不是把草稿算进来");
 
         BlogTopicVO detail = topics.publishedTopicBySlug(enabledSlug);
         assertNotNull(detail, "前台专题页应当能按 slug 打开");
         assertEquals(enabled.getId(), detail.getId());
         assertEquals(1L, detail.getMemberCount().longValue(), "别名 memberCount 丢失");
+        // 空专题不再 404：导航条里点得进来的入口必须能打开（内容为空由前端提示）
+        assertNotNull(topics.publishedTopicBySlug(draftOnly.getSlug()),
+                "ENABLED 的空专题页应当能打开，而不是 404");
+        assertNull(topics.publishedTopicBySlug(disabled.getSlug()),
+                "停用专题仍然不可见");
         assertNull(topics.publishedTopicBySlug(unique("mapperxmltopic-missing")));
 
         List<BlogTopicVO> publicTopics = topics.publicTopicsByPostId(published.getId());

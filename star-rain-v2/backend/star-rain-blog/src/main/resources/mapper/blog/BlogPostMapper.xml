@@ -233,6 +233,22 @@
         ORDER BY `day`
     </select>
 
+    <!--
+        博客首页右栏的写作统计。三项都只算已发布文章：
+          post_count       已发布篇数
+          word_count       CHAR_LENGTH 合计（中文按字、英文按字母，与前台单篇的字数口径一致）
+          first_published  最早一篇的发布时间，前端据此算「开始写作 / 已写 N 天」
+        一次查询取回三列，避免首页为三个数字打三次接口。
+        published_at IS NOT NULL 必须保留：撤回过的文章可能没有首次发布时间。
+    -->
+    <select id="publishedStats" resultType="com.starrainnotes.blog.vo.BlogPublicStatsVO">
+        SELECT COUNT(*) AS postCount,
+               COALESCE(SUM(CHAR_LENGTH(body_markdown)), 0) AS wordCount,
+               MIN(published_at) AS firstPublishedAt
+        FROM sr_blog_post
+        WHERE status = 'PUBLISHED' AND published_at IS NOT NULL
+    </select>
+
     <select id="latestPublished" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postColumns"/> FROM sr_blog_post p
         WHERE p.status = 'PUBLISHED'

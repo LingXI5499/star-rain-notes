@@ -17,6 +17,7 @@ import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
 import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
+import com.starrainnotes.blog.vo.BlogPublicStatsVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
 import com.starrainnotes.blog.vo.BlogTopicDetailVO;
 import com.starrainnotes.blog.vo.BlogTopicVO;
@@ -130,6 +131,13 @@ public class BlogPublicServiceImpl implements BlogPublicService {
     @Transactional(readOnly = true)
     public List<BlogArchiveMonthVO> archiveMonths() {
         return postMapper.archiveMonths();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public BlogPublicStatsVO stats() {
+        // 只有已发布文章参与统计；published_at 为空的行（撤回后未再发布）不计入最早时间
+        return postMapper.publishedStats();
     }
 
     @Override

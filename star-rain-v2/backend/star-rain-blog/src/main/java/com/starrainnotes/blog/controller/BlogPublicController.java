@@ -7,6 +7,7 @@ import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
 import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
+import com.starrainnotes.blog.vo.BlogPublicStatsVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
 import com.starrainnotes.blog.vo.BlogTopicDetailVO;
 import com.starrainnotes.blog.vo.BlogTopicVO;
@@ -60,6 +61,12 @@ public class BlogPublicController {
     @GetMapping("/archive/months")
     public ApiResponse<List<BlogArchiveMonthVO>> archiveMonths() {
         return ApiResponse.ok(publicService.archiveMonths());
+    }
+
+    // 博客首页右栏的写作统计：篇数、正文字数合计、开始写作的时间
+    @GetMapping("/stats")
+    public ApiResponse<BlogPublicStatsVO> stats() {
+        return ApiResponse.ok(publicService.stats());
     }
 
     @GetMapping("/archive/days")

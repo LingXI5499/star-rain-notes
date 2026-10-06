@@ -4,6 +4,7 @@ import com.starrainnotes.blog.entity.BlogPostEntity;
 import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
 import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostNeighborVO;
+import com.starrainnotes.blog.vo.BlogPublicStatsVO;
 import java.time.LocalDateTime;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
@@ -101,6 +102,9 @@ public interface BlogPostMapper {
 
     // 归档月份桶：给前台时间归档的侧栏，依据 published_at 分组
     List<BlogArchiveMonthVO> archiveMonths();
+
+    // 博客首页右栏的写作统计：已发布篇数、正文字符数合计、最早发布时间
+    BlogPublicStatsVO publishedStats();
 
     List<BlogArchiveDayVO> archiveDays(@Param("publishedFrom") LocalDateTime publishedFrom,
                                        @Param("publishedTo") LocalDateTime publishedTo);

@@ -5,6 +5,7 @@ import com.starrainnotes.blog.vo.BlogArchiveMonthVO;
 import com.starrainnotes.blog.vo.BlogArchiveDayVO;
 import com.starrainnotes.blog.vo.BlogPostPublicDetailVO;
 import com.starrainnotes.blog.vo.BlogPostPublicVO;
+import com.starrainnotes.blog.vo.BlogPublicStatsVO;
 import com.starrainnotes.blog.vo.BlogTagVO;
 import com.starrainnotes.blog.vo.BlogTopicDetailVO;
 import com.starrainnotes.blog.vo.BlogTopicVO;
@@ -36,6 +37,9 @@ public interface BlogPublicService {
 
     // 归档侧栏的月份桶
     List<BlogArchiveMonthVO> archiveMonths();
+
+    // 博客首页右栏的写作统计：已发布篇数、正文字符数合计、最早发布时间
+    BlogPublicStatsVO stats();
 
     List<BlogArchiveDayVO> archiveDays(Integer year, Integer month);
 
