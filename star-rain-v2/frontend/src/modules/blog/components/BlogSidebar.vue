@@ -1,26 +1,29 @@
 <script setup>
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
+import BlogTagOverlay from './BlogTagOverlay.vue'
 
 /*
  * 博客列表 / 归档页的右侧固定栏。
  *
  * 三块，自上而下：
- *   TAGS    标签 —— 点一下按标签筛选当前列表
+ *   TAGS    标签 —— 一条可以直接下滑的标签导航条；「全部标签」开悬浮卡片
  *   ARCHIVE 归档 —— 按年月筛选
  *   STATS   写作统计 —— 篇数 / 总字数 / 开始写作（含「已写 N 天」）
  *
  * 专栏（专题）**不在这里**：它已经提到页面顶部的专栏导航条（BlogColumnNav），
  * 同一份列表在右侧再列一遍只会让人分不清「专栏」和「标签」。
  *
- * 需求是「不展示所有标签与归档，正好占满，给一个更多按钮」，因此：
- *   - 整条侧栏 sticky 且高度封顶在视口内，滚动页面时三块一直可见；
- *   - 标签块是弹性块（flex:1），按**实测**能放几行就显示几个，其余走「更多」→ /blog/tags；
- *     不写死数量是因为标签长短差别很大，写死会一会儿半屏空、一会儿被切一半；
- *   - 归档块最多显示最近 6 个月，其余走「更多」→ /blog/archive。
+ * 标签块按用户要求改过两次形态：
+ *   1. 最早是「实测能放几行就显示几个 + 更多 → /blog/tags」——
+ *      需要一套探针测量，且点「更多」会离开当前页；
+ *   2. 现在改成**固定高度、可滚动**的标签导航条：全部标签都在里面，往下滑就能看到，
+ *      不再裁切、不再跳页；想看完整概览或搜索时，点「全部标签」在**当前页**开悬浮卡片
+ *      （BlogTagOverlay），选中的标签原地筛选下方列表。
+ *   去掉探针后也顺手消掉了「探针撑出横向滚动」这个隐患（见 git 历史里的 3797px 事故）。
  *
- * 数据都来自公开接口且只统计已发布文章，因此侧栏数字与点开后的列表一致。
+ * 归档块仍是最多 6 个月 + 更多 → /blog/archive（用户没有对它提要求，保持原样）。
  */
 const { contentPath } = useViewMode()
 const props = defineProps({
@@ -35,14 +38,8 @@ const props = defineProps({
 const emit = defineEmits(['select-tag', 'select-month'])
 
 const MONTH_LIMIT = 6
-const CHIP_GAP = 7
 
-const tagBox = ref(null)
-const tagProbe = ref(null)
-const tagLimit = ref(999)
-
-const visibleTags = computed(() => props.tags.slice(0, tagLimit.value))
-const hiddenTagCount = computed(() => Math.max(0, props.tags.length - visibleTags.value.length))
+const tagsOpen = ref(false)
 const visibleMonths = computed(() => props.months.slice(0, MONTH_LIMIT))
 const hiddenMonthCount = computed(() => Math.max(0, props.months.length - visibleMonths.value.length))
 
@@ -74,59 +71,14 @@ const wordCountText = computed(() => {
   return String(total)
 })
 
-/*
- * 标签块按实测高度裁剪：先量第一行能放几个、再一行一行加，直到超出容器高度。
- * 容器高度由侧栏的 max-height 与其它两块共同决定（标签块是 flex:1），所以要在布局完成后量。
- */
-async function measureTags() {
-  await nextTick()
-  const box = tagBox.value
-  const probe = tagProbe.value
-  if (!box || !probe || !props.tags.length) {
-    tagLimit.value = props.tags.length || 999
-    return
-  }
-  const availableHeight = box.clientHeight
-  const availableWidth = box.clientWidth
-  const chips = [...probe.children]
-  if (!availableHeight || !availableWidth || !chips.length) return
-
-  const chipHeight = chips[0].getBoundingClientRect().height || 24
-  const rowHeight = chipHeight + CHIP_GAP
-  const maxRows = Math.max(1, Math.floor((availableHeight + CHIP_GAP) / rowHeight))
-
-  let rows = 1
-  let usedWidth = 0
-  let limit = 0
-  for (const chip of chips) {
-    const width = chip.getBoundingClientRect().width
-    const next = usedWidth + width + (usedWidth > 0 ? CHIP_GAP : 0)
-    if (next > availableWidth) {
-      rows += 1
-      usedWidth = width
-    } else {
-      usedWidth = next
-    }
-    if (rows > maxRows) break
-    limit += 1
-  }
-  // 至少留 6 个，否则窄屏上「更多」比标签还多
-  tagLimit.value = Math.max(6, Math.min(limit, props.tags.length))
-}
-
-let observer = null
-onMounted(async () => {
-  await measureTags()
-  if (typeof ResizeObserver !== 'undefined' && tagBox.value) {
-    observer = new ResizeObserver(() => { void measureTags() })
-    observer.observe(tagBox.value)
-  }
-})
-onBeforeUnmount(() => observer?.disconnect())
-watch(() => props.tags.map((tag) => tag.slug).join('|'), () => { void measureTags() })
-
 function toggleTag(slug) {
   emit('select-tag', props.activeTag === slug ? '' : slug)
+}
+
+// 悬浮卡片里选了标签：先原地筛选，再把卡片收起来，否则结果被卡片挡着
+function selectTagFromOverlay(slug) {
+  tagsOpen.value = false
+  emit('select-tag', slug)
 }
 
 function toggleMonth(item) {
@@ -142,26 +94,23 @@ function toggleMonth(item) {
         <span>TAGS</span>
         <small>{{ tags.length }} 个标签</small>
       </div>
+      <nav class="blog-panel__tag-nav" aria-label="博客标签导航">
+        <button type="button" :class="{ active: !activeTag }" @click="emit('select-tag', '')">全部</button>
+        <button type="button" class="blog-panel__tag-all" @click="tagsOpen = true">全部标签</button>
+      </nav>
       <p v-if="!tags.length" class="blog-panel__empty">还没有可用标签。</p>
-      <div v-else ref="tagBox" class="blog-panel__tags">
+      <!-- 可直接下滑的标签导航条：全部标签都在里面，高度固定，往下滑即可 -->
+      <div v-else class="blog-panel__tag-list">
         <button
-          v-for="tag in visibleTags"
+          v-for="tag in tags"
           :key="tag.id || tag.slug"
           type="button"
           :class="{ active: activeTag === tag.slug }"
           @click="toggleTag(tag.slug)"
         >
-          <span>{{ tag.name }}</span>
+          <span class="blog-panel__tag-name"># {{ tag.name }}</span>
           <em>{{ tag.postCount }}</em>
         </button>
-      </div>
-      <RouterLink v-if="hiddenTagCount" class="blog-panel__more" :to="contentPath('/blog/tags')">
-        更多 <span aria-hidden="true">»</span>（还有 {{ hiddenTagCount }} 个）
-      </RouterLink>
-      <div class="blog-panel__probe-clip" aria-hidden="true">
-        <div ref="tagProbe" class="blog-panel__probe">
-          <span v-for="tag in tags" :key="tag.id || tag.slug">{{ tag.name }}<em>{{ tag.postCount }}</em></span>
-        </div>
       </div>
     </section>
 
@@ -211,10 +160,35 @@ function toggleMonth(item) {
         </div>
       </dl>
     </section>
+
+    <BlogTagOverlay
+      :open="tagsOpen"
+      :tags="tags"
+      :active-tag="activeTag"
+      @close="tagsOpen = false"
+      @select-tag="selectTagFromOverlay"
+    />
   </aside>
 </template>
 
 <style scoped>
+.blog-panel__tag-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+
+.blog-panel__tag-nav button {
+  padding: 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text-secondary);
+  background: var(--bg-surface);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.blog-panel__tag-nav button.active,
+.blog-panel__tag-nav button:hover { border-color: var(--primary); color: var(--primary); }
+
+.blog-panel__tag-all::after { margin-left: 4px; content: '↗'; font-size: 10px; }
+
 .blog-rail {
   position: sticky;
   top: calc(var(--header-height) + var(--space-4));
@@ -270,35 +244,63 @@ function toggleMonth(item) {
   line-height: 1.7;
 }
 
-.blog-panel__tags {
+/*
+ * 可滚动的标签导航条。
+ * 高度固定而不是跟着内容长：侧栏整体还有 max-height，标签块一长就会把归档与统计顶出视口。
+ * 滚动条走细样式（与教程目录、文章目录一致），避免 Windows 上那条粗箭头滚动条。
+ */
+.blog-panel__tag-list {
   display: flex;
-  flex-wrap: wrap;
-  align-content: flex-start;
-  gap: 7px;
-  /*
-   * 标签块的固定高度上限 —— 这就是「不展示所有标签，正好占满」的实现：
-   * 高度定死，脚本按实测把放不下的标签换成「更多」。定死而不是用 flex 分配，
-   * 是为了让测量结果稳定（flex 分配的高度会随其它块的内容变化而变，标签数量就会跳来跳去）。
-   */
-  max-height: 264px;
-  min-height: 0;
-  overflow: hidden;
+  /* 约 9 行可见：标签是这个侧栏的主要导航，太少一行行滑不方便 */
+  max-height: 296px;
+  flex-direction: column;
+  gap: 2px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
-.blog-panel__tags button {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px 6px 10px;
-  border: 1px solid var(--border);
+.blog-panel__tag-list::-webkit-scrollbar { width: 8px; }
+
+.blog-panel__tag-list::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
   border-radius: 999px;
+  background: var(--border-strong);
+  background-clip: content-box;
+}
+
+.blog-panel__tag-list::-webkit-scrollbar-thumb:hover { background-color: var(--text-muted); }
+
+.blog-panel__tag-list::-webkit-scrollbar-track { background: transparent; }
+
+.blog-panel__tag-list::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+
+.blog-panel__tag-list button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  border-radius: 9px;
   color: var(--text-secondary);
   background: transparent;
   cursor: pointer;
-  font-size: 11px;
+  font-size: 12px;
+  text-align: left;
+  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
 }
 
-.blog-panel__tags em,
+.blog-panel__tag-name {
+  overflow: hidden;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.blog-panel__tag-list em,
 .blog-panel__months em {
   color: var(--text-muted);
   font-size: 9px;
@@ -306,11 +308,11 @@ function toggleMonth(item) {
   white-space: nowrap;
 }
 
-.blog-panel__tags button:hover,
-.blog-panel__tags button.active,
+.blog-panel__tag-list button:hover,
+.blog-panel__tag-list button.active,
 .blog-panel__months button:hover,
 .blog-panel__months button.active {
-  border-color: var(--primary);
+  border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 8%, transparent);
 }
@@ -404,38 +406,6 @@ function toggleMonth(item) {
   font-size: 13px !important;
 }
 
-/*
- * 量标签宽度用：0×0 裁剪盒 + 不换行的 max-content 内容。
- * 裁剪盒是必需的：窄屏下侧栏变成 position:static，绝对定位的探针会逃出侧栏的 overflow:hidden，
- * 把整个文档撑出横向滚动（50 个标签实测 3760px）。
- */
-.blog-panel__probe-clip {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 0;
-  height: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.blog-panel__probe {
-  display: flex;
-  gap: 7px;
-  width: max-content;
-  visibility: hidden;
-}
-
-.blog-panel__probe > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 8px 6px 10px;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  font-size: 11px;
-}
-
 /* 窄屏：侧栏不再固定，改成两列平铺，避免整条栏占满手机屏 */
 @media (max-width: 960px) {
   .blog-rail {
@@ -446,7 +416,7 @@ function toggleMonth(item) {
   }
 
   .blog-panel--stats { grid-column: 1 / -1; }
-  .blog-panel__tags { max-height: 160px; }
+  .blog-panel__tag-list { max-height: 180px; }
 }
 
 @media (max-width: 680px) {
