@@ -62,6 +62,21 @@
     SELECT COUNT(*) FROM sr_tutorial WHERE category_id = #{categoryId}
   </select>
 
+  <!-- 概览只取四个计数，避免读取所有教程及逐条章节统计。 -->
+  <select id="dashboardStats" resultType="com.starrainnotes.tutorial.content.dto.TutorialDashboardStatsDTO">
+    SELECT
+      (SELECT COUNT(*) FROM sr_tutorial) AS total,
+      (SELECT COUNT(*) FROM sr_tutorial WHERE publication_status = 'NEVER_PUBLISHED') AS drafts,
+      (SELECT COUNT(*) FROM sr_tutorial_chapter) AS chapters,
+      (SELECT COUNT(*) FROM sr_tutorial_chapter c JOIN sr_tutorial t ON t.id = c.tutorial_id
+        WHERE t.publication_status = 'NEVER_PUBLISHED') AS draft_chapters
+  </select>
+
+  <select id="dashboardRecent" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    SELECT id, title, publication_status, editing_status, updated_at
+    FROM sr_tutorial ORDER BY updated_at DESC, id DESC LIMIT 8
+  </select>
+
   <!--
     整行保存工作区改动（发布、撤回、恢复、提交审核、改名都走这一条）。
     withdrawn_at 必须无条件出现在 SET 里：null 表示「清除撤回时间」，这是原先

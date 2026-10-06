@@ -5,11 +5,10 @@ import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.media.entity.MediaAssetEntity;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
 import com.starrainnotes.media.service.MediaUploadService;
-import com.starrainnotes.media.service.MediaUploadLimiter;
+import com.starrainnotes.media.security.MediaUploadLimiter;
 import com.starrainnotes.media.service.MediaUploadValidator;
 import com.starrainnotes.media.storage.MediaStorage;
-import com.starrainnotes.media.storage.StorageWriteCommand;
-import com.starrainnotes.media.storage.StoredObject;
+import com.starrainnotes.media.dto.MediaStorageResultDTO;
 import com.starrainnotes.media.utils.FileSignatures;
 import com.starrainnotes.media.enumeration.MediaAccessLevel;
 import com.starrainnotes.media.enumeration.MediaStatus;
@@ -126,8 +125,8 @@ public class MediaUploadServiceImpl implements MediaUploadService {
             throw new MediaContentTypeMismatchException();
         }
         int[] dimensions = verifyContent(metadata, content);
-        StoredObject stored = storage.store(
-                new StorageWriteCommand(new ByteArrayInputStream(content), metadata.getFileExtension()));
+        MediaStorageResultDTO stored = storage.store(
+                new ByteArrayInputStream(content), metadata.getFileExtension());
         return new StoredFile(stored, sha256Hex(content),
                 dimensions == null ? null : dimensions[0],
                 dimensions == null ? null : dimensions[1]);
@@ -142,8 +141,7 @@ public class MediaUploadServiceImpl implements MediaUploadService {
 
             try (DigestInputStream digesting = new DigestInputStream(
                     new SequenceInputStream(new ByteArrayInputStream(head), source), digest)) {
-                StoredObject stored = storage.store(
-                        new StorageWriteCommand(digesting, metadata.getFileExtension()));
+                MediaStorageResultDTO stored = storage.store(digesting, metadata.getFileExtension());
                 return new StoredFile(stored, HexFormat.of().formatHex(digest.digest()), null, null);
             }
         } catch (IOException ex) {
@@ -190,7 +188,7 @@ public class MediaUploadServiceImpl implements MediaUploadService {
     @AllArgsConstructor
     private static class StoredFile {
 
-        private StoredObject stored;
+        private MediaStorageResultDTO stored;
         private String sha256;
         private Integer width;
         private Integer height;

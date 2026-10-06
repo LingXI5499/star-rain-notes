@@ -8,8 +8,6 @@ import java.util.List;
 public interface TutorialPublicationService {
     TutorialAdminVO publish(Long tutorialId);
     TutorialAdminVO withdraw(Long tutorialId);
-    TutorialAdminVO restore(Long tutorialId);
-    TutorialAdminVO submitReview(Long tutorialId);
     JsonNode previewTutorial(Long tutorialId);
     JsonNode previewChapter(Long chapterId);
     List<JsonNode> publicCategories();

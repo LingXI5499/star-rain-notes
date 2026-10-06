@@ -48,6 +48,8 @@ import org.junit.jupiter.api.Test;
 class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
 
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
+    // 探针专题的展示序号：单调递增即可，断言不依赖具体值
+    private static final AtomicLong TOPIC_ORDER = new AtomicLong(1000L);
     private static final LocalDateTime PROBE_BASE = LocalDateTime.of(2099, 1, 1, 0, 0);
 
     private SqlSession session;
@@ -754,6 +756,13 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         topic.setName(name);
         topic.setDescription("XML 验证专题说明");
         topic.setStatus(status);
+        /*
+         * V2_025 给 sr_blog_topic 加了 NOT NULL 的 sort_order / featured（默认值 0），
+         * 而 insertTopic 现在显式写入这两列 —— 不设置就会以「Column 'sort_order' cannot be null」失败。
+         * 探针专题用一个单调递增的序号，插入顺序即展示顺序，断言里不用依赖具体值。
+         */
+        topic.setSortOrder((int) TOPIC_ORDER.getAndIncrement());
+        topic.setFeatured(false);
         return topic;
     }
 

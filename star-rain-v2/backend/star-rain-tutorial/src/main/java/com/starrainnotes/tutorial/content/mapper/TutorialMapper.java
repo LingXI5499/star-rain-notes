@@ -1,6 +1,7 @@
 package com.starrainnotes.tutorial.content.mapper;
 
 import com.starrainnotes.tutorial.content.entity.TutorialEntity;
+import com.starrainnotes.tutorial.content.dto.TutorialDashboardStatsDTO;
 import java.util.List;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -37,6 +38,10 @@ public interface TutorialMapper {
     long countBySlug(@Param("slug") String slug);
 
     long countByCategoryId(@Param("categoryId") Long categoryId);
+
+    TutorialDashboardStatsDTO dashboardStats();
+
+    List<TutorialEntity> dashboardRecent();
 
     /* 整行保存工作区改动；withdrawn_at 必须写进 SET，null 也要覆盖（旧 @TableField(ALWAYS) 语义）。 */
     int update(TutorialEntity tutorial);

@@ -1,8 +1,8 @@
 package com.starrainnotes.analytics;
 
-import com.starrainnotes.analytics.service.AnalyticsAggregateService;
+import com.starrainnotes.analytics.service.impl.AnalyticsAggregateServiceImpl;
 import com.starrainnotes.analytics.api.ContentViewEvent;
-import com.starrainnotes.analytics.service.ReferrerClassifier;
+import com.starrainnotes.analytics.utils.ReferrerClassifier;
 import com.starrainnotes.analytics.entity.AnalyticsEventEntity;
 import com.starrainnotes.analytics.exception.AnalyticsDateRangeInvalidException;
 import com.starrainnotes.analytics.exception.AnalyticsRouteInvalidException;
@@ -55,7 +55,7 @@ class AnalyticsServiceTest {
 
     @Test
     void aggregateReplacesRatherThanIncrementsDay() {
-        AnalyticsAggregateService aggregate = new AnalyticsAggregateService(mapper);
+        AnalyticsAggregateServiceImpl aggregate = new AnalyticsAggregateServiceImpl(mapper);
         LocalDate yesterday = LocalDate.now(java.time.ZoneOffset.UTC).minusDays(1);
         aggregate.aggregateDay(yesterday);
         aggregate.aggregateDay(yesterday);

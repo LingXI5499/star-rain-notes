@@ -28,7 +28,7 @@
 
   <select id="listActiveByGroupId" resultType="com.starrainnotes.tutorial.content.entity.TutorialChapterEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial_chapter
-    WHERE group_id = #{groupId} AND status = 'ACTIVE'
+    WHERE group_id = #{groupId} AND status = 'PUBLISHED'
     ORDER BY sort_order, id
   </select>
 
@@ -37,7 +37,7 @@
   </select>
 
   <select id="countActiveByGroupId" resultType="long">
-    SELECT COUNT(*) FROM sr_tutorial_chapter WHERE group_id = #{groupId} AND status = 'ACTIVE'
+    SELECT COUNT(*) FROM sr_tutorial_chapter WHERE group_id = #{groupId} AND status = 'PUBLISHED'
   </select>
 
   <select id="countByTutorialIdAndSlug" resultType="long">
@@ -74,4 +74,5 @@
     SET group_id = #{groupId}, sort_order = #{sortOrder}, updated_at = #{updatedAt}
     WHERE id = #{id}
   </update>
+  <delete id="deleteById">DELETE FROM sr_tutorial_chapter WHERE id = #{id}</delete>
 </mapper>

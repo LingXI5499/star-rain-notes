@@ -17,10 +17,9 @@ import com.starrainnotes.media.entity.MediaAssetEntity;
 import com.starrainnotes.media.enumeration.MediaAccessLevel;
 import com.starrainnotes.media.enumeration.MediaStatus;
 import com.starrainnotes.media.mapper.MediaAssetMapper;
-import com.starrainnotes.media.service.MediaUploadLimiter;
+import com.starrainnotes.media.security.MediaUploadLimiter;
 import com.starrainnotes.media.storage.MediaStorage;
-import com.starrainnotes.media.storage.StorageWriteCommand;
-import com.starrainnotes.media.storage.StoredObject;
+import com.starrainnotes.media.dto.MediaStorageResultDTO;
 import com.starrainnotes.media.vo.MediaAssetVO;
 import java.io.IOException;
 import java.io.InputStream;
@@ -69,8 +68,8 @@ class MediaUploadServiceImplTest {
     @DisplayName("图片上传：解析宽高入库，上传人取自认证上下文")
     void uploadsImageWithDimensions() throws IOException {
         when(currentActorApi.current()).thenReturn(actor());
-        when(storage.store(any(StorageWriteCommand.class)))
-                .thenReturn(new StoredObject("LOCAL", "2026/10/pic.png", 100L));
+        when(storage.store(any(InputStream.class), any()))
+                .thenReturn(new MediaStorageResultDTO("LOCAL", "2026/10/pic.png", 100L));
         AtomicReference<MediaAssetEntity> inserted = new AtomicReference<>();
         doAnswer(invocation -> {
             MediaAssetEntity entity = invocation.getArgument(0);
@@ -101,14 +100,13 @@ class MediaUploadServiceImplTest {
     void uploadsVideoByStreaming() throws IOException {
         when(currentActorApi.current()).thenReturn(actor());
         byte[] video = TestMediaFiles.mp4();
-        when(storage.store(any(StorageWriteCommand.class)))
+        when(storage.store(any(InputStream.class), any()))
                 .thenAnswer(invocation -> {
                     // 模拟存储实现把流读完，从而触发摘要计算
-                    StorageWriteCommand command = invocation.getArgument(0);
-                    try (InputStream in = command.getContent()) {
+                    try (InputStream in = invocation.getArgument(0)) {
                         assertThat(in.readAllBytes()).isEqualTo(video);
                     }
-                    return new StoredObject("LOCAL", "2026/10/clip.mp4", (long) video.length);
+                    return new MediaStorageResultDTO("LOCAL", "2026/10/clip.mp4", (long) video.length);
                 });
         AtomicReference<MediaAssetEntity> inserted = new AtomicReference<>();
         doAnswer(invocation -> {
@@ -133,8 +131,8 @@ class MediaUploadServiceImplTest {
     @DisplayName("未指定访问级别时默认 PUBLIC：媒体服务于公开内容，默认不公开会让前台图片 403")
     void defaultsToPublic() throws IOException {
         when(currentActorApi.current()).thenReturn(actor());
-        when(storage.store(any(StorageWriteCommand.class)))
-                .thenReturn(new StoredObject("LOCAL", "2026/10/pic.png", 10L));
+        when(storage.store(any(InputStream.class), any()))
+                .thenReturn(new MediaStorageResultDTO("LOCAL", "2026/10/pic.png", 10L));
         AtomicReference<MediaAssetEntity> inserted = new AtomicReference<>();
         doAnswer(invocation -> {
             MediaAssetEntity entity = invocation.getArgument(0);
@@ -153,8 +151,8 @@ class MediaUploadServiceImplTest {
     @DisplayName("写库失败时补偿删除已落盘文件，并向上抛出原始错误")
     void compensatesFileWhenDatabaseWriteFails() throws IOException {
         when(currentActorApi.current()).thenReturn(actor());
-        when(storage.store(any(StorageWriteCommand.class)))
-                .thenReturn(new StoredObject("LOCAL", "2026/10/orphan.png", 10L));
+        when(storage.store(any(InputStream.class), any()))
+                .thenReturn(new MediaStorageResultDTO("LOCAL", "2026/10/orphan.png", 10L));
         doThrow(new ApiException("MEDIA_STORAGE_WRITE_FAILED", "数据库错误", 500))
                 .when(assetMapper).insertAsset(any(MediaAssetEntity.class));
 
@@ -176,7 +174,7 @@ class MediaUploadServiceImplTest {
                 MediaAccessLevel.PUBLIC))
                 .isInstanceOf(ApiException.class);
 
-        verify(storage, never()).store(any());
+        verify(storage, never()).store(any(), any());
     }
 
     @Test
@@ -190,7 +188,7 @@ class MediaUploadServiceImplTest {
                 .extracting(ex -> ((ApiException) ex).getCode())
                 .isEqualTo("MEDIA_CONTENT_TYPE_MISMATCH");
 
-        verify(storage, never()).store(any());
+        verify(storage, never()).store(any(), any());
     }
 
     @Test
@@ -204,7 +202,7 @@ class MediaUploadServiceImplTest {
                 .extracting(ex -> ((ApiException) ex).getCode())
                 .isEqualTo("MEDIA_CONTENT_TYPE_MISMATCH");
 
-        verify(storage, never()).store(any());
+        verify(storage, never()).store(any(), any());
     }
 
     private static CurrentActorApi.CurrentActor actor() {

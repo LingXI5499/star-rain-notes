@@ -30,16 +30,15 @@ public interface TutorialContentService {
     TutorialCurriculumVO curriculum(Long tutorialId);
     TutorialGroupVO createGroup(Long tutorialId, String title);
     TutorialGroupVO updateGroup(Long groupId, String title);
-    void archiveGroup(Long groupId);
-    void restoreGroup(Long groupId);
+    void deleteGroup(Long groupId);
     void reorderGroups(Long tutorialId, List<Long> ids);
 
     TutorialChapterVO chapter(Long chapterId);
     TutorialChapterVO createChapter(Long groupId, ChapterCreateDTO request);
     TutorialChapterVO updateChapter(Long chapterId, ChapterUpdateDTO request);
     TutorialChapterVO updateChapterBody(Long chapterId, ChapterBodyDTO request);
-    void archiveChapter(Long chapterId);
-    void restoreChapter(Long chapterId);
-    void moveChapter(Long chapterId, Long groupId);
+    void deleteChapter(Long chapterId);
+    void publishChapter(Long chapterId);
+    void withdrawChapter(Long chapterId);
     void reorderChapters(Long groupId, List<Long> ids);
 }

@@ -12,4 +12,5 @@ public class BlogTopicDTO {
     private String slug;
     private String name;
     private String description;
+    private Boolean featured;
 }

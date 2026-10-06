@@ -12,5 +12,5 @@ public class RobotsController {
     private final RobotsService service;
 
     @GetMapping(value = "/robots.txt", produces = MediaType.TEXT_PLAIN_VALUE)
-    public String robots() { return service.text(); }
+    public String robots() { return service.robotsTxt(); }
 }

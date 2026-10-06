@@ -30,6 +30,14 @@ public class TutorialMediaReferences {
         attach(REVISION, revisionId, assetIds);
     }
 
+    public void detachChapter(Long chapterId) {
+        mediaReferenceApi.detachAll(MODULE, CHAPTER, chapterId);
+    }
+
+    public void detachRevision(Long revisionId) {
+        mediaReferenceApi.detachAll(MODULE, REVISION, revisionId);
+    }
+
     private void attach(String sourceType, Long sourceId, Collection<Long> assetIds) {
         for (Long mediaAssetId : assetIds) {
             mediaReferenceApi.attach(MediaReferenceCommand.builder()

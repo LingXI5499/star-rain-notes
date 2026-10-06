@@ -22,6 +22,8 @@ public class BlogTopicVO {
     private String slug;
     private String name;
     private String description;
+    private Integer sortOrder;
+    private Boolean featured;
     private String status;
     private Long memberCount;
     private LocalDateTime createdAt;

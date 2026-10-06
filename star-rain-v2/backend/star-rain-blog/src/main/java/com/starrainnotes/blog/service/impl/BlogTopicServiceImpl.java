@@ -107,6 +107,9 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             entity.setSlug(slug);
             entity.setName(name);
             entity.setDescription(description);
+            Integer minimum = topicMapper.minimumSortOrder();
+            entity.setSortOrder(minimum == null ? 0 : minimum - 10);
+            entity.setFeatured(request.getFeatured() == null || request.getFeatured());
             entity.setStatus(BlogTaxonomyStatus.ENABLED_CODE);
             try {
                 topicMapper.insertTopic(entity);
@@ -135,10 +138,37 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         }
         try {
             topicMapper.updateTopic(topicId, slug, name, description);
+            if (request.getFeatured() != null) {
+                topicMapper.updatePresentation(topicId, topic.getSortOrder(), request.getFeatured());
+            }
         } catch (DuplicateKeyException ex) {
             throw new BlogTopicSlugConflictException();
         }
         return toTopicVO(requireTopic(topicId));
+    }
+
+    @Override
+    @Transactional
+    public void reorderTopics(List<Long> topicIds) {
+        List<BlogTopicVO> current = topicMapper.adminPage(null, null, 0, Integer.MAX_VALUE);
+        Set<Long> expected = new LinkedHashSet<>();
+        current.forEach(topic -> expected.add(topic.getId()));
+        /*
+         * 这里的校验不含 `topicIds.contains(null)`：List.of(...) 这类不可变列表
+         * 碰到 contains(null) 会直接抛 NPE（ImmutableCollections 显式拒绝 null 查询），
+         * 于是「顺序非法」在单测里表现为 500 而不是 400。
+         * 去掉它不改变判定结果：带 null 的列表要么长度对不上，要么集合与 expected 不相等，
+         * 下面这一行仍然会拒绝。
+         */
+        if (topicIds == null || topicIds.size() != expected.size()
+                || !new LinkedHashSet<>(topicIds).equals(expected)) {
+            throw new BlogQueryInvalidException("专题排序必须包含全部专题且不能重复");
+        }
+        for (int index = 0; index < topicIds.size(); index++) {
+            Long id = topicIds.get(index);
+            BlogTopicEntity topic = requireTopicForUpdate(id);
+            topicMapper.updatePresentation(id, (index + 1) * 10, Boolean.TRUE.equals(topic.getFeatured()));
+        }
     }
 
     /*
@@ -311,6 +341,8 @@ public class BlogTopicServiceImpl implements BlogTopicService {
                 .slug(topic.getSlug())
                 .name(topic.getName())
                 .description(topic.getDescription())
+                .sortOrder(topic.getSortOrder())
+                .featured(topic.getFeatured())
                 .status(topic.getStatus())
                 .memberCount(topicMapper.countTopicPosts(topic.getId()))
                 .createdAt(topic.getCreatedAt())

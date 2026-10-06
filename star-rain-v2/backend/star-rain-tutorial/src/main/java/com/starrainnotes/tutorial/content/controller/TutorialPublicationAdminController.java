@@ -37,15 +37,4 @@ public class TutorialPublicationAdminController {
         return ApiResponse.ok(publicationService.withdraw(id));
     }
 
-    @PostMapping("/restore-publication")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.WITHDRAW + "')")
-    public ApiResponse<TutorialAdminVO> restore(@PathVariable Long id) {
-        return ApiResponse.ok(publicationService.restore(id));
-    }
-
-    @PostMapping("/submit-review")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.SUBMIT + "')")
-    public ApiResponse<TutorialAdminVO> submitReview(@PathVariable Long id) {
-        return ApiResponse.ok(publicationService.submitReview(id));
-    }
 }

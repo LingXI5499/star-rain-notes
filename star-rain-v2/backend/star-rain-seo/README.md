@@ -2,7 +2,7 @@
 
 公开内容来自 Site、Tutorial、Blog、Portfolio、Profile 的 `api` 公开契约。`sr_seo_page_snapshot` 是可重建的派生快照；后台内容和个人学习数据不进入快照。首次启动且快照为空时自动建立。超级管理员可调用 `POST /api/admin/seo/rebuild` 全量重建，或带 `route=/blog/posts/{slug}` 更新单页。
 
-模块内按 `controller/service/mapper/entity/dto/exception` 分层；快照、HTML、站点地图、robots 与通知不各建一套三层目录。对外契约在 `api`。读取 Blog、Site 等模块公开 API 的 `*SeoSourceProvider` 是 SEO 模块自己的 Service 实现；`StaticPageSeoSourceProvider` 负责静态列表页和首页的 SEO 来源，首页配置通过 Site 公开 API 读取，Site 不依赖 SEO。`SeoSourceProvider` 有五个实现，是实际使用的内部选择接口；HTML 渲染器只有一个实现，直接使用具体类。没有对应职责时不创建空的 `utils` 或 `vo` 目录。
+模块内仍由 Controller 接入、Service 编排、Mapper 访问数据库。`service` 根目录只放业务接口，具体服务放 `service/impl`；五个 SEO 内容来源放 `provider/impl` 并实现 `provider/SeoSourceProvider`；HTML 转换与前端资源注入放 `renderer`；启动补建放 `lifecycle`，IndexNow 发送端放 `notifier`。这些是职责明确的组件，不为每个组件再建一套 Controller/Service/Mapper。对外契约仍在 `api`。`StaticPageSeoSourceProvider` 通过 Site 公开 API 读取首页配置，Site 不依赖 SEO。
 
 - `GET /sitemap.xml` 只读取 ACTIVE 快照；`GET /robots.txt` 使用同一可信域名配置。
 - 公开页面的 GET 路由在后端返回带 title、description、canonical 和真实核心内容的 HTML。客户端路由切换也从 `/api/public/seo/meta?route=...` 更新标题、描述和 canonical；账号路径和搜索页标记 `noindex`。

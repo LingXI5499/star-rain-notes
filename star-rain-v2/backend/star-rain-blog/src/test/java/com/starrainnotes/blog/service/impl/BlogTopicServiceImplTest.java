@@ -101,6 +101,44 @@ class BlogTopicServiceImplTest {
     }
 
     @Test
+    @DisplayName("新专题插在真实排序首位，精选标记按表单保存")
+    void createStartsAtTopAndKeepsFeaturedChoice() {
+        when(topicMapper.minimumSortOrder()).thenReturn(20);
+        doAnswer(invocation -> {
+            invocation.<BlogTopicEntity>getArgument(0).setId(3L);
+            return null;
+        }).when(topicMapper).insertTopic(any());
+        when(topicMapper.topicById(3L)).thenReturn(topic(3L, "ENABLED"));
+        BlogTopicDTO request = dto("new-topic", "新专题");
+        request.setFeatured(false);
+
+        service.create(request);
+
+        var captor = org.mockito.ArgumentCaptor.forClass(BlogTopicEntity.class);
+        verify(topicMapper).insertTopic(captor.capture());
+        assertThat(captor.getValue().getSortOrder()).isEqualTo(10);
+        assertThat(captor.getValue().getFeatured()).isFalse();
+    }
+
+    @Test
+    @DisplayName("调整专题顺序时保存每个专题的新序号和精选标记")
+    void reorderTopicsPersistsNavigationOrder() {
+        when(topicMapper.adminPage(null, null, 0, Integer.MAX_VALUE)).thenReturn(List.of(
+                BlogTopicVO.builder().id(1L).build(), BlogTopicVO.builder().id(2L).build()));
+        BlogTopicEntity first = topic(1L, "ENABLED");
+        first.setFeatured(true);
+        BlogTopicEntity second = topic(2L, "DISABLED");
+        second.setFeatured(false);
+        when(topicMapper.topicByIdForUpdate(2L)).thenReturn(second);
+        when(topicMapper.topicByIdForUpdate(1L)).thenReturn(first);
+
+        service.reorderTopics(List.of(2L, 1L));
+
+        verify(topicMapper).updatePresentation(2L, 10, false);
+        verify(topicMapper).updatePresentation(1L, 20, true);
+    }
+
+    @Test
     @DisplayName("Topic slug 唯一：重复 slug 报 BLOG_TOPIC_SLUG_CONFLICT")
     void createRejectsDuplicateSlug() {
         when(topicMapper.countBySlug("java-roadmap", null)).thenReturn(1L);

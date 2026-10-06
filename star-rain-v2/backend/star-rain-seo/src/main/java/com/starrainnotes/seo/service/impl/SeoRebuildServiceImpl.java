@@ -5,7 +5,7 @@ import com.starrainnotes.seo.mapper.SeoPageMapper;
 import com.starrainnotes.seo.dto.SeoSourceDocument;
 import com.starrainnotes.seo.service.SeoRebuildService;
 import com.starrainnotes.seo.service.SeoSnapshotService;
-import com.starrainnotes.seo.service.SeoSourceProvider;
+import com.starrainnotes.seo.provider.SeoSourceProvider;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;

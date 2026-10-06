@@ -5,6 +5,7 @@ import com.starrainnotes.blog.dto.BlogTopicDTO;
 import com.starrainnotes.blog.dto.BlogTopicMemberRow;
 import com.starrainnotes.blog.dto.BlogTopicOrderDTO;
 import com.starrainnotes.blog.dto.BlogTopicQueryDTO;
+import com.starrainnotes.blog.dto.BlogTopicNavigationOrderDTO;
 import com.starrainnotes.blog.service.BlogTopicService;
 import com.starrainnotes.blog.vo.BlogTopicVO;
 import com.starrainnotes.common.result.ApiResponse;
@@ -57,6 +58,13 @@ public class BlogAdminTopicController {
     @PreAuthorize("hasAuthority('" + BlogPermissions.TAXONOMY_MANAGE + "')")
     public ApiResponse<BlogTopicVO> update(@PathVariable Long topicId, @RequestBody BlogTopicDTO request) {
         return ApiResponse.ok(topicService.update(topicId, request));
+    }
+
+    @PutMapping("/order")
+    @PreAuthorize("hasAuthority('" + BlogPermissions.TAXONOMY_MANAGE + "')")
+    public ApiResponse<Void> reorderTopics(@RequestBody BlogTopicNavigationOrderDTO request) {
+        topicService.reorderTopics(request.getTopicIds());
+        return ApiResponse.ok(null);
     }
 
     /*

@@ -21,6 +21,7 @@ import com.starrainnotes.tutorial.content.exception.TutorialNotFoundException;
 import com.starrainnotes.tutorial.content.exception.TutorialStateException;
 import com.starrainnotes.tutorial.content.mapper.TutorialCategoryMapper;
 import com.starrainnotes.tutorial.content.mapper.TutorialChapterMapper;
+import com.starrainnotes.tutorial.content.mapper.TutorialDependencyCleanup;
 import com.starrainnotes.tutorial.content.mapper.TutorialGroupMapper;
 import com.starrainnotes.tutorial.content.mapper.TutorialMapper;
 import com.starrainnotes.tutorial.content.service.TutorialContentService;
@@ -51,6 +52,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     private final TutorialChapterMapper chapterMapper;
     private final CurrentActorApi currentActorApi;
     private final TutorialMediaReferences mediaReferences;
+    private final TutorialDependencyCleanup dependencies;
 
     private static LocalDateTime now() {
         return LocalDateTime.now(ZoneOffset.UTC);
@@ -94,6 +96,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     private TutorialEntity lockTutorial(Long id) {
         TutorialEntity tutorial = id == null ? null : tutorialMapper.byIdForUpdate(id);
         if (tutorial == null) throw new TutorialNotFoundException();
+        return tutorial;
+    }
+
+    private TutorialEntity editableTutorial(Long id) {
+        TutorialEntity tutorial = lockTutorial(id);
+        if ("PUBLISHED".equals(tutorial.getPublicationStatus())) {
+            throw new TutorialStateException("请先撤回教程，再修改内容");
+        }
         return tutorial;
     }
 
@@ -291,7 +301,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     @Override
     @Transactional
     public TutorialAdminVO updateTutorial(Long id, TutorialUpdateDTO request) {
-        TutorialEntity tutorial = lockTutorial(id);
+        TutorialEntity tutorial = editableTutorial(id);
         if (request.getCategoryId() != null && !request.getCategoryId().equals(tutorial.getCategoryId())) {
             requireCategory(request.getCategoryId());
             tutorial.setCategoryId(request.getCategoryId());
@@ -310,11 +320,22 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     @Transactional
     public void deleteTutorial(Long id) {
         TutorialEntity tutorial = lockTutorial(id);
-        if (!"NEVER_PUBLISHED".equals(tutorial.getPublicationStatus())
-                || groupMapper.countByTutorialId(id) > 0) {
-            throw new TutorialStateException("只有未发布且没有分组的教程可以删除");
+        if ("PUBLISHED".equals(tutorial.getPublicationStatus()))
+            throw new TutorialStateException("请先撤回教程，再删除");
+        dependencies.tutorialLearning(id);
+        for (TutorialGroupEntity group : groupRows(id)) {
+            for (TutorialChapterEntity chapter : chapterRows(group.getId())) deleteChapterData(chapter);
+            groupMapper.deleteById(group.getId());
         }
+        for (Long revisionId : dependencies.revisionIds(id)) mediaReferences.detachRevision(revisionId);
+        dependencies.revisions(id);
         tutorialMapper.deleteById(id);
+    }
+
+    private void deleteChapterData(TutorialChapterEntity chapter) {
+        dependencies.chapterChildren(chapter.getId());
+        mediaReferences.detachChapter(chapter.getId());
+        chapterMapper.deleteById(chapter.getId());
     }
 
     @Override
@@ -344,7 +365,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     @Override
     @Transactional
     public TutorialGroupVO createGroup(Long tutorialId, String title) {
-        lockTutorial(tutorialId);
+        editableTutorial(tutorialId);
         TutorialGroupEntity group = new TutorialGroupEntity();
         group.setTutorialId(tutorialId);
         group.setTitle(text(title, "分组名称", 200));
@@ -359,6 +380,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     @Transactional
     public TutorialGroupVO updateGroup(Long groupId, String title) {
         TutorialGroupEntity group = requireGroup(groupId);
+        editableTutorial(group.getTutorialId());
         group.setTitle(text(title, "分组名称", 200));
         group.setUpdatedAt(now());
         groupMapper.updateTitle(group.getId(), group.getTitle(), group.getUpdatedAt());
@@ -367,30 +389,20 @@ public class TutorialContentServiceImpl implements TutorialContentService {
 
     @Override
     @Transactional
-    public void archiveGroup(Long groupId) {
+    public void deleteGroup(Long groupId) {
         TutorialGroupEntity group = requireGroup(groupId);
-        long activeChapters = chapterMapper.countActiveByGroupId(groupId);
-        if (activeChapters > 0) throw new TutorialGroupNotEmptyException();
-        if (!"ACTIVE".equals(group.getStatus())) throw new TutorialStateException("分组已经归档");
-        group.setStatus("ARCHIVED");
-        group.setUpdatedAt(now());
-        groupMapper.updateStatus(group.getId(), group.getStatus(), group.getUpdatedAt());
-    }
-
-    @Override
-    @Transactional
-    public void restoreGroup(Long groupId) {
-        TutorialGroupEntity group = requireGroup(groupId);
-        if (!"ARCHIVED".equals(group.getStatus())) throw new TutorialStateException("只有已归档分组可以恢复");
-        group.setStatus("ACTIVE");
-        group.setUpdatedAt(now());
-        groupMapper.updateStatus(group.getId(), group.getStatus(), group.getUpdatedAt());
+        TutorialEntity tutorial = lockTutorial(group.getTutorialId());
+        if ("PUBLISHED".equals(tutorial.getPublicationStatus()))
+            throw new TutorialStateException("请先撤回教程，再删除分组");
+        for (TutorialChapterEntity chapter : chapterRows(groupId)) deleteChapterData(chapter);
+        dependencies.groupLearning(groupId);
+        groupMapper.deleteById(groupId);
     }
 
     @Override
     @Transactional
     public void reorderGroups(Long tutorialId, List<Long> ids) {
-        lockTutorial(tutorialId);
+        editableTutorial(tutorialId);
         List<TutorialGroupEntity> rows = groupRows(tutorialId);
         requireExactOrder(ids, rows.stream().map(TutorialGroupEntity::getId).toList());
         for (int index = 0; index < ids.size(); index++) {
@@ -413,7 +425,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     public TutorialChapterVO createChapter(Long groupId, ChapterCreateDTO request) {
         TutorialGroupEntity group = requireGroup(groupId);
         if (!"ACTIVE".equals(group.getStatus())) throw new TutorialStateException("不能在已归档分组中新建章节");
-        lockTutorial(group.getTutorialId());
+        editableTutorial(group.getTutorialId());
         String title = text(request.getTitle(), "章节标题", 200);
         String body = bodyText(request.getBodyMarkdown());
         String base = TutorialSlugDeriver.fromTitle(title, "chapter");
@@ -425,7 +437,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         chapter.setBodyMarkdown(body);
         chapter.setSortOrder(nextOrder(chapterRows(groupId).stream()
                 .map(TutorialChapterEntity::getSortOrder).toList()));
-        chapter.setStatus("ACTIVE");
+        chapter.setStatus("DRAFT");
         for (int attempt = 1; attempt <= 8; attempt++) {
             String slug = attempt == 1 ? base : base + "-" + attempt;
             if (chapterMapper.countByTutorialIdAndSlug(group.getTutorialId(), slug) > 0) continue;
@@ -446,6 +458,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     @Transactional
     public TutorialChapterVO updateChapter(Long chapterId, ChapterUpdateDTO request) {
         TutorialChapterEntity chapter = requireChapter(chapterId);
+        editableTutorial(chapter.getTutorialId());
         if (request.getTitle() != null) chapter.setTitle(text(request.getTitle(), "章节标题", 200));
         chapter.setSummary(optionalText(request.getSummary(), 1000));
         chapter.setUpdatedAt(now());
@@ -457,6 +470,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     @Transactional
     public TutorialChapterVO updateChapterBody(Long chapterId, ChapterBodyDTO request) {
         TutorialChapterEntity chapter = requireChapter(chapterId);
+        editableTutorial(chapter.getTutorialId());
         chapter.setBodyMarkdown(bodyText(request.getBodyMarkdown()));
         chapter.setUpdatedAt(now());
         chapterMapper.updateBody(chapter.getId(), chapter.getBodyMarkdown(), chapter.getUpdatedAt());
@@ -466,49 +480,40 @@ public class TutorialContentServiceImpl implements TutorialContentService {
 
     @Override
     @Transactional
-    public void archiveChapter(Long chapterId) {
+    public void deleteChapter(Long chapterId) {
         TutorialChapterEntity chapter = requireChapter(chapterId);
-        if (!"ACTIVE".equals(chapter.getStatus())) throw new TutorialStateException("章节已经归档");
-        chapter.setStatus("ARCHIVED");
-        chapter.setUpdatedAt(now());
-        chapterMapper.updateStatus(chapter.getId(), chapter.getStatus(), chapter.getUpdatedAt());
+        TutorialEntity tutorial = lockTutorial(chapter.getTutorialId());
+        if ("PUBLISHED".equals(tutorial.getPublicationStatus()))
+            throw new TutorialStateException("请先撤回教程，再删除章节");
+        deleteChapterData(chapter);
     }
 
     @Override
     @Transactional
-    public void restoreChapter(Long chapterId) {
+    public void publishChapter(Long chapterId) {
         TutorialChapterEntity chapter = requireChapter(chapterId);
-        TutorialGroupEntity group = requireGroup(chapter.getGroupId());
-        if (!"ARCHIVED".equals(chapter.getStatus()) || !"ACTIVE".equals(group.getStatus())) {
-            throw new TutorialStateException("只有使用中分组里的已归档章节可以恢复");
-        }
-        chapter.setStatus("ACTIVE");
-        chapter.setUpdatedAt(now());
-        chapterMapper.updateStatus(chapter.getId(), chapter.getStatus(), chapter.getUpdatedAt());
+        editableTutorial(chapter.getTutorialId());
+        if ("PUBLISHED".equals(chapter.getStatus())) return;
+        if (chapter.getBodyMarkdown() == null || chapter.getBodyMarkdown().isBlank())
+            throw new TutorialStateException("章节正文不能为空");
+        chapterMapper.updateStatus(chapterId, "PUBLISHED", now());
     }
 
     @Override
     @Transactional
-    public void moveChapter(Long chapterId, Long groupId) {
+    public void withdrawChapter(Long chapterId) {
         TutorialChapterEntity chapter = requireChapter(chapterId);
-        TutorialGroupEntity target = requireGroup(groupId);
-        if (!chapter.getTutorialId().equals(target.getTutorialId()) || !"ACTIVE".equals(target.getStatus())) {
-            throw new TutorialInvalidRequestException("目标分组必须属于同一教程且处于使用中");
-        }
-        if (groupId.equals(chapter.getGroupId())) return;
-        lockTutorial(chapter.getTutorialId());
-        chapter.setGroupId(groupId);
-        chapter.setSortOrder(nextOrder(chapterRows(groupId).stream()
-                .map(TutorialChapterEntity::getSortOrder).toList()));
-        chapter.setUpdatedAt(now());
-        chapterMapper.moveToGroup(chapter.getId(), chapter.getGroupId(), chapter.getSortOrder(), chapter.getUpdatedAt());
+        editableTutorial(chapter.getTutorialId());
+        if (!"PUBLISHED".equals(chapter.getStatus()))
+            throw new TutorialStateException("只有已公开章节可以撤回");
+        chapterMapper.updateStatus(chapterId, "WITHDRAWN", now());
     }
 
     @Override
     @Transactional
     public void reorderChapters(Long groupId, List<Long> ids) {
         TutorialGroupEntity group = requireGroup(groupId);
-        lockTutorial(group.getTutorialId());
+        editableTutorial(group.getTutorialId());
         List<TutorialChapterEntity> rows = chapterRows(groupId);
         requireExactOrder(ids, rows.stream().map(TutorialChapterEntity::getId).toList());
         for (int index = 0; index < ids.size(); index++) {

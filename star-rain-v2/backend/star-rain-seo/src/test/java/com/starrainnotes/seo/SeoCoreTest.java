@@ -7,13 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import com.starrainnotes.seo.service.CanonicalService;
+import com.starrainnotes.seo.config.CanonicalUrlResolver;
 import com.starrainnotes.seo.config.SeoProperties;
 import com.starrainnotes.seo.mapper.SeoPageMapper;
-import com.starrainnotes.seo.service.SeoHtmlRenderer;
+import com.starrainnotes.seo.renderer.SeoHtmlRenderer;
 import com.starrainnotes.seo.dto.SeoPageModel;
 import com.starrainnotes.seo.service.SitemapService;
 import com.starrainnotes.seo.service.impl.SitemapServiceImpl;
+import com.starrainnotes.seo.service.impl.RobotsServiceImpl;
 import com.starrainnotes.seo.api.dto.SeoPageSnapshot;
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -23,10 +24,20 @@ class SeoCoreTest {
     void canonicalUsesConfiguredOriginAndRejectsUnsafeRoute() {
         SeoProperties config = new SeoProperties();
         config.setPublicBaseUrl("https://example.org/");
-        CanonicalService service = new CanonicalService(config);
+        CanonicalUrlResolver service = new CanonicalUrlResolver(config);
         assertEquals("https://example.org/blog/posts/hello", service.canonical("/blog/posts/hello"));
         assertThrows(RuntimeException.class, () -> service.canonical("//attacker.test/blog"));
         assertThrows(RuntimeException.class, () -> service.canonical("/blog?host=attacker.test"));
+    }
+
+    @Test
+    void robotsIsPlainTextWithConfiguredSitemap() {
+        SeoProperties config = new SeoProperties();
+        config.setPublicBaseUrl("https://example.org/");
+        String content = new RobotsServiceImpl(new CanonicalUrlResolver(config)).robotsTxt();
+        assertTrue(content.contains("Disallow: /api/\n"));
+        assertTrue(content.contains("Disallow: /useradmin/\n"));
+        assertTrue(content.endsWith("Sitemap: https://example.org/sitemap.xml\n"));
     }
 
     @Test

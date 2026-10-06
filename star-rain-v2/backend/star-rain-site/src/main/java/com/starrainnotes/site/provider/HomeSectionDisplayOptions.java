@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.site.entity.HomeSectionEntity;
 import java.util.Set;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +31,18 @@ public class HomeSectionDisplayOptions {
             return config.path("layout").asText(fallback);
         } catch (Exception exception) {
             return fallback;
+        }
+    }
+
+    public List<Long> selectedIdsOf(HomeSectionEntity section) {
+        try {
+            JsonNode ids = json.readTree(section.getConfigJson()).path("selectedIds");
+            if (!ids.isArray()) return List.of();
+            List<Long> result = new java.util.ArrayList<>();
+            ids.forEach(id -> { if (id.canConvertToLong() && id.asLong() > 0) result.add(id.asLong()); });
+            return result;
+        } catch (Exception exception) {
+            return List.of();
         }
     }
 }

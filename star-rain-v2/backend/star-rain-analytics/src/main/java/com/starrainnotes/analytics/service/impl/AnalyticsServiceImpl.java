@@ -2,7 +2,7 @@ package com.starrainnotes.analytics.service.impl;
 
 import com.starrainnotes.analytics.api.ContentViewEvent;
 import com.starrainnotes.analytics.dto.ReferrerClassification;
-import com.starrainnotes.analytics.service.ReferrerClassifier;
+import com.starrainnotes.analytics.utils.ReferrerClassifier;
 import com.starrainnotes.analytics.entity.AnalyticsEventEntity;
 import com.starrainnotes.analytics.exception.AnalyticsContentTypeInvalidException;
 import com.starrainnotes.analytics.exception.AnalyticsDateRangeInvalidException;

@@ -13,6 +13,10 @@ public class TutorialSectionProvider implements HomeSectionProvider {
     private final HomeSectionDisplayOptions limits;
     @Override public String sectionCode() { return "TUTORIALS"; }
     @Override public Object load(HomeSectionEntity section, SitePublicConfigVO config) {
-        return tutorials.latestPublished(limits.limitOf(section));
+        var selected = limits.selectedIdsOf(section);
+        if (selected.isEmpty()) return tutorials.latestPublished(3);
+        var available = tutorials.latestPublished(100);
+        return selected.stream().map(id -> available.stream().filter(item -> item.getId().equals(id)).findFirst().orElse(null))
+                .filter(java.util.Objects::nonNull).toList();
     }
 }

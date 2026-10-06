@@ -24,6 +24,8 @@ public interface BlogTopicService {
 
     BlogTopicVO update(Long topicId, BlogTopicDTO request);
 
+    void reorderTopics(List<Long> topicIds);
+
     /*
      * 删除专题：仅空专题（成员数为 0）可以删，有成员报 BLOG_TOPIC_NOT_EMPTY。
      * 需要下架但保留策展结果时用 disable —— 两者的差别就是「要不要留住成员与顺序」。

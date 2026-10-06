@@ -65,12 +65,16 @@ class PortfolioWorkServiceImplTest {
     }
 
     @Test
-    void publishingWithoutTypeDetailFailsBeforeStateChange() {
+    void publishingWithoutTypeDetailIsAllowed() {
         WorkEntity work = work("DRAFT", null);
         when(works.byIdForUpdate(9L)).thenReturn(work);
+        when(media.listByWorkId(any())).thenReturn(List.of());
+        when(links.listByWorkId(any())).thenReturn(List.of());
 
-        assertThatThrownBy(() -> service.publish(9L)).isInstanceOf(WorkStateInvalidException.class);
-        assertThat(work.getStatus()).isEqualTo("DRAFT");
+        // 原来的规则是「发布前必须填写类型详情」；作品后台整块去掉类型详情后，
+        // 这条断言反过来：缺详情不再阻断发布。
+        assertThat(service.publish(9L).getStatus()).isEqualTo("PUBLISHED");
+        assertThat(work.getStatus()).isEqualTo("PUBLISHED");
     }
 
     @Test

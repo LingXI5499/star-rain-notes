@@ -7,7 +7,6 @@ import static org.mockito.Mockito.when;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.account.api.CurrentActorApi;
-import com.starrainnotes.review.api.ReviewSubmissionApi;
 import com.starrainnotes.tutorial.content.entity.TutorialEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity;
 import com.starrainnotes.tutorial.content.event.TutorialEventPublisher;
@@ -42,7 +41,7 @@ class TutorialPublicationServiceImplTest {
                 tutorialMapper, mock(TutorialCategoryMapper.class), mock(TutorialGroupMapper.class),
                 mock(TutorialChapterMapper.class), mock(TutorialKnowledgeCardMapper.class),
                 mock(TutorialQuestionMapper.class), revisionMapper, mock(TutorialContentService.class),
-                mock(CurrentActorApi.class), mock(ReviewSubmissionApi.class), new ObjectMapper(),
+                mock(CurrentActorApi.class), new ObjectMapper(),
                 mock(TutorialEventPublisher.class), mock(TutorialMediaReferences.class));
 
         JsonNode detail = service.publicTutorial("java");

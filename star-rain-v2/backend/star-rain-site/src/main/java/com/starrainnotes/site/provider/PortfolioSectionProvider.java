@@ -13,6 +13,10 @@ public class PortfolioSectionProvider implements HomeSectionProvider {
     private final HomeSectionDisplayOptions limits;
     @Override public String sectionCode() { return "PORTFOLIO"; }
     @Override public Object load(HomeSectionEntity section, SitePublicConfigVO config) {
-        return works.publishedWorks(1, limits.limitOf(section)).getItems();
+        var selected = limits.selectedIdsOf(section);
+        if (selected.isEmpty()) return works.publishedWorks(1, 3).getItems();
+        var available = works.publishedWorks(1, 100).getItems();
+        return selected.stream().map(id -> available.stream().filter(item -> item.getId().equals(id)).findFirst().orElse(null))
+                .filter(java.util.Objects::nonNull).toList();
     }
 }

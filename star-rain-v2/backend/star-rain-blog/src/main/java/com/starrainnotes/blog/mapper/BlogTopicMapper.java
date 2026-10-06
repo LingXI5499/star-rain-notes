@@ -31,6 +31,11 @@ public interface BlogTopicMapper {
     // 只删专题本身：成员关系由调用方先确认已清空（见 BlogTopicServiceImpl#delete）
     int deleteTopic(@Param("id") Long id);
 
+    Integer minimumSortOrder();
+
+    int updatePresentation(@Param("id") Long id, @Param("sortOrder") int sortOrder,
+                           @Param("featured") boolean featured);
+
     long adminPageCount(@Param("keyword") String keyword, @Param("status") String status);
 
     List<BlogTopicVO> adminPage(@Param("keyword") String keyword,

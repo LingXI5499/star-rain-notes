@@ -2,7 +2,7 @@ package com.starrainnotes.analytics.controller;
 
 import com.starrainnotes.analytics.dto.PageViewDTO;
 import com.starrainnotes.analytics.exception.AnalyticsRouteInvalidException;
-import com.starrainnotes.analytics.service.AnalyticsSubmissionLimiter;
+import com.starrainnotes.analytics.security.AnalyticsSubmissionLimiter;
 import com.starrainnotes.analytics.service.AnalyticsService;
 import com.starrainnotes.common.result.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;

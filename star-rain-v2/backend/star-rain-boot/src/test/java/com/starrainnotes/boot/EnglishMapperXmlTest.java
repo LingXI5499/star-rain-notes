@@ -8,10 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.starrainnotes.english.grammar.dto.GrammarDto;
 import com.starrainnotes.english.grammar.mapper.GrammarMapper;
-import com.starrainnotes.english.listening.dto.ListeningItemDto;
-import com.starrainnotes.english.listening.dto.ListeningSegmentDto;
-import com.starrainnotes.english.listening.mapper.ListeningItemMapper;
-import com.starrainnotes.english.listening.mapper.ListeningSegmentMapper;
 import com.starrainnotes.english.reading.dto.ReadingDto;
 import com.starrainnotes.english.reading.mapper.ReadingMapper;
 import com.starrainnotes.english.vocabulary.dto.VocabularyDto;
@@ -43,25 +39,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /*
- * english 模块 8 个 Mapper 的真实数据库读写验证。
- *
- * 这 8 个 Mapper 有一个共同特征：**几乎每条查询都用 <resultMap> 把列名翻译成 DTO 字段**
- * （transcript_markdown → bodyMarkdown、listening_level → difficultyLevel、reading_level →
- * difficultyLevel、background_markdown → bodyMarkdown、is_primary → primary ……）。
- * resultMap 里少写一行 <result>，属性就是 null，没有任何类型检查会发现。所以本类对每条
- * 代表性的读路径都逐字段断言，而不是只断言「不抛异常」。
- *
- * 另外三处容易出错的地方也钉住了：
- *   1. `listForPublic` / `publicBySlug` / `publicLesson` 把 publish_status='PUBLISHED' 写死在 SQL 里；
- *   2. 六条 setStatus 都用 `published_at = COALESCE(published_at, NOW(3))`，重新发布不能改写成「今天」；
- *      published_at 不在任何 resultMap 里，所以用一条 SELECT 直接核对；
- *   3. vocabulary 的 updateWord 用 COALESCE 保住 scene_meaning / inflections（不传=保留旧值），
- *      而 startMemory / importMemory 是「只增不减」的 UPSERT。
- *
- * sr_english_vocabulary_word_audio 在全库是空表，而且没有任何写入语句（V1 导入数据），
- * 所以 audios 的验证在同一个未提交事务里用一条 INSERT 造行，再走 resultMap 读回来。
- *
- * 全程在一个不 commit 的 SqlSession 里跑，@AfterEach 回滚；最后一个用例用新连接复核。
+ * English Mapper XML integration checks for grammar, reading, vocabulary and writing.
+ * Assertions cover result maps, public visibility and transaction rollback.
  */
 class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
 
@@ -69,8 +48,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
 
     private SqlSession session;
     private GrammarMapper grammar;
-    private ListeningItemMapper listeningItems;
-    private ListeningSegmentMapper listeningSegments;
     private ReadingMapper readings;
     private VocabularyMapper vocabulary;
     private VocabularyStudyMapper vocabularyStudy;
@@ -81,8 +58,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
     void open() {
         session = openSession();
         grammar = session.getMapper(GrammarMapper.class);
-        listeningItems = session.getMapper(ListeningItemMapper.class);
-        listeningSegments = session.getMapper(ListeningSegmentMapper.class);
         readings = session.getMapper(ReadingMapper.class);
         vocabulary = session.getMapper(VocabularyMapper.class);
         vocabularyStudy = session.getMapper(VocabularyStudyMapper.class);
@@ -101,8 +76,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
     @Test
     void everyEnglishMapperIsReachableThroughTheSession() {
         assertNotNull(grammar);
-        assertNotNull(listeningItems);
-        assertNotNull(listeningSegments);
         assertNotNull(readings);
         assertNotNull(vocabulary);
         assertNotNull(vocabularyStudy);
@@ -225,134 +198,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, grammar.deleteSection(section.getId()));
         assertNull(grammar.section(section.getId()));
         assertEquals(0, grammar.deleteSection(section.getId()));
-    }
-
-    @Test
-    void listeningItemCrudHonoursPublicAndSearchFilters() {
-        String search = unique("mapperxmllistening");
-        ListeningItemDto.Item item = newItem(search);
-        assertEquals(1, listeningItems.insert(item));
-        assertNotNull(item.getId(), "insert 没有回填自增主键");
-
-        ListeningItemDto.Item stored = listeningItems.byId(item.getId());
-        assertNotNull(stored, "byId 读不到刚插入的行");
-        assertEquals(item.getSlug(), stored.getSlug());
-        assertEquals(search, stored.getTitle());
-        assertEquals("XML 验证听力摘要", stored.getSummary());
-        assertEquals("# XML 验证听力原文", stored.getBodyMarkdown(),
-                "别名 bodyMarkdown 丢失（XML 映射的是 transcript_markdown）");
-        assertEquals("B1", stored.getCefrLevel(), "别名 cefrLevel 丢失（XML 映射的是 cefr_level）");
-        assertEquals(3, stored.getDifficultyLevel().intValue(),
-                "别名 difficultyLevel 丢失（XML 映射的是 listening_level）");
-        assertEquals(item.getAudioMediaId(), stored.getAudioMediaId(), "别名 audioMediaId 丢失");
-        assertEquals(300, stored.getDurationSeconds().intValue(), "别名 durationSeconds 丢失");
-        assertEquals("XML 验证来源", stored.getSourceName(), "别名 sourceName 丢失");
-        assertEquals("https://example.test/listening", stored.getSourceUrl(), "别名 sourceUrl 丢失");
-        assertEquals("DRAFT", stored.getPublishStatus(),
-                "insert 不写 publish_status，应当取列默认值 DRAFT");
-        assertEquals(0, stored.getSortOrder());
-
-        assertNull(listeningItems.byId(-1L));
-        assertNull(listeningItems.publicBySlug(item.getSlug()), "草稿听力不应能按 slug 公开读取");
-        assertEquals(1, listeningItems.count(false, search), "search 过滤没生效");
-        assertEquals(0, listeningItems.count(true, search), "publicOnly 过滤没生效");
-        assertEquals(0, listeningItems.count(false, search + "-missing"));
-        assertTrue(listeningItems.count(false, null) >= 1, "search 为 null 时必须退化成统计全部");
-
-        List<ListeningItemDto.Item> list = listeningItems.list(false, search, 0, 10);
-        assertEquals(1, list.size());
-        assertEquals(item.getId(), list.get(0).getId());
-        assertEquals(1, listeningItems.list(false, search, 0, 1).size(), "LIMIT 没生效");
-        assertTrue(listeningItems.list(false, search, 1, 10).isEmpty(), "OFFSET 没生效");
-        assertTrue(listeningItems.list(true, search, 0, 10).isEmpty());
-
-        assertEquals(1, listeningItems.setStatus(item.getId(), "PUBLISHED"));
-        assertEquals("PUBLISHED", listeningItems.byId(item.getId()).getPublishStatus());
-        assertNotNull(listeningItems.publicBySlug(item.getSlug()), "已发布听力应当能按 slug 公开读取");
-        assertEquals(1, listeningItems.count(true, search));
-        Object firstPublishedAt = publishedAtOf("sr_english_listening_item", item.getId());
-        assertNotNull(firstPublishedAt, "setStatus 必须写入 published_at");
-        assertEquals(1, listeningItems.setStatus(item.getId(), "DRAFT"));
-        assertEquals(1, listeningItems.setStatus(item.getId(), "PUBLISHED"));
-        assertEquals(firstPublishedAt, publishedAtOf("sr_english_listening_item", item.getId()),
-                "重新发布把首次发布时间改写了（COALESCE 丢失）");
-
-        // update 不改 publish_status，也不该动 slug 之外的身份列
-        // summary 是 NOT NULL 列，这里改成测试可空列 source_name 的「传 null 即清空」语义
-        ListeningItemDto.Item edited = listeningItems.byId(item.getId());
-        edited.setTitle(search + "-改名");
-        edited.setSourceName(null);
-        edited.setDifficultyLevel(5);
-        edited.setDurationSeconds(600);
-        assertEquals(1, listeningItems.update(edited));
-        ListeningItemDto.Item afterUpdate = listeningItems.byId(item.getId());
-        assertEquals(search + "-改名", afterUpdate.getTitle());
-        assertNull(afterUpdate.getSourceName(), "source_name 传 null 没有被清空（这条语句是普通 SET）");
-        assertEquals(5, afterUpdate.getDifficultyLevel().intValue());
-        assertEquals(600, afterUpdate.getDurationSeconds().intValue());
-        assertEquals("PUBLISHED", afterUpdate.getPublishStatus(), "改内容不应改动 publish_status");
-        assertEquals(0, listeningItems.update(withItemId(-1L, edited)));
-
-        assertEquals(1, listeningItems.delete(item.getId()));
-        assertNull(listeningItems.byId(item.getId()));
-        assertEquals(0, listeningItems.delete(item.getId()));
-    }
-
-    @Test
-    void listeningSegmentsFollowTheirItemAndOrdering() {
-        ListeningItemDto.Item item = insertPublishedItem();
-        ListeningItemDto.Item other = insertPublishedItem();
-
-        ListeningSegmentDto.Segment later = newSegment(item.getId(), 2, 2000, "第二句");
-        assertEquals(1, listeningSegments.insert(later));
-        assertNotNull(later.getId(), "insert 没有回填自增主键");
-        ListeningSegmentDto.Segment earlier = newSegment(item.getId(), 1, 1000, "第一句");
-        assertEquals(1, listeningSegments.insert(earlier));
-        assertEquals(1, listeningSegments.insert(newSegment(other.getId(), 1, 1000, "别的听力")));
-
-        List<ListeningSegmentDto.Segment> forAdmin = listeningSegments.listForAdmin(item.getId());
-        assertEquals(2, forAdmin.size(), "只应返回当前听力的切片");
-        assertEquals(earlier.getId(), forAdmin.get(0).getId(), "切片必须按 sort_order 升序");
-        assertEquals(later.getId(), forAdmin.get(1).getId());
-
-        ListeningSegmentDto.Segment loaded = forAdmin.get(0);
-        assertEquals(item.getId(), loaded.getListeningItemId(),
-                "别名 listeningItemId 丢失（XML 映射的是 listening_item_id）");
-        assertEquals(1000, loaded.getStartMs(), "别名 startMs 丢失");
-        assertEquals(1500, loaded.getEndMs(), "别名 endMs 丢失");
-        assertEquals("第一句", loaded.getTranscriptText(), "别名 transcriptText 丢失");
-        assertEquals("XML 验证翻译", loaded.getTranslationText(), "别名 translationText 丢失");
-        assertEquals(1, loaded.getSortOrder(), "别名 sortOrder 丢失");
-
-        List<ListeningSegmentDto.Segment> forPublic = listeningSegments.listForPublic(item.getSlug());
-        assertEquals(2, forPublic.size(), "已发布听力的切片应当能公开读取");
-        assertEquals(earlier.getId(), forPublic.get(0).getId());
-        assertEquals(other.getId(), listeningSegments.listForAdmin(other.getId()).get(0).getListeningItemId());
-
-        assertEquals(earlier.getId(), listeningSegments.get(item.getId(), earlier.getId()).getId());
-        assertNull(listeningSegments.get(other.getId(), earlier.getId()),
-                "get 必须同时校验 listening_item_id，否则能跨听力读到别人的切片");
-        assertNull(listeningSegments.get(item.getId(), probeId()));
-
-        ListeningSegmentDto.Segment edited = listeningSegments.get(item.getId(), earlier.getId());
-        edited.setTranscriptText("改后的第一句");
-        edited.setEndMs(1800);
-        assertEquals(1, listeningSegments.update(edited));
-        ListeningSegmentDto.Segment afterUpdate = listeningSegments.get(item.getId(), earlier.getId());
-        assertEquals("改后的第一句", afterUpdate.getTranscriptText());
-        assertEquals(1800, afterUpdate.getEndMs());
-        assertEquals(item.getId(), afterUpdate.getListeningItemId(), "更新切片不应改动归属听力");
-        assertEquals(0, listeningSegments.update(withSegmentItemId(edited, other.getId())),
-                "update 的 WHERE 带 listening_item_id，归属不对时应当 0 行");
-
-        assertEquals(0, listeningSegments.delete(other.getId(), earlier.getId()),
-                "delete 的 WHERE 带 listening_item_id，归属不对时不应删掉");
-        assertEquals(1, listeningSegments.delete(item.getId(), earlier.getId()));
-        assertEquals(0, listeningSegments.delete(item.getId(), earlier.getId()));
-        assertEquals(1, listeningSegments.listForAdmin(item.getId()).size());
-        assertEquals(1, listeningItems.deleteSegments(item.getId()), "应当删掉剩下那一条切片");
-        assertEquals(0, listeningItems.deleteSegments(item.getId()));
-        assertTrue(listeningSegments.listForAdmin(item.getId()).isEmpty());
     }
 
     @Test
@@ -934,11 +779,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         GrammarDto.Lesson lesson = newLesson(section.getId(), unique("mapperxmlrollbacklesson"));
         grammar.insertLesson(lesson);
 
-        ListeningItemDto.Item item = newItem(unique("mapperxmlrollbacklistening"));
-        listeningItems.insert(item);
-        ListeningSegmentDto.Segment segment = newSegment(item.getId(), 1, 0, "回滚切片");
-        listeningSegments.insert(segment);
-
         ReadingDto.Article article = newArticle(unique("mapperxmlrollbackreading"));
         readings.insert(article);
 
@@ -958,14 +798,12 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
 
         Long sectionId = section.getId();
         Long lessonId = lesson.getId();
-        Long itemId = item.getId();
         Long articleId = article.getId();
         Long themeId = theme.getId();
         Long wordId = word.getId();
         Long promptId = prompt.getId();
         Long resourceId = resource.getId();
         assertNotNull(sectionId);
-        assertNotNull(itemId);
         assertNotNull(articleId);
         assertNotNull(themeId);
         assertNotNull(wordId);
@@ -979,11 +817,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
                     "回滚后语法课程发布状态应当还原");
             assertNull(freshGrammar.section(sectionId), "回滚后不应在开发库里留下测试语法章节");
             assertNull(freshGrammar.lessonById(lessonId), "回滚后不应在开发库里留下测试语法课时");
-
-            ListeningItemMapper freshListening = fresh.getMapper(ListeningItemMapper.class);
-            assertNull(freshListening.byId(itemId), "回滚后不应在开发库里留下测试听力");
-            assertTrue(fresh.getMapper(ListeningSegmentMapper.class).listForAdmin(itemId).isEmpty(),
-                    "回滚后不应在开发库里留下测试听力切片");
 
             assertNull(fresh.getMapper(ReadingMapper.class).byId(articleId),
                     "回滚后不应在开发库里留下测试阅读文章");
@@ -1002,7 +835,7 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
-    /* 六条 setStatus 的 published_at 不在任何 resultMap 里，只能直接读库核对 COALESCE 语义 */
+    /* 五条 setStatus 的 published_at 不在任何 resultMap 里，只能直接读库核对 COALESCE 语义 */
     private Object publishedAtOf(String table, long id) {
         try (PreparedStatement statement = session.getConnection().prepareStatement(
                 "SELECT published_at FROM " + table + " WHERE id = ?")) {
@@ -1048,52 +881,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         lesson.setBodyMarkdown("# XML 验证课时正文");
         lesson.setSortOrder(0);
         return lesson;
-    }
-
-    private ListeningItemDto.Item newItem(String title) {
-        ListeningItemDto.Item item = new ListeningItemDto.Item();
-        item.setSlug(unique("mapperxmllisteningslug"));
-        item.setTitle(title);
-        item.setSummary("XML 验证听力摘要");
-        item.setBodyMarkdown("# XML 验证听力原文");
-        item.setCefrLevel("B1");
-        item.setDifficultyLevel(3);
-        item.setAudioMediaId(probeId());
-        item.setDurationSeconds(300);
-        item.setSourceName("XML 验证来源");
-        item.setSourceUrl("https://example.test/listening");
-        item.setSortOrder(0);
-        return item;
-    }
-
-    private ListeningItemDto.Item insertPublishedItem() {
-        ListeningItemDto.Item item = newItem(unique("mapperxmllistening"));
-        listeningItems.insert(item);
-        assertEquals(1, listeningItems.setStatus(item.getId(), "PUBLISHED"));
-        return item;
-    }
-
-    private ListeningSegmentDto.Segment newSegment(long itemId, int sortOrder, int startMs, String text) {
-        ListeningSegmentDto.Segment segment = new ListeningSegmentDto.Segment();
-        segment.setListeningItemId(itemId);
-        segment.setStartMs(startMs);
-        segment.setEndMs(startMs + 500);
-        segment.setTranscriptText(text);
-        segment.setTranslationText("XML 验证翻译");
-        segment.setSortOrder(sortOrder);
-        return segment;
-    }
-
-    private ListeningSegmentDto.Segment withSegmentItemId(ListeningSegmentDto.Segment source, long itemId) {
-        ListeningSegmentDto.Segment copy = new ListeningSegmentDto.Segment();
-        copy.setId(source.getId());
-        copy.setListeningItemId(itemId);
-        copy.setStartMs(source.getStartMs());
-        copy.setEndMs(source.getEndMs());
-        copy.setTranscriptText(source.getTranscriptText());
-        copy.setTranslationText(source.getTranslationText());
-        copy.setSortOrder(source.getSortOrder());
-        return copy;
     }
 
     private ReadingDto.Article newArticle(String title) {
@@ -1187,24 +974,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         resource.setCefrLevel("B1");
         resource.setSortOrder(0);
         return resource;
-    }
-
-    private ListeningItemDto.Item withItemId(Long id, ListeningItemDto.Item source) {
-        ListeningItemDto.Item copy = new ListeningItemDto.Item();
-        copy.setId(id);
-        copy.setSlug(source.getSlug());
-        copy.setTitle(source.getTitle());
-        copy.setSummary(source.getSummary());
-        copy.setBodyMarkdown(source.getBodyMarkdown());
-        copy.setCefrLevel(source.getCefrLevel());
-        copy.setDifficultyLevel(source.getDifficultyLevel());
-        copy.setAudioMediaId(source.getAudioMediaId());
-        copy.setDurationSeconds(source.getDurationSeconds());
-        copy.setSourceName(source.getSourceName());
-        copy.setSourceUrl(source.getSourceUrl());
-        copy.setPublishStatus(source.getPublishStatus());
-        copy.setSortOrder(source.getSortOrder());
-        return copy;
     }
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实内容撞号 */

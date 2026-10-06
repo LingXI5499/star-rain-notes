@@ -32,4 +32,6 @@ public interface TutorialGroupMapper {
 
     int updateSortOrder(@Param("id") Long id, @Param("sortOrder") int sortOrder,
                         @Param("updatedAt") LocalDateTime updatedAt);
+
+    int deleteById(@Param("id") Long id);
 }

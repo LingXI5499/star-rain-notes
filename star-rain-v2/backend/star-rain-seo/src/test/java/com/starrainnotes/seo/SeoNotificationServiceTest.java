@@ -7,13 +7,13 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.starrainnotes.seo.service.CanonicalService;
+import com.starrainnotes.seo.config.CanonicalUrlResolver;
 import com.starrainnotes.seo.mapper.SeoNotificationMapper;
 import com.starrainnotes.seo.dto.NotificationResult;
-import com.starrainnotes.seo.service.IndexNowNotifier;
+import com.starrainnotes.seo.notifier.IndexNowNotifier;
 import com.starrainnotes.seo.dto.SeoChange;
 import com.starrainnotes.seo.entity.SeoNotificationLog;
-import com.starrainnotes.seo.service.SeoNotificationService;
+import com.starrainnotes.seo.service.impl.SeoNotificationServiceImpl;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.List;
@@ -25,7 +25,7 @@ class SeoNotificationServiceTest {
     void failedProviderIsRetriedWithoutRecordingASecret() {
         SeoNotificationMapper mapper = mock(SeoNotificationMapper.class);
         IndexNowNotifier notifier = mock(IndexNowNotifier.class);
-        CanonicalService canonical = mock(CanonicalService.class);
+        CanonicalUrlResolver canonical = mock(CanonicalUrlResolver.class);
         when(notifier.enabled()).thenReturn(true);
         when(notifier.providerCode()).thenReturn("TEST");
         SeoNotificationLog row = new SeoNotificationLog();
@@ -40,7 +40,7 @@ class SeoNotificationServiceTest {
         when(notifier.notify(any(SeoChange.class))).thenReturn(
             NotificationResult.builder().httpStatus(503).errorCode("HTTP_503").build());
 
-        new SeoNotificationService(mapper, notifier, canonical).processPending();
+        new SeoNotificationServiceImpl(mapper, notifier, canonical).processPending();
 
         ArgumentCaptor<LocalDateTime> next = ArgumentCaptor.forClass(LocalDateTime.class);
         verify(mapper).failure(eq(7L), eq(503), eq("HTTP_503"), next.capture());

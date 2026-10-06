@@ -43,4 +43,5 @@
   <update id="updateSortOrder">
     UPDATE sr_tutorial_group SET sort_order = #{sortOrder}, updated_at = #{updatedAt} WHERE id = #{id}
   </update>
+  <delete id="deleteById">DELETE FROM sr_tutorial_group WHERE id = #{id}</delete>
 </mapper>

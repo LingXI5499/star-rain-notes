@@ -6,14 +6,10 @@ import com.starrainnotes.portfolio.api.event.WorkPublicationChangedEvent;
 import com.starrainnotes.profile.api.ProfilePublicApi;
 import com.starrainnotes.profile.api.event.ProfileChangedEvent;
 import com.starrainnotes.seo.api.SeoRefreshApi;
-import com.starrainnotes.seo.mapper.SeoPageMapper;
 import com.starrainnotes.seo.service.SeoNotificationService;
 import com.starrainnotes.seo.service.SeoTutorialRefreshService;
 import com.starrainnotes.site.api.event.SiteConfigChangedEvent;
 import com.starrainnotes.tutorial.api.event.TutorialPublicationChangedEvent;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +22,6 @@ public class SeoContentEventConsumer {
     private static final Logger log = LoggerFactory.getLogger(SeoContentEventConsumer.class);
     private final SeoRefreshApi refresh;
     private final SeoTutorialRefreshService tutorialRefresh;
-    private final SeoPageMapper pages;
     private final SeoNotificationService notifications;
     private final ProfilePublicApi profiles;
 
@@ -64,23 +59,8 @@ public class SeoContentEventConsumer {
 
     @EventListener
     public void onTutorialChanged(TutorialPublicationChangedEvent event) {
-        safe("TUTORIAL", event.getTutorialId(), () -> {
-            String tutorialPath = "/tutorials/" + event.getSlug();
-            String chapterPrefix = tutorialPath + "/";
-            Set<String> before = new HashSet<>(pages.activePathsByPrefix(chapterPrefix));
-            if ("WITHDRAWN".equals(event.getAction())) {
-                tutorialRefresh.remove(event.getSlug());
-                notifications.enqueue(tutorialPath, "DELETE");
-                before.forEach(path -> notifications.enqueue(path, "DELETE"));
-            } else if ("PUBLISHED".equals(event.getAction()) || "RESTORED".equals(event.getAction())) {
-                tutorialRefresh.refresh(event.getSlug());
-                notifications.enqueue(tutorialPath, "UPSERT");
-                List<String> after = pages.activePathsByPrefix(chapterPrefix);
-                after.forEach(path -> notifications.enqueue(path, "UPSERT"));
-                before.removeAll(after);
-                before.forEach(path -> notifications.enqueue(path, "DELETE"));
-            }
-        });
+        safe("TUTORIAL", event.getTutorialId(),
+            () -> tutorialRefresh.publicationChanged(event.getSlug(), event.getAction()));
     }
 
     private void upsert(String path) {

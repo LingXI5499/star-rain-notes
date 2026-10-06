@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.starrainnotes.tutorial.content.entity.TutorialCategoryEntity;
+import com.starrainnotes.tutorial.content.dto.TutorialDashboardStatsDTO;
 import com.starrainnotes.tutorial.content.entity.TutorialChapterEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialGroupEntity;
@@ -164,6 +165,29 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     @Test
+    void dashboardQueriesCountDraftChaptersAndLimitRecentRows() {
+        TutorialDashboardStatsDTO before = tutorials.dashboardStats();
+        TutorialCategoryEntity category = newCategory(unique("dashboard-category"));
+        categories.insert(category);
+        TutorialEntity tutorial = newTutorial(category.getId(), unique("dashboard-tutorial"));
+        tutorials.insert(tutorial);
+        TutorialGroupEntity group = newGroup(tutorial.getId(), "概览分组");
+        groups.insert(group);
+        TutorialChapterEntity chapter = newChapter(tutorial.getId(), group.getId(), unique("dashboard-chapter"));
+        chapters.insert(chapter);
+
+        TutorialDashboardStatsDTO after = tutorials.dashboardStats();
+        assertEquals(before.getTotal() + 1, after.getTotal());
+        assertEquals(before.getDrafts() + 1, after.getDrafts());
+        assertEquals(before.getChapters() + 1, after.getChapters());
+        assertEquals(before.getDraftChapters() + 1, after.getDraftChapters());
+        List<TutorialEntity> recent = tutorials.dashboardRecent();
+        assertTrue(recent.size() <= 8);
+        assertTrue(recent.stream().allMatch(row -> row.getId() != null
+            && row.getTitle() != null && row.getUpdatedAt() != null));
+    }
+
+    @Test
     void tutorialMapperRoundTripsWorkspaceRowAndClearsWithdrawnAt() {
         TutorialCategoryEntity category = newCategory(unique("mapper-xml-test-tutorial-category"));
         categories.insert(category);
@@ -260,7 +284,7 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(loaded);
         assertEquals("初始摘要", loaded.getSummary());
         assertEquals("# 正文", loaded.getBodyMarkdown());
-        assertEquals("ACTIVE", loaded.getStatus());
+        assertEquals("PUBLISHED", loaded.getStatus());
         assertEquals(1, chapters.countByTutorialId(tutorial.getId()));
         assertEquals(1, chapters.countActiveByGroupId(group.getId()));
         assertEquals(1, chapters.countByTutorialIdAndSlug(tutorial.getId(), slug));
@@ -280,10 +304,11 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, chapters.updateSortOrder(chapter.getId(), 77, at));
         assertEquals(77, chapters.selectById(chapter.getId()).getSortOrder().intValue());
 
-        assertEquals(1, chapters.updateStatus(chapter.getId(), "ARCHIVED", at));
+        // V2_026 把章节状态统一成 DRAFT/PUBLISHED/WITHDRAWN（原来的 ACTIVE/ARCHIVED 已迁移）
+        assertEquals(1, chapters.updateStatus(chapter.getId(), "WITHDRAWN", at));
         assertEquals(0, chapters.countActiveByGroupId(group.getId()));
-        assertEquals(1, chapters.countByTutorialId(tutorial.getId()), "归档章节不应从工作区计数里消失");
-        assertEquals(1, chapters.updateStatus(chapter.getId(), "ACTIVE", at));
+        assertEquals(1, chapters.countByTutorialId(tutorial.getId()), "撤回章节不应从工作区计数里消失");
+        assertEquals(1, chapters.updateStatus(chapter.getId(), "PUBLISHED", at));
 
         assertEquals(1, chapters.moveToGroup(chapter.getId(), other.getId(), 33, at));
         TutorialChapterEntity moved = chapters.selectById(chapter.getId());
@@ -766,7 +791,8 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         row.setTitle("XML 验证章节");
         row.setBodyMarkdown("# 正文");
         row.setSortOrder(10);
-        row.setStatus("ACTIVE");
+        // V2_026 之后章节状态是 DRAFT/PUBLISHED/WITHDRAWN，countActiveByGroupId 统计的是 PUBLISHED
+        row.setStatus("PUBLISHED");
         return row;
     }
 

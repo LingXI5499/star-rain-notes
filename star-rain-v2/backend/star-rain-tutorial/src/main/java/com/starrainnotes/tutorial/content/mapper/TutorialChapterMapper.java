@@ -43,4 +43,6 @@ public interface TutorialChapterMapper {
 
     int moveToGroup(@Param("id") Long id, @Param("groupId") Long groupId,
                     @Param("sortOrder") int sortOrder, @Param("updatedAt") LocalDateTime updatedAt);
+
+    int deleteById(@Param("id") Long id);
 }

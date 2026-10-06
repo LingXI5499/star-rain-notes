@@ -4,7 +4,7 @@
 <mapper namespace="com.starrainnotes.blog.mapper.BlogTopicMapper">
 
     <sql id="topicColumns">
-        t.id, t.slug, t.name, t.description, t.status, t.created_at, t.updated_at
+        t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.created_at, t.updated_at
     </sql>
 
     <sql id="adminFilters">
@@ -21,8 +21,8 @@
 
     <insert id="insertTopic" parameterType="com.starrainnotes.blog.entity.BlogTopicEntity"
             useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sr_blog_topic (slug, name, description, status)
-        VALUES (#{slug}, #{name}, #{description}, #{status})
+        INSERT INTO sr_blog_topic (slug, name, description, sort_order, featured, status)
+        VALUES (#{slug}, #{name}, #{description}, #{sortOrder}, #{featured}, #{status})
     </insert>
 
     <select id="topicById" resultType="com.starrainnotes.blog.entity.BlogTopicEntity">
@@ -61,6 +61,14 @@
         DELETE FROM sr_blog_topic WHERE id = #{id}
     </delete>
 
+    <select id="minimumSortOrder" resultType="int">
+        SELECT MIN(sort_order) FROM sr_blog_topic
+    </select>
+
+    <update id="updatePresentation">
+        UPDATE sr_blog_topic SET sort_order = #{sortOrder}, featured = #{featured} WHERE id = #{id}
+    </update>
+
     <select id="adminPageCount" resultType="long">
         SELECT COUNT(*) FROM sr_blog_topic t
         <include refid="adminFilters"/>
@@ -72,8 +80,8 @@
         FROM sr_blog_topic t
         LEFT JOIN sr_blog_topic_post tp ON tp.topic_id = t.id
         <include refid="adminFilters"/>
-        GROUP BY t.id, t.slug, t.name, t.description, t.status, t.created_at, t.updated_at
-        ORDER BY t.updated_at DESC, t.id DESC
+        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.created_at, t.updated_at
+        ORDER BY t.sort_order, t.id
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
@@ -82,16 +90,16 @@
       只要有 ENABLED 就出现，**不再要求「至少有一篇已发布文章」**：
       专栏是站点预先划定的内容骨架，新开的专栏在还没有文章时也必须显示，
       否则导航条会随着发文进度时有时无。
-      顺序按 id 升序，即建栏先后 —— 表里没有策展列，用创建顺序最可预期。
+      顺序使用后台保存的 sort_order；新专题默认插在最前面。
     -->
     <select id="publishedTopics" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
-        SELECT t.id, t.slug, t.name, t.description, t.status, COUNT(p.id) AS member_count
+        SELECT t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, COUNT(p.id) AS member_count
         FROM sr_blog_topic t
         LEFT JOIN sr_blog_topic_post tp ON tp.topic_id = t.id
         LEFT JOIN sr_blog_post p ON p.id = tp.post_id AND p.status = 'PUBLISHED'
         WHERE t.status = 'ENABLED'
-        GROUP BY t.id, t.slug, t.name, t.description, t.status
-        ORDER BY t.id
+        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status
+        ORDER BY t.sort_order, t.id
     </select>
 
     <!--
@@ -101,12 +109,12 @@
       停用（DISABLED）与不存在的 slug 仍然 404。
     -->
     <select id="publishedTopicBySlug" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
-        SELECT t.id, t.slug, t.name, t.description, t.status, COUNT(p.id) AS member_count
+        SELECT t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, COUNT(p.id) AS member_count
         FROM sr_blog_topic t
         LEFT JOIN sr_blog_topic_post tp ON tp.topic_id = t.id
         LEFT JOIN sr_blog_post p ON p.id = tp.post_id AND p.status = 'PUBLISHED'
         WHERE t.status = 'ENABLED' AND t.slug = #{slug}
-        GROUP BY t.id, t.slug, t.name, t.description, t.status
+        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status
     </select>
 
     <!-- 公开页面上的专题标记：停用专题不出现 -->

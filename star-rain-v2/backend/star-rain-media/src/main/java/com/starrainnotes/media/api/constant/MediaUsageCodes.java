@@ -30,8 +30,6 @@ public final class MediaUsageCodes {
     public static final String SITE_LOGO = "site.logo";
     public static final String SITE_FAVICON = "site.favicon";
 
-    public static final String ENGLISH_LISTENING_AUDIO = "english.listening-audio";
-
     private static final Set<Character> EXTRA_PREFIX_CHARS = Set.of('-', '_');
 
     private MediaUsageCodes() {

@@ -31,9 +31,54 @@ class ModuleBoundaryTest {
                         String target = match.group(1);
                         String name = match.group(2);
                         if (!MODULES.contains(target) || source.equals(target)) continue;
-                        if (name.startsWith("api.") || name.startsWith("event.")
-                            || name.contains(".api.") || name.contains(".event.")) continue;
+                        if ((name.startsWith("api.") || name.contains(".api."))
+                            && !name.startsWith("api.impl.") && !name.contains(".api.impl.")) continue;
                         violations.add(backend.relativize(file) + " imports " + line);
+                    }
+                }
+            }
+        }
+        assertTrue(violations.isEmpty(), () -> String.join("\n", violations));
+    }
+
+    @Test
+    void controllersDoNotDependOnPersistenceTypes() throws IOException {
+        Path backend = backendRoot();
+        List<String> violations = new ArrayList<>();
+        for (String source : MODULES) {
+            Path javaRoot = backend.resolve("star-rain-" + source).resolve("src/main/java");
+            try (var files = Files.walk(javaRoot)) {
+                for (Path file : files.filter(path -> path.toString().endsWith("Controller.java")).toList()) {
+                    for (String line : Files.readAllLines(file)) {
+                        if (line.matches("^import com\\.starrainnotes\\.[^.]+\\.(mapper|entity)\\..+;$")) {
+                            violations.add(backend.relativize(file) + " imports " + line);
+                        }
+                    }
+                }
+            }
+        }
+        assertTrue(violations.isEmpty(), () -> String.join("\n", violations));
+    }
+
+    @Test
+    void reviewedServicePackagesKeepInterfacesAndImplementationsSeparate() throws IOException {
+        Path backend = backendRoot();
+        List<String> violations = new ArrayList<>();
+        for (String module : List.of("account", "analytics", "media", "seo")) {
+            Path service = backend.resolve("star-rain-" + module)
+                .resolve("src/main/java/com/starrainnotes/" + module + "/service");
+            try (var files = Files.list(service)) {
+                for (Path file : files.filter(path -> path.toString().endsWith(".java")).toList()) {
+                    if (!Files.readString(file).contains("public interface ")) {
+                        violations.add(backend.relativize(file) + " is not a service interface");
+                    }
+                }
+            }
+            Path implementations = service.resolve("impl");
+            try (var files = Files.list(implementations)) {
+                for (Path file : files.filter(path -> path.toString().endsWith(".java")).toList()) {
+                    if (!file.getFileName().toString().endsWith("Impl.java")) {
+                        violations.add(backend.relativize(file) + " lacks Impl suffix");
                     }
                 }
             }

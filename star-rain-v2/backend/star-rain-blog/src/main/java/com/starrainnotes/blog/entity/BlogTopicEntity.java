@@ -22,6 +22,8 @@ public class BlogTopicEntity {
     private String slug;
     private String name;
     private String description;
+    private Integer sortOrder;
+    private Boolean featured;
 
     // ENABLED / DISABLED
     private String status;

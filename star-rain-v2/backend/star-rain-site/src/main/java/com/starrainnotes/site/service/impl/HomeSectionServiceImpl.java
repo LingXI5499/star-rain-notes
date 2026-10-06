@@ -80,7 +80,7 @@ public class HomeSectionServiceImpl implements HomeSectionService {
         var fields = config.fieldNames();
         while (fields.hasNext()) {
             String name = fields.next();
-            if (!Set.of("limit", "layout").contains(name)) throw invalid("区块配置包含不支持的字段");
+            if (!Set.of("limit", "layout", "selectedIds").contains(name)) throw invalid("区块配置包含不支持的字段");
         }
         JsonNode limit = config.get("limit");
         if (limit != null && (!limit.isIntegralNumber() || !limit.canConvertToInt()
@@ -89,6 +89,16 @@ public class HomeSectionServiceImpl implements HomeSectionService {
         JsonNode layout = config.get("layout");
         if (layout != null && (!layout.isTextual() || !Set.of("cards", "list", "hero").contains(layout.asText())))
             throw invalid("区块布局无效");
+        JsonNode selectedIds = config.get("selectedIds");
+        if (selectedIds != null) {
+            if (!selectedIds.isArray() || selectedIds.size() != 3) throw invalid("精选内容必须选满三项");
+            Set<Long> unique = new java.util.HashSet<>();
+            for (JsonNode id : selectedIds) {
+                if (!id.canConvertToLong() || id.asLong() <= 0 || !unique.add(id.asLong())) {
+                    throw invalid("精选内容 ID 必须是三个不重复的正整数");
+                }
+            }
+        }
         try { return json.writeValueAsString(config); }
         catch (JsonProcessingException exception) { throw invalid("区块配置不是有效 JSON"); }
     }

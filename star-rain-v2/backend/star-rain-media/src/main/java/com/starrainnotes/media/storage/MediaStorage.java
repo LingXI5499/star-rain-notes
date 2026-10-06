@@ -1,7 +1,6 @@
 package com.starrainnotes.media.storage;
 
-import com.starrainnotes.media.storage.StorageWriteCommand;
-import com.starrainnotes.media.storage.StoredObject;
+import com.starrainnotes.media.dto.MediaStorageResultDTO;
 import java.io.InputStream;
 import java.time.Instant;
 import java.util.List;
@@ -12,7 +11,7 @@ import java.util.List;
  * 业务 Service 不允许散落 Files.write() / Files.delete()，
  * 也不允许把服务器绝对路径写进数据库。
  *
- * 当前实现是 LocalFileMediaStorage；未来可增加 MinIO / OSS / S3 实现，
+ * 当前实现是 LocalFileMediaStorageImpl；未来可增加 MinIO / OSS / S3 实现，
  * 业务层与数据库字段都不需要改。Storage 不承担业务权限判断，
  * 也不理解任何业务模块的状态机。
  */
@@ -26,7 +25,7 @@ public interface MediaStorage {
      * 入参是流而不是字节数组：视频可达 200MB，不能整份读进堆内存。
      * 已存在的 key 不得被覆盖。
      */
-    StoredObject store(StorageWriteCommand command);
+    MediaStorageResultDTO store(InputStream content, String fileExtension);
 
     // 打开完整内容；对象缺失时抛 MEDIA_CONTENT_MISSING
     InputStream open(String storageKey);

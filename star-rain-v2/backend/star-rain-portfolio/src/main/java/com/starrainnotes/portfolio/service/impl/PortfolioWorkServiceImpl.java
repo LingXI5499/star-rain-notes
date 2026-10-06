@@ -515,15 +515,6 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
                 || work.getBodyMarkdown() == null || work.getBodyMarkdown().isBlank()) {
             throw new WorkStateInvalidException("发布前请补全摘要与正文");
         }
-        WorkDetailEntity detail = detailRow(work.getId());
-        if (detail == null) {
-            throw new WorkStateInvalidException("发布前请填写类型详情");
-        }
-        try {
-            validateDetail(work, objectMapper.readTree(detail.getDetailJson()));
-        } catch (JsonProcessingException exception) {
-            throw new WorkInvalidException("类型详情格式无效");
-        }
         mediaRows(work.getId()).forEach(row -> mediaAssets.assertUsable(row.getMediaAssetId()));
         linkRows(work.getId()).forEach(row -> WorkLinkRules.requireSafeUrl(row.getUrl()));
     }
@@ -578,7 +569,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
 
     private void fillLink(WorkLinkEntity row, WorkLinkDTO request) {
         String type = requiredText(request.getLinkType(), 30, "链接类型").toUpperCase();
-        if (!Set.of("GITHUB", "DEMO", "VIDEO", "ARTICLE", "OTHER").contains(type)) {
+        if (!Set.of("GITHUB", "BILIBILI", "DOUYIN", "OTHER").contains(type)) {
             throw new WorkInvalidException("链接类型无效");
         }
         row.setLinkType(type);

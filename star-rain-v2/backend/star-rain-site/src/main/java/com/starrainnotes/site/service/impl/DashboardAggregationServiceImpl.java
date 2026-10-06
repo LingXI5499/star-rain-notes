@@ -11,9 +11,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -36,7 +38,16 @@ public class DashboardAggregationServiceImpl implements DashboardAggregationServ
                 return thread;
             }, new ThreadPoolExecutor.AbortPolicy());
 
-    public DashboardAggregationServiceImpl(List<DashboardSource> sources) { this.sources = sources; }
+    public DashboardAggregationServiceImpl(List<DashboardSource> sources) {
+        Set<String> codes = new HashSet<>();
+        for (DashboardSource source : sources) {
+            String code = source.moduleCode();
+            if (code == null || code.isBlank() || !codes.add(code)) {
+                throw new IllegalArgumentException("Invalid or duplicate dashboard module code: " + code);
+            }
+        }
+        this.sources = List.copyOf(sources);
+    }
 
     @Override
     public SiteDashboardVO dashboard() {
@@ -60,13 +71,23 @@ public class DashboardAggregationServiceImpl implements DashboardAggregationServ
             try {
                 long remaining = Math.max(0, deadlines.get(code) - System.nanoTime());
                 DashboardModuleData data = future.get(remaining, TimeUnit.NANOSECONDS);
+                if (data == null || data.getMetrics() == null || data.getRecentContent() == null) {
+                    throw new IllegalStateException("Dashboard source returned incomplete data");
+                }
                 modules.put(code, data);
                 recent.addAll(data.getRecentContent());
             } catch (InterruptedException exception) {
                 Thread.currentThread().interrupt();
                 future.cancel(true);
                 degraded.add(code);
-            } catch (ExecutionException | TimeoutException exception) {
+                futures.forEach((remainingCode, pending) -> {
+                    if (!modules.containsKey(remainingCode) && !degraded.contains(remainingCode)) {
+                        pending.cancel(true);
+                        degraded.add(remainingCode);
+                    }
+                });
+                break;
+            } catch (ExecutionException | TimeoutException | IllegalStateException exception) {
                 future.cancel(true);
                 log.warn("Site dashboard source {} degraded", code, exception);
                 degraded.add(code);

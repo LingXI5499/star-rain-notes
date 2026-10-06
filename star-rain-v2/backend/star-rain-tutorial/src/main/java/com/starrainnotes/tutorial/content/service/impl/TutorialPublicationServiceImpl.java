@@ -6,8 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.result.PageResult;
-import com.starrainnotes.review.api.ReviewSubmissionApi;
-import com.starrainnotes.review.api.dto.ReviewSubmissionCommand;
 import com.starrainnotes.tutorial.content.entity.TutorialCategoryEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialChapterEntity;
 import com.starrainnotes.tutorial.content.entity.TutorialEntity;
@@ -55,7 +53,6 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     private final TutorialRevisionMapper revisionMapper;
     private final TutorialContentService contentService;
     private final CurrentActorApi currentActorApi;
-    private final ReviewSubmissionApi reviewSubmissionApi;
     private final ObjectMapper objectMapper;
     private final TutorialEventPublisher eventPublisher;
     private final TutorialMediaReferences mediaReferences;
@@ -84,6 +81,15 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     private ObjectNode publicSummary(TutorialEntity row, JsonNode frozen) {
         ObjectNode item = ((ObjectNode) frozen).deepCopy();
         item.remove("groups");
+        long wordCount = 0;
+        for (JsonNode group : frozen.path("groups")) {
+            for (JsonNode chapter : group.path("chapters")) {
+                String plain = chapter.path("bodyMarkdown").asText("")
+                        .replaceAll("[\\s#*_`>\\[\\]()]", "");
+                wordCount += plain.codePointCount(0, plain.length());
+            }
+        }
+        item.put("wordCount", wordCount);
         item.put("publishedAt", row.getPublishedAt() == null ? "" : row.getPublishedAt().toString());
         return item;
     }
@@ -189,6 +195,9 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     @Transactional
     public TutorialAdminVO publish(Long tutorialId) {
         TutorialEntity tutorial = lock(tutorialId);
+        if ("PUBLISHED".equals(tutorial.getPublicationStatus())) {
+            throw new TutorialStateException("教程已公开；请先撤回，再修改并重新公开");
+        }
         if ("IN_REVIEW".equals(tutorial.getEditingStatus())) {
             throw new TutorialStateException("教程审核中，不能直接发布");
         }
@@ -215,39 +224,6 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         tutorialMapper.update(tutorial);
         eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
                 tutorial.getTitle(), "WITHDRAWN", tutorial.getPublishedAt()));
-        return contentService.tutorial(tutorialId);
-    }
-
-    @Override
-    @Transactional
-    public TutorialAdminVO restore(Long tutorialId) {
-        TutorialEntity tutorial = lock(tutorialId);
-        if (!"WITHDRAWN".equals(tutorial.getPublicationStatus()) || tutorial.getPublishedRevisionId() == null) {
-            throw new TutorialStateException("没有可以重新公开的教程版本");
-        }
-        tutorial.setPublicationStatus("PUBLISHED");
-        tutorial.setWithdrawnAt(null);
-        tutorialMapper.update(tutorial);
-        eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
-                tutorial.getTitle(), "RESTORED", tutorial.getPublishedAt()));
-        return contentService.tutorial(tutorialId);
-    }
-
-    @Override
-    @Transactional
-    public TutorialAdminVO submitReview(Long tutorialId) {
-        TutorialEntity tutorial = lock(tutorialId);
-        if ("IN_REVIEW".equals(tutorial.getEditingStatus())) {
-            throw new TutorialStateException("教程已在审核中");
-        }
-        TutorialRevisionEntity revision = freeze(tutorial);
-        Long actorId = currentActorApi.current().getAccountId();
-        reviewSubmissionApi.submit(ReviewSubmissionCommand.builder()
-                .reviewType("tutorial.publish").targetModule("TUTORIAL").targetType("TUTORIAL")
-                .targetId(tutorialId).targetRevisionRef(revision.getRevisionRef())
-                .targetDisplayName(tutorial.getTitle()).applicantAccountId(actorId).build());
-        tutorial.setEditingStatus("IN_REVIEW");
-        tutorialMapper.update(tutorial);
         return contentService.tutorial(tutorialId);
     }
 

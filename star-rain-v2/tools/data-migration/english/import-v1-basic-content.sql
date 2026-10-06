@@ -77,18 +77,6 @@ SELECT id,title,slug,summary,body_markdown,reading_level,cefr_level,source_name,
        sort_order,COALESCE(published_at,created_at,NOW(3)),created_at,updated_at
 FROM {{SOURCE}}.english_reading_article;
 
-INSERT IGNORE INTO {{TARGET}}.sr_english_listening_item
-(id,title,slug,summary,transcript_markdown,cefr_level,listening_level,duration_seconds,source_name,source_url,
- publish_status,sort_order,published_at,created_at,updated_at)
-SELECT id,title,slug,summary,transcript_markdown,cefr_level,listening_level,duration_seconds,source_name,source_url,
-       'PUBLISHED',sort_order,COALESCE(published_at,created_at,NOW(3)),created_at,updated_at
-FROM {{SOURCE}}.english_listening_item;
-
-INSERT IGNORE INTO {{TARGET}}.sr_english_listening_segment
-(id,listening_item_id,start_ms,end_ms,transcript_text,translation_text,sort_order,created_at,updated_at)
-SELECT id,listening_item_id,start_ms,end_ms,transcript_text,translation_text,sort_order,created_at,updated_at
-FROM {{SOURCE}}.english_listening_segment;
-
 INSERT IGNORE INTO {{TARGET}}.sr_english_writing_resource
 (id,resource_kind,title,slug,summary,body_markdown,cefr_level,publish_status,sort_order,published_at,created_at,updated_at)
 SELECT id,resource_kind,title,slug,summary,body_markdown,cefr_level,'PUBLISHED',sort_order,
@@ -112,7 +100,5 @@ UNION ALL SELECT 'vocabulary_word_audio_with_media',COUNT(*) FROM {{TARGET}}.sr_
 UNION ALL SELECT 'grammar_section',COUNT(*) FROM {{TARGET}}.sr_english_grammar_section
 UNION ALL SELECT 'grammar_lesson',COUNT(*) FROM {{TARGET}}.sr_english_grammar_lesson
 UNION ALL SELECT 'reading',COUNT(*) FROM {{TARGET}}.sr_english_reading_article
-UNION ALL SELECT 'listening',COUNT(*) FROM {{TARGET}}.sr_english_listening_item
-UNION ALL SELECT 'listening_segment',COUNT(*) FROM {{TARGET}}.sr_english_listening_segment
 UNION ALL SELECT 'writing_resource',COUNT(*) FROM {{TARGET}}.sr_english_writing_resource
 UNION ALL SELECT 'writing_prompt',COUNT(*) FROM {{TARGET}}.sr_english_writing_prompt;
