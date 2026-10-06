@@ -3,7 +3,7 @@ import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 
 /*
- * 博客首页顶部的专栏导航条。
+ * 博客列表顶部的导航条（专栏栏 / 标签栏共用）。
  *
  * 需求是「放得下的平铺，放不下的收进更多」，而且平铺的那部分要**正好占满一行**——
  * 所以这里是真的按像素测量，而不是写死「显示前 6 个」：
@@ -14,24 +14,51 @@ import { RouterLink } from 'vue-router'
  * 为什么不用纯 CSS：`overflow:hidden` 会把第 7 个条目切一半，看起来像坏了；
  * 只在 CSS 里限宽也做不到「刚好填满」。
  *
- * 专栏数据来自公开专题接口（`/public/blog/topics`），外加一个「首页」——
- * 首页不是专题，它是 /blog 的全部文章，所以由调用方拼在数组最前面。
+ * 条目**不跳新页面**：调用方传进来的 to 指向同一个列表页、只带不同的筛选查询
+ * （`?topic=` / `?tag=`），点一下就是「原地切换下方的列表」。
+ *
+ * 选中态是一枚会滑动的底片：位置由当前选中项实测得到，
+ * 切换专栏时它从旧位置滑到新位置，而不是硬切背景色。
  */
 const props = defineProps({
-  // [{ key, label, to }]，key 用于判断选中态
+  // [{ key, label, to }]，key 用于判断选中态，to 交给 RouterLink
   columns: { type: Array, default: () => [] },
   activeKey: { type: String, default: '' },
+  ariaLabel: { type: String, default: '博客专栏' },
 })
 
 const row = ref(null)
 const probe = ref(null)
 const fitCount = ref(0)
 const open = ref(false)
+const pill = ref({ left: 0, top: 0, width: 0, height: 0, ready: false })
 
 const visible = computed(() => props.columns.slice(0, fitCount.value))
 const overflow = computed(() => props.columns.slice(fitCount.value))
+// 选中项被收进「更多」时，行内没有底片，改为照亮「更多」按钮
+const activeInOverflow = computed(() => overflow.value.some((item) => item.key === props.activeKey))
 
 const GAP = 8
+
+/*
+ * 底片位置只能实测：条目宽度随文案和字体变化，写死 translate 到第 N 个位置一定会错。
+ * 选中项不在可见行（被收进「更多」）时直接藏起来。
+ */
+function placePill() {
+  const rowEl = row.value
+  const activeEl = rowEl?.querySelector('.column-nav__item--active')
+  if (!rowEl || !activeEl) {
+    pill.value = { ...pill.value, ready: false }
+    return
+  }
+  pill.value = {
+    left: activeEl.offsetLeft,
+    top: activeEl.offsetTop,
+    width: activeEl.offsetWidth,
+    height: activeEl.offsetHeight,
+    ready: true,
+  }
+}
 
 async function measure() {
   await nextTick()
@@ -50,6 +77,8 @@ async function measure() {
   if (totalWidth <= available) {
     fitCount.value = props.columns.length
     open.value = false
+    await nextTick()
+    placePill()
     return
   }
 
@@ -65,6 +94,8 @@ async function measure() {
   }
   fitCount.value = Math.max(1, count)
   if (overflow.value.length === 0) open.value = false
+  await nextTick()
+  placePill()
 }
 
 let observer = null
@@ -94,17 +125,34 @@ onBeforeUnmount(() => {
 })
 
 watch(() => props.columns.map((item) => `${item.key}:${item.label}`).join('|'), () => { void measure() })
+watch(() => props.activeKey, async () => { await nextTick(); placePill() })
 </script>
 
 <template>
-  <nav class="column-nav" aria-label="博客专栏">
+  <nav class="column-nav" :aria-label="ariaLabel">
     <div ref="row" class="column-nav__row">
+      <!--
+        滑动底片。只在量到位置后渲染：挂载时就带着正确坐标，因此首帧不会从左上角滑进来。
+        aria-hidden：它纯装饰，读屏信息由条目的 aria-current 表达。
+      -->
+      <span
+        v-if="pill.ready"
+        class="column-nav__pill"
+        aria-hidden="true"
+        :style="{
+          width: `${pill.width}px`,
+          height: `${pill.height}px`,
+          transform: `translate(${pill.left}px, ${pill.top}px)`,
+        }"
+      />
+
       <RouterLink
         v-for="column in visible"
         :key="column.key"
         :to="column.to"
         class="column-nav__item"
         :class="{ 'column-nav__item--active': activeKey === column.key }"
+        :aria-current="activeKey === column.key ? 'true' : undefined"
       >
         {{ column.label }}
       </RouterLink>
@@ -113,7 +161,10 @@ watch(() => props.columns.map((item) => `${item.key}:${item.label}`).join('|'), 
         <button
           type="button"
           class="column-nav__more-trigger"
-          :class="{ 'column-nav__more-trigger--open': open }"
+          :class="{
+            'column-nav__more-trigger--open': open,
+            'column-nav__more-trigger--active': activeInOverflow,
+          }"
           :aria-expanded="open"
           @click.stop="open = !open"
         >
@@ -125,6 +176,7 @@ watch(() => props.columns.map((item) => `${item.key}:${item.label}`).join('|'), 
             <RouterLink
               :to="column.to"
               :class="{ 'column-nav__menu-link--active': activeKey === column.key }"
+              :aria-current="activeKey === column.key ? 'true' : undefined"
               @click="open = false"
             >
               {{ column.label }}
@@ -159,13 +211,29 @@ watch(() => props.columns.map((item) => `${item.key}:${item.label}`).join('|'), 
 }
 
 .column-nav__row {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 8px;
   min-height: 40px;
 }
 
+.column-nav__pill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+  border-radius: 10px;
+  background: var(--primary);
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--primary) 24%, transparent);
+  transition:
+    transform 320ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1)),
+    width 320ms var(--ease-out, cubic-bezier(0.16, 1, 0.3, 1));
+}
+
 .column-nav__item {
+  position: relative;
+  z-index: 1;
   flex: 0 0 auto;
   padding: 8px 14px;
   border-radius: 10px;
@@ -182,12 +250,18 @@ watch(() => props.columns.map((item) => `${item.key}:${item.label}`).join('|'), 
 
 .column-nav__item--active {
   color: var(--on-primary);
-  background: var(--primary);
   font-weight: 600;
+}
+
+/* 选中项自己不再铺底色：底色由底片负责，否则底片滑走后会留下一块残影 */
+.column-nav__item--active:hover {
+  color: var(--on-primary);
+  background: transparent;
 }
 
 .column-nav__more {
   position: relative;
+  z-index: 1;
   flex: 0 0 auto;
   margin-left: auto;
 }
@@ -212,6 +286,12 @@ watch(() => props.columns.map((item) => `${item.key}:${item.label}`).join('|'), 
   border-color: var(--primary);
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.column-nav__more-trigger--active {
+  border-color: var(--primary);
+  color: var(--primary);
+  font-weight: 600;
 }
 
 .column-nav__menu {
@@ -266,6 +346,10 @@ watch(() => props.columns.map((item) => `${item.key}:${item.label}`).join('|'), 
   gap: 8px;
   width: max-content;
   visibility: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .column-nav__pill { transition: none; }
 }
 
 @media (max-width: 680px) {

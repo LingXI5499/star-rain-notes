@@ -12,10 +12,14 @@ import BlogPagination from '../components/BlogPagination.vue'
 /*
  * BLOG-001 前台博客列表（对齐 V1 `views/blog/BlogView.vue`）。
  *
- * 视觉与信息架构：标题区（+ 公开文章总数）→ 左侧时间线轴 → 右侧 TOPICS（专题）/ TAGS（标签）/ ARCHIVE 侧栏。
+ * 视觉与信息架构：标题区（+ 公开文章总数）→ 左侧顶部专栏栏 → 时间线 → 右侧 TAGS（标签）/ ARCHIVE（归档）/ STATS 侧栏。
  *
- * 筛选条件写回 URL（`?tag=` / `?month=YYYY-MM` / `?page=`），
- * 「某标签下的文章」「某个月的文章」都是可直接分享的地址，前进后退也不会丢状态。
+ * 筛选条件写回 URL（`?topic=` / `?tag=` / `?month=YYYY-MM` / `?page=`），
+ * 「某专栏下的文章」「某标签下的文章」「某个月的文章」都是可直接分享的地址，前进后退也不会丢状态。
+ *
+ * 顶部专栏栏**不再跳转 /blog/topics/:slug**：用户要求「上方的固定专栏不需要跳转新页面，
+ * 就在原基础上切换下方的博客列表即可」，因此专栏条目指向本页 + `?topic=`，
+ * 由下面的 watch 原地换掉列表内容（专题页 /blog/topics/:slug 仍然存在，正文里的专题标记还用它）。
  *
  * 时间筛选走归档接口：`/public/blog/archive` 才支持 year/month，
  * 列表接口 `BlogPublicQueryDTO` 明确忽略这两个参数。
@@ -33,6 +37,7 @@ const router = useRouter()
 const pageSize = 10
 const state = reactive({
   tag: '',
+  topic: '',
   month: null, // { year, month } 或 null
   page: 1,
   total: 0,
@@ -49,18 +54,26 @@ const errorText = ref('')
  * 顶部专栏导航：首页 + 各专题。
  * 「首页」不是专题，它是本页的全部文章，所以在这里拼在最前面；
  * 放不下的由 BlogColumnNav 收进「更多」（它按像素实测，不写死数量）。
+ * 条目全部落回本页，只用查询串区分 —— 这就是「原地切换下方列表」。
  */
 const columns = computed(() => [
-  { key: 'home', label: '首页', to: contentPath('/blog') },
+  { key: 'home', label: '首页', to: { path: contentPath('/blog') } },
   ...topics.value.map((topic) => ({
     key: topic.slug,
     label: topic.name,
-    to: contentPath(`/blog/topics/${topic.slug}`),
+    to: { path: contentPath('/blog'), query: { topic: topic.slug } },
   })),
 ])
 
 const totalPages = computed(() => Math.max(1, Math.ceil(state.total / pageSize)))
 const activeMonth = computed(() => (state.month ? `${state.month.year}-${String(state.month.month).padStart(2, '0')}` : ''))
+const activeColumn = computed(() => state.topic || 'home')
+/*
+ * 换筛选条件时把时间线整块重挂一次：卡片带着 [data-stagger] 的错峰入场重新播一遍，
+ * 切换专栏的手感就是「旧列表淡出、新列表逐条浮上来」，而不是硬替换。
+ * 列表数据由本页持有，重挂不触发任何请求。
+ */
+const listKey = computed(() => [state.topic, state.tag, activeMonth.value, state.page].join('|'))
 
 // 月份 -> 'YYYY-MM'；非法值返回 null，避免把坏 URL 传给后端拿 400
 function parseMonth(value) {
@@ -74,6 +87,7 @@ function parseMonth(value) {
 
 function queryOf() {
   return {
+    ...(state.topic ? { topic: state.topic } : {}),
     ...(state.tag ? { tag: state.tag } : {}),
     ...(activeMonth.value ? { month: activeMonth.value } : {}),
     ...(state.page > 1 ? { page: String(state.page) } : {}),
@@ -81,6 +95,7 @@ function queryOf() {
 }
 
 function syncFromQuery() {
+  state.topic = typeof route.query.topic === 'string' ? route.query.topic : ''
   state.tag = typeof route.query.tag === 'string' ? route.query.tag : ''
   state.month = parseMonth(route.query.month)
   state.page = Math.max(Number(route.query.page) || 1, 1)
@@ -93,6 +108,7 @@ async function loadPosts() {
     const params = {
       page: state.page,
       pageSize,
+      topic: state.topic || undefined,
       tag: state.tag || undefined,
     }
     const result = state.month
@@ -138,6 +154,17 @@ function selectTag(slug) {
   applyQuery()
 }
 
+function selectTopic(slug) {
+  state.topic = slug
+  state.page = 1
+  applyQuery()
+}
+
+// 「当前视图」胶囊上显示专栏名字，而不是 slug
+function columnLabel(slug) {
+  return topics.value.find((item) => item.slug === slug)?.name || slug
+}
+
 function selectMonth(month) {
   state.month = month
   state.page = 1
@@ -145,6 +172,7 @@ function selectMonth(month) {
 }
 
 function clearAll() {
+  state.topic = ''
   state.tag = ''
   state.month = null
   state.page = 1
@@ -164,20 +192,26 @@ onMounted(() => {
   void loadPosts()
 })
 
-// URL 是筛选条件的唯一出口：手改地址栏、前进后退都会走到这里
-watch(() => [route.query.tag, route.query.month, route.query.page], ([tag, month, page]) => {
+// URL 是筛选条件的唯一出口：手改地址栏、点顶部专栏栏、前进后退都会走到这里
+watch(() => [route.query.topic, route.query.tag, route.query.month, route.query.page], ([topic, tag, month, page]) => {
+  const nextTopic = typeof topic === 'string' ? topic : ''
   const nextTag = typeof tag === 'string' ? tag : ''
   const nextMonth = parseMonth(month)
   const nextPage = Math.max(Number(page) || 1, 1)
   const sameMonth = (nextMonth?.year === state.month?.year) && (nextMonth?.month === state.month?.month)
-  if (nextTag === state.tag && sameMonth && nextPage === state.page) return
+  if (nextTopic === state.topic && nextTag === state.tag && sameMonth && nextPage === state.page) return
+  state.topic = nextTopic
   state.tag = nextTag
   state.month = nextMonth
   state.page = nextPage
   void loadPosts()
 })
 
-const emptyText = computed(() => (state.tag || state.month ? '没有符合条件的文章。' : '还没有已发布的文章。'))
+const emptyText = computed(() => {
+  if (state.topic) return '这个专栏下还没有文章。'
+  if (state.tag || state.month) return '没有符合条件的文章。'
+  return '还没有已发布的文章。'
+})
 </script>
 
 <template>
@@ -201,15 +235,17 @@ const emptyText = computed(() => (state.tag || state.month ? '没有符合条件
           参照站的导航条右边缘与文章列表对齐，右侧栏从页面顶部就开始了。
           放在 grid 外面横跨整行的话，右栏会被顶到导航条下面，上半屏右侧空一大块。
         -->
-        <BlogColumnNav :columns="columns" active-key="home" />
-        <div v-if="state.tag || activeMonth" class="blog-active">
+        <BlogColumnNav :columns="columns" :active-key="activeColumn" aria-label="博客专栏" />
+        <div v-if="state.topic || state.tag || activeMonth" class="blog-active">
           <span>当前视图</span>
-          <button v-if="state.tag" type="button" @click="selectTag(state.tag)"># {{ state.tag }} ×</button>
+          <button v-if="state.topic" type="button" @click="selectTopic('')">{{ columnLabel(state.topic) }} ×</button>
+          <button v-if="state.tag" type="button" @click="selectTag('')"># {{ state.tag }} ×</button>
           <button v-if="activeMonth" type="button" @click="selectMonth(null)">{{ activeMonth }} ×</button>
           <button type="button" class="blog-active__clear" @click="clearAll">清除全部</button>
         </div>
 
         <BlogTimeline
+          :key="listKey"
           :items="state.items"
           :loading="loading"
           :error-text="errorText"
