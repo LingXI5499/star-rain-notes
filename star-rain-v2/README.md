@@ -63,24 +63,33 @@ V2 使用独立目录、独立数据库 `star_rain_v2`、独立会话 Cookie `ST
 
 | 包 | 放什么 |
 | --- | --- |
-| api (+dto) | 模块对外契约：只有接口 + 契约 DTO，不放实现 |
+| api (+dto/vo/impl/event) | 模块对外契约：根包及 dto/vo/event 只放契约，实现只放 api/impl |
 | config | `@Configuration` 配置类 |
 | constant | 常量类（权限码、usageCode 等） |
 | context | 上下文与主体对象 |
 | controller | Controller |
 | dto | 请求 DTO 与层间传输对象 |
+| dashboard | 模块概览的数据源适配；聚合逻辑仍在 site/service |
 | entity | 数据库实体 |
 | enumeration | 枚举 |
+| event | 领域事件的发布与消费适配；业务编排放在 service，跨模块事件类型放在 api/event |
+| job | 定时任务入口；只负责调度 service |
 | exception | 自定义异常与错误码 |
 | handler | 处理器 |
 | interceptor | 拦截器 / 过滤器 |
+| lifecycle | 启动或关闭时的一次性协调 |
 | mapper | MyBatis Mapper 接口 |
+| notifier | 对外通知的基础设施适配 |
 | properties | `@ConfigurationProperties` |
-| security | 安全声明（URL 边界、权限码语义） |
+| provider (+impl) | 同一模块内多来源读取契约及其实现 |
+| renderer | 将内容转换为 HTML 等呈现格式 |
+| security | 安全声明与请求限流 |
 | service (+impl) | 服务接口 + 实现 |
 | storage (+impl) | 可替换的基础设施抽象 |
-| utils | 无状态工具类 |
+| utils | 无状态格式化与分类工具 |
 | vo | 视图对象 |
+
+`common/dashboard/api` 只放模块概览契约，避免 `site` 依赖各业务模块时出现反向依赖。模块的 `dashboard` 类只把本模块 service 结果转换为契约数据；`site/service` 负责聚合和降级。模块的 `event` 类只接收或发布提交后的领域事件，搜索与 SEO 的派生数据更新留在各自 service。跨模块调用继续通过目标模块的 `api` 契约。
 
 按需建包，不创建空层。新增类别必须先补进本规范再建包。
 
