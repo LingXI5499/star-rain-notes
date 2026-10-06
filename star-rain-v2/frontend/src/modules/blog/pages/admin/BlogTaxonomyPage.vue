@@ -31,6 +31,8 @@ const { filters, page, pageSize, read: readQuery, write: writeQuery, reset: rese
   defaults: { keyword: '', status: '' },
   defaultPageSize: 24,
   pageSizes: [12, 24, 48],
+  // 允许自定义每页条数（1..100），与后端 BlogQueryRules.PAGE_SIZE_MAX 对齐
+  maxPageSize: 100,
 })
 
 const result = ref({ items: [], total: 0, page: 1, pageSize: 24 })
@@ -41,6 +43,17 @@ const notice = ref('')
 const tagDialog = ref(null)
 const tagForm = reactive({ id: null, name: '' })
 let loadVersion = 0
+
+/*
+ * 每页条数：常用档位之外还允许自己填（用户要求「可以来个自定义的」）。
+ * 后端 BlogQueryRules.PAGE_SIZE_MAX = 100，超出会被拒绝，所以这里先把输入夹到 1..100。
+ */
+const PAGE_SIZE_OPTIONS = [12, 24, 48]
+const PAGE_SIZE_MAX = 100
+const customOpen = ref(false)
+const customValue = ref('')
+// URL 里带着一个非档位的 pageSize（例如别人分享的 ?pageSize=30）时，直接进自定义态
+const isCustomSize = computed(() => !PAGE_SIZE_OPTIONS.includes(pageSize.value))
 
 const tags = computed(() => result.value.items || [])
 const totalPages = computed(() => Math.max(1, Math.ceil(result.value.total / pageSize.value)))
@@ -80,10 +93,34 @@ function changePage(next) {
   writeQuery()
 }
 
-function changePageSize(event) {
-  pageSize.value = Number(event.target.value)
+/*
+ * 每页条数：既给常用档位，也允许自己填。
+ * 后端 BlogQueryRules 的硬边界是 1..100，这里先夹住再写 URL ——
+ * 让用户看到「输入被收拢到合法值」，而不是提交后收到一个 BLOG_QUERY_INVALID。
+ */
+function applyPageSize(raw) {
+  const size = Math.min(PAGE_SIZE_MAX, Math.max(1, Math.floor(Number(raw) || pageSize.value)))
+  customValue.value = String(size)
+  if (size === pageSize.value) return
+  pageSize.value = size
   page.value = 1
   writeQuery()
+}
+
+function choosePageSize(event) {
+  const value = event.target.value
+  if (value === 'custom') {
+    customOpen.value = true
+    customValue.value = String(pageSize.value)
+    return
+  }
+  customOpen.value = false
+  applyPageSize(Number(value))
+}
+
+// 自定义输入允许边输边改，回车或失焦时才收拢成合法值并查询
+function commitCustomPageSize() {
+  applyPageSize(customValue.value)
 }
 
 async function openTagDialog(tag = null) {
@@ -143,6 +180,8 @@ async function toggleTagStatus(tag) {
 // URL 是筛选与分页的唯一出口：手改地址栏、前进后退都会走到这里
 watch(() => route.fullPath, () => {
   readQuery()
+  customOpen.value = !PAGE_SIZE_OPTIONS.includes(pageSize.value)
+  customValue.value = String(pageSize.value)
   load()
 }, { immediate: true })
 </script>
@@ -207,11 +246,26 @@ watch(() => route.fullPath, () => {
 
     <nav v-if="result.total > 0" class="tag-admin__pages" aria-label="标签分页">
       <span>共 {{ result.total }} 个标签</span>
-      <label class="tag-admin__page-size">每页
-        <select :value="pageSize" @change="changePageSize">
-          <option v-for="size in [12, 24, 48]" :key="size" :value="size">{{ size }}</option>
-        </select>
-      </label>
+      <div class="tag-admin__page-controls">
+        <label class="tag-admin__page-size">每页
+          <select :value="customOpen || isCustomSize ? 'custom' : pageSize" @change="choosePageSize">
+            <option v-for="size in PAGE_SIZE_OPTIONS" :key="size" :value="size">{{ size }}</option>
+            <option value="custom">自定义…</option>
+          </select>
+        </label>
+        <span v-if="customOpen || isCustomSize" class="tag-admin__page-custom">
+          <input
+            v-model="customValue"
+            type="number"
+            min="1"
+            :max="PAGE_SIZE_MAX"
+            aria-label="每页条数，1 到 100"
+            @keyup.enter="commitCustomPageSize"
+            @blur="commitCustomPageSize"
+          />
+          <button type="button" @click="commitCustomPageSize">应用</button>
+        </span>
+      </div>
       <div class="tag-admin__page-jump">
         <button type="button" :disabled="page <= 1 || loading" @click="changePage(page - 1)">上一页</button>
         <span>{{ page }} / {{ totalPages }}</span>
@@ -287,6 +341,27 @@ watch(() => route.fullPath, () => {
 .tag-admin__page-size { display: flex; align-items: center; gap: 8px; }
 
 .tag-admin__page-size select { width: auto; min-height: 34px; padding: 4px 8px; }
+
+.tag-admin__page-controls { display: flex; align-items: center; gap: 10px; }
+
+.tag-admin__page-custom { display: flex; align-items: center; gap: 6px; }
+
+.tag-admin__page-custom input {
+  width: 84px;
+  min-height: 34px;
+  padding: 4px 8px;
+  text-align: center;
+}
+
+.tag-admin__page-custom button {
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  color: var(--primary);
+  background: var(--bg-surface);
+  font-size: 12px;
+  cursor: pointer;
+}
 
 @media (max-width: 900px) {
   .tag-admin__stats--tags { grid-template-columns: 1fr 1fr; }

@@ -16,11 +16,33 @@ const Probe = defineComponent({
   },
 })
 
+// 允许自定义每页条数的页面：档位之外的值只要不超过上限就接受
+const CustomSizeProbe = defineComponent({
+  setup(_, { expose }) {
+    const state = useListQuery({
+      defaults: { keyword: '' },
+      defaultPageSize: 24,
+      pageSizes: [12, 24, 48],
+      maxPageSize: 100,
+    })
+    expose(state)
+    return () => null
+  },
+})
+
 async function fixture(url) {
   const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component: Probe }] })
   await router.push(url)
   await router.isReady()
   const wrapper = mount(Probe, { global: { plugins: [router] } })
+  return { router, wrapper }
+}
+
+async function customFixture(url) {
+  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component: CustomSizeProbe }] })
+  await router.push(url)
+  await router.isReady()
+  const wrapper = mount(CustomSizeProbe, { global: { plugins: [router] } })
   return { router, wrapper }
 }
 
@@ -49,5 +71,18 @@ describe('useListQuery', () => {
     await wrapper.vm.reset()
     expect(router.currentRoute.value.query).toEqual({})
     wrapper.unmount()
+  })
+
+  it('accepts a custom pageSize up to maxPageSize, and falls back beyond it', async () => {
+    const custom = await customFixture('/?pageSize=7')
+    custom.wrapper.vm.read()
+    // 7 不在档位 [12,24,48] 里，但没超过上限，必须保留 —— 否则用户填了等于没填
+    expect(custom.wrapper.vm.pageSize).toBe(7)
+    custom.wrapper.unmount()
+
+    const tooBig = await customFixture('/?pageSize=101')
+    tooBig.wrapper.vm.read()
+    expect(tooBig.wrapper.vm.pageSize).toBe(24)
+    tooBig.wrapper.unmount()
   })
 })

@@ -13,7 +13,7 @@ import { accountPath } from '../viewMode'
  * 按角色与权限隐藏 —— 是「看不见」，不是「点了报 403」：
  *
  *   概览    仪表盘、访问统计                 仅 SUPER_ADMIN
- *   内容    教程工作台、博客管理（+标签与专题）、英语内容（+五个方向）、
+ *   内容    教程工作台、博客管理（+标签管理/专题管理）、英语内容（+五个方向）、
  *           作品管理、媒体库、作者资料       ADMIN 及以上，逐项按权限
  *   协作    审核中心、留言管理                按 review:read / message:read-admin
  *   站点    站点设置                          仅 SUPER_ADMIN
@@ -29,7 +29,7 @@ import { accountPath } from '../viewMode'
  *      现在统一为「组标题 + 一级项」，只有真正存在子页面的项才挂子项。
  *      同时删掉了 `item.pending` 那两条永不成立的「建设中」死分支。
  *
- * 子项（标签与专题、英语五个方向、学习四页）过去「有路由无入口」，
+ * 子项（标签管理/专题管理、英语五个方向、学习四页）过去「有路由无入口」，
  * 只能靠手输地址访问；现在挂在各自父项下，父项所在组展开时可见。
  *
  * 返回前台指向**账号树前台**（accountPath('/') = /useradmin），不是裸 '/'：
@@ -131,8 +131,14 @@ const navGroups = computed(() => {
         {
           label: '博客管理', short: '博', to: accountPath('/blog/manage'),
           visible: auth.hasPermission('blog:read-admin'),
+          /*
+           * 标签与专题拆成两条并列入口（用户要求「三者可以进行路由」）：
+           * 它们本来就是两种不同的东西 —— 标签没有顺序也没有成员，
+           * 专题有成员与人工顺序、可以整体删除；合在一个入口里点进去再分栏，等于把导航藏了一半。
+           */
           children: [
-            { label: '标签与专题', to: accountPath('/blog/taxonomy'), visible: auth.hasPermission('blog:taxonomy-manage') },
+            { label: '标签管理', to: accountPath('/blog/taxonomy'), visible: auth.hasPermission('blog:taxonomy-manage') },
+            { label: '专题管理', to: accountPath('/blog/topics'), visible: auth.hasPermission('blog:taxonomy-manage') },
           ],
         },
         {
