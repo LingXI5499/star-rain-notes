@@ -8,20 +8,38 @@ import { VIEW_MODE, accountPath, resolveViewMode } from '../../../../shared/view
 const route = useRoute()
 const router = useRouter()
 const categories = ref([])
-const tutorials = ref([])
+const allTutorials = ref([])
 const selectedSlug = ref('')
 const search = ref('')
 const loading = ref(true)
 const error = ref('')
+
 const tutorialPath = (slug) => resolveViewMode(route.path) === VIEW_MODE.ACCOUNT
   ? accountPath(`/tutorials/${slug}`) : `/tutorials/${slug}`
 
 const selectedCategory = computed(() => categories.value.find((item) => item.slug === selectedSlug.value))
-const filtered = computed(() => tutorials.value.filter((item) => {
-  if (selectedCategory.value && item.categoryId !== selectedCategory.value.id) return false
-  const term = search.value.trim().toLocaleLowerCase()
-  return !term || `${item.title} ${item.summary || ''}`.toLocaleLowerCase().includes(term)
-}))
+
+/*
+ * 与 V1 TutorialsView 一致地分成两层：
+ *   categoryTutorials —— 只按左侧分类过滤，用于顶部数字与「共 N 门可学习教程」；
+ *   displayed         —— 再叠加搜索关键字，只决定网格里显示哪些卡片。
+ * 混成一层会让「输入关键字」时顶部总数也跟着变小，与 V1 的观感不同。
+ */
+const categoryTutorials = computed(() => selectedCategory.value
+  ? allTutorials.value.filter((item) => item.categoryId === selectedCategory.value.id)
+  : allTutorials.value)
+
+const displayed = computed(() => {
+  const keyword = search.value.trim().toLocaleLowerCase()
+  return keyword
+    ? categoryTutorials.value.filter((item) => `${item.title} ${item.summary || ''}`.toLocaleLowerCase().includes(keyword))
+    : categoryTutorials.value
+})
+
+function categoryCount(category) {
+  if (typeof category.tutorialCount === 'number') return category.tutorialCount
+  return allTutorials.value.filter((item) => item.categoryId === category.id).length
+}
 
 async function load() {
   loading.value = true
@@ -31,11 +49,11 @@ async function load() {
       listPublicCategories(), listPublicTutorials({ page: 1, pageSize: 100 }),
     ])
     categories.value = categoryRows
-    tutorials.value = [...(first.items || [])]
+    allTutorials.value = [...(first.items || [])]
     const pages = Math.ceil((first.total || 0) / 100)
     for (let page = 2; page <= pages; page += 1) {
       const next = await listPublicTutorials({ page, pageSize: 100 })
-      tutorials.value.push(...(next.items || []))
+      allTutorials.value.push(...(next.items || []))
     }
     selectedSlug.value = typeof route.query.categorySlug === 'string' ? route.query.categorySlug : ''
   } catch (cause) { error.value = errorMessage(cause) }
@@ -55,40 +73,159 @@ onMounted(load)
 <template>
   <section class="page-container tutorial-catalog">
     <header class="tutorial-catalog__hero">
-      <div><p class="eyebrow">LEARNING PATHS · 教程中心</p><h1>选择一门教程，开始系统学习</h1><p>左侧按知识体系浏览，右侧从教程卡片进入；课程内提供完整目录、上下篇与页内导航。</p></div>
-      <div class="tutorial-catalog__summary"><strong>{{ filtered.length }}</strong><span>{{ selectedCategory ? '当前分类教程' : '公开教程' }}</span></div>
+      <div>
+        <p class="tutorial-catalog__eyebrow">LEARNING PATHS · 教程中心</p>
+        <h1>选择一门教程，开始系统学习</h1>
+        <p>左侧按知识体系浏览，右侧从教程卡片进入；课程内提供完整目录、上下篇与页内导航。</p>
+      </div>
+      <div class="tutorial-catalog__summary">
+        <strong>{{ categoryTutorials.length }}</strong>
+        <span>{{ selectedCategory ? '当前分类教程' : '公开教程' }}</span>
+      </div>
     </header>
+
     <div class="tutorial-catalog__layout">
       <aside class="tutorial-catalog__sidebar">
-        <header><strong>教程目录</strong><small>{{ categories.length }} 类</small></header>
-        <nav aria-label="教程分类"><button type="button" :class="{ active: !selectedSlug }" @click="selectCategory('')">全部教程 <span>{{ tutorials.length }}</span></button><button v-for="category in categories" :key="category.id" type="button" :class="{ active: selectedSlug === category.slug }" @click="selectCategory(category.slug)">{{ category.name }} <span>{{ category.tutorialCount }}</span></button></nav>
+        <div class="tutorial-catalog__sidebar-head">
+          <span>教程目录</span>
+          <small>{{ categories.length }} 类</small>
+        </div>
+        <nav aria-label="教程分类">
+          <button
+            type="button"
+            class="tutorial-catalog__all"
+            :class="{ 'tutorial-catalog__all--active': !selectedSlug }"
+            @click="selectCategory('')"
+          >
+            <span>全部教程</span>
+            <span class="tutorial-catalog__all-count">{{ allTutorials.length }}</span>
+            <span class="tutorial-catalog__all-arrow" aria-hidden="true">›</span>
+          </button>
+          <ul class="tutorial-catalog__category-tree">
+            <li v-for="category in categories" :key="category.id" class="tutorial-catalog__category-item">
+              <button
+                type="button"
+                class="tutorial-catalog__category"
+                :class="{ 'tutorial-catalog__category--active': selectedSlug === category.slug }"
+                @click="selectCategory(category.slug)"
+              >
+                <span class="tutorial-catalog__category-name">{{ category.name }}</span>
+                <span class="tutorial-catalog__category-count">{{ categoryCount(category) }}</span>
+                <span class="tutorial-catalog__category-arrow" aria-hidden="true">›</span>
+              </button>
+            </li>
+          </ul>
+        </nav>
       </aside>
+
       <main class="tutorial-catalog__content">
-        <header><div><p>教程 / {{ selectedCategory?.name || '全部教程' }}</p><h2>{{ selectedCategory?.name || '全部教程' }}</h2><small>共 {{ filtered.length }} 门可学习教程</small></div><input v-model="search" type="search" placeholder="筛选当前教程" aria-label="筛选当前教程" /></header>
+        <div class="tutorial-catalog__content-head">
+          <div>
+            <p class="tutorial-catalog__path">教程 / {{ selectedCategory?.name || '全部教程' }}</p>
+            <h2>{{ selectedCategory?.name || '全部教程' }}</h2>
+            <p>共 {{ categoryTutorials.length }} 门可学习教程</p>
+          </div>
+          <label class="tutorial-catalog__search">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input v-model="search" type="search" placeholder="筛选当前教程" aria-label="筛选当前教程" />
+          </label>
+        </div>
+
         <p v-if="loading" class="tutorial-catalog__empty">正在加载教程…</p>
         <p v-else-if="error" class="tutorial-catalog__empty" role="alert">{{ error }}</p>
-        <p v-else-if="!filtered.length" class="tutorial-catalog__empty">当前分类暂无匹配教程。</p>
-        <div v-else class="tutorial-catalog__grid"><RouterLink v-for="tutorial in filtered" :key="tutorial.id" :to="tutorialPath(tutorial.slug)" class="tutorial-card"><small>{{ tutorial.categoryName }}</small><h3>{{ tutorial.title }}</h3><p>{{ tutorial.summary }}</p><div><span>{{ tutorial.chapterCount }} 个章节</span><strong>进入课程 →</strong></div></RouterLink></div>
+        <p v-else-if="!displayed.length" class="tutorial-catalog__empty">当前分类暂无匹配教程。</p>
+        <div v-else class="tutorial-catalog__grid" data-stagger>
+          <RouterLink
+            v-for="tutorial in displayed"
+            :key="tutorial.id"
+            :to="tutorialPath(tutorial.slug)"
+            class="tutorial-card"
+          >
+            <div class="tutorial-card__body">
+              <p class="tutorial-card__category">{{ tutorial.categoryName }}</p>
+              <h3>{{ tutorial.title }}</h3>
+              <p class="tutorial-card__summary">{{ tutorial.summary }}</p>
+              <div class="tutorial-card__footer">
+                <span class="tutorial-card__chapter-count">
+                  <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 5.5v15M8 7h8M8 11h6"/></svg>
+                  {{ tutorial.chapterCount }} 个章节
+                </span>
+                <strong class="tutorial-card__cta">
+                  进入课程
+                  <span aria-hidden="true">→</span>
+                </strong>
+              </div>
+            </div>
+          </RouterLink>
+        </div>
       </main>
     </div>
   </section>
 </template>
 
 <style scoped>
-.tutorial-catalog__hero{display:flex;align-items:end;justify-content:space-between;gap:28px;padding:32px 0;margin-bottom:32px;border-bottom:1px solid var(--border)}
-.tutorial-catalog__hero h1{font-size:clamp(32px,4vw,48px);line-height:1.15;margin:10px 0}
-.tutorial-catalog__hero p:last-child{color:var(--text-secondary);line-height:1.8}
-.tutorial-catalog__summary{min-width:130px;padding:18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface);text-align:center}
-.tutorial-catalog__summary strong{display:block;color:var(--primary);font-size:28px}.tutorial-catalog__summary span{font-size:12px;color:var(--text-muted)}
-.tutorial-catalog__layout{display:grid;grid-template-columns:260px minmax(0,1fr);gap:32px;align-items:start}
-.tutorial-catalog__sidebar{position:sticky;top:100px;border:1px solid var(--border);border-radius:18px;background:var(--bg-surface);overflow:hidden}
-.tutorial-catalog__sidebar header,.tutorial-catalog__content header{display:flex;align-items:center;justify-content:space-between;gap:16px}
-.tutorial-catalog__sidebar header{padding:18px;border-bottom:1px solid var(--border)}.tutorial-catalog__sidebar small{color:var(--text-muted)}
-.tutorial-catalog__sidebar nav{display:grid;gap:4px;padding:10px}.tutorial-catalog__sidebar button{display:flex;justify-content:space-between;text-align:left;border:0;border-radius:10px;padding:12px;background:transparent;color:var(--text-secondary);cursor:pointer}
-.tutorial-catalog__sidebar button:hover,.tutorial-catalog__sidebar button.active{color:var(--primary);background:var(--bg-subtle)}
-.tutorial-catalog__content{min-width:0}.tutorial-catalog__content header{margin-bottom:24px}.tutorial-catalog__content header p,.tutorial-catalog__content header small{color:var(--text-muted);font-size:13px}.tutorial-catalog__content h2{font-size:26px;margin:5px 0}
-.tutorial-catalog__content input{width:min(280px,40%);border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--bg-surface);color:var(--text-primary)}
-.tutorial-catalog__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:20px}.tutorial-card{display:flex;flex-direction:column;min-height:230px;padding:22px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface);color:var(--text-primary);transition:transform .17s,box-shadow .17s}.tutorial-card:hover{transform:translateY(-3px);box-shadow:0 14px 35px #0001}.tutorial-card small{color:var(--accent)}.tutorial-card h3{font-size:20px;line-height:1.4;margin:12px 0}.tutorial-card p{color:var(--text-secondary);line-height:1.7;flex:1}.tutorial-card div{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding-top:16px;color:var(--text-muted);font-size:12px}.tutorial-card strong{color:var(--primary)}.tutorial-catalog__empty{padding:64px;border:1px dashed var(--border);border-radius:16px;color:var(--text-muted);text-align:center}
-@media(max-width:900px){.tutorial-catalog__layout{grid-template-columns:1fr}.tutorial-catalog__sidebar{position:static}.tutorial-catalog__summary{display:none}}
-@media(max-width:600px){.tutorial-catalog__content header{align-items:stretch;flex-direction:column}.tutorial-catalog__content input{width:100%}}
+/* 以下样式逐条照抄 V1 `frontend/src/views/tutorials/TutorialsView.vue`，
+   只把侧栏的树组件展开成平铺按钮（V2 的公开分类接口本来就是平铺的）。 */
+.tutorial-catalog__hero {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space-8);
+  margin-bottom: var(--space-8);
+  padding: var(--space-7) 0;
+  border-bottom: 1px solid var(--border);
+}
+.tutorial-catalog__eyebrow { margin-bottom: var(--space-3); color: var(--accent); font-size: 12px; font-weight: 700; letter-spacing: .16em; }
+.tutorial-catalog__hero h1 { max-width: 760px; margin-bottom: var(--space-3); font-size: clamp(32px,4vw,48px); line-height: 1.16; letter-spacing: -.03em; }
+.tutorial-catalog__hero p:last-child { max-width: 720px; color: var(--text-secondary); font-size: 15px; line-height: 1.8; }
+.tutorial-catalog__summary { min-width: 130px; padding: var(--space-4) var(--space-5); border: 1px solid var(--border); border-radius: 16px; background: var(--bg-surface); box-shadow: 0 10px 28px rgb(14 35 28/.05); text-align: center; }
+.tutorial-catalog__summary strong { display: block; color: var(--primary); font-size: 28px; }
+.tutorial-catalog__summary span { color: var(--text-muted); font-size: 12px; }
+.tutorial-catalog__layout { display: grid; grid-template-columns: 260px minmax(0,1fr); gap: var(--space-8); align-items: start; }
+.tutorial-catalog__sidebar { position: sticky; top: calc(var(--header-height) + var(--space-5)); max-height: calc(100vh - var(--header-height) - var(--space-10)); overflow: auto; border: 1px solid var(--border); border-radius: 18px; background: var(--bg-surface); box-shadow: 0 12px 32px rgb(14 35 28/.055); }
+.tutorial-catalog__sidebar-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-4); border-bottom: 1px solid var(--border); font-weight: 700; }
+.tutorial-catalog__sidebar-head small { color: var(--text-muted); font-weight: 400; }
+.tutorial-catalog__sidebar nav { padding: var(--space-3); }
+.tutorial-catalog__all { width: 100%; min-height: 42px; display: grid; grid-template-columns: minmax(0,1fr) auto 12px; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; border-radius: 12px; color: var(--text-secondary); background: none; font-size: 14px; text-align: left; cursor: pointer; transition: transform 170ms ease,background-color 170ms ease,border-color 170ms ease,box-shadow 170ms ease; }
+.tutorial-catalog__all:hover { border-color: var(--border); background: var(--bg-subtle); color: var(--text-primary); transform: translateX(3px); }
+.tutorial-catalog__all--active { border-color: color-mix(in srgb,var(--primary) 22%,var(--border)); color: var(--primary); background: color-mix(in srgb,var(--primary) 11%,transparent); box-shadow: 0 6px 17px color-mix(in srgb,var(--primary) 10%,transparent); font-weight: 600; }
+.tutorial-catalog__all-count { min-width: 28px; padding: 3px 7px; border-radius: 999px; color: var(--text-muted); background: var(--bg-page); font-size: 11px; text-align: center; }
+.tutorial-catalog__all-arrow { color: var(--primary); font-size: 17px; }
+.tutorial-catalog__all:focus-visible,.tutorial-card:focus-visible { outline: 3px solid color-mix(in srgb,var(--primary) 28%,transparent); outline-offset: 3px; }
+.tutorial-catalog__category-tree { margin: 3px 0 0; padding: 0; list-style: none; }
+.tutorial-catalog__category-item { list-style: none; }
+.tutorial-catalog__category { width: 100%; min-height: 38px; display: grid; grid-template-columns: minmax(0,1fr) auto 12px; align-items: center; gap: 8px; padding: 7px 10px; border: 1px solid transparent; border-radius: 12px; color: var(--text-secondary); background: none; font-size: 14px; line-height: 1.45; text-align: left; cursor: pointer; transition: transform 170ms ease,background-color 170ms ease,border-color 170ms ease,box-shadow 170ms ease; }
+.tutorial-catalog__category:hover { color: var(--text-primary); background: var(--bg-subtle); border-color: var(--border); transform: translateX(3px); }
+.tutorial-catalog__category--active { color: var(--primary); background: color-mix(in srgb,var(--primary) 11%,transparent); border-color: color-mix(in srgb,var(--primary) 22%,var(--border)); box-shadow: 0 6px 17px color-mix(in srgb,var(--primary) 10%,transparent); font-weight: 600; }
+.tutorial-catalog__category:focus-visible { outline: 3px solid color-mix(in srgb,var(--primary) 28%,transparent); outline-offset: 3px; }
+.tutorial-catalog__category-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tutorial-catalog__category-count { flex-shrink: 0; min-width: 27px; padding: 3px 7px; border-radius: 999px; color: var(--text-muted); background: var(--bg-page); font-size: 11px; text-align: center; }
+.tutorial-catalog__category-arrow { color: var(--primary); font-size: 17px; }
+.tutorial-catalog__content { min-width: 0; }
+.tutorial-catalog__content-head { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-5); margin-bottom: var(--space-6); }
+.tutorial-catalog__path { margin-bottom: var(--space-2); color: var(--text-muted); font-size: 12px; }
+.tutorial-catalog__content-head h2 { margin-bottom: 4px; font-size: 26px; line-height: 1.3; }
+.tutorial-catalog__content-head > div > p:last-child { color: var(--text-muted); font-size: 13px; }
+.tutorial-catalog__search { width: min(280px,38vw); height: 42px; display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-3); border: 1px solid var(--border-strong); border-radius: 12px; color: var(--text-muted); background: var(--bg-surface); transition: border-color 170ms ease,box-shadow 170ms ease; }
+.tutorial-catalog__search:focus-within { border-color: var(--primary); box-shadow: 0 0 0 3px color-mix(in srgb,var(--primary) 12%,transparent); }
+.tutorial-catalog__search input { min-width: 0; flex: 1; border: 0; outline: 0; color: var(--text-primary); background: none; }
+.tutorial-catalog__grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(min(280px,100%),1fr)); gap: var(--space-5); }
+.tutorial-card { min-width: 0; overflow: hidden; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 16px; color: var(--text-primary); background: var(--bg-surface); transition: transform 170ms ease,border-color 170ms ease,box-shadow 170ms ease; }
+.tutorial-card:hover { transform: translateY(-3px); border-color: color-mix(in srgb,var(--primary) 55%,var(--border)); box-shadow: 0 14px 35px rgb(0 0 0/.09); }
+.tutorial-card::before { content: ''; display: block; height: 3px; background: linear-gradient(90deg, color-mix(in srgb,var(--primary) 55%,transparent), color-mix(in srgb,var(--accent) 35%,transparent) 65%, transparent); opacity: .55; }
+.tutorial-card:hover::before { opacity: 1; }
+.tutorial-card__body { flex: 1; display: flex; flex-direction: column; padding: var(--space-5); }
+.tutorial-card__category { margin-bottom: var(--space-2); color: var(--accent); font-size: 12px; }
+.tutorial-card h3 { margin-bottom: var(--space-3); font-size: 19px; line-height: 1.45; }
+.tutorial-card__summary { display: -webkit-box; overflow: hidden; margin-bottom: var(--space-5); color: var(--text-secondary); font-size: 14px; line-height: 1.7; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+.tutorial-card__footer { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); margin-top: auto; padding-top: var(--space-4); border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px; }
+.tutorial-card__chapter-count { display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; }
+.tutorial-card__cta { display: inline-flex; align-items: center; gap: 8px; padding: 8px 11px; border: 1px solid color-mix(in srgb,var(--primary) 22%,transparent); border-radius: 999px; color: var(--primary); background: color-mix(in srgb,var(--primary) 9%,transparent); font-size: 12px; font-weight: 700; white-space: nowrap; transition: color 170ms ease,background-color 170ms ease,transform 170ms ease,box-shadow 170ms ease; }
+.tutorial-card__cta span { display: grid; width: 20px; height: 20px; place-items: center; border-radius: 50%; color: var(--on-primary); background: var(--primary); transition: transform 170ms ease; }
+.tutorial-card:hover .tutorial-card__cta { color: var(--on-primary); background: var(--primary); box-shadow: 0 8px 20px color-mix(in srgb,var(--primary) 22%,transparent); }
+.tutorial-card:hover .tutorial-card__cta span { color: var(--primary); background: var(--on-primary); transform: translateX(2px); }
+.tutorial-catalog__empty { padding: var(--space-10); border: 1px dashed var(--border-strong); border-radius: var(--radius-md); color: var(--text-muted); text-align: center; }
+@media (prefers-reduced-motion: reduce) { .tutorial-catalog__all,.tutorial-catalog__category,.tutorial-catalog__search,.tutorial-card,.tutorial-card__cta,.tutorial-card__cta span { transition: none; } }
+@media (max-width: 900px) { .tutorial-catalog__hero { align-items: flex-start; } .tutorial-catalog__summary { display: none; } .tutorial-catalog__layout { grid-template-columns: 1fr; } .tutorial-catalog__sidebar { position: static; max-height: none; } }
+@media (max-width: 620px) { .tutorial-catalog__content-head { align-items: stretch; flex-direction: column; } .tutorial-catalog__search { width: 100%; } .tutorial-catalog__grid { grid-template-columns: 1fr; } }
 </style>

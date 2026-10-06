@@ -303,9 +303,25 @@
     --page-padding-x: 20px;
   }
 
+  /*
+   * 刘海/挖孔屏安全区：V1 的 base.css 在 768px 以下把容器的左右内边距改成
+   * `max(16px, env(safe-area-inset-left))`，V2 之前只改了 `--page-padding-x` 这个令牌，
+   * 而公开页的实际容器是 `.page-container`（不走那个令牌），所以全面屏手机上正文会贴到圆角里。
+   * 这里按左右分别取安全区，语义与 V1 一致、比 V1 更准确（V1 左右都用了 left）。
+   */
+  .public-shell .page-container {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+
   .public-shell button,
   .public-shell a.public-button {
     min-height: 44px;
+  }
+
+  /* 触摸屏没有真正的 hover：小屏上关掉卡片的位移抬升，避免点完残留悬停态。 */
+  .public-shell .tutorial-card:hover {
+    transform: none;
   }
 }
 
