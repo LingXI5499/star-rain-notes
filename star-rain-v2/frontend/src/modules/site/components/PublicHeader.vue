@@ -25,7 +25,7 @@ let ticking = false
 const branding = useSiteBranding()
 /*
  * 导航顺序是所有者指定的一级信息架构：
- *   教程 → 博客 → 作品 → 英语 → 关于 → 留言
+ *   教程 → 博客 → 作品 → 英语 → 留言 → 关于
  * 页脚 EXPLORE 保持同一顺序，两处必须一起改，否则同一个站点会出现两种导航心智。
  */
 const navItems = computed(() => [
@@ -33,8 +33,8 @@ const navItems = computed(() => [
   { label: '博客', to: contentPath('/blog') },
   { label: '作品', to: contentPath('/portfolio') },
   { label: '英语', to: contentPath('/english') },
-  { label: '关于', to: contentPath('/about') },
   { label: '留言', to: contentPath('/messages') },
+  { label: '关于', to: contentPath('/about') },
 ])
 const brandPath = computed(() => contentPath('/'))
 

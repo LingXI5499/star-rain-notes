@@ -29,14 +29,14 @@ const year = new Date().getFullYear()
 /* 生产公开域名。V2 站点配置尚未承载该字段，先作为部署身份常量放在这里。 */
 const publicDomain = 'yulanlin.cn'
 
-/* 与顶栏同一顺序：教程 → 博客 → 作品 → 英语 → 关于 → 留言 */
+/* 与顶栏同一顺序：教程 → 博客 → 作品 → 英语 → 留言 → 关于 */
 const navItems = computed(() => [
   { label: '教程', to: contentPath('/tutorials') },
   { label: '博客', to: contentPath('/blog') },
   { label: '作品', to: contentPath('/portfolio') },
   { label: '英语', to: contentPath('/english') },
-  { label: '关于', to: contentPath('/about') },
   { label: '留言', to: contentPath('/messages') },
+  { label: '关于', to: contentPath('/about') },
 ])
 
 function scrollToTop() {

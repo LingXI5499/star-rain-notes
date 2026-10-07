@@ -6,8 +6,8 @@ import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import ThemeHero from '../../site/components/ThemeHero.vue'
 import { getPublicProfile } from '../api/profileApi'
+import { getPublicTutorial } from '../../tutorial/api/tutorialApi'
 import CareerSnapshot from '../components/CareerSnapshot.vue'
-import EvidenceGrid from '../components/EvidenceGrid.vue'
 import TechFlow from '../components/TechFlow.vue'
 
 /*
@@ -16,9 +16,8 @@ import TechFlow from '../components/TechFlow.vue'
  *   主视觉（主题插画 + 圆形羽化头像 + 眉标/姓名/headline/bio 摘要/标语/操作按钮）
  *   → CURRENT / DIRECTION / FEATURED / STATUS 四格速览
  *   → 此刻关注（CURRENT FOCUS 标签流）
- *   → sticky 章节胶囊导航（01…07）
+ *   → sticky 章节胶囊导航（01…06）
  *   → 代表作品（首项跨栏大卡）
- *   → 工程证据（SKILL = EVIDENCE）
  *   → 双栏阅读区（左 ON THIS PAGE 锚点 + 右 技术方向 / 学习与实践 / 知识内容）
  *   → 个人说明（PERSONAL NOTE）
  *   → 保持联系（LET'S KEEP IN TOUCH）
@@ -38,6 +37,8 @@ const { contentPath } = useViewMode()
 const profile = ref(null)
 const loading = ref(true)
 const error = ref('')
+const supplementalTutorial = ref(null)
+const featuredError = ref('')
 
 /* V1 用的是 hero 里的「人像插画」，固定资源；V2 作者上传了头像就用它，否则退回同一张品牌图 */
 
@@ -49,7 +50,6 @@ const eyebrows = {
 }
 const sectionNotes = {
   work: '用真实项目说明我如何理解问题、组织工程并持续复盘。',
-  evidence: '不罗列“精通”，只把已经完成并能够查看的内容放在这里。',
   direction: '不是技能清单，而是正在建立的能力结构。',
   journey: '在理解、动手和复盘之间缓慢积累。',
   knowledge: '系统教程与阶段性思考，共同构成可以回看的学习坐标。',
@@ -134,8 +134,29 @@ const focusItems = computed(() => (profile.value?.skills || [])
   .map((item) => item.name)
   .filter(Boolean))
 
-/* 代表作品：V1 是 selectedProjects，V2 用 featuredContents（后端已按 sortOrder 排序） */
-const featuredWork = computed(() => (profile.value?.featuredContents || []).filter((item) => item.available !== false))
+/* 保留作者精选数据，知识内容区域继续使用完整列表。 */
+const availableFeatured = computed(() => (profile.value?.featuredContents || []).filter((item) => item.available !== false))
+
+/* 代表作品：星雨笔录项目、两个精选教程、两篇精选博客，组内沿用作者排序。 */
+const featuredWork = computed(() => {
+  const items = availableFeatured.value
+  const tutorials = items.filter((item) => item.contentType === 'TUTORIAL').slice(0, 2)
+  if (tutorials.length < 2 && supplementalTutorial.value
+    && !tutorials.some((item) => item.url === supplementalTutorial.value.url)) {
+    tutorials.push(supplementalTutorial.value)
+  }
+  return [
+    ...items.filter((item) => item.contentType === 'PORTFOLIO' && item.title === '星雨笔录').slice(0, 1),
+    ...tutorials,
+    ...items.filter((item) => item.contentType === 'BLOG').slice(0, 2),
+  ]
+})
+
+const workLabels = {
+  PORTFOLIO: { category: '精选项目', action: '查看项目复盘' },
+  TUTORIAL: { category: '精选教程', action: '查看教程' },
+  BLOG: { category: '精选博客', action: '阅读全文' },
+}
 
 /*
  * 知识内容：V2 没有单独的「精选教程 / 精选博客」字段，只能从 featuredContents 里按类型挑。
@@ -143,34 +164,11 @@ const featuredWork = computed(() => (profile.value?.featuredContents || []).filt
  * 两个类型都没有时整块不渲染，也不留空标题。
  */
 const knowledgeColumns = computed(() => {
-  const items = featuredWork.value
+  const items = availableFeatured.value
   return {
     tutorials: items.filter((item) => item.contentType === 'TUTORIAL'),
     posts: items.filter((item) => item.contentType === 'BLOG'),
   }
-})
-
-/*
- * 工程证据：V1 把「作品 + 教程 + 博客」各取 2 项拼成证据墙。
- * V2 只有 featuredContents 一类来源，于是按内容类型分组后各组最多取 2 项，
- * kind / note 文案沿用 V1 的措辞。
- */
-const evidence = computed(() => {
-  const items = featuredWork.value
-  const notes = {
-    PORTFOLIO: { kind: '工程实践', note: '真实项目与工程复盘' },
-    TUTORIAL: { kind: '知识组织', note: '结构化知识与学习路径' },
-    BLOG: { kind: '技术写作', note: '实践记录、判断与反思' },
-  }
-  return ['PORTFOLIO', 'TUTORIAL', 'BLOG'].flatMap((type) => items
-    .filter((item) => item.contentType === type)
-    .slice(0, 2)
-    .map((item) => ({
-      title: item.title,
-      to: contentPath(item.url),
-      note: notes[type].note,
-      kind: notes[type].kind,
-    })))
 })
 
 /* 四格速览：CURRENT 取 headline，DIRECTION 取前三个关注点，FEATURED 取首个代表作品 */
@@ -228,15 +226,14 @@ const contactLinks = computed(() => {
 })
 
 /*
- * sticky 章节胶囊导航 —— 顺序照抄 V1：
- * 01 代表作品 → 02 工程证据 → 03 技术地图 → 04 学习经历 → 05 知识内容
- * → 06 个人说明 → 07 保持联系，只保留真正有内容的章节。
+ * sticky 章节胶囊导航：
+ * 01 代表作品 → 02 技术地图 → 03 学习经历 → 04 知识内容
+ * → 05 个人说明 → 06 保持联系，只保留真正有内容的章节。
  * 「学习经历」同时承载 V2 的 experiences 列表与 bio 里的「学习与实践」段落，
  * 因此两块都有内容时也只有一个锚点（见模板里的 #journey）。
  */
 const sections = computed(() => [
   { id: 'work', label: '代表作品', visible: !!featuredWork.value.length },
-  { id: 'evidence', label: '工程证据', visible: !!evidence.value.length },
   { id: 'direction', label: '技术地图', visible: !!reading.value.direction },
   { id: 'journey', label: '学习与实践', visible: !!reading.value.journey },
   {
@@ -254,8 +251,26 @@ const sections = computed(() => [
 async function load() {
   loading.value = true
   error.value = ''
+  featuredError.value = ''
   try {
     profile.value = await getPublicProfile()
+    supplementalTutorial.value = null
+    if (availableFeatured.value.filter((item) => item.contentType === 'TUTORIAL').length < 2) {
+      // 精选教程尚未配齐时，以已公开的 Git 教程补位，不改变作者精选配置和其他区域。
+      try {
+        const tutorial = await getPublicTutorial('git')
+        supplementalTutorial.value = {
+          id: `tutorial-${tutorial.id}`,
+          contentType: 'TUTORIAL',
+          title: tutorial.title,
+          summary: tutorial.summary,
+          coverUrl: tutorial.coverUrl,
+          url: `/tutorials/${tutorial.slug}`,
+        }
+      } catch (cause) {
+        featuredError.value = `精选教程加载失败：${errorMessage(cause)}`
+      }
+    }
   } catch (cause) {
     // 404 是「作者还没公开档案」，与网络/服务异常分开说，错误不静默
     error.value = cause?.response?.status === 404 ? '作者资料暂未公开。' : errorMessage(cause)
@@ -337,6 +352,7 @@ onMounted(load)
           </div>
           <p>{{ sectionNotes.work }}</p>
         </header>
+        <p v-if="featuredError" role="alert">{{ featuredError }} <button type="button" @click="load">重新读取</button></p>
         <div class="profile-page__work">
           <RouterLink
             v-for="(item, index) in featuredWork"
@@ -352,25 +368,13 @@ onMounted(load)
               <small>{{ { PORTFOLIO: 'PORTFOLIO', TUTORIAL: 'TUTORIAL', BLOG: 'JOURNAL' }[item.contentType] || 'WORK' }}</small>
             </div>
             <article>
-              <small>CASE STUDY · {{ String(index + 1).padStart(2, '0') }}</small>
+              <small>{{ workLabels[item.contentType].category }} · {{ String(index + 1).padStart(2, '0') }}</small>
               <h3>{{ item.title }}</h3>
               <p v-if="item.summary" class="profile-page__work-summary">{{ item.summary }}</p>
-              <span>查看项目复盘 →</span>
+              <span>{{ workLabels[item.contentType].action }} →</span>
             </article>
           </RouterLink>
         </div>
-      </section>
-
-      <!-- ============ 工程证据（SKILL = EVIDENCE） ============ -->
-      <section v-if="evidence.length" id="evidence" class="profile-page__section">
-        <header>
-          <div>
-            <p class="public-eyebrow">SKILL = EVIDENCE</p>
-            <h2 class="public-section-title">工程证据</h2>
-          </div>
-          <p>{{ sectionNotes.evidence }}</p>
-        </header>
-        <EvidenceGrid :items="evidence" />
       </section>
 
       <!-- ============ 双栏阅读区：左 ON THIS PAGE，右 技术方向 / 学习与实践 / 知识内容 ============ -->
