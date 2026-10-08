@@ -26,9 +26,10 @@ public class ReadingAdminController {
 
     @GetMapping
     public ApiResponse<Page> list(@RequestParam(required = false) String search,
+                                  @RequestParam(required=false) Long topicId, @RequestParam(required=false) Long genreId, @RequestParam(required=false) Long purposeId,
                                   @RequestParam(defaultValue = "1") int page,
                                   @RequestParam(defaultValue = "20") int size) {
-        return ApiResponse.ok(service.list(true, search, page, size));
+        return ApiResponse.ok(service.listFiltered(true, search, page, size, topicId, genreId, purposeId));
     }
 
     @GetMapping("/{id}")
@@ -46,8 +47,8 @@ public class ReadingAdminController {
 
     @PostMapping("/{id}/{action:publish|withdraw}")
     @PreAuthorize("hasAuthority('english:content-edit')")
-    public ApiResponse<Article> status(@PathVariable String id, @PathVariable String action) {
-        return ApiResponse.ok(service.setPublished(id, "publish".equals(action)));
+    public ApiResponse<Article> status(@PathVariable String id, @PathVariable String action, @RequestBody(required=false) com.starrainnotes.english.knowledge.dto.RevisionDto.Request version) {
+        return ApiResponse.ok(service.setPublished(id, "publish".equals(action), version==null?null:version.getRowVersion()));
     }
 
     @DeleteMapping("/{id}")

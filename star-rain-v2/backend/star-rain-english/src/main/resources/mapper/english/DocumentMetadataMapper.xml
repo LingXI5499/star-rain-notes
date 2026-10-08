@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.starrainnotes.english.knowledge.mapper.DocumentMetadataMapper">
+ <sql id="tagsTable"><choose><when test="kind == 'READING'">sr_english_reading_tag</when><otherwise>sr_english_writing_article_tag</otherwise></choose></sql>
+ <sql id="revisionTable"><choose><when test="kind == 'READING'">sr_english_reading_revision</when><otherwise>sr_english_writing_revision</otherwise></choose></sql>
+ <select id="tags" resultType="com.starrainnotes.english.taxonomy.dto.TaxonomyDto$Node">SELECT t.id,t.dimension,t.name,t.name_en,t.slug FROM sr_english_taxonomy_term t JOIN <include refid="tagsTable"/> r ON r.term_id=t.id WHERE r.article_id=#{id} ORDER BY t.dimension,t.sort_order,t.id</select>
+ <delete id="clearTags">DELETE FROM <include refid="tagsTable"/> WHERE article_id=#{id}</delete>
+ <insert id="insertTags">INSERT INTO <include refid="tagsTable"/>(article_id,term_id) VALUES <foreach collection="ids" item="term" separator=",">(#{id},#{term})</foreach></insert>
+ <select id="revisionCount" resultType="long">SELECT COUNT(*) FROM <include refid="revisionTable"/> WHERE article_id=#{id}</select>
+ <select id="nextRevision" resultType="long">SELECT COALESCE(MAX(revision_no),0)+1 FROM <include refid="revisionTable"/> WHERE article_id=#{id}</select>
+ <select id="revisions" resultType="com.starrainnotes.english.knowledge.dto.RevisionDto$Revision">SELECT revision_no,created_at,change_note FROM <include refid="revisionTable"/> WHERE article_id=#{id} ORDER BY revision_no DESC LIMIT #{limit} OFFSET #{offset}</select>
+ <select id="revision" resultType="com.starrainnotes.english.knowledge.dto.RevisionDto$Revision">SELECT revision_no,created_at,change_note,snapshot_json FROM <include refid="revisionTable"/> WHERE article_id=#{id} AND revision_no=#{no}</select>
+ <insert id="insertRevision">INSERT INTO <include refid="revisionTable"/>(article_id,revision_no,snapshot_json,editor_account_id,change_note) VALUES(#{id},#{no},#{snapshot},#{actor},#{note})</insert>
+</mapper>

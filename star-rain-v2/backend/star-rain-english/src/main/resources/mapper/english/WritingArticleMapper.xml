@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.starrainnotes.english.writing.article.mapper.WritingArticleMapper">
+ <sql id="columns">a.id,a.owner_account_id,a.public_eligible,a.keywords_json,a.slug,a.title,a.summary,a.body_markdown,a.translation_zh_markdown,a.primary_topic_id,a.state,a.visibility,a.row_version,a.created_at,a.updated_at,a.published_at</sql>
+ <sql id="public">a.visibility='PUBLIC' AND a.state='COMPLETED' AND a.public_eligible=1 AND a.deleted_at IS NULL</sql>
+ <sql id="filters">a.deleted_at IS NULL <choose><when test="owner != null">AND a.owner_account_id=#{owner}</when><otherwise>AND <include refid="com.starrainnotes.english.writing.article.mapper.WritingArticleMapper.public"/></otherwise></choose>
+ <if test="search != null and search != ''">AND (a.title LIKE CONCAT('%',#{search},'%') OR a.summary LIKE CONCAT('%',#{search},'%') <if test="owner != null">OR a.keywords_json LIKE CONCAT('%',#{search},'%')</if>)</if>
+ <if test="state != null and state != ''">AND a.state=#{state}</if>
+ <if test="topics != null and !topics.isEmpty()">AND (a.primary_topic_id IN <foreach collection="topics" item="v" open="(" separator="," close=")">#{v}</foreach> OR EXISTS (SELECT 1 FROM sr_english_writing_article_tag t WHERE t.article_id=a.id AND t.term_id IN <foreach collection="topics" item="v" open="(" separator="," close=")">#{v}</foreach>))</if>
+ <if test="genres != null and !genres.isEmpty()">AND EXISTS (SELECT 1 FROM sr_english_writing_article_tag t WHERE t.article_id=a.id AND t.term_id IN <foreach collection="genres" item="v" open="(" separator="," close=")">#{v}</foreach>)</if>
+ <if test="purposes != null and !purposes.isEmpty()">AND EXISTS (SELECT 1 FROM sr_english_writing_article_tag t WHERE t.article_id=a.id AND t.term_id IN <foreach collection="purposes" item="v" open="(" separator="," close=")">#{v}</foreach>)</if>
+ </sql>
+ <select id="count" resultType="long">SELECT COUNT(*) FROM sr_english_writing_article a WHERE <include refid="filters"/></select>
+ <select id="list" resultType="com.starrainnotes.english.writing.article.dto.WritingArticleDto$Article">SELECT <include refid="columns"/> FROM sr_english_writing_article a WHERE <include refid="filters"/> ORDER BY a.updated_at DESC,a.id DESC LIMIT #{limit} OFFSET #{offset}</select>
+ <select id="owned" resultType="com.starrainnotes.english.writing.article.dto.WritingArticleDto$Article">SELECT <include refid="columns"/> FROM sr_english_writing_article a WHERE a.id=#{id} AND a.owner_account_id=#{owner} AND a.deleted_at IS NULL</select>
+ <select id="locked" resultType="com.starrainnotes.english.writing.article.dto.WritingArticleDto$Article">SELECT <include refid="columns"/> FROM sr_english_writing_article a WHERE a.id=#{id} AND a.owner_account_id=#{owner} AND a.deleted_at IS NULL FOR UPDATE</select>
+ <select id="publicBySlug" resultType="com.starrainnotes.english.writing.article.dto.WritingArticleDto$Article">SELECT <include refid="columns"/> FROM sr_english_writing_article a WHERE a.slug=#{slug} AND <include refid="public"/></select>
+ <insert id="insert" useGeneratedKeys="true" keyProperty="id">INSERT INTO sr_english_writing_article(owner_account_id,public_eligible,slug,title,summary,body_markdown,translation_zh_markdown,primary_topic_id,keywords_json) VALUES(#{ownerAccountId},#{publicEligible},#{slug},#{title},#{summary},#{bodyMarkdown},#{translationZhMarkdown},#{primaryTopicId},#{keywordsJson})</insert>
+ <update id="finishSlug">UPDATE sr_english_writing_article SET slug=#{slug} WHERE id=#{id} AND owner_account_id=#{ownerAccountId}</update>
+ <update id="update">UPDATE sr_english_writing_article SET title=#{title},summary=#{summary},body_markdown=#{bodyMarkdown},translation_zh_markdown=#{translationZhMarkdown},primary_topic_id=#{primaryTopicId},keywords_json=#{keywordsJson},state=#{state},visibility=#{visibility},row_version=row_version+1 WHERE id=#{id} AND owner_account_id=#{ownerAccountId} AND deleted_at IS NULL AND row_version=#{rowVersion}</update>
+ <update id="status">UPDATE sr_english_writing_article SET state=#{state},visibility=#{visibility},published_at=<choose><when test="visibility == 'PUBLIC'">CURRENT_TIMESTAMP(3)</when><otherwise>NULL</otherwise></choose>,row_version=row_version+1 WHERE id=#{id} AND owner_account_id=#{owner} AND deleted_at IS NULL AND row_version=#{version}</update>
+ <update id="delete">UPDATE sr_english_writing_article SET deleted_at=CURRENT_TIMESTAMP(3),visibility='PRIVATE',row_version=row_version+1 WHERE id=#{id} AND owner_account_id=#{owner} AND deleted_at IS NULL AND row_version=#{version}</update>
+</mapper>

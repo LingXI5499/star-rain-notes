@@ -1,4 +1,7 @@
 <script setup>
+import EnglishTopicDirectory from '../../components/EnglishTopicDirectory.vue'
+import '../../styles/englishRw.css'
+import EnglishArticleFilters from '../../components/EnglishArticleFilters.vue'
 import PublicFilterBar from '../../../../shared/ui/PublicFilterBar.vue'
 import PublicSearch from '../../../../shared/ui/PublicSearch.vue'
 import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
@@ -26,7 +29,7 @@ const resourcePage = computed(() => publicPage(route.query.resourcePage)), promp
 const resourceSize = computed(() => publicPageSize(route.query.resourceSize)), promptSize = computed(() => publicPageSize(route.query.promptSize))
 const resourceTotal = ref(0), promptTotal = ref(0)
 let version = 0
-const labels = { reading: { zh: '阅读中心', en: 'READING', desc: '通过分级文章训练理解与表达。', cta: '开始阅读' }, writing: { zh: '写作中心', en: 'WRITING', desc: '从素材、范文和任务中练习清晰表达。', cta: '查看内容' } }
+const labels = { reading: { zh: '阅读中心', en: 'READING', desc: '读完整文章，理解真实表达。按主题、文体与用途探索。', cta: '开始阅读' }, writing: { zh: '写作中心', en: 'WRITING', desc: '从素材、范文和任务中练习清晰表达。', cta: '查看内容' } }
 const label = computed(() => labels[props.domain])
 
 function path(item, kind = props.domain) {
@@ -46,7 +49,7 @@ async function load() {
       if (request !== version) return
       resources.value = materials.items; resourceTotal.value = materials.total; prompts.value = tasks.items; promptTotal.value = tasks.total
     } else {
-      const result = await listEnglishDocuments(props.domain, { page: page.value, size: pageSize.value, search: search.value })
+      const result = await listEnglishDocuments(props.domain, { page: page.value, size: pageSize.value, search: search.value, topicId: route.query.topicId, genreId: route.query.genreId, purposeId: route.query.purposeId })
       if (request === version) data.value = result
     }
   } catch (cause) { if (request === version) error.value = errorMessage(cause) }
@@ -61,8 +64,8 @@ watch(() => [props.domain, route.fullPath], load, { immediate: true })
 <template>
   <main class="english-documents" :data-domain="domain">
     <RouterLink :to="contentPath('/english')" class="english-documents__back">← 英语</RouterLink>
-    <header class="english-documents__hero"><div><p class="public-eyebrow">ENGLISH {{ label.en }} · 分级精选</p><h1>{{ label.zh }}</h1><p>{{ label.desc }}</p></div><div class="english-documents__count"><strong>{{ domain === 'writing' ? resourceTotal + promptTotal : data.total }}</strong><span>{{ domain === 'writing' ? '项写作内容' : '篇精选文章' }}</span></div></header>
-    <PublicFilterBar :label="label.zh + '筛选'" :active="Boolean(route.query.search)" @reset="search = ''; submitSearch('')"><PublicSearch v-model="search" label="搜索标题或摘要" placeholder="输入标题或摘要关键词" @search="submitSearch" /></PublicFilterBar>
+    <header class="english-documents__hero"><div><p class="public-eyebrow">ENGLISH {{ label.en }} · 阅读与表达</p><h1>{{ label.zh }}</h1><p>{{ label.desc }}</p></div><div class="english-documents__count"><strong>{{ domain === 'writing' ? resourceTotal + promptTotal : data.total }}</strong><span>{{ domain === 'writing' ? '项写作内容' : '篇精选文章' }}</span></div></header>
+    <EnglishTopicDirectory v-if="domain === 'reading'" /><EnglishArticleFilters v-if="domain === 'reading'" :model-value="route.query" @update:model-value="router.push({ query: $event })" /><PublicFilterBar v-else :label="label.zh + '筛选'" :active="Boolean(route.query.search)" @reset="search = ''; submitSearch('')"><PublicSearch v-model="search" label="搜索标题或摘要" placeholder="输入标题或摘要关键词" @search="submitSearch" /></PublicFilterBar>
     <p v-if="loading" class="english-documents__state">正在读取内容…</p><p v-else-if="error" class="english-documents__state" role="alert">{{ error }}</p>
     <template v-else-if="domain === 'writing'">
       <section class="english-documents__section"><header><div><p class="public-eyebrow">WRITING MATERIALS</p><h2>写作素材</h2></div><span>{{ resourceTotal }} 篇</span></header><div class="english-documents__grid"><RouterLink v-for="item in resources" :key="item.id" :to="path(item,'writing-resources')" class="english-documents__card"><div class="english-documents__card-top"><span class="english-documents__level">{{ item.cefrLevel || 'ENGLISH' }}</span><small>{{ item.resourceKind || '素材' }}</small></div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p><strong>开始学习 →</strong></RouterLink><p v-if="!resources.length" class="english-documents__empty">暂无匹配素材。</p></div><PublicPagination :page="resourcePage" :page-size="resourceSize" :total="resourceTotal" :loading="loading" label="写作素材分页" unit="篇" @change="go($event, 'resourcePage')" @page-size="changeSize($event, 'resourceSize', 'resourcePage')" /></section>

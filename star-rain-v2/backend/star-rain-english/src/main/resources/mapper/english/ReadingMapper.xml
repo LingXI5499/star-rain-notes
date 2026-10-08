@@ -1,59 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.english.reading.mapper.ReadingMapper">
-    <resultMap id="articleMap" type="com.starrainnotes.english.reading.dto.ReadingDto$Article">
-        <id property="id" column="id"/>
-        <result property="slug" column="slug"/>
-        <result property="title" column="title"/>
-        <result property="summary" column="summary"/>
-        <result property="bodyMarkdown" column="body_markdown"/>
-        <result property="cefrLevel" column="cefr_level"/>
-        <result property="difficultyLevel" column="reading_level"/>
-        <result property="sourceName" column="source_name"/>
-        <result property="sourceUrl" column="source_url"/>
-        <result property="publishStatus" column="publish_status"/>
-        <result property="sortOrder" column="sort_order"/>
-    </resultMap>
-    <sql id="columns">
-        id,slug,title,summary,body_markdown,cefr_level,reading_level,
-        source_name,source_url,publish_status,sort_order
-    </sql>
-    <sql id="filter">
-        <where>
-            <if test="publicOnly">publish_status='PUBLISHED'</if>
-            <if test="search != null and search != ''">AND title LIKE CONCAT('%',#{search},'%')</if>
-        </where>
-    </sql>
-    <select id="count" resultType="long">
-        SELECT COUNT(*) FROM sr_english_reading_article <include refid="filter"/>
-    </select>
-    <select id="list" resultMap="articleMap">
-        SELECT <include refid="columns"/> FROM sr_english_reading_article
-        <include refid="filter"/> ORDER BY sort_order,id LIMIT #{limit} OFFSET #{offset}
-    </select>
-    <select id="byId" resultMap="articleMap">
-        SELECT <include refid="columns"/> FROM sr_english_reading_article WHERE id=#{id}
-    </select>
-    <select id="publicBySlug" resultMap="articleMap">
-        SELECT <include refid="columns"/> FROM sr_english_reading_article
-        WHERE slug=#{slug} AND publish_status='PUBLISHED'
-    </select>
-    <insert id="insert" parameterType="com.starrainnotes.english.reading.dto.ReadingDto$Article"
-            useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO sr_english_reading_article
-        (slug,title,summary,body_markdown,reading_level,cefr_level,source_name,source_url,sort_order)
-        VALUES (#{slug},#{title},#{summary},#{bodyMarkdown},#{difficultyLevel},
-                #{cefrLevel},#{sourceName},#{sourceUrl},#{sortOrder})
-    </insert>
-    <update id="update">
-        UPDATE sr_english_reading_article SET title=#{title},summary=#{summary},
-        body_markdown=#{bodyMarkdown},reading_level=#{difficultyLevel},cefr_level=#{cefrLevel},
-        source_name=#{sourceName},source_url=#{sourceUrl},sort_order=#{sortOrder},
-        slug=#{slug} WHERE id=#{id}
-    </update>
-    <update id="setStatus">
-        UPDATE sr_english_reading_article SET publish_status=#{status},
-        published_at=COALESCE(published_at,NOW(3)) WHERE id=#{id}
-    </update>
-    <delete id="delete">DELETE FROM sr_english_reading_article WHERE id=#{id}</delete>
+<resultMap id="articleMap" type="com.starrainnotes.english.reading.dto.ReadingDto$Article"><result property="id" column="id"/><result property="slug" column="slug"/><result property="title" column="title"/><result property="summary" column="summary"/><result property="bodyMarkdown" column="body_markdown"/><result property="translationZhMarkdown" column="translation_zh_markdown"/><result property="primaryTopicId" column="primary_topic_id"/><result property="rowVersion" column="row_version"/><result property="cefrLevel" column="cefr_level"/><result property="difficultyLevel" column="reading_level"/><result property="levelAssessed" column="level_assessed"/><result property="sourceName" column="source_name"/><result property="sourceUrl" column="source_url"/><result property="contentOrigin" column="content_origin"/><result property="publishStatus" column="publish_status"/><result property="sortOrder" column="sort_order"/></resultMap><sql id="columns">a.id,a.slug,a.title,a.summary,a.body_markdown,a.translation_zh_markdown,a.primary_topic_id,a.row_version,a.cefr_level,a.reading_level,a.level_assessed,a.source_name,a.source_url,a.content_origin,a.publish_status,a.sort_order</sql><sql id="publicCheck">a.publish_status='PUBLISHED' AND (a.content_origin='ORIGINAL' AND NOT EXISTS(SELECT 1 FROM sr_english_reading_rights r WHERE r.article_id=a.id AND r.rights_status='BLOCKED') OR EXISTS(SELECT 1 FROM sr_english_reading_rights r WHERE r.article_id=a.id AND r.rights_status='CLEARED' AND COALESCE(TRIM(r.rights_basis),'')!=''))</sql>
+<sql id="filter"><where>a.deleted_at IS NULL <if test="publicOnly">AND <include refid="com.starrainnotes.english.reading.mapper.ReadingMapper.publicCheck"/></if><if test="search != null and search != ''">AND (a.title LIKE CONCAT('%',#{search},'%') OR a.summary LIKE CONCAT('%',#{search},'%'))</if><if test="topics != null and topics.size()>0">AND (a.primary_topic_id IN <foreach collection="topics" item="term" open="(" close=")" separator=",">#{term}</foreach> OR EXISTS(SELECT 1 FROM sr_english_reading_tag t WHERE t.article_id=a.id AND t.term_id IN <foreach collection="topics" item="term" open="(" close=")" separator=",">#{term}</foreach>))</if><if test="genres != null and genres.size()>0">AND EXISTS(SELECT 1 FROM sr_english_reading_tag t WHERE t.article_id=a.id AND t.term_id IN <foreach collection="genres" item="term" open="(" close=")" separator=",">#{term}</foreach>)</if><if test="purposes != null and purposes.size()>0">AND EXISTS(SELECT 1 FROM sr_english_reading_tag t WHERE t.article_id=a.id AND t.term_id IN <foreach collection="purposes" item="term" open="(" close=")" separator=",">#{term}</foreach>)</if></where></sql>
+<select id="count" resultType="long">SELECT COUNT(*) FROM sr_english_reading_article a <include refid="filter"/></select>
+<select id="list" resultMap="articleMap">SELECT <include refid="columns"/> FROM sr_english_reading_article a <include refid="filter"/> ORDER BY a.published_at DESC,a.id DESC LIMIT #{limit} OFFSET #{offset}</select>
+<select id="byId" resultMap="articleMap">SELECT <include refid="columns"/> FROM sr_english_reading_article a WHERE a.id=#{id} AND a.deleted_at IS NULL</select>
+<select id="lockById" resultMap="articleMap">SELECT <include refid="columns"/> FROM sr_english_reading_article a WHERE a.id=#{id} AND a.deleted_at IS NULL FOR UPDATE</select>
+<select id="publicBySlug" resultMap="articleMap">SELECT <include refid="columns"/> FROM sr_english_reading_article a WHERE a.slug=#{slug} AND a.deleted_at IS NULL AND <include refid="com.starrainnotes.english.reading.mapper.ReadingMapper.publicCheck"/></select>
+<insert id="insert" useGeneratedKeys="true" keyProperty="id">INSERT INTO sr_english_reading_article(slug,title,summary,body_markdown,translation_zh_markdown,primary_topic_id,reading_level,cefr_level,level_assessed,source_name,source_url,content_origin,sort_order) VALUES(#{slug},#{title},#{summary},#{bodyMarkdown},#{translationZhMarkdown},#{primaryTopicId},#{difficultyLevel},#{cefrLevel},#{levelAssessed},#{sourceName},#{sourceUrl},#{contentOrigin},#{sortOrder})</insert>
+<update id="finishSlug">UPDATE sr_english_reading_article SET slug=#{slug} WHERE id=#{id}</update>
+<update id="update">UPDATE sr_english_reading_article SET title=#{title},summary=#{summary},body_markdown=#{bodyMarkdown},translation_zh_markdown=#{translationZhMarkdown},primary_topic_id=#{primaryTopicId},reading_level=#{difficultyLevel},cefr_level=#{cefrLevel},level_assessed=#{levelAssessed},source_name=#{sourceName},source_url=#{sourceUrl},content_origin=#{contentOrigin},sort_order=#{sortOrder},row_version=row_version+1 WHERE id=#{id} AND row_version=#{rowVersion} AND deleted_at IS NULL</update>
+<update id="setStatus">UPDATE sr_english_reading_article SET publish_status=#{status},published_at=CASE WHEN #{status}='PUBLISHED' THEN COALESCE(published_at,NOW(3)) ELSE published_at END,row_version=row_version+1 WHERE id=#{id} AND row_version=#{version} AND deleted_at IS NULL</update>
+<update id="delete">UPDATE sr_english_reading_article SET deleted_at=NOW(3),publish_status='WITHDRAWN',row_version=row_version+1 WHERE id=#{id} AND row_version=#{version} AND deleted_at IS NULL</update>
+<select id="rights" resultType="com.starrainnotes.english.reading.dto.ReadingDto$Rights">SELECT rights_status,rights_basis,original_author,license_notice FROM sr_english_reading_rights WHERE article_id=#{id}</select>
+<insert id="saveRights">INSERT INTO sr_english_reading_rights(article_id,source_name,source_url,rights_status,rights_basis,original_author,license_notice) VALUES(#{id},#{sourceName},#{sourceUrl},#{rights.rightsStatus},#{rights.rightsBasis},#{rights.originalAuthor},#{rights.licenseNotice}) ON DUPLICATE KEY UPDATE source_name=#{sourceName},source_url=#{sourceUrl},rights_status=#{rights.rightsStatus},rights_basis=#{rights.rightsBasis},original_author=#{rights.originalAuthor},license_notice=#{rights.licenseNotice}</insert>
 </mapper>

@@ -225,22 +225,22 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
 
         assertNull(readings.byId(-1L));
         assertNull(readings.publicBySlug(article.getSlug()), "草稿文章不应能按 slug 公开读取");
-        assertEquals(1, readings.count(false, search), "search 过滤没生效");
-        assertEquals(0, readings.count(true, search), "publicOnly 过滤没生效");
-        assertEquals(0, readings.count(false, search + "-missing"));
-        assertTrue(readings.count(false, null) >= 1, "search 为 null 时必须退化成统计全部");
-        assertEquals(1, readings.list(false, search, 0, 10).size());
-        assertEquals(1, readings.list(false, search, 0, 1).size(), "LIMIT 没生效");
-        assertTrue(readings.list(false, search, 1, 10).isEmpty(), "OFFSET 没生效");
+        assertEquals(1, readings.count(false, search, List.of(), List.of(), List.of()), "search 过滤没生效");
+        assertEquals(0, readings.count(true, search, List.of(), List.of(), List.of()), "publicOnly 过滤没生效");
+        assertEquals(0, readings.count(false, search + "-missing", List.of(), List.of(), List.of()));
+        assertTrue(readings.count(false, null, List.of(), List.of(), List.of()) >= 1, "search 为 null 时必须退化成统计全部");
+        assertEquals(1, readings.list(false, search, List.of(), List.of(), List.of(), 0, 10).size());
+        assertEquals(1, readings.list(false, search, List.of(), List.of(), List.of(), 0, 1).size(), "LIMIT 没生效");
+        assertTrue(readings.list(false, search, List.of(), List.of(), List.of(), 1, 10).isEmpty(), "OFFSET 没生效");
 
-        assertEquals(1, readings.setStatus(article.getId(), "PUBLISHED"));
+        assertEquals(1, readings.setStatus(article.getId(), "PUBLISHED", readings.byId(article.getId()).getRowVersion()));
         assertEquals("PUBLISHED", readings.byId(article.getId()).getPublishStatus());
         assertNotNull(readings.publicBySlug(article.getSlug()), "已发布文章应当能按 slug 公开读取");
-        assertEquals(1, readings.count(true, search));
+        assertEquals(1, readings.count(true, search, List.of(), List.of(), List.of()));
         Object firstPublishedAt = publishedAtOf("sr_english_reading_article", article.getId());
         assertNotNull(firstPublishedAt, "setStatus 必须写入 published_at");
-        assertEquals(1, readings.setStatus(article.getId(), "DRAFT"));
-        assertEquals(1, readings.setStatus(article.getId(), "PUBLISHED"));
+        assertEquals(1, readings.setStatus(article.getId(), "DRAFT", readings.byId(article.getId()).getRowVersion()));
+        assertEquals(1, readings.setStatus(article.getId(), "PUBLISHED", readings.byId(article.getId()).getRowVersion()));
         assertEquals(firstPublishedAt, publishedAtOf("sr_english_reading_article", article.getId()),
                 "重新发布把首次发布时间改写了（COALESCE 丢失）");
 
@@ -255,14 +255,14 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(search + "-改名", afterUpdate.getTitle());
         assertNull(afterUpdate.getSourceName(), "source_name 传 null 没有被清空（这条语句是普通 SET）");
         assertEquals(6, afterUpdate.getDifficultyLevel().intValue());
-        assertEquals(article.getSlug() + "-renamed", afterUpdate.getSlug());
+        assertEquals(article.getSlug(), afterUpdate.getSlug(), "Existing reading URLs remain stable");
         assertEquals("PUBLISHED", afterUpdate.getPublishStatus(), "改内容不应改动 publish_status");
-        assertNotNull(readings.publicBySlug(article.getSlug() + "-renamed"), "改 slug 后应当按新地址公开");
-        assertNull(readings.publicBySlug(article.getSlug()), "旧地址应当查不到了");
+        assertNull(readings.publicBySlug(article.getSlug() + "-renamed"));
+        assertNotNull(readings.publicBySlug(article.getSlug()), "正文修改保留原有地址");
 
-        assertEquals(1, readings.delete(article.getId()));
+        assertEquals(1, readings.delete(article.getId(), afterUpdate.getRowVersion()));
         assertNull(readings.byId(article.getId()));
-        assertEquals(0, readings.delete(article.getId()));
+        assertEquals(0, readings.delete(article.getId(), afterUpdate.getRowVersion()));
     }
 
     @Test
@@ -445,7 +445,8 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
                 "introducedSince 没生效");
         assertEquals(0, vocabularyStudy.introducedSince(accountId, now.plusMinutes(1)),
                 "first_learned_at 在窗口之后时不应被统计");
-        assertEquals(1L, vocabularyStudy.dueCount(accountId, now), "next_review_at <= now 应当算到期");
+        assertEquals(0L, vocabularyStudy.dueCount(accountId, now),
+                "V2_034 的到期统计只读取方向训练卡；旧 startMemory 不创建方向训练卡");
         assertEquals(0L, vocabularyStudy.dueCount(accountId, now.minusMinutes(1)));
         assertEquals(List.of(wordId), vocabularyStudy.dueWordIds(accountId, now, 10),
                 "dueWordIds 没生效");
@@ -472,7 +473,7 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1L, summary.getTotal(), "别名 total 丢失");
         assertEquals(0L, summary.getCompleted(), "还没走完十档间隔，completed 应当是 0");
         assertEquals(1L, summary.getInProgress(), "review_step < maxStep 应当算进行中");
-        assertEquals(1L, summary.getDueForReview(), "next_review_at <= now 应当算到期");
+        assertEquals(0L, summary.getDueForReview(), "旧记忆行不应被当作方向训练卡的到期任务");
 
         assertEquals(List.of(otherWordId), vocabularyStudy.newWordIds(theme.getId(), accountId, 10),
                 "newWordIds 只应返回还没有记忆行的词");
@@ -894,6 +895,8 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         article.setSourceName("XML 验证来源");
         article.setSourceUrl("https://example.test/reading");
         article.setSortOrder(0);
+        article.setContentOrigin("ORIGINAL");
+        article.setRowVersion(0L);
         return article;
     }
 

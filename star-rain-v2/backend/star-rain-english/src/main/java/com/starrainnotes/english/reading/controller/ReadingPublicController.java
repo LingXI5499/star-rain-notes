@@ -19,9 +19,10 @@ public class ReadingPublicController {
 
     @GetMapping
     public ApiResponse<Page> list(@RequestParam(required = false) String search,
+                                  @RequestParam(required=false) Long topicId, @RequestParam(required=false) Long genreId, @RequestParam(required=false) Long purposeId,
                                   @RequestParam(defaultValue = "1") int page,
                                   @RequestParam(defaultValue = "20") int size) {
-        return ApiResponse.ok(service.list(false, search, page, size));
+        return ApiResponse.ok(service.listFiltered(false, search, page, size, topicId, genreId, purposeId));
     }
 
     @GetMapping("/{slug}")
