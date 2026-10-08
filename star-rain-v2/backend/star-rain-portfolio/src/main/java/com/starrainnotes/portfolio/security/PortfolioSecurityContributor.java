@@ -25,4 +25,9 @@ public class PortfolioSecurityContributor implements ModuleSecurityContributor {
     public List<String> authenticatedPatterns() {
         return List.of("/api/admin/portfolio/**");
     }
+
+    @Override
+    public List<String> sameOriginFramePatterns() {
+        return List.of("/api/public/portfolio/works/*/live/**");
+    }
 }

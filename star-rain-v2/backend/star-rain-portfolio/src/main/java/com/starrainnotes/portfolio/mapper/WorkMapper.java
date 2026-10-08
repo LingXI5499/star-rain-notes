@@ -35,10 +35,18 @@ public interface WorkMapper {
                                   @Param("keyword") String keyword,
                                   @Param("limit") int limit, @Param("offset") long offset);
 
+    long countByTaxonomy(@Param("workType") String workType, @Param("status") String status,
+        @Param("keyword") String keyword, @Param("filter") com.starrainnotes.portfolio.dto.WorkFilterDTO filter);
+    List<WorkEntity> pageByTaxonomy(@Param("workType") String workType, @Param("status") String status,
+        @Param("keyword") String keyword, @Param("filter") com.starrainnotes.portfolio.dto.WorkFilterDTO filter,
+        @Param("limit") int limit, @Param("offset") long offset);
     long countBySlug(@Param("slug") String slug);
 
     /* 编辑工作区基础信息：只写 slug / title / summary 与审计列 */
     int updateContent(WorkEntity work);
+    int updatePrototype(WorkEntity work);
+    com.starrainnotes.portfolio.vo.WorkNavigationVO previousPublished(@Param("id") Long id, @Param("sortOrder") int sortOrder);
+    com.starrainnotes.portfolio.vo.WorkNavigationVO nextPublished(@Param("id") Long id, @Param("sortOrder") int sortOrder);
 
     /* 正文单独保存：正文可能有 1MB，不能跟着基础信息一起整行写 */
     int updateBody(WorkEntity work);

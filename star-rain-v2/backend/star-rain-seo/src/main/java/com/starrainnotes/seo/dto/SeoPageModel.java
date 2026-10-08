@@ -15,4 +15,5 @@ public class SeoPageModel {
     private String description;
     private String robotsDirective;
     private String bodyMarkdown;
+    private String coverUrl;
 }

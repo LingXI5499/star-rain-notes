@@ -15,6 +15,21 @@ public class WorkEntity {
     private String workType;
     private String title;
     private String summary;
+    private Long prototypeAssetId;
+    private String prototypeEntry;
+    private String subtitle;
+    private Long categoryId;
+    private Long formatId;
+    private String role;
+    private String techStack;
+    private String projectStatus = "COMPLETED";
+    private java.time.LocalDate startedOn;
+    private java.time.LocalDate endedOn;
+    private Boolean featured = false;
+    private Integer sortOrder = 0;
+    private String seoTitle;
+    private String seoDescription;
+
     private String bodyMarkdown;
     private String status;
     private LocalDateTime publishedAt;

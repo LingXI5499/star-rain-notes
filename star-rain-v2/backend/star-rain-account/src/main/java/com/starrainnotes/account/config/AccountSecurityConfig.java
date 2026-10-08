@@ -3,6 +3,7 @@ package com.starrainnotes.account.config;
 import com.starrainnotes.account.security.AccountAuthenticator;
 import com.starrainnotes.account.security.SecurityPatternValidator;
 import com.starrainnotes.account.security.SecurityRulePlan;
+import com.starrainnotes.account.security.ModuleFrameHeaders;
 import com.starrainnotes.account.interceptor.AccountSessionValidationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 import com.starrainnotes.account.mapper.AccountMapper;
@@ -70,6 +71,8 @@ public class AccountSecurityConfig {
                 .toList();
         SecurityPatternValidator.validate(ordered);
         http
+                .headers(headers -> headers.frameOptions(frame -> frame.disable())
+                        .addHeaderWriter(ModuleFrameHeaders.writer(ordered)))
                 .csrf(csrf -> csrf.csrfTokenRepository(csrfRepository)
                         .csrfTokenRequestHandler(new CsrfTokenRequestAttributeHandler()))
                 .securityContext(context -> context.securityContextRepository(contextRepository))

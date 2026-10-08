@@ -81,7 +81,7 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
     @Override
     public void indexWork(PortfolioPublishedWork work) {
         index.upsert(document("PORTFOLIO", work.getId(), work.getTitle(), work.getSummary(),
-            work.getBodyMarkdown(), "/portfolio/" + work.getSlug(), work.getPublishedAt(), work.getUpdatedAt()));
+            work.getSearchableText() == null ? work.getBodyMarkdown() : work.getSearchableText(), "/portfolio/" + work.getSlug(), work.getPublishedAt(), work.getUpdatedAt()));
     }
 
     private void rebuildBlogs() {

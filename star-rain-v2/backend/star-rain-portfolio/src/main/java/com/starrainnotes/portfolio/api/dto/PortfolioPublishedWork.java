@@ -18,6 +18,9 @@ public class PortfolioPublishedWork {
     private String summary;
     private String coverUrl;
     private String bodyMarkdown;
+    private String searchableText;
+    private String seoTitle;
+    private String seoDescription;
     private LocalDateTime publishedAt;
     private LocalDateTime updatedAt;
 }

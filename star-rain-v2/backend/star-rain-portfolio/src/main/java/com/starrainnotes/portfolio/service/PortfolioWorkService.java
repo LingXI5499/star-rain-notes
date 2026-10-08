@@ -12,6 +12,8 @@ import com.starrainnotes.portfolio.vo.WorkVO;
 
 public interface PortfolioWorkService {
     PageResult<WorkVO> publicWorks(int page, int pageSize, WorkType type);
+    PageResult<WorkVO> filteredWorks(int page, int pageSize, WorkType type, String status, String keyword,
+        com.starrainnotes.portfolio.dto.WorkFilterDTO filter, boolean publicOnly);
     WorkVO publicWork(String slug);
     WorkVO publicWorkById(Long id);
     PageResult<WorkVO> adminWorks(int page, int pageSize, WorkType type, String status, String keyword);

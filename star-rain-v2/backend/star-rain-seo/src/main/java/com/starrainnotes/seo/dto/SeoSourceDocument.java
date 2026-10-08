@@ -17,5 +17,6 @@ public class SeoSourceDocument {
     private String title;
     private String summary;
     private String bodyMarkdown;
+    private String coverUrl;
     private LocalDateTime updatedAt;
 }

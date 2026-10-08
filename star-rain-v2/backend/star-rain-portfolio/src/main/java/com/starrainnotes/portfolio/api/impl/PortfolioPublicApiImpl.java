@@ -16,12 +16,13 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PortfolioPublicApiImpl implements PortfolioPublicApi, PortfolioReferenceApi, PortfolioSearchSourceApi {
     private final PortfolioWorkService works;
+    private final com.starrainnotes.portfolio.service.PortfolioContentService content;
 
     @Override
     public PageResult<PortfolioPublishedWork> publishedWorks(int page, int pageSize) {
         PageResult<WorkVO> pageResult = works.publicWorks(page, pageSize, null);
         return PageResult.<PortfolioPublishedWork>builder()
-                .items(pageResult.getItems().stream().map(this::published).toList())
+                .items(pageResult.getItems().stream().map(item -> published(works.publicWorkById(Long.valueOf(item.getId())))).toList())
                 .page(pageResult.getPage()).pageSize(pageResult.getPageSize())
                 .total(pageResult.getTotal()).build();
     }
@@ -63,7 +64,8 @@ public class PortfolioPublicApiImpl implements PortfolioPublicApi, PortfolioRefe
         return PortfolioPublishedWork.builder().id(Long.valueOf(work.getId()))
                 .slug(work.getSlug()).workType(work.getWorkType()).title(work.getTitle())
                 .summary(work.getSummary()).coverUrl(work.getCoverUrl())
-                .bodyMarkdown(work.getBodyMarkdown())
+                .bodyMarkdown(content.seoMarkdown(Long.valueOf(work.getId()), work.getBodyMarkdown()))
+                .searchableText(work.getSearchableText()).seoTitle(work.getSeoTitle()).seoDescription(work.getSeoDescription())
                 .publishedAt(work.getPublishedAt()).updatedAt(work.getUpdatedAt()).build();
     }
 }
