@@ -1,4 +1,9 @@
 <script setup>
+import PublicSearch from '../../../../shared/ui/PublicSearch.vue'
+import PublicSelect from '../../../../shared/ui/PublicSelect.vue'
+import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
+import { publicPage, publicPageSize, sizeQuery } from '../../../../shared/composables/publicListState'
+
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useViewMode } from '../../../../shared/viewMode'
@@ -9,7 +14,10 @@ const route = useRoute(), router = useRouter(), { contentPath } = useViewMode()
 const theme = ref(null), account = ref(false), plan = ref(null), items = ref([]), states = ref({}), total = ref(0)
 const settings = ref({ showEnglish: true, showChinese: true }), loading = ref(false), error = ref(''), busyIds = ref(new Set())
 const selection = ref(createSelection(route.params.themeId)), q = ref(''), learned = ref('ANY'), mastery = ref('ANY'), inPlan = ref('ANY'), direction = ref('ANY'), lastRating = ref('ANY')
-const page = computed(() => Math.max(1, Number(route.query.page) || 1)), pages = computed(() => Math.max(1, Math.ceil(total.value / 24)))
+const page = computed(() => publicPage(route.query.page)), pages = computed(() => Math.max(1, Math.ceil(total.value / pageSize.value)))
+const pageSize = computed(() => publicPageSize(route.query.pageSize, 24, [12, 24, 48, 96]))
+function changePage(next) { router.push({ query: { ...route.query, page: next > 1 ? String(next) : undefined } }) }
+function changeSize(size) { router.push({ query: sizeQuery(route.query, size, 24) }) }
 const count = computed(() => selection.value.selectAllMatched ? Math.max(0, total.value - selection.value.excludedWordIds.length) : selection.value.wordIds.length)
 const personalFilters = ref(false)
 const headerOffset = ref(64)
@@ -28,7 +36,7 @@ async function load() {
     if (token !== version) return
     account.value = authenticated
     if (!authenticated) plan.value = null
-    const [themes, words, displaySettings] = await Promise.all([getVocabularyThemes(), learningWords({ ...filters, page: page.value, size: 24 }), getVocabularyStudySettings()])
+    const [themes, words, displaySettings] = await Promise.all([getVocabularyThemes(), learningWords({ ...filters, page: page.value, size: pageSize.value }), getVocabularyStudySettings()])
     if (token !== version) return
     theme.value = themes.find((item) => item.id === String(route.params.themeId))
     items.value = words.items; total.value = words.total; settings.value = displaySettings
@@ -45,7 +53,7 @@ async function load() {
 }
 function filters() {
   clearTimeout(searchTimer)
-  router.push({ query: { q: q.value.trim() || undefined, learned: learned.value === 'ANY' ? undefined : learned.value, mastery: mastery.value === 'ANY' ? undefined : mastery.value,
+  router.push({ query: { pageSize: route.query.pageSize, q: q.value.trim() || undefined, learned: learned.value === 'ANY' ? undefined : learned.value, mastery: mastery.value === 'ANY' ? undefined : mastery.value,
     inPlan: inPlan.value === 'ANY' ? undefined : inPlan.value, direction: direction.value === 'ANY' ? undefined : direction.value, lastRating: lastRating.value === 'ANY' ? undefined : lastRating.value } })
 }
 function cancelSearch() { clearTimeout(searchTimer) }
@@ -90,17 +98,17 @@ onBeforeUnmount(() => { clearTimeout(searchTimer); headerObserver?.disconnect();
 
     <section class="theme-words__tools" aria-label="词汇搜索与筛选">
       <form class="theme-words__filters" @submit.prevent="filters">
-        <div class="theme-words__search"><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input v-model="q" type="search" placeholder="搜索单词或中文释义…" aria-label="搜索单词或释义" @input="search" @compositionstart="cancelSearch" @compositionend="search"></div>
+        <PublicSearch v-model="q" label="搜索单词或释义" placeholder="搜索单词或中文释义…" @search="filters" />
         <button type="button" :class="{ 'is-active': personalFilters }" :aria-expanded="personalFilters" aria-controls="vocabulary-personal-filters" @click="personalFilters = !personalFilters">个人筛选 <span v-if="personalFilterCount" class="theme-words__badge">{{ personalFilterCount }}</span><span aria-hidden="true">{{ personalFilters ? '−' : '+' }}</span></button>
         <button v-if="activeFilters || q" type="button" class="theme-words__reset" @click="resetFilters">重置</button>
       </form>
       <div v-if="personalFilters" id="vocabulary-personal-filters" class="theme-words__advanced">
         <template v-if="account">
-          <label>学习状态<select v-model="learned" aria-label="是否已学" @change="filters"><option value="ANY">全部状态</option><option value="YES">已学</option><option value="NO">未学</option></select></label>
-          <label>熟练度<select v-model="mastery" aria-label="熟练度" @change="filters"><option value="ANY">全部境界</option><option value="UNRATED">未修习</option><option v-for="(label, rank) in masteryLabels" :key="rank" :value="rank">{{ label }}</option></select></label>
-          <label>计划范围<select v-model="inPlan" aria-label="计划范围" @change="filters"><option value="ANY">全部词汇</option><option value="YES">当前计划内</option><option value="NO">当前计划外</option></select></label>
-          <label>评价方向<select v-model="direction" aria-label="评价方向" @change="filters"><option value="ANY">任一方向</option><option value="EN_TO_ZH">英译中</option><option value="ZH_TO_EN">中译英</option><option value="AUDIO_TO_BOTH">听音辨词</option></select></label>
-          <label>最近评价<select v-model="lastRating" aria-label="最近评价" @change="filters"><option value="ANY">全部评价</option><option value="FORGOT">忘记</option><option value="UNCERTAIN">模糊</option><option value="KNOW">掌握</option></select></label>
+          <PublicSelect v-model="learned" label="是否已学" :options="[{ value: 'ANY', label: '全部状态' }, { value: 'YES', label: '已学' }, { value: 'NO', label: '未学' }]" @update:model-value="filters" />
+          <PublicSelect v-model="mastery" label="熟练度" :options="[{ value: 'ANY', label: '全部境界' }, { value: 'UNRATED', label: '未修习' }, ...Object.entries(masteryLabels).map(([value, label]) => ({ value, label }))]" @update:model-value="filters" />
+          <PublicSelect v-model="inPlan" label="计划范围" :options="[{ value: 'ANY', label: '全部词汇' }, { value: 'YES', label: '当前计划内' }, { value: 'NO', label: '当前计划外' }]" @update:model-value="filters" />
+          <PublicSelect v-model="direction" label="评价方向" :options="[{ value: 'ANY', label: '任一方向' }, { value: 'EN_TO_ZH', label: '英译中' }, { value: 'ZH_TO_EN', label: '中译英' }, { value: 'AUDIO_TO_BOTH', label: '听音辨词' }]" @update:model-value="filters" />
+          <PublicSelect v-model="lastRating" label="最近评价" :options="[{ value: 'ANY', label: '全部评价' }, { value: 'FORGOT', label: '忘记' }, { value: 'UNCERTAIN', label: '模糊' }, { value: 'KNOW', label: '掌握' }]" @update:model-value="filters" />
         </template>
         <p v-else class="theme-words__login">搜索可直接使用；登录后可按学习状态、熟练度、计划和评价筛选。<RouterLink :to="{ path: '/useradmin/login', query: { redirect: route.fullPath } }">去登录 →</RouterLink></p>
       </div>
@@ -116,16 +124,17 @@ onBeforeUnmount(() => { clearTimeout(searchTimer); headerObserver?.disconnect();
     <div v-else class="theme-words__grid" :class="{ 'is-loading': loading }" :aria-busy="loading">
       <VocabularyCard v-for="word in items" :key="word.id" :word="word" :memory="states[word.id]" :settings="settings" :busy="loading || busyIds.has(String(word.id))" :selectable="true" :selected="selectedWord(selection, word.id)" @start="toggle" @display="display" />
     </div>
-    <nav class="theme-words__pager" aria-label="词汇分页"><button :disabled="loading || page <= 1" @click="router.push({ query: { ...route.query, page: page - 1 } })">← 上一页</button><span>{{ page }} / {{ pages }}</span><button :disabled="loading || page >= pages" @click="router.push({ query: { ...route.query, page: page + 1 } })">下一页 →</button></nav>
+<PublicPagination :page="page" :page-size="pageSize" :page-sizes="[12, 24, 48, 96]" :total="total" :loading="loading" label="词汇分页" unit="词" @change="changePage" @page-size="changeSize" />
   </main>
 </template>
 <style scoped>
+.theme-words__filters :deep(.public-search){min-width:0}
 .theme-words{max-width:1200px;margin:auto;padding-bottom:48px}
 .theme-words__header{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:28px}.theme-words__back{font-size:13px;color:var(--text-secondary)}.theme-words .public-eyebrow{margin-top:22px}.theme-words h1{font-size:clamp(28px,3.4vw,42px);line-height:1.3;margin:10px 0;letter-spacing:-.04em}.theme-words__intro{color:var(--text-secondary);font-size:14px}.theme-words__plan{flex-shrink:0;padding:12px 16px;border:1px solid var(--border-strong);border-radius:12px;font-size:14px}.theme-words__note{padding:12px 16px;background:var(--primary-soft);border-radius:12px;color:var(--primary);font-size:13px;margin-bottom:18px}
 button,select,input[type=search]{width:auto;min-width:0;min-height:40px;padding:9px 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-surface);color:var(--text-primary);font:inherit;font-size:13px}button{cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}button:hover:not(:disabled){border-color:var(--primary);background:var(--primary-soft)}button:disabled{opacity:.45;cursor:default}button:focus-visible,summary:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
 .theme-words__tools{position:sticky;top:calc(var(--vocabulary-header-offset,64px) + 10px);z-index:15;padding:16px 18px 12px;background:var(--bg-surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-md,0 8px 28px #0001)}
-.theme-words__filters{display:flex;align-items:center;gap:10px}.theme-words__search{display:flex;align-items:center;gap:10px;flex:1;min-width:0;padding:0 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-elevated)}.theme-words__search:focus-within{border-color:var(--primary);outline:2px solid var(--primary-soft)}.theme-words__search svg{width:18px;height:18px;fill:none;stroke:var(--text-muted);stroke-width:1.7;flex-shrink:0}.theme-words__search input{width:100%;border:0;background:transparent;padding-left:0;outline:none;box-shadow:none}.theme-words__filters>button{display:flex;align-items:center;gap:10px}.theme-words__filters>button.is-active{color:var(--primary);border-color:var(--primary);background:var(--primary-soft)}.theme-words__badge{font-size:11px}.theme-words__reset{color:var(--text-secondary)}
-.theme-words__advanced{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;border-top:1px solid var(--border);padding-top:14px;margin-top:14px}.theme-words__advanced label{display:grid;gap:6px;font-size:11px;color:var(--text-muted)}.theme-words__advanced select{width:100%;min-width:0}.theme-words__login{grid-column:1/-1;font-size:13px;color:var(--text-secondary);line-height:1.7;margin:0}.theme-words__login a{margin-left:12px;color:var(--primary)}
+.theme-words__filters{display:flex;align-items:flex-end;gap:10px}.theme-words__search{display:flex;align-items:center;gap:10px;flex:1;min-width:0;padding:0 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-elevated)}.theme-words__search:focus-within{border-color:var(--primary);outline:2px solid var(--primary-soft)}.theme-words__search svg{width:18px;height:18px;fill:none;stroke:var(--text-muted);stroke-width:1.7;flex-shrink:0}.theme-words__search input{width:100%;border:0;background:transparent;padding-left:0;outline:none;box-shadow:none}.theme-words__filters>button{display:flex;align-items:center;gap:10px}.theme-words__filters>button.is-active{color:var(--primary);border-color:var(--primary);background:var(--primary-soft)}.theme-words__badge{font-size:11px}.theme-words__reset{color:var(--text-secondary)}
+.theme-words__advanced{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;border-top:1px solid var(--border);padding-top:14px;margin-top:14px}.theme-words__advanced :deep(.public-select){min-width:0}.theme-words__advanced label{display:grid;gap:6px;font-size:11px;color:var(--text-muted)}.theme-words__advanced select{width:100%;min-width:0}.theme-words__login{grid-column:1/-1;font-size:13px;color:var(--text-secondary);line-height:1.7;margin:0}.theme-words__login a{margin-left:12px;color:var(--primary)}
 .theme-words__toolbar{display:flex;align-items:center;gap:18px;flex-wrap:wrap;margin-top:12px}.theme-words__display{display:flex;align-items:center;gap:3px;font-size:12px;color:var(--text-muted)}.theme-words__display>span{margin-right:8px}.theme-words__display button{border:0;min-height:30px;padding:5px 10px;background:transparent;color:var(--text-secondary);border-radius:7px;font-size:12px}.theme-words__display button.is-active{color:var(--primary);background:var(--primary-soft)}.theme-words__batch{position:relative;font-size:12px;color:var(--text-secondary)}.theme-words__batch summary{cursor:pointer;list-style:none;padding:7px 0}.theme-words__batch summary::after{content:' ▾'}.theme-words__batch>div{position:absolute;top:100%;left:0;display:grid;gap:6px;padding:10px;min-width:210px;background:var(--bg-surface);border:1px solid var(--border);box-shadow:var(--shadow-md);border-radius:12px}.theme-words__batch button{text-align:left;border:0}
 .theme-words__selected{display:flex;align-items:center;gap:14px;margin-left:auto;font-size:12px;color:var(--text-secondary)}.theme-words__selected strong{font-size:16px;color:var(--primary);font-variant-numeric:tabular-nums}.theme-words__confirm{background:var(--primary);color:var(--on-primary);border-color:var(--primary);min-height:34px;padding:6px 12px}.theme-words__confirm:hover:not(:disabled){background:var(--primary);color:var(--on-primary);filter:brightness(1.1)}
 .theme-words__results{display:flex;justify-content:space-between;gap:12px;margin:24px 2px 14px;font-size:12px;color:var(--text-muted)}.theme-words__grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:18px;transition:opacity .15s}.theme-words__grid.is-loading{opacity:.55;pointer-events:none}.theme-words__pager{display:flex;justify-content:center;align-items:center;gap:24px;margin-top:28px;font-size:13px}.theme-words__empty{padding:48px 20px;text-align:center;line-height:2;background:var(--bg-surface);border:1px dashed var(--border-strong);border-radius:16px}.theme-words__empty button{margin-left:12px}[role=alert]{color:var(--accent)}

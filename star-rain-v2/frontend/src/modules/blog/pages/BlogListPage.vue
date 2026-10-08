@@ -1,4 +1,6 @@
 <script setup>
+import { publicPage, publicPageSize, sizeQuery } from '../../../shared/composables/publicListState'
+
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { listArchive, listPublicPosts, listArchiveMonths, listPublicTags, listPublicTopics, getPublicBlogStats } from '../api/blogApi'
@@ -34,7 +36,7 @@ const { contentPath } = useViewMode()
 const route = useRoute()
 const router = useRouter()
 
-const pageSize = 10
+const pageSize = ref(10)
 const state = reactive({
   // 标签筛选统一存成数组：单标签就是一个元素的数组（URL 写 ?tag=），
   // 多标签写 ?tags=a,b（后端「命中任一」），两者在页面内是同一条数据。
@@ -59,16 +61,16 @@ const errorText = ref('')
  * 条目全部落回本页，只用查询串区分 —— 这就是「原地切换下方列表」。
  */
 const columns = computed(() => [
-  { key: 'home', label: '首页', to: { path: contentPath('/blog') } },
+  { key: 'home', label: '首页', to: { path: contentPath('/blog'), query: { ...queryOf(), topic: undefined, page: undefined } } },
   ...topics.value.map((topic) => ({
     key: topic.slug,
     label: topic.name,
     featured: topic.featured,
-    to: { path: contentPath('/blog'), query: { topic: topic.slug } },
+    to: { path: contentPath('/blog'), query: { ...queryOf(), topic: topic.slug, page: undefined } },
   })),
 ])
 
-const totalPages = computed(() => Math.max(1, Math.ceil(state.total / pageSize)))
+const totalPages = computed(() => Math.max(1, Math.ceil(state.total / pageSize.value)))
 const activeMonth = computed(() => (state.month ? `${state.month.year}-${String(state.month.month).padStart(2, '0')}` : ''))
 const activeColumn = computed(() => state.topic || 'home')
 /*
@@ -76,7 +78,7 @@ const activeColumn = computed(() => state.topic || 'home')
  * 切换专栏的手感就是「旧列表淡出、新列表逐条浮上来」，而不是硬替换。
  * 列表数据由本页持有，重挂不触发任何请求。
  */
-const listKey = computed(() => [[...state.tags].sort().join(','), state.topic, activeMonth.value, state.page].join('|'))
+const listKey = computed(() => [[...state.tags].sort().join(','), state.topic, activeMonth.value, state.page, pageSize.value].join('|'))
 
 // 月份 -> 'YYYY-MM'；非法值返回 null，避免把坏 URL 传给后端拿 400
 function parseMonth(value) {
@@ -111,6 +113,7 @@ function queryOf() {
     ...(state.tags.length === 1 ? { tag: state.tags[0] } : {}),
     ...(state.tags.length > 1 ? { tags: state.tags.join(',') } : {}),
     ...(activeMonth.value ? { month: activeMonth.value } : {}),
+    ...(pageSize.value !== 10 ? { pageSize: String(pageSize.value) } : {}),
     ...(state.page > 1 ? { page: String(state.page) } : {}),
   }
 }
@@ -130,7 +133,8 @@ function syncFromQuery() {
   state.topic = typeof route.query.topic === 'string' ? route.query.topic : ''
   state.tags = parseTagQuery()
   state.month = parseMonth(route.query.month)
-  state.page = Math.max(Number(route.query.page) || 1, 1)
+  state.page = publicPage(route.query.page)
+  pageSize.value = publicPageSize(route.query.pageSize, 10, [10, 20, 30, 50])
 }
 
 async function loadPosts() {
@@ -141,7 +145,7 @@ async function loadPosts() {
   try {
     const params = {
       page: state.page,
-      pageSize,
+      pageSize: pageSize.value,
       topic: state.topic || undefined,
       // 单标签走 tag，多标签走 tags：与 URL 的写法保持一致，请求和地址栏对得上
       tag: state.tags.length === 1 ? state.tags[0] : undefined,
@@ -187,7 +191,7 @@ async function loadAside() {
 }
 
 function applyQuery() {
-  router.replace({ path: contentPath('/blog'), query: queryOf() })
+  router.push({ path: contentPath('/blog'), query: queryOf() })
 }
 
 // 侧栏标签导航条点一行 = 单标签筛选（再点一次取消）
@@ -242,6 +246,8 @@ function clearAll() {
   state.page = 1
   applyQuery()
 }
+
+function changeSize(size) { pageSize.value = size; state.page = 1; applyQuery() }
 
 function goPage(next) {
   state.page = next
@@ -312,7 +318,10 @@ const emptyText = computed(() => {
           :page="state.page"
           :total-pages="totalPages"
           :total="state.total"
-          @change="goPage"
+          :page-size="pageSize"
+        :loading="loading"
+        @page-size="changeSize"
+        @change="goPage"
         />
       </main>
 

@@ -13,7 +13,7 @@ vi.mock('../../api/englishApi', () => api)
 vi.mock('../../api/vocabularyLearningApi', async () => ({ ...(await vi.importActual('../../api/vocabularyLearningApi')), ...api }))
 vi.mock('../../../../shared/viewMode', () => ({ useViewMode: () => ({ contentPath: path => path }) }))
 const mounted = []
-const button = (wrapper, text) => wrapper.findAll('button').find(item => item.text().includes(text))
+const button = (wrapper, text) => wrapper.findAll('button').find(item => item.text().includes(text) || item.attributes('aria-label') === text)
 async function setup(query = '') {
   const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/english/vocabulary/:themeId', component: VocabularyThemePage }] })
   await router.push('/english/vocabulary/3' + query)
@@ -50,12 +50,12 @@ describe('vocabulary toolbar and working filters', () => {
     'immediately applies %s to the server query', async (label, key, value) => {
       const { wrapper, router } = await setup('?page=2')
       await button(wrapper, '个人筛选').trigger('click')
-      await wrapper.find(`select[aria-label="${label}"]`).setValue(value); await flushPromises()
+      wrapper.findAllComponents({ name: 'PublicSelect' }).find(item => item.props('label') === label).vm.$emit('update:modelValue', value); await flushPromises()
       expect(router.currentRoute.value.query).toEqual({ [key]: value })
       expect(api.learningWords).toHaveBeenLastCalledWith(expect.objectContaining({ [key]: value, page: 1 }))
       await button(wrapper, '重置').trigger('click'); await flushPromises()
       expect(router.currentRoute.value.query).toEqual({})
-      expect(wrapper.find(`select[aria-label="${label}"]`).element.value).toBe('ANY')
+      expect(wrapper.findAllComponents({ name: 'PublicSelect' }).find(item => item.props('label') === label).props('modelValue')).toBe('ANY')
     },
   )
 

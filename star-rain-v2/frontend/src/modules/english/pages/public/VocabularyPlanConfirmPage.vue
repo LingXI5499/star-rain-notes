@@ -1,10 +1,16 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
+import { publicPage, publicPageSize, sizeQuery } from '../../../../shared/composables/publicListState'
+
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useViewMode } from '../../../../shared/viewMode'
 import { confirmPlan, learningMessage, loadSelection, previewPlan, saveSelection, toggleSelected } from '../../api/vocabularyLearningApi'
 const route = useRoute(), router = useRouter(), { contentPath } = useViewMode()
 const selection = ref(loadSelection(route.query.themeId || '')), preview = ref(null), page = ref(1), loading = ref(false), saving = ref(false), error = ref(''), accepted = ref(false)
+const pageSize = computed(() => publicPageSize(route.query.pageSize, 24, [12, 24, 48]))
+function go(next) { router.push({ query: { ...route.query, page: next > 1 ? String(next) : undefined } }) }
+function changeSize(size) { router.push({ query: sizeQuery(route.query, size, 24) }) }
 const replacing = computed(() => preview.value?.existingPlan?.status !== 'NONE' && !!preview.value?.existingPlan)
 const batchValid = computed(() => Number.isInteger(selection.value.batchSize) && selection.value.batchSize >= 5 && selection.value.batchSize <= 100)
 const ready = computed(() => accepted.value && preview.value?.totalWords > 0 && batchValid.value && !saving.value && !loading.value && !error.value)
@@ -14,7 +20,7 @@ async function load(nextPage = 1) {
   if (!batchValid.value) return
   const token = ++version; loading.value = true; error.value = ''; accepted.value = false
   try {
-    const result = await previewPlan(selection.value, nextPage)
+    const result = await previewPlan(selection.value, nextPage, pageSize.value)
     if (token !== version) return
     preview.value = result; page.value = nextPage
     selection.value = { ...selection.value, expectedRevision: result.expectedRevision, previewFingerprint: result.previewFingerprint }
@@ -22,7 +28,7 @@ async function load(nextPage = 1) {
   } catch (cause) { if (token === version) { error.value = learningMessage(cause); preview.value = null } }
   finally { if (token === version) loading.value = false }
 }
-async function remove(word) { selection.value = toggleSelected(selection.value, word.id); saveSelection(selection.value); await load(1) }
+async function remove(word) { selection.value = toggleSelected(selection.value, word.id); saveSelection(selection.value); if (publicPage(route.query.page) > 1) go(1); else await load(1) }
 async function confirm() {
   if (!ready.value) return
   saving.value = true; error.value = ''
@@ -30,7 +36,7 @@ async function confirm() {
   catch (cause) { error.value = learningMessage(cause); accepted.value = false }
   finally { saving.value = false }
 }
-onMounted(() => load())
+watch(() => [route.query.page, route.query.pageSize], () => load(publicPage(route.query.page)), { immediate: true })
 onBeforeUnmount(() => { version += 1 })
 </script>
 <template>
@@ -47,8 +53,8 @@ onBeforeUnmount(() => { version += 1 })
         <div class="plan-confirm__summary"><p class="plan-confirm__eyebrow">本次待选</p><h2 id="selected-words-heading">{{ preview.sourceName }}</h2><div class="plan-confirm__stats"><div><strong>{{ preview.totalWords }}<small>词</small></strong><span>待选词汇</span></div><div><strong>{{ preview.learnedWords }}<small>词</small></strong><span>已学过</span></div><div><strong>{{ preview.totalGroups }}<small>组</small></strong><span>学习分组</span></div></div></div>
         <div class="plan-confirm__list-heading"><h3>核对词汇</h3><span>第 {{ page }} / {{ Math.max(1, preview.totalPages) }} 页</span></div>
         <p v-if="!preview.totalWords" class="plan-confirm__empty">待选词汇已清空，请返回词库添加单词。</p>
-        <ul v-else class="plan-confirm__words"><li v-for="(word, index) in preview.items" :key="word.id"><span class="plan-confirm__word-index" aria-hidden="true">{{ (page - 1) * 24 + index + 1 }}</span><div><strong>{{ word.word }}</strong><span>{{ word.translation }}</span></div><button :disabled="saving || loading" :aria-label="`移除 ${word.word}`" @click="remove(word)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg><span>移除</span></button></li></ul>
-        <nav class="plan-confirm__pager" aria-label="待选词汇分页"><button :disabled="page <= 1 || loading || saving" @click="load(page - 1)">上一页</button><span>{{ page }} / {{ Math.max(1, preview.totalPages) }}</span><button :disabled="page >= preview.totalPages || loading || saving" @click="load(page + 1)">下一页</button></nav>
+        <ul v-else class="plan-confirm__words"><li v-for="(word, index) in preview.items" :key="word.id"><span class="plan-confirm__word-index" aria-hidden="true">{{ (page - 1) * pageSize + index + 1 }}</span><div><strong>{{ word.word }}</strong><span>{{ word.translation }}</span></div><button :disabled="saving || loading" :aria-label="`移除 ${word.word}`" @click="remove(word)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m6 6 8 8M14 6l-8 8"/></svg><span>移除</span></button></li></ul>
+<PublicPagination class="plan-confirm__pagination" :page="page" :page-size="pageSize" :total="preview.totalWords" :page-sizes="[12, 24, 48]" :loading="loading || saving" label="待选词汇分页" unit="词" @change="go" @page-size="changeSize" />
       </section>
       <aside class="plan-confirm__decision" aria-labelledby="plan-settings-heading">
         <form @submit.prevent="confirm">
@@ -70,6 +76,7 @@ onBeforeUnmount(() => { version += 1 })
   </main>
 </template>
 <style scoped>
+.plan-confirm__pagination{margin:18px 24px 24px}
 .plan-confirm{max-width:1100px;margin:auto;padding-bottom:60px;line-height:1.6}.plan-confirm__header{margin-bottom:28px}.plan-confirm__back{font-size:13px;color:var(--text-secondary)}.plan-confirm .public-eyebrow{margin-top:24px}.plan-confirm h1{font-size:clamp(28px,4vw,40px);margin:10px 0;letter-spacing:-.04em}.plan-confirm__intro{font-size:14px;color:var(--text-secondary)}.plan-confirm__steps{display:flex;align-items:center;gap:30px;list-style:none;padding:0;margin:24px 0 0;font-size:12px;color:var(--text-muted)}.plan-confirm__steps li{display:flex;gap:8px;align-items:center}.plan-confirm__steps li>span{display:grid;place-items:center;width:24px;height:24px;border:1px solid var(--border-strong);border-radius:50%;font-size:11px}.plan-confirm__steps li[aria-current]{color:var(--primary);font-weight:600}.plan-confirm__steps li[aria-current]>span{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
 .plan-confirm__workspace{display:grid;grid-template-columns:minmax(0,1fr) 350px;gap:24px;align-items:start}.plan-confirm__selection,.plan-confirm__decision{min-width:0;border:1px solid var(--border);border-radius:18px;background:var(--bg-surface);box-shadow:var(--shadow-sm);overflow:hidden}.plan-confirm__summary{padding:24px;background:var(--bg-elevated);border-bottom:1px solid var(--border)}.plan-confirm__eyebrow{font-size:11px;color:var(--text-muted);margin:0 0 8px}.plan-confirm h2{font-size:19px;line-height:1.5;margin:0;overflow-wrap:anywhere}.plan-confirm__stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:24px}.plan-confirm__stats>div{display:grid;gap:6px}.plan-confirm__stats strong{font-size:28px;font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}.plan-confirm__stats>div:first-child strong{color:var(--primary)}.plan-confirm__stats small{font-size:12px;font-weight:400;color:var(--text-muted);margin-left:6px}.plan-confirm__stats>div>span{font-size:12px;color:var(--text-muted)}.plan-confirm__list-heading{display:flex;justify-content:space-between;align-items:center;padding:20px 24px 8px;gap:12px}.plan-confirm__list-heading h3{font-size:13px;font-weight:600;margin:0}.plan-confirm__list-heading>span{font-size:12px;color:var(--text-muted)}
 .plan-confirm__words{list-style:none;padding:0 24px;margin:0}.plan-confirm__words li{display:flex;align-items:center;gap:14px;padding:16px 0;border-bottom:1px solid var(--border)}.plan-confirm__word-index{width:20px;flex-shrink:0;font-size:11px;color:var(--text-muted);font-variant-numeric:tabular-nums}.plan-confirm__words li>div{display:grid;gap:5px;min-width:0;flex:1;overflow-wrap:anywhere}.plan-confirm__words strong{font-size:17px}.plan-confirm__words li>div>span{font-size:13px;line-height:1.6;color:var(--text-secondary)}.plan-confirm__words button{display:flex;align-items:center;gap:4px;padding:6px 8px;min-height:32px;border:0;background:transparent;color:var(--text-muted);font-size:12px;flex-shrink:0}.plan-confirm__words button:hover:not(:disabled){color:var(--accent);background:var(--bg-subtle)}.plan-confirm__words button svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.5}.plan-confirm__pager{display:flex;justify-content:center;align-items:center;gap:18px;margin:20px 0;font-size:12px;color:var(--text-secondary)}.plan-confirm__empty{padding:24px;color:var(--text-muted);font-size:14px;line-height:1.7}

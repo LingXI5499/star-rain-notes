@@ -67,7 +67,7 @@ describe('plan confirmation card', () => {
     await wrapper.find('form').trigger('submit'); expect(api.confirmPlan).not.toHaveBeenCalled()
     await wrapper.find('input[type=number]').setValue(30); await flushPromises()
     expect(api.previewPlan).toHaveBeenCalledTimes(2)
-    expect(api.previewPlan).toHaveBeenLastCalledWith(expect.objectContaining({ batchSize: 30 }), 1)
+    expect(api.previewPlan).toHaveBeenLastCalledWith(expect.objectContaining({ batchSize: 30 }), 1, 24)
     expect(wrapper.find('.plan-confirm__submit').element.disabled).toBe(true)
   })
 

@@ -29,7 +29,7 @@ export async function learningStates(ids) {
   return states
 }
 export async function currentPlan() { await requireAccount(); return get(`${base}/plan`) }
-export async function previewPlan(selection, page = 1) { await requireAccount(); return post(`${base}/plan/preview?page=${page}&size=24`, selection) }
+export async function previewPlan(selection, page = 1, size = 24) { await requireAccount(); return post(`${base}/plan/preview?page=${page}&size=${size}`, selection) }
 export async function confirmPlan(selection) { await requireAccount(); return put(`${base}/plan`, selection) }
 export async function planItems(revision, groupNo, after = 0, limit = 100) { await requireAccount(); return get(`${base}/plan/items`, { revision, groupNo, after, limit }) }
 export async function planGroups(revision, after = 0) { await requireAccount(); return get(`${base}/plan/groups`, { revision, after, limit: 50 }) }

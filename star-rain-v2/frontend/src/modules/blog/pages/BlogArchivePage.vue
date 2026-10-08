@@ -1,4 +1,6 @@
 <script setup>
+import { publicPage, publicPageSize, sizeQuery } from '../../../shared/composables/publicListState'
+
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { listArchive, listArchiveDays, listArchiveMonths, listPublicTags, listPublicTopics } from '../api/blogApi'
@@ -29,7 +31,7 @@ const { contentPath } = useViewMode()
 const route = useRoute()
 const router = useRouter()
 
-const pageSize = 10
+const pageSize = ref(10)
 /*
  * tag  = 工具条那个单标签下拉（字符串）
  * tags = 悬浮卡片多选出来的集合，是同一件事的两种写法：
@@ -45,7 +47,7 @@ const daysLoading = ref(false)
 const loading = ref(false)
 const errorText = ref('')
 
-const totalPages = computed(() => Math.max(1, Math.ceil(state.total / pageSize)))
+const totalPages = computed(() => Math.max(1, Math.ceil(state.total / pageSize.value)))
 const activeMonth = computed(() => (filters.year ? `${filters.year}-${String(filters.month || 1).padStart(2, '0')}` : ''))
 const rangeLabel = computed(() => filters.day
   ? `${monthLabel(filters.year, filters.month)} ${filters.day} 日`
@@ -69,6 +71,7 @@ function queryOf() {
     ...(filters.year ? { year: String(filters.year) } : {}),
     ...(filters.month ? { month: String(filters.month) } : {}),
     ...(filters.day ? { day: String(filters.day) } : {}),
+    ...(pageSize.value !== 10 ? { pageSize: String(pageSize.value) } : {}),
     ...(state.page > 1 ? { page: String(state.page) } : {}),
   }
 }
@@ -90,16 +93,19 @@ function syncFromQuery() {
   filters.year = Number.isInteger(year) && year > 0 ? year : null
   filters.month = filters.year && Number.isInteger(month) && month >= 1 && month <= 12 ? month : null
   filters.day = filters.month && Number.isInteger(day) && day >= 1 && day <= 31 ? day : null
-  state.page = Math.max(Number(route.query.page) || 1, 1)
+  state.page = publicPage(route.query.page)
+  pageSize.value = publicPageSize(route.query.pageSize, 10, [10, 20, 30, 50])
 }
 
+let postRequest = 0
 async function loadPosts() {
+  const request = ++postRequest
   loading.value = true
   errorText.value = ''
   try {
     const result = await listArchive({
       page: state.page,
-      pageSize,
+      pageSize: pageSize.value,
       tag: filters.tags.length === 1 ? filters.tags[0] : undefined,
       tags: filters.tags.length > 1 ? filters.tags.join(',') : undefined,
       topic: filters.topic || undefined,
@@ -107,14 +113,16 @@ async function loadPosts() {
       month: filters.month || undefined,
       day: filters.day || undefined,
     })
+    if (request !== postRequest) return
     state.items = result.items || []
     state.total = result.total || 0
   } catch (cause) {
+    if (request !== postRequest) return
     state.items = []
     state.total = 0
     errorText.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (request === postRequest) loading.value = false
   }
 }
 
@@ -152,7 +160,7 @@ async function loadDays(monthKey) {
 }
 
 function applyQuery() {
-  router.replace({ path: contentPath('/blog/archive'), query: queryOf() })
+  router.push({ path: contentPath('/blog/archive'), query: queryOf() })
   void loadPosts()
 }
 
@@ -222,6 +230,8 @@ function clearAll() {
   applyQuery()
 }
 
+function changeSize(size) { pageSize.value = size; state.page = 1; applyQuery() }
+
 function goPage(next) {
   state.page = next
   applyQuery()
@@ -238,11 +248,11 @@ onMounted(() => {
 // URL 是筛选条件的唯一出口：浏览器前进/后退也能正确回到当时的归档视图
 watch(calendarMonth, loadDays)
 
-watch(() => [route.query.tag, route.query.topic, route.query.year, route.query.month, route.query.day, route.query.page],
+watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.year, route.query.month, route.query.day, route.query.page, route.query.pageSize],
   () => {
-    const before = JSON.stringify([filters.tag, filters.topic, filters.year, filters.month, filters.day, state.page])
+    const before = JSON.stringify([filters.tags, filters.topic, filters.year, filters.month, filters.day, state.page, pageSize.value])
     syncFromQuery()
-    const after = JSON.stringify([filters.tag, filters.topic, filters.year, filters.month, filters.day, state.page])
+    const after = JSON.stringify([filters.tags, filters.topic, filters.year, filters.month, filters.day, state.page, pageSize.value])
     if (before === after) return
     void loadPosts()
   })
@@ -305,7 +315,10 @@ watch(() => [route.query.tag, route.query.topic, route.query.year, route.query.m
           :page="state.page"
           :total-pages="totalPages"
           :total="state.total"
-          @change="goPage"
+          :page-size="pageSize"
+        :loading="loading"
+        @page-size="changeSize"
+        @change="goPage"
         />
       </main>
 

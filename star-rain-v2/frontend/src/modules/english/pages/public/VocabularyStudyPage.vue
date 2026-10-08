@@ -1,4 +1,6 @@
 <script setup>
+import PublicSelect from '../../../../shared/ui/PublicSelect.vue'
+
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../../shared/viewMode'
@@ -43,7 +45,7 @@ onMounted(refresh)
       <div class="review-study__summary-note"><span>到期任务会保留，分批完成即可。</span><span v-if="summary.earliestDueAt">最早到期 {{ new Date(summary.earliestDueAt).toLocaleDateString() }}</span></div>
     </section>
     <section class="review-study__workspace" aria-label="复习训练">
-      <div class="review-study__controls"><label>每批 <select v-model.number="limit" :disabled="busy || !!pending" aria-label="每批训练卡数量"><option :value="20">20 张</option><option :value="30">30 张</option><option :value="50">50 张</option></select></label><button class="review-study__begin" :disabled="loading || busy || !!pending" @click="begin">{{ card ? '重新读取本批' : started ? '开始下一批' : '开始本批' }} →</button><button class="review-study__refresh" :disabled="loading || busy || !!pending" @click="refresh">刷新统计</button></div>
+      <div class="review-study__controls"><PublicSelect v-model="limit" :disabled="busy || !!pending" label="每批训练卡数量" :options="[20, 30, 50].map(value => ({ value, label: value + ' 张' }))" /><button class="review-study__begin" :disabled="loading || busy || !!pending" @click="begin">{{ card ? '重新读取本批' : started ? '开始下一批' : '开始本批' }} →</button><button class="review-study__refresh" :disabled="loading || busy || !!pending" @click="refresh">刷新统计</button></div>
       <p v-if="loading" class="review-study__status" role="status">正在读取到期方向…</p><p v-if="error" class="review-study__error" role="alert">{{ error }} <button v-if="pending" :disabled="busy" @click="submit()">重试原评分</button></p>
       <template v-if="started && !loading">
         <div v-if="card" class="review-study__progress"><div><span>本批进度</span><strong>{{ index + 1 }} <span>/ {{ cards.length }}</span></strong></div><div class="review-study__track" role="progressbar" aria-label="本批已完成训练卡" :aria-valuenow="index" :aria-valuemax="cards.length" aria-valuemin="0"><span :style="{ width: `${index / cards.length * 100}%` }"></span></div></div>

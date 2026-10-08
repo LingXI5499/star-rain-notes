@@ -1,9 +1,16 @@
 <script setup>
+import PublicFilterBar from '../../../../shared/ui/PublicFilterBar.vue'
+import PublicSearch from '../../../../shared/ui/PublicSearch.vue'
+import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
+import { publicPage, publicPageSize, sizeQuery } from '../../../../shared/composables/publicListState'
+
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { errorMessage } from '../../../../shared/http'
 import { listEnglishDocuments } from '../../api/englishApi'
 
+import { useViewMode } from '../../../../shared/viewMode'
+const { contentPath } = useViewMode()
 const props = defineProps({ domain: { type: String, required: true } })
 const route = useRoute()
 const router = useRouter()
@@ -12,55 +19,58 @@ const resources = ref([])
 const prompts = ref([])
 const loading = ref(true)
 const error = ref('')
-const search = ref('')
-const page = computed(() => Math.max(1, Number(route.query.page) || 1))
-const totalPages = computed(() => Math.max(1, Math.ceil(data.value.total / 20)))
+const search = ref(String(route.query.search || ''))
+const page = computed(() => publicPage(route.query.page))
+const pageSize = computed(() => publicPageSize(route.query.pageSize))
+const resourcePage = computed(() => publicPage(route.query.resourcePage)), promptPage = computed(() => publicPage(route.query.promptPage))
+const resourceSize = computed(() => publicPageSize(route.query.resourceSize)), promptSize = computed(() => publicPageSize(route.query.promptSize))
+const resourceTotal = ref(0), promptTotal = ref(0)
+let version = 0
 const labels = { reading: { zh: '阅读中心', en: 'READING', desc: '通过分级文章训练理解与表达。', cta: '开始阅读' }, writing: { zh: '写作中心', en: 'WRITING', desc: '从素材、范文和任务中练习清晰表达。', cta: '查看内容' } }
 const label = computed(() => labels[props.domain])
 
 function path(item, kind = props.domain) {
-  if (kind === 'writing-resources') return `/english/writing/resources/${item.slug}`
-  if (kind === 'writing-prompts') return `/english/writing/practice/${item.slug}`
-  return `/english/${kind}/${item.slug}`
+  if (kind === 'writing-resources') return contentPath(`/english/writing/resources/${item.slug}`)
+  if (kind === 'writing-prompts') return contentPath(`/english/writing/practice/${item.slug}`)
+  return contentPath(`/english/${kind}/${item.slug}`)
 }
 
 async function load() {
-  loading.value = true
-  error.value = ''
+  const request = ++version; loading.value = true; error.value = ''; search.value = String(route.query.search || '')
   try {
     if (props.domain === 'writing') {
-      const [resourcePage, promptPage] = await Promise.all([
-        listEnglishDocuments('writing-resources', { page: 1, size: 50 }),
-        listEnglishDocuments('writing-prompts', { page: 1, size: 50 }),
+      const [materials, tasks] = await Promise.all([
+        listEnglishDocuments('writing-resources', { page: resourcePage.value, size: resourceSize.value, search: search.value }),
+        listEnglishDocuments('writing-prompts', { page: promptPage.value, size: promptSize.value, search: search.value }),
       ])
-      resources.value = resourcePage.items
-      prompts.value = promptPage.items
+      if (request !== version) return
+      resources.value = materials.items; resourceTotal.value = materials.total; prompts.value = tasks.items; promptTotal.value = tasks.total
     } else {
-      data.value = await listEnglishDocuments(props.domain, { page: page.value, size: 20, search: route.query.search || '' })
-      search.value = String(route.query.search || '')
+      const result = await listEnglishDocuments(props.domain, { page: page.value, size: pageSize.value, search: search.value })
+      if (request === version) data.value = result
     }
-  } catch (cause) { error.value = errorMessage(cause) }
-  finally { loading.value = false }
+  } catch (cause) { if (request === version) error.value = errorMessage(cause) }
+  finally { if (request === version) loading.value = false }
 }
-
-function submitSearch() { router.push({ query: search.value.trim() ? { search: search.value.trim() } : {} }) }
-function go(next) { router.push({ query: { ...route.query, page: next === 1 ? undefined : String(next) } }) }
-watch(() => [props.domain, route.query.page, route.query.search], load, { immediate: true })
+function submitSearch(value) { router.push({ query: { ...route.query, search: value || undefined, page: undefined, resourcePage: undefined, promptPage: undefined } }) }
+function go(next, key = 'page') { router.push({ query: { ...route.query, [key]: next > 1 ? String(next) : undefined } }) }
+function changeSize(size, key = 'pageSize', pageKey = 'page') { router.push({ query: { ...route.query, [key]: size === 12 ? undefined : String(size), [pageKey]: undefined } }) }
+watch(() => [props.domain, route.fullPath], load, { immediate: true })
 </script>
 
 <template>
   <main class="english-documents" :data-domain="domain">
-    <RouterLink to="/english" class="english-documents__back">← 英语</RouterLink>
-    <header class="english-documents__hero"><div><p class="public-eyebrow">ENGLISH {{ label.en }} · 分级精选</p><h1>{{ label.zh }}</h1><p>{{ label.desc }}</p></div><div class="english-documents__count"><strong>{{ domain === 'writing' ? resources.length + prompts.length : data.total }}</strong><span>{{ domain === 'writing' ? '项写作内容' : '篇精选文章' }}</span></div></header>
+    <RouterLink :to="contentPath('/english')" class="english-documents__back">← 英语</RouterLink>
+    <header class="english-documents__hero"><div><p class="public-eyebrow">ENGLISH {{ label.en }} · 分级精选</p><h1>{{ label.zh }}</h1><p>{{ label.desc }}</p></div><div class="english-documents__count"><strong>{{ domain === 'writing' ? resourceTotal + promptTotal : data.total }}</strong><span>{{ domain === 'writing' ? '项写作内容' : '篇精选文章' }}</span></div></header>
+    <PublicFilterBar :label="label.zh + '筛选'" :active="Boolean(route.query.search)" @reset="search = ''; submitSearch('')"><PublicSearch v-model="search" label="搜索标题或摘要" placeholder="输入标题或摘要关键词" @search="submitSearch" /></PublicFilterBar>
     <p v-if="loading" class="english-documents__state">正在读取内容…</p><p v-else-if="error" class="english-documents__state" role="alert">{{ error }}</p>
     <template v-else-if="domain === 'writing'">
-      <section class="english-documents__section"><header><div><p class="public-eyebrow">WRITING MATERIALS</p><h2>写作素材</h2></div><span>{{ resources.length }} 篇</span></header><div class="english-documents__grid"><RouterLink v-for="item in resources" :key="item.id" :to="path(item,'writing-resources')" class="english-documents__card"><div class="english-documents__card-top"><span class="english-documents__level">{{ item.cefrLevel || 'ENGLISH' }}</span><small>{{ item.resourceKind || '素材' }}</small></div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p><strong>开始学习 →</strong></RouterLink><p v-if="!resources.length" class="english-documents__empty">素材正在建设中。</p></div></section>
-      <section class="english-documents__section"><header><div><p class="public-eyebrow">WRITING PRACTICE</p><h2>写作任务</h2></div><span>{{ prompts.length }} 项</span></header><div class="english-documents__grid"><RouterLink v-for="item in prompts" :key="item.id" :to="path(item,'writing-prompts')" class="english-documents__card english-documents__card--prompt"><div class="english-documents__card-top"><span class="english-documents__level">{{ item.cefrLevel || 'ENGLISH' }}</span><small>练习任务</small></div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p><strong>{{ item.wordMin }}–{{ item.wordMax }} 词 · {{ item.estimatedMinutes }} 分钟 →</strong></RouterLink><p v-if="!prompts.length" class="english-documents__empty">任务正在准备中。</p></div></section>
+      <section class="english-documents__section"><header><div><p class="public-eyebrow">WRITING MATERIALS</p><h2>写作素材</h2></div><span>{{ resourceTotal }} 篇</span></header><div class="english-documents__grid"><RouterLink v-for="item in resources" :key="item.id" :to="path(item,'writing-resources')" class="english-documents__card"><div class="english-documents__card-top"><span class="english-documents__level">{{ item.cefrLevel || 'ENGLISH' }}</span><small>{{ item.resourceKind || '素材' }}</small></div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p><strong>开始学习 →</strong></RouterLink><p v-if="!resources.length" class="english-documents__empty">暂无匹配素材。</p></div><PublicPagination :page="resourcePage" :page-size="resourceSize" :total="resourceTotal" :loading="loading" label="写作素材分页" unit="篇" @change="go($event, 'resourcePage')" @page-size="changeSize($event, 'resourceSize', 'resourcePage')" /></section>
+      <section class="english-documents__section"><header><div><p class="public-eyebrow">WRITING PRACTICE</p><h2>写作任务</h2></div><span>{{ promptTotal }} 项</span></header><div class="english-documents__grid"><RouterLink v-for="item in prompts" :key="item.id" :to="path(item,'writing-prompts')" class="english-documents__card english-documents__card--prompt"><div class="english-documents__card-top"><span class="english-documents__level">{{ item.cefrLevel || 'ENGLISH' }}</span><small>练习任务</small></div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p><strong>{{ item.wordMin }}–{{ item.wordMax }} 词 · {{ item.estimatedMinutes }} 分钟 →</strong></RouterLink><p v-if="!prompts.length" class="english-documents__empty">暂无匹配任务。</p></div><PublicPagination :page="promptPage" :page-size="promptSize" :total="promptTotal" :loading="loading" label="写作任务分页" unit="项" @change="go($event, 'promptPage')" @page-size="changeSize($event, 'promptSize', 'promptPage')" /></section>
     </template>
     <template v-else>
-      <div class="english-documents__toolbar"><span>{{ data.total }} 项内容</span><form class="english-documents__search" @submit.prevent="submitSearch"><input v-model="search" type="search" placeholder="搜索标题或摘要" aria-label="搜索标题或摘要"><button type="submit">搜索</button></form></div>
       <div class="english-documents__grid"><RouterLink v-for="item in data.items" :key="item.id" :to="path(item)" class="english-documents__card"><div class="english-documents__card-top"><span class="english-documents__level">{{ item.cefrLevel || 'ENGLISH' }}</span><small>{{ item.difficultyLevel ? '难度 ' + item.difficultyLevel : label.en }}</small></div><h2>{{ item.title }}</h2><p>{{ item.summary }}</p><strong>{{ label.cta }} →</strong></RouterLink><p v-if="!data.items.length" class="english-documents__empty">暂无内容。</p></div>
-      <nav v-if="totalPages > 1" class="english-documents__pager"><button :disabled="page <= 1" @click="go(page - 1)">上一页</button><span>{{ page }} / {{ totalPages }}</span><button :disabled="page >= totalPages" @click="go(page + 1)">下一页</button></nav>
+<PublicPagination :page="page" :page-size="pageSize" :total="data.total" :loading="loading" label="英语阅读分页" unit="篇" @change="go" @page-size="changeSize" />
     </template>
   </main>
 </template>

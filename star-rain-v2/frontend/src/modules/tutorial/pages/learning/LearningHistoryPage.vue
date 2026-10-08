@@ -1,5 +1,8 @@
 <script setup>
-import { onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
+import LearningPagination from '../../components/LearningPagination.vue'
+import { publicPage, publicPageSize, sizeQuery } from '../../../../shared/composables/publicListState'
+import { computed, ref, watch } from 'vue'
 import LearningNav from '../../components/LearningNav.vue'
 import { errorMessage } from '../../../../shared/http'
 import { getLearningHistory, getLearningStatistics } from '../../api/learningApi'
@@ -8,7 +11,9 @@ import '../../styles/learning.css'
 
 const rows = ref([])
 const stats = ref(null)
-const page = ref(1)
+const route = useRoute(), router = useRouter()
+const page = computed(() => publicPage(route.query.page))
+const pageSize = computed(() => publicPageSize(route.query.pageSize, 20, [10, 20, 50]))
 const total = ref(0)
 const loading = ref(true)
 const error = ref('')
@@ -22,7 +27,7 @@ async function load() {
   loading.value = true
   error.value = ''
   try {
-    const [history, summary] = await Promise.all([getLearningHistory({ page: page.value, pageSize: 20 }), getLearningStatistics()])
+    const [history, summary] = await Promise.all([getLearningHistory({ page: page.value, pageSize: pageSize.value }), getLearningStatistics()])
     rows.value = history.items || []
     total.value = history.total || 0
     stats.value = summary
@@ -30,8 +35,9 @@ async function load() {
   finally { loading.value = false }
 }
 
-function changePage(value) { page.value = value; load() }
-onMounted(load)
+function changePage(value) { router.push({ query: { ...route.query, page: value > 1 ? String(value) : undefined } }) }
+function changeSize(value) { router.push({ query: sizeQuery(route.query, value, 20) }) }
+watch(() => route.query, load, { immediate: true })
 </script>
 
 <template>
@@ -40,7 +46,7 @@ onMounted(load)
     <LearningNav />
     <p v-if="error" class="learning-error" role="alert">{{ error }}</p>
     <section class="learning-grid" aria-label="累计学习统计"><div class="learning-stat"><strong>{{ stats?.completedChapters ?? 0 }}</strong><span>完成章节</span></div><div class="learning-stat"><strong>{{ Math.floor((stats?.studySecondsTotal || 0) / 60) }}</strong><span>累计学习分钟</span></div><div class="learning-stat"><strong>{{ stats?.completedReviews ?? 0 }}</strong><span>完成复习</span></div><div class="learning-stat"><strong>{{ Object.values(stats?.masteryDistribution || {}).reduce((a, b) => a + b, 0) }}</strong><span>有掌握记录的卡片</span></div></section>
-    <section class="learning-panel"><h2>时间线</h2><p>共 {{ total }} 条记录。</p><p v-if="loading">正在读取…</p><div v-else-if="!rows.length" class="learning-empty">还没有学习事件。从教程章节开始学习后，这里会留下记录。</div><ol v-else class="learning-list"><li v-for="item in rows" :key="item.id"><div><strong>{{ names[item.eventType] || '学习记录' }}</strong><small>{{ formatLearningDateTime(item.occurredAt) }}<template v-if="item.chapterId"> · 章节 #{{ item.chapterId }}</template></small></div></li></ol><div v-if="total > 20" class="learning-actions history-pagination"><button class="learning-button" type="button" :disabled="page === 1 || loading" @click="changePage(page - 1)">上一页</button><span>{{ page }} / {{ Math.ceil(total / 20) }}</span><button class="learning-button" type="button" :disabled="page >= Math.ceil(total / 20) || loading" @click="changePage(page + 1)">下一页</button></div></section>
+    <section class="learning-panel"><h2>时间线</h2><p>共 {{ total }} 条记录。</p><p v-if="loading">正在读取…</p><div v-else-if="!rows.length" class="learning-empty">还没有学习事件。从教程章节开始学习后，这里会留下记录。</div><ol v-else class="learning-list"><li v-for="item in rows" :key="item.id"><div><strong>{{ names[item.eventType] || '学习记录' }}</strong><small>{{ formatLearningDateTime(item.occurredAt) }}<template v-if="item.chapterId"> · 章节 #{{ item.chapterId }}</template></small></div></li></ol><LearningPagination :page="page" :page-size="pageSize" :total="total" :loading="loading" @page="changePage" @page-size="changeSize" /></section>
   </main>
 </template>
 

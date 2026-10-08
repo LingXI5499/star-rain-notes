@@ -1,4 +1,11 @@
 <script setup>
+import PublicSelect from '../../../shared/ui/PublicSelect.vue'
+import PublicToggleFilter from '../../../shared/ui/PublicToggleFilter.vue'
+import PublicFilterBar from '../../../shared/ui/PublicFilterBar.vue'
+import PublicFilterTabs from '../../../shared/ui/PublicFilterTabs.vue'
+import PublicPagination from '../../../shared/ui/PublicPagination.vue'
+import { publicPage, publicPageSize, sizeQuery } from '../../../shared/composables/publicListState'
+
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { listPublicWorks, getWorkTaxonomy } from '../api/portfolioApi'
@@ -10,12 +17,15 @@ const { contentPath } = useViewMode()
 const taxonomy = ref({ categories: [], formats: [], tags: [] })
 const result = ref({ items: [], total: 0 }), loading = ref(false), error = ref('')
 const featuredWorks = ref([]), featuredLoading = ref(true), featuredError = ref('')
-const page = computed(() => Math.max(1, Number(route.query.page) || 1))
-const pages = computed(() => Math.max(1, Math.ceil(result.value.total / 12)))
+const page = computed(() => publicPage(route.query.page))
+const pageSize = computed(() => publicPageSize(route.query.pageSize))
+const activeFilters = computed(() => ['categoryId', 'formatId', 'tagId', 'featured'].some(key => route.query[key]))
+function changeSize(size) { router.push({ query: sizeQuery(route.query, size, 12) }) }
+function resetFilters() { router.push({ query: { pageSize: route.query.pageSize } }) }
 let version = 0
 async function load() {
  const current = ++version; loading.value = true; error.value = ''
- try { const data = await listPublicWorks({ page: page.value, pageSize: 12, categoryId: route.query.categoryId || undefined, formatId: route.query.formatId || undefined, tagId: route.query.tagId || undefined, featured: route.query.featured === 'true' ? true : undefined }); if (current === version) result.value = data }
+ try { const data = await listPublicWorks({ page: page.value, pageSize: pageSize.value, categoryId: route.query.categoryId || undefined, formatId: route.query.formatId || undefined, tagId: route.query.tagId || undefined, featured: route.query.featured === 'true' ? true : undefined }); if (current === version) result.value = data }
  catch (cause) { if (current === version) error.value = errorMessage(cause) }
  finally { if (current === version) loading.value = false }
 }
@@ -42,11 +52,15 @@ onMounted(loadFeatured)
   </section>
   <section class="works-archive" aria-labelledby="works-archive-title">
   <header class="works-archive__heading"><div><p class="public-eyebrow">EXPLORE THE ARCHIVE</p><h2 id="works-archive-title">全部作品</h2></div><p>按分类、形态和标签，找到感兴趣的作品。</p></header>
-  <nav class="works-categories" aria-label="作品分类"><button :class="{ active: !route.query.categoryId }" @click="filter('categoryId','')">全部作品</button><button v-for="item in taxonomy.categories" :key="item.id" :class="{ active: route.query.categoryId === item.id }" @click="filter('categoryId',item.id)">{{ item.name }}</button></nav>
-  <div class="works-filters"><label>作品形态<select :value="route.query.formatId || ''" @change="filter('formatId',$event.target.value)"><option value="">全部形态</option><option v-for="item in taxonomy.formats" :key="item.id" :value="item.id">{{ item.name }}</option></select></label><label>标签<select :value="route.query.tagId || ''" @change="filter('tagId',$event.target.value)"><option value="">全部标签</option><option v-for="item in taxonomy.tags" :key="item.id" :value="item.id">{{ item.name }}</option></select></label><label><input type="checkbox" :checked="route.query.featured === 'true'" @change="filter('featured',$event.target.checked ? 'true' : '')" />只看精选</label><span>{{ result.total }} 件作品</span></div>
+  <PublicFilterBar label="作品筛选" :active="activeFilters" :total="result.total" unit="件作品" @reset="resetFilters">
+    <template #tabs><PublicFilterTabs label="作品分类" :model-value="route.query.categoryId || ''" :options="[{ value: '', label: '全部作品' }, ...taxonomy.categories.map(item => ({ value: item.id, label: item.name }))]" @update:model-value="filter('categoryId', $event)" /></template>
+    <PublicSelect label="作品形态" :model-value="route.query.formatId || ''" :options="[{ value: '', label: '全部形态' }, ...taxonomy.formats.map(item => ({ value: item.id, label: item.name }))]" @update:model-value="filter('formatId', $event)" />
+    <PublicSelect label="标签" :model-value="route.query.tagId || ''" :options="[{ value: '', label: '全部标签' }, ...taxonomy.tags.map(item => ({ value: item.id, label: item.name }))]" @update:model-value="filter('tagId', $event)" />
+    <PublicToggleFilter label="只看精选" :model-value="route.query.featured === 'true'" @update:model-value="filter('featured', $event ? 'true' : '')" />
+  </PublicFilterBar>
   <p v-if="loading" class="works-state">正在加载作品…</p><p v-else-if="error" class="works-state" role="alert">{{ error }}</p><p v-else-if="!result.items.length" class="works-state">暂无符合条件的公开作品。</p>
   <div v-else class="works-grid"><WorkCard v-for="work in result.items" :key="work.id" :work="work" /></div>
-  <nav v-if="pages > 1" class="works-pages" aria-label="作品分页"><button :disabled="page <= 1" @click="changePage(page - 1)">上一页</button><span>{{ page }} / {{ pages }}</span><button :disabled="page >= pages" @click="changePage(page + 1)">下一页</button></nav>
+  <PublicPagination :page="page" :page-size="pageSize" :total="result.total" :loading="loading" label="作品分页" unit="件" @change="changePage" @page-size="changeSize" />
   </section>
  </section>
 </template>
