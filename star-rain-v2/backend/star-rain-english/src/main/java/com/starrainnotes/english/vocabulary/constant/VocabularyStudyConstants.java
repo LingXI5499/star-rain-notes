@@ -29,7 +29,7 @@ public final class VocabularyStudyConstants {
     /* 学习设置缺省值（账户还没有设置行时返回，不写库） */
     public static final boolean DEFAULT_SHOW_ENGLISH = true;
     public static final boolean DEFAULT_SHOW_CHINESE = true;
-    public static final String DEFAULT_REVIEW_DIRECTION = "MIXED";
+    public static final String DEFAULT_REVIEW_DIRECTION = "EN_TO_ZH";
     public static final int DEFAULT_DAILY_NEW_LIMIT = 20;
     public static final int DEFAULT_DAILY_REVIEW_LIMIT = 200;
 

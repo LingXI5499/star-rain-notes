@@ -4,7 +4,6 @@ import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.english.vocabulary.dto.VocabularyDisplayRequestDTO;
 import com.starrainnotes.english.vocabulary.dto.VocabularyLocalProgressRequestDTO;
-import com.starrainnotes.english.vocabulary.dto.VocabularyReviewRequestDTO;
 import com.starrainnotes.english.vocabulary.dto.VocabularyStudySettingsRequestDTO;
 import com.starrainnotes.english.vocabulary.service.VocabularyProgressImportService;
 import com.starrainnotes.english.vocabulary.service.VocabularyStudyCommandService;
@@ -12,10 +11,11 @@ import com.starrainnotes.english.vocabulary.service.VocabularyStudyQueryService;
 import com.starrainnotes.english.vocabulary.vo.VocabularyMemoryEntryVO;
 import com.starrainnotes.english.vocabulary.vo.VocabularyMemoryVO;
 import com.starrainnotes.english.vocabulary.vo.VocabularyProgressVO;
-import com.starrainnotes.english.vocabulary.vo.VocabularyQueueVO;
-import com.starrainnotes.english.vocabulary.vo.VocabularyReviewResultVO;
 import com.starrainnotes.english.vocabulary.vo.VocabularyStudySettingsVO;
 import com.starrainnotes.english.vocabulary.vo.VocabularySummaryVO;
+import com.starrainnotes.english.vocabulary.learning.VocabularyLearningService;
+import com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels;
+import com.starrainnotes.common.exception.ApiException;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -48,6 +48,7 @@ public class VocabularyStudyAccountController {
     private final VocabularyStudyCommandService commandService;
     private final VocabularyProgressImportService importService;
     private final CurrentActorApi currentActorApi;
+    private final VocabularyLearningService learningService;
 
     private long accountId() {
         return currentActorApi.current().getAccountId();
@@ -93,8 +94,9 @@ public class VocabularyStudyAccountController {
     }
 
     @GetMapping("/review-queue")
-    public ApiResponse<VocabularyQueueVO> reviewQueue(@RequestParam(required = false) Long themeId) {
-        return ApiResponse.ok(queryService.queue(accountId(), themeId));
+    public ApiResponse<VocabularyLearningModels.Queue> reviewQueue(@RequestParam(defaultValue = "20") int limit,
+            @RequestParam(required = false) String cursor) {
+        return ApiResponse.ok(learningService.queue(accountId(), limit, cursor));
     }
 
     @PostMapping("/words/{wordId}/start")
@@ -103,15 +105,16 @@ public class VocabularyStudyAccountController {
     }
 
     @PostMapping("/words/{wordId}/reviews")
-    public ApiResponse<VocabularyReviewResultVO> review(@PathVariable long wordId,
-                                                       @Valid @RequestBody VocabularyReviewRequestDTO request) {
-        return ApiResponse.ok(commandService.completeReview(accountId(), wordId, request));
+    public ApiResponse<VocabularyLearningModels.RatingResult> review(@PathVariable long wordId,
+            @Valid @RequestBody VocabularyLearningModels.RatingRequest request) {
+        return ApiResponse.ok(learningService.rate(accountId(), wordId, request));
     }
 
     @DeleteMapping("/words/{wordId}/progress")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void reset(@PathVariable long wordId) {
-        commandService.reset(accountId(), wordId);
+        accountId();
+        throw new ApiException("ENGLISH_VOCABULARY_LEARNING_CONFLICT", "记忆档案永久保留；重新练习请创建学习计划", 409);
     }
 
     @PutMapping("/words/{wordId}/display")

@@ -59,6 +59,8 @@ public final class VocabularyMemoryAssembler {
 
     public static VocabularyReviewHistoryVO toVO(VocabularyReviewHistoryRow row) {
         return VocabularyReviewHistoryVO.builder()
+                .rating(row.getRating())
+                .source(row.getSource())
                 .id(row.getId())
                 .wordId(row.getWordId())
                 .word(row.getWord())

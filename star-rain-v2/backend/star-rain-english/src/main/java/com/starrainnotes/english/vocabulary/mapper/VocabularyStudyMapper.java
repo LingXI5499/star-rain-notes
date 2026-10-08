@@ -83,6 +83,7 @@ public interface VocabularyStudyMapper {
                      @Param("now") LocalDateTime now);
 
     int wordExists(@Param("wordId") long wordId);
+    int calibrateLegacyMemory(@Param("accountId") long accountId, @Param("wordId") long wordId);
 
     /* ---------- 复习日志 ---------- */
 

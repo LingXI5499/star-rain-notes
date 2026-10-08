@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VocabularyReviewHistoryRow {
+    private String rating;
+    private String source;
 
     private Long id;
 

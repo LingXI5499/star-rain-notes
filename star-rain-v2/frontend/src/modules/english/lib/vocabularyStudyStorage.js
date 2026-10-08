@@ -14,7 +14,7 @@
 export const DEFAULT_VOCABULARY_SETTINGS = {
   showEnglish: true,
   showChinese: true,
-  reviewDirection: 'MIXED',
+  reviewDirection: 'EN_TO_ZH',
   dailyNewLimit: 20,
   dailyReviewLimit: 200,
 }
@@ -117,7 +117,7 @@ class VocabularyStudyStorage {
     await this.initialize()
     const db = await this.database()
     const stored = await requestValue(db.transaction('settings').objectStore('settings').get(SETTINGS_KEY))
-    return stored ?? { ...DEFAULT_VOCABULARY_SETTINGS }
+    return stored ? { ...stored, reviewDirection: stored.reviewDirection === 'MIXED' ? 'EN_TO_ZH' : stored.reviewDirection } : { ...DEFAULT_VOCABULARY_SETTINGS }
   }
 
   async saveSettings(settings) {

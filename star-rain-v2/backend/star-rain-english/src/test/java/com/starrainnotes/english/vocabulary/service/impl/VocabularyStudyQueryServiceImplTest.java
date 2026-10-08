@@ -49,7 +49,7 @@ class VocabularyStudyQueryServiceImplTest {
 
         VocabularyStudySettingsVO result = service.settings(1L);
 
-        assertThat(result.getReviewDirection()).isEqualTo("MIXED");
+        assertThat(result.getReviewDirection()).isEqualTo("EN_TO_ZH");
         assertThat(result.getDailyNewLimit()).isEqualTo(20);
         assertThat(result.getDailyReviewLimit()).isEqualTo(200);
     }

@@ -85,6 +85,8 @@ const routeDeclarations = [
    * （vue-router 4 的静态段本身优先于参数段，这里的顺序是显式声明意图，不依赖打分实现。）
    */
   { path: '/english/vocabulary/study', component: () => import('../modules/english/pages/public/VocabularyStudyPage.vue'), meta: { publicPage: true } },
+  { path: '/english/vocabulary/plan/confirm', component: () => import('../modules/english/pages/public/VocabularyPlanConfirmPage.vue'), meta: { publicPage: true } },
+  { path: '/english/vocabulary/plan', component: () => import('../modules/english/pages/public/VocabularyPlanPage.vue'), meta: { publicPage: true } },
   { path: '/english/vocabulary/progress', component: () => import('../modules/english/pages/public/VocabularyProgressPage.vue'), meta: { publicPage: true } },
   { path: '/english/vocabulary/:themeId', component: () => import('../modules/english/pages/public/VocabularyThemePage.vue'), meta: { publicPage: true } },
   { path: '/english/grammar', component: () => import('../modules/english/pages/public/GrammarPage.vue'), meta: { publicPage: true } },

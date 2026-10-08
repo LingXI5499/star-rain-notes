@@ -2,6 +2,7 @@
 import { computed, ref } from 'vue'
 import { resolveVocabularyVisibility } from '../lib/vocabularyDisplay'
 import { playBrowserSpeech, playProfessionalPronunciation } from '../lib/vocabularyPronunciation'
+import { masteryLabels } from '../api/vocabularyLearningApi'
 
 /*
  * 主题页词卡。信息密度对齐 V1 VocabularyCard：
@@ -14,6 +15,8 @@ const props = defineProps({
   memory: { type: Object, default: null },
   settings: { type: Object, required: true },
   busy: { type: Boolean, default: false },
+  selectable: { type: Boolean, default: false },
+  selected: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['start', 'display', 'reset'])
@@ -73,7 +76,7 @@ function formatTime(value) {
 <template>
   <article class="vocabulary-card">
     <div class="vocabulary-card__toolbar">
-      <span :class="['vocabulary-card__status', { active }]">{{ active ? '已在计划' : '未加入' }}</span>
+      <span :class="['vocabulary-card__status', { active }]">{{ selectable ? (masteryLabels[memory?.masteryRank] || '未修习') : active ? '已在计划' : '未加入' }}{{ memory?.inPlan ? ' · 当前计划内' : '' }}</span>
       <div class="vocabulary-card__display" role="group" aria-label="本卡显示方式">
         <button
           v-for="option in displayOptions"
@@ -123,12 +126,15 @@ function formatTime(value) {
     <footer class="vocabulary-card__footer">
       <div class="vocabulary-card__progress">
         <strong>{{ memory?.memoryCount ?? 0 }}</strong>
-        <span>次记忆</span>
+        <span>次记忆 · {{ masteryLabels[memory?.masteryRank] || '未修习' }}</span>
+        <span v-if="memory?.modeMemory?.length">英→中 {{ memory.modeMemory.find(m => m.direction === 'EN_TO_ZH')?.ratingCount || 0 }} 次 · 中→英 {{ memory.modeMemory.find(m => m.direction === 'ZH_TO_EN')?.ratingCount || 0 }} 次 · 听音 {{ memory.modeMemory.find(m => m.direction === 'AUDIO_TO_BOTH')?.ratingCount || 0 }} 次</span>
+        <span v-if="memory?.memoryCount && !memory?.masteryRank">历史次数已保留，熟练度待评价</span>
         <span v-if="memory?.lastReviewedAt">上次 {{ formatTime(memory.lastReviewedAt) }}</span>
         <span v-if="memory?.nextReviewAt">下次 {{ formatTime(memory.nextReviewAt) }}</span>
       </div>
       <div class="vocabulary-card__actions">
-        <button v-if="!active" type="button" :disabled="busy" @click="emit('start', word)">加入记忆计划</button>
+        <button v-if="selectable" type="button" :disabled="busy" @click="emit('start', word)">{{ selected ? '移出待选' : '加入待选' }}</button>
+        <button v-else-if="!active" type="button" :disabled="busy" @click="emit('start', word)">加入记忆计划</button>
         <template v-else>
           <button type="button" class="joined" disabled>已在计划</button>
           <button type="button" class="danger" :disabled="busy" @click="emit('reset', word)">重新开始</button>

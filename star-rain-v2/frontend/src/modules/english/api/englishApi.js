@@ -35,7 +35,8 @@ export async function resolveVocabularyAccount() {
   try {
     await get('/account/english/vocabulary/settings')
     accountProbe = true
-  } catch {
+  } catch (cause) {
+    if (cause?.response?.status !== 401) throw cause
     accountProbe = false
   }
   return accountProbe

@@ -8,6 +8,8 @@ public enum ReviewDirection {
     EN_TO_ZH,
     /* 中译英 */
     ZH_TO_EN,
+    /* 听音辨词 */
+    AUDIO_TO_BOTH,
     /* 随机混合（按 单词ID + 当天序数 稳定取向，同一天同一词方向不变） */
     MIXED;
 
@@ -24,6 +26,6 @@ public enum ReviewDirection {
     }
 
     public static boolean isConcrete(String value) {
-        return EN_TO_ZH.name().equals(value) || ZH_TO_EN.name().equals(value);
+        return EN_TO_ZH.name().equals(value) || ZH_TO_EN.name().equals(value) || AUDIO_TO_BOTH.name().equals(value);
     }
 }

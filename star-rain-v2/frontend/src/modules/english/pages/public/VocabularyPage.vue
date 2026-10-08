@@ -62,14 +62,14 @@ onMounted(load)
 
     <nav class="vocabulary-page__study-nav" aria-label="单词学习工具">
       <RouterLink :to="contentPath('/english/vocabulary/study')">
-        <strong>今日学习</strong>
-        <span>复习到期单词，或从主题开始新词</span>
-        <em v-if="summary">到期 {{ summary.dueForReview }} · 计划内 {{ summary.inProgress + summary.completed }}</em>
+        <strong>今日背单词</strong>
+        <span>按到期方向分批复习，不混入未学新词</span>
+        <em v-if="summary">到期 {{ summary.dueForReview }} 词 · 出神入化 {{ summary.completed }} 词</em>
       </RouterLink>
-      <RouterLink :to="contentPath('/english/vocabulary/progress')">
-        <strong>学习进度</strong>
-        <span>查看复习间隔与真实完成记录</span>
-        <em v-if="summary">已完成 {{ summary.completed }} · 总计划 {{ summary.total }}</em>
+      <RouterLink :to="contentPath('/english/vocabulary/plan')">
+        <strong>学习计划</strong>
+        <span>双语预览，每组依次完成三种方向训练</span>
+        <em>替换计划保留永久记忆与历史</em>
       </RouterLink>
     </nav>
 
