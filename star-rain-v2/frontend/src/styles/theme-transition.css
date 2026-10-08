@@ -1,0 +1,35 @@
+/* Circular theme reveal adapted from clay-blog; see THIRD_PARTY_NOTICES.md. */
+html.is-theme-revealing::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+  opacity: 1;
+  z-index: 1;
+}
+html.is-theme-revealing::view-transition-new(root) {
+  animation: star-rain-theme-reveal .52s linear both;
+  mix-blend-mode: normal;
+  opacity: 1;
+  z-index: 2;
+}
+/* One coherent snapshot avoids competing color animations on long pages. */
+html.is-theme-revealing *,
+html.is-theme-revealing *::before,
+html.is-theme-revealing *::after { transition: none !important; view-transition-name: none !important; }
+html.is-theme-revealing [data-theme-toggle] { view-transition-name: star-rain-theme-toggle !important; }
+html.is-theme-revealing::view-transition-group(star-rain-theme-toggle) { animation: none; z-index: 4; }
+html.is-theme-revealing::view-transition-old(star-rain-theme-toggle) {
+  animation: star-rain-theme-icon-out .18s ease-in both;
+  mix-blend-mode: normal;
+}
+html.is-theme-revealing::view-transition-new(star-rain-theme-toggle) {
+  animation: star-rain-theme-icon-in .46s .04s ease-out both;
+  mix-blend-mode: normal;
+}
+@keyframes star-rain-theme-icon-out { to { opacity: 0; transform: rotate(28deg) scale(.72); } }
+@keyframes star-rain-theme-icon-in {
+  from { opacity: 0; transform: rotate(-32deg) scale(.62); }
+  to { opacity: 1; transform: rotate(0) scale(1); }
+}
+html.is-theme-fading body { animation: star-rain-theme-settle .32s ease-out both; }
+@keyframes star-rain-theme-settle { from { opacity: .8; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { html.is-theme-fading body { animation: none; } }
