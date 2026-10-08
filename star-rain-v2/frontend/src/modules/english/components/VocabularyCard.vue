@@ -74,7 +74,7 @@ function formatTime(value) {
 </script>
 
 <template>
-  <article class="vocabulary-card">
+  <article class="vocabulary-card" :class="{ 'vocabulary-card--selected': selectable && selected }">
     <div class="vocabulary-card__toolbar">
       <span :class="['vocabulary-card__status', { active }]">{{ selectable ? (masteryLabels[memory?.masteryRank] || '未修习') : active ? '已在计划' : '未加入' }}{{ memory?.inPlan ? ' · 当前计划内' : '' }}</span>
       <div class="vocabulary-card__display" role="group" aria-label="本卡显示方式">
@@ -133,7 +133,7 @@ function formatTime(value) {
         <span v-if="memory?.nextReviewAt">下次 {{ formatTime(memory.nextReviewAt) }}</span>
       </div>
       <div class="vocabulary-card__actions">
-        <button v-if="selectable" type="button" :disabled="busy" @click="emit('start', word)">{{ selected ? '移出待选' : '加入待选' }}</button>
+        <button v-if="selectable" type="button" :class="{ selected }" :aria-pressed="selected" :disabled="busy" @click="emit('start', word)"><span aria-hidden="true">{{ selected ? '✓' : '+' }}</span> {{ selected ? '移出待选' : '加入待选' }}</button>
         <button v-else-if="!active" type="button" :disabled="busy" @click="emit('start', word)">加入记忆计划</button>
         <template v-else>
           <button type="button" class="joined" disabled>已在计划</button>
@@ -145,7 +145,8 @@ function formatTime(value) {
 </template>
 
 <style scoped>
-.vocabulary-card{display:flex;flex-direction:column;gap:16px;min-height:360px;padding:22px;border:1px solid var(--border);border-radius:18px;background:var(--bg-surface)}
+.vocabulary-card{display:flex;flex-direction:column;gap:18px;min-height:330px;padding:22px;border:1px solid var(--border);border-radius:18px;background:var(--bg-surface);box-shadow:var(--shadow-sm);transition:border-color .18s,box-shadow .18s}
+.vocabulary-card:hover{border-color:var(--border-strong);box-shadow:var(--shadow-md)}.vocabulary-card.vocabulary-card--selected{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
 .vocabulary-card__toolbar,.vocabulary-card__heading,.vocabulary-card__footer,.vocabulary-card__actions,.vocabulary-card__phonetics{display:flex;align-items:center;gap:10px}
 .vocabulary-card__toolbar,.vocabulary-card__footer{justify-content:space-between}
 .vocabulary-card__display{display:inline-flex;padding:3px;border:1px solid var(--border);border-radius:10px;background:var(--bg-subtle)}
@@ -154,14 +155,14 @@ function formatTime(value) {
 .vocabulary-card__display button.active{background:var(--bg-surface);color:var(--primary)}
 .vocabulary-card__display button:focus-visible{outline:2px solid var(--primary);outline-offset:1px}
 .vocabulary-card__display button:disabled{cursor:wait;opacity:.65}
-.vocabulary-card__status{font-size:12px;color:var(--text-muted)}
+.vocabulary-card__status{font-size:11px;color:var(--text-secondary);padding:4px 8px;border-radius:6px;background:var(--bg-subtle)}
 .vocabulary-card__status.active{color:var(--primary)}
 .vocabulary-card__heading{flex-wrap:wrap}
 .vocabulary-card__heading h2{margin:0;font-size:26px;line-height:1.2}
 .vocabulary-card__pos{font-size:12px;color:var(--accent)}
 .vocabulary-card__speak{margin-left:auto;border:0;background:transparent;color:var(--primary);cursor:pointer}
 .vocabulary-card__speak:disabled{cursor:wait;opacity:.7}
-.vocabulary-card__phonetics{flex-wrap:wrap;color:var(--text-secondary)}
+.vocabulary-card__phonetics{flex-wrap:wrap;color:var(--text-muted);font-size:13px;margin-top:8px}
 .vocabulary-card__muted{font-size:13px;color:var(--text-muted)}
 .vocabulary-card__examples{display:grid;gap:6px;margin-top:12px;font-size:14px;line-height:1.65;color:var(--text-secondary)}
 .vocabulary-card__chinese{padding-top:14px;border-top:1px dashed var(--border)}
@@ -173,10 +174,11 @@ function formatTime(value) {
 .vocabulary-card__progress strong{color:var(--text-primary);font-size:20px}
 .vocabulary-card__actions{flex-wrap:wrap;justify-content:flex-end}
 .vocabulary-card__actions button{min-height:36px;padding:7px 12px;border:1px solid var(--primary);border-radius:9px;background:transparent;color:var(--primary);cursor:pointer}
+.vocabulary-card__actions button:hover{background:var(--primary-soft)}.vocabulary-card__actions button.selected{background:var(--primary);color:var(--on-primary)}.vocabulary-card__actions button:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
 .vocabulary-card__actions button.joined{border-color:var(--border-strong);color:var(--text-muted);cursor:default}
 .vocabulary-card__actions button.danger{border-color:var(--accent);color:var(--accent)}
 .vocabulary-card__actions button:disabled{cursor:default;opacity:.8}
-@media (max-width:640px){
+@media (max-width:420px){
   .vocabulary-card{min-height:0;padding:18px}
   .vocabulary-card__toolbar{align-items:flex-start;flex-direction:column}
   .vocabulary-card__display{width:100%}
@@ -185,4 +187,5 @@ function formatTime(value) {
   .vocabulary-card__actions{width:100%;justify-content:stretch}
   .vocabulary-card__actions button{flex:1}
 }
+@media(prefers-reduced-motion:reduce){.vocabulary-card{transition:none}}
 </style>
