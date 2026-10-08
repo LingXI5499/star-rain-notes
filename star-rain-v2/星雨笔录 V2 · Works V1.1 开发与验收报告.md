@@ -132,7 +132,8 @@
 - 最终公开列表保留原有两件作品；验收样例不进入公开列表、Search 或 Sitemap。
 - 截图在 `.local/works-proof/`：editor.jpg、template-editor.jpg、public-blocks.jpg、prototype.jpg。
 - 2026-10-08 补充远程交付：作品及必要的 Media、Account 安全、Search、SEO 改动整理为独立提交，交付分支 `codex/portfolio-works-v11`。博客、教程等其他未提交工作保持原状，未混入作品提交。
-- 本次收尾从 Git 暂存区导出独立源码副本验证：作品前端 4 个测试文件、14 项测试通过，Vite 生产构建通过。后端专项验证记录见本机 `.local/works-release-backend.log`；真实数据库验收仍以本报告前述原开发过程中的记录为准。
+- 本次收尾从 Git 暂存区导出独立源码副本验证：作品前端 4 个测试文件、14 项测试通过，Vite 生产构建通过。后端专项 34 项通过，13 项数据库测试因独立副本没有数据库配置而跳过；日志见本机 `.local/works-release-backend.log`。真实数据库验收仍以本报告前述原开发过程中的记录为准。
+- 作品代码提交 `7f457fa` 已推送到 GitHub 的 `codex/portfolio-works-v11` 分支，收尾文档随该分支交付。
 - 远程分支提交不等于合并 main 或生产部署；正式合并时需要与尚在本地的教程迁移 V2_027～V2_031 一并核对迁移顺序，避免已有高版本数据库漏跑低版本迁移。
 
 ## 8. 文档中明确暂缓的范围
