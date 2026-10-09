@@ -93,12 +93,12 @@
       顺序使用后台保存的 sort_order；新专题默认插在最前面。
     -->
     <select id="publishedTopics" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
-        SELECT t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, COUNT(p.id) AS member_count
+        SELECT t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.updated_at, COUNT(p.id) AS member_count
         FROM sr_blog_topic t
         LEFT JOIN sr_blog_topic_post tp ON tp.topic_id = t.id
         LEFT JOIN sr_blog_post p ON p.id = tp.post_id AND p.status = 'PUBLISHED'
         WHERE t.status = 'ENABLED'
-        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status
+        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.updated_at
         ORDER BY t.sort_order, t.id
     </select>
 
@@ -109,12 +109,12 @@
       停用（DISABLED）与不存在的 slug 仍然 404。
     -->
     <select id="publishedTopicBySlug" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
-        SELECT t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, COUNT(p.id) AS member_count
+        SELECT t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.updated_at, COUNT(p.id) AS member_count
         FROM sr_blog_topic t
         LEFT JOIN sr_blog_topic_post tp ON tp.topic_id = t.id
         LEFT JOIN sr_blog_post p ON p.id = tp.post_id AND p.status = 'PUBLISHED'
         WHERE t.status = 'ENABLED' AND t.slug = #{slug}
-        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status
+        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.updated_at
     </select>
 
     <!-- 公开页面上的专题标记：停用专题不出现 -->

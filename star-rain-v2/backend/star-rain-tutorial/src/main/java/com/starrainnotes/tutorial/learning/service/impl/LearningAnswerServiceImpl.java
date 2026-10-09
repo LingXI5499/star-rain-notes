@@ -12,7 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Deprecated
+// Legacy implementation retained for historical persistence tests; not registered as a Spring service.
 @RequiredArgsConstructor
 public class LearningAnswerServiceImpl implements LearningAnswerService {
     private final CurrentActorApi currentActorApi;

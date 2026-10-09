@@ -1,6 +1,11 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import PublicFilterBar from '../../../../shared/ui/PublicFilterBar.vue'
+import PublicFilterTabs from '../../../../shared/ui/PublicFilterTabs.vue'
+import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
+import { publicPage, publicPageSize, sizeQuery } from '../../../../shared/composables/publicListState'
+
+import { computed, onMounted, ref, watch } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { errorMessage } from '../../../../shared/http'
 import { useViewMode } from '../../../../shared/viewMode'
 import { getVocabularySummary, getVocabularyThemes } from '../../api/englishApi'
@@ -16,7 +21,13 @@ const { contentPath } = useViewMode()
 
 const themes = ref([])
 const summary = ref(null)
-const activeLayer = ref('')
+const route = useRoute(), router = useRouter()
+const activeLayer = computed(() => String(route.query.layer || ''))
+const page = computed(() => publicPage(route.query.page))
+const pageSize = computed(() => publicPageSize(route.query.pageSize, 24, [12, 24, 48]))
+function selectLayer(layer) { router.push({ query: { ...route.query, layer: layer || undefined, page: undefined } }) }
+function go(next) { router.push({ query: { ...route.query, page: next > 1 ? String(next) : undefined } }) }
+function changeSize(size) { router.push({ query: sizeQuery(route.query, size, 24) }) }
 const loading = ref(true)
 const error = ref('')
 
@@ -28,9 +39,12 @@ const groups = computed(() => {
   }
   return [...grouped].map(([name, items]) => ({ name, items }))
 })
-const visibleGroups = computed(() => activeLayer.value
-  ? groups.value.filter((group) => group.name === activeLayer.value)
-  : groups.value)
+const filtered = computed(() => themes.value.filter(item => !activeLayer.value || item.layer === activeLayer.value))
+const visibleGroups = computed(() => {
+  const rows = filtered.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value), grouped = new Map()
+  for (const item of rows) { if (!grouped.has(item.layer)) grouped.set(item.layer, []); grouped.get(item.layer).push(item) }
+  return [...grouped].map(([name, items]) => ({ name, items }))
+})
 const total = computed(() => themes.value.reduce((sum, theme) => sum + Number(theme.wordCount ?? 0), 0))
 
 async function load() {
@@ -62,30 +76,21 @@ onMounted(load)
 
     <nav class="vocabulary-page__study-nav" aria-label="单词学习工具">
       <RouterLink :to="contentPath('/english/vocabulary/study')">
-        <strong>今日学习</strong>
-        <span>复习到期单词，或从主题开始新词</span>
-        <em v-if="summary">到期 {{ summary.dueForReview }} · 计划内 {{ summary.inProgress + summary.completed }}</em>
+        <strong>今日背单词</strong>
+        <span>按到期方向分批复习，不混入未学新词</span>
+        <em v-if="summary">到期 {{ summary.dueForReview }} 词 · 出神入化 {{ summary.completed }} 词</em>
       </RouterLink>
-      <RouterLink :to="contentPath('/english/vocabulary/progress')">
-        <strong>学习进度</strong>
-        <span>查看复习间隔与真实完成记录</span>
-        <em v-if="summary">已完成 {{ summary.completed }} · 总计划 {{ summary.total }}</em>
+      <RouterLink :to="contentPath('/english/vocabulary/plan')">
+        <strong>学习计划</strong>
+        <span>双语预览，每组依次完成三种方向训练</span>
+        <em>替换计划保留永久记忆与历史</em>
       </RouterLink>
     </nav>
 
     <p v-if="loading" class="vocabulary-page__state">正在读取词库…</p>
     <p v-else-if="error" class="vocabulary-page__state" role="alert">{{ error }} <button type="button" @click="load">重新加载</button></p>
     <template v-else>
-      <div class="vocabulary-page__chips" role="group" aria-label="词类筛选">
-        <button type="button" :class="{ active: !activeLayer }" @click="activeLayer = ''">全部</button>
-        <button
-          v-for="group in groups"
-          :key="group.name"
-          type="button"
-          :class="{ active: activeLayer === group.name }"
-          @click="activeLayer = group.name"
-        >{{ group.name }}</button>
-      </div>
+      <PublicFilterBar label="词类筛选" :total="filtered.length" unit="个主题" :active="Boolean(activeLayer)" @reset="selectLayer('')"><PublicFilterTabs label="词类筛选" :model-value="activeLayer" :options="[{ value: '', label: '全部' }, ...groups.map(group => ({ value: group.name, label: group.name }))]" @update:model-value="selectLayer" /></PublicFilterBar>
       <section v-for="group in visibleGroups" :key="group.name" class="vocabulary-page__group">
         <h2 v-if="visibleGroups.length > 1">{{ group.name }}</h2>
         <div class="vocabulary-page__grid">
@@ -100,7 +105,8 @@ onMounted(load)
           </RouterLink>
         </div>
       </section>
-      <p v-if="!themes.length" class="vocabulary-page__state">词库暂无内容。</p>
+      <PublicPagination :page="page" :page-size="pageSize" :page-sizes="[12, 24, 48]" :total="filtered.length" :loading="loading" label="词汇主题分页" unit="个主题" @change="go" @page-size="changeSize" />
+      <p v-if="!filtered.length" class="vocabulary-page__state">词库暂无内容。</p>
     </template>
   </main>
 </template>

@@ -57,6 +57,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PortfolioWorkServiceImpl implements PortfolioWorkService {
     private static final String SOURCE_MODULE = "PORTFOLIO";
     private static final String SOURCE_TYPE = "WORK_MEDIA";
+    private final com.starrainnotes.portfolio.service.PortfolioContentService content;
     private final WorkMapper works;
     private final WorkDetailMapper details;
     private final WorkMediaMapper media;
@@ -120,11 +121,17 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         String title = requiredText(request.getTitle(), 255, "标题");
         WorkEntity work = new WorkEntity();
         work.setSlug(uniqueGeneratedSlug(title));
+        if (request.getSlug() != null && !request.getSlug().isBlank()) {
+            if (!WorkSlugRules.valid(request.getSlug().trim())) { throw new WorkInvalidException("作品地址格式无效"); }
+            work.setSlug(request.getSlug().trim());
+        }
         work.setWorkType(request.getWorkType().name());
         work.setTitle(title);
         work.setSummary(optionalText(request.getSummary(), 1000));
         work.setBodyMarkdown("");
         work.setStatus(WorkStatus.DRAFT.name());
+        work.setProjectStatus("COMPLETED"); work.setFeatured(false); work.setSortOrder(0);
+        metadata(work, objectMapper.valueToTree(request));
         work.setCreatedByAccountId(actor.current().getAccountId());
         work.setUpdatedByAccountId(actor.current().getAccountId());
         try {
@@ -132,6 +139,8 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         } catch (DuplicateKeyException exception) {
             throw new WorkSlugConflictException();
         }
+        content.setTags(work.getId(), request.getTagIds());
+        content.copyTemplate(work.getId(), request.getTemplateId());
         return view(work, true, false);
     }
 
@@ -139,6 +148,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
     @Transactional
     public WorkVO update(Long id, WorkPatchDTO request) {
         WorkEntity work = lock(id);
+        String previousSlug = work.getSlug();
         if (request.getWorkType() != null) {
             throw new WorkTypeImmutableException();
         }
@@ -155,7 +165,13 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             }
             work.setSlug(slug);
         }
+        metadata(work, objectMapper.valueToTree(request));
+        content.setTags(id, request.getTagIds());
+        if ("PUBLISHED".equals(work.getStatus()) && !previousSlug.equals(work.getSlug())) {
+            events.afterCommit(new WorkPublicationChangedEvent(work.getId(), previousSlug, false));
+        }
         touch(work);
+        if ("PUBLISHED".equals(work.getStatus())) { validatePublish(work); }
         try {
             works.updateContent(work);
         } catch (DuplicateKeyException exception) {
@@ -172,6 +188,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             throw new WorkInvalidException("正文长度无效");
         }
         work.setBodyMarkdown(markdown);
+        if ("PUBLISHED".equals(work.getStatus())) { validatePublish(work); }
         touch(work);
         works.updateBody(work);
         return view(work, true, false);
@@ -228,6 +245,9 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             throw new WorkMediaNotFoundException();
         }
         WorkEntity work = lock(row.getWorkId());
+        if ("PUBLISHED".equals(work.getStatus()) && "COVER".equals(row.getUsageType()) && request.getUsageType() != WorkMediaUsage.COVER) {
+            throw new WorkStateInvalidException("已发布作品必须保留封面");
+        }
         validateMedia(row.getWorkId(), request, row.getId());
         boolean changed = !row.getMediaAssetId().equals(request.getMediaAssetId())
                 || !row.getUsageType().equals(request.getUsageType().name());
@@ -259,6 +279,9 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             throw new WorkMediaNotFoundException();
         }
         WorkEntity work = lock(row.getWorkId());
+        if ("PUBLISHED".equals(work.getStatus()) && "COVER".equals(row.getUsageType())) {
+            throw new WorkStateInvalidException("已发布作品请更换封面，或先撤回后移除");
+        }
         media.deleteById(mediaId);
         detach(row);
         touch(work);
@@ -354,7 +377,6 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         work.setPublishedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         touch(work);
         works.publish(work);
-        events.afterCommit(new WorkPublicationChangedEvent(work.getId(), work.getSlug(), true));
         return view(work, true, false);
     }
 
@@ -384,7 +406,6 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         work.setStatus(WorkStatus.PUBLISHED.name());
         touch(work);
         works.restore(work);
-        events.afterCommit(new WorkPublicationChangedEvent(work.getId(), work.getSlug(), true));
         return view(work, true, false);
     }
 
@@ -406,6 +427,8 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         if (detail != null) {
             details.deleteById(detail.getId());
         }
+        mediaReferences.detachAll("PORTFOLIO", "WORK_PROTOTYPE", id);
+        content.deleteAll(id);
         works.deleteById(id);
         events.afterCommit(new WorkPublicationChangedEvent(id, work.getSlug(), false));
     }
@@ -465,8 +488,8 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         String coverUrl = attached.stream()
                 .filter(row -> WorkMediaUsage.COVER.name().equals(row.getUsageType()))
                 .map(row -> mediaAssets.get(row.getMediaAssetId()))
-                .filter(asset -> asset != null && "ACTIVE".equals(asset.getStatus()))
-                .map(MediaAssetSummary::getContentUrl).findFirst().orElse(null);
+                .filter(asset -> asset != null && "ACTIVE".equals(asset.getStatus()) && (!publicOnly || "PUBLIC".equals(asset.getAccessLevel())))
+                .map(MediaAssetSummary::getContentUrl).filter(java.util.Objects::nonNull).findFirst().orElse(null);
         WorkVO result = WorkVO.builder().id(String.valueOf(work.getId())).slug(work.getSlug())
                 .workType(work.getWorkType()).title(work.getTitle()).summary(work.getSummary())
                 .status(work.getStatus()).coverUrl(coverUrl).publishedAt(work.getPublishedAt())
@@ -479,9 +502,39 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
                 throw new IllegalStateException("Stored portfolio detail is invalid", exception);
             }
         }
+        result.setPrototypeAssetId(work.getPrototypeAssetId() == null ? null : work.getPrototypeAssetId().toString());
+        result.setPrototypeEntry(work.getPrototypeEntry());
+        result.setPrototypeUrl(work.getPrototypeAssetId() == null ? null : "/api/public/portfolio/works/" + work.getSlug() + "/live/" + work.getPrototypeEntry());
+        result.setSubtitle(work.getSubtitle()); result.setCategoryId(work.getCategoryId());
+        result.setFormatId(work.getFormatId()); result.setRole(work.getRole()); result.setTechStack(work.getTechStack());
+        result.setProjectStatus(work.getProjectStatus()); result.setStartedOn(work.getStartedOn()); result.setEndedOn(work.getEndedOn());
+        result.setFeatured(work.getFeatured()); result.setSortOrder(work.getSortOrder());
+        result.setSeoTitle(work.getSeoTitle()); result.setSeoDescription(work.getSeoDescription());
+        var taxonomy = content.taxonomy();
+        result.setCategory(taxonomy.get("categories").stream().filter(t -> t.getId().equals(String.valueOf(work.getCategoryId()))).findFirst().orElse(null));
+        result.setFormat(taxonomy.get("formats").stream().filter(t -> t.getId().equals(String.valueOf(work.getFormatId()))).findFirst().orElse(null));
+        result.setTags(content.tags(work.getId()));
         if (full) {
-            result.setBodyMarkdown(work.getBodyMarkdown());
-            result.setMedia(attached.stream().map(this::mediaView).toList());
+            if (publicOnly) {
+                result.setPreviousWork(works.previousPublished(work.getId(), work.getSortOrder()));
+                result.setNextWork(works.nextPublished(work.getId(), work.getSortOrder()));
+            }
+            var allSections = content.sections(work.getId(), false);
+            result.setHasSections(!allSections.isEmpty());
+            result.setSections(publicOnly ? content.sections(work.getId(), true) : allSections);
+            result.setSearchableText(content.searchableText(work.getId(), work.getBodyMarkdown()) + "\n"
+                    + (work.getSubtitle() == null ? "" : work.getSubtitle()) + " "
+                    + (work.getRole() == null ? "" : work.getRole()) + " "
+                    + (work.getTechStack() == null ? "" : work.getTechStack()) + " "
+                    + (result.getCategory() == null ? "" : result.getCategory().getName()) + " "
+                    + (result.getFormat() == null ? "" : result.getFormat().getName()) + " "
+                    + result.getTags().stream().map(com.starrainnotes.portfolio.vo.WorkTaxonomyVO::getName).collect(java.util.stream.Collectors.joining(" ")));
+            // Once blocks exist, even all-hidden blocks cannot expose the old body.
+            result.setBodyMarkdown(publicOnly && !allSections.isEmpty() ? "" : work.getBodyMarkdown());
+            result.setMedia(attached.stream().filter(row -> {
+                MediaAssetSummary asset = mediaAssets.get(row.getMediaAssetId());
+                return !publicOnly || (asset != null && "ACTIVE".equals(asset.getStatus()) && "PUBLIC".equals(asset.getAccessLevel()));
+            }).map(this::mediaView).toList());
             result.setLinks(linkRows(work.getId()).stream()
                     .filter(row -> !publicOnly || "ENABLED".equals(row.getStatus()))
                     .map(this::linkView).toList());
@@ -512,11 +565,70 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
 
     private void validatePublish(WorkEntity work) {
         if (work.getSummary() == null || work.getSummary().isBlank()
-                || work.getBodyMarkdown() == null || work.getBodyMarkdown().isBlank()) {
-            throw new WorkStateInvalidException("发布前请补全摘要与正文");
+                || work.getCategoryId() == null || work.getFormatId() == null) {
+            throw new WorkStateInvalidException("发布前请补全摘要、分类与形态");
+        }
+        if (content.sections(work.getId(), false).isEmpty()
+                && (work.getBodyMarkdown() == null || work.getBodyMarkdown().isBlank())) {
+            throw new WorkStateInvalidException("发布前需要正文或可见内容区块");
+        }
+        content.validateTaxonomy(work.getCategoryId(), work.getFormatId());
+        content.validatePublication(work.getId());
+        boolean cover = mediaRows(work.getId()).stream().anyMatch(row -> WorkMediaUsage.COVER.name().equals(row.getUsageType()));
+        if (!cover) { throw new WorkStateInvalidException("发布前请选择公开封面"); }
+        for (WorkMediaEntity row : mediaRows(work.getId())) {
+            MediaAssetSummary asset = mediaAssets.get(row.getMediaAssetId());
+            if (asset == null || !"PUBLIC".equals(asset.getAccessLevel())) {
+                throw new WorkStateInvalidException("发布作品的媒体必须可公开访问");
+            }
         }
         mediaRows(work.getId()).forEach(row -> mediaAssets.assertUsable(row.getMediaAssetId()));
         linkRows(work.getId()).forEach(row -> WorkLinkRules.requireSafeUrl(row.getUrl()));
+    }
+
+
+    private void metadata(WorkEntity work, JsonNode request) {
+        if (request.hasNonNull("subtitle")) { work.setSubtitle(optionalText(request.get("subtitle").asText(), 255)); }
+        if (request.hasNonNull("role")) { work.setRole(optionalText(request.get("role").asText(), 255)); }
+        if (request.hasNonNull("techStack")) { work.setTechStack(optionalText(request.get("techStack").asText(), 1000)); }
+        if (request.hasNonNull("seoTitle")) { work.setSeoTitle(optionalText(request.get("seoTitle").asText(), 255)); }
+        if (request.hasNonNull("seoDescription")) { work.setSeoDescription(optionalText(request.get("seoDescription").asText(), 1000)); }
+        if (request.hasNonNull("categoryId")) { work.setCategoryId(request.get("categoryId").asLong()); }
+        if (request.hasNonNull("formatId")) { work.setFormatId(request.get("formatId").asLong()); }
+        content.validateTaxonomy(work.getCategoryId(), work.getFormatId());
+        if (request.hasNonNull("projectStatus")) {
+            String status = request.get("projectStatus").asText();
+            if (!Set.of("IDEA", "PLANNING", "DEVELOPING", "COMPLETED", "MAINTAINING", "ARCHIVED", "ONLINE").contains(status)) {
+                throw new WorkInvalidException("项目生命周期无效");
+            }
+            work.setProjectStatus(status);
+        }
+        if (request.path("clearStartedOn").asBoolean(false)) { work.setStartedOn(null); }
+        if (request.path("clearEndedOn").asBoolean(false)) { work.setEndedOn(null); }
+        if (request.hasNonNull("startedOn")) { work.setStartedOn(java.time.LocalDate.parse(request.get("startedOn").asText())); }
+        if (request.hasNonNull("endedOn")) { work.setEndedOn(java.time.LocalDate.parse(request.get("endedOn").asText())); }
+        if (work.getStartedOn() != null && work.getEndedOn() != null && work.getStartedOn().isAfter(work.getEndedOn())) {
+            throw new WorkInvalidException("结束日期不能早于开始日期");
+        }
+        if (request.hasNonNull("sortOrder")) { work.setSortOrder(safeOrder(request.get("sortOrder").asInt())); }
+        if (request.hasNonNull("featured")) {
+            content.validateFeatured(work.getId() == null ? -1L : work.getId(), request.get("featured").asBoolean());
+            work.setFeatured(request.get("featured").asBoolean());
+        }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public PageResult<WorkVO> filteredWorks(int page, int pageSize, WorkType type, String status,
+            String keyword, com.starrainnotes.portfolio.dto.WorkFilterDTO filter, boolean publicOnly) {
+        if (page < 1 || page > 100000 || pageSize < 1 || pageSize > 100) { throw new WorkInvalidException("分页参数无效"); }
+        String state = publicOnly ? "PUBLISHED" : status;
+        if (state != null && !Set.of("DRAFT", "PUBLISHED", "WITHDRAWN").contains(state)) { throw new WorkInvalidException("作品状态无效"); }
+        String q = optionalText(keyword, 100);
+        long total = works.countByTaxonomy(type == null ? null : type.name(), state, q, filter);
+        var items = works.pageByTaxonomy(type == null ? null : type.name(), state, q, filter, pageSize, (long)(page - 1) * pageSize)
+                .stream().map(row -> view(row, false, publicOnly)).toList();
+        return PageResult.<WorkVO>builder().items(items).total(total).page(page).pageSize(pageSize).build();
     }
 
     private String uniqueGeneratedSlug(String title) {
@@ -569,7 +681,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
 
     private void fillLink(WorkLinkEntity row, WorkLinkDTO request) {
         String type = requiredText(request.getLinkType(), 30, "链接类型").toUpperCase();
-        if (!Set.of("GITHUB", "BILIBILI", "DOUYIN", "OTHER").contains(type)) {
+        if (!Set.of("LIVE", "DEMO", "GITHUB", "DOWNLOAD", "VIDEO", "DOC", "ARTICLE", "BILIBILI", "DOUYIN", "OTHER").contains(type)) {
             throw new WorkInvalidException("链接类型无效");
         }
         row.setLinkType(type);
@@ -584,6 +696,10 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         MediaAssetSummary asset = mediaAssets.get(request.getMediaAssetId());
         if (asset == null) {
             throw new WorkInvalidException("媒体不存在");
+        }
+        WorkEntity owner = works.selectById(workId);
+        if (owner != null && "PUBLISHED".equals(owner.getStatus()) && !"PUBLIC".equals(asset.getAccessLevel())) {
+            throw new WorkInvalidException("已发布作品只能引用公开媒体");
         }
         WorkMediaUsage usage = request.getUsageType();
         if ((usage == WorkMediaUsage.COVER || usage == WorkMediaUsage.SCREENSHOT)
@@ -617,5 +733,9 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
     private void touch(WorkEntity work) {
         work.setUpdatedByAccountId(actor.current().getAccountId());
         work.setUpdatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
+        if ("PUBLISHED".equals(work.getStatus())) {
+            events.afterCommit(WorkPublicationChangedEvent.builder().workId(work.getId()).slug(work.getSlug())
+                    .published(true).build());
+        }
     }
 }

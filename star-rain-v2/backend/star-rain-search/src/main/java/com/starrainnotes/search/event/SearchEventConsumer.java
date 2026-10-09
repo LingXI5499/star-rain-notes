@@ -2,7 +2,9 @@ package com.starrainnotes.search.event;
 
 import com.starrainnotes.blog.api.event.BlogPostPublishedEvent;
 import com.starrainnotes.blog.api.event.BlogPostWithdrawnEvent;
+import com.starrainnotes.blog.api.event.BlogPostChangedEvent;
 import com.starrainnotes.blog.api.BlogSearchSourceApi;
+import com.starrainnotes.english.api.event.EnglishSearchContentChangedEvent;
 import com.starrainnotes.portfolio.api.event.WorkPublicationChangedEvent;
 import com.starrainnotes.portfolio.api.PortfolioReferenceApi;
 import com.starrainnotes.profile.api.event.ProfileChangedEvent;
@@ -14,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 @Component
 @RequiredArgsConstructor
@@ -23,6 +26,14 @@ public class SearchEventConsumer {
     private final SearchIndexService index;
     private final BlogSearchSourceApi blogs;
     private final PortfolioReferenceApi works;
+
+    @TransactionalEventListener(fallbackExecution = true)
+    public void onEnglishChanged(EnglishSearchContentChangedEvent event) {
+        safe(event.getContentType(), event.getContentId(), () -> {
+            if (event.getContentId() == null) rebuild.rebuildType(event.getContentType());
+            else rebuild.syncEnglish(event.getContentType(), event.getContentId());
+        });
+    }
 
     @EventListener
     public void onBlogPublished(BlogPostPublishedEvent event) {
@@ -35,6 +46,14 @@ public class SearchEventConsumer {
     @EventListener
     public void onBlogWithdrawn(BlogPostWithdrawnEvent event) {
         safe("BLOG", event.getPostId(), () -> index.removeByContent("BLOG", event.getPostId()));
+    }
+
+    @EventListener
+    public void onBlogChanged(BlogPostChangedEvent event) {
+        safe("BLOG", event.postId(), () -> {
+            var post = blogs.getPublishedDocument(event.postId());
+            if (post != null) rebuild.indexBlog(post);
+        });
     }
 
     @EventListener

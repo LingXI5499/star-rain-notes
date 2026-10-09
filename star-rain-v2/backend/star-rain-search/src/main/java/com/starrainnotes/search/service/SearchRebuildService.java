@@ -15,4 +15,6 @@ public interface SearchRebuildService {
     void indexBlog(BlogPostDocument post);
 
     void indexWork(PortfolioPublishedWork work);
+
+    void syncEnglish(String contentType, Long contentId);
 }

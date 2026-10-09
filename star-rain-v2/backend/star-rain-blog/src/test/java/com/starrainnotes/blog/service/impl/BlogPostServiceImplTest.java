@@ -20,6 +20,7 @@ import com.starrainnotes.blog.dto.BlogPostQueryDTO;
 import com.starrainnotes.blog.dto.BlogPostUpdateDTO;
 import com.starrainnotes.blog.dto.BlogTopicMemberRow;
 import com.starrainnotes.blog.entity.BlogPostEntity;
+import com.starrainnotes.blog.api.event.BlogPostChangedEvent;
 import com.starrainnotes.blog.entity.BlogTagEntity;
 import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.blog.mapper.BlogTagMapper;
@@ -42,6 +43,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.springframework.context.ApplicationEventPublisher;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.dao.DuplicateKeyException;
 
@@ -73,6 +75,9 @@ class BlogPostServiceImplTest {
 
     @Mock
     private BlogViewAssembler assembler;
+
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
 
     @InjectMocks
     private BlogPostServiceImpl service;
@@ -357,6 +362,23 @@ class BlogPostServiceImplTest {
         verify(mediaReferenceApi, never()).attach(any());
         verify(mediaReferenceApi, never()).detach(any());
         verify(postMapper).updatePostMeta(9L, "first-post", "改个标题", "摘要", 1L);
+    }
+
+    @Test
+    void editingPublishedMetadataRefreshesDerivedDocuments() {
+        BlogPostEntity existing = post(9L, "PUBLISHED", 1L);
+        when(postMapper.postByIdForUpdate(9L)).thenReturn(existing);
+        when(postMapper.postById(9L)).thenReturn(existing);
+        BlogPostUpdateDTO request = new BlogPostUpdateDTO();
+        request.setTitle("更新标题");
+
+        service.update(9L, request);
+
+        verify(eventPublisher).publishEvent((Object) argThat((Object event) ->
+                event instanceof BlogPostChangedEvent changed
+                        && changed.postId().equals(9L)
+                        && changed.previousSlug().equals("first-post")
+                        && changed.slug().equals("first-post")));
     }
 
     @Test

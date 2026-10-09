@@ -21,7 +21,8 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-@Service
+@Deprecated
+// Legacy implementation retained for historical persistence tests; not registered as a Spring service.
 @RequiredArgsConstructor
 public class LearningDashboardServiceImpl implements LearningDashboardService {
     private final CurrentActorApi currentActorApi;

@@ -39,8 +39,9 @@ public class PortfolioAdminController {
                                                  @RequestParam(defaultValue = "20") int pageSize,
                                                  @RequestParam(required = false) WorkType type,
                                                  @RequestParam(required = false) String status,
-                                                 @RequestParam(required = false) String q) {
-        return ApiResponse.ok(works.adminWorks(page, pageSize, type, status, q));
+                                                 @RequestParam(required = false) String q,
+            @org.springframework.web.bind.annotation.ModelAttribute com.starrainnotes.portfolio.dto.WorkFilterDTO filter) {
+        return ApiResponse.ok(works.filteredWorks(page, pageSize, type, status, q, filter, false));
     }
 
     @PostMapping("/works")

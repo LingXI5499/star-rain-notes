@@ -9,21 +9,7 @@ import { errorMessage } from '../../../../shared/http'
 import { getEnglishOverview } from '../../api/englishApi'
 import { loadVocabularySummary } from '../../support/vocabularySummary'
 
-/*
- * 英语首页 —— 按 V1 `views/english/EnglishView.vue` 的信息架构逐块对齐：
- *
- *   整幅主题主视觉（左文案 / 右插画，插画自带 CURRENT STAGE 卡）
- *   → 四个核心方向入口（单词 / 语法 / 阅读 / 写作）
- *   → A1–C2 长期能力轨道
- *   → 游客提示
- *   → 为什么学英语（含四格学习统计）
- *   → 四条学习方向
- *   → 词汇记忆入口
- *   → 长期学习路线
- *
- * 上一版把主视觉做成了「左文案 + 右一张带边框的图」，还缺了方向胶囊、
- * 当前阶段卡与 CEFR 轨道 —— 与 V1 差得最明显的就在这里，因此本轮按 V1 重排。
- */
+/* 英语首页保留单词、语法、真实阅读与自主创作四个方向。 */
 const { contentPath } = useViewMode()
 const auth = useAuthStore()
 
@@ -32,7 +18,6 @@ const summary = ref({ completed: 0, inProgress: 0, dueForReview: 0, total: 0 })
 const loading = ref(true)
 const error = ref('')
 
-const levels = ['A1', 'A2', 'B1', 'B2', 'C1', 'C2']
 const stageLabels = {
   FOUNDATION: '基础阶段',
   WORD_MEMORY: '词汇记忆',
@@ -51,8 +36,8 @@ const heroTraits = [
 const directions = [
   { glyph: '词', name: '单词', en: 'VOCABULARY', to: '/english/vocabulary', description: '主题词库、发音与固定间隔复习，建立可长期维护的词汇网络。', cta: '进入词库' },
   { glyph: '语', name: '语法', en: 'GRAMMAR', to: '/english/grammar', description: '沿章节和课程目录，从词法走向复杂句法与真实表达。', cta: '开始课程' },
-  { glyph: '读', name: '阅读', en: 'READING', to: '/english/reading', description: '通过分级材料训练信息提取、结构理解和语言观察。', cta: '开始阅读' },
-  { glyph: '写', name: '写作', en: 'WRITING', to: '/english/writing', description: '从素材、范文和任务中练习结构清晰、意思准确的表达。', cta: '开始写作' },
+  { glyph: '读', name: '阅读', en: 'READING', to: '/english/reading', description: '通过真实文章阅读，练习信息提取、结构理解和语言观察。', cta: '开始阅读' },
+  { glyph: '写', name: '写作', en: 'WRITING', to: '/english/writing', description: '通过自主英文创作，记录思考，练习结构清晰、意思准确的表达。', cta: '开始写作' },
 ]
 
 const stageText = () => {
@@ -105,11 +90,6 @@ onMounted(async () => {
         <strong>{{ stageText() }}</strong>
       </aside>
     </header>
-
-    <div class="cefr-path" aria-label="CEFR 长期能力路径">
-      <div><span v-for="level in levels" :key="level">{{ level }}</span></div>
-      <p>长期能力路径 · 不标记未经可靠映射的当前等级</p>
-    </div>
 
     <p class="english-guest-hint">
       {{ auth.currentUser ? `当前登录：${auth.currentUser.displayName || auth.currentUser.username}，学习进度会同步到账户。` : '当前为游客，英语进度仅保存在此浏览器。' }}
@@ -252,24 +232,6 @@ onMounted(async () => {
 .english-hero__stage small { color: var(--accent); font: 700 8px var(--font-mono); letter-spacing: 0.13em; }
 .english-hero__stage strong { color: var(--text-primary); font-size: 15px; }
 
-/* ---------------- CEFR 轨道 ---------------- */
-.cefr-path { padding: 26px 0 8px; }
-.cefr-path > div { position: relative; display: grid; grid-template-columns: repeat(6, 1fr); align-items: center; }
-.cefr-path > div::before { position: absolute; left: 0; right: 0; height: 1px; background: var(--border-strong); content: ''; }
-
-.cefr-path span {
-  position: relative;
-  z-index: 1;
-  justify-self: center;
-  padding: 6px 12px;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  color: var(--text-secondary);
-  background: var(--bg-page);
-  font: 650 11px var(--font-mono);
-}
-
-.cefr-path p { margin: 12px 0 0; color: var(--text-muted); font-size: 11px; text-align: center; }
 .english-guest-hint { margin: 0; padding: 12px 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 12px; }
 .english-state { padding: 34px 0; color: var(--text-muted); }
 
@@ -377,7 +339,5 @@ onMounted(async () => {
   .direction-card { min-height: 0; }
   .vocab-gateway { flex-direction: column; align-items: flex-start; }
   .vocab-gateway > span { display: none; }
-  .cefr-path > div { grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  .cefr-path > div::before { display: none; }
 }
 </style>

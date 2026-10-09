@@ -23,8 +23,9 @@ public class PortfolioPublicController {
     @GetMapping
     public ApiResponse<PageResult<WorkVO>> works(@RequestParam(defaultValue = "1") int page,
                                                   @RequestParam(defaultValue = "20") int pageSize,
-                                                  @RequestParam(required = false) WorkType type) {
-        return ApiResponse.ok(works.publicWorks(page, pageSize, type));
+                                                  @RequestParam(required = false) WorkType type,
+            @org.springframework.web.bind.annotation.ModelAttribute com.starrainnotes.portfolio.dto.WorkFilterDTO filter) {
+        return ApiResponse.ok(works.filteredWorks(page, pageSize, type, null, null, filter, true));
     }
 
     @GetMapping("/{slug}")

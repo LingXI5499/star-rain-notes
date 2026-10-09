@@ -39,6 +39,11 @@ public interface ModuleSecurityContributor {
     default List<String> deniedPatterns() {
         return List.of();
     }
+
+    // 允许同源框架嵌入的页面；默认仍为 DENY，不改变匿名访问或认证规则。
+    default List<String> sameOriginFramePatterns() {
+        return List.of();
+    }
 }
 
 

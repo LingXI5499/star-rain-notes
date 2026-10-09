@@ -1,6 +1,7 @@
 package com.starrainnotes.blog.service.impl;
 
 import com.starrainnotes.blog.constant.BlogLimits;
+import com.starrainnotes.blog.api.event.BlogTopicChangedEvent;
 import com.starrainnotes.blog.dto.BlogTopicDTO;
 import com.starrainnotes.blog.dto.BlogTopicMemberRow;
 import com.starrainnotes.blog.dto.BlogTopicOrderItem;
@@ -33,8 +34,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /*
  * BLOG-005 / BLOG-006 / BLOG-007 的实现。
@@ -53,10 +57,13 @@ public class BlogTopicServiceImpl implements BlogTopicService {
 
     private final BlogTopicMapper topicMapper;
     private final BlogPostMapper postMapper;
+    private final ApplicationEventPublisher eventPublisher;
 
-    public BlogTopicServiceImpl(BlogTopicMapper topicMapper, BlogPostMapper postMapper) {
+    public BlogTopicServiceImpl(BlogTopicMapper topicMapper, BlogPostMapper postMapper,
+                                ApplicationEventPublisher eventPublisher) {
         this.topicMapper = topicMapper;
         this.postMapper = postMapper;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -113,7 +120,9 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             entity.setStatus(BlogTaxonomyStatus.ENABLED_CODE);
             try {
                 topicMapper.insertTopic(entity);
-                return toTopicVO(requireTopic(entity.getId()));
+                BlogTopicVO created = toTopicVO(requireTopic(entity.getId()));
+                eventAfterCommit(new BlogTopicChangedEvent(created.getId(), null, created.getSlug(), true));
+                return created;
             } catch (DuplicateKeyException ex) {
                 if (!automatic) {
                     throw new BlogTopicSlugConflictException();
@@ -144,7 +153,10 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         } catch (DuplicateKeyException ex) {
             throw new BlogTopicSlugConflictException();
         }
-        return toTopicVO(requireTopic(topicId));
+        BlogTopicVO updated = toTopicVO(requireTopic(topicId));
+        eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), updated.getSlug(),
+                BlogTaxonomyStatus.ENABLED_CODE.equals(updated.getStatus())));
+        return updated;
     }
 
     @Override
@@ -189,6 +201,7 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             throw new BlogTopicNotEmptyException();
         }
         topicMapper.deleteTopic(topic.getId());
+        eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), false));
     }
 
     /*
@@ -203,6 +216,7 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             return;
         }
         topicMapper.updateStatus(topicId, BlogTaxonomyStatus.DISABLED_CODE);
+        eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), false));
     }
 
     @Override
@@ -213,6 +227,7 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             return;
         }
         topicMapper.updateStatus(topicId, BlogTaxonomyStatus.ENABLED_CODE);
+        eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), true));
     }
 
     @Override
@@ -318,6 +333,19 @@ public class BlogTopicServiceImpl implements BlogTopicService {
     // ------------------------------------------------------------------
     // 内部工具
     // ------------------------------------------------------------------
+
+    private void eventAfterCommit(BlogTopicChangedEvent event) {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            eventPublisher.publishEvent(event);
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                eventPublisher.publishEvent(event);
+            }
+        });
+    }
 
     // 按当前顺序重写 1..n，维持“序号连续”的不变量
     private void compactOrder(Long topicId) {

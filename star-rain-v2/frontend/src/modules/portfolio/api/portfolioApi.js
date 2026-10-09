@@ -22,3 +22,12 @@ export const publishWork = (id) => post(`${workPath(id)}/publish`)
 export const withdrawWork = (id) => post(`${workPath(id)}/withdraw`)
 export const restoreWork = (id) => post(`${workPath(id)}/restore`)
 export const deleteWork = async (id) => (await http.delete(workPath(id))).data.data
+
+export const getWorkTaxonomy = () => get('/public/portfolio/taxonomy')
+export const getWorkTemplates = () => get('/admin/portfolio/templates')
+export const createWorkSection = (id, payload) => post(`${workPath(id)}/sections`, payload)
+export const updateWorkSection = (id, sectionId, payload) => put(`${workPath(id)}/sections/${encodeURIComponent(sectionId)}`, payload)
+export const removeWorkSection = async (id, sectionId) => (await http.delete(`${workPath(id)}/sections/${encodeURIComponent(sectionId)}`)).data.data
+export const orderWorkSections = (id, ids) => put(`${workPath(id)}/sections/order`, { ids })
+
+export const bindWorkPrototype = (id, payload) => put(`${workPath(id)}/prototype`, payload)

@@ -3,7 +3,7 @@
 <mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialKnowledgeCardMapper">
 
   <sql id="columns">
-    id, chapter_id, front_text, back_markdown, sort_order, status, created_at, updated_at
+    id, chapter_id, front_text, back_markdown, content_version, sort_order, status, created_at, updated_at
   </sql>
 
   <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialKnowledgeCardEntity"
@@ -32,7 +32,8 @@
 
   <update id="updateContent">
     UPDATE sr_tutorial_knowledge_card
-    SET front_text = #{frontText}, back_markdown = #{backMarkdown},
+    SET content_version = content_version + IF(NOT(front_text &lt;=&gt; #{frontText}) OR NOT(back_markdown &lt;=&gt; #{backMarkdown}), 1, 0),
+        front_text = #{frontText}, back_markdown = #{backMarkdown},
         status = #{status}, updated_at = #{updatedAt}
     WHERE id = #{id}
   </update>

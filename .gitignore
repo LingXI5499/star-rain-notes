@@ -55,6 +55,7 @@ develop/release/verify-upgrade-*/
 frontend/.vite/
 
 # Private material and internal project notes
+/.local/
 /docs/
 /*.png
 /*.jpg

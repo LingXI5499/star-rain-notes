@@ -199,7 +199,7 @@ onMounted(async () => {
             <div v-else class="home-cards" :class="{ 'home-cards--list': section.layout === 'list' }">
               <RouterLink v-for="item in itemsOf(section)" :key="item.id || item.path"
                 class="home-card public-interactive" :to="contentPath(pathOf(section.code, item))">
-                <img v-if="item.coverUrl" :src="item.coverUrl" alt="" loading="lazy" />
+                <img v-if="item.type === 'PORTFOLIO' && item.coverUrl" :src="item.coverUrl" alt="" loading="lazy" />
                 <div class="home-card__body">
                   <small>{{ eyebrows[section.code] || section.title }}</small>
                   <h3>{{ item.title }}</h3>

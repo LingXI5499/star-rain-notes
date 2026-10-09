@@ -1,4 +1,7 @@
 <script setup>
+import PublicSelect from '../../../shared/ui/PublicSelect.vue'
+import PublicFilterBar from '../../../shared/ui/PublicFilterBar.vue'
+
 import { computed } from 'vue'
 
 /*
@@ -55,25 +58,9 @@ function updateTime(value) {
 </script>
 
 <template>
-  <form class="toolbar toolbar--wrap blog-filter" @submit.prevent="$emit('update:modelValue', { ...modelValue })">
-    <label>标签
-      <select :value="modelValue.tag || ''" @change="update('tag', $event.target.value)">
-        <option value="">全部标签</option>
-        <option v-for="tag in tags" :key="tag.id" :value="tag.slug">{{ tag.name }}</option>
-      </select>
-    </label>
-    <label>专题
-      <select :value="modelValue.topic || ''" @change="update('topic', $event.target.value)">
-        <option value="">全部专题</option>
-        <option v-for="topic in topics" :key="topic.id" :value="topic.slug">{{ topic.name }}</option>
-      </select>
-    </label>
-    <label v-if="showTime">时间
-      <select :value="timeValue" @change="updateTime($event.target.value)">
-        <option value="">全部时间</option>
-        <option v-for="option in timeOptions" :key="option.value" :value="option.value">{{ option.label }}</option>
-      </select>
-    </label>
-    <button class="primary-button" type="submit">查询</button>
-  </form>
+  <PublicFilterBar label="博客条件筛选" :active="Boolean(modelValue.tag || modelValue.tags?.length || modelValue.topic || modelValue.year)" @reset="$emit('update:modelValue', { ...modelValue, tag: '', tags: [], topic: '', year: null, month: null, day: null })">
+    <PublicSelect label="标签" :model-value="modelValue.tag || ''" :options="[{ value: '', label: modelValue.tags?.length > 1 ? '已选 ' + modelValue.tags.length + ' 个标签' : '全部标签' }, ...tags.map(item => ({ value: item.slug, label: item.name }))]" @update:model-value="update('tag', $event)" />
+    <PublicSelect label="专题" :model-value="modelValue.topic || ''" :options="[{ value: '', label: '全部专题' }, ...topics.map(item => ({ value: item.slug, label: item.name }))]" @update:model-value="update('topic', $event)" />
+    <PublicSelect v-if="showTime" label="时间" :model-value="timeValue" :options="[{ value: '', label: '全部时间' }, ...timeOptions]" @update:model-value="updateTime" />
+  </PublicFilterBar>
 </template>

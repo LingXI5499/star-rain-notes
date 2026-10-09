@@ -1,4 +1,10 @@
 <script setup>
+import PublicSearch from '../../../shared/ui/PublicSearch.vue'
+import PublicFilterBar from '../../../shared/ui/PublicFilterBar.vue'
+import PublicFilterTabs from '../../../shared/ui/PublicFilterTabs.vue'
+import PublicPagination from '../../../shared/ui/PublicPagination.vue'
+import { publicPage, publicPageSize, sizeQuery } from '../../../shared/composables/publicListState'
+
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { errorMessage } from '../../../shared/http'
@@ -16,35 +22,45 @@ const types = [
   { value: '', label: '全部' },
   { value: 'TUTORIAL', label: '教程' },
   { value: 'CHAPTER', label: '章节' },
+  { value: 'ENGLISH', label: '英语' },
   { value: 'BLOG', label: '博客' },
   { value: 'PORTFOLIO', label: '作品' },
   { value: 'PROFILE', label: '作者' },
 ]
-const typeLabel = Object.fromEntries(types.map((item) => [item.value, item.label]))
+const typeLabel = {
+  ...Object.fromEntries(types.map((item) => [item.value, item.label])),
+  ENGLISH_VOCABULARY_THEME: '英语词汇主题',
+  ENGLISH_VOCABULARY_WORD: '英语单词',
+  ENGLISH_GRAMMAR_COURSE: '英语语法课程',
+  ENGLISH_GRAMMAR_LESSON: '英语语法课时',
+  ENGLISH_READING: '英语阅读',
+  ENGLISH_WRITING: '英语原创写作',
+}
 const activeType = computed(() => String(route.query.type || ''))
-const page = computed(() => Math.max(1, Number(route.query.page) || 1))
-const pages = computed(() => Math.max(1, Math.ceil(result.value.total / result.value.pageSize)))
+const page = computed(() => publicPage(route.query.page))
+const pageSize = computed(() => publicPageSize(route.query.pageSize, 20, [10, 20, 50]))
+function changeSize(size) { navigate(sizeQuery(route.query, size, 20)) }
 let request = null
 
 function navigate(next = {}) {
-  const query = { q: q.value.trim(), ...(activeType.value ? { type: activeType.value } : {}), ...next }
+  const query = { ...route.query, q: q.value.trim(), ...(activeType.value ? { type: activeType.value } : {}), ...next }
   if (!query.type) delete query.type
   if (!query.page || Number(query.page) === 1) delete query.page
   router.push({ path: contentPath('/search'), query })
 }
 
-watch(() => [route.query.q, route.query.type, route.query.page], async () => {
+watch(() => [route.query.q, route.query.type, route.query.page, route.query.pageSize], async () => {
   request?.abort()
   loading.value = false
   q.value = String(route.query.q || '')
-  result.value = { items: [], total: 0, page: 1, pageSize: 20 }
+  result.value = { items: [], total: 0, page: 1, pageSize: pageSize.value }
   error.value = ''
   if (q.value.trim().length < 2) return
   const current = new AbortController()
   request = current
   loading.value = true
   try {
-    const data = await search(q.value.trim(), activeType.value, page.value, 20, current.signal)
+    const data = await search(q.value.trim(), activeType.value, page.value, pageSize.value, current.signal)
     if (!current.signal.aborted) result.value = data
   } catch (failure) {
     if (!current.signal.aborted) error.value = errorMessage(failure)
@@ -61,17 +77,12 @@ onBeforeUnmount(() => request?.abort())
     <header>
       <p class="eyebrow">SITE SEARCH · 全站检索</p>
       <h1>搜索</h1>
-      <p>在已公开的教程、博客、作品与作者资料中查找内容。</p>
+      <p>在已公开的教程、英语词汇、语法、阅读、原创写作、博客、作品与作者资料中查找内容。</p>
     </header>
-    <form class="search-form" @submit.prevent="navigate({ page: undefined })">
-      <input v-model="q" type="search" aria-label="搜索内容" placeholder="输入至少两个字符" maxlength="100" />
-      <button type="submit">搜索</button>
-    </form>
-    <nav class="filters" aria-label="内容类型">
-      <button v-for="item in types" :key="item.value" type="button"
-        :class="{ active: activeType === item.value }"
-        @click="navigate({ type: item.value, page: undefined })">{{ item.label }}</button>
-    </nav>
+    <PublicFilterBar label="搜索筛选" :active="Boolean(route.query.q || activeType)" @reset="q = ''; navigate({ q: undefined, type: undefined, page: undefined })">
+      <PublicSearch v-model="q" label="搜索内容" placeholder="输入至少两个字符" @search="navigate({ page: undefined })" />
+      <template #tabs><PublicFilterTabs label="内容类型" :model-value="activeType" :options="types" @update:model-value="navigate({ type: $event, page: undefined })" /></template>
+    </PublicFilterBar>
     <p v-if="error" class="state error" role="alert">{{ error }}</p>
     <p v-else-if="loading" class="state" role="status">正在搜索…</p>
     <p v-else-if="!String(route.query.q || '').trim()" class="state">输入关键词开始搜索。</p>
@@ -86,16 +97,13 @@ onBeforeUnmount(() => request?.abort())
           <p v-if="item.summary">{{ item.summary }}</p>
         </li>
       </ul>
-      <nav v-if="pages > 1" class="pagination" aria-label="搜索分页">
-        <button type="button" :disabled="page <= 1" @click="navigate({ page: page - 1 })">上一页</button>
-        <span>{{ page }} / {{ pages }}</span>
-        <button type="button" :disabled="page >= pages" @click="navigate({ page: page + 1 })">下一页</button>
-      </nav>
+      <PublicPagination :page="page" :page-size="pageSize" :page-sizes="[10, 20, 50]" :total="result.total" :loading="loading" label="搜索分页" unit="条" @change="navigate({ page: $event })" @page-size="changeSize" />
     </template>
   </main>
 </template>
 
 <style scoped>
+.search-page > .public-filters { margin-top: 28px; }
 .search-page { max-width: 940px; margin: 0 auto; padding: clamp(32px, 5vw, 72px) 24px 100px; color: var(--text-primary); }
 .eyebrow { color: var(--accent, var(--primary)); font-size: 11px; font-weight: 700; letter-spacing: .15em; }
 h1 { margin: 8px 0 12px; font-size: clamp(34px, 5vw, 54px); }

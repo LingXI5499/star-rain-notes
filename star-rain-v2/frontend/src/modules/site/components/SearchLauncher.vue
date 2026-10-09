@@ -137,7 +137,7 @@ onBeforeUnmount(() => {
             ref="input"
             v-model="query"
             type="search"
-            placeholder="搜索教程、博客、作品…"
+            placeholder="搜索教程、英语、博客、作品…"
             aria-label="搜索关键字"
             autocomplete="off"
           />

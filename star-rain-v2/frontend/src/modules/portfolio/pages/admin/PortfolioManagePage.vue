@@ -1,16 +1,19 @@
 <script setup>
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { deleteWork, listAdminWorks, publishWork, restoreWork, withdrawWork } from '../../api/portfolioApi'
+import { deleteWork, getWorkTaxonomy, listAdminWorks, publishWork, restoreWork, withdrawWork } from '../../api/portfolioApi'
 import { errorMessage } from '../../../../shared/http'
 import { useListQuery } from '../../../../shared/composables/useListQuery'
 import AppConfirmDialog from '../../../../shared/ui/AppConfirmDialog.vue'
 import { accountPath } from '../../../../shared/viewMode'
+import { stageLabels } from '../../support/workBlocks'
 
 const route = useRoute()
 const { filters, page, pageSize, read: readQuery, write: writeQuery, reset: resetQuery } = useListQuery({
-  defaults: { type: '', status: '', q: '' },
+  defaults: { type: '', categoryId: '', status: '', q: '' },
 })
+const categories = ref([])
+getWorkTaxonomy().then(data => { categories.value = data.categories }).catch(cause => { error.value = errorMessage(cause) })
 const result = ref({ items: [], total: 0, pageSize: 20 })
 const error = ref('')
 const notice = ref('')
@@ -21,14 +24,8 @@ let loadVersion = 0
 const pageCount = computed(() => Math.max(1, Math.ceil(result.value.total / pageSize.value)))
 const typeLabels = { SOFTWARE: '软件', VIDEO: '视频', MUSIC: '音乐', WRITING: '写作', OTHER: '其他' }
 const statusLabels = { DRAFT: '草稿', PUBLISHED: '已发布', WITHDRAWN: '已撤回' }
-/*
- * 项目阶段来自 typeDetail.projectStage（后端已随列表返回），
- * 只用在卡片右上角的第三枚胶囊上；V1 的第三枚是「项目状态」，V2 就是这一项。
- */
-const stageLabels = { DEVELOPING: '开发中', COMPLETED: '已完成', ONLINE: '已上线' }
-
 function techStackOf(work) {
-  const stack = work.typeDetail?.techStack
+  const stack = work.techStack ? work.techStack.split(/[,，、]/).map(item => item.trim()).filter(Boolean) : work.typeDetail?.techStack
   return Array.isArray(stack) ? stack : []
 }
 
@@ -42,7 +39,7 @@ async function load() {
   error.value = ''
   try {
     const response = await listAdminWorks({ page: page.value, pageSize: pageSize.value,
-      type: filters.type || undefined, status: filters.status || undefined, q: filters.q.trim() || undefined })
+      categoryId: filters.categoryId || undefined, type: filters.type || undefined, status: filters.status || undefined, q: filters.q.trim() || undefined })
     if (version === loadVersion) result.value = response
   } catch (cause) {
     if (version === loadVersion) error.value = errorMessage(cause)
@@ -113,13 +110,14 @@ watch(() => route.fullPath, () => {
       <div>
         <p>CASE STUDY LIBRARY · 项目案例</p>
         <h1>作品管理</h1>
-        <span>维护作品内容、类型详情与发布状态。</span>
+        <span>通过模板与内容区块管理作品、分类和发布状态。</span>
       </div>
       <RouterLink :to="accountPath('/portfolio/editor/new')">＋ 新建作品</RouterLink>
     </header>
 
     <form class="portfolio-admin__filters" @submit.prevent="search">
       <input v-model="filters.q" type="search" placeholder="搜索作品标题" aria-label="搜索作品标题" />
+      <select v-model="filters.categoryId" aria-label="作品分类"><option value="">全部分类</option><option v-for="item in categories" :key="item.id" :value="item.id">{{ item.name }}</option></select>
       <select v-model="filters.type" aria-label="作品类型">
         <option value="">全部类型</option>
         <option v-for="(label, value) in typeLabels" :key="value" :value="value">{{ label }}</option>
@@ -137,7 +135,7 @@ watch(() => route.fullPath, () => {
 
     <p v-if="loading" class="portfolio-admin__empty">正在加载…</p>
     <div v-else-if="!result.items.length" class="portfolio-admin__empty">
-      <template v-if="filters.type || filters.status || filters.q">
+      <template v-if="filters.categoryId || filters.type || filters.status || filters.q">
         <strong>没有符合条件的作品</strong>
         <span>换一组筛选条件，或清除筛选查看全部作品。</span>
         <button type="button" @click="resetQuery">清除筛选</button>
@@ -163,12 +161,12 @@ watch(() => route.fullPath, () => {
             <div class="portfolio-card__pills">
               <span>{{ typeLabels[work.workType] || work.workType }}</span>
               <span>{{ statusLabels[work.status] || work.status }}</span>
-              <span v-if="stageLabels[work.typeDetail?.projectStage]">{{ stageLabels[work.typeDetail.projectStage] }}</span>
+              <span v-if="stageLabels[work.projectStatus || work.typeDetail?.projectStage]">{{ stageLabels[work.projectStatus || work.typeDetail?.projectStage] }}</span>
             </div>
           </div>
 
           <p class="portfolio-card__summary">{{ work.summary || '摘要待填写' }}</p>
-          <p v-if="work.typeDetail?.role" class="portfolio-card__role">角色 · {{ work.typeDetail.role }}</p>
+          <p v-if="(work.role || work.typeDetail?.role)" class="portfolio-card__role">角色 · {{ work.role || work.typeDetail?.role }}</p>
 
           <div class="portfolio-card__stack">
             <span v-for="tech in techStackOf(work)" :key="tech">{{ tech }}</span>

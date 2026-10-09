@@ -13,12 +13,14 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.starrainnotes.blog.dto.BlogTopicDTO;
+import com.starrainnotes.blog.api.event.BlogTopicChangedEvent;
 import com.starrainnotes.blog.dto.BlogTopicMemberRow;
 import com.starrainnotes.blog.dto.BlogTopicQueryDTO;
 import com.starrainnotes.blog.entity.BlogPostEntity;
 import com.starrainnotes.blog.entity.BlogTopicEntity;
 import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.blog.mapper.BlogTopicMapper;
+import org.springframework.context.ApplicationEventPublisher;
 import com.starrainnotes.blog.utils.BlogSlugDeriver;
 import com.starrainnotes.blog.vo.BlogTopicVO;
 import com.starrainnotes.common.exception.ApiException;
@@ -49,6 +51,9 @@ class BlogTopicServiceImplTest {
     @Mock
     private BlogPostMapper postMapper;
 
+    @Mock
+    private ApplicationEventPublisher eventPublisher;
+
     @InjectMocks
     private BlogTopicServiceImpl service;
 
@@ -70,6 +75,9 @@ class BlogTopicServiceImplTest {
         BlogTopicVO created = service.create(dto("java-roadmap", "Java 学习路线"));
 
         assertThat(created.getId()).isEqualTo(3L);
+        verify(eventPublisher).publishEvent((Object) argThat((Object event) ->
+                event instanceof BlogTopicChangedEvent changed
+                        && changed.topicId().equals(3L) && changed.visible()));
         // 结构性断言：Topic 没有 name 唯一约束，因此 Mapper 里不存在按名字查询的语句。
         // 这是 Tag（有 countByName）与 Topic 最直接的分界。
         assertThat(Arrays.stream(BlogTopicMapper.class.getDeclaredMethods()).map(Method::getName).toList())

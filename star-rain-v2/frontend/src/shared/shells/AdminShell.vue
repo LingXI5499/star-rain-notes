@@ -5,6 +5,7 @@ import { useAuthStore } from '../../modules/account/stores/authStore'
 import { errorMessage } from '../../modules/account/api/http'
 import * as accountApi from '../../modules/account/api/accountApi'
 import { accountPath } from '../viewMode'
+import { applyManualTheme, readManualTheme, switchManualTheme, themeSwitching } from '../theme/manualTheme'
 
 /*
  * 控制台外壳（唯一带侧栏的外壳），由账号树的 /useradmin/center 用户中心进入。
@@ -127,6 +128,12 @@ const navGroups = computed(() => {
         {
           label: '教程工作台', short: '教', to: accountPath('/tutorials/manage'),
           visible: auth.hasPermission('tutorial:read-admin'),
+          activePrefix: accountPath('/tutorials'),
+          children: [
+            { label: '教程与章节', to: accountPath('/tutorials/manage'), visible: auth.hasPermission('tutorial:read-admin'), matches: (path) => path.startsWith(accountPath('/tutorials/')) && !path.endsWith('/cards') && !path.endsWith('/questions') },
+            { label: '知识卡片', to: accountPath('/tutorials/cards'), visible: auth.hasPermission('tutorial:edit'), matches: (path) => path.startsWith(accountPath('/tutorials/')) && path.endsWith('/cards') },
+            { label: '章节问题', to: accountPath('/tutorials/questions'), visible: auth.hasPermission('tutorial:edit'), matches: (path) => path.startsWith(accountPath('/tutorials/')) && path.endsWith('/questions') },
+          ],
         },
         {
           label: '博客管理', short: '博', to: accountPath('/blog/manage'),
@@ -148,7 +155,7 @@ const navGroups = computed(() => {
             { label: '词汇', to: accountPath('/english/manage/vocabulary'), visible: auth.hasPermission('english:content-read-admin') },
             { label: '语法', to: accountPath('/english/manage/grammar'), visible: auth.hasPermission('english:content-read-admin') },
             { label: '阅读', to: accountPath('/english/manage/reading'), visible: auth.hasPermission('english:content-read-admin') },
-            { label: '写作', to: accountPath('/english/manage/writing'), visible: auth.hasPermission('english:content-read-admin') },
+            { label: '写作', to: accountPath('/english/writing'), visible: auth.hasPermission('english:content-read-admin') },
           ],
         },
         {
@@ -214,33 +221,24 @@ function isActive(target) {
  * 于是父项和子项同时高亮。父项只在自己正好是当前页（或当前页不属于任何子项）时高亮。
  */
 function isItemActive(item) {
-  if (!isActive(item.to)) return false
+  if (!isActive(item.activePrefix || item.to)) return false
   if (!item.children?.length) return true
-  return !item.children.some((child) => child.to !== item.to && route.path.startsWith(child.to))
+  return !item.children.some((child) => child.matches ? child.matches(route.path) : child.to !== item.to && route.path.startsWith(child.to))
 }
 
 // ---------------------------------------------------------------------
 // 主题
 //
-// 主题目前只在控制台提供切换：tokens.css 已经声明了 [data-theme='dark'] 的整套变量，
-// 这里只负责把选择写进 <html data-theme>，不引入额外的主题 store。
-// 选择持久化在 localStorage，下次进入控制台立即生效（在 setup 里同步应用，避免闪白）。
+// 控制台保留独立的手动设置；未设置或旧的自动模式统一使用日间。
 // ---------------------------------------------------------------------
-
-const theme = ref('light')
-
-function applyStoredTheme() {
-  const stored = localStorage.getItem('admin-theme')
-  theme.value = stored === 'dark' || stored === 'light'
-    ? stored
-    : (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
-  document.documentElement.dataset.theme = theme.value
-}
-
-function toggleTheme() {
-  theme.value = theme.value === 'dark' ? 'light' : 'dark'
-  document.documentElement.dataset.theme = theme.value
-  localStorage.setItem('admin-theme', theme.value)
+const theme = ref(readManualTheme('admin-theme'))
+function applyStoredTheme() { applyManualTheme(theme.value, 'admin-theme') }
+function toggleTheme(event) {
+  const next = theme.value === 'dark' ? 'light' : 'dark'
+  return switchManualTheme(() => {
+    theme.value = next
+    applyStoredTheme()
+  }, event.currentTarget)
 }
 
 applyStoredTheme()
@@ -376,7 +374,7 @@ async function submitPassword() {
                   :key="child.label"
                   :to="child.to"
                   class="admin-shell__subnav-item"
-                  :class="{ 'is-active': route.path === child.to }"
+                  :class="{ 'is-active': child.matches ? child.matches(route.path) : route.path === child.to }"
                 >{{ child.label }}</RouterLink>
               </div>
             </template>
@@ -411,6 +409,9 @@ async function submitPassword() {
             class="admin-shell__header-action"
             type="button"
             :title="theme === 'dark' ? '切换到浅色主题' : '切换到深色主题'"
+            data-theme-toggle
+            :disabled="themeSwitching"
+            :aria-pressed="theme === 'dark'"
             @click="toggleTheme"
           >
             {{ theme === 'dark' ? '浅色' : '深色' }}<span class="admin-shell__header-action-long">主题</span>

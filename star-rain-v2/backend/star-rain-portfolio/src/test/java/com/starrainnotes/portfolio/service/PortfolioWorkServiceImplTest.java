@@ -31,6 +31,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
 class PortfolioWorkServiceImplTest {
+    private final PortfolioContentService content = mock(PortfolioContentService.class);
     private final WorkMapper works = mock(WorkMapper.class);
     private final WorkDetailMapper details = mock(WorkDetailMapper.class);
     private final WorkMediaMapper media = mock(WorkMediaMapper.class);
@@ -40,12 +41,29 @@ class PortfolioWorkServiceImplTest {
     private final CurrentActorApi actor = mock(CurrentActorApi.class);
     private final WorkEventPublisher events = mock(WorkEventPublisher.class);
     private final PortfolioWorkServiceImpl service = new PortfolioWorkServiceImpl(
-            works, details, media, links, assets, references, actor, new ObjectMapper(),
+            content, works, details, media, links, assets, references, actor, new ObjectMapper(),
             List.of(new OtherDetailValidator()), events);
 
     @BeforeEach
     void actorIsAvailable() {
+        when(content.taxonomy()).thenReturn(java.util.Map.of("categories", List.of(), "formats", List.of(), "tags", List.of()));
+        WorkMediaEntity cover = new WorkMediaEntity(); cover.setId(3L); cover.setSortOrder(0); cover.setWorkId(9L); cover.setMediaAssetId(77L); cover.setUsageType("COVER");
+        when(media.listByWorkId(any())).thenReturn(List.of(cover));
+        when(assets.get(77L)).thenReturn(com.starrainnotes.media.api.dto.MediaAssetSummary.builder().id(77L).mediaType("IMAGE").accessLevel("PUBLIC").status("ACTIVE").build());
         when(actor.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(7L).build());
+    }
+
+    @Test
+    void patchCanExplicitlyClearOptionalDates() {
+        WorkEntity work = work("DRAFT", null);
+        work.setStartedOn(java.time.LocalDate.of(2026, 1, 1));
+        work.setEndedOn(java.time.LocalDate.of(2026, 2, 1));
+        when(works.byIdForUpdate(9L)).thenReturn(work);
+        service.update(9L, com.starrainnotes.portfolio.dto.WorkPatchDTO.builder()
+                .clearStartedOn(true).clearEndedOn(true).build());
+        assertThat(work.getStartedOn()).isNull();
+        assertThat(work.getEndedOn()).isNull();
+        verify(works).updateContent(work);
     }
 
     @Test
@@ -56,7 +74,6 @@ class PortfolioWorkServiceImplTest {
         detail.setDetailJson("{}");
         when(works.byIdForUpdate(9L)).thenReturn(work);
         when(details.selectByWorkId(any())).thenReturn(detail);
-        when(media.listByWorkId(any())).thenReturn(List.of());
         when(links.listByWorkId(any())).thenReturn(List.of());
 
         assertThat(service.restore(9L).getStatus()).isEqualTo("PUBLISHED");
@@ -68,7 +85,6 @@ class PortfolioWorkServiceImplTest {
     void publishingWithoutTypeDetailIsAllowed() {
         WorkEntity work = work("DRAFT", null);
         when(works.byIdForUpdate(9L)).thenReturn(work);
-        when(media.listByWorkId(any())).thenReturn(List.of());
         when(links.listByWorkId(any())).thenReturn(List.of());
 
         // 原来的规则是「发布前必须填写类型详情」；作品后台整块去掉类型详情后，
@@ -115,6 +131,7 @@ class PortfolioWorkServiceImplTest {
         work.setWorkType("OTHER");
         work.setTitle("Sample");
         work.setSummary("A meaningful case study");
+        work.setCategoryId(1L); work.setFormatId(1L);
         work.setBodyMarkdown("# Case Study");
         work.setStatus(status);
         work.setPublishedAt(publishedAt);

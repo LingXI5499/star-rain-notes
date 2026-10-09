@@ -1,6 +1,8 @@
 package com.starrainnotes.english.grammar.service.impl;
 
 import com.starrainnotes.common.exception.ApiException;
+import com.starrainnotes.english.api.event.EnglishSearchContentChangedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import com.starrainnotes.english.grammar.dto.GrammarDto.Course;
 import com.starrainnotes.english.grammar.dto.GrammarDto.CourseRequest;
 import com.starrainnotes.english.grammar.dto.GrammarDto.Curriculum;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class GrammarServiceImpl implements GrammarService {
     private final GrammarMapper mapper;
+    private final ApplicationEventPublisher events;
 
     @Override
     @Transactional(readOnly = true)
@@ -54,6 +57,7 @@ public class GrammarServiceImpl implements GrammarService {
         course.setIntroduction(request.getIntroduction());
         course.setRoadmapMarkdown(request.getRoadmapMarkdown());
         mapper.updateCourse(course);
+        changed("ENGLISH_GRAMMAR_COURSE", 1L);
         return mapper.course();
     }
 
@@ -61,6 +65,8 @@ public class GrammarServiceImpl implements GrammarService {
     @Transactional
     public void setCoursePublished(boolean published) {
         mapper.setCourseStatus(published ? "PUBLISHED" : "WITHDRAWN");
+        changed("ENGLISH_GRAMMAR_COURSE", 1L);
+        changed("ENGLISH_GRAMMAR_LESSON", null);
     }
 
     @Override
@@ -90,6 +96,7 @@ public class GrammarServiceImpl implements GrammarService {
     @Transactional
     public void deleteSection(String sectionId) {
         if (mapper.deleteSection(id(sectionId)) == 0) sectionNotFound();
+        changed("ENGLISH_GRAMMAR_LESSON", null);
     }
 
     @Override
@@ -113,6 +120,7 @@ public class GrammarServiceImpl implements GrammarService {
         lesson.setId(existing.getId());
         lesson.setSlug(existing.getSlug());
         if (mapper.updateLesson(lesson) == 0) lessonNotFound();
+        changed("ENGLISH_GRAMMAR_LESSON", lesson.getId());
         return lesson(lessonId, true);
     }
 
@@ -121,6 +129,7 @@ public class GrammarServiceImpl implements GrammarService {
     public Lesson setLessonPublished(String lessonId, boolean published) {
         if (mapper.setLessonStatus(id(lessonId), published ? "PUBLISHED" : "WITHDRAWN") == 0)
             lessonNotFound();
+        changed("ENGLISH_GRAMMAR_LESSON", id(lessonId));
         return lesson(lessonId, true);
     }
 
@@ -128,6 +137,11 @@ public class GrammarServiceImpl implements GrammarService {
     @Transactional
     public void deleteLesson(String lessonId) {
         if (mapper.deleteLesson(id(lessonId)) == 0) lessonNotFound();
+        changed("ENGLISH_GRAMMAR_LESSON", id(lessonId));
+    }
+
+    private void changed(String type, Long id) {
+        events.publishEvent(new EnglishSearchContentChangedEvent(type, id));
     }
 
     private Section requiredSection(long id) {

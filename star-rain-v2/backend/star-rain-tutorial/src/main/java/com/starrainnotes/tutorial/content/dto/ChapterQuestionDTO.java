@@ -10,4 +10,5 @@ public class ChapterQuestionDTO {
     @NotBlank
     private String referenceAnswer;
     private String status;
+    private java.util.List<Long> knowledgeCardIds = new java.util.ArrayList<>();
 }

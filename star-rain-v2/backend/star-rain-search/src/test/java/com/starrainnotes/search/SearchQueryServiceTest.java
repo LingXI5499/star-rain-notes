@@ -8,6 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.starrainnotes.common.exception.ApiException;
+import com.starrainnotes.english.api.EnglishSearchTypes;
 import com.starrainnotes.search.mapper.SearchDocumentMapper;
 import com.starrainnotes.search.service.SearchQueryService;
 import com.starrainnotes.search.service.impl.SearchQueryServiceImpl;
@@ -45,6 +46,14 @@ class SearchQueryServiceTest {
             () -> service.search("Java", "BLOG,ACCOUNT", 1, 20));
         assertEquals("SEARCH_TYPE_INVALID", exception.getCode());
         Mockito.verifyNoInteractions(mapper);
+    }
+
+    @Test
+    void englishFilterExpandsToPublicEnglishTypesAndDeduplicatesMixedFilters() {
+        service.search("grammar", "ENGLISH,ENGLISH_READING", 1, 20);
+        verify(mapper).count("grammar", EnglishSearchTypes.ALL);
+        service.search("词汇", "ENGLISH_VOCABULARY_WORD", 1, 20);
+        verify(mapper).count("词汇", List.of("ENGLISH_VOCABULARY_WORD"));
     }
 
     @Test

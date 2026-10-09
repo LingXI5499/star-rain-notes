@@ -5,10 +5,12 @@ import {
   createChapter, getAdminChapter, getAdminCurriculum, updateChapter, updateChapterBody,
 } from '../../api/tutorialApi'
 import { errorMessage } from '../../../../shared/http'
+import ChapterAuthorNav from '../../components/ChapterAuthorNav.vue'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
+import { accountPath } from '../../../../shared/viewMode'
 
 const route = useRoute()
 const router = useRouter()
@@ -26,7 +28,6 @@ const editorRef = ref(null)
 const confirmDialog = ref(null)
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
 let savedSnapshot = ''
-let savedAndLeaving = false
 
 function currentBody() {
   return editorRef.value?.getMarkdown?.() ?? body.value
@@ -80,10 +81,12 @@ async function save() {
   error.value = ''
   notice.value = ''
   try {
+    let chapterId = route.params.chapterId
     if (isCreate.value) {
-      await createChapter(form.groupId, {
+      const chapter = await createChapter(form.groupId, {
         title: form.title.trim(), summary: form.summary.trim() || null, bodyMarkdown,
       })
+      chapterId = chapter.id
     } else {
       await updateChapter(route.params.chapterId, {
         title: form.title.trim(), summary: form.summary.trim() || null,
@@ -92,8 +95,8 @@ async function save() {
     }
     body.value = bodyMarkdown
     savedSnapshot = snapshot()
-    savedAndLeaving = true
-    await router.push({ path: returnPath(), query: { group: form.groupId } })
+    notice.value = '章节正文已保存。'
+    if (isCreate.value) await router.replace(accountPath(`/tutorials/${tutorialId.value}/chapters/${chapterId}`))
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -109,7 +112,7 @@ function onKeydown(event) {
 }
 
 onBeforeRouteLeave(async () => {
-  if (savedAndLeaving || !dirty()) return true
+  if (!dirty()) return true
   return confirmDialog.value.ask('章节正文或信息尚未保存，离开后改动会丢失。确定离开吗？')
 })
 onMounted(() => { load(); window.addEventListener('keydown', onKeydown) })
@@ -120,16 +123,17 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
   <main class="page-container chapter-edit">
     <header class="chapter-edit__topbar">
       <div>
-        <h1>{{ isCreate ? '新建章节' : '编辑章节' }}</h1>
+        <h1>{{ isCreate ? '新建章节' : '章节正文' }}</h1>
         <button type="button" class="link-button" @click="router.push(returnPath())">
           教程工作台 › {{ tutorialTitle }} › 课程结构
         </button>
       </div>
       <div class="chapter-edit__actions">
-        <button class="primary-button" type="button" :disabled="saving || loading" @click="save">{{ saving ? '保存中…' : '保存' }}</button>
+        <button class="primary-button" type="button" :disabled="saving || loading" @click="save">{{ saving ? '保存中…' : '保存正文' }}</button>
         <button type="button" @click="router.push(returnPath())">取消</button>
       </div>
     </header>
+    <ChapterAuthorNav :tutorial-id="tutorialId" :chapter-id="route.params.chapterId" active="body" />
 
     <p v-if="error" class="error" role="alert">{{ error }}</p>
     <p v-if="notice" class="notice" role="status">{{ notice }}</p>
@@ -151,8 +155,9 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
           <label>摘要<textarea v-model="form.summary" rows="3" maxlength="1000" /></label>
         </div>
       </div>
+      <p v-if="isCreate">保存章节后，可独立编写知识卡片或章节问题，两者均可留空。</p>
       <div class="chapter-edit__actions chapter-edit__bottom-actions">
-        <button class="primary-button" type="button" :disabled="saving" @click="save">保存</button>
+        <button class="primary-button" type="button" :disabled="saving" @click="save">保存正文</button>
         <button type="button" @click="router.push(returnPath())">取消</button>
       </div>
     </section>

@@ -1,31 +1,39 @@
 <script setup>
-import { onMounted, reactive, ref } from 'vue'
+import PublicPagination from '../../../shared/ui/PublicPagination.vue'
+import { publicPage, publicPageSize, sizeQuery } from '../../../shared/composables/publicListState'
+
+import { computed, reactive, ref, watch } from 'vue'
 import { useAuthStore } from '../../account/stores/authStore'
 import { errorMessage } from '../../../shared/http'
 import { listPublicMessages, submitMessage } from '../api/messageApi'
 
+import { useRoute, useRouter } from 'vue-router'
+const route = useRoute(), router = useRouter()
 const auth = useAuthStore()
 const form = reactive({ authorDisplayName: '', contactEmail: '', content: '' })
 const items = ref([])
-const page = ref(1)
+const page = computed(() => publicPage(route.query.page))
 const total = ref(0)
 const loading = ref(false)
 const submitting = ref(false)
 const error = ref('')
 const notice = ref('')
-const pageSize = 12
+const pageSize = computed(() => publicPageSize(route.query.pageSize))
+let requestVersion = 0
 
 async function load() {
+  const version = ++requestVersion
   loading.value = true
   error.value = ''
   try {
-    const result = await listPublicMessages({ page: page.value, pageSize })
+    const result = await listPublicMessages({ page: page.value, pageSize: pageSize.value })
+    if (version !== requestVersion) return
     items.value = result.items || []
     total.value = result.total || 0
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (version === requestVersion) error.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (version === requestVersion) loading.value = false
   }
 }
 
@@ -49,12 +57,9 @@ function formatDate(value) {
   return value ? new Date(value).toLocaleDateString('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }) : ''
 }
 
-async function changePage(next) {
-  page.value = next
-  await load()
-}
-
-onMounted(load)
+function changePage(next) { router.push({ query: { ...route.query, page: next > 1 ? String(next) : undefined } }) }
+function changeSize(size) { router.push({ query: sizeQuery(route.query, size, 12) }) }
+watch(() => route.query, load, { immediate: true })
 </script>
 
 <template>
@@ -105,11 +110,7 @@ onMounted(load)
             <p>{{ item.content }}</p>
           </li>
         </ol>
-        <div v-if="total > pageSize" class="message-board__pager">
-          <button type="button" :disabled="page <= 1 || loading" @click="changePage(page - 1)">上一页</button>
-          <span>{{ page }} / {{ Math.ceil(total / pageSize) }}</span>
-          <button type="button" :disabled="page * pageSize >= total || loading" @click="changePage(page + 1)">下一页</button>
-        </div>
+        <PublicPagination :page="page" :page-size="pageSize" :total="total" :loading="loading" label="留言分页" unit="条" @change="changePage" @page-size="changeSize" />
       </section>
     </div>
   </main>

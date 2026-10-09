@@ -47,7 +47,7 @@ public class VocabularyStudyCommandServiceImpl implements VocabularyStudyCommand
             throw new VocabularySettingsInvalidException("英文和中文至少保留一组");
         }
         if (!ReviewDirection.isKnown(request.getReviewDirection())) {
-            throw new VocabularySettingsInvalidException("复习方向只能是英译中、中译英或随机混合");
+            throw new VocabularySettingsInvalidException("复习方向只能是英译中、中译英或听音辨词");
         }
         if (request.getDailyNewLimit() < VocabularyStudyConstants.MIN_DAILY_NEW_LIMIT
                 || request.getDailyNewLimit() > VocabularyStudyConstants.MAX_DAILY_NEW_LIMIT) {
@@ -64,7 +64,7 @@ public class VocabularyStudyCommandServiceImpl implements VocabularyStudyCommand
         VocabularyStudySettingsVO settings = VocabularyStudySettingsVO.builder()
                 .showEnglish(request.isShowEnglish())
                 .showChinese(request.isShowChinese())
-                .reviewDirection(request.getReviewDirection())
+                .reviewDirection("MIXED".equals(request.getReviewDirection()) ? "EN_TO_ZH" : request.getReviewDirection())
                 .dailyNewLimit(request.getDailyNewLimit())
                 .dailyReviewLimit(request.getDailyReviewLimit())
                 .build();

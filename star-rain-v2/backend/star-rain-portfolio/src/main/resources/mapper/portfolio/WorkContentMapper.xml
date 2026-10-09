@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.portfolio.mapper.WorkContentMapper">
+<select id="categories" resultType="com.starrainnotes.portfolio.entity.WorkTaxonomyEntity">SELECT id,code,name,group_code,sort_order FROM sr_portfolio_category ORDER BY sort_order,id</select>
+<select id="formats" resultType="com.starrainnotes.portfolio.entity.WorkTaxonomyEntity">SELECT id,code,name,group_code,sort_order FROM sr_portfolio_format ORDER BY sort_order,id</select>
+<select id="tags" resultType="com.starrainnotes.portfolio.entity.WorkTaxonomyEntity">SELECT id,code,name,group_code,sort_order FROM sr_portfolio_tag ORDER BY sort_order,id</select>
+<select id="workTags" resultType="com.starrainnotes.portfolio.entity.WorkTaxonomyEntity">SELECT t.id,t.code,t.name,t.group_code,t.sort_order FROM sr_portfolio_tag t JOIN sr_portfolio_work_tag w ON w.tag_id=t.id WHERE w.work_id=#{workId} ORDER BY t.sort_order,t.id</select>
+<select id="templates" resultType="com.starrainnotes.portfolio.entity.WorkTemplateEntity">SELECT id,code,name,description,sections_json FROM sr_portfolio_template ORDER BY id</select>
+<select id="template" resultType="com.starrainnotes.portfolio.entity.WorkTemplateEntity">SELECT id,code,name,description,sections_json FROM sr_portfolio_template WHERE id=#{id}</select>
+<select id="lockFeatured" resultType="long">SELECT id FROM sr_portfolio_category WHERE code='software' FOR UPDATE</select>
+<select id="featuredCount" resultType="long">SELECT COUNT(*) FROM sr_portfolio_work WHERE featured=TRUE AND id != #{excludeId}</select>
+<delete id="clearTags">DELETE FROM sr_portfolio_work_tag WHERE work_id=#{workId}</delete>
+<insert id="addTag">INSERT INTO sr_portfolio_work_tag(work_id,tag_id) VALUES(#{workId},#{tagId})</insert>
+<select id="sections" resultType="com.starrainnotes.portfolio.entity.WorkSectionEntity">SELECT id,work_id,section_type,title,content,data_json,block_version,visible,sort_order FROM sr_portfolio_section WHERE work_id=#{workId} ORDER BY sort_order,id</select>
+<select id="section" resultType="com.starrainnotes.portfolio.entity.WorkSectionEntity">SELECT id,work_id,section_type,title,content,data_json,block_version,visible,sort_order FROM sr_portfolio_section WHERE id=#{id}</select>
+<insert id="insertSection" useGeneratedKeys="true" keyProperty="id">INSERT INTO sr_portfolio_section(work_id,section_type,title,content,data_json,block_version,visible,sort_order) VALUES(#{workId},#{sectionType},#{title},#{content},#{dataJson},#{blockVersion},#{visible},#{sortOrder})</insert>
+<update id="updateSection">UPDATE sr_portfolio_section SET section_type=#{sectionType},title=#{title},content=#{content},data_json=#{dataJson},block_version=#{blockVersion},visible=#{visible} WHERE id=#{id}</update>
+<update id="orderSection">UPDATE sr_portfolio_section SET sort_order=#{sortOrder} WHERE id=#{id}</update>
+<delete id="deleteSection">DELETE FROM sr_portfolio_section WHERE id=#{id}</delete>
+<select id="sectionMedia" resultType="com.starrainnotes.portfolio.entity.WorkSectionMediaEntity">SELECT id,section_id,media_asset_id,caption,sort_order FROM sr_portfolio_section_media WHERE section_id=#{sectionId} ORDER BY sort_order,id</select>
+<insert id="insertSectionMedia" useGeneratedKeys="true" keyProperty="id">INSERT INTO sr_portfolio_section_media(section_id,media_asset_id,caption,sort_order) VALUES(#{sectionId},#{mediaAssetId},#{caption},#{sortOrder})</insert>
+<delete id="clearSectionMedia">DELETE FROM sr_portfolio_section_media WHERE section_id=#{sectionId}</delete>
+</mapper>

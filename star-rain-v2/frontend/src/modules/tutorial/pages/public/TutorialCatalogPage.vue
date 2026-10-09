@@ -1,4 +1,9 @@
 <script setup>
+import PublicSearch from '../../../../shared/ui/PublicSearch.vue'
+import PublicFilterBar from '../../../../shared/ui/PublicFilterBar.vue'
+import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
+import { publicPage, publicPageSize, sizeQuery } from '../../../../shared/composables/publicListState'
+
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { listPublicCategories, listPublicTutorials } from '../../api/tutorialApi'
@@ -9,8 +14,10 @@ const route = useRoute()
 const router = useRouter()
 const categories = ref([])
 const allTutorials = ref([])
-const selectedSlug = ref('')
-const search = ref('')
+const selectedSlug = ref(String(route.query.categorySlug || ''))
+const search = ref(String(route.query.q || ''))
+const page = computed(() => publicPage(route.query.page))
+const pageSize = computed(() => publicPageSize(route.query.pageSize))
 const loading = ref(true)
 const error = ref('')
 
@@ -34,12 +41,18 @@ const categoryTutorials = computed(() => selectedCategory.value
   ? allTutorials.value.filter((item) => item.categoryId === selectedCategory.value.id)
   : allTutorials.value)
 
-const displayed = computed(() => {
-  const keyword = search.value.trim().toLocaleLowerCase()
+const filtered = computed(() => {
+  const keyword = String(route.query.q || '').trim().toLocaleLowerCase()
   return keyword
     ? categoryTutorials.value.filter((item) => `${item.title} ${item.summary || ''}`.toLocaleLowerCase().includes(keyword))
     : categoryTutorials.value
 })
+
+const displayed = computed(() => filtered.value.slice((page.value - 1) * pageSize.value, page.value * pageSize.value))
+function changePage(next) { router.push({ query: { ...route.query, page: next > 1 ? String(next) : undefined } }) }
+function changeSize(size) { router.push({ query: sizeQuery(route.query, size, 12) }) }
+function searchTutorials(value) { router.push({ query: { ...route.query, q: value || undefined, page: undefined } }) }
+function resetFilters() { router.push({ query: { pageSize: route.query.pageSize } }) }
 
 function categoryCount(category) {
   if (typeof category.tutorialCount === 'number') return category.tutorialCount
@@ -65,13 +78,9 @@ async function load() {
   finally { loading.value = false }
 }
 
-function selectCategory(slug) {
-  selectedSlug.value = slug
-  search.value = ''
-  router.replace({ query: slug ? { categorySlug: slug } : {} })
-}
-
-watch(() => route.query.categorySlug, (value) => { selectedSlug.value = typeof value === 'string' ? value : '' })
+function selectCategory(slug) { router.push({ query: { ...route.query, categorySlug: slug || undefined, page: undefined } }) }
+watch(() => route.query, () => { selectedSlug.value = String(route.query.categorySlug || ''); search.value = String(route.query.q || '') }, { immediate: true })
+watch([filtered, pageSize], () => { if (!loading.value && page.value > Math.max(1, Math.ceil(filtered.value.length / pageSize.value))) changePage(1) })
 onMounted(load)
 </script>
 
@@ -138,12 +147,10 @@ onMounted(load)
             <h2>{{ selectedCategory?.name || '全部教程' }}</h2>
             <p>共 {{ categoryTutorials.length }} 门可学习教程</p>
           </div>
-          <label class="tutorial-catalog__search">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-            <input v-model="search" type="search" placeholder="筛选当前教程" aria-label="筛选当前教程" />
-          </label>
+
         </div>
 
+        <PublicFilterBar label="教程筛选" :total="filtered.length" unit="门教程" :active="Boolean(selectedSlug || route.query.q)" @reset="resetFilters"><PublicSearch v-model="search" label="筛选当前教程" placeholder="搜索教程标题或简介" @search="searchTutorials" /></PublicFilterBar>
         <p v-if="loading" class="tutorial-catalog__empty">正在加载教程…</p>
         <p v-else-if="error" class="tutorial-catalog__empty" role="alert">{{ error }}</p>
         <p v-else-if="!displayed.length" class="tutorial-catalog__empty">当前分类暂无匹配教程。</p>
@@ -171,6 +178,7 @@ onMounted(load)
             </div>
           </RouterLink>
         </div>
+        <PublicPagination :page="page" :page-size="pageSize" :total="filtered.length" :loading="loading" label="教程分页" unit="门" @change="changePage" @page-size="changeSize" />
       </main>
     </div>
   </section>

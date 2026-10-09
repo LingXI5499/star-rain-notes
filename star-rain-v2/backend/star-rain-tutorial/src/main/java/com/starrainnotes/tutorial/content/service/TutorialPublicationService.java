@@ -14,5 +14,4 @@ public interface TutorialPublicationService {
     PageResult<JsonNode> publicTutorials(Long categoryId, String search, int page, int pageSize);
     JsonNode publicTutorial(String slug);
     JsonNode publicChapter(String tutorialSlug, String chapterSlug);
-    JsonNode publicQuestionAnswer(String tutorialSlug, String chapterSlug, String questionId);
 }

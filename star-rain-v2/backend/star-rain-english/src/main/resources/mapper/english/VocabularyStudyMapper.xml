@@ -22,6 +22,8 @@
 
     <resultMap id="reviewHistoryMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyReviewHistoryRow">
         <id property="id" column="id"/>
+        <result property="rating" column="rating"/>
+        <result property="source" column="source"/>
         <result property="wordId" column="word_id"/>
         <result property="word" column="word"/>
         <result property="reviewNumber" column="review_number"/>
@@ -120,20 +122,22 @@
     -->
     <select id="summary" resultType="com.starrainnotes.english.vocabulary.vo.VocabularySummaryVO">
         SELECT COUNT(*) AS total,
-               COALESCE(SUM(CASE WHEN learning_status = 'ACTIVE' AND review_step >= #{maxStep}
+               COALESCE(SUM(CASE WHEN mastery_rank = 'MASTERED'
                                  THEN 1 ELSE 0 END), 0) AS completed,
-               COALESCE(SUM(CASE WHEN learning_status = 'ACTIVE' AND review_step &lt; #{maxStep}
+               COALESCE(SUM(CASE WHEN mastery_rank IS NULL OR mastery_rank != 'MASTERED'
                                  THEN 1 ELSE 0 END), 0) AS in_progress,
-               COALESCE(SUM(CASE WHEN learning_status = 'ACTIVE' AND next_review_at IS NOT NULL
-                                  AND next_review_at &lt;= #{now}
+               COALESCE(SUM(CASE WHEN EXISTS (SELECT 1 FROM sr_english_vocabulary_mode_memory mm
+                                  WHERE mm.account_id = #{accountId} AND mm.word_id = sr_english_vocabulary_memory.word_id
+                                  AND mm.next_review_at &lt;= #{now})
                                  THEN 1 ELSE 0 END), 0) AS due_for_review
         FROM sr_english_vocabulary_memory
         WHERE account_id = #{accountId}
     </select>
 
     <select id="dueCount" resultType="long">
-        SELECT COUNT(*) FROM sr_english_vocabulary_memory
-        WHERE account_id = #{accountId} AND learning_status = 'ACTIVE' AND next_review_at &lt;= #{now}
+        SELECT COUNT(DISTINCT word_id) FROM sr_english_vocabulary_mode_memory mm
+        WHERE account_id = #{accountId} AND next_review_at &lt;= #{now}
+        AND EXISTS (SELECT 1 FROM sr_english_vocabulary_word w WHERE w.id = mm.word_id)
     </select>
 
     <select id="dueWordIds" resultType="long">
@@ -258,6 +262,14 @@
         SELECT COUNT(*) FROM sr_english_vocabulary_word WHERE id = #{wordId}
     </select>
 
+    <insert id="calibrateLegacyMemory">
+        INSERT INTO sr_english_vocabulary_mode_memory(account_id, word_id, direction, next_review_at)
+        SELECT account_id, word_id, 'EN_TO_ZH', next_review_at FROM sr_english_vocabulary_memory
+        WHERE account_id=#{accountId} AND word_id=#{wordId}
+          AND first_rated_at IS NULL
+        ON DUPLICATE KEY UPDATE account_id=account_id
+    </insert>
+
     <!-- ==================== 复习日志 ==================== -->
 
     <select id="findReviewBySession" resultMap="reviewLogRowMap">
@@ -294,10 +306,10 @@
     </select>
 
     <select id="recentReviews" resultMap="reviewHistoryMap">
-        SELECT l.id, l.word_id, w.word, l.review_number, l.direction,
+        SELECT l.id, l.word_id, w.word, l.review_number, l.direction, l.rating, l.source,
                l.scheduled_at, l.reviewed_at, l.interval_seconds, l.timing_status
         FROM sr_english_vocabulary_review_log l
-        JOIN sr_english_vocabulary_word w ON w.id = l.word_id
+        LEFT JOIN sr_english_vocabulary_word w ON w.id = l.word_id
         WHERE l.account_id = #{accountId}
         ORDER BY l.reviewed_at DESC, l.id DESC
         LIMIT #{limit}

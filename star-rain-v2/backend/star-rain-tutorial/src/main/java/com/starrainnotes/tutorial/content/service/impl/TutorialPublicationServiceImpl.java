@@ -50,6 +50,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     private final TutorialChapterMapper chapterMapper;
     private final TutorialKnowledgeCardMapper cardMapper;
     private final TutorialQuestionMapper questionMapper;
+    private final com.starrainnotes.tutorial.content.mapper.TutorialQuestionCardMapper questionCardMapper;
     private final TutorialRevisionMapper revisionMapper;
     private final TutorialContentService contentService;
     private final CurrentActorApi currentActorApi;
@@ -129,11 +130,15 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
                 item.put("bodyMarkdown", chapter.getBodyMarkdown());
                 item.put("cards", cardMapper.listEnabledByChapterId(chapter.getId())
                         .stream().map(card -> Map.of("id", String.valueOf(card.getId()),
-                                "frontText", card.getFrontText(), "backMarkdown", card.getBackMarkdown())).toList());
+                                "frontText", card.getFrontText(), "backMarkdown", card.getBackMarkdown(),
+                                "contentVersion", card.getContentVersion() == null ? 1 : card.getContentVersion())).toList());
                 item.put("questions", questionMapper.listEnabledByChapterId(chapter.getId())
                         .stream().map(question -> Map.of("id", String.valueOf(question.getId()),
                                 "questionText", question.getQuestionText(),
-                                "referenceAnswer", question.getReferenceAnswer())).toList());
+                                "referenceAnswer", question.getReferenceAnswer(),
+                                "knowledgeCardIds", questionCardMapper.cardIds(question.getId()).stream().map(String::valueOf).toList())).toList());
+                item.put("cardCount", ((List<?>)item.get("cards")).size());
+                item.put("questionCount", ((List<?>)item.get("questions")).size());
                 chapterSnapshots.add(item);
             }
             chapterCount += chapterSnapshots.size();
@@ -287,6 +292,8 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         for (JsonNode group : detail.path("groups")) {
             for (JsonNode chapter : group.path("chapters")) {
                 ObjectNode item = (ObjectNode) chapter;
+                item.put("cardCount", item.path("cards").size());
+                item.put("questionCount", item.path("questions").size());
                 item.remove("bodyMarkdown");
                 item.remove("cards");
                 item.remove("questions");
@@ -305,15 +312,4 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return result;
     }
 
-    @Override
-    public JsonNode publicQuestionAnswer(String tutorialSlug, String chapterSlug, String questionId) {
-        JsonNode chapter = frozenChapter(publicSnapshot(tutorialSlug), chapterSlug);
-        for (JsonNode question : chapter.path("questions")) {
-            if (questionId.equals(question.path("id").asText())) {
-                Map<String, Object> result = Map.of("referenceAnswer", question.path("referenceAnswer").asText());
-                return objectMapper.valueToTree(result);
-            }
-        }
-        throw new TutorialNotFoundException();
-    }
 }

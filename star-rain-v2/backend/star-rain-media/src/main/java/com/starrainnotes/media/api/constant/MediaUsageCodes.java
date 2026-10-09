@@ -23,6 +23,8 @@ public final class MediaUsageCodes {
     public static final String PORTFOLIO_SCREENSHOT = "portfolio.screenshot";
     public static final String PORTFOLIO_AUDIO = "portfolio.audio";
     public static final String PORTFOLIO_ATTACHMENT = "portfolio.attachment";
+    public static final String PORTFOLIO_SECTION = "portfolio.section";
+    public static final String PORTFOLIO_PROTOTYPE = "portfolio.prototype";
 
     public static final String PROFILE_AVATAR = "profile.avatar";
     public static final String PROFILE_RESUME = "profile.resume";

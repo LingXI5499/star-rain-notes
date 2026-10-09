@@ -4,6 +4,9 @@ import com.starrainnotes.blog.api.BlogSearchSourceApi;
 import com.starrainnotes.blog.api.dto.BlogDocumentPage;
 import com.starrainnotes.blog.api.dto.BlogPostDocument;
 import com.starrainnotes.common.result.PageResult;
+import com.starrainnotes.english.api.EnglishSearchSourceApi;
+import com.starrainnotes.english.api.EnglishSearchTypes;
+import com.starrainnotes.english.api.dto.EnglishSearchDocument;
 import com.starrainnotes.portfolio.api.PortfolioPublicApi;
 import com.starrainnotes.portfolio.api.dto.PortfolioPublishedWork;
 import com.starrainnotes.profile.api.ProfilePublicApi;
@@ -39,12 +42,13 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
     private final SearchIndexApi index;
     private final SearchDocumentMapper mapper;
     private final SearchTextExtractor extractor;
+    private final EnglishSearchSourceApi english;
 
     @Override
     public long rebuild(String type) {
         if (type == null || type.isBlank()) rebuildAll();
         else {
-            if (!SearchIndexService.TYPES.contains(type)) throw new SearchTypeInvalidException();
+            if (!"ENGLISH".equals(type) && !SearchIndexService.TYPES.contains(type)) throw new SearchTypeInvalidException();
             rebuildType(type);
         }
         return mapper.activeCount();
@@ -57,12 +61,21 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         rebuildBlogs();
         rebuildWorks();
         rebuildProfile();
+        EnglishSearchTypes.ALL.forEach(this::rebuildEnglish);
     }
 
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void rebuildType(String type) {
+        if ("ENGLISH".equals(type)) {
+            EnglishSearchTypes.ALL.forEach(this::rebuildEnglish);
+            return;
+        }
         if (!SearchIndexService.TYPES.contains(type)) throw new IllegalArgumentException("Invalid search type");
+        if (EnglishSearchTypes.ALL.contains(type)) {
+            rebuildEnglish(type);
+            return;
+        }
         switch (type) {
             case "TUTORIAL", "CHAPTER" -> rebuildTutorials();
             case "BLOG" -> rebuildBlogs();
@@ -81,7 +94,7 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
     @Override
     public void indexWork(PortfolioPublishedWork work) {
         index.upsert(document("PORTFOLIO", work.getId(), work.getTitle(), work.getSummary(),
-            work.getBodyMarkdown(), "/portfolio/" + work.getSlug(), work.getPublishedAt(), work.getUpdatedAt()));
+            work.getSearchableText() == null ? work.getBodyMarkdown() : work.getSearchableText(), "/portfolio/" + work.getSlug(), work.getPublishedAt(), work.getUpdatedAt()));
     }
 
     private void rebuildBlogs() {
@@ -96,6 +109,35 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
             cursor = result.getNextCursor();
         } while (cursor != null);
         removeStale("BLOG", seen);
+    }
+
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void syncEnglish(String contentType, Long contentId) {
+        if (!EnglishSearchTypes.ALL.contains(contentType)) throw new SearchTypeInvalidException();
+        EnglishSearchDocument source = english.findPublished(contentType, contentId);
+        if (source == null) index.removeByContent(contentType, contentId);
+        else indexEnglish(source);
+    }
+
+    private void rebuildEnglish(String type) {
+        Set<String> seen = new HashSet<>();
+        Long cursor = null;
+        while (true) {
+            List<EnglishSearchDocument> batch = english.page(type, cursor, BATCH);
+            for (EnglishSearchDocument source : batch) {
+                indexEnglish(source);
+                seen.add(key(type, source.getId()));
+            }
+            if (batch.size() < BATCH) break;
+            cursor = batch.getLast().getId();
+        }
+        removeStale(type, seen);
+    }
+
+    private void indexEnglish(EnglishSearchDocument source) {
+        index.upsert(document(source.getContentType(), source.getId(), source.getTitle(), source.getSummary(),
+            source.getSearchableText(), source.getRoutePath(), source.getPublishedAt(), source.getUpdatedAt()));
     }
 
     private void rebuildTutorials() {

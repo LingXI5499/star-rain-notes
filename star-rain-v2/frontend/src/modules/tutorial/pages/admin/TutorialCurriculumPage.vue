@@ -128,6 +128,9 @@ function newChapter() {
 function editChapter(chapter) {
   router.push(`/useradmin/tutorials/${tutorialId.value}/chapters/${chapter.id}`)
 }
+function editLearningContent(chapter, kind) {
+  router.push(`/useradmin/tutorials/${tutorialId.value}/chapters/${chapter.id}/${kind}`)
+}
 
 onMounted(load)
 </script>
@@ -247,7 +250,9 @@ onMounted(load)
                 {{ chapter.status === 'PUBLISHED' ? '已公开' : chapter.status === 'WITHDRAWN' ? '已撤回' : '草稿' }}
               </span>
               <div class="curriculum-admin__chapter-actions">
-                <button type="button" @click="editChapter(chapter)">编辑</button>
+                <button type="button" @click="editChapter(chapter)">正文</button>
+                <button type="button" @click="editLearningContent(chapter, 'cards')">知识卡片</button>
+                <button type="button" @click="editLearningContent(chapter, 'questions')">章节问题</button>
                 <button type="button" @click="toggleChapter(chapter)">{{ chapter.status === 'PUBLISHED' ? '撤回' : '公开' }}</button>
                 <button type="button" @click="removeChapter(chapter)">删除</button>
               </div>

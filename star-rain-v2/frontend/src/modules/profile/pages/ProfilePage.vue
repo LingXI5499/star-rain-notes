@@ -359,10 +359,9 @@ onMounted(load)
             :key="item.id"
             :to="contentPath(item.url)"
             class="profile-page__work-card editorial-card public-interactive"
-            :class="{ 'is-primary': index === 0 }"
+            :class="{ 'is-primary': index === 0 && item.contentType === 'PORTFOLIO', 'is-text': item.contentType !== 'PORTFOLIO' }"
           >
-            <!-- V2 的 featuredContents 多数没有封面，用首字占位块补住视觉（V1 是 EditorialMotif） -->
-            <div class="profile-page__work-visual">
+            <div v-if="item.contentType === 'PORTFOLIO'" class="profile-page__work-visual">
               <img v-if="item.coverUrl" :src="item.coverUrl" :alt="item.title" :loading="index ? 'lazy' : 'eager'" />
               <span v-else aria-hidden="true">{{ (item.title || '作品').slice(0, 1) }}</span>
               <small>{{ { PORTFOLIO: 'PORTFOLIO', TUTORIAL: 'TUTORIAL', BLOG: 'JOURNAL' }[item.contentType] || 'WORK' }}</small>
@@ -371,7 +370,7 @@ onMounted(load)
               <small>{{ workLabels[item.contentType].category }} · {{ String(index + 1).padStart(2, '0') }}</small>
               <h3>{{ item.title }}</h3>
               <p v-if="item.summary" class="profile-page__work-summary">{{ item.summary }}</p>
-              <span>{{ workLabels[item.contentType].action }} →</span>
+              <span>{{ workLabels[item.contentType].action }} <i aria-hidden="true">→</i></span>
             </article>
           </RouterLink>
         </div>
@@ -724,6 +723,30 @@ onMounted(load)
   min-height: 330px;
 }
 
+.profile-page__work-card.is-text {
+  grid-template-columns: minmax(0, 1fr);
+  min-height: 230px;
+}
+
+.profile-page__work-card.is-text article { padding: clamp(24px, 3vw, 32px); }
+
+.profile-page__work-card.is-text h3 {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  font-size: clamp(21px, 2.2vw, 28px);
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.profile-page__work-card.is-text .profile-page__work-summary {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+}
+
 .profile-page__work-card > div { min-height: 200px; }
 
 .profile-page__work-card article {
@@ -764,13 +787,22 @@ onMounted(load)
   font-weight: 700;
 }
 
+.profile-page__work-card article i {
+  display: inline-block;
+  font-style: normal;
+  transition: transform 180ms ease;
+}
+
+.profile-page__work-card:hover article i,
+.profile-page__work-card:focus-visible article i { transform: translateX(4px); }
+
 .profile-page__work-card:hover {
   transform: translateY(-3px);
   border-color: var(--primary);
   box-shadow: var(--shadow-md);
 }
 
-/* 封面位：有图用图，没图用首字占位块（V2 的 featuredContents 常无 coverUrl） */
+/* 作品保留封面；博客和教程使用纯文字卡片。 */
 .profile-page__work-visual {
   position: relative;
   display: grid;
@@ -1007,6 +1039,7 @@ onMounted(load)
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .profile-page__work-card { transition: none; }
+  .profile-page__work-card,
+  .profile-page__work-card article i { transition: none; }
 }
 </style>

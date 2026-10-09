@@ -8,20 +8,14 @@ import BlogTagOverlay from './BlogTagOverlay.vue'
  * 博客列表 / 归档页的右侧固定栏。
  *
  * 三块，自上而下：
- *   TAGS    标签 —— 一条可以直接下滑的标签导航条；「标签筛选」开悬浮卡片（单/多标签 + 应用）
+ *   TAGS    标签 —— 可滚动的胶囊标签；「标签筛选」开悬浮卡片（单/多标签 + 应用）
  *   ARCHIVE 归档 —— 按年月筛选
  *   STATS   写作统计 —— 篇数 / 总字数 / 开始写作（含「已写 N 天」）
  *
  * 专栏（专题）**不在这里**：它已经提到页面顶部的专栏导航条（BlogColumnNav），
  * 同一份列表在右侧再列一遍只会让人分不清「专栏」和「标签」。
  *
- * 标签块按用户要求改过三次形态：
- *   1. 最早是「实测能放几行就显示几个 + 更多 → /blog/tags」——
- *      需要一套探针测量，且点「更多」会离开当前页；
- *   2. 改成**固定高度、可滚动**的标签导航条：全部标签都在里面，往下滑就能看到；
- *   3. 悬浮卡片从「点一下立刻筛选」改成「先选条件、点应用再筛选」（单标签 / 多标签两种模式）
- *      —— 用户反馈「一点击就直接跳转了…太突兀」。
- * 去掉探针后也顺手消掉了「探针撑出横向滚动」这个隐患（见 git 历史里的 3797px 事故）。
+ * 标签按胶囊形态换行展示，固定高度内可滚动；悬浮卡片先选条件再应用。
  *
  * 归档块仍是最多 6 个月 + 更多 → /blog/archive（用户没有对它提要求，保持原样）。
  */
@@ -80,7 +74,7 @@ function isActiveTag(slug) {
   return props.activeTags.includes(slug)
 }
 
-// 导航条：点一行 = 单标签筛选（再点同一行取消）
+// 点胶囊 = 单标签筛选（再点同一个取消）
 function toggleTag(slug) {
   emit('select-tag', isActiveTag(slug) ? '' : slug)
 }
@@ -105,21 +99,23 @@ function toggleMonth(item) {
         <small>{{ tags.length }} 个标签</small>
       </div>
       <nav class="blog-panel__tag-nav" aria-label="博客标签导航">
-        <button type="button" :class="{ active: !activeTags.length }" @click="emit('apply-tags', [])">全部</button>
         <button type="button" class="blog-panel__tag-all" @click="tagsOpen = true">标签筛选</button>
       </nav>
       <p v-if="!tags.length" class="blog-panel__empty">还没有可用标签。</p>
-      <!-- 可直接下滑的标签导航条：全部标签都在里面，高度固定，往下滑即可 -->
+      <!-- 胶囊标签在固定高度内换行，完整标签集可向下滚动。 -->
       <div v-else class="blog-panel__tag-list">
         <button
           v-for="tag in tags"
           :key="tag.id || tag.slug"
           type="button"
           :class="{ active: isActiveTag(tag.slug) }"
+          :aria-pressed="isActiveTag(tag.slug)"
+          :aria-label="`${tag.name}，${tag.postCount ?? 0} 篇博客`"
+          :title="`${tag.name} · ${tag.postCount ?? 0} 篇博客，点击${isActiveTag(tag.slug) ? '取消筛选' : '筛选'}`"
           @click="toggleTag(tag.slug)"
         >
-          <span class="blog-panel__tag-name"># {{ tag.name }}</span>
-          <em>{{ tag.postCount }}</em>
+          <span class="blog-panel__tag-name">{{ tag.name }}</span>
+          <em>{{ tag.postCount ?? 0 }}</em>
         </button>
       </div>
     </section>
@@ -182,7 +178,7 @@ function toggleMonth(item) {
 </template>
 
 <style scoped>
-.blog-panel__tag-nav { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.blog-panel__tag-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 
 .blog-panel__tag-nav button {
   padding: 5px 9px;
@@ -192,9 +188,9 @@ function toggleMonth(item) {
   background: var(--bg-surface);
   font-size: 12px;
   cursor: pointer;
+  white-space: nowrap;
 }
 
-.blog-panel__tag-nav button.active,
 .blog-panel__tag-nav button:hover { border-color: var(--primary); color: var(--primary); }
 
 .blog-panel__tag-all::after { margin-left: 4px; content: '↗'; font-size: 10px; }
@@ -255,16 +251,17 @@ function toggleMonth(item) {
 }
 
 /*
- * 可滚动的标签导航条。
+ * 可滚动的胶囊标签区。
  * 高度固定而不是跟着内容长：侧栏整体还有 max-height，标签块一长就会把归档与统计顶出视口。
  * 滚动条走细样式（与教程目录、文章目录一致），避免 Windows 上那条粗箭头滚动条。
  */
 .blog-panel__tag-list {
   display: flex;
-  /* 约 9 行可见：标签是这个侧栏的主要导航，太少一行行滑不方便 */
+  align-content: flex-start;
   max-height: 296px;
-  flex-direction: column;
-  gap: 2px;
+  padding: 3px;
+  flex-wrap: wrap;
+  gap: 7px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -287,20 +284,21 @@ function toggleMonth(item) {
 .blog-panel__tag-list::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 
 .blog-panel__tag-list button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
-  padding: 7px 9px;
-  border: 1px solid transparent;
-  border-radius: 9px;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 6px 10px 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
   color: var(--text-secondary);
-  background: transparent;
+  background: var(--bg-surface);
   cursor: pointer;
   font-size: 12px;
   text-align: left;
-  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
 .blog-panel__tag-name {
@@ -325,6 +323,57 @@ function toggleMonth(item) {
   border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.blog-panel__tag-list em {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.blog-panel__tag-list button.active {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border));
+  background: color-mix(in srgb, var(--primary) 11%, var(--bg-surface));
+}
+
+.blog-panel__tag-list button.active em {
+  color: var(--on-primary);
+  background: var(--primary);
+}
+
+.blog-panel__tag-list button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .blog-panel__tag-list button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px color-mix(in srgb, var(--primary) 12%, transparent);
+  }
+  .blog-panel__tag-list button:hover:not(.active) em {
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 12%, var(--bg-surface));
+  }
+}
+
+.blog-panel__tag-list button:active { transform: scale(0.97); }
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-panel__tag-list button,
+  .blog-panel__tag-list em { transition: none; }
+  .blog-panel__tag-list button:hover,
+  .blog-panel__tag-list button:active { transform: none; }
 }
 
 .blog-panel__more {

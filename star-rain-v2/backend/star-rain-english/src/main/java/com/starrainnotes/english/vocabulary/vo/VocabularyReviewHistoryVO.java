@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VocabularyReviewHistoryVO {
+    private String rating;
+    private String source;
 
     @JsonSerialize(using = ToStringSerializer.class)
     private Long id;

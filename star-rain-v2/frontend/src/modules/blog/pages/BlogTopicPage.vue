@@ -1,4 +1,6 @@
 <script setup>
+import { publicPage, publicPageSize, sizeQuery } from '../../../shared/composables/publicListState'
+
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { getPublicTopic } from '../api/blogApi'
@@ -27,7 +29,7 @@ const { contentPath } = useViewMode()
 const route = useRoute()
 const router = useRouter()
 
-const pageSize = 10
+const pageSize = computed(() => publicPageSize(route.query.pageSize, 10, [10, 20, 30, 50]))
 const topic = ref(null)
 const items = ref([])
 const total = ref(0)
@@ -36,7 +38,7 @@ const loading = ref(true)
 const errorText = ref('')
 const notFound = ref(false)
 
-const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize)))
+const totalPages = computed(() => Math.max(1, Math.ceil(total.value / pageSize.value)))
 const countText = computed(() => `${total.value} 篇文章`)
 // 两种「列表为空」不是一回事：翻到越界页码 vs 专题里真的没有文章。
 // 用同一句「暂时没有文章」会在第一页之外说假话。
@@ -48,9 +50,9 @@ async function load() {
   loading.value = true
   errorText.value = ''
   notFound.value = false
-  page.value = Math.max(Number(route.query.page) || 1, 1)
+  page.value = publicPage(route.query.page)
   try {
-    const detail = await getPublicTopic(route.params.slug, { page: page.value, pageSize })
+    const detail = await getPublicTopic(route.params.slug, { page: page.value, pageSize: pageSize.value })
     topic.value = detail.topic
     items.value = detail.posts?.items || []
     total.value = detail.posts?.total || 0
@@ -65,11 +67,13 @@ async function load() {
   }
 }
 
+function changeSize(size) { router.push({ query: sizeQuery(route.query, size, 10) }) }
+
 function goPage(next) {
   page.value = next
-  router.replace({
+  router.push({
     path: contentPath(`/blog/topics/${route.params.slug}`),
-    query: next > 1 ? { page: String(next) } : {},
+    query: { ...route.query, page: next > 1 ? String(next) : undefined },
   })
   const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
   window.scrollTo({ top: 0, behavior })
@@ -78,7 +82,7 @@ function goPage(next) {
 onMounted(load)
 
 // slug 或页码变了都重新拉：翻页走 replace，因此 query 变化就是唯一入口
-watch(() => [route.params.slug, route.query.page], load)
+watch(() => [route.params.slug, route.query.page, route.query.pageSize], load)
 </script>
 
 <template>
@@ -121,6 +125,9 @@ watch(() => [route.params.slug, route.query.page], load)
         :page="page"
         :total-pages="totalPages"
         :total="total"
+        :page-size="pageSize"
+        :loading="loading"
+        @page-size="changeSize"
         @change="goPage"
       />
     </template>

@@ -169,7 +169,7 @@ async function act(item, action) {
     if (action === 'publish') await publishTutorial(item.id)
     if (action === 'withdraw') await withdrawTutorial(item.id)
     if (action === 'delete') {
-      if (!await confirmDialog.value.ask(`确定删除教程「${item.title}」及其全部分组、章节和学习记录？此操作无法撤销。`)) return
+        if (!await confirmDialog.value.ask(`确定删除教程「${item.title}」及其全部分组、章节？未结束计划将取消，个人学习证据和答案版本保留。此操作无法撤销。`)) return
       await deleteTutorial(item.id)
     }
     notice.value = '操作成功。'

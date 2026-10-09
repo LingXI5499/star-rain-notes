@@ -50,6 +50,7 @@ public class VocabularyStudyQueryServiceImpl implements VocabularyStudyQueryServ
     public VocabularyStudySettingsVO settings(long accountId) {
         VocabularyStudySettingsVO stored = mapper.settings(accountId);
         if (stored != null) {
+            if ("MIXED".equals(stored.getReviewDirection())) { stored.setReviewDirection("EN_TO_ZH"); }
             return stored;
         }
         return VocabularyStudySettingsVO.builder()

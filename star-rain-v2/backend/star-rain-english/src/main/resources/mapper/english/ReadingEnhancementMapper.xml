@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.starrainnotes.english.reading.mapper.ReadingEnhancementMapper">
+ <sql id="table"><choose><when test="kind == 'alignments'">sr_english_reading_alignment</when><when test="kind == 'annotations'">sr_english_reading_annotation</when><otherwise>sr_english_reading_vocabulary</otherwise></choose></sql>
+ <sql id="columns">id,sort_order <choose><when test="kind == 'alignments'">,group_key,language,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,alignment_status AS status</when><when test="kind == 'annotations'">,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,annotation_status AS status,analysis_markdown</when><otherwise>,word,part_of_speech,meaning_zh</otherwise></choose></sql>
+ <select id="list" resultType="com.starrainnotes.english.reading.dto.ReadingEnhancementDto$Item">SELECT <include refid="columns"/> FROM <include refid="table"/> WHERE article_id=#{articleId} ORDER BY sort_order,id</select>
+ <select id="item" resultType="com.starrainnotes.english.reading.dto.ReadingEnhancementDto$Item">SELECT <include refid="columns"/> FROM <include refid="table"/> WHERE article_id=#{articleId} AND id=#{id}</select>
+ <update id="touch">UPDATE sr_english_reading_article SET row_version=row_version+1,updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{articleId} AND deleted_at IS NULL AND row_version=#{version}</update>
+ <update id="stale">UPDATE sr_english_reading_alignment SET alignment_status='STALE' WHERE article_id=#{articleId} AND language=#{language}</update>
+ <update id="staleAnnotations">UPDATE sr_english_reading_annotation SET annotation_status='STALE' WHERE article_id=#{articleId}</update>
+ <delete id="clear">DELETE FROM <include refid="table"/> WHERE article_id=#{articleId}</delete>
+ <insert id="insert" useGeneratedKeys="true" keyProperty="item.id">
+ INSERT INTO <include refid="table"/> (article_id,sort_order <choose><when test="kind == 'alignments'">,group_key,language,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,alignment_status</when><when test="kind == 'annotations'">,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,annotation_status,analysis_markdown</when><otherwise>,word,part_of_speech,meaning_zh</otherwise></choose>)
+ VALUES (#{articleId},#{item.sortOrder}<choose><when test="kind == 'alignments'">,#{item.groupKey},#{item.language},#{item.paragraphIndex},#{item.rangeStart},#{item.rangeEnd},#{item.expectedText},#{item.paragraphHash},#{item.sourceMarkdownHash},#{item.status}</when><when test="kind == 'annotations'">,#{item.paragraphIndex},#{item.rangeStart},#{item.rangeEnd},#{item.expectedText},#{item.paragraphHash},#{item.sourceMarkdownHash},#{item.status},#{item.analysisMarkdown}</when><otherwise>,#{item.word},#{item.partOfSpeech},#{item.meaningZh}</otherwise></choose>)
+ </insert>
+ <update id="update">UPDATE <include refid="table"/> SET sort_order=#{item.sortOrder}<choose><when test="kind == 'annotations'">,paragraph_index=#{item.paragraphIndex},range_start=#{item.rangeStart},range_end=#{item.rangeEnd},expected_text=#{item.expectedText},paragraph_hash=#{item.paragraphHash},source_markdown_hash=#{item.sourceMarkdownHash},annotation_status=#{item.status},analysis_markdown=#{item.analysisMarkdown}</when><otherwise>,word=#{item.word},part_of_speech=#{item.partOfSpeech},meaning_zh=#{item.meaningZh}</otherwise></choose> WHERE article_id=#{articleId} AND id=#{item.id}</update>
+ <delete id="delete">DELETE FROM <include refid="table"/> WHERE article_id=#{articleId} AND id=#{id}</delete>
+</mapper>

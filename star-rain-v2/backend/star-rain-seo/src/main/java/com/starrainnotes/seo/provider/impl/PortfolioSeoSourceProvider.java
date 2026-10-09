@@ -19,7 +19,7 @@ public class PortfolioSeoSourceProvider implements SeoSourceProvider {
     private final PortfolioPublicApi works;
 
     @Override
-    public boolean supports(String path) { return path != null && path.matches("/portfolio/[a-zA-Z0-9_-]{1,120}"); }
+    public boolean supports(String path) { return path != null && path.matches("/portfolio/[a-zA-Z0-9_-]{1,180}"); }
 
     @Override
     public Optional<SeoSourceDocument> loadByRoute(String path) {
@@ -41,7 +41,8 @@ public class PortfolioSeoSourceProvider implements SeoSourceProvider {
     private SeoSourceDocument document(PortfolioPublishedWork work) {
         return SeoSourceDocument.builder().routePath("/portfolio/" + work.getSlug())
             .contentType("PORTFOLIO").contentId(work.getId())
-            .title(work.getTitle()).summary(work.getSummary()).bodyMarkdown(work.getBodyMarkdown())
-            .updatedAt(work.getUpdatedAt()).build();
+            .title(work.getSeoTitle() == null || work.getSeoTitle().isBlank() ? work.getTitle() : work.getSeoTitle())
+            .summary(work.getSeoDescription() == null || work.getSeoDescription().isBlank() ? work.getSummary() : work.getSeoDescription()).bodyMarkdown(work.getBodyMarkdown())
+            .coverUrl(work.getCoverUrl()).updatedAt(work.getUpdatedAt()).build();
     }
 }

@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.english.vocabulary.mapper.VocabularyLearningMapper">
+    <sql id="planColumns">p.account_id,p.revision,p.status,p.name,p.source_theme_id,p.source_name,p.batch_size,p.total_words,p.created_at,p.updated_at</sql>
+    <sql id="modeColumns">word_id,direction,rating_count,ema_score,review_step,recent_good_count,last_rating,first_rated_at,last_rated_at,next_review_at,audio_verified</sql>
+    <sql id="wordFrom">
+        FROM sr_english_vocabulary_word w
+        LEFT JOIN sr_english_vocabulary_memory m ON m.account_id=#{accountId} AND m.word_id=w.id
+    </sql>
+    <sql id="filter">
+        <if test="f.themeId != null">AND w.theme_id=#{f.themeId}</if>
+        <if test="f.q != null and f.q != ''">AND (w.word LIKE CONCAT('%',#{f.q},'%') OR w.translation LIKE CONCAT('%',#{f.q},'%'))</if>
+        <if test="f.learned == 'YES'">AND (m.memory_count &gt; 0 OR m.first_rated_at IS NOT NULL)</if>
+        <if test="f.learned == 'NO'">AND COALESCE(m.memory_count,0)=0 AND m.first_rated_at IS NULL</if>
+        <if test="f.mastery == 'UNRATED'">AND m.first_rated_at IS NULL</if>
+        <if test="f.mastery != null and f.mastery != 'ANY' and f.mastery != 'UNRATED'">AND m.mastery_rank=#{f.mastery}</if>
+        <if test="f.inPlan == 'YES'">AND EXISTS (SELECT 1 FROM sr_english_vocabulary_plan_item pi WHERE pi.account_id=#{accountId} AND pi.word_id=w.id)</if>
+        <if test="f.inPlan == 'NO'">AND NOT EXISTS (SELECT 1 FROM sr_english_vocabulary_plan_item pi WHERE pi.account_id=#{accountId} AND pi.word_id=w.id)</if>
+        <if test="f.direction != 'ANY' or f.lastRating != 'ANY'">
+            AND EXISTS (SELECT 1 FROM sr_english_vocabulary_mode_memory mm WHERE mm.account_id=#{accountId} AND mm.word_id=w.id
+                <if test="f.direction != 'ANY'">AND mm.direction=#{f.direction}</if>
+                <if test="f.lastRating != 'ANY'">AND mm.last_rating=#{f.lastRating}</if>)
+        </if>
+    </sql>
+    <sql id="selection">
+        AND (
+            <choose>
+                <when test="s.selectAllMatched">
+                    (1=1 <include refid="filter"/>
+                    <if test="!s.excludedWordIds.isEmpty()">AND w.id NOT IN <foreach collection="s.excludedWordIds" item="id" open="(" close=")" separator=",">#{id}</foreach></if>)
+                </when>
+                <otherwise>1=0</otherwise>
+            </choose>
+            <if test="!s.wordIds.isEmpty()">OR w.id IN <foreach collection="s.wordIds" item="id" open="(" close=")" separator=",">#{id}</foreach></if>
+        )
+    </sql>
+    <insert id="ensureSlot">INSERT INTO sr_english_vocabulary_plan(account_id) VALUES(#{accountId}) ON DUPLICATE KEY UPDATE account_id=account_id</insert>
+    <select id="lockSlot" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$Plan">
+        SELECT <include refid="planColumns"/> FROM sr_english_vocabulary_plan p WHERE p.account_id=#{accountId} FOR UPDATE
+    </select>
+    <select id="plan" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$Plan">
+        SELECT <include refid="planColumns"/>,
+            (SELECT COALESCE(MAX(group_no),0) FROM sr_english_vocabulary_plan_item WHERE account_id=#{accountId}) AS total_groups,
+            (SELECT COALESCE(SUM(BIT_COUNT(done_mask)),0) FROM sr_english_vocabulary_plan_item WHERE account_id=#{accountId}) AS completed_ratings
+        FROM sr_english_vocabulary_plan p WHERE p.account_id=#{accountId}
+    </select>
+    <select id="defaultEntry" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$Entry">
+        SELECT word_id,group_no,sort_no,
+            CASE WHEN (done_mask &amp; 1)=0 THEN 'EN_TO_ZH' WHEN (done_mask &amp; 2)=0 THEN 'ZH_TO_EN' ELSE 'AUDIO_TO_BOTH' END AS direction
+        FROM sr_english_vocabulary_plan_item WHERE account_id=#{accountId} AND done_mask!=7
+        ORDER BY group_no, CASE WHEN (done_mask &amp; 1)=0 THEN 0 WHEN (done_mask &amp; 2)=0 THEN 1 ELSE 2 END,sort_no LIMIT 1
+    </select>
+    <select id="groups" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$GroupProgress">
+        SELECT group_no,COUNT(*) AS total,SUM((done_mask &amp; 1)!=0) AS en_to_zh,
+            SUM((done_mask &amp; 2)!=0) AS zh_to_en,SUM((done_mask &amp; 4)!=0) AS audio_to_both
+        FROM sr_english_vocabulary_plan_item WHERE account_id=#{accountId} AND group_no &gt; #{after}
+        GROUP BY group_no ORDER BY group_no LIMIT #{limit}
+    </select>
+    <select id="items" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$PlanItem">
+        SELECT pi.word_id,pi.sort_no,pi.group_no,pi.done_mask,pi.word_json,(w.id IS NULL) AS unavailable
+        FROM sr_english_vocabulary_plan_item pi LEFT JOIN sr_english_vocabulary_word w ON w.id=pi.word_id
+        WHERE pi.account_id=#{accountId} AND pi.sort_no &gt; #{after}
+        <if test="groupNo != null">AND pi.group_no=#{groupNo}</if>
+        ORDER BY pi.sort_no LIMIT #{limit}
+    </select>
+    <select id="item" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$PlanItem">
+        SELECT word_id,sort_no,group_no,done_mask,word_json FROM sr_english_vocabulary_plan_item WHERE account_id=#{accountId} AND word_id=#{wordId}
+    </select>
+    <delete id="clearItems">DELETE FROM sr_english_vocabulary_plan_item WHERE account_id=#{accountId}</delete>
+    <update id="replacePlan">
+        UPDATE sr_english_vocabulary_plan SET revision=revision+1,status='ACTIVE',name=#{plan.name},source_theme_id=#{plan.sourceThemeId},
+            source_name=#{plan.sourceName},batch_size=#{plan.batchSize},total_words=#{plan.totalWords},created_at=#{plan.createdAt},updated_at=#{plan.createdAt}
+        WHERE account_id=#{accountId}
+    </update>
+    <insert id="insertItems">
+        INSERT INTO sr_english_vocabulary_plan_item(account_id,word_id,sort_no,group_no,word_json) VALUES
+        <foreach collection="items" item="i" separator=",">(#{accountId},#{i.wordId},#{i.sortNo},#{i.groupNo},#{i.wordJson})</foreach>
+    </insert>
+    <update id="markDone">
+        UPDATE sr_english_vocabulary_plan_item SET done_mask=done_mask | #{bit},started_at=COALESCE(started_at,#{now}) WHERE account_id=#{accountId} AND word_id=#{wordId}
+    </update>
+    <update id="updatePlanStatus">
+        UPDATE sr_english_vocabulary_plan SET status=CASE WHEN EXISTS
+            (SELECT 1 FROM sr_english_vocabulary_plan_item WHERE account_id=#{accountId} AND done_mask!=7) THEN 'ACTIVE' ELSE 'COMPLETED' END,
+            updated_at=#{now} WHERE account_id=#{accountId}
+    </update>
+    <update id="cancelPlan">UPDATE sr_english_vocabulary_plan SET revision=revision+1,status='NONE',total_words=0,updated_at=#{now} WHERE account_id=#{accountId}</update>
+    <select id="lastStartedGroup" resultType="int">SELECT COALESCE(MAX(group_no),0) FROM sr_english_vocabulary_plan_item WHERE account_id=#{accountId} AND started_at IS NOT NULL</select>
+    <select id="firstRemainingSort" resultType="java.lang.Integer">SELECT MIN(sort_no) FROM sr_english_vocabulary_plan_item WHERE account_id=#{accountId} AND group_no &gt; #{frozen}</select>
+    <update id="regroup">UPDATE sr_english_vocabulary_plan_item SET group_no=#{frozen}+1+FLOOR((sort_no-#{firstSort})/#{batchSize}) WHERE account_id=#{accountId} AND group_no &gt; #{frozen}</update>
+    <update id="resize">UPDATE sr_english_vocabulary_plan SET batch_size=#{batchSize},revision=revision+1,updated_at=#{now} WHERE account_id=#{accountId}</update>
+    <select id="countWords" resultType="long">SELECT COUNT(*) <include refid="wordFrom"/> WHERE 1=1 <include refid="filter"/></select>
+    <select id="wordPage" resultType="long">SELECT w.id <include refid="wordFrom"/> WHERE 1=1 <include refid="filter"/> ORDER BY w.sort_order,w.id LIMIT #{limit} OFFSET #{offset}</select>
+    <select id="selected" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$SelectionRow">
+        <bind name="f" value="s"/>
+        SELECT w.id AS word_id,MD5(CONCAT_WS('|',w.id,w.theme_id,w.word,w.translation,COALESCE(w.scene_meaning,''),COALESCE(w.phonetic_us,''),COALESCE(w.phonetic_uk,''),COALESCE(w.inflections,''),COALESCE(w.examples,''),w.sort_order)) AS token
+        <include refid="wordFrom"/> WHERE w.id &gt; #{after} <include refid="selection"/> ORDER BY w.id LIMIT #{limit}
+    </select>
+    <select id="learnedCount" resultType="long">
+        SELECT COUNT(*) FROM sr_english_vocabulary_memory WHERE account_id=#{accountId} AND (memory_count &gt; 0 OR first_rated_at IS NOT NULL)
+        AND word_id IN <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+    </select>
+    <select id="states" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$State">
+        SELECT w.id AS word_id,COALESCE(m.memory_count,0) AS memory_count,COALESCE(m.mastery_score,0) AS mastery_score,
+            m.mastery_rank,m.first_rated_at,m.last_rated_at,m.last_reviewed_at,m.next_review_at,
+            COALESCE(m.learning_status,'NEW') AS learning_status,cp.display_mode,
+            EXISTS(SELECT 1 FROM sr_english_vocabulary_plan_item pi WHERE pi.account_id=#{accountId} AND pi.word_id=w.id) AS in_plan
+        <include refid="wordFrom"/>
+        LEFT JOIN sr_english_vocabulary_card_preference cp ON cp.account_id=#{accountId} AND cp.word_id=w.id
+        WHERE w.id IN <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach>
+    </select>
+    <select id="modes" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$ModeMemory">
+        SELECT <include refid="modeColumns"/> FROM sr_english_vocabulary_mode_memory WHERE account_id=#{accountId}
+        AND word_id IN <foreach collection="ids" item="id" open="(" close=")" separator=",">#{id}</foreach> ORDER BY word_id,direction
+    </select>
+    <insert id="initializeMemory">
+        INSERT INTO sr_english_vocabulary_memory(account_id,word_id,learning_status,first_learned_at) VALUES(#{accountId},#{wordId},'ACTIVE',#{now})
+        ON DUPLICATE KEY UPDATE account_id=account_id
+    </insert>
+    <select id="lockMemory" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$State">
+        SELECT word_id,memory_count,mastery_score,mastery_rank,first_rated_at,last_rated_at FROM sr_english_vocabulary_memory WHERE account_id=#{accountId} AND word_id=#{wordId} FOR UPDATE
+    </select>
+    <insert id="saveMode">
+        INSERT INTO sr_english_vocabulary_mode_memory(account_id,word_id,direction,rating_count,ema_score,review_step,recent_good_count,last_rating,first_rated_at,last_rated_at,next_review_at,audio_verified)
+        VALUES(#{accountId},#{mode.wordId},#{mode.direction},#{mode.ratingCount},#{mode.emaScore},#{mode.reviewStep},#{mode.recentGoodCount},#{mode.lastRating},#{mode.firstRatedAt},#{mode.lastRatedAt},#{mode.nextReviewAt},#{mode.audioVerified})
+        ON DUPLICATE KEY UPDATE rating_count=VALUES(rating_count),ema_score=VALUES(ema_score),review_step=VALUES(review_step),recent_good_count=VALUES(recent_good_count),last_rating=VALUES(last_rating),
+            first_rated_at=VALUES(first_rated_at),last_rated_at=VALUES(last_rated_at),next_review_at=VALUES(next_review_at),audio_verified=VALUES(audio_verified)
+    </insert>
+    <insert id="addDay">INSERT INTO sr_english_vocabulary_rating_day(account_id,word_id,rating_day,direction) VALUES(#{accountId},#{wordId},#{day},#{direction}) ON DUPLICATE KEY UPDATE account_id=account_id</insert>
+    <select id="days" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$DayCounts">
+        SELECT COUNT(DISTINCT rating_day) AS total,COUNT(DISTINCT CASE WHEN rating_day BETWEEN #{start} AND #{end} THEN rating_day END) AS recent
+        FROM sr_english_vocabulary_rating_day WHERE account_id=#{accountId} AND word_id=#{wordId}
+    </select>
+    <update id="saveMastery">
+        UPDATE sr_english_vocabulary_memory SET memory_count=memory_count+1,review_count=review_count+1,mastery_score=#{score},mastery_rank=#{rank},
+            first_rated_at=COALESCE(first_rated_at,#{now}),last_rated_at=#{now},last_rating=#{rating},last_reviewed_at=#{now},last_memory_at=#{now},learning_status='ACTIVE',version=version+1,
+            next_review_at=(SELECT MIN(next_review_at) FROM sr_english_vocabulary_mode_memory WHERE account_id=#{accountId} AND word_id=#{wordId})
+        WHERE account_id=#{accountId} AND word_id=#{wordId}
+    </update>
+    <update id="exitConsolidation">
+        UPDATE sr_english_vocabulary_mode_memory SET review_step=13,next_review_at=LEAST(next_review_at,#{cap}) WHERE account_id=#{accountId} AND word_id=#{wordId} AND review_step=14
+    </update>
+    <select id="log" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$RatingLog">
+        SELECT word_id,review_session_id,direction,rating,source,plan_revision,audio_played,old_step,new_step,old_score,new_score,review_number,scheduled_at,reviewed_at,interval_seconds,timing_status,result_json
+        FROM sr_english_vocabulary_review_log WHERE account_id=#{accountId} AND review_session_id=#{sessionId} FOR UPDATE
+    </select>
+    <insert id="insertLog">
+        INSERT INTO sr_english_vocabulary_review_log(account_id,word_id,review_session_id,direction,rating,source,plan_revision,audio_played,old_step,new_step,old_score,new_score,review_number,scheduled_at,reviewed_at,interval_seconds,timing_status)
+        VALUES(#{accountId},#{log.wordId},#{log.reviewSessionId},#{log.direction},#{log.rating},#{log.source},#{log.planRevision},#{log.audioPlayed},#{log.oldStep},#{log.newStep},#{log.oldScore},#{log.newScore},#{log.reviewNumber},#{log.scheduledAt},#{log.reviewedAt},#{log.intervalSeconds},#{log.timingStatus})
+    </insert>
+    <!-- Result is written before the same transaction commits; it never changes after commit. -->
+    <update id="saveLogResult">UPDATE sr_english_vocabulary_review_log SET result_json=#{json} WHERE account_id=#{accountId} AND review_session_id=#{sessionId} AND result_json IS NULL</update>
+    <select id="due" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$ModeMemory">
+        SELECT <include refid="modeColumns"/> FROM sr_english_vocabulary_mode_memory mm
+        WHERE account_id=#{accountId} AND next_review_at &lt;= #{cursor.asOf}
+            AND EXISTS(SELECT 1 FROM sr_english_vocabulary_word w WHERE w.id=mm.word_id)
+        <if test="cursor.dueAt != null">
+            AND (next_review_at &gt; #{cursor.dueAt} OR (next_review_at=#{cursor.dueAt} AND word_id &gt; #{cursor.wordId})
+            OR (next_review_at=#{cursor.dueAt} AND word_id=#{cursor.wordId} AND direction &gt; #{cursor.direction}))
+        </if>
+        ORDER BY next_review_at,word_id,direction LIMIT #{limit}
+    </select>
+    <select id="reviewSummary" resultType="com.starrainnotes.english.vocabulary.learning.VocabularyLearningModels$ReviewSummary">
+        SELECT COUNT(*) AS due_cards,COUNT(DISTINCT word_id) AS due_words,
+            COALESCE(SUM(next_review_at &lt; #{today}),0) AS overdue_cards,MIN(next_review_at) AS earliest_due_at,
+            (SELECT COUNT(*) FROM sr_english_vocabulary_review_log WHERE account_id=#{accountId} AND reviewed_at &gt;= #{today} AND rating IS NOT NULL) AS completed_today
+        FROM sr_english_vocabulary_mode_memory mm WHERE account_id=#{accountId} AND next_review_at &lt;= #{now}
+        AND EXISTS(SELECT 1 FROM sr_english_vocabulary_word w WHERE w.id=mm.word_id)
+    </select>
+</mapper>

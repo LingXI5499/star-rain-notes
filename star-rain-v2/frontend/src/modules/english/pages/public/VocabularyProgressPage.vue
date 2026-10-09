@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { errorMessage } from '../../../../shared/http'
 import { useViewMode } from '../../../../shared/viewMode'
@@ -10,7 +10,7 @@ import {
   vocabularyStudyStorage,
 } from '../../api/englishApi'
 import { directionLabel, intervalLabel } from '../../lib/vocabularyDisplay'
-import { REVIEW_INTERVAL_SECONDS } from '../../lib/vocabularyStudyStorage'
+const REVIEW_INTERVAL_SECONDS = [300, 1200, 3600, 14400, 43200, 86400, 172800, 259200, 432000, 604800, 864000, 1209600, 1814400, 2419200]
 
 /*
  * 学习进度页。
@@ -29,13 +29,6 @@ const account = ref(false)
 const transferMessage = ref('')
 const transferError = ref('')
 const importing = ref(false)
-
-const curvePoints = computed(() => {
-  const max = Math.log10(REVIEW_INTERVAL_SECONDS[REVIEW_INTERVAL_SECONDS.length - 1] ?? 1)
-  return REVIEW_INTERVAL_SECONDS
-    .map((seconds, index) => `${20 + index * 62},${180 - (Math.log10(seconds) / max) * 150}`)
-    .join(' ')
-})
 
 async function load() {
   loading.value = true
@@ -113,10 +106,10 @@ onMounted(load)
       <div>
         <p class="public-eyebrow">VOCABULARY PROGRESS</p>
         <h1>单词学习进度</h1>
-        <span>这里展示计划间隔与真实完成记录，不把它伪装成记忆保持率。</span>
+        <span>这里展示真实评价历史。学习计划与永久记忆独立保存；旧记录不补造自评成绩。</span>
       </div>
       <div class="progress__nav">
-        <RouterLink :to="contentPath('/english/vocabulary/study')">今日学习</RouterLink>
+        <RouterLink :to="contentPath('/english/vocabulary/study')">今日背单词</RouterLink>
         <RouterLink :to="contentPath('/english/vocabulary')">词汇总览</RouterLink>
       </div>
     </header>
@@ -125,7 +118,7 @@ onMounted(load)
     <p v-else-if="error" class="progress__state" role="alert">{{ error }} <button type="button" @click="load">重试</button></p>
     <template v-else-if="progress">
       <div class="progress__stats">
-        <article><strong>{{ progress.activeWords }}</strong><span>计划内单词</span></article>
+        <article><strong>{{ progress.activeWords }}</strong><span>记忆档案单词</span></article>
         <article><strong>{{ progress.dueWords }}</strong><span>当前到期</span></article>
         <article><strong>{{ progress.completedToday }}</strong><span>今日完成</span></article>
         <article><strong>{{ progress.totalReviews }}</strong><span>累计复习</span></article>
@@ -133,21 +126,9 @@ onMounted(load)
 
       <section class="progress__curve">
         <div>
-          <h2>固定复习间隔曲线</h2>
-          <p>完成次数越多，下次复习间隔逐级延长；这是计划，不是记忆保持率。</p>
+          <h2>动态强化复习间隔</h2>
+          <p>每个方向独立演进：忘记回到 5 分钟，模糊回退两级。未毕业最长 28 天；跨日达到出神入化后固定 35 天。具体间隔为产品经验参数。</p>
         </div>
-        <svg viewBox="0 0 620 210" role="img" aria-label="十阶段计划复习间隔折线">
-          <line x1="20" y1="180" x2="600" y2="180" />
-          <polyline :points="curvePoints" />
-          <circle
-            v-for="(seconds, index) in REVIEW_INTERVAL_SECONDS"
-            :key="seconds"
-            :cx="20 + index * 62"
-            :cy="Number(curvePoints.split(' ')[index].split(',')[1])"
-            r="4"
-          />
-          <text v-for="(seconds, index) in REVIEW_INTERVAL_SECONDS" :key="`t-${seconds}`" :x="20 + index * 62" y="202">{{ index + 1 }}</text>
-        </svg>
         <div class="progress__intervals">
           <span v-for="(seconds, index) in REVIEW_INTERVAL_SECONDS" :key="`i-${seconds}`">{{ index + 1 }} · {{ intervalLabel(seconds) }}</span>
         </div>
@@ -159,7 +140,7 @@ onMounted(load)
         <article v-for="item in progress.recentReviews" :key="item.id ?? item.reviewSessionId" class="progress__row">
           <div>
             <strong>{{ item.word ?? `单词 #${item.wordId}` }}</strong>
-            <span>第 {{ item.reviewNumber }} 次 · {{ directionLabel(item.direction) }}</span>
+            <span>第 {{ item.reviewNumber }} 次 · {{ directionLabel(item.direction) }} · {{ { FORGOT: '忘记', UNCERTAIN: '模糊', KNOW: '掌握' }[item.rating] || '历史记录（无评分）' }}</span>
           </div>
           <div>
             <time>{{ formatTime(item.reviewedAt) }}</time>

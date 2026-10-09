@@ -82,6 +82,10 @@ function scrollToTop() {
 
       <div class="site-footer__legal">
         <p>© {{ year }} {{ branding.siteName }} · Built with Java &amp; Vue</p>
+        <nav class="site-footer__policies" aria-label="协议与政策">
+          <RouterLink :to="contentPath('/terms')">用户协议</RouterLink>
+          <RouterLink :to="contentPath('/privacy')">隐私政策</RouterLink>
+        </nav>
         <button type="button" aria-label="返回页面顶部" @click="scrollToTop">返回顶部 <span aria-hidden="true">↑</span></button>
       </div>
 
@@ -187,6 +191,9 @@ function scrollToTop() {
 }
 
 .site-footer__legal button:hover { color: var(--primary); }
+.site-footer__legal { flex-wrap: wrap; }
+.site-footer__policies { display: flex; flex-wrap: wrap; gap: 16px; color: var(--text-secondary); }
+.site-footer__policies a:hover { color: var(--primary); }
 
 .site-footer__icp {
   grid-column: 1 / -1;

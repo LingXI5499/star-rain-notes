@@ -7,7 +7,7 @@
  */
 
 export const DISPLAY_MODES = ['FOLLOW_GLOBAL', 'BILINGUAL', 'ENGLISH_ONLY', 'CHINESE_ONLY']
-export const REVIEW_DIRECTIONS = ['MIXED', 'EN_TO_ZH', 'ZH_TO_EN']
+export const REVIEW_DIRECTIONS = ['EN_TO_ZH', 'ZH_TO_EN', 'AUDIO_TO_BOTH']
 
 export function resolveVocabularyVisibility(mode, settings) {
   const effective = mode && mode !== 'FOLLOW_GLOBAL' ? mode : 'FOLLOW_GLOBAL'
@@ -33,6 +33,7 @@ export function globalDisplayMode(settings) {
 export function directionLabel(direction) {
   if (direction === 'EN_TO_ZH') return '英译中'
   if (direction === 'ZH_TO_EN') return '中译英'
+  if (direction === 'AUDIO_TO_BOTH') return '听音辨词'
   return direction === 'MIXED' ? '随机混合' : (direction || '')
 }
 

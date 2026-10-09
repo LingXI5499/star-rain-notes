@@ -23,7 +23,7 @@ import org.junit.jupiter.api.Test;
 
 class TutorialPublicationServiceImplTest {
     @Test
-    void publicResponsesKeepRevisionFrozenAndHideAnswerUntilRequested() {
+    void publicResponsesKeepRevisionFrozenAndDoNotExposeReferenceAnswers() {
         TutorialMapper tutorialMapper = mock(TutorialMapper.class);
         TutorialRevisionMapper revisionMapper = mock(TutorialRevisionMapper.class);
         TutorialEntity tutorial = new TutorialEntity();
@@ -40,7 +40,7 @@ class TutorialPublicationServiceImplTest {
         TutorialPublicationServiceImpl service = new TutorialPublicationServiceImpl(
                 tutorialMapper, mock(TutorialCategoryMapper.class), mock(TutorialGroupMapper.class),
                 mock(TutorialChapterMapper.class), mock(TutorialKnowledgeCardMapper.class),
-                mock(TutorialQuestionMapper.class), revisionMapper, mock(TutorialContentService.class),
+                mock(TutorialQuestionMapper.class), mock(com.starrainnotes.tutorial.content.mapper.TutorialQuestionCardMapper.class), revisionMapper, mock(TutorialContentService.class),
                 mock(CurrentActorApi.class), new ObjectMapper(),
                 mock(TutorialEventPublisher.class), mock(TutorialMediaReferences.class));
 
@@ -54,7 +54,7 @@ class TutorialPublicationServiceImplTest {
         assertThat(publicChapter.path("cards").get(0).path("frontText").asText()).isEqualTo("正面");
         assertThat(publicChapter.path("questions").get(0).has("referenceAnswer")).isFalse();
 
-        JsonNode answer = service.publicQuestionAnswer("java", "intro", "41");
-        assertThat(answer.path("referenceAnswer").asText()).isEqualTo("参考答案");
+        assertThat(curriculumChapter.path("cardCount").asInt()).isEqualTo(1);
+        assertThat(curriculumChapter.path("questionCount").asInt()).isEqualTo(1);
     }
 }

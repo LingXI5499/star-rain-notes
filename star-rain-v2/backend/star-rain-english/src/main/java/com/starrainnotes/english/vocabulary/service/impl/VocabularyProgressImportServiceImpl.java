@@ -108,6 +108,7 @@ public class VocabularyProgressImportServiceImpl implements VocabularyProgressIm
         mapper.importMemory(accountId, wordId, memoryCount, reviewStep, reviewCount,
                 firstLearnedAt == null ? now : firstLearnedAt, lastReviewedAt,
                 nextReviewAt == null ? now : nextReviewAt, lastMemoryAt, now);
+        mapper.calibrateLegacyMemory(accountId, wordId);
     }
 
     private void importReviewLog(long accountId,

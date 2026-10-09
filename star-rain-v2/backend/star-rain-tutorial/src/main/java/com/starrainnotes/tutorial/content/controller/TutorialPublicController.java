@@ -44,9 +44,4 @@ public class TutorialPublicController {
         return ApiResponse.ok(reading.chapter(slug, chapterSlug));
     }
 
-    @GetMapping("/tutorials/{slug}/chapters/{chapterSlug}/questions/{questionId}/answer")
-    public ApiResponse<JsonNode> answer(@PathVariable String slug, @PathVariable String chapterSlug,
-                                        @PathVariable String questionId) {
-        return ApiResponse.ok(publicationService.publicQuestionAnswer(slug, chapterSlug, questionId));
-    }
 }
