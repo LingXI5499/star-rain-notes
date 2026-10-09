@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.portfolio.mapper.WorkDetailMapper">
+
+  <sql id="columns">
+    id, work_id, work_type, detail_json, created_at, updated_at
+  </sql>
+
+  <!-- detail_json 为 JSON 列，由默认的 String 类型处理器按字符串写入与读回 -->
+  <insert id="insert" parameterType="com.starrainnotes.portfolio.entity.WorkDetailEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_portfolio_work_detail (work_id, work_type, detail_json)
+    VALUES (#{workId}, #{workType}, #{detailJson})
+  </insert>
+
+  <select id="selectByWorkId" resultType="com.starrainnotes.portfolio.entity.WorkDetailEntity">
+    SELECT <include refid="columns"/> FROM sr_portfolio_work_detail WHERE work_id = #{workId}
+  </select>
+
+  <!--
+    只改 detail_json：work_id 与 work_type 由 work detail 的唯一键与作品类型决定，更新路径不涉及。
+    updated_at 写回服务层实体里读出来的值，与原先 updateById 的行为一致。
+  -->
+  <update id="updateDetailJson" parameterType="com.starrainnotes.portfolio.entity.WorkDetailEntity">
+    UPDATE sr_portfolio_work_detail
+    SET detail_json = #{detailJson},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sr_portfolio_work_detail WHERE id = #{id}
+  </delete>
+</mapper>

@@ -1,0 +1,7 @@
+export const blockTypes = { MARKDOWN: '正文', IMAGE: '图片', GALLERY: '画廊', AUDIO: '音频', CODE: '代码', TIMELINE: '时间线', LINKS: '链接组', QUOTE: '引用', FEATURE_LIST: '功能列表', TECH_STACK: '技术栈', STATS: '成果数据', CUSTOM: '自定义正文' }
+export const itemFields = { TIMELINE: { date: '日期', title: '事件', description: '说明' }, LINKS: { label: '名称', url: '地址', description: '说明' }, FEATURE_LIST: { title: '功能', description: '说明' }, TECH_STACK: { name: '技术', group: '分组' }, STATS: { label: '指标', value: '数值' } }
+export const stageLabels = { IDEA: '构想中', PLANNING: '规划中', DEVELOPING: '开发中', COMPLETED: '已完成', MAINTAINING: '维护中', ARCHIVED: '已归档', ONLINE: '已上线' }
+export const linkTypes = { LIVE: '在线体验', GITHUB: 'GitHub', DOWNLOAD: '下载', VIDEO: '视频', DOC: '文档', OTHER: '其他', BILIBILI: '哔哩哔哩', DOUYIN: '抖音', DEMO: '演示', ARTICLE: '文章' }
+export function safeWorkUrl(value) { try { const url = new URL(value); return ['http:', 'https:'].includes(url.protocol) && !url.username && !url.password } catch { return false } }
+export function blockPayload(block) { return { sectionType: block.sectionType, title: block.title || '', content: block.content || '', data: block.data || {}, visible: block.visible !== false, blockVersion: 1, media: (block.media || []).map(item => ({ mediaAssetId: item.mediaAssetId, caption: item.caption || '' })) } }
+export function emptyBlock(type = 'MARKDOWN') { return { sectionType: type, title: '', content: '', data: itemFields[type] ? { items: [] } : {}, visible: true, media: [] } }

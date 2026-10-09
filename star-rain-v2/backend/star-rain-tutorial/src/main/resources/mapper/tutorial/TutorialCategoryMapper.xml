@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialCategoryMapper">
+
+  <sql id="columns">
+    id, name, slug, sort_order, created_at, updated_at
+  </sql>
+
+  <!-- created_at / updated_at 交给列默认值，与原先 insert 跳过 null 字段的行为一致 -->
+  <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialCategoryEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_tutorial_category (name, slug, sort_order)
+    VALUES (#{name}, #{slug}, #{sortOrder})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.tutorial.content.entity.TutorialCategoryEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_category WHERE id = #{id}
+  </select>
+
+  <select id="listOrdered" resultType="com.starrainnotes.tutorial.content.entity.TutorialCategoryEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_category ORDER BY sort_order, id
+  </select>
+
+  <select id="countBySlug" resultType="long">
+    SELECT COUNT(*) FROM sr_tutorial_category WHERE slug = #{slug}
+  </select>
+
+  <update id="updateName">
+    UPDATE sr_tutorial_category SET name = #{name}, updated_at = #{updatedAt} WHERE id = #{id}
+  </update>
+
+  <update id="updateSortOrder">
+    UPDATE sr_tutorial_category SET sort_order = #{sortOrder}, updated_at = #{updatedAt} WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sr_tutorial_category WHERE id = #{id}
+  </delete>
+</mapper>

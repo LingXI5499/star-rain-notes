@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.StudyTaskMapper">
+
+  <sql id="columns">
+    id, plan_id, account_id, tutorial_id, chapter_id, target_type, target_id,
+    task_date, sequence_no, status, generation_version,
+    started_at, completed_at, created_at, updated_at
+  </sql>
+
+  <!-- 计划全量重算时按唯一键 (plan_id, generation_version, target_type, target_id) 幂等补行 -->
+  <insert id="insertPlanned">
+    INSERT IGNORE INTO sr_study_task
+                (plan_id, account_id, tutorial_id, chapter_id, target_type, target_id,
+                 task_date, sequence_no, status, generation_version)
+            VALUES (#{planId}, #{accountId}, #{tutorialId}, #{chapterId}, 'CHAPTER',
+                    #{chapterId}, #{taskDate}, #{sequenceNo}, 'TODO', #{version})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.tutorial.learning.entity.StudyTaskEntity">
+    SELECT <include refid="columns"/> FROM sr_study_task WHERE id = #{id}
+  </select>
+
+  <select id="listByPlanId" resultType="com.starrainnotes.tutorial.learning.entity.StudyTaskEntity">
+    SELECT <include refid="columns"/> FROM sr_study_task
+    WHERE plan_id = #{planId}
+    ORDER BY task_date, sequence_no
+    LIMIT 1000
+  </select>
+
+  <select id="listCompletedByPlanId" resultType="com.starrainnotes.tutorial.learning.entity.StudyTaskEntity">
+    SELECT <include refid="columns"/> FROM sr_study_task
+    WHERE plan_id = #{planId} AND status = 'COMPLETED'
+    ORDER BY task_date, sequence_no
+  </select>
+
+  <!-- 今日任务：到期日不晚于今天且仍未结束 -->
+  <select id="listDueByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.StudyTaskEntity">
+    SELECT <include refid="columns"/> FROM sr_study_task
+    WHERE account_id = #{accountId} AND task_date &lt;= #{today}
+      AND status IN ('TODO', 'IN_PROGRESS', 'OVERDUE')
+    ORDER BY task_date, sequence_no
+    LIMIT 100
+  </select>
+
+  <update id="markOverdue">
+    UPDATE sr_study_task SET status = 'OVERDUE'
+            WHERE account_id = #{accountId} AND task_date &lt; #{today} AND status = 'TODO'
+  </update>
+
+  <update id="start">
+    UPDATE sr_study_task SET status = 'IN_PROGRESS', started_at = UTC_TIMESTAMP(3)
+            WHERE id = #{taskId} AND account_id = #{accountId}
+              AND status IN ('TODO', 'OVERDUE')
+  </update>
+
+  <update id="complete">
+    UPDATE sr_study_task SET status = 'COMPLETED', completed_at = UTC_TIMESTAMP(3)
+            WHERE id = #{taskId} AND account_id = #{accountId} AND status = 'IN_PROGRESS'
+  </update>
+
+  <update id="skip">
+    UPDATE sr_study_task SET status = 'SKIPPED'
+            WHERE id = #{taskId} AND account_id = #{accountId}
+              AND status IN ('TODO', 'IN_PROGRESS', 'OVERDUE')
+  </update>
+
+  <!-- 计划重算：未完成的任务作废，已完成的任务保留 -->
+  <delete id="deleteUnfinishedByPlanId">
+    DELETE FROM sr_study_task WHERE plan_id = #{planId} AND status &lt;&gt; 'COMPLETED'
+  </delete>
+
+  <!-- 结束计划：未完成的任务整体标记为跳过 -->
+  <update id="skipUnfinishedByPlanId">
+    UPDATE sr_study_task SET status = 'SKIPPED'
+            WHERE plan_id = #{planId} AND status IN ('TODO', 'IN_PROGRESS', 'OVERDUE')
+  </update>
+</mapper>

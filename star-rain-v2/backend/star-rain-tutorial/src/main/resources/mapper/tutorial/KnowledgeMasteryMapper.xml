@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.KnowledgeMasteryMapper">
+
+  <sql id="columns">
+    id, account_id, knowledge_card_id, system_suggested_level, user_self_level,
+    last_recall_rating, evidence_count, first_learned_at, last_evidence_at, created_at, updated_at
+  </sql>
+
+  <insert id="ensure">
+    INSERT IGNORE INTO sr_knowledge_mastery
+                (account_id, knowledge_card_id, system_suggested_level, evidence_count)
+            VALUES (#{accountId}, #{cardId}, 'L1', 0)
+  </insert>
+
+  <insert id="ensureLearned">
+    INSERT IGNORE INTO sr_knowledge_mastery
+                (account_id, knowledge_card_id, system_suggested_level, evidence_count, first_learned_at)
+            VALUES (#{accountId}, #{cardId}, 'L1', 0, UTC_TIMESTAMP(3))
+  </insert>
+
+  <update id="markLearned">
+    UPDATE sr_knowledge_mastery
+            SET first_learned_at = COALESCE(first_learned_at, UTC_TIMESTAMP(3))
+            WHERE account_id = #{accountId} AND knowledge_card_id = #{cardId}
+  </update>
+
+  <select id="selectByAccountIdAndCardId" resultType="com.starrainnotes.tutorial.learning.entity.KnowledgeMasteryEntity">
+    SELECT <include refid="columns"/> FROM sr_knowledge_mastery
+    WHERE account_id = #{accountId} AND knowledge_card_id = #{knowledgeCardId}
+  </select>
+
+  <select id="listByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.KnowledgeMasteryEntity">
+    SELECT <include refid="columns"/> FROM sr_knowledge_mastery
+    WHERE account_id = #{accountId}
+    ORDER BY updated_at DESC
+    LIMIT 1000
+  </select>
+
+  <!-- 复习完成后回写证据统计：updated_at 由列上的 ON UPDATE 维护 -->
+  <update id="updateEvidence">
+    UPDATE sr_knowledge_mastery
+            SET evidence_count = #{evidenceCount},
+                last_recall_rating = #{lastRecallRating},
+                last_evidence_at = #{lastEvidenceAt},
+                system_suggested_level = #{systemSuggestedLevel}
+            WHERE id = #{id}
+  </update>
+
+  <update id="updateSelfLevel">
+    UPDATE sr_knowledge_mastery SET user_self_level = #{userSelfLevel} WHERE id = #{id}
+  </update>
+</mapper>

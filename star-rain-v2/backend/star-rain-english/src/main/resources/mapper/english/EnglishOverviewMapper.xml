@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.english.overview.mapper.EnglishOverviewMapper">
+
+    <!-- 列清单在一处维护：resultType 依赖 map-underscore-to-camel-case 做列名到属性名的映射 -->
+    <sql id="columns">
+        id, title, subtitle, introduction, current_stage, roadmap_markdown, created_at, updated_at
+    </sql>
+
+    <!-- 表上有 CHECK (id = 1)，全表只有这一行；没有行时返回 null，由服务层抛 404 -->
+    <select id="selectSingleton" resultType="com.starrainnotes.english.overview.entity.EnglishOverviewEntity">
+        SELECT <include refid="columns"/> FROM sr_english_overview WHERE id = 1
+    </select>
+
+    <!--
+        subtitle / introduction / roadmap_markdown 允许被清空，无条件 SET 即「传 null 就写 NULL」。
+        current_stage 不在这条路径里：它由英语模块的学习阶段决定，编辑文案不应改动它。
+    -->
+    <update id="updateContent">
+        UPDATE sr_english_overview SET title=#{title},subtitle=#{subtitle},
+        introduction=#{introduction},roadmap_markdown=#{roadmapMarkdown},
+        updated_at=CURRENT_TIMESTAMP(3) WHERE id=1
+    </update>
+</mapper>

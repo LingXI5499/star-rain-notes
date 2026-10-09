@@ -1,0 +1,341 @@
+/*
+ * 公开站基础样式 —— 从 V1 `frontend/src/styles/base.css` 移植。
+ *
+ * 与 V1 的唯一差别是作用域：V1 把这份文件当全局重置用（公开站与后台同源），
+ * 而 V2 的后台与用户站已经有自己的一套重置（`src/styles/account.css`），
+ * 直接全局套用会顺手改掉后台的间距。因此这里统一收敛到 `.public-shell` 之下，
+ * 公开站的排版与 V1 一致，其它入口的既有视觉不受影响。
+ *
+ * highlight.js 的 `.hljs-*` 配色随渲染器一起补齐（见本文件末尾）。
+ * 那一段刻意**不带 .public-shell 前缀**：后台 Vditor 编辑区的代码块也用同一套
+ * hljs 类名，跟着主题令牌走才能深色/浅色都读得清。
+ */
+
+.public-shell *,
+.public-shell *::before,
+.public-shell *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.public-shell {
+  font-family: var(--font-family);
+  font-size: 16px;
+  line-height: 28px;
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.public-shell a {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.public-shell a:hover {
+  color: var(--primary-hover);
+}
+
+.public-shell h1,
+.public-shell h2,
+.public-shell h3,
+.public-shell h4 {
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.public-shell img {
+  max-width: 100%;
+  display: block;
+}
+
+.public-shell :focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* 触屏上的最小可点面积：只放开给公开站的控件，不动后台的表格按钮 */
+.public-shell button,
+.public-shell [role='button'] {
+  touch-action: manipulation;
+}
+
+/* ---------------------------------------------------------------
+   布局容器 —— 宽壳 / 窄正文 / 侧栏宽度都来自 tokens.css
+   --------------------------------------------------------------- */
+
+.public-shell .layout-shell {
+  max-width: var(--layout-max-width);
+  margin-inline: auto;
+  padding-inline: var(--page-padding-x);
+}
+
+.public-shell .layout-prose {
+  max-width: var(--content-max-width);
+  margin-inline: auto;
+  width: 100%;
+}
+
+.public-shell .container-marketing {
+  max-width: var(--container-marketing);
+  margin-inline: auto;
+  padding-inline: var(--page-padding-x);
+}
+
+.public-shell .container-content {
+  max-width: var(--container-content);
+  margin-inline: auto;
+  padding-inline: var(--page-padding-x);
+}
+
+/* ---------------------------------------------------------------
+   Markdown 正文（与 support/markdown.js 生成的标签一一对应）
+   --------------------------------------------------------------- */
+
+.public-shell .markdown-body {
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.public-shell .markdown-body h1,
+.public-shell .markdown-body h2,
+.public-shell .markdown-body h3,
+.public-shell .markdown-body h4,
+.public-shell .markdown-body h5,
+.public-shell .markdown-body h6 {
+  margin-top: var(--space-9);
+  margin-bottom: var(--space-4);
+  scroll-margin-top: calc(var(--header-height) + var(--space-4));
+}
+
+.public-shell .markdown-body h1 {
+  padding-bottom: var(--space-3);
+  border-bottom: 2px solid color-mix(in srgb, var(--primary) 50%, var(--border));
+  font-size: 36px;
+  line-height: 44px;
+}
+
+.public-shell .markdown-body h1:first-child {
+  margin-top: 0;
+}
+
+.public-shell .markdown-body h2 {
+  font-size: 32px;
+  line-height: 40px;
+}
+
+.public-shell .markdown-body h3 {
+  font-size: 24px;
+  line-height: 32px;
+}
+
+.public-shell .markdown-body h4 {
+  font-size: 20px;
+  line-height: 28px;
+}
+
+.public-shell .markdown-body h5 {
+  font-size: 17px;
+  line-height: 25px;
+}
+
+.public-shell .markdown-body h6 {
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 23px;
+}
+
+.public-shell .markdown-body p {
+  margin-bottom: var(--space-5);
+}
+
+.public-shell .markdown-body ul,
+.public-shell .markdown-body ol {
+  margin: 0 0 var(--space-5) var(--space-6);
+}
+
+.public-shell .markdown-body li {
+  margin-bottom: var(--space-2);
+}
+
+.public-shell .markdown-body blockquote {
+  position: relative;
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4) var(--space-5) var(--space-4) var(--space-4);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  background: color-mix(in srgb, var(--accent) 6%, transparent);
+  color: var(--text-secondary);
+}
+
+.public-shell .markdown-body blockquote::before {
+  content: '💡';
+  position: absolute;
+  top: var(--space-4);
+  right: var(--space-5);
+  font-size: 16px;
+}
+
+.public-shell .markdown-body a {
+  color: var(--primary);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.public-shell .markdown-body code {
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 0.9em;
+  background: var(--bg-subtle);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.public-shell .markdown-body pre {
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: var(--space-5);
+  overflow-x: auto;
+  margin: 0 0 var(--space-5);
+}
+
+.public-shell .markdown-body pre code {
+  background: none;
+  padding: 0;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.public-shell .markdown-body img {
+  border-radius: var(--radius-md);
+  margin: var(--space-5) 0;
+}
+
+.public-shell .markdown-body hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: var(--space-9) 0;
+}
+
+.public-shell .markdown-body table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-5);
+}
+
+.public-shell .markdown-body th,
+.public-shell .markdown-body td {
+  border: 1px solid var(--border);
+  padding: var(--space-2) var(--space-4);
+  text-align: left;
+}
+
+.public-shell .markdown-body th {
+  background: var(--bg-subtle);
+}
+
+.public-shell .markdown-body .blog-prose__empty {
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------------
+   highlight.js 令牌配色（从 V1 base.css 原样移植）
+   用设计令牌而不是某个 hljs 主题：前后台两套主题（data-theme）都自动生效，
+   也不需要额外引一份第三方主题 CSS。
+   --------------------------------------------------------------- */
+
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-literal {
+  color: var(--primary);
+}
+
+.hljs-string,
+.hljs-attr,
+.hljs-template-variable {
+  color: var(--accent);
+}
+
+.hljs-comment,
+.hljs-quote {
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+.hljs-number,
+.hljs-symbol,
+.hljs-bullet {
+  color: var(--warning);
+}
+
+.hljs-title,
+.hljs-section,
+.hljs-name {
+  color: var(--primary-hover);
+}
+
+.hljs-built_in,
+.hljs-type,
+.hljs-class .hljs-title {
+  color: var(--warning);
+}
+
+.hljs-meta,
+.hljs-keyword,
+.hljs-params {
+  color: var(--text-secondary);
+}
+
+.hljs-emphasis {
+  font-style: italic;
+}
+
+.hljs-strong {
+  font-weight: 700;
+}
+
+/* 小屏收窄横向内边距（只影响公开站） */
+@media (max-width: 768px) {
+  .public-shell {
+    --page-padding-x: 20px;
+  }
+
+  /*
+   * 刘海/挖孔屏安全区：V1 的 base.css 在 768px 以下把容器的左右内边距改成
+   * `max(16px, env(safe-area-inset-left))`，V2 之前只改了 `--page-padding-x` 这个令牌，
+   * 而公开页的实际容器是 `.page-container`（不走那个令牌），所以全面屏手机上正文会贴到圆角里。
+   * 这里按左右分别取安全区，语义与 V1 一致、比 V1 更准确（V1 左右都用了 left）。
+   */
+  .public-shell .page-container {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+
+  .public-shell button,
+  .public-shell a.public-button {
+    min-height: 44px;
+  }
+
+  /* 触摸屏没有真正的 hover：小屏上关掉卡片的位移抬升，避免点完残留悬停态。 */
+  .public-shell .tutorial-card:hover {
+    transform: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   无障碍：尊重系统的「减少动态效果」偏好（WCAG 2.3.3）
+   --------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .public-shell *,
+  .public-shell *::before,
+  .public-shell *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

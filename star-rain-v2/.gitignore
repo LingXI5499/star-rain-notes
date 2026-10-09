@@ -1,0 +1,23 @@
+backend/**/target/
+frontend/node_modules/
+frontend/dist/
+frontend/.vite/
+docs/
+.local/
+# 另一个协助工具（workbuddy）的工作目录：里面是它自己的会话笔记，不属于项目内容
+.workbuddy/
+**/application-local-secret.yml
+
+# 上传的媒体文件按用户要求放在前后端根目录同级，不进版本库
+/media/
+
+# Local handoff material and generated Python caches
+/star-rain-codex-v2/
+/*.md
+!/README.md
+!/CHANGELOG.md
+/*.png
+/*.jpg
+/*.webp
+**/__pycache__/
+*.pyc

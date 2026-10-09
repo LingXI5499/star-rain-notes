@@ -1,0 +1,48 @@
+.learning-page{max-width:1180px;margin:0 auto;padding:34px clamp(18px,4vw,56px) 70px;color:var(--text-primary)}
+.learning-page__heading{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
+.learning-page__heading small{display:block;color:var(--accent);font-size:11px;font-weight:800;letter-spacing:.14em}
+.learning-page__heading h1{font-size:clamp(30px,4vw,42px);margin:8px 0}
+.learning-page__heading p{color:var(--text-secondary);line-height:1.7;margin:0}
+.learning-nav{display:flex;gap:8px;flex-wrap:wrap;border-bottom:1px solid var(--border);padding-bottom:15px;margin-bottom:28px}
+.learning-nav a{padding:9px 15px;border:1px solid var(--border);border-radius:999px;color:var(--text-secondary);font-size:13px}
+.learning-nav a:hover,.learning-nav a.is-active{color:var(--primary);background:var(--bg-subtle);border-color:var(--primary)}
+.learning-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:28px}
+.learning-stat,.learning-panel,.learning-item{border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}
+.learning-stat{padding:22px;display:grid;gap:7px}.learning-stat strong{font-size:30px;color:var(--primary);line-height:1}.learning-stat span{font-size:13px;color:var(--text-muted)}
+.learning-columns{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(280px,1fr);gap:18px}.learning-panel{padding:24px;margin-bottom:18px;min-width:0}
+.learning-panel h2{font-size:20px;margin:0 0 6px}.learning-panel>p{margin:0 0 20px;color:var(--text-secondary);font-size:13px;line-height:1.65}
+.learning-list{list-style:none;margin:0;padding:0}.learning-list li{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:15px 0;border-top:1px solid var(--border)}
+.learning-list li:first-child{border-top:0}.learning-list strong{font-size:15px}.learning-list small{display:block;color:var(--text-muted);margin-top:5px;line-height:1.5}
+.learning-list a{color:var(--primary);font-size:13px;white-space:nowrap}.learning-list button,.learning-button{border:1px solid var(--border);border-radius:9px;padding:9px 14px;background:var(--bg-surface);color:var(--text-primary);font:inherit;cursor:pointer}
+.learning-list button:hover,.learning-button:hover{border-color:var(--primary);color:var(--primary)}.learning-button--primary{background:var(--primary);border-color:var(--primary);color:#fff}.learning-button--primary:hover{color:#fff;filter:brightness(1.1)}
+.learning-button:disabled,.learning-list button:disabled{opacity:.5;cursor:default}.learning-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.learning-button--primary:hover:not(:disabled){background:var(--primary);color:#fff}
+.learning-empty{padding:34px 15px;text-align:center;color:var(--text-muted);background:var(--bg-subtle);border-radius:12px;line-height:1.7}
+.learning-error,.learning-notice{padding:13px 16px;border-radius:10px;margin:0 0 18px;line-height:1.6}.learning-error{background:#fef1ed;color:#a8442d}.learning-notice{background:#eaf6ef;color:#216b48}
+.learning-form{display:grid;gap:16px}.learning-form label{display:grid;gap:7px;color:var(--text-secondary);font-size:13px}.learning-form input,.learning-form select,.learning-form textarea{width:100%;padding:11px 12px;border:1px solid var(--border);border-radius:9px;background:var(--bg-surface);color:var(--text-primary);font:inherit}.learning-form input:focus,.learning-form select:focus,.learning-form textarea:focus{outline:2px solid var(--primary);outline-offset:2px}
+.learning-form__row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.learning-weekdays{display:flex;flex-wrap:wrap;gap:8px}.learning-weekdays label{display:flex;gap:5px;align-items:center;padding:8px 11px;border:1px solid var(--border);border-radius:8px}.learning-weekdays input{width:auto}
+.learning-badge{display:inline-flex;align-items:center;border-radius:999px;background:var(--bg-subtle);padding:5px 9px;color:var(--text-secondary);font-size:12px}
+.learning-progress-track{height:7px;background:var(--bg-subtle);border-radius:99px;overflow:hidden}.learning-progress-track span{display:block;height:100%;background:var(--primary)}
+@media(max-width:950px){.learning-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.learning-columns{grid-template-columns:1fr}}
+@media(max-width:600px){.learning-page__heading{align-items:start;flex-direction:column}.learning-grid{gap:10px}.learning-stat{padding:16px}.learning-panel{padding:18px}.learning-form__row{grid-template-columns:1fr}.learning-list li{align-items:start;flex-direction:column}}
+
+/*
+ * 学习记录的按钮曾经只在控制台里渲染，控制台没有「所有 a 都是主色」这条全局规则，
+ * 所以单类名的 `.learning-button--primary{color:#fff}` 够用。
+ * 这五页搬到公开外壳（PublicShell）之后，`base.css` 里的 `.public-shell a`（0,2,0）
+ * 会盖掉单类名（0,1,0）的颜色声明 —— 于是主按钮变成「主色文字 + 主色背景」，
+ * 整颗按钮看起来是空的。这里用 `.learning-page a.xxx`（0,2,1）把按钮色收回来。
+ */
+.learning-page a.learning-button{color:var(--text-primary)}
+.learning-page a.learning-button:hover{border-color:var(--primary);color:var(--primary)}
+.learning-page a.learning-button--primary,
+.learning-page a.learning-button--primary:hover{background:var(--primary);border-color:var(--primary);color:#fff}
+
+.learning-check{display:flex!important;align-items:flex-start;gap:10px!important;padding:9px 0}.learning-check input{width:auto!important;margin-top:4px}.learning-check small{display:block;color:var(--text-muted)}
+.learning-scope{border:1px solid var(--border);border-radius:12px;padding:12px 18px}.learning-stage-nav{margin-bottom:20px}.learning-button[aria-pressed="true"]{border-color:var(--primary);background:var(--bg-subtle);color:var(--primary)}
+.learning-question{margin-top:22px;padding-top:20px;border-top:1px solid var(--border)}.learning-question h3{line-height:1.7}.learning-answer-text{white-space:pre-wrap;overflow-wrap:anywhere;font:inherit;line-height:1.8}.recall-session h2{margin:18px 0;line-height:1.7}.learning-form p{color:var(--text-muted);font-size:13px}.learning-page progress{max-width:100%;accent-color:var(--primary)}
+.learning-page button:focus-visible,.learning-page a:focus-visible,.learning-page summary:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+
+.learning-plan-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.learning-plan-card{display:flex;flex-direction:column;gap:14px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface);padding:24px;min-width:0}.learning-plan-card h2{font-size:20px;line-height:1.5;overflow-wrap:anywhere;margin:0}.learning-plan-card p{color:var(--text-secondary);font-size:13px;line-height:1.7;margin:0}.learning-plan-card .learning-actions{margin-top:auto;padding-top:6px}.learning-filter-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}.learning-pagination{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:12px;margin-top:24px;font-size:13px;color:var(--text-secondary)}.learning-pagination>span{margin-right:auto}.learning-pagination select{border:1px solid var(--border);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);padding:8px;font:inherit}.learning-history-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.learning-history-grid .learning-panel{margin:0}
+@media(max-width:950px){.learning-plan-grid,.learning-filter-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:600px){.learning-plan-grid,.learning-history-grid,.learning-filter-grid{grid-template-columns:1fr}}

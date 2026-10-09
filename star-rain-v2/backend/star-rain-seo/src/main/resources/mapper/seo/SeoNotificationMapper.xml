@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.seo.mapper.SeoNotificationMapper">
+    <!--
+        全项目其它 insert 都声明了 useGeneratedKeys，只有这条曾经漏掉，
+        导致入队后 SeoNotificationLog.id 恒为 null。当前唯一的调用方
+        （SeoNotificationService.enqueue）不读这个 id，所以没有线上影响；
+        但「enqueue 之后拿 log.getId() 去 claim」这种写法会静默失效（WHERE id = null → 0 行）。
+        补上属性即可，不改变任何现有行为。
+    -->
+    <insert id="enqueue" parameterType="com.starrainnotes.seo.entity.SeoNotificationLog"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_seo_notification_log(provider_code, route_path, canonical_url, change_type,
+            status, next_retry_at)
+        VALUES (#{providerCode}, #{routePath}, #{canonicalUrl}, #{changeType}, 'PENDING', CURRENT_TIMESTAMP(3))
+    </insert>
+    <select id="due" resultType="com.starrainnotes.seo.entity.SeoNotificationLog">
+        SELECT id, provider_code, route_path, canonical_url, change_type, status,
+            attempt_count, next_retry_at FROM sr_seo_notification_log
+        WHERE attempt_count &lt; 5 AND (
+            (status IN ('PENDING', 'FAILED') AND next_retry_at &lt;= #{now})
+            OR (status = 'PROCESSING' AND last_attempt_at &lt; DATE_SUB(#{now}, INTERVAL 5 MINUTE)))
+        ORDER BY created_at, id LIMIT #{limit}
+    </select>
+    <update id="claim">
+        UPDATE sr_seo_notification_log SET status = 'PROCESSING', attempt_count = attempt_count + 1,
+            last_attempt_at = #{now} WHERE id = #{id} AND attempt_count &lt; 5 AND (
+            (status IN ('PENDING', 'FAILED') AND next_retry_at &lt;= #{now}) OR (status = 'PROCESSING'
+                AND last_attempt_at &lt; DATE_SUB(#{now}, INTERVAL 5 MINUTE)))
+    </update>
+    <update id="success">
+        UPDATE sr_seo_notification_log SET status = 'SUCCESS', http_status = #{httpStatus},
+            last_error = NULL, next_retry_at = NULL WHERE id = #{id}
+    </update>
+    <update id="failure">
+        UPDATE sr_seo_notification_log SET status = 'FAILED', http_status = #{httpStatus},
+            last_error = #{error}, next_retry_at = #{nextRetryAt} WHERE id = #{id}
+    </update>
+</mapper>

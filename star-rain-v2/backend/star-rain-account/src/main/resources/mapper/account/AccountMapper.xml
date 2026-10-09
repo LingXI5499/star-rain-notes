@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.account.mapper.AccountMapper">
+
+    <sql id="accountColumns">
+        id, username, email, email_verified_at, display_name, status, auth_version, last_login_at, created_at
+    </sql>
+    <sql id="accountFilters">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                (username LIKE CONCAT('%', #{keyword}, '%')
+                 OR email LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="status != null and status != ''">
+                AND status = #{status}
+            </if>
+        </where>
+    </sql>
+    <sql id="auditFilters">
+        <where>
+            <if test="actor != null">actor_account_id = #{actor}</if>
+            <if test="target != null">AND target_account_id = #{target}</if>
+            <if test="action != null and action != ''">AND action_code = #{action}</if>
+            <if test="result != null and result != ''">AND result = #{result}</if>
+            <if test="start != null">AND created_at &gt;= #{start}</if>
+            <if test="end != null">AND created_at &lt;= #{end}</if>
+        </where>
+    </sql>
+
+    <select id="accountByIdentifier" resultType="com.starrainnotes.account.entity.AccountEntity">
+        SELECT <include refid="accountColumns"/> FROM sr_account
+        WHERE username = #{identifier} OR email = #{identifier}
+        LIMIT 1
+    </select>
+    <select id="accountById" resultType="com.starrainnotes.account.entity.AccountEntity">
+        SELECT <include refid="accountColumns"/> FROM sr_account WHERE id = #{id}
+    </select>
+    <select id="accountByIdForUpdate" resultType="com.starrainnotes.account.entity.AccountEntity">
+        SELECT <include refid="accountColumns"/> FROM sr_account WHERE id = #{id} FOR UPDATE
+    </select>
+    <select id="accountByEmail" resultType="com.starrainnotes.account.entity.AccountEntity">
+        SELECT <include refid="accountColumns"/> FROM sr_account WHERE email = #{email}
+    </select>
+    <select id="usernameCount" resultType="int">
+        SELECT COUNT(*) FROM sr_account WHERE username = #{username}
+    </select>
+    <select id="emailCount" resultType="int">
+        SELECT COUNT(*) FROM sr_account WHERE email = #{email}
+    </select>
+    <insert id="insertAccount" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_account(username, email, email_verified_at, display_name, status)
+        VALUES (#{username}, #{email}, #{emailVerifiedAt}, #{displayName}, #{status})
+    </insert>
+    <update id="verifyEmail">
+        UPDATE sr_account SET email_verified_at = UTC_TIMESTAMP(6)
+        WHERE id = #{accountId} AND email_verified_at IS NULL
+    </update>
+    <insert id="insertCredential">
+        INSERT INTO sr_account_credential(account_id, password_hash)
+        VALUES (#{accountId}, #{passwordHash})
+    </insert>
+    <select id="passwordHash" resultType="string">
+        SELECT password_hash FROM sr_account_credential WHERE account_id = #{accountId}
+    </select>
+    <update id="updatePassword">
+        UPDATE sr_account_credential
+        SET password_hash = #{passwordHash}, password_changed_at = CURRENT_TIMESTAMP(3)
+        WHERE account_id = #{accountId}
+    </update>
+    <update id="updateDisplayName">
+        UPDATE sr_account SET display_name = #{displayName} WHERE id = #{accountId}
+    </update>
+    <update id="updateLastLogin">
+        UPDATE sr_account SET last_login_at = CURRENT_TIMESTAMP(3) WHERE id = #{accountId}
+    </update>
+    <update id="incrementAuthVersion">
+        UPDATE sr_account SET auth_version = auth_version + 1 WHERE id = #{accountId}
+    </update>
+    <update id="incrementVersionsForRole">
+        UPDATE sr_account SET auth_version = auth_version + 1
+        WHERE id IN (SELECT account_id FROM sr_account_role WHERE role_id = #{roleId})
+    </update>
+    <update id="updateStatus">
+        UPDATE sr_account SET status = #{status}, auth_version = auth_version + 1
+        WHERE id = #{accountId}
+    </update>
+
+    <select id="roleByCode" resultType="com.starrainnotes.account.entity.RoleEntity">
+        SELECT id, code, name, description, status FROM sr_role WHERE code = #{code}
+    </select>
+    <select id="roleById" resultType="com.starrainnotes.account.entity.RoleEntity">
+        SELECT id, code, name, description, status FROM sr_role WHERE id = #{id}
+    </select>
+    <select id="allRoles" resultType="com.starrainnotes.account.entity.RoleEntity">
+        SELECT id, code, name, description, status FROM sr_role ORDER BY id
+    </select>
+    <select id="allPermissions" resultType="com.starrainnotes.account.entity.PermissionEntity">
+        SELECT id, code, resource, action, name, description, status
+        FROM sr_permission ORDER BY resource, action
+    </select>
+    <select id="roleCodes" resultType="string">
+        SELECT DISTINCT r.code FROM sr_account_role ar
+        JOIN sr_role r ON r.id = ar.role_id AND r.status = 'ENABLED'
+        WHERE ar.account_id = #{accountId}
+    </select>
+    <select id="permissionCodes" resultType="string">
+        SELECT DISTINCT p.code FROM sr_account_role ar
+        JOIN sr_role r ON r.id = ar.role_id AND r.status = 'ENABLED'
+        JOIN sr_role_permission rp ON rp.role_id = r.id
+        JOIN sr_permission p ON p.id = rp.permission_id AND p.status = 'ENABLED'
+        WHERE ar.account_id = #{accountId}
+    </select>
+    <select id="roleIds" resultType="long">
+        SELECT role_id FROM sr_account_role WHERE account_id = #{accountId}
+    </select>
+    <select id="permissionIdsForRole" resultType="long">
+        SELECT permission_id FROM sr_role_permission WHERE role_id = #{roleId}
+    </select>
+    <select id="activeSuperAdminCount" resultType="int">
+        SELECT COUNT(*) FROM sr_account_role ar
+        JOIN sr_role r ON r.id = ar.role_id AND r.code = 'SUPER_ADMIN'
+        JOIN sr_account a ON a.id = ar.account_id AND a.status = 'ACTIVE'
+    </select>
+    <select id="superAdminAssignmentCount" resultType="int">
+        SELECT COUNT(*) FROM sr_account_role ar
+        JOIN sr_role r ON r.id = ar.role_id AND r.code = 'SUPER_ADMIN'
+    </select>
+    <select id="lockSuperAdminRole" resultType="long">
+        SELECT id FROM sr_role WHERE code = 'SUPER_ADMIN' FOR UPDATE
+    </select>
+    <insert id="insertAccountRole">
+        INSERT IGNORE INTO sr_account_role(account_id, role_id, granted_by)
+        VALUES (#{accountId}, #{roleId}, #{grantedBy})
+    </insert>
+    <delete id="deleteAccountRoles">
+        DELETE FROM sr_account_role WHERE account_id = #{accountId}
+    </delete>
+    <delete id="deleteRolePermissions">
+        DELETE FROM sr_role_permission WHERE role_id = #{roleId}
+    </delete>
+    <insert id="insertRolePermission">
+        INSERT IGNORE INTO sr_role_permission(role_id, permission_id)
+        VALUES (#{roleId}, #{permissionId})
+    </insert>
+    <select id="permissionCount" resultType="int">
+        SELECT COUNT(*) FROM sr_permission WHERE id = #{id} AND status = 'ENABLED'
+    </select>
+    <select id="rolePermissionCount" resultType="int">
+        SELECT COUNT(*) FROM sr_role_permission
+        WHERE role_id = #{roleId} AND permission_id = #{permissionId}
+    </select>
+
+    <select id="accountPageCount" resultType="long">
+        SELECT COUNT(*) FROM sr_account <include refid="accountFilters"/>
+    </select>
+    <select id="accountPage" resultType="com.starrainnotes.account.entity.AccountEntity">
+        SELECT <include refid="accountColumns"/> FROM sr_account
+        <include refid="accountFilters"/>
+        ORDER BY id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <insert id="insertInvitation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_admin_invitation(target_account_id, email_snapshot, target_role_code,
+                                        token_hash, status, invited_by, expires_at)
+        VALUES (#{targetAccountId}, #{emailSnapshot}, #{targetRoleCode},
+                #{tokenHash}, #{status}, #{invitedBy}, #{expiresAt})
+    </insert>
+    <delete id="deleteAccountRole">
+        DELETE FROM sr_account_role WHERE account_id = #{accountId} AND role_id = #{roleId}
+    </delete>
+    <!--
+        列清单必须覆盖实体上所有会被读的列。accepted_by 曾经漏在这里：
+        acceptInvitation 会把它写进去，但没有一条 SELECT 读它，
+        于是 AdminInvitationEntity.acceptedBy 恒为 null —— 同一份 XML 自己写、自己读不出来。
+        目前没有任何代码读这个字段，所以不是线上 bug；但它是「写进去读不出来」的隐患，
+        而是补一列、零行为风险，因此本轮补上（AccountMapperXmlTest 有回归断言）。
+    -->
+    <sql id="invitationColumns">
+        id, target_account_id, email_snapshot, target_role_code, token_hash,
+        status, invited_by, expires_at, created_at, accepted_at, accepted_by, revoked_at,
+        last_sent_at, mail_message_id, mail_submission_status
+    </sql>
+    <select id="invitationById" resultType="com.starrainnotes.account.entity.AdminInvitationEntity">
+        SELECT <include refid="invitationColumns"/> FROM sr_admin_invitation WHERE id = #{id}
+    </select>
+    <select id="invitationByIdForUpdate" resultType="com.starrainnotes.account.entity.AdminInvitationEntity">
+        SELECT <include refid="invitationColumns"/> FROM sr_admin_invitation WHERE id = #{id} FOR UPDATE
+    </select>
+    <select id="invitationByHash" resultType="com.starrainnotes.account.entity.AdminInvitationEntity">
+        SELECT <include refid="invitationColumns"/> FROM sr_admin_invitation WHERE token_hash = #{hash}
+    </select>
+    <select id="invitationPage" resultType="com.starrainnotes.account.entity.AdminInvitationEntity">
+        SELECT <include refid="invitationColumns"/> FROM sr_admin_invitation ORDER BY id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="invitationPageCount" resultType="long">SELECT COUNT(*) FROM sr_admin_invitation</select>
+    <select id="pendingInvitationsForAccount" resultType="com.starrainnotes.account.entity.AdminInvitationEntity">
+        SELECT <include refid="invitationColumns"/> FROM sr_admin_invitation
+        WHERE target_account_id = #{accountId} AND status = 'PENDING' AND expires_at &gt; UTC_TIMESTAMP(3)
+        ORDER BY id DESC LIMIT 50
+    </select>
+    <update id="saveInvitationDelivery">
+        UPDATE sr_admin_invitation SET token_hash = #{tokenHash}, expires_at = #{expiresAt}, status = 'PENDING',
+            last_sent_at = #{lastSentAt}, mail_message_id = #{mailMessageId}, mail_submission_status = 'SUBMITTED'
+        WHERE id = #{id}
+    </update>
+    <update id="revokeInvitation">
+        UPDATE sr_admin_invitation SET status = 'REVOKED', revoked_at = UTC_TIMESTAMP(3) WHERE id = #{id}
+    </update>
+    <select id="invitationByHashForUpdate" resultType="com.starrainnotes.account.entity.AdminInvitationEntity">
+        SELECT id, target_account_id, email_snapshot, target_role_code, token_hash,
+               status, invited_by, expires_at, created_at
+        FROM sr_admin_invitation WHERE token_hash = #{hash} FOR UPDATE
+    </select>
+    <select id="pendingInvitationCount" resultType="int">
+        SELECT COUNT(*) FROM sr_admin_invitation
+        WHERE target_account_id = #{targetId} AND status = 'PENDING'
+          AND expires_at &gt; CURRENT_TIMESTAMP(3)
+    </select>
+    <update id="acceptInvitation">
+        UPDATE sr_admin_invitation SET status = 'ACCEPTED', accepted_by = #{accountId},
+            accepted_at = CURRENT_TIMESTAMP(3)
+        WHERE id = #{id} AND status = 'PENDING' AND expires_at &gt; CURRENT_TIMESTAMP(3)
+    </update>
+    <update id="revokePendingInvitations">
+        UPDATE sr_admin_invitation SET status = 'REVOKED', revoked_at = CURRENT_TIMESTAMP(3)
+        WHERE target_account_id = #{targetId} AND status = 'PENDING'
+    </update>
+
+    <insert id="insertReset" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_password_reset(account_id, token_hash, status, expires_at)
+        VALUES (#{accountId}, #{tokenHash}, #{status}, #{expiresAt})
+    </insert>
+    <select id="resetByHashForUpdate" resultType="com.starrainnotes.account.entity.PasswordResetEntity">
+        SELECT id, account_id, token_hash, status, expires_at
+        FROM sr_password_reset WHERE token_hash = #{hash} FOR UPDATE
+    </select>
+    <update id="useReset">
+        UPDATE sr_password_reset SET status = 'USED', used_at = CURRENT_TIMESTAMP(3)
+        WHERE id = #{id} AND status = 'PENDING' AND expires_at &gt; CURRENT_TIMESTAMP(3)
+    </update>
+    <update id="expirePendingResets">
+        UPDATE sr_password_reset SET status = 'EXPIRED'
+        WHERE account_id = #{accountId} AND status = 'PENDING'
+    </update>
+    <select id="recentResetRequestsByIp" resultType="int">
+        SELECT COUNT(*) FROM sr_account_audit
+        WHERE action_code = 'PASSWORD_RESET_REQUESTED' AND ip_address = #{ip}
+          AND created_at &gt;= #{since}
+    </select>
+    <select id="recentAuditCount" resultType="int">
+        SELECT COUNT(*) FROM sr_account_audit
+        WHERE action_code = #{action} AND ip_address = #{ip}
+          AND created_at &gt;= #{since}
+    </select>
+
+    <insert id="insertAudit" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_account_audit(actor_account_id, target_account_id, action_code, result,
+                                     ip_address, user_agent)
+        VALUES (#{actorAccountId}, #{targetAccountId}, #{actionCode}, #{result},
+                #{ipAddress}, #{userAgent})
+    </insert>
+    <select id="auditPageCount" resultType="long">
+        SELECT COUNT(*) FROM sr_account_audit <include refid="auditFilters"/>
+    </select>
+    <select id="auditPage" resultType="com.starrainnotes.account.entity.AccountAuditEntity">
+        SELECT id, actor_account_id, target_account_id, action_code, result,
+               ip_address, user_agent, created_at
+        FROM sr_account_audit <include refid="auditFilters"/>
+        ORDER BY id DESC LIMIT #{limit} OFFSET #{offset}
+    </select>
+</mapper>

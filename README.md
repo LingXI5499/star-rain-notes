@@ -1,227 +1,89 @@
 # 星雨笔录 · Star Rain Notes
 
-个人知识与作品展示系统，集教程、博客、作品集、英语学习和内容管理于一体。采用 Vue 3 前端与 Spring Boot 模块化单体后端。
+个人知识与作品展示系统，集教程、博客、作品、英语学习与内容管理于一体。当前版本采用 Vue 3 前端与 Spring Boot 多模块后端。
 
 ## 当前版本
 
-**v1.7.0 — 后端分层与 SEO 能力升级**
+**v2.0.0 — V2 首个正式源码版本（2026-10-09）**
 
-本版本完成 English V2 与第二轮后端分层重构，收口内容审核、媒体、搜索和 SEO 的模块边界，并改进事务、内容变更通知与 SEO 页面渲染。标签 `v1.7.0` 包含对应前后端源码、数据库迁移、部署配置与本文档。
+V2 的源码、数据库迁移与启动脚本位于 [`star-rain-v2/`](star-rain-v2/)。[`main`](https://github.com/LingXI5499/star-rain-notes/tree/main) 为 GitHub 默认发布分支，`mainV2` 为 V2 集成分支，版本标签为 `v2.0.0`。
 
-数据库内容、用户上传媒体和运行环境配置独立于源码管理，需在部署环境中保留。本仓库不包含生产数据或部署备份。
+详细说明见 [V2 README](star-rain-v2/README.md)，更新内容见 [版本记录](star-rain-v2/CHANGELOG.md)。根目录的 `backend/`、`frontend/` 保留 V1 源码；既有 V1 标签继续保留。
 
 ## 功能概览
 
-| 模块 | 功能 |
+| 模块 | V2 功能 |
 | --- | --- |
-| 教程与博客 | 分类、章节、标签、Markdown 内容、目录与阅读统计 |
-| 作品集 | 项目封面、技术栈、项目说明、真实域名与静态多页面原型 |
-| 英语学习 | 词汇记忆与复习、语法、听力、阅读、写作、学习包及学习进度 |
-| 个人主页 | 首页、关于页、品牌展示与个人信息维护 |
-| 内容管理 | 内容编辑、媒体库、发布审核、站点设置 |
-| 账号协作 | 邮箱激活、邀请注册、角色权限与审计日志 |
-| 搜索与 SEO | 全站搜索、页面元信息、服务端 SEO HTML 与公开内容缓存 |
+| 教程与学习 | 目录、章节、问题、练习、学习记录、掌握度、复习与学习计划 |
+| 博客 | 主题、标签、时间线、Markdown 阅读与公开主题 SEO |
+| 作品 | 内容区块、展示模板、真实域名与隔离运行的多页面静态原型 |
+| 英语 | 主题词库、发音、学习计划、语法、双语阅读、私有写作及管理员原创公开 |
+| 账户与媒体 | 邮箱验证、管理员邀请、固定角色权限、账户治理与媒体库 |
+| 站点 | 公开路径与账户路径、昼夜主题、首页、关于页、分页与筛选 |
+| 搜索与 SEO | 全站及快捷搜索、英语筛选、内容变更索引同步、SEO HTML 与站点地图 |
 
-## v1.7.0 更新内容
-
-- 将 English 内容、学习和词汇能力统一暴露为 Facade，Controller、Application、Repository 的职责进一步明确。
-- 内容审核、媒体读取、搜索、SEO 与首页聚合通过模块 Port 协作，减少跨模块直接访问 Mapper 和业务表。
-- 补齐关键写路径事务与提交后邮件通知，并收口媒体与作品原型的依赖边界。
-- SEO 页面身份缓存独立管理，JSON-LD 安全转义；已发布内容修改 slug 时同时通知新旧地址。
-
-## v1.5.0 更新内容
-
-- 统一前台、后台与认证页面的响应式布局、按钮、表单、状态反馈和交互动效。
-- 首页作品区修复漏项，并按“手动精选优先、最近更新补足”展示最多三项。
-- 作品封面作为项目主题标识图展示；作品详情移除公开截图轮播。
-- 新增作品 ZIP 静态原型：支持多页面 HTML、CSS、原生 JavaScript、图片与字体；可从作品页上传或从媒体库绑定。
-- 静态原型发布后使用版本化资源路径，通过无同源权限的 sandbox iframe 运行，并限制网络连接、表单、弹窗和顶层跳转。
-- 加强 ZIP 魔数、路径穿越、软链接、文件类型、文件数、压缩体积和解压体积校验；上传上限为 25 MB，解压上限为 100 MB。
-- 媒体库增加压缩包分类、网格/列表视图与作品原型关联流程。
-- 修复原型 iframe 安全响应头冲突与旧缓存导致的“拒绝连接”问题。
-
-## v1.4.0 更新内容
-
-- 修复行内公式紧贴英文时无法渲染的问题（如 `$\Theta(n^2)$Princeton`）。
-- 支持 `::: code-group` 多语言代码 Tab，复制仅针对当前语言。
-- 去掉博客/教程/英语等非作品模块的封面展示与编辑封面选项；保留作品封面、听力音频与正文插图。
-
-本版本继承 v1.3.0 的视觉主题与 v1.2.0 的阅读体验优化。数据库迁移仍为 `V1` 至 `V29`，此次不增加迁移。
+英语搜索覆盖词汇主题、单词、语法课程、语法课时、阅读和公开原创写作。阅读沿用公开状态与版权核查条件，私有写作不进入全站索引；启动时会补建已有英语内容索引。
 
 ## 技术栈
 
 | 层级 | 技术 |
 | --- | --- |
-| 前端 | Vue 3、TypeScript、Vite、Vue Router、Pinia、Axios、Element Plus |
-| 内容编辑 | Vditor、Markdown-it、Highlight.js、DOMPurify |
+| 前端 | Vue 3、JavaScript、Vite、Vue Router、Pinia、Axios |
+| 内容编辑与呈现 | Vditor、Markdown-it、MathJax、Highlight.js、DOMPurify |
 | 后端 | Java 21、Spring Boot 3.5、Spring Security、MyBatis-Plus |
-| 数据库 | MySQL 8.0、Flyway |
-| 构建与部署 | Maven、npm、Nginx、Spring Boot JAR |
+| 数据库 | MySQL 8.0、Flyway，V2 迁移版本 `2.037` |
+| 构建 | Maven、npm |
 
-准确依赖版本以 `frontend/package-lock.json` 和 `backend/pom.xml` 为准。
+准确依赖版本以 `star-rain-v2/frontend/package-lock.json` 和 `star-rain-v2/backend/pom.xml` 为准。
 
 ## 仓库结构
 
 ```text
-backend/
-  pom.xml                  后端依赖与版本
-  src/main/java/           业务逻辑、接口与安全配置
-  src/main/resources/      环境配置模板、数据库迁移与 SEO 模板
-  src/test/                已有测试源码
-frontend/
-  package.json             前端依赖与命令
-  package-lock.json        依赖锁定文件
-  public/brand/            页面使用的品牌与主题资源
-  src/                     页面、组件、路由、状态与接口封装
-README.md                  项目说明
+star-rain-v2/
+  backend/                 V2 Maven 多模块后端
+    star-rain-boot/         启动入口与数据库迁移
+  frontend/                V2 前端与测试
+  deploy/                  本地启停脚本
+  maintenance/             内容维护脚本与说明
+  README.md                V2 配置、功能与工程约定
+  CHANGELOG.md             V2 版本记录
+backend/                   保留的 V1 后端
+frontend/                  保留的 V1 前端
+README.md                  项目入口说明
 ```
-
-根目录另保留 Git 忽略及文本属性配置。内部设计文档、数据库备份、部署包、运行日志和本地密钥不属于发布源码。
 
 ## 本地运行
 
-### 环境要求
+需要 Java 21、Maven、Node.js 22.12 或更新的兼容版本、npm 和 MySQL 8.0。
 
-- Java 21 与 Maven 3.6.3 或更新版本。
-- Node.js 22.12 或更新的兼容版本与 npm。
-- MySQL 8.0；预先创建空数据库，例如 `star_rain_notes`。
+1. 创建独立的 `star_rain_v2` 数据库，使用 utf8mb4。V2 不能直接使用 V1 数据库。
+2. 将 `star-rain-v2/backend/application-local-secret.example.yml` 复制为同目录的 `application-local-secret.yml`，填写数据库与 SMTP 配置。
+3. 根据模板配置首次 bootstrap 超级管理员；初始化后关闭该开关。
+4. 在 Windows PowerShell 执行：
 
-### 后端配置
-
-通过环境变量配置数据库与邮件服务；也可使用被 Git 忽略的 `backend/application-local-secret.yml`。已跟踪的 `application-local.yml` 仅包含模板和本地私密配置导入声明。
-
-| 变量 | 用途 |
-| --- | --- |
-| `MYSQL_HOST`、`MYSQL_PORT` | 数据库地址和端口；默认 localhost、3306 |
-| `MYSQL_DATABASE` | 数据库名；默认 star_rain_notes |
-| `MYSQL_USER`、`MYSQL_PASSWORD` | 数据库账号和密码 |
-| `APP_SUPER_ADMIN_EMAIL` | 首次激活的超级管理员邮箱 |
-| `MAIL_HOST`、`MAIL_PORT` | SMTP 地址和端口 |
-| `MAIL_USERNAME`、`MAIL_AUTH_CODE`、`MAIL_FROM` | 发信账号、授权码和发件地址 |
-| `MAIL_SSL_ENABLED` | SMTP SSL 开关；默认 true |
-| `MAIL_BASE_URL` | 前端访问地址，用于生成邀请链接 |
-| `MEDIA_STORAGE_DIR` | 上传媒体存储目录 |
-
-```bash
-cd backend
-mvn spring-boot:run
+```powershell
+cd star-rain-v2
+./deploy/start-local.ps1 -Build
 ```
 
-默认端口为 `24680`。Flyway 在启动时执行数据库迁移。
+前端地址为 `http://127.0.0.1:5174`，后端地址为 `http://127.0.0.1:8088`。公开页面从 `/` 访问，账户页面从 `/useradmin` 访问。停止服务使用 `./deploy/stop-local.ps1`。
 
-### 前端启动
+## 测试与构建
 
-```bash
-cd frontend
+```powershell
+# 从仓库根目录执行
+mvn -f star-rain-v2/backend/pom.xml test
+mvn -f star-rain-v2/backend/pom.xml -pl star-rain-boot -am -DskipTests package
+cd star-rain-v2/frontend
 npm ci
-npm run dev
-```
-
-访问 `http://localhost:5173`。开发服务器将 `/api`、`/actuator` 和 `/uploads` 转发到后端；可用 `VITE_API_TARGET` 修改开发代理目标。
-
-全新数据库首次使用时，打开 `http://localhost:5173/admin/activate`，通过配置邮箱接收验证码并设置超级管理员密码，随后在 `/admin/login` 登录。系统不提供默认超级管理员密码。
-
-## 数学公式
-
-博客、教程、作品和其他使用共享 Markdown 组件的正文支持 MathJax TeX/LaTeX 公式。后台编辑器与前台使用同一套本地打包的 MathJax 预览，内容始终以原始 Markdown 保存，不依赖外部公式 CDN。
-
-行内公式使用一对 `$`，例如：
-
-```markdown
-时间复杂度为 $\Theta(n)$，总开销为 $\boxed{\Theta(n+b)}$。
-```
-
-独立公式使用 `$$`，建议将分隔符单独成行：
-
-```markdown
-$$
-\sum_{i=1}^{n} i = \frac{n(n+1)}{2}
-$$
-```
-
-也支持 LaTeX 原有的 `\(...\)`、`\[...\]` 分隔符，以及标记为 `math` 或 `latex` 的代码围栏：
-
-````markdown
-```latex
-\begin{bmatrix}
-a & b \\
-c & d
-\end{bmatrix}
-```
-````
-
-直接粘贴完整的上述公式块会保留原样；只粘贴一整段明显的 TeX（例如 `\frac{a}{b}`）会自动包装成独立公式。普通代码、行内代码、货币和自然语言文本不会被自动转换。要显示普通美元符号，可写成 `\$`；行内公式的 `$` 内侧不要留空格。
-
-长独立公式可横向滚动，错误或不支持的公式保留原始文本提示，不中断正文渲染。支持范围以 [MathJax TeX 输入](https://docs.mathjax.org/en/latest/input/tex/index.html) 为准，不提供完整 LaTeX 文档编译、任意第三方宏包或富文本 MathML/Office 保真导入。为安全起见，运行时模块加载、HTML 宏和配置宏均被禁用。
-
-已有正文中符合上述写法的公式会在新版前端部署后自动渲染，不需要修改数据库。若公式本身位于普通代码块中，应先移出代码块。
-
-## 多语言代码组（力扣式切换）
-
-后台编辑器工具栏中的“`</>` 插入可切换代码组”可视化创建代码组：添加任意数量的块，为每块填写显示名称、语言与初始代码即可。前台会按显示名称生成可横向滚动的标签；点击或用方向键/Home/End 切换，复制按钮只复制当前代码块。
-
-也可以手写 `::: code-group`。在开头用 `|` 分隔名称，名称必须非空、同组唯一且不能包含 `|`；标签名称与围栏按顺序对应。旧的裸 `::: code-group` 与逗号分隔语言名仍兼容，缺少名称时自动显示代码语言。
-
-````markdown
-::: code-group C 实现|Java 实现|Python 实现|JavaScript 实现
-
-```c
-int bubble(int* a, int n) { return n; }
-```
-
-```java
-int bubble(int[] a) { return a.length; }
-```
-
-```python
-def bubble(a):
-    return len(a)
-```
-
-```javascript
-function bubble(a) { return a.length }
-```
-
-:::
-````
-
-内容仍以原始 Markdown 存库；解析与 Tab 交互只发生在前台渲染。普通单独代码块行为不变。粘贴完整的标准代码围栏或完整代码组 Markdown 时会原样保留；多个普通围栏不会被自动合并，以避免改变原意。
-
-## 构建与部署
-
-以下命令供部署时使用，后端构建命令显式跳过测试。
-
-```bash
-# 前端：产物位于 frontend/dist/
-cd frontend
-npm ci
+npm test
 npm run build
 ```
 
-```bash
-# 从仓库根目录构建后端，跳过测试编译和执行
-mvn -f backend/pom.xml -Dmaven.test.skip=true package
-```
+后端产物为 `star-rain-v2/backend/star-rain-boot/target/star-rain-boot-2.0.0.jar`，前端产物为 `star-rain-v2/frontend/dist/`。数据库不可达时，依赖 MySQL 的集成测试会跳过；验证结果应同时核对执行与跳过数量。
 
-后端产物为 `backend/target/star-rain-notes-backend-1.7.0.jar`。生产启动设置 `SPRING_PROFILES_ACTIVE=prod`，由部署环境注入数据库及邮件凭据。
+数据库内容、上传媒体、本地密钥、运行日志和内部交接材料独立于源码管理，不包含在版本发布中。部署与升级前备份数据库和媒体；生产环境使用 HTTPS，并设置 `STAR_RAIN_COOKIE_SECURE=true`。
 
-Nginx 提供前端静态资源、单页应用路由回退和后端反向代理。按实际环境配置 `SEO_SITE_ORIGIN`、`SEO_FRONTEND_INDEX_PATH`、`MAIL_BASE_URL` 和 `MEDIA_STORAGE_DIR`；HTTPS 环境保持 `SESSION_COOKIE_SECURE=true`。升级时应保留现有数据库、上传媒体及环境配置。
+## 历史版本
 
-## 敏感信息管理
-
-- 密码、SMTP 授权码、令牌和个人邮箱只通过环境变量或本地私密配置提供。
-- 不提交 `.env`、私钥、数据库备份、运行日志、用户上传文件和构建产物。
-- `VITE_*` 变量可能进入浏览器产物，不得用于保存服务端凭据。
-- `backend/src/main/resources/db/migration/` 中的 SQL 为版本化数据库迁移，应随源码保留。
-
-## 版本记录
-
-| 版本 | 说明 |
-| --- | --- |
-| v1.7.0 | English V2 与后端分层、跨模块 Port、搜索及 SEO 能力升级 |
-| v1.6.0 | 后端 V2 管理能力重构 |
-| v1.5.0 | 前后台体验升级、作品封面、媒体 ZIP 与安全静态多页面原型 |
-| v1.4.1 | 作品集截图放大预览的左右导航、键盘切换与移动端操作优化 |
-| v1.4.0 | 数学公式定界修复、力扣式多语言代码组、去掉非作品封面 UI |
-| v1.3.0 | 同步 UI v3 最新前后端源码，统一版本信息与 README |
-| v1.2.0 | 阅读体验、作品展示与公开内容性能优化 |
+V1 最后版本为 [`v1.7.0`](https://github.com/LingXI5499/star-rain-notes/tree/v1.7.0)，历史功能与启动方式见该标签的 README。V2 使用独立的数据库、会话与构建目录。

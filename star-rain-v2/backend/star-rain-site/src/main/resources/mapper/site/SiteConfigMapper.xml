@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.site.mapper.SiteConfigMapper">
+    <select id="primary" resultType="com.starrainnotes.site.entity.SiteConfigEntity">
+        SELECT id, config_key, site_name, site_title, tagline, site_description,
+               home_intro, footer_text, logo_media_asset_id, favicon_media_asset_id,
+               created_at, updated_at
+        FROM sr_site_config
+        WHERE config_key = 'PRIMARY'
+    </select>
+
+    <update id="update">
+        UPDATE sr_site_config
+        SET site_name = #{siteName}, site_title = #{siteTitle}, tagline = #{tagline},
+            site_description = #{siteDescription}, home_intro = #{homeIntro},
+            footer_text = #{footerText}, logo_media_asset_id = #{logoMediaAssetId},
+            favicon_media_asset_id = #{faviconMediaAssetId}, updated_at = #{updatedAt}
+        WHERE id = #{id}
+    </update>
+</mapper>

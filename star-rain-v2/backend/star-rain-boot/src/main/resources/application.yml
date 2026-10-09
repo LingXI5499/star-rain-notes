@@ -1,0 +1,70 @@
+spring:
+  config:
+    import: optional:file:./application-local-secret.yml
+  jackson:
+    deserialization:
+      fail-on-unknown-properties: true
+  application:
+    name: star-rain-v2
+  datasource:
+    url: ${STAR_RAIN_DB_URL}
+    username: ${STAR_RAIN_DB_USERNAME}
+    password: ${STAR_RAIN_DB_PASSWORD}
+    hikari:
+      connection-init-sql: "SET time_zone = '+00:00'"
+  flyway:
+    enabled: true
+  servlet:
+    multipart:
+      # 硬上限，兜住异常请求。各类型的精确上限由 star-rain.media.upload 决定，
+      # 正常超限会先被 MediaUploadValidator 以 MEDIA_FILE_TOO_LARGE 拒绝。
+      # 视频放在最宽的一档，因此这里必须不小于 max-video-bytes。
+      max-file-size: 512MB
+      max-request-size: 520MB
+  mail:
+    host: ${STAR_RAIN_SMTP_HOST:localhost}
+    port: ${STAR_RAIN_SMTP_PORT:25}
+    username: ${STAR_RAIN_SMTP_USERNAME:}
+    password: ${STAR_RAIN_SMTP_PASSWORD:}
+    properties:
+      mail.smtp.auth: ${STAR_RAIN_SMTP_AUTH:false}
+      mail.smtp.starttls.enable: ${STAR_RAIN_SMTP_STARTTLS:false}
+      mail.smtp.ssl.enable: ${STAR_RAIN_SMTP_SSL:false}
+      mail.smtp.connectiontimeout: 10000
+      mail.smtp.timeout: 10000
+      mail.smtp.writetimeout: 10000
+mybatis-plus:
+  mapper-locations: classpath*:mapper/**/*.xml
+  configuration:
+    map-underscore-to-camel-case: true
+
+star-rain:
+  seo:
+    public-base-url: ${STAR_RAIN_PUBLIC_BASE_URL:https://yulanlin.cn}
+    frontend-index-path: ${STAR_RAIN_FRONTEND_INDEX_PATH:../frontend/dist/index.html}
+    indexnow:
+      enabled: ${STAR_RAIN_INDEXNOW_ENABLED:false}
+      endpoint: ${STAR_RAIN_INDEXNOW_ENDPOINT:https://api.indexnow.org/indexnow}
+      key: ${STAR_RAIN_INDEXNOW_KEY:}
+  account:
+    smtp-enabled: ${STAR_RAIN_SMTP_ENABLED:false}
+    mail-from: ${STAR_RAIN_MAIL_FROM:}
+    frontend-origin: ${STAR_RAIN_FRONTEND_ORIGIN:http://127.0.0.1:5174}
+  media:
+    # 本地存储根目录：与 star-rain-v2/frontend、star-rain-v2/backend 同级（backend 的工作目录是 backend/）。
+    storage-root: ${STAR_RAIN_MEDIA_ROOT:../media}
+    storage-provider: LOCAL
+    # Upload type and size defaults live in MediaProperties; deployments may override them externally.
+    orphan-cleanup:
+      enabled: ${STAR_RAIN_MEDIA_ORPHAN_CLEANUP:true}
+
+server:
+  port: 8088
+  servlet:
+    session:
+      timeout: 2h
+      cookie:
+        name: STAR_RAIN_V2_SESSION
+        http-only: true
+        same-site: lax
+        secure: ${STAR_RAIN_COOKIE_SECURE:false}

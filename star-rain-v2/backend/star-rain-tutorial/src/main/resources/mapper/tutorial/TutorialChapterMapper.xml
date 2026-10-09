@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialChapterMapper">
+
+  <!-- body_markdown 很大，列表查询同样需要它：公开修订快照按列内容冻结 -->
+  <sql id="columns">
+    id, tutorial_id, group_id, slug, title, summary, body_markdown,
+    sort_order, status, created_at, updated_at
+  </sql>
+
+  <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialChapterEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_tutorial_chapter
+      (tutorial_id, group_id, slug, title, summary, body_markdown, sort_order, status)
+    VALUES
+      (#{tutorialId}, #{groupId}, #{slug}, #{title}, #{summary}, #{bodyMarkdown}, #{sortOrder}, #{status})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.tutorial.content.entity.TutorialChapterEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_chapter WHERE id = #{id}
+  </select>
+
+  <select id="listByGroupId" resultType="com.starrainnotes.tutorial.content.entity.TutorialChapterEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_chapter
+    WHERE group_id = #{groupId}
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="listActiveByGroupId" resultType="com.starrainnotes.tutorial.content.entity.TutorialChapterEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_chapter
+    WHERE group_id = #{groupId} AND status = 'PUBLISHED'
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="countByTutorialId" resultType="long">
+    SELECT COUNT(*) FROM sr_tutorial_chapter WHERE tutorial_id = #{tutorialId}
+  </select>
+
+  <select id="countActiveByGroupId" resultType="long">
+    SELECT COUNT(*) FROM sr_tutorial_chapter WHERE group_id = #{groupId} AND status = 'PUBLISHED'
+  </select>
+
+  <select id="countByTutorialIdAndSlug" resultType="long">
+    SELECT COUNT(*) FROM sr_tutorial_chapter WHERE tutorial_id = #{tutorialId} AND slug = #{slug}
+  </select>
+
+  <!--
+    summary 允许被清空：它必须无条件出现在 SET 里，null 表示「删除章节摘要」。
+    这与原先 @TableField(updateStrategy = FieldStrategy.ALWAYS) 的行为一致；
+    写成 <if test="summary != null"> 会让「清空摘要」这个已经支持的操作失效。
+  -->
+  <update id="updateContent">
+    UPDATE sr_tutorial_chapter
+    SET title = #{title}, summary = #{summary}, updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateBody">
+    UPDATE sr_tutorial_chapter
+    SET body_markdown = #{bodyMarkdown}, updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateStatus">
+    UPDATE sr_tutorial_chapter SET status = #{status}, updated_at = #{updatedAt} WHERE id = #{id}
+  </update>
+
+  <update id="updateSortOrder">
+    UPDATE sr_tutorial_chapter SET sort_order = #{sortOrder}, updated_at = #{updatedAt} WHERE id = #{id}
+  </update>
+
+  <update id="moveToGroup">
+    UPDATE sr_tutorial_chapter
+    SET group_id = #{groupId}, sort_order = #{sortOrder}, updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+  <delete id="deleteById">DELETE FROM sr_tutorial_chapter WHERE id = #{id}</delete>
+</mapper>

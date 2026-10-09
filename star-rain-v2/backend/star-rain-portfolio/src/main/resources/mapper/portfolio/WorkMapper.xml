@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.portfolio.mapper.WorkMapper">
+
+  <!-- 列清单在一处维护：resultType 依赖 map-underscore-to-camel-case 做列名到属性名的映射 -->
+  <sql id="columns">
+    id, slug, work_type, title, summary, prototype_asset_id, prototype_entry, subtitle, category_id, format_id, role, tech_stack, project_status, started_on, ended_on, featured, sort_order, seo_title, seo_description, body_markdown, status, published_at, withdrawn_at,
+    created_by_account_id, updated_by_account_id, created_at, updated_at
+  </sql>
+
+  <!--
+    后台列表的过滤条件。workType / status / keyword 为 null 或空串时该条件不参与，
+    与原先 Wrappers.lambdaQuery().eq(condition, ...) 的写法逐条对应：
+    这三个 <if> 表达的是「调用方没给这个筛选条件」，不是把动态 SQL 藏起来。
+  -->
+  <sql id="filters">
+    <if test="workType != null and workType != ''">AND work_type = #{workType}</if>
+    <if test="status != null and status != ''">AND status = #{status}</if>
+    <if test="keyword != null and keyword != ''">AND title LIKE CONCAT('%', #{keyword}, '%')</if>
+  </sql>
+
+  <!-- id 自增回填给实体：创建后要立刻用它去读媒体与外链 -->
+  <insert id="insert" parameterType="com.starrainnotes.portfolio.entity.WorkEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_portfolio_work
+      (slug, work_type, title, summary, subtitle, category_id, format_id, role, tech_stack, project_status, started_on, ended_on, featured, sort_order, seo_title, seo_description, body_markdown, status,
+       created_by_account_id, updated_by_account_id)
+    VALUES
+      (#{slug}, #{workType}, #{title}, #{summary}, #{subtitle}, #{categoryId}, #{formatId}, #{role}, #{techStack}, #{projectStatus}, #{startedOn}, #{endedOn}, #{featured}, #{sortOrder}, #{seoTitle}, #{seoDescription}, #{bodyMarkdown}, #{status},
+       #{createdByAccountId}, #{updatedByAccountId})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
+    SELECT <include refid="columns"/> FROM sr_portfolio_work WHERE id = #{id}
+  </select>
+
+  <!-- 编辑路径先锁行：同一作品的发布 / 撤回 / 排序必须串行 -->
+  <select id="byIdForUpdate" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
+    SELECT <include refid="columns"/> FROM sr_portfolio_work WHERE id = #{id} FOR UPDATE
+  </select>
+
+  <!-- 公开详情按 slug 读，且只认已发布状态 -->
+  <select id="selectBySlugAndStatus" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
+    SELECT <include refid="columns"/> FROM sr_portfolio_work
+    WHERE slug = #{slug} AND status = #{status}
+  </select>
+
+  <select id="selectByIdAndStatus" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
+    SELECT <include refid="columns"/> FROM sr_portfolio_work
+    WHERE id = #{id} AND status = #{status}
+  </select>
+
+  <select id="countByFilter" resultType="long">
+    SELECT COUNT(*) FROM sr_portfolio_work
+    <where>
+      <include refid="filters"/>
+    </where>
+  </select>
+
+  <select id="pageByFilter" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
+    SELECT <include refid="columns"/> FROM sr_portfolio_work
+    <where>
+      <include refid="filters"/>
+    </where>
+    ORDER BY featured DESC, sort_order ASC, updated_at DESC, id DESC
+    LIMIT #{limit} OFFSET #{offset}
+  </select>
+
+  <!-- 生成唯一 slug 时逐个候选查重 -->
+  <select id="countBySlug" resultType="long">
+    SELECT COUNT(*) FROM sr_portfolio_work WHERE slug = #{slug}
+  </select>
+
+  <!--
+    下面五条 UPDATE 原先都是一次 works.updateById(work)，区别只在于服务层改了哪几个字段。
+    显式 SQL 之后每条只列自己真正会写的列，避免「改标题顺手把 status / body_markdown 一起写回」。
+    summary 无条件写：服务层已经保证「请求没带 summary 时实体里仍是库里的值」，写回旧值与不写等价。
+    updated_at 由服务层的 touch() 计算后显式写入；写回读出来的旧值也就等于不推进时间戳。
+  -->
+  <update id="updateContent" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
+    UPDATE sr_portfolio_work
+    SET slug = #{slug},
+        title = #{title},
+        summary = #{summary},
+        subtitle = #{subtitle},
+        category_id = #{categoryId},
+        format_id = #{formatId},
+        role = #{role},
+        tech_stack = #{techStack},
+        project_status = #{projectStatus},
+        started_on = #{startedOn},
+        ended_on = #{endedOn},
+        featured = #{featured},
+        sort_order = #{sortOrder},
+        seo_title = #{seoTitle},
+        seo_description = #{seoDescription},
+        updated_by_account_id = #{updatedByAccountId},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <update id="updateBody" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
+    UPDATE sr_portfolio_work
+    SET body_markdown = #{bodyMarkdown},
+        updated_by_account_id = #{updatedByAccountId},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <update id="touch" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
+    UPDATE sr_portfolio_work
+    SET updated_by_account_id = #{updatedByAccountId},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <!-- 首次发布：写入发布时间。published_at 在草稿阶段必为 null，不存在「覆盖首次发布时间」 -->
+  <update id="publish" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
+    UPDATE sr_portfolio_work
+    SET status = #{status},
+        published_at = #{publishedAt},
+        updated_by_account_id = #{updatedByAccountId},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <!-- 撤回只记撤回时间，published_at 保留：恢复后仍是首次发布时间 -->
+  <update id="withdraw" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
+    UPDATE sr_portfolio_work
+    SET status = #{status},
+        withdrawn_at = #{withdrawnAt},
+        updated_by_account_id = #{updatedByAccountId},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <!-- 恢复只把状态改回 PUBLISHED，既不碰 published_at（首次发布时间）也不碰 withdrawn_at -->
+  <update id="restore" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
+    UPDATE sr_portfolio_work
+    SET status = #{status},
+        updated_by_account_id = #{updatedByAccountId},
+        updated_at = #{updatedAt}
+    WHERE id = #{id}
+  </update>
+
+  <delete id="deleteById">
+    DELETE FROM sr_portfolio_work WHERE id = #{id}
+  </delete>
+<sql id="taxonomyFilters">
+ <if test="filter.categoryId != null">AND category_id=#{filter.categoryId}</if>
+ <if test="filter.formatId != null">AND format_id=#{filter.formatId}</if>
+ <if test="filter.featured != null">AND featured=#{filter.featured}</if>
+ <if test="filter.tagId != null">AND EXISTS(SELECT 1 FROM sr_portfolio_work_tag wt WHERE wt.work_id=sr_portfolio_work.id AND wt.tag_id=#{filter.tagId})</if>
+</sql>
+<select id="countByTaxonomy" resultType="long">SELECT COUNT(*) FROM sr_portfolio_work <where><include refid="filters"/><include refid="taxonomyFilters"/></where></select>
+<select id="pageByTaxonomy" resultType="com.starrainnotes.portfolio.entity.WorkEntity">SELECT <include refid="columns"/> FROM sr_portfolio_work <where><include refid="filters"/><include refid="taxonomyFilters"/></where> ORDER BY featured DESC,sort_order,updated_at DESC,id DESC LIMIT #{limit} OFFSET #{offset}</select>
+<update id="updatePrototype">UPDATE sr_portfolio_work SET prototype_asset_id=#{prototypeAssetId},prototype_entry=#{prototypeEntry},updated_by_account_id=#{updatedByAccountId},updated_at=#{updatedAt} WHERE id=#{id}</update>
+<select id="previousPublished" resultType="com.starrainnotes.portfolio.vo.WorkNavigationVO">SELECT slug,title FROM sr_portfolio_work WHERE status='PUBLISHED' AND (sort_order &lt; #{sortOrder} OR (sort_order=#{sortOrder} AND id &lt; #{id})) ORDER BY sort_order DESC,id DESC LIMIT 1</select>
+<select id="nextPublished" resultType="com.starrainnotes.portfolio.vo.WorkNavigationVO">SELECT slug,title FROM sr_portfolio_work WHERE status='PUBLISHED' AND (sort_order &gt; #{sortOrder} OR (sort_order=#{sortOrder} AND id &gt; #{id})) ORDER BY sort_order,id LIMIT 1</select>
+</mapper>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.starrainnotes.english.taxonomy.mapper.TaxonomyMapper">
+ <resultMap id="node" type="com.starrainnotes.english.taxonomy.dto.TaxonomyDto$Node">
+  <id property="id" column="id"/><result property="parentId" column="parent_id"/><result property="dimension" column="dimension"/>
+  <result property="name" column="name"/><result property="nameEn" column="name_en"/><result property="slug" column="slug"/>
+  <result property="description" column="description"/><result property="sortOrder" column="sort_order"/><result property="enabled" column="enabled"/><result property="worldBaseline" column="is_world_baseline"/>
+ </resultMap>
+ <sql id="columns">id,parent_id,dimension,name,name_en,slug,description,sort_order,enabled,is_world_baseline</sql>
+ <select id="list" resultMap="node">SELECT <include refid="columns"/> FROM sr_english_taxonomy_term <if test="!admin">WHERE enabled=1</if> ORDER BY dimension,sort_order,id</select>
+ <select id="byId" resultMap="node">SELECT <include refid="columns"/> FROM sr_english_taxonomy_term WHERE id=#{id}</select>
+ <select id="bySlug" resultMap="node">SELECT <include refid="columns"/> FROM sr_english_taxonomy_term WHERE slug=#{slug}</select>
+ <insert id="insert" useGeneratedKeys="true" keyProperty="id">INSERT INTO sr_english_taxonomy_term(parent_id,dimension,name,name_en,slug,description,sort_order,enabled,is_world_baseline) VALUES(#{parentId},#{dimension},#{name},#{nameEn},#{slug},#{description},#{sortOrder},1,0)</insert>
+ <update id="update">UPDATE sr_english_taxonomy_term SET name=#{name},name_en=#{nameEn},description=#{description},sort_order=#{sortOrder} WHERE id=#{id}</update>
+ <update id="disable">UPDATE sr_english_taxonomy_term SET enabled=0 WHERE id=#{id} OR parent_id=#{id}</update>
+</mapper>

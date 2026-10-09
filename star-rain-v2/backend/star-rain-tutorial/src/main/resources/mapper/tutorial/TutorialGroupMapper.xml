@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialGroupMapper">
+
+  <sql id="columns">
+    id, tutorial_id, title, description, sort_order, status, created_at, updated_at
+  </sql>
+
+  <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialGroupEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_tutorial_group (tutorial_id, title, sort_order, status)
+    VALUES (#{tutorialId}, #{title}, #{sortOrder}, #{status})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.tutorial.content.entity.TutorialGroupEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_group WHERE id = #{id}
+  </select>
+
+  <select id="listByTutorialId" resultType="com.starrainnotes.tutorial.content.entity.TutorialGroupEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_group
+    WHERE tutorial_id = #{tutorialId}
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="listActiveByTutorialId" resultType="com.starrainnotes.tutorial.content.entity.TutorialGroupEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_group
+    WHERE tutorial_id = #{tutorialId} AND status = 'ACTIVE'
+    ORDER BY sort_order, id
+  </select>
+
+  <select id="countByTutorialId" resultType="long">
+    SELECT COUNT(*) FROM sr_tutorial_group WHERE tutorial_id = #{tutorialId}
+  </select>
+
+  <update id="updateTitle">
+    UPDATE sr_tutorial_group SET title = #{title}, updated_at = #{updatedAt} WHERE id = #{id}
+  </update>
+
+  <update id="updateStatus">
+    UPDATE sr_tutorial_group SET status = #{status}, updated_at = #{updatedAt} WHERE id = #{id}
+  </update>
+
+  <update id="updateSortOrder">
+    UPDATE sr_tutorial_group SET sort_order = #{sortOrder}, updated_at = #{updatedAt} WHERE id = #{id}
+  </update>
+  <delete id="deleteById">DELETE FROM sr_tutorial_group WHERE id = #{id}</delete>
+</mapper>

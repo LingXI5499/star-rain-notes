@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.starrainnotes.english.knowledge.mapper.KnowledgeMapper">
+ <sql id="union">
+ SELECT a.id,'READING' AS type,a.title,a.slug,a.summary,a.primary_topic_id,a.published_at
+ FROM sr_english_reading_article a
+ <bind name="publicOnly" value="true"/>
+ <include refid="com.starrainnotes.english.reading.mapper.ReadingMapper.filter"/>
+ <if test="type != null and type != ''">AND #{type}='READING'</if>
+ UNION ALL
+ SELECT a.id,'WRITING' AS type,a.title,a.slug,a.summary,a.primary_topic_id,a.published_at
+ FROM sr_english_writing_article a
+ <bind name="owner" value="null"/><bind name="state" value="null"/>
+ WHERE <include refid="com.starrainnotes.english.writing.article.mapper.WritingArticleMapper.filters"/>
+ <if test="type != null and type != ''">AND #{type}='WRITING'</if>
+ </sql>
+ <select id="count" resultType="long">SELECT COUNT(*) FROM (<include refid="union"/>) documents</select>
+ <select id="list" resultType="com.starrainnotes.english.knowledge.dto.KnowledgeDto$Item">SELECT * FROM (<include refid="union"/>) documents ORDER BY published_at DESC,type ASC,id DESC LIMIT #{limit} OFFSET #{offset}</select>
+</mapper>

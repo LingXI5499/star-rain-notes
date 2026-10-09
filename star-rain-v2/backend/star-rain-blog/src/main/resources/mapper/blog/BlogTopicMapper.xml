@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.blog.mapper.BlogTopicMapper">
+
+    <sql id="topicColumns">
+        t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.created_at, t.updated_at
+    </sql>
+
+    <sql id="adminFilters">
+        <where>
+            <if test="keyword != null and keyword != ''">
+                AND (LOWER(t.name) LIKE CONCAT('%', #{keyword}, '%')
+                     OR LOWER(t.slug) LIKE CONCAT('%', #{keyword}, '%'))
+            </if>
+            <if test="status != null and status != ''">
+                AND t.status = #{status}
+            </if>
+        </where>
+    </sql>
+
+    <insert id="insertTopic" parameterType="com.starrainnotes.blog.entity.BlogTopicEntity"
+            useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO sr_blog_topic (slug, name, description, sort_order, featured, status)
+        VALUES (#{slug}, #{name}, #{description}, #{sortOrder}, #{featured}, #{status})
+    </insert>
+
+    <select id="topicById" resultType="com.starrainnotes.blog.entity.BlogTopicEntity">
+        SELECT <include refid="topicColumns"/> FROM sr_blog_topic t WHERE t.id = #{id}
+    </select>
+
+    <select id="topicByIdForUpdate" resultType="com.starrainnotes.blog.entity.BlogTopicEntity">
+        SELECT <include refid="topicColumns"/> FROM sr_blog_topic t WHERE t.id = #{id} FOR UPDATE
+    </select>
+
+    <select id="countBySlug" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_topic WHERE slug = #{slug}
+        <if test="excludeId != null">
+            AND id &lt;&gt; #{excludeId}
+        </if>
+    </select>
+
+    <update id="updateTopic">
+        UPDATE sr_blog_topic
+        SET slug = #{slug},
+            name = #{name},
+            description = #{description}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateStatus">
+        UPDATE sr_blog_topic SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <!--
+      删除专题本身。
+      刻意不在这里级联删 sr_blog_topic_post：删除只对空专题开放，
+      「有成员」必须在 Service 里报错，让调用方显式走移出接口（会压缩序号）。
+    -->
+    <delete id="deleteTopic">
+        DELETE FROM sr_blog_topic WHERE id = #{id}
+    </delete>
+
+    <select id="minimumSortOrder" resultType="int">
+        SELECT MIN(sort_order) FROM sr_blog_topic
+    </select>
+
+    <update id="updatePresentation">
+        UPDATE sr_blog_topic SET sort_order = #{sortOrder}, featured = #{featured} WHERE id = #{id}
+    </update>
+
+    <select id="adminPageCount" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_topic t
+        <include refid="adminFilters"/>
+    </select>
+
+    <!-- member_count 统计全部成员（含未发布文章）：专题排序时草稿也会占位置 -->
+    <select id="adminPage" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
+        SELECT <include refid="topicColumns"/>, COUNT(tp.id) AS member_count
+        FROM sr_blog_topic t
+        LEFT JOIN sr_blog_topic_post tp ON tp.topic_id = t.id
+        <include refid="adminFilters"/>
+        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.created_at, t.updated_at
+        ORDER BY t.sort_order, t.id
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <!--
+      前台专题入口（博客首页顶部的专栏导航条）。
+      只要有 ENABLED 就出现，**不再要求「至少有一篇已发布文章」**：
+      专栏是站点预先划定的内容骨架，新开的专栏在还没有文章时也必须显示，
+      否则导航条会随着发文进度时有时无。
+      顺序使用后台保存的 sort_order；新专题默认插在最前面。
+    -->
+    <select id="publishedTopics" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
+        SELECT t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.updated_at, COUNT(p.id) AS member_count
+        FROM sr_blog_topic t
+        LEFT JOIN sr_blog_topic_post tp ON tp.topic_id = t.id
+        LEFT JOIN sr_blog_post p ON p.id = tp.post_id AND p.status = 'PUBLISHED'
+        WHERE t.status = 'ENABLED'
+        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.updated_at
+        ORDER BY t.sort_order, t.id
+    </select>
+
+    <!--
+      前台专题页的专题本身：可见性与 publishedTopics 一致（ENABLED 即可）。
+      空专栏不再 404，而是正常渲染一个「还没有文章」的空列表 ——
+      导航条里点得进来的入口却报 404 是说不通的。
+      停用（DISABLED）与不存在的 slug 仍然 404。
+    -->
+    <select id="publishedTopicBySlug" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
+        SELECT t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.updated_at, COUNT(p.id) AS member_count
+        FROM sr_blog_topic t
+        LEFT JOIN sr_blog_topic_post tp ON tp.topic_id = t.id
+        LEFT JOIN sr_blog_post p ON p.id = tp.post_id AND p.status = 'PUBLISHED'
+        WHERE t.status = 'ENABLED' AND t.slug = #{slug}
+        GROUP BY t.id, t.slug, t.name, t.description, t.sort_order, t.featured, t.status, t.updated_at
+    </select>
+
+    <!-- 公开页面上的专题标记：停用专题不出现 -->
+    <select id="publicTopicsByPostId" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
+        SELECT t.id, t.slug, t.name, t.description, t.status
+        FROM sr_blog_topic_post tp
+        JOIN sr_blog_topic t ON t.id = tp.topic_id
+        WHERE tp.post_id = #{postId} AND t.status = 'ENABLED'
+        ORDER BY tp.sort_order ASC, t.id ASC
+    </select>
+
+    <select id="publicTopicsByPostIds" resultType="com.starrainnotes.blog.dto.BlogPostTopicRow">
+        SELECT tp.post_id AS post_id, t.id AS topic_id, t.slug AS slug, t.name AS name,
+               tp.sort_order AS sort_order
+        FROM sr_blog_topic_post tp
+        JOIN sr_blog_topic t ON t.id = tp.topic_id
+        WHERE t.status = 'ENABLED'
+          AND tp.post_id IN
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+        ORDER BY tp.sort_order ASC, t.id ASC
+    </select>
+
+    <select id="topicsByPostId" resultType="com.starrainnotes.blog.vo.BlogTopicVO">
+        SELECT t.id, t.slug, t.name, t.description, t.status
+        FROM sr_blog_topic_post tp
+        JOIN sr_blog_topic t ON t.id = tp.topic_id
+        WHERE tp.post_id = #{postId}
+        ORDER BY tp.sort_order ASC, t.id ASC
+    </select>
+
+    <select id="topicsByPostIds" resultType="com.starrainnotes.blog.dto.BlogPostTopicRow">
+        SELECT tp.post_id AS post_id, t.id AS topic_id, t.slug AS slug, t.name AS name,
+               tp.sort_order AS sort_order
+        FROM sr_blog_topic_post tp
+        JOIN sr_blog_topic t ON t.id = tp.topic_id
+        WHERE tp.post_id IN
+        <foreach collection="postIds" item="postId" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+        ORDER BY tp.sort_order ASC, t.id ASC
+    </select>
+
+    <select id="topicMembers" resultType="com.starrainnotes.blog.dto.BlogTopicMemberRow">
+        SELECT p.id AS post_id, p.slug AS slug, p.title AS title, p.status AS status,
+               tp.sort_order AS sort_order, p.published_at AS published_at, p.updated_at AS updated_at
+        FROM sr_blog_topic_post tp
+        JOIN sr_blog_post p ON p.id = tp.post_id
+        WHERE tp.topic_id = #{topicId}
+        ORDER BY tp.sort_order ASC, tp.id ASC
+    </select>
+
+    <select id="countTopicPosts" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_topic_post WHERE topic_id = #{topicId}
+    </select>
+
+    <select id="maxSortOrder" resultType="java.lang.Integer">
+        SELECT MAX(sort_order) FROM sr_blog_topic_post WHERE topic_id = #{topicId}
+    </select>
+
+    <insert id="insertTopicPost">
+        INSERT INTO sr_blog_topic_post (topic_id, post_id, sort_order)
+        VALUES (#{topicId}, #{postId}, #{sortOrder})
+    </insert>
+
+    <delete id="deleteTopicPost">
+        DELETE FROM sr_blog_topic_post WHERE topic_id = #{topicId} AND post_id = #{postId}
+    </delete>
+
+    <delete id="deleteTopicPostsByPostId">
+        DELETE FROM sr_blog_topic_post WHERE post_id = #{postId}
+    </delete>
+
+    <select id="countTopicPost" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_topic_post WHERE topic_id = #{topicId} AND post_id = #{postId}
+    </select>
+
+    <!--
+      批量重排序用 CASE WHEN 写成单条 UPDATE。
+      不用 foreach + 分号拼多条语句：那要求 JDBC 打开 allowMultiQueries，
+      而打开它会让所有 SQL 都具备多语句执行能力，代价远大于这里省下的几行。
+      移除成员后的序号压缩也走这条语句，由 Service 按下标重算 1..n。
+    -->
+    <update id="updateTopicOrder">
+        UPDATE sr_blog_topic_post
+        SET sort_order = CASE post_id
+            <foreach collection="items" item="item">
+                WHEN #{item.postId} THEN #{item.sortOrder}
+            </foreach>
+            END
+        WHERE topic_id = #{topicId}
+          AND post_id IN
+          <foreach collection="items" item="item" open="(" separator="," close=")">
+              #{item.postId}
+          </foreach>
+    </update>
+</mapper>

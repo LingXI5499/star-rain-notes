@@ -1,0 +1,15 @@
+<script setup>
+import { onMounted, ref } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
+import LearningNav from '../../components/LearningNav.vue'
+import { getReviewSummary, getCurrentReview, createReviewSession, abandonReviewSession } from '../../api/learningApi'
+import { accountPath } from '../../../../shared/viewMode'
+import { errorMessage } from '../../../../shared/http'
+import '../../styles/learning.css'
+const route = useRoute(), router = useRouter(), summary = ref(null), current = ref(null), count = ref(Number(route.query.count) || 10), error = ref(''), busy = ref(false), loading = ref(true)
+async function load() { loading.value = true; error.value = ''; try { [summary.value, current.value] = await Promise.all([getReviewSummary(), getCurrentReview()]) } catch (e) { error.value = errorMessage(e) } finally { loading.value = false } }
+async function begin(mode) { busy.value = true; error.value = ''; try { const session = await createReviewSession(Number(count.value), mode); await router.push(accountPath(`/learning/review/${session.id}`)) } catch (e) { error.value = errorMessage(e) } finally { busy.value = false } }
+async function abandon() { busy.value = true; error.value = ''; try { await abandonReviewSession(current.value.id); current.value = null } catch (e) { error.value = errorMessage(e) } finally { busy.value = false } }
+onMounted(load)
+</script>
+<template><main class="learning-page"><header class="learning-page__heading"><div><small>GLOBAL REVIEW</small><h1>知识复习</h1><p>优先强化薄弱和更新的知识，同级知识在不同教程间交错。</p></div></header><LearningNav /><p v-if="error" class="learning-error" role="alert">{{ error }}</p><p v-if="loading" role="status">正在读取复习候选…</p><template v-else><section v-if="current" class="learning-panel"><h2>你有一组未完成复习</h2><p>{{ current.summary.cardCount }} / {{ current.items.length }} 个知识点已评价</p><div class="learning-actions"><RouterLink class="learning-button learning-button--primary" :to="accountPath(`/learning/review/${current.id}`)">继续复习</RouterLink><button :disabled="busy" class="learning-button" @click="abandon">放弃本组，保留已完成证据</button></div></section><section v-else-if="summary" class="learning-panel"><h2>{{ summary.recommendedCount }} 个知识点建议强化</h2><p>{{ summary.stableCount }} 个稳定知识可供补位或抽查。</p><div class="learning-actions"><span v-for="(n,p) in summary.priorities" :key="p" class="learning-badge">{{ {P0:'内容更新',P1:'最近忘记',P2:'最近模糊',P3:'学习中',P4:'基本掌握',P5:'稳定掌握'}[p] }} {{ n }}</span></div><form class="learning-form" @submit.prevent="begin('RECOMMENDED')"><label>本次知识点数<input v-model.number="count" type="number" min="1" max="100" required /></label><div class="learning-actions"><button class="learning-button learning-button--primary" :disabled="busy || !summary.candidateCount" type="submit">开始推荐复习</button><button class="learning-button" :disabled="busy || !summary.stableCount" type="button" @click="begin('STABLE_AUDIT')">稳定知识抽查</button></div></form><p v-if="!summary.candidateCount" class="learning-empty">完成知识卡片的首次学习后，即可开始复习。</p></section></template></main></template>

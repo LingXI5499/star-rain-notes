@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.message.mapper.MessageMapper">
+
+  <!-- 列清单在一处维护：resultType 依赖 application.yml 的 map-underscore-to-camel-case 做列名到属性名的映射 -->
+  <sql id="columns">
+    id, account_id, author_display_name, contact_email, content, status,
+    submitted_at, moderated_by_account_id, moderated_at, reject_reason,
+    hidden_at, deleted_at, created_at, updated_at
+  </sql>
+
+  <!-- 投稿：id 自增回填给实体，Service 随后要把 id 写进操作流水 -->
+  <insert id="insert" parameterType="com.starrainnotes.message.entity.MessageEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_message
+      (account_id, author_display_name, contact_email, content, status,
+       submitted_at, created_at, updated_at)
+    VALUES
+      (#{accountId}, #{authorDisplayName}, #{contactEmail}, #{content}, #{status},
+       #{submittedAt}, #{createdAt}, #{updatedAt})
+  </insert>
+
+  <select id="selectById" resultType="com.starrainnotes.message.entity.MessageEntity">
+    SELECT <include refid="columns"/> FROM sr_message WHERE id = #{id}
+  </select>
+
+  <!-- status 为 null 表示「全部状态」，用于后台列表 -->
+  <select id="countByStatus" resultType="long">
+    SELECT COUNT(*) FROM sr_message
+    <where>
+      <if test="status != null">status = #{status}</if>
+    </where>
+  </select>
+
+  <select id="pageByStatus" resultType="com.starrainnotes.message.entity.MessageEntity">
+    SELECT <include refid="columns"/> FROM sr_message
+    <where>
+      <if test="status != null">status = #{status}</if>
+    </where>
+    ORDER BY submitted_at DESC, id DESC
+    LIMIT #{limit} OFFSET #{offset}
+  </select>
+
+  <update id="decide">
+    UPDATE sr_message SET status=#{target}, moderated_by_account_id=#{actorId}, moderated_at=#{at}, reject_reason=#{reason} WHERE id=#{id} AND status='PENDING'
+  </update>
+  <update id="hide">
+    UPDATE sr_message SET status='HIDDEN', hidden_at=#{at} WHERE id=#{id} AND status='PUBLIC'
+  </update>
+  <update id="restore">
+    UPDATE sr_message SET status='PUBLIC', hidden_at=NULL WHERE id=#{id} AND status='HIDDEN'
+  </update>
+  <update id="softDelete">
+    UPDATE sr_message SET status='DELETED', deleted_at=#{at} WHERE id=#{id} AND status IN ('PUBLIC','HIDDEN')
+  </update>
+</mapper>

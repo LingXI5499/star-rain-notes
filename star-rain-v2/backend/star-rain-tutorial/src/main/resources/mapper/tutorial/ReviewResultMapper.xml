@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.ReviewResultMapper">
+
+  <sql id="columns">
+    id, review_task_id, schedule_id, account_id, knowledge_card_id, recall_rating,
+    previous_interval_days, next_interval_days, previous_next_review_at,
+    calculated_next_review_at, created_at
+  </sql>
+
+  <insert id="insert" parameterType="com.starrainnotes.tutorial.learning.entity.ReviewResultEntity"
+          useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_review_result
+      (review_task_id, schedule_id, account_id, knowledge_card_id, recall_rating,
+       previous_interval_days, next_interval_days, previous_next_review_at, calculated_next_review_at)
+    VALUES
+      (#{reviewTaskId}, #{scheduleId}, #{accountId}, #{knowledgeCardId}, #{recallRating},
+       #{previousIntervalDays}, #{nextIntervalDays}, #{previousNextReviewAt}, #{calculatedNextReviewAt})
+  </insert>
+
+  <!-- 系统建议等级依据：这张卡片历史上「正常/轻松」的回忆次数 -->
+  <select id="countGoodByAccountIdAndCardId" resultType="long">
+    SELECT COUNT(*) FROM sr_review_result
+    WHERE account_id = #{accountId} AND knowledge_card_id = #{knowledgeCardId}
+      AND recall_rating IN ('NORMAL', 'EASY')
+  </select>
+</mapper>
