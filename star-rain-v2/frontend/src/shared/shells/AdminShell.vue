@@ -128,6 +128,12 @@ const navGroups = computed(() => {
         {
           label: '教程工作台', short: '教', to: accountPath('/tutorials/manage'),
           visible: auth.hasPermission('tutorial:read-admin'),
+          activePrefix: accountPath('/tutorials'),
+          children: [
+            { label: '教程与章节', to: accountPath('/tutorials/manage'), visible: auth.hasPermission('tutorial:read-admin'), matches: (path) => path.startsWith(accountPath('/tutorials/')) && !path.endsWith('/cards') && !path.endsWith('/questions') },
+            { label: '知识卡片', to: accountPath('/tutorials/cards'), visible: auth.hasPermission('tutorial:edit'), matches: (path) => path.startsWith(accountPath('/tutorials/')) && path.endsWith('/cards') },
+            { label: '章节问题', to: accountPath('/tutorials/questions'), visible: auth.hasPermission('tutorial:edit'), matches: (path) => path.startsWith(accountPath('/tutorials/')) && path.endsWith('/questions') },
+          ],
         },
         {
           label: '博客管理', short: '博', to: accountPath('/blog/manage'),
@@ -215,9 +221,9 @@ function isActive(target) {
  * 于是父项和子项同时高亮。父项只在自己正好是当前页（或当前页不属于任何子项）时高亮。
  */
 function isItemActive(item) {
-  if (!isActive(item.to)) return false
+  if (!isActive(item.activePrefix || item.to)) return false
   if (!item.children?.length) return true
-  return !item.children.some((child) => child.to !== item.to && route.path.startsWith(child.to))
+  return !item.children.some((child) => child.matches ? child.matches(route.path) : child.to !== item.to && route.path.startsWith(child.to))
 }
 
 // ---------------------------------------------------------------------
@@ -368,7 +374,7 @@ async function submitPassword() {
                   :key="child.label"
                   :to="child.to"
                   class="admin-shell__subnav-item"
-                  :class="{ 'is-active': route.path === child.to }"
+                  :class="{ 'is-active': child.matches ? child.matches(route.path) : route.path === child.to }"
                 >{{ child.label }}</RouterLink>
               </div>
             </template>

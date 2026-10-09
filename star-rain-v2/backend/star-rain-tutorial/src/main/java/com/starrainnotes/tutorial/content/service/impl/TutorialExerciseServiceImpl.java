@@ -27,6 +27,7 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
     private final TutorialChapterMapper chapterMapper;
     private final TutorialKnowledgeCardMapper cardMapper;
     private final TutorialQuestionMapper questionMapper;
+    private final com.starrainnotes.tutorial.content.mapper.TutorialQuestionCardMapper questionCardMapper;
 
     private void requireChapter(Long id) {
         if (chapterMapper.selectById(id) == null) throw new TutorialChapterNotFoundException();
@@ -59,6 +60,7 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("id", String.valueOf(row.getId()));
         view.put("chapterId", String.valueOf(row.getChapterId()));
+        view.put("contentVersion", row.getContentVersion());
         view.put("frontText", row.getFrontText());
         view.put("backMarkdown", row.getBackMarkdown());
         view.put("sortOrder", row.getSortOrder());
@@ -70,11 +72,23 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("id", String.valueOf(row.getId()));
         view.put("chapterId", String.valueOf(row.getChapterId()));
+        view.put("knowledgeCardIds", questionCardMapper.cardIds(row.getId()).stream().map(String::valueOf).toList());
         view.put("questionText", row.getQuestionText());
         view.put("referenceAnswer", row.getReferenceAnswer());
         view.put("sortOrder", row.getSortOrder());
         view.put("status", row.getStatus());
         return view;
+    }
+
+    private void saveRelations(TutorialQuestionEntity question, List<Long> ids) {
+        List<Long> selected = ids == null ? List.of() : ids;
+        if (selected.size() > 1000 || selected.contains(null) || new HashSet<>(selected).size() != selected.size()) {
+            throw new TutorialInvalidRequestException("关联卡片不能重复或为空");
+        }
+        java.util.Set<Long> available = new HashSet<>(cardRows(question.getChapterId()).stream().map(TutorialKnowledgeCardEntity::getId).toList());
+        if (!available.containsAll(selected)) throw new TutorialInvalidRequestException("只能关联本章节的知识卡片");
+        questionCardMapper.deleteQuestion(question.getId());
+        for (int index=0;index<selected.size();index++) questionCardMapper.insert(question.getId(),selected.get(index),index);
     }
 
     private void requireOrder(List<Long> ids, List<Long> expected) {
@@ -115,13 +129,14 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         row.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
         cardMapper.updateContent(row.getId(), row.getFrontText(), row.getBackMarkdown(),
                 row.getStatus(), row.getUpdatedAt());
-        return cardView(row);
+        return cardView(cardMapper.selectById(cardId));
     }
 
     @Override
     @Transactional
     public void deleteCard(Long cardId) {
         if (cardMapper.selectById(cardId) == null) throw new TutorialInvalidRequestException("知识卡片不存在");
+        questionCardMapper.deleteCard(cardId);
         cardMapper.deleteById(cardId);
     }
 
@@ -156,6 +171,7 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         row.setStatus(status(request.getStatus()));
         row.setSortOrder(questionRows(chapterId).stream().mapToInt(item -> item.getSortOrder() == null ? 0 : item.getSortOrder()).max().orElse(0) + 10);
         questionMapper.insert(row);
+        saveRelations(row, request.getKnowledgeCardIds());
         return questionView(row);
     }
 
@@ -170,6 +186,7 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         row.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
         questionMapper.updateContent(row.getId(), row.getQuestionText(), row.getReferenceAnswer(),
                 row.getStatus(), row.getUpdatedAt());
+        saveRelations(row, request.getKnowledgeCardIds());
         return questionView(row);
     }
 
@@ -177,6 +194,7 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
     @Transactional
     public void deleteQuestion(Long questionId) {
         if (questionMapper.selectById(questionId) == null) throw new TutorialInvalidRequestException("章节问题不存在");
+        questionCardMapper.deleteQuestion(questionId);
         questionMapper.deleteById(questionId);
     }
 

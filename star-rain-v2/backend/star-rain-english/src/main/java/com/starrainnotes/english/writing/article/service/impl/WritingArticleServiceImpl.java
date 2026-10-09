@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.exception.ApiException;
+import com.starrainnotes.english.api.event.EnglishSearchContentChangedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import com.starrainnotes.english.knowledge.dto.RevisionDto;
 import com.starrainnotes.english.knowledge.service.DocumentMetadataService;
 import com.starrainnotes.english.knowledge.utils.EnglishBodyValidator;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class WritingArticleServiceImpl implements WritingArticleService {
     private final WritingArticleMapper mapper; private final DocumentMetadataService metadata;
     private final TaxonomyService taxonomy; private final CurrentActorApi actor; private final ObjectMapper json;
+    private final ApplicationEventPublisher events;
     @Override @Transactional(readOnly=true) public Page list(boolean mine,String search,String state,Long topic,Long genre,Long purpose,int page,int size) {
         Long owner=mine?owner():null;String term=search==null?"":search.trim();EnglishBodyValidator.length(term,100);
         if(state!=null && !state.isBlank() && !List.of("DRAFT","COMPLETED").contains(state)) invalid("状态无效");
@@ -39,7 +42,7 @@ public class WritingArticleServiceImpl implements WritingArticleService {
         validate(r,historical);Article old=lock(id,r.getRowVersion());Article a=apply(r,old);
         if("PUBLIC".equals(old.getVisibility())) { EnglishBodyValidator.requireBody(a.getBodyMarkdown()); if(!canPublish()) a.setVisibility("PRIVATE"); }
         if(!EnglishBodyValidator.hasMeaningfulText(a.getBodyMarkdown())) { a.setState("DRAFT");a.setVisibility("PRIVATE"); }
-        if(mapper.update(a)!=1) conflict();if(historical)metadata.replaceSnapshot("WRITING",a.getId(),r);else metadata.replace("WRITING",a.getId(),r);return get(id);
+        if(mapper.update(a)!=1) conflict();if(historical)metadata.replaceSnapshot("WRITING",a.getId(),r);else metadata.replace("WRITING",a.getId(),r);changed(a.getId());return get(id);
     }
     @Override @Transactional public Article complete(String id,Long version) {
         Article a=lock(id,version);EnglishBodyValidator.requireBody(a.getBodyMarkdown());change(a,"COMPLETED","PRIVATE");
@@ -52,7 +55,7 @@ public class WritingArticleServiceImpl implements WritingArticleService {
         change(a,a.getState(),publish?"PUBLIC":"PRIVATE");Article saved=get(id);
         if(publish) metadata.snapshot("WRITING",a.getId(),owner(),saved,"公开原创");return saved;
     }
-    @Override @Transactional public void delete(String id) { Article a=lockOwned(id);if(mapper.delete(a.getId(),owner(),a.getRowVersion())!=1) conflict(); }
+    @Override @Transactional public void delete(String id) { Article a=lockOwned(id);if(mapper.delete(a.getId(),owner(),a.getRowVersion())!=1) conflict();changed(a.getId()); }
     @Override @Transactional(readOnly=true) public RevisionDto.Page revisions(String id,int page,int size) { Article a=get(id);return metadata.revisions("WRITING",a.getId(),page,size); }
     @Override @Transactional(readOnly=true) public RevisionDto.Revision revision(String id,long no) { Article a=get(id);return metadata.revision("WRITING",a.getId(),no); }
     @Override @Transactional public RevisionDto.Revision snapshot(String id,RevisionDto.Request r) { lock(id,r.getRowVersion());return metadata.snapshot("WRITING",ReadingServiceImpl.id(id),owner(),get(id),r.getChangeNote()); }
@@ -73,7 +76,8 @@ public class WritingArticleServiceImpl implements WritingArticleService {
     private void validate(Request r,boolean historical) { if(r==null) invalid("内容不能为空");EnglishBodyValidator.length(r.getTitle(),200);EnglishBodyValidator.length(r.getSummary(),1000);EnglishBodyValidator.length(r.getBodyMarkdown(),200000);EnglishBodyValidator.length(r.getTranslationZhMarkdown(),200000);if(historical)metadata.validateSnapshot(r);else metadata.validate(r); }
     private Article lockOwned(String id) { Article a=mapper.locked(ReadingServiceImpl.id(id),owner());if(a==null) missing();return a; }
     private Article lock(String id,Long version) { Article a=lockOwned(id);if(version==null || !version.equals(a.getRowVersion())) conflict();return a; }
-    private void change(Article a,String state,String visibility) { if(mapper.status(a.getId(),owner(),a.getRowVersion(),state,visibility)!=1) conflict(); }
+    private void change(Article a,String state,String visibility) { if(mapper.status(a.getId(),owner(),a.getRowVersion(),state,visibility)!=1) conflict();changed(a.getId()); }
+    private void changed(Long id) { events.publishEvent(new EnglishSearchContentChangedEvent("ENGLISH_WRITING",id)); }
     private long owner() { return actor.current().getAccountId(); }
     private boolean canPublish() { var current=actor.current();return current.getRoles()!=null && (current.getRoles().contains("ADMIN") || current.getRoles().contains("SUPER_ADMIN")) && current.getPermissions()!=null && current.getPermissions().contains("english:content-publish"); }
     private static void invalid(String message) { throw new ApiException("WRITING_ARTICLE_INVALID",message,400); }

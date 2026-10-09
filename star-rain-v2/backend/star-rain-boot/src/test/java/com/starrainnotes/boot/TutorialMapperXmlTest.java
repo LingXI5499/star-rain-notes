@@ -711,7 +711,7 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(first);
         assertEquals("第一次答案", first.getAnswerText());
         assertNotNull(first.getFirstSubmittedAt(), "first_submitted_at 由列默认值填充，应能读回");
-        assertNotNull(first.getReferenceUnlockedAt());
+        assertNull(first.getReferenceUnlockedAt(), "V2_028 后旧覆盖式 Mapper 不会解锁参考答案；解锁由答案版本业务完成");
 
         assertEquals(2, answers.upsertAnswer(accountId, questionId, "第二次答案"),
                 "ON DUPLICATE KEY UPDATE 更新已有行时返回 2");

@@ -1,6 +1,7 @@
 package com.starrainnotes.search.service.impl;
 
 import com.starrainnotes.common.result.PageResult;
+import com.starrainnotes.english.api.EnglishSearchTypes;
 import com.starrainnotes.search.exception.SearchPageInvalidException;
 import com.starrainnotes.search.exception.SearchQueryRequiredException;
 import com.starrainnotes.search.exception.SearchQueryTooLongException;
@@ -62,10 +63,11 @@ public class SearchQueryServiceImpl implements SearchQueryService {
     private List<String> types(String raw) {
         if (raw == null || raw.isBlank()) return List.of();
         List<String> types = Arrays.stream(raw.split(",", -1)).map(String::strip).toList();
-        if (types.stream().anyMatch(type -> !SearchIndexService.TYPES.contains(type))) {
+        if (types.stream().anyMatch(type -> !"ENGLISH".equals(type) && !SearchIndexService.TYPES.contains(type))) {
             throw new SearchTypeInvalidException();
         }
-        return types.stream().distinct().toList();
+        return types.stream().flatMap(type -> "ENGLISH".equals(type)
+            ? EnglishSearchTypes.ALL.stream() : java.util.stream.Stream.of(type)).distinct().toList();
     }
 
 }

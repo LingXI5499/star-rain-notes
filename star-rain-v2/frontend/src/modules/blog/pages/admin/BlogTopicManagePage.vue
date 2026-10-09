@@ -9,6 +9,7 @@ import { errorMessage } from '../../../../shared/http'
 import AppConfirmDialog from '../../../../shared/ui/AppConfirmDialog.vue'
 import { createTaxonomy } from '../../components/admin/tagSlug'
 import { postStatusLabel, taxonomyStatusLabel } from '../../support/display'
+import { reorderTopicIds } from '../../support/topicOrder'
 
 /*
  * 专题管理（BLOG-005 ~ BLOG-007）。
@@ -199,9 +200,7 @@ async function moveTopic(topic, delta) {
 
 async function dropTopic(target) {
   if (!draggingTopicId || draggingTopicId === target.id) return
-  const ids = topics.value.map((item) => item.id)
-  ids.splice(ids.indexOf(draggingTopicId), 1)
-  ids.splice(ids.indexOf(target.id), 0, draggingTopicId)
+  const ids = reorderTopicIds(topics.value.map((item) => item.id), draggingTopicId, target.id)
   draggingTopicId = null
   saving.value = true
   try { await reorderTopics(ids); await loadTopics(); notice.value = '专题展示顺序已更新。' }

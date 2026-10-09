@@ -56,5 +56,3 @@ export const listPublicTutorials = (params) => get('/public/tutorials', params)
 export const getPublicTutorial = (slug) => get(`/public/tutorials/${encoded(slug)}`)
 export const getPublicChapter = (tutorialSlug, chapterSlug) =>
   get(`/public/tutorials/${encoded(tutorialSlug)}/chapters/${encoded(chapterSlug)}`)
-export const getPublicQuestionAnswer = (tutorialSlug, chapterSlug, questionId) =>
-  get(`/public/tutorials/${encoded(tutorialSlug)}/chapters/${encoded(chapterSlug)}/questions/${encoded(questionId)}/answer`)

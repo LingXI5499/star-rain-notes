@@ -1235,10 +1235,11 @@ html.is-vditor-fullscreen .vditor--fullscreen {
   gap: 8px;
 }
 
-.blog-tag-picker__new input {
+.blog-tag-picker__new textarea {
   width: min(100%, 520px);
   min-height: 38px;
   font-size: 13px;
+  resize: vertical;
 }
 
 .blog-tag-picker__suggestions {

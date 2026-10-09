@@ -25,7 +25,7 @@ public class LearningProgressServiceImpl implements LearningProgressService {
     private final CurrentActorApi currentActorApi;
     private final LearningContentAccess content;
     private final LearningProgressMapper progressMapper;
-    private final LearningReviewService reviewService;
+    private final EvidenceLearningService evidenceService;
     private final LearningEventWriter events;
 
     private Long accountId() {
@@ -81,11 +81,7 @@ public class LearningProgressServiceImpl implements LearningProgressService {
     public LearningProgressVO complete(Long chapterId) {
         LearningContentAccess.ChapterRef chapter = content.chapter(chapterId);
         Long actor = accountId();
-        progressMapper.ensureRow(actor, chapter.getTutorialId(), chapter.getGroupId(), chapterId);
-        if (progressMapper.markCompleted(actor, chapterId) == 1) {
-            events.chapter(actor, "CHAPTER_COMPLETED", chapter);
-        }
-        reviewService.initializeChapter(actor, chapterId);
+        evidenceService.completeChapter(chapterId);
         return view(chapter, row(actor, chapterId));
     }
 

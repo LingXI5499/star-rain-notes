@@ -113,15 +113,16 @@ function removeValue(value) {
     </div>
 
     <div class="blog-tag-picker__new">
-      <input
+      <textarea
         v-model="draftName"
         maxlength="500"
+        rows="1"
         placeholder="搜索已有标签；用 | 分隔多个新标签"
         :disabled="disabled"
         @focus="focused = true"
         @blur="focused = false"
         @input="inputError = ''"
-        @keydown.enter.prevent="addDraft"
+        @keydown.enter.exact.prevent="addDraft"
       />
       <button type="button" :disabled="disabled || !draftName.trim()" @click="addDraft">添加标签</button>
     </div>
@@ -129,14 +130,14 @@ function removeValue(value) {
     <div v-if="focused && suggestions.length" class="blog-tag-picker__suggestions" aria-label="匹配的已有标签">
       <p>{{ draftName.trim() ? '匹配的已有标签' : '常用标签' }}</p>
       <button v-for="tag in suggestions" :key="tag.id" type="button" :disabled="disabled"
-        @mousedown.prevent="addSuggestion(tag)"># {{ tag.name }}</button>
+        @mousedown.prevent @click="addSuggestion(tag)"># {{ tag.name }}</button>
     </div>
 
     <p class="blog-tag-picker__hint">
       <template v-if="pendingNames.length">
         保存文章时将新建：<strong>{{ pendingNames.join('、') }}</strong>
       </template>
-      <template v-else>输入时匹配已有标签；多个标签可用 | 分隔，回车后统一添加。新标签在保存文章时创建。</template>
+      <template v-else>输入时匹配已有标签；多个标签可用 |、逗号、分号或换行分隔，回车添加，Shift+Enter 换行。新标签在保存文章时创建。</template>
     </p>
 
     <p v-if="pendingNames.length" class="blog-tag-picker__hint">

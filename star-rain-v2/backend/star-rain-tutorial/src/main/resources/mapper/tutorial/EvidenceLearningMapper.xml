@@ -1,0 +1,228 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.learning.mapper.EvidenceLearningMapper">
+  <update id="saveSessionSummary">UPDATE sr_learning_session SET summary_json=#{summaryJson} WHERE account_id=#{accountId} AND id=#{id} AND summary_json IS NULL</update>
+  <select id="latestInitial" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Session">SELECT id,account_id,session_type,study_round,study_plan_id,study_task_id,tutorial_id,chapter_id,status,requested_item_count,summary_json,started_at,completed_at,abandoned_at,summary_json FROM sr_learning_session WHERE account_id=#{accountId} AND chapter_id=#{chapterId} AND session_type='INITIAL_STUDY' ORDER BY id DESC LIMIT 1</select>
+  <insert id="ensureAccountLock">
+    INSERT IGNORE INTO sr_learning_account_lock(account_id) VALUES(#{accountId})
+  </insert>
+  <select id="lockAccount" resultType="Long">
+    SELECT account_id FROM sr_learning_account_lock WHERE account_id=#{accountId} FOR UPDATE
+  </select>
+  <select id="listPlans" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Plan">
+    SELECT p.id,p.account_id,p.tutorial_id,p.name,p.status,p.target_cards_per_task,p.study_round,p.created_at,p.updated_at,t.title tutorial_title,t.slug tutorial_slug FROM sr_study_plan p LEFT JOIN sr_tutorial t ON t.id=p.tutorial_id WHERE p.account_id=#{accountId} ORDER BY p.created_at DESC,p.id DESC
+  </select>
+  <select id="plan" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Plan">
+    SELECT id,account_id,tutorial_id,name,status,target_cards_per_task,study_round,created_at,updated_at FROM sr_study_plan WHERE account_id=#{accountId} AND id=#{id}
+  </select>
+  <select id="currentPlans" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Plan">
+    SELECT p.id,p.account_id,p.tutorial_id,p.name,p.status,p.target_cards_per_task,p.study_round,p.created_at,p.updated_at,t.title tutorial_title,t.slug tutorial_slug
+    FROM sr_study_plan p LEFT JOIN sr_tutorial t ON t.id=p.tutorial_id WHERE p.account_id=#{accountId} AND p.status IN ('DRAFT','ACTIVE','PAUSED') ORDER BY p.created_at DESC,p.id DESC
+  </select>
+  <sql id="planHistoryConditions">
+    WHERE p.account_id=#{accountId} AND p.status IN ('COMPLETED','CANCELLED')
+    <if test="query.status != null and query.status != ''">AND p.status=#{query.status}</if>
+    <if test="query.tutorialId != null">AND p.tutorial_id=#{query.tutorialId}</if>
+    <if test="query.keyword != null and query.keyword != ''">AND LOCATE(#{query.keyword},p.name) &gt; 0</if>
+  </sql>
+  <select id="planHistory" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Plan">
+    SELECT p.id,p.account_id,p.tutorial_id,p.name,p.status,p.target_cards_per_task,p.study_round,p.created_at,p.updated_at,t.title tutorial_title,
+      (SELECT COUNT(*) FROM sr_study_plan_chapter pc WHERE pc.plan_id=p.id AND pc.account_id=#{accountId}) total_chapters,
+      (SELECT COUNT(*) FROM sr_study_plan_chapter pc WHERE pc.completed_at IS NOT NULL AND pc.plan_id=p.id AND pc.account_id=#{accountId}) completed_chapters
+    FROM sr_study_plan p LEFT JOIN sr_tutorial t ON t.id=p.tutorial_id <include refid="planHistoryConditions"/>
+    ORDER BY p.updated_at DESC,p.id DESC LIMIT #{query.pageSize} OFFSET #{query.offset}
+  </select>
+  <select id="countPlanHistory" resultType="long">
+    SELECT COUNT(*) FROM sr_study_plan p <include refid="planHistoryConditions"/>
+  </select>
+  <insert id="insertPlan" useGeneratedKeys="true" keyProperty="row.id">
+    INSERT INTO sr_study_plan(account_id,tutorial_id,name,status,target_cards_per_task) VALUES(#{row.accountId},#{row.tutorialId},#{row.name},#{row.status},#{row.targetCardsPerTask})
+  </insert>
+  <update id="updatePlan">
+    UPDATE sr_study_plan SET tutorial_id=#{row.tutorialId},name=#{row.name},target_cards_per_task=#{row.targetCardsPerTask} WHERE id=#{row.id} AND account_id=#{row.accountId} AND status='DRAFT'
+  </update>
+  <update id="planStatus">
+    UPDATE sr_study_plan SET status=#{status} WHERE account_id=#{accountId} AND id=#{id}
+  </update>
+  <select id="planChapters" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Chapter">
+    SELECT c.id,c.plan_id,c.account_id,c.tutorial_id,c.group_id,c.chapter_id,c.group_order,c.chapter_order,c.card_count,c.question_count,c.chapter_title,
+ c.completed_at IS NOT NULL completed FROM sr_study_plan_chapter c WHERE c.account_id=#{accountId} AND c.plan_id=#{planId} ORDER BY c.group_order,c.chapter_order,c.chapter_id
+  </select>
+  <select id="conflictingChapters" resultType="Long">
+    SELECT c.chapter_id FROM sr_study_plan_chapter c JOIN sr_study_plan p ON p.id=c.plan_id WHERE p.account_id=#{accountId} AND p.status IN ('DRAFT','ACTIVE','PAUSED') <if test="excludePlanId != null">AND p.id != #{excludePlanId}</if>
+  </select>
+  <insert id="insertPlanChapter" useGeneratedKeys="true" keyProperty="row.id">
+    INSERT INTO sr_study_plan_chapter(plan_id,account_id,tutorial_id,group_id,chapter_id,group_order,chapter_order,card_count,question_count,chapter_title) VALUES(#{row.planId},#{row.accountId},#{row.tutorialId},#{row.groupId},#{row.chapterId},#{row.groupOrder},#{row.chapterOrder},#{row.cardCount},#{row.questionCount},#{row.chapterTitle})
+  </insert>
+  <delete id="deletePlanChapters">
+    DELETE FROM sr_study_plan_chapter WHERE account_id=#{accountId} AND plan_id=#{planId}
+  </delete>
+  <insert id="insertTask" useGeneratedKeys="true" keyProperty="row.id">
+    INSERT INTO sr_study_task(plan_id,account_id,tutorial_id,group_id,sequence_no,card_count,question_count,status,study_round) VALUES(#{row.planId},#{row.accountId},#{row.tutorialId},#{row.groupId},#{row.sequenceNo},#{row.cardCount},#{row.questionCount},#{row.status},#{row.studyRound})
+  </insert>
+  <insert id="insertTaskChapter">
+    INSERT INTO sr_study_task_chapter(study_task_id,chapter_id,sequence_no,card_count,question_count) VALUES(#{taskId},#{row.chapterId},#{sequenceNo},#{row.cardCount},#{row.questionCount})
+  </insert>
+  <select id="tasks" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Task">
+    SELECT t.id,t.plan_id,t.account_id,t.tutorial_id,t.group_id,t.study_round,t.sequence_no,t.card_count,t.question_count,t.status,t.started_at,t.completed_at FROM sr_study_task t WHERE t.account_id=#{accountId} AND t.plan_id=#{planId} AND t.study_round=(SELECT p.study_round FROM sr_study_plan p WHERE p.id=t.plan_id) ORDER BY t.sequence_no,t.id
+  </select>
+  <select id="task" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Task">
+    SELECT t.id,t.plan_id,t.account_id,t.tutorial_id,t.group_id,t.study_round,t.sequence_no,t.card_count,t.question_count,t.status,t.started_at,t.completed_at FROM sr_study_task t WHERE t.account_id=#{accountId} AND t.id=#{id}
+  </select>
+  <select id="taskChapters" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Chapter">
+    SELECT c.id,c.plan_id,c.account_id,c.tutorial_id,c.group_id,c.chapter_id,c.group_order,c.chapter_order,tc.card_count,tc.question_count,c.chapter_title,c.completed_at IS NOT NULL completed
+ FROM sr_study_task_chapter tc JOIN sr_study_task t ON t.id=tc.study_task_id JOIN sr_study_plan_chapter c ON c.plan_id=t.plan_id AND c.chapter_id=tc.chapter_id WHERE t.account_id=#{accountId} AND t.id=#{taskId} ORDER BY tc.sequence_no,tc.id
+  </select>
+  <delete id="deleteTaskChapters">
+    DELETE tc FROM sr_study_task_chapter tc JOIN sr_study_task t ON t.id=tc.study_task_id WHERE t.account_id=#{accountId} AND t.plan_id=#{planId} AND t.study_round=(SELECT p.study_round FROM sr_study_plan p WHERE p.id=t.plan_id)
+  </delete>
+  <delete id="deleteTasks">
+    DELETE FROM sr_study_task WHERE account_id=#{accountId} AND plan_id=#{planId} AND study_round=(SELECT p.study_round FROM sr_study_plan p WHERE p.id=#{planId})
+  </delete>
+  <update id="startTask">
+    UPDATE sr_study_task SET status='IN_PROGRESS',started_at=COALESCE(started_at,CURRENT_TIMESTAMP(3)) WHERE account_id=#{accountId} AND id=#{id} AND status='PENDING'
+  </update>
+  <update id="reconcileTasks">
+    UPDATE sr_study_task t SET t.status='COMPLETED',t.completed_at=CURRENT_TIMESTAMP(3) WHERE t.account_id=#{accountId} AND t.status IN ('PENDING','IN_PROGRESS')
+ AND EXISTS(SELECT 1 FROM sr_study_task_chapter tc WHERE tc.study_task_id=t.id)
+ AND NOT EXISTS(SELECT 1 FROM sr_study_task_chapter tc LEFT JOIN sr_study_plan_chapter c ON c.plan_id=t.plan_id AND c.chapter_id=tc.chapter_id WHERE tc.study_task_id=t.id AND c.completed_at IS NULL)
+ AND EXISTS(SELECT 1 FROM sr_study_plan sp WHERE sp.id=t.plan_id AND sp.study_round=t.study_round AND sp.status IN ('ACTIVE','PAUSED'))
+  </update>
+  <update id="reconcilePlans">
+    UPDATE sr_study_plan p SET p.status='COMPLETED' WHERE p.account_id=#{accountId} AND p.status IN ('ACTIVE','PAUSED') AND EXISTS(SELECT 1 FROM sr_study_task t WHERE t.plan_id=p.id AND t.study_round=p.study_round) AND NOT EXISTS(SELECT 1 FROM sr_study_task t WHERE t.plan_id=p.id AND t.study_round=p.study_round AND t.status != 'COMPLETED')
+  </update>
+  <select id="session" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Session">
+    SELECT id,account_id,session_type,study_round,study_plan_id,study_task_id,tutorial_id,chapter_id,status,requested_item_count,summary_json,started_at,completed_at,abandoned_at FROM sr_learning_session WHERE account_id=#{accountId} AND id=#{id}
+  </select>
+  <select id="currentInitial" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Session">
+    SELECT id,account_id,session_type,study_round,study_plan_id,study_task_id,tutorial_id,chapter_id,status,requested_item_count,summary_json,started_at,completed_at,abandoned_at FROM sr_learning_session WHERE account_id=#{accountId} AND chapter_id=#{chapterId} AND session_type='INITIAL_STUDY' AND status='IN_PROGRESS' ORDER BY id DESC LIMIT 1
+  </select>
+  <select id="currentReview" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Session">
+    SELECT id,account_id,session_type,study_round,study_plan_id,study_task_id,tutorial_id,chapter_id,status,requested_item_count,summary_json,started_at,completed_at,abandoned_at FROM sr_learning_session WHERE account_id=#{accountId} AND session_type IN ('REVIEW','STABLE_AUDIT') AND status='IN_PROGRESS' ORDER BY id DESC LIMIT 1
+  </select>
+  <insert id="insertSession" useGeneratedKeys="true" keyProperty="row.id">
+    INSERT INTO sr_learning_session(account_id,session_type,study_round,study_plan_id,study_task_id,tutorial_id,chapter_id,status,requested_item_count) VALUES(#{row.accountId},#{row.sessionType},#{row.studyRound},#{row.studyPlanId},#{row.studyTaskId},#{row.tutorialId},#{row.chapterId},#{row.status},#{row.requestedItemCount})
+  </insert>
+  <update id="sessionStatus">
+    UPDATE sr_learning_session SET status=#{status},completed_at=IF(#{status}='COMPLETED',CURRENT_TIMESTAMP(3),completed_at),abandoned_at=IF(#{status}='ABANDONED',CURRENT_TIMESTAMP(3),abandoned_at) WHERE account_id=#{accountId} AND id=#{id} AND status='IN_PROGRESS'
+  </update>
+  <select id="items" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Item">
+    SELECT id,session_id,account_id,tutorial_id,chapter_id,knowledge_card_id,card_content_version,front_text,back_markdown,source_priority,sequence_no,status,revealed_at,completed_at FROM sr_learning_session_item WHERE account_id=#{accountId} AND session_id=#{sessionId} ORDER BY sequence_no,id
+  </select>
+  <insert id="insertItem" useGeneratedKeys="true" keyProperty="row.id">
+    INSERT INTO sr_learning_session_item(session_id,account_id,tutorial_id,chapter_id,knowledge_card_id,card_content_version,front_text,back_markdown,source_priority,sequence_no,status) VALUES(#{row.sessionId},#{row.accountId},#{row.tutorialId},#{row.chapterId},#{row.knowledgeCardId},#{row.cardContentVersion},#{row.frontText},#{row.backMarkdown},#{row.sourcePriority},#{row.sequenceNo},'PENDING')
+  </insert>
+  <update id="revealItem">
+    UPDATE sr_learning_session_item SET revealed_at=COALESCE(revealed_at,CURRENT_TIMESTAMP(3)) WHERE account_id=#{accountId} AND session_id=#{sessionId} AND knowledge_card_id=#{cardId} AND status='PENDING'
+  </update>
+  <update id="completeItem">
+    UPDATE sr_learning_session_item SET status='COMPLETED',completed_at=CURRENT_TIMESTAMP(3) WHERE account_id=#{accountId} AND session_id=#{sessionId} AND knowledge_card_id=#{cardId} AND status='PENDING' AND revealed_at IS NOT NULL
+  </update>
+  <select id="initialCardIds" resultType="Long">
+    SELECT knowledge_card_id FROM sr_learning_evidence WHERE account_id=#{accountId} AND chapter_id=#{chapterId} AND evidence_type='INITIAL'
+  </select>
+  <insert id="insertEvidence" useGeneratedKeys="true" keyProperty="row.id">
+    INSERT INTO sr_learning_evidence(account_id,session_id,tutorial_id,chapter_id,knowledge_card_id,card_content_version,evidence_type,rating,previous_mastery_status,mastery_status) VALUES(#{row.accountId},#{row.sessionId},#{row.tutorialId},#{row.chapterId},#{row.knowledgeCardId},#{row.cardContentVersion},#{row.evidenceType},#{row.rating},#{row.previousMasteryStatus},#{row.masteryStatus})
+  </insert>
+  <select id="cardEvidence" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Evidence">
+    SELECT id,account_id,session_id,tutorial_id,chapter_id,knowledge_card_id,card_content_version,evidence_type,rating,previous_mastery_status,mastery_status,created_at FROM sr_learning_evidence WHERE account_id=#{accountId} AND knowledge_card_id=#{cardId} ORDER BY created_at DESC,id DESC
+  </select>
+  <select id="sessionEvidence" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Evidence">
+    SELECT id,account_id,session_id,tutorial_id,chapter_id,knowledge_card_id,card_content_version,evidence_type,rating,previous_mastery_status,mastery_status,created_at FROM sr_learning_evidence WHERE account_id=#{accountId} AND session_id=#{sessionId} ORDER BY id
+  </select>
+  <select id="masteries" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Mastery">
+    SELECT id,account_id,knowledge_card_id,mastery_status,latest_rating,evidence_count,forgot_count,fuzzy_count,remembered_count,recent_score,last_evidence_at,latest_evidence_card_version FROM sr_knowledge_mastery WHERE account_id=#{accountId}
+  </select>
+  <insert id="upsertMastery">
+    INSERT INTO sr_knowledge_mastery(account_id,knowledge_card_id,mastery_status,latest_rating,evidence_count,forgot_count,fuzzy_count,remembered_count,recent_score,last_evidence_at,latest_evidence_card_version) VALUES(#{row.accountId},#{row.knowledgeCardId},#{row.masteryStatus},#{row.latestRating},#{row.evidenceCount},#{row.forgotCount},#{row.fuzzyCount},#{row.rememberedCount},#{row.recentScore},#{row.lastEvidenceAt},#{row.latestEvidenceCardVersion}) ON DUPLICATE KEY UPDATE mastery_status=VALUES(mastery_status),latest_rating=VALUES(latest_rating),evidence_count=VALUES(evidence_count),forgot_count=VALUES(forgot_count),fuzzy_count=VALUES(fuzzy_count),remembered_count=VALUES(remembered_count),recent_score=VALUES(recent_score),last_evidence_at=VALUES(last_evidence_at),latest_evidence_card_version=VALUES(latest_evidence_card_version)
+  </insert>
+  <select id="answer" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Answer">
+    SELECT id,account_id,question_id,latest_version_id,version_count,answer_text,first_answered_at,last_answered_at,reference_unlocked_at FROM sr_user_question_answer WHERE account_id=#{accountId} AND question_id=#{questionId}
+  </select>
+  <insert id="insertAnswer" useGeneratedKeys="true" keyProperty="row.id">
+    INSERT INTO sr_user_question_answer(account_id,question_id,answer_text,reference_unlocked_at,version_count) VALUES(#{row.accountId},#{row.questionId},'',NULL,0)
+  </insert>
+  <insert id="insertAnswerVersion" useGeneratedKeys="true" keyProperty="row.id">
+    INSERT INTO sr_user_question_answer_version(answer_id,version_no,answer_text,answer_phase) VALUES(#{row.answerId},#{row.versionNo},#{row.answerText},#{row.answerPhase})
+  </insert>
+  <select id="answerVersions" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$AnswerVersion">
+    SELECT v.id,v.answer_id,v.version_no,v.answer_text,v.answer_phase,v.created_at FROM sr_user_question_answer_version v JOIN sr_user_question_answer a ON a.id=v.answer_id WHERE a.account_id=#{accountId} AND a.question_id=#{questionId} ORDER BY v.version_no
+  </select>
+  <update id="updateAnswerHeader">
+    UPDATE sr_user_question_answer SET latest_version_id=#{row.latestVersionId},version_count=#{row.versionCount},answer_text=#{row.answerText},first_answered_at=COALESCE(first_answered_at,CURRENT_TIMESTAMP(3)),last_answered_at=CURRENT_TIMESTAMP(3),reference_unlocked_at=COALESCE(reference_unlocked_at,CURRENT_TIMESTAMP(3)) WHERE account_id=#{row.accountId} AND id=#{row.id}
+  </update>
+  <select id="answeredQuestionIds" resultType="Long">
+    SELECT DISTINCT a.question_id FROM sr_user_question_answer a JOIN sr_user_question_answer_version v ON v.answer_id=a.id WHERE a.account_id=#{accountId} AND v.answer_phase='BEFORE_REFERENCE'
+  </select>
+  <select id="historySessions" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Session">
+    SELECT id,account_id,session_type,study_round,study_plan_id,study_task_id,tutorial_id,chapter_id,status,requested_item_count,summary_json,started_at,completed_at,abandoned_at FROM sr_learning_session WHERE account_id=#{accountId} ORDER BY started_at DESC,id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="countHistorySessions" resultType="long">
+    SELECT COUNT(*) FROM sr_learning_session WHERE account_id=#{accountId}
+  </select>
+  <sql id="historyJoins">
+    FROM sr_learning_session s
+    LEFT JOIN sr_tutorial t ON t.id=s.tutorial_id
+    LEFT JOIN sr_tutorial_chapter c ON c.id=s.chapter_id
+    LEFT JOIN sr_study_plan p ON p.id=s.study_plan_id AND p.account_id=s.account_id
+  </sql>
+  <sql id="historyConditions">
+    WHERE s.account_id=#{accountId}
+    <if test="query.status != null and query.status != ''">AND s.status=#{query.status}</if>
+    <if test="query.sessionType != null and query.sessionType != ''">AND s.session_type=#{query.sessionType}</if>
+    <if test="query.tutorialId != null">
+      AND (s.tutorial_id=#{query.tutorialId} OR EXISTS (SELECT 1 FROM sr_learning_session_item i WHERE i.session_id=s.id AND i.account_id=#{accountId} AND i.tutorial_id=#{query.tutorialId}))
+    </if>
+    <if test="query.fromDate != null">AND s.started_at &gt;= #{query.fromTime}</if>
+    <if test="query.toDate != null">AND s.started_at &lt; #{query.untilTime}</if>
+    <if test="query.keyword != null and query.keyword != ''">
+      AND (LOCATE(#{query.keyword},COALESCE(t.title,'')) &gt; 0 OR LOCATE(#{query.keyword},COALESCE(c.title,'')) &gt; 0
+        OR LOCATE(#{query.keyword},COALESCE(p.name,'')) &gt; 0
+        OR EXISTS (SELECT 1 FROM sr_learning_session_item i WHERE i.session_id=s.id AND i.account_id=#{accountId} AND LOCATE(#{query.keyword},i.front_text) &gt; 0))
+    </if>
+  </sql>
+  <select id="filteredHistory" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Session">
+    SELECT s.id,s.account_id,s.session_type,s.study_round,s.study_plan_id,s.study_task_id,s.tutorial_id,s.chapter_id,s.status,
+      s.study_round,s.requested_item_count,s.summary_json,s.started_at,s.completed_at,s.abandoned_at,t.title tutorial_title,c.title chapter_title,p.name plan_name
+    <include refid="historyJoins"/><include refid="historyConditions"/>
+    ORDER BY s.started_at DESC,s.id DESC LIMIT #{query.pageSize} OFFSET #{query.offset}
+  </select>
+  <select id="countFilteredHistory" resultType="long">
+    SELECT COUNT(*) <include refid="historyJoins"/><include refid="historyConditions"/>
+  </select>
+  <select id="historyTutorials" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$TutorialOption">
+    SELECT t.id,t.title FROM sr_tutorial t WHERE
+      EXISTS (SELECT 1 FROM sr_study_plan p WHERE p.tutorial_id=t.id AND p.account_id=#{accountId})
+      OR EXISTS (SELECT 1 FROM sr_learning_session s WHERE s.tutorial_id=t.id AND s.account_id=#{accountId})
+      OR EXISTS (SELECT 1 FROM sr_learning_session_item i WHERE i.tutorial_id=t.id AND i.account_id=#{accountId})
+    ORDER BY t.title,t.id
+  </select>
+
+  <update id="restartPlan">UPDATE sr_study_plan SET study_round=study_round+1,status='DRAFT' WHERE account_id=#{accountId} AND id=#{id} AND status='COMPLETED'</update>
+  <update id="clearPlanCompletion">UPDATE sr_study_plan_chapter SET completed_at=NULL WHERE account_id=#{accountId} AND plan_id=#{id}</update>
+  <update id="completePlanChapter">
+    UPDATE sr_study_plan_chapter c JOIN sr_study_plan p ON p.id=c.plan_id
+    JOIN sr_learning_session s ON s.study_plan_id=p.id AND s.study_round=p.study_round AND s.chapter_id=c.chapter_id
+    SET c.completed_at=COALESCE(c.completed_at,s.completed_at)
+    WHERE c.account_id=#{accountId} AND s.account_id=#{accountId} AND s.id=#{sessionId} AND s.status='COMPLETED'
+  </update>
+  <select id="planSession" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Session">
+    SELECT s.id,s.account_id,s.session_type,s.study_round,s.study_plan_id,s.study_task_id,s.tutorial_id,s.chapter_id,s.status,s.requested_item_count,s.summary_json,s.started_at,s.completed_at,s.abandoned_at
+    FROM sr_learning_session s JOIN sr_study_plan p ON p.id=s.study_plan_id AND p.study_round=s.study_round
+    WHERE s.account_id=#{accountId} AND p.account_id=#{accountId} AND p.id=#{planId} AND s.chapter_id=#{chapterId} ORDER BY s.id DESC LIMIT 1
+  </select>
+  <select id="openInitialSessions" resultType="com.starrainnotes.tutorial.learning.entity.EvidenceModels$Session">
+    SELECT id,account_id,session_type,study_round,study_plan_id,study_task_id,tutorial_id,chapter_id,status,requested_item_count,summary_json,started_at,completed_at,abandoned_at
+    FROM sr_learning_session WHERE account_id=#{accountId} AND chapter_id=#{chapterId} AND session_type='INITIAL_STUDY' AND status='IN_PROGRESS'
+  </select>
+  <insert id="insertSessionQuestion">
+    INSERT INTO sr_learning_session_question(session_id,question_id,baseline_version) VALUES(#{sessionId},#{questionId},#{baselineVersion})
+  </insert>
+  <select id="answeredForSession" resultType="Long">
+    SELECT DISTINCT a.question_id FROM sr_learning_session_question sq
+    JOIN sr_learning_session s ON s.id=sq.session_id
+    JOIN sr_user_question_answer a ON a.question_id=sq.question_id AND a.account_id=s.account_id
+    JOIN sr_user_question_answer_version v ON v.answer_id=a.id
+    WHERE s.account_id=#{accountId} AND sq.session_id=#{sessionId} AND v.answer_phase='BEFORE_REFERENCE' AND v.version_no &gt; sq.baseline_version
+  </select>
+</mapper>

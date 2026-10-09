@@ -13,7 +13,7 @@ import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
  *   - 单标签：点一个换一个（等价于原来的 ?tag=），选中后再点一次取消；
  *   - 多标签：点一个加一个（?tags=a,b，命中任一），可以攒几个一起看；
  *   - 「应用筛选」才真正 emit 出去，父组件换掉下方列表并收起卡片；
- *   - 「清空」只清本地勾选，「全部（不筛选）」清空并立刻应用。
+ *   - 「清空」只清本地勾选；空选项也可通过「应用筛选」取消当前筛选。
  * 打开时会用当前生效的标签预填勾选，再次打开不会「忘掉」上次选了什么。
  */
 const props = defineProps({
@@ -168,7 +168,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 
         <footer class="tag-overlay__foot">
           <div class="tag-overlay__picked">
-            <span v-if="!picked.length" class="tag-overlay__hint">还没有选择标签（选好后点「应用筛选」）。</span>
+            <span v-if="!picked.length" class="tag-overlay__hint">未选择标签，应用后显示所有文章。</span>
             <template v-else>
               <span>已选 {{ picked.length }} 个：</span>
               <button v-for="slug in picked" :key="slug" type="button" class="tag-overlay__chip" @click="toggle(slug)">
@@ -178,8 +178,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
           </div>
           <div class="tag-overlay__actions">
             <button type="button" @click="clearPicked">清空</button>
-            <button type="button" @click="emit('apply', [])">全部（不筛选）</button>
-            <button class="primary-button" type="button" :disabled="!picked.length" @click="apply">应用筛选</button>
+            <button class="primary-button" type="button" @click="apply">应用筛选</button>
           </div>
         </footer>
       </section>

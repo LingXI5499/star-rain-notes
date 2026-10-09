@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.english.knowledge.mapper.EnglishSearchSourceMapper">
+    <!-- Reuse the public article predicates so search has the same visibility as detail pages. -->
+    <sql id="source">
+        <choose>
+            <when test="type == 'ENGLISH_VOCABULARY_THEME'">
+                SELECT t.id, #{type} AS content_type, t.name AS title, t.layer AS summary,
+                    t.layer AS searchable_text, CONCAT('/english/vocabulary/', t.id) AS route_path,
+                    NULL AS published_at, t.updated_at, NULL AS theme_id
+                FROM sr_english_vocabulary_theme t
+            </when>
+            <when test="type == 'ENGLISH_VOCABULARY_WORD'">
+                SELECT w.id, #{type} AS content_type, w.word AS title, w.translation AS summary,
+                    CONCAT_WS(' ', w.part_of_speech, w.scene_meaning, w.inflections, CAST(w.examples AS CHAR)) AS searchable_text,
+                    NULL AS route_path, NULL AS published_at, w.updated_at, w.theme_id
+                FROM sr_english_vocabulary_word w
+                INNER JOIN sr_english_vocabulary_theme t ON t.id = w.theme_id
+            </when>
+            <when test="type == 'ENGLISH_GRAMMAR_COURSE'">
+                SELECT c.id, #{type} AS content_type, c.title, c.summary,
+                    CONCAT_WS(' ', c.subtitle, c.introduction, c.roadmap_markdown) AS searchable_text,
+                    '/english/grammar' AS route_path, c.published_at, c.updated_at, NULL AS theme_id
+                FROM sr_english_grammar_course c WHERE c.publish_status = 'PUBLISHED'
+            </when>
+            <when test="type == 'ENGLISH_GRAMMAR_LESSON'">
+                SELECT l.id, #{type} AS content_type, l.title, l.summary,
+                    l.body_markdown AS searchable_text, CONCAT('/english/grammar/', l.slug) AS route_path,
+                    l.published_at, l.updated_at, NULL AS theme_id
+                FROM sr_english_grammar_lesson l
+                INNER JOIN sr_english_grammar_course c ON c.id = l.course_id
+                INNER JOIN sr_english_grammar_section s ON s.id = l.section_id AND s.course_id = c.id
+                WHERE c.publish_status = 'PUBLISHED' AND l.publish_status = 'PUBLISHED'
+            </when>
+            <when test="type == 'ENGLISH_READING'">
+                SELECT a.id, #{type} AS content_type, a.title, a.summary,
+                    CONCAT_WS(' ', a.body_markdown, a.translation_zh_markdown) AS searchable_text,
+                    CONCAT('/english/reading/', a.slug) AS route_path, a.published_at, a.updated_at, NULL AS theme_id
+                FROM sr_english_reading_article a WHERE a.deleted_at IS NULL
+                    AND <include refid="com.starrainnotes.english.reading.mapper.ReadingMapper.publicCheck"/>
+            </when>
+            <when test="type == 'ENGLISH_WRITING'">
+                SELECT a.id, #{type} AS content_type, a.title, a.summary,
+                    CONCAT_WS(' ', a.body_markdown, a.translation_zh_markdown, a.keywords_json) AS searchable_text,
+                    CONCAT('/english/writing/author/', a.slug) AS route_path, a.published_at, a.updated_at, NULL AS theme_id
+                FROM sr_english_writing_article a
+                WHERE <include refid="com.starrainnotes.english.writing.article.mapper.WritingArticleMapper.public"/>
+            </when>
+        </choose>
+    </sql>
+    <select id="page" resultType="com.starrainnotes.english.api.dto.EnglishSearchDocument">
+        SELECT documents.id, documents.content_type, documents.title, documents.summary,
+            documents.searchable_text, documents.route_path, documents.published_at,
+            documents.updated_at, documents.theme_id FROM (<include refid="source"/>) documents
+        <if test="afterId != null">WHERE documents.id &gt; #{afterId}</if>
+        ORDER BY documents.id LIMIT #{limit}
+    </select>
+    <select id="findPublished" resultType="com.starrainnotes.english.api.dto.EnglishSearchDocument">
+        SELECT documents.id, documents.content_type, documents.title, documents.summary,
+            documents.searchable_text, documents.route_path, documents.published_at,
+            documents.updated_at, documents.theme_id FROM (<include refid="source"/>) documents WHERE documents.id = #{id}
+    </select>
+</mapper>

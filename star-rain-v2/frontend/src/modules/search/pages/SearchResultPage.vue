@@ -22,11 +22,20 @@ const types = [
   { value: '', label: '全部' },
   { value: 'TUTORIAL', label: '教程' },
   { value: 'CHAPTER', label: '章节' },
+  { value: 'ENGLISH', label: '英语' },
   { value: 'BLOG', label: '博客' },
   { value: 'PORTFOLIO', label: '作品' },
   { value: 'PROFILE', label: '作者' },
 ]
-const typeLabel = Object.fromEntries(types.map((item) => [item.value, item.label]))
+const typeLabel = {
+  ...Object.fromEntries(types.map((item) => [item.value, item.label])),
+  ENGLISH_VOCABULARY_THEME: '英语词汇主题',
+  ENGLISH_VOCABULARY_WORD: '英语单词',
+  ENGLISH_GRAMMAR_COURSE: '英语语法课程',
+  ENGLISH_GRAMMAR_LESSON: '英语语法课时',
+  ENGLISH_READING: '英语阅读',
+  ENGLISH_WRITING: '英语原创写作',
+}
 const activeType = computed(() => String(route.query.type || ''))
 const page = computed(() => publicPage(route.query.page))
 const pageSize = computed(() => publicPageSize(route.query.pageSize, 20, [10, 20, 50]))
@@ -68,7 +77,7 @@ onBeforeUnmount(() => request?.abort())
     <header>
       <p class="eyebrow">SITE SEARCH · 全站检索</p>
       <h1>搜索</h1>
-      <p>在已公开的教程、博客、作品与作者资料中查找内容。</p>
+      <p>在已公开的教程、英语词汇、语法、阅读、原创写作、博客、作品与作者资料中查找内容。</p>
     </header>
     <PublicFilterBar label="搜索筛选" :active="Boolean(route.query.q || activeType)" @reset="q = ''; navigate({ q: undefined, type: undefined, page: undefined })">
       <PublicSearch v-model="q" label="搜索内容" placeholder="输入至少两个字符" @search="navigate({ page: undefined })" />

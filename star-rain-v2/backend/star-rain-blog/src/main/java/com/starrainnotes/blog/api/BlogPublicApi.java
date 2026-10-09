@@ -1,6 +1,7 @@
 package com.starrainnotes.blog.api;
 
 import com.starrainnotes.blog.api.dto.BlogPostSummary;
+import com.starrainnotes.blog.api.dto.BlogTopicSummary;
 import java.util.List;
 
 /*
@@ -16,4 +17,10 @@ public interface BlogPublicApi {
 
     // 某个专题下的文章，按专题内人工顺序之外的发布时间倒序展示
     List<BlogPostSummary> featuredByTopic(String topicSlug, int limit);
+
+    /** Enabled topics that have public pages, in navigation order. */
+    List<BlogTopicSummary> publishedTopics();
+
+    /** An enabled topic by slug, or null when the page is not public. */
+    BlogTopicSummary publishedTopicBySlug(String slug);
 }

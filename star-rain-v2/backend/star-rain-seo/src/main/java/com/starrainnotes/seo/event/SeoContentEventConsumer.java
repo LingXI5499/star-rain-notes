@@ -2,6 +2,8 @@ package com.starrainnotes.seo.event;
 
 import com.starrainnotes.blog.api.event.BlogPostPublishedEvent;
 import com.starrainnotes.blog.api.event.BlogPostWithdrawnEvent;
+import com.starrainnotes.blog.api.event.BlogPostChangedEvent;
+import com.starrainnotes.blog.api.event.BlogTopicChangedEvent;
 import com.starrainnotes.portfolio.api.event.WorkPublicationChangedEvent;
 import com.starrainnotes.profile.api.ProfilePublicApi;
 import com.starrainnotes.profile.api.event.ProfileChangedEvent;
@@ -38,6 +40,28 @@ public class SeoContentEventConsumer {
     @EventListener
     public void onBlogWithdrawn(BlogPostWithdrawnEvent event) {
         safe("BLOG", event.getPostId(), () -> remove("/blog/posts/" + event.getSlug()));
+    }
+
+    @EventListener
+    public void onBlogChanged(BlogPostChangedEvent event) {
+        safe("BLOG", event.postId(), () -> {
+            if (!event.previousSlug().equals(event.slug())) {
+                remove("/blog/posts/" + event.previousSlug());
+            }
+            upsert("/blog/posts/" + event.slug());
+        });
+    }
+
+    @EventListener
+    public void onBlogTopicChanged(BlogTopicChangedEvent event) {
+        safe("BLOG_TOPIC", event.topicId(), () -> {
+            String path = "/blog/topics/" + event.slug();
+            if (event.previousSlug() != null && !event.previousSlug().equals(event.slug())) {
+                remove("/blog/topics/" + event.previousSlug());
+            }
+            if (event.visible()) upsert(path);
+            else remove(path);
+        });
     }
 
     @EventListener

@@ -191,6 +191,7 @@ async function switchInvitationAccount() {
             {{ busy ? '处理中…' : title }} <span aria-hidden="true">→</span>
           </button>
         </form>
+        <p class="muted">使用账号服务前，请阅读<RouterLink :to="accountPath('/terms')">用户协议</RouterLink>与<RouterLink :to="accountPath('/privacy')">隐私政策</RouterLink>。</p>
         <!--
           注册入口按所有者口径收在登录页底部这一行：顶栏不再并列「登录 / 注册」
           （见 modules/account/components/AccountEntry.vue），但注册页本身保留，

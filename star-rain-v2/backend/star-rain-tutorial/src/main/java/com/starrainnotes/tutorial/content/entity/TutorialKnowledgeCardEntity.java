@@ -11,6 +11,7 @@ import lombok.Data;
 public class TutorialKnowledgeCardEntity {
     private Long id;
     private Long chapterId;
+    private Integer contentVersion = 1;
     private String frontText;
     private String backMarkdown;
     private Integer sortOrder;

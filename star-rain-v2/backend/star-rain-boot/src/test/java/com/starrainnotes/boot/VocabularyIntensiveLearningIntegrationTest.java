@@ -65,7 +65,7 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
     private VocabularyLearningService service(SqlSession session) {
         VocabularyMapper content = session.getMapper(VocabularyMapper.class);
         return new VocabularyLearningService(session.getMapper(VocabularyLearningMapper.class), content,
-                new VocabularyServiceImpl(content), new ObjectMapper().findAndRegisterModules(), clock);
+                new VocabularyServiceImpl(content, org.mockito.Mockito.mock(org.springframework.context.ApplicationEventPublisher.class)), new ObjectMapper().findAndRegisterModules(), clock);
     }
     private void apply(String file) throws SQLException {
         ScriptUtils.executeSqlScript(sql.getConnection(), new EncodedResource(new ClassPathResource("db/migration/" + file), "UTF-8"));

@@ -11,6 +11,8 @@ import com.starrainnotes.english.vocabulary.exception.VocabularyWordNotFoundExce
 import com.starrainnotes.english.vocabulary.mapper.VocabularyMapper;
 import com.starrainnotes.english.vocabulary.service.VocabularyService;
 import com.starrainnotes.english.vocabulary.vo.VocabularyWordAudioVO;
+import com.starrainnotes.english.api.event.EnglishSearchContentChangedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -26,6 +28,7 @@ public class VocabularyServiceImpl implements VocabularyService {
     private static final int MAX_PAGE_SIZE = 100;
 
     private final VocabularyMapper mapper;
+    private final ApplicationEventPublisher events;
 
     @Override
     @Transactional(readOnly = true)
@@ -97,6 +100,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         theme.setName(request.getName().trim());
         theme.setSortOrder(number(request.getSortOrder()));
         mapper.insertTheme(theme);
+        changed("ENGLISH_VOCABULARY_THEME", theme.getId());
         return requiredTheme(theme.getId());
     }
 
@@ -113,6 +117,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         if (mapper.updateTheme(theme) == 0) {
             throw new VocabularyThemeNotFoundException();
         }
+        changed("ENGLISH_VOCABULARY_THEME", theme.getId());
         return requiredTheme(theme.getId());
     }
 
@@ -122,6 +127,8 @@ public class VocabularyServiceImpl implements VocabularyService {
         if (mapper.deleteTheme(id(themeId)) == 0) {
             throw new VocabularyThemeNotFoundException();
         }
+        changed("ENGLISH_VOCABULARY_THEME", id(themeId));
+        changed("ENGLISH_VOCABULARY_WORD", null);
     }
 
     @Override
@@ -130,6 +137,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         validateWord(request);
         Word word = fromRequest(request);
         mapper.insertWord(word);
+        changed("ENGLISH_VOCABULARY_WORD", word.getId());
         return requiredWord(word.getId());
     }
 
@@ -142,6 +150,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         if (mapper.updateWord(word) == 0) {
             throw new VocabularyWordNotFoundException();
         }
+        changed("ENGLISH_VOCABULARY_WORD", word.getId());
         return requiredWord(word.getId());
     }
 
@@ -151,6 +160,11 @@ public class VocabularyServiceImpl implements VocabularyService {
         if (mapper.deleteWord(id(wordId)) == 0) {
             throw new VocabularyWordNotFoundException();
         }
+        changed("ENGLISH_VOCABULARY_WORD", id(wordId));
+    }
+
+    private void changed(String type, Long id) {
+        events.publishEvent(new EnglishSearchContentChangedEvent(type, id));
     }
 
     private Word requiredWord(long wordId) {

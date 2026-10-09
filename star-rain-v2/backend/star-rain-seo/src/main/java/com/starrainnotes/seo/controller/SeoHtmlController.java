@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SeoHtmlController {
     private final SeoHtmlPageService service;
 
-    @GetMapping(value = {"/", "/blog", "/blog/archive", "/blog/posts/{slug}",
+    @GetMapping(value = {"/", "/blog", "/blog/archive", "/blog/posts/{slug}", "/blog/topics/{slug}",
         "/tutorials", "/tutorials/{slug}", "/tutorials/{slug}/{chapterSlug}",
         "/portfolio", "/portfolio/{slug}", "/messages", "/about"},
         produces = MediaType.TEXT_HTML_VALUE)

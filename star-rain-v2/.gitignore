@@ -10,3 +10,14 @@ docs/
 
 # 上传的媒体文件按用户要求放在前后端根目录同级，不进版本库
 /media/
+
+# Local handoff material and generated Python caches
+/star-rain-codex-v2/
+/*.md
+!/README.md
+!/CHANGELOG.md
+/*.png
+/*.jpg
+/*.webp
+**/__pycache__/
+*.pyc

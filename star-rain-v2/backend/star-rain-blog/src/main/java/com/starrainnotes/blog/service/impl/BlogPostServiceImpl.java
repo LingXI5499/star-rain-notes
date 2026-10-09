@@ -3,6 +3,7 @@ package com.starrainnotes.blog.service.impl;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.blog.constant.BlogLimits;
 import com.starrainnotes.blog.constant.BlogMediaReference;
+import com.starrainnotes.blog.api.event.BlogPostChangedEvent;
 import com.starrainnotes.blog.dto.BlogPostBodyDTO;
 import com.starrainnotes.blog.dto.BlogPostCreateDTO;
 import com.starrainnotes.blog.dto.BlogPostQueryDTO;
@@ -43,8 +44,11 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 /*
  * BLOG-003 创建 / 编辑 Post 的实现。
@@ -63,19 +67,22 @@ public class BlogPostServiceImpl implements BlogPostService {
     private final MediaReferenceApi mediaReferenceApi;
     private final CurrentActorApi currentActorApi;
     private final BlogViewAssembler assembler;
+    private final ApplicationEventPublisher eventPublisher;
 
     public BlogPostServiceImpl(BlogPostMapper postMapper,
                                BlogTagMapper tagMapper,
                                BlogTopicMapper topicMapper,
                                MediaReferenceApi mediaReferenceApi,
                                CurrentActorApi currentActorApi,
-                               BlogViewAssembler assembler) {
+                               BlogViewAssembler assembler,
+                               ApplicationEventPublisher eventPublisher) {
         this.postMapper = postMapper;
         this.tagMapper = tagMapper;
         this.topicMapper = topicMapper;
         this.mediaReferenceApi = mediaReferenceApi;
         this.currentActorApi = currentActorApi;
         this.assembler = assembler;
+        this.eventPublisher = eventPublisher;
     }
 
     @Override
@@ -221,6 +228,9 @@ public class BlogPostServiceImpl implements BlogPostService {
         if (request.getTagIds() != null) {
             syncTags(postId, request.getTagIds());
         }
+        if (BlogPostStatus.PUBLISHED_CODE.equals(post.getStatus())) {
+            eventAfterCommit(new BlogPostChangedEvent(postId, post.getSlug(), slug));
+        }
         return assembler.toAdminVO(requirePost(postId));
     }
 
@@ -250,6 +260,9 @@ public class BlogPostServiceImpl implements BlogPostService {
         for (Long mediaAssetId : contentIds) {
             // attach 会校验媒体存在且 ACTIVE：正文里引用了已归档素材时立刻报错，而不是发布后才发现
             mediaReferenceApi.attach(BlogMediaReferenceCommands.content(mediaAssetId, postId));
+        }
+        if (BlogPostStatus.PUBLISHED_CODE.equals(post.getStatus())) {
+            eventAfterCommit(new BlogPostChangedEvent(postId, post.getSlug(), post.getSlug()));
         }
         return assembler.toAdminDetailVO(requirePost(postId));
     }
@@ -289,6 +302,19 @@ public class BlogPostServiceImpl implements BlogPostService {
     // ------------------------------------------------------------------
     // 内部工具
     // ------------------------------------------------------------------
+
+    private void eventAfterCommit(BlogPostChangedEvent event) {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
+            eventPublisher.publishEvent(event);
+            return;
+        }
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+            @Override
+            public void afterCommit() {
+                eventPublisher.publishEvent(event);
+            }
+        });
+    }
 
     private BlogPostEntity requirePost(Long postId) {
         BlogPostEntity post = postId == null ? null : postMapper.postById(postId);

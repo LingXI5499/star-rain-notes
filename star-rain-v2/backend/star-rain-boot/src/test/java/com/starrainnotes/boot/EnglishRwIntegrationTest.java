@@ -53,7 +53,8 @@ class EnglishRwIntegrationTest extends MapperXmlIntegrationSupport {
      var adminActor=CurrentActorApi.CurrentActor.builder().accountId(71L).roles(Set.of("SUPER_ADMIN")).permissions(Set.of("english:content-publish")).build();
      when(actors.current()).thenReturn(adminActor);
      ReadingMapper readMapper=session.getMapper(ReadingMapper.class);ReadingEnhancementMapper enhanceMapper=session.getMapper(ReadingEnhancementMapper.class);
-     var reading=new ReadingServiceImpl(readMapper,metadata,taxonomy,enhanceMapper);
+     var events=mock(org.springframework.context.ApplicationEventPublisher.class);
+     var reading=new ReadingServiceImpl(readMapper,metadata,taxonomy,enhanceMapper,events);
      var enhancements=new ReadingEnhancementServiceImpl(reading,readMapper,enhanceMapper);
      var revisions=new ReadingRevisionServiceImpl(reading,readMapper,enhancements,metadata,actors,json);
      assertNull(readMapper.publicBySlug("legacy-probe"));
@@ -83,7 +84,7 @@ class EnglishRwIntegrationTest extends MapperXmlIntegrationSupport {
      var ext=ReadingDto.Request.builder().bodyMarkdown("External article.").contentOrigin("EXTERNAL").build();
      var external=reading.create(ext);String externalId=external.getId().toString();assertThrows(ApiException.class,()->reading.setPublished(externalId,true,0L));
      ReadingDto.Rights rights=new ReadingDto.Rights();rights.setRightsStatus("CLEARED");rights.setRightsBasis("test fixture permission");ext.setRights(rights);ext.setRowVersion(0L);external=reading.update(externalId,ext);reading.setPublished(externalId,true,external.getRowVersion());
-     var writing=new WritingArticleServiceImpl(session.getMapper(WritingArticleMapper.class),metadata,taxonomy,actors,json);
+     var writing=new WritingArticleServiceImpl(session.getMapper(WritingArticleMapper.class),metadata,taxonomy,actors,json,events);
      WritingArticleDto.Request w=new WritingArticleDto.Request();w.setBodyMarkdown("");w.setPrimaryTopicId(child);w.setKeywords(List.of("one","two"));
      var owned=writing.create(w);String wid=owned.getId().toString();assertEquals("PRIVATE",owned.getVisibility());assertThrows(ApiException.class,()->writing.complete(wid,0L));
      w.setBodyMarkdown("My original.");w.setRowVersion(0L);owned=writing.save(wid,w);assertThrows(ApiException.class,()->writing.save(wid,w));

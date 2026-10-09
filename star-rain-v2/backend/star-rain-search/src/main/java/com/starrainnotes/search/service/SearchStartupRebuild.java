@@ -23,6 +23,9 @@ public class SearchStartupRebuild {
             if (mapper.activeCount() == 0) {
                 rebuild.rebuildAll();
                 log.info("Search index initialized with {} public documents", mapper.activeCount());
+            } else {
+                // Existing installations already have other modules indexed; backfill English too.
+                rebuild.rebuildType("ENGLISH");
             }
         } catch (RuntimeException exception) {
             log.error("Search startup rebuild failed; admin rebuild remains available", exception);

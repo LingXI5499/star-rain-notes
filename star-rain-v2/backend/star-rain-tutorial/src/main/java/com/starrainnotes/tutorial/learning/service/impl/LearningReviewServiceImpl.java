@@ -30,7 +30,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
+@Deprecated
+// Legacy implementation retained for historical persistence tests; not registered as a Spring service.
 @RequiredArgsConstructor
 public class LearningReviewServiceImpl implements LearningReviewService {
     private final CurrentActorApi currentActorApi;

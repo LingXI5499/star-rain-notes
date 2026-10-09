@@ -1,16 +1,12 @@
 package com.starrainnotes.tutorial.learning.controller;
 
 import com.starrainnotes.common.result.ApiResponse;
-import com.starrainnotes.tutorial.learning.dto.LearningAnswerDTO;
 import com.starrainnotes.tutorial.learning.dto.LearningProgressDTO;
-import com.starrainnotes.tutorial.learning.service.LearningAnswerService;
 import com.starrainnotes.tutorial.learning.service.LearningProgressService;
-import com.starrainnotes.tutorial.learning.vo.LearningAnswerVO;
 import com.starrainnotes.tutorial.learning.vo.LearningProgressVO;
 import com.starrainnotes.tutorial.learning.vo.LearningTutorialProgressVO;
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,7 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 @PreAuthorize("isAuthenticated()")
 public class TutorialLearningController {
     private final LearningProgressService progressService;
-    private final LearningAnswerService answerService;
 
     @PutMapping("/progress/chapters/{chapterId}")
     public ApiResponse<LearningProgressVO> saveProgress(@PathVariable Long chapterId,
@@ -55,19 +50,4 @@ public class TutorialLearningController {
         return ApiResponse.ok(progressService.recent());
     }
 
-    @PutMapping("/questions/{questionId}/answer")
-    public ApiResponse<LearningAnswerVO> answer(@PathVariable Long questionId,
-            @Valid @RequestBody LearningAnswerDTO request) {
-        return ApiResponse.ok(answerService.answer(questionId, request));
-    }
-
-    @GetMapping("/questions/{questionId}/answer")
-    public ApiResponse<LearningAnswerVO> ownAnswer(@PathVariable Long questionId) {
-        return ApiResponse.ok(answerService.ownAnswer(questionId));
-    }
-
-    @GetMapping("/questions/{questionId}/reference-answer")
-    public ApiResponse<Map<String, String>> referenceAnswer(@PathVariable Long questionId) {
-        return ApiResponse.ok(Map.of("referenceAnswer", answerService.referenceAnswer(questionId)));
-    }
 }

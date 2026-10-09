@@ -3,9 +3,12 @@ package com.starrainnotes.search.service;
 import com.starrainnotes.search.api.SearchIndexApi;
 import com.starrainnotes.search.api.dto.SearchableDocument;
 import com.starrainnotes.search.mapper.SearchDocumentMapper;
+import com.starrainnotes.english.api.EnglishSearchTypes;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -14,7 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class SearchIndexService implements SearchIndexApi {
-    public static final Set<String> TYPES = Set.of("TUTORIAL", "CHAPTER", "BLOG", "PORTFOLIO", "PROFILE");
+    public static final Set<String> TYPES = Stream.concat(
+        Stream.of("TUTORIAL", "CHAPTER", "BLOG", "PORTFOLIO", "PROFILE"), EnglishSearchTypes.ALL.stream())
+        .collect(Collectors.toUnmodifiableSet());
     private final SearchDocumentMapper mapper;
 
     @Override

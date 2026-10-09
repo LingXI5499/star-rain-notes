@@ -1,5 +1,7 @@
 package com.starrainnotes.english.reading.service.impl;
 import com.starrainnotes.common.exception.ApiException;
+import com.starrainnotes.english.api.event.EnglishSearchContentChangedEvent;
+import org.springframework.context.ApplicationEventPublisher;
 import com.starrainnotes.english.reading.dto.ReadingDto.*;
 import com.starrainnotes.english.reading.mapper.ReadingMapper;
 import com.starrainnotes.english.reading.mapper.ReadingEnhancementMapper;
@@ -19,6 +21,7 @@ public class ReadingServiceImpl implements ReadingService {
     private final DocumentMetadataService metadata;
     private final TaxonomyService taxonomy;
     private final ReadingEnhancementMapper enhancements;
+    private final ApplicationEventPublisher events;
     @Override @Transactional(readOnly=true) public Page list(boolean admin,String search,int page,int size) { return listFiltered(admin,search,page,size,null,null,null); }
     @Override @Transactional(readOnly=true) public Page listFiltered(boolean admin,String search,int page,int size,Long topicId,Long genreId,Long purposeId) {
         int p=Math.max(1,page),s=Math.max(1,Math.min(50,size)); String term=search==null?"":search.trim(); EnglishBodyValidator.length(term,100);
@@ -52,6 +55,7 @@ public class ReadingServiceImpl implements ReadingService {
         if(!Objects.equals(old.getBodyMarkdown(),a.getBodyMarkdown())) { enhancements.stale(a.getId(),"EN"); enhancements.staleAnnotations(a.getId()); }
         if(!Objects.equals(old.getTranslationZhMarkdown(),a.getTranslationZhMarkdown())) enhancements.stale(a.getId(),"ZH");
         if(historical) metadata.replaceSnapshot("READING",a.getId(),request);else metadata.replace("READING",a.getId(),request);mapper.saveRights(a.getId(),a.getRights(),a.getSourceName(),a.getSourceUrl());
+        changed(a.getId());
         return get(identity,true);
     }
     @Override @Transactional public Article setPublished(String identity,boolean publish) { return setPublished(identity,publish,null); }
@@ -59,9 +63,10 @@ public class ReadingServiceImpl implements ReadingService {
         Article a=mapper.lockById(id(identity));if(a==null) notFound();a.setRights(mapper.rights(a.getId()));
         if(expectedVersion!=null && !expectedVersion.equals(a.getRowVersion())) conflict();
         if(publish) requirePublic(a);
-        if(mapper.setStatus(a.getId(),publish?"PUBLISHED":"WITHDRAWN",a.getRowVersion())!=1) conflict();return get(identity,true);
+        if(mapper.setStatus(a.getId(),publish?"PUBLISHED":"WITHDRAWN",a.getRowVersion())!=1) conflict();changed(a.getId());return get(identity,true);
     }
-    @Override @Transactional public void delete(String identity) { Article a=mapper.lockById(id(identity));if(a==null) notFound();if(mapper.delete(a.getId(),a.getRowVersion())!=1) conflict(); }
+    @Override @Transactional public void delete(String identity) { Article a=mapper.lockById(id(identity));if(a==null) notFound();if(mapper.delete(a.getId(),a.getRowVersion())!=1) conflict();changed(a.getId()); }
+    private void changed(Long id) { events.publishEvent(new EnglishSearchContentChangedEvent("ENGLISH_READING",id)); }
     private Article fromRequest(Request r,Article old) {
         Article a=new Article(); a.setTitle(EnglishBodyValidator.title(r.getTitle()));a.setSummary(EnglishBodyValidator.blank(r.getSummary()));a.setBodyMarkdown(EnglishBodyValidator.blank(r.getBodyMarkdown()));
         a.setTranslationZhMarkdown(r.getTranslationZhMarkdown());a.setPrimaryTopicId(r.getPrimaryTopicId());
