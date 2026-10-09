@@ -1,0 +1,1442 @@
+[
+  {
+    "topicId": 2,
+    "topicName": "数学与统计",
+    "title": "【阅读示例】数学与统计 · Mina counted the bicycles outside school for five mornings.",
+    "writingTitle": "【写作示例】数学与统计 · An average can start a conversation, but it cannot finish one.",
+    "reading": "Mina counted the bicycles outside school for five mornings. Friday looked busiest, but rain had changed the other days. She added a weather column and realized that a number needs a story beside it.",
+    "readingZh": "米娜连续五个早晨统计校外的自行车。周五最多，但其他几天下过雨。她加上天气一栏，意识到数字需要背景。",
+    "writing": "An average can start a conversation, but it cannot finish one. When I compare two groups, I want to know how the numbers were collected and what they leave out.",
+    "writingZh": "平均数可以开启讨论，却不能结束讨论。比较两组数据时，我想知道数据怎样收集，又遗漏了什么。"
+  },
+  {
+    "topicId": 3,
+    "topicName": "物理学",
+    "title": "【阅读示例】物理学 · A toy car rolled down a wooden ramp.",
+    "writingTitle": "【写作示例】物理学 · A small experiment makes an invisible idea easier to discuss.",
+    "reading": "A toy car rolled down a wooden ramp. Leo raised one end and watched the car travel farther. Before calling it a discovery, he checked whether the floor was level and repeated the trial.",
+    "readingZh": "玩具车沿木坡滑下。利奥抬高一端，车滑得更远。他先检查地面是否水平，又重复实验，才考虑得出结论。",
+    "writing": "A small experiment makes an invisible idea easier to discuss. I would rather describe what I measured than say that one quick demonstration proves everything.",
+    "writingZh": "小实验让看不见的概念更容易讨论。我更愿意描述测量结果，而不是说一次演示证明了一切。"
+  },
+  {
+    "topicId": 4,
+    "topicName": "化学",
+    "title": "【阅读示例】化学 · At the science fair, Nora compared two clean pieces of metal.",
+    "writingTitle": "【写作示例】化学 · Chemistry begins with careful observation in this story.",
+    "reading": "At the science fair, Nora compared two clean pieces of metal. One had spent a week outdoors; the other stayed in a dry box. Their different surfaces made her curious about the air around them.",
+    "readingZh": "科学展上，诺拉比较两块金属。一块在室外放了一周，另一块留在干燥盒中。表面的差异让她对周围空气产生好奇。",
+    "writing": "Chemistry begins with careful observation in this story. A changed surface is a question to investigate, not an invitation to mix unfamiliar substances without supervision.",
+    "writingZh": "在这个故事里，化学始于细心观察。变化的表面提出了问题，却不意味着可以在无人指导时混合陌生物质。"
+  },
+  {
+    "topicId": 5,
+    "topicName": "生物学",
+    "title": "【阅读示例】生物学 · Aya drew the leaves of a bean plant every Monday.",
+    "writingTitle": "【写作示例】生物学 · Living things rarely fit a perfectly simple story.",
+    "reading": "Aya drew the leaves of a bean plant every Monday. New leaves appeared after the pot moved closer to the window. Her notebook also recorded water and temperature, so she would not credit the light alone.",
+    "readingZh": "阿雅每周一画豆苗叶片。花盆移近窗户后长出新叶。她也记录浇水和温度，以免只把变化归因于光照。",
+    "writing": "Living things rarely fit a perfectly simple story. I like a biology notebook that records unexpected changes as honestly as the results its owner hoped to see.",
+    "writingZh": "生命很少符合完全简单的故事。我喜欢生物观察笔记同样诚实地记录意外变化和期待中的结果。"
+  },
+  {
+    "topicId": 6,
+    "topicName": "天文学",
+    "title": "【阅读示例】天文学 · The astronomy club waited for a clear evening.",
+    "writingTitle": "【写作示例】天文学 · Not seeing an object is also worth recording.",
+    "reading": "The astronomy club waited for a clear evening. Jun could not find the faint object shown on his chart. Instead of pretending, he marked the bright stars he could see and tried again the next week.",
+    "readingZh": "天文社等待晴朗夜晚。俊没找到星图上那颗暗淡天体。他没有假装看见，而是标出可见亮星，下周再试。",
+    "writing": "Not seeing an object is also worth recording. Astronomy encourages me to distinguish what I expected from what I actually observed under a particular sky.",
+    "writingZh": "没有看到天体也值得记录。天文学让我区分预期和在特定天空下真正观察到的事物。"
+  },
+  {
+    "topicId": 7,
+    "topicName": "地球科学",
+    "title": "【阅读示例】地球科学 · After a storm, Sam walked along the river with his class.",
+    "writingTitle": "【写作示例】地球科学 · A familiar place can teach us geography when we return to it carefully.",
+    "reading": "After a storm, Sam walked along the river with his class. The bank had a new curve, and sand covered an old path. Their photographs became a record of a landscape that never quite stands still.",
+    "readingZh": "暴风雨后，山姆随班级沿河行走。河岸出现新曲线，沙子覆盖旧路。照片记录了不断变化的地貌。",
+    "writing": "A familiar place can teach us geography when we return to it carefully. Comparing two visits often reveals more than treating a landscape as a fixed picture.",
+    "writingZh": "认真重访熟悉的地方，也能学习地理。比较两次观察，往往比把风景当成静止图画收获更多。"
+  },
+  {
+    "topicId": 8,
+    "topicName": "科学方法与实验",
+    "title": "【阅读示例】科学方法与实验 · The class wanted to test a new paper airplane.",
+    "writingTitle": "【写作示例】科学方法与实验 · Fair comparisons need shared rules.",
+    "reading": "The class wanted to test a new paper airplane. They agreed on one launch point and recorded every flight, including failures. The winning design changed after they compared the whole notebook instead of the longest flight.",
+    "readingZh": "班级测试新纸飞机。他们统一起飞位置，记录全部飞行，包括失败。比较完整记录而非最远一次后，最佳设计改变了。",
+    "writing": "Fair comparisons need shared rules. I trust a report more when it explains its failed trials and lets another person repeat the procedure.",
+    "writingZh": "公平比较需要共同规则。如果报告说明失败试验，并让别人能重复过程，我会更信任它。"
+  },
+  {
+    "topicId": 9,
+    "topicName": "科学发现与研究",
+    "title": "【阅读示例】科学发现与研究 · A museum volunteer found two labels that disagreed about an old discovery.",
+    "writingTitle": "【写作示例】科学发现与研究 · A discovery has a history, not just a dramatic headline.",
+    "reading": "A museum volunteer found two labels that disagreed about an old discovery. She checked the archive before changing either one. The final display described both the early claim and the evidence that later revised it.",
+    "readingZh": "博物馆志愿者发现两张标签对旧发现描述不同。她先核查档案。最终展板同时说明早期说法和后来修正它的证据。",
+    "writing": "A discovery has a history, not just a dramatic headline. Showing how an explanation changed can make scientific research feel more human and more trustworthy.",
+    "writingZh": "发现有历史，不只是醒目的标题。呈现解释如何改变，能让科学研究更有人情味，也更可信。"
+  },
+  {
+    "topicId": 11,
+    "topicName": "人工智能",
+    "title": "【阅读示例】人工智能 · An image tool called every round fruit an apple.",
+    "writingTitle": "【写作示例】人工智能 · An impressive answer is still a guess that deserves checking.",
+    "reading": "An image tool called every round fruit an apple. Mei tested it with an orange and saved the mistake. Her team changed the demonstration: visitors would compare the tool's guesses with their own observations.",
+    "readingZh": "图像工具把所有圆形水果都叫作苹果。梅用橙子测试并保存错误。团队改成让访客比较工具猜测和自己的观察。",
+    "writing": "An impressive answer is still a guess that deserves checking. I want an AI demonstration to show uncertainty and mistakes alongside its successful examples.",
+    "writingZh": "令人印象深刻的答案仍值得检查。我希望人工智能演示在成功示例之外，也呈现不确定性和错误。"
+  },
+  {
+    "topicId": 12,
+    "topicName": "计算机科学",
+    "title": "【阅读示例】计算机科学 · The school library's search program could not find a book with an extra space in its title.",
+    "writingTitle": "【写作示例】计算机科学 · Learning to program means learning to ask precise questions.",
+    "reading": "The school library's search program could not find a book with an extra space in its title. Chen wrote a tiny test and traced the input step by step. The fix was small; understanding the path took longer.",
+    "readingZh": "图书馆搜索程序找不到标题多了空格的书。陈写了小测试并逐步追踪输入。修复很小，理解过程花的时间更长。",
+    "writing": "Learning to program means learning to ask precise questions. A short example that reproduces a problem can be more useful than a long argument about whose code is wrong.",
+    "writingZh": "学习编程意味着学习提出精确问题。能复现问题的短示例，有时比争论谁的代码有错更有用。"
+  },
+  {
+    "topicId": 13,
+    "topicName": "软件工程",
+    "title": "【阅读示例】软件工程 · A release worked on the developer's laptop but failed on the shared server.",
+    "writingTitle": "【写作示例】软件工程 · Good software work includes the path from an idea to a dependable release.",
+    "reading": "A release worked on the developer's laptop but failed on the shared server. The team compared their settings and documented the difference. For the next release, they rehearsed the same steps on a clean machine.",
+    "readingZh": "发布在开发者电脑上成功，却在共享服务器失败。团队比较配置并记录差异。下次发布前，他们在干净环境演练相同步骤。",
+    "writing": "Good software work includes the path from an idea to a dependable release. Documentation, review, and a repeatable setup deserve time in the schedule.",
+    "writingZh": "好的软件工作包含从想法到可靠发布的过程。文档、评审和可重复的环境配置都值得安排时间。"
+  },
+  {
+    "topicId": 14,
+    "topicName": "互联网与通信",
+    "title": "【阅读示例】互联网与通信 · During a video call, Lina's voice arrived late.",
+    "writingTitle": "【写作示例】互联网与通信 · A communication tool changes how people take turns.",
+    "reading": "During a video call, Lina's voice arrived late. Her friend waited rather than speaking over her. They switched to a written list for the difficult decisions and returned to conversation when the connection improved.",
+    "readingZh": "视频通话时，莉娜的声音延迟。朋友耐心等候。困难的决定先用书面列表讨论，连接改善后再交谈。",
+    "writing": "A communication tool changes how people take turns. When a connection is unreliable, agreeing on another channel can protect both the message and the relationship.",
+    "writingZh": "沟通工具会改变人们轮流说话的方式。连接不稳定时，约定另一种渠道能同时保护信息和关系。"
+  },
+  {
+    "topicId": 15,
+    "topicName": "网络与信息安全",
+    "title": "【阅读示例】网络与信息安全 · An unexpected message asked Ben to open a file immediately.",
+    "writingTitle": "【写作示例】网络与信息安全 · Trust should not depend on a familiar name alone.",
+    "reading": "An unexpected message asked Ben to open a file immediately. The sender's name looked familiar, but the request felt unusual. He contacted his colleague through their usual channel before deciding what to do with the attachment.",
+    "readingZh": "意外消息要求本立即打开文件。名字熟悉，但要求反常。他先通过常用渠道联系同事，再决定怎样处理附件。",
+    "writing": "Trust should not depend on a familiar name alone. This scene reminds me that a calm question can interrupt the pressure created by an urgent message.",
+    "writingZh": "信任不应只依赖熟悉的名字。这个场景提醒我，冷静询问能打断紧急消息制造的压力。"
+  },
+  {
+    "topicId": 16,
+    "topicName": "机器人与自动化",
+    "title": "【阅读示例】机器人与自动化 · The workshop robot placed an empty cup perfectly, then dropped one with a heavy handle.",
+    "writingTitle": "【写作示例】机器人与自动化 · Automation deserves tests that resemble the place where it will work.",
+    "reading": "The workshop robot placed an empty cup perfectly, then dropped one with a heavy handle. Its designers watched the recording together. They added different cups to the next demonstration and stopped describing the task as already solved.",
+    "readingZh": "机器人能准确放下空杯，却掉落了带重把手的杯子。设计者一起看录像，并在下一次展示增加杯型，不再说任务已经解决。",
+    "writing": "Automation deserves tests that resemble the place where it will work. A smooth demonstration with one object says little about the variety of an ordinary day.",
+    "writingZh": "自动化需要接近真实场景的测试。对单个物体的顺利演示，很难说明日常环境中的多样情况。"
+  },
+  {
+    "topicId": 17,
+    "topicName": "电子与半导体",
+    "title": "【阅读示例】电子与半导体 · Ravi followed the thin tracks on an old circuit board with a magnifying glass.",
+    "writingTitle": "【写作示例】电子与半导体 · A device's small parts can invite large questions.",
+    "reading": "Ravi followed the thin tracks on an old circuit board with a magnifying glass. He drew their connections without powering the board. What first looked like a crowded pattern slowly became a map he could discuss with his teacher.",
+    "readingZh": "拉维用放大镜观察旧电路板细线，不通电，只画连接关系。拥挤图案逐渐成为能和老师讨论的地图。",
+    "writing": "A device's small parts can invite large questions. I enjoy learning how components connect before rushing to replace something whose purpose I do not yet understand.",
+    "writingZh": "设备的小部件能引出大问题。我喜欢先了解元件怎样连接，再考虑更换尚不了解用途的东西。"
+  },
+  {
+    "topicId": 18,
+    "topicName": "机械与工程制造",
+    "title": "【阅读示例】机械与工程制造 · A bracket fit one machine but not the next.",
+    "writingTitle": "【写作示例】机械与工程制造 · Manufacturing makes the cost of a vague drawing visible.",
+    "reading": "A bracket fit one machine but not the next. The workshop measured both openings and found a small difference. Instead of forcing the part into place, they revised the drawing and labeled the two versions clearly.",
+    "readingZh": "支架适合第一台机器，却不适合第二台。车间测量后发现细小差异。他们修改图纸，明确标注两个版本，而不是强行安装。",
+    "writing": "Manufacturing makes the cost of a vague drawing visible. A dimension, a tolerance, and a clear version label can help different people build the same thing.",
+    "writingZh": "制造让模糊图纸的代价变得可见。尺寸、公差和清晰版本标记有助于不同的人制造相同产品。"
+  },
+  {
+    "topicId": 19,
+    "topicName": "航空航天",
+    "title": "【阅读示例】航空航天 · The student team's model glider kept turning left.",
+    "writingTitle": "【写作示例】航空航天 · Flight makes tiny design changes easy to notice.",
+    "reading": "The student team's model glider kept turning left. They compared the wings and noticed a bent edge. After repairing it, they recorded the new flights separately, keeping the earlier failures as part of their project story.",
+    "readingZh": "学生滑翔机模型总向左转。他们发现机翼边缘弯曲。修好后单独记录新飞行，保留此前失败作为项目的一部分。",
+    "writing": "Flight makes tiny design changes easy to notice. I would present a model project through its tests and revisions, rather than through a single successful launch.",
+    "writingZh": "飞行让细小设计变化容易被看见。我会用测试和修改呈现模型项目，而不只展示一次成功起飞。"
+  },
+  {
+    "topicId": 20,
+    "topicName": "交通技术",
+    "title": "【阅读示例】交通技术 · A bus stop display promised a quick journey, but the stroller could not reach the platform easily.",
+    "writingTitle": "【写作示例】交通技术 · Faster vehicles do not automatically make an easier journey.",
+    "reading": "A bus stop display promised a quick journey, but the stroller could not reach the platform easily. The design class timed the whole trip, including the entrance. Their next proposal began with the passenger's route.",
+    "readingZh": "公交站屏幕承诺快速旅程，但婴儿车难以进入站台。设计班记录了包含入口的全程时间。下一方案从乘客路线出发。",
+    "writing": "Faster vehicles do not automatically make an easier journey. Transport technology should be judged alongside access, waiting, and the needs of the people using it.",
+    "writingZh": "更快的车辆不自动意味着更方便的旅程。交通技术也应结合出入、等待和使用者需求来评价。"
+  },
+  {
+    "topicId": 21,
+    "topicName": "材料科学与工程",
+    "title": "【阅读示例】材料科学与工程 · Two sample bags looked identical until the class put the same books inside.",
+    "writingTitle": "【写作示例】材料科学与工程 · The best material depends on the job.",
+    "reading": "Two sample bags looked identical until the class put the same books inside. One stretched more than the other. They recorded the material labels and compared strength, weight, and repairability before choosing a bag for their project.",
+    "readingZh": "两个样品袋外观相同，装入相同书本后一个拉伸更多。班级记录材料标签，比较强度、重量和可修复性再做选择。",
+    "writing": "The best material depends on the job. I prefer a comparison that names several tradeoffs instead of declaring one sample universally better than another.",
+    "writingZh": "最好的材料取决于用途。我更喜欢说明多项取舍的比较，而不是宣称一种样品在所有方面都更好。"
+  },
+  {
+    "topicId": 22,
+    "topicName": "新兴技术",
+    "title": "【阅读示例】新兴技术 · At a technology exhibition, a prototype solved a problem nobody in the team had asked about.",
+    "writingTitle": "【写作示例】新兴技术 · New technology becomes interesting when it meets a real need.",
+    "reading": "At a technology exhibition, a prototype solved a problem nobody in the team had asked about. A visitor suggested using it in a different setting. The inventors returned home with a new question instead of a finished sales pitch.",
+    "readingZh": "技术展上，原型解决了团队没想到的问题。访客建议换一个应用场景。发明者带回的是新问题，而非完成的推销词。",
+    "writing": "New technology becomes interesting when it meets a real need. Listening to an unexpected user may matter as much as adding another impressive feature.",
+    "writingZh": "新技术遇到真实需求时才变得有意义。倾听意外的使用者，可能和增加一个炫目功能同样重要。"
+  },
+  {
+    "topicId": 24,
+    "topicName": "气候变化",
+    "title": "【阅读示例】气候变化 · The gardening club compared photographs of the same tree taken years apart.",
+    "writingTitle": "【写作示例】气候变化 · A changing climate needs a longer view than today's weather.",
+    "reading": "The gardening club compared photographs of the same tree taken years apart. A warm afternoon could not explain the whole pattern. They invited residents to share dated records and kept local memories separate from measured observations.",
+    "readingZh": "园艺社比较同一棵树多年照片。一个温暖午后无法解释完整变化。他们邀请居民分享带日期记录，并区分记忆和测量观察。",
+    "writing": "A changing climate needs a longer view than today's weather. In a local project, careful dates and clear limits make a conversation more useful than a dramatic guess.",
+    "writingZh": "变化的气候需要比当天天气更长的视角。在地方项目中，准确日期和明确局限比夸张猜测更有帮助。"
+  },
+  {
+    "topicId": 25,
+    "topicName": "生态系统",
+    "title": "【阅读示例】生态系统 · A fallen log seemed empty until Iris watched it closely.",
+    "writingTitle": "【写作示例】生态系统 · An ecosystem becomes easier to imagine when we notice relationships.",
+    "reading": "A fallen log seemed empty until Iris watched it closely. An insect disappeared under the bark, and a bird waited nearby. She drew the scene as a set of connections rather than a list of separate creatures.",
+    "readingZh": "倒木起初像空无一物。艾瑞丝看到昆虫钻入树皮，鸟在旁等待。她把景象画成联系网络，而非独立生物列表。",
+    "writing": "An ecosystem becomes easier to imagine when we notice relationships. Removing one apparently unimportant part may change a story that includes many other living things.",
+    "writingZh": "关注关系时，生态系统更容易理解。移走一个看似不重要的部分，可能改变许多生命共同参与的故事。"
+  },
+  {
+    "topicId": 26,
+    "topicName": "环境污染",
+    "title": "【阅读示例】环境污染 · The class found litter beside a stream and photographed it before cleaning the bank.",
+    "writingTitle": "【写作示例】环境污染 · Seeing rubbish is a reason to care, but it is not a complete environmental assessment.",
+    "reading": "The class found litter beside a stream and photographed it before cleaning the bank. They could describe what they saw, but not everything in the water. Their display explained the difference between visible rubbish and untested water quality.",
+    "readingZh": "班级清理河岸前拍下垃圾。他们能描述所见，却无法了解水中一切。展板区分可见垃圾和未经检测的水质。",
+    "writing": "Seeing rubbish is a reason to care, but it is not a complete environmental assessment. I value reports that distinguish direct observations from questions requiring further investigation.",
+    "writingZh": "看到垃圾值得关注，却不等于完整环境评估。我重视区分直接观察与需要进一步调查的问题的报告。"
+  },
+  {
+    "topicId": 27,
+    "topicName": "生物多样性",
+    "title": "【阅读示例】生物多样性 · Visitors hurried past the small patch of wildflowers toward the largest tree.",
+    "writingTitle": "【写作示例】生物多样性 · Biodiversity is easier to overlook when we only admire the biggest things.",
+    "reading": "Visitors hurried past the small patch of wildflowers toward the largest tree. Zoe stayed and counted several different insects. Her sketch helped the park guide tell a richer story about a corner that rarely appeared in photographs.",
+    "readingZh": "游客走过野花去看大树。佐伊留下观察多种昆虫。她的速写帮助公园讲解员讲述鲜少入镜角落的丰富故事。",
+    "writing": "Biodiversity is easier to overlook when we only admire the biggest things. A patient visit to a small patch can change what we think is worth protecting.",
+    "writingZh": "只欣赏大型事物时，很容易忽视生物多样性。耐心观察小片区域，会改变我们认为值得保护的东西。"
+  },
+  {
+    "topicId": 28,
+    "topicName": "自然资源",
+    "title": "【阅读示例】自然资源 · The town's old well appeared in every family story, but its records were scattered.",
+    "writingTitle": "【写作示例】自然资源 · A resource feels ordinary when it arrives without explanation.",
+    "reading": "The town's old well appeared in every family story, but its records were scattered. A student collected maps, photographs, and dated notes. The exhibition asked visitors to think about the resource they used without usually seeing its source.",
+    "readingZh": "镇上老井出现在各家故事里，记录却零散。学生整理地图、照片和日期笔记。展览让人思考日常资源来自哪里。",
+    "writing": "A resource feels ordinary when it arrives without explanation. Learning its journey can make a discussion about use and responsibility much more concrete.",
+    "writingZh": "资源悄然到达时，总显得理所当然。了解它的来路，能让关于使用和责任的讨论更具体。"
+  },
+  {
+    "topicId": 29,
+    "topicName": "生态保护",
+    "title": "【阅读示例】生态保护 · A trail was closed while a nesting bird stayed nearby.",
+    "writingTitle": "【写作示例】生态保护 · Conservation sometimes asks for a small inconvenience now.",
+    "reading": "A trail was closed while a nesting bird stayed nearby. Some walkers complained about the detour. A volunteer showed them another path and explained that the closure would be reviewed after the nesting season.",
+    "readingZh": "鸟在附近筑巢，步道暂时关闭。有游客抱怨绕路。志愿者介绍另一条路线，并说明繁殖季后会重新评估关闭安排。",
+    "writing": "Conservation sometimes asks for a small inconvenience now. Clear explanations and practical alternatives can help people understand the purpose of a temporary restriction.",
+    "writingZh": "生态保护有时要求人们暂时接受不便。清楚解释和可行替代路线，有助于理解限制的目的。"
+  },
+  {
+    "topicId": 30,
+    "topicName": "能源与可持续发展",
+    "title": "【阅读示例】能源与可持续发展 · The community center compared its old energy bills with notes about building use.",
+    "writingTitle": "【写作示例】能源与可持续发展 · Sustainability is more than a lower number on one bill.",
+    "reading": "The community center compared its old energy bills with notes about building use. A quiet month looked efficient until the manager explained that several rooms had been closed. The team changed the comparison before discussing improvements.",
+    "readingZh": "社区中心比较能源账单和使用记录。一个安静月份看似高效，实际上几间房没开放。团队修正比较后才讨论改进。",
+    "writing": "Sustainability is more than a lower number on one bill. I want an explanation of what changed, who benefited, and whether the improvement can last.",
+    "writingZh": "可持续发展不只是某张账单的数字降低。我想了解变化、受益者，以及改善能否持续。"
+  },
+  {
+    "topicId": 31,
+    "topicName": "农业与食物系统",
+    "title": "【阅读示例】农业与食物系统 · A farmer's market stall displayed two baskets of tomatoes.",
+    "writingTitle": "【写作示例】农业与食物系统 · Food connects a meal to many kinds of work.",
+    "reading": "A farmer's market stall displayed two baskets of tomatoes. The grower explained when each was picked and how far it had traveled. A child followed the journey on a map before choosing ingredients for dinner.",
+    "readingZh": "农贸市场摆出两篮番茄。种植者说明采摘时间和运输距离。孩子先在地图上追踪来路，再选晚餐食材。",
+    "writing": "Food connects a meal to many kinds of work. A market conversation can reveal transport, seasons, and effort that a simple price label does not show.",
+    "writingZh": "食物把一顿饭与许多劳动相连。市场交谈能呈现价格标签没写出的运输、季节与付出。"
+  },
+  {
+    "topicId": 32,
+    "topicName": "自然灾害与环境风险",
+    "title": "【阅读示例】自然灾害与环境风险 · When heavy rain canceled their outdoor event, the organizers checked their agreed meeting plan.",
+    "writingTitle": "【写作示例】自然灾害与环境风险 · Planning for uncertainty works best when people understand the plan before they need it.",
+    "reading": "When heavy rain canceled their outdoor event, the organizers checked their agreed meeting plan. Nobody had to guess where the group would gather. Later, they updated the plan using the difficulties people had actually experienced.",
+    "readingZh": "大雨取消户外活动时，组织者按预先约定的集合方案行动。事后，他们根据实际困难更新方案。",
+    "writing": "Planning for uncertainty works best when people understand the plan before they need it. This story values coordination rather than pretending every risk can be predicted.",
+    "writingZh": "应对不确定性时，人们最好提前了解方案。这个故事强调协调，而非假装所有风险都能预测。"
+  },
+  {
+    "topicId": 34,
+    "topicName": "人体与生理",
+    "title": "【阅读示例】人体与生理 · At a museum, Emma tried a moving model of a hand.",
+    "writingTitle": "【写作示例】人体与生理 · Learning about the body can begin with a model and a careful question.",
+    "reading": "At a museum, Emma tried a moving model of a hand. A string pulled one finger while another part held it steady. She left with a drawing and several questions about how movement depends on parts working together.",
+    "readingZh": "博物馆里，艾玛操作手部模型。绳子牵动一根手指，另一部件保持稳定。她带着草图和关于协调运动的问题离开。",
+    "writing": "Learning about the body can begin with a model and a careful question. I like explanations that show connections without treating a classroom model as a complete human being.",
+    "writingZh": "学习人体可以从模型和细心的问题开始。我喜欢呈现联系、又不把课堂模型等同完整人体的解释。"
+  },
+  {
+    "topicId": 35,
+    "topicName": "医学与疾病",
+    "title": "【阅读示例】医学与疾病 · A library exhibition included a patient's diary beside a research timeline.",
+    "writingTitle": "【写作示例】医学与疾病 · A discussion of medicine should leave room for the person inside the story.",
+    "reading": "A library exhibition included a patient's diary beside a research timeline. The diary described waiting, uncertainty, and ordinary daily life. Readers could see that understanding disease involved both scientific questions and the experience of a person.",
+    "readingZh": "图书馆展览把患者日记放在研究时间线旁。日记写等待、不确定和日常生活，让读者看到疾病研究也关乎个人经历。",
+    "writing": "A discussion of medicine should leave room for the person inside the story. A fictional diary can explore that experience without offering readers a diagnosis or treatment.",
+    "writingZh": "医学讨论应给故事中的人留出空间。虚构日记能探索经历，而不向读者提供诊断或治疗。"
+  },
+  {
+    "topicId": 36,
+    "topicName": "公共卫生",
+    "title": "【阅读示例】公共卫生 · The town hall collected questions before a public health meeting.",
+    "writingTitle": "【写作示例】公共卫生 · Public information helps only when its audience can use it.",
+    "reading": "The town hall collected questions before a public health meeting. Several residents said the notice was hard to understand. The organizers rewrote it in plain language and asked neighbors whether the revised message answered their concerns.",
+    "readingZh": "公共卫生会议前，市政厅收集问题。居民说通知难懂。组织者用简单语言重写，并询问邻居是否回应了关切。",
+    "writing": "Public information helps only when its audience can use it. Listening before explaining may reveal a communication problem that a longer announcement would not solve.",
+    "writingZh": "公众能使用信息，信息才有帮助。先倾听再解释，可能发现加长公告也解决不了的沟通问题。"
+  },
+  {
+    "topicId": 37,
+    "topicName": "营养与饮食",
+    "title": "【阅读示例】营养与饮食 · For a family cookbook, Noah asked each relative to describe a familiar lunch.",
+    "writingTitle": "【写作示例】营养与饮食 · Food choices belong to a person's wider life.",
+    "reading": "For a family cookbook, Noah asked each relative to describe a familiar lunch. The answers reflected different schedules, tastes, and traditions. He recorded those differences instead of naming one plate the correct meal for everyone.",
+    "readingZh": "诺亚为家庭食谱询问亲人的午餐。答案反映作息、口味和传统。他记录差异，不指定一种人人都正确的餐盘。",
+    "writing": "Food choices belong to a person's wider life. I would write about variety and context rather than turn a short classroom example into a universal diet plan.",
+    "writingZh": "饮食选择属于更广的生活背景。我会写多样性和情境，而不把课堂短文变成人人适用的饮食方案。"
+  },
+  {
+    "topicId": 38,
+    "topicName": "运动与健身",
+    "title": "【阅读示例】运动与健身 · The walking group used to race toward the hilltop.",
+    "writingTitle": "【写作示例】运动与健身 · An activity becomes more welcoming when it offers meaningful choices.",
+    "reading": "The walking group used to race toward the hilltop. One day, a new member asked for a slower route. They split the walk into two options and discovered that sharing the afternoon mattered more than keeping one pace.",
+    "readingZh": "步行团以前总抢先到山顶。新成员希望慢一点，大家安排两种路线，发现共享午后比统一速度更重要。",
+    "writing": "An activity becomes more welcoming when it offers meaningful choices. In this story, changing the route preserves participation without making everyone move in exactly the same way.",
+    "writingZh": "活动提供有意义的选择时更包容。故事中，调整路线让人继续参与，不必人人以同样方式前进。"
+  },
+  {
+    "topicId": 39,
+    "topicName": "睡眠与恢复",
+    "title": "【阅读示例】睡眠与恢复 · A student preparing a sleep diary recorded bedtimes, noisy evenings, and morning feelings.",
+    "writingTitle": "【写作示例】睡眠与恢复 · Rest is a useful subject for reflection, but a personal diary has limits.",
+    "reading": "A student preparing a sleep diary recorded bedtimes, noisy evenings, and morning feelings. One difficult night stood out, but she resisted explaining the whole month from it. Her project became an exercise in noticing patterns patiently.",
+    "readingZh": "学生记录睡眠时间、吵闹夜晚和晨间感受。她没有用一个糟糕夜晚解释整月，项目成为耐心观察模式的练习。",
+    "writing": "Rest is a useful subject for reflection, but a personal diary has limits. I can describe my experience honestly without presenting it as medical advice for someone else.",
+    "writingZh": "休息值得反思，但个人日记有局限。我可以诚实描述经历，而不把它当作对他人的医疗建议。"
+  },
+  {
+    "topicId": 40,
+    "topicName": "衰老与长寿",
+    "title": "【阅读示例】衰老与长寿 · At eighty, a retired carpenter still kept his first measuring tape.",
+    "writingTitle": "【写作示例】衰老与长寿 · An older person's life is larger than a number.",
+    "reading": "At eighty, a retired carpenter still kept his first measuring tape. His granddaughter expected a story about age, but he talked about friends, unfinished projects, and tools shared across generations. She gave the portrait a different title.",
+    "readingZh": "八十岁的退休木匠还留着第一把卷尺。孙女以为他会谈年龄，他却谈朋友、未完项目和代际共享的工具。她改了人物稿标题。",
+    "writing": "An older person's life is larger than a number. A thoughtful portrait can ask about interests and relationships instead of making every detail an illustration of aging.",
+    "writingZh": "长者的人生比年龄数字更大。细致人物稿会询问兴趣和关系，而非把所有细节都当作衰老的证明。"
+  },
+  {
+    "topicId": 41,
+    "topicName": "医疗技术",
+    "title": "【阅读示例】医疗技术 · A clinic's appointment screen looked simple to its designers.",
+    "writingTitle": "【写作示例】医疗技术 · Healthcare technology should be judged by the people trying to use it.",
+    "reading": "A clinic's appointment screen looked simple to its designers. During a demonstration, an older visitor could not read the small buttons. The team increased the text size and kept a staffed desk beside the digital option.",
+    "readingZh": "诊所预约屏幕在设计者眼里很简单，但年长访客看不清按钮。团队放大文字，并保留有人值守的窗口。",
+    "writing": "Healthcare technology should be judged by the people trying to use it. A convenient screen for one visitor may create a barrier for another.",
+    "writingZh": "医疗技术应由使用者的经历来评价。对某个人方便的屏幕，也可能成为另一人的障碍。"
+  },
+  {
+    "topicId": 42,
+    "topicName": "心理健康与精神医学",
+    "title": "【阅读示例】心理健康与精神医学 · The school play followed a character who hid a difficult week behind cheerful answers.",
+    "writingTitle": "【写作示例】心理健康与精神医学 · A fictional scene can encourage empathy without labeling a person.",
+    "reading": "The school play followed a character who hid a difficult week behind cheerful answers. In the final scene, a friend listened without trying to explain everything. The audience discussed how ordinary conversations could make someone feel less alone.",
+    "readingZh": "校园剧中，一个角色用愉快回答掩盖难熬的一周。最后，朋友安静倾听。观众讨论普通对话怎样让人不再孤单。",
+    "writing": "A fictional scene can encourage empathy without labeling a person. I want stories about mental health to respect uncertainty and make room for voices that are often unheard.",
+    "writingZh": "虚构场景能鼓励共情，不必给人贴标签。我希望心理健康故事尊重不确定性，容纳常被忽略的声音。"
+  },
+  {
+    "topicId": 44,
+    "topicName": "基础教育",
+    "title": "【阅读示例】基础教育 · A teacher asked her pupils to draw a place where they felt curious.",
+    "writingTitle": "【写作示例】基础教育 · School can build a bridge between a child's world and new ideas.",
+    "reading": "A teacher asked her pupils to draw a place where they felt curious. Some chose the classroom, while others drew a kitchen or a playground. She used their pictures to plan a lesson that began with questions they already cared about.",
+    "readingZh": "老师让学生画出好奇的地方。有人选课堂，有人画厨房或操场。她从孩子关心的问题出发设计课程。",
+    "writing": "School can build a bridge between a child's world and new ideas. I value lessons that invite questions before asking everyone to memorize the same answer.",
+    "writingZh": "学校能在孩子的世界和新知识之间搭桥。我重视先鼓励提问、再学习答案的课程。"
+  },
+  {
+    "topicId": 45,
+    "topicName": "高等教育",
+    "title": "【阅读示例】高等教育 · On her first campus visit, Hana followed a student into a discussion seminar.",
+    "writingTitle": "【写作示例】高等教育 · Higher education should make room for uncertainty as well as expertise.",
+    "reading": "On her first campus visit, Hana followed a student into a discussion seminar. Nobody answered immediately. The quiet pause surprised her more than the buildings, and she began to imagine university as a place to examine questions together.",
+    "readingZh": "首次参观大学时，哈娜旁听讨论课。没人立即回答，安静的停顿比建筑更令她惊讶。她开始把大学想象成共同探究问题的地方。",
+    "writing": "Higher education should make room for uncertainty as well as expertise. A seminar becomes valuable when students learn to develop a question instead of simply waiting for a final answer.",
+    "writingZh": "高等教育应容纳不确定性和专业知识。学生学会发展问题，而不只等待最终答案时，讨论课更有价值。"
+  },
+  {
+    "topicId": 46,
+    "topicName": "语言学习",
+    "title": "【阅读示例】语言学习 · Lin understood a new English word in a story but forgot it during a conversation.",
+    "writingTitle": "【写作示例】语言学习 · Knowing a word and using it are different achievements.",
+    "reading": "Lin understood a new English word in a story but forgot it during a conversation. She wrote a sentence about her own day and practiced it with a friend. The word slowly became something she could use, not just recognize.",
+    "readingZh": "琳在故事里认识新词，却在交谈时忘记。她用它写自己的日常，再和朋友练习。词汇逐渐从能认出变成能使用。",
+    "writing": "Knowing a word and using it are different achievements. I want my language notebook to include situations, questions, and sentences that belong to my own life.",
+    "writingZh": "认识词语和使用词语是不同成果。我希望语言笔记包含与自己生活相关的情境、问题和句子。"
+  },
+  {
+    "topicId": 47,
+    "topicName": "学习科学",
+    "title": "【阅读示例】学习科学 · Before rereading a chapter, Omar tried to explain it on a blank page.",
+    "writingTitle": "【写作示例】学习科学 · A feeling of familiarity can hide an unanswered question.",
+    "reading": "Before rereading a chapter, Omar tried to explain it on a blank page. Several gaps appeared in his explanation. He returned to those parts with specific questions instead of treating the whole chapter as equally familiar.",
+    "readingZh": "奥马尔重读前先在空白纸上解释章节，发现几处空缺。他带着具体问题重看，而不把整章都当成熟悉内容。",
+    "writing": "A feeling of familiarity can hide an unanswered question. I like study activities that reveal what I can explain, because the gaps then become a practical plan for the next session.",
+    "writingZh": "熟悉感可能掩盖问题。我喜欢能检验解释能力的学习活动，因为空缺能成为下次学习的计划。"
+  },
+  {
+    "topicId": 48,
+    "topicName": "教学方法",
+    "title": "【阅读示例】教学方法 · The class solved a puzzle in pairs before hearing the teacher's explanation.",
+    "writingTitle": "【写作示例】教学方法 · A teaching method carries a message about whose thinking matters.",
+    "reading": "The class solved a puzzle in pairs before hearing the teacher's explanation. Two groups reached the same answer by different routes. The teacher invited both to the board and used their differences to begin the next lesson.",
+    "readingZh": "学生先两人解题再听讲。两组用不同路线得到同一答案。老师请他们都到黑板前，从差异开始下一课。",
+    "writing": "A teaching method carries a message about whose thinking matters. Comparing students' approaches can turn an answer into a richer discussion about how learning happens.",
+    "writingZh": "教学方法传达谁的思考受到重视。比较学生的思路，能把答案变成关于学习过程的丰富讨论。"
+  },
+  {
+    "topicId": 49,
+    "topicName": "教育公平",
+    "title": "【阅读示例】教育公平 · The homework required a printer, but one student had none at home.",
+    "writingTitle": "【写作示例】教育公平 · Fairness sometimes means changing how a task can be completed.",
+    "reading": "The homework required a printer, but one student had none at home. When she explained the problem, the teacher offered a handwritten option to everyone. The assignment stayed the same; the unnecessary barrier disappeared.",
+    "readingZh": "作业要求打印，但一个学生家里没打印机。老师听后向所有人提供手写选项。任务没变，不必要的障碍消失了。",
+    "writing": "Fairness sometimes means changing how a task can be completed. I would ask whether a rule measures understanding or merely assumes that every household has the same resources.",
+    "writingZh": "公平有时意味着改变完成任务的方式。我会问规则是在检验理解，还是假设每个家庭资源相同。"
+  },
+  {
+    "topicId": 50,
+    "topicName": "教育技术",
+    "title": "【阅读示例】教育技术 · A learning app rewarded fast answers with bright stars.",
+    "writingTitle": "【写作示例】教育技术 · Educational technology chooses what to count.",
+    "reading": "A learning app rewarded fast answers with bright stars. Jules slowed down when a question became difficult, and her score fell. She asked her teacher to discuss her reasoning as well as the number on the screen.",
+    "readingZh": "学习应用奖励快速作答。朱尔斯遇到难题放慢速度，分数下降。她请老师同时讨论推理过程和屏幕数字。",
+    "writing": "Educational technology chooses what to count. I want its feedback to recognize thoughtful work, rather than make speed the only visible sign of progress.",
+    "writingZh": "教育技术决定统计什么。我希望反馈认可认真思考，而不把速度当作唯一可见的进步。"
+  },
+  {
+    "topicId": 51,
+    "topicName": "终身学习",
+    "title": "【阅读示例】终身学习 · After retirement, Mr.",
+    "writingTitle": "【写作示例】终身学习 · Learning later in life does not need to imitate a competition.",
+    "reading": "After retirement, Mr. Wu joined a beginner's drawing class. He was embarrassed by his first crooked lines until another learner showed him a similar page. Their weekly conversations became as important as the sketches they carried home.",
+    "readingZh": "退休后吴先生参加绘画入门课，起初为歪线尴尬，直到同学展示类似作品。每周交谈和带回的速写同样重要。",
+    "writing": "Learning later in life does not need to imitate a competition. A welcoming group can make curiosity easier to sustain and mistakes easier to share.",
+    "writingZh": "晚年学习不必模仿竞赛。友善的群体让好奇更容易延续，也让错误更容易分享。"
+  },
+  {
+    "topicId": 52,
+    "topicName": "学术生活",
+    "title": "【阅读示例】学术生活 · A research student prepared a beautiful presentation, then discovered a missing source.",
+    "writingTitle": "【写作示例】学术生活 · Academic life includes the ordinary work of checking and revising.",
+    "reading": "A research student prepared a beautiful presentation, then discovered a missing source. She delayed the talk and contacted the library. Her revised slides included a short explanation of the gap, which led to the most useful audience question.",
+    "readingZh": "研究生做好演示后发现缺少来源。她延后报告并联系图书馆。修订版说明资料空缺，引出了最有用的提问。",
+    "writing": "Academic life includes the ordinary work of checking and revising. Admitting a missing piece can strengthen a conversation more than hiding it behind a polished presentation.",
+    "writingZh": "学术生活包含核查和修订的日常劳动。承认缺失，可能比用精美演示遮盖它更能推动讨论。"
+  },
+  {
+    "topicId": 54,
+    "topicName": "认知与决策",
+    "title": "【阅读示例】认知与决策 · Kai chose the nearest shop without comparing prices.",
+    "writingTitle": "【写作示例】认知与决策 · A quick decision is not always a bad one, but it has a context.",
+    "reading": "Kai chose the nearest shop without comparing prices. Later, he noticed that a large sign had drawn his attention. He wrote down what influenced the decision, hoping to recognize the same shortcut when the next choice mattered more.",
+    "readingZh": "凯直接选了最近店铺，后来意识到大招牌吸引了注意。他记录决策影响，希望下次重要选择时认出同样捷径。",
+    "writing": "A quick decision is not always a bad one, but it has a context. Reflecting on attention and available information can help me understand how I reached a conclusion.",
+    "writingZh": "快速决定不一定不好，但有背景。反思注意力和已有信息，有助于理解自己怎样得出结论。"
+  },
+  {
+    "topicId": 55,
+    "topicName": "情绪与心理",
+    "title": "【阅读示例】情绪与心理 · Before answering a frustrating message, Sara drafted a reply and left it unsent.",
+    "writingTitle": "【写作示例】情绪与心理 · Naming an emotion does not make it disappear.",
+    "reading": "Before answering a frustrating message, Sara drafted a reply and left it unsent. When she returned, she recognized both anger and disappointment in her words. She changed the question at the end, making space for an explanation.",
+    "readingZh": "回复令人烦躁的消息前，莎拉先写草稿。稍后她看出愤怒和失望，修改结尾问题，为对方解释留空间。",
+    "writing": "Naming an emotion does not make it disappear. For me, it can create a little distance between what I feel and the action I choose next.",
+    "writingZh": "说出情绪不会让它消失，却可能在感受与下一步行动之间创造一点距离。"
+  },
+  {
+    "topicId": 56,
+    "topicName": "自我认知",
+    "title": "【阅读示例】自我认知 · An interview question asked Nia what she enjoyed doing.",
+    "writingTitle": "【写作示例】自我认知 · Self-awareness can begin with an ordinary memory.",
+    "reading": "An interview question asked Nia what she enjoyed doing. She almost gave the answer everyone expected, then remembered an afternoon repairing a bicycle. Her honest story sounded less impressive but revealed more about how she liked to learn.",
+    "readingZh": "面试问妮娅喜欢做什么。她差点说预期答案，却想起修自行车的午后。诚实故事没那么炫目，却更能说明她怎样学习。",
+    "writing": "Self-awareness can begin with an ordinary memory. I learn more from describing a real experience than from choosing a flattering word to summarize my personality.",
+    "writingZh": "自我认知可以从普通记忆开始。描述真实经历，比选一个好听词语总结性格更有收获。"
+  },
+  {
+    "topicId": 57,
+    "topicName": "行为与习惯",
+    "title": "【阅读示例】行为与习惯 · Every evening, Theo placed his notebook beside the kettle.",
+    "writingTitle": "【写作示例】行为与习惯 · A habit can be small enough to fit an imperfect day.",
+    "reading": "Every evening, Theo placed his notebook beside the kettle. The next morning, waiting for tea reminded him to write one sentence. On busy days, that sentence was enough to keep the notebook part of his routine.",
+    "readingZh": "西奥每晚把本子放水壶旁。早晨等茶时便写一句话。忙碌日子里，这句话足以让笔记留在日常生活中。",
+    "writing": "A habit can be small enough to fit an imperfect day. I prefer a routine I can return to over a dramatic plan that fails whenever life interrupts it.",
+    "writingZh": "习惯可以小到容得下不完美的一天。我更喜欢能重拾的日常，而不是一被打断就失败的宏大计划。"
+  },
+  {
+    "topicId": 58,
+    "topicName": "动机与目标",
+    "title": "【阅读示例】动机与目标 · At the start of a project, Mei wanted to finish everything in one week.",
+    "writingTitle": "【写作示例】动机与目标 · A goal becomes clearer when I can describe the next useful result.",
+    "reading": "At the start of a project, Mei wanted to finish everything in one week. Her partner asked which part mattered most. They chose a working first page and saved the extra features for a later version.",
+    "readingZh": "梅想一周内完成整个项目。搭档问哪部分最重要。他们先做可用首页，把额外功能留给后续版本。",
+    "writing": "A goal becomes clearer when I can describe the next useful result. Finishing a small, meaningful piece often gives me more direction than repeating a distant ambition.",
+    "writingZh": "能说清下一项有用成果时，目标就更明确。完成有意义的小部分，比重复遥远抱负更能指引行动。"
+  },
+  {
+    "topicId": 59,
+    "topicName": "时间管理",
+    "title": "【阅读示例】时间管理 · Rina's calendar looked full, but several tasks had no clear ending.",
+    "writingTitle": "【写作示例】时间管理 · Time management is also task definition.",
+    "reading": "Rina's calendar looked full, but several tasks had no clear ending. She rewrote one as a concrete result and reserved a short block for it. At sunset, she knew what had moved forward and what still needed attention.",
+    "readingZh": "莉娜日程很满，却有多项任务没有明确终点。她把一项改写成具体成果，安排短时段，晚上便知道什么取得进展。",
+    "writing": "Time management is also task definition. A schedule helps me more when each block has a reasonable purpose than when every minute is filled with a vague label.",
+    "writingZh": "时间管理也包括定义任务。每个时段有合理目的，比每一分钟都填上模糊标签更有用。"
+  },
+  {
+    "topicId": 60,
+    "topicName": "压力与适应",
+    "title": "【阅读示例】压力与适应 · A canceled train disrupted the group's carefully planned day.",
+    "writingTitle": "【写作示例】压力与适应 · Adaptation does not always mean finding a perfect replacement.",
+    "reading": "A canceled train disrupted the group's carefully planned day. At first, everyone tried to save the original schedule. Then they chose one nearby activity and let the rest go, turning a disappointing morning into a different shared experience.",
+    "readingZh": "列车取消打乱行程。大家起初坚持原计划，后来选择附近一项活动，放下其余安排，把失望早晨变成另一段共同经历。",
+    "writing": "Adaptation does not always mean finding a perfect replacement. Sometimes it means deciding what still matters and allowing the shape of the day to change.",
+    "writingZh": "适应不一定要找到完美替代。有时是决定什么仍重要，并允许一天的形状改变。"
+  },
+  {
+    "topicId": 61,
+    "topicName": "人格与个体差异",
+    "title": "【阅读示例】人格与个体差异 · Two friends prepared for the same presentation differently.",
+    "writingTitle": "【写作示例】人格与个体差异 · Individual differences should invite curiosity, not quick labels.",
+    "reading": "Two friends prepared for the same presentation differently. One rehearsed aloud; the other organized quiet notes. Instead of arguing about the correct style, they listened to each other's practice and found a useful suggestion in both approaches.",
+    "readingZh": "两个朋友准备演示的方式不同，一个朗读排练，一个安静整理。他们没有争正确风格，而是互相观察，找到各自可用建议。",
+    "writing": "Individual differences should invite curiosity, not quick labels. I would ask what helps a person in this situation before assuming that one preference explains everything about them.",
+    "writingZh": "个体差异应引起好奇，而非快速贴标签。我会先问情境中什么有帮助，不假设一种偏好解释一个人的全部。"
+  },
+  {
+    "topicId": 62,
+    "topicName": "人生阶段与成长",
+    "title": "【阅读示例】人生阶段与成长 · When her younger brother left home, Ella expected only sadness.",
+    "writingTitle": "【写作示例】人生阶段与成长 · Growth is rarely a clean move from one feeling to another.",
+    "reading": "When her younger brother left home, Ella expected only sadness. The quiet room also gave her time to begin a neglected project. She realized that a new stage could hold loss and possibility at the same time.",
+    "readingZh": "弟弟离家后，艾拉本以为只会难过。安静房间也让她重拾项目。新阶段可以同时容纳失落和可能性。",
+    "writing": "Growth is rarely a clean move from one feeling to another. A personal story can leave room for mixed emotions instead of treating change as either entirely good or entirely bad.",
+    "writingZh": "成长很少是情绪的整齐切换。个人故事可以容纳复杂感受，不把变化说成全好或全坏。"
+  },
+  {
+    "topicId": 64,
+    "topicName": "家庭与亲密关系",
+    "title": "【阅读示例】家庭与亲密关系 · The family argued about who should organize the reunion.",
+    "writingTitle": "【写作示例】家庭与亲密关系 · Care often hides inside ordinary arrangements.",
+    "reading": "The family argued about who should organize the reunion. A grandparent suggested listing the small jobs instead of choosing one organizer. Cooking, calls, and transport became shared tasks, and the gathering stopped depending on one tired person.",
+    "readingZh": "家人为谁组织聚会争论。长辈建议列小任务，做饭、联系、交通分担后，聚会不再全靠一个疲惫的人。",
+    "writing": "Care often hides inside ordinary arrangements. Sharing those arrangements can be a practical way to show respect for the person who has quietly handled them before.",
+    "writingZh": "关怀常藏在日常安排里。分担安排，是尊重过去默默承担者的一种实际方式。"
+  },
+  {
+    "topicId": 65,
+    "topicName": "友谊与社交",
+    "title": "【阅读示例】友谊与社交 · A friend stopped replying to the group chat.",
+    "writingTitle": "【写作示例】友谊与社交 · Friendship needs room for lives we cannot see from a screen.",
+    "reading": "A friend stopped replying to the group chat. Rather than guessing why, Maya sent one quiet invitation to walk. Their conversation began with an ordinary story about a difficult week, not the dramatic explanation the group had imagined.",
+    "readingZh": "朋友不再回复群聊。玛雅没有猜测，而是单独邀其散步。谈话从难熬一周的普通故事开始，不是群体想象的戏剧解释。",
+    "writing": "Friendship needs room for lives we cannot see from a screen. A simple invitation can offer connection without demanding an immediate explanation.",
+    "writingZh": "友谊需要容纳屏幕上看不见的生活。简单邀请能提供联系，而不强求立即解释。"
+  },
+  {
+    "topicId": 66,
+    "topicName": "社区生活",
+    "title": "【阅读示例】社区生活 · A broken bench stood outside the community hall for months.",
+    "writingTitle": "【写作示例】社区生活 · A community grows through tasks as well as events.",
+    "reading": "A broken bench stood outside the community hall for months. A notice asking for help brought together a carpenter, a painter, and two neighbors with spare time. The repaired bench soon became a place where those strangers greeted one another.",
+    "readingZh": "社区旧长椅坏了几个月。求助通知召集木匠、画工和邻居。修好的长椅很快成为陌生人互相问候的地方。",
+    "writing": "A community grows through tasks as well as events. Solving one modest problem together can create relationships that a formal introduction would never begin.",
+    "writingZh": "社区不仅通过活动，也通过共同任务成长。一起解决小问题，有时能建立正式介绍无法开启的关系。"
+  },
+  {
+    "topicId": 67,
+    "topicName": "城市与乡村",
+    "title": "【阅读示例】城市与乡村 · A city student visited her cousin's village and called it quiet.",
+    "writingTitle": "【写作示例】城市与乡村 · Urban and rural places deserve descriptions beyond a simple contrast.",
+    "reading": "A city student visited her cousin's village and called it quiet. Her cousin showed her the market, delivery routes, and busy harvest shed. On the return visit, they compared different kinds of movement instead of arguing about which place had more life.",
+    "readingZh": "城市学生说表亲村庄安静。表亲带她看市场、运输线和忙碌仓房。再访时，他们比较不同活动，不再争哪里更有活力。",
+    "writing": "Urban and rural places deserve descriptions beyond a simple contrast. Looking at work, travel, and relationships can reveal connections that the word quiet hides.",
+    "writingZh": "城乡值得超越简单对比的描述。观察劳动、出行和关系，能发现“安静”一词掩盖的联系。"
+  },
+  {
+    "topicId": 68,
+    "topicName": "人口与代际",
+    "title": "【阅读示例】人口与代际 · Three generations shared a table at the reunion.",
+    "writingTitle": "【写作示例】人口与代际 · Generational differences can become openings for conversation.",
+    "reading": "Three generations shared a table at the reunion. A teenager explained a new game while her grandfather described the first radio he owned. Each story made an unfamiliar object part of the family's common memory.",
+    "readingZh": "聚会上，三代人同桌。少年讲新游戏，祖父说第一台收音机。各自故事让陌生物件进入家庭共同记忆。",
+    "writing": "Generational differences can become openings for conversation. Asking how an object mattered to someone may teach more than deciding which generation understands the world better.",
+    "writingZh": "代际差异可以成为交谈入口。询问物件对某人的意义，比判断哪一代理解世界更深更有收获。"
+  },
+  {
+    "topicId": 69,
+    "topicName": "社会公平与不平等",
+    "title": "【阅读示例】社会公平与不平等 · The design contest allowed only expensive equipment in its examples.",
+    "writingTitle": "【写作示例】社会公平与不平等 · Opportunity can narrow through assumptions that nobody states aloud.",
+    "reading": "The design contest allowed only expensive equipment in its examples. A student asked whether the rules excluded work made with simpler tools. The judges added a category that evaluated the idea and its execution without assuming the same budget.",
+    "readingZh": "设计竞赛示例都用昂贵设备。学生问规则是否排除了简单工具作品。评委新增按创意和完成度评价、不假设同预算的类别。",
+    "writing": "Opportunity can narrow through assumptions that nobody states aloud. I want a fair contest to examine its entry conditions as carefully as it examines the final work.",
+    "writingZh": "机会可能被无人明说的假设缩窄。我希望公平竞赛同样认真检查参与条件和最终作品。"
+  },
+  {
+    "topicId": 70,
+    "topicName": "公益与志愿服务",
+    "title": "【阅读示例】公益与志愿服务 · A volunteer arrived ready to sort books, but the library needed someone to carry chairs.",
+    "writingTitle": "【写作示例】公益与志愿服务 · Good intentions do not automatically match another person's needs.",
+    "reading": "A volunteer arrived ready to sort books, but the library needed someone to carry chairs. He changed his plan and helped prepare a reading circle. At the end, he understood that useful service starts with listening to the actual request.",
+    "readingZh": "志愿者准备整理书，图书馆却需要搬椅子。他改为布置阅读活动，理解有用服务始于倾听实际需求。",
+    "writing": "Good intentions do not automatically match another person's needs. I would measure a volunteer activity by the help it provides, not only by how satisfying it feels to the helper.",
+    "writingZh": "好意不自动符合他人需求。我会看志愿活动提供什么帮助，而不只看帮助者是否满足。"
+  },
+  {
+    "topicId": 71,
+    "topicName": "社会变迁",
+    "title": "【阅读示例】社会变迁 · The old ticket office became a café, but its clock stayed on the wall.",
+    "writingTitle": "【写作示例】社会变迁 · Social change often appears in familiar buildings and routines.",
+    "reading": "The old ticket office became a café, but its clock stayed on the wall. Residents brought photographs to the opening and compared journeys from different decades. The new place held both a changed purpose and a visible connection to its past.",
+    "readingZh": "旧售票处变咖啡馆，时钟仍在墙上。居民带照片比较不同年代旅程。新空间用途改变，也保留与过去的联系。",
+    "writing": "Social change often appears in familiar buildings and routines. Following one place through several uses can make a large transformation easier to discuss without reducing it to nostalgia.",
+    "writingZh": "社会变迁常出现在熟悉建筑和日常中。追踪一个地方的用途变化，能让大转变更具体，不只停留在怀旧。"
+  },
+  {
+    "topicId": 72,
+    "topicName": "社会行为与群体",
+    "title": "【阅读示例】社会行为与群体 · Nobody wanted to be the first person to ask a question after the talk.",
+    "writingTitle": "【写作示例】社会行为与群体 · A group's silence does not always mean agreement.",
+    "reading": "Nobody wanted to be the first person to ask a question after the talk. Then one visitor raised her hand about a confusing slide. Several others nodded, and the discussion finally moved toward the point many had been wondering about.",
+    "readingZh": "报告结束后没人先提问。一位访客问起难懂幻灯片，其他人点头，讨论终于转向许多人疑惑的内容。",
+    "writing": "A group's silence does not always mean agreement. Making a question welcome can change what people are willing to say and reveal concerns that were present all along.",
+    "writingZh": "群体沉默不一定代表同意。让提问受到欢迎，会改变人们愿说的内容，揭示一直存在的关切。"
+  },
+  {
+    "topicId": 73,
+    "topicName": "公共安全与社会风险",
+    "title": "【阅读示例】公共安全与社会风险 · At a crowded festival, two friends agreed on a meeting place before entering.",
+    "writingTitle": "【写作示例】公共安全与社会风险 · Public safety includes ordinary coordination, not just dramatic emergencies.",
+    "reading": "At a crowded festival, two friends agreed on a meeting place before entering. When a phone lost power, the agreement mattered more than either expected. Their reunion was uneventful, and that was precisely what made the plan useful.",
+    "readingZh": "节庆入场前，两位朋友约定集合点。手机没电后，这个约定发挥作用。重逢平淡，恰恰说明计划有用。",
+    "writing": "Public safety includes ordinary coordination, not just dramatic emergencies. A story about a clear meeting plan can show the value of preparation without pretending to cover every possible situation.",
+    "writingZh": "公共安全包括日常协调，不只是紧急事件。集合方案的故事说明准备的价值，不假装涵盖所有情况。"
+  },
+  {
+    "topicId": 75,
+    "topicName": "宏观经济",
+    "title": "【阅读示例】宏观经济 · The bakery owner heard that the town was growing, but her morning sales stayed uneven.",
+    "writingTitle": "【写作示例】宏观经济 · An economic headline describes a broad pattern.",
+    "reading": "The bakery owner heard that the town was growing, but her morning sales stayed uneven. She compared delivery days, opening hours, and local events. The larger trend mattered, yet it could not explain each customer's decision at her counter.",
+    "readingZh": "面包店主听说城镇发展，但晨间销售仍不稳定。她比较送货日、营业时间和活动。大趋势重要，却解释不了每次购买。",
+    "writing": "An economic headline describes a broad pattern. I want to connect it with local observations carefully, without assuming that every household or shop experiences that pattern in the same way.",
+    "writingZh": "经济标题描述大模式。我希望谨慎联系地方观察，不假设每个家庭和商店经历相同。"
+  },
+  {
+    "topicId": 76,
+    "topicName": "金融与投资",
+    "title": "【阅读示例】金融与投资 · For a classroom project, two students tracked an imaginary investment.",
+    "writingTitle": "【写作示例】金融与投资 · A financial example should show uncertainty as clearly as opportunity.",
+    "reading": "For a classroom project, two students tracked an imaginary investment. One recorded only gains; the other included losses and fees. At the presentation, the second notebook told a less exciting but much more complete story.",
+    "readingZh": "课堂项目中，两人记录虚构投资。一个只记收益，另一个也记损失和费用。后者故事没那么刺激，却更完整。",
+    "writing": "A financial example should show uncertainty as clearly as opportunity. I would evaluate the assumptions and missing costs before treating a classroom result as a prediction.",
+    "writingZh": "金融示例应同样清楚地展示机会和不确定性。我会先审视假设和遗漏成本，不把课堂结果当预测。"
+  },
+  {
+    "topicId": 77,
+    "topicName": "市场与消费",
+    "title": "【阅读示例】市场与消费 · A shop placed a popular snack beside the checkout.",
+    "writingTitle": "【写作示例】市场与消费 · Consumers make choices inside designed spaces.",
+    "reading": "A shop placed a popular snack beside the checkout. Emi bought it without planning to, then noticed the same arrangement elsewhere. She photographed the displays for a project about how a shopping environment can guide an ordinary choice.",
+    "readingZh": "商店把热门零食放收银台旁。艾米无计划地购买后，发现别处类似布置。她拍照研究环境怎样引导选择。",
+    "writing": "Consumers make choices inside designed spaces. Noticing a display, a package, or a suggested bundle can help me distinguish my original intention from the store's invitation.",
+    "writingZh": "消费者在设计过的空间做选择。注意陈列、包装和组合推荐，有助于区分原本意图与店铺邀请。"
+  },
+  {
+    "topicId": 78,
+    "topicName": "企业与管理",
+    "title": "【阅读示例】企业与管理 · A small team had two people waiting for the same approval.",
+    "writingTitle": "【写作示例】企业与管理 · Management can improve the work around a person, rather than simply demand more effort.",
+    "reading": "A small team had two people waiting for the same approval. The manager drew the workflow and found that one handoff had no clear owner. Naming that responsibility shortened the delay without asking everyone to work longer.",
+    "readingZh": "小团队两人等同一项审批。经理画流程后发现交接无人明确负责。指定责任后，不加班也缩短了等待。",
+    "writing": "Management can improve the work around a person, rather than simply demand more effort. A clear handoff may solve a problem that another motivational speech leaves untouched.",
+    "writingZh": "管理可以改进工作环境，而不只要求更多努力。清晰交接可能解决激励讲话无法处理的问题。"
+  },
+  {
+    "topicId": 79,
+    "topicName": "商业模式",
+    "title": "【阅读示例】商业模式 · The community café sold drinks but also rented a quiet room for meetings.",
+    "writingTitle": "【写作示例】商业模式 · A business model explains relationships among value, users, and payment.",
+    "reading": "The community café sold drinks but also rented a quiet room for meetings. A student studying its accounts discovered that the two activities supported different costs. Her diagram showed who used each service and why both belonged in the business.",
+    "readingZh": "社区咖啡馆售饮品，也出租会议室。学生发现两项业务承担不同成本，并画出谁使用服务、为什么它们共同存在。",
+    "writing": "A business model explains relationships among value, users, and payment. I find a concrete diagram more helpful than a fashionable label that leaves those relationships unclear.",
+    "writingZh": "商业模式解释价值、使用者和支付关系。具体图示比没有说清关系的流行标签更有帮助。"
+  },
+  {
+    "topicId": 80,
+    "topicName": "国际贸易",
+    "title": "【阅读示例】国际贸易 · A shipment of handmade cups arrived later than expected.",
+    "writingTitle": "【写作示例】国际贸易 · International trade is easier to understand through a product's journey.",
+    "reading": "A shipment of handmade cups arrived later than expected. The shopkeeper traced the journey through packing, transport, and a document check. The delay became a classroom case showing that trade connects many steps beyond a buyer and a seller.",
+    "readingZh": "手工杯货物晚到。店主追踪包装、运输和文件核查过程。案例说明贸易联系买卖双方之外的许多环节。",
+    "writing": "International trade is easier to understand through a product's journey. Following the handoffs reveals coordination and uncertainty that a simple picture of two countries exchanging goods can hide.",
+    "writingZh": "沿产品旅程理解贸易更具体。追踪交接能揭示两国交换商品的简单图景所隐藏的协调和不确定性。"
+  },
+  {
+    "topicId": 81,
+    "topicName": "创新与创业",
+    "title": "【阅读示例】创新与创业 · A student built a clever lunch box clip, then watched classmates use it.",
+    "writingTitle": "【写作示例】创新与创业 · An idea becomes stronger when its maker listens to use, not only praise.",
+    "reading": "A student built a clever lunch box clip, then watched classmates use it. Most opened their bags in a way she had not expected. She redesigned the clip after the demonstration and found a smaller problem worth solving well.",
+    "readingZh": "学生做出巧妙饭盒夹，却发现同学开包方式出乎预料。她根据演示改设计，找到值得认真解决的小问题。",
+    "writing": "An idea becomes stronger when its maker listens to use, not only praise. A modest solution to a repeated problem can matter more than a grand feature nobody needs.",
+    "writingZh": "创作者倾听使用过程，而不只听赞美时，创意更强。重复问题的小解决方案，可能比无人需要的大功能更重要。"
+  },
+  {
+    "topicId": 82,
+    "topicName": "经济发展",
+    "title": "【阅读示例】经济发展 · A new bridge shortened the village's trip to the market.",
+    "writingTitle": "【写作示例】经济发展 · Development changes daily life unevenly.",
+    "reading": "A new bridge shortened the village's trip to the market. One resident welcomed easier travel, while another worried about traffic near her door. The school report included both interviews instead of presenting development as one identical experience.",
+    "readingZh": "新桥缩短村庄去市场的路程。有人赞交通便利，有人忧家门口车流。学校报告同时收录两种经历。",
+    "writing": "Development changes daily life unevenly. I want a local account to ask who gains time, who faces new costs, and which voices are missing from the first celebration.",
+    "writingZh": "发展对日常生活的影响并不均匀。我希望地方记录询问谁省时间、谁承担新成本、庆祝中少了谁的声音。"
+  },
+  {
+    "topicId": 83,
+    "topicName": "产业与供应链",
+    "title": "【阅读示例】产业与供应链 · The workshop ran out of one small screw while larger parts filled the shelves.",
+    "writingTitle": "【写作示例】产业与供应链 · A supply chain connects tasks that may look independent.",
+    "reading": "The workshop ran out of one small screw while larger parts filled the shelves. A trainee mapped where each piece came from and how long it took to arrive. The smallest missing item turned out to explain the stalled assembly.",
+    "readingZh": "车间大部件充足，却缺小螺丝。学徒画出零件来源和到达时间。最小的缺件解释了装配停滞。",
+    "writing": "A supply chain connects tasks that may look independent. Tracing one delayed part can show why a well-stocked room is not the same as a working production process.",
+    "writingZh": "供应链连接看似独立的任务。追踪延迟零件能说明仓库充足不等于生产过程顺畅。"
+  },
+  {
+    "topicId": 85,
+    "topicName": "职业选择",
+    "title": "【阅读示例】职业选择 · Choosing a career felt like choosing a title until Yuna visited two workplaces.",
+    "writingTitle": "【写作示例】职业选择 · A career choice deserves a picture of ordinary days.",
+    "reading": "Choosing a career felt like choosing a title until Yuna visited two workplaces. She watched meetings, routine tasks, and quiet periods between deadlines. Her notes focused on the daily work rather than the impressive names printed on the doors.",
+    "readingZh": "优娜起初像在选职业名称，直到走访两个工作场所。她记录会议、日常任务和间歇，而非门牌上的漂亮名称。",
+    "writing": "A career choice deserves a picture of ordinary days. I would ask what the work requires and what I enjoy doing, rather than decide from status or a title alone.",
+    "writingZh": "职业选择值得了解普通工作日。我会问工作要求和自己的兴趣，而不只依据地位与名称。"
+  },
+  {
+    "topicId": 86,
+    "topicName": "求职与招聘",
+    "title": "【阅读示例】求职与招聘 · An applicant described a group project during an interview.",
+    "writingTitle": "【写作示例】求职与招聘 · A useful application makes responsibility visible.",
+    "reading": "An applicant described a group project during an interview. Instead of claiming every result, he explained his own contribution and a mistake he helped repair. The interviewer asked more questions about that repair than about the final presentation.",
+    "readingZh": "求职者面试讲团队项目，说明个人贡献及参与修复的错误。面试官对修复过程的提问比最终演示更多。",
+    "writing": "A useful application makes responsibility visible. A specific story about a decision and its result tells me more than a list of qualities that almost anyone could claim.",
+    "writingZh": "有用的申请材料能显示责任。具体决定和结果的故事，比人人都能声称的品质列表更能说明问题。"
+  },
+  {
+    "topicId": 87,
+    "topicName": "职业技能",
+    "title": "【阅读示例】职业技能 · A junior designer kept practicing a difficult layout after work.",
+    "writingTitle": "【写作示例】职业技能 · Professional skill includes explaining a choice, not merely performing a task.",
+    "reading": "A junior designer kept practicing a difficult layout after work. Her colleague suggested explaining each revision aloud. The exercise revealed a choice she had been making automatically, and her next draft had a clearer reason behind every element.",
+    "readingZh": "初级设计师反复练困难布局。同事建议说出每次修改理由。练习让她察觉惯性选择，下一稿每项元素都有更明确依据。",
+    "writing": "Professional skill includes explaining a choice, not merely performing a task. I value practice that makes judgment visible so another person can discuss and improve it.",
+    "writingZh": "职业技能包含解释选择，而不只是执行任务。我重视让判断可见、可供他人讨论和改进的练习。"
+  },
+  {
+    "topicId": 88,
+    "topicName": "职场沟通",
+    "title": "【阅读示例】职场沟通 · A project message said the page should be ready soon.",
+    "writingTitle": "【写作示例】职场沟通 · Workplace communication often fails through an ordinary vague word.",
+    "reading": "A project message said the page should be ready soon. Two teammates understood different deadlines. They replaced soon with a date, a draft link, and a description of what ready meant, preventing the same misunderstanding at the next handoff.",
+    "readingZh": "项目消息说页面“很快”完成，两人理解期限不同。他们改用日期、草稿链接和完成标准，避免再次误会。",
+    "writing": "Workplace communication often fails through an ordinary vague word. A shared deadline and a concrete result can make a short message clearer than a long explanation sent afterward.",
+    "writingZh": "职场沟通常被普通模糊词破坏。共同期限和具体成果，比事后长篇解释更能让短消息清楚。"
+  },
+  {
+    "topicId": 89,
+    "topicName": "工作方式",
+    "title": "【阅读示例】工作方式 · A remote team moved every discussion into meetings and soon had little time to build.",
+    "writingTitle": "【写作示例】工作方式 · A working model should fit the tasks and people involved.",
+    "reading": "A remote team moved every discussion into meetings and soon had little time to build. They tried written updates for routine progress and saved calls for unresolved decisions. The new rhythm made both quiet work and conversation easier to protect.",
+    "readingZh": "远程团队把讨论全变会议，制作时间减少。他们用书面更新日常进展，把通话留给未决事项，保护专注和交流时间。",
+    "writing": "A working model should fit the tasks and people involved. I would compare how information moves before deciding that either constant meetings or complete silence is the better arrangement.",
+    "writingZh": "工作方式应适合任务和人员。我会比较信息流动，而不直接认定不断开会或完全安静更好。"
+  },
+  {
+    "topicId": 90,
+    "topicName": "劳动关系与权益",
+    "title": "【阅读示例】劳动关系与权益 · A new employee found that the handbook and a supervisor's instructions described different break arrangements.",
+    "writingTitle": "【写作示例】劳动关系与权益 · Clear workplace rules help people know what to expect.",
+    "reading": "A new employee found that the handbook and a supervisor's instructions described different break arrangements. She wrote down the question and asked the designated office for clarification. The team updated the handbook so later newcomers would not face the same uncertainty.",
+    "readingZh": "新员工发现手册和主管对休息安排说法不同。她记录问题并向负责办公室核实，团队更新手册避免新人同样困惑。",
+    "writing": "Clear workplace rules help people know what to expect. In this fictional scene, asking for a consistent explanation matters more than guessing what an unclear instruction might mean.",
+    "writingZh": "清楚工作规则帮助人们形成预期。在虚构场景中，要求一致解释比猜测模糊指令的意义更重要。"
+  },
+  {
+    "topicId": 91,
+    "topicName": "职业变迁",
+    "title": "【阅读示例】职业变迁 · A print shop introduced a machine that handled a familiar task.",
+    "writingTitle": "【写作示例】职业变迁 · Work changes involve people as well as equipment.",
+    "reading": "A print shop introduced a machine that handled a familiar task. One employee worried about losing her role, then joined a workshop on maintaining the new equipment. The manager's plan included training time rather than expecting an instant transition.",
+    "readingZh": "印刷店引进机器，员工担忧岗位，后来参加维护培训。经理安排学习时间，而非要求立即完成转型。",
+    "writing": "Work changes involve people as well as equipment. A discussion of new tools should include the time, support, and choices needed by those whose daily tasks are changing.",
+    "writingZh": "工作变化涉及人和设备。讨论新工具时，应包含任务变化者所需的时间、支持和选择。"
+  },
+  {
+    "topicId": 92,
+    "topicName": "工作与生活平衡",
+    "title": "【阅读示例】工作与生活平衡 · Elena kept answering project messages during dinner, even when nobody expected an immediate reply.",
+    "writingTitle": "【写作示例】工作与生活平衡 · Balance is easier when expectations are shared.",
+    "reading": "Elena kept answering project messages during dinner, even when nobody expected an immediate reply. Her team agreed on a response window and an urgent contact channel. The next evening, she could finish a conversation at home without watching the screen.",
+    "readingZh": "埃琳娜晚餐也回项目消息，实际上没人要求立即回复。团队约定响应时段和紧急渠道，她终于能安心完成家中对话。",
+    "writing": "Balance is easier when expectations are shared. An individual boundary may become practical only after a team agrees on what requires immediate attention and what can wait.",
+    "writingZh": "预期共同明确时，平衡更容易。团队约定哪些紧急、哪些可等后，个人边界才更可行。"
+  },
+  {
+    "topicId": 94,
+    "topicName": "国家与政治制度",
+    "title": "【阅读示例】国家与政治制度 · At the museum's civic exhibition, students compared diagrams of decision-making systems.",
+    "writingTitle": "【写作示例】国家与政治制度 · A political system is easier to discuss through its processes than through a label alone.",
+    "reading": "At the museum's civic exhibition, students compared diagrams of decision-making systems. Their teacher asked who could propose a change and who reviewed it. The discussion moved from memorizing labels to following how a decision passed through institutions.",
+    "readingZh": "公民展上，学生比较决策系统图。老师问谁提议、谁审查，讨论从背名称转向追踪决定怎样经过机构。",
+    "writing": "A political system is easier to discuss through its processes than through a label alone. Asking who acts, who checks, and who is represented makes the comparison more concrete.",
+    "writingZh": "通过过程而非标签讨论政治制度更具体。询问谁行动、谁监督、谁被代表，有助于比较。"
+  },
+  {
+    "topicId": 95,
+    "topicName": "法律与司法",
+    "title": "【阅读示例】法律与司法 · The school staged a fictional hearing about a damaged community sign.",
+    "writingTitle": "【写作示例】法律与司法 · A classroom hearing can practice careful reasoning without deciding a real legal case.",
+    "reading": "The school staged a fictional hearing about a damaged community sign. Each group received different evidence and had time to question it. The final discussion focused on the difference between a confident accusation and a conclusion supported by the shared record.",
+    "readingZh": "学校模拟审理社区标牌损坏事件。各组收到不同证据并质询，最后讨论自信指控和有记录支持的结论的区别。",
+    "writing": "A classroom hearing can practice careful reasoning without deciding a real legal case. I want the discussion to make evidence, uncertainty, and a fair opportunity to respond visible.",
+    "writingZh": "课堂听证可以练习推理，不决定真实案件。我希望讨论呈现证据、不确定性和公平回应机会。"
+  },
+  {
+    "topicId": 96,
+    "topicName": "公共政策",
+    "title": "【阅读示例】公共政策 · A town considered changing its park's opening hours.",
+    "writingTitle": "【写作示例】公共政策 · A policy discussion depends on whose experience is collected.",
+    "reading": "A town considered changing its park's opening hours. The first survey reached only daytime visitors. After students pointed out the gap, the organizers also spoke with evening users and workers before presenting the proposal.",
+    "readingZh": "小镇拟改公园开放时间，首轮调查只覆盖白天游客。学生指出空缺后，组织者也访谈晚间使用者和工作人员。",
+    "writing": "A policy discussion depends on whose experience is collected. I would examine the questions and the missing participants before treating a survey as the complete voice of a community.",
+    "writingZh": "政策讨论取决于收集谁的经历。我会先检查问题和缺席者，不把问卷当成社区的完整声音。"
+  },
+  {
+    "topicId": 97,
+    "topicName": "公共治理",
+    "title": "【阅读示例】公共治理 · A resident reported a broken streetlight but did not know which office handled it.",
+    "writingTitle": "【写作示例】公共治理 · Governance becomes visible in ordinary services.",
+    "reading": "A resident reported a broken streetlight but did not know which office handled it. The town published a simple tracking page with a responsible team and an update date. Even before the repair, the process became easier to follow.",
+    "readingZh": "居民报修路灯，却不知哪部门处理。小镇发布追踪页面，注明负责团队和更新时间，让维修前的过程也更清楚。",
+    "writing": "Governance becomes visible in ordinary services. Clear responsibility and understandable updates can help people follow a decision instead of repeatedly asking where their request has gone.",
+    "writingZh": "治理体现在普通服务中。清晰责任和易懂更新，让人能跟进决定，不必反复问请求去了哪里。"
+  },
+  {
+    "topicId": 98,
+    "topicName": "外交与国际关系",
+    "title": "【阅读示例】外交与国际关系 · Two exchange students organized a debate and discovered that the same phrase sounded different in each language.",
+    "writingTitle": "【写作示例】外交与国际关系 · International dialogue depends on interpretation as well as vocabulary.",
+    "reading": "Two exchange students organized a debate and discovered that the same phrase sounded different in each language. They paused to explain its context before continuing. Their most useful agreement concerned how to ask for clarification without turning uncertainty into an insult.",
+    "readingZh": "交换生组织辩论，发现同一表述在两种语言中感受不同。他们先解释背景，约定如何澄清，避免误解变成冒犯。",
+    "writing": "International dialogue depends on interpretation as well as vocabulary. A patient request for context may prevent a disagreement about meaning from becoming a disagreement about intention.",
+    "writingZh": "国际对话依赖解释和词汇。耐心询问背景，可避免意义分歧变成对意图的分歧。"
+  },
+  {
+    "topicId": 99,
+    "topicName": "国际组织",
+    "title": "【阅读示例】国际组织 · A class modeled a shared organization with several fictional towns.",
+    "writingTitle": "【写作示例】国际组织 · An international organization can be studied through coordination problems.",
+    "reading": "A class modeled a shared organization with several fictional towns. Each town brought a different request, and none could fund the whole project alone. The students had to agree on contributions, responsibilities, and a way to review the result.",
+    "readingZh": "班级模拟多镇共同组织，各镇需求不同，谁也不能独自出资。学生协商投入、责任和结果审查方式。",
+    "writing": "An international organization can be studied through coordination problems. Following a shared project reveals why membership alone does not settle questions about resources, priorities, or accountability.",
+    "writingZh": "可以通过协调问题研究国际组织。共同项目说明成员身份本身不能解决资源、优先级和责任问题。"
+  },
+  {
+    "topicId": 100,
+    "topicName": "权利与义务",
+    "title": "【阅读示例】权利与义务 · A community garden gave each member a small plot and shared tools.",
+    "writingTitle": "【写作示例】权利与义务 · Rights and responsibilities meet in everyday shared spaces.",
+    "reading": "A community garden gave each member a small plot and shared tools. When a tool disappeared, the meeting discussed both access and responsibility. The group added a clear borrowing record without closing the shed to everyone.",
+    "readingZh": "社区花园分地并共享工具。工具丢失后，会议讨论使用权与责任，增加借用记录，而非关闭工具棚。",
+    "writing": "Rights and responsibilities meet in everyday shared spaces. I prefer rules that explain both the opportunity offered and the care required to keep that opportunity available.",
+    "writingZh": "权利与义务在日常共享空间相遇。我喜欢说明机会，也说明如何维护机会的规则。"
+  },
+  {
+    "topicId": 101,
+    "topicName": "国际安全与冲突",
+    "title": "【阅读示例】国际安全与冲突 · The novel described two villages that stopped speaking after a rumor.",
+    "writingTitle": "【写作示例】国际安全与冲突 · A fictional conflict can explore how fear narrows the stories people hear.",
+    "reading": "The novel described two villages that stopped speaking after a rumor. A messenger carried written questions between them and discovered different accounts of the same event. The ending did not erase the disagreement, but it opened a conversation that had seemed impossible.",
+    "readingZh": "小说中，两村因谣言断绝交流。信使传递书面问题，发现同一事件的不同叙述。结尾没消除分歧，却打开了对话。",
+    "writing": "A fictional conflict can explore how fear narrows the stories people hear. I would make space for uncertainty and dialogue instead of treating one rumor as a complete explanation.",
+    "writingZh": "虚构冲突能探索恐惧如何缩窄人们听到的故事。我会容纳不确定性与对话，不把谣言当完整解释。"
+  },
+  {
+    "topicId": 103,
+    "topicName": "世界历史",
+    "title": "【阅读示例】世界历史 · In a world history class, Mara placed two events on one long timeline.",
+    "writingTitle": "【写作示例】世界历史 · A timeline can connect stories without proving that one caused another.",
+    "reading": "In a world history class, Mara placed two events on one long timeline. Their closeness surprised her, though the stories had been taught separately. She began asking which connections were supported by records and which were only tempting comparisons.",
+    "readingZh": "世界史课上，玛拉把两件事放在同一时间线，发现发生时间接近。她开始区分有记录支持的联系和诱人的比较。",
+    "writing": "A timeline can connect stories without proving that one caused another. I want historical writing to distinguish shared timing from an explanation supported by evidence.",
+    "writingZh": "时间线可以连接故事，却不证明因果。我希望历史写作区分时间接近和有证据支持的解释。"
+  },
+  {
+    "topicId": 104,
+    "topicName": "区域与国家历史",
+    "title": "【阅读示例】区域与国家历史 · The town archive held a letter written by a shopkeeper a century earlier.",
+    "writingTitle": "【写作示例】区域与国家历史 · Regional history gives a place more than a list of famous dates.",
+    "reading": "The town archive held a letter written by a shopkeeper a century earlier. Students compared it with a local map and a newspaper page. The small collection showed how one person's routine could sit inside a much larger regional story.",
+    "readingZh": "镇档案馆保存百年前店主的信。学生对照地图和报纸，看见个人日常怎样处于更大的地方历史中。",
+    "writing": "Regional history gives a place more than a list of famous dates. Everyday records can help us ask how wider changes appeared in the lives of particular residents.",
+    "writingZh": "区域史不只是著名日期列表。日常记录帮助我们询问更大变化怎样出现在具体居民生活中。"
+  },
+  {
+    "topicId": 105,
+    "topicName": "文明史",
+    "title": "【阅读示例】文明史 · A museum case held a broken pot beside a drawing of an old settlement.",
+    "writingTitle": "【写作示例】文明史 · A civilization is made of daily practices as well as monuments.",
+    "reading": "A museum case held a broken pot beside a drawing of an old settlement. Talia expected a story about rulers, but the guide discussed storage, trade, and shared meals. The ordinary object made a distant civilization easier to imagine.",
+    "readingZh": "展柜里，碎陶罐旁是旧聚落图。塔莉娅期待统治者故事，讲解员却谈储藏、贸易和共餐。普通物件让文明更可想象。",
+    "writing": "A civilization is made of daily practices as well as monuments. I would use ordinary objects to explore those practices while admitting what the surviving evidence cannot tell us.",
+    "writingZh": "文明由日常实践和纪念物共同构成。我会借普通物件探索生活，也承认留存证据的局限。"
+  },
+  {
+    "topicId": 106,
+    "topicName": "考古与文物",
+    "title": "【阅读示例】考古与文物 · During a supervised excavation visit, the class watched a worker record a small fragment before moving it.",
+    "writingTitle": "【写作示例】考古与文物 · Archaeology asks where an object was found as well as what it is.",
+    "reading": "During a supervised excavation visit, the class watched a worker record a small fragment before moving it. The guide explained that its position belonged to the evidence too. The students left understanding why a careful note could matter as much as the object.",
+    "readingZh": "参观考古发掘时，学生看到工作人员移动碎片前先记录。讲解员说明位置也是证据，细心笔记可能和物件同样重要。",
+    "writing": "Archaeology asks where an object was found as well as what it is. Preserving context can keep a fascinating discovery from becoming a story built on guesses.",
+    "writingZh": "考古学既问物件是什么，也问在哪里发现。保存背景能避免把有趣发现写成猜测组成的故事。"
+  },
+  {
+    "topicId": 107,
+    "topicName": "历史人物",
+    "title": "【阅读示例】历史人物 · A biography described a famous person's achievements, but one letter revealed an uncertain early decision.",
+    "writingTitle": "【写作示例】历史人物 · Historical figures deserve context, not only praise or blame.",
+    "reading": "A biography described a famous person's achievements, but one letter revealed an uncertain early decision. Amir added that moment to his presentation. The portrait became less like a statue and more like a person working without knowing the ending.",
+    "readingZh": "传记写名人成就，一封信却透露早年的犹疑决定。阿米尔加入这个细节，让人物更像不知结局而行动的人。",
+    "writing": "Historical figures deserve context, not only praise or blame. Showing uncertainty can help readers understand a decision without pretending that its later outcome was obvious from the beginning.",
+    "writingZh": "历史人物需要背景，不只赞美或责备。呈现不确定性能帮助理解决定，不假装后来的结局一开始就明显。"
+  },
+  {
+    "topicId": 108,
+    "topicName": "自然地理",
+    "title": "【阅读示例】自然地理 · On a field walk, students followed a stream from a shaded slope to an open valley.",
+    "writingTitle": "【写作示例】自然地理 · Physical geography invites us to connect observations across a place.",
+    "reading": "On a field walk, students followed a stream from a shaded slope to an open valley. Their map recorded changes in ground, vegetation, and direction. By the end, the route looked like a connected landscape rather than a sequence of photo stops.",
+    "readingZh": "野外步行时，学生沿溪从阴坡到开阔谷地。地图记录地面、植被和方向变化，路线成为相连地景，而非拍照点列表。",
+    "writing": "Physical geography invites us to connect observations across a place. A useful field map should describe relationships and uncertainty, not merely label the features that are easiest to name.",
+    "writingZh": "自然地理鼓励联系空间观察。有用的野外地图应描述关系和不确定性，不只标容易命名的地物。"
+  },
+  {
+    "topicId": 109,
+    "topicName": "人文地理",
+    "title": "【阅读示例】人文地理 · The city map showed a station as a dot, but Jamal's interviews showed its wider role.",
+    "writingTitle": "【写作示例】人文地理 · Human geography connects places with the people moving through them.",
+    "reading": "The city map showed a station as a dot, but Jamal's interviews showed its wider role. A café owner, a cleaner, and a commuter described different routines around it. He redrew the area as paths and meeting points rather than only buildings.",
+    "readingZh": "城市地图把车站画成一点，贾迈勒访谈却呈现咖啡店主、清洁工和通勤者的不同日常。他改画路径与交汇点。",
+    "writing": "Human geography connects places with the people moving through them. Listening to several users can reveal a map that a view from above cannot provide.",
+    "writingZh": "人文地理把地方与穿行其间的人联系起来。倾听不同使用者能揭示俯视图无法提供的地图。"
+  },
+  {
+    "topicId": 110,
+    "topicName": "区域与国家研究",
+    "title": "【阅读示例】区域与国家研究 · For a regional study, Elena collected one official map and three residents' sketches.",
+    "writingTitle": "【写作示例】区域与国家研究 · A region is more than a name on a map.",
+    "reading": "For a regional study, Elena collected one official map and three residents' sketches. Each sketch emphasized a different boundary or destination. Her report kept the maps together, showing that a region can be understood through several overlapping experiences.",
+    "readingZh": "区域研究中，埃琳娜收集官方地图和三张居民速写。每张强调不同边界或目的地。报告并列地图，呈现重叠的区域经验。",
+    "writing": "A region is more than a name on a map. I want a study to compare sources and perspectives before presenting one description as the only way to understand a place.",
+    "writingZh": "区域不只是地图上的名称。我希望研究比较资料和视角，而不把一种描述当唯一理解方式。"
+  },
+  {
+    "topicId": 111,
+    "topicName": "人口迁移",
+    "title": "【阅读示例】人口迁移 · After moving to another city, Luis carried a familiar recipe into his new apartment.",
+    "writingTitle": "【写作示例】人口迁移 · Migration includes ordinary acts of making a place familiar.",
+    "reading": "After moving to another city, Luis carried a familiar recipe into his new apartment. Cooking it led to a conversation with a neighbor who had also moved. Their different journeys met in a kitchen, where belonging began with a shared meal.",
+    "readingZh": "搬到新城后，路易斯在新家做熟悉菜谱，遇到同样迁居的邻居。不同旅程在厨房相遇，归属从共餐开始。",
+    "writing": "Migration includes ordinary acts of making a place familiar. A recipe, a route, or a conversation can reveal experiences that a map of movement alone leaves out.",
+    "writingZh": "迁移包括让地方熟悉起来的普通行动。食谱、路线与谈话能呈现移动地图遗漏的经历。"
+  },
+  {
+    "topicId": 112,
+    "topicName": "历史研究方法",
+    "title": "【阅读示例】历史研究方法 · An old photograph had no date on its back.",
+    "writingTitle": "【写作示例】历史研究方法 · Historical research can be honest about incomplete records.",
+    "reading": "An old photograph had no date on its back. The history group compared shop signs, clothing, and a newspaper notice before suggesting a time range. Their display explained the clues instead of presenting the estimate as a certain date.",
+    "readingZh": "旧照片背后没日期。历史小组对比店牌、衣着和报纸，推测年代区间。展板说明线索，不把估计当确定日期。",
+    "writing": "Historical research can be honest about incomplete records. Showing how an estimate was formed allows readers to judge its strength and understand why another source might change it.",
+    "writingZh": "历史研究可以诚实面对残缺记录。展示估计过程，让读者判断依据，也理解新资料为何可能改变结论。"
+  },
+  {
+    "topicId": 114,
+    "topicName": "节日与庆典",
+    "title": "【阅读示例】节日与庆典 · Before the festival, neighbors folded decorations around one long table.",
+    "writingTitle": "【写作示例】节日与庆典 · A festival lives in its preparation as well as its public performance.",
+    "reading": "Before the festival, neighbors folded decorations around one long table. A newcomer learned the pattern from a child and then taught another visitor. By evening, the preparation had become a celebration of its own, full of stories crossing between hands.",
+    "readingZh": "节日前，邻居同桌折装饰。新人向孩子学图案，再教另一个访客。准备过程也成为庆祝，故事在双手之间传递。",
+    "writing": "A festival lives in its preparation as well as its public performance. Joining a small task can help a newcomer understand a tradition through participation rather than observation alone.",
+    "writingZh": "节日活在准备和公开活动中。参与小任务，能让新人通过实践而非只靠观看理解传统。"
+  },
+  {
+    "topicId": 115,
+    "topicName": "民俗与社会习惯",
+    "title": "【阅读示例】民俗与社会习惯 · At a family gathering, Mina reached for a seat before noticing everyone waiting.",
+    "writingTitle": "【写作示例】民俗与社会习惯 · A custom becomes easier to understand when someone explains its local meaning.",
+    "reading": "At a family gathering, Mina reached for a seat before noticing everyone waiting. Her aunt quietly explained the household's custom. Mina asked a question, and the conversation turned into stories about how the practice had changed over time.",
+    "readingZh": "家庭聚会时，米娜想坐下才发现大家在等。姑妈解释习惯，米娜提问，谈话转成习俗如何随时间改变的故事。",
+    "writing": "A custom becomes easier to understand when someone explains its local meaning. I would ask respectfully instead of assuming that an unfamiliar practice has one universal explanation.",
+    "writingZh": "有人说明地方意义时，习俗更容易理解。我会尊重地询问，而不假设陌生做法只有一种通用解释。"
+  },
+  {
+    "topicId": 116,
+    "topicName": "宗教与信仰",
+    "title": "【阅读示例】宗教与信仰 · Two classmates visited an exhibition about different beliefs.",
+    "writingTitle": "【写作示例】宗教与信仰 · Respectful discussion of belief can begin with personal experience.",
+    "reading": "Two classmates visited an exhibition about different beliefs. One recognized objects from home; the other had never seen them before. They described their experiences without asking either person to speak for every member of a tradition.",
+    "readingZh": "同学参观信仰展，一人认出家中物件，另一人从未见过。他们描述个人经历，不要求谁代表整个传统。",
+    "writing": "Respectful discussion of belief can begin with personal experience. Listening to one person should deepen curiosity without turning that person's account into a claim about an entire community.",
+    "writingZh": "尊重地讨论信仰可以从个人经历开始。倾听个人应增进好奇，而不把其叙述当成整个群体的情况。"
+  },
+  {
+    "topicId": 117,
+    "topicName": "文化遗产",
+    "title": "【阅读示例】文化遗产 · A faded mural stood behind the new market.",
+    "writingTitle": "【写作示例】文化遗产 · Heritage is not only an old object's age.",
+    "reading": "A faded mural stood behind the new market. Students recorded residents' memories before helping an approved restoration team prepare the site. Their display included both the image and the stories that explained why neighbors wanted it preserved.",
+    "readingZh": "新市场后有褪色壁画。学生先记录居民记忆，再帮助获准修复的团队。展板包含图像和人们希望保存它的原因。",
+    "writing": "Heritage is not only an old object's age. The meanings people attach to it deserve attention alongside the material work required to keep it available for future visitors.",
+    "writingZh": "遗产不只在于物件古老。人们赋予的意义，与让未来访客继续看到它的保护工作同样值得关注。"
+  },
+  {
+    "topicId": 118,
+    "topicName": "跨文化交流",
+    "title": "【阅读示例】跨文化交流 · A host offered more food just as her guest felt full.",
+    "writingTitle": "【写作示例】跨文化交流 · Cross-cultural communication needs curiosity about intention.",
+    "reading": "A host offered more food just as her guest felt full. Each was trying to be polite, but their habits differed. A friendly explanation turned the awkward moment into a conversation about hospitality instead of a judgment about manners.",
+    "readingZh": "主人添菜时客人已饱，两人都想礼貌，习惯却不同。友善解释把尴尬变成关于待客的交谈，而非礼仪评判。",
+    "writing": "Cross-cultural communication needs curiosity about intention. A small misunderstanding can become useful when both people explain their habits without treating either one as the only normal way.",
+    "writingZh": "跨文化交流需要对意图好奇。双方解释习惯、不把一种做法当唯一正常方式时，小误会也能有价值。"
+  },
+  {
+    "topicId": 119,
+    "topicName": "文化认同",
+    "title": "【阅读示例】文化认同 · Leila wrote about the languages spoken at her dinner table.",
+    "writingTitle": "【写作示例】文化认同 · Cultural identity can hold several attachments at once.",
+    "reading": "Leila wrote about the languages spoken at her dinner table. Some words belonged to memories she could not translate neatly. Her essay kept a few of them with explanations, allowing the reader to meet her experience without smoothing away its differences.",
+    "readingZh": "莱拉写餐桌语言，有些词承载难以整齐翻译的记忆。她保留部分词并解释，让读者接近经历，也保留差异。",
+    "writing": "Cultural identity can hold several attachments at once. I want a personal essay to make room for that complexity rather than force its writer to choose a single simple label.",
+    "writingZh": "文化认同可以同时包含多种联系。我希望个人文章容纳复杂性，不迫使作者选择单一简单标签。"
+  },
+  {
+    "topicId": 120,
+    "topicName": "饮食文化",
+    "title": "【阅读示例】饮食文化 · For a neighborhood cookbook, Arun asked cooks when they prepared each dish.",
+    "writingTitle": "【写作示例】饮食文化 · Food culture connects taste with occasions and memory.",
+    "reading": "For a neighborhood cookbook, Arun asked cooks when they prepared each dish. A soup belonged to winter evenings, while a bread appeared at reunions. The collection became a calendar of relationships, not merely a set of ingredients and instructions.",
+    "readingZh": "社区食谱中，阿伦询问做菜时间。汤属于冬夜，面包出现在团聚时。合集变成关系的日历，不只是配料和步骤。",
+    "writing": "Food culture connects taste with occasions and memory. Asking when a dish matters can reveal a story that copying its ingredients alone would miss.",
+    "writingZh": "饮食文化把味道与场合和记忆相连。询问一道菜何时重要，能揭示只抄配料会遗漏的故事。"
+  },
+  {
+    "topicId": 121,
+    "topicName": "传统技艺",
+    "title": "【阅读示例】传统技艺 · The apprentice copied a basket maker's pattern and produced a crooked rim.",
+    "writingTitle": "【写作示例】传统技艺 · Traditional craft carries knowledge that a picture cannot fully record.",
+    "reading": "The apprentice copied a basket maker's pattern and produced a crooked rim. Her teacher pointed to the tension in each strip rather than the finished shape. On the next attempt, she slowed down and began to notice the craft inside each movement.",
+    "readingZh": "学徒照编篮图案做出歪边。师傅让她注意每条材料张力，而非只看成品。下次慢下来后，她察觉动作中的技艺。",
+    "writing": "Traditional craft carries knowledge that a picture cannot fully record. Watching, asking, and practicing can reveal judgments hidden inside a maker's familiar movements.",
+    "writingZh": "传统技艺有图片难完整记录的知识。观察、提问与练习能揭示熟练动作中隐藏的判断。"
+  },
+  {
+    "topicId": 122,
+    "topicName": "礼仪与社会规范",
+    "title": "【阅读示例】礼仪与社会规范 · At a formal dinner, a guest did not know how to begin.",
+    "writingTitle": "【写作示例】礼仪与社会规范 · Etiquette should help people share a space comfortably.",
+    "reading": "At a formal dinner, a guest did not know how to begin. The host explained the arrangement quietly and gave him time to settle. The evening stayed welcoming because guidance replaced the expectation that every visitor should already know the rules.",
+    "readingZh": "正式晚餐中，客人不知如何开始。主人轻声说明安排，给他适应时间。指导代替默认人人懂规则，让晚餐保持友善。",
+    "writing": "Etiquette should help people share a space comfortably. I value a rule more when its purpose can be explained and newcomers can learn it without embarrassment.",
+    "writingZh": "礼仪应帮助人们舒适共享空间。规则目的能解释，新人能不尴尬地学习时，我更重视它。"
+  },
+  {
+    "topicId": 124,
+    "topicName": "语言与语言学",
+    "title": "【阅读示例】语言与语言学 · A child invented a new word for the sound of a creaking gate.",
+    "writingTitle": "【写作示例】语言与语言学 · Language is both a shared system and a living activity.",
+    "reading": "A child invented a new word for the sound of a creaking gate. Her father wrote it down beside the words different relatives used. Their notebook became a small record of how meaning could grow from shared experience and playful attention.",
+    "readingZh": "孩子给门吱响造新词，父亲和亲人的用词一起记下。本子记录意义如何从共同经历和游戏般的关注中生长。",
+    "writing": "Language is both a shared system and a living activity. Noticing an ordinary expression can lead to questions about meaning, context, and who understands a word in the same way.",
+    "writingZh": "语言既是共享系统，也是活的活动。普通表达能引出意义、背景及谁以相同方式理解词语的问题。"
+  },
+  {
+    "topicId": 125,
+    "topicName": "文学与小说",
+    "title": "【阅读示例】文学与小说 · In the library story circle, everyone read the same ending.",
+    "writingTitle": "【写作示例】文学与小说 · A novel can support more than one careful reading.",
+    "reading": "In the library story circle, everyone read the same ending. One reader saw forgiveness; another saw an unfinished argument. They returned to particular lines and discovered that their different interpretations depended on different details they had noticed.",
+    "readingZh": "阅读会上，同一结尾有人看到原谅，有人看到未完争论。回到具体句子后，他们发现各自注意的细节不同。",
+    "writing": "A novel can support more than one careful reading. I want an interpretation to return to the text, so disagreement becomes a discussion of evidence rather than a contest of certainty.",
+    "writingZh": "小说可以支持多种细读。我希望解释回到文本，让分歧成为证据讨论，而非自信程度的竞赛。"
+  },
+  {
+    "topicId": 126,
+    "topicName": "诗歌",
+    "title": "【阅读示例】诗歌 · The poet crossed out a grand sentence and kept a line about rain on a windowsill.",
+    "writingTitle": "【写作示例】诗歌 · Poetry can make an ordinary image feel newly visible.",
+    "reading": "The poet crossed out a grand sentence and kept a line about rain on a windowsill. When she read the draft aloud, the smaller image carried the feeling she had struggled to name. She left space around it on the page.",
+    "readingZh": "诗人删去宏大句子，留下雨落窗台的诗行。朗读时，小意象传达了难命名的感受，她在纸上为它留白。",
+    "writing": "Poetry can make an ordinary image feel newly visible. I enjoy a line that invites attention rather than explains every possible meaning before the reader has time to respond.",
+    "writingZh": "诗歌能让普通意象重新可见。我喜欢邀请关注的诗行，而非读者回应前就解释所有意义。"
+  },
+  {
+    "topicId": 127,
+    "topicName": "绘画与视觉艺术",
+    "title": "【阅读示例】绘画与视觉艺术 · A painter placed two similar colors beside each other.",
+    "writingTitle": "【写作示例】绘画与视觉艺术 · Visual art rewards changes in distance and attention.",
+    "reading": "A painter placed two similar colors beside each other. From across the room they seemed alike, but near the canvas one felt much warmer. A visitor walked back and forth, discovering that looking was an activity rather than a single glance.",
+    "readingZh": "画家把近似颜色并列，远看相同，近看一个更暖。访客来回走动，发现观看是一项活动，而非一瞥。",
+    "writing": "Visual art rewards changes in distance and attention. Before deciding that I have understood an image, I like to notice what appears when I look again from another position.",
+    "writingZh": "视觉艺术回应观看距离和注意变化。判断理解图像前，我愿换个位置再看，留意新出现的细节。"
+  },
+  {
+    "topicId": 128,
+    "topicName": "摄影",
+    "title": "【阅读示例】摄影 · A photographer waited at the station for an empty platform.",
+    "writingTitle": "【写作示例】摄影 · A photograph frames a choice about what matters.",
+    "reading": "A photographer waited at the station for an empty platform. A cleaner entered the frame, and the scene became more interesting than her original plan. She asked permission for the portrait and changed the caption to include the work behind the quiet place.",
+    "readingZh": "摄影师等空站台，清洁工入镜后画面更有意思。她征得肖像许可，修改说明，呈现安静背后的劳动。",
+    "writing": "A photograph frames a choice about what matters. I want to think about the people inside that choice, not only the light, composition, and picture I hoped to bring home.",
+    "writingZh": "照片框定什么重要。我希望考虑选择中的人，而不只考虑光线、构图与想带回的画面。"
+  },
+  {
+    "topicId": 129,
+    "topicName": "音乐与舞蹈",
+    "title": "【阅读示例】音乐与舞蹈 · The dancers rehearsed with a familiar song until the musician changed its pace.",
+    "writingTitle": "【写作示例】音乐与舞蹈 · Music and dance share time rather than merely occupy it.",
+    "reading": "The dancers rehearsed with a familiar song until the musician changed its pace. At first they tried to keep the old movements. Then they listened closely and adjusted together, turning the rehearsal into a conversation between sound and motion.",
+    "readingZh": "舞者用熟悉歌曲排练，乐手改节奏后，他们先坚持旧动作，再仔细聆听共同调整，让排练成为声音和动作的对话。",
+    "writing": "Music and dance share time rather than merely occupy it. Watching a rehearsal reminds me that responsiveness can matter as much as memorizing a sequence perfectly.",
+    "writingZh": "音乐和舞蹈共享时间，不只是占用时间。排练让我想起，回应变化和完美记住顺序同样重要。"
+  },
+  {
+    "topicId": 130,
+    "topicName": "电影与戏剧",
+    "title": "【阅读示例】电影与戏剧 · In rehearsal, an actor paused before a simple line.",
+    "writingTitle": "【写作示例】电影与戏剧 · A performance carries meaning through timing, silence, and movement.",
+    "reading": "In rehearsal, an actor paused before a simple line. The director first asked him to speak faster, then watched the whole scene again. The pause revealed hesitation the dialogue never stated, so it stayed in the final performance.",
+    "readingZh": "演员在简单台词前停顿。导演起初要求快说，再看全场后发现停顿揭示对白没说的犹疑，于是保留。",
+    "writing": "A performance carries meaning through timing, silence, and movement. I would discuss what a choice makes visible before judging it only by the words printed in the script.",
+    "writingZh": "表演用时机、沉默和动作承载意义。我会先讨论选择呈现什么，再依据剧本词句评价。"
+  },
+  {
+    "topicId": 131,
+    "topicName": "设计与建筑",
+    "title": "【阅读示例】设计与建筑 · A new entrance looked elegant in the model, but visitors carrying bags struggled with its narrow turn.",
+    "writingTitle": "【写作示例】设计与建筑 · Good design includes the journey through an object or a place.",
+    "reading": "A new entrance looked elegant in the model, but visitors carrying bags struggled with its narrow turn. The architect watched the trial and widened the passage. The revision made the design less dramatic and the building easier to enter.",
+    "readingZh": "新入口模型优雅，但提包访客难过狭窄转角。建筑师观察后拓宽通道，设计没那么戏剧，却更易进入。",
+    "writing": "Good design includes the journey through an object or a place. A beautiful drawing deserves to be tested against the ordinary movements it is supposed to support.",
+    "writingZh": "好设计包含穿行物件或空间的过程。漂亮图纸应与它需要支持的日常动作对照测试。"
+  },
+  {
+    "topicId": 132,
+    "topicName": "艺术欣赏与批评",
+    "title": "【阅读示例】艺术欣赏与批评 · After visiting an exhibition, Tomas wrote that one painting was boring.",
+    "writingTitle": "【写作示例】艺术欣赏与批评 · Criticism becomes useful when judgment grows from description.",
+    "reading": "After visiting an exhibition, Tomas wrote that one painting was boring. His teacher asked him to describe what he had actually noticed. The second review discussed color, repetition, and the experience of waiting, giving readers something they could examine themselves.",
+    "readingZh": "托马斯说画无聊。老师让他描述所见。第二稿讨论色彩、重复和等待感，让读者有能自行审视的内容。",
+    "writing": "Criticism becomes useful when judgment grows from description. I can dislike a work while still explaining its choices carefully enough for another reader to understand my response.",
+    "writingZh": "判断来自描述时，批评更有用。我可以不喜欢作品，同时细致说明其选择，让读者理解我的回应。"
+  },
+  {
+    "topicId": 134,
+    "topicName": "新闻与新闻业",
+    "title": "【阅读示例】新闻与新闻业 · A reporter heard a striking claim outside the market.",
+    "writingTitle": "【写作示例】新闻与新闻业 · News writing depends on more than an interesting statement.",
+    "reading": "A reporter heard a striking claim outside the market. Before publishing it, she found the original notice and spoke with people affected by the change. Her final article included a correction to the rumor that had first drawn her attention.",
+    "readingZh": "记者在市场听到惊人说法，先查原通知并访谈受影响者。最终报道纠正最初吸引她的传言。",
+    "writing": "News writing depends on more than an interesting statement. A clear account of sources and unanswered questions helps readers distinguish reporting from the repetition of a rumor.",
+    "writingZh": "新闻写作不只靠有趣说法。说明来源和未解问题，帮助读者区分报道与传言重复。"
+  },
+  {
+    "topicId": 135,
+    "topicName": "社交媒体",
+    "title": "【阅读示例】社交媒体 · A short post about the café spread quickly without its last sentence.",
+    "writingTitle": "【写作示例】社交媒体 · Social media makes sharing easy but context fragile.",
+    "reading": "A short post about the café spread quickly without its last sentence. The missing line had explained that the closure was temporary. The owner reposted the full notice, learning that a message could travel farther while carrying less of its original meaning.",
+    "readingZh": "咖啡馆短帖快速传播，却少了说明暂时关闭的末句。店主重发完整通知，发现信息传得更远，也可能带得更少。",
+    "writing": "Social media makes sharing easy but context fragile. Before passing on a surprising post, I want to find the complete message and understand what the cropped version leaves out.",
+    "writingZh": "社交媒体易分享，背景却脆弱。转发惊人帖子前，我想找完整消息，了解裁剪版本遗漏什么。"
+  },
+  {
+    "topicId": 136,
+    "topicName": "广告与传播",
+    "title": "【阅读示例】广告与传播 · The class designed an advertisement for a reusable bag.",
+    "writingTitle": "【写作示例】广告与传播 · Persuasion does not need an unlimited promise.",
+    "reading": "The class designed an advertisement for a reusable bag. Their first poster promised that it solved every problem. After discussing the claim, they replaced it with a specific description of the bag and a picture of how it could be used.",
+    "readingZh": "班级设计环保袋广告，首稿承诺解决所有问题。讨论后，他们改成具体特点和使用图片。",
+    "writing": "Persuasion does not need an unlimited promise. A clear advertisement can describe a real benefit while leaving the audience enough information to judge whether the product fits its needs.",
+    "writingZh": "说服不需要无限承诺。清晰广告能说明真实益处，让受众判断产品是否适合需求。"
+  },
+  {
+    "topicId": 137,
+    "topicName": "信息传播",
+    "title": "【阅读示例】信息传播 · A meeting time changed three times, but the newest notice looked like the earlier ones.",
+    "writingTitle": "【写作示例】信息传播 · Communication includes helping someone recognize the current message.",
+    "reading": "A meeting time changed three times, but the newest notice looked like the earlier ones. Several neighbors arrived late. The organizer added a visible update date and marked the current version, making the same information easier to identify and use.",
+    "readingZh": "会议时间改三次，新旧通知相似，邻居迟到。组织者增加醒目更新日期和当前版本标记，使信息更易识别使用。",
+    "writing": "Communication includes helping someone recognize the current message. A date and a version label can matter as much as rewriting the sentence inside the notice.",
+    "writingZh": "传播也包括帮助识别当前消息。日期和版本标记可能与重写通知句子同样重要。"
+  },
+  {
+    "topicId": 138,
+    "topicName": "媒体素养",
+    "title": "【阅读示例】媒体素养 · A dramatic image appeared in the group chat with no date or source.",
+    "writingTitle": "【写作示例】媒体素养 · Media literacy means following a claim back toward its origin.",
+    "reading": "A dramatic image appeared in the group chat with no date or source. Sofia found an earlier copy connected to a different event. She shared the original context and explained her search instead of merely calling the new caption wrong.",
+    "readingZh": "群聊出现无日期来源的夸张图。索菲娅找到关联另一事件的早期版本，分享背景和查找过程，而不只说新说明错。",
+    "writing": "Media literacy means following a claim back toward its origin. Explaining that path can help other readers ask better questions the next time an impressive image appears.",
+    "writingZh": "媒体素养包括追溯说法源头。说明追溯路径，可帮助读者下次看到震撼图片时提出更好问题。"
+  },
+  {
+    "topicId": 139,
+    "topicName": "公共舆论",
+    "title": "【阅读示例】公共舆论 · The first comments on a town proposal were strongly negative.",
+    "writingTitle": "【写作示例】公共舆论 · Public opinion is shaped by who speaks and where they can speak.",
+    "reading": "The first comments on a town proposal were strongly negative. At the public meeting, quieter residents described different experiences. The student observer compared the settings and realized that the loudest visible discussion was not automatically the whole community's opinion.",
+    "readingZh": "城镇提案最早评论强烈反对，公开会议中安静居民却讲不同经历。学生发现最响亮的可见讨论不自动代表全体意见。",
+    "writing": "Public opinion is shaped by who speaks and where they can speak. I would compare several channels before describing one comment thread as a community's shared position.",
+    "writingZh": "公共舆论受谁发声、哪里能发声影响。我会比较多种渠道，不把一条评论串当社区共同立场。"
+  },
+  {
+    "topicId": 140,
+    "topicName": "数字内容创作",
+    "title": "【阅读示例】数字内容创作 · A creator planned a tutorial video and filmed the perfect final result first.",
+    "writingTitle": "【写作示例】数字内容创作 · Useful digital content considers the viewer's starting point.",
+    "reading": "A creator planned a tutorial video and filmed the perfect final result first. Then a beginner asked about a mistake that appeared halfway through. She added the missing steps and made the lesson longer, but much easier to follow.",
+    "readingZh": "创作者先拍教程完美结果。初学者问中途错误，她补入缺失步骤。视频更长，却更易跟随。",
+    "writing": "Useful digital content considers the viewer's starting point. Showing a common mistake and its repair can teach more than displaying a result that seems to arrive without effort.",
+    "writingZh": "有用内容考虑观众起点。展示常见错误和修复，比展示毫不费力出现的结果更能教学。"
+  },
+  {
+    "topicId": 141,
+    "topicName": "信息伦理",
+    "title": "【阅读示例】信息伦理 · A writer wanted to use a neighbor's private message in an essay.",
+    "writingTitle": "【写作示例】信息伦理 · Information being available does not settle whether I should publish it.",
+    "reading": "A writer wanted to use a neighbor's private message in an essay. The sentence was powerful, but its sender had not agreed to publication. The writer asked permission and accepted a refusal, rebuilding the paragraph around her own experience.",
+    "readingZh": "作者想用邻居私信写文章，句子有力，却未获公开同意。询问被拒后，她接受结果，改用自身经历重写。",
+    "writing": "Information being available does not settle whether I should publish it. I want the people behind a useful detail to remain visible in the decisions I make as a writer.",
+    "writingZh": "信息能获得，不等于应该发布。我希望写作决定中仍看见有用细节背后的人。"
+  },
+  {
+    "topicId": 143,
+    "topicName": "衣着与个人生活",
+    "title": "【阅读示例】衣着与个人生活 · For a school costume day, Eden repaired an old jacket instead of buying another.",
+    "writingTitle": "【写作示例】衣着与个人生活 · Clothing can carry memory as well as style.",
+    "reading": "For a school costume day, Eden repaired an old jacket instead of buying another. A bright patch changed its appearance and started a conversation about where it had been worn. The garment returned to daily use with a new piece of history.",
+    "readingZh": "服装日里，伊登修旧夹克而非另买。亮色补丁引出过往故事，衣服带着新历史重回日常。",
+    "writing": "Clothing can carry memory as well as style. Repairing one familiar piece may give it a role that a replacement cannot reproduce, even when both serve the same practical purpose.",
+    "writingZh": "衣着承载记忆和风格。修补熟悉衣物能赋予替代品无法复制的作用，即使实用功能相同。"
+  },
+  {
+    "topicId": 144,
+    "topicName": "食物与烹饪",
+    "title": "【阅读示例】食物与烹饪 · The recipe assumed every tomato would taste the same.",
+    "writingTitle": "【写作示例】食物与烹饪 · Cooking joins instructions with attention.",
+    "reading": "The recipe assumed every tomato would taste the same. When dinner seemed unexpectedly sharp, Noor asked her grandmother to taste it with her. They adjusted the next batch together and wrote a note beside the printed quantities.",
+    "readingZh": "菜谱假设番茄味道相同。晚餐意外偏酸时，努尔请祖母共尝，调整下一批，并在印刷用量旁加笔记。",
+    "writing": "Cooking joins instructions with attention. A recipe is more useful to me when it leaves room to notice the ingredients in front of me and record what changed.",
+    "writingZh": "烹饪结合指令和关注。食谱留出观察手头食材、记录变化的空间时，对我更有用。"
+  },
+  {
+    "topicId": 145,
+    "topicName": "住房与居住",
+    "title": "【阅读示例】住房与居住 · A new apartment had a beautiful view but nowhere convenient to leave a bicycle.",
+    "writingTitle": "【写作示例】住房与居住 · A home is also a pattern of daily movement.",
+    "reading": "A new apartment had a beautiful view but nowhere convenient to leave a bicycle. During a second visit, Ana walked through an ordinary morning in her imagination. The small daily details changed how she compared the two homes on her list.",
+    "readingZh": "新公寓景色好，却不好放自行车。二次看房时，安娜想象普通早晨，日常细节改变了比较方式。",
+    "writing": "A home is also a pattern of daily movement. I would consider storage, access, and familiar routines alongside the view that makes the first visit exciting.",
+    "writingZh": "住房也是日常行动的模式。我会同时考虑储物、出入和习惯，而不只看首次参观吸引人的景色。"
+  },
+  {
+    "topicId": 146,
+    "topicName": "交通出行",
+    "title": "【阅读示例】交通出行 · The map suggested the shortest walk to the station.",
+    "writingTitle": "【写作示例】交通出行 · A useful route is not always the shortest one.",
+    "reading": "The map suggested the shortest walk to the station. With a heavy bag, Ivo found the steep steps difficult and returned by a longer flat route. He saved both options, knowing that the best path could depend on the journey's circumstances.",
+    "readingZh": "地图建议最短步行路。伊沃提重包觉得台阶难走，回程选较长平路，保存两种选项，因为最佳路线取决于情境。",
+    "writing": "A useful route is not always the shortest one. Travel information becomes more helpful when it describes the conditions that allow different people to choose well.",
+    "writingZh": "有用路线不总是最短路线。出行信息说明条件，让不同人合理选择时更有帮助。"
+  },
+  {
+    "topicId": 147,
+    "topicName": "旅游与探索",
+    "title": "【阅读示例】旅游与探索 · A traveler rushed toward the famous viewpoint and passed a closed gate.",
+    "writingTitle": "【写作示例】旅游与探索 · Exploration can begin when a plan changes.",
+    "reading": "A traveler rushed toward the famous viewpoint and passed a closed gate. A local guide offered another walk through a working orchard, with the owner's permission. The unexpected route became the most memorable part of her journal.",
+    "readingZh": "旅行者赶去名景点却遇闭门。当地向导经果园主人许可带走另一条路，意外路线成为日志最难忘部分。",
+    "writing": "Exploration can begin when a plan changes. I want travel writing to respect the places and people encountered, rather than treat every unfamiliar path as something a visitor is entitled to enter.",
+    "writingZh": "探索可始于计划变化。我希望游记尊重遇到的地方与人，不把陌生路都当成访客有权进入的空间。"
+  },
+  {
+    "topicId": 148,
+    "topicName": "购物与消费",
+    "title": "【阅读示例】购物与消费 · A discount sign made the large box seem irresistible.",
+    "writingTitle": "【写作示例】购物与消费 · A bargain should be compared with a real need, not only another price.",
+    "reading": "A discount sign made the large box seem irresistible. Before buying it, Fen checked how much she would actually use. The smaller package cost more per item but fit her need, and she left without the impressive bargain.",
+    "readingZh": "折扣牌让大盒诱人，芬先想实际用量。小包装单价高却适合需求，她没有买看似划算的大盒。",
+    "writing": "A bargain should be compared with a real need, not only another price. I find a shopping decision clearer when I include what will be used and what may be wasted.",
+    "writingZh": "优惠应和真实需求比较，而不只比较价格。考虑使用量和浪费后，购物决定更清楚。"
+  },
+  {
+    "topicId": 149,
+    "topicName": "休闲与娱乐",
+    "title": "【阅读示例】休闲与娱乐 · The friends planned an afternoon of competitive games.",
+    "writingTitle": "【写作示例】休闲与娱乐 · Leisure should allow different kinds of enjoyment.",
+    "reading": "The friends planned an afternoon of competitive games. One member asked for something quieter, so they added a puzzle table beside the main activity. By evening, people had moved between both spaces without needing to enjoy the day in the same way.",
+    "readingZh": "朋友安排竞技游戏，有人想安静，于是旁设拼图桌。大家自由往返，不必用同样方式享受下午。",
+    "writing": "Leisure should allow different kinds of enjoyment. Offering a quiet option can make a shared event more welcoming without removing the energy others came to experience.",
+    "writingZh": "休闲应容纳不同乐趣。安静选项能使活动更包容，又不取消别人想体验的热闹。"
+  },
+  {
+    "topicId": 150,
+    "topicName": "家庭生活管理",
+    "title": "【阅读示例】家庭生活管理 · The household kept buying milk because nobody knew what remained in the fridge.",
+    "writingTitle": "【写作示例】家庭生活管理 · Household organization works better when responsibility is shared.",
+    "reading": "The household kept buying milk because nobody knew what remained in the fridge. A small shared list changed the pattern. At the weekend meeting, the family discussed who would update it, so the new system would not become another invisible job.",
+    "readingZh": "家人不知冰箱余量，总重复买奶。共享小清单改变情况。他们约定更新责任，避免新系统成为另一项隐形家务。",
+    "writing": "Household organization works better when responsibility is shared. A clever list is only a beginning if one person must quietly maintain it for everyone else.",
+    "writingZh": "家庭管理在共同承担责任时更好。若仍全靠一人默默维护，聪明清单也只是起点。"
+  },
+  {
+    "topicId": 151,
+    "topicName": "公共与生活服务",
+    "title": "【阅读示例】公共与生活服务 · A visitor at the public service desk could not understand the ticket machine.",
+    "writingTitle": "【写作示例】公共与生活服务 · Everyday services deserve to be understandable on the first visit.",
+    "reading": "A visitor at the public service desk could not understand the ticket machine. An assistant explained the options and watched where he hesitated. Her notes helped the office rewrite the labels, reducing a difficulty that many previous visitors had faced silently.",
+    "readingZh": "公共服务窗口访客不懂取号机。工作人员解释并观察犹疑点，笔记帮助重写标签，减少过去人们默默面对的困难。",
+    "writing": "Everyday services deserve to be understandable on the first visit. Observing a real user's hesitation can reveal a problem that experienced staff no longer notice.",
+    "writingZh": "日常服务应让首次使用者也理解。观察真实使用者犹疑，能发现熟练员工不再注意的问题。"
+  },
+  {
+    "topicId": 153,
+    "topicName": "形而上学",
+    "title": "【阅读示例】形而上学 · A child asked whether a repaired toy was still the same toy after every part had changed.",
+    "writingTitle": "【写作示例】形而上学 · Metaphysics can begin with an ordinary object.",
+    "reading": "A child asked whether a repaired toy was still the same toy after every part had changed. Her uncle answered with another question about the memories attached to it. Their walk home became a discussion about objects, continuity, and what a name preserves.",
+    "readingZh": "孩子问玩具所有部件换过后是否还是原玩具。叔叔反问相关记忆，回家路变成关于物件、连续性和名称的讨论。",
+    "writing": "Metaphysics can begin with an ordinary object. A thought experiment helps me examine what I mean by sameness without assuming that the first familiar answer settles the question.",
+    "writingZh": "形而上学可始于普通物件。思想实验帮助审视“相同”的意义，不假设第一个熟悉答案就能解决问题。"
+  },
+  {
+    "topicId": 154,
+    "topicName": "认识论",
+    "title": "【阅读示例】认识论 · Two friends heard the same claim from different people.",
+    "writingTitle": "【写作示例】认识论 · Knowing asks for reasons as well as confidence.",
+    "reading": "Two friends heard the same claim from different people. One trusted the speaker; the other asked for the original record. They compared their reasons and discovered that agreement about an answer did not mean agreement about how they knew it.",
+    "readingZh": "两位朋友听到同一说法，一人信任讲述者，一人找原记录。比较理由后，他们发现答案一致不等于认知方式一致。",
+    "writing": "Knowing asks for reasons as well as confidence. I want to distinguish what I observed, what I inferred, and what I accepted from another person's testimony.",
+    "writingZh": "知识要求理由，不只要求自信。我希望区分观察到的、推断出的和接受他人证言的内容。"
+  },
+  {
+    "topicId": 155,
+    "topicName": "伦理学",
+    "title": "【阅读示例】伦理学 · The club had one ticket left and two members who wanted it.",
+    "writingTitle": "【写作示例】伦理学 · An ethical question often contains several reasonable concerns.",
+    "reading": "The club had one ticket left and two members who wanted it. A coin toss seemed fair until someone explained an earlier promise. The group paused to compare equal chances with keeping commitments, discovering that fairness involved more than one consideration.",
+    "readingZh": "社团只剩一票，两人想要。抛硬币看似公平，却有人提出先前承诺。大家比较平等机会与信守承诺，发现公平有多重考量。",
+    "writing": "An ethical question often contains several reasonable concerns. I prefer to name those concerns before choosing, so a simple rule does not hide the people and commitments affected.",
+    "writingZh": "伦理问题常含多个合理关切。我喜欢选择前先说明它们，避免简单规则遮住受影响的人与承诺。"
+  },
+  {
+    "topicId": 156,
+    "topicName": "逻辑与批判性思维",
+    "title": "【阅读示例】逻辑与批判性思维 · An argument sounded convincing because its speaker listed many examples.",
+    "writingTitle": "【写作示例】逻辑与批判性思维 · Critical thinking includes checking the bridge between evidence and a claim.",
+    "reading": "An argument sounded convincing because its speaker listed many examples. Priya asked whether those examples actually supported the final claim. One belonged to a different situation, and removing it made the group state a smaller conclusion they could defend.",
+    "readingZh": "发言者列出很多例子，论证很有说服力。普莉娅问例子是否支持结论，发现一例情境不同。去掉后，大家提出更小但有依据的结论。",
+    "writing": "Critical thinking includes checking the bridge between evidence and a claim. A narrower conclusion with clear support can be stronger than a dramatic statement built from unrelated examples.",
+    "writingZh": "批判思维包括检查证据通向结论的桥。范围较小但依据清晰的结论，比无关例子组成的大说法更强。"
+  },
+  {
+    "topicId": 157,
+    "topicName": "意识与心灵哲学",
+    "title": "【阅读示例】意识与心灵哲学 · A story described a machine that spoke exactly like its maker.",
+    "writingTitle": "【写作示例】意识与心灵哲学 · The mind invites questions that behavior alone may not settle.",
+    "reading": "A story described a machine that spoke exactly like its maker. Readers agreed about its behavior but disagreed about its inner experience. The discussion ended with a list of questions, showing that an observable response and a claimed feeling were not the same thing.",
+    "readingZh": "故事里机器说话像制造者。读者对行为一致，却对内在体验分歧。讨论列出问题，区分可见回应和声称的感受。",
+    "writing": "The mind invites questions that behavior alone may not settle. I want a philosophical discussion to separate what can be observed from the experience it is trying to explain.",
+    "writingZh": "心灵引出行为本身未必解决的问题。我希望哲学讨论区分可观察事物和试图解释的体验。"
+  },
+  {
+    "topicId": 158,
+    "topicName": "自由与政治哲学",
+    "title": "【阅读示例】自由与政治哲学 · A fictional island let residents choose every activity except the time the harbor closed.",
+    "writingTitle": "【写作示例】自由与政治哲学 · Political philosophy can examine the conditions behind a choice.",
+    "reading": "A fictional island let residents choose every activity except the time the harbor closed. A character praised the freedom until a late arrival changed her view. The class debated how personal choices and shared arrangements could limit one another.",
+    "readingZh": "虚构岛屿让人选择活动，却固定港口关闭时间。角色称赞自由，迟到后改观。班级讨论个人选择与共同安排如何相互限制。",
+    "writing": "Political philosophy can examine the conditions behind a choice. Calling a person free is only a beginning if we have not discussed the rules and shared resources shaping that freedom.",
+    "writingZh": "政治哲学可审视选择背后的条件。若未讨论规则和共享资源如何塑造自由，称人自由只是起点。"
+  },
+  {
+    "topicId": 159,
+    "topicName": "价值与人生意义",
+    "title": "【阅读示例】价值与人生意义 · At the reunion, three friends described what made their year worthwhile.",
+    "writingTitle": "【写作示例】价值与人生意义 · Meaning may grow through different commitments rather than one public measure.",
+    "reading": "At the reunion, three friends described what made their year worthwhile. One named a promotion, another a repaired friendship, and the third a quiet project nobody else had seen. Listening changed how each understood the word success.",
+    "readingZh": "重逢时，朋友分别说升职、修复友谊、无人看见的安静项目让一年值得。倾听改变了对成功的理解。",
+    "writing": "Meaning may grow through different commitments rather than one public measure. I want to ask what an achievement expresses before deciding that its visibility tells me how valuable it is.",
+    "writingZh": "意义可能来自不同投入，而非单一公共尺度。我希望先问成就表达什么，不凭可见度决定价值。"
+  },
+  {
+    "topicId": 160,
+    "topicName": "思想史",
+    "title": "【阅读示例】思想史 · A reading group followed one idea through texts written centuries apart.",
+    "writingTitle": "【写作示例】思想史 · The history of ideas asks how a question traveled and changed.",
+    "reading": "A reading group followed one idea through texts written centuries apart. The same word changed its emphasis as the surrounding questions changed. Their notes placed each passage in context, allowing comparison without pretending that all the authors were having the same conversation.",
+    "readingZh": "读书会追踪跨世纪文本中的观念。同一词语随问题背景改变重点。笔记保留语境，比较而不假装作者讨论完全同一问题。",
+    "writing": "The history of ideas asks how a question traveled and changed. I enjoy comparisons that preserve context, because a familiar word can carry an unfamiliar argument in another time.",
+    "writingZh": "思想史询问问题如何传播和变化。我喜欢保留背景的比较，因为熟悉词语在另一时代可能承载陌生论证。"
+  }
+]
