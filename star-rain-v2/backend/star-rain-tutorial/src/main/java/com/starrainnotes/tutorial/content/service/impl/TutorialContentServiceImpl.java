@@ -1,5 +1,7 @@
 package com.starrainnotes.tutorial.content.service.impl;
 
+import org.springframework.transaction.annotation.Isolation;
+import com.starrainnotes.tutorial.content.mapper.TutorialRevisionMapper;
 import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.common.result.PageResult;
 import com.starrainnotes.tutorial.content.dto.ChapterBodyDTO;
@@ -53,6 +55,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     private final CurrentActorApi currentActorApi;
     private final TutorialMediaReferences mediaReferences;
     private final TutorialDependencyCleanup dependencies;
+    private final TutorialRevisionMapper revisionMapper;
 
     private static LocalDateTime now() {
         return LocalDateTime.now(ZoneOffset.UTC);
@@ -101,8 +104,8 @@ public class TutorialContentServiceImpl implements TutorialContentService {
 
     private TutorialEntity editableTutorial(Long id) {
         TutorialEntity tutorial = lockTutorial(id);
-        if ("PUBLISHED".equals(tutorial.getPublicationStatus())) {
-            throw new TutorialStateException("请先撤回教程，再修改内容");
+        if ("IN_REVIEW".equals(tutorial.getEditingStatus())) {
+            throw new TutorialStateException("教程审核中，请先完成或取消审核再修改工作区");
         }
         return tutorial;
     }
@@ -182,7 +185,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                 .groupId(String.valueOf(chapter.getGroupId()))
                 .slug(chapter.getSlug()).title(chapter.getTitle()).summary(chapter.getSummary())
                 .bodyMarkdown(chapter.getBodyMarkdown()).sortOrder(chapter.getSortOrder())
-                .status(chapter.getStatus()).updatedAt(chapter.getUpdatedAt()).build();
+                .status(chapter.getStatus()).rowVersion(chapter.getRowVersion()).updatedAt(chapter.getUpdatedAt()).build();
     }
 
     @Override
@@ -191,7 +194,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialCategoryVO createCategory(String name) {
         String validName = text(name, "知识体系名称", 100);
         String base = TutorialSlugDeriver.fromTitle(validName, "category");
@@ -213,7 +216,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialCategoryVO updateCategory(Long id, String name) {
         TutorialCategoryEntity category = requireCategory(id);
         category.setName(text(name, "知识体系名称", 100));
@@ -224,7 +227,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteCategory(Long id) {
         requireCategory(id);
         if (tutorialMapper.countByCategoryId(id) > 0) {
@@ -234,7 +237,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderCategories(List<Long> ids) {
         List<TutorialCategoryEntity> rows = categoryRows();
         requireExactOrder(ids, rows.stream().map(TutorialCategoryEntity::getId).toList());
@@ -268,7 +271,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialAdminVO createTutorial(TutorialCreateDTO request) {
         requireCategory(request.getCategoryId());
         String title = text(request.getTitle(), "教程标题", 200);
@@ -299,7 +302,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialAdminVO updateTutorial(Long id, TutorialUpdateDTO request) {
         TutorialEntity tutorial = editableTutorial(id);
         if (request.getCategoryId() != null && !request.getCategoryId().equals(tutorial.getCategoryId())) {
@@ -317,11 +320,12 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteTutorial(Long id) {
-        TutorialEntity tutorial = lockTutorial(id);
+        TutorialEntity tutorial = editableTutorial(id);
         if ("PUBLISHED".equals(tutorial.getPublicationStatus()))
             throw new TutorialStateException("请先撤回教程，再删除");
+        if (revisionMapper.countByTutorialId(id) > 0) throw new TutorialStateException("教程存在历史版本，请使用撤回以保留学习记录");
         dependencies.tutorialLearning(id);
         for (TutorialGroupEntity group : groupRows(id)) {
             for (TutorialChapterEntity chapter : chapterRows(group.getId())) deleteChapterData(chapter);
@@ -333,13 +337,16 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     private void deleteChapterData(TutorialChapterEntity chapter) {
+        if (revisionMapper.countByTutorialId(chapter.getTutorialId()) > 0) {
+            throw new TutorialStateException("教程存在历史版本，请撤回章节以保留学习记录");
+        }
         dependencies.chapterChildren(chapter.getId());
         mediaReferences.detachChapter(chapter.getId());
         chapterMapper.deleteById(chapter.getId());
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderTutorials(Long categoryId, List<Long> ids) {
         requireCategory(categoryId);
         List<TutorialEntity> rows = tutorialRows(categoryId);
@@ -349,8 +356,8 @@ public class TutorialContentServiceImpl implements TutorialContentService {
             TutorialEntity row = rows.stream().filter(item -> item.getId().equals(id)).findFirst().orElseThrow();
             row.setSortOrder((index + 1) * 10);
             row.setUpdatedAt(now());
-            // 行来自 listOrdered 的完整结果，整行保存与原先 updateById 的字段范围一致
-            tutorialMapper.update(row);
+            editableTutorial(row.getId());
+            tutorialMapper.updateSortOrder(row.getId(), row.getSortOrder());
         }
     }
 
@@ -363,7 +370,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialGroupVO createGroup(Long tutorialId, String title) {
         editableTutorial(tutorialId);
         TutorialGroupEntity group = new TutorialGroupEntity();
@@ -377,7 +384,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialGroupVO updateGroup(Long groupId, String title) {
         TutorialGroupEntity group = requireGroup(groupId);
         editableTutorial(group.getTutorialId());
@@ -388,10 +395,10 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteGroup(Long groupId) {
         TutorialGroupEntity group = requireGroup(groupId);
-        TutorialEntity tutorial = lockTutorial(group.getTutorialId());
+        TutorialEntity tutorial = editableTutorial(group.getTutorialId());
         if ("PUBLISHED".equals(tutorial.getPublicationStatus()))
             throw new TutorialStateException("请先撤回教程，再删除分组");
         for (TutorialChapterEntity chapter : chapterRows(groupId)) deleteChapterData(chapter);
@@ -400,7 +407,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderGroups(Long tutorialId, List<Long> ids) {
         editableTutorial(tutorialId);
         List<TutorialGroupEntity> rows = groupRows(tutorialId);
@@ -421,7 +428,7 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialChapterVO createChapter(Long groupId, ChapterCreateDTO request) {
         TutorialGroupEntity group = requireGroup(groupId);
         if (!"ACTIVE".equals(group.getStatus())) throw new TutorialStateException("不能在已归档分组中新建章节");
@@ -455,62 +462,46 @@ public class TutorialContentServiceImpl implements TutorialContentService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialChapterVO updateChapter(Long chapterId, ChapterUpdateDTO request) {
         TutorialChapterEntity chapter = requireChapter(chapterId);
         editableTutorial(chapter.getTutorialId());
+        if (request.getRowVersion() == null || !request.getRowVersion().equals(chapter.getRowVersion())) {
+            throw new TutorialConflictException("章节已被其他操作修改，请保留当前输入并重新加载后合并");
+        }
         if (request.getTitle() != null) chapter.setTitle(text(request.getTitle(), "章节标题", 200));
         chapter.setSummary(optionalText(request.getSummary(), 1000));
+        if (request.getBodyMarkdown() != null) chapter.setBodyMarkdown(bodyText(request.getBodyMarkdown()));
         chapter.setUpdatedAt(now());
-        chapterMapper.updateContent(chapter.getId(), chapter.getTitle(), chapter.getSummary(), chapter.getUpdatedAt());
+        if (chapterMapper.saveWorkspace(chapter) != 1) {
+            throw new TutorialConflictException("章节版本冲突，请重新加载后合并");
+        }
+        mediaReferences.replaceChapter(chapterId, chapter.getBodyMarkdown());
+        chapter.setRowVersion(chapter.getRowVersion() + 1);
         return chapterView(chapter);
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialChapterVO updateChapterBody(Long chapterId, ChapterBodyDTO request) {
         TutorialChapterEntity chapter = requireChapter(chapterId);
-        editableTutorial(chapter.getTutorialId());
-        chapter.setBodyMarkdown(bodyText(request.getBodyMarkdown()));
-        chapter.setUpdatedAt(now());
-        chapterMapper.updateBody(chapter.getId(), chapter.getBodyMarkdown(), chapter.getUpdatedAt());
-        mediaReferences.replaceChapter(chapterId, chapter.getBodyMarkdown());
-        return chapterView(chapter);
+        return updateChapter(chapterId, ChapterUpdateDTO.builder().title(chapter.getTitle())
+                .summary(chapter.getSummary()).bodyMarkdown(request.getBodyMarkdown())
+                .rowVersion(request.getRowVersion()).build());
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteChapter(Long chapterId) {
         TutorialChapterEntity chapter = requireChapter(chapterId);
-        TutorialEntity tutorial = lockTutorial(chapter.getTutorialId());
+        TutorialEntity tutorial = editableTutorial(chapter.getTutorialId());
         if ("PUBLISHED".equals(tutorial.getPublicationStatus()))
             throw new TutorialStateException("请先撤回教程，再删除章节");
         deleteChapterData(chapter);
     }
 
     @Override
-    @Transactional
-    public void publishChapter(Long chapterId) {
-        TutorialChapterEntity chapter = requireChapter(chapterId);
-        editableTutorial(chapter.getTutorialId());
-        if ("PUBLISHED".equals(chapter.getStatus())) return;
-        if (chapter.getBodyMarkdown() == null || chapter.getBodyMarkdown().isBlank())
-            throw new TutorialStateException("章节正文不能为空");
-        chapterMapper.updateStatus(chapterId, "PUBLISHED", now());
-    }
-
-    @Override
-    @Transactional
-    public void withdrawChapter(Long chapterId) {
-        TutorialChapterEntity chapter = requireChapter(chapterId);
-        editableTutorial(chapter.getTutorialId());
-        if (!"PUBLISHED".equals(chapter.getStatus()))
-            throw new TutorialStateException("只有已公开章节可以撤回");
-        chapterMapper.updateStatus(chapterId, "WITHDRAWN", now());
-    }
-
-    @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderChapters(Long groupId, List<Long> ids) {
         TutorialGroupEntity group = requireGroup(groupId);
         editableTutorial(group.getTutorialId());

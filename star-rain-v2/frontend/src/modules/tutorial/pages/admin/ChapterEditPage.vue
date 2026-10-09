@@ -1,8 +1,8 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
-import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
+import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import {
-  createChapter, getAdminChapter, getAdminCurriculum, updateChapter, updateChapterBody,
+  createChapter, getAdminChapter, getAdminCurriculum, updateChapter,
 } from '../../api/tutorialApi'
 import { errorMessage } from '../../../../shared/http'
 import ChapterAuthorNav from '../../components/ChapterAuthorNav.vue'
@@ -18,6 +18,7 @@ const tutorialId = computed(() => route.params.tutorialId)
 const isCreate = computed(() => route.params.chapterId === 'new')
 const form = reactive({ title: '', groupId: '', summary: '' })
 const body = ref('')
+const rowVersion = ref(null)
 const groups = ref([])
 const tutorialTitle = ref('')
 const loading = ref(false)
@@ -27,6 +28,7 @@ const notice = ref('')
 const editorRef = ref(null)
 const confirmDialog = ref(null)
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
+let loadToken = 0
 let savedSnapshot = ''
 
 function currentBody() {
@@ -41,18 +43,26 @@ function returnPath() {
 }
 
 async function load() {
+  const token = ++loadToken
+  const id = tutorialId.value
+  const chapterId = route.params.chapterId
+  const create = chapterId === 'new'
   loading.value = true
   error.value = ''
+  form.title = ''; form.summary = ''; body.value = ''; rowVersion.value = null
   try {
-    const curriculum = await getAdminCurriculum(tutorialId.value)
+    const curriculum = await getAdminCurriculum(id)
+    if (token !== loadToken) return
     tutorialTitle.value = curriculum.tutorial.title
     groups.value = curriculum.groups.filter((group) => group.status === 'ACTIVE')
-    if (isCreate.value) {
+    if (create) {
       const requested = String(route.query.group || '')
       form.groupId = groups.value.some((group) => String(group.id) === requested)
         ? requested : String(groups.value[0]?.id || '')
     } else {
-      const chapter = await getAdminChapter(route.params.chapterId)
+      const chapter = await getAdminChapter(chapterId)
+      if (token !== loadToken) return
+      rowVersion.value = chapter.rowVersion
       form.title = chapter.title
       form.groupId = String(chapter.groupId)
       form.summary = chapter.summary || ''
@@ -60,9 +70,9 @@ async function load() {
     }
     savedSnapshot = snapshot()
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (token === loadToken) error.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (token === loadToken) loading.value = false
   }
 }
 
@@ -72,6 +82,7 @@ async function pickBodyImage() {
 }
 
 async function save() {
+  if (saving.value || loading.value) return
   const bodyMarkdown = currentBody()
   if (!form.title.trim() || !form.groupId || !bodyMarkdown.trim()) {
     error.value = '请填写标题、所属分组和正文。'
@@ -87,15 +98,16 @@ async function save() {
         title: form.title.trim(), summary: form.summary.trim() || null, bodyMarkdown,
       })
       chapterId = chapter.id
+      rowVersion.value = chapter.rowVersion
     } else {
-      await updateChapter(route.params.chapterId, {
-        title: form.title.trim(), summary: form.summary.trim() || null,
+      const saved = await updateChapter(route.params.chapterId, {
+        title: form.title.trim(), summary: form.summary.trim() || null, bodyMarkdown, rowVersion: rowVersion.value,
       })
-      await updateChapterBody(route.params.chapterId, bodyMarkdown)
+      rowVersion.value = saved.rowVersion
     }
     body.value = bodyMarkdown
     savedSnapshot = snapshot()
-    notice.value = '章节正文已保存。'
+    notice.value = '已保存到工作区；到课程结构发布改动或提交审核后，读者才能看到。'
     if (isCreate.value) await router.replace(accountPath(`/tutorials/${tutorialId.value}/chapters/${chapterId}`))
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -115,7 +127,9 @@ onBeforeRouteLeave(async () => {
   if (!dirty()) return true
   return confirmDialog.value.ask('章节正文或信息尚未保存，离开后改动会丢失。确定离开吗？')
 })
-onMounted(() => { load(); window.addEventListener('keydown', onKeydown) })
+watch(() => `${route.params.tutorialId}:${route.params.chapterId}`, load, { immediate: true })
+onBeforeRouteUpdate(async () => !dirty() || confirmDialog.value.ask('章节尚未保存，确定切换吗？'))
+onMounted(() => { window.addEventListener('keydown', onKeydown) })
 onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 </script>
 
@@ -129,7 +143,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
         </button>
       </div>
       <div class="chapter-edit__actions">
-        <button class="primary-button" type="button" :disabled="saving || loading" @click="save">{{ saving ? '保存中…' : '保存正文' }}</button>
+        <button class="primary-button" type="button" :disabled="saving || loading" @click="save">{{ saving ? '保存中…' : '保存工作区' }}</button>
         <button type="button" @click="router.push(returnPath())">取消</button>
       </div>
     </header>

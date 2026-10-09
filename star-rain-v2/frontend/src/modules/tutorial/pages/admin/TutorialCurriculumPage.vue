@@ -1,13 +1,16 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, watch, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '../../../account/stores/authStore'
 import { errorMessage } from '../../../../shared/http'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 import {
   createGroup, deleteChapter, deleteGroup, getAdminCurriculum, publishChapter,
-  reorderChapters, reorderGroups, updateGroup, withdrawChapter,
+  reorderChapters, reorderGroups, updateGroup, withdrawChapter, submitTutorialReview,
 } from '../../api/tutorialApi'
 
+const auth = useAuthStore()
+const busyId = ref('')
 const route = useRoute()
 const router = useRouter()
 const tutorialId = computed(() => route.params.tutorialId)
@@ -20,6 +23,7 @@ const notice = ref('')
 const groupDialog = ref(null)
 const groupForm = reactive({ id: '', title: '' })
 const confirmDialog = ref(null)
+let loadToken = 0
 let draggingGroupId = ''
 let draggingChapterId = ''
 
@@ -32,17 +36,21 @@ const visibleChapters = computed(() => {
 })
 
 async function load() {
+  const token = ++loadToken
+  const id = tutorialId.value
   loading.value = true
   error.value = ''
   try {
-    curriculum.value = await getAdminCurriculum(tutorialId.value)
+    const result = await getAdminCurriculum(id)
+    if (token !== loadToken) return
+    curriculum.value = result
     const requested = String(route.query.group || activeGroupId.value || '')
     activeGroupId.value = groups.value.some((group) => String(group.id) === requested)
       ? requested : String(groups.value[0]?.id || '')
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (token === loadToken) error.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (token === loadToken) loading.value = false
   }
 }
 
@@ -103,17 +111,30 @@ async function dropChapter(targetId) {
   catch (cause) { error.value = errorMessage(cause) }
 }
 
-async function toggleChapter(chapter) {
-  const publish = chapter.status !== 'PUBLISHED'
-  const label = publish ? '公开' : '撤回'
-  if (!await confirmDialog.value.ask(`确定${label}章节「${chapter.title}」？`)) return
+async function publishChanges(chapter) {
+  if (busyId.value) return
+  const direct = auth.hasPermission('tutorial:publish')
+  if (!await confirmDialog.value.ask(direct
+    ? `发布「${chapter.title}」的工作区改动？只更新本章节，其他章节草稿不会上线。`
+    : `提交「${chapter.title}」的工作区改动审核？审核通过后更新公开版本。`)) return
+  busyId.value = String(chapter.id); error.value = ''; notice.value = ''
   try {
-    if (publish) await publishChapter(chapter.id)
-    else await withdrawChapter(chapter.id)
+    if (direct) await publishChapter(chapter.id)
+    else await submitTutorialReview(tutorialId.value, chapter.id)
     await load()
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  }
+    notice.value = direct ? '本章节改动已发布。' : '已提交审核，公开内容暂不改变。'
+  } catch (cause) { error.value = errorMessage(cause) }
+  finally { busyId.value = '' }
+}
+async function withdrawPublishedChapter(chapter) {
+  if (busyId.value) return
+  if (!await confirmDialog.value.ask(`撤回公开章节「${chapter.title}」？其他章节继续公开；工作区、历史版本和学习记录均保留。`)) return
+  busyId.value = String(chapter.id); error.value = ''; notice.value = ''
+  try {
+    await withdrawChapter(chapter.id); await load()
+    notice.value = '本章节已撤回，其他公开章节和历史学习记录已保留。'
+  } catch (cause) { error.value = errorMessage(cause) }
+  finally { busyId.value = '' }
 }
 
 async function removeChapter(chapter) {
@@ -132,7 +153,8 @@ function editLearningContent(chapter, kind) {
   router.push(`/useradmin/tutorials/${tutorialId.value}/chapters/${chapter.id}/${kind}`)
 }
 
-onMounted(load)
+watch(() => route.params.tutorialId, () => { activeGroupId.value = ''; search.value = ''; notice.value = ''; load() }, { immediate: true })
+watch(() => route.query.group, value => { if (groups.value.some(group => String(group.id) === String(value))) activeGroupId.value = String(value) })
 </script>
 
 <!--
@@ -217,7 +239,7 @@ onMounted(load)
             <button class="primary-button curriculum-admin__create" type="button" :disabled="!activeGroup" @click="newChapter">新建章节</button>
           </div>
         </header>
-        <p class="curriculum-admin__hint">章节仅在当前分组内拖拽排序；新章节保存后先公开，再公开教程。</p>
+        <p class="curriculum-admin__hint">保存只修改工作区。发布改动或提交审核只更新选中的章节；撤回保留历史学习记录。</p>
         <div class="curriculum-admin__chapter-body">
           <div v-if="!activeGroup" class="curriculum-admin__empty">
             <span aria-hidden="true">←</span>
@@ -235,7 +257,6 @@ onMounted(load)
               :key="chapter.id"
               class="curriculum-admin__chapter"
               :draggable="!search"
-              @dblclick="editChapter(chapter)"
               @dragstart="draggingChapterId = String(chapter.id)"
               @dragover.prevent
               @drop.prevent="dropChapter(chapter.id)"
@@ -247,13 +268,14 @@ onMounted(load)
                 <p>更新于 {{ chapter.updatedAt?.slice(0, 16).replace('T', ' ') }}</p>
               </div>
               <span class="curriculum-admin__status" :class="chapter.status === 'PUBLISHED' ? 'is-active' : 'is-archived'">
-                {{ chapter.status === 'PUBLISHED' ? '已公开' : chapter.status === 'WITHDRAWN' ? '已撤回' : '草稿' }}
+                {{ chapter.status === 'PUBLISHED' && curriculum?.tutorial.publicationStatus === 'PUBLISHED' ? '已公开（可编辑工作区）' : chapter.status === 'PUBLISHED' ? '教程已撤回' : chapter.status === 'WITHDRAWN' ? '已撤回' : '草稿' }}
               </span>
               <div class="curriculum-admin__chapter-actions">
                 <button type="button" @click="editChapter(chapter)">正文</button>
                 <button type="button" @click="editLearningContent(chapter, 'cards')">知识卡片</button>
                 <button type="button" @click="editLearningContent(chapter, 'questions')">章节问题</button>
-                <button type="button" @click="toggleChapter(chapter)">{{ chapter.status === 'PUBLISHED' ? '撤回' : '公开' }}</button>
+                <button v-if="auth.hasPermission('tutorial:publish') || auth.hasPermission('tutorial:submit')" type="button" :disabled="!!busyId || curriculum?.tutorial.editingStatus === 'IN_REVIEW'" @click="publishChanges(chapter)">{{ auth.hasPermission('tutorial:publish') ? '发布改动' : '提交审核' }}</button>
+                <button v-if="auth.hasPermission('tutorial:withdraw') && chapter.status === 'PUBLISHED' && curriculum?.tutorial.publicationStatus === 'PUBLISHED'" type="button" :disabled="!!busyId || curriculum?.tutorial.editingStatus === 'IN_REVIEW'" @click="withdrawPublishedChapter(chapter)">撤回公开章节</button>
                 <button type="button" @click="removeChapter(chapter)">删除</button>
               </div>
             </article>

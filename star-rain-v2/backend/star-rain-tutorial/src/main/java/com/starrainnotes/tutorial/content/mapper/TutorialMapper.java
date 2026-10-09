@@ -46,5 +46,7 @@ public interface TutorialMapper {
     /* 整行保存工作区改动；withdrawn_at 必须写进 SET，null 也要覆盖（旧 @TableField(ALWAYS) 语义）。 */
     int update(TutorialEntity tutorial);
 
+    int updateSortOrder(@Param("id") Long id, @Param("sortOrder") int sortOrder);
+
     int deleteById(@Param("id") Long id);
 }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChapterBodyDTO {
+    private Long rowVersion;
     @NotBlank
     private String bodyMarkdown;
 }

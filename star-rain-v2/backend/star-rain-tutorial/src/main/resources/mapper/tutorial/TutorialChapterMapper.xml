@@ -4,9 +4,19 @@
 
   <!-- body_markdown 很大，列表查询同样需要它：公开修订快照按列内容冻结 -->
   <sql id="columns">
-    id, tutorial_id, group_id, slug, title, summary, body_markdown,
+    row_version, id, tutorial_id, group_id, slug, title, summary, body_markdown,
     sort_order, status, created_at, updated_at
   </sql>
+
+  <update id="saveWorkspace">
+    UPDATE sr_tutorial_chapter
+    SET title = #{title}, summary = #{summary}, body_markdown = #{bodyMarkdown},
+        row_version = row_version + 1, updated_at = #{updatedAt}
+    WHERE id = #{id} AND row_version = #{rowVersion}
+  </update>
+  <update id="bumpVersion">
+    UPDATE sr_tutorial_chapter SET row_version = row_version + 1 WHERE id = #{id}
+  </update>
 
   <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialChapterEntity"
           useGeneratedKeys="true" keyProperty="id">

@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class TutorialQuestionEntity {
     private Long id;
+    private Long rowVersion = 0L;
     private Long chapterId;
     private String questionText;
     private String referenceAnswer;

@@ -19,6 +19,7 @@ export const updateTutorial = (id, payload) => patch(`/admin/tutorials/${encoded
 export const deleteTutorial = (id) => del(`/admin/tutorials/${encoded(id)}`)
 export const reorderTutorials = (categoryId, ids) =>
   put(`/admin/tutorial-categories/${encoded(categoryId)}/tutorials/order`, { ids })
+export const submitTutorialReview = (id, chapterId) => post(`/admin/tutorials/${encoded(id)}/submit-review${chapterId ? `?chapterId=${encoded(chapterId)}` : ''}`)
 export const publishTutorial = (id) => post(`/admin/tutorials/${encoded(id)}/publish`)
 export const withdrawTutorial = (id) => post(`/admin/tutorials/${encoded(id)}/withdraw`)
 
@@ -32,8 +33,8 @@ export const createChapter = (groupId, payload) =>
   post(`/admin/tutorial-groups/${encoded(groupId)}/chapters`, payload)
 export const getAdminChapter = (chapterId) => get(`/admin/tutorial-chapters/${encoded(chapterId)}`)
 export const updateChapter = (chapterId, payload) => patch(`/admin/tutorial-chapters/${encoded(chapterId)}`, payload)
-export const updateChapterBody = (chapterId, bodyMarkdown) =>
-  put(`/admin/tutorial-chapters/${encoded(chapterId)}/body`, { bodyMarkdown })
+export const updateChapterBody = (chapterId, bodyMarkdown, rowVersion) =>
+  put(`/admin/tutorial-chapters/${encoded(chapterId)}/body`, { bodyMarkdown, rowVersion })
 export const deleteChapter = (chapterId) => del(`/admin/tutorial-chapters/${encoded(chapterId)}`)
 export const publishChapter = (chapterId) => post(`/admin/tutorial-chapters/${encoded(chapterId)}/publish`)
 export const withdrawChapter = (chapterId) => post(`/admin/tutorial-chapters/${encoded(chapterId)}/withdraw`)

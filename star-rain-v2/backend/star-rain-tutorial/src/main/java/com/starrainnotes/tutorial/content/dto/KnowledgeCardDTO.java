@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class KnowledgeCardDTO {
+    private Long rowVersion;
     @NotBlank
     private String frontText;
     @NotBlank

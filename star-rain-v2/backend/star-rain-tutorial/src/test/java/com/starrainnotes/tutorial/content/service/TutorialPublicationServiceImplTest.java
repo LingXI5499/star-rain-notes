@@ -42,7 +42,7 @@ class TutorialPublicationServiceImplTest {
                 mock(TutorialChapterMapper.class), mock(TutorialKnowledgeCardMapper.class),
                 mock(TutorialQuestionMapper.class), mock(com.starrainnotes.tutorial.content.mapper.TutorialQuestionCardMapper.class), revisionMapper, mock(TutorialContentService.class),
                 mock(CurrentActorApi.class), new ObjectMapper(),
-                mock(TutorialEventPublisher.class), mock(TutorialMediaReferences.class));
+                mock(TutorialEventPublisher.class), mock(TutorialMediaReferences.class), mock(com.starrainnotes.review.api.ReviewSubmissionApi.class));
 
         JsonNode detail = service.publicTutorial("java");
         JsonNode curriculumChapter = detail.path("groups").get(0).path("chapters").get(0);

@@ -6,6 +6,9 @@ import com.starrainnotes.tutorial.content.vo.TutorialAdminVO;
 import java.util.List;
 
 public interface TutorialPublicationService {
+    void publishChapter(Long chapterId);
+    void withdrawChapter(Long chapterId);
+    void submitReview(Long tutorialId, Long chapterId);
     TutorialAdminVO publish(Long tutorialId);
     TutorialAdminVO withdraw(Long tutorialId);
     JsonNode previewTutorial(Long tutorialId);

@@ -1,5 +1,11 @@
 package com.starrainnotes.tutorial.content.service.impl;
 
+import org.springframework.transaction.annotation.Isolation;
+import com.starrainnotes.tutorial.content.media.TutorialMediaReferences;
+import com.starrainnotes.tutorial.content.mapper.TutorialQuestionCardMapper;
+import com.starrainnotes.tutorial.content.mapper.TutorialMapper;
+import com.starrainnotes.tutorial.content.exception.TutorialStateException;
+import com.starrainnotes.tutorial.content.exception.TutorialConflictException;
 import com.starrainnotes.tutorial.content.dto.ChapterQuestionDTO;
 import com.starrainnotes.tutorial.content.dto.KnowledgeCardDTO;
 import com.starrainnotes.tutorial.content.entity.TutorialChapterEntity;
@@ -25,9 +31,32 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class TutorialExerciseServiceImpl implements TutorialExerciseService {
     private final TutorialChapterMapper chapterMapper;
+    private final TutorialMediaReferences mediaReferences;
+    private final TutorialMapper tutorialMapper;
     private final TutorialKnowledgeCardMapper cardMapper;
     private final TutorialQuestionMapper questionMapper;
-    private final com.starrainnotes.tutorial.content.mapper.TutorialQuestionCardMapper questionCardMapper;
+    private final TutorialQuestionCardMapper questionCardMapper;
+
+    private void refreshMedia(Long chapterId) {
+        mediaReferences.replaceChapter(chapterId, chapterMapper.selectById(chapterId).getBodyMarkdown());
+    }
+
+
+    private void editChapter(Long id) {
+        TutorialChapterEntity chapter = chapterMapper.selectById(id);
+        if (chapter == null) throw new TutorialChapterNotFoundException();
+        var tutorial = tutorialMapper.byIdForUpdate(chapter.getTutorialId());
+        if (tutorial == null || "IN_REVIEW".equals(tutorial.getEditingStatus())) {
+            throw new TutorialStateException("教程审核中或不存在，不能修改工作区");
+        }
+        chapterMapper.bumpVersion(id);
+    }
+
+    private void checkVersion(Long expected, Long actual) {
+        if (expected == null || !expected.equals(actual)) {
+            throw new TutorialConflictException("内容已被其他操作修改，请保留当前输入并重新加载后合并");
+        }
+    }
 
     private void requireChapter(Long id) {
         if (chapterMapper.selectById(id) == null) throw new TutorialChapterNotFoundException();
@@ -60,6 +89,7 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("id", String.valueOf(row.getId()));
         view.put("chapterId", String.valueOf(row.getChapterId()));
+        view.put("rowVersion", row.getRowVersion());
         view.put("contentVersion", row.getContentVersion());
         view.put("frontText", row.getFrontText());
         view.put("backMarkdown", row.getBackMarkdown());
@@ -72,6 +102,7 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         Map<String, Object> view = new LinkedHashMap<>();
         view.put("id", String.valueOf(row.getId()));
         view.put("chapterId", String.valueOf(row.getChapterId()));
+        view.put("rowVersion", row.getRowVersion());
         view.put("knowledgeCardIds", questionCardMapper.cardIds(row.getId()).stream().map(String::valueOf).toList());
         view.put("questionText", row.getQuestionText());
         view.put("referenceAnswer", row.getReferenceAnswer());
@@ -105,9 +136,9 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Map<String, Object> createCard(Long chapterId, KnowledgeCardDTO request) {
-        requireChapter(chapterId);
+        editChapter(chapterId);
         TutorialKnowledgeCardEntity row = new TutorialKnowledgeCardEntity();
         row.setChapterId(chapterId);
         row.setFrontText(text(request.getFrontText(), "卡片正面", 5000));
@@ -115,35 +146,44 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         row.setStatus(status(request.getStatus()));
         row.setSortOrder(cardRows(chapterId).stream().mapToInt(item -> item.getSortOrder() == null ? 0 : item.getSortOrder()).max().orElse(0) + 10);
         cardMapper.insert(row);
+        refreshMedia(chapterId);
         return cardView(row);
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Map<String, Object> updateCard(Long cardId, KnowledgeCardDTO request) {
         TutorialKnowledgeCardEntity row = cardMapper.selectById(cardId);
         if (row == null) throw new TutorialInvalidRequestException("知识卡片不存在");
+        editChapter(row.getChapterId());
+        row = cardMapper.selectById(cardId);
+        checkVersion(request.getRowVersion(), row.getRowVersion());
         row.setFrontText(text(request.getFrontText(), "卡片正面", 5000));
         row.setBackMarkdown(text(request.getBackMarkdown(), "卡片背面", 100000));
         row.setStatus(status(request.getStatus()));
         row.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
-        cardMapper.updateContent(row.getId(), row.getFrontText(), row.getBackMarkdown(),
-                row.getStatus(), row.getUpdatedAt());
+        if (cardMapper.saveWorkspace(row) != 1) {
+            throw new TutorialConflictException("内容版本冲突，请重新加载后合并");
+        }
+        refreshMedia(row.getChapterId());
         return cardView(cardMapper.selectById(cardId));
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteCard(Long cardId) {
-        if (cardMapper.selectById(cardId) == null) throw new TutorialInvalidRequestException("知识卡片不存在");
+        TutorialKnowledgeCardEntity row = cardMapper.selectById(cardId);
+        if (row == null) throw new TutorialInvalidRequestException("知识卡片不存在");
+        editChapter(row.getChapterId());
         questionCardMapper.deleteCard(cardId);
         cardMapper.deleteById(cardId);
+        refreshMedia(row.getChapterId());
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderCards(Long chapterId, List<Long> ids) {
-        requireChapter(chapterId);
+        editChapter(chapterId);
         List<TutorialKnowledgeCardEntity> rows = cardRows(chapterId);
         requireOrder(ids, rows.stream().map(TutorialKnowledgeCardEntity::getId).toList());
         for (int index = 0; index < ids.size(); index++) {
@@ -161,9 +201,9 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Map<String, Object> createQuestion(Long chapterId, ChapterQuestionDTO request) {
-        requireChapter(chapterId);
+        editChapter(chapterId);
         TutorialQuestionEntity row = new TutorialQuestionEntity();
         row.setChapterId(chapterId);
         row.setQuestionText(text(request.getQuestionText(), "题目", 5000));
@@ -172,36 +212,45 @@ public class TutorialExerciseServiceImpl implements TutorialExerciseService {
         row.setSortOrder(questionRows(chapterId).stream().mapToInt(item -> item.getSortOrder() == null ? 0 : item.getSortOrder()).max().orElse(0) + 10);
         questionMapper.insert(row);
         saveRelations(row, request.getKnowledgeCardIds());
+        refreshMedia(row.getChapterId());
         return questionView(row);
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Map<String, Object> updateQuestion(Long questionId, ChapterQuestionDTO request) {
         TutorialQuestionEntity row = questionMapper.selectById(questionId);
         if (row == null) throw new TutorialInvalidRequestException("章节问题不存在");
+        editChapter(row.getChapterId());
+        row = questionMapper.selectById(questionId);
+        checkVersion(request.getRowVersion(), row.getRowVersion());
         row.setQuestionText(text(request.getQuestionText(), "题目", 5000));
         row.setReferenceAnswer(text(request.getReferenceAnswer(), "参考答案", 100000));
         row.setStatus(status(request.getStatus()));
         row.setUpdatedAt(LocalDateTime.now(ZoneOffset.UTC));
-        questionMapper.updateContent(row.getId(), row.getQuestionText(), row.getReferenceAnswer(),
-                row.getStatus(), row.getUpdatedAt());
+        if (questionMapper.saveWorkspace(row) != 1) {
+            throw new TutorialConflictException("内容版本冲突，请重新加载后合并");
+        }
         saveRelations(row, request.getKnowledgeCardIds());
-        return questionView(row);
+        refreshMedia(row.getChapterId());
+        return questionView(questionMapper.selectById(questionId));
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteQuestion(Long questionId) {
-        if (questionMapper.selectById(questionId) == null) throw new TutorialInvalidRequestException("章节问题不存在");
+        TutorialQuestionEntity row = questionMapper.selectById(questionId);
+        if (row == null) throw new TutorialInvalidRequestException("章节问题不存在");
+        editChapter(row.getChapterId());
         questionCardMapper.deleteQuestion(questionId);
         questionMapper.deleteById(questionId);
+        refreshMedia(row.getChapterId());
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderQuestions(Long chapterId, List<Long> ids) {
-        requireChapter(chapterId);
+        editChapter(chapterId);
         List<TutorialQuestionEntity> rows = questionRows(chapterId);
         requireOrder(ids, rows.stream().map(TutorialQuestionEntity::getId).toList());
         for (int index = 0; index < ids.size(); index++) {

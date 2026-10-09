@@ -1,5 +1,6 @@
 package com.starrainnotes.tutorial.content.controller;
 
+import com.starrainnotes.tutorial.content.service.TutorialPublicationService;
 import com.starrainnotes.common.result.ApiResponse;
 import com.starrainnotes.tutorial.content.constant.TutorialPermissions;
 import com.starrainnotes.tutorial.content.dto.ChapterBodyDTO;
@@ -28,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/admin")
 public class TutorialStructureAdminController {
     private final TutorialContentService contentService;
+    private final TutorialPublicationService publicationService;
 
     @PatchMapping("/tutorial-groups/{groupId}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
@@ -86,16 +88,16 @@ public class TutorialStructureAdminController {
     }
 
     @PostMapping("/tutorial-chapters/{chapterId}/publish")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.PUBLISH + "')")
     public ApiResponse<Void> publishChapter(@PathVariable Long chapterId) {
-        contentService.publishChapter(chapterId);
+        publicationService.publishChapter(chapterId);
         return ApiResponse.ok(null);
     }
 
     @PostMapping("/tutorial-chapters/{chapterId}/withdraw")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.WITHDRAW + "')")
     public ApiResponse<Void> withdrawChapter(@PathVariable Long chapterId) {
-        contentService.withdrawChapter(chapterId);
+        publicationService.withdrawChapter(chapterId);
         return ApiResponse.ok(null);
     }
 

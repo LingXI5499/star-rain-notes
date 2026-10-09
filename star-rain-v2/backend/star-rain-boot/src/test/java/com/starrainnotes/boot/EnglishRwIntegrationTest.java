@@ -37,7 +37,7 @@ class EnglishRwIntegrationTest extends MapperXmlIntegrationSupport {
      Flyway.configure().dataSource(ds).defaultSchema(schema).schemas(schema).target("2.034").load().migrate();
      try(Statement sql=connection.createStatement()) {sql.executeUpdate("INSERT INTO sr_english_reading_article(slug,title,summary,body_markdown,reading_level,cefr_level,publish_status) VALUES('legacy-probe','Legacy','','Legacy English',1,'A1','PUBLISHED')");}
      Flyway flyway=Flyway.configure().dataSource(ds).defaultSchema(schema).schemas(schema).load();flyway.migrate();
-     assertEquals("2.037",flyway.info().current().getVersion().getVersion());
+     assertEquals("2.038",flyway.info().current().getVersion().getVersion());
      try(Statement sql=connection.createStatement();ResultSet result=sql.executeQuery("SELECT COUNT(*) FROM flyway_schema_history WHERE version IN ('2.035','2.036') AND success=1")) {assertTrue(result.next());assertEquals(2,result.getInt(1));}
      var taxonomy=new TaxonomyServiceImpl(session.getMapper(TaxonomyMapper.class));
      var roots=taxonomy.tree(false);assertEquals(16,roots.stream().filter(t->"TOPIC".equals(t.getDimension())).count());

@@ -55,7 +55,7 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
                 new LearningEventWriter(sql.getMapper(LearningHistoryMapper.class)),json);
         publications=new TutorialPublicationServiceImpl(tutorials,sql.getMapper(TutorialCategoryMapper.class),sql.getMapper(TutorialGroupMapper.class),chapters,cards,questions,
                 sql.getMapper(TutorialQuestionCardMapper.class),sql.getMapper(TutorialRevisionMapper.class),mock(TutorialContentService.class),actors,json,
-                mock(TutorialEventPublisher.class),mock(TutorialMediaReferences.class));
+                mock(TutorialEventPublisher.class),mock(TutorialMediaReferences.class), mock(com.starrainnotes.review.api.ReviewSubmissionApi.class));
     }
     @AfterEach void rollback() { if(sql!=null) { sql.rollback();sql.close(); } }
 
@@ -93,6 +93,31 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         return session;
     }
     private void answer(Long questionId,String phase,String text) { AnswerVersionDTO dto=new AnswerVersionDTO();dto.setAnswerText(text);dto.setAnswerPhase(phase);learning.saveVersion(questionId,dto); }
+
+    @Test void chapterWithdrawalRetainsCompletedPlanTasksEvidenceAnswersAndOldRevision() {
+        Fixture fixture=fixture(true,1);
+        Plan plan=plans.transition(plans.create(request(fixture)).getId(),"activate");
+        Long chapterId=fixture.chapters.get(0).getId(),questionId=fixture.questions.get(0).getId();
+        Session session=rateAll(learning.initial(chapterId,plan.getTasks().get(0).getId()),"REMEMBERED");
+        answer(questionId,"BEFORE_REFERENCE","Historical answer");
+        var revisions=sql.getMapper(TutorialRevisionMapper.class);
+        Long revisionId=tutorials.selectById(fixture.tutorial.getId()).getPublishedRevisionId();
+        String oldJson=revisions.selectById(revisionId).getSnapshotJson();
+        var tasks=plans.get(plan.getId()).getTasks();
+        var evidence=mapper.cardEvidence(accountId,fixture.cards.get(0).getId());
+        var answers=mapper.answerVersions(accountId,questionId);
+        publications.withdrawChapter(chapterId);
+        assertEquals(oldJson,revisions.selectById(revisionId).getSnapshotJson());
+        assertEquals("COMPLETED",plans.get(plan.getId()).getStatus());
+        assertEquals(tasks.size(),plans.get(plan.getId()).getTasks().size());
+        assertEquals(session.getId(),learning.session(session.getId()).getId());
+        assertEquals(evidence.size(),mapper.cardEvidence(accountId,fixture.cards.get(0).getId()).size());
+        assertEquals(answers.size(),mapper.answerVersions(accountId,questionId).size());
+        assertEquals(answers.get(0).getAnswerText(),mapper.answerVersions(accountId,questionId).get(0).getAnswerText());
+        assertNotNull(chapters.selectById(chapterId));
+        assertThrows(com.starrainnotes.tutorial.content.exception.TutorialNotFoundException.class,
+                ()->publications.publicChapter(fixture.tutorial.getSlug(),fixture.chapters.get(0).getSlug()));
+    }
 
     @Test void filteredHistoryAndMasteryPaginateAfterFilteringAndKeepAccountsIsolated() {
         Fixture fixture=fixture(false,1,1);Plan plan=plans.create(request(fixture));plan=plans.transition(plan.getId(),"activate");

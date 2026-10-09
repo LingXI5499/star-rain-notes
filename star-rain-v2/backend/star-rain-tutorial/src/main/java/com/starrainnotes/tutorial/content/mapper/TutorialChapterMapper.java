@@ -13,6 +13,10 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface TutorialChapterMapper {
 
+    int saveWorkspace(TutorialChapterEntity chapter);
+
+    int bumpVersion(@Param("id") Long id);
+
     int insert(TutorialChapterEntity chapter);
 
     TutorialChapterEntity selectById(@Param("id") Long id);

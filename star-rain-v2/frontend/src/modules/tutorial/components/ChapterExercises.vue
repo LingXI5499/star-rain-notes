@@ -7,8 +7,8 @@ const props = defineProps({ chapterId: { type: [String, Number], required: true 
 const cards = ref([]), questions = ref([]), loading = ref(true), busy = ref(false), error = ref(''), notice = ref('')
 const cardEditor = ref(null), questionEditor = ref(null)
 const editorKey = ref(0)
-const card = reactive({ id: '', frontText: '', backMarkdown: '', status: 'ENABLED' })
-const question = reactive({ id: '', questionText: '', referenceAnswer: '', status: 'ENABLED', knowledgeCardIds: [] })
+const card = reactive({ id: '', rowVersion: null, frontText: '', backMarkdown: '', status: 'ENABLED' })
+const question = reactive({ id: '', rowVersion: null, questionText: '', referenceAnswer: '', status: 'ENABLED', knowledgeCardIds: [] })
 let savedCard = JSON.stringify({ ...card, backMarkdown: card.backMarkdown.trimEnd() }), savedQuestion = JSON.stringify({ ...question, referenceAnswer: question.referenceAnswer.trimEnd() })
 const cardSnapshot = () => JSON.stringify({ ...card, backMarkdown: (cardEditor.value?.getMarkdown?.() ?? card.backMarkdown).trimEnd() })
 const questionSnapshot = () => JSON.stringify({ ...question, referenceAnswer: (questionEditor.value?.getMarkdown?.() ?? question.referenceAnswer).trimEnd() })
@@ -18,24 +18,24 @@ const enabledCards = computed(() => cards.value.filter(c => c.status === 'ENABLE
 const enabledQuestions = computed(() => questions.value.filter(q => q.status === 'ENABLED').length)
 async function load() { try { [cards.value, questions.value] = await Promise.all([listCards(props.chapterId), listQuestions(props.chapterId)]) } catch (e) { error.value = errorMessage(e); throw e } finally { loading.value = false } }
 async function run(action) { if (busy.value) return; busy.value = true; error.value = ''; notice.value = ''; try { await action(); await load(); notice.value = '已保存到教程工作区，发布后对学习者生效。'; return true } catch (e) { error.value = errorMessage(e); return false } finally { busy.value = false } }
-function resetCard() { Object.assign(card, { id: '', frontText: '', backMarkdown: '', status: 'ENABLED' }); savedCard = JSON.stringify({ ...card, backMarkdown: card.backMarkdown.trimEnd() }); editorKey.value++ }
-function resetQuestion() { Object.assign(question, { id: '', questionText: '', referenceAnswer: '', status: 'ENABLED', knowledgeCardIds: [] }); savedQuestion = JSON.stringify({ ...question, referenceAnswer: question.referenceAnswer.trimEnd() }); editorKey.value++ }
+function resetCard() { Object.assign(card, { id: '', rowVersion: null, frontText: '', backMarkdown: '', status: 'ENABLED' }); savedCard = JSON.stringify({ ...card, backMarkdown: card.backMarkdown.trimEnd() }); editorKey.value++ }
+function resetQuestion() { Object.assign(question, { id: '', rowVersion: null, questionText: '', referenceAnswer: '', status: 'ENABLED', knowledgeCardIds: [] }); savedQuestion = JSON.stringify({ ...question, referenceAnswer: question.referenceAnswer.trimEnd() }); editorKey.value++ }
 function confirmSwitch() { return !isDirty() || window.confirm('当前内容尚未保存，切换后改动会丢失。确定切换吗？') }
 function selectCard(c) { if (busy.value || String(c.id) === String(card.id) || !confirmSwitch()) return; editCard(c); error.value = ''; notice.value = '' }
 function selectQuestion(q) { if (busy.value || String(q.id) === String(question.id) || !confirmSwitch()) return; editQuestion(q); error.value = ''; notice.value = '' }
 function newItem() { if (busy.value || !confirmSwitch()) return; props.kind === 'cards' ? resetCard() : resetQuestion(); error.value = ''; notice.value = '' }
 function saveCard() {
- const payload = { frontText: card.frontText, backMarkdown: cardEditor.value?.getMarkdown?.() ?? card.backMarkdown, status: card.status }
+ const payload = { ...(card.id ? { rowVersion: card.rowVersion } : {}), frontText: card.frontText, backMarkdown: cardEditor.value?.getMarkdown?.() ?? card.backMarkdown, status: card.status }
  if (!payload.frontText.trim() || !payload.backMarkdown.trim()) { error.value = '请填写回忆问题和卡片答案'; return false }
  return run(async () => { const saved = card.id ? await updateCard(card.id, payload) : await createCard(props.chapterId, payload); editCard({ ...payload, ...saved, id: saved?.id ?? card.id }) })
 }
 function saveQuestion() {
- const payload = { questionText: question.questionText, referenceAnswer: questionEditor.value?.getMarkdown?.() ?? question.referenceAnswer, status: question.status, knowledgeCardIds: [...question.knowledgeCardIds] }
+ const payload = { ...(question.id ? { rowVersion: question.rowVersion } : {}), questionText: question.questionText, referenceAnswer: questionEditor.value?.getMarkdown?.() ?? question.referenceAnswer, status: question.status, knowledgeCardIds: [...question.knowledgeCardIds] }
  if (!payload.questionText.trim() || !payload.referenceAnswer.trim()) { error.value = '请填写问题和参考答案'; return false }
  return run(async () => { const saved = question.id ? await updateQuestion(question.id, payload) : await createQuestion(props.chapterId, payload); editQuestion({ ...payload, ...saved, id: saved?.id ?? question.id }) })
 }
-function editCard(c) { Object.assign(card, { id: c.id, frontText: c.frontText, backMarkdown: c.backMarkdown || '', status: c.status }); savedCard = JSON.stringify({ ...card, backMarkdown: card.backMarkdown.trimEnd() }); editorKey.value++ }
-function editQuestion(q) { Object.assign(question, { id: q.id, questionText: q.questionText, referenceAnswer: q.referenceAnswer || '', status: q.status, knowledgeCardIds: [...(q.knowledgeCardIds || [])] }); savedQuestion = JSON.stringify({ ...question, referenceAnswer: question.referenceAnswer.trimEnd() }); editorKey.value++ }
+function editCard(c) { Object.assign(card, { id: c.id, rowVersion: c.rowVersion, frontText: c.frontText, backMarkdown: c.backMarkdown || '', status: c.status }); savedCard = JSON.stringify({ ...card, backMarkdown: card.backMarkdown.trimEnd() }); editorKey.value++ }
+function editQuestion(q) { Object.assign(question, { id: q.id, rowVersion: q.rowVersion, questionText: q.questionText, referenceAnswer: q.referenceAnswer || '', status: q.status, knowledgeCardIds: [...(q.knowledgeCardIds || [])] }); savedQuestion = JSON.stringify({ ...question, referenceAnswer: question.referenceAnswer.trimEnd() }); editorKey.value++ }
 async function remove(kind, item) { if (busy.value || !window.confirm(`删除“${kind === 'card' ? item.frontText : item.questionText}”？已发布版本和学习证据仍保留。`)) return; await run(async () => { if (kind === 'card') { await deleteCard(item.id); if (String(card.id) === String(item.id)) resetCard() } else { await deleteQuestion(item.id); if (String(question.id) === String(item.id)) resetQuestion() } }) }
 function move(kind, index, delta) { run(async () => { const ids = (kind === 'card' ? cards.value : questions.value).map(row => row.id); [ids[index], ids[index + delta]] = [ids[index + delta], ids[index]]; if (kind === 'card') await reorderCards(props.chapterId, ids); else await reorderQuestions(props.chapterId, ids) }) }
 async function initialize() { loading.value = true; try { await load(); if (props.kind === 'cards' && cards.value.length) editCard(cards.value[0]); else if (props.kind === 'questions' && questions.value.length) editQuestion(questions.value[0]) } catch { /* load displays the error */ } }

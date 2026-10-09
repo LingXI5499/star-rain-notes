@@ -3,9 +3,14 @@
 <mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialQuestionMapper">
 
   <sql id="columns">
-    id, chapter_id, question_text, reference_answer, sort_order, status, created_at, updated_at
+    row_version, id, chapter_id, question_text, reference_answer, sort_order, status, created_at, updated_at
   </sql>
 
+  <update id="saveWorkspace">
+    UPDATE sr_tutorial_question SET question_text = #{questionText}, reference_answer = #{referenceAnswer},
+      status = #{status}, updated_at = #{updatedAt}, row_version = row_version + 1
+    WHERE id = #{id} AND row_version = #{rowVersion}
+  </update>
   <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialQuestionEntity"
           useGeneratedKeys="true" keyProperty="id">
     INSERT INTO sr_tutorial_question
@@ -33,7 +38,7 @@
   <update id="updateContent">
     UPDATE sr_tutorial_question
     SET question_text = #{questionText}, reference_answer = #{referenceAnswer},
-        status = #{status}, updated_at = #{updatedAt}
+        status = #{status}, row_version = row_version + 1, updated_at = #{updatedAt}
     WHERE id = #{id}
   </update>
 

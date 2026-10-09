@@ -13,6 +13,8 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface TutorialQuestionMapper {
 
+    int saveWorkspace(TutorialQuestionEntity row);
+
     int insert(TutorialQuestionEntity question);
 
     TutorialQuestionEntity selectById(@Param("id") Long id);

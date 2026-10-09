@@ -1,5 +1,7 @@
 package com.starrainnotes.tutorial.content.media;
 
+import com.starrainnotes.tutorial.content.mapper.TutorialQuestionMapper;
+import com.starrainnotes.tutorial.content.mapper.TutorialKnowledgeCardMapper;
 import com.starrainnotes.media.api.MediaReferenceApi;
 import com.starrainnotes.media.api.dto.MediaReferenceCommand;
 import com.starrainnotes.media.api.constant.MediaUsageCodes;
@@ -16,10 +18,15 @@ public class TutorialMediaReferences {
     private static final String CHAPTER = "CHAPTER";
     private static final String REVISION = "REVISION";
     private final MediaReferenceApi mediaReferenceApi;
+    private final TutorialKnowledgeCardMapper cardMapper;
+    private final TutorialQuestionMapper questionMapper;
 
     public void replaceChapter(Long chapterId, String markdown) {
         mediaReferenceApi.detachAll(MODULE, CHAPTER, chapterId);
-        attach(CHAPTER, chapterId, TutorialContentMediaParser.extractMediaAssetIds(markdown));
+        LinkedHashSet<Long> assets = new LinkedHashSet<>(TutorialContentMediaParser.extractMediaAssetIds(markdown));
+        cardMapper.listByChapterId(chapterId).forEach(card -> assets.addAll(TutorialContentMediaParser.extractMediaAssetIds(card.getBackMarkdown())));
+        questionMapper.listByChapterId(chapterId).forEach(question -> assets.addAll(TutorialContentMediaParser.extractMediaAssetIds(question.getReferenceAnswer())));
+        attach(CHAPTER, chapterId, assets);
     }
 
     public void attachRevision(Long revisionId, Collection<String> chapterBodies) {

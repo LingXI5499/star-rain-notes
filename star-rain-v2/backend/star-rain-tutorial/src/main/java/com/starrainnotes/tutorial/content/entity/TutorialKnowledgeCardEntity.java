@@ -10,6 +10,7 @@ import lombok.Data;
 @Data
 public class TutorialKnowledgeCardEntity {
     private Long id;
+    private Long rowVersion = 0L;
     private Long chapterId;
     private Integer contentVersion = 1;
     private String frontText;

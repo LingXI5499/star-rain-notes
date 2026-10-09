@@ -38,7 +38,5 @@ public interface TutorialContentService {
     TutorialChapterVO updateChapter(Long chapterId, ChapterUpdateDTO request);
     TutorialChapterVO updateChapterBody(Long chapterId, ChapterBodyDTO request);
     void deleteChapter(Long chapterId);
-    void publishChapter(Long chapterId);
-    void withdrawChapter(Long chapterId);
     void reorderChapters(Long groupId, List<Long> ids);
 }

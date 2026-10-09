@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TutorialChapterVO {
     private String id;
+    private Long rowVersion;
     private String tutorialId;
     private String groupId;
     private String slug;

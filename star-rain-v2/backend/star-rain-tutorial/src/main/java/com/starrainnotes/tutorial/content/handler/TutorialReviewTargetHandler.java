@@ -1,5 +1,8 @@
 package com.starrainnotes.tutorial.content.handler;
 
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Isolation;
+import com.starrainnotes.tutorial.content.mapper.TutorialChapterMapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +31,7 @@ public class TutorialReviewTargetHandler implements ReviewTargetHandler {
     private final TutorialRevisionMapper revisionMapper;
     private final ObjectMapper objectMapper;
     private final TutorialEventPublisher eventPublisher;
+    private final TutorialChapterMapper chapterMapper;
 
     @Override
     public String targetModule() { return "TUTORIAL"; }
@@ -66,7 +70,7 @@ public class TutorialReviewTargetHandler implements ReviewTargetHandler {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void onApproved(ReviewDecisionContext context) {
         TutorialRevisionEntity revision = revision(context.getTarget());
         if (revision == null) throw new TutorialStateException("审核版本不存在");
@@ -76,6 +80,17 @@ public class TutorialReviewTargetHandler implements ReviewTargetHandler {
                 && "PUBLISHED".equals(tutorial.getPublicationStatus())) return;
         if (!"IN_REVIEW".equals(tutorial.getEditingStatus()) || !isLatestRevision(revision)) {
             throw new TutorialStateException("教程不在审核中");
+        }
+        try {
+            for (JsonNode group : objectMapper.readTree(revision.getSnapshotJson()).path("groups")) {
+                for (JsonNode chapter : group.path("chapters")) {
+                    Long id = Long.valueOf(chapter.path("id").asText());
+                    chapterMapper.updateStatus(id, "PUBLISHED", LocalDateTime.now(ZoneOffset.UTC));
+                    chapterMapper.bumpVersion(id);
+                }
+            }
+        } catch (JsonProcessingException exception) {
+            throw new TutorialStateException("教程审核版本不可读取");
         }
         tutorial.setPublishedRevisionId(revision.getId());
         tutorial.setPublicationStatus("PUBLISHED");
@@ -88,13 +103,13 @@ public class TutorialReviewTargetHandler implements ReviewTargetHandler {
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void onRejected(ReviewDecisionContext context) {
         resetReview(context);
     }
 
     @Override
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void onCanceled(ReviewDecisionContext context) {
         resetReview(context);
     }

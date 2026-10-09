@@ -5,6 +5,7 @@ import lombok.Data;
 
 @Data
 public class ChapterQuestionDTO {
+    private Long rowVersion;
     @NotBlank
     private String questionText;
     @NotBlank

@@ -6,7 +6,7 @@ import { errorMessage } from '../../../../shared/http'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 import {
   createCategory, deleteCategory, deleteTutorial, listAdminCategories, listAdminTutorials,
-  publishTutorial, reorderCategories, reorderTutorials,
+  submitTutorialReview, publishTutorial, reorderCategories, reorderTutorials,
   updateCategory, updateTutorial, withdrawTutorial,
 } from '../../api/tutorialApi'
 
@@ -166,8 +166,18 @@ async function act(item, action) {
   error.value = ''
   notice.value = ''
   try {
-    if (action === 'publish') await publishTutorial(item.id)
-    if (action === 'withdraw') await withdrawTutorial(item.id)
+    if (action === 'publish') {
+      if (!await confirmDialog.value.ask('发布整个教程的工作区改动？所有未撤回章节的当前内容将上线。仅发布某章请进入课程结构。')) return
+      await publishTutorial(item.id)
+    }
+    if (action === 'submit') {
+      if (!await confirmDialog.value.ask('提交整个教程工作区审核？批准后更新公开版本。')) return
+      await submitTutorialReview(item.id)
+    }
+    if (action === 'withdraw') {
+      if (!await confirmDialog.value.ask(`撤回整个教程「${item.title}」？所有章节将停止公开，工作区与历史学习记录保留。`)) return
+      await withdrawTutorial(item.id)
+    }
     if (action === 'delete') {
         if (!await confirmDialog.value.ask(`确定删除教程「${item.title}」及其全部分组、章节？未结束计划将取消，个人学习证据和答案版本保留。此操作无法撤销。`)) return
       await deleteTutorial(item.id)
@@ -305,7 +315,8 @@ onMounted(load)
                 <button type="button" @click="router.push(`/useradmin/tutorials/editor/${item.id}`)">编辑</button>
                 <button type="button" @click="router.push(`/useradmin/tutorials/${item.id}/preview`)">预览</button>
                 <button type="button" @click="openMoveDialog(item)">更换体系</button>
-                <button v-if="auth.hasPermission('tutorial:publish') && item.publicationStatus !== 'PUBLISHED'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'publish')">{{ item.publicationStatus === 'WITHDRAWN' ? '重新公开' : '公开' }}</button>
+                <button v-if="auth.hasPermission('tutorial:publish') && item.editingStatus !== 'IN_REVIEW'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'publish')">{{ item.publicationStatus === 'PUBLISHED' ? '发布全部改动' : '公开教程' }}</button>
+                <button v-if="!auth.hasPermission('tutorial:publish') && auth.hasPermission('tutorial:submit') && item.editingStatus !== 'IN_REVIEW'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'submit')">提交审核</button>
                 <button v-if="auth.hasPermission('tutorial:withdraw') && item.publicationStatus === 'PUBLISHED'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'withdraw')">撤回</button>
                 <button v-if="auth.hasPermission('tutorial:publish')" type="button" class="danger" :disabled="busyId === String(item.id)" @click="act(item, 'delete')">删除</button>
               </div>

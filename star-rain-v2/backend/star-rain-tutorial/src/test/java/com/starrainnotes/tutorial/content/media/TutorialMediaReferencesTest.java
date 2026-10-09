@@ -17,7 +17,7 @@ class TutorialMediaReferencesTest {
     @Test
     void draftAndFrozenRevisionKeepIndependentMediaReferences() {
         MediaReferenceApi media = mock(MediaReferenceApi.class);
-        TutorialMediaReferences references = new TutorialMediaReferences(media);
+        TutorialMediaReferences references = new TutorialMediaReferences(media, mock(com.starrainnotes.tutorial.content.mapper.TutorialKnowledgeCardMapper.class), mock(com.starrainnotes.tutorial.content.mapper.TutorialQuestionMapper.class));
         String body = "![图](/api/media/assets/12/content) ![重复](/api/media/assets/12/content)";
 
         references.replaceChapter(20L, body);
@@ -41,4 +41,20 @@ class TutorialMediaReferencesTest {
                 ![图2](/api/media/assets/7/content)
                 """)).containsExactly(7L);
     }
+    @Test
+    void workspaceProtectsMediaUsedByCardsAndQuestionsIncludingDisabledDraftContent() {
+        var media=mock(MediaReferenceApi.class);
+        var cards=mock(com.starrainnotes.tutorial.content.mapper.TutorialKnowledgeCardMapper.class);
+        var questions=mock(com.starrainnotes.tutorial.content.mapper.TutorialQuestionMapper.class);
+        var card=new com.starrainnotes.tutorial.content.entity.TutorialKnowledgeCardEntity();
+        card.setStatus("DISABLED");card.setBackMarkdown("![draft](/api/media/assets/21/content)");
+        var question=new com.starrainnotes.tutorial.content.entity.TutorialQuestionEntity();
+        question.setReferenceAnswer("![answer](/api/media/assets/22/content)");
+        org.mockito.Mockito.when(cards.listByChapterId(4L)).thenReturn(List.of(card));
+        org.mockito.Mockito.when(questions.listByChapterId(4L)).thenReturn(List.of(question));
+        new TutorialMediaReferences(media,cards,questions).replaceChapter(4L,"![body](/api/media/assets/20/content)");
+        var captured=ArgumentCaptor.forClass(MediaReferenceCommand.class);verify(media,times(3)).attach(captured.capture());
+        assertThat(captured.getAllValues()).extracting(MediaReferenceCommand::getMediaAssetId).containsExactly(20L,21L,22L);
+    }
+
 }

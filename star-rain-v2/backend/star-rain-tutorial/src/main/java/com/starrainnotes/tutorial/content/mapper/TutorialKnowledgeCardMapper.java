@@ -13,6 +13,8 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface TutorialKnowledgeCardMapper {
 
+    int saveWorkspace(TutorialKnowledgeCardEntity row);
+
     int insert(TutorialKnowledgeCardEntity card);
 
     TutorialKnowledgeCardEntity selectById(@Param("id") Long id);

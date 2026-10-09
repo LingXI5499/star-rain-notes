@@ -1,5 +1,10 @@
 package com.starrainnotes.tutorial.content.service.impl;
 
+import org.springframework.transaction.annotation.Isolation;
+import com.starrainnotes.tutorial.content.mapper.TutorialQuestionCardMapper;
+import com.starrainnotes.review.api.dto.ReviewSubmissionCommand;
+import com.starrainnotes.review.api.ReviewSubmissionApi;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -50,13 +55,21 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     private final TutorialChapterMapper chapterMapper;
     private final TutorialKnowledgeCardMapper cardMapper;
     private final TutorialQuestionMapper questionMapper;
-    private final com.starrainnotes.tutorial.content.mapper.TutorialQuestionCardMapper questionCardMapper;
+    private final TutorialQuestionCardMapper questionCardMapper;
     private final TutorialRevisionMapper revisionMapper;
     private final TutorialContentService contentService;
     private final CurrentActorApi currentActorApi;
     private final ObjectMapper objectMapper;
     private final TutorialEventPublisher eventPublisher;
     private final TutorialMediaReferences mediaReferences;
+    private final ReviewSubmissionApi reviews;
+
+    private void requireNotInReview(TutorialEntity tutorial) {
+        if ("IN_REVIEW".equals(tutorial.getEditingStatus())) {
+            throw new TutorialStateException("教程审核中，请先完成或取消审核");
+        }
+    }
+
 
     private TutorialEntity lock(Long id) {
         TutorialEntity row = tutorialMapper.byIdForUpdate(id);
@@ -112,11 +125,12 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     private Map<String, Object> draftSnapshot(TutorialEntity tutorial, boolean requirePublishable) {
         TutorialCategoryEntity category = categoryMapper.selectById(tutorial.getCategoryId());
         if (category == null) throw new TutorialStateException("知识体系不存在");
-        List<TutorialGroupEntity> groups = groupMapper.listActiveByTutorialId(tutorial.getId());
+        List<TutorialGroupEntity> groups = requirePublishable ? groupMapper.listActiveByTutorialId(tutorial.getId()) : groupMapper.listByTutorialId(tutorial.getId());
         List<Map<String, Object>> groupSnapshots = new ArrayList<>();
         int chapterCount = 0;
         for (TutorialGroupEntity group : groups) {
-            List<TutorialChapterEntity> chapters = chapterMapper.listActiveByGroupId(group.getId());
+            List<TutorialChapterEntity> chapters = chapterMapper.listByGroupId(group.getId()).stream()
+                    .filter(chapter -> !requirePublishable || !"WITHDRAWN".equals(chapter.getStatus())).toList();
             List<Map<String, Object>> chapterSnapshots = new ArrayList<>();
             for (TutorialChapterEntity chapter : chapters) {
                 if (requirePublishable && (chapter.getBodyMarkdown() == null || chapter.getBodyMarkdown().isBlank())) {
@@ -165,9 +179,13 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     }
 
     private TutorialRevisionEntity freeze(TutorialEntity tutorial) {
+        return freeze(tutorial, objectMapper.valueToTree(draftSnapshot(tutorial, true)));
+    }
+
+    private TutorialRevisionEntity freeze(TutorialEntity tutorial, JsonNode candidate) {
         String json;
         try {
-            json = objectMapper.writeValueAsString(draftSnapshot(tutorial, true));
+            json = objectMapper.writeValueAsString(candidate);
         } catch (JsonProcessingException exception) {
             throw new TutorialStateException("教程版本生成失败");
         }
@@ -190,6 +208,8 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         for (JsonNode group : frozen.path("groups")) {
             for (JsonNode chapter : group.path("chapters")) {
                 chapterBodies.add(chapter.path("bodyMarkdown").asText());
+                for (JsonNode card : chapter.path("cards")) chapterBodies.add(card.path("backMarkdown").asText());
+                for (JsonNode question : chapter.path("questions")) chapterBodies.add(question.path("referenceAnswer").asText());
             }
         }
         mediaReferences.attachRevision(revision.getId(), chapterBodies);
@@ -197,16 +217,14 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialAdminVO publish(Long tutorialId) {
         TutorialEntity tutorial = lock(tutorialId);
-        if ("PUBLISHED".equals(tutorial.getPublicationStatus())) {
-            throw new TutorialStateException("教程已公开；请先撤回，再修改并重新公开");
-        }
         if ("IN_REVIEW".equals(tutorial.getEditingStatus())) {
             throw new TutorialStateException("教程审核中，不能直接发布");
         }
         TutorialRevisionEntity revision = freeze(tutorial);
+        markPublishedChapters(revision);
         tutorial.setPublishedRevisionId(revision.getId());
         tutorial.setPublicationStatus("PUBLISHED");
         tutorial.setPublishedAt(LocalDateTime.now(ZoneOffset.UTC));
@@ -218,9 +236,10 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     }
 
     @Override
-    @Transactional
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialAdminVO withdraw(Long tutorialId) {
         TutorialEntity tutorial = lock(tutorialId);
+        requireNotInReview(tutorial);
         if (!"PUBLISHED".equals(tutorial.getPublicationStatus())) {
             throw new TutorialStateException("只有已发布教程可以撤回");
         }
@@ -230,6 +249,126 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
                 tutorial.getTitle(), "WITHDRAWN", tutorial.getPublishedAt()));
         return contentService.tutorial(tutorialId);
+    }
+
+    // Derive from the public snapshot, never from unrelated workspace drafts.
+    private ObjectNode chapterCandidate(TutorialEntity tutorial, Long chapterId, boolean remove) {
+        ObjectNode base;
+        if ("PUBLISHED".equals(tutorial.getPublicationStatus()) && tutorial.getPublishedRevisionId() != null) {
+            base = ((ObjectNode) snapshot(revisionMapper.selectById(tutorial.getPublishedRevisionId()))).deepCopy();
+        } else {
+            if (remove) throw new TutorialStateException("章节当前未公开");
+            base = objectMapper.valueToTree(draftSnapshot(tutorial, false));
+            base.putArray("groups");
+        }
+        JsonNode replacement = null;
+        JsonNode workspaceGroup = null;
+        if (!remove) {
+            JsonNode workspace = objectMapper.valueToTree(draftSnapshot(tutorial, false));
+            for (JsonNode group : workspace.path("groups")) {
+                for (JsonNode chapter : group.path("chapters")) {
+                    if (String.valueOf(chapterId).equals(chapter.path("id").asText())) {
+                        replacement = chapter;
+                        workspaceGroup = group;
+                    }
+                }
+            }
+            if (replacement == null || replacement.path("bodyMarkdown").asText().isBlank()) {
+                throw new TutorialStateException("章节不存在或正文为空");
+            }
+        }
+        boolean found = false;
+        for (JsonNode group : base.path("groups")) {
+            var chapters = (ArrayNode) group.path("chapters");
+            for (int i = 0; i < chapters.size(); i++) {
+                if (String.valueOf(chapterId).equals(chapters.get(i).path("id").asText())) {
+                    if (remove) chapters.remove(i); else chapters.set(i, replacement);
+                    found = true;
+                    break;
+                }
+            }
+        }
+        if (!found && remove) throw new TutorialStateException("章节当前未公开");
+        if (!found) {
+            ObjectNode target = null;
+            for (JsonNode group : base.path("groups")) {
+                if (group.path("id").equals(workspaceGroup.path("id"))) target = (ObjectNode) group;
+            }
+            if (target == null) {
+                target = ((ObjectNode) workspaceGroup).deepCopy();
+                target.putArray("chapters");
+                ((ArrayNode) base.path("groups")).add(target);
+            }
+            ((ArrayNode) target.path("chapters")).add(replacement);
+        }
+        int count = 0;
+        for (JsonNode group : base.path("groups")) count += group.path("chapters").size();
+        base.put("chapterCount", count);
+        return base;
+    }
+
+    private TutorialEntity chapterTutorial(Long chapterId) {
+        TutorialChapterEntity chapter = chapterMapper.selectById(chapterId);
+        if (chapter == null) throw new TutorialNotFoundException();
+        TutorialEntity tutorial = lock(chapter.getTutorialId());
+        requireNotInReview(tutorial);
+        return tutorial;
+    }
+
+    private void markPublishedChapters(TutorialRevisionEntity revision) {
+        for (JsonNode group : snapshot(revision).path("groups")) {
+            for (JsonNode chapter : group.path("chapters")) {
+                chapterMapper.updateStatus(Long.valueOf(chapter.path("id").asText()), "PUBLISHED", LocalDateTime.now(ZoneOffset.UTC));
+            }
+        }
+    }
+
+    private void activate(TutorialEntity tutorial, TutorialRevisionEntity revision) {
+        markPublishedChapters(revision);
+        tutorial.setPublishedRevisionId(revision.getId());
+        tutorial.setPublicationStatus("PUBLISHED");
+        tutorial.setPublishedAt(LocalDateTime.now(ZoneOffset.UTC));
+        tutorial.setWithdrawnAt(null);
+        tutorialMapper.update(tutorial);
+        eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorial.getId(), tutorial.getSlug(),
+                tutorial.getTitle(), "PUBLISHED", tutorial.getPublishedAt()));
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void publishChapter(Long chapterId) {
+        TutorialEntity tutorial = chapterTutorial(chapterId);
+        activate(tutorial, freeze(tutorial, chapterCandidate(tutorial, chapterId, false)));
+        chapterMapper.updateStatus(chapterId, "PUBLISHED", LocalDateTime.now(ZoneOffset.UTC));
+        chapterMapper.bumpVersion(chapterId);
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void withdrawChapter(Long chapterId) {
+        TutorialEntity tutorial = chapterTutorial(chapterId);
+        activate(tutorial, freeze(tutorial, chapterCandidate(tutorial, chapterId, true)));
+        chapterMapper.updateStatus(chapterId, "WITHDRAWN", LocalDateTime.now(ZoneOffset.UTC));
+        chapterMapper.bumpVersion(chapterId);
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void submitReview(Long tutorialId, Long chapterId) {
+        TutorialEntity tutorial = lock(tutorialId);
+        requireNotInReview(tutorial);
+        if (chapterId != null) {
+            TutorialChapterEntity chapter = chapterMapper.selectById(chapterId);
+            if (chapter == null || !tutorialId.equals(chapter.getTutorialId())) throw new TutorialNotFoundException();
+        }
+        TutorialRevisionEntity revision = chapterId == null ? freeze(tutorial)
+                : freeze(tutorial, chapterCandidate(tutorial, chapterId, false));
+        reviews.submit(ReviewSubmissionCommand.builder()
+                .reviewType("tutorial.publish").targetModule("TUTORIAL").targetType("TUTORIAL")
+                .targetId(tutorialId).targetRevisionRef(revision.getRevisionRef())
+                .targetDisplayName(tutorial.getTitle()).applicantAccountId(currentActorApi.current().getAccountId()).build());
+        tutorial.setEditingStatus("IN_REVIEW");
+        tutorialMapper.update(tutorial);
     }
 
     @Override

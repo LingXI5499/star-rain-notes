@@ -1,5 +1,6 @@
 package com.starrainnotes.tutorial.content.controller;
 
+import org.springframework.web.bind.annotation.RequestParam;
 import com.starrainnotes.common.result.ApiResponse;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.starrainnotes.tutorial.content.constant.TutorialPermissions;
@@ -18,6 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/admin/tutorials/{id}")
 public class TutorialPublicationAdminController {
     private final TutorialPublicationService publicationService;
+
+    @PostMapping("/submit-review")
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.SUBMIT + "')")
+    public ApiResponse<Void> submit(@PathVariable Long id,
+            @RequestParam(required = false) Long chapterId) {
+        publicationService.submitReview(id, chapterId);
+        return ApiResponse.ok(null);
+    }
 
     @GetMapping("/preview")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.READ_ADMIN + "')")

@@ -13,6 +13,7 @@ import lombok.Data;
 @Data
 public class TutorialChapterEntity {
     private Long id;
+    private Long rowVersion = 0L;
     private Long tutorialId;
     private Long groupId;
     private String slug;
