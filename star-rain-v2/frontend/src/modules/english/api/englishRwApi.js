@@ -21,3 +21,6 @@ export const listRevisions = (kind, id, params) => get(versions(kind, id), param
 export const getRevision = (kind, id, no) => get(versions(kind, id) + '/' + no)
 export const saveRevision = (kind, id, rowVersion, changeNote) => post(versions(kind, id), { rowVersion, changeNote })
 export const restoreRevision = (kind, id, no, rowVersion) => post(versions(kind, id) + '/' + no + '/restore', { rowVersion })
+
+export const listPublicWriting = params => get('/public/english/content/writing-articles', params)
+export const getPublicWriting = slug => get('/public/english/content/writing-articles/' + slug)

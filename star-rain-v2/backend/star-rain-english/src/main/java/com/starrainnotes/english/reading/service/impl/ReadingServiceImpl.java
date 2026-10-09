@@ -25,14 +25,13 @@ public class ReadingServiceImpl implements ReadingService {
         var topics=taxonomy.descendants(topicId,"TOPIC");var genres=taxonomy.descendants(genreId,"GENRE");var purposes=taxonomy.descendants(purposeId,"PURPOSE");
         long total=mapper.count(!admin,term,topics,genres,purposes);
         var items=total==0?List.<Article>of():mapper.list(!admin,term,topics,genres,purposes,(long)(p-1)*s,s);
-        items.forEach(a->{ metadata.load("READING",a.getId(),a); if(!admin) { a.setBodyMarkdown(null); a.setTranslationZhMarkdown(null); if(!a.isLevelAssessed()) { a.setCefrLevel(null);a.setDifficultyLevel(null); } } });
+        items.forEach(a->{ metadata.load("READING",a.getId(),a); if(!admin) { a.setBodyMarkdown(null); a.setTranslationZhMarkdown(null); } });
         return new Page(items,total,p,s);
     }
     @Override @Transactional(readOnly=true) public Article get(String identity,boolean admin) {
         Article a=admin?mapper.byId(id(identity)):mapper.publicBySlug(identity); if(a==null) notFound();
         metadata.load("READING",a.getId(),a); Rights rights=mapper.rights(a.getId());
         if(!admin && rights!=null) rights.setRightsBasis(null); a.setRights(rights);
-        if(!admin && !a.isLevelAssessed()) { a.setCefrLevel(null);a.setDifficultyLevel(null); }
         return a;
     }
     @Override @Transactional public Article create(Request request) {
@@ -65,7 +64,7 @@ public class ReadingServiceImpl implements ReadingService {
     @Override @Transactional public void delete(String identity) { Article a=mapper.lockById(id(identity));if(a==null) notFound();if(mapper.delete(a.getId(),a.getRowVersion())!=1) conflict(); }
     private Article fromRequest(Request r,Article old) {
         Article a=new Article(); a.setTitle(EnglishBodyValidator.title(r.getTitle()));a.setSummary(EnglishBodyValidator.blank(r.getSummary()));a.setBodyMarkdown(EnglishBodyValidator.blank(r.getBodyMarkdown()));
-        a.setTranslationZhMarkdown(r.getTranslationZhMarkdown());a.setPrimaryTopicId(r.getPrimaryTopicId());a.setCefrLevel(r.getCefrLevel()==null?"A1":r.getCefrLevel());a.setDifficultyLevel(r.getDifficultyLevel()==null?1:r.getDifficultyLevel());a.setLevelAssessed(r.isLevelAssessed());
+        a.setTranslationZhMarkdown(r.getTranslationZhMarkdown());a.setPrimaryTopicId(r.getPrimaryTopicId());
         a.setSourceName(r.getSourceName());a.setSourceUrl(r.getSourceUrl());a.setSortOrder(r.getSortOrder()==null?0:r.getSortOrder());a.setContentOrigin(r.getContentOrigin()==null?(old==null?"EXTERNAL":old.getContentOrigin()):r.getContentOrigin());
         Rights rights=r.getRights();if(rights==null) rights=old==null?new Rights():old.getRights();if(rights==null) rights=new Rights();if(rights.getRightsStatus()==null) rights.setRightsStatus("PENDING");
         if(old!=null && r.getRights()==null && (!Objects.equals(old.getBodyMarkdown(),a.getBodyMarkdown()) || !Objects.equals(old.getSourceUrl(),a.getSourceUrl()))) rights.setRightsStatus("PENDING");
@@ -78,8 +77,6 @@ public class ReadingServiceImpl implements ReadingService {
         EnglishBodyValidator.length(r.getSourceName(),200);EnglishBodyValidator.length(r.getSourceUrl(),500);
         if(r.getSourceUrl()!=null && !r.getSourceUrl().isBlank() && !r.getSourceUrl().matches("https?://[^\\s]+")) throw new ApiException("ENGLISH_DOCUMENT_INVALID","来源地址仅支持 HTTP 或 HTTPS",400);
         if(r.getContentOrigin()!=null && !List.of("ORIGINAL","EXTERNAL").contains(r.getContentOrigin())) throw new ApiException("ENGLISH_DOCUMENT_INVALID","无效的来源类型",400);
-        if(r.isLevelAssessed() && (r.getCefrLevel()==null || !List.of("A1","A2","B1","B2","C1","C2").contains(r.getCefrLevel()))) throw new ApiException("ENGLISH_DOCUMENT_INVALID","请选择真实评定等级",400);
-        if(r.getDifficultyLevel()!=null && (r.getDifficultyLevel()<1 || r.getDifficultyLevel()>3)) throw new ApiException("ENGLISH_DOCUMENT_INVALID","难度范围无效",400);
         if(r.getRights()!=null) { Rights rights=r.getRights(); if(rights.getRightsStatus()!=null && !List.of("PENDING","CLEARED","BLOCKED").contains(rights.getRightsStatus())) throw new ApiException("ENGLISH_DOCUMENT_INVALID","无效的版权状态",400);
             EnglishBodyValidator.length(rights.getRightsBasis(),1000);EnglishBodyValidator.length(rights.getOriginalAuthor(),200);EnglishBodyValidator.length(rights.getLicenseNotice(),10000); }
         if(historical) metadata.validateSnapshot(r);else metadata.validate(r);

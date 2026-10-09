@@ -149,7 +149,7 @@ const navGroups = computed(() => {
             { label: '词汇', to: accountPath('/english/manage/vocabulary'), visible: auth.hasPermission('english:content-read-admin') },
             { label: '语法', to: accountPath('/english/manage/grammar'), visible: auth.hasPermission('english:content-read-admin') },
             { label: '阅读', to: accountPath('/english/manage/reading'), visible: auth.hasPermission('english:content-read-admin') },
-            { label: '写作', to: accountPath('/english/manage/writing'), visible: auth.hasPermission('english:content-read-admin') },
+            { label: '写作', to: accountPath('/english/writing'), visible: auth.hasPermission('english:content-read-admin') },
           ],
         },
         {

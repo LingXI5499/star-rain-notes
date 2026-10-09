@@ -37,7 +37,7 @@ class EnglishRwIntegrationTest extends MapperXmlIntegrationSupport {
      Flyway.configure().dataSource(ds).defaultSchema(schema).schemas(schema).target("2.034").load().migrate();
      try(Statement sql=connection.createStatement()) {sql.executeUpdate("INSERT INTO sr_english_reading_article(slug,title,summary,body_markdown,reading_level,cefr_level,publish_status) VALUES('legacy-probe','Legacy','','Legacy English',1,'A1','PUBLISHED')");}
      Flyway flyway=Flyway.configure().dataSource(ds).defaultSchema(schema).schemas(schema).load();flyway.migrate();
-     assertEquals("2.036",flyway.info().current().getVersion().getVersion());
+     assertEquals("2.037",flyway.info().current().getVersion().getVersion());
      try(Statement sql=connection.createStatement();ResultSet result=sql.executeQuery("SELECT COUNT(*) FROM flyway_schema_history WHERE version IN ('2.035','2.036') AND success=1")) {assertTrue(result.next());assertEquals(2,result.getInt(1));}
      var taxonomy=new TaxonomyServiceImpl(session.getMapper(TaxonomyMapper.class));
      var roots=taxonomy.tree(false);assertEquals(16,roots.stream().filter(t->"TOPIC".equals(t.getDimension())).count());
@@ -60,6 +60,8 @@ class EnglishRwIntegrationTest extends MapperXmlIntegrationSupport {
      assertEquals("PENDING",readMapper.rights(readMapper.list(false,"Legacy",List.of(),List.of(),List.of(),0,5).getFirst().getId()).getRightsStatus());
      var r=ReadingDto.Request.builder().bodyMarkdown("").contentOrigin("ORIGINAL").build();r.setPrimaryTopicId(child);r.setOtherTopicIds(List.of(child,topic));
      var article=reading.create(r);String id=article.getId().toString();assertEquals("Untitled Article",article.getTitle());
+     var jsonArticle=json.valueToTree(article);
+     for(String removed:List.of("cefrLevel","difficultyLevel","levelAssessed"))assertFalse(jsonArticle.has(removed));
      assertThrows(ApiException.class,()->reading.setPublished(id,true,0L));
      r.setBodyMarkdown("English **body**.");r.setTranslationZhMarkdown("中文正文。");r.setRowVersion(0L);article=reading.update(id,r);
      article=reading.setPublished(id,true,article.getRowVersion());assertEquals(1,reading.listFiltered(false,"",1,12,topic,null,null).getTotal());

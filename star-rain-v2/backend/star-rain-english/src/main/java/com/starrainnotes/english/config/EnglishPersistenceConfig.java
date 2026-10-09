@@ -17,8 +17,7 @@ import org.springframework.context.annotation.Configuration;
     "com.starrainnotes.english.vocabulary.mapper",
     "com.starrainnotes.english.grammar.mapper",
     "com.starrainnotes.english.reading.mapper",
-    "com.starrainnotes.english.writing.mapper",
-        "com.starrainnotes.english.writing.article.mapper",
+    "com.starrainnotes.english.writing.article.mapper",
     "com.starrainnotes.english.taxonomy.mapper",
     "com.starrainnotes.english.knowledge.mapper"
 })

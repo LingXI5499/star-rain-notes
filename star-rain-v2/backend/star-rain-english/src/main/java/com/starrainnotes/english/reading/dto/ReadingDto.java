@@ -19,6 +19,7 @@ public final class ReadingDto {
     }
 
     @Data
+    @com.fasterxml.jackson.annotation.JsonIgnoreProperties(ignoreUnknown=true)
     public static class Article extends DocumentMetadata {
         @JsonSerialize(using = ToStringSerializer.class)
         private Long id;
@@ -26,12 +27,9 @@ public final class ReadingDto {
         private String title;
         private String summary;
         private String bodyMarkdown;
-        private String cefrLevel;
-        private Integer difficultyLevel;
 
         private String translationZhMarkdown;
         private String contentOrigin;
-        private boolean levelAssessed;
         private Rights rights;
         private String sourceName;
         private String sourceUrl;
@@ -59,12 +57,9 @@ public final class ReadingDto {
         private String title;
         private String summary;
         private String bodyMarkdown;
-        private String cefrLevel;
-        private Integer difficultyLevel;
 
         private String translationZhMarkdown;
         private String contentOrigin;
-        private boolean levelAssessed;
         private Rights rights;
         private String sourceName;
         private String sourceUrl;

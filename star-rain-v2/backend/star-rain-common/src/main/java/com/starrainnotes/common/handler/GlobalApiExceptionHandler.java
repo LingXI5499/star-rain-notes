@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.servlet.NoHandlerFoundException;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalApiExceptionHandler {
@@ -65,6 +67,12 @@ public class GlobalApiExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> authorizationDenied(AuthorizationDeniedException exception) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(new ApiResponse<>("FORBIDDEN", "没有操作权限", null));
+    }
+
+    @ExceptionHandler({NoHandlerFoundException.class, NoResourceFoundException.class})
+    public ResponseEntity<ApiResponse<Void>> notFound(Exception exception) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                .body(new ApiResponse<>("NOT_FOUND", "页面或接口不存在", null));
     }
 
     @ExceptionHandler(Exception.class)

@@ -6,7 +6,7 @@ import PublicSelect from '../../../../shared/ui/PublicSelect.vue'
 import PublicFilterTabs from '../../../../shared/ui/PublicFilterTabs.vue'
 import { accountPath } from '../../../../shared/viewMode'
 import { errorMessage } from '../../../../shared/http'
-import { createEnglishDocument,getEnglishDocument,updateEnglishDocument } from '../../api/englishApi'
+import { createReading,getReading,updateReading } from '../../api/englishApi'
 import { post } from '../../../../shared/http'
 import { getEnhancements,saveEnhancements } from '../../api/englishRwApi'
 import EnglishTaxonomyFields from '../../components/EnglishTaxonomyFields.vue'
@@ -20,16 +20,16 @@ const tabs=computed(()=>[{value:'body',label:'正文与分类'},{value:'alignmen
 const groups=computed(()=>Object.entries(Object.groupBy(rows.value.alignments,r=>r.groupKey)))
 const pos=['NOUN','VERB','ADJECTIVE','ADVERB','PREPOSITION','PRONOUN','CONJUNCTION','PHRASE','OTHER']
 let initializing=false,generation=0
-function blank(){return{title:'',summary:'',bodyMarkdown:'',translationZhMarkdown:'',primaryTopicId:null,otherTopicIds:[],genreIds:[],purposeIds:[],contentOrigin:'EXTERNAL',levelAssessed:false,cefrLevel:'A1',difficultyLevel:1,sourceName:'',sourceUrl:'',rights:{rightsStatus:'PENDING',rightsBasis:'',originalAuthor:'',licenseNotice:''}}}
+function blank(){return{title:'',summary:'',bodyMarkdown:'',translationZhMarkdown:'',primaryTopicId:null,otherTopicIds:[],genreIds:[],purposeIds:[],contentOrigin:'EXTERNAL',sourceName:'',sourceUrl:'',rights:{rightsStatus:'PENDING',rightsBasis:'',originalAuthor:'',licenseNotice:''}}}
 async function loadRows(){if(!article.value)return;const [a,b,c]=await Promise.all(['alignments','annotations','vocabulary'].map(k=>getEnhancements(article.value.id,k,true)));rows.value={alignments:a,annotations:b,vocabulary:c}}
 async function accept(value){initializing=true;article.value=value;form.value={...blank(),...value,rights:{...blank().rights,...value.rights}};await nextTick();initializing=false;dirty.value=false}
 watch(()=>route.params.documentId,async id=>{const n=++generation;loading.value=true;error.value='';tab.value='body';article.value=null;rows.value={alignments:[],annotations:[],vocabulary:[]};initializing=true;form.value=blank();await nextTick();initializing=false;dirty.value=false
- try { if(id!=='new'){const value=await getEnglishDocument('reading',id,true);if(n!==generation)return;await accept(value);await loadRows()} }catch(cause){error.value=errorMessage(cause)}finally{if(n===generation)loading.value=false}
+ try { if(id!=='new'){const value=await getReading(id,true);if(n!==generation)return;await accept(value);await loadRows()} }catch(cause){error.value=errorMessage(cause)}finally{if(n===generation)loading.value=false}
 },{immediate:true})
 watch(form,()=>{if(!initializing)dirty.value=true},{deep:true})
 watch(()=>[form.value.bodyMarkdown,form.value.sourceUrl],()=>{if(!initializing && form.value.contentOrigin==='EXTERNAL')form.value.rights.rightsStatus='PENDING'})
 async function save(){if(busy.value)return false;if(englishEditor.value)form.value.bodyMarkdown=englishEditor.value.getMarkdown();if(chineseEditor.value)form.value.translationZhMarkdown=chineseEditor.value.getMarkdown();await nextTick();busy.value=true;error.value='';notice.value=''
- try { const payload={...form.value,rowVersion:article.value?.rowVersion};const saved=article.value?await updateEnglishDocument('reading',article.value.id,payload):await createEnglishDocument('reading',payload);await accept(saved);await loadRows();notice.value='正文与分类已保存。'
+ try { const payload={...form.value,rowVersion:article.value?.rowVersion};const saved=article.value?await updateReading(article.value.id,payload):await createReading(payload);await accept(saved);await loadRows();notice.value='正文与分类已保存。'
   if(route.params.documentId==='new')await router.replace(accountPath('/english/manage/editor/reading/'+saved.id));return true
  }catch(cause){error.value=errorMessage(cause);return false}finally{busy.value=false}}
 async function status(){if(!article.value || busy.value)return;busy.value=true;error.value=''
@@ -51,7 +51,7 @@ async function restored(value){await accept(value);await loadRows();notice.value
  <PublicFilterTabs v-model="tab" :options="tabs" label="阅读编辑工作区" />
  <section v-show="tab==='body'"><div class="english-rw__panel"><div class="english-rw__fields"><label>标题 · 可选<input v-model="form.title" maxlength="200" placeholder="Untitled Article"></label><label>摘要 · 可选<textarea v-model="form.summary" maxlength="1000" rows="2"></textarea></label></div><EnglishTaxonomyFields v-model="form" /></div>
  <div class="english-rw__panel"><h2>来源与公开权限</h2><p class="english-rw__muted">外部作品需要先确认公开依据。正文或来源变化后请重新核查。</p><div class="english-rw__fields"><PublicSelect v-model="form.contentOrigin" label="内容来源" :options="[{value:'EXTERNAL',label:'外部作品'},{value:'ORIGINAL',label:'本人原创'}]" /><PublicSelect v-model="form.rights.rightsStatus" label="版权核查状态" :options="[{value:'PENDING',label:'待核查'},{value:'CLEARED',label:'已核查可公开'},{value:'BLOCKED',label:'禁止公开'}]" /><label>来源名称<input v-model="form.sourceName" maxlength="200"></label><label>来源地址<input v-model="form.sourceUrl" type="url" maxlength="500"></label><label>原作者<input v-model="form.rights.originalAuthor" maxlength="200"></label><label>公开依据 · 仅管理端可见<textarea v-model="form.rights.rightsBasis" maxlength="1000" rows="3"></textarea></label><label>读者可见的许可说明<textarea v-model="form.rights.licenseNotice" maxlength="10000" rows="3"></textarea></label></div>
- <label><span><input v-model="form.levelAssessed" type="checkbox"> 已人工评定能力等级</span></label><PublicSelect v-if="form.levelAssessed" v-model="form.cefrLevel" label="能力等级" :options="['A1','A2','B1','B2','C1','C2'].map(v=>({value:v,label:v}))" /></div>
+ </div>
  <section class="english-rw__panel"><h2>完整英文正文</h2><MarkdownEditor ref="englishEditor" v-model="form.bodyMarkdown" /></section><section class="english-rw__panel"><h2>完整中文译文 · 可选</h2><MarkdownEditor ref="chineseEditor" v-model="form.translationZhMarkdown" /></section></section>
  <template v-if="tab==='alignments' || tab==='annotations'"><p v-if="dirty" class="english-rw__notice">请先保存正文，再选择片段。正文修改会使已有标注失效。</p><p class="english-rw__muted">{{tab==='alignments'?'在下方预览中依次选择英文、中文片段，可按一对多加入同组。':'在英文预览中选择少量值得精读的片段，填写人工解析。'}}</p>
  <EnglishBilingualProse :english="article.bodyMarkdown || ''" :chinese="article.translationZhMarkdown || ''" :mode="tab==='alignments'?'BOTH':'EN'" :selecting="!dirty" @selection="select" @invalid="error=$event" />

@@ -22,10 +22,6 @@ import com.starrainnotes.english.vocabulary.mapper.VocabularyStudyMapper;
 import com.starrainnotes.english.vocabulary.vo.VocabularyStudySettingsVO;
 import com.starrainnotes.english.vocabulary.vo.VocabularySummaryVO;
 import com.starrainnotes.english.vocabulary.vo.VocabularyWordAudioVO;
-import com.starrainnotes.english.writing.dto.WritingPromptDto;
-import com.starrainnotes.english.writing.dto.WritingResourceDto;
-import com.starrainnotes.english.writing.mapper.WritingPromptMapper;
-import com.starrainnotes.english.writing.mapper.WritingResourceMapper;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -51,8 +47,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
     private ReadingMapper readings;
     private VocabularyMapper vocabulary;
     private VocabularyStudyMapper vocabularyStudy;
-    private WritingPromptMapper writingPrompts;
-    private WritingResourceMapper writingResources;
 
     @BeforeEach
     void open() {
@@ -61,8 +55,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         readings = session.getMapper(ReadingMapper.class);
         vocabulary = session.getMapper(VocabularyMapper.class);
         vocabularyStudy = session.getMapper(VocabularyStudyMapper.class);
-        writingPrompts = session.getMapper(WritingPromptMapper.class);
-        writingResources = session.getMapper(WritingResourceMapper.class);
     }
 
     @AfterEach
@@ -79,8 +71,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(readings);
         assertNotNull(vocabulary);
         assertNotNull(vocabularyStudy);
-        assertNotNull(writingPrompts);
-        assertNotNull(writingResources);
     }
 
     @Test
@@ -216,9 +206,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
                 "别名 bodyMarkdown 丢失（XML 映射的是 body_markdown）");
         assertEquals("XML 验证来源", stored.getSourceName(), "别名 sourceName 丢失");
         assertEquals("https://example.test/reading", stored.getSourceUrl(), "别名 sourceUrl 丢失");
-        assertEquals("A2", stored.getCefrLevel());
-        assertEquals(4, stored.getDifficultyLevel().intValue(),
-                "别名 difficultyLevel 丢失（XML 映射的是 reading_level）");
         assertEquals("DRAFT", stored.getPublishStatus(),
                 "insert 不写 publish_status，应当取列默认值 DRAFT");
         assertEquals(0, stored.getSortOrder());
@@ -248,13 +235,11 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         ReadingDto.Article edited = readings.byId(article.getId());
         edited.setTitle(search + "-改名");
         edited.setSourceName(null);
-        edited.setDifficultyLevel(6);
         edited.setSlug(article.getSlug() + "-renamed");
         assertEquals(1, readings.update(edited));
         ReadingDto.Article afterUpdate = readings.byId(article.getId());
         assertEquals(search + "-改名", afterUpdate.getTitle());
         assertNull(afterUpdate.getSourceName(), "source_name 传 null 没有被清空（这条语句是普通 SET）");
-        assertEquals(6, afterUpdate.getDifficultyLevel().intValue());
         assertEquals(article.getSlug(), afterUpdate.getSlug(), "Existing reading URLs remain stable");
         assertEquals("PUBLISHED", afterUpdate.getPublishStatus(), "改内容不应改动 publish_status");
         assertNull(readings.publicBySlug(article.getSlug() + "-renamed"));
@@ -638,131 +623,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     @Test
-    void writingPromptCrudHonoursPublicAndSearchFilters() {
-        String search = unique("mapperxmlwritingprompt");
-        WritingPromptDto.Prompt prompt = newPrompt(search);
-        assertEquals(1, writingPrompts.insert(prompt));
-        assertNotNull(prompt.getId(), "insert 没有回填自增主键");
-
-        WritingPromptDto.Prompt stored = writingPrompts.byId(prompt.getId());
-        assertNotNull(stored, "byId 读不到刚插入的行");
-        assertEquals(prompt.getSlug(), stored.getSlug());
-        assertEquals(search, stored.getTitle());
-        assertEquals("XML 验证作文摘要", stored.getSummary());
-        assertEquals("# XML 验证作文背景", stored.getBodyMarkdown(),
-                "别名 bodyMarkdown 丢失（XML 映射的是 background_markdown）");
-        assertEquals("## XML 验证作文要求", stored.getRequirementsMarkdown(),
-                "别名 requirementsMarkdown 丢失（XML 映射的是 requirements_markdown）");
-        assertEquals("B2", stored.getCefrLevel());
-        assertEquals(180, stored.getWordMin().intValue(), "别名 wordMin 丢失（XML 映射的是 word_min）");
-        assertEquals(260, stored.getWordMax().intValue(), "别名 wordMax 丢失");
-        assertEquals(40, stored.getEstimatedMinutes().intValue(), "别名 estimatedMinutes 丢失");
-        assertEquals("DRAFT", stored.getPublishStatus(),
-                "insert 不写 publish_status，应当取列默认值 DRAFT");
-        assertEquals(0, stored.getSortOrder());
-
-        assertNull(writingPrompts.byId(-1L));
-        assertNull(writingPrompts.publicBySlug(prompt.getSlug()), "草稿作文题不应能按 slug 公开读取");
-        assertEquals(1, writingPrompts.count(false, search), "search 过滤没生效");
-        assertEquals(0, writingPrompts.count(true, search), "publicOnly 过滤没生效");
-        assertEquals(0, writingPrompts.count(false, search + "-missing"));
-        assertTrue(writingPrompts.count(false, null) >= 1, "search 为 null 时必须退化成统计全部");
-        assertEquals(1, writingPrompts.list(false, search, 0, 10).size());
-        assertEquals(1, writingPrompts.list(false, search, 0, 1).size(), "LIMIT 没生效");
-        assertTrue(writingPrompts.list(false, search, 1, 10).isEmpty(), "OFFSET 没生效");
-
-        assertEquals(1, writingPrompts.setStatus(prompt.getId(), "PUBLISHED"));
-        assertEquals("PUBLISHED", writingPrompts.byId(prompt.getId()).getPublishStatus());
-        assertNotNull(writingPrompts.publicBySlug(prompt.getSlug()),
-                "已发布作文题应当能按 slug 公开读取");
-        assertEquals(1, writingPrompts.count(true, search));
-        Object firstPublishedAt = publishedAtOf("sr_english_writing_prompt", prompt.getId());
-        assertNotNull(firstPublishedAt, "setStatus 必须写入 published_at");
-        assertEquals(1, writingPrompts.setStatus(prompt.getId(), "DRAFT"));
-        assertEquals(1, writingPrompts.setStatus(prompt.getId(), "PUBLISHED"));
-        assertEquals(firstPublishedAt, publishedAtOf("sr_english_writing_prompt", prompt.getId()),
-                "重新发布把首次发布时间改写了（COALESCE 丢失）");
-
-        WritingPromptDto.Prompt edited = writingPrompts.byId(prompt.getId());
-        edited.setTitle(search + "-改名");
-        edited.setWordMin(null);
-        edited.setWordMax(null);
-        edited.setEstimatedMinutes(null);
-        assertEquals(1, writingPrompts.update(edited));
-        WritingPromptDto.Prompt afterUpdate = writingPrompts.byId(prompt.getId());
-        assertEquals(search + "-改名", afterUpdate.getTitle());
-        assertNull(afterUpdate.getWordMin(), "word_min 传 null 没有被清空（这条语句是普通 SET）");
-        assertNull(afterUpdate.getWordMax());
-        assertNull(afterUpdate.getEstimatedMinutes());
-        assertEquals("PUBLISHED", afterUpdate.getPublishStatus(), "改内容不应改动 publish_status");
-        assertEquals("## XML 验证作文要求", afterUpdate.getRequirementsMarkdown());
-
-        assertEquals(1, writingPrompts.delete(prompt.getId()));
-        assertNull(writingPrompts.byId(prompt.getId()));
-        assertEquals(0, writingPrompts.delete(prompt.getId()));
-    }
-
-    @Test
-    void writingResourceCrudHonoursPublicAndSearchFilters() {
-        String search = unique("mapperxmlwritingresource");
-        WritingResourceDto.Resource resource = newResource(search);
-        assertEquals(1, writingResources.insert(resource));
-        assertNotNull(resource.getId(), "insert 没有回填自增主键");
-
-        WritingResourceDto.Resource stored = writingResources.byId(resource.getId());
-        assertNotNull(stored, "byId 读不到刚插入的行");
-        assertEquals(resource.getSlug(), stored.getSlug());
-        assertEquals("TEMPLATE", stored.getResourceKind(),
-                "别名 resourceKind 丢失（XML 映射的是 resource_kind）");
-        assertEquals(search, stored.getTitle());
-        assertEquals("XML 验证资源摘要", stored.getSummary());
-        assertEquals("# XML 验证资源正文", stored.getBodyMarkdown(), "别名 bodyMarkdown 丢失");
-        assertEquals("B1", stored.getCefrLevel());
-        assertEquals("DRAFT", stored.getPublishStatus(),
-                "insert 不写 publish_status，应当取列默认值 DRAFT");
-        assertEquals(0, stored.getSortOrder());
-
-        assertNull(writingResources.byId(-1L));
-        assertNull(writingResources.publicBySlug(resource.getSlug()), "草稿资源不应能按 slug 公开读取");
-        assertEquals(1, writingResources.count(false, search), "search 过滤没生效");
-        assertEquals(0, writingResources.count(true, search), "publicOnly 过滤没生效");
-        assertEquals(0, writingResources.count(false, search + "-missing"));
-        assertTrue(writingResources.count(false, null) >= 1, "search 为 null 时必须退化成统计全部");
-        assertEquals(1, writingResources.list(false, search, 0, 10).size());
-        assertEquals(1, writingResources.list(false, search, 0, 1).size(), "LIMIT 没生效");
-        assertTrue(writingResources.list(false, search, 1, 10).isEmpty(), "OFFSET 没生效");
-
-        assertEquals(1, writingResources.setStatus(resource.getId(), "PUBLISHED"));
-        assertEquals("PUBLISHED", writingResources.byId(resource.getId()).getPublishStatus());
-        assertNotNull(writingResources.publicBySlug(resource.getSlug()),
-                "已发布资源应当能按 slug 公开读取");
-        assertEquals(1, writingResources.count(true, search));
-        Object firstPublishedAt = publishedAtOf("sr_english_writing_resource", resource.getId());
-        assertNotNull(firstPublishedAt, "setStatus 必须写入 published_at");
-        assertEquals(1, writingResources.setStatus(resource.getId(), "DRAFT"));
-        assertEquals(1, writingResources.setStatus(resource.getId(), "PUBLISHED"));
-        assertEquals(firstPublishedAt, publishedAtOf("sr_english_writing_resource", resource.getId()),
-                "重新发布把首次发布时间改写了（COALESCE 丢失）");
-
-        // 这张表除主键外没有可空列（summary/body_markdown 都是 NOT NULL），只验证改动的列生效
-        WritingResourceDto.Resource edited = writingResources.byId(resource.getId());
-        edited.setTitle(search + "-改名");
-        edited.setResourceKind("CHECKLIST");
-        edited.setSlug(resource.getSlug() + "-renamed");
-        assertEquals(1, writingResources.update(edited));
-        WritingResourceDto.Resource afterUpdate = writingResources.byId(resource.getId());
-        assertEquals(search + "-改名", afterUpdate.getTitle());
-        assertEquals("CHECKLIST", afterUpdate.getResourceKind());
-        assertEquals(resource.getSlug() + "-renamed", afterUpdate.getSlug());
-        assertEquals("# XML 验证资源正文", afterUpdate.getBodyMarkdown(), "改内容不应动正文");
-        assertEquals("PUBLISHED", afterUpdate.getPublishStatus(), "改内容不应改动 publish_status");
-
-        assertEquals(1, writingResources.delete(resource.getId()));
-        assertNull(writingResources.byId(resource.getId()));
-        assertEquals(0, writingResources.delete(resource.getId()));
-    }
-
-    @Test
     void rollbackLeavesNoEnglishProbeRowsAndRestoresTheGrammarCourse() {
         GrammarDto.Course before = grammar.course();
         assertNotNull(before);
@@ -792,18 +652,12 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
                         .reviewNumber(1).reviewStep(1).intervalSeconds(60L)
                         .reviewedAt(now()).nextReviewAt(now()).timingStatus("NEW").build());
 
-        WritingPromptDto.Prompt prompt = newPrompt(unique("mapperxmlrollbackprompt"));
-        writingPrompts.insert(prompt);
-        WritingResourceDto.Resource resource = newResource(unique("mapperxmlrollbackresource"));
-        writingResources.insert(resource);
 
         Long sectionId = section.getId();
         Long lessonId = lesson.getId();
         Long articleId = article.getId();
         Long themeId = theme.getId();
         Long wordId = word.getId();
-        Long promptId = prompt.getId();
-        Long resourceId = resource.getId();
         assertNotNull(sectionId);
         assertNotNull(articleId);
         assertNotNull(themeId);
@@ -829,10 +683,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
             assertNull(freshStudy.memory(accountId, wordId), "回滚后不应在开发库里留下测试记忆行");
             assertEquals(0L, freshStudy.countReviews(accountId), "回滚后不应在开发库里留下测试复习日志");
 
-            assertNull(fresh.getMapper(WritingPromptMapper.class).byId(promptId),
-                    "回滚后不应在开发库里留下测试作文题");
-            assertNull(fresh.getMapper(WritingResourceMapper.class).byId(resourceId),
-                    "回滚后不应在开发库里留下测试写作资源");
         }
     }
 
@@ -890,8 +740,6 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         article.setTitle(title);
         article.setSummary("XML 验证阅读摘要");
         article.setBodyMarkdown("# XML 验证阅读正文");
-        article.setCefrLevel("A2");
-        article.setDifficultyLevel(4);
         article.setSourceName("XML 验证来源");
         article.setSourceUrl("https://example.test/reading");
         article.setSortOrder(0);
@@ -952,32 +800,7 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         return word;
     }
 
-    private WritingPromptDto.Prompt newPrompt(String title) {
-        WritingPromptDto.Prompt prompt = new WritingPromptDto.Prompt();
-        prompt.setSlug(unique("mapperxmlwritingpromptslug"));
-        prompt.setTitle(title);
-        prompt.setSummary("XML 验证作文摘要");
-        prompt.setBodyMarkdown("# XML 验证作文背景");
-        prompt.setRequirementsMarkdown("## XML 验证作文要求");
-        prompt.setCefrLevel("B2");
-        prompt.setWordMin(180);
-        prompt.setWordMax(260);
-        prompt.setEstimatedMinutes(40);
-        prompt.setSortOrder(0);
-        return prompt;
-    }
 
-    private WritingResourceDto.Resource newResource(String title) {
-        WritingResourceDto.Resource resource = new WritingResourceDto.Resource();
-        resource.setResourceKind("TEMPLATE");
-        resource.setTitle(title);
-        resource.setSlug(unique("mapperxmlwritingresourceslug"));
-        resource.setSummary("XML 验证资源摘要");
-        resource.setBodyMarkdown("# XML 验证资源正文");
-        resource.setCefrLevel("B1");
-        resource.setSortOrder(0);
-        return resource;
-    }
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实内容撞号 */
     private long probeId() {

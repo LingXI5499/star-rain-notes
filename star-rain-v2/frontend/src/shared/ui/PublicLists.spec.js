@@ -9,7 +9,7 @@ import SearchResultPage from '../../modules/search/pages/SearchResultPage.vue'
 import BlogListPage from '../../modules/blog/pages/BlogListPage.vue'
 import BlogArchivePage from '../../modules/blog/pages/BlogArchivePage.vue'
 import BlogTopicPage from '../../modules/blog/pages/BlogTopicPage.vue'
-const api = vi.hoisted(() => ({ listPublicTutorials: vi.fn(), listPublicCategories: vi.fn(), listEnglishDocuments: vi.fn(), search: vi.fn(), listArchive: vi.fn(), listPublicPosts: vi.fn(), listArchiveMonths: vi.fn(), listPublicTags: vi.fn(), listPublicTopics: vi.fn(), getPublicBlogStats: vi.fn(), listArchiveDays: vi.fn(), getPublicTopic: vi.fn() }))
+const api = vi.hoisted(() => ({ listPublicTutorials: vi.fn(), listPublicCategories: vi.fn(), listReading: vi.fn(), search: vi.fn(), listArchive: vi.fn(), listPublicPosts: vi.fn(), listArchiveMonths: vi.fn(), listPublicTags: vi.fn(), listPublicTopics: vi.fn(), getPublicBlogStats: vi.fn(), listArchiveDays: vi.fn(), getPublicTopic: vi.fn() }))
 vi.mock('../../modules/tutorial/api/tutorialApi', () => api)
 vi.mock('../../modules/english/api/englishApi', () => api)
 vi.mock('../../modules/search/api/searchApi', () => api)
@@ -18,13 +18,13 @@ vi.mock('../../shared/viewMode', () => ({ VIEW_MODE: { ACCOUNT: 'ACCOUNT' }, res
 const mounted = []
 async function render(component, url, props = {}) {
   const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/:pathMatch(.*)*', component: { template: '<div />' } }] }); await router.push(url)
-  const w = mount(component, { props, global: { plugins: [router], stubs: { BlogSidebar: true, BlogTimeline: true, BlogColumnNav: true, BlogArchiveCalendar: true } } }); mounted.push(w); await flushPromises(); return { w, router }
+  const w = mount(component, { props, global: { plugins: [router], stubs: { BlogSidebar: true, BlogTimeline: true, BlogColumnNav: true, BlogArchiveCalendar: true, EnglishTopicDirectory:true, EnglishArticleFilters:true } } }); mounted.push(w); await flushPromises(); return { w, router }
 }
 beforeEach(() => {
   vi.clearAllMocks()
   api.listPublicCategories.mockResolvedValue([{ id: 'c', slug: 'java', name: 'Java' }])
   api.listPublicTutorials.mockResolvedValue({ total: 25, items: Array.from({ length: 25 }, (_, n) => ({ id: String(n), title: 'Java 教程 ' + n, slug: 'java-' + n, categoryId: 'c', chapterCount: 3 })) })
-  api.listEnglishDocuments.mockImplementation(async (kind, query) => ({ items: [], total: 65, page: query.page, pageSize: query.size }))
+  api.listReading.mockImplementation(async query => ({ items: [], total: 65, page: query.page, pageSize: query.size }))
   api.search.mockResolvedValue({ items: [], total: 65, pageSize: 20 })
   api.listPublicPosts.mockResolvedValue({ items: [], total: 65 }); api.listArchive.mockResolvedValue({ items: [], total: 65 }); api.getPublicTopic.mockResolvedValue({ topic: { name: '专题' }, posts: { items: [], total: 65 } })
   for (const name of ['listArchiveMonths', 'listPublicTags', 'listPublicTopics', 'listArchiveDays']) api[name].mockResolvedValue([])
@@ -47,17 +47,15 @@ describe('public list integration', () => {
     router.back(); await flushPromises(); expect(w.findAll('.tutorial-card')).toHaveLength(12); expect(w.getComponent(PublicPagination).props('page')).toBe(2)
   })
   it('uses selectable reading sizes in the real query and resets the page without losing search', async () => {
-    const { w, router } = await render(EnglishDocumentsPage, '/english/reading?search=story&page=2', { domain: 'reading' })
-    expect(api.listEnglishDocuments).toHaveBeenLastCalledWith('reading', { page: 2, size: 12, search: 'story' })
+    const { w, router } = await render(EnglishDocumentsPage, '/english/reading?search=story&page=2')
+    expect(api.listReading).toHaveBeenLastCalledWith({ page: 2, size: 12, search: 'story' })
     w.getComponent(PublicPagination).vm.$emit('page-size', 24); await flushPromises()
-    expect(api.listEnglishDocuments).toHaveBeenLastCalledWith('reading', { page: 1, size: 24, search: 'story' }); expect(router.currentRoute.value.query.search).toBe('story')
+    expect(api.listReading).toHaveBeenLastCalledWith(expect.objectContaining({ page: 1, size: 24, search: 'story' })); expect(router.currentRoute.value.query.search).toBe('story')
   })
-  it('paginates writing materials and tasks independently without the old 50-item cap', async () => {
-    const { w, router } = await render(EnglishDocumentsPage, '/english/writing?search=essay&resourcePage=2&promptPage=3', { domain: 'writing' })
-    const pagers = w.findAllComponents(PublicPagination); expect(pagers).toHaveLength(2)
-    pagers[0].vm.$emit('page-size', 24); await flushPromises()
-    expect(api.listEnglishDocuments).toHaveBeenCalledWith('writing-resources', { page: 1, size: 24, search: 'essay' })
-    expect(api.listEnglishDocuments).toHaveBeenCalledWith('writing-prompts', { page: 3, size: 12, search: 'essay' }); expect(router.currentRoute.value.query.promptPage).toBe('3')
+  it('shows one reading pager and no retired writing sections or grade badges', async () => {
+    api.listReading.mockResolvedValue({items:[{id:'1',slug:'reading-1',title:'Real prose',summary:'Summary',cefrLevel:'C2',difficultyLevel:3}],total:1})
+    const {w}=await render(EnglishDocumentsPage,'/english/reading')
+    expect(w.findAllComponents(PublicPagination)).toHaveLength(1);expect(w.text()).not.toContain('写作素材');expect(w.text()).not.toContain('写作任务');expect(w.text()).not.toContain('C2');expect(w.text()).not.toContain('难度')
   })
   it('sends the selected search page size to the API and retains content type and keyword', async () => {
     const { w, router } = await render(SearchResultPage, '/search?q=Java&type=TUTORIAL&page=2')

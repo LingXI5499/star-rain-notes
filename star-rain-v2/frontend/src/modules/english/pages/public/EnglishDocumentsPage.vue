@@ -1,82 +1,32 @@
 <script setup>
-import EnglishTopicDirectory from '../../components/EnglishTopicDirectory.vue'
-import '../../styles/englishRw.css'
-import EnglishArticleFilters from '../../components/EnglishArticleFilters.vue'
-import PublicFilterBar from '../../../../shared/ui/PublicFilterBar.vue'
-import PublicSearch from '../../../../shared/ui/PublicSearch.vue'
-import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
-import { publicPage, publicPageSize, sizeQuery } from '../../../../shared/composables/publicListState'
-
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
-import { errorMessage } from '../../../../shared/http'
-import { listEnglishDocuments } from '../../api/englishApi'
-
 import { useViewMode } from '../../../../shared/viewMode'
-const { contentPath } = useViewMode()
-const props = defineProps({ domain: { type: String, required: true } })
-const route = useRoute()
-const router = useRouter()
-const data = ref({ items: [], total: 0 })
-const resources = ref([])
-const prompts = ref([])
-const loading = ref(true)
-const error = ref('')
-const search = ref(String(route.query.search || ''))
-const page = computed(() => publicPage(route.query.page))
-const pageSize = computed(() => publicPageSize(route.query.pageSize))
-const resourcePage = computed(() => publicPage(route.query.resourcePage)), promptPage = computed(() => publicPage(route.query.promptPage))
-const resourceSize = computed(() => publicPageSize(route.query.resourceSize)), promptSize = computed(() => publicPageSize(route.query.promptSize))
-const resourceTotal = ref(0), promptTotal = ref(0)
-let version = 0
-const labels = { reading: { zh: '阅读中心', en: 'READING', desc: '读完整文章，理解真实表达。按主题、文体与用途探索。', cta: '开始阅读' }, writing: { zh: '写作中心', en: 'WRITING', desc: '从素材、范文和任务中练习清晰表达。', cta: '查看内容' } }
-const label = computed(() => labels[props.domain])
-
-function path(item, kind = props.domain) {
-  if (kind === 'writing-resources') return contentPath(`/english/writing/resources/${item.slug}`)
-  if (kind === 'writing-prompts') return contentPath(`/english/writing/practice/${item.slug}`)
-  return contentPath(`/english/${kind}/${item.slug}`)
-}
-
-async function load() {
-  const request = ++version; loading.value = true; error.value = ''; search.value = String(route.query.search || '')
-  try {
-    if (props.domain === 'writing') {
-      const [materials, tasks] = await Promise.all([
-        listEnglishDocuments('writing-resources', { page: resourcePage.value, size: resourceSize.value, search: search.value }),
-        listEnglishDocuments('writing-prompts', { page: promptPage.value, size: promptSize.value, search: search.value }),
-      ])
-      if (request !== version) return
-      resources.value = materials.items; resourceTotal.value = materials.total; prompts.value = tasks.items; promptTotal.value = tasks.total
-    } else {
-      const result = await listEnglishDocuments(props.domain, { page: page.value, size: pageSize.value, search: search.value, topicId: route.query.topicId, genreId: route.query.genreId, purposeId: route.query.purposeId })
-      if (request === version) data.value = result
-    }
-  } catch (cause) { if (request === version) error.value = errorMessage(cause) }
-  finally { if (request === version) loading.value = false }
-}
-function submitSearch(value) { router.push({ query: { ...route.query, search: value || undefined, page: undefined, resourcePage: undefined, promptPage: undefined } }) }
-function go(next, key = 'page') { router.push({ query: { ...route.query, [key]: next > 1 ? String(next) : undefined } }) }
-function changeSize(size, key = 'pageSize', pageKey = 'page') { router.push({ query: { ...route.query, [key]: size === 12 ? undefined : String(size), [pageKey]: undefined } }) }
-watch(() => [props.domain, route.fullPath], load, { immediate: true })
+import { errorMessage } from '../../../../shared/http'
+import { publicPage, publicPageSize } from '../../../../shared/composables/publicListState'
+import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
+import EnglishTopicDirectory from '../../components/EnglishTopicDirectory.vue'
+import EnglishArticleFilters from '../../components/EnglishArticleFilters.vue'
+import { listReading } from '../../api/englishApi'
+import '../../styles/englishRw.css'
+const route=useRoute(), router=useRouter(), {contentPath}=useViewMode()
+const data=ref({items:[],total:0}), loading=ref(true), error=ref('')
+const page=computed(()=>publicPage(route.query.page)), size=computed(()=>publicPageSize(route.query.pageSize))
+let generation=0
+watch(()=>route.fullPath,async()=>{
+ const n=++generation; loading.value=true; error.value=''
+ try { const result=await listReading({...route.query,page:page.value,size:size.value}); if(n===generation)data.value=result }
+ catch(cause){if(n===generation)error.value=errorMessage(cause)}
+ finally{if(n===generation)loading.value=false}
+},{immediate:true})
+function paginate(value){router.push({query:{...route.query,page:value>1?String(value):undefined}})}
+function resize(value){router.push({query:{...route.query,pageSize:value===12?undefined:String(value),page:undefined}})}
 </script>
-
-<template>
-  <main class="english-documents" :data-domain="domain">
-    <RouterLink :to="contentPath('/english')" class="english-documents__back">← 英语</RouterLink>
-    <header class="english-documents__hero"><div><p class="public-eyebrow">ENGLISH {{ label.en }} · 阅读与表达</p><h1>{{ label.zh }}</h1><p>{{ label.desc }}</p></div><div class="english-documents__count"><strong>{{ domain === 'writing' ? resourceTotal + promptTotal : data.total }}</strong><span>{{ domain === 'writing' ? '项写作内容' : '篇精选文章' }}</span></div></header>
-    <EnglishTopicDirectory v-if="domain === 'reading'" /><EnglishArticleFilters v-if="domain === 'reading'" :model-value="route.query" @update:model-value="router.push({ query: $event })" /><PublicFilterBar v-else :label="label.zh + '筛选'" :active="Boolean(route.query.search)" @reset="search = ''; submitSearch('')"><PublicSearch v-model="search" label="搜索标题或摘要" placeholder="输入标题或摘要关键词" @search="submitSearch" /></PublicFilterBar>
-    <p v-if="loading" class="english-documents__state">正在读取内容…</p><p v-else-if="error" class="english-documents__state" role="alert">{{ error }}</p>
-    <template v-else-if="domain === 'writing'">
-      <section class="english-documents__section"><header><div><p class="public-eyebrow">WRITING MATERIALS</p><h2>写作素材</h2></div><span>{{ resourceTotal }} 篇</span></header><div class="english-documents__grid"><RouterLink v-for="item in resources" :key="item.id" :to="path(item,'writing-resources')" class="english-documents__card"><div class="english-documents__card-top"><span class="english-documents__level">{{ item.cefrLevel || 'ENGLISH' }}</span><small>{{ item.resourceKind || '素材' }}</small></div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p><strong>开始学习 →</strong></RouterLink><p v-if="!resources.length" class="english-documents__empty">暂无匹配素材。</p></div><PublicPagination :page="resourcePage" :page-size="resourceSize" :total="resourceTotal" :loading="loading" label="写作素材分页" unit="篇" @change="go($event, 'resourcePage')" @page-size="changeSize($event, 'resourceSize', 'resourcePage')" /></section>
-      <section class="english-documents__section"><header><div><p class="public-eyebrow">WRITING PRACTICE</p><h2>写作任务</h2></div><span>{{ promptTotal }} 项</span></header><div class="english-documents__grid"><RouterLink v-for="item in prompts" :key="item.id" :to="path(item,'writing-prompts')" class="english-documents__card english-documents__card--prompt"><div class="english-documents__card-top"><span class="english-documents__level">{{ item.cefrLevel || 'ENGLISH' }}</span><small>练习任务</small></div><h3>{{ item.title }}</h3><p>{{ item.summary }}</p><strong>{{ item.wordMin }}–{{ item.wordMax }} 词 · {{ item.estimatedMinutes }} 分钟 →</strong></RouterLink><p v-if="!prompts.length" class="english-documents__empty">暂无匹配任务。</p></div><PublicPagination :page="promptPage" :page-size="promptSize" :total="promptTotal" :loading="loading" label="写作任务分页" unit="项" @change="go($event, 'promptPage')" @page-size="changeSize($event, 'promptSize', 'promptPage')" /></section>
-    </template>
-    <template v-else>
-      <div class="english-documents__grid"><RouterLink v-for="item in data.items" :key="item.id" :to="path(item)" class="english-documents__card"><div class="english-documents__card-top"><span class="english-documents__level">{{ item.cefrLevel || 'ENGLISH' }}</span><small>{{ item.difficultyLevel ? '难度 ' + item.difficultyLevel : label.en }}</small></div><h2>{{ item.title }}</h2><p>{{ item.summary }}</p><strong>{{ label.cta }} →</strong></RouterLink><p v-if="!data.items.length" class="english-documents__empty">暂无内容。</p></div>
-<PublicPagination :page="page" :page-size="pageSize" :total="data.total" :loading="loading" label="英语阅读分页" unit="篇" @change="go" @page-size="changeSize" />
-    </template>
-  </main>
-</template>
-<style scoped>
-.english-documents{max-width:1340px;margin:auto;padding:25px 0 85px}.english-documents__back{color:var(--primary);font-size:13px}.english-documents__hero{display:flex;justify-content:space-between;align-items:end;gap:30px;padding:28px 0 30px}.english-documents__hero h1{margin:8px 0;font-size:clamp(36px,5vw,48px);line-height:1.15}.english-documents__hero p:last-child{margin:0;color:var(--text-secondary);line-height:1.7}.english-documents__count{display:grid;min-width:105px;padding:15px 18px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface);text-align:center}.english-documents__count strong{color:var(--primary);font-size:30px;line-height:1.2}.english-documents__count span{color:var(--text-muted);font-size:12px}.english-documents__state{padding:70px 0;color:var(--text-secondary)}.english-documents__toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin:0 0 20px;padding-top:20px;border-top:1px solid var(--border)}.english-documents__toolbar>span,.english-documents__section>header>span{color:var(--text-muted);font-size:13px}.english-documents__search{display:flex;width:min(100%,430px);gap:8px}.english-documents__search input{flex:1;min-width:0;padding:10px 12px;border:1px solid var(--border-strong);border-radius:9px;background:var(--bg-surface);color:var(--text-primary);font:inherit}.english-documents__search button,.english-documents__pager button{padding:9px 15px;border:1px solid var(--border-strong);border-radius:9px;background:var(--bg-surface);color:var(--text-primary);cursor:pointer}.english-documents__search button{border-color:var(--primary);background:var(--primary);color:var(--on-primary)}.english-documents__section{margin:18px 0 54px}.english-documents__section>header{display:flex;justify-content:space-between;align-items:end;margin-bottom:18px;padding-top:20px;border-top:1px solid var(--border)}.english-documents__section h2{margin:5px 0 0;font-size:26px}.english-documents__grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:15px}.english-documents__card{position:relative;display:flex;min-height:305px;flex-direction:column;padding:19px 18px 20px;border:1px solid var(--border);border-radius:17px;color:var(--text-primary);background:var(--bg-surface);box-shadow:0 2px 8px rgb(0 0 0/.025);transition:transform .18s,border-color .18s,box-shadow .18s}.english-documents__card:hover{transform:translateY(-3px);border-color:var(--primary);box-shadow:0 8px 22px rgb(0 0 0/.055)}.english-documents__card--prompt{background:linear-gradient(140deg,var(--bg-surface),var(--primary-soft))}.english-documents__card-top{display:flex;justify-content:space-between;align-items:center;gap:6px}.english-documents__level{display:inline-grid;min-width:34px;min-height:34px;place-items:center;padding:0 5px;border:1px solid var(--border-strong);border-radius:50%;color:var(--accent);font-size:11px;font-weight:700}.english-documents__card small{color:var(--text-muted);font-size:11px}.english-documents__card h2,.english-documents__card h3{margin:17px 0 7px;font-size:20px;line-height:1.25}.english-documents__card p{margin:0;color:var(--text-secondary);font-size:13px;line-height:1.8}.english-documents__card strong{margin-top:auto;padding-top:18px;color:var(--primary);font-size:13px;font-weight:550}.english-documents__empty{grid-column:1/-1;padding:60px;color:var(--text-muted);text-align:center}.english-documents__pager{display:flex;justify-content:center;align-items:center;gap:15px;margin-top:25px}.english-documents__pager button:disabled{opacity:.4;cursor:default}@media(max-width:1050px){.english-documents__grid{grid-template-columns:repeat(3,minmax(0,1fr))}}@media(max-width:780px){.english-documents__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.english-documents__hero,.english-documents__toolbar{align-items:start;flex-direction:column}.english-documents__search{width:100%}.english-documents__grid{grid-template-columns:1fr}.english-documents__card{min-height:235px}}@media(prefers-reduced-motion:reduce){.english-documents__card{transition:none}.english-documents__card:hover{transform:none}}
-</style>
+<template><main class="english-rw">
+ <RouterLink :to="contentPath('/english')">← 英语</RouterLink>
+ <header class="english-rw__hero"><div><p class="public-eyebrow">READ & UNDERSTAND</p><h1>阅读中心</h1><p>读完整文章，理解真实表达。按主题、文体与用途探索。</p></div><span class="english-rw__muted">{{data.total}} 篇文章</span></header>
+ <EnglishTopicDirectory /><EnglishArticleFilters :model-value="route.query" @update:model-value="router.push({query:$event})" />
+ <p v-if="loading" class="english-rw__empty">正在读取文章…</p><p v-else-if="error" class="english-rw__error" role="alert">{{error}}</p>
+ <template v-else><div class="english-rw__grid"><RouterLink v-for="item in data.items" :key="item.id" class="english-rw__card" :to="contentPath('/english/reading/'+item.slug)"><small>READING</small><h2>{{item.title}}</h2><p>{{item.summary}}</p><strong>开始阅读 →</strong></RouterLink></div><p v-if="!data.items.length" class="english-rw__empty">暂无匹配的阅读文章，可以调整筛选或稍后再来。</p></template>
+ <PublicPagination :page="page" :page-size="size" :total="data.total" :loading="loading" unit="篇" label="阅读文章分页" @change="paginate" @page-size="resize" />
+</main></template>

@@ -5,8 +5,8 @@ import { accountPath } from '../../../../shared/viewMode'
 const domains = [
   { glyph: '词', title: '单词', en: 'VOCABULARY', description: '主题词库、音标、释义与例句。', path: '/english/manage/vocabulary' },
   { glyph: '语', title: '语法', en: 'GRAMMAR', description: '课程章节、课时正文与顺序。', path: '/english/manage/grammar' },
-  { glyph: '读', title: '阅读', en: 'READING', description: '分级阅读文章与正文。', path: '/english/manage/reading' },
-  { glyph: '写', title: '写作', en: 'WRITING', description: '写作素材和练习任务。', path: '/english/manage/writing' },
+  { glyph: '读', title: '阅读', en: 'READING', description: '真实文章、双语对照与人工精读。', path: '/english/manage/reading' },
+  { glyph: '写', title: '写作', en: 'WRITING', description: '本人英文创作、草稿与历史版本。', path: '/english/writing' },
 ]
 </script>
 
