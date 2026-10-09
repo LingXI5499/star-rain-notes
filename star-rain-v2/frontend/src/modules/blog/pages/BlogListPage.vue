@@ -301,7 +301,7 @@ const emptyText = computed(() => {
           <span>当前视图</span>
           <button v-if="state.topic" type="button" @click="selectTopic('')">{{ columnLabel(state.topic) }} ×</button>
           <!-- 多标签时每个标签一枚胶囊，点掉其中一个其余保留 -->
-          <button v-for="slug in state.tags" :key="slug" type="button" @click="removeTag(slug)"># {{ tagLabel(slug) }} ×</button>
+          <button v-for="slug in state.tags" :key="slug" type="button" @click="removeTag(slug)">{{ tagLabel(slug) }} ×</button>
           <button v-if="activeMonth" type="button" @click="selectMonth(null)">{{ activeMonth }} ×</button>
           <button type="button" class="blog-active__clear" @click="clearAll">清除全部</button>
         </div>

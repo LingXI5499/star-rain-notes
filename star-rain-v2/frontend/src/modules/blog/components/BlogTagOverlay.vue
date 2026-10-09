@@ -155,9 +155,11 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
               type="button"
               :class="{ 'is-picked': isPicked(tag.slug) }"
               :aria-pressed="isPicked(tag.slug)"
+              :aria-label="`${tag.name}，${tag.postCount ?? 0} 篇博客`"
+              :title="`${tag.name} · ${tag.postCount ?? 0} 篇博客`"
               @click="toggle(tag.slug)"
             >
-              <span class="tag-overlay__mark" aria-hidden="true">{{ isPicked(tag.slug) ? '✓' : '#' }}</span>
+              <span class="tag-overlay__mark" aria-hidden="true">{{ isPicked(tag.slug) ? '✓' : '' }}</span>
               <span class="tag-overlay__name">{{ tag.name }}</span>
               <em>{{ tag.postCount || 0 }}</em>
             </button>
@@ -309,7 +311,7 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   background: var(--bg-surface);
   cursor: pointer;
   text-align: left;
-  transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
+  transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
 .tag-overlay__list button:hover { border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
@@ -321,7 +323,43 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   font-weight: 650;
 }
 
-.tag-overlay__mark { flex: none; width: 12px; color: var(--accent); font-size: 11px; }
+.tag-overlay__mark {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  width: 16px;
+  height: 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  color: transparent;
+  font-size: 11px;
+  line-height: 1;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
+}
+
+.tag-overlay__list button.is-picked .tag-overlay__mark {
+  border-color: var(--primary);
+  color: var(--on-primary);
+  background: var(--primary);
+}
+
+.tag-overlay__list button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+@media (hover: hover) {
+  .tag-overlay__list button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px color-mix(in srgb, var(--primary) 12%, transparent);
+  }
+}
+
+.tag-overlay__list button:active { transform: scale(0.98); }
+
+@media (prefers-reduced-motion: reduce) {
+  .tag-overlay__list button,
+  .tag-overlay__mark { transition: none; }
+  .tag-overlay__list button:hover,
+  .tag-overlay__list button:active { transform: none; }
+}
 
 .tag-overlay__name {
   overflow: hidden;
@@ -332,7 +370,25 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   white-space: nowrap;
 }
 
-.tag-overlay__list em { color: var(--text-muted); font-size: 10px; font-style: normal; }
+.tag-overlay__list em {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  font-size: 10px;
+  font-style: normal;
+  font-variant-numeric: tabular-nums;
+}
+
+.tag-overlay__list button.is-picked em {
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 14%, var(--bg-surface));
+}
 
 .tag-overlay__empty { padding: 40px 0; color: var(--text-muted); font-size: 13px; text-align: center; }
 

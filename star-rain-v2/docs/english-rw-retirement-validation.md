@@ -6,13 +6,13 @@
 
 移除阅读等级 DTO/默认值/校验/XML/前后台卡片/编辑表单/首页轨道；删除旧写作素材和题目的类、映射、页面、路由、请求与管理入口。新原创写作的归属、私稿、自动保存、完成、发布及历史版本保持原实现。
 
-阅读 EN/ZH/BOTH 共享真实原位范围：单栏显示人工对应译文，双栏按组同步高亮，一对多全部展示。无对应范围只做临时局部高亮，提示“此处暂无对应译文”，不创建映射或写入数据库。保留 Markdown 强调、链接、列表及 UTF-16 选区，跳过代码/公式/隐藏内容；缩写等不确定分句保守降为整段。手机无映射时明确区分原文/译文；仅有效映射段落穿插。正文先显示，辅助功能独立失败降级。
+阅读 EN/ZH/BOTH 共享真实原位范围：按用户后续要求，单栏仅高亮当前语言片段，双栏按组同步高亮，一对多对应保留。无对应范围只做临时局部高亮，不创建映射或写入数据库。悬停不再生成译文浮窗。保留 Markdown 强调、链接、列表及 UTF-16 选区，跳过代码/公式/隐藏内容；缩写等不确定分句保守降为整段。手机无映射时明确区分原文/译文；仅有效映射段落穿插。正文先显示，辅助功能独立失败降级。
 
-浮层支持键盘、Escape、关闭按钮、复制、点击固定与外部关闭；滚动进入视野时保留键盘浮层，位置随锚点更新，离开视野时关闭。手机浮层按实际可用宽度计算边距，避免滚动条导致裁切。
+高亮支持键盘、Escape 清除、触屏点击固定与外部关闭；切换模式或进入人工选区模式时清除高亮。悬浮翻译、浮窗定位和复制代码已移除；点击人工精读标记仍可查看解析。
 
 V2_037 删除三等级列和旧写作两表，精确匹配旧首页默认文案后更新介绍/路线图。管理员自编概览不会被覆盖。历史 V2_020/035/036 未修改。该迁移不清空阅读文章；一次性内容维护另存 `maintenance/english-reading-reset/`，默认门禁无效且 ROLLBACK。
 
-## 实测结果
+## 业务收敛阶段实测结果（0485613）
 
 | 验证 | 结果 |
 |---|---|
@@ -102,3 +102,15 @@ star-rain-v2/maintenance/english-reading-reset/02_backup_and_restore.md
 star-rain-v2/maintenance/english-reading-reset/03_reset_once.sql
 star-rain-v2/maintenance/english-reading-reset/04_verify.sql
 ```
+
+## 2026-10-09 后续界面调整
+
+根据用户三个后续要求完成：博客标签移除 #，保留 postCount，数量徽标、悬停上浮、点击反馈、选中高亮及键盘焦点；筛选弹层同步移除 # 并改为选择标记。已生效的标签条件也不显示 #。原单/多标签筛选及再次点击取消行为保留。
+
+写作按钮被普通链接颜色覆盖，现提高英语按钮样式优先级，明确普通/主按钮/悬停/焦点状态。主按钮使用主题 on-primary，夜间公开外壳补齐深色文字令牌。真实浏览器日间为浅字/深绿底，夜间为深字/浅绿底；开始写作目标仍是原私人草稿入口。
+
+阅读取消英/中模式的译文浮窗，仅高亮当前语言；双语模式同步高亮对应片段。上表的浮窗验收是 0485613 的历史结果，后续行为以此节为准，不再保留复制译文或无映射提示浮窗。
+
+验证命令：`npm test -- src/modules/english/components/EnglishBilingualProse.spec.js src/modules/english/lib/readingAnchors.spec.js src/modules/english/pages/public/EnglishReadingPage.spec.js src/modules/english/pages/public/EnglishWritingPage.spec.js`，4 文件 25 项通过；`npm run build` 通过。真实浏览器确认英文仅 3 个英文格式片段高亮、中文仅 2 个中文对应段落高亮、BOTH 同时 3 EN + 2 ZH；三模式均无译文浮窗。精读 note 点击与人工选区模式有回归验证。标签选择/取消、数量保留及筛选弹层已实测；主题最终恢复日间。
+
+本轮额外涉及 BlogSidebar.vue、BlogTagOverlay.vue、BlogListPage.vue、englishRw.css、public-theme.css；仅提交本轮相关的标签外观；其余博客、教程等已有修改保留工作区。截图存于忽略目录 `.local/ui-polish/screenshots/`。

@@ -116,10 +116,13 @@ function toggleMonth(item) {
           :key="tag.id || tag.slug"
           type="button"
           :class="{ active: isActiveTag(tag.slug) }"
+          :aria-pressed="isActiveTag(tag.slug)"
+          :aria-label="`${tag.name}，${tag.postCount ?? 0} 篇博客`"
+          :title="`${tag.name} · ${tag.postCount ?? 0} 篇博客，点击${isActiveTag(tag.slug) ? '取消筛选' : '筛选'}`"
           @click="toggleTag(tag.slug)"
         >
-          <span class="blog-panel__tag-name"># {{ tag.name }}</span>
-          <em>{{ tag.postCount }}</em>
+          <span class="blog-panel__tag-name">{{ tag.name }}</span>
+          <em>{{ tag.postCount ?? 0 }}</em>
         </button>
       </div>
     </section>
@@ -261,10 +264,11 @@ function toggleMonth(item) {
  */
 .blog-panel__tag-list {
   display: flex;
-  /* 约 9 行可见：标签是这个侧栏的主要导航，太少一行行滑不方便 */
+  align-content: flex-start;
   max-height: 296px;
-  flex-direction: column;
-  gap: 2px;
+  padding: 3px;
+  flex-wrap: wrap;
+  gap: 7px;
   overflow-y: auto;
   overscroll-behavior: contain;
   scrollbar-width: thin;
@@ -287,20 +291,21 @@ function toggleMonth(item) {
 .blog-panel__tag-list::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 
 .blog-panel__tag-list button {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
-  padding: 7px 9px;
-  border: 1px solid transparent;
-  border-radius: 9px;
+  max-width: 100%;
+  min-height: 36px;
+  padding: 6px 10px 6px 12px;
+  border: 1px solid var(--border);
+  border-radius: 999px;
   color: var(--text-secondary);
-  background: transparent;
+  background: var(--bg-surface);
   cursor: pointer;
   font-size: 12px;
   text-align: left;
-  transition: color 150ms ease, background-color 150ms ease, border-color 150ms ease;
+  transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
 .blog-panel__tag-name {
@@ -325,6 +330,57 @@ function toggleMonth(item) {
   border-color: color-mix(in srgb, var(--primary) 40%, var(--border));
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 8%, transparent);
+}
+
+.blog-panel__tag-list em {
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: 999px;
+  color: var(--text-secondary);
+  background: var(--bg-subtle);
+  font-size: 10px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+
+.blog-panel__tag-list button.active {
+  border-color: color-mix(in srgb, var(--primary) 55%, var(--border));
+  background: color-mix(in srgb, var(--primary) 11%, var(--bg-surface));
+}
+
+.blog-panel__tag-list button.active em {
+  color: var(--on-primary);
+  background: var(--primary);
+}
+
+.blog-panel__tag-list button:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) {
+  .blog-panel__tag-list button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 3px 8px color-mix(in srgb, var(--primary) 12%, transparent);
+  }
+  .blog-panel__tag-list button:hover:not(.active) em {
+    color: var(--primary);
+    background: color-mix(in srgb, var(--primary) 12%, var(--bg-surface));
+  }
+}
+
+.blog-panel__tag-list button:active { transform: scale(0.97); }
+
+@media (prefers-reduced-motion: reduce) {
+  .blog-panel__tag-list button,
+  .blog-panel__tag-list em { transition: none; }
+  .blog-panel__tag-list button:hover,
+  .blog-panel__tag-list button:active { transform: none; }
 }
 
 .blog-panel__more {
