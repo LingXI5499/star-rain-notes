@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../../shared/composables/paginationScroll'
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { deleteWork, getWorkTaxonomy, listAdminWorks, publishWork, restoreWork, withdrawWork } from '../../api/portfolioApi'
@@ -94,6 +95,7 @@ watch(() => route.fullPath, () => {
   readQuery()
   load()
 }, { immediate: true })
+usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value)
 </script>
 
 <!--
@@ -147,7 +149,7 @@ watch(() => route.fullPath, () => {
     </div>
 
     <div v-else class="portfolio-admin__list">
-      <article v-for="work in result.items" :key="work.id" class="portfolio-card">
+      <article v-for="work in result.items" :key="work.id" class="portfolio-card" tabindex="0" :aria-label="`编辑作品：${work.title}`" @click="router.push(accountPath(`/portfolio/editor/${work.id}`))" @keydown.enter.self="router.push(accountPath(`/portfolio/editor/${work.id}`))">
         <div class="portfolio-card__visual">
           <img v-if="work.coverUrl" :src="work.coverUrl" :alt="work.title" loading="lazy" />
           <span v-else aria-hidden="true">{{ work.title.slice(0, 1) }}</span>
@@ -173,7 +175,7 @@ watch(() => route.fullPath, () => {
             <small v-if="!techStackOf(work).length">技术栈待补充</small>
           </div>
 
-          <footer>
+          <footer @click.stop>
             <time :datetime="work.updatedAt || undefined">更新 {{ updatedLabel(work) }}</time>
             <div>
               <RouterLink :to="accountPath(`/portfolio/editor/${work.id}`)">编辑</RouterLink>

@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../../shared/composables/paginationScroll'
 import { computed, reactive, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import { errorMessage } from '../../../../shared/http'
@@ -15,6 +16,8 @@ const activeLayer = ref('')
 const page = ref(1)
 const search = ref('')
 const loading = ref(true)
+const wordLoading = ref(false)
+let wordRequest = 0
 const busy = ref(false)
 const error = ref('')
 const notice = ref('')
@@ -36,7 +39,14 @@ const visibleThemes = computed(() => activeLayer.value
   : groupedThemes.value.flatMap((group) => group.items))
 
 async function loadThemes() { themes.value = await getVocabularyThemes() }
-async function loadWords() { words.value = await getVocabularyWords({ themeId: activeTheme.value || undefined, search: search.value || undefined, page: page.value, size: 20 }) }
+async function loadWords() {
+  const request = ++wordRequest
+  wordLoading.value = true
+  try {
+    const result = await getVocabularyWords({ themeId: activeTheme.value || undefined, search: search.value || undefined, page: page.value, size: 20 })
+    if (request === wordRequest) words.value = result
+  } finally { if (request === wordRequest) wordLoading.value = false }
+}
 async function load() {
   loading.value = true
   error.value = ''
@@ -101,6 +111,7 @@ async function removeWord(word) {
 
 watch(page, () => loadWords().catch((cause) => { error.value = errorMessage(cause) }))
 load()
+usePaginationScroll(() => page.value, () => wordLoading.value)
 </script>
 
 <template>
@@ -139,10 +150,10 @@ load()
       </header>
       <p v-if="loading" class="vocab-admin__empty">正在读取词汇…</p>
       <div v-else class="vocab-admin__word-list">
-        <article v-for="word in words.items" :key="word.id"><div><h3>{{ word.word }} <small>{{ word.phoneticUs }}</small></h3><p>{{ word.partOfSpeech }} {{ word.translation }}</p></div><div><button type="button" @click="openWord(word)">编辑</button><button type="button" @click="removeWord(word)">删除</button></div></article>
+        <article v-for="word in words.items" :key="word.id" class="content-card" tabindex="0" :aria-label="`编辑单词 ${word.word}`" @click="openWord(word)" @keydown.enter.self="openWord(word)"><div><h3>{{ word.word }} <small>{{ word.phoneticUs }}</small></h3><p>{{ word.partOfSpeech }} {{ word.translation }}</p></div><div class="vocab-admin__word-actions" @click.stop><button type="button" @click="openWord(word)">编辑</button><button type="button" @click="removeWord(word)">删除</button></div></article>
         <p v-if="!words.items.length" class="vocab-admin__empty">没有符合条件的单词。</p>
       </div>
-      <footer v-if="words.total > 20"><button :disabled="page <= 1" @click="page--">上一页</button><span>{{ page }} / {{ Math.ceil(words.total / 20) }}</span><button :disabled="page >= Math.ceil(words.total / 20)" @click="page++">下一页</button></footer>
+      <footer v-if="words.total > 20"><button :disabled="wordLoading || page <= 1" @click="page--">上一页</button><span>{{ page }} / {{ Math.ceil(words.total / 20) }}</span><button :disabled="wordLoading || page >= Math.ceil(words.total / 20)" @click="page++">下一页</button></footer>
     </section>
     <div v-if="themeFormOpen" class="vocab-admin__overlay" role="presentation" @click.self="themeFormOpen = false"><form class="vocab-admin__dialog" role="dialog" aria-modal="true" aria-label="编辑词汇主题" @submit.prevent="saveTheme"><h2>{{ themeForm.id ? '编辑主题' : '新建主题' }}</h2><label>词层<input v-model="themeForm.layer" required maxlength="100" placeholder="例如：基础词汇"></label><label>主题名称<input v-model="themeForm.name" required maxlength="200"></label><label>词层顺序<input v-model.number="themeForm.layerOrder" type="number"></label><label>主题顺序<input v-model.number="themeForm.sortOrder" type="number"></label><div><button type="button" @click="themeFormOpen = false">取消</button><button type="submit" :disabled="busy">保存</button></div></form></div>
     <div v-if="wordFormOpen" class="vocab-admin__overlay" role="presentation" @click.self="wordFormOpen = false"><form class="vocab-admin__dialog vocab-admin__dialog--wide" role="dialog" aria-modal="true" aria-label="编辑单词" @submit.prevent="saveWord"><h2>{{ wordForm.id ? '编辑单词' : '新建单词' }}</h2><label>主题<select v-model="wordForm.themeId" required><option v-for="theme in themes" :key="theme.id" :value="theme.id">{{ theme.layer }} › {{ theme.name }}</option></select></label><label>单词<input v-model="wordForm.word" required maxlength="200"></label><label>词性<input v-model="wordForm.partOfSpeech" maxlength="50" placeholder="例如：n."></label><label>美式音标<input v-model="wordForm.phoneticUs" maxlength="100"></label><label>英式音标<input v-model="wordForm.phoneticUk" maxlength="100"></label><label>释义<textarea v-model="wordForm.translation" required rows="3" maxlength="1000"></textarea></label><label>本主题用法<textarea v-model="wordForm.sceneMeaning" rows="2" maxlength="1000" placeholder="该词在本主题语境下的用法（词卡「本主题用法」一行）"></textarea></label><label>词形变化<input v-model="wordForm.inflections" maxlength="1000" placeholder="例如：复数 abilities；过去式 abandoned"></label><label>例句（每行：英文 | 中文）<textarea v-model="wordForm.examples" rows="4" placeholder="This is an example. | 这是一个例句。"></textarea></label><label>排序<input v-model.number="wordForm.sortOrder" type="number"></label><div><button type="button" @click="wordFormOpen = false">取消</button><button type="submit" :disabled="busy">保存</button></div></form></div>

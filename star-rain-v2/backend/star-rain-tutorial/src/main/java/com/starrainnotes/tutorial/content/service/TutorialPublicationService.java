@@ -6,6 +6,7 @@ import com.starrainnotes.tutorial.content.vo.TutorialAdminVO;
 import java.util.List;
 
 public interface TutorialPublicationService {
+    void refreshPublished(Long tutorialId, String operation, Long changedChapterId);
     void publishChapter(Long chapterId);
     void withdrawChapter(Long chapterId);
     void submitReview(Long tutorialId, Long chapterId);

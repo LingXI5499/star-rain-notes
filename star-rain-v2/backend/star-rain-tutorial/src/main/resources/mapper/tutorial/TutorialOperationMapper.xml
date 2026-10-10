@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialOperationMapper">
+  <sql id="columns">
+    id, operation, arguments_json, baseline_json, scope_key, pending_scope, status, display_name, applicant_account_id
+  </sql>
+  <select id="lockCatalog" resultType="long">
+    SELECT id FROM sr_tutorial_category ORDER BY id FOR UPDATE
+  </select>
+  <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+    INSERT INTO sr_tutorial_operation
+      (operation, arguments_json, baseline_json, scope_key, pending_scope, status, display_name, applicant_account_id)
+    VALUES (#{operation}, #{argumentsJson}, #{baselineJson}, #{scopeKey}, #{pendingScope}, #{status}, #{displayName}, #{applicantAccountId})
+  </insert>
+  <select id="selectById" resultType="com.starrainnotes.tutorial.content.entity.TutorialOperationEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_operation WHERE id = #{id}
+  </select>
+  <select id="byIdForUpdate" resultType="com.starrainnotes.tutorial.content.entity.TutorialOperationEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_operation WHERE id = #{id} FOR UPDATE
+  </select>
+  <select id="pending" resultType="com.starrainnotes.tutorial.content.entity.TutorialOperationEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial_operation WHERE pending_scope = #{scope}
+  </select>
+  <select id="pendingOperations" resultType="com.starrainnotes.tutorial.content.entity.TutorialOperationEntity">
+    SELECT id, scope_key, operation, display_name FROM sr_tutorial_operation WHERE status = 'PENDING' ORDER BY id
+  </select>
+  <update id="finish">
+    UPDATE sr_tutorial_operation SET status = #{status}, pending_scope = NULL WHERE id = #{id} AND status = 'PENDING'
+  </update>
+</mapper>

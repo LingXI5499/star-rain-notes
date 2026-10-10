@@ -2,6 +2,7 @@
 import PublicHeader from '../../modules/site/components/PublicHeader.vue'
 import PublicFooter from '../../modules/site/components/PublicFooter.vue'
 import AccountEntry from '../../modules/account/components/AccountEntry.vue'
+import MobilePublicNav from '../ui/MobilePublicNav.vue'
 import { useViewMode } from '../viewMode'
 import '../../styles/base.css'
 import '../../styles/public-theme.css'
@@ -42,6 +43,7 @@ const { isAccount } = useViewMode()
       <slot />
     </main>
     <PublicFooter />
+    <MobilePublicNav />
   </div>
 </template>
 
@@ -56,5 +58,9 @@ const { isAccount } = useViewMode()
   flex: 1;
   width: 100%;
   padding-block: var(--space-10);
+}
+@media (max-width: 768px) {
+  .public-shell { padding-bottom: calc(84px + env(safe-area-inset-bottom)); }
+  .public-main { padding-block: 24px; }
 }
 </style>

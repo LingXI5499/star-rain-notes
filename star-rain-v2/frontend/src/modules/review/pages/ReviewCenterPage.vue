@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../account/stores/authStore'
@@ -164,6 +165,7 @@ onMounted(() => {
   if (canRead.value) loadPending()
   else if (canHistory.value) switchTab('history')
 })
+usePaginationScroll(() => `${pendingPage.value}:${historyPage.value}`, () => loading.value)
 </script>
 
 <template>

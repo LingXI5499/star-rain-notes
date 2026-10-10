@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import * as api from '../api/accountApi'
@@ -49,6 +50,7 @@ async function act(item, action) {
   finally { busy.value = false }
 }
 onMounted(load)
+usePaginationScroll(() => page.value, () => loading.value)
 </script>
 
 <template>

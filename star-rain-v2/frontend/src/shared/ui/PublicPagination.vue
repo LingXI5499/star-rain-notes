@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, nextTick, watch } from 'vue'
+import { scrollPageTop } from '../composables/paginationScroll'
 import PublicSelect from './PublicSelect.vue'
 const props = defineProps({ page: { type: Number, default: 1 }, pageSize: { type: Number, default: 12 }, total: { type: Number, default: 0 }, pageSizes: { type: Array, default: () => [12, 24, 48] }, loading: Boolean, label: { type: String, default: '列表分页' }, unit: { type: String, default: '项' } })
 const emit = defineEmits(['change', 'page-size'])
@@ -12,9 +13,27 @@ const pages = computed(() => {
   const numbers = [...new Set([1, last.value, current.value - 1, current.value, current.value + 1])].filter(n => n >= 1 && n <= last.value).sort((a,b) => a-b)
   return numbers.flatMap((n, index) => index && n > numbers[index - 1] + 1 ? ['…', n] : [n])
 })
-function go(value) { if (!props.loading && value !== current.value && value >= 1 && value <= last.value) emit('change', value) }
+let requested = null
+function go(value) {
+  if (props.loading || value === current.value || value < 1 || value > last.value) return
+  requested = { page: value, size: props.pageSize }
+  emit('change', value)
+}
+function resize(size) {
+  if (props.loading || size === props.pageSize) return
+  requested = { page: 1, size }
+  emit('page-size', size)
+}
+watch(() => [props.page, props.pageSize, props.loading], async () => {
+  if (!requested || props.loading || props.page !== requested.page || props.pageSize !== requested.size) return
+  const target = requested
+  await nextTick()
+  if (props.loading || requested !== target) return
+  requested = null
+  scrollPageTop()
+}, { flush: 'post' })
 </script>
-<template><nav class="public-pagination" :aria-label="label"><span class="public-pagination__total">{{ range }} / 共 {{ total.toLocaleString() }} {{ unit }}</span><div class="public-pagination__pages"><button type="button" class="public-pagination__arrow" :disabled="loading || current <= 1" aria-label="上一页" @click="go(current - 1)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg></button><template v-for="(item, index) in pages" :key="index"><span v-if="item === '…'" class="public-pagination__gap">…</span><button v-else type="button" :class="{ 'is-neighbour': item !== current && item !== 1 && item !== last }" :aria-label="'第 ' + item + ' 页'" :aria-current="item === current ? 'page' : undefined" :disabled="loading" @click="go(item)">{{ item }}</button></template><button type="button" class="public-pagination__arrow" :disabled="loading || current >= last" aria-label="下一页" @click="go(current + 1)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg></button></div><div class="public-pagination__size"><span>每页</span><PublicSelect :model-value="pageSize" :options="sizes" label="每页数量" compact hide-label :disabled="loading" @update:model-value="emit('page-size', $event)" /></div></nav></template>
+<template><nav class="public-pagination" :aria-label="label"><span class="public-pagination__total">{{ range }} / 共 {{ total.toLocaleString() }} {{ unit }}</span><div class="public-pagination__pages"><button type="button" class="public-pagination__arrow" :disabled="loading || current <= 1" aria-label="上一页" @click="go(current - 1)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg></button><template v-for="(item, index) in pages" :key="index"><span v-if="item === '…'" class="public-pagination__gap">…</span><button v-else type="button" :class="{ 'is-neighbour': item !== current && item !== 1 && item !== last }" :aria-label="'第 ' + item + ' 页'" :aria-current="item === current ? 'page' : undefined" :disabled="loading" @click="go(item)">{{ item }}</button></template><button type="button" class="public-pagination__arrow" :disabled="loading || current >= last" aria-label="下一页" @click="go(current + 1)"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg></button></div><div class="public-pagination__size"><span>每页</span><PublicSelect :model-value="pageSize" :options="sizes" label="每页数量" compact hide-label :disabled="loading" @update:model-value="resize" /></div></nav></template>
 <style scoped>
 .public-pagination{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:28px 0 0;padding:16px 0 0;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);line-height:1.5;min-width:0}.public-pagination__total{font-variant-numeric:tabular-nums}.public-pagination__pages{display:flex;align-items:center;gap:4px}.public-pagination__pages button{display:grid;place-items:center;width:36px;min-width:36px;min-height:36px;padding:0;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--text-secondary);font:inherit;font-size:13px;line-height:1;cursor:pointer}.public-pagination__pages button:hover:not(:disabled){color:var(--primary);border-color:var(--border-strong);background:var(--bg-surface)}.public-pagination__pages button[aria-current=page]{border-color:var(--primary);background:var(--primary);color:var(--on-primary);font-weight:600}.public-pagination__pages button[aria-current=page]:hover:not(:disabled){background:var(--primary);color:var(--on-primary)}.public-pagination__pages button:disabled{opacity:.4;cursor:default}.public-pagination__pages button:focus-visible{outline:2px solid var(--primary);outline-offset:2px}.public-pagination__pages button.public-pagination__arrow{border-color:var(--border);background:var(--bg-surface)}.public-pagination__arrow svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.5}.public-pagination__gap{width:18px;text-align:center}.public-pagination__size{display:flex;align-items:center;gap:8px}.public-pagination__size :deep(.public-select){width:94px}.public-pagination__size :deep(.public-select__trigger){font-size:12px}@media(max-width:700px){.public-pagination{justify-content:center;gap:14px}.public-pagination__total{margin-right:auto}.public-pagination__size{margin-left:auto}.public-pagination__pages{order:3;flex-basis:100%;justify-content:center}}@media(max-width:420px){.public-pagination__pages button.is-neighbour{display:none}}
 </style>

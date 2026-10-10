@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../../shared/composables/paginationScroll'
 import { onMounted, ref } from 'vue'
 import { errorMessage } from '../../../../shared/http'
 import { approveMessage, deleteMessage, hideMessage, listAdminMessages, listMessageActions, rejectMessage, restoreMessage } from '../../api/messageApi'
@@ -83,6 +84,7 @@ function date(value) {
 }
 
 onMounted(load)
+usePaginationScroll(() => page.value, () => loading.value)
 </script>
 
 <template>

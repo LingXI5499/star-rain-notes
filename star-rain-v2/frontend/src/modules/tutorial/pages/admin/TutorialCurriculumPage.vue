@@ -2,11 +2,12 @@
 import { computed, watch, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../../account/stores/authStore'
+import { isReviewPending, operationNotice } from '../../support/operationResult'
 import { errorMessage } from '../../../../shared/http'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 import {
   createGroup, deleteChapter, deleteGroup, getAdminCurriculum, publishChapter,
-  reorderChapters, reorderGroups, updateGroup, withdrawChapter, submitTutorialReview,
+  reorderChapters, reorderGroups, updateGroup, withdrawChapter, listPendingTutorialOperations,
 } from '../../api/tutorialApi'
 
 const auth = useAuthStore()
@@ -20,6 +21,7 @@ const search = ref('')
 const loading = ref(false)
 const error = ref('')
 const notice = ref('')
+const pending = ref(false)
 const groupDialog = ref(null)
 const groupForm = reactive({ id: '', title: '' })
 const confirmDialog = ref(null)
@@ -41,9 +43,10 @@ async function load() {
   loading.value = true
   error.value = ''
   try {
-    const result = await getAdminCurriculum(id)
+    const [result, operations] = await Promise.all([getAdminCurriculum(id), listPendingTutorialOperations()])
     if (token !== loadToken) return
     curriculum.value = result
+    pending.value = operations.some(row => row.scopeKey === 'catalog' || row.scopeKey === `tutorial:${id}`)
     const requested = String(route.query.group || activeGroupId.value || '')
     activeGroupId.value = groups.value.some((group) => String(group.id) === requested)
       ? requested : String(groups.value[0]?.id || '')
@@ -73,8 +76,8 @@ async function saveGroup() {
       ? await updateGroup(groupForm.id, groupForm.title.trim())
       : await createGroup(tutorialId.value, groupForm.title.trim())
     groupDialog.value.close()
-    activeGroupId.value = String(saved.id)
-    notice.value = '分组已保存。'
+    if (!isReviewPending(saved)) activeGroupId.value = String(saved.id)
+    notice.value = operationNotice(saved, '分组已保存。')
     await load()
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -84,7 +87,7 @@ async function saveGroup() {
 async function removeGroup(group) {
   if (!await confirmDialog.value.ask(`确定删除分组「${group.title}」及其全部章节？此操作无法撤销。`)) return
   try {
-    await deleteGroup(group.id)
+    notice.value = operationNotice(await deleteGroup(group.id))
     await load()
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -97,7 +100,7 @@ async function dropGroup(targetId) {
   ids.splice(ids.indexOf(draggingGroupId), 1)
   ids.splice(ids.indexOf(String(targetId)), 0, draggingGroupId)
   draggingGroupId = ''
-  try { await reorderGroups(tutorialId.value, ids); await load() }
+  try { notice.value = operationNotice(await reorderGroups(tutorialId.value, ids)); await load() }
   catch (cause) { error.value = errorMessage(cause) }
 }
 
@@ -107,7 +110,7 @@ async function dropChapter(targetId) {
   ids.splice(ids.indexOf(draggingChapterId), 1)
   ids.splice(ids.indexOf(String(targetId)), 0, draggingChapterId)
   draggingChapterId = ''
-  try { await reorderChapters(activeGroupId.value, ids); await load() }
+  try { notice.value = operationNotice(await reorderChapters(activeGroupId.value, ids)); await load() }
   catch (cause) { error.value = errorMessage(cause) }
 }
 
@@ -119,10 +122,9 @@ async function publishChanges(chapter) {
     : `提交「${chapter.title}」的工作区改动审核？审核通过后更新公开版本。`)) return
   busyId.value = String(chapter.id); error.value = ''; notice.value = ''
   try {
-    if (direct) await publishChapter(chapter.id)
-    else await submitTutorialReview(tutorialId.value, chapter.id)
+    const result = await publishChapter(chapter.id)
     await load()
-    notice.value = direct ? '本章节改动已发布。' : '已提交审核，公开内容暂不改变。'
+    notice.value = operationNotice(result, '章节已发布。')
   } catch (cause) { error.value = errorMessage(cause) }
   finally { busyId.value = '' }
 }
@@ -131,15 +133,15 @@ async function withdrawPublishedChapter(chapter) {
   if (!await confirmDialog.value.ask(`撤回公开章节「${chapter.title}」？其他章节继续公开；工作区、历史版本和学习记录均保留。`)) return
   busyId.value = String(chapter.id); error.value = ''; notice.value = ''
   try {
-    await withdrawChapter(chapter.id); await load()
-    notice.value = '本章节已撤回，其他公开章节和历史学习记录已保留。'
+    const result = await withdrawChapter(chapter.id); await load()
+    notice.value = operationNotice(result, '本章节已撤回，其他公开章节和历史学习记录已保留。')
   } catch (cause) { error.value = errorMessage(cause) }
   finally { busyId.value = '' }
 }
 
 async function removeChapter(chapter) {
   if (!await confirmDialog.value.ask(`确定删除章节「${chapter.title}」？此操作无法撤销。`)) return
-  try { await deleteChapter(chapter.id); await load() }
+  try { notice.value = operationNotice(await deleteChapter(chapter.id)); await load() }
   catch (cause) { error.value = errorMessage(cause) }
 }
 
@@ -157,13 +159,7 @@ watch(() => route.params.tutorialId, () => { activeGroupId.value = ''; search.va
 watch(() => route.query.group, value => { if (groups.value.some(group => String(group.id) === String(value))) activeGroupId.value = String(value) })
 </script>
 
-<!--
-  课程结构：视觉按 V1 `views/admin/ChapterManageView.vue` 对齐。
-  两级结构、拖拽排序、归档/恢复、跨组移动的接口与判断全部保持 V2 原样，
-  只重排呈现层：面包屑补回「知识体系」一级、面板阴影 + 面板头 + 提示条、
-  分组计数胶囊与悬停才出现的操作、章节行状态胶囊与悬停上浮、V1 那套图标空态。
-  V2 独有的「新建章节」「移动到分组」「归档 / 恢复」按钮一个不少。
--->
+
 <template>
   <main class="page-container curriculum-admin">
     <nav class="curriculum-admin__breadcrumb" aria-label="面包屑">
@@ -204,7 +200,7 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
           <article
             v-for="group in groups"
             :key="group.id"
-            class="curriculum-admin__group"
+            class="curriculum-admin__group" tabindex="0" @keydown.enter.self="selectGroup(group)"
             :class="{ 'is-active': String(group.id) === activeGroupId }"
             draggable="true"
             @click="selectGroup(group)"
@@ -239,7 +235,8 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
             <button class="primary-button curriculum-admin__create" type="button" :disabled="!activeGroup" @click="newChapter">新建章节</button>
           </div>
         </header>
-        <p class="curriculum-admin__hint">保存只修改工作区。发布改动或提交审核只更新选中的章节；撤回保留历史学习记录。</p>
+        <p class="curriculum-admin__hint">草稿和发布状态均可直接编辑保存；管理员操作通过审核后生效，撤回保留历史学习记录。</p>
+        <p v-if="pending" class="notice" role="status">操作审核中，当前发布状态保持不变。可在审核中心查看或取消申请。</p>
         <div class="curriculum-admin__chapter-body">
           <div v-if="!activeGroup" class="curriculum-admin__empty">
             <span aria-hidden="true">←</span>
@@ -256,6 +253,9 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
               v-for="(chapter, index) in visibleChapters"
               :key="chapter.id"
               class="curriculum-admin__chapter"
+              tabindex="0"
+              @click="editChapter(chapter)"
+              @keydown.enter.self="editChapter(chapter)"
               :draggable="!search"
               @dragstart="draggingChapterId = String(chapter.id)"
               @dragover.prevent
@@ -267,15 +267,15 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
                 <h3>{{ chapter.title }}</h3>
                 <p>更新于 {{ chapter.updatedAt?.slice(0, 16).replace('T', ' ') }}</p>
               </div>
-              <span class="curriculum-admin__status" :class="chapter.status === 'PUBLISHED' ? 'is-active' : 'is-archived'">
-                {{ chapter.status === 'PUBLISHED' && curriculum?.tutorial.publicationStatus === 'PUBLISHED' ? '已公开（可编辑工作区）' : chapter.status === 'PUBLISHED' ? '教程已撤回' : chapter.status === 'WITHDRAWN' ? '已撤回' : '草稿' }}
+              <span class="curriculum-admin__status" role="status" :class="chapter.status === 'PUBLISHED' ? 'is-active' : 'is-archived'">
+                {{ chapter.status === 'PUBLISHED' && curriculum?.tutorial.publicationStatus === 'PUBLISHED' ? '已发布' : '草稿' }}
               </span>
-              <div class="curriculum-admin__chapter-actions">
-                <button type="button" @click="editChapter(chapter)">正文</button>
+              <div class="curriculum-admin__chapter-actions" @click.stop>
+                <button type="button" @click="editChapter(chapter)">编辑</button>
+                <button type="button" @click="router.push(`/useradmin/tutorials/${tutorialId}/preview?chapter=${chapter.id}`)">预览</button>
                 <button type="button" @click="editLearningContent(chapter, 'cards')">知识卡片</button>
                 <button type="button" @click="editLearningContent(chapter, 'questions')">章节问题</button>
-                <button v-if="auth.hasPermission('tutorial:publish') || auth.hasPermission('tutorial:submit')" type="button" :disabled="!!busyId || curriculum?.tutorial.editingStatus === 'IN_REVIEW'" @click="publishChanges(chapter)">{{ auth.hasPermission('tutorial:publish') ? '发布改动' : '提交审核' }}</button>
-                <button v-if="auth.hasPermission('tutorial:withdraw') && chapter.status === 'PUBLISHED' && curriculum?.tutorial.publicationStatus === 'PUBLISHED'" type="button" :disabled="!!busyId || curriculum?.tutorial.editingStatus === 'IN_REVIEW'" @click="withdrawPublishedChapter(chapter)">撤回公开章节</button>
+                <button v-if="auth.hasPermission('tutorial:edit') || auth.hasPermission('tutorial:publish')" type="button" :disabled="!!busyId || pending || curriculum?.tutorial.editingStatus === 'IN_REVIEW'" @click="chapter.status === 'PUBLISHED' && curriculum?.tutorial.publicationStatus === 'PUBLISHED' ? withdrawPublishedChapter(chapter) : publishChanges(chapter)">{{ chapter.status === 'PUBLISHED' && curriculum?.tutorial.publicationStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button>
                 <button type="button" @click="removeChapter(chapter)">删除</button>
               </div>
             </article>
@@ -655,8 +655,9 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
 @media (max-width: 760px) {
   .curriculum-admin__hero { align-items: flex-start; flex-direction: column; }
   .curriculum-admin__hero-actions { width: 100%; flex-wrap: wrap; }
-  .curriculum-admin__layout { grid-template-columns: 1fr; }
-  .curriculum-admin__group-body { max-height: 360px; }
+  .curriculum-admin__layout { grid-template-columns: 1fr; min-height: 0; }
+  .curriculum-admin__group-body { min-height: 0; max-height: 240px; }
+  .curriculum-admin__group-actions { display: flex; }
   .curriculum-admin__tools { align-items: stretch; flex-direction: column; }
   .curriculum-admin__chapter { grid-template-columns: 16px 25px minmax(0, 1fr) auto; }
 }

@@ -21,8 +21,7 @@ async function load() {
   error.value = ''
   try {
     tutorial.value = await previewTutorial(route.params.tutorialId)
-    selectedSlug.value = typeof route.query.chapter === 'string' && chapters.value.some((item) => item.slug === route.query.chapter)
-      ? route.query.chapter : (chapters.value[0]?.slug || '')
+    selectedSlug.value = chapters.value.find(item => item.slug === route.query.chapter || String(item.id) === route.query.chapter)?.slug || chapters.value[0]?.slug || ''
   } catch (cause) { error.value = errorMessage(cause) }
   finally { loading.value = false }
 }
@@ -36,7 +35,7 @@ watch(() => route.params.tutorialId, load, { immediate: true })
 
 <template>
   <main class="page-container tutorial-preview">
-    <header class="tutorial-preview__header"><div><p class="eyebrow">DRAFT PREVIEW · 工作区预览</p><h1>{{ tutorial?.title || '教程预览' }}</h1><p>这里展示当前草稿，读者页面仍以最近一次公开版本为准。</p></div><button type="button" @click="router.push(`/useradmin/tutorials/${route.params.tutorialId}/curriculum`)">返回课程结构</button></header>
+    <header class="tutorial-preview__header"><div><p class="eyebrow">CONTENT PREVIEW · 内容预览</p><h1>{{ tutorial?.title || '教程预览' }}</h1><p>预览当前已保存内容；管理员待审核的修改通过后才会生效。</p></div><button type="button" @click="router.push(`/useradmin/tutorials/${route.params.tutorialId}/curriculum`)">返回课程结构</button></header>
     <p v-if="loading">正在生成预览…</p><p v-else-if="error" class="error" role="alert">{{ error }}</p>
     <div v-else-if="tutorial" class="tutorial-preview__layout">
       <aside class="tutorial-preview__curriculum"><h2>课程目录</h2><section v-for="group in tutorial.groups" :key="group.id"><h3>{{ group.title }}</h3><button v-for="chapter in group.chapters" :key="chapter.id" type="button" :class="{ active: chapter.slug === selectedSlug }" @click="selectChapter(chapter.slug)">{{ chapter.title }}</button></section></aside>

@@ -2,11 +2,12 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../../account/stores/authStore'
+import { isReviewPending, operationNotice } from '../../support/operationResult'
 import { errorMessage } from '../../../../shared/http'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 import {
   createCategory, deleteCategory, deleteTutorial, listAdminCategories, listAdminTutorials,
-  submitTutorialReview, publishTutorial, reorderCategories, reorderTutorials,
+  listPendingTutorialOperations, publishTutorial, reorderCategories, reorderTutorials,
   updateCategory, updateTutorial, withdrawTutorial,
 } from '../../api/tutorialApi'
 
@@ -19,8 +20,10 @@ const activeCategoryId = ref('')
 const search = ref('')
 const loading = ref(false)
 const error = ref('')
-const notice = ref('')
+const notice = ref(route.query.review === 'pending' ? '已提交超级管理员审核，通过后才会执行新增或修改。' : '')
 const busyId = ref('')
+const pending = ref([])
+const isPending = item => pending.value.some(row => row.scopeKey === 'catalog' || row.scopeKey === `tutorial:${item.id}`)
 const confirmDialog = ref(null)
 const categoryDialog = ref(null)
 const moveDialog = ref(null)
@@ -46,18 +49,12 @@ function categoryCount(categoryId) {
 
 function statusLabel(item) {
   if (item.publicationStatus === 'PUBLISHED') return '已发布'
-  if (item.publicationStatus === 'WITHDRAWN') return '已撤回'
   return '草稿'
 }
 
-/*
- * 状态胶囊只用三种底色（对齐 V1 `.status-pill--published/draft/withdrawn`）：
- * V2 比 V1 多一个「审核中」编辑态，它既不是已发布也不是已撤回，按「进行中」归到草稿的琥珀色。
- * 映射只影响配色，状态文案仍由 statusLabel 决定。
- */
+// 发布状态只呈现草稿和已发布，待审核操作另外提示。
 function statusTone(item) {
   if (item.publicationStatus === 'PUBLISHED') return 'published'
-  if (item.publicationStatus === 'WITHDRAWN') return 'withdrawn'
   return 'draft'
 }
 
@@ -65,10 +62,11 @@ async function load() {
   loading.value = true
   error.value = ''
   try {
-    const [categoryRows, firstPage] = await Promise.all([
-      listAdminCategories(), listAdminTutorials({ page: 1, pageSize: 100 }),
+    const [categoryRows, firstPage, pendingRows] = await Promise.all([
+      listAdminCategories(), listAdminTutorials({ page: 1, pageSize: 100 }), listPendingTutorialOperations(),
     ])
     categories.value = categoryRows
+    pending.value = pendingRows
     tutorials.value = firstPage.items || []
     const pages = Math.ceil((firstPage.total || 0) / 100)
     for (let page = 2; page <= pages; page += 1) {
@@ -104,8 +102,8 @@ async function saveCategory() {
       ? await updateCategory(categoryForm.id, categoryForm.name.trim())
       : await createCategory(categoryForm.name.trim())
     categoryDialog.value.close()
-    activeCategoryId.value = String(saved.id)
-    notice.value = '知识体系已保存。'
+    if (!isReviewPending(saved)) activeCategoryId.value = String(saved.id)
+    notice.value = operationNotice(saved, '知识体系已保存。')
     await load()
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -115,7 +113,7 @@ async function saveCategory() {
 async function removeCategory(category) {
   if (!await confirmDialog.value.ask(`确定删除知识体系「${category.name}」？仅空体系可以删除。`)) return
   try {
-    await deleteCategory(category.id)
+    notice.value = operationNotice(await deleteCategory(category.id), '知识体系已删除。')
     await load()
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -128,7 +126,7 @@ async function dropCategory(targetId) {
   ids.splice(ids.indexOf(draggingCategoryId), 1)
   ids.splice(ids.indexOf(String(targetId)), 0, draggingCategoryId)
   draggingCategoryId = ''
-  try { await reorderCategories(ids); await load() }
+  try { notice.value = operationNotice(await reorderCategories(ids), "顺序已保存。"); await load() }
   catch (cause) { error.value = errorMessage(cause) }
 }
 
@@ -138,7 +136,7 @@ async function dropTutorial(targetId) {
   ids.splice(ids.indexOf(draggingTutorialId), 1)
   ids.splice(ids.indexOf(String(targetId)), 0, draggingTutorialId)
   draggingTutorialId = ''
-  try { await reorderTutorials(activeCategoryId.value, ids); await load() }
+  try { notice.value = operationNotice(await reorderTutorials(activeCategoryId.value, ids), "顺序已保存。"); await load() }
   catch (cause) { error.value = errorMessage(cause) }
 }
 
@@ -151,10 +149,10 @@ function openMoveDialog(item) {
 async function moveTutorial() {
   if (!moveTarget.value || moveCategoryId.value === String(moveTarget.value.categoryId)) return
   try {
-    await updateTutorial(moveTarget.value.id, { categoryId: moveCategoryId.value })
+    const result = await updateTutorial(moveTarget.value.id, { categoryId: moveCategoryId.value })
     moveDialog.value.close()
-    activeCategoryId.value = moveCategoryId.value
-    notice.value = '教程已移动到目标知识体系末尾。'
+    if (!isReviewPending(result)) activeCategoryId.value = moveCategoryId.value
+    notice.value = operationNotice(result, '教程已移动到目标知识体系末尾。')
     await load()
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -166,23 +164,20 @@ async function act(item, action) {
   error.value = ''
   notice.value = ''
   try {
+    let result
     if (action === 'publish') {
-      if (!await confirmDialog.value.ask('发布整个教程的工作区改动？所有未撤回章节的当前内容将上线。仅发布某章请进入课程结构。')) return
-      await publishTutorial(item.id)
-    }
-    if (action === 'submit') {
-      if (!await confirmDialog.value.ask('提交整个教程工作区审核？批准后更新公开版本。')) return
-      await submitTutorialReview(item.id)
+      if (!await confirmDialog.value.ask(`发布教程「${item.title}」？${auth.hasPermission('tutorial:publish') ? '发布后读者可见。' : '通过超级管理员审核后发布。'}`)) return
+      result = await publishTutorial(item.id)
     }
     if (action === 'withdraw') {
       if (!await confirmDialog.value.ask(`撤回整个教程「${item.title}」？所有章节将停止公开，工作区与历史学习记录保留。`)) return
-      await withdrawTutorial(item.id)
+      result = await withdrawTutorial(item.id)
     }
     if (action === 'delete') {
         if (!await confirmDialog.value.ask(`确定删除教程「${item.title}」及其全部分组、章节？未结束计划将取消，个人学习证据和答案版本保留。此操作无法撤销。`)) return
-      await deleteTutorial(item.id)
+      result = await deleteTutorial(item.id)
     }
-    notice.value = '操作成功。'
+    notice.value = operationNotice(result)
     await load()
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -194,13 +189,7 @@ async function act(item, action) {
 onMounted(load)
 </script>
 
-<!--
-  教程工作台：视觉按 V1 `views/admin/TutorialListView.vue` 对齐。
-  信息架构、接口、权限判断、拖拽排序全部保持 V2 原样，只重排了呈现层：
-  面板阴影 / 面板头 + 提示条 / 知识体系计数胶囊与悬停才出现的操作 /
-  课程卡片的状态胶囊 + 编号行 + 悬停上浮 / V1 那套「图标 + 标题 + 说明」的空态。
-  V2 独有的「预览」「更换体系」「提交审核」等按钮一个不少。
--->
+
 <template>
   <main class="page-container tutorial-manage">
     <header class="tutorial-manage__hero">
@@ -225,7 +214,7 @@ onMounted(load)
         <header class="tutorial-manage__panel-head">
           <h2>知识体系</h2>
           <button
-            v-if="auth.hasPermission('tutorial:publish')"
+            v-if="auth.hasPermission('tutorial:edit')"
             class="tutorial-manage__icon-button"
             type="button"
             title="新建知识体系"
@@ -239,7 +228,7 @@ onMounted(load)
           <article
             v-for="category in categories"
             :key="category.id"
-            class="tutorial-manage__system"
+            class="tutorial-manage__system" tabindex="0" @keydown.enter.self="selectCategory(category)"
             :class="{ 'is-active': String(category.id) === activeCategoryId }"
             draggable="true"
             @click="selectCategory(category)"
@@ -251,7 +240,7 @@ onMounted(load)
             <strong class="tutorial-manage__system-name">{{ category.name }}</strong>
             <span class="tutorial-manage__count">{{ categoryCount(category.id) }}</span>
             <span class="tutorial-manage__arrow" aria-hidden="true">›</span>
-            <div v-if="auth.hasPermission('tutorial:publish')" class="tutorial-manage__system-actions">
+            <div v-if="auth.hasPermission('tutorial:edit')" class="tutorial-manage__system-actions">
               <button type="button" @click.stop="openCategoryDialog(category)">编辑</button>
               <button type="button" class="danger" @click.stop="removeCategory(category)">删除</button>
             </div>
@@ -289,6 +278,9 @@ onMounted(load)
               v-for="item in visibleTutorials"
               :key="item.id"
               class="tutorial-manage__card"
+              tabindex="0"
+              @click="router.push(`/useradmin/tutorials/${item.id}/curriculum`)"
+              @keydown.enter.self="router.push(`/useradmin/tutorials/${item.id}/curriculum`)"
               :draggable="!search"
               @dragstart="draggingTutorialId = String(item.id)"
               @dragover.prevent
@@ -297,8 +289,9 @@ onMounted(load)
               <div class="tutorial-manage__card-head">
                 <span class="tutorial-manage__grip" aria-hidden="true">⠿</span>
                 <small>{{ activeCategory?.name }}</small>
-                <span class="status-pill" :class="`status-pill--${statusTone(item)}`">{{ statusLabel(item) }}</span>
+                <span class="status-pill" :class="`status-pill--${statusTone(item)}`" role="status">{{ statusLabel(item) }}</span>
               </div>
+              <p v-if="isPending(item)" class="form-hint" role="status">操作审核中 · 当前状态保持不变</p>
               <h3>{{ item.title }}</h3>
               <p class="tutorial-manage__card-slug">编号 {{ item.slug }}</p>
               <p class="tutorial-manage__card-summary">{{ item.summary }}</p>
@@ -309,16 +302,14 @@ onMounted(load)
               <button
                 type="button"
                 class="tutorial-manage__enter"
-                @click="router.push(`/useradmin/tutorials/${item.id}/curriculum`)"
+                @click.stop="router.push(`/useradmin/tutorials/${item.id}/curriculum`)"
               >管理课程结构 <span aria-hidden="true">→</span></button>
-              <div class="tutorial-manage__card-actions">
+              <div class="tutorial-manage__card-actions" @click.stop>
                 <button type="button" @click="router.push(`/useradmin/tutorials/editor/${item.id}`)">编辑</button>
                 <button type="button" @click="router.push(`/useradmin/tutorials/${item.id}/preview`)">预览</button>
                 <button type="button" @click="openMoveDialog(item)">更换体系</button>
-                <button v-if="auth.hasPermission('tutorial:publish') && item.editingStatus !== 'IN_REVIEW'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'publish')">{{ item.publicationStatus === 'PUBLISHED' ? '发布全部改动' : '公开教程' }}</button>
-                <button v-if="!auth.hasPermission('tutorial:publish') && auth.hasPermission('tutorial:submit') && item.editingStatus !== 'IN_REVIEW'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'submit')">提交审核</button>
-                <button v-if="auth.hasPermission('tutorial:withdraw') && item.publicationStatus === 'PUBLISHED'" type="button" :disabled="busyId === String(item.id)" @click="act(item, 'withdraw')">撤回</button>
-                <button v-if="auth.hasPermission('tutorial:publish')" type="button" class="danger" :disabled="busyId === String(item.id)" @click="act(item, 'delete')">删除</button>
+                <button v-if="auth.hasPermission('tutorial:edit')" type="button" :disabled="!!busyId || isPending(item) || item.editingStatus === 'IN_REVIEW'" @click="act(item, item.publicationStatus === 'PUBLISHED' ? 'withdraw' : 'publish')">{{ item.publicationStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button>
+                <button v-if="auth.hasPermission('tutorial:edit')" type="button" class="danger" :disabled="busyId === String(item.id)" @click="act(item, 'delete')">删除</button>
               </div>
             </article>
           </div>
@@ -725,9 +716,11 @@ onMounted(load)
 
 @media (max-width: 720px) {
   .tutorial-manage__hero { align-items: flex-start; flex-direction: column; }
-  .tutorial-manage__layout { grid-template-columns: 1fr; }
-  .tutorial-manage__system-body { max-height: 300px; }
+  .tutorial-manage__layout { grid-template-columns: 1fr; min-height: 0; }
+  .tutorial-manage__system-body { min-height: 0; max-height: 240px; }
+  .tutorial-manage__system-actions { display: flex; }
   .tutorial-manage__tools { align-items: stretch; flex-direction: column; }
   .tutorial-manage__grid { grid-template-columns: 1fr; }
+  .tutorial-manage__empty { min-height: 200px; padding: 24px 12px; }
 }
 </style>

@@ -1,6 +1,8 @@
 <script setup>
+import { usePaginationScroll } from '../../../../shared/composables/paginationScroll'
 import { ref, onMounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+const router = useRouter()
 import { errorMessage } from '../../../../shared/http'
 import { accountPath } from '../../../../shared/viewMode'
 import { deleteReading, listReading, setReadingPublished } from '../../api/englishApi'
@@ -44,6 +46,7 @@ async function remove(item) {
 }
 
 onMounted(load)
+usePaginationScroll(() => currentPage.value, () => loading.value)
 </script>
 
 <template>
@@ -52,7 +55,7 @@ onMounted(load)
     <header class="english-docs-admin__hero"><div><p class="public-eyebrow">{{ englishLabel }} · CONTENT MANAGEMENT</p><h1>{{ heading }}</h1><p>{{ introduction }}</p></div><div class="english-docs-admin__hero-side"><div class="english-docs-admin__count"><strong>{{ page.total }}</strong><span>项内容</span></div><RouterLink :to="accountPath('/english/manage/editor/reading/new')" class="english-docs-admin__create">＋ 新建内容</RouterLink></div></header>
     <section class="english-docs-admin__catalog"><div class="english-docs-admin__toolbar"><div><p class="public-eyebrow">CONTENT CATALOG</p><h2>{{ heading }}</h2></div><form class="english-docs-admin__search" @submit.prevent="currentPage = 1; load()"><input v-model="search" type="search" placeholder="搜索标题" aria-label="搜索标题"><button type="submit">查询</button></form></div>
       <p v-if="error" class="english-docs-admin__error" role="alert">{{ error }}</p><p v-if="notice" class="english-docs-admin__notice" role="status">{{ notice }}</p><p v-if="loading" class="english-docs-admin__empty">正在读取内容…</p>
-      <div v-else class="english-docs-admin__grid"><article v-for="item in page.items" :key="item.id" class="english-docs-admin__card"><div class="english-docs-admin__card-top"><span class="english-docs-admin__kind">READING</span><span class="english-docs-admin__status" :class="{ published: item.publishStatus === 'PUBLISHED' }">{{ item.publishStatus === 'PUBLISHED' ? '已发布' : item.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</span></div><h3>{{ item.title }}</h3><p>{{ item.summary || '暂无摘要' }}</p><div class="english-docs-admin__actions"><RouterLink :to="accountPath('/english/manage/editor/reading/' + item.id)">编辑</RouterLink><button type="button" :disabled="busy" @click="changeStatus(item)">{{ item.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button type="button" :disabled="busy" class="english-docs-admin__delete" @click="remove(item)">删除</button></div></article><p v-if="!page.items.length" class="english-docs-admin__empty">暂无内容。</p></div>
+      <div v-else class="english-docs-admin__grid"><article v-for="item in page.items" :key="item.id" class="english-docs-admin__card" tabindex="0" :aria-label="`编辑文章：${item.title}`" @click="router.push(accountPath('/english/manage/editor/reading/' + item.id))" @keydown.enter.self="router.push(accountPath('/english/manage/editor/reading/' + item.id))"><div class="english-docs-admin__card-top"><span class="english-docs-admin__kind">READING</span><span class="english-docs-admin__status" :class="{ published: item.publishStatus === 'PUBLISHED' }">{{ item.publishStatus === 'PUBLISHED' ? '已发布' : item.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</span></div><h3>{{ item.title }}</h3><p>{{ item.summary || '暂无摘要' }}</p><div class="english-docs-admin__actions" @click.stop><RouterLink :to="accountPath('/english/manage/editor/reading/' + item.id)">编辑</RouterLink><button type="button" :disabled="busy" @click="changeStatus(item)">{{ item.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button type="button" :disabled="busy" class="english-docs-admin__delete" @click="remove(item)">删除</button></div></article><p v-if="!page.items.length" class="english-docs-admin__empty">暂无内容。</p></div>
       <nav v-if="page.total > 20" class="english-docs-admin__pager" aria-label="分页"><button type="button" :disabled="currentPage <= 1" @click="currentPage--; load()">上一页</button><span>{{ currentPage }} / {{ Math.ceil(page.total / 20) }}</span><button type="button" :disabled="currentPage >= Math.ceil(page.total / 20)" @click="currentPage++; load()">下一页</button></nav>
     </section>
   </main>

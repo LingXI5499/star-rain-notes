@@ -11,6 +11,7 @@ export const deleteCategory = (id) => del(`/admin/tutorial-categories/${encoded(
 export const reorderCategories = (ids) => put('/admin/tutorial-categories/order', { ids })
 
 export const listAdminTutorials = (params) => get('/admin/tutorials', params)
+export const listPendingTutorialOperations = () => get('/admin/tutorial-operations/pending')
 export const getAdminTutorial = (id) => get(`/admin/tutorials/${encoded(id)}`)
 export const previewTutorial = (id) => get(`/admin/tutorials/${encoded(id)}/preview`)
 export const previewChapter = (id) => get(`/admin/tutorial-chapters/${encoded(id)}/preview`)

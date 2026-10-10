@@ -92,6 +92,31 @@ class TutorialWorkspacePublicationTest {
         assertThat(service.publicChapter("java","two").path("bodyMarkdown").asText()).isEqualTo("untouched public body");
         assertThatThrownBy(() -> service.publicChapter("java","draft")).isInstanceOf(TutorialNotFoundException.class);
     }
+    @Test void savingPublishedContentRefreshesItAndKeepsNewChaptersAsDrafts() throws Exception {
+        String original = old.getSnapshotJson();
+        service.refreshPublished(1L, "updateChapter", 4L);
+        assertThat(service.publicChapter("java","one").path("bodyMarkdown").asText()).isEqualTo("New body");
+        assertThat(service.publicTutorial("java").path("title").asText()).isEqualTo("Public title");
+        assertThat(service.publicChapter("java","two").path("bodyMarkdown").asText()).isEqualTo("untouched public body");
+        assertThatThrownBy(() -> service.publicChapter("java","draft")).isInstanceOf(TutorialNotFoundException.class);
+        assertThat(candidate().path("chapterCount").asInt()).isEqualTo(2);
+        assertThat(old.getSnapshotJson()).isEqualTo(original);
+    }
+    @Test void newlyCreatedTutorialCanPublishWithoutChapters() throws Exception {
+        tutorial.setPublicationStatus("NEVER_PUBLISHED");
+        tutorial.setPublishedRevisionId(null);
+        when(groups.listActiveByTutorialId(1L)).thenReturn(List.of());
+        service.publish(1L);
+        assertThat(candidate().path("chapterCount").asInt()).isZero();
+        assertThat(tutorial.getPublicationStatus()).isEqualTo("PUBLISHED");
+        verify(events).afterCommit(any());
+    }
+    @Test void draftSaveDoesNotPublishIt() {
+        tutorial.setPublicationStatus("NEVER_PUBLISHED");
+        service.refreshPublished(1L, "updateChapter", 4L);
+        verify(revisions,never()).insert(any());
+        verifyNoInteractions(events);
+    }
     @Test void previewIncludesDraftWhilePublicStillReadsOldRevision() {
         assertThat(service.previewTutorial(1L).path("groups").get(0).path("chapters").size()).isEqualTo(3);
         assertThat(service.publicChapter("java","one").path("bodyMarkdown").asText()).isEqualTo("old body");

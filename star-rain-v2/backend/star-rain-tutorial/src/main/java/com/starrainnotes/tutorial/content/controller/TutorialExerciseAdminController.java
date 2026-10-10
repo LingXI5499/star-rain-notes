@@ -1,6 +1,7 @@
 package com.starrainnotes.tutorial.content.controller;
 
 import com.starrainnotes.common.result.ApiResponse;
+import com.starrainnotes.tutorial.content.service.TutorialOperationService;
 import com.starrainnotes.tutorial.content.constant.TutorialPermissions;
 import com.starrainnotes.tutorial.content.dto.ChapterQuestionDTO;
 import com.starrainnotes.tutorial.content.dto.IdOrderDTO;
@@ -25,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
 public class TutorialExerciseAdminController {
+    private final TutorialOperationService operations;
     private final TutorialExerciseService service;
 
     @GetMapping("/tutorial-chapters/{chapterId}/cards")
@@ -35,30 +37,28 @@ public class TutorialExerciseAdminController {
 
     @PostMapping("/tutorial-chapters/{chapterId}/cards")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Map<String, Object>> createCard(@PathVariable Long chapterId,
+    public ApiResponse<Object> createCard(@PathVariable Long chapterId,
                                                         @Valid @RequestBody KnowledgeCardDTO request) {
-        return ApiResponse.ok(service.createCard(chapterId, request));
+        return ApiResponse.ok(operations.request("createCard", new Object[]{chapterId, request}));
     }
 
     @PatchMapping("/tutorial-cards/{cardId}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Map<String, Object>> updateCard(@PathVariable Long cardId,
+    public ApiResponse<Object> updateCard(@PathVariable Long cardId,
                                                         @Valid @RequestBody KnowledgeCardDTO request) {
-        return ApiResponse.ok(service.updateCard(cardId, request));
+        return ApiResponse.ok(operations.request("updateCard", new Object[]{cardId, request}));
     }
 
     @DeleteMapping("/tutorial-cards/{cardId}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Void> deleteCard(@PathVariable Long cardId) {
-        service.deleteCard(cardId);
-        return ApiResponse.ok(null);
+    public ApiResponse<Object> deleteCard(@PathVariable Long cardId) {
+        return ApiResponse.ok(operations.request("deleteCard", new Object[]{cardId}));
     }
 
     @PutMapping("/tutorial-chapters/{chapterId}/cards/order")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Void> reorderCards(@PathVariable Long chapterId, @Valid @RequestBody IdOrderDTO request) {
-        service.reorderCards(chapterId, request.getIds());
-        return ApiResponse.ok(null);
+    public ApiResponse<Object> reorderCards(@PathVariable Long chapterId, @Valid @RequestBody IdOrderDTO request) {
+        return ApiResponse.ok(operations.request("reorderCards", new Object[]{chapterId, request.getIds()}));
     }
 
     @GetMapping("/tutorial-chapters/{chapterId}/questions")
@@ -69,29 +69,27 @@ public class TutorialExerciseAdminController {
 
     @PostMapping("/tutorial-chapters/{chapterId}/questions")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Map<String, Object>> createQuestion(@PathVariable Long chapterId,
+    public ApiResponse<Object> createQuestion(@PathVariable Long chapterId,
                                                             @Valid @RequestBody ChapterQuestionDTO request) {
-        return ApiResponse.ok(service.createQuestion(chapterId, request));
+        return ApiResponse.ok(operations.request("createQuestion", new Object[]{chapterId, request}));
     }
 
     @PatchMapping("/tutorial-questions/{questionId}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Map<String, Object>> updateQuestion(@PathVariable Long questionId,
+    public ApiResponse<Object> updateQuestion(@PathVariable Long questionId,
                                                             @Valid @RequestBody ChapterQuestionDTO request) {
-        return ApiResponse.ok(service.updateQuestion(questionId, request));
+        return ApiResponse.ok(operations.request("updateQuestion", new Object[]{questionId, request}));
     }
 
     @DeleteMapping("/tutorial-questions/{questionId}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Void> deleteQuestion(@PathVariable Long questionId) {
-        service.deleteQuestion(questionId);
-        return ApiResponse.ok(null);
+    public ApiResponse<Object> deleteQuestion(@PathVariable Long questionId) {
+        return ApiResponse.ok(operations.request("deleteQuestion", new Object[]{questionId}));
     }
 
     @PutMapping("/tutorial-chapters/{chapterId}/questions/order")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Void> reorderQuestions(@PathVariable Long chapterId, @Valid @RequestBody IdOrderDTO request) {
-        service.reorderQuestions(chapterId, request.getIds());
-        return ApiResponse.ok(null);
+    public ApiResponse<Object> reorderQuestions(@PathVariable Long chapterId, @Valid @RequestBody IdOrderDTO request) {
+        return ApiResponse.ok(operations.request("reorderQuestions", new Object[]{chapterId, request.getIds()}));
     }
 }

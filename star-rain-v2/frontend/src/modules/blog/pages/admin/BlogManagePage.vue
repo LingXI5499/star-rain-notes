@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../../shared/composables/paginationScroll'
 import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import {
@@ -157,6 +158,7 @@ watch(() => route.fullPath, () => {
   readQuery()
   load()
 }, { immediate: true })
+usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value)
 </script>
 
 <template>
@@ -197,7 +199,7 @@ watch(() => route.fullPath, () => {
     <p v-if="loading" class="loading" role="status">正在加载文章…</p>
 
     <div class="content-admin__list">
-      <article v-for="post in data.items" :key="post.id" class="content-card">
+      <article v-for="post in data.items" :key="post.id" class="content-card" tabindex="0" :aria-label="`编辑文章：${post.title}`" @click="router.push(`/useradmin/blog/editor/${post.id}`)" @keydown.enter.self="router.push(`/useradmin/blog/editor/${post.id}`)">
         <div class="content-card__body">
           <div class="content-card__heading">
             <div>
@@ -220,7 +222,7 @@ watch(() => route.fullPath, () => {
               <span>更新 {{ dateLabel(post.updatedAt) }}</span>
               <span>正文{{ post.hasBody ? '已填写' : '为空' }}</span>
             </div>
-            <div class="content-card__actions">
+            <div class="content-card__actions" @click.stop>
               <button type="button" @click="preview(post)">预览</button>
               <button type="button" @click="router.push(`/useradmin/blog/editor/${post.id}`)">编辑</button>
               <button v-if="canPublish(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'publish')">发布</button>

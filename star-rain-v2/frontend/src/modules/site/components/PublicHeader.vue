@@ -199,12 +199,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
 
   /* 导航换行排在第二行，横向可滚动，不藏入口也不挤爆头部 */
   .site-header__nav {
-    order: 3;
-    width: 100%;
-    gap: var(--space-5);
-    overflow-x: auto;
-    white-space: nowrap;
-    scrollbar-width: none;
+    display: none;
   }
 
   .site-header__nav::-webkit-scrollbar {

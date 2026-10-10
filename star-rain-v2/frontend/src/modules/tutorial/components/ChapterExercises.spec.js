@@ -1,7 +1,7 @@
 import { mount, flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ChapterExercises from './ChapterExercises.vue'
-import { listCards, listQuestions, createCard, createQuestion, updateCard, updateQuestion, deleteCard } from '../api/tutorialApi'
+import { listCards, listQuestions, createCard, createQuestion, updateCard, updateQuestion, deleteCard, reorderCards } from '../api/tutorialApi'
 const editorDrafts = vi.hoisted(() => ({}))
 vi.mock('../api/tutorialApi', () => ({ listCards: vi.fn(), listQuestions: vi.fn(), createCard: vi.fn(), createQuestion: vi.fn(), updateCard: vi.fn(), updateQuestion: vi.fn(), deleteCard: vi.fn(), deleteQuestion: vi.fn(), reorderCards: vi.fn(), reorderQuestions: vi.fn() }))
 vi.mock('../../../shared/editor/MarkdownEditor.vue', () => ({ default: {
@@ -87,6 +87,23 @@ describe('chapter learning content editor', () => {
   const wrapper = mount(ChapterExercises, { props: { chapterId: '9' } }); await flushPromises()
   await wrapper.findAll('button').find(b => b.text() === '删除').trigger('click'); await flushPromises()
   expect(deleteCard).toHaveBeenCalledWith('1'); expect(wrapper.find('textarea').element.value).toBe('')
+ })
+ it('keeps the selected card and shows review pending when deletion awaits approval', async () => {
+  listCards.mockResolvedValue([{ id: '1', frontText: 'Original', backMarkdown: 'Answer', status: 'ENABLED' }])
+  deleteCard.mockResolvedValue({ reviewPending: true }); vi.spyOn(window, 'confirm').mockReturnValue(true)
+  const wrapper = mount(ChapterExercises, { props: { chapterId: '9' } }); await flushPromises()
+  await wrapper.findAll('button').find(b => b.text() === '删除').trigger('click'); await flushPromises()
+  expect(wrapper.find('textarea').element.value).toBe('Original')
+  expect(wrapper.find('[role="status"]').text()).toContain('已提交超级管理员审核')
+ })
+ it('does not reorder the visible cards before the proposed order is approved', async () => {
+  listCards.mockResolvedValue([{ id: '1', frontText: 'First', status: 'ENABLED' }, { id: '2', frontText: 'Second', status: 'ENABLED' }])
+  reorderCards.mockResolvedValue({ reviewPending: true })
+  const wrapper = mount(ChapterExercises, { props: { chapterId: '9' } }); await flushPromises()
+  await wrapper.find('[aria-label="下移卡片 First"]').trigger('click'); await flushPromises()
+  expect(reorderCards).toHaveBeenCalledWith('9', ['2', '1'])
+  expect(wrapper.findAll('.chapter-exercises__select')[0].text()).toContain('First')
+  expect(wrapper.find('[role="status"]').text()).toContain('已提交超级管理员审核')
  })
  it('selects and updates a question independently from cards', async () => {
   listQuestions.mockResolvedValue([{ id: '4', questionText: 'Why?', referenceAnswer: 'Because', status: 'ENABLED', knowledgeCardIds: [] }]); updateQuestion.mockResolvedValue({ id: '4' })

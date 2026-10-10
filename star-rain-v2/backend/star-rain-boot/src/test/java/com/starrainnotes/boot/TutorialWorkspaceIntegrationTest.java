@@ -43,6 +43,8 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
     private DataSourceTransactionManager transactions;
     private TutorialContentService content;
     private TutorialPublicationService publication;
+    private TutorialOperationService operations;
+    private CurrentActorApi actors;
     private TutorialMediaReferences media;
     private TutorialEntity tutorial;
     private TutorialChapterEntity chapter;
@@ -60,7 +62,7 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
             statement.executeUpdate("INSERT INTO sr_tutorial_category(name,slug,sort_order) VALUES('Before upgrade','before-upgrade',0)");
         }
         Flyway upgraded = Flyway.configure().dataSource(dataSource).defaultSchema(schema).schemas(schema).load();
-        upgraded.migrate(); upgraded.validate(); assertEquals("2.038",upgraded.info().current().getVersion().getVersion());
+        upgraded.migrate(); upgraded.validate(); assertEquals("2.039",upgraded.info().current().getVersion().getVersion());
         try (Statement statement=connection.createStatement(); ResultSet row=statement.executeQuery("SELECT COUNT(*) FROM sr_tutorial_category WHERE slug='before-upgrade'")) { assertTrue(row.next());assertEquals(1,row.getInt(1)); }
         Configuration configuration = new Configuration(); configuration.setMapUnderscoreToCamelCase(true);
         configuration.setEnvironment(new Environment("workspace-test",new SpringManagedTransactionFactory(),dataSource));
@@ -71,13 +73,18 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         }
         sql=new SqlSessionTemplate(new SqlSessionFactoryBuilder().build(configuration));
         transactions=new DataSourceTransactionManager(dataSource);
-        var actors=mock(CurrentActorApi.class);when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(71L).build());
+        actors=mock(CurrentActorApi.class);when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(71L).roles(Set.of("SUPER_ADMIN")).build());
         media=mock(TutorialMediaReferences.class);
         content=proxy(new TutorialContentServiceImpl(mapper(TutorialCategoryMapper.class),mapper(TutorialMapper.class),mapper(TutorialGroupMapper.class),
                 mapper(TutorialChapterMapper.class),actors,media,mock(TutorialDependencyCleanup.class),mapper(TutorialRevisionMapper.class)),TutorialContentService.class);
         publication=proxy(new TutorialPublicationServiceImpl(mapper(TutorialMapper.class),mapper(TutorialCategoryMapper.class),mapper(TutorialGroupMapper.class),
                 mapper(TutorialChapterMapper.class),mapper(TutorialKnowledgeCardMapper.class),mapper(TutorialQuestionMapper.class),mapper(TutorialQuestionCardMapper.class),
                 mapper(TutorialRevisionMapper.class),content,actors,json,mock(TutorialEventPublisher.class),media,mock(ReviewSubmissionApi.class)),TutorialPublicationService.class);
+        var reviews=mock(ReviewSubmissionApi.class);
+        when(reviews.submit(any())).thenReturn(com.starrainnotes.review.api.dto.ReviewSubmissionResult.builder().reviewRequestId(1L).status("PENDING").build());
+        operations=proxy(new TutorialOperationService(content,mock(TutorialExerciseService.class),publication,
+                mapper(TutorialOperationMapper.class),mapper(TutorialMapper.class),mapper(TutorialGroupMapper.class),mapper(TutorialChapterMapper.class),
+                mapper(TutorialKnowledgeCardMapper.class),mapper(TutorialQuestionMapper.class),actors,reviews,json),TutorialOperationService.class);
         new TransactionTemplate(transactions).executeWithoutResult(tx -> {
             var category=new TutorialCategoryEntity();category.setName("Java");category.setSlug("java");category.setSortOrder(0);mapper(TutorialCategoryMapper.class).insert(category);
             tutorial=new TutorialEntity();tutorial.setCategoryId(category.getId());tutorial.setTitle("Tutorial");tutorial.setSlug("java");tutorial.setSummary("Summary");tutorial.setSortOrder(0);
@@ -111,11 +118,30 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         assertEquals("Edited title",saved.getTitle());assertEquals("Edited summary",saved.getSummary());assertEquals("Edited body",saved.getBodyMarkdown());
         assertEquals(originalChapter.getRowVersion()+1,saved.getRowVersion());
         assertEquals("Original body",publication.publicChapter("java","intro").path("bodyMarkdown").asText());
-        var mvc=MockMvcBuilders.standaloneSetup(new TutorialStructureAdminController(content,publication)).setControllerAdvice(new GlobalApiExceptionHandler()).build();
+        var mvc=MockMvcBuilders.standaloneSetup(new TutorialStructureAdminController(operations,content,publication)).setControllerAdvice(new GlobalApiExceptionHandler()).build();
         mvc.perform(patch("/api/admin/tutorial-chapters/"+chapter.getId()).contentType("application/json").content(json.writeValueAsString(change(originalChapter.getRowVersion()))))
                 .andExpect(status().isConflict()).andExpect(jsonPath("$.code").value("TUTORIAL_CONFLICT"));
         publication.publishChapter(chapter.getId());
         assertEquals("Edited body",publication.publicChapter("java","intro").path("bodyMarkdown").asText());
+    }
+    @Test void adminEditLeavesWorkspaceAndPublicContentUnchangedUntilApprovalAndReplaysOnlyOnce() {
+        when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("ADMIN")).build());
+        var before=content.chapter(chapter.getId());
+        var response=(Map<?,?>)operations.request("updateChapter",new Object[]{chapter.getId(),change(before.getRowVersion())});
+        assertEquals(true,response.get("reviewPending"));
+        assertEquals("Original body",content.chapter(chapter.getId()).getBodyMarkdown());
+        assertEquals("Original body",publication.publicChapter("java","intro").path("bodyMarkdown").asText());
+        var pending=mapper(TutorialOperationMapper.class).pending("tutorial:"+tutorial.getId());
+        assertNotNull(pending);
+        when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(71L).roles(Set.of("SUPER_ADMIN")).build());
+        operations.approve(pending.getId());
+        assertEquals("Edited body",content.chapter(chapter.getId()).getBodyMarkdown());
+        assertEquals("Edited body",publication.publicChapter("java","intro").path("bodyMarkdown").asText());
+        assertNull(mapper(TutorialOperationMapper.class).pending("tutorial:"+tutorial.getId()));
+        assertEquals("APPLIED",mapper(TutorialOperationMapper.class).selectById(pending.getId()).getStatus());
+        var appliedVersion=content.chapter(chapter.getId()).getRowVersion();
+        operations.approve(pending.getId());
+        assertEquals(appliedVersion,content.chapter(chapter.getId()).getRowVersion());
     }
     @Test void mediaReferenceFailureRollsBackTitleSummaryBodyAndVersionInRealSpringTransaction() {
         var before=content.chapter(chapter.getId());

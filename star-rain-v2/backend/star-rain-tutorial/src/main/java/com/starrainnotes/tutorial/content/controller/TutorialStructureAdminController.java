@@ -2,6 +2,7 @@ package com.starrainnotes.tutorial.content.controller;
 
 import com.starrainnotes.tutorial.content.service.TutorialPublicationService;
 import com.starrainnotes.common.result.ApiResponse;
+import com.starrainnotes.tutorial.content.service.TutorialOperationService;
 import com.starrainnotes.tutorial.content.constant.TutorialPermissions;
 import com.starrainnotes.tutorial.content.dto.ChapterBodyDTO;
 import com.starrainnotes.tutorial.content.dto.ChapterCreateDTO;
@@ -28,36 +29,35 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin")
 public class TutorialStructureAdminController {
+    private final TutorialOperationService operations;
     private final TutorialContentService contentService;
     private final TutorialPublicationService publicationService;
 
     @PatchMapping("/tutorial-groups/{groupId}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<TutorialGroupVO> updateGroup(@PathVariable Long groupId,
+    public ApiResponse<Object> updateGroup(@PathVariable Long groupId,
                                                      @Valid @RequestBody GroupNameDTO request) {
-        return ApiResponse.ok(contentService.updateGroup(groupId, request.getTitle()));
+        return ApiResponse.ok(operations.request("updateGroup", new Object[]{groupId, request.getTitle()}));
     }
 
     @DeleteMapping("/tutorial-groups/{groupId}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Void> deleteGroup(@PathVariable Long groupId) {
-        contentService.deleteGroup(groupId);
-        return ApiResponse.ok(null);
+    public ApiResponse<Object> deleteGroup(@PathVariable Long groupId) {
+        return ApiResponse.ok(operations.request("deleteGroup", new Object[]{groupId}));
     }
 
     @PostMapping("/tutorial-groups/{groupId}/chapters")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<TutorialChapterVO> createChapter(@PathVariable Long groupId,
+    public ApiResponse<Object> createChapter(@PathVariable Long groupId,
                                                          @Valid @RequestBody ChapterCreateDTO request) {
-        return ApiResponse.ok(contentService.createChapter(groupId, request));
+        return ApiResponse.ok(operations.request("createChapter", new Object[]{groupId, request}));
     }
 
     @PutMapping("/tutorial-groups/{groupId}/chapters/order")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Void> reorderChapters(@PathVariable Long groupId,
+    public ApiResponse<Object> reorderChapters(@PathVariable Long groupId,
                                               @Valid @RequestBody IdOrderDTO request) {
-        contentService.reorderChapters(groupId, request.getIds());
-        return ApiResponse.ok(null);
+        return ApiResponse.ok(operations.request("reorderChapters", new Object[]{groupId, request.getIds()}));
     }
 
     @GetMapping("/tutorial-chapters/{chapterId}")
@@ -68,37 +68,34 @@ public class TutorialStructureAdminController {
 
     @PatchMapping("/tutorial-chapters/{chapterId}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<TutorialChapterVO> updateChapter(@PathVariable Long chapterId,
+    public ApiResponse<Object> updateChapter(@PathVariable Long chapterId,
                                                          @Valid @RequestBody ChapterUpdateDTO request) {
-        return ApiResponse.ok(contentService.updateChapter(chapterId, request));
+        return ApiResponse.ok(operations.request("updateChapter", new Object[]{chapterId, request}));
     }
 
     @PutMapping("/tutorial-chapters/{chapterId}/body")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<TutorialChapterVO> updateBody(@PathVariable Long chapterId,
+    public ApiResponse<Object> updateBody(@PathVariable Long chapterId,
                                                       @Valid @RequestBody ChapterBodyDTO request) {
-        return ApiResponse.ok(contentService.updateChapterBody(chapterId, request));
+        return ApiResponse.ok(operations.request("updateChapterBody", new Object[]{chapterId, request}));
     }
 
     @DeleteMapping("/tutorial-chapters/{chapterId}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Void> deleteChapter(@PathVariable Long chapterId) {
-        contentService.deleteChapter(chapterId);
-        return ApiResponse.ok(null);
+    public ApiResponse<Object> deleteChapter(@PathVariable Long chapterId) {
+        return ApiResponse.ok(operations.request("deleteChapter", new Object[]{chapterId}));
     }
 
     @PostMapping("/tutorial-chapters/{chapterId}/publish")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.PUBLISH + "')")
-    public ApiResponse<Void> publishChapter(@PathVariable Long chapterId) {
-        publicationService.publishChapter(chapterId);
-        return ApiResponse.ok(null);
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    public ApiResponse<Object> publishChapter(@PathVariable Long chapterId) {
+        return ApiResponse.ok(operations.request("publishChapter", new Object[]{chapterId}));
     }
 
     @PostMapping("/tutorial-chapters/{chapterId}/withdraw")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.WITHDRAW + "')")
-    public ApiResponse<Void> withdrawChapter(@PathVariable Long chapterId) {
-        publicationService.withdrawChapter(chapterId);
-        return ApiResponse.ok(null);
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    public ApiResponse<Object> withdrawChapter(@PathVariable Long chapterId) {
+        return ApiResponse.ok(operations.request("withdrawChapter", new Object[]{chapterId}));
     }
 
 }

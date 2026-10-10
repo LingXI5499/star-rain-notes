@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '../../account/stores/authStore'
@@ -148,6 +149,7 @@ onMounted(() => {
   load()
   loadCounts()
 })
+usePaginationScroll(() => page.value, () => loading.value)
 </script>
 
 <template>
@@ -211,12 +213,12 @@ onMounted(() => {
           <p v-if="loading" class="loading" role="status">正在加载媒体…</p>
 
           <div v-if="view === 'grid'" class="media-library__grid">
-            <article v-for="asset in data.items" :key="asset.id" class="media-library__card">
+            <article v-for="asset in data.items" :key="asset.id" class="media-library__card" tabindex="0" :aria-label="`查看媒体：${asset.originalName}`" @click="router.push(`/useradmin/media/${asset.id}`)" @keydown.enter.self="router.push(`/useradmin/media/${asset.id}`)">
               <button
                 class="media-library__preview"
                 type="button"
                 :aria-label="`打开 ${asset.originalName}`"
-                @click="openAsset(asset)"
+                @click.stop="openAsset(asset)"
               >
                 <MediaPreview :asset="asset" variant="thumb" />
               </button>
@@ -232,7 +234,7 @@ onMounted(() => {
                   <span class="status-chip">{{ accessLevelLabel(asset.accessLevel) }}</span>
                   <span v-if="asset.status === 'ARCHIVED'" class="status-chip status-chip--danger">{{ mediaStatusLabel(asset.status) }}</span>
                 </div>
-                <div class="media-library__actions">
+                <div class="media-library__actions" @click.stop>
                   <button type="button" @click="openAsset(asset)">打开</button>
                   <button type="button" @click="copyUrl(asset)">复制 URL</button>
                   <button type="button" @click="openDetail(asset)">详情</button>

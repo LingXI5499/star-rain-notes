@@ -162,9 +162,6 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
             item.put("chapters", chapterSnapshots);
             groupSnapshots.add(item);
         }
-        if (requirePublishable && chapterCount == 0) {
-            throw new TutorialStateException("请先创建至少一个使用中的章节");
-        }
         Map<String, Object> root = new LinkedHashMap<>();
         root.put("id", String.valueOf(tutorial.getId()));
         root.put("categoryId", String.valueOf(category.getId()));
@@ -332,6 +329,42 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         tutorialMapper.update(tutorial);
         eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorial.getId(), tutorial.getSlug(),
                 tutorial.getTitle(), "PUBLISHED", tutorial.getPublishedAt()));
+    }
+
+    @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public void refreshPublished(Long tutorialId, String operation, Long changedChapterId) {
+        TutorialEntity tutorial = lock(tutorialId);
+        if (!"PUBLISHED".equals(tutorial.getPublicationStatus()) || tutorial.getPublishedRevisionId() == null) return;
+        JsonNode previous = snapshot(revisionMapper.selectById(tutorial.getPublishedRevisionId()));
+        java.util.Map<String, JsonNode> publicChapters = new java.util.HashMap<>();
+        for (JsonNode group : previous.path("groups")) {
+            for (JsonNode chapter : group.path("chapters")) publicChapters.put(chapter.path("id").asText(), chapter);
+        }
+        ObjectNode candidate = objectMapper.valueToTree(draftSnapshot(tutorial, false));
+        if (!"updateTutorial".equals(operation)) {
+            for (String key : List.of("title", "summary", "slug")) {
+                if (previous.has(key)) candidate.set(key, previous.get(key));
+            }
+        }
+        JsonNode workspace = candidate.deepCopy();
+        ArrayNode visibleGroups = candidate.putArray("groups");
+        int count = 0;
+        for (JsonNode group : workspace.path("groups")) {
+            ObjectNode visibleGroup = ((ObjectNode) group).deepCopy();
+            ArrayNode visibleChapters = visibleGroup.putArray("chapters");
+            for (JsonNode chapter : group.path("chapters")) {
+                String id = chapter.path("id").asText();
+                if (publicChapters.containsKey(id)) {
+                    visibleChapters.add(id.equals(String.valueOf(changedChapterId)) ? chapter : publicChapters.get(id));
+                }
+            }
+            if (!visibleChapters.isEmpty()) visibleGroups.add(visibleGroup);
+            count += visibleChapters.size();
+        }
+        candidate.put("chapterCount", count);
+        // A new draft chapter stays a draft; editing an existing public chapter updates it immediately.
+        if (!candidate.equals(previous)) activate(tutorial, freeze(tutorial, candidate));
     }
 
     @Override

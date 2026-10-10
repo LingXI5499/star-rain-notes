@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { listAudits } from '../api/accountApi'
 import { errorMessage } from '../api/http'
@@ -30,6 +31,7 @@ async function load() {
 function search() { page.value = 1; load() }
 function changePage(next) { page.value = next; load() }
 onMounted(load)
+usePaginationScroll(() => page.value, () => loading.value)
 </script>
 
 <template>

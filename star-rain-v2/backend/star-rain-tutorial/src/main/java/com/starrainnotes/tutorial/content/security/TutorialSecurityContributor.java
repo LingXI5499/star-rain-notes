@@ -28,6 +28,7 @@ public class TutorialSecurityContributor implements ModuleSecurityContributor {
         return List.of("/api/admin/tutorials/**", "/api/admin/tutorials",
                 "/api/admin/tutorial-categories", "/api/admin/tutorial-categories/**",
                 "/api/admin/tutorial-groups/**", "/api/admin/tutorial-chapters/**",
-                "/api/admin/tutorial-cards/**", "/api/admin/tutorial-questions/**");
+                "/api/admin/tutorial-cards/**", "/api/admin/tutorial-questions/**",
+                "/api/admin/tutorial-operations/pending");
     }
 }

@@ -1,6 +1,7 @@
 package com.starrainnotes.tutorial.content.controller;
 
 import com.starrainnotes.common.result.ApiResponse;
+import com.starrainnotes.tutorial.content.service.TutorialOperationService;
 import com.starrainnotes.tutorial.content.constant.TutorialPermissions;
 import com.starrainnotes.tutorial.content.dto.CategoryNameDTO;
 import com.starrainnotes.tutorial.content.dto.IdOrderDTO;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/tutorial-categories")
 public class TutorialCategoryAdminController {
+    private final TutorialOperationService operations;
     private final TutorialContentService contentService;
 
     @GetMapping
@@ -33,37 +35,34 @@ public class TutorialCategoryAdminController {
     }
 
     @PostMapping
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.PUBLISH + "')")
-    public ApiResponse<TutorialCategoryVO> create(@Valid @RequestBody CategoryNameDTO request) {
-        return ApiResponse.ok(contentService.createCategory(request.getName()));
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    public ApiResponse<Object> create(@Valid @RequestBody CategoryNameDTO request) {
+        return ApiResponse.ok(operations.request("createCategory", new Object[]{request.getName()}));
     }
 
     @PatchMapping("/{id}")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.PUBLISH + "')")
-    public ApiResponse<TutorialCategoryVO> update(@PathVariable Long id,
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    public ApiResponse<Object> update(@PathVariable Long id,
                                                    @Valid @RequestBody CategoryNameDTO request) {
-        return ApiResponse.ok(contentService.updateCategory(id, request.getName()));
+        return ApiResponse.ok(operations.request("updateCategory", new Object[]{id, request.getName()}));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.PUBLISH + "')")
-    public ApiResponse<Void> delete(@PathVariable Long id) {
-        contentService.deleteCategory(id);
-        return ApiResponse.ok(null);
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    public ApiResponse<Object> delete(@PathVariable Long id) {
+        return ApiResponse.ok(operations.request("deleteCategory", new Object[]{id}));
     }
 
     @PutMapping("/order")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.PUBLISH + "')")
-    public ApiResponse<Void> reorder(@Valid @RequestBody IdOrderDTO request) {
-        contentService.reorderCategories(request.getIds());
-        return ApiResponse.ok(null);
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    public ApiResponse<Object> reorder(@Valid @RequestBody IdOrderDTO request) {
+        return ApiResponse.ok(operations.request("reorderCategories", new Object[]{request.getIds()}));
     }
 
     @PutMapping("/{categoryId}/tutorials/order")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Void> reorderTutorials(@PathVariable Long categoryId,
+    public ApiResponse<Object> reorderTutorials(@PathVariable Long categoryId,
                                                @Valid @RequestBody IdOrderDTO request) {
-        contentService.reorderTutorials(categoryId, request.getIds());
-        return ApiResponse.ok(null);
+        return ApiResponse.ok(operations.request("reorderTutorials", new Object[]{categoryId, request.getIds()}));
     }
 }

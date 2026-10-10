@@ -4,6 +4,7 @@ import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from 'vu
 import {
   createChapter, getAdminChapter, getAdminCurriculum, updateChapter,
 } from '../../api/tutorialApi'
+import { isReviewPending, operationNotice } from '../../support/operationResult'
 import { errorMessage } from '../../../../shared/http'
 import ChapterAuthorNav from '../../components/ChapterAuthorNav.vue'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
@@ -93,22 +94,25 @@ async function save() {
   notice.value = ''
   try {
     let chapterId = route.params.chapterId
+    let result
     if (isCreate.value) {
       const chapter = await createChapter(form.groupId, {
         title: form.title.trim(), summary: form.summary.trim() || null, bodyMarkdown,
       })
+      result = chapter
       chapterId = chapter.id
       rowVersion.value = chapter.rowVersion
     } else {
       const saved = await updateChapter(route.params.chapterId, {
         title: form.title.trim(), summary: form.summary.trim() || null, bodyMarkdown, rowVersion: rowVersion.value,
       })
-      rowVersion.value = saved.rowVersion
+      result = saved
+      if (!isReviewPending(saved)) rowVersion.value = saved.rowVersion
     }
     body.value = bodyMarkdown
     savedSnapshot = snapshot()
-    notice.value = '已保存到工作区；到课程结构发布改动或提交审核后，读者才能看到。'
-    if (isCreate.value) await router.replace(accountPath(`/tutorials/${tutorialId.value}/chapters/${chapterId}`))
+    notice.value = operationNotice(result, '修改已保存；已发布内容同步更新，草稿内容保留为草稿。')
+    if (isCreate.value && !isReviewPending(result)) await router.replace(accountPath(`/tutorials/${tutorialId.value}/chapters/${chapterId}`))
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -143,7 +147,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
         </button>
       </div>
       <div class="chapter-edit__actions">
-        <button class="primary-button" type="button" :disabled="saving || loading" @click="save">{{ saving ? '保存中…' : '保存工作区' }}</button>
+        <button class="primary-button" type="button" :disabled="saving || loading" @click="save">{{ saving ? '保存中…' : '保存修改' }}</button>
         <button type="button" @click="router.push(returnPath())">取消</button>
       </div>
     </header>

@@ -2,6 +2,7 @@ package com.starrainnotes.tutorial.content.controller;
 
 import org.springframework.web.bind.annotation.RequestParam;
 import com.starrainnotes.common.result.ApiResponse;
+import com.starrainnotes.tutorial.content.service.TutorialOperationService;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.starrainnotes.tutorial.content.constant.TutorialPermissions;
 import com.starrainnotes.tutorial.content.service.TutorialPublicationService;
@@ -18,14 +19,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/tutorials/{id}")
 public class TutorialPublicationAdminController {
+    private final TutorialOperationService operations;
     private final TutorialPublicationService publicationService;
 
     @PostMapping("/submit-review")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.SUBMIT + "')")
-    public ApiResponse<Void> submit(@PathVariable Long id,
+    public ApiResponse<Object> submit(@PathVariable Long id,
             @RequestParam(required = false) Long chapterId) {
-        publicationService.submitReview(id, chapterId);
-        return ApiResponse.ok(null);
+        return ApiResponse.ok(operations.request(chapterId == null ? "publish" : "publishChapter",
+                new Object[]{chapterId == null ? id : chapterId}));
     }
 
     @GetMapping("/preview")
@@ -35,15 +37,15 @@ public class TutorialPublicationAdminController {
     }
 
     @PostMapping("/publish")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.PUBLISH + "')")
-    public ApiResponse<TutorialAdminVO> publish(@PathVariable Long id) {
-        return ApiResponse.ok(publicationService.publish(id));
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    public ApiResponse<Object> publish(@PathVariable Long id) {
+        return ApiResponse.ok(operations.request("publish", new Object[]{id}));
     }
 
     @PostMapping("/withdraw")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.WITHDRAW + "')")
-    public ApiResponse<TutorialAdminVO> withdraw(@PathVariable Long id) {
-        return ApiResponse.ok(publicationService.withdraw(id));
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    public ApiResponse<Object> withdraw(@PathVariable Long id) {
+        return ApiResponse.ok(operations.request("withdraw", new Object[]{id}));
     }
 
 }

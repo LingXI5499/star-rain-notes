@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
@@ -96,6 +97,7 @@ async function removeAdministrator() {
 }
 
 onMounted(load)
+usePaginationScroll(() => page.value, () => loading.value)
 </script>
 
 <template>

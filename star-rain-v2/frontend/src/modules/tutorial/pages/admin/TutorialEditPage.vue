@@ -2,6 +2,7 @@
 import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
 import { onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import { createTutorial, getAdminTutorial, listAdminCategories, updateTutorial } from '../../api/tutorialApi'
+import { isReviewPending } from '../../support/operationResult'
 import { errorMessage } from '../../../../shared/http'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 
@@ -61,7 +62,7 @@ async function save() {
       : await updateTutorial(route.params.tutorialId, payload)
     savedSnapshot = snapshot()
     savedAndLeaving = true
-    await router.push({ path: '/useradmin/tutorials/manage', query: { category: tutorial.categoryId } })
+    await router.push({ path: '/useradmin/tutorials/manage', query: { category: tutorial.categoryId || form.categoryId, review: isReviewPending(tutorial) ? 'pending' : undefined } })
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -92,7 +93,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
   <main class="page-container tutorial-edit">
     <header class="tutorial-edit__heading">
       <h1>{{ isCreate ? '新建教程' : '编辑教程' }}</h1>
-      <p>教程顺序请在教程工作台中直接拖动调整。</p>
+      <p>草稿和已发布教程均可直接修改；管理员操作通过超级管理员审核后生效。</p>
     </header>
     <p v-if="error" class="error" role="alert">{{ error }}</p>
     <p v-if="loading" class="loading" role="status">正在加载教程…</p>

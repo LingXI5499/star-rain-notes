@@ -1,4 +1,5 @@
 <script setup>
+import { usePaginationScroll } from '../../../../shared/composables/paginationScroll'
 import { computed, nextTick, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { createTag, disableTag, enableTag, listAdminTags, updateTag } from '../../api/blogApi'
@@ -184,6 +185,7 @@ watch(() => route.fullPath, () => {
   customValue.value = String(pageSize.value)
   load()
 }, { immediate: true })
+usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value)
 </script>
 
 <template>
@@ -223,13 +225,13 @@ watch(() => route.fullPath, () => {
     <p v-if="loading" class="loading" role="status">正在加载标签…</p>
 
     <div class="tag-grid">
-      <article v-for="tag in tags" :key="tag.id" class="tag-card">
+      <article v-for="tag in tags" :key="tag.id" class="tag-card" tabindex="0" :aria-label="`编辑标签：${tag.name}`" @click="openTagDialog(tag)" @keydown.enter.self="openTagDialog(tag)">
         <div class="tag-card__top">
           <span>#</span>
           <strong>{{ tag.name }}</strong>
           <em>{{ tag.postCount || 0 }}</em>
         </div>
-        <footer>
+        <footer @click.stop>
           <span :class="['status-chip', tag.status === 'DISABLED' && 'status-chip--danger']">{{ taxonomyStatusLabel(tag.status) }}</span>
           <div>
             <button type="button" @click="openTagDialog(tag)">编辑</button>

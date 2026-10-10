@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { listCards, createCard, updateCard, deleteCard, reorderCards, listQuestions, createQuestion, updateQuestion, deleteQuestion, reorderQuestions } from '../api/tutorialApi'
 import { errorMessage } from '../../../shared/http'
+import { operationNotice } from '../support/operationResult'
 import MarkdownEditor from '../../../shared/editor/MarkdownEditor.vue'
 const props = defineProps({ chapterId: { type: [String, Number], required: true }, kind: { type: String, default: 'cards' } })
 const cards = ref([]), questions = ref([]), loading = ref(true), busy = ref(false), error = ref(''), notice = ref('')
@@ -17,7 +18,7 @@ defineExpose({ isDirty })
 const enabledCards = computed(() => cards.value.filter(c => c.status === 'ENABLED').length)
 const enabledQuestions = computed(() => questions.value.filter(q => q.status === 'ENABLED').length)
 async function load() { try { [cards.value, questions.value] = await Promise.all([listCards(props.chapterId), listQuestions(props.chapterId)]) } catch (e) { error.value = errorMessage(e); throw e } finally { loading.value = false } }
-async function run(action) { if (busy.value) return; busy.value = true; error.value = ''; notice.value = ''; try { await action(); await load(); notice.value = '已保存到教程工作区，发布后对学习者生效。'; return true } catch (e) { error.value = errorMessage(e); return false } finally { busy.value = false } }
+async function run(action) { if (busy.value) return; busy.value = true; error.value = ''; notice.value = ''; try { const result = await action(); await load(); notice.value = operationNotice(result, '修改已保存；已发布章节的学习内容同步更新。'); return true } catch (e) { error.value = errorMessage(e); return false } finally { busy.value = false } }
 function resetCard() { Object.assign(card, { id: '', rowVersion: null, frontText: '', backMarkdown: '', status: 'ENABLED' }); savedCard = JSON.stringify({ ...card, backMarkdown: card.backMarkdown.trimEnd() }); editorKey.value++ }
 function resetQuestion() { Object.assign(question, { id: '', rowVersion: null, questionText: '', referenceAnswer: '', status: 'ENABLED', knowledgeCardIds: [] }); savedQuestion = JSON.stringify({ ...question, referenceAnswer: question.referenceAnswer.trimEnd() }); editorKey.value++ }
 function confirmSwitch() { return !isDirty() || window.confirm('当前内容尚未保存，切换后改动会丢失。确定切换吗？') }
@@ -27,17 +28,33 @@ function newItem() { if (busy.value || !confirmSwitch()) return; props.kind === 
 function saveCard() {
  const payload = { ...(card.id ? { rowVersion: card.rowVersion } : {}), frontText: card.frontText, backMarkdown: cardEditor.value?.getMarkdown?.() ?? card.backMarkdown, status: card.status }
  if (!payload.frontText.trim() || !payload.backMarkdown.trim()) { error.value = '请填写回忆问题和卡片答案'; return false }
- return run(async () => { const saved = card.id ? await updateCard(card.id, payload) : await createCard(props.chapterId, payload); editCard({ ...payload, ...saved, id: saved?.id ?? card.id }) })
+ return run(async () => { const saved = card.id ? await updateCard(card.id, payload) : await createCard(props.chapterId, payload); editCard({ ...payload, ...saved, id: saved?.id ?? card.id }); return saved })
 }
 function saveQuestion() {
  const payload = { ...(question.id ? { rowVersion: question.rowVersion } : {}), questionText: question.questionText, referenceAnswer: questionEditor.value?.getMarkdown?.() ?? question.referenceAnswer, status: question.status, knowledgeCardIds: [...question.knowledgeCardIds] }
  if (!payload.questionText.trim() || !payload.referenceAnswer.trim()) { error.value = '请填写问题和参考答案'; return false }
- return run(async () => { const saved = question.id ? await updateQuestion(question.id, payload) : await createQuestion(props.chapterId, payload); editQuestion({ ...payload, ...saved, id: saved?.id ?? question.id }) })
+ return run(async () => { const saved = question.id ? await updateQuestion(question.id, payload) : await createQuestion(props.chapterId, payload); editQuestion({ ...payload, ...saved, id: saved?.id ?? question.id }); return saved })
 }
 function editCard(c) { Object.assign(card, { id: c.id, rowVersion: c.rowVersion, frontText: c.frontText, backMarkdown: c.backMarkdown || '', status: c.status }); savedCard = JSON.stringify({ ...card, backMarkdown: card.backMarkdown.trimEnd() }); editorKey.value++ }
 function editQuestion(q) { Object.assign(question, { id: q.id, rowVersion: q.rowVersion, questionText: q.questionText, referenceAnswer: q.referenceAnswer || '', status: q.status, knowledgeCardIds: [...(q.knowledgeCardIds || [])] }); savedQuestion = JSON.stringify({ ...question, referenceAnswer: question.referenceAnswer.trimEnd() }); editorKey.value++ }
-async function remove(kind, item) { if (busy.value || !window.confirm(`删除“${kind === 'card' ? item.frontText : item.questionText}”？已发布版本和学习证据仍保留。`)) return; await run(async () => { if (kind === 'card') { await deleteCard(item.id); if (String(card.id) === String(item.id)) resetCard() } else { await deleteQuestion(item.id); if (String(question.id) === String(item.id)) resetQuestion() } }) }
-function move(kind, index, delta) { run(async () => { const ids = (kind === 'card' ? cards.value : questions.value).map(row => row.id); [ids[index], ids[index + delta]] = [ids[index + delta], ids[index]]; if (kind === 'card') await reorderCards(props.chapterId, ids); else await reorderQuestions(props.chapterId, ids) }) }
+async function remove(kind, item) {
+ if (busy.value || !window.confirm(`删除“${kind === 'card' ? item.frontText : item.questionText}”？已发布版本和学习证据仍保留。`)) return
+ await run(async () => {
+  const result = kind === 'card' ? await deleteCard(item.id) : await deleteQuestion(item.id)
+  if (!result?.reviewPending) {
+   if (kind === 'card' && String(card.id) === String(item.id)) resetCard()
+   if (kind === 'question' && String(question.id) === String(item.id)) resetQuestion()
+  }
+  return result
+ })
+}
+function move(kind, index, delta) {
+ return run(async () => {
+  const ids = (kind === 'card' ? cards.value : questions.value).map(row => row.id)
+  ;[ids[index], ids[index + delta]] = [ids[index + delta], ids[index]]
+  return kind === 'card' ? reorderCards(props.chapterId, ids) : reorderQuestions(props.chapterId, ids)
+ })
+}
 async function initialize() { loading.value = true; try { await load(); if (props.kind === 'cards' && cards.value.length) editCard(cards.value[0]); else if (props.kind === 'questions' && questions.value.length) editQuestion(questions.value[0]) } catch { /* load displays the error */ } }
 onMounted(initialize); watch(() => props.chapterId, () => { resetCard(); resetQuestion(); initialize() })
 </script>

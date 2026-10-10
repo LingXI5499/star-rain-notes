@@ -1,6 +1,7 @@
 package com.starrainnotes.tutorial.content.controller;
 
 import com.starrainnotes.common.result.ApiResponse;
+import com.starrainnotes.tutorial.content.service.TutorialOperationService;
 import com.starrainnotes.common.result.PageResult;
 import com.starrainnotes.tutorial.content.constant.TutorialPermissions;
 import com.starrainnotes.tutorial.content.dto.GroupNameDTO;
@@ -29,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/api/admin/tutorials")
 public class TutorialAdminController {
+    private final TutorialOperationService operations;
     private final TutorialContentService contentService;
 
     @GetMapping
@@ -41,8 +43,8 @@ public class TutorialAdminController {
 
     @PostMapping
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<TutorialAdminVO> create(@Valid @RequestBody TutorialCreateDTO request) {
-        return ApiResponse.ok(contentService.createTutorial(request));
+    public ApiResponse<Object> create(@Valid @RequestBody TutorialCreateDTO request) {
+        return ApiResponse.ok(operations.request("createTutorial", new Object[]{request}));
     }
 
     @GetMapping("/{id}")
@@ -53,16 +55,15 @@ public class TutorialAdminController {
 
     @PatchMapping("/{id}")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<TutorialAdminVO> update(@PathVariable Long id,
+    public ApiResponse<Object> update(@PathVariable Long id,
                                                 @Valid @RequestBody TutorialUpdateDTO request) {
-        return ApiResponse.ok(contentService.updateTutorial(id, request));
+        return ApiResponse.ok(operations.request("updateTutorial", new Object[]{id, request}));
     }
 
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('" + TutorialPermissions.PUBLISH + "')")
-    public ApiResponse<Void> delete(@PathVariable Long id) {
-        contentService.deleteTutorial(id);
-        return ApiResponse.ok(null);
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
+    public ApiResponse<Object> delete(@PathVariable Long id) {
+        return ApiResponse.ok(operations.request("deleteTutorial", new Object[]{id}));
     }
 
     @GetMapping("/{id}/curriculum")
@@ -73,16 +74,15 @@ public class TutorialAdminController {
 
     @PostMapping("/{id}/groups")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<TutorialGroupVO> createGroup(@PathVariable Long id,
+    public ApiResponse<Object> createGroup(@PathVariable Long id,
                                                      @Valid @RequestBody GroupNameDTO request) {
-        return ApiResponse.ok(contentService.createGroup(id, request.getTitle()));
+        return ApiResponse.ok(operations.request("createGroup", new Object[]{id, request.getTitle()}));
     }
 
     @PutMapping("/{id}/groups/order")
     @PreAuthorize("hasAuthority('" + TutorialPermissions.EDIT + "')")
-    public ApiResponse<Void> reorderGroups(@PathVariable Long id,
+    public ApiResponse<Object> reorderGroups(@PathVariable Long id,
                                             @Valid @RequestBody IdOrderDTO request) {
-        contentService.reorderGroups(id, request.getIds());
-        return ApiResponse.ok(null);
+        return ApiResponse.ok(operations.request("reorderGroups", new Object[]{id, request.getIds()}));
     }
 }
