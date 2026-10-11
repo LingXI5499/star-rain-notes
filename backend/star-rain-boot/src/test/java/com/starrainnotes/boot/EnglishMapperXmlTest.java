@@ -300,6 +300,12 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, vocabulary.words(theme.getId(), null, 0, 1).size(), "LIMIT 没生效");
         assertTrue(vocabulary.words(theme.getId(), null, 1, 10).isEmpty(), "OFFSET 没生效");
         assertTrue(vocabulary.words(probeId(), null, 0, 10).isEmpty());
+        // A clean CI database has no user vocabulary; seed another theme instead of relying on local content.
+        VocabularyDto.Theme otherTheme = newTheme();
+        assertEquals(1, vocabulary.insertTheme(otherTheme));
+        for (int index = 0; index < 9; index++) {
+            assertEquals(1, vocabulary.insertWord(newWord(otherTheme.getId(), unique("mapperxmllimit"))));
+        }
         assertEquals(10, vocabulary.words(null, null, 0, 10).size(),
                 "themeId 为 null 时必须退化成不过滤主题，只受 LIMIT 约束");
         assertEquals(1, vocabulary.wordsByIds(List.of(word.getId())).size());

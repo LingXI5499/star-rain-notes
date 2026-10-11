@@ -186,6 +186,30 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         assertEquals("APPLIED", mapper(TutorialOperationMapper.class).selectById(pending.getId()).getStatus());
     }
 
+    @Test void recoveryRejectsChangedBaselineAndNeverReplaysRejectedOrCanceledOperations() {
+        when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("ADMIN")).build());
+        operations.request("updateChapter", new Object[]{chapter.getId(), change(content.chapter(chapter.getId()).getRowVersion())});
+        var pending = mapper(TutorialOperationMapper.class).pending("tutorial:" + tutorial.getId());
+        operations.recordFailure(pending.getId(), new IllegalStateException("interrupted"));
+        when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(71L).roles(Set.of("SUPER_ADMIN")).build());
+        var newer = change(content.chapter(chapter.getId()).getRowVersion()); newer.setBodyMarkdown("Newer independent edit");
+        content.updateChapter(chapter.getId(), newer);
+        Long version = content.chapter(chapter.getId()).getRowVersion();
+        assertThrows(com.starrainnotes.tutorial.content.exception.TutorialStateException.class, () -> operations.recoverApproved(pending.getId()));
+        assertEquals("Newer independent edit", content.chapter(chapter.getId()).getBodyMarkdown());
+        assertEquals(version, content.chapter(chapter.getId()).getRowVersion());
+        assertEquals("FAILED", mapper(TutorialOperationMapper.class).selectById(pending.getId()).getStatus());
+        for (String terminal : List.of("REJECTED", "CANCELED")) {
+            when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("ADMIN")).build());
+            operations.request("updateChapter", new Object[]{chapter.getId(), change(version)});
+            var stopped = mapper(TutorialOperationMapper.class).pending("tutorial:" + tutorial.getId());
+            operations.finish(stopped.getId(), terminal);
+            assertThrows(com.starrainnotes.tutorial.content.exception.TutorialStateException.class, () -> operations.recoverApproved(stopped.getId()));
+            assertEquals(terminal, mapper(TutorialOperationMapper.class).selectById(stopped.getId()).getStatus());
+            assertEquals(version, content.chapter(chapter.getId()).getRowVersion());
+        }
+    }
+
     @Test void mediaReferenceFailureRollsBackTitleSummaryBodyAndVersionInRealSpringTransaction() {
         var before=content.chapter(chapter.getId());
         doThrow(new IllegalStateException("media failure")).when(media).replaceChapter(eq(chapter.getId()),anyString());
