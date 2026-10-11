@@ -1,3 +1,11 @@
+/**
+ * WorkSectionRenderer.spec.js：作品模块的自动化测试。
+ * 职责范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、@vue/test-utils、./WorkSectionRenderer.vue、../support/workBlocks。
+ * 验证场景：work content blocks；renders structured blocks and omits hidden content；treats code and quotation as text and rejects unsafe links；serializes media IDs without persisting display URLs；renders media, feature, technology and text blocks with captions, native audio and sanitized markup。
+ */
+
 import { describe, it, expect } from 'vitest'
 import { mount } from '@vue/test-utils'
 import WorkSectionRenderer from './WorkSectionRenderer.vue'

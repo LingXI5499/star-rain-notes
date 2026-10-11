@@ -1,3 +1,10 @@
+/**
+ * markdownOutline.js：跨模块基础模块的共享工具。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 将跨模块使用的行为收敛到一个实现，调用方通过导出函数或组合式函数使用。
+ * 阅读入口：headingText（heading文本的处理函数）；headingSlug（heading固定链接标识的处理函数）；uniqueHeadingId（uniqueHeading标识的处理函数）。
+ */
+
 /*
  * 标题大纲的 slug 规则 —— 从 V1 `lib/markdownOutline.ts` 逐条移植成 JS。
  *
@@ -28,7 +35,14 @@ export const OUTLINE_MAX_LEVEL = 6
  *     V1 的列表里也有 math_inline，因为 V1 同样支持公式）；
  *   - 刻意不收 emoji / 图片等节点：图片的 alt 不进大纲，与 V1 一致。
  */
-export function headingText(inline) {
+export
+  /**
+   * heading文本的处理函数。
+   * 主要协作：.trim、.join、.map、.filter、.includes。
+   * @param inline inline；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function headingText(inline) {
   if (!inline || inline.type !== 'inline') return ''
   return (inline.children || [])
     .filter((child) => ['text', 'code_inline', 'math_inline'].includes(child.type))
@@ -38,7 +52,14 @@ export function headingText(inline) {
 }
 
 /* 标题文本 → id 基名（同名的第 2 个标题会在此基础上加 -1，见 uniqueHeadingId） */
-export function headingSlug(text) {
+export
+  /**
+   * heading固定链接标识的处理函数。
+   * 主要协作：.replace、.toLowerCase、.trim、.normalize。
+   * @param text 文本；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function headingSlug(text) {
   const base = String(text)
     .normalize('NFKC')
     .trim()
@@ -53,7 +74,15 @@ export function headingSlug(text) {
  * used 由调用方提供（渲染器放在 markdown-it 的 env 里），因此同一篇文档共用一个计数表，
  * 不同文档之间互不影响。返回值必须原样作为 DOM 的 id，且同一顺序下重复调用结果一致。
  */
-export function uniqueHeadingId(text, used) {
+export
+  /**
+   * uniqueHeading标识的处理函数。
+   * 主要协作：headingSlug、used.get、used.set。
+   * @param text 文本；默认值、解构字段与可选参数见函数签名。
+   * @param used used；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function uniqueHeadingId(text, used) {
   const base = headingSlug(text)
   const count = used.get(base) || 0
   used.set(base, count + 1)

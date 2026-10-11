@@ -1,13 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialRevisionMapper">
+    <!--
+      TutorialRevisionMapper.xml：com.starrainnotes.tutorial.content.mapper.TutorialRevisionMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, tutorial_id, revision_no, revision_ref, snapshot_json, content_sha256,
     revision_reason, created_by_account_id, created_at
   </sql>
 
   <!-- snapshot_json 是 JSON 列，由 Service 生成合法 JSON 后写入；created_at 交给列默认值 -->
+  <!--
+    insert：新增；新增语句。
+    涉及数据表：sr_tutorial_revision；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    插入成功后 JDBC 自动生成的主键回填到 id。
+    绑定参数：tutorialId、revisionNo、revisionRef、snapshotJson、contentSha256、createdByAccountId；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity"
           useGeneratedKeys="true" keyProperty="id">
     INSERT INTO sr_tutorial_revision
@@ -16,15 +34,37 @@
       (#{tutorialId}, #{revisionNo}, #{revisionRef}, #{snapshotJson}, #{contentSha256}, #{createdByAccountId})
   </insert>
 
+  <!--
+    selectById：查询依据标识；读取语句。
+    涉及数据表：sr_tutorial_revision；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectById" resultType="com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial_revision WHERE id = #{id}
   </select>
 
+  <!--
+    selectByTutorialIdAndRef：查询依据教程标识及Ref；读取语句。
+    涉及数据表：sr_tutorial_revision；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：tutorialId、revisionRef；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectByTutorialIdAndRef" resultType="com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial_revision
     WHERE tutorial_id = #{tutorialId} AND revision_ref = #{revisionRef}
   </select>
 
+  <!--
+    selectLatestByTutorialId：查询最新依据教程标识；读取语句。
+    涉及数据表：sr_tutorial_revision；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：tutorialId；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="selectLatestByTutorialId" resultType="com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial_revision
     WHERE tutorial_id = #{tutorialId}
@@ -32,6 +72,13 @@
     LIMIT 1
   </select>
 
+  <!--
+    countByTutorialId：数量依据教程标识；读取语句。
+    涉及数据表：sr_tutorial_revision；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+    绑定参数：tutorialId；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="countByTutorialId" resultType="long">
     SELECT COUNT(*) FROM sr_tutorial_revision WHERE tutorial_id = #{tutorialId}
   </select>

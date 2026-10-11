@@ -1,3 +1,11 @@
+/*
+ * MediaContentController：媒体模块的HTTP 接入文件。
+ * 业务范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 声明 HTTP 路由，接收路径、查询或请求体参数，并将业务结果包装为统一响应。权限和参数校验以本类注解及调用服务为准。
+ * 主要协作类型：MediaAccessService、MediaContentVO。
+ * 阅读入口：content（内容处理入口）。
+ */
+
 package com.starrainnotes.media.controller;
 
 import com.starrainnotes.media.service.MediaAccessService;
@@ -27,20 +35,48 @@ import org.springframework.web.bind.annotation.RestController;
  *   合法单区间      → 206 + Content-Range
  *   区间不可满足    → 416（由 MediaAccessService 抛出，带 Content-Range 语义的错误码）
  */
+/**
+ * 媒体内容控制器，属于媒体模块。
+ * 声明 HTTP 路由，接收路径、查询或请求体参数，并将业务结果包装为统一响应。权限和参数校验以本类注解及调用服务为准。
+ */
 @RestController
 public class MediaContentController {
 
+    /**
+     * 缓存。
+     */
     private static final String PUBLIC_CACHE = "public, max-age=86400";
 
     // 受保护内容不进共享缓存，也不进浏览器持久缓存
+    /**
+     * 缓存。
+     */
     private static final String PROTECTED_CACHE = "private, no-store";
 
+    /**
+     * 访问业务服务。
+     * 协作类型：<code>MediaAccessService</code>。
+     */
     private final MediaAccessService accessService;
 
+    /**
+     * 构造MediaContentController，接收本类使用的依赖或初始化参数。
+     *
+     * @param accessService 访问业务服务；类型为 <code>MediaAccessService</code>
+     */
     public MediaContentController(MediaAccessService accessService) {
         this.accessService = accessService;
     }
 
+    /**
+     * 内容处理入口。
+     * HTTP 映射：<code>@GetMapping("/api/media/assets/{mediaAssetId}/content")</code>。
+     * 主要协作调用：<code>accessService.open</code>。
+     *
+     * @param mediaAssetId 关联的媒体资产标识；类型为 <code>Long</code>
+     * @param rangeHeader 范围响应头；类型为 <code>String</code>
+     * @return 类型为 <code>ResponseEntity&lt;InputStreamResource&gt;</code> 的处理结果
+     */
     @GetMapping("/api/media/assets/{mediaAssetId}/content")
     public ResponseEntity<InputStreamResource> content(
             @PathVariable Long mediaAssetId,

@@ -1,3 +1,11 @@
+/*
+ * TutorialContentServiceImpl：教程与学习模块的业务实现文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：TutorialRevisionMapper、CurrentActorApi、PageResult、ChapterBodyDTO、ChapterCreateDTO、ChapterUpdateDTO、TutorialCreateDTO。
+ * 阅读入口：categories（categories处理入口）；createCategory（创建分类）；updateCategory（更新分类）；deleteCategory（删除分类）。
+ */
+
 package com.starrainnotes.tutorial.content.service.impl;
 
 import org.springframework.transaction.annotation.Isolation;
@@ -45,22 +53,71 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 教程内容业务服务实现，属于教程与学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class TutorialContentServiceImpl implements TutorialContentService {
+    /**
+     * 分类数据映射。
+     * 协作类型：<code>TutorialCategoryMapper</code>。
+     */
     private final TutorialCategoryMapper categoryMapper;
+    /**
+     * 教程数据映射。
+     * 协作类型：<code>TutorialMapper</code>。
+     */
     private final TutorialMapper tutorialMapper;
+    /**
+     * 分组数据映射。
+     * 协作类型：<code>TutorialGroupMapper</code>。
+     */
     private final TutorialGroupMapper groupMapper;
+    /**
+     * 章节数据映射。
+     * 协作类型：<code>TutorialChapterMapper</code>。
+     */
     private final TutorialChapterMapper chapterMapper;
+    /**
+     * 提供当前认证操作者身份的跨模块接口。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi currentActorApi;
+    /**
+     * 媒体References。
+     */
     private final TutorialMediaReferences mediaReferences;
+    /**
+     * dependencies。
+     */
     private final TutorialDependencyCleanup dependencies;
+    /**
+     * 修订数据映射。
+     * 协作类型：<code>TutorialRevisionMapper</code>。
+     */
     private final TutorialRevisionMapper revisionMapper;
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private static LocalDateTime now() {
         return LocalDateTime.now(ZoneOffset.UTC);
     }
 
+    /**
+     * 文本处理入口。
+     * 关键处理步骤调用 <code>value.strip</code>、<code>result.isEmpty</code>、<code>result.length</code>。
+     * 实现中的显式失败类型包括 <code>TutorialInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @param field 字段；类型为 <code>String</code>
+     * @param maxLength 最大Length；类型为 <code>int</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String text(String value, String field, int maxLength) {
         String result = value == null ? "" : value.strip();
         if (result.isEmpty() || result.length() > maxLength) {
@@ -69,6 +126,15 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return result;
     }
 
+    /**
+     * optional文本处理入口。
+     * 关键处理步骤调用 <code>value.strip</code>、<code>result.length</code>、<code>result.isEmpty</code>。
+     * 实现中的显式失败类型包括 <code>TutorialInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @param maxLength 最大Length；类型为 <code>int</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String optionalText(String value, int maxLength) {
         String result = value == null ? "" : value.strip();
         if (result.length() > maxLength) {
@@ -77,6 +143,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return result.isEmpty() ? null : result;
     }
 
+    /**
+     * 正文文本处理入口。
+     * 关键处理步骤调用 <code>value.isBlank</code>、<code>value.length</code>。
+     * 实现中的显式失败类型包括 <code>TutorialInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String bodyText(String value) {
         if (value == null || value.isBlank() || value.length() > 2_000_000) {
             throw new TutorialInvalidRequestException("章节正文不能为空，且长度不能超过 2000000 字符");
@@ -84,24 +158,56 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return value;
     }
 
+    /**
+     * 检查所需分类。
+     * 主要协作调用：<code>categoryMapper.selectById</code>。
+     * 实现中的显式失败类型包括 <code>TutorialCategoryNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialCategoryEntity</code> 的处理结果
+     */
     private TutorialCategoryEntity requireCategory(Long id) {
         TutorialCategoryEntity category = id == null ? null : categoryMapper.selectById(id);
         if (category == null) throw new TutorialCategoryNotFoundException();
         return category;
     }
 
+    /**
+     * 检查所需教程。
+     * 主要协作调用：<code>tutorialMapper.selectById</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialEntity</code> 的处理结果
+     */
     private TutorialEntity requireTutorial(Long id) {
         TutorialEntity tutorial = id == null ? null : tutorialMapper.selectById(id);
         if (tutorial == null) throw new TutorialNotFoundException();
         return tutorial;
     }
 
+    /**
+     * 锁教程处理入口。
+     * 主要协作调用：<code>tutorialMapper.byIdForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialEntity</code> 的处理结果
+     */
     private TutorialEntity lockTutorial(Long id) {
         TutorialEntity tutorial = id == null ? null : tutorialMapper.byIdForUpdate(id);
         if (tutorial == null) throw new TutorialNotFoundException();
         return tutorial;
     }
 
+    /**
+     * editable教程处理入口。
+     * 关键处理步骤调用 <code>lockTutorial</code>、<code>tutorial.getEditingStatus</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialEntity</code> 的处理结果
+     */
     private TutorialEntity editableTutorial(Long id) {
         TutorialEntity tutorial = lockTutorial(id);
         if ("IN_REVIEW".equals(tutorial.getEditingStatus())) {
@@ -110,38 +216,95 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return tutorial;
     }
 
+    /**
+     * 检查所需分组。
+     * 主要协作调用：<code>groupMapper.selectById</code>。
+     * 实现中的显式失败类型包括 <code>TutorialGroupNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialGroupEntity</code> 的处理结果
+     */
     private TutorialGroupEntity requireGroup(Long id) {
         TutorialGroupEntity group = id == null ? null : groupMapper.selectById(id);
         if (group == null) throw new TutorialGroupNotFoundException();
         return group;
     }
 
+    /**
+     * 检查所需章节。
+     * 主要协作调用：<code>chapterMapper.selectById</code>。
+     * 实现中的显式失败类型包括 <code>TutorialChapterNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialChapterEntity</code> 的处理结果
+     */
     private TutorialChapterEntity requireChapter(Long id) {
         TutorialChapterEntity chapter = id == null ? null : chapterMapper.selectById(id);
         if (chapter == null) throw new TutorialChapterNotFoundException();
         return chapter;
     }
 
+    /**
+     * 分类行集合处理入口。
+     * 主要协作调用：<code>categoryMapper.listOrdered</code>。
+     * @return 本次处理得到的条目集合
+     */
     private List<TutorialCategoryEntity> categoryRows() {
         return categoryMapper.listOrdered();
     }
 
+    /**
+     * 教程行集合处理入口。
+     * 主要协作调用：<code>tutorialMapper.listOrdered</code>。
+     *
+     * @param categoryId 分类标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     private List<TutorialEntity> tutorialRows(Long categoryId) {
         return tutorialMapper.listOrdered(categoryId);
     }
 
+    /**
+     * 分组行集合处理入口。
+     * 主要协作调用：<code>groupMapper.listByTutorialId</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     private List<TutorialGroupEntity> groupRows(Long tutorialId) {
         return groupMapper.listByTutorialId(tutorialId);
     }
 
+    /**
+     * 章节行集合处理入口。
+     * 主要协作调用：<code>chapterMapper.listByGroupId</code>。
+     *
+     * @param groupId 分组标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     private List<TutorialChapterEntity> chapterRows(Long groupId) {
         return chapterMapper.listByGroupId(groupId);
     }
 
+    /**
+     * 下一项顺序处理入口。
+     * 关键处理步骤调用 <code>orders.stream</code>。
+     *
+     * @param orders orders；类型为 <code>List&lt;Integer&gt;</code>
+     * @return 类型为 <code>int</code> 的处理结果
+     */
     private static int nextOrder(List<Integer> orders) {
         return orders.stream().filter(Objects::nonNull).mapToInt(Integer::intValue).max().orElse(0) + 10;
     }
 
+    /**
+     * 检查所需Exact顺序。
+     * 关键处理步骤调用 <code>ids.size</code>、<code>expected.size</code>。
+     * 实现中的显式失败类型包括 <code>TutorialInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     * @param expected 测试期望结果；类型为 <code>List&lt;Long&gt;</code>
+     */
     private static void requireExactOrder(List<Long> ids, List<Long> expected) {
         if (ids == null || ids.size() != expected.size()
                 || new HashSet<>(ids).size() != ids.size()
@@ -150,6 +313,13 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         }
     }
 
+    /**
+     * 分类View处理入口。
+     * 关键处理步骤调用 <code>TutorialCategoryVO.builder</code>、<code>String.valueOf</code>、<code>category.getId</code>、<code>category.getName</code>。
+     *
+     * @param category 分类；类型为 <code>TutorialCategoryEntity</code>
+     * @return 类型为 <code>TutorialCategoryVO</code> 的处理结果
+     */
     private TutorialCategoryVO categoryView(TutorialCategoryEntity category) {
         return TutorialCategoryVO.builder().id(String.valueOf(category.getId())).name(category.getName())
                 .slug(category.getSlug()).sortOrder(category.getSortOrder())
@@ -157,6 +327,13 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                 .chapterCount(category.getChapterCount() == null ? 0L : category.getChapterCount()).build();
     }
 
+    /**
+     * 教程View处理入口。
+     * 主要协作调用：<code>categoryMapper.selectById</code>、<code>chapterMapper.countByTutorialId</code>。
+     *
+     * @param tutorial 教程；类型为 <code>TutorialEntity</code>
+     * @return 类型为 <code>TutorialAdminVO</code> 的处理结果
+     */
     private TutorialAdminVO tutorialView(TutorialEntity tutorial) {
         TutorialCategoryEntity category = categoryMapper.selectById(tutorial.getCategoryId());
         long chapterCount = chapterMapper.countByTutorialId(tutorial.getId());
@@ -169,6 +346,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                 .publishedAt(tutorial.getPublishedAt()).updatedAt(tutorial.getUpdatedAt()).build();
     }
 
+    /**
+     * 分组View处理入口。
+     * 关键处理步骤调用 <code>TutorialGroupVO.builder</code>、<code>String.valueOf</code>、<code>group.getId</code>、<code>group.getTutorialId</code>。
+     *
+     * @param group 分组；类型为 <code>TutorialGroupEntity</code>
+     * @param chapters 章节列表；类型为 <code>List&lt;TutorialChapterEntity&gt;</code>
+     * @return 类型为 <code>TutorialGroupVO</code> 的处理结果
+     */
     private TutorialGroupVO groupView(TutorialGroupEntity group, List<TutorialChapterEntity> chapters) {
         return TutorialGroupVO.builder().id(String.valueOf(group.getId()))
                 .tutorialId(String.valueOf(group.getTutorialId())).title(group.getTitle())
@@ -181,6 +366,13 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                 }).toList()).build();
     }
 
+    /**
+     * 章节View处理入口。
+     * 关键处理步骤调用 <code>TutorialChapterVO.builder</code>、<code>String.valueOf</code>、<code>chapter.getId</code>、<code>chapter.getTutorialId</code>。
+     *
+     * @param chapter 章节；类型为 <code>TutorialChapterEntity</code>
+     * @return 类型为 <code>TutorialChapterVO</code> 的处理结果
+     */
     private TutorialChapterVO chapterView(TutorialChapterEntity chapter) {
         return TutorialChapterVO.builder().id(String.valueOf(chapter.getId()))
                 .tutorialId(String.valueOf(chapter.getTutorialId()))
@@ -190,11 +382,25 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                 .status(chapter.getStatus()).rowVersion(chapter.getRowVersion()).updatedAt(chapter.getUpdatedAt()).build();
     }
 
+    /**
+     * categories处理入口。
+     * 关键处理步骤调用 <code>categoryRows</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     public List<TutorialCategoryVO> categories() {
         return categoryRows().stream().map(this::categoryView).toList();
     }
 
+    /**
+     * 创建分类。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>categoryMapper.countBySlug</code>、<code>categoryMapper.insert</code>。
+     * 实现中的显式失败类型包括 <code>TutorialConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param name 名称；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialCategoryVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialCategoryVO createCategory(String name) {
@@ -217,6 +423,15 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         throw new TutorialConflictException("知识体系名称对应的地址已被占用，请稍后重试");
     }
 
+    /**
+     * 更新分类。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>categoryMapper.updateName</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param name 名称；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialCategoryVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialCategoryVO updateCategory(Long id, String name) {
@@ -228,6 +443,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return categoryView(category);
     }
 
+    /**
+     * 删除分类。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tutorialMapper.countByCategoryId</code>、<code>categoryMapper.deleteById</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteCategory(Long id) {
@@ -238,6 +461,13 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         categoryMapper.deleteById(id);
     }
 
+    /**
+     * 调整顺序Categories。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>categoryMapper.updateSortOrder</code>。
+     *
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderCategories(List<Long> ids) {
@@ -253,11 +483,30 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         }
     }
 
+    /**
+     * tutorials处理入口。
+     * 关键处理步骤调用 <code>tutorials</code>。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @return 类型为 <code>PageResult&lt;TutorialAdminVO&gt;</code> 的处理结果
+     */
     @Override
     public PageResult<TutorialAdminVO> tutorials(int page, int pageSize) {
         return tutorials(null, null, page, pageSize);
     }
 
+    /**
+     * tutorials处理入口。
+     * 主要协作调用：<code>tutorialMapper.adminPage</code>、<code>tutorialMapper.adminCount</code>。
+     * 实现中的显式失败类型包括 <code>TutorialInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param categoryId 分类标识；类型为 <code>Long</code>
+     * @param keyword 关键词；类型为 <code>String</code>
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @return 类型为 <code>PageResult&lt;TutorialAdminVO&gt;</code> 的处理结果
+     */
     @Override
     public PageResult<TutorialAdminVO> tutorials(Long categoryId, String keyword, int page, int pageSize) {
         if (page < 1 || pageSize < 1 || pageSize > 100) {
@@ -272,17 +521,40 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                 .page(page).pageSize(pageSize).build();
     }
 
+    /**
+     * 教程顺序处理入口。
+     * 主要协作调用：<code>tutorialMapper.orderItems</code>。
+     *
+     * @param categoryId 分类标识；类型为 <code>Long</code>
+     * @return 类型为 <code>java.util.List&lt;com.starrainnotes.tutorial.content.vo.TutorialOrderItemVO&gt;</code> 的处理结果
+     */
     @Override
     public java.util.List<com.starrainnotes.tutorial.content.vo.TutorialOrderItemVO> tutorialOrder(Long categoryId) {
         requireCategory(categoryId);
         return tutorialMapper.orderItems(categoryId);
     }
 
+    /**
+     * 教程处理入口。
+     * 关键处理步骤调用 <code>tutorialView</code>、<code>requireTutorial</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialAdminVO</code> 的处理结果
+     */
     @Override
     public TutorialAdminVO tutorial(Long id) {
         return tutorialView(requireTutorial(id));
     }
 
+    /**
+     * 创建教程。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>currentActorApi.current</code>、<code>tutorialMapper.countBySlug</code>、<code>tutorialMapper.insert</code>。
+     * 实现中的显式失败类型包括 <code>TutorialConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>TutorialCreateDTO</code>
+     * @return 类型为 <code>TutorialAdminVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialAdminVO createTutorial(TutorialCreateDTO request) {
@@ -314,6 +586,15 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         throw new TutorialConflictException("教程地址生成冲突，请稍后重试");
     }
 
+    /**
+     * 更新教程。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>currentActorApi.current</code>、<code>tutorialMapper.update</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>TutorialUpdateDTO</code>
+     * @return 类型为 <code>TutorialAdminVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialAdminVO updateTutorial(Long id, TutorialUpdateDTO request) {
@@ -332,6 +613,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return tutorialView(tutorial);
     }
 
+    /**
+     * 删除教程。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>revisionMapper.countByTutorialId</code>、<code>dependencies.tutorialLearning</code>、<code>groupMapper.deleteById</code>、<code>dependencies.revisionIds</code>、<code>mediaReferences.detachRevision</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteTutorial(Long id) {
@@ -349,6 +638,13 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         tutorialMapper.deleteById(id);
     }
 
+    /**
+     * 删除章节Data。
+     * 主要协作调用：<code>revisionMapper.countByTutorialId</code>、<code>dependencies.chapterChildren</code>、<code>mediaReferences.detachChapter</code>、<code>chapterMapper.deleteById</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param chapter 章节；类型为 <code>TutorialChapterEntity</code>
+     */
     private void deleteChapterData(TutorialChapterEntity chapter) {
         if (revisionMapper.countByTutorialId(chapter.getTutorialId()) > 0) {
             throw new TutorialStateException("教程存在历史版本，请撤回章节以保留学习记录");
@@ -358,6 +654,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         chapterMapper.deleteById(chapter.getId());
     }
 
+    /**
+     * 调整顺序Tutorials。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tutorialMapper.updateSortOrder</code>。
+     *
+     * @param categoryId 分类标识；类型为 <code>Long</code>
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderTutorials(Long categoryId, List<Long> ids) {
@@ -374,6 +678,13 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         }
     }
 
+    /**
+     * curriculum处理入口。
+     * 关键处理步骤调用 <code>requireTutorial</code>、<code>groupRows</code>、<code>groupView</code>、<code>chapterRows</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialCurriculumVO</code> 的处理结果
+     */
     @Override
     public TutorialCurriculumVO curriculum(Long tutorialId) {
         TutorialEntity tutorial = requireTutorial(tutorialId);
@@ -382,6 +693,15 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return TutorialCurriculumVO.builder().tutorial(tutorialView(tutorial)).groups(groups).build();
     }
 
+    /**
+     * 创建分组。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>groupMapper.insert</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @param title 标题；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialGroupVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialGroupVO createGroup(Long tutorialId, String title) {
@@ -396,6 +716,15 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return groupView(group, List.of());
     }
 
+    /**
+     * 更新分组。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>groupMapper.updateTitle</code>。
+     *
+     * @param groupId 分组标识；类型为 <code>Long</code>
+     * @param title 标题；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialGroupVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialGroupVO updateGroup(Long groupId, String title) {
@@ -407,6 +736,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return groupView(group, chapterRows(groupId));
     }
 
+    /**
+     * 删除分组。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>dependencies.groupLearning</code>、<code>groupMapper.deleteById</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param groupId 分组标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteGroup(Long groupId) {
@@ -419,6 +756,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         groupMapper.deleteById(groupId);
     }
 
+    /**
+     * 调整顺序Groups。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>groupMapper.updateSortOrder</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderGroups(Long tutorialId, List<Long> ids) {
@@ -435,11 +780,28 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         }
     }
 
+    /**
+     * 章节处理入口。
+     * 关键处理步骤调用 <code>chapterView</code>、<code>requireChapter</code>。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialChapterVO</code> 的处理结果
+     */
     @Override
     public TutorialChapterVO chapter(Long chapterId) {
         return chapterView(requireChapter(chapterId));
     }
 
+    /**
+     * 创建章节。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>chapterMapper.countByTutorialIdAndSlug</code>、<code>chapterMapper.insert</code>、<code>mediaReferences.replaceChapter</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>、<code>TutorialConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param groupId 分组标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>ChapterCreateDTO</code>
+     * @return 类型为 <code>TutorialChapterVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialChapterVO createChapter(Long groupId, ChapterCreateDTO request) {
@@ -474,6 +836,16 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         throw new TutorialConflictException("章节地址生成冲突，请稍后重试");
     }
 
+    /**
+     * 更新章节。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>chapterMapper.saveWorkspace</code>、<code>mediaReferences.replaceChapter</code>。
+     * 实现中的显式失败类型包括 <code>TutorialConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>ChapterUpdateDTO</code>
+     * @return 类型为 <code>TutorialChapterVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialChapterVO updateChapter(Long chapterId, ChapterUpdateDTO request) {
@@ -494,6 +866,15 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         return chapterView(chapter);
     }
 
+    /**
+     * 更新章节正文。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>requireChapter</code>、<code>updateChapter</code>、<code>ChapterUpdateDTO.builder</code>、<code>chapter.getTitle</code>。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>ChapterBodyDTO</code>
+     * @return 类型为 <code>TutorialChapterVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialChapterVO updateChapterBody(Long chapterId, ChapterBodyDTO request) {
@@ -503,6 +884,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
                 .rowVersion(request.getRowVersion()).build());
     }
 
+    /**
+     * 删除章节。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>requireChapter</code>、<code>editableTutorial</code>、<code>chapter.getTutorialId</code>、<code>tutorial.getPublicationStatus</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void deleteChapter(Long chapterId) {
@@ -513,6 +902,14 @@ public class TutorialContentServiceImpl implements TutorialContentService {
         deleteChapterData(chapter);
     }
 
+    /**
+     * 调整顺序章节列表。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>chapterMapper.updateSortOrder</code>。
+     *
+     * @param groupId 分组标识；类型为 <code>Long</code>
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void reorderChapters(Long groupId, List<Long> ids) {

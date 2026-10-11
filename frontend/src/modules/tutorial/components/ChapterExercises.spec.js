@@ -1,3 +1,11 @@
+/**
+ * ChapterExercises.spec.js：教程与学习模块的自动化测试。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vitest、./ChapterExercises.vue、../api/tutorialApi。
+ * 验证场景：chapter learning content editor；saves the latest card Markdown even before the editor emits v-model；renders only the question form on its own page and saves multiple relations；rejects empty content before making a request；allows a question without any knowledge card association。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ChapterExercises from './ChapterExercises.vue'

@@ -1,3 +1,11 @@
+/**
+ * QuestionAnswers.spec.js：教程与学习模块的自动化测试。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vitest、./QuestionAnswers.vue、../api/learningApi。
+ * 验证场景：question answer versions；saves BEFORE_REFERENCE before offering reference, then appends AFTER_REFERENCE；reanswer starts an empty independent version and conceals the displayed reference；starts a new round with an empty answer and keeps the old reference concealed；prevents answering during the card stage。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import QuestionAnswers from './QuestionAnswers.vue'

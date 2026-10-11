@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * ReviewCenterPage.vue：审核模块的页面组件。
+ * 职责范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：../../../shared/composables/paginationScroll、vue、vue-router、../../account/stores/authStore、../api/reviewApi、../../../shared/http。
+ * 主要响应式状态：router、auth、tab、loading、error、notice、pendingFilters、pendingPage。
+ * 阅读入口：blank（blank的处理函数）；loadPending（加载待处理）；loadHistory（加载历史）；load（加载当前操作）；switchTab（switchTab的处理函数）。
+ */
+
+
 import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -19,39 +29,114 @@ import { REVIEW_STATUSES, dateLabel, targetLabel } from '../support/display'
  * 待办永远只查 PENDING（由后端固定），前端不提供状态筛选，
  * 避免出现「待办里筛状态」这种自相矛盾的交互。
  */
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
 
+/**
+ * tab；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tab = ref('pending')
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
 
+/**
+ * 待处理筛选条件；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pendingFilters = reactive({ targetModule: '', reviewType: '', keyword: '' })
+/**
+ * 待处理分页；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pendingPage = ref(1)
 const pendingSize = 20
+/**
+ * 待处理；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pending = ref({ items: [], total: 0, page: 1, pageSize: pendingSize })
 
+/**
+ * 历史筛选条件；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const historyFilters = reactive({
   targetModule: '', targetType: '', targetId: '', reviewType: '',
   status: '', applicantAccountId: '', reviewerAccountId: '', startTime: '', endTime: '',
 })
+/**
+ * 历史分页；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const historyPage = ref(1)
 const historySize = 20
+/**
+ * 历史；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const history = ref({ items: [], total: 0, page: 1, pageSize: historySize })
 
 
+/**
+ * can读取；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const canRead = computed(() => auth.hasPermission('review:read'))
+/**
+ * can历史；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const canHistory = computed(() => auth.hasPermission('review:history-read'))
+/**
+ * 待处理Pages；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const pendingPages = computed(() => Math.max(1, Math.ceil(pending.value.total / pendingSize)))
+/**
+ * 历史Pages；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const historyPages = computed(() => Math.max(1, Math.ceil(history.value.total / historySize)))
 
+/**
+ * blank的处理函数。
+ * 主要协作：.trim。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function blank(value) {
   if (value === undefined || value === null) return undefined
   const trimmed = String(value).trim()
   return trimmed === '' ? undefined : trimmed
 }
 
+/**
+ * 加载待处理。
+ * 主要协作：listPendingReviews、blank、errorMessage。
+ * 更新的响应式状态包括 loading、error、pending；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadPending() {
   loading.value = true
   error.value = ''
@@ -70,6 +155,13 @@ async function loadPending() {
   }
 }
 
+/**
+ * 加载历史。
+ * 主要协作：listReviewHistory、blank、errorMessage。
+ * 更新的响应式状态包括 loading、error、history；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadHistory() {
   loading.value = true
   error.value = ''
@@ -95,10 +187,21 @@ async function loadHistory() {
   }
 }
 
+/**
+ * 加载当前操作。
+ * 主要协作：loadPending、loadHistory。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function load() {
   return tab.value === 'pending' ? loadPending() : loadHistory()
 }
 
+/**
+ * switchTab的处理函数。
+ * 主要协作：loadPending、loadHistory。
+ * 更新的响应式状态包括 tab、notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @param next 下一项；默认值、解构字段与可选参数见函数签名。
+ */
 function switchTab(next) {
   tab.value = next
   notice.value = ''
@@ -107,16 +210,30 @@ function switchTab(next) {
   if (next === 'history' && canHistory.value) loadHistory()
 }
 
+/**
+ * 搜索待处理的处理函数。
+ * 主要协作：loadPending。
+ * 更新的响应式状态包括 pendingPage；渲染由 Vue 的依赖跟踪触发。
+ */
 function searchPending() {
   pendingPage.value = 1
   loadPending()
 }
 
+/**
+ * 搜索历史的处理函数。
+ * 主要协作：loadHistory。
+ * 更新的响应式状态包括 historyPage；渲染由 Vue 的依赖跟踪触发。
+ */
 function searchHistory() {
   historyPage.value = 1
   loadHistory()
 }
 
+/**
+ * 重置历史。
+ * 主要协作：Object.assign、searchHistory。
+ */
 function resetHistory() {
   Object.assign(historyFilters, {
     targetModule: '', targetType: '', targetId: '', reviewType: '',
@@ -125,6 +242,11 @@ function resetHistory() {
   searchHistory()
 }
 
+/**
+ * 打开详情。
+ * 主要协作：router.push。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ */
 function openDetail(item) {
   router.push(`/useradmin/reviews/${item.reviewId}`)
 }
@@ -161,6 +283,9 @@ function isMine(item) {
   return item.applicantAccountId != null && String(item.applicantAccountId) === String(currentId)
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(() => {
   if (canRead.value) loadPending()
   else if (canHistory.value) switchTab('history')

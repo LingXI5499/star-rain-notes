@@ -1,3 +1,11 @@
+/*
+ * EnglishSearchSourceMapperTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：EnglishSearchTypes、EnglishSearchSourceApiAdapter、EnglishSearchSourceMapper。
+ * 阅读入口：open（打开英语搜索来源数据映射）；rollback（回滚英语搜索来源数据映射）；everyEnglishTypeCanBeReadAndMapped（every英语类型CanBe读取及Mapped处理入口）；readingIndexRequiresPublicStatusAndClearedExternalRights（阅读索引Requires公开状态及ClearedExternalRights处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -14,11 +22,29 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 /* Real SQL visibility checks; all fixture changes are rolled back. */
+/**
+ * 英语搜索来源数据映射测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * 数据映射。
+     * 协作类型：<code>EnglishSearchSourceMapper</code>。
+     */
     private EnglishSearchSourceMapper mapper;
+    /**
+     * 来源。
+     */
     private EnglishSearchSourceApiAdapter source;
 
+    /**
+     * 打开英语搜索来源数据映射。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -26,11 +52,19 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         source = new EnglishSearchSourceApiAdapter(mapper);
     }
 
+    /**
+     * 回滚英语搜索来源数据映射。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) { session.rollback(true); session.close(); }
     }
 
+    /**
+     * every英语类型CanBe读取及Mapped处理入口。
+     * 主要协作调用：<code>source.page</code>、<code>source.findPublished</code>。
+     */
     @Test
     void everyEnglishTypeCanBeReadAndMapped() {
         for (String type : EnglishSearchTypes.ALL) {
@@ -45,6 +79,11 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 阅读索引Requires公开状态及ClearedExternalRights处理入口。
+     * 主要协作调用：<code>source.findPublished</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void readingIndexRequiresPublicStatusAndClearedExternalRights() throws Exception {
         long id = insert("INSERT INTO sr_english_reading_article(title,slug,summary,body_markdown,translation_zh_markdown,content_origin) VALUES(?,?,?,?,?,?)",
@@ -64,6 +103,11 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         assertNull(source.findPublished("ENGLISH_READING", id));
     }
 
+    /**
+     * 写作索引ExcludesPrivate草稿Ineligible及已删除Articles处理入口。
+     * 主要协作调用：<code>source.findPublished</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void writingIndexExcludesPrivateDraftIneligibleAndDeletedArticles() throws Exception {
         long id = insert("INSERT INTO sr_english_writing_article(owner_account_id,title,slug,body_markdown,translation_zh_markdown,keywords_json) VALUES(?,?,?,?,?,?)",
@@ -86,6 +130,11 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         assertNull(source.findPublished("ENGLISH_WRITING", id));
     }
 
+    /**
+     * 词汇Links编码查询参数及孤儿文件WordsAreExcluded处理入口。
+     * 主要协作调用：<code>source.findPublished</code>、<code>source.page</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void vocabularyLinksEncodeQueryAndOrphanWordsAreExcluded() throws Exception {
         long theme = insert("INSERT INTO sr_english_vocabulary_theme(layer,name) VALUES('Probe layer','Search probe theme')");
@@ -100,6 +149,11 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         assertNull(source.findPublished("ENGLISH_VOCABULARY_WORD", word));
     }
 
+    /**
+     * 语法Requires已发布Course及Lesson及Existing区块处理入口。
+     * 主要协作调用：<code>source.findPublished</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void grammarRequiresPublishedCourseAndLessonAndExistingSection() throws Exception {
         long section = insert("INSERT INTO sr_english_grammar_section(course_id,title,sort_order) VALUES(1,'Search probe',99999)");
@@ -118,6 +172,15 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         assertNull(source.findPublished("ENGLISH_GRAMMAR_LESSON", lesson));
     }
 
+    /**
+     * 写入英语搜索来源数据映射。
+     * 主要协作调用：<code>session.getConnection</code>。
+     *
+     * @param sql sql；类型为 <code>String</code>
+     * @param values 值集合；类型为 <code>Object[]</code>
+     * @return 类型为 <code>long</code> 的处理结果
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     private long insert(String sql, Object... values) throws Exception {
         try (PreparedStatement statement = session.getConnection().prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             for (int i = 0; i < values.length; i++) statement.setObject(i + 1, values[i]);
@@ -126,6 +189,14 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 执行英语搜索来源数据映射。
+     * 主要协作调用：<code>session.getConnection</code>、<code>session.clearCache</code>。
+     *
+     * @param sql sql；类型为 <code>String</code>
+     * @param values 值集合；类型为 <code>Object[]</code>
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     private void execute(String sql, Object... values) throws Exception {
         try (PreparedStatement statement = session.getConnection().prepareStatement(sql)) {
             for (int i = 0; i < values.length; i++) statement.setObject(i + 1, values[i]);

@@ -1,3 +1,10 @@
+/*
+ * ReviewDecisionCallbackDispatcher：审核模块的模块支持文件。
+ * 业务范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
+ * 阅读入口：dispatch（分发审核决定CallbackDispatcher）；afterCommit（之后Commit处理入口）。
+ */
+
 package com.starrainnotes.review.handler;
 
 import org.springframework.stereotype.Component;
@@ -18,9 +25,19 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * 没有活动事务时（例如纯单元测试、或将来从非事务上下文调用）立即执行，
  * 保证行为可预期，而不是静默丢弃回调。
  */
+/**
+ * 审核决定CallbackDispatcher，属于审核模块。
+ * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
+ */
 @Component
 public class ReviewDecisionCallbackDispatcher {
 
+    /**
+     * 分发审核决定CallbackDispatcher。
+     * 关键处理步骤调用 <code>TransactionSynchronizationManager.isSynchronizationActive</code>、<code>callback.run</code>、<code>TransactionSynchronizationManager.registerSynchronization</code>。
+     *
+     * @param callback callback；类型为 <code>Runnable</code>
+     */
     public void dispatch(Runnable callback) {
         if (callback == null) {
             return;
@@ -30,7 +47,16 @@ public class ReviewDecisionCallbackDispatcher {
             callback.run();
             return;
         }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
+    /**
+     * 当前调用使用的匿名协作实现，属于审核模块。
+     * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
+     */
+    {
+            /**
+             * 之后Commit处理入口。
+             * 关键处理步骤调用 <code>callback.run</code>。
+             */
             @Override
             public void afterCommit() {
                 callback.run();

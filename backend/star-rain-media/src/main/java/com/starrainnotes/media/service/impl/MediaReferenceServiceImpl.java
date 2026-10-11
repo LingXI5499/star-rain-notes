@@ -1,3 +1,11 @@
+/*
+ * MediaReferenceServiceImpl：媒体模块的业务实现文件。
+ * 业务范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：MediaAssetNotActiveException、MediaAssetNotFoundException、MediaQueryInvalidException、MediaReferenceExistsException、MediaReferenceNotFoundException、MediaReferenceService、MediaReferenceCommand。
+ * 阅读入口：attach（建立关联媒体引用）；detach（解除关联媒体引用）；detachAll（解除关联全部）；listByAsset（列出依据资产）。
+ */
+
 package com.starrainnotes.media.service.impl;
 
 import com.starrainnotes.media.exception.MediaAssetNotActiveException;
@@ -29,18 +37,44 @@ import org.springframework.transaction.annotation.Transactional;
  * 原因是模块间视图 MediaReferenceVO（media.api.vo） 与模块内视图 MediaReferenceVO 返回类型不同，
  * Java 不允许同一个类用同一签名实现两个返回类型不同的方法。
  */
+/**
+ * 媒体引用业务服务实现，属于媒体模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class MediaReferenceServiceImpl implements MediaReferenceService {
 
+    /**
+     * 资产数据映射。
+     * 协作类型：<code>MediaAssetMapper</code>。
+     */
     private final MediaAssetMapper assetMapper;
+    /**
+     * 引用数据映射。
+     * 协作类型：<code>MediaReferenceMapper</code>。
+     */
     private final MediaReferenceMapper referenceMapper;
 
+    /**
+     * 构造MediaReferenceServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param assetMapper 资产数据映射；类型为 <code>MediaAssetMapper</code>
+     * @param referenceMapper 引用数据映射；类型为 <code>MediaReferenceMapper</code>
+     */
     public MediaReferenceServiceImpl(MediaAssetMapper assetMapper,
                                      MediaReferenceMapper referenceMapper) {
         this.assetMapper = assetMapper;
         this.referenceMapper = referenceMapper;
     }
 
+    /**
+     * 建立关联媒体引用。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>assetMapper.assetByIdForUpdate</code>、<code>referenceMapper.insertReference</code>。
+     * 实现中的显式失败类型包括 <code>MediaAssetNotFoundException</code>、<code>MediaAssetNotActiveException</code>、<code>MediaReferenceExistsException</code>；具体触发条件见对应分支。
+     *
+     * @param command command；类型为 <code>MediaReferenceCommand</code>
+     */
     @Override
     @Transactional
     public void attach(MediaReferenceCommand command) {
@@ -69,6 +103,14 @@ public class MediaReferenceServiceImpl implements MediaReferenceService {
         }
     }
 
+    /**
+     * 解除关联媒体引用。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>referenceMapper.deleteReference</code>。
+     * 实现中的显式失败类型包括 <code>MediaReferenceNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param command command；类型为 <code>MediaReferenceCommand</code>
+     */
     @Override
     @Transactional
     public void detach(MediaReferenceCommand command) {
@@ -82,6 +124,15 @@ public class MediaReferenceServiceImpl implements MediaReferenceService {
         }
     }
 
+    /**
+     * 解除关联全部。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>referenceMapper.deleteAllBySource</code>。
+     *
+     * @param sourceModule 引用或数据来源所属模块；类型为 <code>String</code>
+     * @param sourceType 来源对象的业务类型；类型为 <code>String</code>
+     * @param sourceId 来源对象的业务标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void detachAll(String sourceModule, String sourceType, Long sourceId) {
@@ -91,6 +142,15 @@ public class MediaReferenceServiceImpl implements MediaReferenceService {
         referenceMapper.deleteAllBySource(source[0], source[1], sourceId);
     }
 
+    /**
+     * 列出依据资产。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>referenceMapper.selectByMediaAssetId</code>。
+     * 实现中的显式失败类型包括 <code>MediaQueryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param mediaAssetId 关联的媒体资产标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<MediaReferenceVO> listByAsset(Long mediaAssetId) {
@@ -102,6 +162,14 @@ public class MediaReferenceServiceImpl implements MediaReferenceService {
                 .toList();
     }
 
+    /**
+     * 统计依据资产。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>referenceMapper.countByMediaAssetId</code>。
+     *
+     * @param mediaAssetId 关联的媒体资产标识；类型为 <code>Long</code>
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public long countByAsset(Long mediaAssetId) {

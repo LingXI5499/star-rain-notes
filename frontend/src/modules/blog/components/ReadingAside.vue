@@ -1,4 +1,13 @@
 <script setup>
+/**
+ * ReadingAside.vue：博客模块的视图组件。
+ * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：./ArticleOutline.vue。
+ * 组件输入：items、charCount、readMinutes、navigationStyle、extraInfo；默认值与类型见 defineProps。
+ */
+
+
 import ArticleOutline from './ArticleOutline.vue'
 
 /*
@@ -45,6 +54,16 @@ defineProps({
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.reading-aside。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 在正常文档流中保留位置，吸附偏移由 top=calc(var(--header-height) + var(--space-6)) 决定；父级高度限制吸附范围。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .reading-aside {
   position: sticky;
   top: calc(var(--header-height) + var(--space-6));
@@ -54,10 +73,18 @@ defineProps({
   gap: var(--space-4);
 }
 
+/**
+ * 样式范围：.reading-aside__card。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .reading-aside__card {
   padding: 0 0 var(--space-4);
 }
 
+/**
+ * 样式范围：.reading-aside__title。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .reading-aside__title {
   font-size: 13px;
   font-weight: 600;
@@ -67,12 +94,22 @@ defineProps({
   margin-bottom: var(--space-4);
 }
 
+/**
+ * 样式范围：.reading-aside__info。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .reading-aside__info {
   display: flex;
   flex-direction: column;
   gap: var(--space-2);
 }
 
+/**
+ * 样式范围：.reading-aside__info div。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .reading-aside__info div {
   display: flex;
   justify-content: space-between;
@@ -80,11 +117,19 @@ defineProps({
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.reading-aside__info dt。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .reading-aside__info dt {
   color: var(--text-muted);
   flex-shrink: 0;
 }
 
+/**
+ * 样式范围：.reading-aside__info dd。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .reading-aside__info dd {
   margin: 0;
   color: var(--text-primary);
@@ -102,6 +147,10 @@ defineProps({
   scrollbar-gutter: stable;
 }
 
+/**
+ * 样式范围：.reading-aside--curriculum .reading-aside__title。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .reading-aside--curriculum .reading-aside__title {
   color: var(--text-primary);
   font-size: 17px;
@@ -110,11 +159,19 @@ defineProps({
   text-transform: none;
 }
 
+/**
+ * 样式范围：.reading-aside--curriculum :deep(.article-outline--embedded)。
+ * 溢出处理：整体 visible。
+ */
 .reading-aside--curriculum :deep(.article-outline--embedded) {
   max-height: none;
   overflow: visible;
 }
 
+/**
+ * 样式范围：.reading-aside--curriculum .reading-aside__card + .reading-aside__card。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .reading-aside--curriculum .reading-aside__card + .reading-aside__card {
   padding-top: var(--space-4);
   border-top: 1px solid var(--border);

@@ -1,3 +1,11 @@
+/*
+ * AccountMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：AccountAuditEntity、AccountEntity、AdminInvitationEntity、EmailVerificationEntity、PasswordResetEntity、PermissionEntity、RoleEntity。
+ * 阅读入口：open（打开账号数据映射Xml）；rollback（回滚账号数据映射Xml）；everyAccountMapperIsReachableThroughTheSession（every账号数据映射是否ReachableThroughThe会话处理入口）；insertedAccountIsReadableByEveryLookupAndBackfillsItsId（按Every查找及BackfillsIts标识读取inserted账号是否Readable）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,14 +58,37 @@ import org.junit.jupiter.api.Test;
  * session 时区又是 SYSTEM(UTC+8)，两套时钟会差 8 小时，过期/未过期的边界断言就会失真。
  * 所以这里在 @BeforeEach 显式把本会话的 time_zone 对齐成生产值，并用 UTC 时钟造数据。
  */
+/**
+ * 账号数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * 账号集合。
+     * 协作类型：<code>AccountMapper</code>。
+     */
     private AccountMapper accounts;
+    /**
+     * verifications。
+     * 协作类型：<code>EmailVerificationMapper</code>。
+     */
     private EmailVerificationMapper verifications;
 
+    /**
+     * 打开账号数据映射Xml。
+     * 主要协作调用：<code>session.getConnection</code>、<code>session.getMapper</code>。
+     * @throws SQLException 底层操作失败或输入不满足本方法要求时抛出
+     */
     @BeforeEach
     void open() throws SQLException {
         session = openSession();
@@ -68,6 +99,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         verifications = session.getMapper(EmailVerificationMapper.class);
     }
 
+    /**
+     * 回滚账号数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -76,12 +111,19 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * every账号数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void everyAccountMapperIsReachableThroughTheSession() {
         assertNotNull(accounts);
         assertNotNull(verifications);
     }
 
+    /**
+     * 按Every查找及BackfillsIts标识读取inserted账号是否Readable。
+     * 主要协作调用：<code>accounts.insertAccount</code>、<code>accounts.accountById</code>、<code>accounts.accountByIdentifier</code>、<code>accounts.accountByEmail</code>、<code>accounts.usernameCount</code>。
+     */
     @Test
     void insertedAccountIsReadableByEveryLookupAndBackfillsItsId() {
         AccountEntity probe = newAccount("ACTIVE");
@@ -116,6 +158,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, accounts.emailCount(unique("mapperxmlmissing") + "@example.test"));
     }
 
+    /**
+     * 邮箱验证状态Changes及版本BumpsLand触发TheRight列集合处理入口。
+     * 主要协作调用：<code>accounts.insertAccount</code>、<code>accounts.verifyEmail</code>、<code>accounts.accountById</code>、<code>accounts.updateDisplayName</code>、<code>accounts.updateLastLogin</code>。
+     */
     @Test
     void emailVerificationStatusChangesAndVersionBumpsLandOnTheRightColumns() {
         AccountEntity probe = newAccount("ACTIVE");
@@ -150,6 +196,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, accounts.verifyEmail(-1L));
     }
 
+    /**
+     * credentialsRoundTrip及密码ChangeRewritesThe摘要处理入口。
+     * 主要协作调用：<code>accounts.insertAccount</code>、<code>accounts.passwordHash</code>、<code>accounts.insertCredential</code>、<code>accounts.updatePassword</code>。
+     */
     @Test
     void credentialsRoundTripAndPasswordChangeRewritesTheHash() {
         AccountEntity probe = newAccount("ACTIVE");
@@ -165,6 +215,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(accounts.passwordHash(-1L));
     }
 
+    /**
+     * 角色及权限WiringReadsBack及GrantsAreIdempotent处理入口。
+     * 主要协作调用：<code>accounts.roleByCode</code>、<code>accounts.roleById</code>、<code>accounts.allRoles</code>、<code>accounts.allPermissions</code>、<code>accounts.permissionCount</code>。
+     */
     @Test
     void roleAndPermissionWiringReadsBackAndGrantsAreIdempotent() {
         RoleEntity superAdmin = accounts.roleByCode("SUPER_ADMIN");
@@ -214,6 +268,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(accounts.activeSuperAdminCount() >= 0);
     }
 
+    /**
+     * 角色权限MappingsAreRewrittenInsideTheUncommitted事务处理入口。
+     * 主要协作调用：<code>accounts.roleByCode</code>、<code>accounts.allPermissions</code>、<code>accounts.rolePermissionCount</code>、<code>accounts.deleteRolePermissions</code>、<code>accounts.permissionIdsForRole</code>。
+     */
     @Test
     void rolePermissionMappingsAreRewrittenInsideTheUncommittedTransaction() {
         RoleEntity admin = accounts.roleByCode("ADMIN");
@@ -239,6 +297,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, accounts.rolePermissionCount(admin.getId(), permissionId));
     }
 
+    /**
+     * incrementVersions面向角色BumpsEveryMember账号处理入口。
+     * 主要协作调用：<code>accounts.insertAccount</code>、<code>accounts.accountById</code>、<code>accounts.roleByCode</code>、<code>accounts.insertAccountRole</code>、<code>accounts.incrementVersionsForRole</code>。
+     */
     @Test
     void incrementVersionsForRoleBumpsEveryMemberAccount() {
         AccountEntity probe = newAccount("ACTIVE");
@@ -253,6 +315,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
                 "角色变更必须让该角色的所有成员 auth_version 递增");
     }
 
+    /**
+     * 按关键词及状态及PagesNewest首次读取账号分页筛选。
+     * 主要协作调用：<code>accounts.insertAccount</code>、<code>accounts.accountPageCount</code>、<code>accounts.accountPage</code>。
+     */
     @Test
     void accountPageFiltersByKeywordAndStatusAndPagesNewestFirst() {
         String keyword = unique("mapperxmlpage");
@@ -283,6 +349,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
                 "OFFSET 没生效");
     }
 
+    /**
+     * 邀请生命周期Guards待处理状态及到期时间处理入口。
+     * 主要协作调用：<code>accounts.insertAccount</code>、<code>accounts.insertInvitation</code>、<code>accounts.invitationById</code>、<code>accounts.invitationByHash</code>、<code>accounts.invitationByIdForUpdate</code>。
+     */
     @Test
     void invitationLifecycleGuardsPendingStatusAndExpiry() {
         AccountEntity inviter = newAccount("ACTIVE");
@@ -397,6 +467,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, accounts.revokePendingInvitations(target.getId()));
     }
 
+    /**
+     * 密码Reset令牌集合AreConsumedOnce及待处理OnesExpirePer账号处理入口。
+     * 主要协作调用：<code>accounts.insertAccount</code>、<code>accounts.insertReset</code>、<code>accounts.resetByHashForUpdate</code>、<code>accounts.useReset</code>、<code>accounts.expirePendingResets</code>。
+     */
     @Test
     void passwordResetTokensAreConsumedOnceAndPendingOnesExpirePerAccount() {
         AccountEntity probe = newAccount("ACTIVE");
@@ -441,6 +515,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
                 "别人的账户不该被顺手过期");
     }
 
+    /**
+     * 审计行集合RoundTrip及EveryOptional筛选NarrowsThe分页处理入口。
+     * 主要协作调用：<code>accounts.insertAccount</code>、<code>PROBE.incrementAndGet</code>、<code>accounts.insertAudit</code>、<code>accounts.auditPage</code>、<code>accounts.auditPageCount</code>。
+     */
     @Test
     void auditRowsRoundTripAndEveryOptionalFilterNarrowsThePage() {
         AccountEntity actor = newAccount("ACTIVE");
@@ -498,6 +576,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
                 "since 之后的窗口不应命中任何审计行");
     }
 
+    /**
+     * 邮箱验证IssuesConsumes及LocksOutCodes处理入口。
+     * 主要协作调用：<code>verifications.ensureEmail</code>、<code>verifications.findForUpdate</code>、<code>verifications.saveCode</code>、<code>verifications.incrementFailures</code>、<code>verifications.consume</code>。
+     */
     @Test
     void emailVerificationIssuesConsumesAndLocksOutCodes() {
         String email = unique("mapperxmlverify") + "@example.test";
@@ -545,6 +627,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(verifications.findForUpdate(email).getConsumedAt());
     }
 
+    /**
+     * 已过期代码及TooManyFailuresAreBoth已拒绝处理入口。
+     * 主要协作调用：<code>verifications.ensureEmail</code>、<code>verifications.saveCode</code>、<code>verifications.consume</code>、<code>verifications.incrementFailures</code>、<code>verifications.findForUpdate</code>。
+     */
     @Test
     void expiredCodeAndTooManyFailuresAreBothRejected() {
         LocalDateTime dbNow = now();
@@ -590,6 +676,10 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, verifications.consume(lockedEmail, locked.getCodeHash()));
     }
 
+    /**
+     * 回滚Leaves不含账号测试样本行集合Behind。
+     * 主要协作调用：<code>accounts.insertAccount</code>、<code>verifications.saveCode</code>、<code>session.rollback</code>。
+     */
     @Test
     void rollbackLeavesNoAccountProbeRowsBehind() {
         AccountEntity probe = newAccount("ACTIVE");
@@ -611,6 +701,13 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * new账号处理入口。
+     * 关键处理步骤调用 <code>unique</code>、<code>account.setUsername</code>、<code>account.setEmail</code>、<code>account.setDisplayName</code>。
+     *
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @return 类型为 <code>AccountEntity</code> 的处理结果
+     */
     private AccountEntity newAccount(String status) {
         String marker = unique("mapperxmlacct");
         AccountEntity account = new AccountEntity();
@@ -622,6 +719,17 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         return account;
     }
 
+    /**
+     * new邀请处理入口。
+     * 关键处理步骤调用 <code>invitation.setTargetAccountId</code>、<code>invitation.setEmailSnapshot</code>、<code>invitation.setTargetRoleCode</code>、<code>invitation.setTokenHash</code>。
+     *
+     * @param targetAccountId 目标账号标识；类型为 <code>long</code>
+     * @param targetEmail 目标邮箱；类型为 <code>String</code>
+     * @param hash 摘要；类型为 <code>String</code>
+     * @param invitedBy invited依据；类型为 <code>long</code>
+     * @param expiresAt 到期时间；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>AdminInvitationEntity</code> 的处理结果
+     */
     private AdminInvitationEntity newInvitation(long targetAccountId, String targetEmail, String hash,
                                                 long invitedBy, LocalDateTime expiresAt) {
         AdminInvitationEntity invitation = new AdminInvitationEntity();
@@ -635,6 +743,15 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         return invitation;
     }
 
+    /**
+     * newReset处理入口。
+     * 关键处理步骤调用 <code>reset.setAccountId</code>、<code>reset.setTokenHash</code>、<code>reset.setStatus</code>、<code>reset.setExpiresAt</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param hash 摘要；类型为 <code>String</code>
+     * @param expiresAt 到期时间；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>PasswordResetEntity</code> 的处理结果
+     */
     private PasswordResetEntity newReset(long accountId, String hash, LocalDateTime expiresAt) {
         PasswordResetEntity reset = new PasswordResetEntity();
         reset.setAccountId(accountId);
@@ -644,6 +761,17 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         return reset;
     }
 
+    /**
+     * new审计处理入口。
+     * 关键处理步骤调用 <code>audit.setActorAccountId</code>、<code>audit.setTargetAccountId</code>、<code>audit.setActionCode</code>、<code>audit.setResult</code>。
+     *
+     * @param actorId 操作者标识；类型为 <code>long</code>
+     * @param targetId 被处理或审核的目标对象标识；类型为 <code>Long</code>
+     * @param action 动作；类型为 <code>String</code>
+     * @param result 结果；类型为 <code>String</code>
+     * @param ip IP 地址；类型为 <code>String</code>
+     * @return 类型为 <code>AccountAuditEntity</code> 的处理结果
+     */
     private AccountAuditEntity newAudit(long actorId, Long targetId, String action, String result, String ip) {
         AccountAuditEntity audit = new AccountAuditEntity();
         audit.setActorAccountId(actorId);
@@ -656,6 +784,14 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* invitationColumns 没有 selected accepted_by，只能直接读库核对 acceptInvitation 的写路径 */
+    /**
+     * 按标识读取已接受。
+     * 主要协作调用：<code>session.getConnection</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param invitationId 邀请标识；类型为 <code>long</code>
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long acceptedById(long invitationId) {
         try (PreparedStatement statement = session.getConnection().prepareStatement(
                 "SELECT accepted_by FROM sr_admin_invitation WHERE id = ?")) {
@@ -669,7 +805,15 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
-    /* token_hash 是 char(64)，拿足 64 个字符避免被空格补齐后与断言里的字符串不等 */    private String token64(String seed) {
+    /* token_hash 是 char(64)，拿足 64 个字符避免被空格补齐后与断言里的字符串不等 */
+    /**
+     * 令牌64处理入口。
+     * 关键处理步骤调用 <code>seed.replaceAll</code>、<code>builder.length</code>、<code>builder.append</code>、<code>builder.substring</code>。
+     *
+     * @param seed seed；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
+    private String token64(String seed) {
         String cleaned = seed.replaceAll("[^A-Za-z0-9]", "");
         StringBuilder builder = new StringBuilder();
         while (builder.length() < 64) {
@@ -678,11 +822,23 @@ class AccountMapperXmlTest extends MapperXmlIntegrationSupport {
         return builder.substring(0, 64);
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }
 
     /* 账户模块的业务时间一律是 UTC（见类注释里的时区说明），这里与生产 Service 保持同一口径 */
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now(ZoneOffset.UTC);
     }

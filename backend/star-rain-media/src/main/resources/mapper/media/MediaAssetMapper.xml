@@ -2,30 +2,68 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.media.mapper.MediaAssetMapper">
+    <!--
+      MediaAssetMapper.xml：com.starrainnotes.media.mapper.MediaAssetMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+    <!--
+      assetColumns：资产投影列；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    -->
     <sql id="assetColumns">
         id, original_name, media_type, mime_type, file_extension, size_bytes, sha256,
         storage_provider, storage_key, width, height, access_level, status,
         uploaded_by_account_id, archived_at, created_at, updated_at
     </sql>
 
+    <!--
+      assetFilters：资产筛选条件；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+      绑定参数：keyword、mediaType、status、accessLevel；参数含义参见 Mapper 方法注释。
+    -->
     <sql id="assetFilters">
+        <!--
+          统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+        -->
         <where>
+            <!--
+              条件 keyword != null and keyword != '' 成立时才输出此段 SQL。
+            -->
             <if test="keyword != null and keyword != ''">
                 original_name LIKE CONCAT('%', #{keyword}, '%')
             </if>
+            <!--
+              条件 mediaType != null and mediaType != '' 成立时才输出此段 SQL。
+            -->
             <if test="mediaType != null and mediaType != ''">
                 AND media_type = #{mediaType}
             </if>
+            <!--
+              条件 status != null and status != '' 成立时才输出此段 SQL。
+            -->
             <if test="status != null and status != ''">
                 AND status = #{status}
             </if>
+            <!--
+              条件 accessLevel != null and accessLevel != '' 成立时才输出此段 SQL。
+            -->
             <if test="accessLevel != null and accessLevel != ''">
                 AND access_level = #{accessLevel}
             </if>
         </where>
     </sql>
 
+    <!--
+      insertAsset：新增资产；新增语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.media.entity.MediaAssetEntity；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：originalName、mediaType、mimeType、fileExtension、sizeBytes、sha256、storageProvider、storageKey、width、height、accessLevel、status、uploadedByAccountId；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertAsset" parameterType="com.starrainnotes.media.entity.MediaAssetEntity"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_media_asset (
@@ -39,19 +77,49 @@
         )
     </insert>
 
+    <!--
+      assetById：资产依据标识；读取语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.media.entity.MediaAssetEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：assetColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="assetById" resultType="com.starrainnotes.media.entity.MediaAssetEntity">
         SELECT <include refid="assetColumns"/> FROM sr_media_asset WHERE id = #{id}
     </select>
 
+    <!--
+      assetByIdForUpdate：资产依据标识面向更新；读取语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.media.entity.MediaAssetEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：assetColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+      锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+    -->
     <select id="assetByIdForUpdate" resultType="com.starrainnotes.media.entity.MediaAssetEntity">
         SELECT <include refid="assetColumns"/> FROM sr_media_asset WHERE id = #{id} FOR UPDATE
     </select>
 
+    <!--
+      assetPageCount：资产分页数量；读取语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      复用片段：assetFilters。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="assetPageCount" resultType="long">
         SELECT COUNT(*) FROM sr_media_asset
         <include refid="assetFilters"/>
     </select>
 
+    <!--
+      assetPage：资产分页；读取语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.media.entity.MediaAssetEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：assetColumns、assetFilters。
+      绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="assetPage" resultType="com.starrainnotes.media.entity.MediaAssetEntity">
         SELECT <include refid="assetColumns"/> FROM sr_media_asset
         <include refid="assetFilters"/>
@@ -59,28 +127,58 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <!--
+      countBySha256：数量依据摘要256；读取语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：sha256；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countBySha256" resultType="long">
         SELECT COUNT(*) FROM sr_media_asset WHERE sha256 = #{sha256}
     </select>
 
+    <!--
+      archiveAsset：archive资产；更新语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：archivedAt、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="archiveAsset">
         UPDATE sr_media_asset
         SET status = 'ARCHIVED', archived_at = #{archivedAt}
         WHERE id = #{id} AND status = 'ACTIVE'
     </update>
 
+    <!--
+      restoreAsset：restore资产；更新语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="restoreAsset">
         UPDATE sr_media_asset
         SET status = 'ACTIVE', archived_at = NULL
         WHERE id = #{id} AND status = 'ARCHIVED'
     </update>
 
+    <!--
+      updateAccessLevel：更新访问Level；更新语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accessLevel、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updateAccessLevel">
         UPDATE sr_media_asset
         SET access_level = #{accessLevel}
         WHERE id = #{id}
     </update>
 
+    <!--
+      allStorageKeys：全部存储Keys；读取语句。
+      涉及数据表：sr_media_asset；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：string；集合与单值形态由 Java 方法签名决定。
+    -->
     <select id="allStorageKeys" resultType="string">
         SELECT storage_key FROM sr_media_asset
     </select>

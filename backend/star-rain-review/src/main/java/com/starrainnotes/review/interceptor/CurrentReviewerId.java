@@ -1,3 +1,9 @@
+/*
+ * CurrentReviewerId：审核模块的模块支持文件。
+ * 业务范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
+ */
+
 package com.starrainnotes.review.interceptor;
 
 import java.lang.annotation.Documented;
@@ -16,6 +22,10 @@ import java.lang.annotation.Target;
  *
  * 与 AccountPrincipal 的关系：实现里走 Account 的 CurrentActorApi，
  * 不直接读 SecurityContext 的模块内部类型。
+ */
+/**
+ * 当前审核人标识，属于审核模块。
+ * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
  */
 @Target(ElementType.PARAMETER)
 @Retention(RetentionPolicy.RUNTIME)

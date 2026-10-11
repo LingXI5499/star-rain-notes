@@ -1,4 +1,12 @@
 <script setup>
+/**
+ * LearningNav.vue：教程与学习模块的视图组件。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue-router、../../../shared/viewMode。
+ */
+
+
 import { RouterLink } from 'vue-router'
 import { accountPath } from '../../../shared/viewMode'
 

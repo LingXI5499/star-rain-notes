@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * GrammarLessonEditorPage.vue：英语学习模块的页面组件。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../../../shared/editor/MarkdownEditor.vue、../../../media/components/MediaPicker.vue、../../../media/support/useMediaPicker、../../../../shared/http。
+ * 主要响应式状态：route、router、id、isNew、form、sections、lesson、editor。
+ * 阅读入口：load（加载当前操作）；save（保存当前操作）；toggle（切换当前操作）；pickImage（pick图片的处理函数）。
+ */
+
+
 import { computed, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
@@ -11,21 +21,78 @@ import {
   setGrammarLessonPublished, updateGrammarLesson,
 } from '../../api/englishApi'
 
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
+/**
+ * 当前业务对象的数据库标识；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const id = computed(() => String(route.params.lessonId))
+/**
+ * 是否New；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const isNew = computed(() => id.value === 'new')
+/**
+ * form；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const form = reactive({ sectionId: '', title: '', summary: '', bodyMarkdown: '', sortOrder: 0 })
+/**
+ * sections；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const sections = ref([])
+/**
+ * lesson；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const lesson = ref(null)
+/**
+ * editor；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const editor = ref(null)
+/**
+ * editor键；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const editorKey = ref(0)
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(true)
+/**
+ * saving；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const saving = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
 
+/**
+ * 加载当前操作。
+ * 主要协作：getGrammarCurriculum、Object.assign、getGrammarLesson、errorMessage。
+ * 更新的响应式状态包括 loading、error、sections、lesson；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   loading.value = true
   error.value = ''
@@ -44,6 +111,12 @@ async function load() {
   finally { loading.value = false }
 }
 
+/**
+ * 保存当前操作。
+ * 主要协作：form.title.trim、editor.value.getMarkdown、createGrammarLesson、updateGrammarLesson、Object.assign。
+ * 更新的响应式状态包括 error、saving、notice、lesson；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function save() {
   if (saving.value) return
   if (!form.title.trim() || !form.sectionId) { error.value = '请填写标题并选择章节。'; return }
@@ -59,6 +132,12 @@ async function save() {
   finally { saving.value = false }
 }
 
+/**
+ * 切换当前操作。
+ * 主要协作：setGrammarLessonPublished、errorMessage。
+ * 更新的响应式状态包括 saving、error、lesson、notice；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function toggle() {
   if (!lesson.value) return
   saving.value = true; error.value = ''
@@ -69,11 +148,19 @@ async function toggle() {
   finally { saving.value = false }
 }
 
+/**
+ * pick图片的处理函数。
+ * 主要协作：pick。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function pickImage() {
   const asset = await pick('IMAGE')
   return asset ? { url: asset.contentUrl, name: asset.originalName } : null
 }
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.params.lessonId, load, { immediate: true })
 </script>
 
@@ -82,5 +169,96 @@ watch(() => route.params.lessonId, load, { immediate: true })
 </template>
 
 <style scoped>
-.grammar-lesson-editor{max-width:1250px;margin:auto;padding:26px 0 80px}.grammar-lesson-editor>header{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}.grammar-lesson-editor>header a{color:var(--primary);font-size:13px}.grammar-lesson-editor>header .public-eyebrow{margin-top:18px}.grammar-lesson-editor h1{margin:7px 0;font-size:34px}.grammar-lesson-editor>header p:last-child{color:var(--text-muted)}.grammar-lesson-editor>header>div:last-child{display:flex;gap:8px}.grammar-lesson-editor button{padding:9px 15px;border:1px solid var(--border-strong);border-radius:9px;background:var(--bg-surface);color:var(--text-primary);font:inherit;cursor:pointer}.grammar-lesson-editor>header button:last-child,.grammar-lesson-editor form>button{border-color:var(--primary);background:var(--primary);color:var(--on-primary)}.grammar-lesson-editor button:disabled{opacity:.5}.grammar-lesson-editor__error,.grammar-lesson-editor__notice{padding:12px;border-radius:9px}.grammar-lesson-editor__error{color:#a13b2b;background:#fff0e8}.grammar-lesson-editor__notice{color:var(--primary);background:var(--primary-soft)}.grammar-lesson-editor form{display:grid;gap:20px}.grammar-lesson-editor__fields,.grammar-lesson-editor__body{display:grid;gap:16px;padding:24px;border:1px solid var(--border);border-radius:17px;background:var(--bg-surface)}.grammar-lesson-editor label{display:grid;gap:7px;font-weight:650}.grammar-lesson-editor input,.grammar-lesson-editor textarea,.grammar-lesson-editor select{width:100%;padding:11px;border:1px solid var(--border-strong);border-radius:9px;background:var(--bg-page);color:var(--text-primary);font:inherit}.grammar-lesson-editor__body h2{margin:0;font-size:22px}.grammar-lesson-editor form>button{justify-self:start}
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.grammar-lesson-editor。
+ */
+.grammar-lesson-editor{max-width:1250px;margin:auto;padding:26px 0 80px}
+  /**
+   * 样式范围：.grammar-lesson-editor>header。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .grammar-lesson-editor>header{display:flex;justify-content:space-between;align-items:end;gap:20px;margin-bottom:22px}
+  /**
+   * 样式范围：.grammar-lesson-editor>header a。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .grammar-lesson-editor>header a{color:var(--primary);font-size:13px}
+  /**
+   * 样式范围：.grammar-lesson-editor>header .public-eyebrow。
+   */
+  .grammar-lesson-editor>header .public-eyebrow{margin-top:18px}
+  /**
+   * 样式范围：.grammar-lesson-editor h1。
+   */
+  .grammar-lesson-editor h1{margin:7px 0;font-size:34px}
+  /**
+   * 样式范围：.grammar-lesson-editor>header p:last-child。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .grammar-lesson-editor>header p:last-child{color:var(--text-muted)}
+  /**
+   * 样式范围：.grammar-lesson-editor>header>div:last-child。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .grammar-lesson-editor>header>div:last-child{display:flex;gap:8px}
+  /**
+   * 样式范围：.grammar-lesson-editor button。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .grammar-lesson-editor button{padding:9px 15px;border:1px solid var(--border-strong);border-radius:9px;background:var(--bg-surface);color:var(--text-primary);font:inherit;cursor:pointer}
+  /**
+   * 样式范围：.grammar-lesson-editor>header button:last-child,.grammar-lesson-editor form>button。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .grammar-lesson-editor>header button:last-child,.grammar-lesson-editor form>button{border-color:var(--primary);background:var(--primary);color:var(--on-primary)}
+  /**
+   * 样式范围：.grammar-lesson-editor button:disabled。
+   */
+  .grammar-lesson-editor button:disabled{opacity:.5}
+  /**
+   * 样式范围：.grammar-lesson-editor__error,.grammar-lesson-editor__notice。
+   */
+  .grammar-lesson-editor__error,.grammar-lesson-editor__notice{padding:12px;border-radius:9px}
+  /**
+   * 样式范围：.grammar-lesson-editor__error。
+   */
+  .grammar-lesson-editor__error{color:#a13b2b;background:#fff0e8}
+  /**
+   * 样式范围：.grammar-lesson-editor__notice。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .grammar-lesson-editor__notice{color:var(--primary);background:var(--primary-soft)}
+  /**
+   * 样式范围：.grammar-lesson-editor form。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 20px 控制。
+   */
+  .grammar-lesson-editor form{display:grid;gap:20px}
+  /**
+   * 样式范围：.grammar-lesson-editor__fields,.grammar-lesson-editor__body。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 16px 控制。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .grammar-lesson-editor__fields,.grammar-lesson-editor__body{display:grid;gap:16px;padding:24px;border:1px solid var(--border);border-radius:17px;background:var(--bg-surface)}
+  /**
+   * 样式范围：.grammar-lesson-editor label。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 7px 控制。
+   */
+  .grammar-lesson-editor label{display:grid;gap:7px;font-weight:650}
+  /**
+   * 样式范围：.grammar-lesson-editor input,.grammar-lesson-editor textarea,.grammar-lesson-editor select。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .grammar-lesson-editor input,.grammar-lesson-editor textarea,.grammar-lesson-editor select{width:100%;padding:11px;border:1px solid var(--border-strong);border-radius:9px;background:var(--bg-page);color:var(--text-primary);font:inherit}
+  /**
+   * 样式范围：.grammar-lesson-editor__body h2。
+   */
+  .grammar-lesson-editor__body h2{margin:0;font-size:22px}
+  /**
+   * 样式范围：.grammar-lesson-editor form>button。
+   */
+  .grammar-lesson-editor form>button{justify-self:start}
 </style>

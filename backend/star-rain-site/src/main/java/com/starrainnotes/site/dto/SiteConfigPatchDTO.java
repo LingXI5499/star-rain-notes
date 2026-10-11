@@ -1,13 +1,41 @@
+/*
+ * SiteConfigPatchDTO：站点模块的请求与传输数据文件。
+ * 业务范围：站点品牌、首页内容和站点设置。
+ * 描述请求、内部传输或计算结果的数据结构。字段约束使用本类的校验注解；没有注解的限制由使用该对象的服务处理。
+ */
+
 package com.starrainnotes.site.dto;
 
 import lombok.Data;
 
+/**
+ * 站点配置Patch传输对象，属于站点模块。
+ * 描述请求、内部传输或计算结果的数据结构。字段约束使用本类的校验注解；没有注解的限制由使用该对象的服务处理。
+ */
 @Data
 public class SiteConfigPatchDTO {
+    /**
+     * 站点名称。
+     */
     private String siteName;
+    /**
+     * 站点标题。
+     */
     private String siteTitle;
+    /**
+     * tagline。
+     */
     private String tagline;
+    /**
+     * 站点描述。
+     */
     private String siteDescription;
+    /**
+     * 首页Intro。
+     */
     private String homeIntro;
+    /**
+     * footer文本。
+     */
     private String footerText;
 }

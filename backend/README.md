@@ -6,7 +6,15 @@ Java 21 / Spring Boot 3.5 / Maven 多模块应用，使用 MySQL 8、MyBatis Map
 
 `common` 提供响应、异常和安全契约；`account` 管理身份、权限、邮箱及邀请；`tutorial` 管理教程、审核工作区与学习；`blog`、`portfolio`、`english`、`message`、`profile`、`site` 对应业务内容；`media` 管理存储及引用；`review` 管理审批；`analytics`、`search`、`seo` 提供统计、搜索及公开 HTML 派生数据。
 
-跨模块通过 `api` 契约调用，Controller 校验输入与权限，Service 编排业务和事务，Mapper 绑定 SQL 参数。Service 接口和实现分开，DTO、VO 与值对象使用 Lombok POJO，禁止新建 Java record；新增业务异常继承项目异常基类。包按职责分类，不创建 support/misc 包，注释解释业务原因，遵循现有普通注释风格。保留现有逻辑外键、角色与权限模型。
+跨模块通过 `api` 契约调用，Controller 校验输入与权限，Service 编排业务和事务，Mapper 绑定 SQL 参数。Service 接口和实现分开，DTO、VO 与值对象使用 Lombok POJO，禁止新建 Java record；新增业务异常继承项目异常基类。包按职责分类，不创建 support/misc 包。类型、字段和方法使用 Javadoc 说明职责、参数、返回值、约束及协作调用，流程内的普通注释解释业务原因。保留现有逻辑外键、角色与权限模型。
+
+## 源码阅读与注释
+
+每个 Java 源文件（包含测试）都有模块职责和入口说明。先读 Controller 的路由与输入约束，再读 Service 的业务步骤、事务及异常分支，最后按 Mapper 方法找到同名 XML 语句。DTO/VO/Entity 字段注释说明数据含义与校验、序列化规则；测试注释对应实际场景和断言。
+
+Mapper XML 逐条说明读写目标、参数、结果类型、主键回填、行锁和动态条件；各模块 POM 标明聚合、依赖及插件职责。`application.yml` 与公开配置模板说明环境绑定和默认值，`tools/check_public_source.py` 说明扫描范围和失败报告方式。注释不包含真实配置或个人邮箱。
+
+已发布的 40 份迁移 SQL 保留原文，以免改变 Flyway 校验值；每份迁移的职责、涉及对象和结构变更说明见[迁移目录 README](star-rain-boot/src/main/resources/db/migration/README.md)。修改数据库应追加迁移，不能改已执行脚本。
 
 ## 配置与启动
 

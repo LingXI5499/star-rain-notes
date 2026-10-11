@@ -1,27 +1,219 @@
+/**
+ * englishRw.css：英语学习模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
+/**
+ * 样式范围：.english-rw。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw{max-width:1220px;margin:auto;padding:32px 0 90px;color:var(--text-primary)}
+/**
+ * 样式范围：.english-rw__hero。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .english-rw__hero{display:flex;align-items:end;justify-content:space-between;gap:24px;margin:22px 0 30px}
-.english-rw h1{font-size:clamp(32px,4vw,46px);line-height:1.2;margin:8px 0 14px}.english-rw h2{font-size:24px;margin:0 0 16px}.english-rw h3{margin:0 0 10px}
+/**
+ * 样式范围：.english-rw h1。
+ */
+.english-rw h1{font-size:clamp(32px,4vw,46px);line-height:1.2;margin:8px 0 14px}
+  /**
+   * 样式范围：.english-rw h2。
+   */
+  .english-rw h2{font-size:24px;margin:0 0 16px}
+  /**
+   * 样式范围：.english-rw h3。
+   */
+  .english-rw h3{margin:0 0 10px}
+/**
+ * 样式范围：.english-rw__muted,.english-rw__hero p:last-child。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw__muted,.english-rw__hero p:last-child{color:var(--text-secondary);line-height:1.8}
+/**
+ * 样式范围：.english-rw__panel。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw__panel{padding:24px;border:1px solid var(--border);border-radius:18px;background:var(--bg-surface);margin:20px 0}
+/**
+ * 样式范围：.english-rw__actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .english-rw__actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+/**
+ * 样式范围：.english-rw .english-rw__button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw .english-rw__button{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex-shrink:0;min-height:44px;padding:10px 18px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-surface);color:var(--primary);font:inherit;font-size:14px;line-height:1.5;font-weight:600;text-decoration:none;cursor:pointer;transition:color 160ms ease,background-color 160ms ease,border-color 160ms ease,box-shadow 160ms ease,transform 160ms ease}
+/**
+ * 样式范围：.english-rw .english-rw__button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw .english-rw__button:hover{border-color:var(--primary);color:var(--primary);background:var(--bg-subtle)}
+/**
+ * 样式范围：.english-rw .english-rw__button--primary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw .english-rw__button--primary{background:var(--primary);border-color:var(--primary);color:var(--on-primary)}
+/**
+ * 样式范围：.english-rw .english-rw__button--primary:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw .english-rw__button--primary:hover{background:var(--primary-hover);border-color:var(--primary-hover);color:var(--on-primary);box-shadow:0 4px 12px color-mix(in srgb,var(--primary) 18%,transparent)}
+/**
+ * 样式范围：.english-rw .english-rw__button:focus-visible。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw .english-rw__button:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+/**
+ * 样式范围：.english-rw .english-rw__button:active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .english-rw .english-rw__button:active{transform:scale(.98)}
+/**
+ * 样式范围：.english-rw__button svg。
+ */
 .english-rw__button svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round}
+/**
+ * 样式范围：.english-rw button:disabled。
+ */
 .english-rw button:disabled{opacity:.5;cursor:default}
-.english-rw__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}.english-rw__card{display:flex;flex-direction:column;min-height:210px;padding:24px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface);color:var(--text-primary);transition:border-color .2s}
-.english-rw__card:hover{border-color:var(--primary)}.english-rw__card small{color:var(--accent);margin-bottom:18px}.english-rw__card p{color:var(--text-secondary);line-height:1.8;margin:0 0 18px}.english-rw__card strong{color:var(--primary);margin-top:auto;font-size:13px}
-.english-rw__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}.english-rw label{display:grid;gap:8px;color:var(--text-secondary);font-size:13px}
+/**
+ * 样式范围：.english-rw__grid。
+ * 使用网格布局组织内容；列定义为 repeat(3,minmax(0,1fr))，间距由 18px 控制。
+ */
+.english-rw__grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+  /**
+   * 样式范围：.english-rw__card。
+   * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .english-rw__card{display:flex;flex-direction:column;min-height:210px;padding:24px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface);color:var(--text-primary);transition:border-color .2s}
+/**
+ * 样式范围：.english-rw__card:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
+.english-rw__card:hover{border-color:var(--primary)}
+  /**
+   * 样式范围：.english-rw__card small。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .english-rw__card small{color:var(--accent);margin-bottom:18px}
+  /**
+   * 样式范围：.english-rw__card p。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .english-rw__card p{color:var(--text-secondary);line-height:1.8;margin:0 0 18px}
+  /**
+   * 样式范围：.english-rw__card strong。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .english-rw__card strong{color:var(--primary);margin-top:auto;font-size:13px}
+/**
+ * 样式范围：.english-rw__fields。
+ * 使用网格布局组织内容；列定义为 repeat(2,minmax(0,1fr))，间距由 18px 控制。
+ */
+.english-rw__fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+  /**
+   * 样式范围：.english-rw label。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 8px 控制。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .english-rw label{display:grid;gap:8px;color:var(--text-secondary);font-size:13px}
+/**
+ * 样式范围：.english-rw input:not([type=checkbox]),.english-rw textarea。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw input:not([type=checkbox]),.english-rw textarea{box-sizing:border-box;width:100%;padding:12px 14px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-page);color:var(--text-primary);font:inherit;line-height:1.7}
-.english-rw__notice{padding:14px 18px;border-radius:12px;background:var(--primary-soft);color:var(--primary);line-height:1.7}.english-rw__error{padding:14px 18px;border:1px solid var(--accent);border-radius:12px;color:var(--accent);line-height:1.7}
+/**
+ * 样式范围：.english-rw__notice。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
+.english-rw__notice{padding:14px 18px;border-radius:12px;background:var(--primary-soft);color:var(--primary);line-height:1.7}
+  /**
+   * 样式范围：.english-rw__error。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .english-rw__error{padding:14px 18px;border:1px solid var(--accent);border-radius:12px;color:var(--accent);line-height:1.7}
+/**
+ * 样式范围：.english-rw__empty。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw__empty{padding:32px;border:1px dashed var(--border-strong);border-radius:14px;color:var(--text-muted);line-height:1.8}
-.english-rw__section{margin:38px 0}.english-rw__section>header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
-.english-rw__section>header h2{margin:0}.english-rw__badge{font-size:12px;padding:5px 9px;border-radius:6px;background:var(--primary-soft);color:var(--primary)}
-.english-rw__prose{line-height:1.9;overflow-wrap:anywhere}.english-rw__prose .markdown-body{padding:0}
+/**
+ * 样式范围：.english-rw__section。
+ */
+.english-rw__section{margin:38px 0}
+  /**
+   * 样式范围：.english-rw__section>header。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .english-rw__section>header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}
+/**
+ * 样式范围：.english-rw__section>header h2。
+ */
+.english-rw__section>header h2{margin:0}
+  /**
+   * 样式范围：.english-rw__badge。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .english-rw__badge{font-size:12px;padding:5px 9px;border-radius:6px;background:var(--primary-soft);color:var(--primary)}
+/**
+ * 样式范围：.english-rw__prose。
+ */
+.english-rw__prose{line-height:1.9;overflow-wrap:anywhere}
+  /**
+   * 样式范围：.english-rw__prose .markdown-body。
+   */
+  .english-rw__prose .markdown-body{padding:0}
+/**
+ * 样式范围：.english-rw__row。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .english-rw__row{display:flex;gap:16px;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid var(--border)}
-@media(max-width:850px){.english-rw__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:600px){.english-rw__hero{align-items:start;flex-direction:column}.english-rw__grid,.english-rw__fields{grid-template-columns:1fr}.english-rw__panel{padding:18px}.english-rw__row{align-items:start;flex-wrap:wrap}}
-@media(prefers-reduced-motion:reduce){.english-rw__card,.english-rw .english-rw__button{transition:none}.english-rw .english-rw__button:active{transform:none}}
+/**
+ * 响应式或设备条件：(max-width:850px)；仅在该条件成立时覆盖基础样式。
+ */
+@media(max-width:850px){
+  /**
+   * 样式范围：.english-rw__grid。
+   */
+  .english-rw__grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/**
+ * 响应式或设备条件：(max-width:600px)；仅在该条件成立时覆盖基础样式。
+ */
+@media(max-width:600px){
+  /**
+   * 样式范围：.english-rw__hero。
+   */
+  .english-rw__hero{align-items:start;flex-direction:column}
+  /**
+   * 样式范围：.english-rw__grid,.english-rw__fields。
+   */
+  .english-rw__grid,.english-rw__fields{grid-template-columns:1fr}
+  /**
+   * 样式范围：.english-rw__panel。
+   */
+  .english-rw__panel{padding:18px}
+  /**
+   * 样式范围：.english-rw__row。
+   */
+  .english-rw__row{align-items:start;flex-wrap:wrap}}
+/**
+ * 响应式或设备条件：(prefers-reduced-motion:reduce)；仅在该条件成立时覆盖基础样式。
+ */
+@media(prefers-reduced-motion:reduce){
+  /**
+   * 样式范围：.english-rw__card,.english-rw .english-rw__button。
+   */
+  .english-rw__card,.english-rw .english-rw__button{transition:none}
+  /**
+   * 样式范围：.english-rw .english-rw__button:active。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   */
+  .english-rw .english-rw__button:active{transform:none}}

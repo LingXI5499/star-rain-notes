@@ -1,3 +1,11 @@
+/*
+ * PortfolioContentServiceTest：作品模块的测试文件。
+ * 业务范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CurrentActorApi、WorkEventPublisher、PortfolioContentServiceImpl、WorkSectionRules。
+ * 阅读入口：setup（setup处理入口）；aHiddenBlockCannotLeakOrRestoreLegacyContent（aHidden区块CannotLeak或RestoreLegacy内容处理入口）；legacyBodyIsUsedOnlyWhenThereAreNoBlocks（legacy正文是否UsedOnly条件ThereAre不含Blocks处理入口）；mediaAttachmentCreatesTheCrossDomainDeletionGuard（媒体AttachmentCreatesTheCrossDomainDeletionGuard处理入口）。
+ */
+
 package com.starrainnotes.portfolio.service;
 
 import static org.assertj.core.api.Assertions.*;
@@ -18,18 +26,63 @@ import java.util.*;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 
+/**
+ * 作品内容业务服务测试，属于作品模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class PortfolioContentServiceTest {
+    /**
+     * 数据映射。
+     * 协作类型：<code>WorkContentMapper</code>。
+     */
     private final WorkContentMapper mapper = mock(WorkContentMapper.class);
+    /**
+     * 作品列表。
+     * 协作类型：<code>WorkMapper</code>。
+     */
     private final WorkMapper works = mock(WorkMapper.class);
+    /**
+     * assets。
+     * 协作类型：<code>MediaAssetApi</code>。
+     */
     private final MediaAssetApi assets = mock(MediaAssetApi.class);
+    /**
+     * refs。
+     * 协作类型：<code>MediaReferenceApi</code>。
+     */
     private final MediaReferenceApi refs = mock(MediaReferenceApi.class);
+    /**
+     * 当前操作对应的身份对象。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi actor = mock(CurrentActorApi.class);
+    /**
+     * 事件集合。
+     */
     private final WorkEventPublisher events = mock(WorkEventPublisher.class);
+    /**
+     * JSON 读写或映射协作对象。
+     * 协作类型：<code>ObjectMapper</code>。
+     */
     private final ObjectMapper json = new ObjectMapper();
+    /**
+     * 业务服务。
+     * 协作类型：<code>PortfolioContentService</code>。
+     */
     private final PortfolioContentService service = new PortfolioContentServiceImpl(mapper, works, assets, refs, actor, events, json);
+    /**
+     * 作品。
+     */
     private WorkEntity work;
+    /**
+     * 行集合。
+     */
     private final List<WorkSectionEntity> rows = new ArrayList<>();
 
+    /**
+     * setup处理入口。
+     * 主要协作调用：<code>work.setId</code>、<code>work.setStatus</code>、<code>work.setSlug</code>、<code>works.byIdForUpdate</code>、<code>actor.current</code>。
+     */
     @BeforeEach void setup() {
         work = new WorkEntity(); work.setId(1L); work.setStatus("DRAFT"); work.setSlug("test");
         when(works.byIdForUpdate(1L)).thenReturn(work);
@@ -37,6 +90,10 @@ class PortfolioContentServiceTest {
         when(mapper.sections(1L)).thenAnswer(i -> new ArrayList<>(rows));
         doAnswer(i -> { WorkSectionEntity row = i.getArgument(0); row.setId((long)rows.size() + 1); rows.add(row); return null; }).when(mapper).insertSection(any());
     }
+    /**
+     * aHidden区块CannotLeak或RestoreLegacy内容处理入口。
+     * 主要协作调用：<code>service.create</code>、<code>service.sections</code>、<code>service.searchableText</code>、<code>service.seoMarkdown</code>。
+     */
     @Test void aHiddenBlockCannotLeakOrRestoreLegacyContent() {
         service.create(1L, block("MARKDOWN", "private searchable secret", false));
         assertThat(service.sections(1L, true)).isEmpty();
@@ -44,11 +101,19 @@ class PortfolioContentServiceTest {
         assertThat(service.seoMarkdown(1L, "old secret")).isEmpty();
         assertThat(service.sections(1L, false)).hasSize(1);
     }
+    /**
+     * legacy正文是否UsedOnly条件ThereAre不含Blocks处理入口。
+     * 主要协作调用：<code>service.searchableText</code>、<code>service.create</code>。
+     */
     @Test void legacyBodyIsUsedOnlyWhenThereAreNoBlocks() {
         assertThat(service.searchableText(1L, "legacy content")).isEqualTo("legacy content");
         service.create(1L, block("MARKDOWN", "current content", true));
         assertThat(service.searchableText(1L, "legacy content")).contains("current content").doesNotContain("legacy content");
     }
+    /**
+     * 媒体AttachmentCreatesTheCrossDomainDeletionGuard处理入口。
+     * 主要协作调用：<code>assets.get</code>、<code>service.create</code>。
+     */
     @Test void mediaAttachmentCreatesTheCrossDomainDeletionGuard() {
         when(assets.get(20L)).thenReturn(MediaAssetSummary.builder().id(20L).mediaType("IMAGE").accessLevel("PUBLIC").status("ACTIVE").build());
         doAnswer(i -> { WorkSectionMediaEntity row = i.getArgument(0); row.setId(50L); return null; }).when(mapper).insertSectionMedia(any());
@@ -62,6 +127,10 @@ class PortfolioContentServiceTest {
                 .isEqualTo("portfolio.section");
     }
 
+    /**
+     * Markdown选中ImagesUseTheSameArchiveProtection及公开访问检查处理入口。
+     * 主要协作调用：<code>assets.get</code>、<code>service.create</code>、<code>work.setStatus</code>。
+     */
     @Test void markdownSelectedImagesUseTheSameArchiveProtectionAndPublicAccessCheck() {
         when(assets.get(20L)).thenReturn(MediaAssetSummary.builder().id(20L).mediaType("IMAGE")
                 .contentUrl("/media/20").accessLevel("PUBLIC").status("ACTIVE").build());
@@ -77,6 +146,10 @@ class PortfolioContentServiceTest {
                 .accessLevel("PROTECTED").status("ACTIVE").build());
         assertThatThrownBy(() -> service.create(1L, dto)).isInstanceOf(WorkInvalidException.class);
     }
+    /**
+     * 图片区块拒绝音频及已发布区块拒绝Private媒体处理入口。
+     * 主要协作调用：<code>assets.get</code>、<code>service.create</code>、<code>work.setStatus</code>。
+     */
     @Test void imageBlockRejectsAudioAndPublishedBlockRejectsPrivateMedia() {
         when(assets.get(20L)).thenReturn(MediaAssetSummary.builder().id(20L).mediaType("AUDIO").accessLevel("PUBLIC").status("ACTIVE").build());
         WorkSectionDTO dto = block("IMAGE", "", true); dto.setMedia(List.of(SectionMediaDTO.builder().mediaAssetId(20L).build()));
@@ -86,6 +159,10 @@ class PortfolioContentServiceTest {
         assertThatThrownBy(() -> service.create(1L, dto)).isInstanceOf(WorkInvalidException.class);
         verify(mapper, never()).insertSection(any());
     }
+    /**
+     * 区块Ownership及Complete顺序AreEnforced处理入口。
+     * 主要协作调用：<code>mapper.section</code>、<code>service.update</code>、<code>service.create</code>、<code>service.reorder</code>。
+     */
     @Test void sectionOwnershipAndCompleteOrderAreEnforced() {
         var other = WorkSectionEntity.builder().id(9L).workId(2L).build(); when(mapper.section(9L)).thenReturn(other);
         assertThatThrownBy(() -> service.update(1L, 9L, block("MARKDOWN", "x", true))).isInstanceOf(WorkNotFoundException.class);
@@ -94,6 +171,10 @@ class PortfolioContentServiceTest {
         assertThatThrownBy(() -> service.reorder(1L, List.of(1L,9L))).isInstanceOf(WorkInvalidException.class);
         service.reorder(1L, List.of(2L,1L)); verify(mapper).orderSection(2L,10); verify(mapper).orderSection(1L,20);
     }
+    /**
+     * templateCopy是否AnIndependent快照及BlankTemplateCreates不含行集合处理入口。
+     * 主要协作调用：<code>mapper.template</code>、<code>service.copyTemplate</code>、<code>rows.getFirst</code>。
+     */
     @Test void templateCopyIsAnIndependentSnapshotAndBlankTemplateCreatesNoRows() {
         var template = WorkTemplateEntity.builder().id(3L).sectionsJson("[{\"sectionType\":\"MARKDOWN\",\"title\":\"Background\",\"content\":\"\",\"data\":{},\"visible\":true}]").build();
         when(mapper.template(3L)).thenReturn(template); service.copyTemplate(1L,3L);
@@ -101,12 +182,21 @@ class PortfolioContentServiceTest {
         when(mapper.template(4L)).thenReturn(WorkTemplateEntity.builder().id(4L).sectionsJson("[]").build());
         service.copyTemplate(1L,4L); assertThat(rows).hasSize(1);
     }
+    /**
+     * 发布RequiresNonempty可见Blocks处理入口。
+     * 主要协作调用：<code>service.create</code>、<code>service.validatePublication</code>、<code>rows.getFirst</code>。
+     */
     @Test void publicationRequiresNonemptyVisibleBlocks() {
         service.create(1L, block("MARKDOWN", "", false));
         assertThatThrownBy(() -> service.validatePublication(1L)).isInstanceOf(WorkInvalidException.class);
         rows.getFirst().setVisible(true);
         assertThatThrownBy(() -> service.validatePublication(1L)).isInstanceOf(WorkInvalidException.class);
     }
+    /**
+     * 无效数据库模式及不安全LinksAre已拒绝处理入口。
+     * 主要协作调用：<code>json.readTree</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void invalidSchemaAndUnsafeLinksAreRejected() throws Exception {
         var dto = block("LINKS", "", true); dto.setData(json.readTree("{\"items\":[{\"url\":\"javascript:alert(1)\",\"label\":\"X\"}]}"));
         assertThatThrownBy(() -> WorkSectionRules.validate(dto)).isInstanceOf(WorkInvalidException.class);
@@ -114,6 +204,10 @@ class PortfolioContentServiceTest {
         assertThatThrownBy(() -> WorkSectionRules.validate(dto)).isInstanceOf(WorkInvalidException.class);
         assertThatThrownBy(() -> WorkSectionRules.validate(block("UNKNOWN", "x", true))).isInstanceOf(WorkInvalidException.class);
     }
+    /**
+     * 精选Cap及标签OwnershipAreEnforced处理入口。
+     * 主要协作调用：<code>mapper.featuredCount</code>、<code>service.validateFeatured</code>、<code>mapper.tags</code>、<code>service.setTags</code>。
+     */
     @Test void featuredCapAndTagOwnershipAreEnforced() {
         when(mapper.featuredCount(1L)).thenReturn(3L);
         assertThatThrownBy(() -> service.validateFeatured(1L,true)).isInstanceOf(WorkInvalidException.class);
@@ -123,6 +217,15 @@ class PortfolioContentServiceTest {
         assertThatThrownBy(() -> service.setTags(1L,List.of(10L,10L))).isInstanceOf(WorkInvalidException.class);
         service.setTags(1L,List.of(10L)); verify(mapper).addTag(1L,10L);
     }
+    /**
+     * 区块处理入口。
+     * 主要协作调用：<code>json.createObjectNode</code>。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @param text 文本；类型为 <code>String</code>
+     * @param visible 可见；类型为 <code>boolean</code>
+     * @return 类型为 <code>WorkSectionDTO</code> 的处理结果
+     */
     private WorkSectionDTO block(String type, String text, boolean visible) {
         return WorkSectionDTO.builder().sectionType(type).title("A block").content(text).visible(visible).data(json.createObjectNode()).build();
     }

@@ -1,3 +1,11 @@
+/*
+ * EnglishSearchSourceApiTest：英语学习模块的测试文件。
+ * 业务范围：文档、词汇、语法、阅读听力及复习记录。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：EnglishSearchDocument、EnglishSearchSourceApiAdapter、EnglishSearchSourceMapper。
+ * 阅读入口：longVocabularyQueriesFitTheIndexUrlWithoutSplittingUnicode（long词汇QueriesFitThe索引地址不含SplittingUnicode处理入口）；invalidSourceRequestsAreRejectedBeforeScanning（无效来源RequestsAre已拒绝之前Scanning处理入口）。
+ */
+
 package com.starrainnotes.english.api;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,7 +18,15 @@ import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
+/**
+ * 英语搜索来源接口测试，属于英语学习模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class EnglishSearchSourceApiTest {
+    /**
+     * long词汇QueriesFitThe索引地址不含SplittingUnicode处理入口。
+     * 关键处理步骤调用 <code>document.setContentType</code>、<code>document.setId</code>、<code>document.setThemeId</code>、<code>document.setTitle</code>。
+     */
     @Test
     void longVocabularyQueriesFitTheIndexUrlWithoutSplittingUnicode() {
         var mapper = mock(EnglishSearchSourceMapper.class);
@@ -29,6 +45,10 @@ class EnglishSearchSourceApiTest {
         assertEquals(0, query.length() % 2);
     }
 
+    /**
+     * 无效来源RequestsAre已拒绝之前Scanning处理入口。
+     * 关键处理步骤调用 <code>source.page</code>、<code>source.findPublished</code>。
+     */
     @Test
     void invalidSourceRequestsAreRejectedBeforeScanning() {
         var mapper = mock(EnglishSearchSourceMapper.class);

@@ -2,8 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--
+      pom.xml：star-rain-parent 的 Maven 构建描述。
+      父 POM 统一版本与构建约定；本模块只声明自身装配所需的模块和库。
+      依赖 scope、插件执行阶段与聚合 modules 共同决定编译、测试及产物，注释不改变构建参数。
+    -->
+
     <modelVersion>4.0.0</modelVersion>
 
+    <!--
+      继承父项目的依赖管理、插件默认值与版本约定；relativePath 决定本地父 POM 的查找方式。
+    -->
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
@@ -16,11 +25,17 @@
     <version>2.0.1</version>
     <packaging>pom</packaging>
 
+    <!--
+      定义编译语言、编码或可复用版本属性；${...} 在 Maven 解析时替换。
+    -->
     <properties>
         <java.version>21</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <!--
+      聚合构建入口；Maven 根据模块依赖决定构建顺序，列表不表示运行时调用顺序。
+    -->
     <modules>
         <module>star-rain-common</module>
         <module>star-rain-account</module>

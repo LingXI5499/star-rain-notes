@@ -1,3 +1,10 @@
+/*
+ * ModuleBoundaryTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 阅读入口：businessModulesOnlyImportOtherModulesPublicContracts（businessModulesOnlyImportOtherModules公开Contracts处理入口）；controllersDoNotDependOnPersistenceTypes（controllersDo不Depend触发持久化Types处理入口）；reviewedServicePackagesKeepInterfacesAndImplementationsSeparate（复习业务服务PackagesKeepInterfaces及ImplementationsSeparate处理入口）；backendRoot（backendRoot处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -12,11 +19,26 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Module边界测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class ModuleBoundaryTest {
+    /**
+     * IMPORT。
+     */
     private static final Pattern IMPORT = Pattern.compile("^import com\\.starrainnotes\\.([a-z]+)\\.(.+);$");
+    /**
+     * MODULES。
+     */
     private static final Set<String> MODULES = Set.of("account", "analytics", "blog", "english", "media",
         "message", "portfolio", "profile", "review", "search", "seo", "site", "tutorial");
 
+    /**
+     * businessModulesOnlyImportOtherModules公开Contracts处理入口。
+     * 主要协作调用：<code>IMPORT.matcher</code>、<code>MODULES.contains</code>。
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void businessModulesOnlyImportOtherModulesPublicContracts() throws IOException {
         Path backend = backendRoot();
@@ -41,6 +63,11 @@ class ModuleBoundaryTest {
         assertTrue(violations.isEmpty(), () -> String.join("\n", violations));
     }
 
+    /**
+     * controllersDo不Depend触发持久化Types处理入口。
+     * 关键处理步骤调用 <code>backendRoot</code>、<code>backend.resolve</code>、<code>Files.walk</code>、<code>files.filter</code>。
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void controllersDoNotDependOnPersistenceTypes() throws IOException {
         Path backend = backendRoot();
@@ -60,6 +87,11 @@ class ModuleBoundaryTest {
         assertTrue(violations.isEmpty(), () -> String.join("\n", violations));
     }
 
+    /**
+     * 复习业务服务PackagesKeepInterfaces及ImplementationsSeparate处理入口。
+     * 关键处理步骤调用 <code>backendRoot</code>、<code>List.of</code>、<code>backend.resolve</code>、<code>Files.list</code>。
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void reviewedServicePackagesKeepInterfacesAndImplementationsSeparate() throws IOException {
         Path backend = backendRoot();
@@ -86,6 +118,12 @@ class ModuleBoundaryTest {
         assertTrue(violations.isEmpty(), () -> String.join("\n", violations));
     }
 
+    /**
+     * backendRoot处理入口。
+     * 关键处理步骤调用 <code>Path.of</code>、<code>System.getProperty</code>、<code>Files.isDirectory</code>、<code>current.resolve</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     * @return 类型为 <code>Path</code> 的处理结果
+     */
     private Path backendRoot() {
         Path current = Path.of(System.getProperty("user.dir")).toAbsolutePath();
         while (current != null) {

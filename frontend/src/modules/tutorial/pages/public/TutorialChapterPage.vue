@@ -1,4 +1,16 @@
 <script setup>
+/**
+ * TutorialChapterPage.vue：教程与学习模块的页面组件。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 课程树与章节正文分别加载；路由切章时使用请求版本与取消机制隔离旧正文。
+ * 阅读进度和回答属于登录学习能力；公开正文保持可读，临时回答草稿与服务端记录按各自流程处理。
+ * 主要依赖：vue、vue-router、../learning/ChapterStudyPage.vue、../../styles/study-exercises.css、../../../blog/components/BlogProse.vue、../../../blog/components/ReadingAside.vue。
+ * 主要响应式状态：route、tutorial、chapter、loading、chapterLoading、error、answers、drafts。
+ * 阅读入口：tutorialPath（教程路径的处理函数）；revealActiveChapter（reveal有效章节的处理函数）；load（加载当前操作）；visitorKey（visitor键的处理函数）；openQuestion（打开问题）。
+ */
+
+
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import ChapterStudyPage from '../learning/ChapterStudyPage.vue'
@@ -11,22 +23,90 @@ import { VIEW_MODE, accountPath, resolveViewMode } from '../../../../shared/view
 import { getChapterProgress, getOwnAnswer, getOwnReferenceAnswer, saveChapterProgress, saveOwnAnswer } from '../../api/learningApi'
 import { useAuthStore } from '../../../account/stores/authStore'
 
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * 教程；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tutorial = ref(null)
+/**
+ * 章节；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const chapter = ref(null)
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(true)
+/**
+ * 章节Loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const chapterLoading = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * 答案列表；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const answers = ref({})
+/**
+ * 草稿列表；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const drafts = ref({})
+/**
+ * 阅读；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const reading = ref(null)
+/**
+ * 进度错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const progressError = ref('')
+/**
+ * 答案错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const answerError = ref({})
+/**
+ * articleElement；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const articleElement = ref(null)
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
+/**
+ * 账号Mode；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const accountMode = computed(() => resolveViewMode(route.path) === VIEW_MODE.ACCOUNT)
+/**
+ * 计划Mode；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const planMode = computed(() => accountMode.value && !!route.query.plan)
+/**
+ * signed内部；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const signedIn = computed(() => accountMode.value && Boolean(auth.currentUser))
+/**
+ * 教程路径的处理函数。
+ * 主要协作：accountPath。
+ * @param suffix = '' suffix；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const tutorialPath = (suffix = '') => accountMode.value ? accountPath(`/tutorials${suffix}`) : `/tutorials${suffix}`
 /*
  * 把当前章节滚进侧栏的可视区 —— 照抄 V1 TutorialCurriculumList 的 revealActive。
@@ -34,28 +114,83 @@ const tutorialPath = (suffix = '') => accountMode.value ? accountPath(`/tutorial
  * block:'nearest' 在条目本来就可见时是空操作，所以不会和用户的手动滚动打架。
  * 目录可能有一百多章，不滚的话从外部链接进来常常看不到自己在哪。
  */
+/**
+ * 课程目录Ref；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const curriculumRef = ref(null)
+/**
+ * reveal有效章节的处理函数。
+ * 主要协作：nextTick、.scrollIntoView、curriculumRef.value.querySelector。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function revealActiveChapter() {
   await nextTick()
   curriculumRef.value?.querySelector('.curriculum__chapter--active')?.scrollIntoView({ block: 'nearest' })
 }
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(revealActiveChapter)
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => chapter.value?.slug, revealActiveChapter)
 
 let progressTimer = null
 let lastSaveAt = Date.now()
 let currentChapterId = null
 let lastScrollRatio = 0
+/**
+ * drawerOpen；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const drawerOpen = ref(false)
+/**
+ * 正文目录；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const outline = ref([])
+/**
+ * 章节列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const chapters = computed(() => tutorial.value?.groups?.flatMap((group) => group.chapters || []) || [])
+/**
+ * 章节索引；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const chapterIndex = computed(() => chapters.value.findIndex((item) => item.slug === route.params.chapterSlug))
+/**
+ * 分组；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const group = computed(() => tutorial.value?.groups?.find((item) => item.chapters?.some((row) => row.slug === route.params.chapterSlug)))
+/**
+ * 上一项；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const previous = computed(() => chapters.value[chapterIndex.value - 1] || null)
+/**
+ * 下一项；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const next = computed(() => chapters.value[chapterIndex.value + 1] || null)
+/**
+ * 进度；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const progress = computed(() => chapters.value.length && chapterIndex.value >= 0
   ? Math.round(((chapterIndex.value + 1) / chapters.value.length) * 100) : 0)
+/**
+ * 字符数量；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const charCount = computed(() => (chapter.value?.bodyMarkdown || '').replace(/\s/g, '').length)
+/**
+ * 读取分钟；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const readMinutes = computed(() => Math.max(1, Math.ceil(charCount.value / 400)))
 
 /*
@@ -65,11 +200,23 @@ const readMinutes = computed(() => Math.max(1, Math.ceil(charCount.value / 400))
  *               不是滚动位置；滚动位置属于「学习记录」，只在账号模式下额外展示）。
  *   所属教程 —— 当前课程标题。
  */
+/**
+ * asideInfo；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const asideInfo = computed(() => [
   { label: '阅读进度', value: `${progress.value}%` },
   { label: '所属教程', value: tutorial.value?.title || '' },
 ])
 
+/**
+ * 加载当前操作。
+ * 主要协作：Promise.all、Promise.resolve、getPublicTutorial、getPublicChapter、Date.now。
+ * 更新的响应式状态包括 tutorial、chapter、loading、chapterLoading、error、answers、drafts；渲染由 Vue 的依赖跟踪触发。
+ * 通过版本或 epoch 判断放弃过期结果，避免异步请求覆盖后来的界面状态。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   const version = ++load.version
   const slug = route.params.tutorialSlug
@@ -106,7 +253,19 @@ async function load() {
   finally { if (version === load.version) { loading.value = false; chapterLoading.value = false } }
 }
 load.version = 0
+/**
+ * visitor键的处理函数。
+ * @param questionId 问题标识；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function visitorKey(questionId) { return `star-rain:learning:answer:${questionId}` }
+/**
+ * 打开问题。
+ * 主要协作：getOwnAnswer、revealReference、localStorage.getItem、visitorKey、errorMessage。
+ * @param event 事件；默认值、解构字段与可选参数见函数签名。
+ * @param question 问题；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function openQuestion(event, question) {
   if (!event.target.open) return
   try {
@@ -121,6 +280,12 @@ async function openQuestion(event, question) {
     }
   } catch (cause) { answerError.value[question.id] = errorMessage(cause) }
 }
+/**
+ * reveal引用的处理函数。
+ * 主要协作：getOwnReferenceAnswer、errorMessage。
+ * @param question 问题；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function revealReference(question) {
   answers.value[question.id] = { loading: true, text: '' }
   try {
@@ -132,6 +297,12 @@ async function revealReference(question) {
     answerError.value[question.id] = errorMessage(cause)
   }
 }
+/**
+ * 提交答案。
+ * 主要协作：drafts.value.question.id.trim、saveOwnAnswer、localStorage.setItem、visitorKey、revealReference。
+ * @param question 问题；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function submitAnswer(question) {
   const answer = drafts.value[question.id]?.trim()
   if (!answer) { answerError.value[question.id] = '请先填写自己的答案。'; return }
@@ -143,12 +314,23 @@ async function submitAnswer(question) {
     else answerError.value[question.id] = '本地草稿已保存，登录后进入章节学习可记录答案版本。'
   } catch (cause) { answerError.value[question.id] = errorMessage(cause) }
 }
+/**
+ * 阅读比例的处理函数。
+ * 主要协作：element.getBoundingClientRect。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function readingRatio() {
   const element = articleElement.value
   if (!element) return 0
   const rect = element.getBoundingClientRect()
   return Math.max(0, Math.min(1, (window.innerHeight - rect.top) / Math.max(rect.height, 1)))
 }
+/**
+ * 持久化进度。
+ * 主要协作：Date.now、saveChapterProgress、errorMessage。
+ * 更新的响应式状态包括 reading、progressError；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function persistProgress() {
   if (!signedIn.value || planMode.value || !currentChapterId) return
   const elapsed = Math.max(0, Math.min(1800, Math.floor((Date.now() - lastSaveAt) / 1000)))
@@ -160,18 +342,29 @@ async function persistProgress() {
     progressError.value = ''
   } catch (cause) { progressError.value = errorMessage(cause) }
 }
+/**
+ * 响应滚动。
+ * 主要协作：readingRatio、window.setTimeout、persistProgress。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function onScroll() {
   if (!signedIn.value || planMode.value || !chapter.value) return
   lastScrollRatio = readingRatio()
   if (progressTimer) return
   progressTimer = window.setTimeout(() => { progressTimer = null; persistProgress() }, 10000)
 }
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => [route.params.tutorialSlug, route.params.chapterSlug, route.query.plan], async () => {
   if (progressTimer) { window.clearTimeout(progressTimer); progressTimer = null }
   if (currentChapterId) await persistProgress()
   await load()
 }, { immediate: true })
 window.addEventListener('scroll', onScroll, { passive: true })
+/**
+ * 组件销毁后执行剩余清理回调。
+ */
 onUnmounted(() => {
   window.removeEventListener('scroll', onScroll)
   if (progressTimer) window.clearTimeout(progressTimer)

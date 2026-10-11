@@ -1,3 +1,12 @@
+/**
+ * EnglishWritingPage.spec.js：英语学习模块的自动化测试。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue-router、vue、vitest、./EnglishWritingPage.vue。
+ * 阅读入口：setup（setup的处理函数）。
+ * 验证场景：writing center account boundary；does not request private articles or expose private counters on the public tree；uses only the original-writing list and never renders retired materials or tasks；keeps private work available when the public list fails；keeps public articles available when private work fails。
+ */
+
 import { mount,flushPromises } from '@vue/test-utils'
 import { createMemoryHistory,createRouter } from 'vue-router'
 import { ref } from 'vue'
@@ -8,6 +17,12 @@ vi.mock('../../api/englishRwApi',()=>({listPublicWriting:mocked.listPublicWritin
 vi.mock('../../../account/stores/authStore',()=>({useAuthStore:()=>({currentUser:mocked.user})}))
 vi.mock('../../../../shared/viewMode',()=>({useViewMode:()=>({contentPath:p=>p,isAccount:ref(mocked.account)}),accountPath:p=>'/useradmin'+p}))
 let wrapper
+/**
+ * setup的处理函数。
+ * 主要协作：createRouter、createMemoryHistory、router.push、mount、flushPromises。
+ * @param path='/english/writing' 路径英语写作；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function setup(path='/english/writing'){const router=createRouter({history:createMemoryHistory(),routes:[{path:'/english/writing',component:EnglishWritingPage},{path:'/english/topics/:slug',component:{template:'<div />'}}]});await router.push(path);wrapper=mount(EnglishWritingPage,{global:{plugins:[router]}});await flushPromises();return router}
 beforeEach(()=>{vi.clearAllMocks();mocked.account=false;mocked.user=null;mocked.listPublicWriting.mockResolvedValue({items:[],total:0});mocked.listMyWriting.mockResolvedValue({items:[{id:'99',title:'Private work',state:'DRAFT',visibility:'PRIVATE'}],total:1});mocked.getTaxonomy.mockResolvedValue([])})
 afterEach(()=>wrapper?.unmount())

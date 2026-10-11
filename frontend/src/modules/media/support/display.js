@@ -1,3 +1,10 @@
+/**
+ * display.js：媒体模块的业务支持工具。
+ * 职责范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 提供格式化、映射或计算能力，供模块页面与组件复用。
+ * 阅读入口：mediaTypeLabel（媒体类型标签的处理函数）；accessLevelLabel（访问Level标签的处理函数）；mediaStatusLabel（媒体状态标签的处理函数）；isBrowserPlayable（判断是否BrowserPlayable）；badgeText（badge文本的处理函数）。
+ */
+
 /*
  * 媒体模块的展示辅助。
  *
@@ -17,24 +24,59 @@ export const MEDIA_TYPE_CODES = MEDIA_TYPES.map((item) => item.value)
 
 const typeLabels = Object.fromEntries(MEDIA_TYPES.map((item) => [item.value, item.label]))
 
+/**
+ * 媒体类型标签的处理函数。
+ * @param code 代码；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 export const mediaTypeLabel = (code) => typeLabels[code] || code || '未知'
 
+/**
+ * 访问Level标签的处理函数。
+ * @param code 代码；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 export const accessLevelLabel = (code) => ({ PUBLIC: '公开', PROTECTED: '受保护' })[code] || code
 
+/**
+ * 媒体状态标签的处理函数。
+ * @param code 代码；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 export const mediaStatusLabel = (code) => ({ ACTIVE: '可用', ARCHIVED: '已归档' })[code] || code
 
 // 浏览器能直接播放/显示的类型；其余类型给下载入口，避免渲染未知格式
-export function isBrowserPlayable(mediaType) {
+export
+  /**
+   * 判断是否BrowserPlayable。
+   * @param mediaType 媒体类型；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function isBrowserPlayable(mediaType) {
   return mediaType === 'IMAGE' || mediaType === 'AUDIO' || mediaType === 'VIDEO'
 }
 
 // 文件类型在卡片上的角标文案
-export function badgeText(asset) {
+export
+  /**
+   * badge文本的处理函数。
+   * 主要协作：.toUpperCase、.slice、mediaTypeLabel。
+   * @param asset 资产；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function badgeText(asset) {
   const extension = (asset?.fileExtension || '').toUpperCase()
   return extension || mediaTypeLabel(asset?.mediaType).slice(0, 4)
 }
 
-export function formatSize(bytes) {
+export
+  /**
+   * 格式化大小。
+   * 主要协作：Number.isFinite、.toFixed。
+   * @param bytes 字节；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function formatSize(bytes) {
   const value = Number(bytes)
   if (!Number.isFinite(value) || value < 0) return '—'
   if (value < 1024) return `${value} B`
@@ -44,7 +86,14 @@ export function formatSize(bytes) {
 }
 
 // 后端返回的是无时区的 LocalDateTime，与 account 模块保持同一约定
-export function dateLabel(value) {
+export
+  /**
+   * 日期标签的处理函数。
+   * 主要协作：value.endsWith、Number.isNaN、date.getTime、date.toLocaleString。
+   * @param value 值；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function dateLabel(value) {
   if (!value) return '—'
   const date = new Date(value.endsWith('Z') ? value : value + 'Z')
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString('zh-CN', { hour12: false })

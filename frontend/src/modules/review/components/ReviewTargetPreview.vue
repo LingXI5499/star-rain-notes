@@ -1,4 +1,15 @@
 <script setup>
+/**
+ * ReviewTargetPreview.vue：审核模块的视图组件。
+ * 职责范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：../../tutorial/support/operationResult、../support/display、vue。
+ * 组件输入：view、revisionRef；默认值与类型见 defineProps。
+ * 主要响应式状态：props、operationFields、previousContent。
+ * 阅读入口：extraEntries（extra条目列表的处理函数）。
+ */
+
+
 import { operationLabels } from '../../tutorial/support/operationResult'
 import { dateLabel } from '../support/display'
 import { computed, defineAsyncComponent } from 'vue'
@@ -15,11 +26,18 @@ const BlogProse = defineAsyncComponent(() => import('../../blog/components/BlogP
  * 这样 Tutorial / Blog 将来扩展视图字段时，前端不需要跟着改，
  * 也不会因为字段缺失而白屏。
  */
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({
   view: { type: Object, default: null },
   revisionRef: { type: String, default: '' },
 })
 
+/**
+ * 操作字段集合；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const operationFields = computed(() => {
   const args = props.view?.proposed || []
   const payload = args.find(item => item && typeof item === 'object' && !Array.isArray(item))
@@ -35,11 +53,20 @@ const operationFields = computed(() => {
   const text = typeof args[args.length - 1] === 'string' ? args[args.length - 1] : null
   return text ? [{ key: 'name', label: '名称', value: text }] : []
 })
+/**
+ * 上一项内容；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const previousContent = computed(() => props.view?.before?.content)
 
 // 已经单独渲染过的字段不再进「其他字段」表
 const KNOWN_KEYS = ['viewType', 'targetId', 'targetModule', 'targetType', 'revisionRef', 'title', 'summary', 'contentSnapshot', 'frozenAt', 'operation', 'before', 'proposed', 'executionStatus', 'executionMessage']
 
+/**
+ * extra条目列表的处理函数。
+ * 主要协作：.map、.filter、Object.entries、KNOWN_KEYS.includes、JSON.stringify。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const extraEntries = () => {
   if (!props.view) return []
   return Object.entries(props.view)
@@ -93,7 +120,73 @@ const extraEntries = () => {
 </template>
 
 <style scoped>
-.review-target__tutorial{display:grid;gap:20px;min-width:0}.review-target__tutorial section{display:grid;gap:14px}.review-target__tutorial article{padding:18px;border:1px solid var(--border);border-radius:12px}.review-target__tutorial h3{font-size:20px}.review-target__tutorial h4{font-size:17px;margin-bottom:14px}.review-target__tutorial p{color:var(--text-secondary)}
-.review-target__operation pre{max-height:480px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;padding:16px;background:var(--bg-subtle);border-radius:10px}.review-target__operation{display:grid;gap:14px}
-.review-target__field{min-width:0;padding:14px;border:1px solid var(--border);border-radius:10px}.review-target__field>strong{display:block;margin-bottom:10px;color:var(--text-secondary);font-size:13px}.review-target__field>p{white-space:pre-wrap;overflow-wrap:anywhere}.review-target__before summary{cursor:pointer;padding:10px 0}.review-target__before ul{padding-left:20px;line-height:1.8}.review-target__before .review-target__tutorial{margin-top:14px}
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.review-target__tutorial。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 20px 控制。
+ */
+.review-target__tutorial{display:grid;gap:20px;min-width:0}
+  /**
+   * 样式范围：.review-target__tutorial section。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 14px 控制。
+   */
+  .review-target__tutorial section{display:grid;gap:14px}
+  /**
+   * 样式范围：.review-target__tutorial article。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .review-target__tutorial article{padding:18px;border:1px solid var(--border);border-radius:12px}
+  /**
+   * 样式范围：.review-target__tutorial h3。
+   */
+  .review-target__tutorial h3{font-size:20px}
+  /**
+   * 样式范围：.review-target__tutorial h4。
+   */
+  .review-target__tutorial h4{font-size:17px;margin-bottom:14px}
+  /**
+   * 样式范围：.review-target__tutorial p。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .review-target__tutorial p{color:var(--text-secondary)}
+/**
+ * 样式范围：.review-target__operation pre。
+ * 溢出处理：整体 auto。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
+.review-target__operation pre{max-height:480px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;padding:16px;background:var(--bg-subtle);border-radius:10px}
+  /**
+   * 样式范围：.review-target__operation。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 14px 控制。
+   */
+  .review-target__operation{display:grid;gap:14px}
+/**
+ * 样式范围：.review-target__field。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
+.review-target__field{min-width:0;padding:14px;border:1px solid var(--border);border-radius:10px}
+  /**
+   * 样式范围：.review-target__field>strong。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .review-target__field>strong{display:block;margin-bottom:10px;color:var(--text-secondary);font-size:13px}
+  /**
+   * 样式范围：.review-target__field>p。
+   */
+  .review-target__field>p{white-space:pre-wrap;overflow-wrap:anywhere}
+  /**
+   * 样式范围：.review-target__before summary。
+   */
+  .review-target__before summary{cursor:pointer;padding:10px 0}
+  /**
+   * 样式范围：.review-target__before ul。
+   */
+  .review-target__before ul{padding-left:20px;line-height:1.8}
+  /**
+   * 样式范围：.review-target__before .review-target__tutorial。
+   */
+  .review-target__before .review-target__tutorial{margin-top:14px}
 </style>

@@ -2,11 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.media.mapper.MediaReferenceMapper">
+    <!--
+      MediaReferenceMapper.xml：com.starrainnotes.media.mapper.MediaReferenceMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+    <!--
+      referenceColumns：引用投影列；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    -->
     <sql id="referenceColumns">
         id, media_asset_id, source_module, source_type, source_id, usage_code, created_at
     </sql>
 
+    <!--
+      insertReference：新增引用；新增语句。
+      涉及数据表：sr_media_reference；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.media.entity.MediaReferenceEntity；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：mediaAssetId、sourceModule、sourceType、sourceId、usageCode；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertReference" parameterType="com.starrainnotes.media.entity.MediaReferenceEntity"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_media_reference (
@@ -16,16 +34,36 @@
         )
     </insert>
 
+    <!--
+      countByMediaAssetId：数量依据媒体资产标识；读取语句。
+      涉及数据表：sr_media_reference；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：mediaAssetId；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countByMediaAssetId" resultType="long">
         SELECT COUNT(*) FROM sr_media_reference WHERE media_asset_id = #{mediaAssetId}
     </select>
 
+    <!--
+      selectByMediaAssetId：查询依据媒体资产标识；读取语句。
+      涉及数据表：sr_media_reference；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.media.entity.MediaReferenceEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：referenceColumns。
+      绑定参数：mediaAssetId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="selectByMediaAssetId" resultType="com.starrainnotes.media.entity.MediaReferenceEntity">
         SELECT <include refid="referenceColumns"/> FROM sr_media_reference
         WHERE media_asset_id = #{mediaAssetId}
         ORDER BY created_at ASC, id ASC
     </select>
 
+    <!--
+      deleteReference：删除引用；删除语句。
+      涉及数据表：sr_media_reference；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：mediaAssetId、sourceModule、sourceType、sourceId、usageCode；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="deleteReference">
         DELETE FROM sr_media_reference
         WHERE media_asset_id = #{mediaAssetId}
@@ -35,6 +73,12 @@
           AND usage_code = #{usageCode}
     </delete>
 
+    <!--
+      deleteAllBySource：删除全部依据来源；删除语句。
+      涉及数据表：sr_media_reference；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：sourceModule、sourceType、sourceId；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="deleteAllBySource">
         DELETE FROM sr_media_reference
         WHERE source_module = #{sourceModule}

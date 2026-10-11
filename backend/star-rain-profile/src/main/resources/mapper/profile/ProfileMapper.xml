@@ -1,14 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.profile.mapper.ProfileMapper">
+    <!--
+      ProfileMapper.xml：com.starrainnotes.profile.mapper.ProfileMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
 
   <!-- 列清单在一处维护：resultType 依赖 map-underscore-to-camel-case 做列名到属性名的映射 -->
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, profile_key, display_name, headline, bio_markdown, location_text,
     avatar_media_asset_id, resume_media_asset_id, status, created_at, updated_at
   </sql>
 
   <!-- profile_key 有唯一键，服务层一直只读 OWNER 这一行；没有 OWNER 行时返回 null 由服务层报 404 -->
+  <!--
+    selectOwner：查询Owner；读取语句。
+    涉及数据表：sr_profile；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.profile.entity.ProfileEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+  -->
   <select id="selectOwner" resultType="com.starrainnotes.profile.entity.ProfileEntity">
     SELECT <include refid="columns"/> FROM sr_profile WHERE profile_key = 'OWNER'
   </select>
@@ -18,6 +34,13 @@
     null 表示「删除这段文案」。这与原先 @TableField(updateStrategy = FieldStrategy.ALWAYS)
     的行为一致；写成 <if test="headline != null"> 会让「清空标题」这个已经支持的操作失效。
     profile_key / status / 头像与简历引用不属于这条路径，不参与 SET。
+  -->
+  <!--
+    updateBasic：更新Basic；更新语句。
+    涉及数据表：sr_profile；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.profile.entity.ProfileEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：displayName、headline、bioMarkdown、locationText、updatedAt、id；参数含义参见 Mapper 方法注释。
   -->
   <update id="updateBasic" parameterType="com.starrainnotes.profile.entity.ProfileEntity">
     UPDATE sr_profile
@@ -32,6 +55,13 @@
   <!--
     头像与简历引用同样带 ALWAYS 语义：换其中一个时另一个也要写回（保持读出来的原值），
     否则「清除简历」这类操作会被 NOT_NULL 策略吞掉。
+  -->
+  <!--
+    updateMediaAssets：更新媒体Assets；更新语句。
+    涉及数据表：sr_profile；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.profile.entity.ProfileEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：avatarMediaAssetId、resumeMediaAssetId、updatedAt、id；参数含义参见 Mapper 方法注释。
   -->
   <update id="updateMediaAssets" parameterType="com.starrainnotes.profile.entity.ProfileEntity">
     UPDATE sr_profile

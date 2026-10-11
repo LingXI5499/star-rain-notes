@@ -1,3 +1,11 @@
+/*
+ * ReviewDecisionServiceImpl：审核模块的业务实现文件。
+ * 业务范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：ReviewDecisionContext、ReviewTargetHandler、ReviewTargetRef、ReviewApproveCommand、ReviewRejectCommand、ReviewActionEntity、ReviewRequestEntity。
+ * 阅读入口：approve（批准审核决定）；reject（拒绝审核决定）；recoverApproved（recover已批准处理入口）。
+ */
+
 package com.starrainnotes.review.service.impl;
 
 import com.starrainnotes.review.api.ReviewDecisionContext;
@@ -38,14 +46,40 @@ import org.springframework.transaction.annotation.Transactional;
  *   业务模块派生动作失败不会把已经生效的审核决定回滚掉。
  *   Review 全程不注入任何业务 Mapper，也不读业务表。
  */
+/**
+ * 审核决定业务服务实现，属于审核模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class ReviewDecisionServiceImpl implements ReviewDecisionService {
 
+    /**
+     * 请求数据映射。
+     * 协作类型：<code>ReviewRequestMapper</code>。
+     */
     private final ReviewRequestMapper requestMapper;
+    /**
+     * 动作数据映射。
+     * 协作类型：<code>ReviewActionMapper</code>。
+     */
     private final ReviewActionMapper actionMapper;
+    /**
+     * 处理器Registry。
+     */
     private final ReviewTargetHandlerRegistry handlerRegistry;
+    /**
+     * callbackDispatcher。
+     */
     private final ReviewDecisionCallbackDispatcher callbackDispatcher;
 
+    /**
+     * 构造ReviewDecisionServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param requestMapper 请求数据映射；类型为 <code>ReviewRequestMapper</code>
+     * @param actionMapper 动作数据映射；类型为 <code>ReviewActionMapper</code>
+     * @param handlerRegistry 处理器Registry；类型为 <code>ReviewTargetHandlerRegistry</code>
+     * @param callbackDispatcher callbackDispatcher；类型为 <code>ReviewDecisionCallbackDispatcher</code>
+     */
     public ReviewDecisionServiceImpl(ReviewRequestMapper requestMapper,
                                      ReviewActionMapper actionMapper,
                                      ReviewTargetHandlerRegistry handlerRegistry,
@@ -56,6 +90,16 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
         this.callbackDispatcher = callbackDispatcher;
     }
 
+    /**
+     * 批准审核决定。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>handlerRegistry.require</code>、<code>requestMapper.approveIfPending</code>、<code>actionMapper.insertAction</code>、<code>callbackDispatcher.dispatch</code>。
+     * 实现中的显式失败类型包括 <code>ReviewAlreadyCompletedException</code>；具体触发条件见对应分支。
+     *
+     * @param reviewRequestId 审核请求标识；类型为 <code>Long</code>
+     * @param command command；类型为 <code>ReviewApproveCommand</code>
+     * @param reviewerAccountId 审核人账号标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void approve(Long reviewRequestId, ReviewApproveCommand command, Long reviewerAccountId) {
@@ -80,6 +124,16 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
         callbackDispatcher.dispatch(() -> handler.onApproved(context));
     }
 
+    /**
+     * 拒绝审核决定。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>handlerRegistry.require</code>、<code>requestMapper.rejectIfPending</code>、<code>actionMapper.insertAction</code>、<code>callbackDispatcher.dispatch</code>。
+     * 实现中的显式失败类型包括 <code>ReviewRejectReasonRequiredException</code>、<code>ReviewAlreadyCompletedException</code>；具体触发条件见对应分支。
+     *
+     * @param reviewRequestId 审核请求标识；类型为 <code>Long</code>
+     * @param command command；类型为 <code>ReviewRejectCommand</code>
+     * @param reviewerAccountId 审核人账号标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void reject(Long reviewRequestId, ReviewRejectCommand command, Long reviewerAccountId) {
@@ -106,6 +160,14 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
         callbackDispatcher.dispatch(() -> handler.onRejected(context));
     }
 
+    /**
+     * 检查所需请求。
+     * 主要协作调用：<code>requestMapper.requestById</code>。
+     * 实现中的显式失败类型包括 <code>ReviewNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param reviewRequestId 审核请求标识；类型为 <code>Long</code>
+     * @return 类型为 <code>ReviewRequestEntity</code> 的处理结果
+     */
     private ReviewRequestEntity requireRequest(Long reviewRequestId) {
         ReviewRequestEntity request = reviewRequestId == null ? null : requestMapper.requestById(reviewRequestId);
         if (request == null) {
@@ -114,6 +176,16 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
         return request;
     }
 
+    /**
+     * recover已批准处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 调用约束：<code>@org.springframework.security.access.prepost.PreAuthorize("hasRole(\'SUPER_ADMIN\') and hasAuthority(\'review:approve\')")</code>。
+     * 主要协作调用：<code>handlerRegistry.require</code>、<code>actionMapper.insertAction</code>、<code>callbackDispatcher.dispatch</code>。
+     * 实现中的显式失败类型包括 <code>ReviewAlreadyCompletedException</code>、<code>ReviewAccessDeniedException</code>；具体触发条件见对应分支。
+     *
+     * @param reviewRequestId 审核请求标识；类型为 <code>Long</code>
+     * @param reviewerAccountId 审核人账号标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     @org.springframework.security.access.prepost.PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('review:approve')")
@@ -132,12 +204,30 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
     }
 
     // 审核动作必须有人负责：决策人缺失属于调用方越权或内部错误，不能容忍
+    /**
+     * 检查所需审核人。
+     * 实现中的显式失败类型包括 <code>ReviewAccessDeniedException</code>；具体触发条件见对应分支。
+     *
+     * @param reviewerAccountId 审核人账号标识；类型为 <code>Long</code>
+     */
     private static void requireReviewer(Long reviewerAccountId) {
         if (reviewerAccountId == null) {
             throw new ReviewAccessDeniedException();
         }
     }
 
+    /**
+     * context处理入口。
+     * 关键处理步骤调用 <code>ReviewDecisionContext.builder</code>、<code>request.getId</code>、<code>request.getReviewType</code>、<code>ReviewTargetRef.builder</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>ReviewRequestEntity</code>
+     * @param actionType 动作类型；类型为 <code>ReviewActionType</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @param reason 原因；类型为 <code>String</code>
+     * @param reviewerAccountId 审核人账号标识；类型为 <code>Long</code>
+     * @param decidedAt 决定时间；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>ReviewDecisionContext</code> 的处理结果
+     */
     private static ReviewDecisionContext context(ReviewRequestEntity request, ReviewActionType actionType,
                                                  String status, String reason, Long reviewerAccountId,
                                                  LocalDateTime decidedAt) {
@@ -160,6 +250,18 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
                 .build();
     }
 
+    /**
+     * 动作处理入口。
+     * 关键处理步骤调用 <code>action.setReviewRequestId</code>、<code>action.setActionType</code>、<code>action.setActorAccountId</code>、<code>action.setActorType</code>。
+     *
+     * @param reviewRequestId 审核请求标识；类型为 <code>Long</code>
+     * @param actionType 动作类型；类型为 <code>String</code>
+     * @param actorAccountId 操作者账号标识；类型为 <code>Long</code>
+     * @param actorType 操作者类型；类型为 <code>String</code>
+     * @param note note；类型为 <code>String</code>
+     * @param createdAt 创建时间；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>ReviewActionEntity</code> 的处理结果
+     */
     private static ReviewActionEntity action(Long reviewRequestId, String actionType,
                                              Long actorAccountId, String actorType,
                                              String note, LocalDateTime createdAt) {

@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * DashboardPage.vue：站点模块的页面组件。
+ * 职责范围：站点品牌、首页内容和站点设置。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../../shared/http、../../../shared/viewMode、../../blog/support/display、../api/siteApi。
+ * 主要响应式状态：loading、error、contentCounts、draftCounts、recentContent、pendingMessages、pendingReviews、accountTotal。
+ * 阅读入口：statusLabel（状态标签的处理函数）；editorPath（editor路径的处理函数）；load（加载当前操作）；metrics（metrics的处理函数）。
+ */
+
+
 import { onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { errorMessage } from '../../../shared/http'
@@ -7,17 +17,63 @@ import { dateLabel, postStatusLabel } from '../../blog/support/display'
 import { getAdminSiteDashboard } from '../api/siteApi'
 
 // Site 汇总来自各模块 API 的统计，单个模块失败时保留其余数据。
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * 内容数量集合；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const contentCounts = ref({ tutorials: 0, chapters: 0, blogPosts: 0, portfolioProjects: 0 })
+/**
+ * 草稿数量集合；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const draftCounts = ref({ tutorials: 0, chapters: 0, blogPosts: 0, portfolioProjects: 0 })
+/**
+ * recent内容；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const recentContent = ref([])
+/**
+ * 待处理Messages；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pendingMessages = ref(0)
+/**
+ * 待处理Reviews；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pendingReviews = ref(0)
+/**
+ * 账号总数；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const accountTotal = ref(0)
+/**
+ * 分页Views；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pageViews = ref(0)
+/**
+ * degradedModules；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const degradedModules = ref([])
 
+/**
+ * 状态标签的处理函数。
+ * 主要协作：postStatusLabel。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function statusLabel(item) {
   if (item.type === 'BLOG') return postStatusLabel(item.status)
   if (item.status === 'PUBLISHED') return '已发布'
@@ -38,11 +94,23 @@ function editorPath(item) {
   return accountPath(`/blog/editor/${item.id}`)
 }
 
+/**
+ * 加载当前操作。
+ * 主要协作：getAdminSiteDashboard、metrics、.map、statusLabel、errorMessage。
+ * 更新的响应式状态包括 loading、error、degradedModules、contentCounts、draftCounts、pendingMessages、pendingReviews；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   loading.value = true
   error.value = ''
   try {
     const dashboard = await getAdminSiteDashboard()
+    /**
+     * metrics的处理函数。
+     * @param code 代码；默认值、解构字段与可选参数见函数签名。
+     * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+     */
     const metrics = (code) => dashboard.modules?.[code]?.metrics || {}
     degradedModules.value = dashboard.degradedModules || []
     contentCounts.value = {
@@ -69,6 +137,9 @@ async function load() {
   }
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(load)
 </script>
 
@@ -151,6 +222,10 @@ onMounted(load)
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
 /*
  * 运行状态指标带：一行到底，超窄屏换行。
  * 数值用主色、标签用弱色，视觉重量明显低于上面四张主卡，仪表盘因此只剩一层重点。
@@ -167,6 +242,11 @@ onMounted(load)
   background: var(--border);
 }
 
+/**
+ * 样式范围：.dashboard__metrics > div。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__metrics > div {
   display: flex;
   align-items: baseline;
@@ -176,11 +256,19 @@ onMounted(load)
   background: var(--bg-surface);
 }
 
+/**
+ * 样式范围：.dashboard__metrics dt。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__metrics dt {
   color: var(--text-muted);
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.dashboard__metrics dd。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__metrics dd {
   margin: 0;
   color: var(--text-primary);

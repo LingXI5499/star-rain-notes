@@ -1,3 +1,11 @@
+/*
+ * FileSignatures：媒体模块的工具文件。
+ * 业务范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 封装本模块重复使用的转换、计算或校验步骤，具体边界条件由方法注释与实现保持一致。
+ * 主要协作类型：MediaFileType。
+ * 阅读入口：verify（验证文件Signatures）；verifyPlainText（验证纯文本文本）。
+ */
+
 package com.starrainnotes.media.utils;
 
 import com.starrainnotes.media.enumeration.MediaFileType;
@@ -26,36 +34,115 @@ import javax.imageio.stream.ImageInputStream;
  *
  * 只解析头部与容器结构，不做转码、不做图像处理。
  */
+/**
+ * 文件Signatures，属于媒体模块。
+ * 封装本模块重复使用的转换、计算或校验步骤，具体边界条件由方法注释与实现保持一致。
+ */
 public final class FileSignatures {
 
     // 文件头读取长度：要覆盖 tar 在偏移 257 的 ustar 标记，以及 WebP 的 30 字节头
+    /**
+     * 字节。
+     */
     public static final int HEAD_BYTES = 64 * 1024;
 
+    /**
+     * PNG。
+     */
     private static final byte[] PNG = {(byte) 0x89, 0x50, 0x4E, 0x47, 0x0D, 0x0A, 0x1A, 0x0A};
+    /**
+     * JPEG。
+     */
     private static final byte[] JPEG = {(byte) 0xFF, (byte) 0xD8, (byte) 0xFF};
+    /**
+     * BMP。
+     */
     private static final byte[] BMP = {'B', 'M'};
+    /**
+     * LE。
+     */
     private static final byte[] TIFF_LE = {'I', 'I', 0x2A, 0x00};
+    /**
+     * BE。
+     */
     private static final byte[] TIFF_BE = {'M', 'M', 0x00, 0x2A};
+    /**
+     * PDF。
+     */
     private static final byte[] PDF = "%PDF-".getBytes(StandardCharsets.US_ASCII);
+    /**
+     * 2。
+     */
     private static final byte[] OLE2 = {(byte) 0xD0, (byte) 0xCF, 0x11, (byte) 0xE0,
             (byte) 0xA1, (byte) 0xB1, 0x1A, (byte) 0xE1};
+    /**
+     * ZIP。
+     */
     private static final byte[] ZIP = {'P', 'K'};
+    /**
+     * 3。
+     */
     private static final byte[] ID3 = "ID3".getBytes(StandardCharsets.US_ASCII);
+    /**
+     * OGG。
+     */
     private static final byte[] OGG = "OggS".getBytes(StandardCharsets.US_ASCII);
+    /**
+     * FLAC。
+     */
     private static final byte[] FLAC = "fLaC".getBytes(StandardCharsets.US_ASCII);
+    /**
+     * FTYP。
+     */
     private static final byte[] FTYP = "ftyp".getBytes(StandardCharsets.US_ASCII);
+    /**
+     * RIFF。
+     */
     private static final byte[] RIFF = "RIFF".getBytes(StandardCharsets.US_ASCII);
+    /**
+     * WEBP。
+     */
     private static final byte[] WEBP = "WEBP".getBytes(StandardCharsets.US_ASCII);
+    /**
+     * WAVE。
+     */
     private static final byte[] WAVE = "WAVE".getBytes(StandardCharsets.US_ASCII);
+    /**
+     * AVI。
+     */
     private static final byte[] AVI = {'A', 'V', 'I', ' '};
+    /**
+     * EBML。
+     */
     private static final byte[] EBML = {0x1A, 0x45, (byte) 0xDF, (byte) 0xA3};
+    /**
+     * 4。
+     */
     private static final byte[] RAR4 = {'R', 'a', 'r', '!', 0x1A, 0x07, 0x00};
+    /**
+     * 5。
+     */
     private static final byte[] RAR5 = {'R', 'a', 'r', '!', 0x1A, 0x07, 0x01, 0x00};
+    /**
+     * Z。
+     */
     private static final byte[] SEVEN_Z = {'7', 'z', (byte) 0xBC, (byte) 0xAF, 0x27, 0x1C};
+    /**
+     * GZIP。
+     */
     private static final byte[] GZIP = {0x1F, (byte) 0x8B};
+    /**
+     * USTAR。
+     */
     private static final byte[] USTAR = "ustar".getBytes(StandardCharsets.US_ASCII);
+    /**
+     * BRANDS。
+     */
     private static final Set<String> AVIF_BRANDS = Set.of("avif", "avis", "mif1", "msf1");
 
+    /**
+     * 构造FileSignatures，接收本类使用的依赖或初始化参数。
+     */
     private FileSignatures() {
     }
 
@@ -64,6 +151,17 @@ public final class FileSignatures {
      *
      * @return 图片的 {width, height}；非图片、或该格式不解析尺寸时返回 null
      * @throws IOException 内容与扩展名不匹配或不可解析，由调用方转成 415
+     */
+    /**
+     * 验证文件Signatures。
+     * 主要协作调用：<code>AVIF_BRANDS.contains</code>。
+     * 实现中的显式失败类型包括 <code>IOException</code>；具体触发条件见对应分支。
+     * 边界判断包含 <code>(!startsWith(content, TIFF_LE) &amp;&amp; !startsWith(content, TIFF_BE))</code>；<code>(content.length &lt; 12 || !matchesAt(content, 8, WEBP))</code>。
+     *
+     * @param type 类型；类型为 <code>MediaFileType</code>
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @return 类型为 <code>int[]</code> 的处理结果
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
      */
     public static int[] verify(MediaFileType type, byte[] content) throws IOException {
         return switch (type) {
@@ -214,6 +312,16 @@ public final class FileSignatures {
     }
 
     // ISO BMFF 家族（mp4/mov/m4a/avif）：偏移 4 起必须是 ftyp box
+    /**
+     * 校验IsoBmff。
+     * 关键处理步骤调用 <code>matchesAt</code>。
+     * 实现中的显式失败类型包括 <code>IOException</code>；具体触发条件见对应分支。
+     * 边界判断包含 <code>(content.length &lt; 12 || !matchesAt(content, 4, FTYP))</code>。
+     *
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @param label 标签；类型为 <code>String</code>
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static void assertIsoBmff(byte[] content, String label) throws IOException {
         if (content.length < 12 || !matchesAt(content, 4, FTYP)) {
             throw new IOException(label + " (ISO BMFF) signature mismatch");
@@ -221,6 +329,15 @@ public final class FileSignatures {
     }
 
     // zip 及其派生容器：PK 后跟 03 04（本地文件头）、05 06（空档案）或 07 08（分卷）
+    /**
+     * 校验Zip。
+     * 关键处理步骤调用 <code>startsWith</code>。
+     * 实现中的显式失败类型包括 <code>IOException</code>；具体触发条件见对应分支。
+     * 边界判断包含 <code>(content.length &lt; 4 || !startsWith(content, ZIP))</code>；<code>(!ok)</code>。
+     *
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static void assertZip(byte[] content) throws IOException {
         if (content.length < 4 || !startsWith(content, ZIP)) {
             throw new IOException("ZIP container mismatch");
@@ -236,6 +353,12 @@ public final class FileSignatures {
     }
 
     // 纯文本：不能含 NUL，且必须是合法 UTF-8
+    /**
+     * 校验纯文本文本。
+     *
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static void assertPlainText(byte[] content) throws IOException {
         verifyPlainText(new ByteArrayInputStream(content));
     }
@@ -259,6 +382,14 @@ public final class FileSignatures {
         }
     }
 
+    /**
+     * 校验Gif。
+     * 实现中的显式失败类型包括 <code>IOException</code>；具体触发条件见对应分支。
+     * 边界判断包含 <code>(content.length &lt; 10)</code>；<code>(!"GIF87a".equals(header) &amp;&amp; !"GIF89a".equals(header))</code>。
+     *
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static void assertGif(byte[] content) throws IOException {
         if (content.length < 10) {
             throw new IOException("truncated GIF header");
@@ -270,6 +401,16 @@ public final class FileSignatures {
     }
 
     // 用 ImageReader 只取宽高，不触发像素解码
+    /**
+     * 读取Via图片Io。
+     * 关键处理步骤调用 <code>ImageIO.createImageInputStream</code>、<code>ImageIO.getImageReaders</code>、<code>readers.hasNext</code>、<code>readers.next</code>。
+     * 实现中的显式失败类型包括 <code>IOException</code>；具体触发条件见对应分支。
+     * 边界判断包含 <code>(stream == null)</code>；<code>(!readers.hasNext())</code>。
+     *
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @return 类型为 <code>int[]</code> 的处理结果
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static int[] readViaImageIo(byte[] content) throws IOException {
         try (ImageInputStream stream = ImageIO.createImageInputStream(new ByteArrayInputStream(content))) {
             if (stream == null) {
@@ -292,6 +433,15 @@ public final class FileSignatures {
     /*
      * 只解析 VP8 / VP8L / VP8X 容器头，不做图像处理。
      * 布局：0-3 "RIFF"，8-11 "WEBP"，12-15 chunk tag，16-19 chunk size，其后是 chunk 载荷。
+     */
+    /**
+     * 读取WebpDimensions。
+     * 实现中的显式失败类型包括 <code>IOException</code>；具体触发条件见对应分支。
+     * 边界判断包含 <code>(h.length &lt; 30)</code>；<code>((h[20] &amp; 255) != 157 || (h[21] &amp; 255) != 1 || (h[22] &amp; 255) != 42)</code>。
+     *
+     * @param h h；类型为 <code>byte[]</code>
+     * @return 类型为 <code>int[]</code> 的处理结果
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
      */
     private static int[] readWebpDimensions(byte[] h) throws IOException {
         if (h.length < 30) {
@@ -327,16 +477,44 @@ public final class FileSignatures {
         };
     }
 
+    /**
+     * 校验Magic。
+     * 关键处理步骤调用 <code>startsWith</code>。
+     * 实现中的显式失败类型包括 <code>IOException</code>；具体触发条件见对应分支。
+     * 边界判断包含 <code>(!startsWith(content, magic))</code>。
+     *
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @param magic magic；类型为 <code>byte[]</code>
+     * @param label 标签；类型为 <code>String</code>
+     * @throws IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static void assertMagic(byte[] content, byte[] magic, String label) throws IOException {
         if (!startsWith(content, magic)) {
             throw new IOException(label + " signature mismatch");
         }
     }
 
+    /**
+     * starts包含处理入口。
+     * 关键处理步骤调用 <code>matchesAt</code>。
+     *
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @param magic magic；类型为 <code>byte[]</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private static boolean startsWith(byte[] content, byte[] magic) {
         return matchesAt(content, 0, magic);
     }
 
+    /**
+     * 判断是否匹配时间。
+     * 边界判断包含 <code>(content.length &lt; offset + magic.length)</code>；<code>(content[offset + i] != magic[i])</code>。
+     *
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @param offset 查询跳过的记录数；类型为 <code>int</code>
+     * @param magic magic；类型为 <code>byte[]</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private static boolean matchesAt(byte[] content, int offset, byte[] magic) {
         if (content.length < offset + magic.length) {
             return false;

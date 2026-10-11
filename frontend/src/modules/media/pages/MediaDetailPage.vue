@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * MediaDetailPage.vue：媒体模块的页面组件。
+ * 职责范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../account/stores/authStore、../api/mediaApi、../../../shared/http、../components/MediaPreview.vue。
+ * 主要响应式状态：route、auth、mediaAssetId、asset、loading、error、notice、busy。
+ * 阅读入口：load（加载当前操作）；run（运行当前操作）；toggleAccessLevel（切换访问Level）。
+ */
+
+
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { useAuthStore } from '../../account/stores/authStore'
@@ -18,21 +28,74 @@ import { accessLevelLabel, badgeText, dateLabel, formatSize, mediaStatusLabel, m
  * 归档按钮在存在业务引用时禁用，与后端 MEDIA_ASSET_IN_USE 的规则一致：
  * 引用完整性优先，超级管理员也不能绕过。
  */
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
 
+/**
+ * 关联的媒体资产标识；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const mediaAssetId = computed(() => route.params.mediaAssetId)
+/**
+ * 资产；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const asset = ref(null)
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
+/**
+ * busy；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const busy = ref(false)
 
+/**
+ * canArchive；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const canArchive = computed(() => auth.hasPermission('media:archive'))
+/**
+ * canRestore；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const canRestore = computed(() => auth.hasPermission('media:restore'))
+/**
+ * canManage访问；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const canManageAccess = computed(() => auth.hasPermission('media:access-manage'))
+/**
+ * 内部Use；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const inUse = computed(() => (asset.value?.referenceCount || 0) > 0)
 
+/**
+ * 加载当前操作。
+ * 主要协作：getMedia、errorMessage。
+ * 更新的响应式状态包括 loading、error、asset；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   loading.value = true
   error.value = ''
@@ -46,6 +109,15 @@ async function load() {
   }
 }
 
+/**
+ * 运行当前操作。
+ * 主要协作：action、load、errorMessage。
+ * 更新的响应式状态包括 busy、error、notice；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param action 动作；默认值、解构字段与可选参数见函数签名。
+ * @param success success；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function run(action, success) {
   busy.value = true
   error.value = ''
@@ -61,12 +133,19 @@ async function run(action, success) {
   }
 }
 
+/**
+ * 切换访问Level。
+ * 主要协作：run、changeAccessLevel。
+ */
 function toggleAccessLevel() {
   const next = asset.value.accessLevel === 'PUBLIC' ? 'PROTECTED' : 'PUBLIC'
   run(() => changeAccessLevel(asset.value.id, next),
     next === 'PUBLIC' ? '已改为公开：任何人都能读取。' : '已改为受保护：需要登录且有权限才能读取。')
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(load)
 </script>
 

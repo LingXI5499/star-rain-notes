@@ -1,3 +1,11 @@
+/**
+ * PortfolioManagePage.spec.js：作品模块的自动化测试。
+ * 职责范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、@vue/test-utils、vue-router、./PortfolioManagePage.vue。
+ * 验证场景：portfolio management metadata compatibility；renders new works without legacy type details and keeps the legacy fallback。
+ */
+
 import { describe, it, expect, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'

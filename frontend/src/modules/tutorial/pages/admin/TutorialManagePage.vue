@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * TutorialManagePage.vue：教程与学习模块的页面组件。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../../account/stores/authStore、../../support/operationResult、../../../../shared/http、../../../blog/components/admin/AdminConfirmDialog.vue。
+ * 主要响应式状态：route、router、auth、categories、tutorials、activeCategoryId、search、page。
+ * 阅读入口：isPending（判断是否待处理）；categoryCount（分类数量的处理函数）；statusLabel（状态标签的处理函数）；statusTone（状态Tone的处理函数）；load（加载当前操作）。
+ */
+
+
 import { computed, onMounted, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../../account/stores/authStore'
@@ -12,52 +22,183 @@ import {
   updateCategory, updateTutorial, withdrawTutorial, listTutorialOrderItems,
 } from '../../api/tutorialApi'
 
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
+/**
+ * categories；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const categories = ref([])
+/**
+ * tutorials；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tutorials = ref([])
+/**
+ * 有效分类标识；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const activeCategoryId = ref('')
+/**
+ * 搜索；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const search = ref('')
+/**
+ * 分页页码；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const page = ref(1)
+/**
+ * 单页返回条目数；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pageSize = ref(20)
+/**
+ * 符合查询条件的总记录数；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const total = ref(0)
+/**
+ * sorting；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const sorting = ref(false)
+/**
+ * 顺序条目列表；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const orderItems = ref([])
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref(route.query.review === 'pending' ? '已提交超级管理员审核，通过后才会执行新增或修改。' : '')
+/**
+ * busy标识；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const busyId = ref('')
+/**
+ * 待处理；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pending = ref([])
+/**
+ * 判断是否待处理。
+ * 主要协作：pending.value.some。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const isPending = item => pending.value.some(row => row.scopeKey === 'catalog' || row.scopeKey === `tutorial:${item.id}`)
+/**
+ * 确认弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const confirmDialog = ref(null)
+/**
+ * 分类弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const categoryDialog = ref(null)
+/**
+ * move弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const moveDialog = ref(null)
+/**
+ * move目标；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const moveTarget = ref(null)
+/**
+ * move分类标识；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const moveCategoryId = ref('')
+/**
+ * 分类Form；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const categoryForm = reactive({ id: '', name: '' })
 let draggingCategoryId = ''
 let draggingTutorialId = ''
 
+/**
+ * 有效分类；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const activeCategory = computed(() => categories.value.find((item) => String(item.id) === activeCategoryId.value))
+/**
+ * 可见Tutorials；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const visibleTutorials = computed(() => tutorials.value)
+/**
+ * 章节数量；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const chapterCount = computed(() => activeCategory.value?.chapterCount || 0)
 
+/**
+ * 分类数量的处理函数。
+ * 主要协作：categories.value.find。
+ * @param categoryId 分类标识；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function categoryCount(categoryId) {
   return categories.value.find(item => String(item.id) === String(categoryId))?.tutorialCount || 0
 }
 
+/**
+ * 状态标签的处理函数。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function statusLabel(item) {
   if (item.publicationStatus === 'PUBLISHED') return '已发布'
   return '草稿'
 }
 
 // 发布状态只呈现草稿和已发布，待审核操作另外提示。
+/**
+ * 状态Tone的处理函数。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function statusTone(item) {
   if (item.publicationStatus === 'PUBLISHED') return 'published'
   return 'draft'
 }
 
+/**
+ * 加载当前操作。
+ * 主要协作：Promise.all、listAdminCategories、listPendingTutorialOperations、categories.value.some、listAdminTutorials。
+ * 更新的响应式状态包括 loading、error、categories、pending、activeCategoryId、tutorials、total；渲染由 Vue 的依赖跟踪触发。
+ * 通过版本或 epoch 判断放弃过期结果，避免异步请求覆盖后来的界面状态。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   const version = ++loadVersion
   loading.value = true
@@ -89,18 +230,47 @@ async function load() {
 }
 let loadVersion = 0
 let searchTimer
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(search, () => {
   clearTimeout(searchTimer)
   loadVersion += 1
   searchTimer = setTimeout(() => { page.value = 1; load() }, 300)
 })
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.query.category, value => {
   if (value && String(value) !== activeCategoryId.value) selectCategory({ id: value })
 })
+/**
+ * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
+ */
 onBeforeUnmount(() => { loadVersion += 1; clearTimeout(searchTimer) })
+/**
+ * change分页的处理函数。
+ * 主要协作：load。
+ * 更新的响应式状态包括 page；渲染由 Vue 的依赖跟踪触发。
+ * @param next 下一项；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function changePage(next) { page.value = next; await load() }
+/**
+ * change分页大小的处理函数。
+ * 主要协作：load。
+ * 更新的响应式状态包括 pageSize、page；渲染由 Vue 的依赖跟踪触发。
+ * @param next 下一项；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function changePageSize(next) { pageSize.value = next; page.value = 1; await load() }
 
+/**
+ * 查询分类的处理函数。
+ * 主要协作：clearTimeout、router.replace、load。
+ * 更新的响应式状态包括 activeCategoryId、search、page、sorting、orderItems；渲染由 Vue 的依赖跟踪触发。
+ * @param category 分类；默认值、解构字段与可选参数见函数签名。
+ */
 function selectCategory(category) {
   clearTimeout(searchTimer)
   activeCategoryId.value = String(category.id)
@@ -112,6 +282,12 @@ function selectCategory(category) {
   load()
 }
 
+/**
+ * 切换Sorting。
+ * 主要协作：listTutorialOrderItems、errorMessage。
+ * 更新的响应式状态包括 sorting、orderItems、error；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function toggleSorting() {
   if (sorting.value) { sorting.value = false; return }
   const category = activeCategoryId.value
@@ -123,12 +299,23 @@ async function toggleSorting() {
   } catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * 打开分类弹窗。
+ * 主要协作：categoryDialog.value.showModal。
+ * @param category = null 分类空值；默认值、解构字段与可选参数见函数签名。
+ */
 function openCategoryDialog(category = null) {
   categoryForm.id = category ? String(category.id) : ''
   categoryForm.name = category?.name || ''
   categoryDialog.value.showModal()
 }
 
+/**
+ * 保存分类。
+ * 主要协作：categoryForm.name.trim、updateCategory、createCategory、categoryDialog.value.close、isReviewPending。
+ * 更新的响应式状态包括 activeCategoryId、notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function saveCategory() {
   if (!categoryForm.name.trim()) return
   try {
@@ -144,6 +331,13 @@ async function saveCategory() {
   }
 }
 
+/**
+ * 移除分类。
+ * 主要协作：confirmDialog.value.ask、operationNotice、deleteCategory、load、errorMessage。
+ * 更新的响应式状态包括 notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @param category 分类；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function removeCategory(category) {
   if (!await confirmDialog.value.ask(`确定删除知识体系「${category.name}」？仅空体系可以删除。`)) return
   try {
@@ -154,6 +348,13 @@ async function removeCategory(category) {
   }
 }
 
+/**
+ * drop分类的处理函数。
+ * 主要协作：categories.value.map、ids.splice、ids.indexOf、operationNotice、reorderCategories。
+ * 更新的响应式状态包括 notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @param targetId 被处理或审核的目标对象标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function dropCategory(targetId) {
   if (!draggingCategoryId || draggingCategoryId === String(targetId)) return
   const ids = categories.value.map((item) => String(item.id))
@@ -164,6 +365,13 @@ async function dropCategory(targetId) {
   catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * drop教程的处理函数。
+ * 主要协作：orderItems.value.map、ids.includes、ids.splice、ids.indexOf、operationNotice。
+ * 更新的响应式状态包括 notice、sorting、error；渲染由 Vue 的依赖跟踪触发。
+ * @param targetId 被处理或审核的目标对象标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function dropTutorial(targetId) {
   if (!draggingTutorialId || draggingTutorialId === String(targetId)) return
   if (!sorting.value) return
@@ -180,12 +388,24 @@ async function dropTutorial(targetId) {
   catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * 打开Move弹窗。
+ * 主要协作：moveDialog.value.showModal。
+ * 更新的响应式状态包括 moveTarget、moveCategoryId；渲染由 Vue 的依赖跟踪触发。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ */
 function openMoveDialog(item) {
   moveTarget.value = item
   moveCategoryId.value = String(item.categoryId)
   moveDialog.value.showModal()
 }
 
+/**
+ * move教程的处理函数。
+ * 主要协作：updateTutorial、moveDialog.value.close、isReviewPending、operationNotice、load。
+ * 更新的响应式状态包括 activeCategoryId、notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function moveTutorial() {
   if (!moveTarget.value || moveCategoryId.value === String(moveTarget.value.categoryId)) return
   try {
@@ -199,6 +419,15 @@ async function moveTutorial() {
   }
 }
 
+/**
+ * act的处理函数。
+ * 主要协作：confirmDialog.value.ask、auth.hasPermission、publishTutorial、withdrawTutorial、deleteTutorial。
+ * 更新的响应式状态包括 busyId、error、notice；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ * @param action 动作；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function act(item, action) {
   busyId.value = String(item.id)
   error.value = ''
@@ -226,6 +455,9 @@ async function act(item, action) {
   }
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(load)
 </script>
 
@@ -400,7 +632,19 @@ onMounted(load)
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.tutorial-manage__order-item。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__order-item { padding: 16px; margin-block: 8px; border: 1px solid var(--border); border-radius: 8px; cursor: grab; }
+/**
+ * 样式范围：.tutorial-manage__hero。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .tutorial-manage__hero {
   display: flex;
   align-items: flex-end;
@@ -409,6 +653,9 @@ onMounted(load)
   margin-bottom: 24px;
 }
 
+/**
+ * 样式范围：.tutorial-manage__hero h1。
+ */
 .tutorial-manage__hero h1 {
   margin: 4px 0 8px;
   font-size: clamp(28px, 3vw, 38px);
@@ -416,6 +663,10 @@ onMounted(load)
   letter-spacing: -0.035em;
 }
 
+/**
+ * 样式范围：.tutorial-manage__hero > div > p:last-child。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__hero > div > p:last-child {
   color: var(--text-secondary);
   font-size: 14px;
@@ -424,6 +675,10 @@ onMounted(load)
 /* 主按钮不换行：窄一点的头部里「新建教程」曾被压成两行 */
 .tutorial-manage__create { white-space: nowrap; }
 
+/**
+ * 样式范围：.tutorial-manage__layout。
+ * 使用网格布局组织内容；列定义为 288px minmax(0, 1fr)，间距由 20px 控制。
+ */
 .tutorial-manage__layout {
   display: grid;
   grid-template-columns: 288px minmax(0, 1fr);
@@ -431,6 +686,12 @@ onMounted(load)
   min-height: calc(100vh - 190px);
 }
 
+/**
+ * 样式范围：.tutorial-manage__systems, .tutorial-manage__courses。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__systems,
 .tutorial-manage__courses {
   display: flex;
@@ -443,6 +704,11 @@ onMounted(load)
   overflow: hidden;
 }
 
+/**
+ * 样式范围：.tutorial-manage__panel-head。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__panel-head {
   display: flex;
   min-height: 84px;
@@ -454,14 +720,24 @@ onMounted(load)
   background: color-mix(in srgb, var(--bg-subtle) 52%, transparent);
 }
 
+/**
+ * 样式范围：.tutorial-manage__panel-head--stack。
+ */
 .tutorial-manage__panel-head--stack { align-items: flex-end; }
 
+/**
+ * 样式范围：.tutorial-manage__panel-head h2。
+ */
 .tutorial-manage__panel-head h2 {
   margin-top: 5px;
   font-size: 18px;
   line-height: 1.3;
 }
 
+/**
+ * 样式范围：.tutorial-manage__icon-button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__icon-button {
   width: 34px;
   height: 34px;
@@ -475,8 +751,17 @@ onMounted(load)
   transition: transform 160ms ease, border-color 160ms ease;
 }
 
+/**
+ * 样式范围：.tutorial-manage__icon-button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__icon-button:hover { border-color: var(--primary); transform: translateY(-1px); }
 
+/**
+ * 样式范围：.tutorial-manage__hint。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__hint {
   margin: 0;
   padding: 9px 20px;
@@ -485,6 +770,11 @@ onMounted(load)
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.tutorial-manage__system-body。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 溢出处理：整体 auto。
+ */
 .tutorial-manage__system-body {
   display: flex;
   min-height: 260px;
@@ -495,6 +785,11 @@ onMounted(load)
   overflow: auto;
 }
 
+/**
+ * 样式范围：.tutorial-manage__system。
+ * 使用网格布局组织内容；列定义为 16px minmax(0, 1fr) auto 12px，间距由 9px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__system {
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr) auto 12px;
@@ -508,12 +803,22 @@ onMounted(load)
   transition: transform 170ms ease, background-color 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
 
+/**
+ * 样式范围：.tutorial-manage__system:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__system:hover {
   border-color: var(--border);
   background: var(--bg-subtle);
   transform: translateX(3px);
 }
 
+/**
+ * 样式范围：.tutorial-manage__system.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__system.is-active {
   border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
   color: var(--primary);
@@ -521,12 +826,21 @@ onMounted(load)
   box-shadow: 0 7px 20px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
+/**
+ * 样式范围：.tutorial-manage__grip。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__grip {
   color: var(--text-muted);
   letter-spacing: -4px;
   cursor: grab;
 }
 
+/**
+ * 样式范围：.tutorial-manage__system-name。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ */
 .tutorial-manage__system-name {
   overflow: hidden;
   font-size: 13px;
@@ -535,6 +849,10 @@ onMounted(load)
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.tutorial-manage__count。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__count {
   min-width: 27px;
   padding: 3px 7px;
@@ -545,6 +863,10 @@ onMounted(load)
   text-align: center;
 }
 
+/**
+ * 样式范围：.tutorial-manage__arrow。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__arrow { color: var(--primary); font-size: 18px; }
 
 /* 编辑 / 删除只在悬停或键盘聚焦时出现，静态列表保持干净（与 V1 一致） */
@@ -555,9 +877,18 @@ onMounted(load)
   padding-top: 5px;
 }
 
+/**
+ * 样式范围：.tutorial-manage__system:hover .tutorial-manage__system-actions, .tutorial-manage__system:focus-within .tutorial-manage__system-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .tutorial-manage__system:hover .tutorial-manage__system-actions,
 .tutorial-manage__system:focus-within .tutorial-manage__system-actions { display: flex; }
 
+/**
+ * 样式范围：.tutorial-manage__system-actions button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__system-actions button {
   padding: 0;
   border: 0;
@@ -567,40 +898,78 @@ onMounted(load)
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.tutorial-manage__system-actions button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .tutorial-manage__system-actions button:hover { background: none; text-decoration: underline; }
 
+/**
+ * 样式范围：.tutorial-manage__system-actions .danger, .tutorial-manage__card-actions .danger。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__system-actions .danger,
 .tutorial-manage__card-actions .danger { color: var(--danger); }
 
+/**
+ * 样式范围：.tutorial-manage__path。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__path {
   margin-bottom: 7px;
   color: var(--text-muted);
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.tutorial-manage__courses .tutorial-manage__panel-head h2。
+ */
 .tutorial-manage__courses .tutorial-manage__panel-head h2 { font-size: 24px; }
 
+/**
+ * 样式范围：.tutorial-manage__courses .tutorial-manage__panel-head small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__courses .tutorial-manage__panel-head small {
   color: var(--text-muted);
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.tutorial-manage__tools。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .tutorial-manage__tools { display: flex; width: min(420px, 48%); gap: 10px; }
 
+/**
+ * 样式范围：.tutorial-manage__tools input。
+ */
 .tutorial-manage__tools input { min-width: 160px; }
 
+/**
+ * 样式范围：.tutorial-manage__body。
+ */
 .tutorial-manage__body {
   min-height: 360px;
   flex: 1;
   padding: 20px;
 }
 
+/**
+ * 样式范围：.tutorial-manage__grid。
+ * 使用网格布局组织内容；列定义为 repeat(auto-fill, minmax(260px, 1fr))，间距由 16px 控制。
+ */
 .tutorial-manage__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 16px;
 }
 
+/**
+ * 样式范围：.tutorial-manage__card。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__card {
   display: flex;
   min-width: 0;
@@ -612,14 +981,29 @@ onMounted(load)
   transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
 
+/**
+ * 样式范围：.tutorial-manage__card:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__card:hover {
   border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
   box-shadow: 0 16px 34px rgb(14 35 28 / 0.09);
   transform: translateY(-3px);
 }
 
+/**
+ * 样式范围：.tutorial-manage__card-head。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .tutorial-manage__card-head { display: flex; align-items: center; gap: 8px; }
 
+/**
+ * 样式范围：.tutorial-manage__card-head small。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__card-head small {
   min-width: 0;
   overflow: hidden;
@@ -630,14 +1014,26 @@ onMounted(load)
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.tutorial-manage__card-head .status-pill。
+ */
 .tutorial-manage__card-head .status-pill { margin-left: auto; }
 
+/**
+ * 样式范围：.tutorial-manage__card h3。
+ */
 .tutorial-manage__card h3 {
   margin: 7px 0 4px;
   font-size: 17px;
   line-height: 1.4;
 }
 
+/**
+ * 样式范围：.tutorial-manage__card-slug。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__card-slug {
   overflow: hidden;
   color: var(--text-muted);
@@ -646,6 +1042,10 @@ onMounted(load)
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.tutorial-manage__card-summary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__card-summary {
   margin-top: 9px;
   color: var(--text-secondary);
@@ -653,6 +1053,11 @@ onMounted(load)
   line-height: 1.7;
 }
 
+/**
+ * 样式范围：.tutorial-manage__card-meta。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__card-meta {
   display: flex;
   justify-content: space-between;
@@ -677,25 +1082,44 @@ onMounted(load)
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.tutorial-manage__enter。
+ */
 .tutorial-manage__enter {
   align-self: flex-start;
   margin-top: 14px;
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.tutorial-manage__enter span。
+ */
 .tutorial-manage__enter span {
   display: inline-block;
   transition: transform 160ms ease;
 }
 
+/**
+ * 样式范围：.tutorial-manage__card:hover .tutorial-manage__enter span。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .tutorial-manage__card:hover .tutorial-manage__enter span { transform: translateX(3px); }
 
+/**
+ * 样式范围：.tutorial-manage__enter:hover, .tutorial-manage__card-actions button:hover:not(:disabled)。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__enter:hover,
 .tutorial-manage__card-actions button:hover:not(:disabled) {
   border-color: var(--primary);
   background: color-mix(in srgb, var(--primary) 7%, var(--bg-surface));
 }
 
+/**
+ * 样式范围：.tutorial-manage__card-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .tutorial-manage__card-actions {
   display: flex;
   flex-wrap: wrap;
@@ -703,9 +1127,17 @@ onMounted(load)
   margin-top: 10px;
 }
 
+/**
+ * 样式范围：.tutorial-manage__empty, .tutorial-manage__empty-message。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__empty,
 .tutorial-manage__empty-message { color: var(--text-muted); text-align: center; }
 
+/**
+ * 样式范围：.tutorial-manage__empty。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 7px 控制。
+ */
 .tutorial-manage__empty {
   display: grid;
   min-height: 360px;
@@ -713,15 +1145,33 @@ onMounted(load)
   gap: 7px;
 }
 
+/**
+ * 样式范围：.tutorial-manage__empty span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__empty span { color: var(--primary); font-size: 32px; }
 
+/**
+ * 样式范围：.tutorial-manage__empty h3。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__empty h3 { color: var(--text-secondary); font-size: 16px; }
 
+/**
+ * 样式范围：.tutorial-manage__empty p, .tutorial-manage__empty-message。
+ */
 .tutorial-manage__empty p,
 .tutorial-manage__empty-message { font-size: 12px; }
 
+/**
+ * 样式范围：.tutorial-manage__empty-message。
+ */
 .tutorial-manage__empty-message { padding: 38px 12px; }
 
+/**
+ * 样式范围：.tutorial-manage__dialog。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__dialog {
   width: min(440px, 92vw);
   padding: 24px;
@@ -731,10 +1181,21 @@ onMounted(load)
   background: var(--bg-surface);
 }
 
+/**
+ * 样式范围：.tutorial-manage__dialog h2。
+ */
 .tutorial-manage__dialog h2 { margin-bottom: 16px; }
 
+/**
+ * 样式范围：.tutorial-manage__dialog form。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 16px 控制。
+ */
 .tutorial-manage__dialog form { display: grid; gap: 16px; }
 
+/**
+ * 样式范围：.tutorial-manage__dialog-tip。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__dialog-tip {
   margin: 2px 0 0;
   color: var(--text-muted);
@@ -742,8 +1203,16 @@ onMounted(load)
   line-height: 1.7;
 }
 
+/**
+ * 样式范围：.tutorial-manage__dialog-lead。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tutorial-manage__dialog-lead { margin: 0 0 14px; color: var(--text-primary); font-weight: 650; }
 
+/**
+ * 样式范围：.tutorial-manage__dialog-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .tutorial-manage__dialog-actions {
   display: flex;
   justify-content: flex-end;
@@ -751,27 +1220,73 @@ onMounted(load)
   margin-top: 18px;
 }
 
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
 @media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：.tutorial-manage__system,   .tutorial-manage__card,   .tutorial-manage__enter span,   .tutorial-manage__icon-button。
+   */
   .tutorial-manage__system,
   .tutorial-manage__card,
   .tutorial-manage__enter span,
   .tutorial-manage__icon-button { transition: none; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 1024px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 1024px) {
+  /**
+   * 样式范围：.tutorial-manage__layout。
+   */
   .tutorial-manage__layout { grid-template-columns: 240px minmax(0, 1fr); }
+  /**
+   * 样式范围：.tutorial-manage__grid。
+   */
   .tutorial-manage__grid { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+  /**
+   * 样式范围：.tutorial-manage__panel-head--stack。
+   */
   .tutorial-manage__panel-head--stack { align-items: flex-start; flex-direction: column; }
+  /**
+   * 样式范围：.tutorial-manage__tools。
+   */
   .tutorial-manage__tools { width: 100%; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 720px) {
+  /**
+   * 样式范围：.tutorial-manage__hero。
+   */
   .tutorial-manage__hero { align-items: flex-start; flex-direction: column; }
+  /**
+   * 样式范围：.tutorial-manage__layout。
+   */
   .tutorial-manage__layout { grid-template-columns: 1fr; min-height: 0; }
+  /**
+   * 样式范围：.tutorial-manage__system-body。
+   */
   .tutorial-manage__system-body { min-height: 0; max-height: 240px; }
+  /**
+   * 样式范围：.tutorial-manage__system-actions。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
   .tutorial-manage__system-actions { display: flex; }
+  /**
+   * 样式范围：.tutorial-manage__tools。
+   */
   .tutorial-manage__tools { align-items: stretch; flex-direction: column; }
+  /**
+   * 样式范围：.tutorial-manage__grid。
+   */
   .tutorial-manage__grid { grid-template-columns: 1fr; }
+  /**
+   * 样式范围：.tutorial-manage__empty。
+   */
   .tutorial-manage__empty { min-height: 200px; padding: 24px 12px; }
 }
 </style>

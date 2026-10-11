@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.english.vocabulary.mapper.VocabularyMapper">
+    <!--
+      VocabularyMapper.xml：com.starrainnotes.english.vocabulary.mapper.VocabularyMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+    <!--
+      themeMap：主题Map；结果映射。
+      将数据库列装配为 com.starrainnotes.english.vocabulary.dto.VocabularyDto$Theme；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="themeMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyDto$Theme">
         <id property="id" column="id"/>
         <result property="layer" column="layer"/>
@@ -9,6 +19,10 @@
         <result property="sortOrder" column="sort_order"/>
         <result property="wordCount" column="word_count"/>
     </resultMap>
+    <!--
+      wordMap：单词Map；结果映射。
+      将数据库列装配为 com.starrainnotes.english.vocabulary.dto.VocabularyDto$Word；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="wordMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyDto$Word">
         <id property="id" column="id"/>
         <result property="themeId" column="theme_id"/>
@@ -23,6 +37,10 @@
         <result property="sortOrder" column="sort_order"/>
         <result property="memoryCount" column="memory_count"/>
     </resultMap>
+    <!--
+      audioMap：音频Map；结果映射。
+      将数据库列装配为 com.starrainnotes.english.vocabulary.vo.VocabularyWordAudioVO；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="audioMap" type="com.starrainnotes.english.vocabulary.vo.VocabularyWordAudioVO">
         <id property="id" column="id"/>
         <result property="wordId" column="word_id"/>
@@ -33,18 +51,42 @@
         <result property="licenseNote" column="license_note"/>
         <result property="primary" column="is_primary"/>
     </resultMap>
+    <!--
+      wordColumns：单词投影列；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    -->
     <sql id="wordColumns">
         id,theme_id,word,part_of_speech,phonetic_us,phonetic_uk,translation,scene_meaning,inflections,
         CAST(examples AS CHAR) AS examples,sort_order,memory_count
     </sql>
+    <!--
+      wordFilter：单词筛选；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+      绑定参数：themeId、search；参数含义参见 Mapper 方法注释。
+    -->
     <sql id="wordFilter">
+        <!--
+          统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+        -->
         <where>
+            <!--
+              条件 themeId != null 成立时才输出此段 SQL。
+            -->
             <if test="themeId != null">theme_id = #{themeId}</if>
+            <!--
+              条件 search != null and search != '' 成立时才输出此段 SQL。
+            -->
             <if test="search != null and search != ''">
                 AND (word LIKE CONCAT('%',#{search},'%') OR translation LIKE CONCAT('%',#{search},'%'))
             </if>
         </where>
     </sql>
+    <!--
+      themes：themes；读取语句。
+      涉及数据表：sr_english_vocabulary_theme、sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：themeMap；集合与单值形态由 Java 方法签名决定。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="themes" resultMap="themeMap">
         SELECT t.id,t.layer,t.layer_order,t.name,t.sort_order,COUNT(w.id) AS word_count
         FROM sr_english_vocabulary_theme t
@@ -52,6 +94,13 @@
         GROUP BY t.id,t.layer,t.layer_order,t.name,t.sort_order
         ORDER BY t.layer_order,t.sort_order,t.id
     </select>
+    <!--
+      theme：主题；读取语句。
+      涉及数据表：sr_english_vocabulary_theme、sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：themeMap；集合与单值形态由 Java 方法签名决定。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="theme" resultMap="themeMap">
         SELECT t.id,t.layer,t.layer_order,t.name,t.sort_order,COUNT(w.id) AS word_count
         FROM sr_english_vocabulary_theme t
@@ -59,15 +108,37 @@
         WHERE t.id=#{id}
         GROUP BY t.id,t.layer,t.layer_order,t.name,t.sort_order
     </select>
+    <!--
+      countWords：数量Words；读取语句。
+      涉及数据表：sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      复用片段：wordFilter。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countWords" resultType="long">
         SELECT COUNT(*) FROM sr_english_vocabulary_word
         <include refid="wordFilter"/>
     </select>
+    <!--
+      words：words；读取语句。
+      涉及数据表：sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：wordMap；集合与单值形态由 Java 方法签名决定。
+      复用片段：wordColumns、wordFilter。
+      绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="words" resultMap="wordMap">
         SELECT <include refid="wordColumns"/> FROM sr_english_vocabulary_word
         <include refid="wordFilter"/>
         ORDER BY sort_order,id LIMIT #{limit} OFFSET #{offset}
     </select>
+    <!--
+      word：单词；读取语句。
+      涉及数据表：sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：wordMap；集合与单值形态由 Java 方法签名决定。
+      复用片段：wordColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="word" resultMap="wordMap">
         SELECT <include refid="wordColumns"/> FROM sr_english_vocabulary_word WHERE id=#{id}
     </select>
@@ -75,30 +146,79 @@
       按编号批量取词，供「已加入计划」筛选与游客复习队列使用。
       ORDER BY sort_order,id 让结果与主题内的展示顺序一致，客户端不必再排序。
     -->
+    <!--
+      wordsByIds：words依据标识集合；读取语句。
+      涉及数据表：sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：wordMap；集合与单值形态由 Java 方法签名决定。
+      复用片段：wordColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="wordsByIds" resultMap="wordMap">
         SELECT <include refid="wordColumns"/> FROM sr_english_vocabulary_word
         WHERE id IN
+        <!--
+          遍历 ids，元素名为 id；open/close/separator 控制 SQL 列表格式。
+          集合是否允许为空由外围条件和业务校验决定。
+        -->
         <foreach collection="ids" item="id" open="(" separator="," close=")">#{id}</foreach>
         ORDER BY sort_order,id
     </select>
     <!-- 已上传的授权发音；media_asset_id 为空的行只有来源信息，没有可播放地址 -->
+    <!--
+      audios：audios；读取语句。
+      涉及数据表：sr_english_vocabulary_word_audio；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：audioMap；集合与单值形态由 Java 方法签名决定。
+      绑定参数：wordId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="audios" resultMap="audioMap">
         SELECT id,word_id,accent,media_asset_id,provider,source_url,license_note,is_primary
         FROM sr_english_vocabulary_word_audio
         WHERE word_id IN
+        <!--
+          遍历 wordIds，元素名为 wordId；open/close/separator 控制 SQL 列表格式。
+          集合是否允许为空由外围条件和业务校验决定。
+        -->
         <foreach collection="wordIds" item="wordId" open="(" separator="," close=")">#{wordId}</foreach>
         ORDER BY word_id,is_primary DESC,id
     </select>
+    <!--
+      insertTheme：新增主题；新增语句。
+      涉及数据表：sr_english_vocabulary_theme；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.english.vocabulary.dto.VocabularyDto$Theme；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：layer、layerOrder、name、sortOrder；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertTheme" parameterType="com.starrainnotes.english.vocabulary.dto.VocabularyDto$Theme"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_english_vocabulary_theme(layer,layer_order,name,sort_order)
         VALUES (#{layer},#{layerOrder},#{name},#{sortOrder})
     </insert>
+    <!--
+      updateTheme：更新主题；更新语句。
+      涉及数据表：sr_english_vocabulary_theme；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：layer、layerOrder、name、sortOrder、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updateTheme">
         UPDATE sr_english_vocabulary_theme SET layer=#{layer},layer_order=#{layerOrder},
         name=#{name},sort_order=#{sortOrder} WHERE id=#{id}
     </update>
+    <!--
+      deleteTheme：删除主题；删除语句。
+      涉及数据表：sr_english_vocabulary_theme；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="deleteTheme">DELETE FROM sr_english_vocabulary_theme WHERE id=#{id}</delete>
+    <!--
+      insertWord：新增单词；新增语句。
+      涉及数据表：sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.english.vocabulary.dto.VocabularyDto$Word；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：themeId、word、partOfSpeech、phoneticUs、phoneticUk、translation、sceneMeaning、inflections、examples、sortOrder；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertWord" parameterType="com.starrainnotes.english.vocabulary.dto.VocabularyDto$Word"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_english_vocabulary_word
@@ -111,6 +231,12 @@
       scene_meaning / inflections 用 COALESCE 保留旧值：后台编辑表单不一定带这两个字段，
       直接覆盖会把词卡上的「本主题用法」「词形」清空。
     -->
+    <!--
+      updateWord：更新单词；更新语句。
+      涉及数据表：sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：themeId、word、partOfSpeech、phoneticUs、phoneticUk、translation、sceneMeaning、inflections、examples、sortOrder、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updateWord">
         UPDATE sr_english_vocabulary_word SET theme_id=#{themeId},word=#{word},
         part_of_speech=#{partOfSpeech},phonetic_us=#{phoneticUs},phonetic_uk=#{phoneticUk},
@@ -120,5 +246,11 @@
         examples=#{examples},sort_order=#{sortOrder}
         WHERE id=#{id}
     </update>
+    <!--
+      deleteWord：删除单词；删除语句。
+      涉及数据表：sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="deleteWord">DELETE FROM sr_english_vocabulary_word WHERE id=#{id}</delete>
 </mapper>

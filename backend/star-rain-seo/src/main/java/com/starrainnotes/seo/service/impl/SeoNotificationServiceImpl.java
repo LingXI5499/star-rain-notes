@@ -1,3 +1,11 @@
+/*
+ * SeoNotificationServiceImpl：公开页面与 SEO模块的业务实现文件。
+ * 业务范围：公开 HTML 快照、规范地址、站点地图和搜索引擎通知。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：NotificationResult、SeoChange、SeoNotificationLog、IndexNowNotifier、SeoNotificationMapper、SeoNotificationService、CanonicalUrlResolver。
+ * 阅读入口：enqueue（enqueue处理入口）；processPending（处理待处理）。
+ */
+
 package com.starrainnotes.seo.service.impl;
 
 import com.starrainnotes.seo.dto.NotificationResult;
@@ -16,14 +24,40 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * SEO通知业务服务实现，属于公开页面与 SEO模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class SeoNotificationServiceImpl implements SeoNotificationService {
+    /**
+     * 当前类使用的日志记录器。
+     */
     private static final Logger log = LoggerFactory.getLogger(SeoNotificationServiceImpl.class);
+    /**
+     * 数据映射。
+     * 协作类型：<code>SeoNotificationMapper</code>。
+     */
     private final SeoNotificationMapper mapper;
+    /**
+     * notifier。
+     */
     private final IndexNowNotifier notifier;
+    /**
+     * 规范。
+     */
     private final CanonicalUrlResolver canonical;
 
+    /**
+     * enqueue处理入口。
+     * 事务声明：<code>@Transactional(propagation = Propagation.REQUIRES_NEW)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>canonical.canonical</code>、<code>notifier.enabled</code>、<code>notifier.providerCode</code>、<code>mapper.enqueue</code>。
+     * 实现中的显式失败类型包括 <code>IllegalArgumentException</code>；具体触发条件见对应分支。
+     *
+     * @param routePath 路由路径；类型为 <code>String</code>
+     * @param changeType change类型；类型为 <code>String</code>
+     */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void enqueue(String routePath, String changeType) {
@@ -40,6 +74,10 @@ public class SeoNotificationServiceImpl implements SeoNotificationService {
         mapper.enqueue(row);
     }
 
+    /**
+     * 处理待处理。
+     * 主要协作调用：<code>mapper.due</code>、<code>notifier.enabled</code>、<code>notifier.providerCode</code>、<code>mapper.claim</code>、<code>notifier.notify</code>。
+     */
     @Override
     public void processPending() {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);

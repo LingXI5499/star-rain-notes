@@ -1,8 +1,23 @@
+/**
+ * publicTracking.js：访问统计模块的应用配置与入口。
+ * 职责范围：前台访问事件、按日汇总和统计查询。
+ * 组织前端装配、构建或入口行为，具体依赖和导出入口见下文。
+ * 主要依赖：../api/analyticsApi。
+ * 阅读入口：installPublicTracking（install公开Tracking的处理函数）。
+ */
+
 import { recordPageView } from '../api/analyticsApi'
 
 const allowed = new Set(['/', '/blog', '/blog/archive', '/tutorials', '/portfolio', '/messages', '/about', '/search'])
 
-export function installPublicTracking(router) {
+export
+  /**
+   * install公开Tracking的处理函数。
+   * 主要协作：router.afterEach、to.path.startsWith、allowed.has、.catch、recordPageView。
+   * @param router router；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function installPublicTracking(router) {
   let first = true
   router.afterEach((to) => {
     if (to.path.startsWith('/useradmin')) return

@@ -1,3 +1,11 @@
+/*
+ * MediaCleanupServiceImpl：媒体模块的业务实现文件。
+ * 业务范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：MediaProperties、MediaAssetMapper、MediaCleanupService、MediaStorage。
+ * 阅读入口：cleanupOrphans（清理Orphans）。
+ */
+
 package com.starrainnotes.media.service.impl;
 
 import com.starrainnotes.media.properties.MediaProperties;
@@ -22,17 +30,42 @@ import org.springframework.stereotype.Service;
  *   2. 文件写入时间早于宽限期（默认 24 小时）。
  * 第 2 条是关键：刚落盘、还没来得及写库的正常上传文件不能被误删。
  */
+/**
+ * 媒体清理业务服务实现，属于媒体模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @ConditionalOnProperty(prefix = "star-rain.media.orphan-cleanup", name = "enabled",
         havingValue = "true", matchIfMissing = true)
 public class MediaCleanupServiceImpl implements MediaCleanupService {
 
+    /**
+     * 当前类的日志记录器；日志参数不能包含密码或会话令牌。
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaCleanupServiceImpl.class);
 
+    /**
+     * 存储。
+     */
     private final MediaStorage storage;
+    /**
+     * 资产数据映射。
+     * 协作类型：<code>MediaAssetMapper</code>。
+     */
     private final MediaAssetMapper assetMapper;
+    /**
+     * 本模块的外部配置属性。
+     * 协作类型：<code>MediaProperties</code>。
+     */
     private final MediaProperties properties;
 
+    /**
+     * 构造MediaCleanupServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param storage 存储；类型为 <code>MediaStorage</code>
+     * @param assetMapper 资产数据映射；类型为 <code>MediaAssetMapper</code>
+     * @param properties 本模块的外部配置属性；类型为 <code>MediaProperties</code>
+     */
     public MediaCleanupServiceImpl(MediaStorage storage,
                                    MediaAssetMapper assetMapper,
                                    MediaProperties properties) {
@@ -41,6 +74,12 @@ public class MediaCleanupServiceImpl implements MediaCleanupService {
         this.properties = properties;
     }
 
+    /**
+     * 清理Orphans。
+     * 调用约束：<code>@Scheduled(cron = "${star-rain.media.orphan-cleanup.cron:0 30 3 * * *}")</code>。
+     * 主要协作调用：<code>properties.getOrphanCleanup</code>、<code>assetMapper.allStorageKeys</code>、<code>storage.listKeys</code>、<code>storage.lastModified</code>、<code>storage.delete</code>。
+     * @return 类型为 <code>int</code> 的处理结果
+     */
     @Override
     @Scheduled(cron = "${star-rain.media.orphan-cleanup.cron:0 30 3 * * *}")
     public int cleanupOrphans() {

@@ -1,3 +1,254 @@
+/**
+ * study-exercises.css：教程与学习模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 /* Shared public reading and signed-in study surfaces; all colours follow the site theme. */
-.study-section-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}.study-section-head small,.study-kicker{display:block;font-size:10px;font-weight:750;letter-spacing:.14em;color:var(--accent);margin-bottom:7px}.study-section-head h2{margin:0!important;font-size:22px!important}.study-count{flex-shrink:0;font-size:12px;color:var(--primary);background:var(--bg-subtle);border:1px solid var(--border);padding:6px 12px;border-radius:999px}.study-hint{font-size:13px;line-height:1.8;color:var(--text-muted);margin-bottom:20px}.study-recall__progress{display:block;width:100%;height:5px;margin:0 0 26px;border:0;border-radius:999px;accent-color:var(--primary)}.study-recall__progress::-webkit-progress-bar{background:var(--bg-subtle);border-radius:999px}.study-recall__progress::-webkit-progress-value{background:var(--primary);border-radius:999px}.study-recall__face{padding:28px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 7%,var(--bg-surface)),var(--bg-surface))}.study-recall__face h3{font-size:clamp(19px,2vw,25px);line-height:1.6;overflow-wrap:anywhere;margin:12px 0 18px}.study-recall__face p{font-size:13px;line-height:1.8;color:var(--text-secondary);margin:0 0 22px}.study-reference{padding:22px;margin-top:20px;border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:12px;background:var(--bg-subtle);min-width:0;overflow-wrap:anywhere}.study-reference .blog-prose{font-size:15px}.study-rating-label{font-size:13px;color:var(--text-secondary);margin:24px 0 12px}.study-ratings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.study-rating{display:grid;gap:7px;text-align:left;border:1px solid var(--border);border-radius:12px;background:var(--bg-surface);color:var(--text-primary);padding:16px;cursor:pointer;font:inherit;transition:border-color .15s,background .15s}.study-rating strong{font-size:15px}.study-rating small{color:var(--text-muted);font-size:11px;line-height:1.5}.study-rating:hover:not(:disabled){border-color:var(--primary);background:var(--bg-subtle)}.study-rating:disabled{opacity:.5;cursor:default}.study-rating--remembered strong{color:var(--primary)}.study-rating--forgot strong{color:var(--accent)}.study-rating:focus-visible{outline:2px solid var(--primary);outline-offset:3px}.study-recall__finished h3{font-size:21px;line-height:1.7;margin:12px 0 20px}.study-results{display:flex;flex-wrap:wrap;gap:12px}.study-results span{padding:12px 18px;background:var(--bg-subtle);border-radius:10px;color:var(--text-secondary);font-size:13px}.study-results strong{margin-left:8px;color:var(--primary);font-size:21px}.study-question{border:1px solid var(--border);border-radius:14px;padding:22px;margin-top:18px}.study-question__heading{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}.study-question__heading h3{flex:1;margin:0;font-size:17px;line-height:1.75;overflow-wrap:anywhere}.study-question__number{flex-shrink:0;display:grid;place-items:center;min-width:30px;height:30px;border-radius:8px;background:var(--bg-subtle);color:var(--primary);font:650 11px/1 ui-monospace,monospace}.study-question textarea,.tutorial-reader__answer textarea{min-height:145px;resize:vertical;line-height:1.8}.study-answer-history{margin-top:22px;padding-top:16px;border-top:1px solid var(--border);font-size:13px;color:var(--text-secondary)}.study-answer-history summary{cursor:pointer}.study-answer-history article{padding:16px;margin-top:12px;background:var(--bg-subtle);border-radius:10px}.study-answer-history h4{margin:0 0 8px}.study-answer-history p{font-size:12px;color:var(--text-muted);margin-bottom:12px}.tutorial-reader__exercises .study-disclosure{padding:0;border-radius:14px;overflow:hidden}.study-disclosure>summary{display:flex;align-items:center;gap:12px;padding:18px;list-style:none;line-height:1.7;font-size:15px}.study-disclosure>summary::-webkit-details-marker{display:none}.study-disclosure>summary>span:nth-child(2){flex:1;overflow-wrap:anywhere}.study-disclosure>summary:after{content:'+';color:var(--primary);font-size:21px;font-weight:400;flex-shrink:0}.study-disclosure[open]>summary:after{content:'−'}.study-disclosure[open]>summary{background:var(--bg-subtle);border-bottom:1px solid var(--border)}.tutorial-reader__exercises .study-disclosure>.study-reference{margin:18px}.tutorial-reader__exercises .study-disclosure>.tutorial-reader__answer{margin:0;padding:22px}.tutorial-reader__answer label{font-size:13px;color:var(--text-secondary)}
-@media(max-width:600px){.study-recall__face,.study-question,.study-reference{padding:18px}.study-ratings{grid-template-columns:1fr}.study-rating{grid-template-columns:70px 1fr;align-items:center}.study-disclosure>summary{padding:14px}.study-question__heading{flex-wrap:wrap}.study-question__heading h3{min-width:60%}}
+.study-section-head{display:flex;align-items:center;justify-content:space-between;gap:18px;margin-bottom:20px}
+  /**
+   * 样式范围：.study-section-head small,.study-kicker。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-section-head small,.study-kicker{display:block;font-size:10px;font-weight:750;letter-spacing:.14em;color:var(--accent);margin-bottom:7px}
+  /**
+   * 样式范围：.study-section-head h2。
+   */
+  .study-section-head h2{margin:0!important;font-size:22px!important}
+  /**
+   * 样式范围：.study-count。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-count{flex-shrink:0;font-size:12px;color:var(--primary);background:var(--bg-subtle);border:1px solid var(--border);padding:6px 12px;border-radius:999px}
+  /**
+   * 样式范围：.study-hint。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-hint{font-size:13px;line-height:1.8;color:var(--text-muted);margin-bottom:20px}
+  /**
+   * 样式范围：.study-recall__progress。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-recall__progress{display:block;width:100%;height:5px;margin:0 0 26px;border:0;border-radius:999px;accent-color:var(--primary)}
+  /**
+   * 样式范围：.study-recall__progress::-webkit-progress-bar。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-recall__progress::-webkit-progress-bar{background:var(--bg-subtle);border-radius:999px}
+  /**
+   * 样式范围：.study-recall__progress::-webkit-progress-value。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-recall__progress::-webkit-progress-value{background:var(--primary);border-radius:999px}
+  /**
+   * 样式范围：.study-recall__face。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-recall__face{padding:28px;border:1px solid var(--border);border-radius:14px;background:linear-gradient(135deg,color-mix(in srgb,var(--primary) 7%,var(--bg-surface)),var(--bg-surface))}
+  /**
+   * 样式范围：.study-recall__face h3。
+   */
+  .study-recall__face h3{font-size:clamp(19px,2vw,25px);line-height:1.6;overflow-wrap:anywhere;margin:12px 0 18px}
+  /**
+   * 样式范围：.study-recall__face p。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-recall__face p{font-size:13px;line-height:1.8;color:var(--text-secondary);margin:0 0 22px}
+  /**
+   * 样式范围：.study-reference。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-reference{padding:22px;margin-top:20px;border:1px solid var(--border);border-left:3px solid var(--primary);border-radius:12px;background:var(--bg-subtle);min-width:0;overflow-wrap:anywhere}
+  /**
+   * 样式范围：.study-reference .blog-prose。
+   */
+  .study-reference .blog-prose{font-size:15px}
+  /**
+   * 样式范围：.study-rating-label。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-rating-label{font-size:13px;color:var(--text-secondary);margin:24px 0 12px}
+  /**
+   * 样式范围：.study-ratings。
+   * 使用网格布局组织内容；列定义为 repeat(3,minmax(0,1fr))，间距由 10px 控制。
+   */
+  .study-ratings{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  /**
+   * 样式范围：.study-rating。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 7px 控制。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-rating{display:grid;gap:7px;text-align:left;border:1px solid var(--border);border-radius:12px;background:var(--bg-surface);color:var(--text-primary);padding:16px;cursor:pointer;font:inherit;transition:border-color .15s,background .15s}
+  /**
+   * 样式范围：.study-rating strong。
+   */
+  .study-rating strong{font-size:15px}
+  /**
+   * 样式范围：.study-rating small。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-rating small{color:var(--text-muted);font-size:11px;line-height:1.5}
+  /**
+   * 样式范围：.study-rating:hover:not(:disabled)。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-rating:hover:not(:disabled){border-color:var(--primary);background:var(--bg-subtle)}
+  /**
+   * 样式范围：.study-rating:disabled。
+   */
+  .study-rating:disabled{opacity:.5;cursor:default}
+  /**
+   * 样式范围：.study-rating--remembered strong。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-rating--remembered strong{color:var(--primary)}
+  /**
+   * 样式范围：.study-rating--forgot strong。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-rating--forgot strong{color:var(--accent)}
+  /**
+   * 样式范围：.study-rating:focus-visible。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-rating:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+  /**
+   * 样式范围：.study-recall__finished h3。
+   */
+  .study-recall__finished h3{font-size:21px;line-height:1.7;margin:12px 0 20px}
+  /**
+   * 样式范围：.study-results。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .study-results{display:flex;flex-wrap:wrap;gap:12px}
+  /**
+   * 样式范围：.study-results span。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-results span{padding:12px 18px;background:var(--bg-subtle);border-radius:10px;color:var(--text-secondary);font-size:13px}
+  /**
+   * 样式范围：.study-results strong。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-results strong{margin-left:8px;color:var(--primary);font-size:21px}
+  /**
+   * 样式范围：.study-question。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-question{border:1px solid var(--border);border-radius:14px;padding:22px;margin-top:18px}
+  /**
+   * 样式范围：.study-question__heading。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .study-question__heading{display:flex;align-items:flex-start;gap:12px;margin-bottom:20px}
+  /**
+   * 样式范围：.study-question__heading h3。
+   */
+  .study-question__heading h3{flex:1;margin:0;font-size:17px;line-height:1.75;overflow-wrap:anywhere}
+  /**
+   * 样式范围：.study-question__number。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 各行列间距规则 控制。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-question__number{flex-shrink:0;display:grid;place-items:center;min-width:30px;height:30px;border-radius:8px;background:var(--bg-subtle);color:var(--primary);font:650 11px/1 ui-monospace,monospace}
+  /**
+   * 样式范围：.study-question textarea,.tutorial-reader__answer textarea。
+   */
+  .study-question textarea,.tutorial-reader__answer textarea{min-height:145px;resize:vertical;line-height:1.8}
+  /**
+   * 样式范围：.study-answer-history。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-answer-history{margin-top:22px;padding-top:16px;border-top:1px solid var(--border);font-size:13px;color:var(--text-secondary)}
+  /**
+   * 样式范围：.study-answer-history summary。
+   */
+  .study-answer-history summary{cursor:pointer}
+  /**
+   * 样式范围：.study-answer-history article。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-answer-history article{padding:16px;margin-top:12px;background:var(--bg-subtle);border-radius:10px}
+  /**
+   * 样式范围：.study-answer-history h4。
+   */
+  .study-answer-history h4{margin:0 0 8px}
+  /**
+   * 样式范围：.study-answer-history p。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-answer-history p{font-size:12px;color:var(--text-muted);margin-bottom:12px}
+  /**
+   * 样式范围：.tutorial-reader__exercises .study-disclosure。
+   * 溢出处理：整体 hidden。
+   */
+  .tutorial-reader__exercises .study-disclosure{padding:0;border-radius:14px;overflow:hidden}
+  /**
+   * 样式范围：.study-disclosure>summary。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .study-disclosure>summary{display:flex;align-items:center;gap:12px;padding:18px;list-style:none;line-height:1.7;font-size:15px}
+  /**
+   * 样式范围：.study-disclosure>summary::-webkit-details-marker。
+   */
+  .study-disclosure>summary::-webkit-details-marker{display:none}
+  /**
+   * 样式范围：.study-disclosure>summary>span:nth-child(2)。
+   */
+  .study-disclosure>summary>span:nth-child(2){flex:1;overflow-wrap:anywhere}
+  /**
+   * 样式范围：.study-disclosure>summary:after。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-disclosure>summary:after{content:'+';color:var(--primary);font-size:21px;font-weight:400;flex-shrink:0}
+  /**
+   * 样式范围：.study-disclosure[open]>summary:after。
+   */
+  .study-disclosure[open]>summary:after{content:'−'}
+  /**
+   * 样式范围：.study-disclosure[open]>summary。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .study-disclosure[open]>summary{background:var(--bg-subtle);border-bottom:1px solid var(--border)}
+  /**
+   * 样式范围：.tutorial-reader__exercises .study-disclosure>.study-reference。
+   */
+  .tutorial-reader__exercises .study-disclosure>.study-reference{margin:18px}
+  /**
+   * 样式范围：.tutorial-reader__exercises .study-disclosure>.tutorial-reader__answer。
+   */
+  .tutorial-reader__exercises .study-disclosure>.tutorial-reader__answer{margin:0;padding:22px}
+  /**
+   * 样式范围：.tutorial-reader__answer label。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .tutorial-reader__answer label{font-size:13px;color:var(--text-secondary)}
+/**
+ * 响应式或设备条件：(max-width:600px)；仅在该条件成立时覆盖基础样式。
+ */
+@media(max-width:600px){
+  /**
+   * 样式范围：.study-recall__face,.study-question,.study-reference。
+   */
+  .study-recall__face,.study-question,.study-reference{padding:18px}
+  /**
+   * 样式范围：.study-ratings。
+   */
+  .study-ratings{grid-template-columns:1fr}
+  /**
+   * 样式范围：.study-rating。
+   */
+  .study-rating{grid-template-columns:70px 1fr;align-items:center}
+  /**
+   * 样式范围：.study-disclosure>summary。
+   */
+  .study-disclosure>summary{padding:14px}
+  /**
+   * 样式范围：.study-question__heading。
+   */
+  .study-question__heading{flex-wrap:wrap}
+  /**
+   * 样式范围：.study-question__heading h3。
+   */
+  .study-question__heading h3{min-width:60%}}

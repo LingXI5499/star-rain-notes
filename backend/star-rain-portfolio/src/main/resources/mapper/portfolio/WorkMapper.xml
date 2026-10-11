@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.portfolio.mapper.WorkMapper">
+    <!--
+      WorkMapper.xml：com.starrainnotes.portfolio.mapper.WorkMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
 
   <!-- 列清单在一处维护：resultType 依赖 map-underscore-to-camel-case 做列名到属性名的映射 -->
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, slug, work_type, title, summary, prototype_asset_id, prototype_entry, subtitle, category_id, format_id, role, tech_stack, project_status, started_on, ended_on, featured, sort_order, seo_title, seo_description, body_markdown, status, published_at, withdrawn_at,
     created_by_account_id, updated_by_account_id, created_at, updated_at
@@ -13,13 +23,35 @@
     与原先 Wrappers.lambdaQuery().eq(condition, ...) 的写法逐条对应：
     这三个 <if> 表达的是「调用方没给这个筛选条件」，不是把动态 SQL 藏起来。
   -->
+  <!--
+    filters：筛选条件；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    绑定参数：workType、status、keyword；参数含义参见 Mapper 方法注释。
+  -->
   <sql id="filters">
+    <!--
+      条件 workType != null and workType != '' 成立时才输出此段 SQL。
+    -->
     <if test="workType != null and workType != ''">AND work_type = #{workType}</if>
+    <!--
+      条件 status != null and status != '' 成立时才输出此段 SQL。
+    -->
     <if test="status != null and status != ''">AND status = #{status}</if>
+    <!--
+      条件 keyword != null and keyword != '' 成立时才输出此段 SQL。
+    -->
     <if test="keyword != null and keyword != ''">AND title LIKE CONCAT('%', #{keyword}, '%')</if>
   </sql>
 
   <!-- id 自增回填给实体：创建后要立刻用它去读媒体与外链 -->
+  <!--
+    insert：新增；新增语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    插入成功后 JDBC 自动生成的主键回填到 id。
+    绑定参数：slug、workType、title、summary、subtitle、categoryId、formatId、role、techStack、projectStatus、startedOn、endedOn、featured、sortOrder、seoTitle、seoDescription、bodyMarkdown、status、createdByAccountId、updatedByAccountId；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="insert" parameterType="com.starrainnotes.portfolio.entity.WorkEntity"
           useGeneratedKeys="true" keyProperty="id">
     INSERT INTO sr_portfolio_work
@@ -30,35 +62,85 @@
        #{createdByAccountId}, #{updatedByAccountId})
   </insert>
 
+  <!--
+    selectById：查询依据标识；读取语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.portfolio.entity.WorkEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectById" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
     SELECT <include refid="columns"/> FROM sr_portfolio_work WHERE id = #{id}
   </select>
 
   <!-- 编辑路径先锁行：同一作品的发布 / 撤回 / 排序必须串行 -->
+  <!--
+    byIdForUpdate：依据标识面向更新；读取语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.portfolio.entity.WorkEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+    锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+  -->
   <select id="byIdForUpdate" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
     SELECT <include refid="columns"/> FROM sr_portfolio_work WHERE id = #{id} FOR UPDATE
   </select>
 
   <!-- 公开详情按 slug 读，且只认已发布状态 -->
+  <!--
+    selectBySlugAndStatus：查询依据固定链接标识及状态；读取语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.portfolio.entity.WorkEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：slug、status；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectBySlugAndStatus" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
     SELECT <include refid="columns"/> FROM sr_portfolio_work
     WHERE slug = #{slug} AND status = #{status}
   </select>
 
+  <!--
+    selectByIdAndStatus：查询依据标识及状态；读取语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.portfolio.entity.WorkEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id、status；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectByIdAndStatus" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
     SELECT <include refid="columns"/> FROM sr_portfolio_work
     WHERE id = #{id} AND status = #{status}
   </select>
 
+  <!--
+    countByFilter：数量依据筛选；读取语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+    复用片段：filters。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="countByFilter" resultType="long">
     SELECT COUNT(*) FROM sr_portfolio_work
+    <!--
+      统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+    -->
     <where>
       <include refid="filters"/>
     </where>
   </select>
 
+  <!--
+    pageByFilter：分页依据筛选；读取语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.portfolio.entity.WorkEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns、filters。
+    绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="pageByFilter" resultType="com.starrainnotes.portfolio.entity.WorkEntity">
     SELECT <include refid="columns"/> FROM sr_portfolio_work
+    <!--
+      统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+    -->
     <where>
       <include refid="filters"/>
     </where>
@@ -67,6 +149,13 @@
   </select>
 
   <!-- 生成唯一 slug 时逐个候选查重 -->
+  <!--
+    countBySlug：数量依据固定链接标识；读取语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+    绑定参数：slug；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="countBySlug" resultType="long">
     SELECT COUNT(*) FROM sr_portfolio_work WHERE slug = #{slug}
   </select>
@@ -76,6 +165,13 @@
     显式 SQL 之后每条只列自己真正会写的列，避免「改标题顺手把 status / body_markdown 一起写回」。
     summary 无条件写：服务层已经保证「请求没带 summary 时实体里仍是库里的值」，写回旧值与不写等价。
     updated_at 由服务层的 touch() 计算后显式写入；写回读出来的旧值也就等于不推进时间戳。
+  -->
+  <!--
+    updateContent：更新内容；更新语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：slug、title、summary、subtitle、categoryId、formatId、role、techStack、projectStatus、startedOn、endedOn、featured、sortOrder、seoTitle、seoDescription、updatedByAccountId、updatedAt、id；参数含义参见 Mapper 方法注释。
   -->
   <update id="updateContent" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
     UPDATE sr_portfolio_work
@@ -99,6 +195,13 @@
     WHERE id = #{id}
   </update>
 
+  <!--
+    updateBody：更新正文；更新语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：bodyMarkdown、updatedByAccountId、updatedAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="updateBody" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
     UPDATE sr_portfolio_work
     SET body_markdown = #{bodyMarkdown},
@@ -107,6 +210,13 @@
     WHERE id = #{id}
   </update>
 
+  <!--
+    touch：touch；更新语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：updatedByAccountId、updatedAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="touch" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
     UPDATE sr_portfolio_work
     SET updated_by_account_id = #{updatedByAccountId},
@@ -115,6 +225,13 @@
   </update>
 
   <!-- 首次发布：写入发布时间。published_at 在草稿阶段必为 null，不存在「覆盖首次发布时间」 -->
+  <!--
+    publish：发布；更新语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：status、publishedAt、updatedByAccountId、updatedAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="publish" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
     UPDATE sr_portfolio_work
     SET status = #{status},
@@ -125,6 +242,13 @@
   </update>
 
   <!-- 撤回只记撤回时间，published_at 保留：恢复后仍是首次发布时间 -->
+  <!--
+    withdraw：撤回；更新语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：status、withdrawnAt、updatedByAccountId、updatedAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="withdraw" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
     UPDATE sr_portfolio_work
     SET status = #{status},
@@ -135,6 +259,13 @@
   </update>
 
   <!-- 恢复只把状态改回 PUBLISHED，既不碰 published_at（首次发布时间）也不碰 withdrawn_at -->
+  <!--
+    restore：restore；更新语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：status、updatedByAccountId、updatedAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="restore" parameterType="com.starrainnotes.portfolio.entity.WorkEntity">
     UPDATE sr_portfolio_work
     SET status = #{status},
@@ -143,18 +274,85 @@
     WHERE id = #{id}
   </update>
 
+  <!--
+    deleteById：删除依据标识；删除语句。
+    涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <delete id="deleteById">
     DELETE FROM sr_portfolio_work WHERE id = #{id}
   </delete>
+<!--
+  taxonomyFilters：taxonomy筛选条件；可复用 SQL 片段。
+  涉及数据表：sr_portfolio_work_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+  通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  绑定参数：filter.categoryId、filter.formatId、filter.featured、filter.tagId；参数含义参见 Mapper 方法注释。
+-->
 <sql id="taxonomyFilters">
+ <!--
+   条件 filter.categoryId != null 成立时才输出此段 SQL。
+ -->
  <if test="filter.categoryId != null">AND category_id=#{filter.categoryId}</if>
+ <!--
+   条件 filter.formatId != null 成立时才输出此段 SQL。
+ -->
  <if test="filter.formatId != null">AND format_id=#{filter.formatId}</if>
+ <!--
+   条件 filter.featured != null 成立时才输出此段 SQL。
+ -->
  <if test="filter.featured != null">AND featured=#{filter.featured}</if>
+ <!--
+   条件 filter.tagId != null 成立时才输出此段 SQL。
+ -->
  <if test="filter.tagId != null">AND EXISTS(SELECT 1 FROM sr_portfolio_work_tag wt WHERE wt.work_id=sr_portfolio_work.id AND wt.tag_id=#{filter.tagId})</if>
 </sql>
-<select id="countByTaxonomy" resultType="long">SELECT COUNT(*) FROM sr_portfolio_work <where><include refid="filters"/><include refid="taxonomyFilters"/></where></select>
-<select id="pageByTaxonomy" resultType="com.starrainnotes.portfolio.entity.WorkEntity">SELECT <include refid="columns"/> FROM sr_portfolio_work <where><include refid="filters"/><include refid="taxonomyFilters"/></where> ORDER BY featured DESC,sort_order,updated_at DESC,id DESC LIMIT #{limit} OFFSET #{offset}</select>
+<!--
+  countByTaxonomy：数量依据Taxonomy；读取语句。
+  涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+  复用片段：filters、taxonomyFilters。
+  返回匹配条件的数量，不返回完整实体。
+-->
+<select id="countByTaxonomy" resultType="long">SELECT COUNT(*) FROM sr_portfolio_work
+    <!--
+      统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+    -->
+    <where><include refid="filters"/><include refid="taxonomyFilters"/></where></select>
+<!--
+  pageByTaxonomy：分页依据Taxonomy；读取语句。
+  涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkEntity；集合与单值形态由 Java 方法签名决定。
+  复用片段：columns、filters、taxonomyFilters。
+  绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+  LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+-->
+<select id="pageByTaxonomy" resultType="com.starrainnotes.portfolio.entity.WorkEntity">SELECT <include refid="columns"/> FROM sr_portfolio_work
+    <!--
+      统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+    -->
+    <where><include refid="filters"/><include refid="taxonomyFilters"/></where> ORDER BY featured DESC,sort_order,updated_at DESC,id DESC LIMIT #{limit} OFFSET #{offset}</select>
+<!--
+  updatePrototype：更新Prototype；更新语句。
+  涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+  执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+  绑定参数：prototypeAssetId、prototypeEntry、updatedByAccountId、updatedAt、id；参数含义参见 Mapper 方法注释。
+-->
 <update id="updatePrototype">UPDATE sr_portfolio_work SET prototype_asset_id=#{prototypeAssetId},prototype_entry=#{prototypeEntry},updated_by_account_id=#{updatedByAccountId},updated_at=#{updatedAt} WHERE id=#{id}</update>
+<!--
+  previousPublished：上一项已发布；读取语句。
+  涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.vo.WorkNavigationVO；集合与单值形态由 Java 方法签名决定。
+  绑定参数：sortOrder、id；参数含义参见 Mapper 方法注释。
+  LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+-->
 <select id="previousPublished" resultType="com.starrainnotes.portfolio.vo.WorkNavigationVO">SELECT slug,title FROM sr_portfolio_work WHERE status='PUBLISHED' AND (sort_order &lt; #{sortOrder} OR (sort_order=#{sortOrder} AND id &lt; #{id})) ORDER BY sort_order DESC,id DESC LIMIT 1</select>
+<!--
+  nextPublished：下一项已发布；读取语句。
+  涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.vo.WorkNavigationVO；集合与单值形态由 Java 方法签名决定。
+  绑定参数：sortOrder、id；参数含义参见 Mapper 方法注释。
+  LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+-->
 <select id="nextPublished" resultType="com.starrainnotes.portfolio.vo.WorkNavigationVO">SELECT slug,title FROM sr_portfolio_work WHERE status='PUBLISHED' AND (sort_order &gt; #{sortOrder} OR (sort_order=#{sortOrder} AND id &gt; #{id})) ORDER BY sort_order,id LIMIT 1</select>
 </mapper>

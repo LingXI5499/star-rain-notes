@@ -1,20 +1,66 @@
+/**
+ * readingAnchors.js：英语学习模块的应用配置与入口。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 组织前端装配、构建或入口行为，具体依赖和导出入口见下文。
+ * 阅读入口：textNodes（文本节点列表的处理函数）；visibleText（可见文本的处理函数）；readingBlocks（阅读Blocks的处理函数）；sha256（文件内容的 SHA-256 摘要的处理函数）；selectionAnchor（选择结果Anchor的处理函数）。
+ */
+
 // Range and string offsets use UTF-16. Code, math and interface text have no anchors.
 const omitted = 'pre,code,button,mjx-container,.katex,[aria-hidden="true"],[hidden],.markdown-toolbar'
-export function textNodes(block) {
+export
+  /**
+   * 文本节点列表的处理函数。
+   * 主要协作：document.createTreeWalker、walk.nextNode、node.parentElement.closest、nodes.push。
+   * @param block 区块；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function textNodes(block) {
  const walk = document.createTreeWalker(block, NodeFilter.SHOW_TEXT), nodes = []
  let node
  while ((node = walk.nextNode())) if (!node.parentElement?.closest(omitted)) nodes.push(node)
  return nodes
 }
-export function visibleText(block) { return textNodes(block).map(n => n.data).join('') }
-export function readingBlocks(root) {
+export
+  /**
+   * 可见文本的处理函数。
+   * 主要协作：.join、.map、textNodes。
+   * @param block 区块；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function visibleText(block) { return textNodes(block).map(n => n.data).join('') }
+export
+  /**
+   * 阅读Blocks的处理函数。
+   * 主要协作：.filter、root.querySelectorAll、n.closest、n.querySelector。
+   * @param root root；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function readingBlocks(root) {
  return [...root.querySelectorAll('p,li,h1,h2,h3,h4,h5,h6,td,th')].filter(n => !n.closest(omitted) && !n.querySelector('p,li,h1,h2,h3,h4,h5,h6,td,th'))
 }
-export async function sha256(text) {
+export
+  /**
+   * 文件内容的 SHA-256 摘要的处理函数。
+   * 主要协作：globalThis.crypto.subtle.digest、.encode、.join、Array.from、.padStart。
+   * @param text 文本；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function sha256(text) {
  const bytes = await globalThis.crypto.subtle.digest('SHA-256', new TextEncoder().encode(text || ''))
  return Array.from(new Uint8Array(bytes), b => b.toString(16).padStart(2, '0')).join('')
 }
-export async function selectionAnchor(root, markdown, language, selection = window.getSelection()) {
+export
+  /**
+   * 选择结果Anchor的处理函数。
+   * 主要协作：selection.getRangeAt、readingBlocks、blocks.findIndex、b.contains、range.cloneRange。
+   * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+   * @param root root；默认值、解构字段与可选参数见函数签名。
+   * @param markdown Markdown；默认值、解构字段与可选参数见函数签名。
+   * @param language language；默认值、解构字段与可选参数见函数签名。
+   * @param selection = window.getSelection() 选择结果时间窗口get选择结果；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function selectionAnchor(root, markdown, language, selection = window.getSelection()) {
  if (!selection || selection.isCollapsed || !selection.rangeCount) throw new Error('请先选择一段正文。')
  const range = selection.getRangeAt(0), blocks = readingBlocks(root)
  const index = blocks.findIndex(b => b.contains(range.startContainer) && b.contains(range.endContainer))
@@ -25,7 +71,16 @@ export async function selectionAnchor(root, markdown, language, selection = wind
  if (!expectedText.trim()) throw new Error('选区没有可用正文。')
  return { language, paragraphIndex: index, rangeStart: start, rangeEnd: start + expectedText.length, expectedText, paragraphHash: await sha256(visibleText(block)), sourceMarkdownHash: await sha256(markdown) }
 }
-export async function applyAnchors(root, rows, markdown) {
+export
+  /**
+   * 应用Anchors。
+   * 主要协作：clearMarks、readingBlocks、sha256、visibleText、Number.isInteger。
+   * @param root root；默认值、解构字段与可选参数见函数签名。
+   * @param rows 行集合；默认值、解构字段与可选参数见函数签名。
+   * @param markdown Markdown；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function applyAnchors(root, rows, markdown) {
  clearMarks(root)
  const blocks = readingBlocks(root), sourceHash = await sha256(markdown), valid = []
  for (const row of rows) {
@@ -59,13 +114,27 @@ export async function applyAnchors(root, rows, markdown) {
  }
  return valid
 }
-export function clearMarks(root) {
+export
+  /**
+   * 清理Marks。
+   * 主要协作：root.querySelectorAll、span.replaceWith、root.normalize。
+   * @param root root；默认值、解构字段与可选参数见函数签名。
+   */
+  function clearMarks(root) {
  for (const span of root.querySelectorAll('[data-rw-anchor],[data-rw-local-segment]')) span.replaceWith(...span.childNodes)
  root.normalize()
 }
 // Conservative, ephemeral segmentation. Ambiguous abbreviations/quotes keep the paragraph.
 // These offsets are never saved or treated as bilingual mappings.
-export function sentenceRanges(text, locale='EN') {
+export
+  /**
+   * sentenceRanges的处理函数。
+   * 主要协作：text.trim、.test、text.match、.trim、text.slice。
+   * @param text 文本；默认值、解构字段与可选参数见函数签名。
+   * @param locale='EN' 区域；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function sentenceRanges(text, locale='EN') {
  if (!text.trim()) return []
  const paragraph = [{ start:0, end:text.length }]
  if (locale==='EN' && /\b(?:Mr|Mrs|Ms|Dr|Prof|Sr|Jr|St|vs|etc|e\.g|i\.e)\.|\b[A-Z]\.(?:\s|[A-Z]\.)/i.test(text)) return paragraph
@@ -83,7 +152,16 @@ export function sentenceRanges(text, locale='EN') {
  if(text.slice(start).trim())ranges.push({start,end:text.length})
  return ranges.length?ranges:paragraph
 }
-export function applyHoverSegments(root, validAnchors, locale) {
+export
+  /**
+   * 应用HoverSegments。
+   * 主要协作：readingBlocks、blocks.entries、validAnchors.filter、.flatMap、sentenceRanges。
+   * @param root root；默认值、解构字段与可选参数见函数签名。
+   * @param validAnchors 有效Anchors；默认值、解构字段与可选参数见函数签名。
+   * @param locale 区域；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function applyHoverSegments(root, validAnchors, locale) {
  const blocks=readingBlocks(root)
  for(const [index,block] of blocks.entries()) {
   const reserved=validAnchors.filter(r=>r.paragraphIndex===index)
@@ -110,10 +188,30 @@ export function applyHoverSegments(root, validAnchors, locale) {
   }
  }
 }
-export function clearParagraphOrder(root) {
+export
+  /**
+   * 清理Paragraph顺序。
+   * 主要协作：root.querySelectorAll、block.style.removeProperty。
+   * @param root root；默认值、解构字段与可选参数见函数签名。
+   */
+  function clearParagraphOrder(root) {
  for(const block of root.querySelectorAll('[data-rw-order]')){block.style.removeProperty('order');delete block.dataset.rwOrder}
 }
-export function mobileParagraphOrder(enRoot, zhRoot, rows) {
+export
+  /**
+   * mobileParagraph顺序的处理函数。
+   * 主要协作：flow、readingBlocks、groups.get、g.r.language.push、groups.set。
+   * @param enRoot enRoot；默认值、解构字段与可选参数见函数签名。
+   * @param zhRoot zhRoot；默认值、解构字段与可选参数见函数签名。
+   * @param rows 行集合；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function mobileParagraphOrder(enRoot, zhRoot, rows) {
+ /**
+  * flow的处理函数。
+  * @param root root；默认值、解构字段与可选参数见函数签名。
+  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+  */
  const flow = root => {
   while (root.children.length===1 && root.firstElementChild.tagName==='DIV' && !root.firstElementChild.className) {
    root=root.firstElementChild;root.dataset.rwFlow=''

@@ -1,3 +1,11 @@
+/*
+ * EvidenceLearningService：教程与学习模块的业务实现文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：CurrentActorApi、PageResult、TutorialMapper、EvidenceLearningMapper、LearningProgressMapper、EvidenceAlgorithms。
+ * 阅读入口：studyState（学习状态处理入口）；studyState（学习状态处理入口）；initial（initial处理入口）；session（当前业务使用的会话对象处理入口）。
+ */
+
 package com.starrainnotes.tutorial.learning.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,24 +27,91 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 证据学习业务服务，属于教程与学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class EvidenceLearningService {
+    /**
+     * actors。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi actors;
+    /**
+     * 内容。
+     */
     private final LearningContentAccess content;
+    /**
+     * tutorials。
+     * 协作类型：<code>TutorialMapper</code>。
+     */
     private final TutorialMapper tutorials;
+    /**
+     * 数据映射。
+     * 协作类型：<code>EvidenceLearningMapper</code>。
+     */
     private final EvidenceLearningMapper mapper;
+    /**
+     * 进度。
+     * 协作类型：<code>LearningProgressMapper</code>。
+     */
     private final LearningProgressMapper progress;
+    /**
+     * plans。
+     * 协作类型：<code>EvidenceStudyPlanService</code>。
+     */
     private final EvidenceStudyPlanService plans;
+    /**
+     * 事件集合。
+     */
     private final LearningEventWriter events;
+    /**
+     * JSON 读写或映射协作对象。
+     * 协作类型：<code>ObjectMapper</code>。
+     */
     private final ObjectMapper json;
 
+    /**
+     * 当前操作对应的身份对象处理入口。
+     * 主要协作调用：<code>actors.current</code>。
+     * @return 类型为 <code>Long</code> 的处理结果
+     */
     private Long actor() { return actors.current().getAccountId(); }
+    /**
+     * 锁处理入口。
+     * 主要协作调用：<code>mapper.ensureAccountLock</code>、<code>mapper.lockAccount</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     */
     private void lock(Long accountId) { mapper.ensureAccountLock(accountId);mapper.lockAccount(accountId); }
+    /**
+     * 冲突处理入口。
+     *
+     * @param message 留言；类型为 <code>String</code>
+     * @return 类型为 <code>LearningStateConflictException</code> 的处理结果
+     */
     private LearningStateConflictException conflict(String message) { return new LearningStateConflictException(message); }
 
+    /**
+     * 学习状态处理入口。
+     * 关键处理步骤调用 <code>studyState</code>。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @return 类型为 <code>StudyState</code> 的处理结果
+     */
     public StudyState studyState(Long chapterId) { return studyState(chapterId,null); }
 
+    /**
+     * 学习状态处理入口。
+     * 主要协作调用：<code>content.chapter</code>、<code>plans.get</code>、<code>mapper.latestInitial</code>、<code>mapper.planSession</code>、<code>mapper.initialCardIds</code>。
+     * 实现中的显式失败类型包括 <code>LearningResourceNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @param planId 计划标识；类型为 <code>Long</code>
+     * @return 类型为 <code>StudyState</code> 的处理结果
+     */
     public StudyState studyState(Long chapterId, Long planId) {
         Long accountId = actor();LearningContentAccess.ChapterRef chapter=content.chapter(chapterId);
         StudyState state = new StudyState();state.setChapterId(chapterId);state.setTitle(chapter.getTitle());
@@ -62,6 +137,15 @@ public class EvidenceLearningService {
         state.setSession(current==null?null:sessionView(accountId,current));return state;
     }
 
+    /**
+     * initial处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>content.chapter</code>、<code>plans.task</code>、<code>plans.get</code>、<code>plans.start</code>、<code>mapper.currentInitial</code>。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @param taskId 任务标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     @Transactional
     public Session initial(Long chapterId, Long taskId) {
         Long accountId=actor();lock(accountId);LearningContentAccess.ChapterRef chapter=content.chapter(chapterId);
@@ -106,24 +190,65 @@ public class EvidenceLearningService {
         return sessionView(accountId,session);
     }
 
+    /**
+     * 检查所需会话。
+     * 主要协作调用：<code>mapper.session</code>。
+     * 实现中的显式失败类型包括 <code>LearningResourceNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     private Session requireSession(Long accountId,Long id) {
         Session session=mapper.session(accountId,id);
         if (session==null) throw new LearningResourceNotFoundException();return session;
     }
 
+    /**
+     * 当前业务使用的会话对象处理入口。
+     * 关键处理步骤调用 <code>sessionView</code>、<code>actor</code>、<code>requireSession</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     public Session session(Long id) { return sessionView(actor(),requireSession(actor(),id)); }
+    /**
+     * 审核会话处理入口。
+     * 关键处理步骤调用 <code>requireSession</code>、<code>actor</code>、<code>session.getSessionType</code>、<code>sessionView</code>。
+     * 实现中的显式失败类型包括 <code>LearningResourceNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     public Session reviewSession(Long id) {
         Session session=requireSession(actor(),id);
         if ("INITIAL_STUDY".equals(session.getSessionType())) throw new LearningResourceNotFoundException();
         return sessionView(actor(),session);
     }
 
+    /**
+     * 会话View处理入口。
+     * 主要协作调用：<code>mapper.items</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param session 当前业务使用的会话对象；类型为 <code>Session</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     private Session sessionView(Long accountId,Session session) {
         List<Item> items=mapper.items(accountId,session.getId());
         for(Item item:items) if(item.getRevealedAt()==null) item.setBackMarkdown(null);
         session.setItems(items);session.setSummary(summary(accountId,session));return session;
     }
 
+    /**
+     * 有效Item处理入口。
+     * 主要协作调用：<code>plans.get</code>、<code>mapper.items</code>、<code>content.card</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param session 当前业务使用的会话对象；类型为 <code>Session</code>
+     * @param cardId 卡片标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Item</code> 的处理结果
+     */
     private Item activeItem(Long accountId,Session session,Long cardId) {
         if (session.getStudyPlanId() != null) {
             Plan plan = plans.get(session.getStudyPlanId());
@@ -140,6 +265,16 @@ public class EvidenceLearningService {
         return item;
     }
 
+    /**
+     * reveal处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.revealItem</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param cardId 卡片标识；类型为 <code>Long</code>
+     * @param reviewOnly 审核Only；类型为 <code>boolean</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     @Transactional
     public Session reveal(Long id,Long cardId,boolean reviewOnly) {
         Long accountId=actor();lock(accountId);Session session=requireSession(accountId,id);
@@ -147,10 +282,30 @@ public class EvidenceLearningService {
         mapper.revealItem(accountId,id,cardId);return sessionView(accountId,session);
     }
 
+    /**
+     * 检查路由。
+     * 关键处理步骤调用 <code>session.getSessionType</code>。
+     * 实现中的显式失败类型包括 <code>LearningResourceNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param session 当前业务使用的会话对象；类型为 <code>Session</code>
+     * @param reviewOnly 审核Only；类型为 <code>boolean</code>
+     */
     private void checkRoute(Session session,boolean reviewOnly) {
         if(reviewOnly && "INITIAL_STUDY".equals(session.getSessionType())) throw new LearningResourceNotFoundException();
     }
 
+    /**
+     * rate处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.items</code>、<code>mapper.cardEvidence</code>、<code>mapper.insertEvidence</code>、<code>mapper.upsertMastery</code>、<code>mapper.completeItem</code>。
+     * 实现中的显式失败类型包括 <code>LearningInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param cardId 卡片标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>EvidenceRatingDTO</code>
+     * @param reviewOnly 审核Only；类型为 <code>boolean</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     @Transactional
     public Session rate(Long id,Long cardId,EvidenceRatingDTO request,boolean reviewOnly) {
         Long accountId=actor();lock(accountId);Session session=requireSession(accountId,id);checkRoute(session,reviewOnly);
@@ -180,6 +335,13 @@ public class EvidenceLearningService {
         return sessionView(accountId,requireSession(accountId,id));
     }
 
+    /**
+     * aggregate处理入口。
+     * 关键处理步骤调用 <code>newestFirst.size</code>、<code>newestFirst.get</code>、<code>EvidenceAlgorithms.score</code>、<code>result.setEvidenceCount</code>。
+     *
+     * @param newestFirst newest首次；类型为 <code>List&lt;Evidence&gt;</code>
+     * @return 类型为 <code>Mastery</code> 的处理结果
+     */
     private Mastery aggregate(List<Evidence> newestFirst) {
         Mastery result=new Mastery();int forgot=0,fuzzy=0,remembered=0,recent=0;
         for(int i=0;i<newestFirst.size();i++) {
@@ -197,6 +359,14 @@ public class EvidenceLearningService {
         return result;
     }
 
+    /**
+     * eligible处理入口。
+     * 主要协作调用：<code>mapper.initialCardIds</code>、<code>mapper.answeredQuestionIds</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param chapter 章节；类型为 <code>LearningContentAccess.ChapterRef</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private boolean eligible(Long accountId,LearningContentAccess.ChapterRef chapter) {
         Set<Long> initial=new HashSet<>(mapper.initialCardIds(accountId,chapter.getChapterId()));
         // Zero-card content can be read, but is not evidence-based initial study.
@@ -207,6 +377,13 @@ public class EvidenceLearningService {
         return true;
     }
 
+    /**
+     * 完成章节。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>content.chapter</code>。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     */
     @Transactional
     public void completeChapter(Long chapterId) {
         Long accountId=actor();lock(accountId);LearningContentAccess.ChapterRef chapter=content.chapter(chapterId);
@@ -214,6 +391,13 @@ public class EvidenceLearningService {
         reconcile(accountId,chapter);
     }
 
+    /**
+     * reconcile处理入口。
+     * 主要协作调用：<code>progress.ensureRow</code>、<code>progress.markCompleted</code>、<code>events.chapter</code>、<code>mapper.openInitialSessions</code>、<code>mapper.reconcileTasks</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param chapter 章节；类型为 <code>LearningContentAccess.ChapterRef</code>
+     */
     private void reconcile(Long accountId,LearningContentAccess.ChapterRef chapter) {
         if(!eligible(accountId,chapter)) return;
         progress.ensureRow(accountId,chapter.getTutorialId(),chapter.getGroupId(),chapter.getChapterId());
@@ -224,6 +408,15 @@ public class EvidenceLearningService {
         mapper.reconcileTasks(accountId);mapper.reconcilePlans(accountId);
     }
 
+    /**
+     * roundEligible处理入口。
+     * 主要协作调用：<code>mapper.items</code>、<code>mapper.answeredForSession</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param session 当前业务使用的会话对象；类型为 <code>Session</code>
+     * @param chapter 章节；类型为 <code>LearningContentAccess.ChapterRef</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private boolean roundEligible(Long accountId,Session session,LearningContentAccess.ChapterRef chapter) {
         List<Item> items = mapper.items(accountId,session.getId());
         if (items.isEmpty() || items.stream().anyMatch(i -> !"COMPLETED".equals(i.getStatus()))) return false;
@@ -234,6 +427,14 @@ public class EvidenceLearningService {
         return true;
     }
 
+    /**
+     * finish处理入口。
+     * 主要协作调用：<code>mapper.sessionStatus</code>、<code>mapper.completePlanChapter</code>、<code>mapper.saveSessionSummary</code>、<code>json.writeValueAsString</code>、<code>events.session</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param session 当前业务使用的会话对象；类型为 <code>Session</code>
+     */
     private void finish(Long accountId,Session session) {
         if(mapper.sessionStatus(accountId,session.getId(),"COMPLETED")==1) {
             mapper.completePlanChapter(accountId,session.getId());
@@ -244,13 +445,37 @@ public class EvidenceLearningService {
         }
     }
 
+    /**
+     * 答案处理入口。
+     * 主要协作调用：<code>content.question</code>、<code>mapper.answer</code>、<code>mapper.answerVersions</code>。
+     *
+     * @param questionId 问题标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Answer</code> 的处理结果
+     */
     public Answer answer(Long questionId) {
         content.question(questionId);Answer answer=mapper.answer(actor(),questionId);
         if(answer!=null) answer.setVersions(mapper.answerVersions(actor(),questionId));return answer;
     }
 
+    /**
+     * versions处理入口。
+     * 主要协作调用：<code>content.question</code>、<code>mapper.answerVersions</code>。
+     *
+     * @param questionId 问题标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     public List<AnswerVersion> versions(Long questionId) { content.question(questionId);return mapper.answerVersions(actor(),questionId); }
 
+    /**
+     * 保存版本。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>content.question</code>、<code>mapper.answer</code>、<code>mapper.insertAnswer</code>、<code>mapper.insertAnswerVersion</code>、<code>mapper.updateAnswerHeader</code>。
+     * 实现中的显式失败类型包括 <code>LearningInvalidRequestException</code>、<code>LearningAnswerLockedException</code>；具体触发条件见对应分支。
+     *
+     * @param questionId 问题标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>AnswerVersionDTO</code>
+     * @return 类型为 <code>Answer</code> 的处理结果
+     */
     @Transactional
     public Answer saveVersion(Long questionId,AnswerVersionDTO request) {
         Long accountId=actor();lock(accountId);LearningContentAccess.QuestionRef question=content.question(questionId);
@@ -265,6 +490,14 @@ public class EvidenceLearningService {
         mapper.updateAnswerHeader(answer);reconcile(accountId,question.getChapter());return answer(questionId);
     }
 
+    /**
+     * 引用处理入口。
+     * 主要协作调用：<code>content.question</code>、<code>mapper.answer</code>、<code>mapper.answerVersions</code>。
+     * 实现中的显式失败类型包括 <code>LearningAnswerLockedException</code>；具体触发条件见对应分支。
+     *
+     * @param questionId 问题标识；类型为 <code>Long</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     public String reference(Long questionId) {
         LearningContentAccess.QuestionRef question=content.question(questionId);Answer answer=mapper.answer(actor(),questionId);
         if(answer==null || answer.getReferenceUnlockedAt()==null
@@ -272,6 +505,14 @@ public class EvidenceLearningService {
         return question.getReferenceAnswer();
     }
 
+    /**
+     * 掌握处理入口。
+     * 主要协作调用：<code>mapper.masteries</code>、<code>content.publishedTutorial</code>、<code>content.chapter</code>、<code>tutorials.listPublished</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     public List<CardMastery> mastery(Long tutorialId,Long chapterId) {
         Long accountId=actor();Map<Long,Mastery> saved=new HashMap<>();mapper.masteries(accountId).forEach(m->saved.put(m.getKnowledgeCardId(),m));
         List<CardMastery> result=new ArrayList<>();
@@ -301,8 +542,20 @@ public class EvidenceLearningService {
         return result;
     }
 
+    /**
+     * candidates处理入口。
+     * 关键处理步骤调用 <code>mastery</code>、<code>c.getEvidenceCount</code>。
+     * @return 本次处理得到的条目集合
+     */
     private List<CardMastery> candidates() { return mastery(null,null).stream().filter(c->c.getEvidenceCount()>0).toList(); }
 
+    /**
+     * 掌握分页处理入口。
+     * 关键处理步骤调用 <code>query.validate</code>、<code>Set.of</code>、<code>query.getKeyword</code>、<code>mastery</code>。
+     *
+     * @param query 查询参数；类型为 <code>LearningPageQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;CardMastery&gt;</code> 的处理结果
+     */
     public PageResult<CardMastery> masteryPage(LearningPageQueryDTO query) {
         query.validate(Set.of("UNLEARNED", "LEARNING", "BASIC_MASTERED", "STABLE_MASTERED"));
         String keyword = query.getKeyword() == null ? "" : query.getKeyword().strip().toLowerCase(Locale.ROOT);
@@ -315,14 +568,29 @@ public class EvidenceLearningService {
                 .total(rows.size()).page(query.getPage()).pageSize(query.getPageSize()).build();
     }
 
+    /**
+     * 掌握Options处理入口。
+     * 关键处理步骤调用 <code>mastery</code>、<code>java.util.stream.Collectors.toMap</code>、<code>option.setId</code>、<code>c.getTutorialId</code>。
+     * @return 本次处理得到的条目集合
+     */
     public List<TutorialOption> masteryOptions() {
         return mastery(null, null).stream().collect(java.util.stream.Collectors.toMap(CardMastery::getTutorialId, c -> {
             TutorialOption option = new TutorialOption();option.setId(c.getTutorialId());option.setTitle(c.getTutorialTitle());return option;
         }, (first, duplicate) -> first, LinkedHashMap::new)).values().stream().toList();
     }
 
+    /**
+     * 历史Options处理入口。
+     * 主要协作调用：<code>mapper.historyTutorials</code>。
+     * @return 本次处理得到的条目集合
+     */
     public List<TutorialOption> historyOptions() { return mapper.historyTutorials(actor()); }
 
+    /**
+     * 审核摘要处理入口。
+     * 关键处理步骤调用 <code>candidates</code>、<code>result.setCandidateCount</code>、<code>cards.size</code>、<code>result.setRecommendedCount</code>。
+     * @return 类型为 <code>ReviewSummary</code> 的处理结果
+     */
     public ReviewSummary reviewSummary() {
         List<CardMastery> cards=candidates();ReviewSummary result=new ReviewSummary();result.setCandidateCount(cards.size());
         result.setRecommendedCount((int)cards.stream().filter(c->c.getPriority()<5).count());result.setStableCount(cards.size()-result.getRecommendedCount());
@@ -330,8 +598,22 @@ public class EvidenceLearningService {
         cards.forEach(c->buckets.merge("P"+c.getPriority(),1,Integer::sum));result.setPriorities(buckets);return result;
     }
 
+    /**
+     * 当前审核处理入口。
+     * 主要协作调用：<code>mapper.currentReview</code>。
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     public Session currentReview() { Session current=mapper.currentReview(actor());return current==null?null:sessionView(actor(),current); }
 
+    /**
+     * 审核处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.currentReview</code>、<code>mapper.insertSession</code>、<code>mapper.insertItem</code>。
+     * 实现中的显式失败类型包括 <code>LearningInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>ReviewSessionDTO</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     @Transactional
     public Session review(ReviewSessionDTO request) {
         Long accountId=actor();lock(accountId);Session current=mapper.currentReview(accountId);
@@ -353,6 +635,14 @@ public class EvidenceLearningService {
         return sessionView(accountId,session);
     }
 
+    /**
+     * abandon处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.sessionStatus</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     @Transactional
     public Session abandon(Long id) {
         Long accountId=actor();lock(accountId);Session session=requireSession(accountId,id);
@@ -360,6 +650,15 @@ public class EvidenceLearningService {
         mapper.sessionStatus(accountId,id,"ABANDONED");return sessionView(accountId,requireSession(accountId,id));
     }
 
+    /**
+     * 摘要处理入口。
+     * 主要协作调用：<code>json.readValue</code>、<code>mapper.sessionEvidence</code>、<code>mapper.answeredQuestionIds</code>、<code>mapper.answeredForSession</code>、<code>content.chapter</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param session 当前业务使用的会话对象；类型为 <code>Session</code>
+     * @return 类型为 <code>SessionSummary</code> 的处理结果
+     */
     private SessionSummary summary(Long accountId,Session session) {
         if(session.getSummaryJson()!=null) {
             try { return json.readValue(session.getSummaryJson(),SessionSummary.class); }
@@ -393,6 +692,15 @@ public class EvidenceLearningService {
         return summary;
     }
 
+    /**
+     * 历史处理入口。
+     * 主要协作调用：<code>mapper.historySessions</code>、<code>mapper.countHistorySessions</code>。
+     * 实现中的显式失败类型包括 <code>LearningInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @return 类型为 <code>PageResult&lt;Session&gt;</code> 的处理结果
+     */
     public PageResult<Session> history(int page,int pageSize) {
         if(page<1 || pageSize<1 || pageSize>100 || (long)(page-1)*pageSize>Integer.MAX_VALUE) throw new LearningInvalidRequestException("分页参数无效");
         Long accountId=actor();List<Session> sessions=mapper.historySessions(accountId,(page-1)*pageSize,pageSize);
@@ -400,6 +708,13 @@ public class EvidenceLearningService {
         return PageResult.<Session>builder().items(sessions).total(mapper.countHistorySessions(accountId)).page(page).pageSize(pageSize).build();
     }
 
+    /**
+     * 历史处理入口。
+     * 主要协作调用：<code>mapper.filteredHistory</code>、<code>mapper.countFilteredHistory</code>。
+     *
+     * @param query 查询参数；类型为 <code>LearningPageQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;Session&gt;</code> 的处理结果
+     */
     public PageResult<Session> history(LearningPageQueryDTO query) {
         query.validate(Set.of("IN_PROGRESS", "COMPLETED", "ABANDONED"));
         Long accountId = actor();
@@ -409,6 +724,11 @@ public class EvidenceLearningService {
                 .page(query.getPage()).pageSize(query.getPageSize()).build();
     }
 
+    /**
+     * statistics处理入口。
+     * 主要协作调用：<code>plans.list</code>。
+     * @return 类型为 <code>Statistics</code> 的处理结果
+     */
     public Statistics statistics() {
         List<CardMastery> cards=mastery(null,null);Statistics result=new Statistics();result.setPlans(plans.list());
         result.setUnfinishedPlanCount((int)result.getPlans().stream().filter(p->Set.of("DRAFT","ACTIVE","PAUSED").contains(p.getStatus())).count());

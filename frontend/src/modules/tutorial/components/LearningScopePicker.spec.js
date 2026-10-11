@@ -1,7 +1,22 @@
+/**
+ * LearningScopePicker.spec.js：教程与学习模块的自动化测试。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vitest、./LearningScopePicker.vue。
+ * 阅读入口：mountPicker（挂载选择器）。
+ * 验证场景：learning scope curriculum picker；shows only the active group chapters and searches within that group；preserves chapter selections across groups and counts effective scope；includes a whole group without double counting individual chapter selections；selects the entire tutorial and clears all three scope levels。
+ */
+
 import { mount } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import LearningScopePicker from './LearningScopePicker.vue'
 const groups = [{ id: 'g1', title: 'First group', chapters: [{ id: 'c1', title: 'Alpha', cardCount: 2, questionCount: 1 }, { id: 'c2', title: 'Beta', cardCount: 3, questionCount: 0 }] }, { id: 'g2', title: 'Second group', chapters: [{ id: 'c3', title: 'Gamma', cardCount: 4, questionCount: 1 }] }]
+/**
+ * 挂载选择器。
+ * 主要协作：mount、wrapper.setProps。
+ * @param props = {} 组件输入；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function mountPicker(props = {}) {
  let wrapper
  wrapper = mount(LearningScopePicker, { global: { stubs: { RouterLink: { props: ['to'], template: '<a :href="to"><slot /></a>' } } }, props: { groups, ...props, 'onUpdate:entireTutorial': value => wrapper.setProps({ entireTutorial: value }), 'onUpdate:groupIds': value => wrapper.setProps({ groupIds: value }), 'onUpdate:chapterIds': value => wrapper.setProps({ chapterIds: value }) } })

@@ -1,3 +1,8 @@
+/**
+ * reading-layout.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 /*
  * 博客和作品共享教程阅读页的左栏宽度与列间距。
  * 外层 PublicShell 与页头使用同一容器，页面再复用教程的 page-container 内边距；
@@ -11,6 +16,9 @@
   align-items: start;
 }
 
+/**
+ * 样式范围：.reading-layout > *。
+ */
 .reading-layout > * { min-width: 0; }
 
 /* 主题给普通 Markdown 设置了 780px 上限；这两类阅读页需要铺满右侧正文列。 */
@@ -19,11 +27,26 @@
   max-width: none;
 }
 
+/**
+ * 响应式或设备条件：(max-width: 1100px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 1100px) {
+  /**
+   * 样式范围：.reading-layout。
+   */
   .reading-layout { grid-template-columns: minmax(200px, 250px) minmax(0, 1fr); }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 720px) {
+  /**
+   * 样式范围：.reading-layout。
+   */
   .reading-layout { grid-template-columns: minmax(0, 1fr); }
+  /**
+   * 样式范围：.reading-layout > .reading-layout__sidebar。
+   */
   .reading-layout > .reading-layout__sidebar { display: none; }
 }

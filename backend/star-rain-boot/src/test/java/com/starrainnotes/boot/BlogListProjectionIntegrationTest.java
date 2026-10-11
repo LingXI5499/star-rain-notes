@@ -1,3 +1,11 @@
+/*
+ * BlogListProjectionIntegrationTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：BlogPostMapper。
+ * 阅读入口：listsExcludeLargeBodyWhilePublicDetailsKeepIt（listsExcludeLarge正文While公开详情KeepIt处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -6,7 +14,16 @@ import java.sql.*;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
+/**
+ * 博客ListProjectionIntegration测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class BlogListProjectionIntegrationTest extends MapperXmlIntegrationSupport {
+    /**
+     * listsExcludeLarge正文While公开详情KeepIt处理入口。
+     * 关键处理步骤调用 <code>openSession</code>、<code>UUID.randomUUID</code>、<code>session.getConnection</code>、<code>insert.setString</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void listsExcludeLargeBodyWhilePublicDetailsKeepIt() throws Exception {
         try (var session = openSession()) {
             String slug = "projection-" + UUID.randomUUID();

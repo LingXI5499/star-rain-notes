@@ -1,4 +1,16 @@
 <script setup>
+/**
+ * BlogTagOverlay.vue：博客模块的视图组件。
+ * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue。
+ * 组件输入：open、tags、activeTags；默认值与类型见 defineProps。
+ * 组件输出事件：close、apply；负载由 emit 调用给出。
+ * 主要响应式状态：props、emit、keyword、mode、picked、searchInput、matched、totalRelations。
+ * 阅读入口：nameOf（名称所属的处理函数）；isPicked（判断是否Picked）；toggle（切换当前操作）；switchMode（switchMode的处理函数）；clearPicked（清理Picked）。
+ */
+
+
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 
 /*
@@ -16,6 +28,9 @@ import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
  *   - 「清空」只清本地勾选；空选项也可通过「应用筛选」取消当前筛选。
  * 打开时会用当前生效的标签预填勾选，再次打开不会「忘掉」上次选了什么。
  */
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({
   open: { type: Boolean, default: false },
   tags: { type: Array, default: () => [] },
@@ -23,13 +38,36 @@ const props = defineProps({
   activeTags: { type: Array, default: () => [] },
 })
 
+/**
+ * 事件发射器；通过 defineEmits 建立。
+ */
 const emit = defineEmits(['close', 'apply'])
 
+/**
+ * 关键词；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const keyword = ref('')
+/**
+ * mode；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const mode = ref('single')
+/**
+ * picked；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const picked = ref([])
+/**
+ * 搜索Input；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const searchInput = ref(null)
 
+/**
+ * matched；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const matched = computed(() => {
   const term = keyword.value.trim().toLocaleLowerCase()
   if (!term) return props.tags
@@ -37,13 +75,33 @@ const matched = computed(() => {
 })
 
 // 总引用次数：卡片右上角显示「50 个标签 · 58 次引用」，与标签管理页的口径一致
+/**
+ * 总数Relations；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const totalRelations = computed(() => props.tags.reduce((sum, tag) => sum + (tag.postCount || 0), 0))
+/**
+ * pickedNames；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const pickedNames = computed(() => picked.value.map((slug) => nameOf(slug)))
 
+/**
+ * 名称所属的处理函数。
+ * 主要协作：props.tags.find。
+ * @param slug 公开固定链接的路径标识；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function nameOf(slug) {
   return props.tags.find((tag) => tag.slug === slug)?.name || slug
 }
 
+/**
+ * 判断是否Picked。
+ * 主要协作：picked.value.includes。
+ * @param slug 公开固定链接的路径标识；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function isPicked(slug) {
   return picked.value.includes(slug)
 }
@@ -56,6 +114,13 @@ function isPicked(slug) {
  */
 const PICK_MAX = 20
 
+/**
+ * 切换当前操作。
+ * 主要协作：isPicked、picked.value.filter。
+ * 更新的响应式状态包括 picked；渲染由 Vue 的依赖跟踪触发。
+ * @param slug 公开固定链接的路径标识；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function toggle(slug) {
   if (mode.value === 'single') {
     picked.value = isPicked(slug) ? [] : [slug]
@@ -69,28 +134,54 @@ function toggle(slug) {
   picked.value = [...picked.value, slug]
 }
 
+/**
+ * switchMode的处理函数。
+ * 主要协作：picked.value.slice。
+ * 更新的响应式状态包括 mode、picked；渲染由 Vue 的依赖跟踪触发。
+ * @param next 下一项；默认值、解构字段与可选参数见函数签名。
+ */
 function switchMode(next) {
   mode.value = next
   // 从多标签切回单标签时只留第一个，避免出现「单标签模式下选中了 3 个」的矛盾状态
   if (next === 'single' && picked.value.length > 1) picked.value = picked.value.slice(0, 1)
 }
 
+/**
+ * 清理Picked。
+ * 更新的响应式状态包括 picked；渲染由 Vue 的依赖跟踪触发。
+ */
 function clearPicked() {
   picked.value = []
 }
 
+/**
+ * 应用当前操作。
+ * 主要协作：emit。
+ */
 function apply() {
   emit('apply', [...picked.value])
 }
 
+/**
+ * 关闭当前操作。
+ * 主要协作：emit。
+ */
 function close() {
   emit('close')
 }
 
+/**
+ * 响应Keydown。
+ * 主要协作：close。
+ * @param event 事件；默认值、解构字段与可选参数见函数签名。
+ */
 function onKeydown(event) {
   if (event.key === 'Escape' && props.open) close()
 }
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => props.open, async (value) => {
   if (!value) return
   // 打开时用当前生效的标签预填；顺带把模式也定成与选择数量相符的那个
@@ -102,11 +193,17 @@ watch(() => props.open, async (value) => {
 })
 
 // 只在卡片打开期间挂 Esc：组件常驻在侧栏里，不能一直占着全局键盘事件
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => props.open, (value) => {
   if (value) document.addEventListener('keydown', onKeydown)
   else document.removeEventListener('keydown', onKeydown)
 })
 
+/**
+ * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
+ */
 onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 </script>
 
@@ -187,6 +284,16 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.tag-overlay。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 各行列间距规则 控制。
+ * 相对视口定位，用于浮层或固定操作区域；层叠顺序由 z-index 决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay {
   position: fixed;
   z-index: var(--z-search-sheet, 100);
@@ -198,6 +305,12 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   backdrop-filter: blur(2px);
 }
 
+/**
+ * 样式范围：.tag-overlay__card。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__card {
   display: flex;
   width: min(760px, 100%);
@@ -210,6 +323,11 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   overflow: hidden;
 }
 
+/**
+ * 样式范围：.tag-overlay__head。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__head {
   display: flex;
   align-items: flex-start;
@@ -219,6 +337,10 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   border-bottom: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.tag-overlay__eyebrow。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__eyebrow {
   margin-bottom: 6px;
   color: var(--accent);
@@ -226,10 +348,21 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   letter-spacing: 0.16em;
 }
 
+/**
+ * 样式范围：.tag-overlay__head h2。
+ */
 .tag-overlay__head h2 { margin-bottom: 4px; font-size: 24px; letter-spacing: -0.03em; }
 
+/**
+ * 样式范围：.tag-overlay__head span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__head span { color: var(--text-muted); font-size: 12px; }
 
+/**
+ * 样式范围：.tag-overlay__close。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__close {
   flex: none;
   width: 34px;
@@ -244,8 +377,17 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.tag-overlay__close:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__close:hover { border-color: var(--primary); color: var(--primary); }
 
+/**
+ * 样式范围：.tag-overlay__modes。
+ * 使用网格布局组织内容；列定义为 repeat(2, minmax(0, 1fr))，间距由 10px 控制。
+ */
 .tag-overlay__modes {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -253,6 +395,11 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   padding: 14px 22px 0;
 }
 
+/**
+ * 样式范围：.tag-overlay__modes button。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 3px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__modes button {
   display: grid;
   gap: 3px;
@@ -267,16 +414,35 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   text-align: left;
 }
 
+/**
+ * 样式范围：.tag-overlay__modes button small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__modes button small { color: var(--text-muted); font-size: 10px; font-weight: 400; }
 
+/**
+ * 样式范围：.tag-overlay__modes button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__modes button:hover { border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
 
+/**
+ * 样式范围：.tag-overlay__modes button.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__modes button.is-active {
   border-color: var(--primary);
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 8%, transparent);
 }
 
+/**
+ * 样式范围：.tag-overlay__search。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__search {
   display: flex;
   align-items: center;
@@ -286,18 +452,38 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   background: color-mix(in srgb, var(--bg-subtle) 45%, transparent);
 }
 
+/**
+ * 样式范围：.tag-overlay__search input。
+ */
 .tag-overlay__search input { flex: 1; min-width: 0; }
 
+/**
+ * 样式范围：.tag-overlay__search > span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__search > span { flex: none; color: var(--text-muted); font-size: 11px; }
 
+/**
+ * 样式范围：.tag-overlay__body。
+ * 溢出处理：整体 auto。
+ */
 .tag-overlay__body { min-height: 150px; flex: 1; overflow: auto; padding: 16px 22px; }
 
+/**
+ * 样式范围：.tag-overlay__list。
+ * 使用网格布局组织内容；列定义为 repeat(auto-fill, minmax(176px, 1fr))，间距由 8px 控制。
+ */
 .tag-overlay__list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(176px, 1fr));
   gap: 8px;
 }
 
+/**
+ * 样式范围：.tag-overlay__list button。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__list button {
   display: flex;
   align-items: center;
@@ -313,8 +499,17 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
+/**
+ * 样式范围：.tag-overlay__list button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__list button:hover { border-color: color-mix(in srgb, var(--primary) 45%, var(--border)); }
 
+/**
+ * 样式范围：.tag-overlay__list button.is-picked。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__list button.is-picked {
   border-color: var(--primary);
   color: var(--primary);
@@ -322,6 +517,10 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   font-weight: 650;
 }
 
+/**
+ * 样式范围：.tag-overlay__mark。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__mark {
   display: inline-grid;
   place-items: center;
@@ -336,30 +535,66 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease;
 }
 
+/**
+ * 样式范围：.tag-overlay__list button.is-picked .tag-overlay__mark。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__list button.is-picked .tag-overlay__mark {
   border-color: var(--primary);
   color: var(--on-primary);
   background: var(--primary);
 }
 
+/**
+ * 样式范围：.tag-overlay__list button:focus-visible。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__list button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
 
+/**
+ * 响应式或设备条件：(hover: hover)；仅在该条件成立时覆盖基础样式。
+ */
 @media (hover: hover) {
+  /**
+   * 样式范围：.tag-overlay__list button:hover。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
   .tag-overlay__list button:hover {
     transform: translateY(-2px);
     box-shadow: 0 3px 8px color-mix(in srgb, var(--primary) 12%, transparent);
   }
 }
 
+/**
+ * 样式范围：.tag-overlay__list button:active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .tag-overlay__list button:active { transform: scale(0.98); }
 
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
 @media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：.tag-overlay__list button,   .tag-overlay__mark。
+   */
   .tag-overlay__list button,
   .tag-overlay__mark { transition: none; }
+  /**
+   * 样式范围：.tag-overlay__list button:hover,   .tag-overlay__list button:active。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   */
   .tag-overlay__list button:hover,
   .tag-overlay__list button:active { transform: none; }
 }
 
+/**
+ * 样式范围：.tag-overlay__name。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ */
 .tag-overlay__name {
   overflow: hidden;
   min-width: 0;
@@ -369,6 +604,10 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.tag-overlay__list em。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__list em {
   display: inline-grid;
   place-items: center;
@@ -384,13 +623,26 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   font-variant-numeric: tabular-nums;
 }
 
+/**
+ * 样式范围：.tag-overlay__list button.is-picked em。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__list button.is-picked em {
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 14%, var(--bg-surface));
 }
 
+/**
+ * 样式范围：.tag-overlay__empty。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__empty { padding: 40px 0; color: var(--text-muted); font-size: 13px; text-align: center; }
 
+/**
+ * 样式范围：.tag-overlay__foot。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 10px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__foot {
   display: grid;
   gap: 10px;
@@ -398,6 +650,11 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   border-top: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.tag-overlay__picked。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__picked {
   display: flex;
   flex-wrap: wrap;
@@ -408,6 +665,10 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   color: var(--text-muted);
 }
 
+/**
+ * 样式范围：.tag-overlay__chip。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__chip {
   padding: 3px 8px;
   border: 1px solid color-mix(in srgb, var(--primary) 35%, var(--border));
@@ -418,6 +679,10 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.tag-overlay__actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .tag-overlay__actions {
   display: flex;
   flex-wrap: wrap;
@@ -426,6 +691,10 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   gap: 10px;
 }
 
+/**
+ * 样式范围：.tag-overlay__actions button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__actions button {
   padding: 8px 14px;
   border: 1px solid var(--border);
@@ -436,8 +705,17 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.tag-overlay__actions button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__actions button:hover { border-color: var(--primary); color: var(--primary); }
 
+/**
+ * 样式范围：.tag-overlay__actions .primary-button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__actions .primary-button {
   border-color: var(--primary);
   color: var(--on-primary);
@@ -445,27 +723,59 @@ onBeforeUnmount(() => document.removeEventListener('keydown', onKeydown))
   font-weight: 650;
 }
 
+/**
+ * 样式范围：.tag-overlay__actions .primary-button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-overlay__actions .primary-button:hover { background: var(--primary-hover); color: var(--on-primary); }
 
+/**
+ * 样式范围：.tag-overlay__actions .primary-button:disabled。
+ */
 .tag-overlay__actions .primary-button:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/**
+ * 响应式或设备条件：(max-width: 680px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 680px) {
+  /**
+   * 样式范围：.tag-overlay。
+   */
   .tag-overlay { padding: 12px; }
 
+  /**
+   * 样式范围：.tag-overlay__card。
+   */
   .tag-overlay__card { max-height: 88vh; border-radius: 18px; }
 
+  /**
+   * 样式范围：.tag-overlay__search,   .tag-overlay__body,   .tag-overlay__head,   .tag-overlay__foot,   .tag-overlay__modes。
+   */
   .tag-overlay__search,
   .tag-overlay__body,
   .tag-overlay__head,
   .tag-overlay__foot,
   .tag-overlay__modes { padding-left: 16px; padding-right: 16px; }
 
+  /**
+   * 样式范围：.tag-overlay__modes。
+   */
   .tag-overlay__modes { grid-template-columns: 1fr; }
 
+  /**
+   * 样式范围：.tag-overlay__list。
+   */
   .tag-overlay__list { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 
+  /**
+   * 样式范围：.tag-overlay__actions。
+   */
   .tag-overlay__actions { justify-content: stretch; }
 
+  /**
+   * 样式范围：.tag-overlay__actions button。
+   */
   .tag-overlay__actions button { flex: 1 1 40%; }
 }
 </style>

@@ -1,3 +1,11 @@
+/*
+ * SearchQueryServiceTest：搜索模块的测试文件。
+ * 业务范围：搜索文档投影、索引重建和关键词查询。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：ApiException、EnglishSearchTypes、SearchDocumentMapper、SearchQueryService、SearchQueryServiceImpl、SearchHitVO。
+ * 阅读入口：setUp（初始化当前测试场景的被测对象与模拟依赖）；filtersTypesAndPaginatesWithBoundParameters（筛选Types及Paginates包含BoundParameters处理入口）；rejectsUnknownTypeBeforeQuery（验证拒绝Unknown类型之前查询参数）；englishFilterExpandsToPublicEnglishTypesAndDeduplicatesMixedFilters（英语筛选Expands目标公开英语Types及DeduplicatesMixed筛选处理入口）。
+ */
+
 package com.starrainnotes.search;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -18,16 +26,36 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
+/**
+ * 搜索查询参数业务服务测试，属于搜索模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class SearchQueryServiceTest {
+    /**
+     * 数据映射。
+     * 协作类型：<code>SearchDocumentMapper</code>。
+     */
     private SearchDocumentMapper mapper;
+    /**
+     * 业务服务。
+     * 协作类型：<code>SearchQueryService</code>。
+     */
     private SearchQueryService service;
 
+    /**
+     * 初始化当前测试场景的被测对象与模拟依赖。
+     * 关键处理步骤调用 <code>Mockito.mock</code>。
+     */
     @BeforeEach
     void setUp() {
         mapper = Mockito.mock(SearchDocumentMapper.class);
         service = new SearchQueryServiceImpl(mapper);
     }
 
+    /**
+     * 筛选Types及Paginates包含BoundParameters处理入口。
+     * 主要协作调用：<code>mapper.count</code>、<code>mapper.search</code>、<code>service.search</code>。
+     */
     @Test
     void filtersTypesAndPaginatesWithBoundParameters() {
         List<String> types = List.of("CHAPTER", "BLOG");
@@ -40,6 +68,10 @@ class SearchQueryServiceTest {
         verify(mapper).search("Java", types, 20L, 20);
     }
 
+    /**
+     * 验证拒绝Unknown类型之前查询参数。
+     * 主要协作调用：<code>service.search</code>。
+     */
     @Test
     void rejectsUnknownTypeBeforeQuery() {
         ApiException exception = assertThrows(ApiException.class,
@@ -48,6 +80,10 @@ class SearchQueryServiceTest {
         Mockito.verifyNoInteractions(mapper);
     }
 
+    /**
+     * 英语筛选Expands目标公开英语Types及DeduplicatesMixed筛选处理入口。
+     * 主要协作调用：<code>service.search</code>。
+     */
     @Test
     void englishFilterExpandsToPublicEnglishTypesAndDeduplicatesMixedFilters() {
         service.search("grammar", "ENGLISH,ENGLISH_READING", 1, 20);
@@ -56,6 +92,10 @@ class SearchQueryServiceTest {
         verify(mapper).count("词汇", List.of("ENGLISH_VOCABULARY_WORD"));
     }
 
+    /**
+     * 验证拒绝Blank及Oversized查询参数不含Scanning。
+     * 主要协作调用：<code>service.search</code>、<code>service.quick</code>。
+     */
     @Test
     void rejectsBlankAndOversizedQueryWithoutScanning() {
         assertEquals("SEARCH_QUERY_REQUIRED", assertThrows(ApiException.class,
@@ -65,6 +105,10 @@ class SearchQueryServiceTest {
         Mockito.verifyNoInteractions(mapper);
     }
 
+    /**
+     * quick及SuggestionsShare查询参数校验处理入口。
+     * 主要协作调用：<code>mapper.search</code>、<code>service.quick</code>、<code>service.suggestions</code>。
+     */
     @Test
     void quickAndSuggestionsShareQueryValidation() {
         when(mapper.search(eq("中文"), anyList(), eq(0L), eq(8))).thenReturn(List.of());

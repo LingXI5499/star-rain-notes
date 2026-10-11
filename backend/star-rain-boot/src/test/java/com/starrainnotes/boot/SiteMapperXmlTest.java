@@ -1,3 +1,11 @@
+/*
+ * SiteMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：HomeSectionEntity、SiteConfigEntity、HomeSectionMapper、SiteConfigMapper。
+ * 阅读入口：open（打开站点数据映射Xml）；rollback（回滚站点数据映射Xml）；everySiteMapperIsReachableThroughTheSession（every站点数据映射是否ReachableThroughThe会话处理入口）；primaryConfigReadsTheSingletonRowWithEveryColumn（primary配置ReadsTheSingleton行包含Every列处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,14 +40,36 @@ import org.junit.jupiter.api.Test;
  *
  * 这两个 Mapper 都没有 insert / delete 语句，所以只测读路径与两条 update 写路径。
  */
+/**
+ * 站点数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * configs。
+     * 协作类型：<code>SiteConfigMapper</code>。
+     */
     private SiteConfigMapper configs;
+    /**
+     * sections。
+     * 协作类型：<code>HomeSectionMapper</code>。
+     */
     private HomeSectionMapper sections;
 
+    /**
+     * 打开站点数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -47,6 +77,10 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
         sections = session.getMapper(HomeSectionMapper.class);
     }
 
+    /**
+     * 回滚站点数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -55,12 +89,19 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * every站点数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void everySiteMapperIsReachableThroughTheSession() {
         assertNotNull(configs);
         assertNotNull(sections);
     }
 
+    /**
+     * primary配置ReadsTheSingleton行包含Every列处理入口。
+     * 主要协作调用：<code>configs.primary</code>。
+     */
     @Test
     void primaryConfigReadsTheSingletonRowWithEveryColumn() {
         SiteConfigEntity config = configs.primary();
@@ -73,6 +114,10 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(config.getUpdatedAt());
     }
 
+    /**
+     * 配置更新写入EveryCopy列及保留配置键及标识处理入口。
+     * 主要协作调用：<code>configs.primary</code>、<code>configs.update</code>。
+     */
     @Test
     void configUpdateWritesEveryCopyColumnAndKeepsConfigKeyAndId() {
         SiteConfigEntity original = configs.primary();
@@ -107,6 +152,10 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, configs.update(withId(-1L, edited)), "不存在的 id 不应更新成功");
     }
 
+    /**
+     * 配置更新写入空值面向EveryOptionalCopy列处理入口。
+     * 主要协作调用：<code>configs.primary</code>、<code>configs.update</code>。
+     */
     @Test
     void configUpdateWritesNullForEveryOptionalCopyColumn() {
         SiteConfigEntity original = configs.primary();
@@ -135,6 +184,10 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(updated.getSiteTitle());
     }
 
+    /**
+     * 按排序顺序Then标识读取首页Sections读取BackOrdered。
+     * 主要协作调用：<code>sections.all</code>、<code>sections.byCode</code>。
+     */
     @Test
     void homeSectionsReadBackOrderedBySortOrderThenId() {
         List<HomeSectionEntity> all = sections.all();
@@ -160,6 +213,10 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(sections.byCode(unique("mapperxmlmissing-section")), "不存在的 section_code 应返回 null");
     }
 
+    /**
+     * 首页区块更新写入OnlyItsOwn列集合处理入口。
+     * 主要协作调用：<code>sections.byCode</code>、<code>sections.update</code>。
+     */
     @Test
     void homeSectionUpdateWritesOnlyItsOwnColumns() {
         HomeSectionEntity original = sections.byCode("HERO");
@@ -195,6 +252,10 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, sections.update(withSectionId(-1L, reEnabled)), "不存在的 id 不应更新成功");
     }
 
+    /**
+     * 回滚RestoresThePrimary配置及The首页Sections。
+     * 主要协作调用：<code>configs.primary</code>、<code>sections.byCode</code>、<code>sections.all</code>、<code>configs.update</code>、<code>sections.update</code>。
+     */
     @Test
     void rollbackRestoresThePrimaryConfigAndTheHomeSections() {
         SiteConfigEntity before = configs.primary();
@@ -259,6 +320,14 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 包含标识处理入口。
+     * 关键处理步骤调用 <code>copy.setId</code>、<code>copy.setConfigKey</code>、<code>source.getConfigKey</code>、<code>copy.setSiteName</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param source 来源；类型为 <code>SiteConfigEntity</code>
+     * @return 类型为 <code>SiteConfigEntity</code> 的处理结果
+     */
     private SiteConfigEntity withId(Long id, SiteConfigEntity source) {
         SiteConfigEntity copy = new SiteConfigEntity();
         copy.setId(id);
@@ -275,6 +344,14 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
         return copy;
     }
 
+    /**
+     * 包含区块标识处理入口。
+     * 关键处理步骤调用 <code>copy.setId</code>、<code>copy.setSectionCode</code>、<code>source.getSectionCode</code>、<code>copy.setDisplayName</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param source 来源；类型为 <code>HomeSectionEntity</code>
+     * @return 类型为 <code>HomeSectionEntity</code> 的处理结果
+     */
     private HomeSectionEntity withSectionId(Long id, HomeSectionEntity source) {
         HomeSectionEntity copy = new HomeSectionEntity();
         copy.setId(id);
@@ -288,14 +365,31 @@ class SiteMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实媒体资源撞号 */
+    /**
+     * 测试样本标识处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long probeId() {
         return 900_000_000_000L + PROBE.incrementAndGet();
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
     }

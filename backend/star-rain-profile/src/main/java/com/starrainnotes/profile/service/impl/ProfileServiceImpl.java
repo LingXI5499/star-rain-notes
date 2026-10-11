@@ -1,3 +1,11 @@
+/*
+ * ProfileServiceImpl：作者资料模块的业务实现文件。
+ * 业务范围：个人介绍、社交链接、经历技能和精选内容。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：BlogReferenceApi、BlogPostSummary、ApiException、MediaAssetApi、MediaReferenceApi、MediaAssetSummary、MediaReferenceCommand。
+ * 阅读入口：publicProfile（公开资料处理入口）；summary（摘要处理入口）；publicProfileId（公开资料标识处理入口）；publishedDocument（已发布文档处理入口）。
+ */
+
 package com.starrainnotes.profile.service.impl;
 
 import com.starrainnotes.blog.api.BlogReferenceApi;
@@ -44,24 +52,86 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 资料业务服务实现，属于作者资料模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
+    /**
+     * TYPES。
+     */
     private static final Set<String> EXPERIENCE_TYPES = Set.of("EDUCATION", "PROJECT", "CAREER", "GROWTH", "OTHER");
+    /**
+     * CATEGORIES。
+     */
     private static final Set<String> SKILL_CATEGORIES = Set.of("SKILL", "DIRECTION", "INTEREST");
+    /**
+     * PLATFORMS。
+     */
     private static final Set<String> PLATFORMS = Set.of("GITHUB", "BILIBILI", "GITEE", "LINKEDIN", "EMAIL_PAGE", "OTHER");
+    /**
+     * profiles。
+     * 协作类型：<code>ProfileMapper</code>。
+     */
     private final ProfileMapper profiles;
+    /**
+     * experiences。
+     * 协作类型：<code>ExperienceMapper</code>。
+     */
     private final ExperienceMapper experiences;
+    /**
+     * skills。
+     * 协作类型：<code>SkillMapper</code>。
+     */
     private final SkillMapper skills;
+    /**
+     * socials。
+     * 协作类型：<code>SocialLinkMapper</code>。
+     */
     private final SocialLinkMapper socials;
+    /**
+     * 精选。
+     * 协作类型：<code>FeaturedContentMapper</code>。
+     */
     private final FeaturedContentMapper featured;
+    /**
+     * 媒体。
+     * 协作类型：<code>MediaAssetApi</code>。
+     */
     private final MediaAssetApi media;
+    /**
+     * 媒体References。
+     * 协作类型：<code>MediaReferenceApi</code>。
+     */
     private final MediaReferenceApi mediaReferences;
+    /**
+     * tutorials。
+     * 协作类型：<code>TutorialReferenceApi</code>。
+     */
     private final TutorialReferenceApi tutorials;
+    /**
+     * blogs。
+     * 协作类型：<code>BlogReferenceApi</code>。
+     */
     private final BlogReferenceApi blogs;
+    /**
+     * 作品列表。
+     * 协作类型：<code>PortfolioReferenceApi</code>。
+     */
     private final PortfolioReferenceApi works;
+    /**
+     * 事件集合。
+     */
     private final ProfileEventPublisher events;
 
+    /**
+     * 公开资料处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>owner</code>、<code>profile.getStatus</code>、<code>error</code>、<code>view</code>。
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public ProfileVO publicProfile() {
@@ -72,11 +142,22 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return view(profile, false);
     }
 
+    /**
+     * 摘要处理入口。
+     * 关键处理步骤调用 <code>publicProfile</code>。
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     public ProfileVO summary() {
         return publicProfile();
     }
 
+    /**
+     * 公开资料标识处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>owner</code>、<code>profile.getStatus</code>、<code>profile.getId</code>。
+     * @return 类型为 <code>Long</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public Long publicProfileId() {
@@ -84,6 +165,12 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return "PUBLIC".equals(profile.getStatus()) ? profile.getId() : null;
     }
 
+    /**
+     * 已发布文档处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>publicProfileId</code>、<code>summary</code>、<code>profile.getBioMarkdown</code>、<code>profile.getExperiences</code>。
+     * @return 类型为 <code>ProfilePublishedDocument</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public ProfilePublishedDocument publishedDocument() {
@@ -100,12 +187,26 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return new ProfilePublishedDocument(id, profile.getDisplayName(), profile.getHeadline(), body.toString());
     }
 
+    /**
+     * 后台资料处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>view</code>、<code>owner</code>。
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public ProfileVO adminProfile() {
         return view(owner(), true);
     }
 
+    /**
+     * 更新Basic。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>profiles.updateBasic</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>ProfilePatchDTO</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO updateBasic(ProfilePatchDTO request) {
@@ -120,6 +221,15 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(row);
     }
 
+    /**
+     * 保存Experience。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>EXPERIENCE_TYPES.contains</code>、<code>experiences.countByProfileId</code>、<code>experiences.insert</code>、<code>experiences.updateContent</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>ExperienceDTO</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO saveExperience(Long id, ExperienceDTO request) {
@@ -155,6 +265,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 移除Experience。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>experiences.deleteById</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO removeExperience(Long id) {
@@ -163,6 +281,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 顺序Experiences处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>experiences.listByProfileId</code>、<code>experiences.updateSortOrder</code>。
+     *
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO orderExperiences(List<Long> ids) {
@@ -176,6 +302,15 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 保存Skill。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>SKILL_CATEGORIES.contains</code>、<code>skills.countByProfileId</code>、<code>skills.insert</code>、<code>skills.updateContent</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>SkillDTO</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO saveSkill(Long id, SkillDTO request) {
@@ -207,6 +342,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 移除Skill。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>skills.deleteById</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO removeSkill(Long id) {
@@ -215,6 +358,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 顺序Skills处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>skills.listByProfileId</code>、<code>skills.updateSortOrder</code>。
+     *
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO orderSkills(List<Long> ids) {
@@ -228,6 +379,15 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 保存Social。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>PLATFORMS.contains</code>、<code>socials.countByProfileId</code>、<code>socials.insert</code>、<code>socials.updateContent</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>SocialLinkDTO</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO saveSocial(Long id, SocialLinkDTO request) {
@@ -259,6 +419,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 移除Social。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>socials.deleteById</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO removeSocial(Long id) {
@@ -267,6 +435,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 顺序Social处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>socials.listByProfileId</code>、<code>socials.updateSortOrder</code>。
+     *
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO orderSocial(List<Long> ids) {
@@ -280,6 +456,15 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 设置媒体。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>media.assertUsable</code>、<code>media.get</code>、<code>profiles.updateMediaAssets</code>、<code>mediaReferences.attach</code>、<code>mediaReferences.detach</code>。
+     *
+     * @param kind kind；类型为 <code>String</code>
+     * @param mediaAssetId 关联的媒体资产标识；类型为 <code>Long</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO setMedia(String kind, Long mediaAssetId) {
@@ -307,6 +492,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 添加精选。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>featured.countByProfileId</code>、<code>featured.insert</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>FeaturedContentDTO</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO addFeatured(FeaturedContentDTO request) {
@@ -341,6 +534,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 移除精选。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>featured.deleteById</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO removeFeatured(Long id) {
@@ -349,6 +550,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * 顺序精选处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>featured.listByProfileId</code>、<code>featured.updateSortOrder</code>。
+     *
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public ProfileVO orderFeatured(List<Long> ids) {
@@ -362,11 +571,26 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return changed(owner);
     }
 
+    /**
+     * changed处理入口。
+     * 主要协作调用：<code>events.afterCommit</code>。
+     *
+     * @param owner owner；类型为 <code>ProfileEntity</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     private ProfileVO changed(ProfileEntity owner) {
         events.afterCommit(owner.getId());
         return view(owner, true);
     }
 
+    /**
+     * view处理入口。
+     * 主要协作调用：<code>experiences.listEnabledByProfileId</code>、<code>skills.listEnabledByProfileId</code>、<code>socials.listEnabledByProfileId</code>、<code>featured.listEnabledByProfileId</code>。
+     *
+     * @param profile 资料；类型为 <code>ProfileEntity</code>
+     * @param admin 后台；类型为 <code>boolean</code>
+     * @return 类型为 <code>ProfileVO</code> 的处理结果
+     */
     private ProfileVO view(ProfileEntity profile, boolean admin) {
         Long profileId = profile.getId();
         List<ProfileVO.Experience> experienceViews = experiences.listEnabledByProfileId(profileId)
@@ -407,6 +631,16 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
                 .featuredContents(featuredViews).build();
     }
 
+    /**
+     * resolved处理入口。
+     * 主要协作调用：<code>tutorials.publishedTutorial</code>、<code>blogs.summary</code>、<code>works.publishedWork</code>。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param referenceId 引用标识；类型为 <code>Long</code>
+     * @param order 顺序；类型为 <code>Integer</code>
+     * @return 类型为 <code>ProfileVO.Featured</code> 的处理结果
+     */
     private ProfileVO.Featured resolved(String type, Long id, Long referenceId, Integer order) {
         String rowId = referenceId == null ? null : String.valueOf(referenceId);
         String targetId = id == null ? null : String.valueOf(id);
@@ -428,6 +662,14 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return null;
     }
 
+    /**
+     * 目标存在性处理入口。
+     * 主要协作调用：<code>tutorials.exists</code>、<code>blogs.exists</code>、<code>works.exists</code>。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private boolean targetExists(String type, Long id) {
         return switch (type) {
             case "TUTORIAL" -> tutorials.exists(id);
@@ -437,12 +679,25 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         };
     }
 
+    /**
+     * owner处理入口。
+     * 主要协作调用：<code>profiles.selectOwner</code>。
+     * @return 类型为 <code>ProfileEntity</code> 的处理结果
+     */
     private ProfileEntity owner() {
         ProfileEntity row = profiles.selectOwner();
         if (row == null) throw error("PROFILE_NOT_FOUND", "作者资料不存在", 404);
         return row;
     }
 
+    /**
+     * experience处理入口。
+     * 主要协作调用：<code>experiences.selectById</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param profileId 资料标识；类型为 <code>Long</code>
+     * @return 类型为 <code>ExperienceEntity</code> 的处理结果
+     */
     private ExperienceEntity experience(Long id, Long profileId) {
         ExperienceEntity row = id == null ? null : experiences.selectById(id);
         if (row == null || !profileId.equals(row.getProfileId())) {
@@ -451,24 +706,55 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return row;
     }
 
+    /**
+     * skill处理入口。
+     * 主要协作调用：<code>skills.selectById</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param profileId 资料标识；类型为 <code>Long</code>
+     * @return 类型为 <code>SkillEntity</code> 的处理结果
+     */
     private SkillEntity skill(Long id, Long profileId) {
         SkillEntity row = id == null ? null : skills.selectById(id);
         if (row == null || !profileId.equals(row.getProfileId())) throw error("PROFILE_SKILL_NOT_FOUND", "条目不存在", 404);
         return row;
     }
 
+    /**
+     * social处理入口。
+     * 主要协作调用：<code>socials.selectById</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param profileId 资料标识；类型为 <code>Long</code>
+     * @return 类型为 <code>SocialLinkEntity</code> 的处理结果
+     */
     private SocialLinkEntity social(Long id, Long profileId) {
         SocialLinkEntity row = id == null ? null : socials.selectById(id);
         if (row == null || !profileId.equals(row.getProfileId())) throw error("PROFILE_SOCIAL_NOT_FOUND", "链接不存在", 404);
         return row;
     }
 
+    /**
+     * 功能处理入口。
+     * 主要协作调用：<code>featured.selectById</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param profileId 资料标识；类型为 <code>Long</code>
+     * @return 类型为 <code>FeaturedContentEntity</code> 的处理结果
+     */
     private FeaturedContentEntity feature(Long id, Long profileId) {
         FeaturedContentEntity row = id == null ? null : featured.selectById(id);
         if (row == null || !profileId.equals(row.getProfileId())) throw error("PROFILE_FEATURED_NOT_FOUND", "精选内容不存在", 404);
         return row;
     }
 
+    /**
+     * 公开媒体地址处理入口。
+     * 主要协作调用：<code>media.get</code>。
+     *
+     * @param assetId 资产标识；类型为 <code>Long</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String publicMediaUrl(Long assetId) {
         if (assetId == null) return null;
         MediaAssetSummary asset = media.get(assetId);
@@ -476,11 +762,27 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
                 ? asset.getContentUrl() : null;
     }
 
+    /**
+     * 引用处理入口。
+     * 关键处理步骤调用 <code>MediaReferenceCommand.builder</code>。
+     *
+     * @param profileId 资料标识；类型为 <code>Long</code>
+     * @param assetId 资产标识；类型为 <code>Long</code>
+     * @param usage usage；类型为 <code>String</code>
+     * @return 类型为 <code>MediaReferenceCommand</code> 的处理结果
+     */
     private MediaReferenceCommand reference(Long profileId, Long assetId, String usage) {
         return MediaReferenceCommand.builder().mediaAssetId(assetId).sourceModule("PROFILE")
                 .sourceType("PROFILE").sourceId(profileId).usageCode(usage).build();
     }
 
+    /**
+     * 安全地址处理入口。
+     * 关键处理步骤调用 <code>required</code>、<code>URI.create</code>、<code>uri.getScheme</code>、<code>uri.getHost</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String safeUrl(String value) {
         String url = required(value, 1000, "PROFILE_SOCIAL_URL_INVALID", "链接地址");
         try {
@@ -495,6 +797,13 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return url;
     }
 
+    /**
+     * 检查顺序。
+     * 关键处理步骤调用 <code>ids.size</code>、<code>existing.size</code>、<code>error</code>。
+     *
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     * @param existing existing；类型为 <code>List&lt;Long&gt;</code>
+     */
     private void checkOrder(List<Long> ids, List<Long> existing) {
         if (ids == null || ids.size() != existing.size()
                 || new HashSet<>(ids).size() != ids.size() || !new HashSet<>(ids).equals(new HashSet<>(existing))) {
@@ -502,12 +811,31 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         }
     }
 
+    /**
+     * 必需处理入口。
+     * 关键处理步骤调用 <code>value.trim</code>、<code>normalized.isEmpty</code>、<code>normalized.length</code>、<code>error</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @param max 最大；类型为 <code>int</code>
+     * @param code 代码；类型为 <code>String</code>
+     * @param field 字段；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String required(String value, int max, String code, String field) {
         String normalized = value == null ? "" : value.trim();
         if (normalized.isEmpty() || normalized.length() > max) throw error(code, field + "长度无效", 400);
         return normalized;
     }
 
+    /**
+     * optional处理入口。
+     * 关键处理步骤调用 <code>value.trim</code>、<code>normalized.length</code>、<code>error</code>、<code>normalized.isEmpty</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @param max 最大；类型为 <code>int</code>
+     * @param field 字段；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String optional(String value, int max, String field) {
         if (value == null) return null;
         String normalized = value.trim();
@@ -515,10 +843,23 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
         return normalized.isEmpty() ? null : normalized;
     }
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
     }
 
+    /**
+     * 错误处理入口。
+     *
+     * @param code 代码；类型为 <code>String</code>
+     * @param message 留言；类型为 <code>String</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>int</code>
+     * @return 类型为 <code>ApiException</code> 的处理结果
+     */
     private ApiException error(String code, String message, int status) {
         return new ApiException(code, message, status);
     }

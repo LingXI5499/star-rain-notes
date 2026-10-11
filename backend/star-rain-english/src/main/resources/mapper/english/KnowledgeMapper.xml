@@ -2,19 +2,61 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.starrainnotes.english.knowledge.mapper.KnowledgeMapper">
+    <!--
+      KnowledgeMapper.xml：com.starrainnotes.english.knowledge.mapper.KnowledgeMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+ <!--
+   union：union；可复用 SQL 片段。
+   涉及数据表：sr_english_reading_article、sr_english_writing_article；关系条件与可见性筛选由下方 SQL 明确限定。
+   通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+   复用片段：com.starrainnotes.english.reading.mapper.ReadingMapper.filter、com.starrainnotes.english.writing.article.mapper.WritingArticleMapper.filters。
+   绑定参数：type；参数含义参见 Mapper 方法注释。
+ -->
  <sql id="union">
  SELECT a.id,'READING' AS type,a.title,a.slug,a.summary,a.primary_topic_id,a.published_at
  FROM sr_english_reading_article a
+ <!--
+   将表达式 true 绑定为 publicOnly，供后续参数占位符复用。
+ -->
  <bind name="publicOnly" value="true"/>
  <include refid="com.starrainnotes.english.reading.mapper.ReadingMapper.filter"/>
+ <!--
+   条件 type != null and type != '' 成立时才输出此段 SQL。
+ -->
  <if test="type != null and type != ''">AND #{type}='READING'</if>
  UNION ALL
  SELECT a.id,'WRITING' AS type,a.title,a.slug,a.summary,a.primary_topic_id,a.published_at
  FROM sr_english_writing_article a
- <bind name="owner" value="null"/><bind name="state" value="null"/>
+ <!--
+   将表达式 null 绑定为 owner，供后续参数占位符复用。
+ -->
+ <bind name="owner" value="null"/>
+    <!--
+      将表达式 null 绑定为 state，供后续参数占位符复用。
+    -->
+    <bind name="state" value="null"/>
  WHERE <include refid="com.starrainnotes.english.writing.article.mapper.WritingArticleMapper.filters"/>
+ <!--
+   条件 type != null and type != '' 成立时才输出此段 SQL。
+ -->
  <if test="type != null and type != ''">AND #{type}='WRITING'</if>
  </sql>
+ <!--
+   count：数量；读取语句。
+   结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+   复用片段：union。
+   返回匹配条件的数量，不返回完整实体。
+ -->
  <select id="count" resultType="long">SELECT COUNT(*) FROM (<include refid="union"/>) documents</select>
+ <!--
+   list：list；读取语句。
+   结果类型或映射：com.starrainnotes.english.knowledge.dto.KnowledgeDto$Item；集合与单值形态由 Java 方法签名决定。
+   复用片段：union。
+   绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+   LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+ -->
  <select id="list" resultType="com.starrainnotes.english.knowledge.dto.KnowledgeDto$Item">SELECT * FROM (<include refid="union"/>) documents ORDER BY published_at DESC,type ASC,id DESC LIMIT #{limit} OFFSET #{offset}</select>
 </mapper>

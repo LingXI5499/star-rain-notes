@@ -1,3 +1,8 @@
+/**
+ * admin.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 /* ============================================================
    星雨笔录 V2 · 后台控制台视觉（移植自 V1 frontend/src/styles/admin.css）
 
@@ -51,19 +56,37 @@
     transform 0.1s ease;
 }
 
+/**
+ * 样式范围：.admin-shell :where(button, a, input, select, textarea):focus-visible。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell :where(button, a, input, select, textarea):focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
+/**
+ * 样式范围：.admin-shell button:active:not(:disabled)。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .admin-shell button:active:not(:disabled) {
   transform: translateY(1px);
 }
 
+/**
+ * 样式范围：.admin-shell .primary-button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell .primary-button {
   box-shadow: 0 2px 10px color-mix(in srgb, var(--primary) 28%, transparent);
 }
 
+/**
+ * 样式范围：.admin-shell .primary-button:not(:disabled):hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell .primary-button:not(:disabled):hover {
   box-shadow: 0 4px 14px color-mix(in srgb, var(--primary) 34%, transparent);
 }
@@ -75,6 +98,11 @@
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.admin-shell .link-button:hover:not(:disabled)。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell .link-button:hover:not(:disabled) {
   background: var(--bg-subtle);
 }
@@ -92,6 +120,11 @@
     background-color 0.15s ease;
 }
 
+/**
+ * 样式范围：.admin-shell input:focus, .admin-shell select:focus, .admin-shell textarea:focus。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell input:focus,
 .admin-shell select:focus,
 .admin-shell textarea:focus {
@@ -100,6 +133,10 @@
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent);
 }
 
+/**
+ * 样式范围：.admin-shell label。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell label {
   color: var(--text-secondary);
   font-weight: 500;
@@ -113,6 +150,10 @@
   box-shadow: var(--admin-shadow-lighter);
 }
 
+/**
+ * 样式范围：.admin-shell dialog。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell dialog {
   border-radius: 14px;
   box-shadow: var(--admin-shadow);
@@ -125,11 +166,20 @@
   border-radius: 12px;
 }
 
+/**
+ * 样式范围：.admin-shell th。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell th {
   background: var(--bg-subtle);
   font-weight: 600;
 }
 
+/**
+ * 样式范围：.admin-shell tbody tr:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell tbody tr:hover {
   background: color-mix(in srgb, var(--bg-subtle) 70%, transparent);
 }
@@ -142,6 +192,9 @@
   padding: 4px 11px;
 }
 
+/**
+ * 样式范围：.admin-shell .pagination button。
+ */
 .admin-shell .pagination button {
   border-radius: 8px;
   transition: background-color 0.15s ease, color 0.15s ease;
@@ -155,6 +208,10 @@
   height: 10px;
 }
 
+/**
+ * 样式范围：.admin-shell ::-webkit-scrollbar-thumb。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell ::-webkit-scrollbar-thumb {
   background: var(--border-strong);
   border-radius: 999px;
@@ -162,10 +219,18 @@
   background-clip: content-box;
 }
 
+/**
+ * 样式范围：.admin-shell ::-webkit-scrollbar-thumb:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell ::-webkit-scrollbar-thumb:hover {
   background-color: var(--text-muted);
 }
 
+/**
+ * 样式范围：.admin-shell ::-webkit-scrollbar-track。
+ */
 .admin-shell ::-webkit-scrollbar-track {
   background: transparent;
 }
@@ -185,6 +250,11 @@
   backdrop-filter: blur(2px);
 }
 
+/**
+ * 样式范围：.admin-shell__sidebar。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__sidebar {
   width: var(--admin-sidebar-width);
   flex-shrink: 0;
@@ -198,15 +268,27 @@
   transition: width 0.2s ease;
 }
 
+/**
+ * 样式范围：.admin-shell__sidebar--collapsed。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__sidebar--collapsed {
   width: var(--admin-sidebar-collapsed);
 }
 
+/**
+ * 样式范围：.admin-shell__brand。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__brand {
   padding: var(--space-6) var(--space-5);
   border-bottom: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.admin-shell__brand-link。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__brand-link {
   display: block;
   font-weight: 700;
@@ -215,6 +297,12 @@
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.admin-shell__nav。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 溢出处理：纵向 auto。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__nav {
   flex: 1;
   min-height: 0;
@@ -227,6 +315,11 @@
   scrollbar-gutter: stable;
 }
 
+/**
+ * 样式范围：.admin-shell__nav-item。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__nav-item {
   display: flex;
   align-items: center;
@@ -244,17 +337,30 @@
   transition: background-color 0.15s ease, color 0.15s ease;
 }
 
+/**
+ * 样式范围：.admin-shell__nav-item:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__nav-item:hover {
   background: var(--bg-subtle);
   color: var(--text-primary);
 }
 
+/**
+ * 样式范围：.admin-shell__nav-item--active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__nav-item--active {
   background: color-mix(in srgb, var(--primary) 10%, transparent);
   color: var(--primary);
   font-weight: 600;
 }
 
+/**
+ * 样式范围：.admin-shell__nav-short。
+ */
 .admin-shell__nav-short {
   width: 20px;
   flex-shrink: 0;
@@ -274,6 +380,11 @@
   letter-spacing: 0.14em;
 }
 
+/**
+ * 样式范围：.admin-shell__nav-caption--toggle。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__nav-caption--toggle {
   display: flex;
   align-items: center;
@@ -287,15 +398,28 @@
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.admin-shell__nav-caption--toggle:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__nav-caption--toggle:hover {
   color: var(--text-secondary);
 }
 
+/**
+ * 样式范围：.admin-shell__sidebar--collapsed .admin-shell__nav-caption。
+ */
 .admin-shell__sidebar--collapsed .admin-shell__nav-caption {
   padding-inline: 0;
   text-align: center;
 }
 
+/**
+ * 样式范围：.admin-shell__subnav。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 2px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__subnav {
   display: grid;
   gap: 2px;
@@ -304,6 +428,10 @@
   border-left: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.admin-shell__subnav-item。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__subnav-item {
   padding: 7px 9px;
   border-radius: 7px;
@@ -312,12 +440,21 @@
   transition: color 0.16s ease, background-color 0.16s ease;
 }
 
+/**
+ * 样式范围：.admin-shell__subnav-item:hover, .admin-shell__subnav-item.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__subnav-item:hover,
 .admin-shell__subnav-item.is-active {
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 8%, transparent);
 }
 
+/**
+ * 样式范围：.admin-shell__collapse。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__collapse {
   margin: var(--space-4);
   padding: var(--space-2);
@@ -327,11 +464,21 @@
   color: var(--text-secondary);
 }
 
+/**
+ * 样式范围：.admin-shell__collapse:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__collapse:hover {
   background: color-mix(in srgb, var(--primary) 10%, transparent);
   color: var(--primary);
 }
 
+/**
+ * 样式范围：.admin-shell__body。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 溢出处理：整体 hidden。
+ */
 .admin-shell__body {
   flex: 1;
   min-width: 0;
@@ -341,6 +488,11 @@
   overflow: hidden;
 }
 
+/**
+ * 样式范围：.admin-shell__header。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__header {
   height: var(--header-height);
   flex-shrink: 0;
@@ -355,6 +507,11 @@
   z-index: 10;
 }
 
+/**
+ * 样式范围：.admin-shell__header-title。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__header-title {
   display: flex;
   align-items: center;
@@ -362,17 +519,31 @@
   color: var(--text-primary);
 }
 
+/**
+ * 样式范围：.admin-shell__header-title-short, .admin-shell__header-action-short。
+ */
 .admin-shell__header-title-short,
 .admin-shell__header-action-short {
   display: none;
 }
 
+/**
+ * 样式范围：.admin-shell__header-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__header-actions {
   display: flex;
   align-items: center;
   gap: var(--space-4);
 }
 
+/**
+ * 样式范围：.admin-shell__header-actions button, .admin-shell__header-action。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__header-actions button,
 .admin-shell__header-action {
   padding: var(--space-2) var(--space-3);
@@ -387,16 +558,28 @@
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.admin-shell__header-actions button:hover, .admin-shell__header-action:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__header-actions button:hover,
 .admin-shell__header-action:hover {
   color: var(--primary);
   background: var(--bg-subtle);
 }
 
+/**
+ * 样式范围：.admin-shell__account。
+ */
 .admin-shell__account {
   position: relative;
 }
 
+/**
+ * 样式范围：.admin-shell__account-menu。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__account-menu {
   position: absolute;
   top: calc(100% + 6px);
@@ -410,6 +593,10 @@
   box-shadow: var(--admin-shadow);
 }
 
+/**
+ * 样式范围：.admin-shell__account-menu button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__account-menu button {
   display: block;
   width: 100%;
@@ -423,21 +610,40 @@
   text-align: left;
 }
 
+/**
+ * 样式范围：.admin-shell__account-menu button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__account-menu button:hover {
   background: var(--bg-subtle);
   color: var(--primary);
 }
 
+/**
+ * 样式范围：.admin-shell__account-menu hr。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__account-menu hr {
   margin: 5px 6px;
   border: 0;
   border-top: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.admin-shell__account-menu .is-danger:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__account-menu .is-danger:hover {
   color: var(--danger);
 }
 
+/**
+ * 样式范围：.admin-shell__content。
+ * 溢出处理：纵向 auto。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .admin-shell__content {
   flex: 1;
   min-height: 0;
@@ -447,6 +653,9 @@
   scrollbar-gutter: stable;
 }
 
+/**
+ * 样式范围：.admin-shell__mobile-menu。
+ */
 .admin-shell__mobile-menu {
   display: none;
 }
@@ -461,6 +670,11 @@
   margin-bottom: var(--space-8);
 }
 
+/**
+ * 样式范围：.dashboard__cards。
+ * 使用网格布局组织内容；列定义为 repeat(auto-fit, minmax(160px, 1fr))，间距由 var(--space-4) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__cards {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -468,6 +682,10 @@
   margin-bottom: var(--space-6);
 }
 
+/**
+ * 样式范围：.dashboard__card。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__card {
   background: var(--bg-surface);
   border: 1px solid var(--border);
@@ -475,10 +693,18 @@
   padding: var(--space-5);
 }
 
+/**
+ * 样式范围：.dashboard__card--subtle。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__card--subtle {
   background: var(--bg-subtle);
 }
 
+/**
+ * 样式范围：.dashboard__card-value。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__card-value {
   font-size: 32px;
   line-height: 40px;
@@ -486,24 +712,39 @@
   color: var(--primary);
 }
 
+/**
+ * 样式范围：.dashboard__card-label。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__card-label {
   margin-top: var(--space-1);
   font-size: 14px;
   color: var(--text-muted);
 }
 
+/**
+ * 样式范围：.dashboard__card-note。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__card-note {
   margin-top: 2px;
   color: var(--text-muted);
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.dashboard__section。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .dashboard__section {
   font-size: 20px;
   line-height: 28px;
   margin: var(--space-8) 0 var(--space-4);
 }
 
+/**
+ * 样式范围：.dashboard__table。
+ */
 .dashboard__table {
   width: 100%;
 }
@@ -520,17 +761,29 @@
   margin-bottom: var(--space-6);
 }
 
+/**
+ * 样式范围：.content-admin__hero h1。
+ */
 .content-admin__hero h1 {
   margin-bottom: 5px;
   font-size: 34px;
   letter-spacing: -0.03em;
 }
 
+/**
+ * 样式范围：.content-admin__hero p:last-child。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__hero p:last-child {
   color: var(--text-muted);
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.content-admin__toolbar。
+ * 使用网格布局组织内容；列定义为 minmax(220px, 1fr) 150px 170px auto auto，间距由 var(--space-3) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__toolbar {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) 150px 170px auto auto;
@@ -543,6 +796,11 @@
   background: var(--bg-surface);
 }
 
+/**
+ * 样式范围：.content-admin__toolbar label。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 4px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__toolbar label {
   display: grid;
   gap: 4px;
@@ -551,12 +809,19 @@
   font-weight: 600;
 }
 
+/**
+ * 样式范围：.content-admin__toolbar input, .content-admin__toolbar select。
+ */
 .content-admin__toolbar input,
 .content-admin__toolbar select {
   min-height: 38px;
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.content-admin__total。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__total {
   justify-self: end;
   color: var(--text-muted);
@@ -570,6 +835,10 @@
   gap: var(--space-2);
 }
 
+/**
+ * 样式范围：.content-admin__hero-actions a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__hero-actions a {
   display: inline-flex;
   align-items: center;
@@ -584,10 +853,19 @@
   transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
+/**
+ * 样式范围：.content-admin__hero-actions a:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__hero-actions a:hover {
   background: var(--bg-subtle);
 }
 
+/**
+ * 样式范围：.content-admin__hero-actions a.is-primary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__hero-actions a.is-primary {
   border-color: var(--primary);
   background: var(--primary);
@@ -595,10 +873,20 @@
   font-weight: 650;
 }
 
+/**
+ * 样式范围：.content-admin__hero-actions a.is-primary:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__hero-actions a.is-primary:hover {
   background: var(--primary-hover);
 }
 
+/**
+ * 样式范围：.content-admin__page-size。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__page-size {
   display: flex;
   align-items: center;
@@ -608,6 +896,9 @@
   font-weight: 600;
 }
 
+/**
+ * 样式范围：.content-admin__page-size select。
+ */
 .content-admin__page-size select {
   width: auto;
   min-height: 32px;
@@ -615,18 +906,34 @@
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.pagination button.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .pagination button.is-active {
   border-color: var(--primary);
   background: var(--primary);
   color: var(--on-primary);
 }
 
+/**
+ * 样式范围：.content-admin__list。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 var(--space-4) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__list {
   min-height: 180px;
   display: grid;
   gap: var(--space-4);
 }
 
+/**
+ * 样式范围：.content-card。
+ * 使用网格布局组织内容；列定义为 minmax(0, 1fr)，间距由 各行列间距规则 控制。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -637,17 +944,31 @@
   transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
 
+/**
+ * 样式范围：.content-card:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card:hover {
   border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
   transform: translateY(-2px);
   box-shadow: 0 15px 34px rgb(0 0 0 / 0.065);
 }
 
+/**
+ * 样式范围：.content-card__body。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__body {
   min-width: 0;
   padding: var(--space-5);
 }
 
+/**
+ * 样式范围：.content-card__heading。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__heading {
   display: flex;
   align-items: flex-start;
@@ -655,17 +976,29 @@
   gap: var(--space-4);
 }
 
+/**
+ * 样式范围：.content-card__slug。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__slug {
   margin-bottom: 4px;
   color: var(--accent);
   font: 600 10px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/**
+ * 样式范围：.content-card h2。
+ */
 .content-card h2 {
   font-size: 20px;
   line-height: 1.4;
 }
 
+/**
+ * 样式范围：.content-card__summary。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__summary {
   display: -webkit-box;
   overflow: hidden;
@@ -677,6 +1010,10 @@
   -webkit-line-clamp: 2;
 }
 
+/**
+ * 样式范围：.content-card__tags。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .content-card__tags {
   display: flex;
   min-height: 24px;
@@ -684,6 +1021,10 @@
   gap: 6px;
 }
 
+/**
+ * 样式范围：.content-card__tags span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__tags span {
   padding: 3px 9px;
   border-radius: 999px;
@@ -692,10 +1033,19 @@
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.content-card__tags small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__tags small {
   color: var(--text-muted);
 }
 
+/**
+ * 样式范围：.content-card__foot。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__foot {
   display: flex;
   align-items: end;
@@ -706,6 +1056,11 @@
   border-top: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.content-card__foot > div:first-child。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__foot > div:first-child {
   display: flex;
   flex-wrap: wrap;
@@ -714,12 +1069,20 @@
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.content-card__actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .content-card__actions {
   display: flex;
   flex-shrink: 0;
   gap: 5px;
 }
 
+/**
+ * 样式范围：.content-card__actions button, .content-card__actions a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__actions button,
 .content-card__actions a {
   padding: 6px 10px;
@@ -731,17 +1094,30 @@
   transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease;
 }
 
+/**
+ * 样式范围：.content-card__actions button:hover:not(:disabled), .content-card__actions a:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__actions button:hover:not(:disabled),
 .content-card__actions a:hover {
   border-color: var(--primary);
   color: var(--primary);
 }
 
+/**
+ * 样式范围：.content-card__actions .is-danger:hover:not(:disabled)。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-card__actions .is-danger:hover:not(:disabled) {
   border-color: var(--danger);
   color: var(--danger);
 }
 
+/**
+ * 样式范围：.status-pill。
+ */
 .status-pill {
   flex-shrink: 0;
   padding: 5px 10px;
@@ -750,21 +1126,36 @@
   font-weight: 700;
 }
 
+/**
+ * 样式范围：.status-pill--published。
+ */
 .status-pill--published {
   color: #159362;
   background: color-mix(in srgb, #25b879 14%, transparent);
 }
 
+/**
+ * 样式范围：.status-pill--draft。
+ */
 .status-pill--draft {
   color: #b47a17;
   background: color-mix(in srgb, #d79a2b 14%, transparent);
 }
 
+/**
+ * 样式范围：.status-pill--withdrawn。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .status-pill--withdrawn {
   color: var(--text-muted);
   background: var(--bg-subtle);
 }
 
+/**
+ * 样式范围：.content-admin__empty。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 6px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__empty {
   display: grid;
   min-height: 220px;
@@ -776,10 +1167,18 @@
   text-align: center;
 }
 
+/**
+ * 样式范围：.content-admin__empty strong。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__empty strong {
   color: var(--text-primary);
 }
 
+/**
+ * 样式范围：.content-admin__pagination。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .content-admin__pagination {
   margin-top: var(--space-6);
 }
@@ -796,6 +1195,10 @@
   margin-bottom: var(--space-6);
 }
 
+/**
+ * 样式范围：.tag-admin__hero p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__hero p {
   margin-bottom: 8px;
   color: var(--accent);
@@ -804,16 +1207,28 @@
   letter-spacing: 0.16em;
 }
 
+/**
+ * 样式范围：.tag-admin__hero h1。
+ */
 .tag-admin__hero h1 {
   margin-bottom: 5px;
   font-size: 34px;
 }
 
+/**
+ * 样式范围：.tag-admin__hero span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__hero span {
   color: var(--text-muted);
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.tag-admin__stats。
+ * 使用网格布局组织内容；列定义为 150px 150px minmax(220px, 1fr)，间距由 var(--space-3) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__stats {
   display: grid;
   grid-template-columns: 150px 150px minmax(220px, 1fr);
@@ -821,6 +1236,11 @@
   margin-bottom: var(--space-5);
 }
 
+/**
+ * 样式范围：.tag-admin__stats > div。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__stats > div {
   display: flex;
   align-items: baseline;
@@ -831,20 +1251,36 @@
   background: var(--bg-surface);
 }
 
+/**
+ * 样式范围：.tag-admin__stats strong。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__stats strong {
   color: var(--primary);
   font-size: 24px;
 }
 
+/**
+ * 样式范围：.tag-admin__stats span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__stats span {
   color: var(--text-muted);
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.tag-admin__stats input。
+ */
 .tag-admin__stats input {
   min-height: 44px;
 }
 
+/**
+ * 样式范围：.tag-grid。
+ * 使用网格布局组织内容；列定义为 repeat(auto-fill, minmax(250px, 1fr))，间距由 var(--space-4) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-grid {
   min-height: 150px;
   display: grid;
@@ -852,22 +1288,89 @@
   gap: var(--space-4);
 }
 
+/**
+ * 样式范围：.tag-grid--topics。
+ */
 .tag-grid--topics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/**
+ * 样式范围：.tag-grid--topics .topic-card。
+ */
 .tag-grid--topics .topic-card { min-width: 0; padding: 24px; border-radius: 20px; }
+/**
+ * 样式范围：.topic-card .tag-card__top。
+ */
 .topic-card .tag-card__top { grid-template-columns: 40px minmax(0, 1fr) auto; gap: 14px; }
+/**
+ * 样式范围：.topic-card .tag-card__top > span。
+ */
 .topic-card .tag-card__top > span { width: 40px; height: 40px; border-radius: 12px; font-size: 12px; }
+/**
+ * 样式范围：.topic-card .tag-card__top strong。
+ */
 .topic-card .tag-card__top strong { font-size: 19px; }
+/**
+ * 样式范围：.topic-card .tag-card__top em。
+ */
 .topic-card .tag-card__top em { padding: 6px 10px; font-size: 12px; }
+/**
+ * 样式范围：.topic-card__meta。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .topic-card__meta { display: flex; gap: 10px; margin: 18px 0 0 54px; color: var(--text-muted); font-size: 12px; }
+/**
+ * 样式范围：.topic-card__featured。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .topic-card__featured { color: var(--primary); font-weight: 700; }
+/**
+ * 样式范围：.topic-card__description。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .topic-card__description { min-height: 38px; margin: 8px 0 0 54px; color: var(--text-secondary); font-size: 13px; line-height: 1.6; }
+/**
+ * 样式范围：.tag-grid--topics .topic-card footer。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-grid--topics .topic-card footer { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--border); }
+/**
+ * 样式范围：.topic-card__actions。
+ */
 .topic-card__actions { width: 100%; justify-content: flex-start; flex-wrap: wrap; gap: 8px !important; }
+/**
+ * 样式范围：.topic-card .topic-card__actions button。
+ */
 .topic-card .topic-card__actions button { padding: 7px 11px; border-radius: 9px; white-space: nowrap; font-size: 12px; }
+/**
+ * 样式范围：.topic-card__actions .topic-card__primary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .topic-card__actions .topic-card__primary { margin-right: auto; border-color: var(--primary); color: var(--primary); font-weight: 700; }
-@media (max-width: 900px) { .tag-grid--topics { grid-template-columns: minmax(0, 1fr); } }
-@media (max-width: 520px) { .tag-grid--topics .topic-card { padding: 18px; } .topic-card__meta, .topic-card__description { margin-left: 0; } }
+/**
+ * 响应式或设备条件：(max-width: 900px)；仅在该条件成立时覆盖基础样式。
+ */
+@media (max-width: 900px) {
+  /**
+   * 样式范围：.tag-grid--topics。
+   */
+  .tag-grid--topics { grid-template-columns: minmax(0, 1fr); } }
+/**
+ * 响应式或设备条件：(max-width: 520px)；仅在该条件成立时覆盖基础样式。
+ */
+@media (max-width: 520px) {
+  /**
+   * 样式范围：.tag-grid--topics .topic-card。
+   */
+  .tag-grid--topics .topic-card { padding: 18px; }
+  /**
+   * 样式范围：.topic-card__meta, .topic-card__description。
+   */
+  .topic-card__meta, .topic-card__description { margin-left: 0; } }
 
+/**
+ * 样式范围：.tag-card。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card {
   padding: var(--space-5);
   border: 1px solid var(--border);
@@ -876,27 +1379,48 @@
   transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
 
+/**
+ * 样式范围：.tag-card:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card:hover {
   border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
   transform: translateY(-2px);
   box-shadow: 0 13px 28px rgb(0 0 0 / 0.055);
 }
 
+/**
+ * 样式范围：.tag-card.is-selected。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card.is-selected {
   border-color: var(--primary);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
+/**
+ * 样式范围：.tag-card--pending。
+ */
 .tag-card--pending {
   cursor: not-allowed;
 }
 
+/**
+ * 样式范围：.tag-card--pending:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card--pending:hover {
   transform: none;
   border-color: var(--border);
   box-shadow: none;
 }
 
+/**
+ * 样式范围：.tag-card__top。
+ * 使用网格布局组织内容；列定义为 28px minmax(0, 1fr) auto，间距由 8px 控制。
+ */
 .tag-card__top {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) auto;
@@ -904,6 +1428,11 @@
   gap: 8px;
 }
 
+/**
+ * 样式范围：.tag-card__top > span。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 各行列间距规则 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card__top > span {
   display: grid;
   width: 28px;
@@ -915,12 +1444,21 @@
   font-weight: 800;
 }
 
+/**
+ * 样式范围：.tag-card__top strong。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ */
 .tag-card__top strong {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.tag-card__top em。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card__top em {
   min-width: 28px;
   padding: 4px 7px;
@@ -932,6 +1470,11 @@
   text-align: center;
 }
 
+/**
+ * 样式范围：.tag-card footer。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card footer {
   margin-top: var(--space-4);
   display: flex;
@@ -942,11 +1485,19 @@
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.tag-card footer div。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .tag-card footer div {
   display: flex;
   gap: 5px;
 }
 
+/**
+ * 样式范围：.tag-card button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card button {
   padding: 5px 9px;
   border: 1px solid var(--border);
@@ -956,16 +1507,30 @@
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.tag-card button:hover:not(:disabled)。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card button:hover:not(:disabled) {
   border-color: var(--primary);
   color: var(--primary);
 }
 
+/**
+ * 样式范围：.tag-card button.danger:hover:not(:disabled)。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-card button.danger:hover:not(:disabled) {
   border-color: var(--danger);
   color: var(--danger);
 }
 
+/**
+ * 样式范围：.tag-admin__empty。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__empty {
   grid-column: 1 / -1;
   padding: var(--space-9);
@@ -975,6 +1540,10 @@
   text-align: center;
 }
 
+/**
+ * 样式范围：.tag-admin__note。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__note {
   margin-top: var(--space-4);
   color: var(--text-muted);
@@ -990,10 +1559,18 @@
   margin: var(--space-8) 0 var(--space-5);
 }
 
+/**
+ * 样式范围：.tag-admin__section-head h2。
+ */
 .tag-admin__section-head h2 {
   font-size: 22px;
 }
 
+/**
+ * 样式范围：.tag-admin__search。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 4px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__search {
   display: grid;
   gap: 4px;
@@ -1003,15 +1580,25 @@
   font-weight: 600;
 }
 
+/**
+ * 样式范围：.tag-admin__search input。
+ */
 .tag-admin__search input {
   min-height: 38px;
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.tag-admin__members。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .tag-admin__members {
   margin-top: var(--space-6);
 }
 
+/**
+ * 样式范围：.tag-admin__post-select。
+ */
 .tag-admin__post-select {
   min-width: 260px;
   min-height: 38px;
@@ -1037,22 +1624,38 @@
   border-bottom: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
 }
 
+/**
+ * 样式范围：.blog-edit__title。
+ */
 .blog-edit__title {
   font-size: 26px;
   line-height: 32px;
 }
 
+/**
+ * 样式范围：.blog-edit__topbar p:last-child。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__topbar p:last-child {
   color: var(--text-muted);
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.blog-edit__topbar-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__topbar-actions {
   display: flex;
   flex-shrink: 0;
   gap: var(--space-2);
 }
 
+/**
+ * 样式范围：.blog-edit__writing-card, .blog-edit__meta。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__writing-card,
 .blog-edit__meta {
   border: 1px solid var(--border);
@@ -1061,6 +1664,10 @@
   box-shadow: 0 18px 45px rgb(0 0 0 / 0.035);
 }
 
+/**
+ * 样式范围：.blog-edit__writing-card。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__writing-card {
   padding: var(--space-5);
 }
@@ -1081,23 +1688,40 @@
   line-height: 52px;
 }
 
+/**
+ * 样式范围：.blog-edit__title-input:focus。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .blog-edit__title-input:focus {
   outline: none;
   border: 0;
   box-shadow: none;
 }
 
+/**
+ * 样式范围：.blog-edit__outline-note。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__outline-note {
   margin-bottom: var(--space-4);
   color: var(--text-muted);
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.blog-edit__meta。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__meta {
   margin-top: var(--space-8);
   padding: var(--space-6);
 }
 
+/**
+ * 样式范围：.blog-edit__section-head。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__section-head {
   display: flex;
   align-items: end;
@@ -1106,15 +1730,26 @@
   margin-bottom: var(--space-5);
 }
 
+/**
+ * 样式范围：.blog-edit__section-head h2。
+ */
 .blog-edit__section-head h2 {
   font-size: 22px;
 }
 
+/**
+ * 样式范围：.blog-edit__section-head > span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__section-head > span {
   color: var(--text-muted);
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.blog-edit__panel。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__panel {
   min-width: 0;
   padding: var(--space-5);
@@ -1123,12 +1758,21 @@
   background: color-mix(in srgb, var(--bg-subtle) 55%, var(--bg-surface));
 }
 
+/**
+ * 样式范围：.blog-edit__panel h3。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__panel h3 {
   margin-bottom: var(--space-4);
   color: var(--text-primary);
   font-size: 15px;
 }
 
+/**
+ * 样式范围：.blog-edit__actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__actions {
   display: flex;
   justify-content: flex-end;
@@ -1143,12 +1787,21 @@
   flex-wrap: wrap;
 }
 
+/**
+ * 样式范围：.blog-edit__actions-group。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-edit__actions-group {
   display: flex;
   flex-wrap: wrap;
   gap: var(--space-2);
 }
 
+/**
+ * 样式范围：.blog-ref-chip。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-ref-chip {
   display: inline-block;
   margin-right: 6px;
@@ -1171,6 +1824,9 @@ html.is-vditor-fullscreen body {
   overflow: hidden !important;
 }
 
+/**
+ * 样式范围：html.is-vditor-fullscreen .admin-shell__sidebar, html.is-vditor-fullscreen .admin-shell__header, html.is-vditor-fullscreen .admin-shell__scrim, html.is-vditor-fullscreen .admin-shell__mobile-menu。
+ */
 html.is-vditor-fullscreen .admin-shell__sidebar,
 html.is-vditor-fullscreen .admin-shell__header,
 html.is-vditor-fullscreen .admin-shell__scrim,
@@ -1179,6 +1835,11 @@ html.is-vditor-fullscreen .admin-shell__mobile-menu {
   pointer-events: none !important;
 }
 
+/**
+ * 样式范围：html.is-vditor-fullscreen .vditor--fullscreen。
+ * 相对视口定位，用于浮层或固定操作区域；层叠顺序由 z-index 决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 html.is-vditor-fullscreen .vditor--fullscreen {
   position: fixed !important;
   inset: 0 !important;
@@ -1196,12 +1857,20 @@ html.is-vditor-fullscreen .vditor--fullscreen {
   gap: 10px;
 }
 
+/**
+ * 样式范围：.blog-tag-picker__chips。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-tag-picker__chips {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
 }
 
+/**
+ * 样式范围：.blog-tag-picker__chip。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__chip {
   display: inline-flex;
   align-items: center;
@@ -1214,27 +1883,46 @@ html.is-vditor-fullscreen .vditor--fullscreen {
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.blog-tag-picker__chip.is-on。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__chip.is-on {
   border-color: var(--primary);
   color: var(--primary);
   background: color-mix(in srgb, var(--primary) 10%, transparent);
 }
 
+/**
+ * 样式范围：.blog-tag-picker__chip small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__chip small {
   color: var(--text-muted);
 }
 
+/**
+ * 样式范围：.blog-tag-picker__chip.is-disabled。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__chip.is-disabled {
   border-style: dashed;
   color: var(--text-muted);
 }
 
+/**
+ * 样式范围：.blog-tag-picker__new。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-tag-picker__new {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
+/**
+ * 样式范围：.blog-tag-picker__new textarea。
+ */
 .blog-tag-picker__new textarea {
   width: min(100%, 520px);
   min-height: 38px;
@@ -1242,6 +1930,11 @@ html.is-vditor-fullscreen .vditor--fullscreen {
   resize: vertical;
 }
 
+/**
+ * 样式范围：.blog-tag-picker__suggestions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__suggestions {
   display: flex;
   flex-wrap: wrap;
@@ -1251,16 +1944,37 @@ html.is-vditor-fullscreen .vditor--fullscreen {
   border-radius: 12px;
   background: var(--bg-subtle);
 }
+/**
+ * 样式范围：.blog-tag-picker__suggestions p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__suggestions p { width: 100%; margin: 0; color: var(--text-muted); font-size: 12px; }
+/**
+ * 样式范围：.blog-tag-picker__suggestions button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__suggestions button { padding: 6px 10px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg-surface); color: var(--text-secondary); cursor: pointer; }
+/**
+ * 样式范围：.blog-tag-picker__suggestions button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__suggestions button:hover { border-color: var(--primary); color: var(--primary); }
 
+/**
+ * 样式范围：.blog-tag-picker__hint。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__hint {
   color: var(--text-muted);
   font-size: 12px;
   line-height: 1.5;
 }
 
+/**
+ * 样式范围：.blog-tag-picker__hint strong。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-picker__hint strong {
   color: var(--accent);
   font-weight: 650;
@@ -1272,34 +1986,62 @@ html.is-vditor-fullscreen .vditor--fullscreen {
 
 /* 编辑器自身的窄屏适配（工具栏横向滚动、收起大纲）写在 MarkdownEditor.vue 的 scoped 样式里 */
 
+/**
+ * 响应式或设备条件：(max-width: 900px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 900px) {
+  /**
+   * 样式范围：.content-admin__toolbar。
+   */
   .content-admin__toolbar {
     grid-template-columns: 1fr 1fr;
   }
 
+  /**
+   * 样式范围：.content-admin__total。
+   */
   .content-admin__total {
     justify-self: start;
   }
 
+  /**
+   * 样式范围：.content-card__foot。
+   */
   .content-card__foot {
     align-items: flex-start;
     flex-direction: column;
   }
 
+  /**
+   * 样式范围：.tag-admin__stats。
+   */
   .tag-admin__stats {
     grid-template-columns: 1fr 1fr;
   }
 
+  /**
+   * 样式范围：.tag-admin__stats > label。
+   */
   .tag-admin__stats > label {
     grid-column: 1 / -1;
   }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 720px) {
+  /**
+   * 样式范围：.admin-shell__scrim.is-open。
+   */
   .admin-shell__scrim.is-open {
     display: block;
   }
 
+  /**
+   * 样式范围：.admin-shell__sidebar。
+   * 相对视口定位，用于浮层或固定操作区域；层叠顺序由 z-index 决定。
+   */
   .admin-shell__sidebar {
     position: fixed;
     inset: 0 auto 0 0;
@@ -1309,36 +2051,61 @@ html.is-vditor-fullscreen .vditor--fullscreen {
     transition: transform 0.2s ease;
   }
 
+  /**
+   * 样式范围：.admin-shell__sidebar.is-mobile-open。
+   */
   .admin-shell__sidebar.is-mobile-open {
     transform: translateX(0);
   }
 
+  /**
+   * 样式范围：.admin-shell__sidebar--collapsed。
+   */
   .admin-shell__sidebar--collapsed {
     width: min(310px, 86vw);
   }
 
+  /**
+   * 样式范围：.admin-shell__brand。
+   */
   .admin-shell__brand {
     padding: 18px 20px;
   }
 
+  /**
+   * 样式范围：.admin-shell__nav。
+   */
   .admin-shell__nav {
     padding: 12px;
   }
 
+  /**
+   * 样式范围：.admin-shell__nav-item。
+   */
   .admin-shell__nav-item {
     justify-content: flex-start;
     padding: 10px 12px;
   }
 
+  /**
+   * 样式范围：.admin-shell__nav-label,   .admin-shell__nav-chevron。
+   */
   .admin-shell__nav-label,
   .admin-shell__nav-chevron {
     display: inline;
   }
 
+  /**
+   * 样式范围：.admin-shell__collapse。
+   */
   .admin-shell__collapse {
     display: none;
   }
 
+  /**
+   * 样式范围：.admin-shell__mobile-menu。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
   .admin-shell__mobile-menu {
     display: inline-grid;
     width: 34px;
@@ -1351,25 +2118,40 @@ html.is-vditor-fullscreen .vditor--fullscreen {
     color: var(--text-primary);
   }
 
+  /**
+   * 样式范围：.admin-shell__header。
+   */
   .admin-shell__header {
     padding-inline: 14px;
     font-size: 13px;
   }
 
+  /**
+   * 样式范围：.admin-shell__header-title-long,   .admin-shell__header-action-long。
+   */
   .admin-shell__header-title-long,
   .admin-shell__header-action-long {
     display: none;
   }
 
+  /**
+   * 样式范围：.admin-shell__header-title-short,   .admin-shell__header-action-short。
+   */
   .admin-shell__header-title-short,
   .admin-shell__header-action-short {
     display: inline;
   }
 
+  /**
+   * 样式范围：.admin-shell__header-actions。
+   */
   .admin-shell__header-actions {
     gap: 2px;
   }
 
+  /**
+   * 样式范围：.admin-shell__header-actions button,   .admin-shell__header-action。
+   */
   .admin-shell__header-actions button,
   .admin-shell__header-action {
     max-width: 92px;
@@ -1377,42 +2159,73 @@ html.is-vditor-fullscreen .vditor--fullscreen {
     font-size: 12px;
   }
 
+  /**
+   * 样式范围：.admin-shell__content。
+   */
   .admin-shell__content {
     padding: 18px 14px;
   }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 620px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 620px) {
+  /**
+   * 样式范围：.content-admin__hero。
+   */
   .content-admin__hero {
     align-items: flex-start;
   }
 
+  /**
+   * 样式范围：.content-admin__toolbar。
+   */
   .content-admin__toolbar {
     grid-template-columns: 1fr;
   }
 
+  /**
+   * 样式范围：.content-card__actions。
+   */
   .content-card__actions {
     width: 100%;
     flex-wrap: wrap;
   }
 
+  /**
+   * 样式范围：.tag-admin__hero。
+   */
   .tag-admin__hero {
     align-items: flex-start;
   }
 
+  /**
+   * 样式范围：.blog-edit__topbar。
+   */
   .blog-edit__topbar {
     align-items: flex-start;
   }
 
+  /**
+   * 样式范围：.blog-edit__topbar p:last-child,   .blog-edit__section-head > span。
+   */
   .blog-edit__topbar p:last-child,
   .blog-edit__section-head > span {
     display: none;
   }
 
+  /**
+   * 样式范围：.blog-edit__topbar-actions。
+   */
   .blog-edit__topbar-actions {
     flex-direction: column-reverse;
   }
 
+  /**
+   * 样式范围：.blog-edit__writing-card,   .blog-edit__meta。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
   .blog-edit__writing-card,
   .blog-edit__meta {
     padding: var(--space-4);
@@ -1420,7 +2233,13 @@ html.is-vditor-fullscreen .vditor--fullscreen {
   }
 }
 
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
 @media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：.content-card,   .content-card__actions button,   .tag-card。
+   */
   .content-card,
   .content-card__actions button,
   .tag-card {
@@ -1433,10 +2252,17 @@ html.is-vditor-fullscreen .vditor--fullscreen {
   color: #5cb383;
 }
 
+/**
+ * 样式范围：[data-theme='dark'] .status-pill--draft。
+ */
 [data-theme='dark'] .status-pill--draft {
   color: #d9a45b;
 }
 
+/**
+ * 样式范围：[data-theme='dark'] .tag-admin__stats strong, [data-theme='dark'] .dashboard__card-value。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 [data-theme='dark'] .tag-admin__stats strong,
 [data-theme='dark'] .dashboard__card-value {
   color: var(--primary);

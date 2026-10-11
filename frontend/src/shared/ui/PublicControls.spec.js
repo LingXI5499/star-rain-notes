@@ -1,3 +1,12 @@
+/**
+ * PublicControls.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vitest、./PublicSelect.vue、./PublicPagination.vue、./PublicSearch.vue、../composables/publicListState。
+ * 阅读入口：render（渲染当前操作）。
+ * 验证场景：public browsing controls；allows keyboard selection, restores trigger focus and closes on an outside click；searches long option lists and gives an empty state without changing the selection；shows the last partial range and disables the correct pagination boundaries；keeps page numbers bounded while exposing page size changes。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import PublicSelect from './PublicSelect.vue'
@@ -5,6 +14,13 @@ import PublicPagination from './PublicPagination.vue'
 import PublicSearch from './PublicSearch.vue'
 import { publicPage, publicPageSize, sizeQuery } from '../composables/publicListState'
 const mounted = []
+/**
+ * 渲染当前操作。
+ * 主要协作：mount、mounted.push。
+ * @param component component；默认值、解构字段与可选参数见函数签名。
+ * @param props 组件输入；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function render(component, props) { const wrapper = mount(component, { props, attachTo: document.body }); mounted.push(wrapper); return wrapper }
 afterEach(() => { mounted.splice(0).forEach(w => w.unmount()); vi.useRealTimers() })
 describe('public browsing controls', () => {

@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * TutorialCurriculumPage.vue：教程与学习模块的页面组件。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../../account/stores/authStore、../../support/operationResult、../../../../shared/http、../../../blog/components/admin/AdminConfirmDialog.vue。
+ * 主要响应式状态：auth、busyId、route、router、tutorialId、curriculum、activeGroupId、search。
+ * 阅读入口：load（加载当前操作）；selectGroup（查询分组的处理函数）；openGroupDialog（打开分组弹窗）；saveGroup（保存分组）；removeGroup（移除分组）。
+ */
+
+
 import { computed, watch, reactive, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../../account/stores/authStore'
@@ -10,33 +20,109 @@ import {
   reorderChapters, reorderGroups, updateGroup, withdrawChapter, listPendingTutorialOperations,
 } from '../../api/tutorialApi'
 
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
+/**
+ * busy标识；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const busyId = ref('')
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
+/**
+ * 教程标识；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const tutorialId = computed(() => route.params.tutorialId)
+/**
+ * 课程目录；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const curriculum = ref(null)
+/**
+ * 有效分组标识；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const activeGroupId = ref('')
+/**
+ * 搜索；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const search = ref('')
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
+/**
+ * 待处理；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pending = ref(false)
+/**
+ * 分组弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const groupDialog = ref(null)
+/**
+ * 分组Form；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const groupForm = reactive({ id: '', title: '' })
+/**
+ * 确认弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const confirmDialog = ref(null)
 let loadToken = 0
 let draggingGroupId = ''
 let draggingChapterId = ''
 
+/**
+ * 分组列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const groups = computed(() => curriculum.value?.groups || [])
+/**
+ * 有效分组；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const activeGroup = computed(() => groups.value.find((group) => String(group.id) === activeGroupId.value))
+/**
+ * 可见章节列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const visibleChapters = computed(() => {
   const chapters = activeGroup.value?.chapters || []
   const term = search.value.trim().toLocaleLowerCase()
   return term ? chapters.filter((item) => item.title.toLocaleLowerCase().includes(term)) : chapters
 })
 
+/**
+ * 加载当前操作。
+ * 主要协作：Promise.all、getAdminCurriculum、listPendingTutorialOperations、operations.some、groups.value.some。
+ * 更新的响应式状态包括 loading、error、curriculum、pending、activeGroupId；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   const token = ++loadToken
   const id = tutorialId.value
@@ -57,18 +143,35 @@ async function load() {
   }
 }
 
+/**
+ * 查询分组的处理函数。
+ * 主要协作：router.replace。
+ * 更新的响应式状态包括 activeGroupId、search；渲染由 Vue 的依赖跟踪触发。
+ * @param group 分组；默认值、解构字段与可选参数见函数签名。
+ */
 function selectGroup(group) {
   activeGroupId.value = String(group.id)
   search.value = ''
   router.replace({ query: { group: activeGroupId.value } })
 }
 
+/**
+ * 打开分组弹窗。
+ * 主要协作：groupDialog.value.showModal。
+ * @param group = null 分组空值；默认值、解构字段与可选参数见函数签名。
+ */
 function openGroupDialog(group = null) {
   groupForm.id = group ? String(group.id) : ''
   groupForm.title = group?.title || ''
   groupDialog.value.showModal()
 }
 
+/**
+ * 保存分组。
+ * 主要协作：groupForm.title.trim、updateGroup、createGroup、groupDialog.value.close、isReviewPending。
+ * 更新的响应式状态包括 activeGroupId、notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function saveGroup() {
   if (!groupForm.title.trim()) return
   try {
@@ -84,6 +187,13 @@ async function saveGroup() {
   }
 }
 
+/**
+ * 移除分组。
+ * 主要协作：confirmDialog.value.ask、operationNotice、deleteGroup、load、errorMessage。
+ * 更新的响应式状态包括 notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @param group 分组；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function removeGroup(group) {
   if (!await confirmDialog.value.ask(`确定删除分组「${group.title}」及其全部章节？此操作无法撤销。`)) return
   try {
@@ -94,6 +204,13 @@ async function removeGroup(group) {
   }
 }
 
+/**
+ * drop分组的处理函数。
+ * 主要协作：groups.value.map、ids.splice、ids.indexOf、operationNotice、reorderGroups。
+ * 更新的响应式状态包括 notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @param targetId 被处理或审核的目标对象标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function dropGroup(targetId) {
   if (!draggingGroupId || draggingGroupId === String(targetId)) return
   const ids = groups.value.map((group) => String(group.id))
@@ -104,6 +221,13 @@ async function dropGroup(targetId) {
   catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * drop章节的处理函数。
+ * 主要协作：search.value.trim、.map、ids.splice、ids.indexOf、operationNotice。
+ * 更新的响应式状态包括 notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @param targetId 被处理或审核的目标对象标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function dropChapter(targetId) {
   if (!draggingChapterId || draggingChapterId === String(targetId) || search.value.trim()) return
   const ids = (activeGroup.value?.chapters || []).map((chapter) => String(chapter.id))
@@ -114,6 +238,14 @@ async function dropChapter(targetId) {
   catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * 发布Changes。
+ * 主要协作：auth.hasPermission、confirmDialog.value.ask、publishChapter、load、operationNotice。
+ * 更新的响应式状态包括 busyId、error、notice；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param chapter 章节；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function publishChanges(chapter) {
   if (busyId.value) return
   const direct = auth.hasPermission('tutorial:publish')
@@ -128,6 +260,14 @@ async function publishChanges(chapter) {
   } catch (cause) { error.value = errorMessage(cause) }
   finally { busyId.value = '' }
 }
+/**
+ * 撤回已发布章节。
+ * 主要协作：confirmDialog.value.ask、withdrawChapter、load、operationNotice、errorMessage。
+ * 更新的响应式状态包括 busyId、error、notice；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param chapter 章节；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function withdrawPublishedChapter(chapter) {
   if (busyId.value) return
   if (!await confirmDialog.value.ask(`撤回公开章节「${chapter.title}」？其他章节继续公开；工作区、历史版本和学习记录均保留。`)) return
@@ -139,23 +279,51 @@ async function withdrawPublishedChapter(chapter) {
   finally { busyId.value = '' }
 }
 
+/**
+ * 移除章节。
+ * 主要协作：confirmDialog.value.ask、operationNotice、deleteChapter、load、errorMessage。
+ * 更新的响应式状态包括 notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @param chapter 章节；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function removeChapter(chapter) {
   if (!await confirmDialog.value.ask(`确定删除章节「${chapter.title}」？此操作无法撤销。`)) return
   try { notice.value = operationNotice(await deleteChapter(chapter.id)); await load() }
   catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * new章节的处理函数。
+ * 主要协作：router.push。
+ */
 function newChapter() {
   router.push({ path: `/useradmin/tutorials/${tutorialId.value}/chapters/new`, query: { group: activeGroupId.value } })
 }
+/**
+ * edit章节的处理函数。
+ * 主要协作：router.push。
+ * @param chapter 章节；默认值、解构字段与可选参数见函数签名。
+ */
 function editChapter(chapter) {
   router.push(`/useradmin/tutorials/${tutorialId.value}/chapters/${chapter.id}`)
 }
+/**
+ * edit学习内容的处理函数。
+ * 主要协作：router.push。
+ * @param chapter 章节；默认值、解构字段与可选参数见函数签名。
+ * @param kind kind；默认值、解构字段与可选参数见函数签名。
+ */
 function editLearningContent(chapter, kind) {
   router.push(`/useradmin/tutorials/${tutorialId.value}/chapters/${chapter.id}/${kind}`)
 }
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.params.tutorialId, () => { activeGroupId.value = ''; search.value = ''; notice.value = ''; load() }, { immediate: true })
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.query.group, value => { if (groups.value.some(group => String(group.id) === String(value))) activeGroupId.value = String(value) })
 </script>
 
@@ -301,6 +469,15 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.curriculum-admin__breadcrumb。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__breadcrumb {
   display: flex;
   flex-wrap: wrap;
@@ -311,6 +488,10 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.curriculum-admin__breadcrumb button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__breadcrumb button {
   padding: 0;
   border: 0;
@@ -319,10 +500,22 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.curriculum-admin__breadcrumb button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .curriculum-admin__breadcrumb button:hover { background: none; text-decoration: underline; }
 
+/**
+ * 样式范围：.curriculum-admin__breadcrumb strong。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__breadcrumb strong { color: var(--text-secondary); font-weight: 650; }
 
+/**
+ * 样式范围：.curriculum-admin__hero。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .curriculum-admin__hero {
   display: flex;
   align-items: flex-end;
@@ -331,6 +524,9 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   margin-bottom: 24px;
 }
 
+/**
+ * 样式范围：.curriculum-admin__hero h1。
+ */
 .curriculum-admin__hero h1 {
   margin: 4px 0 8px;
   font-size: clamp(28px, 3vw, 38px);
@@ -338,8 +534,16 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   letter-spacing: -0.035em;
 }
 
+/**
+ * 样式范围：.curriculum-admin__hero > div > p:last-child。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__hero > div > p:last-child { color: var(--text-secondary); font-size: 14px; }
 
+/**
+ * 样式范围：.curriculum-admin__eyebrow。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__eyebrow {
   color: var(--accent);
   font-size: 11px;
@@ -347,10 +551,21 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   letter-spacing: 0.15em;
 }
 
+/**
+ * 样式范围：.curriculum-admin__hero-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .curriculum-admin__hero-actions { display: flex; gap: 10px; }
 
+/**
+ * 样式范围：.curriculum-admin__create。
+ */
 .curriculum-admin__create { white-space: nowrap; }
 
+/**
+ * 样式范围：.curriculum-admin__layout。
+ * 使用网格布局组织内容；列定义为 minmax(260px, 300px) minmax(0, 1fr)，间距由 20px 控制。
+ */
 .curriculum-admin__layout {
   display: grid;
   grid-template-columns: minmax(260px, 300px) minmax(0, 1fr);
@@ -358,6 +573,12 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   min-height: calc(100vh - 220px);
 }
 
+/**
+ * 样式范围：.curriculum-admin__groups, .curriculum-admin__chapters。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__groups,
 .curriculum-admin__chapters {
   display: flex;
@@ -370,6 +591,11 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   overflow: hidden;
 }
 
+/**
+ * 样式范围：.curriculum-admin__panel-head。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__panel-head {
   display: flex;
   min-height: 84px;
@@ -381,18 +607,36 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   background: color-mix(in srgb, var(--bg-subtle) 52%, transparent);
 }
 
+/**
+ * 样式范围：.curriculum-admin__panel-head--stack。
+ */
 .curriculum-admin__panel-head--stack { align-items: flex-end; }
 
+/**
+ * 样式范围：.curriculum-admin__panel-head span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__panel-head span {
   color: var(--accent);
   font: 700 9px/1.3 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
   letter-spacing: 0.13em;
 }
 
+/**
+ * 样式范围：.curriculum-admin__panel-head h2。
+ */
 .curriculum-admin__panel-head h2 { margin-top: 5px; font-size: 18px; line-height: 1.3; }
 
+/**
+ * 样式范围：.curriculum-admin__panel-head p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__panel-head p { margin-top: 4px; color: var(--text-muted); font-size: 10px; }
 
+/**
+ * 样式范围：.curriculum-admin__hint。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__hint {
   margin: 0;
   padding: 9px 20px;
@@ -401,6 +645,10 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.curriculum-admin__icon-button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__icon-button {
   width: 34px;
   height: 34px;
@@ -414,8 +662,18 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   transition: transform 160ms ease, border-color 160ms ease;
 }
 
+/**
+ * 样式范围：.curriculum-admin__icon-button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__icon-button:hover { border-color: var(--primary); transform: translateY(-1px); }
 
+/**
+ * 样式范围：.curriculum-admin__group-body。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 溢出处理：整体 auto。
+ */
 .curriculum-admin__group-body {
   display: flex;
   min-height: 260px;
@@ -426,6 +684,11 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   overflow: auto;
 }
 
+/**
+ * 样式范围：.curriculum-admin__group。
+ * 使用网格布局组织内容；列定义为 16px minmax(0, 1fr) auto 12px，间距由 9px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__group {
   display: grid;
   grid-template-columns: 16px minmax(0, 1fr) auto 12px;
@@ -439,12 +702,22 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   transition: transform 170ms ease, background-color 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
 
+/**
+ * 样式范围：.curriculum-admin__group:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__group:hover {
   border-color: var(--border);
   background: var(--bg-subtle);
   transform: translateX(3px);
 }
 
+/**
+ * 样式范围：.curriculum-admin__group.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__group.is-active {
   border-color: color-mix(in srgb, var(--primary) 28%, var(--border));
   color: var(--primary);
@@ -452,14 +725,26 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   box-shadow: 0 7px 20px color-mix(in srgb, var(--primary) 12%, transparent);
 }
 
+/**
+ * 样式范围：.curriculum-admin__grip。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__grip {
   color: var(--text-muted);
   letter-spacing: -4px;
   cursor: grab;
 }
 
+/**
+ * 样式范围：.curriculum-admin__group-copy。
+ */
 .curriculum-admin__group-copy { min-width: 0; }
 
+/**
+ * 样式范围：.curriculum-admin__group-copy h3。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ */
 .curriculum-admin__group-copy h3 {
   overflow: hidden;
   font-size: 13px;
@@ -468,8 +753,16 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.curriculum-admin__group-copy p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__group-copy p { margin-top: 3px; color: var(--text-muted); font-size: 10px; }
 
+/**
+ * 样式范围：.curriculum-admin__count。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__count {
   min-width: 27px;
   padding: 3px 7px;
@@ -480,8 +773,15 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   text-align: center;
 }
 
+/**
+ * 样式范围：.curriculum-admin__arrow。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__arrow { color: var(--primary); font-size: 18px; }
 
+/**
+ * 样式范围：.curriculum-admin__group-actions。
+ */
 .curriculum-admin__group-actions {
   display: none;
   grid-column: 2 / 5;
@@ -489,9 +789,18 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   padding-top: 5px;
 }
 
+/**
+ * 样式范围：.curriculum-admin__group:hover .curriculum-admin__group-actions, .curriculum-admin__group:focus-within .curriculum-admin__group-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .curriculum-admin__group:hover .curriculum-admin__group-actions,
 .curriculum-admin__group:focus-within .curriculum-admin__group-actions { display: flex; }
 
+/**
+ * 样式范围：.curriculum-admin__group-actions button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__group-actions button {
   padding: 0;
   border: 0;
@@ -501,12 +810,27 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.curriculum-admin__group-actions button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .curriculum-admin__group-actions button:hover { background: none; text-decoration: underline; }
 
+/**
+ * 样式范围：.curriculum-admin__tools。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .curriculum-admin__tools { display: flex; width: min(430px, 52%); gap: 10px; }
 
+/**
+ * 样式范围：.curriculum-admin__tools input。
+ */
 .curriculum-admin__tools input { min-width: 170px; }
 
+/**
+ * 样式范围：.curriculum-admin__chapter-body。
+ * 溢出处理：整体 auto。
+ */
 .curriculum-admin__chapter-body {
   min-height: 360px;
   flex: 1;
@@ -514,8 +838,17 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   overflow: auto;
 }
 
+/**
+ * 样式范围：.curriculum-admin__chapter-list。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ */
 .curriculum-admin__chapter-list { display: flex; flex-direction: column; gap: 8px; }
 
+/**
+ * 样式范围：.curriculum-admin__chapter。
+ * 使用网格布局组织内容；列定义为 16px 30px minmax(0, 1fr) auto minmax(200px, auto)，间距由 11px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__chapter {
   display: grid;
   grid-template-columns: 16px 30px minmax(0, 1fr) auto minmax(200px, auto);
@@ -529,19 +862,36 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
 }
 
+/**
+ * 样式范围：.curriculum-admin__chapter:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__chapter:hover {
   border-color: color-mix(in srgb, var(--primary) 34%, var(--border));
   box-shadow: 0 8px 22px rgb(16 38 31 / 0.06);
   transform: translateY(-1px);
 }
 
+/**
+ * 样式范围：.curriculum-admin__chapter-index。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__chapter-index {
   color: var(--accent);
   font: 650 10px/1 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
 }
 
+/**
+ * 样式范围：.curriculum-admin__chapter-copy。
+ */
 .curriculum-admin__chapter-copy { min-width: 0; }
 
+/**
+ * 样式范围：.curriculum-admin__chapter-copy h3。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ */
 .curriculum-admin__chapter-copy h3 {
   overflow: hidden;
   font-size: 14px;
@@ -550,6 +900,12 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.curriculum-admin__chapter-copy p。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__chapter-copy p {
   overflow: hidden;
   margin-top: 4px;
@@ -559,6 +915,9 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.curriculum-admin__status。
+ */
 .curriculum-admin__status {
   padding: 4px 8px;
   border-radius: 999px;
@@ -566,13 +925,26 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.curriculum-admin__status.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__status.is-active {
   color: var(--success);
   background: color-mix(in srgb, var(--success) 13%, transparent);
 }
 
+/**
+ * 样式范围：.curriculum-admin__status.is-archived。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__status.is-archived { color: var(--text-muted); background: var(--bg-subtle); }
 
+/**
+ * 样式范围：.curriculum-admin__chapter-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .curriculum-admin__chapter-actions {
   display: flex;
   flex-wrap: wrap;
@@ -580,6 +952,10 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   gap: 11px;
 }
 
+/**
+ * 样式范围：.curriculum-admin__chapter-actions button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__chapter-actions button {
   padding: 0;
   border: 0;
@@ -589,8 +965,17 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.curriculum-admin__chapter-actions button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .curriculum-admin__chapter-actions button:hover { background: none; text-decoration: underline; }
 
+/**
+ * 样式范围：.curriculum-admin__empty。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 7px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__empty {
   display: grid;
   min-height: 360px;
@@ -600,15 +985,34 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   text-align: center;
 }
 
+/**
+ * 样式范围：.curriculum-admin__empty span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__empty span { color: var(--primary); font-size: 30px; }
 
+/**
+ * 样式范围：.curriculum-admin__empty h3。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__empty h3 { color: var(--text-secondary); font-size: 16px; }
 
+/**
+ * 样式范围：.curriculum-admin__empty p, .curriculum-admin__empty-message。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__empty p,
 .curriculum-admin__empty-message { color: var(--text-muted); font-size: 12px; }
 
+/**
+ * 样式范围：.curriculum-admin__empty-message。
+ */
 .curriculum-admin__empty-message { display: block; padding: 38px 12px; text-align: center; }
 
+/**
+ * 样式范围：.curriculum-admin__dialog。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__dialog {
   width: min(440px, 92vw);
   padding: 24px;
@@ -618,10 +1022,21 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   background: var(--bg-surface);
 }
 
+/**
+ * 样式范围：.curriculum-admin__dialog h2。
+ */
 .curriculum-admin__dialog h2 { margin-bottom: 16px; }
 
+/**
+ * 样式范围：.curriculum-admin__dialog form。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 14px 控制。
+ */
 .curriculum-admin__dialog form { display: grid; gap: 14px; }
 
+/**
+ * 样式范围：.curriculum-admin__dialog-tip。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__dialog-tip {
   margin: 2px 0 0;
   color: var(--text-muted);
@@ -629,8 +1044,16 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   line-height: 1.7;
 }
 
+/**
+ * 样式范围：.curriculum-admin__dialog-lead。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .curriculum-admin__dialog-lead { margin: 0 0 14px; color: var(--text-primary); font-weight: 650; }
 
+/**
+ * 样式范围：.curriculum-admin__dialog-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .curriculum-admin__dialog-actions {
   display: flex;
   justify-content: flex-end;
@@ -638,27 +1061,76 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
   margin-top: 18px;
 }
 
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
 @media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：.curriculum-admin__group,   .curriculum-admin__chapter,   .curriculum-admin__icon-button。
+   */
   .curriculum-admin__group,
   .curriculum-admin__chapter,
   .curriculum-admin__icon-button { transition: none; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 1100px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 1100px) {
+  /**
+   * 样式范围：.curriculum-admin__layout。
+   */
   .curriculum-admin__layout { grid-template-columns: 260px minmax(0, 1fr); }
+  /**
+   * 样式范围：.curriculum-admin__chapter。
+   */
   .curriculum-admin__chapter { grid-template-columns: 16px 28px minmax(0, 1fr) auto; }
+  /**
+   * 样式范围：.curriculum-admin__chapter-actions。
+   */
   .curriculum-admin__chapter-actions { grid-column: 3 / 5; justify-content: flex-start; }
+  /**
+   * 样式范围：.curriculum-admin__panel-head--stack。
+   */
   .curriculum-admin__panel-head--stack { align-items: flex-start; flex-direction: column; }
+  /**
+   * 样式范围：.curriculum-admin__tools。
+   */
   .curriculum-admin__tools { width: 100%; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 760px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 760px) {
+  /**
+   * 样式范围：.curriculum-admin__hero。
+   */
   .curriculum-admin__hero { align-items: flex-start; flex-direction: column; }
+  /**
+   * 样式范围：.curriculum-admin__hero-actions。
+   */
   .curriculum-admin__hero-actions { width: 100%; flex-wrap: wrap; }
+  /**
+   * 样式范围：.curriculum-admin__layout。
+   */
   .curriculum-admin__layout { grid-template-columns: 1fr; min-height: 0; }
+  /**
+   * 样式范围：.curriculum-admin__group-body。
+   */
   .curriculum-admin__group-body { min-height: 0; max-height: 240px; }
+  /**
+   * 样式范围：.curriculum-admin__group-actions。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
   .curriculum-admin__group-actions { display: flex; }
+  /**
+   * 样式范围：.curriculum-admin__tools。
+   */
   .curriculum-admin__tools { align-items: stretch; flex-direction: column; }
+  /**
+   * 样式范围：.curriculum-admin__chapter。
+   */
   .curriculum-admin__chapter { grid-template-columns: 16px 25px minmax(0, 1fr) auto; }
 }
 </style>

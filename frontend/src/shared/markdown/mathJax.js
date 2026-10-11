@@ -1,3 +1,10 @@
+/**
+ * mathJax.js：跨模块基础模块的共享工具。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 将跨模块使用的行为收敛到一个实现，调用方通过导出函数或组合式函数使用。
+ * 阅读入口：loadScript（加载Script）；prepareMathJax（prepareMathJax的处理函数）；formulaError（formula错误的处理函数）；typesetMath（typesetMath的处理函数）。
+ */
+
 /*
  * MathJax 排版 —— 从 V1 `lib/mathJax.ts` 移植。
  *
@@ -17,6 +24,13 @@
 /* 载入中/已载入的 promise。失败时清空，让下一次调用可以重试（例如网络瞬断） */
 let loading
 
+/**
+ * 加载Script。
+ * 主要协作：document.getElementById、resolve、document.createElement、script.remove、reject。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @param src src；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function loadScript(id, src) {
   return new Promise((resolve, reject) => {
     if (document.getElementById(id)) {
@@ -36,7 +50,14 @@ function loadScript(id, src) {
   })
 }
 
-export function prepareMathJax() {
+export
+  /**
+   * prepareMathJax的处理函数。
+   * 主要协作：.catch、loadScript。
+   * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function prepareMathJax() {
   loading ??= (async () => {
     if (!window.MathJax) {
       window.MathJax = {
@@ -72,7 +93,15 @@ function formulaError(element, source) {
 }
 
 /* 对 root 里的每个 .math-source 占位元素做排版（已排版过的跳过） */
-export async function typesetMath(root) {
+export
+  /**
+   * typesetMath的处理函数。
+   * 主要协作：Array.from、root.querySelectorAll、prepareMathJax、formula.textContent.trim、engine.getMetricsFor。
+   * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+   * @param root root；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function typesetMath(root) {
   const formulas = Array.from(root.querySelectorAll('.math-source'))
   if (formulas.length === 0) return
   await prepareMathJax()

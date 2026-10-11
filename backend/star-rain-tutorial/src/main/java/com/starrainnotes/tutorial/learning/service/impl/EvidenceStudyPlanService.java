@@ -1,3 +1,11 @@
+/*
+ * EvidenceStudyPlanService：教程与学习模块的业务实现文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：CurrentActorApi、EvidencePlanDTO、LearningPageQueryDTO、PageResult、EvidenceLearningMapper、EvidenceAlgorithms。
+ * 阅读入口：list（列出证据学习计划）；list（列出证据学习计划）；get（读取证据学习计划）；history（历史处理入口）。
+ */
+
 package com.starrainnotes.tutorial.learning.service.impl;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -17,24 +25,64 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 证据学习计划业务服务，属于教程与学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class EvidenceStudyPlanService {
+    /**
+     * actors。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi actors;
+    /**
+     * 内容。
+     */
     private final LearningContentAccess content;
+    /**
+     * 数据映射。
+     * 协作类型：<code>EvidenceLearningMapper</code>。
+     */
     private final EvidenceLearningMapper mapper;
 
+    /**
+     * 当前操作对应的身份对象处理入口。
+     * 主要协作调用：<code>actors.current</code>。
+     * @return 类型为 <code>Long</code> 的处理结果
+     */
     private Long actor() { return actors.current().getAccountId(); }
+    /**
+     * 锁处理入口。
+     * 主要协作调用：<code>mapper.ensureAccountLock</code>、<code>mapper.lockAccount</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     */
     private void lock(Long accountId) {
         mapper.ensureAccountLock(accountId);
         mapper.lockAccount(accountId);
     }
 
+    /**
+     * 列出证据学习计划。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>list</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Transactional
     public List<Plan> list() {
         return list(false);
     }
 
+    /**
+     * 列出证据学习计划。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.reconcileTasks</code>、<code>mapper.reconcilePlans</code>、<code>mapper.currentPlans</code>、<code>mapper.listPlans</code>。
+     *
+     * @param currentOnly 当前Only；类型为 <code>boolean</code>
+     * @return 本次处理得到的条目集合
+     */
     @Transactional
     public List<Plan> list(boolean currentOnly) {
         Long accountId = actor();
@@ -45,14 +93,39 @@ public class EvidenceStudyPlanService {
                 .map(plan -> decorate(accountId, plan, false)).toList();
     }
 
+    /**
+     * 读取证据学习计划。
+     * 关键处理步骤调用 <code>decorate</code>、<code>actor</code>、<code>require</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     public Plan get(Long id) { return decorate(actor(), require(actor(), id), true); }
 
+    /**
+     * 检查所需证据学习计划。
+     * 主要协作调用：<code>mapper.plan</code>。
+     * 实现中的显式失败类型包括 <code>LearningResourceNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     private Plan require(Long accountId, Long id) {
         Plan plan = mapper.plan(accountId, id);
         if (plan == null) throw new LearningResourceNotFoundException();
         return plan;
     }
 
+    /**
+     * decorate处理入口。
+     * 主要协作调用：<code>mapper.planChapters</code>、<code>content.publishedTutorial</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param plan 计划；类型为 <code>Plan</code>
+     * @param withTasks 包含Tasks；类型为 <code>boolean</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     private Plan decorate(Long accountId, Plan plan, boolean withTasks) {
         plan.setChapters(mapper.planChapters(accountId, plan.getId()));
         plan.setTotalChapters(plan.getChapters().size());
@@ -78,6 +151,14 @@ public class EvidenceStudyPlanService {
         return plan;
     }
 
+    /**
+     * 历史处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.reconcileTasks</code>、<code>mapper.reconcilePlans</code>、<code>mapper.planHistory</code>、<code>mapper.countPlanHistory</code>。
+     *
+     * @param query 查询参数；类型为 <code>LearningPageQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;Plan&gt;</code> 的处理结果
+     */
     @Transactional
     public PageResult<Plan> history(LearningPageQueryDTO query) {
         query.validate(Set.of("COMPLETED", "CANCELLED"));
@@ -86,11 +167,29 @@ public class EvidenceStudyPlanService {
                 .page(query.getPage()).pageSize(query.getPageSize()).build();
     }
 
+    /**
+     * 预览证据学习计划。
+     * 关键处理步骤调用 <code>require</code>、<code>actor</code>、<code>definition</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>EvidencePlanDTO</code>
+     * @param excludePlanId exclude计划标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     public Plan preview(EvidencePlanDTO request, Long excludePlanId) {
         if (excludePlanId != null) require(actor(), excludePlanId);
         return definition(actor(), request, excludePlanId);
     }
 
+    /**
+     * definition处理入口。
+     * 主要协作调用：<code>content.publishedTutorial</code>、<code>mapper.conflictingChapters</code>。
+     * 实现中的显式失败类型包括 <code>LearningInvalidRequestException</code>、<code>LearningStateConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>EvidencePlanDTO</code>
+     * @param excludePlanId exclude计划标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     private Plan definition(Long accountId, EvidencePlanDTO request, Long excludePlanId) {
         if (request.getTutorialId() == null || request.getName() == null || request.getName().isBlank()
                 || request.getName().length() > 160 || request.getTargetCardsPerTask() == null
@@ -136,6 +235,15 @@ public class EvidenceStudyPlanService {
         return plan;
     }
 
+    /**
+     * 创建证据学习计划。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.listPlans</code>、<code>mapper.planChapters</code>、<code>mapper.insertPlan</code>。
+     * 实现中的显式失败类型包括 <code>LearningStateConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>EvidencePlanDTO</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     @Transactional
     public Plan create(EvidencePlanDTO request) {
         Long accountId = actor();lock(accountId);
@@ -152,6 +260,16 @@ public class EvidenceStudyPlanService {
         return get(plan.getId());
     }
 
+    /**
+     * 更新证据学习计划。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.planChapters</code>、<code>mapper.updatePlan</code>、<code>mapper.deleteTaskChapters</code>、<code>mapper.deleteTasks</code>、<code>mapper.deletePlanChapters</code>。
+     * 实现中的显式失败类型包括 <code>LearningStateConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>EvidencePlanDTO</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     @Transactional
     public Plan update(Long id, EvidencePlanDTO request) {
         Long accountId = actor();lock(accountId);Plan old = require(accountId,id);
@@ -166,6 +284,12 @@ public class EvidenceStudyPlanService {
         persist(plan);return get(id);
     }
 
+    /**
+     * 持久化证据学习计划。
+     * 主要协作调用：<code>mapper.insertPlanChapter</code>、<code>mapper.insertTask</code>、<code>mapper.insertTaskChapter</code>。
+     *
+     * @param plan 计划；类型为 <code>Plan</code>
+     */
     private void persist(Plan plan) {
         for (Chapter chapter : plan.getChapters()) { chapter.setPlanId(plan.getId());mapper.insertPlanChapter(chapter); }
         for (Task task : plan.getTasks()) {
@@ -196,6 +320,16 @@ public class EvidenceStudyPlanService {
         return get(id);
     }
 
+    /**
+     * transition处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.planChapters</code>、<code>content.chapter</code>、<code>mapper.tasks</code>、<code>mapper.planStatus</code>、<code>mapper.reconcileTasks</code>。
+     * 实现中的显式失败类型包括 <code>LearningStateConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param action 动作；类型为 <code>String</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     @Transactional
     public Plan transition(Long id, String action) {
         Long accountId = actor();lock(accountId);Plan plan = require(accountId,id);
@@ -218,8 +352,19 @@ public class EvidenceStudyPlanService {
         mapper.planStatus(accountId,id,to);mapper.reconcileTasks(accountId);mapper.reconcilePlans(accountId);return get(id);
     }
 
+    /**
+     * 冲突处理入口。
+     * @return 类型为 <code>LearningStateConflictException</code> 的处理结果
+     */
     private LearningStateConflictException conflict() { return new LearningStateConflictException("当前计划状态不支持此操作"); }
 
+    /**
+     * tasks处理入口。
+     * 主要协作调用：<code>mapper.tasks</code>、<code>mapper.taskChapters</code>。
+     *
+     * @param planId 计划标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     public List<Task> tasks(Long planId) {
         Long accountId = actor();require(accountId,planId);
         List<Task> tasks = mapper.tasks(accountId,planId);
@@ -227,12 +372,29 @@ public class EvidenceStudyPlanService {
         return tasks;
     }
 
+    /**
+     * 任务处理入口。
+     * 主要协作调用：<code>mapper.task</code>、<code>mapper.taskChapters</code>。
+     * 实现中的显式失败类型包括 <code>LearningResourceNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Task</code> 的处理结果
+     */
     public Task task(Long id) {
         Long accountId = actor();Task task = mapper.task(accountId,id);
         if (task == null) throw new LearningResourceNotFoundException();
         task.setChapters(mapper.taskChapters(accountId,id));return task;
     }
 
+    /**
+     * 开始处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.startTask</code>。
+     * 实现中的显式失败类型包括 <code>LearningStateConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Task</code> 的处理结果
+     */
     @Transactional
     public Task start(Long id) {
         Long accountId = actor();lock(accountId);Task task=task(id);

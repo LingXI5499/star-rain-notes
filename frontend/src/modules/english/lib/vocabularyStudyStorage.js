@@ -1,3 +1,10 @@
+/**
+ * vocabularyStudyStorage.js：英语学习模块的应用配置与入口。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 组织前端装配、构建或入口行为，具体依赖和导出入口见下文。
+ * 阅读入口：requestValue（请求值的处理函数）；transactionDone（事务Done的处理函数）；countLocalVocabularyProgress（统计Local词汇进度）。
+ */
+
 /*
  * 游客本机学习进度（IndexedDB）。
  *
@@ -28,6 +35,12 @@ const LEGACY_KEY = 'srn-english-learning-v1'
 const MIGRATION_KEY = 'legacy-v1-migrated'
 const SETTINGS_KEY = 'vocabulary'
 
+/**
+ * 请求值的处理函数。
+ * 主要协作：resolve、reject。
+ * @param request 本次操作的请求参数对象；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function requestValue(request) {
   return new Promise((resolve, reject) => {
     request.onsuccess = () => resolve(request.result)
@@ -35,6 +48,12 @@ function requestValue(request) {
   })
 }
 
+/**
+ * 事务Done的处理函数。
+ * 主要协作：resolve、reject。
+ * @param transaction 事务；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function transactionDone(transaction) {
   return new Promise((resolve, reject) => {
     transaction.oncomplete = () => resolve()
@@ -324,7 +343,13 @@ export const vocabularyStudyStorage = new VocabularyStudyStorage()
  * 英语首页与词库页共用：未登录时不去问后端，直接本地算。
  * IndexedDB 不可用时返回全 0，首页不会因为浏览器限制而报错。
  */
-export async function countLocalVocabularyProgress() {
+export
+  /**
+   * 统计Local词汇进度。
+   * 主要协作：Promise.all、vocabularyStudyStorage.memories、vocabularyStudyStorage.reviews、Date.now、today.setHours。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function countLocalVocabularyProgress() {
   const empty = { completed: 0, inProgress: 0, dueForReview: 0, total: 0 }
   try {
     const [memory, reviews] = await Promise.all([vocabularyStudyStorage.memories(), vocabularyStudyStorage.reviews()])

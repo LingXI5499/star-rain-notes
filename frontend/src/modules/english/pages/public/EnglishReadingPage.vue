@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * EnglishReadingPage.vue：英语学习模块的页面组件。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../../blog/components/BlogProse.vue、../../../profile/api/profileApi、../../../../shared/ui/PublicToggleFilter.vue、../../../../shared/ui/PublicFilterTabs.vue。
+ * 组件输入：kind；默认值与类型见 defineProps。
+ * 主要响应式状态：props、route、item、error、loading、mode、alignments、annotations。
+ */
+
+
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import BlogProse from '../../../blog/components/BlogProse.vue'
@@ -11,17 +21,49 @@ import { getReading } from '../../api/englishApi'
 import { getEnhancements, getTaxonomy, getPublicWriting } from '../../api/englishRwApi'
 import EnglishBilingualProse from '../../components/EnglishBilingualProse.vue'
 import '../../styles/englishRw.css'
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props=defineProps({kind:{type:String,default:'reading'}})
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route=useRoute(), {contentPath}=useViewMode(), item=ref(null),error=ref(''),loading=ref(true),mode=ref('EN'),alignments=ref([]),annotations=ref([]),words=ref([]),activeNote=ref(''),terms=ref([]), contact=ref(''), showNotes=ref(true),auxiliaryNotice=ref('')
+/**
+ * tabs；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const tabs=computed(()=>[{value:'EN',label:'英文'},{value:'ZH',label:'中文',disabled:!item.value?.translationZhMarkdown?.trim()},{value:'BOTH',label:'双语对照',disabled:!item.value?.translationZhMarkdown?.trim()}])
+/**
+ * 分组列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const groups=computed(()=>Object.entries(Object.groupBy(words.value,w=>w.partOfSpeech)))
 const pos={NOUN:'名词',VERB:'动词',ADJECTIVE:'形容词',ADVERB:'副词',PREPOSITION:'介词',PRONOUN:'代词',CONJUNCTION:'连词',PHRASE:'短语',OTHER:'其他'}
+/**
+ * taxonomy；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const taxonomy=computed(()=>terms.value.flatMap(n=>[n,...(n.children||[])]))
+/**
+ * 专题；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const topic=computed(()=>taxonomy.value.find(t=>String(t.id)===String(item.value?.primaryTopicId)))
+/**
+ * 选中Note；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const selectedNote=computed(()=>annotations.value.find(n=>String(n.id)===String(activeNote.value)))
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(mode,value=>{if(value==='ZH')activeNote.value=''})
 getPublicProfile().then(p=>{contact.value=p?.publicEmail || (p?.socialLinks || []).find(l=>l.url?.startsWith('mailto:'))?.url?.slice(7) || ''}).catch(()=>{})
 let generation=0
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(()=>[route.params.slug,props.kind],async()=>{
  const n=++generation; loading.value=true; error.value=''; auxiliaryNotice.value=''; item.value=null; mode.value='EN'; activeNote.value=''
  alignments.value=[]; annotations.value=[]; words.value=[]; terms.value=[]
@@ -59,8 +101,75 @@ watch(()=>[route.params.slug,props.kind],async()=>{
  </template>
 </main></template>
 <style scoped>
-.rw-reader__toolbar{position:sticky;top:76px;z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;margin-bottom:30px;background:var(--bg-page);border-bottom:1px solid var(--border)}.rw-reader__quote{padding:0;border:0;background:transparent;color:var(--primary);font:inherit;text-align:left;cursor:pointer;line-height:1.8}.rw-reader__note--active{border-color:var(--primary)}.rw-reader__words{display:grid;grid-template-columns:minmax(90px,180px) minmax(0,1fr);gap:14px;margin:0}.rw-reader__words dt{font-weight:700}.rw-reader__words dd{margin:0;color:var(--text-secondary)}
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.rw-reader__toolbar。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 在正常文档流中保留位置，吸附偏移由 top=76px 决定；父级高度限制吸附范围。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
+.rw-reader__toolbar{position:sticky;top:76px;z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;padding:14px 0;margin-bottom:30px;background:var(--bg-page);border-bottom:1px solid var(--border)}
+  /**
+   * 样式范围：.rw-reader__quote。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .rw-reader__quote{padding:0;border:0;background:transparent;color:var(--primary);font:inherit;text-align:left;cursor:pointer;line-height:1.8}
+  /**
+   * 样式范围：.rw-reader__note--active。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .rw-reader__note--active{border-color:var(--primary)}
+  /**
+   * 样式范围：.rw-reader__words。
+   * 使用网格布局组织内容；列定义为 minmax(90px,180px) minmax(0,1fr)，间距由 14px 控制。
+   */
+  .rw-reader__words{display:grid;grid-template-columns:minmax(90px,180px) minmax(0,1fr);gap:14px;margin:0}
+  /**
+   * 样式范围：.rw-reader__words dt。
+   */
+  .rw-reader__words dt{font-weight:700}
+  /**
+   * 样式范围：.rw-reader__words dd。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .rw-reader__words dd{margin:0;color:var(--text-secondary)}
 </style>
 <style scoped>
-.rw-reader__analysis{position:fixed;z-index:25;right:24px;bottom:24px;width:min(390px,calc(100vw - 32px));max-height:65vh;overflow:auto;box-sizing:border-box;padding:22px;border:1px solid var(--border-strong);border-radius:18px;background:var(--bg-surface);color:var(--text-primary);box-shadow:0 12px 50px rgb(0 0 0/.18)}.rw-reader__analysis header{display:flex;align-items:center;justify-content:space-between;gap:16px}.rw-reader__analysis blockquote{margin:20px 0;padding-left:14px;border-left:2px solid var(--primary);font-size:13px;line-height:1.8;color:var(--text-secondary)}.rw-reader__analysis :deep(.markdown-body){padding:0;font-size:14px;line-height:1.8}@media(max-width:600px){.rw-reader__analysis{right:16px;bottom:16px;max-height:55vh}}
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.rw-reader__analysis。
+ * 相对视口定位，用于浮层或固定操作区域；层叠顺序由 z-index 决定。
+ * 溢出处理：整体 auto。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
+.rw-reader__analysis{position:fixed;z-index:25;right:24px;bottom:24px;width:min(390px,calc(100vw - 32px));max-height:65vh;overflow:auto;box-sizing:border-box;padding:22px;border:1px solid var(--border-strong);border-radius:18px;background:var(--bg-surface);color:var(--text-primary);box-shadow:0 12px 50px rgb(0 0 0/.18)}
+  /**
+   * 样式范围：.rw-reader__analysis header。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .rw-reader__analysis header{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  /**
+   * 样式范围：.rw-reader__analysis blockquote。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .rw-reader__analysis blockquote{margin:20px 0;padding-left:14px;border-left:2px solid var(--primary);font-size:13px;line-height:1.8;color:var(--text-secondary)}
+  /**
+   * 样式范围：.rw-reader__analysis :deep(.markdown-body)。
+   */
+  .rw-reader__analysis :deep(.markdown-body){padding:0;font-size:14px;line-height:1.8}
+  /**
+   * 响应式或设备条件：(max-width:600px)；仅在该条件成立时覆盖基础样式。
+   */
+  @media(max-width:600px){
+  /**
+   * 样式范围：.rw-reader__analysis。
+   */
+  .rw-reader__analysis{right:16px;bottom:16px;max-height:55vh}}
 </style>

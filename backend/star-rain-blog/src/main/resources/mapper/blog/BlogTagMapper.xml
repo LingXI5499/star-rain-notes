@@ -2,52 +2,125 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.blog.mapper.BlogTagMapper">
+    <!--
+      BlogTagMapper.xml：com.starrainnotes.blog.mapper.BlogTagMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+    <!--
+      tagColumns：标签投影列；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    -->
     <sql id="tagColumns">
         t.id, t.slug, t.name, t.description, t.status, t.created_at, t.updated_at
     </sql>
 
+    <!--
+      adminFilters：后台筛选条件；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+      绑定参数：keyword、status；参数含义参见 Mapper 方法注释。
+    -->
     <sql id="adminFilters">
+        <!--
+          统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+        -->
         <where>
+            <!--
+              条件 keyword != null and keyword != '' 成立时才输出此段 SQL。
+            -->
             <if test="keyword != null and keyword != ''">
                 AND (LOWER(t.name) LIKE CONCAT('%', #{keyword}, '%')
                      OR LOWER(t.slug) LIKE CONCAT('%', #{keyword}, '%'))
             </if>
+            <!--
+              条件 status != null and status != '' 成立时才输出此段 SQL。
+            -->
             <if test="status != null and status != ''">
                 AND t.status = #{status}
             </if>
         </where>
     </sql>
 
+    <!--
+      insertTag：新增标签；新增语句。
+      涉及数据表：sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.blog.entity.BlogTagEntity；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：slug、name、description、status；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertTag" parameterType="com.starrainnotes.blog.entity.BlogTagEntity"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_blog_tag (slug, name, description, status)
         VALUES (#{slug}, #{name}, #{description}, #{status})
     </insert>
 
+    <!--
+      tagById：标签依据标识；读取语句。
+      涉及数据表：sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogTagEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：tagColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="tagById" resultType="com.starrainnotes.blog.entity.BlogTagEntity">
         SELECT <include refid="tagColumns"/> FROM sr_blog_tag t WHERE t.id = #{id}
     </select>
 
+    <!--
+      tagByIdForUpdate：标签依据标识面向更新；读取语句。
+      涉及数据表：sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogTagEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：tagColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+      锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+    -->
     <select id="tagByIdForUpdate" resultType="com.starrainnotes.blog.entity.BlogTagEntity">
         SELECT <include refid="tagColumns"/> FROM sr_blog_tag t WHERE t.id = #{id} FOR UPDATE
     </select>
 
+    <!--
+      countBySlug：数量依据固定链接标识；读取语句。
+      涉及数据表：sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：slug、excludeId；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countBySlug" resultType="long">
         SELECT COUNT(*) FROM sr_blog_tag WHERE slug = #{slug}
+        <!--
+          条件 excludeId != null 成立时才输出此段 SQL。
+        -->
         <if test="excludeId != null">
             AND id &lt;&gt; #{excludeId}
         </if>
     </select>
 
+    <!--
+      countByName：数量依据名称；读取语句。
+      涉及数据表：sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：name、excludeId；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countByName" resultType="long">
         SELECT COUNT(*) FROM sr_blog_tag WHERE name = #{name}
+        <!--
+          条件 excludeId != null 成立时才输出此段 SQL。
+        -->
         <if test="excludeId != null">
             AND id &lt;&gt; #{excludeId}
         </if>
     </select>
 
     <!-- 合并后的值由 Service 计算：这样 description 传空字符串是“清空”，传 null 是“不改” -->
+    <!--
+      updateTag：更新标签；更新语句。
+      涉及数据表：sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：slug、name、description、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updateTag">
         UPDATE sr_blog_tag
         SET slug = #{slug},
@@ -56,16 +129,38 @@
         WHERE id = #{id}
     </update>
 
+    <!--
+      updateStatus：更新状态；更新语句。
+      涉及数据表：sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：status、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updateStatus">
         UPDATE sr_blog_tag SET status = #{status} WHERE id = #{id}
     </update>
 
+    <!--
+      adminPageCount：后台分页数量；读取语句。
+      涉及数据表：sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      复用片段：adminFilters。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="adminPageCount" resultType="long">
         SELECT COUNT(*) FROM sr_blog_tag t
         <include refid="adminFilters"/>
     </select>
 
     <!-- post_count 统计全部绑定关系（含草稿），用于判断标签是否还在被使用 -->
+    <!--
+      adminPage：后台分页；读取语句。
+      涉及数据表：sr_blog_tag、sr_blog_post_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.vo.BlogTagVO；集合与单值形态由 Java 方法签名决定。
+      复用片段：tagColumns、adminFilters。
+      绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="adminPage" resultType="com.starrainnotes.blog.vo.BlogTagVO">
         SELECT <include refid="tagColumns"/>, COUNT(pt.id) AS post_count
         FROM sr_blog_tag t
@@ -77,6 +172,12 @@
     </select>
 
     <!-- 前台筛选项：只统计已发布文章，0 篇的标签不出现，避免点进去是空列表 -->
+    <!--
+      publishedTags：已发布标签列表；读取语句。
+      涉及数据表：sr_blog_tag、sr_blog_post_tag、sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.vo.BlogTagVO；集合与单值形态由 Java 方法签名决定。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="publishedTags" resultType="com.starrainnotes.blog.vo.BlogTagVO">
         SELECT t.id, t.slug, t.name, t.description, t.status, COUNT(p.id) AS post_count
         FROM sr_blog_tag t
@@ -88,6 +189,12 @@
         ORDER BY t.name ASC, t.id ASC
     </select>
 
+    <!--
+      tagsByPostId：标签列表依据文章标识；读取语句。
+      涉及数据表：sr_blog_post_tag、sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.vo.BlogTagVO；集合与单值形态由 Java 方法签名决定。
+      绑定参数：postId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="tagsByPostId" resultType="com.starrainnotes.blog.vo.BlogTagVO">
         SELECT t.id, t.slug, t.name, t.description, t.status
         FROM sr_blog_post_tag pt
@@ -96,43 +203,95 @@
         ORDER BY t.name ASC, t.id ASC
     </select>
 
+    <!--
+      tagsByPostIds：标签列表依据文章标识集合；读取语句。
+      涉及数据表：sr_blog_post_tag、sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.dto.BlogPostTagRow；集合与单值形态由 Java 方法签名决定。
+      绑定参数：postId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="tagsByPostIds" resultType="com.starrainnotes.blog.dto.BlogPostTagRow">
         SELECT pt.post_id AS post_id, t.id AS tag_id, t.slug AS slug, t.name AS name
         FROM sr_blog_post_tag pt
         JOIN sr_blog_tag t ON t.id = pt.tag_id
         WHERE pt.post_id IN
+        <!--
+          遍历 postIds，元素名为 postId；open/close/separator 控制 SQL 列表格式。
+          集合是否允许为空由外围条件和业务校验决定。
+        -->
         <foreach collection="postIds" item="postId" open="(" separator="," close=")">
             #{postId}
         </foreach>
         ORDER BY t.name ASC, t.id ASC
     </select>
 
+    <!--
+      tagsByIds：标签列表依据标识集合；读取语句。
+      涉及数据表：sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogTagEntity；集合与单值形态由 Java 方法签名决定。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="tagsByIds" resultType="com.starrainnotes.blog.entity.BlogTagEntity">
         SELECT id, slug, name, description, status, created_at, updated_at
         FROM sr_blog_tag
         WHERE id IN
+        <!--
+          遍历 ids，元素名为 id；open/close/separator 控制 SQL 列表格式。
+          集合是否允许为空由外围条件和业务校验决定。
+        -->
         <foreach collection="ids" item="id" open="(" separator="," close=")">
             #{id}
         </foreach>
     </select>
 
+    <!--
+      insertPostTag：新增文章标签；新增语句。
+      涉及数据表：sr_blog_post_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：postId、tagId；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertPostTag">
         INSERT INTO sr_blog_post_tag (post_id, tag_id)
         VALUES (#{postId}, #{tagId})
     </insert>
 
+    <!--
+      deletePostTag：删除文章标签；删除语句。
+      涉及数据表：sr_blog_post_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：postId、tagId；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="deletePostTag">
         DELETE FROM sr_blog_post_tag WHERE post_id = #{postId} AND tag_id = #{tagId}
     </delete>
 
+    <!--
+      deletePostTagsByPostId：删除文章标签列表依据文章标识；删除语句。
+      涉及数据表：sr_blog_post_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：postId；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="deletePostTagsByPostId">
         DELETE FROM sr_blog_post_tag WHERE post_id = #{postId}
     </delete>
 
+    <!--
+      countPostTag：数量文章标签；读取语句。
+      涉及数据表：sr_blog_post_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：postId、tagId；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countPostTag" resultType="long">
         SELECT COUNT(*) FROM sr_blog_post_tag WHERE post_id = #{postId} AND tag_id = #{tagId}
     </select>
 
+    <!--
+      countDisabledTagsByPostId：数量已禁用标签列表依据文章标识；读取语句。
+      涉及数据表：sr_blog_post_tag、sr_blog_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：postId；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countDisabledTagsByPostId" resultType="long">
         SELECT COUNT(*)
         FROM sr_blog_post_tag pt

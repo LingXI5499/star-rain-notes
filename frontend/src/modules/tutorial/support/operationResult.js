@@ -1,4 +1,23 @@
+/**
+ * operationResult.js：教程与学习模块的业务支持工具。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 提供格式化、映射或计算能力，供模块页面与组件复用。
+ * 阅读入口：isReviewPending（判断是否审核待处理）；operationNotice（操作Notice的处理函数）。
+ */
+
+/**
+ * 判断是否审核待处理。
+ * @param result 结果；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 export const isReviewPending = result => result?.reviewPending === true
+/**
+ * 操作Notice的处理函数。
+ * 主要协作：isReviewPending。
+ * @param result 结果；默认值、解构字段与可选参数见函数签名。
+ * @param success = '操作成功。' success；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 export const operationNotice = (result, success = '操作成功。') => isReviewPending(result)
   ? '已提交超级管理员审核，通过后才会执行；当前内容保持原状态。'
   : success

@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * EnglishWritingPage.vue：英语学习模块的页面组件。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：../../components/EnglishTopicDirectory.vue、../../styles/englishRw.css、vue、vue-router、../../../../shared/viewMode、../../../account/stores/authStore。
+ * 主要响应式状态：route、router、auth、original、mine、publicError、myError、publicLoading。
+ * 阅读入口：load（加载当前操作）；filter（筛选当前操作）；paginate（paginate的处理函数）；resize（resize的处理函数）。
+ */
+
+
 import EnglishTopicDirectory from '../../components/EnglishTopicDirectory.vue'
 import '../../styles/englishRw.css'
 import { computed, ref, watch } from 'vue'
@@ -12,11 +22,32 @@ import { errorMessage } from '../../../../shared/http'
 import EnglishArticleFilters from '../../components/EnglishArticleFilters.vue'
 import { listMyWriting, listPublicWriting } from '../../api/englishRwApi'
 import '../../styles/englishRw.css'
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route=useRoute(),router=useRouter(),auth=useAuthStore(),{contentPath,isAccount}=useViewMode()
+/**
+ * 原始；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const original=ref({items:[],total:0}),mine=ref({items:[],total:0}),publicError=ref(''),myError=ref(''),publicLoading=ref(false),myLoading=ref(false)
+/**
+ * 分页页码；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const page=computed(()=>publicPage(route.query.page)),size=computed(()=>publicPageSize(route.query.pageSize)),myPage=computed(()=>publicPage(route.query.myPage)),mySize=computed(()=>publicPageSize(route.query.mySize))
+/**
+ * signed内部；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const signedIn=computed(()=>isAccount.value && Boolean(auth.currentUser))
 let generation=0
+/**
+ * 加载当前操作。
+ * 主要协作：.finally、.catch、.then、listPublicWriting、errorMessage。
+ * 更新的响应式状态包括 publicError、myError、publicLoading、myLoading、mine、original；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load(){
  const n=++generation; publicError.value=''; myError.value=''; publicLoading.value=true; myLoading.value=signedIn.value
  if(!signedIn.value)mine.value={items:[],total:0}
@@ -30,9 +61,30 @@ async function load(){
   .finally(()=>{if(n===generation)myLoading.value=false}):Promise.resolve()
  await Promise.all([publicRequest,privateRequest])
 }
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(()=>[route.fullPath,signedIn.value],load,{immediate:true})
+/**
+ * 筛选当前操作。
+ * 主要协作：router.push。
+ * @param query 查询；默认值、解构字段与可选参数见函数签名。
+ */
 function filter(query){router.push({query:{...query,page:undefined,myPage:undefined}})}
+/**
+ * paginate的处理函数。
+ * 主要协作：router.push。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @param key='page' 键分页；默认值、解构字段与可选参数见函数签名。
+ */
 function paginate(value,key='page'){router.push({query:{...route.query,[key]:value>1?String(value):undefined}})}
+/**
+ * resize的处理函数。
+ * 主要协作：router.push。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @param key='pageSize' 键分页大小；默认值、解构字段与可选参数见函数签名。
+ * @param pageKey='page' 分页键分页；默认值、解构字段与可选参数见函数签名。
+ */
 function resize(value,key='pageSize',pageKey='page'){router.push({query:{...route.query,[key]:value===12?undefined:String(value),[pageKey]:undefined}})}
 </script>
 <template><main class="english-rw"><RouterLink :to="contentPath('/english')">← 英语</RouterLink><header class="english-rw__hero"><div><p class="public-eyebrow">WRITE YOUR OWN VOICE</p><h1>写作中心</h1><p>记录思考，练习表达。从自己的第一篇文章开始。</p></div><RouterLink v-if="signedIn" class="english-rw__button english-rw__button--primary" :to="accountPath('/english/writing/articles/new')"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 4v12M4 10h12" /></svg><span>开始写作</span></RouterLink></header>

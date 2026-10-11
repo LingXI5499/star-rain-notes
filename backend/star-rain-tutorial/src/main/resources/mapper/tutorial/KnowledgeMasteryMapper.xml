@@ -1,35 +1,78 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.learning.mapper.KnowledgeMasteryMapper">
+    <!--
+      KnowledgeMasteryMapper.xml：com.starrainnotes.tutorial.learning.mapper.KnowledgeMasteryMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, account_id, knowledge_card_id, system_suggested_level, user_self_level,
     last_recall_rating, evidence_count, first_learned_at, last_evidence_at, created_at, updated_at
   </sql>
 
+  <!--
+    ensure：ensure；新增语句。
+    涉及数据表：sr_knowledge_mastery；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：accountId、cardId；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="ensure">
     INSERT IGNORE INTO sr_knowledge_mastery
                 (account_id, knowledge_card_id, system_suggested_level, evidence_count)
             VALUES (#{accountId}, #{cardId}, 'L1', 0)
   </insert>
 
+  <!--
+    ensureLearned：ensure已学习；新增语句。
+    涉及数据表：sr_knowledge_mastery；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：accountId、cardId；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="ensureLearned">
     INSERT IGNORE INTO sr_knowledge_mastery
                 (account_id, knowledge_card_id, system_suggested_level, evidence_count, first_learned_at)
             VALUES (#{accountId}, #{cardId}, 'L1', 0, UTC_TIMESTAMP(3))
   </insert>
 
+  <!--
+    markLearned：mark已学习；更新语句。
+    涉及数据表：sr_knowledge_mastery；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：accountId、cardId；参数含义参见 Mapper 方法注释。
+  -->
   <update id="markLearned">
     UPDATE sr_knowledge_mastery
             SET first_learned_at = COALESCE(first_learned_at, UTC_TIMESTAMP(3))
             WHERE account_id = #{accountId} AND knowledge_card_id = #{cardId}
   </update>
 
+  <!--
+    selectByAccountIdAndCardId：查询依据账号标识及卡片标识；读取语句。
+    涉及数据表：sr_knowledge_mastery；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.KnowledgeMasteryEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：accountId、knowledgeCardId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectByAccountIdAndCardId" resultType="com.starrainnotes.tutorial.learning.entity.KnowledgeMasteryEntity">
     SELECT <include refid="columns"/> FROM sr_knowledge_mastery
     WHERE account_id = #{accountId} AND knowledge_card_id = #{knowledgeCardId}
   </select>
 
+  <!--
+    listByAccountId：list依据账号标识；读取语句。
+    涉及数据表：sr_knowledge_mastery；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.KnowledgeMasteryEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：accountId；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="listByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.KnowledgeMasteryEntity">
     SELECT <include refid="columns"/> FROM sr_knowledge_mastery
     WHERE account_id = #{accountId}
@@ -38,6 +81,12 @@
   </select>
 
   <!-- 复习完成后回写证据统计：updated_at 由列上的 ON UPDATE 维护 -->
+  <!--
+    updateEvidence：更新证据；更新语句。
+    涉及数据表：sr_knowledge_mastery；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：evidenceCount、lastRecallRating、lastEvidenceAt、systemSuggestedLevel、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="updateEvidence">
     UPDATE sr_knowledge_mastery
             SET evidence_count = #{evidenceCount},
@@ -47,6 +96,12 @@
             WHERE id = #{id}
   </update>
 
+  <!--
+    updateSelfLevel：更新SelfLevel；更新语句。
+    涉及数据表：sr_knowledge_mastery；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：userSelfLevel、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="updateSelfLevel">
     UPDATE sr_knowledge_mastery SET user_self_level = #{userSelfLevel} WHERE id = #{id}
   </update>

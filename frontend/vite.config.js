@@ -1,3 +1,12 @@
+/**
+ * vite.config.js：前端应用模块的应用配置与入口。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 组织前端装配、构建或入口行为，具体依赖和导出入口见下文。
+ * 注册 Vue 编译插件；开发环境的 /api 代理目标读取 STAR_RAIN_API_TARGET，否则使用本机默认后端地址。
+ * 该开发代理配置不替代生产环境的 Nginx 同源反向代理。
+ * 主要依赖：vite、@vitejs/plugin-vue。
+ */
+
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 

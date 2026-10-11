@@ -1,3 +1,11 @@
+/*
+ * HomeAggregationServiceImpl：站点模块的业务实现文件。
+ * 业务范围：站点品牌、首页内容和站点设置。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：HomeSectionVO、SiteHomeVO、SitePublicApi、SitePublicConfigVO、HomeSectionEntity、HomeAggregationService、HomeSectionDisplayOptions。
+ * 阅读入口：home（首页处理入口）；shutdown（shutdown处理入口）。
+ */
+
 package com.starrainnotes.site.service.impl;
 
 import com.starrainnotes.site.vo.HomeSectionVO;
@@ -25,14 +33,42 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/**
+ * 首页Aggregation业务服务实现，属于站点模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class HomeAggregationServiceImpl implements HomeAggregationService {
+    /**
+     * 当前类使用的日志记录器。
+     */
     private static final Logger log = LoggerFactory.getLogger(HomeAggregationService.class);
+    /**
+     * MS。
+     * 初始值为 <code>1200</code>。
+     */
     private static final long SECTION_BUDGET_MS = 1200;
+    /**
+     * 站点。
+     * 协作类型：<code>SitePublicApi</code>。
+     */
     private final SitePublicApi site;
+    /**
+     * sections。
+     * 协作类型：<code>HomeSectionService</code>。
+     */
     private final HomeSectionService sections;
+    /**
+     * 显示。
+     */
     private final HomeSectionDisplayOptions display;
+    /**
+     * providers。
+     */
     private final Map<String, HomeSectionProvider> providers = new HashMap<>();
+    /**
+     * workers。
+     */
     private final ThreadPoolExecutor workers = new ThreadPoolExecutor(6, 6, 30, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(24), task -> {
                 Thread thread = new Thread(task, "site-home-section");
@@ -40,6 +76,15 @@ public class HomeAggregationServiceImpl implements HomeAggregationService {
                 return thread;
             }, new ThreadPoolExecutor.AbortPolicy());
 
+    /**
+     * 构造HomeAggregationServiceImpl，接收本类使用的依赖或初始化参数。
+     * 关键处理步骤调用 <code>this.providers.put</code>、<code>provider.sectionCode</code>。
+     *
+     * @param site 站点；类型为 <code>SitePublicApi</code>
+     * @param sections sections；类型为 <code>HomeSectionService</code>
+     * @param display 显示；类型为 <code>HomeSectionDisplayOptions</code>
+     * @param providers providers；类型为 <code>List&lt;HomeSectionProvider&gt;</code>
+     */
     public HomeAggregationServiceImpl(SitePublicApi site, HomeSectionService sections, HomeSectionDisplayOptions display,
                                   List<HomeSectionProvider> providers) {
         this.site = site;
@@ -48,6 +93,11 @@ public class HomeAggregationServiceImpl implements HomeAggregationService {
         for (HomeSectionProvider provider : providers) this.providers.put(provider.sectionCode(), provider);
     }
 
+    /**
+     * 首页处理入口。
+     * 主要协作调用：<code>site.config</code>、<code>sections.enabled</code>、<code>providers.get</code>、<code>workers.submit</code>、<code>display.layoutOf</code>。
+     * @return 类型为 <code>SiteHomeVO</code> 的处理结果
+     */
     @Override
     public SiteHomeVO home() {
         SitePublicConfigVO config = site.config();
@@ -93,10 +143,21 @@ public class HomeAggregationServiceImpl implements HomeAggregationService {
         return new SiteHomeVO(config, result);
     }
 
+    /**
+     * degraded处理入口。
+     * 主要协作调用：<code>display.layoutOf</code>。
+     *
+     * @param section 区块；类型为 <code>HomeSectionEntity</code>
+     * @return 类型为 <code>HomeSectionVO</code> 的处理结果
+     */
     private HomeSectionVO degraded(HomeSectionEntity section) {
         return new HomeSectionVO(section.getSectionCode(), section.getDisplayName(), List.of(), "DEGRADED", display.layoutOf(section));
     }
 
+    /**
+     * shutdown处理入口。
+     * 主要协作调用：<code>workers.shutdownNow</code>。
+     */
     @PreDestroy
     public void shutdown() { workers.shutdownNow(); }
 }

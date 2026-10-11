@@ -1,3 +1,11 @@
+/*
+ * ReviewSubmissionServiceImpl：审核模块的业务实现文件。
+ * 业务范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：ReviewSummary、ReviewTargetKey、ReviewSubmissionCommand、ReviewSubmissionResult、ReviewActionEntity、ReviewRequestEntity、ReviewActionType。
+ * 阅读入口：submit（提交审核Submission）；cancelByApplicant（取消依据申请人）；cancelBySystem（取消依据System）；findActivePending（查找有效待处理）。
+ */
+
 package com.starrainnotes.review.service.impl;
 
 import com.starrainnotes.review.api.ReviewSummary;
@@ -40,16 +48,42 @@ import org.springframework.transaction.annotation.Transactional;
  * 事务边界：submit 必须运行在事务里，否则命名锁会在每条语句后随连接归还而失效，
  * 临界区不成立（activeTransactionRequired 就是为这个约束把关）。
  */
+/**
+ * 审核Submission业务服务实现，属于审核模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
 
     // 命名锁等待上限：提交是用户操作，等太久不如直接告诉他稍后重试
+    /**
+     * 秒。
+     * 初始值为 <code>5</code>。
+     */
     private static final int LOCK_TIMEOUT_SECONDS = 5;
 
+    /**
+     * 请求数据映射。
+     * 协作类型：<code>ReviewRequestMapper</code>。
+     */
     private final ReviewRequestMapper requestMapper;
+    /**
+     * 动作数据映射。
+     * 协作类型：<code>ReviewActionMapper</code>。
+     */
     private final ReviewActionMapper actionMapper;
+    /**
+     * 处理器Registry。
+     */
     private final ReviewTargetHandlerRegistry handlerRegistry;
 
+    /**
+     * 构造ReviewSubmissionServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param requestMapper 请求数据映射；类型为 <code>ReviewRequestMapper</code>
+     * @param actionMapper 动作数据映射；类型为 <code>ReviewActionMapper</code>
+     * @param handlerRegistry 处理器Registry；类型为 <code>ReviewTargetHandlerRegistry</code>
+     */
     public ReviewSubmissionServiceImpl(ReviewRequestMapper requestMapper,
                                        ReviewActionMapper actionMapper,
                                        ReviewTargetHandlerRegistry handlerRegistry) {
@@ -58,6 +92,15 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
         this.handlerRegistry = handlerRegistry;
     }
 
+    /**
+     * 提交审核Submission。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>handlerRegistry.require</code>、<code>requestMapper.selectPending</code>、<code>requestMapper.insertRequest</code>、<code>requestMapper.requestById</code>、<code>actionMapper.insertAction</code>。
+     * 实现中的显式失败类型包括 <code>ReviewAlreadyPendingException</code>、<code>ReviewDecisionConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param command command；类型为 <code>ReviewSubmissionCommand</code>
+     * @return 类型为 <code>ReviewSubmissionResult</code> 的处理结果
+     */
     @Override
     @Transactional
     public ReviewSubmissionResult submit(ReviewSubmissionCommand command) {
@@ -118,6 +161,15 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
         }
     }
 
+    /**
+     * 取消依据申请人。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>requireRequest</code>、<code>ReviewStatus.PENDING_CODE.equals</code>、<code>request.getStatus</code>、<code>request.getApplicantAccountId</code>。
+     * 实现中的显式失败类型包括 <code>ReviewNotPendingException</code>、<code>ReviewApplicantMismatchException</code>；具体触发条件见对应分支。
+     *
+     * @param reviewRequestId 审核请求标识；类型为 <code>Long</code>
+     * @param actorAccountId 操作者账号标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void cancelByApplicant(Long reviewRequestId, Long actorAccountId) {
@@ -132,6 +184,15 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
         cancel(request, actorAccountId, ReviewActorType.ACCOUNT_CODE, "申请人取消待审核请求");
     }
 
+    /**
+     * 取消依据System。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>requestMapper.selectPending</code>。
+     *
+     * @param target 目标；类型为 <code>ReviewTargetKey</code>
+     * @param reviewType 审核类型；类型为 <code>String</code>
+     * @param reason 原因；类型为 <code>String</code>
+     */
     @Override
     @Transactional
     public void cancelBySystem(ReviewTargetKey target, String reviewType, String reason) {
@@ -149,6 +210,15 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
                 reason == null || reason.isBlank() ? "目标已变更，系统自动取消待审请求" : reason);
     }
 
+    /**
+     * 查找有效待处理。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>requestMapper.selectPending</code>。
+     *
+     * @param target 目标；类型为 <code>ReviewTargetKey</code>
+     * @param reviewType 审核类型；类型为 <code>String</code>
+     * @return 可选结果；没有匹配值时由空 Optional 表达
+     */
     @Override
     @Transactional(readOnly = true)
     public Optional<ReviewSummary> findActivePending(ReviewTargetKey target, String reviewType) {
@@ -161,6 +231,16 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
     }
 
     // 取消的共同路径：条件更新 + 写历史，条件更新影响 0 行说明并发中已被处理
+    /**
+     * 取消审核Submission。
+     * 主要协作调用：<code>requestMapper.cancelIfPending</code>、<code>actionMapper.insertAction</code>。
+     * 实现中的显式失败类型包括 <code>ReviewNotPendingException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>ReviewRequestEntity</code>
+     * @param actorAccountId 操作者账号标识；类型为 <code>Long</code>
+     * @param actorType 操作者类型；类型为 <code>String</code>
+     * @param note note；类型为 <code>String</code>
+     */
     private void cancel(ReviewRequestEntity request, Long actorAccountId, String actorType, String note) {
         LocalDateTime now = LocalDateTime.now();
         int updated = requestMapper.cancelIfPending(request.getId(), now);
@@ -173,6 +253,14 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
                 actorAccountId, actorType, note, now));
     }
 
+    /**
+     * 检查所需请求。
+     * 主要协作调用：<code>requestMapper.requestById</code>。
+     * 实现中的显式失败类型包括 <code>ReviewNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param reviewRequestId 审核请求标识；类型为 <code>Long</code>
+     * @return 类型为 <code>ReviewRequestEntity</code> 的处理结果
+     */
     private ReviewRequestEntity requireRequest(Long reviewRequestId) {
         ReviewRequestEntity request = reviewRequestId == null ? null : requestMapper.requestById(reviewRequestId);
         if (request == null) {
@@ -181,6 +269,13 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
         return request;
     }
 
+    /**
+     * 获取锁。
+     * 主要协作调用：<code>requestMapper.acquireTargetLock</code>。
+     * 实现中的显式失败类型包括 <code>ReviewAlreadyPendingException</code>；具体触发条件见对应分支。
+     *
+     * @param lockName 锁名称；类型为 <code>String</code>
+     */
     private void acquireLock(String lockName) {
         Integer acquired = requestMapper.acquireTargetLock(lockName, LOCK_TIMEOUT_SECONDS);
         if (acquired == null || acquired != 1) {
@@ -190,6 +285,12 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
         }
     }
 
+    /**
+     * 释放锁。
+     * 主要协作调用：<code>requestMapper.releaseTargetLock</code>。
+     *
+     * @param lockName 锁名称；类型为 <code>String</code>
+     */
     private void releaseLock(String lockName) {
         try {
             requestMapper.releaseTargetLock(lockName);
@@ -198,6 +299,13 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
         }
     }
 
+    /**
+     * 摘要处理入口。
+     * 关键处理步骤调用 <code>ReviewSummary.builder</code>、<code>entity.getId</code>、<code>entity.getReviewType</code>、<code>entity.getTargetModule</code>。
+     *
+     * @param entity 数据库映射实体；类型为 <code>ReviewRequestEntity</code>
+     * @return 类型为 <code>ReviewSummary</code> 的处理结果
+     */
     private ReviewSummary summary(ReviewRequestEntity entity) {
         return ReviewSummary.builder()
                 .reviewRequestId(entity.getId())
@@ -213,6 +321,18 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
                 .build();
     }
 
+    /**
+     * 动作处理入口。
+     * 关键处理步骤调用 <code>action.setReviewRequestId</code>、<code>action.setActionType</code>、<code>action.setActorAccountId</code>、<code>action.setActorType</code>。
+     *
+     * @param reviewRequestId 审核请求标识；类型为 <code>Long</code>
+     * @param actionType 动作类型；类型为 <code>String</code>
+     * @param actorAccountId 操作者账号标识；类型为 <code>Long</code>
+     * @param actorType 操作者类型；类型为 <code>String</code>
+     * @param note note；类型为 <code>String</code>
+     * @param createdAt 创建时间；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>ReviewActionEntity</code> 的处理结果
+     */
     private static ReviewActionEntity action(Long reviewRequestId, String actionType,
                                              Long actorAccountId, String actorType,
                                              String note, LocalDateTime createdAt) {
@@ -227,6 +347,13 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
     }
 
     // 内部调用方（业务模块）也可能构造出不完整命令，这里做最小必要校验
+    /**
+     * 检查所需Command。
+     * 关键处理步骤调用 <code>command.getApplicantAccountId</code>、<code>command.getTargetId</code>、<code>isBlank</code>、<code>command.getReviewType</code>。
+     * 实现中的显式失败类型包括 <code>ReviewCommandInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param command command；类型为 <code>ReviewSubmissionCommand</code>
+     */
     private static void requireCommand(ReviewSubmissionCommand command) {
         if (command == null) {
             throw new ReviewCommandInvalidException("提交审核的命令不能为空");
@@ -252,6 +379,13 @@ public class ReviewSubmissionServiceImpl implements ReviewSubmissionService {
         }
     }
 
+    /**
+     * 判断是否Blank。
+     * 关键处理步骤调用 <code>value.isBlank</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private static boolean isBlank(String value) {
         return value == null || value.isBlank();
     }

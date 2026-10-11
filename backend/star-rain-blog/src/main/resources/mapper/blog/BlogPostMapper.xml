@@ -2,12 +2,26 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.blog.mapper.BlogPostMapper">
+    <!--
+      BlogPostMapper.xml：com.starrainnotes.blog.mapper.BlogPostMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+    <!--
+      postColumns：文章投影列；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    -->
     <sql id="postColumns">
         p.id, p.slug, p.title, p.summary, p.body_markdown, p.cover_media_asset_id, p.status,
         p.published_at, p.withdrawn_at, p.created_by_account_id, p.updated_by_account_id,
         p.created_at, p.updated_at
     </sql>
+    <!--
+      postListColumns：文章List投影列；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    -->
     <sql id="postListColumns">
         p.id, p.slug, p.title, p.summary, p.cover_media_asset_id, p.status,
         p.published_at, p.withdrawn_at, p.created_by_account_id, p.updated_by_account_id,
@@ -15,19 +29,40 @@
     </sql>
 
     <!-- 后台筛选：关键词命中标题或 slug，标签与专题走 EXISTS 避免 JOIN 造成重复行 -->
+    <!--
+      adminFilters：后台筛选条件；可复用 SQL 片段。
+      涉及数据表：sr_blog_post_tag、sr_blog_topic_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+      绑定参数：keyword、status、tagId、topicId；参数含义参见 Mapper 方法注释。
+    -->
     <sql id="adminFilters">
+        <!--
+          统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+        -->
         <where>
+            <!--
+              条件 keyword != null and keyword != '' 成立时才输出此段 SQL。
+            -->
             <if test="keyword != null and keyword != ''">
                 AND (LOWER(p.title) LIKE CONCAT('%', #{keyword}, '%')
                      OR LOWER(p.slug) LIKE CONCAT('%', #{keyword}, '%'))
             </if>
+            <!--
+              条件 status != null and status != '' 成立时才输出此段 SQL。
+            -->
             <if test="status != null and status != ''">
                 AND p.status = #{status}
             </if>
+            <!--
+              条件 tagId != null 成立时才输出此段 SQL。
+            -->
             <if test="tagId != null">
                 AND EXISTS (SELECT 1 FROM sr_blog_post_tag pt
                             WHERE pt.post_id = p.id AND pt.tag_id = #{tagId})
             </if>
+            <!--
+              条件 topicId != null 成立时才输出此段 SQL。
+            -->
             <if test="topicId != null">
                 AND EXISTS (SELECT 1 FROM sr_blog_topic_post tp
                             WHERE tp.post_id = p.id AND tp.topic_id = #{topicId})
@@ -39,7 +74,16 @@
       公开筛选：status 写死在 SQL 里而不是靠传参。
       参数可以被伪造，SQL 里的常量不行 —— 这是“草稿不进公开接口”的最后一道防线。
     -->
+    <!--
+      publishedFilters：已发布筛选条件；可复用 SQL 片段。
+      涉及数据表：sr_blog_post_tag、sr_blog_tag、sr_blog_topic_post、sr_blog_topic；关系条件与可见性筛选由下方 SQL 明确限定。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+      绑定参数：tagSlug、topicSlug、publishedFrom、publishedTo；参数含义参见 Mapper 方法注释。
+    -->
     <sql id="publishedFilters">
+        <!--
+          统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+        -->
         <where>
             p.status = 'PUBLISHED'
             <!--
@@ -48,27 +92,51 @@
               用「且」几乎永远返回空列表，用户会以为筛选坏了。
               IN 列表交给 MyBatis 生成绑定参数，不做字符串拼接。
             -->
+            <!--
+              条件  成立时才输出此段 SQL。
+            -->
             <if test="tagSlugs != null and tagSlugs.size() > 0">
                 AND EXISTS (SELECT 1 FROM sr_blog_post_tag pt
                             JOIN sr_blog_tag t ON t.id = pt.tag_id
                             WHERE pt.post_id = p.id AND t.slug IN
+                            <!--
+                              遍历 tagSlugs，元素名为 tagSlug；open/close/separator 控制 SQL 列表格式。
+                              集合是否允许为空由外围条件和业务校验决定。
+                            -->
                             <foreach collection="tagSlugs" item="tagSlug" open="(" separator="," close=")">#{tagSlug}</foreach>)
             </if>
+            <!--
+              条件 topicSlug != null and topicSlug != '' 成立时才输出此段 SQL。
+            -->
             <if test="topicSlug != null and topicSlug != ''">
                 AND EXISTS (SELECT 1 FROM sr_blog_topic_post tp
                             JOIN sr_blog_topic top ON top.id = tp.topic_id
                             WHERE tp.post_id = p.id AND top.slug = #{topicSlug})
             </if>
             <!-- 时间归档按 published_at 的范围比较，不用 YEAR()/MONTH()，索引才能生效 -->
+            <!--
+              条件 publishedFrom != null 成立时才输出此段 SQL。
+            -->
             <if test="publishedFrom != null">
                 AND p.published_at &gt;= #{publishedFrom}
             </if>
+            <!--
+              条件 publishedTo != null 成立时才输出此段 SQL。
+            -->
             <if test="publishedTo != null">
                 AND p.published_at &lt; #{publishedTo}
             </if>
         </where>
     </sql>
 
+    <!--
+      insertPost：新增文章；新增语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.blog.entity.BlogPostEntity；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：slug、title、summary、bodyMarkdown、coverMediaAssetId、status、publishedAt、withdrawnAt、createdByAccountId、updatedByAccountId；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertPost" parameterType="com.starrainnotes.blog.entity.BlogPostEntity"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_blog_post (
@@ -80,20 +148,49 @@
         )
     </insert>
 
+    <!--
+      postById：文章依据标识；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="postById" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postColumns"/> FROM sr_blog_post p WHERE p.id = #{id}
     </select>
 
+    <!--
+      postByIdForUpdate：文章依据标识面向更新；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+      锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+    -->
     <select id="postByIdForUpdate" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postColumns"/> FROM sr_blog_post p WHERE p.id = #{id} FOR UPDATE
     </select>
 
+    <!--
+      publishedPostBySlug：已发布文章依据固定链接标识；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postColumns。
+      绑定参数：slug；参数含义参见 Mapper 方法注释。
+    -->
     <select id="publishedPostBySlug" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postColumns"/> FROM sr_blog_post p
         WHERE p.slug = #{slug} AND p.status = 'PUBLISHED'
     </select>
 
     <!-- 同一发布时间用 id 打破平局，草稿和撤回文章不能进入相邻导航。 -->
+    <!--
+      publishedPrevious：已发布上一项；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.vo.BlogPostNeighborVO；集合与单值形态由 Java 方法签名决定。
+      绑定参数：publishedAt、id；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="publishedPrevious" resultType="com.starrainnotes.blog.vo.BlogPostNeighborVO">
         SELECT p.slug, p.title FROM sr_blog_post p
         WHERE p.status = 'PUBLISHED'
@@ -103,6 +200,13 @@
         LIMIT 1
     </select>
 
+    <!--
+      publishedNext：已发布下一项；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.vo.BlogPostNeighborVO；集合与单值形态由 Java 方法签名决定。
+      绑定参数：publishedAt、id；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="publishedNext" resultType="com.starrainnotes.blog.vo.BlogPostNeighborVO">
         SELECT p.slug, p.title FROM sr_blog_post p
         WHERE p.status = 'PUBLISHED'
@@ -112,24 +216,56 @@
         LIMIT 1
     </select>
 
+    <!--
+      publishedPostById：已发布文章依据标识；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="publishedPostById" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postColumns"/> FROM sr_blog_post p
         WHERE p.id = #{id} AND p.status = 'PUBLISHED'
     </select>
 
+    <!--
+      countBySlug：数量依据固定链接标识；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：slug、excludeId；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countBySlug" resultType="long">
         SELECT COUNT(*) FROM sr_blog_post
         WHERE slug = #{slug}
+        <!--
+          条件 excludeId != null 成立时才输出此段 SQL。
+        -->
         <if test="excludeId != null">
             AND id &lt;&gt; #{excludeId}
         </if>
     </select>
 
+    <!--
+      adminPageCount：后台分页数量；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      复用片段：adminFilters。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="adminPageCount" resultType="long">
         SELECT COUNT(*) FROM sr_blog_post p
         <include refid="adminFilters"/>
     </select>
 
+    <!--
+      adminPage：后台分页；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postListColumns、adminFilters。
+      绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="adminPage" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postListColumns"/> FROM sr_blog_post p
         <include refid="adminFilters"/>
@@ -142,6 +278,12 @@
       刻意不用动态 SET：动态 SET 在全空时会生成没有 SET 子句的非法 SQL，
       而“哪些字段算改动”这种判断放在 Java 里可读、可测。
     -->
+    <!--
+      updatePostMeta：更新文章Meta；更新语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：slug、title、summary、updatedByAccountId、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updatePostMeta">
         UPDATE sr_blog_post
         SET slug = #{slug},
@@ -151,6 +293,12 @@
         WHERE id = #{id}
     </update>
 
+    <!--
+      updatePostCover：更新文章封面；更新语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：coverMediaAssetId、updatedByAccountId、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updatePostCover">
         UPDATE sr_blog_post
         SET cover_media_asset_id = #{coverMediaAssetId},
@@ -158,6 +306,12 @@
         WHERE id = #{id}
     </update>
 
+    <!--
+      updatePostBody：更新文章正文；更新语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：bodyMarkdown、updatedByAccountId、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updatePostBody">
         UPDATE sr_blog_post
         SET body_markdown = #{bodyMarkdown},
@@ -166,6 +320,12 @@
     </update>
 
     <!-- COALESCE 保住首次发布时间：撤回后恢复不该把文章重新排到列表最前面 -->
+    <!--
+      publishPost：发布文章；更新语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：publishedAt、updatedByAccountId、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="publishPost">
         UPDATE sr_blog_post
         SET status = 'PUBLISHED',
@@ -175,6 +335,12 @@
         WHERE id = #{id} AND status IN ('DRAFT', 'WITHDRAWN')
     </update>
 
+    <!--
+      withdrawPost：撤回文章；更新语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：withdrawnAt、updatedByAccountId、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="withdrawPost">
         UPDATE sr_blog_post
         SET status = 'WITHDRAWN',
@@ -184,16 +350,37 @@
     </update>
 
     <!-- 公开内容删不掉：WHERE 里的状态条件会让 PUBLISHED 的影响行数为 0 -->
+    <!--
+      deletePost：删除文章；更新语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="deletePost">
         DELETE FROM sr_blog_post
         WHERE id = #{id} AND status IN ('DRAFT', 'WITHDRAWN')
     </update>
 
+    <!--
+      publishedPageCount：已发布分页数量；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      复用片段：publishedFilters。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="publishedPageCount" resultType="long">
         SELECT COUNT(*) FROM sr_blog_post p
         <include refid="publishedFilters"/>
     </select>
 
+    <!--
+      publishedPage：已发布分页；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postListColumns、publishedFilters。
+      绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="publishedPage" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postListColumns"/> FROM sr_blog_post p
         <include refid="publishedFilters"/>
@@ -206,6 +393,13 @@
       停用专题的成员不会因为前端传对了 slug 就泄露出去。
       顺序取 tp.sort_order（策展顺序），同一序号用 id 打破平局。
     -->
+    <!--
+      publishedTopicPageCount：已发布专题分页数量；读取语句。
+      涉及数据表：sr_blog_post、sr_blog_topic_post、sr_blog_topic；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：topicSlug；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="publishedTopicPageCount" resultType="long">
         SELECT COUNT(*)
         FROM sr_blog_post p
@@ -214,6 +408,14 @@
         WHERE p.status = 'PUBLISHED' AND t.status = 'ENABLED' AND t.slug = #{topicSlug}
     </select>
 
+    <!--
+      publishedTopicPage：已发布专题分页；读取语句。
+      涉及数据表：sr_blog_post、sr_blog_topic_post、sr_blog_topic；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postListColumns。
+      绑定参数：topicSlug、limit、offset；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="publishedTopicPage" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postListColumns"/>
         FROM sr_blog_post p
@@ -224,6 +426,12 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <!--
+      archiveMonths：archiveMonths；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.vo.BlogArchiveMonthVO；集合与单值形态由 Java 方法签名决定。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="archiveMonths" resultType="com.starrainnotes.blog.vo.BlogArchiveMonthVO">
         SELECT YEAR(published_at) AS `year`,
                MONTH(published_at) AS `month`,
@@ -235,6 +443,13 @@
     </select>
 
     <!-- 月份范围命中发布时间索引，只对当月的已发布文章做按日聚合。 -->
+    <!--
+      archiveDays：archiveDays；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.vo.BlogArchiveDayVO；集合与单值形态由 Java 方法签名决定。
+      绑定参数：publishedFrom、publishedTo；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="archiveDays" resultType="com.starrainnotes.blog.vo.BlogArchiveDayVO">
         SELECT DAY(p.published_at) AS `day`, COUNT(*) AS post_count
         FROM sr_blog_post p
@@ -253,6 +468,12 @@
         一次查询取回三列，避免首页为三个数字打三次接口。
         published_at IS NOT NULL 必须保留：撤回过的文章可能没有首次发布时间。
     -->
+    <!--
+      publishedStats：已发布统计字段；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.vo.BlogPublicStatsVO；集合与单值形态由 Java 方法签名决定。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="publishedStats" resultType="com.starrainnotes.blog.vo.BlogPublicStatsVO">
         SELECT COUNT(*) AS postCount,
                COALESCE(SUM(CHAR_LENGTH(body_markdown)), 0) AS wordCount,
@@ -261,6 +482,14 @@
         WHERE status = 'PUBLISHED' AND published_at IS NOT NULL
     </select>
 
+    <!--
+      latestPublished：最新已发布；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postListColumns。
+      绑定参数：limit；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="latestPublished" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postListColumns"/> FROM sr_blog_post p
         WHERE p.status = 'PUBLISHED'
@@ -268,6 +497,14 @@
         LIMIT #{limit}
     </select>
 
+    <!--
+      publishedByTopicSlug：已发布依据专题固定链接标识；读取语句。
+      涉及数据表：sr_blog_post、sr_blog_topic_post、sr_blog_topic；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postListColumns。
+      绑定参数：topicSlug、limit；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="publishedByTopicSlug" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postListColumns"/> FROM sr_blog_post p
         WHERE p.status = 'PUBLISHED'
@@ -279,9 +516,20 @@
     </select>
 
     <!-- 游标用主键而不是 offset：增量重建索引时不依赖上次查到的位置 -->
+    <!--
+      publishedAfterCursor：已发布之后Cursor；读取语句。
+      涉及数据表：sr_blog_post；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.blog.entity.BlogPostEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：postColumns。
+      绑定参数：cursorId、limit；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="publishedAfterCursor" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
         SELECT <include refid="postColumns"/> FROM sr_blog_post p
         WHERE p.status = 'PUBLISHED'
+        <!--
+          条件 cursorId != null 成立时才输出此段 SQL。
+        -->
         <if test="cursorId != null">
             AND p.id &gt; #{cursorId}
         </if>

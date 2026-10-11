@@ -1,3 +1,11 @@
+/**
+ * upload.spec.js：媒体模块的自动化测试。
+ * 职责范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、./upload。
+ * 验证场景：editor image upload；rejects unsupported, empty and oversized files before upload；inserts the server media address and escapes malformed names；never displays private paths from an old storage error response；distinguishes text validation and server failure without exposing response internals。
+ */
+
 import { describe, expect, it } from 'vitest'
 import { imageMarkdown, mediaUploadError, validateEditorImage } from './upload'
 

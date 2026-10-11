@@ -1,3 +1,11 @@
+/*
+ * ReviewMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：ReviewActionEntity、ReviewRequestEntity、ReviewActionMapper、ReviewRequestMapper。
+ * 阅读入口：open（打开审核数据映射Xml）；rollback（回滚审核数据映射Xml）；everyReviewMapperIsReachableThroughTheSession（every审核数据映射是否ReachableThroughThe会话处理入口）；insertedRequestRoundTripsEveryColumnAndBackfillsItsId（inserted请求RoundTripsEvery列及BackfillsIts标识处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,14 +40,36 @@ import org.junit.jupiter.api.Test;
  *
  * 全程在一个不 commit 的 SqlSession 里跑，@AfterEach 回滚；最后一个用例用新连接复核。
  */
+/**
+ * 审核数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * requests。
+     * 协作类型：<code>ReviewRequestMapper</code>。
+     */
     private ReviewRequestMapper requests;
+    /**
+     * actions。
+     * 协作类型：<code>ReviewActionMapper</code>。
+     */
     private ReviewActionMapper actions;
 
+    /**
+     * 打开审核数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -47,6 +77,10 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
         actions = session.getMapper(ReviewActionMapper.class);
     }
 
+    /**
+     * 回滚审核数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -55,12 +89,19 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * every审核数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void everyReviewMapperIsReachableThroughTheSession() {
         assertNotNull(requests);
         assertNotNull(actions);
     }
 
+    /**
+     * inserted请求RoundTripsEvery列及BackfillsIts标识处理入口。
+     * 主要协作调用：<code>requests.insertRequest</code>、<code>requests.requestById</code>。
+     */
     @Test
     void insertedRequestRoundTripsEveryColumnAndBackfillsItsId() {
         LocalDateTime submittedAt = now().minusMinutes(3);
@@ -92,6 +133,10 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(requests.requestById(-1L), "不存在的 id 应返回 null");
     }
 
+    /**
+     * 查询待处理PicksTheNewest待处理行面向单次目标处理入口。
+     * 主要协作调用：<code>requests.insertRequest</code>、<code>requests.selectPending</code>、<code>requests.approveIfPending</code>。
+     */
     @Test
     void selectPendingPicksTheNewestPendingRowForOneTarget() {
         long targetId = probeId();
@@ -124,6 +169,10 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
                 "两条都批完以后不应该再查到待审请求");
     }
 
+    /**
+     * 待处理ListHonoursItsThreeOptional筛选及Ordering处理入口。
+     * 主要协作调用：<code>requests.insertRequest</code>、<code>requests.pendingCount</code>、<code>requests.pendingPage</code>。
+     */
     @Test
     void pendingListHonoursItsThreeOptionalFiltersAndOrdering() {
         String keyword = unique("mapperxmlpendingpage");
@@ -161,6 +210,10 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(2, requests.pendingPage(module, null, keyword, 0, 10).size());
     }
 
+    /**
+     * every决定GuardAppliesExactlyOnce处理入口。
+     * 主要协作调用：<code>requests.insertRequest</code>、<code>requests.approveIfPending</code>、<code>requests.requestById</code>、<code>requests.rejectIfPending</code>、<code>requests.cancelIfPending</code>。
+     */
     @Test
     void everyDecisionGuardAppliesExactlyOnce() {
         ReviewRequestEntity approvable = newRequest("TUTORIAL_PUBLISH", "TUTORIAL", "TUTORIAL",
@@ -217,6 +270,10 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, requests.cancelIfPending(-1L, now()));
     }
 
+    /**
+     * 历史筛选及Ordering封面EveryOptionalCondition处理入口。
+     * 主要协作调用：<code>requests.insertRequest</code>、<code>requests.rejectIfPending</code>、<code>requests.cancelIfPending</code>、<code>requests.historyCount</code>、<code>requests.historyPage</code>。
+     */
     @Test
     void historyFiltersAndOrderingCoverEveryOptionalCondition() {
         String module = unique("MAPPERXMLHISTORY");
@@ -273,6 +330,10 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
                         .get(0).getId(), "OFFSET 没生效");
     }
 
+    /**
+     * 目标Named锁CanBeAcquired及Released处理入口。
+     * 主要协作调用：<code>requests.acquireTargetLock</code>、<code>requests.releaseTargetLock</code>。
+     */
     @Test
     void targetNamedLockCanBeAcquiredAndReleased() {
         String lockName = "mapper-xml-test-lock-" + unique("review");
@@ -280,6 +341,10 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, requests.releaseTargetLock(lockName), "RELEASE_LOCK 应当成功释放自己拿到的锁");
     }
 
+    /**
+     * 动作历史Appends内部顺序及是否具备不含更新或删除处理入口。
+     * 主要协作调用：<code>requests.insertRequest</code>、<code>actions.selectByReviewRequestId</code>、<code>actions.insertAction</code>。
+     */
     @Test
     void actionHistoryAppendsInOrderAndHasNoUpdateOrDelete() {
         ReviewRequestEntity request = newRequest("TUTORIAL_PUBLISH", "TUTORIAL", "TUTORIAL",
@@ -311,6 +376,10 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
                 "别人的审核请求不应带出动作历史");
     }
 
+    /**
+     * 回滚Leaves不含审核测试样本行集合Behind。
+     * 主要协作调用：<code>requests.insertRequest</code>、<code>actions.insertAction</code>、<code>session.rollback</code>。
+     */
     @Test
     void rollbackLeavesNoReviewProbeRowsBehind() {
         ReviewRequestEntity request = newRequest("TUTORIAL_PUBLISH", "TUTORIAL", "TUTORIAL",
@@ -331,6 +400,18 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * new请求处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param reviewType 审核类型；类型为 <code>String</code>
+     * @param module module；类型为 <code>String</code>
+     * @param type 类型；类型为 <code>String</code>
+     * @param targetId 被处理或审核的目标对象标识；类型为 <code>long</code>
+     * @param submittedAt 提交时间；类型为 <code>LocalDateTime</code>
+     * @param displayName 显示名称；类型为 <code>String</code>
+     * @return 类型为 <code>ReviewRequestEntity</code> 的处理结果
+     */
     private ReviewRequestEntity newRequest(String reviewType, String module, String type, long targetId,
                                            LocalDateTime submittedAt, String displayName) {
         ReviewRequestEntity request = new ReviewRequestEntity();
@@ -348,6 +429,17 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
         return request;
     }
 
+    /**
+     * new动作处理入口。
+     * 关键处理步骤调用 <code>action.setReviewRequestId</code>、<code>action.setActionType</code>、<code>action.setActorAccountId</code>、<code>action.setActorType</code>。
+     *
+     * @param requestId 请求标识；类型为 <code>Long</code>
+     * @param type 类型；类型为 <code>String</code>
+     * @param actorId 操作者标识；类型为 <code>Long</code>
+     * @param actorType 操作者类型；类型为 <code>String</code>
+     * @param note note；类型为 <code>String</code>
+     * @return 类型为 <code>ReviewActionEntity</code> 的处理结果
+     */
     private ReviewActionEntity newAction(Long requestId, String type, Long actorId, String actorType, String note) {
         ReviewActionEntity action = new ReviewActionEntity();
         action.setReviewRequestId(requestId);
@@ -360,14 +452,31 @@ class ReviewMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实账户/内容撞号 */
+    /**
+     * 测试样本标识处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long probeId() {
         return 900_000_000_000L + PROBE.incrementAndGet();
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
     }

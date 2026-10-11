@@ -1,3 +1,11 @@
+/*
+ * TutorialMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：TutorialCategoryEntity、TutorialDashboardStatsDTO、TutorialChapterEntity、TutorialEntity、TutorialGroupEntity、TutorialKnowledgeCardEntity、TutorialQuestionEntity。
+ * 阅读入口：open（打开教程数据映射Xml）；rollback（回滚教程数据映射Xml）；everyTutorialMapperIsReachableThroughTheSession（every教程数据映射是否ReachableThroughThe会话处理入口）；categoryMapperRoundTripsCrudAndOrdering（分类数据映射RoundTripsCrud及Ordering处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -65,28 +73,106 @@ import org.junit.jupiter.api.Test;
  * 全程在一个不 commit 的 SqlSession 里跑，@AfterEach 回滚；另有一个用例显式用新连接
  * 断言回滚后库里没有残留测试数据。
  */
+/**
+ * 教程数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * categories。
+     * 协作类型：<code>TutorialCategoryMapper</code>。
+     */
     private TutorialCategoryMapper categories;
+    /**
+     * tutorials。
+     * 协作类型：<code>TutorialMapper</code>。
+     */
     private TutorialMapper tutorials;
+    /**
+     * groups。
+     * 协作类型：<code>TutorialGroupMapper</code>。
+     */
     private TutorialGroupMapper groups;
+    /**
+     * 章节列表。
+     * 协作类型：<code>TutorialChapterMapper</code>。
+     */
     private TutorialChapterMapper chapters;
+    /**
+     * 卡片集合。
+     * 协作类型：<code>TutorialKnowledgeCardMapper</code>。
+     */
     private TutorialKnowledgeCardMapper cards;
+    /**
+     * 问题集合。
+     * 协作类型：<code>TutorialQuestionMapper</code>。
+     */
     private TutorialQuestionMapper questions;
+    /**
+     * 修订集合。
+     * 协作类型：<code>TutorialRevisionMapper</code>。
+     */
     private TutorialRevisionMapper revisions;
+    /**
+     * plans。
+     * 协作类型：<code>StudyPlanMapper</code>。
+     */
     private StudyPlanMapper plans;
+    /**
+     * tasks。
+     * 协作类型：<code>StudyTaskMapper</code>。
+     */
     private StudyTaskMapper tasks;
+    /**
+     * 进度。
+     * 协作类型：<code>LearningProgressMapper</code>。
+     */
     private LearningProgressMapper progress;
+    /**
+     * 历史。
+     * 协作类型：<code>LearningHistoryMapper</code>。
+     */
     private LearningHistoryMapper history;
+    /**
+     * 掌握。
+     * 协作类型：<code>KnowledgeMasteryMapper</code>。
+     */
     private KnowledgeMasteryMapper mastery;
+    /**
+     * 审核Tasks。
+     * 协作类型：<code>ReviewTaskMapper</code>。
+     */
     private ReviewTaskMapper reviewTasks;
+    /**
+     * schedules。
+     * 协作类型：<code>ReviewScheduleMapper</code>。
+     */
     private ReviewScheduleMapper schedules;
+    /**
+     * 审核结果集合。
+     * 协作类型：<code>ReviewResultMapper</code>。
+     */
     private ReviewResultMapper reviewResults;
+    /**
+     * 答案集合。
+     * 协作类型：<code>UserQuestionAnswerMapper</code>。
+     */
     private UserQuestionAnswerMapper answers;
 
+    /**
+     * 打开教程数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -108,6 +194,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         answers = session.getMapper(UserQuestionAnswerMapper.class);
     }
 
+    /**
+     * 回滚教程数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -116,6 +206,9 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * every教程数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void everyTutorialMapperIsReachableThroughTheSession() {
         assertNotNull(categories);
@@ -136,6 +229,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(answers);
     }
 
+    /**
+     * 分类数据映射RoundTripsCrud及Ordering处理入口。
+     * 主要协作调用：<code>categories.insert</code>、<code>categories.selectById</code>、<code>categories.countBySlug</code>、<code>categories.listOrdered</code>、<code>categories.updateName</code>。
+     */
     @Test
     void categoryMapperRoundTripsCrudAndOrdering() {
         TutorialCategoryEntity row = newCategory(unique("mapper-xml-test-category"));
@@ -164,6 +261,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(categories.selectById(row.getId()));
     }
 
+    /**
+     * 概览Queries数量草稿章节列表及上限Recent行集合处理入口。
+     * 主要协作调用：<code>tutorials.dashboardStats</code>、<code>categories.insert</code>、<code>tutorials.insert</code>、<code>groups.insert</code>、<code>chapters.insert</code>。
+     */
     @Test
     void dashboardQueriesCountDraftChaptersAndLimitRecentRows() {
         TutorialDashboardStatsDTO before = tutorials.dashboardStats();
@@ -187,6 +288,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
             && row.getTitle() != null && row.getUpdatedAt() != null));
     }
 
+    /**
+     * 教程数据映射RoundTripsWorkspace行及Clears已撤回时间处理入口。
+     * 主要协作调用：<code>categories.insert</code>、<code>tutorials.insert</code>、<code>tutorials.selectById</code>、<code>tutorials.byIdForUpdate</code>、<code>tutorials.countBySlug</code>。
+     */
     @Test
     void tutorialMapperRoundTripsWorkspaceRowAndClearsWithdrawnAt() {
         TutorialCategoryEntity category = newCategory(unique("mapper-xml-test-tutorial-category"));
@@ -239,6 +344,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(tutorials.listPublished().stream().anyMatch(item -> item.getId().equals(row.getId())));
     }
 
+    /**
+     * 分组数据映射RoundTrips标题状态及顺序处理入口。
+     * 主要协作调用：<code>groups.insert</code>、<code>groups.selectById</code>、<code>groups.listByTutorialId</code>、<code>groups.listActiveByTutorialId</code>、<code>groups.countByTutorialId</code>。
+     */
     @Test
     void groupMapperRoundTripsTitleStatusAndOrder() {
         TutorialEntity tutorial = insertTutorial();
@@ -266,6 +375,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
                 .noneMatch(item -> item.getId().equals(group.getId())));
     }
 
+    /**
+     * 章节数据映射RoundTrips正文状态Move及Clears摘要处理入口。
+     * 主要协作调用：<code>groups.insert</code>、<code>chapters.insert</code>、<code>chapters.selectById</code>、<code>chapters.countByTutorialId</code>、<code>chapters.countActiveByGroupId</code>。
+     */
     @Test
     void chapterMapperRoundTripsBodyStatusMoveAndClearsSummary() {
         TutorialEntity tutorial = insertTutorial();
@@ -318,6 +431,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(chapters.listByGroupId(group.getId()).stream().noneMatch(item -> item.getId().equals(chapter.getId())));
     }
 
+    /**
+     * 知识卡片数据映射RoundTrips内容状态及删除处理入口。
+     * 主要协作调用：<code>cards.insert</code>、<code>cards.selectById</code>、<code>cards.listByChapterId</code>、<code>cards.listEnabledByChapterId</code>、<code>cards.updateContent</code>。
+     */
     @Test
     void knowledgeCardMapperRoundTripsContentStatusAndDelete() {
         TutorialChapterEntity chapter = insertChapter();
@@ -355,6 +472,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(cards.selectById(card.getId()));
     }
 
+    /**
+     * 问题数据映射RoundTrips内容状态及删除处理入口。
+     * 主要协作调用：<code>questions.insert</code>、<code>questions.selectById</code>、<code>questions.listByChapterId</code>、<code>questions.listEnabledByChapterId</code>、<code>questions.updateContent</code>。
+     */
     @Test
     void questionMapperRoundTripsContentStatusAndDelete() {
         TutorialChapterEntity chapter = insertChapter();
@@ -389,6 +510,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(questions.selectById(question.getId()));
     }
 
+    /**
+     * 修订数据映射RoundTrips快照Ref及最新处理入口。
+     * 主要协作调用：<code>revisions.insert</code>、<code>revisions.countByTutorialId</code>、<code>revisions.selectById</code>、<code>revisions.selectByTutorialIdAndRef</code>、<code>revisions.selectLatestByTutorialId</code>。
+     */
     @Test
     void revisionMapperRoundTripsSnapshotRefAndLatest() {
         TutorialEntity tutorial = insertTutorial();
@@ -415,6 +540,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
                 "最新版本必须按 revision_no 倒序取一条");
     }
 
+    /**
+     * 学习计划数据映射保留不空值Semantics面向Optional列集合处理入口。
+     * 主要协作调用：<code>plans.insert</code>、<code>plans.selectById</code>、<code>plans.countActiveByAccountId</code>、<code>plans.listRecentByAccountId</code>、<code>plans.updateDefinition</code>。
+     */
     @Test
     void studyPlanMapperKeepsNotNullSemanticsForOptionalColumns() {
         Long accountId = probeId();
@@ -457,6 +586,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, plans.countActiveByAccountId(accountId));
     }
 
+    /**
+     * 学习任务数据映射FollowsIts状态Guards及计划Recompute处理入口。
+     * 主要协作调用：<code>tasks.insertPlanned</code>、<code>tasks.listByPlanId</code>、<code>tasks.selectById</code>、<code>tasks.listDueByAccountId</code>、<code>tasks.listCompletedByPlanId</code>。
+     */
     @Test
     void studyTaskMapperFollowsItsStateGuardsAndPlanRecompute() {
         Long planId = probeId();
@@ -504,6 +637,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, tasks.listByPlanId(planId).size());
     }
 
+    /**
+     * 学习进度数据映射UpsertsAccumulates及CompletesOnce处理入口。
+     * 主要协作调用：<code>progress.ensureRow</code>、<code>progress.selectByAccountIdAndChapterId</code>、<code>progress.upsertReading</code>、<code>progress.markCompleted</code>、<code>progress.listByAccountId</code>。
+     */
     @Test
     void learningProgressMapperUpsertsAccumulatesAndCompletesOnce() {
         Long accountId = probeId();
@@ -545,6 +682,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, progress.listRecentByAccountId(accountId).size());
     }
 
+    /**
+     * 学习历史数据映射Appends及PagesNewest首次处理入口。
+     * 主要协作调用：<code>history.insert</code>、<code>history.countByAccountId</code>、<code>history.pageByAccountId</code>。
+     */
     @Test
     void learningHistoryMapperAppendsAndPagesNewestFirst() {
         Long accountId = probeId();
@@ -578,6 +719,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(secondPage.get(0).getDetailJson(), "detail_json 为 null 的事件也要能读回");
     }
 
+    /**
+     * 知识掌握数据映射EnsuresOnce及Updates证据处理入口。
+     * 主要协作调用：<code>mastery.ensure</code>、<code>mastery.selectByAccountIdAndCardId</code>、<code>mastery.listByAccountId</code>、<code>mastery.ensureLearned</code>、<code>mastery.markLearned</code>。
+     */
     @Test
     void knowledgeMasteryMapperEnsuresOnceAndUpdatesEvidence() {
         Long accountId = probeId();
@@ -616,6 +761,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(3, self.getEvidenceCount().intValue(), "自评不应影响证据统计");
     }
 
+    /**
+     * 审核任务数据映射FollowsDue及状态Guards处理入口。
+     * 主要协作调用：<code>reviewTasks.insertDue</code>、<code>reviewTasks.listPendingByAccountId</code>、<code>reviewTasks.selectById</code>、<code>reviewTasks.countCompletedByAccountId</code>、<code>reviewTasks.markOverdue</code>。
+     */
     @Test
     void reviewTaskMapperFollowsDueAndStatusGuards() {
         Long accountId = probeId();
@@ -647,6 +796,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(reviewTasks.listPendingByAccountId(accountId).isEmpty());
     }
 
+    /**
+     * 审核Schedule数据映射QueuesDue行集合OnlyOnce处理入口。
+     * 主要协作调用：<code>schedules.ensure</code>、<code>schedules.dueUnqueuedForAccount</code>、<code>schedules.selectById</code>、<code>schedules.dueUnqueued</code>、<code>reviewTasks.insertDue</code>。
+     */
     @Test
     void reviewScheduleMapperQueuesDueRowsOnlyOnce() {
         Long accountId = probeId();
@@ -679,6 +832,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(advanced.getLastResultAt());
     }
 
+    /**
+     * 审核结果数据映射数量集合OnlyGoodRatings处理入口。
+     * 主要协作调用：<code>reviewResults.insert</code>、<code>reviewResults.countGoodByAccountIdAndCardId</code>。
+     */
     @Test
     void reviewResultMapperCountsOnlyGoodRatings() {
         Long accountId = probeId();
@@ -700,6 +857,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
                 "只应统计当前账户自己的复习结果");
     }
 
+    /**
+     * 用户问题答案数据映射Upserts不含Losing首次Submission时间处理入口。
+     * 主要协作调用：<code>answers.selectByAccountIdAndQuestionId</code>、<code>answers.upsertAnswer</code>。
+     */
     @Test
     void userQuestionAnswerMapperUpsertsWithoutLosingFirstSubmissionTime() {
         Long accountId = probeId();
@@ -721,6 +882,10 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(first.getId(), updated.getId(), "同一账户同一题目只应有一行");
     }
 
+    /**
+     * 回滚Leaves不含测试行集合内部TheDevelopment数据库。
+     * 主要协作调用：<code>categories.insert</code>、<code>session.rollback</code>。
+     */
     @Test
     void rollbackLeavesNoTestRowsInTheDevelopmentDatabase() {
         TutorialCategoryEntity row = newCategory(unique("mapper-xml-test-rollback"));
@@ -735,6 +900,11 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 写入教程。
+     * 主要协作调用：<code>categories.insert</code>、<code>tutorials.insert</code>。
+     * @return 类型为 <code>TutorialEntity</code> 的处理结果
+     */
     private TutorialEntity insertTutorial() {
         TutorialCategoryEntity category = newCategory(unique("mapper-xml-test-category"));
         categories.insert(category);
@@ -743,6 +913,11 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         return tutorial;
     }
 
+    /**
+     * 写入章节。
+     * 主要协作调用：<code>groups.insert</code>、<code>chapters.insert</code>。
+     * @return 类型为 <code>TutorialChapterEntity</code> 的处理结果
+     */
     private TutorialChapterEntity insertChapter() {
         TutorialEntity tutorial = insertTutorial();
         TutorialGroupEntity group = newGroup(tutorial.getId(), "分组");
@@ -752,6 +927,13 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         return chapter;
     }
 
+    /**
+     * new分类处理入口。
+     * 关键处理步骤调用 <code>row.setName</code>、<code>row.setSlug</code>、<code>row.setSortOrder</code>。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialCategoryEntity</code> 的处理结果
+     */
     private TutorialCategoryEntity newCategory(String slug) {
         TutorialCategoryEntity row = new TutorialCategoryEntity();
         row.setName("XML 验证分类");
@@ -760,6 +942,14 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         return row;
     }
 
+    /**
+     * new教程处理入口。
+     * 关键处理步骤调用 <code>row.setCategoryId</code>、<code>row.setSlug</code>、<code>row.setTitle</code>、<code>row.setSummary</code>。
+     *
+     * @param categoryId 分类标识；类型为 <code>Long</code>
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialEntity</code> 的处理结果
+     */
     private TutorialEntity newTutorial(Long categoryId, String slug) {
         TutorialEntity row = new TutorialEntity();
         row.setCategoryId(categoryId);
@@ -774,6 +964,14 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         return row;
     }
 
+    /**
+     * new分组处理入口。
+     * 关键处理步骤调用 <code>row.setTutorialId</code>、<code>row.setTitle</code>、<code>row.setSortOrder</code>、<code>row.setStatus</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @param title 标题；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialGroupEntity</code> 的处理结果
+     */
     private TutorialGroupEntity newGroup(Long tutorialId, String title) {
         TutorialGroupEntity row = new TutorialGroupEntity();
         row.setTutorialId(tutorialId);
@@ -783,6 +981,15 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         return row;
     }
 
+    /**
+     * new章节处理入口。
+     * 关键处理步骤调用 <code>row.setTutorialId</code>、<code>row.setGroupId</code>、<code>row.setSlug</code>、<code>row.setTitle</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @param groupId 分组标识；类型为 <code>Long</code>
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialChapterEntity</code> 的处理结果
+     */
     private TutorialChapterEntity newChapter(Long tutorialId, Long groupId, String slug) {
         TutorialChapterEntity row = new TutorialChapterEntity();
         row.setTutorialId(tutorialId);
@@ -796,6 +1003,14 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         return row;
     }
 
+    /**
+     * new修订处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @param revisionNo 修订不含；类型为 <code>int</code>
+     * @return 类型为 <code>TutorialRevisionEntity</code> 的处理结果
+     */
     private TutorialRevisionEntity newRevision(Long tutorialId, int revisionNo) {
         TutorialRevisionEntity row = new TutorialRevisionEntity();
         row.setTutorialId(tutorialId);
@@ -807,6 +1022,13 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         return row;
     }
 
+    /**
+     * new计划处理入口。
+     * 关键处理步骤调用 <code>row.setAccountId</code>、<code>row.setTutorialId</code>、<code>probeId</code>、<code>row.setName</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @return 类型为 <code>StudyPlanEntity</code> 的处理结果
+     */
     private StudyPlanEntity newPlan(Long accountId) {
         StudyPlanEntity row = new StudyPlanEntity();
         row.setAccountId(accountId);
@@ -821,6 +1043,15 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
         return row;
     }
 
+    /**
+     * new审核结果处理入口。
+     * 关键处理步骤调用 <code>row.setReviewTaskId</code>、<code>probeId</code>、<code>row.setScheduleId</code>、<code>row.setAccountId</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param cardId 卡片标识；类型为 <code>Long</code>
+     * @param rating 评分；类型为 <code>String</code>
+     * @return 类型为 <code>ReviewResultEntity</code> 的处理结果
+     */
     private ReviewResultEntity newReviewResult(Long accountId, Long cardId, String rating) {
         ReviewResultEntity row = new ReviewResultEntity();
         row.setReviewTaskId(probeId());
@@ -836,14 +1067,31 @@ class TutorialMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* 只做逻辑外键，库里没有物理 FOREIGN KEY；用一个大号段避免和真实账户/教程撞号 */
+    /**
+     * 测试样本标识处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long probeId() {
         return 900_000_000_000L + PROBE.incrementAndGet();
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now(ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS);
     }

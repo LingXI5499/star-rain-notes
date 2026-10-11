@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * AdminInvitationsPage.vue：账号模块的页面组件。
+ * 职责范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：../../../shared/composables/paginationScroll、vue、vue-router、../api/accountApi、../api/http、../support/display。
+ * 主要响应式状态：data、page、loading、busy、error、notice、latestLink、confirm。
+ * 阅读入口：statusLabel（状态标签的处理函数）；load（加载当前操作）；changePage（change分页的处理函数）；act（act的处理函数）。
+ */
+
+
 import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
@@ -7,17 +17,65 @@ import { errorMessage } from '../api/http'
 import { dateLabel } from '../support/display'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
 
+/**
+ * 数据；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const data = ref({ items: [], total: 0, pageSize: 20 })
+/**
+ * 分页页码；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const page = ref(1)
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * busy；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const busy = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
+/**
+ * 最新链接；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const latestLink = ref('')
+/**
+ * 确认；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const confirm = ref(null)
+/**
+ * 总数Pages；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const totalPages = computed(() => Math.max(1, Math.ceil(data.value.total / 20)))
+/**
+ * 状态标签的处理函数。
+ * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const statusLabel = (status) => ({ PENDING: '待接受', ACCEPTED: '已接受', REVOKED: '已撤销', EXPIRED: '已过期' })[status] || status
 
+/**
+ * 加载当前操作。
+ * 主要协作：api.listInvitations、errorMessage。
+ * 更新的响应式状态包括 loading、error、data；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   loading.value = true
   error.value = ''
@@ -26,8 +84,24 @@ async function load() {
   finally { loading.value = false }
 }
 
+/**
+ * change分页的处理函数。
+ * 主要协作：load。
+ * 更新的响应式状态包括 page；渲染由 Vue 的依赖跟踪触发。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function changePage(value) { page.value = value; await load() }
 
+/**
+ * act的处理函数。
+ * 主要协作：confirm.value.ask、api.resendInvitation、api.revokeInvitation、load、errorMessage。
+ * 更新的响应式状态包括 busy、error、notice、latestLink；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ * @param action 动作；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function act(item, action) {
   if (busy.value) return
   const message = action === 'resend'
@@ -49,6 +123,9 @@ async function act(item, action) {
   } catch (cause) { error.value = errorMessage(cause) }
   finally { busy.value = false }
 }
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(load)
 usePaginationScroll(() => page.value, () => loading.value)
 </script>

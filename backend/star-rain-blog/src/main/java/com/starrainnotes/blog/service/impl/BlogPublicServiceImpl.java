@@ -1,3 +1,11 @@
+/*
+ * BlogPublicServiceImpl：博客模块的业务实现文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：BlogLimits、BlogPublicQueryDTO、BlogPostEntity、BlogPostNotFoundException、BlogQueryInvalidException、BlogTopicNotFoundException、BlogPostMapper。
+ * 阅读入口：listPosts（列出文章列表）；postBySlug（按固定链接标识读取文章）；archive（archive处理入口）；topicBySlug（按固定链接标识读取专题）。
+ */
+
 package com.starrainnotes.blog.service.impl;
 
 import com.starrainnotes.blog.constant.BlogLimits;
@@ -39,17 +47,48 @@ import org.springframework.transaction.annotation.Transactional;
  * 用 YEAR()/MONTH() 会让 idx_sr_blog_post_status_published 失去作用，
  * 而且跨年边界容易写错（12 月 + 1 个月是次年 1 月）。
  */
+/**
+ * 博客公开业务服务实现，属于博客模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class BlogPublicServiceImpl implements BlogPublicService {
 
     // 标签筛选的个数上限：再多就不是筛选，而是把 SQL 的 IN 列表撑大
+    /**
+     * 最大。
+     * 初始值为 <code>20</code>。
+     */
     private static final int TAG_FILTER_MAX = 20;
 
+    /**
+     * 文章数据映射。
+     * 协作类型：<code>BlogPostMapper</code>。
+     */
     private final BlogPostMapper postMapper;
+    /**
+     * 标签数据映射。
+     * 协作类型：<code>BlogTagMapper</code>。
+     */
     private final BlogTagMapper tagMapper;
+    /**
+     * 专题数据映射。
+     * 协作类型：<code>BlogTopicMapper</code>。
+     */
     private final BlogTopicMapper topicMapper;
+    /**
+     * 组装器。
+     */
     private final BlogViewAssembler assembler;
 
+    /**
+     * 构造BlogPublicServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param postMapper 文章数据映射；类型为 <code>BlogPostMapper</code>
+     * @param tagMapper 标签数据映射；类型为 <code>BlogTagMapper</code>
+     * @param topicMapper 专题数据映射；类型为 <code>BlogTopicMapper</code>
+     * @param assembler 组装器；类型为 <code>BlogViewAssembler</code>
+     */
     public BlogPublicServiceImpl(BlogPostMapper postMapper,
                                  BlogTagMapper tagMapper,
                                  BlogTopicMapper topicMapper,
@@ -60,6 +99,14 @@ public class BlogPublicServiceImpl implements BlogPublicService {
         this.assembler = assembler;
     }
 
+    /**
+     * 列出文章列表。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>BlogQueryRules.validatePage</code>、<code>query.getPage</code>、<code>query.getPageSize</code>、<code>tagSlugs</code>。
+     *
+     * @param query 查询参数；类型为 <code>BlogPublicQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;BlogPostPublicVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<BlogPostPublicVO> listPosts(BlogPublicQueryDTO query) {
@@ -69,6 +116,15 @@ public class BlogPublicServiceImpl implements BlogPublicService {
         return page(query, tagSlugs, topicSlug, null, null);
     }
 
+    /**
+     * 按固定链接标识读取文章。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.publishedPostBySlug</code>、<code>assembler.toPublicDetailVO</code>、<code>postMapper.publishedPrevious</code>、<code>postMapper.publishedNext</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @return 类型为 <code>BlogPostPublicDetailVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public BlogPostPublicDetailVO postBySlug(String slug) {
@@ -86,6 +142,14 @@ public class BlogPublicServiceImpl implements BlogPublicService {
         return detail;
     }
 
+    /**
+     * archive处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>BlogQueryRules.validatePage</code>、<code>query.getPage</code>、<code>query.getPageSize</code>、<code>tagSlugs</code>。
+     *
+     * @param query 查询参数；类型为 <code>BlogPublicQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;BlogPostPublicVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<BlogPostPublicVO> archive(BlogPublicQueryDTO query) {
@@ -105,6 +169,17 @@ public class BlogPublicServiceImpl implements BlogPublicService {
         return page(query, tagSlugs, topicSlug, from, to);
     }
 
+    /**
+     * 按固定链接标识读取专题。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.publishedTopicBySlug</code>、<code>postMapper.publishedTopicPageCount</code>、<code>assembler.toPublicVOs</code>、<code>postMapper.publishedTopicPage</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @return 类型为 <code>BlogTopicDetailVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public BlogTopicDetailVO topicBySlug(String slug, int page, int pageSize) {
@@ -131,12 +206,24 @@ public class BlogPublicServiceImpl implements BlogPublicService {
                 .build();
     }
 
+    /**
+     * archiveMonths处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.archiveMonths</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BlogArchiveMonthVO> archiveMonths() {
         return postMapper.archiveMonths();
     }
 
+    /**
+     * 统计字段处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.publishedStats</code>。
+     * @return 类型为 <code>BlogPublicStatsVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public BlogPublicStatsVO stats() {
@@ -144,6 +231,16 @@ public class BlogPublicServiceImpl implements BlogPublicService {
         return postMapper.publishedStats();
     }
 
+    /**
+     * archiveDays处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.archiveDays</code>。
+     * 实现中的显式失败类型包括 <code>BlogQueryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param year 年份；类型为 <code>Integer</code>
+     * @param month 月份；类型为 <code>Integer</code>
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BlogArchiveDayVO> archiveDays(Integer year, Integer month) {
@@ -156,18 +253,41 @@ public class BlogPublicServiceImpl implements BlogPublicService {
         return postMapper.archiveDays(from, from.plusMonths(1));
     }
 
+    /**
+     * 列出已发布标签列表。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tagMapper.publishedTags</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BlogTagVO> listPublishedTags() {
         return tagMapper.publishedTags();
     }
 
+    /**
+     * 列出已发布专题列表。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.publishedTopics</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BlogTopicVO> listPublishedTopics() {
         return topicMapper.publishedTopics();
     }
 
+    /**
+     * 分页读取博客公开。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>assembler.toPublicVOs</code>、<code>postMapper.publishedPage</code>。
+     *
+     * @param query 查询参数；类型为 <code>BlogPublicQueryDTO</code>
+     * @param tagSlugs 标签Slugs；类型为 <code>List&lt;String&gt;</code>
+     * @param topicSlug 专题固定链接标识；类型为 <code>String</code>
+     * @param publishedFrom 已发布来源；类型为 <code>LocalDateTime</code>
+     * @param publishedTo 已发布目标；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>PageResult&lt;BlogPostPublicVO&gt;</code> 的处理结果
+     */
     private PageResult<BlogPostPublicVO> page(BlogPublicQueryDTO query, List<String> tagSlugs, String topicSlug,
                                               LocalDateTime publishedFrom, LocalDateTime publishedTo) {
         long total = postMapper.publishedPageCount(tagSlugs, topicSlug, publishedFrom, publishedTo);
@@ -189,6 +309,13 @@ public class BlogPublicServiceImpl implements BlogPublicService {
      * 两个都给时不报错，因为「分享出来的链接里 tag 与 tags 同时存在」是很自然的事，
      * 为此报 400 只会让人困惑。数量上限 20：再多就不是筛选，而是把 SQL 的 IN 列表撑大。
      */
+    /**
+     * 标签Slugs处理入口。
+     * 关键处理步骤调用 <code>publicSlugs</code>、<code>query.getTag</code>、<code>query.getTags</code>、<code>slugs.contains</code>。
+     *
+     * @param query 查询参数；类型为 <code>BlogPublicQueryDTO</code>
+     * @return 本次处理得到的条目集合
+     */
     private List<String> tagSlugs(BlogPublicQueryDTO query) {
         List<String> slugs = new ArrayList<>(publicSlugs(query.getTag(), "tag", BlogLimits.TAG_SLUG_MAX_LENGTH));
         for (String slug : publicSlugs(query.getTags(), "tags", BlogLimits.TAG_SLUG_MAX_LENGTH)) {
@@ -199,6 +326,15 @@ public class BlogPublicServiceImpl implements BlogPublicService {
         return slugs.size() > TAG_FILTER_MAX ? slugs.subList(0, TAG_FILTER_MAX) : slugs;
     }
 
+    /**
+     * 公开Slugs处理入口。
+     * 关键处理步骤调用 <code>raw.isBlank</code>、<code>List.of</code>、<code>raw.split</code>、<code>publicSlug</code>。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @param fieldName 字段名称；类型为 <code>String</code>
+     * @param maxLength 最大Length；类型为 <code>int</code>
+     * @return 本次处理得到的条目集合
+     */
     private List<String> publicSlugs(String raw, String fieldName, int maxLength) {
         if (raw == null || raw.isBlank()) {
             return List.of();
@@ -218,6 +354,16 @@ public class BlogPublicServiceImpl implements BlogPublicService {
      *
      * 非法值明确报 BLOG_QUERY_INVALID 而不是当作“查不到”：
      * 归档页的筛选条件来自 URL query，静默返回空列表会让人以为是“这个分类下没有文章”。
+     */
+    /**
+     * 公开固定链接标识处理入口。
+     * 关键处理步骤调用 <code>raw.isBlank</code>、<code>BlogSlugRules.normalize</code>、<code>BlogSlugRules.isValid</code>。
+     * 实现中的显式失败类型包括 <code>BlogQueryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @param fieldName 字段名称；类型为 <code>String</code>
+     * @param maxLength 最大Length；类型为 <code>int</code>
+     * @return 类型为 <code>String</code> 的处理结果
      */
     private String publicSlug(String raw, String fieldName, int maxLength) {
         if (raw == null || raw.isBlank()) {

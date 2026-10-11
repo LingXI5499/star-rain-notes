@@ -2,18 +2,163 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.starrainnotes.english.reading.mapper.ReadingEnhancementMapper">
- <sql id="table"><choose><when test="kind == 'alignments'">sr_english_reading_alignment</when><when test="kind == 'annotations'">sr_english_reading_annotation</when><otherwise>sr_english_reading_vocabulary</otherwise></choose></sql>
- <sql id="columns">id,sort_order <choose><when test="kind == 'alignments'">,group_key,language,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,alignment_status AS status</when><when test="kind == 'annotations'">,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,annotation_status AS status,analysis_markdown</when><otherwise>,word,part_of_speech,meaning_zh</otherwise></choose></sql>
+    <!--
+      ReadingEnhancementMapper.xml：com.starrainnotes.english.reading.mapper.ReadingEnhancementMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+ <!--
+   table：table；可复用 SQL 片段。
+   通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+ -->
+ <sql id="table">
+    <!--
+      只采用第一个成立的 when 分支；否则使用 otherwise 分支（如有）。
+    -->
+    <choose>
+    <!--
+      条件 kind == 'alignments' 成立时才输出此段 SQL。
+    -->
+    <when test="kind == 'alignments'">sr_english_reading_alignment</when>
+    <!--
+      条件 kind == 'annotations' 成立时才输出此段 SQL。
+    -->
+    <when test="kind == 'annotations'">sr_english_reading_annotation</when>
+    <!--
+      前面的 when 均不成立时使用此兜底分支。
+    -->
+    <otherwise>sr_english_reading_vocabulary</otherwise></choose></sql>
+ <!--
+   columns：投影列；可复用 SQL 片段。
+   通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+ -->
+ <sql id="columns">id,sort_order
+    <!--
+      只采用第一个成立的 when 分支；否则使用 otherwise 分支（如有）。
+    -->
+    <choose>
+    <!--
+      条件 kind == 'alignments' 成立时才输出此段 SQL。
+    -->
+    <when test="kind == 'alignments'">,group_key,language,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,alignment_status AS status</when>
+    <!--
+      条件 kind == 'annotations' 成立时才输出此段 SQL。
+    -->
+    <when test="kind == 'annotations'">,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,annotation_status AS status,analysis_markdown</when>
+    <!--
+      前面的 when 均不成立时使用此兜底分支。
+    -->
+    <otherwise>,word,part_of_speech,meaning_zh</otherwise></choose></sql>
+ <!--
+   list：list；读取语句。
+   结果类型或映射：com.starrainnotes.english.reading.dto.ReadingEnhancementDto$Item；集合与单值形态由 Java 方法签名决定。
+   复用片段：columns、table。
+   绑定参数：articleId；参数含义参见 Mapper 方法注释。
+ -->
  <select id="list" resultType="com.starrainnotes.english.reading.dto.ReadingEnhancementDto$Item">SELECT <include refid="columns"/> FROM <include refid="table"/> WHERE article_id=#{articleId} ORDER BY sort_order,id</select>
+ <!--
+   item：item；读取语句。
+   结果类型或映射：com.starrainnotes.english.reading.dto.ReadingEnhancementDto$Item；集合与单值形态由 Java 方法签名决定。
+   复用片段：columns、table。
+   绑定参数：articleId、id；参数含义参见 Mapper 方法注释。
+ -->
  <select id="item" resultType="com.starrainnotes.english.reading.dto.ReadingEnhancementDto$Item">SELECT <include refid="columns"/> FROM <include refid="table"/> WHERE article_id=#{articleId} AND id=#{id}</select>
+ <!--
+   touch：touch；更新语句。
+   涉及数据表：sr_english_reading_article；关系条件与可见性筛选由下方 SQL 明确限定。
+   执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+   绑定参数：articleId、version；参数含义参见 Mapper 方法注释。
+ -->
  <update id="touch">UPDATE sr_english_reading_article SET row_version=row_version+1,updated_at=CURRENT_TIMESTAMP(3) WHERE id=#{articleId} AND deleted_at IS NULL AND row_version=#{version}</update>
+ <!--
+   stale：stale；更新语句。
+   涉及数据表：sr_english_reading_alignment；关系条件与可见性筛选由下方 SQL 明确限定。
+   执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+   绑定参数：articleId、language；参数含义参见 Mapper 方法注释。
+ -->
  <update id="stale">UPDATE sr_english_reading_alignment SET alignment_status='STALE' WHERE article_id=#{articleId} AND language=#{language}</update>
+ <!--
+   staleAnnotations：staleAnnotations；更新语句。
+   涉及数据表：sr_english_reading_annotation；关系条件与可见性筛选由下方 SQL 明确限定。
+   执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+   绑定参数：articleId；参数含义参见 Mapper 方法注释。
+ -->
  <update id="staleAnnotations">UPDATE sr_english_reading_annotation SET annotation_status='STALE' WHERE article_id=#{articleId}</update>
+ <!--
+   clear：clear；删除语句。
+   执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+   复用片段：table。
+   绑定参数：articleId；参数含义参见 Mapper 方法注释。
+ -->
  <delete id="clear">DELETE FROM <include refid="table"/> WHERE article_id=#{articleId}</delete>
+ <!--
+   insert：新增；新增语句。
+   执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+   插入成功后 JDBC 自动生成的主键回填到 item.id。
+   复用片段：table。
+   绑定参数：articleId、item.sortOrder、item.groupKey、item.language、item.paragraphIndex、item.rangeStart、item.rangeEnd、item.expectedText、item.paragraphHash、item.sourceMarkdownHash、item.status、item.analysisMarkdown、item.word、item.partOfSpeech、item.meaningZh；参数含义参见 Mapper 方法注释。
+ -->
  <insert id="insert" useGeneratedKeys="true" keyProperty="item.id">
- INSERT INTO <include refid="table"/> (article_id,sort_order <choose><when test="kind == 'alignments'">,group_key,language,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,alignment_status</when><when test="kind == 'annotations'">,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,annotation_status,analysis_markdown</when><otherwise>,word,part_of_speech,meaning_zh</otherwise></choose>)
- VALUES (#{articleId},#{item.sortOrder}<choose><when test="kind == 'alignments'">,#{item.groupKey},#{item.language},#{item.paragraphIndex},#{item.rangeStart},#{item.rangeEnd},#{item.expectedText},#{item.paragraphHash},#{item.sourceMarkdownHash},#{item.status}</when><when test="kind == 'annotations'">,#{item.paragraphIndex},#{item.rangeStart},#{item.rangeEnd},#{item.expectedText},#{item.paragraphHash},#{item.sourceMarkdownHash},#{item.status},#{item.analysisMarkdown}</when><otherwise>,#{item.word},#{item.partOfSpeech},#{item.meaningZh}</otherwise></choose>)
+ INSERT INTO <include refid="table"/> (article_id,sort_order
+    <!--
+      只采用第一个成立的 when 分支；否则使用 otherwise 分支（如有）。
+    -->
+    <choose>
+    <!--
+      条件 kind == 'alignments' 成立时才输出此段 SQL。
+    -->
+    <when test="kind == 'alignments'">,group_key,language,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,alignment_status</when>
+    <!--
+      条件 kind == 'annotations' 成立时才输出此段 SQL。
+    -->
+    <when test="kind == 'annotations'">,paragraph_index,range_start,range_end,expected_text,paragraph_hash,source_markdown_hash,annotation_status,analysis_markdown</when>
+    <!--
+      前面的 when 均不成立时使用此兜底分支。
+    -->
+    <otherwise>,word,part_of_speech,meaning_zh</otherwise></choose>)
+ VALUES (#{articleId},#{item.sortOrder}
+    <!--
+      只采用第一个成立的 when 分支；否则使用 otherwise 分支（如有）。
+    -->
+    <choose>
+    <!--
+      条件 kind == 'alignments' 成立时才输出此段 SQL。
+    -->
+    <when test="kind == 'alignments'">,#{item.groupKey},#{item.language},#{item.paragraphIndex},#{item.rangeStart},#{item.rangeEnd},#{item.expectedText},#{item.paragraphHash},#{item.sourceMarkdownHash},#{item.status}</when>
+    <!--
+      条件 kind == 'annotations' 成立时才输出此段 SQL。
+    -->
+    <when test="kind == 'annotations'">,#{item.paragraphIndex},#{item.rangeStart},#{item.rangeEnd},#{item.expectedText},#{item.paragraphHash},#{item.sourceMarkdownHash},#{item.status},#{item.analysisMarkdown}</when>
+    <!--
+      前面的 when 均不成立时使用此兜底分支。
+    -->
+    <otherwise>,#{item.word},#{item.partOfSpeech},#{item.meaningZh}</otherwise></choose>)
  </insert>
- <update id="update">UPDATE <include refid="table"/> SET sort_order=#{item.sortOrder}<choose><when test="kind == 'annotations'">,paragraph_index=#{item.paragraphIndex},range_start=#{item.rangeStart},range_end=#{item.rangeEnd},expected_text=#{item.expectedText},paragraph_hash=#{item.paragraphHash},source_markdown_hash=#{item.sourceMarkdownHash},annotation_status=#{item.status},analysis_markdown=#{item.analysisMarkdown}</when><otherwise>,word=#{item.word},part_of_speech=#{item.partOfSpeech},meaning_zh=#{item.meaningZh}</otherwise></choose> WHERE article_id=#{articleId} AND id=#{item.id}</update>
+ <!--
+   update：更新；更新语句。
+   执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+   复用片段：table。
+   绑定参数：item.sortOrder、item.paragraphIndex、item.rangeStart、item.rangeEnd、item.expectedText、item.paragraphHash、item.sourceMarkdownHash、item.status、item.analysisMarkdown、item.word、item.partOfSpeech、item.meaningZh、articleId、item.id；参数含义参见 Mapper 方法注释。
+ -->
+ <update id="update">UPDATE <include refid="table"/> SET sort_order=#{item.sortOrder}
+    <!--
+      只采用第一个成立的 when 分支；否则使用 otherwise 分支（如有）。
+    -->
+    <choose>
+    <!--
+      条件 kind == 'annotations' 成立时才输出此段 SQL。
+    -->
+    <when test="kind == 'annotations'">,paragraph_index=#{item.paragraphIndex},range_start=#{item.rangeStart},range_end=#{item.rangeEnd},expected_text=#{item.expectedText},paragraph_hash=#{item.paragraphHash},source_markdown_hash=#{item.sourceMarkdownHash},annotation_status=#{item.status},analysis_markdown=#{item.analysisMarkdown}</when>
+    <!--
+      前面的 when 均不成立时使用此兜底分支。
+    -->
+    <otherwise>,word=#{item.word},part_of_speech=#{item.partOfSpeech},meaning_zh=#{item.meaningZh}</otherwise></choose> WHERE article_id=#{articleId} AND id=#{item.id}</update>
+ <!--
+   delete：删除；删除语句。
+   执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+   复用片段：table。
+   绑定参数：articleId、id；参数含义参见 Mapper 方法注释。
+ -->
  <delete id="delete">DELETE FROM <include refid="table"/> WHERE article_id=#{articleId} AND id=#{id}</delete>
 </mapper>

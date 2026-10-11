@@ -1,3 +1,11 @@
+/*
+ * LearningDashboardServiceImpl：教程与学习模块的业务实现文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：CurrentActorApi、PageResult、LearningHistoryEntity、LearningProgressEntity、LearningInvalidRequestException、KnowledgeMasteryMapper、LearningHistoryMapper。
+ * 阅读入口：history（历史处理入口）；statistics（statistics处理入口）。
+ */
+
 package com.starrainnotes.tutorial.learning.service.impl;
 
 import com.starrainnotes.account.api.CurrentActorApi;
@@ -21,23 +29,75 @@ import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+/**
+ * 学习概览业务服务实现，属于教程与学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Deprecated
 // Legacy implementation retained for historical persistence tests; not registered as a Spring service.
 @RequiredArgsConstructor
 public class LearningDashboardServiceImpl implements LearningDashboardService {
+    /**
+     * 提供当前认证操作者身份的跨模块接口。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi currentActorApi;
+    /**
+     * 历史数据映射。
+     * 协作类型：<code>LearningHistoryMapper</code>。
+     */
     private final LearningHistoryMapper historyMapper;
+    /**
+     * 进度数据映射。
+     * 协作类型：<code>LearningProgressMapper</code>。
+     */
     private final LearningProgressMapper progressMapper;
+    /**
+     * 计划数据映射。
+     * 协作类型：<code>StudyPlanMapper</code>。
+     */
     private final StudyPlanMapper planMapper;
+    /**
+     * 审核任务数据映射。
+     * 协作类型：<code>ReviewTaskMapper</code>。
+     */
     private final ReviewTaskMapper reviewTaskMapper;
+    /**
+     * 掌握数据映射。
+     * 协作类型：<code>KnowledgeMasteryMapper</code>。
+     */
     private final KnowledgeMasteryMapper masteryMapper;
+    /**
+     * plans。
+     * 协作类型：<code>StudyPlanService</code>。
+     */
     private final StudyPlanService plans;
+    /**
+     * reviews。
+     * 协作类型：<code>LearningReviewService</code>。
+     */
     private final LearningReviewService reviews;
 
+    /**
+     * 当前业务对象的数据库标识处理入口。
+     * 关键处理步骤调用 <code>String.valueOf</code>。
+     *
+     * @param value 值；类型为 <code>Long</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String id(Long value) {
         return value == null ? null : String.valueOf(value);
     }
 
+    /**
+     * 历史处理入口。
+     * 主要协作调用：<code>currentActorApi.current</code>、<code>historyMapper.countByAccountId</code>、<code>historyMapper.pageByAccountId</code>。
+     * 实现中的显式失败类型包括 <code>LearningInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @return 类型为 <code>PageResult&lt;LearningHistoryVO&gt;</code> 的处理结果
+     */
     @Override
     public PageResult<LearningHistoryVO> history(int page, int pageSize) {
         if (page < 1 || pageSize < 1 || pageSize > 100) {
@@ -57,6 +117,11 @@ public class LearningDashboardServiceImpl implements LearningDashboardService {
                 .page(page).pageSize(pageSize).build();
     }
 
+    /**
+     * statistics处理入口。
+     * 主要协作调用：<code>currentActorApi.current</code>、<code>progressMapper.listByAccountId</code>、<code>planMapper.countActiveByAccountId</code>、<code>reviewTaskMapper.countCompletedByAccountId</code>、<code>masteryMapper.listByAccountId</code>。
+     * @return 类型为 <code>LearningStatisticsVO</code> 的处理结果
+     */
     @Override
     public LearningStatisticsVO statistics() {
         Long actor = currentActorApi.current().getAccountId();

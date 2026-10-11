@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * EnglishReadingEditorPage.vue：英语学习模块的页面组件。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../../../shared/editor/MarkdownEditor.vue、../../../../shared/ui/PublicSelect.vue、../../../../shared/ui/PublicFilterTabs.vue、../../../../shared/viewMode。
+ * 主要响应式状态：englishEditor、chineseEditor、route、router、article、form、tab、loading。
+ * 阅读入口：blank（blank的处理函数）；loadRows（加载行集合）；accept（接受当前操作）；save（保存当前操作）；status（当前业务状态，合法取值由本模块状态定义和状态转换规则约束的处理函数）。
+ */
+
+
 import { computed,nextTick,ref,watch } from 'vue'
 import { RouterLink,useRoute,useRouter } from 'vue-router'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
@@ -13,37 +23,135 @@ import EnglishTaxonomyFields from '../../components/EnglishTaxonomyFields.vue'
 import EnglishBilingualProse from '../../components/EnglishBilingualProse.vue'
 import EnglishRevisionPanel from '../../components/EnglishRevisionPanel.vue'
 import '../../styles/englishRw.css'
+/**
+ * 英语Editor；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const englishEditor=ref(null),chineseEditor=ref(null)
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route=useRoute(),router=useRouter(),article=ref(null),form=ref({}),tab=ref('body'),loading=ref(true),busy=ref(false),error=ref(''),notice=ref(''),dirty=ref(false),selected=ref([]),noteSelection=ref(null),analysis=ref(''),editingNote=ref(null)
+/**
+ * 行集合；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const rows=ref({alignments:[],annotations:[],vocabulary:[]}),word=ref({word:'',partOfSpeech:'NOUN',meaningZh:''}),editingWord=ref(null)
+/**
+ * tabs；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const tabs=computed(()=>[{value:'body',label:'正文与分类'},{value:'alignments',label:'双语对齐',disabled:!article.value},{value:'annotations',label:'精选精读',disabled:!article.value},{value:'vocabulary',label:'本文词汇',disabled:!article.value},{value:'history',label:'历史版本',disabled:!article.value}])
+/**
+ * 分组列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const groups=computed(()=>Object.entries(Object.groupBy(rows.value.alignments,r=>r.groupKey)))
 const pos=['NOUN','VERB','ADJECTIVE','ADVERB','PREPOSITION','PRONOUN','CONJUNCTION','PHRASE','OTHER']
 let initializing=false,generation=0
+/**
+ * blank的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function blank(){return{title:'',summary:'',bodyMarkdown:'',translationZhMarkdown:'',primaryTopicId:null,otherTopicIds:[],genreIds:[],purposeIds:[],contentOrigin:'EXTERNAL',sourceName:'',sourceUrl:'',rights:{rightsStatus:'PENDING',rightsBasis:'',originalAuthor:'',licenseNotice:''}}}
+/**
+ * 加载行集合。
+ * 主要协作：Promise.all、.map、getEnhancements。
+ * 更新的响应式状态包括 rows；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadRows(){if(!article.value)return;const [a,b,c]=await Promise.all(['alignments','annotations','vocabulary'].map(k=>getEnhancements(article.value.id,k,true)));rows.value={alignments:a,annotations:b,vocabulary:c}}
+/**
+ * 接受当前操作。
+ * 主要协作：blank、nextTick。
+ * 更新的响应式状态包括 article、form、dirty；渲染由 Vue 的依赖跟踪触发。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function accept(value){initializing=true;article.value=value;form.value={...blank(),...value,rights:{...blank().rights,...value.rights}};await nextTick();initializing=false;dirty.value=false}
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(()=>route.params.documentId,async id=>{const n=++generation;loading.value=true;error.value='';tab.value='body';article.value=null;rows.value={alignments:[],annotations:[],vocabulary:[]};initializing=true;form.value=blank();await nextTick();initializing=false;dirty.value=false
  try { if(id!=='new'){const value=await getReading(id,true);if(n!==generation)return;await accept(value);await loadRows()} }catch(cause){error.value=errorMessage(cause)}finally{if(n===generation)loading.value=false}
 },{immediate:true})
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(form,()=>{if(!initializing)dirty.value=true},{deep:true})
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(()=>[form.value.bodyMarkdown,form.value.sourceUrl],()=>{if(!initializing && form.value.contentOrigin==='EXTERNAL')form.value.rights.rightsStatus='PENDING'})
+/**
+ * 保存当前操作。
+ * 主要协作：englishEditor.value.getMarkdown、chineseEditor.value.getMarkdown、nextTick、updateReading、createReading。
+ * 更新的响应式状态包括 busy、error、notice；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function save(){if(busy.value)return false;if(englishEditor.value)form.value.bodyMarkdown=englishEditor.value.getMarkdown();if(chineseEditor.value)form.value.translationZhMarkdown=chineseEditor.value.getMarkdown();await nextTick();busy.value=true;error.value='';notice.value=''
  try { const payload={...form.value,rowVersion:article.value?.rowVersion};const saved=article.value?await updateReading(article.value.id,payload):await createReading(payload);await accept(saved);await loadRows();notice.value='正文与分类已保存。'
   if(route.params.documentId==='new')await router.replace(accountPath('/english/manage/editor/reading/'+saved.id));return true
  }catch(cause){error.value=errorMessage(cause);return false}finally{busy.value=false}}
+/**
+ * 当前业务状态，合法取值由本模块状态定义和状态转换规则约束的处理函数。
+ * 请求入口：post('/admin/english/content/reading/'+article.value.id+'/'+(article.value.publishStatus==='PUBLISHED'?'withdraw':'publish'))；路径参数的编码和请求体结构保持接口契约。
+ * 更新的响应式状态包括 busy、error、article、notice；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function status(){if(!article.value || busy.value)return;busy.value=true;error.value=''
  try{const saved=await post('/admin/english/content/reading/'+article.value.id+'/'+(article.value.publishStatus==='PUBLISHED'?'withdraw':'publish'),{rowVersion:article.value.rowVersion});article.value=saved;notice.value=saved.publishStatus==='PUBLISHED'?'文章已发布。':'文章已撤回，可以修改版权待核查的正文。'}catch(cause){error.value=errorMessage(cause)}finally{busy.value=false}}
+/**
+ * 查询的处理函数。
+ * 主要协作：selected.value.push。
+ * 更新的响应式状态包括 noteSelection、error；渲染由 Vue 的依赖跟踪触发。
+ * @param anchor anchor；默认值、解构字段与可选参数见函数签名。
+ */
 function select(anchor){if(tab.value==='alignments')selected.value.push(anchor);else if(anchor.language==='EN')noteSelection.value=anchor;else error.value='精选精读请选择英文片段。'}
+/**
+ * 添加分组。
+ * 主要协作：selected.value.some、crypto.randomUUID、rows.value.alignments.push、selected.value.map。
+ * 更新的响应式状态包括 error、selected；渲染由 Vue 的依赖跟踪触发。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function addGroup(){if(!selected.value.some(r=>r.language==='EN') || !selected.value.some(r=>r.language==='ZH')){error.value='请至少选择一段英文和一段中文，可以添加多个片段。';return}
  const groupKey=crypto.randomUUID();rows.value.alignments.push(...selected.value.map(r=>({...r,groupKey,status:'ACTIVE',sortOrder:0})));selected.value=[]}
+/**
+ * 添加Note。
+ * 主要协作：analysis.value.trim、rows.value.annotations.splice、rows.value.annotations.push。
+ * 更新的响应式状态包括 error、noteSelection、analysis、editingNote；渲染由 Vue 的依赖跟踪触发。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function addNote(){if(!noteSelection.value || !analysis.value.trim()){error.value='请选择英文片段并填写人工解析。';return}
  const value={...noteSelection.value,status:'ACTIVE',analysisMarkdown:analysis.value,sortOrder:0}
  if(editingNote.value!==null)rows.value.annotations.splice(editingNote.value,1,value);else rows.value.annotations.push(value);noteSelection.value=null;analysis.value='';editingNote.value=null}
+/**
+ * 添加单词。
+ * 主要协作：word.value.word.trim、word.value.meaningZh.trim、rows.value.vocabulary.splice、rows.value.vocabulary.push。
+ * 更新的响应式状态包括 error、word、editingWord；渲染由 Vue 的依赖跟踪触发。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function addWord(){if(!word.value.word.trim() || !word.value.meaningZh.trim()){error.value='请填写单词与本文释义。';return}
  const value={...word.value,sortOrder:0};if(editingWord.value!==null)rows.value.vocabulary.splice(editingWord.value,1,value);else rows.value.vocabulary.push(value);word.value={word:'',partOfSpeech:'NOUN',meaningZh:''};editingWord.value=null}
+/**
+ * 保存行集合。
+ * 主要协作：saveEnhancements、errorMessage。
+ * 更新的响应式状态包括 busy、error、notice、dirty；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param kind kind；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function saveRows(kind){if(busy.value || dirty.value)return;busy.value=true;error.value=''
  try{const saved=await saveEnhancements(article.value.id,kind,article.value.rowVersion,rows.value[kind]);article.value.rowVersion=saved.rowVersion;rows.value[kind]=saved.items;notice.value='条目已保存。';dirty.value=false}catch(cause){error.value=errorMessage(cause)}finally{busy.value=false}}
+/**
+ * restored的处理函数。
+ * 主要协作：accept、loadRows。
+ * 更新的响应式状态包括 notice；渲染由 Vue 的依赖跟踪触发。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function restored(value){await accept(value);await loadRows();notice.value='已恢复正文、分类与增强数据，并新增历史版本。'}
 </script>
 <template><main class="english-rw"><RouterLink :to="accountPath('/english/manage/reading')">← 阅读管理</RouterLink><header class="english-rw__hero"><div><p class="public-eyebrow">READING STUDIO</p><h1>{{article?'编辑阅读文章':'新建阅读文章'}}</h1><p>{{article?.publishStatus==='PUBLISHED'?'已发布':article?.publishStatus==='WITHDRAWN'?'已撤回':'草稿'}}{{dirty?' · 有未保存修改':''}}</p></div><div class="english-rw__actions"><RouterLink class="english-rw__button" :to="accountPath('/english/manage/taxonomy')">管理分类</RouterLink><button v-if="article" class="english-rw__button" :disabled="busy || (dirty && article.publishStatus!=='PUBLISHED')" @click="status">{{article.publishStatus==='PUBLISHED'?'撤回':'发布'}}</button><button class="english-rw__button english-rw__button--primary" :disabled="busy" @click="save">保存正文</button></div></header>

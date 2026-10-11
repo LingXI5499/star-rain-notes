@@ -1,3 +1,11 @@
+/**
+ * studyPlanScope.spec.js：教程与学习模块的自动化测试。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、./studyPlanScope。
+ * 验证场景：study plan scope eligibility；requires published enabled cards but permits zero questions；blocks chapters in unended plans, while excluding the draft being edited and ended plans；expands overlapping whole-group and individual selections once。
+ */
+
 import { describe, expect, it } from 'vitest'
 import { chapterPlanRestriction, selectedScopeChapters } from './studyPlanScope'
 describe('study plan scope eligibility', () => {

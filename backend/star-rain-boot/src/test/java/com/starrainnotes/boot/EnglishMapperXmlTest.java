@@ -1,3 +1,11 @@
+/*
+ * EnglishMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：GrammarDto、GrammarMapper、ReadingDto、ReadingMapper、VocabularyDto、VocabularyMemoryEntryRow、VocabularyMemoryLock。
+ * 阅读入口：open（打开英语数据映射Xml）；rollback（回滚英语数据映射Xml）；everyEnglishMapperIsReachableThroughTheSession（every英语数据映射是否ReachableThroughThe会话处理入口）；grammarCourseRoundTripsAndKeepsItsFirstPublishedAt（语法CourseRoundTrips及保留Its首次已发布时间处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,16 +46,46 @@ import org.junit.jupiter.api.Test;
  * English Mapper XML integration checks for grammar, reading, vocabulary and writing.
  * Assertions cover result maps, public visibility and transaction rollback.
  */
+/**
+ * 英语数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * 语法。
+     * 协作类型：<code>GrammarMapper</code>。
+     */
     private GrammarMapper grammar;
+    /**
+     * readings。
+     * 协作类型：<code>ReadingMapper</code>。
+     */
     private ReadingMapper readings;
+    /**
+     * 词汇。
+     * 协作类型：<code>VocabularyMapper</code>。
+     */
     private VocabularyMapper vocabulary;
+    /**
+     * 词汇学习。
+     * 协作类型：<code>VocabularyStudyMapper</code>。
+     */
     private VocabularyStudyMapper vocabularyStudy;
 
+    /**
+     * 打开英语数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -57,6 +95,10 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         vocabularyStudy = session.getMapper(VocabularyStudyMapper.class);
     }
 
+    /**
+     * 回滚英语数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -65,6 +107,9 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * every英语数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void everyEnglishMapperIsReachableThroughTheSession() {
         assertNotNull(grammar);
@@ -73,6 +118,10 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(vocabularyStudy);
     }
 
+    /**
+     * 语法CourseRoundTrips及保留Its首次已发布时间处理入口。
+     * 主要协作调用：<code>grammar.course</code>、<code>grammar.updateCourse</code>、<code>grammar.setCourseStatus</code>。
+     */
     @Test
     void grammarCourseRoundTripsAndKeepsItsFirstPublishedAt() {
         GrammarDto.Course original = grammar.course();
@@ -111,6 +160,10 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
                 "重新发布把首次发布时间改写了（COALESCE 丢失）");
     }
 
+    /**
+     * 语法区块及LessonCrudRoundTrips处理入口。
+     * 主要协作调用：<code>grammar.insertSection</code>、<code>grammar.section</code>、<code>grammar.sections</code>、<code>grammar.insertLesson</code>、<code>grammar.lessonById</code>。
+     */
     @Test
     void grammarSectionAndLessonCrudRoundTrips() {
         GrammarDto.Section section = new GrammarDto.Section();
@@ -190,6 +243,10 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, grammar.deleteSection(section.getId()));
     }
 
+    /**
+     * 阅读ArticleCrudHonours公开及搜索筛选处理入口。
+     * 主要协作调用：<code>readings.insert</code>、<code>readings.byId</code>、<code>readings.publicBySlug</code>、<code>readings.count</code>、<code>readings.list</code>。
+     */
     @Test
     void readingArticleCrudHonoursPublicAndSearchFilters() {
         String search = unique("mapperxmlreading");
@@ -250,6 +307,10 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, readings.delete(article.getId(), afterUpdate.getRowVersion()));
     }
 
+    /**
+     * 词汇主题及单词CrudRoundTrips处理入口。
+     * 主要协作调用：<code>vocabulary.insertTheme</code>、<code>vocabulary.theme</code>、<code>vocabulary.themes</code>、<code>vocabulary.insertWord</code>、<code>vocabulary.word</code>。
+     */
     @Test
     void vocabularyThemeAndWordCrudRoundTrips() {
         VocabularyDto.Theme theme = newTheme();
@@ -356,6 +417,10 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, vocabulary.deleteTheme(theme.getId()));
     }
 
+    /**
+     * 词汇学习Settings及Single卡片Preference新增或更新处理入口。
+     * 主要协作调用：<code>vocabularyStudy.settings</code>、<code>vocabularyStudy.upsertSettings</code>、<code>vocabularyStudy.displayMode</code>、<code>vocabularyStudy.upsertDisplay</code>、<code>vocabularyStudy.deleteDisplay</code>。
+     */
     @Test
     void vocabularyStudySettingsAndSingleCardPreferenceUpsert() {
         long accountId = probeId();
@@ -399,6 +464,10 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(vocabularyStudy.displayMode(accountId, wordId));
     }
 
+    /**
+     * 词汇记忆生命周期FollowsItsGuards处理入口。
+     * 主要协作调用：<code>vocabularyStudy.wordExists</code>、<code>vocabularyStudy.memory</code>、<code>vocabularyStudy.memorySnapshot</code>、<code>vocabularyStudy.totalMemoryCount</code>、<code>vocabularyStudy.activeCount</code>。
+     */
     @Test
     void vocabularyMemoryLifecycleFollowsItsGuards() {
         long accountId = probeId();
@@ -557,6 +626,10 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
                 "两行记忆的 memory_count 之和应当是 0 + 5");
     }
 
+    /**
+     * 词汇审核LogsAreIdempotentPer审核会话处理入口。
+     * 主要协作调用：<code>vocabularyStudy.findReviewBySession</code>、<code>vocabularyStudy.insertReview</code>、<code>vocabularyStudy.countReviews</code>、<code>vocabularyStudy.countReviewsSince</code>、<code>vocabularyStudy.importReview</code>。
+     */
     @Test
     void vocabularyReviewLogsAreIdempotentPerReviewSession() {
         long accountId = probeId();
@@ -628,6 +701,10 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
                 "别的账户的历史不应被读到");
     }
 
+    /**
+     * 回滚Leaves不含英语测试样本行集合及RestoresThe语法Course。
+     * 主要协作调用：<code>grammar.course</code>、<code>grammar.updateCourse</code>、<code>grammar.insertSection</code>、<code>grammar.insertLesson</code>、<code>readings.insert</code>。
+     */
     @Test
     void rollbackLeavesNoEnglishProbeRowsAndRestoresTheGrammarCourse() {
         GrammarDto.Course before = grammar.course();
@@ -693,6 +770,15 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* 五条 setStatus 的 published_at 不在任何 resultMap 里，只能直接读库核对 COALESCE 语义 */
+    /**
+     * 已发布时间所属处理入口。
+     * 主要协作调用：<code>session.getConnection</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param table table；类型为 <code>String</code>
+     * @param id 当前业务对象的数据库标识；类型为 <code>long</code>
+     * @return 类型为 <code>Object</code> 的处理结果
+     */
     private Object publishedAtOf(String table, long id) {
         try (PreparedStatement statement = session.getConnection().prepareStatement(
                 "SELECT published_at FROM " + table + " WHERE id = ?")) {
@@ -709,6 +795,15 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
     /*
      * sr_english_vocabulary_word_audio 的数据来自 V1 导入，Mapper 里没有写入语句，
      * 所以这里在同一个未提交事务里造一条授权发音，专门验证 audios() 的 resultMap。
+     */
+    /**
+     * 写入音频Fixture。
+     * 主要协作调用：<code>session.getConnection</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param wordId 单词标识；类型为 <code>long</code>
+     * @param mediaAssetId 关联的媒体资产标识；类型为 <code>long</code>
+     * @return 类型为 <code>long</code> 的处理结果
      */
     private long insertAudioFixture(long wordId, long mediaAssetId) {
         try (PreparedStatement statement = session.getConnection().prepareStatement(
@@ -729,6 +824,14 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * newLesson处理入口。
+     * 关键处理步骤调用 <code>lesson.setSectionId</code>、<code>lesson.setTitle</code>、<code>lesson.setSlug</code>、<code>lesson.setSummary</code>。
+     *
+     * @param sectionId 区块标识；类型为 <code>long</code>
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @return 类型为 <code>GrammarDto.Lesson</code> 的处理结果
+     */
     private GrammarDto.Lesson newLesson(long sectionId, String slug) {
         GrammarDto.Lesson lesson = new GrammarDto.Lesson();
         lesson.setSectionId(sectionId);
@@ -740,6 +843,13 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         return lesson;
     }
 
+    /**
+     * newArticle处理入口。
+     * 关键处理步骤调用 <code>article.setSlug</code>、<code>unique</code>、<code>article.setTitle</code>、<code>article.setSummary</code>。
+     *
+     * @param title 标题；类型为 <code>String</code>
+     * @return 类型为 <code>ReadingDto.Article</code> 的处理结果
+     */
     private ReadingDto.Article newArticle(String title) {
         ReadingDto.Article article = new ReadingDto.Article();
         article.setSlug(unique("mapperxmlreadingslug"));
@@ -754,6 +864,11 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         return article;
     }
 
+    /**
+     * new主题处理入口。
+     * 关键处理步骤调用 <code>theme.setLayer</code>、<code>theme.setLayerOrder</code>、<code>theme.setName</code>、<code>unique</code>。
+     * @return 类型为 <code>VocabularyDto.Theme</code> 的处理结果
+     */
     private VocabularyDto.Theme newTheme() {
         VocabularyDto.Theme theme = new VocabularyDto.Theme();
         theme.setLayer("XML 验证层级");
@@ -763,6 +878,14 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         return theme;
     }
 
+    /**
+     * new单词处理入口。
+     * 关键处理步骤调用 <code>word.setThemeId</code>、<code>word.setWord</code>、<code>word.setPartOfSpeech</code>、<code>word.setPhoneticUs</code>。
+     *
+     * @param themeId 主题标识；类型为 <code>long</code>
+     * @param text 文本；类型为 <code>String</code>
+     * @return 类型为 <code>VocabularyDto.Word</code> 的处理结果
+     */
     private VocabularyDto.Word newWord(long themeId, String text) {
         VocabularyDto.Word word = new VocabularyDto.Word();
         word.setThemeId(themeId);
@@ -778,6 +901,14 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         return word;
     }
 
+    /**
+     * 包含单词标识处理入口。
+     * 关键处理步骤调用 <code>copy.setId</code>、<code>copy.setThemeId</code>、<code>source.getThemeId</code>、<code>copy.setWord</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param source 来源；类型为 <code>VocabularyDto.Word</code>
+     * @return 类型为 <code>VocabularyDto.Word</code> 的处理结果
+     */
     private VocabularyDto.Word withWordId(Long id, VocabularyDto.Word source) {
         VocabularyDto.Word copy = new VocabularyDto.Word();
         copy.setId(id);
@@ -794,12 +925,24 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
         return copy;
     }
 
+    /**
+     * 写入测试样本主题。
+     * 主要协作调用：<code>vocabulary.insertTheme</code>。
+     * @return 类型为 <code>VocabularyDto.Theme</code> 的处理结果
+     */
     private VocabularyDto.Theme insertProbeTheme() {
         VocabularyDto.Theme theme = newTheme();
         assertEquals(1, vocabulary.insertTheme(theme));
         return theme;
     }
 
+    /**
+     * 写入测试样本单词。
+     * 主要协作调用：<code>vocabulary.insertWord</code>。
+     *
+     * @param themeId 主题标识；类型为 <code>long</code>
+     * @return 类型为 <code>VocabularyDto.Word</code> 的处理结果
+     */
     private VocabularyDto.Word insertProbeWord(long themeId) {
         VocabularyDto.Word word = newWord(themeId, unique("mapperxmlword"));
         assertEquals(1, vocabulary.insertWord(word));
@@ -809,14 +952,31 @@ class EnglishMapperXmlTest extends MapperXmlIntegrationSupport {
 
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实内容撞号 */
+    /**
+     * 测试样本标识处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long probeId() {
         return 900_000_000_000L + PROBE.incrementAndGet();
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.MILLIS);
     }

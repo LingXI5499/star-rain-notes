@@ -1,3 +1,11 @@
+/**
+ * markdownCodeGroup.js：跨模块基础模块的共享工具。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 将跨模块使用的行为收敛到一个实现，调用方通过导出函数或组合式函数使用。
+ * 主要依赖：markdown-it-container。
+ * 阅读入口：createCodeGroupBlock（创建代码分组区块）；languageLabel（language标签的处理函数）；parseCodeGroupLabels（解析代码分组Labels）；validateCodeGroupBlocks（校验代码分组Blocks）；safeLanguage（安全Language的处理函数）。
+ */
+
 import markdownItContainer from 'markdown-it-container'
 
 /*
@@ -47,11 +55,26 @@ const LANG_LABELS = {
 }
 
 /* 编辑器「创建代码组」弹窗里的一行 */
-export function createCodeGroupBlock(label, language, content) {
+export
+  /**
+   * 创建代码分组区块。
+   * @param label 标签；默认值、解构字段与可选参数见函数签名。
+   * @param language language；默认值、解构字段与可选参数见函数签名。
+   * @param content 内容；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function createCodeGroupBlock(label, language, content) {
   return { label, language, content }
 }
 
-export function languageLabel(lang) {
+export
+  /**
+   * language标签的处理函数。
+   * 主要协作：.toLowerCase、.trim。
+   * @param lang lang；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function languageLabel(lang) {
   const key = String(lang ?? '').trim().toLowerCase()
   if (!key || key === 'code') return 'Code'
   return LANG_LABELS[key] ?? String(lang).trim()
@@ -64,7 +87,14 @@ export function languageLabel(lang) {
  * 「命名代码组」这个功能上线之前写下的 `::: code-group C,Java` 老文章。
  * 反过来（先切逗号再切竖线）会把 `方案, 一|方案二` 这种带逗号的自定义名称拆坏。
  */
-export function parseCodeGroupLabels(info) {
+export
+  /**
+   * 解析代码分组Labels。
+   * 主要协作：.match、.trim、matched..includes、.filter、.map。
+   * @param info info；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function parseCodeGroupLabels(info) {
   const matched = String(info ?? '').trim().match(/^code-group(?:\s+(.+))?$/)
   if (!matched?.[1]) return []
   const delimiter = matched[1].includes('|') ? '|' : ','
@@ -82,7 +112,14 @@ export const parseCodeGroupLangs = parseCodeGroupLabels
  * 返回错误文案或 null —— 返回文案而不是抛异常，是为了让弹窗能把它显示在对话框里，
  * 而不是炸掉整个编辑器。
  */
-export function validateCodeGroupBlocks(blocks) {
+export
+  /**
+   * 校验代码分组Blocks。
+   * 主要协作：.trim、label.includes、label.toLocaleLowerCase、labels.has、labels.add。
+   * @param blocks blocks；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function validateCodeGroupBlocks(blocks) {
   if (!blocks || blocks.length === 0) return '请至少添加一个代码块。'
   const labels = new Set()
   for (const block of blocks) {
@@ -98,6 +135,12 @@ export function validateCodeGroupBlocks(blocks) {
 }
 
 /* 语言串只允许 [\w+-]（含 C++ / C#）：其余一律降级成 text，避免围栏 info 被注入奇怪内容 */
+/**
+ * 安全Language的处理函数。
+ * 主要协作：.trim、.test。
+ * @param language language；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function safeLanguage(language) {
   const normalized = String(language ?? '').trim()
   return /^[\w+-]+$/.test(normalized) ? normalized : 'text'
@@ -115,7 +158,15 @@ function fenceFor(content) {
 }
 
 /* 生成编辑器要插入的 Markdown 文本（源码仍然是普通 Markdown，见文件头第 1 点） */
-export function createCodeGroupMarkdown(blocks) {
+export
+  /**
+   * 创建代码分组Markdown。
+   * 主要协作：validateCodeGroupBlocks、.join、blocks.map、.trim、.replace。
+   * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+   * @param blocks blocks；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function createCodeGroupMarkdown(blocks) {
   const error = validateCodeGroupBlocks(blocks)
   if (error) throw new Error(error)
   const labelList = blocks.map((block) => String(block.label).trim()).join('|')
@@ -135,6 +186,12 @@ export function createCodeGroupMarkdown(blocks) {
 
 /* data 属性走 HTML 转义后仍是合法 JSON（JSON 里的 " 会变成 &quot;），
    浏览器解析属性时会还原，渲染层 JSON.parse(dataset.codeLabels) 拿到原始数组 */
+/**
+ * 转义Attr。
+ * 主要协作：.replace。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function escapeAttr(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -142,6 +199,12 @@ function escapeAttr(value) {
     .replace(/</g, '&lt;')
 }
 
+/**
+ * 编码Labels。
+ * 主要协作：escapeAttr、JSON.stringify。
+ * @param labels labels；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function encodeLabels(labels) {
   return escapeAttr(JSON.stringify(labels))
 }
@@ -153,7 +216,14 @@ function encodeLabels(labels) {
  * markdown.js 的 enhanceMarkdownDom 在 DOM 落地之后构建 —— 页签需要事件与
  * hidden 状态，写在 HTML 字符串里还得再做一遍 DOM 查询，不如一次做完。
  */
-export function useMarkdownCodeGroup(md) {
+export
+  /**
+   * useMarkdown代码分组的处理函数。
+   * 主要协作：md.use、.test、.trim、parseCodeGroupLabels、encodeLabels。
+   * @param md md；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function useMarkdownCodeGroup(md) {
   md.use(markdownItContainer, 'code-group', {
     validate: (params) => /^code-group(?:\s+.+)?$/.test(String(params).trim()),
     render: (tokens, idx) => {

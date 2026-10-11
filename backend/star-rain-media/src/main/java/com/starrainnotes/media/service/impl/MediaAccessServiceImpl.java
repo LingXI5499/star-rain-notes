@@ -1,3 +1,11 @@
+/*
+ * MediaAccessServiceImpl：媒体模块的业务实现文件。
+ * 业务范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：MediaAccessDeniedException、MediaAssetArchivedException、MediaAssetNotFoundException、MediaContentMissingException、CurrentActorApi、MediaAssetEntity、MediaAssetMapper。
+ * 阅读入口：open（打开媒体访问）。
+ */
+
 package com.starrainnotes.media.service.impl;
 
 import com.starrainnotes.media.exception.MediaAccessDeniedException;
@@ -33,13 +41,35 @@ import org.springframework.transaction.annotation.Transactional;
  * Range 支持：音频/视频拖动进度条会发 Range 请求，这里按真实文件长度
  * 裁剪区间并交给 MediaStorage 定位读取，避免整份读进内存。
  */
+/**
+ * 媒体访问业务服务实现，属于媒体模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class MediaAccessServiceImpl implements MediaAccessService {
 
+    /**
+     * 资产数据映射。
+     * 协作类型：<code>MediaAssetMapper</code>。
+     */
     private final MediaAssetMapper assetMapper;
+    /**
+     * 存储。
+     */
     private final MediaStorage storage;
+    /**
+     * 提供当前认证操作者身份的跨模块接口。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi currentActorApi;
 
+    /**
+     * 构造MediaAccessServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param assetMapper 资产数据映射；类型为 <code>MediaAssetMapper</code>
+     * @param storage 存储；类型为 <code>MediaStorage</code>
+     * @param currentActorApi 提供当前认证操作者身份的跨模块接口；类型为 <code>CurrentActorApi</code>
+     */
     public MediaAccessServiceImpl(MediaAssetMapper assetMapper,
                                   MediaStorage storage,
                                   CurrentActorApi currentActorApi) {
@@ -48,6 +78,16 @@ public class MediaAccessServiceImpl implements MediaAccessService {
         this.currentActorApi = currentActorApi;
     }
 
+    /**
+     * 打开媒体访问。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>assetMapper.assetById</code>、<code>storage.size</code>、<code>storage.open</code>、<code>storage.openRange</code>。
+     * 实现中的显式失败类型包括 <code>MediaAssetNotFoundException</code>、<code>MediaContentMissingException</code>；具体触发条件见对应分支。
+     *
+     * @param mediaAssetId 关联的媒体资产标识；类型为 <code>Long</code>
+     * @param rangeHeader 范围响应头；类型为 <code>String</code>
+     * @return 类型为 <code>MediaContentVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public MediaContentVO open(Long mediaAssetId, String rangeHeader) {
@@ -84,6 +124,13 @@ public class MediaAccessServiceImpl implements MediaAccessService {
                 stream);
     }
 
+    /**
+     * 校验授权媒体访问。
+     * 关键处理步骤调用 <code>MediaStatus.ARCHIVED_CODE.equals</code>、<code>asset.getStatus</code>、<code>canReadRestricted</code>、<code>MediaAccessLevel.PROTECTED.name</code>。
+     * 实现中的显式失败类型包括 <code>MediaAssetArchivedException</code>、<code>MediaAccessDeniedException</code>；具体触发条件见对应分支。
+     *
+     * @param asset 资产；类型为 <code>MediaAssetEntity</code>
+     */
     private void authorize(MediaAssetEntity asset) {
         if (MediaStatus.ARCHIVED_CODE.equals(asset.getStatus())) {
             // 归档资产默认不进入公开访问，后台可预览
@@ -97,6 +144,11 @@ public class MediaAccessServiceImpl implements MediaAccessService {
         }
     }
 
+    /**
+     * 判断能否读取Restricted。
+     * 主要协作调用：<code>currentActorApi.currentOptional</code>。
+     * @return 本方法条件是否成立的判断结果
+     */
     private boolean canReadRestricted() {
         return currentActorApi.currentOptional()
                 .map(actor -> actor.getPermissions().contains(MediaPermissions.READ))

@@ -1,3 +1,11 @@
+/*
+ * TutorialWorkspaceIntegrationTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CurrentActorApi、GlobalApiExceptionHandler、ReviewSubmissionApi、TutorialStructureAdminController、TutorialEventPublisher、TutorialMediaReferences。
+ * 阅读入口：setup（setup处理入口）；mapper（数据映射处理入口）；proxy（proxy处理入口）；change（change处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -35,21 +43,73 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 /** Actual Flyway upgrade, MyBatis SQL and Spring transactions in a disposable local schema. */
 class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
+    /**
+     * connectionOwner。
+     */
     private SqlSession connectionOwner;
+    /**
+     * connection。
+     */
     private Connection connection;
+    /**
+     * 原始。
+     */
     private String original, schema;
+    /**
+     * data来源。
+     */
     private SingleConnectionDataSource dataSource;
+    /**
+     * sql。
+     */
     private SqlSessionTemplate sql;
+    /**
+     * transactions。
+     */
     private DataSourceTransactionManager transactions;
+    /**
+     * 内容。
+     * 协作类型：<code>TutorialContentService</code>。
+     */
     private TutorialContentService content;
+    /**
+     * 发布。
+     * 协作类型：<code>TutorialPublicationService</code>。
+     */
     private TutorialPublicationService publication;
+    /**
+     * operations。
+     * 协作类型：<code>TutorialOperationService</code>。
+     */
     private TutorialOperationService operations;
+    /**
+     * actors。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private CurrentActorApi actors;
+    /**
+     * 媒体。
+     */
     private TutorialMediaReferences media;
+    /**
+     * 教程。
+     */
     private TutorialEntity tutorial;
+    /**
+     * 章节。
+     */
     private TutorialChapterEntity chapter;
+    /**
+     * JSON 读写或映射协作对象。
+     * 协作类型：<code>ObjectMapper</code>。
+     */
     private final ObjectMapper json = new ObjectMapper().findAndRegisterModules();
 
+    /**
+     * setup处理入口。
+     * 主要协作调用：<code>connectionOwner.getConnection</code>、<code>connection.getCatalog</code>、<code>schema.matches</code>、<code>connection.createStatement</code>、<code>connection.setCatalog</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @BeforeEach void setup() throws Exception {
         connectionOwner = openSession(); connection = connectionOwner.getConnection(); original = connection.getCatalog();
         schema = "sr_tutorial_workspace_probe_" + Long.toUnsignedString(System.nanoTime());
@@ -95,13 +155,40 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         });
         publication.publish(tutorial.getId());
     }
+    /**
+     * 数据映射处理入口。
+     * 主要协作调用：<code>sql.getMapper</code>。
+     *
+     * @param type 类型；类型为 <code>Class&lt;T&gt;</code>
+     * @return 类型为 <code>T</code> 的处理结果
+     */
     private <T> T mapper(Class<T> type) { return sql.getMapper(type); }
+    /**
+     * proxy处理入口。
+     * 关键处理步骤调用 <code>factory.addAdvice</code>、<code>type.cast</code>、<code>factory.getProxy</code>。
+     *
+     * @param target 目标；类型为 <code>T</code>
+     * @param type 类型；类型为 <code>Class&lt;T&gt;</code>
+     * @return 类型为 <code>T</code> 的处理结果
+     */
     private <T> T proxy(T target,Class<T> type) {
         ProxyFactory factory=new ProxyFactory(target);
         factory.addAdvice(new TransactionInterceptor(transactions,new AnnotationTransactionAttributeSource()));
         return type.cast(factory.getProxy());
     }
+    /**
+     * change处理入口。
+     * 关键处理步骤调用 <code>ChapterUpdateDTO.builder</code>。
+     *
+     * @param version 版本；类型为 <code>Long</code>
+     * @return 类型为 <code>ChapterUpdateDTO</code> 的处理结果
+     */
     private ChapterUpdateDTO change(Long version) { return ChapterUpdateDTO.builder().title("Edited title").summary("Edited summary").bodyMarkdown("Edited body").rowVersion(version).build(); }
+    /**
+     * 清理教程WorkspaceIntegration。
+     * 主要协作调用：<code>connection.getAutoCommit</code>、<code>connection.rollback</code>、<code>connection.setAutoCommit</code>、<code>connection.setCatalog</code>、<code>schema.matches</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @AfterEach void cleanup() throws Exception {
         if (connection != null) {
             if (!connection.getAutoCommit()) connection.rollback();
@@ -112,6 +199,11 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         }
         if (connectionOwner != null) connectionOwner.close();
     }
+    /**
+     * workspaceSave是否原子操作公开修订StaysFrozen及Stale客户端GetsHTTP409处理入口。
+     * 主要协作调用：<code>content.chapter</code>、<code>chapter.getId</code>、<code>content.updateChapter</code>、<code>publication.publicChapter</code>、<code>json.writeValueAsString</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void workspaceSaveIsAtomicPublicRevisionStaysFrozenAndStaleClientGetsHttp409() throws Exception {
         var originalChapter=content.chapter(chapter.getId());
         var saved=content.updateChapter(chapter.getId(),change(originalChapter.getRowVersion()));
@@ -124,6 +216,10 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         publication.publishChapter(chapter.getId());
         assertEquals("Edited body",publication.publicChapter("java","intro").path("bodyMarkdown").asText());
     }
+    /**
+     * 后台EditLeavesWorkspace及公开内容UnchangedUntilApproval及ReplaysOnlyOnce处理入口。
+     * 主要协作调用：<code>actors.current</code>、<code>content.chapter</code>、<code>chapter.getId</code>、<code>operations.request</code>、<code>publication.publicChapter</code>。
+     */
     @Test void adminEditLeavesWorkspaceAndPublicContentUnchangedUntilApprovalAndReplaysOnlyOnce() {
         when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("ADMIN")).build());
         var before=content.chapter(chapter.getId());
@@ -143,6 +239,10 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         operations.approve(pending.getId());
         assertEquals(appliedVersion,content.chapter(chapter.getId()).getRowVersion());
     }
+    /**
+     * committedApprovalSurvivesCallback失败及显式Recovery是否Idempotent处理入口。
+     * 主要协作调用：<code>actors.current</code>、<code>operations.request</code>、<code>chapter.getId</code>、<code>content.chapter</code>、<code>tutorial.getId</code>。
+     */
     @Test void committedApprovalSurvivesCallbackFailureAndExplicitRecoveryIsIdempotent() {
         when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("ADMIN")).build());
         operations.request("updateChapter", new Object[]{chapter.getId(), change(content.chapter(chapter.getId()).getRowVersion())});
@@ -176,6 +276,10 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         assertNull(mapper(TutorialOperationMapper.class).selectById(pending.getId()).getExecutionMessage());
     }
 
+    /**
+     * recovers已批准待处理Crash时间窗口OnlyWhile原始BaselineStillMatches处理入口。
+     * 主要协作调用：<code>actors.current</code>、<code>operations.request</code>、<code>chapter.getId</code>、<code>content.chapter</code>、<code>tutorial.getId</code>。
+     */
     @Test void recoversApprovedPendingCrashWindowOnlyWhileOriginalBaselineStillMatches() {
         when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("ADMIN")).build());
         operations.request("updateChapter", new Object[]{chapter.getId(), change(content.chapter(chapter.getId()).getRowVersion())});
@@ -186,6 +290,10 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         assertEquals("APPLIED", mapper(TutorialOperationMapper.class).selectById(pending.getId()).getStatus());
     }
 
+    /**
+     * recovery拒绝ChangedBaseline及NeverReplays已拒绝或CanceledOperations处理入口。
+     * 主要协作调用：<code>actors.current</code>、<code>operations.request</code>、<code>chapter.getId</code>、<code>content.chapter</code>、<code>tutorial.getId</code>。
+     */
     @Test void recoveryRejectsChangedBaselineAndNeverReplaysRejectedOrCanceledOperations() {
         when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("ADMIN")).build());
         operations.request("updateChapter", new Object[]{chapter.getId(), change(content.chapter(chapter.getId()).getRowVersion())});
@@ -210,6 +318,10 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 媒体引用失败RollsBack标题摘要正文及版本内部RealSpring事务处理入口。
+     * 主要协作调用：<code>content.chapter</code>、<code>chapter.getId</code>、<code>content.updateChapter</code>。
+     */
     @Test void mediaReferenceFailureRollsBackTitleSummaryBodyAndVersionInRealSpringTransaction() {
         var before=content.chapter(chapter.getId());
         doThrow(new IllegalStateException("media failure")).when(media).replaceChapter(eq(chapter.getId()),anyString());
@@ -218,6 +330,10 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         assertEquals(before.getTitle(),after.getTitle());assertEquals(before.getSummary(),after.getSummary());
         assertEquals(before.getBodyMarkdown(),after.getBodyMarkdown());assertEquals(before.getRowVersion(),after.getRowVersion());
     }
+    /**
+     * 卡片及问题WorkspaceUseSame审核锁及CannotOverwriteStaleVersions处理入口。
+     * 主要协作调用：<code>chapter.getId</code>、<code>publication.publicChapter</code>、<code>publication.submitReview</code>、<code>tutorial.getId</code>、<code>content.updateChapter</code>。
+     */
     @Test void cardAndQuestionWorkspaceUseSameReviewLockAndCannotOverwriteStaleVersions() {
         var exercise=proxy(new TutorialExerciseServiceImpl(mapper(TutorialChapterMapper.class),media,mapper(TutorialMapper.class),mapper(TutorialKnowledgeCardMapper.class),
                 mapper(TutorialQuestionMapper.class),mapper(TutorialQuestionCardMapper.class)),TutorialExerciseService.class);

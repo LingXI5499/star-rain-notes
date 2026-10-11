@@ -1,3 +1,11 @@
+/*
+ * BlogTagServiceImpl：博客模块的业务实现文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：BlogLimits、BlogTagDTO、BlogTagQueryDTO、BlogTagEntity、BlogTaxonomyStatus、BlogTagDescriptionInvalidException、BlogTagNameConflictException。
+ * 阅读入口：page（分页读取博客标签）；listPublished（列出已发布）；create（创建博客标签）；update（更新博客标签）。
+ */
+
 package com.starrainnotes.blog.service.impl;
 
 import com.starrainnotes.blog.constant.BlogLimits;
@@ -33,17 +41,42 @@ import org.springframework.transaction.annotation.Transactional;
  * - 名字唯一：同名不同 ID 会把同一批文章拆到两个归档入口；
  * - 只能停用不能删除：已被文章使用的标签若被物理删除，历史归档会指向不存在的分类。
  */
+/**
+ * 博客标签业务服务实现，属于博客模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class BlogTagServiceImpl implements BlogTagService {
 
+    /**
+     * 标签数据映射。
+     * 协作类型：<code>BlogTagMapper</code>。
+     */
     private final BlogTagMapper tagMapper;
+    /**
+     * 组装器。
+     */
     private final BlogViewAssembler assembler;
 
+    /**
+     * 构造BlogTagServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param tagMapper 标签数据映射；类型为 <code>BlogTagMapper</code>
+     * @param assembler 组装器；类型为 <code>BlogViewAssembler</code>
+     */
     public BlogTagServiceImpl(BlogTagMapper tagMapper, BlogViewAssembler assembler) {
         this.tagMapper = tagMapper;
         this.assembler = assembler;
     }
 
+    /**
+     * 分页读取博客标签。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tagMapper.adminPageCount</code>、<code>tagMapper.adminPage</code>。
+     *
+     * @param query 查询参数；类型为 <code>BlogTagQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;BlogTagVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<BlogTagVO> page(BlogTagQueryDTO query) {
@@ -64,12 +97,27 @@ public class BlogTagServiceImpl implements BlogTagService {
                 .build();
     }
 
+    /**
+     * 列出已发布。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tagMapper.publishedTags</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BlogTagVO> listPublished() {
         return tagMapper.publishedTags();
     }
 
+    /**
+     * 创建博客标签。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tagMapper.countBySlug</code>、<code>tagMapper.insertTag</code>、<code>assembler.toTagVO</code>。
+     * 实现中的显式失败类型包括 <code>BlogTagSlugConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>BlogTagDTO</code>
+     * @return 类型为 <code>BlogTagVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public BlogTagVO create(BlogTagDTO request) {
@@ -108,6 +156,15 @@ public class BlogTagServiceImpl implements BlogTagService {
         throw new BlogTagSlugConflictException();
     }
 
+    /**
+     * 更新博客标签。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tagMapper.updateTag</code>、<code>assembler.toTagVO</code>。
+     *
+     * @param tagId 标签标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>BlogTagDTO</code>
+     * @return 类型为 <code>BlogTagVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public BlogTagVO update(Long tagId, BlogTagDTO request) {
@@ -137,6 +194,13 @@ public class BlogTagServiceImpl implements BlogTagService {
      * 停用：不再允许新绑定，但不动任何已有绑定关系。
      * 重复停用视为成功（幂等）：管理员连点两次不该看到一个业务错误。
      */
+    /**
+     * 禁用博客标签。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tagMapper.updateStatus</code>。
+     *
+     * @param tagId 标签标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void disable(Long tagId) {
@@ -147,6 +211,13 @@ public class BlogTagServiceImpl implements BlogTagService {
         tagMapper.updateStatus(tagId, BlogTaxonomyStatus.DISABLED_CODE);
     }
 
+    /**
+     * 启用博客标签。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tagMapper.updateStatus</code>。
+     *
+     * @param tagId 标签标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void enable(Long tagId) {
@@ -161,6 +232,14 @@ public class BlogTagServiceImpl implements BlogTagService {
     // 内部工具
     // ------------------------------------------------------------------
 
+    /**
+     * 检查所需标签。
+     * 主要协作调用：<code>tagMapper.tagById</code>。
+     * 实现中的显式失败类型包括 <code>BlogTagNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param tagId 标签标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogTagEntity</code> 的处理结果
+     */
     private BlogTagEntity requireTag(Long tagId) {
         BlogTagEntity tag = tagId == null ? null : tagMapper.tagById(tagId);
         if (tag == null) {
@@ -169,6 +248,14 @@ public class BlogTagServiceImpl implements BlogTagService {
         return tag;
     }
 
+    /**
+     * 检查所需标签面向更新。
+     * 主要协作调用：<code>tagMapper.tagByIdForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>BlogTagNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param tagId 标签标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogTagEntity</code> 的处理结果
+     */
     private BlogTagEntity requireTagForUpdate(Long tagId) {
         BlogTagEntity tag = tagId == null ? null : tagMapper.tagByIdForUpdate(tagId);
         if (tag == null) {
@@ -177,18 +264,43 @@ public class BlogTagServiceImpl implements BlogTagService {
         return tag;
     }
 
+    /**
+     * 校验固定链接标识Free。
+     * 主要协作调用：<code>tagMapper.countBySlug</code>。
+     * 实现中的显式失败类型包括 <code>BlogTagSlugConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @param excludeId exclude标识；类型为 <code>Long</code>
+     */
     private void assertSlugFree(String slug, Long excludeId) {
         if (tagMapper.countBySlug(slug, excludeId) > 0) {
             throw new BlogTagSlugConflictException();
         }
     }
 
+    /**
+     * 校验名称Free。
+     * 主要协作调用：<code>tagMapper.countByName</code>。
+     * 实现中的显式失败类型包括 <code>BlogTagNameConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param name 名称；类型为 <code>String</code>
+     * @param excludeId exclude标识；类型为 <code>Long</code>
+     */
     private void assertNameFree(String name, Long excludeId) {
         if (tagMapper.countByName(name, excludeId) > 0) {
             throw new BlogTagNameConflictException();
         }
     }
 
+    /**
+     * duplicate原因处理入口。
+     * 主要协作调用：<code>tagMapper.countBySlug</code>。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @param name 名称；类型为 <code>String</code>
+     * @param excludeId exclude标识；类型为 <code>Long</code>
+     * @return 类型为 <code>RuntimeException</code> 的处理结果
+     */
     private RuntimeException duplicateReason(String slug, String name, Long excludeId) {
         if (tagMapper.countBySlug(slug, excludeId) > 0) {
             return new BlogTagSlugConflictException();
@@ -196,6 +308,14 @@ public class BlogTagServiceImpl implements BlogTagService {
         return new BlogTagNameConflictException();
     }
 
+    /**
+     * 检查所需固定链接标识。
+     * 关键处理步骤调用 <code>BlogSlugRules.normalize</code>、<code>BlogSlugRules.isValid</code>。
+     * 实现中的显式失败类型包括 <code>BlogTagSlugInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String requireSlug(String raw) {
         String slug = BlogSlugRules.normalize(raw);
         if (!BlogSlugRules.isValid(slug, BlogLimits.TAG_SLUG_MAX_LENGTH)) {
@@ -205,6 +325,14 @@ public class BlogTagServiceImpl implements BlogTagService {
         return slug;
     }
 
+    /**
+     * 检查所需名称。
+     * 关键处理步骤调用 <code>BlogTextRules.normalizeName</code>、<code>name.length</code>。
+     * 实现中的显式失败类型包括 <code>BlogTagNameInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String requireName(String raw) {
         String name = BlogTextRules.normalizeName(raw);
         if (name == null) {
@@ -216,6 +344,14 @@ public class BlogTagServiceImpl implements BlogTagService {
         return name;
     }
 
+    /**
+     * 检查所需描述。
+     * 关键处理步骤调用 <code>BlogTextRules.normalizeDescription</code>、<code>description.length</code>。
+     * 实现中的显式失败类型包括 <code>BlogTagDescriptionInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String requireDescription(String raw) {
         String description = BlogTextRules.normalizeDescription(raw);
         if (description != null && description.length() > BlogLimits.TAG_DESCRIPTION_MAX_LENGTH) {

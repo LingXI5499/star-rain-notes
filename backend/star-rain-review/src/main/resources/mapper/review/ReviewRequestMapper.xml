@@ -2,7 +2,17 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.review.mapper.ReviewRequestMapper">
+    <!--
+      ReviewRequestMapper.xml：com.starrainnotes.review.mapper.ReviewRequestMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+    <!--
+      requestColumns：请求投影列；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    -->
     <sql id="requestColumns">
         id, review_type, target_module, target_type, target_id,
         target_revision_ref, target_display_name,
@@ -11,16 +21,33 @@
         submitted_at, decided_at, canceled_at, created_at, updated_at
     </sql>
 
+    <!--
+      pendingFilters：待处理筛选条件；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+      绑定参数：targetModule、reviewType、keyword；参数含义参见 Mapper 方法注释。
+    -->
     <sql id="pendingFilters">
+        <!--
+          统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+        -->
         <where>
             status = 'PENDING'
+            <!--
+              条件 targetModule != null and targetModule != '' 成立时才输出此段 SQL。
+            -->
             <if test="targetModule != null and targetModule != ''">
                 AND target_module = #{targetModule}
             </if>
+            <!--
+              条件 reviewType != null and reviewType != '' 成立时才输出此段 SQL。
+            -->
             <if test="reviewType != null and reviewType != ''">
                 AND review_type = #{reviewType}
             </if>
             <!-- 关键字只匹配提交时冻结的两个显示名快照，不跨模块查标题 -->
+            <!--
+              条件 keyword != null and keyword != '' 成立时才输出此段 SQL。
+            -->
             <if test="keyword != null and keyword != ''">
                 AND (
                     target_display_name LIKE CONCAT('%', #{keyword}, '%')
@@ -30,38 +57,81 @@
         </where>
     </sql>
 
+    <!--
+      historyFilters：历史筛选条件；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+      绑定参数：targetModule、targetType、targetId、reviewType、status、applicantAccountId、reviewerAccountId、startTime、endTime；参数含义参见 Mapper 方法注释。
+    -->
     <sql id="historyFilters">
+        <!--
+          统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+        -->
         <where>
+            <!--
+              条件 targetModule != null and targetModule != '' 成立时才输出此段 SQL。
+            -->
             <if test="targetModule != null and targetModule != ''">
                 AND target_module = #{targetModule}
             </if>
+            <!--
+              条件 targetType != null and targetType != '' 成立时才输出此段 SQL。
+            -->
             <if test="targetType != null and targetType != ''">
                 AND target_type = #{targetType}
             </if>
+            <!--
+              条件 targetId != null 成立时才输出此段 SQL。
+            -->
             <if test="targetId != null">
                 AND target_id = #{targetId}
             </if>
+            <!--
+              条件 reviewType != null and reviewType != '' 成立时才输出此段 SQL。
+            -->
             <if test="reviewType != null and reviewType != ''">
                 AND review_type = #{reviewType}
             </if>
+            <!--
+              条件 status != null and status != '' 成立时才输出此段 SQL。
+            -->
             <if test="status != null and status != ''">
                 AND status = #{status}
             </if>
+            <!--
+              条件 applicantAccountId != null 成立时才输出此段 SQL。
+            -->
             <if test="applicantAccountId != null">
                 AND applicant_account_id = #{applicantAccountId}
             </if>
+            <!--
+              条件 reviewerAccountId != null 成立时才输出此段 SQL。
+            -->
             <if test="reviewerAccountId != null">
                 AND reviewer_account_id = #{reviewerAccountId}
             </if>
+            <!--
+              条件 startTime != null 成立时才输出此段 SQL。
+            -->
             <if test="startTime != null">
                 AND submitted_at &gt;= #{startTime}
             </if>
+            <!--
+              条件 endTime != null 成立时才输出此段 SQL。
+            -->
             <if test="endTime != null">
                 AND submitted_at &lt;= #{endTime}
             </if>
         </where>
     </sql>
 
+    <!--
+      insertRequest：新增请求；新增语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.review.entity.ReviewRequestEntity；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：reviewType、targetModule、targetType、targetId、targetRevisionRef、targetDisplayName、applicantAccountId、applicantDisplayName、submissionNote、status、submittedAt；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertRequest" parameterType="com.starrainnotes.review.entity.ReviewRequestEntity"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_review_request (
@@ -77,10 +147,25 @@
         )
     </insert>
 
+    <!--
+      requestById：请求依据标识；读取语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.review.entity.ReviewRequestEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：requestColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="requestById" resultType="com.starrainnotes.review.entity.ReviewRequestEntity">
         SELECT <include refid="requestColumns"/> FROM sr_review_request WHERE id = #{id}
     </select>
 
+    <!--
+      selectPending：查询待处理；读取语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.review.entity.ReviewRequestEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：requestColumns。
+      绑定参数：targetModule、targetType、targetId、reviewType；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="selectPending" resultType="com.starrainnotes.review.entity.ReviewRequestEntity">
         SELECT <include refid="requestColumns"/> FROM sr_review_request
         WHERE target_module = #{targetModule}
@@ -92,11 +177,26 @@
         LIMIT 1
     </select>
 
+    <!--
+      pendingCount：待处理数量；读取语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      复用片段：pendingFilters。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="pendingCount" resultType="long">
         SELECT COUNT(*) FROM sr_review_request
         <include refid="pendingFilters"/>
     </select>
 
+    <!--
+      pendingPage：待处理分页；读取语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.review.entity.ReviewRequestEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：requestColumns、pendingFilters。
+      绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="pendingPage" resultType="com.starrainnotes.review.entity.ReviewRequestEntity">
         SELECT <include refid="requestColumns"/> FROM sr_review_request
         <include refid="pendingFilters"/>
@@ -105,11 +205,26 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <!--
+      historyCount：历史数量；读取语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      复用片段：historyFilters。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="historyCount" resultType="long">
         SELECT COUNT(*) FROM sr_review_request
         <include refid="historyFilters"/>
     </select>
 
+    <!--
+      historyPage：历史分页；读取语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.review.entity.ReviewRequestEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：requestColumns、historyFilters。
+      绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="historyPage" resultType="com.starrainnotes.review.entity.ReviewRequestEntity">
         SELECT <include refid="requestColumns"/> FROM sr_review_request
         <include refid="historyFilters"/>
@@ -117,6 +232,12 @@
         LIMIT #{limit} OFFSET #{offset}
     </select>
 
+    <!--
+      approveIfPending：approveIf待处理；更新语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：reviewerAccountId、reason、decidedAt、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="approveIfPending">
         UPDATE sr_review_request
         SET status = 'APPROVED',
@@ -127,6 +248,12 @@
           AND status = 'PENDING'
     </update>
 
+    <!--
+      rejectIfPending：rejectIf待处理；更新语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：reviewerAccountId、reason、decidedAt、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="rejectIfPending">
         UPDATE sr_review_request
         SET status = 'REJECTED',
@@ -137,6 +264,12 @@
           AND status = 'PENDING'
     </update>
 
+    <!--
+      cancelIfPending：cancelIf待处理；更新语句。
+      涉及数据表：sr_review_request；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：canceledAt、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="cancelIfPending">
         UPDATE sr_review_request
         SET status = 'CANCELED',
@@ -149,10 +282,20 @@
           AND status = 'PENDING'
     </update>
 
+    <!--
+      acquireTargetLock：acquire目标锁；读取语句。
+      结果类型或映射：int；集合与单值形态由 Java 方法签名决定。
+      绑定参数：lockName、timeoutSeconds；参数含义参见 Mapper 方法注释。
+    -->
     <select id="acquireTargetLock" resultType="int">
         SELECT GET_LOCK(#{lockName}, #{timeoutSeconds})
     </select>
 
+    <!--
+      releaseTargetLock：release目标锁；读取语句。
+      结果类型或映射：int；集合与单值形态由 Java 方法签名决定。
+      绑定参数：lockName；参数含义参见 Mapper 方法注释。
+    -->
     <select id="releaseTargetLock" resultType="int">
         SELECT RELEASE_LOCK(#{lockName})
     </select>

@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * WorkEditorPage.vue：作品模块的页面组件。
+ * 职责范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../api/portfolioApi、../../../../shared/http、../../../../shared/viewMode、../../../../shared/editor/MarkdownEditor.vue。
+ * 主要响应式状态：route、router、workId、current、editor、editorKey、loading、saving。
+ * 阅读入口：load（加载当前操作）；save（保存当前操作）；pickBodyImage（pick正文图片的处理函数）；addMedia（添加媒体）；choosePrototype（choosePrototype的处理函数）。
+ */
+
+
 import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink, useRoute, useRouter, onBeforeRouteLeave } from 'vue-router'
 import {
@@ -15,28 +25,105 @@ import AppConfirmDialog from '../../../../shared/ui/AppConfirmDialog.vue'
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
 
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
+/**
+ * 作品标识；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const workId = computed(() => route.params.workId === 'new' ? '' : String(route.params.workId))
+/**
+ * 当前；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const current = ref(null)
+/**
+ * editor；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const editor = ref(null)
+/**
+ * editor键；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const editorKey = ref(0)
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * saving；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const saving = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
+/**
+ * tab；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tab = ref('basic'), templateId = ref(''), templates = ref([]), taxonomy = ref({ categories: [], formats: [], tags: [] }), sectionEditor = ref(null), confirm = ref(null), savedForm = ref('')
 const tabs = { basic: '基本信息', content: '内容区块', taxonomy: '分类与标签', media: '媒体与原型', links: '外部链接', seo: 'SEO', publish: '发布' }
+/**
+ * form；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const form = reactive({ workType: 'SOFTWARE', title: '', subtitle: '', slug: '', summary: '', bodyMarkdown: '', categoryId: '', formatId: '', role: '', techStack: '', projectStatus: 'COMPLETED', startedOn: '', endedOn: '', featured: false, sortOrder: 0, seoTitle: '', seoDescription: '', tagIds: [] })
+/**
+ * dirty；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const dirty = computed(() => savedForm.value && JSON.stringify(form) !== savedForm.value)
+/**
+ * 选中Template；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const selectedTemplate = computed(() => templates.value.find(item => item.id === templateId.value))
+/**
+ * prototype入口；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const prototypeEntry = ref('index.html')
+/**
+ * 链接；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const link = reactive({ id: '', linkType: 'GITHUB', label: '', url: '' })
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
+/**
+ * 媒体条目列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const mediaItems = computed(() => current.value?.media?.filter((item) => item.usageType === 'COVER') || [])
+/**
+ * 链接条目列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const linkItems = computed(() => current.value?.links || [])
 const typeLabels = { SOFTWARE: '软件', VIDEO: '视频', MUSIC: '音乐', WRITING: '写作', OTHER: '其他' }
 
+/**
+ * 加载当前操作。
+ * 主要协作：getAdminWork、current.value.tags.map、JSON.stringify、errorMessage。
+ * 更新的响应式状态包括 loading、error、current、savedForm、editorKey；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   if (!workId.value) return
   loading.value = true
@@ -56,6 +143,12 @@ async function load() {
   }
 }
 
+/**
+ * 保存当前操作。
+ * 主要协作：form.title.trim、editor.value.getMarkdown、createWork、payload、updateWork。
+ * 更新的响应式状态包括 error、saving、notice；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function save() {
   if (!form.title.trim()) { error.value = '请填写作品标题。'; return }
   const latest = editor.value?.getMarkdown?.()
@@ -82,11 +175,22 @@ async function save() {
   }
 }
 
+/**
+ * pick正文图片的处理函数。
+ * 主要协作：pick。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function pickBodyImage() {
   const asset = await pick('IMAGE')
   return asset ? { url: asset.contentUrl, name: asset.originalName } : null
 }
 
+/**
+ * 添加媒体。
+ * 主要协作：pick、updateWorkMedia、addWorkMedia、errorMessage。
+ * 更新的响应式状态包括 error、current；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function addMedia() {
   if (!workId.value) { error.value = '请先保存作品，再添加封面。'; return }
   const asset = await pick('IMAGE')
@@ -99,26 +203,58 @@ async function addMedia() {
   } catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * choosePrototype的处理函数。
+ * 主要协作：pick、bindWorkPrototype、prototypeEntry.value.trim、getAdminWork、errorMessage。
+ * 更新的响应式状态包括 error、saving、current、notice；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function choosePrototype() {
  if (!workId.value) { error.value = '请先保存作品。'; return }
  const asset = await pick('ARCHIVE'); if (!asset) return
  saving.value = true; error.value = ''
  try { await bindWorkPrototype(workId.value, { mediaAssetId: asset.id, entryPath: prototypeEntry.value.trim() }); current.value = await getAdminWork(workId.value); notice.value = '静态原型已绑定。' } catch (cause) { error.value = errorMessage(cause) } finally { saving.value = false }
 }
+/**
+ * 清理Prototype。
+ * 主要协作：bindWorkPrototype、getAdminWork、errorMessage。
+ * 更新的响应式状态包括 current、error；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function clearPrototype() {
  try { await bindWorkPrototype(workId.value, { mediaAssetId: null }); current.value = await getAdminWork(workId.value) } catch (cause) { error.value = errorMessage(cause) }
 }
+/**
+ * 移除媒体。
+ * 主要协作：removeWorkMedia、getAdminWork、errorMessage。
+ * 更新的响应式状态包括 error、current；渲染由 Vue 的依赖跟踪触发。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function removeMedia(item) {
   error.value = ''
   try { await removeWorkMedia(item.id); current.value = await getAdminWork(workId.value) } catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * edit链接的处理函数。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ */
 function editLink(item) {
   link.id = item.id; link.linkType = item.linkType; link.label = item.label; link.url = item.url
 }
 
+/**
+ * 清理链接。
+ */
 function clearLink() { link.id = ''; link.linkType = 'GITHUB'; link.label = ''; link.url = '' }
 
+/**
+ * 保存链接。
+ * 主要协作：link.label.trim、link.url.trim、linkItems.value.find、updateWorkLink、addWorkLink。
+ * 更新的响应式状态包括 error、current；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function saveLink() {
   if (!workId.value) { error.value = '请先保存作品，再添加外链。'; return }
   error.value = ''
@@ -130,11 +266,26 @@ async function saveLink() {
   } catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * 移除链接。
+ * 主要协作：removeWorkLink、getAdminWork、errorMessage。
+ * 更新的响应式状态包括 error、current；渲染由 Vue 的依赖跟踪触发。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function removeLink(item) {
   error.value = ''
   try { await removeWorkLink(item.id); current.value = await getAdminWork(workId.value) } catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * move链接的处理函数。
+ * 主要协作：linkItems.value.map、orderWorkLinks、errorMessage。
+ * 更新的响应式状态包括 current、error；渲染由 Vue 的依赖跟踪触发。
+ * @param index 索引；默认值、解构字段与可选参数见函数签名。
+ * @param direction direction；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function moveLink(index, direction) {
   const ids = linkItems.value.map((item) => item.id)
   const target = index + direction
@@ -143,10 +294,21 @@ async function moveLink(index, direction) {
   try { current.value = await orderWorkLinks(workId.value, ids) } catch (cause) { error.value = errorMessage(cause) }
 }
 
+/**
+ * 本次提交的数据的处理函数。
+ * 主要协作：form.title.trim。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function payload() {
  const { workType, bodyMarkdown, ...metadata } = form
  return { ...metadata, ...(workId.value ? { clearStartedOn: !form.startedOn, clearEndedOn: !form.endedOn } : {}), title: form.title.trim(), categoryId: form.categoryId || undefined, formatId: form.formatId || undefined, startedOn: form.startedOn || undefined, endedOn: form.endedOn || undefined, slug: form.slug || undefined }
 }
+/**
+ * 设置状态。
+ * 主要协作：withdrawWork、restoreWork、publishWork、errorMessage。
+ * 更新的响应式状态包括 error、saving、current、notice；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function setStatus() {
  if (dirty.value || sectionEditor.value?.dirty) { error.value = '请先保存当前修改，再改变发布状态。'; return }
  saving.value = true; error.value = ''
@@ -157,6 +319,9 @@ onBeforeRouteLeave(async () => {
  if (dirty.value || sectionEditor.value?.dirty) return await confirm.value.ask({ title: '尚有未保存的修改', message: '离开后当前未保存的修改将丢失。', confirmText: '放弃修改' })
  return true
 })
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(async () => { try { [taxonomy.value, templates.value] = await Promise.all([getWorkTaxonomy(), getWorkTemplates()]); savedForm.value = JSON.stringify(form); await load() } catch (cause) { error.value = errorMessage(cause) } })
 </script>
 
@@ -199,6 +364,224 @@ onMounted(async () => { try { [taxonomy.value, templates.value] = await Promise.
 </template>
 
 <style scoped>
-.work-editor{max-width:1420px;margin:auto}.work-editor__header{display:flex;align-items:end;justify-content:space-between;margin-bottom:25px;gap:18px}.work-editor__header a{color:var(--text-muted);text-decoration:none}.work-editor__header p{margin:18px 0 6px;color:var(--accent);font-size:11px;letter-spacing:.1em}.work-editor__header h1{margin:0;font-size:36px}.work-editor__header>button,.work-editor footer button{padding:12px 24px;border:0;border-radius:10px;color:var(--on-primary);background:var(--primary);cursor:pointer}.work-editor__section{margin-top:30px;padding:25px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.work-editor__section h2{margin:0 0 8px;font-size:22px}.work-editor__section p{margin:0 0 18px;color:var(--text-muted);font-size:13px}.work-editor__panel{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:25px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}.work-editor__panel .wide{grid-column:1/-1}.work-editor label{display:grid;gap:8px;color:var(--text-secondary);font-size:13px}.work-editor input,.work-editor select,.work-editor textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--border);border-radius:9px;color:var(--text-primary);background:var(--bg-page);font:inherit}.work-editor__tools{display:flex;gap:8px;flex-wrap:wrap}.work-editor__tools button,.work-editor__rows button,.work-editor__link button{padding:8px 12px;border:1px solid var(--border);border-radius:8px;color:var(--primary);background:var(--bg-page);cursor:pointer}.work-editor__rows{display:grid;gap:8px;margin-top:15px}.work-editor__rows>div{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:9px}.work-editor__rows span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.work-editor__rows img{width:65px;height:45px;object-fit:cover;border-radius:6px}.work-editor__link{display:grid;grid-template-columns:120px 150px 1fr auto;gap:8px}.work-editor footer{display:flex;justify-content:flex-end;margin:25px 0 55px}.work-editor__error{color:var(--danger)}.work-editor__notice{color:var(--primary)}@media(max-width:750px){.work-editor__panel{grid-template-columns:1fr}.work-editor__panel .wide{grid-column:1}.work-editor__link{grid-template-columns:1fr 1fr}.work-editor__rows>div{flex-wrap:wrap}}@media(max-width:520px){.work-editor__link{grid-template-columns:1fr}.work-editor__header{align-items:start;flex-direction:column}}
-.work-editor__tabs{display:flex;gap:8px;flex-wrap:wrap;margin:25px 0}.work-editor__tabs button,.work-template-grid button{padding:12px 18px;border:1px solid var(--border);border-radius:10px;background:var(--bg-surface);color:var(--text-secondary);cursor:pointer}.work-editor__tabs button.active,.work-template-grid button.active{border-color:var(--primary);background:var(--bg-subtle);color:var(--primary)}.work-template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}.work-template-grid button{display:grid;text-align:left;gap:8px}.work-template-grid small{color:var(--text-muted)}.work-template-preview{line-height:1.8}.work-tag-picker{display:flex;flex-wrap:wrap;gap:12px}.work-tag-picker label,.work-check{display:flex!important;align-items:center;gap:8px!important}.work-tag-picker label{padding:10px 16px;border:1px solid var(--border);border-radius:999px}.work-tag-picker input,.work-check input{width:16px!important}.work-content-panel{margin:24px 0}.work-editor__tools a{padding:8px 12px;color:var(--primary)}@media(max-width:650px){.work-template-grid{grid-template-columns:repeat(2,1fr)}}
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.work-editor。
+ */
+.work-editor{max-width:1420px;margin:auto}
+  /**
+   * 样式范围：.work-editor__header。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .work-editor__header{display:flex;align-items:end;justify-content:space-between;margin-bottom:25px;gap:18px}
+  /**
+   * 样式范围：.work-editor__header a。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__header a{color:var(--text-muted);text-decoration:none}
+  /**
+   * 样式范围：.work-editor__header p。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__header p{margin:18px 0 6px;color:var(--accent);font-size:11px;letter-spacing:.1em}
+  /**
+   * 样式范围：.work-editor__header h1。
+   */
+  .work-editor__header h1{margin:0;font-size:36px}
+  /**
+   * 样式范围：.work-editor__header>button,.work-editor footer button。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__header>button,.work-editor footer button{padding:12px 24px;border:0;border-radius:10px;color:var(--on-primary);background:var(--primary);cursor:pointer}
+  /**
+   * 样式范围：.work-editor__section。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__section{margin-top:30px;padding:25px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}
+  /**
+   * 样式范围：.work-editor__section h2。
+   */
+  .work-editor__section h2{margin:0 0 8px;font-size:22px}
+  /**
+   * 样式范围：.work-editor__section p。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__section p{margin:0 0 18px;color:var(--text-muted);font-size:13px}
+  /**
+   * 样式范围：.work-editor__panel。
+   * 使用网格布局组织内容；列定义为 1fr 1fr，间距由 18px 控制。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__panel{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:25px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}
+  /**
+   * 样式范围：.work-editor__panel .wide。
+   */
+  .work-editor__panel .wide{grid-column:1/-1}
+  /**
+   * 样式范围：.work-editor label。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 8px 控制。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor label{display:grid;gap:8px;color:var(--text-secondary);font-size:13px}
+  /**
+   * 样式范围：.work-editor input,.work-editor select,.work-editor textarea。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor input,.work-editor select,.work-editor textarea{width:100%;box-sizing:border-box;padding:12px;border:1px solid var(--border);border-radius:9px;color:var(--text-primary);background:var(--bg-page);font:inherit}
+  /**
+   * 样式范围：.work-editor__tools。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .work-editor__tools{display:flex;gap:8px;flex-wrap:wrap}
+  /**
+   * 样式范围：.work-editor__tools button,.work-editor__rows button,.work-editor__link button。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__tools button,.work-editor__rows button,.work-editor__link button{padding:8px 12px;border:1px solid var(--border);border-radius:8px;color:var(--primary);background:var(--bg-page);cursor:pointer}
+  /**
+   * 样式范围：.work-editor__rows。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 8px 控制。
+   */
+  .work-editor__rows{display:grid;gap:8px;margin-top:15px}
+  /**
+   * 样式范围：.work-editor__rows>div。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__rows>div{display:flex;align-items:center;gap:8px;padding:10px;border:1px solid var(--border);border-radius:9px}
+  /**
+   * 样式范围：.work-editor__rows span。
+   * 溢出处理：整体 hidden。
+   * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+   */
+  .work-editor__rows span{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /**
+   * 样式范围：.work-editor__rows img。
+   */
+  .work-editor__rows img{width:65px;height:45px;object-fit:cover;border-radius:6px}
+  /**
+   * 样式范围：.work-editor__link。
+   * 使用网格布局组织内容；列定义为 120px 150px 1fr auto，间距由 8px 控制。
+   */
+  .work-editor__link{display:grid;grid-template-columns:120px 150px 1fr auto;gap:8px}
+  /**
+   * 样式范围：.work-editor footer。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .work-editor footer{display:flex;justify-content:flex-end;margin:25px 0 55px}
+  /**
+   * 样式范围：.work-editor__error。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__error{color:var(--danger)}
+  /**
+   * 样式范围：.work-editor__notice。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__notice{color:var(--primary)}
+  /**
+   * 响应式或设备条件：(max-width:750px)；仅在该条件成立时覆盖基础样式。
+   */
+  @media(max-width:750px){
+  /**
+   * 样式范围：.work-editor__panel。
+   */
+  .work-editor__panel{grid-template-columns:1fr}
+  /**
+   * 样式范围：.work-editor__panel .wide。
+   */
+  .work-editor__panel .wide{grid-column:1}
+  /**
+   * 样式范围：.work-editor__link。
+   */
+  .work-editor__link{grid-template-columns:1fr 1fr}
+  /**
+   * 样式范围：.work-editor__rows>div。
+   */
+  .work-editor__rows>div{flex-wrap:wrap}}
+  /**
+   * 响应式或设备条件：(max-width:520px)；仅在该条件成立时覆盖基础样式。
+   */
+  @media(max-width:520px){
+  /**
+   * 样式范围：.work-editor__link。
+   */
+  .work-editor__link{grid-template-columns:1fr}
+  /**
+   * 样式范围：.work-editor__header。
+   */
+  .work-editor__header{align-items:start;flex-direction:column}}
+/**
+ * 样式范围：.work-editor__tabs。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
+.work-editor__tabs{display:flex;gap:8px;flex-wrap:wrap;margin:25px 0}
+  /**
+   * 样式范围：.work-editor__tabs button,.work-template-grid button。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__tabs button,.work-template-grid button{padding:12px 18px;border:1px solid var(--border);border-radius:10px;background:var(--bg-surface);color:var(--text-secondary);cursor:pointer}
+  /**
+   * 样式范围：.work-editor__tabs button.active,.work-template-grid button.active。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__tabs button.active,.work-template-grid button.active{border-color:var(--primary);background:var(--bg-subtle);color:var(--primary)}
+  /**
+   * 样式范围：.work-template-grid。
+   * 使用网格布局组织内容；列定义为 repeat(3,1fr)，间距由 12px 控制。
+   */
+  .work-template-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:20px 0}
+  /**
+   * 样式范围：.work-template-grid button。
+   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 8px 控制。
+   */
+  .work-template-grid button{display:grid;text-align:left;gap:8px}
+  /**
+   * 样式范围：.work-template-grid small。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-template-grid small{color:var(--text-muted)}
+  /**
+   * 样式范围：.work-template-preview。
+   */
+  .work-template-preview{line-height:1.8}
+  /**
+   * 样式范围：.work-tag-picker。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .work-tag-picker{display:flex;flex-wrap:wrap;gap:12px}
+  /**
+   * 样式范围：.work-tag-picker label,.work-check。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   */
+  .work-tag-picker label,.work-check{display:flex!important;align-items:center;gap:8px!important}
+  /**
+   * 样式范围：.work-tag-picker label。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-tag-picker label{padding:10px 16px;border:1px solid var(--border);border-radius:999px}
+  /**
+   * 样式范围：.work-tag-picker input,.work-check input。
+   */
+  .work-tag-picker input,.work-check input{width:16px!important}
+  /**
+   * 样式范围：.work-content-panel。
+   */
+  .work-content-panel{margin:24px 0}
+  /**
+   * 样式范围：.work-editor__tools a。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .work-editor__tools a{padding:8px 12px;color:var(--primary)}
+  /**
+   * 响应式或设备条件：(max-width:650px)；仅在该条件成立时覆盖基础样式。
+   */
+  @media(max-width:650px){
+  /**
+   * 样式范围：.work-template-grid。
+   */
+  .work-template-grid{grid-template-columns:repeat(2,1fr)}}
 </style>

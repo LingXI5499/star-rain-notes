@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * PublicFooter.vue：站点模块的视图组件。
+ * 职责范围：站点品牌、首页内容和站点设置。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue、vue-router、../../../shared/viewMode、../support/siteBranding、../support/publicSocialLinks。
+ * 主要响应式状态：navItems。
+ * 阅读入口：scrollToTop（滚动目标Top）。
+ */
+
+
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
@@ -30,6 +40,10 @@ const securityRecord = import.meta.env.VITE_PUBLIC_SECURITY_RECORD || ''
 const securityCode = import.meta.env.VITE_PUBLIC_SECURITY_CODE || ''
 
 /* 与顶栏同一顺序：教程 → 博客 → 作品 → 英语 → 留言 → 关于 */
+/**
+ * nav条目列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const navItems = computed(() => [
   { label: '教程', to: contentPath('/tutorials') },
   { label: '博客', to: contentPath('/blog') },
@@ -39,6 +53,10 @@ const navItems = computed(() => [
   { label: '关于', to: contentPath('/about') },
 ])
 
+/**
+ * 滚动目标Top。
+ * 主要协作：window.matchMedia、window.scrollTo。
+ */
 function scrollToTop() {
   const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
   window.scrollTo({ top: 0, behavior })
@@ -99,6 +117,10 @@ function scrollToTop() {
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
 /*
  * 上一版外壳骨架里那组 `.site-footer { padding / font-size }` 与 `.site-footer p { margin }`
  * 已随域名方案（styles/entry.css）一并删除，这里不需要再写覆盖规则把排版拉回来。
@@ -111,6 +133,11 @@ function scrollToTop() {
     var(--bg-surface);
 }
 
+/**
+ * 样式范围：.site-footer__inner。
+ * 使用网格布局组织内容；列定义为 minmax(0, 1.3fr) minmax(320px, 0.7fr)，间距由 44px clamp(36px, 7vw, 96px) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__inner {
   max-width: var(--layout-max-width);
   margin-inline: auto;
@@ -120,16 +147,34 @@ function scrollToTop() {
   gap: 44px clamp(36px, 7vw, 96px);
 }
 
+/**
+ * 样式范围：.site-footer__lead。
+ */
 .site-footer__lead { max-width: 580px; }
+/**
+ * 样式范围：.site-footer__brand。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .site-footer__brand { display: flex; align-items: center; gap: 14px; }
+/**
+ * 样式范围：.site-footer__mark。
+ */
 .site-footer__mark { width: 42px; height: 42px; object-fit: contain; }
 
+/**
+ * 样式范围：.site-footer__name。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__name {
   font-size: 20px;
   font-weight: 760;
   color: var(--text-primary);
 }
 
+/**
+ * 样式范围：.site-footer__tagline。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__tagline {
   font-size: 12px;
   letter-spacing: 0.12em;
@@ -138,27 +183,57 @@ function scrollToTop() {
   margin-top: var(--space-1);
 }
 
+/**
+ * 样式范围：.site-footer__statement。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__statement { margin-top: 22px; color: var(--text-secondary); line-height: 1.8; }
+/**
+ * 样式范围：.site-footer__links。
+ * 使用网格布局组织内容；列定义为 1fr 0.7fr，间距由 28px 控制。
+ */
 .site-footer__links { display: grid; grid-template-columns: 1fr 0.7fr; gap: 28px; }
+/**
+ * 样式范围：.site-footer__label。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__label { margin-bottom: 14px; color: var(--accent); font-size: 11px; font-weight: 750; letter-spacing: 0.16em; }
 
+/**
+ * 样式范围：.site-footer__nav。
+ * 使用网格布局组织内容；列定义为 repeat(2, minmax(0, 1fr))，间距由 10px 22px 控制。
+ */
 .site-footer__nav {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 10px 22px;
 }
 
+/**
+ * 样式范围：.site-footer__link。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__link {
   font-size: 14px;
   color: var(--text-secondary);
   transition: color var(--motion-fast) var(--ease-standard), transform var(--motion-fast) var(--ease-standard);
 }
 
+/**
+ * 样式范围：.site-footer__link:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__link:hover {
   color: var(--primary);
   transform: translateX(2px);
 }
 
+/**
+ * 样式范围：.site-footer__link--pending, .site-footer__link--pending:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__link--pending,
 .site-footer__link--pending:hover {
   color: var(--text-muted);
@@ -166,11 +241,28 @@ function scrollToTop() {
   transform: none;
 }
 
+/**
+ * 样式范围：.site-footer__connect。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 10px 控制。
+ */
 .site-footer__connect { display: grid; gap: 10px; justify-items: start; }
+/**
+ * 样式范围：.site-footer__connect .site-footer__link span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__connect .site-footer__link span { color: var(--accent); }
 
+/**
+ * 样式范围：.site-footer__muted。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__muted { color: var(--text-muted); font-size: 13px; }
 
+/**
+ * 样式范围：.site-footer__legal。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__legal {
   grid-column: 1 / -1;
   display: flex;
@@ -183,6 +275,10 @@ function scrollToTop() {
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.site-footer__legal button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__legal button {
   border: 0;
   background: transparent;
@@ -190,11 +286,34 @@ function scrollToTop() {
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.site-footer__legal button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__legal button:hover { color: var(--primary); }
+/**
+ * 样式范围：.site-footer__legal。
+ */
 .site-footer__legal { flex-wrap: wrap; }
+/**
+ * 样式范围：.site-footer__policies。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__policies { display: flex; flex-wrap: wrap; gap: 16px; color: var(--text-secondary); }
+/**
+ * 样式范围：.site-footer__policies a:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__policies a:hover { color: var(--primary); }
 
+/**
+ * 样式范围：.site-footer__icp。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__icp {
   grid-column: 1 / -1;
   display: flex;
@@ -205,17 +324,47 @@ function scrollToTop() {
   color: var(--text-muted);
 }
 
+/**
+ * 样式范围：.site-footer__icp a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__icp a { color: var(--text-muted); }
+/**
+ * 样式范围：.site-footer__icp a:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .site-footer__icp a:hover { color: var(--primary); }
 
+/**
+ * 响应式或设备条件：(max-width: 760px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 760px) {
+  /**
+   * 样式范围：.site-footer__inner。
+   */
   .site-footer__inner { grid-template-columns: 1fr; gap: 34px; }
+  /**
+   * 样式范围：.site-footer__links。
+   */
   .site-footer__links { grid-template-columns: 1fr 1fr; }
+  /**
+   * 样式范围：.site-footer__legal。
+   */
   .site-footer__legal { align-items: flex-start; }
+  /**
+   * 样式范围：.site-footer__icp。
+   */
   .site-footer__icp { align-items: flex-start; flex-direction: column; gap: 8px; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 420px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 420px) {
+  /**
+   * 样式范围：.site-footer__links。
+   */
   .site-footer__links { grid-template-columns: 1fr; }
 }
 </style>

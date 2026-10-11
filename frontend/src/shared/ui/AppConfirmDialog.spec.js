@@ -1,3 +1,11 @@
+/**
+ * AppConfirmDialog.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vitest、vue、./AppConfirmDialog.vue。
+ * 验证场景：AppConfirmDialog；keeps the existing text and options API for account and blog pages；requires the object name for irreversible actions。
+ */
+
 import { mount } from '@vue/test-utils'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'

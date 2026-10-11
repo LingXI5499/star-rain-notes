@@ -1,3 +1,11 @@
+/*
+ * HomeSectionSettingVO：站点模块的响应数据文件。
+ * 业务范围：站点品牌、首页内容和站点设置。
+ * 描述返回给客户端的数据结构。转换方法负责把实体或内部结果映射到这些展示字段。
+ * 主要协作类型：HomeSectionEntity。
+ * 阅读入口：from（从输入构造首页区块Setting）。
+ */
+
 package com.starrainnotes.site.vo;
 
 import com.starrainnotes.site.entity.HomeSectionEntity;
@@ -20,20 +28,54 @@ import lombok.NoArgsConstructor;
  *
  * 字段名与实体逐字相同，因此管理端 JSON 契约不变，前端不需要改。
  */
+/**
+ * 首页区块Setting响应对象，属于站点模块。
+ * 描述返回给客户端的数据结构。转换方法负责把实体或内部结果映射到这些展示字段。
+ */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class HomeSectionSettingVO {
+    /**
+     * 当前业务对象的数据库标识。
+     */
     private Long id;
+    /**
+     * 区块代码。
+     */
     private String sectionCode;
+    /**
+     * 显示名称。
+     */
     private String displayName;
+    /**
+     * 已启用。
+     */
     private Boolean enabled;
+    /**
+     * 展示排序值。
+     */
     private Integer sortOrder;
+    /**
+     * 配置JSON。
+     */
     private String configJson;
+    /**
+     * 创建时间。
+     */
     private LocalDateTime createdAt;
+    /**
+     * 更新时间。
+     */
     private LocalDateTime updatedAt;
 
+    /**
+     * 从输入构造首页区块Setting。
+     *
+     * @param entity 数据库映射实体；类型为 <code>HomeSectionEntity</code>
+     * @return 由输入对象组装的首页区块Setting响应对象
+     */
     public static HomeSectionSettingVO from(HomeSectionEntity entity) {
         if (entity == null) return null;
         return HomeSectionSettingVO.builder()

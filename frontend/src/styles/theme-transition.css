@@ -1,3 +1,8 @@
+/**
+ * theme-transition.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 /* Circular theme reveal adapted from clay-blog; see THIRD_PARTY_NOTICES.md. */
 html.is-theme-revealing::view-transition-old(root) {
   animation: none;
@@ -5,6 +10,9 @@ html.is-theme-revealing::view-transition-old(root) {
   opacity: 1;
   z-index: 1;
 }
+/**
+ * 样式范围：html.is-theme-revealing::view-transition-new(root)。
+ */
 html.is-theme-revealing::view-transition-new(root) {
   animation: star-rain-theme-reveal .52s linear both;
   mix-blend-mode: normal;
@@ -15,21 +23,70 @@ html.is-theme-revealing::view-transition-new(root) {
 html.is-theme-revealing *,
 html.is-theme-revealing *::before,
 html.is-theme-revealing *::after { transition: none !important; view-transition-name: none !important; }
+/**
+ * 样式范围：html.is-theme-revealing [data-theme-toggle]。
+ */
 html.is-theme-revealing [data-theme-toggle] { view-transition-name: star-rain-theme-toggle !important; }
+/**
+ * 样式范围：html.is-theme-revealing::view-transition-group(star-rain-theme-toggle)。
+ */
 html.is-theme-revealing::view-transition-group(star-rain-theme-toggle) { animation: none; z-index: 4; }
+/**
+ * 样式范围：html.is-theme-revealing::view-transition-old(star-rain-theme-toggle)。
+ */
 html.is-theme-revealing::view-transition-old(star-rain-theme-toggle) {
   animation: star-rain-theme-icon-out .18s ease-in both;
   mix-blend-mode: normal;
 }
+/**
+ * 样式范围：html.is-theme-revealing::view-transition-new(star-rain-theme-toggle)。
+ */
 html.is-theme-revealing::view-transition-new(star-rain-theme-toggle) {
   animation: star-rain-theme-icon-in .46s .04s ease-out both;
   mix-blend-mode: normal;
 }
-@keyframes star-rain-theme-icon-out { to { opacity: 0; transform: rotate(28deg) scale(.72); } }
+/**
+ * 动画 star-rain-theme-icon-out 的关键帧；帧内仅定义随动画时间改变的属性。
+ */
+@keyframes star-rain-theme-icon-out {
+  /**
+   * 样式范围：to。
+   */
+  to { opacity: 0; transform: rotate(28deg) scale(.72); } }
+/**
+ * 动画 star-rain-theme-icon-in 的关键帧；帧内仅定义随动画时间改变的属性。
+ */
 @keyframes star-rain-theme-icon-in {
+  /**
+   * 样式范围：from。
+   */
   from { opacity: 0; transform: rotate(-32deg) scale(.62); }
+  /**
+   * 样式范围：to。
+   */
   to { opacity: 1; transform: rotate(0) scale(1); }
 }
+/**
+ * 样式范围：html.is-theme-fading body。
+ */
 html.is-theme-fading body { animation: star-rain-theme-settle .32s ease-out both; }
-@keyframes star-rain-theme-settle { from { opacity: .8; } to { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { html.is-theme-fading body { animation: none; } }
+/**
+ * 动画 star-rain-theme-settle 的关键帧；帧内仅定义随动画时间改变的属性。
+ */
+@keyframes star-rain-theme-settle {
+  /**
+   * 样式范围：from。
+   */
+  from { opacity: .8; }
+  /**
+   * 样式范围：to。
+   */
+  to { opacity: 1; } }
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
+@media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：html.is-theme-fading body。
+   */
+  html.is-theme-fading body { animation: none; } }

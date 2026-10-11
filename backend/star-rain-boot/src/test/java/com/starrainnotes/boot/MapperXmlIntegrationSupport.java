@@ -1,3 +1,10 @@
+/*
+ * MapperXmlIntegrationSupport：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 阅读入口：configuration（configuration处理入口）；openSession（打开会话）；xmlResources（xmlResources处理入口）；namespaceOf（namespace所属处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -46,16 +53,41 @@ import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
  *   1. 环境变量 STAR_RAIN_DB_URL / STAR_RAIN_DB_USERNAME / STAR_RAIN_DB_PASSWORD
  *   2. star-rain-v2/backend/application-local-secret.yml（本机开发配置，不入库）
  */
+/**
+ * 数据映射XmlIntegration支持，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 abstract class MapperXmlIntegrationSupport {
 
+    /**
+     * JDBC。
+     */
     private static final Pattern JDBC = Pattern.compile(
             "^jdbc:mysql://(?<host>[^:/?]+):(?<port>\\d+)/(?<db>[^?]+)");
+    /**
+     * NAMESPACE。
+     */
     private static final Pattern NAMESPACE = Pattern.compile("namespace=\"([^\"]+)\"");
 
+    /**
+     * 解析后Configuration。
+     */
     private static Configuration parsedConfiguration;
+    /**
+     * sql会话Factory。
+     */
     private static SqlSessionFactory sqlSessionFactory;
+    /**
+     * resolvedDb。
+     */
     private static DbConfig resolvedDb;
+    /**
+     * dbResolved。
+     */
     private static boolean dbResolved;
+    /**
+     * skip原因。
+     */
     private static String skipReason;
 
     /** 解析层配置：只加载 XML，不带数据源。 */
@@ -81,12 +113,27 @@ abstract class MapperXmlIntegrationSupport {
         return discoverMapperXmlResources();
     }
 
+    /**
+     * namespace所属处理入口。
+     * 主要协作调用：<code>NAMESPACE.matcher</code>。
+     *
+     * @param resource resource；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     protected static String namespaceOf(String resource) {
         Matcher matcher = NAMESPACE.matcher(readResource(resource));
         assertNotNull(matcher.find() ? matcher.group(1) : null, "XML 缺少 namespace：" + resource);
         return matcher.group(1);
     }
 
+    /**
+     * 读取Resource。
+     * 关键处理步骤调用 <code>Resources.getResourceAsStream</code>、<code>in.readAllBytes</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param resource resource；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     protected static String readResource(String resource) {
         try (InputStream in = Resources.getResourceAsStream(resource)) {
             assertNotNull(in, "classpath 上找不到 Mapper XML：" + resource);
@@ -96,6 +143,11 @@ abstract class MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 基础Configuration处理入口。
+     * 关键处理步骤调用 <code>configuration.setMapUnderscoreToCamelCase</code>。
+     * @return 类型为 <code>Configuration</code> 的处理结果
+     */
     private static Configuration baseConfiguration() {
         Configuration configuration = new Configuration();
         // 与 application.yml 的 mybatis-plus.configuration.map-underscore-to-camel-case 对齐
@@ -103,6 +155,14 @@ abstract class MapperXmlIntegrationSupport {
         return configuration;
     }
 
+    /**
+     * 解析Into。
+     * 关键处理步骤调用 <code>discoverMapperXmlResources</code>、<code>Resources.getResourceAsStream</code>、<code>configuration.getSqlFragments</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param configuration configuration；类型为 <code>Configuration</code>
+     * @return 类型为 <code>Configuration</code> 的处理结果
+     */
     private static Configuration parseInto(Configuration configuration) {
         for (String resource : discoverMapperXmlResources()) {
             try (InputStream in = Resources.getResourceAsStream(resource)) {
@@ -115,6 +175,11 @@ abstract class MapperXmlIntegrationSupport {
         return configuration;
     }
 
+    /**
+     * factory处理入口。
+     * 关键处理步骤调用 <code>dbConfig</code>、<code>assumeTrue</code>、<code>baseConfiguration</code>、<code>configuration.setEnvironment</code>。
+     * @return 类型为 <code>SqlSessionFactory</code> 的处理结果
+     */
     private static synchronized SqlSessionFactory factory() {
         if (sqlSessionFactory != null) return sqlSessionFactory;
         DbConfig config = dbConfig();
@@ -127,6 +192,12 @@ abstract class MapperXmlIntegrationSupport {
         return sqlSessionFactory;
     }
 
+    /**
+     * discover数据映射XmlResources处理入口。
+     * 关键处理步骤调用 <code>backendRoot</code>、<code>Files.list</code>、<code>modules.filter</code>、<code>module.resolve</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     * @return 本次处理得到的条目集合
+     */
     private static List<String> discoverMapperXmlResources() {
         Path root = backendRoot();
         List<String> resources = new ArrayList<>();
@@ -148,6 +219,11 @@ abstract class MapperXmlIntegrationSupport {
         return resources;
     }
 
+    /**
+     * db配置处理入口。
+     * 关键处理步骤调用 <code>System.getenv</code>、<code>url.isBlank</code>、<code>backendRoot</code>、<code>Files.isRegularFile</code>。
+     * @return 类型为 <code>DbConfig</code> 的处理结果
+     */
     private static synchronized DbConfig dbConfig() {
         if (dbResolved) return resolvedDb;
         dbResolved = true;
@@ -184,12 +260,27 @@ abstract class MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 值处理入口。
+     * 关键处理步骤调用 <code>Pattern.compile</code>、<code>Pattern.quote</code>、<code>matcher.find</code>、<code>matcher.group</code>。
+     *
+     * @param yaml yaml；类型为 <code>String</code>
+     * @param key 键；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String value(String yaml, String key) {
         Matcher matcher = Pattern.compile("(?m)^" + Pattern.quote(key) + ":\\s*(.+)$").matcher(yaml);
         if (!matcher.find()) return null;
         return matcher.group(1).trim().replaceAll("^[\"']|[\"']$", "");
     }
 
+    /**
+     * reachable处理入口。
+     * 主要协作调用：<code>JDBC.matcher</code>。
+     *
+     * @param config 配置；类型为 <code>DbConfig</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private static boolean reachable(DbConfig config) {
         Matcher matcher = JDBC.matcher(config.url);
         if (!matcher.find()) return false;
@@ -202,6 +293,11 @@ abstract class MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * backendRoot处理入口。
+     * 关键处理步骤调用 <code>Path.of</code>、<code>current.getFileName</code>、<code>current.getParent</code>。
+     * @return 类型为 <code>Path</code> 的处理结果
+     */
     private static Path backendRoot() {
         Path current = Path.of("").toAbsolutePath();
         // 从 star-rain-boot 跑测试时工作目录就是模块目录，向上一级是 backend
@@ -212,12 +308,36 @@ abstract class MapperXmlIntegrationSupport {
     }
 
     /* 项目约定禁 record，这里用普通 POJO 保持一致。 */
+    /**
+     * Db配置，属于应用启动模块。
+     * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+     */
     private static final class DbConfig {
+        /**
+         * 地址。
+         */
         private final String url;
+        /**
+         * 用户名。
+         */
         private final String username;
+        /**
+         * 密码参数；使用和保存方式由对应的密码处理流程决定。
+         */
         private final String password;
+        /**
+         * driver。
+         */
         private final String driver;
 
+        /**
+         * 构造DbConfig，接收本类使用的依赖或初始化参数。
+         *
+         * @param url 地址；类型为 <code>String</code>
+         * @param username 用户名；类型为 <code>String</code>
+         * @param password 密码参数；使用和保存方式由对应的密码处理流程决定；类型为 <code>String</code>
+         * @param driver driver；类型为 <code>String</code>
+         */
         private DbConfig(String url, String username, String password, String driver) {
             this.url = url;
             this.username = username;

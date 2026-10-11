@@ -1,3 +1,10 @@
+/*
+ * ReviewDecisionCallbackDispatcherTest：审核模块的测试文件。
+ * 业务范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 阅读入口：clearSynchronization（清理Synchronization）；runsImmediatelyWithoutTransaction（\u6ca1\u6709\u6d3b\u52a8\u4e8b\u52a1\u65f6\u7acb\u5373\u6267\u884c\uff1a\u56de\u8c03\u4e0d\u4f1a\u88ab\u9759\u9ed8\u4e22\u5f03）；defersUntilAfterCommit（\u6709\u6d3b\u52a8\u4e8b\u52a1\u65f6\u6ce8\u518c\u4e3a afterCommit\uff1a\u63d0\u4ea4\u524d\u4e0d\u6267\u884c\uff0c\u63d0\u4ea4\u540e\u624d\u6267\u884c）；doesNotRunOnRollback（\u4e8b\u52a1\u56de\u6eda\u65f6\u4e0d\u6267\u884c\u56de\u8c03\uff1a\u5ba1\u6838\u51b3\u5b9a\u6ca1\u751f\u6548\u5c31\u4e0d\u8be5\u63a8\u8fdb\u4e1a\u52a1\u72b6\u6001）。
+ */
+
 package com.starrainnotes.review.handler;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,10 +24,21 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * 因此要精确验证 afterCommit 语义：注册之后不会立刻执行，
  * 只有事务提交（或没有事务时的立即执行）才真正调用回调。
  */
+/**
+ * 审核决定CallbackDispatcher测试，属于审核模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class ReviewDecisionCallbackDispatcherTest {
 
+    /**
+     * dispatcher。
+     */
     private final ReviewDecisionCallbackDispatcher dispatcher = new ReviewDecisionCallbackDispatcher();
 
+    /**
+     * 清理Synchronization。
+     * 关键处理步骤调用 <code>TransactionSynchronizationManager.isSynchronizationActive</code>、<code>TransactionSynchronizationManager.clearSynchronization</code>。
+     */
     @AfterEach
     void clearSynchronization() {
         if (TransactionSynchronizationManager.isSynchronizationActive()) {
@@ -28,6 +46,10 @@ class ReviewDecisionCallbackDispatcherTest {
         }
     }
 
+    /**
+     * \u6ca1\u6709\u6d3b\u52a8\u4e8b\u52a1\u65f6\u7acb\u5373\u6267\u884c\uff1a\u56de\u8c03\u4e0d\u4f1a\u88ab\u9759\u9ed8\u4e22\u5f03。
+     * 主要协作调用：<code>dispatcher.dispatch</code>。
+     */
     @Test
     @DisplayName("没有活动事务时立即执行：回调不会被静默丢弃")
     void runsImmediatelyWithoutTransaction() {
@@ -38,6 +60,10 @@ class ReviewDecisionCallbackDispatcherTest {
         assertThat(counter.get()).isEqualTo(1);
     }
 
+    /**
+     * \u6709\u6d3b\u52a8\u4e8b\u52a1\u65f6\u6ce8\u518c\u4e3a afterCommit\uff1a\u63d0\u4ea4\u524d\u4e0d\u6267\u884c\uff0c\u63d0\u4ea4\u540e\u624d\u6267\u884c。
+     * 主要协作调用：<code>dispatcher.dispatch</code>。
+     */
     @Test
     @DisplayName("有活动事务时注册为 afterCommit：提交前不执行，提交后才执行")
     void defersUntilAfterCommit() {
@@ -57,6 +83,10 @@ class ReviewDecisionCallbackDispatcherTest {
         assertThat(counter.get()).isEqualTo(1);
     }
 
+    /**
+     * \u4e8b\u52a1\u56de\u6eda\u65f6\u4e0d\u6267\u884c\u56de\u8c03\uff1a\u5ba1\u6838\u51b3\u5b9a\u6ca1\u751f\u6548\u5c31\u4e0d\u8be5\u63a8\u8fdb\u4e1a\u52a1\u72b6\u6001。
+     * 主要协作调用：<code>dispatcher.dispatch</code>。
+     */
     @Test
     @DisplayName("事务回滚时不执行回调：审核决定没生效就不该推进业务状态")
     void doesNotRunOnRollback() {
@@ -72,6 +102,10 @@ class ReviewDecisionCallbackDispatcherTest {
         assertThat(counter.get()).isZero();
     }
 
+    /**
+     * \u591a\u4e2a\u56de\u8c03\u6309\u6ce8\u518c\u987a\u5e8f\u6267\u884c\uff1a\u5148\u5199\u5386\u53f2\u7684\u56de\u8c03\u4e0d\u4f1a\u88ab\u540e\u6ce8\u518c\u7684\u6324\u6389。
+     * 主要协作调用：<code>dispatcher.dispatch</code>。
+     */
     @Test
     @DisplayName("多个回调按注册顺序执行：先写历史的回调不会被后注册的挤掉")
     void runsMultipleCallbacksInRegistrationOrder() {
@@ -87,6 +121,10 @@ class ReviewDecisionCallbackDispatcherTest {
         assertThat(order.toString()).isEqualTo("AB");
     }
 
+    /**
+     * null \u56de\u8c03\u88ab\u5b89\u9759\u5ffd\u7565\uff0c\u4e0d\u629b\u5f02\u5e38。
+     * 主要协作调用：<code>dispatcher.dispatch</code>。
+     */
     @Test
     @DisplayName("null 回调被安静忽略，不抛异常")
     void ignoresNullCallback() {

@@ -1,3 +1,11 @@
+/*
+ * BaselineReviewIntervalPolicy：教程与学习模块的业务实现文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：RecallRating、LearningReviewProperties、ReviewIntervalPolicy、ReviewIntervalDecision。
+ * 阅读入口：next（下一项处理入口）。
+ */
+
 package com.starrainnotes.tutorial.learning.service.impl;
 
 import com.starrainnotes.tutorial.learning.enumeration.RecallRating;
@@ -8,11 +16,29 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+/**
+ * Baseline审核间隔策略，属于教程与学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Component
 @RequiredArgsConstructor
 public class BaselineReviewIntervalPolicy implements ReviewIntervalPolicy {
+    /**
+     * 本模块的外部配置属性。
+     * 协作类型：<code>LearningReviewProperties</code>。
+     */
     private final LearningReviewProperties properties;
 
+    /**
+     * 下一项处理入口。
+     * 主要协作调用：<code>properties.getBaseIntervalDays</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>、<code>IllegalArgumentException</code>；具体触发条件见对应分支。
+     *
+     * @param stepIndex step索引；类型为 <code>int</code>
+     * @param currentIntervalDays 当前间隔Days；类型为 <code>int</code>
+     * @param rating 评分；类型为 <code>RecallRating</code>
+     * @return 类型为 <code>ReviewIntervalDecision</code> 的处理结果
+     */
     @Override
     public ReviewIntervalDecision next(int stepIndex, int currentIntervalDays, RecallRating rating) {
         List<Integer> intervals = properties.getBaseIntervalDays();

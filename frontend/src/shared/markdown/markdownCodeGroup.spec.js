@@ -1,3 +1,11 @@
+/**
+ * markdownCodeGroup.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、markdown-it、dompurify、./markdownMath、./markdownCodeGroup。
+ * 验证场景：markdownCodeGroup；labels common languages like LeetCode；parses explicit group labels；wraps consecutive fences inside ::: code-group；still accepts bare ::: code-group。
+ */
+
 import { describe, expect, it } from 'vitest'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'

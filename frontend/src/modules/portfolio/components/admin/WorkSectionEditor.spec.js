@@ -1,3 +1,12 @@
+/**
+ * WorkSectionEditor.spec.js：作品模块的自动化测试。
+ * 职责范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、@vue/test-utils、./WorkSectionEditor.vue。
+ * 阅读入口：view（view的处理函数）。
+ * 验证场景：work block authoring；selects an existing block into a separate edit area；creates no server draft when choosing a block type；saves the selected block with its work and section ownership；sends the full work order when moving a block。
+ */
+
 import { beforeEach, describe, it, expect, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import WorkSectionEditor from './WorkSectionEditor.vue'
@@ -5,6 +14,11 @@ const api = vi.hoisted(() => ({ createWorkSection: vi.fn(), updateWorkSection: v
 vi.mock('../../api/portfolioApi', () => api)
 const first = { id: '10', sectionType: 'CODE', title: '第一段', content: 'const x = 1', data: { language: 'javascript' }, visible: true, media: [] }
 const second = { id: '20', sectionType: 'QUOTE', title: '第二段', content: 'text', data: {}, visible: true, media: [] }
+/**
+ * view的处理函数。
+ * 主要协作：mount。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function view() { return mount(WorkSectionEditor, { props: { work: { id: '1', sections: [first, second] } }, global: { stubs: { MarkdownEditor: true, MediaPicker: true, AppConfirmDialog: true } } }) }
 beforeEach(() => { vi.clearAllMocks(); api.getAdminWork.mockResolvedValue({ id: '1', sections: [first, second] }); api.updateWorkSection.mockResolvedValue(first); api.createWorkSection.mockResolvedValue({ ...first, id: '30' }) })
 describe('work block authoring', () => {

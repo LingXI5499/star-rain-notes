@@ -1,3 +1,12 @@
+/**
+ * PublicLists.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue-router、vitest、./PublicPagination.vue、./PublicSelect.vue、../../modules/tutorial/pages/public/TutorialCatalogPage.vue。
+ * 阅读入口：render（渲染当前操作）。
+ * 验证场景：public list integration；keeps blog columns and sidebar without reintroducing the removed top filter bar；paginates filtered tutorial metadata and preserves the category when sizing and going back；uses selectable reading sizes in the real query and resets the page without losing search；shows one reading pager and no retired writing sections or grade badges。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -16,6 +25,14 @@ vi.mock('../../modules/search/api/searchApi', () => api)
 vi.mock('../../modules/blog/api/blogApi', () => api)
 vi.mock('../../shared/viewMode', () => ({ VIEW_MODE: { ACCOUNT: 'ACCOUNT' }, resolveViewMode: path => path.startsWith('/useradmin') ? 'ACCOUNT' : 'PUBLIC', accountPath: path => '/useradmin' + path, useViewMode: () => ({ contentPath: path => path }) }))
 const mounted = []
+/**
+ * 渲染当前操作。
+ * 主要协作：createRouter、createMemoryHistory、router.push、mount、mounted.push。
+ * @param component component；默认值、解构字段与可选参数见函数签名。
+ * @param url 地址；默认值、解构字段与可选参数见函数签名。
+ * @param props = {} 组件输入；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function render(component, url, props = {}) {
   const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/:pathMatch(.*)*', component: { template: '<div />' } }] }); await router.push(url)
   const w = mount(component, { props, global: { plugins: [router], stubs: { BlogSidebar: true, BlogTimeline: true, BlogColumnNav: true, BlogArchiveCalendar: true, EnglishTopicDirectory:true, EnglishArticleFilters:true } } }); mounted.push(w); await flushPromises(); return { w, router }

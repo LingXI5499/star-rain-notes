@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.search.mapper.SearchDocumentMapper">
+    <!--
+      SearchDocumentMapper.xml：com.starrainnotes.search.mapper.SearchDocumentMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+    <!--
+      upsert：新增或更新；新增语句。
+      涉及数据表：sr_search_document；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.search.api.dto.SearchableDocument；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：contentType、contentId、documentKey、title、summary、searchableText、routePath、publishedAt、sourceUpdatedAt；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="upsert" parameterType="com.starrainnotes.search.api.dto.SearchableDocument">
         INSERT INTO sr_search_document(content_type, content_id, document_key, title, summary,
             searchable_text, route_path, published_at, source_updated_at, status)
@@ -11,30 +24,80 @@
             published_at = VALUES(published_at), source_updated_at = VALUES(source_updated_at),
             status = 'ACTIVE', indexed_at = CURRENT_TIMESTAMP(3)
     </insert>
+    <!--
+      remove：remove；更新语句。
+      涉及数据表：sr_search_document；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：documentKey；参数含义参见 Mapper 方法注释。
+    -->
     <update id="remove">
         UPDATE sr_search_document SET status = 'REMOVED' WHERE document_key = #{documentKey}
     </update>
+    <!--
+      removeByContent：remove依据内容；更新语句。
+      涉及数据表：sr_search_document；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：contentType、contentId；参数含义参见 Mapper 方法注释。
+    -->
     <update id="removeByContent">
         UPDATE sr_search_document SET status = 'REMOVED'
         WHERE content_type = #{contentType} AND content_id = #{contentId}
     </update>
+    <!--
+      removeRoutePrefix：remove路由Prefix；更新语句。
+      涉及数据表：sr_search_document；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：prefix；参数含义参见 Mapper 方法注释。
+    -->
     <update id="removeRoutePrefix">
         UPDATE sr_search_document SET status = 'REMOVED'
         WHERE content_type = 'CHAPTER' AND LEFT(route_path, CHAR_LENGTH(#{prefix})) = #{prefix}
     </update>
+    <!--
+      activeKeys：有效Keys；读取语句。
+      涉及数据表：sr_search_document；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：string；集合与单值形态由 Java 方法签名决定。
+      绑定参数：contentType；参数含义参见 Mapper 方法注释。
+    -->
     <select id="activeKeys" resultType="string">
         SELECT document_key FROM sr_search_document
         WHERE content_type = #{contentType} AND status = 'ACTIVE'
     </select>
+    <!--
+      activeCount：有效数量；读取语句。
+      涉及数据表：sr_search_document；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="activeCount" resultType="long">
         SELECT COUNT(*) FROM sr_search_document WHERE status = 'ACTIVE'
     </select>
+    <!--
+      typeFilter：类型筛选；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+      绑定参数：type；参数含义参见 Mapper 方法注释。
+    -->
     <sql id="typeFilter">
+        <!--
+          条件 types != null and types.size() &gt; 0 成立时才输出此段 SQL。
+        -->
         <if test="types != null and types.size() &gt; 0">
             AND content_type IN
+            <!--
+              遍历 types，元素名为 type；open/close/separator 控制 SQL 列表格式。
+              集合是否允许为空由外围条件和业务校验决定。
+            -->
             <foreach collection="types" item="type" open="(" separator="," close=")">#{type}</foreach>
         </if>
     </sql>
+    <!--
+      count：数量；读取语句。
+      涉及数据表：sr_search_document；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      复用片段：typeFilter。
+      绑定参数：query；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="count" resultType="long">
         SELECT COUNT(*) FROM sr_search_document
         WHERE status = 'ACTIVE' AND (
@@ -43,6 +106,14 @@
             OR LOCATE(#{query}, COALESCE(summary, '')) &gt; 0)
         <include refid="typeFilter"/>
     </select>
+    <!--
+      search：搜索；读取语句。
+      涉及数据表：sr_search_document；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.search.vo.SearchHitVO；集合与单值形态由 Java 方法签名决定。
+      复用片段：typeFilter。
+      绑定参数：query、limit、offset；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="search" resultType="com.starrainnotes.search.vo.SearchHitVO">
         SELECT content_type AS contentType, CAST(content_id AS CHAR) AS contentId,
             title, summary, route_path AS routePath, published_at AS publishedAt,
@@ -58,6 +129,13 @@
         <include refid="typeFilter"/>
         ORDER BY score DESC, published_at DESC, id DESC LIMIT #{limit} OFFSET #{offset}
     </select>
+    <!--
+      suggestions：suggestions；读取语句。
+      涉及数据表：sr_search_document；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.search.vo.SearchSuggestionVO；集合与单值形态由 Java 方法签名决定。
+      绑定参数：query、limit；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="suggestions" resultType="com.starrainnotes.search.vo.SearchSuggestionVO">
         SELECT title AS text, content_type AS contentType, route_path AS routePath
         FROM sr_search_document

@@ -1,3 +1,11 @@
+/*
+ * PortfolioWorkServiceImplTest：作品模块的测试文件。
+ * 业务范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CurrentActorApi、MediaAssetApi、MediaReferenceApi、MediaReferenceCommand、WorkDetailEntity、WorkEntity、WorkMediaEntity。
+ * 阅读入口：actorIsAvailable（操作者是否Available处理入口）；patchCanExplicitlyClearOptionalDates（patchCanExplicitlyClearOptionalDates处理入口）；withdrawnWorkRestoresWithoutChangingFirstPublicationTime（已撤回作品Restores不含Changing首次发布时间处理入口）；publishingWithoutTypeDetailIsAllowed（publishing不含类型详情是否Allowed处理入口）。
+ */
+
 package com.starrainnotes.portfolio.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -30,20 +38,66 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+/**
+ * 作品作品业务服务实现测试，属于作品模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class PortfolioWorkServiceImplTest {
+    /**
+     * 内容。
+     * 协作类型：<code>PortfolioContentService</code>。
+     */
     private final PortfolioContentService content = mock(PortfolioContentService.class);
+    /**
+     * 作品列表。
+     * 协作类型：<code>WorkMapper</code>。
+     */
     private final WorkMapper works = mock(WorkMapper.class);
+    /**
+     * 详情。
+     * 协作类型：<code>WorkDetailMapper</code>。
+     */
     private final WorkDetailMapper details = mock(WorkDetailMapper.class);
+    /**
+     * 媒体。
+     * 协作类型：<code>WorkMediaMapper</code>。
+     */
     private final WorkMediaMapper media = mock(WorkMediaMapper.class);
+    /**
+     * links。
+     * 协作类型：<code>WorkLinkMapper</code>。
+     */
     private final WorkLinkMapper links = mock(WorkLinkMapper.class);
+    /**
+     * assets。
+     * 协作类型：<code>MediaAssetApi</code>。
+     */
     private final MediaAssetApi assets = mock(MediaAssetApi.class);
+    /**
+     * references。
+     * 协作类型：<code>MediaReferenceApi</code>。
+     */
     private final MediaReferenceApi references = mock(MediaReferenceApi.class);
+    /**
+     * 当前操作对应的身份对象。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi actor = mock(CurrentActorApi.class);
+    /**
+     * 事件集合。
+     */
     private final WorkEventPublisher events = mock(WorkEventPublisher.class);
+    /**
+     * 业务服务。
+     */
     private final PortfolioWorkServiceImpl service = new PortfolioWorkServiceImpl(
             content, works, details, media, links, assets, references, actor, new ObjectMapper(),
             List.of(new OtherDetailValidator()), events);
 
+    /**
+     * 操作者是否Available处理入口。
+     * 主要协作调用：<code>content.taxonomy</code>、<code>media.listByWorkId</code>、<code>assets.get</code>、<code>actor.current</code>。
+     */
     @BeforeEach
     void actorIsAvailable() {
         when(content.taxonomy()).thenReturn(java.util.Map.of("categories", List.of(), "formats", List.of(), "tags", List.of()));
@@ -53,6 +107,10 @@ class PortfolioWorkServiceImplTest {
         when(actor.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(7L).build());
     }
 
+    /**
+     * patchCanExplicitlyClearOptionalDates处理入口。
+     * 主要协作调用：<code>works.byIdForUpdate</code>、<code>service.update</code>。
+     */
     @Test
     void patchCanExplicitlyClearOptionalDates() {
         WorkEntity work = work("DRAFT", null);
@@ -66,6 +124,10 @@ class PortfolioWorkServiceImplTest {
         verify(works).updateContent(work);
     }
 
+    /**
+     * 已撤回作品Restores不含Changing首次发布时间处理入口。
+     * 主要协作调用：<code>works.byIdForUpdate</code>、<code>details.selectByWorkId</code>、<code>links.listByWorkId</code>、<code>service.restore</code>。
+     */
     @Test
     void withdrawnWorkRestoresWithoutChangingFirstPublicationTime() {
         LocalDateTime firstPublished = LocalDateTime.of(2026, 9, 1, 10, 30);
@@ -81,6 +143,10 @@ class PortfolioWorkServiceImplTest {
         verify(events).afterCommit(any());
     }
 
+    /**
+     * publishing不含类型详情是否Allowed处理入口。
+     * 主要协作调用：<code>works.byIdForUpdate</code>、<code>links.listByWorkId</code>、<code>service.publish</code>。
+     */
     @Test
     void publishingWithoutTypeDetailIsAllowed() {
         WorkEntity work = work("DRAFT", null);
@@ -93,12 +159,20 @@ class PortfolioWorkServiceImplTest {
         assertThat(work.getStatus()).isEqualTo("PUBLISHED");
     }
 
+    /**
+     * 公开查找Does不RevealUnpublished作品处理入口。
+     * 主要协作调用：<code>service.publicWork</code>。
+     */
     @Test
     void publicLookupDoesNotRevealUnpublishedWork() {
         assertThatThrownBy(() -> service.publicWork("private-draft"))
                 .isInstanceOf(WorkNotFoundException.class);
     }
 
+    /**
+     * removing媒体DetachesIts引用处理入口。
+     * 主要协作调用：<code>media.selectById</code>、<code>works.byIdForUpdate</code>、<code>service.removeMedia</code>。
+     */
     @Test
     void removingMediaDetachesItsReference() {
         WorkMediaEntity attached = new WorkMediaEntity();
@@ -118,12 +192,24 @@ class PortfolioWorkServiceImplTest {
         assertThat(command.getValue().getSourceId()).isEqualTo(3L);
     }
 
+    /**
+     * 已发布作品MustBe已撤回之前Deletion处理入口。
+     * 主要协作调用：<code>works.byIdForUpdate</code>、<code>service.delete</code>。
+     */
     @Test
     void publishedWorkMustBeWithdrawnBeforeDeletion() {
         when(works.byIdForUpdate(9L)).thenReturn(work("PUBLISHED", LocalDateTime.now()));
         assertThatThrownBy(() -> service.delete(9L)).isInstanceOf(WorkStateInvalidException.class);
     }
 
+    /**
+     * 作品处理入口。
+     * 关键处理步骤调用 <code>work.setId</code>、<code>work.setSlug</code>、<code>work.setWorkType</code>、<code>work.setTitle</code>。
+     *
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @param publishedAt 已发布时间；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>WorkEntity</code> 的处理结果
+     */
     private WorkEntity work(String status, LocalDateTime publishedAt) {
         WorkEntity work = new WorkEntity();
         work.setId(9L);

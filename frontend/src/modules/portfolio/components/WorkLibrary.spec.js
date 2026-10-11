@@ -1,3 +1,12 @@
+/**
+ * WorkLibrary.spec.js：作品模块的自动化测试。
+ * 职责范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、@vue/test-utils、vue-router、./WorkLibrary.vue。
+ * 阅读入口：render（渲染当前操作）。
+ * 验证场景：featured works and the lower archive；shows independently loaded selected works above filters, cards and pagination；changes only the archive query and resets its page when filtering in the account tree；keeps ordinary works in the archive when no selected works have been configured。
+ */
+
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
@@ -12,6 +21,12 @@ beforeEach(() => {
  api.getWorkTaxonomy.mockResolvedValue({ categories: [{ id: '3', name: '工具' }], formats: [], tags: [] })
  api.listPublicWorks.mockImplementation(params => Promise.resolve(params.pageSize === 3 ? { items: [chosen], total: 1 } : { items: [chosen, ordinary], total: 25 }))
 })
+/**
+ * 渲染当前操作。
+ * 主要协作：createRouter、createMemoryHistory、router.push、mount、flushPromises。
+ * @param url = '/portfolio' 地址作品；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function render(url = '/portfolio') {
  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/portfolio', component: WorkLibrary }, { path: '/useradmin/portfolio', component: WorkLibrary }] })
  await router.push(url)

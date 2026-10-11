@@ -1,3 +1,10 @@
+/*
+ * AccountAuditService：账号模块的业务契约文件。
+ * 业务范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 声明业务服务的输入和输出，使接入层与具体实现分离；状态转换和数据写入由实现类处理。
+ * 阅读入口：success（success处理入口）；failed（失败处理入口）；failedIndependently（失败独立执行处理入口）。
+ */
+
 package com.starrainnotes.account.service;
 
 /*
@@ -16,12 +23,37 @@ package com.starrainnotes.account.service;
  * 一旦把它搬进 @Transactional 的服务方法，用 failed() 就会丢审计。
  * 现在服务层有了语义明确的方法，这条规则可以放回它该在的地方，不必依赖调用时机。
  */
+/**
+ * 账号审计业务服务，属于账号模块。
+ * 声明业务服务的输入和输出，使接入层与具体实现分离；状态转换和数据写入由实现类处理。
+ */
 public interface AccountAuditService {
 
+    /**
+     * success处理入口。
+     *
+     * @param actor 当前操作对应的身份对象；类型为 <code>Long</code>
+     * @param target 目标；类型为 <code>Long</code>
+     * @param action 动作；类型为 <code>String</code>
+     */
     void success(Long actor, Long target, String action);
 
+    /**
+     * 失败处理入口。
+     *
+     * @param actor 当前操作对应的身份对象；类型为 <code>Long</code>
+     * @param target 目标；类型为 <code>Long</code>
+     * @param action 动作；类型为 <code>String</code>
+     */
     void failed(Long actor, Long target, String action);
 
     // 独立事务写入：调用方回滚也保留这条记录
+    /**
+     * 失败独立执行处理入口。
+     *
+     * @param actor 当前操作对应的身份对象；类型为 <code>Long</code>
+     * @param target 目标；类型为 <code>Long</code>
+     * @param action 动作；类型为 <code>String</code>
+     */
     void failedIndependently(Long actor, Long target, String action);
 }

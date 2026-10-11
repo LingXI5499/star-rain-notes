@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * AdminAccountsPage.vue：账号模块的页面组件。
+ * 职责范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：../../../shared/composables/paginationScroll、vue、vue-router、../stores/authStore、../api/accountApi、../api/http。
+ * 主要响应式状态：auth、filters、page、data、loading、error、notice、selected。
+ * 阅读入口：load（加载当前操作）；search（搜索的处理函数）；changePage（change分页的处理函数）；choose（choose的处理函数）；run（运行当前操作）。
+ */
+
+
 import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
@@ -8,20 +18,78 @@ import { errorMessage } from '../api/http'
 import ConfirmDialog from '../components/ConfirmDialog.vue'
 import { roleLabel, statusLabel, dateLabel } from '../support/display'
 
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
+/**
+ * 筛选条件；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const filters = reactive({ keyword: '', status: '' })
+/**
+ * 分页页码；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const page = ref(1)
+/**
+ * 数据；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const data = ref({ items: [], total: 0, page: 1, pageSize: 20 })
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
+/**
+ * 选中；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const selected = ref(null)
+/**
+ * 邀请地址；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const invitationUrl = ref('')
+/**
+ * 邀请到期时间；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const invitationExpiresAt = ref('')
+/**
+ * 动作Busy；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const actionBusy = ref(false)
+/**
+ * 确认弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const confirmDialog = ref(null)
+/**
+ * 总数Pages；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const totalPages = computed(() => Math.max(1, Math.ceil(data.value.total / data.value.pageSize)))
 
+/**
+ * 加载当前操作。
+ * 主要协作：api.listAccounts、errorMessage。
+ * 更新的响应式状态包括 loading、error、data；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   loading.value = true
   error.value = ''
@@ -34,8 +102,24 @@ async function load() {
   }
 }
 
+/**
+ * 搜索的处理函数。
+ * 主要协作：load。
+ * 更新的响应式状态包括 page；渲染由 Vue 的依赖跟踪触发。
+ */
 function search() { page.value = 1; load() }
+/**
+ * change分页的处理函数。
+ * 主要协作：load。
+ * 更新的响应式状态包括 page；渲染由 Vue 的依赖跟踪触发。
+ * @param next 下一项；默认值、解构字段与可选参数见函数签名。
+ */
 function changePage(next) { page.value = next; load() }
+/**
+ * choose的处理函数。
+ * 更新的响应式状态包括 selected、invitationUrl、invitationExpiresAt、notice；渲染由 Vue 的依赖跟踪触发。
+ * @param account 账号；默认值、解构字段与可选参数见函数签名。
+ */
 function choose(account) {
   selected.value = account
   invitationUrl.value = ''
@@ -43,6 +127,14 @@ function choose(account) {
   notice.value = ''
 }
 
+/**
+ * 运行当前操作。
+ * 主要协作：action、load、data.value.items.find、errorMessage。
+ * 更新的响应式状态包括 actionBusy、error、notice、selected；渲染由 Vue 的依赖跟踪触发。
+ * @param action 动作；默认值、解构字段与可选参数见函数签名。
+ * @param success success；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function run(action, success) {
   actionBusy.value = true
   error.value = ''
@@ -61,17 +153,36 @@ async function run(action, success) {
   }
 }
 
+/**
+ * 切换状态。
+ * 主要协作：confirmDialog.value.ask、run、api.changeAccountStatus。
+ * @param account 账号；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function toggleStatus(account) {
   const next = account.status === 'ACTIVE' ? 'DISABLED' : 'ACTIVE'
   if (!await confirmDialog.value.ask(`确定${next === 'DISABLED' ? '停用' : '启用'}账户 ${account.username} 吗？`)) return
   run(() => api.changeAccountStatus(account.id, next), '账户状态已更新。')
 }
 
+/**
+ * 判断能否Invite。
+ * 主要协作：account.roles.includes。
+ * @param account 账号；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function canInvite(account) {
   return account.status === 'ACTIVE' && account.roles.includes('USER')
     && !account.roles.includes('ADMIN') && !account.roles.includes('SUPER_ADMIN')
 }
 
+/**
+ * invite的处理函数。
+ * 主要协作：canInvite、confirmDialog.value.ask、choose、api.createInvitation、errorMessage。
+ * 更新的响应式状态包括 actionBusy、error、invitationUrl、invitationExpiresAt、notice；渲染由 Vue 的依赖跟踪触发。
+ * @param account = selected.value 账号选中值；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function invite(account = selected.value) {
   if (actionBusy.value || !account || !canInvite(account)) return
   if (!await confirmDialog.value.ask(`向 ${account.username}（${account.email}）发送管理员邀请？用户接受邀请后才会获得管理员角色。`)) return
@@ -91,11 +202,19 @@ async function invite(account = selected.value) {
   }
 }
 
+/**
+ * 移除Administrator。
+ * 主要协作：confirmDialog.value.ask、run、api.revokeAdministrator。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function removeAdministrator() {
   if (!selected.value || !await confirmDialog.value.ask(`取消 ${selected.value.username} 的管理员身份？其现有会话将失效，账户保留为普通用户。`)) return
   run(() => api.revokeAdministrator(selected.value.id), '管理员身份已取消。')
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(load)
 usePaginationScroll(() => page.value, () => loading.value)
 </script>

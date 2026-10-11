@@ -1,3 +1,11 @@
+/*
+ * SeoMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：SeoPageSnapshot、SeoNotificationLog、SeoNotificationMapper、SeoPageMapper。
+ * 阅读入口：open（打开SEO数据映射Xml）；rollback（回滚SEO数据映射Xml）；everySeoMapperIsReachableThroughTheSession（everySEO数据映射是否ReachableThroughThe会话处理入口）；upsertedSnapshotRoundTripsThroughTheFullColumnList（upserted快照RoundTripsThroughThe完整列List处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,14 +53,36 @@ import org.junit.jupiter.api.Test;
  *
  * 全程在一个不 commit 的 SqlSession 里跑，@AfterEach 回滚；最后一个用例用新连接复核。
  */
+/**
+ * SEO数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * pages。
+     * 协作类型：<code>SeoPageMapper</code>。
+     */
     private SeoPageMapper pages;
+    /**
+     * notifications。
+     * 协作类型：<code>SeoNotificationMapper</code>。
+     */
     private SeoNotificationMapper notifications;
 
+    /**
+     * 打开SEO数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -60,6 +90,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         notifications = session.getMapper(SeoNotificationMapper.class);
     }
 
+    /**
+     * 回滚SEO数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -68,12 +102,19 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * everySEO数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void everySeoMapperIsReachableThroughTheSession() {
         assertNotNull(pages);
         assertNotNull(notifications);
     }
 
+    /**
+     * upserted快照RoundTripsThroughThe完整列List处理入口。
+     * 主要协作调用：<code>pages.upsert</code>、<code>pages.active</code>、<code>pages.activeCount</code>、<code>pages.activePaths</code>、<code>pages.activePages</code>。
+     */
     @Test
     void upsertedSnapshotRoundTripsThroughTheFullColumnList() {
         String routePath = route();
@@ -104,6 +145,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(pages.active(route() + "-missing"), "不存在的路由应返回 null");
     }
 
+    /**
+     * 有效MetaOnlyCarriesThe元数据列集合处理入口。
+     * 主要协作调用：<code>pages.upsert</code>、<code>pages.activeMeta</code>。
+     */
     @Test
     void activeMetaOnlyCarriesTheMetadataColumns() {
         String routePath = route();
@@ -125,6 +170,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(meta.getGeneratedAt());
     }
 
+    /**
+     * reindexingTheSame路由Updates内部Place及保留单次有效行处理入口。
+     * 主要协作调用：<code>pages.upsert</code>、<code>pages.activeCount</code>、<code>pages.active</code>。
+     */
     @Test
     void reindexingTheSameRouteUpdatesInPlaceAndKeepsOneActiveRow() {
         String routePath = route();
@@ -146,6 +195,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(before, pages.activeCount(), "同路由重复索引不应产生第二行");
     }
 
+    /**
+     * 按Prefix及RemoveFollowThe路由路径读取有效Paths。
+     * 主要协作调用：<code>pages.upsert</code>、<code>pages.activePathsByPrefix</code>、<code>pages.remove</code>、<code>pages.active</code>、<code>pages.activeMeta</code>。
+     */
     @Test
     void activePathsByPrefixAndRemoveFollowTheRoutePath() {
         String prefix = "/mapper-xml-test/" + unique("seoprefix");
@@ -167,6 +220,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, pages.remove(prefix + "-no-such-route"));
     }
 
+    /**
+     * enqueueThenClaimMovesThe行目标Processing处理入口。
+     * 主要协作调用：<code>notifications.claim</code>。
+     */
     @Test
     void enqueueThenClaimMovesTheRowToProcessing() {
         LocalDateTime enqueuedAt = now();
@@ -193,6 +250,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, notifications.claim(-1L, claimedAt));
     }
 
+    /**
+     * claimGivesUp之后FiveAttempts处理入口。
+     * 主要协作调用：<code>notifications.claim</code>、<code>notifications.due</code>。
+     */
     @Test
     void claimGivesUpAfterFiveAttempts() {
         LocalDateTime base = now();
@@ -216,6 +277,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
                 "attempt_count 到 5 以后不应再出现在 due 里");
     }
 
+    /**
+     * successStoresTheHTTP状态及ClearsThe重试列集合处理入口。
+     * 主要协作调用：<code>notifications.claim</code>、<code>notifications.success</code>、<code>notifications.due</code>。
+     */
     @Test
     void successStoresTheHttpStatusAndClearsTheRetryColumns() {
         LocalDateTime base = now();
@@ -234,6 +299,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, notifications.success(-1L, 200));
     }
 
+    /**
+     * 失败StoresThe错误及SchedulesThe下一项重试处理入口。
+     * 主要协作调用：<code>notifications.claim</code>、<code>notifications.failure</code>、<code>notifications.due</code>。
+     */
     @Test
     void failureStoresTheErrorAndSchedulesTheNextRetry() {
         LocalDateTime base = now();
@@ -258,6 +327,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, notifications.failure(-1L, 500, "boom", nextRetryAt));
     }
 
+    /**
+     * 回滚Leaves不含SEO测试样本行集合Behind。
+     * 主要协作调用：<code>pages.upsert</code>、<code>session.rollback</code>。
+     */
     @Test
     void rollbackLeavesNoSeoProbeRowsBehind() {
         String routePath = route();
@@ -279,6 +352,14 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
      * 这是本测试发现的缺陷，已补上属性，所以现在直接断言主键被回填。
      * 随后仍用 due() 把行读回来（顺带验证 due 的列映射与状态条件）。
      */
+    /**
+     * enqueue及Reload处理入口。
+     * 主要协作调用：<code>notifications.enqueue</code>、<code>notifications.due</code>。
+     *
+     * @param log 当前类使用的日志记录器；类型为 <code>SeoNotificationLog</code>
+     * @param dueAt due时间；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>SeoNotificationLog</code> 的处理结果
+     */
     private SeoNotificationLog enqueueAndReload(SeoNotificationLog log, LocalDateTime dueAt) {
         assertEquals(1, notifications.enqueue(log));
         assertNotNull(log.getId(), "enqueue 应回填自增主键（缺 useGeneratedKeys 时这里会是 null）");
@@ -291,6 +372,15 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* SeoNotificationLog 实体没有声明 http_status / last_error / last_attempt_at，直接读库核对 */
+    /**
+     * 列处理入口。
+     * 主要协作调用：<code>session.getConnection</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param column 列；类型为 <code>String</code>
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>Object</code> 的处理结果
+     */
     private Object column(String column, Long id) {
         try (PreparedStatement statement = session.getConnection().prepareStatement(
                 "SELECT " + column + " FROM sr_seo_notification_log WHERE id = ?")) {
@@ -304,6 +394,15 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * new快照处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param routePath 路由路径；类型为 <code>String</code>
+     * @param contentType 内容类型或请求声明的 Content-Type；类型为 <code>String</code>
+     * @param contentId 内容标识；类型为 <code>Long</code>
+     * @return 类型为 <code>SeoPageSnapshot</code> 的处理结果
+     */
     private SeoPageSnapshot newSnapshot(String routePath, String contentType, Long contentId) {
         SeoPageSnapshot snapshot = new SeoPageSnapshot();
         snapshot.setRoutePath(routePath);
@@ -319,6 +418,12 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         return snapshot;
     }
 
+    /**
+     * newLog处理入口。
+     *
+     * @param marker marker；类型为 <code>String</code>
+     * @return 类型为 <code>SeoNotificationLog</code> 的处理结果
+     */
     private SeoNotificationLog newLog(String marker) {
         SeoNotificationLog log = new SeoNotificationLog();
         log.setProviderCode("INDEXNOW");
@@ -328,19 +433,41 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         return log;
     }
 
+    /**
+     * 路由处理入口。
+     * 关键处理步骤调用 <code>unique</code>。
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String route() {
         return "/mapper-xml-test/" + unique("seo") + "/page";
     }
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实内容撞号 */
+    /**
+     * 测试样本标识处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long probeId() {
         return 900_000_000_000L + PROBE.incrementAndGet();
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
     }

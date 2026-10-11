@@ -1,4 +1,18 @@
 <script setup>
+/**
+ * MarkdownEditor.vue：跨模块基础模块的视图组件。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 封装 Vditor 编辑实例、Markdown 值同步、数学公式兼容和媒体插入。
+ * 上传图片使用服务端返回的媒体地址；保存正文后由后端建立内容引用，取消或切换文档时阻止旧上传结果回填。
+ * 主要依赖：vue、../markdown/markdownEditorChrome、../markdown/markdownCodeGroup、../markdown/markdownMath、../markdown/mathJax、../../modules/media/api/mediaApi。
+ * 组件输入：modelValue、placeholder、minHeight、pickImage；默认值与类型见 defineProps。
+ * 组件输出事件：update:modelValue；负载由 emit 调用给出。
+ * 主要响应式状态：props、emit、host、loadingError、imageInput、imageError、imageStatus、uploadingImages。
+ * 阅读入口：newCodeGroupBlock（new代码分组区块的处理函数）；openCodeGroupCreator（打开代码分组Creator）；addCodeGroupBlock（添加代码分组区块）；removeCodeGroupBlock（移除代码分组区块）；insertCodeGroup（写入代码分组）。
+ */
+
+
 import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { resolveVditorEditorHeight, setVditorFullscreenActive } from '../markdown/markdownEditorChrome'
 import { createCodeGroupMarkdown, validateCodeGroupBlocks } from '../markdown/markdownCodeGroup'
@@ -34,6 +48,9 @@ import { useAuthStore } from '../../modules/account/stores/authStore'
  * 懒加载：Vditor（含样式）与 MathJax 全部是动态 import / 运行时注入 script，
  * 主包只多出「什么时候去加载」的几行代码。
  */
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({
   modelValue: { type: String, default: '' },
   placeholder: { type: String, default: '' },
@@ -43,15 +60,49 @@ const props = defineProps({
   pickImage: { type: Function, default: null },
 })
 
+/**
+ * 事件发射器；通过 defineEmits 建立。
+ */
 const emit = defineEmits(['update:modelValue'])
 
+/**
+ * 主机；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const host = ref(null)
+/**
+ * loading错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loadingError = ref('')
+/**
+ * 图片Input；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const imageInput = ref(null)
+/**
+ * 图片错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const imageError = ref('')
+/**
+ * 图片状态；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const imageStatus = ref('')
+/**
+ * uploadingImages；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const uploadingImages = ref(false)
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
+/**
+ * can上传Images；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const canUploadImages = computed(() => auth.hasPermission('media:upload'))
 let savedImageRange = null
 let imageUploadController = null
@@ -72,38 +123,92 @@ let pasteHost = null
    --------------------------------------------------------------- */
 const TABLE_MAX_COLS = 20
 const TABLE_MAX_ROWS = 50
+/**
+ * table选择器Open；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tablePickerOpen = ref(false)
+/**
+ * tableCols；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tableCols = ref(3)
+/**
+ * table行集合；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tableRows = ref(3)
+/**
+ * table选择器Ref；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tablePickerRef = ref(null)
 
 /* ---------------------------------------------------------------
    代码组创建器 —— 产出的是可移植的普通 Markdown
    --------------------------------------------------------------- */
+/**
+ * 代码分组Open；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const codeGroupOpen = ref(false)
+/**
+ * 代码分组错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const codeGroupError = ref('')
+/**
+ * 代码分组Blocks；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const codeGroupBlocks = ref([])
 
+/**
+ * new代码分组区块的处理函数。
+ * @param index 索引；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function newCodeGroupBlock(index) {
   return { label: `方案 ${index}`, language: 'typescript', content: '' }
 }
 
+/**
+ * 打开代码分组Creator。
+ * 主要协作：newCodeGroupBlock。
+ * 更新的响应式状态包括 codeGroupError、codeGroupBlocks、codeGroupOpen；渲染由 Vue 的依赖跟踪触发。
+ */
 function openCodeGroupCreator() {
   codeGroupError.value = ''
   codeGroupBlocks.value = [newCodeGroupBlock(1), newCodeGroupBlock(2)]
   codeGroupOpen.value = true
 }
 
+/**
+ * 添加代码分组区块。
+ * 主要协作：codeGroupBlocks.value.push、newCodeGroupBlock。
+ */
 function addCodeGroupBlock() {
   codeGroupBlocks.value.push(newCodeGroupBlock(codeGroupBlocks.value.length + 1))
 }
 
+/**
+ * 移除代码分组区块。
+ * 主要协作：codeGroupBlocks.value.splice。
+ * @param index 索引；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function removeCodeGroupBlock(index) {
   /* 至少留一个：空代码组是非法输入，与其让用户删到 0 再报错，不如禁止删到 0 */
   if (codeGroupBlocks.value.length <= 1) return
   codeGroupBlocks.value.splice(index, 1)
 }
 
+/**
+ * 写入代码分组。
+ * 主要协作：validateCodeGroupBlocks、vditor.insertValue、createCodeGroupMarkdown。
+ * 更新的响应式状态包括 codeGroupError、codeGroupOpen；渲染由 Vue 的依赖跟踪触发。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function insertCodeGroup() {
   const error = validateCodeGroupBlocks(codeGroupBlocks.value)
   if (error) {
@@ -114,12 +219,25 @@ function insertCodeGroup() {
   codeGroupOpen.value = false
 }
 
+/**
+ * 打开Table选择器。
+ * 更新的响应式状态包括 tablePickerOpen；渲染由 Vue 的依赖跟踪触发。
+ */
 function openTablePicker() {
   tablePickerOpen.value = true
 }
 
 /* 点空白处关闭表格选择器（与 V2 原来的行为一致，避免弹层留在页面上挡住正文） */
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(tablePickerOpen, (open) => {
+  /**
+   * 响应Outside。
+   * 主要协作：tablePickerRef.value.contains。
+   * 更新的响应式状态包括 tablePickerOpen；渲染由 Vue 的依赖跟踪触发。
+   * @param event 事件；默认值、解构字段与可选参数见函数签名。
+   */
   const onOutside = (event) => {
     if (!tablePickerRef.value?.contains(event.target)) tablePickerOpen.value = false
   }
@@ -127,9 +245,19 @@ watch(tablePickerOpen, (open) => {
   else document.removeEventListener('pointerdown', onOutside)
 })
 
+/**
+ * 写入Table。
+ * 主要协作：.join、Array.from、cell、vditor.insertValue。
+ * 更新的响应式状态包括 tablePickerOpen；渲染由 Vue 的依赖跟踪触发。
+ */
 function insertTable() {
   const cols = Math.min(TABLE_MAX_COLS, Math.max(1, Math.round(tableCols.value) || 3))
   const rows = Math.min(TABLE_MAX_ROWS, Math.max(1, Math.round(tableRows.value) || 3))
+  /**
+   * cell的处理函数。
+   * @param content 内容；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
   const cell = (content) => ` ${content} `
   const header = `|${Array.from({ length: cols }, (_, i) => cell(`列 ${i + 1}`)).join('|')}|`
   const separator = `|${Array.from({ length: cols }, () => cell('---')).join('|')}|`
@@ -139,6 +267,11 @@ function insertTable() {
   vditor?.insertValue([header, separator, ...body].join('\n'))
 }
 
+/**
+ * remember图片范围的处理函数。
+ * 主要协作：window.getSelection、selection.getRangeAt、host.value.contains、node.closest、range.cloneRange。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function rememberImageRange() {
   const selection = window.getSelection()
   if (!selection?.rangeCount) return savedImageRange
@@ -148,6 +281,13 @@ function rememberImageRange() {
   return savedImageRange?.cloneRange() || null
 }
 
+/**
+ * 写入媒体图片。
+ * 主要协作：host.value.contains、.focus、host.value.querySelector、window.getSelection、selection.removeAllRanges。
+ * @param asset 资产；默认值、解构字段与可选参数见函数签名。
+ * @param range 范围；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function insertMediaImage(asset, range) {
   if (!ready || !vditor || disposed) return
   if (range?.startContainer.isConnected && host.value?.contains(range.startContainer)) {
@@ -160,6 +300,11 @@ function insertMediaImage(asset, range) {
   rememberImageRange()
 }
 
+/**
+ * 写入图片。
+ * 主要协作：rememberImageRange、props.pickImage、insertMediaImage。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function insertImage() {
   if (!props.pickImage) return
   const range = rememberImageRange()
@@ -169,12 +314,26 @@ async function insertImage() {
   insertMediaImage(asset, range)
 }
 
+/**
+ * 查询图片Files的处理函数。
+ * 主要协作：rememberImageRange、imageInput.value.click。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function selectImageFiles() {
   if (!canUploadImages.value || uploadingImages.value) return
   rememberImageRange()
   imageInput.value?.click()
 }
 
+/**
+ * 上传图片Files。
+ * 主要协作：validateEditorImage、failures.push、uploadMedia、insertMediaImage、rememberImageRange。
+ * 更新的响应式状态包括 imageError、uploadingImages、imageStatus；渲染由 Vue 的依赖跟踪触发。
+ * 使用取消信号终止不再需要的异步工作，调用方仍需区分取消和真实失败。
+ * @param files files；默认值、解构字段与可选参数见函数签名。
+ * @param range = rememberImageRange() 范围remember图片范围；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function uploadImageFiles(files, range = rememberImageRange()) {
   if (!files.length || !ready) return
   if (!canUploadImages.value) { imageError.value = '当前账号没有媒体上传权限。'; return }
@@ -208,12 +367,24 @@ async function uploadImageFiles(files, range = rememberImageRange()) {
   imageUploadController = null
 }
 
+/**
+ * 响应图片Files。
+ * 主要协作：Array.from、uploadImageFiles。
+ * 更新的响应式状态包括 event.target；渲染由 Vue 的依赖跟踪触发。
+ * @param event 事件；默认值、解构字段与可选参数见函数签名。
+ */
 function onImageFiles(event) {
   const files = Array.from(event.target.files || [])
   event.target.value = ''
   void uploadImageFiles(files)
 }
 
+/**
+ * 响应EditorDrop。
+ * 主要协作：Array.from、event.preventDefault、event.stopImmediatePropagation、document.caretRangeFromPoint、uploadImageFiles。
+ * @param event 事件；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function onEditorDrop(event) {
   const files = Array.from(event.dataTransfer?.files || [])
   if (!files.length) return
@@ -227,6 +398,10 @@ function onEditorDrop(event) {
    主题 / 全屏
    --------------------------------------------------------------- */
 
+/**
+ * 判断是否Dark主题。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function isDarkTheme() {
   return document.documentElement.dataset.theme === 'dark'
 }
@@ -241,11 +416,21 @@ function syncTheme() {
   vditor.setTheme(dark ? 'dark' : 'classic', dark ? 'dark' : 'light')
 }
 
+/**
+ * 同步Fullscreen标记。
+ * 主要协作：setVditorFullscreenActive、element.classList.contains。
+ * @param element element；默认值、解构字段与可选参数见函数签名。
+ */
 function syncFullscreenFlag(element) {
   setVditorFullscreenActive(element.classList.contains('vditor--fullscreen'))
 }
 
 /* Vditor 全屏只是给它自己加 class，没有事件回调，因此用 MutationObserver 盯 class */
+/**
+ * watchFullscreen的处理函数。
+ * 主要协作：fullscreenObserver.disconnect、syncFullscreenFlag、fullscreenObserver.observe。
+ * @param element element；默认值、解构字段与可选参数见函数签名。
+ */
 function watchFullscreen(element) {
   fullscreenObserver?.disconnect()
   syncFullscreenFlag(element)
@@ -254,6 +439,10 @@ function watchFullscreen(element) {
 }
 
 /* 控制台的主题开关写的是 <html data-theme>，这里跟着它走，不额外引主题 store */
+/**
+ * watch主题的处理函数。
+ * 主要协作：themeObserver.disconnect、themeObserver.observe。
+ */
 function watchTheme() {
   themeObserver?.disconnect()
   themeObserver = new MutationObserver(syncTheme)
@@ -264,6 +453,12 @@ function watchTheme() {
    粘贴归一化：从网页 / 其它编辑器复制来的公式要能变成合法语法
    --------------------------------------------------------------- */
 
+/**
+ * 响应EditorPaste。
+ * 主要协作：Array.from、event.preventDefault、event.stopImmediatePropagation、uploadImageFiles、event.clipboardData.getData。
+ * @param event 事件；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function onEditorPaste(event) {
   const files = Array.from(event.clipboardData?.files || [])
   if (files.length) {
@@ -307,6 +502,11 @@ const ICON_CODE_GROUP = '<span aria-hidden="true" style="font:600 12px/1 var(--f
 const ICON_TABLE = '<svg viewBox="0 0 16 16" aria-hidden="true" style="width:16px;height:16px;"><rect x="1.6" y="2.6" width="12.8" height="10.8" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M1.6 6.2h12.8M1.6 9.8h12.8M6.2 2.6v10.8" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>'
 const ICON_IMAGE = '<svg viewBox="0 0 16 16" aria-hidden="true" style="width:16px;height:16px;"><rect x="1.6" y="3" width="12.8" height="10" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M2.4 11.4 5.6 8.2l2.4 2.2 1.9-1.7 2.9 2.6" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="5.7" cy="5.9" r="1" fill="currentColor"/></svg>'
 
+/**
+ * 构建Toolbar。
+ * 主要协作：vditor.insertValue、openCodeGroupCreator、openTablePicker、insertImage。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function buildToolbar() {
   return [
     'undo',
@@ -372,6 +572,12 @@ defineExpose({
    生命周期
    --------------------------------------------------------------- */
 
+/**
+ * 挂载Editor。
+ * 主要协作：prepareMathJax、resolveVditorEditorHeight、isDarkTheme、buildToolbar、emit。
+ * 更新的响应式状态包括 loadingError；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function mountEditor() {
   /* Vditor 与它的样式表都是动态加载：~1MB 的库不进主包，只有打开编辑器页才下载 */
   const { default: Vditor } = await import('vditor')
@@ -435,6 +641,9 @@ async function mountEditor() {
   })
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(() => {
   document.addEventListener('selectionchange', rememberImageRange)
   watchTheme()
@@ -442,6 +651,9 @@ onMounted(() => {
 })
 
 /* 外部改值（加载文章、切换文章）→ 写回编辑器，写回期间不回发事件 */
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(
   () => props.modelValue,
   (value) => {
@@ -460,6 +672,9 @@ watch(
   },
 )
 
+/**
+ * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
+ */
 onBeforeUnmount(() => {
   disposed = true
   imageOperation += 1
@@ -482,6 +697,10 @@ onBeforeUnmount(() => {
    底部字数统计（V2 既有能力，保留）
    标题数不在这里算：左侧大纲就是标题清单，再解析一遍正文只会多出一份会漂移的实现。
    --------------------------------------------------------------- */
+/**
+ * 单词数量；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const wordCount = computed(() => {
   const text = String(props.modelValue ?? '').trim()
   if (!text) return 0
@@ -491,6 +710,10 @@ const wordCount = computed(() => {
   return cjk + words
 })
 
+/**
+ * line数量；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const lineCount = computed(() => (props.modelValue ? String(props.modelValue).split('\n').length : 0))
 </script>
 
@@ -560,10 +783,33 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.markdown-editor__file-input。
+ */
 .markdown-editor__file-input { display: none; }
+/**
+ * 样式范围：.markdown-editor__image-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .markdown-editor__image-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+/**
+ * 样式范围：.markdown-editor__image-actions span, .markdown-editor__image-status。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__image-actions span, .markdown-editor__image-status { color: var(--text-muted); font-size: 12px; }
+/**
+ * 样式范围：.markdown-editor__error。
+ */
 .markdown-editor__error { white-space: pre-wrap; }
+/**
+ * 样式范围：.markdown-editor。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor {
   position: relative;
   border: 1px solid var(--border);
@@ -580,18 +826,31 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   overflow: hidden;
 }
 
+/**
+ * 样式范围：.markdown-editor__host :deep(.vditor-ir), .markdown-editor__host :deep(.vditor-wysiwyg), .markdown-editor__host :deep(.vditor-sv)。
+ * 溢出处理：纵向 auto。
+ */
 .markdown-editor__host :deep(.vditor-ir),
 .markdown-editor__host :deep(.vditor-wysiwyg),
 .markdown-editor__host :deep(.vditor-sv) {
   overflow-y: auto;
 }
 
+/**
+ * 样式范围：.markdown-editor__error。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__error {
   padding: var(--space-3) var(--space-4);
   color: var(--danger);
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.markdown-editor__footer。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__footer {
   display: flex;
   flex-wrap: wrap;
@@ -620,6 +879,11 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.markdown-editor__popover-field。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 2px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__popover-field {
   display: grid;
   gap: 2px;
@@ -628,6 +892,10 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   font-weight: 500;
 }
 
+/**
+ * 样式范围：.markdown-editor__popover-field input。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__popover-field input {
   width: 64px;
   min-height: 26px;
@@ -649,6 +917,12 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   background: rgb(0 0 0 / 0.42);
 }
 
+/**
+ * 样式范围：.markdown-editor__dialog。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__dialog {
   display: flex;
   flex-direction: column;
@@ -662,6 +936,11 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   box-shadow: 0 20px 48px rgb(0 0 0 / 0.28);
 }
 
+/**
+ * 样式范围：.markdown-editor__dialog header, .markdown-editor__code-row-head, .markdown-editor__dialog footer。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__dialog header,
 .markdown-editor__code-row-head,
 .markdown-editor__dialog footer {
@@ -670,10 +949,24 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   gap: var(--space-3);
 }
 
+/**
+ * 样式范围：.markdown-editor__dialog header。
+ */
 .markdown-editor__dialog header { justify-content: space-between; }
+/**
+ * 样式范围：.markdown-editor__dialog h2。
+ */
 .markdown-editor__dialog h2 { margin: 0; font-size: 18px; }
+/**
+ * 样式范围：.markdown-editor__dialog header p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__dialog header p { margin: 4px 0 0; color: var(--text-muted); font-size: 13px; }
 
+/**
+ * 样式范围：.markdown-editor__dialog-close。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__dialog-close {
   border: 0;
   background: transparent;
@@ -682,6 +975,12 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.markdown-editor__code-list。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 var(--space-3) 控制。
+ * 溢出处理：纵向 auto。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__code-list {
   display: grid;
   gap: var(--space-3);
@@ -689,6 +988,11 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   overflow-y: auto;
 }
 
+/**
+ * 样式范围：.markdown-editor__code-row。
+ * 使用网格布局组织内容；列定义为 1fr 150px，间距由 var(--space-3) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__code-row {
   display: grid;
   grid-template-columns: 1fr 150px;
@@ -698,8 +1002,15 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   border-radius: var(--radius-sm);
 }
 
+/**
+ * 样式范围：.markdown-editor__code-row-head。
+ */
 .markdown-editor__code-row-head { grid-column: 1 / -1; justify-content: space-between; }
 
+/**
+ * 样式范围：.markdown-editor__code-row-head button, .markdown-editor__dialog-secondary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__code-row-head button,
 .markdown-editor__dialog-secondary {
   padding: 6px 10px;
@@ -710,8 +1021,16 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.markdown-editor__code-row-head button:disabled。
+ */
 .markdown-editor__code-row-head button:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/**
+ * 样式范围：.markdown-editor__code-row label。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 4px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__code-row label {
   display: grid;
   gap: 4px;
@@ -722,6 +1041,10 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
 /* 代码输入框横跨整行：代码要宽，名称与语言各占一列即可 */
 .markdown-editor__code-row label:last-child { grid-column: 1 / -1; }
 
+/**
+ * 样式范围：.markdown-editor__code-row input, .markdown-editor__code-row textarea。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .markdown-editor__code-row input,
 .markdown-editor__code-row textarea {
   width: 100%;
@@ -734,13 +1057,30 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   font: 13px / 1.6 ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
+/**
+ * 样式范围：.markdown-editor__code-row textarea。
+ */
 .markdown-editor__code-row textarea { resize: vertical; }
 
+/**
+ * 样式范围：.markdown-editor__dialog footer。
+ */
 .markdown-editor__dialog footer { justify-content: flex-end; }
+/**
+ * 样式范围：.markdown-editor__dialog-spacer。
+ */
 .markdown-editor__dialog-spacer { flex: 1; }
 
 /* 窄屏：工具栏横向滚动（不换行，避免吃掉正文高度），大纲收起 */
+/**
+ * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 720px) {
+  /**
+   * 样式范围：.markdown-editor__host :deep(.vditor-toolbar)。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   * 溢出处理：纵向 hidden，横向 auto。
+   */
   .markdown-editor__host :deep(.vditor-toolbar) {
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -751,8 +1091,17 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
     padding-left: 0 !important;
   }
 
+  /**
+   * 样式范围：.markdown-editor__host :deep(.vditor-toolbar__item)。
+   */
   .markdown-editor__host :deep(.vditor-toolbar__item) { flex: 0 0 auto; }
+  /**
+   * 样式范围：.markdown-editor__host :deep(.vditor-outline)。
+   */
   .markdown-editor__host :deep(.vditor-outline) { display: none !important; }
+  /**
+   * 样式范围：.markdown-editor__code-row。
+   */
   .markdown-editor__code-row { grid-template-columns: 1fr; }
 }
 </style>

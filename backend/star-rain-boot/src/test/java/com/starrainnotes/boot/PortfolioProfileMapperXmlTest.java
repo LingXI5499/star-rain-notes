@@ -1,3 +1,11 @@
+/*
+ * PortfolioProfileMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：EnglishOverviewEntity、EnglishOverviewMapper、WorkDetailEntity、WorkEntity、WorkLinkEntity、WorkMediaEntity、WorkDetailMapper。
+ * 阅读入口：open（打开作品资料数据映射Xml）；rollback（回滚作品资料数据映射Xml）；everyMigratedMapperIsReachableThroughTheSession（everyMigrated数据映射是否ReachableThroughThe会话处理入口）；workMapperRoundTripsFiltersAndEveryUpdateKeepsUntouchedColumns（作品数据映射RoundTrips筛选及Every更新保留Untouched列集合处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,22 +58,76 @@ import org.junit.jupiter.api.Test;
  * 全程在一个不 commit 的 SqlSession 里跑，@AfterEach 回滚；最后一个用例用新连接断言库里没有残留，
  * 并核对被改过的 OWNER 行（sr_profile 单行资料）已经回到测试前的值。
  */
+/**
+ * 作品资料数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * 作品列表。
+     * 协作类型：<code>WorkMapper</code>。
+     */
     private WorkMapper works;
+    /**
+     * 详情。
+     * 协作类型：<code>WorkDetailMapper</code>。
+     */
     private WorkDetailMapper details;
+    /**
+     * 媒体。
+     * 协作类型：<code>WorkMediaMapper</code>。
+     */
     private WorkMediaMapper media;
+    /**
+     * links。
+     * 协作类型：<code>WorkLinkMapper</code>。
+     */
     private WorkLinkMapper links;
+    /**
+     * profiles。
+     * 协作类型：<code>ProfileMapper</code>。
+     */
     private ProfileMapper profiles;
+    /**
+     * experiences。
+     * 协作类型：<code>ExperienceMapper</code>。
+     */
     private ExperienceMapper experiences;
+    /**
+     * skills。
+     * 协作类型：<code>SkillMapper</code>。
+     */
     private SkillMapper skills;
+    /**
+     * socials。
+     * 协作类型：<code>SocialLinkMapper</code>。
+     */
     private SocialLinkMapper socials;
+    /**
+     * 精选。
+     * 协作类型：<code>FeaturedContentMapper</code>。
+     */
     private FeaturedContentMapper featured;
+    /**
+     * 英语Overview。
+     * 协作类型：<code>EnglishOverviewMapper</code>。
+     */
     private EnglishOverviewMapper englishOverview;
 
+    /**
+     * 打开作品资料数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -81,6 +143,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         englishOverview = session.getMapper(EnglishOverviewMapper.class);
     }
 
+    /**
+     * 回滚作品资料数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -89,6 +155,9 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * everyMigrated数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void everyMigratedMapperIsReachableThroughTheSession() {
         assertNotNull(works);
@@ -103,6 +172,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(englishOverview);
     }
 
+    /**
+     * 作品数据映射RoundTrips筛选及Every更新保留Untouched列集合处理入口。
+     * 主要协作调用：<code>works.insert</code>、<code>works.selectById</code>、<code>works.byIdForUpdate</code>、<code>works.selectBySlugAndStatus</code>、<code>works.selectByIdAndStatus</code>。
+     */
     @Test
     void workMapperRoundTripsFiltersAndEveryUpdateKeepsUntouchedColumns() {
         /* keyword 过滤查的是 title，所以唯一标记放标题里；slug 另用一个唯一值 */
@@ -217,6 +290,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(works.selectById(created.getId()));
     }
 
+    /**
+     * 作品详情数据映射RoundTripsJSON及删除处理入口。
+     * 主要协作调用：<code>details.insert</code>、<code>details.selectByWorkId</code>、<code>details.updateDetailJson</code>、<code>details.deleteById</code>。
+     */
     @Test
     void workDetailMapperRoundTripsJsonAndDelete() {
         WorkEntity work = insertWork();
@@ -246,6 +323,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(details.selectByWorkId(work.getId()));
     }
 
+    /**
+     * 作品媒体数据映射保留说明及资产触发排序OnlyUpdates处理入口。
+     * 主要协作调用：<code>media.insert</code>、<code>media.selectById</code>、<code>media.listByWorkId</code>、<code>media.updateContent</code>、<code>media.updateSortOrder</code>。
+     */
     @Test
     void workMediaMapperKeepsCaptionAndAssetOnSortOnlyUpdates() {
         WorkEntity work = insertWork();
@@ -299,6 +380,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(media.listByWorkId(work.getId()).isEmpty());
     }
 
+    /**
+     * 作品链接数据映射保留内容触发排序OnlyUpdates处理入口。
+     * 主要协作调用：<code>links.insert</code>、<code>links.selectById</code>、<code>links.listByWorkId</code>、<code>links.updateContent</code>、<code>links.updateSortOrder</code>。
+     */
     @Test
     void workLinkMapperKeepsContentOnSortOnlyUpdates() {
         WorkEntity work = insertWork();
@@ -342,6 +427,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(links.listByWorkId(work.getId()).isEmpty());
     }
 
+    /**
+     * 资料数据映射UpdatesBasic及媒体不含TouchingOther列集合处理入口。
+     * 主要协作调用：<code>profiles.selectOwner</code>、<code>profiles.updateBasic</code>、<code>profiles.updateMediaAssets</code>。
+     */
     @Test
     void profileMapperUpdatesBasicAndMediaWithoutTouchingOtherColumns() {
         ProfileEntity original = profiles.selectOwner();
@@ -397,6 +486,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
                 "avatarMediaAssetId 传 null 没有被清空，ALWAYS 更新语义在迁移中丢了");
     }
 
+    /**
+     * experience数据映射RoundTrips内容排序及Clearable列集合处理入口。
+     * 主要协作调用：<code>experiences.insert</code>、<code>experiences.selectById</code>、<code>experiences.listByProfileId</code>、<code>experiences.listEnabledByProfileId</code>、<code>experiences.countByProfileId</code>。
+     */
     @Test
     void experienceMapperRoundTripsContentSortAndClearableColumns() {
         long profileId = probeId();
@@ -446,6 +539,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(experiences.listByProfileId(profileId).isEmpty());
     }
 
+    /**
+     * skill数据映射RoundTrips内容排序及Clearable列集合处理入口。
+     * 主要协作调用：<code>skills.insert</code>、<code>skills.selectById</code>、<code>skills.listByProfileId</code>、<code>skills.listEnabledByProfileId</code>、<code>skills.countByProfileId</code>。
+     */
     @Test
     void skillMapperRoundTripsContentSortAndClearableColumns() {
         long profileId = probeId();
@@ -485,6 +582,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(skills.selectById(row.getId()));
     }
 
+    /**
+     * social链接数据映射RoundTrips内容及排序处理入口。
+     * 主要协作调用：<code>socials.insert</code>、<code>socials.selectById</code>、<code>socials.listByProfileId</code>、<code>socials.listEnabledByProfileId</code>、<code>socials.countByProfileId</code>。
+     */
     @Test
     void socialLinkMapperRoundTripsContentAndSort() {
         long profileId = probeId();
@@ -522,6 +623,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNull(socials.selectById(row.getId()));
     }
 
+    /**
+     * 精选内容数据映射RoundTrips顺序及删除处理入口。
+     * 主要协作调用：<code>featured.insert</code>、<code>featured.selectById</code>、<code>featured.listByProfileId</code>、<code>featured.listEnabledByProfileId</code>、<code>featured.countByProfileId</code>。
+     */
     @Test
     void featuredContentMapperRoundTripsOrderAndDelete() {
         long profileId = probeId();
@@ -560,6 +665,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, featured.countByProfileId(profileId));
     }
 
+    /**
+     * 英语Overview数据映射Reads及UpdatesTheSingleton处理入口。
+     * 主要协作调用：<code>englishOverview.selectSingleton</code>、<code>englishOverview.updateContent</code>。
+     */
     @Test
     void englishOverviewMapperReadsAndUpdatesTheSingleton() {
         EnglishOverviewEntity original = englishOverview.selectSingleton();
@@ -581,6 +690,10 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(updated.getUpdatedAt());
     }
 
+    /**
+     * 回滚Leaves不含测试行集合及RestoresTheOwner资料。
+     * 主要协作调用：<code>profiles.selectOwner</code>、<code>profiles.updateBasic</code>、<code>profiles.updateMediaAssets</code>、<code>experiences.insert</code>、<code>session.rollback</code>。
+     */
     @Test
     void rollbackLeavesNoTestRowsAndRestoresTheOwnerProfile() {
         ProfileEntity beforeUpdate = profiles.selectOwner();
@@ -622,12 +735,27 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 写入作品。
+     * 主要协作调用：<code>works.insert</code>。
+     * @return 类型为 <code>WorkEntity</code> 的处理结果
+     */
     private WorkEntity insertWork() {
         WorkEntity work = newWork(unique("mapperxmlwork"), "XML 验证作品", "OTHER", "DRAFT");
         assertEquals(1, works.insert(work));
         return work;
     }
 
+    /**
+     * new作品处理入口。
+     * 关键处理步骤调用 <code>work.setSlug</code>、<code>work.setWorkType</code>、<code>work.setTitle</code>、<code>work.setSummary</code>。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @param title 标题；类型为 <code>String</code>
+     * @param workType 作品类型；类型为 <code>String</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @return 类型为 <code>WorkEntity</code> 的处理结果
+     */
     private WorkEntity newWork(String slug, String title, String workType, String status) {
         WorkEntity work = new WorkEntity();
         work.setSlug(slug);
@@ -641,6 +769,14 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         return work;
     }
 
+    /**
+     * newExperience处理入口。
+     * 关键处理步骤调用 <code>row.setProfileId</code>、<code>row.setExperienceType</code>、<code>row.setTitle</code>、<code>row.setOrganization</code>。
+     *
+     * @param profileId 资料标识；类型为 <code>long</code>
+     * @param title 标题；类型为 <code>String</code>
+     * @return 类型为 <code>ExperienceEntity</code> 的处理结果
+     */
     private ExperienceEntity newExperience(long profileId, String title) {
         ExperienceEntity row = new ExperienceEntity();
         row.setProfileId(profileId);
@@ -658,6 +794,14 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         return row;
     }
 
+    /**
+     * newSkill处理入口。
+     * 关键处理步骤调用 <code>row.setProfileId</code>、<code>row.setCategory</code>、<code>row.setName</code>、<code>row.setDescription</code>。
+     *
+     * @param profileId 资料标识；类型为 <code>long</code>
+     * @param name 名称；类型为 <code>String</code>
+     * @return 类型为 <code>SkillEntity</code> 的处理结果
+     */
     private SkillEntity newSkill(long profileId, String name) {
         SkillEntity row = new SkillEntity();
         row.setProfileId(profileId);
@@ -672,6 +816,13 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
         return row;
     }
 
+    /**
+     * newSocial处理入口。
+     * 关键处理步骤调用 <code>row.setProfileId</code>、<code>row.setPlatformCode</code>、<code>row.setLabel</code>、<code>row.setUrl</code>。
+     *
+     * @param profileId 资料标识；类型为 <code>long</code>
+     * @return 类型为 <code>SocialLinkEntity</code> 的处理结果
+     */
     private SocialLinkEntity newSocial(long profileId) {
         SocialLinkEntity row = new SocialLinkEntity();
         row.setProfileId(profileId);
@@ -686,14 +837,31 @@ class PortfolioProfileMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实账户/资料撞号 */
+    /**
+     * 测试样本标识处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long probeId() {
         return 900_000_000_000L + PROBE.incrementAndGet();
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
     }

@@ -1,3 +1,12 @@
+/**
+ * index.js：前端应用模块的应用配置与入口。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 组织前端装配、构建或入口行为，具体依赖和导出入口见下文。
+ * 主要依赖：vue-router、../modules/account/stores/authStore、../shared/routeLoadFailure、../shared/viewMode、../modules/site/pages/HomePage.vue。
+ * 主要响应式状态：auth。
+ * 阅读入口：AuthPage（认证分页的处理函数）；AccountPage（账号分页的处理函数）；AdminAccountsPage（后台账号集合分页的处理函数）；AdminInvitationsPage（后台Invitations分页的处理函数）；AccountAuditsPage（账号Audits分页的处理函数）。
+ */
+
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../modules/account/stores/authStore'
 import { handleRouteLoadError, routeLoadFailed } from '../shared/routeLoadFailure'
@@ -9,17 +18,61 @@ import {
   modeHomePath,
   resolveViewMode,
 } from '../shared/viewMode'
+/**
+ * 认证分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const AuthPage = () => import('../modules/account/pages/AuthPage.vue')
+/**
+ * 账号分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const AccountPage = () => import('../modules/account/pages/AccountPage.vue')
+/**
+ * 后台账号集合分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const AdminAccountsPage = () => import('../modules/account/pages/AdminAccountsPage.vue')
+/**
+ * 后台Invitations分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const AdminInvitationsPage = () => import('../modules/account/pages/AdminInvitationsPage.vue')
+/**
+ * 账号Audits分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const AccountAuditsPage = () => import('../modules/account/pages/AccountAuditsPage.vue')
+/**
+ * 媒体Library分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const MediaLibraryPage = () => import('../modules/media/pages/MediaLibraryPage.vue')
+/**
+ * 媒体详情分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const MediaDetailPage = () => import('../modules/media/pages/MediaDetailPage.vue')
+/**
+ * 审核Center分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const ReviewCenterPage = () => import('../modules/review/pages/ReviewCenterPage.vue')
+/**
+ * 审核详情分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const ReviewDetailPage = () => import('../modules/review/pages/ReviewDetailPage.vue')
 import HomePage from '../modules/site/pages/HomePage.vue'
+/**
+ * 待处理分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const PendingPage = () => import('../modules/site/pages/PendingPage.vue')
+/**
+ * 概览分页的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const DashboardPage = () => import('../modules/site/pages/DashboardPage.vue')
 
 /*
@@ -280,6 +333,9 @@ router.beforeEach(async (to) => {
     }
   }
 
+  /**
+   * 认证；通过 useAuthStore 建立。
+   */
   const auth = useAuthStore()
   /*
    * 公开树刻意**不**初始化会话：不在公开树问「我是谁」，公开树就不可能渲染出账号 UI。

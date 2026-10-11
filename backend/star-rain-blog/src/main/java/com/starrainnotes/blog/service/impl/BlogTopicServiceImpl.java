@@ -1,3 +1,11 @@
+/*
+ * BlogTopicServiceImpl：博客模块的业务实现文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：BlogLimits、BlogTopicChangedEvent、BlogTopicDTO、BlogTopicMemberRow、BlogTopicOrderItem、BlogTopicQueryDTO、BlogPostEntity。
+ * 阅读入口：page（分页读取博客专题）；listPublished（列出已发布）；create（创建博客专题）；update（更新博客专题）。
+ */
+
 package com.starrainnotes.blog.service.impl;
 
 import com.starrainnotes.blog.constant.BlogLimits;
@@ -52,13 +60,35 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * 靠两件事维持 —— 加入时取 max + 1，移出后按当前顺序重写 1..n。
  * 这样“顺序”可以用列表下标表达，前端拖拽结果能直接映射成接口出入参。
  */
+/**
+ * 博客专题业务服务实现，属于博客模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class BlogTopicServiceImpl implements BlogTopicService {
 
+    /**
+     * 专题数据映射。
+     * 协作类型：<code>BlogTopicMapper</code>。
+     */
     private final BlogTopicMapper topicMapper;
+    /**
+     * 文章数据映射。
+     * 协作类型：<code>BlogPostMapper</code>。
+     */
     private final BlogPostMapper postMapper;
+    /**
+     * 事件发布器。
+     */
     private final ApplicationEventPublisher eventPublisher;
 
+    /**
+     * 构造BlogTopicServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param topicMapper 专题数据映射；类型为 <code>BlogTopicMapper</code>
+     * @param postMapper 文章数据映射；类型为 <code>BlogPostMapper</code>
+     * @param eventPublisher 事件发布器；类型为 <code>ApplicationEventPublisher</code>
+     */
     public BlogTopicServiceImpl(BlogTopicMapper topicMapper, BlogPostMapper postMapper,
                                 ApplicationEventPublisher eventPublisher) {
         this.topicMapper = topicMapper;
@@ -66,6 +96,14 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         this.eventPublisher = eventPublisher;
     }
 
+    /**
+     * 分页读取博客专题。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.adminPageCount</code>、<code>topicMapper.adminPage</code>。
+     *
+     * @param query 查询参数；类型为 <code>BlogTopicQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;BlogTopicVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<BlogTopicVO> page(BlogTopicQueryDTO query) {
@@ -86,12 +124,27 @@ public class BlogTopicServiceImpl implements BlogTopicService {
                 .build();
     }
 
+    /**
+     * 列出已发布。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.publishedTopics</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BlogTopicVO> listPublished() {
         return topicMapper.publishedTopics();
     }
 
+    /**
+     * 创建博客专题。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.countBySlug</code>、<code>topicMapper.minimumSortOrder</code>、<code>topicMapper.insertTopic</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicSlugConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>BlogTopicDTO</code>
+     * @return 类型为 <code>BlogTopicVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public BlogTopicVO create(BlogTopicDTO request) {
@@ -132,6 +185,16 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         throw new BlogTopicSlugConflictException();
     }
 
+    /**
+     * 更新博客专题。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.countBySlug</code>、<code>topicMapper.updateTopic</code>、<code>topicMapper.updatePresentation</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicSlugConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>BlogTopicDTO</code>
+     * @return 类型为 <code>BlogTopicVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public BlogTopicVO update(Long topicId, BlogTopicDTO request) {
@@ -159,6 +222,14 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         return updated;
     }
 
+    /**
+     * 调整顺序专题列表。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.adminPage</code>、<code>topicMapper.updatePresentation</code>。
+     * 实现中的显式失败类型包括 <code>BlogQueryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param topicIds 专题标识集合；类型为 <code>List&lt;Long&gt;</code>
+     */
     @Override
     @Transactional
     public void reorderTopics(List<Long> topicIds) {
@@ -193,6 +264,14 @@ public class BlogTopicServiceImpl implements BlogTopicService {
      * 取行锁再数：与「同时给这个专题加文章」并发时，
      * 否则可能删掉一个刚被加入成员、关系已经写进去的专题。
      */
+    /**
+     * 删除博客专题。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.countTopicPosts</code>、<code>topicMapper.deleteTopic</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicNotEmptyException</code>；具体触发条件见对应分支。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void delete(Long topicId) {
@@ -208,6 +287,13 @@ public class BlogTopicServiceImpl implements BlogTopicService {
      * 停用：不在前台展示、不再接受新文章，但成员关系与顺序全部保留。
      * 幂等：重复停用不报错。
      */
+    /**
+     * 禁用博客专题。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.updateStatus</code>。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void disable(Long topicId) {
@@ -219,6 +305,13 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), false));
     }
 
+    /**
+     * 启用博客专题。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.updateStatus</code>。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void enable(Long topicId) {
@@ -230,6 +323,14 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), true));
     }
 
+    /**
+     * members处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.topicMembers</code>。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<BlogTopicMemberRow> members(Long topicId) {
@@ -238,6 +339,15 @@ public class BlogTopicServiceImpl implements BlogTopicService {
     }
 
     // BLOG-006 加入：追加到末尾，序号 = 当前最大值 + 1
+    /**
+     * 添加文章。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.postById</code>、<code>topicMapper.countTopicPost</code>、<code>topicMapper.maxSortOrder</code>、<code>topicMapper.insertTopicPost</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicDisabledException</code>、<code>BlogPostNotFoundException</code>、<code>BlogTopicPostExistsException</code>；具体触发条件见对应分支。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     * @param postId 文章标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void addPost(Long topicId, Long postId) {
@@ -265,6 +375,15 @@ public class BlogTopicServiceImpl implements BlogTopicService {
      * BLOG-006 移出：先删关系，再按剩余成员重写 1..n。
      * 停用的专题也允许移出 —— 只能加不能减会让“专题不再合适”的文章无法清理。
      */
+    /**
+     * 移除文章。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.countTopicPost</code>、<code>topicMapper.deleteTopicPost</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicPostNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     * @param postId 文章标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void removePost(Long topicId, Long postId) {
@@ -282,6 +401,15 @@ public class BlogTopicServiceImpl implements BlogTopicService {
      * 要求 postIds 与该专题当前成员集合完全一致，而不是“允许只传子集”：
      * 后者会让未出现在请求里的成员序号留在旧值上，形成重复序号，
      * 排序结果就取决于数据库的物理顺序，同一个专题每次读到的顺序可能不同。
+     */
+    /**
+     * 调整顺序博客专题。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.topicMembers</code>、<code>topicMapper.updateTopicOrder</code>。
+     * 实现中的显式失败类型包括 <code>BlogQueryInvalidException</code>、<code>BlogTopicPostNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     * @param postIds 文章标识集合；类型为 <code>List&lt;Long&gt;</code>
      */
     @Override
     @Transactional
@@ -334,12 +462,27 @@ public class BlogTopicServiceImpl implements BlogTopicService {
     // 内部工具
     // ------------------------------------------------------------------
 
+    /**
+     * 事件之后Commit处理入口。
+     * 主要协作调用：<code>eventPublisher.publishEvent</code>。
+     *
+     * @param event 事件；类型为 <code>BlogTopicChangedEvent</code>
+     */
     private void eventAfterCommit(BlogTopicChangedEvent event) {
         if (!TransactionSynchronizationManager.isSynchronizationActive()) {
             eventPublisher.publishEvent(event);
             return;
         }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
+    /**
+     * 当前调用使用的匿名协作实现，属于博客模块。
+     * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+     */
+    {
+            /**
+             * 之后Commit处理入口。
+             * 关键处理步骤调用 <code>eventPublisher.publishEvent</code>。
+             */
             @Override
             public void afterCommit() {
                 eventPublisher.publishEvent(event);
@@ -348,6 +491,12 @@ public class BlogTopicServiceImpl implements BlogTopicService {
     }
 
     // 按当前顺序重写 1..n，维持“序号连续”的不变量
+    /**
+     * compact顺序处理入口。
+     * 主要协作调用：<code>topicMapper.topicMembers</code>、<code>topicMapper.updateTopicOrder</code>。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     */
     private void compactOrder(Long topicId) {
         List<BlogTopicMemberRow> members = topicMapper.topicMembers(topicId);
         if (members.isEmpty()) {
@@ -363,6 +512,13 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         topicMapper.updateTopicOrder(topicId, items);
     }
 
+    /**
+     * 转换为专题响应对象。
+     * 主要协作调用：<code>topicMapper.countTopicPosts</code>。
+     *
+     * @param topic 专题；类型为 <code>BlogTopicEntity</code>
+     * @return 类型为 <code>BlogTopicVO</code> 的处理结果
+     */
     private BlogTopicVO toTopicVO(BlogTopicEntity topic) {
         return BlogTopicVO.builder()
                 .id(topic.getId())
@@ -378,6 +534,14 @@ public class BlogTopicServiceImpl implements BlogTopicService {
                 .build();
     }
 
+    /**
+     * 检查所需专题。
+     * 主要协作调用：<code>topicMapper.topicById</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogTopicEntity</code> 的处理结果
+     */
     private BlogTopicEntity requireTopic(Long topicId) {
         BlogTopicEntity topic = topicId == null ? null : topicMapper.topicById(topicId);
         if (topic == null) {
@@ -386,6 +550,14 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         return topic;
     }
 
+    /**
+     * 检查所需专题面向更新。
+     * 主要协作调用：<code>topicMapper.topicByIdForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogTopicEntity</code> 的处理结果
+     */
     private BlogTopicEntity requireTopicForUpdate(Long topicId) {
         BlogTopicEntity topic = topicId == null ? null : topicMapper.topicByIdForUpdate(topicId);
         if (topic == null) {
@@ -394,6 +566,14 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         return topic;
     }
 
+    /**
+     * 检查所需固定链接标识。
+     * 关键处理步骤调用 <code>BlogSlugRules.normalize</code>、<code>BlogSlugRules.isValid</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicSlugInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String requireSlug(String raw) {
         String slug = BlogSlugRules.normalize(raw);
         if (!BlogSlugRules.isValid(slug, BlogLimits.TOPIC_SLUG_MAX_LENGTH)) {
@@ -403,6 +583,14 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         return slug;
     }
 
+    /**
+     * 检查所需名称。
+     * 关键处理步骤调用 <code>BlogTextRules.normalizeName</code>、<code>name.length</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicNameInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String requireName(String raw) {
         String name = BlogTextRules.normalizeName(raw);
         if (name == null) {
@@ -414,6 +602,14 @@ public class BlogTopicServiceImpl implements BlogTopicService {
         return name;
     }
 
+    /**
+     * 检查所需描述。
+     * 关键处理步骤调用 <code>BlogTextRules.normalizeDescription</code>、<code>description.length</code>。
+     * 实现中的显式失败类型包括 <code>BlogTopicDescriptionInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String requireDescription(String raw) {
         String description = BlogTextRules.normalizeDescription(raw);
         if (description != null && description.length() > BlogLimits.TOPIC_DESCRIPTION_MAX_LENGTH) {

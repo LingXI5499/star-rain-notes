@@ -1,5 +1,19 @@
+/**
+ * seoMeta.js：公开页面与 SEO模块的应用配置与入口。
+ * 职责范围：公开 HTML 快照、规范地址、站点地图和搜索引擎通知。
+ * 组织前端装配、构建或入口行为，具体依赖和导出入口见下文。
+ * 主要依赖：../../shared/http。
+ * 阅读入口：meta（meta的处理函数）；canonical（规范的处理函数）；installSeoMeta（installSEOMeta的处理函数）。
+ */
+
 import http from '../../shared/http'
 
+/**
+ * meta的处理函数。
+ * 主要协作：document.head.querySelector、document.createElement、document.head.append。
+ * @param name 名称；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function meta(name) {
   let node = document.head.querySelector(`meta[name="${name}"]`)
   if (!node) {
@@ -10,6 +24,11 @@ function meta(name) {
   return node
 }
 
+/**
+ * 规范的处理函数。
+ * 主要协作：document.head.querySelector、document.createElement、document.head.append。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function canonical() {
   let node = document.head.querySelector('link[rel="canonical"]')
   if (!node) {
@@ -20,7 +39,15 @@ function canonical() {
   return node
 }
 
-export function installSeoMeta(router) {
+export
+  /**
+   * installSEOMeta的处理函数。
+   * 请求入口：http.get('/public/seo/meta')；路径参数的编码和请求体结构保持接口契约。
+   * 使用取消信号终止不再需要的异步工作，调用方仍需区分取消和真实失败。
+   * @param router router；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+   */
+  function installSeoMeta(router) {
   let request = null
   router.afterEach(async (to) => {
     request?.abort()

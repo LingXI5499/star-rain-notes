@@ -1,3 +1,12 @@
+/**
+ * http.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、./http。
+ * 阅读入口：token（令牌的处理函数）。
+ * 验证场景：CSRF single flight and user errors；fetches one token for ten concurrent writes and reuses it；does not let an old token repopulate state after logout；allows retry after token fetch failure and never fetches for reads；clears invalid tokens without automatically replaying writes。
+ */
+
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 const state = vi.hoisted(() => ({ request: null, responseError: null, get: vi.fn() }))
 vi.mock('axios', () => ({ default: {
@@ -7,6 +16,11 @@ vi.mock('axios', () => ({ default: {
   create: () => ({ interceptors: { request: { use: callback => { state.request = callback } }, response: { use: (_, callback) => { state.responseError = callback } } } }),
 } }))
 import { clearCsrf, errorMessage, isRequestCanceled } from './http'
+/**
+ * 令牌的处理函数。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const token = value => ({ data: { data: { token: value } } })
 beforeEach(() => { clearCsrf(); vi.clearAllMocks() })
 describe('CSRF single flight and user errors', () => {

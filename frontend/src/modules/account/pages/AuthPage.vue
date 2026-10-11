@@ -1,4 +1,15 @@
 <script setup>
+/**
+ * AuthPage.vue：账号模块的页面组件。
+ * 职责范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../stores/authStore、../api/accountApi、../api/http、../support/useEmailCode。
+ * 组件输入：mode；默认值与类型见 defineProps。
+ * 主要响应式状态：props、route、router、auth、form、busy、error、notice。
+ * 阅读入口：requestRegistrationCode（请求Registration代码的处理函数）；submit（提交当前操作）；switchInvitationAccount（switch邀请账号的处理函数）。
+ */
+
+
 import { computed, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
@@ -8,20 +19,60 @@ import { useEmailCode } from '../support/useEmailCode'
 // 认证页全部落在账号树，路径一律由 viewMode 的 accountPath() 推出来，不写死 '/useradmin' 字面量
 import { accountPath } from '../../../shared/viewMode'
 
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({ mode: { type: String, required: true } })
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
+/**
+ * form；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const form = reactive({
   username: '', email: '', identifier: '', password: '', confirmPassword: '',
   newPassword: '', token: '', verificationCode: '',
 })
+/**
+ * busy；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const busy = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
+/**
+ * show密码；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const showPassword = ref(false)
+/**
+ * 邮箱Input；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const emailInput = ref(null)
 const { sending: sendingCode, remaining: codeCooldown, send: sendCode } = useEmailCode()
+/**
+ * 标题；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const title = computed(() => ({
   login: '登录星雨笔录',
   register: '创建账户',
@@ -30,6 +81,9 @@ const title = computed(() => ({
   invite: '接受管理员邀请',
 })[props.mode])
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => props.mode, () => {
   error.value = ''
   notice.value = ''
@@ -39,8 +93,17 @@ watch(() => props.mode, () => {
   form.verificationCode = ''
 })
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => form.email, () => { form.verificationCode = ''; notice.value = '' })
 
+/**
+ * 请求Registration代码的处理函数。
+ * 主要协作：emailInput.value.reportValidity、sendCode、api.sendRegistrationCode、errorMessage。
+ * 更新的响应式状态包括 error、notice；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function requestRegistrationCode() {
   if (busy.value || sendingCode.value || codeCooldown.value) return
   if (!emailInput.value?.reportValidity()) return
@@ -58,6 +121,13 @@ async function requestRegistrationCode() {
   }
 }
 
+/**
+ * 提交当前操作。
+ * 主要协作：auth.login、router.replace、redirect.startsWith、accountPath、api.register。
+ * 更新的响应式状态包括 busy、error、notice；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function submit() {
   if (busy.value) return
   busy.value = true
@@ -108,6 +178,12 @@ async function submit() {
   }
 }
 
+/**
+ * switch邀请账号的处理函数。
+ * 主要协作：auth.logout、router.replace、accountPath、errorMessage。
+ * 更新的响应式状态包括 error；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function switchInvitationAccount() {
   error.value = ''
   try {

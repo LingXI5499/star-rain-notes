@@ -2,11 +2,29 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.review.mapper.ReviewActionMapper">
+    <!--
+      ReviewActionMapper.xml：com.starrainnotes.review.mapper.ReviewActionMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+    <!--
+      actionColumns：动作投影列；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    -->
     <sql id="actionColumns">
         id, review_request_id, action_type, actor_account_id, actor_type, note, created_at
     </sql>
 
+    <!--
+      insertAction：新增动作；新增语句。
+      涉及数据表：sr_review_action；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.review.entity.ReviewActionEntity；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：reviewRequestId、actionType、actorAccountId、actorType、note、createdAt；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertAction" parameterType="com.starrainnotes.review.entity.ReviewActionEntity"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_review_action (
@@ -16,6 +34,13 @@
         )
     </insert>
 
+    <!--
+      selectByReviewRequestId：查询依据审核请求标识；读取语句。
+      涉及数据表：sr_review_action；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.review.entity.ReviewActionEntity；集合与单值形态由 Java 方法签名决定。
+      复用片段：actionColumns。
+      绑定参数：reviewRequestId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="selectByReviewRequestId" resultType="com.starrainnotes.review.entity.ReviewActionEntity">
         SELECT <include refid="actionColumns"/> FROM sr_review_action
         WHERE review_request_id = #{reviewRequestId}

@@ -1,3 +1,11 @@
+/*
+ * EnglishSearchIndexTest：搜索模块的测试文件。
+ * 业务范围：搜索文档投影、索引重建和关键词查询。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：EnglishSearchSourceApi、EnglishSearchTypes、EnglishSearchDocument、EnglishSearchContentChangedEvent、SearchIndexApi、SearchableDocument、SearchEventConsumer。
+ * 阅读入口：syncUpdatesPublicBodiesAndRemovesWithdrawnOrPrivateDocuments（同步Updates公开Bodies及Removes已撤回或PrivateDocuments）；rebuildUsesIdCursorAndRemovesStaleKeysOnlyForTheRequestedType（重建Uses标识Cursor及RemovesStaleKeysOnly面向TheRequested类型）；existingInstallationsBackfillEveryEnglishTypeAtStartup（existingInstallationsBackfillEvery英语类型时间Startup处理入口）；indexAcceptsEnglishTypes（索引Accepts英语Types处理入口）。
+ */
+
 package com.starrainnotes.search;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,13 +31,36 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import org.springframework.transaction.event.TransactionalEventListenerFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+/**
+ * 英语搜索索引测试，属于搜索模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class EnglishSearchIndexTest {
+    /**
+     * 来源。
+     * 协作类型：<code>EnglishSearchSourceApi</code>。
+     */
     private final EnglishSearchSourceApi source = mock(EnglishSearchSourceApi.class);
+    /**
+     * 索引。
+     * 协作类型：<code>SearchIndexApi</code>。
+     */
     private final SearchIndexApi index = mock(SearchIndexApi.class);
+    /**
+     * 数据映射。
+     * 协作类型：<code>SearchDocumentMapper</code>。
+     */
     private final SearchDocumentMapper mapper = mock(SearchDocumentMapper.class);
+    /**
+     * rebuild。
+     */
     private final SearchRebuildServiceImpl rebuild = new SearchRebuildServiceImpl(null, null, null, null,
         index, mapper, new SearchTextExtractor(), source);
 
+    /**
+     * 同步Updates公开Bodies及Removes已撤回或PrivateDocuments。
+     * 主要协作调用：<code>source.findPublished</code>、<code>rebuild.syncEnglish</code>。
+     */
     @Test
     void syncUpdatesPublicBodiesAndRemovesWithdrawnOrPrivateDocuments() {
         var document = document(12L);
@@ -45,6 +76,10 @@ class EnglishSearchIndexTest {
         verify(index).removeByContent("ENGLISH_READING", 12L);
     }
 
+    /**
+     * 重建Uses标识Cursor及RemovesStaleKeysOnly面向TheRequested类型。
+     * 主要协作调用：<code>source.page</code>、<code>mapper.activeKeys</code>、<code>rebuild.rebuildType</code>。
+     */
     @Test
     void rebuildUsesIdCursorAndRemovesStaleKeysOnlyForTheRequestedType() {
         var first = java.util.stream.LongStream.rangeClosed(1, 100).mapToObj(this::document).toList();
@@ -60,6 +95,10 @@ class EnglishSearchIndexTest {
         verify(mapper, never()).activeKeys("BLOG");
     }
 
+    /**
+     * existingInstallationsBackfillEvery英语类型时间Startup处理入口。
+     * 主要协作调用：<code>mapper.activeCount</code>、<code>source.page</code>、<code>rebuild.rebuildType</code>。
+     */
     @Test
     void existingInstallationsBackfillEveryEnglishTypeAtStartup() {
         var service = mock(SearchRebuildService.class);
@@ -71,6 +110,10 @@ class EnglishSearchIndexTest {
         for (String type : EnglishSearchTypes.ALL) verify(source).page(type, null, 100);
     }
 
+    /**
+     * 索引Accepts英语Types处理入口。
+     * 关键处理步骤调用 <code>document.setContentType</code>、<code>document.setContentId</code>、<code>document.setDocumentKey</code>、<code>document.setTitle</code>。
+     */
     @Test
     void indexAcceptsEnglishTypes() {
         var service = new SearchIndexService(mapper);
@@ -84,6 +127,11 @@ class EnglishSearchIndexTest {
         verify(mapper).upsert(document);
     }
 
+    /**
+     * 英语事件集合Wait面向Commit及AreDiscarded触发回滚处理入口。
+     * 关键处理步骤调用 <code>context.registerBean</code>、<code>context.refresh</code>、<code>TransactionSynchronizationManager.setActualTransactionActive</code>、<code>TransactionSynchronizationManager.initSynchronization</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void englishEventsWaitForCommitAndAreDiscardedOnRollback() throws Exception {
         var service = mock(SearchRebuildService.class);
@@ -118,6 +166,13 @@ class EnglishSearchIndexTest {
         }
     }
 
+    /**
+     * 文档处理入口。
+     * 关键处理步骤调用 <code>document.setContentType</code>、<code>document.setId</code>、<code>document.setTitle</code>、<code>document.setSearchableText</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>long</code>
+     * @return 类型为 <code>EnglishSearchDocument</code> 的处理结果
+     */
     private EnglishSearchDocument document(long id) {
         var document = new EnglishSearchDocument();
         document.setContentType("ENGLISH_READING");

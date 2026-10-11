@@ -1,3 +1,11 @@
+/*
+ * SearchRebuildServiceImpl：搜索模块的业务实现文件。
+ * 业务范围：搜索文档投影、索引重建和关键词查询。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：BlogSearchSourceApi、BlogDocumentPage、BlogPostDocument、PageResult、EnglishSearchSourceApi、EnglishSearchTypes、EnglishSearchDocument。
+ * 阅读入口：rebuild（重建搜索Rebuild）；rebuildAll（重建全部）；rebuildType（重建类型）；indexBlog（索引博客处理入口）。
+ */
+
 package com.starrainnotes.search.service.impl;
 
 import com.starrainnotes.blog.api.BlogSearchSourceApi;
@@ -31,19 +39,66 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.annotation.Propagation;
 
+/**
+ * 搜索Rebuild业务服务实现，属于搜索模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class SearchRebuildServiceImpl implements SearchRebuildService {
+    /**
+     * 批量。
+     * 初始值为 <code>100</code>。
+     */
     private static final int BATCH = 100;
+    /**
+     * blogs。
+     * 协作类型：<code>BlogSearchSourceApi</code>。
+     */
     private final BlogSearchSourceApi blogs;
+    /**
+     * tutorials。
+     * 协作类型：<code>TutorialDocumentSourceApi</code>。
+     */
     private final TutorialDocumentSourceApi tutorials;
+    /**
+     * 作品列表。
+     * 协作类型：<code>PortfolioPublicApi</code>。
+     */
     private final PortfolioPublicApi works;
+    /**
+     * profiles。
+     * 协作类型：<code>ProfilePublicApi</code>。
+     */
     private final ProfilePublicApi profiles;
+    /**
+     * 索引。
+     * 协作类型：<code>SearchIndexApi</code>。
+     */
     private final SearchIndexApi index;
+    /**
+     * 数据映射。
+     * 协作类型：<code>SearchDocumentMapper</code>。
+     */
     private final SearchDocumentMapper mapper;
+    /**
+     * extractor。
+     */
     private final SearchTextExtractor extractor;
+    /**
+     * 英语。
+     * 协作类型：<code>EnglishSearchSourceApi</code>。
+     */
     private final EnglishSearchSourceApi english;
 
+    /**
+     * 重建搜索Rebuild。
+     * 主要协作调用：<code>mapper.activeCount</code>。
+     * 实现中的显式失败类型包括 <code>SearchTypeInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     @Override
     public long rebuild(String type) {
         if (type == null || type.isBlank()) rebuildAll();
@@ -54,6 +109,11 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         return mapper.activeCount();
     }
 
+    /**
+     * 重建全部。
+     * 事务声明：<code>@Transactional(propagation = Propagation.REQUIRES_NEW)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>rebuildTutorials</code>、<code>rebuildBlogs</code>、<code>rebuildWorks</code>、<code>rebuildProfile</code>。
+     */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void rebuildAll() {
@@ -64,6 +124,14 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         EnglishSearchTypes.ALL.forEach(this::rebuildEnglish);
     }
 
+    /**
+     * 重建类型。
+     * 事务声明：<code>@Transactional(propagation = Propagation.REQUIRES_NEW)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>EnglishSearchTypes.ALL.forEach</code>、<code>SearchIndexService.TYPES.contains</code>、<code>EnglishSearchTypes.ALL.contains</code>、<code>rebuildEnglish</code>。
+     * 实现中的显式失败类型包括 <code>IllegalArgumentException</code>；具体触发条件见对应分支。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void rebuildType(String type) {
@@ -85,18 +153,34 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         }
     }
 
+    /**
+     * 索引博客处理入口。
+     * 主要协作调用：<code>index.upsert</code>。
+     *
+     * @param post 文章；类型为 <code>BlogPostDocument</code>
+     */
     @Override
     public void indexBlog(BlogPostDocument post) {
         index.upsert(document("BLOG", post.getId(), post.getTitle(), post.getSummary(),
             post.getBodyMarkdown(), "/blog/posts/" + post.getSlug(), post.getPublishedAt(), post.getUpdatedAt()));
     }
 
+    /**
+     * 索引作品处理入口。
+     * 主要协作调用：<code>index.upsert</code>。
+     *
+     * @param work 作品；类型为 <code>PortfolioPublishedWork</code>
+     */
     @Override
     public void indexWork(PortfolioPublishedWork work) {
         index.upsert(document("PORTFOLIO", work.getId(), work.getTitle(), work.getSummary(),
             work.getSearchableText() == null ? work.getBodyMarkdown() : work.getSearchableText(), "/portfolio/" + work.getSlug(), work.getPublishedAt(), work.getUpdatedAt()));
     }
 
+    /**
+     * 重建Blogs。
+     * 主要协作调用：<code>blogs.listPublishedDocuments</code>。
+     */
     private void rebuildBlogs() {
         Set<String> seen = new HashSet<>();
         Long cursor = null;
@@ -111,6 +195,15 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         removeStale("BLOG", seen);
     }
 
+    /**
+     * 同步英语。
+     * 事务声明：<code>@Transactional(propagation = Propagation.REQUIRES_NEW)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>english.findPublished</code>、<code>index.removeByContent</code>。
+     * 实现中的显式失败类型包括 <code>SearchTypeInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param contentType 内容类型或请求声明的 Content-Type；类型为 <code>String</code>
+     * @param contentId 内容标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void syncEnglish(String contentType, Long contentId) {
@@ -120,6 +213,12 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         else indexEnglish(source);
     }
 
+    /**
+     * 重建英语。
+     * 主要协作调用：<code>english.page</code>。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     */
     private void rebuildEnglish(String type) {
         Set<String> seen = new HashSet<>();
         Long cursor = null;
@@ -135,11 +234,21 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         removeStale(type, seen);
     }
 
+    /**
+     * 索引英语处理入口。
+     * 主要协作调用：<code>index.upsert</code>。
+     *
+     * @param source 来源；类型为 <code>EnglishSearchDocument</code>
+     */
     private void indexEnglish(EnglishSearchDocument source) {
         index.upsert(document(source.getContentType(), source.getId(), source.getTitle(), source.getSummary(),
             source.getSearchableText(), source.getRoutePath(), source.getPublishedAt(), source.getUpdatedAt()));
     }
 
+    /**
+     * 重建Tutorials。
+     * 主要协作调用：<code>tutorials.page</code>、<code>index.upsert</code>。
+     */
     private void rebuildTutorials() {
         Set<String> seenTutorials = new HashSet<>();
         Set<String> seenChapters = new HashSet<>();
@@ -162,6 +271,10 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         removeStale("CHAPTER", seenChapters);
     }
 
+    /**
+     * 重建作品列表。
+     * 主要协作调用：<code>works.publishedWorks</code>。
+     */
     private void rebuildWorks() {
         Set<String> seen = new HashSet<>();
         for (int page = 1; ; page++) {
@@ -175,6 +288,10 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         removeStale("PORTFOLIO", seen);
     }
 
+    /**
+     * 重建资料。
+     * 主要协作调用：<code>profiles.publishedDocument</code>、<code>index.upsert</code>。
+     */
     private void rebuildProfile() {
         ProfilePublishedDocument profile = profiles.publishedDocument();
         Set<String> seen = new HashSet<>();
@@ -187,12 +304,33 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         removeStale("PROFILE", seen);
     }
 
+    /**
+     * 移除Stale。
+     * 主要协作调用：<code>mapper.activeKeys</code>、<code>index.remove</code>。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @param seen seen；类型为 <code>Set&lt;String&gt;</code>
+     */
     private void removeStale(String type, Set<String> seen) {
         for (String key : mapper.activeKeys(type)) {
             if (!seen.contains(key)) index.remove(key);
         }
     }
 
+    /**
+     * 文档处理入口。
+     * 主要协作调用：<code>extractor.plainText</code>。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param title 标题；类型为 <code>String</code>
+     * @param summary 摘要；类型为 <code>String</code>
+     * @param markdown Markdown；类型为 <code>String</code>
+     * @param route 路由；类型为 <code>String</code>
+     * @param publishedAt 已发布时间；类型为 <code>LocalDateTime</code>
+     * @param updatedAt 更新时间；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>SearchableDocument</code> 的处理结果
+     */
     private SearchableDocument document(String type, Long id, String title, String summary,
         String markdown, String route, LocalDateTime publishedAt, LocalDateTime updatedAt) {
         SearchableDocument result = new SearchableDocument();
@@ -208,5 +346,12 @@ public class SearchRebuildServiceImpl implements SearchRebuildService {
         return result;
     }
 
+    /**
+     * 键处理入口。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String key(String type, Long id) { return type + ":" + id; }
 }

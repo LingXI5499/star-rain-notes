@@ -1,3 +1,11 @@
+/*
+ * EnglishRwIntegrationTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CurrentActorApi、ApiException、RevisionDto、EnglishBodyValidator、TaxonomyMapper、TaxonomyServiceImpl、ReadingDto。
+ * 阅读入口：flywayUpgradeAndReadingWritingContracts（flywayUpgrade及阅读写作Contracts处理入口）；request（本次操作的请求参数对象处理入口）；anchor（anchor处理入口）。
+ */
+
 package com.starrainnotes.boot;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -25,6 +33,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 /** Real Flyway upgrade and service/SQL contracts in one disposable MySQL schema. */
 class EnglishRwIntegrationTest extends MapperXmlIntegrationSupport {
+ /**
+  * flywayUpgrade及阅读写作Contracts处理入口。
+  * 关键处理步骤调用 <code>openSession</code>、<code>session.getConnection</code>、<code>connection.getCatalog</code>、<code>Long.toUnsignedString</code>。
+  * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+  */
  @Test void flywayUpgradeAndReadingWritingContracts() throws Exception {
   try(SqlSession session=openSession()) {
    Connection connection=session.getConnection();String original=connection.getCatalog();
@@ -110,6 +123,22 @@ class EnglishRwIntegrationTest extends MapperXmlIntegrationSupport {
    }
   }
  }
+ /**
+  * 本次操作的请求参数对象处理入口。
+  * 关键处理步骤调用 <code>r.setRowVersion</code>。
+  *
+  * @param version 版本；类型为 <code>Long</code>
+  * @return 类型为 <code>RevisionDto.Request</code> 的处理结果
+  */
  private static RevisionDto.Request request(Long version) {var r=new RevisionDto.Request();r.setRowVersion(version);return r;}
+ /**
+  * anchor处理入口。
+  * 关键处理步骤调用 <code>i.setLanguage</code>、<code>i.setGroupKey</code>、<code>i.setParagraphIndex</code>、<code>i.setRangeStart</code>。
+  *
+  * @param language language；类型为 <code>String</code>
+  * @param expected 测试期望结果；类型为 <code>String</code>
+  * @param source 来源；类型为 <code>String</code>
+  * @return 类型为 <code>Item</code> 的处理结果
+  */
  private static Item anchor(String language,String expected,String source) { Item i=new Item();i.setLanguage(language);i.setGroupKey("group-one");i.setParagraphIndex(0);i.setRangeStart(0);i.setRangeEnd(expected.length());i.setExpectedText(expected);i.setParagraphHash(EnglishBodyValidator.hash(expected));i.setSourceMarkdownHash(EnglishBodyValidator.hash(source));return i; }
 }

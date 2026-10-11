@@ -1,3 +1,11 @@
+/*
+ * ProfileServiceTest：作者资料模块的测试文件。
+ * 业务范围：个人介绍、社交链接、经历技能和精选内容。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：BlogReferenceApi、ApiException、MediaAssetApi、MediaReferenceApi、MediaAssetSummary、PortfolioReferenceApi、ExperienceDTO。
+ * 阅读入口：owner（owner处理入口）；currentExperienceCannotHaveEndDate（当前ExperienceCannotHave结束日期处理入口）；protectedResumeCannotBeExposed（受保护ResumeCannotBeExposed处理入口）；unsafeSocialUrlIsRejected（不安全Social地址是否已拒绝处理入口）。
+ */
+
 package com.starrainnotes.profile;
 
 import com.starrainnotes.blog.api.BlogReferenceApi;
@@ -37,21 +45,87 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * 资料业务服务测试，属于作者资料模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 @ExtendWith(MockitoExtension.class)
 class ProfileServiceTest {
+    /**
+     * profiles。
+     * 协作类型：<code>ProfileMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private ProfileMapper profiles;
+    /**
+     * experiences。
+     * 协作类型：<code>ExperienceMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private ExperienceMapper experiences;
+    /**
+     * skills。
+     * 协作类型：<code>SkillMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private SkillMapper skills;
+    /**
+     * socials。
+     * 协作类型：<code>SocialLinkMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private SocialLinkMapper socials;
+    /**
+     * 精选。
+     * 协作类型：<code>FeaturedContentMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private FeaturedContentMapper featured;
+    /**
+     * 媒体。
+     * 协作类型：<code>MediaAssetApi</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private MediaAssetApi media;
+    /**
+     * 媒体References。
+     * 协作类型：<code>MediaReferenceApi</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private MediaReferenceApi mediaReferences;
+    /**
+     * tutorials。
+     * 协作类型：<code>TutorialReferenceApi</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private TutorialReferenceApi tutorials;
+    /**
+     * blogs。
+     * 协作类型：<code>BlogReferenceApi</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private BlogReferenceApi blogs;
+    /**
+     * 作品列表。
+     * 协作类型：<code>PortfolioReferenceApi</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private PortfolioReferenceApi works;
+    /**
+     * 事件集合。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private ProfileEventPublisher events;
+    /**
+     * 业务服务。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @InjectMocks private ProfileServiceImpl service;
 
+    /**
+     * owner处理入口。
+     * 主要协作调用：<code>profiles.selectOwner</code>。
+     */
     @BeforeEach
     void owner() {
         ProfileEntity row = new ProfileEntity();
@@ -61,6 +135,10 @@ class ProfileServiceTest {
         when(profiles.selectOwner()).thenReturn(row);
     }
 
+    /**
+     * 当前ExperienceCannotHave结束日期处理入口。
+     * 主要协作调用：<code>service.saveExperience</code>。
+     */
     @Test
     void currentExperienceCannotHaveEndDate() {
         ExperienceDTO request = new ExperienceDTO();
@@ -75,6 +153,10 @@ class ProfileServiceTest {
         verify(experiences, never()).insert(any(ExperienceEntity.class));
     }
 
+    /**
+     * 受保护ResumeCannotBeExposed处理入口。
+     * 主要协作调用：<code>media.get</code>、<code>service.setMedia</code>。
+     */
     @Test
     void protectedResumeCannotBeExposed() {
         MediaAssetSummary asset = new MediaAssetSummary();
@@ -89,6 +171,10 @@ class ProfileServiceTest {
         verify(profiles, never()).updateMediaAssets(any(ProfileEntity.class));
     }
 
+    /**
+     * 不安全Social地址是否已拒绝处理入口。
+     * 主要协作调用：<code>service.saveSocial</code>。
+     */
     @Test
     void unsafeSocialUrlIsRejected() {
         SocialLinkDTO request = new SocialLinkDTO();
@@ -102,6 +188,10 @@ class ProfileServiceTest {
         verify(socials, never()).insert(any(SocialLinkEntity.class));
     }
 
+    /**
+     * 草稿教程CannotBe精选处理入口。
+     * 主要协作调用：<code>tutorials.exists</code>、<code>tutorials.publishedTutorial</code>、<code>service.addFeatured</code>。
+     */
     @Test
     void draftTutorialCannotBeFeatured() {
         FeaturedContentDTO request = new FeaturedContentDTO();

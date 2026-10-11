@@ -1,3 +1,11 @@
+/*
+ * VocabularyPronunciationServiceImpl：英语学习模块的业务实现文件。
+ * 业务范围：文档、词汇、语法、阅读听力及复习记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：PronunciationAccentInvalidException、PronunciationDisabledException、PronunciationUpstreamException、PronunciationWordInvalidException、VocabularyPronunciationProperties、VocabularyPronunciationService、PronunciationAudioSource。
+ * 阅读入口：audio（音频处理入口）。
+ */
+
 package com.starrainnotes.english.vocabulary.service.impl;
 
 import com.starrainnotes.english.vocabulary.exception.PronunciationAccentInvalidException;
@@ -34,22 +42,61 @@ import org.springframework.stereotype.Service;
  * 因此响应可以给浏览器长缓存。缓存读写都是尽力而为：读失败或写失败只影响命中率，
  * 不影响本次响应。
  */
+/**
+ * 词汇Pronunciation业务服务实现，属于英语学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class VocabularyPronunciationServiceImpl implements VocabularyPronunciationService {
 
+    /**
+     * 当前类的日志记录器；日志参数不能包含密码或会话令牌。
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(VocabularyPronunciationServiceImpl.class);
 
     /* 单个英文词：字母开头，可含内部撇号与连字符 */
+    /**
+     * 模式。
+     */
     private static final Pattern WORD_PATTERN = Pattern.compile("[A-Za-z][A-Za-z'\\-]*");
+    /**
+     * LENGTH。
+     * 初始值为 <code>64</code>。
+     */
     private static final int MAX_WORD_LENGTH = 64;
+    /**
+     * US。
+     */
     private static final String ACCENT_US = "US";
+    /**
+     * UK。
+     */
     private static final String ACCENT_UK = "UK";
 
+    /**
+     * 音频来源。
+     */
     private final PronunciationAudioSource audioSource;
+    /**
+     * 本模块的外部配置属性。
+     * 协作类型：<code>VocabularyPronunciationProperties</code>。
+     */
     private final VocabularyPronunciationProperties properties;
+    /**
+     * 词汇PronunciationHTTP客户端。
+     */
     private final HttpClient vocabularyPronunciationHttpClient;
 
+    /**
+     * 音频处理入口。
+     * 主要协作调用：<code>audioSource.enabled</code>、<code>audioSource.audioUrl</code>。
+     * 实现中的显式失败类型包括 <code>PronunciationDisabledException</code>；具体触发条件见对应分支。
+     *
+     * @param word 单词；类型为 <code>String</code>
+     * @param accent accent；类型为 <code>String</code>
+     * @return 类型为 <code>byte[]</code> 的处理结果
+     */
     @Override
     public byte[] audio(String word, String accent) {
         String clean = normalizeWord(word);
@@ -71,6 +118,14 @@ public class VocabularyPronunciationServiceImpl implements VocabularyPronunciati
         return bytes;
     }
 
+    /**
+     * fetch处理入口。
+     * 主要协作调用：<code>properties.getRequestTimeoutSeconds</code>、<code>vocabularyPronunciationHttpClient.send</code>。
+     * 实现中的显式失败类型包括 <code>PronunciationUpstreamException</code>；具体触发条件见对应分支。
+     *
+     * @param url 地址；类型为 <code>String</code>
+     * @return 类型为 <code>byte[]</code> 的处理结果
+     */
     private byte[] fetch(String url) {
         HttpRequest request = HttpRequest.newBuilder(URI.create(url))
                 .timeout(Duration.ofSeconds(Math.max(1, properties.getRequestTimeoutSeconds())))
@@ -92,10 +147,25 @@ public class VocabularyPronunciationServiceImpl implements VocabularyPronunciati
         }
     }
 
+    /**
+     * 缓存路径处理入口。
+     * 主要协作调用：<code>properties.getCacheDir</code>。
+     *
+     * @param word 单词；类型为 <code>String</code>
+     * @param accent accent；类型为 <code>String</code>
+     * @return 类型为 <code>Path</code> 的处理结果
+     */
     private Path cachePath(String word, String accent) {
         return Path.of(properties.getCacheDir()).resolve(sha256(word + "|" + accent) + ".mp3");
     }
 
+    /**
+     * 读取缓存。
+     * 关键处理步骤调用 <code>Files.isRegularFile</code>、<code>Files.size</code>、<code>Files.readAllBytes</code>。
+     *
+     * @param path 路径；类型为 <code>Path</code>
+     * @return 类型为 <code>byte[]</code> 的处理结果
+     */
     private byte[] readCache(Path path) {
         try {
             if (Files.isRegularFile(path) && Files.size(path) > 0) {
@@ -107,6 +177,13 @@ public class VocabularyPronunciationServiceImpl implements VocabularyPronunciati
         return null;
     }
 
+    /**
+     * 写入缓存。
+     * 关键处理步骤调用 <code>Files.createDirectories</code>、<code>path.getParent</code>、<code>Files.write</code>。
+     *
+     * @param path 路径；类型为 <code>Path</code>
+     * @param bytes 字节；类型为 <code>byte[]</code>
+     */
     private void writeCache(Path path, byte[] bytes) {
         try {
             Files.createDirectories(path.getParent());
@@ -116,6 +193,14 @@ public class VocabularyPronunciationServiceImpl implements VocabularyPronunciati
         }
     }
 
+    /**
+     * 规范化单词。
+     * 主要协作调用：<code>WORD_PATTERN.matcher</code>。
+     * 实现中的显式失败类型包括 <code>PronunciationWordInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param word 单词；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String normalizeWord(String word) {
         if (word == null || word.isBlank()) {
             throw new PronunciationWordInvalidException("缺少 word 参数");
@@ -130,6 +215,14 @@ public class VocabularyPronunciationServiceImpl implements VocabularyPronunciati
         return trimmed;
     }
 
+    /**
+     * 规范化Accent。
+     * 主要协作调用：<code>properties.getDefaultAccent</code>、<code>ACCENT_US.equals</code>、<code>ACCENT_UK.equals</code>。
+     * 实现中的显式失败类型包括 <code>PronunciationAccentInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param accent accent；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String normalizeAccent(String accent) {
         if (accent == null || accent.isBlank()) {
             return normalizeAccent(properties.getDefaultAccent());
@@ -141,6 +234,14 @@ public class VocabularyPronunciationServiceImpl implements VocabularyPronunciati
         return upper;
     }
 
+    /**
+     * 文件内容的 SHA-256 摘要处理入口。
+     * 关键处理步骤调用 <code>MessageDigest.getInstance</code>、<code>HexFormat.of</code>、<code>digest.digest</code>、<code>value.getBytes</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String sha256(String value) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");

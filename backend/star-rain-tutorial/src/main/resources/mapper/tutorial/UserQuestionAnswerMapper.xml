@@ -1,13 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.learning.mapper.UserQuestionAnswerMapper">
+    <!--
+      UserQuestionAnswerMapper.xml：com.starrainnotes.tutorial.learning.mapper.UserQuestionAnswerMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, account_id, question_id, answer_text, first_submitted_at,
     reference_unlocked_at, created_at, updated_at
   </sql>
 
   <!-- 重复提交只覆盖 answer_text：首次提交时间与参考答案解锁时间保持第一次的值 -->
+  <!--
+    upsertAnswer：新增或更新答案；新增语句。
+    涉及数据表：sr_user_question_answer；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：accountId、questionId、answerText；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="upsertAnswer">
     INSERT INTO sr_user_question_answer
                 (account_id, question_id, answer_text)
@@ -15,6 +31,13 @@
             ON DUPLICATE KEY UPDATE answer_text = VALUES(answer_text)
   </insert>
 
+  <!--
+    selectByAccountIdAndQuestionId：查询依据账号标识及问题标识；读取语句。
+    涉及数据表：sr_user_question_answer；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.UserQuestionAnswerEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：accountId、questionId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectByAccountIdAndQuestionId" resultType="com.starrainnotes.tutorial.learning.entity.UserQuestionAnswerEntity">
     SELECT <include refid="columns"/> FROM sr_user_question_answer
     WHERE account_id = #{accountId} AND question_id = #{questionId}

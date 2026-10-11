@@ -1,22 +1,54 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.portfolio.mapper.WorkMediaMapper">
+    <!--
+      WorkMediaMapper.xml：com.starrainnotes.portfolio.mapper.WorkMediaMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, work_id, media_asset_id, usage_type, caption, sort_order, created_at, updated_at
   </sql>
 
+  <!--
+    insert：新增；新增语句。
+    涉及数据表：sr_portfolio_media；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkMediaEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    插入成功后 JDBC 自动生成的主键回填到 id。
+    绑定参数：workId、mediaAssetId、usageType、caption、sortOrder；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="insert" parameterType="com.starrainnotes.portfolio.entity.WorkMediaEntity"
           useGeneratedKeys="true" keyProperty="id">
     INSERT INTO sr_portfolio_media (work_id, media_asset_id, usage_type, caption, sort_order)
     VALUES (#{workId}, #{mediaAssetId}, #{usageType}, #{caption}, #{sortOrder})
   </insert>
 
+  <!--
+    selectById：查询依据标识；读取语句。
+    涉及数据表：sr_portfolio_media；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.portfolio.entity.WorkMediaEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectById" resultType="com.starrainnotes.portfolio.entity.WorkMediaEntity">
     SELECT <include refid="columns"/> FROM sr_portfolio_media WHERE id = #{id}
   </select>
 
   <!-- 作品的媒体按 sort_order 展示；id 兜底保证同序号时顺序稳定 -->
+  <!--
+    listByWorkId：list依据作品标识；读取语句。
+    涉及数据表：sr_portfolio_media；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.portfolio.entity.WorkMediaEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：workId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="listByWorkId" resultType="com.starrainnotes.portfolio.entity.WorkMediaEntity">
     SELECT <include refid="columns"/> FROM sr_portfolio_media
     WHERE work_id = #{workId}
@@ -29,10 +61,20 @@
     work_id 不参与更新：媒体的归属作品不可变。
     updated_at 写回实体里读出来的值，与原先 updateById 一致（排序/编辑不推进该列）。
   -->
+  <!--
+    updateContent：更新内容；更新语句。
+    涉及数据表：sr_portfolio_media；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkMediaEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：mediaAssetId、usageType、caption、sortOrder、updatedAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="updateContent" parameterType="com.starrainnotes.portfolio.entity.WorkMediaEntity">
     UPDATE sr_portfolio_media
     SET media_asset_id = #{mediaAssetId},
         usage_type = #{usageType},
+        <!--
+          条件 caption != null 成立时才输出此段 SQL。
+        -->
         <if test="caption != null">caption = #{caption},</if>
         sort_order = #{sortOrder},
         updated_at = #{updatedAt}
@@ -40,6 +82,13 @@
   </update>
 
   <!-- 只改排序：caption / media_asset_id / usage_type 必须保持原值 -->
+  <!--
+    updateSortOrder：更新排序顺序；更新语句。
+    涉及数据表：sr_portfolio_media；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.portfolio.entity.WorkMediaEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：sortOrder、updatedAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="updateSortOrder" parameterType="com.starrainnotes.portfolio.entity.WorkMediaEntity">
     UPDATE sr_portfolio_media
     SET sort_order = #{sortOrder},
@@ -47,6 +96,12 @@
     WHERE id = #{id}
   </update>
 
+  <!--
+    deleteById：删除依据标识；删除语句。
+    涉及数据表：sr_portfolio_media；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <delete id="deleteById">
     DELETE FROM sr_portfolio_media WHERE id = #{id}
   </delete>

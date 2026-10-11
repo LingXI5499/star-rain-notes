@@ -1,3 +1,11 @@
+/*
+ * EnglishRetirementContractTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：ReadingDto。
+ * 阅读入口：scannedControllerRoutesHaveNoLegacyWritingHandlers（scanned控制器路由集合Have不含Legacy写作Handlers处理入口）；readingDtoDropsLegacyFieldsWhileAcceptingHistoricalSnapshots（阅读传输对象DropsLegacy字段集合WhileAcceptingHistoricalSnapshots处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,7 +21,16 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 英语RetirementContract测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class EnglishRetirementContractTest {
+    /**
+     * scanned控制器路由集合Have不含Legacy写作Handlers处理入口。
+     * 关键处理步骤调用 <code>scanner.addIncludeFilter</code>、<code>scanner.findCandidateComponents</code>、<code>Class.forName</code>、<code>bean.getBeanClassName</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void scannedControllerRoutesHaveNoLegacyWritingHandlers() throws Exception {
         var scanner = new ClassPathScanningCandidateComponentProvider(false);
@@ -36,6 +53,11 @@ class EnglishRetirementContractTest {
         assertTrue(routes.contains("/api/public/english/content/writing-articles"));
     }
 
+    /**
+     * 阅读传输对象DropsLegacy字段集合WhileAcceptingHistoricalSnapshots处理入口。
+     * 关键处理步骤调用 <code>json.readTree</code>、<code>json.treeToValue</code>、<code>article.getTitle</code>、<code>request.getBodyMarkdown</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void readingDtoDropsLegacyFieldsWhileAcceptingHistoricalSnapshots() throws Exception {
         ObjectMapper json = new ObjectMapper().findAndRegisterModules();

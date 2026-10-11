@@ -1,3 +1,11 @@
+/*
+ * SecurityRulePlan：账号模块的安全策略文件。
+ * 业务范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 处理认证、授权或访问限制相关规则；身份来源、限制条件和失败分支以具体方法为准。
+ * 主要协作类型：ModuleSecurityContributor。
+ * 阅读入口：of（所属处理入口）。
+ */
+
 package com.starrainnotes.account.security;
 
 import com.starrainnotes.common.security.ModuleSecurityContributor;
@@ -20,14 +28,34 @@ import lombok.Data;
  * 那种写法可以被静默重排；而是由这里的 of() 唯一决定，并由
  * SecurityRulePlanTest 把「DENIED 全部排在 PUBLIC 之前、PUBLIC 全部排在 AUTHENTICATED 之前」钉死。
  */
+/**
+ * 安全规则计划，属于账号模块。
+ * 处理认证、授权或访问限制相关规则；身份来源、限制条件和失败分支以具体方法为准。
+ */
 public final class SecurityRulePlan {
+    /**
+     * 构造SecurityRulePlan，接收本类使用的依赖或初始化参数。
+     */
     private SecurityRulePlan() {
     }
 
     // URL 边界的三种访问级别，声明顺序即落地顺序
+    /**
+     * 访问，属于账号模块。
+     * 处理认证、授权或访问限制相关规则；身份来源、限制条件和失败分支以具体方法为准。
+     */
     public enum Access {
+        /**
+         * 被拒绝。
+         */
         DENIED,
+        /**
+         * 公开。
+         */
         PUBLIC,
+        /**
+         * 已认证。
+         */
         AUTHENTICATED
     }
 
@@ -37,11 +65,24 @@ public final class SecurityRulePlan {
      * module 只用于诊断与冲突排查，不参与匹配。
      * 项目约定禁 record，这里用 Lombok POJO 保持与 VO / DTO 一致的 JavaBean 形状。
      */
+    /**
+     * 规则，属于账号模块。
+     * 处理认证、授权或访问限制相关规则；身份来源、限制条件和失败分支以具体方法为准。
+     */
     @Data
     @AllArgsConstructor
     public static class Rule {
+        /**
+         * 模式。
+         */
         private String pattern;
+        /**
+         * 访问。
+         */
         private Access access;
+        /**
+         * module。
+         */
         private String module;
     }
 
@@ -61,6 +102,14 @@ public final class SecurityRulePlan {
         return List.copyOf(rules);
     }
 
+    /**
+     * patterns所属处理入口。
+     * 关键处理步骤调用 <code>contributor.deniedPatterns</code>、<code>contributor.publicPatterns</code>、<code>contributor.authenticatedPatterns</code>。
+     *
+     * @param contributor 贡献者；类型为 <code>ModuleSecurityContributor</code>
+     * @param access 访问；类型为 <code>Access</code>
+     * @return 本次处理得到的条目集合
+     */
     private static List<String> patternsOf(ModuleSecurityContributor contributor, Access access) {
         return switch (access) {
             case DENIED -> contributor.deniedPatterns();

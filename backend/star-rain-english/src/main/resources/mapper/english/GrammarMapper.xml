@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.english.grammar.mapper.GrammarMapper">
+    <!--
+      GrammarMapper.xml：com.starrainnotes.english.grammar.mapper.GrammarMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+    <!--
+      courseMap：courseMap；结果映射。
+      将数据库列装配为 com.starrainnotes.english.grammar.dto.GrammarDto$Course；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="courseMap" type="com.starrainnotes.english.grammar.dto.GrammarDto$Course">
         <result property="title" column="title"/>
         <result property="subtitle" column="subtitle"/>
@@ -9,11 +19,19 @@
         <result property="roadmapMarkdown" column="roadmap_markdown"/>
         <result property="publishStatus" column="publish_status"/>
     </resultMap>
+    <!--
+      sectionMap：区块Map；结果映射。
+      将数据库列装配为 com.starrainnotes.english.grammar.dto.GrammarDto$Section；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="sectionMap" type="com.starrainnotes.english.grammar.dto.GrammarDto$Section">
         <id property="id" column="id"/>
         <result property="title" column="title"/>
         <result property="sortOrder" column="sort_order"/>
     </resultMap>
+    <!--
+      lessonMap：lessonMap；结果映射。
+      将数据库列装配为 com.starrainnotes.english.grammar.dto.GrammarDto$Lesson；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="lessonMap" type="com.starrainnotes.english.grammar.dto.GrammarDto$Lesson">
         <id property="id" column="id"/>
         <result property="sectionId" column="section_id"/>
@@ -24,64 +42,166 @@
         <result property="publishStatus" column="publish_status"/>
         <result property="sortOrder" column="sort_order"/>
     </resultMap>
+    <!--
+      lessonColumns：lesson投影列；可复用 SQL 片段。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    -->
     <sql id="lessonColumns">id,section_id,title,slug,summary,body_markdown,publish_status,sort_order</sql>
+    <!--
+      course：course；读取语句。
+      涉及数据表：sr_english_grammar_course；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：courseMap；集合与单值形态由 Java 方法签名决定。
+    -->
     <select id="course" resultMap="courseMap">
         SELECT title,subtitle,summary,introduction,roadmap_markdown,publish_status
         FROM sr_english_grammar_course WHERE id=1
     </select>
+    <!--
+      sections：sections；读取语句。
+      涉及数据表：sr_english_grammar_section；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：sectionMap；集合与单值形态由 Java 方法签名决定。
+    -->
     <select id="sections" resultMap="sectionMap">
         SELECT id,title,sort_order FROM sr_english_grammar_section
         WHERE course_id=1 ORDER BY sort_order,id
     </select>
+    <!--
+      section：区块；读取语句。
+      涉及数据表：sr_english_grammar_section；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：sectionMap；集合与单值形态由 Java 方法签名决定。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="section" resultMap="sectionMap">
         SELECT id,title,sort_order FROM sr_english_grammar_section WHERE id=#{id} AND course_id=1
     </select>
+    <!--
+      lessons：lessons；读取语句。
+      涉及数据表：sr_english_grammar_lesson；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：lessonMap；集合与单值形态由 Java 方法签名决定。
+      复用片段：lessonColumns。
+      绑定参数：sectionId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="lessons" resultMap="lessonMap">
         SELECT <include refid="lessonColumns"/> FROM sr_english_grammar_lesson
         WHERE section_id=#{sectionId}
+        <!--
+          条件 publicOnly 成立时才输出此段 SQL。
+        -->
         <if test="publicOnly">AND publish_status='PUBLISHED'</if>
         ORDER BY sort_order,id
     </select>
+    <!--
+      lessonById：lesson依据标识；读取语句。
+      涉及数据表：sr_english_grammar_lesson；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：lessonMap；集合与单值形态由 Java 方法签名决定。
+      复用片段：lessonColumns。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="lessonById" resultMap="lessonMap">
         SELECT <include refid="lessonColumns"/> FROM sr_english_grammar_lesson WHERE id=#{id}
     </select>
+    <!--
+      publicLesson：公开Lesson；读取语句。
+      涉及数据表：sr_english_grammar_lesson；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：lessonMap；集合与单值形态由 Java 方法签名决定。
+      复用片段：lessonColumns。
+      绑定参数：slug；参数含义参见 Mapper 方法注释。
+    -->
     <select id="publicLesson" resultMap="lessonMap">
         SELECT <include refid="lessonColumns"/> FROM sr_english_grammar_lesson
         WHERE slug=#{slug} AND publish_status='PUBLISHED'
     </select>
+    <!--
+      updateCourse：更新Course；更新语句。
+      涉及数据表：sr_english_grammar_course；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：title、subtitle、summary、introduction、roadmapMarkdown；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updateCourse">
         UPDATE sr_english_grammar_course SET title=#{title},subtitle=#{subtitle},
         summary=#{summary},introduction=#{introduction},roadmap_markdown=#{roadmapMarkdown}
         WHERE id=1
     </update>
+    <!--
+      setCourseStatus：setCourse状态；更新语句。
+      涉及数据表：sr_english_grammar_course；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：status；参数含义参见 Mapper 方法注释。
+    -->
     <update id="setCourseStatus">
         UPDATE sr_english_grammar_course SET publish_status=#{status},
         published_at=COALESCE(published_at,NOW(3)) WHERE id=1
     </update>
+    <!--
+      insertSection：新增区块；新增语句。
+      涉及数据表：sr_english_grammar_section；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.english.grammar.dto.GrammarDto$Section；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：title、sortOrder；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertSection" parameterType="com.starrainnotes.english.grammar.dto.GrammarDto$Section"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_english_grammar_section(course_id,title,sort_order)
         VALUES (1,#{title},#{sortOrder})
     </insert>
+    <!--
+      updateSection：更新区块；更新语句。
+      涉及数据表：sr_english_grammar_section；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：title、sortOrder、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updateSection">
         UPDATE sr_english_grammar_section SET title=#{title},sort_order=#{sortOrder}
         WHERE id=#{id}
     </update>
+    <!--
+      deleteSection：删除区块；删除语句。
+      涉及数据表：sr_english_grammar_section；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="deleteSection">DELETE FROM sr_english_grammar_section WHERE id=#{id}</delete>
+    <!--
+      insertLesson：新增Lesson；新增语句。
+      涉及数据表：sr_english_grammar_lesson；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.english.grammar.dto.GrammarDto$Lesson；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：sectionId、title、slug、summary、bodyMarkdown、sortOrder；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertLesson" parameterType="com.starrainnotes.english.grammar.dto.GrammarDto$Lesson"
             useGeneratedKeys="true" keyProperty="id">
         INSERT INTO sr_english_grammar_lesson
         (course_id,section_id,title,slug,summary,body_markdown,sort_order)
         VALUES (1,#{sectionId},#{title},#{slug},#{summary},#{bodyMarkdown},#{sortOrder})
     </insert>
+    <!--
+      updateLesson：更新Lesson；更新语句。
+      涉及数据表：sr_english_grammar_lesson；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：sectionId、title、slug、summary、bodyMarkdown、sortOrder、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="updateLesson">
         UPDATE sr_english_grammar_lesson SET section_id=#{sectionId},title=#{title},
         slug=#{slug},summary=#{summary},body_markdown=#{bodyMarkdown},sort_order=#{sortOrder}
         WHERE id=#{id}
     </update>
+    <!--
+      setLessonStatus：setLesson状态；更新语句。
+      涉及数据表：sr_english_grammar_lesson；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：status、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="setLessonStatus">
         UPDATE sr_english_grammar_lesson SET publish_status=#{status},
         published_at=COALESCE(published_at,NOW(3)) WHERE id=#{id}
     </update>
+    <!--
+      deleteLesson：删除Lesson；删除语句。
+      涉及数据表：sr_english_grammar_lesson；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="deleteLesson">DELETE FROM sr_english_grammar_lesson WHERE id=#{id}</delete>
 </mapper>

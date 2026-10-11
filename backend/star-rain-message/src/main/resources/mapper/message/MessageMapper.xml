@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.message.mapper.MessageMapper">
+    <!--
+      MessageMapper.xml：com.starrainnotes.message.mapper.MessageMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
 
   <!-- 列清单在一处维护：resultType 依赖 application.yml 的 map-underscore-to-camel-case 做列名到属性名的映射 -->
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, account_id, author_display_name, contact_email, content, status,
     submitted_at, moderated_by_account_id, moderated_at, reject_reason,
@@ -10,6 +20,14 @@
   </sql>
 
   <!-- 投稿：id 自增回填给实体，Service 随后要把 id 写进操作流水 -->
+  <!--
+    insert：新增；新增语句。
+    涉及数据表：sr_message；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.message.entity.MessageEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    插入成功后 JDBC 自动生成的主键回填到 id。
+    绑定参数：accountId、authorDisplayName、contactEmail、content、status、submittedAt、createdAt、updatedAt；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="insert" parameterType="com.starrainnotes.message.entity.MessageEntity"
           useGeneratedKeys="true" keyProperty="id">
     INSERT INTO sr_message
@@ -20,36 +38,94 @@
        #{submittedAt}, #{createdAt}, #{updatedAt})
   </insert>
 
+  <!--
+    selectById：查询依据标识；读取语句。
+    涉及数据表：sr_message；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.message.entity.MessageEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectById" resultType="com.starrainnotes.message.entity.MessageEntity">
     SELECT <include refid="columns"/> FROM sr_message WHERE id = #{id}
   </select>
 
   <!-- status 为 null 表示「全部状态」，用于后台列表 -->
+  <!--
+    countByStatus：数量依据状态；读取语句。
+    涉及数据表：sr_message；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+    绑定参数：status；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="countByStatus" resultType="long">
     SELECT COUNT(*) FROM sr_message
+    <!--
+      统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+    -->
     <where>
+      <!--
+        条件 status != null 成立时才输出此段 SQL。
+      -->
       <if test="status != null">status = #{status}</if>
     </where>
   </select>
 
+  <!--
+    pageByStatus：分页依据状态；读取语句。
+    涉及数据表：sr_message；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.message.entity.MessageEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：status、limit、offset；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="pageByStatus" resultType="com.starrainnotes.message.entity.MessageEntity">
     SELECT <include refid="columns"/> FROM sr_message
+    <!--
+      统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+    -->
     <where>
+      <!--
+        条件 status != null 成立时才输出此段 SQL。
+      -->
       <if test="status != null">status = #{status}</if>
     </where>
     ORDER BY submitted_at DESC, id DESC
     LIMIT #{limit} OFFSET #{offset}
   </select>
 
+  <!--
+    decide：decide；更新语句。
+    涉及数据表：sr_message；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：target、actorId、at、reason、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="decide">
     UPDATE sr_message SET status=#{target}, moderated_by_account_id=#{actorId}, moderated_at=#{at}, reject_reason=#{reason} WHERE id=#{id} AND status='PENDING'
   </update>
+  <!--
+    hide：hide；更新语句。
+    涉及数据表：sr_message；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：at、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="hide">
     UPDATE sr_message SET status='HIDDEN', hidden_at=#{at} WHERE id=#{id} AND status='PUBLIC'
   </update>
+  <!--
+    restore：restore；更新语句。
+    涉及数据表：sr_message；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="restore">
     UPDATE sr_message SET status='PUBLIC', hidden_at=NULL WHERE id=#{id} AND status='HIDDEN'
   </update>
+  <!--
+    softDelete：soft删除；更新语句。
+    涉及数据表：sr_message；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：at、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="softDelete">
     UPDATE sr_message SET status='DELETED', deleted_at=#{at} WHERE id=#{id} AND status IN ('PUBLIC','HIDDEN')
   </update>

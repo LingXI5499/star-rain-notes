@@ -1,3 +1,11 @@
+/*
+ * WorkSectionRules：作品模块的输入校验文件。
+ * 业务范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 把外部输入转换为可供业务使用的值，并在格式或范围不符合要求时明确失败。
+ * 主要协作类型：WorkSectionDTO、WorkInvalidException、WorkLinkRules。
+ * 阅读入口：validate（校验作品区块）；complete（完成作品区块）。
+ */
+
 package com.starrainnotes.portfolio.validator;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -9,10 +17,23 @@ import java.util.Set;
 
 /** Version-one block schema. Unknown fields are rejected rather than stored as unvalidated HTML. */
 public final class WorkSectionRules {
+    /**
+     * TYPES。
+     */
     public static final Set<String> TYPES = Set.of("MARKDOWN", "IMAGE", "GALLERY", "AUDIO", "CODE",
             "TIMELINE", "LINKS", "QUOTE", "FEATURE_LIST", "TECH_STACK", "STATS", "CUSTOM");
+    /**
+     * 构造WorkSectionRules，接收本类使用的依赖或初始化参数。
+     */
     private WorkSectionRules() { }
 
+    /**
+     * 校验作品区块。
+     * 主要协作调用：<code>TYPES.contains</code>。
+     * 边界判断包含 <code>(request == null || request.getSectionType() == null || !TYPES.contains(request.getSectionType()))</code>；<code>(request.getBlockVersion() != null &amp;&amp; request.getBlockVersion() != 1)</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkSectionDTO</code>
+     */
     public static void validate(WorkSectionDTO request) {
         if (request == null || request.getSectionType() == null || !TYPES.contains(request.getSectionType())) {
             invalid("区块类型无效");
@@ -61,6 +82,13 @@ public final class WorkSectionRules {
         }
     }
 
+    /**
+     * 完成作品区块。
+     * 关键处理步骤调用 <code>validate</code>、<code>request.getSectionType</code>、<code>Set.of</code>、<code>request.getMedia</code>。
+     * 边界判断包含 <code>(Set.of("IMAGE", "GALLERY", "AUDIO").contains(type))</code>；<code>(size == 0 || (!"GALLERY".equals(type) &amp;&amp; size != 1))</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkSectionDTO</code>
+     */
     public static void complete(WorkSectionDTO request) {
         validate(request);
         String type = request.getSectionType();
@@ -89,18 +117,49 @@ public final class WorkSectionRules {
         }
     }
 
+    /**
+     * 字段集合处理入口。
+     * 关键处理步骤调用 <code>node.fieldNames</code>、<code>allowed.containsAll</code>、<code>invalid</code>。
+     * 边界判断包含 <code>(!allowed.containsAll(keys))</code>。
+     *
+     * @param node node；类型为 <code>JsonNode</code>
+     * @param allowed allowed；类型为 <code>Set&lt;String&gt;</code>
+     */
     private static void fields(JsonNode node, Set<String> allowed) {
         Set<String> keys = new HashSet<>();
         node.fieldNames().forEachRemaining(keys::add);
         if (!allowed.containsAll(keys)) { invalid("区块包含未支持的字段"); }
     }
+    /**
+     * 值处理入口。
+     * 关键处理步骤调用 <code>node.has</code>、<code>node.get</code>、<code>invalid</code>、<code>text</code>。
+     * 边界判断包含 <code>(!node.has(key))</code>；<code>(!node.get(key).isTextual())</code>。
+     *
+     * @param node node；类型为 <code>JsonNode</code>
+     * @param key 键；类型为 <code>String</code>
+     * @param max 最大；类型为 <code>int</code>
+     */
     private static void value(JsonNode node, String key, int max) {
         if (!node.has(key)) { return; }
         if (!node.get(key).isTextual()) { invalid("条目字段必须是文本"); }
         text(node.get(key).asText(), max);
     }
+    /**
+     * 文本处理入口。
+     * 关键处理步骤调用 <code>value.length</code>、<code>invalid</code>。
+     * 边界判断包含 <code>(value != null &amp;&amp; value.length() &gt; max)</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @param max 最大；类型为 <code>int</code>
+     */
     private static void text(String value, int max) {
         if (value != null && value.length() > max) { invalid("区块内容过长"); }
     }
+    /**
+     * 无效处理入口。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param message 留言；类型为 <code>String</code>
+     */
     private static void invalid(String message) { throw new WorkInvalidException(message); }
 }

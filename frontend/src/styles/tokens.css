@@ -1,4 +1,9 @@
 /**
+ * tokens.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
+/**
  * 墨境 · Inkspace — frozen design tokens (02-ui-design.md §3).
  *
  * Light tokens live on :root; dark tokens activate under [data-theme="dark"].
@@ -91,6 +96,9 @@
   --search-input-height: 38px;
 }
 
+/**
+ * 样式范围：[data-theme='dark']。
+ */
 [data-theme='dark'] {
   /* Dark palette — Night Ink / Mist Green / Star Orange */
   --bg-page: #102c31;
@@ -128,6 +136,9 @@
   --el-color-primary-dark-2: #0a2e28;
 }
 
+/**
+ * 样式范围：[data-theme='dark']。
+ */
 [data-theme='dark'] {
   --el-color-primary: #7a9c8f;
   --el-color-primary-light-3: #65877b;

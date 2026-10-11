@@ -1,3 +1,9 @@
+/*
+ * BlogPermissions：博客模块的常量文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 集中维护本模块使用的固定代码或边界值，避免业务实现各自定义不同的字符串和数值。
+ */
+
 package com.starrainnotes.blog.constant;
 
 /*
@@ -9,14 +15,36 @@ package com.starrainnotes.blog.constant;
  * 注意：V2 的博客是个人内容域，这五个权限当前只授予 SUPER_ADMIN，
  * 刻意不授予 ADMIN（教程内容协作管理员），所以后台接口不能只要求“已认证”。
  */
+/**
+ * 博客权限集合，属于博客模块。
+ * 集中维护本模块使用的固定代码或边界值，避免业务实现各自定义不同的字符串和数值。
+ */
 public final class BlogPermissions {
 
+    /**
+     * 后台。
+     */
     public static final String READ_ADMIN = "blog:read-admin";
+    /**
+     * EDIT。
+     */
     public static final String EDIT = "blog:edit";
+    /**
+     * 发布。
+     */
     public static final String PUBLISH = "blog:publish";
+    /**
+     * 撤回。
+     */
     public static final String WITHDRAW = "blog:withdraw";
+    /**
+     * MANAGE。
+     */
     public static final String TAXONOMY_MANAGE = "blog:taxonomy-manage";
 
+    /**
+     * 构造BlogPermissions，接收本类使用的依赖或初始化参数。
+     */
     private BlogPermissions() {
     }
 }

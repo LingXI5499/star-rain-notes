@@ -1,4 +1,15 @@
 <script setup>
+/**
+ * ReviewPendingTable.vue：审核模块的视图组件。
+ * 职责范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue、./ReviewStatusTag.vue、../support/display。
+ * 组件输入：items、loading、emptyText、showStatus、showReviewer、canCancel；默认值与类型见 defineProps。
+ * 组件输出事件：open、cancel；负载由 emit 调用给出。
+ * 主要响应式状态：props、emit、columnCount。
+ */
+
+
 import { computed } from 'vue'
 import ReviewStatusTag from './ReviewStatusTag.vue'
 import { dateLabel, targetLabel } from '../support/display'
@@ -10,6 +21,9 @@ import { dateLabel, targetLabel } from '../support/display'
  * 交给父级跳详情。这样「待办」与「历史」两个列表可以共用同一套表格骨架。
  *
  * 列表所有字段都来自提交时冻结的快照，因此渲染不需要任何跨模块查询。
+ */
+/**
+ * 组件输入；通过 defineProps 建立。
  */
 const props = defineProps({
   items: { type: Array, default: () => [] },
@@ -23,8 +37,15 @@ const props = defineProps({
   canCancel: { type: Function, default: () => false },
 })
 
+/**
+ * 事件发射器；通过 defineEmits 建立。
+ */
 const emit = defineEmits(['open', 'cancel'])
 
+/**
+ * 列数量；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const columnCount = computed(() => 5 + (props.showStatus ? 1 : 0) + (props.showReviewer ? 1 : 0))
 </script>
 

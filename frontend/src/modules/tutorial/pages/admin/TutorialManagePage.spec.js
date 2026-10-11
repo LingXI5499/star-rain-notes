@@ -1,3 +1,12 @@
+/**
+ * TutorialManagePage.spec.js：教程与学习模块的自动化测试。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue、vitest、./TutorialManagePage.vue、../../api/tutorialApi。
+ * 阅读入口：row（行的处理函数）；open（打开当前操作）。
+ * 验证场景：bounded tutorial administration；requests one SQL-backed page even with a thousand tutorials；debounces search and resets paging without fetching all pages；ignores a stale result when switching categories quickly；loads the complete lightweight order only on demand and includes hidden-page IDs when sorting。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { reactive } from 'vue'
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest'
@@ -8,7 +17,18 @@ vi.mock('vue-router', () => ({ useRoute: () => state.route, useRouter: () => sta
 vi.mock('../../../account/stores/authStore', () => ({ useAuthStore: () => ({ hasPermission: () => true }) }))
 vi.mock('../../api/tutorialApi', () => Object.fromEntries(['createCategory', 'deleteCategory', 'deleteTutorial', 'listAdminCategories', 'listAdminTutorials', 'listPendingTutorialOperations', 'publishTutorial', 'reorderCategories', 'reorderTutorials', 'updateCategory', 'updateTutorial', 'withdrawTutorial', 'listTutorialOrderItems'].map(name => [name, vi.fn()])))
 const wrappers = []
+/**
+ * 行的处理函数。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @param title 标题；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const row = (id, title) => ({ id, title, categoryId: '1', sortOrder: Number(id), publicationStatus: 'PUBLISHED', chapterCount: 1 })
+/**
+ * 打开当前操作。
+ * 主要协作：mount、wrappers.push。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const open = () => {
   const wrapper = mount(Page, { global: { stubs: { AdminConfirmDialog: true, PublicPagination: { props: ['page', 'total'], emits: ['change'], template: '<button data-page-two @click="$emit(\'change\', 2)">Page 2</button>' } } } })
   wrappers.push(wrapper); return wrapper

@@ -1,3 +1,11 @@
+/**
+ * manualTheme.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、./manualTheme。
+ * 验证场景：manual theme switching；normalizes automatic/unknown preferences to day, keeps explicit night and tolerates blocked storage；changes immediately without snapshots when reduced motion is requested；locks repeated input, covers the viewport and cleans up a skipped snapshot；uses a short fallback when the browser has no snapshot API。
+ */
+
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { applyManualTheme, readManualTheme, switchManualTheme, themeSwitching } from './manualTheme'
 

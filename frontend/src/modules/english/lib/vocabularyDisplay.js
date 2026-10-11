@@ -1,3 +1,10 @@
+/**
+ * vocabularyDisplay.js：英语学习模块的应用配置与入口。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 组织前端装配、构建或入口行为，具体依赖和导出入口见下文。
+ * 阅读入口：resolveVocabularyVisibility（解析词汇Visibility）；stableReviewDirection（stable审核Direction的处理函数）；globalDisplayMode（global显示Mode的处理函数）；directionLabel（direction标签的处理函数）；intervalLabel（间隔标签的处理函数）。
+ */
+
 /*
  * 词卡可见性与复习方向解析（与 V1 vocabulary-display 一致）。
  *
@@ -9,7 +16,14 @@
 export const DISPLAY_MODES = ['FOLLOW_GLOBAL', 'BILINGUAL', 'ENGLISH_ONLY', 'CHINESE_ONLY']
 export const REVIEW_DIRECTIONS = ['EN_TO_ZH', 'ZH_TO_EN', 'AUDIO_TO_BOTH']
 
-export function resolveVocabularyVisibility(mode, settings) {
+export
+  /**
+   * 解析词汇Visibility。
+   * @param mode mode；默认值、解构字段与可选参数见函数签名。
+   * @param settings settings；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function resolveVocabularyVisibility(mode, settings) {
   const effective = mode && mode !== 'FOLLOW_GLOBAL' ? mode : 'FOLLOW_GLOBAL'
   return {
     showEnglish: effective === 'BILINGUAL' || effective === 'ENGLISH_ONLY'
@@ -19,18 +33,38 @@ export function resolveVocabularyVisibility(mode, settings) {
   }
 }
 
-export function stableReviewDirection(wordId, setting, epochDay) {
+export
+  /**
+   * stable审核Direction的处理函数。
+   * @param wordId 单词标识；默认值、解构字段与可选参数见函数签名。
+   * @param setting setting；默认值、解构字段与可选参数见函数签名。
+   * @param epochDay epoch日；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function stableReviewDirection(wordId, setting, epochDay) {
   if (setting !== 'MIXED') return setting
   return ((Number(wordId) + epochDay) & 1) === 0 ? 'EN_TO_ZH' : 'ZH_TO_EN'
 }
 
 /* 全局设置 -> 三档显示模式，供「全部词卡显示」分段控件的选中态 */
-export function globalDisplayMode(settings) {
+export
+  /**
+   * global显示Mode的处理函数。
+   * @param settings settings；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function globalDisplayMode(settings) {
   if (settings.showEnglish && settings.showChinese) return 'BILINGUAL'
   return settings.showEnglish ? 'ENGLISH_ONLY' : 'CHINESE_ONLY'
 }
 
-export function directionLabel(direction) {
+export
+  /**
+   * direction标签的处理函数。
+   * @param direction direction；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function directionLabel(direction) {
   if (direction === 'EN_TO_ZH') return '英译中'
   if (direction === 'ZH_TO_EN') return '中译英'
   if (direction === 'AUDIO_TO_BOTH') return '听音辨词'
@@ -38,7 +72,14 @@ export function directionLabel(direction) {
 }
 
 /* 复习间隔的人类可读文案：分钟 / 小时 / 天 */
-export function intervalLabel(seconds) {
+export
+  /**
+   * 间隔标签的处理函数。
+   * 主要协作：Number.isFinite。
+   * @param seconds 秒；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function intervalLabel(seconds) {
   if (!Number.isFinite(seconds) || seconds <= 0) return ''
   if (seconds < 3600) return `${Math.round(seconds / 60)} 分钟`
   if (seconds < 86400) return `${Math.round(seconds / 3600)} 小时`

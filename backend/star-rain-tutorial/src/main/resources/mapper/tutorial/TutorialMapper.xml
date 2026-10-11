@@ -1,8 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialMapper">
+    <!--
+      TutorialMapper.xml：com.starrainnotes.tutorial.content.mapper.TutorialMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
 
   <!-- 列清单在一处维护：resultType 依赖 map-underscore-to-camel-case 做列名到属性名的映射 -->
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, category_id, slug, title, summary, sort_order, cover_media_asset_id,
     publication_status, editing_status, published_revision_id, published_at, withdrawn_at,
@@ -10,6 +20,14 @@
   </sql>
 
   <!-- id 自增回填给实体：发布/提交审核随后要把 id 写进版本与审核记录 -->
+  <!--
+    insert：新增；新增语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.tutorial.content.entity.TutorialEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    插入成功后 JDBC 自动生成的主键回填到 id。
+    绑定参数：categoryId、slug、title、summary、sortOrder、publicationStatus、editingStatus、createdByAccountId、updatedByAccountId；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialEntity"
           useGeneratedKeys="true" keyProperty="id">
     INSERT INTO sr_tutorial
@@ -20,67 +38,169 @@
        #{publicationStatus}, #{editingStatus}, #{createdByAccountId}, #{updatedByAccountId})
   </insert>
 
+  <!--
+    selectById：查询依据标识；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectById" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial WHERE id = #{id}
   </select>
 
+  <!--
+    byIdForUpdate：依据标识面向更新；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+    锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+  -->
   <select id="byIdForUpdate" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial WHERE id = #{id} FOR UPDATE
   </select>
 
+  <!--
+    selectPublishedBySlug：查询已发布依据固定链接标识；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：slug；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectPublishedBySlug" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial
     WHERE slug = #{slug} AND publication_status = 'PUBLISHED'
   </select>
 
   <!-- categoryId 为 null 表示「全部知识体系」，用于后台列表 -->
+  <!--
+    listOrdered：listOrdered；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：categoryId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="listOrdered" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial
+    <!--
+      统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+    -->
     <where>
+      <!--
+        条件 categoryId != null 成立时才输出此段 SQL。
+      -->
       <if test="categoryId != null">category_id = #{categoryId}</if>
     </where>
     ORDER BY sort_order, id
   </select>
 
+  <!--
+    adminFilters：后台筛选条件；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+    绑定参数：categoryId、keyword；参数含义参见 Mapper 方法注释。
+  -->
   <sql id="adminFilters">
+    <!--
+      统一生成 WHERE 并去除开头多余的 AND/OR；没有有效条件时不输出该子句。
+    -->
     <where>
+      <!--
+        条件 categoryId != null 成立时才输出此段 SQL。
+      -->
       <if test="categoryId != null">category_id = #{categoryId}</if>
+      <!--
+        条件 keyword != null and keyword != '' 成立时才输出此段 SQL。
+      -->
       <if test="keyword != null and keyword != ''">AND LOCATE(#{keyword}, title) &gt; 0</if>
     </where>
   </sql>
+  <!--
+    adminPage：后台分页；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns、adminFilters。
+    绑定参数：limit、offset；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="adminPage" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial
     <include refid="adminFilters"/>
     ORDER BY category_id, sort_order, id LIMIT #{limit} OFFSET #{offset}
   </select>
+  <!--
+    adminCount：后台数量；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+    复用片段：adminFilters。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="adminCount" resultType="long">
     SELECT COUNT(*) FROM sr_tutorial <include refid="adminFilters"/>
   </select>
+  <!--
+    orderItems：顺序条目集合；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.vo.TutorialOrderItemVO；集合与单值形态由 Java 方法签名决定。
+    绑定参数：categoryId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="orderItems" resultType="com.starrainnotes.tutorial.content.vo.TutorialOrderItemVO">
     SELECT id, title, sort_order FROM sr_tutorial WHERE category_id = #{categoryId} ORDER BY sort_order, id
   </select>
 
+  <!--
+    listPublishedWithRevision：list已发布包含修订；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+  -->
   <select id="listPublishedWithRevision" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial
     WHERE publication_status = 'PUBLISHED' AND published_revision_id IS NOT NULL
     ORDER BY category_id, sort_order, id
   </select>
 
+  <!--
+    listPublished：list已发布；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+  -->
   <select id="listPublished" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial
     WHERE publication_status = 'PUBLISHED'
     ORDER BY id
   </select>
 
+  <!--
+    countBySlug：数量依据固定链接标识；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+    绑定参数：slug；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="countBySlug" resultType="long">
     SELECT COUNT(*) FROM sr_tutorial WHERE slug = #{slug}
   </select>
 
+  <!--
+    countByCategoryId：数量依据分类标识；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+    绑定参数：categoryId；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="countByCategoryId" resultType="long">
     SELECT COUNT(*) FROM sr_tutorial WHERE category_id = #{categoryId}
   </select>
 
   <!-- 概览只取四个计数，避免读取所有教程及逐条章节统计。 -->
+  <!--
+    dashboardStats：概览统计字段；读取语句。
+    涉及数据表：sr_tutorial、sr_tutorial_chapter；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.dto.TutorialDashboardStatsDTO；集合与单值形态由 Java 方法签名决定。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="dashboardStats" resultType="com.starrainnotes.tutorial.content.dto.TutorialDashboardStatsDTO">
     SELECT
       (SELECT COUNT(*) FROM sr_tutorial) AS total,
@@ -90,6 +210,12 @@
         WHERE t.publication_status = 'NEVER_PUBLISHED') AS draft_chapters
   </select>
 
+  <!--
+    dashboardRecent：概览Recent；读取语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialEntity；集合与单值形态由 Java 方法签名决定。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="dashboardRecent" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     SELECT id, title, publication_status, editing_status, updated_at
     FROM sr_tutorial ORDER BY updated_at DESC, id DESC LIMIT 8
@@ -101,6 +227,13 @@
     @TableField(updateStrategy = FieldStrategy.ALWAYS) 承担的唯一职责，漏掉它会让
     重新发布后的教程仍带着旧的 withdrawn_at。
     created_at / created_by_account_id 是不可变列，不参与 SET。
+  -->
+  <!--
+    update：更新；更新语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.tutorial.content.entity.TutorialEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：categoryId、slug、title、summary、sortOrder、coverMediaAssetId、publicationStatus、editingStatus、publishedRevisionId、publishedAt、withdrawnAt、updatedByAccountId、updatedAt、id；参数含义参见 Mapper 方法注释。
   -->
   <update id="update" parameterType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     UPDATE sr_tutorial SET
@@ -120,8 +253,20 @@
     WHERE id = #{id}
   </update>
 
+  <!--
+    updateSortOrder：更新排序顺序；更新语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：sortOrder、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="updateSortOrder">UPDATE sr_tutorial SET sort_order = #{sortOrder} WHERE id = #{id}</update>
 
+  <!--
+    deleteById：删除依据标识；删除语句。
+    涉及数据表：sr_tutorial；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <delete id="deleteById">
     DELETE FROM sr_tutorial WHERE id = #{id}
   </delete>

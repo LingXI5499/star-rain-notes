@@ -1,15 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.english.knowledge.mapper.EnglishSearchSourceMapper">
+    <!--
+      EnglishSearchSourceMapper.xml：com.starrainnotes.english.knowledge.mapper.EnglishSearchSourceMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
     <!-- Reuse the public article predicates so search has the same visibility as detail pages. -->
+    <!--
+      source：来源；可复用 SQL 片段。
+      涉及数据表：sr_english_vocabulary_theme、sr_english_vocabulary_word、sr_english_grammar_course、sr_english_grammar_lesson、sr_english_grammar_section、sr_english_reading_article、sr_english_writing_article；关系条件与可见性筛选由下方 SQL 明确限定。
+      通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+      复用片段：com.starrainnotes.english.reading.mapper.ReadingMapper.publicCheck、com.starrainnotes.english.writing.article.mapper.WritingArticleMapper.public。
+      绑定参数：type；参数含义参见 Mapper 方法注释。
+    -->
     <sql id="source">
+        <!--
+          只采用第一个成立的 when 分支；否则使用 otherwise 分支（如有）。
+        -->
         <choose>
+            <!--
+              条件 type == 'ENGLISH_VOCABULARY_THEME' 成立时才输出此段 SQL。
+            -->
             <when test="type == 'ENGLISH_VOCABULARY_THEME'">
                 SELECT t.id, #{type} AS content_type, t.name AS title, t.layer AS summary,
                     t.layer AS searchable_text, CONCAT('/english/vocabulary/', t.id) AS route_path,
                     NULL AS published_at, t.updated_at, NULL AS theme_id
                 FROM sr_english_vocabulary_theme t
             </when>
+            <!--
+              条件 type == 'ENGLISH_VOCABULARY_WORD' 成立时才输出此段 SQL。
+            -->
             <when test="type == 'ENGLISH_VOCABULARY_WORD'">
                 SELECT w.id, #{type} AS content_type, w.word AS title, w.translation AS summary,
                     CONCAT_WS(' ', w.part_of_speech, w.scene_meaning, w.inflections, CAST(w.examples AS CHAR)) AS searchable_text,
@@ -17,12 +39,18 @@
                 FROM sr_english_vocabulary_word w
                 INNER JOIN sr_english_vocabulary_theme t ON t.id = w.theme_id
             </when>
+            <!--
+              条件 type == 'ENGLISH_GRAMMAR_COURSE' 成立时才输出此段 SQL。
+            -->
             <when test="type == 'ENGLISH_GRAMMAR_COURSE'">
                 SELECT c.id, #{type} AS content_type, c.title, c.summary,
                     CONCAT_WS(' ', c.subtitle, c.introduction, c.roadmap_markdown) AS searchable_text,
                     '/english/grammar' AS route_path, c.published_at, c.updated_at, NULL AS theme_id
                 FROM sr_english_grammar_course c WHERE c.publish_status = 'PUBLISHED'
             </when>
+            <!--
+              条件 type == 'ENGLISH_GRAMMAR_LESSON' 成立时才输出此段 SQL。
+            -->
             <when test="type == 'ENGLISH_GRAMMAR_LESSON'">
                 SELECT l.id, #{type} AS content_type, l.title, l.summary,
                     l.body_markdown AS searchable_text, CONCAT('/english/grammar/', l.slug) AS route_path,
@@ -32,6 +60,9 @@
                 INNER JOIN sr_english_grammar_section s ON s.id = l.section_id AND s.course_id = c.id
                 WHERE c.publish_status = 'PUBLISHED' AND l.publish_status = 'PUBLISHED'
             </when>
+            <!--
+              条件 type == 'ENGLISH_READING' 成立时才输出此段 SQL。
+            -->
             <when test="type == 'ENGLISH_READING'">
                 SELECT a.id, #{type} AS content_type, a.title, a.summary,
                     CONCAT_WS(' ', a.body_markdown, a.translation_zh_markdown) AS searchable_text,
@@ -39,6 +70,9 @@
                 FROM sr_english_reading_article a WHERE a.deleted_at IS NULL
                     AND <include refid="com.starrainnotes.english.reading.mapper.ReadingMapper.publicCheck"/>
             </when>
+            <!--
+              条件 type == 'ENGLISH_WRITING' 成立时才输出此段 SQL。
+            -->
             <when test="type == 'ENGLISH_WRITING'">
                 SELECT a.id, #{type} AS content_type, a.title, a.summary,
                     CONCAT_WS(' ', a.body_markdown, a.translation_zh_markdown, a.keywords_json) AS searchable_text,
@@ -48,13 +82,29 @@
             </when>
         </choose>
     </sql>
+    <!--
+      page：分页页码；读取语句。
+      结果类型或映射：com.starrainnotes.english.api.dto.EnglishSearchDocument；集合与单值形态由 Java 方法签名决定。
+      复用片段：source。
+      绑定参数：afterId、limit；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="page" resultType="com.starrainnotes.english.api.dto.EnglishSearchDocument">
         SELECT documents.id, documents.content_type, documents.title, documents.summary,
             documents.searchable_text, documents.route_path, documents.published_at,
             documents.updated_at, documents.theme_id FROM (<include refid="source"/>) documents
+        <!--
+          条件 afterId != null 成立时才输出此段 SQL。
+        -->
         <if test="afterId != null">WHERE documents.id &gt; #{afterId}</if>
         ORDER BY documents.id LIMIT #{limit}
     </select>
+    <!--
+      findPublished：find已发布；读取语句。
+      结果类型或映射：com.starrainnotes.english.api.dto.EnglishSearchDocument；集合与单值形态由 Java 方法签名决定。
+      复用片段：source。
+      绑定参数：id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="findPublished" resultType="com.starrainnotes.english.api.dto.EnglishSearchDocument">
         SELECT documents.id, documents.content_type, documents.title, documents.summary,
             documents.searchable_text, documents.route_path, documents.published_at,

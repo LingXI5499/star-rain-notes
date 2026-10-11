@@ -1,3 +1,11 @@
+/*
+ * AccountAuthServiceImpl：账号模块的业务实现文件。
+ * 业务范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：AccountEntity、PasswordResetEntity、RoleEntity、ChangePasswordDTO、ConfirmEmailDTO、LoginDTO、PasswordResetConfirmDTO。
+ * 阅读入口：register（注册账号认证）；login（执行登录账号认证）；confirmEmail（确认邮箱）；logout（执行退出登录账号认证）。
+ */
+
 package com.starrainnotes.account.service.impl;
 
 import com.starrainnotes.account.entity.AccountEntity;
@@ -39,18 +47,63 @@ import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 账号认证业务服务实现，属于账号模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class AccountAuthServiceImpl implements AccountAuthService {
 
+    /**
+     * 数据映射。
+     * 协作类型：<code>AccountMapper</code>。
+     */
     private final AccountMapper mapper;
+    /**
+     * 身份。
+     * 协作类型：<code>AccountIdentityService</code>。
+     */
     private final AccountIdentityService identity;
+    /**
+     * 审计。
+     * 协作类型：<code>AccountAuditService</code>。
+     */
     private final AccountAuditService audit;
+    /**
+     * encoder。
+     */
     private final PasswordEncoder encoder;
+    /**
+     * 认证Manager。
+     */
     private final AuthenticationManager authenticationManager;
+    /**
+     * contextRepository。
+     */
     private final SecurityContextRepository contextRepository;
+    /**
+     * 邮件。
+     * 协作类型：<code>AccountMailService</code>。
+     */
     private final AccountMailService mail;
+    /**
+     * 邮箱验证。
+     * 协作类型：<code>EmailVerificationService</code>。
+     */
     private final EmailVerificationService emailVerification;
 
+    /**
+     * 构造AccountAuthServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param mapper 数据映射；类型为 <code>AccountMapper</code>
+     * @param identity 身份；类型为 <code>AccountIdentityService</code>
+     * @param audit 审计；类型为 <code>AccountAuditService</code>
+     * @param encoder encoder；类型为 <code>PasswordEncoder</code>
+     * @param authenticationManager 认证Manager；类型为 <code>AuthenticationManager</code>
+     * @param contextRepository contextRepository；类型为 <code>SecurityContextRepository</code>
+     * @param mail 邮件；类型为 <code>AccountMailService</code>
+     * @param emailVerification 邮箱验证；类型为 <code>EmailVerificationService</code>
+     */
     public AccountAuthServiceImpl(AccountMapper mapper, AccountIdentityService identity,
                                   AccountAuditService audit, PasswordEncoder encoder,
                                   AuthenticationManager authenticationManager,
@@ -66,6 +119,15 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         this.emailVerification = emailVerification;
     }
 
+    /**
+     * 注册账号认证。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.usernameCount</code>、<code>mapper.emailCount</code>、<code>emailVerification.verify</code>、<code>emailVerification.consume</code>、<code>mapper.insertAccount</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>RegisterDTO</code>
+     * @return 类型为 <code>CurrentAccountVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public CurrentAccountVO register(RegisterDTO request) {
@@ -98,6 +160,16 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         return identity.view(account.getId());
     }
 
+    /**
+     * 执行登录账号认证。
+     * 主要协作调用：<code>mapper.recentAuditCount</code>、<code>authenticationManager.authenticate</code>、<code>audit.failed</code>、<code>mapper.updateLastLogin</code>、<code>audit.success</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>LoginDTO</code>
+     * @param servletRequest servlet请求；类型为 <code>HttpServletRequest</code>
+     * @param servletResponse servlet响应；类型为 <code>HttpServletResponse</code>
+     * @return 类型为 <code>CurrentAccountVO</code> 的处理结果
+     */
     @Override
     public CurrentAccountVO login(LoginDTO request, HttpServletRequest servletRequest,
                              HttpServletResponse servletResponse) {
@@ -127,6 +199,15 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         return identity.view(principal.getAccountId());
     }
 
+    /**
+     * 确认邮箱。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>identity.principal</code>、<code>mapper.accountByIdForUpdate</code>、<code>emailVerification.verify</code>、<code>emailVerification.consume</code>、<code>mapper.verifyEmail</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>ConfirmEmailDTO</code>
+     * @return 类型为 <code>CurrentAccountVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public CurrentAccountVO confirmEmail(ConfirmEmailDTO request) {
@@ -145,6 +226,12 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         return identity.view(id);
     }
 
+    /**
+     * 执行退出登录账号认证。
+     * 主要协作调用：<code>identity.currentOptional</code>、<code>audit.success</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>HttpServletRequest</code>
+     */
     @Override
     public void logout(HttpServletRequest request) {
         identity.currentOptional().ifPresent(actor ->
@@ -156,6 +243,14 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         }
     }
 
+    /**
+     * 更新Me。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>identity.principal</code>、<code>mapper.updateDisplayName</code>、<code>identity.view</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>UpdateMyAccountDTO</code>
+     * @return 类型为 <code>CurrentAccountVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public CurrentAccountVO updateMe(UpdateMyAccountDTO request) {
@@ -164,6 +259,14 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         return identity.view(accountId);
     }
 
+    /**
+     * change密码处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>identity.principal</code>、<code>mapper.accountByIdForUpdate</code>、<code>mapper.passwordHash</code>、<code>encoder.matches</code>、<code>mapper.updatePassword</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>ChangePasswordDTO</code>
+     */
     @Override
     @Transactional
     public void changePassword(ChangePasswordDTO request) {
@@ -185,6 +288,15 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         audit.success(accountId, accountId, "PASSWORD_CHANGED");
     }
 
+    /**
+     * 请求密码Reset处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mail.requireDelivery</code>、<code>mapper.recentResetRequestsByIp</code>、<code>mapper.accountByEmail</code>、<code>mapper.expirePendingResets</code>、<code>mapper.insertReset</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>PasswordResetRequestDTO</code>
+     * @param servletRequest servlet请求；类型为 <code>HttpServletRequest</code>
+     */
     @Override
     @Transactional
     public void requestPasswordReset(PasswordResetRequestDTO request, HttpServletRequest servletRequest) {
@@ -209,6 +321,14 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         audit.success(null, account == null ? null : account.getId(), "PASSWORD_RESET_REQUESTED");
     }
 
+    /**
+     * 确认密码Reset。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.resetByHashForUpdate</code>、<code>mapper.accountByIdForUpdate</code>、<code>mapper.useReset</code>、<code>mapper.updatePassword</code>、<code>encoder.encode</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>PasswordResetConfirmDTO</code>
+     */
     @Override
     @Transactional
     public void confirmPasswordReset(PasswordResetConfirmDTO request) {
@@ -236,6 +356,17 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         audit.success(account.getId(), account.getId(), "PASSWORD_RESET_SUCCESS");
     }
 
+    /**
+     * 初始化Super后台处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.lockSuperAdminRole</code>、<code>mapper.activeSuperAdminCount</code>、<code>mapper.superAdminAssignmentCount</code>、<code>mapper.usernameCount</code>、<code>mapper.emailCount</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param enabled 已启用；类型为 <code>boolean</code>
+     * @param username 用户名；类型为 <code>String</code>
+     * @param email 邮箱；类型为 <code>String</code>
+     * @param password 密码参数；使用和保存方式由对应的密码处理流程决定；类型为 <code>String</code>
+     */
     @Override
     @Transactional
     public void bootstrapSuperAdmin(boolean enabled, String username, String email, String password) {
@@ -268,6 +399,14 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         audit.success(account.getId(), account.getId(), "BOOTSTRAP_SUPER_ADMIN_CREATED");
     }
 
+    /**
+     * 必需角色处理入口。
+     * 主要协作调用：<code>mapper.roleByCode</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param code 代码；类型为 <code>String</code>
+     * @return 类型为 <code>RoleEntity</code> 的处理结果
+     */
     private RoleEntity requiredRole(String code) {
         RoleEntity role = mapper.roleByCode(code);
         if (role == null || !"ENABLED".equals(role.getStatus())) {

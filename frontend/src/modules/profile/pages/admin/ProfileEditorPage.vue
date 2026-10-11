@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * ProfileEditorPage.vue：作者资料模块的页面组件。
+ * 职责范围：个人介绍、社交链接、经历技能和精选内容。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../../../shared/editor/MarkdownEditor.vue、../../../tutorial/api/tutorialApi、../../../blog/api/blogApi、../../../portfolio/api/portfolioApi。
+ * 主要响应式状态：profile、loading、busy、error、notice、editorKey、basic、skill。
+ * 阅读入口：fetchAll（fetch全部的处理函数）；load（加载当前操作）；run（运行当前操作）；resetSkill（重置Skill）；editSkill（editSkill的处理函数）。
+ */
+
+
 import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
@@ -13,19 +23,73 @@ import {
   saveSkill, saveSocial, updateProfile,
 } from '../../api/profileApi'
 
+/**
+ * 资料；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const profile = ref(null)
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(true)
+/**
+ * busy；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const busy = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
+/**
+ * editor键；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const editorKey = ref(0)
+/**
+ * basic；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const basic = reactive({ displayName: '', headline: '', bioMarkdown: '', locationText: '' })
+/**
+ * skill；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const skill = reactive({ id: '', category: 'SKILL', name: '', description: '', proficiency: '' })
+/**
+ * social；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const social = reactive({ id: '', platformCode: 'GITHUB', label: '', url: '' })
+/**
+ * 功能；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const feature = reactive({ contentType: 'TUTORIAL', contentId: '', titleOverride: '' })
+/**
+ * candidates；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const candidates = reactive({ TUTORIAL: [], BLOG: [], PORTFOLIO: [] })
+/**
+ * availableCandidates；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const availableCandidates = computed(() => candidates[feature.contentType] || [])
 
+/**
+ * fetch全部的处理函数。
+ * 主要协作：api、items.push、items.map。
+ * @param api 接口；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function fetchAll(api) {
   const first = await api({ page: 1, pageSize: 100 })
   const items = [...(first.items || [])]
@@ -36,6 +100,13 @@ async function fetchAll(api) {
   return items.map((item) => ({ id: String(item.id), title: item.title }))
 }
 
+/**
+ * 加载当前操作。
+ * 主要协作：getAdminProfile、Promise.all、fetchAll、errorMessage。
+ * 更新的响应式状态包括 loading、profile、editorKey、error；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   loading.value = true
   try {
@@ -58,6 +129,15 @@ async function load() {
   }
 }
 
+/**
+ * 运行当前操作。
+ * 主要协作：action、errorMessage。
+ * 更新的响应式状态包括 busy、error、notice、profile；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param action 动作；默认值、解构字段与可选参数见函数签名。
+ * @param success = '已保存' success；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function run(action, success = '已保存') {
   if (busy.value) return false
   busy.value = true
@@ -75,16 +155,61 @@ async function run(action, success = '已保存') {
   }
 }
 
+/**
+ * 重置Skill。
+ * 主要协作：Object.assign。
+ */
 function resetSkill() { Object.assign(skill, { id: '', category: 'SKILL', name: '', description: '', proficiency: '' }) }
+/**
+ * editSkill的处理函数。
+ * 主要协作：Object.assign、.scrollIntoView、document.getElementById。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ */
 function editSkill(item) { Object.assign(skill, item); document.getElementById('profile-skill-form')?.scrollIntoView({ behavior: 'smooth' }) }
+/**
+ * 提交Skill。
+ * 主要协作：run、saveSkill、resetSkill。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function submitSkill() { const payload = { ...skill }; delete payload.id; if (await run(() => saveSkill(skill.id, payload))) resetSkill() }
+/**
+ * 删除Skill。
+ * 主要协作：window.confirm、run、removeSkill。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function deleteSkill(id) { if (window.confirm('删除这个条目？')) await run(() => removeSkill(id), '条目已删除') }
 
+/**
+ * 重置Social。
+ * 主要协作：Object.assign。
+ */
 function resetSocial() { Object.assign(social, { id: '', platformCode: 'GITHUB', label: '', url: '' }) }
+/**
+ * editSocial的处理函数。
+ * 主要协作：Object.assign、.scrollIntoView、document.getElementById。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ */
 function editSocial(item) { Object.assign(social, item); document.getElementById('profile-social-form')?.scrollIntoView({ behavior: 'smooth' }) }
+/**
+ * 提交Social。
+ * 主要协作：run、saveSocial、resetSocial。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function submitSocial() { const payload = { ...social }; delete payload.id; if (await run(() => saveSocial(social.id, payload))) resetSocial() }
+/**
+ * 删除Social。
+ * 主要协作：window.confirm、run、removeSocial。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function deleteSocial(id) { if (window.confirm('删除这个链接？')) await run(() => removeSocial(id), '链接已删除') }
 
+/**
+ * 提交精选。
+ * 主要协作：run、addFeatured。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function submitFeatured() {
   if (!feature.contentId) return
   if (await run(() => addFeatured({ ...feature }), '精选内容已添加')) {
@@ -92,8 +217,22 @@ async function submitFeatured() {
     feature.titleOverride = ''
   }
 }
+/**
+ * 删除精选。
+ * 主要协作：window.confirm、run、removeFeatured。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function deleteFeatured(id) { if (window.confirm('移除这条精选内容？')) await run(() => removeFeatured(id), '精选已移除') }
 
+/**
+ * move的处理函数。
+ * 主要协作：items.map、run、save。
+ * @param section 区块；默认值、解构字段与可选参数见函数签名。
+ * @param index 索引；默认值、解构字段与可选参数见函数签名。
+ * @param delta delta；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function move(section, index, delta) {
   const items = profile.value?.[section] || []
   const target = index + delta
@@ -104,6 +243,9 @@ async function move(section, index, delta) {
   await run(() => save(ids), '顺序已更新')
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(load)
 </script>
 
@@ -142,28 +284,188 @@ onMounted(load)
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.profile-editor。
+ */
 .profile-editor { max-width: 1180px; margin: auto; padding: 36px 36px 90px; }
+/**
+ * 样式范围：.profile-editor__header。
+ */
 .profile-editor__header { margin-bottom: 32px; }
+/**
+ * 样式范围：.profile-editor__header p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor__header p { color: var(--accent); font-size: 11px; font-weight: 700; letter-spacing: .14em; }
+/**
+ * 样式范围：.profile-editor__header h1。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor__header h1 { color: var(--text-primary); font-size: 36px; margin: 10px 0; }
+/**
+ * 样式范围：.profile-editor__header span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor__header span { color: var(--text-secondary); }
+/**
+ * 样式范围：.profile-editor__header a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor__header a { display: inline-block; margin-left: 20px; color: var(--primary); }
+/**
+ * 样式范围：.profile-editor__state。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor__state { padding: 60px; text-align: center; color: var(--text-muted); }
-.profile-editor__error { color: #bd4e39; margin-bottom: 16px; }.profile-editor__notice { color: var(--primary); margin-bottom: 16px; }
+/**
+ * 样式范围：.profile-editor__error。
+ */
+.profile-editor__error { color: #bd4e39; margin-bottom: 16px; }
+  /**
+   * 样式范围：.profile-editor__notice。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .profile-editor__notice { color: var(--primary); margin-bottom: 16px; }
+/**
+ * 样式范围：.profile-editor__panel。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor__panel { border: 1px solid var(--border); border-radius: 18px; padding: 27px; background: var(--bg-surface); margin-bottom: 22px; }
+/**
+ * 样式范围：.profile-editor__panel h2。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor__panel h2 { color: var(--text-primary); font-size: 24px; margin-bottom: 18px; }
+/**
+ * 样式范围：.profile-editor__panel h3。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor__panel h3 { font-size: 17px; color: var(--text-primary); margin: 22px 0 12px; }
+/**
+ * 样式范围：.profile-editor__hint。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor__hint { color: var(--text-muted); font-size: 13px; margin: -5px 0 18px; }
+/**
+ * 样式范围：.profile-editor__grid。
+ * 使用网格布局组织内容；列定义为 repeat(auto-fit, minmax(200px, 1fr))，间距由 14px 控制。
+ */
 .profile-editor__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; }
+/**
+ * 样式范围：.profile-editor label。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor label { display: block; color: var(--text-secondary); font-size: 13px; font-weight: 600; margin: 12px 0; }
+/**
+ * 样式范围：.profile-editor input:not([type=checkbox]), .profile-editor select, .profile-editor textarea。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor input:not([type=checkbox]), .profile-editor select, .profile-editor textarea { display: block; width: 100%; box-sizing: border-box; margin-top: 7px; border: 1px solid var(--border); border-radius: 8px; padding: 10px 12px; background: var(--bg-page); color: var(--text-primary); font: inherit; }
-.profile-editor textarea { resize: vertical; }.profile-editor input:focus, .profile-editor select:focus, .profile-editor textarea:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+/**
+ * 样式范围：.profile-editor textarea。
+ */
+.profile-editor textarea { resize: vertical; }
+  /**
+   * 样式范围：.profile-editor input:focus, .profile-editor select:focus, .profile-editor textarea:focus。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .profile-editor input:focus, .profile-editor select:focus, .profile-editor textarea:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+/**
+ * 样式范围：.profile-editor button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .profile-editor button { border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; margin: 8px 8px 0 0; background: var(--bg-page); color: var(--text-primary); cursor: pointer; }
-.profile-editor button:hover { color: var(--primary); border-color: var(--primary); }.profile-editor button:disabled { opacity: .45; cursor: default; }
+/**
+ * 样式范围：.profile-editor button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
+.profile-editor button:hover { color: var(--primary); border-color: var(--primary); }
+  /**
+   * 样式范围：.profile-editor button:disabled。
+   */
+  .profile-editor button:disabled { opacity: .45; cursor: default; }
+/**
+ * 样式范围：.profile-editor__checkbox。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .profile-editor__checkbox { display: flex !important; align-items: center; gap: 8px; align-self: end; }
-.profile-editor__items { list-style: none; padding: 0; margin: 0; }.profile-editor__items li { display: flex; justify-content: space-between; align-items: center; gap: 18px; border-top: 1px solid var(--border); padding: 12px 0; }
-.profile-editor__items strong { display: block; color: var(--text-primary); }.profile-editor__items small { display: block; color: var(--text-muted); margin-top: 4px; overflow-wrap: anywhere; }
-.profile-editor__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; }.profile-editor__actions button { margin: 0 0 4px 6px; }
-.profile-editor__media { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }.profile-editor__media > div { border: 1px dashed var(--border); padding: 18px; border-radius: 10px; }.profile-editor__media img { max-width: 120px; aspect-ratio: 1; object-fit: cover; display: block; margin-bottom: 10px; }.profile-editor__media p { color: var(--text-muted); }.profile-editor__media a { color: var(--primary); }
-@media(max-width: 700px) { .profile-editor { padding-inline: 16px; }.profile-editor__panel { padding: 18px; }.profile-editor__media { grid-template-columns: 1fr; }.profile-editor__items li { align-items: flex-start; flex-direction: column; } }
+/**
+ * 样式范围：.profile-editor__items。
+ */
+.profile-editor__items { list-style: none; padding: 0; margin: 0; }
+  /**
+   * 样式范围：.profile-editor__items li。
+   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .profile-editor__items li { display: flex; justify-content: space-between; align-items: center; gap: 18px; border-top: 1px solid var(--border); padding: 12px 0; }
+/**
+ * 样式范围：.profile-editor__items strong。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
+.profile-editor__items strong { display: block; color: var(--text-primary); }
+  /**
+   * 样式范围：.profile-editor__items small。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .profile-editor__items small { display: block; color: var(--text-muted); margin-top: 4px; overflow-wrap: anywhere; }
+/**
+ * 样式范围：.profile-editor__actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
+.profile-editor__actions { display: flex; flex-wrap: wrap; justify-content: flex-end; }
+  /**
+   * 样式范围：.profile-editor__actions button。
+   */
+  .profile-editor__actions button { margin: 0 0 4px 6px; }
+/**
+ * 样式范围：.profile-editor__media。
+ * 使用网格布局组织内容；列定义为 1fr 1fr，间距由 24px 控制。
+ */
+.profile-editor__media { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  /**
+   * 样式范围：.profile-editor__media > div。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .profile-editor__media > div { border: 1px dashed var(--border); padding: 18px; border-radius: 10px; }
+  /**
+   * 样式范围：.profile-editor__media img。
+   */
+  .profile-editor__media img { max-width: 120px; aspect-ratio: 1; object-fit: cover; display: block; margin-bottom: 10px; }
+  /**
+   * 样式范围：.profile-editor__media p。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .profile-editor__media p { color: var(--text-muted); }
+  /**
+   * 样式范围：.profile-editor__media a。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
+  .profile-editor__media a { color: var(--primary); }
+/**
+ * 响应式或设备条件：(max-width: 700px)；仅在该条件成立时覆盖基础样式。
+ */
+@media(max-width: 700px) {
+  /**
+   * 样式范围：.profile-editor。
+   */
+  .profile-editor { padding-inline: 16px; }
+  /**
+   * 样式范围：.profile-editor__panel。
+   */
+  .profile-editor__panel { padding: 18px; }
+  /**
+   * 样式范围：.profile-editor__media。
+   */
+  .profile-editor__media { grid-template-columns: 1fr; }
+  /**
+   * 样式范围：.profile-editor__items li。
+   */
+  .profile-editor__items li { align-items: flex-start; flex-direction: column; } }
 </style>

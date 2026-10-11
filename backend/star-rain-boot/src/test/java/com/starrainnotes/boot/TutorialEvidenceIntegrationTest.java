@@ -1,3 +1,11 @@
+/*
+ * TutorialEvidenceIntegrationTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CurrentActorApi、TutorialContentService、TutorialPublicationServiceImpl、TutorialEventPublisher、TutorialMediaReferences。
+ * 阅读入口：setup（setup处理入口）；rollback（回滚教程证据Integration）；fixture（fixture处理入口）；request（本次操作的请求参数对象处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -26,19 +34,68 @@ import org.junit.jupiter.api.*;
 
 /** Real content publication + plan/session/evidence/answer SQL. All probes roll back. */
 class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
+    /**
+     * sql。
+     */
     private SqlSession sql;
+    /**
+     * 数据映射。
+     * 协作类型：<code>EvidenceLearningMapper</code>。
+     */
     private EvidenceLearningMapper mapper;
+    /**
+     * tutorials。
+     * 协作类型：<code>TutorialMapper</code>。
+     */
     private TutorialMapper tutorials;
+    /**
+     * 章节列表。
+     * 协作类型：<code>TutorialChapterMapper</code>。
+     */
     private TutorialChapterMapper chapters;
+    /**
+     * 卡片集合。
+     * 协作类型：<code>TutorialKnowledgeCardMapper</code>。
+     */
     private TutorialKnowledgeCardMapper cards;
+    /**
+     * 问题集合。
+     * 协作类型：<code>TutorialQuestionMapper</code>。
+     */
     private TutorialQuestionMapper questions;
+    /**
+     * publications。
+     */
     private TutorialPublicationServiceImpl publications;
+    /**
+     * plans。
+     * 协作类型：<code>EvidenceStudyPlanService</code>。
+     */
     private EvidenceStudyPlanService plans;
+    /**
+     * 学习。
+     * 协作类型：<code>EvidenceLearningService</code>。
+     */
     private EvidenceLearningService learning;
+    /**
+     * actors。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private CurrentActorApi actors;
+    /**
+     * 账号标识。
+     */
     private Long accountId;
+    /**
+     * 测试样本。
+     */
     private final AtomicLong probe=new AtomicLong(System.nanoTime()%1_000_000L);
 
+    /**
+     * setup处理入口。
+     * 主要协作调用：<code>sql.getConnection</code>、<code>sql.getMapper</code>、<code>probe.incrementAndGet</code>、<code>actors.current</code>。
+     * @throws java.sql.SQLException 底层操作失败或输入不满足本方法要求时抛出
+     */
     @BeforeEach void setup() throws java.sql.SQLException {
         sql=openSession();
         // Match the application's Hikari connection-init-sql; DATETIME facts are UTC.
@@ -57,8 +114,20 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
                 sql.getMapper(TutorialQuestionCardMapper.class),sql.getMapper(TutorialRevisionMapper.class),mock(TutorialContentService.class),actors,json,
                 mock(TutorialEventPublisher.class),mock(TutorialMediaReferences.class), mock(com.starrainnotes.review.api.ReviewSubmissionApi.class));
     }
+    /**
+     * 回滚教程证据Integration。
+     * 主要协作调用：<code>sql.rollback</code>、<code>sql.close</code>。
+     */
     @AfterEach void rollback() { if(sql!=null) { sql.rollback();sql.close(); } }
 
+    /**
+     * fixture处理入口。
+     * 主要协作调用：<code>sql.getMapper</code>、<code>tutorials.insert</code>、<code>chapters.insert</code>、<code>cards.insert</code>、<code>questions.insert</code>。
+     *
+     * @param withQuestion 包含问题；类型为 <code>boolean</code>
+     * @param cardCounts 卡片数量集合；类型为 <code>int[]</code>
+     * @return 类型为 <code>Fixture</code> 的处理结果
+     */
     private Fixture fixture(boolean withQuestion,int... cardCounts) {
         TutorialCategoryEntity category=new TutorialCategoryEntity();category.setName("Evidence probe");category.setSlug("evidence-cat-"+System.nanoTime());category.setSortOrder(0);
         sql.getMapper(TutorialCategoryMapper.class).insert(category);
@@ -82,9 +151,24 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         }
         publications.publish(tutorial.getId());return fixture;
     }
+    /**
+     * 本次操作的请求参数对象处理入口。
+     * 关键处理步骤调用 <code>dto.setName</code>、<code>dto.setTutorialId</code>、<code>fixture.tutorial.getId</code>、<code>dto.setEntireTutorial</code>。
+     *
+     * @param fixture fixture；类型为 <code>Fixture</code>
+     * @return 类型为 <code>EvidencePlanDTO</code> 的处理结果
+     */
     private EvidencePlanDTO request(Fixture fixture) {
         EvidencePlanDTO dto=new EvidencePlanDTO();dto.setName("Learning probe");dto.setTutorialId(fixture.tutorial.getId());dto.setEntireTutorial(true);return dto;
     }
+    /**
+     * rate全部处理入口。
+     * 主要协作调用：<code>learning.reveal</code>、<code>learning.rate</code>。
+     *
+     * @param session 当前业务使用的会话对象；类型为 <code>Session</code>
+     * @param rating 评分；类型为 <code>String</code>
+     * @return 类型为 <code>Session</code> 的处理结果
+     */
     private Session rateAll(Session session,String rating) {
         for(Item item:session.getItems()) if(!"COMPLETED".equals(item.getStatus())) {
             session=learning.reveal(session.getId(),item.getKnowledgeCardId(),false);
@@ -92,8 +176,20 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         }
         return session;
     }
+    /**
+     * 答案处理入口。
+     * 主要协作调用：<code>learning.saveVersion</code>。
+     *
+     * @param questionId 问题标识；类型为 <code>Long</code>
+     * @param phase phase；类型为 <code>String</code>
+     * @param text 文本；类型为 <code>String</code>
+     */
     private void answer(Long questionId,String phase,String text) { AnswerVersionDTO dto=new AnswerVersionDTO();dto.setAnswerText(text);dto.setAnswerPhase(phase);learning.saveVersion(questionId,dto); }
 
+    /**
+     * 章节WithdrawalRetains已完成计划Tasks证据答案集合及Old修订处理入口。
+     * 主要协作调用：<code>plans.transition</code>、<code>plans.create</code>、<code>learning.initial</code>、<code>sql.getMapper</code>、<code>tutorials.selectById</code>。
+     */
     @Test void chapterWithdrawalRetainsCompletedPlanTasksEvidenceAnswersAndOldRevision() {
         Fixture fixture=fixture(true,1);
         Plan plan=plans.transition(plans.create(request(fixture)).getId(),"activate");
@@ -119,6 +215,10 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
                 ()->publications.publicChapter(fixture.tutorial.getSlug(),fixture.chapters.get(0).getSlug()));
     }
 
+    /**
+     * filtered历史及掌握Paginate之后Filtering及Keep账号集合Isolated处理入口。
+     * 主要协作调用：<code>plans.create</code>、<code>plans.transition</code>、<code>learning.initial</code>、<code>learning.history</code>、<code>learning.masteryPage</code>。
+     */
     @Test void filteredHistoryAndMasteryPaginateAfterFilteringAndKeepAccountsIsolated() {
         Fixture fixture=fixture(false,1,1);Plan plan=plans.create(request(fixture));plan=plans.transition(plan.getId(),"activate");
         assertEquals(fixture.tutorial.getSlug(),plan.getTutorialSlug());
@@ -148,6 +248,10 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         masteryQuery.setNeedsRevalidation(null);masteryQuery.setStatus("UNLEARNED");assertEquals(2,learning.masteryPage(masteryQuery).getTotal());
     }
 
+    /**
+     * 已完成PlansRelease有效ListQuota及Remain内部Paged历史处理入口。
+     * 主要协作调用：<code>plans.create</code>、<code>plans.transition</code>、<code>learning.initial</code>、<code>plans.get</code>、<code>plans.list</code>。
+     */
     @Test void completedPlansReleaseActiveListQuotaAndRemainInPagedHistory() {
         Fixture fixture=fixture(false,1);Plan plan=plans.create(request(fixture));plan=plans.transition(plan.getId(),"activate");
         rateAll(learning.initial(fixture.chapters.get(0).getId(),plan.getTasks().get(0).getId()),"REMEMBERED");
@@ -158,6 +262,10 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         assertTrue(plans.list().stream().noneMatch(p->List.of("ACTIVE","DRAFT","PAUSED").contains(p.getStatus())));
     }
 
+    /**
+     * repeated计划NeedsNew证据及答案集合及保留上一项Rounds处理入口。
+     * 主要协作调用：<code>plans.transition</code>、<code>plans.create</code>、<code>learning.initial</code>、<code>plans.get</code>、<code>plans.start</code>。
+     */
     @Test void repeatedPlanNeedsNewEvidenceAndAnswersAndKeepsPreviousRounds() {
         Fixture fixture=fixture(true,1);
         Plan plan=plans.transition(plans.create(request(fixture)).getId(),"activate");
@@ -191,6 +299,10 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         assertThrows(LearningResourceNotFoundException.class,()->plans.restart(plan.getId()));
     }
 
+    /**
+     * identicalNames包含Different知识ScopesAreIndependentPlans处理入口。
+     * 主要协作调用：<code>plans.create</code>。
+     */
     @Test void identicalNamesWithDifferentKnowledgeScopesAreIndependentPlans() {
         Fixture fixture=fixture(false,1,1);
         EvidencePlanDTO one=request(fixture);one.setEntireTutorial(false);one.setChapterIds(List.of(fixture.chapters.get(0).getId()));
@@ -200,6 +312,10 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         assertEquals(1,first.getTotalChapters());assertEquals(1,second.getTotalChapters());
     }
 
+    /**
+     * deletingAuthoring内容RetiresPlans及Preserves学习Facts处理入口。
+     * 主要协作调用：<code>plans.create</code>、<code>plans.transition</code>、<code>learning.initial</code>、<code>sql.getConnection</code>、<code>sql.getMapper</code>。
+     */
     @Test void deletingAuthoringContentRetiresPlansAndPreservesLearningFacts() {
         Fixture fixture=fixture(true,1,1);Plan plan=plans.create(request(fixture));plans.transition(plan.getId(),"activate");
         Long chapterId=fixture.chapters.get(0).getId(), cardId=fixture.cards.get(0).getId(), questionId=fixture.questions.get(0).getId();
@@ -225,6 +341,11 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         cleanup.tutorialLearning(third.tutorial.getId());sql.clearCache();assertEquals("CANCELLED",plans.get(thirdPlan.getId()).getStatus());
     }
 
+    /**
+     * 完成作者目标Initial学习答案及审核Loop。
+     * 主要协作调用：<code>plans.preview</code>、<code>plans.create</code>、<code>plans.transition</code>、<code>learning.initial</code>、<code>learning.rate</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void completeAuthorToInitialStudyAnswerAndReviewLoop() throws Exception {
         Fixture fixture=fixture(true,7,5);Plan preview=plans.preview(request(fixture),null);Plan plan=plans.create(request(fixture));
         assertEquals(preview.getTasks().stream().map(Task::getCardCount).toList(),plan.getTasks().stream().map(Task::getCardCount).toList());
@@ -260,6 +381,10 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * fivePlansCanBe有效Sixth是否已拒绝及CancellationReleasesQuota处理入口。
+     * 主要协作调用：<code>plans.create</code>、<code>plans.transition</code>、<code>plans.list</code>、<code>plans.update</code>。
+     */
     @Test void fivePlansCanBeActiveSixthIsRejectedAndCancellationReleasesQuota() {
         Fixture fixture=fixture(false,1,1,1,1,1,1);List<Plan> active=new ArrayList<>();
         for(int i=0;i<5;i++) { EvidencePlanDTO request=request(fixture);request.setEntireTutorial(false);request.setChapterIds(List.of(fixture.chapters.get(i).getId()));Plan plan=plans.create(request);active.add(plans.transition(plan.getId(),"activate")); }
@@ -269,6 +394,10 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         assertThrows(LearningStateConflictException.class,()->plans.update(active.get(1).getId(),sixth));
     }
 
+    /**
+     * 内容修订Revalidates不含Destroying证据或掌握处理入口。
+     * 主要协作调用：<code>learning.initial</code>、<code>learning.review</code>、<code>publications.withdraw</code>、<code>cards.updateContent</code>、<code>publications.publish</code>。
+     */
     @Test void contentRevisionRevalidatesWithoutDestroyingEvidenceOrMastery() {
         Fixture fixture=fixture(false,1);Long chapterId=fixture.chapters.get(0).getId();rateAll(learning.initial(chapterId,null),"REMEMBERED");
         ReviewSessionDTO request=new ReviewSessionDTO();request.setCount(1);rateAll(learning.review(request),"REMEMBERED");rateAll(learning.review(request),"REMEMBERED");
@@ -281,6 +410,10 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         assertEquals("REVALIDATION",mapper.cardEvidence(accountId,card.getId()).get(0).getEvidenceType());
     }
 
+    /**
+     * 已禁用已发布卡片LeavesRecommendationBut保留历史及OwnerIsolation处理入口。
+     * 主要协作调用：<code>learning.initial</code>、<code>learning.reviewSummary</code>、<code>publications.withdraw</code>、<code>cards.updateContent</code>、<code>publications.publish</code>。
+     */
     @Test void disabledPublishedCardLeavesRecommendationButKeepsHistoryAndOwnerIsolation() {
         Fixture fixture=fixture(false,1);Long chapterId=fixture.chapters.get(0).getId();Session initial=rateAll(learning.initial(chapterId,null),"REMEMBERED");
         assertEquals(1,learning.reviewSummary().getCandidateCount());
@@ -292,6 +425,10 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         assertThrows(LearningResourceNotFoundException.class,()->learning.session(initial.getId()));assertEquals(0,learning.history(1,20).getTotal());
     }
 
+    /**
+     * 草稿EditRebuilds及冲突Scope拒绝Duplicates处理入口。
+     * 主要协作调用：<code>plans.create</code>、<code>plans.update</code>、<code>plans.transition</code>、<code>plans.get</code>。
+     */
     @Test void draftEditRebuildsAndConflictScopeRejectsDuplicates() {
         Fixture fixture=fixture(false,3,3,36);EvidencePlanDTO request=request(fixture);request.setEntireTutorial(false);request.setChapterIds(List.of(fixture.chapters.get(0).getId(),fixture.chapters.get(2).getId()));
         Plan plan=plans.create(request);assertEquals(List.of(3,36),plan.getTasks().stream().map(Task::getCardCount).toList());
@@ -301,14 +438,40 @@ class TutorialEvidenceIntegrationTest extends MapperXmlIntegrationSupport {
         assertEquals("ACTIVE",plans.get(plan.getId()).getStatus());
     }
 
+    /**
+     * 数据库Enforces单次InitialPer账号卡片及单次FactPer会话处理入口。
+     * 主要协作调用：<code>learning.initial</code>、<code>mapper.cardEvidence</code>、<code>mapper.insertEvidence</code>。
+     */
     @Test void databaseEnforcesOneInitialPerAccountCardAndOneFactPerSession() {
         Fixture fixture=fixture(false,1);Session session=rateAll(learning.initial(fixture.chapters.get(0).getId(),null),"FUZZY");
         Evidence duplicate=mapper.cardEvidence(accountId,fixture.cards.get(0).getId()).get(0);duplicate.setSessionId(session.getId()+9999);
         assertThrows(org.apache.ibatis.exceptions.PersistenceException.class,()->mapper.insertEvidence(duplicate));
     }
 
+    /**
+     * Fixture，属于应用启动模块。
+     * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+     */
     private static class Fixture {
-        TutorialEntity tutorial;Long groupId;
-        List<TutorialChapterEntity> chapters=new ArrayList<>();List<TutorialKnowledgeCardEntity> cards=new ArrayList<>();List<TutorialQuestionEntity> questions=new ArrayList<>();
+        /**
+         * 教程。
+         */
+        TutorialEntity tutorial;
+    /**
+     * 分组标识。
+     */
+    Long groupId;
+        /**
+         * 章节列表。
+         */
+        List<TutorialChapterEntity> chapters=new ArrayList<>();
+    /**
+     * 卡片集合。
+     */
+    List<TutorialKnowledgeCardEntity> cards=new ArrayList<>();
+    /**
+     * 问题集合。
+     */
+    List<TutorialQuestionEntity> questions=new ArrayList<>();
     }
 }

@@ -1,3 +1,11 @@
+/**
+ * markdown.js：跨模块基础模块的共享工具。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 将跨模块使用的行为收敛到一个实现，调用方通过导出函数或组合式函数使用。
+ * 主要依赖：markdown-it、dompurify、highlight.js/lib/core、highlight.js/lib/languages/bash、highlight.js/lib/languages/c、highlight.js/lib/languages/cpp。
+ * 阅读入口：escapeHtml（转义HTML）；createRenderer（创建渲染器）；createEnv（创建Env）；sanitize（过滤当前操作）；renderMarkdown（渲染Markdown）。
+ */
+
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js/lib/core'
@@ -79,6 +87,12 @@ hljs.registerAliases(['yml'], { languageName: 'yaml' })
 
 const ESCAPES = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }
 
+/**
+ * 转义HTML。
+ * 主要协作：.replace。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function escapeHtml(value) {
   return String(value).replace(/[&<>"']/g, (character) => ESCAPES[character])
 }
@@ -106,6 +120,11 @@ const SANITIZE_CONFIG = {
   ],
 }
 
+/**
+ * 创建渲染器。
+ * 主要协作：hljs.getLanguage、hljs.highlight、escapeHtml、useMarkdownMath、useMarkdownCodeGroup。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function createRenderer() {
   const md = new MarkdownIt({
     /* 正文里的原始 HTML 一律不解析（安全底线第 1 条） */
@@ -175,10 +194,20 @@ function createRenderer() {
 const md = createRenderer()
 
 /* 新建一次渲染的状态容器。两处必须成对出现，因此单独一个函数 */
+/**
+ * 创建Env。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function createEnv() {
   return { headings: [], headingIds: new Map() }
 }
 
+/**
+ * 过滤当前操作。
+ * 主要协作：DOMPurify.sanitize。
+ * @param rendered rendered；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function sanitize(rendered) {
   /*
    * 外面套一层一次性父节点：DOMPurify 会把「只有一个顶层块」的文档直接提升成它的子节点，
@@ -189,7 +218,14 @@ function sanitize(rendered) {
 }
 
 /* 只渲染 HTML（后台「预览」这类不需要大纲的场景） */
-export function renderMarkdown(source) {
+export
+  /**
+   * 渲染Markdown。
+   * 主要协作：.trim、sanitize、md.render、createEnv。
+   * @param source 来源；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function renderMarkdown(source) {
   if (!source || !String(source).trim()) {
     return '<p class="blog-prose__empty">（正文为空）</p>'
   }
@@ -200,7 +236,14 @@ export function renderMarkdown(source) {
  * 渲染 HTML 并返回大纲。
  * 大纲的 id 与 HTML 里标题的 id 是同一份数据，调用方不需要（也不应该）再解析一次 DOM。
  */
-export function renderMarkdownDocument(source) {
+export
+  /**
+   * 渲染Markdown文档。
+   * 主要协作：.trim、createEnv、sanitize、md.render。
+   * @param source 来源；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function renderMarkdownDocument(source) {
   if (!source || !String(source).trim()) {
     return { html: '<p class="blog-prose__empty">（正文为空）</p>', outline: [] }
   }
@@ -213,6 +256,12 @@ export function renderMarkdownDocument(source) {
 let codeGroupId = 0
 
 /* 围栏语言：优先取 <code> 上的 language-xxx；highlight.js 也可能把它挂在 <pre> 上 */
+/**
+ * fenceLanguage的处理函数。
+ * 主要协作：pre.querySelector、code.className.match、pre.className.match。
+ * @param pre pre；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function fenceLanguage(pre) {
   const code = pre.querySelector('code')
   const fromClass = code?.className.match(/language-([\w+-]+)/)?.[1]
@@ -358,7 +407,14 @@ function enhanceCodeGroups(container) {
  * 必须在 v-html 更新之后、且在内层元素存在时调用（组件里 await nextTick() 后调用）。
  * 幂等：重复调用不会重复建外壳。
  */
-export function enhanceMarkdownDom(container) {
+export
+  /**
+   * enhanceMarkdownDom的处理函数。
+   * 主要协作：enhanceCodeGroups、enhanceStandaloneCodeBlocks。
+   * @param container container；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function enhanceMarkdownDom(container) {
   if (!container) return
   enhanceCodeGroups(container)
   enhanceStandaloneCodeBlocks(container)
@@ -369,7 +425,14 @@ export function enhanceMarkdownDom(container) {
  * 失败（MathJax 资源加载不了）时**不抛出到调用方之外**的取舍在组件侧做：
  * 这里保留 throw，让调用方能区分「没有公式」与「排版失败」。
  */
-export function typesetMarkdownMath(container) {
+export
+  /**
+   * typesetMarkdownMath的处理函数。
+   * 主要协作：typesetMath。
+   * @param container container；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function typesetMarkdownMath(container) {
   return typesetMath(container)
 }
 

@@ -1,3 +1,12 @@
+/**
+ * TutorialWorkspace.spec.js：教程与学习模块的自动化测试。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue、vitest、./TutorialCurriculumPage.vue、./ChapterEditPage.vue、../../api/tutorialApi。
+ * 阅读入口：curriculum（课程目录的处理函数）；open（打开当前操作）；button（button的处理函数）。
+ * 验证场景：tutorial workspace interactions；saves title, summary and body in one versioned request；retains local input on HTTP 409 without reporting success；does not withdraw when the confirmation is declined；withdraws only the selected chapter and reports preserved history。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { reactive } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -10,6 +19,10 @@ vi.mock('vue-router', () => ({ useRoute: () => state.route, useRouter: () => ({ 
 vi.mock('../../../account/stores/authStore', () => ({ useAuthStore: () => ({ hasPermission: code => state.permissions.has(code) }) }))
 vi.mock('../../api/tutorialApi', () => ({ listPendingTutorialOperations: vi.fn(), getAdminCurriculum: vi.fn(), getAdminChapter: vi.fn(), createChapter: vi.fn(), updateChapter: vi.fn(), updateChapterBody: vi.fn(), createGroup: vi.fn(), deleteChapter: vi.fn(), deleteGroup: vi.fn(), publishChapter: vi.fn(), withdrawChapter: vi.fn(), reorderChapters: vi.fn(), reorderGroups: vi.fn(), updateGroup: vi.fn(), submitTutorialReview: vi.fn() }))
 vi.mock('../../../media/support/useMediaPicker', () => ({ useMediaPicker: () => ({ pickerOpen: false, pick: vi.fn(), settle: vi.fn() }) }))
+/**
+ * 课程目录的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const curriculum = () => ({ tutorial: { id: '1', title: 'Java', publicationStatus: 'PUBLISHED', editingStatus: 'DRAFT' }, groups: [{ id: '3', title: 'Group', status: 'ACTIVE', chapters: [{ id: '4', title: 'Intro', status: 'PUBLISHED', rowVersion: 2 }] }] })
 const stubs = {
  AdminConfirmDialog: { setup(_, { expose }) { expose({ ask: state.ask }) }, template: '<div />' },
@@ -19,7 +32,20 @@ const stubs = {
 const wrappers = []
 import { afterEach } from 'vitest'
 afterEach(() => { wrappers.splice(0).forEach(wrapper => wrapper.unmount()) })
+/**
+ * 打开当前操作。
+ * 主要协作：mount、wrappers.push。
+ * @param component component；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function open(component) { const wrapper = mount(component, { global: { stubs } }); wrappers.push(wrapper); return wrapper }
+/**
+ * button的处理函数。
+ * 主要协作：.find、wrapper.findAll、item.text。
+ * @param wrapper wrapper；默认值、解构字段与可选参数见函数签名。
+ * @param text 文本；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function button(wrapper, text) { return wrapper.findAll('button').find(item => item.text() === text) }
 beforeEach(() => {
  vi.clearAllMocks(); state.route = reactive({ params: { tutorialId: '1', chapterId: '4' }, query: {} }); state.ask.mockResolvedValue(true)

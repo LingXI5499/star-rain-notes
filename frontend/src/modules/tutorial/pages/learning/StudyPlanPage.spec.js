@@ -1,3 +1,12 @@
+/**
+ * StudyPlanPage.spec.js：教程与学习模块的自动化测试。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue-router、vitest、./StudyPlanPage.vue、../../api/tutorialApi、../../api/learningApi。
+ * 阅读入口：mountPage（挂载分页）；fillPlan（fill计划的处理函数）。
+ * 验证场景：study plan creation workflow；renders only unended plan cards and directly starts at the next tutorial chapter；refreshes and removes a plan completed elsewhere before continuing study；reuses a completed plan for the next round and enters its scoped reader；blocks an empty or ineligible range and previews a valid chapter with no questions。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -7,12 +16,24 @@ import { listStudyPlans, getStudyPlan, previewStudyPlan, createStudyPlan, transi
 vi.mock('../../api/tutorialApi', () => ({ getPublicTutorial: vi.fn(), listPublicTutorials: vi.fn() }))
 vi.mock('../../api/learningApi', () => ({ listStudyPlans: vi.fn(), getStudyPlan: vi.fn(), previewStudyPlan: vi.fn(), createStudyPlan: vi.fn(), updateStudyPlan: vi.fn(), transitionStudyPlan: vi.fn(), startStudyTask: vi.fn() }))
 const tutorial = { id: 't1', title: 'Tutorial', slug: 'tutorial', groups: [{ id: 'g1', title: 'Group', chapters: [{ id: 'c1', title: 'Ready', cardCount: 2, questionCount: 0 }, { id: 'c2', title: 'Reading', cardCount: 0, questionCount: 1 }] }] }
+/**
+ * 挂载分页。
+ * 主要协作：createRouter、createMemoryHistory、router.push、router.isReady、mount。
+ * @param planId = 'new' 计划标识new；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function mountPage(planId = 'new') {
  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/useradmin/learning/plans/:planId?', component: { template: '<div />' } }, { path: '/useradmin/tutorials/:tutorialSlug/:chapterSlug', component: { template: '<div />' } }, { path: '/useradmin/learning/history', component: { template: '<div />' } }] })
  await router.push(`/useradmin/learning/plans${planId ? `/${planId}` : ''}`); await router.isReady()
  const wrapper = mount(StudyPlanPage, { global: { plugins: [router], stubs: { LearningNav: true } } }); await flushPromises()
  return { wrapper, router }
 }
+/**
+ * fill计划的处理函数。
+ * 主要协作：.setValue、wrapper.get、wrapper.find、flushPromises、.trigger。
+ * @param wrapper wrapper；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function fillPlan(wrapper) {
  await wrapper.get('input[placeholder="例如：Java 集合强化"]').setValue('My plan')
  await wrapper.find('select').setValue('t1'); await flushPromises()

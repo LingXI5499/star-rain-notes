@@ -1,3 +1,11 @@
+/*
+ * SearchMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：SearchableDocument、SearchDocumentMapper、SearchHitVO、SearchSuggestionVO。
+ * 阅读入口：open（打开搜索数据映射Xml）；rollback（回滚搜索数据映射Xml）；searchDocumentMapperIsReachableThroughTheSession（搜索文档数据映射是否ReachableThroughThe会话处理入口）；upsertIndexesANewDocumentAndSearchExposesEveryAlias（新增或更新IndexesANew文档及搜索ExposesEveryAlias）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -42,19 +50,41 @@ import org.junit.jupiter.api.Test;
  *
  * 全程在一个不 commit 的 SqlSession 里跑，@AfterEach 回滚；最后一个用例用新连接复核。
  */
+/**
+ * 搜索数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * documents。
+     * 协作类型：<code>SearchDocumentMapper</code>。
+     */
     private SearchDocumentMapper documents;
 
+    /**
+     * 打开搜索数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
         documents = session.getMapper(SearchDocumentMapper.class);
     }
 
+    /**
+     * 回滚搜索数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -63,11 +93,18 @@ class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 搜索文档数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void searchDocumentMapperIsReachableThroughTheSession() {
         assertNotNull(documents);
     }
 
+    /**
+     * 新增或更新IndexesANew文档及搜索ExposesEveryAlias。
+     * 主要协作调用：<code>documents.count</code>、<code>documents.upsert</code>、<code>documents.activeKeys</code>、<code>documents.activeCount</code>、<code>documents.search</code>。
+     */
     @Test
     void upsertIndexesANewDocumentAndSearchExposesEveryAlias() {
         String token = token();
@@ -127,6 +164,10 @@ class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, documents.suggestions(token, 1).size(), "LIMIT 没生效");
     }
 
+    /**
+     * reindexingTheSame文档键UpdatesInstead所属Duplicating处理入口。
+     * 主要协作调用：<code>documents.upsert</code>、<code>documents.count</code>、<code>documents.search</code>、<code>documents.suggestions</code>。
+     */
     @Test
     void reindexingTheSameDocumentKeyUpdatesInsteadOfDuplicating() {
         String token = token();
@@ -151,6 +192,10 @@ class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, documents.suggestions(token, 10).size());
     }
 
+    /**
+     * 移除HidesThe文档来源Every有效查询参数。
+     * 主要协作调用：<code>documents.upsert</code>、<code>documents.count</code>、<code>documents.remove</code>、<code>documents.activeKeys</code>、<code>documents.search</code>。
+     */
     @Test
     void removeHidesTheDocumentFromEveryActiveQuery() {
         String token = token();
@@ -169,6 +214,10 @@ class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, documents.remove("mapper-xml-test:no-such-key-" + token));
     }
 
+    /**
+     * 移除依据内容HidesEvery文档所属That内容。
+     * 主要协作调用：<code>documents.upsert</code>、<code>documents.count</code>、<code>documents.removeByContent</code>、<code>documents.activeKeys</code>。
+     */
     @Test
     void removeByContentHidesEveryDocumentOfThatContent() {
         String token = token();
@@ -185,6 +234,10 @@ class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, documents.removeByContent(type, probeId()), "别的 content_id 不应被误删");
     }
 
+    /**
+     * 移除路由PrefixOnlyTouches章节Documents。
+     * 主要协作调用：<code>documents.upsert</code>、<code>documents.suggestions</code>、<code>documents.removeRoutePrefix</code>、<code>documents.activeKeys</code>。
+     */
     @Test
     void removeRoutePrefixOnlyTouchesChapterDocuments() {
         String token = token();
@@ -210,6 +263,10 @@ class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, documents.removeRoutePrefix(prefix + "-no-such-prefix"));
     }
 
+    /**
+     * 回滚Leaves不含搜索测试样本行集合Behind。
+     * 主要协作调用：<code>documents.upsert</code>、<code>session.rollback</code>。
+     */
     @Test
     void rollbackLeavesNoSearchProbeRowsBehind() {
         String token = token();
@@ -226,6 +283,17 @@ class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * new文档处理入口。
+     * 关键处理步骤调用 <code>document.setContentType</code>、<code>document.setContentId</code>、<code>document.setDocumentKey</code>、<code>document.setTitle</code>。
+     *
+     * @param documentKey 文档键；类型为 <code>String</code>
+     * @param contentType 内容类型或请求声明的 Content-Type；类型为 <code>String</code>
+     * @param contentId 内容标识；类型为 <code>long</code>
+     * @param token 令牌；类型为 <code>String</code>
+     * @param routePath 路由路径；类型为 <code>String</code>
+     * @return 类型为 <code>SearchableDocument</code> 的处理结果
+     */
     private SearchableDocument newDocument(String documentKey, String contentType, long contentId,
                                            String token, String routePath) {
         SearchableDocument document = new SearchableDocument();
@@ -242,24 +310,51 @@ class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* 全文检索的查询词必须是唯一的单个字母数字 token，才能配合 LOCATE 分支稳定隔离探针文档 */
+    /**
+     * 令牌处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String token() {
         return "mapperxmlsearch" + PROBE.incrementAndGet() + "x" + (System.nanoTime() % 100000L);
     }
 
     /* content_type 是 varchar(30)：用短且唯一的类型把探针文档从 2234 行真实索引里隔离出来 */
+    /**
+     * 测试样本类型处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String probeType() {
         return "MAPPERXMLTEST" + PROBE.incrementAndGet();
     }
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实内容撞号 */
+    /**
+     * 测试样本标识处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long probeId() {
         return 900_000_000_000L + PROBE.incrementAndGet();
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
     }

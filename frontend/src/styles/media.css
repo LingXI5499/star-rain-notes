@@ -1,3 +1,8 @@
+/**
+ * media.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 /*
  * 媒体模块样式。
  *
@@ -7,21 +12,57 @@
 
 /* ---------- 分类筛选与视图切换 ---------- */
 .media-categories { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
+/**
+ * 样式范围：.media-category。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-category {
   padding: 7px 14px; border: 1px solid var(--border-strong); border-radius: 999px;
   background: var(--bg-surface); color: var(--text-secondary); font-size: 13px;
 }
+/**
+ * 样式范围：.media-category:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-category:hover { background: var(--bg-subtle); }
+/**
+ * 样式范围：.media-category.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-category.is-active {
   border-color: var(--primary); background: var(--el-color-primary-light-9);
   color: var(--primary); font-weight: 650;
 }
+/**
+ * 样式范围：.media-category small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-category small { color: var(--text-muted); margin-left: 6px; font-weight: 400; }
 
+/**
+ * 样式范围：.media-view-toggle。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .media-view-toggle { display: flex; gap: 0; }
+/**
+ * 样式范围：.media-view-toggle button。
+ */
 .media-view-toggle button { border-radius: 0; font-size: 12px; padding: 8px 12px; }
+/**
+ * 样式范围：.media-view-toggle button:first-child。
+ */
 .media-view-toggle button:first-child { border-radius: 10px 0 0 10px; }
+/**
+ * 样式范围：.media-view-toggle button:last-child。
+ */
 .media-view-toggle button:last-child { border-radius: 0 10px 10px 0; border-left: 0; }
+/**
+ * 样式范围：.media-view-toggle button.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-view-toggle button.is-active {
   background: var(--el-color-primary-light-9); border-color: var(--primary);
   color: var(--primary); font-weight: 650;
@@ -32,14 +73,37 @@
   display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: var(--space-4);
 }
+/**
+ * 样式范围：.media-card。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-card {
   display: flex; min-width: 0; flex-direction: column; gap: var(--space-2);
   padding: var(--space-2); border: 1px solid var(--border); border-radius: var(--radius-md);
   background: var(--bg-surface); text-align: left;
 }
+/**
+ * 样式范围：.media-card:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-card:hover { border-color: var(--primary); }
+/**
+ * 样式范围：.media-card__name。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ */
 .media-card__name { overflow: hidden; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
+/**
+ * 样式范围：.media-card__meta。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-card__meta { color: var(--text-muted); font-size: 11px; }
+/**
+ * 样式范围：.media-card__chips。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .media-card__chips { display: flex; flex-wrap: wrap; gap: 3px; }
 
 /* ---------- 预览 ---------- */
@@ -47,27 +111,78 @@
   display: flex; align-items: center; justify-content: center; overflow: hidden;
   border-radius: 6px; background: var(--bg-subtle);
 }
+/**
+ * 样式范围：.media-preview--thumb。
+ */
 .media-preview--thumb { aspect-ratio: 4 / 2.6; }
+/**
+ * 样式范围：.media-preview--full。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-preview--full { min-height: 220px; padding: var(--space-3); }
+/**
+ * 样式范围：.media-preview img。
+ */
 .media-preview img { width: 100%; height: 100%; object-fit: cover; }
+/**
+ * 样式范围：.media-preview--full img。
+ */
 .media-preview--full img { width: auto; max-width: 100%; max-height: 60vh; object-fit: contain; }
+/**
+ * 样式范围：.media-preview video。
+ */
 .media-preview video { width: 100%; max-height: 60vh; background: #000; }
+/**
+ * 样式范围：.media-preview audio。
+ */
 .media-preview audio { width: calc(100% - 12px); }
+/**
+ * 样式范围：.media-preview__badge。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-preview__badge {
   color: var(--danger); font-size: 13px; font-weight: 700; letter-spacing: .08em;
   text-transform: uppercase; overflow-wrap: anywhere; text-align: center; padding: 0 6px;
 }
+/**
+ * 样式范围：.media-preview--thumb .media-preview__badge。
+ */
 .media-preview--thumb .media-preview__badge { font-size: 12px; }
 
 /* ---------- 详情 ---------- */
 .media-detail-grid { display: grid; grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: var(--space-6); }
+/**
+ * 样式范围：.media-actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: var(--space-4); }
+/**
+ * 样式范围：.media-danger-button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-danger-button { color: var(--danger); border-color: var(--border-strong); }
+/**
+ * 样式范围：.media-open-link。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-open-link { display: inline-block; margin-top: var(--space-3); font-size: 13px; }
 
+/**
+ * 响应式或设备条件：(max-width: 1000px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 1000px) {
+  /**
+   * 样式范围：.media-detail-grid。
+   */
   .media-detail-grid { grid-template-columns: 1fr; }
 }
+/**
+ * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 720px) {
+  /**
+   * 样式范围：.media-grid。
+   */
   .media-grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 }

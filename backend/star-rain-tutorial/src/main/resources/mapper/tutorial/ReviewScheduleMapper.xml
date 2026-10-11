@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.learning.mapper.ReviewScheduleMapper">
+    <!--
+      ReviewScheduleMapper.xml：com.starrainnotes.tutorial.learning.mapper.ReviewScheduleMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     s.id, s.account_id, s.knowledge_card_id, s.step_index, s.current_interval_days,
     s.next_review_at, s.status, s.last_result_at, s.created_at, s.updated_at
   </sql>
 
+  <!--
+    ensure：ensure；新增语句。
+    涉及数据表：sr_review_schedule；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：accountId、cardId、days、nextAt；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="ensure">
     INSERT IGNORE INTO sr_review_schedule
                 (account_id, knowledge_card_id, step_index, current_interval_days,
@@ -14,6 +30,14 @@
             VALUES (#{accountId}, #{cardId}, 0, #{days}, #{nextAt}, 'ACTIVE')
   </insert>
 
+  <!--
+    dueUnqueued：dueUnqueued；读取语句。
+    涉及数据表：sr_review_schedule、sr_review_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.ReviewScheduleEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：now；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="dueUnqueued" resultType="com.starrainnotes.tutorial.learning.entity.ReviewScheduleEntity">
     SELECT <include refid="columns"/>
             FROM sr_review_schedule s
@@ -23,6 +47,14 @@
             ORDER BY s.next_review_at, s.id LIMIT 500
   </select>
 
+  <!--
+    dueUnqueuedForAccount：dueUnqueued面向账号；读取语句。
+    涉及数据表：sr_review_schedule、sr_review_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.ReviewScheduleEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：accountId、now；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="dueUnqueuedForAccount" resultType="com.starrainnotes.tutorial.learning.entity.ReviewScheduleEntity">
     SELECT <include refid="columns"/>
             FROM sr_review_schedule s
@@ -33,11 +65,24 @@
             ORDER BY s.next_review_at, s.id LIMIT 500
   </select>
 
+  <!--
+    selectById：查询依据标识；读取语句。
+    涉及数据表：sr_review_schedule；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.ReviewScheduleEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectById" resultType="com.starrainnotes.tutorial.learning.entity.ReviewScheduleEntity">
     SELECT <include refid="columns"/> FROM sr_review_schedule s WHERE s.id = #{id}
   </select>
 
   <!-- 复习完成后推进步骤、间隔与下次复习时间；updated_at 由列上的 ON UPDATE 维护 -->
+  <!--
+    updateAfterReview：更新之后审核；更新语句。
+    涉及数据表：sr_review_schedule；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：stepIndex、currentIntervalDays、nextReviewAt、lastResultAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="updateAfterReview">
     UPDATE sr_review_schedule
             SET step_index = #{stepIndex},

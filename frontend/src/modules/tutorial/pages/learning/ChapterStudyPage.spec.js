@@ -1,3 +1,12 @@
+/**
+ * ChapterStudyPage.spec.js：教程与学习模块的自动化测试。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue-router、vitest、./ChapterStudyPage.vue、../../api/learningApi。
+ * 阅读入口：plan（计划的处理函数）；state（状态的处理函数）；mountReader（挂载Reader）。
+ * 验证场景：plan scoped normal reader；shows only selected chapters in the shared reader and links the next selected chapter；starts recall against the owned plan task rather than a forged query task；rejects a chapter outside the plan before loading study content；unlocks questions after all current cards have actual initial evidence。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
@@ -6,8 +15,22 @@ import { getStudyPlan, getStudyState, startInitialSession, saveChapterProgress }
 vi.mock('../../api/learningApi', () => ({ getStudyPlan: vi.fn(), getStudyTask: vi.fn(), getStudyState: vi.fn(), startInitialSession: vi.fn(), saveChapterProgress: vi.fn() }))
 vi.mock('../../api/tutorialApi', () => ({ getPublicTutorial: vi.fn() }))
 const tutorial = { id: 't', title: 'Tutorial', slug: 'tutorial', groups: [{ id: 'g', title: 'Group', chapters: [{ id: 'c1', slug: 'first', title: 'First' }, { id: 'outside', slug: 'outside', title: 'Outside' }, { id: 'c2', slug: 'second', title: 'Second' }] }] }
+/**
+ * 计划的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const plan = () => ({ id: 'p', tutorialId: 't', tutorialSlug: 'tutorial', name: 'Plan', status: 'ACTIVE', completedChapters: 0, totalChapters: 2, chapters: [{ chapterId: 'c1', chapterSlug: 'first', completed: false }, { chapterId: 'c2', chapterSlug: 'second', completed: false }], tasks: [{ id: 'task', chapters: [{ chapterId: 'c1' }, { chapterId: 'c2' }] }] })
+/**
+ * 状态的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const state = () => ({ chapterId: 'c1', title: 'First', bodyMarkdown: '# Body', requiredCardIds: ['card'], initialCardIds: [], completed: false, questions: [{ id: 'question' }], session: null })
+/**
+ * 挂载Reader。
+ * 主要协作：createRouter、createMemoryHistory、router.push、router.isReady、mount。
+ * @param id = 'c1' 标识c1；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function mountReader(id = 'c1') {
  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/useradmin/tutorials/:tutorialSlug/:chapterSlug', component: { template: '<div />' } }, { path: '/useradmin/learning/:pathMatch(.*)*', component: { template: '<div />' } }] })
  await router.push('/useradmin/tutorials/tutorial/first?plan=p&task=forged'); await router.isReady()

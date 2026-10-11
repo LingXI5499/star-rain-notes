@@ -1,3 +1,11 @@
+/*
+ * MediaMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：MediaAssetEntity、MediaReferenceEntity、MediaAssetMapper、MediaReferenceMapper。
+ * 阅读入口：open（打开媒体数据映射Xml）；rollback（回滚媒体数据映射Xml）；everyMediaMapperIsReachableThroughTheSession（every媒体数据映射是否ReachableThroughThe会话处理入口）；insertedAssetIsReadableBackWithEveryColumn（inserted资产是否ReadableBack包含Every列处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -30,14 +38,36 @@ import org.junit.jupiter.api.Test;
  *
  * 全程在一个不 commit 的 SqlSession 里跑，@AfterEach 回滚；最后一个用例用新连接复核。
  */
+/**
+ * 媒体数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * assets。
+     * 协作类型：<code>MediaAssetMapper</code>。
+     */
     private MediaAssetMapper assets;
+    /**
+     * references。
+     * 协作类型：<code>MediaReferenceMapper</code>。
+     */
     private MediaReferenceMapper references;
 
+    /**
+     * 打开媒体数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -45,6 +75,10 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
         references = session.getMapper(MediaReferenceMapper.class);
     }
 
+    /**
+     * 回滚媒体数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -53,12 +87,19 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * every媒体数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void everyMediaMapperIsReachableThroughTheSession() {
         assertNotNull(assets);
         assertNotNull(references);
     }
 
+    /**
+     * inserted资产是否ReadableBack包含Every列处理入口。
+     * 主要协作调用：<code>assets.insertAsset</code>、<code>assets.assetById</code>、<code>assets.assetByIdForUpdate</code>、<code>assets.countBySha256</code>、<code>assets.allStorageKeys</code>。
+     */
     @Test
     void insertedAssetIsReadableBackWithEveryColumn() {
         MediaAssetEntity asset = newAsset(unique("mapperxmlmedia") + "-image.png", "IMAGE", "PUBLIC");
@@ -95,6 +136,10 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
                 "孤儿清理用的全量 storage_key 列表里找不到刚插入的键");
     }
 
+    /**
+     * 资产分页Honours全部FourOptional筛选处理入口。
+     * 主要协作调用：<code>assets.insertAsset</code>、<code>assets.assetPageCount</code>、<code>assets.assetPage</code>。
+     */
     @Test
     void assetPageHonoursAllFourOptionalFilters() {
         String keyword = unique("mapperxmlmediapage");
@@ -125,6 +170,10 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(document.getId(), assets.assetPage(keyword, "DOCUMENT", null, null, 0, 10).get(0).getId());
     }
 
+    /**
+     * archive及RestoreFollowTheir状态Guards处理入口。
+     * 主要协作调用：<code>assets.insertAsset</code>、<code>assets.archiveAsset</code>、<code>assets.assetById</code>、<code>assets.restoreAsset</code>、<code>assets.updateAccessLevel</code>。
+     */
     @Test
     void archiveAndRestoreFollowTheirStateGuards() {
         MediaAssetEntity asset = newAsset(unique("mapperxmlmedia") + "-lifecycle.png", "IMAGE", "PUBLIC");
@@ -152,6 +201,10 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, assets.updateAccessLevel(-1L, "PUBLIC"));
     }
 
+    /**
+     * 资产分页筛选StillAgree之后Archiving处理入口。
+     * 主要协作调用：<code>assets.insertAsset</code>、<code>assets.assetPageCount</code>、<code>assets.archiveAsset</code>、<code>assets.assetPage</code>。
+     */
     @Test
     void assetPageFiltersStillAgreeAfterArchiving() {
         String keyword = unique("mapperxmlmediaarchive");
@@ -166,6 +219,10 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
                 "归档后的资产不应再出现在 ACTIVE 列表里");
     }
 
+    /**
+     * 按Exact身份读取referencesAppendList及删除。
+     * 主要协作调用：<code>assets.insertAsset</code>、<code>references.countByMediaAssetId</code>、<code>references.selectByMediaAssetId</code>、<code>references.insertReference</code>、<code>references.deleteReference</code>。
+     */
     @Test
     void referencesAppendListAndDeleteByExactIdentity() {
         MediaAssetEntity asset = newAsset(unique("mapperxmlmedia") + "-referenced.png", "IMAGE", "PROTECTED");
@@ -210,6 +267,10 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, references.countByMediaAssetId(probeId()), "别的资产不应被算进来");
     }
 
+    /**
+     * deleting全部References所属单次来源保留TheOtherSources处理入口。
+     * 主要协作调用：<code>assets.insertAsset</code>、<code>references.insertReference</code>、<code>references.countByMediaAssetId</code>、<code>references.deleteAllBySource</code>、<code>references.selectByMediaAssetId</code>。
+     */
     @Test
     void deletingAllReferencesOfOneSourceKeepsTheOtherSources() {
         MediaAssetEntity asset = newAsset(unique("mapperxmlmedia") + "-multi-source.png", "IMAGE", "PROTECTED");
@@ -230,6 +291,10 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, references.deleteAllBySource("BLOG", "POST", postId), "已经没有可删的了");
     }
 
+    /**
+     * 回滚Leaves不含媒体测试样本行集合Behind。
+     * 主要协作调用：<code>assets.insertAsset</code>、<code>references.insertReference</code>、<code>session.rollback</code>。
+     */
     @Test
     void rollbackLeavesNoMediaProbeRowsBehind() {
         MediaAssetEntity asset = newAsset(unique("mapperxmlmedia-rollback") + ".png", "IMAGE", "PUBLIC");
@@ -250,6 +315,15 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * new资产处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param originalName 原始名称；类型为 <code>String</code>
+     * @param mediaType 媒体类型；类型为 <code>String</code>
+     * @param accessLevel 媒体访问级别；类型为 <code>String</code>
+     * @return 类型为 <code>MediaAssetEntity</code> 的处理结果
+     */
     private MediaAssetEntity newAsset(String originalName, String mediaType, String accessLevel) {
         String marker = unique("mapperxmlstorage");
         MediaAssetEntity asset = new MediaAssetEntity();
@@ -269,6 +343,17 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
         return asset;
     }
 
+    /**
+     * new引用处理入口。
+     * 关键处理步骤调用 <code>reference.setMediaAssetId</code>、<code>reference.setSourceModule</code>、<code>reference.setSourceType</code>、<code>reference.setSourceId</code>。
+     *
+     * @param assetId 资产标识；类型为 <code>long</code>
+     * @param module module；类型为 <code>String</code>
+     * @param type 类型；类型为 <code>String</code>
+     * @param sourceId 来源对象的业务标识；类型为 <code>long</code>
+     * @param usageCode usage代码；类型为 <code>String</code>
+     * @return 类型为 <code>MediaReferenceEntity</code> 的处理结果
+     */
     private MediaReferenceEntity newReference(long assetId, String module, String type, long sourceId,
                                               String usageCode) {
         MediaReferenceEntity reference = new MediaReferenceEntity();
@@ -281,6 +366,13 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* storage_provider + storage_key、sha256 都是 char(64)/唯一键，拿足位数避免被空格补齐影响比较 */
+    /**
+     * 令牌64处理入口。
+     * 关键处理步骤调用 <code>seed.replaceAll</code>、<code>builder.length</code>、<code>builder.append</code>、<code>builder.substring</code>。
+     *
+     * @param seed seed；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String token64(String seed) {
         String cleaned = seed.replaceAll("[^A-Za-z0-9]", "");
         StringBuilder builder = new StringBuilder();
@@ -291,14 +383,31 @@ class MediaMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实账户撞号 */
+    /**
+     * 测试样本标识处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long probeId() {
         return 900_000_000_000L + PROBE.incrementAndGet();
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }
 
+    /**
+     * now处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() {
         return LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
     }

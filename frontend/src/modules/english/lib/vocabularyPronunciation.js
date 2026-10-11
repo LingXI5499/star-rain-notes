@@ -1,3 +1,10 @@
+/**
+ * vocabularyPronunciation.js：英语学习模块的应用配置与入口。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 组织前端装配、构建或入口行为，具体依赖和导出入口见下文。
+ * 阅读入口：pronunciationUrl（pronunciation地址的处理函数）；playProfessionalPronunciation（playProfessionalPronunciation的处理函数）；finish（finish的处理函数）；playBrowserSpeech（playBrowserSpeech的处理函数）。
+ */
+
 /*
  * 单词发音三级回退：
  *   1. 已上传的授权音频（词条自带 audios[].publicUrl）
@@ -13,19 +20,42 @@ export const PRONUNCIATION_ENDPOINT = '/api/public/english/vocabulary/pronunciat
 // 同一次会话内已经失败过的词不再重复请求，避免断网时每次点击都等一次超时
 const failed = new Set()
 
-export function pronunciationUrl(word, accent = 'US') {
+export
+  /**
+   * pronunciation地址的处理函数。
+   * 主要协作：encodeURIComponent。
+   * @param word 单词；默认值、解构字段与可选参数见函数签名。
+   * @param accent = 'US' accent；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function pronunciationUrl(word, accent = 'US') {
   return `${PRONUNCIATION_ENDPOINT}?word=${encodeURIComponent(word)}&accent=${accent}`
 }
 
 /*
  * 播放服务端代理发音。resolve(true) 表示已经开始播放，调用方不必再走浏览器合成。
  */
-export function playProfessionalPronunciation(word, onEnd, accent = 'US') {
+export
+  /**
+   * playProfessionalPronunciation的处理函数。
+   * 主要协作：failed.has、Promise.resolve、pronunciationUrl、failed.add、resolve。
+   * @param word 单词；默认值、解构字段与可选参数见函数签名。
+   * @param onEnd 触发结束；默认值、解构字段与可选参数见函数签名。
+   * @param accent = 'US' accent；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function playProfessionalPronunciation(word, onEnd, accent = 'US') {
   const key = `${word}|${accent}`
   if (!word || failed.has(key)) return Promise.resolve(false)
   return new Promise((resolve) => {
     const audio = new Audio(pronunciationUrl(word, accent))
     let settled = false
+    /**
+     * finish的处理函数。
+     * 主要协作：failed.add、resolve。
+     * @param ok ok；默认值、解构字段与可选参数见函数签名。
+     * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+     */
     const finish = (ok) => {
       if (settled) return
       settled = true
@@ -39,7 +69,16 @@ export function playProfessionalPronunciation(word, onEnd, accent = 'US') {
 }
 
 /* 兜底：浏览器合成。没有 speechSynthesis 时立刻回调，界面不会卡在「播放中」。 */
-export function playBrowserSpeech(word, onEnd, lang = 'en-US') {
+export
+  /**
+   * playBrowserSpeech的处理函数。
+   * 主要协作：onEnd、window.speechSynthesis.cancel、window.speechSynthesis.speak。
+   * @param word 单词；默认值、解构字段与可选参数见函数签名。
+   * @param onEnd 触发结束；默认值、解构字段与可选参数见函数签名。
+   * @param lang = 'en-US' langen；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function playBrowserSpeech(word, onEnd, lang = 'en-US') {
   if (!word || !('speechSynthesis' in window)) { onEnd?.(); return }
   window.speechSynthesis.cancel()
   const utterance = new SpeechSynthesisUtterance(word)

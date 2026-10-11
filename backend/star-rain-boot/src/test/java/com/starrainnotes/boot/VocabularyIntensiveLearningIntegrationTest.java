@@ -1,3 +1,11 @@
+/*
+ * VocabularyIntensiveLearningIntegrationTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：ApiException、Word、VocabularyServiceImpl。
+ * 阅读入口：getZone（读取Zone）；withZone（包含Zone处理入口）；instant（instant处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -21,14 +29,43 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 /** Real MySQL probes use a disposable schema; the application's existing database is never migrated. */
 class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSupport {
+    /**
+     * sql。
+     */
     private SqlSession sql;
+    /**
+     * 原始。
+     */
     private String original;
+    /**
+     * 数据库模式。
+     */
     private String schema;
+    /**
+     * 业务服务。
+     * 协作类型：<code>VocabularyLearningService</code>。
+     */
     private VocabularyLearningService service;
+    /**
+     * 数据映射。
+     * 协作类型：<code>VocabularyLearningMapper</code>。
+     */
     private VocabularyLearningMapper mapper;
+    /**
+     * clock。
+     */
     private final MutableClock clock = new MutableClock();
+    /**
+     * 账号。
+     * 初始值为 <code>41</code>。
+     */
     private static final long ACCOUNT = 41;
 
+    /**
+     * setup处理入口。
+     * 主要协作调用：<code>sql.getConnection</code>、<code>schema.matches</code>、<code>sql.commit</code>、<code>sql.getMapper</code>、<code>service</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @BeforeEach void setup() throws Exception {
         sql = openSession();
         Connection connection = sql.getConnection(); original = connection.getCatalog();
@@ -52,6 +89,11 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         mapper = sql.getMapper(VocabularyLearningMapper.class); service = service(sql);
         clock.at("2026-10-08T00:00:00Z");
     }
+    /**
+     * 清理词汇Intensive学习Integration。
+     * 主要协作调用：<code>sql.rollback</code>、<code>sql.getConnection</code>、<code>schema.matches</code>、<code>sql.close</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @AfterEach void cleanup() throws Exception {
         if (sql == null) { return; }
         try {
@@ -62,35 +104,97 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
             }
         } finally { sql.close(); }
     }
+    /**
+     * 业务服务处理入口。
+     * 关键处理步骤调用 <code>session.getMapper</code>、<code>org.mockito.Mockito.mock</code>。
+     *
+     * @param session 当前业务使用的会话对象；类型为 <code>SqlSession</code>
+     * @return 类型为 <code>VocabularyLearningService</code> 的处理结果
+     */
     private VocabularyLearningService service(SqlSession session) {
         VocabularyMapper content = session.getMapper(VocabularyMapper.class);
         return new VocabularyLearningService(session.getMapper(VocabularyLearningMapper.class), content,
                 new VocabularyServiceImpl(content, org.mockito.Mockito.mock(org.springframework.context.ApplicationEventPublisher.class)), new ObjectMapper().findAndRegisterModules(), clock);
     }
+    /**
+     * 应用词汇Intensive学习Integration。
+     * 主要协作调用：<code>sql.getConnection</code>。
+     *
+     * @param file 待处理的上传文件；类型为 <code>String</code>
+     * @throws SQLException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private void apply(String file) throws SQLException {
         ScriptUtils.executeSqlScript(sql.getConnection(), new EncodedResource(new ClassPathResource("db/migration/" + file), "UTF-8"));
     }
+    /**
+     * 添加Words。
+     * 主要协作调用：<code>sql.getConnection</code>。
+     *
+     * @param first 首次；类型为 <code>int</code>
+     * @param last 最近；类型为 <code>int</code>
+     * @throws SQLException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private void addWords(int first, int last) throws SQLException {
         try (PreparedStatement statement = sql.getConnection().prepareStatement("INSERT INTO sr_english_vocabulary_word(id,theme_id,word,translation,examples,sort_order) VALUES(?,1,?,'释义','[]',?)")) {
             for (int i = first; i <= last; i++) { statement.setInt(1, i); statement.setString(2, "probe" + i); statement.setInt(3, i); statement.addBatch(); }
             statement.executeBatch();
         }
     }
+    /**
+     * 全部处理入口。
+     * 关键处理步骤调用 <code>selection.setThemeId</code>、<code>selection.setSelectAllMatched</code>。
+     * @return 类型为 <code>Selection</code> 的处理结果
+     */
     private Selection all() { Selection selection = new Selection(); selection.setThemeId(1L); selection.setSelectAllMatched(true); return selection; }
+    /**
+     * 预览词汇Intensive学习Integration。
+     * 主要协作调用：<code>service.preview</code>。
+     *
+     * @param selection selection；类型为 <code>Selection</code>
+     * @return 类型为 <code>Selection</code> 的处理结果
+     */
     private Selection preview(Selection selection) {
         Preview preview = service.preview(ACCOUNT, selection, 1, 24);
         selection.setExpectedRevision(preview.getExpectedRevision()); selection.setPreviewFingerprint(preview.getPreviewFingerprint()); return selection;
     }
+    /**
+     * 确认全部。
+     * 主要协作调用：<code>service.confirm</code>。
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     private Plan confirmAll() { return service.confirm(ACCOUNT, preview(all())); }
+    /**
+     * 评分处理入口。
+     * 关键处理步骤调用 <code>request.setReviewSessionId</code>、<code>UUID.randomUUID</code>、<code>request.setDirection</code>、<code>request.setRating</code>。
+     *
+     * @param direction direction；类型为 <code>String</code>
+     * @param rating 评分；类型为 <code>String</code>
+     * @param source 来源；类型为 <code>String</code>
+     * @param revision 修订；类型为 <code>Long</code>
+     * @return 类型为 <code>RatingRequest</code> 的处理结果
+     */
     private RatingRequest rating(String direction, String rating, String source, Long revision) {
         RatingRequest request = new RatingRequest(); request.setReviewSessionId(UUID.randomUUID().toString()); request.setDirection(direction);
         request.setRating(rating); request.setSource(source); request.setPlanRevision(revision); request.setAudioPlayed("AUDIO_TO_BOTH".equals(direction)); return request;
     }
+    /**
+     * 统计词汇Intensive学习Integration。
+     * 主要协作调用：<code>sql.getConnection</code>。
+     *
+     * @param table table；类型为 <code>String</code>
+     * @return 类型为 <code>int</code> 的处理结果
+     * @throws SQLException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private int count(String table) throws SQLException {
         assertTrue(Set.of("sr_english_vocabulary_memory", "sr_english_vocabulary_mode_memory", "sr_english_vocabulary_review_log", "sr_english_vocabulary_plan_item", "sr_english_vocabulary_rating_day").contains(table));
         try (Statement statement = sql.getConnection().createStatement(); ResultSet result = statement.executeQuery("SELECT COUNT(*) FROM " + table)) { assertTrue(result.next()); return result.getInt(1); }
     }
 
+    /**
+     * migration及预览RetainLegacyFacts不含FabricatedRatings处理入口。
+     * 主要协作调用：<code>service.states</code>、<code>sql.getMapper</code>、<code>service.preview</code>、<code>service.items</code>、<code>service.reviewSummary</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void migrationAndPreviewRetainLegacyFactsWithoutFabricatedRatings() throws Exception {
         State legacy = service.states(ACCOUNT, List.of(45L)).getFirst(); assertEquals(19, legacy.getMemoryCount()); assertNull(legacy.getMasteryRank());
         assertEquals(0, legacy.getModeMemory().getFirst().getRatingCount()); assertEquals(1, count("sr_english_vocabulary_review_log"));
@@ -103,6 +207,10 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         assertEquals(1, count("sr_english_vocabulary_memory"));
     }
 
+    /**
+     * threeRounds及默认入口UseEarliestIncompleteMode及分组处理入口。
+     * 主要协作调用：<code>service.items</code>、<code>service.plan</code>、<code>service.rate</code>、<code>clock.at</code>、<code>service.states</code>。
+     */
     @Test void threeRoundsAndDefaultEntryUseEarliestIncompleteModeAndGroup() {
         Plan plan = confirmAll();
         service.items(ACCOUNT, 1, 3, 0, 100); assertEquals(1, service.plan(ACCOUNT).getNextDefaultEntry().getGroupNo());
@@ -119,6 +227,11 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         assertEquals(2, service.plan(ACCOUNT).getNextDefaultEntry().getGroupNo());
     }
 
+    /**
+     * replacement修订及DeletionNeverRemove记忆或Logs处理入口。
+     * 主要协作调用：<code>service.rate</code>、<code>service.confirm</code>、<code>service.cancel</code>、<code>service.plan</code>、<code>service.states</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void replacementRevisionAndDeletionNeverRemoveMemoryOrLogs() throws Exception {
         confirmAll(); service.rate(ACCOUNT, 1, rating("EN_TO_ZH", "KNOW", "PLAN", 1L));
         Selection selection = new Selection(); selection.setWordIds(List.of(2L)); preview(selection);
@@ -131,6 +244,11 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         assertEquals(1, service.states(ACCOUNT, List.of(1L)).getFirst().getMemoryCount());
     }
 
+    /**
+     * stableFingerprintIncludes完整FilteredSelection及内容Changes处理入口。
+     * 主要协作调用：<code>service.preview</code>、<code>sql.getConnection</code>、<code>service.confirm</code>、<code>mapper.item</code>、<code>service.words</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void stableFingerprintIncludesWholeFilteredSelectionAndContentChanges() throws Exception {
         Selection selection = all(); selection.setExcludedWordIds(List.of(2L, 45L)); preview(selection);
         assertEquals(43, service.preview(ACCOUNT, selection, 2, 24).getTotalWords());
@@ -142,6 +260,10 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         filter.setLearned("YES"); assertEquals(0, service.words(ACCOUNT, filter, 1, 24).getTotal());
     }
 
+    /**
+     * same日SpamCannotGraduate及Cross日GraduationConsolidatesUntil失败处理入口。
+     * 主要协作调用：<code>service.rate</code>、<code>service.states</code>、<code>clock.at</code>。
+     */
     @Test void sameDaySpamCannotGraduateAndCrossDayGraduationConsolidatesUntilFailure() {
         for (int round = 0; round < 4; round++) for (String direction : VocabularyMasteryCalculator.DIRECTIONS) service.rate(ACCOUNT, 1, rating(direction, "KNOW", "FREE", null));
         assertEquals("SKILLED", service.states(ACCOUNT, List.of(1L)).getFirst().getMasteryRank());
@@ -155,6 +277,11 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         assertEquals(300, service.rate(ACCOUNT, 1, rating("AUDIO_TO_BOTH", "FORGOT", "FREE", null)).getIntervalSeconds());
     }
 
+    /**
+     * idempotentReplayChecksEvery提交内容字段及Partial写入回滚处理入口。
+     * 主要协作调用：<code>service.rate</code>、<code>sql.commit</code>、<code>clock.at</code>、<code>sql.rollback</code>、<code>mapper.lockMemory</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void idempotentReplayChecksEveryPayloadFieldAndPartialWritesRollback() throws Exception {
         RatingRequest request = rating("EN_TO_ZH", "KNOW", "FREE", null); RatingResult first = service.rate(ACCOUNT, 1, request); sql.commit();
         clock.at("2026-10-08T01:00:00Z"); RatingResult replay = service.rate(ACCOUNT, 1, request);
@@ -166,6 +293,11 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         assertNull(mapper.lockMemory(ACCOUNT, 3));
     }
 
+    /**
+     * resizePreservesStarted分组及已删除内容CanBeSkipped不含评分处理入口。
+     * 主要协作调用：<code>service.rate</code>、<code>service.resize</code>、<code>service.items</code>、<code>sql.getConnection</code>、<code>sql.clearCache</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void resizePreservesStartedGroupAndDeletedContentCanBeSkippedWithoutRating() throws Exception {
         confirmAll(); service.rate(ACCOUNT, 1, rating("EN_TO_ZH", "KNOW", "PLAN", 1L));
         RevisionRequest resize = new RevisionRequest(); resize.setExpectedRevision(1); resize.setBatchSize(10);
@@ -177,6 +309,11 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         service.skipMissing(ACCOUNT, 2, 2); assertEquals(7, mapper.item(ACCOUNT, 2).getDoneMask()); assertEquals(2, count("sr_english_vocabulary_review_log"));
     }
 
+    /**
+     * concurrentModes及会话ReplayDo不LoseRatings处理入口。
+     * 主要协作调用：<code>sql.commit</code>、<code>sql.clearCache</code>、<code>sql.rollback</code>、<code>service.states</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void concurrentModesAndSessionReplayDoNotLoseRatings() throws Exception {
         sql.commit(true);
         RatingRequest en = rating("EN_TO_ZH", "KNOW", "FREE", null), zh = rating("ZH_TO_EN", "FORGOT", "FREE", null);
@@ -194,6 +331,15 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         }
         sql.clearCache(); sql.rollback(true); assertEquals(3, service.states(ACCOUNT, List.of(1L)).getFirst().getMemoryCount()); assertEquals(4, count("sr_english_vocabulary_review_log"));
     }
+    /**
+     * rateConcurrent处理入口。
+     * 主要协作调用：<code>service</code>。
+     *
+     * @param gate gate；类型为 <code>CountDownLatch</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>RatingRequest</code>
+     * @return 类型为 <code>RatingResult</code> 的处理结果
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     private RatingResult rateConcurrent(CountDownLatch gate, RatingRequest request) throws Exception {
         try (SqlSession other = openSession()) {
             other.getConnection().setCatalog(schema); gate.await(10, TimeUnit.SECONDS);
@@ -201,6 +347,11 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         }
     }
 
+    /**
+     * tenThousandWordsThirtyThousandDirectionsUseBoundedIndexedQueue及Seek处理入口。
+     * 主要协作调用：<code>service.plan</code>、<code>service.items</code>、<code>sql.getConnection</code>、<code>service.reviewSummary</code>、<code>service.queue</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void tenThousandWordsThirtyThousandDirectionsUseBoundedIndexedQueueAndSeek() throws Exception {
         addWords(46, 10000); confirmAll(); assertEquals(500, service.plan(ACCOUNT).getTotalGroups()); assertEquals(20, service.items(ACCOUNT, 1, 400, 0, 100).size());
         try (Statement statement = sql.getConnection().createStatement()) {
@@ -216,11 +367,39 @@ class VocabularyIntensiveLearningIntegrationTest extends MapperXmlIntegrationSup
         for (var card : next.getItems()) assertFalse(keys.contains(card.getWord().getId()+":"+card.getDirection()));
         assertEquals(20, service.queue(42, 20, null).getItems().size()); assertEquals(1, count("sr_english_vocabulary_review_log"));
     }
+    /**
+     * MutableClock，属于应用启动模块。
+     * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+     */
     private static class MutableClock extends Clock {
+        /**
+         * instant。
+         */
         private final AtomicReference<Instant> instant = new AtomicReference<>(Instant.parse("2026-10-08T00:00:00Z"));
+        /**
+         * 时间处理入口。
+         * 主要协作调用：<code>instant.set</code>。
+         *
+         * @param value 值；类型为 <code>String</code>
+         */
         void at(String value) { instant.set(Instant.parse(value)); }
+        /**
+         * 读取Zone。
+         * @return 类型为 <code>ZoneId</code> 的处理结果
+         */
         @Override public ZoneId getZone() { return ZoneOffset.UTC; }
+        /**
+         * 包含Zone处理入口。
+         *
+         * @param zone zone；类型为 <code>ZoneId</code>
+         * @return 类型为 <code>Clock</code> 的处理结果
+         */
         @Override public Clock withZone(ZoneId zone) { return this; }
+        /**
+         * instant处理入口。
+         * 主要协作调用：<code>instant.get</code>。
+         * @return 类型为 <code>Instant</code> 的处理结果
+         */
         @Override public Instant instant() { return instant.get(); }
     }
 }

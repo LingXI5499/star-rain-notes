@@ -1,3 +1,11 @@
+/*
+ * SeoCoreTest：公开页面与 SEO模块的测试文件。
+ * 业务范围：公开 HTML 快照、规范地址、站点地图和搜索引擎通知。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CanonicalUrlResolver、SeoProperties、SeoPageMapper、SeoHtmlRenderer、SeoPageModel、SitemapService、SitemapServiceImpl。
+ * 阅读入口：canonicalUsesConfiguredOriginAndRejectsUnsafeRoute（规范UsesConfigured来源及拒绝不安全路由处理入口）；robotsIsPlainTextWithConfiguredSitemap（robots是否纯文本文本包含ConfiguredSitemap处理入口）；htmlEscapesUntrustedContentAndKeepsCoreText（HTMLEscapesUntrusted内容及保留Core文本处理入口）；sitemapEscapesCanonicalUrls（sitemapEscapes规范Urls处理入口）。
+ */
+
 package com.starrainnotes.seo;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,7 +27,15 @@ import com.starrainnotes.seo.api.dto.SeoPageSnapshot;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * SEOCore测试，属于公开页面与 SEO模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class SeoCoreTest {
+    /**
+     * 规范UsesConfigured来源及拒绝不安全路由处理入口。
+     * 关键处理步骤调用 <code>config.setPublicBaseUrl</code>、<code>service.canonical</code>。
+     */
     @Test
     void canonicalUsesConfiguredOriginAndRejectsUnsafeRoute() {
         SeoProperties config = new SeoProperties();
@@ -30,6 +46,10 @@ class SeoCoreTest {
         assertThrows(RuntimeException.class, () -> service.canonical("/blog?host=attacker.test"));
     }
 
+    /**
+     * robots是否纯文本文本包含ConfiguredSitemap处理入口。
+     * 关键处理步骤调用 <code>config.setPublicBaseUrl</code>、<code>content.contains</code>、<code>content.endsWith</code>。
+     */
     @Test
     void robotsIsPlainTextWithConfiguredSitemap() {
         SeoProperties config = new SeoProperties();
@@ -40,6 +60,10 @@ class SeoCoreTest {
         assertTrue(content.endsWith("Sitemap: https://example.org/sitemap.xml\n"));
     }
 
+    /**
+     * HTMLEscapesUntrusted内容及保留Core文本处理入口。
+     * 关键处理步骤调用 <code>SeoPageModel.builder</code>、<code>html.contains</code>。
+     */
     @Test
     void htmlEscapesUntrustedContentAndKeepsCoreText() {
         String html = new SeoHtmlRenderer().render(SeoPageModel.builder()
@@ -56,6 +80,10 @@ class SeoCoreTest {
         assertFalse(html.contains("<img src=x"));
     }
 
+    /**
+     * sitemapEscapes规范Urls处理入口。
+     * 关键处理步骤调用 <code>page.setCanonicalUrl</code>、<code>mapper.activePages</code>、<code>List.of</code>、<code>xml.contains</code>。
+     */
     @Test
     void sitemapEscapesCanonicalUrls() {
         SeoPageMapper mapper = mock(SeoPageMapper.class);

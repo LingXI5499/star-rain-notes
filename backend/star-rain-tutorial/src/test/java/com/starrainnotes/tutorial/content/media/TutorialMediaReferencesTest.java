@@ -1,3 +1,11 @@
+/*
+ * TutorialMediaReferencesTest：教程与学习模块的测试文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：MediaReferenceApi、MediaReferenceCommand、TutorialContentMediaParser。
+ * 阅读入口：draftAndFrozenRevisionKeepIndependentMediaReferences（草稿及Frozen修订KeepIndependent媒体References处理入口）；onlyLocalContentUrlsBecomeReferences（onlyLocal内容UrlsBecomeReferences处理入口）；workspaceProtectsMediaUsedByCardsAndQuestionsIncludingDisabledDraftContent（按卡片集合及问题集合Including已禁用草稿内容读取workspaceProtects媒体Used）。
+ */
+
 package com.starrainnotes.tutorial.content.media;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -13,7 +21,15 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+/**
+ * 教程媒体References测试，属于教程与学习模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class TutorialMediaReferencesTest {
+    /**
+     * 草稿及Frozen修订KeepIndependent媒体References处理入口。
+     * 关键处理步骤调用 <code>references.replaceChapter</code>、<code>references.attachRevision</code>、<code>List.of</code>、<code>times</code>。
+     */
     @Test
     void draftAndFrozenRevisionKeepIndependentMediaReferences() {
         MediaReferenceApi media = mock(MediaReferenceApi.class);
@@ -33,6 +49,10 @@ class TutorialMediaReferencesTest {
         assertThat(attached).extracting(MediaReferenceCommand::getMediaAssetId).containsExactly(12L, 12L);
     }
 
+    /**
+     * onlyLocal内容UrlsBecomeReferences处理入口。
+     * 关键处理步骤调用 <code>TutorialContentMediaParser.extractMediaAssetIds</code>。
+     */
     @Test
     void onlyLocalContentUrlsBecomeReferences() {
         assertThat(TutorialContentMediaParser.extractMediaAssetIds("""
@@ -41,6 +61,10 @@ class TutorialMediaReferencesTest {
                 ![图2](/api/media/assets/7/content)
                 """)).containsExactly(7L);
     }
+    /**
+     * 按卡片集合及问题集合Including已禁用草稿内容读取workspaceProtects媒体Used。
+     * 关键处理步骤调用 <code>card.setStatus</code>、<code>card.setBackMarkdown</code>、<code>question.setReferenceAnswer</code>、<code>org.mockito.Mockito.when</code>。
+     */
     @Test
     void workspaceProtectsMediaUsedByCardsAndQuestionsIncludingDisabledDraftContent() {
         var media=mock(MediaReferenceApi.class);

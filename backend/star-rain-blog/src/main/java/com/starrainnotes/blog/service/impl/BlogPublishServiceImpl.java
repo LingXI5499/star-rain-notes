@@ -1,3 +1,11 @@
+/*
+ * BlogPublishServiceImpl：博客模块的业务实现文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：CurrentActorApi、BlogLimits、BlogPostEntity、BlogPostStatus、BlogPostPublishedEvent、BlogPostWithdrawnEvent、BlogAccessDeniedException。
+ * 阅读入口：publish（发布博客发布）；withdraw（撤回博客发布）；restore（恢复博客发布）；afterCommit（之后Commit处理入口）。
+ */
+
 package com.starrainnotes.blog.service.impl;
 
 import com.starrainnotes.account.api.CurrentActorApi;
@@ -40,16 +48,46 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  * 这里选后者 —— 停用标签后历史文章仍能继续发布，新绑定则在绑定环节就被
  * BLOG_TAG_DISABLED 拦下。否则“停用某标签”会连带让所有用过它的老文章无法重新发布。
  */
+/**
+ * 博客发布业务服务实现，属于博客模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class BlogPublishServiceImpl implements BlogPublishService {
 
+    /**
+     * 角色。
+     */
     private static final String SUPER_ADMIN_ROLE = "SUPER_ADMIN";
 
+    /**
+     * 文章数据映射。
+     * 协作类型：<code>BlogPostMapper</code>。
+     */
     private final BlogPostMapper postMapper;
+    /**
+     * 媒体资产接口。
+     * 协作类型：<code>MediaAssetApi</code>。
+     */
     private final MediaAssetApi mediaAssetApi;
+    /**
+     * 提供当前认证操作者身份的跨模块接口。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi currentActorApi;
+    /**
+     * 事件发布器。
+     */
     private final ApplicationEventPublisher eventPublisher;
 
+    /**
+     * 构造BlogPublishServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param postMapper 文章数据映射；类型为 <code>BlogPostMapper</code>
+     * @param mediaAssetApi 媒体资产接口；类型为 <code>MediaAssetApi</code>
+     * @param currentActorApi 提供当前认证操作者身份的跨模块接口；类型为 <code>CurrentActorApi</code>
+     * @param eventPublisher 事件发布器；类型为 <code>ApplicationEventPublisher</code>
+     */
     public BlogPublishServiceImpl(BlogPostMapper postMapper,
                                   MediaAssetApi mediaAssetApi,
                                   CurrentActorApi currentActorApi,
@@ -60,6 +98,14 @@ public class BlogPublishServiceImpl implements BlogPublishService {
         this.eventPublisher = eventPublisher;
     }
 
+    /**
+     * 发布博客发布。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.publishPost</code>、<code>postMapper.postById</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void publish(Long postId) {
@@ -83,6 +129,14 @@ public class BlogPublishServiceImpl implements BlogPublishService {
                 .build());
     }
 
+    /**
+     * 撤回博客发布。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.withdrawPost</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void withdraw(Long postId) {
@@ -103,6 +157,14 @@ public class BlogPublishServiceImpl implements BlogPublishService {
                 .build());
     }
 
+    /**
+     * 恢复博客发布。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.publishPost</code>、<code>postMapper.postById</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void restore(Long postId) {
@@ -130,6 +192,12 @@ public class BlogPublishServiceImpl implements BlogPublishService {
     // 内部工具
     // ------------------------------------------------------------------
 
+    /**
+     * 检查所需Super后台。
+     * 主要协作调用：<code>currentActorApi.currentOptional</code>。
+     * 实现中的显式失败类型包括 <code>BlogAccessDeniedException</code>；具体触发条件见对应分支。
+     * @return 类型为 <code>Long</code> 的处理结果
+     */
     private Long requireSuperAdmin() {
         CurrentActorApi.CurrentActor actor = currentActorApi.currentOptional()
                 .orElseThrow(BlogAccessDeniedException::new);
@@ -139,6 +207,14 @@ public class BlogPublishServiceImpl implements BlogPublishService {
         return actor.getAccountId();
     }
 
+    /**
+     * 检查所需文章面向更新。
+     * 主要协作调用：<code>postMapper.postByIdForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogPostEntity</code> 的处理结果
+     */
     private BlogPostEntity requirePostForUpdate(Long postId) {
         BlogPostEntity post = postId == null ? null : postMapper.postByIdForUpdate(postId);
         if (post == null) {
@@ -153,6 +229,14 @@ public class BlogPublishServiceImpl implements BlogPublishService {
      * 派生写在这里，而不是要求作者先调一次 PATCH：
      * 摘要对“能否发布”不是硬条件（正文非空才是），但它决定列表卡片与 meta description 的观感，
      * 顺手补齐比逼作者重复劳动更可能被长期遵守。
+     */
+    /**
+     * 校验面向发布。
+     * 主要协作调用：<code>postMapper.updatePostMeta</code>、<code>mediaAssetApi.assertUsable</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostTitleInvalidException</code>、<code>BlogPostSlugInvalidException</code>、<code>BlogPostContentEmptyException</code>、<code>BlogPostSummaryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param post 文章；类型为 <code>BlogPostEntity</code>
+     * @param actorId 操作者标识；类型为 <code>Long</code>
      */
     private void validateForPublish(BlogPostEntity post, Long actorId) {
         if (!BlogTextRules.hasText(post.getTitle())) {
@@ -196,12 +280,27 @@ public class BlogPublishServiceImpl implements BlogPublishService {
      * 若当前没有活跃事务（例如被单测直接调用），立即发布：这样单元测试不需要
      * 额外搭事务，而生产路径上依然保证“先提交、后通知”。
      */
+    /**
+     * 事件之后Commit处理入口。
+     * 主要协作调用：<code>eventPublisher.publishEvent</code>。
+     *
+     * @param event 事件；类型为 <code>Object</code>
+     */
     private void eventAfterCommit(Object event) {
         if (!TransactionSynchronizationManager.isSynchronizationActive()) {
             eventPublisher.publishEvent(event);
             return;
         }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
+    /**
+     * 当前调用使用的匿名协作实现，属于博客模块。
+     * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+     */
+    {
+            /**
+             * 之后Commit处理入口。
+             * 关键处理步骤调用 <code>eventPublisher.publishEvent</code>。
+             */
             @Override
             public void afterCommit() {
                 eventPublisher.publishEvent(event);

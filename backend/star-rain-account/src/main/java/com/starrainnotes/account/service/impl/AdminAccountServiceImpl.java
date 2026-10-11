@@ -1,3 +1,11 @@
+/*
+ * AdminAccountServiceImpl：账号模块的业务实现文件。
+ * 业务范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：AccountEntity、RoleEntity、AdminInvitationEntity、AccountAuditEntity、CreateAdminInvitationDTO、AcceptAdminInvitationDTO、AccountStatusDTO。
+ * 阅读入口：accounts（账号集合处理入口）；changeStatus（change状态处理入口）；createInvitation（创建邀请）；acceptInvitation（接受邀请）。
+ */
+
 package com.starrainnotes.account.service.impl;
 
 import com.starrainnotes.account.entity.AccountEntity;
@@ -28,14 +36,42 @@ import java.util.Set;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 后台账号业务服务实现，属于账号模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class AdminAccountServiceImpl implements AdminAccountService {
 
+    /**
+     * 数据映射。
+     * 协作类型：<code>AccountMapper</code>。
+     */
     private final AccountMapper mapper;
+    /**
+     * 身份。
+     * 协作类型：<code>AccountIdentityService</code>。
+     */
     private final AccountIdentityService identity;
+    /**
+     * 邮件。
+     * 协作类型：<code>AccountMailService</code>。
+     */
     private final AccountMailService mail;
+    /**
+     * 审计。
+     * 协作类型：<code>AccountAuditService</code>。
+     */
     private final AccountAuditService audit;
 
+    /**
+     * 构造AdminAccountServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param mapper 数据映射；类型为 <code>AccountMapper</code>
+     * @param identity 身份；类型为 <code>AccountIdentityService</code>
+     * @param mail 邮件；类型为 <code>AccountMailService</code>
+     * @param audit 审计；类型为 <code>AccountAuditService</code>
+     */
     public AdminAccountServiceImpl(AccountMapper mapper, AccountIdentityService identity,
                                    AccountMailService mail, AccountAuditService audit) {
         this.mapper = mapper;
@@ -44,6 +80,18 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         this.audit = audit;
     }
 
+    /**
+     * 账号集合处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.accountPageCount</code>、<code>mapper.accountPage</code>、<code>mapper.roleCodes</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @param keyword 关键词；类型为 <code>String</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @return 类型为 <code>PageResult&lt;AdminAccountVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<AdminAccountVO> accounts(int page, int pageSize, String keyword, String status) {
@@ -62,6 +110,15 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         return new PageResult<>(items, total, page, pageSize);
     }
 
+    /**
+     * change状态处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.lockSuperAdminRole</code>、<code>mapper.roleCodes</code>、<code>mapper.activeSuperAdminCount</code>、<code>mapper.updateStatus</code>、<code>mapper.revokePendingInvitations</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param targetId 被处理或审核的目标对象标识；类型为 <code>String</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>AccountStatusDTO</code>
+     */
     @Override
     @Transactional
     public void changeStatus(String targetId, AccountStatusDTO request) {
@@ -87,6 +144,15 @@ public class AdminAccountServiceImpl implements AdminAccountService {
                 "ACTIVE".equals(request.getStatus()) ? "ACCOUNT_ENABLED" : "ACCOUNT_DISABLED");
     }
 
+    /**
+     * 创建邀请。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.roleCodes</code>、<code>mapper.pendingInvitationCount</code>、<code>identity.principal</code>、<code>mapper.insertInvitation</code>、<code>audit.success</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>CreateAdminInvitationDTO</code>
+     * @return 类型为 <code>AdminInvitationVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public AdminInvitationVO createInvitation(CreateAdminInvitationDTO request) {
@@ -118,6 +184,14 @@ public class AdminAccountServiceImpl implements AdminAccountService {
                 invitation.getExpiresAt(), mail.invitationUrl(token), target.getEmail(), "SUBMITTED");
     }
 
+    /**
+     * 接受邀请。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>identity.principal</code>、<code>mapper.invitationByHash</code>、<code>mapper.invitationByHashForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>AcceptAdminInvitationDTO</code>
+     */
     @Override
     @Transactional
     public void acceptInvitation(AcceptAdminInvitationDTO request) {
@@ -131,6 +205,13 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         accept(invitation, actorId);
     }
 
+    /**
+     * 接受邀请依据标识。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>identity.principal</code>、<code>mapper.invitationByIdForUpdate</code>。
+     *
+     * @param invitationId 邀请标识；类型为 <code>String</code>
+     */
     @Override
     @Transactional
     public void acceptInvitationById(String invitationId) {
@@ -140,6 +221,14 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         accept(invitation, actorId);
     }
 
+    /**
+     * 接受后台账号。
+     * 主要协作调用：<code>mapper.roleByCode</code>、<code>mapper.roleCodes</code>、<code>mapper.acceptInvitation</code>、<code>mapper.insertAccountRole</code>、<code>mapper.incrementAuthVersion</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param invitation 邀请；类型为 <code>AdminInvitationEntity</code>
+     * @param actorId 操作者标识；类型为 <code>long</code>
+     */
     private void accept(AdminInvitationEntity invitation, long actorId) {
         if (invitation == null) {
             throw new ApiException("INVALID_ADMIN_INVITATION", "邀请链接无效", 400);
@@ -173,6 +262,15 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         audit.success(actorId, actorId, "ADMIN_INVITATION_ACCEPTED");
     }
 
+    /**
+     * invitations处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.invitationPage</code>、<code>mapper.invitationPageCount</code>。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @return 类型为 <code>PageResult&lt;InvitationRecordVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<InvitationRecordVO> invitations(int page, int pageSize) {
@@ -181,6 +279,12 @@ public class AdminAccountServiceImpl implements AdminAccountService {
                 .map(this::invitationView).toList(), mapper.invitationPageCount(), page, pageSize);
     }
 
+    /**
+     * myInvitations处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.pendingInvitationsForAccount</code>、<code>identity.principal</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<InvitationRecordVO> myInvitations() {
@@ -188,6 +292,15 @@ public class AdminAccountServiceImpl implements AdminAccountService {
                 .map(this::invitationView).toList();
     }
 
+    /**
+     * resend邀请处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.roleCodes</code>、<code>mapper.pendingInvitationCount</code>、<code>audit.success</code>、<code>identity.principal</code>、<code>mail.invitationUrl</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param invitationId 邀请标识；类型为 <code>String</code>
+     * @return 类型为 <code>AdminInvitationVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public AdminInvitationVO resendInvitation(String invitationId) {
@@ -218,6 +331,14 @@ public class AdminAccountServiceImpl implements AdminAccountService {
                 invitation.getExpiresAt(), mail.invitationUrl(token), target.getEmail(), "SUBMITTED");
     }
 
+    /**
+     * 撤销邀请。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.revokeInvitation</code>、<code>audit.success</code>、<code>identity.principal</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param invitationId 邀请标识；类型为 <code>String</code>
+     */
     @Override
     @Transactional
     public void revokeInvitation(String invitationId) {
@@ -229,6 +350,14 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         audit.success(identity.principal().getAccountId(), invitation.getTargetAccountId(), "ADMIN_INVITATION_REVOKED");
     }
 
+    /**
+     * 移除Administrator。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.lockSuperAdminRole</code>、<code>mapper.roleCodes</code>、<code>mapper.deleteAccountRole</code>、<code>mapper.roleByCode</code>、<code>mapper.revokePendingInvitations</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param targetId 被处理或审核的目标对象标识；类型为 <code>String</code>
+     */
     @Override
     @Transactional
     public void removeAdministrator(String targetId) {
@@ -248,6 +377,14 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         audit.success(identity.principal().getAccountId(), id, "ADMIN_ROLE_REVOKED");
     }
 
+    /**
+     * locked邀请处理入口。
+     * 主要协作调用：<code>mapper.invitationById</code>、<code>mapper.invitationByIdForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param invitationId 邀请标识；类型为 <code>String</code>
+     * @return 类型为 <code>AdminInvitationEntity</code> 的处理结果
+     */
     private AdminInvitationEntity lockedInvitation(String invitationId) {
         long id = AccountRules.id(invitationId);
         AdminInvitationEntity reference = mapper.invitationById(id);
@@ -258,12 +395,26 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         return mapper.invitationByIdForUpdate(id);
     }
 
+    /**
+     * deliver邀请处理入口。
+     * 主要协作调用：<code>mail.sendInvitation</code>、<code>mapper.saveInvitationDelivery</code>。
+     *
+     * @param invitation 邀请；类型为 <code>AdminInvitationEntity</code>
+     * @param token 令牌；类型为 <code>String</code>
+     */
     private void deliverInvitation(AdminInvitationEntity invitation, String token) {
         invitation.setMailMessageId(mail.sendInvitation(invitation.getEmailSnapshot(), token));
         invitation.setLastSentAt(LocalDateTime.now(ZoneOffset.UTC));
         mapper.saveInvitationDelivery(invitation);
     }
 
+    /**
+     * 邀请View处理入口。
+     * 关键处理步骤调用 <code>invitation.getStatus</code>、<code>invitation.getExpiresAt</code>、<code>LocalDateTime.now</code>、<code>String.valueOf</code>。
+     *
+     * @param invitation 邀请；类型为 <code>AdminInvitationEntity</code>
+     * @return 类型为 <code>InvitationRecordVO</code> 的处理结果
+     */
     private InvitationRecordVO invitationView(AdminInvitationEntity invitation) {
         String status = invitation.getStatus();
         if ("PENDING".equals(status) && !invitation.getExpiresAt().isAfter(LocalDateTime.now(ZoneOffset.UTC))) {
@@ -274,6 +425,22 @@ public class AdminAccountServiceImpl implements AdminAccountService {
                 invitation.getLastSentAt(), invitation.getMailSubmissionStatus());
     }
 
+    /**
+     * audits处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.auditPageCount</code>、<code>mapper.auditPage</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param actor 当前操作对应的身份对象；类型为 <code>Long</code>
+     * @param target 目标；类型为 <code>Long</code>
+     * @param action 动作；类型为 <code>String</code>
+     * @param result 结果；类型为 <code>String</code>
+     * @param start 开始；类型为 <code>LocalDateTime</code>
+     * @param end 结束；类型为 <code>LocalDateTime</code>
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @return 类型为 <code>PageResult&lt;AccountAuditVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<AccountAuditVO> audits(Long actor, Long target, String action, String result,
@@ -300,6 +467,14 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         return new PageResult<>(items, total, page, pageSize);
     }
 
+    /**
+     * 检查所需账号面向更新。
+     * 主要协作调用：<code>mapper.accountByIdForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>long</code>
+     * @return 类型为 <code>AccountEntity</code> 的处理结果
+     */
     private AccountEntity requireAccountForUpdate(long id) {
         AccountEntity account = mapper.accountByIdForUpdate(id);
         if (account == null) {
@@ -308,6 +483,13 @@ public class AdminAccountServiceImpl implements AdminAccountService {
         return account;
     }
 
+    /**
+     * 检查分页。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     */
     private static void checkPage(int page, int pageSize) {
         if (page < 1 || page > 1_000_000 || pageSize < 1 || pageSize > 100) {
             throw new ApiException("INVALID_PAGE", "分页参数无效", 400);

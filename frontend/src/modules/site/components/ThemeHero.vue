@@ -1,4 +1,15 @@
 <script setup>
+/**
+ * ThemeHero.vue：站点模块的视图组件。
+ * 职责范围：站点品牌、首页内容和站点设置。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue。
+ * 组件输入：src、alt、focus；默认值与类型见 defineProps。
+ * 主要响应式状态：props、failed。
+ * 阅读入口：onError（响应错误）。
+ */
+
+
 import { ref } from 'vue'
 
 /*
@@ -10,6 +21,9 @@ import { ref } from 'vue'
  *
  * V1 用 `withDefaults` + TypeScript 泛型声明 props；V2 是纯 JS，改成运行时声明，语义不变。
  */
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({
   src: { type: String, required: true },
   alt: { type: String, default: '' },
@@ -17,8 +31,16 @@ const props = defineProps({
   focus: { type: String, default: 'right' },
 })
 
+/**
+ * 失败；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const failed = ref(false)
 
+/**
+ * 响应错误。
+ * 更新的响应式状态包括 failed；渲染由 Vue 的依赖跟踪触发。
+ */
 function onError() {
   failed.value = true
 }
@@ -50,6 +72,15 @@ function onError() {
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.theme-stage。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .theme-stage {
   position: absolute;
   inset: 0;
@@ -59,6 +90,9 @@ function onError() {
   background: var(--bg-page);
 }
 
+/**
+ * 样式范围：.theme-stage__image。
+ */
 .theme-stage__image {
   display: block;
   width: 100%;
@@ -67,16 +101,27 @@ function onError() {
   object-position: 78% center;
 }
 
+/**
+ * 样式范围：.theme-stage--focus-center .theme-stage__image。
+ */
 .theme-stage--focus-center .theme-stage__image {
   object-position: 62% center;
 }
 
+/**
+ * 样式范围：.theme-stage__fallback。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .theme-stage__fallback {
   width: 100%;
   height: 100%;
   background: linear-gradient(135deg, color-mix(in srgb, var(--primary) 14%, var(--bg-page)), var(--bg-page));
 }
 
+/**
+ * 样式范围：.theme-stage__veil。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .theme-stage__veil {
   position: absolute;
   inset: 0;
@@ -91,6 +136,10 @@ function onError() {
   );
 }
 
+/**
+ * 样式范围：.theme-stage__fog。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .theme-stage__fog {
   position: absolute;
   inset: auto 0 0;
@@ -99,6 +148,10 @@ function onError() {
   opacity: 0.98;
 }
 
+/**
+ * 样式范围：[data-theme='dark'] .theme-stage__veil。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 [data-theme='dark'] .theme-stage__veil {
   background: linear-gradient(
     90deg,
@@ -111,16 +164,29 @@ function onError() {
   );
 }
 
+/**
+ * 样式范围：[data-theme='dark'] .theme-stage__image。
+ */
 [data-theme='dark'] .theme-stage__image {
   filter: brightness(0.74) saturate(0.9);
 }
 
+/**
+ * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 720px) {
+  /**
+   * 样式范围：.theme-stage__image。
+   */
   .theme-stage__image {
     object-position: 70% 30%;
     opacity: 0.42;
   }
 
+  /**
+   * 样式范围：.theme-stage__veil。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
   .theme-stage__veil {
     background: linear-gradient(
       180deg,

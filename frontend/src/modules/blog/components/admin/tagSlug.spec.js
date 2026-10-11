@@ -1,3 +1,11 @@
+/**
+ * tagSlug.spec.js：博客模块的自动化测试。
+ * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、./tagSlug。
+ * 验证场景：hidden taxonomy slug compatibility；derives a valid address from English or Chinese names；submits a slug for an older backend and retries collisions；does not retry a duplicate label name。
+ */
+
 import { describe, expect, it, vi } from 'vitest'
 import { createTaxonomy, derivedSlug } from './tagSlug'
 

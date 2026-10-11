@@ -1,4 +1,15 @@
 <script setup>
+/**
+ * ChapterStudyPage.vue：教程与学习模块的页面组件。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../components/RecallSession.vue、../../components/QuestionAnswers.vue、../../../blog/components/BlogProse.vue、../../../blog/components/ReadingAside.vue。
+ * 组件输入：chapterId、tutorial；默认值与类型见 defineProps。
+ * 主要响应式状态：props、route、state、session、plan、tutorial、error、busy。
+ * 阅读入口：isComplete（判断是否Complete）；chapterRoute（章节路由的处理函数）；load（加载当前操作）；begin（begin的处理函数）；refresh（刷新当前操作）。
+ */
+
+
 import { computed, nextTick, onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import RecallSession from '../../components/RecallSession.vue'
@@ -11,33 +22,124 @@ import { scopedGroups, planChapterRoute } from '../../support/planReader'
 import { accountPath } from '../../../../shared/viewMode'
 import { errorMessage } from '../../../../shared/http'
 import '../../styles/learning.css'
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({ chapterId: [String, Number], tutorial: Object })
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute(), state = ref(null), session = ref(null), plan = ref(null), tutorial = ref(null)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref(''), busy = ref(false), loading = ref(true), outline = ref([]), drawerOpen = ref(false), article = ref(null), curriculum = ref(null)
+/**
+ * 章节标识；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const chapterId = computed(() => String(props.chapterId || route.params.chapterId))
+/**
+ * 分组列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const groups = computed(() => scopedGroups(tutorial.value || {}, plan.value))
+/**
+ * 章节列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const chapters = computed(() => groups.value.flatMap(g => g.chapters))
+/**
+ * 索引；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const index = computed(() => chapters.value.findIndex(c => String(c.id) === chapterId.value))
+/**
+ * 章节；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const chapter = computed(() => chapters.value[index.value])
+/**
+ * 分组；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const group = computed(() => groups.value.find(g => g.chapters.some(c => String(c.id) === chapterId.value)))
+/**
+ * 任务；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const task = computed(() => plan.value?.tasks?.find(t => t.chapters.some(c => String(c.chapterId) === chapterId.value)))
+/**
+ * 卡片列表Done；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const cardsDone = computed(() => {
  const done = new Set((state.value?.initialCardIds || []).map(String))
  return (state.value?.requiredCardIds || []).every(id => done.has(String(id)))
 })
+/**
+ * can学习；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const canStudy = computed(() => !plan.value || plan.value.status === 'ACTIVE')
+/**
+ * 下一项；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const next = computed(() => chapters.value.slice(index.value + 1).find(c => !isComplete(c)) || chapters.value.find(c => !isComplete(c) && String(c.id) !== chapterId.value))
+/**
+ * 上一项；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const previous = computed(() => chapters.value[index.value - 1])
+/**
+ * 字符数量；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const charCount = computed(() => (state.value?.bodyMarkdown || '').replace(/\s/g, '').length)
+/**
+ * 读取分钟；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const readMinutes = computed(() => Math.max(1, Math.ceil(charCount.value / 400)))
+/**
+ * 进度；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const progress = computed(() => plan.value ? Math.round(plan.value.completedChapters / Math.max(1, plan.value.totalChapters) * 100) : Math.round((index.value + 1) / Math.max(1, chapters.value.length) * 100))
+/**
+ * asideInfo；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const asideInfo = computed(() => [{ label: '所属教程', value: tutorial.value?.title || '' }, { label: plan.value ? '计划完成' : '目录位置', value: `${progress.value}%` }])
+/**
+ * 判断是否Complete。
+ * 主要协作：plan.value.chapters.find。
+ * @param c c；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function isComplete(c) { return plan.value?.chapters?.find(member => String(member.chapterId) === String(c.id))?.completed || (String(c.id) === chapterId.value && state.value?.completed) }
+/**
+ * 章节路由的处理函数。
+ * 主要协作：planChapterRoute、plan.value.chapters.find、accountPath。
+ * @param c c；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function chapterRoute(c) {
  if (plan.value) return planChapterRoute(plan.value, plan.value.chapters.find(member => String(member.chapterId) === String(c.id)))
  return { path: accountPath(`/learning/chapters/${c.id}`) }
 }
 let started = Date.now(), timer, loadVersion = 0
+/**
+ * 加载当前操作。
+ * 主要协作：getStudyTask、getStudyPlan、ownPlan.chapters.some、getStudyState、getPublicTutorial。
+ * 更新的响应式状态包括 loading、error、state、session、outline、plan、tutorial；渲染由 Vue 的依赖跟踪触发。
+ * 通过版本或 epoch 判断放弃过期结果，避免异步请求覆盖后来的界面状态。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
  const version = ++loadVersion; loading.value = true; error.value = ''; state.value = null; session.value = null; outline.value = []
  try {
@@ -55,12 +157,26 @@ async function load() {
  } catch (e) { if (version === loadVersion) { state.value = null; error.value = (e instanceof Error && !e.isAxiosError ? e.message : errorMessage(e)) } }
  finally { if (version === loadVersion) loading.value = false }
 }
+/**
+ * begin的处理函数。
+ * 主要协作：startInitialSession、refresh、nextTick、.scrollIntoView、document.getElementById。
+ * 更新的响应式状态包括 busy、error、session；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function begin() {
  if (busy.value || !canStudy.value) return
  busy.value = true; error.value = ''
  try { session.value = await startInitialSession(chapterId.value, task.value?.id); await refresh(); await nextTick(); document.getElementById('chapter-recall')?.scrollIntoView({ behavior: 'smooth', block: 'start' }) }
  catch (e) { error.value = (e instanceof Error && !e.isAxiosError ? e.message : errorMessage(e)) } finally { busy.value = false }
 }
+/**
+ * 刷新当前操作。
+ * 主要协作：Promise.all、getStudyState、getStudyPlan、Promise.resolve、errorMessage。
+ * 更新的响应式状态包括 state、session、plan、error；渲染由 Vue 的依赖跟踪触发。
+ * 通过版本或 epoch 判断放弃过期结果，避免异步请求覆盖后来的界面状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function refresh() {
  const id = chapterId.value, version = loadVersion
  try {
@@ -69,7 +185,20 @@ async function refresh() {
   state.value = current; session.value = current.session; if (ownPlan) plan.value = ownPlan
  } catch (e) { error.value = (e instanceof Error && !e.isAxiosError ? e.message : errorMessage(e)) }
 }
+/**
+ * 更新会话。
+ * 主要协作：refresh。
+ * 更新的响应式状态包括 session；渲染由 Vue 的依赖跟踪触发。
+ * @param s s；默认值、解构字段与可选参数见函数签名。
+ */
 function updateSession(s) { session.value = s; refresh() }
+/**
+ * 保存阅读。
+ * 主要协作：Date.now、article.value.getBoundingClientRect、saveChapterProgress、errorMessage。
+ * 更新的响应式状态包括 error；渲染由 Vue 的依赖跟踪触发。
+ * @param id = chapterId.value 标识章节标识值；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function saveReading(id = chapterId.value) {
  if (!state.value || loading.value) return
  const seconds = Math.min(1800, Math.max(0, Math.floor((Date.now() - started) / 1000))); started = Date.now()
@@ -77,8 +206,17 @@ async function saveReading(id = chapterId.value) {
  const ratio = rect ? Math.max(0, Math.min(1, (window.innerHeight - rect.top) / Math.max(rect.height, 1))) : 0
  try { await saveChapterProgress(id, { progressRatio: ratio, studySecondsDelta: seconds }) } catch (e) { error.value = (e instanceof Error && !e.isAxiosError ? e.message : errorMessage(e)) }
 }
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(() => { load(); timer = setInterval(saveReading, 30000) })
+/**
+ * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
+ */
 onBeforeUnmount(() => { clearInterval(timer); saveReading(); ++loadVersion })
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => [chapterId.value, route.query.plan, route.query.task], (_, old) => { saveReading(old?.[0]); drawerOpen.value = false; load() })
 </script>
 <template>
@@ -113,5 +251,24 @@ watch(() => [chapterId.value, route.query.plan, route.query.task], (_, old) => {
 </template>
 <style scoped src="../../styles/tutorial-reader.css" />
 <style scoped>
-#chapter-recall{scroll-margin-top:100px}.learning-reader .learning-panel{padding:20px}.learning-reader .learning-notice{margin-top:24px}.learning-reader .learning-button--primary{color:#fff}
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：#chapter-recall。
+ */
+#chapter-recall{scroll-margin-top:100px}
+  /**
+   * 样式范围：.learning-reader .learning-panel。
+   */
+  .learning-reader .learning-panel{padding:20px}
+  /**
+   * 样式范围：.learning-reader .learning-notice。
+   */
+  .learning-reader .learning-notice{margin-top:24px}
+  /**
+   * 样式范围：.learning-reader .learning-button--primary。
+   */
+  .learning-reader .learning-button--primary{color:#fff}
 </style>

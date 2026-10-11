@@ -1,11 +1,32 @@
 <script setup>
+/**
+ * LegalPage.vue：站点模块的页面组件。
+ * 职责范围：站点品牌、首页内容和站点设置。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../../shared/viewMode。
+ * 组件输入：kind；默认值与类型见 defineProps。
+ * 主要响应式状态：props、privacy、title、sections。
+ */
+
+
 import { computed } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
 
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({ kind: { type: String, required: true } })
 const { isAccount, contentPath } = useViewMode()
+/**
+ * privacy；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const privacy = computed(() => props.kind === 'privacy')
+/**
+ * 标题；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const title = computed(() => privacy.value ? '隐私政策' : '用户协议')
 // 法律说明仅使用静态文案，不读取会话、用户资料或学习记录。
 const terms = [
@@ -33,6 +54,10 @@ const accountPrivacy = [
   { title: '账号与安全审计', text: '账号名称、邮箱及密码验证信息用于注册、登录、邮箱验证和找回密码。相关安全操作记录包含操作类型、结果、时间及 IP、浏览器信息，用于账号安全和异常追溯；这些记录不在公开政策页面展示。' },
   { title: '学习记录与访问范围', text: '个人学习数据与账号关联，包括所选章节、计划状态、阅读进度、卡片评价、问题作答与答题版本、复习和学习历史。公开展示端不列出这些私人记录。管理员按职责和权限处理必要的账号或运维信息，不因展示端不同而获得任意查看私人数据的授权。' },
 ]
+/**
+ * sections；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const sections = computed(() => [
   ...(privacy.value ? privacySections : terms),
   ...(isAccount.value ? (privacy.value ? accountPrivacy : accountTerms) : []),
@@ -66,16 +91,66 @@ const sections = computed(() => [
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.legal-page。
+ */
 .legal-page { max-width: 960px; margin: 0 auto; padding: 64px 24px 80px; }
+/**
+ * 样式范围：.legal-page header。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .legal-page header { border-bottom: 1px solid var(--border); padding-bottom: 28px; }
+/**
+ * 样式范围：.legal-page h1。
+ */
 .legal-page h1 { font-size: clamp(32px, 5vw, 52px); margin: 16px 0; }
+/**
+ * 样式范围：.legal-page p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .legal-page p { color: var(--text-secondary); line-height: 1.9; margin: 14px 0; }
+/**
+ * 样式范围：.legal-page__meta。
+ */
 .legal-page__meta { font-size: 13px; }
+/**
+ * 样式范围：.legal-page nav。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .legal-page nav { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 24px; }
+/**
+ * 样式范围：.legal-page nav a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .legal-page nav a { padding: 10px 18px; border: 1px solid var(--border); border-radius: 999px; }
+/**
+ * 样式范围：.legal-page nav a[aria-current="page"]。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .legal-page nav a[aria-current="page"] { color: var(--primary); background: var(--surface); border-color: var(--primary); }
+/**
+ * 样式范围：.legal-page__content section。
+ */
 .legal-page__content section { margin-top: 32px; }
+/**
+ * 样式范围：.legal-page h2。
+ */
 .legal-page h2 { font-size: 21px; line-height: 1.5; }
+/**
+ * 样式范围：.legal-page__content a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .legal-page__content a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
-@media (max-width: 600px) { .legal-page { padding: 36px 20px 48px; } }
+/**
+ * 响应式或设备条件：(max-width: 600px)；仅在该条件成立时覆盖基础样式。
+ */
+@media (max-width: 600px) {
+  /**
+   * 样式范围：.legal-page。
+   */
+  .legal-page { padding: 36px 20px 48px; } }
 </style>

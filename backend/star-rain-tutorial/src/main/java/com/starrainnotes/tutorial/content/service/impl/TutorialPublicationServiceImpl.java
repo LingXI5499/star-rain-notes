@@ -1,3 +1,11 @@
+/*
+ * TutorialPublicationServiceImpl：教程与学习模块的业务实现文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：TutorialQuestionCardMapper、ReviewSubmissionCommand、ReviewSubmissionApi、CurrentActorApi、PageResult、TutorialCategoryEntity、TutorialChapterEntity。
+ * 阅读入口：publish（发布教程发布）；withdraw（撤回教程发布）；refreshPublished（刷新已发布）；publishChapter（发布章节）。
+ */
+
 package com.starrainnotes.tutorial.content.service.impl;
 
 import org.springframework.transaction.annotation.Isolation;
@@ -46,24 +54,89 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 教程发布业务服务实现，属于教程与学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class TutorialPublicationServiceImpl implements TutorialPublicationService {
+    /**
+     * 教程数据映射。
+     * 协作类型：<code>TutorialMapper</code>。
+     */
     private final TutorialMapper tutorialMapper;
+    /**
+     * 分类数据映射。
+     * 协作类型：<code>TutorialCategoryMapper</code>。
+     */
     private final TutorialCategoryMapper categoryMapper;
+    /**
+     * 分组数据映射。
+     * 协作类型：<code>TutorialGroupMapper</code>。
+     */
     private final TutorialGroupMapper groupMapper;
+    /**
+     * 章节数据映射。
+     * 协作类型：<code>TutorialChapterMapper</code>。
+     */
     private final TutorialChapterMapper chapterMapper;
+    /**
+     * 卡片数据映射。
+     * 协作类型：<code>TutorialKnowledgeCardMapper</code>。
+     */
     private final TutorialKnowledgeCardMapper cardMapper;
+    /**
+     * 问题数据映射。
+     * 协作类型：<code>TutorialQuestionMapper</code>。
+     */
     private final TutorialQuestionMapper questionMapper;
+    /**
+     * 问题卡片数据映射。
+     * 协作类型：<code>TutorialQuestionCardMapper</code>。
+     */
     private final TutorialQuestionCardMapper questionCardMapper;
+    /**
+     * 修订数据映射。
+     * 协作类型：<code>TutorialRevisionMapper</code>。
+     */
     private final TutorialRevisionMapper revisionMapper;
+    /**
+     * 内容业务服务。
+     * 协作类型：<code>TutorialContentService</code>。
+     */
     private final TutorialContentService contentService;
+    /**
+     * 提供当前认证操作者身份的跨模块接口。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi currentActorApi;
+    /**
+     * 项目配置的 Jackson JSON 读写器。
+     * 协作类型：<code>ObjectMapper</code>。
+     */
     private final ObjectMapper objectMapper;
+    /**
+     * 事件发布器。
+     */
     private final TutorialEventPublisher eventPublisher;
+    /**
+     * 媒体References。
+     */
     private final TutorialMediaReferences mediaReferences;
+    /**
+     * reviews。
+     * 协作类型：<code>ReviewSubmissionApi</code>。
+     */
     private final ReviewSubmissionApi reviews;
 
+    /**
+     * 检查所需不内部审核。
+     * 关键处理步骤调用 <code>tutorial.getEditingStatus</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param tutorial 教程；类型为 <code>TutorialEntity</code>
+     */
     private void requireNotInReview(TutorialEntity tutorial) {
         if ("IN_REVIEW".equals(tutorial.getEditingStatus())) {
             throw new TutorialStateException("教程审核中，请先完成或取消审核");
@@ -71,18 +144,42 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     }
 
 
+    /**
+     * 锁处理入口。
+     * 主要协作调用：<code>tutorialMapper.byIdForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialEntity</code> 的处理结果
+     */
     private TutorialEntity lock(Long id) {
         TutorialEntity row = tutorialMapper.byIdForUpdate(id);
         if (row == null) throw new TutorialNotFoundException();
         return row;
     }
 
+    /**
+     * 公开行处理入口。
+     * 主要协作调用：<code>tutorialMapper.selectPublishedBySlug</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialEntity</code> 的处理结果
+     */
     private TutorialEntity publicRow(String slug) {
         TutorialEntity row = tutorialMapper.selectPublishedBySlug(slug);
         if (row == null || row.getPublishedRevisionId() == null) throw new TutorialNotFoundException();
         return row;
     }
 
+    /**
+     * 快照处理入口。
+     * 主要协作调用：<code>objectMapper.readTree</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>、<code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param revision 修订；类型为 <code>TutorialRevisionEntity</code>
+     * @return 类型为 <code>JsonNode</code> 的处理结果
+     */
     private JsonNode snapshot(TutorialRevisionEntity revision) {
         if (revision == null) throw new TutorialNotFoundException();
         try {
@@ -92,6 +189,14 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         }
     }
 
+    /**
+     * 公开摘要处理入口。
+     * 关键处理步骤调用 <code>item.remove</code>、<code>frozen.path</code>、<code>group.path</code>、<code>chapter.path</code>。
+     *
+     * @param row 行；类型为 <code>TutorialEntity</code>
+     * @param frozen frozen；类型为 <code>JsonNode</code>
+     * @return 类型为 <code>ObjectNode</code> 的处理结果
+     */
     private ObjectNode publicSummary(TutorialEntity row, JsonNode frozen) {
         ObjectNode item = ((ObjectNode) frozen).deepCopy();
         item.remove("groups");
@@ -108,11 +213,27 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return item;
     }
 
+    /**
+     * 公开快照处理入口。
+     * 主要协作调用：<code>revisionMapper.selectById</code>。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @return 类型为 <code>JsonNode</code> 的处理结果
+     */
     private JsonNode publicSnapshot(String slug) {
         TutorialEntity row = publicRow(slug);
         return snapshot(revisionMapper.selectById(row.getPublishedRevisionId()));
     }
 
+    /**
+     * frozen章节处理入口。
+     * 关键处理步骤调用 <code>tutorial.path</code>、<code>group.path</code>、<code>chapterSlug.equals</code>、<code>chapter.path</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param tutorial 教程；类型为 <code>JsonNode</code>
+     * @param chapterSlug 章节固定链接标识；类型为 <code>String</code>
+     * @return 类型为 <code>JsonNode</code> 的处理结果
+     */
     private JsonNode frozenChapter(JsonNode tutorial, String chapterSlug) {
         for (JsonNode group : tutorial.path("groups")) {
             for (JsonNode chapter : group.path("chapters")) {
@@ -122,6 +243,15 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         throw new TutorialNotFoundException();
     }
 
+    /**
+     * 草稿快照处理入口。
+     * 主要协作调用：<code>categoryMapper.selectById</code>、<code>groupMapper.listActiveByTutorialId</code>、<code>groupMapper.listByTutorialId</code>、<code>chapterMapper.listByGroupId</code>、<code>cardMapper.listEnabledByChapterId</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param tutorial 教程；类型为 <code>TutorialEntity</code>
+     * @param requirePublishable 要求Publishable；类型为 <code>boolean</code>
+     * @return 类型为 <code>Map&lt;String, Object&gt;</code> 的处理结果
+     */
     private Map<String, Object> draftSnapshot(TutorialEntity tutorial, boolean requirePublishable) {
         TutorialCategoryEntity category = categoryMapper.selectById(tutorial.getCategoryId());
         if (category == null) throw new TutorialStateException("知识体系不存在");
@@ -175,10 +305,26 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return root;
     }
 
+    /**
+     * freeze处理入口。
+     * 主要协作调用：<code>objectMapper.valueToTree</code>。
+     *
+     * @param tutorial 教程；类型为 <code>TutorialEntity</code>
+     * @return 类型为 <code>TutorialRevisionEntity</code> 的处理结果
+     */
     private TutorialRevisionEntity freeze(TutorialEntity tutorial) {
         return freeze(tutorial, objectMapper.valueToTree(draftSnapshot(tutorial, true)));
     }
 
+    /**
+     * freeze处理入口。
+     * 主要协作调用：<code>objectMapper.writeValueAsString</code>、<code>revisionMapper.countByTutorialId</code>、<code>currentActorApi.current</code>、<code>revisionMapper.insert</code>、<code>mediaReferences.attachRevision</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>、<code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param tutorial 教程；类型为 <code>TutorialEntity</code>
+     * @param candidate candidate；类型为 <code>JsonNode</code>
+     * @return 类型为 <code>TutorialRevisionEntity</code> 的处理结果
+     */
     private TutorialRevisionEntity freeze(TutorialEntity tutorial, JsonNode candidate) {
         String json;
         try {
@@ -213,6 +359,15 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return revision;
     }
 
+    /**
+     * 发布教程发布。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tutorialMapper.update</code>、<code>eventPublisher.afterCommit</code>、<code>contentService.tutorial</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialAdminVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialAdminVO publish(Long tutorialId) {
@@ -232,6 +387,15 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return contentService.tutorial(tutorialId);
     }
 
+    /**
+     * 撤回教程发布。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>tutorialMapper.update</code>、<code>eventPublisher.afterCommit</code>、<code>contentService.tutorial</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialAdminVO</code> 的处理结果
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public TutorialAdminVO withdraw(Long tutorialId) {
@@ -249,6 +413,16 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     }
 
     // Derive from the public snapshot, never from unrelated workspace drafts.
+    /**
+     * 章节Candidate处理入口。
+     * 主要协作调用：<code>revisionMapper.selectById</code>、<code>objectMapper.valueToTree</code>。
+     * 实现中的显式失败类型包括 <code>TutorialStateException</code>；具体触发条件见对应分支。
+     *
+     * @param tutorial 教程；类型为 <code>TutorialEntity</code>
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @param remove remove；类型为 <code>boolean</code>
+     * @return 类型为 <code>ObjectNode</code> 的处理结果
+     */
     private ObjectNode chapterCandidate(TutorialEntity tutorial, Long chapterId, boolean remove) {
         ObjectNode base;
         if ("PUBLISHED".equals(tutorial.getPublicationStatus()) && tutorial.getPublishedRevisionId() != null) {
@@ -304,6 +478,14 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return base;
     }
 
+    /**
+     * 章节教程处理入口。
+     * 主要协作调用：<code>chapterMapper.selectById</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @return 类型为 <code>TutorialEntity</code> 的处理结果
+     */
     private TutorialEntity chapterTutorial(Long chapterId) {
         TutorialChapterEntity chapter = chapterMapper.selectById(chapterId);
         if (chapter == null) throw new TutorialNotFoundException();
@@ -312,6 +494,12 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return tutorial;
     }
 
+    /**
+     * mark已发布章节列表处理入口。
+     * 主要协作调用：<code>chapterMapper.updateStatus</code>。
+     *
+     * @param revision 修订；类型为 <code>TutorialRevisionEntity</code>
+     */
     private void markPublishedChapters(TutorialRevisionEntity revision) {
         for (JsonNode group : snapshot(revision).path("groups")) {
             for (JsonNode chapter : group.path("chapters")) {
@@ -320,6 +508,13 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         }
     }
 
+    /**
+     * activate处理入口。
+     * 主要协作调用：<code>tutorialMapper.update</code>、<code>eventPublisher.afterCommit</code>。
+     *
+     * @param tutorial 教程；类型为 <code>TutorialEntity</code>
+     * @param revision 修订；类型为 <code>TutorialRevisionEntity</code>
+     */
     private void activate(TutorialEntity tutorial, TutorialRevisionEntity revision) {
         markPublishedChapters(revision);
         tutorial.setPublishedRevisionId(revision.getId());
@@ -331,6 +526,15 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
                 tutorial.getTitle(), "PUBLISHED", tutorial.getPublishedAt()));
     }
 
+    /**
+     * 刷新已发布。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>revisionMapper.selectById</code>、<code>objectMapper.valueToTree</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @param operation 操作；类型为 <code>String</code>
+     * @param changedChapterId changed章节标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void refreshPublished(Long tutorialId, String operation, Long changedChapterId) {
@@ -367,6 +571,13 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         if (!candidate.equals(previous)) activate(tutorial, freeze(tutorial, candidate));
     }
 
+    /**
+     * 发布章节。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>chapterMapper.updateStatus</code>、<code>chapterMapper.bumpVersion</code>。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void publishChapter(Long chapterId) {
@@ -376,6 +587,13 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         chapterMapper.bumpVersion(chapterId);
     }
 
+    /**
+     * 撤回章节。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>chapterMapper.updateStatus</code>、<code>chapterMapper.bumpVersion</code>。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void withdrawChapter(Long chapterId) {
@@ -385,6 +603,15 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         chapterMapper.bumpVersion(chapterId);
     }
 
+    /**
+     * 提交审核。
+     * 事务声明：<code>@Transactional(isolation = Isolation.READ_COMMITTED)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>chapterMapper.selectById</code>、<code>reviews.submit</code>、<code>currentActorApi.current</code>、<code>tutorialMapper.update</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public void submitReview(Long tutorialId, Long chapterId) {
@@ -404,6 +631,14 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         tutorialMapper.update(tutorial);
     }
 
+    /**
+     * 预览教程。
+     * 主要协作调用：<code>tutorialMapper.selectById</code>、<code>objectMapper.valueToTree</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @return 类型为 <code>JsonNode</code> 的处理结果
+     */
     @Override
     public JsonNode previewTutorial(Long tutorialId) {
         TutorialEntity tutorial = tutorialMapper.selectById(tutorialId);
@@ -411,6 +646,14 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return objectMapper.valueToTree(draftSnapshot(tutorial, false));
     }
 
+    /**
+     * 预览章节。
+     * 主要协作调用：<code>chapterMapper.selectById</code>、<code>objectMapper.valueToTree</code>。
+     * 实现中的显式失败类型包括 <code>TutorialNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @return 类型为 <code>JsonNode</code> 的处理结果
+     */
     @Override
     public JsonNode previewChapter(Long chapterId) {
         TutorialChapterEntity chapter = chapterMapper.selectById(chapterId);
@@ -424,6 +667,11 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return objectMapper.valueToTree(row);
     }
 
+    /**
+     * 公开Categories处理入口。
+     * 主要协作调用：<code>tutorialMapper.listPublishedWithRevision</code>、<code>revisionMapper.selectById</code>、<code>categoryMapper.listOrdered</code>、<code>objectMapper.valueToTree</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     public List<JsonNode> publicCategories() {
         Map<String, Long> publishedCounts = new LinkedHashMap<>();
@@ -442,6 +690,17 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
                 }).toList();
     }
 
+    /**
+     * 公开Tutorials处理入口。
+     * 主要协作调用：<code>tutorialMapper.listPublishedWithRevision</code>、<code>revisionMapper.selectById</code>。
+     * 实现中的显式失败类型包括 <code>TutorialInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param categoryId 分类标识；类型为 <code>Long</code>
+     * @param search 搜索；类型为 <code>String</code>
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @return 类型为 <code>PageResult&lt;JsonNode&gt;</code> 的处理结果
+     */
     @Override
     public PageResult<JsonNode> publicTutorials(Long categoryId, String search, int page, int pageSize) {
         if (page < 1 || pageSize < 1 || pageSize > 100) throw new TutorialInvalidRequestException("分页参数不合法");
@@ -456,6 +715,13 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return PageResult.<JsonNode>builder().items(items).total(rows.size()).page(page).pageSize(pageSize).build();
     }
 
+    /**
+     * 公开教程处理入口。
+     * 主要协作调用：<code>revisionMapper.selectById</code>。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @return 类型为 <code>JsonNode</code> 的处理结果
+     */
     @Override
     public JsonNode publicTutorial(String slug) {
         TutorialEntity row = publicRow(slug);
@@ -474,6 +740,14 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         return detail;
     }
 
+    /**
+     * 公开章节处理入口。
+     * 关键处理步骤调用 <code>frozenChapter</code>、<code>publicSnapshot</code>、<code>result.path</code>。
+     *
+     * @param tutorialSlug 教程固定链接标识；类型为 <code>String</code>
+     * @param chapterSlug 章节固定链接标识；类型为 <code>String</code>
+     * @return 类型为 <code>JsonNode</code> 的处理结果
+     */
     @Override
     public JsonNode publicChapter(String tutorialSlug, String chapterSlug) {
         JsonNode raw = frozenChapter(publicSnapshot(tutorialSlug), chapterSlug);

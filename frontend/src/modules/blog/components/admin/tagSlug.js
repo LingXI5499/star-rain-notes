@@ -1,9 +1,25 @@
+/**
+ * tagSlug.js：博客模块的应用配置与入口。
+ * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织前端装配、构建或入口行为，具体依赖和导出入口见下文。
+ * 阅读入口：derivedSlug（derived固定链接标识的处理函数）；slugWithSuffix（固定链接标识包含Suffix的处理函数）；createTaxonomy（创建Taxonomy）。
+ */
+
 /*
  * 运行中的旧版后端仍要求创建标签/专题时显式提交 slug。
  * 表单只展示名称，这里在请求里补上合法地址并在撞名时加后缀；
  * 新版后端也接受这个格式，因此前后端滚动更新期间创建始终可用。
  */
-export function derivedSlug(raw, prefix, maxLength) {
+export
+  /**
+   * derived固定链接标识的处理函数。
+   * 主要协作：.toLowerCase、.trim、.normalize、.replace、normalized.replace。
+   * @param raw 原始；默认值、解构字段与可选参数见函数签名。
+   * @param prefix prefix；默认值、解构字段与可选参数见函数签名。
+   * @param maxLength 最大Length；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function derivedSlug(raw, prefix, maxLength) {
   const normalized = String(raw ?? '').normalize('NFKC').trim().toLowerCase()
   const ascii = normalized.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '')
   if (ascii) return ascii.slice(0, maxLength).replace(/-+$/g, '')
@@ -15,13 +31,34 @@ export function derivedSlug(raw, prefix, maxLength) {
   return `${prefix}-${hash.toString(36)}`
 }
 
-export function slugWithSuffix(base, ordinal, maxLength) {
+export
+  /**
+   * 固定链接标识包含Suffix的处理函数。
+   * 主要协作：.replace、base.slice。
+   * @param base 基础；默认值、解构字段与可选参数见函数签名。
+   * @param ordinal 序号；默认值、解构字段与可选参数见函数签名。
+   * @param maxLength 最大Length；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function slugWithSuffix(base, ordinal, maxLength) {
   if (ordinal === 1) return base
   const suffix = `-${ordinal}`
   return `${base.slice(0, maxLength - suffix.length).replace(/-+$/g, '')}${suffix}`
 }
 
-export async function createTaxonomy(create, name, prefix, maxLength, extra = {}) {
+export
+  /**
+   * 创建Taxonomy。
+   * 主要协作：derivedSlug、prefix.toUpperCase、create、slugWithSuffix。
+   * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+   * @param create 创建；默认值、解构字段与可选参数见函数签名。
+   * @param name 名称；默认值、解构字段与可选参数见函数签名。
+   * @param prefix prefix；默认值、解构字段与可选参数见函数签名。
+   * @param maxLength 最大Length；默认值、解构字段与可选参数见函数签名。
+   * @param extra = {} extra；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function createTaxonomy(create, name, prefix, maxLength, extra = {}) {
   const base = derivedSlug(name, prefix, maxLength)
   const conflictCode = `BLOG_${prefix.toUpperCase()}_SLUG_CONFLICT`
   for (let ordinal = 1; ordinal <= 1000; ordinal += 1) {

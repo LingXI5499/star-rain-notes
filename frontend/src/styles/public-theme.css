@@ -1,3 +1,8 @@
+/**
+ * public-theme.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 /*
  * 星轨纸境 · Starfall Editorial —— 公开站专属主题层。
  * 从 V1 `frontend/src/styles/public-theme.css` 移植。
@@ -50,6 +55,10 @@
     var(--bg-page);
 }
 
+/**
+ * 样式范围：[data-theme='dark'] .public-shell。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 [data-theme='dark'] .public-shell {
   --bg-page: #0c1210;
   --bg-surface: #131a17;
@@ -78,10 +87,17 @@
     var(--bg-page);
 }
 
+/**
+ * 样式范围：.public-shell .public-main。
+ */
 .public-shell .public-main {
   position: relative;
 }
 
+/**
+ * 样式范围：.public-shell :where(.public-interactive, .editorial-card, .public-button)。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell :where(.public-interactive, .editorial-card, .public-button) {
   transition:
     color var(--motion-fast) var(--ease-standard),
@@ -91,6 +107,10 @@
     transform var(--motion-base) var(--ease-out);
 }
 
+/**
+ * 样式范围：.public-shell .public-eyebrow。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .public-eyebrow {
   margin: 0;
   color: var(--accent);
@@ -99,18 +119,28 @@
   text-transform: uppercase;
 }
 
+/**
+ * 样式范围：.public-shell .public-display。
+ */
 .public-shell .public-display {
   font-size: clamp(44px, 7vw, 92px);
   line-height: 0.98;
   letter-spacing: -0.065em;
 }
 
+/**
+ * 样式范围：.public-shell .public-section-title。
+ */
 .public-shell .public-section-title {
   font-size: clamp(28px, 3.8vw, 48px);
   line-height: 1.14;
   letter-spacing: -0.045em;
 }
 
+/**
+ * 样式范围：.public-shell .public-button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .public-button {
   display: inline-flex;
   align-items: center;
@@ -127,36 +157,61 @@
   font-weight: 700;
 }
 
+/**
+ * 样式范围：.public-shell .public-button.primary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .public-button.primary {
   border-color: var(--primary);
   color: var(--on-primary);
   background: var(--primary);
 }
 
+/**
+ * 样式范围：.public-shell .public-button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .public-button:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body。
+ */
 .public-shell .markdown-body {
   max-width: 780px;
   font-size: 17px;
   line-height: 1.88;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body p。
+ */
 .public-shell .markdown-body p {
   margin-bottom: 1.45em;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h1。
+ */
 .public-shell .markdown-body h1 {
   margin-top: 3.2em;
   font-size: clamp(30px, 3.3vw, 40px);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h1:first-child。
+ */
 .public-shell .markdown-body h1:first-child {
   margin-top: 0;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h2。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body h2 {
   margin-top: 2.8em;
   padding-bottom: 0.32em;
@@ -164,23 +219,39 @@
   scroll-margin-top: calc(var(--header-height) + 26px);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h3。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body h3 {
   margin-top: 2.15em;
   scroll-margin-top: calc(var(--header-height) + 26px);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body img。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body img {
   height: auto;
   border: 1px solid var(--border);
   box-shadow: var(--shadow-sm);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body table。
+ * 溢出处理：横向 auto。
+ */
 .public-shell .markdown-body table {
   display: block;
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body blockquote。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body blockquote {
   border-left-color: var(--accent);
   background: color-mix(in srgb, var(--accent-soft) 52%, transparent);
@@ -191,6 +262,11 @@
   position: relative;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before, .public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before,
 .public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before {
   content: '#';
@@ -210,6 +286,11 @@
   margin: 0 0 var(--space-6);
 }
 
+/**
+ * 样式范围：.public-shell .code-block__head。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-block__head {
   display: flex;
   align-items: center;
@@ -224,12 +305,20 @@
   background: var(--bg-elevated);
 }
 
+/**
+ * 样式范围：.public-shell .code-block__label。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-block__label {
   font: 650 10px/1 var(--font-mono);
   letter-spacing: 0.09em;
   text-transform: uppercase;
 }
 
+/**
+ * 样式范围：.public-shell .code-block__copy。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-block__copy {
   min-height: 28px;
   padding: 3px 9px;
@@ -241,22 +330,38 @@
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.public-shell .code-block__copy:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-block__copy:hover {
   border-color: var(--border);
   color: var(--primary);
   background: var(--bg-subtle);
 }
 
+/**
+ * 样式范围：.public-shell .code-block__copy[data-state='success']。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-block__copy[data-state='success'] {
   color: var(--primary);
   background: var(--primary-soft);
 }
 
+/**
+ * 样式范围：.public-shell .code-block__copy[data-state='error']。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-block__copy[data-state='error'] {
   color: var(--accent);
   background: var(--accent-soft);
 }
 
+/**
+ * 样式范围：.public-shell .code-block pre。
+ */
 .public-shell .code-block pre {
   margin: 0;
   border-top-left-radius: 0;
@@ -273,6 +378,11 @@
   background: var(--bg-surface);
 }
 
+/**
+ * 样式范围：.public-shell .code-group__toolbar。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-group__toolbar {
   display: flex;
   align-items: center;
@@ -284,6 +394,11 @@
   background: var(--bg-elevated);
 }
 
+/**
+ * 样式范围：.public-shell .code-group__tabs。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 溢出处理：横向 auto。
+ */
 .public-shell .code-group__tabs {
   display: flex;
   align-items: stretch;
@@ -293,6 +408,10 @@
   scrollbar-width: thin;
 }
 
+/**
+ * 样式范围：.public-shell .code-group__tab。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-group__tab {
   appearance: none;
   flex: 0 0 auto;
@@ -307,19 +426,35 @@
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.public-shell .code-group__tab:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-group__tab:hover {
   color: var(--text-primary);
 }
 
+/**
+ * 样式范围：.public-shell .code-group__tab.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .code-group__tab.is-active {
   color: var(--primary);
   border-bottom-color: var(--primary);
 }
 
+/**
+ * 样式范围：.public-shell .code-group__copy。
+ */
 .public-shell .code-group__copy {
   flex-shrink: 0;
 }
 
+/**
+ * 样式范围：.public-shell .code-group__panels pre。
+ */
 .public-shell .code-group__panels pre {
   margin: 0;
   border: 0;
@@ -344,18 +479,54 @@
   animation: public-stagger-in var(--motion-slow) var(--ease-out) both;
 }
 
+/**
+ * 样式范围：.public-shell [data-stagger] > *:nth-child(1)。
+ */
 .public-shell [data-stagger] > *:nth-child(1) { animation-delay: 40ms; }
+/**
+ * 样式范围：.public-shell [data-stagger] > *:nth-child(2)。
+ */
 .public-shell [data-stagger] > *:nth-child(2) { animation-delay: 80ms; }
+/**
+ * 样式范围：.public-shell [data-stagger] > *:nth-child(3)。
+ */
 .public-shell [data-stagger] > *:nth-child(3) { animation-delay: 120ms; }
+/**
+ * 样式范围：.public-shell [data-stagger] > *:nth-child(4)。
+ */
 .public-shell [data-stagger] > *:nth-child(4) { animation-delay: 160ms; }
+/**
+ * 样式范围：.public-shell [data-stagger] > *:nth-child(5)。
+ */
 .public-shell [data-stagger] > *:nth-child(5) { animation-delay: 200ms; }
+/**
+ * 样式范围：.public-shell [data-stagger] > *:nth-child(6)。
+ */
 .public-shell [data-stagger] > *:nth-child(6) { animation-delay: 240ms; }
+/**
+ * 样式范围：.public-shell [data-stagger] > *:nth-child(7)。
+ */
 .public-shell [data-stagger] > *:nth-child(7) { animation-delay: 280ms; }
+/**
+ * 样式范围：.public-shell [data-stagger] > *:nth-child(8)。
+ */
 .public-shell [data-stagger] > *:nth-child(8) { animation-delay: 320ms; }
+/**
+ * 样式范围：.public-shell [data-stagger] > *:nth-child(n + 9)。
+ */
 .public-shell [data-stagger] > *:nth-child(n + 9) { animation-delay: 360ms; }
 
+/**
+ * 动画 public-stagger-in 的关键帧；帧内仅定义随动画时间改变的属性。
+ */
 @keyframes public-stagger-in {
+  /**
+   * 样式范围：from。
+   */
   from { opacity: 0; transform: translateY(10px); }
+  /**
+   * 样式范围：to。
+   */
   to { opacity: 1; transform: none; }
 }
 
@@ -365,11 +536,18 @@
   scrollbar-color: var(--border-strong) transparent;
 }
 
+/**
+ * 样式范围：.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar。
+ */
 .public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
+/**
+ * 样式范围：.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-thumb。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-thumb {
   background: var(--border-strong);
   border-radius: 999px;
@@ -377,36 +555,69 @@
   background-clip: content-box;
 }
 
+/**
+ * 样式范围：.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-thumb:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-thumb:hover {
   background-color: var(--text-muted);
 }
 
+/**
+ * 样式范围：.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-track。
+ */
 .public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-track {
   background: transparent;
 }
 
+/**
+ * 样式范围：.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-button。
+ */
 .public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-button {
   display: none;
   width: 0;
   height: 0;
 }
 
+/**
+ * 响应式或设备条件：(max-width: 768px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 768px) {
+  /**
+   * 样式范围：.public-shell .markdown-body。
+   */
   .public-shell .markdown-body {
     font-size: 16px;
     line-height: 1.82;
   }
 
+  /**
+   * 样式范围：.public-shell .markdown-body h1。
+   */
   .public-shell .markdown-body h1 { font-size: 29px; }
+  /**
+   * 样式范围：.public-shell .markdown-body h2。
+   */
   .public-shell .markdown-body h2 { font-size: 27px; }
 
+  /**
+   * 样式范围：.public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before,   .public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   */
   .public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before,
   .public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before {
     content: none;
   }
 }
 
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
 @media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：.public-shell [data-stagger] > *。
+   */
   .public-shell [data-stagger] > * {
     opacity: 1;
     transform: none;

@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * AccountEntry.vue：账号模块的视图组件。
+ * 职责范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue、vue-router、../stores/authStore、../api/http、../../../shared/viewMode。
+ * 主要响应式状态：route、router、auth、open、root、busy、failure、displayName。
+ * 阅读入口：toggle（切换当前操作）；closeOnOutsideClick（关闭触发OutsideClick）；onDocumentKeydown（响应文档Keydown）；logout（执行退出登录当前操作）。
+ */
+
+
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
@@ -21,20 +31,53 @@ import { accountPath } from '../../../shared/viewMode'
  * 这个组件只由 PublicShell 在账号模式下渲染，公开模式根本不挂载它——
  * 「公开站永远匿名」因此在结构上成立，而不是靠组件内部再判一次模式。
  */
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
 
+/**
+ * open；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const open = ref(false)
+/**
+ * root；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const root = ref(null)
+/**
+ * busy；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const busy = ref(false)
+/**
+ * 失败；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const failure = ref('')
 
+/**
+ * 显示名称；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const displayName = computed(() => auth.currentUser?.displayName || auth.currentUser?.username || '')
 
 /*
  * 用户标识里的首字母，与「我的账户」页（AccountPage.vue 的 initial）同一口径：
  * 拉丁字母统一大写，兜底「我」。圆标是纯 CSS 画的，不额外请求头像资源。
+ */
+/**
+ * initial；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
 const initial = computed(() => {
   const source = displayName.value.trim() || '我'
@@ -56,8 +99,16 @@ const initial = computed(() => {
  * 组件里写死 'SUPER_ADMIN' 会在权限口径调整后与守卫悄悄脱钩，而这种脱钩没人会发现。
  * 能进仪表盘就去仪表盘，否则去所有登录用户都能进的控制台首页 /center。
  */
+/**
+ * console路径；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const consolePath = computed(() => (auth.canManage('account:read') ? accountPath('/dashboard') : accountPath('/center')))
 
+/**
+ * 切换当前操作。
+ * 更新的响应式状态包括 open；渲染由 Vue 的依赖跟踪触发。
+ */
 function toggle() {
   open.value = !open.value
 }
@@ -73,6 +124,11 @@ function closeOnOutsideClick(event) {
   }
 }
 
+/**
+ * 响应文档Keydown。
+ * 更新的响应式状态包括 open；渲染由 Vue 的依赖跟踪触发。
+ * @param event 事件；默认值、解构字段与可选参数见函数签名。
+ */
 function onDocumentKeydown(event) {
   if (event.key === 'Escape' && open.value) {
     open.value = false
@@ -81,13 +137,26 @@ function onDocumentKeydown(event) {
 
 document.addEventListener('pointerdown', closeOnOutsideClick)
 document.addEventListener('keydown', onDocumentKeydown)
+/**
+ * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
+ */
 onBeforeUnmount(() => {
   document.removeEventListener('pointerdown', closeOnOutsideClick)
   document.removeEventListener('keydown', onDocumentKeydown)
 })
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.fullPath, () => { open.value = false })
 
+/**
+ * 执行退出登录当前操作。
+ * 主要协作：auth.logout、router.replace、accountPath、errorMessage。
+ * 更新的响应式状态包括 busy、failure；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function logout() {
   if (busy.value) return
   busy.value = true
@@ -167,14 +236,30 @@ async function logout() {
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.account-entry。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry {
   display: flex;
   align-items: center;
   gap: var(--space-2);
 }
 
+/**
+ * 样式范围：.account-entry__menu-root。
+ */
 .account-entry__menu-root { position: relative; }
 
+/**
+ * 样式范围：.account-entry__trigger。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__trigger {
   display: inline-flex;
   align-items: center;
@@ -189,6 +274,11 @@ async function logout() {
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.account-entry__trigger:hover, .account-entry__trigger[aria-expanded='true']。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__trigger:hover,
 .account-entry__trigger[aria-expanded='true'] {
   border-color: var(--border-strong);
@@ -209,6 +299,11 @@ async function logout() {
   font-weight: 700;
 }
 
+/**
+ * 样式范围：.account-entry__name。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ */
 .account-entry__name {
   max-width: 140px;
   overflow: hidden;
@@ -216,6 +311,11 @@ async function logout() {
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.account-entry__menu。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__menu {
   position: absolute;
   top: calc(100% + 8px);
@@ -232,6 +332,10 @@ async function logout() {
   gap: 2px;
 }
 
+/**
+ * 样式范围：.account-entry__item。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__item {
   padding: 8px 10px;
   border: 0;
@@ -243,19 +347,37 @@ async function logout() {
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.account-entry__item:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__item:hover {
   color: var(--primary);
   background: var(--bg-subtle);
 }
 
+/**
+ * 样式范围：.account-entry__item.is-danger:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__item.is-danger:hover { color: var(--danger, #c0392b); }
 
+/**
+ * 样式范围：.account-entry__error。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__error {
   padding: 4px 10px;
   color: var(--danger, #c0392b);
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.account-entry__link。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__link {
   padding: 7px 12px;
   border: 1px solid transparent;
@@ -265,16 +387,30 @@ async function logout() {
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.account-entry__link:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__link:hover {
   color: var(--primary);
   background: var(--bg-subtle);
 }
 
+/**
+ * 样式范围：.account-entry__link.is-primary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__link.is-primary {
   border-color: var(--border-strong);
   color: var(--text-primary);
 }
 
+/**
+ * 样式范围：.account-entry__link.is-primary:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .account-entry__link.is-primary:hover {
   border-color: var(--primary);
   color: var(--primary);

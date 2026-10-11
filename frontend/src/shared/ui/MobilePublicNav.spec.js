@@ -1,3 +1,12 @@
+/**
+ * MobilePublicNav.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue-router、vitest、./MobilePublicNav.vue、../../modules/tutorial/api/tutorialApi。
+ * 阅读入口：open（打开当前操作）；button（button的处理函数）。
+ * 验证场景：mobile public navigation；returns to the top when tapping the active home entry；keeps account-tree navigation in the account tree；opens the active section menu and closes it after navigation；offers all secondary pages without exposing an account entry in public mode。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { createRouter, createMemoryHistory } from 'vue-router'
 import { afterEach, describe, expect, it, vi } from 'vitest'
@@ -6,11 +15,23 @@ import { listPublicCategories } from '../../modules/tutorial/api/tutorialApi'
 vi.mock('../../modules/tutorial/api/tutorialApi', () => ({ listPublicCategories: vi.fn().mockResolvedValue([{id:'2',name:'Java',slug:'java'}]) }))
 vi.mock('../../modules/blog/api/blogApi', () => ({ listPublicTags: vi.fn().mockResolvedValue([{id:'3',name:'开发',slug:'development'}]) }))
 let wrapper, router
+/**
+ * 打开当前操作。
+ * 主要协作：createRouter、createMemoryHistory、router.push、router.isReady、mount。
+ * @param path 路径；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function open(path) {
   router = createRouter({history:createMemoryHistory(),routes:[{path:'/:pathMatch(.*)*',component:{template:'<div />'}}]})
   await router.push(path); await router.isReady()
   wrapper = mount(MobileNav,{attachTo:document.body,global:{plugins:[router]}}); await flushPromises()
 }
+/**
+ * button的处理函数。
+ * 主要协作：.find、wrapper.findAll、.endsWith、item.text。
+ * @param label 标签；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const button = label => wrapper.findAll('button').find(item => item.text().endsWith(label))
 afterEach(() => { wrapper?.unmount(); document.body.innerHTML=''; document.body.style.overflow=''; vi.clearAllMocks() })
 describe('mobile public navigation', () => {

@@ -1,3 +1,11 @@
+/*
+ * BlogPublicServiceImplTest：博客模块的测试文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：BlogPublicQueryDTO、BlogPostEntity、BlogPostMapper、BlogTagMapper、BlogTopicMapper、BlogViewAssembler、BlogArchiveMonthVO。
+ * 阅读入口：listRejectsInvalidPaging（\u5217\u8868\u5206\u9875\u975e\u6cd5\u62a5 BLOG_QUERY_INVALID）；listRejectsInvalidFilterSlug（\u5217\u8868\u7b5b\u9009 slug \u975e\u6cd5\u62a5 BLOG_QUERY_INVALID\uff0c\u800c\u4e0d\u662f\u9759\u9ed8\u8fd4\u56de\u7a7a\u5217\u8868）；listPassesNormalizedFilters（\u5217\u8868\u6309 tag / topic \u7ec4\u5408\u7b5b\u9009\uff0cslug \u89c4\u8303\u5316\u540e\u4f20\u7ed9\u6301\u4e45\u5c42）；listPassesMultipleTagSlugs（\u591a\u6807\u7b7e ?tags=a,b\uff1a\u9017\u53f7\u62c6\u6210\u96c6\u5408\u3001\u53bb\u91cd\u3001\u6309\u300c\u547d\u4e2d\u4efb\u4e00\u300d\u4ea4\u7ed9 SQL）。
+ */
+
 package com.starrainnotes.blog.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -40,21 +48,48 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * 1. 断言公开读取只走 publishedPostBySlug / publishedPage，绝不碰不过滤状态的 postById；
  * 2. 断言时间归档被换算成 [from, to) 半开区间，跨年边界不出错。
  */
+/**
+ * 博客公开业务服务实现测试，属于博客模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 @ExtendWith(MockitoExtension.class)
 class BlogPublicServiceImplTest {
 
+    /**
+     * 文章数据映射。
+     * 协作类型：<code>BlogPostMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock
     private BlogPostMapper postMapper;
 
+    /**
+     * 标签数据映射。
+     * 协作类型：<code>BlogTagMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock
     private BlogTagMapper tagMapper;
 
+    /**
+     * 专题数据映射。
+     * 协作类型：<code>BlogTopicMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock
     private BlogTopicMapper topicMapper;
 
+    /**
+     * 组装器。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock
     private BlogViewAssembler assembler;
 
+    /**
+     * 业务服务。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @InjectMocks
     private BlogPublicServiceImpl service;
 
@@ -62,6 +97,10 @@ class BlogPublicServiceImplTest {
     // BLOG-001 列表
     // ------------------------------------------------------------------
 
+    /**
+     * \u5217\u8868\u5206\u9875\u975e\u6cd5\u62a5 BLOG_QUERY_INVALID。
+     * 主要协作调用：<code>service.listPosts</code>。
+     */
     @Test
     @DisplayName("列表分页非法报 BLOG_QUERY_INVALID")
     void listRejectsInvalidPaging() {
@@ -75,6 +114,10 @@ class BlogPublicServiceImplTest {
         verify(postMapper, never()).publishedPageCount(any(), any(), any(), any());
     }
 
+    /**
+     * \u5217\u8868\u7b5b\u9009 slug \u975e\u6cd5\u62a5 BLOG_QUERY_INVALID\uff0c\u800c\u4e0d\u662f\u9759\u9ed8\u8fd4\u56de\u7a7a\u5217\u8868。
+     * 主要协作调用：<code>service.listPosts</code>。
+     */
     @Test
     @DisplayName("列表筛选 slug 非法报 BLOG_QUERY_INVALID，而不是静默返回空列表")
     void listRejectsInvalidFilterSlug() {
@@ -87,6 +130,10 @@ class BlogPublicServiceImplTest {
                 .isEqualTo("BLOG_QUERY_INVALID");
     }
 
+    /**
+     * \u5217\u8868\u6309 tag / topic \u7ec4\u5408\u7b5b\u9009\uff0cslug \u89c4\u8303\u5316\u540e\u4f20\u7ed9\u6301\u4e45\u5c42。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>postMapper.publishedPage</code>、<code>assembler.toPublicVOs</code>、<code>service.listPosts</code>。
+     */
     @Test
     @DisplayName("列表按 tag / topic 组合筛选，slug 规范化后传给持久层")
     void listPassesNormalizedFilters() {
@@ -105,6 +152,10 @@ class BlogPublicServiceImplTest {
         verify(postMapper, never()).postById(anyLong());
     }
 
+    /**
+     * \u591a\u6807\u7b7e ?tags=a,b\uff1a\u9017\u53f7\u62c6\u6210\u96c6\u5408\u3001\u53bb\u91cd\u3001\u6309\u300c\u547d\u4e2d\u4efb\u4e00\u300d\u4ea4\u7ed9 SQL。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>service.listPosts</code>。
+     */
     @Test
     @DisplayName("多标签 ?tags=a,b：逗号拆成集合、去重、按「命中任一」交给 SQL")
     void listPassesMultipleTagSlugs() {
@@ -118,6 +169,10 @@ class BlogPublicServiceImplTest {
         verify(postMapper).publishedPageCount(List.of("java", "spring-boot"), null, null, null);
     }
 
+    /**
+     * \u5355\u6807\u7b7e tag \u4e0e\u591a\u6807\u7b7e tags \u540c\u65f6\u7ed9\u51fa\u65f6\u5408\u5e76\u53bb\u91cd\uff0c\u4e0d\u62a5\u9519。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>service.listPosts</code>。
+     */
     @Test
     @DisplayName("单标签 tag 与多标签 tags 同时给出时合并去重，不报错")
     void listMergesSingleAndMultipleTags() {
@@ -132,6 +187,10 @@ class BlogPublicServiceImplTest {
         verify(postMapper).publishedPageCount(List.of("java", "spring-boot"), null, null, null);
     }
 
+    /**
+     * \u591a\u6807\u7b7e\u91cc\u6709\u4e00\u4e2a\u975e\u6cd5 slug \u540c\u6837\u62a5 BLOG_QUERY_INVALID。
+     * 主要协作调用：<code>service.listPosts</code>。
+     */
     @Test
     @DisplayName("多标签里有一个非法 slug 同样报 BLOG_QUERY_INVALID")
     void listRejectsInvalidSlugInsideTags() {
@@ -144,6 +203,10 @@ class BlogPublicServiceImplTest {
                 .isEqualTo("BLOG_QUERY_INVALID");
     }
 
+    /**
+     * \u7a7a\u7ed3\u679c\u4e0d\u89e6\u53d1\u7b2c\u4e8c\u6b21\u67e5\u8be2。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>service.listPosts</code>。
+     */
     @Test
     @DisplayName("空结果不触发第二次查询")
     void listSkipsSecondQueryWhenEmpty() {
@@ -160,6 +223,10 @@ class BlogPublicServiceImplTest {
     // BLOG-002 阅读
     // ------------------------------------------------------------------
 
+    /**
+     * \u9605\u8bfb\u6587\u7ae0\uff1aslug \u89c4\u8303\u5316\u540e\u53ea\u67e5\u5df2\u53d1\u5e03\u8bb0\u5f55。
+     * 主要协作调用：<code>postMapper.publishedPostBySlug</code>、<code>assembler.toPublicDetailVO</code>、<code>service.postBySlug</code>。
+     */
     @Test
     @DisplayName("阅读文章：slug 规范化后只查已发布记录")
     void postBySlugUsesPublishedQuery() {
@@ -174,6 +241,10 @@ class BlogPublicServiceImplTest {
         verify(postMapper, never()).postById(anyLong());
     }
 
+    /**
+     * \u76f8\u90bb\u5bfc\u822a\u53ea\u53d6\u5df2\u53d1\u5e03\u6587\u7ae0\uff0c\u6309\u53d1\u5e03\u65f6\u95f4\u548c ID \u5b9a\u4f4d。
+     * 主要协作调用：<code>postMapper.publishedPostBySlug</code>、<code>assembler.toPublicDetailVO</code>、<code>postMapper.publishedPrevious</code>、<code>postMapper.publishedNext</code>、<code>service.postBySlug</code>。
+     */
     @Test
     @DisplayName("相邻导航只取已发布文章，按发布时间和 ID 定位")
     void postBySlugAddsPublishedNeighbors() {
@@ -191,6 +262,10 @@ class BlogPublicServiceImplTest {
         assertThat(result.getNext()).isEqualTo(next);
     }
 
+    /**
+     * \u8349\u7a3f\u4e0e\u5df2\u64a4\u56de\u6587\u7ae0\u5bf9\u5916\u4e00\u5f8b 404\uff1a\u4e0d\u533a\u5206\u201c\u4e0d\u5b58\u5728\u201d\u548c\u201c\u672a\u516c\u5f00\u201d。
+     * 主要协作调用：<code>postMapper.publishedPostBySlug</code>、<code>service.postBySlug</code>。
+     */
     @Test
     @DisplayName("草稿与已撤回文章对外一律 404：不区分“不存在”和“未公开”")
     void postBySlugHidesUnpublished() {
@@ -202,6 +277,10 @@ class BlogPublicServiceImplTest {
                 .isEqualTo("BLOG_POST_NOT_FOUND");
     }
 
+    /**
+     * slug \u4e3a\u7a7a\u767d\u76f4\u63a5 404\uff0c\u4e0d\u53bb\u67e5\u5e93。
+     * 主要协作调用：<code>service.postBySlug</code>。
+     */
     @Test
     @DisplayName("slug 为空白直接 404，不去查库")
     void postBySlugRejectsBlank() {
@@ -216,6 +295,10 @@ class BlogPublicServiceImplTest {
     // BLOG-010 归档
     // ------------------------------------------------------------------
 
+    /**
+     * \u6309\u6708\u5f52\u6863\u6362\u7b97\u6210\u534a\u5f00\u533a\u95f4\uff1a7 \u6708 = [7/1 00:00, 8/1 00:00)。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>postMapper.publishedPage</code>、<code>assembler.toPublicVOs</code>、<code>service.archive</code>。
+     */
     @Test
     @DisplayName("按月归档换算成半开区间：7 月 = [7/1 00:00, 8/1 00:00)")
     void archiveMonthComputesHalfOpenRange() {
@@ -233,6 +316,10 @@ class BlogPublicServiceImplTest {
         assertThat(result.getTotal()).isEqualTo(1L);
     }
 
+    /**
+     * \u6309\u5e74\u5f52\u6863\u8de8\u5e74\u8fb9\u754c\u6b63\u786e\uff1a2026 = [2026-01-01, 2027-01-01)。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>service.archive</code>。
+     */
     @Test
     @DisplayName("按年归档跨年边界正确：2026 = [2026-01-01, 2027-01-01)")
     void archiveYearComputesHalfOpenRange() {
@@ -245,6 +332,10 @@ class BlogPublicServiceImplTest {
         assertThat(service.archive(query).getItems()).isEmpty();
     }
 
+    /**
+     * 12 \u6708\u5f52\u6863\u8de8\u5e74\u5230\u6b21\u5e74 1 \u6708\uff0c\u800c\u4e0d\u662f 13 \u6708。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>service.archive</code>。
+     */
     @Test
     @DisplayName("12 月归档跨年到次年 1 月，而不是 13 月")
     void archiveDecemberRollsOver() {
@@ -258,6 +349,10 @@ class BlogPublicServiceImplTest {
         assertThat(service.archive(query).getItems()).isEmpty();
     }
 
+    /**
+     * \u6309\u5929\u5f52\u6863\u53ea\u67e5\u8be2\u5f53\u65e5\u7684\u534a\u5f00\u65f6\u95f4\u8303\u56f4。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>service.archive</code>。
+     */
     @Test
     @DisplayName("按天归档只查询当日的半开时间范围")
     void archiveDayComputesHalfOpenRange() {
@@ -272,6 +367,10 @@ class BlogPublicServiceImplTest {
         assertThat(service.archive(query).getItems()).isEmpty();
     }
 
+    /**
+     * \u6307\u5b9a\u6708\u4efd\u7684\u65e5\u5386\u53ea\u8bfb\u53d6\u8be5\u6708\u7684\u53d1\u5e03\u65e5\u6876。
+     * 主要协作调用：<code>postMapper.archiveDays</code>、<code>service.archiveDays</code>。
+     */
     @Test
     @DisplayName("指定月份的日历只读取该月的发布日桶")
     void archiveDaysQueriesMonth() {
@@ -287,6 +386,10 @@ class BlogPublicServiceImplTest {
                 .isEqualTo("BLOG_QUERY_INVALID");
     }
 
+    /**
+     * \u53ea\u7ed9 month \u4e0d\u7ed9 year \u62a5 BLOG_QUERY_INVALID。
+     * 主要协作调用：<code>service.archive</code>。
+     */
     @Test
     @DisplayName("只给 month 不给 year 报 BLOG_QUERY_INVALID")
     void archiveRejectsMonthWithoutYear() {
@@ -299,6 +402,10 @@ class BlogPublicServiceImplTest {
                 .isEqualTo("BLOG_QUERY_INVALID");
     }
 
+    /**
+     * \u5f52\u6863\u5e74\u4efd\u4e0e\u6708\u4efd\u8d8a\u754c\u62a5 BLOG_QUERY_INVALID。
+     * 主要协作调用：<code>service.archive</code>。
+     */
     @Test
     @DisplayName("归档年份与月份越界报 BLOG_QUERY_INVALID")
     void archiveRejectsOutOfRangeTime() {
@@ -318,6 +425,10 @@ class BlogPublicServiceImplTest {
                 .isEqualTo("BLOG_QUERY_INVALID");
     }
 
+    /**
+     * \u5f52\u6863\u53ef\u540c\u65f6\u5e26 tag / topic / \u65f6\u95f4\u6761\u4ef6。
+     * 主要协作调用：<code>postMapper.publishedPageCount</code>、<code>service.archive</code>。
+     */
     @Test
     @DisplayName("归档可同时带 tag / topic / 时间条件")
     void archiveCombinesFilters() {
@@ -338,6 +449,10 @@ class BlogPublicServiceImplTest {
     // 归档月份与前台筛选项
     // ------------------------------------------------------------------
 
+    /**
+     * \u5f52\u6863\u6708\u4efd\u6876\u4e0e\u524d\u53f0\u7b5b\u9009\u9879\u76f4\u63a5\u53d6\u5df2\u53d1\u5e03\u53e3\u5f84\u7684\u6570\u636e。
+     * 主要协作调用：<code>postMapper.archiveMonths</code>、<code>tagMapper.publishedTags</code>、<code>topicMapper.publishedTopics</code>、<code>service.archiveMonths</code>、<code>service.listPublishedTags</code>。
+     */
     @Test
     @DisplayName("归档月份桶与前台筛选项直接取已发布口径的数据")
     void delegatedReads() {
@@ -352,6 +467,13 @@ class BlogPublicServiceImplTest {
         assertThat(service.listPublishedTopics()).hasSize(1);
     }
 
+    /**
+     * 文章处理入口。
+     * 关键处理步骤调用 <code>entity.setId</code>、<code>entity.setSlug</code>、<code>entity.setTitle</code>、<code>entity.setStatus</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogPostEntity</code> 的处理结果
+     */
     private static BlogPostEntity post(Long id) {
         BlogPostEntity entity = new BlogPostEntity();
         entity.setId(id);

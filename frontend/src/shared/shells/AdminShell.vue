@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * AdminShell.vue：跨模块基础模块的视图组件。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue、vue-router、../../modules/account/stores/authStore、../../modules/account/api/http、../../modules/account/api/accountApi、../viewMode。
+ * 主要响应式状态：route、router、auth、collapsed、mobileOpen、navRef、contentRef、closedGroups。
+ * 阅读入口：readClosedGroups（读取Closed分组列表）；isGroupOpen（判断是否分组Open）；toggleGroup（切换分组）；rememberNavScroll（rememberNav滚动的处理函数）；revealActiveItem（reveal有效Item的处理函数）。
+ */
+
+
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../modules/account/stores/authStore'
@@ -41,13 +51,38 @@ import { applyManualTheme, readManualTheme, switchManualTheme, themeSwitching } 
  * 仍然用整页链接（<a>）而不是 RouterLink：离开控制台时整页重载会顺带丢掉控制台自己的
  *   运行态（侧栏折叠、导航滚动位置、已挂载的各控制台 store），比 SPA 内跳更干净。
  */
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
 
+/**
+ * collapsed；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const collapsed = ref(localStorage.getItem('admin-sidebar-collapsed') === 'true')
+/**
+ * mobileOpen；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const mobileOpen = ref(false)
+/**
+ * navRef；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const navRef = ref(null)
+/**
+ * 内容Ref；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const contentRef = ref(null)
 
 /*
@@ -55,8 +90,17 @@ const contentRef = ref(null)
  * 当前路由所在的组**永远强制展开** —— 否则「我明明在这个页面，侧栏里却找不到它」。
  */
 const GROUP_STORAGE_KEY = 'admin-nav-groups'
+/**
+ * closed分组列表；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const closedGroups = ref(readClosedGroups())
 
+/**
+ * 读取Closed分组列表。
+ * 主要协作：JSON.parse、localStorage.getItem、stored.filter。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function readClosedGroups() {
   try {
     const stored = JSON.parse(localStorage.getItem(GROUP_STORAGE_KEY) || '[]')
@@ -66,11 +110,23 @@ function readClosedGroups() {
   }
 }
 
+/**
+ * 判断是否分组Open。
+ * 主要协作：closedGroups.value.includes。
+ * @param key 键；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function isGroupOpen(key) {
   if (closedGroups.value.includes(key)) return false
   return true
 }
 
+/**
+ * 切换分组。
+ * 主要协作：closedGroups.value.includes、closedGroups.value.filter、localStorage.setItem、JSON.stringify。
+ * 更新的响应式状态包括 closedGroups；渲染由 Vue 的依赖跟踪触发。
+ * @param key 键；默认值、解构字段与可选参数见函数签名。
+ */
 function toggleGroup(key) {
   closedGroups.value = closedGroups.value.includes(key)
     ? closedGroups.value.filter((item) => item !== key)
@@ -78,23 +134,41 @@ function toggleGroup(key) {
   localStorage.setItem(GROUP_STORAGE_KEY, JSON.stringify(closedGroups.value))
 }
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(collapsed, (value) => localStorage.setItem('admin-sidebar-collapsed', String(value)))
 
+/**
+ * rememberNav滚动的处理函数。
+ * 主要协作：sessionStorage.setItem。
+ */
 function rememberNavScroll() {
   if (navRef.value) sessionStorage.setItem('admin-nav-scroll', String(navRef.value.scrollTop))
 }
 
+/**
+ * reveal有效Item的处理函数。
+ * 主要协作：nextTick、.scrollIntoView、navRef.value.querySelector。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function revealActiveItem() {
   await nextTick()
   navRef.value?.querySelector('.is-active, .admin-shell__nav-item--active')?.scrollIntoView({ block: 'nearest' })
 }
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.fullPath, async () => {
   mobileOpen.value = false
   contentRef.value?.scrollTo({ top: 0, behavior: 'auto' })
   await revealActiveItem()
 })
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(async () => {
   await nextTick()
   if (navRef.value) navRef.value.scrollTop = Number(sessionStorage.getItem('admin-nav-scroll') || 0)
@@ -109,6 +183,10 @@ onMounted(async () => {
 // hasPermission = 持有该权限即可（ADMIN 也能拿到 media:read / review:read）。
 // ---------------------------------------------------------------------
 
+/**
+ * nav分组列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const navGroups = computed(() => {
   const groups = [
     {
@@ -212,6 +290,12 @@ const navGroups = computed(() => {
     .filter((group) => group.items.length)
 })
 
+/**
+ * 判断是否有效。
+ * 主要协作：route.path.startsWith。
+ * @param target 目标；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function isActive(target) {
   return route.path === target || route.path.startsWith(`${target}/`)
 }
@@ -231,8 +315,23 @@ function isItemActive(item) {
 //
 // 控制台保留独立的手动设置；未设置或旧的自动模式统一使用日间。
 // ---------------------------------------------------------------------
+/**
+ * 主题；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const theme = ref(readManualTheme('admin-theme'))
+/**
+ * 应用Stored主题。
+ * 主要协作：applyManualTheme。
+ */
 function applyStoredTheme() { applyManualTheme(theme.value, 'admin-theme') }
+/**
+ * 切换主题。
+ * 主要协作：switchManualTheme、applyStoredTheme。
+ * 更新的响应式状态包括 theme；渲染由 Vue 的依赖跟踪触发。
+ * @param event 事件；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function toggleTheme(event) {
   const next = theme.value === 'dark' ? 'light' : 'dark'
   return switchManualTheme(() => {
@@ -247,26 +346,76 @@ applyStoredTheme()
 // 账户菜单 / 修改密码 / 退出
 // ---------------------------------------------------------------------
 
+/**
+ * 账号MenuOpen；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const accountMenuOpen = ref(false)
+/**
+ * menuRef；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const menuRef = ref(null)
+/**
+ * 密码弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const passwordDialog = ref(null)
+/**
+ * 密码Form；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const passwordForm = ref({ currentPassword: '', newPassword: '', confirmPassword: '' })
+/**
+ * 密码错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const passwordError = ref('')
+/**
+ * 密码Busy；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const passwordBusy = ref(false)
+/**
+ * logoutBusy；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const logoutBusy = ref(false)
 
+/**
+ * 切换账号Menu。
+ * 更新的响应式状态包括 accountMenuOpen；渲染由 Vue 的依赖跟踪触发。
+ */
 function toggleAccountMenu() {
   accountMenuOpen.value = !accountMenuOpen.value
 }
 
+/**
+ * 关闭账号Menu。
+ * 主要协作：menuRef.value.contains。
+ * 更新的响应式状态包括 accountMenuOpen；渲染由 Vue 的依赖跟踪触发。
+ * @param event 事件；默认值、解构字段与可选参数见函数签名。
+ */
 function closeAccountMenu(event) {
   if (accountMenuOpen.value && !menuRef.value?.contains(event.target)) accountMenuOpen.value = false
 }
 
 document.addEventListener('pointerdown', closeAccountMenu)
+/**
+ * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
+ */
 onBeforeUnmount(() => document.removeEventListener('pointerdown', closeAccountMenu))
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.fullPath, () => { accountMenuOpen.value = false })
 
+/**
+ * 执行退出登录当前操作。
+ * 主要协作：auth.logout、router.replace、accountPath。
+ * 更新的响应式状态包括 logoutBusy；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function logout() {
   if (logoutBusy.value) return
   logoutBusy.value = true
@@ -284,10 +433,20 @@ async function logout() {
   }
 }
 
+/**
+ * 关闭密码弹窗。
+ * 主要协作：passwordDialog.value.close。
+ */
 function closePasswordDialog() {
   passwordDialog.value?.close()
 }
 
+/**
+ * 打开密码弹窗。
+ * 主要协作：nextTick、passwordDialog.value.showModal。
+ * 更新的响应式状态包括 accountMenuOpen、passwordForm、passwordError；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function openPasswordDialog() {
   accountMenuOpen.value = false
   passwordForm.value = { currentPassword: '', newPassword: '', confirmPassword: '' }
@@ -296,6 +455,12 @@ async function openPasswordDialog() {
   passwordDialog.value?.showModal()
 }
 
+/**
+ * 提交密码。
+ * 主要协作：accountApi.changePassword、passwordDialog.value.close、router.replace、accountPath、errorMessage。
+ * 更新的响应式状态包括 passwordError、passwordBusy；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function submitPassword() {
   const form = passwordForm.value
   if (!form.currentPassword || !form.newPassword) {

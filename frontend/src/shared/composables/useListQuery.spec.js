@@ -1,3 +1,12 @@
+/**
+ * useListQuery.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue、vue-router、vitest、./useListQuery。
+ * 阅读入口：fixture（fixture的处理函数）；customFixture（customFixture的处理函数）。
+ * 验证场景：useListQuery；reads a deep link and writes filters and pagination to browser history；falls back from invalid pagination and resets filters；accepts a custom pageSize up to maxPageSize, and falls back beyond it。
+ */
+
 import { mount } from '@vue/test-utils'
 import { defineComponent } from 'vue'
 import { createMemoryHistory, createRouter } from 'vue-router'
@@ -30,6 +39,12 @@ const CustomSizeProbe = defineComponent({
   },
 })
 
+/**
+ * fixture的处理函数。
+ * 主要协作：createRouter、createMemoryHistory、router.push、router.isReady、mount。
+ * @param url 地址；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function fixture(url) {
   const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component: Probe }] })
   await router.push(url)
@@ -38,6 +53,12 @@ async function fixture(url) {
   return { router, wrapper }
 }
 
+/**
+ * customFixture的处理函数。
+ * 主要协作：createRouter、createMemoryHistory、router.push、router.isReady、mount。
+ * @param url 地址；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function customFixture(url) {
   const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/', component: CustomSizeProbe }] })
   await router.push(url)

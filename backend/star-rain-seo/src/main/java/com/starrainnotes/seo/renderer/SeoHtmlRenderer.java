@@ -1,3 +1,11 @@
+/*
+ * SeoHtmlRenderer：公开页面与 SEO模块的内容渲染文件。
+ * 业务范围：公开 HTML 快照、规范地址、站点地图和搜索引擎通知。
+ * 将业务内容转换为展示结果；输入、输出和渲染所需协作对象在方法注释中说明。
+ * 主要协作类型：SeoPageModel。
+ * 阅读入口：render（渲染SEOHTML渲染器）；visit（visit处理入口）；visit（visit处理入口）；visit（visit处理入口）。
+ */
+
 package com.starrainnotes.seo.renderer;
 
 import com.starrainnotes.seo.dto.SeoPageModel;
@@ -16,14 +24,41 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+/**
+ * SEOHTML渲染器，属于公开页面与 SEO模块。
+ * 将业务内容转换为展示结果；输入、输出和渲染所需协作对象在方法注释中说明。
+ */
 @Component
 public class SeoHtmlRenderer {
+    /**
+     * 当前类使用的日志记录器。
+     */
     private static final Logger log = LoggerFactory.getLogger(SeoHtmlRenderer.class);
+    /**
+     * LENGTH。
+     * 初始值为 <code>200000</code>。
+     */
     private static final int MAX_MARKDOWN_LENGTH = 200_000;
+    /**
+     * EXTENSIONS。
+     */
     private static final List<Extension> EXTENSIONS = List.of(TablesExtension.create());
+    /**
+     * parser。
+     */
     private final Parser parser = Parser.builder().extensions(EXTENSIONS).build();
+    /**
+     * Markdown渲染器。
+     */
     private final HtmlRenderer markdownRenderer = HtmlRenderer.builder().extensions(EXTENSIONS)
             .escapeHtml(true).sanitizeUrls(true).build();
+    /**
+     * 渲染SEOHTML渲染器。
+     * 关键处理步骤调用 <code>escape</code>、<code>model.getTitle</code>、<code>model.getDescription</code>、<code>model.getCanonicalUrl</code>。
+     *
+     * @param model model；类型为 <code>SeoPageModel</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     public String render(SeoPageModel model) {
         String title = escape(model.getTitle());
         String description = escape(model.getDescription());
@@ -45,6 +80,13 @@ public class SeoHtmlRenderer {
             + "</div></article></main></div></body></html>";
     }
 
+    /**
+     * structuredData处理入口。
+     * 关键处理步骤调用 <code>model.getContentType</code>、<code>data.put</code>、<code>model.getTitle</code>、<code>model.getDescription</code>。
+     *
+     * @param model model；类型为 <code>SeoPageModel</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String structuredData(SeoPageModel model) {
         var data = new com.fasterxml.jackson.databind.ObjectMapper().createObjectNode();
         String type = "BLOG".equals(model.getContentType()) ? "BlogPosting"
@@ -57,6 +99,13 @@ public class SeoHtmlRenderer {
         return "<script type=\"application/ld+json\">" + json + "</script>";
     }
 
+    /**
+     * semantic正文处理入口。
+     * 主要协作调用：<code>parser.parse</code>、<code>markdownRenderer.render</code>。
+     *
+     * @param markdown Markdown；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String semanticBody(String markdown) {
         if (markdown == null) return "";
         int end = Math.min(markdown.length(), MAX_MARKDOWN_LENGTH);
@@ -65,15 +114,38 @@ public class SeoHtmlRenderer {
             log.warn("SEO Markdown truncated from {} to {} characters", markdown.length(), end);
         }
         Node document = parser.parse(markdown.substring(0, end));
-        document.accept(new AbstractVisitor() {
+        document.accept(new AbstractVisitor()
+    /**
+     * 当前调用使用的匿名协作实现，属于公开页面与 SEO模块。
+     * 将业务内容转换为展示结果；输入、输出和渲染所需协作对象在方法注释中说明。
+     */
+    {
+            /**
+             * visit处理入口。
+             * 关键处理步骤调用 <code>heading.getLevel</code>、<code>heading.setLevel</code>、<code>visitChildren</code>。
+             *
+             * @param heading heading；类型为 <code>Heading</code>
+             */
             @Override public void visit(Heading heading) {
                 if (heading.getLevel() == 1) heading.setLevel(2);
                 visitChildren(heading);
             }
+            /**
+             * visit处理入口。
+             * 关键处理步骤调用 <code>safeUrl</code>、<code>link.getDestination</code>、<code>link.setDestination</code>、<code>visitChildren</code>。
+             *
+             * @param link 链接；类型为 <code>Link</code>
+             */
             @Override public void visit(Link link) {
                 if (!safeUrl(link.getDestination(), false)) link.setDestination("");
                 visitChildren(link);
             }
+            /**
+             * visit处理入口。
+             * 关键处理步骤调用 <code>safeUrl</code>、<code>image.getDestination</code>、<code>image.setDestination</code>、<code>visitChildren</code>。
+             *
+             * @param image 图片；类型为 <code>Image</code>
+             */
             @Override public void visit(Image image) {
                 if (!safeUrl(image.getDestination(), true)) image.setDestination("");
                 visitChildren(image);
@@ -82,6 +154,14 @@ public class SeoHtmlRenderer {
         return markdownRenderer.render(document);
     }
 
+    /**
+     * 安全地址处理入口。
+     * 关键处理步骤调用 <code>destination.isBlank</code>、<code>destination.startsWith</code>、<code>destination.indexOf</code>、<code>destination.chars</code>。
+     *
+     * @param destination destination；类型为 <code>String</code>
+     * @param image 图片；类型为 <code>boolean</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private boolean safeUrl(String destination, boolean image) {
         if (destination == null || destination.isBlank() || destination.startsWith("//")
                 || destination.indexOf('\\') >= 0 || destination.chars().anyMatch(Character::isISOControl)) return false;
@@ -97,6 +177,13 @@ public class SeoHtmlRenderer {
         }
     }
 
+    /**
+     * 转义SEOHTML渲染器。
+     * 关键处理步骤调用 <code>text.replace</code>。
+     *
+     * @param text 文本；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String escape(String text) {
         if (text == null) return "";
         return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")

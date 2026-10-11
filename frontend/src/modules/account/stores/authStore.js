@@ -1,3 +1,10 @@
+/**
+ * authStore.js：账号模块的状态仓库。
+ * 职责范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 集中维护跨组件共享状态，并通过仓库动作完成读取或更新。
+ * 主要依赖：pinia、../api/accountApi、../api/http。
+ */
+
 import { defineStore } from 'pinia'
 import * as api from '../api/accountApi'
 import { clearCsrf } from '../api/http'

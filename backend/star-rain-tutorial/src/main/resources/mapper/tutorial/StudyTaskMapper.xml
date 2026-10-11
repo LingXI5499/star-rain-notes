@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.learning.mapper.StudyTaskMapper">
+    <!--
+      StudyTaskMapper.xml：com.starrainnotes.tutorial.learning.mapper.StudyTaskMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, plan_id, account_id, tutorial_id, chapter_id, target_type, target_id,
     task_date, sequence_no, status, generation_version,
@@ -9,6 +19,12 @@
   </sql>
 
   <!-- 计划全量重算时按唯一键 (plan_id, generation_version, target_type, target_id) 幂等补行 -->
+  <!--
+    insertPlanned：新增Planned；新增语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：planId、accountId、tutorialId、chapterId、taskDate、sequenceNo、version；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="insertPlanned">
     INSERT IGNORE INTO sr_study_task
                 (plan_id, account_id, tutorial_id, chapter_id, target_type, target_id,
@@ -17,10 +33,25 @@
                     #{chapterId}, #{taskDate}, #{sequenceNo}, 'TODO', #{version})
   </insert>
 
+  <!--
+    selectById：查询依据标识；读取语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.StudyTaskEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectById" resultType="com.starrainnotes.tutorial.learning.entity.StudyTaskEntity">
     SELECT <include refid="columns"/> FROM sr_study_task WHERE id = #{id}
   </select>
 
+  <!--
+    listByPlanId：list依据计划标识；读取语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.StudyTaskEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：planId；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="listByPlanId" resultType="com.starrainnotes.tutorial.learning.entity.StudyTaskEntity">
     SELECT <include refid="columns"/> FROM sr_study_task
     WHERE plan_id = #{planId}
@@ -28,6 +59,13 @@
     LIMIT 1000
   </select>
 
+  <!--
+    listCompletedByPlanId：list已完成依据计划标识；读取语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.StudyTaskEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：planId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="listCompletedByPlanId" resultType="com.starrainnotes.tutorial.learning.entity.StudyTaskEntity">
     SELECT <include refid="columns"/> FROM sr_study_task
     WHERE plan_id = #{planId} AND status = 'COMPLETED'
@@ -35,6 +73,14 @@
   </select>
 
   <!-- 今日任务：到期日不晚于今天且仍未结束 -->
+  <!--
+    listDueByAccountId：listDue依据账号标识；读取语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.StudyTaskEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：accountId、today；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="listDueByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.StudyTaskEntity">
     SELECT <include refid="columns"/> FROM sr_study_task
     WHERE account_id = #{accountId} AND task_date &lt;= #{today}
@@ -43,22 +89,46 @@
     LIMIT 100
   </select>
 
+  <!--
+    markOverdue：markOverdue；更新语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：accountId、today；参数含义参见 Mapper 方法注释。
+  -->
   <update id="markOverdue">
     UPDATE sr_study_task SET status = 'OVERDUE'
             WHERE account_id = #{accountId} AND task_date &lt; #{today} AND status = 'TODO'
   </update>
 
+  <!--
+    start：开始；更新语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：taskId、accountId；参数含义参见 Mapper 方法注释。
+  -->
   <update id="start">
     UPDATE sr_study_task SET status = 'IN_PROGRESS', started_at = UTC_TIMESTAMP(3)
             WHERE id = #{taskId} AND account_id = #{accountId}
               AND status IN ('TODO', 'OVERDUE')
   </update>
 
+  <!--
+    complete：complete；更新语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：taskId、accountId；参数含义参见 Mapper 方法注释。
+  -->
   <update id="complete">
     UPDATE sr_study_task SET status = 'COMPLETED', completed_at = UTC_TIMESTAMP(3)
             WHERE id = #{taskId} AND account_id = #{accountId} AND status = 'IN_PROGRESS'
   </update>
 
+  <!--
+    skip：skip；更新语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：taskId、accountId；参数含义参见 Mapper 方法注释。
+  -->
   <update id="skip">
     UPDATE sr_study_task SET status = 'SKIPPED'
             WHERE id = #{taskId} AND account_id = #{accountId}
@@ -66,11 +136,23 @@
   </update>
 
   <!-- 计划重算：未完成的任务作废，已完成的任务保留 -->
+  <!--
+    deleteUnfinishedByPlanId：删除Unfinished依据计划标识；删除语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：planId；参数含义参见 Mapper 方法注释。
+  -->
   <delete id="deleteUnfinishedByPlanId">
     DELETE FROM sr_study_task WHERE plan_id = #{planId} AND status &lt;&gt; 'COMPLETED'
   </delete>
 
   <!-- 结束计划：未完成的任务整体标记为跳过 -->
+  <!--
+    skipUnfinishedByPlanId：skipUnfinished依据计划标识；更新语句。
+    涉及数据表：sr_study_task；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：planId；参数含义参见 Mapper 方法注释。
+  -->
   <update id="skipUnfinishedByPlanId">
     UPDATE sr_study_task SET status = 'SKIPPED'
             WHERE plan_id = #{planId} AND status IN ('TODO', 'IN_PROGRESS', 'OVERDUE')

@@ -1,6 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.seo.mapper.SeoPageMapper">
+    <!--
+      SeoPageMapper.xml：com.starrainnotes.seo.mapper.SeoPageMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+    <!--
+      upsert：新增或更新；新增语句。
+      涉及数据表：sr_seo_page_snapshot；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.seo.api.dto.SeoPageSnapshot；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：routePath、contentType、contentId、canonicalUrl、title、description、robotsDirective、structuredDataJson、htmlSnapshot、sourceVersionRef；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="upsert" parameterType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         INSERT INTO sr_seo_page_snapshot(route_path, content_type, content_id, canonical_url,
             title, description, robots_directive, structured_data_json, html_snapshot,
@@ -14,31 +27,71 @@
             html_snapshot = VALUES(html_snapshot), source_version_ref = VALUES(source_version_ref),
             status = 'ACTIVE', generated_at = CURRENT_TIMESTAMP(3)
     </insert>
+    <!--
+      remove：remove；更新语句。
+      涉及数据表：sr_seo_page_snapshot；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：routePath；参数含义参见 Mapper 方法注释。
+    -->
     <update id="remove">
         UPDATE sr_seo_page_snapshot SET status = 'REMOVED' WHERE route_path = #{routePath}
     </update>
+    <!--
+      active：有效；读取语句。
+      涉及数据表：sr_seo_page_snapshot；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.seo.api.dto.SeoPageSnapshot；集合与单值形态由 Java 方法签名决定。
+      绑定参数：routePath；参数含义参见 Mapper 方法注释。
+    -->
     <select id="active" resultType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         SELECT route_path, content_type, content_id, canonical_url, title, description,
             robots_directive, structured_data_json, html_snapshot, source_version_ref,
             status, generated_at FROM sr_seo_page_snapshot
         WHERE route_path = #{routePath} AND status = 'ACTIVE'
     </select>
+    <!--
+      activePages：有效Pages；读取语句。
+      涉及数据表：sr_seo_page_snapshot；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.seo.api.dto.SeoPageSnapshot；集合与单值形态由 Java 方法签名决定。
+    -->
     <select id="activePages" resultType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         SELECT route_path, canonical_url, source_version_ref
         FROM sr_seo_page_snapshot WHERE status = 'ACTIVE'
         ORDER BY route_path
     </select>
+    <!--
+      activeMeta：有效Meta；读取语句。
+      涉及数据表：sr_seo_page_snapshot；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.seo.api.dto.SeoPageSnapshot；集合与单值形态由 Java 方法签名决定。
+      绑定参数：routePath；参数含义参见 Mapper 方法注释。
+    -->
     <select id="activeMeta" resultType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         SELECT route_path, canonical_url, title, description, robots_directive
         FROM sr_seo_page_snapshot WHERE route_path = #{routePath} AND status = 'ACTIVE'
     </select>
+    <!--
+      activePaths：有效Paths；读取语句。
+      涉及数据表：sr_seo_page_snapshot；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：string；集合与单值形态由 Java 方法签名决定。
+    -->
     <select id="activePaths" resultType="string">
         SELECT route_path FROM sr_seo_page_snapshot WHERE status = 'ACTIVE'
     </select>
+    <!--
+      activePathsByPrefix：有效Paths依据Prefix；读取语句。
+      涉及数据表：sr_seo_page_snapshot；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：string；集合与单值形态由 Java 方法签名决定。
+      绑定参数：prefix；参数含义参见 Mapper 方法注释。
+    -->
     <select id="activePathsByPrefix" resultType="string">
         SELECT route_path FROM sr_seo_page_snapshot
         WHERE status = 'ACTIVE' AND LEFT(route_path, CHAR_LENGTH(#{prefix})) = #{prefix}
     </select>
+    <!--
+      activeCount：有效数量；读取语句。
+      涉及数据表：sr_seo_page_snapshot；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="activeCount" resultType="long">
         SELECT COUNT(*) FROM sr_seo_page_snapshot WHERE status = 'ACTIVE'
     </select>

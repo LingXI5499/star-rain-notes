@@ -1,5 +1,15 @@
 # 前端
 
+## 源码阅读与注释
+
+每个 Vue、JavaScript 和 CSS 源文件（包含测试）都有职责说明。Vue 文件标明输入属性、输出事件、主要状态和阅读入口；函数注释说明请求路径、状态变化、参数、结果及异步边界。样式说明对应选择器、布局、交互状态和断点，既有行为由测试与实现共同约束。
+
+可从 `src/main.js`、`src/router/index.js` 和 `src/shared/shells` 开始，再按业务进入 `src/modules`。接口文件复用 `src/shared/http.js`；Markdown 编辑、媒体选择与保存正文是不同步骤，上传完成不等于已建立业务引用。公开阅读共用 Markdown 组件与目录跟踪能力，博客和作品采用左栏目录、右侧正文布局。
+
+`package.json` 的 `type: module` 使用 ES 模块；`private: true` 避免误发布 npm 包。`scripts` 分别提供本地开发、生产构建、构建预览和自动化测试；`dependencies` 是应用所需库，`devDependencies` 是构建及测试工具，`overrides` 统一指定传递依赖。生成的 `package-lock.json` 记录精确依赖树，保持原样；JSON 不支持注释，因此在此说明。`public/brand/site.webmanifest` 的名称、主题色和图标描述可安装应用的公开品牌资源，也保持原样。
+
+HTML 入口、静态 404、品牌 SVG、构建配置和 `.env.example` 也有对应注释。`VITE_*` 值会进入浏览器产物，只能保存公开信息；依赖目录、生成产物和二进制图片不属于项目源码注释范围。
+
 Vue 3、Vite、Vue Router、Pinia。公开页面与 `/useradmin` 共用单域名，首页直接加载，管理及其他页面按需加载。Markdown 经净化后渲染，支持代码高亮、公式、表格和目录。
 
 教程阅读使用章节目录、正文和页内导航三栏。博客与作品详情使用左侧导航、右侧正文两栏，手机端可展开目录。作品详情仅在配置有效代码库地址时展示代码库按钮，详情页不展示封面与在线访问入口。

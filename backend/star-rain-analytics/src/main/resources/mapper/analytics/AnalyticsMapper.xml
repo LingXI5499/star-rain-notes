@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.analytics.mapper.AnalyticsMapper">
+    <!--
+      AnalyticsMapper.xml：com.starrainnotes.analytics.mapper.AnalyticsMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
   <!--
     referrer_category 在库里是 NOT NULL DEFAULT 'DIRECT'。显式把这一列写进 INSERT 会**覆盖掉列默认值**：
     一旦传 null，插入就不是「回落到 DIRECT」而是直接违反非空约束。
@@ -8,15 +14,34 @@
     但这条失败会被 AnalyticsServiceImpl.safelyInsert 吞掉并只记一条 warn 日志——
     也就是「页面浏览被静默丢掉」。所以这里显式 COALESCE，让 XML 尊重库声明的默认值。
   -->
+  <!--
+    insert：新增；新增语句。
+    涉及数据表：sr_analytics_event；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：eventType、routeKey、contentType、contentId、referrerCategory、referrerHost；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="insert">
     INSERT INTO sr_analytics_event(event_type, route_key, content_type, content_id,
             referrer_category, referrer_host)
         VALUES (#{eventType}, #{routeKey}, #{contentType}, #{contentId},
             COALESCE(#{referrerCategory}, 'DIRECT'), #{referrerHost})
   </insert>
+  <!--
+    deleteSiteDay：删除站点日；删除语句。
+    涉及数据表：sr_analytics_daily_site；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：date；参数含义参见 Mapper 方法注释。
+  -->
   <delete id="deleteSiteDay">
     DELETE FROM sr_analytics_daily_site WHERE stat_date = #{date}
   </delete>
+  <!--
+    insertSiteDay：新增站点日；新增语句。
+    涉及数据表：sr_analytics_daily_site、sr_analytics_event；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：date；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <insert id="insertSiteDay">
     INSERT INTO sr_analytics_daily_site(stat_date, page_view_count, content_view_count)
         SELECT #{date},
@@ -26,9 +51,22 @@
         WHERE occurred_at &gt;= #{date} AND occurred_at &lt; DATE_ADD(#{date}, INTERVAL 1 DAY)
         HAVING COUNT(*) &gt; 0
   </insert>
+  <!--
+    deleteContentDay：删除内容日；删除语句。
+    涉及数据表：sr_analytics_daily_content；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：date；参数含义参见 Mapper 方法注释。
+  -->
   <delete id="deleteContentDay">
     DELETE FROM sr_analytics_daily_content WHERE stat_date = #{date}
   </delete>
+  <!--
+    insertContentDay：新增内容日；新增语句。
+    涉及数据表：sr_analytics_daily_content、sr_analytics_event；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：date；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <insert id="insertContentDay">
     INSERT INTO sr_analytics_daily_content(stat_date, content_type, content_id, view_count)
         SELECT #{date}, content_type, content_id, COUNT(*)
@@ -37,32 +75,71 @@
           AND occurred_at &lt; DATE_ADD(#{date}, INTERVAL 1 DAY)
         GROUP BY content_type, content_id
   </insert>
+  <!--
+    deleteReferrerDay：删除Referrer日；删除语句。
+    涉及数据表：sr_analytics_daily_referrer；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：date；参数含义参见 Mapper 方法注释。
+  -->
   <delete id="deleteReferrerDay">
     DELETE FROM sr_analytics_daily_referrer WHERE stat_date = #{date}
   </delete>
+  <!--
+    insertReferrerDay：新增Referrer日；新增语句。
+    涉及数据表：sr_analytics_daily_referrer、sr_analytics_event；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：date；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <insert id="insertReferrerDay">
     INSERT INTO sr_analytics_daily_referrer(stat_date, referrer_category, view_count)
         SELECT #{date}, referrer_category, COUNT(*) FROM sr_analytics_event
         WHERE event_type = 'PAGE_VIEW' AND occurred_at &gt;= #{date} AND occurred_at &lt; DATE_ADD(#{date}, INTERVAL 1 DAY)
         GROUP BY referrer_category
   </insert>
+  <!--
+    historicalTotals：historicalTotals；读取语句。
+    涉及数据表：sr_analytics_daily_site；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：map；集合与单值形态由 Java 方法签名决定。
+    绑定参数：today；参数含义参见 Mapper 方法注释。
+  -->
   <select id="historicalTotals" resultType="map">
     SELECT COALESCE(SUM(page_view_count),0) AS pageViews,
           COALESCE(SUM(content_view_count),0) AS contentViews
         FROM sr_analytics_daily_site WHERE stat_date &lt; #{today}
   </select>
+  <!--
+    dayCounts：日数量集合；读取语句。
+    涉及数据表：sr_analytics_event；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：map；集合与单值形态由 Java 方法签名决定。
+    绑定参数：today；参数含义参见 Mapper 方法注释。
+  -->
   <select id="dayCounts" resultType="map">
     SELECT COALESCE(SUM(event_type = 'PAGE_VIEW'),0) AS pageViews,
           COALESCE(SUM(event_type = 'CONTENT_VIEW'),0) AS contentViews
         FROM sr_analytics_event WHERE occurred_at &gt;= #{today}
           AND occurred_at &lt; DATE_ADD(#{today}, INTERVAL 1 DAY)
   </select>
+  <!--
+    dailyTrend：dailyTrend；读取语句。
+    涉及数据表：sr_analytics_daily_site；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：map；集合与单值形态由 Java 方法签名决定。
+    绑定参数：start、end、today；参数含义参见 Mapper 方法注释。
+  -->
   <select id="dailyTrend" resultType="map">
     SELECT stat_date AS statDate, page_view_count AS pageViews,
           content_view_count AS contentViews FROM sr_analytics_daily_site
         WHERE stat_date &gt;= #{start} AND stat_date &lt;= #{end} AND stat_date &lt; #{today}
         ORDER BY stat_date
   </select>
+  <!--
+    hotContent：hot内容；读取语句。
+    涉及数据表：sr_analytics_daily_content、sr_analytics_event；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：map；集合与单值形态由 Java 方法签名决定。
+    绑定参数：start、end、today、type、limit；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="hotContent" resultType="map">
     SELECT content_type AS contentType, content_id AS contentId,
           SUM(view_count) AS viewCount FROM (
@@ -76,6 +153,13 @@
         ) counts WHERE (#{type} IS NULL OR content_type = #{type})
         GROUP BY content_type, content_id ORDER BY viewCount DESC LIMIT #{limit}
   </select>
+  <!--
+    referrers：referrers；读取语句。
+    涉及数据表：sr_analytics_daily_referrer、sr_analytics_event；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：map；集合与单值形态由 Java 方法签名决定。
+    绑定参数：start、end、today；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="referrers" resultType="map">
     SELECT referrer_category AS category, SUM(view_count) AS viewCount FROM (
           SELECT referrer_category, view_count FROM sr_analytics_daily_referrer
@@ -87,6 +171,12 @@
           GROUP BY referrer_category
         ) counts GROUP BY referrer_category ORDER BY viewCount DESC
   </select>
+  <!--
+    deleteRawBefore：删除原始之前；删除语句。
+    涉及数据表：sr_analytics_event；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：cutoff；参数含义参见 Mapper 方法注释。
+  -->
   <delete id="deleteRawBefore">
     DELETE FROM sr_analytics_event WHERE occurred_at &lt; #{cutoff}
   </delete>

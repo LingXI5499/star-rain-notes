@@ -1,10 +1,40 @@
+/**
+ * display.js：账号模块的业务支持工具。
+ * 职责范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 提供格式化、映射或计算能力，供模块页面与组件复用。
+ * 阅读入口：roleLabel（角色标签的处理函数）；statusLabel（状态标签的处理函数）；dateLabel（日期标签的处理函数）；utcQueryTime（utc查询时间的处理函数）；actionLabel（动作标签的处理函数）。
+ */
+
+/**
+ * 角色标签的处理函数。
+ * @param code 代码；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 export const roleLabel = (code) => ({ USER: '普通用户', ADMIN: '管理员', SUPER_ADMIN: '超级管理员' })[code] || code
+/**
+ * 状态标签的处理函数。
+ * @param code 代码；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 export const statusLabel = (code) => ({ ACTIVE: '正常', DISABLED: '已停用', ENABLED: '已启用', SUCCESS: '成功', FAILED: '失败' })[code] || code
-export function dateLabel(value) {
+export
+  /**
+   * 日期标签的处理函数。
+   * 主要协作：value.endsWith、Number.isNaN、date.getTime、date.toLocaleString。
+   * @param value 值；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function dateLabel(value) {
   if (!value) return '—'
   const date = new Date(value.endsWith('Z') ? value : value + 'Z')
   return Number.isNaN(date.getTime()) ? value : date.toLocaleString('zh-CN', { hour12: false })
 }
+/**
+ * utc查询时间的处理函数。
+ * 主要协作：.slice、.toISOString。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 export const utcQueryTime = (value) => value ? new Date(value).toISOString().slice(0, -1) : ''
 export const auditActions = {
   ADMIN_INVITATION_RESENT: '重发邀请通知', ADMIN_INVITATION_REVOKED: '撤销管理员邀请', ADMIN_ROLE_REVOKED: '取消管理员身份',
@@ -16,4 +46,9 @@ export const auditActions = {
   BOOTSTRAP_SUPER_ADMIN_CREATED: '初始化超级管理员',
   SUPER_ADMIN_IDENTITY_CORRECTED: '修正超级管理员初始化邮箱',
 }
+/**
+ * 动作标签的处理函数。
+ * @param code 代码；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 export const actionLabel = (code) => auditActions[code] || code

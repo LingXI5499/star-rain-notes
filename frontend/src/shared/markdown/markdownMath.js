@@ -1,3 +1,11 @@
+/**
+ * markdownMath.js：跨模块基础模块的共享工具。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 将跨模块使用的行为收敛到一个实现，调用方通过导出函数或组合式函数使用。
+ * 主要依赖：@mdit/plugin-tex。
+ * 阅读入口：isWordChar（判断是否单词字符）；isSpaceChar（判断是否Space字符）；looksLikeTex（looksLikeTex的处理函数）；canOpenDollar（判断能否OpenDollar）；canCloseDollar（判断能否CloseDollar）。
+ */
+
 import { tex } from '@mdit/plugin-tex'
 
 /*
@@ -29,16 +37,34 @@ function isWordChar(code) {
     || code === 95
 }
 
+/**
+ * 判断是否Space字符。
+ * @param code 代码；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function isSpaceChar(code) {
   if (code == null) return false
   return code === 32 || code === 9 || code === 10 || code === 13
 }
 
 /* 内容几乎可以确定是 TeX（有反斜杠/上下标/花括号），而不是货币或占位词 */
+/**
+ * looksLikeTex的处理函数。
+ * 主要协作：.test。
+ * @param content 内容；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function looksLikeTex(content) {
   return /[\\^_{}]/.test(content)
 }
 
+/**
+ * 判断能否OpenDollar。
+ * 主要协作：src.charCodeAt、isWordChar、isSpaceChar。
+ * @param src src；默认值、解构字段与可选参数见函数签名。
+ * @param pos pos；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function canOpenDollar(src, pos) {
   if (src.charCodeAt(pos) !== 36) return false
   const prev = pos === 0 ? undefined : src.charCodeAt(pos - 1)
@@ -52,6 +78,14 @@ function canOpenDollar(src, pos) {
   return true
 }
 
+/**
+ * 判断能否CloseDollar。
+ * 主要协作：src.charCodeAt、isSpaceChar、isWordChar、looksLikeTex。
+ * @param src src；默认值、解构字段与可选参数见函数签名。
+ * @param pos pos；默认值、解构字段与可选参数见函数签名。
+ * @param content 内容；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function canCloseDollar(src, pos, content) {
   if (src.charCodeAt(pos) !== 36) return false
   const prev = src.charCodeAt(pos - 1)
@@ -65,6 +99,14 @@ function canCloseDollar(src, pos, content) {
 }
 
 /* 数一数 pos 之前的连续反斜杠：奇数表示这个 `$` 被转义了，不能当闭标记 */
+/**
+ * 统计TrailingBackslashes。
+ * 主要协作：src.charCodeAt。
+ * @param src src；默认值、解构字段与可选参数见函数签名。
+ * @param pos pos；默认值、解构字段与可选参数见函数签名。
+ * @param minPos 最小Pos；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function countTrailingBackslashes(src, pos, minPos) {
   let count = 0
   let i = pos - 1
@@ -75,6 +117,12 @@ function countTrailingBackslashes(src, pos, minPos) {
   return count
 }
 
+/**
+ * 转义HTML。
+ * 主要协作：.replace。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function escapeHtml(value) {
   return String(value)
     .replace(/&/g, '&amp;')
@@ -161,7 +209,14 @@ function mathInlineDollar(state, silent) {
  */
 const EXPLICIT_FORMULA = /^(?:\$\$[\s\S]*\$\$|\$[^\n$]+\$|\\\([\s\S]*\\\)|\\\[[\s\S]*\\\]|```(?:math|latex)\s*\n[\s\S]*\n```)$/i
 
-export function normalizePastedMath(value) {
+export
+  /**
+   * 规范化PastedMath。
+   * 主要协作：.replace、source.trim、EXPLICIT_FORMULA.test、.test。
+   * @param value 值；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function normalizePastedMath(value) {
   const source = String(value ?? '').replace(/\r\n/g, '\n').replace(/\r/g, '\n')
   const trimmed = source.trim()
   if (!trimmed) return null
@@ -177,7 +232,14 @@ export function normalizePastedMath(value) {
  * 把数学语法挂到 markdown-it 上。
  * 调用顺序有依赖：必须先 md.use(tex) 注册出 math_inline_dollar，才能用 ruler.at 替换它。
  */
-export function useMarkdownMath(md) {
+export
+  /**
+   * useMarkdownMath的处理函数。
+   * 主要协作：md.use、.toLowerCase、token.info.trim、renderMathPlaceholder、originalFence。
+   * @param md md；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function useMarkdownMath(md) {
   md.use(tex, {
     /* 同时接受 $...$、$$...$$、\(...\)、\[...\] */
     delimiters: 'all',

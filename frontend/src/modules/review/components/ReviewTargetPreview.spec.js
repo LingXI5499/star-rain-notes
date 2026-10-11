@@ -1,3 +1,11 @@
+/**
+ * ReviewTargetPreview.spec.js：审核模块的自动化测试。
+ * 职责范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vitest、./ReviewTargetPreview.vue。
+ * 验证场景：tutorial operation review；shows proposed content with readable labels and hides internal versions；shows ordering proposals and execution failures clearly。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
 import ReviewTargetPreview from './ReviewTargetPreview.vue'

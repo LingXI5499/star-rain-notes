@@ -1,3 +1,11 @@
+/*
+ * TutorialAdminPagingIntegrationTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：TutorialMapper、TutorialCategoryMapper。
+ * 阅读入口：filtersAndCountsInSqlAndPreservesCompleteSortingProjection（筛选及数量集合内部Sql及PreservesCompleteSortingProjection处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -7,7 +15,16 @@ import java.sql.*;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 
+/**
+ * 教程后台PagingIntegration测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class TutorialAdminPagingIntegrationTest extends MapperXmlIntegrationSupport {
+    /**
+     * 筛选及数量集合内部Sql及PreservesCompleteSortingProjection处理入口。
+     * 关键处理步骤调用 <code>openSession</code>、<code>session.getConnection</code>、<code>UUID.randomUUID</code>、<code>connection.prepareStatement</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void filtersAndCountsInSqlAndPreservesCompleteSortingProjection() throws Exception {
         try (var session = openSession()) {
             Connection connection = session.getConnection();

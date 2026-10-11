@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.learning.mapper.LearningProgressMapper">
+    <!--
+      LearningProgressMapper.xml：com.starrainnotes.tutorial.learning.mapper.LearningProgressMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, account_id, tutorial_id, group_id, chapter_id, scroll_anchor, progress_ratio,
     study_seconds_total, completed_at, last_studied_at, created_at, updated_at
   </sql>
 
+  <!--
+    upsertReading：新增或更新阅读；新增语句。
+    涉及数据表：sr_learning_progress；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：accountId、tutorialId、groupId、chapterId、anchor、ratio、seconds；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="upsertReading">
     INSERT INTO sr_learning_progress
                 (account_id, tutorial_id, group_id, chapter_id, scroll_anchor,
@@ -20,6 +36,12 @@
                 last_studied_at = VALUES(last_studied_at)
   </insert>
 
+  <!--
+    ensureRow：ensure行；新增语句。
+    涉及数据表：sr_learning_progress；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：accountId、tutorialId、groupId、chapterId；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="ensureRow">
     INSERT IGNORE INTO sr_learning_progress
                 (account_id, tutorial_id, group_id, chapter_id,
@@ -29,6 +51,12 @@
   </insert>
 
   <!-- 只在第一次完成时返回 1：Service 用它决定要不要写完成事件 -->
+  <!--
+    markCompleted：mark已完成；更新语句。
+    涉及数据表：sr_learning_progress；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：accountId、chapterId；参数含义参见 Mapper 方法注释。
+  -->
   <update id="markCompleted">
     UPDATE sr_learning_progress
             SET completed_at = UTC_TIMESTAMP(3), last_studied_at = UTC_TIMESTAMP(3)
@@ -36,20 +64,49 @@
               AND completed_at IS NULL
   </update>
 
+  <!--
+    selectByAccountIdAndChapterId：查询依据账号标识及章节标识；读取语句。
+    涉及数据表：sr_learning_progress；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.LearningProgressEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：accountId、chapterId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectByAccountIdAndChapterId" resultType="com.starrainnotes.tutorial.learning.entity.LearningProgressEntity">
     SELECT <include refid="columns"/> FROM sr_learning_progress
     WHERE account_id = #{accountId} AND chapter_id = #{chapterId}
   </select>
 
+  <!--
+    listByAccountId：list依据账号标识；读取语句。
+    涉及数据表：sr_learning_progress；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.LearningProgressEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：accountId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="listByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.LearningProgressEntity">
     SELECT <include refid="columns"/> FROM sr_learning_progress WHERE account_id = #{accountId}
   </select>
 
+  <!--
+    listByAccountIdAndTutorialId：list依据账号标识及教程标识；读取语句。
+    涉及数据表：sr_learning_progress；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.LearningProgressEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：accountId、tutorialId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="listByAccountIdAndTutorialId" resultType="com.starrainnotes.tutorial.learning.entity.LearningProgressEntity">
     SELECT <include refid="columns"/> FROM sr_learning_progress
     WHERE account_id = #{accountId} AND tutorial_id = #{tutorialId}
   </select>
 
+  <!--
+    listRecentByAccountId：listRecent依据账号标识；读取语句。
+    涉及数据表：sr_learning_progress；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.learning.entity.LearningProgressEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：accountId；参数含义参见 Mapper 方法注释。
+    LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+  -->
   <select id="listRecentByAccountId" resultType="com.starrainnotes.tutorial.learning.entity.LearningProgressEntity">
     SELECT <include refid="columns"/> FROM sr_learning_progress
     WHERE account_id = #{accountId}

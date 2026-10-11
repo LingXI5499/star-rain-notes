@@ -1,4 +1,16 @@
 <script setup>
+/**
+ * BlogSidebar.vue：博客模块的视图组件。
+ * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue、vue-router、../../../shared/viewMode、./BlogTagOverlay.vue。
+ * 组件输入：tags、months、stats、activeTags、activeMonth；默认值与类型见 defineProps。
+ * 组件输出事件：select-tag、apply-tags、select-month；负载由 emit 调用给出。
+ * 主要响应式状态：props、emit、tagsOpen、visibleMonths、hiddenMonthCount、writingDays、startedAt、wordCountText。
+ * 阅读入口：monthKey（月份键的处理函数）；isActiveTag（判断是否有效标签）；toggleTag（切换标签）；applyTags（应用标签列表）；toggleMonth（切换月份）。
+ */
+
+
 import { computed, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
@@ -20,6 +32,9 @@ import BlogTagOverlay from './BlogTagOverlay.vue'
  * 归档块仍是最多 6 个月 + 更多 → /blog/archive（用户没有对它提要求，保持原样）。
  */
 const { contentPath } = useViewMode()
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({
   tags: { type: Array, default: () => [] },
   months: { type: Array, default: () => [] },
@@ -34,17 +49,42 @@ const props = defineProps({
   activeMonth: { type: String, default: '' },
 })
 
+/**
+ * 事件发射器；通过 defineEmits 建立。
+ */
 const emit = defineEmits(['select-tag', 'apply-tags', 'select-month'])
 
 const MONTH_LIMIT = 6
 
+/**
+ * 标签列表Open；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tagsOpen = ref(false)
+/**
+ * 可见Months；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const visibleMonths = computed(() => props.months.slice(0, MONTH_LIMIT))
+/**
+ * hidden月份数量；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const hiddenMonthCount = computed(() => Math.max(0, props.months.length - visibleMonths.value.length))
 
+/**
+ * 月份键的处理函数。
+ * 主要协作：.padStart。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const monthKey = (item) => `${item.year}-${String(item.month).padStart(2, '0')}`
 
 // 写作天数：从最早一篇的发布日期算到今天，当天记为第 1 天
+/**
+ * 写作Days；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const writingDays = computed(() => {
   const first = props.stats?.firstPublishedAt
   if (!first) return 0
@@ -54,6 +94,10 @@ const writingDays = computed(() => {
   return Math.max(1, days + 1)
 })
 
+/**
+ * started时间；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const startedAt = computed(() => {
   const first = props.stats?.firstPublishedAt
   if (!first) return '—'
@@ -63,6 +107,10 @@ const startedAt = computed(() => {
 })
 
 // 中文习惯：万字；不足一万按千字显示
+/**
+ * 单词数量文本；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const wordCountText = computed(() => {
   const total = Number(props.stats?.wordCount || 0)
   if (total >= 10000) return `${(total / 10000).toFixed(1)} 万`
@@ -70,21 +118,43 @@ const wordCountText = computed(() => {
   return String(total)
 })
 
+/**
+ * 判断是否有效标签。
+ * 主要协作：props.activeTags.includes。
+ * @param slug 公开固定链接的路径标识；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function isActiveTag(slug) {
   return props.activeTags.includes(slug)
 }
 
 // 点胶囊 = 单标签筛选（再点同一个取消）
+/**
+ * 切换标签。
+ * 主要协作：emit、isActiveTag。
+ * @param slug 公开固定链接的路径标识；默认值、解构字段与可选参数见函数签名。
+ */
 function toggleTag(slug) {
   emit('select-tag', isActiveTag(slug) ? '' : slug)
 }
 
 // 悬浮卡片：一次提交一组标签（空数组 = 全部不筛选）
+/**
+ * 应用标签列表。
+ * 主要协作：emit。
+ * 更新的响应式状态包括 tagsOpen；渲染由 Vue 的依赖跟踪触发。
+ * @param slugs slugs；默认值、解构字段与可选参数见函数签名。
+ */
 function applyTags(slugs) {
   tagsOpen.value = false
   emit('apply-tags', slugs)
 }
 
+/**
+ * 切换月份。
+ * 主要协作：monthKey、emit。
+ * @param item item；默认值、解构字段与可选参数见函数签名。
+ */
 function toggleMonth(item) {
   const key = monthKey(item)
   emit('select-month', props.activeMonth === key ? null : { year: item.year, month: item.month })
@@ -178,8 +248,20 @@ function toggleMonth(item) {
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.blog-panel__tag-nav。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-panel__tag-nav { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
 
+/**
+ * 样式范围：.blog-panel__tag-nav button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-nav button {
   padding: 5px 9px;
   border: 1px solid var(--border);
@@ -191,10 +273,25 @@ function toggleMonth(item) {
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.blog-panel__tag-nav button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-nav button:hover { border-color: var(--primary); color: var(--primary); }
 
+/**
+ * 样式范围：.blog-panel__tag-all::after。
+ */
 .blog-panel__tag-all::after { margin-left: 4px; content: '↗'; font-size: 10px; }
 
+/**
+ * 样式范围：.blog-rail。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 在正常文档流中保留位置，吸附偏移由 top=calc(var(--header-height) + var(--space-4)) 决定；父级高度限制吸附范围。
+ * 溢出处理：整体 auto。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-rail {
   position: sticky;
   top: calc(var(--header-height) + var(--space-4));
@@ -210,6 +307,11 @@ function toggleMonth(item) {
   overflow: auto;
 }
 
+/**
+ * 样式范围：.blog-panel。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel {
   display: flex;
   flex-direction: column;
@@ -225,6 +327,10 @@ function toggleMonth(item) {
 .blog-panel--archive,
 .blog-panel--stats { flex: 0 0 auto; }
 
+/**
+ * 样式范围：.blog-panel__head。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-panel__head {
   display: flex;
   align-items: center;
@@ -232,6 +338,10 @@ function toggleMonth(item) {
   margin-bottom: 12px;
 }
 
+/**
+ * 样式范围：.blog-panel__head span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__head span {
   color: var(--text-primary);
   font-size: 11px;
@@ -239,11 +349,19 @@ function toggleMonth(item) {
   letter-spacing: 0.1em;
 }
 
+/**
+ * 样式范围：.blog-panel__head small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__head small {
   color: var(--text-muted);
   font-size: 10px;
 }
 
+/**
+ * 样式范围：.blog-panel__empty。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__empty {
   color: var(--text-muted);
   font-size: 11px;
@@ -268,8 +386,15 @@ function toggleMonth(item) {
   scrollbar-color: var(--border-strong) transparent;
 }
 
+/**
+ * 样式范围：.blog-panel__tag-list::-webkit-scrollbar。
+ */
 .blog-panel__tag-list::-webkit-scrollbar { width: 8px; }
 
+/**
+ * 样式范围：.blog-panel__tag-list::-webkit-scrollbar-thumb。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-list::-webkit-scrollbar-thumb {
   border: 2px solid transparent;
   border-radius: 999px;
@@ -277,12 +402,27 @@ function toggleMonth(item) {
   background-clip: content-box;
 }
 
+/**
+ * 样式范围：.blog-panel__tag-list::-webkit-scrollbar-thumb:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-list::-webkit-scrollbar-thumb:hover { background-color: var(--text-muted); }
 
+/**
+ * 样式范围：.blog-panel__tag-list::-webkit-scrollbar-track。
+ */
 .blog-panel__tag-list::-webkit-scrollbar-track { background: transparent; }
 
+/**
+ * 样式范围：.blog-panel__tag-list::-webkit-scrollbar-button。
+ */
 .blog-panel__tag-list::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
 
+/**
+ * 样式范围：.blog-panel__tag-list button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-list button {
   display: inline-flex;
   align-items: center;
@@ -301,6 +441,11 @@ function toggleMonth(item) {
   transition: color 160ms ease, background-color 160ms ease, border-color 160ms ease, transform 160ms ease, box-shadow 160ms ease;
 }
 
+/**
+ * 样式范围：.blog-panel__tag-name。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ */
 .blog-panel__tag-name {
   overflow: hidden;
   min-width: 0;
@@ -308,6 +453,10 @@ function toggleMonth(item) {
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.blog-panel__tag-list em, .blog-panel__months em。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-list em,
 .blog-panel__months em {
   color: var(--text-muted);
@@ -316,6 +465,11 @@ function toggleMonth(item) {
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.blog-panel__tag-list button:hover, .blog-panel__tag-list button.active, .blog-panel__months button:hover, .blog-panel__months button.active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-list button:hover,
 .blog-panel__tag-list button.active,
 .blog-panel__months button:hover,
@@ -325,6 +479,10 @@ function toggleMonth(item) {
   background: color-mix(in srgb, var(--primary) 8%, transparent);
 }
 
+/**
+ * 样式范围：.blog-panel__tag-list em。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-list em {
   display: inline-grid;
   place-items: center;
@@ -341,41 +499,85 @@ function toggleMonth(item) {
   transition: color 160ms ease, background-color 160ms ease;
 }
 
+/**
+ * 样式范围：.blog-panel__tag-list button.active。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-list button.active {
   border-color: color-mix(in srgb, var(--primary) 55%, var(--border));
   background: color-mix(in srgb, var(--primary) 11%, var(--bg-surface));
 }
 
+/**
+ * 样式范围：.blog-panel__tag-list button.active em。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-list button.active em {
   color: var(--on-primary);
   background: var(--primary);
 }
 
+/**
+ * 样式范围：.blog-panel__tag-list button:focus-visible。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__tag-list button:focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
+/**
+ * 响应式或设备条件：(hover: hover)；仅在该条件成立时覆盖基础样式。
+ */
 @media (hover: hover) {
+  /**
+   * 样式范围：.blog-panel__tag-list button:hover。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
   .blog-panel__tag-list button:hover {
     transform: translateY(-2px);
     box-shadow: 0 3px 8px color-mix(in srgb, var(--primary) 12%, transparent);
   }
+  /**
+   * 样式范围：.blog-panel__tag-list button:hover:not(.active) em。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+   */
   .blog-panel__tag-list button:hover:not(.active) em {
     color: var(--primary);
     background: color-mix(in srgb, var(--primary) 12%, var(--bg-surface));
   }
 }
 
+/**
+ * 样式范围：.blog-panel__tag-list button:active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .blog-panel__tag-list button:active { transform: scale(0.97); }
 
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
 @media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：.blog-panel__tag-list button,   .blog-panel__tag-list em。
+   */
   .blog-panel__tag-list button,
   .blog-panel__tag-list em { transition: none; }
+  /**
+   * 样式范围：.blog-panel__tag-list button:hover,   .blog-panel__tag-list button:active。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   */
   .blog-panel__tag-list button:hover,
   .blog-panel__tag-list button:active { transform: none; }
 }
 
+/**
+ * 样式范围：.blog-panel__more。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__more {
   display: inline-flex;
   align-items: center;
@@ -385,6 +587,11 @@ function toggleMonth(item) {
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.blog-panel__more:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__more:hover { color: var(--primary); }
 
 /* 归档：参照站是「月份卡片」两列网格，比一列流水行更容易一眼扫完 */
@@ -394,6 +601,11 @@ function toggleMonth(item) {
   gap: 8px;
 }
 
+/**
+ * 样式范围：.blog-panel__months button。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__months button {
   display: flex;
   flex-direction: column;
@@ -407,18 +619,30 @@ function toggleMonth(item) {
   text-align: left;
 }
 
+/**
+ * 样式范围：.blog-panel__month-label。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__month-label {
   color: var(--text-muted);
   font-size: 10px;
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.blog-panel__months strong。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__months strong {
   color: var(--text-primary);
   font-size: 15px;
   font-weight: 700;
 }
 
+/**
+ * 样式范围：.blog-panel__months strong i。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__months strong i {
   margin-left: 2px;
   color: var(--text-muted);
@@ -427,6 +651,10 @@ function toggleMonth(item) {
   font-weight: 400;
 }
 
+/**
+ * 样式范围：.blog-panel__stats。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ */
 .blog-panel__stats {
   display: flex;
   flex-direction: column;
@@ -434,6 +662,10 @@ function toggleMonth(item) {
   margin: 0;
 }
 
+/**
+ * 样式范围：.blog-panel__stats > div。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-panel__stats > div {
   display: flex;
   align-items: baseline;
@@ -441,11 +673,19 @@ function toggleMonth(item) {
   gap: 10px;
 }
 
+/**
+ * 样式范围：.blog-panel__stats dt。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__stats dt {
   color: var(--text-muted);
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.blog-panel__stats dd。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__stats dd {
   margin: 0;
   color: var(--primary);
@@ -453,6 +693,10 @@ function toggleMonth(item) {
   font-weight: 700;
 }
 
+/**
+ * 样式范围：.blog-panel__stats dd i。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-panel__stats dd i {
   margin-left: 3px;
   color: var(--text-muted);
@@ -461,12 +705,22 @@ function toggleMonth(item) {
   font-weight: 400;
 }
 
+/**
+ * 样式范围：.blog-panel__stats-date。
+ */
 .blog-panel__stats-date {
   font-size: 13px !important;
 }
 
 /* 窄屏：侧栏不再固定，改成两列平铺，避免整条栏占满手机屏 */
+/**
+ * 响应式或设备条件：(max-width: 960px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 960px) {
+  /**
+   * 样式范围：.blog-rail。
+   * 使用网格布局组织内容；列定义为 repeat(2, minmax(0, 1fr))，间距由 各行列间距规则 控制。
+   */
   .blog-rail {
     position: static;
     max-height: none;
@@ -474,11 +728,23 @@ function toggleMonth(item) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
+  /**
+   * 样式范围：.blog-panel--stats。
+   */
   .blog-panel--stats { grid-column: 1 / -1; }
+  /**
+   * 样式范围：.blog-panel__tag-list。
+   */
   .blog-panel__tag-list { max-height: 180px; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 680px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 680px) {
+  /**
+   * 样式范围：.blog-rail。
+   */
   .blog-rail { grid-template-columns: 1fr; }
 }
 </style>

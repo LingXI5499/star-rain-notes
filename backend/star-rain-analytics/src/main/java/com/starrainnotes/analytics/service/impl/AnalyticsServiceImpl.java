@@ -1,3 +1,11 @@
+/*
+ * AnalyticsServiceImpl：访问统计模块的业务实现文件。
+ * 业务范围：前台访问事件、按日汇总和统计查询。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：ContentViewEvent、ReferrerClassification、ReferrerClassifier、AnalyticsEventEntity、AnalyticsContentTypeInvalidException、AnalyticsDateRangeInvalidException、AnalyticsRouteInvalidException。
+ * 阅读入口：recordPageView（记录分页View）；recordContentView（记录内容View）；siteSummary（站点摘要处理入口）；trend（trend处理入口）。
+ */
+
 package com.starrainnotes.analytics.service.impl;
 
 import com.starrainnotes.analytics.api.ContentViewEvent;
@@ -21,16 +29,44 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/**
+ * 统计业务服务实现，属于访问统计模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class AnalyticsServiceImpl implements AnalyticsService {
+    /**
+     * 当前类使用的日志记录器。
+     */
     private static final Logger log = LoggerFactory.getLogger(AnalyticsServiceImpl.class);
+    /**
+     * 路由集合。
+     */
     private static final Set<String> PAGE_ROUTES = Set.of("/", "/blog", "/blog/archive", "/tutorials",
         "/portfolio", "/messages", "/about", "/search");
+    /**
+     * TYPES。
+     */
     private static final Set<String> CONTENT_TYPES = Set.of("BLOG", "TUTORIAL", "CHAPTER", "PORTFOLIO");
+    /**
+     * 数据映射。
+     * 协作类型：<code>AnalyticsMapper</code>。
+     */
     private final AnalyticsMapper mapper;
+    /**
+     * classifier。
+     */
     private final ReferrerClassifier classifier;
 
+    /**
+     * 记录分页View。
+     * 主要协作调用：<code>PAGE_ROUTES.contains</code>、<code>classifier.classify</code>。
+     * 实现中的显式失败类型包括 <code>AnalyticsRouteInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param routeKey 路由键；类型为 <code>String</code>
+     * @param referrer referrer；类型为 <code>String</code>
+     */
     @Override
     public void recordPageView(String routeKey, String referrer) {
         if (routeKey == null || !PAGE_ROUTES.contains(routeKey)) {
@@ -45,6 +81,13 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         safelyInsert(event);
     }
 
+    /**
+     * 记录内容View。
+     * 主要协作调用：<code>CONTENT_TYPES.contains</code>。
+     * 实现中的显式失败类型包括 <code>IllegalArgumentException</code>；具体触发条件见对应分支。
+     *
+     * @param event 事件；类型为 <code>ContentViewEvent</code>
+     */
     @Override
     public void recordContentView(ContentViewEvent event) {
         if (event == null || !CONTENT_TYPES.contains(event.getContentType())
@@ -61,6 +104,12 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         safelyInsert(row);
     }
 
+    /**
+     * safely新增处理入口。
+     * 主要协作调用：<code>mapper.insert</code>。
+     *
+     * @param event 事件；类型为 <code>AnalyticsEventEntity</code>
+     */
     private void safelyInsert(AnalyticsEventEntity event) {
         try {
             mapper.insert(event);
@@ -69,6 +118,11 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         }
     }
 
+    /**
+     * 站点摘要处理入口。
+     * 主要协作调用：<code>mapper.historicalTotals</code>、<code>mapper.dayCounts</code>。
+     * @return 类型为 <code>Map&lt;String, Object&gt;</code> 的处理结果
+     */
     @Override
     public Map<String, Object> siteSummary() {
         LocalDate today = LocalDate.now(ZoneOffset.UTC);
@@ -83,6 +137,14 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         return result;
     }
 
+    /**
+     * trend处理入口。
+     * 主要协作调用：<code>mapper.dailyTrend</code>、<code>mapper.dayCounts</code>。
+     *
+     * @param start 开始；类型为 <code>LocalDate</code>
+     * @param end 结束；类型为 <code>LocalDate</code>
+     * @return 本次处理得到的条目集合
+     */
     @Override
     public List<Map<String, Object>> trend(LocalDate start, LocalDate end) {
         validateDates(start, end);
@@ -96,6 +158,17 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         return result;
     }
 
+    /**
+     * hot内容处理入口。
+     * 主要协作调用：<code>CONTENT_TYPES.contains</code>、<code>mapper.hotContent</code>。
+     * 实现中的显式失败类型包括 <code>AnalyticsContentTypeInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @param start 开始；类型为 <code>LocalDate</code>
+     * @param end 结束；类型为 <code>LocalDate</code>
+     * @param limit 本次查询或处理的数量上限；类型为 <code>int</code>
+     * @return 本次处理得到的条目集合
+     */
     @Override
     public List<Map<String, Object>> hotContent(String type, LocalDate start, LocalDate end, int limit) {
         validateDates(start, end);
@@ -105,12 +178,28 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         return mapper.hotContent(start, end, LocalDate.now(ZoneOffset.UTC), type, limit);
     }
 
+    /**
+     * referrers处理入口。
+     * 主要协作调用：<code>mapper.referrers</code>。
+     *
+     * @param start 开始；类型为 <code>LocalDate</code>
+     * @param end 结束；类型为 <code>LocalDate</code>
+     * @return 本次处理得到的条目集合
+     */
     @Override
     public List<Map<String, Object>> referrers(LocalDate start, LocalDate end) {
         validateDates(start, end);
         return mapper.referrers(start, end, LocalDate.now(ZoneOffset.UTC));
     }
 
+    /**
+     * 校验Dates。
+     * 关键处理步骤调用 <code>end.isBefore</code>、<code>java.time.temporal.ChronoUnit.DAYS.between</code>、<code>end.isAfter</code>、<code>LocalDate.now</code>。
+     * 实现中的显式失败类型包括 <code>AnalyticsDateRangeInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param start 开始；类型为 <code>LocalDate</code>
+     * @param end 结束；类型为 <code>LocalDate</code>
+     */
     private void validateDates(LocalDate start, LocalDate end) {
         if (start == null || end == null || end.isBefore(start)
             || java.time.temporal.ChronoUnit.DAYS.between(start, end) > 366
@@ -119,6 +208,14 @@ public class AnalyticsServiceImpl implements AnalyticsService {
         }
     }
 
+    /**
+     * 统计统计。
+     * 关键处理步骤调用 <code>source.get</code>、<code>number.longValue</code>。
+     *
+     * @param source 来源；类型为 <code>Map&lt;String, Object&gt;</code>
+     * @param key 键；类型为 <code>String</code>
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long count(Map<String, Object> source, String key) {
         Object value = source == null ? null : source.get(key);
         return value instanceof Number number ? number.longValue() : 0;

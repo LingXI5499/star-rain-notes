@@ -1,9 +1,22 @@
+/**
+ * RecallSession.spec.js：教程与学习模块的自动化测试。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vitest、./RecallSession.vue、../api/learningApi。
+ * 阅读入口：initial（initial的处理函数）。
+ * 验证场景：evidence recall flow；hides ratings until the server confirms reveal, then records one of three ratings；resumes at the first unfinished frozen card and blocks parallel submissions；shows revalidation and mastery declines in the session result。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import RecallSession from './RecallSession.vue'
 import { revealCard, rateCard } from '../api/learningApi'
 vi.mock('../api/learningApi', () => ({ revealCard: vi.fn(), rateCard: vi.fn() }))
 vi.mock('../../blog/components/BlogProse.vue', () => ({ default: { props: ['markdown'], template: '<article>{{ markdown }}</article>' } }))
+/**
+ * initial的处理函数。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const initial = () => ({ id: '5', status: 'IN_PROGRESS', items: [{ knowledgeCardId: '9', status: 'PENDING', frontText: 'Recall this', backMarkdown: null, revealedAt: null }], summary: {} })
 describe('evidence recall flow', () => {
  beforeEach(() => vi.clearAllMocks())

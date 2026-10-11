@@ -1,9 +1,24 @@
+/**
+ * upload.js：媒体模块的业务支持工具。
+ * 职责范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 提供格式化、映射或计算能力，供模块页面与组件复用。
+ * 主要依赖：../../../shared/http。
+ * 阅读入口：validateEditorImage（校验Editor图片）；mediaUploadError（媒体上传错误的处理函数）；imageMarkdown（图片Markdown的处理函数）。
+ */
+
 import { errorMessage } from '../../../shared/http'
 
 export const IMAGE_ACCEPT = '.png,.jpg,.jpeg,.webp,.gif,.bmp,.tiff,.tif,.avif'
 export const IMAGE_MAX_BYTES = 20 * 1024 * 1024
 
-export function validateEditorImage(file) {
+export
+  /**
+   * 校验Editor图片。
+   * 主要协作：.toLowerCase、.pop、.split、.includes、IMAGE_ACCEPT.split。
+   * @param file 待处理的上传文件；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function validateEditorImage(file) {
   const extension = `.${String(file.name).split('.').pop().toLowerCase()}`
   if (!IMAGE_ACCEPT.split(',').includes(extension)) return '请选择 PNG、JPEG、WebP、GIF、BMP、TIFF 或 AVIF 图片。'
   if (!file.size) return '不能上传空图片。'
@@ -11,7 +26,14 @@ export function validateEditorImage(file) {
   return ''
 }
 
-export function mediaUploadError(cause) {
+export
+  /**
+   * 媒体上传错误的处理函数。
+   * 主要协作：.includes、errorMessage。
+   * @param cause 原始异常，用于保留失败原因；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function mediaUploadError(cause) {
   const response = cause?.response
   const code = response?.data?.code
   // 使用固定文案，兼容旧服务端可能包含磁盘路径的错误响应。
@@ -31,7 +53,15 @@ export function mediaUploadError(cause) {
   return errorMessage(cause)
 }
 
-export function imageMarkdown(asset) {
+export
+  /**
+   * 图片Markdown的处理函数。
+   * 主要协作：.test、.trim、.replace、url.replace、encodeURIComponent。
+   * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+   * @param asset 资产；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function imageMarkdown(asset) {
   const url = asset.contentUrl || asset.url
   if (!url || !/^(\/api\/media\/assets\/[^/]+\/content|https?:\/\/)/.test(url)) throw new Error('图片地址不可用')
   const alt = String(asset.originalName || asset.name || '图片').replace(/[\\[\]\r\n]/g, ' ').trim() || '图片'

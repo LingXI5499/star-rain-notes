@@ -1,3 +1,11 @@
+/*
+ * HomeSectionServiceImpl：站点模块的业务实现文件。
+ * 业务范围：站点品牌、首页内容和站点设置。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：HomeSectionOrderDTO、HomeSectionPatchDTO、HomeSectionEntity、HomeSectionMapper、HomeSectionService、HomeSectionSettingVO、SiteConfigException。
+ * 阅读入口：all（全部处理入口）；enabled（已启用处理入口）；reorder（调整顺序首页区块）；patch（patch处理入口）。
+ */
+
 package com.starrainnotes.site.service.impl;
 
 import com.starrainnotes.site.dto.HomeSectionOrderDTO;
@@ -19,19 +27,46 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 首页区块业务服务实现，属于站点模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class HomeSectionServiceImpl implements HomeSectionService {
+    /**
+     * CODES。
+     */
     public static final Set<String> CODES = Set.of("HERO", "LATEST", "TUTORIALS", "BLOG", "PORTFOLIO", "PROFILE", "HOT_CONTENT");
+    /**
+     * 数据映射。
+     * 协作类型：<code>HomeSectionMapper</code>。
+     */
     private final HomeSectionMapper mapper;
+    /**
+     * JSON 读写或映射协作对象。
+     * 协作类型：<code>ObjectMapper</code>。
+     */
     private final ObjectMapper json;
 
+    /**
+     * 全部处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.all</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<HomeSectionSettingVO> all() {
         return mapper.all().stream().map(HomeSectionSettingVO::from).toList();
     }
 
+    /**
+     * 已启用处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.all</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional(readOnly = true)
     public List<HomeSectionEntity> enabled() {
@@ -39,6 +74,14 @@ public class HomeSectionServiceImpl implements HomeSectionService {
         return mapper.all().stream().filter(HomeSectionEntity::getEnabled).toList();
     }
 
+    /**
+     * 调整顺序首页区块。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.all</code>、<code>mapper.update</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>HomeSectionOrderDTO</code>
+     * @return 本次处理得到的条目集合
+     */
     @Override
     @Transactional
     public List<HomeSectionSettingVO> reorder(HomeSectionOrderDTO request) {
@@ -56,6 +99,16 @@ public class HomeSectionServiceImpl implements HomeSectionService {
         return all();
     }
 
+    /**
+     * patch处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>CODES.contains</code>、<code>mapper.byCode</code>、<code>mapper.update</code>。
+     * 实现中的显式失败类型包括 <code>SiteConfigException</code>；具体触发条件见对应分支。
+     *
+     * @param code 代码；类型为 <code>String</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>HomeSectionPatchDTO</code>
+     * @return 类型为 <code>HomeSectionSettingVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public HomeSectionSettingVO patch(String code, HomeSectionPatchDTO request) {
@@ -75,6 +128,13 @@ public class HomeSectionServiceImpl implements HomeSectionService {
         return HomeSectionSettingVO.from(row);
     }
 
+    /**
+     * 校验配置。
+     * 主要协作调用：<code>json.writeValueAsString</code>。
+     *
+     * @param config 配置；类型为 <code>JsonNode</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String validateConfig(JsonNode config) {
         if (!config.isObject()) throw invalid("区块配置必须是对象");
         var fields = config.fieldNames();
@@ -103,6 +163,12 @@ public class HomeSectionServiceImpl implements HomeSectionService {
         catch (JsonProcessingException exception) { throw invalid("区块配置不是有效 JSON"); }
     }
 
+    /**
+     * 无效处理入口。
+     *
+     * @param message 留言；类型为 <code>String</code>
+     * @return 类型为 <code>SiteConfigException</code> 的处理结果
+     */
     private SiteConfigException invalid(String message) {
         return new SiteConfigException("SITE_SECTION_CONFIG_INVALID", message, 400);
     }

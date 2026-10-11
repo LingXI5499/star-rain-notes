@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * MediaLibraryPage.vue：媒体模块的页面组件。
+ * 职责范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：../../../shared/composables/paginationScroll、vue、vue-router、../../account/stores/authStore、../api/mediaApi、../../../shared/http。
+ * 主要响应式状态：router、auth、filters、page、data、loading、error、notice。
+ * 阅读入口：load（加载当前操作）；loadCounts（加载数量集合）；search（搜索的处理函数）；changePage（change分页的处理函数）；toggleCategory（切换分类）。
+ */
+
+
 import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRouter } from 'vue-router'
@@ -29,20 +39,70 @@ import {
  * 六个请求并行、失败就退回 0，不阻塞列表，也不需要改后端。
  * 计数口径与 V1 的 summary 一致：不受搜索词/状态/访问级别影响，只按类型统计。
  */
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
+/**
+ * 认证；通过 useAuthStore 建立。
+ */
 const auth = useAuthStore()
 
+/**
+ * 筛选条件；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const filters = reactive({ keyword: '', mediaType: '', status: '', accessLevel: '' })
+/**
+ * 分页页码；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const page = ref(1)
+/**
+ * 数据；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const data = ref({ items: [], total: 0, page: 1, pageSize: 24 })
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
+/**
+ * view；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const view = ref('grid')
+/**
+ * 上传弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const uploadDialog = ref(null)
+/**
+ * 数量集合；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const counts = ref({ all: 0 })
 
+/**
+ * 总数Pages；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const totalPages = computed(() => Math.max(1, Math.ceil(data.value.total / data.value.pageSize)))
+/**
+ * can上传；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const canUpload = computed(() => auth.hasPermission('media:upload'))
 
 const CATEGORY_MARKS = { IMAGE: 'IMG', DOCUMENT: 'PDF', AUDIO: 'AUD', VIDEO: 'VID', ARCHIVE: 'ZIP' }
@@ -54,6 +114,10 @@ const CATEGORY_NOTES = {
   ARCHIVE: '作品静态原型包',
 }
 
+/**
+ * categories；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const categories = computed(() => [
   { value: '', label: '全部', mark: 'ALL', note: '所有可复用文件', count: counts.value.all },
   ...MEDIA_TYPES.map((type) => ({
@@ -66,6 +130,13 @@ const categories = computed(() => [
   })),
 ])
 
+/**
+ * 加载当前操作。
+ * 主要协作：listMedia、errorMessage。
+ * 更新的响应式状态包括 loading、error、data；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   loading.value = true
   error.value = ''
@@ -86,6 +157,12 @@ async function load() {
 }
 
 // 分类角标上的数量：每个类型只取一条，用返回的 total 当计数
+/**
+ * 加载数量集合。
+ * 主要协作：Promise.all、listMedia、MEDIA_TYPES.map、MEDIA_TYPES.forEach。
+ * 更新的响应式状态包括 next.type、counts；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadCounts() {
   try {
     const [all, ...byType] = await Promise.all([
@@ -101,31 +178,64 @@ async function loadCounts() {
   }
 }
 
+/**
+ * 搜索的处理函数。
+ * 主要协作：load。
+ * 更新的响应式状态包括 page；渲染由 Vue 的依赖跟踪触发。
+ */
 function search() {
   page.value = 1
   load()
 }
 
+/**
+ * change分页的处理函数。
+ * 主要协作：load。
+ * 更新的响应式状态包括 page；渲染由 Vue 的依赖跟踪触发。
+ * @param next 下一项；默认值、解构字段与可选参数见函数签名。
+ */
 function changePage(next) {
   page.value = next
   load()
 }
 
 // 分类是「点一次筛选、再点一次取消」，比下拉框更符合浏览媒体的习惯
+/**
+ * 切换分类。
+ * 主要协作：search。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ */
 function toggleCategory(value) {
   filters.mediaType = filters.mediaType === value ? '' : value
   search()
 }
 
+/**
+ * 打开详情。
+ * 主要协作：router.push。
+ * @param asset 资产；默认值、解构字段与可选参数见函数签名。
+ */
 function openDetail(asset) {
   router.push(`/useradmin/media/${asset.id}`)
 }
 
 // 「打开」走后端给的 contentUrl，路径规则由后端决定，前端不自己拼
+/**
+ * 打开资产。
+ * 主要协作：window.open。
+ * @param asset 资产；默认值、解构字段与可选参数见函数签名。
+ */
 function openAsset(asset) {
   window.open(asset.contentUrl, '_blank', 'noopener,noreferrer')
 }
 
+/**
+ * 复制地址。
+ * 主要协作：navigator.clipboard.writeText。
+ * 更新的响应式状态包括 notice、error；渲染由 Vue 的依赖跟踪触发。
+ * @param asset 资产；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function copyUrl(asset) {
   notice.value = ''
   error.value = ''
@@ -138,6 +248,12 @@ async function copyUrl(asset) {
   }
 }
 
+/**
+ * 响应上传。
+ * 主要协作：load、loadCounts。
+ * 更新的响应式状态包括 notice、page；渲染由 Vue 的依赖跟踪触发。
+ * @param asset 资产；默认值、解构字段与可选参数见函数签名。
+ */
 function onUploaded(asset) {
   notice.value = `已上传 ${asset.originalName}`
   page.value = 1
@@ -145,6 +261,9 @@ function onUploaded(asset) {
   loadCounts()
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(() => {
   load()
   loadCounts()
@@ -288,8 +407,21 @@ usePaginationScroll(() => page.value, () => loading.value)
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.media-library。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 22px 控制。
+ */
 .media-library { display: grid; gap: 22px; }
 
+/**
+ * 样式范围：.media-library__header。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__header {
   display: flex;
   align-items: flex-end;
@@ -299,6 +431,10 @@ usePaginationScroll(() => page.value, () => loading.value)
   border-bottom: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.media-library__eyebrow。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__eyebrow {
   margin-bottom: 6px;
   color: var(--accent);
@@ -306,8 +442,15 @@ usePaginationScroll(() => page.value, () => loading.value)
   letter-spacing: 0.14em;
 }
 
+/**
+ * 样式范围：.media-library__header h1。
+ */
 .media-library__header h1 { margin: 0; font-size: 32px; }
 
+/**
+ * 样式范围：.media-library__header span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__header span {
   display: block;
   margin-top: 7px;
@@ -315,8 +458,15 @@ usePaginationScroll(() => page.value, () => loading.value)
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.media-library__upload。
+ */
 .media-library__upload { white-space: nowrap; }
 
+/**
+ * 样式范围：.media-library__layout。
+ * 使用网格布局组织内容；列定义为 220px minmax(0, 1fr)，间距由 18px 控制。
+ */
 .media-library__layout {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
@@ -324,6 +474,11 @@ usePaginationScroll(() => page.value, () => loading.value)
   align-items: start;
 }
 
+/**
+ * 样式范围：.media-library__sidebar。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 8px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__sidebar {
   display: grid;
   gap: 8px;
@@ -333,6 +488,11 @@ usePaginationScroll(() => page.value, () => loading.value)
   background: var(--bg-surface);
 }
 
+/**
+ * 样式范围：.media-library__category。
+ * 使用网格布局组织内容；列定义为 36px minmax(0, 1fr) auto，间距由 10px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__category {
   display: grid;
   grid-template-columns: 36px minmax(0, 1fr) auto;
@@ -349,13 +509,28 @@ usePaginationScroll(() => page.value, () => loading.value)
   transition: background-color 160ms ease, border-color 160ms ease;
 }
 
+/**
+ * 样式范围：.media-library__category:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__category:hover { background: var(--bg-subtle); }
 
+/**
+ * 样式范围：.media-library__category.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__category.is-active {
   border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
   background: color-mix(in srgb, var(--primary) 8%, var(--bg-surface));
 }
 
+/**
+ * 样式范围：.media-library__category-mark。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 各行列间距规则 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__category-mark {
   display: grid;
   width: 36px;
@@ -368,15 +543,33 @@ usePaginationScroll(() => page.value, () => loading.value)
   letter-spacing: 0.04em;
 }
 
+/**
+ * 样式范围：.media-library__category.is-active .media-library__category-mark。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__category.is-active .media-library__category-mark {
   color: var(--on-primary);
   background: var(--primary);
 }
 
+/**
+ * 样式范围：.media-library__category-text。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 2px 控制。
+ */
 .media-library__category-text { display: grid; gap: 2px; min-width: 0; }
 
+/**
+ * 样式范围：.media-library__category-text strong。
+ */
 .media-library__category-text strong { font-size: 13px; }
 
+/**
+ * 样式范围：.media-library__category-text small。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__category-text small {
   overflow: hidden;
   color: var(--text-muted);
@@ -385,17 +578,36 @@ usePaginationScroll(() => page.value, () => loading.value)
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.media-library__category-count。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__category-count {
   color: var(--text-muted);
   font: 700 14px var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
 }
 
+/**
+ * 样式范围：.media-library__main。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 14px 控制。
+ */
 .media-library__main { display: grid; gap: 14px; min-width: 0; }
 
+/**
+ * 样式范围：.media-library__panel。
+ */
 .media-library__panel { min-width: 0; }
 
+/**
+ * 样式范围：.media-library__toolbar。
+ */
 .media-library__toolbar { margin-bottom: 18px; }
 
+/**
+ * 样式范围：.media-library__view-toggle。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__view-toggle {
   display: flex;
   margin-left: auto;
@@ -405,6 +617,10 @@ usePaginationScroll(() => page.value, () => loading.value)
   background: var(--bg-subtle);
 }
 
+/**
+ * 样式范围：.media-library__view-toggle button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__view-toggle button {
   min-height: 32px;
   padding: 0 12px;
@@ -416,6 +632,11 @@ usePaginationScroll(() => page.value, () => loading.value)
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.media-library__view-toggle button.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__view-toggle button.is-active {
   color: var(--primary);
   background: var(--bg-surface);
@@ -423,12 +644,23 @@ usePaginationScroll(() => page.value, () => loading.value)
   box-shadow: var(--shadow-sm, 0 1px 2px rgb(20 38 31 / 0.08));
 }
 
+/**
+ * 样式范围：.media-library__grid。
+ * 使用网格布局组织内容；列定义为 repeat(auto-fill, minmax(190px, 1fr))，间距由 var(--space-4) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
   gap: var(--space-4);
 }
 
+/**
+ * 样式范围：.media-library__card。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__card {
   display: flex;
   min-width: 0;
@@ -440,12 +672,22 @@ usePaginationScroll(() => page.value, () => loading.value)
   transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
 
+/**
+ * 样式范围：.media-library__card:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__card:hover {
   border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
   box-shadow: 0 12px 28px rgb(17 35 29 / 0.07);
   transform: translateY(-2px);
 }
 
+/**
+ * 样式范围：.media-library__preview。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__preview {
   display: block;
   width: 100%;
@@ -457,6 +699,11 @@ usePaginationScroll(() => page.value, () => loading.value)
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.media-library__preview:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__preview:hover { background: var(--bg-subtle); }
 
 /* 缩略图填满卡片顶部：V1 的预览区是固定高度，这里沿用它的 140px */
@@ -480,8 +727,16 @@ usePaginationScroll(() => page.value, () => loading.value)
   padding: 12px 13px 13px;
 }
 
+/**
+ * 样式范围：.media-library__title。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .media-library__title { display: flex; align-items: center; gap: 8px; min-width: 0; }
 
+/**
+ * 样式范围：.media-library__title > span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__title > span {
   flex: none;
   padding: 3px 6px;
@@ -491,6 +746,11 @@ usePaginationScroll(() => page.value, () => loading.value)
   font-size: 9px;
 }
 
+/**
+ * 样式范围：.media-library__title p。
+ * 溢出处理：整体 hidden。
+ * 长文本使用省略号收束，配合 overflow 与 white-space 避免挤压邻列。
+ */
 .media-library__title p {
   overflow: hidden;
   margin: 0;
@@ -500,10 +760,23 @@ usePaginationScroll(() => page.value, () => loading.value)
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.media-library__meta。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__meta { color: var(--text-muted); font-size: 11px; }
 
+/**
+ * 样式范围：.media-library__chips。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .media-library__chips { display: flex; flex-wrap: wrap; gap: 4px; }
 
+/**
+ * 样式范围：.media-library__actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__actions {
   display: flex;
   flex-wrap: wrap;
@@ -514,6 +787,10 @@ usePaginationScroll(() => page.value, () => loading.value)
   border-top: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.media-library__actions button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__actions button {
   padding: 0;
   border: 0;
@@ -523,8 +800,17 @@ usePaginationScroll(() => page.value, () => loading.value)
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.media-library__actions button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ */
 .media-library__actions button:hover { background: none; text-decoration: underline; }
 
+/**
+ * 样式范围：.media-library__empty。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 7px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__empty {
   display: grid;
   grid-column: 1 / -1;
@@ -537,18 +823,41 @@ usePaginationScroll(() => page.value, () => loading.value)
   text-align: center;
 }
 
+/**
+ * 样式范围：.media-library__empty strong。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .media-library__empty strong { color: var(--text-secondary); font-size: 15px; }
 
+/**
+ * 样式范围：.media-library__empty span。
+ */
 .media-library__empty span { font-size: 12px; }
 
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
 @media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：.media-library__category,   .media-library__card。
+   */
   .media-library__category,
   .media-library__card { transition: none; }
 
+  /**
+   * 样式范围：.media-library__card:hover。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   */
   .media-library__card:hover { transform: none; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 900px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 900px) {
+  /**
+   * 样式范围：.media-library__layout。
+   */
   .media-library__layout { grid-template-columns: 1fr; }
 
   /* 窄屏把竖排分类栏折成一行可横向滚动的分类条 */
@@ -558,14 +867,29 @@ usePaginationScroll(() => page.value, () => loading.value)
     overflow-x: auto;
   }
 
+  /**
+   * 样式范围：.media-library__category。
+   */
   .media-library__category { min-width: 180px; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 640px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 640px) {
+  /**
+   * 样式范围：.media-library__header。
+   */
   .media-library__header { align-items: flex-start; flex-direction: column; }
 
+  /**
+   * 样式范围：.media-library__toolbar。
+   */
   .media-library__toolbar { align-items: stretch; }
 
+  /**
+   * 样式范围：.media-library__view-toggle。
+   */
   .media-library__view-toggle { margin-left: 0; }
 }
 </style>

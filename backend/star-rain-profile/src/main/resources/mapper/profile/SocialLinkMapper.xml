@@ -1,11 +1,29 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.profile.mapper.SocialLinkMapper">
+    <!--
+      SocialLinkMapper.xml：com.starrainnotes.profile.mapper.SocialLinkMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, profile_id, platform_code, label, url, sort_order, status, created_at, updated_at
   </sql>
 
+  <!--
+    insert：新增；新增语句。
+    涉及数据表：sr_profile_social_link；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.profile.entity.SocialLinkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    插入成功后 JDBC 自动生成的主键回填到 id。
+    绑定参数：profileId、platformCode、label、url、sortOrder、status、createdAt、updatedAt；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="insert" parameterType="com.starrainnotes.profile.entity.SocialLinkEntity"
           useGeneratedKeys="true" keyProperty="id">
     INSERT INTO sr_profile_social_link
@@ -15,27 +33,62 @@
        #{createdAt}, #{updatedAt})
   </insert>
 
+  <!--
+    selectById：查询依据标识；读取语句。
+    涉及数据表：sr_profile_social_link；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.profile.entity.SocialLinkEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectById" resultType="com.starrainnotes.profile.entity.SocialLinkEntity">
     SELECT <include refid="columns"/> FROM sr_profile_social_link WHERE id = #{id}
   </select>
 
+  <!--
+    listByProfileId：list依据资料标识；读取语句。
+    涉及数据表：sr_profile_social_link；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.profile.entity.SocialLinkEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：profileId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="listByProfileId" resultType="com.starrainnotes.profile.entity.SocialLinkEntity">
     SELECT <include refid="columns"/> FROM sr_profile_social_link
     WHERE profile_id = #{profileId}
     ORDER BY sort_order, id
   </select>
 
+  <!--
+    listEnabledByProfileId：list已启用依据资料标识；读取语句。
+    涉及数据表：sr_profile_social_link；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.profile.entity.SocialLinkEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：profileId；参数含义参见 Mapper 方法注释。
+  -->
   <select id="listEnabledByProfileId" resultType="com.starrainnotes.profile.entity.SocialLinkEntity">
     SELECT <include refid="columns"/> FROM sr_profile_social_link
     WHERE profile_id = #{profileId} AND status = 'ENABLED'
     ORDER BY sort_order, id
   </select>
 
+  <!--
+    countByProfileId：数量依据资料标识；读取语句。
+    涉及数据表：sr_profile_social_link；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+    绑定参数：profileId；参数含义参见 Mapper 方法注释。
+    返回匹配条件的数量，不返回完整实体。
+  -->
   <select id="countByProfileId" resultType="long">
     SELECT COUNT(*) FROM sr_profile_social_link WHERE profile_id = #{profileId}
   </select>
 
   <!-- 三列都必填，不存在「清空」场景；profile_id 是归属键，不在更新范围内 -->
+  <!--
+    updateContent：更新内容；更新语句。
+    涉及数据表：sr_profile_social_link；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.profile.entity.SocialLinkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：platformCode、label、url、updatedAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="updateContent" parameterType="com.starrainnotes.profile.entity.SocialLinkEntity">
     UPDATE sr_profile_social_link
     SET platform_code = #{platformCode},
@@ -45,6 +98,13 @@
     WHERE id = #{id}
   </update>
 
+  <!--
+    updateSortOrder：更新排序顺序；更新语句。
+    涉及数据表：sr_profile_social_link；关系条件与可见性筛选由下方 SQL 明确限定。
+    输入对象：com.starrainnotes.profile.entity.SocialLinkEntity；占位符按其属性读取。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：sortOrder、updatedAt、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="updateSortOrder" parameterType="com.starrainnotes.profile.entity.SocialLinkEntity">
     UPDATE sr_profile_social_link
     SET sort_order = #{sortOrder},
@@ -52,6 +112,12 @@
     WHERE id = #{id}
   </update>
 
+  <!--
+    deleteById：删除依据标识；删除语句。
+    涉及数据表：sr_profile_social_link；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <delete id="deleteById">
     DELETE FROM sr_profile_social_link WHERE id = #{id}
   </delete>

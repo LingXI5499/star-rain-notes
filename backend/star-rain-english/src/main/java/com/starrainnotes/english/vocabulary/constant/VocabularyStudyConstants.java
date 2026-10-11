@@ -1,3 +1,9 @@
+/*
+ * VocabularyStudyConstants：英语学习模块的常量文件。
+ * 业务范围：文档、词汇、语法、阅读听力及复习记录。
+ * 集中维护本模块使用的固定代码或边界值，避免业务实现各自定义不同的字符串和数值。
+ */
+
 package com.starrainnotes.english.vocabulary.constant;
 
 /*
@@ -7,13 +13,23 @@ package com.starrainnotes.english.vocabulary.constant;
  * V1 VocabularyReviewPolicy.REVIEW_INTERVAL_SECONDS 与
  * account_vocabulary_review_log.interval_seconds 的历史数据都以此为口径。
  */
+/**
+ * 词汇学习常量，属于英语学习模块。
+ * 集中维护本模块使用的固定代码或边界值，避免业务实现各自定义不同的字符串和数值。
+ */
 public final class VocabularyStudyConstants {
 
+    /**
+     * 构造VocabularyStudyConstants，接收本类使用的依赖或初始化参数。
+     */
     private VocabularyStudyConstants() { }
 
     /*
      * 十阶段固定复习间隔（秒）：5 分、30 分、12 时、1 天、2 天、4 天、7 天、15 天、30 天、60 天。
      * 下标 = 复习序号 - 1，序号超过 10 后停在最后一档。
+     */
+    /**
+     * 秒。
      */
     public static final long[] REVIEW_INTERVAL_SECONDS = {
             300L, 1_800L, 43_200L, 86_400L, 172_800L,
@@ -21,35 +37,93 @@ public final class VocabularyStudyConstants {
     };
 
     /* review_step 的档位上限，等于间隔表长度 */
+    /**
+     * STEP。
+     */
     public static final int MAX_REVIEW_STEP = REVIEW_INTERVAL_SECONDS.length;
 
     /* OVERDUE 的门槛：超过计划时间 24 小时 */
+    /**
+     * 秒。
+     * 初始值为 <code>86400L</code>。
+     */
     public static final long OVERDUE_GRACE_SECONDS = 86_400L;
 
     /* 学习设置缺省值（账户还没有设置行时返回，不写库） */
+    /**
+     * 英语。
+     * 初始值为 <code>true</code>。
+     */
     public static final boolean DEFAULT_SHOW_ENGLISH = true;
+    /**
+     * CHINESE。
+     * 初始值为 <code>true</code>。
+     */
     public static final boolean DEFAULT_SHOW_CHINESE = true;
+    /**
+     * DIRECTION。
+     */
     public static final String DEFAULT_REVIEW_DIRECTION = "EN_TO_ZH";
+    /**
+     * 上限。
+     * 初始值为 <code>20</code>。
+     */
     public static final int DEFAULT_DAILY_NEW_LIMIT = 20;
+    /**
+     * 上限。
+     * 初始值为 <code>200</code>。
+     */
     public static final int DEFAULT_DAILY_REVIEW_LIMIT = 200;
 
     /* 单次批量状态查询的词数上限，避免 IN 列表无限增长 */
+    /**
+     * WORDS。
+     * 初始值为 <code>500</code>。
+     */
     public static final int MAX_STATE_QUERY_WORDS = 500;
 
     /* 单次批量取词的词数上限 */
+    /**
+     * WORDS。
+     * 初始值为 <code>100</code>。
+     */
     public static final int MAX_BATCH_WORDS = 100;
 
     /* 每日新词上限的允许区间 */
+    /**
+     * 上限。
+     * 初始值为 <code>0</code>。
+     */
     public static final int MIN_DAILY_NEW_LIMIT = 0;
+    /**
+     * 上限。
+     * 初始值为 <code>200</code>。
+     */
     public static final int MAX_DAILY_NEW_LIMIT = 200;
 
     /* 每日复习上限的允许区间 */
+    /**
+     * 上限。
+     * 初始值为 <code>1</code>。
+     */
     public static final int MIN_DAILY_REVIEW_LIMIT = 1;
+    /**
+     * 上限。
+     * 初始值为 <code>1000</code>。
+     */
     public static final int MAX_DAILY_REVIEW_LIMIT = 1000;
 
     /* 进度页「最近真实复习」最多返回的条数 */
+    /**
+     * 上限。
+     * 初始值为 <code>100</code>。
+     */
     public static final int RECENT_REVIEW_LIMIT = 100;
 
     /* 导入本机进度时允许的未来时间容差（客户端时钟漂移） */
+    /**
+     * 分钟。
+     * 初始值为 <code>5L</code>。
+     */
     public static final long IMPORT_FUTURE_TOLERANCE_MINUTES = 5L;
 }

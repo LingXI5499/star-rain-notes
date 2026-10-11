@@ -1,3 +1,10 @@
+/*
+ * ReviewDecisionConflictException：审核模块的业务异常文件。
+ * 业务范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 用约定的错误码、公开提示和 HTTP 状态表达业务失败，由统一异常处理器转换为接口响应。
+ * 主要协作类型：ApiException。
+ */
+
 package com.starrainnotes.review.exception;
 
 import com.starrainnotes.common.exception.ApiException;
@@ -10,8 +17,18 @@ import com.starrainnotes.common.exception.ApiException;
  * 不一致的写入结果」，作为条件更新与动作历史数量不匹配时的最后一道兜底，
  * 宁可报冲突也不留下「状态改了但历史没写」的脏轨迹。
  */
+/**
+ * 审核决定冲突异常，属于审核模块。
+ * 用约定的错误码、公开提示和 HTTP 状态表达业务失败，由统一异常处理器转换为接口响应。
+ * 错误码：<code>REVIEW_DECISION_CONFLICT</code>；HTTP 状态：<code>409</code>。
+ * 公开提示：该审核请求正在被处理，请稍后重试。
+ */
 public class ReviewDecisionConflictException extends ApiException {
 
+    /**
+     * 构造ReviewDecisionConflictException，接收本类使用的依赖或初始化参数。
+     * 关键处理步骤调用 <code>super</code>。
+     */
     public ReviewDecisionConflictException() {
         super("REVIEW_DECISION_CONFLICT", "该审核请求正在被处理，请稍后重试", 409);
     }

@@ -1,4 +1,16 @@
 <script setup>
+/**
+ * BlogTagPicker.vue：博客模块的视图组件。
+ * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue。
+ * 组件输入：modelValue、tags、disabled；默认值与类型见 defineProps。
+ * 组件输出事件：update:modelValue；负载由 emit 调用给出。
+ * 主要响应式状态：props、emit、draftName、focused、inputError、selectedIds、pendingNames、selectedTags。
+ * 阅读入口：normalizeName（规范化名称）；normalizedKey（规范化键的处理函数）；commit（提交当前操作）；toggle（切换当前操作）；addDraft（添加草稿）。
+ */
+
+
 import { computed, ref } from 'vue'
 
 /*
@@ -13,26 +25,61 @@ import { computed, ref } from 'vue'
  * 名称归一化（NFKC + 折叠空白 + 大小写无关去重）与 V1 保持一致：
  * 「Spring  Boot」与「spring boot」视为同一个标签，不会重复添加。
  */
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({
   modelValue: { type: Array, default: () => [] },
   tags: { type: Array, default: () => [] },
   disabled: { type: Boolean, default: false },
 })
 
+/**
+ * 事件发射器；通过 defineEmits 建立。
+ */
 const emit = defineEmits(['update:modelValue'])
 
+/**
+ * 草稿名称；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const draftName = ref('')
+/**
+ * focused；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const focused = ref(false)
+/**
+ * input错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const inputError = ref('')
 
+/**
+ * 规范化名称。
+ * 主要协作：.replace、.trim、.normalize。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function normalizeName(value) {
   return String(value ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ')
 }
 
+/**
+ * 规范化键的处理函数。
+ * 主要协作：.toLocaleLowerCase、normalizeName。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function normalizedKey(value) {
   return normalizeName(value).toLocaleLowerCase()
 }
 
+/**
+ * 提交当前操作。
+ * 主要协作：normalizeName、props.tags.find、normalizedKey、seen.has、seen.add。
+ * @param values 值列表；默认值、解构字段与可选参数见函数签名。
+ */
 function commit(values) {
   const result = []
   const seen = new Set()
@@ -52,9 +99,25 @@ function commit(values) {
   emit('update:modelValue', result)
 }
 
+/**
+ * 选中标识集合；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const selectedIds = computed(() => props.modelValue.filter((value) => typeof value === 'number'))
+/**
+ * 待处理Names；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const pendingNames = computed(() => props.modelValue.filter((value) => typeof value === 'string'))
+/**
+ * 选中标签列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const selectedTags = computed(() => props.tags.filter((tag) => selectedIds.value.includes(tag.id)))
+/**
+ * suggestions；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const suggestions = computed(() => {
   const term = normalizedKey(draftName.value.split(/[|｜,，、;；\n]/).at(-1))
   return props.tags.filter((tag) => tag.status !== 'DISABLED'
@@ -64,6 +127,12 @@ const suggestions = computed(() => {
     .slice(0, 8)
 })
 
+/**
+ * 切换当前操作。
+ * 主要协作：commit、selectedIds.value.includes、props.modelValue.filter。
+ * @param tag 标签；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function toggle(tag) {
   if (props.disabled) return
   commit(selectedIds.value.includes(tag.id)
@@ -71,6 +140,12 @@ function toggle(tag) {
     : [...props.modelValue, tag.id])
 }
 
+/**
+ * 添加草稿。
+ * 主要协作：.filter、.map、draftName.value.split、names.some、commit。
+ * 更新的响应式状态包括 inputError、draftName；渲染由 Vue 的依赖跟踪触发。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function addDraft() {
   const names = draftName.value.split(/[|｜,，、;；\n]/).map(normalizeName).filter(Boolean)
   if (!names.length) return
@@ -83,11 +158,22 @@ function addDraft() {
   draftName.value = ''
 }
 
+/**
+ * 添加Suggestion。
+ * 主要协作：commit。
+ * 更新的响应式状态包括 draftName；渲染由 Vue 的依赖跟踪触发。
+ * @param tag 标签；默认值、解构字段与可选参数见函数签名。
+ */
 function addSuggestion(tag) {
   commit([...props.modelValue, tag.id])
   draftName.value = ''
 }
 
+/**
+ * 移除值。
+ * 主要协作：commit、props.modelValue.filter。
+ * @param value 值；默认值、解构字段与可选参数见函数签名。
+ */
 function removeValue(value) {
   commit(props.modelValue.filter((item) => item !== value))
 }

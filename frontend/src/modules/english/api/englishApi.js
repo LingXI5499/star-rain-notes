@@ -1,3 +1,12 @@
+/**
+ * englishApi.js：英语学习模块的接口封装。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 复用 shared/http 的同源请求、会话与 CSRF 处理；对调用方返回业务数据，而不是整个 Axios 响应。
+ * 主要依赖：../../../shared/http、../../account/stores/authStore、../lib/vocabularyStudyStorage、../lib/vocabularyDisplay。
+ * 主要响应式状态：auth。
+ * 阅读入口：resolveVocabularyAccount（解析词汇账号）；resetVocabularyAccountProbe（重置词汇账号测试样本）；getEnglishOverview（读取英语Overview）；getAdminEnglishOverview（读取后台英语Overview）；updateEnglishOverview（更新英语Overview）。
+ */
+
 import { del, get, post, put } from '../../../shared/http'
 import { useAuthStore } from '../../account/stores/authStore'
 import {
@@ -28,7 +37,17 @@ if (typeof window !== 'undefined') {
  * 这里必须直接调 http helper，不能复用 getVocabularyStudySettings——
  * 那个函数本身要问 resolveVocabularyAccount，复用会形成无限递归。
  */
-export async function resolveVocabularyAccount() {
+export
+  /**
+   * 解析词汇账号。
+   * 请求入口：get('/account/english/vocabulary/settings')；路径参数的编码和请求体结构保持接口契约。
+   * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function resolveVocabularyAccount() {
+  /**
+   * 认证；通过 useAuthStore 建立。
+   */
   const auth = useAuthStore()
   if (auth.initialized) return Boolean(auth.currentUser)
   if (accountProbe !== null) return accountProbe
@@ -43,36 +62,125 @@ export async function resolveVocabularyAccount() {
 }
 
 /* 登录/退出后由调用方显式失效一次，避免沿用上一次的探测结果 */
-export function resetVocabularyAccountProbe() {
+export
+  /**
+   * 重置词汇账号测试样本。
+   */
+  function resetVocabularyAccountProbe() {
   accountProbe = null
 }
 
 /* ---------------- 内容（公开） ---------------- */
 
+/**
+ * 读取英语Overview。
+ * 请求入口：get('/public/english/overview')；路径参数的编码和请求体结构保持接口契约。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const getEnglishOverview = () => get('/public/english/overview')
+/**
+ * 读取后台英语Overview。
+ * 请求入口：get('/admin/english/overview')；路径参数的编码和请求体结构保持接口契约。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const getAdminEnglishOverview = () => get('/admin/english/overview')
+/**
+ * 更新英语Overview。
+ * 请求入口：put('/admin/english/overview')；路径参数的编码和请求体结构保持接口契约。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const updateEnglishOverview = (payload) => put('/admin/english/overview', payload)
 
+/**
+ * 读取词汇Themes。
+ * 请求入口：get('/public/english/vocabulary/themes')；路径参数的编码和请求体结构保持接口契约。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const getVocabularyThemes = () => get('/public/english/vocabulary/themes')
+/**
+ * 读取词汇Words。
+ * 请求入口：get('/public/english/vocabulary/words')；路径参数的编码和请求体结构保持接口契约。
+ * @param params 查询参数；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const getVocabularyWords = (params) => get('/public/english/vocabulary/words', params)
+/**
+ * 读取词汇Words依据标识集合。
+ * 请求入口：get('/public/english/vocabulary/words/batch')；路径参数的编码和请求体结构保持接口契约。
+ * @param ids 标识集合；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const getVocabularyWordsByIds = (ids) => ids.length
   ? get('/public/english/vocabulary/words/batch', { ids: ids.join(',') })
   : Promise.resolve([])
+/**
+ * 创建词汇主题。
+ * 请求入口：post('/admin/english/vocabulary/themes')；路径参数的编码和请求体结构保持接口契约。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const createVocabularyTheme = (payload) => post('/admin/english/vocabulary/themes', payload)
+/**
+ * 更新词汇主题。
+ * 请求入口：put(`/admin/english/vocabulary/themes/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const updateVocabularyTheme = (id, payload) => put(`/admin/english/vocabulary/themes/${id}`, payload)
+/**
+ * 删除词汇主题。
+ * 请求入口：del(`/admin/english/vocabulary/themes/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const deleteVocabularyTheme = (id) => del(`/admin/english/vocabulary/themes/${id}`)
+/**
+ * 创建词汇单词。
+ * 请求入口：post('/admin/english/vocabulary/words')；路径参数的编码和请求体结构保持接口契约。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const createVocabularyWord = (payload) => post('/admin/english/vocabulary/words', payload)
+/**
+ * 更新词汇单词。
+ * 请求入口：put(`/admin/english/vocabulary/words/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const updateVocabularyWord = (id, payload) => put(`/admin/english/vocabulary/words/${id}`, payload)
+/**
+ * 删除词汇单词。
+ * 请求入口：del(`/admin/english/vocabulary/words/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const deleteVocabularyWord = (id) => del(`/admin/english/vocabulary/words/${id}`)
 
 /* ---------------- 学习设置 ---------------- */
 
-export async function getVocabularyStudySettings() {
+export
+  /**
+   * 读取词汇学习Settings。
+   * 请求入口：get('/account/english/vocabulary/settings')；路径参数的编码和请求体结构保持接口契约。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function getVocabularyStudySettings() {
   if (!(await resolveVocabularyAccount())) return vocabularyStudyStorage.settings()
   return get('/account/english/vocabulary/settings')
 }
 
-export async function saveVocabularyStudySettings(settings) {
+export
+  /**
+   * 保存词汇学习Settings。
+   * 请求入口：put('/account/english/vocabulary/settings')；路径参数的编码和请求体结构保持接口契约。
+   * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+   * @param settings settings；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function saveVocabularyStudySettings(settings) {
   if (!settings.showEnglish && !settings.showChinese) throw new Error('英文和中文至少保留一组。')
   if (!(await resolveVocabularyAccount())) {
     await vocabularyStudyStorage.saveSettings(settings)
@@ -86,7 +194,14 @@ export async function saveVocabularyStudySettings(settings) {
 /*
  * 批量状态。缺省项由调用方补 NEW，这里保证「每个请求到的词都有返回值」。
  */
-export async function getVocabularyStates(wordIds) {
+export
+  /**
+   * 读取词汇States。
+   * 请求入口：get('/account/english/vocabulary/states')；路径参数的编码和请求体结构保持接口契约。
+   * @param wordIds 单词标识集合；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function getVocabularyStates(wordIds) {
   if (!wordIds.length) return {}
   if (!(await resolveVocabularyAccount())) {
     const [memories, displays] = await Promise.all([
@@ -117,7 +232,13 @@ export async function getVocabularyStates(wordIds) {
  * 记忆集合：值为 { count, at }，键是 wordId。
  * 「全部 / 已加入计划」筛选与「学习整主题」都要用它判断哪些词已经在计划里。
  */
-export async function getVocabularyMemory() {
+export
+  /**
+   * 读取词汇记忆。
+   * 请求入口：get('/account/english/vocabulary/memory')；路径参数的编码和请求体结构保持接口契约。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function getVocabularyMemory() {
   const result = {}
   if (!(await resolveVocabularyAccount())) {
     for (const row of await vocabularyStudyStorage.memories()) {
@@ -131,7 +252,14 @@ export async function getVocabularyMemory() {
   return result
 }
 
-export async function startVocabularyWord(wordId) {
+export
+  /**
+   * 开始词汇单词的处理函数。
+   * 请求入口：post(`/account/english/vocabulary/words/${wordId}/start`)；路径参数的编码和请求体结构保持接口契约。
+   * @param wordId 单词标识；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function startVocabularyWord(wordId) {
   if (!(await resolveVocabularyAccount())) return vocabularyStudyStorage.start(Number(wordId))
   return post(`/account/english/vocabulary/words/${wordId}/start`)
 }
@@ -140,7 +268,15 @@ export async function startVocabularyWord(wordId) {
  * 整主题加入。登录态走服务端，每词一次请求；并发 6 条，够快又不会把连接池打满。
  * 游客态一次事务写多行。
  */
-export async function startVocabularyWords(wordIds, onProgress) {
+export
+  /**
+   * 开始词汇Words的处理函数。
+   * 主要协作：wordIds.filter、Number.isInteger、resolveVocabularyAccount、vocabularyStudyStorage.startMany、onProgress。
+   * @param wordIds 单词标识集合；默认值、解构字段与可选参数见函数签名。
+   * @param onProgress 触发进度；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function startVocabularyWords(wordIds, onProgress) {
   const uniqueIds = [...new Set(wordIds.filter((id) => Number.isInteger(Number(id)) && Number(id) > 0))]
   if (!uniqueIds.length) return 0
   if (!(await resolveVocabularyAccount())) {
@@ -163,12 +299,27 @@ export async function startVocabularyWords(wordIds, onProgress) {
   return completed
 }
 
-export async function resetVocabularyProgress(wordId) {
+export
+  /**
+   * 重置词汇进度。
+   * 请求入口：del(`/account/english/vocabulary/words/${wordId}/progress`)；路径参数的编码和请求体结构保持接口契约。
+   * @param wordId 单词标识；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function resetVocabularyProgress(wordId) {
   if (!(await resolveVocabularyAccount())) return vocabularyStudyStorage.reset(Number(wordId))
   return del(`/account/english/vocabulary/words/${wordId}/progress`)
 }
 
-export async function setVocabularyDisplay(wordId, displayMode) {
+export
+  /**
+   * 设置词汇显示。
+   * 请求入口：del(`/account/english/vocabulary/words/${wordId}/display`)；路径参数的编码和请求体结构保持接口契约。
+   * @param wordId 单词标识；默认值、解构字段与可选参数见函数签名。
+   * @param displayMode 显示Mode；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function setVocabularyDisplay(wordId, displayMode) {
   if (!(await resolveVocabularyAccount())) return vocabularyStudyStorage.saveDisplay(Number(wordId), displayMode)
   if (displayMode === 'FOLLOW_GLOBAL') return del(`/account/english/vocabulary/words/${wordId}/display`)
   return put(`/account/english/vocabulary/words/${wordId}/display`, { displayMode })
@@ -176,7 +327,14 @@ export async function setVocabularyDisplay(wordId, displayMode) {
 
 /* ---------------- 学习 / 复习 ---------------- */
 
-export async function getVocabularyReviewQueue(themeId) {
+export
+  /**
+   * 读取词汇审核Queue。
+   * 请求入口：get('/account/english/vocabulary/review-queue')；路径参数的编码和请求体结构保持接口契约。
+   * @param themeId 主题标识；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function getVocabularyReviewQueue(themeId) {
   if (await resolveVocabularyAccount()) {
     return get('/account/english/vocabulary/review-queue', themeId ? { themeId } : undefined)
   }
@@ -242,14 +400,29 @@ export async function getVocabularyReviewQueue(themeId) {
   return { items, dueCount: due.length, newCount: newIds.length, generatedAt: new Date().toISOString() }
 }
 
-export async function completeVocabularyReview(wordId, reviewSessionId, direction) {
+export
+  /**
+   * 完成词汇审核。
+   * 请求入口：post(`/account/english/vocabulary/words/${wordId}/reviews`)；路径参数的编码和请求体结构保持接口契约。
+   * @param wordId 单词标识；默认值、解构字段与可选参数见函数签名。
+   * @param reviewSessionId 审核会话标识；默认值、解构字段与可选参数见函数签名。
+   * @param direction direction；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function completeVocabularyReview(wordId, reviewSessionId, direction) {
   if (!(await resolveVocabularyAccount())) {
     return vocabularyStudyStorage.complete(Number(wordId), reviewSessionId, direction)
   }
   return post(`/account/english/vocabulary/words/${wordId}/reviews`, { reviewSessionId, direction })
 }
 
-export async function getVocabularyProgress() {
+export
+  /**
+   * 读取词汇进度。
+   * 请求入口：get('/account/english/vocabulary/progress')；路径参数的编码和请求体结构保持接口契约。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function getVocabularyProgress() {
   if (await resolveVocabularyAccount()) return get('/account/english/vocabulary/progress')
   const [memory, reviews] = await Promise.all([
     vocabularyStudyStorage.memories(),
@@ -274,13 +447,27 @@ export async function getVocabularyProgress() {
  * 字段与后端 /account/english/vocabulary/summary 一致：completed / inProgress / dueForReview / total。
  * 未登录时不去问后端，直接读浏览器本地的游客进度。
  */
-export async function getVocabularySummary() {
+export
+  /**
+   * 读取词汇摘要。
+   * 请求入口：get('/account/english/vocabulary/summary')；路径参数的编码和请求体结构保持接口契约。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function getVocabularySummary() {
   if (await resolveVocabularyAccount()) return get('/account/english/vocabulary/summary')
   return countLocalVocabularyProgress()
 }
 
 /* 登录后把浏览器本地进度合并到账号；只增不减，重复调用安全 */
-export async function importLocalVocabularyProgress(payload) {
+export
+  /**
+   * importLocal词汇进度的处理函数。
+   * 请求入口：post('/account/english/vocabulary/import-local')；路径参数的编码和请求体结构保持接口契约。
+   * 显式失败通过异常交给调用方处理，不在此处伪造成功结果。
+   * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function importLocalVocabularyProgress(payload) {
   if (!(await resolveVocabularyAccount())) throw new Error('登录后才能把本机进度合并到账号。')
   const body = payload ?? await vocabularyStudyStorage.exportForAccountImport()
   return post('/account/english/vocabulary/import-local', body)
@@ -290,21 +477,131 @@ export { countLocalVocabularyProgress, vocabularyStudyStorage, globalDisplayMode
 
 /* ---------------- 其它英语方向 ---------------- */
 
+/**
+ * 读取语法课程目录。
+ * 请求入口：get(`${admin ? '/admin' : '/public'}/english/grammar`)；路径参数的编码和请求体结构保持接口契约。
+ * @param admin = false 后台false；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const getGrammarCurriculum = (admin = false) => get(`${admin ? '/admin' : '/public'}/english/grammar`)
+/**
+ * 读取语法Lesson。
+ * 请求入口：get(`${admin ? '/admin' : '/public'}/english/grammar/lessons/${idOrSlug}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param idOrSlug 标识或固定链接标识；默认值、解构字段与可选参数见函数签名。
+ * @param admin = false 后台false；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const getGrammarLesson = (idOrSlug, admin = false) => get(`${admin ? '/admin' : '/public'}/english/grammar/lessons/${idOrSlug}`)
+/**
+ * 更新语法Course。
+ * 请求入口：put('/admin/english/grammar')；路径参数的编码和请求体结构保持接口契约。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const updateGrammarCourse = (payload) => put('/admin/english/grammar', payload)
+/**
+ * 设置语法Course已发布。
+ * 请求入口：post(`/admin/english/grammar/${published ? 'publish' : 'withdraw'}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param published 已发布；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const setGrammarCoursePublished = (published) => post(`/admin/english/grammar/${published ? 'publish' : 'withdraw'}`)
+/**
+ * 创建语法区块。
+ * 请求入口：post('/admin/english/grammar/sections')；路径参数的编码和请求体结构保持接口契约。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const createGrammarSection = (payload) => post('/admin/english/grammar/sections', payload)
+/**
+ * 更新语法区块。
+ * 请求入口：put(`/admin/english/grammar/sections/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const updateGrammarSection = (id, payload) => put(`/admin/english/grammar/sections/${id}`, payload)
+/**
+ * 删除语法区块。
+ * 请求入口：del(`/admin/english/grammar/sections/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const deleteGrammarSection = (id) => del(`/admin/english/grammar/sections/${id}`)
+/**
+ * 创建语法Lesson。
+ * 请求入口：post('/admin/english/grammar/lessons')；路径参数的编码和请求体结构保持接口契约。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const createGrammarLesson = (payload) => post('/admin/english/grammar/lessons', payload)
+/**
+ * 更新语法Lesson。
+ * 请求入口：put(`/admin/english/grammar/lessons/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const updateGrammarLesson = (id, payload) => put(`/admin/english/grammar/lessons/${id}`, payload)
+/**
+ * 设置语法Lesson已发布。
+ * 请求入口：post(`/admin/english/grammar/lessons/${id}/${published ? 'publish' : 'withdraw'}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @param published 已发布；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const setGrammarLessonPublished = (id, published) => post(`/admin/english/grammar/lessons/${id}/${published ? 'publish' : 'withdraw'}`)
+/**
+ * 删除语法Lesson。
+ * 请求入口：del(`/admin/english/grammar/lessons/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const deleteGrammarLesson = (id) => del(`/admin/english/grammar/lessons/${id}`)
 
+/**
+ * 列出阅读。
+ * 请求入口：get(`${admin ? '/admin' : '/public'}/english/content/reading`)；路径参数的编码和请求体结构保持接口契约。
+ * @param params 查询参数；默认值、解构字段与可选参数见函数签名。
+ * @param admin = false 后台false；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const listReading = (params, admin = false) => get(`${admin ? '/admin' : '/public'}/english/content/reading`, params)
+/**
+ * 读取阅读。
+ * 请求入口：get(`${admin ? '/admin' : '/public'}/english/content/reading/${idOrSlug}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param idOrSlug 标识或固定链接标识；默认值、解构字段与可选参数见函数签名。
+ * @param admin = false 后台false；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const getReading = (idOrSlug, admin = false) => get(`${admin ? '/admin' : '/public'}/english/content/reading/${idOrSlug}`)
+/**
+ * 创建阅读。
+ * 请求入口：post('/admin/english/content/reading')；路径参数的编码和请求体结构保持接口契约。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const createReading = payload => post('/admin/english/content/reading', payload)
+/**
+ * 更新阅读。
+ * 请求入口：put(`/admin/english/content/reading/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const updateReading = (id, payload) => put(`/admin/english/content/reading/${id}`, payload)
+/**
+ * 设置阅读已发布。
+ * 请求入口：post(`/admin/english/content/reading/${id}/${published ? 'publish' : 'withdraw'}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @param published 已发布；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const setReadingPublished = (id, published) => post(`/admin/english/content/reading/${id}/${published ? 'publish' : 'withdraw'}`)
+/**
+ * 删除阅读。
+ * 请求入口：del(`/admin/english/content/reading/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
+ */
 export const deleteReading = id => del(`/admin/english/content/reading/${id}`)

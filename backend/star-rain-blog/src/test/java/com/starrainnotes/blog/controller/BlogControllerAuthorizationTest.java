@@ -1,3 +1,10 @@
+/*
+ * BlogControllerAuthorizationTest：博客模块的测试文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 阅读入口：everyAdminHandlerDeclaresBlogAuthority（\u540e\u53f0\u6bcf\u4e2a\u5904\u7406\u65b9\u6cd5\u90fd\u5fc5\u987b\u58f0\u660e blog:* \u6743\u9650）；publishAndEditUseDistinctPermissions（\u53d1\u5e03\u3001\u64a4\u56de\u3001\u7f16\u8f91\u4f7f\u7528\u5404\u81ea\u72ec\u7acb\u7684\u6743\u9650\u7801\uff0c\u4e0d\u80fd\u5171\u7528\u4e00\u4e2a\u7c97\u7c92\u5ea6\u6743\u9650）；taxonomyEndpointsUseTaxonomyPermission（\u5206\u7c7b\u4e0e\u4e13\u9898\u7ba1\u7406\u7edf\u4e00\u8d70 blog:taxonomy-manage）；publicControllerHasNoPermissionAnnotations（\u524d\u53f0\u516c\u5f00\u63a5\u53e3\u4e0d\u58f0\u660e\u4efb\u4f55\u6743\u9650\u6ce8\u89e3\uff1a\u533f\u540d\u8bbf\u95ee\u662f\u8bbe\u8ba1\u610f\u56fe）。
+ */
+
 package com.starrainnotes.blog.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,13 +28,24 @@ import org.springframework.security.access.prepost.PreAuthorize;
  * 注意这只覆盖声明层；服务层的角色约束（发布必须 SUPER_ADMIN）在
  * BlogPublishServiceImplTest 里单独验证，两者互补。
  */
+/**
+ * 博客控制器Authorization测试，属于博客模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class BlogControllerAuthorizationTest {
 
+    /**
+     * CONTROLLERS。
+     */
     private static final List<Class<?>> ADMIN_CONTROLLERS = List.of(
             BlogAdminPostController.class,
             BlogAdminTagController.class,
             BlogAdminTopicController.class);
 
+    /**
+     * \u540e\u53f0\u6bcf\u4e2a\u5904\u7406\u65b9\u6cd5\u90fd\u5fc5\u987b\u58f0\u660e blog:* \u6743\u9650。
+     * 关键处理步骤调用 <code>controller.getDeclaredMethods</code>、<code>Modifier.isPublic</code>、<code>method.getModifiers</code>、<code>method.isSynthetic</code>。
+     */
     @Test
     @DisplayName("后台每个处理方法都必须声明 blog:* 权限")
     void everyAdminHandlerDeclaresBlogAuthority() {
@@ -48,6 +66,10 @@ class BlogControllerAuthorizationTest {
         }
     }
 
+    /**
+     * \u53d1\u5e03\u3001\u64a4\u56de\u3001\u7f16\u8f91\u4f7f\u7528\u5404\u81ea\u72ec\u7acb\u7684\u6743\u9650\u7801\uff0c\u4e0d\u80fd\u5171\u7528\u4e00\u4e2a\u7c97\u7c92\u5ea6\u6743\u9650。
+     * 关键处理步骤调用 <code>expected.put</code>、<code>expected.entrySet</code>、<code>findMethod</code>、<code>entry.getKey</code>。
+     */
     @Test
     @DisplayName("发布、撤回、编辑使用各自独立的权限码，不能共用一个粗粒度权限")
     void publishAndEditUseDistinctPermissions() {
@@ -69,6 +91,10 @@ class BlogControllerAuthorizationTest {
         }
     }
 
+    /**
+     * \u5206\u7c7b\u4e0e\u4e13\u9898\u7ba1\u7406\u7edf\u4e00\u8d70 blog:taxonomy-manage。
+     * 关键处理步骤调用 <code>BlogAdminTagController.class.getDeclaredMethods</code>、<code>Modifier.isPublic</code>、<code>method.getModifiers</code>、<code>method.isSynthetic</code>。
+     */
     @Test
     @DisplayName("分类与专题管理统一走 blog:taxonomy-manage")
     void taxonomyEndpointsUseTaxonomyPermission() {
@@ -87,6 +113,10 @@ class BlogControllerAuthorizationTest {
         assertThat(reorder.value()).contains("blog:taxonomy-manage");
     }
 
+    /**
+     * \u524d\u53f0\u516c\u5f00\u63a5\u53e3\u4e0d\u58f0\u660e\u4efb\u4f55\u6743\u9650\u6ce8\u89e3\uff1a\u533f\u540d\u8bbf\u95ee\u662f\u8bbe\u8ba1\u610f\u56fe。
+     * 关键处理步骤调用 <code>BlogPublicController.class.getDeclaredMethods</code>、<code>Modifier.isPublic</code>、<code>method.getModifiers</code>、<code>method.isSynthetic</code>。
+     */
     @Test
     @DisplayName("前台公开接口不声明任何权限注解：匿名访问是设计意图")
     void publicControllerHasNoPermissionAnnotations() {
@@ -100,6 +130,14 @@ class BlogControllerAuthorizationTest {
         }
     }
 
+    /**
+     * 查找Method。
+     * 关键处理步骤调用 <code>type.getDeclaredMethods</code>、<code>method.getName</code>。
+     *
+     * @param type 类型；类型为 <code>Class&lt;?&gt;</code>
+     * @param name 名称；类型为 <code>String</code>
+     * @return 类型为 <code>Method</code> 的处理结果
+     */
     private static Method findMethod(Class<?> type, String name) {
         for (Method method : type.getDeclaredMethods()) {
             if (method.getName().equals(name)) {

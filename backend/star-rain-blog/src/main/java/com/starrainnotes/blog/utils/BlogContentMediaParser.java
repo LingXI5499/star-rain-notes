@@ -1,3 +1,10 @@
+/*
+ * BlogContentMediaParser：博客模块的工具文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 封装本模块重复使用的转换、计算或校验步骤，具体边界条件由方法注释与实现保持一致。
+ * 阅读入口：extractMediaAssetIds（提取媒体资产标识集合）。
+ */
+
 package com.starrainnotes.blog.utils;
 
 import java.util.ArrayList;
@@ -17,6 +24,10 @@ import java.util.regex.Pattern;
  * 只识别 Media 模块公开的内容地址（/api/media/assets/{id}/content），
  * 不解析任意 URL：外部图床地址不构成对本站媒体的引用。
  */
+/**
+ * 博客内容媒体Parser，属于博客模块。
+ * 封装本模块重复使用的转换、计算或校验步骤，具体边界条件由方法注释与实现保持一致。
+ */
 public final class BlogContentMediaParser {
 
     /*
@@ -26,13 +37,27 @@ public final class BlogContentMediaParser {
      * https://cdn.example.com/api/media/assets/9/content.png 这种外部地址
      * 也会被当成“引用了本站 9 号媒体”，于是 Media 会永远拒绝归档它。
      */
+    /**
+     * 地址。
+     */
     private static final Pattern CONTENT_URL =
             Pattern.compile("(?<![A-Za-z0-9.\\-])/api/media/assets/(\\d+)/content");
 
+    /**
+     * 构造BlogContentMediaParser，接收本类使用的依赖或初始化参数。
+     */
     private BlogContentMediaParser() {
     }
 
     // 保持出现顺序并去重：引用顺序稳定，便于测试与排障
+    /**
+     * 提取媒体资产标识集合。
+     * 主要协作调用：<code>CONTENT_URL.matcher</code>。
+     * 边界判断包含 <code>(bodyMarkdown == null || bodyMarkdown.isBlank())</code>；<code>(id &gt; 0)</code>。
+     *
+     * @param bodyMarkdown Markdown 格式的正文；类型为 <code>String</code>
+     * @return 本次处理得到的条目集合
+     */
     public static List<Long> extractMediaAssetIds(String bodyMarkdown) {
         if (bodyMarkdown == null || bodyMarkdown.isBlank()) {
             return List.of();

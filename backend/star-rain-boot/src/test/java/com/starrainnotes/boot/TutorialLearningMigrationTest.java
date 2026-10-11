@@ -1,3 +1,10 @@
+/*
+ * TutorialLearningMigrationTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 阅读入口：migrationPreservesLegacyAnswersResultsAndCompletionFacts（migrationPreservesLegacy答案集合结果集合及完成Facts处理入口）；apply（应用教程学习Migration）；assertCount（校验数量）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -12,6 +19,11 @@ import org.springframework.jdbc.datasource.init.ScriptUtils;
 
 /** Applies the original schema and new migrations against an isolated, disposable database. */
 class TutorialLearningMigrationTest extends MapperXmlIntegrationSupport {
+    /**
+     * migrationPreservesLegacy答案集合结果集合及完成Facts处理入口。
+     * 关键处理步骤调用 <code>openSession</code>、<code>session.getConnection</code>、<code>connection.getCatalog</code>、<code>Long.toUnsignedString</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void migrationPreservesLegacyAnswersResultsAndCompletionFacts() throws Exception {
         try(SqlSession session=openSession()) {
             Connection connection=session.getConnection();String original=connection.getCatalog();
@@ -57,9 +69,25 @@ class TutorialLearningMigrationTest extends MapperXmlIntegrationSupport {
             }
         }
     }
+    /**
+     * 应用教程学习Migration。
+     * 关键处理步骤调用 <code>ScriptUtils.executeSqlScript</code>。
+     *
+     * @param connection connection；类型为 <code>Connection</code>
+     * @param file 待处理的上传文件；类型为 <code>String</code>
+     */
     private void apply(Connection connection,String file) {
         ScriptUtils.executeSqlScript(connection,new EncodedResource(new ClassPathResource("db/migration/"+file),"UTF-8"));
     }
+    /**
+     * 校验数量。
+     * 关键处理步骤调用 <code>java.util.Set.of</code>、<code>statement.executeQuery</code>、<code>result.next</code>、<code>result.getInt</code>。
+     *
+     * @param statement statement；类型为 <code>Statement</code>
+     * @param table table；类型为 <code>String</code>
+     * @param expected 测试期望结果；类型为 <code>int</code>
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     private void assertCount(Statement statement,String table,int expected) throws Exception {
         assertTrue(java.util.Set.of("sr_review_result","sr_learning_evidence","sr_learning_legacy_completion").contains(table));
         try(ResultSet result=statement.executeQuery("SELECT COUNT(*) FROM "+table)) { assertTrue(result.next());assertEquals(expected,result.getInt(1)); }

@@ -2,8 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--
+      pom.xml：star-rain-profile 的 Maven 构建描述。
+      父 POM 统一版本与构建约定；本模块只声明自身装配所需的模块和库。
+      依赖 scope、插件执行阶段与聚合 modules 共同决定编译、测试及产物，注释不改变构建参数。
+    -->
+
     <modelVersion>4.0.0</modelVersion>
 
+    <!--
+      继承父项目的依赖管理、插件默认值与版本约定；relativePath 决定本地父 POM 的查找方式。
+    -->
     <parent>
         <groupId>com.starrainnotes</groupId>
         <artifactId>star-rain-parent</artifactId>
@@ -13,37 +22,89 @@
 
     <artifactId>star-rain-profile</artifactId>
 
+    <!--
+      声明本模块实际依赖；内部模块提供跨模块契约，scope 限定使用阶段。
+    -->
     <dependencies>
+        <!--
+          依赖 com.starrainnotes:star-rain-common。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：统一响应、异常、分页、安全与跨模块基础契约；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-media。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：上传校验、本地存储、访问级别、业务引用与文件清理；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-media</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-tutorial。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-tutorial</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-blog。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：文章、标签、专题、归档、发布状态和公开阅读；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-blog</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-portfolio。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：作品分类、展示区块、代码库链接及关联媒体；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-portfolio</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 org.springframework.boot:spring-boot-starter-web。
+          使用范围：compile；版本由父项目或依赖管理提供。
+        -->
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-web</artifactId></dependency>
+        <!--
+          依赖 org.springframework.boot:spring-boot-starter-security。
+          使用范围：compile；版本由父项目或依赖管理提供。
+        -->
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-security</artifactId></dependency>
+        <!--
+          依赖 org.springframework.boot:spring-boot-starter-validation。
+          使用范围：compile；版本由父项目或依赖管理提供。
+        -->
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-validation</artifactId></dependency>
+        <!--
+          依赖 com.baomidou:mybatis-plus-spring-boot3-starter。
+          使用范围：compile；版本为 3.5.17。
+        -->
         <dependency><groupId>com.baomidou</groupId><artifactId>mybatis-plus-spring-boot3-starter</artifactId><version>3.5.17</version></dependency>
+        <!--
+          依赖 org.projectlombok:lombok。
+          使用范围：provided；版本为 1.18.42。
+        -->
         <dependency><groupId>org.projectlombok</groupId><artifactId>lombok</artifactId><version>1.18.42</version><scope>provided</scope></dependency>
+        <!--
+          依赖 org.springframework.boot:spring-boot-starter-test。
+          使用范围：test；版本由父项目或依赖管理提供。
+        -->
         <dependency><groupId>org.springframework.boot</groupId><artifactId>spring-boot-starter-test</artifactId><scope>test</scope></dependency>
     </dependencies>
 </project>

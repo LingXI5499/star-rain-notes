@@ -1,3 +1,11 @@
+/*
+ * VocabularyStudyQueryServiceImpl：英语学习模块的业务实现文件。
+ * 业务范围：文档、词汇、语法、阅读听力及复习记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：VocabularyStudyConstants、VocabularyDto、VocabularyMemoryEntryRow、VocabularyMemoryRow、LearningStatus、VocabularyProgressNotFoundException、VocabularyStudyMapper。
+ * 阅读入口：settings（settings处理入口）；memorySnapshot（记忆快照处理入口）；memories（memories处理入口）；memoryOrDefault（记忆或默认处理入口）。
+ */
+
 package com.starrainnotes.english.vocabulary.service.impl;
 
 import com.starrainnotes.english.vocabulary.constant.VocabularyStudyConstants;
@@ -38,14 +46,33 @@ import org.springframework.transaction.annotation.Transactional;
  * 队列顺序照抄 V1：先按 next_review_at 排到期词，再补主题新词（去重），
  * 最后按这个固定顺序装配卡片——不能直接用批量查询返回的顺序，那会按 sort_order 打乱到期优先。
  */
+/**
+ * 词汇学习查询参数业务服务实现，属于英语学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class VocabularyStudyQueryServiceImpl implements VocabularyStudyQueryService {
 
+    /**
+     * 数据映射。
+     * 协作类型：<code>VocabularyStudyMapper</code>。
+     */
     private final VocabularyStudyMapper mapper;
+    /**
+     * 词汇。
+     * 协作类型：<code>VocabularyService</code>。
+     */
     private final VocabularyService vocabulary;
 
+    /**
+     * settings处理入口。
+     * 主要协作调用：<code>mapper.settings</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @return 类型为 <code>VocabularyStudySettingsVO</code> 的处理结果
+     */
     @Override
     public VocabularyStudySettingsVO settings(long accountId) {
         VocabularyStudySettingsVO stored = mapper.settings(accountId);
@@ -62,6 +89,13 @@ public class VocabularyStudyQueryServiceImpl implements VocabularyStudyQueryServ
                 .build();
     }
 
+    /**
+     * 记忆快照处理入口。
+     * 主要协作调用：<code>mapper.memorySnapshot</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @return 本次处理得到的条目集合
+     */
     @Override
     public List<VocabularyMemoryEntryVO> memorySnapshot(long accountId) {
         return mapper.memorySnapshot(accountId).stream()
@@ -69,6 +103,14 @@ public class VocabularyStudyQueryServiceImpl implements VocabularyStudyQueryServ
                 .toList();
     }
 
+    /**
+     * memories处理入口。
+     * 主要协作调用：<code>mapper.memories</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param wordIds 单词标识集合；类型为 <code>List&lt;Long&gt;</code>
+     * @return 本次处理得到的条目集合
+     */
     @Override
     public List<VocabularyMemoryVO> memories(long accountId, List<Long> wordIds) {
         if (wordIds == null || wordIds.isEmpty()) {
@@ -91,12 +133,29 @@ public class VocabularyStudyQueryServiceImpl implements VocabularyStudyQueryServ
         return result;
     }
 
+    /**
+     * 记忆或默认处理入口。
+     * 主要协作调用：<code>mapper.memory</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param wordId 单词标识；类型为 <code>long</code>
+     * @return 类型为 <code>VocabularyMemoryVO</code> 的处理结果
+     */
     @Override
     public VocabularyMemoryVO memoryOrDefault(long accountId, long wordId) {
         VocabularyMemoryRow row = mapper.memory(accountId, wordId);
         return row == null ? VocabularyMemoryAssembler.empty(wordId, null) : VocabularyMemoryAssembler.toVO(row);
     }
 
+    /**
+     * 必需记忆处理入口。
+     * 主要协作调用：<code>mapper.memory</code>。
+     * 实现中的显式失败类型包括 <code>VocabularyProgressNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param wordId 单词标识；类型为 <code>long</code>
+     * @return 类型为 <code>VocabularyMemoryVO</code> 的处理结果
+     */
     @Override
     public VocabularyMemoryVO requiredMemory(long accountId, long wordId) {
         VocabularyMemoryRow row = mapper.memory(accountId, wordId);
@@ -106,6 +165,14 @@ public class VocabularyStudyQueryServiceImpl implements VocabularyStudyQueryServ
         return VocabularyMemoryAssembler.toVO(row);
     }
 
+    /**
+     * queue处理入口。
+     * 主要协作调用：<code>mapper.dueCount</code>、<code>mapper.dueWordIds</code>、<code>mapper.introducedSince</code>、<code>mapper.newWordIds</code>、<code>vocabulary.wordsByIds</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param themeId 主题标识；类型为 <code>Long</code>
+     * @return 类型为 <code>VocabularyQueueVO</code> 的处理结果
+     */
     @Override
     public VocabularyQueueVO queue(long accountId, Long themeId) {
         VocabularyStudySettingsVO setting = settings(accountId);
@@ -159,6 +226,13 @@ public class VocabularyStudyQueryServiceImpl implements VocabularyStudyQueryServ
                 .build();
     }
 
+    /**
+     * 进度处理入口。
+     * 主要协作调用：<code>mapper.recentReviews</code>、<code>mapper.activeCount</code>、<code>mapper.dueCount</code>、<code>mapper.countReviewsSince</code>、<code>mapper.countReviews</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @return 类型为 <code>VocabularyProgressVO</code> 的处理结果
+     */
     @Override
     public VocabularyProgressVO progress(long accountId) {
         LocalDateTime now = utcNow();
@@ -176,12 +250,24 @@ public class VocabularyStudyQueryServiceImpl implements VocabularyStudyQueryServ
                 .build();
     }
 
+    /**
+     * 摘要处理入口。
+     * 主要协作调用：<code>mapper.summary</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @return 类型为 <code>VocabularySummaryVO</code> 的处理结果
+     */
     @Override
     public VocabularySummaryVO summary(long accountId) {
         VocabularySummaryVO summary = mapper.summary(accountId, utcNow(), VocabularyStudyConstants.MAX_REVIEW_STEP);
         return summary == null ? VocabularySummaryVO.builder().build() : summary;
     }
 
+    /**
+     * utcNow处理入口。
+     * 关键处理步骤调用 <code>LocalDateTime.now</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime utcNow() {
         return LocalDateTime.now(ZoneOffset.UTC);
     }

@@ -1,3 +1,8 @@
+/**
+ * blog.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 /*
  * 博客模块样式。
  *
@@ -27,13 +32,25 @@
   line-height: 1.2;
 }
 
+/**
+ * 样式范围：.button-link:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .button-link:hover { background: var(--bg-subtle); }
 
 /* 两列字段格：标签/专题/文章信息三处共用 */
 .field-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
 
+/**
+ * 样式范围：.field-grid__wide。
+ */
 .field-grid__wide { grid-column: 1 / -1; }
 
+/**
+ * 样式范围：.field-grid textarea。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .field-grid textarea {
   width: 100%;
   padding: 10px 12px;
@@ -48,6 +65,10 @@
 /* 危险操作（删除文章 / 移出专题）：只染文字，避免整页都是红按钮 */
 .blog-danger { color: var(--danger); }
 
+/**
+ * 样式范围：.status-chip--muted。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .status-chip--muted { color: var(--text-secondary); background: var(--bg-subtle); }
 
 /* ------------------------------------------------------------------
@@ -57,8 +78,16 @@
 
 .public-nav { display: flex; gap: 18px; font-size: 14px; }
 
+/**
+ * 样式范围：.public-nav a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-nav a { color: var(--text-secondary); }
 
+/**
+ * 样式范围：.public-nav a.router-link-active。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-nav a.router-link-active { color: var(--primary); font-weight: 650; }
 
 /* ------------------------------------------------------------------
@@ -67,8 +96,17 @@
 
 .blog-public { max-width: 1080px; }
 
+/**
+ * 样式范围：.blog-card-list。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 18px 控制。
+ */
 .blog-card-list { display: grid; gap: 18px; }
 
+/**
+ * 样式范围：.blog-card。
+ * 使用网格布局组织内容；列定义为 220px minmax(0, 1fr)，间距由 20px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-card {
   display: grid;
   grid-template-columns: 220px minmax(0, 1fr);
@@ -79,20 +117,51 @@
   border-radius: 14px;
 }
 
+/**
+ * 样式范围：.blog-card:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-card:hover { border-color: var(--border-strong); }
 
+/**
+ * 样式范围：.blog-card__cover。
+ * 溢出处理：整体 hidden。
+ */
 .blog-card__cover { display: block; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 10px; }
 
+/**
+ * 样式范围：.blog-card__cover img。
+ */
 .blog-card__cover img { width: 100%; height: 100%; object-fit: cover; }
 
+/**
+ * 样式范围：.blog-card__body。
+ * 使用弹性布局排列子项，方向为 column；对齐及换行由本规则声明控制。
+ */
 .blog-card__body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
 
+/**
+ * 样式范围：.blog-card__date。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-card__date { margin: 0; color: var(--text-muted); font-size: 12px; letter-spacing: .04em; }
 
+/**
+ * 样式范围：.blog-card__title。
+ */
 .blog-card__title { margin: 0; font-size: 20px; line-height: 1.4; }
 
+/**
+ * 样式范围：.blog-card__summary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-card__summary { margin: 0; color: var(--text-secondary); }
 
+/**
+ * 样式范围：.blog-card__meta。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-card__meta { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: auto; }
 
 /* ------------------------------------------------------------------
@@ -101,9 +170,17 @@
 
 .blog-tag-list { display: inline-flex; flex-wrap: wrap; gap: 6px; }
 
+/**
+ * 样式范围：.blog-tag-list--empty, .blog-topic-list--empty。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-list--empty,
 .blog-topic-list--empty { color: var(--text-muted); font-size: 12px; }
 
+/**
+ * 样式范围：.blog-tag。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag {
   display: inline-flex;
   align-items: center;
@@ -116,12 +193,27 @@
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.blog-tag small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag small { color: var(--text-muted); font-size: 10px; }
 
+/**
+ * 样式范围：.blog-tag--disabled。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag--disabled { color: var(--text-muted); text-decoration: line-through; }
 
+/**
+ * 样式范围：.blog-topic-list。
+ */
 .blog-topic-list { display: inline-flex; flex-wrap: wrap; gap: 6px; margin: 0; padding: 0; list-style: none; }
 
+/**
+ * 样式范围：.blog-topic。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-topic {
   display: inline-flex;
   align-items: center;
@@ -133,6 +225,10 @@
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.blog-topic__order。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-topic__order {
   display: inline-flex;
   align-items: center;
@@ -145,6 +241,10 @@
   font-size: 10px;
 }
 
+/**
+ * 样式范围：.blog-topic--disabled。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-topic--disabled { color: var(--text-muted); }
 
 /* ------------------------------------------------------------------
@@ -158,16 +258,40 @@
   align-items: start;
 }
 
+/**
+ * 样式范围：.blog-aside__title。
+ */
 .blog-aside__title { margin-bottom: 14px; font-size: 15px; }
 
+/**
+ * 样式范围：.blog-month-list。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 4px 控制。
+ */
 .blog-month-list { display: grid; gap: 4px; margin: 0 0 12px; padding: 0; list-style: none; }
 
+/**
+ * 样式范围：.blog-month-list .link-button。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-month-list .link-button { display: flex; justify-content: space-between; width: 100%; }
 
+/**
+ * 样式范围：.blog-month-list .link-button.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-month-list .link-button.is-active { color: var(--primary); background: var(--bg-subtle); font-weight: 650; }
 
+/**
+ * 样式范围：.blog-month-list small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-month-list small { color: var(--text-muted); }
 
+/**
+ * 样式范围：.blog-archive-main。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 4px 控制。
+ */
 .blog-archive-main { display: grid; gap: 4px; }
 
 /* ------------------------------------------------------------------
@@ -176,8 +300,16 @@
 
 .blog-breadcrumb { margin-bottom: 18px; font-size: 13px; }
 
+/**
+ * 样式范围：.blog-article。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-article { max-width: var(--content-max-width); margin: 0 auto; }
 
+/**
+ * 样式范围：.blog-article__preview-badge。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-article__preview-badge {
   display: inline-block;
   margin-bottom: 14px;
@@ -188,39 +320,86 @@
   font-size: 12px;
 }
 
+/**
+ * 样式范围：.blog-article__header。
+ */
 .blog-article__header { margin-bottom: 22px; }
 
+/**
+ * 样式范围：.blog-article__header h1。
+ */
 .blog-article__header h1 { font-size: 34px; }
 
+/**
+ * 样式范围：.blog-article__meta。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-article__meta { display: flex; flex-wrap: wrap; gap: 14px; color: var(--text-muted); font-size: 12px; }
 
+/**
+ * 样式范围：.blog-article__taxonomy。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-article__taxonomy { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
 
+/**
+ * 样式范围：.blog-article__cover。
+ */
 .blog-article__cover { width: 100%; border-radius: 14px; margin-bottom: 22px; }
 
+/**
+ * 样式范围：.blog-article__summary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-article__summary { color: var(--text-secondary); font-style: italic; }
 
+/**
+ * 样式范围：.blog-article__footer。
+ */
 .blog-article__footer { margin-top: 32px; }
 
+/**
+ * 样式范围：.blog-notfound。
+ */
 .blog-notfound { max-width: 560px; margin: 40px auto; text-align: center; }
 
+/**
+ * 样式范围：.blog-notfound .primary-button。
+ */
 .blog-notfound .primary-button { display: inline-block; margin-top: 12px; }
 
 /* 正文排版：只作用于渲染出来的 Markdown 结构 */
 .blog-prose { font: var(--font-prose); color: var(--text-primary); overflow-wrap: anywhere; }
 
+/**
+ * 样式范围：.blog-prose h1, .blog-prose h2, .blog-prose h3, .blog-prose h4。
+ */
 .blog-prose h1,
 .blog-prose h2,
 .blog-prose h3,
 .blog-prose h4 { margin: 32px 0 12px; line-height: 1.35; }
 
+/**
+ * 样式范围：.blog-prose p。
+ */
 .blog-prose p { margin: 0 0 18px; }
 
+/**
+ * 样式范围：.blog-prose ul, .blog-prose ol。
+ */
 .blog-prose ul,
 .blog-prose ol { margin: 0 0 18px; padding-left: 22px; }
 
+/**
+ * 样式范围：.blog-prose li。
+ */
 .blog-prose li { margin-bottom: 6px; }
 
+/**
+ * 样式范围：.blog-prose blockquote。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-prose blockquote {
   margin: 0 0 18px;
   padding: 6px 18px;
@@ -228,6 +407,11 @@
   color: var(--text-secondary);
 }
 
+/**
+ * 样式范围：.blog-prose pre。
+ * 溢出处理：横向 auto。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-prose pre {
   margin: 0 0 18px;
   padding: 16px;
@@ -238,14 +422,32 @@
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.blog-prose code。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-prose code { padding: 2px 5px; border-radius: 4px; background: var(--bg-subtle); font-size: 13px; }
 
+/**
+ * 样式范围：.blog-prose pre code。
+ */
 .blog-prose pre code { padding: 0; background: transparent; }
 
+/**
+ * 样式范围：.blog-prose img。
+ */
 .blog-prose img { max-width: 100%; border-radius: 10px; }
 
+/**
+ * 样式范围：.blog-prose hr。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-prose hr { margin: 28px 0; border: 0; border-top: 1px solid var(--border); }
 
+/**
+ * 样式范围：.blog-prose__empty。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-prose__empty { color: var(--text-muted); }
 
 /* ------------------------------------------------------------------
@@ -259,10 +461,23 @@
   align-items: start;
 }
 
+/**
+ * 样式范围：.blog-editor-aside。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 var(--space-4) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-editor-aside { display: grid; gap: var(--space-4); }
 
+/**
+ * 样式范围：.blog-editor__subheading。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-editor__subheading { margin: 24px 0 10px; color: var(--text-secondary); }
 
+/**
+ * 样式范围：.blog-editor__actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-editor__actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-top: 16px; }
 
 /* 封面输入项已按 V1 字段集从编辑页移除（后端仍支持封面媒体引用），相关样式一并删除 */
@@ -271,6 +486,10 @@
 
 .blog-tag-picker { display: flex; flex-wrap: wrap; gap: 10px; }
 
+/**
+ * 样式范围：.blog-tag-option。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-option {
   display: inline-flex;
   align-items: center;
@@ -282,12 +501,28 @@
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.blog-tag-option input。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-option input { width: 16px; min-height: 16px; accent-color: var(--primary); }
 
+/**
+ * 样式范围：.blog-tag-option small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-option small { color: var(--text-muted); }
 
+/**
+ * 样式范围：.blog-tag-option.is-disabled。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-tag-option.is-disabled { color: var(--text-muted); border-style: dashed; }
 
+/**
+ * 样式范围：.blog-body-input。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-body-input {
   width: 100%;
   padding: 14px;
@@ -299,8 +534,16 @@
   resize: vertical;
 }
 
+/**
+ * 样式范围：.blog-ref-list。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-ref-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0 0; padding: 0; list-style: none; }
 
+/**
+ * 样式范围：.blog-ref-list li。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-ref-list li { padding: 2px 8px; border-radius: 6px; background: var(--bg-subtle); font-size: 12px; }
 
 /* ------------------------------------------------------------------
@@ -314,12 +557,28 @@
   align-items: start;
 }
 
+/**
+ * 样式范围：.blog-taxonomy-aside。
+ */
 .blog-taxonomy-aside { grid-column: 1 / -1; }
 
+/**
+ * 样式范围：.blog-taxonomy-layout tr.is-selected。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-taxonomy-layout tr.is-selected { background: var(--el-color-primary-light-9); }
 
+/**
+ * 样式范围：.blog-member-list。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 8px 控制。
+ */
 .blog-member-list { display: grid; gap: 8px; margin: 12px 0 0; padding: 0; list-style: none; }
 
+/**
+ * 样式范围：.blog-member-list li。
+ * 使用网格布局组织内容；列定义为 28px minmax(0, 1fr) auto，间距由 12px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-member-list li {
   display: grid;
   grid-template-columns: 28px minmax(0, 1fr) auto;
@@ -328,8 +587,15 @@
   padding: 8px 0;
   border-bottom: 1px solid var(--border);
 }
+/**
+ * 样式范围：.blog-member-list li.muted。
+ */
 .blog-member-list li.muted { display: block; }
 
+/**
+ * 样式范围：.blog-member-list__order。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-member-list__order {
   display: inline-flex;
   align-items: center;
@@ -342,26 +608,55 @@
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.blog-member-list__title small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-member-list__title small { display: block; color: var(--text-muted); font-size: 11px; }
 
+/**
+ * 样式范围：.blog-member-list__actions。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .blog-member-list__actions { display: flex; gap: 2px; }
 
 /* ------------------------------------------------------------------
    响应式
    ------------------------------------------------------------------ */
 
+/**
+ * 响应式或设备条件：(max-width: 1000px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 1000px) {
+  /**
+   * 样式范围：.blog-editor-layout,   .blog-taxonomy-layout,   .blog-archive-layout。
+   */
   .blog-editor-layout,
   .blog-taxonomy-layout,
   .blog-archive-layout { grid-template-columns: minmax(0, 1fr); }
 
+  /**
+   * 样式范围：.blog-card。
+   */
   .blog-card { grid-template-columns: minmax(0, 1fr); }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 640px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 640px) {
+  /**
+   * 样式范围：.field-grid。
+   */
   .field-grid { grid-template-columns: minmax(0, 1fr); }
 
+  /**
+   * 样式范围：.blog-member-list li。
+   */
   .blog-member-list li { grid-template-columns: 28px minmax(0, 1fr); }
 
+  /**
+   * 样式范围：.blog-member-list__actions。
+   */
   .blog-member-list__actions { grid-column: 2; }
 }

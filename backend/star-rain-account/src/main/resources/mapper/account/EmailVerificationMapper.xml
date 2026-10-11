@@ -1,14 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.account.mapper.EmailVerificationMapper">
+    <!--
+      EmailVerificationMapper.xml：com.starrainnotes.account.mapper.EmailVerificationMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+    <!--
+      ensureEmail：ensure邮箱；新增语句。
+      涉及数据表：sr_email_verification；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：email；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="ensureEmail">
         INSERT INTO sr_email_verification(email) VALUES (#{email})
         ON DUPLICATE KEY UPDATE email = #{email}
     </insert>
+    <!--
+      findForUpdate：find面向更新；读取语句。
+      涉及数据表：sr_email_verification；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.account.entity.EmailVerificationEntity；集合与单值形态由 Java 方法签名决定。
+      绑定参数：email；参数含义参见 Mapper 方法注释。
+      锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+    -->
     <select id="findForUpdate" resultType="com.starrainnotes.account.entity.EmailVerificationEntity">
         SELECT email, code_hash, expires_at, consumed_at, sent_at, window_started_at, send_count, failed_attempts
         FROM sr_email_verification WHERE email = #{email} FOR UPDATE
     </select>
+    <!--
+      saveCode：save代码；更新语句。
+      涉及数据表：sr_email_verification；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：codeHash、expiresAt、sentAt、windowStartedAt、sendCount、email；参数含义参见 Mapper 方法注释。
+    -->
     <update id="saveCode">
         UPDATE sr_email_verification
         SET code_hash = #{codeHash}, expires_at = #{expiresAt}, consumed_at = NULL,
@@ -16,9 +41,21 @@
             send_count = #{sendCount}, failed_attempts = 0
         WHERE email = #{email}
     </update>
+    <!--
+      incrementFailures：incrementFailures；更新语句。
+      涉及数据表：sr_email_verification；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：email；参数含义参见 Mapper 方法注释。
+    -->
     <update id="incrementFailures">
         UPDATE sr_email_verification SET failed_attempts = failed_attempts + 1 WHERE email = #{email}
     </update>
+    <!--
+      consume：consume；更新语句。
+      涉及数据表：sr_email_verification；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：email、codeHash；参数含义参见 Mapper 方法注释。
+    -->
     <update id="consume">
         UPDATE sr_email_verification SET consumed_at = UTC_TIMESTAMP(6)
         WHERE email = #{email} AND code_hash = #{codeHash} AND consumed_at IS NULL

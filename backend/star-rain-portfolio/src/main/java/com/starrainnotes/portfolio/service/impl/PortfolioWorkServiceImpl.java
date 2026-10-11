@@ -1,3 +1,11 @@
+/*
+ * PortfolioWorkServiceImpl：作品模块的业务实现文件。
+ * 业务范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：CurrentActorApi、PageResult、MediaAssetApi、MediaReferenceApi、MediaAssetSummary、MediaReferenceCommand、IdOrderDTO。
+ * 阅读入口：publicWorks（公开作品列表处理入口）；publicWork（公开作品处理入口）；publicWorkById（按标识读取公开作品）；adminWorks（后台作品列表处理入口）。
+ */
+
 package com.starrainnotes.portfolio.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,29 +60,100 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 作品作品业务服务实现，属于作品模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class PortfolioWorkServiceImpl implements PortfolioWorkService {
+    /**
+     * MODULE。
+     */
     private static final String SOURCE_MODULE = "PORTFOLIO";
+    /**
+     * 类型。
+     */
     private static final String SOURCE_TYPE = "WORK_MEDIA";
+    /**
+     * 内容。
+     * 协作类型：<code>com.starrainnotes.portfolio.service.PortfolioContentService</code>。
+     */
     private final com.starrainnotes.portfolio.service.PortfolioContentService content;
+    /**
+     * 作品列表。
+     * 协作类型：<code>WorkMapper</code>。
+     */
     private final WorkMapper works;
+    /**
+     * 详情。
+     * 协作类型：<code>WorkDetailMapper</code>。
+     */
     private final WorkDetailMapper details;
+    /**
+     * 媒体。
+     * 协作类型：<code>WorkMediaMapper</code>。
+     */
     private final WorkMediaMapper media;
+    /**
+     * links。
+     * 协作类型：<code>WorkLinkMapper</code>。
+     */
     private final WorkLinkMapper links;
+    /**
+     * 媒体Assets。
+     * 协作类型：<code>MediaAssetApi</code>。
+     */
     private final MediaAssetApi mediaAssets;
+    /**
+     * 媒体References。
+     * 协作类型：<code>MediaReferenceApi</code>。
+     */
     private final MediaReferenceApi mediaReferences;
+    /**
+     * 当前操作对应的身份对象。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi actor;
+    /**
+     * 项目配置的 Jackson JSON 读写器。
+     * 协作类型：<code>ObjectMapper</code>。
+     */
     private final ObjectMapper objectMapper;
+    /**
+     * validators。
+     */
     private final List<WorkDetailValidator> validators;
+    /**
+     * 事件集合。
+     */
     private final WorkEventPublisher events;
 
+    /**
+     * 公开作品列表处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>list</code>、<code>WorkStatus.PUBLISHED.name</code>。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @param type 类型；类型为 <code>WorkType</code>
+     * @return 类型为 <code>PageResult&lt;WorkVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<WorkVO> publicWorks(int page, int pageSize, WorkType type) {
         return list(page, pageSize, type, WorkStatus.PUBLISHED.name(), null, true);
     }
 
+    /**
+     * 公开作品处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>works.selectBySlugAndStatus</code>。
+     * 实现中的显式失败类型包括 <code>WorkNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public WorkVO publicWork(String slug) {
@@ -85,6 +164,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, true);
     }
 
+    /**
+     * 按标识读取公开作品。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>works.selectByIdAndStatus</code>。
+     * 实现中的显式失败类型包括 <code>WorkNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public WorkVO publicWorkById(Long id) {
@@ -95,6 +183,19 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, true);
     }
 
+    /**
+     * 后台作品列表处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>status.isBlank</code>、<code>WorkStatus.valueOf</code>、<code>list</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @param type 类型；类型为 <code>WorkType</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @param keyword 关键词；类型为 <code>String</code>
+     * @return 类型为 <code>PageResult&lt;WorkVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<WorkVO> adminWorks(int page, int pageSize, WorkType type,
@@ -109,12 +210,29 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return list(page, pageSize, type, status, keyword, false);
     }
 
+    /**
+     * 后台作品处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>view</code>、<code>require</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public WorkVO adminWork(Long id) {
         return view(require(id), true, false);
     }
 
+    /**
+     * 创建作品作品。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>objectMapper.valueToTree</code>、<code>actor.current</code>、<code>works.insert</code>、<code>content.setTags</code>、<code>content.copyTemplate</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>、<code>WorkSlugConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkCreateDTO</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO create(WorkCreateDTO request) {
@@ -144,6 +262,16 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 更新作品作品。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>objectMapper.valueToTree</code>、<code>content.setTags</code>、<code>events.afterCommit</code>、<code>works.updateContent</code>。
+     * 实现中的显式失败类型包括 <code>WorkTypeImmutableException</code>、<code>WorkInvalidException</code>、<code>WorkSlugConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkPatchDTO</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO update(Long id, WorkPatchDTO request) {
@@ -180,6 +308,16 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 更新正文。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>works.updateBody</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param markdown Markdown；类型为 <code>String</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO updateBody(Long id, String markdown) {
@@ -194,6 +332,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 更新详情。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>details.insert</code>、<code>details.updateDetailJson</code>、<code>works.touch</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param detail 详情；类型为 <code>JsonNode</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO updateDetail(Long id, JsonNode detail) {
@@ -215,6 +362,16 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 添加媒体。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>media.insert</code>、<code>works.touch</code>。
+     * 实现中的显式失败类型包括 <code>WorkMediaConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkMediaDTO</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO addMedia(Long id, WorkMediaDTO request) {
@@ -237,6 +394,16 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 更新媒体。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>media.selectById</code>、<code>media.updateContent</code>、<code>works.touch</code>。
+     * 实现中的显式失败类型包括 <code>WorkMediaNotFoundException</code>、<code>WorkStateInvalidException</code>、<code>WorkMediaConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param mediaId 媒体标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkMediaDTO</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO updateMedia(Long mediaId, WorkMediaDTO request) {
@@ -271,6 +438,14 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 移除媒体。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>media.selectById</code>、<code>media.deleteById</code>、<code>works.touch</code>。
+     * 实现中的显式失败类型包括 <code>WorkMediaNotFoundException</code>、<code>WorkStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param mediaId 媒体标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void removeMedia(Long mediaId) {
@@ -288,6 +463,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         works.touch(work);
     }
 
+    /**
+     * 顺序媒体处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>media.updateSortOrder</code>、<code>works.touch</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>IdOrderDTO</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO orderMedia(Long id, IdOrderDTO request) {
@@ -306,6 +490,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 添加链接。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>links.insert</code>、<code>works.touch</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkLinkDTO</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO addLink(Long id, WorkLinkDTO request) {
@@ -319,6 +512,16 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 更新链接。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>links.selectById</code>、<code>links.updateContent</code>、<code>works.touch</code>。
+     * 实现中的显式失败类型包括 <code>WorkLinkNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param linkId 链接标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkLinkDTO</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO updateLink(Long linkId, WorkLinkDTO request) {
@@ -334,6 +537,14 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 移除链接。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>links.selectById</code>、<code>links.deleteById</code>、<code>works.touch</code>。
+     * 实现中的显式失败类型包括 <code>WorkLinkNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param linkId 链接标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void removeLink(Long linkId) {
@@ -347,6 +558,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         works.touch(work);
     }
 
+    /**
+     * 顺序Links处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>links.updateSortOrder</code>、<code>works.touch</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>IdOrderDTO</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO orderLinks(Long id, IdOrderDTO request) {
@@ -365,6 +585,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 发布作品作品。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>works.publish</code>。
+     * 实现中的显式失败类型包括 <code>WorkStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO publish(Long id) {
@@ -380,6 +609,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 撤回作品作品。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>works.withdraw</code>、<code>events.afterCommit</code>。
+     * 实现中的显式失败类型包括 <code>WorkStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO withdraw(Long id) {
@@ -395,6 +633,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 恢复作品作品。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>works.restore</code>。
+     * 实现中的显式失败类型包括 <code>WorkStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public WorkVO restore(Long id) {
@@ -409,6 +656,14 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return view(work, true, false);
     }
 
+    /**
+     * 删除作品作品。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>media.deleteById</code>、<code>links.deleteById</code>、<code>details.deleteById</code>、<code>mediaReferences.detachAll</code>、<code>content.deleteAll</code>。
+     * 实现中的显式失败类型包括 <code>WorkStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void delete(Long id) {
@@ -433,6 +688,19 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         events.afterCommit(new WorkPublicationChangedEvent(id, work.getSlug(), false));
     }
 
+    /**
+     * 列出作品作品。
+     * 主要协作调用：<code>works.countByFilter</code>、<code>works.pageByFilter</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @param type 类型；类型为 <code>WorkType</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @param keyword 关键词；类型为 <code>String</code>
+     * @param publicOnly 公开Only；类型为 <code>boolean</code>
+     * @return 类型为 <code>PageResult&lt;WorkVO&gt;</code> 的处理结果
+     */
     private PageResult<WorkVO> list(int page, int pageSize, WorkType type,
                                      String status, String keyword, boolean publicOnly) {
         if (page < 1 || page > 100_000 || pageSize < 1 || pageSize > 100) {
@@ -455,6 +723,14 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return PageResult.<WorkVO>builder().items(items).total(total).page(page).pageSize(pageSize).build();
     }
 
+    /**
+     * 检查所需作品作品。
+     * 主要协作调用：<code>works.selectById</code>。
+     * 实现中的显式失败类型包括 <code>WorkNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>WorkEntity</code> 的处理结果
+     */
     private WorkEntity require(Long id) {
         WorkEntity work = id == null ? null : works.selectById(id);
         if (work == null) {
@@ -463,6 +739,14 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return work;
     }
 
+    /**
+     * 锁处理入口。
+     * 主要协作调用：<code>works.byIdForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>WorkNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @return 类型为 <code>WorkEntity</code> 的处理结果
+     */
     private WorkEntity lock(Long id) {
         WorkEntity work = id == null ? null : works.byIdForUpdate(id);
         if (work == null) {
@@ -471,18 +755,49 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return work;
     }
 
+    /**
+     * 读取详情行。
+     * 主要协作调用：<code>details.selectByWorkId</code>。
+     *
+     * @param workId 作品标识；类型为 <code>Long</code>
+     * @return 类型为 <code>WorkDetailEntity</code> 的处理结果
+     */
     private WorkDetailEntity detailRow(Long workId) {
         return details.selectByWorkId(workId);
     }
 
+    /**
+     * 媒体行集合处理入口。
+     * 主要协作调用：<code>media.listByWorkId</code>。
+     *
+     * @param workId 作品标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     private List<WorkMediaEntity> mediaRows(Long workId) {
         return media.listByWorkId(workId);
     }
 
+    /**
+     * 链接行集合处理入口。
+     * 主要协作调用：<code>links.listByWorkId</code>。
+     *
+     * @param workId 作品标识；类型为 <code>Long</code>
+     * @return 本次处理得到的条目集合
+     */
     private List<WorkLinkEntity> linkRows(Long workId) {
         return links.listByWorkId(workId);
     }
 
+    /**
+     * view处理入口。
+     * 主要协作调用：<code>mediaAssets.get</code>、<code>objectMapper.readTree</code>、<code>content.taxonomy</code>、<code>content.tags</code>、<code>works.previousPublished</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param work 作品；类型为 <code>WorkEntity</code>
+     * @param full 完整；类型为 <code>boolean</code>
+     * @param publicOnly 公开Only；类型为 <code>boolean</code>
+     * @return 类型为 <code>WorkVO</code> 的处理结果
+     */
     private WorkVO view(WorkEntity work, boolean full, boolean publicOnly) {
         List<WorkMediaEntity> attached = mediaRows(work.getId());
         String coverUrl = attached.stream()
@@ -542,6 +857,13 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return result;
     }
 
+    /**
+     * 媒体View处理入口。
+     * 主要协作调用：<code>mediaAssets.get</code>。
+     *
+     * @param row 行；类型为 <code>WorkMediaEntity</code>
+     * @return 类型为 <code>WorkMediaVO</code> 的处理结果
+     */
     private WorkMediaVO mediaView(WorkMediaEntity row) {
         MediaAssetSummary asset = mediaAssets.get(row.getMediaAssetId());
         return WorkMediaVO.builder().id(String.valueOf(row.getId()))
@@ -550,12 +872,26 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
                 .sortOrder(row.getSortOrder()).url(asset == null ? null : asset.getContentUrl()).build();
     }
 
+    /**
+     * 链接View处理入口。
+     * 关键处理步骤调用 <code>WorkLinkVO.builder</code>、<code>String.valueOf</code>、<code>row.getId</code>、<code>row.getLinkType</code>。
+     *
+     * @param row 行；类型为 <code>WorkLinkEntity</code>
+     * @return 类型为 <code>WorkLinkVO</code> 的处理结果
+     */
     private WorkLinkVO linkView(WorkLinkEntity row) {
         return WorkLinkVO.builder().id(String.valueOf(row.getId())).linkType(row.getLinkType())
                 .label(row.getLabel()).url(row.getUrl()).sortOrder(row.getSortOrder())
                 .enabled("ENABLED".equals(row.getStatus())).build();
     }
 
+    /**
+     * 校验详情。
+     * 主要协作调用：<code>validators.stream</code>。
+     *
+     * @param work 作品；类型为 <code>WorkEntity</code>
+     * @param detail 详情；类型为 <code>JsonNode</code>
+     */
     private void validateDetail(WorkEntity work, JsonNode detail) {
         WorkType type = WorkType.valueOf(work.getWorkType());
         validators.stream().filter(validator -> validator.supports() == type)
@@ -563,6 +899,13 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
                 .validate(detail);
     }
 
+    /**
+     * 校验发布。
+     * 主要协作调用：<code>content.sections</code>、<code>content.validateTaxonomy</code>、<code>content.validatePublication</code>、<code>mediaAssets.get</code>、<code>mediaAssets.assertUsable</code>。
+     * 实现中的显式失败类型包括 <code>WorkStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param work 作品；类型为 <code>WorkEntity</code>
+     */
     private void validatePublish(WorkEntity work) {
         if (work.getSummary() == null || work.getSummary().isBlank()
                 || work.getCategoryId() == null || work.getFormatId() == null) {
@@ -587,6 +930,14 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
     }
 
 
+    /**
+     * 已通过元数据校验的上传信息处理入口。
+     * 主要协作调用：<code>content.validateTaxonomy</code>、<code>content.validateFeatured</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param work 作品；类型为 <code>WorkEntity</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>JsonNode</code>
+     */
     private void metadata(WorkEntity work, JsonNode request) {
         if (request.hasNonNull("subtitle")) { work.setSubtitle(optionalText(request.get("subtitle").asText(), 255)); }
         if (request.hasNonNull("role")) { work.setRole(optionalText(request.get("role").asText(), 255)); }
@@ -617,6 +968,21 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         }
     }
 
+    /**
+     * filtered作品列表处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>works.countByTaxonomy</code>、<code>works.pageByTaxonomy</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @param type 类型；类型为 <code>WorkType</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @param keyword 关键词；类型为 <code>String</code>
+     * @param filter 筛选；类型为 <code>com.starrainnotes.portfolio.dto.WorkFilterDTO</code>
+     * @param publicOnly 公开Only；类型为 <code>boolean</code>
+     * @return 类型为 <code>PageResult&lt;WorkVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<WorkVO> filteredWorks(int page, int pageSize, WorkType type, String status,
@@ -631,6 +997,14 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return PageResult.<WorkVO>builder().items(items).total(total).page(page).pageSize(pageSize).build();
     }
 
+    /**
+     * uniqueGenerated固定链接标识处理入口。
+     * 主要协作调用：<code>works.countBySlug</code>。
+     * 实现中的显式失败类型包括 <code>WorkSlugConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param title 标题；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String uniqueGeneratedSlug(String title) {
         String base = WorkSlugRules.fromTitle(title);
         for (int suffix = 1; suffix <= 100; suffix++) {
@@ -642,6 +1016,16 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         throw new WorkSlugConflictException();
     }
 
+    /**
+     * 必需文本处理入口。
+     * 关键处理步骤调用 <code>raw.trim</code>、<code>value.isEmpty</code>、<code>value.length</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @param max 最大；类型为 <code>int</code>
+     * @param name 名称；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String requiredText(String raw, int max, String name) {
         String value = raw == null ? null : raw.trim();
         if (value == null || value.isEmpty() || value.length() > max) {
@@ -650,6 +1034,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return value;
     }
 
+    /**
+     * optional文本处理入口。
+     * 关键处理步骤调用 <code>raw.trim</code>、<code>value.length</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @param max 最大；类型为 <code>int</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String optionalText(String raw, int max) {
         if (raw == null) {
             return null;
@@ -661,6 +1054,13 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return value;
     }
 
+    /**
+     * 安全顺序处理入口。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param value 值；类型为 <code>Integer</code>
+     * @return 类型为 <code>int</code> 的处理结果
+     */
     private int safeOrder(Integer value) {
         if (value == null) {
             return 0;
@@ -671,6 +1071,14 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         return value;
     }
 
+    /**
+     * 检查顺序。
+     * 关键处理步骤调用 <code>submitted.size</code>、<code>existing.size</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param submitted 提交；类型为 <code>List&lt;Long&gt;</code>
+     * @param existing existing；类型为 <code>List&lt;Long&gt;</code>
+     */
     private void checkOrder(List<Long> submitted, List<Long> existing) {
         if (submitted == null || submitted.size() != existing.size()
                 || new HashSet<>(submitted).size() != submitted.size()
@@ -679,6 +1087,14 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         }
     }
 
+    /**
+     * fill链接处理入口。
+     * 关键处理步骤调用 <code>requiredText</code>、<code>request.getLinkType</code>、<code>Set.of</code>、<code>row.setLinkType</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param row 行；类型为 <code>WorkLinkEntity</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkLinkDTO</code>
+     */
     private void fillLink(WorkLinkEntity row, WorkLinkDTO request) {
         String type = requiredText(request.getLinkType(), 30, "链接类型").toUpperCase();
         if (!Set.of("LIVE", "DEMO", "GITHUB", "DOWNLOAD", "VIDEO", "DOC", "ARTICLE", "BILIBILI", "DOUYIN", "OTHER").contains(type)) {
@@ -691,6 +1107,15 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         row.setStatus(Boolean.FALSE.equals(request.getEnabled()) ? "DISABLED" : "ENABLED");
     }
 
+    /**
+     * 校验媒体。
+     * 主要协作调用：<code>mediaAssets.assertUsable</code>、<code>mediaAssets.get</code>、<code>works.selectById</code>。
+     * 实现中的显式失败类型包括 <code>WorkInvalidException</code>、<code>WorkMediaConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param workId 作品标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>WorkMediaDTO</code>
+     * @param excludeId exclude标识；类型为 <code>Long</code>
+     */
     private void validateMedia(Long workId, WorkMediaDTO request, Long excludeId) {
         mediaAssets.assertUsable(request.getMediaAssetId());
         MediaAssetSummary asset = mediaAssets.get(request.getMediaAssetId());
@@ -716,20 +1141,45 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         }
     }
 
+    /**
+     * 建立关联作品作品。
+     * 主要协作调用：<code>mediaReferences.attach</code>。
+     *
+     * @param row 行；类型为 <code>WorkMediaEntity</code>
+     */
     private void attach(WorkMediaEntity row) {
         mediaReferences.attach(reference(row));
     }
 
+    /**
+     * 解除关联作品作品。
+     * 主要协作调用：<code>mediaReferences.detach</code>。
+     *
+     * @param row 行；类型为 <code>WorkMediaEntity</code>
+     */
     private void detach(WorkMediaEntity row) {
         mediaReferences.detach(reference(row));
     }
 
+    /**
+     * 引用处理入口。
+     * 关键处理步骤调用 <code>MediaReferenceCommand.builder</code>、<code>row.getMediaAssetId</code>、<code>row.getId</code>、<code>WorkMediaUsage.valueOf</code>。
+     *
+     * @param row 行；类型为 <code>WorkMediaEntity</code>
+     * @return 类型为 <code>MediaReferenceCommand</code> 的处理结果
+     */
     private MediaReferenceCommand reference(WorkMediaEntity row) {
         return MediaReferenceCommand.builder().mediaAssetId(row.getMediaAssetId())
                 .sourceModule(SOURCE_MODULE).sourceType(SOURCE_TYPE).sourceId(row.getId())
                 .usageCode(WorkMediaUsage.valueOf(row.getUsageType()).usageCode()).build();
     }
 
+    /**
+     * touch处理入口。
+     * 主要协作调用：<code>actor.current</code>、<code>events.afterCommit</code>。
+     *
+     * @param work 作品；类型为 <code>WorkEntity</code>
+     */
     private void touch(WorkEntity work) {
         work.setUpdatedByAccountId(actor.current().getAccountId());
         work.setUpdatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));

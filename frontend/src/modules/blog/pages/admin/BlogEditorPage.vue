@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * BlogEditorPage.vue：博客模块的页面组件。
+ * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../api/blogApi、../../../../shared/http、../../../media/components/MediaPicker.vue、../../../media/support/useMediaPicker。
+ * 主要响应式状态：route、router、isCreate、postId、form、body、detail、tagOptions。
+ * 阅读入口：snapshot（快照的处理函数）；markSaved（markSaved的处理函数）；markMetaSaved（markMetaSaved的处理函数）；syncEditorBody（同步Editor正文）；loadTags（加载标签列表）。
+ */
+
+
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import {
@@ -34,24 +44,82 @@ import { canDelete, canPublish, canRestore, canWithdraw, dateLabel } from '../..
  * 「输入新标签，保存时自动创建」：V2 的 PATCH 只有一个 tagIds 字段（没有 V1 的 tagNames），
  * 所以要按顺序做两步——先 POST /admin/blog/tags 建标签，再用返回的 id 保存文章。
  */
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
 
+/**
+ * 是否创建；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const isCreate = computed(() => route.params.postId === 'new')
+/**
+ * 文章标识；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const postId = computed(() => (isCreate.value ? null : Number(route.params.postId)))
 
+/**
+ * form；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const form = reactive({ title: '', summary: '', tagValues: [] })
+/**
+ * 正文；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const body = ref('')
+/**
+ * 详情；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const detail = ref(null)
+/**
+ * 标签选项；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tagOptions = ref([])
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * saving；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const saving = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
 /* 加载文章时递增，用来强制重建编辑器（Vditor 需要拿到新的初始值，而不是被 setValue 追着改） */
+/**
+ * editor键；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const editorKey = ref(0)
+/**
+ * editorRef；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const editorRef = ref(null)
 let keepEditorOnNextRoute = false
+/**
+ * 确认弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const confirmDialog = ref(null)
 
 /*
@@ -60,7 +128,16 @@ const confirmDialog = ref(null)
  * 因为 loadPost() 会程序化地写入 form / body，脏标记必须在写入之后才允许生效，
  * 快照对比天然没有这个时序问题。
  */
+/**
+ * saved快照；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const savedSnapshot = ref('')
+/**
+ * 快照的处理函数。
+ * 主要协作：JSON.stringify。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function snapshot() {
   return JSON.stringify({
     title: form.title,
@@ -69,15 +146,35 @@ function snapshot() {
     body: body.value,
   })
 }
+/**
+ * dirty；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const dirty = computed(() => savedSnapshot.value !== '' && savedSnapshot.value !== snapshot())
+/**
+ * markSaved的处理函数。
+ * 主要协作：snapshot。
+ * 更新的响应式状态包括 savedSnapshot；渲染由 Vue 的依赖跟踪触发。
+ */
 function markSaved() {
   savedSnapshot.value = snapshot()
 }
+/**
+ * markMetaSaved的处理函数。
+ * 主要协作：JSON.stringify。
+ * 更新的响应式状态包括 savedSnapshot；渲染由 Vue 的依赖跟踪触发。
+ * @param savedBody saved正文；默认值、解构字段与可选参数见函数签名。
+ */
 function markMetaSaved(savedBody) {
   savedSnapshot.value = JSON.stringify({
     title: form.title, summary: form.summary, tagValues: [...form.tagValues], body: savedBody ?? '',
   })
 }
+/**
+ * 同步Editor正文。
+ * 主要协作：editorRef.value.getMarkdown。
+ * 更新的响应式状态包括 body；渲染由 Vue 的依赖跟踪触发。
+ */
 function syncEditorBody() {
   // Vditor 的 input 回调可能晚于紧接着的保存点击；提交前直接读取当前正文。
   const current = editorRef.value?.getMarkdown?.()
@@ -86,9 +183,23 @@ function syncEditorBody() {
 
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
 
+/**
+ * 选中标签列表；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const selectedTags = computed(() => tagOptions.value.filter((tag) => form.tagValues.includes(tag.id)))
+/**
+ * 待处理标签Names；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const pendingTagNames = computed(() => form.tagValues.filter((value) => typeof value === 'string'))
 
+/**
+ * 加载标签列表。
+ * 主要协作：listAdminTags、rows.push、errorMessage。
+ * 更新的响应式状态包括 tagOptions、error；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadTags() {
   try {
     const first = await listAdminTags({ page: 1, pageSize: 100 })
@@ -103,6 +214,13 @@ async function loadTags() {
   }
 }
 
+/**
+ * 加载文章。
+ * 主要协作：markSaved、getAdminPost、.map、errorMessage。
+ * 更新的响应式状态包括 detail、body、loading、error；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadPost() {
   if (isCreate.value) {
     detail.value = null
@@ -131,12 +249,22 @@ async function loadPost() {
 }
 
 /* 编辑器里的图片按钮复用媒体库选择器，插入的是媒体内容地址 */
+/**
+ * pick正文图片的处理函数。
+ * 主要协作：pick。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function pickBodyImage() {
   const asset = await pick('IMAGE')
   return asset ? { url: asset.contentUrl, name: asset.originalName } : null
 }
 
 // 离开编辑器：有未保存改动时先问一次（对应 V1 的 useUnsavedGuard 路由离开提醒）
+/**
+ * 离开Editor。
+ * 主要协作：syncEditorBody、confirmDialog.value.ask、router.push。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function leaveEditor() {
   syncEditorBody()
   if (dirty.value && !await confirmDialog.value.ask('正文或文章信息还没保存，离开后改动会丢失。确定返回列表吗？')) return
@@ -164,6 +292,13 @@ async function resolveTagIds() {
   return Array.from(new Set(ids))
 }
 
+/**
+ * 保存Meta。
+ * 主要协作：syncEditorBody、form.title.trim、resolveTagIds、createPost、markMetaSaved。
+ * 更新的响应式状态包括 error、saving、notice、detail；渲染由 Vue 的依赖跟踪触发。
+ * @param { silent = false } = {} silentfalse；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function saveMeta({ silent = false } = {}) {
   syncEditorBody()
   if (!form.title.trim()) {
@@ -213,6 +348,12 @@ async function saveMeta({ silent = false } = {}) {
   }
 }
 
+/**
+ * 保存正文。
+ * 主要协作：syncEditorBody、updatePostBody、markSaved、errorMessage。
+ * 更新的响应式状态包括 saving、error、notice、detail；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function saveBody() {
   syncEditorBody()
   saving.value = true
@@ -232,6 +373,12 @@ async function saveBody() {
 }
 
 // 顶部「保存文章」：一次把元数据与正文都落库，新文章先建草稿再写正文
+/**
+ * 保存全部。
+ * 主要协作：saveMeta、body.value.trim、saveBody。
+ * 更新的响应式状态包括 notice；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function saveAll() {
   const wasCreate = isCreate.value
   const ok = await saveMeta({ silent: true })
@@ -243,6 +390,13 @@ async function saveAll() {
   await saveBody()
 }
 
+/**
+ * act的处理函数。
+ * 主要协作：confirmDialog.value.ask、publishPost、withdrawPost、restorePost、deletePost。
+ * 更新的响应式状态包括 saving、error、notice、detail；渲染由 Vue 的依赖跟踪触发。
+ * @param action 动作；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function act(action) {
   if (!postId.value) return
   if (action === 'delete') {
@@ -273,6 +427,12 @@ async function act(action) {
 }
 
 // 未保存提醒：正文与元数据都算改动（V1 由 useUnsavedGuard 负责，这里用等价的最小实现）
+/**
+ * 响应之前Unload。
+ * 主要协作：syncEditorBody、event.preventDefault。
+ * @param event 事件；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function onBeforeUnload(event) {
   syncEditorBody()
   if (!dirty.value) return
@@ -280,14 +440,23 @@ function onBeforeUnload(event) {
   event.returnValue = ''
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(() => {
   loadTags()
   loadPost()
   window.addEventListener('beforeunload', onBeforeUnload)
 })
 
+/**
+ * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
+ */
 onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload))
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.params.postId, () => {
   if (keepEditorOnNextRoute) {
     keepEditorOnNextRoute = false

@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * PortfolioManagePage.vue：作品模块的页面组件。
+ * 职责范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：../../../../shared/composables/paginationScroll、vue、vue-router、../../api/portfolioApi、../../../../shared/http、../../../../shared/composables/useListQuery。
+ * 主要响应式状态：route、categories、result、error、notice、loading、busyId、confirmDialog。
+ * 阅读入口：techStackOf（技术技术栈所属的处理函数）；updatedLabel（更新标签的处理函数）；load（加载当前操作）；search（搜索的处理函数）；changePage（change分页的处理函数）。
+ */
+
+
 import { usePaginationScroll } from '../../../../shared/composables/paginationScroll'
 import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
@@ -9,31 +19,85 @@ import AppConfirmDialog from '../../../../shared/ui/AppConfirmDialog.vue'
 import { accountPath } from '../../../../shared/viewMode'
 import { stageLabels } from '../../support/workBlocks'
 
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
 const { filters, page, pageSize, read: readQuery, write: writeQuery, reset: resetQuery } = useListQuery({
   defaults: { type: '', categoryId: '', status: '', q: '' },
 })
+/**
+ * categories；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const categories = ref([])
 getWorkTaxonomy().then(data => { categories.value = data.categories }).catch(cause => { error.value = errorMessage(cause) })
+/**
+ * 结果；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const result = ref({ items: [], total: 0, pageSize: 20 })
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * notice；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const notice = ref('')
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * busy标识；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const busyId = ref('')
+/**
+ * 确认弹窗；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const confirmDialog = ref(null)
 let loadVersion = 0
+/**
+ * 分页数量；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const pageCount = computed(() => Math.max(1, Math.ceil(result.value.total / pageSize.value)))
 const typeLabels = { SOFTWARE: '软件', VIDEO: '视频', MUSIC: '音乐', WRITING: '写作', OTHER: '其他' }
 const statusLabels = { DRAFT: '草稿', PUBLISHED: '已发布', WITHDRAWN: '已撤回' }
+/**
+ * 技术技术栈所属的处理函数。
+ * 主要协作：.filter、.map、work.techStack.split、item.trim。
+ * @param work 作品；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function techStackOf(work) {
   const stack = work.techStack ? work.techStack.split(/[,，、]/).map(item => item.trim()).filter(Boolean) : work.typeDetail?.techStack
   return Array.isArray(stack) ? stack : []
 }
 
+/**
+ * 更新标签的处理函数。
+ * 主要协作：.replace、work.updatedAt.slice。
+ * @param work 作品；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function updatedLabel(work) {
   return work.updatedAt ? work.updatedAt.slice(0, 16).replace('T', ' ') : '—'
 }
 
+/**
+ * 加载当前操作。
+ * 主要协作：listAdminWorks、filters.q.trim、errorMessage。
+ * 更新的响应式状态包括 loading、error、result；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
   const version = ++loadVersion
   loading.value = true
@@ -49,6 +113,12 @@ async function load() {
   }
 }
 
+/**
+ * 搜索的处理函数。
+ * 主要协作：writeQuery、load。
+ * 更新的响应式状态包括 page；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function search() {
   page.value = 1
   const previous = route.fullPath
@@ -56,12 +126,27 @@ async function search() {
   if (route.fullPath === previous) await load()
 }
 
+/**
+ * change分页的处理函数。
+ * 主要协作：writeQuery。
+ * 更新的响应式状态包括 page；渲染由 Vue 的依赖跟踪触发。
+ * @param next 下一项；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function changePage(next) {
   if (next < 1 || next > pageCount.value || next === page.value) return
   page.value = next
   writeQuery()
 }
 
+/**
+ * change状态的处理函数。
+ * 主要协作：withdrawWork、restoreWork、publishWork、load、errorMessage。
+ * 更新的响应式状态包括 busyId、error、notice；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param work 作品；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function changeStatus(work) {
   busyId.value = work.id
   error.value = ''
@@ -79,6 +164,14 @@ async function changeStatus(work) {
   }
 }
 
+/**
+ * 移除当前操作。
+ * 主要协作：confirmDialog.value.ask、deleteWork、load、errorMessage。
+ * 更新的响应式状态包括 busyId、error、notice；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param work 作品；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function remove(work) {
   if (!await confirmDialog.value.ask({
     title: '删除作品', message: `删除「${work.title}」后无法恢复。`,
@@ -91,6 +184,9 @@ async function remove(work) {
   finally { busyId.value = '' }
 }
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.fullPath, () => {
   readQuery()
   load()
@@ -199,8 +295,20 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.portfolio-admin。
+ */
 .portfolio-admin { max-width: 1160px; margin: auto; }
 
+/**
+ * 样式范围：.portfolio-admin__hero。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__hero {
   display: flex;
   align-items: flex-end;
@@ -209,6 +317,10 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   margin-bottom: var(--space-6);
 }
 
+/**
+ * 样式范围：.portfolio-admin__hero p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__hero p {
   margin-bottom: 8px;
   color: var(--accent);
@@ -217,10 +329,21 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   letter-spacing: 0.16em;
 }
 
+/**
+ * 样式范围：.portfolio-admin__hero h1。
+ */
 .portfolio-admin__hero h1 { margin-bottom: 5px; font-size: 34px; letter-spacing: -0.03em; }
 
+/**
+ * 样式范围：.portfolio-admin__hero span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__hero span { color: var(--text-muted); font-size: 13px; }
 
+/**
+ * 样式范围：.portfolio-admin__hero > a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__hero > a {
   padding: 11px 18px;
   border-radius: 10px;
@@ -231,8 +354,18 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.portfolio-admin__hero > a:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__hero > a:hover { background: var(--primary-hover); }
 
+/**
+ * 样式范围：.portfolio-admin__filters。
+ * 使用网格布局组织内容；列定义为 minmax(220px, 1fr) 150px 150px auto auto，间距由 var(--space-3) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__filters {
   display: grid;
   grid-template-columns: minmax(220px, 1fr) 150px 150px auto auto;
@@ -245,6 +378,10 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   background: var(--bg-surface);
 }
 
+/**
+ * 样式范围：.portfolio-admin__filters input, .portfolio-admin__filters select。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__filters input,
 .portfolio-admin__filters select {
   min-width: 0;
@@ -267,12 +404,32 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.portfolio-admin__filters button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__filters button:hover { border-color: var(--primary); color: var(--primary); }
 
+/**
+ * 样式范围：.portfolio-admin__filters > span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__filters > span { justify-self: end; color: var(--text-muted); font-size: 12px; }
 
+/**
+ * 样式范围：.portfolio-admin__list。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 var(--space-4) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__list { min-height: 180px; display: grid; gap: var(--space-4); }
 
+/**
+ * 样式范围：.portfolio-card。
+ * 使用网格布局组织内容；列定义为 230px minmax(0, 1fr)，间距由 各行列间距规则 控制。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card {
   display: grid;
   grid-template-columns: 230px minmax(0, 1fr);
@@ -283,12 +440,23 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   transition: transform 170ms ease, border-color 170ms ease, box-shadow 170ms ease;
 }
 
+/**
+ * 样式范围：.portfolio-card:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card:hover {
   border-color: color-mix(in srgb, var(--primary) 38%, var(--border));
   transform: translateY(-2px);
   box-shadow: 0 15px 34px rgb(0 0 0 / 0.065);
 }
 
+/**
+ * 样式范围：.portfolio-card__visual。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 各行列间距规则 控制。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__visual {
   position: relative;
   display: grid;
@@ -302,15 +470,31 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   );
 }
 
+/**
+ * 样式范围：.portfolio-card__visual img。
+ */
 .portfolio-card__visual img { width: 100%; height: 100%; object-fit: cover; }
 
+/**
+ * 样式范围：.portfolio-card__visual > span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__visual > span {
   color: color-mix(in srgb, var(--primary) 58%, var(--text-muted));
   font: 700 62px/1 Georgia, 'Songti SC', serif;
 }
 
+/**
+ * 样式范围：.portfolio-card__body。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__body { min-width: 0; padding: var(--space-5); }
 
+/**
+ * 样式范围：.portfolio-card__top。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__top {
   display: flex;
   align-items: flex-start;
@@ -318,16 +502,31 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   gap: var(--space-4);
 }
 
+/**
+ * 样式范围：.portfolio-card__top p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__top p {
   margin-bottom: 4px;
   color: var(--accent);
   font: 600 10px/1.4 var(--font-mono, ui-monospace, SFMono-Regular, Menlo, monospace);
 }
 
+/**
+ * 样式范围：.portfolio-card__top h2。
+ */
 .portfolio-card__top h2 { font-size: 21px; line-height: 1.4; }
 
+/**
+ * 样式范围：.portfolio-card__pills。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .portfolio-card__pills { display: flex; flex-wrap: wrap; gap: 5px; }
 
+/**
+ * 样式范围：.portfolio-card__pills span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__pills span {
   padding: 5px 9px;
   border-radius: 999px;
@@ -337,6 +536,11 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   white-space: nowrap;
 }
 
+/**
+ * 样式范围：.portfolio-card__summary。
+ * 溢出处理：整体 hidden。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__summary {
   display: -webkit-box;
   overflow: hidden;
@@ -348,8 +552,16 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   -webkit-line-clamp: 2;
 }
 
+/**
+ * 样式范围：.portfolio-card__role。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__role { color: var(--text-muted); font-size: 11px; }
 
+/**
+ * 样式范围：.portfolio-card__stack。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .portfolio-card__stack {
   display: flex;
   min-height: 26px;
@@ -358,6 +570,10 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   margin-top: 10px;
 }
 
+/**
+ * 样式范围：.portfolio-card__stack span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__stack span {
   padding: 3px 9px;
   border-radius: 999px;
@@ -366,8 +582,17 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.portfolio-card__stack small。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card__stack small { color: var(--text-muted); }
 
+/**
+ * 样式范围：.portfolio-card footer。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card footer {
   display: flex;
   align-items: flex-end;
@@ -378,10 +603,22 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   border-top: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.portfolio-card time。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card time { color: var(--text-muted); font-size: 11px; }
 
+/**
+ * 样式范围：.portfolio-card footer > div。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .portfolio-card footer > div { display: flex; flex-wrap: wrap; gap: 5px; }
 
+/**
+ * 样式范围：.portfolio-card footer a, .portfolio-card footer button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card footer a,
 .portfolio-card footer button {
   padding: 6px 10px;
@@ -394,11 +631,26 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.portfolio-card footer a:hover, .portfolio-card footer button:hover:not(:disabled)。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card footer a:hover,
 .portfolio-card footer button:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
 
+/**
+ * 样式范围：.portfolio-card footer .danger:hover:not(:disabled)。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-card footer .danger:hover:not(:disabled) { border-color: var(--danger); color: var(--danger); }
 
+/**
+ * 样式范围：.portfolio-admin__empty。
+ * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 6px 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__empty {
   display: grid;
   min-height: 220px;
@@ -411,10 +663,21 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   text-align: center;
 }
 
+/**
+ * 样式范围：.portfolio-admin__empty strong。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__empty strong { color: var(--text-primary); font-size: 15px; }
 
+/**
+ * 样式范围：.portfolio-admin__empty span。
+ */
 .portfolio-admin__empty span { font-size: 13px; }
 
+/**
+ * 样式范围：.portfolio-admin__empty button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__empty button {
   justify-self: center;
   margin-top: 6px;
@@ -427,11 +690,29 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.portfolio-admin__empty button:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__empty button:hover { border-color: var(--primary); color: var(--primary); }
 
+/**
+ * 样式范围：.portfolio-admin__error。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__error { color: var(--danger); }
+/**
+ * 样式范围：.portfolio-admin__notice。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__notice { color: var(--primary); }
 
+/**
+ * 样式范围：.portfolio-admin__pages。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__pages {
   display: flex;
   align-items: center;
@@ -440,6 +721,10 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   margin-top: var(--space-6);
 }
 
+/**
+ * 样式范围：.portfolio-admin__pages button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__pages button {
   padding: 7px 12px;
   border: 1px solid var(--border);
@@ -449,28 +734,78 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.portfolio-admin__pages span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .portfolio-admin__pages span { color: var(--text-muted); font-size: 12px; }
 
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
 @media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：.portfolio-card。
+   */
   .portfolio-card { transition: none; }
+  /**
+   * 样式范围：.portfolio-card:hover。
+   * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+   */
   .portfolio-card:hover { transform: none; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 1000px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 1000px) {
+  /**
+   * 样式范围：.portfolio-admin__filters。
+   */
   .portfolio-admin__filters { grid-template-columns: 1fr 1fr; }
+  /**
+   * 样式范围：.portfolio-card。
+   */
   .portfolio-card { grid-template-columns: 160px minmax(0, 1fr); }
+  /**
+   * 样式范围：.portfolio-card footer。
+   */
   .portfolio-card footer { align-items: flex-start; flex-direction: column; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 750px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 750px) {
+  /**
+   * 样式范围：.portfolio-admin__filters。
+   */
   .portfolio-admin__filters { grid-template-columns: 1fr 1fr; }
+  /**
+   * 样式范围：.portfolio-admin__hero。
+   */
   .portfolio-admin__hero { align-items: flex-start; flex-direction: column; }
+  /**
+   * 样式范围：.portfolio-card。
+   */
   .portfolio-card { grid-template-columns: 1fr; }
+  /**
+   * 样式范围：.portfolio-card__visual。
+   */
   .portfolio-card__visual { min-height: 150px; aspect-ratio: 16 / 7; }
+  /**
+   * 样式范围：.portfolio-card__top。
+   */
   .portfolio-card__top { flex-direction: column; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 480px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 480px) {
+  /**
+   * 样式范围：.portfolio-admin__filters。
+   */
   .portfolio-admin__filters { grid-template-columns: 1fr; }
 }
 </style>

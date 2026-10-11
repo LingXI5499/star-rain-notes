@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.english.vocabulary.mapper.VocabularyStudyMapper">
+    <!--
+      VocabularyStudyMapper.xml：com.starrainnotes.english.vocabulary.mapper.VocabularyStudyMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
 
+
+    <!--
+      memoryRowMap：记忆行Map；结果映射。
+      将数据库列装配为 com.starrainnotes.english.vocabulary.dto.VocabularyMemoryRow；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="memoryRowMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyMemoryRow">
         <id property="wordId" column="word_id"/>
         <result property="memoryCount" column="memory_count"/>
@@ -14,12 +24,20 @@
         <result property="displayMode" column="display_mode"/>
     </resultMap>
 
+    <!--
+      memoryEntryMap：记忆入口Map；结果映射。
+      将数据库列装配为 com.starrainnotes.english.vocabulary.dto.VocabularyMemoryEntryRow；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="memoryEntryMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyMemoryEntryRow">
         <id property="wordId" column="word_id"/>
         <result property="memoryCount" column="memory_count"/>
         <result property="lastMemoryAt" column="last_memory_at"/>
     </resultMap>
 
+    <!--
+      reviewHistoryMap：审核历史Map；结果映射。
+      将数据库列装配为 com.starrainnotes.english.vocabulary.dto.VocabularyReviewHistoryRow；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="reviewHistoryMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyReviewHistoryRow">
         <id property="id" column="id"/>
         <result property="rating" column="rating"/>
@@ -34,6 +52,10 @@
         <result property="timingStatus" column="timing_status"/>
     </resultMap>
 
+    <!--
+      reviewLogRowMap：审核Log行Map；结果映射。
+      将数据库列装配为 com.starrainnotes.english.vocabulary.dto.VocabularyReviewLogRow；id/result 区分标识字段与普通属性。
+    -->
     <resultMap id="reviewLogRowMap" type="com.starrainnotes.english.vocabulary.dto.VocabularyReviewLogRow">
         <id property="wordId" column="word_id"/>
         <result property="reviewNumber" column="review_number"/>
@@ -43,12 +65,24 @@
 
     <!-- ==================== 学习设置 ==================== -->
 
+    <!--
+      settings：settings；读取语句。
+      涉及数据表：sr_english_vocabulary_study_setting；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.english.vocabulary.vo.VocabularyStudySettingsVO；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="settings" resultType="com.starrainnotes.english.vocabulary.vo.VocabularyStudySettingsVO">
         SELECT show_english, show_chinese, review_direction, daily_new_limit, daily_review_limit
         FROM sr_english_vocabulary_study_setting
         WHERE account_id = #{accountId}
     </select>
 
+    <!--
+      upsertSettings：新增或更新Settings；新增语句。
+      涉及数据表：sr_english_vocabulary_study_setting；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、settings.showEnglish、settings.showChinese、settings.reviewDirection、settings.dailyNewLimit、settings.dailyReviewLimit；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="upsertSettings">
         INSERT INTO sr_english_vocabulary_study_setting
             (account_id, show_english, show_chinese, review_direction, daily_new_limit, daily_review_limit)
@@ -64,17 +98,35 @@
 
     <!-- ==================== 单卡显示偏好 ==================== -->
 
+    <!--
+      displayMode：显示Mode；读取语句。
+      涉及数据表：sr_english_vocabulary_card_preference；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：java.lang.String；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、wordId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="displayMode" resultType="java.lang.String">
         SELECT display_mode FROM sr_english_vocabulary_card_preference
         WHERE account_id = #{accountId} AND word_id = #{wordId}
     </select>
 
+    <!--
+      upsertDisplay：新增或更新显示；新增语句。
+      涉及数据表：sr_english_vocabulary_card_preference；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、wordId、displayMode；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="upsertDisplay">
         INSERT INTO sr_english_vocabulary_card_preference (account_id, word_id, display_mode)
         VALUES (#{accountId}, #{wordId}, #{displayMode})
         ON DUPLICATE KEY UPDATE display_mode = VALUES(display_mode)
     </insert>
 
+    <!--
+      deleteDisplay：删除显示；删除语句。
+      涉及数据表：sr_english_vocabulary_card_preference；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、wordId；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="deleteDisplay">
         DELETE FROM sr_english_vocabulary_card_preference
         WHERE account_id = #{accountId} AND word_id = #{wordId}
@@ -82,6 +134,12 @@
 
     <!-- ==================== 记忆状态 ==================== -->
 
+    <!--
+      memories：memories；读取语句。
+      涉及数据表：sr_english_vocabulary_word、sr_english_vocabulary_memory、sr_english_vocabulary_card_preference；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：memoryRowMap；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、id；参数含义参见 Mapper 方法注释。
+    -->
     <select id="memories" resultMap="memoryRowMap">
         SELECT w.id AS word_id,
                COALESCE(m.memory_count, 0) AS memory_count,
@@ -95,10 +153,20 @@
         LEFT JOIN sr_english_vocabulary_card_preference p
             ON p.word_id = w.id AND p.account_id = #{accountId}
         WHERE w.id IN
+        <!--
+          遍历 wordIds，元素名为 id；open/close/separator 控制 SQL 列表格式。
+          集合是否允许为空由外围条件和业务校验决定。
+        -->
         <foreach collection="wordIds" item="id" open="(" separator="," close=")">#{id}</foreach>
         ORDER BY w.id
     </select>
 
+    <!--
+      memory：记忆；读取语句。
+      涉及数据表：sr_english_vocabulary_memory、sr_english_vocabulary_card_preference；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：memoryRowMap；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、wordId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="memory" resultMap="memoryRowMap">
         SELECT m.word_id, m.memory_count, m.review_step, m.review_count,
                m.first_learned_at, m.last_reviewed_at, m.next_review_at, m.learning_status,
@@ -109,6 +177,12 @@
         WHERE m.account_id = #{accountId} AND m.word_id = #{wordId}
     </select>
 
+    <!--
+      memorySnapshot：记忆快照；读取语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：memoryEntryMap；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="memorySnapshot" resultMap="memoryEntryMap">
         SELECT word_id, memory_count, last_memory_at
         FROM sr_english_vocabulary_memory
@@ -119,6 +193,13 @@
     <!--
       英语首页四格统计。completed 的口径是「走完十档固定间隔」（review_step >= maxStep），
       与学习记录域里 completion_status='COMPLETED' 的语义对齐：到终点才算完成。
+    -->
+    <!--
+      summary：摘要；读取语句。
+      涉及数据表：sr_english_vocabulary_mode_memory、sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.english.vocabulary.vo.VocabularySummaryVO；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、now；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
     -->
     <select id="summary" resultType="com.starrainnotes.english.vocabulary.vo.VocabularySummaryVO">
         SELECT COUNT(*) AS total,
@@ -134,12 +215,26 @@
         WHERE account_id = #{accountId}
     </select>
 
+    <!--
+      dueCount：due数量；读取语句。
+      涉及数据表：sr_english_vocabulary_mode_memory、sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、now；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="dueCount" resultType="long">
         SELECT COUNT(DISTINCT word_id) FROM sr_english_vocabulary_mode_memory mm
         WHERE account_id = #{accountId} AND next_review_at &lt;= #{now}
         AND EXISTS (SELECT 1 FROM sr_english_vocabulary_word w WHERE w.id = mm.word_id)
     </select>
 
+    <!--
+      dueWordIds：due单词标识集合；读取语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、now、limit；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="dueWordIds" resultType="long">
         SELECT word_id FROM sr_english_vocabulary_memory
         WHERE account_id = #{accountId} AND learning_status = 'ACTIVE' AND next_review_at &lt;= #{now}
@@ -147,11 +242,25 @@
         LIMIT #{limit}
     </select>
 
+    <!--
+      introducedSince：introducedSince；读取语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：int；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、start；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="introducedSince" resultType="int">
         SELECT COUNT(*) FROM sr_english_vocabulary_memory
         WHERE account_id = #{accountId} AND first_learned_at IS NOT NULL AND first_learned_at &gt;= #{start}
     </select>
 
+    <!--
+      newWordIds：new单词标识集合；读取语句。
+      涉及数据表：sr_english_vocabulary_word、sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：themeId、accountId、limit；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="newWordIds" resultType="long">
         SELECT w.id FROM sr_english_vocabulary_word w
         WHERE w.theme_id = #{themeId}
@@ -163,11 +272,24 @@
         LIMIT #{limit}
     </select>
 
+    <!--
+      totalMemoryCount：总数记忆数量；读取语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId；参数含义参见 Mapper 方法注释。
+    -->
     <select id="totalMemoryCount" resultType="long">
         SELECT COALESCE(SUM(memory_count), 0) FROM sr_english_vocabulary_memory
         WHERE account_id = #{accountId}
     </select>
 
+    <!--
+      activeCount：有效数量；读取语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="activeCount" resultType="long">
         SELECT COUNT(*) FROM sr_english_vocabulary_memory
         WHERE account_id = #{accountId} AND learning_status = 'ACTIVE'
@@ -176,6 +298,12 @@
     <!--
       加入记忆计划：幂等。已存在的行只把状态推回 ACTIVE，并补齐缺失的首次学习时间与到期时间，
       不覆盖已有的复习进度。
+    -->
+    <!--
+      startMemory：开始记忆；新增语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、wordId、now；参数含义参见 Mapper 方法注释。
     -->
     <insert id="startMemory">
         INSERT INTO sr_english_vocabulary_memory
@@ -192,6 +320,12 @@
       首次复习时补建记忆行（此前没点过「加入记忆计划」也能直接复习）。
       与 startMemory 分开，是为了让「复习落库」路径不依赖调用方先调 start。
     -->
+    <!--
+      initializeMemory：initialize记忆；新增语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、wordId、now；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="initializeMemory">
         INSERT INTO sr_english_vocabulary_memory
             (account_id, word_id, memory_count, review_step, review_count,
@@ -200,11 +334,24 @@
         ON DUPLICATE KEY UPDATE account_id = account_id
     </insert>
 
+    <!--
+      resetMemory：reset记忆；删除语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、wordId；参数含义参见 Mapper 方法注释。
+    -->
     <delete id="resetMemory">
         DELETE FROM sr_english_vocabulary_memory
         WHERE account_id = #{accountId} AND word_id = #{wordId}
     </delete>
 
+    <!--
+      lockMemory：锁记忆；读取语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.english.vocabulary.dto.VocabularyMemoryLock；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、wordId；参数含义参见 Mapper 方法注释。
+      锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+    -->
     <select id="lockMemory" resultType="com.starrainnotes.english.vocabulary.dto.VocabularyMemoryLock">
         SELECT memory_count, review_count, next_review_at
         FROM sr_english_vocabulary_memory
@@ -212,6 +359,12 @@
         FOR UPDATE
     </select>
 
+    <!--
+      advanceMemory：advance记忆；更新语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：schedule.reviewStep、schedule.reviewNumber、schedule.reviewedAt、schedule.nextReviewAt、accountId、wordId；参数含义参见 Mapper 方法注释。
+    -->
     <update id="advanceMemory">
         UPDATE sr_english_vocabulary_memory
         SET memory_count = memory_count + 1,
@@ -228,6 +381,12 @@
     <!--
       导入本机进度：只增不减。memory_count / review_step / review_count 取较大值，
       时间列取更晚的一个，避免用小号的本地进度把账号上已有的进度改小。
+    -->
+    <!--
+      importMemory：import记忆；新增语句。
+      涉及数据表：sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、wordId、memoryCount、reviewStep、reviewCount、firstLearnedAt、lastReviewedAt、nextReviewAt、lastMemoryAt；参数含义参见 Mapper 方法注释。
     -->
     <insert id="importMemory">
         INSERT INTO sr_english_vocabulary_memory
@@ -258,10 +417,23 @@
             next_review_at = COALESCE(next_review_at, VALUES(next_review_at))
     </insert>
 
+    <!--
+      wordExists：单词存在性；读取语句。
+      涉及数据表：sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：int；集合与单值形态由 Java 方法签名决定。
+      绑定参数：wordId；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="wordExists" resultType="int">
         SELECT COUNT(*) FROM sr_english_vocabulary_word WHERE id = #{wordId}
     </select>
 
+    <!--
+      calibrateLegacyMemory：calibrateLegacy记忆；新增语句。
+      涉及数据表：sr_english_vocabulary_mode_memory、sr_english_vocabulary_memory；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、wordId；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="calibrateLegacyMemory">
         INSERT INTO sr_english_vocabulary_mode_memory(account_id, word_id, direction, next_review_at)
         SELECT account_id, word_id, 'EN_TO_ZH', next_review_at FROM sr_english_vocabulary_memory
@@ -272,6 +444,13 @@
 
     <!-- ==================== 复习日志 ==================== -->
 
+    <!--
+      findReviewBySession：find审核依据会话；读取语句。
+      涉及数据表：sr_english_vocabulary_review_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：reviewLogRowMap；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、reviewSessionId；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="findReviewBySession" resultMap="reviewLogRowMap">
         SELECT word_id, review_number, interval_seconds, timing_status
         FROM sr_english_vocabulary_review_log
@@ -279,6 +458,12 @@
         LIMIT 1
     </select>
 
+    <!--
+      insertReview：新增审核；新增语句。
+      涉及数据表：sr_english_vocabulary_review_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、wordId、reviewSessionId、direction、schedule.reviewNumber、schedule.scheduledAt、schedule.reviewedAt、schedule.intervalSeconds、schedule.timingStatus；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="insertReview">
         INSERT IGNORE INTO sr_english_vocabulary_review_log
             (account_id, word_id, review_session_id, direction, review_number,
@@ -288,6 +473,12 @@
                 #{schedule.timingStatus})
     </insert>
 
+    <!--
+      importReview：import审核；新增语句。
+      涉及数据表：sr_english_vocabulary_review_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：accountId、wordId、reviewSessionId、direction、reviewNumber、scheduledAt、reviewedAt、intervalSeconds、timingStatus；参数含义参见 Mapper 方法注释。
+    -->
     <insert id="importReview">
         INSERT IGNORE INTO sr_english_vocabulary_review_log
             (account_id, word_id, review_session_id, direction, review_number,
@@ -296,15 +487,36 @@
                 #{scheduledAt}, #{reviewedAt}, #{intervalSeconds}, #{timingStatus})
     </insert>
 
+    <!--
+      countReviews：数量Reviews；读取语句。
+      涉及数据表：sr_english_vocabulary_review_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countReviews" resultType="long">
         SELECT COUNT(*) FROM sr_english_vocabulary_review_log WHERE account_id = #{accountId}
     </select>
 
+    <!--
+      countReviewsSince：数量ReviewsSince；读取语句。
+      涉及数据表：sr_english_vocabulary_review_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、start；参数含义参见 Mapper 方法注释。
+      返回匹配条件的数量，不返回完整实体。
+    -->
     <select id="countReviewsSince" resultType="long">
         SELECT COUNT(*) FROM sr_english_vocabulary_review_log
         WHERE account_id = #{accountId} AND reviewed_at &gt;= #{start}
     </select>
 
+    <!--
+      recentReviews：recentReviews；读取语句。
+      涉及数据表：sr_english_vocabulary_review_log、sr_english_vocabulary_word；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：reviewHistoryMap；集合与单值形态由 Java 方法签名决定。
+      绑定参数：accountId、limit；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="recentReviews" resultMap="reviewHistoryMap">
         SELECT l.id, l.word_id, w.word, l.review_number, l.direction, l.rating, l.source,
                l.scheduled_at, l.reviewed_at, l.interval_seconds, l.timing_status

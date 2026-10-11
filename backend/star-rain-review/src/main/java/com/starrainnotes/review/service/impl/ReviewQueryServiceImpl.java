@@ -1,3 +1,11 @@
+/*
+ * ReviewQueryServiceImpl：审核模块的业务实现文件。
+ * 业务范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：PageResult、ReviewTargetRef、ReviewTargetView、ReviewPermissions、ReviewViewer、ReviewHistoryQueryDTO、ReviewQueryDTO。
+ * 阅读入口：pagePending（分页读取待处理）；getDetail（读取详情）；pageHistory（分页读取历史）。
+ */
+
 package com.starrainnotes.review.service.impl;
 
 import com.starrainnotes.common.result.PageResult;
@@ -42,15 +50,41 @@ import org.springframework.transaction.annotation.Transactional;
  * 满足「actor 就是申请人」或「actor 拥有 review:read」之一才放行，
  * 否则返回 REVIEW_ACCESS_DENIED，避免 IDOR。
  */
+/**
+ * 审核查询参数业务服务实现，属于审核模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class ReviewQueryServiceImpl implements ReviewQueryService {
 
+    /**
+     * 大小。
+     * 初始值为 <code>100</code>。
+     */
     private static final int MAX_PAGE_SIZE = 100;
 
+    /**
+     * 请求数据映射。
+     * 协作类型：<code>ReviewRequestMapper</code>。
+     */
     private final ReviewRequestMapper requestMapper;
+    /**
+     * 动作数据映射。
+     * 协作类型：<code>ReviewActionMapper</code>。
+     */
     private final ReviewActionMapper actionMapper;
+    /**
+     * 处理器Registry。
+     */
     private final ReviewTargetHandlerRegistry handlerRegistry;
 
+    /**
+     * 构造ReviewQueryServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param requestMapper 请求数据映射；类型为 <code>ReviewRequestMapper</code>
+     * @param actionMapper 动作数据映射；类型为 <code>ReviewActionMapper</code>
+     * @param handlerRegistry 处理器Registry；类型为 <code>ReviewTargetHandlerRegistry</code>
+     */
     public ReviewQueryServiceImpl(ReviewRequestMapper requestMapper,
                                   ReviewActionMapper actionMapper,
                                   ReviewTargetHandlerRegistry handlerRegistry) {
@@ -59,6 +93,14 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
         this.handlerRegistry = handlerRegistry;
     }
 
+    /**
+     * 分页读取待处理。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>requestMapper.pendingCount</code>、<code>requestMapper.pendingPage</code>。
+     *
+     * @param query 查询参数；类型为 <code>ReviewQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;ReviewListItemVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<ReviewListItemVO> pagePending(ReviewQueryDTO query) {
@@ -78,6 +120,16 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
         return new PageResult<>(items, total, page, pageSize);
     }
 
+    /**
+     * 读取详情。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>requestMapper.requestById</code>、<code>actionMapper.selectByReviewRequestId</code>。
+     * 实现中的显式失败类型包括 <code>ReviewNotFoundException</code>、<code>ReviewAccessDeniedException</code>；具体触发条件见对应分支。
+     *
+     * @param reviewRequestId 审核请求标识；类型为 <code>Long</code>
+     * @param viewer viewer；类型为 <code>ReviewViewer</code>
+     * @return 类型为 <code>ReviewDetailVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public ReviewDetailVO getDetail(Long reviewRequestId, ReviewViewer viewer) {
@@ -119,6 +171,15 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
                 .build();
     }
 
+    /**
+     * 分页读取历史。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>requestMapper.historyCount</code>、<code>requestMapper.historyPage</code>。
+     * 实现中的显式失败类型包括 <code>ReviewQueryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param query 查询参数；类型为 <code>ReviewHistoryQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;ReviewHistoryVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<ReviewHistoryVO> pageHistory(ReviewHistoryQueryDTO query) {
@@ -152,6 +213,14 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
     // ---------- 授权判定 ----------
 
     // 申请人本人或具备 review:read 的后台都可以看详情
+    /**
+     * 判断能否View。
+     * 关键处理步骤调用 <code>viewer.isApplicant</code>、<code>request.getApplicantAccountId</code>、<code>viewer.reviewer</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>ReviewRequestEntity</code>
+     * @param viewer viewer；类型为 <code>ReviewViewer</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private static boolean canView(ReviewRequestEntity request, ReviewViewer viewer) {
         if (viewer == null) {
             return false;
@@ -160,6 +229,15 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
     }
 
     // 只有 PENDING 才谈得上「可以决定」，终态一律不给按钮
+    /**
+     * 判断能否Decide。
+     * 关键处理步骤调用 <code>ReviewStatus.PENDING_CODE.equals</code>、<code>request.getStatus</code>、<code>viewer.hasPermission</code>。
+     *
+     * @param viewer viewer；类型为 <code>ReviewViewer</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>ReviewRequestEntity</code>
+     * @param permission 权限；类型为 <code>String</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private static boolean canDecide(ReviewViewer viewer, ReviewRequestEntity request, String permission) {
         return viewer != null
                 && ReviewStatus.PENDING_CODE.equals(request.getStatus())
@@ -167,6 +245,14 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
     }
 
     // 取消只属于申请人本人：Reviewer 不应该替申请人撤回请求
+    /**
+     * 判断能否Cancel。
+     * 关键处理步骤调用 <code>ReviewStatus.PENDING_CODE.equals</code>、<code>request.getStatus</code>、<code>viewer.isApplicant</code>、<code>request.getApplicantAccountId</code>。
+     *
+     * @param viewer viewer；类型为 <code>ReviewViewer</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>ReviewRequestEntity</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private static boolean canCancel(ReviewViewer viewer, ReviewRequestEntity request) {
         return viewer != null
                 && ReviewStatus.PENDING_CODE.equals(request.getStatus())
@@ -175,6 +261,14 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
 
     // ---------- 目标视图 ----------
 
+    /**
+     * 加载目标View。
+     * 主要协作调用：<code>handlerRegistry.loadView</code>。
+     * 实现中的显式失败类型包括 <code>ReviewTargetRevisionNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>ReviewRequestEntity</code>
+     * @return 类型为 <code>ReviewTargetView</code> 的处理结果
+     */
     private ReviewTargetView loadTargetView(ReviewRequestEntity request) {
         ReviewTargetRef target = ReviewTargetRef.builder()
                 .targetModule(request.getTargetModule())
@@ -197,6 +291,13 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
 
     // ---------- 映射 ----------
 
+    /**
+     * 转换为ListItem。
+     * 关键处理步骤调用 <code>ReviewListItemVO.builder</code>、<code>entity.getId</code>、<code>entity.getReviewType</code>、<code>entity.getTargetModule</code>。
+     *
+     * @param entity 数据库映射实体；类型为 <code>ReviewRequestEntity</code>
+     * @return 类型为 <code>ReviewListItemVO</code> 的处理结果
+     */
     private static ReviewListItemVO toListItem(ReviewRequestEntity entity) {
         return ReviewListItemVO.builder()
                 .reviewId(entity.getId())
@@ -212,6 +313,13 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
                 .build();
     }
 
+    /**
+     * 转换为历史。
+     * 关键处理步骤调用 <code>ReviewHistoryVO.builder</code>、<code>entity.getId</code>、<code>entity.getReviewType</code>、<code>entity.getTargetModule</code>。
+     *
+     * @param entity 数据库映射实体；类型为 <code>ReviewRequestEntity</code>
+     * @return 类型为 <code>ReviewHistoryVO</code> 的处理结果
+     */
     private static ReviewHistoryVO toHistory(ReviewRequestEntity entity) {
         return ReviewHistoryVO.builder()
                 .reviewId(entity.getId())
@@ -237,6 +345,14 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
      * 决策类动作只有 reviewer_account_id，Account 模块没有暴露账户摘要 API，
      * 因此这里不编造名字，交给前端显示为「审核员 #<id>」。
      */
+    /**
+     * 转换为动作响应对象。
+     * 关键处理步骤调用 <code>action.getActorAccountId</code>、<code>request.getApplicantAccountId</code>、<code>ReviewActionType.SUBMITTED_CODE.equals</code>、<code>action.getActionType</code>。
+     *
+     * @param action 动作；类型为 <code>ReviewActionEntity</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>ReviewRequestEntity</code>
+     * @return 类型为 <code>ReviewActionVO</code> 的处理结果
+     */
     private static ReviewActionVO toActionVO(ReviewActionEntity action, ReviewRequestEntity request) {
         boolean actorIsApplicant = action.getActorAccountId() != null
                 && action.getActorAccountId().equals(request.getApplicantAccountId());
@@ -257,6 +373,13 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
 
     // ---------- 参数校验 ----------
 
+    /**
+     * 规范化分页。
+     * 实现中的显式失败类型包括 <code>ReviewQueryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @return 类型为 <code>int</code> 的处理结果
+     */
     private static int normalizePage(int page) {
         if (page < 1) {
             throw new ReviewQueryInvalidException("page 必须大于等于 1");
@@ -264,6 +387,13 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
         return page;
     }
 
+    /**
+     * 规范化分页大小。
+     * 实现中的显式失败类型包括 <code>ReviewQueryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param pageSize 单页返回条目数；类型为 <code>int</code>
+     * @return 类型为 <code>int</code> 的处理结果
+     */
     private static int normalizePageSize(int pageSize) {
         if (pageSize < 1 || pageSize > MAX_PAGE_SIZE) {
             throw new ReviewQueryInvalidException("pageSize 必须在 1 到 " + MAX_PAGE_SIZE + " 之间");
@@ -272,6 +402,14 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
     }
 
     // 空白视为不筛选；非空但取值非法时明确报错
+    /**
+     * 规范化状态。
+     * 关键处理步骤调用 <code>trimToNull</code>、<code>trimmed.toUpperCase</code>、<code>ReviewStatus.isKnown</code>。
+     * 实现中的显式失败类型包括 <code>ReviewQueryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String normalizeStatus(String status) {
         String trimmed = trimToNull(status);
         if (trimmed == null) {
@@ -284,6 +422,13 @@ public class ReviewQueryServiceImpl implements ReviewQueryService {
         return normalized;
     }
 
+    /**
+     * 去除首尾空白目标空值处理入口。
+     * 关键处理步骤调用 <code>value.trim</code>、<code>trimmed.isEmpty</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String trimToNull(String value) {
         if (value == null) {
             return null;

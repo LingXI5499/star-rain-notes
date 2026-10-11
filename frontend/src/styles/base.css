@@ -1,3 +1,8 @@
+/**
+ * base.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 /*
  * 公开站基础样式 —— 从 V1 `frontend/src/styles/base.css` 移植。
  *
@@ -19,6 +24,10 @@
   padding: 0;
 }
 
+/**
+ * 样式范围：.public-shell。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell {
   font-family: var(--font-family);
   font-size: 16px;
@@ -28,15 +37,27 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+/**
+ * 样式范围：.public-shell a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell a {
   color: var(--primary);
   text-decoration: none;
 }
 
+/**
+ * 样式范围：.public-shell a:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell a:hover {
   color: var(--primary-hover);
 }
 
+/**
+ * 样式范围：.public-shell h1, .public-shell h2, .public-shell h3, .public-shell h4。
+ */
 .public-shell h1,
 .public-shell h2,
 .public-shell h3,
@@ -45,11 +66,19 @@
   line-height: 1.25;
 }
 
+/**
+ * 样式范围：.public-shell img。
+ */
 .public-shell img {
   max-width: 100%;
   display: block;
 }
 
+/**
+ * 样式范围：.public-shell :focus-visible。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
@@ -71,18 +100,30 @@
   padding-inline: var(--page-padding-x);
 }
 
+/**
+ * 样式范围：.public-shell .layout-prose。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .layout-prose {
   max-width: var(--content-max-width);
   margin-inline: auto;
   width: 100%;
 }
 
+/**
+ * 样式范围：.public-shell .container-marketing。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .container-marketing {
   max-width: var(--container-marketing);
   margin-inline: auto;
   padding-inline: var(--page-padding-x);
 }
 
+/**
+ * 样式范围：.public-shell .container-content。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .container-content {
   max-width: var(--container-content);
   margin-inline: auto;
@@ -100,6 +141,10 @@
   overflow-wrap: anywhere;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h1, .public-shell .markdown-body h2, .public-shell .markdown-body h3, .public-shell .markdown-body h4, .public-shell .markdown-body h5, .public-shell .markdown-body h6。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body h1,
 .public-shell .markdown-body h2,
 .public-shell .markdown-body h3,
@@ -111,6 +156,10 @@
   scroll-margin-top: calc(var(--header-height) + var(--space-4));
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h1。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body h1 {
   padding-bottom: var(--space-3);
   border-bottom: 2px solid color-mix(in srgb, var(--primary) 50%, var(--border));
@@ -118,49 +167,84 @@
   line-height: 44px;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h1:first-child。
+ */
 .public-shell .markdown-body h1:first-child {
   margin-top: 0;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h2。
+ */
 .public-shell .markdown-body h2 {
   font-size: 32px;
   line-height: 40px;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h3。
+ */
 .public-shell .markdown-body h3 {
   font-size: 24px;
   line-height: 32px;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h4。
+ */
 .public-shell .markdown-body h4 {
   font-size: 20px;
   line-height: 28px;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h5。
+ */
 .public-shell .markdown-body h5 {
   font-size: 17px;
   line-height: 25px;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body h6。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body h6 {
   color: var(--text-secondary);
   font-size: 15px;
   line-height: 23px;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body p {
   margin-bottom: var(--space-5);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body ul, .public-shell .markdown-body ol。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body ul,
 .public-shell .markdown-body ol {
   margin: 0 0 var(--space-5) var(--space-6);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body li。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body li {
   margin-bottom: var(--space-2);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body blockquote。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body blockquote {
   position: relative;
   margin: 0 0 var(--space-5);
@@ -171,6 +255,10 @@
   color: var(--text-secondary);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body blockquote::before。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body blockquote::before {
   content: '💡';
   position: absolute;
@@ -179,12 +267,20 @@
   font-size: 16px;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body a。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body a {
   color: var(--primary);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body code。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body code {
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: 0.9em;
@@ -193,6 +289,11 @@
   border-radius: 4px;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body pre。
+ * 溢出处理：横向 auto。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body pre {
   background: var(--bg-subtle);
   border: 1px solid var(--border);
@@ -202,6 +303,9 @@
   margin: 0 0 var(--space-5);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body pre code。
+ */
 .public-shell .markdown-body pre code {
   background: none;
   padding: 0;
@@ -209,23 +313,39 @@
   line-height: 1.6;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body img。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body img {
   border-radius: var(--radius-md);
   margin: var(--space-5) 0;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body hr。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body hr {
   border: none;
   border-top: 1px solid var(--border);
   margin: var(--space-9) 0;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body table。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: var(--space-5);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body th, .public-shell .markdown-body td。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body th,
 .public-shell .markdown-body td {
   border: 1px solid var(--border);
@@ -233,10 +353,18 @@
   text-align: left;
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body th。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body th {
   background: var(--bg-subtle);
 }
 
+/**
+ * 样式范围：.public-shell .markdown-body .blog-prose__empty。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .public-shell .markdown-body .blog-prose__empty {
   color: var(--text-muted);
 }
@@ -253,52 +381,88 @@
   color: var(--primary);
 }
 
+/**
+ * 样式范围：.hljs-string, .hljs-attr, .hljs-template-variable。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .hljs-string,
 .hljs-attr,
 .hljs-template-variable {
   color: var(--accent);
 }
 
+/**
+ * 样式范围：.hljs-comment, .hljs-quote。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .hljs-comment,
 .hljs-quote {
   color: var(--text-muted);
   font-style: italic;
 }
 
+/**
+ * 样式范围：.hljs-number, .hljs-symbol, .hljs-bullet。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .hljs-number,
 .hljs-symbol,
 .hljs-bullet {
   color: var(--warning);
 }
 
+/**
+ * 样式范围：.hljs-title, .hljs-section, .hljs-name。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .hljs-title,
 .hljs-section,
 .hljs-name {
   color: var(--primary-hover);
 }
 
+/**
+ * 样式范围：.hljs-built_in, .hljs-type, .hljs-class .hljs-title。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .hljs-built_in,
 .hljs-type,
 .hljs-class .hljs-title {
   color: var(--warning);
 }
 
+/**
+ * 样式范围：.hljs-meta, .hljs-keyword, .hljs-params。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .hljs-meta,
 .hljs-keyword,
 .hljs-params {
   color: var(--text-secondary);
 }
 
+/**
+ * 样式范围：.hljs-emphasis。
+ */
 .hljs-emphasis {
   font-style: italic;
 }
 
+/**
+ * 样式范围：.hljs-strong。
+ */
 .hljs-strong {
   font-weight: 700;
 }
 
 /* 小屏收窄横向内边距（只影响公开站） */
+/**
+ * 响应式或设备条件：(max-width: 768px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 768px) {
+  /**
+   * 样式范围：.public-shell。
+   */
   .public-shell {
     --page-padding-x: 20px;
   }
@@ -314,6 +478,9 @@
     padding-right: max(16px, env(safe-area-inset-right));
   }
 
+  /**
+   * 样式范围：.public-shell button,   .public-shell a.public-button。
+   */
   .public-shell button,
   .public-shell a.public-button {
     min-height: 44px;
@@ -329,7 +496,13 @@
    无障碍：尊重系统的「减少动态效果」偏好（WCAG 2.3.3）
    --------------------------------------------------------------- */
 
+/**
+ * 响应式或设备条件：(prefers-reduced-motion: reduce)；仅在该条件成立时覆盖基础样式。
+ */
 @media (prefers-reduced-motion: reduce) {
+  /**
+   * 样式范围：.public-shell *,   .public-shell *::before,   .public-shell *::after。
+   */
   .public-shell *,
   .public-shell *::before,
   .public-shell *::after {

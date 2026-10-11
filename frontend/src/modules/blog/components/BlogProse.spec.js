@@ -1,3 +1,12 @@
+/**
+ * BlogProse.spec.js：博客模块的自动化测试。
+ * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vitest、./BlogProse.vue。
+ * 阅读入口：render（渲染当前操作）。
+ * 验证场景：BlogProse uses the shared Markdown renderer；uses explicit group labels and switches tabs with mouse and keyboard；falls back to a fenced language label and keeps copy controls；passes formula placeholders to MathJax；gives all heading levels unique anchors and excludes code fences from the outline。
+ */
+
 import { flushPromises, mount } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import BlogProse from './BlogProse.vue'
@@ -5,6 +14,12 @@ import BlogProse from './BlogProse.vue'
 const mocks = vi.hoisted(() => ({ typesetMath: vi.fn().mockResolvedValue(undefined) }))
 vi.mock('../../../shared/markdown/mathJax', () => ({ typesetMath: mocks.typesetMath }))
 
+/**
+ * 渲染当前操作。
+ * 主要协作：mount、flushPromises、wrapper.vm.$nextTick。
+ * @param markdown Markdown；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function render(markdown) {
   const wrapper = mount(BlogProse, { props: { markdown }, attachTo: document.body })
   await flushPromises()

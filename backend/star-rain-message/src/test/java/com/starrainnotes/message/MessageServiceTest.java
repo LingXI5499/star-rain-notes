@@ -1,3 +1,11 @@
+/*
+ * MessageServiceTest：留言模块的测试文件。
+ * 业务范围：留言提交、审核展示和后台管理。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：AccountReferenceApi、CurrentActorApi、ApiException、MessageSubmitDTO、MessageActionEntity、MessageEntity、MessageActionMapper。
+ * 阅读入口：setUp（初始化当前测试场景的被测对象与模拟依赖）；publicProjectionNeverExposesPrivateFields（公开ProjectionNeverExposesPrivate字段集合处理入口）；onlyOnePendingDecisionCanCreateAnAction（only单次待处理决定Can创建An动作处理入口）；loggedInSubmissionUsesAccountDisplayName（logged内部SubmissionUses账号显示名称处理入口）。
+ */
+
 package com.starrainnotes.message;
 
 import com.starrainnotes.account.api.AccountReferenceApi;
@@ -29,19 +37,53 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+/**
+ * 留言业务服务测试，属于留言模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 @ExtendWith(MockitoExtension.class)
 class MessageServiceTest {
+    /**
+     * messages。
+     * 协作类型：<code>MessageMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private MessageMapper messages;
+    /**
+     * actions。
+     * 协作类型：<code>MessageActionMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private MessageActionMapper actions;
+    /**
+     * 当前操作对应的身份对象。
+     * 协作类型：<code>CurrentActorApi</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private CurrentActorApi actor;
+    /**
+     * 账号集合。
+     * 协作类型：<code>AccountReferenceApi</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private AccountReferenceApi accounts;
+    /**
+     * 业务服务。
+     */
     private MessageServiceImpl service;
 
+    /**
+     * 初始化当前测试场景的被测对象与模拟依赖。
+     */
     @BeforeEach
     void setUp() {
         service = new MessageServiceImpl(messages, actions, actor, accounts, new MessageSubmissionLimiter());
     }
 
+    /**
+     * 公开ProjectionNeverExposesPrivate字段集合处理入口。
+     * 主要协作调用：<code>messages.countByStatus</code>、<code>messages.pageByStatus</code>、<code>service.publicMessages</code>。
+     */
     @Test
     void publicProjectionNeverExposesPrivateFields() {
         MessageEntity entity = new MessageEntity();
@@ -62,6 +104,10 @@ class MessageServiceTest {
         assertEquals(4, item.getClass().getDeclaredFields().length);
     }
 
+    /**
+     * only单次待处理决定Can创建An动作处理入口。
+     * 主要协作调用：<code>actor.current</code>、<code>messages.decide</code>、<code>messages.selectById</code>、<code>service.approve</code>。
+     */
     @Test
     void onlyOnePendingDecisionCanCreateAnAction() {
         when(actor.current()).thenReturn(new CurrentActorApi.CurrentActor(1L, null, null));
@@ -76,6 +122,10 @@ class MessageServiceTest {
         verify(actions, never()).insert(any(MessageActionEntity.class));
     }
 
+    /**
+     * logged内部SubmissionUses账号显示名称处理入口。
+     * 主要协作调用：<code>actor.currentOptional</code>、<code>accounts.displayName</code>、<code>service.submit</code>。
+     */
     @Test
     void loggedInSubmissionUsesAccountDisplayName() {
         MessageSubmitDTO request = new MessageSubmitDTO();
@@ -92,6 +142,10 @@ class MessageServiceTest {
         assertEquals(2L, saved.getValue().getAccountId());
     }
 
+    /**
+     * submission是否RateLimited处理入口。
+     * 关键处理步骤调用 <code>limiter.check</code>、<code>error.getCode</code>、<code>error.getStatus</code>。
+     */
     @Test
     void submissionIsRateLimited() {
         MessageSubmissionLimiter limiter = new MessageSubmissionLimiter();

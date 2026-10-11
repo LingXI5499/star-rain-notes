@@ -1,4 +1,13 @@
 <script setup>
+/**
+ * ReviewStatusTag.vue：审核模块的视图组件。
+ * 职责范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：../support/display。
+ * 组件输入：status、label；默认值与类型见 defineProps。
+ */
+
+
 import { statusLabel, statusToneClass } from '../support/display'
 
 /*

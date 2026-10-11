@@ -1,3 +1,8 @@
+/**
+ * style.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 @import './styles/tokens.css';
 @import './styles/auth.css';
 @import './styles/account.css';
@@ -10,9 +15,24 @@
 @import './styles/admin.css';
 /* 验证码字段在注册页与账户安全页共用。 */
 .verification-field { display: flex; align-items: stretch; gap: 8px; }
+/**
+ * 样式范围：.verification-field input。
+ */
 .verification-field input { min-width: 0; flex: 1; width: 0; }
+/**
+ * 样式范围：.verification-field button。
+ */
 .verification-field button { flex-shrink: 0; white-space: nowrap; }
+/**
+ * 响应式或设备条件：(max-width: 480px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 480px) {
+  /**
+   * 样式范围：.verification-field。
+   */
   .verification-field { flex-wrap: wrap; }
+  /**
+   * 样式范围：.verification-field input。
+   */
   .verification-field input { width: 100%; flex-basis: 100%; }
 }

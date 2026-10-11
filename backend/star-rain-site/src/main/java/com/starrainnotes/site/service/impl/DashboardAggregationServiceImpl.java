@@ -1,3 +1,11 @@
+/*
+ * DashboardAggregationServiceImpl：站点模块的业务实现文件。
+ * 业务范围：站点品牌、首页内容和站点设置。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：SiteDashboardVO、DashboardAggregationService、DashboardSource、DashboardModuleData、DashboardRecentItem。
+ * 阅读入口：dashboard（概览处理入口）；shutdown（shutdown处理入口）。
+ */
+
 package com.starrainnotes.site.service.impl;
 
 import com.starrainnotes.site.vo.SiteDashboardVO;
@@ -26,11 +34,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/**
+ * 概览Aggregation业务服务实现，属于站点模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class DashboardAggregationServiceImpl implements DashboardAggregationService {
+    /**
+     * 当前类使用的日志记录器。
+     */
     private static final Logger log = LoggerFactory.getLogger(DashboardAggregationServiceImpl.class);
+    /**
+     * MS。
+     * 初始值为 <code>1500</code>。
+     */
     private static final long SOURCE_BUDGET_MS = 1500;
+    /**
+     * sources。
+     */
     private final List<DashboardSource> sources;
+    /**
+     * workers。
+     */
     private final ThreadPoolExecutor workers = new ThreadPoolExecutor(7, 7, 30, TimeUnit.SECONDS,
             new LinkedBlockingQueue<>(28), task -> {
                 Thread thread = new Thread(task, "site-dashboard-source");
@@ -38,6 +63,13 @@ public class DashboardAggregationServiceImpl implements DashboardAggregationServ
                 return thread;
             }, new ThreadPoolExecutor.AbortPolicy());
 
+    /**
+     * 构造DashboardAggregationServiceImpl，接收本类使用的依赖或初始化参数。
+     * 关键处理步骤调用 <code>source.moduleCode</code>、<code>code.isBlank</code>、<code>codes.add</code>、<code>List.copyOf</code>。
+     * 实现中的显式失败类型包括 <code>IllegalArgumentException</code>；具体触发条件见对应分支。
+     *
+     * @param sources sources；类型为 <code>List&lt;DashboardSource&gt;</code>
+     */
     public DashboardAggregationServiceImpl(List<DashboardSource> sources) {
         Set<String> codes = new HashSet<>();
         for (DashboardSource source : sources) {
@@ -49,6 +81,12 @@ public class DashboardAggregationServiceImpl implements DashboardAggregationServ
         this.sources = List.copyOf(sources);
     }
 
+    /**
+     * 概览处理入口。
+     * 主要协作调用：<code>workers.submit</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     * @return 类型为 <code>SiteDashboardVO</code> 的处理结果
+     */
     @Override
     public SiteDashboardVO dashboard() {
         Map<String, Future<DashboardModuleData>> futures = new LinkedHashMap<>();
@@ -98,6 +136,10 @@ public class DashboardAggregationServiceImpl implements DashboardAggregationServ
         return new SiteDashboardVO(modules, recent.stream().limit(8).toList(), degraded);
     }
 
+    /**
+     * shutdown处理入口。
+     * 主要协作调用：<code>workers.shutdownNow</code>。
+     */
     @PreDestroy
     public void shutdown() { workers.shutdownNow(); }
 }

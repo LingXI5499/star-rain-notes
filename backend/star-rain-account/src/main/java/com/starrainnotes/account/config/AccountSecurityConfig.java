@@ -1,3 +1,11 @@
+/*
+ * AccountSecurityConfig：账号模块的装配配置文件。
+ * 业务范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 向 Spring 容器装配本模块使用的组件或注册规则，方法上的 Bean 与配置注解决定装配方式。
+ * 主要协作类型：AccountAuthenticator、SecurityPatternValidator、SecurityRulePlan、ModuleFrameHeaders、AccountSessionValidationFilter、AccountMapper、ModuleSecurityContributor。
+ * 阅读入口：passwordEncoder（密码Encoder处理入口）；authenticationManager（认证Manager处理入口）；securityContextRepository（安全ContextRepository处理入口）；securityFilterChain（安全筛选Chain处理入口）。
+ */
+
 package com.starrainnotes.account.config;
 
 import com.starrainnotes.account.security.AccountAuthenticator;
@@ -39,25 +47,54 @@ import org.springframework.security.web.csrf.CsrfException;
  * 请求头、Cookie、方法完全一样，因此「公开站不暴露注册登录」退化为前端路由级保证。
  * 注册接口恢复为普通公开接口，其既有业务约束（邮箱验证码、参数校验、用户名唯一）不变。
  */
+/**
+ * 账号安全配置，属于账号模块。
+ * 向 Spring 容器装配本模块使用的组件或注册规则，方法上的 Bean 与配置注解决定装配方式。
+ */
 @Configuration
 @EnableMethodSecurity
 public class AccountSecurityConfig {
 
+    /**
+     * 密码Encoder处理入口。
+     * @return 类型为 <code>PasswordEncoder</code> 的处理结果
+     */
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder(12);
     }
 
+    /**
+     * 认证Manager处理入口。
+     *
+     * @param authenticator authenticator；类型为 <code>AccountAuthenticator</code>
+     * @return 类型为 <code>AuthenticationManager</code> 的处理结果
+     */
     @Bean
     AuthenticationManager authenticationManager(AccountAuthenticator authenticator) {
         return new ProviderManager(authenticator);
     }
 
+    /**
+     * 安全ContextRepository处理入口。
+     * @return 类型为 <code>SecurityContextRepository</code> 的处理结果
+     */
     @Bean
     SecurityContextRepository securityContextRepository() {
         return new HttpSessionSecurityContextRepository();
     }
 
+    /**
+     * 安全筛选Chain处理入口。
+     * 关键处理步骤调用 <code>csrfRepository.setHeaderName</code>、<code>contributors.stream</code>、<code>Comparator.comparingInt</code>、<code>SecurityPatternValidator.validate</code>。
+     *
+     * @param http HTTP；类型为 <code>HttpSecurity</code>
+     * @param contextRepository contextRepository；类型为 <code>SecurityContextRepository</code>
+     * @param mapper 数据映射；类型为 <code>AccountMapper</code>
+     * @param contributors contributors；类型为 <code>List&lt;ModuleSecurityContributor&gt;</code>
+     * @return 类型为 <code>SecurityFilterChain</code> 的处理结果
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http,
                                             SecurityContextRepository contextRepository,
@@ -110,6 +147,16 @@ public class AccountSecurityConfig {
         return http.build();
     }
 
+    /**
+     * 写入安全错误。
+     * 关键处理步骤调用 <code>response.setStatus</code>、<code>response.setContentType</code>、<code>response.getWriter</code>。
+     *
+     * @param response 响应；类型为 <code>HttpServletResponse</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>int</code>
+     * @param code 代码；类型为 <code>String</code>
+     * @param message 留言；类型为 <code>String</code>
+     * @throws java.io.IOException 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static void writeSecurityError(HttpServletResponse response, int status,
                                            String code, String message) throws java.io.IOException {
         response.setStatus(status);

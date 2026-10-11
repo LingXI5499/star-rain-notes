@@ -1,3 +1,11 @@
+/*
+ * GrammarServiceImpl：英语学习模块的业务实现文件。
+ * 业务范围：文档、词汇、语法、阅读听力及复习记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：ApiException、EnglishSearchContentChangedEvent、Course、CourseRequest、Curriculum、Lesson、LessonRequest。
+ * 阅读入口：curriculum（curriculum处理入口）；lesson（lesson处理入口）；updateCourse（更新Course）；setCoursePublished（设置Course已发布）。
+ */
+
 package com.starrainnotes.english.grammar.service.impl;
 
 import com.starrainnotes.common.exception.ApiException;
@@ -18,12 +26,32 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 语法业务服务实现，属于英语学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class GrammarServiceImpl implements GrammarService {
+    /**
+     * 数据映射。
+     * 协作类型：<code>GrammarMapper</code>。
+     */
     private final GrammarMapper mapper;
+    /**
+     * 事件集合。
+     */
     private final ApplicationEventPublisher events;
 
+    /**
+     * curriculum处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.course</code>、<code>mapper.sections</code>、<code>mapper.lessons</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param admin 后台；类型为 <code>boolean</code>
+     * @return 类型为 <code>Curriculum</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public Curriculum curriculum(boolean admin) {
@@ -37,6 +65,16 @@ public class GrammarServiceImpl implements GrammarService {
         return new Curriculum(course, sections);
     }
 
+    /**
+     * lesson处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.lessonById</code>、<code>mapper.publicLesson</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param identity 身份；类型为 <code>String</code>
+     * @param admin 后台；类型为 <code>boolean</code>
+     * @return 类型为 <code>Lesson</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public Lesson lesson(String identity, boolean admin) {
@@ -45,6 +83,15 @@ public class GrammarServiceImpl implements GrammarService {
         return lesson;
     }
 
+    /**
+     * 更新Course。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.updateCourse</code>、<code>mapper.course</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>CourseRequest</code>
+     * @return 类型为 <code>Course</code> 的处理结果
+     */
     @Override
     @Transactional
     public Course updateCourse(CourseRequest request) {
@@ -61,6 +108,13 @@ public class GrammarServiceImpl implements GrammarService {
         return mapper.course();
     }
 
+    /**
+     * 设置Course已发布。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.setCourseStatus</code>。
+     *
+     * @param published 已发布；类型为 <code>boolean</code>
+     */
     @Override
     @Transactional
     public void setCoursePublished(boolean published) {
@@ -69,6 +123,14 @@ public class GrammarServiceImpl implements GrammarService {
         changed("ENGLISH_GRAMMAR_LESSON", null);
     }
 
+    /**
+     * 创建区块。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.insertSection</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>SectionRequest</code>
+     * @return 类型为 <code>Section</code> 的处理结果
+     */
     @Override
     @Transactional
     public Section createSection(SectionRequest request) {
@@ -80,6 +142,15 @@ public class GrammarServiceImpl implements GrammarService {
         return requiredSection(section.getId());
     }
 
+    /**
+     * 更新区块。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.updateSection</code>。
+     *
+     * @param sectionId 区块标识；类型为 <code>String</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>SectionRequest</code>
+     * @return 类型为 <code>Section</code> 的处理结果
+     */
     @Override
     @Transactional
     public Section updateSection(String sectionId, SectionRequest request) {
@@ -92,6 +163,13 @@ public class GrammarServiceImpl implements GrammarService {
         return requiredSection(section.getId());
     }
 
+    /**
+     * 删除区块。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.deleteSection</code>。
+     *
+     * @param sectionId 区块标识；类型为 <code>String</code>
+     */
     @Override
     @Transactional
     public void deleteSection(String sectionId) {
@@ -99,6 +177,14 @@ public class GrammarServiceImpl implements GrammarService {
         changed("ENGLISH_GRAMMAR_LESSON", null);
     }
 
+    /**
+     * 创建Lesson。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.insertLesson</code>、<code>mapper.updateLesson</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>LessonRequest</code>
+     * @return 类型为 <code>Lesson</code> 的处理结果
+     */
     @Override
     @Transactional
     public Lesson createLesson(LessonRequest request) {
@@ -111,6 +197,15 @@ public class GrammarServiceImpl implements GrammarService {
         return lesson(String.valueOf(lesson.getId()), true);
     }
 
+    /**
+     * 更新Lesson。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.updateLesson</code>。
+     *
+     * @param lessonId lesson标识；类型为 <code>String</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>LessonRequest</code>
+     * @return 类型为 <code>Lesson</code> 的处理结果
+     */
     @Override
     @Transactional
     public Lesson updateLesson(String lessonId, LessonRequest request) {
@@ -124,6 +219,15 @@ public class GrammarServiceImpl implements GrammarService {
         return lesson(lessonId, true);
     }
 
+    /**
+     * 设置Lesson已发布。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.setLessonStatus</code>。
+     *
+     * @param lessonId lesson标识；类型为 <code>String</code>
+     * @param published 已发布；类型为 <code>boolean</code>
+     * @return 类型为 <code>Lesson</code> 的处理结果
+     */
     @Override
     @Transactional
     public Lesson setLessonPublished(String lessonId, boolean published) {
@@ -133,6 +237,13 @@ public class GrammarServiceImpl implements GrammarService {
         return lesson(lessonId, true);
     }
 
+    /**
+     * 删除Lesson。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.deleteLesson</code>。
+     *
+     * @param lessonId lesson标识；类型为 <code>String</code>
+     */
     @Override
     @Transactional
     public void deleteLesson(String lessonId) {
@@ -140,10 +251,24 @@ public class GrammarServiceImpl implements GrammarService {
         changed("ENGLISH_GRAMMAR_LESSON", id(lessonId));
     }
 
+    /**
+     * changed处理入口。
+     * 主要协作调用：<code>events.publishEvent</code>。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     */
     private void changed(String type, Long id) {
         events.publishEvent(new EnglishSearchContentChangedEvent(type, id));
     }
 
+    /**
+     * 必需区块处理入口。
+     * 主要协作调用：<code>mapper.section</code>、<code>mapper.lessons</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>long</code>
+     * @return 类型为 <code>Section</code> 的处理结果
+     */
     private Section requiredSection(long id) {
         Section section = mapper.section(id);
         if (section == null) sectionNotFound();
@@ -151,6 +276,13 @@ public class GrammarServiceImpl implements GrammarService {
         return section;
     }
 
+    /**
+     * 从输入构造请求。
+     * 关键处理步骤调用 <code>lesson.setSectionId</code>、<code>id</code>、<code>request.getSectionId</code>、<code>lesson.setTitle</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>LessonRequest</code>
+     * @return 类型为 <code>Lesson</code> 的处理结果
+     */
     private Lesson fromRequest(LessonRequest request) {
         Lesson lesson = new Lesson();
         lesson.setSectionId(id(request.getSectionId()));
@@ -161,11 +293,25 @@ public class GrammarServiceImpl implements GrammarService {
         return lesson;
     }
 
+    /**
+     * 校验区块。
+     * 关键处理步骤调用 <code>request.getTitle</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>SectionRequest</code>
+     */
     private void validateSection(SectionRequest request) {
         if (request == null || request.getTitle() == null || request.getTitle().isBlank())
             throw new ApiException("ENGLISH_GRAMMAR_INVALID", "请填写章节标题", 400);
     }
 
+    /**
+     * 校验Lesson。
+     * 主要协作调用：<code>mapper.section</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>LessonRequest</code>
+     */
     private void validateLesson(LessonRequest request) {
         if (request == null || request.getSectionId() == null || request.getTitle() == null
                 || request.getTitle().isBlank())
@@ -173,14 +319,30 @@ public class GrammarServiceImpl implements GrammarService {
         if (mapper.section(id(request.getSectionId())) == null) sectionNotFound();
     }
 
+    /**
+     * 区块不存在处理入口。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     */
     private void sectionNotFound() {
         throw new ApiException("ENGLISH_GRAMMAR_SECTION_NOT_FOUND", "语法章节不存在", 404);
     }
 
+    /**
+     * lesson不存在处理入口。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     */
     private void lessonNotFound() {
         throw new ApiException("ENGLISH_GRAMMAR_LESSON_NOT_FOUND", "语法课时不存在", 404);
     }
 
+    /**
+     * 当前业务对象的数据库标识处理入口。
+     * 关键处理步骤调用 <code>Long.parseLong</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long id(String value) {
         try { return Long.parseLong(value); }
         catch (NumberFormatException exception) {
@@ -188,5 +350,11 @@ public class GrammarServiceImpl implements GrammarService {
         }
     }
 
+    /**
+     * 顺序处理入口。
+     *
+     * @param value 值；类型为 <code>Integer</code>
+     * @return 类型为 <code>int</code> 的处理结果
+     */
     private int order(Integer value) { return value == null ? 0 : value; }
 }

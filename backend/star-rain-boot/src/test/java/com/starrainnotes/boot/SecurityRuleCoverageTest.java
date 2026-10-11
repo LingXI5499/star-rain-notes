@@ -1,3 +1,11 @@
+/*
+ * SecurityRuleCoverageTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：SecurityRulePlan、ModuleSecurityContributor。
+ * 阅读入口：everyContributorDeclaresAtLeastOnePattern（every贡献者Declares时间Least单次模式处理入口）；everyPatternIsAnAbsoluteAntPattern（every模式是否AnAbsoluteAnt模式处理入口）；noPatternIsClaimedAtTwoDifferentAccessLevels（不含模式是否Claimed时间TwoDifferent访问Levels处理入口）；effectiveAccessLevelOfCriticalRoutes（effective访问Level所属Critical路由集合处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -35,10 +43,21 @@ import org.springframework.util.AntPathMatcher;
  * 不启动 Spring：贡献者都是无参构造，直接反射实例化即可。新增贡献者若带了构造依赖，
  * 这个测试会失败并明确报出是哪一个，那时再改成上下文装配也不迟。
  */
+/**
+ * 安全规则Coverage测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class SecurityRuleCoverageTest {
 
+    /**
+     * MATCHER。
+     */
     private static final AntPathMatcher MATCHER = new AntPathMatcher();
 
+    /**
+     * every贡献者Declares时间Least单次模式处理入口。
+     * 关键处理步骤调用 <code>contributors</code>、<code>contributor.publicPatterns</code>、<code>contributor.authenticatedPatterns</code>、<code>contributor.deniedPatterns</code>。
+     */
     @Test
     void everyContributorDeclaresAtLeastOnePattern() {
         List<String> silent = new ArrayList<>();
@@ -51,6 +70,10 @@ class SecurityRuleCoverageTest {
         assertTrue(silent.isEmpty(), "这些模块声明了安全贡献者却一条规则都没有，属于死贡献者：" + silent);
     }
 
+    /**
+     * every模式是否AnAbsoluteAnt模式处理入口。
+     * 关键处理步骤调用 <code>contributors</code>、<code>allPatterns</code>、<code>pattern.startsWith</code>、<code>problems.add</code>。
+     */
     @Test
     void everyPatternIsAnAbsoluteAntPattern() {
         List<String> problems = new ArrayList<>();
@@ -67,6 +90,10 @@ class SecurityRuleCoverageTest {
     /*
      * 同一模式在不同模块被声明成不同访问级别，是真正的安全缺陷：
      * 谁先谁后决定结果，而两边都认为自己说了算。必须启动即失败。
+     */
+    /**
+     * 不含模式是否Claimed时间TwoDifferent访问Levels处理入口。
+     * 关键处理步骤调用 <code>contributors</code>、<code>contributor.deniedPatterns</code>、<code>claims.computeIfAbsent</code>、<code>contributor.moduleName</code>。
      */
     @Test
     void noPatternIsClaimedAtTwoDifferentAccessLevels() {
@@ -96,6 +123,10 @@ class SecurityRuleCoverageTest {
      * 关键路由的生效访问级别。这张表就是「谁能匿名访问什么」的可执行版本——
      * 任何一次规则调整只要改变了下列任一结论，这里就会红。
      */
+    /**
+     * effective访问Level所属Critical路由集合处理入口。
+     * 关键处理步骤调用 <code>plannedRules</code>、<code>expected.put</code>、<code>expected.forEach</code>、<code>effective</code>。
+     */
     @Test
     void effectiveAccessLevelOfCriticalRoutes() {
         List<SecurityRulePlan.Rule> rules = plannedRules();
@@ -124,6 +155,10 @@ class SecurityRuleCoverageTest {
     }
 
     /* 没有被任何规则覆盖的路径必须落到 anyRequest().denyAll()，而不是被放行。 */
+    /**
+     * unmatchedPathsFallThrough目标Deny全部处理入口。
+     * 关键处理步骤调用 <code>plannedRules</code>、<code>effective</code>。
+     */
     @Test
     void unmatchedPathsFallThroughToDenyAll() {
         List<SecurityRulePlan.Rule> rules = plannedRules();
@@ -139,6 +174,10 @@ class SecurityRuleCoverageTest {
      * 这是有意的——URL 规则只管「能不能进来」，对象级与权限级判断由 @PreAuthorize 负责，
      * 所以这里把实际行为钉住，避免以后有人以为它是整段封禁。
      */
+    /**
+     * 被拒绝CarveOut是否NarrowerThanTheAllow规则ThatCoversIt处理入口。
+     * 关键处理步骤调用 <code>plannedRules</code>、<code>effective</code>。
+     */
     @Test
     void deniedCarveOutIsNarrowerThanTheAllowRuleThatCoversIt() {
         List<SecurityRulePlan.Rule> rules = plannedRules();
@@ -152,6 +191,11 @@ class SecurityRuleCoverageTest {
     /*
      * 排序不变量：denied 必须全部排在 public 之前，public 必须全部排在 authenticated 之前。
      * SecurityRulePlanTest 用手写假贡献者验过一次，这里用**真实模块的规则**再验一次。
+     */
+    /**
+     * 被拒绝Precedes公开Precedes已认证内部TheReal规则List处理入口。
+     * 关键处理步骤调用 <code>plannedRules</code>、<code>rules.size</code>、<code>rules.get</code>、<code>Math.min</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
      */
     @Test
     void deniedPrecedesPublicPrecedesAuthenticatedInTheRealRuleList() {
@@ -176,6 +220,10 @@ class SecurityRuleCoverageTest {
     }
 
     /* 贡献者数量与源码树一致：新增模块却忘了纳入验证范围会在这里失败。 */
+    /**
+     * 贡献者InventoryMatchesThe来源Tree处理入口。
+     * 关键处理步骤调用 <code>contributors</code>、<code>discoverContributorClassNames</code>。
+     */
     @Test
     void contributorInventoryMatchesTheSourceTree() {
         assertNotNull(contributors());
@@ -185,6 +233,12 @@ class SecurityRuleCoverageTest {
 
     // ------------------------------------------------------------------
 
+    /**
+     * contributors处理入口。
+     * 关键处理步骤调用 <code>discoverContributorClassNames</code>、<code>Class.forName</code>、<code>type.getDeclaredConstructor</code>、<code>constructor.setAccessible</code>。
+     * 实现中的显式失败类型包括 <code>AssertionError</code>；具体触发条件见对应分支。
+     * @return 本次处理得到的条目集合
+     */
     private static List<ModuleSecurityContributor> contributors() {
         List<ModuleSecurityContributor> result = new ArrayList<>();
         for (String className : discoverContributorClassNames()) {
@@ -201,6 +255,11 @@ class SecurityRuleCoverageTest {
         return result;
     }
 
+    /**
+     * planned规则处理入口。
+     * 关键处理步骤调用 <code>contributors</code>、<code>ordered.sort</code>、<code>Integer.compare</code>、<code>left.order</code>。
+     * @return 本次处理得到的条目集合
+     */
     private static List<SecurityRulePlan.Rule> plannedRules() {
         List<ModuleSecurityContributor> ordered = new ArrayList<>(contributors());
         ordered.sort((left, right) -> Integer.compare(left.order(), right.order()));
@@ -209,6 +268,14 @@ class SecurityRuleCoverageTest {
         return rules;
     }
 
+    /**
+     * effective处理入口。
+     * 主要协作调用：<code>MATCHER.match</code>。
+     *
+     * @param rules 规则；类型为 <code>List&lt;SecurityRulePlan.Rule&gt;</code>
+     * @param path 路径；类型为 <code>String</code>
+     * @return 类型为 <code>SecurityRulePlan.Access</code> 的处理结果
+     */
     private static SecurityRulePlan.Access effective(List<SecurityRulePlan.Rule> rules, String path) {
         for (SecurityRulePlan.Rule rule : rules) {
             if (MATCHER.match(rule.getPattern(), path)) return rule.getAccess();
@@ -216,6 +283,13 @@ class SecurityRuleCoverageTest {
         return null;
     }
 
+    /**
+     * 全部Patterns处理入口。
+     * 关键处理步骤调用 <code>patterns.addAll</code>、<code>contributor.deniedPatterns</code>、<code>contributor.publicPatterns</code>、<code>contributor.authenticatedPatterns</code>。
+     *
+     * @param contributor 贡献者；类型为 <code>ModuleSecurityContributor</code>
+     * @return 本次处理得到的条目集合
+     */
     private static List<String> allPatterns(ModuleSecurityContributor contributor) {
         List<String> patterns = new ArrayList<>();
         patterns.addAll(contributor.deniedPatterns());
@@ -224,6 +298,12 @@ class SecurityRuleCoverageTest {
         return patterns;
     }
 
+    /**
+     * discover贡献者ClassNames处理入口。
+     * 关键处理步骤调用 <code>backendRoot</code>、<code>Files.list</code>、<code>modules.filter</code>、<code>module.resolve</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     * @return 本次处理得到的条目集合
+     */
     private static List<String> discoverContributorClassNames() {
         Path backend = backendRoot();
         List<String> names = new ArrayList<>();
@@ -248,6 +328,11 @@ class SecurityRuleCoverageTest {
         return names;
     }
 
+    /**
+     * backendRoot处理入口。
+     * 关键处理步骤调用 <code>Path.of</code>、<code>current.getFileName</code>、<code>current.getParent</code>。
+     * @return 类型为 <code>Path</code> 的处理结果
+     */
     private static Path backendRoot() {
         Path current = Path.of("").toAbsolutePath();
         if (current.getFileName() != null && current.getFileName().toString().startsWith("star-rain-")) {

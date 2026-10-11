@@ -1,3 +1,12 @@
+/**
+ * MarkdownEditor.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、@vue/test-utils、pinia、../../modules/account/stores/authStore、./MarkdownEditor.vue、../../modules/blog/components/admin/MarkdownEditor.vue。
+ * 阅读入口：editor（editor的处理函数）；transfer（transfer的处理函数）。
+ * 验证场景：shared Markdown editor；keeps the legacy blog import pointing to the same editor；uploads pasted and dropped images once each and inserts registered media URLs；does not insert into another document after an upload finishes late；keeps the document untouched on upload failure and on unmount。
+ */
+
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
@@ -21,12 +30,25 @@ describe('shared Markdown editor', () => {
   it('keeps the legacy blog import pointing to the same editor', () => {
     expect(LegacyMarkdownEditor).toBe(MarkdownEditor)
   })
+  /**
+   * editor的处理函数。
+   * 主要协作：mount、.toBeTruthy、state.options.after。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
   async function editor() {
     const wrapper = mount(MarkdownEditor, { props: { modelValue: '原文' }, attachTo: document.body })
     await vi.waitFor(() => expect(state.options).toBeTruthy())
     state.options.after()
     return wrapper
   }
+  /**
+   * transfer的处理函数。
+   * 主要协作：Object.defineProperty、.element.dispatchEvent、wrapper.find。
+   * @param wrapper wrapper；默认值、解构字段与可选参数见函数签名。
+   * @param type 类型；默认值、解构字段与可选参数见函数签名。
+   * @param files files；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
   function transfer(wrapper, type, files) {
     const event = new Event(type, { bubbles: true, cancelable: true })
     Object.defineProperty(event, type === 'paste' ? 'clipboardData' : 'dataTransfer', { value: { files } })

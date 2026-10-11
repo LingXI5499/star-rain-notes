@@ -2,8 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!--
+      pom.xml：star-rain-boot 的 Maven 构建描述。
+      父 POM 统一版本与构建约定；本模块只声明自身装配所需的模块和库。
+      依赖 scope、插件执行阶段与聚合 modules 共同决定编译、测试及产物，注释不改变构建参数。
+    -->
+
     <modelVersion>4.0.0</modelVersion>
 
+    <!--
+      继承父项目的依赖管理、插件默认值与版本约定；relativePath 决定本地父 POM 的查找方式。
+    -->
     <parent>
         <groupId>com.starrainnotes</groupId>
         <artifactId>star-rain-parent</artifactId>
@@ -13,94 +22,187 @@
 
     <artifactId>star-rain-boot</artifactId>
 
+    <!--
+      声明本模块实际依赖；内部模块提供跨模块契约，scope 限定使用阶段。
+    -->
     <dependencies>
+        <!--
+          依赖 com.starrainnotes:star-rain-common。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：统一响应、异常、分页、安全与跨模块基础契约；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-common</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-account。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：身份、会话、邮箱验证、角色权限和邀请策略；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-account</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-media。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：上传校验、本地存储、访问级别、业务引用与文件清理；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-media</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-review。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：审批请求、审核步骤、目标锁和审批后的业务应用；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-review</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-tutorial。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-tutorial</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-blog。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：文章、标签、专题、归档、发布状态和公开阅读；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-blog</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-portfolio。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：作品分类、展示区块、代码库链接及关联媒体；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-portfolio</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-message。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：留言提交、审核展示和后台管理；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-message</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-english。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：文档、词汇、语法、阅读听力及复习记录；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-english</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-profile。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：个人介绍、社交链接、经历技能和精选内容；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-profile</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-analytics。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：前台访问事件、按日汇总和统计查询；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-analytics</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-site。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：站点品牌、首页内容和站点设置；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-site</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-search。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：搜索文档投影、索引重建和关键词查询；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-search</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 com.starrainnotes:star-rain-seo。
+          使用范围：compile；版本为 ${project.version}。
+          模块职责：公开 HTML 快照、规范地址、站点地图和搜索引擎通知；具体调用通过 Java 契约完成。
+        -->
         <dependency>
             <groupId>com.starrainnotes</groupId>
             <artifactId>star-rain-seo</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <!--
+          依赖 org.springframework.boot:spring-boot-starter-web。
+          使用范围：compile；版本由父项目或依赖管理提供。
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
+        <!--
+          依赖 com.mysql:mysql-connector-j。
+          使用范围：runtime；版本由父项目或依赖管理提供。
+        -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <scope>runtime</scope>
         </dependency>
+        <!--
+          依赖 org.flywaydb:flyway-core。
+          使用范围：compile；版本由父项目或依赖管理提供。
+        -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-core</artifactId>
         </dependency>
+        <!--
+          依赖 org.flywaydb:flyway-mysql。
+          使用范围：compile；版本由父项目或依赖管理提供。
+        -->
         <dependency>
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>
         </dependency>
+        <!--
+          依赖 org.springframework.boot:spring-boot-starter-test。
+          使用范围：test；版本由父项目或依赖管理提供。
+        -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -108,8 +210,18 @@
         </dependency>
     </dependencies>
 
+    <!--
+      定义编译与打包插件；是否生成可运行 JAR 取决于本模块的插件配置。
+    -->
     <build>
+        <!--
+          构建插件及其配置；执行时机由插件默认绑定或 executions 指定。
+        -->
         <plugins>
+            <!--
+              插件 org.springframework.boot:spring-boot-maven-plugin。
+              由 Spring Boot 插件重打包应用及运行时依赖，生成可直接 java -jar 启动的产物。
+            -->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

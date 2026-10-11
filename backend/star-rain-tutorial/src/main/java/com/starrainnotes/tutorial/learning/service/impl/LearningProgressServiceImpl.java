@@ -1,3 +1,11 @@
+/*
+ * LearningProgressServiceImpl：教程与学习模块的业务实现文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：CurrentActorApi、LearningProgressDTO、LearningProgressEntity、LearningInvalidRequestException、LearningResourceNotFoundException、LearningProgressMapper、LearningProgressService。
+ * 阅读入口：save（保存学习进度）；complete（完成学习进度）；chapter（章节处理入口）；tutorial（教程处理入口）。
+ */
+
 package com.starrainnotes.tutorial.learning.service.impl;
 
 import com.starrainnotes.account.api.CurrentActorApi;
@@ -19,23 +27,66 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 学习进度业务服务实现，属于教程与学习模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class LearningProgressServiceImpl implements LearningProgressService {
+    /**
+     * 提供当前认证操作者身份的跨模块接口。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi currentActorApi;
+    /**
+     * 内容。
+     */
     private final LearningContentAccess content;
+    /**
+     * 进度数据映射。
+     * 协作类型：<code>LearningProgressMapper</code>。
+     */
     private final LearningProgressMapper progressMapper;
+    /**
+     * 证据业务服务。
+     * 协作类型：<code>EvidenceLearningService</code>。
+     */
     private final EvidenceLearningService evidenceService;
+    /**
+     * 事件集合。
+     */
     private final LearningEventWriter events;
 
+    /**
+     * 账号标识处理入口。
+     * 主要协作调用：<code>currentActorApi.current</code>。
+     * @return 类型为 <code>Long</code> 的处理结果
+     */
     private Long accountId() {
         return currentActorApi.current().getAccountId();
     }
 
+    /**
+     * 行处理入口。
+     * 主要协作调用：<code>progressMapper.selectByAccountIdAndChapterId</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>Long</code>
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @return 类型为 <code>LearningProgressEntity</code> 的处理结果
+     */
     private LearningProgressEntity row(Long accountId, Long chapterId) {
         return progressMapper.selectByAccountIdAndChapterId(accountId, chapterId);
     }
 
+    /**
+     * view处理入口。
+     * 关键处理步骤调用 <code>LearningProgressVO.builder</code>、<code>String.valueOf</code>、<code>chapter.getTutorialId</code>、<code>chapter.getChapterId</code>。
+     *
+     * @param chapter 章节；类型为 <code>LearningContentAccess.ChapterRef</code>
+     * @param row 行；类型为 <code>LearningProgressEntity</code>
+     * @return 类型为 <code>LearningProgressVO</code> 的处理结果
+     */
     private LearningProgressVO view(LearningContentAccess.ChapterRef chapter, LearningProgressEntity row) {
         return LearningProgressVO.builder()
                 .tutorialId(String.valueOf(chapter.getTutorialId()))
@@ -49,6 +100,16 @@ public class LearningProgressServiceImpl implements LearningProgressService {
                 .lastStudiedAt(row == null ? null : row.getLastStudiedAt()).build();
     }
 
+    /**
+     * 保存学习进度。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>content.chapter</code>、<code>progressMapper.upsertReading</code>、<code>events.chapter</code>。
+     * 实现中的显式失败类型包括 <code>LearningInvalidRequestException</code>；具体触发条件见对应分支。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>LearningProgressDTO</code>
+     * @return 类型为 <code>LearningProgressVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public LearningProgressVO save(Long chapterId, LearningProgressDTO request) {
@@ -76,6 +137,14 @@ public class LearningProgressServiceImpl implements LearningProgressService {
         return view(chapter, row(actor, chapterId));
     }
 
+    /**
+     * 完成学习进度。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>content.chapter</code>、<code>evidenceService.completeChapter</code>。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @return 类型为 <code>LearningProgressVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public LearningProgressVO complete(Long chapterId) {
@@ -85,12 +154,26 @@ public class LearningProgressServiceImpl implements LearningProgressService {
         return view(chapter, row(actor, chapterId));
     }
 
+    /**
+     * 章节处理入口。
+     * 主要协作调用：<code>content.chapter</code>。
+     *
+     * @param chapterId 章节标识；类型为 <code>Long</code>
+     * @return 类型为 <code>LearningProgressVO</code> 的处理结果
+     */
     @Override
     public LearningProgressVO chapter(Long chapterId) {
         LearningContentAccess.ChapterRef chapter = content.chapter(chapterId);
         return view(chapter, row(accountId(), chapterId));
     }
 
+    /**
+     * 教程处理入口。
+     * 主要协作调用：<code>progressMapper.listByAccountIdAndTutorialId</code>、<code>content.chapters</code>。
+     *
+     * @param tutorialId 教程标识；类型为 <code>Long</code>
+     * @return 类型为 <code>LearningTutorialProgressVO</code> 的处理结果
+     */
     @Override
     public LearningTutorialProgressVO tutorial(Long tutorialId) {
         Long actor = accountId();
@@ -110,6 +193,11 @@ public class LearningProgressServiceImpl implements LearningProgressService {
                 .totalChapters(rows.size()).completedChapters(completed).chapters(rows).build();
     }
 
+    /**
+     * recent处理入口。
+     * 主要协作调用：<code>progressMapper.listRecentByAccountId</code>、<code>content.chapter</code>。
+     * @return 本次处理得到的条目集合
+     */
     @Override
     public List<LearningProgressVO> recent() {
         Long actor = accountId();

@@ -1,3 +1,11 @@
+/*
+ * BlogPostServiceImpl：博客模块的业务实现文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：CurrentActorApi、BlogLimits、BlogMediaReference、BlogPostChangedEvent、BlogPostBodyDTO、BlogPostCreateDTO、BlogPostQueryDTO。
+ * 阅读入口：page（分页读取博客文章）；detail（读取详情博客文章）；preview（预览博客文章）；create（创建博客文章）。
+ */
+
 package com.starrainnotes.blog.service.impl;
 
 import com.starrainnotes.account.api.CurrentActorApi;
@@ -58,17 +66,58 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
  *    Media 的归档保护随之失效（媒体被归档，文章封面变成 404）。
  * 2. Tag 绑定只允许 ENABLED：停用标签的历史绑定保留，但不再接受新的绑定。
  */
+/**
+ * 博客文章业务服务实现，属于博客模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class BlogPostServiceImpl implements BlogPostService {
 
+    /**
+     * 文章数据映射。
+     * 协作类型：<code>BlogPostMapper</code>。
+     */
     private final BlogPostMapper postMapper;
+    /**
+     * 标签数据映射。
+     * 协作类型：<code>BlogTagMapper</code>。
+     */
     private final BlogTagMapper tagMapper;
+    /**
+     * 专题数据映射。
+     * 协作类型：<code>BlogTopicMapper</code>。
+     */
     private final BlogTopicMapper topicMapper;
+    /**
+     * 媒体引用接口。
+     * 协作类型：<code>MediaReferenceApi</code>。
+     */
     private final MediaReferenceApi mediaReferenceApi;
+    /**
+     * 提供当前认证操作者身份的跨模块接口。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi currentActorApi;
+    /**
+     * 组装器。
+     */
     private final BlogViewAssembler assembler;
+    /**
+     * 事件发布器。
+     */
     private final ApplicationEventPublisher eventPublisher;
 
+    /**
+     * 构造BlogPostServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param postMapper 文章数据映射；类型为 <code>BlogPostMapper</code>
+     * @param tagMapper 标签数据映射；类型为 <code>BlogTagMapper</code>
+     * @param topicMapper 专题数据映射；类型为 <code>BlogTopicMapper</code>
+     * @param mediaReferenceApi 媒体引用接口；类型为 <code>MediaReferenceApi</code>
+     * @param currentActorApi 提供当前认证操作者身份的跨模块接口；类型为 <code>CurrentActorApi</code>
+     * @param assembler 组装器；类型为 <code>BlogViewAssembler</code>
+     * @param eventPublisher 事件发布器；类型为 <code>ApplicationEventPublisher</code>
+     */
     public BlogPostServiceImpl(BlogPostMapper postMapper,
                                BlogTagMapper tagMapper,
                                BlogTopicMapper topicMapper,
@@ -85,6 +134,14 @@ public class BlogPostServiceImpl implements BlogPostService {
         this.eventPublisher = eventPublisher;
     }
 
+    /**
+     * 分页读取博客文章。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.adminPageCount</code>、<code>assembler.toAdminVOs</code>、<code>postMapper.adminPage</code>。
+     *
+     * @param query 查询参数；类型为 <code>BlogPostQueryDTO</code>
+     * @return 类型为 <code>PageResult&lt;BlogPostAdminVO&gt;</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public PageResult<BlogPostAdminVO> page(BlogPostQueryDTO query) {
@@ -108,6 +165,14 @@ public class BlogPostServiceImpl implements BlogPostService {
                 .build();
     }
 
+    /**
+     * 读取详情博客文章。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>assembler.toAdminDetailVO</code>。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogPostAdminDetailVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public BlogPostAdminDetailVO detail(Long postId) {
@@ -115,12 +180,29 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     // 预览与详情同一份数据：差异只在前端呈现方式（预览按公开样式渲染）
+    /**
+     * 预览博客文章。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>assembler.toAdminDetailVO</code>。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogPostAdminDetailVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public BlogPostAdminDetailVO preview(Long postId) {
         return assembler.toAdminDetailVO(requirePost(postId));
     }
 
+    /**
+     * 创建博客文章。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.countBySlug</code>、<code>postMapper.insertPost</code>、<code>mediaReferenceApi.attach</code>、<code>assembler.toAdminVO</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostSlugConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>BlogPostCreateDTO</code>
+     * @return 类型为 <code>BlogPostAdminVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public BlogPostAdminVO create(BlogPostCreateDTO request) {
@@ -180,6 +262,16 @@ public class BlogPostServiceImpl implements BlogPostService {
         return assembler.toAdminVO(requirePost(entity.getId()));
     }
 
+    /**
+     * 更新博客文章。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.countBySlug</code>、<code>postMapper.updatePostMeta</code>、<code>postMapper.updatePostCover</code>、<code>mediaReferenceApi.attach</code>、<code>mediaReferenceApi.detach</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostSlugConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>BlogPostUpdateDTO</code>
+     * @return 类型为 <code>BlogPostAdminVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public BlogPostAdminVO update(Long postId, BlogPostUpdateDTO request) {
@@ -234,6 +326,15 @@ public class BlogPostServiceImpl implements BlogPostService {
         return assembler.toAdminVO(requirePost(postId));
     }
 
+    /**
+     * 更新正文。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>postMapper.updatePostBody</code>、<code>mediaReferenceApi.detachAll</code>、<code>mediaReferenceApi.attach</code>、<code>assembler.toAdminDetailVO</code>。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>BlogPostBodyDTO</code>
+     * @return 类型为 <code>BlogPostAdminDetailVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public BlogPostAdminDetailVO updateBody(Long postId, BlogPostBodyDTO request) {
@@ -267,6 +368,14 @@ public class BlogPostServiceImpl implements BlogPostService {
         return assembler.toAdminDetailVO(requirePost(postId));
     }
 
+    /**
+     * 删除博客文章。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>topicMapper.topicsByPostId</code>、<code>tagMapper.deletePostTagsByPostId</code>、<code>topicMapper.deleteTopicPostsByPostId</code>、<code>mediaReferenceApi.detachAll</code>、<code>postMapper.deletePost</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostStateInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     */
     @Override
     @Transactional
     public void delete(Long postId) {
@@ -303,12 +412,27 @@ public class BlogPostServiceImpl implements BlogPostService {
     // 内部工具
     // ------------------------------------------------------------------
 
+    /**
+     * 事件之后Commit处理入口。
+     * 主要协作调用：<code>eventPublisher.publishEvent</code>。
+     *
+     * @param event 事件；类型为 <code>BlogPostChangedEvent</code>
+     */
     private void eventAfterCommit(BlogPostChangedEvent event) {
         if (!TransactionSynchronizationManager.isSynchronizationActive()) {
             eventPublisher.publishEvent(event);
             return;
         }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
+    /**
+     * 当前调用使用的匿名协作实现，属于博客模块。
+     * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+     */
+    {
+            /**
+             * 之后Commit处理入口。
+             * 关键处理步骤调用 <code>eventPublisher.publishEvent</code>。
+             */
             @Override
             public void afterCommit() {
                 eventPublisher.publishEvent(event);
@@ -316,6 +440,14 @@ public class BlogPostServiceImpl implements BlogPostService {
         });
     }
 
+    /**
+     * 检查所需文章。
+     * 主要协作调用：<code>postMapper.postById</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogPostEntity</code> 的处理结果
+     */
     private BlogPostEntity requirePost(Long postId) {
         BlogPostEntity post = postId == null ? null : postMapper.postById(postId);
         if (post == null) {
@@ -324,6 +456,14 @@ public class BlogPostServiceImpl implements BlogPostService {
         return post;
     }
 
+    /**
+     * 检查所需文章面向更新。
+     * 主要协作调用：<code>postMapper.postByIdForUpdate</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostNotFoundException</code>；具体触发条件见对应分支。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     * @return 类型为 <code>BlogPostEntity</code> 的处理结果
+     */
     private BlogPostEntity requirePostForUpdate(Long postId) {
         BlogPostEntity post = postId == null ? null : postMapper.postByIdForUpdate(postId);
         if (post == null) {
@@ -332,10 +472,23 @@ public class BlogPostServiceImpl implements BlogPostService {
         return post;
     }
 
+    /**
+     * 当前账号标识处理入口。
+     * 主要协作调用：<code>currentActorApi.current</code>。
+     * @return 类型为 <code>Long</code> 的处理结果
+     */
     private Long currentAccountId() {
         return currentActorApi.current().getAccountId();
     }
 
+    /**
+     * 检查所需固定链接标识。
+     * 关键处理步骤调用 <code>BlogSlugRules.normalize</code>、<code>BlogSlugRules.isValid</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostSlugInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String requireSlug(String raw) {
         String slug = BlogSlugRules.normalize(raw);
         if (!BlogSlugRules.isValid(slug, BlogLimits.POST_SLUG_MAX_LENGTH)) {
@@ -345,6 +498,14 @@ public class BlogPostServiceImpl implements BlogPostService {
         return slug;
     }
 
+    /**
+     * 检查所需标题。
+     * 关键处理步骤调用 <code>BlogTextRules.normalizeName</code>、<code>title.length</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostTitleInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String requireTitle(String raw) {
         String title = BlogTextRules.normalizeName(raw);
         if (title == null) {
@@ -357,6 +518,14 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     // 空字符串表示“清空摘要”（发布时会按正文派生一份），null 由调用方解释为“不修改”
+    /**
+     * 规范化摘要。
+     * 关键处理步骤调用 <code>raw.trim</code>、<code>summary.isEmpty</code>、<code>summary.length</code>。
+     * 实现中的显式失败类型包括 <code>BlogPostSummaryInvalidException</code>；具体触发条件见对应分支。
+     *
+     * @param raw 原始；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String normalizeSummary(String raw) {
         if (raw == null) {
             return null;
@@ -377,6 +546,14 @@ public class BlogPostServiceImpl implements BlogPostService {
      *
      * 先加后删：中途失败时宁可在事务回滚后回到原状，也不要出现“既没加也没删”的中间态。
      * 停用标签只拦新绑定：已经绑定的停用标签保留历史关系，否则停用一个标签会静默改写历史文章。
+     */
+    /**
+     * 同步标签列表。
+     * 主要协作调用：<code>tagMapper.tagsByPostId</code>、<code>tagMapper.tagByIdForUpdate</code>、<code>tagMapper.insertPostTag</code>、<code>tagMapper.deletePostTag</code>。
+     * 实现中的显式失败类型包括 <code>BlogTagNotFoundException</code>、<code>BlogTagDisabledException</code>；具体触发条件见对应分支。
+     *
+     * @param postId 文章标识；类型为 <code>Long</code>
+     * @param tagIds 标签标识集合；类型为 <code>List&lt;Long&gt;</code>
      */
     private void syncTags(Long postId, List<Long> tagIds) {
         Set<Long> target = new LinkedHashSet<>();
@@ -413,6 +590,12 @@ public class BlogPostServiceImpl implements BlogPostService {
     }
 
     // 删除文章后把受影响专题的序号重排回 1..n，保持“下一个序号 = 最大值 + 1”
+    /**
+     * compact顺序处理入口。
+     * 主要协作调用：<code>topicMapper.topicMembers</code>、<code>topicMapper.updateTopicOrder</code>。
+     *
+     * @param topicId 专题标识；类型为 <code>Long</code>
+     */
     private void compactOrder(Long topicId) {
         List<BlogTopicMemberRow> members = topicMapper.topicMembers(topicId);
         if (members.isEmpty()) {

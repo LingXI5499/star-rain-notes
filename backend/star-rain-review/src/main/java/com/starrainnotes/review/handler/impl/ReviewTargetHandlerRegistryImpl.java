@@ -1,3 +1,11 @@
+/*
+ * ReviewTargetHandlerRegistryImpl：审核模块的模块支持文件。
+ * 业务范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
+ * 主要协作类型：ReviewTargetHandler、ReviewTargetRef、ReviewTargetView、ReviewDecisionConflictException、ReviewTargetNotSupportedException、ReviewTargetHandlerRegistry。
+ * 阅读入口：require（检查所需审核目标处理器Registry实现）；supports（判断是否支持审核目标处理器Registry实现）；loadView（加载View）。
+ */
+
 package com.starrainnotes.review.handler.impl;
 
 import com.starrainnotes.review.api.ReviewTargetHandler;
@@ -25,16 +33,39 @@ import org.springframework.stereotype.Component;
  * Handler 在构造时一次性拷贝，运行期不再变化；业务模块在启动时注册 Bean，
  * 因此这里不存在并发可见性问题，拷贝同时也防止外部 list 被改动影响路由结果。
  */
+/**
+ * 审核目标处理器Registry实现，属于审核模块。
+ * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
+ */
 @Component
 public class ReviewTargetHandlerRegistryImpl implements ReviewTargetHandlerRegistry {
 
+    /**
+     * handlers。
+     */
     private final List<ReviewTargetHandler> handlers;
 
+    /**
+     * 构造ReviewTargetHandlerRegistryImpl，接收本类使用的依赖或初始化参数。
+     * 关键处理步骤调用 <code>List.copyOf</code>。
+     *
+     * @param handlers handlers；类型为 <code>List&lt;ReviewTargetHandler&gt;</code>
+     */
     public ReviewTargetHandlerRegistryImpl(List<ReviewTargetHandler> handlers) {
         // 只做一次拷贝，防止外部 list 后续被改动影响路由结果
         this.handlers = List.copyOf(handlers);
     }
 
+    /**
+     * 检查所需审核目标处理器Registry实现。
+     * 关键处理步骤调用 <code>find</code>。
+     * 实现中的显式失败类型包括 <code>ReviewTargetNotSupportedException</code>；具体触发条件见对应分支。
+     *
+     * @param targetModule 目标对象所属模块；类型为 <code>String</code>
+     * @param targetType 目标对象的业务类型；类型为 <code>String</code>
+     * @param reviewType 审核类型；类型为 <code>String</code>
+     * @return 类型为 <code>ReviewTargetHandler</code> 的处理结果
+     */
     @Override
     public ReviewTargetHandler require(String targetModule, String targetType, String reviewType) {
         ReviewTargetHandler handler = find(targetModule, targetType, reviewType);
@@ -44,11 +75,28 @@ public class ReviewTargetHandlerRegistryImpl implements ReviewTargetHandlerRegis
         return handler;
     }
 
+    /**
+     * 判断是否支持审核目标处理器Registry实现。
+     * 关键处理步骤调用 <code>find</code>。
+     *
+     * @param targetModule 目标对象所属模块；类型为 <code>String</code>
+     * @param targetType 目标对象的业务类型；类型为 <code>String</code>
+     * @param reviewType 审核类型；类型为 <code>String</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     @Override
     public boolean supports(String targetModule, String targetType, String reviewType) {
         return find(targetModule, targetType, reviewType) != null;
     }
 
+    /**
+     * 加载View。
+     * 关键处理步骤调用 <code>find</code>、<code>target.getTargetModule</code>、<code>target.getTargetType</code>、<code>handler.loadReviewView</code>。
+     *
+     * @param target 目标；类型为 <code>ReviewTargetRef</code>
+     * @param reviewType 审核类型；类型为 <code>String</code>
+     * @return 类型为 <code>ReviewTargetView</code> 的处理结果
+     */
     @Override
     public ReviewTargetView loadView(ReviewTargetRef target, String reviewType) {
         if (target == null) {
@@ -58,6 +106,16 @@ public class ReviewTargetHandlerRegistryImpl implements ReviewTargetHandlerRegis
         return handler == null ? null : handler.loadReviewView(target);
     }
 
+    /**
+     * 查找审核目标处理器Registry实现。
+     * 关键处理步骤调用 <code>handler.supports</code>。
+     * 实现中的显式失败类型包括 <code>ReviewDecisionConflictException</code>；具体触发条件见对应分支。
+     *
+     * @param targetModule 目标对象所属模块；类型为 <code>String</code>
+     * @param targetType 目标对象的业务类型；类型为 <code>String</code>
+     * @param reviewType 审核类型；类型为 <code>String</code>
+     * @return 类型为 <code>ReviewTargetHandler</code> 的处理结果
+     */
     private ReviewTargetHandler find(String targetModule, String targetType, String reviewType) {
         if (targetModule == null || targetType == null) {
             return null;

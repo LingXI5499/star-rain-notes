@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * StudyPlanPage.vue：教程与学习模块的页面组件。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：vue、vue-router、../../components/LearningNav.vue、../../components/LearningScopePicker.vue、../../api/tutorialApi、../../api/learningApi。
+ * 主要响应式状态：route、router、plans、selected、tutorials、detail、preview、loading。
+ * 阅读入口：loadTutorial（加载教程）；load（加载当前操作）；editPlan（edit计划的处理函数）；run（运行当前操作）；payload（本次提交的数据的处理函数）。
+ */
+
+
 import { computed, onMounted, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import LearningNav from '../../components/LearningNav.vue'
@@ -11,19 +21,70 @@ import { accountPath } from '../../../../shared/viewMode'
 import { errorMessage } from '../../../../shared/http'
 import { chapterPlanRestriction, selectedScopeChapters } from '../../support/studyPlanScope'
 import '../../styles/learning.css'
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute(), router = useRouter()
+/**
+ * plans；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const plans = ref([]), selected = ref(null), tutorials = ref([]), detail = ref(null), preview = ref(null)
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(true), busy = ref(false), error = ref(''), notice = ref(''), editing = ref(false)
+/**
+ * catalogLoading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const catalogLoading = ref(false), catalogError = ref(''), actionError = ref('')
+/**
+ * 预览Definition；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const previewDefinition = ref('')
+/**
+ * form；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const form = reactive({ tutorialId: '', name: '', entireTutorial: false, groupIds: [], chapterIds: [], targetCardsPerTask: 12 })
+/**
+ * creating；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const creating = computed(() => route.params.planId === 'new')
+/**
+ * form可见；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const formVisible = computed(() => creating.value || editing.value)
+/**
+ * 有效Plans；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const activePlans = computed(() => currentPlans(plans.value))
+/**
+ * unfinished；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const unfinished = computed(() => activePlans.value.length)
+/**
+ * 剩余Tasks；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const remainingTasks = computed(() => selected.value?.tasks?.filter(t => t.status !== 'COMPLETED') || [])
+/**
+ * restrictions；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const restrictions = computed(() => Object.fromEntries((detail.value?.groups || []).flatMap(group => group.chapters || [])
  .map(chapter => [String(chapter.id), chapterPlanRestriction(chapter, plans.value, selected.value?.id)])))
+/**
+ * scopeIssue；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const scopeIssue = computed(() => {
  if (!form.tutorialId) return '请先选择教程。'
  if (catalogLoading.value) return '正在读取教程和可学习范围…'
@@ -37,19 +98,46 @@ const scopeIssue = computed(() => {
  if (unavailable.length) return `已选范围中有 ${unavailable.length} 章暂不可加入：${unavailable[0].title}。请取消这些章节，或点击“选中所有可加入章节”。`
  return ''
 })
+/**
+ * can预览；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const canPreview = computed(() => !busy.value && !scopeIssue.value && !!form.name.trim()
  && Number(form.targetCardsPerTask) >= 5 && Number(form.targetCardsPerTask) <= 30
  && (!creating.value || unfinished.value < 5))
+/**
+ * 预览当前；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const previewCurrent = computed(() => !!preview.value && previewDefinition.value === JSON.stringify(payload()))
 let catalogVersion = 0
+/**
+ * 加载教程。
+ * 主要协作：tutorials.value.find、getPublicTutorial、errorMessage。
+ * 更新的响应式状态包括 detail、catalogLoading、catalogError；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadTutorial() {
  const version = ++catalogVersion; detail.value = null; catalogLoading.value = true; catalogError.value = ''
  try { const tutorial = tutorials.value.find(t => String(t.id) === String(form.tutorialId)); const result = tutorial ? await getPublicTutorial(tutorial.slug) : null; if (version === catalogVersion) detail.value = result }
  catch (e) { if (version === catalogVersion) catalogError.value = errorMessage(e) }
  finally { if (version === catalogVersion) catalogLoading.value = false }
 }
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => form.tutorialId, () => { preview.value = null; loadTutorial() })
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => JSON.stringify(form), () => { preview.value = null; previewDefinition.value = ''; actionError.value = '' })
+/**
+ * 加载当前操作。
+ * 主要协作：Promise.all、listStudyPlans、listPublicTutorials、getStudyPlan、Object.assign。
+ * 更新的响应式状态包括 loading、error、actionError、selected、editing、preview、plans；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function load() {
  loading.value = true; error.value = ''; actionError.value = ''; selected.value = null; editing.value = false; preview.value = null
  try { const [rows, catalog] = await Promise.all([listStudyPlans(), listPublicTutorials({ page: 1, pageSize: 100 })]); plans.value = rows; tutorials.value = catalog.items || []
@@ -60,10 +148,38 @@ async function load() {
   }
  } catch (e) { error.value = errorMessage(e) } finally { loading.value = false }
 }
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => route.params.planId, load)
+/**
+ * edit计划的处理函数。
+ * 主要协作：Object.assign、selected.value.chapters.map、loadTutorial。
+ * 更新的响应式状态包括 editing；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function editPlan() { Object.assign(form, { tutorialId: selected.value.tutorialId, name: selected.value.name, entireTutorial: false, groupIds: [], chapterIds: selected.value.chapters.map(c => c.chapterId), targetCardsPerTask: selected.value.targetCardsPerTask }); editing.value = true; await loadTutorial() }
+/**
+ * 运行当前操作。
+ * 主要协作：action、errorMessage、.includes、Promise.allSettled、loadTutorial。
+ * 更新的响应式状态包括 busy、actionError、notice、preview、plans；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param action 动作；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function run(action) { if (busy.value) return; busy.value = true; actionError.value = ''; notice.value = ''; try { await action() } catch (e) { actionError.value = e instanceof Error && !e.isAxiosError ? e.message : errorMessage(e); if (formVisible.value && [400,409].includes(e.response?.status)) { preview.value = null; await Promise.allSettled([loadTutorial(), listStudyPlans().then(rows => { plans.value = rows })]) } } finally { busy.value = false } }
+/**
+ * 本次提交的数据的处理函数。
+ * 主要协作：form.name.trim。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function payload() { return { ...form, name: form.name.trim(), groupIds: [...form.groupIds], chapterIds: [...form.chapterIds], targetCardsPerTask: Number(form.targetCardsPerTask) } }
+/**
+ * 预览Tasks。
+ * 主要协作：payload、run、previewStudyPlan、JSON.stringify。
+ * 更新的响应式状态包括 previewDefinition、preview；渲染由 Vue 的依赖跟踪触发。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const previewTasks = () => {
  if (!canPreview.value) return
  const definition = payload(), excludePlanId = selected.value?.id
@@ -73,6 +189,13 @@ const previewTasks = () => {
   previewDefinition.value = JSON.stringify(definition); preview.value = result
  })
 }
+/**
+ * 保存当前操作。
+ * 主要协作：run、updateStudyPlan、payload、createStudyPlan、transitionStudyPlan。
+ * 更新的响应式状态包括 editing、notice、actionError；渲染由 Vue 的依赖跟踪触发。
+ * @param activate = false activatefalse；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const save = (activate = false) => {
  if (!canPreview.value || !previewCurrent.value) return
  return run(async () => {
@@ -89,7 +212,20 @@ const save = (activate = false) => {
   actionError.value = activationError
  })
 }
+/**
+ * transition的处理函数。
+ * 主要协作：run、transitionStudyPlan、listStudyPlans。
+ * 更新的响应式状态包括 selected、plans；渲染由 Vue 的依赖跟踪触发。
+ * @param action 动作；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const transition = (action) => run(async () => { selected.value = await transitionStudyPlan(selected.value.id, action); plans.value = await listStudyPlans() })
+/**
+ * 开始计划章节的处理函数。
+ * 主要协作：nextPlanChapter、planChapterRoute、plan.tasks.find、t.chapters.some、startStudyTask。
+ * @param plan 计划；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function startPlanChapter(plan) {
  const chapter = nextPlanChapter(plan)
  const target = planChapterRoute(plan, chapter)
@@ -97,6 +233,13 @@ async function startPlanChapter(plan) {
  if (task) await startStudyTask(task.id)
  await router.push(target)
 }
+/**
+ * 开始计划的处理函数。
+ * 主要协作：run、getStudyPlan、transitionStudyPlan、nextPlanChapter、listStudyPlans。
+ * 更新的响应式状态包括 selected、plans、notice；渲染由 Vue 的依赖跟踪触发。
+ * @param p p；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function startPlan(p) {
  if (busy.value) return
  await run(async () => {
@@ -112,6 +255,9 @@ async function startPlan(p) {
   await startPlanChapter(plan)
  })
 }
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(load)
 </script>
 <template><main class="learning-page">

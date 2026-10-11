@@ -1,3 +1,12 @@
+/**
+ * VocabularyThemePage.spec.js：英语学习模块的自动化测试。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue-router、vitest、./VocabularyThemePage.vue、../../api/vocabularyLearningApi。
+ * 阅读入口：button（button的处理函数）；setup（setup的处理函数）。
+ * 验证场景：vocabulary toolbar and working filters；debounces search, resets pagination and preserves the query on browser back；uses only the card action and retains explicit selection across pages and filters；does not filter intermediate Chinese composition text；gives guests a login link instead of unusable personal dropdowns。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -13,7 +22,20 @@ vi.mock('../../api/englishApi', () => api)
 vi.mock('../../api/vocabularyLearningApi', async () => ({ ...(await vi.importActual('../../api/vocabularyLearningApi')), ...api }))
 vi.mock('../../../../shared/viewMode', () => ({ useViewMode: () => ({ contentPath: path => path }) }))
 const mounted = []
+/**
+ * button的处理函数。
+ * 主要协作：.find、wrapper.findAll、.includes、item.text、item.attributes。
+ * @param wrapper wrapper；默认值、解构字段与可选参数见函数签名。
+ * @param text 文本；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const button = (wrapper, text) => wrapper.findAll('button').find(item => item.text().includes(text) || item.attributes('aria-label') === text)
+/**
+ * setup的处理函数。
+ * 主要协作：createRouter、createMemoryHistory、router.push、mount、mounted.push。
+ * @param query = '' 查询；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function setup(query = '') {
   const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/english/vocabulary/:themeId', component: VocabularyThemePage }] })
   await router.push('/english/vocabulary/3' + query)

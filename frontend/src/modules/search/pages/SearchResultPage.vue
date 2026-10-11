@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * SearchResultPage.vue：搜索模块的页面组件。
+ * 职责范围：搜索文档投影、索引重建和关键词查询。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：../../../shared/ui/PublicSearch.vue、../../../shared/ui/PublicFilterBar.vue、../../../shared/ui/PublicFilterTabs.vue、../../../shared/ui/PublicPagination.vue、../../../shared/composables/publicListState、vue。
+ * 主要响应式状态：route、router、q、loading、error、result、activeType、page。
+ * 阅读入口：changeSize（change大小的处理函数）；navigate（跳转当前操作）。
+ */
+
+
 import PublicSearch from '../../../shared/ui/PublicSearch.vue'
 import PublicFilterBar from '../../../shared/ui/PublicFilterBar.vue'
 import PublicFilterTabs from '../../../shared/ui/PublicFilterTabs.vue'
@@ -11,12 +21,34 @@ import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import { search } from '../api/searchApi'
 
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
 const { contentPath } = useViewMode()
+/**
+ * q；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const q = ref(String(route.query.q || ''))
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * 错误；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const error = ref('')
+/**
+ * 结果；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const result = ref({ items: [], total: 0, page: 1, pageSize: 20 })
 const types = [
   { value: '', label: '全部' },
@@ -36,12 +68,34 @@ const typeLabel = {
   ENGLISH_READING: '英语阅读',
   ENGLISH_WRITING: '英语原创写作',
 }
+/**
+ * 有效类型；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const activeType = computed(() => String(route.query.type || ''))
+/**
+ * 分页页码；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const page = computed(() => publicPage(route.query.page))
+/**
+ * 单页返回条目数；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const pageSize = computed(() => publicPageSize(route.query.pageSize, 20, [10, 20, 50]))
+/**
+ * change大小的处理函数。
+ * 主要协作：navigate、sizeQuery。
+ * @param size 大小；默认值、解构字段与可选参数见函数签名。
+ */
 function changeSize(size) { navigate(sizeQuery(route.query, size, 20)) }
 let request = null
 
+/**
+ * 跳转当前操作。
+ * 主要协作：q.value.trim、router.push、contentPath。
+ * @param next = {} 下一项；默认值、解构字段与可选参数见函数签名。
+ */
 function navigate(next = {}) {
   const query = { ...route.query, q: q.value.trim(), ...(activeType.value ? { type: activeType.value } : {}), ...next }
   if (!query.type) delete query.type
@@ -49,6 +103,9 @@ function navigate(next = {}) {
   router.push({ path: contentPath('/search'), query })
 }
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => [route.query.q, route.query.type, route.query.page, route.query.pageSize], async () => {
   request?.abort()
   loading.value = false
@@ -69,6 +126,9 @@ watch(() => [route.query.q, route.query.type, route.query.page, route.query.page
   }
 }, { immediate: true })
 
+/**
+ * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
+ */
 onBeforeUnmount(() => request?.abort())
 </script>
 
@@ -103,28 +163,122 @@ onBeforeUnmount(() => request?.abort())
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.search-page > .public-filters。
+ */
 .search-page > .public-filters { margin-top: 28px; }
+/**
+ * 样式范围：.search-page。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .search-page { max-width: 940px; margin: 0 auto; padding: clamp(32px, 5vw, 72px) 24px 100px; color: var(--text-primary); }
+/**
+ * 样式范围：.eyebrow。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .eyebrow { color: var(--accent, var(--primary)); font-size: 11px; font-weight: 700; letter-spacing: .15em; }
+/**
+ * 样式范围：h1。
+ */
 h1 { margin: 8px 0 12px; font-size: clamp(34px, 5vw, 54px); }
+/**
+ * 样式范围：header > p:last-child。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 header > p:last-child { color: var(--text-secondary); }
+/**
+ * 样式范围：.search-form。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .search-form { display: flex; gap: 10px; margin-top: 32px; }
+/**
+ * 样式范围：.search-form input。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .search-form input { flex: 1; min-width: 0; min-height: 50px; padding: 0 16px; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--bg-surface); color: var(--text-primary); font: inherit; }
+/**
+ * 样式范围：.search-form button, .pagination button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .search-form button, .pagination button { padding: 0 20px; border: 1px solid var(--primary); border-radius: var(--radius-md); background: var(--primary); color: white; cursor: pointer; }
+/**
+ * 样式范围：.filters。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0; }
+/**
+ * 样式范围：.filters button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .filters button { padding: 8px 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--bg-surface); color: var(--text-secondary); cursor: pointer; }
+/**
+ * 样式范围：.filters button.active。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .filters button.active { border-color: var(--primary); color: var(--primary); font-weight: 700; }
+/**
+ * 样式范围：.state。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .state { padding: 36px 0; color: var(--text-secondary); }
+/**
+ * 样式范围：.state.error。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .state.error { color: var(--danger, #a43d31); }
+/**
+ * 样式范围：.count。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .count { color: var(--text-muted); font-size: 13px; }
+/**
+ * 样式范围：.results。
+ */
 .results { margin: 16px 0 28px; padding: 0; list-style: none; }
+/**
+ * 样式范围：.results li。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .results li { padding: 22px 0; border-bottom: 1px solid var(--border); }
+/**
+ * 样式范围：.type。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .type { color: var(--primary); font-size: 12px; font-weight: 700; }
+/**
+ * 样式范围：.results h2。
+ */
 .results h2 { margin: 8px 0; font-size: 22px; }
+/**
+ * 样式范围：.results a。
+ */
 .results a { color: inherit; text-decoration: none; }
+/**
+ * 样式范围：.results a:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .results a:hover { color: var(--primary); }
+/**
+ * 样式范围：.results li p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .results li p { margin: 0; color: var(--text-secondary); line-height: 1.7; }
+/**
+ * 样式范围：.pagination。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .pagination { display: flex; align-items: center; justify-content: center; gap: 18px; }
+/**
+ * 样式范围：.pagination button。
+ */
 .pagination button { min-height: 38px; }
+/**
+ * 样式范围：.pagination button:disabled。
+ */
 .pagination button:disabled { opacity: .4; cursor: default; }
 </style>

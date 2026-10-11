@@ -1,11 +1,18 @@
 <!doctype html>
 <html lang="zh-CN">
+  <!--
+    入口头部：语言、字符集、适配视口和搜索元信息；动态路由的元信息由前端 SEO 逻辑更新。
+  -->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="系统整理 Java 全栈、计算机基础、软件工程与英语学习内容，用真实项目验证学习与成长。" />
     <meta name="theme-color" content="#0F3D36" />
-    <script>
+    <!--
+    首屏同步主题：在 Vue 挂载前读取浏览器主题偏好；localStorage 不可用时使用浅色。
+    同时同步 color-scheme 与 theme-color，减少页面首次加载时的明暗闪烁。
+  -->
+  <script>
       (() => {
         let theme = 'light'
         try { theme = localStorage.getItem('star-rain-theme') === 'dark' ? 'dark' : 'light' } catch {}
@@ -15,15 +22,33 @@
       })()
     </script>
     <title>星雨笔录 | Java 全栈、计算机基础与技术学习笔记</title>
-    <link rel="icon" href="/brand/favicon.png" type="image/png" sizes="64x64" data-brand-icon />
+    <!--
+    站点图标及兼容格式；PNG 与 ICO 分别服务于不同浏览器能力。
+  -->
+  <link rel="icon" href="/brand/favicon.png" type="image/png" sizes="64x64" data-brand-icon />
     <link rel="icon" href="/brand/favicon.ico" sizes="any" />
     <link rel="apple-touch-icon" href="/brand/apple-touch-icon.png" />
-    <link rel="manifest" href="/brand/site.webmanifest" data-brand-manifest />
-    <link rel="preload" href="/brand/favicon.png" as="image" type="image/png" />
+    <!--
+    Web 应用清单提供安装名称和图标；品牌切换逻辑可更新带标记的资源。
+  -->
+  <link rel="manifest" href="/brand/site.webmanifest" data-brand-manifest />
+    <!--
+    提前获取品牌图像；是否产生未使用预加载提示取决于实际页面消费时机。
+  -->
+  <link rel="preload" href="/brand/favicon.png" as="image" type="image/png" />
     <link rel="preload" href="/brand/mark.svg" as="image" type="image/svg+xml" />
   </head>
+  <!--
+    页面主体；入口容器交由 Vue 管理。
+  -->
   <body>
-    <div id="app"></div>
-    <script type="module" src="/src/main.js"></script>
+    <!--
+    Vue 挂载点；main.js 装配路由、状态管理和共享外壳。
+  -->
+  <div id="app"></div>
+    <!--
+    Vite 构建入口：开发载入源码模块，生产构建会改写为带摘要的静态资源地址。
+  -->
+  <script type="module" src="/src/main.js"></script>
   </body>
 </html>

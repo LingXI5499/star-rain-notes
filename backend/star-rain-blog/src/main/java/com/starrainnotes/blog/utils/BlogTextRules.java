@@ -1,3 +1,10 @@
+/*
+ * BlogTextRules：博客模块的工具文件。
+ * 业务范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 封装本模块重复使用的转换、计算或校验步骤，具体边界条件由方法注释与实现保持一致。
+ * 阅读入口：hasText（判断是否具备文本）；length（length处理入口）；deriveSummary（推导摘要）；publicSummary（公开摘要处理入口）。
+ */
+
 package com.starrainnotes.blog.utils;
 
 import java.util.Locale;
@@ -9,24 +16,60 @@ import java.util.regex.Pattern;
  * 摘要允许留空：作者写正文时往往不想再写一遍摘要，
  * 发布时若摘要为空就从句首派生一段，比强制填写更容易被坚持使用。
  */
+/**
+ * 博客文本规则，属于博客模块。
+ * 封装本模块重复使用的转换、计算或校验步骤，具体边界条件由方法注释与实现保持一致。
+ */
 public final class BlogTextRules {
 
     // 与 sr_blog_post.summary 的列长度一致，Service 先拒绝避免 MySQL 抛 500
+    /**
+     * LENGTH。
+     * 初始值为 <code>1000</code>。
+     */
     public static final int SUMMARY_MAX_LENGTH = 1000;
+    /**
+     * LENGTH。
+     * 初始值为 <code>255</code>。
+     */
     public static final int TITLE_MAX_LENGTH = 255;
 
     // 派生摘要的长度：短到能进列表卡片，又足以说明文章在讲什么
+    /**
+     * LENGTH。
+     * 初始值为 <code>200</code>。
+     */
     private static final int DERIVED_SUMMARY_LENGTH = 200;
+    /**
+     * MATH。
+     */
     private static final Pattern INLINE_DOLLAR_MATH = Pattern.compile("\\$[^$\\n]+\\$");
 
+    /**
+     * 构造BlogTextRules，接收本类使用的依赖或初始化参数。
+     */
     private BlogTextRules() {
     }
 
+    /**
+     * 判断是否具备文本。
+     * 关键处理步骤调用 <code>value.isBlank</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     public static boolean hasText(String value) {
         return value != null && !value.isBlank();
     }
 
     // 统一按去掉首尾空白后的长度判断，避免全空格标题绕过校验
+    /**
+     * length处理入口。
+     * 关键处理步骤调用 <code>value.trim</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 类型为 <code>int</code> 的处理结果
+     */
     public static int length(String value) {
         return value == null ? 0 : value.trim().length();
     }
@@ -36,6 +79,14 @@ public final class BlogTextRules {
      *
      * 去掉常见标记（标题井号、引用、列表符号、强调符号、代码围栏、链接语法）后取前 N 个字符：
      * 目的是给列表与 meta description 一段能读的文字，不是做完整的 Markdown 渲染。
+     */
+    /**
+     * 推导摘要。
+     * 关键处理步骤调用 <code>hasText</code>、<code>hasMathMarkup</code>、<code>deriveMathSafeSummary</code>、<code>bodyMarkdown.length</code>。
+     * 边界判断包含 <code>(!hasText(bodyMarkdown))</code>；<code>(hasMathMarkup(bodyMarkdown))</code>。
+     *
+     * @param bodyMarkdown Markdown 格式的正文；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
      */
     public static String deriveSummary(String bodyMarkdown) {
         if (!hasText(bodyMarkdown)) {
@@ -94,12 +145,27 @@ public final class BlogTextRules {
         return hasMathMarkup(summary) ? deriveMathSafeSummary(bodyMarkdown) : summary;
     }
 
+    /**
+     * 判断是否具备MathMarkup。
+     * 主要协作调用：<code>INLINE_DOLLAR_MATH.matcher</code>。
+     *
+     * @param text 文本；类型为 <code>String</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     public static boolean hasMathMarkup(String text) {
         return text != null && (text.contains("\\(") || text.contains("\\[")
                 || text.contains("$$") || text.contains("\\begin{")
                 || INLINE_DOLLAR_MATH.matcher(text).find());
     }
 
+    /**
+     * 推导Math安全摘要。
+     * 关键处理步骤调用 <code>hasText</code>、<code>bodyMarkdown.split</code>、<code>rawLine.trim</code>、<code>line.startsWith</code>。
+     * 边界判断包含 <code>(!hasText(bodyMarkdown))</code>；<code>(line.startsWith("```"))</code>。
+     *
+     * @param bodyMarkdown Markdown 格式的正文；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String deriveMathSafeSummary(String bodyMarkdown) {
         if (!hasText(bodyMarkdown)) {
             return null;
@@ -165,14 +231,35 @@ public final class BlogTextRules {
     }
 
     // 标签 / 专题名统一去掉首尾空白，避免 "Java" 与 "Java " 被当成两个不同名字
+    /**
+     * 规范化名称。
+     * 关键处理步骤调用 <code>hasText</code>、<code>value.trim</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     public static String normalizeName(String value) {
         return hasText(value) ? value.trim() : null;
     }
 
+    /**
+     * 规范化描述。
+     * 关键处理步骤调用 <code>hasText</code>、<code>value.trim</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     public static String normalizeDescription(String value) {
         return hasText(value) ? value.trim() : null;
     }
 
+    /**
+     * 规范化关键词。
+     * 关键处理步骤调用 <code>hasText</code>、<code>value.trim</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     public static String normalizeKeyword(String value) {
         return hasText(value) ? value.trim().toLowerCase(Locale.ROOT) : null;
     }

@@ -1,8 +1,31 @@
+/**
+ * readingAnchors.spec.js：英语学习模块的自动化测试。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：node:crypto、vitest、./readingAnchors。
+ * 阅读入口：make（make的处理函数）；row（行的处理函数）。
+ * 验证场景：manual reading anchors；segments unmapped prose inline while preserving emphasis, links, excluded code and UTF-16 selections；keeps local hover spans outside real anchors and never saves fabricated mappings；protects decimal numbers and falls back to paragraphs for abbreviations or ambiguous quotes；orders real renderer wrappers as paragraph groups on mobile, including one-to-many translations。
+ */
+
 import { webcrypto } from 'node:crypto'
 import { beforeAll,describe,expect,it } from 'vitest'
 import { applyAnchors,applyHoverSegments,clearMarks,mobileParagraphOrder,readingBlocks,selectionAnchor,sentenceRanges,sha256,visibleText } from './readingAnchors'
 beforeAll(()=>Object.defineProperty(globalThis,'crypto',{value:webcrypto,configurable:true}))
+/**
+ * make的处理函数。
+ * 主要协作：document.createElement。
+ * @param html HTML；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 const make=html=>{const node=document.createElement('div');node.innerHTML=html;return node}
+/**
+ * 行的处理函数。
+ * 主要协作：sha256。
+ * @param text 文本；默认值、解构字段与可选参数见函数签名。
+ * @param source 来源；默认值、解构字段与可选参数见函数签名。
+ * @param extra={} extra；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function row(text,source,extra={}){return {paragraphIndex:0,rangeStart:0,rangeEnd:text.length,expectedText:text,paragraphHash:await sha256(text),sourceMarkdownHash:await sha256(source),status:'ACTIVE',groupKey:'one',...extra}}
 describe('manual reading anchors',()=>{
  it('segments unmapped prose inline while preserving emphasis, links, excluded code and UTF-16 selections',async()=>{

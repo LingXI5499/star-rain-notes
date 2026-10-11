@@ -1,3 +1,11 @@
+/*
+ * MediaUploadServiceImpl：媒体模块的业务实现文件。
+ * 业务范围：上传校验、本地存储、访问级别、业务引用与文件清理。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：MediaContentTypeMismatchException、CurrentActorApi、MediaAssetEntity、MediaAssetMapper、MediaUploadService、MediaUploadLimiter、MediaUploadValidator。
+ * 阅读入口：upload（上传媒体上传）。
+ */
+
 package com.starrainnotes.media.service.impl;
 
 import com.starrainnotes.media.exception.MediaContentTypeMismatchException;
@@ -48,17 +56,50 @@ import org.springframework.web.multipart.MultipartFile;
  *             并在同一遍读取中用 DigestInputStream 计算 SHA-256。
  * 因此 200MB 的视频不会占用等量堆内存，也不会被读两遍。
  */
+/**
+ * 媒体上传业务服务实现，属于媒体模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class MediaUploadServiceImpl implements MediaUploadService {
 
+    /**
+     * 当前类的日志记录器；日志参数不能包含密码或会话令牌。
+     */
     private static final Logger LOGGER = LoggerFactory.getLogger(MediaUploadServiceImpl.class);
 
+    /**
+     * 校验器。
+     */
     private final MediaUploadValidator validator;
+    /**
+     * 存储。
+     */
     private final MediaStorage storage;
+    /**
+     * 资产数据映射。
+     * 协作类型：<code>MediaAssetMapper</code>。
+     */
     private final MediaAssetMapper assetMapper;
+    /**
+     * 提供当前认证操作者身份的跨模块接口。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     private final CurrentActorApi currentActorApi;
+    /**
+     * 上传Limiter。
+     */
     private final MediaUploadLimiter uploadLimiter;
 
+    /**
+     * 构造MediaUploadServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param validator 校验器；类型为 <code>MediaUploadValidator</code>
+     * @param storage 存储；类型为 <code>MediaStorage</code>
+     * @param assetMapper 资产数据映射；类型为 <code>MediaAssetMapper</code>
+     * @param currentActorApi 提供当前认证操作者身份的跨模块接口；类型为 <code>CurrentActorApi</code>
+     * @param uploadLimiter 上传Limiter；类型为 <code>MediaUploadLimiter</code>
+     */
     public MediaUploadServiceImpl(MediaUploadValidator validator,
                                   MediaStorage storage,
                                   MediaAssetMapper assetMapper,
@@ -71,6 +112,15 @@ public class MediaUploadServiceImpl implements MediaUploadService {
         this.uploadLimiter = uploadLimiter;
     }
 
+    /**
+     * 上传媒体上传。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>currentActorApi.current</code>、<code>uploadLimiter.check</code>、<code>validator.validate</code>、<code>assetMapper.insertAsset</code>、<code>assetMapper.countBySha256</code>。
+     *
+     * @param file 待处理的上传文件；类型为 <code>MultipartFile</code>
+     * @param accessLevel 媒体访问级别；类型为 <code>MediaAccessLevel</code>
+     * @return 类型为 <code>MediaAssetVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public MediaAssetVO upload(MultipartFile file, MediaAccessLevel accessLevel) {
@@ -111,6 +161,14 @@ public class MediaUploadServiceImpl implements MediaUploadService {
     /*
      * 落盘并计算摘要。图片走整份读入，其余走“头部校验 + 流式复制”。
      */
+    /**
+     * 存储及摘要。
+     * 关键处理步骤调用 <code>metadata.requiresFullContent</code>、<code>storeWholeImage</code>、<code>storeStreamed</code>。
+     *
+     * @param file 待处理的上传文件；类型为 <code>MultipartFile</code>
+     * @param metadata 已通过元数据校验的上传信息；类型为 <code>UploadMetadata</code>
+     * @return 类型为 <code>StoredFile</code> 的处理结果
+     */
     private StoredFile storeAndDigest(MultipartFile file, UploadMetadata metadata) {
         if (metadata.requiresFullContent()) {
             return storeWholeImage(file, metadata);
@@ -118,6 +176,15 @@ public class MediaUploadServiceImpl implements MediaUploadService {
         return storeStreamed(file, metadata);
     }
 
+    /**
+     * 存储完整图片。
+     * 主要协作调用：<code>storage.store</code>。
+     * 实现中的显式失败类型包括 <code>MediaContentTypeMismatchException</code>；具体触发条件见对应分支。
+     *
+     * @param file 待处理的上传文件；类型为 <code>MultipartFile</code>
+     * @param metadata 已通过元数据校验的上传信息；类型为 <code>UploadMetadata</code>
+     * @return 类型为 <code>StoredFile</code> 的处理结果
+     */
     private StoredFile storeWholeImage(MultipartFile file, UploadMetadata metadata) {
         byte[] content;
         try {
@@ -133,6 +200,15 @@ public class MediaUploadServiceImpl implements MediaUploadService {
                 dimensions == null ? null : dimensions[1]);
     }
 
+    /**
+     * 存储流式。
+     * 主要协作调用：<code>storage.store</code>。
+     * 实现中的显式失败类型包括 <code>MediaContentTypeMismatchException</code>；具体触发条件见对应分支。
+     *
+     * @param file 待处理的上传文件；类型为 <code>MultipartFile</code>
+     * @param metadata 已通过元数据校验的上传信息；类型为 <code>UploadMetadata</code>
+     * @return 类型为 <code>StoredFile</code> 的处理结果
+     */
     private StoredFile storeStreamed(MultipartFile file, UploadMetadata metadata) {
         boolean plainText = switch (metadata.getFileType()) {
             case MD, MARKDOWN, TXT -> true;
@@ -163,6 +239,15 @@ public class MediaUploadServiceImpl implements MediaUploadService {
         }
     }
 
+    /**
+     * 验证内容。
+     * 关键处理步骤调用 <code>FileSignatures.verify</code>、<code>metadata.getFileType</code>。
+     * 实现中的显式失败类型包括 <code>MediaContentTypeMismatchException</code>；具体触发条件见对应分支。
+     *
+     * @param metadata 已通过元数据校验的上传信息；类型为 <code>UploadMetadata</code>
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @return 类型为 <code>int[]</code> 的处理结果
+     */
     private int[] verifyContent(UploadMetadata metadata, byte[] content) {
         try {
             return FileSignatures.verify(metadata.getFileType(), content);
@@ -173,6 +258,13 @@ public class MediaUploadServiceImpl implements MediaUploadService {
     }
 
     // 补偿删除失败不能掩盖原始异常，只记录日志，交由孤儿清理任务兜底
+    /**
+     * 执行补偿Stored文件。
+     * 主要协作调用：<code>storage.delete</code>。
+     *
+     * @param storageKey 媒体在存储根目录内的相对键；类型为 <code>String</code>
+     * @param cause 原始异常，用于保留失败原因；类型为 <code>RuntimeException</code>
+     */
     private void compensateStoredFile(String storageKey, RuntimeException cause) {
         try {
             storage.delete(storageKey);
@@ -183,6 +275,12 @@ public class MediaUploadServiceImpl implements MediaUploadService {
         LOGGER.warn("媒体数据库写入失败，已回滚存储文件，storageKey={}", storageKey, cause);
     }
 
+    /**
+     * new摘要256处理入口。
+     * 关键处理步骤调用 <code>MessageDigest.getInstance</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     * @return 类型为 <code>MessageDigest</code> 的处理结果
+     */
     private static MessageDigest newSha256() {
         try {
             return MessageDigest.getInstance("SHA-256");
@@ -191,20 +289,43 @@ public class MediaUploadServiceImpl implements MediaUploadService {
         }
     }
 
+    /**
+     * 摘要256十六进制处理入口。
+     * 关键处理步骤调用 <code>HexFormat.of</code>、<code>newSha256</code>。
+     *
+     * @param content 内容；类型为 <code>byte[]</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String sha256Hex(byte[] content) {
         return HexFormat.of().formatHex(newSha256().digest(content));
     }
 
     // 落盘结果 + 摘要 + 图片宽高（非图片为 null）
+    /**
+     * Stored文件，属于媒体模块。
+     * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+     */
     @Data
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
     private static class StoredFile {
 
+        /**
+         * stored。
+         */
         private MediaStorageResultDTO stored;
+        /**
+         * 文件内容的 SHA-256 摘要。
+         */
         private String sha256;
+        /**
+         * 宽度。
+         */
         private Integer width;
+        /**
+         * 高度。
+         */
         private Integer height;
     }
 }

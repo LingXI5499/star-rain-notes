@@ -1,3 +1,11 @@
+/**
+ * writingAutosave.spec.js：英语学习模块的自动化测试。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、./writingAutosave。
+ * 验证场景：private writing autosave；debounces edits and does not create revision snapshots；queues a newer edit after an in-flight save using its returned version；retains the draft and stops on 409 until explicit merge resumes saving；reports network failure and preserves pending content。
+ */
+
 import { afterEach,describe,expect,it,vi } from 'vitest'
 import { createWritingAutosave } from './writingAutosave'
 afterEach(()=>vi.useRealTimers())

@@ -1,3 +1,11 @@
+/*
+ * EmailVerificationServiceImpl：账号模块的业务实现文件。
+ * 业务范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：EmailVerificationEntity、AccountEntity、AccountMapper、EmailVerificationMapper、AccountAuditService、AccountIdentityService、AccountMailService。
+ * 阅读入口：send（发送邮箱验证）；sendForCurrentAccount（发送面向当前账号）；verify（验证邮箱验证）；consume（消费邮箱验证）。
+ */
+
 package com.starrainnotes.account.service.impl;
 
 import com.starrainnotes.account.entity.EmailVerificationEntity;
@@ -20,20 +28,72 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+/**
+ * 邮箱验证业务服务实现，属于账号模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 public class EmailVerificationServiceImpl implements EmailVerificationService {
+    /**
+     * RANDOM。
+     */
     private static final SecureRandom RANDOM = new SecureRandom();
+    /**
+     * 秒。
+     * 初始值为 <code>600</code>。
+     */
     private static final int VALID_SECONDS = 600;
+    /**
+     * 秒。
+     * 初始值为 <code>60</code>。
+     */
     private static final int RESEND_SECONDS = 60;
+    /**
+     * FAILURES。
+     * 初始值为 <code>5</code>。
+     */
     private static final int MAX_FAILURES = 5;
 
+    /**
+     * 数据映射。
+     * 协作类型：<code>EmailVerificationMapper</code>。
+     */
     private final EmailVerificationMapper mapper;
+    /**
+     * 账号集合。
+     * 协作类型：<code>AccountMapper</code>。
+     */
     private final AccountMapper accounts;
+    /**
+     * 邮件。
+     * 协作类型：<code>AccountMailService</code>。
+     */
     private final AccountMailService mail;
+    /**
+     * 审计。
+     * 协作类型：<code>AccountAuditService</code>。
+     */
     private final AccountAuditService audit;
+    /**
+     * encoder。
+     */
     private final PasswordEncoder encoder;
+    /**
+     * 身份。
+     * 协作类型：<code>AccountIdentityService</code>。
+     */
     private final AccountIdentityService identity;
 
+    /**
+     * 构造EmailVerificationServiceImpl，接收本类使用的依赖或初始化参数。
+     *
+     * @param mapper 数据映射；类型为 <code>EmailVerificationMapper</code>
+     * @param accounts 账号集合；类型为 <code>AccountMapper</code>
+     * @param mail 邮件；类型为 <code>AccountMailService</code>
+     * @param audit 审计；类型为 <code>AccountAuditService</code>
+     * @param encoder encoder；类型为 <code>PasswordEncoder</code>
+     * @param identity 身份；类型为 <code>AccountIdentityService</code>
+     */
     public EmailVerificationServiceImpl(EmailVerificationMapper mapper, AccountMapper accounts,
                                         AccountMailService mail, AccountAuditService audit,
                                         PasswordEncoder encoder, AccountIdentityService identity) {
@@ -45,6 +105,16 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         this.identity = identity;
     }
 
+    /**
+     * 发送邮箱验证。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mail.requireDelivery</code>、<code>accounts.accountByEmail</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param rawEmail 原始邮箱；类型为 <code>String</code>
+     * @param ip IP 地址；类型为 <code>String</code>
+     * @return 类型为 <code>EmailVerificationCodeVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public EmailVerificationCodeVO send(String rawEmail, String ip) {
@@ -58,6 +128,15 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         return sendCode(email, ip, existing != null, null);
     }
 
+    /**
+     * 发送面向当前账号。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>accounts.accountByIdForUpdate</code>、<code>identity.principal</code>、<code>mail.requireDelivery</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param ip IP 地址；类型为 <code>String</code>
+     * @return 类型为 <code>EmailVerificationCodeVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public EmailVerificationCodeVO sendForCurrentAccount(String ip) {
@@ -72,6 +151,17 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         return sendCode(account.getEmail(), ip, true, account.getId());
     }
 
+    /**
+     * 发送代码。
+     * 主要协作调用：<code>accounts.recentAuditCount</code>、<code>mapper.ensureEmail</code>、<code>mapper.findForUpdate</code>、<code>RANDOM.nextInt</code>、<code>encoder.encode</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param email 邮箱；类型为 <code>String</code>
+     * @param ip IP 地址；类型为 <code>String</code>
+     * @param existingAccount existing账号；类型为 <code>boolean</code>
+     * @param actorId 操作者标识；类型为 <code>Long</code>
+     * @return 类型为 <code>EmailVerificationCodeVO</code> 的处理结果
+     */
     private EmailVerificationCodeVO sendCode(String email, String ip, boolean existingAccount, Long actorId) {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         int requests = accounts.recentAuditCount(ip, "EMAIL_CODE_SENT", now.minusHours(1))
@@ -113,6 +203,14 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
      * 因为事务已经回滚完、写审计落到了自动提交上。但那条调用路径把业务规则留在了接入层，
      * 且「能活下来」依赖的是调用时机而不是声明的语义，一旦有人把它搬进来就会静默丢审计。
      */
+    /**
+     * deliver处理入口。
+     * 主要协作调用：<code>mail.sendEmailVerificationCode</code>、<code>audit.failedIndependently</code>。
+     *
+     * @param email 邮箱；类型为 <code>String</code>
+     * @param code 代码；类型为 <code>String</code>
+     * @param actorId 操作者标识；类型为 <code>Long</code>
+     */
     private void deliver(String email, String code, Long actorId) {
         try {
             mail.sendEmailVerificationCode(email, code);
@@ -126,6 +224,16 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
 
     // 失败计数独立提交，避免注册事务回滚后验证码可以被无限试错。
     // 成功时只返回哈希；验证码的消费仍参与注册事务，注册失败不会烧毁验证码。
+    /**
+     * 验证邮箱验证。
+     * 事务声明：<code>@Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = ApiException.class)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.findForUpdate</code>、<code>encoder.matches</code>、<code>mapper.incrementFailures</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param email 邮箱；类型为 <code>String</code>
+     * @param code 代码；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     @Override
     @Transactional(propagation = Propagation.REQUIRES_NEW, noRollbackFor = ApiException.class)
     public String verify(String email, String code) {
@@ -149,6 +257,15 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         return verification.getCodeHash();
     }
 
+    /**
+     * 消费邮箱验证。
+     * 事务声明：<code>@Transactional(propagation = Propagation.MANDATORY)</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.consume</code>。
+     * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
+     *
+     * @param email 邮箱；类型为 <code>String</code>
+     * @param codeHash 代码摘要；类型为 <code>String</code>
+     */
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
     public void consume(String email, String codeHash) {

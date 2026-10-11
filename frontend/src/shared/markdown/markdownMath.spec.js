@@ -1,7 +1,22 @@
+/**
+ * markdownMath.spec.js：跨模块基础模块的自动化测试。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：vitest、markdown-it、./markdownMath。
+ * 阅读入口：render（渲染当前操作）。
+ * 验证场景：useMarkdownMath；renders boxed Theta before an English word；still renders simple inline math before Chinese；does not treat currency as math；keeps plain $word$ before another word unparsed。
+ */
+
 import { describe, expect, it } from 'vitest'
 import MarkdownIt from 'markdown-it'
 import { normalizePastedMath, useMarkdownMath } from './markdownMath'
 
+/**
+ * 渲染当前操作。
+ * 主要协作：useMarkdownMath、md.render。
+ * @param src src；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function render(src) {
   const md = new MarkdownIt({ html: false })
   useMarkdownMath(md)

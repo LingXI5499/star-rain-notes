@@ -1,3 +1,11 @@
+/*
+ * TutorialWorkspacePublicationTest：教程与学习模块的测试文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CurrentActorApi、ReviewSubmissionApi、TutorialEventPublisher、TutorialMediaReferences、TutorialPublicationServiceImpl。
+ * 阅读入口：setup（setup处理入口）；chapter（章节处理入口）；candidate（candidate处理入口）；withdrawalCopiesPublicVersionAndDoesNotPublishUnfinishedDrafts（withdrawalCopies公开版本及Does不发布UnfinishedDrafts处理入口）。
+ */
+
 package com.starrainnotes.tutorial.content.service;
 
 import static org.assertj.core.api.Assertions.*;
@@ -15,23 +23,90 @@ import java.util.*;
 import org.junit.jupiter.api.*;
 import org.mockito.ArgumentCaptor;
 
+/**
+ * 教程Workspace发布测试，属于教程与学习模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class TutorialWorkspacePublicationTest {
+    /**
+     * JSON 读写或映射协作对象。
+     * 协作类型：<code>ObjectMapper</code>。
+     */
     final ObjectMapper json = new ObjectMapper();
+    /**
+     * tutorials。
+     * 协作类型：<code>TutorialMapper</code>。
+     */
     final TutorialMapper tutorials = mock(TutorialMapper.class);
+    /**
+     * 修订集合。
+     * 协作类型：<code>TutorialRevisionMapper</code>。
+     */
     final TutorialRevisionMapper revisions = mock(TutorialRevisionMapper.class);
+    /**
+     * 章节列表。
+     * 协作类型：<code>TutorialChapterMapper</code>。
+     */
     final TutorialChapterMapper chapters = mock(TutorialChapterMapper.class);
+    /**
+     * groups。
+     * 协作类型：<code>TutorialGroupMapper</code>。
+     */
     final TutorialGroupMapper groups = mock(TutorialGroupMapper.class);
+    /**
+     * categories。
+     * 协作类型：<code>TutorialCategoryMapper</code>。
+     */
     final TutorialCategoryMapper categories = mock(TutorialCategoryMapper.class);
+    /**
+     * 卡片集合。
+     * 协作类型：<code>TutorialKnowledgeCardMapper</code>。
+     */
     final TutorialKnowledgeCardMapper cards = mock(TutorialKnowledgeCardMapper.class);
+    /**
+     * 问题集合。
+     * 协作类型：<code>TutorialQuestionMapper</code>。
+     */
     final TutorialQuestionMapper questions = mock(TutorialQuestionMapper.class);
+    /**
+     * relations。
+     * 协作类型：<code>TutorialQuestionCardMapper</code>。
+     */
     final TutorialQuestionCardMapper relations = mock(TutorialQuestionCardMapper.class);
+    /**
+     * 事件集合。
+     */
     final TutorialEventPublisher events = mock(TutorialEventPublisher.class);
+    /**
+     * 媒体。
+     */
     final TutorialMediaReferences media = mock(TutorialMediaReferences.class);
+    /**
+     * reviews。
+     * 协作类型：<code>ReviewSubmissionApi</code>。
+     */
     final ReviewSubmissionApi reviews = mock(ReviewSubmissionApi.class);
+    /**
+     * actors。
+     * 协作类型：<code>CurrentActorApi</code>。
+     */
     final CurrentActorApi actors = mock(CurrentActorApi.class);
+    /**
+     * 教程。
+     */
     final TutorialEntity tutorial = new TutorialEntity();
+    /**
+     * old。
+     */
     final TutorialRevisionEntity old = new TutorialRevisionEntity();
+    /**
+     * 业务服务。
+     */
     TutorialPublicationServiceImpl service;
+    /**
+     * setup处理入口。
+     * 主要协作调用：<code>tutorial.setId</code>、<code>tutorial.setSlug</code>、<code>tutorial.setTitle</code>、<code>tutorial.setCategoryId</code>、<code>tutorial.setPublicationStatus</code>。
+     */
     @BeforeEach void setup() {
         tutorial.setId(1L); tutorial.setSlug("java"); tutorial.setTitle("Unfinished tutorial title");
         tutorial.setCategoryId(2L); tutorial.setPublicationStatus("PUBLISHED");
@@ -64,14 +139,35 @@ class TutorialWorkspacePublicationTest {
         service = new TutorialPublicationServiceImpl(tutorials,categories,groups,chapters,cards,questions,relations,revisions,
                 mock(TutorialContentService.class),actors,json,events,media,reviews);
     }
+    /**
+     * 章节处理入口。
+     * 关键处理步骤调用 <code>row.setId</code>、<code>row.setTutorialId</code>、<code>row.setGroupId</code>、<code>row.setSlug</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @param body 正文；类型为 <code>String</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @return 类型为 <code>TutorialChapterEntity</code> 的处理结果
+     */
     private TutorialChapterEntity chapter(Long id,String slug,String body,String status) {
         var row = new TutorialChapterEntity();row.setId(id);row.setTutorialId(1L);row.setGroupId(3L);
         row.setSlug(slug);row.setTitle("Workspace "+slug);row.setBodyMarkdown(body);row.setStatus(status);return row;
     }
+    /**
+     * candidate处理入口。
+     * 主要协作调用：<code>json.readTree</code>。
+     * @return 类型为 <code>JsonNode</code> 的处理结果
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     private JsonNode candidate() throws Exception {
         var capture=ArgumentCaptor.forClass(TutorialRevisionEntity.class);verify(revisions).insert(capture.capture());
         return json.readTree(capture.getValue().getSnapshotJson());
     }
+    /**
+     * withdrawalCopies公开版本及Does不发布UnfinishedDrafts处理入口。
+     * 主要协作调用：<code>old.getSnapshotJson</code>、<code>service.withdrawChapter</code>、<code>service.publicChapter</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void withdrawalCopiesPublicVersionAndDoesNotPublishUnfinishedDrafts() throws Exception {
         String oldJson=old.getSnapshotJson(); service.withdrawChapter(4L);
         JsonNode result=candidate();
@@ -84,6 +180,11 @@ class TutorialWorkspacePublicationTest {
         verify(media).attachRevision(eq(11L),any());verify(events).afterCommit(any());
         verify(chapters,never()).deleteById(any());
     }
+    /**
+     * 章节发布OnlyReplaces目标及保留公开元数据处理入口。
+     * 主要协作调用：<code>service.publishChapter</code>、<code>service.publicChapter</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void chapterPublicationOnlyReplacesTargetAndKeepsPublicMetadata() throws Exception {
         service.publishChapter(4L);JsonNode result=candidate();
         assertThat(result.path("chapterCount").asInt()).isEqualTo(2);
@@ -92,6 +193,11 @@ class TutorialWorkspacePublicationTest {
         assertThat(service.publicChapter("java","two").path("bodyMarkdown").asText()).isEqualTo("untouched public body");
         assertThatThrownBy(() -> service.publicChapter("java","draft")).isInstanceOf(TutorialNotFoundException.class);
     }
+    /**
+     * saving已发布内容RefreshesIt及保留New章节列表AsDrafts处理入口。
+     * 主要协作调用：<code>old.getSnapshotJson</code>、<code>service.refreshPublished</code>、<code>service.publicChapter</code>、<code>service.publicTutorial</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void savingPublishedContentRefreshesItAndKeepsNewChaptersAsDrafts() throws Exception {
         String original = old.getSnapshotJson();
         service.refreshPublished(1L, "updateChapter", 4L);
@@ -102,6 +208,11 @@ class TutorialWorkspacePublicationTest {
         assertThat(candidate().path("chapterCount").asInt()).isEqualTo(2);
         assertThat(old.getSnapshotJson()).isEqualTo(original);
     }
+    /**
+     * newly创建教程Can发布不含章节列表处理入口。
+     * 主要协作调用：<code>tutorial.setPublicationStatus</code>、<code>tutorial.setPublishedRevisionId</code>、<code>groups.listActiveByTutorialId</code>、<code>service.publish</code>、<code>tutorial.getPublicationStatus</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void newlyCreatedTutorialCanPublishWithoutChapters() throws Exception {
         tutorial.setPublicationStatus("NEVER_PUBLISHED");
         tutorial.setPublishedRevisionId(null);
@@ -111,17 +222,30 @@ class TutorialWorkspacePublicationTest {
         assertThat(tutorial.getPublicationStatus()).isEqualTo("PUBLISHED");
         verify(events).afterCommit(any());
     }
+    /**
+     * 草稿SaveDoes不发布It处理入口。
+     * 主要协作调用：<code>tutorial.setPublicationStatus</code>、<code>service.refreshPublished</code>。
+     */
     @Test void draftSaveDoesNotPublishIt() {
         tutorial.setPublicationStatus("NEVER_PUBLISHED");
         service.refreshPublished(1L, "updateChapter", 4L);
         verify(revisions,never()).insert(any());
         verifyNoInteractions(events);
     }
+    /**
+     * 预览Includes草稿While公开StillReadsOld修订。
+     * 主要协作调用：<code>service.previewTutorial</code>、<code>service.publicChapter</code>。
+     */
     @Test void previewIncludesDraftWhilePublicStillReadsOldRevision() {
         assertThat(service.previewTutorial(1L).path("groups").get(0).path("chapters").size()).isEqualTo(3);
         assertThat(service.publicChapter("java","one").path("bodyMarkdown").asText()).isEqualTo("old body");
         verifyNoInteractions(events);
     }
+    /**
+     * 审核FreezesCandidate不含Switching公开版本处理入口。
+     * 主要协作调用：<code>service.submitReview</code>、<code>tutorial.getPublishedRevisionId</code>、<code>tutorial.getEditingStatus</code>、<code>service.withdrawChapter</code>、<code>service.publishChapter</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void reviewFreezesCandidateWithoutSwitchingPublicVersion() throws Exception {
         service.submitReview(1L,4L);
         assertThat(tutorial.getPublishedRevisionId()).isEqualTo(10L);
@@ -132,6 +256,11 @@ class TutorialWorkspacePublicationTest {
         assertThatThrownBy(() -> service.withdrawChapter(4L)).isInstanceOf(TutorialStateException.class);
         assertThatThrownBy(() -> service.publishChapter(4L)).isInstanceOf(TutorialStateException.class);
     }
+    /**
+     * approvalPublishesTheFrozenCandidate及Finishes审核处理入口。
+     * 主要协作调用：<code>service.submitReview</code>、<code>revisions.selectByTutorialIdAndRef</code>、<code>revisions.selectLatestByTutorialId</code>、<code>tutorial.getEditingStatus</code>、<code>service.publicChapter</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test void approvalPublishesTheFrozenCandidateAndFinishesReview() throws Exception {
         service.submitReview(1L,4L);
         var capture=ArgumentCaptor.forClass(TutorialRevisionEntity.class);verify(revisions).insert(capture.capture());

@@ -1,3 +1,11 @@
+/*
+ * SeoSemanticRenderingTest：公开页面与 SEO模块的测试文件。
+ * 业务范围：公开 HTML 快照、规范地址、站点地图和搜索引擎通知。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：SeoPageModel、SeoHtmlRenderer、SeoPageSnapshot、SeoPageMapper、SitemapServiceImpl。
+ * 阅读入口：render（渲染SEOSemanticRendering）；preservesSemanticMarkdownAndOneMainHeading（preservesSemanticMarkdown及单次MainHeading处理入口）；preventsRawHtmlAndUnsafeUrlExecution（验证防止原始HTML及不安全地址执行）；keepsMetadataAndJsonLdSafeAndBoundsLargeContent（验证保留元数据及JSONLd安全及BoundsLarge内容）。
+ */
+
 package com.starrainnotes.seo;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -11,14 +19,32 @@ import java.time.LocalDateTime;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
+/**
+ * SEOSemanticRendering测试，属于公开页面与 SEO模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class SeoSemanticRenderingTest {
+    /**
+     * 渲染器。
+     */
     private final SeoHtmlRenderer renderer = new SeoHtmlRenderer();
+    /**
+     * 渲染SEOSemanticRendering。
+     * 主要协作调用：<code>renderer.render</code>。
+     *
+     * @param body 正文；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String render(String body) {
         return renderer.render(SeoPageModel.builder().title("Title").description("Description")
                 .canonicalUrl("https://example.org/blog/posts/test").robotsDirective("index,follow")
                 .contentType("BLOG").bodyMarkdown(body).build());
     }
 
+    /**
+     * preservesSemanticMarkdown及单次MainHeading处理入口。
+     * 关键处理步骤调用 <code>render</code>、<code>List.of</code>、<code>html.contains</code>、<code>html.split</code>。
+     */
     @Test void preservesSemanticMarkdownAndOneMainHeading() {
         String html = render("""
                 # Title
@@ -48,6 +74,10 @@ class SeoSemanticRenderingTest {
         assertTrue(html.contains("\"@type\":\"BlogPosting\""));
     }
 
+    /**
+     * 验证防止原始HTML及不安全地址执行。
+     * 关键处理步骤调用 <code>render</code>、<code>html.contains</code>。
+     */
     @Test void preventsRawHtmlAndUnsafeUrlExecution() {
         String html = render("""
                 <script>alert(1)</script>
@@ -68,6 +98,10 @@ class SeoSemanticRenderingTest {
         assertTrue(html.contains("src=\"/api/public/media/1/content\""));
     }
 
+    /**
+     * 验证保留元数据及JSONLd安全及BoundsLarge内容。
+     * 主要协作调用：<code>renderer.render</code>。
+     */
     @Test void keepsMetadataAndJsonLdSafeAndBoundsLargeContent() {
         String html = renderer.render(SeoPageModel.builder().title("</script><script>alert(1)</script>")
                 .description("\" & <>").bodyMarkdown("a".repeat(210_000)).build());
@@ -77,6 +111,10 @@ class SeoSemanticRenderingTest {
         assertTrue(html.length() < 205_000);
     }
 
+    /**
+     * sitemapUses来源日期及Omits缺失或OpaqueDates处理入口。
+     * 关键处理步骤调用 <code>page.setCanonicalUrl</code>、<code>page.setSourceVersionRef</code>、<code>page.setGeneratedAt</code>、<code>LocalDateTime.of</code>。
+     */
     @Test void sitemapUsesSourceDateAndOmitsMissingOrOpaqueDates() {
         SeoPageMapper mapper = mock(SeoPageMapper.class);
         SeoPageSnapshot page = new SeoPageSnapshot();

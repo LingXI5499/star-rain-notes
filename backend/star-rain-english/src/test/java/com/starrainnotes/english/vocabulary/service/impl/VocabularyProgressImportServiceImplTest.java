@@ -1,3 +1,11 @@
+/*
+ * VocabularyProgressImportServiceImplTest：英语学习模块的测试文件。
+ * 业务范围：文档、词汇、语法、阅读听力及复习记录。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：VocabularyLocalProgressRequestDTO、VocabularyStudyMapper。
+ * 阅读入口：memory（记忆处理入口）；planMembershipWithoutAnyReviewStillImportsSoGuestPlansSurviveLogin（计划Membership不含Any审核StillImportsSoGuestPlansSurviveLogin处理入口）；inactiveRowWithZeroCountsIsNotImported（inactive行包含Zero数量集合是否不Imported处理入口）；unknownWordsAndBrokenRowsAreSkippedWithoutFailingTheBatch（unknownWords及Broken行集合AreSkipped不含FailingThe批量处理入口）。
+ */
+
 package com.starrainnotes.english.vocabulary.service.impl;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -24,13 +32,36 @@ import org.mockito.junit.jupiter.MockitoExtension;
 /*
  * 本机进度导入：坏数据只丢行不整批失败，且只增不减。
  */
+/**
+ * 词汇进度Import业务服务实现测试，属于英语学习模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 @ExtendWith(MockitoExtension.class)
 class VocabularyProgressImportServiceImplTest {
 
+    /**
+     * 数据映射。
+     * 协作类型：<code>VocabularyStudyMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock VocabularyStudyMapper mapper;
 
+    /**
+     * 业务服务。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @InjectMocks VocabularyProgressImportServiceImpl service;
 
+    /**
+     * 记忆处理入口。
+     * 关键处理步骤调用 <code>payload.setWordId</code>、<code>payload.setMemoryCount</code>、<code>payload.setReviewCount</code>、<code>payload.setLearningStatus</code>。
+     *
+     * @param wordId 单词标识；类型为 <code>Long</code>
+     * @param memoryCount 记忆数量；类型为 <code>Integer</code>
+     * @param reviewCount 审核数量；类型为 <code>Integer</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @return 类型为 <code>VocabularyLocalProgressRequestDTO.LocalMemoryPayload</code> 的处理结果
+     */
     private static VocabularyLocalProgressRequestDTO.LocalMemoryPayload memory(Long wordId, Integer memoryCount,
                                                                            Integer reviewCount, String status) {
         VocabularyLocalProgressRequestDTO.LocalMemoryPayload payload = new VocabularyLocalProgressRequestDTO.LocalMemoryPayload();
@@ -41,6 +72,10 @@ class VocabularyProgressImportServiceImplTest {
         return payload;
     }
 
+    /**
+     * 计划Membership不含Any审核StillImportsSoGuestPlansSurviveLogin处理入口。
+     * 主要协作调用：<code>mapper.wordExists</code>、<code>service.importLocal</code>。
+     */
     @Test
     void planMembershipWithoutAnyReviewStillImportsSoGuestPlansSurviveLogin() {
         when(mapper.wordExists(20717L)).thenReturn(1);
@@ -52,6 +87,10 @@ class VocabularyProgressImportServiceImplTest {
         verify(mapper).importMemory(eq(1L), eq(20717L), eq(0), eq(0), eq(0), any(), any(), any(), any(), any());
     }
 
+    /**
+     * inactive行包含Zero数量集合是否不Imported处理入口。
+     * 主要协作调用：<code>service.importLocal</code>。
+     */
     @Test
     void inactiveRowWithZeroCountsIsNotImported() {
         VocabularyLocalProgressRequestDTO request = new VocabularyLocalProgressRequestDTO();
@@ -63,6 +102,10 @@ class VocabularyProgressImportServiceImplTest {
                 any(), any(), any(), any(), any());
     }
 
+    /**
+     * unknownWords及Broken行集合AreSkipped不含FailingThe批量处理入口。
+     * 主要协作调用：<code>mapper.wordExists</code>、<code>service.importLocal</code>。
+     */
     @Test
     void unknownWordsAndBrokenRowsAreSkippedWithoutFailingTheBatch() {
         when(mapper.wordExists(20717L)).thenReturn(1);
@@ -78,6 +121,10 @@ class VocabularyProgressImportServiceImplTest {
         verify(mapper).importMemory(eq(1L), eq(20717L), eq(3), eq(2), eq(2), any(), any(), any(), any(), any());
     }
 
+    /**
+     * legacy词汇Map是否已接受处理入口。
+     * 主要协作调用：<code>mapper.wordExists</code>、<code>service.importLocal</code>。
+     */
     @Test
     void legacyVocabularyMapIsAccepted() {
         when(mapper.wordExists(15560L)).thenReturn(1);
@@ -89,6 +136,10 @@ class VocabularyProgressImportServiceImplTest {
         verify(mapper).importMemory(eq(1L), eq(15560L), eq(4), eq(0), eq(0), any(), any(), any(), any(), any());
     }
 
+    /**
+     * 审核Log行集合AreClamped及BadDirectionsDropped处理入口。
+     * 主要协作调用：<code>mapper.wordExists</code>、<code>service.importLocal</code>。
+     */
     @Test
     void reviewLogRowsAreClampedAndBadDirectionsDropped() {
         when(mapper.wordExists(20717L)).thenReturn(1);

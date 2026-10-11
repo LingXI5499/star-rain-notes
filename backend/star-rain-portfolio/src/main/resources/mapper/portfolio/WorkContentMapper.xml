@@ -1,23 +1,142 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.portfolio.mapper.WorkContentMapper">
+    <!--
+      WorkContentMapper.xml：com.starrainnotes.portfolio.mapper.WorkContentMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+<!--
+  categories：categories；读取语句。
+  涉及数据表：sr_portfolio_category；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkTaxonomyEntity；集合与单值形态由 Java 方法签名决定。
+-->
 <select id="categories" resultType="com.starrainnotes.portfolio.entity.WorkTaxonomyEntity">SELECT id,code,name,group_code,sort_order FROM sr_portfolio_category ORDER BY sort_order,id</select>
+<!--
+  formats：formats；读取语句。
+  涉及数据表：sr_portfolio_format；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkTaxonomyEntity；集合与单值形态由 Java 方法签名决定。
+-->
 <select id="formats" resultType="com.starrainnotes.portfolio.entity.WorkTaxonomyEntity">SELECT id,code,name,group_code,sort_order FROM sr_portfolio_format ORDER BY sort_order,id</select>
+<!--
+  tags：标签列表；读取语句。
+  涉及数据表：sr_portfolio_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkTaxonomyEntity；集合与单值形态由 Java 方法签名决定。
+-->
 <select id="tags" resultType="com.starrainnotes.portfolio.entity.WorkTaxonomyEntity">SELECT id,code,name,group_code,sort_order FROM sr_portfolio_tag ORDER BY sort_order,id</select>
+<!--
+  workTags：作品标签列表；读取语句。
+  涉及数据表：sr_portfolio_tag、sr_portfolio_work_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkTaxonomyEntity；集合与单值形态由 Java 方法签名决定。
+  绑定参数：workId；参数含义参见 Mapper 方法注释。
+-->
 <select id="workTags" resultType="com.starrainnotes.portfolio.entity.WorkTaxonomyEntity">SELECT t.id,t.code,t.name,t.group_code,t.sort_order FROM sr_portfolio_tag t JOIN sr_portfolio_work_tag w ON w.tag_id=t.id WHERE w.work_id=#{workId} ORDER BY t.sort_order,t.id</select>
+<!--
+  templates：templates；读取语句。
+  涉及数据表：sr_portfolio_template；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkTemplateEntity；集合与单值形态由 Java 方法签名决定。
+-->
 <select id="templates" resultType="com.starrainnotes.portfolio.entity.WorkTemplateEntity">SELECT id,code,name,description,sections_json FROM sr_portfolio_template ORDER BY id</select>
+<!--
+  template：template；读取语句。
+  涉及数据表：sr_portfolio_template；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkTemplateEntity；集合与单值形态由 Java 方法签名决定。
+  绑定参数：id；参数含义参见 Mapper 方法注释。
+-->
 <select id="template" resultType="com.starrainnotes.portfolio.entity.WorkTemplateEntity">SELECT id,code,name,description,sections_json FROM sr_portfolio_template WHERE id=#{id}</select>
+<!--
+  lockFeatured：锁精选；读取语句。
+  涉及数据表：sr_portfolio_category；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+  锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+-->
 <select id="lockFeatured" resultType="long">SELECT id FROM sr_portfolio_category WHERE code='software' FOR UPDATE</select>
+<!--
+  featuredCount：精选数量；读取语句。
+  涉及数据表：sr_portfolio_work；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+  绑定参数：excludeId；参数含义参见 Mapper 方法注释。
+  返回匹配条件的数量，不返回完整实体。
+-->
 <select id="featuredCount" resultType="long">SELECT COUNT(*) FROM sr_portfolio_work WHERE featured=TRUE AND id != #{excludeId}</select>
+<!--
+  clearTags：clear标签列表；删除语句。
+  涉及数据表：sr_portfolio_work_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+  执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+  绑定参数：workId；参数含义参见 Mapper 方法注释。
+-->
 <delete id="clearTags">DELETE FROM sr_portfolio_work_tag WHERE work_id=#{workId}</delete>
+<!--
+  addTag：add标签；新增语句。
+  涉及数据表：sr_portfolio_work_tag；关系条件与可见性筛选由下方 SQL 明确限定。
+  执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+  绑定参数：workId、tagId；参数含义参见 Mapper 方法注释。
+-->
 <insert id="addTag">INSERT INTO sr_portfolio_work_tag(work_id,tag_id) VALUES(#{workId},#{tagId})</insert>
+<!--
+  sections：sections；读取语句。
+  涉及数据表：sr_portfolio_section；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkSectionEntity；集合与单值形态由 Java 方法签名决定。
+  绑定参数：workId；参数含义参见 Mapper 方法注释。
+-->
 <select id="sections" resultType="com.starrainnotes.portfolio.entity.WorkSectionEntity">SELECT id,work_id,section_type,title,content,data_json,block_version,visible,sort_order FROM sr_portfolio_section WHERE work_id=#{workId} ORDER BY sort_order,id</select>
+<!--
+  section：区块；读取语句。
+  涉及数据表：sr_portfolio_section；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkSectionEntity；集合与单值形态由 Java 方法签名决定。
+  绑定参数：id；参数含义参见 Mapper 方法注释。
+-->
 <select id="section" resultType="com.starrainnotes.portfolio.entity.WorkSectionEntity">SELECT id,work_id,section_type,title,content,data_json,block_version,visible,sort_order FROM sr_portfolio_section WHERE id=#{id}</select>
+<!--
+  insertSection：新增区块；新增语句。
+  涉及数据表：sr_portfolio_section；关系条件与可见性筛选由下方 SQL 明确限定。
+  执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+  插入成功后 JDBC 自动生成的主键回填到 id。
+  绑定参数：workId、sectionType、title、content、dataJson、blockVersion、visible、sortOrder；参数含义参见 Mapper 方法注释。
+-->
 <insert id="insertSection" useGeneratedKeys="true" keyProperty="id">INSERT INTO sr_portfolio_section(work_id,section_type,title,content,data_json,block_version,visible,sort_order) VALUES(#{workId},#{sectionType},#{title},#{content},#{dataJson},#{blockVersion},#{visible},#{sortOrder})</insert>
+<!--
+  updateSection：更新区块；更新语句。
+  涉及数据表：sr_portfolio_section；关系条件与可见性筛选由下方 SQL 明确限定。
+  执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+  绑定参数：sectionType、title、content、dataJson、blockVersion、visible、id；参数含义参见 Mapper 方法注释。
+-->
 <update id="updateSection">UPDATE sr_portfolio_section SET section_type=#{sectionType},title=#{title},content=#{content},data_json=#{dataJson},block_version=#{blockVersion},visible=#{visible} WHERE id=#{id}</update>
+<!--
+  orderSection：顺序区块；更新语句。
+  涉及数据表：sr_portfolio_section；关系条件与可见性筛选由下方 SQL 明确限定。
+  执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+  绑定参数：sortOrder、id；参数含义参见 Mapper 方法注释。
+-->
 <update id="orderSection">UPDATE sr_portfolio_section SET sort_order=#{sortOrder} WHERE id=#{id}</update>
+<!--
+  deleteSection：删除区块；删除语句。
+  涉及数据表：sr_portfolio_section；关系条件与可见性筛选由下方 SQL 明确限定。
+  执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+  绑定参数：id；参数含义参见 Mapper 方法注释。
+-->
 <delete id="deleteSection">DELETE FROM sr_portfolio_section WHERE id=#{id}</delete>
+<!--
+  sectionMedia：区块媒体；读取语句。
+  涉及数据表：sr_portfolio_section_media；关系条件与可见性筛选由下方 SQL 明确限定。
+  结果类型或映射：com.starrainnotes.portfolio.entity.WorkSectionMediaEntity；集合与单值形态由 Java 方法签名决定。
+  绑定参数：sectionId；参数含义参见 Mapper 方法注释。
+-->
 <select id="sectionMedia" resultType="com.starrainnotes.portfolio.entity.WorkSectionMediaEntity">SELECT id,section_id,media_asset_id,caption,sort_order FROM sr_portfolio_section_media WHERE section_id=#{sectionId} ORDER BY sort_order,id</select>
+<!--
+  insertSectionMedia：新增区块媒体；新增语句。
+  涉及数据表：sr_portfolio_section_media；关系条件与可见性筛选由下方 SQL 明确限定。
+  执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+  插入成功后 JDBC 自动生成的主键回填到 id。
+  绑定参数：sectionId、mediaAssetId、caption、sortOrder；参数含义参见 Mapper 方法注释。
+-->
 <insert id="insertSectionMedia" useGeneratedKeys="true" keyProperty="id">INSERT INTO sr_portfolio_section_media(section_id,media_asset_id,caption,sort_order) VALUES(#{sectionId},#{mediaAssetId},#{caption},#{sortOrder})</insert>
+<!--
+  clearSectionMedia：clear区块媒体；删除语句。
+  涉及数据表：sr_portfolio_section_media；关系条件与可见性筛选由下方 SQL 明确限定。
+  执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+  绑定参数：sectionId；参数含义参见 Mapper 方法注释。
+-->
 <delete id="clearSectionMedia">DELETE FROM sr_portfolio_section_media WHERE section_id=#{sectionId}</delete>
 </mapper>

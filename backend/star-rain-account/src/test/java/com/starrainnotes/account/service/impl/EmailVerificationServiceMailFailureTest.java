@@ -1,3 +1,11 @@
+/*
+ * EmailVerificationServiceMailFailureTest：账号模块的测试文件。
+ * 业务范围：身份、会话、邮箱验证、角色权限和邀请策略。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：AccountPrincipal、AccountEntity、EmailVerificationEntity、AccountMapper、EmailVerificationMapper、AccountAuditService、AccountIdentityService。
+ * 阅读入口：setUp（初始化当前测试场景的被测对象与模拟依赖）；deliveryFailureIsAuditedInItsOwnTransactionAndStillFailsTheRequest（delivery失败是否Audited内部ItsOwn事务及StillFailsThe请求处理入口）；registrationPathAuditsFailureWithoutAnActor（registration路径Audits失败不含An操作者处理入口）；successfulDeliveryAuditsSuccessAndNeverTheFailureRecord（successfulDeliveryAuditsSuccess及NeverThe失败记录处理入口）。
+ */
+
 package com.starrainnotes.account.service.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -41,26 +49,76 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  *   2. 异常继续向上抛，接口仍然返回失败，不会假装成功；
  *   3. 验证码没有被写库（发信失败就不该留下一个能用的验证码）。
  */
+/**
+ * 邮箱验证业务服务邮件失败测试，属于账号模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 @ExtendWith(MockitoExtension.class)
 class EmailVerificationServiceMailFailureTest {
 
+    /**
+     * 标识。
+     * 初始值为 <code>4242L</code>。
+     */
     private static final long ACCOUNT_ID = 4242L;
+    /**
+     * 邮箱。
+     */
     private static final String EMAIL = "owner@example.test";
 
+    /**
+     * 数据映射。
+     * 协作类型：<code>EmailVerificationMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private EmailVerificationMapper mapper;
+    /**
+     * 账号集合。
+     * 协作类型：<code>AccountMapper</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private AccountMapper accounts;
+    /**
+     * 邮件。
+     * 协作类型：<code>AccountMailService</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private AccountMailService mail;
+    /**
+     * 审计。
+     * 协作类型：<code>AccountAuditService</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private AccountAuditService audit;
+    /**
+     * encoder。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private PasswordEncoder encoder;
+    /**
+     * 身份。
+     * 协作类型：<code>AccountIdentityService</code>。
+     * 此字段为测试替身，不连接实际业务实现。
+     */
     @Mock private AccountIdentityService identity;
 
+    /**
+     * 业务服务。
+     */
     private EmailVerificationServiceImpl service;
 
+    /**
+     * 初始化当前测试场景的被测对象与模拟依赖。
+     */
     @BeforeEach
     void setUp() {
         service = new EmailVerificationServiceImpl(mapper, accounts, mail, audit, encoder, identity);
     }
 
+    /**
+     * delivery失败是否Audited内部ItsOwn事务及StillFailsThe请求处理入口。
+     * 主要协作调用：<code>service.sendForCurrentAccount</code>。
+     */
     @Test
     void deliveryFailureIsAuditedInItsOwnTransactionAndStillFailsTheRequest() {
         givenSendableAccount();
@@ -78,6 +136,10 @@ class EmailVerificationServiceMailFailureTest {
         verify(mapper, never()).saveCode(any(EmailVerificationEntity.class));
     }
 
+    /**
+     * registration路径Audits失败不含An操作者处理入口。
+     * 主要协作调用：<code>accounts.accountByEmail</code>、<code>accounts.recentAuditCount</code>、<code>mapper.findForUpdate</code>、<code>encoder.encode</code>、<code>service.send</code>。
+     */
     @Test
     void registrationPathAuditsFailureWithoutAnActor() {
         when(accounts.accountByEmail(EMAIL)).thenReturn(null);
@@ -93,6 +155,10 @@ class EmailVerificationServiceMailFailureTest {
         verify(audit).failedIndependently(null, null, "EMAIL_CODE_DELIVERY_FAILED");
     }
 
+    /**
+     * successfulDeliveryAuditsSuccess及NeverThe失败记录处理入口。
+     * 主要协作调用：<code>service.sendForCurrentAccount</code>。
+     */
     @Test
     void successfulDeliveryAuditsSuccessAndNeverTheFailureRecord() {
         givenSendableAccount();
@@ -103,6 +169,10 @@ class EmailVerificationServiceMailFailureTest {
         verify(audit, never()).failedIndependently(any(), any(), anyString());
     }
 
+    /**
+     * givenSendable账号处理入口。
+     * 主要协作调用：<code>identity.principal</code>、<code>accounts.accountByIdForUpdate</code>、<code>accounts.recentAuditCount</code>、<code>mapper.findForUpdate</code>、<code>encoder.encode</code>。
+     */
     private void givenSendableAccount() {
         AccountEntity account = new AccountEntity();
         account.setId(ACCOUNT_ID);
@@ -118,6 +188,11 @@ class EmailVerificationServiceMailFailureTest {
         when(encoder.encode(anyString())).thenReturn("hash");
     }
 
+    /**
+     * fresh验证处理入口。
+     * 关键处理步骤调用 <code>entity.setEmail</code>、<code>entity.setSendCount</code>。
+     * @return 类型为 <code>EmailVerificationEntity</code> 的处理结果
+     */
     private EmailVerificationEntity freshVerification() {
         EmailVerificationEntity entity = new EmailVerificationEntity();
         entity.setEmail(EMAIL);

@@ -1,4 +1,14 @@
 <script setup>
+/**
+ * BlogArchivePage.vue：博客模块的页面组件。
+ * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
+ * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
+ * 主要依赖：../../../shared/composables/publicListState、vue、vue-router、../api/blogApi、../../../shared/http、../../../shared/viewMode。
+ * 主要响应式状态：route、router、pageSize、filters、state、tags、topics、months。
+ * 阅读入口：queryOf（查询所属的处理函数）；syncFromQuery（同步来源查询）；loadPosts（加载文章列表）；loadOptions（加载选项）；loadDays（加载Days）。
+ */
+
+
 import { publicPage, publicPageSize, sizeQuery } from '../../../shared/composables/publicListState'
 
 import { computed, onMounted, reactive, ref, watch } from 'vue'
@@ -28,41 +38,112 @@ import { monthLabel } from '../support/display'
  * 因此写回 URL 时用 contentPath() 按当前模式取地址。
  */
 const { contentPath } = useViewMode()
+/**
+ * 路由；通过 useRoute 建立。
+ */
 const route = useRoute()
+/**
+ * router；通过 useRouter 建立。
+ */
 const router = useRouter()
 
+/**
+ * 单页返回条目数；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const pageSize = ref(10)
 /*
  * tag  = 工具条那个单标签下拉（字符串）
  * tags = 悬浮卡片多选出来的集合，是同一件事的两种写法：
  *        一个元素时写 URL 的 ?tag=，多个元素时写 ?tags=a,b（后端「命中任一」）。
  */
+/**
+ * 筛选条件；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const filters = reactive({ tag: '', tags: [], topic: '', year: null, month: null, day: null })
+/**
+ * 状态；通过 reactive 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const state = reactive({ items: [], total: 0, page: 1 })
+/**
+ * 标签列表；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const tags = ref([])
+/**
+ * 专题列表；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const topics = ref([])
+/**
+ * months；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const months = ref([])
+/**
+ * days；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const days = ref([])
+/**
+ * daysLoading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const daysLoading = ref(false)
+/**
+ * loading；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const loading = ref(false)
+/**
+ * 错误文本；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const errorText = ref('')
 
+/**
+ * 总数Pages；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const totalPages = computed(() => Math.max(1, Math.ceil(state.total / pageSize.value)))
+/**
+ * 有效月份；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const activeMonth = computed(() => (filters.year ? `${filters.year}-${String(filters.month || 1).padStart(2, '0')}` : ''))
+/**
+ * 范围标签；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const rangeLabel = computed(() => filters.day
   ? `${monthLabel(filters.year, filters.month)} ${filters.day} 日`
   : monthLabel(filters.year, filters.month))
+/**
+ * calendar月份；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const calendarMonth = computed(() => {
   const selected = filters.year && filters.month
     ? { year: filters.year, month: filters.month }
     : months.value.find((item) => item.year === filters.year) || months.value[0]
   return selected ? `${selected.year}-${String(selected.month).padStart(2, '0')}` : ''
 })
+/**
+ * calendarParts；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const calendarParts = computed(() => {
   const [year, month] = calendarMonth.value.split('-').map(Number)
   return { year, month }
 })
 
+/**
+ * 查询所属的处理函数。
+ * 主要协作：filters.tags.join。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function queryOf() {
   return {
     ...(filters.tags.length === 1 ? { tag: filters.tags[0] } : {}),
@@ -76,6 +157,11 @@ function queryOf() {
   }
 }
 
+/**
+ * 同步来源查询。
+ * 主要协作：route.query.tag.trim、.filter、.map、route.query.tags.split、item.trim。
+ * 更新的响应式状态包括 pageSize；渲染由 Vue 的依赖跟踪触发。
+ */
 function syncFromQuery() {
   // 与列表页同一套写法：?tag= 与 ?tags=a,b 都认，合并去重
   const single = typeof route.query.tag === 'string' ? route.query.tag.trim() : ''
@@ -98,6 +184,13 @@ function syncFromQuery() {
 }
 
 let postRequest = 0
+/**
+ * 加载文章列表。
+ * 主要协作：listArchive、filters.tags.join、errorMessage。
+ * 更新的响应式状态包括 loading、errorText；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadPosts() {
   const request = ++postRequest
   loading.value = true
@@ -126,6 +219,12 @@ async function loadPosts() {
   }
 }
 
+/**
+ * 加载选项。
+ * 主要协作：Promise.all、listPublicTags、listPublicTopics、listArchiveMonths。
+ * 更新的响应式状态包括 tags、topics、months；渲染由 Vue 的依赖跟踪触发。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadOptions() {
   try {
     const [tagList, topicList, monthList] = await Promise.all([
@@ -143,6 +242,13 @@ async function loadOptions() {
 }
 
 let dayRequest = 0
+/**
+ * 加载Days。
+ * 主要协作：.map、monthKey.split、listArchiveDays。
+ * 更新的响应式状态包括 days、daysLoading；渲染由 Vue 的依赖跟踪触发。
+ * @param monthKey 月份键；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function loadDays(monthKey) {
   const request = ++dayRequest
   days.value = []
@@ -159,11 +265,20 @@ async function loadDays(monthKey) {
   }
 }
 
+/**
+ * 应用查询。
+ * 主要协作：router.push、contentPath、queryOf、loadPosts。
+ */
 function applyQuery() {
   router.push({ path: contentPath('/blog/archive'), query: queryOf() })
   void loadPosts()
 }
 
+/**
+ * 应用筛选条件。
+ * 主要协作：Object.assign、applyQuery。
+ * @param next 下一项；默认值、解构字段与可选参数见函数签名。
+ */
 function applyFilters(next) {
   if (next.year !== filters.year || next.month !== filters.month) filters.day = null
   /*
@@ -179,6 +294,11 @@ function applyFilters(next) {
 }
 
 // 导航条点一行 = 单标签筛选（再点一次取消）
+/**
+ * 查询标签的处理函数。
+ * 主要协作：applyQuery。
+ * @param slug 公开固定链接的路径标识；默认值、解构字段与可选参数见函数签名。
+ */
 function selectTag(slug) {
   filters.tags = slug ? [slug] : []
   filters.tag = slug
@@ -187,6 +307,11 @@ function selectTag(slug) {
 }
 
 // 悬浮卡片「应用筛选」= 一次提交一组标签
+/**
+ * 应用标签列表。
+ * 主要协作：applyQuery。
+ * @param slugs slugs；默认值、解构字段与可选参数见函数签名。
+ */
 function applyTags(slugs) {
   filters.tags = [...slugs]
   filters.tag = slugs.length === 1 ? slugs[0] : ''
@@ -194,15 +319,31 @@ function applyTags(slugs) {
   applyQuery()
 }
 
+/**
+ * 移除标签。
+ * 主要协作：filters.tags.filter、applyTags。
+ * @param slug 公开固定链接的路径标识；默认值、解构字段与可选参数见函数签名。
+ */
 function removeTag(slug) {
   const next = filters.tags.filter((item) => item !== slug)
   applyTags(next)
 }
 
+/**
+ * 标签标签的处理函数。
+ * 主要协作：tags.value.find。
+ * @param slug 公开固定链接的路径标识；默认值、解构字段与可选参数见函数签名。
+ * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+ */
 function tagLabel(slug) {
   return tags.value.find((item) => item.slug === slug)?.name || slug
 }
 
+/**
+ * 查询月份的处理函数。
+ * 主要协作：applyQuery。
+ * @param month 月份；默认值、解构字段与可选参数见函数签名。
+ */
 function selectMonth(month) {
   filters.year = month ? month.year : null
   filters.month = month ? month.month : null
@@ -211,6 +352,11 @@ function selectMonth(month) {
   applyQuery()
 }
 
+/**
+ * 查询日的处理函数。
+ * 主要协作：applyQuery。
+ * @param day 日；默认值、解构字段与可选参数见函数签名。
+ */
 function selectDay(day) {
   filters.year = calendarParts.value.year
   filters.month = calendarParts.value.month
@@ -219,6 +365,10 @@ function selectDay(day) {
   applyQuery()
 }
 
+/**
+ * 清理全部。
+ * 主要协作：applyQuery。
+ */
 function clearAll() {
   filters.tag = ''
   filters.tags = []
@@ -230,8 +380,19 @@ function clearAll() {
   applyQuery()
 }
 
+/**
+ * change大小的处理函数。
+ * 主要协作：applyQuery。
+ * 更新的响应式状态包括 pageSize；渲染由 Vue 的依赖跟踪触发。
+ * @param size 大小；默认值、解构字段与可选参数见函数签名。
+ */
 function changeSize(size) { pageSize.value = size; state.page = 1; applyQuery() }
 
+/**
+ * go分页的处理函数。
+ * 主要协作：applyQuery、window.matchMedia、window.scrollTo。
+ * @param next 下一项；默认值、解构字段与可选参数见函数签名。
+ */
 function goPage(next) {
   state.page = next
   applyQuery()
@@ -239,6 +400,9 @@ function goPage(next) {
   window.scrollTo({ top: 0, behavior })
 }
 
+/**
+ * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
+ */
 onMounted(() => {
   syncFromQuery()
   void loadOptions()
@@ -246,8 +410,14 @@ onMounted(() => {
 })
 
 // URL 是筛选条件的唯一出口：浏览器前进/后退也能正确回到当时的归档视图
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(calendarMonth, loadDays)
 
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.year, route.query.month, route.query.day, route.query.page, route.query.pageSize],
   () => {
     const before = JSON.stringify([filters.tags, filters.topic, filters.year, filters.month, filters.day, state.page, pageSize.value])
@@ -337,6 +507,15 @@ watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.y
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
+/**
+ * 样式范围：.blog-hero。
+ * 使用网格布局组织内容；列定义为 minmax(0, 1fr) 230px，间距由 var(--space-9) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-hero {
   display: grid;
   grid-template-columns: minmax(0, 1fr) 230px;
@@ -347,6 +526,10 @@ watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.y
   border-bottom: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.blog-hero > div > p:first-child。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-hero > div > p:first-child {
   margin-bottom: 12px;
   color: var(--accent);
@@ -355,29 +538,48 @@ watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.y
   letter-spacing: 0.16em;
 }
 
+/**
+ * 样式范围：.blog-hero h1。
+ */
 .blog-hero h1 {
   font-size: clamp(38px, 5vw, 62px);
   line-height: 1.08;
   letter-spacing: -0.045em;
 }
 
+/**
+ * 样式范围：.blog-hero__range。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-hero__range {
   margin-top: 12px;
   color: var(--text-secondary);
   font-size: 13px;
 }
 
+/**
+ * 样式范围：.blog-hero > aside。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-hero > aside {
   padding-left: var(--space-5);
   border-left: 1px solid var(--border);
 }
 
+/**
+ * 样式范围：.blog-hero aside strong。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-hero aside strong {
   display: block;
   color: var(--primary);
   font-size: 34px;
 }
 
+/**
+ * 样式范围：.blog-hero aside span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-hero aside span {
   color: var(--text-muted);
   font-size: 11px;
@@ -385,6 +587,10 @@ watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.y
   letter-spacing: 0.1em;
 }
 
+/**
+ * 样式范围：.blog-hero aside p。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-hero aside p {
   margin-top: 12px;
   color: var(--text-secondary);
@@ -392,6 +598,11 @@ watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.y
   line-height: 1.7;
 }
 
+/**
+ * 样式范围：.blog-layout。
+ * 使用网格布局组织内容；列定义为 minmax(0, 1fr) var(--aside-width)，间距由 var(--layout-gap) 控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr) var(--aside-width);
@@ -399,8 +610,16 @@ watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.y
   gap: var(--layout-gap);
 }
 
+/**
+ * 样式范围：.blog-main。
+ */
 .blog-main { min-width: 0; }
 
+/**
+ * 样式范围：.blog-active。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-active {
   display: flex;
   align-items: center;
@@ -409,11 +628,19 @@ watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.y
   margin-bottom: var(--space-5);
 }
 
+/**
+ * 样式范围：.blog-active > span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-active > span {
   color: var(--text-muted);
   font-size: 11px;
 }
 
+/**
+ * 样式范围：.blog-active button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-active button {
   padding: 5px 10px;
   border: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
@@ -423,18 +650,37 @@ watch(() => [route.query.tag, route.query.tags, route.query.topic, route.query.y
   cursor: pointer;
 }
 
+/**
+ * 样式范围：.blog-active__clear。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .blog-active__clear {
   border-color: var(--border) !important;
   color: var(--text-muted) !important;
   background: transparent !important;
 }
 
+/**
+ * 响应式或设备条件：(max-width: 960px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 960px) {
+  /**
+   * 样式范围：.blog-layout。
+   */
   .blog-layout { grid-template-columns: 1fr; }
 }
 
+/**
+ * 响应式或设备条件：(max-width: 680px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 680px) {
+  /**
+   * 样式范围：.blog-hero。
+   */
   .blog-hero { grid-template-columns: 1fr; }
+  /**
+   * 样式范围：.blog-hero > aside。
+   */
   .blog-hero > aside { display: none; }
 }
 </style>

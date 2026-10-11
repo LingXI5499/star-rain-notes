@@ -1,3 +1,11 @@
+/*
+ * TutorialPublicationServiceImplTest：教程与学习模块的测试文件。
+ * 业务范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CurrentActorApi、TutorialEntity、TutorialRevisionEntity、TutorialEventPublisher、TutorialCategoryMapper、TutorialChapterMapper、TutorialGroupMapper。
+ * 阅读入口：publicResponsesKeepRevisionFrozenAndDoNotExposeReferenceAnswers（公开ResponsesKeep修订Frozen及Do不Expose引用答案集合处理入口）。
+ */
+
 package com.starrainnotes.tutorial.content.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -21,7 +29,15 @@ import com.starrainnotes.tutorial.content.media.TutorialMediaReferences;
 import com.starrainnotes.tutorial.content.service.impl.TutorialPublicationServiceImpl;
 import org.junit.jupiter.api.Test;
 
+/**
+ * 教程发布业务服务实现测试，属于教程与学习模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class TutorialPublicationServiceImplTest {
+    /**
+     * 公开ResponsesKeep修订Frozen及Do不Expose引用答案集合处理入口。
+     * 关键处理步骤调用 <code>tutorial.setId</code>、<code>tutorial.setSlug</code>、<code>tutorial.setPublicationStatus</code>、<code>tutorial.setPublishedRevisionId</code>。
+     */
     @Test
     void publicResponsesKeepRevisionFrozenAndDoNotExposeReferenceAnswers() {
         TutorialMapper tutorialMapper = mock(TutorialMapper.class);

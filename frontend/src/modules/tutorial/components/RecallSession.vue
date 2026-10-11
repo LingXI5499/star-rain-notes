@@ -1,16 +1,57 @@
 <script setup>
+/**
+ * RecallSession.vue：教程与学习模块的视图组件。
+ * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 主要依赖：vue、../../blog/components/BlogProse.vue、../api/learningApi、../../../shared/http、../support/learningLabels、../styles/study-exercises.css。
+ * 组件输入：session、disabled；默认值与类型见 defineProps。
+ * 组件输出事件：update、completed；负载由 emit 调用给出。
+ * 主要响应式状态：props、emit、busy、error、heading、next、completed。
+ * 阅读入口：act（act的处理函数）。
+ */
+
+
 import { computed, ref, watch } from 'vue'
 import BlogProse from '../../blog/components/BlogProse.vue'
 import { revealCard, rateCard } from '../api/learningApi'
 import { errorMessage } from '../../../shared/http'
 import { masteryLabels } from '../support/learningLabels'
 import '../styles/study-exercises.css'
+/**
+ * 组件输入；通过 defineProps 建立。
+ */
 const props = defineProps({ session: { type: Object, required: true }, disabled: Boolean })
+/**
+ * 事件发射器；通过 defineEmits 建立。
+ */
 const emit = defineEmits(['update', 'completed'])
+/**
+ * busy；通过 ref 建立。
+ * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+ */
 const busy = ref(false), error = ref(''), heading = ref(null)
+/**
+ * 下一项；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const next = computed(() => props.session.items?.find(c => c.status !== 'COMPLETED'))
+/**
+ * 已完成；通过 computed 建立。
+ * 该值由依赖自动重新计算，不作为独立可写状态维护。
+ */
 const completed = computed(() => props.session.items?.filter(c => c.status === 'COMPLETED').length || 0)
+/**
+ * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+ */
 watch(() => next.value?.knowledgeCardId, () => heading.value?.focus())
+/**
+ * act的处理函数。
+ * 主要协作：rateCard、revealCard、emit、errorMessage。
+ * 更新的响应式状态包括 busy、error；渲染由 Vue 的依赖跟踪触发。
+ * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
+ * @param rating 评分；默认值、解构字段与可选参数见函数签名。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function act(rating) { if (busy.value || props.disabled || !next.value) return; busy.value = true; error.value = ''; try { const updated = rating ? await rateCard(props.session.id, next.value.knowledgeCardId, rating) : await revealCard(props.session.id, next.value.knowledgeCardId); emit('update', updated); if (updated.status === 'COMPLETED') emit('completed', updated) } catch (e) { error.value = errorMessage(e) } finally { busy.value = false } }
 </script>
 <template>

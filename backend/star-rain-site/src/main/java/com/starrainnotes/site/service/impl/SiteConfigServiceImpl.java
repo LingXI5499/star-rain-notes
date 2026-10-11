@@ -1,3 +1,11 @@
+/*
+ * SiteConfigServiceImpl：站点模块的业务实现文件。
+ * 业务范围：站点品牌、首页内容和站点设置。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ * 主要协作类型：SiteConfigPatchDTO、SiteMediaRequestDTO、SiteConfigEntity、SiteConfigMapper、SitePublicConfigVO、MediaAssetApi、MediaReferenceApi。
+ * 阅读入口：config（配置处理入口）；patch（patch处理入口）；setMediaRequired（设置媒体必需）；setMedia（设置媒体）。
+ */
+
 package com.starrainnotes.site.service.impl;
 
 import com.starrainnotes.site.dto.SiteConfigPatchDTO;
@@ -23,15 +31,43 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronization;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+/**
+ * 站点配置业务服务实现，属于站点模块。
+ * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+ */
 @Service
 @RequiredArgsConstructor
 public class SiteConfigServiceImpl implements SiteConfigService {
+    /**
+     * TYPES。
+     */
     private static final Set<String> FAVICON_TYPES = Set.of("image/png", "image/x-icon", "image/vnd.microsoft.icon", "image/svg+xml");
+    /**
+     * 数据映射。
+     * 协作类型：<code>SiteConfigMapper</code>。
+     */
     private final SiteConfigMapper mapper;
+    /**
+     * 媒体。
+     * 协作类型：<code>MediaAssetApi</code>。
+     */
     private final MediaAssetApi media;
+    /**
+     * references。
+     * 协作类型：<code>MediaReferenceApi</code>。
+     */
     private final MediaReferenceApi references;
+    /**
+     * 事件集合。
+     */
     private final ApplicationEventPublisher events;
 
+    /**
+     * 配置处理入口。
+     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>primary</code>、<code>SitePublicConfigVO.builder</code>、<code>row.getSiteName</code>、<code>row.getSiteTitle</code>。
+     * @return 类型为 <code>SitePublicConfigVO</code> 的处理结果
+     */
     @Override
     @Transactional(readOnly = true)
     public SitePublicConfigVO config() {
@@ -43,6 +79,14 @@ public class SiteConfigServiceImpl implements SiteConfigService {
                 .faviconUrl(url(row.getFaviconMediaAssetId())).build();
     }
 
+    /**
+     * patch处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.update</code>。
+     *
+     * @param patch patch；类型为 <code>SiteConfigPatchDTO</code>
+     * @return 类型为 <code>SitePublicConfigVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public SitePublicConfigVO patch(SiteConfigPatchDTO patch) {
@@ -60,6 +104,16 @@ public class SiteConfigServiceImpl implements SiteConfigService {
         return config();
     }
 
+    /**
+     * 设置媒体必需。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 关键处理步骤调用 <code>request.getMediaAssetId</code>、<code>setMedia</code>。
+     * 实现中的显式失败类型包括 <code>SiteConfigException</code>；具体触发条件见对应分支。
+     *
+     * @param kind kind；类型为 <code>String</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>SiteMediaRequestDTO</code>
+     * @return 类型为 <code>SitePublicConfigVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public SitePublicConfigVO setMediaRequired(String kind, SiteMediaRequestDTO request) {
@@ -68,6 +122,15 @@ public class SiteConfigServiceImpl implements SiteConfigService {
         return setMedia(kind, request.getMediaAssetId());
     }
 
+    /**
+     * 设置媒体。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.update</code>、<code>references.attach</code>、<code>references.detach</code>。
+     *
+     * @param kind kind；类型为 <code>String</code>
+     * @param assetId 资产标识；类型为 <code>Long</code>
+     * @return 类型为 <code>SitePublicConfigVO</code> 的处理结果
+     */
     @Override
     @Transactional
     public SitePublicConfigVO setMedia(String kind, Long assetId) {
@@ -88,12 +151,25 @@ public class SiteConfigServiceImpl implements SiteConfigService {
         return config();
     }
 
+    /**
+     * primary处理入口。
+     * 主要协作调用：<code>mapper.primary</code>。
+     * 实现中的显式失败类型包括 <code>SiteConfigException</code>；具体触发条件见对应分支。
+     * @return 类型为 <code>SiteConfigEntity</code> 的处理结果
+     */
     private SiteConfigEntity primary() {
         SiteConfigEntity row = mapper.primary();
         if (row == null) throw new SiteConfigException("SITE_CONFIG_NOT_FOUND", "站点配置不存在", 500);
         return row;
     }
 
+    /**
+     * 地址处理入口。
+     * 主要协作调用：<code>media.get</code>。
+     *
+     * @param assetId 资产标识；类型为 <code>Long</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String url(Long assetId) {
         if (assetId == null) return null;
         MediaAssetSummary asset = media.get(assetId);
@@ -101,6 +177,14 @@ public class SiteConfigServiceImpl implements SiteConfigService {
                 && "PUBLIC".equals(asset.getAccessLevel()) ? asset.getContentUrl() : null;
     }
 
+    /**
+     * 校验媒体。
+     * 主要协作调用：<code>media.get</code>、<code>FAVICON_TYPES.contains</code>。
+     * 实现中的显式失败类型包括 <code>SiteConfigException</code>；具体触发条件见对应分支。
+     *
+     * @param assetId 资产标识；类型为 <code>Long</code>
+     * @param logo logo；类型为 <code>boolean</code>
+     */
     private void validateMedia(Long assetId, boolean logo) {
         if (assetId <= 0) throw invalid("媒体 ID 无效");
         MediaAssetSummary asset = media.get(assetId);
@@ -114,33 +198,79 @@ public class SiteConfigServiceImpl implements SiteConfigService {
             throw new SiteConfigException("SITE_MEDIA_INVALID", "图标须为方形且不超过 512 像素的 PNG、ICO 或 SVG", 400);
     }
 
+    /**
+     * 引用处理入口。
+     * 关键处理步骤调用 <code>MediaReferenceCommand.builder</code>。
+     *
+     * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
+     * @param assetId 资产标识；类型为 <code>Long</code>
+     * @param usage usage；类型为 <code>String</code>
+     * @return 类型为 <code>MediaReferenceCommand</code> 的处理结果
+     */
     private MediaReferenceCommand reference(Long id, Long assetId, String usage) {
         return MediaReferenceCommand.builder().mediaAssetId(assetId).sourceModule("SITE")
                 .sourceType("CONFIG").sourceId(id).usageCode(usage).build();
     }
 
+    /**
+     * 必需处理入口。
+     * 关键处理步骤调用 <code>value.trim</code>、<code>clean.isEmpty</code>、<code>clean.length</code>、<code>invalid</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @param max 最大；类型为 <code>int</code>
+     * @param field 字段；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String required(String value, int max, String field) {
         String clean = value.trim();
         if (clean.isEmpty() || clean.length() > max) throw invalid(field + "长度无效");
         return clean;
     }
 
+    /**
+     * optional处理入口。
+     * 关键处理步骤调用 <code>value.trim</code>、<code>clean.length</code>、<code>invalid</code>、<code>clean.isEmpty</code>。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @param max 最大；类型为 <code>int</code>
+     * @param field 字段；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String optional(String value, int max, String field) {
         String clean = value.trim();
         if (clean.length() > max) throw invalid(field + "过长");
         return clean.isEmpty() ? null : clean;
     }
 
+    /**
+     * 无效处理入口。
+     *
+     * @param message 留言；类型为 <code>String</code>
+     * @return 类型为 <code>SiteConfigException</code> 的处理结果
+     */
     private SiteConfigException invalid(String message) {
         return new SiteConfigException("SITE_CONFIG_INVALID", message, 400);
     }
 
+    /**
+     * 之后Commit处理入口。
+     * 主要协作调用：<code>events.publishEvent</code>。
+     */
     private void afterCommit() {
         if (!TransactionSynchronizationManager.isSynchronizationActive()) {
             events.publishEvent(new SiteConfigChangedEvent());
             return;
         }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
+    /**
+     * 当前调用使用的匿名协作实现，属于站点模块。
+     * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
+     */
+    {
+            /**
+             * 之后Commit处理入口。
+             * 关键处理步骤调用 <code>events.publishEvent</code>。
+             */
             @Override public void afterCommit() { events.publishEvent(new SiteConfigChangedEvent()); }
         });
     }

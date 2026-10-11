@@ -1,3 +1,11 @@
+/*
+ * AnalyticsMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：AnalyticsEventEntity、AnalyticsMapper。
+ * 阅读入口：open（打开统计数据映射Xml）；rollback（回滚统计数据映射Xml）；insertAndDayCountsAgreeOnTodaysEvents（写入及日数量集合Agree触发Todays事件集合）；historicalTotalsExposesBothAliases（historicalTotalsExposesBothAliases处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -28,12 +36,30 @@ import org.junit.jupiter.api.Test;
  *
  * 全程不 commit，`@AfterEach` 里 rollback；对聚合表的 DELETE 也因此不会影响开发库。
  */
+/**
+ * 统计数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * 数据映射。
+     * 协作类型：<code>AnalyticsMapper</code>。
+     */
     private AnalyticsMapper mapper;
+    /**
+     * today。
+     */
     private LocalDate today;
 
+    /**
+     * 打开统计数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -41,6 +67,10 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
         today = LocalDate.now();
     }
 
+    /**
+     * 回滚统计数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -49,6 +79,10 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 写入及日数量集合Agree触发Todays事件集合。
+     * 主要协作调用：<code>mapper.dayCounts</code>、<code>mapper.insert</code>。
+     */
     @Test
     void insertAndDayCountsAgreeOnTodaysEvents() {
         long before = number(mapper.dayCounts(today), "pageViews");
@@ -64,6 +98,10 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
                 "插入的 CONTENT_VIEW 没有计入当天计数");
     }
 
+    /**
+     * historicalTotalsExposesBothAliases处理入口。
+     * 主要协作调用：<code>mapper.historicalTotals</code>。
+     */
     @Test
     void historicalTotalsExposesBothAliases() {
         Map<String, Object> totals = mapper.historicalTotals(today);
@@ -73,6 +111,10 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(number(totals, "pageViews") >= 0);
     }
 
+    /**
+     * dailyTrend行集合UseTheAliasesThe业务服务Reads处理入口。
+     * 主要协作调用：<code>mapper.dailyTrend</code>、<code>today.minusDays</code>、<code>today.plusDays</code>。
+     */
     @Test
     void dailyTrendRowsUseTheAliasesTheServiceReads() {
         List<Map<String, Object>> rows = mapper.dailyTrend(today.minusDays(30), today.plusDays(1), today.plusDays(2));
@@ -83,6 +125,10 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * hot内容Aliases及类型筛选作品处理入口。
+     * 主要协作调用：<code>mapper.insert</code>、<code>mapper.hotContent</code>。
+     */
     @Test
     void hotContentAliasesAndTypeFilterWork() {
         mapper.insert(contentView(424243L));
@@ -100,6 +146,10 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(all.size() >= rows.size(), "type 为 null 的分支没有返回全部类型");
     }
 
+    /**
+     * referrersAliases作品处理入口。
+     * 主要协作调用：<code>mapper.insert</code>、<code>mapper.referrers</code>。
+     */
     @Test
     void referrersAliasesWork() {
         mapper.insert(referredPageView("/analytics-xml-test-ref"));
@@ -111,6 +161,10 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * dailyAggregationRoundTripRebuildsThe日来源原始事件集合处理入口。
+     * 主要协作调用：<code>mapper.insert</code>、<code>mapper.deleteSiteDay</code>、<code>mapper.insertSiteDay</code>、<code>mapper.deleteContentDay</code>、<code>mapper.insertContentDay</code>。
+     */
     @Test
     void dailyAggregationRoundTripRebuildsTheDayFromRawEvents() {
         mapper.insert(pageView("/analytics-xml-test-agg"));
@@ -133,6 +187,10 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(today.toString(), String.valueOf(trend.get(0).get("statDate")));
     }
 
+    /**
+     * 删除原始之前OnlyRemovesOlder事件集合。
+     * 主要协作调用：<code>mapper.insert</code>、<code>mapper.deleteRawBefore</code>、<code>mapper.dayCounts</code>。
+     */
     @Test
     void deleteRawBeforeOnlyRemovesOlderEvents() {
         mapper.insert(pageView("/analytics-xml-test-keep"));
@@ -148,6 +206,10 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
      * 这一条会抛非空约束异常，并且被 AnalyticsServiceImpl.safelyInsert 吞掉，
      * 表现为「页面浏览静默丢失」。
      */
+    /**
+     * 空值Referrer分类FallsBack目标The列默认Instead所属Failing处理入口。
+     * 主要协作调用：<code>mapper.insert</code>。
+     */
     @Test
     void nullReferrerCategoryFallsBackToTheColumnDefaultInsteadOfFailing() {
         AnalyticsEventEntity anonymous = event("PAGE_VIEW", "/analytics-xml-test-null-ref", null, null, null);
@@ -155,18 +217,50 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
                 "referrer_category 为 null 时插入失败：XML 覆盖了库里的 DEFAULT 'DIRECT'");
     }
 
+    /**
+     * 分页读取View。
+     * 关键处理步骤调用 <code>event</code>。
+     *
+     * @param route 路由；类型为 <code>String</code>
+     * @return 类型为 <code>AnalyticsEventEntity</code> 的处理结果
+     */
     private AnalyticsEventEntity pageView(String route) {
         return event("PAGE_VIEW", route, null, null, "DIRECT");
     }
 
+    /**
+     * referred分页View处理入口。
+     * 关键处理步骤调用 <code>event</code>。
+     *
+     * @param route 路由；类型为 <code>String</code>
+     * @return 类型为 <code>AnalyticsEventEntity</code> 的处理结果
+     */
     private AnalyticsEventEntity referredPageView(String route) {
         return event("PAGE_VIEW", route, null, null, "SEARCH");
     }
 
+    /**
+     * 内容View处理入口。
+     * 关键处理步骤调用 <code>event</code>。
+     *
+     * @param contentId 内容标识；类型为 <code>Long</code>
+     * @return 类型为 <code>AnalyticsEventEntity</code> 的处理结果
+     */
     private AnalyticsEventEntity contentView(Long contentId) {
         return event("CONTENT_VIEW", "/tutorials/:slug", "TUTORIAL", contentId, null);
     }
 
+    /**
+     * 事件处理入口。
+     * 关键处理步骤调用 <code>entity.setEventType</code>、<code>entity.setRouteKey</code>、<code>entity.setContentType</code>、<code>entity.setContentId</code>。
+     *
+     * @param type 类型；类型为 <code>String</code>
+     * @param route 路由；类型为 <code>String</code>
+     * @param contentType 内容类型或请求声明的 Content-Type；类型为 <code>String</code>
+     * @param contentId 内容标识；类型为 <code>Long</code>
+     * @param referrer referrer；类型为 <code>String</code>
+     * @return 类型为 <code>AnalyticsEventEntity</code> 的处理结果
+     */
     private AnalyticsEventEntity event(String type, String route, String contentType, Long contentId, String referrer) {
         AnalyticsEventEntity entity = new AnalyticsEventEntity();
         entity.setEventType(type);
@@ -178,6 +272,14 @@ class AnalyticsMapperXmlTest extends MapperXmlIntegrationSupport {
         return entity;
     }
 
+    /**
+     * 数值处理入口。
+     * 关键处理步骤调用 <code>row.get</code>、<code>number.longValue</code>。
+     *
+     * @param row 行；类型为 <code>Map&lt;String, Object&gt;</code>
+     * @param key 键；类型为 <code>String</code>
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long number(Map<String, Object> row, String key) {
         Object value = row == null ? null : row.get(key);
         return value instanceof Number number ? number.longValue() : 0L;

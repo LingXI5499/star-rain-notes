@@ -1,3 +1,12 @@
+/**
+ * VocabularyPlanConfirmPage.spec.js：英语学习模块的自动化测试。
+ * 职责范围：文档、词汇、语法、阅读听力及复习记录。
+ * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
+ * 主要依赖：@vue/test-utils、vue-router、vitest、./VocabularyPlanConfirmPage.vue、../../api/vocabularyLearningApi。
+ * 阅读入口：setup（setup的处理函数）。
+ * 验证场景：plan confirmation card；shows replacement consequences and requires acknowledgement before sending the verified selection；presents creation copy when there is no current plan；requires a fresh acknowledgement after name or batch changes and does not preview invalid group sizes；locks confirmation during a new preview and after all selected words have been removed。
+ */
+
 import { mount, flushPromises } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
@@ -11,6 +20,11 @@ const mounted = []
 const preview = { sourceName: '颜色与材料', totalWords: 2, learnedWords: 1, totalGroups: 1, totalPages: 1,
   expectedRevision: 7, previewFingerprint: 'verified-selection', existingPlan: { status: 'ACTIVE', name: '旧学习计划' },
   samples: [{ word: 'quality' }, { word: 'compare' }], items: [{ id: '1', word: 'quality', translation: '质量' }, { id: '2', word: 'compare', translation: '比较' }] }
+/**
+ * setup的处理函数。
+ * 主要协作：createRouter、createMemoryHistory、router.push、mount、mounted.push。
+ * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+ */
 async function setup() {
   const router = createRouter({ history: createMemoryHistory(), routes: [
     { path: '/english/vocabulary/plan/confirm', component: VocabularyPlanConfirmPage },

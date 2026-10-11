@@ -1,3 +1,11 @@
+/*
+ * VocabularyLearningService：英语学习模块的模块支持文件。
+ * 业务范围：文档、词汇、语法、阅读听力及复习记录。
+ * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
+ * 主要协作类型：ApiException、Page、Word、Queue、VocabularyLearningMapper、VocabularyMapper、VocabularyService。
+ * 阅读入口：plan（计划处理入口）；words（words处理入口）；states（states处理入口）；preview（预览词汇学习）。
+ */
+
 package com.starrainnotes.english.vocabulary.learning;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -26,14 +34,50 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional(readOnly = true)
 public class VocabularyLearningService {
+    /**
+     * CHUNK。
+     * 初始值为 <code>500</code>。
+     */
     private static final int SELECTION_CHUNK = 500;
+    /**
+     * WORDS。
+     * 初始值为 <code>100000</code>。
+     */
     private static final int MAX_PLAN_WORDS = 100_000;
+    /**
+     * 数据映射。
+     * 协作类型：<code>VocabularyLearningMapper</code>。
+     */
     private final VocabularyLearningMapper mapper;
+    /**
+     * 内容。
+     * 协作类型：<code>VocabularyMapper</code>。
+     */
     private final VocabularyMapper content;
+    /**
+     * 词汇。
+     * 协作类型：<code>VocabularyService</code>。
+     */
     private final VocabularyService vocabulary;
+    /**
+     * JSON 读写或映射协作对象。
+     * 协作类型：<code>ObjectMapper</code>。
+     */
     private final ObjectMapper json;
+    /**
+     * clock。
+     */
     private final Clock clock;
 
+    /**
+     * 构造VocabularyLearningService，接收本类使用的依赖或初始化参数。
+     *
+     * @param mapper 数据映射；类型为 <code>VocabularyLearningMapper</code>
+     * @param content 内容；类型为 <code>VocabularyMapper</code>
+     * @param vocabulary 词汇；类型为 <code>VocabularyService</code>
+     * @param json JSON 读写或映射协作对象；类型为 <code>ObjectMapper</code>
+     * @param clock clock；类型为 <code>Clock</code>
+     */
     public VocabularyLearningService(VocabularyLearningMapper mapper, VocabularyMapper content,
             VocabularyService vocabulary, ObjectMapper json, @Qualifier("vocabularyLearningClock") Clock clock) {
         this.mapper = mapper;
@@ -43,6 +87,13 @@ public class VocabularyLearningService {
         this.clock = clock;
     }
 
+    /**
+     * 计划处理入口。
+     * 主要协作调用：<code>mapper.plan</code>、<code>mapper.defaultEntry</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     public Plan plan(long accountId) {
         Plan plan = mapper.plan(accountId);
         if (plan == null) { return new Plan(); }
@@ -50,6 +101,16 @@ public class VocabularyLearningService {
         return plan;
     }
 
+    /**
+     * words处理入口。
+     * 主要协作调用：<code>mapper.countWords</code>、<code>mapper.wordPage</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param filter 筛选；类型为 <code>Filter</code>
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param size 大小；类型为 <code>int</code>
+     * @return 类型为 <code>Page&lt;Word&gt;</code> 的处理结果
+     */
     public Page<Word> words(long accountId, Filter filter, int page, int size) {
         pagination(page, size, 100);
         long total = mapper.countWords(accountId, filter);
@@ -58,6 +119,14 @@ public class VocabularyLearningService {
                 .totalPages((int) ((total + size - 1) / size)).build();
     }
 
+    /**
+     * states处理入口。
+     * 主要协作调用：<code>mapper.states</code>、<code>mapper.modes</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     * @return 本次处理得到的条目集合
+     */
     public List<State> states(long accountId, List<Long> ids) {
         if (ids.isEmpty()) { return List.of(); }
         if (ids.size() > 100 || ids.stream().anyMatch(id -> id == null || id <= 0)) { throw invalid("一次最多读取 100 个有效词条"); }
@@ -94,6 +163,15 @@ public class VocabularyLearningService {
         return preview;
     }
 
+    /**
+     * 确认词汇学习。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.clearItems</code>、<code>mapper.replacePlan</code>、<code>vocabulary.wordsByIds</code>、<code>mapper.insertItems</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param selection selection；类型为 <code>Selection</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     @Transactional
     public Plan confirm(long accountId, Selection selection) {
         Plan slot = lockSlot(accountId);
@@ -133,6 +211,17 @@ public class VocabularyLearningService {
         return plan(accountId);
     }
 
+    /**
+     * 条目集合处理入口。
+     * 主要协作调用：<code>mapper.items</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param revision 修订；类型为 <code>long</code>
+     * @param groupNo 分组不含；类型为 <code>Integer</code>
+     * @param after 之后；类型为 <code>int</code>
+     * @param limit 本次查询或处理的数量上限；类型为 <code>int</code>
+     * @return 本次处理得到的条目集合
+     */
     public List<PlanItem> items(long accountId, long revision, Integer groupNo, int after, int limit) {
         requireRevision(plan(accountId), revision);
         if (after < 0 || limit < 1 || limit > 100 || (groupNo != null && groupNo < 1)) { throw invalid("无效的分组或分页参数"); }
@@ -146,12 +235,31 @@ public class VocabularyLearningService {
         return items;
     }
 
+    /**
+     * groups处理入口。
+     * 主要协作调用：<code>mapper.groups</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param revision 修订；类型为 <code>long</code>
+     * @param after 之后；类型为 <code>int</code>
+     * @param limit 本次查询或处理的数量上限；类型为 <code>int</code>
+     * @return 本次处理得到的条目集合
+     */
     public List<GroupProgress> groups(long accountId, long revision, int after, int limit) {
         requireRevision(plan(accountId), revision);
         if (after < 0 || limit < 1 || limit > 100) { throw invalid("无效的分组分页参数"); }
         return mapper.groups(accountId, after, limit);
     }
 
+    /**
+     * resize处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.lastStartedGroup</code>、<code>mapper.firstRemainingSort</code>、<code>mapper.regroup</code>、<code>mapper.resize</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>RevisionRequest</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     @Transactional
     public Plan resize(long accountId, RevisionRequest request) {
         Plan slot = lockSlot(accountId);
@@ -164,6 +272,15 @@ public class VocabularyLearningService {
         return plan(accountId);
     }
 
+    /**
+     * 取消词汇学习。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.clearItems</code>、<code>mapper.cancelPlan</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param revision 修订；类型为 <code>long</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     @Transactional
     public Plan cancel(long accountId, long revision) {
         Plan slot = lockSlot(accountId);
@@ -183,6 +300,16 @@ public class VocabularyLearningService {
         return plan(accountId);
     }
 
+    /**
+     * rate处理入口。
+     * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
+     * 主要协作调用：<code>mapper.log</code>、<code>mapper.item</code>、<code>vocabulary.word</code>、<code>mapper.initializeMemory</code>、<code>mapper.lockMemory</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param wordId 单词标识；类型为 <code>long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>RatingRequest</code>
+     * @return 类型为 <code>RatingResult</code> 的处理结果
+     */
     @Transactional
     public RatingResult rate(long accountId, long wordId, RatingRequest request) {
         validateRating(request);
@@ -268,6 +395,15 @@ public class VocabularyLearningService {
         return result;
     }
 
+    /**
+     * queue处理入口。
+     * 主要协作调用：<code>mapper.due</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param limit 本次查询或处理的数量上限；类型为 <code>int</code>
+     * @param encodedCursor encodedCursor；类型为 <code>String</code>
+     * @return 类型为 <code>Queue</code> 的处理结果
+     */
     public Queue queue(long accountId, int limit, String encodedCursor) {
         if (limit < 1 || limit > 50) { throw invalid("复习批次为 1～50 张卡片"); }
         DueCursor cursor = new DueCursor();
@@ -311,6 +447,13 @@ public class VocabularyLearningService {
         return queue;
     }
 
+    /**
+     * 审核摘要处理入口。
+     * 主要协作调用：<code>mapper.reviewSummary</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @return 类型为 <code>ReviewSummary</code> 的处理结果
+     */
     public ReviewSummary reviewSummary(long accountId) {
         LocalDateTime now = now();
         LocalDateTime today = VocabularyMasteryCalculator.siteDay(now).atStartOfDay(com.starrainnotes.english.vocabulary.utils.VocabularySiteTime.SITE_ZONE)
@@ -318,6 +461,15 @@ public class VocabularyLearningService {
         return mapper.reviewSummary(accountId, now, today);
     }
 
+    /**
+     * replay处理入口。
+     * 关键处理步骤调用 <code>Objects.equals</code>、<code>request.getDirection</code>、<code>request.getRating</code>、<code>request.getSource</code>。
+     *
+     * @param wordId 单词标识；类型为 <code>long</code>
+     * @param request 本次操作的请求参数对象；类型为 <code>RatingRequest</code>
+     * @param log 当前类使用的日志记录器；类型为 <code>RatingLog</code>
+     * @return 类型为 <code>RatingResult</code> 的处理结果
+     */
     private RatingResult replay(long wordId, RatingRequest request, RatingLog log) {
         if (!Objects.equals(log.getWordId(), wordId) || !Objects.equals(log.getDirection(), request.getDirection())
                 || !Objects.equals(log.getRating(), request.getRating()) || !Objects.equals(log.getSource(), request.getSource())
@@ -330,6 +482,16 @@ public class VocabularyLearningService {
         return result;
     }
 
+    /**
+     * expand处理入口。
+     * 主要协作调用：<code>mapper.selected</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @param selection selection；类型为 <code>Selection</code>
+     * @param revision 修订；类型为 <code>long</code>
+     * @return 类型为 <code>Expanded</code> 的处理结果
+     */
     private Expanded expand(long accountId, Selection selection, long revision) {
         if (selection.getBatchSize() < 5 || selection.getBatchSize() > 100 || selection.getWordIds() == null
                 || selection.getExcludedWordIds() == null || selection.getWordIds().size() > 1000 || selection.getExcludedWordIds().size() > 1000) {
@@ -354,27 +516,61 @@ public class VocabularyLearningService {
         return new Expanded(ids, HexFormat.of().formatHex(digest.digest()));
     }
 
+    /**
+     * orderedWords处理入口。
+     * 主要协作调用：<code>vocabulary.wordsByIds</code>。
+     *
+     * @param ids 标识集合；类型为 <code>List&lt;Long&gt;</code>
+     * @return 本次处理得到的条目集合
+     */
     private List<Word> orderedWords(List<Long> ids) {
         if (ids.isEmpty()) { return List.of(); }
         Map<Long, Word> words = vocabulary.wordsByIds(ids, ids.size()).stream().collect(Collectors.toMap(Word::getId, Function.identity()));
         return ids.stream().map(words::get).filter(Objects::nonNull).toList();
     }
 
+    /**
+     * 来源名称处理入口。
+     * 主要协作调用：<code>content.theme</code>。
+     *
+     * @param selection selection；类型为 <code>Selection</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String sourceName(Selection selection) {
         if (selection.getThemeId() == null) { return "自选词汇"; }
         var theme = content.theme(selection.getThemeId());
         return theme == null ? "主题词汇" : theme.getName();
     }
 
+    /**
+     * 锁Slot处理入口。
+     * 主要协作调用：<code>mapper.ensureSlot</code>、<code>mapper.lockSlot</code>。
+     *
+     * @param accountId 账号标识；类型为 <code>long</code>
+     * @return 类型为 <code>Plan</code> 的处理结果
+     */
     private Plan lockSlot(long accountId) {
         mapper.ensureSlot(accountId);
         return mapper.lockSlot(accountId);
     }
 
+    /**
+     * 检查所需修订。
+     * 关键处理步骤调用 <code>plan.getRevision</code>、<code>conflict</code>。
+     *
+     * @param plan 计划；类型为 <code>Plan</code>
+     * @param revision 修订；类型为 <code>long</code>
+     */
     private void requireRevision(Plan plan, long revision) {
         if (plan.getRevision() != revision) { throw conflict("学习计划已在另一页面更改，请刷新后重试"); }
     }
 
+    /**
+     * 校验评分。
+     * 关键处理步骤调用 <code>request.getDirection</code>、<code>request.getRating</code>、<code>request.getSource</code>、<code>VocabularyMasteryCalculator.DIRECTIONS.contains</code>。
+     *
+     * @param request 本次操作的请求参数对象；类型为 <code>RatingRequest</code>
+     */
     private void validateRating(RatingRequest request) {
         if (request.getDirection() == null || request.getRating() == null || request.getSource() == null
                 || !VocabularyMasteryCalculator.DIRECTIONS.contains(request.getDirection())
@@ -388,24 +584,76 @@ public class VocabularyLearningService {
         }
     }
 
+    /**
+     * pagination处理入口。
+     * 关键处理步骤调用 <code>invalid</code>。
+     *
+     * @param page 分页页码；类型为 <code>int</code>
+     * @param size 大小；类型为 <code>int</code>
+     * @param max 最大；类型为 <code>int</code>
+     */
     private void pagination(int page, int size, int max) {
         if (page < 1 || size < 1 || size > max) { throw invalid("无效的分页参数"); }
     }
 
+    /**
+     * now处理入口。
+     * 主要协作调用：<code>clock.instant</code>。
+     * @return 类型为 <code>LocalDateTime</code> 的处理结果
+     */
     private LocalDateTime now() { return LocalDateTime.ofInstant(clock.instant(), ZoneOffset.UTC).truncatedTo(ChronoUnit.MILLIS); }
+    /**
+     * 写入JSON。
+     * 主要协作调用：<code>json.writeValueAsString</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param value 值；类型为 <code>Object</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String writeJson(Object value) {
         try { return json.writeValueAsString(value); }
         catch (JsonProcessingException exception) { throw new IllegalStateException("Cannot encode vocabulary snapshot", exception); }
     }
+    /**
+     * 读取JSON。
+     * 主要协作调用：<code>json.readValue</code>。
+     * 实现中的显式失败类型包括 <code>IllegalStateException</code>；具体触发条件见对应分支。
+     *
+     * @param value 值；类型为 <code>String</code>
+     * @param type 类型；类型为 <code>Class&lt;T&gt;</code>
+     * @return 类型为 <code>T</code> 的处理结果
+     */
     private <T> T readJson(String value, Class<T> type) {
         try { return json.readValue(value, type); }
         catch (JsonProcessingException exception) { throw new IllegalStateException("Cannot decode vocabulary snapshot", exception); }
     }
+    /**
+     * 无效处理入口。
+     *
+     * @param message 留言；类型为 <code>String</code>
+     * @return 类型为 <code>ApiException</code> 的处理结果
+     */
     private ApiException invalid(String message) { return new ApiException("ENGLISH_VOCABULARY_LEARNING_INVALID", message, 400); }
+    /**
+     * 冲突处理入口。
+     *
+     * @param message 留言；类型为 <code>String</code>
+     * @return 类型为 <code>ApiException</code> 的处理结果
+     */
     private ApiException conflict(String message) { return new ApiException("ENGLISH_VOCABULARY_LEARNING_CONFLICT", message, 409); }
+    /**
+     * Expanded，属于英语学习模块。
+     * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
+     */
     @lombok.Value
     private static class Expanded {
+        /**
+         * 标识集合。
+         */
         List<Long> ids;
+        /**
+         * fingerprint。
+         */
         String fingerprint;
     }
 }

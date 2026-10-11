@@ -1,4 +1,12 @@
 <script setup>
+/**
+ * CareerSnapshot.vue：作者资料模块的视图组件。
+ * 职责范围：个人介绍、社交链接、经历技能和精选内容。
+ * 组织模板和交互状态；输入属性与输出事件以本组件的 defineProps、defineEmits 声明为准。
+ * 组件输入：headline、focus、featured、status；默认值与类型见 defineProps。
+ */
+
+
 /*
  * 履历速览四格 —— 从 V1 `components/about/CareerSnapshot.vue` 移植。
  *
@@ -39,6 +47,10 @@ defineProps({
 </template>
 
 <style scoped>
+/**
+ * 组件局部样式：布局、状态和断点分别在以下规则处说明。
+ */
+
 /* V1：四格等宽、发丝边框、直角到 --radius-lg 的圆角，移动端收成两列（768px 断点一致） */
 .career-snapshot {
   display: grid;
@@ -47,6 +59,10 @@ defineProps({
   margin: 0;
 }
 
+/**
+ * 样式范围：.career-snapshot__cell。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .career-snapshot__cell {
   padding: var(--space-5);
   border: 1px solid var(--border);
@@ -54,6 +70,10 @@ defineProps({
   background: var(--bg-surface);
 }
 
+/**
+ * 样式范围：.career-snapshot__cell dt。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .career-snapshot__cell dt {
   margin-bottom: var(--space-3);
   color: var(--accent);
@@ -61,6 +81,10 @@ defineProps({
   letter-spacing: 0.16em;
 }
 
+/**
+ * 样式范围：.career-snapshot__cell dd。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .career-snapshot__cell dd {
   margin: 0;
   color: var(--text-primary);
@@ -68,7 +92,13 @@ defineProps({
   line-height: 1.7;
 }
 
+/**
+ * 响应式或设备条件：(max-width: 768px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 768px) {
+  /**
+   * 样式范围：.career-snapshot。
+   */
   .career-snapshot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 </style>

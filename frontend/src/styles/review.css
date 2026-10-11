@@ -1,3 +1,8 @@
+/**
+ * review.css：前端应用模块的样式定义。
+ * 作用域由选择器决定；优先复用主题变量，媒体查询只覆盖需要变化的属性。
+ */
+
 /*
  * 审核模块样式。
  *
@@ -11,30 +16,74 @@
 /* ---------- 状态色板 ---------- */
 /* .status-chip 已在 account.css 里定义基础样式，这里只叠加语义色 */
 .review-chip--pending { color: var(--warning); background: color-mix(in srgb, var(--warning) 12%, transparent); }
+/**
+ * 样式范围：.review-chip--approved。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-chip--approved { color: var(--success); background: color-mix(in srgb, var(--success) 12%, transparent); }
+/**
+ * 样式范围：.review-chip--rejected。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-chip--rejected { color: var(--danger); background: color-mix(in srgb, var(--danger) 12%, transparent); }
+/**
+ * 样式范围：.review-chip--canceled。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-chip--canceled { color: var(--text-muted); background: var(--bg-subtle); }
 
 /* ---------- 标签页与演示面板 ---------- */
 .review-tabs { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 18px; }
+/**
+ * 样式范围：.review-tab。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-tab {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 8px 16px; border: 1px solid var(--border-strong); border-radius: 999px;
   background: var(--bg-surface); color: var(--text-secondary); font-size: 13px;
 }
+/**
+ * 样式范围：.review-tab:hover。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-tab:hover { background: var(--bg-subtle); }
+/**
+ * 样式范围：.review-tab.is-active。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-tab.is-active {
   border-color: var(--primary); background: var(--el-color-primary-light-9);
   color: var(--primary); font-weight: 650;
 }
+/**
+ * 样式范围：.review-tab span。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-tab span {
   padding: 1px 7px; border-radius: 999px; background: var(--bg-subtle);
   color: var(--text-secondary); font-size: 11px;
 }
+/**
+ * 样式范围：.review-tab.is-active span。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-tab.is-active span { background: var(--bg-surface); color: var(--primary); }
+/**
+ * 样式范围：.review-demo-toggle。
+ */
 .review-demo-toggle { margin-left: auto; font-size: 12px; }
 
+/**
+ * 样式范围：.review-demo。
+ */
 .review-demo { margin-bottom: 20px; }
+/**
+ * 样式范围：.review-demo .toolbar。
+ */
 .review-demo .toolbar { margin-bottom: 0; }
 
 /* ---------- 列表行内的取消入口 ---------- */
@@ -43,13 +92,33 @@
 
 /* ---------- 详情动作区 ---------- */
 .review-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-top: var(--space-4); }
+/**
+ * 样式范围：.review-danger-button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-danger-button { color: var(--danger); border-color: var(--border-strong); }
+/**
+ * 样式范围：.primary-button.review-danger-button。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .primary-button.review-danger-button { color: var(--on-primary); background: var(--danger); border-color: var(--danger); }
 
 /* ---------- 目标冻结版本预览 ---------- */
 .review-target__body { display: grid; gap: var(--space-3); }
+/**
+ * 样式范围：.review-target__title。
+ */
 .review-target__title { margin: 0; font-size: 16px; font-weight: 650; }
+/**
+ * 样式范围：.review-target__summary。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-target__summary { margin: 0; color: var(--text-secondary); }
+/**
+ * 样式范围：.review-target__content。
+ * 溢出处理：横向 auto。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-target__content {
   margin: 0; padding: var(--space-4); overflow-x: auto;
   border: 1px solid var(--border); border-radius: var(--radius-md);
@@ -57,30 +126,80 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 12px; line-height: 1.7; white-space: pre-wrap; overflow-wrap: anywhere;
 }
+/**
+ * 样式范围：.review-target__meta。
+ */
 .review-target__meta { margin: 0; padding-bottom: 0; border-bottom: 0; }
 
 /* ---------- 审核轨迹 ---------- */
 .review-timeline { margin: 0; padding: 0; list-style: none; }
+/**
+ * 样式范围：.review-timeline__item。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-timeline__item { position: relative; display: flex; gap: var(--space-3); padding: 0 0 var(--space-5) 0; }
+/**
+ * 样式范围：.review-timeline__item:last-child。
+ */
 .review-timeline__item:last-child { padding-bottom: 0; }
 /* 竖线连接相邻节点；最后一项不画，避免线尾悬空 */
 .review-timeline__item:not(:last-child)::before {
   content: ''; position: absolute; left: 5px; top: 16px; bottom: 0;
   width: 1px; background: var(--border);
 }
+/**
+ * 样式范围：.review-timeline__marker。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-timeline__marker {
   flex-shrink: 0; width: 11px; height: 11px; margin-top: 6px;
   border: 2px solid var(--border-strong); border-radius: 50%; background: var(--bg-surface);
 }
+/**
+ * 样式范围：.review-timeline__item.is-approved .review-timeline__marker。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-timeline__item.is-approved .review-timeline__marker { border-color: var(--success); background: var(--success); }
+/**
+ * 样式范围：.review-timeline__item.is-rejected .review-timeline__marker。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-timeline__item.is-rejected .review-timeline__marker { border-color: var(--danger); background: var(--danger); }
+/**
+ * 样式范围：.review-timeline__item.is-canceled .review-timeline__marker。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-timeline__item.is-canceled .review-timeline__marker { border-color: var(--text-muted); background: var(--bg-subtle); }
+/**
+ * 样式范围：.review-timeline__item.is-submitted .review-timeline__marker。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-timeline__item.is-submitted .review-timeline__marker { border-color: var(--primary); background: var(--primary); }
 
+/**
+ * 样式范围：.review-timeline__body。
+ */
 .review-timeline__body { min-width: 0; }
+/**
+ * 样式范围：.review-timeline__head。
+ * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
+ */
 .review-timeline__head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 10px; margin: 0; }
+/**
+ * 样式范围：.review-timeline__head time。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-timeline__head time { color: var(--text-muted); font-size: 12px; }
+/**
+ * 样式范围：.review-timeline__actor。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-timeline__actor { color: var(--text-secondary); font-size: 12px; }
+/**
+ * 样式范围：.review-timeline__note。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 .review-timeline__note {
   margin: 6px 0 0; padding: 10px 12px;
   border: 1px solid var(--border); border-radius: var(--radius-sm);
@@ -95,9 +214,23 @@ dialog textarea {
   background: var(--bg-surface); color: var(--text-primary);
   font-family: inherit; font-size: 13px; line-height: 1.6;
 }
+/**
+ * 样式范围：dialog textarea:focus-visible。
+ * 此段覆盖交互或选中状态；实际改变的属性由以下声明决定。
+ * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
+ */
 dialog textarea:focus-visible { outline: 2px solid var(--primary); outline-offset: 1px; }
 
+/**
+ * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。
+ */
 @media (max-width: 720px) {
+  /**
+   * 样式范围：.review-demo-toggle。
+   */
   .review-demo-toggle { margin-left: 0; }
+  /**
+   * 样式范围：.review-target__content。
+   */
   .review-target__content { font-size: 11px; }
 }

@@ -1,3 +1,11 @@
+/*
+ * HomeSectionService：站点模块的业务契约文件。
+ * 业务范围：站点品牌、首页内容和站点设置。
+ * 声明业务服务的输入和输出，使接入层与具体实现分离；状态转换和数据写入由实现类处理。
+ * 主要协作类型：HomeSectionOrderDTO、HomeSectionPatchDTO、HomeSectionEntity、HomeSectionSettingVO。
+ * 阅读入口：all（全部处理入口）；enabled（已启用处理入口）；reorder（调整顺序首页区块）；patch（patch处理入口）。
+ */
+
 package com.starrainnotes.site.service;
 
 import com.starrainnotes.site.dto.HomeSectionOrderDTO;
@@ -13,6 +21,10 @@ import java.util.List;
  *   - 面向前端的三个方法（all / reorder / patch）返回 `HomeSectionSettingVO`，把持久化实体挡在 HTTP 契约之外；
  *   - `enabled()` 只服务模块内部（首页聚合与各 Provider 都要读 config_json 决定取多少条），
  *     返回实体，避免内部为了一次读取多绕一层映射。
+ */
+/**
+ * 首页区块业务服务，属于站点模块。
+ * 声明业务服务的输入和输出，使接入层与具体实现分离；状态转换和数据写入由实现类处理。
  */
 public interface HomeSectionService {
     /** 按展示顺序返回全部区块（后台视图）。 */

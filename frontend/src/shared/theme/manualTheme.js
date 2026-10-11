@@ -1,14 +1,42 @@
+/**
+ * manualTheme.js：跨模块基础模块的共享工具。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 将跨模块使用的行为收敛到一个实现，调用方通过导出函数或组合式函数使用。
+ * 主要依赖：vue。
+ * 主要响应式状态：themeSwitching。
+ * 阅读入口：readManualTheme（读取Manual主题）；applyManualTheme（应用Manual主题）；switchManualTheme（switchManual主题的处理函数）；commit（提交当前操作）。
+ */
+
 import { nextTick, ref } from 'vue'
 
-export const themeSwitching = ref(false)
+export
+  /**
+   * 主题Switching；通过 ref 建立。
+   * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+   */
+  const themeSwitching = ref(false)
 const colors = { light: '#0F3D36', dark: '#102C31' }
 
-export function readManualTheme(key) {
+export
+  /**
+   * 读取Manual主题。
+   * 主要协作：localStorage.getItem。
+   * @param key 键；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function readManualTheme(key) {
   try { return localStorage.getItem(key) === 'dark' ? 'dark' : 'light' }
   catch { return 'light' }
 }
 
-export function applyManualTheme(theme, key) {
+export
+  /**
+   * 应用Manual主题。
+   * 主要协作：.setAttribute、document.querySelector、localStorage.setItem。
+   * @param theme 主题；默认值、解构字段与可选参数见函数签名。
+   * @param key 键；默认值、解构字段与可选参数见函数签名。
+   */
+  function applyManualTheme(theme, key) {
   const value = theme === 'dark' ? 'dark' : 'light'
   document.documentElement.dataset.theme = value
   document.documentElement.style.colorScheme = value
@@ -20,11 +48,25 @@ export function applyManualTheme(theme, key) {
 
 // Circular reveal adapted from clay-blog (MIT). See THIRD_PARTY_NOTICES.md.
 // Percent coordinates keep the snapshot geometry correct on high-DPI screens.
-export async function switchManualTheme(change, button) {
+export
+  /**
+   * switchManual主题的处理函数。
+   * 主要协作：change、nextTick、window.matchMedia、commit、root.classList.add。
+   * 更新的响应式状态包括 themeSwitching；渲染由 Vue 的依赖跟踪触发。
+   * @param change change；默认值、解构字段与可选参数见函数签名。
+   * @param button button；默认值、解构字段与可选参数见函数签名。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
+  async function switchManualTheme(change, button) {
   if (themeSwitching.value) return false
   themeSwitching.value = true
   const root = document.documentElement
   let committed = false
+  /**
+   * 提交当前操作。
+   * 主要协作：change、nextTick。
+   * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
+   */
   const commit = async () => {
     change()
     committed = true

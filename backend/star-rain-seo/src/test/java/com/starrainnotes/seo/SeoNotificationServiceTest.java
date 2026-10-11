@@ -1,3 +1,11 @@
+/*
+ * SeoNotificationServiceTest：公开页面与 SEO模块的测试文件。
+ * 业务范围：公开 HTML 快照、规范地址、站点地图和搜索引擎通知。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CanonicalUrlResolver、SeoNotificationMapper、NotificationResult、IndexNowNotifier、SeoChange、SeoNotificationLog、SeoNotificationServiceImpl。
+ * 阅读入口：failedProviderIsRetriedWithoutRecordingASecret（失败提供方是否Retried不含RecordingASecret处理入口）。
+ */
+
 package com.starrainnotes.seo;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,7 +28,15 @@ import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+/**
+ * SEO通知业务服务测试，属于公开页面与 SEO模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class SeoNotificationServiceTest {
+    /**
+     * 失败提供方是否Retried不含RecordingASecret处理入口。
+     * 关键处理步骤调用 <code>notifier.enabled</code>、<code>notifier.providerCode</code>、<code>row.setId</code>、<code>row.setProviderCode</code>。
+     */
     @Test
     void failedProviderIsRetriedWithoutRecordingASecret() {
         SeoNotificationMapper mapper = mock(SeoNotificationMapper.class);

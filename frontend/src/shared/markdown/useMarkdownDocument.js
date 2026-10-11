@@ -1,3 +1,12 @@
+/**
+ * useMarkdownDocument.js：跨模块基础模块的共享工具。
+ * 职责范围：路由、应用装配、共享组件或样式能力。
+ * 将跨模块使用的行为收敛到一个实现，调用方通过导出函数或组合式函数使用。
+ * 主要依赖：vue、./markdown。
+ * 主要响应式状态：html。
+ * 阅读入口：useMarkdownDocument（useMarkdown文档的处理函数）。
+ */
+
 import { nextTick, ref, watch } from 'vue'
 import { enhanceMarkdownDom, renderMarkdownDocument, typesetMarkdownMath } from './markdown'
 
@@ -15,9 +24,26 @@ import { enhanceMarkdownDom, renderMarkdownDocument, typesetMarkdownMath } from 
  * 公式排版失败被吞掉是有意的：MathJax 资源加载不了时，正文里其它内容（代码、表格、
  * 标题）必须照常显示，只有公式退化成红色原始 TeX。把异常抛给组件只会整页白屏。
  */
-export function useMarkdownDocument(rootRef, source, options = {}) {
+export
+  /**
+   * useMarkdown文档的处理函数。
+   * 主要协作：watch、renderMarkdownDocument、options.onOutline、nextTick、enhanceMarkdownDom。
+   * 更新的响应式状态包括 html；渲染由 Vue 的依赖跟踪触发。
+   * @param rootRef rootRef；默认值、解构字段与可选参数见函数签名。
+   * @param source 来源；默认值、解构字段与可选参数见函数签名。
+   * @param options = {} 选项；默认值、解构字段与可选参数见函数签名。
+   * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
+   */
+  function useMarkdownDocument(rootRef, source, options = {}) {
+  /**
+   * HTML；通过 ref 建立。
+   * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
+   */
   const html = ref('')
 
+  /**
+   * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
+   */
   watch(source, async (value) => {
     const rendered = renderMarkdownDocument(value)
     html.value = rendered.html

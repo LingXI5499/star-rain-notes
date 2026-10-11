@@ -1,3 +1,11 @@
+/*
+ * PortfolioPrototypeServiceTest：作品模块的测试文件。
+ * 业务范围：作品分类、展示区块、代码库链接及关联媒体。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：CurrentActorApi、MediaReferenceApi、StaticPrototypeApi、MediaReferenceCommand、MediaReferenceCommands、PortfolioPrototypeController、WorkPrototypeDTO。
+ * 阅读入口：bindingUsesTheRealMediaReferenceContractAndClearingDetachesIt（绑定UsesTheReal媒体引用Contract及ClearingDetachesIt处理入口）；prototypeResponseAllowsItsOwnFrameAndKeepsScriptIsolation（prototype响应AllowsItsOwn框架及保留ScriptIsolation处理入口）。
+ */
+
 package com.starrainnotes.portfolio.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -17,7 +25,15 @@ import com.starrainnotes.portfolio.service.impl.PortfolioPrototypeServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 
+/**
+ * 作品Prototype业务服务测试，属于作品模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class PortfolioPrototypeServiceTest {
+    /**
+     * 绑定UsesTheReal媒体引用Contract及ClearingDetachesIt处理入口。
+     * 关键处理步骤调用 <code>work.setId</code>、<code>work.setWorkType</code>、<code>work.setStatus</code>、<code>works.byIdForUpdate</code>。
+     */
     @Test
     void bindingUsesTheRealMediaReferenceContractAndClearingDetachesIt() {
         WorkMapper works = mock(WorkMapper.class);
@@ -41,6 +57,10 @@ class PortfolioPrototypeServiceTest {
         verify(references, times(2)).detachAll("PORTFOLIO", "WORK_PROTOTYPE", 1L);
     }
 
+    /**
+     * prototype响应AllowsItsOwn框架及保留ScriptIsolation处理入口。
+     * 关键处理步骤调用 <code>service.read</code>、<code>service.contentType</code>、<code>response.getHeaders</code>。
+     */
     @Test
     void prototypeResponseAllowsItsOwnFrameAndKeepsScriptIsolation() {
         PortfolioPrototypeService service = mock(PortfolioPrototypeService.class);

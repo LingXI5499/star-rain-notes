@@ -1,3 +1,11 @@
+/*
+ * DashboardAggregationServiceTest：站点模块的测试文件。
+ * 业务范围：站点品牌、首页内容和站点设置。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：SiteDashboardVO、DashboardAggregationServiceImpl、DashboardSource、DashboardModuleData。
+ * 阅读入口：failedSourceDoesNotHideOtherModuleSummary（失败来源Does不HideOtherModule摘要处理入口）；duplicateModuleCodeFailsAtStartup（duplicateModule代码Fails时间Startup处理入口）；incompleteSourceDegradesWithoutDroppingOtherModules（incomplete来源Degrades不含DroppingOtherModules处理入口）。
+ */
+
 package com.starrainnotes.site.dashboard;
 
 import com.starrainnotes.site.vo.SiteDashboardVO;
@@ -15,7 +23,15 @@ import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.Test;
 
+/**
+ * 概览Aggregation业务服务测试，属于站点模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class DashboardAggregationServiceTest {
+    /**
+     * 失败来源Does不HideOtherModule摘要处理入口。
+     * 关键处理步骤调用 <code>blog.moduleCode</code>、<code>blog.load</code>、<code>Map.of</code>、<code>List.of</code>。
+     */
     @Test
     void failedSourceDoesNotHideOtherModuleSummary() {
         DashboardSource blog = mock(DashboardSource.class);
@@ -34,6 +50,10 @@ class DashboardAggregationServiceTest {
         }
     }
 
+    /**
+     * duplicateModule代码Fails时间Startup处理入口。
+     * 关键处理步骤调用 <code>first.moduleCode</code>、<code>second.moduleCode</code>、<code>List.of</code>。
+     */
     @Test
     void duplicateModuleCodeFailsAtStartup() {
         DashboardSource first = mock(DashboardSource.class);
@@ -44,6 +64,10 @@ class DashboardAggregationServiceTest {
             () -> new DashboardAggregationServiceImpl(List.of(first, second)));
     }
 
+    /**
+     * incomplete来源Degrades不含DroppingOtherModules处理入口。
+     * 关键处理步骤调用 <code>broken.moduleCode</code>、<code>broken.load</code>、<code>healthy.moduleCode</code>、<code>healthy.load</code>。
+     */
     @Test
     void incompleteSourceDegradesWithoutDroppingOtherModules() {
         DashboardSource broken = mock(DashboardSource.class);

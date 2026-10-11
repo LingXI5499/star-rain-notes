@@ -1,3 +1,10 @@
+/*
+ * ReviewAdminControllerSecurityTest：审核模块的测试文件。
+ * 业务范围：审批请求、审核步骤、目标锁和审批后的业务应用。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 阅读入口：hasPermission（判断是否具备权限）；hasPermission（判断是否具备权限）。
+ */
+
 package com.starrainnotes.review.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -43,17 +50,42 @@ import org.springframework.security.core.context.SecurityContextHolder;
  *   /reject  需要 review:reject        → 仅 SUPER_ADMIN
  *   /cancel  需要 review:read + 申请人本人（身份判定在 Service 内）
  */
+/**
+ * 审核后台控制器安全测试，属于审核模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class ReviewAdminControllerSecurityTest {
 
+    /**
+     * 后台。
+     */
     private static final String ADMIN = "ROLE_ADMIN";
+    /**
+     * 后台。
+     */
     private static final String SUPER_ADMIN = "ROLE_SUPER_ADMIN";
 
+    /**
+     * parser。
+     */
     private final ExpressionParser parser = new SpelExpressionParser();
 
     // 声明真实的 RoleHierarchy：SUPER_ADMIN 继承 ADMIN，与数据库里的角色设计一致
+    /**
+     * 角色Hierarchy。
+     */
     private final RoleHierarchy roleHierarchy = RoleHierarchyImpl.fromHierarchy("ROLE_SUPER_ADMIN > ROLE_ADMIN");
 
     // 只有受保护的方法才需要 @PreAuthorize；这里挑出所有声明了它的端点
+    /**
+     * method处理入口。
+     * 关键处理步骤调用 <code>ReviewAdminController.class.getDeclaredMethod</code>。
+     * 实现中的显式失败类型包括 <code>AssertionError</code>；具体触发条件见对应分支。
+     *
+     * @param name 名称；类型为 <code>String</code>
+     * @param parameterTypes parameterTypes；类型为 <code>Class&lt;?&gt;[]</code>
+     * @return 类型为 <code>Method</code> 的处理结果
+     */
     private static Method method(String name, Class<?>... parameterTypes) {
         try {
             return ReviewAdminController.class.getDeclaredMethod(name, parameterTypes);
@@ -62,6 +94,13 @@ class ReviewAdminControllerSecurityTest {
         }
     }
 
+    /**
+     * preAuthorize处理入口。
+     * 关键处理步骤调用 <code>method.getAnnotation</code>、<code>method.getName</code>、<code>annotation.value</code>。
+     *
+     * @param method method；类型为 <code>Method</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private static String preAuthorize(Method method) {
         PreAuthorize annotation = method.getAnnotation(PreAuthorize.class);
         assertThat(annotation).as("%s 必须声明 @PreAuthorize，否则 URL 层 authenticated 会被误当成授权",
@@ -70,6 +109,14 @@ class ReviewAdminControllerSecurityTest {
     }
 
     // 用 Spring Security 自己的表达式根求值，不自己实现 hasAuthority 语义
+    /**
+     * allowed处理入口。
+     * 主要协作调用：<code>parser.parseExpression</code>。
+     *
+     * @param method method；类型为 <code>Method</code>
+     * @param authorities authorities；类型为 <code>String[]</code>
+     * @return 本方法条件是否成立的判断结果
+     */
     private boolean allowed(Method method, String... authorities) {
         List<GrantedAuthority> granted = AuthorityUtils.createAuthorityList(authorities);
         Authentication authentication = new TestingAuthenticationToken("tester", "n/a", granted);
@@ -86,13 +133,38 @@ class ReviewAdminControllerSecurityTest {
     }
 
     // 只暴露表达式根所需能力；PermissionEvaluator 这里用不到但构造器要求，给一个恒定拒绝的实现
-    private static final PermissionEvaluator DENY_ALL = new PermissionEvaluator() {
+    /**
+     * 全部。
+     */
+    private static final PermissionEvaluator DENY_ALL = new PermissionEvaluator()
+    /**
+     * 当前调用使用的匿名协作实现，属于审核模块。
+     * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+     */
+    {
 
+        /**
+         * 判断是否具备权限。
+         *
+         * @param authentication 认证；类型为 <code>Authentication</code>
+         * @param targetDomainObject 目标DomainObject；类型为 <code>Object</code>
+         * @param permission 权限；类型为 <code>Object</code>
+         * @return 本方法条件是否成立的判断结果
+         */
         @Override
         public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
             return false;
         }
 
+        /**
+         * 判断是否具备权限。
+         *
+         * @param authentication 认证；类型为 <code>Authentication</code>
+         * @param targetId 被处理或审核的目标对象标识；类型为 <code>java.io.Serializable</code>
+         * @param targetType 目标对象的业务类型；类型为 <code>String</code>
+         * @param permission 权限；类型为 <code>Object</code>
+         * @return 本方法条件是否成立的判断结果
+         */
         @Override
         public boolean hasPermission(Authentication authentication, java.io.Serializable targetId,
                                      String targetType, Object permission) {
@@ -100,8 +172,18 @@ class ReviewAdminControllerSecurityTest {
         }
     };
 
+    /**
+     * 测试Root，属于审核模块。
+     * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+     */
     private final class TestRoot extends SecurityExpressionRoot {
 
+        /**
+         * 构造TestRoot，接收本类使用的依赖或初始化参数。
+         * 关键处理步骤调用 <code>super</code>、<code>setRoleHierarchy</code>、<code>setPermissionEvaluator</code>、<code>setTrustResolver</code>。
+         *
+         * @param authentication 认证；类型为 <code>Authentication</code>
+         */
         TestRoot(Authentication authentication) {
             super(authentication);
             setRoleHierarchy(roleHierarchy);
@@ -112,12 +194,22 @@ class ReviewAdminControllerSecurityTest {
     }
 
     // 各端点真实的参数签名，供反射取 Method；写错会立刻在测试里报出来
+    /**
+     * ENDPOINTS。
+     */
     private static final java.util.Map<String, Method> VIEW_ENDPOINTS = java.util.Map.of(
             "pending", method("pending", com.starrainnotes.review.dto.ReviewQueryDTO.class),
             "history", method("history", com.starrainnotes.review.dto.ReviewHistoryQueryDTO.class),
             "detail", method("detail", Long.class),
             "cancel", method("cancel", Long.class, Long.class));
 
+    /**
+     * \u67e5\u770b\u7c7b\u7aef\u70b9\uff1aADMIN \u4e0e SUPER_ADMIN \u90fd\u80fd\u901a\u8fc7\uff08\u6743\u9650\u540c\u65f6\u6388\u4e88\u4e24\u4e2a\u89d2\u8272\uff09\uff0c\u666e\u901a\u7528\u6237\u88ab\u62d2。
+     * 主要协作调用：<code>VIEW_ENDPOINTS.get</code>。
+     *
+     * @param endpoint endpoint；类型为 <code>String</code>
+     * @param permission 权限；类型为 <code>String</code>
+     */
     @ParameterizedTest
     @CsvSource({
             "pending,   review:read",
@@ -138,6 +230,10 @@ class ReviewAdminControllerSecurityTest {
                 .as("%s 不应允许普通用户", endpoint).isFalse();
     }
 
+    /**
+     * REV-006 \u53d6\u6d88\u7aef\u70b9\u53ea\u8981\u6c42\u5df2\u8ba4\u8bc1\uff0c\u8eab\u4efd\u5fc5\u987b\u7b49\u4e8e\u7533\u8bf7\u4eba\u8fd9\u6761\u89c4\u5219\u7531 Service \u5bf9\u8c61\u7ea7\u6388\u6743\u515c\u4f4f。
+     * 主要协作调用：<code>VIEW_ENDPOINTS.get</code>。
+     */
     @Test
     @DisplayName("REV-006 取消端点只要求已认证，身份必须等于申请人这条规则由 Service 对象级授权兜住")
     void cancelRequiresAuthenticatedActorOnly() {
@@ -150,6 +246,10 @@ class ReviewAdminControllerSecurityTest {
         assertThat(allowed(cancel, ADMIN)).isTrue();
     }
 
+    /**
+     * recoveryRequiresSuperAdministrator及Approval权限处理入口。
+     * 关键处理步骤调用 <code>method</code>、<code>allowed</code>。
+     */
     @Test void recoveryRequiresSuperAdministratorAndApprovalPermission() {
         Method recover = method("recover", Long.class, Long.class);
         assertThat(allowed(recover, ADMIN, "review:approve")).isFalse();
@@ -157,6 +257,10 @@ class ReviewAdminControllerSecurityTest {
         assertThat(allowed(recover, SUPER_ADMIN, "review:approve")).isTrue();
     }
 
+    /**
+     * REV-002/003 \u7f3a\u5c11 review:read \u7684\u8d26\u6237\u8bbf\u95ee\u5f85\u5ba1\u5217\u8868\u4e0e\u8be6\u60c5\u4e00\u5f8b\u88ab\u62d2。
+     * 关键处理步骤调用 <code>method</code>、<code>allowed</code>。
+     */
     @Test
     @DisplayName("REV-002/003 缺少 review:read 的账户访问待审列表与详情一律被拒")
     void viewEndpointsDeniedWithoutReadPermission() {
@@ -169,6 +273,10 @@ class ReviewAdminControllerSecurityTest {
         assertThat(allowed(detail, "review:history-read")).isFalse();
     }
 
+    /**
+     * REV-007 \u7f3a\u5c11 review:history-read \u7684\u8d26\u6237\u4e0d\u80fd\u67e5\u8be2\u5ba1\u6838\u5386\u53f2。
+     * 关键处理步骤调用 <code>method</code>、<code>allowed</code>。
+     */
     @Test
     @DisplayName("REV-007 缺少 review:history-read 的账户不能查询审核历史")
     void historyDeniedWithoutHistoryReadPermission() {
@@ -178,6 +286,10 @@ class ReviewAdminControllerSecurityTest {
         assertThat(allowed(history, ADMIN, "review:history-read")).isTrue();
     }
 
+    /**
+     * REV-004 \u666e\u901a ADMIN \u6ca1\u6709 review:approve\uff0c\u5ba1\u6838\u901a\u8fc7\u5fc5\u987b\u88ab\u62d2\uff1b\u53ea\u6709 SUPER_ADMIN \u901a\u8fc7。
+     * 关键处理步骤调用 <code>method</code>、<code>allowed</code>。
+     */
     @Test
     @DisplayName("REV-004 普通 ADMIN 没有 review:approve，审核通过必须被拒；只有 SUPER_ADMIN 通过")
     void approveRequiresSuperAdmin() {
@@ -190,6 +302,10 @@ class ReviewAdminControllerSecurityTest {
         assertThat(allowed(approve, SUPER_ADMIN, "review:approve")).isTrue();
     }
 
+    /**
+     * REV-005 \u666e\u901a ADMIN \u6ca1\u6709 review:reject\uff0c\u5ba1\u6838\u62d2\u7edd\u5fc5\u987b\u88ab\u62d2\uff1b\u53ea\u6709 SUPER_ADMIN \u901a\u8fc7。
+     * 关键处理步骤调用 <code>method</code>、<code>allowed</code>。
+     */
     @Test
     @DisplayName("REV-005 普通 ADMIN 没有 review:reject，审核拒绝必须被拒；只有 SUPER_ADMIN 通过")
     void rejectRequiresSuperAdmin() {
@@ -202,6 +318,10 @@ class ReviewAdminControllerSecurityTest {
         assertThat(allowed(reject, SUPER_ADMIN, "review:reject")).isTrue();
     }
 
+    /**
+     * \u6bcf\u4e2a\u540e\u53f0\u7aef\u70b9\u90fd\u663e\u5f0f\u58f0\u660e\u4e86\u6388\u6743\uff0c\u6ca1\u6709\u7aef\u70b9\u53ea\u4f9d\u8d56 URL \u5c42\u7684 authenticated。
+     * 关键处理步骤调用 <code>Arrays.stream</code>、<code>ReviewAdminController.class.getDeclaredMethods</code>、<code>m.isAnnotationPresent</code>、<code>m.getAnnotation</code>。
+     */
     @Test
     @DisplayName("每个后台端点都显式声明了授权，没有端点只依赖 URL 层的 authenticated")
     void everyEndpointDeclaresAuthorization() {

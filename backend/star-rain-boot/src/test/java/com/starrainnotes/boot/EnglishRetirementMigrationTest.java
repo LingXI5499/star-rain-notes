@@ -1,3 +1,10 @@
+/*
+ * EnglishRetirementMigrationTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 阅读入口：freshInstallHasNoRetiredSchemaAndNeverClearsNewReadingOnRestart（freshInstall是否具备不含Retired数据库模式及NeverClearsNew阅读触发Restart处理入口）；upgradeAndOneOffResetPreserveOriginalWritingAndOtherEnglishData（upgrade及单次OffResetPreserve原始写作及Other英语Data处理入口）；assertRetiredSchemaAbsent（校验Retired数据库模式Absent）；flyway（flyway处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -13,9 +20,17 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 /** Only disposable schemas are migrated or cleared; never the configured application's schema. */
 class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
+    /**
+     * 阅读。
+     */
     private static final List<String> READING = List.of("revision", "alignment", "annotation",
             "vocabulary", "tag", "rights", "article");
 
+    /**
+     * freshInstall是否具备不含Retired数据库模式及NeverClearsNew阅读触发Restart处理入口。
+     * 关键处理步骤调用 <code>inIsolatedDatabase</code>、<code>flyway</code>、<code>flyway.migrate</code>、<code>flyway.info</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void freshInstallHasNoRetiredSchemaAndNeverClearsNewReadingOnRestart() throws Exception {
         inIsolatedDatabase((connection, schema) -> {
@@ -34,6 +49,11 @@ class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
         });
     }
 
+    /**
+     * upgrade及单次OffResetPreserve原始写作及Other英语Data处理入口。
+     * 关键处理步骤调用 <code>inIsolatedDatabase</code>、<code>flyway</code>、<code>connection.createStatement</code>、<code>sql.executeUpdate</code>。
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     @Test
     void upgradeAndOneOffResetPreserveOriginalWritingAndOtherEnglishData() throws Exception {
         inIsolatedDatabase((connection, schema) -> {
@@ -96,6 +116,13 @@ class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
         });
     }
 
+    /**
+     * 校验Retired数据库模式Absent。
+     * 关键处理步骤调用 <code>scalar</code>。
+     *
+     * @param connection connection；类型为 <code>Connection</code>
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static void assertRetiredSchemaAbsent(Connection connection) throws Exception {
         assertEquals("0", scalar(connection, "SELECT COUNT(*) FROM information_schema.columns"
                 + " WHERE table_schema=DATABASE() AND table_name='sr_english_reading_article'"
@@ -104,6 +131,15 @@ class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
                 + " WHERE table_schema=DATABASE() AND table_name IN ('sr_english_writing_resource','sr_english_writing_prompt')"));
     }
 
+    /**
+     * flyway处理入口。
+     * 关键处理步骤调用 <code>Flyway.configure</code>、<code>config.target</code>、<code>config.load</code>。
+     *
+     * @param connection connection；类型为 <code>Connection</code>
+     * @param schema 数据库模式；类型为 <code>String</code>
+     * @param target 目标；类型为 <code>String</code>
+     * @return 类型为 <code>Flyway</code> 的处理结果
+     */
     private static Flyway flyway(Connection connection, String schema, String target) {
         var config = Flyway.configure().dataSource(new SingleConnectionDataSource(connection, true))
                 .defaultSchema(schema).schemas(schema);
@@ -111,10 +147,28 @@ class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
         return config.load();
     }
 
+    /**
+     * 统计英语RetirementMigration。
+     * 关键处理步骤调用 <code>Long.parseLong</code>、<code>scalar</code>。
+     *
+     * @param connection connection；类型为 <code>Connection</code>
+     * @param table table；类型为 <code>String</code>
+     * @return 类型为 <code>long</code> 的处理结果
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static long count(Connection connection, String table) throws Exception {
         return Long.parseLong(scalar(connection, "SELECT COUNT(*) FROM " + table));
     }
 
+    /**
+     * scalar处理入口。
+     * 关键处理步骤调用 <code>connection.createStatement</code>、<code>sql.executeQuery</code>、<code>row.next</code>、<code>row.getString</code>。
+     *
+     * @param connection connection；类型为 <code>Connection</code>
+     * @param query 查询参数；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     private static String scalar(Connection connection, String query) throws Exception {
         try (Statement sql = connection.createStatement(); ResultSet row = sql.executeQuery(query)) {
             assertTrue(row.next());
@@ -122,6 +176,13 @@ class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 内部Isolated数据库处理入口。
+     * 关键处理步骤调用 <code>openSession</code>、<code>session.getConnection</code>、<code>connection.getCatalog</code>、<code>Long.toUnsignedString</code>。
+     *
+     * @param check 检查；类型为 <code>DatabaseCheck</code>
+     * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+     */
     private void inIsolatedDatabase(DatabaseCheck check) throws Exception {
         try (SqlSession session = openSession()) {
             Connection connection = session.getConnection();
@@ -144,8 +205,19 @@ class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * 数据库检查，属于应用启动模块。
+     * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+     */
     @FunctionalInterface
     private interface DatabaseCheck {
+        /**
+         * 运行数据库检查。
+         *
+         * @param connection connection；类型为 <code>Connection</code>
+         * @param schema 数据库模式；类型为 <code>String</code>
+         * @throws Exception 底层操作失败或输入不满足本方法要求时抛出
+         */
         void run(Connection connection, String schema) throws Exception;
     }
 }

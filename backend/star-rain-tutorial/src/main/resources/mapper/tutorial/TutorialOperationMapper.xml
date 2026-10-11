@@ -1,33 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialOperationMapper">
+    <!--
+      TutorialOperationMapper.xml：com.starrainnotes.tutorial.content.mapper.TutorialOperationMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+  <!--
+    columns：投影列；可复用 SQL 片段。
+    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
+  -->
   <sql id="columns">
     id, operation, arguments_json, baseline_json, scope_key, pending_scope, status, display_name, applicant_account_id, execution_message
   </sql>
+  <!--
+    lockCatalog：锁Catalog；读取语句。
+    涉及数据表：sr_tutorial_category；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：long；集合与单值形态由 Java 方法签名决定。
+    锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+  -->
   <select id="lockCatalog" resultType="long">
     SELECT id FROM sr_tutorial_category ORDER BY id FOR UPDATE
   </select>
+  <!--
+    insert：新增；新增语句。
+    涉及数据表：sr_tutorial_operation；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    插入成功后 JDBC 自动生成的主键回填到 id。
+    绑定参数：operation、argumentsJson、baselineJson、scopeKey、pendingScope、status、displayName、applicantAccountId；参数含义参见 Mapper 方法注释。
+  -->
   <insert id="insert" useGeneratedKeys="true" keyProperty="id">
     INSERT INTO sr_tutorial_operation
       (operation, arguments_json, baseline_json, scope_key, pending_scope, status, display_name, applicant_account_id)
     VALUES (#{operation}, #{argumentsJson}, #{baselineJson}, #{scopeKey}, #{pendingScope}, #{status}, #{displayName}, #{applicantAccountId})
   </insert>
+  <!--
+    selectById：查询依据标识；读取语句。
+    涉及数据表：sr_tutorial_operation；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialOperationEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+  -->
   <select id="selectById" resultType="com.starrainnotes.tutorial.content.entity.TutorialOperationEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial_operation WHERE id = #{id}
   </select>
+  <!--
+    byIdForUpdate：依据标识面向更新；读取语句。
+    涉及数据表：sr_tutorial_operation；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialOperationEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：id；参数含义参见 Mapper 方法注释。
+    锁定命中的记录，直到事务结束；用于串行化当前对象的检查与写入。
+  -->
   <select id="byIdForUpdate" resultType="com.starrainnotes.tutorial.content.entity.TutorialOperationEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial_operation WHERE id = #{id} FOR UPDATE
   </select>
+  <!--
+    pending：待处理；读取语句。
+    涉及数据表：sr_tutorial_operation；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialOperationEntity；集合与单值形态由 Java 方法签名决定。
+    复用片段：columns。
+    绑定参数：scope；参数含义参见 Mapper 方法注释。
+  -->
   <select id="pending" resultType="com.starrainnotes.tutorial.content.entity.TutorialOperationEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial_operation WHERE pending_scope = #{scope}
   </select>
+  <!--
+    pendingOperations：待处理Operations；读取语句。
+    涉及数据表：sr_tutorial_operation；关系条件与可见性筛选由下方 SQL 明确限定。
+    结果类型或映射：com.starrainnotes.tutorial.content.entity.TutorialOperationEntity；集合与单值形态由 Java 方法签名决定。
+  -->
   <select id="pendingOperations" resultType="com.starrainnotes.tutorial.content.entity.TutorialOperationEntity">
     SELECT id, scope_key, operation, display_name FROM sr_tutorial_operation WHERE status = 'PENDING' ORDER BY id
   </select>
+  <!--
+    finish：finish；更新语句。
+    涉及数据表：sr_tutorial_operation；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：status、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="finish">
     UPDATE sr_tutorial_operation SET status = #{status}, pending_scope = NULL, execution_message = NULL
     WHERE id = #{id} AND (status = 'PENDING' OR (status = 'FAILED' AND #{status} = 'APPLIED'))
   </update>
+  <!--
+    recordFailure：记录失败；更新语句。
+    涉及数据表：sr_tutorial_operation；关系条件与可见性筛选由下方 SQL 明确限定。
+    执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+    绑定参数：message、id；参数含义参见 Mapper 方法注释。
+  -->
   <update id="recordFailure">
     UPDATE sr_tutorial_operation SET status = 'FAILED', pending_scope = NULL, execution_message = #{message}
     WHERE id = #{id} AND status IN ('PENDING', 'FAILED')

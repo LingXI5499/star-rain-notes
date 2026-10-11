@@ -1,3 +1,11 @@
+/*
+ * BlogMapperXmlTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：BlogPostTagRow、BlogPostTopicRow、BlogTopicMemberRow、BlogTopicOrderItem、BlogPostEntity、BlogTagEntity、BlogTopicEntity。
+ * 阅读入口：open（打开博客数据映射Xml）；rollback（回滚博客数据映射Xml）；everyBlogMapperIsReachableThroughTheSession（every博客数据映射是否ReachableThroughThe会话处理入口）；insertedPostRoundTripsEveryColumnAndOnlyPublishedIsPubliclyVisible（inserted文章RoundTripsEvery列及Only已发布是否Publicly可见处理入口）。
+ */
+
 package com.starrainnotes.boot;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -45,18 +53,50 @@ import org.junit.jupiter.api.Test;
  *
  * 全程在一个不 commit 的 SqlSession 里跑，@AfterEach 回滚；最后一个用例用新连接复核。
  */
+/**
+ * 博客数据映射Xml测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
 
+    /**
+     * 测试样本。
+     */
     private static final AtomicLong PROBE = new AtomicLong(System.nanoTime() % 1_000_000L);
     // 探针专题的展示序号：单调递增即可，断言不依赖具体值
+    /**
+     * 顺序。
+     */
     private static final AtomicLong TOPIC_ORDER = new AtomicLong(1000L);
+    /**
+     * 基础。
+     */
     private static final LocalDateTime PROBE_BASE = LocalDateTime.of(2099, 1, 1, 0, 0);
 
+    /**
+     * 当前业务使用的会话对象。
+     */
     private SqlSession session;
+    /**
+     * 文章列表。
+     * 协作类型：<code>BlogPostMapper</code>。
+     */
     private BlogPostMapper posts;
+    /**
+     * 标签列表。
+     * 协作类型：<code>BlogTagMapper</code>。
+     */
     private BlogTagMapper tags;
+    /**
+     * 专题列表。
+     * 协作类型：<code>BlogTopicMapper</code>。
+     */
     private BlogTopicMapper topics;
 
+    /**
+     * 打开博客数据映射Xml。
+     * 主要协作调用：<code>session.getMapper</code>。
+     */
     @BeforeEach
     void open() {
         session = openSession();
@@ -65,6 +105,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         topics = session.getMapper(BlogTopicMapper.class);
     }
 
+    /**
+     * 回滚博客数据映射Xml。
+     * 主要协作调用：<code>session.rollback</code>、<code>session.close</code>。
+     */
     @AfterEach
     void rollback() {
         if (session != null) {
@@ -73,6 +117,9 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * every博客数据映射是否ReachableThroughThe会话处理入口。
+     */
     @Test
     void everyBlogMapperIsReachableThroughTheSession() {
         assertNotNull(posts);
@@ -80,6 +127,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertNotNull(topics);
     }
 
+    /**
+     * inserted文章RoundTripsEvery列及Only已发布是否Publicly可见处理入口。
+     * 主要协作调用：<code>posts.insertPost</code>、<code>posts.postById</code>、<code>posts.postByIdForUpdate</code>、<code>posts.countBySlug</code>、<code>posts.publishedPostBySlug</code>。
+     */
     @Test
     void insertedPostRoundTripsEveryColumnAndOnlyPublishedIsPubliclyVisible() {
         String slug = unique("mapperxmlpost");
@@ -124,6 +175,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, posts.countBySlug(publishedSlug, probeId()), "excludeId 不该排除别的文章");
     }
 
+    /**
+     * 按关键词状态标签及专题读取后台分页筛选。
+     * 主要协作调用：<code>posts.insertPost</code>、<code>tags.insertTag</code>、<code>topics.insertTopic</code>、<code>tags.insertPostTag</code>、<code>topics.insertTopicPost</code>。
+     */
     @Test
     void adminPageFiltersByKeywordStatusTagAndTopic() {
         String keyword = unique("mapperxmladminpage");
@@ -164,6 +219,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, posts.adminPage(keyword, null, tag.getId(), null, 0, 10).size());
     }
 
+    /**
+     * meta封面及正文UpdatesOnlyTouchTheirOwn列集合处理入口。
+     * 主要协作调用：<code>posts.insertPost</code>、<code>posts.updatePostMeta</code>、<code>posts.postById</code>、<code>posts.updatePostCover</code>、<code>posts.updatePostBody</code>。
+     */
     @Test
     void metaCoverAndBodyUpdatesOnlyTouchTheirOwnColumns() {
         String slug = unique("mapperxmlpost");
@@ -208,6 +267,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, posts.updatePostBody(-1L, "x", toucher));
     }
 
+    /**
+     * 发布撤回及删除FollowTheir状态Guards。
+     * 主要协作调用：<code>posts.insertPost</code>、<code>PROBE_BASE.plusDays</code>、<code>posts.publishPost</code>、<code>posts.postById</code>、<code>posts.withdrawPost</code>。
+     */
     @Test
     void publishWithdrawAndDeleteFollowTheirStateGuards() {
         String slug = unique("mapperxmlpost");
@@ -257,6 +320,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(1, posts.deletePost(fresh.getId()), "DRAFT 的文章应当可以物理删除");
     }
 
+    /**
+     * 已发布PagesHonour标签专题及时间筛选处理入口。
+     * 主要协作调用：<code>tags.insertTag</code>、<code>topics.insertTopic</code>、<code>posts.insertPost</code>、<code>PROBE_BASE.plusDays</code>、<code>tags.insertPostTag</code>。
+     */
     @Test
     void publishedPagesHonourTagTopicAndTimeFilters() {
         String tagSlug = unique("mapperxmltag");
@@ -341,6 +408,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
                 .filter(item -> item.getId().equals(second.getId())).count());
     }
 
+    /**
+     * neighbourCursorArchive及最新Queries作品处理入口。
+     * 主要协作调用：<code>posts.insertPost</code>、<code>PROBE_BASE.plusDays</code>、<code>posts.publishedPrevious</code>、<code>posts.publishedNext</code>、<code>posts.latestPublished</code>。
+     */
     @Test
     void neighbourCursorArchiveAndLatestQueriesWork() {
         BlogPostEntity first = newPost(unique("mapperxmlpost"), unique("mapperxmlposttitle"),
@@ -401,6 +472,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
                 "时间窗外不应有归档桶");
     }
 
+    /**
+     * 标签数据映射RoundTripsCrudUniqueness及后台数量集合处理入口。
+     * 主要协作调用：<code>tags.insertTag</code>、<code>tags.tagById</code>、<code>tags.tagByIdForUpdate</code>、<code>tags.countBySlug</code>、<code>tags.countByName</code>。
+     */
     @Test
     void tagMapperRoundTripsCrudUniquenessAndAdminCounts() {
         String slug = unique("mapperxmltag");
@@ -459,6 +534,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(tags.adminPage(name + "-改名", null, 1, 10).isEmpty(), "OFFSET 没生效");
     }
 
+    /**
+     * 标签BindingsDrive后台公开及BulkQueries处理入口。
+     * 主要协作调用：<code>tags.insertTag</code>、<code>posts.insertPost</code>、<code>PROBE_BASE.plusDays</code>、<code>tags.insertPostTag</code>、<code>tags.countPostTag</code>。
+     */
     @Test
     void tagBindingsDriveAdminPublicAndBulkQueries() {
         String slug = unique("mapperxmltag");
@@ -532,6 +611,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertTrue(tags.tagsByPostId(draft.getId()).isEmpty());
     }
 
+    /**
+     * 专题数据映射RoundTripsCrudCurated顺序及MemberQueries处理入口。
+     * 主要协作调用：<code>topics.insertTopic</code>、<code>topics.topicById</code>、<code>topics.topicByIdForUpdate</code>、<code>topics.countBySlug</code>、<code>topics.updateTopic</code>。
+     */
     @Test
     void topicMapperRoundTripsCrudCuratedOrderAndMemberQueries() {
         String slug = unique("mapperxmltopic");
@@ -619,6 +702,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(0, topics.deleteTopicPostsByPostId(first.getId()));
     }
 
+    /**
+     * 专题VisibilityDrivesEvery公开查询参数处理入口。
+     * 主要协作调用：<code>topics.insertTopic</code>、<code>posts.insertPost</code>、<code>PROBE_BASE.plusDays</code>、<code>topics.insertTopicPost</code>、<code>topics.countTopicPosts</code>。
+     */
     @Test
     void topicVisibilityDrivesEveryPublicQuery() {
         String enabledSlug = unique("mapperxmltopic");
@@ -697,6 +784,10 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         assertEquals(2, adminRows.size(), "批量后台标记里应当带上停用专题");
     }
 
+    /**
+     * 回滚Leaves不含博客测试样本行集合Behind。
+     * 主要协作调用：<code>tags.insertTag</code>、<code>topics.insertTopic</code>、<code>posts.insertPost</code>、<code>tags.insertPostTag</code>、<code>topics.insertTopicPost</code>。
+     */
     @Test
     void rollbackLeavesNoBlogProbeRowsBehind() {
         BlogTagEntity tag = newTag(unique("mapperxmlrollback"), unique("mapperxmlrollbackname"), "ENABLED");
@@ -726,6 +817,16 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         }
     }
 
+    /**
+     * new文章处理入口。
+     * 关键处理步骤调用 <code>post.setSlug</code>、<code>post.setTitle</code>、<code>post.setSummary</code>、<code>post.setBodyMarkdown</code>。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @param title 标题；类型为 <code>String</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @param publishedAt 已发布时间；类型为 <code>LocalDateTime</code>
+     * @return 类型为 <code>BlogPostEntity</code> 的处理结果
+     */
     private BlogPostEntity newPost(String slug, String title, String status, LocalDateTime publishedAt) {
         BlogPostEntity post = new BlogPostEntity();
         post.setSlug(slug);
@@ -741,6 +842,15 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         return post;
     }
 
+    /**
+     * new标签处理入口。
+     * 关键处理步骤调用 <code>tag.setSlug</code>、<code>tag.setName</code>、<code>tag.setDescription</code>、<code>tag.setStatus</code>。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @param name 名称；类型为 <code>String</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @return 类型为 <code>BlogTagEntity</code> 的处理结果
+     */
     private BlogTagEntity newTag(String slug, String name, String status) {
         BlogTagEntity tag = new BlogTagEntity();
         tag.setSlug(slug);
@@ -750,6 +860,15 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
         return tag;
     }
 
+    /**
+     * new专题处理入口。
+     * 主要协作调用：<code>TOPIC_ORDER.getAndIncrement</code>。
+     *
+     * @param slug 公开固定链接的路径标识；类型为 <code>String</code>
+     * @param name 名称；类型为 <code>String</code>
+     * @param status 当前业务状态，合法取值由本模块状态定义和状态转换规则约束；类型为 <code>String</code>
+     * @return 类型为 <code>BlogTopicEntity</code> 的处理结果
+     */
     private BlogTopicEntity newTopic(String slug, String name, String status) {
         BlogTopicEntity topic = new BlogTopicEntity();
         topic.setSlug(slug);
@@ -767,10 +886,22 @@ class BlogMapperXmlTest extends MapperXmlIntegrationSupport {
     }
 
     /* 逻辑外键，库里没有物理 FOREIGN KEY：用一个大号段避免和真实账户撞号 */
+    /**
+     * 测试样本标识处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     * @return 类型为 <code>long</code> 的处理结果
+     */
     private long probeId() {
         return 900_000_000_000L + PROBE.incrementAndGet();
     }
 
+    /**
+     * unique处理入口。
+     * 主要协作调用：<code>PROBE.incrementAndGet</code>。
+     *
+     * @param prefix prefix；类型为 <code>String</code>
+     * @return 类型为 <code>String</code> 的处理结果
+     */
     private String unique(String prefix) {
         return prefix + "-" + PROBE.incrementAndGet() + "-" + System.nanoTime();
     }

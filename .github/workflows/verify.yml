@@ -1,36 +1,53 @@
+# verify.yml：持续集成流程定义。
+# 本次只补充注释；配置键、默认值、端口及外部变量绑定保持原样。
+# 工作流的显示名称；作业由下面的事件触发。
 name: Verify
+# 主分支、codex 分支推送和 PR 执行检查，也支持手动触发。
 on:
   push:
     branches: [main, 'codex/**']
   pull_request:
   workflow_dispatch:
+# 工作流令牌只有读取仓库内容权限。
 permissions:
   contents: read
+# 同一工作流与分支只保留最新检查，避免重复消耗 CI 资源。
 concurrency:
   group: verify-${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
+# 前后端分别校验；后端使用独立数据库，不连接部署数据库。
 jobs:
+  # 前端 CI：安装锁定依赖，执行测试与生产构建。
   frontend:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    # shell 步骤的默认工作目录；uses 动作不受此目录配置影响。
     defaults:
       run:
         working-directory: frontend
+    # 步骤按顺序执行；数据库迁移完成后再运行依赖数据库的测试。
     steps:
+      # 检出当前提交；不持久化访问令牌到 Git 配置。
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      # 安装 Node 24 并按 package-lock 缓存 npm 下载内容。
       - uses: actions/setup-node@v7
         with:
           node-version: '24'
           cache: npm
           cache-dependency-path: frontend/package-lock.json
+      # 严格按锁文件安装依赖，避免 CI 与本机构建版本漂移。
       - run: npm ci
+      # 执行前端单元与组件测试；失败则终止当前作业。
       - run: npm test
+      # 验证生产构建可完成；产物仅包含前端资源。
       - run: npm run build
+  # 后端 CI：打包、迁移独立数据库、运行完整测试并检查跳过数量。
   backend:
     runs-on: ubuntu-latest
     timeout-minutes: 25
+    # 作业专用 MySQL 容器；健康检查通过后才开始执行步骤。
     services:
       mysql:
         image: mysql:8.0
@@ -45,6 +62,7 @@ jobs:
           --health-interval=10s
           --health-timeout=5s
           --health-retries=12
+    # 仅供隔离 CI 使用的环境值；禁用发信、管理员初始化、索引通知和孤儿清理。
     env:
       STAR_RAIN_DB_URL: jdbc:mysql://127.0.0.1:3306/star_rain_ci?serverTimezone=UTC&sslMode=DISABLED&allowPublicKeyRetrieval=true
       STAR_RAIN_DB_USERNAME: root
@@ -53,22 +71,29 @@ jobs:
       STAR_RAIN_INDEXNOW_ENABLED: 'false'
       STAR_RAIN_BOOTSTRAP_ADMIN_ENABLED: 'false'
       STAR_RAIN_MEDIA_ORPHAN_CLEANUP: 'false'
+    # shell 步骤的默认工作目录；uses 动作不受此目录配置影响。
     defaults:
       run:
         working-directory: backend
+    # 步骤按顺序执行；数据库迁移完成后再运行依赖数据库的测试。
     steps:
+      # 检出当前提交；不持久化访问令牌到 Git 配置。
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
+      # 安装 Temurin JDK 21 并缓存 Maven 下载内容。
       - uses: actions/setup-java@v6
         with:
           distribution: temurin
           java-version: '21'
           cache: maven
+      # 扫描已跟踪的源文件范围和隐私特征，失败只报告路径与行号。
       - name: Check public source
         run: python3 tools/check_public_source.py
+      # 先生成用于迁移的可运行应用；此步骤不执行测试。
       - name: Package application for test database migrations
         run: mvn -B -DskipTests package
+      # 临时启动应用执行 Flyway，轮询公开配置接口；退出时清理该临时进程。
       - name: Migrate isolated database
         shell: bash
         run: |
@@ -88,7 +113,9 @@ jobs:
           done
           cat "$RUNNER_TEMP/migration.log"
           exit 1
+      # 迁移成功后运行 Maven 完整验证，包括数据库行为测试。
       - run: mvn -B verify
+      # 汇总 Surefire 报告；任何测试被跳过都会使 CI 失败。
       - name: Require database coverage
         run: |
           python3 - <<'PY'

@@ -2,11 +2,25 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.seo.mapper.SeoNotificationMapper">
     <!--
+      SeoNotificationMapper.xml：com.starrainnotes.seo.mapper.SeoNotificationMapper 的 MyBatis SQL 映射。
+      语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。
+      读写行为由每条语句决定；需要锁的查询应由业务层开启事务并在同一连接内执行。
+    -->
+
+    <!--
         全项目其它 insert 都声明了 useGeneratedKeys，只有这条曾经漏掉，
         导致入队后 SeoNotificationLog.id 恒为 null。当前唯一的调用方
         （SeoNotificationService.enqueue）不读这个 id，所以没有线上影响；
         但「enqueue 之后拿 log.getId() 去 claim」这种写法会静默失效（WHERE id = null → 0 行）。
         补上属性即可，不改变任何现有行为。
+    -->
+    <!--
+      enqueue：enqueue；新增语句。
+      涉及数据表：sr_seo_notification_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      输入对象：com.starrainnotes.seo.entity.SeoNotificationLog；占位符按其属性读取。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      插入成功后 JDBC 自动生成的主键回填到 id。
+      绑定参数：providerCode、routePath、canonicalUrl、changeType；参数含义参见 Mapper 方法注释。
     -->
     <insert id="enqueue" parameterType="com.starrainnotes.seo.entity.SeoNotificationLog"
             useGeneratedKeys="true" keyProperty="id">
@@ -14,6 +28,13 @@
             status, next_retry_at)
         VALUES (#{providerCode}, #{routePath}, #{canonicalUrl}, #{changeType}, 'PENDING', CURRENT_TIMESTAMP(3))
     </insert>
+    <!--
+      due：due；读取语句。
+      涉及数据表：sr_seo_notification_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      结果类型或映射：com.starrainnotes.seo.entity.SeoNotificationLog；集合与单值形态由 Java 方法签名决定。
+      绑定参数：now、limit；参数含义参见 Mapper 方法注释。
+      LIMIT 限定读取数量，若包含 OFFSET 则跳过对应记录；排序依据以本语句为准。
+    -->
     <select id="due" resultType="com.starrainnotes.seo.entity.SeoNotificationLog">
         SELECT id, provider_code, route_path, canonical_url, change_type, status,
             attempt_count, next_retry_at FROM sr_seo_notification_log
@@ -22,16 +43,34 @@
             OR (status = 'PROCESSING' AND last_attempt_at &lt; DATE_SUB(#{now}, INTERVAL 5 MINUTE)))
         ORDER BY created_at, id LIMIT #{limit}
     </select>
+    <!--
+      claim：claim；更新语句。
+      涉及数据表：sr_seo_notification_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：now、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="claim">
         UPDATE sr_seo_notification_log SET status = 'PROCESSING', attempt_count = attempt_count + 1,
             last_attempt_at = #{now} WHERE id = #{id} AND attempt_count &lt; 5 AND (
             (status IN ('PENDING', 'FAILED') AND next_retry_at &lt;= #{now}) OR (status = 'PROCESSING'
                 AND last_attempt_at &lt; DATE_SUB(#{now}, INTERVAL 5 MINUTE)))
     </update>
+    <!--
+      success：success；更新语句。
+      涉及数据表：sr_seo_notification_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：httpStatus、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="success">
         UPDATE sr_seo_notification_log SET status = 'SUCCESS', http_status = #{httpStatus},
             last_error = NULL, next_retry_at = NULL WHERE id = #{id}
     </update>
+    <!--
+      failure：失败；更新语句。
+      涉及数据表：sr_seo_notification_log；关系条件与可见性筛选由下方 SQL 明确限定。
+      执行结果通常为受影响行数；状态、版本或条件不匹配时需由调用方检查结果。
+      绑定参数：httpStatus、error、nextRetryAt、id；参数含义参见 Mapper 方法注释。
+    -->
     <update id="failure">
         UPDATE sr_seo_notification_log SET status = 'FAILED', http_status = #{httpStatus},
             last_error = #{error}, next_retry_at = #{nextRetryAt} WHERE id = #{id}

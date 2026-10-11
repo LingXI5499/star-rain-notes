@@ -1,10 +1,26 @@
+/*
+ * PortfolioContentMapperTest：应用启动模块的测试文件。
+ * 业务范围：多模块装配、入口路由、安全配置和启动初始化。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ * 主要协作类型：WorkFilterDTO。
+ * 阅读入口：taxonomyTemplatesSectionsReferencesAndFiltersRoundTripInOneRollback（taxonomyTemplatesSectionsReferences及筛选RoundTrip内部单次回滚处理入口）。
+ */
+
 package com.starrainnotes.boot;
 import static org.junit.jupiter.api.Assertions.*;
 import com.starrainnotes.portfolio.dto.WorkFilterDTO;
 import com.starrainnotes.portfolio.entity.*;
 import com.starrainnotes.portfolio.mapper.*;
 import org.junit.jupiter.api.Test;
+/**
+ * 作品内容数据映射测试，属于应用启动模块。
+ * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
+ */
 class PortfolioContentMapperTest extends MapperXmlIntegrationSupport {
+ /**
+  * taxonomyTemplatesSectionsReferences及筛选RoundTrip内部单次回滚处理入口。
+  * 关键处理步骤调用 <code>openSession</code>、<code>session.getMapper</code>、<code>blocks.categories</code>、<code>blocks.formats</code>。
+  */
  @Test void taxonomyTemplatesSectionsReferencesAndFiltersRoundTripInOneRollback() {
   try (var session = openSession()) {
    var works = session.getMapper(WorkMapper.class); var blocks = session.getMapper(WorkContentMapper.class);
