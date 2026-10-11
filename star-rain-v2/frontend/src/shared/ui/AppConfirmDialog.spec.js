@@ -45,4 +45,17 @@ describe('AppConfirmDialog', () => {
     expect(await result).toBe(true)
     wrapper.unmount()
   })
+
+  it.each(['[网页是怎么布局的？ 从网站类型到响应式空间设计]', '「网页是怎么布局的？ 从网站类型到响应式空间设计」', '  网页是怎么布局的？  从网站类型到响应式空间设计  '])('accepts the complete blog title with copied display punctuation: %s', async (input) => {
+    const wrapper = mount(AppConfirmDialog)
+    const result = wrapper.vm.ask({ requireName: '网页是怎么布局的？ 从网站类型到响应式空间设计', confirmText: '删除', danger: true })
+    await nextTick()
+    await wrapper.find('input').setValue('网页是怎么布局的')
+    expect(wrapper.findAll('button')[1].attributes('disabled')).toBeDefined()
+    await wrapper.find('input').setValue(input)
+    expect(wrapper.findAll('button')[1].attributes('disabled')).toBeUndefined()
+    await wrapper.findAll('button')[1].trigger('click')
+    expect(await result).toBe(true)
+    wrapper.unmount()
+  })
 })
