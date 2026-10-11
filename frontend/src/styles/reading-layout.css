@@ -1,0 +1,29 @@
+/*
+ * 博客和作品共享教程阅读页的左栏宽度与列间距。
+ * 外层 PublicShell 与页头使用同一容器，页面再复用教程的 page-container 内边距；
+ * 这里不再增加额外的居中或最大宽度限制，左栏与页头的站点名称文字对齐。
+ * 第二列占满剩余空间，相当于教程的正文列加右侧知识点导航列。
+ */
+.reading-layout {
+  display: grid;
+  grid-template-columns: minmax(210px, 260px) minmax(0, 1fr);
+  gap: clamp(20px, 3vw, 48px);
+  align-items: start;
+}
+
+.reading-layout > * { min-width: 0; }
+
+/* 主题给普通 Markdown 设置了 780px 上限；这两类阅读页需要铺满右侧正文列。 */
+.public-shell .reading-layout .markdown-body {
+  width: 100%;
+  max-width: none;
+}
+
+@media (max-width: 1100px) {
+  .reading-layout { grid-template-columns: minmax(200px, 250px) minmax(0, 1fr); }
+}
+
+@media (max-width: 720px) {
+  .reading-layout { grid-template-columns: minmax(0, 1fr); }
+  .reading-layout > .reading-layout__sidebar { display: none; }
+}

@@ -2,7 +2,7 @@
 import ArticleOutline from './ArticleOutline.vue'
 
 /*
- * 阅读页右侧栏 —— 对齐 V1 `components/ReadingAside.vue`：
+ * 阅读页的目录与统计信息：教程在右侧使用普通目录，博客、作品在左侧使用课程目录风格。
  * 「本页导航」（TOC）+「学习信息」（字数 / 预计阅读 + 可选的额外行）。
  * 保持无卡片外壳的扁平排版，与教程阅读页的右侧栏是同一套语言。
  */
@@ -10,19 +10,20 @@ defineProps({
   items: { type: Array, default: () => [] },
   charCount: { type: Number, default: 0 },
   readMinutes: { type: Number, default: 0 },
+  navigationStyle: { type: String, default: 'outline' },
   // 额外的信息行，例如「阅读进度」
   extraInfo: { type: Array, default: () => [] },
 })
 </script>
 
 <template>
-  <aside class="reading-aside">
+  <aside class="reading-aside" :class="{ 'reading-aside--curriculum': navigationStyle === 'curriculum' }">
     <div v-if="items.length" class="reading-aside__card">
       <p class="reading-aside__title">本页导航</p>
-      <ArticleOutline :items="items" hide-title embedded />
+      <ArticleOutline :items="items" :navigation-style="navigationStyle" hide-title embedded />
     </div>
     <div class="reading-aside__card">
-      <p class="reading-aside__title">学习信息</p>
+      <p class="reading-aside__title">{{ navigationStyle === 'curriculum' ? '阅读信息' : '学习信息' }}</p>
       <dl class="reading-aside__info">
         <div>
           <dt>字数</dt>
@@ -89,5 +90,33 @@ defineProps({
   color: var(--text-primary);
   text-align: right;
   overflow-wrap: anywhere;
+}
+
+/* 与教程左侧课程目录一致：整个侧栏可滚动，目录内部不再生成第二条滚动条。 */
+.reading-aside--curriculum {
+  top: 100px;
+  max-height: calc(100dvh - 120px);
+  overflow-y: auto;
+  padding-right: 16px;
+  border-right: 1px solid var(--border);
+  scrollbar-gutter: stable;
+}
+
+.reading-aside--curriculum .reading-aside__title {
+  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none;
+}
+
+.reading-aside--curriculum :deep(.article-outline--embedded) {
+  max-height: none;
+  overflow: visible;
+}
+
+.reading-aside--curriculum .reading-aside__card + .reading-aside__card {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
 }
 </style>

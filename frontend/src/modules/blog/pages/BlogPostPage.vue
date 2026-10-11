@@ -9,6 +9,7 @@ import ArticleOutline from '../components/ArticleOutline.vue'
 import ReadingAside from '../components/ReadingAside.vue'
 import ReadingProgress from '../components/ReadingProgress.vue'
 import { estimateReadingStats, fullDate } from '../support/display'
+import '../../../styles/reading-layout.css'
 
 /*
  * BLOG-002 阅读文章（对齐 V1 `views/blog/BlogDetailView.vue`）。
@@ -76,7 +77,19 @@ watch(() => route.params.slug, load)
       <RouterLink :to="contentPath('/blog')">返回博客列表</RouterLink>
     </div>
 
-    <article v-else-if="post" class="article">
+    <article v-else-if="post" class="article page-container">
+      <button v-if="outline.length" class="article__drawer-button" type="button" @click="drawerOpen = true">
+        本页目录 · {{ outline.length }}
+      </button>
+      <div class="article__reading reading-layout">
+        <ReadingAside
+          class="article__toc reading-layout__sidebar"
+          navigation-style="curriculum"
+          :items="outline"
+          :char-count="charCount"
+          :read-minutes="readMinutes"
+        />
+        <main class="article__body">
       <header class="article-hero">
         <nav>
           <RouterLink :to="contentPath('/blog')">博客时间线</RouterLink>
@@ -107,18 +120,6 @@ watch(() => route.params.slug, load)
         </div>
       </header>
 
-      <button v-if="outline.length" class="article__drawer-button" type="button" @click="drawerOpen = true">
-        本页目录 · {{ outline.length }}
-      </button>
-
-      <div class="article__reading">
-        <ReadingAside
-          class="article__toc"
-          :items="outline"
-          :char-count="charCount"
-          :read-minutes="readMinutes"
-        />
-        <main class="article__body">
           <img v-if="post.coverUrl" class="article__cover" :src="post.coverUrl" :alt="post.title" />
           <BlogProse :markdown="post.bodyMarkdown" @outline="outline = $event" />
           <nav v-if="post.previous || post.next" class="article__neighbors" aria-label="相邻文章">
@@ -145,7 +146,7 @@ watch(() => route.params.slug, load)
             <strong>本页目录</strong>
             <button type="button" aria-label="关闭目录" @click="drawerOpen = false">×</button>
           </header>
-          <ArticleOutline :items="outline" hide-title />
+          <ArticleOutline :items="outline" navigation-style="curriculum" hide-title />
         </div>
       </div>
     </article>
@@ -154,13 +155,12 @@ watch(() => route.params.slug, load)
 
 <style scoped>
 .article {
-  max-width: 1120px;
-  margin-inline: auto;
+  width: 100%;
+  padding-block: 34px;
 }
 
 .article-hero {
-  max-width: 840px;
-  margin: 0 auto var(--space-8);
+  margin: 0 0 var(--space-8);
   text-align: center;
 }
 
@@ -241,14 +241,6 @@ watch(() => route.params.slug, load)
   font-size: 11px;
 }
 
-.article__reading {
-  display: grid;
-  grid-template-columns: minmax(180px, 240px) minmax(0, 760px);
-  justify-content: center;
-  align-items: start;
-  gap: var(--layout-gap);
-}
-
 .article__body { min-width: 0; }
 .article__toc { min-width: 0; }
 
@@ -302,11 +294,7 @@ watch(() => route.params.slug, load)
 .article__drawer-button,
 .article-drawer { display: none; }
 
-@media (max-width: 1000px) {
-  .article__reading { grid-template-columns: 1fr; }
-
-  .article__toc { display: none; }
-
+@media (max-width: 720px) {
   .article__drawer-button {
     display: inline-flex;
     margin-bottom: var(--space-5);
