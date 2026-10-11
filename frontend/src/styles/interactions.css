@@ -6,7 +6,7 @@
   --interaction-duration: 160ms;
 }
 
-body :is(.public-shell, .admin-shell) :is(
+body :where(.public-shell, .admin-shell) :where(
   button, a.public-button, a.primary-button, a.secondary-button, a.english-rw__button,
   a[class*='__create'], [class*='__actions'] > a, .portfolio-card footer a
 ):not(:where(
@@ -41,7 +41,7 @@ body :is(.public-shell, .admin-shell) :is(
     border-color var(--interaction-duration) ease, box-shadow var(--interaction-duration) ease;
 }
 
-body :is(.public-shell, .admin-shell) :is(button, .public-button, .primary-button, .secondary-button, .english-rw__button, a[class*='__create']):hover:not(:disabled) {
+body :where(.public-shell, .admin-shell) :where(button, .public-button, .primary-button, .secondary-button, .english-rw__button, a[class*='__create']):where(:hover:not(:disabled)) {
   border-color: var(--primary);
   box-shadow: 0 3px 10px color-mix(in srgb, var(--primary) 10%, transparent);
 }

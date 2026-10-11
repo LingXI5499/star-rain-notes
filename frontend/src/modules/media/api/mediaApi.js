@@ -17,11 +17,11 @@ export const getMedia = (id) => get(`/admin/media/assets/${encodeURIComponent(id
  * MED-001 上传：走 multipart，不手动设置 Content-Type，
  * 让浏览器自己补 boundary。
  */
-export function uploadMedia(file, accessLevel) {
+export function uploadMedia(file, accessLevel, options = {}) {
   const form = new FormData()
   form.append('file', file)
   if (accessLevel) form.append('accessLevel', accessLevel)
-  return postForm('/admin/media/assets', form)
+  return postForm('/admin/media/assets', form, { timeout: 300000, ...options })
 }
 
 // MED-006 归档 / 恢复，以及归档生命周期里的访问级别调整

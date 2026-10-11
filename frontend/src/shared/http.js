@@ -82,8 +82,8 @@ export async function post(path, data) {
 }
 
 // 上传走 multipart：不要手动设置 Content-Type，浏览器需要自己补 boundary
-export async function postForm(path, formData) {
-  const response = await http.post(path, formData)
+export async function postForm(path, formData, options = {}) {
+  const response = await http.post(path, formData, options)
   return response.data.data
 }
 

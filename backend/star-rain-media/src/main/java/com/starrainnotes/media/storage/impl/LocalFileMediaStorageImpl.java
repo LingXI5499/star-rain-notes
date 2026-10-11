@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /*
@@ -39,6 +41,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class LocalFileMediaStorageImpl implements MediaStorage {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(LocalFileMediaStorageImpl.class);
 
     private static final DateTimeFormatter MONTH_PATH = DateTimeFormatter.ofPattern("yyyy/MM");
     private static final int MAX_KEY_ATTEMPTS = 3;
@@ -77,6 +81,7 @@ public class LocalFileMediaStorageImpl implements MediaStorage {
             } catch (FileAlreadyExistsException ex) {
                 // 同名文件不覆盖，换一个 Key 重试
             } catch (IOException ex) {
+                LOGGER.error("Media storage write failed; root={}, key={}", root, key, ex);
                 throw new MediaStorageWriteException(ex);
             }
         }

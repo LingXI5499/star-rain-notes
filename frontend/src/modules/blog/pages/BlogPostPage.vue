@@ -14,8 +14,8 @@ import { estimateReadingStats, fullDate } from '../support/display'
  * BLOG-002 阅读文章（对齐 V1 `views/blog/BlogDetailView.vue`）。
  *
  * 信息架构：居中大标题 + 标签 + 元信息（发布 / 字数 / 预计阅读 / 更新）
- * → 左侧正文（Markdown 渲染 + 代码块复制）→ 右侧「本页导航」随滚动高亮。
- * 窄屏时右侧栏换成底部抽屉，正文优先。
+ * → 左侧「本页导航」与阅读统计 → 右侧正文。
+ * 窄屏时侧栏换成底部抽屉，正文优先。
  *
  * 按 slug 读取：后端对草稿、已撤回与不存在的 slug 一律返回 BLOG_POST_NOT_FOUND，
  * 因此这里只需要区分「404」与「其它错误」，不去猜文章状态。
@@ -112,6 +112,12 @@ watch(() => route.params.slug, load)
       </button>
 
       <div class="article__reading">
+        <ReadingAside
+          class="article__toc"
+          :items="outline"
+          :char-count="charCount"
+          :read-minutes="readMinutes"
+        />
         <main class="article__body">
           <img v-if="post.coverUrl" class="article__cover" :src="post.coverUrl" :alt="post.title" />
           <BlogProse :markdown="post.bodyMarkdown" @outline="outline = $event" />
@@ -131,12 +137,6 @@ watch(() => route.params.slug, load)
           </p>
         </main>
 
-        <ReadingAside
-          class="article__toc"
-          :items="outline"
-          :char-count="charCount"
-          :read-minutes="readMinutes"
-        />
       </div>
 
       <div v-if="drawerOpen" class="article-drawer" @click.self="drawerOpen = false">
@@ -243,13 +243,14 @@ watch(() => route.params.slug, load)
 
 .article__reading {
   display: grid;
-  grid-template-columns: minmax(0, 760px) minmax(165px, 220px);
+  grid-template-columns: minmax(180px, 240px) minmax(0, 760px);
   justify-content: center;
   align-items: start;
   gap: var(--layout-gap);
 }
 
 .article__body { min-width: 0; }
+.article__toc { min-width: 0; }
 
 .article__cover {
   width: 100%;
@@ -297,7 +298,7 @@ watch(() => route.params.slug, load)
 .article-state strong { color: var(--text-primary); font-size: 18px; }
 .article-state a { color: var(--primary); }
 
-/* 窄屏：右侧栏收起，改用底部抽屉 */
+/* 窄屏：侧栏收起，改用底部抽屉 */
 .article__drawer-button,
 .article-drawer { display: none; }
 

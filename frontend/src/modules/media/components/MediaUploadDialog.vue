@@ -1,7 +1,7 @@
 <script setup>
 import { nextTick, ref } from 'vue'
 import { uploadMedia } from '../api/mediaApi'
-import { errorMessage } from '../../../shared/http'
+import { mediaUploadError } from '../support/upload'
 import { ACCEPT_ATTRIBUTE, SIZE_HINTS, formatSize, mediaTypeLabel } from '../support/display'
 
 /*
@@ -25,6 +25,7 @@ const error = ref('')
 const uploaded = ref(null)
 
 function open() {
+  if (busy.value) { nextTick(() => { if (!dialog.value?.open) dialog.value?.showModal() }); return }
   file.value = null
   uploaded.value = null
   error.value = ''
@@ -54,7 +55,7 @@ async function submit() {
     if (fileInput.value) fileInput.value.value = ''
     emit('uploaded', asset)
   } catch (cause) {
-    error.value = errorMessage(cause)
+    error.value = mediaUploadError(cause)
   } finally {
     busy.value = false
   }
@@ -64,7 +65,7 @@ defineExpose({ open })
 </script>
 
 <template>
-  <dialog ref="dialog" aria-labelledby="media-upload-title" @cancel.prevent="close">
+  <dialog ref="dialog" class="media-upload-dialog" aria-labelledby="media-upload-title" @cancel.prevent="close">
     <h2 id="media-upload-title">上传媒体</h2>
     <p class="muted">
       支持图片、文档、音频、视频与压缩包。按真实文件内容校验，改名不会绕过类型检查。
@@ -73,7 +74,7 @@ defineExpose({ open })
     <div class="form-stack">
       <label>
         选择文件
-        <input ref="fileInput" type="file" :accept="ACCEPT_ATTRIBUTE" @change="pick" />
+        <input ref="fileInput" class="media-file-input" type="file" :accept="ACCEPT_ATTRIBUTE" :disabled="busy" @change="pick" />
       </label>
 
       <p v-if="file" class="muted">
@@ -107,3 +108,10 @@ defineExpose({ open })
     </div>
   </dialog>
 </template>
+
+<style scoped>
+.media-upload-dialog { max-height: calc(100dvh - 32px); overflow-y: auto; }
+.media-file-input { width: 100%; min-width: 0; padding: 10px; font: inherit; }
+.media-file-input::file-selector-button { margin-right: 12px; padding: 9px 14px; border: 1px solid var(--border-strong); border-radius: var(--action-radius,10px); background: var(--bg-subtle); color: var(--primary); font: inherit; font-weight: 600; cursor: pointer; }
+.media-file-input::file-selector-button:hover { border-color: var(--primary); background: color-mix(in srgb,var(--primary) 10%,var(--bg-surface)); }
+</style>

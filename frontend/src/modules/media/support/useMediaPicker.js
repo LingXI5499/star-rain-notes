@@ -1,4 +1,4 @@
-import { ref } from 'vue'
+import { onBeforeUnmount, ref } from 'vue'
 
 /*
  * 媒体选择器状态。
@@ -14,12 +14,14 @@ export function useMediaPicker() {
   let resolvePick = null
 
   function pick(mediaType = '') {
+    settle(null)
     pickerType.value = mediaType
     pickerOpen.value = true
     return new Promise((resolve) => {
       resolvePick = resolve
     })
   }
+  onBeforeUnmount(() => settle(null))
 
   // asset 为空表示用户取消选择
   function settle(asset) {

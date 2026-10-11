@@ -4,6 +4,9 @@ import { resolveVditorEditorHeight, setVditorFullscreenActive } from '../markdow
 import { createCodeGroupMarkdown, validateCodeGroupBlocks } from '../markdown/markdownCodeGroup'
 import { normalizePastedMath } from '../markdown/markdownMath'
 import { prepareMathJax } from '../markdown/mathJax'
+import { uploadMedia } from '../../modules/media/api/mediaApi'
+import { IMAGE_ACCEPT, imageMarkdown, mediaUploadError, validateEditorImage } from '../../modules/media/support/upload'
+import { useAuthStore } from '../../modules/account/stores/authStore'
 
 /*
  * 文章正文编辑器 —— 对标 V1 `components/MarkdownEditor.vue`（Vditor，IR 即时渲染）。
@@ -19,7 +22,7 @@ import { prepareMathJax } from '../markdown/mathJax'
  *   - 代码组：一次插入多个可切换的代码块，源码仍是普通 Markdown（见 markdownCodeGroup.js）
  *   - 数学公式：$...$ / $$...$$，MathJax 排版；粘贴外部公式时做归一化
  *   - 表格：自定义行列数的尺寸选择器（Vditor 自带按钮只会插固定 3x3）
- *   - 图片：走媒体库选择器（由父页面注入 pickImage）
+ *   - 图片：直接上传、粘贴或拖入，上传后插入媒体地址；也可选媒体库图片
  *   - 全屏
  *
  * 两个必须遵守的约束（V1 注释里写明的坑）：
@@ -44,6 +47,16 @@ const emit = defineEmits(['update:modelValue'])
 
 const host = ref(null)
 const loadingError = ref('')
+const imageInput = ref(null)
+const imageError = ref('')
+const imageStatus = ref('')
+const uploadingImages = ref(false)
+const auth = useAuthStore()
+const canUploadImages = computed(() => auth.hasPermission('media:upload'))
+let savedImageRange = null
+let imageUploadController = null
+let imageOperation = 0
+let disposed = false
 
 /* Vditor 实例。类型不上 TS，这里刻意保留为普通变量，JS 项目里加 JSDoc 类型反而更难维护 */
 let vditor = null
@@ -126,17 +139,88 @@ function insertTable() {
   vditor?.insertValue([header, separator, ...body].join('\n'))
 }
 
-/* 图片：走父页面注入的媒体库选择器；没有注入时插入一段可手填的占位语法 */
-async function insertImage() {
-  if (!props.pickImage) {
-    vditor?.insertValue('![图片说明](https://)')
-    return
+function rememberImageRange() {
+  const selection = window.getSelection()
+  if (!selection?.rangeCount) return savedImageRange
+  const range = selection.getRangeAt(0)
+  const node = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement
+  if (host.value?.contains(node) && node?.closest('[contenteditable="true"]')) savedImageRange = range.cloneRange()
+  return savedImageRange?.cloneRange() || null
+}
+
+function insertMediaImage(asset, range) {
+  if (!ready || !vditor || disposed) return
+  if (range?.startContainer.isConnected && host.value?.contains(range.startContainer)) {
+    host.value.querySelector('[contenteditable="true"]')?.focus()
+    const selection = window.getSelection()
+    selection.removeAllRanges()
+    selection.addRange(range)
   }
+  vditor.insertMD(`\n${imageMarkdown(asset)}\n`)
+  rememberImageRange()
+}
+
+async function insertImage() {
+  if (!props.pickImage) return
+  const range = rememberImageRange()
+  const operation = imageOperation
   const asset = await props.pickImage()
-  if (!asset?.url) return
-  /* alt 里的方括号/换行会把 Markdown 图片语法拆坏，插入前先抹平 */
-  const alt = String(asset.name || '图片').replace(/[[\]\r\n]/g, ' ').trim() || '图片'
-  vditor?.insertValue(`![${alt}](${asset.url})`)
+  if (!asset?.url || disposed || operation !== imageOperation) return
+  insertMediaImage(asset, range)
+}
+
+function selectImageFiles() {
+  if (!canUploadImages.value || uploadingImages.value) return
+  rememberImageRange()
+  imageInput.value?.click()
+}
+
+async function uploadImageFiles(files, range = rememberImageRange()) {
+  if (!files.length || !ready) return
+  if (!canUploadImages.value) { imageError.value = '当前账号没有媒体上传权限。'; return }
+  if (uploadingImages.value) { imageError.value = '图片正在上传，请等待完成后再添加。'; return }
+  const operation = ++imageOperation
+  imageUploadController = new AbortController()
+  uploadingImages.value = true
+  imageError.value = ''
+  let completed = 0
+  const failures = []
+  for (const file of files) {
+    if (disposed || operation !== imageOperation) break
+    const invalid = validateEditorImage(file)
+    if (invalid) { failures.push(`${file.name}：${invalid}`); continue }
+    imageStatus.value = `正在上传 ${completed + 1} / ${files.length}：${file.name}`
+    try {
+      const asset = await uploadMedia(file, 'PUBLIC', { signal: imageUploadController.signal })
+      if (disposed || operation !== imageOperation) break
+      insertMediaImage(asset, range)
+      range = rememberImageRange()
+      completed += 1
+    } catch (cause) {
+      if (disposed || operation !== imageOperation) break
+      failures.push(`${file.name}：${mediaUploadError(cause)}`)
+    }
+  }
+  if (disposed || operation !== imageOperation) return
+  imageError.value = failures.join('\n')
+  imageStatus.value = completed ? `已插入 ${completed} 张图片并加入媒体库；保存正文后会建立内容引用。` : ''
+  uploadingImages.value = false
+  imageUploadController = null
+}
+
+function onImageFiles(event) {
+  const files = Array.from(event.target.files || [])
+  event.target.value = ''
+  void uploadImageFiles(files)
+}
+
+function onEditorDrop(event) {
+  const files = Array.from(event.dataTransfer?.files || [])
+  if (!files.length) return
+  event.preventDefault()
+  event.stopImmediatePropagation()
+  const range = document.caretRangeFromPoint?.(event.clientX, event.clientY)
+  void uploadImageFiles(files, host.value?.contains(range?.startContainer) ? range : rememberImageRange())
 }
 
 /* ---------------------------------------------------------------
@@ -181,12 +265,20 @@ function watchTheme() {
    --------------------------------------------------------------- */
 
 function onEditorPaste(event) {
+  const files = Array.from(event.clipboardData?.files || [])
+  if (files.length) {
+    event.preventDefault()
+    event.stopImmediatePropagation()
+    void uploadImageFiles(files)
+    return
+  }
   const pasted = event.clipboardData?.getData('text/plain')
   if (!pasted) return
   const normalized = normalizePastedMath(pasted)
   /* null 表示「不是公式」，原样交给 Vditor 的默认粘贴流程 */
   if (normalized == null) return
   event.preventDefault()
+  event.stopImmediatePropagation()
   vditor?.insertValue(normalized)
 }
 
@@ -198,6 +290,7 @@ function watchFormulaPaste(element) {
   pasteHost?.removeEventListener('paste', onEditorPaste, true)
   pasteHost = element
   pasteHost.addEventListener('paste', onEditorPaste, true)
+  pasteHost.addEventListener('drop', onEditorDrop, true)
 }
 
 /* ---------------------------------------------------------------
@@ -249,12 +342,18 @@ function buildToolbar() {
       tip: '表格（自定义行列）',
       click: () => openTablePicker(),
     },
-    {
-      name: 'image-library',
+    ...(canUploadImages.value ? [{
+      name: 'image-upload',
       icon: ICON_IMAGE,
-      tip: '插入图片（媒体库）',
+      tip: '上传图片（也可粘贴或拖入）',
+      click: selectImageFiles,
+    }] : []),
+    ...(props.pickImage ? [{
+      name: 'image-library',
+      icon: '<span aria-hidden="true" style="font:600 12px/1 var(--font-family)">库</span>',
+      tip: '从媒体库插入图片',
       click: () => { void insertImage() },
-    },
+    }] : []),
     'link',
     '|',
     'outline',
@@ -337,6 +436,7 @@ async function mountEditor() {
 }
 
 onMounted(() => {
+  document.addEventListener('selectionchange', rememberImageRange)
   watchTheme()
   void mountEditor()
 })
@@ -348,6 +448,11 @@ watch(
     if (!vditor || !ready) return
     const current = vditor.getValue()
     if (value !== current) {
+      imageOperation += 1
+      imageUploadController?.abort()
+      uploadingImages.value = false
+      imageStatus.value = ''
+      savedImageRange = null
       suppressing = true
       vditor.setValue(value ?? '')
       suppressing = false
@@ -356,12 +461,17 @@ watch(
 )
 
 onBeforeUnmount(() => {
+  disposed = true
+  imageOperation += 1
+  imageUploadController?.abort()
+  document.removeEventListener('selectionchange', rememberImageRange)
   ready = false
   fullscreenObserver?.disconnect()
   fullscreenObserver = null
   themeObserver?.disconnect()
   themeObserver = null
   pasteHost?.removeEventListener('paste', onEditorPaste, true)
+  pasteHost?.removeEventListener('drop', onEditorDrop, true)
   pasteHost = null
   setVditorFullscreenActive(false)
   vditor?.destroy()
@@ -386,7 +496,15 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
 
 <template>
   <div class="markdown-editor">
+    <input ref="imageInput" class="markdown-editor__file-input" type="file" :accept="IMAGE_ACCEPT" multiple aria-label="上传正文图片" @change="onImageFiles" />
     <div ref="host" class="markdown-editor__host" />
+    <div class="markdown-editor__image-actions">
+      <button v-if="canUploadImages" type="button" class="secondary-button" :disabled="uploadingImages" @click="selectImageFiles">{{ uploadingImages ? '图片上传中…' : '上传图片' }}</button>
+      <button v-if="pickImage" type="button" class="secondary-button" @click="insertImage">从媒体库选择</button>
+      <span v-if="canUploadImages">可直接粘贴或拖入图片，上传图片将公开可读。</span>
+    </div>
+    <p v-if="imageStatus" class="markdown-editor__image-status" role="status">{{ imageStatus }}</p>
+    <p v-if="imageError" class="markdown-editor__error" role="alert">{{ imageError }}</p>
     <p v-if="loadingError" class="markdown-editor__error" role="alert">{{ loadingError }}</p>
 
     <div v-if="tablePickerOpen" ref="tablePickerRef" class="markdown-editor__popover">
@@ -442,6 +560,10 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
 </template>
 
 <style scoped>
+.markdown-editor__file-input { display: none; }
+.markdown-editor__image-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
+.markdown-editor__image-actions span, .markdown-editor__image-status { color: var(--text-muted); font-size: 12px; }
+.markdown-editor__error { white-space: pre-wrap; }
 .markdown-editor {
   position: relative;
   border: 1px solid var(--border);

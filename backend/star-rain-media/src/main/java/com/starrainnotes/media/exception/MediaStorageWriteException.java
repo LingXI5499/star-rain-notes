@@ -10,6 +10,6 @@ import com.starrainnotes.common.exception.ApiException;
 public class MediaStorageWriteException extends ApiException {
 
     public MediaStorageWriteException(Throwable cause) {
-        super("MEDIA_STORAGE_WRITE_FAILED", "媒体文件写入失败：" + cause.getMessage(), 500, cause);
+        super("MEDIA_STORAGE_WRITE_FAILED", "媒体存储目录无法写入，请检查目录权限和磁盘空间", 500, cause);
     }
 }

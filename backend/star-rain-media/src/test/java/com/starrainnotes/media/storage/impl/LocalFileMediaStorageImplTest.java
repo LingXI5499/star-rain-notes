@@ -36,6 +36,23 @@ class LocalFileMediaStorageImplTest {
     }
 
     @Test
+    @DisplayName("写入目录不可用时保留根因，但响应不泄露磁盘路径")
+    void writeFailureDoesNotExposePath() throws IOException {
+        Path blocked = tempDir.resolve("private-location");
+        Files.writeString(blocked, "not a directory");
+        MediaProperties properties = new MediaProperties();
+        properties.setStorageRoot(blocked.toString());
+        LocalFileMediaStorageImpl unavailable = new LocalFileMediaStorageImpl(properties);
+
+        assertThatThrownBy(() -> unavailable.store(content("hello"), "png"))
+                .isInstanceOf(ApiException.class)
+                .hasCauseInstanceOf(IOException.class)
+                .hasMessageNotContaining(blocked.toString())
+                .extracting(ex -> ((ApiException) ex).getCode())
+                .isEqualTo("MEDIA_STORAGE_WRITE_FAILED");
+    }
+
+    @Test
     @DisplayName("storageKey 形如 YYYY/MM/<uuid>.<ext>，且不含绝对路径")
     void keyLayout() {
         MediaStorageResultDTO stored = storage.store(content("hello"), "png");
