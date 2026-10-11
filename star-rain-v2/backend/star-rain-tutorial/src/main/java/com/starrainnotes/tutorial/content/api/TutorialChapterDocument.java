@@ -16,4 +16,9 @@ public class TutorialChapterDocument {
     private String summary;
     private String bodyMarkdown;
     private String searchableText;
+    private java.time.LocalDateTime updatedAt;
+
+    public TutorialChapterDocument(Long id, String slug, String title, String summary, String bodyMarkdown, String searchableText) {
+        this(id, slug, title, summary, bodyMarkdown, searchableText, null);
+    }
 }

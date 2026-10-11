@@ -68,7 +68,7 @@ public class SeoSnapshotServiceImpl implements SeoSnapshotService, SeoPageApi, S
         String robots = "index,follow";
         String html = renderer.render(SeoPageModel.builder().canonicalUrl(url).title(title)
             .description(description).robotsDirective(robots).bodyMarkdown(source.getBodyMarkdown())
-            .coverUrl(source.getCoverUrl()).build());
+            .coverUrl(source.getCoverUrl()).contentType(source.getContentType()).updatedAt(source.getUpdatedAt()).build());
         SeoPageSnapshot snapshot = new SeoPageSnapshot();
         snapshot.setRoutePath(route);
         snapshot.setContentType(source.getContentType());

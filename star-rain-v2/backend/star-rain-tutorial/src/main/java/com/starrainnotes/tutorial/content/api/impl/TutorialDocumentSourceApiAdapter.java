@@ -38,9 +38,15 @@ public class TutorialDocumentSourceApiAdapter implements TutorialDocumentSourceA
                 }
             }
             String published = detail.path("publishedAt").asText("");
-            return Optional.of(new TutorialPublishedDocument(id(detail), detail.path("slug").asText(),
+            TutorialPublishedDocument document = new TutorialPublishedDocument(id(detail), detail.path("slug").asText(),
                 detail.path("title").asText(), detail.path("summary").asText(),
-                published.isBlank() ? null : LocalDateTime.parse(published), List.copyOf(chapters)));
+                published.isBlank() ? null : LocalDateTime.parse(published), List.copyOf(chapters));
+            LocalDateTime modified = modifiedAt(detail);
+            for (var chapter : chapters) {
+                if (chapter.getUpdatedAt() != null && (modified == null || chapter.getUpdatedAt().isAfter(modified))) modified = chapter.getUpdatedAt();
+            }
+            document.setUpdatedAt(modified);
+            return Optional.of(document);
         } catch (TutorialNotFoundException absent) {
             return Optional.empty();
         }
@@ -58,13 +64,22 @@ public class TutorialDocumentSourceApiAdapter implements TutorialDocumentSourceA
             for (JsonNode question : detail.path("questions")) {
                 searchable.append(' ').append(question.path("questionText").asText());
             }
-            return Optional.of(new TutorialChapterDocument(id(detail), detail.path("slug").asText(),
+            TutorialChapterDocument document = new TutorialChapterDocument(id(detail), detail.path("slug").asText(),
                 detail.path("title").asText(), detail.path("summary").asText(),
-                detail.path("bodyMarkdown").asText(), searchable.toString()));
+                detail.path("bodyMarkdown").asText(), searchable.toString());
+            document.setUpdatedAt(modifiedAt(detail));
+            return Optional.of(document);
         } catch (TutorialNotFoundException absent) {
             return Optional.empty();
         }
     }
 
     private Long id(JsonNode node) { return Long.valueOf(node.path("id").asText()); }
+
+    private LocalDateTime modifiedAt(JsonNode publishedSnapshot) {
+        String value = publishedSnapshot.path("updatedAt").asText("");
+        if (value.isBlank()) return null;
+        try { return LocalDateTime.parse(value); }
+        catch (java.time.format.DateTimeParseException absentDate) { return null; }
+    }
 }

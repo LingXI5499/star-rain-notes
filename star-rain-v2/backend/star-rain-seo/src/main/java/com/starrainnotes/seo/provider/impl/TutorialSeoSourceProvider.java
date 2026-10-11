@@ -60,12 +60,12 @@ public class TutorialSeoSourceProvider implements SeoSourceProvider {
             .append(' ').append(chapter.getSummary()));
         return SeoSourceDocument.builder().routePath("/tutorials/" + detail.getSlug())
             .contentType("TUTORIAL").contentId(detail.getId()).title(detail.getTitle())
-            .summary(detail.getSummary()).bodyMarkdown(body.toString()).build();
+            .summary(detail.getSummary()).bodyMarkdown(body.toString()).updatedAt(detail.getUpdatedAt()).build();
     }
 
     private SeoSourceDocument chapter(String tutorialSlug, TutorialChapterDocument detail) {
         return SeoSourceDocument.builder().routePath("/tutorials/" + tutorialSlug + "/" + detail.getSlug())
             .contentType("CHAPTER").contentId(detail.getId()).title(detail.getTitle())
-            .summary(detail.getSummary()).bodyMarkdown(detail.getSearchableText()).build();
+            .summary(detail.getSummary()).bodyMarkdown(detail.getSearchableText()).updatedAt(detail.getUpdatedAt()).build();
     }
 }

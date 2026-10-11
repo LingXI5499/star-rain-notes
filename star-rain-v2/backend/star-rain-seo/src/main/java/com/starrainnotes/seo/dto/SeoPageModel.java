@@ -16,4 +16,6 @@ public class SeoPageModel {
     private String robotsDirective;
     private String bodyMarkdown;
     private String coverUrl;
+    private String contentType;
+    private java.time.LocalDateTime updatedAt;
 }

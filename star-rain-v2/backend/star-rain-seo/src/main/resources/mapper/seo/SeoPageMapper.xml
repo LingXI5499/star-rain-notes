@@ -24,7 +24,7 @@
         WHERE route_path = #{routePath} AND status = 'ACTIVE'
     </select>
     <select id="activePages" resultType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
-        SELECT route_path, canonical_url, generated_at
+        SELECT route_path, canonical_url, source_version_ref
         FROM sr_seo_page_snapshot WHERE status = 'ACTIVE'
         ORDER BY route_path
     </select>
