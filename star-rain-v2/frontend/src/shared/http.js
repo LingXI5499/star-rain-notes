@@ -13,18 +13,29 @@ import axios from 'axios'
  */
 const http = axios.create({ baseURL: '/api', withCredentials: true, timeout: 20000 })
 let csrfToken = ''
+let csrfRequest = null
+let csrfEpoch = 0
 
 async function ensureCsrf() {
-  if (!csrfToken) {
-    const response = await axios.get('/api/auth/csrf', { withCredentials: true, timeout: 20000 })
-    csrfToken = response.data.data.token
-  }
-  return csrfToken
+  if (csrfToken) return csrfToken
+  if (csrfRequest) return csrfRequest
+  const epoch = csrfEpoch
+  const pending = axios.get('/api/auth/csrf', { withCredentials: true, timeout: 20000 })
+    .then(response => {
+      if (epoch !== csrfEpoch) throw new axios.CanceledError('CSRF token invalidated')
+      const token = response.data?.data?.token
+      if (!token) throw new Error('CSRF token unavailable')
+      csrfToken = token
+      return token
+    }).finally(() => { if (csrfRequest === pending) csrfRequest = null })
+  csrfRequest = pending
+  return pending
 }
 
 http.interceptors.request.use(async (config) => {
   const method = (config.method || 'get').toLowerCase()
   if (!['get', 'head', 'options'].includes(method)) {
+    config.headers ||= {}
     config.headers['X-XSRF-TOKEN'] = await ensureCsrf()
   }
   return config
@@ -40,16 +51,28 @@ http.interceptors.response.use((response) => response, (error) => {
 })
 
 export function clearCsrf() {
+  csrfEpoch += 1
   csrfToken = ''
+  csrfRequest = null
+}
+
+export function isRequestCanceled(error) {
+  return error?.code === 'ERR_CANCELED' || error?.name === 'AbortError' || axios.isCancel(error)
 }
 
 export function errorMessage(error) {
-  if (!error?.response) return '无法连接服务，请确认后端已启动后重试。'
+  if (isRequestCanceled(error)) return ''
+  if (['ECONNABORTED', 'ETIMEDOUT'].includes(error?.code)) return '请求超时，请重试。'
+  if (!error?.response) return '网络连接失败，请检查网络后重试。'
+  if (error.response.status === 401) return '登录已失效，请重新登录。'
+  if (error.response.data?.code === 'CSRF_INVALID') return '安全验证已过期，请重新提交。'
+  if (error.response.status === 403) return '没有执行此操作的权限。'
+  if (error.response.status >= 500) return '服务暂时不可用，请稍后重试。'
   return error.response.data?.message || '请求失败，请稍后重试'
 }
 
-export async function get(path, params) {
-  const response = await http.get(path, { params })
+export async function get(path, params, options = {}) {
+  const response = await http.get(path, { ...options, params })
   return response.data.data
 }
 

@@ -14,4 +14,5 @@ public class TutorialOperationEntity {
     private String status;
     private String displayName;
     private Long applicantAccountId;
+    private String executionMessage;
 }

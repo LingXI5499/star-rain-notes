@@ -15,4 +15,5 @@ public interface ReviewDecisionService {
     void approve(Long reviewRequestId, ReviewApproveCommand command, Long reviewerAccountId);
 
     void reject(Long reviewRequestId, ReviewRejectCommand command, Long reviewerAccountId);
+    void recoverApproved(Long reviewRequestId, Long reviewerAccountId);
 }

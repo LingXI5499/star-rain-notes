@@ -2,7 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.tutorial.content.mapper.TutorialOperationMapper">
   <sql id="columns">
-    id, operation, arguments_json, baseline_json, scope_key, pending_scope, status, display_name, applicant_account_id
+    id, operation, arguments_json, baseline_json, scope_key, pending_scope, status, display_name, applicant_account_id, execution_message
   </sql>
   <select id="lockCatalog" resultType="long">
     SELECT id FROM sr_tutorial_category ORDER BY id FOR UPDATE
@@ -25,6 +25,11 @@
     SELECT id, scope_key, operation, display_name FROM sr_tutorial_operation WHERE status = 'PENDING' ORDER BY id
   </select>
   <update id="finish">
-    UPDATE sr_tutorial_operation SET status = #{status}, pending_scope = NULL WHERE id = #{id} AND status = 'PENDING'
+    UPDATE sr_tutorial_operation SET status = #{status}, pending_scope = NULL, execution_message = NULL
+    WHERE id = #{id} AND (status = 'PENDING' OR (status = 'FAILED' AND #{status} = 'APPLIED'))
+  </update>
+  <update id="recordFailure">
+    UPDATE sr_tutorial_operation SET status = 'FAILED', pending_scope = NULL, execution_message = #{message}
+    WHERE id = #{id} AND status IN ('PENDING', 'FAILED')
   </update>
 </mapper>

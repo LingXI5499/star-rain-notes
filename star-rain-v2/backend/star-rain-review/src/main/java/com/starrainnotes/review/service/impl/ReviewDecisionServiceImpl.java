@@ -114,6 +114,23 @@ public class ReviewDecisionServiceImpl implements ReviewDecisionService {
         return request;
     }
 
+    @Override
+    @Transactional
+    @org.springframework.security.access.prepost.PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('review:approve')")
+    public void recoverApproved(Long reviewRequestId, Long reviewerAccountId) {
+        requireReviewer(reviewerAccountId);
+        ReviewRequestEntity request = requireRequest(reviewRequestId);
+        if (!ReviewStatus.APPROVED_CODE.equals(request.getStatus())) throw new ReviewAlreadyCompletedException();
+        ReviewTargetHandler handler = handlerRegistry.require(request.getTargetModule(), request.getTargetType(), request.getReviewType());
+        if (!handler.supportsApprovedRecovery()) throw new ReviewAccessDeniedException();
+        LocalDateTime attemptedAt = LocalDateTime.now();
+        actionMapper.insertAction(action(request.getId(), "RECOVERY_REQUESTED", reviewerAccountId,
+                ReviewActorType.ACCOUNT_CODE, "显式重新核实并恢复业务应用；审批结论保持不变", attemptedAt));
+        ReviewDecisionContext context = context(request, ReviewActionType.RECOVERY_REQUESTED, ReviewStatus.APPROVED_CODE,
+                request.getDecisionReason(), reviewerAccountId, request.getDecidedAt());
+        callbackDispatcher.dispatch(() -> handler.recoverApproved(context));
+    }
+
     // 审核动作必须有人负责：决策人缺失属于调用方越权或内部错误，不能容忍
     private static void requireReviewer(Long reviewerAccountId) {
         if (reviewerAccountId == null) {

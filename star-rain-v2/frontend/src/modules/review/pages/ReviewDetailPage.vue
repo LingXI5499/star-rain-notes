@@ -1,7 +1,9 @@
 <script setup>
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { cancelReview, getReview } from '../api/reviewApi'
+import { cancelReview, getReview, recoverReview } from '../api/reviewApi'
+import { useAuthStore } from '../../account/stores/authStore'
+import AppConfirmDialog from '../../../shared/ui/AppConfirmDialog.vue'
 import { errorMessage } from '../../../shared/http'
 import ReviewApproveDialog from '../components/ReviewApproveDialog.vue'
 import ReviewHistoryTimeline from '../components/ReviewHistoryTimeline.vue'
@@ -20,6 +22,8 @@ import { dateLabel, targetLabel } from '../support/display'
  * 否则前后端各写一套授权规则，迟早会漂移出「前端给了按钮后端 403」这种体验。
  */
 const route = useRoute()
+const auth = useAuthStore()
+const recoveryDialog = ref(null)
 
 const reviewId = computed(() => route.params.reviewId)
 const detail = ref(null)
@@ -31,6 +35,9 @@ const approveDialog = ref(null)
 const rejectDialog = ref(null)
 
 const isPending = computed(() => detail.value?.status === 'PENDING')
+const operationNeedsRecovery = computed(() => detail.value?.status === 'APPROVED'
+  && detail.value?.targetView?.viewType === 'TUTORIAL_OPERATION'
+  && ['PENDING', 'FAILED'].includes(detail.value?.targetView?.executionStatus))
 
 async function load() {
   loading.value = true
@@ -48,6 +55,22 @@ async function load() {
 async function afterDecision(message) {
   notice.value = message
   await load()
+  if (operationNeedsRecovery.value) notice.value = '审批已通过，但业务变更尚未生效，请核对应用状态。'
+}
+
+async function recover() {
+  if (busy.value || !operationNeedsRecovery.value) return
+  if (!await recoveryDialog.value.ask({ title: '重新核实并恢复', message: '系统将重新校验审批目标、原内容与当前版本。内容已改变时会拒绝恢复；已生效的操作不会重复执行。', confirmText: '核实并恢复' })) return
+  busy.value = true
+  try {
+    await recoverReview(reviewId.value)
+    await afterDecision('恢复请求已处理，请核对业务应用状态。')
+  } catch (cause) {
+    error.value = errorMessage(cause)
+    const message = error.value
+    await load()
+    error.value = message
+  } finally { busy.value = false }
 }
 
 async function cancelPending() {
@@ -82,6 +105,11 @@ onMounted(load)
     <p v-if="loading" class="loading" role="status">正在加载审核详情…</p>
 
     <template v-if="detail">
+      <section v-if="operationNeedsRecovery" class="surface-card" role="alert">
+        <h2>审核已通过，业务变更尚未生效</h2>
+        <p>{{ detail.targetView.executionMessage || '变更未完成，可能在审批提交后中断。请先核实当前内容，再由超级管理员显式恢复。' }}</p>
+        <button v-if="auth.canManage('review:approve')" type="button" :disabled="busy" @click="recover">重新核实并恢复</button>
+      </section>
       <section class="surface-card">
         <div class="section-heading">
           <div><p class="eyebrow">REQUEST</p><h2>审核请求 #{{ detail.reviewId }}</h2></div>
@@ -150,6 +178,7 @@ onMounted(load)
         <ReviewHistoryTimeline :history="detail.history" />
       </section>
     </template>
+    <AppConfirmDialog ref="recoveryDialog" />
 
     <ReviewApproveDialog ref="approveDialog" @approved="afterDecision('审核已通过，目标模块将按审核结论推进自身状态。')" />
     <ReviewRejectDialog ref="rejectDialog" @rejected="afterDecision('审核已拒绝，申请人可修改后重新提交。')" />

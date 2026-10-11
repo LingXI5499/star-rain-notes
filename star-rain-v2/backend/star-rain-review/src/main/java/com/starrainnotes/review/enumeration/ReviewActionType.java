@@ -12,7 +12,8 @@ public enum ReviewActionType {
     SUBMITTED,
     APPROVED,
     REJECTED,
-    CANCELED;
+    CANCELED,
+    RECOVERY_REQUESTED;
 
     public static final String SUBMITTED_CODE = "SUBMITTED";
     public static final String APPROVED_CODE = "APPROVED";

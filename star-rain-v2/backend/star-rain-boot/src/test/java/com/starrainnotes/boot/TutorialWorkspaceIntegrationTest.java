@@ -62,7 +62,7 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
             statement.executeUpdate("INSERT INTO sr_tutorial_category(name,slug,sort_order) VALUES('Before upgrade','before-upgrade',0)");
         }
         Flyway upgraded = Flyway.configure().dataSource(dataSource).defaultSchema(schema).schemas(schema).load();
-        upgraded.migrate(); upgraded.validate(); assertEquals("2.039",upgraded.info().current().getVersion().getVersion());
+        upgraded.migrate(); upgraded.validate(); assertEquals("2.040",upgraded.info().current().getVersion().getVersion());
         try (Statement statement=connection.createStatement(); ResultSet row=statement.executeQuery("SELECT COUNT(*) FROM sr_tutorial_category WHERE slug='before-upgrade'")) { assertTrue(row.next());assertEquals(1,row.getInt(1)); }
         Configuration configuration = new Configuration(); configuration.setMapUnderscoreToCamelCase(true);
         configuration.setEnvironment(new Environment("workspace-test",new SpringManagedTransactionFactory(),dataSource));
@@ -143,6 +143,49 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
         operations.approve(pending.getId());
         assertEquals(appliedVersion,content.chapter(chapter.getId()).getRowVersion());
     }
+    @Test void committedApprovalSurvivesCallbackFailureAndExplicitRecoveryIsIdempotent() {
+        when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("ADMIN")).build());
+        operations.request("updateChapter", new Object[]{chapter.getId(), change(content.chapter(chapter.getId()).getRowVersion())});
+        var pending = mapper(TutorialOperationMapper.class).pending("tutorial:" + tutorial.getId());
+        var requestMapper = mapper(com.starrainnotes.review.mapper.ReviewRequestMapper.class);
+        var request = new com.starrainnotes.review.entity.ReviewRequestEntity();
+        request.setReviewType("tutorial.operation"); request.setTargetModule("TUTORIAL"); request.setTargetType("OPERATION");
+        request.setTargetId(pending.getId()); request.setTargetRevisionRef("tutorial-operation:" + pending.getId());
+        request.setTargetDisplayName("Update chapter"); request.setApplicantAccountId(72L); request.setApplicantDisplayName("Isolated administrator");
+        request.setStatus("PENDING"); request.setSubmittedAt(java.time.LocalDateTime.now()); requestMapper.insertRequest(request);
+        var handler = new com.starrainnotes.tutorial.content.handler.TutorialOperationReviewHandler(mapper(TutorialOperationMapper.class), operations);
+        var registry = mock(com.starrainnotes.review.handler.ReviewTargetHandlerRegistry.class);
+        when(registry.require("TUTORIAL", "OPERATION", "tutorial.operation")).thenReturn(handler);
+        var decisions = proxy(new com.starrainnotes.review.service.impl.ReviewDecisionServiceImpl(requestMapper,
+                mapper(com.starrainnotes.review.mapper.ReviewActionMapper.class), registry,
+                new com.starrainnotes.review.handler.ReviewDecisionCallbackDispatcher()), com.starrainnotes.review.service.ReviewDecisionService.class);
+        when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(71L).roles(Set.of("SUPER_ADMIN")).build());
+        doThrow(new IllegalStateException("SQL internal detail must not reach the administrator")).when(media).replaceChapter(eq(chapter.getId()), anyString());
+        assertThrows(IllegalStateException.class, () -> decisions.approve(request.getId(), null, 71L));
+        assertEquals("APPROVED", requestMapper.requestById(request.getId()).getStatus());
+        var failed = mapper(TutorialOperationMapper.class).selectById(pending.getId());
+        assertEquals("FAILED", failed.getStatus()); assertFalse(failed.getExecutionMessage().contains("SQL"));
+        assertEquals("Original body", content.chapter(chapter.getId()).getBodyMarkdown());
+        reset(media);
+        decisions.recoverApproved(request.getId(), 71L);
+        assertEquals("Edited body", content.chapter(chapter.getId()).getBodyMarkdown());
+        Long version = content.chapter(chapter.getId()).getRowVersion();
+        decisions.recoverApproved(request.getId(), 71L);
+        assertEquals(version, content.chapter(chapter.getId()).getRowVersion());
+        assertEquals("APPLIED", mapper(TutorialOperationMapper.class).selectById(pending.getId()).getStatus());
+        assertNull(mapper(TutorialOperationMapper.class).selectById(pending.getId()).getExecutionMessage());
+    }
+
+    @Test void recoversApprovedPendingCrashWindowOnlyWhileOriginalBaselineStillMatches() {
+        when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(72L).roles(Set.of("ADMIN")).build());
+        operations.request("updateChapter", new Object[]{chapter.getId(), change(content.chapter(chapter.getId()).getRowVersion())});
+        var pending = mapper(TutorialOperationMapper.class).pending("tutorial:" + tutorial.getId());
+        when(actors.current()).thenReturn(CurrentActorApi.CurrentActor.builder().accountId(71L).roles(Set.of("SUPER_ADMIN")).build());
+        operations.recoverApproved(pending.getId());
+        assertEquals("Edited body", content.chapter(chapter.getId()).getBodyMarkdown());
+        assertEquals("APPLIED", mapper(TutorialOperationMapper.class).selectById(pending.getId()).getStatus());
+    }
+
     @Test void mediaReferenceFailureRollsBackTitleSummaryBodyAndVersionInRealSpringTransaction() {
         var before=content.chapter(chapter.getId());
         doThrow(new IllegalStateException("media failure")).when(media).replaceChapter(eq(chapter.getId()),anyString());

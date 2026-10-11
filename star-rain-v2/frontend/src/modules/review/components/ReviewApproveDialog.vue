@@ -1,6 +1,6 @@
 <script setup>
 import { nextTick, ref } from 'vue'
-import { approveReview } from '../api/reviewApi'
+import { approveReview, getReview } from '../api/reviewApi'
 import { errorMessage } from '../../../shared/http'
 
 /*
@@ -41,6 +41,13 @@ async function submit() {
     close()
   } catch (cause) {
     error.value = errorMessage(cause)
+    // A post-commit callback failure does not undo the recorded approval.
+    if (cause.response?.status >= 500) {
+      try {
+        const current = await getReview(review.value.reviewId)
+        if (current.status === 'APPROVED') { emit('approved', current); close() }
+      } catch { /* Keep the original error and local note when status cannot be verified. */ }
+    }
   } finally {
     busy.value = false
   }

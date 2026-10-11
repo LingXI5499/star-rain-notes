@@ -50,4 +50,10 @@ public interface ReviewTargetHandler {
 
     default void onCanceled(ReviewDecisionContext context) {
     }
+
+    default boolean supportsApprovedRecovery() { return false; }
+
+    default void recoverApproved(ReviewDecisionContext context) {
+        throw new com.starrainnotes.review.exception.ReviewAccessDeniedException();
+    }
 }

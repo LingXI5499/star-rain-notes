@@ -36,6 +36,7 @@ export const ACTION_TYPES = {
   APPROVED: '审核通过',
   REJECTED: '审核拒绝',
   CANCELED: '取消审核',
+  RECOVERY_REQUESTED: '重新核实并恢复',
 }
 
 export const actionLabel = (code) => ACTION_TYPES[code] || code || '未知动作'

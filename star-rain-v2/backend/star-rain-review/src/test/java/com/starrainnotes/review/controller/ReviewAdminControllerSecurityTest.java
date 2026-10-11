@@ -150,6 +150,13 @@ class ReviewAdminControllerSecurityTest {
         assertThat(allowed(cancel, ADMIN)).isTrue();
     }
 
+    @Test void recoveryRequiresSuperAdministratorAndApprovalPermission() {
+        Method recover = method("recover", Long.class, Long.class);
+        assertThat(allowed(recover, ADMIN, "review:approve")).isFalse();
+        assertThat(allowed(recover, SUPER_ADMIN)).isFalse();
+        assertThat(allowed(recover, SUPER_ADMIN, "review:approve")).isTrue();
+    }
+
     @Test
     @DisplayName("REV-002/003 缺少 review:read 的账户访问待审列表与详情一律被拒")
     void viewEndpointsDeniedWithoutReadPermission() {

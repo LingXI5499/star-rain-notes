@@ -7,6 +7,7 @@ import java.util.List;
 
 @Mapper
 public interface TutorialOperationMapper {
+    int recordFailure(@org.apache.ibatis.annotations.Param("id") Long id, @org.apache.ibatis.annotations.Param("message") String message);
     List<Long> lockCatalog();
     int insert(TutorialOperationEntity row);
     TutorialOperationEntity byIdForUpdate(@Param("id") Long id);

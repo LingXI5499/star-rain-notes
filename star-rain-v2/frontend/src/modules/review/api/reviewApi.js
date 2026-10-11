@@ -27,3 +27,4 @@ export const rejectReview = (reviewId, reason) =>
 // REV-006 取消待审请求：只有申请人本人能取消
 export const cancelReview = (reviewId) =>
   post(`/admin/reviews/${encodeURIComponent(reviewId)}/cancel`)
+export const recoverReview = (reviewId) => post(`/admin/reviews/${encodeURIComponent(reviewId)}/recover`)

@@ -34,14 +34,15 @@ public class TutorialOperationReviewHandler implements ReviewTargetHandler {
     public ReviewTargetView loadReviewView(ReviewTargetRef target) {
         var row = operations.selectById(target.getTargetId());
         if (row == null || !("tutorial-operation:" + row.getId()).equals(target.getRevisionRef())) return null;
-        return new OperationView(target.getRevisionRef(), row.getDisplayName(), row.getOperation(), row.getStatus(),
-                service.read(row.getBaselineJson()), service.read(row.getArgumentsJson()));
+        var view = new OperationView(target.getRevisionRef(), row.getDisplayName(), row.getOperation(), row.getStatus(),
+                service.read(row.getBaselineJson()), service.read(row.getArgumentsJson()), row.getExecutionMessage());
+        return view;
     }
     @Override
     public void onApproved(ReviewDecisionContext context) {
         try { service.approve(context.getTarget().getTargetId()); }
         catch (RuntimeException exception) {
-            service.finish(context.getTarget().getTargetId(), "FAILED");
+            service.recordFailure(context.getTarget().getTargetId(), exception);
             throw exception;
         }
     }
@@ -49,6 +50,16 @@ public class TutorialOperationReviewHandler implements ReviewTargetHandler {
     public void onRejected(ReviewDecisionContext context) { service.finish(context.getTarget().getTargetId(), "REJECTED"); }
     @Override
     public void onCanceled(ReviewDecisionContext context) { service.finish(context.getTarget().getTargetId(), "CANCELED"); }
+
+    @Override public boolean supportsApprovedRecovery() { return true; }
+    @Override public void recoverApproved(ReviewDecisionContext context) {
+        Long id = context.getTarget().getTargetId();
+        if (!"APPROVED".equals(context.getStatus()) || !("tutorial-operation:" + id).equals(context.getTarget().getRevisionRef())) {
+            throw new com.starrainnotes.tutorial.content.exception.TutorialStateException("审核目标或审批结论不匹配");
+        }
+        try { service.recoverApproved(id); }
+        catch (RuntimeException exception) { service.recordFailure(id, exception); throw exception; }
+    }
 
     @Data
     @AllArgsConstructor
@@ -59,6 +70,7 @@ public class TutorialOperationReviewHandler implements ReviewTargetHandler {
         private String executionStatus;
         private JsonNode before;
         private JsonNode proposed;
+        private String executionMessage;
         @Override @JsonProperty("viewType")
         public String viewType() { return "TUTORIAL_OPERATION"; }
     }

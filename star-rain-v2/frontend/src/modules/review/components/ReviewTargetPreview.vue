@@ -38,7 +38,7 @@ const operationFields = computed(() => {
 const previousContent = computed(() => props.view?.before?.content)
 
 // 已经单独渲染过的字段不再进「其他字段」表
-const KNOWN_KEYS = ['viewType', 'targetId', 'targetModule', 'targetType', 'revisionRef', 'title', 'summary', 'contentSnapshot', 'frozenAt', 'operation', 'before', 'proposed', 'executionStatus']
+const KNOWN_KEYS = ['viewType', 'targetId', 'targetModule', 'targetType', 'revisionRef', 'title', 'summary', 'contentSnapshot', 'frozenAt', 'operation', 'before', 'proposed', 'executionStatus', 'executionMessage']
 
 const extraEntries = () => {
   if (!props.view) return []
@@ -55,7 +55,8 @@ const extraEntries = () => {
       <p v-if="view.summary" class="review-target__summary">{{ view.summary }}</p>
       <section v-if="view.viewType === 'TUTORIAL_OPERATION'" class="review-target__operation">
         <h3>{{ operationLabels[view.operation] || view.operation }}</h3>
-        <p>执行状态：{{ {PENDING:'待审核', APPLIED:'已执行', REJECTED:'已拒绝', CANCELED:'已取消', FAILED:'执行失败，请重新提交'}[view.executionStatus] }}</p>
+        <p>业务应用状态：{{ {PENDING:'尚未应用', APPLIED:'已生效', REJECTED:'已拒绝，未应用', CANCELED:'已取消，未应用', FAILED:'应用失败，需核实后恢复'}[view.executionStatus] }}</p>
+        <p v-if="view.executionMessage" role="status">{{ view.executionMessage }}</p>
         <h4>申请内容</h4>
         <div v-for="field in operationFields" :key="field.key" class="review-target__field"><strong>{{ field.label }}</strong><BlogProse v-if="field.markdown" :markdown="field.value || ''" /><p v-else>{{ field.value }}</p></div>
         <p v-if="!operationFields.length">审核通过后执行“{{ operationLabels[view.operation] }}”。</p>

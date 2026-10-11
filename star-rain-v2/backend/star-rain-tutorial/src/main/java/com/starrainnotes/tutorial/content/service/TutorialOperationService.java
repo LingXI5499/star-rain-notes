@@ -152,9 +152,21 @@ public class TutorialOperationService {
 
     private void validateVersion(String operation, JsonNode args) {
         Long expected = null;
-        if (List.of("updateChapter", "updateChapterBody").contains(operation)) expected = chapters.selectById(args.get(0).asLong()).getRowVersion();
-        if ("updateCard".equals(operation)) expected = cards.selectById(args.get(0).asLong()).getRowVersion();
-        if ("updateQuestion".equals(operation)) expected = questions.selectById(args.get(0).asLong()).getRowVersion();
+        if (List.of("updateChapter", "updateChapterBody").contains(operation)) {
+            var row = chapters.selectById(args.get(0).asLong());
+            if (row == null) throw new TutorialStateException("章节不存在或已改变");
+            expected = row.getRowVersion();
+        }
+        if ("updateCard".equals(operation)) {
+            var row = cards.selectById(args.get(0).asLong());
+            if (row == null) throw new TutorialStateException("知识卡片不存在或已改变");
+            expected = row.getRowVersion();
+        }
+        if ("updateQuestion".equals(operation)) {
+            var row = questions.selectById(args.get(0).asLong());
+            if (row == null) throw new TutorialStateException("章节问题不存在或已改变");
+            expected = row.getRowVersion();
+        }
         if (expected != null && (!args.get(1).hasNonNull("rowVersion") || args.get(1).path("rowVersion").asLong() != expected)) {
             throw new com.starrainnotes.tutorial.content.exception.TutorialConflictException("内容版本冲突，请保留当前输入并重新加载后合并");
         }
@@ -176,22 +188,41 @@ public class TutorialOperationService {
 
     @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
     public void approve(Long id) {
+        applyApproved(id, false);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW, isolation = Isolation.READ_COMMITTED)
+    public void recoverApproved(Long id) {
+        applyApproved(id, true);
+    }
+
+    private void applyApproved(Long id, boolean recovery) {
         operations.lockCatalog();
         TutorialOperationEntity row = operations.byIdForUpdate(id);
         if (row == null) throw new TutorialStateException("审核操作不存在");
         if ("APPLIED".equals(row.getStatus())) return; // Review callbacks may be retried.
-        if (!"PENDING".equals(row.getStatus())) throw new TutorialStateException("操作已结束");
+        if (!"PENDING".equals(row.getStatus()) && !(recovery && "FAILED".equals(row.getStatus()))) throw new TutorialStateException("操作已结束");
+        var otherPending = operations.pending(row.getScopeKey());
+        if (otherPending != null && !id.equals(otherPending.getId())) throw new TutorialStateException("该范围已有新的待审核操作，请先核实后处理");
         JsonNode args = read(row.getArgumentsJson());
         String currentScope = scope(row.getOperation(), args);
         if (!currentScope.equals(row.getScopeKey()) || !read(baseline(currentScope).toString()).equals(read(row.getBaselineJson()))) {
             throw new TutorialStateException("内容已改变，本次审核操作不能执行，请取消后重新提交");
         }
+        validateVersion(row.getOperation(), args);
         execute(row.getOperation(), args, currentScope);
         operations.finish(id, "APPLIED");
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void finish(Long id, String status) { operations.finish(id, status); }
+
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void recordFailure(Long id, RuntimeException cause) {
+        String message = cause instanceof TutorialStateException || cause instanceof com.starrainnotes.tutorial.content.exception.TutorialConflictException
+                ? cause.getMessage() : "业务应用失败，请联系超级管理员核实内容与操作日志后恢复。";
+        operations.recordFailure(id, message == null ? "业务应用失败" : message.substring(0, Math.min(500, message.length())));
+    }
 
     public List<Map<String, Object>> pendingOperations() {
         return operations.pendingOperations().stream().map(row -> Map.<String, Object>of(

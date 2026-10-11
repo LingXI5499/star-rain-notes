@@ -94,6 +94,13 @@ public class ReviewAdminController {
     }
 
     // REV-005 审核拒绝：reason 必填，缺失时由 @Valid 拦成 INVALID_REQUEST，Service 再兜一层
+    @PostMapping("/{reviewId}/recover")
+    @PreAuthorize("hasRole('SUPER_ADMIN') and hasAuthority('review:approve')")
+    public ApiResponse<Void> recover(@PathVariable Long reviewId, @CurrentReviewerId Long reviewerAccountId) {
+        decisionService.recoverApproved(reviewId, reviewerAccountId);
+        return ApiResponse.ok(null);
+    }
+
     @PostMapping("/{reviewId}/reject")
     @PreAuthorize("hasAuthority('review:reject')")
     public ApiResponse<Void> reject(@PathVariable Long reviewId,

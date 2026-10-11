@@ -7,6 +7,7 @@ import com.starrainnotes.account.api.CurrentActorApi;
 import com.starrainnotes.review.api.ReviewSubmissionApi;
 import com.starrainnotes.review.api.dto.ReviewSubmissionResult;
 import com.starrainnotes.tutorial.content.dto.TutorialCreateDTO;
+import com.starrainnotes.tutorial.content.dto.ChapterUpdateDTO;
 import com.starrainnotes.tutorial.content.entity.TutorialOperationEntity;
 import com.starrainnotes.tutorial.content.exception.TutorialStateException;
 import com.starrainnotes.tutorial.content.mapper.*;
@@ -80,5 +81,12 @@ class TutorialOperationServiceTest {
         when(operations.byIdForUpdate(8L)).thenReturn(applied);
         service.approve(8L);
         verifyNoInteractions(content, publication, exercises);
+    }
+
+    @Test void deletedChapterTurnsVersionValidationIntoBusinessErrorInsteadOfNullPointer() {
+        var dto = new ChapterUpdateDTO(); dto.setRowVersion(2L); dto.setTitle("Local input");
+        assertThatThrownBy(() -> service.request("updateChapter", new Object[]{999L, dto}))
+                .isInstanceOf(TutorialStateException.class).hasMessageContaining("不存在");
+        verifyNoInteractions(reviews);
     }
 }
