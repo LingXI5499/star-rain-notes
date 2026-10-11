@@ -8,6 +8,11 @@
         p.published_at, p.withdrawn_at, p.created_by_account_id, p.updated_by_account_id,
         p.created_at, p.updated_at
     </sql>
+    <sql id="postListColumns">
+        p.id, p.slug, p.title, p.summary, p.cover_media_asset_id, p.status,
+        p.published_at, p.withdrawn_at, p.created_by_account_id, p.updated_by_account_id,
+        p.created_at, p.updated_at
+    </sql>
 
     <!-- 后台筛选：关键词命中标题或 slug，标签与专题走 EXISTS 避免 JOIN 造成重复行 -->
     <sql id="adminFilters">
@@ -126,7 +131,7 @@
     </select>
 
     <select id="adminPage" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
-        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        SELECT <include refid="postListColumns"/> FROM sr_blog_post p
         <include refid="adminFilters"/>
         ORDER BY p.updated_at DESC, p.id DESC
         LIMIT #{limit} OFFSET #{offset}
@@ -190,7 +195,7 @@
     </select>
 
     <select id="publishedPage" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
-        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        SELECT <include refid="postListColumns"/> FROM sr_blog_post p
         <include refid="publishedFilters"/>
         ORDER BY p.published_at DESC, p.id DESC
         LIMIT #{limit} OFFSET #{offset}
@@ -210,7 +215,7 @@
     </select>
 
     <select id="publishedTopicPage" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
-        SELECT <include refid="postColumns"/>
+        SELECT <include refid="postListColumns"/>
         FROM sr_blog_post p
         JOIN sr_blog_topic_post tp ON tp.post_id = p.id
         JOIN sr_blog_topic t ON t.id = tp.topic_id
@@ -257,14 +262,14 @@
     </select>
 
     <select id="latestPublished" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
-        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        SELECT <include refid="postListColumns"/> FROM sr_blog_post p
         WHERE p.status = 'PUBLISHED'
         ORDER BY p.published_at DESC, p.id DESC
         LIMIT #{limit}
     </select>
 
     <select id="publishedByTopicSlug" resultType="com.starrainnotes.blog.entity.BlogPostEntity">
-        SELECT <include refid="postColumns"/> FROM sr_blog_post p
+        SELECT <include refid="postListColumns"/> FROM sr_blog_post p
         WHERE p.status = 'PUBLISHED'
           AND EXISTS (SELECT 1 FROM sr_blog_topic_post tp
                       JOIN sr_blog_topic top ON top.id = tp.topic_id

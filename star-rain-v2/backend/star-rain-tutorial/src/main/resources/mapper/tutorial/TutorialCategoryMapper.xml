@@ -18,7 +18,13 @@
   </select>
 
   <select id="listOrdered" resultType="com.starrainnotes.tutorial.content.entity.TutorialCategoryEntity">
-    SELECT <include refid="columns"/> FROM sr_tutorial_category ORDER BY sort_order, id
+    SELECT c.id, c.name, c.slug, c.sort_order, c.created_at, c.updated_at,
+      COALESCE(t.tutorial_count, 0) AS tutorial_count, COALESCE(ch.chapter_count, 0) AS chapter_count
+    FROM sr_tutorial_category c
+    LEFT JOIN (SELECT category_id, COUNT(*) AS tutorial_count FROM sr_tutorial GROUP BY category_id) t ON t.category_id = c.id
+    LEFT JOIN (SELECT t.category_id, COUNT(*) AS chapter_count FROM sr_tutorial_chapter ch
+      JOIN sr_tutorial t ON t.id = ch.tutorial_id GROUP BY t.category_id) ch ON ch.category_id = c.id
+    ORDER BY c.sort_order, c.id
   </select>
 
   <select id="countBySlug" resultType="long">

@@ -37,8 +37,16 @@ public class TutorialAdminController {
     @PreAuthorize("hasAuthority('" + TutorialPermissions.READ_ADMIN + "')")
     public ApiResponse<PageResult<TutorialAdminVO>> tutorials(
             @RequestParam(defaultValue = "1") int page,
-            @RequestParam(defaultValue = "20") int pageSize) {
-        return ApiResponse.ok(contentService.tutorials(page, pageSize));
+            @RequestParam(defaultValue = "20") int pageSize,
+            @RequestParam(required = false) Long categoryId,
+            @RequestParam(required = false) String keyword) {
+        return ApiResponse.ok(contentService.tutorials(categoryId, keyword, page, pageSize));
+    }
+
+    @GetMapping("/order-items")
+    @PreAuthorize("hasAuthority('" + TutorialPermissions.READ_ADMIN + "')")
+    public ApiResponse<java.util.List<com.starrainnotes.tutorial.content.vo.TutorialOrderItemVO>> orderItems(@RequestParam Long categoryId) {
+        return ApiResponse.ok(contentService.tutorialOrder(categoryId));
     }
 
     @PostMapping

@@ -8,6 +8,7 @@ import com.starrainnotes.blog.entity.BlogPostEntity;
 import com.starrainnotes.blog.entity.BlogTagEntity;
 import com.starrainnotes.blog.mapper.BlogTagMapper;
 import com.starrainnotes.blog.mapper.BlogTopicMapper;
+import com.starrainnotes.blog.mapper.BlogPostMapper;
 import com.starrainnotes.blog.service.BlogViewAssembler;
 import com.starrainnotes.blog.utils.BlogContentMediaParser;
 import com.starrainnotes.blog.utils.BlogTextRules;
@@ -37,13 +38,31 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
     private final BlogTagMapper tagMapper;
     private final BlogTopicMapper topicMapper;
     private final MediaAssetApi mediaAssetApi;
+    private final BlogPostMapper postMapper;
 
     public BlogViewAssemblerImpl(BlogTagMapper tagMapper,
                                 BlogTopicMapper topicMapper,
                                 MediaAssetApi mediaAssetApi) {
+        this(tagMapper, topicMapper, mediaAssetApi, null);
+    }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public BlogViewAssemblerImpl(BlogTagMapper tagMapper, BlogTopicMapper topicMapper,
+                                 MediaAssetApi mediaAssetApi, BlogPostMapper postMapper) {
         this.tagMapper = tagMapper;
         this.topicMapper = topicMapper;
         this.mediaAssetApi = mediaAssetApi;
+        this.postMapper = postMapper;
+    }
+
+    private String summary(BlogPostEntity post) {
+        String body = post.getBodyMarkdown();
+        // Legacy TeX summaries need their original body; ordinary lists never fetch it.
+        if (body == null && postMapper != null && BlogTextRules.hasMathMarkup(post.getSummary())) {
+            BlogPostEntity detail = postMapper.postById(post.getId());
+            body = detail == null ? null : detail.getBodyMarkdown();
+        }
+        return BlogTextRules.publicSummary(post.getSummary(), body);
     }
 
     @Override
@@ -154,7 +173,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
                 .id(post.getId())
                 .slug(post.getSlug())
                 .title(post.getTitle())
-                .summary(BlogTextRules.publicSummary(post.getSummary(), post.getBodyMarkdown()))
+                .summary(summary(post))
                 .bodyMarkdown(post.getBodyMarkdown())
                 .coverMediaAssetId(post.getCoverMediaAssetId())
                 .coverUrl(coverUrl(post.getCoverMediaAssetId()))
@@ -173,7 +192,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
                 .id(post.getId())
                 .slug(post.getSlug())
                 .title(post.getTitle())
-                .summary(BlogTextRules.publicSummary(post.getSummary(), post.getBodyMarkdown()))
+                .summary(summary(post))
                 .coverUrl(coverUrl(post.getCoverMediaAssetId()))
                 .publishedAt(post.getPublishedAt())
                 .tagNames(tags.stream().map(BlogTagVO::getName).toList())
@@ -189,7 +208,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
                 .id(post.getId())
                 .slug(post.getSlug())
                 .title(post.getTitle())
-                .summary(BlogTextRules.publicSummary(post.getSummary(), post.getBodyMarkdown()))
+                .summary(summary(post))
                 .bodyMarkdown(post.getBodyMarkdown())
                 .coverUrl(coverUrl(post.getCoverMediaAssetId()))
                 .publishedAt(post.getPublishedAt())
@@ -212,7 +231,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
                 .id(post.getId())
                 .slug(post.getSlug())
                 .title(post.getTitle())
-                .summary(BlogTextRules.publicSummary(post.getSummary(), post.getBodyMarkdown()))
+                .summary(summary(post))
                 .status(post.getStatus())
                 .coverMediaAssetId(post.getCoverMediaAssetId())
                 .coverUrl(coverUrl(post.getCoverMediaAssetId()))
@@ -231,7 +250,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
                 .id(post.getId())
                 .slug(post.getSlug())
                 .title(post.getTitle())
-                .summary(BlogTextRules.publicSummary(post.getSummary(), post.getBodyMarkdown()))
+                .summary(summary(post))
                 .coverMediaAssetId(post.getCoverMediaAssetId())
                 .coverUrl(coverUrl(post.getCoverMediaAssetId()))
                 .publishedAt(post.getPublishedAt())

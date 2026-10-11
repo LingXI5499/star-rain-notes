@@ -94,7 +94,7 @@ public final class BlogTextRules {
         return hasMathMarkup(summary) ? deriveMathSafeSummary(bodyMarkdown) : summary;
     }
 
-    private static boolean hasMathMarkup(String text) {
+    public static boolean hasMathMarkup(String text) {
         return text != null && (text.contains("\\(") || text.contains("\\[")
                 || text.contains("$$") || text.contains("\\begin{")
                 || INLINE_DOLLAR_MATH.matcher(text).find());

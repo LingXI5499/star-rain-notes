@@ -28,6 +28,10 @@ public interface TutorialMapper {
 
     /* categoryId 为 null 表示「全部知识体系」，用于后台列表。 */
     List<TutorialEntity> listOrdered(@Param("categoryId") Long categoryId);
+    List<TutorialEntity> adminPage(@Param("categoryId") Long categoryId, @Param("keyword") String keyword,
+            @Param("offset") long offset, @Param("limit") int limit);
+    long adminCount(@Param("categoryId") Long categoryId, @Param("keyword") String keyword);
+    List<com.starrainnotes.tutorial.content.vo.TutorialOrderItemVO> orderItems(@Param("categoryId") Long categoryId);
 
     /* 公开目录：已发布且已有公开版本。 */
     List<TutorialEntity> listPublishedWithRevision();

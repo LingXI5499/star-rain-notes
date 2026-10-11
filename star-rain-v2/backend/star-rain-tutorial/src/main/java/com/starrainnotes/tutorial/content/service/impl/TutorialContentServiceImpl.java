@@ -152,7 +152,9 @@ public class TutorialContentServiceImpl implements TutorialContentService {
 
     private TutorialCategoryVO categoryView(TutorialCategoryEntity category) {
         return TutorialCategoryVO.builder().id(String.valueOf(category.getId())).name(category.getName())
-                .slug(category.getSlug()).sortOrder(category.getSortOrder()).build();
+                .slug(category.getSlug()).sortOrder(category.getSortOrder())
+                .tutorialCount(category.getTutorialCount() == null ? 0L : category.getTutorialCount())
+                .chapterCount(category.getChapterCount() == null ? 0L : category.getChapterCount()).build();
     }
 
     private TutorialAdminVO tutorialView(TutorialEntity tutorial) {
@@ -253,16 +255,27 @@ public class TutorialContentServiceImpl implements TutorialContentService {
 
     @Override
     public PageResult<TutorialAdminVO> tutorials(int page, int pageSize) {
+        return tutorials(null, null, page, pageSize);
+    }
+
+    @Override
+    public PageResult<TutorialAdminVO> tutorials(Long categoryId, String keyword, int page, int pageSize) {
         if (page < 1 || pageSize < 1 || pageSize > 100) {
             throw new TutorialInvalidRequestException("分页参数不合法");
         }
-        List<TutorialEntity> rows = tutorialRows(null);
+        if (categoryId != null && categoryId <= 0) throw new TutorialInvalidRequestException("分类参数不合法");
+        String term = optionalText(keyword, 100);
         long start = (long) (page - 1) * pageSize;
-        List<TutorialAdminVO> items = start >= rows.size() ? List.of()
-                : rows.subList((int) start, Math.min(rows.size(), (int) start + pageSize))
-                    .stream().map(this::tutorialView).toList();
-        return PageResult.<TutorialAdminVO>builder().items(items).total(rows.size())
+        List<TutorialAdminVO> items = tutorialMapper.adminPage(categoryId, term, start, pageSize)
+                .stream().map(this::tutorialView).toList();
+        return PageResult.<TutorialAdminVO>builder().items(items).total(tutorialMapper.adminCount(categoryId, term))
                 .page(page).pageSize(pageSize).build();
+    }
+
+    @Override
+    public java.util.List<com.starrainnotes.tutorial.content.vo.TutorialOrderItemVO> tutorialOrder(Long categoryId) {
+        requireCategory(categoryId);
+        return tutorialMapper.orderItems(categoryId);
     }
 
     @Override

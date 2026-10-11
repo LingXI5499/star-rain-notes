@@ -21,6 +21,8 @@ public interface TutorialContentService {
     void reorderCategories(List<Long> ids);
 
     PageResult<TutorialAdminVO> tutorials(int page, int pageSize);
+    PageResult<TutorialAdminVO> tutorials(Long categoryId, String keyword, int page, int pageSize);
+    java.util.List<com.starrainnotes.tutorial.content.vo.TutorialOrderItemVO> tutorialOrder(Long categoryId);
     TutorialAdminVO tutorial(Long id);
     TutorialAdminVO createTutorial(TutorialCreateDTO request);
     TutorialAdminVO updateTutorial(Long id, TutorialUpdateDTO request);

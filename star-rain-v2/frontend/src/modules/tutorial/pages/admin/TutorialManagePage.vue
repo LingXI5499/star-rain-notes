@@ -1,14 +1,15 @@
 <script setup>
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, onMounted, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../../account/stores/authStore'
 import { isReviewPending, operationNotice } from '../../support/operationResult'
 import { errorMessage } from '../../../../shared/http'
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
+import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
 import {
   createCategory, deleteCategory, deleteTutorial, listAdminCategories, listAdminTutorials,
   listPendingTutorialOperations, publishTutorial, reorderCategories, reorderTutorials,
-  updateCategory, updateTutorial, withdrawTutorial,
+  updateCategory, updateTutorial, withdrawTutorial, listTutorialOrderItems,
 } from '../../api/tutorialApi'
 
 const route = useRoute()
@@ -18,6 +19,11 @@ const categories = ref([])
 const tutorials = ref([])
 const activeCategoryId = ref('')
 const search = ref('')
+const page = ref(1)
+const pageSize = ref(20)
+const total = ref(0)
+const sorting = ref(false)
+const orderItems = ref([])
 const loading = ref(false)
 const error = ref('')
 const notice = ref(route.query.review === 'pending' ? '已提交超级管理员审核，通过后才会执行新增或修改。' : '')
@@ -34,17 +40,11 @@ let draggingCategoryId = ''
 let draggingTutorialId = ''
 
 const activeCategory = computed(() => categories.value.find((item) => String(item.id) === activeCategoryId.value))
-const currentTutorials = computed(() => tutorials.value
-  .filter((item) => String(item.categoryId) === activeCategoryId.value)
-  .sort((a, b) => a.sortOrder - b.sortOrder || Number(a.id) - Number(b.id)))
-const visibleTutorials = computed(() => {
-  const term = search.value.trim().toLocaleLowerCase()
-  return term ? currentTutorials.value.filter((item) => item.title.toLocaleLowerCase().includes(term)) : currentTutorials.value
-})
-const chapterCount = computed(() => currentTutorials.value.reduce((total, item) => total + (item.chapterCount || 0), 0))
+const visibleTutorials = computed(() => tutorials.value)
+const chapterCount = computed(() => activeCategory.value?.chapterCount || 0)
 
 function categoryCount(categoryId) {
-  return tutorials.value.filter((item) => String(item.categoryId) === String(categoryId)).length
+  return categories.value.find(item => String(item.id) === String(categoryId))?.tutorialCount || 0
 }
 
 function statusLabel(item) {
@@ -59,34 +59,68 @@ function statusTone(item) {
 }
 
 async function load() {
+  const version = ++loadVersion
   loading.value = true
   error.value = ''
   try {
-    const [categoryRows, firstPage, pendingRows] = await Promise.all([
-      listAdminCategories(), listAdminTutorials({ page: 1, pageSize: 100 }), listPendingTutorialOperations(),
+    const [categoryRows, pendingRows] = await Promise.all([
+      listAdminCategories(), listPendingTutorialOperations(),
     ])
+    if (version !== loadVersion) return
     categories.value = categoryRows
     pending.value = pendingRows
-    tutorials.value = firstPage.items || []
-    const pages = Math.ceil((firstPage.total || 0) / 100)
-    for (let page = 2; page <= pages; page += 1) {
-      const next = await listAdminTutorials({ page, pageSize: 100 })
-      tutorials.value.push(...next.items)
-    }
-    const requested = String(route.query.category || activeCategoryId.value || '')
+    const requested = String(activeCategoryId.value || route.query.category || '')
     activeCategoryId.value = categories.value.some((item) => String(item.id) === requested)
       ? requested : String(categories.value[0]?.id || '')
+    if (!activeCategoryId.value) { tutorials.value = []; total.value = 0; return }
+    const result = await listAdminTutorials({ page: page.value, pageSize: pageSize.value, categoryId: activeCategoryId.value, keyword: search.value.trim() || undefined })
+    if (version !== loadVersion) return
+    total.value = result.total || 0
+    tutorials.value = result.items || []
+    if (page.value > 1 && !tutorials.value.length && total.value > 0) {
+      page.value = Math.max(1, Math.ceil(total.value / pageSize.value))
+      await load()
+    }
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (version === loadVersion) error.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (version === loadVersion) loading.value = false
   }
 }
+let loadVersion = 0
+let searchTimer
+watch(search, () => {
+  clearTimeout(searchTimer)
+  loadVersion += 1
+  searchTimer = setTimeout(() => { page.value = 1; load() }, 300)
+})
+watch(() => route.query.category, value => {
+  if (value && String(value) !== activeCategoryId.value) selectCategory({ id: value })
+})
+onBeforeUnmount(() => { loadVersion += 1; clearTimeout(searchTimer) })
+async function changePage(next) { page.value = next; await load() }
+async function changePageSize(next) { pageSize.value = next; page.value = 1; await load() }
 
 function selectCategory(category) {
+  clearTimeout(searchTimer)
   activeCategoryId.value = String(category.id)
   search.value = ''
+  page.value = 1
+  sorting.value = false
+  orderItems.value = []
   router.replace({ query: { category: activeCategoryId.value } })
+  load()
+}
+
+async function toggleSorting() {
+  if (sorting.value) { sorting.value = false; return }
+  const category = activeCategoryId.value
+  try {
+    const rows = await listTutorialOrderItems(category)
+    if (category !== activeCategoryId.value) return
+    orderItems.value = rows
+    sorting.value = true
+  } catch (cause) { error.value = errorMessage(cause) }
 }
 
 function openCategoryDialog(category = null) {
@@ -132,11 +166,17 @@ async function dropCategory(targetId) {
 
 async function dropTutorial(targetId) {
   if (!draggingTutorialId || draggingTutorialId === String(targetId)) return
-  const ids = currentTutorials.value.map((item) => String(item.id))
+  if (!sorting.value) return
+  const ids = orderItems.value.map((item) => String(item.id))
+  if (!ids.includes(draggingTutorialId) || !ids.includes(String(targetId))) return
   ids.splice(ids.indexOf(draggingTutorialId), 1)
   ids.splice(ids.indexOf(String(targetId)), 0, draggingTutorialId)
   draggingTutorialId = ''
-  try { notice.value = operationNotice(await reorderTutorials(activeCategoryId.value, ids), "顺序已保存。"); await load() }
+  try {
+    notice.value = operationNotice(await reorderTutorials(activeCategoryId.value, ids), "顺序已保存。")
+    sorting.value = false
+    await load()
+  }
   catch (cause) { error.value = errorMessage(cause) }
 }
 
@@ -253,10 +293,11 @@ onMounted(load)
           <div>
             <p class="tutorial-manage__path">教程工作台 / {{ activeCategory?.name || '请选择知识体系' }}</p>
             <h2>{{ activeCategory?.name || '教程列表' }}</h2>
-            <small>{{ currentTutorials.length }} 门教程 · {{ chapterCount }} 个章节</small>
+            <small>{{ total }} 门匹配教程 · 体系共 {{ chapterCount }} 个章节</small>
           </div>
           <div class="tutorial-manage__tools">
             <input v-model="search" type="search" placeholder="搜索当前体系教程" />
+            <button type="button" :disabled="loading || !activeCategoryId" @click="toggleSorting">{{ sorting ? '退出排序' : '调整顺序' }}</button>
             <button
               class="primary-button tutorial-manage__create"
               type="button"
@@ -267,6 +308,13 @@ onMounted(load)
         </header>
 
         <div class="tutorial-manage__body">
+          <section v-if="sorting" aria-label="完整体系排序">
+            <p>拖动条目调整整个体系顺序。搜索和分页不影响这份完整列表。</p>
+            <article v-for="item in orderItems" :key="item.id" class="tutorial-manage__order-item" draggable="true"
+              @dragstart="draggingTutorialId = String(item.id)" @dragover.prevent @drop.prevent="dropTutorial(item.id)">
+              <span aria-hidden="true">⠿</span> {{ item.title }}
+            </article>
+          </section>
           <div v-if="loading" class="loading">正在加载教程…</div>
           <div v-else-if="!visibleTutorials.length" class="tutorial-manage__empty">
             <span aria-hidden="true">⌁</span>
@@ -281,7 +329,7 @@ onMounted(load)
               tabindex="0"
               @click="router.push(`/useradmin/tutorials/${item.id}/curriculum`)"
               @keydown.enter.self="router.push(`/useradmin/tutorials/${item.id}/curriculum`)"
-              :draggable="!search"
+              :draggable="false"
               @dragstart="draggingTutorialId = String(item.id)"
               @dragover.prevent
               @drop.prevent="dropTutorial(item.id)"
@@ -314,6 +362,8 @@ onMounted(load)
             </article>
           </div>
         </div>
+        <PublicPagination v-if="!sorting" :page="page" :page-size="pageSize" :total="total" :loading="loading"
+          :page-sizes="[20, 50, 100]" label="教程管理分页" unit="门" @change="changePage" @page-size="changePageSize" />
       </section>
     </div>
 
@@ -350,6 +400,7 @@ onMounted(load)
 </template>
 
 <style scoped>
+.tutorial-manage__order-item { padding: 16px; margin-block: 8px; border: 1px solid var(--border); border-radius: 8px; cursor: grab; }
 .tutorial-manage__hero {
   display: flex;
   align-items: flex-end;

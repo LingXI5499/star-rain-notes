@@ -42,6 +42,24 @@
     ORDER BY sort_order, id
   </select>
 
+  <sql id="adminFilters">
+    <where>
+      <if test="categoryId != null">category_id = #{categoryId}</if>
+      <if test="keyword != null and keyword != ''">AND LOCATE(#{keyword}, title) &gt; 0</if>
+    </where>
+  </sql>
+  <select id="adminPage" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
+    SELECT <include refid="columns"/> FROM sr_tutorial
+    <include refid="adminFilters"/>
+    ORDER BY category_id, sort_order, id LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="adminCount" resultType="long">
+    SELECT COUNT(*) FROM sr_tutorial <include refid="adminFilters"/>
+  </select>
+  <select id="orderItems" resultType="com.starrainnotes.tutorial.content.vo.TutorialOrderItemVO">
+    SELECT id, title, sort_order FROM sr_tutorial WHERE category_id = #{categoryId} ORDER BY sort_order, id
+  </select>
+
   <select id="listPublishedWithRevision" resultType="com.starrainnotes.tutorial.content.entity.TutorialEntity">
     SELECT <include refid="columns"/> FROM sr_tutorial
     WHERE publication_status = 'PUBLISHED' AND published_revision_id IS NOT NULL

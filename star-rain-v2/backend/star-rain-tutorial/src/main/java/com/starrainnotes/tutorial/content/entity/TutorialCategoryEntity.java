@@ -15,4 +15,6 @@ public class TutorialCategoryEntity {
     private Integer sortOrder;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private Long tutorialCount;
+    private Long chapterCount;
 }

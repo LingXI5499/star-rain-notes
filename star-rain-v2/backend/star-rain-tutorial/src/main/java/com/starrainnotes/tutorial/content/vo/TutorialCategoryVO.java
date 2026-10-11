@@ -14,4 +14,6 @@ public class TutorialCategoryVO {
     private String name;
     private String slug;
     private Integer sortOrder;
+    private Long tutorialCount;
+    private Long chapterCount;
 }
