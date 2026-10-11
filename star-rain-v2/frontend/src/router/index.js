@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useAuthStore } from '../modules/account/stores/authStore'
+import { handleRouteLoadError, routeLoadFailed } from '../shared/routeLoadFailure'
 import {
   ROUTE_TREE,
   VIEW_MODE,
@@ -8,18 +9,18 @@ import {
   modeHomePath,
   resolveViewMode,
 } from '../shared/viewMode'
-import AuthPage from '../modules/account/pages/AuthPage.vue'
-import AccountPage from '../modules/account/pages/AccountPage.vue'
-import AdminAccountsPage from '../modules/account/pages/AdminAccountsPage.vue'
-import AdminInvitationsPage from '../modules/account/pages/AdminInvitationsPage.vue'
-import AccountAuditsPage from '../modules/account/pages/AccountAuditsPage.vue'
-import MediaLibraryPage from '../modules/media/pages/MediaLibraryPage.vue'
-import MediaDetailPage from '../modules/media/pages/MediaDetailPage.vue'
-import ReviewCenterPage from '../modules/review/pages/ReviewCenterPage.vue'
-import ReviewDetailPage from '../modules/review/pages/ReviewDetailPage.vue'
+const AuthPage = () => import('../modules/account/pages/AuthPage.vue')
+const AccountPage = () => import('../modules/account/pages/AccountPage.vue')
+const AdminAccountsPage = () => import('../modules/account/pages/AdminAccountsPage.vue')
+const AdminInvitationsPage = () => import('../modules/account/pages/AdminInvitationsPage.vue')
+const AccountAuditsPage = () => import('../modules/account/pages/AccountAuditsPage.vue')
+const MediaLibraryPage = () => import('../modules/media/pages/MediaLibraryPage.vue')
+const MediaDetailPage = () => import('../modules/media/pages/MediaDetailPage.vue')
+const ReviewCenterPage = () => import('../modules/review/pages/ReviewCenterPage.vue')
+const ReviewDetailPage = () => import('../modules/review/pages/ReviewDetailPage.vue')
 import HomePage from '../modules/site/pages/HomePage.vue'
-import PendingPage from '../modules/site/pages/PendingPage.vue'
-import DashboardPage from '../modules/site/pages/DashboardPage.vue'
+const PendingPage = () => import('../modules/site/pages/PendingPage.vue')
+const DashboardPage = () => import('../modules/site/pages/DashboardPage.vue')
 
 /*
  * 路由表 —— 一个域名，两条路径树。
@@ -312,5 +313,8 @@ router.beforeEach(async (to) => {
     }
   }
 })
+
+router.onError(handleRouteLoadError)
+router.afterEach(() => { routeLoadFailed.value = false })
 
 export default router

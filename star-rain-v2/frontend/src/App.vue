@@ -3,6 +3,7 @@ import { computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import PublicShell from './shared/shells/PublicShell.vue'
 import AdminShell from './shared/shells/AdminShell.vue'
+import { routeLoadFailed, reloadRoute } from './shared/routeLoadFailure'
 
 /*
  * 外壳按**路由用途**切换，不再按域名。
@@ -25,6 +26,15 @@ const shell = computed(() => {
 </script>
 
 <template>
+  <div v-if="routeLoadFailed" class="route-load-error" role="alert">
+    页面资源未能加载，请检查网络后重新加载。未保存的内容请先复制保留。
+    <button type="button" @click="reloadRoute">重新加载</button>
+  </div>
   <component :is="shell" v-if="shell"><RouterView /></component>
   <RouterView v-else />
 </template>
+
+<style scoped>
+.route-load-error { position: fixed; inset: 0 0 auto; z-index: 1000; padding: 16px; background: var(--bg-surface); color: var(--text-primary); border-bottom: 1px solid var(--border); }
+.route-load-error button { margin-left: 12px; min-height: 44px; }
+</style>

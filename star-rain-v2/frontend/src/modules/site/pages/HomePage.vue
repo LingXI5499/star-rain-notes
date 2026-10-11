@@ -1,10 +1,11 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, onBeforeUnmount, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import { getPublicSiteHome } from '../api/siteApi'
 import ThemeHero from '../components/ThemeHero.vue'
+import { useSiteBranding } from '../support/siteBranding'
 
 /*
  * 公开站首页 —— 逐块对齐 V1 `views/HomeView.vue` 的信息架构：
@@ -24,6 +25,7 @@ import ThemeHero from '../components/ThemeHero.vue'
  * 链接一律走 `contentPath`：账号模式下同一个首页要落在 /useradmin 前缀下。
  */
 const { contentPath } = useViewMode()
+const branding = useSiteBranding()
 const home = ref(null)
 const loading = ref(true)
 const errorText = ref('')
@@ -31,7 +33,7 @@ const errorText = ref('')
 /* 首页只渲染自己认识的区块代码；后台配置了未知代码时不渲染，也不报错。 */
 const knownCodes = new Set(['HERO', 'LATEST', 'TUTORIALS', 'BLOG', 'PORTFOLIO', 'PROFILE', 'HOT_CONTENT'])
 const sections = computed(() => (home.value?.sections || []).filter((section) => knownCodes.has(section.code)))
-const siteConfig = computed(() => home.value?.config || {})
+const siteConfig = computed(() => home.value?.config || branding)
 const hero = computed(() => sections.value.find((section) => section.code === 'HERO') || null)
 const contentSections = computed(() => sections.value.filter((section) => section.code !== 'HERO'))
 
@@ -80,25 +82,27 @@ function dateOf(value) {
   return `${date.getFullYear()}/${pad(date.getMonth() + 1)}/${pad(date.getDate())}`
 }
 
-onMounted(async () => {
+let generation = 0
+async function load() {
+  const request = ++generation
+  loading.value = true
+  errorText.value = ''
   try {
-    home.value = await getPublicSiteHome()
+    const result = await getPublicSiteHome()
+    if (request === generation) home.value = result
   } catch (cause) {
-    errorText.value = errorMessage(cause)
-    loading.value = false
+    if (request === generation) errorText.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (request === generation) loading.value = false
   }
-})
+}
+onMounted(load)
+onBeforeUnmount(() => { generation += 1 })
 </script>
 
 <template>
   <div class="home-page">
-    <p v-if="loading" class="home-state" role="status">正在读取首页…</p>
-    <p v-else-if="errorText" class="home-state" role="alert">{{ errorText }}</p>
-
-    <template v-else>
-      <section v-if="hero" class="home-hero" aria-labelledby="home-title">
+      <section v-if="loading || errorText || hero" class="home-hero" aria-labelledby="home-title">
         <ThemeHero src="/brand/themes/home-hero.webp" alt="星雨笔录世界观主视觉" />
         <div class="home-hero__copy">
           <p class="public-eyebrow home-hero__kicker">STAR RAIN NOTES</p>
@@ -121,6 +125,14 @@ onMounted(async () => {
       </nav>
 
       <main class="home-content">
+        <section v-if="loading" class="home-loading" role="status" aria-label="正在读取最新内容" aria-busy="true">
+          <p>正在读取最新内容…</p>
+          <div v-for="line in 3" :key="line" class="home-skeleton" aria-hidden="true" />
+        </section>
+        <section v-else-if="errorText" class="home-state" role="alert">
+          <p>{{ errorText }}</p>
+          <button type="button" class="public-button" @click="load">重新加载</button>
+        </section>
         <template v-for="section in contentSections" :key="section.code">
           <!-- 关于作者：V1 是左右分栏的作者简介带，没有区块标题行 -->
           <section v-if="section.code === 'PROFILE' && section.data" class="home-author">
@@ -212,7 +224,6 @@ onMounted(async () => {
           </section>
         </template>
       </main>
-    </template>
   </div>
 </template>
 
@@ -291,6 +302,8 @@ onMounted(async () => {
 
 /* ---------------- 区块通用 ---------------- */
 .home-content { padding-top: 8px; }
+.home-loading { min-height: 300px; padding-block: 36px; color: var(--text-muted); }
+.home-skeleton { height: 48px; margin-top: 20px; border-radius: 8px; background: var(--bg-subtle); }
 .home-section { padding: 48px 0; border-bottom: 1px solid var(--border); }
 
 .home-section > header {

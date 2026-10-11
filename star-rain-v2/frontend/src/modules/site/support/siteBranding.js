@@ -1,11 +1,13 @@
 import { reactive } from 'vue'
 import { getPublicSiteConfig } from '../api/siteApi'
 
-const branding = reactive({ siteName: '星雨笔录', footerText: '', logoUrl: '', faviconUrl: '' })
+const branding = reactive({ siteName: '星雨笔录', tagline: '', homeIntro: '', footerText: '', logoUrl: '', faviconUrl: '' })
 let pending
 
 export function applySiteBranding(config) {
   branding.siteName = config.siteName || '星雨笔录'
+  branding.tagline = config.tagline || ''
+  branding.homeIntro = config.homeIntro || ''
   branding.footerText = config.footerText || ''
   branding.logoUrl = config.logoUrl || ''
   branding.faviconUrl = config.faviconUrl || ''
