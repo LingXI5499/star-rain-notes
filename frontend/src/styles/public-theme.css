@@ -1,9 +1,18 @@
-/**
- * 星轨纸境 · Starfall Editorial
- * Public-only theme layer. Every visual token is scoped to `.base-layout`
- * so the admin application continues to use the frozen Inkspace tokens.
+/*
+ * 星轨纸境 · Starfall Editorial —— 公开站专属主题层。
+ * 从 V1 `frontend/src/styles/public-theme.css` 移植。
+ *
+ * 与 V1 的差别：
+ *   1. V1 用 `.base-layout` 作用域，V2 公开站外壳的根类名是 `.public-shell`，逐条改名；
+ *   2. V1 有 Element Plus 的配色桥接段（`.el-input` / `.el-pagination` / `.el-button`…），
+ *      V2 没有 Element Plus，整段不移植；
+ *   3. `::: code-group` 多语言代码页签的样式已随渲染器一起补齐（本文件底部），
+ *      `.code-block`（语言标签 + 复制按钮）继续复用；
+ *   4. V1 的 `[data-reveal]` 与 `.page-view-*` 依赖 V1 的 useReveal / 路由过渡组件，
+ *      V2 没有这两套机制，留着就是不会被命中的死样式，因此不移植。
+ * 所有视觉令牌都收敛在 `.public-shell` 之下，后台与用户站的既有令牌不受影响。
  */
-.base-layout {
+.public-shell {
   --bg-page: #f4f3ed;
   --bg-surface: #fffefa;
   --bg-elevated: #faf9f4;
@@ -19,29 +28,29 @@
   --accent-soft: #f1dfd4;
   --border: #daddd6;
   --border-strong: #bfc7c0;
-  --paper-line: color-mix(in srgb,var(--primary) 8%,transparent);
-  --shadow-xs: 0 1px 2px rgb(20 38 31 / .04);
-  --shadow-sm: 0 10px 28px rgb(20 38 31 / .07);
-  --shadow-md: 0 20px 54px rgb(20 38 31 / .10);
-  --shadow-floating: 0 28px 80px rgb(20 38 31 / .15);
-  --shadow-hero: 0 34px 90px rgb(20 38 31 / .13);
+  --paper-line: color-mix(in srgb, var(--primary) 8%, transparent);
+  --shadow-xs: 0 1px 2px rgb(20 38 31 / 0.04);
+  --shadow-sm: 0 10px 28px rgb(20 38 31 / 0.07);
+  --shadow-md: 0 20px 54px rgb(20 38 31 / 0.1);
+  --shadow-floating: 0 28px 80px rgb(20 38 31 / 0.15);
+  --shadow-hero: 0 34px 90px rgb(20 38 31 / 0.13);
   --radius-card: 20px;
   --radius-hero: 30px;
   --motion-fast: 140ms;
   --motion-base: 220ms;
   --motion-slow: 480ms;
-  --ease-standard: cubic-bezier(.2,.8,.2,1);
-  --ease-out: cubic-bezier(.16,1,.3,1);
-  --font-mono: 'SFMono-Regular',Consolas,'Liberation Mono',monospace;
+  --ease-standard: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --font-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
   min-height: 100vh;
   color: var(--text-primary);
   background:
-    linear-gradient(90deg,transparent calc(50% - 1px),var(--paper-line) 50%,transparent calc(50% + 1px)) 50% 0/100% 100%,
-    radial-gradient(70% 42% at 82% 4%,rgb(168 88 49 / .075),transparent 68%),
+    linear-gradient(90deg, transparent calc(50% - 1px), var(--paper-line) 50%, transparent calc(50% + 1px)) 50% 0/100% 100%,
+    radial-gradient(70% 42% at 82% 4%, rgb(168 88 49 / 0.075), transparent 68%),
     var(--bg-page);
 }
 
-[data-theme='dark'] .base-layout {
+[data-theme='dark'] .public-shell {
   --bg-page: #0c1210;
   --bg-surface: #131a17;
   --bg-elevated: #18211d;
@@ -51,204 +60,139 @@
   --text-muted: #8b9790;
   --primary: #82b8a8;
   --primary-hover: #8fbcb0;
+  --on-primary: #0d1a16;
   --primary-soft: #1a3a41;
   --accent: #d68b62;
   --accent-soft: #36241c;
   --border: #2a3530;
   --border-strong: #435149;
-  --paper-line: rgb(130 184 168 / .045);
-  --shadow-xs: 0 1px 2px rgb(0 0 0 / .18);
-  --shadow-sm: 0 10px 28px rgb(0 0 0 / .22);
-  --shadow-md: 0 20px 54px rgb(0 0 0 / .30);
-  --shadow-floating: 0 28px 80px rgb(0 0 0 / .42);
-  --shadow-hero: 0 34px 100px rgb(0 0 0 / .38);
+  --paper-line: rgb(130 184 168 / 0.045);
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.18);
+  --shadow-sm: 0 10px 28px rgb(0 0 0 / 0.22);
+  --shadow-md: 0 20px 54px rgb(0 0 0 / 0.3);
+  --shadow-floating: 0 28px 80px rgb(0 0 0 / 0.42);
+  --shadow-hero: 0 34px 100px rgb(0 0 0 / 0.38);
   background:
-    linear-gradient(90deg,transparent calc(50% - 1px),var(--paper-line) 50%,transparent calc(50% + 1px)) 50% 0/100% 100%,
-    radial-gradient(65% 40% at 83% 2%,rgb(126 178 163 / .085),transparent 70%),
+    linear-gradient(90deg, transparent calc(50% - 1px), var(--paper-line) 50%, transparent calc(50% + 1px)) 50% 0/100% 100%,
+    radial-gradient(65% 40% at 83% 2%, rgb(126 178 163 / 0.085), transparent 70%),
     var(--bg-page);
 }
 
-.base-layout__main { position: relative; }
-.base-layout :where(a,button,input,select,textarea):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
-.base-layout :where(.public-interactive,.editorial-card,.public-button) { transition: color var(--motion-fast) var(--ease-standard),background-color var(--motion-fast) var(--ease-standard),border-color var(--motion-fast) var(--ease-standard),box-shadow var(--motion-base) var(--ease-standard),transform var(--motion-base) var(--ease-out); }
-.base-layout .public-eyebrow { margin: 0; color: var(--accent); font: 750 10px/1.5 var(--font-mono); letter-spacing: .18em; text-transform: uppercase; }
-.base-layout .public-display { font-size: clamp(44px,7vw,92px); line-height: .98; letter-spacing: -.065em; }
-.base-layout .public-section-title { font-size: clamp(28px,3.8vw,48px); line-height: 1.14; letter-spacing: -.045em; }
-
-.base-layout .markdown-body { max-width: 780px; font-size: 17px; line-height: 1.88; }
-.base-layout .markdown-body p { margin-bottom: 1.45em; }
-.base-layout .markdown-body h1 { margin-top: 3.2em; font-size:clamp(30px,3.3vw,40px); }
-.base-layout .markdown-body h1:first-child { margin-top: 0; }
-.base-layout .markdown-body h2 { margin-top: 2.8em; padding-bottom: .32em; border-bottom: 1px solid var(--border); scroll-margin-top: calc(var(--header-height) + 26px); }
-.base-layout .markdown-body h3 { margin-top: 2.15em; scroll-margin-top: calc(var(--header-height) + 26px); }
-.base-layout .markdown-body img { height: auto; border: 1px solid var(--border); box-shadow: var(--shadow-sm); }
-.base-layout .markdown-body table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; }
-.base-layout .markdown-body blockquote { border-left-color: var(--accent); background: color-mix(in srgb,var(--accent-soft) 52%,transparent); }
-
-.base-layout .code-block { position: relative; margin: 0 0 var(--space-6); }
-.base-layout .code-block__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 38px; padding: 6px 11px 6px 14px; border: 1px solid var(--border); border-bottom: 0; border-radius: 13px 13px 0 0; color: var(--text-muted); background: var(--bg-elevated); }
-.base-layout .code-block__label { font: 650 10px/1 var(--font-mono); letter-spacing: .09em; text-transform: uppercase; }
-.base-layout .code-block__copy { min-height: 28px; padding: 3px 9px; border: 1px solid transparent; border-radius: 8px; color: var(--text-secondary); background: transparent; cursor: pointer; font-size: 11px; }
-.base-layout .code-block__copy:hover { border-color: var(--border); color: var(--primary); background: var(--bg-subtle); }
-.base-layout .code-block__copy[data-state='success'] { color: var(--primary); background: var(--primary-soft); }
-.base-layout .code-block__copy[data-state='error'] { color: var(--accent); background: var(--accent-soft); }
-.base-layout .code-block pre { margin: 0; border-top-left-radius: 0; border-top-right-radius: 0; }
-
-/* LeetCode-style multi-language code group */
-.base-layout .code-group { margin: 0 0 var(--space-6); border: 1px solid var(--border); border-radius: 13px; overflow: hidden; background: var(--bg-surface); }
-.base-layout .code-group__toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 42px; padding: 0 10px 0 8px; border-bottom: 1px solid var(--border); background: var(--bg-elevated); }
-.base-layout .code-group__tabs { display: flex; align-items: stretch; gap: 2px; min-width: 0; overflow-x: auto; scrollbar-width: thin; }
-.base-layout .code-group__tab { appearance: none; flex: 0 0 auto; min-height: 42px; padding: 0 12px; border: 0; border-bottom: 2px solid transparent; color: var(--text-secondary); background: transparent; cursor: pointer; font: 650 13px/1 var(--font-sans, inherit); white-space: nowrap; }
-.base-layout .code-group__tab:hover { color: var(--text-primary); }
-.base-layout .code-group__tab.is-active { color: var(--primary); border-bottom-color: var(--primary); }
-.base-layout .code-group__copy { flex-shrink: 0; }
-.base-layout .code-group__panels pre { margin: 0; border: 0; border-radius: 0; }
-.base-layout .code-group__panels pre[hidden] { display: none; }
-
-/* English is one product family: each tool keeps its own metaphor while
-   sharing the same editorial rhythm, controls and quiet paper surfaces. */
-.base-layout :where(.english-hub,.vocab,.words,.study,.grammar-home,.reading-center,.l-center,.writing,.bundles-page,.insights-page) {
-  width: 100%;
-  min-width: 0;
-}
-.base-layout :where(.vocab__hero,.words__header,.study__header,.grammar-hero,.reading-center__hero,.writing>header,.bundles-page>header,.insights-hero) {
+.public-shell .public-main {
   position: relative;
 }
-.base-layout :where(.vocab__hero,.reading-center__hero,.writing>header,.bundles-page>header,.insights-hero)::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  width: clamp(84px,18vw,240px);
-  height: 1px;
-  background: linear-gradient(90deg,transparent,var(--accent));
+
+.public-shell :where(.public-interactive, .editorial-card, .public-button) {
+  transition:
+    color var(--motion-fast) var(--ease-standard),
+    background-color var(--motion-fast) var(--ease-standard),
+    border-color var(--motion-fast) var(--ease-standard),
+    box-shadow var(--motion-base) var(--ease-standard),
+    transform var(--motion-base) var(--ease-out);
 }
-.base-layout :where(.vocab__card,.article-card,.lc-card,.writing .card,.pr-public-card,.metrics article,.panel) {
-  box-shadow: var(--shadow-xs);
-  transition: transform var(--motion-base) var(--ease-out),border-color var(--motion-fast) var(--ease-standard),box-shadow var(--motion-base) var(--ease-standard);
+
+.public-shell .public-eyebrow {
+  margin: 0;
+  color: var(--accent);
+  font: 750 10px/1.5 var(--font-mono);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
-.base-layout :where(.vocab__card,.article-card,.lc-card,.writing .card,.pr-public-card):hover {
-  transform: translateY(-4px);
-  border-color: color-mix(in srgb,var(--primary) 48%,var(--border));
+
+.public-shell .public-display {
+  font-size: clamp(44px, 7vw, 92px);
+  line-height: 0.98;
+  letter-spacing: -0.065em;
+}
+
+.public-shell .public-section-title {
+  font-size: clamp(28px, 3.8vw, 48px);
+  line-height: 1.14;
+  letter-spacing: -0.045em;
+}
+
+.public-shell .public-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  min-width: 150px;
+  padding: 12px 15px;
+  border: 1px solid var(--border-strong);
+  border-radius: 11px;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--bg-surface) 88%, transparent);
+  backdrop-filter: blur(10px);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.public-shell .public-button.primary {
+  border-color: var(--primary);
+  color: var(--on-primary);
+  background: var(--primary);
+}
+
+.public-shell .public-button:hover {
+  transform: translateY(-2px);
   box-shadow: var(--shadow-sm);
 }
 
-/* Staggered enter for public list cards (tutorials / blog / english / portfolio). */
-.base-layout [data-stagger] > * {
-  opacity: 0;
-  transform: translateY(10px);
-  animation: public-stagger-in var(--motion-slow) var(--ease-out) forwards;
-}
-.base-layout [data-stagger] > *:nth-child(1) { animation-delay: 40ms; }
-.base-layout [data-stagger] > *:nth-child(2) { animation-delay: 80ms; }
-.base-layout [data-stagger] > *:nth-child(3) { animation-delay: 120ms; }
-.base-layout [data-stagger] > *:nth-child(4) { animation-delay: 160ms; }
-.base-layout [data-stagger] > *:nth-child(5) { animation-delay: 200ms; }
-.base-layout [data-stagger] > *:nth-child(6) { animation-delay: 240ms; }
-.base-layout [data-stagger] > *:nth-child(7) { animation-delay: 280ms; }
-.base-layout [data-stagger] > *:nth-child(8) { animation-delay: 320ms; }
-.base-layout [data-stagger] > *:nth-child(n+9) { animation-delay: 360ms; }
-@keyframes public-stagger-in {
-  to { opacity: 1; transform: none; }
-}
-.base-layout :where(.article-card__cover,.lc-card__cover) .editorial-motif { width: 100%; height: 100%; min-height: 168px; border: 0; border-radius: 0; }
-.base-layout :where(.reading-detail__main,.ld__main,.prd__main,.writing-detail main,.grammar-reader>article) {
-  min-width: 0;
-}
-.base-layout audio { accent-color: var(--primary); }
-
-/* Quiet reading-rail scrollbars (match tutorial left nav; hide Windows arrows). */
-.base-layout :is(
-  .reading-detail__left, .reading-detail__right,
-  .ld__left, .ld__right, .prd__right,
-  .course-nav, .page-outline,
-  .reader__sidebar, .reader__toc, .reading-aside,
-  .article-outline, .article__toc, .case-study__toc,
-  .writing-detail .outline
-) {
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-strong) transparent;
-}
-.base-layout :is(
-  .reading-detail__left, .reading-detail__right,
-  .ld__left, .ld__right, .prd__right,
-  .course-nav, .page-outline,
-  .reader__sidebar, .reader__toc, .reading-aside,
-  .article-outline, .article__toc, .case-study__toc,
-  .writing-detail .outline
-)::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-.base-layout :is(
-  .reading-detail__left, .reading-detail__right,
-  .ld__left, .ld__right, .prd__right,
-  .course-nav, .page-outline,
-  .reader__sidebar, .reader__toc, .reading-aside,
-  .article-outline, .article__toc, .case-study__toc,
-  .writing-detail .outline
-)::-webkit-scrollbar-thumb {
-  background: var(--border-strong);
-  border-radius: 999px;
-  border: 2px solid transparent;
-  background-clip: content-box;
-}
-.base-layout :is(
-  .reading-detail__left, .reading-detail__right,
-  .ld__left, .ld__right, .prd__right,
-  .course-nav, .page-outline,
-  .reader__sidebar, .reader__toc, .reading-aside,
-  .article-outline, .article__toc, .case-study__toc,
-  .writing-detail .outline
-)::-webkit-scrollbar-thumb:hover {
-  background-color: var(--text-muted);
-}
-.base-layout :is(
-  .reading-detail__left, .reading-detail__right,
-  .ld__left, .ld__right, .prd__right,
-  .course-nav, .page-outline,
-  .reader__sidebar, .reader__toc, .reading-aside,
-  .article-outline, .article__toc, .case-study__toc,
-  .writing-detail .outline
-)::-webkit-scrollbar-track {
-  background: transparent;
-}
-.base-layout :is(
-  .reading-detail__left, .reading-detail__right,
-  .ld__left, .ld__right, .prd__right,
-  .course-nav, .page-outline,
-  .reader__sidebar, .reader__toc, .reading-aside,
-  .article-outline, .article__toc, .case-study__toc,
-  .writing-detail .outline
-)::-webkit-scrollbar-button {
-  display: none;
-  width: 0;
-  height: 0;
+.public-shell .markdown-body {
+  max-width: 780px;
+  font-size: 17px;
+  line-height: 1.88;
 }
 
-[data-reveal] { opacity: 0; transform: translateY(14px); transition: opacity var(--motion-slow) var(--ease-out),transform var(--motion-slow) var(--ease-out); }
-[data-reveal].is-revealed { opacity: 1; transform: none; }
-
-/* Soft page enter/leave for public RouterView transitions (key = route.name). */
-.page-view-enter-active,
-.page-view-leave-active {
-  transition: opacity var(--motion-base) var(--ease-standard), transform var(--motion-base) var(--ease-out);
-}
-.page-view-enter-from {
-  opacity: 0;
-  transform: translateY(6px);
-}
-.page-view-leave-to {
-  opacity: 0;
-  transform: translateY(-4px);
+.public-shell .markdown-body p {
+  margin-bottom: 1.45em;
 }
 
-/* Markdown heading anchors: quiet affordance on hover/focus. */
-.base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6) {
+.public-shell .markdown-body h1 {
+  margin-top: 3.2em;
+  font-size: clamp(30px, 3.3vw, 40px);
+}
+
+.public-shell .markdown-body h1:first-child {
+  margin-top: 0;
+}
+
+.public-shell .markdown-body h2 {
+  margin-top: 2.8em;
+  padding-bottom: 0.32em;
+  border-bottom: 1px solid var(--border);
+  scroll-margin-top: calc(var(--header-height) + 26px);
+}
+
+.public-shell .markdown-body h3 {
+  margin-top: 2.15em;
+  scroll-margin-top: calc(var(--header-height) + 26px);
+}
+
+.public-shell .markdown-body img {
+  height: auto;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.public-shell .markdown-body table {
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.public-shell .markdown-body blockquote {
+  border-left-color: var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 52%, transparent);
+}
+
+/* Markdown 标题锚点：hover / 聚焦时给一个安静的可点提示 */
+.public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6) {
   position: relative;
 }
-.base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before,
-.base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before {
+
+.public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before,
+.public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before {
   content: '#';
   position: absolute;
   left: -0.95em;
@@ -257,120 +201,215 @@
   opacity: 0.55;
 }
 
-@media (max-width: 768px) {
-  .base-layout { background: var(--bg-page); }
-  .base-layout .markdown-body { font-size: 16px; line-height: 1.82; }
-  .base-layout .markdown-body h1 { font-size: 29px; }
-  .base-layout .markdown-body h2 { font-size: 27px; }
-  .base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before,
-  .base-layout .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before { content: none; }
-  .base-layout :where(.vocab__card,.article-card,.lc-card,.writing .card,.pr-public-card):hover { transform: none; }
+/* ---------------------------------------------------------------
+   代码块外壳：语言标签 + 复制按钮（由 support/markdown.js 生成结构，
+   点击行为由 BlogProse.vue 的事件委托处理）
+   --------------------------------------------------------------- */
+.public-shell .code-block {
+  position: relative;
+  margin: 0 0 var(--space-6);
 }
 
-@media (prefers-reduced-motion: reduce) {
-  [data-reveal] { opacity: 1; transform: none; transition: none; }
-  .page-view-enter-active,
-  .page-view-leave-active { transition: none; }
-  .page-view-enter-from,
-  .page-view-leave-to { opacity: 1; transform: none; }
-  .base-layout [data-stagger] > * {
-    opacity: 1;
-    transform: none;
-    animation: none;
-  }
+.public-shell .code-block__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 38px;
+  padding: 6px 11px 6px 14px;
+  border: 1px solid var(--border);
+  border-bottom: 0;
+  border-radius: 13px 13px 0 0;
+  color: var(--text-muted);
+  background: var(--bg-elevated);
 }
 
-/* ------------------------------------------------------------
-   Element Plus on public pages — match teal brand, not default blue
-   ------------------------------------------------------------ */
-.base-layout {
-  --el-color-primary: var(--primary);
-  --el-color-primary-light-3: color-mix(in srgb, var(--primary) 70%, white);
-  --el-color-primary-light-5: color-mix(in srgb, var(--primary) 50%, white);
-  --el-color-primary-light-7: color-mix(in srgb, var(--primary) 30%, white);
-  --el-color-primary-light-8: color-mix(in srgb, var(--primary) 20%, white);
-  --el-color-primary-light-9: color-mix(in srgb, var(--primary) 12%, white);
-  --el-color-primary-dark-2: var(--primary-hover);
-  --el-border-radius-base: 10px;
+.public-shell .code-block__label {
+  font: 650 10px/1 var(--font-mono);
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
 }
 
-.base-layout .el-input__wrapper,
-.base-layout .el-select__wrapper {
-  border-radius: 10px;
-  background-color: var(--bg-surface);
-  box-shadow: 0 0 0 1px var(--border) inset;
-  transition: box-shadow 0.15s ease, background-color 0.15s ease;
-}
-
-.base-layout .el-input__wrapper:hover,
-.base-layout .el-select__wrapper:hover {
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--primary) 35%, var(--border)) inset;
-}
-
-.base-layout .el-input__wrapper.is-focus,
-.base-layout .el-select__wrapper.is-focused {
-  box-shadow:
-    0 0 0 1px var(--primary) inset,
-    0 0 0 3px color-mix(in srgb, var(--primary) 14%, transparent) !important;
-}
-
-.base-layout .el-pagination {
-  --el-pagination-button-bg-color: var(--bg-surface);
-  --el-pagination-hover-color: var(--primary);
-  font-weight: 500;
-}
-
-.base-layout .el-pagination .el-pager li,
-.base-layout .el-pagination button {
+.public-shell .code-block__copy {
+  min-height: 28px;
+  padding: 3px 9px;
+  border: 1px solid transparent;
   border-radius: 8px;
-  background: var(--bg-surface);
   color: var(--text-secondary);
-  min-width: 32px;
+  background: transparent;
+  cursor: pointer;
+  font-size: 11px;
 }
 
-.base-layout .el-pagination .el-pager li.is-active {
-  background: var(--primary) !important;
-  color: var(--on-primary, #fff) !important;
-}
-
-.base-layout .el-pagination button:hover:not(:disabled),
-.base-layout .el-pagination .el-pager li:hover {
-  color: var(--primary);
-}
-
-.base-layout .el-button--primary {
-  --el-button-bg-color: var(--primary);
-  --el-button-border-color: var(--primary);
-  --el-button-hover-bg-color: var(--primary-hover);
-  --el-button-hover-border-color: var(--primary-hover);
-  --el-button-active-bg-color: var(--primary-hover);
-  --el-button-active-border-color: var(--primary-hover);
-  border-radius: 10px;
-}
-
-.base-layout .el-button:not(.el-button--primary) {
-  border-radius: 10px;
+.public-shell .code-block__copy:hover {
   border-color: var(--border);
-  color: var(--text-secondary);
-  background: var(--bg-surface);
+  color: var(--primary);
+  background: var(--bg-subtle);
 }
 
-.base-layout .el-button:not(.el-button--primary):hover {
-  border-color: var(--primary);
+.public-shell .code-block__copy[data-state='success'] {
   color: var(--primary);
   background: var(--primary-soft);
 }
 
-/* Teleported Element poppers (select dropdown) inherit brand primary */
-.el-select-dropdown__item.is-selected,
-.el-select-dropdown__item.is-hovering {
-  color: #24584d;
+.public-shell .code-block__copy[data-state='error'] {
+  color: var(--accent);
+  background: var(--accent-soft);
 }
 
-.el-select-dropdown__item.is-selected {
-  font-weight: 600;
+.public-shell .code-block pre {
+  margin: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
-.el-popper.is-light .el-select-dropdown__item.is-hovering {
-  background-color: #dce8e3;
+/* LeetCode 风格多语言代码组：外壳与页签由 support/markdown.js 的 enhanceMarkdownDom
+   在渲染后构建（内容来自 `::: code-group` 容器），切换行为由 useCodeCopy 事件委托。 */
+.public-shell .code-group {
+  margin: 0 0 var(--space-6);
+  border: 1px solid var(--border);
+  border-radius: 13px;
+  overflow: hidden;
+  background: var(--bg-surface);
+}
+
+.public-shell .code-group__toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 42px;
+  padding: 0 10px 0 8px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-elevated);
+}
+
+.public-shell .code-group__tabs {
+  display: flex;
+  align-items: stretch;
+  gap: 2px;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.public-shell .code-group__tab {
+  appearance: none;
+  flex: 0 0 auto;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--text-secondary);
+  background: transparent;
+  cursor: pointer;
+  font: 650 13px/1 var(--font-family);
+  white-space: nowrap;
+}
+
+.public-shell .code-group__tab:hover {
+  color: var(--text-primary);
+}
+
+.public-shell .code-group__tab.is-active {
+  color: var(--primary);
+  border-bottom-color: var(--primary);
+}
+
+.public-shell .code-group__copy {
+  flex-shrink: 0;
+}
+
+.public-shell .code-group__panels pre {
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+/* hidden 属性必须显式生效：panelHost 内的 pre 有自己的 display 规则会盖过它 */
+.public-shell .code-group__panels pre[hidden] {
+  display: none;
+}
+
+/*
+ * 公开站列表卡片的错峰入场。
+ *
+ * 与 V1 的一处差别（有意）：V1 把 `opacity: 0` 写在静态样式里、靠动画的
+ * `forwards` 把它改成 1，动画一旦没跑完（截图工具、自动化渲染、极端慢设备），
+ * 卡片就会永久停在全透明状态——内容其实在 DOM 里，只是看不见。
+ * 这里反过来：静态样式保持完全可见，动画只负责「从透明淡入」，
+ * 动画不执行时最坏结果是没有动效，而不是没有内容。
+ */
+.public-shell [data-stagger] > * {
+  animation: public-stagger-in var(--motion-slow) var(--ease-out) both;
+}
+
+.public-shell [data-stagger] > *:nth-child(1) { animation-delay: 40ms; }
+.public-shell [data-stagger] > *:nth-child(2) { animation-delay: 80ms; }
+.public-shell [data-stagger] > *:nth-child(3) { animation-delay: 120ms; }
+.public-shell [data-stagger] > *:nth-child(4) { animation-delay: 160ms; }
+.public-shell [data-stagger] > *:nth-child(5) { animation-delay: 200ms; }
+.public-shell [data-stagger] > *:nth-child(6) { animation-delay: 240ms; }
+.public-shell [data-stagger] > *:nth-child(7) { animation-delay: 280ms; }
+.public-shell [data-stagger] > *:nth-child(8) { animation-delay: 320ms; }
+.public-shell [data-stagger] > *:nth-child(n + 9) { animation-delay: 360ms; }
+
+@keyframes public-stagger-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* 阅读侧栏的细滚动条（隐藏 Windows 上的箭头按钮） */
+.public-shell :is(.article-outline, .blog-sidebar, .reading-aside) {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-thumb:hover {
+  background-color: var(--text-muted);
+}
+
+.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.public-shell :is(.article-outline, .blog-sidebar, .reading-aside)::-webkit-scrollbar-button {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+@media (max-width: 768px) {
+  .public-shell .markdown-body {
+    font-size: 16px;
+    line-height: 1.82;
+  }
+
+  .public-shell .markdown-body h1 { font-size: 29px; }
+  .public-shell .markdown-body h2 { font-size: 27px; }
+
+  .public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):hover::before,
+  .public-shell .markdown-body :is(h1, h2, h3, h4, h5, h6):focus-within::before {
+    content: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .public-shell [data-stagger] > * {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
 }

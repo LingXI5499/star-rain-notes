@@ -1,83 +1,44 @@
-application-local-secret.yml
-backend/application-local-secret.yml
-
-# Local secrets
-.env
-.env.*
-!.env.example
-backend/.env.local
-
-# Java / Maven build and IDE state
-backend/target/
-backend-deploy-build/
-backend/.idea/
-.idea/
-*.iml
-
-# Frontend dependencies and build output
-frontend/node_modules/
-frontend/dist/
-
-# Runtime-generated media and logs
-backend/uploads/
-backend/data/
+# Publish only the active source and verification configuration.
+/*
+!/backend/
+!/frontend/
+!/.github/
+!/README.md
+!/LICENSE
+!/.gitignore
+!/.gitattributes
+**/node_modules/
+**/target/
+**/dist/
+**/.vite/
+**/.local/
+**/uploads/
+**/data/
+/backend/media/
+**/.idea/
+**/.vscode/
+**/test-results/
+**/playwright-report/
 *.log
-
-# OS/editor noise
-.DS_Store
-Thumbs.db
-.vscode/
-
-# Local Codex/Maven bootstrap file
-.codex-maven-settings.xml
-
-# Local archives, generated deployment packages and historical work copies
-/develop/
-/release/
-/backend/docs/audit-tmp/
+*.iml
 *.jar
 *.zip
-backend/backend/
-develop/backend-deploy-build/
-develop/project-clean/
-develop/resource/
-develop/tmp/
-develop/yulanlin/
-develop/release/README-上传说明.md
-develop/release/SHA256SUMS.txt
-develop/release/*.sha256.txt
-develop/release/english-management-upgrade/
-develop/release/upgrade-*/
-develop/release/verify-upgrade-*/
-
-# Local brainstorm / tooling
-.superpowers/
-frontend/.vite/
-
-# Private material and internal project notes
-/.local/
-/docs/
-/*.png
-/*.jpg
-/*.webp
-/*.sql
-/*.sql.*
-/*.md
-!/README.md
+*.bak
+*.dump
+*.sql.gz
+*.sql.zip
+Thumbs.db
+.DS_Store
+# Keep real configuration private; publish placeholder templates only.
+**/.env
+**/.env.*
+!**/.env.example
 **/application-*-secret.yml
 **/application-*-secret.yaml
-*.pem
-*.key
-*.p12
-*.pfx
-*.dump
-*.bak
-**/uploads/
-**/data/pronunciation-cache/
-
-flyway-local.conf
-backend/flyway-local.conf
-
-# Playwright
-frontend/test-results/
-frontend/playwright-report/
+!**/application-local-secret.example.yml
+**/flyway-local.conf
+**/*.pem
+**/*.key
+**/*.p12
+**/*.pfx
+**/.codex-maven-settings.xml

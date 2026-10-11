@@ -1,0 +1,100 @@
+name: Verify
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: verify-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+  backend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: isolated_ci_only
+          MYSQL_ROOT_HOST: '%'
+          MYSQL_DATABASE: star_rain_ci
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h localhost -pisolated_ci_only"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+    env:
+      STAR_RAIN_DB_URL: jdbc:mysql://127.0.0.1:3306/star_rain_ci?serverTimezone=UTC&sslMode=DISABLED&allowPublicKeyRetrieval=true
+      STAR_RAIN_DB_USERNAME: root
+      STAR_RAIN_DB_PASSWORD: isolated_ci_only
+      STAR_RAIN_SMTP_ENABLED: 'false'
+      STAR_RAIN_INDEXNOW_ENABLED: 'false'
+      STAR_RAIN_BOOTSTRAP_ADMIN_ENABLED: 'false'
+      STAR_RAIN_MEDIA_ORPHAN_CLEANUP: 'false'
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+      - name: Check public source
+        run: python3 tools/check_public_source.py
+      - name: Package application for test database migrations
+        run: mvn -B -DskipTests package
+      - name: Migrate isolated database
+        shell: bash
+        run: |
+          set -euo pipefail
+          java -Xmx256m -jar star-rain-boot/target/star-rain-boot-2.0.1.jar > "$RUNNER_TEMP/migration.log" 2>&1 &
+          application_pid=$!
+          trap 'kill "$application_pid" 2>/dev/null || true' EXIT
+          for attempt in $(seq 1 60); do
+            if curl --fail --silent http://127.0.0.1:8088/api/public/site/config > /dev/null; then
+              exit 0
+            fi
+            if ! kill -0 "$application_pid" 2>/dev/null; then
+              cat "$RUNNER_TEMP/migration.log"
+              exit 1
+            fi
+            sleep 2
+          done
+          cat "$RUNNER_TEMP/migration.log"
+          exit 1
+      - run: mvn -B verify
+      - name: Require database coverage
+        run: |
+          python3 - <<'PY'
+          import pathlib, xml.etree.ElementTree as ET
+          reports = list(pathlib.Path('.').glob('*/target/surefire-reports/TEST-*.xml'))
+          assert reports, 'No test reports'
+          skipped = sum(int(ET.parse(path).getroot().get('skipped', '0')) for path in reports)
+          assert skipped == 0, f'{skipped} tests skipped; check database setup'
+          PY

@@ -1,185 +1,167 @@
-/* Base styles for 星雨笔录 · Star Rain Notes (墨境 · Inkspace) */
+/*
+ * 公开站基础样式 —— 从 V1 `frontend/src/styles/base.css` 移植。
+ *
+ * 与 V1 的唯一差别是作用域：V1 把这份文件当全局重置用（公开站与后台同源），
+ * 而 V2 的后台与用户站已经有自己的一套重置（`src/styles/account.css`），
+ * 直接全局套用会顺手改掉后台的间距。因此这里统一收敛到 `.public-shell` 之下，
+ * 公开站的排版与 V1 一致，其它入口的既有视觉不受影响。
+ *
+ * highlight.js 的 `.hljs-*` 配色随渲染器一起补齐（见本文件末尾）。
+ * 那一段刻意**不带 .public-shell 前缀**：后台 Vditor 编辑区的代码块也用同一套
+ * hljs 类名，跟着主题令牌走才能深色/浅色都读得清。
+ */
 
-*,
-*::before,
-*::after {
+.public-shell *,
+.public-shell *::before,
+.public-shell *::after {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
 }
 
-html {
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
+.public-shell {
   font-family: var(--font-family);
   font-size: 16px;
   line-height: 28px;
   color: var(--text-primary);
-  background-color: var(--bg-page);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-a {
+.public-shell a {
   color: var(--primary);
   text-decoration: none;
 }
 
-a:hover {
+.public-shell a:hover {
   color: var(--primary-hover);
 }
 
-h1,
-h2,
-h3,
-h4 {
+.public-shell h1,
+.public-shell h2,
+.public-shell h3,
+.public-shell h4 {
   font-weight: 600;
   line-height: 1.25;
 }
 
-img {
+.public-shell img {
   max-width: 100%;
   display: block;
 }
 
-:focus-visible {
+.public-shell :focus-visible {
   outline: 2px solid var(--primary);
   outline-offset: 2px;
 }
 
-/* Shared interaction floor: pointer controls remain comfortably usable on
-   touch devices without forcing large desktop-only controls. */
-button,
-[role='button'],
-input[type='checkbox'],
-input[type='radio'] { touch-action: manipulation; }
-
-@media (max-width: 768px) {
-  button:not(.el-button),
-  a.public-button { min-height: 44px; }
-  .layout-shell,
-  .container-marketing,
-  .container-content,
-  .container-docs { padding-inline: max(16px, env(safe-area-inset-left)); }
-}
-
-/* Lightweight global busy state used by admin lists and forms. */
-.app-loading {
-  cursor: progress;
-  opacity: 0.58;
-  pointer-events: none;
-  transition: opacity 0.15s ease;
+/* 触屏上的最小可点面积：只放开给公开站的控件，不动后台的表格按钮 */
+.public-shell button,
+.public-shell [role='button'] {
+  touch-action: manipulation;
 }
 
 /* ---------------------------------------------------------------
-   Layout system — unified page shell (wide), narrow prose and
-   sidebar/aside column widths come from design tokens (tokens.css).
+   布局容器 —— 宽壳 / 窄正文 / 侧栏宽度都来自 tokens.css
    --------------------------------------------------------------- */
 
-.layout-shell {
+.public-shell .layout-shell {
   max-width: var(--layout-max-width);
   margin-inline: auto;
   padding-inline: var(--page-padding-x);
 }
 
-.layout-prose {
+.public-shell .layout-prose {
   max-width: var(--content-max-width);
   margin-inline: auto;
   width: 100%;
 }
 
-.container-marketing {
+.public-shell .container-marketing {
   max-width: var(--container-marketing);
   margin-inline: auto;
   padding-inline: var(--page-padding-x);
 }
 
-.container-content {
+.public-shell .container-content {
   max-width: var(--container-content);
   margin-inline: auto;
   padding-inline: var(--page-padding-x);
 }
 
-.container-docs {
-  max-width: var(--container-docs);
-  margin-inline: auto;
-  padding-inline: var(--page-padding-x);
-}
-
 /* ---------------------------------------------------------------
-   Markdown prose (shared renderer pipeline)
+   Markdown 正文（与 support/markdown.js 生成的标签一一对应）
    --------------------------------------------------------------- */
 
-.markdown-body {
+.public-shell .markdown-body {
   font-size: 17px;
   line-height: 1.8;
   color: var(--text-primary);
+  overflow-wrap: anywhere;
 }
 
-.markdown-body h1,
-.markdown-body h2,
-.markdown-body h3,
-.markdown-body h4,
-.markdown-body h5,
-.markdown-body h6 {
+.public-shell .markdown-body h1,
+.public-shell .markdown-body h2,
+.public-shell .markdown-body h3,
+.public-shell .markdown-body h4,
+.public-shell .markdown-body h5,
+.public-shell .markdown-body h6 {
   margin-top: var(--space-9);
   margin-bottom: var(--space-4);
   scroll-margin-top: calc(var(--header-height) + var(--space-4));
 }
 
-.markdown-body h1 {
+.public-shell .markdown-body h1 {
   padding-bottom: var(--space-3);
   border-bottom: 2px solid color-mix(in srgb, var(--primary) 50%, var(--border));
   font-size: 36px;
   line-height: 44px;
 }
 
-.markdown-body h1:first-child {
+.public-shell .markdown-body h1:first-child {
   margin-top: 0;
 }
 
-.markdown-body h2 {
+.public-shell .markdown-body h2 {
   font-size: 32px;
   line-height: 40px;
 }
 
-.markdown-body h3 {
+.public-shell .markdown-body h3 {
   font-size: 24px;
   line-height: 32px;
 }
 
-.markdown-body h4 {
+.public-shell .markdown-body h4 {
   font-size: 20px;
   line-height: 28px;
 }
 
-.markdown-body h5 {
+.public-shell .markdown-body h5 {
   font-size: 17px;
   line-height: 25px;
 }
 
-.markdown-body h6 {
+.public-shell .markdown-body h6 {
   color: var(--text-secondary);
   font-size: 15px;
   line-height: 23px;
 }
 
-.markdown-body p {
+.public-shell .markdown-body p {
   margin-bottom: var(--space-5);
 }
 
-.markdown-body ul,
-.markdown-body ol {
+.public-shell .markdown-body ul,
+.public-shell .markdown-body ol {
   margin: 0 0 var(--space-5) var(--space-6);
 }
 
-.markdown-body li {
+.public-shell .markdown-body li {
   margin-bottom: var(--space-2);
 }
 
-.markdown-body blockquote {
+.public-shell .markdown-body blockquote {
   position: relative;
   margin: 0 0 var(--space-5);
   padding: var(--space-4) var(--space-5) var(--space-4) var(--space-4);
@@ -189,7 +171,7 @@ input[type='radio'] { touch-action: manipulation; }
   color: var(--text-secondary);
 }
 
-.markdown-body blockquote::before {
+.public-shell .markdown-body blockquote::before {
   content: '💡';
   position: absolute;
   top: var(--space-4);
@@ -197,13 +179,13 @@ input[type='radio'] { touch-action: manipulation; }
   font-size: 16px;
 }
 
-.markdown-body a {
+.public-shell .markdown-body a {
   color: var(--primary);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
-.markdown-body code {
+.public-shell .markdown-body code {
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
   font-size: 0.9em;
   background: var(--bg-subtle);
@@ -211,7 +193,7 @@ input[type='radio'] { touch-action: manipulation; }
   border-radius: 4px;
 }
 
-.markdown-body pre {
+.public-shell .markdown-body pre {
   background: var(--bg-subtle);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -220,42 +202,51 @@ input[type='radio'] { touch-action: manipulation; }
   margin: 0 0 var(--space-5);
 }
 
-.markdown-body pre code {
+.public-shell .markdown-body pre code {
   background: none;
   padding: 0;
   font-size: 14px;
   line-height: 1.6;
 }
 
-.markdown-body img {
+.public-shell .markdown-body img {
   border-radius: var(--radius-md);
   margin: var(--space-5) 0;
 }
 
-.markdown-body hr {
+.public-shell .markdown-body hr {
   border: none;
   border-top: 1px solid var(--border);
   margin: var(--space-9) 0;
 }
 
-.markdown-body table {
+.public-shell .markdown-body table {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: var(--space-5);
 }
 
-.markdown-body th,
-.markdown-body td {
+.public-shell .markdown-body th,
+.public-shell .markdown-body td {
   border: 1px solid var(--border);
   padding: var(--space-2) var(--space-4);
   text-align: left;
 }
 
-.markdown-body th {
+.public-shell .markdown-body th {
   background: var(--bg-subtle);
 }
 
-/* highlight.js classes styled with design tokens (dark-mode aware) */
+.public-shell .markdown-body .blog-prose__empty {
+  color: var(--text-muted);
+}
+
+/* ---------------------------------------------------------------
+   highlight.js 令牌配色（从 V1 base.css 原样移植）
+   用设计令牌而不是某个 hljs 主题：前后台两套主题（data-theme）都自动生效，
+   也不需要额外引一份第三方主题 CSS。
+   --------------------------------------------------------------- */
+
 .hljs-keyword,
 .hljs-selector-tag,
 .hljs-literal {
@@ -306,22 +297,42 @@ input[type='radio'] { touch-action: manipulation; }
   font-weight: 700;
 }
 
-/* Reduce horizontal padding on small screens (shared --page-padding-x). */
+/* 小屏收窄横向内边距（只影响公开站） */
 @media (max-width: 768px) {
-  :root {
+  .public-shell {
     --page-padding-x: 20px;
+  }
+
+  /*
+   * 刘海/挖孔屏安全区：V1 的 base.css 在 768px 以下把容器的左右内边距改成
+   * `max(16px, env(safe-area-inset-left))`，V2 之前只改了 `--page-padding-x` 这个令牌，
+   * 而公开页的实际容器是 `.page-container`（不走那个令牌），所以全面屏手机上正文会贴到圆角里。
+   * 这里按左右分别取安全区，语义与 V1 一致、比 V1 更准确（V1 左右都用了 left）。
+   */
+  .public-shell .page-container {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+
+  .public-shell button,
+  .public-shell a.public-button {
+    min-height: 44px;
+  }
+
+  /* 触摸屏没有真正的 hover：小屏上关掉卡片的位移抬升，避免点完残留悬停态。 */
+  .public-shell .tutorial-card:hover {
+    transform: none;
   }
 }
 
 /* ---------------------------------------------------------------
-   Accessibility: respect the user's reduced-motion preference
-   (WCAG 2.3.3). Smooth scrolling is also gated in JS (ArticleOutline).
+   无障碍：尊重系统的「减少动态效果」偏好（WCAG 2.3.3）
    --------------------------------------------------------------- */
 
 @media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
+  .public-shell *,
+  .public-shell *::before,
+  .public-shell *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

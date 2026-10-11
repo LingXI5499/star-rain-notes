@@ -17,6 +17,12 @@
   --border-strong: #ccd1cd;
   --primary: #0f3d36;
   --primary-hover: #0a2e28;
+  /*
+   * 主色的柔和底色。公开外壳在 `.public-shell` 里另有一套自己的色板，
+   * 后台走的是这份全局令牌 —— 以前只有公开外壳定义了 --primary-soft，
+   * 于是英语后台那几处 `var(--primary-soft)` 取到空值、背景整块不生效。
+   */
+  --primary-soft: #dfeae7;
   --accent: #c46f4e;
   --success: #357a55;
   --warning: #a56828;
@@ -97,6 +103,7 @@
   --border-strong: #3a565c;
   --primary: #7a9c8f;
   --primary-hover: #8fbcb0;
+  --primary-soft: #273c37;
   --accent: #c46f4e;
   --success: #5cb383;
   --warning: #d9a45b;
