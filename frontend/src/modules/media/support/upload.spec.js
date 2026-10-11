@@ -15,8 +15,16 @@ describe('editor image upload', () => {
   it('never displays private paths from an old storage error response', () => {
     const message = mediaUploadError({ response: { status: 500, data: { code: 'MEDIA_STORAGE_WRITE_FAILED', message: '/private/home/secret.png' } } })
     expect(message).toContain('权限')
+    expect(message).toContain('MEDIA_STORAGE_WRITE_FAILED')
     expect(message).not.toContain('/private/')
     expect(mediaUploadError({ response: { status: 500, data: { code: 'INTERNAL_ERROR', message: 'SQL password' } } })).not.toContain('SQL')
     expect(mediaUploadError({ code: 'ECONNABORTED' })).toContain('是否已经收到')
+  })
+  it('distinguishes text validation and server failure without exposing response internals', () => {
+    expect(mediaUploadError({ response: { status: 415, data: { code: 'MEDIA_CONTENT_TYPE_MISMATCH' } } })).toContain('UTF-8')
+    expect(mediaUploadError({ response: { status: 500, data: { code: 'INTERNAL_ERROR', message: 'SQL password' } } })).toContain('HTTP 500 / INTERNAL_ERROR')
+    const unsafe = mediaUploadError({ response: { status: 502, data: { code: '/private/path', message: 'secret' } } })
+    expect(unsafe).toContain('HTTP 502')
+    expect(unsafe).not.toMatch(/private|secret/)
   })
 })

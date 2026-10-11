@@ -42,7 +42,8 @@ import org.springframework.web.multipart.MultipartFile;
  * 进程异常宕机留下的孤儿文件由 MediaCleanupService 兜底。
  *
  * 内存策略（关键）：
- *   图片   —— 整份读入，因为要解析宽高（图片上限 10MB，可接受）；
+ *   图片   —— 整份读入，因为要解析宽高（默认图片上限 20MB）；
+ *   文本   —— 先流式校验完整 UTF-8，再重新打开上传流落盘，避免非法尾部产生文件；
  *   其他   —— 只读文件头做 magic bytes 校验，其余流式落盘，
  *             并在同一遍读取中用 DigestInputStream 计算 SHA-256。
  * 因此 200MB 的视频不会占用等量堆内存，也不会被读两遍。
@@ -133,11 +134,24 @@ public class MediaUploadServiceImpl implements MediaUploadService {
     }
 
     private StoredFile storeStreamed(MultipartFile file, UploadMetadata metadata) {
+        boolean plainText = switch (metadata.getFileType()) {
+            case MD, MARKDOWN, TXT -> true;
+            default -> false;
+        };
+        if (plainText) {
+            try (InputStream source = file.getInputStream()) {
+                FileSignatures.verifyPlainText(source);
+            } catch (IOException ex) {
+                throw new MediaContentTypeMismatchException();
+            }
+        }
         MessageDigest digest = newSha256();
         try (InputStream source = file.getInputStream()) {
-            // 只需要文件头就能完成签名校验；其余字节不进入堆内存
-            byte[] head = source.readNBytes(FileSignatures.HEAD_BYTES);
-            verifyContent(metadata, head);
+            // 文本已经完整校验；二进制格式只需检查签名头，再连同其余字节原样落盘。
+            byte[] head = plainText ? new byte[0] : source.readNBytes(FileSignatures.HEAD_BYTES);
+            if (!plainText) {
+                verifyContent(metadata, head);
+            }
 
             try (DigestInputStream digesting = new DigestInputStream(
                     new SequenceInputStream(new ByteArrayInputStream(head), source), digest)) {

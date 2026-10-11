@@ -23,12 +23,18 @@ import com.starrainnotes.media.dto.MediaStorageResultDTO;
 import com.starrainnotes.media.vo.MediaAssetVO;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.HexFormat;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.mock.web.MockMultipartFile;
@@ -203,6 +209,59 @@ class MediaUploadServiceImplTest {
                 .isEqualTo("MEDIA_CONTENT_TYPE_MISMATCH");
 
         verify(storage, never()).store(any(), any());
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {"md", "markdown", "txt"})
+    @DisplayName("中文文本跨越 64KB 文件头边界时完整上传，不截断汉字，摘要与原文一致")
+    void uploadsTextAcrossHeaderBoundary(String extension) throws NoSuchAlgorithmException {
+        when(currentActorApi.current()).thenReturn(actor());
+        byte[] text = ("\uFEFF# 中文教程\n" + "汉".repeat(23800) + "🌧️\n")
+                .getBytes(StandardCharsets.UTF_8);
+        when(storage.store(any(InputStream.class), any())).thenAnswer(invocation -> {
+            try (InputStream in = invocation.getArgument(0)) {
+                assertThat(in.readAllBytes()).isEqualTo(text);
+            }
+            return new MediaStorageResultDTO("LOCAL", "2026/10/article." + extension, (long) text.length);
+        });
+        AtomicReference<MediaAssetEntity> inserted = new AtomicReference<>();
+        doAnswer(invocation -> {
+            MediaAssetEntity entity = invocation.getArgument(0);
+            entity.setId(12L);
+            inserted.set(entity);
+            return null;
+        }).when(assetMapper).insertAsset(any(MediaAssetEntity.class));
+        when(assetMapper.assetById(12L)).thenAnswer(invocation -> inserted.get());
+
+        MockMultipartFile file = new MockMultipartFile("file", "中文教程." + extension, "text/plain", text) {
+            @Override
+            public byte[] getBytes() {
+                throw new IllegalStateException("文本不能整份读入内存");
+            }
+        };
+        MediaAssetVO uploaded = service.upload(file, MediaAccessLevel.PUBLIC);
+
+        assertThat(uploaded.getSizeBytes()).isEqualTo(text.length);
+        assertThat(inserted.get().getSha256()).isEqualTo(
+                HexFormat.of().formatHex(MessageDigest.getInstance("SHA-256").digest(text)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {0, 255, 228})
+    @DisplayName("文本文件头之后包含 NUL、非法 UTF-8 或末尾残缺汉字时，校验失败且不落盘")
+    void rejectsInvalidTextAfterHeader(int invalidByte) {
+        when(currentActorApi.current()).thenReturn(actor());
+        byte[] text = ("a".repeat(70 * 1024) + "x").getBytes(StandardCharsets.UTF_8);
+        text[text.length - 1] = (byte) invalidByte;
+
+        assertThatThrownBy(() -> service.upload(
+                new MockMultipartFile("file", "invalid.md", "text/markdown", text), MediaAccessLevel.PUBLIC))
+                .isInstanceOf(ApiException.class)
+                .extracting(ex -> ((ApiException) ex).getCode())
+                .isEqualTo("MEDIA_CONTENT_TYPE_MISMATCH");
+
+        verify(storage, never()).store(any(), any());
+        verify(assetMapper, never()).insertAsset(any());
     }
 
     private static CurrentActorApi.CurrentActor actor() {

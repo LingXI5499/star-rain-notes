@@ -3,8 +3,9 @@ package com.starrainnotes.media.utils;
 import com.starrainnotes.media.enumeration.MediaFileType;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.charset.CharacterCodingException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.CodingErrorAction;
 import java.nio.charset.StandardCharsets;
 import java.util.Iterator;
@@ -19,7 +20,8 @@ import javax.imageio.stream.ImageInputStream;
  * 这是“不信任扩展名、不信任浏览器声明的 Content-Type”的最终依据。
  *
  * 调用约定：
- *   图片  —— 传入完整内容（需要解析宽高），图片有 10MB 上限，整份读入是可接受的；
+ *   图片  —— 传入完整内容（需要解析宽高），默认上限 20MB；
+ *   文本  —— 用 verifyPlainText 流式校验完整内容，不能在文件头边界截断 UTF-8 字符；
  *   其他  —— 只需传入文件头（见 HEAD_BYTES），因为签名都在前若干字节内。
  *
  * 只解析头部与容器结构，不做转码、不做图像处理。
@@ -235,18 +237,25 @@ public final class FileSignatures {
 
     // 纯文本：不能含 NUL，且必须是合法 UTF-8
     private static void assertPlainText(byte[] content) throws IOException {
-        for (byte b : content) {
-            if (b == 0) {
-                throw new IOException("text content contains NUL byte");
+        verifyPlainText(new ByteArrayInputStream(content));
+    }
+
+    /**
+     * 校验完整文本流，解码器保留跨缓冲区的字符字节；关闭时同时关闭传入的流。
+     */
+    public static void verifyPlainText(InputStream content) throws IOException {
+        try (Reader reader = new InputStreamReader(content, StandardCharsets.UTF_8.newDecoder()
+                .onMalformedInput(CodingErrorAction.REPORT)
+                .onUnmappableCharacter(CodingErrorAction.REPORT))) {
+            char[] buffer = new char[4096];
+            int count;
+            while ((count = reader.read(buffer)) != -1) {
+                for (int index = 0; index < count; index++) {
+                    if (buffer[index] == '\0') {
+                        throw new IOException("text content contains NUL byte");
+                    }
+                }
             }
-        }
-        try {
-            StandardCharsets.UTF_8.newDecoder()
-                    .onMalformedInput(CodingErrorAction.REPORT)
-                    .onUnmappableCharacter(CodingErrorAction.REPORT)
-                    .decode(ByteBuffer.wrap(content));
-        } catch (CharacterCodingException ex) {
-            throw new IOException("text content is not valid UTF-8", ex);
         }
     }
 

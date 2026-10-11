@@ -53,6 +53,8 @@ public class LocalFileMediaStorageImpl implements MediaStorage {
     public LocalFileMediaStorageImpl(MediaProperties properties) {
         this.root = Path.of(properties.getStorageRoot()).toAbsolutePath().normalize();
         this.provider = properties.getStorageProvider();
+        LOGGER.info("Media storage initialized; provider={}, root={}, exists={}, directory={}, writable={}",
+                provider, root, Files.exists(root), Files.isDirectory(root), Files.isWritable(root));
     }
 
     @Override
@@ -93,11 +95,13 @@ public class LocalFileMediaStorageImpl implements MediaStorage {
         Path target = resolveWithinRoot(storageKey);
         if (!Files.isRegularFile(target)) {
             // 数据库有记录但文件不在：存储与数据库不一致，需要运维介入
+            LOGGER.warn("Media content missing or not a regular file; root={}, key={}", root, storageKey);
             throw new MediaContentMissingException();
         }
         try {
             return Files.newInputStream(target);
         } catch (IOException ex) {
+            LOGGER.warn("Media content read failed; root={}, key={}", root, storageKey, ex);
             throw new MediaContentMissingException();
         }
     }
@@ -106,6 +110,7 @@ public class LocalFileMediaStorageImpl implements MediaStorage {
     public InputStream openRange(String storageKey, long start, long length) {
         Path target = resolveWithinRoot(storageKey);
         if (!Files.isRegularFile(target)) {
+            LOGGER.warn("Media content missing or not a regular file; root={}, key={}", root, storageKey);
             throw new MediaContentMissingException();
         }
         try {
@@ -114,6 +119,7 @@ public class LocalFileMediaStorageImpl implements MediaStorage {
             channel.position(start);
             return new BoundedInputStream(Channels.newInputStream(channel), length);
         } catch (IOException ex) {
+            LOGGER.warn("Media content range read failed; root={}, key={}", root, storageKey, ex);
             throw new MediaContentMissingException();
         }
     }
