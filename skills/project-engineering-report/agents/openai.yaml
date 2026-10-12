@@ -1,0 +1,4 @@
+interface:
+  display_name: "软件工程全景报告"
+  short_description: "基于真实仓库、数据库与线上证据生成完整的软件工程现状报告"
+  default_prompt: "Use $project-engineering-report to inspect this project and generate a current-state HTML engineering report."

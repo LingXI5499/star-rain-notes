@@ -1,0 +1,4 @@
+interface:
+  display_name: "Java 服务端开发规范"
+  short_description: "按嵩山版手册和项目实际约定指导 Java 接口、持久化、安全与测试"
+  default_prompt: "使用 $java-songshan-guidelines 检查当前 Java 服务端改动，指出具体规范问题并验证修正。"

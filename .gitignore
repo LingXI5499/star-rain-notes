@@ -1,8 +1,9 @@
-# Publish only the active source and verification configuration.
+# Publish the active source, authored skills and verification configuration.
 /*
 !/backend/
 !/frontend/
 !/.github/
+!/skills/
 !/README.md
 !/LICENSE
 !/.gitignore
@@ -12,6 +13,8 @@
 **/dist/
 **/.vite/
 **/.local/
+**/__pycache__/
+*.pyc
 **/uploads/
 **/data/
 /backend/media/

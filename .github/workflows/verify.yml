@@ -17,6 +17,18 @@ concurrency:
   cancel-in-progress: true
 # 前后端分别校验；后端使用独立数据库，不连接部署数据库。
 jobs:
+  # 技能包独立检查：验证 Python 脚本语法与文章结构检查器，不生成发布或部署产物。
+  skills:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - name: Check skill script syntax
+        run: python3 -m compileall -q skills
+      - name: Test algorithm article validator
+        run: python3 skills/star-rain-algorithm-blog/scripts/test_validate_article.py
   # 前端 CI：安装锁定依赖，执行测试与生产构建。
   frontend:
     runs-on: ubuntu-latest

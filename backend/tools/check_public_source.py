@@ -10,7 +10,7 @@ import sys
 root = pathlib.Path(__file__).resolve().parents[2]
 # NUL 分隔能保留带空格或中文的文件名；Git 出错时立即失败，不把空清单视为通过。
 paths = subprocess.check_output(['git', 'ls-files', '-z'], cwd=root).decode('utf-8').split('\0')
-# 根目录只允许项目说明、开源协议和 Git 规则，其余公共内容应放在前后端或 CI 目录。
+# 根目录只允许项目说明、开源协议和 Git 规则，其余公共内容应放在前后端、自建 skills 或 CI 目录。
 allowed_root_files = {'README.md', 'LICENSE', '.gitignore', '.gitattributes'}
 # 扫描私钥头、常见平台令牌、云访问标识及个人邮箱特征；命中仅返回文件和行号。
 # 这是项目范围的辅助检查，不尝试解密文件或访问任何外部服务。
@@ -25,7 +25,7 @@ errors = []
 # 逐文件验证目录范围、私有配置类型和内容特征；路径或类型不允许时不继续读取内容。
 for name in filter(None, paths):
     path = pathlib.PurePosixPath(name)
-    if path.parts[0] not in {'backend', 'frontend', '.github'} and name not in allowed_root_files:
+    if path.parts[0] not in {'backend', 'frontend', 'skills', '.github'} and name not in allowed_root_files:
         errors.append((name, 'outside active source tree'))
         continue
     # 大小写统一后判断敏感文件后缀；公开的 .env.example 是允许的模板。

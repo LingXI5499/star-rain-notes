@@ -2,7 +2,7 @@
 
 基于 Vue 3 与 Spring Boot 的学习与内容管理网站。公开页面用于阅读，`/useradmin` 提供个人学习空间和管理功能；前后端采用同一个域名，通过 Session 与 CSRF 保护账号及写操作。
 
-仓库只维护当前 V2 主线，前端在 `frontend/`，后端在 `backend/`。旧版源码、数据库导出、部署产物和私人配置不在当前源码树中。
+仓库只维护当前 V2 主线，前端在 `frontend/`，后端在 `backend/`，自建技能合集在 `skills/`。旧版源码、数据库导出、部署产物和私人配置不在当前源码树中。
 
 ## 功能
 
@@ -23,11 +23,25 @@
 ```text
 frontend/       Vue 3、Vite、Vue Router、Pinia、Axios
 backend/        Java 21、Spring Boot 3.5、MyBatis、MySQL 8、Flyway
+skills/         算法博客、JavaSE 教程、Java 开发规范、工程报告技能合集
 .github/        仅测试和构建的 GitHub Actions
 LICENSE         MIT 开源协议
 ```
 
 进一步说明见 [前端 README](frontend/README.md) 与 [后端 README](backend/README.md)。
+
+## 自建 Skills
+
+[Skills 合集](skills/README.md) 将星雨笔录创建的写作、开发与工程分析方法整理为可复用规范，包含完整技能入口、参考资料、模板及辅助脚本。
+
+| 技能 | 主要意义 |
+| --- | --- |
+| [算法博客](skills/star-rain-algorithm-blog/SKILL.md) | 用题意、测试、逐解法推导、多语言实现和复杂度讲清任意来源算法题，不限于 LeetCode |
+| [JavaSE 教程写作](skills/star-rain-java-tutorial-authoring/SKILL.md) | 控制章节边界、知识价值、编号、示例及练习 |
+| [Java 开发规范](skills/java-songshan-guidelines/SKILL.md) | 将嵩山版手册结合项目约定用于服务端编码与审查 |
+| [工程报告](skills/project-engineering-report/SKILL.md) | 从源码、数据库和测试证据生成工程现状及设计文档 |
+
+技能由用户请求或支持技能加载的工具调用，不属于网站运行时依赖，部署仍只需要前端 `dist/` 和后端 JAR。合集及本仓库维护的文件使用 MIT 协议，引用资料保留其来源的权利与条件。
 
 ## 本地运行
 

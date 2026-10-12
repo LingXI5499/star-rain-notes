@@ -1,0 +1,4 @@
+interface:
+  display_name: "星雨笔录 Java 教程生产"
+  short_description: "生成四块正文、面向秋招与真实开发的精简 JavaSE 教程"
+  default_prompt: "Use $star-rain-java-tutorial-authoring to write a concise JavaSE article with only learning goals, core knowledge, questions, and exercises as its four body sections."
