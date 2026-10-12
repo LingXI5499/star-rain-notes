@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Validate concise Star Rain Java tutorial chapters."""
+"""Check the default Star Rain four-section tutorial format for any subject.
+
+This checks Markdown structure, not subject accuracy or execution results.
+Custom tutorial formats must be reviewed against their own requirements.
+"""
 
 from __future__ import annotations
 
@@ -39,19 +43,52 @@ BANNED_TEMPLATE_TITLES = {
 }
 
 
-def headings(lines: list[str]) -> list[tuple[int, int, str]]:
-    result: list[tuple[int, int, str]] = []
-    in_fence = False
+def markdown_parts(
+    lines: list[str],
+) -> tuple[list[tuple[int, int, str]], list[tuple[str, str]], list[str]]:
+    """Exclude fenced examples from headings, including nested fence text.
+
+    A closing fence uses the opening character and at least its length.
+    This matters for shell comments, Markdown examples and non-Java snippets.
+    """
+    found: list[tuple[int, int, str]] = []
+    blocks: list[tuple[str, str]] = []
+    errors: list[str] = []
+    fence: tuple[str, int, int] | None = None
+    language = ""
+    content: list[str] = []
     for line_no, line in enumerate(lines, 1):
-        if line.startswith("```"):
-            in_fence = not in_fence
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
+        if fence is not None:
+            char, length, _ = fence
+            if (marker and marker.group(1)[0] == char
+                    and len(marker.group(1)) >= length
+                    and not marker.group(2).strip()):
+                blocks.append((language, "\n".join(content)))
+                fence = None
+            else:
+                content.append(line)
             continue
-        if in_fence:
+        if marker:
+            info = marker.group(2).strip()
+            # Backticks in the info string cannot start a backtick fence.
+            if marker.group(1)[0] == "`" and "`" in info:
+                continue
+            fence = (marker.group(1)[0], len(marker.group(1)), line_no)
+            language = info.split()[0].lower() if info else ""
+            content = []
             continue
-        match = re.match(r"^(#{1,6})\s+(.+)$", line)
+        match = re.match(r"^ {0,3}(#{1,6})\s+(.+)$", line)
         if match:
-            result.append((line_no, len(match.group(1)), match.group(2).strip()))
-    return result
+            found.append((line_no, len(match.group(1)), match.group(2).strip()))
+    if fence is not None:
+        errors.append(f"第 {fence[2]} 行开始的代码围栏未闭合。")
+    return found, blocks, errors
+
+
+def headings(lines: list[str]) -> list[tuple[int, int, str]]:
+    """Return navigation headings for callers that only need the outline."""
+    return markdown_parts(lines)[0]
 
 
 def parse_chinese_number(value: str) -> int | None:
@@ -84,7 +121,8 @@ def validate_frontmatter(text: str, errors: list[str], warnings: list[str]) -> N
     if keys != ["title", "summary"]:
         errors.append(f"元数据必须且只能按顺序包含 title、summary；当前为 {keys}。")
     for key in ("title", "summary"):
-        if not re.search(rf"(?m)^{key}:\s*\S", frontmatter):
+        value = re.search(rf"(?m)^{key}:[ \t]*(.*)$", frontmatter)
+        if not value or not value.group(1).strip().strip("\"'").strip():
             errors.append(f"frontmatter 缺少有效的 {key}。")
     title_match = re.search(r'(?m)^title:\s*["\']?(.*?)["\']?\s*$', frontmatter)
     summary_match = re.search(r'(?m)^summary:\s*["\']?(.*?)["\']?\s*$', frontmatter)
@@ -101,13 +139,14 @@ def validate_frontmatter(text: str, errors: list[str], warnings: list[str]) -> N
 
 
 def validate(path: Path) -> tuple[list[str], list[str]]:
-    text = path.read_text(encoding="utf-8")
+    text = path.read_text(encoding="utf-8-sig")
     lines = text.splitlines()
     errors: list[str] = []
     warnings: list[str] = []
 
     validate_frontmatter(text, errors, warnings)
-    found = headings(lines)
+    found, code_blocks, fence_errors = markdown_parts(lines)
+    errors.extend(fence_errors)
     if not found:
         return errors + ["正文没有标题。"], warnings
 
@@ -191,8 +230,11 @@ def validate(path: Path) -> tuple[list[str], list[str]]:
         if not match or match.group(1).count(".") != 2:
             errors.append(f"第 {line_no} 行 H4 应使用 2.1.1 形式：{title}")
             continue
-        parent = next((item for item in reversed(found[:index]) if item[1] == 3), None)
-        if parent:
+        # Stop at H2, so an H4 cannot inherit an H3 from the previous section.
+        parent = next((item for item in reversed(found[:index]) if item[1] <= 3), None)
+        if parent is None or parent[1] != 3:
+            errors.append(f"第 {line_no} 行 H4 缺少本节 H3 父级：{title}")
+        else:
             parent_match = DECIMAL_PATTERN.match(parent[2])
             if not parent_match or not match.group(1).startswith(parent_match.group(1) + "."):
                 errors.append(f"第 {line_no} 行 H4 编号与父级不一致：{title}")
@@ -204,10 +246,21 @@ def validate(path: Path) -> tuple[list[str], list[str]]:
     if h4_count > 4:
         warnings.append(f"正文有 {h4_count} 个 H4，可能拆分过细。")
 
-    java_blocks = re.findall(r"```java\s*\n(.*?)```", text, re.DOTALL)
-    for index, block in enumerate(java_blocks, 1):
-        if "//" not in block and "/*" not in block:
-            warnings.append(f"第 {index} 个 Java 代码块没有注释，请确认代码是否足够自解释。")
+    # A heuristic reminder for source code, never a requirement to add code.
+    # Commands, JSON, data and unrecognized languages receive no comment check.
+    comment_markers = {
+        "java": ("//", "/*"), "javascript": ("//", "/*"), "js": ("//", "/*"),
+        "typescript": ("//", "/*"), "ts": ("//", "/*"),
+        "c": ("//", "/*"), "cpp": ("//", "/*"), "c++": ("//", "/*"),
+        "csharp": ("//", "/*"), "c#": ("//", "/*"),
+        "go": ("//", "/*"), "rust": ("//", "/*"), "kotlin": ("//", "/*"),
+        "python": ("#",), "py": ("#",), "ruby": ("#",),
+        "sql": ("--", "/*"),
+    }
+    for index, (language, block) in enumerate(code_blocks, 1):
+        markers = comment_markers.get(language)
+        if markers and not any(marker in block for marker in markers):
+            warnings.append(f"第 {index} 个 {language} 代码块没有注释，请确认代码是否足够自解释。")
 
     if len(text) > 12000:
         errors.append(f"正文共 {len(text)} 字符，超过 12,000 的结构上限。")

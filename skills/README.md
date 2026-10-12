@@ -9,11 +9,13 @@
 | 技能 | 用途与意义 | 典型产物 |
 | --- | --- | --- |
 | [star-rain-algorithm-blog](star-rain-algorithm-blog/SKILL.md) | 将任意来源算法题组织为“题意、测试、推导、步骤、实现、复杂度、选型”，帮助读者理解和复现算法；支持函数提交、标准输入输出和自拟契约 | 博客 Markdown、发布信息、真实验证记录 |
-| [star-rain-java-tutorial-authoring](star-rain-java-tutorial-authoring/SKILL.md) | 为 JavaSE 课程控制知识价值、章节边界、标题编号、示例和练习，避免堆砌低价值特性或重复内容 | 目录审计、章节正文、内部生产记录、结构检查结果 |
+| [star-rain-tutorial-authoring](star-rain-tutorial-authoring/SKILL.md) | 为任意学科与工具的教程控制知识价值、章节边界、编号、示例和练习，按主题选择事实来源与验证；JavaSE 只是可选领域上下文 | 目录审计、章节正文、内部生产记录、结构检查结果 |
 | [java-songshan-guidelines](java-songshan-guidelines/SKILL.md) | 将嵩山版手册提炼为 Java 服务端实践，结合项目版本与约定检查编码、API、异常日志、安全、测试、持久化和设计 | 实现指引、具体审查问题、验证结果 |
 | [project-engineering-report](project-engineering-report/SKILL.md) | 从当前源码、数据库迁移、路由、接口和测试等证据生成工程文档，使需求、设计和部署说明可以回溯到真实实现 | 独立 HTML 工程报告、页面与接口清单、ER 和类设计资料 |
 
-算法博客不局限于 LeetCode；JavaSE 教程和 Java 服务端规范分别处理教学与工程约定；工程报告用于实际系统现状分析。按照请求选择需要的技能，不把所有规范同时加载到无关任务。
+算法博客不局限于 LeetCode；通用教程写作适用于编程语言、框架、数据库、软件操作、原理及非编程知识，JavaSE 只是其中一种主题；Java 服务端规范处理工程约定；工程报告分析实际系统现状。按照请求选择需要的技能，不把所有规范同时加载到无关任务。
+
+教程技能现名为 `star-rain-tutorial-authoring`，替代原先范围过窄的 `star-rain-java-tutorial-authoring`，目录和调用名称一并更新。已有安装如需使用新版，应以新目录替换旧版，并在支持的工具中重新加载技能；不会因此增加一项重复技能。
 
 ## 使用
 
@@ -23,7 +25,8 @@
 
 ```text
 使用 $star-rain-algorithm-blog，把这道自拟算法题写成星雨笔录博客，提供测试和 C++ / Python 实现。
-使用 $star-rain-java-tutorial-authoring，审查这章 JavaSE 教程的边界、编号、示例和练习。
+使用 $star-rain-tutorial-authoring，编写 Git 分支与合并教程，给出操作步骤与可核对的练习结果。
+使用 $star-rain-tutorial-authoring，审查这章统计学或 JavaSE 教程的边界、编号、示例和练习。
 使用 $java-songshan-guidelines，检查当前 Java API 改动并说明具体风险和验证结果。
 使用 $project-engineering-report，为当前仓库生成可回溯源码的 HTML 工程报告。
 ```
@@ -33,7 +36,7 @@
 - 一项技能对应一个同名目录，入口 `SKILL.md` 使用 `name` 和 `description` 前置信息。
 - `references/` 放条件性细则，`assets/` 放输出模板，`scripts/` 放可执行辅助工具，`agents/openai.yaml` 放显示与调用信息。仅保留确实需要的资源。
 - 更新时同时核对触发范围、引用链接、模板、脚本和示例；用户请求和项目约定优先，不把技能规范作为额外外部操作授权。
-- 校验算法技能可运行 `python skills/star-rain-algorithm-blog/scripts/test_validate_article.py`。其他脚本按各自入口参数使用；结构通过、代码运行和人工审查是不同结论。
+- 校验算法技能可运行 `python skills/star-rain-algorithm-blog/scripts/test_validate_article.py`；校验通用教程技能可运行 `python skills/star-rain-tutorial-authoring/scripts/test_validate_chapter_structure.py`。其他脚本按各自入口参数使用；结构通过、示例实际验证和人工审查是不同结论。
 - 不上传本机绝对路径、个人邮箱、密钥、实际环境配置、运行输出及缓存；部署包不包含本合集，网站前后端不依赖它运行。
 
 ## 开源协议与来源

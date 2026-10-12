@@ -1,5 +1,5 @@
 # verify.yml：持续集成流程定义。
-# 本次只补充注释；配置键、默认值、端口及外部变量绑定保持原样。
+# 定义前后端与自建技能的独立检查，不连接部署数据库。
 # 工作流的显示名称；作业由下面的事件触发。
 name: Verify
 # 主分支、codex 分支推送和 PR 执行检查，也支持手动触发。
@@ -29,6 +29,8 @@ jobs:
         run: python3 -m compileall -q skills
       - name: Test algorithm article validator
         run: python3 skills/star-rain-algorithm-blog/scripts/test_validate_article.py
+      - name: Test tutorial chapter validator
+        run: python3 skills/star-rain-tutorial-authoring/scripts/test_validate_chapter_structure.py
   # 前端 CI：安装锁定依赖，执行测试与生产构建。
   frontend:
     runs-on: ubuntu-latest

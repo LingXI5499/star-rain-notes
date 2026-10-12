@@ -1,0 +1,4 @@
+interface:
+  display_name: "星雨笔录通用教程写作"
+  short_description: "适用于任意学科与工具的教程规划、写作和审核，按主题选择示例与验证"
+  default_prompt: "Use $star-rain-tutorial-authoring to write a tutorial for the specified topic and audience, with suitable examples, exercises, and verification."

@@ -23,7 +23,7 @@
 ```text
 frontend/       Vue 3、Vite、Vue Router、Pinia、Axios
 backend/        Java 21、Spring Boot 3.5、MyBatis、MySQL 8、Flyway
-skills/         算法博客、JavaSE 教程、Java 开发规范、工程报告技能合集
+skills/         算法博客、通用教程、Java 开发规范、工程报告技能合集
 .github/        仅测试和构建的 GitHub Actions
 LICENSE         MIT 开源协议
 ```
@@ -37,7 +37,7 @@ LICENSE         MIT 开源协议
 | 技能 | 主要意义 |
 | --- | --- |
 | [算法博客](skills/star-rain-algorithm-blog/SKILL.md) | 用题意、测试、逐解法推导、多语言实现和复杂度讲清任意来源算法题，不限于 LeetCode |
-| [JavaSE 教程写作](skills/star-rain-java-tutorial-authoring/SKILL.md) | 控制章节边界、知识价值、编号、示例及练习 |
+| [通用教程写作](skills/star-rain-tutorial-authoring/SKILL.md) | 面向任意学科与工具，控制章节边界、知识价值、编号、示例及练习；JavaSE 为可选领域上下文 |
 | [Java 开发规范](skills/java-songshan-guidelines/SKILL.md) | 将嵩山版手册结合项目约定用于服务端编码与审查 |
 | [工程报告](skills/project-engineering-report/SKILL.md) | 从源码、数据库和测试证据生成工程现状及设计文档 |
 
