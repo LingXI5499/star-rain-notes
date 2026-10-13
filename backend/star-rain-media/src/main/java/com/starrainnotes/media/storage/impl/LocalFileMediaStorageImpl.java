@@ -115,6 +115,7 @@ public class LocalFileMediaStorageImpl implements MediaStorage {
         for (int attempt = 0; attempt < MAX_KEY_ATTEMPTS; attempt++) {
             String key = keyFor(extension);
             Path target = root.resolve(key).normalize();
+            boolean created = false;
             try {
                 Files.createDirectories(target.getParent());
                 /*
@@ -124,12 +125,17 @@ public class LocalFileMediaStorageImpl implements MediaStorage {
                 long written;
                 try (OutputStream out = Files.newOutputStream(target,
                         StandardOpenOption.CREATE_NEW, StandardOpenOption.WRITE)) {
+                    created = true;
                     written = content.transferTo(out);
                 }
                 return new MediaStorageResultDTO(provider, key, written);
             } catch (FileAlreadyExistsException ex) {
                 // 同名文件不覆盖，换一个 Key 重试
             } catch (IOException ex) {
+                if (created) {
+                    try { Files.deleteIfExists(target); }
+                    catch (IOException cleanupFailure) { ex.addSuppressed(cleanupFailure); }
+                }
                 LOGGER.error("Media storage write failed; root={}, key={}", root, key, ex);
                 throw new MediaStorageWriteException(ex);
             }

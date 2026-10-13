@@ -61,6 +61,27 @@ import org.springframework.mock.web.MockMultipartFile;
  */
 @ExtendWith(MockitoExtension.class)
 class MediaUploadServiceImplTest {
+    /** A rollback discovered after upload returns still compensates the physical file. */
+    @Test
+    void compensatesAfterTransactionRollback() throws IOException {
+        when(currentActorApi.current()).thenReturn(actor());
+        when(storage.store(any(InputStream.class), any()))
+                .thenReturn(new MediaStorageResultDTO("LOCAL", "2026/10/rollback.png", 100L));
+        AtomicReference<MediaAssetEntity> inserted = new AtomicReference<>();
+        doAnswer(call -> {
+            MediaAssetEntity entity = call.getArgument(0); entity.setId(99L); inserted.set(entity); return 1;
+        }).when(assetMapper).insertAsset(any());
+        when(assetMapper.assetById(99L)).thenAnswer(call -> inserted.get());
+        org.springframework.transaction.support.TransactionSynchronizationManager.initSynchronization();
+        try {
+            service.upload(new MockMultipartFile("file", "cover.png", "image/png", TestMediaFiles.png(4, 4)), MediaAccessLevel.PUBLIC);
+            verify(storage, never()).delete(any());
+            var callbacks = org.springframework.transaction.support.TransactionSynchronizationManager.getSynchronizations();
+            assertThat(callbacks).isNotEmpty();
+            callbacks.forEach(callback -> callback.afterCompletion(org.springframework.transaction.support.TransactionSynchronization.STATUS_ROLLED_BACK));
+            verify(storage).delete("2026/10/rollback.png");
+        } finally { org.springframework.transaction.support.TransactionSynchronizationManager.clearSynchronization(); }
+    }
 
     /**
      * 存储。
