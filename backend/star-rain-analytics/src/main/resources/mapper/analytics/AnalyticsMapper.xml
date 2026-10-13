@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.analytics.mapper.AnalyticsMapper">
+  <!-- Completed retained UTC dates, including events older than the retention cutoff.
+       Missing/mismatched totals are rebuilt atomically across all three summary tables. -->
+  <select id="pendingDays" resultType="java.time.LocalDate">
+    SELECT DATE(e.occurred_at) AS raw_date
+    FROM sr_analytics_event e
+    LEFT JOIN sr_analytics_daily_site d ON d.stat_date = DATE(e.occurred_at)
+    WHERE e.occurred_at &lt; #{today}
+    GROUP BY DATE(e.occurred_at), d.stat_date, d.page_view_count, d.content_view_count
+    HAVING d.stat_date IS NULL
+      OR SUM(e.event_type = 'PAGE_VIEW') != d.page_view_count
+      OR SUM(e.event_type = 'CONTENT_VIEW') != d.content_view_count
+      OR raw_date &gt;= DATE_SUB(#{today}, INTERVAL 3 DAY)
+    ORDER BY raw_date
+  </select>
+  <!-- A narrow existence/count check prevents clearing summaries after raw expiration. -->
+  <select id="rawDayCount" resultType="long">
+    SELECT COUNT(*) FROM sr_analytics_event
+    WHERE occurred_at &gt;= #{date} AND occurred_at &lt; DATE_ADD(#{date}, INTERVAL 1 DAY)
+  </select>
     <!--
       AnalyticsMapper.xml：com.starrainnotes.analytics.mapper.AnalyticsMapper 的 MyBatis SQL 映射。
       语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。

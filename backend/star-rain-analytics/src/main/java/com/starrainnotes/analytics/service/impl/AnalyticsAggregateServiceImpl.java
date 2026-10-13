@@ -11,6 +11,7 @@ package com.starrainnotes.analytics.service.impl;
 import com.starrainnotes.analytics.mapper.AnalyticsMapper;
 import com.starrainnotes.analytics.service.AnalyticsAggregateService;
 import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,12 @@ public class AnalyticsAggregateServiceImpl implements AnalyticsAggregateService 
      */
     private final AnalyticsMapper mapper;
 
+    /** Enumerate retained dates; no checkpoint can hide an older missing day. */
+    @Override
+    public List<LocalDate> pendingDays(LocalDate today) {
+        return mapper.pendingDays(today);
+    }
+
     /**
      * aggregate日处理入口。
      * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
@@ -42,6 +49,8 @@ public class AnalyticsAggregateServiceImpl implements AnalyticsAggregateService 
         if (date == null || !date.isBefore(LocalDate.now(java.time.ZoneOffset.UTC))) {
             throw new IllegalArgumentException("Only completed UTC days can be aggregated");
         }
+        // Expired raw data cannot reconstruct an existing valuable summary.
+        if (mapper.rawDayCount(date) == 0) return;
         mapper.deleteSiteDay(date);
         mapper.deleteContentDay(date);
         mapper.deleteReferrerDay(date);

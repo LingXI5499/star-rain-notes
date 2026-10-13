@@ -25,7 +25,8 @@ errors = []
 # 逐文件验证目录范围、私有配置类型和内容特征；路径或类型不允许时不继续读取内容。
 for name in filter(None, paths):
     path = pathlib.PurePosixPath(name)
-    if path.parts[0] not in {'backend', 'frontend', 'skills', '.github'} and name not in allowed_root_files:
+    audit_document = name.startswith(('docs/audit/', 'docs/deployment/')) and name.endswith('.md')
+    if path.parts[0] not in {'backend', 'frontend', 'skills', '.github'} and name not in allowed_root_files and not audit_document:
         errors.append((name, 'outside active source tree'))
         continue
     # 大小写统一后判断敏感文件后缀；公开的 .env.example 是允许的模板。

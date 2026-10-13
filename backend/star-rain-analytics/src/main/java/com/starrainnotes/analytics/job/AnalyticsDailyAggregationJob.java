@@ -49,14 +49,13 @@ public class AnalyticsDailyAggregationJob {
     @Scheduled(cron = "0 15 2 * * *", zone = "UTC")
     public void run() {
         LocalDate today = LocalDate.now(ZoneOffset.UTC);
-        for (int daysAgo = 3; daysAgo >= 1; daysAgo--) {
-            LocalDate date = today.minusDays(daysAgo);
-            try {
+        try {
+            for (LocalDate date : aggregate.pendingDays(today)) {
                 aggregate.aggregateDay(date);
-            } catch (RuntimeException failure) {
-                log.error("Analytics aggregation failed for {}", date, failure);
-                return;
             }
+        } catch (RuntimeException failure) {
+            log.error("Analytics catch-up failed; raw retention deferred", failure);
+            return;
         }
         if (retentionDays > 3) {
             try {

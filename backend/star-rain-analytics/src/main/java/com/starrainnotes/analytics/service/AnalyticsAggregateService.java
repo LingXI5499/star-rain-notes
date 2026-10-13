@@ -8,12 +8,15 @@
 package com.starrainnotes.analytics.service;
 
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * 统计Aggregate业务服务，属于访问统计模块。
  * 声明业务服务的输入和输出，使接入层与具体实现分离；状态转换和数据写入由实现类处理。
  */
 public interface AnalyticsAggregateService {
+    /** @return completed UTC days with missing/stale summaries or recent raw events. */
+    List<LocalDate> pendingDays(LocalDate today);
     /**
      * aggregate日处理入口。
      *

@@ -1,5 +1,5 @@
 # application.yml：后端默认配置与环境变量绑定。
-# 本次只补充注释；配置键、默认值、端口及外部变量绑定保持原样。
+# 默认配置不包含真实凭据；转发头处理必须按部署的代理边界显式启用。
 # Spring Boot 框架配置；各子项在启动时绑定。
 spring:
   config:
@@ -81,6 +81,13 @@ star-rain:
 # HTTP 服务监听与 Cookie 配置；宝塔通过反向代理访问服务端口。
 server:
   port: 8088
+  address: ${STAR_RAIN_SERVER_ADDRESS:0.0.0.0}
+  # Enable NATIVE only behind the documented proxy boundary; standalone ignores headers.
+  forward-headers-strategy: ${STAR_RAIN_FORWARD_HEADERS_STRATEGY:NONE}
+  tomcat:
+    remoteip:
+      # Unlike Tomcat's broad private-network default, trust only local proxy addresses.
+      internal-proxies: '${STAR_RAIN_TRUSTED_PROXIES:127\.0\.0\.1|0:0:0:0:0:0:0:1|::1}'
   # Servlet 与会话相关设置；multipart 限制是请求解析的硬上限。
   servlet:
     # 会话有效期及 Cookie 属性；HttpOnly 阻止脚本读取会话标识。

@@ -96,6 +96,7 @@ class AnalyticsServiceTest {
     void aggregateReplacesRatherThanIncrementsDay() {
         AnalyticsAggregateServiceImpl aggregate = new AnalyticsAggregateServiceImpl(mapper);
         LocalDate yesterday = LocalDate.now(java.time.ZoneOffset.UTC).minusDays(1);
+        when(mapper.rawDayCount(yesterday)).thenReturn(1L);
         aggregate.aggregateDay(yesterday);
         aggregate.aggregateDay(yesterday);
         verify(mapper, times(2)).deleteSiteDay(yesterday);
