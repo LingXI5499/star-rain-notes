@@ -39,6 +39,8 @@ java -jar star-rain-boot/target/star-rain-boot-2.0.1.jar
 | `STAR_RAIN_FRONTEND_INDEX_PATH` | dist/index.html 路径，生产建议绝对路径 |
 | `STAR_RAIN_MEDIA_ROOT` | 持久化媒体目录，默认 `../media` |
 | `STAR_RAIN_COOKIE_SECURE` | 生产 HTTPS 下开启，开发 HTTP 保持 false |
+| `STAR_RAIN_SERVER_ADDRESS` | 默认 0.0.0.0；单机 Nginx 部署设为 127.0.0.1 并隔离后端端口 |
+| `STAR_RAIN_FORWARD_HEADERS_STRATEGY / STAR_RAIN_TRUSTED_PROXIES` | 默认 NONE；仅在可信反代边界启用 NATIVE，信任精确代理地址正则，默认只含 loopback |
 | `STAR_RAIN_INDEXNOW_ENABLED / KEY` | 可选索引提交，未配置保持关闭；完整变量以 `STAR_RAIN_INDEXNOW_` 开头 |
 
 Session Cookie 为 `STAR_RAIN_V2_SESSION`，HttpOnly、SameSite=Lax。注册只授予 USER，管理员通过邀请产生，账户治理及审核恢复需要超级管理员身份和对应权限。写接口需要 CSRF，请使用前端共享 HTTP 客户端。
@@ -55,7 +57,7 @@ location /api/ {
     proxy_pass http://127.0.0.1:8088;
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-For $remote_addr;
 }
 location /assets/ {
     try_files $uri =404;
@@ -72,7 +74,7 @@ location / {
     proxy_pass http://127.0.0.1:8088;
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-Proto $scheme;
-    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-For $remote_addr;
 }
 ```
 
