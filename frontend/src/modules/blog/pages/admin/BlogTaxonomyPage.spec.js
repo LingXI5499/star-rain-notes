@@ -39,3 +39,9 @@ it('shows a server-side reference conflict when a new binding appeared after loa
   await start(); await wrapper.findAll('button').find(button => button.text() === '删除').trigger('click'); await flushPromises()
   expect(wrapper.get('[role="alert"]').text()).toContain('引用')
 })
+it('does not reload or navigate after a deleted tag response arrives following unmount', async () => {
+  let finish; api.ask.mockResolvedValue(true); api.deleteTag.mockReturnValue(new Promise(resolve => { finish = resolve }))
+  await start(); await wrapper.findAll('button').find(button => button.text() === '删除').trigger('click'); await flushPromises()
+  wrapper.unmount(); finish(null); await flushPromises()
+  expect(api.listAdminTags).toHaveBeenCalledTimes(1)
+})

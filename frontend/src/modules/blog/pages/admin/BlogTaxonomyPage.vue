@@ -10,7 +10,7 @@
 
 
 import { usePaginationScroll } from '../../../../shared/composables/paginationScroll'
-import { computed, nextTick, reactive, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { createTag, deleteTag, disableTag, enableTag, listAdminTags, updateTag } from '../../api/blogApi'
 import AdminConfirmDialog from '../../components/admin/AdminConfirmDialog.vue'
@@ -82,16 +82,19 @@ async function removeTag(tag) {
   if (!await deleteConfirm.value.ask({ title: '删除标签',
     message: `确定删除未被引用的标签「${tag.name}」？删除后不可恢复。`,
     requireName: tag.name, confirmText: '删除', danger: true })) return
+  if (!active || saving.value) return
+  const submittedPath = route.fullPath
   saving.value = true
   error.value = ''
   notice.value = ''
   try {
     await deleteTag(tag.id)
+    if (!active) return
     notice.value = `标签「${tag.name}」已删除。`
-    if (tags.value.length === 1 && page.value > 1) { page.value -= 1; await writeQuery() }
+    if (route.fullPath === submittedPath && tags.value.length === 1 && page.value > 1) { page.value -= 1; await writeQuery() }
     else await load()
-  } catch (cause) { error.value = errorMessage(cause) }
-  finally { saving.value = false }
+  } catch (cause) { if (active) error.value = errorMessage(cause) }
+  finally { if (active) saving.value = false }
 }
 /**
  * 标签弹窗；通过 ref 建立。
@@ -104,6 +107,8 @@ const tagDialog = ref(null)
  */
 const tagForm = reactive({ id: null, name: '' })
 let loadVersion = 0
+let active = true
+onBeforeUnmount(() => { active = false; loadVersion += 1 })
 
 /*
  * 每页条数：常用档位之外还允许自己填（用户要求「可以来个自定义的」）。
