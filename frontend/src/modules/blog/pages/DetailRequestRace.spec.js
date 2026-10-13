@@ -29,6 +29,10 @@ describe.each([
     const { a, b } = await start(); b.resolve({ title: 'B' }); await flushPromises()
     a.resolve({ title: 'A' }); await flushPromises(); expect(wrapper.get('h1').text()).toBe('B')
   })
+  it('does not add a second main inside the public shell', async () => {
+    const { a, b } = await start(); b.resolve({ title: 'B' }); a.resolve({ title: 'A' }); await flushPromises()
+    expect(wrapper.find('main').exists()).toBe(false)
+  })
   it('slow A cannot hide a fast B failure', async () => {
     const { a, b } = await start(); b.reject({ response: { status: 404 } }); await flushPromises()
     a.resolve({ title: 'A' }); await flushPromises(); expect(wrapper.find('h1').exists()).toBe(false)

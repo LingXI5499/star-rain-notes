@@ -137,9 +137,13 @@ onMounted(loadFeatured)
     <PublicSelect label="标签" :model-value="route.query.tagId || ''" :options="[{ value: '', label: '全部标签' }, ...taxonomy.tags.map(item => ({ value: item.id, label: item.name }))]" @update:model-value="filter('tagId', $event)" />
     <PublicToggleFilter label="只看精选" :model-value="route.query.featured === 'true'" @update:model-value="filter('featured', $event ? 'true' : '')" />
   </PublicFilterBar>
-  <p v-if="loading" class="works-state">正在加载作品…</p><p v-else-if="error" class="works-state" role="alert">{{ error }}</p><p v-else-if="!result.items.length" class="works-state">暂无符合条件的公开作品。</p>
-  <div v-else class="works-grid"><WorkCard v-for="work in result.items" :key="work.id" :work="work" /></div>
-  <PublicPagination :page="page" :page-size="pageSize" :total="result.total" :loading="loading" label="作品分页" unit="件" @change="changePage" @page-size="changeSize" />
+  <div class="works-archive__results" :aria-busy="loading">
+    <p v-if="loading" class="works-state" role="status">正在更新作品…</p>
+    <p v-else-if="error" class="works-state" role="alert">{{ error }}</p>
+    <p v-else-if="!result.items.length" class="works-state">暂无符合条件的公开作品。</p>
+    <div v-if="result.items.length" class="works-grid"><WorkCard v-for="work in result.items" :key="work.id" :work="work" /></div>
+  </div>
+  <PublicPagination :page="page" :page-size="pageSize" :total="result.total" :loading="loading || featuredLoading" label="作品分页" unit="件" @change="changePage" @page-size="changeSize" />
   </section>
  </section>
 </template>
@@ -152,6 +156,8 @@ onMounted(loadFeatured)
  * 样式范围：.works-library。
  */
 .works-library{width:min(1180px,100%);margin:auto;padding:40px 0 80px}
+/* Leave a viewport of result space even for an empty filter; avoid scroll clamping on refresh. */
+.works-archive__results{min-height:calc(100dvh - 160px);overflow-anchor:none}
   /**
    * 样式范围：.works-library__hero。
    * 使用网格布局组织内容；列定义为 1.4fr 1fr，间距由 50px 控制。

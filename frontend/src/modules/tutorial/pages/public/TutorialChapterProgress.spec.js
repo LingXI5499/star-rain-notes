@@ -4,7 +4,7 @@ import { reactive } from 'vue'
 import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import TutorialChapterPage from './TutorialChapterPage.vue'
 const mocks = vi.hoisted(() => ({ route: null, chapter: vi.fn(), tutorial: vi.fn(), get: vi.fn(), save: vi.fn() }))
-vi.mock('vue-router', () => ({ useRoute: () => mocks.route, RouterLink: { template: '<a><slot /></a>' } }))
+vi.mock('vue-router', () => ({ useRoute: () => mocks.route, RouterLink: { props: ['to'], template: '<a :href="to"><slot /></a>' } }))
 vi.mock('../../api/tutorialApi', () => ({ getPublicTutorial: mocks.tutorial, getPublicChapter: mocks.chapter }))
 vi.mock('../../api/learningApi', () => ({ getChapterProgress: mocks.get, saveChapterProgress: mocks.save,
   getOwnAnswer: vi.fn(), getOwnReferenceAnswer: vi.fn(), saveOwnAnswer: vi.fn() }))
@@ -18,9 +18,9 @@ beforeEach(() => {
   mocks.chapter.mockImplementation(async (_, slug) => ({ id: slug.charCodeAt(0), slug, title: slug, bodyMarkdown: '' }))
   mocks.get.mockResolvedValue({ progressRatio: 0.1 }); mocks.save.mockResolvedValue({ progressRatio: 0.2 })
 })
-afterEach(() => { wrapper?.unmount(); vi.restoreAllMocks() })
+afterEach(() => { wrapper?.unmount(); document.body.innerHTML = ''; vi.restoreAllMocks() })
 async function start() {
-  wrapper = mount(TutorialChapterPage, { global: { stubs: { BlogProse: true, ReadingAside: true, ChapterStudyPage: true } } })
+  wrapper = mount(TutorialChapterPage, { attachTo: document.body, global: { stubs: { BlogProse: true, ReadingAside: true, ChapterStudyPage: true } } })
   await flushPromises()
 }
 async function switchChapter(slug) { mocks.route.params.chapterSlug = slug; await flushPromises() }
@@ -61,4 +61,16 @@ it('does not update progress after unmount', async () => {
   await start(); const a = deferred(); mocks.save.mockReturnValueOnce(a.promise)
   const state = wrapper.vm.$.setupState; wrapper.unmount(); a.resolve({ progressRatio: 0.9 }); await flushPromises()
   expect(state.reading.progressRatio).toBe(0.1)
+})
+it('flushes the previous reading session when entering plan mode', async () => {
+  await start(); now += 5000; mocks.route.query.plan = '1'; await flushPromises()
+  expect(mocks.save).toHaveBeenCalledWith(97, expect.objectContaining({ studySecondsDelta: 5 }))
+})
+it('closes the mobile course directory with Escape and returns focus', async () => {
+  await start(); const trigger = wrapper.get('.tutorial-reader__drawer-toggle')
+  trigger.element.focus(); await trigger.trigger('click'); await flushPromises()
+  expect(trigger.attributes('aria-expanded')).toBe('true')
+  expect(document.activeElement).toBe(wrapper.get('.tutorial-reader__sidebar a').element)
+  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); await flushPromises()
+  expect(trigger.attributes('aria-expanded')).toBe('false'); expect(document.activeElement).toBe(trigger.element)
 })

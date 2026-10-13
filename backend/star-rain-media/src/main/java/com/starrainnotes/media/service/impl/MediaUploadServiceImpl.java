@@ -38,6 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 /*
@@ -162,9 +164,9 @@ public class MediaUploadServiceImpl implements MediaUploadService {
 
     /** Method success precedes transaction commit; compensate only a confirmed rollback. */
     private void compensateOnRollback(String storageKey) {
-        if (!org.springframework.transaction.support.TransactionSynchronizationManager.isSynchronizationActive()) return;
-        org.springframework.transaction.support.TransactionSynchronizationManager.registerSynchronization(
-                new org.springframework.transaction.support.TransactionSynchronization() {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) return;
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
                     @Override public void afterCompletion(int status) {
                         if (status == STATUS_ROLLED_BACK) {
                             compensateStoredFile(storageKey, new IllegalStateException("Media transaction rolled back"));

@@ -160,7 +160,7 @@ async function revealActiveItem() {
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
-watch(() => route.fullPath, async () => {
+watch(() => route.path, async () => {
   mobileOpen.value = false
   contentRef.value?.scrollTo({ top: 0, behavior: 'auto' })
   await revealActiveItem()

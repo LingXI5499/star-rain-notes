@@ -2,6 +2,15 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.starrainnotes.blog.mapper.BlogTagMapper">
+    <!-- Include every persisted relation, irrespective of post publication status. -->
+    <select id="countReferences" resultType="long">
+        SELECT COUNT(*) FROM sr_blog_post_tag WHERE tag_id = #{tagId}
+    </select>
+    <!-- Defensive anti-join as well as the service's shared tag lock; never cascade posts. -->
+    <delete id="deleteUnusedTag">
+        DELETE FROM sr_blog_tag WHERE id = #{tagId}
+        AND NOT EXISTS (SELECT 1 FROM sr_blog_post_tag WHERE tag_id = #{tagId})
+    </delete>
     <!--
       BlogTagMapper.xml：com.starrainnotes.blog.mapper.BlogTagMapper 的 MyBatis SQL 映射。
       语句 id 对应 Mapper 接口方法；#{...} 使用预编译参数，字段别名及结果映射约定保持一致。

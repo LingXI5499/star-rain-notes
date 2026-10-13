@@ -18,6 +18,7 @@ import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import BlogProse from '../../blog/components/BlogProse.vue'
 import ReadingAside from '../../blog/components/ReadingAside.vue'
+import ReadingDrawer from '../../blog/components/ReadingDrawer.vue'
 import { estimateReadingStats } from '../../blog/support/display'
 import WorkSectionRenderer from '../components/WorkSectionRenderer.vue'
 import { stageLabels, safeWorkUrl } from '../support/workBlocks'
@@ -121,9 +122,10 @@ watch(() => [route.params.slug, route.params.workId], load, { immediate: true })
     <p v-else-if="error" class="work-detail__state" role="alert">{{ error }} <RouterLink :to="contentPath('/portfolio')">返回作品列表</RouterLink></p>
     <template v-else-if="work">
       <p v-if="preview" class="work-preview">作品预览 · 仅展示可见区块，不改变发布状态</p>
+      <ReadingDrawer :key="work.id || work.slug" :items="navigation" />
       <div class="work-detail__reading reading-layout">
         <ReadingAside class="work-detail__navigation reading-layout__sidebar" navigation-style="curriculum" :items="navigation" :char-count="stats.charCount" :read-minutes="stats.readMinutes" />
-        <main>
+        <div class="work-detail__body">
       <header class="work-detail__hero">
         <RouterLink :to="contentPath('/portfolio')">← 全部作品</RouterLink>
         <p class="public-eyebrow">SELECTED WORK · {{ typeLabel }}</p>
@@ -133,10 +135,9 @@ watch(() => [route.params.slug, route.params.workId], load, { immediate: true })
           <a v-for="link in links" :key="link.id" :href="link.url" target="_blank" rel="noopener noreferrer">代码库{{ links.length > 1 && link.label ? ` · ${link.label}` : '' }} ↗</a>
         </div>
       </header>
-      <details v-if="navigation.length" class="work-detail__mobile-navigation"><summary>本页导航</summary><ReadingAside navigation-style="curriculum" :items="navigation" :char-count="stats.charCount" :read-minutes="stats.readMinutes" /></details>
           <WorkSectionRenderer v-if="work.hasSections" :sections="work.sections" /><template v-else><BlogProse :markdown="work.bodyMarkdown || ''" @outline="outline = $event" /><div class="work-detail__gallery"><figure v-for="item in work.media?.filter(m => m.usageType === 'SCREENSHOT') || []" :key="item.id"><img :src="item.url" :alt="item.caption || work.title" /><figcaption>{{ item.caption }}</figcaption></figure></div><audio v-for="item in work.media?.filter(m => m.usageType === 'AUDIO') || []" :key="item.id" :src="item.url" controls /></template>
       <nav v-if="!preview" class="work-neighbors" aria-label="前后作品"><RouterLink v-if="work.previousWork" :to="contentPath(`/portfolio/${work.previousWork.slug}`)">← {{ work.previousWork.title }}</RouterLink><RouterLink v-if="work.nextWork" :to="contentPath(`/portfolio/${work.nextWork.slug}`)">{{ work.nextWork.title }} →</RouterLink></nav>
-        </main>
+        </div>
       </div>
     </template>
   </article>
@@ -213,12 +214,11 @@ watch(() => [route.params.slug, route.params.workId], load, { immediate: true })
   /**
    * 样式范围：.work-detail__reading main。
    */
-  .work-detail__reading main{min-width:0}
+  .work-detail__body{min-width:0}
   /**
    * 样式范围：.work-detail__reading aside。
    * 在正常文档流中保留位置，吸附偏移由 top=100px 决定；父级高度限制吸附范围。
    */
-  .work-detail__reading aside{position:sticky;top:100px;align-self:start}
   /**
    * 样式范围：.work-detail__state。
    * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
@@ -231,19 +231,6 @@ watch(() => [route.params.slug, route.params.workId], load, { immediate: true })
   .work-detail__state a{margin-left:8px;color:var(--primary)}
   /**
    * 响应式或设备条件：(max-width:720px)；仅在该条件成立时覆盖基础样式。
-   */
-  @media(max-width:720px){
-  /**
-   * 样式范围：.work-detail__mobile-navigation。
-   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
-   */
-  .work-detail__mobile-navigation{display:block;margin-top:20px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--bg-surface)}
-  /**
-   * 样式范围：.work-detail__mobile-navigation :deep(.reading-aside)。
-   */
-  .work-detail__mobile-navigation :deep(.reading-aside){position:static;max-height:none;margin-top:16px;padding-right:0;border-right:0}}
-  /**
-   * 响应式或设备条件：(max-width:620px)；仅在该条件成立时覆盖基础样式。
    */
   @media(max-width:620px){
   /**

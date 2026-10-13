@@ -11,7 +11,7 @@
  */
 
 
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, useId, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import ChapterStudyPage from '../learning/ChapterStudyPage.vue'
 import '../../styles/study-exercises.css'
@@ -145,11 +145,31 @@ let active = true
 let visible = document.visibilityState !== 'hidden'
 let progressSequence = 0
 let appliedProgressSequence = 0
+let progressSessionEnabled = false
 /**
  * drawerOpen；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const drawerOpen = ref(false)
+const drawerTrigger = ref(null), sidebar = ref(null), drawerId = useId()
+let previousFocus = null
+watch(drawerOpen, async open => {
+  if (open) {
+    previousFocus = document.activeElement
+    await nextTick()
+    if (active && drawerOpen.value) sidebar.value?.querySelector('a,button')?.focus({ preventScroll: true })
+  } else if (active && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true })
+})
+function onDirectoryKey(event) {
+  if (!drawerOpen.value) return
+  if (event.key === 'Escape') { event.preventDefault(); drawerOpen.value = false; return }
+  if (event.key !== 'Tab') return
+  const controls = [...(sidebar.value?.querySelectorAll('a,button,[tabindex="0"]') || [])]
+  const first = controls[0], last = controls.at(-1)
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+}
+document.addEventListener('keydown', onDirectoryKey)
 /**
  * 正文目录；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -242,6 +262,7 @@ async function load() {
     progressError.value = ''
     reading.value = null
     currentChapterId = body.id
+    progressSessionEnabled = signedIn.value && !planMode.value
     lastSaveAt = Date.now()
     lastScrollRatio = 0
     outline.value = []
@@ -339,7 +360,7 @@ function readingRatio() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function persistProgress() {
-  if (!signedIn.value || planMode.value || !currentChapterId) return
+  if (!progressSessionEnabled || !currentChapterId) return
   // Capture ID, position, seconds and session together before yielding.
   const now = Date.now()
   const elapsed = visible ? Math.max(0, Math.min(1800, Math.floor((now - lastSaveAt) / 1000))) : 0
@@ -379,6 +400,7 @@ watch(() => [route.params.tutorialSlug, route.params.chapterSlug, route.query.pl
   if (progressTimer) { window.clearTimeout(progressTimer); progressTimer = null }
   if (currentChapterId) persistProgress()
   currentChapterId = null
+  progressSessionEnabled = false
   load()
 }, { immediate: true })
 window.addEventListener('scroll', onScroll, { passive: true })
@@ -403,6 +425,7 @@ onUnmounted(() => {
   load.version += 1
   window.removeEventListener('scroll', onScroll)
   document.removeEventListener('visibilitychange', onVisibilityChange)
+  document.removeEventListener('keydown', onDirectoryKey)
   if (progressTimer) window.clearTimeout(progressTimer)
 })
 </script>
@@ -414,9 +437,10 @@ onUnmounted(() => {
     <p v-else-if="error && !chapter" role="alert">{{ error }}</p>
     <p v-else-if="!chapter">章节不存在或尚未公开。</p>
     <template v-else>
-      <button class="tutorial-reader__drawer-toggle" type="button" :aria-expanded="drawerOpen" @click="drawerOpen = !drawerOpen">{{ drawerOpen ? '关闭目录' : '目录' }}</button>
+      <button ref="drawerTrigger" class="tutorial-reader__drawer-toggle" type="button" :aria-expanded="drawerOpen" :aria-controls="drawerId" @click="drawerOpen = !drawerOpen">{{ drawerOpen ? '关闭目录' : '目录' }}</button>
       <div v-if="drawerOpen" class="tutorial-reader__backdrop" @click="drawerOpen = false"></div>
-      <aside class="tutorial-reader__sidebar" :class="{ 'is-open': drawerOpen }">
+      <aside :id="drawerId" ref="sidebar" class="tutorial-reader__sidebar" :class="{ 'is-open': drawerOpen }"
+        :role="drawerOpen ? 'dialog' : undefined" :aria-modal="drawerOpen ? 'true' : undefined" aria-label="课程目录">
         <RouterLink :to="tutorialPath(`/${tutorial.slug}`)" class="tutorial-reader__course">{{ tutorial.title }}</RouterLink>
         <div class="tutorial-reader__progress"><span :style="{ width: `${progress}%` }"></span></div><p class="tutorial-reader__progress-label">课程目录位置 {{ chapterIndex + 1 }} / {{ chapters.length }}</p>
         <!--

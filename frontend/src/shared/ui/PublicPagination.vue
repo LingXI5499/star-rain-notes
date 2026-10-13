@@ -12,12 +12,13 @@
 
 
 import { computed, nextTick, watch } from 'vue'
-import { scrollPageTop } from '../composables/paginationScroll'
+import { scrollPageTop, useInitialListScroll } from '../composables/paginationScroll'
 import PublicSelect from './PublicSelect.vue'
 /**
  * 组件输入；通过 defineProps 建立。
  */
 const props = defineProps({ page: { type: Number, default: 1 }, pageSize: { type: Number, default: 12 }, total: { type: Number, default: 0 }, pageSizes: { type: Array, default: () => [12, 24, 48] }, loading: Boolean, label: { type: String, default: '列表分页' }, unit: { type: String, default: '项' } })
+useInitialListScroll(() => props.loading)
 /**
  * 事件发射器；通过 defineEmits 建立。
  */

@@ -356,7 +356,9 @@ async function persistMeta(context) {
   const tags = (updated.tags || []).map(tag => tag.id)
   // Convert submitted tag names to IDs only when the selection has not changed.
   if (JSON.stringify(form.tagValues) === JSON.stringify(submitted.tagValues)) form.tagValues = tags
-  savedMeta.value = metaOf({ ...submitted, tagValues: tags })
+  if (form.title === submitted.title) form.title = updated.title ?? submitted.title
+  if (form.summary === submitted.summary) form.summary = updated.summary || ''
+  savedMeta.value = metaOf({ title: updated.title ?? submitted.title, summary: updated.summary || '', tagValues: tags })
   notice.value = created ? `草稿已创建（地址 ${updated.slug}），正文尚未保存。` : '文章信息已保存，正文需单独保存。'
   if (created) {
     savedBody.value = ''
@@ -423,6 +425,7 @@ async function act(action) {
   if (action === 'delete') {
     const accepted = await confirmDialog.value.ask(`确认删除《${form.title}》？标签、专题关系与媒体引用都会被解除。`)
     if (!accepted) return
+    if (!validContext(context) || saving.value) return
   }
   saving.value = true
   error.value = ''
@@ -440,15 +443,16 @@ async function act(action) {
       await router.replace('/useradmin/blog/manage')
       return
     }
+    if (!validContext(context)) return
     notice.value = '状态已更新。'
     // 只刷新详情里的状态与时间戳，不碰 form / body——
     // 改状态之前可能有还没保存的正文，重新 loadPost() 会把它悄悄冲掉
     const updated = await getAdminPost(context.id)
     if (validContext(context)) detail.value = updated
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (validContext(context)) error.value = errorMessage(cause)
   } finally {
-    saving.value = false
+    if (validContext(context)) saving.value = false
   }
 }
 

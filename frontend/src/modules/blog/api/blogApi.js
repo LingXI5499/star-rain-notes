@@ -8,6 +8,9 @@
 
 import http, { get, patch, post, put } from '../../../shared/http'
 
+/** Delete only an unused tag; the server checks references and taxonomy permissions. */
+export const deleteTag = tagId => del(`/admin/blog/tags/${encodeURIComponent(tagId)}`)
+
 /*
  * 博客模块后端接口封装。
  *

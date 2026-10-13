@@ -55,6 +55,7 @@ export
     request = current
     if (to.path.startsWith('/useradmin') || to.path === '/search') {
       document.title = to.path === '/search' ? '搜索 | 星雨笔录' : '星雨笔录 · 用户中心'
+      meta('description').content = ''
       meta('robots').content = 'noindex,nofollow'
       canonical().removeAttribute('href')
       return
@@ -72,6 +73,7 @@ export
     } catch (error) {
       if (current.signal.aborted) return
       document.title = '星雨笔录'
+      meta('description').content = ''
       meta('robots').content = 'noindex,follow'
       canonical().removeAttribute('href')
     }

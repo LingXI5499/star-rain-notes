@@ -8,6 +8,8 @@
 
 package com.starrainnotes.blog.controller;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
+
 import com.starrainnotes.blog.constant.BlogPermissions;
 import com.starrainnotes.blog.dto.BlogTagDTO;
 import com.starrainnotes.blog.dto.BlogTagQueryDTO;
@@ -27,9 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 /*
  * BLOG-004 标签管理接口。
  *
- * 刻意没有 DELETE：V2 不提供级联删除已被文章使用的 Tag，
- * 而“未被使用才能删”的规则在个人博客里收益极低、误删代价极高，因此直接不给入口。
- * 需要下架就 disable。
+ * DELETE 只删除未被任何文章引用的标签；已有绑定须显式解除，或使用 disable。
  */
 /**
  * 博客后台标签控制器，属于博客模块。
@@ -38,6 +38,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/admin/blog/tags")
 public class BlogAdminTagController {
+    /** Delete an unused tag with the same authority as other taxonomy writes; CSRF remains required. */
+    @DeleteMapping("/{tagId}")
+    @PreAuthorize("hasAuthority('" + BlogPermissions.TAXONOMY_MANAGE + "')")
+    public ApiResponse<Void> delete(@PathVariable Long tagId) {
+        tagService.delete(tagId);
+        return ApiResponse.ok(null);
+    }
 
     /**
      * 标签业务服务。

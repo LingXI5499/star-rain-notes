@@ -12,7 +12,8 @@
 import { usePaginationScroll } from '../../../../shared/composables/paginationScroll'
 import { computed, nextTick, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
-import { createTag, disableTag, enableTag, listAdminTags, updateTag } from '../../api/blogApi'
+import { createTag, deleteTag, disableTag, enableTag, listAdminTags, updateTag } from '../../api/blogApi'
+import AdminConfirmDialog from '../../components/admin/AdminConfirmDialog.vue'
 import { errorMessage } from '../../../../shared/http'
 import { useListQuery } from '../../../../shared/composables/useListQuery'
 import { createTaxonomy } from '../../components/admin/tagSlug'
@@ -34,8 +35,7 @@ import { taxonomyStatusLabel } from '../../support/display'
  * 视觉沿用 admin.css 里既有的 .tag-admin__* / .tag-card（那一套是按 V1 BlogTagView 定的），
  * 本文件只补分页条与筛选行，避免同一套样式在全局与页面里各写一份后悄悄分叉。
  *
- * 仍然没有物理删除：后端 BlogAdminTagController 明确不提供 DELETE
- * （已被文章使用的标签删掉，历史文章就会指向不存在的标签），下架请用停用。
+ * 未引用标签可经名称确认删除；已有文章绑定时禁用删除，下架仍使用停用。
  */
 /**
  * 路由；通过 useRoute 建立。
@@ -74,6 +74,25 @@ const error = ref('')
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const notice = ref('')
+const deleteConfirm = ref(null)
+
+/** Unused tags can be deleted; live bindings retain the existing disable workflow. */
+async function removeTag(tag) {
+  if (saving.value || tag.postCount > 0) return
+  if (!await deleteConfirm.value.ask({ title: '删除标签',
+    message: `确定删除未被引用的标签「${tag.name}」？删除后不可恢复。`,
+    requireName: tag.name, confirmText: '删除', danger: true })) return
+  saving.value = true
+  error.value = ''
+  notice.value = ''
+  try {
+    await deleteTag(tag.id)
+    notice.value = `标签「${tag.name}」已删除。`
+    if (tags.value.length === 1 && page.value > 1) { page.value -= 1; await writeQuery() }
+    else await load()
+  } catch (cause) { error.value = errorMessage(cause) }
+  finally { saving.value = false }
+}
 /**
  * 标签弹窗；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -361,6 +380,9 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
             <button type="button" :disabled="saving" @click="toggleTagStatus(tag)">
               {{ tag.status === 'DISABLED' ? '启用' : '停用' }}
             </button>
+            <button type="button" class="blog-danger" :disabled="saving || (tag.postCount || 0) > 0"
+              :title="tag.postCount > 0 ? '仍被文章引用，请先解除关联或停用' : '删除未被引用的标签'"
+              @click="removeTag(tag)">删除</button>
           </div>
         </footer>
       </article>
@@ -399,10 +421,11 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
     </nav>
 
     <p class="tag-admin__note">
-      标签不提供物理删除：已被文章使用的标签一旦删除，历史文章就会指向不存在的标签。
-      需要下架时用「停用」，历史绑定保留。专题在「专题管理」页，规则不同（专题有成员与顺序，空专题可以删除）。
+      未被引用的标签可以删除；被文章引用的标签请先解除全部关联，或用「停用」保留历史绑定。
+      专题在「专题管理」页，移出全部文章后可删除空专题。
     </p>
 
+    <AdminConfirmDialog ref="deleteConfirm" />
     <dialog ref="tagDialog" aria-labelledby="tag-dialog-title" @cancel.prevent="tagDialog?.close()">
       <h2 id="tag-dialog-title">{{ tagForm.id ? '编辑标签' : '新建标签' }}</h2>
       <form class="form-stack" @submit.prevent="submitTag">

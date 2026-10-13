@@ -14,6 +14,7 @@ import com.starrainnotes.blog.dto.BlogTagQueryDTO;
 import com.starrainnotes.blog.entity.BlogTagEntity;
 import com.starrainnotes.blog.enumeration.BlogTaxonomyStatus;
 import com.starrainnotes.blog.exception.BlogTagDescriptionInvalidException;
+import com.starrainnotes.blog.exception.BlogTagInUseException;
 import com.starrainnotes.blog.exception.BlogTagNameConflictException;
 import com.starrainnotes.blog.exception.BlogTagNameInvalidException;
 import com.starrainnotes.blog.exception.BlogTagNotFoundException;
@@ -39,7 +40,7 @@ import org.springframework.transaction.annotation.Transactional;
  * Tag 的语义边界在这里被固化下来：
  * - 无序：没有任何排序字段与排序接口，需要顺序请用 Topic；
  * - 名字唯一：同名不同 ID 会把同一批文章拆到两个归档入口；
- * - 只能停用不能删除：已被文章使用的标签若被物理删除，历史归档会指向不存在的分类。
+ * - 未使用标签可删除；已被文章使用的标签保留绑定，使用停用或先显式解除关联。
  */
 /**
  * 博客标签业务服务实现，属于博客模块。
@@ -47,6 +48,15 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class BlogTagServiceImpl implements BlogTagService {
+    /** Match binding writers' row lock, so checking and deleting cannot race a new binding. */
+    @Override
+    @Transactional
+    public void delete(Long tagId) {
+        requireTagForUpdate(tagId);
+        if (tagMapper.countReferences(tagId) > 0 || tagMapper.deleteUnusedTag(tagId) != 1) {
+            throw new BlogTagInUseException();
+        }
+    }
 
     /**
      * 标签数据映射。
