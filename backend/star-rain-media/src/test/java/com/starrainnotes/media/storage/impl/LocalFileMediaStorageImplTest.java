@@ -34,6 +34,21 @@ import org.junit.jupiter.api.io.TempDir;
  * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
  */
 class LocalFileMediaStorageImplTest {
+    /** A failed stream must leave no partial final file behind. */
+    @Test
+    void failedTransferRemovesPartialFile() throws IOException {
+        java.io.InputStream broken = new java.io.InputStream() {
+            private boolean started;
+            @Override public int read() throws IOException {
+                if (!started) { started = true; return 42; }
+                throw new IOException("isolated interrupted stream");
+            }
+        };
+        assertThatThrownBy(() -> storage.store(broken, "mp4")).isInstanceOf(ApiException.class);
+        try (var paths = Files.walk(tempDir)) {
+            assertThat(paths.filter(Files::isRegularFile).count()).isZero();
+        }
+    }
 
     /**
      * tempDir。

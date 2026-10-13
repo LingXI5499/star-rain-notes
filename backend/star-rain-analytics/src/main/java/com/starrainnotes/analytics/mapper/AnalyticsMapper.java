@@ -21,6 +21,11 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface AnalyticsMapper {
+    /** @return raw-event dates requiring an atomic rebuild, oldest first. */
+    List<LocalDate> pendingDays(@Param("today") LocalDate today);
+
+    /** @return number of retained raw events for one completed UTC date. */
+    long rawDayCount(@Param("date") LocalDate date);
 
     /**
      * 写入统计。

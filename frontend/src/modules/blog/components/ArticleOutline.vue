@@ -50,6 +50,7 @@ const groups = computed(() => {
   }
   return result
 })
+const flat = computed(() => groups.value.length > 0 && groups.value.every(group => !group.children.length))
 
 /**
  * 有效标识；通过 ref 建立。
@@ -135,7 +136,16 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
     aria-label="文章目录"
   >
     <p v-if="!hideTitle" class="article-outline__title">目录</p>
-    <div v-if="navigationStyle === 'curriculum'" class="article-outline__groups">
+    <ol v-if="navigationStyle === 'curriculum' && flat" class="article-outline__chapters">
+      <li v-for="(item, index) in items" :key="item.id">
+        <a class="article-outline__chapter" :class="{ 'is-active': activeId === item.id }" :href="`#${item.id}`"
+          :title="item.text" :aria-current="activeId === item.id ? 'location' : undefined" @click.prevent="scrollTo(item.id)">
+          <span class="article-outline__index">{{ String(index + 1).padStart(2, '0') }}</span>
+          <span class="article-outline__chapter-title">{{ item.text }}</span>
+        </a>
+      </li>
+    </ol>
+    <div v-else-if="navigationStyle === 'curriculum'" class="article-outline__groups">
       <section v-for="group in groups" :key="group.heading.id" class="article-outline__group">
         <a class="article-outline__group-title" :class="{ 'is-active': activeId === group.heading.id }"
           :href="`#${group.heading.id}`" :title="group.heading.text"

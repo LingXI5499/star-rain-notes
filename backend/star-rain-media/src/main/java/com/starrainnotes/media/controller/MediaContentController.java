@@ -45,7 +45,8 @@ public class MediaContentController {
     /**
      * 缓存。
      */
-    private static final String PUBLIC_CACHE = "public, max-age=86400";
+    // Access level is mutable. Keep local copies but require server authorization on reuse.
+    private static final String PUBLIC_CACHE = "private, no-cache, max-age=0, must-revalidate";
 
     // 受保护内容不进共享缓存，也不进浏览器持久缓存
     /**

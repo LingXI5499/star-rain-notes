@@ -11,13 +11,14 @@
  */
 
 
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { getPublicWork, getAdminWork } from '../api/portfolioApi'
 import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import BlogProse from '../../blog/components/BlogProse.vue'
 import ReadingAside from '../../blog/components/ReadingAside.vue'
+import ReadingDrawer from '../../blog/components/ReadingDrawer.vue'
 import { estimateReadingStats } from '../../blog/support/display'
 import WorkSectionRenderer from '../components/WorkSectionRenderer.vue'
 import { stageLabels, safeWorkUrl } from '../support/workBlocks'
@@ -85,28 +86,34 @@ const typeLabel = computed(() => ({ SOFTWARE: '软件', VIDEO: '视频', MUSIC: 
  * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
+let requestGeneration = 0
+onBeforeUnmount(() => { requestGeneration += 1 })
 async function load() {
+  const generation = ++requestGeneration
+  const { slug, workId } = route.params
   loading.value = true
   error.value = ''
   work.value = null
   outline.value = []
   try {
-    work.value = await (preview.value ? getAdminWork(route.params.workId) : getPublicWork(route.params.slug))
+    const result = await (workId ? getAdminWork(workId) : getPublicWork(slug))
+    if (generation !== requestGeneration) return
+    work.value = result
   } catch (cause) {
+    if (generation !== requestGeneration) return
     error.value = cause?.response?.status === 404 ? '作品不存在或尚未公开。' : errorMessage(cause)
   } finally {
-    loading.value = false
+    if (generation === requestGeneration) loading.value = false
   }
 }
 
 /**
  * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
  */
-onMounted(load)
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
-watch(() => [route.params.slug, route.params.workId], load)
+watch(() => [route.params.slug, route.params.workId], load, { immediate: true })
 </script>
 
 <template>
@@ -115,9 +122,10 @@ watch(() => [route.params.slug, route.params.workId], load)
     <p v-else-if="error" class="work-detail__state" role="alert">{{ error }} <RouterLink :to="contentPath('/portfolio')">返回作品列表</RouterLink></p>
     <template v-else-if="work">
       <p v-if="preview" class="work-preview">作品预览 · 仅展示可见区块，不改变发布状态</p>
+      <ReadingDrawer :key="work.id || work.slug" :items="navigation" />
       <div class="work-detail__reading reading-layout">
         <ReadingAside class="work-detail__navigation reading-layout__sidebar" navigation-style="curriculum" :items="navigation" :char-count="stats.charCount" :read-minutes="stats.readMinutes" />
-        <main>
+        <div class="work-detail__body">
       <header class="work-detail__hero">
         <RouterLink :to="contentPath('/portfolio')">← 全部作品</RouterLink>
         <p class="public-eyebrow">SELECTED WORK · {{ typeLabel }}</p>
@@ -127,10 +135,9 @@ watch(() => [route.params.slug, route.params.workId], load)
           <a v-for="link in links" :key="link.id" :href="link.url" target="_blank" rel="noopener noreferrer">代码库{{ links.length > 1 && link.label ? ` · ${link.label}` : '' }} ↗</a>
         </div>
       </header>
-      <details v-if="navigation.length" class="work-detail__mobile-navigation"><summary>本页导航</summary><ReadingAside navigation-style="curriculum" :items="navigation" :char-count="stats.charCount" :read-minutes="stats.readMinutes" /></details>
           <WorkSectionRenderer v-if="work.hasSections" :sections="work.sections" /><template v-else><BlogProse :markdown="work.bodyMarkdown || ''" @outline="outline = $event" /><div class="work-detail__gallery"><figure v-for="item in work.media?.filter(m => m.usageType === 'SCREENSHOT') || []" :key="item.id"><img :src="item.url" :alt="item.caption || work.title" /><figcaption>{{ item.caption }}</figcaption></figure></div><audio v-for="item in work.media?.filter(m => m.usageType === 'AUDIO') || []" :key="item.id" :src="item.url" controls /></template>
       <nav v-if="!preview" class="work-neighbors" aria-label="前后作品"><RouterLink v-if="work.previousWork" :to="contentPath(`/portfolio/${work.previousWork.slug}`)">← {{ work.previousWork.title }}</RouterLink><RouterLink v-if="work.nextWork" :to="contentPath(`/portfolio/${work.nextWork.slug}`)">{{ work.nextWork.title }} →</RouterLink></nav>
-        </main>
+        </div>
       </div>
     </template>
   </article>
@@ -207,12 +214,11 @@ watch(() => [route.params.slug, route.params.workId], load)
   /**
    * 样式范围：.work-detail__reading main。
    */
-  .work-detail__reading main{min-width:0}
+  .work-detail__body{min-width:0}
   /**
    * 样式范围：.work-detail__reading aside。
    * 在正常文档流中保留位置，吸附偏移由 top=100px 决定；父级高度限制吸附范围。
    */
-  .work-detail__reading aside{position:sticky;top:100px;align-self:start}
   /**
    * 样式范围：.work-detail__state。
    * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
@@ -225,19 +231,6 @@ watch(() => [route.params.slug, route.params.workId], load)
   .work-detail__state a{margin-left:8px;color:var(--primary)}
   /**
    * 响应式或设备条件：(max-width:720px)；仅在该条件成立时覆盖基础样式。
-   */
-  @media(max-width:720px){
-  /**
-   * 样式范围：.work-detail__mobile-navigation。
-   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
-   */
-  .work-detail__mobile-navigation{display:block;margin-top:20px;padding:14px;border:1px solid var(--border);border-radius:12px;background:var(--bg-surface)}
-  /**
-   * 样式范围：.work-detail__mobile-navigation :deep(.reading-aside)。
-   */
-  .work-detail__mobile-navigation :deep(.reading-aside){position:static;max-height:none;margin-top:16px;padding-right:0;border-right:0}}
-  /**
-   * 响应式或设备条件：(max-width:620px)；仅在该条件成立时覆盖基础样式。
    */
   @media(max-width:620px){
   /**

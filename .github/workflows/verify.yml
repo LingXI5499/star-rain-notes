@@ -58,6 +58,32 @@ jobs:
       # 验证生产构建可完成；产物仅包含前端资源。
       - run: npm run build
   # 后端 CI：打包、迁移独立数据库、运行完整测试并检查跳过数量。
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v7
+        if: failure()
+        with:
+          name: browser-regression-failures
+          path: |
+            frontend/playwright-report/
+            frontend/test-results/
+          retention-days: 7
   backend:
     runs-on: ubuntu-latest
     timeout-minutes: 25

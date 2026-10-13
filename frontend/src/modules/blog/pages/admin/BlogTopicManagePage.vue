@@ -585,7 +585,7 @@ onMounted(refresh)
     <p class="tag-admin__note">
       删除只对空专题开放：专题的价值在成员与顺序上，物理删除会连带毁掉策展结果，
       所以有文章时请先在右侧移出。只想下架、还要留住成员与顺序时用「停用」。
-      标签在「标签管理」页，标签没有成员与顺序，也不提供删除。
+      标签在「标签管理」页，未被文章引用的标签也可删除。
     </p>
 
     <dialog ref="topicDialog" aria-labelledby="topic-dialog-title" @cancel.prevent="topicDialog?.close()">

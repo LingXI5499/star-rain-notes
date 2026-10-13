@@ -31,6 +31,36 @@ import org.mockito.ArgumentCaptor;
  * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
  */
 class TutorialOperationServiceTest {
+    /** Recovery rechecks a frozen failed operation and an applied retry has no second side effect. */
+    @Test void failedOperationRecoversOnce() {
+        service.request("createCategory", new Object[]{"Java"});
+        var capture = ArgumentCaptor.forClass(TutorialOperationEntity.class);
+        verify(operations).insert(capture.capture());
+        var frozen = capture.getValue(); frozen.setStatus("FAILED");
+        when(operations.byIdForUpdate(8L)).thenReturn(frozen);
+        when(operations.finish(8L, "APPLIED")).thenAnswer(call -> { frozen.setStatus("APPLIED"); return 1; });
+        service.recoverApproved(8L); service.recoverApproved(8L);
+        verify(content, times(1)).createCategory("Java");
+    }
+    /** Changed content is rejected during recovery, just as during the original callback. */
+    @Test void recoveryRefusesChangedBaseline() {
+        service.request("createCategory", new Object[]{"Java"});
+        var capture = ArgumentCaptor.forClass(TutorialOperationEntity.class); verify(operations).insert(capture.capture());
+        var frozen = capture.getValue(); frozen.setStatus("FAILED");
+        frozen.setBaselineJson("{\"categories\":[\"newer content\"],\"tutorials\":[]}");
+        when(operations.byIdForUpdate(8L)).thenReturn(frozen);
+        assertThatThrownBy(() -> service.recoverApproved(8L)).isInstanceOf(TutorialStateException.class);
+        verify(content, never()).createCategory(any());
+    }
+    /** Rejection and cancellation cannot be revived through the recovery entry point. */
+    @Test void terminalRejectedOperationsCannotRecover() {
+        for (String status : List.of("REJECTED", "CANCELED")) {
+            var row = new TutorialOperationEntity(); row.setStatus(status);
+            when(operations.byIdForUpdate(8L)).thenReturn(row);
+            assertThatThrownBy(() -> service.recoverApproved(8L)).isInstanceOf(TutorialStateException.class);
+        }
+        verifyNoInteractions(content, publication, exercises);
+    }
     /**
      * 内容。
      * 协作类型：<code>TutorialContentService</code>。

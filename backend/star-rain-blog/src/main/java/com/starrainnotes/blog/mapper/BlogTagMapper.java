@@ -21,6 +21,11 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface BlogTagMapper {
+    /** Count all bindings, including drafts and withdrawn posts, under the tag row lock. */
+    long countReferences(@Param("tagId") Long tagId);
+
+    /** Delete only an unreferenced tag; callers must hold tagByIdForUpdate's lock. */
+    int deleteUnusedTag(@Param("tagId") Long tagId);
 
     /**
      * 写入标签。

@@ -38,6 +38,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 import org.springframework.web.multipart.MultipartFile;
 
 /*
@@ -151,11 +153,27 @@ public class MediaUploadServiceImpl implements MediaUploadService {
 
             // sha256 不是业务唯一键：这里只回传同内容素材数量用于提示，不静默合并
             long sameSha256Count = assetMapper.countBySha256(storedFile.getSha256());
-            return MediaAssetVO.from(assetMapper.assetById(entity.getId()), sameSha256Count);
+            MediaAssetVO result = MediaAssetVO.from(assetMapper.assetById(entity.getId()), sameSha256Count);
+            compensateOnRollback(storedFile.getStored().getStorageKey());
+            return result;
         } catch (RuntimeException ex) {
             compensateStoredFile(storedFile.getStored().getStorageKey(), ex);
             throw ex;
         }
+    }
+
+    /** Method success precedes transaction commit; compensate only a confirmed rollback. */
+    private void compensateOnRollback(String storageKey) {
+        if (!TransactionSynchronizationManager.isSynchronizationActive()) return;
+        TransactionSynchronizationManager.registerSynchronization(
+                new TransactionSynchronization() {
+                    @Override public void afterCompletion(int status) {
+                        if (status == STATUS_ROLLED_BACK) {
+                            compensateStoredFile(storageKey, new IllegalStateException("Media transaction rolled back"));
+                        }
+                        // UNKNOWN may have committed: leave the file for the existing orphan reconciliation.
+                    }
+                });
     }
 
     /*

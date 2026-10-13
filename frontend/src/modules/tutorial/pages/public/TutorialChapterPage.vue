@@ -11,7 +11,7 @@
  */
 
 
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, useId, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import ChapterStudyPage from '../learning/ChapterStudyPage.vue'
 import '../../styles/study-exercises.css'
@@ -141,11 +141,35 @@ let progressTimer = null
 let lastSaveAt = Date.now()
 let currentChapterId = null
 let lastScrollRatio = 0
+let active = true
+let visible = document.visibilityState !== 'hidden'
+let progressSequence = 0
+let appliedProgressSequence = 0
+let progressSessionEnabled = false
 /**
  * drawerOpen；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const drawerOpen = ref(false)
+const drawerTrigger = ref(null), sidebar = ref(null), drawerId = useId()
+let previousFocus = null
+watch(drawerOpen, async open => {
+  if (open) {
+    previousFocus = document.activeElement
+    await nextTick()
+    if (active && drawerOpen.value) sidebar.value?.querySelector('a,button')?.focus({ preventScroll: true })
+  } else if (active && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true })
+})
+function onDirectoryKey(event) {
+  if (!drawerOpen.value) return
+  if (event.key === 'Escape') { event.preventDefault(); drawerOpen.value = false; return }
+  if (event.key !== 'Tab') return
+  const controls = [...(sidebar.value?.querySelectorAll('a,button,[tabindex="0"]') || [])]
+  const first = controls[0], last = controls.at(-1)
+  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
+}
+document.addEventListener('keydown', onDirectoryKey)
 /**
  * 正文目录；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -238,16 +262,20 @@ async function load() {
     progressError.value = ''
     reading.value = null
     currentChapterId = body.id
+    progressSessionEnabled = signedIn.value && !planMode.value
     lastSaveAt = Date.now()
     lastScrollRatio = 0
     outline.value = []
     drawerOpen.value = false
     if (signedIn.value && !planMode.value) {
       try {
-        reading.value = await getChapterProgress(body.id)
+        const sequence = progressSequence
+        const result = await getChapterProgress(body.id)
+        if (!active || version !== load.version || sequence !== progressSequence) return
+        reading.value = result
         lastScrollRatio = Number(reading.value?.progressRatio || 0)
       }
-      catch (cause) { progressError.value = errorMessage(cause) }
+      catch (cause) { if (active && version === load.version) progressError.value = errorMessage(cause) }
     }
   } catch (cause) { if (version === load.version) { chapter.value = null; error.value = errorMessage(cause) } }
   finally { if (version === load.version) { loading.value = false; chapterLoading.value = false } }
@@ -332,15 +360,27 @@ function readingRatio() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function persistProgress() {
-  if (!signedIn.value || planMode.value || !currentChapterId) return
-  const elapsed = Math.max(0, Math.min(1800, Math.floor((Date.now() - lastSaveAt) / 1000)))
-  lastSaveAt = Date.now()
+  if (!progressSessionEnabled || !currentChapterId) return
+  // Capture ID, position, seconds and session together before yielding.
+  const now = Date.now()
+  const elapsed = visible ? Math.max(0, Math.min(1800, Math.floor((now - lastSaveAt) / 1000))) : 0
+  lastSaveAt = now
+  const id = currentChapterId
+  const version = load.version
+  const sequence = ++progressSequence
+  const payload = { progressRatio: lastScrollRatio, studySecondsDelta: elapsed }
   try {
-    reading.value = await saveChapterProgress(currentChapterId, {
-      progressRatio: lastScrollRatio, studySecondsDelta: elapsed,
-    })
+    const result = await saveChapterProgress(id, payload)
+    if (!active || version !== load.version || id !== currentChapterId || sequence < appliedProgressSequence) return
+    appliedProgressSequence = sequence
+    reading.value = result
     progressError.value = ''
-  } catch (cause) { progressError.value = errorMessage(cause) }
+  } catch (cause) {
+    // Deltas are non-idempotent: do not replay an uncertain request.
+    if (active && version === load.version && sequence >= appliedProgressSequence) {
+      progressError.value = '本次学习记录结果未确认，未自动重试以免重复累计。' + errorMessage(cause)
+    }
+  }
 }
 /**
  * 响应滚动。
@@ -348,7 +388,7 @@ async function persistProgress() {
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
 function onScroll() {
-  if (!signedIn.value || planMode.value || !chapter.value) return
+  if (!visible || !signedIn.value || planMode.value || !currentChapterId) return
   lastScrollRatio = readingRatio()
   if (progressTimer) return
   progressTimer = window.setTimeout(() => { progressTimer = null; persistProgress() }, 10000)
@@ -356,19 +396,37 @@ function onScroll() {
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
-watch(() => [route.params.tutorialSlug, route.params.chapterSlug, route.query.plan], async () => {
+watch(() => [route.params.tutorialSlug, route.params.chapterSlug, route.query.plan, route.path], () => {
   if (progressTimer) { window.clearTimeout(progressTimer); progressTimer = null }
-  if (currentChapterId) await persistProgress()
-  await load()
+  if (currentChapterId) persistProgress()
+  currentChapterId = null
+  progressSessionEnabled = false
+  load()
 }, { immediate: true })
 window.addEventListener('scroll', onScroll, { passive: true })
+/** Stop counting hidden time; flushing is best effort, never a guaranteed close-time write. */
+function onVisibilityChange() {
+  if (document.visibilityState === 'hidden') {
+    if (visible) persistProgress()
+    visible = false
+    if (progressTimer) { window.clearTimeout(progressTimer); progressTimer = null }
+  } else {
+    visible = true
+    lastSaveAt = Date.now()
+  }
+}
+document.addEventListener('visibilitychange', onVisibilityChange)
 /**
  * 组件销毁后执行剩余清理回调。
  */
 onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
-  if (progressTimer) window.clearTimeout(progressTimer)
   persistProgress()
+  active = false
+  load.version += 1
+  window.removeEventListener('scroll', onScroll)
+  document.removeEventListener('visibilitychange', onVisibilityChange)
+  document.removeEventListener('keydown', onDirectoryKey)
+  if (progressTimer) window.clearTimeout(progressTimer)
 })
 </script>
 
@@ -379,9 +437,10 @@ onUnmounted(() => {
     <p v-else-if="error && !chapter" role="alert">{{ error }}</p>
     <p v-else-if="!chapter">章节不存在或尚未公开。</p>
     <template v-else>
-      <button class="tutorial-reader__drawer-toggle" type="button" :aria-expanded="drawerOpen" @click="drawerOpen = !drawerOpen">{{ drawerOpen ? '关闭目录' : '目录' }}</button>
+      <button ref="drawerTrigger" class="tutorial-reader__drawer-toggle" type="button" :aria-expanded="drawerOpen" :aria-controls="drawerId" @click="drawerOpen = !drawerOpen">{{ drawerOpen ? '关闭目录' : '目录' }}</button>
       <div v-if="drawerOpen" class="tutorial-reader__backdrop" @click="drawerOpen = false"></div>
-      <aside class="tutorial-reader__sidebar" :class="{ 'is-open': drawerOpen }">
+      <aside :id="drawerId" ref="sidebar" class="tutorial-reader__sidebar" :class="{ 'is-open': drawerOpen }"
+        :role="drawerOpen ? 'dialog' : undefined" :aria-modal="drawerOpen ? 'true' : undefined" aria-label="课程目录">
         <RouterLink :to="tutorialPath(`/${tutorial.slug}`)" class="tutorial-reader__course">{{ tutorial.title }}</RouterLink>
         <div class="tutorial-reader__progress"><span :style="{ width: `${progress}%` }"></span></div><p class="tutorial-reader__progress-label">课程目录位置 {{ chapterIndex + 1 }} / {{ chapters.length }}</p>
         <!--

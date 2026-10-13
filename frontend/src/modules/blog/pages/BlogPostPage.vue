@@ -11,13 +11,13 @@
  */
 
 
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { getPublicPost } from '../api/blogApi'
 import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import BlogProse from '../components/BlogProse.vue'
-import ArticleOutline from '../components/ArticleOutline.vue'
+import ReadingDrawer from '../components/ReadingDrawer.vue'
 import ReadingAside from '../components/ReadingAside.vue'
 import ReadingProgress from '../components/ReadingProgress.vue'
 import { estimateReadingStats, fullDate } from '../support/display'
@@ -71,7 +71,7 @@ const notFound = ref(false)
  * drawerOpen；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
-const drawerOpen = ref(false)
+
 
 /**
  * 统计字段；通过 computed 建立。
@@ -96,31 +96,36 @@ const readMinutes = computed(() => stats.value.readMinutes)
  * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
+let requestGeneration = 0
+onBeforeUnmount(() => { requestGeneration += 1 })
 async function load() {
+  const generation = ++requestGeneration
+  const slug = route.params.slug
   loading.value = true
   errorText.value = ''
   notFound.value = false
   post.value = null
   outline.value = []
-  drawerOpen.value = false
   try {
-    post.value = await getPublicPost(route.params.slug)
+    const result = await getPublicPost(slug)
+    if (generation !== requestGeneration) return
+    post.value = result
   } catch (cause) {
+    if (generation !== requestGeneration) return
     if (cause?.response?.status === 404) notFound.value = true
     else errorText.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (generation === requestGeneration) loading.value = false
   }
 }
 
 /**
  * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
  */
-onMounted(load)
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
-watch(() => route.params.slug, load)
+watch(() => route.params.slug, load, { immediate: true })
 </script>
 
 <template>
@@ -142,9 +147,7 @@ watch(() => route.params.slug, load)
     </div>
 
     <article v-else-if="post" class="article page-container">
-      <button v-if="outline.length" class="article__drawer-button" type="button" @click="drawerOpen = true">
-        本页目录 · {{ outline.length }}
-      </button>
+      <ReadingDrawer :key="post.id || post.slug" :items="outline" />
       <div class="article__reading reading-layout">
         <ReadingAside
           class="article__toc reading-layout__sidebar"
@@ -153,7 +156,7 @@ watch(() => route.params.slug, load)
           :char-count="charCount"
           :read-minutes="readMinutes"
         />
-        <main class="article__body">
+        <div class="article__body">
       <header class="article-hero">
         <nav>
           <RouterLink :to="contentPath('/blog')">博客时间线</RouterLink>
@@ -200,19 +203,10 @@ watch(() => route.params.slug, load)
           <p class="article__back">
             <RouterLink :to="contentPath('/blog')">← 返回博客时间线</RouterLink>
           </p>
-        </main>
-
-      </div>
-
-      <div v-if="drawerOpen" class="article-drawer" @click.self="drawerOpen = false">
-        <div>
-          <header>
-            <strong>本页目录</strong>
-            <button type="button" aria-label="关闭目录" @click="drawerOpen = false">×</button>
-          </header>
-          <ArticleOutline :items="outline" navigation-style="curriculum" hide-title />
         </div>
+
       </div>
+
     </article>
   </section>
 </template>
@@ -452,83 +446,6 @@ watch(() => route.params.slug, load)
  */
 .article-state a { color: var(--primary); }
 
-/* 窄屏：侧栏收起，改用底部抽屉 */
-.article__drawer-button,
-.article-drawer { display: none; }
-
-/**
- * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。
- */
-@media (max-width: 720px) {
-  /**
-   * 样式范围：.article__drawer-button。
-   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
-   */
-  .article__drawer-button {
-    display: inline-flex;
-    margin-bottom: var(--space-5);
-    padding: 9px 14px;
-    border: 1px solid var(--border-strong);
-    border-radius: 999px;
-    color: var(--primary);
-    background: var(--bg-surface);
-    cursor: pointer;
-  }
-
-  /**
-   * 样式范围：.article-drawer。
-   * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 各行列间距规则 控制。
-   * 相对视口定位，用于浮层或固定操作区域；层叠顺序由 z-index 决定。
-   */
-  .article-drawer {
-    position: fixed;
-    inset: 0;
-    z-index: 80;
-    display: grid;
-    align-items: end;
-    background: rgb(0 0 0 / 0.45);
-  }
-
-  /**
-   * 样式范围：.article-drawer > div。
-   * 溢出处理：整体 auto。
-   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
-   */
-  .article-drawer > div {
-    max-height: 75vh;
-    overflow: auto;
-    padding: var(--space-5);
-    border-radius: 20px 20px 0 0;
-    background: var(--bg-surface);
-  }
-
-  /**
-   * 样式范围：.article-drawer header。
-   * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
-   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
-   */
-  .article-drawer header {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: var(--space-4);
-  }
-
-  /**
-   * 样式范围：.article-drawer button。
-   * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
-   */
-  .article-drawer button {
-    border: 0;
-    color: var(--text-primary);
-    background: transparent;
-    font-size: 24px;
-    cursor: pointer;
-  }
-}
-
-/**
- * 响应式或设备条件：(max-width: 600px)；仅在该条件成立时覆盖基础样式。
- */
 @media (max-width: 600px) {
   /**
    * 样式范围：.article-hero。

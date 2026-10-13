@@ -8,6 +8,7 @@
  */
 
 import { createRouter, createWebHistory } from 'vue-router'
+import { resolveScrollPosition } from './scrollBehavior'
 import { useAuthStore } from '../modules/account/stores/authStore'
 import { handleRouteLoadError, routeLoadFailed } from '../shared/routeLoadFailure'
 import {
@@ -304,11 +305,7 @@ routes.push({
 const router = createRouter({
   history: createWebHistory(),
   routes,
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) return savedPosition
-    if (to.hash) return { el: to.hash, top: 90 }
-    if (to.path !== from.path || to.fullPath !== from.fullPath) return { left: 0, top: 0 }
-  },
+  scrollBehavior: resolveScrollPosition,
 })
 
 /*

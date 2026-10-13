@@ -42,6 +42,24 @@ npm run build
 
 教程后台分页和筛选在服务端执行，排序模式使用完整的轻量目录，不能只提交当前页 ID。删除确认要求文章标题，允许复制时附带一层常见书名号或方括号，以及等价空格；输入不同标题仍不可删除。已发布文章应先撤回再删除。
 
+## V2.1 浏览器回归与交互约定
+
+```bash
+npm ci
+npx playwright install chromium
+npm run test:e2e
+```
+
+套件自动启动并停止 `127.0.0.1:5189` 的 Vite，所有 API 都由每个用例独立的内存假服务接管；Vditor CDN 资源来自已安装的本地包，不连接生产域名、账号或数据库。失败截图/trace 位于 `test-results/`，HTML 报告位于 `playwright-report/`，这些目录被 Git 忽略。`npm test` 仍只运行 Vitest，不自动启动浏览器。
+
+默认使用 Playwright Chromium，CI 安装其系统依赖。Windows 若 Chromium 报“并行配置不正确”，可用已有 Edge 验证：PowerShell 设置 `$env:PLAYWRIGHT_CHANNEL='msedge'` 后运行同一命令；不需要导入个人浏览器配置或 Cookie。这个变量只选择测试浏览器，测试服务地址保持 loopback。
+
+查询参数变化保留当前视口，真正更换页面回顶，主动分页按原有规则滚动。共享分页在真实刷新后等待异步数据加载，再恢复本标签页保存的位置；不会把旧位置应用到后续 SPA 导航。作品的精选区与结果区都加载完成后才恢复。
+
+标签管理支持名称确认后删除未被引用标签；包含草稿或撤回文章的任一绑定都会在后端拒绝删除，应先解除关联或使用停用。专题已有删除入口，须先移出全部文章。博客与作品共用带编号的平级目录和手机目录抽屉；教程保留课程树并支持 Escape 与焦点返回。
+
+浏览器假服务验证实际前端行为；真实接口权限、事务、文档 HTML 200/404 由后端测试和预发布验收补充。完整结果见 [稳定性审计](../docs/audit/v2.1-stability-report.md)，发布核对见 [部署清单](../docs/deployment/v2.1-release-checklist.md)。
+
 ## 第三方许可
 
 圆形主题切换和图标过渡改编自 [clay-blog](https://github.com/laogou717/clay-blog)，提交 `65d2fa5`。以下保留原始 MIT 版权和许可：

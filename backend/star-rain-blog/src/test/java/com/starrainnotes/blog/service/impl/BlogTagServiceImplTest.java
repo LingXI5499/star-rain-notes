@@ -336,14 +336,14 @@ class BlogTagServiceImplTest {
      * 关键处理步骤调用 <code>Arrays.stream</code>、<code>BlogTagService.class.getDeclaredMethods</code>、<code>name.toLowerCase</code>。
      */
     @Test
-    @DisplayName("服务契约不提供删除方法：V2 不允许级联删除已被文章使用的 Tag")
-    void serviceExposesNoDeleteOperation() {
+    @DisplayName("提供未引用标签删除，同时保留停用与启用；不提供级联删除契约")
+    void serviceExposesExplicitDeletionAndPreservesDisableWorkflow() {
         List<String> methodNames = Arrays.stream(BlogTagService.class.getDeclaredMethods())
                 .map(Method::getName)
                 .toList();
 
-        assertThat(methodNames).noneMatch(name -> name.toLowerCase().contains("delete"));
-        assertThat(methodNames).contains("disable", "enable");
+        assertThat(methodNames).contains("delete", "disable", "enable");
+        assertThat(methodNames.stream().filter(name -> name.toLowerCase().contains("delete"))).containsExactly("delete");
     }
 
     /**

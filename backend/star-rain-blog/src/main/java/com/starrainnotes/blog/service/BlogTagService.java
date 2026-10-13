@@ -25,6 +25,8 @@ import java.util.List;
  * 声明业务服务的输入和输出，使接入层与具体实现分离；状态转换和数据写入由实现类处理。
  */
 public interface BlogTagService {
+    /** Delete an unused tag; referenced tags must be disabled instead. */
+    void delete(Long tagId);
 
     /**
      * 分页读取博客标签。
