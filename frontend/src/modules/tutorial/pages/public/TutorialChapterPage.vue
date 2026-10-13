@@ -141,6 +141,10 @@ let progressTimer = null
 let lastSaveAt = Date.now()
 let currentChapterId = null
 let lastScrollRatio = 0
+let active = true
+let visible = document.visibilityState !== 'hidden'
+let progressSequence = 0
+let appliedProgressSequence = 0
 /**
  * drawerOpen；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -244,10 +248,13 @@ async function load() {
     drawerOpen.value = false
     if (signedIn.value && !planMode.value) {
       try {
-        reading.value = await getChapterProgress(body.id)
+        const sequence = progressSequence
+        const result = await getChapterProgress(body.id)
+        if (!active || version !== load.version || sequence !== progressSequence) return
+        reading.value = result
         lastScrollRatio = Number(reading.value?.progressRatio || 0)
       }
-      catch (cause) { progressError.value = errorMessage(cause) }
+      catch (cause) { if (active && version === load.version) progressError.value = errorMessage(cause) }
     }
   } catch (cause) { if (version === load.version) { chapter.value = null; error.value = errorMessage(cause) } }
   finally { if (version === load.version) { loading.value = false; chapterLoading.value = false } }
@@ -333,14 +340,26 @@ function readingRatio() {
  */
 async function persistProgress() {
   if (!signedIn.value || planMode.value || !currentChapterId) return
-  const elapsed = Math.max(0, Math.min(1800, Math.floor((Date.now() - lastSaveAt) / 1000)))
-  lastSaveAt = Date.now()
+  // Capture ID, position, seconds and session together before yielding.
+  const now = Date.now()
+  const elapsed = visible ? Math.max(0, Math.min(1800, Math.floor((now - lastSaveAt) / 1000))) : 0
+  lastSaveAt = now
+  const id = currentChapterId
+  const version = load.version
+  const sequence = ++progressSequence
+  const payload = { progressRatio: lastScrollRatio, studySecondsDelta: elapsed }
   try {
-    reading.value = await saveChapterProgress(currentChapterId, {
-      progressRatio: lastScrollRatio, studySecondsDelta: elapsed,
-    })
+    const result = await saveChapterProgress(id, payload)
+    if (!active || version !== load.version || id !== currentChapterId || sequence < appliedProgressSequence) return
+    appliedProgressSequence = sequence
+    reading.value = result
     progressError.value = ''
-  } catch (cause) { progressError.value = errorMessage(cause) }
+  } catch (cause) {
+    // Deltas are non-idempotent: do not replay an uncertain request.
+    if (active && version === load.version && sequence >= appliedProgressSequence) {
+      progressError.value = '本次学习记录结果未确认，未自动重试以免重复累计。' + errorMessage(cause)
+    }
+  }
 }
 /**
  * 响应滚动。
@@ -348,7 +367,7 @@ async function persistProgress() {
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
 function onScroll() {
-  if (!signedIn.value || planMode.value || !chapter.value) return
+  if (!visible || !signedIn.value || planMode.value || !currentChapterId) return
   lastScrollRatio = readingRatio()
   if (progressTimer) return
   progressTimer = window.setTimeout(() => { progressTimer = null; persistProgress() }, 10000)
@@ -356,19 +375,35 @@ function onScroll() {
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
-watch(() => [route.params.tutorialSlug, route.params.chapterSlug, route.query.plan], async () => {
+watch(() => [route.params.tutorialSlug, route.params.chapterSlug, route.query.plan, route.path], () => {
   if (progressTimer) { window.clearTimeout(progressTimer); progressTimer = null }
-  if (currentChapterId) await persistProgress()
-  await load()
+  if (currentChapterId) persistProgress()
+  currentChapterId = null
+  load()
 }, { immediate: true })
 window.addEventListener('scroll', onScroll, { passive: true })
+/** Stop counting hidden time; flushing is best effort, never a guaranteed close-time write. */
+function onVisibilityChange() {
+  if (document.visibilityState === 'hidden') {
+    if (visible) persistProgress()
+    visible = false
+    if (progressTimer) { window.clearTimeout(progressTimer); progressTimer = null }
+  } else {
+    visible = true
+    lastSaveAt = Date.now()
+  }
+}
+document.addEventListener('visibilitychange', onVisibilityChange)
 /**
  * 组件销毁后执行剩余清理回调。
  */
 onUnmounted(() => {
-  window.removeEventListener('scroll', onScroll)
-  if (progressTimer) window.clearTimeout(progressTimer)
   persistProgress()
+  active = false
+  load.version += 1
+  window.removeEventListener('scroll', onScroll)
+  document.removeEventListener('visibilitychange', onVisibilityChange)
+  if (progressTimer) window.clearTimeout(progressTimer)
 })
 </script>
 

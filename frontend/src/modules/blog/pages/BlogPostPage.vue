@@ -11,7 +11,7 @@
  */
 
 
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { getPublicPost } from '../api/blogApi'
 import { errorMessage } from '../../../shared/http'
@@ -96,7 +96,11 @@ const readMinutes = computed(() => stats.value.readMinutes)
  * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
+let requestGeneration = 0
+onBeforeUnmount(() => { requestGeneration += 1 })
 async function load() {
+  const generation = ++requestGeneration
+  const slug = route.params.slug
   loading.value = true
   errorText.value = ''
   notFound.value = false
@@ -104,23 +108,25 @@ async function load() {
   outline.value = []
   drawerOpen.value = false
   try {
-    post.value = await getPublicPost(route.params.slug)
+    const result = await getPublicPost(slug)
+    if (generation !== requestGeneration) return
+    post.value = result
   } catch (cause) {
+    if (generation !== requestGeneration) return
     if (cause?.response?.status === 404) notFound.value = true
     else errorText.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (generation === requestGeneration) loading.value = false
   }
 }
 
 /**
  * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
  */
-onMounted(load)
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
-watch(() => route.params.slug, load)
+watch(() => route.params.slug, load, { immediate: true })
 </script>
 
 <template>
