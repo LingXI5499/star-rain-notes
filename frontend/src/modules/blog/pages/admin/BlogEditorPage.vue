@@ -10,7 +10,7 @@
 
 
 import { computed, onBeforeUnmount, onMounted, reactive, ref, watch } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { onBeforeRouteLeave, onBeforeRouteUpdate, useRoute, useRouter } from 'vue-router'
 import {
   createPost, createTag, deletePost, getAdminPost, listAdminTags,
   publishPost, restorePost, updatePost, updatePostBody, withdrawPost,
@@ -115,7 +115,11 @@ const editorKey = ref(0)
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const editorRef = ref(null)
-let keepEditorOnNextRoute = false
+let draftTransition = null
+let active = true
+let generation = 0
+let leaveConfirmation = null
+const uncertainSave = ref(false)
 /**
  * 确认弹窗；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -132,43 +136,36 @@ const confirmDialog = ref(null)
  * saved快照；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
-const savedSnapshot = ref('')
+const savedMeta = ref(null)
+const savedBody = ref('')
 /**
  * 快照的处理函数。
  * 主要协作：JSON.stringify。
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
 function snapshot() {
-  return JSON.stringify({
+  return {
     title: form.title,
     summary: form.summary,
     tagValues: [...form.tagValues],
     body: body.value,
-  })
+  }
 }
 /**
  * dirty；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
-const dirty = computed(() => savedSnapshot.value !== '' && savedSnapshot.value !== snapshot())
+const metaOf = value => JSON.stringify({ title: value.title, summary: value.summary, tagValues: value.tagValues })
+const dirty = computed(() => savedMeta.value !== null
+  && (savedMeta.value !== metaOf(snapshot()) || savedBody.value !== body.value))
 /**
  * markSaved的处理函数。
  * 主要协作：snapshot。
  * 更新的响应式状态包括 savedSnapshot；渲染由 Vue 的依赖跟踪触发。
  */
 function markSaved() {
-  savedSnapshot.value = snapshot()
-}
-/**
- * markMetaSaved的处理函数。
- * 主要协作：JSON.stringify。
- * 更新的响应式状态包括 savedSnapshot；渲染由 Vue 的依赖跟踪触发。
- * @param savedBody saved正文；默认值、解构字段与可选参数见函数签名。
- */
-function markMetaSaved(savedBody) {
-  savedSnapshot.value = JSON.stringify({
-    title: form.title, summary: form.summary, tagValues: [...form.tagValues], body: savedBody ?? '',
-  })
+  savedMeta.value = metaOf(snapshot())
+  savedBody.value = body.value
 }
 /**
  * 同步Editor正文。
@@ -208,9 +205,9 @@ async function loadTags() {
       const next = await listAdminTags({ page, pageSize: 100 })
       rows.push(...(next.items || []))
     }
-    tagOptions.value = rows
+    if (active) tagOptions.value = rows
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (active) error.value = errorMessage(cause)
   }
 }
 
@@ -222,6 +219,9 @@ async function loadTags() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function loadPost() {
+  const version = ++generation
+  uncertainSave.value = false
+  const id = postId.value
   if (isCreate.value) {
     detail.value = null
     form.title = ''
@@ -234,7 +234,8 @@ async function loadPost() {
   loading.value = true
   error.value = ''
   try {
-    const post = await getAdminPost(postId.value)
+    const post = await getAdminPost(id)
+    if (!active || version !== generation) return
     detail.value = post
     form.title = post.title
     form.summary = post.summary || ''
@@ -242,9 +243,9 @@ async function loadPost() {
     body.value = post.bodyMarkdown || ''
     markSaved()
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (active && version === generation) error.value = errorMessage(cause)
   } finally {
-    loading.value = false
+    if (active && version === generation) loading.value = false
   }
 }
 
@@ -266,18 +267,34 @@ async function pickBodyImage() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function leaveEditor() {
-  syncEditorBody()
-  if (dirty.value && !await confirmDialog.value.ask('正文或文章信息还没保存，离开后改动会丢失。确定返回列表吗？')) return
   await router.push('/useradmin/blog/manage')
 }
+
+/** One guard covers buttons, navigation, history and changes to the article parameter. */
+async function guardNavigation(to, from) {
+  if (draftTransition?.from === from.fullPath && draftTransition?.to === to.fullPath) return true
+  if (saving.value) {
+    error.value = '请求尚未结束，请等待结果后再离开编辑器。'
+    return false
+  }
+  syncEditorBody()
+  if (!dirty.value && !uncertainSave.value) return true
+  if (!leaveConfirmation) {
+    leaveConfirmation = confirmDialog.value.ask('正文或文章信息还没保存，或保存结果尚未核实。离开后改动会丢失，确定离开吗？')
+      .finally(() => { leaveConfirmation = null })
+  }
+  return active && await leaveConfirmation
+}
+onBeforeRouteLeave(guardNavigation)
+onBeforeRouteUpdate((to, from) => to.params.postId === from.params.postId ? true : guardNavigation(to, from))
 
 /*
  * 把「待创建的新标签名」先建成真实标签，再返回完整的 tagIds。
  * 已存在同名标签时直接复用，不重复建。
  */
-async function resolveTagIds() {
-  const ids = form.tagValues.filter((value) => typeof value === 'number')
-  for (const name of pendingTagNames.value) {
+async function resolveTagIds(values) {
+  const ids = values.filter((value) => typeof value === 'number')
+  for (const name of values.filter(value => typeof value === 'string')) {
     const existing = tagOptions.value.find(
       (tag) => tag.name.normalize('NFKC').trim().toLowerCase() === name.normalize('NFKC').trim().toLowerCase(),
     )
@@ -287,7 +304,7 @@ async function resolveTagIds() {
     }
     const created = await createTaxonomy(createTag, name, 'tag', 100)
     ids.push(created.id)
-    tagOptions.value = [...tagOptions.value, created]
+    if (active) tagOptions.value = [...tagOptions.value, created]
   }
   return Array.from(new Set(ids))
 }
@@ -299,95 +316,98 @@ async function resolveTagIds() {
  * @param { silent = false } = {} silentfalse；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function saveMeta({ silent = false } = {}) {
+/** Capture everything before tag creation or HTTP requests can yield. */
+async function runSave(operation) {
+  if (saving.value || loading.value || uncertainSave.value) return
   syncEditorBody()
-  if (!form.title.trim()) {
-    error.value = '请先填写文章标题。'
-    return false
-  }
-  saving.value = true
-  error.value = ''
-  if (!silent) notice.value = ''
-  try {
-    const tagIds = await resolveTagIds()
-    /*
-     * 刻意不传 slug：
-     *   创建时后端从标题派生（纯中文标题也有确定性回退）；
-     *   更新时字段缺省 = 不改，已发布的地址因此不会因为改标题而变化。
-     */
-    const payload = {
-      title: form.title,
-      summary: form.summary,
-      tagIds,
-    }
-
-    if (isCreate.value) {
-      const created = await createPost(payload)
-      detail.value = { ...created, bodyMarkdown: '' }
-      // 创建草稿只保存了元数据；正文还在编辑器里，必须保持为未保存状态。
-      markMetaSaved('')
-      notice.value = `草稿已创建（地址 ${created.slug}），可以继续写正文了。`
-      keepEditorOnNextRoute = true
-      await router.replace(`/useradmin/blog/editor/${created.id}`)
-      return true
-    }
-    const updated = await updatePost(postId.value, payload)
-    // PATCH 返回的是列表项 VO（没有正文与正文媒体引用），合并而不是整体替换，
-    // 否则正在编辑的正文与引用面板会被清空
-    detail.value = { ...detail.value, ...updated }
-    form.tagValues = (updated.tags || []).map((tag) => tag.id)
-    markMetaSaved(detail.value?.bodyMarkdown)
-    notice.value = '文章信息已保存。'
-    return true
-  } catch (cause) {
-    keepEditorOnNextRoute = false
-    error.value = errorMessage(cause)
-    return false
-  } finally {
-    saving.value = false
-  }
-}
-
-/**
- * 保存正文。
- * 主要协作：syncEditorBody、updatePostBody、markSaved、errorMessage。
- * 更新的响应式状态包括 saving、error、notice、detail；渲染由 Vue 的依赖跟踪触发。
- * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
- */
-async function saveBody() {
-  syncEditorBody()
+  const submitted = snapshot()
+  const context = { id: postId.value, version: generation, submitted }
   saving.value = true
   error.value = ''
   notice.value = ''
   try {
-    const updated = await updatePostBody(postId.value, body.value)
-    detail.value = updated
-    // 正文里的媒体引用由后端从正文解析后重建，这里把返回的引用集合显示出来便于核对
-    notice.value = `正文已保存，识别到 ${updated.contentMediaAssetIds?.length || 0} 个正文媒体引用。`
-    markSaved()
+    await operation(context)
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (!active || context.version !== generation) return
+    // A transport error cannot tell whether the server committed the request.
+    uncertainSave.value = !cause?.response || cause.response.status >= 500
+    error.value = uncertainSave.value
+      ? '保存结果尚未确认，输入已保留。请核实服务端内容后再重试；创建结果请在文章列表核实。'
+      : errorMessage(cause)
   } finally {
-    saving.value = false
+    draftTransition = null
+    if (active && context.version === generation) saving.value = false
   }
 }
 
-// 顶部「保存文章」：一次把元数据与正文都落库，新文章先建草稿再写正文
-/**
- * 保存全部。
- * 主要协作：saveMeta、body.value.trim、saveBody。
- * 更新的响应式状态包括 notice；渲染由 Vue 的依赖跟踪触发。
- * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
- */
-async function saveAll() {
-  const wasCreate = isCreate.value
-  const ok = await saveMeta({ silent: true })
-  if (!ok) return
-  if (wasCreate && !body.value.trim()) {
-    notice.value = '草稿已创建，可以继续写正文。'
-    return
+const validContext = context => active && context.version === generation
+
+/** Save only submitted metadata; the returned body cannot acknowledge editor input. */
+async function persistMeta(context) {
+  const submitted = context.submitted
+  if (!submitted.title.trim()) throw { response: { status: 400, data: { message: '请先填写文章标题。' } } }
+  const tagIds = await resolveTagIds(submitted.tagValues)
+  if (!validContext(context)) return false
+  const payload = { title: submitted.title, summary: submitted.summary, tagIds }
+  const created = context.id === null
+  const updated = await (created ? createPost(payload) : updatePost(context.id, payload))
+  if (!validContext(context)) return false
+  detail.value = created ? { ...updated, bodyMarkdown: '' } : { ...detail.value, ...updated }
+  const tags = (updated.tags || []).map(tag => tag.id)
+  // Convert submitted tag names to IDs only when the selection has not changed.
+  if (JSON.stringify(form.tagValues) === JSON.stringify(submitted.tagValues)) form.tagValues = tags
+  savedMeta.value = metaOf({ ...submitted, tagValues: tags })
+  notice.value = created ? `草稿已创建（地址 ${updated.slug}），正文尚未保存。` : '文章信息已保存，正文需单独保存。'
+  if (created) {
+    savedBody.value = ''
+    context.id = updated.id
+    draftTransition = { from: route.fullPath, to: `/useradmin/blog/editor/${updated.id}` }
+    try {
+      const failure = await router.replace(draftTransition.to)
+      if (failure) throw new Error('Draft navigation failed')
+    } finally { draftTransition = null }
   }
-  await saveBody()
+  return true
+}
+
+/** A body response acknowledges exactly the Markdown submitted at request start. */
+async function persistBody(context) {
+  if (!context.id || !validContext(context)) return
+  const updated = await updatePostBody(context.id, context.submitted.body)
+  if (!validContext(context)) return
+  detail.value = updated
+  savedBody.value = context.submitted.body
+  notice.value = `正文已保存，识别到 ${updated.contentMediaAssetIds?.length || 0} 个正文媒体引用。`
+}
+
+async function saveMeta() { await runSave(persistMeta) }
+async function saveBody() { await runSave(persistBody) }
+async function saveAll() {
+  await runSave(async context => {
+    if (!await persistMeta(context)) return
+    if (!context.submitted.body.trim() && !savedBody.value) return
+    await persistBody(context)
+  })
+}
+
+/** Read back uncertain writes without replacing any current input or replaying a write. */
+async function verifySavedContent() {
+  if (saving.value || !postId.value) return
+  const context = { id: postId.value, version: generation }
+  saving.value = true
+  try {
+    const persisted = await getAdminPost(context.id)
+    if (!validContext(context)) return
+    detail.value = persisted
+    savedMeta.value = metaOf({ title: persisted.title, summary: persisted.summary || '', tagValues: (persisted.tags || []).map(tag => tag.id) })
+    savedBody.value = persisted.bodyMarkdown || ''
+    uncertainSave.value = false
+    error.value = ''
+    syncEditorBody()
+    notice.value = dirty.value ? '服务端内容已核实，当前输入仍有未保存改动，可继续保存。' : '服务端内容已核实，与当前输入一致。'
+  } catch (cause) {
+    if (validContext(context)) error.value = errorMessage(cause)
+  } finally { if (validContext(context)) saving.value = false }
 }
 
 /**
@@ -398,7 +418,8 @@ async function saveAll() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function act(action) {
-  if (!postId.value) return
+  if (!postId.value || saving.value || loading.value || uncertainSave.value) return
+  const context = { id: postId.value, version: generation }
   if (action === 'delete') {
     const accepted = await confirmDialog.value.ask(`确认删除《${form.title}》？标签、专题关系与媒体引用都会被解除。`)
     if (!accepted) return
@@ -407,18 +428,23 @@ async function act(action) {
   error.value = ''
   notice.value = ''
   try {
-    if (action === 'publish') await publishPost(postId.value)
-    if (action === 'withdraw') await withdrawPost(postId.value)
-    if (action === 'restore') await restorePost(postId.value)
+    if (action === 'publish') await publishPost(context.id)
+    if (action === 'withdraw') await withdrawPost(context.id)
+    if (action === 'restore') await restorePost(context.id)
     if (action === 'delete') {
-      await deletePost(postId.value)
+      await deletePost(context.id)
+      if (!validContext(context)) return
+      savedMeta.value = metaOf(snapshot())
+      savedBody.value = body.value
+      saving.value = false
       await router.replace('/useradmin/blog/manage')
       return
     }
     notice.value = '状态已更新。'
     // 只刷新详情里的状态与时间戳，不碰 form / body——
     // 改状态之前可能有还没保存的正文，重新 loadPost() 会把它悄悄冲掉
-    detail.value = await getAdminPost(postId.value)
+    const updated = await getAdminPost(context.id)
+    if (validContext(context)) detail.value = updated
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -435,7 +461,7 @@ async function act(action) {
  */
 function onBeforeUnload(event) {
   syncEditorBody()
-  if (!dirty.value) return
+  if (!dirty.value && !saving.value && !uncertainSave.value) return
   event.preventDefault()
   event.returnValue = ''
 }
@@ -452,14 +478,17 @@ onMounted(() => {
 /**
  * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
  */
-onBeforeUnmount(() => window.removeEventListener('beforeunload', onBeforeUnload))
+onBeforeUnmount(() => {
+  active = false
+  generation += 1
+  window.removeEventListener('beforeunload', onBeforeUnload)
+})
 
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
 watch(() => route.params.postId, () => {
-  if (keepEditorOnNextRoute) {
-    keepEditorOnNextRoute = false
+  if (draftTransition?.to === route.fullPath) {
     return
   }
   editorKey.value += 1
@@ -490,6 +519,7 @@ watch(() => route.params.postId, () => {
     </div>
 
     <p v-if="error" class="error" role="alert">{{ error }}</p>
+    <button v-if="uncertainSave && postId" type="button" :disabled="saving" @click="verifySavedContent">核实服务端保存结果</button>
     <p v-if="notice" class="notice" role="status">{{ notice }}</p>
     <p v-if="loading" class="loading" role="status">正在加载文章…</p>
 
