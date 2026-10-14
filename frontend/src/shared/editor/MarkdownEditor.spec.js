@@ -81,6 +81,17 @@ describe('shared Markdown editor', () => {
     expect(state.insert).not.toHaveBeenCalled()
     wrapper.unmount()
   })
+  it('aborts an old upload on a context switch even when both fields have identical text', async () => {
+    let resolve
+    state.upload.mockReturnValue(new Promise(done => { resolve = done }))
+    const wrapper = await editor()
+    await wrapper.setProps({editorContext:{accountId:1,module:'blog',documentId:'A',field:'body',baseline:'原文'}})
+    transfer(wrapper,'paste',[new File(['PNG'],'late.png')])
+    await wrapper.setProps({editorContext:{accountId:1,module:'blog',documentId:'B',field:'body',baseline:'原文'}})
+    expect(state.upload.mock.calls[0][2].signal.aborted).toBe(true)
+    resolve({originalName:'late.png',contentUrl:'/api/media/assets/20/content'});await flushPromises()
+    expect(state.insert).not.toHaveBeenCalled();wrapper.unmount()
+  })
   it('keeps the document untouched on upload failure and on unmount', async () => {
     state.upload.mockRejectedValue({ response: { status: 500, data: { code: 'MEDIA_STORAGE_WRITE_FAILED' } } })
     const wrapper = await editor()

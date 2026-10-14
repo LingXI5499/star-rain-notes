@@ -188,6 +188,16 @@ test('source table editing preserves pipes and image property changes keep the m
   expect(saved).toContain('full')
   expect(saved).toContain('更新的结构图')
 })
+test('TSV has an explicit preview and inserts only after confirmation at the captured source caret',async({page,fixture})=>{
+  await open(page);await page.getByLabel('编辑视图').selectOption('sv');await sourcePoint(page,'Original body')
+  await page.getByRole('button',{name:'编辑表格',exact:true}).click();await page.getByText('粘贴 TSV 转表格',{exact:true}).click()
+  await page.getByLabel('TSV 数据').fill('中文\t值\n转义|字符\t1')
+  await expect(page.getByLabel('TSV 转换预览')).toContainText('转义\\|字符')
+  expect(fixture.savedBodies).toHaveLength(0)
+  await page.getByRole('button',{name:'确认转换并插入',exact:true}).click()
+  await page.getByRole('button',{name:'保存正文',exact:true}).click()
+  expect(fixture.savedBodies.at(-1)).toContain('转义\\|字符');expect(fixture.savedBodies.at(-1)).toContain('Original body')
+})
 test('browser recovery survives reload and never saves until the user confirms server saving', async ({
   page,
   fixture,
@@ -205,6 +215,83 @@ test('browser recovery survives reload and never saves until the user confirms s
   expect(fixture.savedBodies).toHaveLength(0)
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
   expect(fixture.savedBodies.at(-1)).toContain('Local offline text')
+})
+test('Markdown import can be cancelled, then explicitly applied and exported without saving', async ({
+  page,
+  fixture,
+}) => {
+  await open(page)
+  const imported = '# 导入标题\n\n新增 **正文**\n'
+  const picker = page.locator('.editor-file-tools input[type=file]')
+  await picker.setInputFiles({
+    name: 'test.md',
+    mimeType: 'text/markdown',
+    buffer: Buffer.from(imported),
+  })
+  await expect(page.getByRole('dialog', { name: 'Markdown 导入确认' })).toBeVisible()
+  await page.getByRole('button', { name: '取消导入' }).click()
+  await expect(page.locator('.vditor-ir p').filter({ hasText: 'Original body' })).toBeVisible()
+  await picker.setInputFiles({
+    name: 'test.md',
+    mimeType: 'text/markdown',
+    buffer: Buffer.from(imported),
+  })
+  await page.getByRole('button', { name: '确认导入到编辑器' }).click()
+  await expect(page.locator('.vditor-sv[contenteditable=true]')).toContainText('新增 **正文**')
+  expect(fixture.savedBodies).toHaveLength(0)
+  const downloaded = page.waitForEvent('download')
+  await page.getByRole('button', { name: '导出 Markdown', exact: true }).click()
+  expect((await downloaded).suggestedFilename()).toBe('导入标题.md')
+})
+test('Word export downloads a real docx and account shortcut settings apply only in the editor', async ({
+  page,
+  fixture,
+}) => {
+  const input = await open(page)
+  await page.getByRole('button', { name: '快捷键 ?' }).click()
+  await page.getByLabel('配置H2快捷键').fill('Alt+7')
+  await page.getByRole('button', { name: '保存快捷键', exact: true }).click()
+  await input.locator('p').filter({ hasText: 'Original body' }).click()
+  await page.keyboard.press('Alt+7')
+  await expect(input.locator('h2')).toContainText('Original body')
+  const downloaded = page.waitForEvent('download')
+  await page.getByRole('button', { name: '导出 Word', exact: true }).click()
+  expect((await downloaded).suggestedFilename()).toMatch(/\.docx$/)
+  expect(fixture.savedBodies).toHaveLength(0)
+})
+test('English and Chinese editors isolate focus and import suspends existing automatic saving', async ({
+  page,
+  fixture,
+}) => {
+  await page.goto('/useradmin/english/writing/articles/2/edit')
+  const editors = page.locator('.markdown-editor')
+  await expect(editors).toHaveCount(2)
+  const en = editors.nth(0),
+    zh = editors.nth(1)
+  await expect(en.getByRole('button', { name: 'H2', exact: true })).toBeEnabled()
+  await en.locator('.vditor-ir p').click()
+  await page.keyboard.press('Alt+2')
+  await expect(en.locator('.vditor-ir h2')).toContainText('English body')
+  await page.getByText('中文译文 · 可选', { exact: true }).click()
+  await expect(zh.locator('.vditor-ir p')).toContainText('中文正文')
+  await expect(zh.locator('.vditor-ir h2')).toHaveCount(0)
+  await expect.poll(() => fixture.writingSaves.length).toBe(1)
+  const count = fixture.writingSaves.length
+  await en
+    .locator('.editor-file-tools input[type=file]')
+    .setInputFiles({
+      name: 'recovery.md',
+      mimeType: 'text/markdown',
+      buffer: Buffer.from('# Restored draft\n\nLocal only\n'),
+    })
+  await en.getByRole('button', { name: '确认导入到编辑器' }).click()
+  await expect(page.getByRole('status').filter({ hasText: '自动保存已暂停' })).toBeVisible()
+  await page.waitForTimeout(1800)
+  expect(fixture.writingSaves).toHaveLength(count)
+  await page.getByRole('button', { name: '确认保存恢复稿', exact: true }).click()
+  await expect.poll(() => fixture.writingSaves.length).toBe(count + 1)
+  expect(fixture.writingSaves.at(-1).bodyMarkdown).toContain('Restored draft')
+  expect(fixture.writingSaves.at(-1).translationZhMarkdown).toContain('中文正文')
 })
 test('HTTP 409 retains the local backup for a deliberate recovery after reload', async ({
   page,

@@ -86,7 +86,7 @@ function table(command) {
 }
 function convertTsv() {
   safe(() => {
-    props.adapter.restore()
+    if (!props.adapter.restore()) throw new Error('插入位置已变化，请先回到源码正文选择插入位置。')
     props.adapter.insert(tsvTable(tsv.value))
     panel.value = ''
   })
@@ -222,7 +222,7 @@ async function checkMedia() {
     try {
       const asset = await props.getMedia(item.id)
       if (epoch !== generation || !active) return
-      item.accessLevel = asset.accessLevel
+      item.accessLevel = asset.accessLevel || '无法确认，请到媒体库核对'
     } catch {
       if (epoch !== generation || !active) return
       item.accessLevel = '无法确认，请到媒体库核对'

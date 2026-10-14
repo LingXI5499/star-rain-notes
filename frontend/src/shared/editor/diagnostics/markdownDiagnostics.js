@@ -54,15 +54,19 @@ export function diagnoseMarkdown(source) {
       return
     }
     if (/^\s*:::/.test(line)) {
-      if (group) {
+      if (group !== null) {
         group = null
       } else {
         group = index
       }
       return
     }
-    if (/^\s*\$\$\s*$/.test(line)) {
-      math = math === null ? index : null
+    if (math && ((math.kind === '$$' && /^\s*\$\$\s*$/.test(line)) || (math.kind === '\\[' && /^\s*\\\]\s*$/.test(line)))) {
+      math = null
+      return
+    }
+    if (!math && /^\s*(?:\$\$|\\\[)\s*$/.test(line)) {
+      math = {line:index,kind:line.trim()}
       return
     }
     if (protectedLines.has(index)) return
@@ -72,7 +76,7 @@ export function diagnoseMarkdown(source) {
     if (/\[[^\]\n]*\]\(\s*\)/.test(line)) add('MD003', index, '链接地址为空，请补充目标地址。')
   })
   if (fence) add('MD004', fence.line, '代码围栏未闭合。')
-  if (math !== null) add('MD004', math, '块公式未闭合。')
+  if (math !== null) add('MD004', math.line, '块公式未闭合。')
   if (group !== null) add('MD009', group, '代码组容器未闭合。')
   for (const image of markdownImages(source)) {
     const line = source.slice(0, image.start).split('\n').length - 1

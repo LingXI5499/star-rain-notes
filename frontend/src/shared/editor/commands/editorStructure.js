@@ -20,7 +20,7 @@ export function markdownBlocks(source) {
   const lines = String(source).split('\n')
   const protectedLines = new Set()
   let fence = null,
-    math = false,
+    math = null,
     group = false
   lines.forEach((line, index) => {
     const marker = line.match(/^ {0,3}(`{3,}|~{3,})/)
@@ -49,12 +49,17 @@ export function markdownBlocks(source) {
       protectedLines.add(index)
       return
     }
-    if (/^\s*\$\$\s*$/.test(line)) {
+    if (math) {
       protectedLines.add(index)
-      math = !math
+      if ((math === '$$' && /^\s*\$\$\s*$/.test(line)) || (math === '\\[' && /^\s*\\\]\s*$/.test(line))) math = null
       return
     }
-    if (math || /^ {4}|^\t/.test(line)) protectedLines.add(index)
+    if (/^\s*(?:\$\$|\\\[)\s*$/.test(line)) {
+      protectedLines.add(index)
+      math = line.trim()
+      return
+    }
+    if (/^\s*(?:\$\$.*\$\$|\\\[.*\\\])\s*$/.test(line) || /^ {4}|^\t/.test(line)) protectedLines.add(index)
   })
   const tokens = parser.parse(source, {})
   const blocks = tokens

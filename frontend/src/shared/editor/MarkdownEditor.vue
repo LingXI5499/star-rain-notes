@@ -26,6 +26,7 @@ import { createVditorAdapter } from './commands/vditorAdapter'
 import { normalizeVditorMarkdown } from './commands/editorDocument'
 import EditorRecovery from './EditorRecovery.vue'
 import EditorDiagnostics from './EditorDiagnostics.vue'
+import EditorFileTools from './EditorFileTools.vue'
 
 /*
  * 文章正文编辑器 —— 对标 V1 `components/MarkdownEditor.vue`（Vditor，IR 即时渲染）。
@@ -773,6 +774,7 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
     <EditorRecovery :context="editorContext" :source="modelValue" :read-only="readOnly || !editorReady" @restore="applyLocalContent" />
     <p v-if="longDocument" role="status">正文超过 10 万字符，采用源码视图减少大规模渲染开销；阅读效果请使用预览。保存格式仍为 Markdown。</p>
     <EditorDiagnostics :context="editorContext" :source="modelValue" :get-media="getMedia" />
+    <EditorFileTools :adapter="adapter" :context="editorContext" :ready="editorReady" :read-only="readOnly" @apply="applyLocalContent" />
     <input ref="imageInput" class="markdown-editor__file-input" type="file" :accept="IMAGE_ACCEPT" multiple aria-label="上传正文图片" @change="onImageFiles" />
     <div ref="host" class="markdown-editor__host" />
     <div class="markdown-editor__image-actions">

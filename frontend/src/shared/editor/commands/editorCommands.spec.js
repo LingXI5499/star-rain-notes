@@ -38,6 +38,10 @@ describe('semantic heading edits', () => {
     expect(() => headingEdit('a\nb', 0, 0, 2)).toThrow()
     expect(() => headingEdit('title\n===', 0, 0, 2)).toThrow()
   })
+  it.each(['\\[\n# formula\n\\]', '\\[x^2\\]', '$$x^2$$'])('protects display formula syntax %s',source=>{
+    expect(()=>headingEdit(source,source.indexOf('formula')>=0?source.indexOf('formula'):Math.floor(source.length/2),source.length,2)).toThrow()
+    expect(outlineSections(source)).toEqual([])
+  })
 })
 describe('scoped heading key matching', () => {
   const key = (changes) => ({

@@ -39,4 +39,10 @@ describe('source-aware non-destructive quality rules', () => {
       ).map((item) => item.rule),
     ).toContain('MD009')
   })
+  it('accepts a complete code group beginning on line one and checks bracket math closures',()=>{
+    const valid='::: code-group Java|Python\n\n```java\na\n```\n\n```python\nb\n```\n\n:::'
+    expect(diagnoseMarkdown(valid)).toEqual([])
+    expect(diagnoseMarkdown('\\[\nx^2').map(item=>item.rule)).toContain('MD004')
+    expect(diagnoseMarkdown('\\[\n# formula\n\\]')).toEqual([])
+  })
 })

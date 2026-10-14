@@ -16,7 +16,7 @@ const buildIdentity = {
   name: 'build-identity',
   generateBundle() {
     this.emitFile({ type: 'asset', fileName: 'build-info.json', source: JSON.stringify({
-      batch: 'V2.2', commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+      batch: 'V2.2', editorVersion: 'V3', commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
       dirty: Boolean(execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()),
     }) })
   },
