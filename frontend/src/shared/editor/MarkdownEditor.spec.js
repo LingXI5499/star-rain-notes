@@ -107,4 +107,17 @@ describe('shared Markdown editor', () => {
     expect(wrapper.text()).toContain('没有媒体上传权限')
     wrapper.unmount()
   })
+  it('reuses and releases the same outside listener over a hundred table openings', async () => {
+    const add = vi.spyOn(document, 'addEventListener'), remove = vi.spyOn(document, 'removeEventListener')
+    const wrapper = await editor()
+    for (let index = 0; index < 100; index++) {
+      state.options.toolbar.find(item => item.name === 'table-size').click()
+      await flushPromises()
+      document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+      await flushPromises()
+    }
+    wrapper.unmount()
+    for (const [event, handler] of add.mock.calls.filter(([name]) => name === 'pointerdown')) expect(remove.mock.calls.some(([name, callback]) => name === event && callback === handler)).toBe(true)
+    add.mockRestore(); remove.mockRestore()
+  })
 })

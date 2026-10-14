@@ -21,6 +21,8 @@ import { prepareMathJax } from '../markdown/mathJax'
 import { uploadMedia } from '../../modules/media/api/mediaApi'
 import { IMAGE_ACCEPT, imageMarkdown, mediaUploadError, validateEditorImage } from '../../modules/media/support/upload'
 import { useAuthStore } from '../../modules/account/stores/authStore'
+import EditorWorkbench from './EditorWorkbench.vue'
+import { createVditorAdapter } from './commands/vditorAdapter'
 
 /*
  * 文章正文编辑器 —— 对标 V1 `components/MarkdownEditor.vue`（Vditor，IR 即时渲染）。
@@ -58,6 +60,8 @@ const props = defineProps({
   minHeight: { type: Number, default: 460 },
   // () => Promise<{ url, name } | null>；为空时图片按钮退化为插入占位语法
   pickImage: { type: Function, default: null },
+  editorContext: { type: Object, default: null },
+  readOnly: { type: Boolean, default: false },
 })
 
 /**
@@ -70,6 +74,16 @@ const emit = defineEmits(['update:modelValue'])
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const host = ref(null)
+const editorReady = ref(false), workbench = ref(null)
+const adapter = createVditorAdapter(() => vditor, () => host.value)
+let workbenchRange = null
+function workbenchAction({ name, range }) {
+  workbenchRange = range
+  if (name === 'table') openTablePicker()
+  if (name === 'code-group') openCodeGroupCreator()
+  if (name === 'upload') { adapter.restore(range); selectImageFiles() }
+  if (name === 'library') { adapter.restore(range); void insertImage() }
+}
 /**
  * loading错误；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -103,7 +117,7 @@ const auth = useAuthStore()
  * can上传Images；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
-const canUploadImages = computed(() => auth.hasPermission('media:upload'))
+const canUploadImages = computed(() => !props.readOnly && auth.hasPermission('media:upload'))
 let savedImageRange = null
 let imageUploadController = null
 let imageOperation = 0
@@ -215,7 +229,8 @@ function insertCodeGroup() {
     codeGroupError.value = error
     return
   }
-  vditor?.insertValue(`\n${createCodeGroupMarkdown(codeGroupBlocks.value)}\n`)
+  if (workbenchRange) { adapter.insert(`\n${createCodeGroupMarkdown(codeGroupBlocks.value)}\n`, workbenchRange); workbenchRange = null }
+  else vditor?.insertValue(`\n${createCodeGroupMarkdown(codeGroupBlocks.value)}\n`)
   codeGroupOpen.value = false
 }
 
@@ -231,16 +246,10 @@ function openTablePicker() {
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
+const onOutside = (event) => {
+  if (!tablePickerRef.value?.contains(event.target)) tablePickerOpen.value = false
+}
 watch(tablePickerOpen, (open) => {
-  /**
-   * 响应Outside。
-   * 主要协作：tablePickerRef.value.contains。
-   * 更新的响应式状态包括 tablePickerOpen；渲染由 Vue 的依赖跟踪触发。
-   * @param event 事件；默认值、解构字段与可选参数见函数签名。
-   */
-  const onOutside = (event) => {
-    if (!tablePickerRef.value?.contains(event.target)) tablePickerOpen.value = false
-  }
   if (open) document.addEventListener('pointerdown', onOutside)
   else document.removeEventListener('pointerdown', onOutside)
 })
@@ -264,7 +273,8 @@ function insertTable() {
   const body = Array.from({ length: rows }, () => `|${Array.from({ length: cols }, () => cell('')).join('|')}|`)
   tablePickerOpen.value = false
   /* 与 V1 一致：表格不加前后换行。加换行会在「行内插入」时把当前段落切断 */
-  vditor?.insertValue([header, separator, ...body].join('\n'))
+  if (workbenchRange) { adapter.insert([header, separator, ...body].join('\n'), workbenchRange); workbenchRange = null }
+  else vditor?.insertValue([header, separator, ...body].join('\n'))
 }
 
 /**
@@ -599,6 +609,7 @@ async function mountEditor() {
   const editorHeight = Math.max(resolveVditorEditorHeight(window.innerHeight), props.minHeight || 0)
 
   vditor = new Vditor(host.value, {
+    cdn: '/vendor/vditor-3.11.3',
     mode: 'ir',
     value: props.modelValue ?? '',
     placeholder: props.placeholder ?? '',
@@ -616,6 +627,8 @@ async function mountEditor() {
     },
     /* 不用 Vditor 的本地草稿缓存：正文的唯一真源是后端的 bodyMarkdown */
     cache: { enable: false },
+    // Native formatting operations must reach their own undo checkpoint before the next command.
+    undoDelay: 0,
     counter: { enable: false },
     fullscreen: { index: 10000 },
     /* 左侧文档大纲（V1 的「像阅读页目录一样」） */
@@ -626,6 +639,8 @@ async function mountEditor() {
     },
     after: () => {
       ready = true
+      editorReady.value = true
+      if (props.readOnly) vditor?.disabled()
       /* 初始化期间 Vditor 可能规范化过正文（例如补上结尾换行），以组件收到的值为准再对齐一次 */
       if (vditor && vditor.getValue() !== props.modelValue) {
         suppressing = true
@@ -647,8 +662,9 @@ async function mountEditor() {
 onMounted(() => {
   document.addEventListener('selectionchange', rememberImageRange)
   watchTheme()
-  void mountEditor()
+  void mountEditor().catch(() => { loadingError.value = '编辑器资源加载失败，正文未改变，请刷新页面重试。' })
 })
+watch(() => props.readOnly, value => { if (ready) { if (value) vditor.disabled(); else vditor.enable() } })
 
 /* 外部改值（加载文章、切换文章）→ 写回编辑器，写回期间不回发事件 */
 /**
@@ -681,6 +697,8 @@ onBeforeUnmount(() => {
   imageUploadController?.abort()
   document.removeEventListener('selectionchange', rememberImageRange)
   ready = false
+  editorReady.value = false
+  document.removeEventListener('pointerdown', onOutside)
   fullscreenObserver?.disconnect()
   fullscreenObserver = null
   themeObserver?.disconnect()
@@ -719,12 +737,13 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
 
 <template>
   <div class="markdown-editor">
+    <EditorWorkbench ref="workbench" :adapter="adapter" :host="host" :ready="editorReady" :model-value="modelValue" :context="editorContext" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" @action="workbenchAction" />
     <input ref="imageInput" class="markdown-editor__file-input" type="file" :accept="IMAGE_ACCEPT" multiple aria-label="上传正文图片" @change="onImageFiles" />
     <div ref="host" class="markdown-editor__host" />
     <div class="markdown-editor__image-actions">
       <button v-if="canUploadImages" type="button" class="secondary-button" :disabled="uploadingImages" @click="selectImageFiles">{{ uploadingImages ? '图片上传中…' : '上传图片' }}</button>
       <button v-if="pickImage" type="button" class="secondary-button" @click="insertImage">从媒体库选择</button>
-      <span v-if="canUploadImages">可直接粘贴或拖入图片，上传图片将公开可读。</span>
+      <span v-if="canUploadImages">可粘贴或拖入图片。图片默认仅授权用户可访问；正式发布前请确认素材公开权限。</span>
     </div>
     <p v-if="imageStatus" class="markdown-editor__image-status" role="status">{{ imageStatus }}</p>
     <p v-if="imageError" class="markdown-editor__error" role="alert">{{ imageError }}</p>

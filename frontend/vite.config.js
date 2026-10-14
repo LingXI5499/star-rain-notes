@@ -10,6 +10,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { execFileSync } from 'node:child_process'
+import { vditorAssets } from './vditorAssets'
 
 const buildIdentity = {
   name: 'build-identity',
@@ -31,7 +32,7 @@ const buildIdentity = {
  *     host/baseUrl 推导里出现前端 dev server 的端口，没有收益。
  */
 export default defineConfig({
-  plugins: [vue(), buildIdentity],
+  plugins: [vue(), buildIdentity, vditorAssets()],
   server: {
     port: 5174,
     strictPort: true,
