@@ -222,7 +222,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
      */
     private JsonNode publicSnapshot(String slug) {
         TutorialEntity row = publicRow(slug);
-        return snapshot(revisionMapper.selectById(row.getPublishedRevisionId()));
+        return publishedSnapshot(row.getPublishedRevisionId()).root();
     }
 
     /**
@@ -345,6 +345,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
             throw new IllegalStateException(exception);
         }
         revision.setCreatedByAccountId(currentActorApi.current().getAccountId());
+        revision.setSummaryJson(publicSummary(tutorial, snapshot(revision)).toString());
         revisionMapper.insert(revision);
         List<String> chapterBodies = new ArrayList<>();
         JsonNode frozen = snapshot(revision);
@@ -382,7 +383,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         tutorial.setPublishedAt(LocalDateTime.now(ZoneOffset.UTC));
         tutorial.setWithdrawnAt(null);
         tutorialMapper.update(tutorial);
-        eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
+        eventPublisher.publish(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
                 tutorial.getTitle(), "PUBLISHED", tutorial.getPublishedAt()));
         return contentService.tutorial(tutorialId);
     }
@@ -407,7 +408,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         tutorial.setPublicationStatus("WITHDRAWN");
         tutorial.setWithdrawnAt(LocalDateTime.now(ZoneOffset.UTC));
         tutorialMapper.update(tutorial);
-        eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
+        eventPublisher.publish(new TutorialPublicationChangedEvent(tutorialId, tutorial.getSlug(),
                 tutorial.getTitle(), "WITHDRAWN", tutorial.getPublishedAt()));
         return contentService.tutorial(tutorialId);
     }
@@ -503,6 +504,13 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     private void markPublishedChapters(TutorialRevisionEntity revision) {
         for (JsonNode group : snapshot(revision).path("groups")) {
             for (JsonNode chapter : group.path("chapters")) {
+                mediaReferences.assertPublicContent(chapter.path("bodyMarkdown").asText());
+                for (JsonNode card : chapter.path("cards")) mediaReferences.assertPublicContent(card.path("backMarkdown").asText());
+                for (JsonNode question : chapter.path("questions")) mediaReferences.assertPublicContent(question.path("referenceAnswer").asText());
+            }
+        }
+        for (JsonNode group : snapshot(revision).path("groups")) {
+            for (JsonNode chapter : group.path("chapters")) {
                 chapterMapper.updateStatus(Long.valueOf(chapter.path("id").asText()), "PUBLISHED", LocalDateTime.now(ZoneOffset.UTC));
             }
         }
@@ -522,7 +530,7 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         tutorial.setPublishedAt(LocalDateTime.now(ZoneOffset.UTC));
         tutorial.setWithdrawnAt(null);
         tutorialMapper.update(tutorial);
-        eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorial.getId(), tutorial.getSlug(),
+        eventPublisher.publish(new TutorialPublicationChangedEvent(tutorial.getId(), tutorial.getSlug(),
                 tutorial.getTitle(), "PUBLISHED", tutorial.getPublishedAt()));
     }
 
@@ -675,12 +683,8 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     @Override
     public List<JsonNode> publicCategories() {
         Map<String, Long> publishedCounts = new LinkedHashMap<>();
-        tutorialMapper.listPublishedWithRevision()
-                .forEach(tutorial -> {
-                    String frozenCategoryId = snapshot(revisionMapper.selectById(tutorial.getPublishedRevisionId()))
-                            .path("categoryId").asText();
-                    publishedCounts.merge(frozenCategoryId, 1L, Long::sum);
-                });
+        tutorialMapper.publishedCategoryCounts().forEach(row ->
+                publishedCounts.put(String.valueOf(row.get("categoryId")), ((Number) row.get("total")).longValue()));
         return categoryMapper.listOrdered()
                 .stream().map(category -> {
                     long count = publishedCounts.getOrDefault(String.valueOf(category.getId()), 0L);
@@ -704,15 +708,15 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     @Override
     public PageResult<JsonNode> publicTutorials(Long categoryId, String search, int page, int pageSize) {
         if (page < 1 || pageSize < 1 || pageSize > 100) throw new TutorialInvalidRequestException("分页参数不合法");
-        List<JsonNode> rows = tutorialMapper.listPublishedWithRevision().stream()
-                .map(row -> (JsonNode) publicSummary(row, snapshot(revisionMapper.selectById(row.getPublishedRevisionId()))))
-                .filter(item -> categoryId == null || String.valueOf(categoryId).equals(item.path("categoryId").asText()))
-                .filter(item -> search == null || search.isBlank()
-                        || item.path("title").asText().contains(search.strip())).toList();
-        long start = (long) (page - 1) * pageSize;
-        List<JsonNode> items = start >= rows.size() ? List.of()
-                : rows.subList((int) start, Math.min(rows.size(), (int) start + pageSize));
-        return PageResult.<JsonNode>builder().items(items).total(rows.size()).page(page).pageSize(pageSize).build();
+        long offset = (long) (page - 1) * pageSize;
+        if (offset > 100000) throw new TutorialInvalidRequestException("请缩小筛选范围后再翻页");
+        String query = search == null ? null : search.strip();
+        long total = tutorialMapper.publicCount(categoryId, query);
+        List<JsonNode> items = tutorialMapper.publicSummaries(categoryId, query, offset, pageSize).stream().map(raw -> {
+            try { return objectMapper.readTree(raw); }
+            catch (JsonProcessingException invalid) { throw new TutorialStateException("教程公开摘要不可读取"); }
+        }).toList();
+        return PageResult.<JsonNode>builder().items(items).total(total).page(page).pageSize(pageSize).build();
     }
 
     /**
@@ -725,18 +729,8 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
     @Override
     public JsonNode publicTutorial(String slug) {
         TutorialEntity row = publicRow(slug);
-        ObjectNode detail = ((ObjectNode) snapshot(revisionMapper.selectById(row.getPublishedRevisionId()))).deepCopy();
+        ObjectNode detail = publishedSnapshot(row.getPublishedRevisionId()).directory().deepCopy();
         detail.put("publishedAt", row.getPublishedAt() == null ? "" : row.getPublishedAt().toString());
-        for (JsonNode group : detail.path("groups")) {
-            for (JsonNode chapter : group.path("chapters")) {
-                ObjectNode item = (ObjectNode) chapter;
-                item.put("cardCount", item.path("cards").size());
-                item.put("questionCount", item.path("questions").size());
-                item.remove("bodyMarkdown");
-                item.remove("cards");
-                item.remove("questions");
-            }
-        }
         return detail;
     }
 
@@ -754,6 +748,36 @@ public class TutorialPublicationServiceImpl implements TutorialPublicationServic
         ObjectNode result = ((ObjectNode) raw).deepCopy();
         for (JsonNode question : result.path("questions")) {
             ((ObjectNode) question).remove("referenceAnswer");
+        }
+        return result;
+    }
+
+    private final java.util.LinkedHashMap<Long, PublishedRead> publicReads = new java.util.LinkedHashMap<>(16, .75f, true);
+    private long publicReadBytes;
+    private record PublishedRead(JsonNode root, ObjectNode directory, long weight) { }
+
+    /** Revision payloads are immutable; publication pointers are always read from the database first. */
+    private synchronized PublishedRead publishedSnapshot(Long revisionId) {
+        PublishedRead existing = publicReads.get(revisionId);
+        if (existing != null) return existing;
+        var revision = revisionMapper.selectById(revisionId);
+        JsonNode root = snapshot(revision);
+        ObjectNode directory = ((ObjectNode) root).deepCopy();
+        for (JsonNode group : directory.path("groups")) {
+            for (JsonNode chapter : group.path("chapters")) {
+                ObjectNode item = (ObjectNode) chapter;
+                item.put("cardCount", item.path("cards").size());
+                item.put("questionCount", item.path("questions").size());
+                item.remove(java.util.List.of("bodyMarkdown", "cards", "questions"));
+            }
+        }
+        long weight = (long) revision.getSnapshotJson().length() * 4;
+        PublishedRead result = new PublishedRead(root, directory, weight);
+        if (weight <= 8L * 1024 * 1024) {
+            publicReads.put(revisionId, result); publicReadBytes += weight;
+            while (publicReadBytes > 32L * 1024 * 1024 || publicReads.size() > 32) {
+                var first = publicReads.entrySet().iterator(); var removed = first.next(); publicReadBytes -= removed.getValue().weight(); first.remove();
+            }
         }
         return result;
     }

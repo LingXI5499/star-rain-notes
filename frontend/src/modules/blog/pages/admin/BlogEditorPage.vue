@@ -1,4 +1,5 @@
 <script setup>
+import ContentHistoryPanel from '../../../../shared/editor/ContentHistoryPanel.vue'
 /**
  * BlogEditorPage.vue：博客模块的页面组件。
  * 职责范围：文章、标签、专题、归档、发布状态和公开阅读。
@@ -15,7 +16,7 @@ import {
   createPost, createTag, deletePost, getAdminPost, listAdminTags,
   publishPost, restorePost, updatePost, updatePostBody, withdrawPost,
 } from '../../api/blogApi'
-import { errorMessage } from '../../../../shared/http'
+import { errorMessage, bindEditingVersion } from '../../../../shared/http'
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
 import AdminConfirmDialog from '../../components/admin/AdminConfirmDialog.vue'
@@ -63,6 +64,8 @@ const isCreate = computed(() => route.params.postId === 'new')
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
 const postId = computed(() => (isCreate.value ? null : Number(route.params.postId)))
+const editVersion = ref(0), serverComparison = ref(null)
+bindEditingVersion('blog/posts', postId, editVersion)
 
 /**
  * form；通过 reactive 建立。
@@ -94,6 +97,7 @@ const loading = ref(false)
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const saving = ref(false)
+const versionConflict = ref(false)
 /**
  * 错误；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -237,6 +241,7 @@ async function loadPost() {
     const post = await getAdminPost(id)
     if (!active || version !== generation) return
     detail.value = post
+    editVersion.value = post.rowVersion || 0
     form.title = post.title
     form.summary = post.summary || ''
     form.tagValues = (post.tags || []).map((tag) => tag.id)
@@ -329,6 +334,7 @@ async function runSave(operation) {
     await operation(context)
   } catch (cause) {
     if (!active || context.version !== generation) return
+    versionConflict.value = cause?.response?.data?.code === 'CONTENT_VERSION_CONFLICT'
     // A transport error cannot tell whether the server committed the request.
     uncertainSave.value = !cause?.response || cause.response.status >= 500
     error.value = uncertainSave.value
@@ -353,6 +359,7 @@ async function persistMeta(context) {
   const updated = await (created ? createPost(payload) : updatePost(context.id, payload))
   if (!validContext(context)) return false
   detail.value = created ? { ...updated, bodyMarkdown: '' } : { ...detail.value, ...updated }
+  if (updated.rowVersion != null) editVersion.value = updated.rowVersion
   const tags = (updated.tags || []).map(tag => tag.id)
   // Convert submitted tag names to IDs only when the selection has not changed.
   if (JSON.stringify(form.tagValues) === JSON.stringify(submitted.tagValues)) form.tagValues = tags
@@ -401,9 +408,12 @@ async function verifySavedContent() {
     const persisted = await getAdminPost(context.id)
     if (!validContext(context)) return
     detail.value = persisted
+    editVersion.value = persisted.rowVersion || 0
+    serverComparison.value = persisted
     savedMeta.value = metaOf({ title: persisted.title, summary: persisted.summary || '', tagValues: (persisted.tags || []).map(tag => tag.id) })
     savedBody.value = persisted.bodyMarkdown || ''
     uncertainSave.value = false
+    versionConflict.value = false
     error.value = ''
     syncEditorBody()
     notice.value = dirty.value ? '服务端内容已核实，当前输入仍有未保存改动，可继续保存。' : '服务端内容已核实，与当前输入一致。'
@@ -421,6 +431,11 @@ async function verifySavedContent() {
  */
 async function act(action) {
   if (!postId.value || saving.value || loading.value || uncertainSave.value) return
+  syncEditorBody()
+  if (['publish', 'restore'].includes(action) && dirty.value) {
+    error.value = '请先保存当前修改，再发布；公开内容必须与已保存版本一致。'
+    return
+  }
   const context = { id: postId.value, version: generation }
   if (action === 'delete') {
     const accepted = await confirmDialog.value.ask(`确认删除《${form.title}》？标签、专题关系与媒体引用都会被解除。`)
@@ -454,6 +469,15 @@ async function act(action) {
   } finally {
     if (validContext(context)) saving.value = false
   }
+}
+
+async function restoreRevision(snapshot) {
+  if (saving.value || loading.value) return
+  syncEditorBody()
+  if (dirty.value && !await confirmDialog.value.ask('载入历史版本会替换当前未保存的正文与基本信息，是否继续？')) return
+  form.title = snapshot.title || ''; form.summary = snapshot.summary || ''
+  body.value = snapshot.bodyMarkdown || ''; editorKey.value += 1
+  notice.value = '历史内容已载入，确认后保存到当前版本。'
 }
 
 // 未保存提醒：正文与元数据都算改动（V1 由 useUnsavedGuard 负责，这里用等价的最小实现）
@@ -523,7 +547,7 @@ watch(() => route.params.postId, () => {
     </div>
 
     <p v-if="error" class="error" role="alert">{{ error }}</p>
-    <button v-if="uncertainSave && postId" type="button" :disabled="saving" @click="verifySavedContent">核实服务端保存结果</button>
+    <button v-if="(uncertainSave || versionConflict) && postId" type="button" :disabled="saving" @click="verifySavedContent">核实服务端保存结果（保留当前输入）</button>
     <p v-if="notice" class="notice" role="status">{{ notice }}</p>
     <p v-if="loading" class="loading" role="status">正在加载文章…</p>
 
@@ -599,6 +623,8 @@ watch(() => route.params.postId, () => {
     </section>
 
     <AdminConfirmDialog ref="confirmDialog" />
+    <ContentHistoryPanel v-if="postId" :base-path="`/admin/blog/posts/${postId}`" @restore="restoreRevision" />
+    <details v-if="serverComparison"><summary>服务器上的最新正文与文章信息</summary><h3>{{ serverComparison.title }}</h3><p>{{ serverComparison.summary }}</p><pre>{{ serverComparison.bodyMarkdown }}</pre></details>
     <MediaPicker :open="pickerOpen" :media-type="pickerType" @update:open="settle(null)" @select="settle" />
   </section>
 </template>

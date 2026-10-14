@@ -68,11 +68,13 @@ public class AnalyticsAggregateServiceImpl implements AnalyticsAggregateService 
      * @param date 日期；类型为 <code>LocalDate</code>
      */
     @Override
-    @Transactional
     public void deleteRawBefore(LocalDate date) {
         if (date == null || !date.isBefore(LocalDate.now(java.time.ZoneOffset.UTC))) {
             throw new IllegalArgumentException("Raw retention cutoff must be before today UTC");
         }
-        mapper.deleteRawBefore(date);
+        // Each bounded delete commits independently; the next scheduled run continues any backlog.
+        for (int batch = 0; batch < 100; batch++) {
+            if (mapper.deleteRawBefore(date) < 1000) break;
+        }
     }
 }

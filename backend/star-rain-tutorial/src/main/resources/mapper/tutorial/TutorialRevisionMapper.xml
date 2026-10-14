@@ -13,7 +13,7 @@
     通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
   -->
   <sql id="columns">
-    id, tutorial_id, revision_no, revision_ref, snapshot_json, content_sha256,
+    id, tutorial_id, revision_no, revision_ref, snapshot_json, summary_json, content_sha256,
     revision_reason, created_by_account_id, created_at
   </sql>
 
@@ -29,9 +29,9 @@
   <insert id="insert" parameterType="com.starrainnotes.tutorial.content.entity.TutorialRevisionEntity"
           useGeneratedKeys="true" keyProperty="id">
     INSERT INTO sr_tutorial_revision
-      (tutorial_id, revision_no, revision_ref, snapshot_json, content_sha256, created_by_account_id)
+      (tutorial_id, revision_no, revision_ref, snapshot_json, summary_json, content_sha256, created_by_account_id)
     VALUES
-      (#{tutorialId}, #{revisionNo}, #{revisionRef}, #{snapshotJson}, #{contentSha256}, #{createdByAccountId})
+      (#{tutorialId}, #{revisionNo}, #{revisionRef}, #{snapshotJson}, #{summaryJson}, #{contentSha256}, #{createdByAccountId})
   </insert>
 
   <!--

@@ -270,4 +270,12 @@
   <delete id="deleteById">
     DELETE FROM sr_tutorial WHERE id = #{id}
   </delete>
+<sql id="publicRevisionFilters">
+      t.publication_status='PUBLISHED' AND t.published_revision_id IS NOT NULL
+      <if test="categoryId != null">AND r.frozen_category_id=#{categoryId}</if>
+      <if test="search != null and search != ''">AND LOCATE(BINARY #{search},BINARY r.frozen_title)&gt;0</if>
+    </sql>
+    <select id="publicCount" resultType="long">SELECT COUNT(*) FROM sr_tutorial t JOIN sr_tutorial_revision r ON r.id=t.published_revision_id WHERE <include refid="publicRevisionFilters"/></select>
+    <select id="publicSummaries" resultType="string">SELECT JSON_SET(COALESCE(r.summary_json,JSON_REMOVE(r.snapshot_json,'$.groups')),'$.publishedAt',COALESCE(DATE_FORMAT(t.published_at,'%Y-%m-%dT%H:%i:%s.%f'),'')) FROM sr_tutorial t JOIN sr_tutorial_revision r ON r.id=t.published_revision_id WHERE <include refid="publicRevisionFilters"/> ORDER BY t.sort_order,t.id LIMIT #{limit} OFFSET #{offset}</select>
+    <select id="publishedCategoryCounts" resultType="map">SELECT CAST(r.frozen_category_id AS CHAR) AS categoryId,COUNT(*) AS total FROM sr_tutorial t JOIN sr_tutorial_revision r ON r.id=t.published_revision_id WHERE t.publication_status='PUBLISHED' GROUP BY r.frozen_category_id</select>
 </mapper>

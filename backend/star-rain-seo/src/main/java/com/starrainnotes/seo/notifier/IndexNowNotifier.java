@@ -80,6 +80,7 @@ public class IndexNowNotifier {
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(Map.of("host", URI.create(canonical.baseUrl()).getHost(),
                     "key", properties.getIndexnow().getKey(),
+                    "keyLocation", canonical.canonical("/api/public/seo/indexnow-key.txt"),
                     "urlList", List.of(change.getCanonicalUrl())))
                 .retrieve().toBodilessEntity().getStatusCode().value();
             return NotificationResult.builder().success(status >= 200 && status < 300).httpStatus(status).build();

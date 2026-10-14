@@ -68,6 +68,9 @@ public class PortfolioPrototypeServiceImpl implements PortfolioPrototypeService 
     @Override @Transactional public void bind(Long workId, WorkPrototypeDTO request) {
         WorkEntity work = works.byIdForUpdate(workId);
         if (work == null) { throw new WorkNotFoundException(); }
+        com.starrainnotes.common.web.ContentVersion.require(work.getRowVersion());
+        works.archive(work.getId());
+        works.pruneHistory(work.getId(), work.getRowVersion() == null ? 0 : work.getRowVersion());
         if (request.getMediaAssetId() != null) {
             if (!"SOFTWARE".equals(work.getWorkType())) { throw new WorkInvalidException("静态原型用于软件作品"); }
             prototypes.validate(request.getMediaAssetId(), request.getEntryPath());
@@ -82,7 +85,7 @@ public class PortfolioPrototypeServiceImpl implements PortfolioPrototypeService 
         work.setUpdatedByAccountId(actor.current().getAccountId());
         work.setUpdatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         works.updatePrototype(work);
-        if ("PUBLISHED".equals(work.getStatus())) { events.afterCommit(WorkPublicationChangedEvent.builder().workId(workId).slug(work.getSlug()).published(true).build()); }
+        if ("PUBLISHED".equals(work.getStatus())) { events.publish(WorkPublicationChangedEvent.builder().workId(workId).slug(work.getSlug()).published(true).build()); }
     }
     /**
      * 读取作品Prototype。

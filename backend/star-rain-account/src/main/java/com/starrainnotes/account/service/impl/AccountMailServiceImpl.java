@@ -7,6 +7,7 @@
  */
 
 package com.starrainnotes.account.service.impl;
+import com.starrainnotes.account.delivery.MailOutbox;
 
 import com.starrainnotes.account.service.AccountMailService;
 import com.starrainnotes.common.exception.ApiException;
@@ -39,6 +40,7 @@ public class AccountMailServiceImpl implements AccountMailService {
      * sender。
      */
     private final JavaMailSender sender;
+    private final MailOutbox outbox;
     /**
      * 已启用。
      */
@@ -61,11 +63,12 @@ public class AccountMailServiceImpl implements AccountMailService {
      * @param from 来源；类型为 <code>String</code>
      * @param frontendOrigin frontend来源；类型为 <code>String</code>
      */
-    public AccountMailServiceImpl(JavaMailSender sender,
+    public AccountMailServiceImpl(JavaMailSender sender, MailOutbox outbox,
                               @Value("${star-rain.account.smtp-enabled:false}") boolean enabled,
                               @Value("${star-rain.account.mail-from:}") String from,
                               @Value("${star-rain.account.frontend-origin}") String frontendOrigin) {
         this.sender = sender;
+        this.outbox = outbox;
         this.enabled = enabled;
         this.from = from;
         this.frontendOrigin = frontendOrigin.replaceAll("/+$", "");
@@ -81,6 +84,7 @@ public class AccountMailServiceImpl implements AccountMailService {
         if (!enabled || from.isBlank()) {
             throw new ApiException("MAIL_NOT_CONFIGURED", "邮件服务尚未配置", 503);
         }
+        outbox.requireReady();
     }
 
     /*
@@ -173,18 +177,6 @@ public class AccountMailServiceImpl implements AccountMailService {
      * @return 类型为 <code>String</code> 的处理结果
      */
     private String send(String email, String subject, String body) {
-        try {
-            MimeMessage message = sender.createMimeMessage();
-            message.setFrom(new InternetAddress(from));
-            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-            message.setSubject(subject, "UTF-8");
-            message.setText(body, "UTF-8");
-            message.setSentDate(new Date());
-            sender.send(message);
-            return message.getMessageID();
-        } catch (MailException | MessagingException exception) {
-            LOGGER.warn("Mail submission failed; category={}", exception.getClass().getSimpleName());
-            throw new ApiException("MAIL_DELIVERY_FAILED", "邮件发送失败，请稍后重试", 503);
-        }
+        return outbox.enqueue(from, email, subject, body);
     }
 }

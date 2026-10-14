@@ -225,7 +225,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
     @Override
     public BlogPostAdminDetailVO toAdminDetailVO(BlogPostEntity post) {
         return BlogPostAdminDetailVO.builder()
-                .id(post.getId())
+                .id(post.getId()).rowVersion(post.getRowVersion())
                 .slug(post.getSlug())
                 .title(post.getTitle())
                 .summary(post.getSummary())
@@ -379,7 +379,7 @@ public class BlogViewAssemblerImpl implements BlogViewAssembler {
      */
     private BlogPostAdminVO adminVO(BlogPostEntity post, List<BlogTagVO> tags, List<BlogTopicVO> topics) {
         return BlogPostAdminVO.builder()
-                .id(post.getId())
+                .id(post.getId()).rowVersion(post.getRowVersion())
                 .slug(post.getSlug())
                 .title(post.getTitle())
                 .summary(summary(post))

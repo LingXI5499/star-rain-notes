@@ -33,6 +33,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 @RequiredArgsConstructor
 public class SearchEventConsumer {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationEventPublisher acknowledgements;
     /**
      * 当前类使用的日志记录器。
      */
@@ -68,7 +70,7 @@ public class SearchEventConsumer {
      */
     @TransactionalEventListener(fallbackExecution = true)
     public void onEnglishChanged(EnglishSearchContentChangedEvent event) {
-        safe(event.getContentType(), event.getContentId(), () -> {
+        safe(event, event.getContentType(), event.getContentId(), () -> {
             if (event.getContentId() == null) rebuild.rebuildType(event.getContentType());
             else rebuild.syncEnglish(event.getContentType(), event.getContentId());
         });
@@ -76,14 +78,14 @@ public class SearchEventConsumer {
 
     /**
      * 响应博客已发布。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 主要协作调用：<code>blogs.getPublishedDocument</code>、<code>rebuild.indexBlog</code>。
      *
      * @param event 事件；类型为 <code>BlogPostPublishedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onBlogPublished(BlogPostPublishedEvent event) {
-        safe("BLOG", event.getPostId(), () -> {
+        safe(event, "BLOG", event.getPostId(), () -> {
             var post = blogs.getPublishedDocument(event.getPostId());
             if (post != null) rebuild.indexBlog(post);
         });
@@ -91,26 +93,26 @@ public class SearchEventConsumer {
 
     /**
      * 响应博客已撤回。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 主要协作调用：<code>index.removeByContent</code>。
      *
      * @param event 事件；类型为 <code>BlogPostWithdrawnEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onBlogWithdrawn(BlogPostWithdrawnEvent event) {
-        safe("BLOG", event.getPostId(), () -> index.removeByContent("BLOG", event.getPostId()));
+        safe(event, "BLOG", event.getPostId(), () -> index.removeByContent("BLOG", event.getPostId()));
     }
 
     /**
      * 响应博客Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 主要协作调用：<code>blogs.getPublishedDocument</code>、<code>rebuild.indexBlog</code>。
      *
      * @param event 事件；类型为 <code>BlogPostChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onBlogChanged(BlogPostChangedEvent event) {
-        safe("BLOG", event.postId(), () -> {
+        safe(event, "BLOG", event.postId(), () -> {
             var post = blogs.getPublishedDocument(event.postId());
             if (post != null) rebuild.indexBlog(post);
         });
@@ -118,26 +120,26 @@ public class SearchEventConsumer {
 
     /**
      * 响应教程Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 主要协作调用：<code>rebuild.rebuildType</code>。
      *
      * @param event 事件；类型为 <code>TutorialPublicationChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onTutorialChanged(TutorialPublicationChangedEvent event) {
-        safe("TUTORIAL", event.getTutorialId(), () -> rebuild.rebuildType("TUTORIAL"));
+        safe(event, "TUTORIAL", event.getTutorialId(), () -> rebuild.rebuildType("TUTORIAL"));
     }
 
     /**
      * 响应作品Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 主要协作调用：<code>works.publishedWork</code>、<code>index.removeByContent</code>。
      *
      * @param event 事件；类型为 <code>WorkPublicationChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onWorkChanged(WorkPublicationChangedEvent event) {
-        safe("PORTFOLIO", event.getWorkId(), () -> {
+        safe(event, "PORTFOLIO", event.getWorkId(), () -> {
             if (event.isPublished()) works.publishedWork(event.getWorkId()).ifPresent(rebuild::indexWork);
             else index.removeByContent("PORTFOLIO", event.getWorkId());
         });
@@ -145,14 +147,14 @@ public class SearchEventConsumer {
 
     /**
      * 响应资料Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 主要协作调用：<code>rebuild.rebuildType</code>。
      *
      * @param event 事件；类型为 <code>ProfileChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onProfileChanged(ProfileChangedEvent event) {
-        safe("PROFILE", event.getProfileId(), () -> rebuild.rebuildType("PROFILE"));
+        safe(event, "PROFILE", event.getProfileId(), () -> rebuild.rebuildType("PROFILE"));
     }
 
     /**
@@ -163,12 +165,15 @@ public class SearchEventConsumer {
      * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
      * @param action 动作；类型为 <code>Runnable</code>
      */
-    private void safe(String type, Long id, Runnable action) {
-        try {
-            action.run();
-        } catch (RuntimeException exception) {
-            // Index is derived state: a failed consumer must not turn a committed publication into a failed HTTP response.
-            log.error("Search index sync failed for {} {}; run rebuild", type, id, exception);
+    private void safe(Object event, String type, Long id, Runnable action) {
+        boolean success = false;
+        try { action.run(); success = true; }
+        catch (RuntimeException failure) { log.error("SEARCH projection sync failed for {} {}", type, id, failure); }
+        finally {
+            if (acknowledgements != null) {
+                try { acknowledgements.publishEvent(new com.starrainnotes.common.event.ProjectionHandledEvent(event, "SEARCH", success)); }
+                catch (RuntimeException failure) { log.warn("SEARCH acknowledgement failed; durable repair remains pending", failure); }
+            }
         }
     }
 }

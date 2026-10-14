@@ -22,6 +22,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LearningProgressVO {
+    private Long rowVersion;
     /**
      * 教程标识。
      */

@@ -62,7 +62,7 @@ describe('shared Markdown editor', () => {
       const file = new File(['PNG'], '截图.png', { type: 'image/png' })
       expect(transfer(wrapper, type, [file]).defaultPrevented).toBe(true)
       await flushPromises()
-      expect(state.upload).toHaveBeenLastCalledWith(file, 'PUBLIC', expect.objectContaining({ signal: expect.any(AbortSignal) }))
+      expect(state.upload).toHaveBeenLastCalledWith(file, 'PROTECTED', expect.objectContaining({ signal: expect.any(AbortSignal) }))
     }
     expect(state.upload).toHaveBeenCalledTimes(2)
     expect(state.insert).toHaveBeenCalledTimes(2)

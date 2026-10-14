@@ -33,25 +33,7 @@ public class TutorialEventPublisher {
      *
      * @param event 事件；类型为 <code>TutorialPublicationChangedEvent</code>
      */
-    public void afterCommit(TutorialPublicationChangedEvent event) {
-        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
-            publisher.publishEvent(event);
-            return;
-        }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
-    /**
-     * 当前调用使用的匿名协作实现，属于教程与学习模块。
-     * 定义或消费业务事件，用于把内容变化同步给其它模块；事件携带字段和处理方法在下文说明。
-     */
-    {
-            /**
-             * 之后Commit处理入口。
-             * 关键处理步骤调用 <code>publisher.publishEvent</code>。
-             */
-            @Override
-            public void afterCommit() {
-                publisher.publishEvent(event);
-            }
-        });
+    public void publish(TutorialPublicationChangedEvent event) {
+        publisher.publishEvent(event);
     }
 }

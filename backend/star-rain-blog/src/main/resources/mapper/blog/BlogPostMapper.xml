@@ -14,7 +14,7 @@
       通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
     -->
     <sql id="postColumns">
-        p.id, p.slug, p.title, p.summary, p.body_markdown, p.cover_media_asset_id, p.status,
+        p.id, p.row_version, p.slug, p.title, p.summary, p.body_markdown, p.cover_media_asset_id, p.status,
         p.published_at, p.withdrawn_at, p.created_by_account_id, p.updated_by_account_id,
         p.created_at, p.updated_at
     </sql>
@@ -23,7 +23,7 @@
       通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
     -->
     <sql id="postListColumns">
-        p.id, p.slug, p.title, p.summary, p.cover_media_asset_id, p.status,
+        p.id, p.row_version, p.slug, p.title, p.summary, p.cover_media_asset_id, p.status,
         p.published_at, p.withdrawn_at, p.created_by_account_id, p.updated_by_account_id,
         p.created_at, p.updated_at
     </sql>
@@ -286,7 +286,7 @@
     -->
     <update id="updatePostMeta">
         UPDATE sr_blog_post
-        SET slug = #{slug},
+        SET row_version = row_version + 1, slug = #{slug},
             title = #{title},
             summary = #{summary},
             updated_by_account_id = #{updatedByAccountId}
@@ -314,7 +314,7 @@
     -->
     <update id="updatePostBody">
         UPDATE sr_blog_post
-        SET body_markdown = #{bodyMarkdown},
+        SET row_version = row_version + 1, body_markdown = #{bodyMarkdown},
             updated_by_account_id = #{updatedByAccountId}
         WHERE id = #{id}
     </update>
@@ -328,7 +328,7 @@
     -->
     <update id="publishPost">
         UPDATE sr_blog_post
-        SET status = 'PUBLISHED',
+        SET row_version = row_version + 1, status = 'PUBLISHED',
             published_at = COALESCE(published_at, #{publishedAt}),
             withdrawn_at = NULL,
             updated_by_account_id = #{updatedByAccountId}
@@ -343,7 +343,7 @@
     -->
     <update id="withdrawPost">
         UPDATE sr_blog_post
-        SET status = 'WITHDRAWN',
+        SET row_version = row_version + 1, status = 'WITHDRAWN',
             withdrawn_at = #{withdrawnAt},
             updated_by_account_id = #{updatedByAccountId}
         WHERE id = #{id} AND status = 'PUBLISHED'
@@ -536,4 +536,6 @@
         ORDER BY p.id ASC
         LIMIT #{limit}
     </select>
+<insert id="archive">INSERT IGNORE INTO sr_content_revision(content_type,content_id,row_version,snapshot_json) SELECT 'BLOG',id,row_version,JSON_OBJECT('id',id,'rowVersion',row_version,'slug',slug,'title',title,'summary',summary,'bodyMarkdown',body_markdown,'coverMediaAssetId',cover_media_asset_id,'status',status,'publishedAt',published_at,'withdrawnAt',withdrawn_at,'createdByAccountId',created_by_account_id,'updatedByAccountId',updated_by_account_id,'createdAt',created_at,'updatedAt',updated_at) FROM sr_blog_post WHERE id=#{id}</insert>
+ <delete id="pruneHistory">DELETE FROM sr_content_revision WHERE content_type='BLOG' AND content_id=#{id} AND row_version&lt;#{version}-99</delete>
 </mapper>

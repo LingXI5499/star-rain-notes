@@ -19,6 +19,7 @@ import lombok.Data;
  */
 @Data
 public class TutorialRevisionEntity {
+    private String summaryJson;
     /**
      * 当前业务对象的数据库标识。
      */

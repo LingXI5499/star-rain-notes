@@ -55,7 +55,7 @@ public class SearchQueryServiceImpl implements SearchQueryService {
     @Transactional(readOnly = true)
     public PageResult<SearchHitVO> search(String rawQuery, String rawTypes, int page, int pageSize) {
         String query = query(rawQuery);
-        if (page < 1 || pageSize < 1 || pageSize > 100 || (long) (page - 1) * pageSize > Integer.MAX_VALUE) {
+        if (page < 1 || pageSize < 1 || pageSize > 100 || (long) (page - 1) * pageSize > 10000) {
             throw new SearchPageInvalidException();
         }
         List<String> types = types(rawTypes);

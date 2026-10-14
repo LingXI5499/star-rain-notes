@@ -24,8 +24,21 @@ import org.springframework.stereotype.Component;
  * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
  */
 @Component
-@RequiredArgsConstructor
 public class StaticPageSeoSourceProvider implements SeoSourceProvider {
+    private final com.starrainnotes.blog.api.BlogSearchSourceApi blogs;
+    private final com.starrainnotes.portfolio.api.PortfolioPublicApi works;
+    private final com.starrainnotes.tutorial.content.api.TutorialDocumentSourceApi tutorials;
+
+    public StaticPageSeoSourceProvider(SitePublicApi site) { this(site, null, null, null); }
+
+    @org.springframework.beans.factory.annotation.Autowired
+    public StaticPageSeoSourceProvider(SitePublicApi site, com.starrainnotes.blog.api.BlogSearchSourceApi blogs,
+            com.starrainnotes.portfolio.api.PortfolioPublicApi works,
+            com.starrainnotes.tutorial.content.api.TutorialDocumentSourceApi tutorials) {
+        this.site = site; this.blogs = blogs; this.works = works; this.tutorials = tutorials;
+    }
+
+    @Override public boolean publiclyVisible(String path) { return supports(path); }
     /**
      * 站点。
      * 协作类型：<code>SitePublicApi</code>。
@@ -64,7 +77,8 @@ public class StaticPageSeoSourceProvider implements SeoSourceProvider {
     @Override
     public Optional<SeoSourceDocument> loadByRoute(String routePath) {
         if ("/".equals(routePath)) return Optional.of(home());
-        return PAGES.stream().filter(page -> page.getRoutePath().equals(routePath)).findFirst();
+        return PAGES.stream().filter(page -> page.getRoutePath().equals(routePath)).findFirst().map(source ->
+                page(source.getRoutePath(), source.getTitle(), source.getSummary(), listBody(source.getRoutePath(), source.getBodyMarkdown())));
     }
 
     /**
@@ -76,7 +90,7 @@ public class StaticPageSeoSourceProvider implements SeoSourceProvider {
     public List<SeoSourceDocument> listPublished() {
         List<SeoSourceDocument> pages = new java.util.ArrayList<>();
         pages.add(home());
-        pages.addAll(PAGES);
+        for (var page : PAGES) loadByRoute(page.getRoutePath()).ifPresent(pages::add);
         return pages;
     }
 
@@ -103,5 +117,22 @@ public class StaticPageSeoSourceProvider implements SeoSourceProvider {
     private static SeoSourceDocument page(String path, String title, String summary, String body) {
         return SeoSourceDocument.builder().routePath(path).contentType("SITE")
             .title(title).summary(summary).bodyMarkdown(body).build();
+    }
+
+    private String listBody(String route, String intro) {
+        StringBuilder body = new StringBuilder(intro).append("\n\n");
+        if (("/blog".equals(route) || "/blog/archive".equals(route)) && blogs != null) {
+            for (var post : blogs.listPublishedDocuments(null, 30).getItems()) appendLink(body, post.getTitle(), "/blog/posts/" + post.getSlug());
+        } else if ("/portfolio".equals(route) && works != null) {
+            for (var work : works.publishedWorks(1, 24).getItems()) appendLink(body, work.getTitle(), "/portfolio/" + work.getSlug());
+        } else if ("/tutorials".equals(route) && tutorials != null) {
+            for (var tutorial : tutorials.page(1, 30).getItems()) appendLink(body, tutorial.getTitle(), "/tutorials/" + tutorial.getSlug());
+        }
+        return body.toString();
+    }
+
+    private void appendLink(StringBuilder body, String title, String path) {
+        String safe = title.replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]").replace("\n", " ").replace("\r", " ");
+        body.append("- [").append(safe).append("](").append(path).append(")\n");
     }
 }

@@ -54,6 +54,23 @@ beforeEach(() => {
 })
 afterEach(() => wrapper?.unmount())
 describe('blog editor reliability', () => {
+  it('does not publish unsaved content', async () => {
+    await start(); await wrapper.get('[aria-label="正文"]').setValue('Changed draft')
+    await click('发布')
+    expect(api.publishPost).not.toHaveBeenCalled()
+    expect(wrapper.get('[aria-label="正文"]').element.value).toBe('Changed draft')
+    expect(wrapper.get('[role="alert"]').text()).toContain('请先保存')
+  })
+  it('keeps input after a version conflict and offers a deliberate read-back', async () => {
+    await start(); await wrapper.get('[aria-label="正文"]').setValue('My unsaved text')
+    api.updatePostBody.mockRejectedValue({ response: { status: 409, data: { code: 'CONTENT_VERSION_CONFLICT', message: '内容已被其他窗口修改' } } })
+    await click('保存正文')
+    expect(wrapper.get('[aria-label="正文"]').element.value).toBe('My unsaved text')
+    api.getAdminPost.mockResolvedValue(article('Other editor saved'))
+    await click('核实服务端保存结果（保留当前输入）')
+    expect(wrapper.get('[aria-label="正文"]').element.value).toBe('My unsaved text')
+    await dirtyLeave()
+  })
   it.each(['正文', '文章标题'])('guards navigation after editing %s', async label => {
     await start(); await wrapper.get(`[aria-label="${label}"]`).setValue('B'); await dirtyLeave()
   })
@@ -124,7 +141,7 @@ describe('blog editor reliability', () => {
     await start(); api.updatePostBody.mockRejectedValue({ code: 'ECONNABORTED' })
     await click('保存正文'); expect(wrapper.get('[role="alert"]').text()).toContain('尚未确认')
     await click('保存正文'); expect(api.updatePostBody).toHaveBeenCalledTimes(1)
-    await wrapper.get('[aria-label="正文"]').setValue('B'); await click('核实服务端保存结果')
+    await wrapper.get('[aria-label="正文"]').setValue('B'); await click('核实服务端保存结果（保留当前输入）')
     expect(wrapper.get('[aria-label="正文"]').element.value).toBe('B'); await dirtyLeave()
   })
   it('does not mutate a destroyed editor when the request resolves', async () => {

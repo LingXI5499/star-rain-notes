@@ -9,6 +9,18 @@
  */
 
 import axios from 'axios'
+import { createContentVersions } from './contentVersions'
+import { watch, onBeforeUnmount } from 'vue'
+
+const contentVersions = createContentVersions()
+export function bindEditingVersion(domain, id, version) {
+  let release
+  watch(id, value => {
+    release?.()
+    if (value) release = contentVersions.bind(`${domain}:${value}`, () => String(version.value), next => { version.value = next })
+  }, { immediate: true })
+  onBeforeUnmount(() => release?.())
+}
 
 /*
  * 全站唯一的 HTTP 客户端。
@@ -53,12 +65,20 @@ http.interceptors.request.use(async (config) => {
   const method = (config.method || 'get').toLowerCase()
   if (!['get', 'head', 'options'].includes(method)) {
     config.headers ||= {}
+    const version = contentVersions.header(config.url)
+    config.contentVersionOwner = contentVersions.owner(config.url)
+    if (version !== undefined && !config.headers['If-Match']) config.headers['If-Match'] = `"${version}"`
     config.headers['X-XSRF-TOKEN'] = await ensureCsrf()
   }
   return config
 })
 
-http.interceptors.response.use((response) => response, (error) => {
+http.interceptors.response.use((response) => {
+  const method = (response.config?.method || 'get').toLowerCase()
+  if (['get', 'head'].includes(method)) contentVersions.observe(response.config?.url, response.data?.data)
+  else contentVersions.succeeded(response.config?.url, response.data?.data, response.headers?.['x-content-version'], response.config?.contentVersionOwner)
+  return response
+}, (error) => {
   if (error.response?.status === 401 && error.response?.data?.code === 'UNAUTHORIZED') {
     clearCsrf()
     window.dispatchEvent(new Event('account-session-expired'))
@@ -72,6 +92,7 @@ export
    * 清理CSRF。
    */
   function clearCsrf() {
+  contentVersions.clear()
   csrfEpoch += 1
   csrfToken = ''
   csrfRequest = null

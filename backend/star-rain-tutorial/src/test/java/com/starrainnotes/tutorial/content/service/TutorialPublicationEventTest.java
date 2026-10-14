@@ -22,20 +22,20 @@ class TutorialPublicationEventTest {
      * 公开版本InvalidationRunsOnly之后Commit处理入口。
      * 关键处理步骤调用 <code>TransactionSynchronizationManager.initSynchronization</code>、<code>events.afterCommit</code>、<code>TransactionSynchronizationManager.getSynchronizations</code>、<code>sync.afterCommit</code>。
      */
-    @Test void publicVersionInvalidationRunsOnlyAfterCommit() {
+    @Test void publicationEventIsRegisteredInsideTheBusinessTransaction() {
         var publisher=mock(ApplicationEventPublisher.class);var events=new TutorialEventPublisher(publisher);
         var event=new TutorialPublicationChangedEvent(1L,"java","Java","PUBLISHED",null);
         TransactionSynchronizationManager.initSynchronization();
         try {
-            events.afterCommit(event);verifyNoInteractions(publisher);
+            events.publish(event);verify(publisher).publishEvent(event);
             TransactionSynchronizationManager.getSynchronizations().forEach(sync -> sync.afterCommit());
             verify(publisher).publishEvent(event);
         } finally {TransactionSynchronizationManager.clearSynchronization();}
         reset(publisher);TransactionSynchronizationManager.initSynchronization();
         try {
-            events.afterCommit(event);
+            events.publish(event);
             TransactionSynchronizationManager.getSynchronizations().forEach(sync -> sync.afterCompletion(1));
-            verifyNoInteractions(publisher);
+            verify(publisher).publishEvent(event);
         } finally {TransactionSynchronizationManager.clearSynchronization();}
     }
 }

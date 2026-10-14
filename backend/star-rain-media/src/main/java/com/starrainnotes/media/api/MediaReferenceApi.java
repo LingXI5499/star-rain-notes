@@ -23,6 +23,7 @@ import java.util.List;
  * 提供模块边界上的能力契约，让调用方依赖接口及传输类型，而不是读取本模块的内部实现。
  */
 public interface MediaReferenceApi {
+    void assertPublicContent(String markdown);
 
     /*
      * 建立引用。要求媒体存在且为 ACTIVE，相同引用不能重复登记。

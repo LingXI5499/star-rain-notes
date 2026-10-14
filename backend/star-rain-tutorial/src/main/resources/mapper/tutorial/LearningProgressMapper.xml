@@ -13,7 +13,7 @@
     通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
   -->
   <sql id="columns">
-    id, account_id, tutorial_id, group_id, chapter_id, scroll_anchor, progress_ratio,
+    id, row_version, account_id, tutorial_id, group_id, chapter_id, scroll_anchor, progress_ratio,
     study_seconds_total, completed_at, last_studied_at, created_at, updated_at
   </sql>
 
@@ -113,4 +113,6 @@
     ORDER BY last_studied_at DESC
     LIMIT 20
   </select>
+<insert id="acceptEvent">INSERT IGNORE INTO sr_learning_progress_event(account_id,event_id) VALUES(#{accountId},#{eventId})</insert>
+  <update id="applyReading">UPDATE sr_learning_progress SET scroll_anchor=#{anchor},progress_ratio=#{ratio},study_seconds_total=study_seconds_total+CASE WHEN row_version=0 AND study_seconds_total=0 THEN #{seconds} ELSE LEAST(#{seconds},GREATEST(0,TIMESTAMPDIFF(SECOND,last_studied_at,UTC_TIMESTAMP(3)))) END,last_studied_at=UTC_TIMESTAMP(3),row_version=row_version+1 WHERE account_id=#{accountId} AND chapter_id=#{chapterId} AND row_version=#{version}</update>
 </mapper>

@@ -18,6 +18,7 @@ import java.util.Optional;
  * 提供包内其它组件使用的支持能力，主要协作类型及入口方法见本文件说明。
  */
 public interface SeoSourceProvider {
+    default boolean publiclyVisible(String routePath) { return loadByRoute(routePath).isPresent(); }
     /**
      * 判断是否支持SEO来源提供方。
      *

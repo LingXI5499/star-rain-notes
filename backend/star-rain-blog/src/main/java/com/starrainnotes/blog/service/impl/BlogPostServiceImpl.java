@@ -301,6 +301,9 @@ public class BlogPostServiceImpl implements BlogPostService {
         }
 
         postMapper.updatePostMeta(postId, slug, title, summary, actorId);
+        if (BlogPostStatus.PUBLISHED_CODE.equals(post.getStatus()) && newCover != null) {
+            mediaReferenceApi.assertPublicContent("/api/media/assets/" + newCover + "/content");
+        }
 
         if (coverChanged) {
             postMapper.updatePostCover(postId, newCover, actorId);
@@ -321,7 +324,7 @@ public class BlogPostServiceImpl implements BlogPostService {
             syncTags(postId, request.getTagIds());
         }
         if (BlogPostStatus.PUBLISHED_CODE.equals(post.getStatus())) {
-            eventAfterCommit(new BlogPostChangedEvent(postId, post.getSlug(), slug));
+            publishChange(new BlogPostChangedEvent(postId, post.getSlug(), slug));
         }
         return assembler.toAdminVO(requirePost(postId));
     }
@@ -341,6 +344,7 @@ public class BlogPostServiceImpl implements BlogPostService {
         Long actorId = currentAccountId();
         BlogPostEntity post = requirePostForUpdate(postId);
         String body = request.getBodyMarkdown() == null ? "" : request.getBodyMarkdown();
+        if (BlogPostStatus.PUBLISHED_CODE.equals(post.getStatus())) mediaReferenceApi.assertPublicContent(body);
         postMapper.updatePostBody(postId, body, actorId);
 
         /*
@@ -363,7 +367,7 @@ public class BlogPostServiceImpl implements BlogPostService {
             mediaReferenceApi.attach(BlogMediaReferenceCommands.content(mediaAssetId, postId));
         }
         if (BlogPostStatus.PUBLISHED_CODE.equals(post.getStatus())) {
-            eventAfterCommit(new BlogPostChangedEvent(postId, post.getSlug(), post.getSlug()));
+            publishChange(new BlogPostChangedEvent(postId, post.getSlug(), post.getSlug()));
         }
         return assembler.toAdminDetailVO(requirePost(postId));
     }
@@ -418,26 +422,8 @@ public class BlogPostServiceImpl implements BlogPostService {
      *
      * @param event 事件；类型为 <code>BlogPostChangedEvent</code>
      */
-    private void eventAfterCommit(BlogPostChangedEvent event) {
-        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
-            eventPublisher.publishEvent(event);
-            return;
-        }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
-    /**
-     * 当前调用使用的匿名协作实现，属于博客模块。
-     * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
-     */
-    {
-            /**
-             * 之后Commit处理入口。
-             * 关键处理步骤调用 <code>eventPublisher.publishEvent</code>。
-             */
-            @Override
-            public void afterCommit() {
-                eventPublisher.publishEvent(event);
-            }
-        });
+    private void publishChange(BlogPostChangedEvent event) {
+        eventPublisher.publishEvent(event);
     }
 
     /**
@@ -469,6 +455,9 @@ public class BlogPostServiceImpl implements BlogPostService {
         if (post == null) {
             throw new BlogPostNotFoundException();
         }
+        com.starrainnotes.common.web.ContentVersion.require(post.getRowVersion());
+        postMapper.archive(post.getId());
+        postMapper.pruneHistory(post.getId(), post.getRowVersion() == null ? 0 : post.getRowVersion());
         return post;
     }
 

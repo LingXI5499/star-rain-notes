@@ -21,6 +21,8 @@ import com.starrainnotes.media.vo.MediaContentVO;
  * 声明业务服务的输入和输出，使接入层与具体实现分离；状态转换和数据写入由实现类处理。
  */
 public interface MediaAccessService {
+    /** Authorize and inspect without opening the file. */
+    MediaContentVO describe(Long mediaAssetId);
 
     /*
      * 授权并打开资源。

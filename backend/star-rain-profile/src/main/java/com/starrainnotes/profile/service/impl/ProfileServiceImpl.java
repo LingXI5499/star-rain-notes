@@ -579,7 +579,7 @@ public class ProfileServiceImpl implements ProfileService, ProfilePublicApi {
      * @return 类型为 <code>ProfileVO</code> 的处理结果
      */
     private ProfileVO changed(ProfileEntity owner) {
-        events.afterCommit(owner.getId());
+        events.publish(owner.getId());
         return view(owner, true);
     }
 

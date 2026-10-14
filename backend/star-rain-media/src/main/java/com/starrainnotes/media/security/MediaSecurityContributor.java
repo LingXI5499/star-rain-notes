@@ -54,7 +54,7 @@ public class MediaSecurityContributor implements ModuleSecurityContributor {
      */
     @Override
     public List<String> publicPatterns() {
-        return List.of("/api/media/assets/*/content");
+        return List.of("/api/media/assets/*/content", "/api/media/assets/*/thumbnail");
     }
 
     /**

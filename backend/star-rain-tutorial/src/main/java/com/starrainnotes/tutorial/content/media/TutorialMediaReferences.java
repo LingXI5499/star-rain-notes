@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class TutorialMediaReferences {
+    public void assertPublicContent(String markdown) { mediaReferenceApi.assertPublicContent(markdown); }
     /**
      * MODULE。
      */

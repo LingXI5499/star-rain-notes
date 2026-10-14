@@ -24,6 +24,8 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface BlogPostMapper {
+    int archive(@org.apache.ibatis.annotations.Param("id") Long id);
+    int pruneHistory(@org.apache.ibatis.annotations.Param("id") Long id,@org.apache.ibatis.annotations.Param("version") long version);
 
     /**
      * 写入文章。

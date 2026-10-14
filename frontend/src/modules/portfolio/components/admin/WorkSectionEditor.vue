@@ -26,7 +26,7 @@ const props = defineProps({ work: { type: Object, required: true } })
 /**
  * 事件发射器；通过 defineEmits 建立。
  */
-const emit = defineEmits(['updated'])
+const emit = defineEmits(['updated', 'conflict'])
 /**
  * 选中标识；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -69,7 +69,7 @@ watch(() => props.work.id, () => { selectedId.value = props.work.sections?.[0]?.
  * 主要协作：confirm.value.ask。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function discardAllowed() { return !dirty.value || await confirm.value.ask({ title: '尚有未保存的区块', message: '切换后当前区块的未保存修改将丢失。', confirmText: '放弃修改' }) }
+async function discardAllowed() { return !busy.value && (!dirty.value || await confirm.value.ask({ title: '尚有未保存的区块', message: '切换后当前区块的未保存修改将丢失。', confirmText: '放弃修改' })) }
 /**
  * 查询的处理函数。
  * 主要协作：discardAllowed、assign。
@@ -99,10 +99,21 @@ async function refresh() { emit('updated', await getAdminWork(props.work.id)); a
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function save() {
+ if (busy.value) return
  busy.value = true; error.value = ''; notice.value = ''
  const latest = markdown.value?.getMarkdown?.(); if (markdownType.value && typeof latest === 'string') form.content = latest
  if (markdownType.value) form.media = form.media.filter(item => item.url && form.content.includes(item.url))
- try { const result = selectedId.value ? await updateWorkSection(props.work.id, selectedId.value, blockPayload(form)) : await createWorkSection(props.work.id, blockPayload(form)); selectedId.value = result.id; assign(result); await refresh(); notice.value = '区块已保存。' } catch (cause) { error.value = errorMessage(cause) } finally { busy.value = false }
+ const submitted = JSON.parse(JSON.stringify(blockPayload(form))), signature = JSON.stringify(submitted)
+ try {
+  const result = selectedId.value ? await updateWorkSection(props.work.id, selectedId.value, submitted) : await createWorkSection(props.work.id, submitted)
+  selectedId.value = result.id
+  const changedWhileSaving = JSON.stringify(blockPayload(form)) !== signature
+  if (changedWhileSaving) saved.value = signature; else assign(result)
+  await refresh(); notice.value = changedWhileSaving ? '提交的区块已保存，后续输入仍待保存。' : '区块已保存。'
+ } catch (cause) {
+  if (cause?.response?.data?.code === 'CONTENT_VERSION_CONFLICT') emit('conflict')
+  error.value = errorMessage(cause)
+ } finally { busy.value = false }
 }
 /**
  * 移除当前操作。

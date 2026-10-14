@@ -27,6 +27,9 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface TutorialMapper {
+    long publicCount(@org.apache.ibatis.annotations.Param("categoryId") Long categoryId, @org.apache.ibatis.annotations.Param("search") String search);
+    java.util.List<String> publicSummaries(@org.apache.ibatis.annotations.Param("categoryId") Long categoryId, @org.apache.ibatis.annotations.Param("search") String search, @org.apache.ibatis.annotations.Param("offset") long offset, @org.apache.ibatis.annotations.Param("limit") int limit);
+    java.util.List<java.util.Map<String,Object>> publishedCategoryCounts();
 
     /**
      * 写入教程。
