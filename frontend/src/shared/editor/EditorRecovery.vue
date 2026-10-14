@@ -149,9 +149,16 @@ async function inspect() {
     if (n === epoch) report(error)
   }
 }
-function restore() {
+async function restore() {
   if (!point.value || props.readOnly) return
-  emit('restore', point.value.source)
+  const recovered = point.value.source, n = epoch, current = latest
+  await flush()
+  if (!active || n !== epoch || latest !== current) return
+  if (pending) {
+    notice.value = '当前输入未能备份，请先手动保存当前内容，再载入其他恢复点。'
+    return
+  }
+  emit('restore', recovered)
   opened.value = false
   notice.value = '恢复内容仅载入当前编辑器；请检查后手动保存到服务器。'
 }

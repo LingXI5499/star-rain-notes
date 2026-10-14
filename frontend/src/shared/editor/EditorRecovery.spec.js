@@ -31,3 +31,11 @@ it('does not clear a newer local edit when an older submitted snapshot is acknow
   await vi.advanceTimersByTimeAsync(1801);await flushPromises()
   expect(store.removeDraft).not.toHaveBeenCalled();expect(store.writeDraft).toHaveBeenCalledWith(expect.objectContaining({baseline:'submitted'}),'newer')
 })
+it('backs up current in-progress input before explicitly replacing it with an older recovery point',async()=>{
+  store.getDraft.mockResolvedValue({points:[{source:'older local',baseline:'old',serverVersion:2,time:1}]})
+  wrapper=mount(EditorRecovery,{props:{context,source:'server'}});await flushPromises()
+  await wrapper.setProps({source:'latest unsaved input'})
+  await wrapper.findAll('button').find(button=>button.text()==='载入此恢复点到编辑器').trigger('click');await flushPromises()
+  expect(store.writeDraft).toHaveBeenCalledWith(context,'latest unsaved input')
+  expect(wrapper.emitted('restore')).toEqual([['older local']])
+})
