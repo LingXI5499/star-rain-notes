@@ -1,6 +1,12 @@
 import MarkdownIt from 'markdown-it'
+import { headingText, uniqueHeadingId } from '../../markdown/markdownOutline'
 
 const parser = new MarkdownIt({ html: false })
+/** Compare syntax and content while ignoring blank-line/indent formatting between Markdown blocks. */
+export function markdownSemantics(source) {
+  const token = value => ({ type:value.type, tag:value.tag, nesting:value.nesting, content:value.content, info:value.info, attrs:value.attrs, children:value.children?.map(token) })
+  return JSON.stringify(parser.parse(source,{}).map(token))
+}
 /** Source maps belong to Markdown tokens; protected containers are never interpreted as prose. */
 export function markdownBlocks(source) {
   const lines = String(source).split('\n')
@@ -50,8 +56,10 @@ export function headingEdit(source, start, end, level) {
 
 export function outlineSections(source) {
   const { blocks, lines } = markdownBlocks(source)
+  const used = new Map()
   return blocks.filter(block => block.level).map((block, index, all) => {
     const next = all.slice(index + 1).find(item => item.level <= block.level)
-    return { ...block, title: lines[block.start].replace(/^\s*#{1,6}\s*/, '').replace(/\s+#+\s*$/, ''), sectionEnd: next?.start ?? lines.length }
+    const title = headingText(parser.parseInline(lines[block.start].replace(/^\s*#{1,6}\s*/, '').replace(/\s+#+\s*$/, ''), {})[0])
+    return { ...block, title, id: uniqueHeadingId(title, used), sectionEnd: next?.start ?? lines.length }
   })
 }

@@ -2,8 +2,9 @@
 import { computed, onBeforeUnmount, ref, watch, useId } from 'vue'
 import { defaultHeadingKeys, headingHotkey } from './commands/editorHotkeys'
 import { markdownBlocks } from './commands/editorStructure'
+import EditorDocumentTools from './EditorDocumentTools.vue'
 
-const props = defineProps({ adapter: { type: Object, required: true }, host: Object, ready: Boolean, modelValue: String, context: Object, readOnly: Boolean, canUpload: Boolean, canPick: Boolean })
+const props = defineProps({ adapter: { type: Object, required: true }, host: Object, ready: Boolean, modelValue: String, context: Object, readOnly: Boolean, canUpload: Boolean, canPick: Boolean, pickImage: Function, getMedia: Function })
 const emit = defineEmits(['action'])
 const notice = ref(''), help = ref(false), selected = ref(''), popup = ref(null), query = ref(null), current = ref(0)
 const keys = ref({ ...defaultHeadingKeys })
@@ -56,7 +57,7 @@ function safe(action) {
   try { action() } catch (error) { notice.value = error.message }
 }
 function applyHeading(level) { safe(() => { props.adapter.restore(); props.adapter.heading(level); hide() }) }
-function format(name) { safe(() => { props.adapter.restore(); props.adapter.command(name); hide() }) }
+function format(name) { safe(() => { if (!props.adapter.restore()) throw new Error('选区已变化，请重新选择文本。'); props.adapter.command(name); hide() }) }
 function execute(item) {
   const range = menuRange?.cloneRange()
   if (!range) return
@@ -109,6 +110,7 @@ defineExpose({ hide, applyHeading })
   <div class="editor-workbench" @keydown.esc="help = false">
     <div class="editor-workbench__bar"><span>写作工具</span><button v-for="level in 7" :key="level" type="button" :disabled="!ready || readOnly" @pointerdown.prevent @click="applyHeading(level - 1)">{{ level === 1 ? '正文' : `H${level - 1}` }}</button><button type="button" :aria-expanded="help" :aria-controls="helpId" @click="help = !help">快捷键 ?</button></div>
     <p v-if="notice" role="status">{{ notice }}</p>
+    <EditorDocumentTools :adapter="adapter" :host="host" :ready="ready" :source="modelValue" :read-only="readOnly" :context="context" :pick-image="pickImage" :get-media="getMedia" />
     <div v-if="popup && query !== null" class="editor-workbench__popup" :style="popup" role="listbox" aria-label="段落命令"><button v-for="(item, index) in filtered" :key="item.id" type="button" role="option" :aria-selected="current === index" @pointerdown.prevent @click="execute(item)">{{ item.title }}</button><p v-if="!filtered.length">没有匹配的命令</p></div>
     <div v-else-if="popup && selected" class="editor-workbench__popup editor-workbench__floating" :style="popup" role="toolbar" aria-label="选区格式"><button v-for="[id, label] in [['bold','加粗'],['italic','斜体'],['strike','删除线'],['inline-code','行内代码'],['link','链接']]" :key="id" type="button" @pointerdown.prevent @click="format(id)">{{ label }}</button><label>标题<select aria-label="选区标题级别" @pointerdown="adapter.remember()" @change="applyHeading(Number($event.target.value)); $event.target.value = ''"><option value="">选择</option><option v-for="level in 7" :key="level" :value="level-1">{{ level === 1 ? '正文' : `H${level-1}` }}</option></select></label><button type="button" @pointerdown.prevent @click="copySelection">复制</button></div>
     <section v-if="help" :id="helpId" class="editor-workbench__panel" aria-label="快捷键帮助"><button type="button" @click="help = false">关闭</button><p v-for="level in 7" :key="level">{{ level === 1 ? '正文' : `H${level - 1}` }}：{{ keys[`heading${level - 1}`] }}</p><p>Ctrl+B 加粗 · Ctrl+I 斜体 · Ctrl+Z 撤销 · Ctrl+Y 重做。段落行首输入 / 打开命令菜单。快捷键仅作用于当前编辑区域；系统或输入法可能占用组合键，可使用上方按钮。</p></section>

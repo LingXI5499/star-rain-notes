@@ -12,7 +12,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useAuthStore } from '../../modules/account/stores/authStore'
 const state = vi.hoisted(() => ({ options: null, insert: vi.fn(), upload: vi.fn() }))
-vi.mock('../../modules/media/api/mediaApi', () => ({ uploadMedia: state.upload }))
+vi.mock('../../modules/media/api/mediaApi', () => ({ uploadMedia: state.upload, getMedia: vi.fn() }))
 vi.mock('../markdown/mathJax', () => ({ prepareMathJax: vi.fn().mockResolvedValue(undefined) }))
 vi.mock('vditor', () => ({ default: class {
   constructor(host, options) { state.options = options; this.value = options.value; host.innerHTML = '<div contenteditable="true"><p>原文</p></div>' }

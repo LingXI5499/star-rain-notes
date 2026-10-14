@@ -1,8 +1,23 @@
 import { test, expect } from './fixtures'
+const complex = '# 第一章\n\n**中文加粗** 与链接 [站点](https://example.com)\n\n$$\nx^2\n$$\n\n::: code-group C++|Java\n\n```cpp\n#include <iostream>\n```\n\n```java\nclass Test {}\n```\n\n:::\n\n| 中文 | 值 |\n| :--- | ---: |\n| 转义\\|字符 | `a\\|b` |\n\n![结构](/api/media/assets/19/content "图 wide")\n\n# 第二章\n\n末尾正文\n'
+async function sourcePoint(page, text) {
+  const input = page.locator('.vditor-sv[contenteditable="true"]')
+  await expect(input).toBeVisible()
+  await input.evaluate((element,text) => {
+    element.focus()
+    const offset = element.textContent.indexOf(text)
+    if (offset < 0) throw new Error('Fixture text missing')
+    const walker = document.createTreeWalker(element,NodeFilter.SHOW_TEXT); let node, remaining=offset
+    while ((node=walker.nextNode())) { if (remaining <= node.textContent.length) { const range=document.createRange();range.setStart(node,remaining);range.collapse(true);const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range);return } remaining-=node.textContent.length }
+    throw new Error('Fixture offset missing')
+  },text)
+  return input
+}
 async function open(page) {
   await page.goto('/useradmin/blog/editor/1')
   const input = page.locator('.vditor-ir [contenteditable="true"]')
   await expect(input).toBeVisible()
+  await expect(page.getByRole('button',{name:'H2',exact:true})).toBeEnabled()
   return input
 }
 test('Alt headings replace levels, paragraph conversion and undo preserve content', async ({ page, fixture }) => {
@@ -47,7 +62,7 @@ test('input fields and composing input never receive heading commands', async ({
 })
 test('floating toolbar restores selection and stays closed after Escape', async ({ page, fixture }) => {
   const input = await open(page)
-  await input.locator('p').filter({ hasText: 'Original body' }).evaluate(element => { const range = document.createRange(); range.selectNodeContents(element); const selection=window.getSelection(); selection.removeAllRanges(); selection.addRange(range); element.closest('[contenteditable]').focus() })
+  await input.locator('p').filter({ hasText: 'Original body' }).evaluate(element => { element.closest('[contenteditable]').focus(); const range = document.createRange(); range.selectNodeContents(element); const selection=window.getSelection(); selection.removeAllRanges(); selection.addRange(range) })
   const toolbar = page.getByRole('toolbar', { name: '选区格式' })
   await expect(toolbar).toBeVisible()
   await toolbar.getByRole('button', { name: '加粗', exact: true }).click()
@@ -56,4 +71,60 @@ test('floating toolbar restores selection and stays closed after Escape', async 
   await expect(toolbar).toHaveCount(0)
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
   expect(fixture.savedBodies.at(-1)).toContain('**Original body**')
+})
+test('unsafe native conversion rolls back complex content and real preview does not save or run HTML', async ({ page, fixture }) => {
+  fixture.article.bodyMarkdown = complex + '\n<script>window.editorXss = 1</script>\n'
+  await open(page)
+  await page.getByLabel('编辑视图').selectOption('sv')
+  await page.getByLabel('编辑视图').selectOption('ir')
+  await expect(page.getByLabel('编辑视图')).toHaveValue('sv')
+  await expect(page.getByRole('status').filter({hasText:'已恢复原文'})).toBeVisible()
+  await page.getByRole('button',{name:'阅读预览',exact:true}).click()
+  const preview=page.getByRole('dialog',{name:'阅读预览'})
+  await expect(preview.getByRole('heading',{name:'第一章',exact:true})).toBeVisible()
+  await expect(preview.locator('[data-code-group]')).toHaveCount(1)
+  await expect(preview.locator('img')).toHaveClass(/markdown-img--wide/)
+  expect(await page.evaluate(()=>window.editorXss)).toBeUndefined()
+  expect(fixture.savedBodies).toEqual([])
+  await preview.getByRole('button',{name:'关闭预览'}).click()
+  await page.getByRole('button',{name:'保存正文',exact:true}).click()
+  expect(fixture.savedBodies.at(-1)).toContain('#include <iostream>')
+  expect(fixture.savedBodies.at(-1)).toContain('::: code-group')
+  expect(fixture.savedBodies.at(-1)).toContain('`a\\|b`')
+})
+test('all three native modes retain ordinary inline formatting', async ({page,fixture})=>{
+  fixture.article.bodyMarkdown='# 标题\n\n**中文加粗** 与普通正文\n'
+  await open(page)
+  for(const mode of ['sv','wysiwyg','ir']) { await page.getByLabel('编辑视图').selectOption(mode); await expect(page.getByLabel('编辑视图')).toHaveValue(mode) }
+  await page.getByRole('button',{name:'保存正文',exact:true}).click()
+  expect(fixture.savedBodies.at(-1)).toContain('**中文加粗**')
+})
+test('source headings and protected code are scoped and undoable', async ({ page,fixture }) => {
+  fixture.article.bodyMarkdown=complex
+  await open(page); await page.getByLabel('编辑视图').selectOption('sv')
+  const input=await sourcePoint(page,'末尾正文')
+  await page.keyboard.press('Alt+3')
+  await expect(input).toContainText('### 末尾正文')
+  await sourcePoint(page,'#include')
+  await page.keyboard.press('Alt+2')
+  await page.getByRole('button',{name:'保存正文',exact:true}).click()
+  expect(fixture.savedBodies.at(-1)).toContain('#include <iostream>')
+  expect(fixture.savedBodies.at(-1)).not.toContain('## #include')
+})
+test('source table editing preserves pipes and image property changes keep the media URL', async ({ page,fixture }) => {
+  fixture.article.bodyMarkdown=complex
+  await open(page); await page.getByLabel('编辑视图').selectOption('sv')
+  await sourcePoint(page,'转义')
+  await page.getByRole('button',{name:'编辑表格',exact:true}).click()
+  await page.getByRole('button',{name:'下插行',exact:true}).click()
+  await sourcePoint(page,'![结构]')
+  await page.getByRole('button',{name:'图片属性',exact:true}).click()
+  await page.getByLabel('替代文本').fill('更新的结构图')
+  await page.getByLabel('图片尺寸').selectOption('full')
+  await page.getByRole('button',{name:'应用图片属性',exact:true}).click()
+  await page.getByRole('button',{name:'保存正文',exact:true}).click()
+  const saved=fixture.savedBodies.at(-1)
+  expect(saved).toContain('转义\\|字符');expect(saved).toContain('`a\\|b`')
+  expect(saved).toContain('/api/media/assets/19/content');expect(saved).toContain('full')
+  expect(saved).toContain('更新的结构图')
 })

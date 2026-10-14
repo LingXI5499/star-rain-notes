@@ -18,11 +18,12 @@ import { resolveVditorEditorHeight, setVditorFullscreenActive } from '../markdow
 import { createCodeGroupMarkdown, validateCodeGroupBlocks } from '../markdown/markdownCodeGroup'
 import { normalizePastedMath } from '../markdown/markdownMath'
 import { prepareMathJax } from '../markdown/mathJax'
-import { uploadMedia } from '../../modules/media/api/mediaApi'
+import { uploadMedia, getMedia } from '../../modules/media/api/mediaApi'
 import { IMAGE_ACCEPT, imageMarkdown, mediaUploadError, validateEditorImage } from '../../modules/media/support/upload'
 import { useAuthStore } from '../../modules/account/stores/authStore'
 import EditorWorkbench from './EditorWorkbench.vue'
 import { createVditorAdapter } from './commands/vditorAdapter'
+import { normalizeVditorMarkdown } from './commands/editorDocument'
 
 /*
  * 文章正文编辑器 —— 对标 V1 `components/MarkdownEditor.vue`（Vditor，IR 即时渲染）。
@@ -78,7 +79,7 @@ const editorReady = ref(false), workbench = ref(null)
 const adapter = createVditorAdapter(() => vditor, () => host.value)
 let workbenchRange = null
 function workbenchAction({ name, range }) {
-  workbenchRange = range
+  workbenchRange = ['table','code-group'].includes(name) ? range : null
   if (name === 'table') openTablePicker()
   if (name === 'code-group') openCodeGroupCreator()
   if (name === 'upload') { adapter.restore(range); selectImageFiles() }
@@ -104,6 +105,7 @@ const imageError = ref('')
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const imageStatus = ref('')
+const imagePercent = ref(null), failedImages = ref([])
 /**
  * uploadingImages；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -354,13 +356,18 @@ async function uploadImageFiles(files, range = rememberImageRange()) {
   imageError.value = ''
   let completed = 0
   const failures = []
+  const retryFiles = []
+  failedImages.value = []
   for (const file of files) {
     if (disposed || operation !== imageOperation) break
     const invalid = validateEditorImage(file)
     if (invalid) { failures.push(`${file.name}：${invalid}`); continue }
     imageStatus.value = `正在上传 ${completed + 1} / ${files.length}：${file.name}`
+    imagePercent.value = null
     try {
-      const asset = await uploadMedia(file, 'PROTECTED', { signal: imageUploadController.signal })
+      const asset = await uploadMedia(file, 'PROTECTED', { signal: imageUploadController.signal, onUploadProgress: event => {
+        if (operation === imageOperation && event.total > 0) imagePercent.value = Math.min(99, Math.round(event.loaded / event.total * 100))
+      } })
       if (disposed || operation !== imageOperation) break
       insertMediaImage(asset, range)
       range = rememberImageRange()
@@ -368,10 +375,13 @@ async function uploadImageFiles(files, range = rememberImageRange()) {
     } catch (cause) {
       if (disposed || operation !== imageOperation) break
       failures.push(`${file.name}：${mediaUploadError(cause)}`)
+      retryFiles.push(file)
     }
   }
   if (disposed || operation !== imageOperation) return
   imageError.value = failures.join('\n')
+  failedImages.value = retryFiles
+  imagePercent.value = null
   imageStatus.value = completed ? `已插入 ${completed} 张图片并加入媒体库；保存正文后会建立内容引用。` : ''
   uploadingImages.value = false
   imageUploadController = null
@@ -567,6 +577,7 @@ function buildToolbar() {
     'link',
     '|',
     'outline',
+    'edit-mode',
     'fullscreen',
   ]
 }
@@ -575,7 +586,7 @@ function buildToolbar() {
 const TOOLBAR_ITEM_COUNT = buildToolbar().filter((item) => item !== '|').length
 defineExpose({
   TOOLBAR_ITEM_COUNT,
-  getMarkdown: () => (ready && vditor ? vditor.getValue() : props.modelValue),
+  getMarkdown: () => (ready && vditor ? normalizeVditorMarkdown(vditor.getValue()) : props.modelValue),
 })
 
 /* ---------------------------------------------------------------
@@ -609,7 +620,7 @@ async function mountEditor() {
   const editorHeight = Math.max(resolveVditorEditorHeight(window.innerHeight), props.minHeight || 0)
 
   vditor = new Vditor(host.value, {
-    cdn: '/vendor/vditor-3.11.3',
+    cdn: '/assets/vditor-3.11.3',
     mode: 'ir',
     value: props.modelValue ?? '',
     placeholder: props.placeholder ?? '',
@@ -635,7 +646,7 @@ async function mountEditor() {
     outline: { enable: true, position: 'left' },
     toolbar: buildToolbar(),
     input: (value) => {
-      if (!suppressing) emit('update:modelValue', value)
+      if (!suppressing) emit('update:modelValue', normalizeVditorMarkdown(value))
     },
     after: () => {
       ready = true
@@ -675,7 +686,7 @@ watch(
   (value) => {
     if (!vditor || !ready) return
     const current = vditor.getValue()
-    if (value !== current) {
+    if (value !== current && value !== normalizeVditorMarkdown(current)) {
       imageOperation += 1
       imageUploadController?.abort()
       uploadingImages.value = false
@@ -737,7 +748,7 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
 
 <template>
   <div class="markdown-editor">
-    <EditorWorkbench ref="workbench" :adapter="adapter" :host="host" :ready="editorReady" :model-value="modelValue" :context="editorContext" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" @action="workbenchAction" />
+    <EditorWorkbench ref="workbench" :adapter="adapter" :host="host" :ready="editorReady" :model-value="modelValue" :context="editorContext" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :pick-image="pickImage" :get-media="getMedia" @action="workbenchAction" />
     <input ref="imageInput" class="markdown-editor__file-input" type="file" :accept="IMAGE_ACCEPT" multiple aria-label="上传正文图片" @change="onImageFiles" />
     <div ref="host" class="markdown-editor__host" />
     <div class="markdown-editor__image-actions">
@@ -746,6 +757,8 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
       <span v-if="canUploadImages">可粘贴或拖入图片。图片默认仅授权用户可访问；正式发布前请确认素材公开权限。</span>
     </div>
     <p v-if="imageStatus" class="markdown-editor__image-status" role="status">{{ imageStatus }}</p>
+    <progress v-if="uploadingImages" :value="imagePercent ?? undefined" max="100" aria-label="图片上传进度" />
+    <div v-if="failedImages.length"><p>失败文件保留在当前页面。超时或网络中断时，请先核对媒体库，避免重复上传。</p><button type="button" :disabled="uploadingImages || readOnly" @click="uploadImageFiles([...failedImages])">已核对媒体库，重试失败图片</button></div>
     <p v-if="imageError" class="markdown-editor__error" role="alert">{{ imageError }}</p>
     <p v-if="loadingError" class="markdown-editor__error" role="alert">{{ loadingError }}</p>
 

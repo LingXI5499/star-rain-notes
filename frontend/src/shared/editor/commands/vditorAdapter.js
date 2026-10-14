@@ -1,4 +1,5 @@
-import { headingEdit, markdownBlocks } from './editorStructure'
+import { headingEdit, markdownBlocks, markdownSemantics } from './editorStructure'
+import { normalizeVditorMarkdown } from './editorDocument'
 
 const escape = value => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 const clean = value => value.replace(/\u200b/g, '')
@@ -6,7 +7,7 @@ function elementOf(node) { return node?.nodeType === 1 ? node : node?.parentElem
 
 /** All version-specific toolbar selectors are contained here; content changes use public Vditor APIs. */
 export function createVditorAdapter(getEditor, getHost) {
-  let saved = null
+  let saved = null, snapshot = null, changingMode = false
   function selection() {
     const selection = window.getSelection()
     if (!selection?.rangeCount) return null
@@ -15,8 +16,19 @@ export function createVditorAdapter(getEditor, getHost) {
     return { range, element }
   }
   function restore(range = saved) {
-    if (!range || !getHost()?.contains(range.startContainer) || !getHost()?.contains(range.endContainer)) return false
-    elementOf(range.startContainer)?.closest('[contenteditable="true"]')?.focus()
+    if (!range) return false
+    if (!getHost()?.contains(range.startContainer) || !getHost()?.contains(range.endContainer)) {
+      if (range === saved && snapshot && getHost()?.contains(snapshot.element) && clean(snapshot.element.textContent) === snapshot.text) {
+        selectOffsets(snapshot.element,snapshot.start,snapshot.end); return true
+      }
+      return false
+    }
+    const element = elementOf(range.startContainer)?.closest('[contenteditable="true"]')
+    element?.focus()
+    if (!getHost()?.contains(range.startContainer)) {
+      if (range === saved && snapshot && clean(element.textContent) === snapshot.text) { selectOffsets(element,snapshot.start,snapshot.end); return true }
+      return false
+    }
     const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range.cloneRange())
     return true
   }
@@ -51,12 +63,25 @@ export function createVditorAdapter(getEditor, getHost) {
   function replace(edit) {
     const current = sourcePosition()
     selectOffsets(current.element, edit.start, edit.end)
-    getEditor().updateValue(escape(edit.replacement).replace(/\n/g, '<br>'))
+    getEditor().updateValue(`<span style="white-space:pre-wrap">${escape(edit.replacement)}</span>`)
   }
   function button(selector) {
     const target = getHost()?.querySelector(selector)
     if (!target || target.classList.contains('vditor-menu--disabled')) throw new Error('此处暂不支持该格式操作。')
     target.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+  }
+  function setMode(value) {
+    const previous = mode(), source = getEditor().getValue()
+    if (previous === value) return
+    changingMode = true
+    try {
+      button(`.vditor-toolbar [data-mode="${value}"]`)
+      if (markdownSemantics(normalizeVditorMarkdown(getEditor().getValue())) !== markdownSemantics(normalizeVditorMarkdown(source))) {
+        button(`.vditor-toolbar [data-mode="${previous}"]`); getEditor().setValue(source)
+        throw new Error('此文档包含当前 Vditor 模式转换无法完整保留的语法，已恢复原文；请使用原视图或阅读预览。')
+      }
+      saved = null; snapshot = null
+    } finally { changingMode = false }
   }
   function heading(level) {
     const current = selection()
@@ -77,8 +102,17 @@ export function createVditorAdapter(getEditor, getHost) {
   }
   return {
     selection, sourcePosition, replace, mode, heading, restore, selectOffsets,
-    remember() { const current = selection(); if (current) saved = current.range.cloneRange(); return saved },
-    reset() { saved = null },
+    remember() {
+      const current = selection()
+      if (current) {
+        saved = current.range.cloneRange()
+        const prefix = saved.cloneRange(); prefix.selectNodeContents(current.element); prefix.setEnd(saved.startContainer,saved.startOffset)
+        const end = prefix.cloneRange(); end.setEnd(saved.endContainer,saved.endOffset)
+        snapshot = {element:current.element,text:clean(current.element.textContent),start:clean(prefix.toString()).length,end:clean(end.toString()).length}
+      }
+      return saved
+    },
+    reset() { saved = null; snapshot = null },
     markdown() { return getEditor()?.getValue() || '' },
     markdownSelection() {
       const current = selection()
@@ -90,7 +124,12 @@ export function createVditorAdapter(getEditor, getHost) {
     },
     shortcutTips(keys) { for (let level = 1; level <= 6; level++) { const item = getHost()?.querySelector(`[data-tag="h${level}"]`); if (item) item.textContent = `H${level} · ${keys[`heading${level}`]}` } },
     command(name) { button(`.vditor-toolbar [data-type="${name}"]`) },
-    setMode(value) { button(`.vditor-toolbar [data-mode="${value}"]`) },
+    setMode,
+    interceptMode(event) {
+      const target = event.target.closest?.('.vditor-toolbar [data-mode]')
+      if (!target || changingMode) return false
+      event.preventDefault(); event.stopImmediatePropagation(); setMode(target.dataset.mode); return true
+    },
     insert(value, range) { if (range && !restore(range)) throw new Error('文档选区已变化，请重新插入。'); getEditor()?.insertMD(value) },
   }
 }
