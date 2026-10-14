@@ -121,7 +121,7 @@ public class BlogPublishServiceImpl implements BlogPublishService {
             throw new BlogPostStateInvalidException("文章状态已变化，发布未生效");
         }
         BlogPostEntity published = postMapper.postById(postId);
-        eventAfterCommit(BlogPostPublishedEvent.builder()
+        publishChange(BlogPostPublishedEvent.builder()
                 .postId(postId)
                 .slug(published.getSlug())
                 .title(published.getTitle())
@@ -150,7 +150,7 @@ public class BlogPublishServiceImpl implements BlogPublishService {
         if (updated == 0) {
             throw new BlogPostStateInvalidException("文章状态已变化，撤回未生效");
         }
-        eventAfterCommit(BlogPostWithdrawnEvent.builder()
+        publishChange(BlogPostWithdrawnEvent.builder()
                 .postId(postId)
                 .slug(post.getSlug())
                 .withdrawnAt(now)
@@ -180,7 +180,7 @@ public class BlogPublishServiceImpl implements BlogPublishService {
             throw new BlogPostStateInvalidException("文章状态已变化，恢复未生效");
         }
         BlogPostEntity restored = postMapper.postById(postId);
-        eventAfterCommit(BlogPostPublishedEvent.builder()
+        publishChange(BlogPostPublishedEvent.builder()
                 .postId(postId)
                 .slug(restored.getSlug())
                 .title(restored.getTitle())
@@ -220,6 +220,9 @@ public class BlogPublishServiceImpl implements BlogPublishService {
         if (post == null) {
             throw new BlogPostNotFoundException();
         }
+        com.starrainnotes.common.web.ContentVersion.require(post.getRowVersion());
+        postMapper.archive(post.getId());
+        postMapper.pruneHistory(post.getId(), post.getRowVersion() == null ? 0 : post.getRowVersion());
         return post;
     }
 
@@ -271,6 +274,19 @@ public class BlogPublishServiceImpl implements BlogPublishService {
          */
         if (post.getCoverMediaAssetId() != null) {
             mediaAssetApi.assertUsable(post.getCoverMediaAssetId());
+            requirePublicMedia(post.getCoverMediaAssetId());
+        }
+        for (Long assetId : com.starrainnotes.blog.utils.BlogContentMediaParser.extractMediaAssetIds(post.getBodyMarkdown())) {
+            mediaAssetApi.assertUsable(assetId);
+            requirePublicMedia(assetId);
+        }
+    }
+
+    private void requirePublicMedia(Long id) {
+        var asset = mediaAssetApi.get(id);
+        if (asset == null || !"PUBLIC".equals(asset.getAccessLevel())) {
+            throw new com.starrainnotes.common.exception.ApiException("BLOG_MEDIA_NOT_PUBLIC",
+                    "文章引用的素材尚未公开，请在媒体库确认访问级别后发布。", 409);
         }
     }
 
@@ -286,25 +302,7 @@ public class BlogPublishServiceImpl implements BlogPublishService {
      *
      * @param event 事件；类型为 <code>Object</code>
      */
-    private void eventAfterCommit(Object event) {
-        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
-            eventPublisher.publishEvent(event);
-            return;
-        }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
-    /**
-     * 当前调用使用的匿名协作实现，属于博客模块。
-     * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
-     */
-    {
-            /**
-             * 之后Commit处理入口。
-             * 关键处理步骤调用 <code>eventPublisher.publishEvent</code>。
-             */
-            @Override
-            public void afterCommit() {
-                eventPublisher.publishEvent(event);
-            }
-        });
+    private void publishChange(Object event) {
+        eventPublisher.publishEvent(event);
     }
 }

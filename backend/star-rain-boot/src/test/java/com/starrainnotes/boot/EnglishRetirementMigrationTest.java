@@ -36,7 +36,7 @@ class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
         inIsolatedDatabase((connection, schema) -> {
             Flyway flyway = flyway(connection, schema, null);
             flyway.migrate();
-            assertEquals("2.040", flyway.info().current().getVersion().getVersion());
+            assertEquals("2.046", flyway.info().current().getVersion().getVersion());
             assertRetiredSchemaAbsent(connection);
             try (Statement sql = connection.createStatement()) {
                 sql.executeUpdate("INSERT INTO sr_english_reading_article(slug,title,summary,body_markdown,content_origin)"
@@ -85,7 +85,7 @@ class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
             assertEquals("An authored roadmap", scalar(connection, "SELECT roadmap_markdown FROM sr_english_overview WHERE id=1"));
             assertEquals(readings, count(connection, "sr_english_reading_article"), "DDL must not clear readings");
             assertEquals(oldChecksums, scalar(connection, "SELECT GROUP_CONCAT(CONCAT(version,':',checksum) ORDER BY installed_rank)"
-                    + " FROM flyway_schema_history WHERE success=1 AND version NOT IN ('2.037','2.038','2.039','2.040')"));
+                    + " FROM flyway_schema_history WHERE success=1 AND version <= '2.036'"));
             // This is an explicit, isolated rehearsal, not a startup migration.
             connection.setAutoCommit(false);
             try (Statement sql = connection.createStatement()) {

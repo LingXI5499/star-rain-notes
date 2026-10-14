@@ -98,3 +98,25 @@ server:
         http-only: true
         same-site: lax
         secure: ${STAR_RAIN_COOKIE_SECURE:false}
+
+# Management endpoints use a separate loopback listener; do not proxy this port publicly.
+management:
+  metrics:
+    distribution:
+      percentiles:
+        http.server.requests: 0.5,0.95,0.99
+  server:
+    address: 127.0.0.1
+    port: ${STAR_RAIN_MANAGEMENT_PORT:18089}
+  endpoints:
+    web:
+      exposure:
+        include: health,metrics
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        readiness:
+          include: readinessState,db

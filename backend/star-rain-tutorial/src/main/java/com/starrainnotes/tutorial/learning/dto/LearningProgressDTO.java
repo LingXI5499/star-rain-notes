@@ -26,6 +26,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LearningProgressDTO {
+    private Long expectedVersion;
+    @Size(max = 64)
+    private String eventId;
     /**
      * scrollAnchor。
      * 校验规则 <code>@Size(max = 255)</code>。

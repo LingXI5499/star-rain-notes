@@ -43,6 +43,22 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 public class MediaReferenceServiceImpl implements MediaReferenceService {
+    private static final java.util.regex.Pattern CONTENT_MEDIA = java.util.regex.Pattern.compile("/api/media/assets/(\\d+)/(?:content|thumbnail)");
+
+    @Override public void assertPublicContent(String markdown) {
+        var matcher = CONTENT_MEDIA.matcher(markdown == null ? "" : markdown);
+        var checked = new java.util.HashSet<Long>();
+        while (matcher.find()) {
+            Long id;
+            try { id = Long.valueOf(matcher.group(1)); }
+            catch (NumberFormatException invalid) { throw new com.starrainnotes.common.exception.ApiException("MEDIA_REFERENCE_INVALID", "媒体标识无效", 400); }
+            if (!checked.add(id)) continue;
+            var asset = assetMapper.assetById(id);
+            if (asset == null || !"ACTIVE".equals(asset.getStatus()) || !"PUBLIC".equals(asset.getAccessLevel())) {
+                throw new com.starrainnotes.common.exception.ApiException("MEDIA_NOT_PUBLIC", "内容引用的素材尚未公开，请在媒体库确认后发布。", 409);
+            }
+        }
+    }
 
     /**
      * 资产数据映射。

@@ -46,7 +46,7 @@
         SELECT route_path, content_type, content_id, canonical_url, title, description,
             robots_directive, structured_data_json, html_snapshot, source_version_ref,
             status, generated_at FROM sr_seo_page_snapshot
-        WHERE route_path = #{routePath} AND status = 'ACTIVE'
+        WHERE route_path = #{routePath} AND status = 'ACTIVE' <include refid="publicationGuard"/>
     </select>
     <!--
       activePages：有效Pages；读取语句。
@@ -55,7 +55,7 @@
     -->
     <select id="activePages" resultType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         SELECT route_path, canonical_url, source_version_ref
-        FROM sr_seo_page_snapshot WHERE status = 'ACTIVE'
+        FROM sr_seo_page_snapshot WHERE status = 'ACTIVE' <include refid="publicationGuard"/>
         ORDER BY route_path
     </select>
     <!--
@@ -66,7 +66,7 @@
     -->
     <select id="activeMeta" resultType="com.starrainnotes.seo.api.dto.SeoPageSnapshot">
         SELECT route_path, canonical_url, title, description, robots_directive
-        FROM sr_seo_page_snapshot WHERE route_path = #{routePath} AND status = 'ACTIVE'
+        FROM sr_seo_page_snapshot WHERE route_path = #{routePath} AND status = 'ACTIVE' <include refid="publicationGuard"/>
     </select>
     <!--
       activePaths：有效Paths；读取语句。
@@ -95,4 +95,13 @@
     <select id="activeCount" resultType="long">
         SELECT COUNT(*) FROM sr_seo_page_snapshot WHERE status = 'ACTIVE'
     </select>
+<sql id="publicationGuard">
+ AND (content_type NOT IN ('BLOG','BLOG_TOPIC','PORTFOLIO','TUTORIAL','CHAPTER','PROFILE')
+ OR (content_type='BLOG' AND EXISTS(SELECT 1 FROM sr_blog_post p WHERE p.id=sr_seo_page_snapshot.content_id AND p.status='PUBLISHED' AND sr_seo_page_snapshot.route_path=CONCAT('/blog/posts/',p.slug)))
+ OR (content_type='BLOG_TOPIC' AND EXISTS(SELECT 1 FROM sr_blog_topic p WHERE p.id=sr_seo_page_snapshot.content_id AND p.status='ENABLED' AND sr_seo_page_snapshot.route_path=CONCAT('/blog/topics/',p.slug)))
+ OR (content_type='PORTFOLIO' AND EXISTS(SELECT 1 FROM sr_portfolio_work p WHERE p.id=sr_seo_page_snapshot.content_id AND p.status='PUBLISHED' AND sr_seo_page_snapshot.route_path=CONCAT('/portfolio/',p.slug)))
+ OR (content_type='PROFILE' AND EXISTS(SELECT 1 FROM sr_profile p WHERE p.id=sr_seo_page_snapshot.content_id AND p.status='PUBLIC'))
+ OR (content_type='TUTORIAL' AND EXISTS(SELECT 1 FROM sr_tutorial p WHERE p.id=sr_seo_page_snapshot.content_id AND p.publication_status='PUBLISHED' AND p.published_revision_id IS NOT NULL AND sr_seo_page_snapshot.route_path=CONCAT('/tutorials/',p.slug)))
+ OR (content_type='CHAPTER' AND EXISTS(SELECT 1 FROM sr_tutorial p JOIN sr_tutorial_revision r ON r.id=p.published_revision_id JOIN JSON_TABLE(r.snapshot_json,'$.groups[*].chapters[*]' COLUMNS(chapter_id BIGINT PATH '$.id',chapter_slug VARCHAR(255) PATH '$.slug')) j WHERE p.publication_status='PUBLISHED' AND j.chapter_id=sr_seo_page_snapshot.content_id AND sr_seo_page_snapshot.route_path=CONCAT('/tutorials/',p.slug,'/',j.chapter_slug))))
+ </sql>
 </mapper>

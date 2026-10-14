@@ -1,4 +1,7 @@
 <script setup>
+import { createStudyClock } from "../../support/studyClock"
+const studyClock = createStudyClock()
+let readingVersion = 0
 /**
  * ChapterStudyPage.vue：教程与学习模块的页面组件。
  * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
@@ -16,7 +19,7 @@ import RecallSession from '../../components/RecallSession.vue'
 import QuestionAnswers from '../../components/QuestionAnswers.vue'
 import BlogProse from '../../../blog/components/BlogProse.vue'
 import ReadingAside from '../../../blog/components/ReadingAside.vue'
-import { getStudyState, startInitialSession, saveChapterProgress, getStudyPlan, getStudyTask } from '../../api/learningApi'
+import { getStudyState, startInitialSession, saveChapterProgress, getStudyPlan, getStudyTask, getChapterProgress } from '../../api/learningApi'
 import { getPublicTutorial } from '../../api/tutorialApi'
 import { scopedGroups, planChapterRoute } from '../../support/planReader'
 import { accountPath } from '../../../../shared/viewMode'
@@ -148,9 +151,12 @@ async function load() {
   const ownPlan = planId ? await getStudyPlan(planId) : null
   if (ownPlan && !ownPlan.chapters.some(c => String(c.chapterId) === chapterId.value)) throw new Error('这个章节不在当前学习计划中。')
   const current = await getStudyState(chapterId.value, ownPlan?.id)
+  const savedReading = await getChapterProgress(chapterId.value)
   const catalog = props.tutorial || await getPublicTutorial(current.tutorialSlug)
   if (ownPlan && String(ownPlan.tutorialId) !== String(catalog.id)) throw new Error('教程与学习计划不匹配。')
   if (version !== loadVersion) return
+  readingVersion = savedReading.rowVersion || 0
+  studyClock.reset()
   plan.value = ownPlan; tutorial.value = catalog; state.value = current; session.value = current.session; started = Date.now()
   if (!chapter.value) throw new Error('这个章节已撤回，暂不能继续学习。')
   await nextTick(); curriculum.value?.querySelector('.curriculum__chapter--active')?.scrollIntoView?.({ block: 'nearest' })
@@ -201,10 +207,20 @@ function updateSession(s) { session.value = s; refresh() }
  */
 async function saveReading(id = chapterId.value) {
  if (!state.value || loading.value) return
- const seconds = Math.min(1800, Math.max(0, Math.floor((Date.now() - started) / 1000))); started = Date.now()
+ const version = loadVersion
+ const seconds = studyClock.consume(); started = Date.now()
  const rect = article.value?.getBoundingClientRect()
  const ratio = rect ? Math.max(0, Math.min(1, (window.innerHeight - rect.top) / Math.max(rect.height, 1))) : 0
- try { await saveChapterProgress(id, { progressRatio: ratio, studySecondsDelta: seconds }) } catch (e) { error.value = (e instanceof Error && !e.isAxiosError ? e.message : errorMessage(e)) }
+ try {
+  const saved = await saveChapterProgress(id, { progressRatio: ratio, studySecondsDelta: seconds, eventId: crypto.randomUUID(), expectedVersion: readingVersion })
+  if (version === loadVersion && id === chapterId.value) readingVersion = saved.rowVersion || 0
+ } catch (e) {
+  if (version !== loadVersion || id !== chapterId.value) return
+  error.value = (e instanceof Error && !e.isAxiosError ? e.message : errorMessage(e))
+  if (e?.response?.status === 409) {
+   try { const latest = await getChapterProgress(id); if (version === loadVersion && id === chapterId.value) readingVersion = latest.rowVersion || 0 } catch { }
+  }
+ }
 }
 /**
  * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
@@ -213,7 +229,7 @@ onMounted(() => { load(); timer = setInterval(saveReading, 30000) })
 /**
  * 组件销毁前释放监听、定时器、请求或其它资源，具体清理对象见回调。
  */
-onBeforeUnmount(() => { clearInterval(timer); saveReading(); ++loadVersion })
+onBeforeUnmount(() => { studyClock.dispose(); clearInterval(timer); saveReading(); ++loadVersion })
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */

@@ -89,6 +89,7 @@ public class LearningProgressServiceImpl implements LearningProgressService {
      */
     private LearningProgressVO view(LearningContentAccess.ChapterRef chapter, LearningProgressEntity row) {
         return LearningProgressVO.builder()
+                .rowVersion(row == null || row.getRowVersion() == null ? 0L : row.getRowVersion())
                 .tutorialId(String.valueOf(chapter.getTutorialId()))
                 .chapterId(String.valueOf(chapter.getChapterId()))
                 .tutorialSlug(chapter.getTutorialSlug()).chapterSlug(chapter.getChapterSlug())
@@ -129,8 +130,24 @@ public class LearningProgressServiceImpl implements LearningProgressService {
         }
         Long actor = accountId();
         boolean firstVisit = row(actor, chapterId) == null;
-        progressMapper.upsertReading(actor, chapter.getTutorialId(), chapter.getGroupId(), chapterId,
-                anchor, request.getProgressRatio(), seconds);
+        boolean protocol = request.getEventId() != null || request.getExpectedVersion() != null;
+        if (!protocol && org.springframework.web.context.request.RequestContextHolder.getRequestAttributes() != null) {
+            throw new com.starrainnotes.common.exception.ApiException("PROGRESS_VERSION_REQUIRED", "请刷新学习页面后再保存进度。", 428);
+        }
+        if (protocol) {
+            if (request.getEventId() == null || !request.getEventId().matches("[A-Za-z0-9-]{16,64}")
+                    || request.getExpectedVersion() == null || request.getExpectedVersion() < 0 || seconds > 60) {
+                throw new LearningInvalidRequestException("学习事件、版本或有效时长无效");
+            }
+            if (progressMapper.acceptEvent(actor, request.getEventId()) == 0) return view(chapter, row(actor, chapterId));
+            progressMapper.ensureRow(actor, chapter.getTutorialId(), chapter.getGroupId(), chapterId);
+            if (progressMapper.applyReading(actor, chapterId, anchor, request.getProgressRatio(), seconds, request.getExpectedVersion()) != 1) {
+                throw new com.starrainnotes.common.exception.ApiException("PROGRESS_VERSION_CONFLICT", "其他页面已更新学习进度，请读取最新记录后继续。", 409);
+            }
+        } else {
+            progressMapper.upsertReading(actor, chapter.getTutorialId(), chapter.getGroupId(), chapterId,
+                    anchor, request.getProgressRatio(), seconds);
+        }
         if (firstVisit) {
             events.chapter(actor, "CHAPTER_OPENED", chapter);
         }

@@ -398,6 +398,7 @@ public class PortfolioContentServiceImpl implements PortfolioContentService {
         List<SectionMediaDTO> media = request.getMedia() == null ? List.of() : request.getMedia();
         String type = request.getSectionType();
         boolean inlineImages = Set.of("MARKDOWN", "CUSTOM").contains(type);
+        if (publicOnly && inlineImages) references.assertPublicContent(request.getContent());
         if (!Set.of("IMAGE", "GALLERY", "AUDIO").contains(type) && !inlineImages && !media.isEmpty()) {
             throw new WorkInvalidException("此区块不接受媒体附件");
         }
@@ -467,6 +468,9 @@ public class PortfolioContentServiceImpl implements PortfolioContentService {
     private WorkEntity lock(Long id) {
         WorkEntity work = id == null ? null : works.byIdForUpdate(id);
         if (work == null) { throw new WorkNotFoundException(); }
+        com.starrainnotes.common.web.ContentVersion.require(work.getRowVersion());
+        works.archive(work.getId());
+        works.pruneHistory(work.getId(), work.getRowVersion() == null ? 0 : work.getRowVersion());
         return work;
     }
     /**
@@ -493,7 +497,7 @@ public class PortfolioContentServiceImpl implements PortfolioContentService {
         work.setUpdatedByAccountId(actor.current().getAccountId());
         work.setUpdatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS)); works.touch(work);
         if ("PUBLISHED".equals(work.getStatus())) {
-            events.afterCommit(WorkPublicationChangedEvent.builder().workId(work.getId()).slug(work.getSlug())
+            events.publish(WorkPublicationChangedEvent.builder().workId(work.getId()).slug(work.getSlug())
                     .published(true).build());
         }
     }

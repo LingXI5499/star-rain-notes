@@ -64,7 +64,7 @@ public class SeoSnapshotServiceImpl implements SeoSnapshotService, SeoPageApi, S
     @Transactional(readOnly = true)
     public Optional<SeoPageSnapshot> getByRoute(String routePath) {
         canonical.canonical(routePath);
-        return Optional.ofNullable(mapper.active(routePath));
+        return publiclyVisible(routePath) ? Optional.ofNullable(mapper.active(routePath)) : Optional.empty();
     }
 
     /**
@@ -79,7 +79,7 @@ public class SeoSnapshotServiceImpl implements SeoSnapshotService, SeoPageApi, S
     @Transactional(readOnly = true)
     public Optional<SeoPageSnapshot> getMetaByRoute(String routePath) {
         canonical.canonical(routePath);
-        return Optional.ofNullable(mapper.activeMeta(routePath));
+        return publiclyVisible(routePath) ? Optional.ofNullable(mapper.activeMeta(routePath)) : Optional.empty();
     }
 
     /**
@@ -141,5 +141,11 @@ public class SeoSnapshotServiceImpl implements SeoSnapshotService, SeoPageApi, S
         snapshot.setHtmlSnapshot(html);
         snapshot.setSourceVersionRef(source.getUpdatedAt() == null ? null : source.getUpdatedAt().toString());
         mapper.upsert(snapshot);
+    }
+
+    /** Consult authoritative publication state even when a projection update previously failed. */
+    private boolean publiclyVisible(String routePath) {
+        return providers.stream().filter(provider -> provider.supports(routePath)).findFirst()
+                .map(provider -> provider.publiclyVisible(routePath)).orElse(false);
     }
 }

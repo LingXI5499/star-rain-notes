@@ -249,7 +249,7 @@ class SearchMapperXmlTest extends MapperXmlIntegrationSupport {
                 token + "tutorial", prefix + "/1");
         documents.upsert(tutorial);
         // suggestions 是纯 LOCATE 精确匹配，两篇探针文档的标题/摘要都含同一个 token，用它隔离出这两行
-        assertEquals(2, documents.suggestions(token, 10).size());
+        assertEquals(1, documents.suggestions(token, 10).size(), "没有真实公开来源的章节不能出现在建议中");
 
         assertEquals(1, documents.removeRoutePrefix(prefix),
                 "removeRoutePrefix 必须只影响 content_type = 'CHAPTER' 的行");

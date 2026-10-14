@@ -27,6 +27,8 @@ import lombok.Data;
 @Data
 @TableName("sr_blog_post")
 public class BlogPostEntity {
+    /** Optimistic editing version. */
+    private Long rowVersion;
 
     /**
      * 当前业务对象的数据库标识。

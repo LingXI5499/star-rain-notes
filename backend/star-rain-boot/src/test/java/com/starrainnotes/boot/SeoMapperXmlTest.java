@@ -118,14 +118,14 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
     @Test
     void upsertedSnapshotRoundTripsThroughTheFullColumnList() {
         String routePath = route();
-        SeoPageSnapshot snapshot = newSnapshot(routePath, "TUTORIAL", probeId());
+        SeoPageSnapshot snapshot = newSnapshot(routePath, "MAPPERXML", probeId());
 
         assertEquals(1, pages.upsert(snapshot), "首次 upsert 应当插入一行");
 
         SeoPageSnapshot active = pages.active(routePath);
         assertNotNull(active, "active 读不到刚提交的快照");
         assertEquals(routePath, active.getRoutePath(), "别名 routePath/route_path 映射不上");
-        assertEquals("TUTORIAL", active.getContentType());
+        assertEquals("MAPPERXML", active.getContentType());
         assertEquals(snapshot.getContentId(), active.getContentId());
         assertEquals(snapshot.getCanonicalUrl(), active.getCanonicalUrl());
         assertEquals(snapshot.getTitle(), active.getTitle());
@@ -152,7 +152,7 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
     @Test
     void activeMetaOnlyCarriesTheMetadataColumns() {
         String routePath = route();
-        SeoPageSnapshot snapshot = newSnapshot(routePath, "BLOG", probeId());
+        SeoPageSnapshot snapshot = newSnapshot(routePath, "MAPPERXML", probeId());
         pages.upsert(snapshot);
 
         SeoPageSnapshot meta = pages.activeMeta(routePath);
@@ -177,10 +177,10 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
     @Test
     void reindexingTheSameRouteUpdatesInPlaceAndKeepsOneActiveRow() {
         String routePath = route();
-        SeoPageSnapshot first = newSnapshot(routePath, "TUTORIAL", probeId());
+        SeoPageSnapshot first = newSnapshot(routePath, "MAPPERXML", probeId());
         assertEquals(1, pages.upsert(first));
 
-        SeoPageSnapshot second = newSnapshot(routePath, "TUTORIAL", first.getContentId());
+        SeoPageSnapshot second = newSnapshot(routePath, "MAPPERXML2", first.getContentId());
         second.setTitle(first.getTitle() + "-改名");
         second.setDescription("XML 验证描述（改）");
         second.setRobotsDirective("noindex,nofollow");
@@ -204,8 +204,8 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
         String prefix = "/mapper-xml-test/" + unique("seoprefix");
         String child = prefix + "/child";
         String other = "/mapper-xml-test/" + unique("seoother") + "/page";
-        pages.upsert(newSnapshot(child, "TUTORIAL", probeId()));
-        pages.upsert(newSnapshot(other, "TUTORIAL", probeId()));
+        pages.upsert(newSnapshot(child, "MAPPERXML", probeId()));
+        pages.upsert(newSnapshot(other, "MAPPERXML", probeId()));
 
         List<String> byPrefix = pages.activePathsByPrefix(prefix);
         assertTrue(byPrefix.contains(child), "按前缀取路由没生效");
@@ -334,7 +334,7 @@ class SeoMapperXmlTest extends MapperXmlIntegrationSupport {
     @Test
     void rollbackLeavesNoSeoProbeRowsBehind() {
         String routePath = route();
-        pages.upsert(newSnapshot(routePath, "TUTORIAL", probeId()));
+        pages.upsert(newSnapshot(routePath, "MAPPERXML", probeId()));
         SeoNotificationLog row = enqueueAndReload(newLog(unique("mapper-seo-rollback")), now().plusMinutes(1));
 
         session.rollback();

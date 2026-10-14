@@ -76,6 +76,7 @@ const { isAccount } = useViewMode()
  */
 .public-main {
   flex: 1;
+  min-height: calc(100svh - 64px);
   width: 100%;
   padding-block: var(--space-10);
 }

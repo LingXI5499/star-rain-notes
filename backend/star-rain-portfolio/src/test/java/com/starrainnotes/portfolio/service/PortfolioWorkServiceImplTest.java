@@ -140,7 +140,7 @@ class PortfolioWorkServiceImplTest {
 
         assertThat(service.restore(9L).getStatus()).isEqualTo("PUBLISHED");
         assertThat(work.getPublishedAt()).isEqualTo(firstPublished);
-        verify(events).afterCommit(any());
+        verify(events).publish(any());
     }
 
     /**

@@ -20,6 +20,7 @@ import java.time.LocalDateTime;
  */
 @Data
 public class LearningProgressEntity {
+    private Long rowVersion;
     /**
      * 当前业务对象的数据库标识。
      */

@@ -61,6 +61,7 @@ const error = ref('')
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const uploaded = ref(null)
+const publicUpload = ref(false)
 
 /**
  * 打开当前操作。
@@ -72,6 +73,7 @@ function open() {
   if (busy.value) { nextTick(() => { if (!dialog.value?.open) dialog.value?.showModal() }); return }
   file.value = null
   uploaded.value = null
+  publicUpload.value = false
   error.value = ''
   if (fileInput.value) fileInput.value.value = ''
   nextTick(() => dialog.value?.showModal())
@@ -109,7 +111,7 @@ async function submit() {
   busy.value = true
   error.value = ''
   try {
-    const asset = await uploadMedia(file.value, 'PUBLIC')
+    const asset = await uploadMedia(file.value, publicUpload.value ? 'PUBLIC' : 'PROTECTED')
     uploaded.value = asset
     file.value = null
     if (fileInput.value) fileInput.value.value = ''
@@ -146,7 +148,8 @@ defineExpose({ open })
           {{ hint.label }} {{ hint.limit }}<template v-if="index < SIZE_HINTS.length - 1"> · </template>
         </template>
       </p>
-      <p class="form-hint">上传后为公开可读；需要限制读取的文件请在媒体详情页改为「受保护」。</p>
+      <label><input v-model="publicUpload" type="checkbox" :disabled="busy" />允许任何人通过文件链接读取此素材</label>
+      <p class="form-hint">默认仅有媒体读取权限的账户可预览。公开文章引用的素材，请在发布前于媒体库确认公开。</p>
 
       <p v-if="error" class="error" role="alert">{{ error }}</p>
 

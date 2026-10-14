@@ -177,7 +177,7 @@ class TutorialWorkspacePublicationTest {
         assertThat(old.getSnapshotJson()).isEqualTo(oldJson);
         assertThatThrownBy(() -> service.publicChapter("java","one")).isInstanceOf(TutorialNotFoundException.class);
         assertThat(service.publicChapter("java","two").path("bodyMarkdown").asText()).isEqualTo("untouched public body");
-        verify(media).attachRevision(eq(11L),any());verify(events).afterCommit(any());
+        verify(media).attachRevision(eq(11L),any());verify(events).publish(any());
         verify(chapters,never()).deleteById(any());
     }
     /**
@@ -220,7 +220,7 @@ class TutorialWorkspacePublicationTest {
         service.publish(1L);
         assertThat(candidate().path("chapterCount").asInt()).isZero();
         assertThat(tutorial.getPublicationStatus()).isEqualTo("PUBLISHED");
-        verify(events).afterCommit(any());
+        verify(events).publish(any());
     }
     /**
      * 草稿SaveDoes不发布It处理入口。
@@ -273,7 +273,7 @@ class TutorialWorkspacePublicationTest {
         assertThat(tutorial.getEditingStatus()).isEqualTo("DRAFT");
         assertThat(service.publicChapter("java","one").path("bodyMarkdown").asText()).isEqualTo("New body");
         assertThat(service.publicChapter("java","two").path("bodyMarkdown").asText()).isEqualTo("untouched public body");
-        verify(events).afterCommit(any());
+        verify(events).publish(any());
         var annotation=handler.getClass().getMethod("onApproved",com.starrainnotes.review.api.ReviewDecisionContext.class)
                 .getAnnotation(org.springframework.transaction.annotation.Transactional.class);
         assertThat(annotation.propagation()).isEqualTo(org.springframework.transaction.annotation.Propagation.REQUIRES_NEW);

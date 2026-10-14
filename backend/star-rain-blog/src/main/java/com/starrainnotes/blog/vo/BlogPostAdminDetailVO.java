@@ -29,6 +29,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class BlogPostAdminDetailVO {
+    /** Optimistic editing version. */
+    private Long rowVersion;
 
     /**
      * 当前业务对象的数据库标识。

@@ -23,7 +23,7 @@ import com.starrainnotes.tutorial.api.event.TutorialPublicationChangedEvent;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.event.EventListener;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,6 +33,8 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class SeoContentEventConsumer {
+    @org.springframework.beans.factory.annotation.Autowired
+    private org.springframework.context.ApplicationEventPublisher acknowledgements;
     /**
      * 当前类使用的日志记录器。
      */
@@ -60,50 +62,50 @@ public class SeoContentEventConsumer {
 
     /**
      * 响应站点配置Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 关键处理步骤调用 <code>safe</code>、<code>upsert</code>。
      *
      * @param event 事件；类型为 <code>SiteConfigChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onSiteConfigChanged(SiteConfigChangedEvent event) {
-        safe("SITE", null, () -> upsert("/"));
+        safe(event, "SITE", null, () -> upsert("/"));
     }
 
     /**
      * 响应博客已发布。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 关键处理步骤调用 <code>safe</code>、<code>event.getPostId</code>、<code>upsert</code>、<code>event.getSlug</code>。
      *
      * @param event 事件；类型为 <code>BlogPostPublishedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onBlogPublished(BlogPostPublishedEvent event) {
-        safe("BLOG", event.getPostId(), () -> upsert("/blog/posts/" + event.getSlug()));
+        safe(event, "BLOG", event.getPostId(), () -> upsert("/blog/posts/" + event.getSlug()));
     }
 
     /**
      * 响应博客已撤回。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 关键处理步骤调用 <code>safe</code>、<code>event.getPostId</code>、<code>remove</code>、<code>event.getSlug</code>。
      *
      * @param event 事件；类型为 <code>BlogPostWithdrawnEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onBlogWithdrawn(BlogPostWithdrawnEvent event) {
-        safe("BLOG", event.getPostId(), () -> remove("/blog/posts/" + event.getSlug()));
+        safe(event, "BLOG", event.getPostId(), () -> remove("/blog/posts/" + event.getSlug()));
     }
 
     /**
      * 响应博客Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 关键处理步骤调用 <code>safe</code>、<code>event.postId</code>、<code>event.previousSlug</code>、<code>event.slug</code>。
      *
      * @param event 事件；类型为 <code>BlogPostChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onBlogChanged(BlogPostChangedEvent event) {
-        safe("BLOG", event.postId(), () -> {
+        safe(event, "BLOG", event.postId(), () -> {
             if (!event.previousSlug().equals(event.slug())) {
                 remove("/blog/posts/" + event.previousSlug());
             }
@@ -113,14 +115,14 @@ public class SeoContentEventConsumer {
 
     /**
      * 响应博客专题Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 关键处理步骤调用 <code>safe</code>、<code>event.topicId</code>、<code>event.slug</code>、<code>event.previousSlug</code>。
      *
      * @param event 事件；类型为 <code>BlogTopicChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onBlogTopicChanged(BlogTopicChangedEvent event) {
-        safe("BLOG_TOPIC", event.topicId(), () -> {
+        safe(event, "BLOG_TOPIC", event.topicId(), () -> {
             String path = "/blog/topics/" + event.slug();
             if (event.previousSlug() != null && !event.previousSlug().equals(event.slug())) {
                 remove("/blog/topics/" + event.previousSlug());
@@ -132,14 +134,14 @@ public class SeoContentEventConsumer {
 
     /**
      * 响应作品Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 关键处理步骤调用 <code>safe</code>、<code>event.getWorkId</code>、<code>event.getSlug</code>、<code>event.isPublished</code>。
      *
      * @param event 事件；类型为 <code>WorkPublicationChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onWorkChanged(WorkPublicationChangedEvent event) {
-        safe("PORTFOLIO", event.getWorkId(), () -> {
+        safe(event, "PORTFOLIO", event.getWorkId(), () -> {
             String path = "/portfolio/" + event.getSlug();
             if (event.isPublished()) upsert(path);
             else remove(path);
@@ -148,14 +150,14 @@ public class SeoContentEventConsumer {
 
     /**
      * 响应资料Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 主要协作调用：<code>profiles.publicProfileId</code>。
      *
      * @param event 事件；类型为 <code>ProfileChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onProfileChanged(ProfileChangedEvent event) {
-        safe("PROFILE", event.getProfileId(), () -> {
+        safe(event, "PROFILE", event.getProfileId(), () -> {
             if (profiles.publicProfileId() == null) remove("/about");
             else upsert("/about");
         });
@@ -163,14 +165,14 @@ public class SeoContentEventConsumer {
 
     /**
      * 响应教程Changed。
-     * 调用约束：<code>@EventListener</code>。
+     * 调用约束：<code>@TransactionalEventListener(fallbackExecution = true)</code>。
      * 主要协作调用：<code>tutorialRefresh.publicationChanged</code>。
      *
      * @param event 事件；类型为 <code>TutorialPublicationChangedEvent</code>
      */
-    @EventListener
+    @TransactionalEventListener(fallbackExecution = true)
     public void onTutorialChanged(TutorialPublicationChangedEvent event) {
-        safe("TUTORIAL", event.getTutorialId(),
+        safe(event, "TUTORIAL", event.getTutorialId(),
             () -> tutorialRefresh.publicationChanged(event.getSlug(), event.getAction()));
     }
 
@@ -204,10 +206,15 @@ public class SeoContentEventConsumer {
      * @param id 当前业务对象的数据库标识；类型为 <code>Long</code>
      * @param action 动作；类型为 <code>Runnable</code>
      */
-    private void safe(String type, Long id, Runnable action) {
-        try { action.run(); }
-        catch (RuntimeException exception) {
-            log.error("SEO refresh failed for {} {}; run rebuild", type, id, exception);
+    private void safe(Object event, String type, Long id, Runnable action) {
+        boolean success = false;
+        try { action.run(); success = true; }
+        catch (RuntimeException failure) { log.error("SEO projection sync failed for {} {}", type, id, failure); }
+        finally {
+            if (acknowledgements != null) {
+                try { acknowledgements.publishEvent(new com.starrainnotes.common.event.ProjectionHandledEvent(event, "SEO", success)); }
+                catch (RuntimeException failure) { log.warn("SEO acknowledgement failed; durable repair remains pending", failure); }
+            }
         }
     }
 }

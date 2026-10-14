@@ -1,4 +1,5 @@
 <script setup>
+import ContentHistoryPanel from '../../../../shared/editor/ContentHistoryPanel.vue'
 /**
  * WorkEditorPage.vue：作品模块的页面组件。
  * 职责范围：作品分类、展示区块、代码库链接及关联媒体。
@@ -16,7 +17,7 @@ import {
   removeWorkLink, removeWorkMedia, updateWork, updateWorkBody, updateWorkLink, updateWorkMedia,
   getWorkTaxonomy, getWorkTemplates, bindWorkPrototype, publishWork, restoreWork, withdrawWork,
 } from '../../api/portfolioApi'
-import { errorMessage } from '../../../../shared/http'
+import { errorMessage, bindEditingVersion } from '../../../../shared/http'
 import { accountPath } from '../../../../shared/viewMode'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import WorkSectionEditor from '../../components/admin/WorkSectionEditor.vue'
@@ -38,6 +39,8 @@ const router = useRouter()
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
 const workId = computed(() => route.params.workId === 'new' ? '' : String(route.params.workId))
+const editVersion = ref(0)
+bindEditingVersion('portfolio/works', workId, editVersion)
 /**
  * 当前；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -73,6 +76,7 @@ const error = ref('')
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const notice = ref('')
+const versionConflict = ref(false), serverComparison = ref(null)
 /**
  * tab；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -130,6 +134,7 @@ async function load() {
   error.value = ''
   try {
     current.value = await getAdminWork(workId.value)
+    editVersion.value = current.value.rowVersion || 0
     for (const key of Object.keys(form)) {
       if (key === 'tagIds') form.tagIds = current.value.tags?.map(t => t.id) || []
       else form[key] = current.value[key] ?? (key === 'featured' ? false : key === 'sortOrder' ? 0 : '')
@@ -137,7 +142,7 @@ async function load() {
     savedForm.value = JSON.stringify(form)
     editorKey.value += 1
   } catch (cause) {
-    error.value = errorMessage(cause)
+    error.value = editorError(cause)
   } finally {
     loading.value = false
   }
@@ -150,26 +155,31 @@ async function load() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function save() {
+  if (saving.value || loading.value) return
   if (!form.title.trim()) { error.value = '请填写作品标题。'; return }
   const latest = editor.value?.getMarkdown?.()
   if (typeof latest === 'string') form.bodyMarkdown = latest
+  const submitted = structuredClone({ ...form, tagIds: [...form.tagIds] })
+  const legacyBody = !current.value?.sections?.length
   saving.value = true
   error.value = ''
   notice.value = ''
   try {
     let id = workId.value
     if (!id) {
-      const created = await createWork({ ...payload(), workType: form.workType, templateId: templateId.value || undefined })
+      const created = await createWork({ ...payload(submitted), workType: submitted.workType, templateId: templateId.value || undefined })
       id = created.id
     } else {
-      await updateWork(id, payload())
+      current.value = await updateWork(id, payload(submitted))
     }
-    if (current.value && !current.value.sections?.length) await updateWorkBody(id, form.bodyMarkdown)
+    if (legacyBody) current.value = await updateWorkBody(id, submitted.bodyMarkdown)
+    savedForm.value = JSON.stringify(submitted)
     if (!workId.value) await router.replace(accountPath(`/portfolio/editor/${id}`))
-    await load()
-    notice.value = '作品已保存。'
+    if (JSON.stringify(form) === JSON.stringify(submitted)) await load()
+    notice.value = dirty.value ? '提交的作品已保存；保存期间的新输入仍待保存。' : '作品已保存。'
   } catch (cause) {
-    error.value = errorMessage(cause)
+    versionConflict.value = cause?.response?.data?.code === 'CONTENT_VERSION_CONFLICT'
+    error.value = editorError(cause)
   } finally {
     saving.value = false
   }
@@ -200,7 +210,7 @@ async function addMedia() {
     const existing = mediaItems.value[0]
     const data = { mediaAssetId: asset.id, usageType: 'COVER', caption: '', sortOrder: 0 }
     current.value = existing ? await updateWorkMedia(existing.id, data) : await addWorkMedia(workId.value, data)
-  } catch (cause) { error.value = errorMessage(cause) }
+  } catch (cause) { error.value = editorError(cause) }
 }
 
 /**
@@ -213,7 +223,7 @@ async function choosePrototype() {
  if (!workId.value) { error.value = '请先保存作品。'; return }
  const asset = await pick('ARCHIVE'); if (!asset) return
  saving.value = true; error.value = ''
- try { await bindWorkPrototype(workId.value, { mediaAssetId: asset.id, entryPath: prototypeEntry.value.trim() }); current.value = await getAdminWork(workId.value); notice.value = '静态原型已绑定。' } catch (cause) { error.value = errorMessage(cause) } finally { saving.value = false }
+ try { await bindWorkPrototype(workId.value, { mediaAssetId: asset.id, entryPath: prototypeEntry.value.trim() }); current.value = await getAdminWork(workId.value); notice.value = '静态原型已绑定。' } catch (cause) { error.value = editorError(cause) } finally { saving.value = false }
 }
 /**
  * 清理Prototype。
@@ -222,7 +232,7 @@ async function choosePrototype() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function clearPrototype() {
- try { await bindWorkPrototype(workId.value, { mediaAssetId: null }); current.value = await getAdminWork(workId.value) } catch (cause) { error.value = errorMessage(cause) }
+ try { await bindWorkPrototype(workId.value, { mediaAssetId: null }); current.value = await getAdminWork(workId.value) } catch (cause) { error.value = editorError(cause) }
 }
 /**
  * 移除媒体。
@@ -233,7 +243,7 @@ async function clearPrototype() {
  */
 async function removeMedia(item) {
   error.value = ''
-  try { await removeWorkMedia(item.id); current.value = await getAdminWork(workId.value) } catch (cause) { error.value = errorMessage(cause) }
+  try { await removeWorkMedia(item.id); current.value = await getAdminWork(workId.value) } catch (cause) { error.value = editorError(cause) }
 }
 
 /**
@@ -263,7 +273,7 @@ async function saveLink() {
       sortOrder: link.id ? linkItems.value.find((item) => item.id === link.id)?.sortOrder || 0 : linkItems.value.length }
     current.value = link.id ? await updateWorkLink(link.id, payload) : await addWorkLink(workId.value, payload)
     clearLink()
-  } catch (cause) { error.value = errorMessage(cause) }
+  } catch (cause) { error.value = editorError(cause) }
 }
 
 /**
@@ -275,7 +285,7 @@ async function saveLink() {
  */
 async function removeLink(item) {
   error.value = ''
-  try { await removeWorkLink(item.id); current.value = await getAdminWork(workId.value) } catch (cause) { error.value = errorMessage(cause) }
+  try { await removeWorkLink(item.id); current.value = await getAdminWork(workId.value) } catch (cause) { error.value = editorError(cause) }
 }
 
 /**
@@ -291,7 +301,7 @@ async function moveLink(index, direction) {
   const target = index + direction
   if (target < 0 || target >= ids.length) return
   ;[ids[index], ids[target]] = [ids[target], ids[index]]
-  try { current.value = await orderWorkLinks(workId.value, ids) } catch (cause) { error.value = errorMessage(cause) }
+  try { current.value = await orderWorkLinks(workId.value, ids) } catch (cause) { error.value = editorError(cause) }
 }
 
 /**
@@ -299,9 +309,21 @@ async function moveLink(index, direction) {
  * 主要协作：form.title.trim。
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
-function payload() {
- const { workType, bodyMarkdown, ...metadata } = form
- return { ...metadata, ...(workId.value ? { clearStartedOn: !form.startedOn, clearEndedOn: !form.endedOn } : {}), title: form.title.trim(), categoryId: form.categoryId || undefined, formatId: form.formatId || undefined, startedOn: form.startedOn || undefined, endedOn: form.endedOn || undefined, slug: form.slug || undefined }
+function payload(source = form) {
+ const { workType, bodyMarkdown, ...metadata } = source
+ return { ...metadata, ...(workId.value ? { clearStartedOn: !source.startedOn, clearEndedOn: !source.endedOn } : {}), title: source.title.trim(), categoryId: source.categoryId || undefined, formatId: source.formatId || undefined, startedOn: source.startedOn || undefined, endedOn: source.endedOn || undefined, slug: source.slug || undefined }
+}
+
+function editorError(cause) {
+ if (cause?.response?.data?.code === 'CONTENT_VERSION_CONFLICT') versionConflict.value = true
+ return errorMessage(cause)
+}
+
+async function compareServerVersion() {
+  if (saving.value || !workId.value) return
+  saving.value = true
+  try { serverComparison.value = await getAdminWork(workId.value); editVersion.value = serverComparison.value.rowVersion || 0; versionConflict.value = false; notice.value = '服务器版本已读取，当前输入保留。请对照正文和信息完成合并后再保存。' }
+  catch (cause) { error.value = editorError(cause) } finally { saving.value = false }
 }
 /**
  * 设置状态。
@@ -312,7 +334,14 @@ function payload() {
 async function setStatus() {
  if (dirty.value || sectionEditor.value?.dirty) { error.value = '请先保存当前修改，再改变发布状态。'; return }
  saving.value = true; error.value = ''
- try { current.value = current.value.status === 'PUBLISHED' ? await withdrawWork(workId.value) : current.value.status === 'WITHDRAWN' ? await restoreWork(workId.value) : await publishWork(workId.value); notice.value = '发布状态已更新。' } catch (cause) { error.value = errorMessage(cause) } finally { saving.value = false }
+ try { current.value = current.value.status === 'PUBLISHED' ? await withdrawWork(workId.value) : current.value.status === 'WITHDRAWN' ? await restoreWork(workId.value) : await publishWork(workId.value); notice.value = '发布状态已更新。' } catch (cause) { error.value = editorError(cause) } finally { saving.value = false }
+}
+
+async function restoreRevision(snapshot) {
+  if (saving.value || loading.value) return
+  if (dirty.value && !await confirm.value.ask({ title: '载入历史内容', message: '将替换未保存的正文与基本信息，区块与关联保持当前记录。', confirmText: '载入' })) return
+  for (const key of Object.keys(form)) if (key !== 'tagIds' && key !== 'workType' && Object.hasOwn(snapshot, key)) form[key] = snapshot[key] ?? ''
+  editorKey.value += 1; notice.value = '历史内容已载入，确认后保存到当前版本。'
 }
 onBeforeRouteLeave(async () => {
  if (saving.value) return true
@@ -322,11 +351,14 @@ onBeforeRouteLeave(async () => {
 /**
  * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
  */
-onMounted(async () => { try { [taxonomy.value, templates.value] = await Promise.all([getWorkTaxonomy(), getWorkTemplates()]); savedForm.value = JSON.stringify(form); await load() } catch (cause) { error.value = errorMessage(cause) } })
+onMounted(async () => { try { [taxonomy.value, templates.value] = await Promise.all([getWorkTaxonomy(), getWorkTemplates()]); savedForm.value = JSON.stringify(form); await load() } catch (cause) { error.value = editorError(cause) } })
 </script>
 
 <template>
   <section class="work-editor">
+    <button v-if="versionConflict" type="button" :disabled="saving" @click="compareServerVersion">核对服务器版本（保留当前输入）</button>
+    <details v-if="serverComparison"><summary>服务器上的最新内容</summary><p>{{ serverComparison.title }} · {{ serverComparison.summary }}</p><pre>{{ serverComparison.bodyMarkdown }}</pre><section v-for="section in serverComparison.sections || []" :key="section.id"><h3>{{ section.title }}</h3><pre>{{ section.content }}</pre><pre v-if="section.data">{{ JSON.stringify(section.data, null, 2) }}</pre></section></details>
+    <ContentHistoryPanel v-if="workId" :base-path="`/admin/portfolio/works/${workId}`" @restore="restoreRevision" />
     <header class="work-editor__header"><div><RouterLink :to="accountPath('/portfolio/manage')">← 返回作品管理</RouterLink><p>WORK EDITOR · {{ workId ? '编辑作品' : '新建作品' }}</p><h1>{{ workId ? '编辑作品' : '新建作品' }}</h1></div><button type="button" :disabled="saving" @click="save">{{ saving ? '保存中…' : '保存基本信息' }}</button></header>
     <p v-if="loading">正在加载…</p>
     <p v-if="error" class="work-editor__error" role="alert">{{ error }}</p>
@@ -344,7 +376,7 @@ onMounted(async () => { try { [taxonomy.value, templates.value] = await Promise.
         <label class="work-check"><input v-model="form.featured" type="checkbox" />设为精选作品（最多 3 个）</label>
         <label class="wide">摘要<textarea v-model="form.summary" maxlength="1000" rows="3" placeholder="简要介绍作品解决的问题" /></label>
       </section>
-      <section v-show="tab === 'content'" class="work-content-panel"><WorkSectionEditor v-if="current" ref="sectionEditor" :work="current" @updated="current = $event" /><p v-else class="work-editor__section">先保存基本信息，再编辑内容区块。</p></section>
+      <section v-show="tab === 'content'" class="work-content-panel"><WorkSectionEditor v-if="current" ref="sectionEditor" :work="current" @updated="current = $event" @conflict="versionConflict = true" /><p v-else class="work-editor__section">先保存基本信息，再编辑内容区块。</p></section>
       <section v-show="tab === 'taxonomy'" class="work-editor__panel"><label>作品分类<select v-model="form.categoryId"><option value="">请选择</option><option v-for="item in taxonomy.categories" :key="item.id" :value="item.id">{{ item.name }}</option></select></label><label>作品形态<select v-model="form.formatId"><option value="">请选择</option><option v-for="item in taxonomy.formats" :key="item.id" :value="item.id">{{ item.name }}</option></select></label><div class="wide"><h2>标签</h2><div class="work-tag-picker"><label v-for="item in taxonomy.tags" :key="item.id"><input v-model="form.tagIds" :value="item.id" type="checkbox" />{{ item.name }}</label></div></div></section>
       <section v-if="current?.bodyMarkdown?.trim() && !current.sections?.length" v-show="tab === 'content'" class="work-editor__section"><h2>原有正文</h2><p>添加区块后，公开详情以区块内容为准。原有正文会保留。</p><MarkdownEditor :key="editorKey" ref="editor" v-model="form.bodyMarkdown" :pick-image="pickBodyImage" /></section>
       <section v-show="tab === 'media'" class="work-editor__section"><h2>作品封面</h2><p>从媒体库选择一张公开图片作为封面。</p><div class="work-editor__tools"><button type="button" @click="addMedia">{{ mediaItems.length ? '更换封面' : '选择封面' }}</button></div>

@@ -4,16 +4,17 @@
   <!-- Completed retained UTC dates, including events older than the retention cutoff.
        Missing/mismatched totals are rebuilt atomically across all three summary tables. -->
   <select id="pendingDays" resultType="java.time.LocalDate">
-    SELECT DATE(e.occurred_at) AS raw_date
-    FROM sr_analytics_event e
-    LEFT JOIN sr_analytics_daily_site d ON d.stat_date = DATE(e.occurred_at)
-    WHERE e.occurred_at &lt; #{today}
-    GROUP BY DATE(e.occurred_at), d.stat_date, d.page_view_count, d.content_view_count
-    HAVING d.stat_date IS NULL
-      OR SUM(e.event_type = 'PAGE_VIEW') != d.page_view_count
-      OR SUM(e.event_type = 'CONTENT_VIEW') != d.content_view_count
-      OR raw_date &gt;= DATE_SUB(#{today}, INTERVAL 3 DAY)
-    ORDER BY raw_date
+    WITH raw_days AS (SELECT DATE(occurred_at) AS stat_date,SUM(event_type='PAGE_VIEW') AS pv,SUM(event_type='CONTENT_VIEW') AS cv FROM sr_analytics_event WHERE occurred_at &lt; #{today} GROUP BY DATE(occurred_at)),
+    raw_content AS (SELECT DATE(occurred_at) AS stat_date,content_type,content_id,COUNT(*) AS total FROM sr_analytics_event WHERE event_type='CONTENT_VIEW' AND occurred_at &lt; #{today} GROUP BY DATE(occurred_at),content_type,content_id),
+    raw_referrer AS (SELECT DATE(occurred_at) AS stat_date,referrer_category,COUNT(*) AS total FROM sr_analytics_event WHERE event_type='PAGE_VIEW' AND occurred_at &lt; #{today} GROUP BY DATE(occurred_at),referrer_category)
+    SELECT r.stat_date FROM raw_days r LEFT JOIN sr_analytics_daily_site d ON d.stat_date=r.stat_date
+    WHERE d.stat_date IS NULL OR r.pv!=d.page_view_count OR r.cv!=d.content_view_count
+      OR r.stat_date &gt;= DATE_SUB(#{today},INTERVAL 3 DAY)
+      OR EXISTS(SELECT 1 FROM raw_content c LEFT JOIN sr_analytics_daily_content a ON a.stat_date=c.stat_date AND a.content_type=c.content_type AND a.content_id=c.content_id WHERE c.stat_date=r.stat_date AND (a.stat_date IS NULL OR a.view_count!=c.total))
+      OR EXISTS(SELECT 1 FROM raw_referrer c LEFT JOIN sr_analytics_daily_referrer a ON a.stat_date=c.stat_date AND a.referrer_category=c.referrer_category WHERE c.stat_date=r.stat_date AND (a.stat_date IS NULL OR a.view_count!=c.total))
+      OR r.cv!=(SELECT COALESCE(SUM(view_count),0) FROM sr_analytics_daily_content a WHERE a.stat_date=r.stat_date)
+      OR r.pv!=(SELECT COALESCE(SUM(view_count),0) FROM sr_analytics_daily_referrer a WHERE a.stat_date=r.stat_date)
+    ORDER BY r.stat_date
   </select>
   <!-- A narrow existence/count check prevents clearing summaries after raw expiration. -->
   <select id="rawDayCount" resultType="long">
@@ -197,6 +198,6 @@
     绑定参数：cutoff；参数含义参见 Mapper 方法注释。
   -->
   <delete id="deleteRawBefore">
-    DELETE FROM sr_analytics_event WHERE occurred_at &lt; #{cutoff}
+    DELETE FROM sr_analytics_event WHERE occurred_at &lt; #{cutoff} ORDER BY id LIMIT 1000
   </delete>
 </mapper>

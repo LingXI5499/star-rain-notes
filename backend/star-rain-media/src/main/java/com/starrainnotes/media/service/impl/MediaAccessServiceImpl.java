@@ -154,4 +154,17 @@ public class MediaAccessServiceImpl implements MediaAccessService {
                 .map(actor -> actor.getPermissions().contains(MediaPermissions.READ))
                 .orElse(false);
     }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MediaContentVO describe(Long mediaAssetId) {
+        if (mediaAssetId == null || mediaAssetId <= 0) throw new MediaAssetNotFoundException();
+        var asset = assetMapper.assetById(mediaAssetId);
+        if (asset == null) throw new MediaAssetNotFoundException();
+        authorize(asset);
+        long size = storage.size(asset.getStorageKey());
+        if (size < 0) throw new MediaContentMissingException();
+        return new MediaContentVO(asset.getId(), MediaType.of(asset.getMediaType()), asset.getMimeType(),
+                asset.getOriginalName(), size, asset.getSha256(), asset.getAccessLevel(), null, null);
+    }
 }

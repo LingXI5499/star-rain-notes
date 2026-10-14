@@ -207,7 +207,7 @@ class MediaUploadServiceImplTest {
      */
     @Test
     @DisplayName("未指定访问级别时默认 PUBLIC：媒体服务于公开内容，默认不公开会让前台图片 403")
-    void defaultsToPublic() throws IOException {
+    void defaultsToProtected() throws IOException {
         when(currentActorApi.current()).thenReturn(actor());
         when(storage.store(any(InputStream.class), any()))
                 .thenReturn(new MediaStorageResultDTO("LOCAL", "2026/10/pic.png", 10L));
@@ -222,7 +222,7 @@ class MediaUploadServiceImplTest {
 
         assertThat(service.upload(
                 new MockMultipartFile("file", "cover.png", "image/png", TestMediaFiles.png(4, 4)), null)
-                .getAccessLevel()).isEqualTo("PUBLIC");
+                .getAccessLevel()).isEqualTo("PROTECTED");
     }
 
     /**

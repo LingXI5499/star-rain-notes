@@ -299,7 +299,8 @@ const routes = buildTreeRoutes(routeDeclarations)
  */
 routes.push({
   path: '/:pathMatch(.*)*',
-  redirect: (to) => modeHomePath(resolveViewMode(to.path)),
+  component: () => import('../modules/site/pages/NotFoundPage.vue'),
+  meta: { publicPage: true },
 })
 
 const router = createRouter({

@@ -259,7 +259,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         }
         content.setTags(work.getId(), request.getTagIds());
         content.copyTemplate(work.getId(), request.getTemplateId());
-        return view(work, true, false);
+        return view(works.selectById(work.getId()), true, false);
     }
 
     /**
@@ -296,7 +296,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         metadata(work, objectMapper.valueToTree(request));
         content.setTags(id, request.getTagIds());
         if ("PUBLISHED".equals(work.getStatus()) && !previousSlug.equals(work.getSlug())) {
-            events.afterCommit(new WorkPublicationChangedEvent(work.getId(), previousSlug, false));
+            events.publish(new WorkPublicationChangedEvent(work.getId(), previousSlug, false));
         }
         touch(work);
         if ("PUBLISHED".equals(work.getStatus())) { validatePublish(work); }
@@ -629,7 +629,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         work.setWithdrawnAt(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         touch(work);
         works.withdraw(work);
-        events.afterCommit(new WorkPublicationChangedEvent(work.getId(), work.getSlug(), false));
+        events.publish(new WorkPublicationChangedEvent(work.getId(), work.getSlug(), false));
         return view(work, true, false);
     }
 
@@ -685,7 +685,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         mediaReferences.detachAll("PORTFOLIO", "WORK_PROTOTYPE", id);
         content.deleteAll(id);
         works.deleteById(id);
-        events.afterCommit(new WorkPublicationChangedEvent(id, work.getSlug(), false));
+        events.publish(new WorkPublicationChangedEvent(id, work.getSlug(), false));
     }
 
     /**
@@ -752,6 +752,9 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         if (work == null) {
             throw new WorkNotFoundException();
         }
+        com.starrainnotes.common.web.ContentVersion.require(work.getRowVersion());
+        works.archive(work.getId());
+        works.pruneHistory(work.getId(), work.getRowVersion() == null ? 0 : work.getRowVersion());
         return work;
     }
 
@@ -805,7 +808,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
                 .map(row -> mediaAssets.get(row.getMediaAssetId()))
                 .filter(asset -> asset != null && "ACTIVE".equals(asset.getStatus()) && (!publicOnly || "PUBLIC".equals(asset.getAccessLevel())))
                 .map(MediaAssetSummary::getContentUrl).filter(java.util.Objects::nonNull).findFirst().orElse(null);
-        WorkVO result = WorkVO.builder().id(String.valueOf(work.getId())).slug(work.getSlug())
+        WorkVO result = WorkVO.builder().rowVersion(work.getRowVersion() == null ? 0L : work.getRowVersion()).id(String.valueOf(work.getId())).slug(work.getSlug())
                 .workType(work.getWorkType()).title(work.getTitle()).summary(work.getSummary())
                 .status(work.getStatus()).coverUrl(coverUrl).publishedAt(work.getPublishedAt())
                 .updatedAt(work.getUpdatedAt()).build();
@@ -907,6 +910,7 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
      * @param work 作品；类型为 <code>WorkEntity</code>
      */
     private void validatePublish(WorkEntity work) {
+        mediaReferences.assertPublicContent(work.getBodyMarkdown());
         if (work.getSummary() == null || work.getSummary().isBlank()
                 || work.getCategoryId() == null || work.getFormatId() == null) {
             throw new WorkStateInvalidException("发布前请补全摘要、分类与形态");
@@ -1181,10 +1185,11 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
      * @param work 作品；类型为 <code>WorkEntity</code>
      */
     private void touch(WorkEntity work) {
+        work.setRowVersion((work.getRowVersion() == null ? 0 : work.getRowVersion()) + 1);
         work.setUpdatedByAccountId(actor.current().getAccountId());
         work.setUpdatedAt(LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS));
         if ("PUBLISHED".equals(work.getStatus())) {
-            events.afterCommit(WorkPublicationChangedEvent.builder().workId(work.getId()).slug(work.getSlug())
+            events.publish(WorkPublicationChangedEvent.builder().workId(work.getId()).slug(work.getSlug())
                     .published(true).build());
         }
     }

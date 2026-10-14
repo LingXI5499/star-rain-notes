@@ -49,7 +49,12 @@ export
    */
   function installSeoMeta(router) {
   let request = null
-  router.afterEach(async (to) => {
+  let hasNavigated = false
+  router.afterEach(async (to, from, failure) => {
+    if (failure) return
+    const initial = !hasNavigated
+    if (!initial && to.path === from?.path) return
+    hasNavigated = true
     request?.abort()
     const current = new AbortController()
     request = current
@@ -58,6 +63,11 @@ export
       meta('description').content = ''
       meta('robots').content = 'noindex,nofollow'
       canonical().removeAttribute('href')
+      return
+    }
+    const initialCanonical = document.head.querySelector('link[rel="canonical"]')?.href
+    if (initial && to.path === location.pathname && initialCanonical
+        && new URL(initialCanonical).pathname === to.path && meta('robots').content === 'index,follow') {
       return
     }
     try {

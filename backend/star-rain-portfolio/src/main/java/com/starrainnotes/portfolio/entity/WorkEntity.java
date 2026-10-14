@@ -20,6 +20,8 @@ import lombok.Data;
  */
 @Data
 public class WorkEntity {
+    /** Optimistic editing version. */
+    private Long rowVersion;
     /**
      * 当前业务对象的数据库标识。
      */

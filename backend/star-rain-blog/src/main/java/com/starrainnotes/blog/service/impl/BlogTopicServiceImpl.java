@@ -174,7 +174,7 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             try {
                 topicMapper.insertTopic(entity);
                 BlogTopicVO created = toTopicVO(requireTopic(entity.getId()));
-                eventAfterCommit(new BlogTopicChangedEvent(created.getId(), null, created.getSlug(), true));
+                publishChange(new BlogTopicChangedEvent(created.getId(), null, created.getSlug(), true));
                 return created;
             } catch (DuplicateKeyException ex) {
                 if (!automatic) {
@@ -217,7 +217,7 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             throw new BlogTopicSlugConflictException();
         }
         BlogTopicVO updated = toTopicVO(requireTopic(topicId));
-        eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), updated.getSlug(),
+        publishChange(new BlogTopicChangedEvent(topicId, topic.getSlug(), updated.getSlug(),
                 BlogTaxonomyStatus.ENABLED_CODE.equals(updated.getStatus())));
         return updated;
     }
@@ -280,7 +280,7 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             throw new BlogTopicNotEmptyException();
         }
         topicMapper.deleteTopic(topic.getId());
-        eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), false));
+        publishChange(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), false));
     }
 
     /*
@@ -302,7 +302,7 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             return;
         }
         topicMapper.updateStatus(topicId, BlogTaxonomyStatus.DISABLED_CODE);
-        eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), false));
+        publishChange(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), false));
     }
 
     /**
@@ -320,7 +320,7 @@ public class BlogTopicServiceImpl implements BlogTopicService {
             return;
         }
         topicMapper.updateStatus(topicId, BlogTaxonomyStatus.ENABLED_CODE);
-        eventAfterCommit(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), true));
+        publishChange(new BlogTopicChangedEvent(topicId, topic.getSlug(), topic.getSlug(), true));
     }
 
     /**
@@ -468,26 +468,8 @@ public class BlogTopicServiceImpl implements BlogTopicService {
      *
      * @param event 事件；类型为 <code>BlogTopicChangedEvent</code>
      */
-    private void eventAfterCommit(BlogTopicChangedEvent event) {
-        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
-            eventPublisher.publishEvent(event);
-            return;
-        }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
-    /**
-     * 当前调用使用的匿名协作实现，属于博客模块。
-     * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
-     */
-    {
-            /**
-             * 之后Commit处理入口。
-             * 关键处理步骤调用 <code>eventPublisher.publishEvent</code>。
-             */
-            @Override
-            public void afterCommit() {
-                eventPublisher.publishEvent(event);
-            }
-        });
+    private void publishChange(BlogTopicChangedEvent event) {
+        eventPublisher.publishEvent(event);
     }
 
     // 按当前顺序重写 1..n，维持“序号连续”的不变量

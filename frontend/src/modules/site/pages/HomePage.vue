@@ -1,4 +1,5 @@
 <script setup>
+import { mediaImage, mediaImageSet } from '../../../shared/mediaImages'
 /**
  * HomePage.vue：站点模块的页面组件。
  * 职责范围：站点品牌、首页内容和站点设置。
@@ -268,7 +269,7 @@ onBeforeUnmount(() => { generation += 1 })
                 :to="contentPath(pathOf(section.code, item))" class="home-project public-interactive"
                 :class="{ 'is-featured': index === 0 }">
                 <div class="home-project__cover">
-                  <img v-if="item.coverUrl" :src="item.coverUrl" :alt="item.title" :loading="index ? 'lazy' : 'eager'" />
+                  <img v-if="item.coverUrl" :src="mediaImage(item.coverUrl)" :srcset="mediaImageSet(item.coverUrl)" sizes="(max-width: 768px) calc(100vw - 40px), 400px" :alt="item.title" loading="lazy" decoding="async" width="400" height="300" />
                   <span v-else class="home-project__mark">{{ (item.title || '作品').slice(0, 1) }}</span>
                 </div>
                 <div class="home-project__body">
@@ -285,7 +286,7 @@ onBeforeUnmount(() => { generation += 1 })
             <div v-else class="home-cards" :class="{ 'home-cards--list': section.layout === 'list' }">
               <RouterLink v-for="item in itemsOf(section)" :key="item.id || item.path"
                 class="home-card public-interactive" :to="contentPath(pathOf(section.code, item))">
-                <img v-if="item.type === 'PORTFOLIO' && item.coverUrl" :src="item.coverUrl" alt="" loading="lazy" />
+                <img v-if="item.type === 'PORTFOLIO' && item.coverUrl" :src="mediaImage(item.coverUrl)" :srcset="mediaImageSet(item.coverUrl)" sizes="400px" alt="" loading="lazy" decoding="async" width="400" height="300" />
                 <div class="home-card__body">
                   <small>{{ eyebrows[section.code] || section.title }}</small>
                   <h3>{{ item.title }}</h3>

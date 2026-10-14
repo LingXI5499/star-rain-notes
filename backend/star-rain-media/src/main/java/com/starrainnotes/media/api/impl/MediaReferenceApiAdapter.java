@@ -32,6 +32,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class MediaReferenceApiAdapter implements MediaReferenceApi {
+    @Override public void assertPublicContent(String markdown) { referenceService.assertPublicContent(markdown); }
 
     /**
      * 引用业务服务。

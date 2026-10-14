@@ -9,6 +9,17 @@
 
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
+import { execFileSync } from 'node:child_process'
+
+const buildIdentity = {
+  name: 'build-identity',
+  generateBundle() {
+    this.emitFile({ type: 'asset', fileName: 'build-info.json', source: JSON.stringify({
+      batch: 'V2.2', commit: execFileSync('git', ['rev-parse', 'HEAD'], { encoding: 'utf8' }).trim(),
+      dirty: Boolean(execFileSync('git', ['status', '--porcelain'], { encoding: 'utf8' }).trim()),
+    }) })
+  },
+}
 
 /*
  * 单域名 + 两条路径树之后，dev server 不再需要按 Host 分流：
@@ -20,7 +31,7 @@ import vue from '@vitejs/plugin-vue'
  *     host/baseUrl 推导里出现前端 dev server 的端口，没有收益。
  */
 export default defineConfig({
-  plugins: [vue()],
+  plugins: [vue(), buildIdentity],
   server: {
     port: 5174,
     strictPort: true,

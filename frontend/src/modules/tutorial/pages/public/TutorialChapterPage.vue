@@ -1,4 +1,6 @@
 <script setup>
+import { createStudyClock } from "../../support/studyClock"
+const studyClock = createStudyClock()
 /**
  * TutorialChapterPage.vue：教程与学习模块的页面组件。
  * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
@@ -363,12 +365,12 @@ async function persistProgress() {
   if (!progressSessionEnabled || !currentChapterId) return
   // Capture ID, position, seconds and session together before yielding.
   const now = Date.now()
-  const elapsed = visible ? Math.max(0, Math.min(1800, Math.floor((now - lastSaveAt) / 1000))) : 0
+  const elapsed = visible ? studyClock.consume() : 0
   lastSaveAt = now
   const id = currentChapterId
   const version = load.version
   const sequence = ++progressSequence
-  const payload = { progressRatio: lastScrollRatio, studySecondsDelta: elapsed }
+  const payload = { progressRatio: lastScrollRatio, studySecondsDelta: elapsed, eventId: crypto.randomUUID(), expectedVersion: reading.value?.rowVersion || 0 }
   try {
     const result = await saveChapterProgress(id, payload)
     if (!active || version !== load.version || id !== currentChapterId || sequence < appliedProgressSequence) return
@@ -376,6 +378,12 @@ async function persistProgress() {
     reading.value = result
     progressError.value = ''
   } catch (cause) {
+    if (cause?.response?.status === 409 && active && version === load.version && id === currentChapterId) {
+      try {
+        const latest = await getChapterProgress(id)
+        if (active && version === load.version && id === currentChapterId) reading.value = latest
+      } catch { /* Keep the failure visible and never replay the rejected delta. */ }
+    }
     // Deltas are non-idempotent: do not replay an uncertain request.
     if (active && version === load.version && sequence >= appliedProgressSequence) {
       progressError.value = '本次学习记录结果未确认，未自动重试以免重复累计。' + errorMessage(cause)
@@ -420,6 +428,7 @@ document.addEventListener('visibilitychange', onVisibilityChange)
  * 组件销毁后执行剩余清理回调。
  */
 onUnmounted(() => {
+  studyClock.dispose()
   persistProgress()
   active = false
   load.version += 1

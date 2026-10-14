@@ -350,7 +350,7 @@ async function uploadImageFiles(files, range = rememberImageRange()) {
     if (invalid) { failures.push(`${file.name}：${invalid}`); continue }
     imageStatus.value = `正在上传 ${completed + 1} / ${files.length}：${file.name}`
     try {
-      const asset = await uploadMedia(file, 'PUBLIC', { signal: imageUploadController.signal })
+      const asset = await uploadMedia(file, 'PROTECTED', { signal: imageUploadController.signal })
       if (disposed || operation !== imageOperation) break
       insertMediaImage(asset, range)
       range = rememberImageRange()

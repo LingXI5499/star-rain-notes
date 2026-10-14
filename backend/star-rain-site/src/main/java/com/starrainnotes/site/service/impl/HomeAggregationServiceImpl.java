@@ -100,6 +100,34 @@ public class HomeAggregationServiceImpl implements HomeAggregationService {
      */
     @Override
     public SiteHomeVO home() {
+        CachedHome current = cachedHome;
+        long now = System.nanoTime();
+        if (current != null && now < current.expiresAt()) return current.value();
+        synchronized (cacheLock) {
+            current = cachedHome;
+            if (current != null && System.nanoTime() < current.expiresAt()) return current.value();
+            long generation = cacheGeneration.get();
+            SiteHomeVO result = loadHome();
+            if (generation == cacheGeneration.get()) cachedHome = new CachedHome(result, System.nanoTime() + TimeUnit.SECONDS.toNanos(15));
+            return result;
+        }
+    }
+
+    private final Object cacheLock = new Object();
+    private final java.util.concurrent.atomic.AtomicLong cacheGeneration = new java.util.concurrent.atomic.AtomicLong();
+    private volatile CachedHome cachedHome;
+    private record CachedHome(SiteHomeVO value, long expiresAt) { }
+
+    @org.springframework.transaction.event.TransactionalEventListener(fallbackExecution = true)
+    public void invalidateHome(Object event) {
+        if (event instanceof org.springframework.context.PayloadApplicationEvent<?> payload) event = payload.getPayload();
+        String name = event.getClass().getName();
+        if (!name.startsWith("com.starrainnotes.") || !name.contains(".event.")) return;
+        cacheGeneration.incrementAndGet();
+        cachedHome = null;
+    }
+
+    private SiteHomeVO loadHome() {
         SitePublicConfigVO config = site.config();
         List<HomeSectionEntity> enabled = sections.enabled();
         Map<String, Future<Object>> futures = new HashMap<>();

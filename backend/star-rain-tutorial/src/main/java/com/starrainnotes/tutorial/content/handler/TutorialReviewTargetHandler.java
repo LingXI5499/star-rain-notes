@@ -175,7 +175,7 @@ public class TutorialReviewTargetHandler implements ReviewTargetHandler {
         tutorial.setPublishedAt(LocalDateTime.now(ZoneOffset.UTC));
         tutorial.setWithdrawnAt(null);
         tutorialMapper.update(tutorial);
-        eventPublisher.afterCommit(new TutorialPublicationChangedEvent(tutorial.getId(), tutorial.getSlug(),
+        eventPublisher.publish(new TutorialPublicationChangedEvent(tutorial.getId(), tutorial.getSlug(),
                 tutorial.getTitle(), "PUBLISHED", tutorial.getPublishedAt()));
     }
 

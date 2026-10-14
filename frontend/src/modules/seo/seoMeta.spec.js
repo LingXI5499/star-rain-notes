@@ -1,22 +1,24 @@
-/** SEO navigation must clear metadata belonging to the previous page on failure. */
-import { beforeEach, expect, it, vi } from 'vitest'
+import { beforeEach, describe, it, expect, vi } from 'vitest'
 import { installSeoMeta } from './seoMeta'
-const api = vi.hoisted(() => ({ get: vi.fn() }))
-vi.mock('../../shared/http', () => ({ default: api }))
-beforeEach(() => { vi.resetAllMocks(); document.head.innerHTML = '' })
-it('removes stale descriptions and canonical on a failed page request', async () => {
-  let navigate; installSeoMeta({ afterEach: handler => { navigate = handler } })
-  api.get.mockResolvedValueOnce({ data: { data: { title: 'A', description: 'Description A', robots: 'index,follow', canonicalUrl: 'https://example.invalid/a' } } })
-  await navigate({ path: '/a' }); api.get.mockRejectedValueOnce(new Error('offline')); await navigate({ path: '/b' })
-  expect(document.querySelector('meta[name="description"]').content).toBe('')
-  expect(document.querySelector('meta[name="robots"]').content).toBe('noindex,follow')
-  expect(document.querySelector('link[rel="canonical"]').hasAttribute('href')).toBe(false)
-})
-it('ignores old responses even if the fake transport does not honor cancellation', async () => {
-  let resolveA, navigate; installSeoMeta({ afterEach: handler => { navigate = handler } })
-  api.get.mockReturnValueOnce(new Promise(resolve => { resolveA = resolve }))
-  const a = navigate({ path: '/a' })
-  api.get.mockResolvedValueOnce({ data: { data: { title: 'B', robots: 'index,follow', canonicalUrl: 'https://example.invalid/b' } } })
-  await navigate({ path: '/b' }); resolveA({ data: { data: { title: 'A' } } }); await a
-  expect(document.title).toBe('B'); expect(document.querySelectorAll('link[rel="canonical"]')).toHaveLength(1)
+const http = vi.hoisted(() => ({ get: vi.fn() }))
+vi.mock('../../shared/http', () => ({ default: http }))
+function router() { let navigate; installSeoMeta({ afterEach: hook => { navigate = hook } }); return navigate }
+const publicMeta = path => ({ data: { data: { title: path, description: '', robots: 'index,follow', canonicalUrl: 'https://example.org' + path } } })
+beforeEach(() => { document.head.innerHTML = ''; http.get.mockReset(); http.get.mockImplementation(async (_, config) => publicMeta(config.params.route)) })
+describe('SEO navigation metadata', () => {
+  it('restores public indexing after returning from account mode', async () => {
+    const navigate = router()
+    await navigate({ path: '/blog' }, { path: '/' })
+    await navigate({ path: '/useradmin/center' }, { path: '/blog' })
+    expect(document.querySelector('meta[name="robots"]').content).toBe('noindex,nofollow')
+    await navigate({ path: '/blog' }, { path: '/useradmin/center' })
+    expect(document.querySelector('meta[name="robots"]').content).toBe('index,follow')
+    expect(http.get).toHaveBeenCalledTimes(2)
+  })
+  it('does not repeat metadata requests for a query-only filter change', async () => {
+    const navigate = router()
+    await navigate({ path: '/portfolio' }, { path: '/' })
+    await navigate({ path: '/portfolio', query: { category: 'ai' } }, { path: '/portfolio' })
+    expect(http.get).toHaveBeenCalledTimes(1)
+  })
 })

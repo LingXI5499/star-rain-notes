@@ -100,7 +100,7 @@
     -->
     <select id="count" resultType="long">
         SELECT COUNT(*) FROM sr_search_document
-        WHERE status = 'ACTIVE' AND (
+        WHERE status = 'ACTIVE' <include refid="publicationGuard"/> AND (
             MATCH(title, summary, searchable_text) AGAINST(#{query} IN NATURAL LANGUAGE MODE) &gt; 0
             OR LOCATE(#{query}, title) &gt; 0
             OR LOCATE(#{query}, COALESCE(summary, '')) &gt; 0)
@@ -122,7 +122,7 @@
                 + CASE WHEN LOCATE(#{query}, title) &gt; 0 THEN 2 ELSE 0 END
                 + CASE WHEN LOCATE(#{query}, COALESCE(summary, '')) &gt; 0 THEN 0.5 ELSE 0 END AS score
         FROM sr_search_document
-        WHERE status = 'ACTIVE' AND (
+        WHERE status = 'ACTIVE' <include refid="publicationGuard"/> AND (
             MATCH(title, summary, searchable_text) AGAINST(#{query} IN NATURAL LANGUAGE MODE) &gt; 0
             OR LOCATE(#{query}, title) &gt; 0
             OR LOCATE(#{query}, COALESCE(summary, '')) &gt; 0)
@@ -139,8 +139,17 @@
     <select id="suggestions" resultType="com.starrainnotes.search.vo.SearchSuggestionVO">
         SELECT title AS text, content_type AS contentType, route_path AS routePath
         FROM sr_search_document
-        WHERE status = 'ACTIVE' AND (LOCATE(#{query}, title) &gt; 0 OR LOCATE(#{query}, COALESCE(summary, '')) &gt; 0)
+        WHERE status = 'ACTIVE' <include refid="publicationGuard"/> AND (LOCATE(#{query}, title) &gt; 0 OR LOCATE(#{query}, COALESCE(summary, '')) &gt; 0)
         ORDER BY CASE WHEN LEFT(title, CHAR_LENGTH(#{query})) = #{query} THEN 0 ELSE 1 END,
             published_at DESC, id DESC LIMIT #{limit}
     </select>
+<sql id="publicationGuard">
+ AND (content_type NOT IN ('BLOG','BLOG_TOPIC','PORTFOLIO','TUTORIAL','CHAPTER','PROFILE')
+ OR (content_type='BLOG' AND EXISTS(SELECT 1 FROM sr_blog_post p WHERE p.id=sr_search_document.content_id AND p.status='PUBLISHED' AND sr_search_document.route_path=CONCAT('/blog/posts/',p.slug)))
+ OR (content_type='BLOG_TOPIC' AND EXISTS(SELECT 1 FROM sr_blog_topic p WHERE p.id=sr_search_document.content_id AND p.status='ENABLED' AND sr_search_document.route_path=CONCAT('/blog/topics/',p.slug)))
+ OR (content_type='PORTFOLIO' AND EXISTS(SELECT 1 FROM sr_portfolio_work p WHERE p.id=sr_search_document.content_id AND p.status='PUBLISHED' AND sr_search_document.route_path=CONCAT('/portfolio/',p.slug)))
+ OR (content_type='PROFILE' AND EXISTS(SELECT 1 FROM sr_profile p WHERE p.id=sr_search_document.content_id AND p.status='PUBLIC'))
+ OR (content_type='TUTORIAL' AND EXISTS(SELECT 1 FROM sr_tutorial p WHERE p.id=sr_search_document.content_id AND p.publication_status='PUBLISHED' AND p.published_revision_id IS NOT NULL AND sr_search_document.route_path=CONCAT('/tutorials/',p.slug)))
+ OR (content_type='CHAPTER' AND EXISTS(SELECT 1 FROM sr_tutorial p JOIN sr_tutorial_revision r ON r.id=p.published_revision_id JOIN JSON_TABLE(r.snapshot_json,'$.groups[*].chapters[*]' COLUMNS(chapter_id BIGINT PATH '$.id',chapter_slug VARCHAR(255) PATH '$.slug')) j WHERE p.publication_status='PUBLISHED' AND j.chapter_id=sr_search_document.content_id AND sr_search_document.route_path=CONCAT('/tutorials/',p.slug,'/',j.chapter_slug))))
+ </sql>
 </mapper>

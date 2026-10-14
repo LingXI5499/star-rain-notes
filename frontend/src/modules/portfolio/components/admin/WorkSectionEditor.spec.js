@@ -22,6 +22,17 @@ const second = { id: '20', sectionType: 'QUOTE', title: '第二段', content: 't
 function view() { return mount(WorkSectionEditor, { props: { work: { id: '1', sections: [first, second] } }, global: { stubs: { MarkdownEditor: true, MediaPicker: true, AppConfirmDialog: true } } }) }
 beforeEach(() => { vi.clearAllMocks(); api.getAdminWork.mockResolvedValue({ id: '1', sections: [first, second] }); api.updateWorkSection.mockResolvedValue(first); api.createWorkSection.mockResolvedValue({ ...first, id: '30' }) })
 describe('work block authoring', () => {
+ it('keeps input typed while the submitted block is saving', async () => {
+  let resolve
+  api.updateWorkSection.mockReturnValue(new Promise(done => { resolve = done }))
+  const editor = view(); await editor.find('.section-compose input').setValue('Submitted title')
+  await editor.find('.section-save').trigger('click')
+  await editor.find('.section-compose input').setValue('New unsaved title')
+  resolve({ ...first, title: 'Submitted title' }); await flushPromises()
+  expect(editor.find('.section-compose input').element.value).toBe('New unsaved title')
+  expect(editor.vm.dirty).toBe(true)
+  editor.unmount()
+ })
  it('selects an existing block into a separate edit area', async () => {
   const editor = view(); await editor.findAll('.section-list__select')[1].trigger('click'); await flushPromises()
   expect(editor.find('.section-compose input').element.value).toBe('第二段')

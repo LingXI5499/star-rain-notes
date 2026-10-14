@@ -82,7 +82,26 @@ public class MediaContentController {
     public ResponseEntity<InputStreamResource> content(
             @PathVariable Long mediaAssetId,
             @RequestHeader(value = HttpHeaders.RANGE, required = false) String rangeHeader) {
-        MediaContentVO content = accessService.open(mediaAssetId, rangeHeader);
+        var attributes = org.springframework.web.context.request.RequestContextHolder.getRequestAttributes();
+        MediaContentVO content;
+        if (attributes instanceof org.springframework.web.context.request.ServletRequestAttributes context) {
+            var metadata = accessService.describe(mediaAssetId);
+            String etag = "\"" + metadata.getSha256() + "\"";
+            String cache = "PUBLIC".equals(metadata.getAccessLevel()) ? PUBLIC_CACHE : PROTECTED_CACHE;
+            var request = new org.springframework.web.context.request.ServletWebRequest(context.getRequest(), context.getResponse());
+            if (request.checkNotModified(etag)) {
+                return ResponseEntity.status(304).eTag(etag).header(HttpHeaders.CACHE_CONTROL, cache).build();
+            }
+            if ("HEAD".equals(context.getRequest().getMethod())) {
+                return ResponseEntity.ok().eTag(etag).header(HttpHeaders.CACHE_CONTROL, cache)
+                        .contentType(MediaType.parseMediaType(metadata.getMimeType())).contentLength(metadata.getTotalSize()).build();
+            }
+            String ifRange = context.getRequest().getHeader(HttpHeaders.IF_RANGE);
+            if (ifRange != null && !ifRange.equals(etag)) rangeHeader = null;
+            content = accessService.open(mediaAssetId, rangeHeader);
+        } else {
+            content = accessService.open(mediaAssetId, rangeHeader);
+        }
 
         HttpHeaders headers = new HttpHeaders();
         // MIME 只取自入库时的白名单规范值，不信任浏览器声明

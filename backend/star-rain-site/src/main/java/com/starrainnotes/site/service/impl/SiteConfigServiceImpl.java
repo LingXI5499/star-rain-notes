@@ -100,7 +100,7 @@ public class SiteConfigServiceImpl implements SiteConfigService {
         if (patch.getFooterText() != null) row.setFooterText(optional(patch.getFooterText(), 1000, "页脚文字"));
         row.setUpdatedAt(LocalDateTime.now());
         mapper.update(row);
-        afterCommit();
+        publishChange();
         return config();
     }
 
@@ -147,7 +147,7 @@ public class SiteConfigServiceImpl implements SiteConfigService {
         String usage = logo ? MediaUsageCodes.SITE_LOGO : MediaUsageCodes.SITE_FAVICON;
         if (assetId != null) references.attach(reference(row.getId(), assetId, usage));
         if (oldId != null) references.detach(reference(row.getId(), oldId, usage));
-        afterCommit();
+        publishChange();
         return config();
     }
 
@@ -256,22 +256,7 @@ public class SiteConfigServiceImpl implements SiteConfigService {
      * 之后Commit处理入口。
      * 主要协作调用：<code>events.publishEvent</code>。
      */
-    private void afterCommit() {
-        if (!TransactionSynchronizationManager.isSynchronizationActive()) {
-            events.publishEvent(new SiteConfigChangedEvent());
-            return;
-        }
-        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization()
-    /**
-     * 当前调用使用的匿名协作实现，属于站点模块。
-     * 组织本模块的业务步骤，协调数据访问与其它接口。事务、权限和异常分支由具体方法说明。
-     */
-    {
-            /**
-             * 之后Commit处理入口。
-             * 关键处理步骤调用 <code>events.publishEvent</code>。
-             */
-            @Override public void afterCommit() { events.publishEvent(new SiteConfigChangedEvent()); }
-        });
+    private void publishChange() {
+        events.publishEvent(new SiteConfigChangedEvent());
     }
 }

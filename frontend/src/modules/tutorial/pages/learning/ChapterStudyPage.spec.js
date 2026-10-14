@@ -11,8 +11,8 @@ import { mount, flushPromises } from '@vue/test-utils'
 import { createMemoryHistory, createRouter } from 'vue-router'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ChapterStudyPage from './ChapterStudyPage.vue'
-import { getStudyPlan, getStudyState, startInitialSession, saveChapterProgress } from '../../api/learningApi'
-vi.mock('../../api/learningApi', () => ({ getStudyPlan: vi.fn(), getStudyTask: vi.fn(), getStudyState: vi.fn(), startInitialSession: vi.fn(), saveChapterProgress: vi.fn() }))
+import { getStudyPlan, getStudyState, startInitialSession, saveChapterProgress, getChapterProgress } from '../../api/learningApi'
+vi.mock('../../api/learningApi', () => ({ getChapterProgress: vi.fn(), getStudyPlan: vi.fn(), getStudyTask: vi.fn(), getStudyState: vi.fn(), startInitialSession: vi.fn(), saveChapterProgress: vi.fn() }))
 vi.mock('../../api/tutorialApi', () => ({ getPublicTutorial: vi.fn() }))
 const tutorial = { id: 't', title: 'Tutorial', slug: 'tutorial', groups: [{ id: 'g', title: 'Group', chapters: [{ id: 'c1', slug: 'first', title: 'First' }, { id: 'outside', slug: 'outside', title: 'Outside' }, { id: 'c2', slug: 'second', title: 'Second' }] }] }
 /**
@@ -38,7 +38,7 @@ async function mountReader(id = 'c1') {
  return wrapper
 }
 describe('plan scoped normal reader', () => {
- beforeEach(() => { vi.resetAllMocks(); getStudyPlan.mockResolvedValue(plan()); getStudyState.mockResolvedValue(state()); saveChapterProgress.mockResolvedValue({}) })
+ beforeEach(() => { vi.resetAllMocks(); getChapterProgress.mockResolvedValue({ rowVersion: 0 }); getStudyPlan.mockResolvedValue(plan()); getStudyState.mockResolvedValue(state()); saveChapterProgress.mockResolvedValue({}) })
  it('shows only selected chapters in the shared reader and links the next selected chapter', async () => {
   const w = await mountReader(); expect(w.find('.tutorial-reader__sidebar').exists()).toBe(true)
   expect(w.text()).not.toContain('Outside'); expect(w.get('nav[aria-label="章节导航"]').text()).toContain('Second')

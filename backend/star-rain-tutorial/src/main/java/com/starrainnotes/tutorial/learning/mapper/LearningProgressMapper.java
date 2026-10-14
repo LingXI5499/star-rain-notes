@@ -24,6 +24,8 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface LearningProgressMapper {
+    int acceptEvent(@org.apache.ibatis.annotations.Param("accountId") Long accountId, @org.apache.ibatis.annotations.Param("eventId") String eventId);
+    int applyReading(@org.apache.ibatis.annotations.Param("accountId") Long accountId, @org.apache.ibatis.annotations.Param("chapterId") Long chapterId, @org.apache.ibatis.annotations.Param("anchor") String anchor, @org.apache.ibatis.annotations.Param("ratio") java.math.BigDecimal ratio, @org.apache.ibatis.annotations.Param("seconds") int seconds, @org.apache.ibatis.annotations.Param("version") long version);
 
     /* 同一账户同一章节只有一行：读到哪写到哪，学习时长累加。 */
     /**
