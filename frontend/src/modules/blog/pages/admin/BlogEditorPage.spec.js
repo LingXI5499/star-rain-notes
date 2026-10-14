@@ -4,6 +4,7 @@ import { createMemoryHistory, createRouter, RouterView } from 'vue-router'
 import { defineComponent, h } from 'vue'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import BlogEditorPage from './BlogEditorPage.vue'
+import { createPinia, setActivePinia } from 'pinia'
 
 const api = vi.hoisted(() => Object.fromEntries([
   'createPost', 'createTag', 'deletePost', 'getAdminPost', 'listAdminTags',
@@ -44,6 +45,7 @@ async function dirtyLeave(expected = true) {
   expect(router.currentRoute.value.path).toBe(expected ? '/useradmin/blog/editor/1' : '/elsewhere')
 }
 beforeEach(() => {
+  setActivePinia(createPinia())
   vi.resetAllMocks()
   api.getAdminPost.mockResolvedValue(article())
   api.listAdminTags.mockResolvedValue({ items: [], total: 0 })

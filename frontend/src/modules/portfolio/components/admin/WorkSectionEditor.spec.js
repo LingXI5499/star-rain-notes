@@ -8,6 +8,7 @@
  */
 
 import { beforeEach, describe, it, expect, vi } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
 import { mount, flushPromises } from '@vue/test-utils'
 import WorkSectionEditor from './WorkSectionEditor.vue'
 const api = vi.hoisted(() => ({ createWorkSection: vi.fn(), updateWorkSection: vi.fn(), removeWorkSection: vi.fn(), orderWorkSections: vi.fn(), getAdminWork: vi.fn() }))
@@ -20,7 +21,7 @@ const second = { id: '20', sectionType: 'QUOTE', title: '第二段', content: 't
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
 function view() { return mount(WorkSectionEditor, { props: { work: { id: '1', sections: [first, second] } }, global: { stubs: { MarkdownEditor: true, MediaPicker: true, AppConfirmDialog: true } } }) }
-beforeEach(() => { vi.clearAllMocks(); api.getAdminWork.mockResolvedValue({ id: '1', sections: [first, second] }); api.updateWorkSection.mockResolvedValue(first); api.createWorkSection.mockResolvedValue({ ...first, id: '30' }) })
+beforeEach(() => { setActivePinia(createPinia()); vi.clearAllMocks(); api.getAdminWork.mockResolvedValue({ id: '1', sections: [first, second] }); api.updateWorkSection.mockResolvedValue(first); api.createWorkSection.mockResolvedValue({ ...first, id: '30' }) })
 describe('work block authoring', () => {
  it('keeps input typed while the submitted block is saving', async () => {
   let resolve

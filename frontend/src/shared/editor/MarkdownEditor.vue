@@ -24,6 +24,8 @@ import { useAuthStore } from '../../modules/account/stores/authStore'
 import EditorWorkbench from './EditorWorkbench.vue'
 import { createVditorAdapter } from './commands/vditorAdapter'
 import { normalizeVditorMarkdown } from './commands/editorDocument'
+import EditorRecovery from './EditorRecovery.vue'
+import EditorDiagnostics from './EditorDiagnostics.vue'
 
 /*
  * 文章正文编辑器 —— 对标 V1 `components/MarkdownEditor.vue`（Vditor，IR 即时渲染）。
@@ -68,7 +70,7 @@ const props = defineProps({
 /**
  * 事件发射器；通过 defineEmits 建立。
  */
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue','local-content-applied'])
 
 /**
  * 主机；通过 ref 建立。
@@ -76,8 +78,20 @@ const emit = defineEmits(['update:modelValue'])
  */
 const host = ref(null)
 const editorReady = ref(false), workbench = ref(null)
+const longDocument = computed(() => props.modelValue.length >= 100000)
 const adapter = createVditorAdapter(() => vditor, () => host.value)
 let workbenchRange = null
+function applyLocalContent(value) {
+  if (!ready || props.readOnly) return
+  try {
+    adapter.setMode('sv')
+    suppressing = true
+    vditor.setValue(value)
+    emit('local-content-applied')
+    emit('update:modelValue', value)
+  } catch (error) { loadingError.value = error.message }
+  finally { suppressing = false }
+}
 function workbenchAction({ name, range }) {
   workbenchRange = ['table','code-group'].includes(name) ? range : null
   if (name === 'table') openTablePicker()
@@ -318,7 +332,7 @@ function insertMediaImage(asset, range) {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function insertImage() {
-  if (!props.pickImage) return
+  if (!props.pickImage || props.readOnly) return
   const range = rememberImageRange()
   const operation = imageOperation
   const asset = await props.pickImage()
@@ -621,7 +635,8 @@ async function mountEditor() {
 
   vditor = new Vditor(host.value, {
     cdn: '/assets/vditor-3.11.3',
-    mode: 'ir',
+    // Native SV avoids retaining a large IR tree alongside the source tree.
+    mode: longDocument.value ? 'sv' : 'ir',
     value: props.modelValue ?? '',
     placeholder: props.placeholder ?? '',
     height: editorHeight,
@@ -633,6 +648,7 @@ async function mountEditor() {
      * 因此编辑器预览里的原生 HTML 靠这里过滤（前台渲染则连解析都不做，见 support/markdown.js）。
      */
     preview: {
+      mode: 'editor',
       math: { engine: 'MathJax', inlineDigit: true },
       markdown: { sanitize: true, mathBlockPreview: true },
     },
@@ -676,6 +692,10 @@ onMounted(() => {
   void mountEditor().catch(() => { loadingError.value = '编辑器资源加载失败，正文未改变，请刷新页面重试。' })
 })
 watch(() => props.readOnly, value => { if (ready) { if (value) vditor.disabled(); else vditor.enable() } })
+watch(() => JSON.stringify([props.editorContext?.accountId,props.editorContext?.module,props.editorContext?.documentId,props.editorContext?.field]), () => {
+  imageOperation++;imageUploadController?.abort();uploadingImages.value=false;failedImages.value=[];imagePercent.value=null;imageError.value='';imageStatus.value='';savedImageRange=null;workbenchRange=null
+  tablePickerOpen.value=false;codeGroupOpen.value=false;adapter.reset();workbench.value?.hide()
+})
 
 /* 外部改值（加载文章、切换文章）→ 写回编辑器，写回期间不回发事件 */
 /**
@@ -693,6 +713,7 @@ watch(
       imageStatus.value = ''
       savedImageRange = null
       suppressing = true
+      if ((value?.length || 0) >= 100000 && adapter.mode() !== 'sv') adapter.setMode('sv')
       vditor.setValue(value ?? '')
       suppressing = false
     }
@@ -749,6 +770,9 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
 <template>
   <div class="markdown-editor">
     <EditorWorkbench ref="workbench" :adapter="adapter" :host="host" :ready="editorReady" :model-value="modelValue" :context="editorContext" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :pick-image="pickImage" :get-media="getMedia" @action="workbenchAction" />
+    <EditorRecovery :context="editorContext" :source="modelValue" :read-only="readOnly || !editorReady" @restore="applyLocalContent" />
+    <p v-if="longDocument" role="status">正文超过 10 万字符，采用源码视图减少大规模渲染开销；阅读效果请使用预览。保存格式仍为 Markdown。</p>
+    <EditorDiagnostics :context="editorContext" :source="modelValue" :get-media="getMedia" />
     <input ref="imageInput" class="markdown-editor__file-input" type="file" :accept="IMAGE_ACCEPT" multiple aria-label="上传正文图片" @change="onImageFiles" />
     <div ref="host" class="markdown-editor__host" />
     <div class="markdown-editor__image-actions">

@@ -23,6 +23,9 @@ import AdminConfirmDialog from '../../components/admin/AdminConfirmDialog.vue'
 import BlogStatusPill from '../../components/admin/BlogStatusPill.vue'
 import BlogTagPicker from '../../components/admin/BlogTagPicker.vue'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('blog')
+
 import { createTaxonomy } from '../../components/admin/tagSlug'
 import { canDelete, canPublish, canRestore, canWithdraw, dateLabel } from '../../support/display'
 
@@ -563,7 +566,7 @@ watch(() => route.params.postId, () => {
         标题独立展示，页面地址在创建时按标题自动生成；正文可从 H1 开始，左侧大纲收录 H1–H6。
       </p>
 
-      <MarkdownEditor
+      <MarkdownEditor :editor-context="loading ? null : editorContext(postId, 'bodyMarkdown', editVersion, savedBody)"
         ref="editorRef"
         :key="editorKey"
         v-model="body"

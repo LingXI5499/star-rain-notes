@@ -12,6 +12,9 @@
 import { computed, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('english-grammar-lesson')
+
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
 import { errorMessage } from '../../../../shared/http'
@@ -125,7 +128,7 @@ async function save() {
     const payload = { ...form, title: form.title.trim(), bodyMarkdown: editor.value?.getMarkdown?.() ?? form.bodyMarkdown }
     const saved = isNew.value ? await createGrammarLesson(payload) : await updateGrammarLesson(id.value, payload)
     lesson.value = saved
-    Object.assign(form, payload)
+    if (JSON.stringify({ ...form, title: form.title.trim(), bodyMarkdown: editor.value?.getMarkdown?.() ?? form.bodyMarkdown }) === JSON.stringify(payload)) Object.assign(form, payload)
     notice.value = '课时已保存。'
     if (isNew.value) await router.replace(accountPath(`/english/manage/grammar/lesson/${saved.id}`))
   } catch (cause) { error.value = errorMessage(cause) }
@@ -165,7 +168,7 @@ watch(() => route.params.lessonId, load, { immediate: true })
 </script>
 
 <template>
-  <main class="grammar-lesson-editor"><header><div><RouterLink :to="{ path: accountPath('/english/manage/grammar'), query: { section: form.sectionId } }">← 返回语法课程</RouterLink><p class="public-eyebrow">GRAMMAR LESSON · 统一编辑器</p><h1>{{ isNew ? '新建课时' : '编辑课时' }}</h1><p v-if="lesson">{{ lesson.publishStatus === 'PUBLISHED' ? '已发布' : lesson.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }} · 自动编号 {{ lesson.slug }}</p></div><div><button v-if="lesson" :disabled="saving" @click="toggle">{{ lesson.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button :disabled="saving" @click="save">{{ saving ? '保存中…' : '保存课时' }}</button></div></header><p v-if="error" class="grammar-lesson-editor__error" role="alert">{{ error }}</p><p v-if="notice" class="grammar-lesson-editor__notice" role="status">{{ notice }}</p><p v-if="loading">正在读取课时…</p><form v-else @submit.prevent="save"><div class="grammar-lesson-editor__fields"><label>所属章节<select v-model="form.sectionId" required><option v-for="section in sections" :key="section.id" :value="section.id">{{ section.title }}</option></select></label><label>标题<input v-model="form.title" required maxlength="200"></label><label>摘要<textarea v-model="form.summary" rows="3" maxlength="1000"></textarea></label><label>顺序<input v-model.number="form.sortOrder" type="number"></label></div><div class="grammar-lesson-editor__body"><h2>课时正文</h2><MarkdownEditor :key="editorKey" ref="editor" v-model="form.bodyMarkdown" :pick-image="pickImage" /></div><button type="submit" :disabled="saving">保存课时</button></form><MediaPicker :open="pickerOpen" :media-type="pickerType" @update:open="settle(null)" @select="settle" /></main>
+  <main class="grammar-lesson-editor"><header><div><RouterLink :to="{ path: accountPath('/english/manage/grammar'), query: { section: form.sectionId } }">← 返回语法课程</RouterLink><p class="public-eyebrow">GRAMMAR LESSON · 统一编辑器</p><h1>{{ isNew ? '新建课时' : '编辑课时' }}</h1><p v-if="lesson">{{ lesson.publishStatus === 'PUBLISHED' ? '已发布' : lesson.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }} · 自动编号 {{ lesson.slug }}</p></div><div><button v-if="lesson" :disabled="saving" @click="toggle">{{ lesson.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button :disabled="saving" @click="save">{{ saving ? '保存中…' : '保存课时' }}</button></div></header><p v-if="error" class="grammar-lesson-editor__error" role="alert">{{ error }}</p><p v-if="notice" class="grammar-lesson-editor__notice" role="status">{{ notice }}</p><p v-if="loading">正在读取课时…</p><form v-else @submit.prevent="save"><div class="grammar-lesson-editor__fields"><label>所属章节<select v-model="form.sectionId" required><option v-for="section in sections" :key="section.id" :value="section.id">{{ section.title }}</option></select></label><label>标题<input v-model="form.title" required maxlength="200"></label><label>摘要<textarea v-model="form.summary" rows="3" maxlength="1000"></textarea></label><label>顺序<input v-model.number="form.sortOrder" type="number"></label></div><div class="grammar-lesson-editor__body"><h2>课时正文</h2><MarkdownEditor :editor-context="loading ? null : editorContext(id, 'bodyMarkdown', lesson?.rowVersion, lesson?.bodyMarkdown || '')" :key="editorKey" ref="editor" v-model="form.bodyMarkdown" :pick-image="pickImage" /></div><button type="submit" :disabled="saving">保存课时</button></form><MediaPicker :open="pickerOpen" :media-type="pickerType" @update:open="settle(null)" @select="settle" /></main>
 </template>
 
 <style scoped>

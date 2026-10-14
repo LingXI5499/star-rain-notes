@@ -12,6 +12,9 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import { RouterLink, onBeforeRouteLeave, useRoute, useRouter } from 'vue-router'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('english-writing')
+
 import PublicFilterTabs from '../../../../shared/ui/PublicFilterTabs.vue'
 import { accountPath } from '../../../../shared/viewMode'
 import { errorMessage } from '../../../../shared/http'
@@ -31,6 +34,9 @@ const route=useRoute(),router=useRouter(),auth=useAuthStore()
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const englishEditor=ref(null),chineseEditor=ref(null)
+const acceptedWriting=ref({}),localRecoveryPaused=ref(false)
+function pauseLocalRecovery(){localRecoveryPaused.value=true;autosave?.stop()}
+async function saveConfirmedRecovery(){syncEditors();await nextTick();if(!autosave)return false;localRecoveryPaused.value=false;return autosave.resume()}
 /**
  * article；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -54,7 +60,7 @@ const statusLabel=computed(()=>({dirty:'等待保存',saving:'正在保存…',s
  * @param value 值；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function accept(value) { initializing=true;article.value=value;form.value={...value};keywords.value=(value.keywords||[]).join(', ');await nextTick();initializing=false }
+async function accept(value) { initializing=true;article.value=value;acceptedWriting.value={...value};localRecoveryPaused.value=false;form.value={...value};keywords.value=(value.keywords||[]).join(', ');await nextTick();initializing=false }
 /**
  * 本次提交的数据的处理函数。
  * 主要协作：.filter、.map、keywords.value.split、s.trim。
@@ -71,7 +77,7 @@ watch(()=>[route.params.id,route.path.endsWith('/revisions')],async()=>{
   if(n!==generation)return
   if(!route.params.id){await router.replace(accountPath('/english/writing/articles/'+value.id+'/edit'));return}
   await accept(value)
-  autosave=createWritingAutosave({read:payload,save:body=>saveWriting(article.value.id,body),applyVersion:saved=>{article.value={...article.value,rowVersion:saved.rowVersion,state:saved.state,visibility:saved.visibility}},onState:(state,cause)=>{status.value=state;if(cause)error.value=errorMessage(cause)}})
+  autosave=createWritingAutosave({read:payload,save:async body=>{const saved=await saveWriting(article.value.id,body);acceptedWriting.value={...body};return saved},applyVersion:saved=>{article.value={...article.value,rowVersion:saved.rowVersion,state:saved.state,visibility:saved.visibility}},onState:(state,cause)=>{status.value=state;if(cause)error.value=errorMessage(cause)}})
  }catch(cause){if(n===generation)error.value=errorMessage(cause)}finally{if(n===generation)loading.value=false}
 },{immediate:true})
 /**
@@ -92,7 +98,7 @@ watch(tab,()=>syncEditors())
  * 主要协作：syncEditors、nextTick、autosave.flush。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function flush(){ if(!autosave)return false;syncEditors();await nextTick();const okay=await autosave.flush();await nextTick();return okay }
+async function flush(){ if(!autosave || localRecoveryPaused.value)return false;syncEditors();await nextTick();const okay=await autosave.flush();await nextTick();return okay }
 /**
  * 动作的处理函数。
  * 主要协作：flush、completeWriting、publishWriting、accept、errorMessage。
@@ -117,14 +123,14 @@ async function loadRemote() { try { remote.value=await getWriting(article.value.
  * 更新的响应式状态包括 error、remote；渲染由 Vue 的依赖跟踪触发。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function merge() { if(!remote.value)return;syncEditors();await nextTick();article.value.rowVersion=remote.value.rowVersion;error.value='';await autosave.resume();remote.value=null }
+async function merge() { if(!remote.value)return;localRecoveryPaused.value=false;syncEditors();await nextTick();article.value.rowVersion=remote.value.rowVersion;error.value='';await autosave.resume();remote.value=null }
 /**
  * 重试Save的处理函数。
  * 主要协作：autosave.resume。
  * 更新的响应式状态包括 error；渲染由 Vue 的依赖跟踪触发。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function retrySave() { error.value='';await autosave.resume() }
+async function retrySave() { if(localRecoveryPaused.value)return;error.value='';await autosave.resume() }
 /**
  * restored的处理函数。
  * 主要协作：accept。
@@ -156,11 +162,11 @@ onBeforeUnmount(()=>{generation++;autosave?.dispose();window.removeEventListener
 </script>
 <template><main class="english-rw"><RouterLink :to="accountPath('/english/writing')">← 我的写作</RouterLink>
  <p v-if="loading" class="english-rw__empty">正在准备编辑器…</p><p v-if="error" class="english-rw__error" role="alert">{{error}}</p>
- <template v-if="!loading && article"><header class="english-rw__hero"><div><p class="public-eyebrow">MY WRITING · 自主表达</p><h1>{{form.title || 'Untitled Article'}}</h1><p role="status">{{statusLabel}} · {{article.visibility==='PUBLIC'?'已公开':'仅自己可见'}} · {{article.state==='COMPLETED'?'已完成':'草稿'}}</p></div><div class="english-rw__actions"><button class="english-rw__button" :disabled="busy || status==='conflict'" @click="flush">保存草稿</button><button class="english-rw__button english-rw__button--primary" :disabled="busy || status==='conflict'" @click="action('complete')">完成写作</button><button v-if="canPublish" class="english-rw__button" :disabled="busy || status==='conflict'" @click="action(article.visibility==='PUBLIC'?'withdraw':'publish')">{{article.visibility==='PUBLIC'?'撤回公开':'公开原创'}}</button></div></header>
+ <template v-if="!loading && article"><header class="english-rw__hero"><div><p class="public-eyebrow">MY WRITING · 自主表达</p><h1>{{form.title || 'Untitled Article'}}</h1><p role="status">{{statusLabel}} · {{article.visibility==='PUBLIC'?'已公开':'仅自己可见'}} · {{article.state==='COMPLETED'?'已完成':'草稿'}}</p></div><div class="english-rw__actions"><button class="english-rw__button" :disabled="busy || status==='conflict'" @click="localRecoveryPaused ? saveConfirmedRecovery() : flush()">{{ localRecoveryPaused ? '确认保存恢复稿' : '保存草稿' }}</button><button class="english-rw__button english-rw__button--primary" :disabled="busy || status==='conflict'" @click="action('complete')">完成写作</button><button v-if="canPublish" class="english-rw__button" :disabled="busy || status==='conflict'" @click="action(article.visibility==='PUBLIC'?'withdraw':'publish')">{{article.visibility==='PUBLIC'?'撤回公开':'公开原创'}}</button></div></header>
  <section v-if="status==='conflict' || status==='error'" class="english-rw__panel"><h2>当前草稿仍保留在编辑框</h2><p class="english-rw__muted">读取服务端内容后核对，再决定如何合并。</p><div class="english-rw__actions"><button v-if="status==='error'" class="english-rw__button" @click="retrySave">重试保存</button><button class="english-rw__button" @click="loadRemote">读取服务端版本</button></div><div v-if="remote"><h3>服务端版本 · {{remote.title}}</h3><p v-if="remote.summary">{{remote.summary}}</p><p v-if="remote.keywords?.length" class="english-rw__muted">关键词：{{remote.keywords.join('、')}}</p><pre class="rw-writing__remote">{{remote.bodyMarkdown}}</pre><button class="english-rw__button" @click="merge">确认按当前草稿合并保存</button></div></section>
- <PublicFilterTabs v-model="tab" label="写作工作区" :options="[{value:'edit',label:'编辑正文'},{value:'preview',label:'阅读预览'},{value:'history',label:'历史版本'}]" />
+ <p v-if="localRecoveryPaused" role="status">本地恢复/导入内容待确认，自动保存已暂停；检查后点击「确认保存恢复稿」。</p><PublicFilterTabs v-model="tab" label="写作工作区" :options="[{value:'edit',label:'编辑正文'},{value:'preview',label:'阅读预览'},{value:'history',label:'历史版本'}]" />
  <section v-show="tab==='edit'"><div class="english-rw__panel"><div class="english-rw__fields"><label>标题 · 可选<input v-model="form.title" maxlength="200" placeholder="Untitled Article"></label><label>关键词 · 可选<input v-model="keywords" maxlength="3000" placeholder="用逗号分隔"></label><label>摘要 · 可选<textarea v-model="form.summary" maxlength="1000" rows="3"></textarea></label></div><h3>文章分类 · 可选</h3><EnglishTaxonomyFields v-model="form" /></div>
- <section class="english-rw__panel"><h2>英文正文</h2><MarkdownEditor ref="englishEditor" v-model="form.bodyMarkdown" placeholder="Write something that matters to you…" /></section><details class="english-rw__panel"><summary>中文译文 · 可选</summary><MarkdownEditor ref="chineseEditor" v-model="form.translationZhMarkdown" /></details>
+ <section class="english-rw__panel"><h2>英文正文</h2><MarkdownEditor :editor-context="loading ? null : editorContext(article?.id, 'bodyMarkdown', article?.rowVersion, acceptedWriting.bodyMarkdown || '')" @local-content-applied="pauseLocalRecovery" ref="englishEditor" v-model="form.bodyMarkdown" placeholder="Write something that matters to you…" /></section><details class="english-rw__panel"><summary>中文译文 · 可选</summary><MarkdownEditor :editor-context="loading ? null : editorContext(article?.id, 'translationZhMarkdown', article?.rowVersion, acceptedWriting.translationZhMarkdown || '')" @local-content-applied="pauseLocalRecovery" ref="chineseEditor" v-model="form.translationZhMarkdown" /></details>
  <button class="english-rw__button" @click="deleteOpen=true">归档文章</button><section v-if="deleteOpen" class="english-rw__notice"><p>归档后文章会从列表移除，历史记录保留。</p><div class="english-rw__actions"><button class="english-rw__button" @click="deleteOpen=false">取消</button><button class="english-rw__button" :disabled="busy" @click="archive">确认归档</button></div></section></section>
  <section v-if="tab==='preview'" class="english-rw__panel"><PublicFilterTabs v-model="mode" label="预览语言" :options="[{value:'EN',label:'英文'},{value:'ZH',label:'中文',disabled:!form.translationZhMarkdown?.trim()},{value:'BOTH',label:'双语',disabled:!form.translationZhMarkdown?.trim()}]" /><EnglishBilingualProse :english="form.bodyMarkdown || ''" :chinese="form.translationZhMarkdown || ''" :mode="mode" /></section>
  <EnglishRevisionPanel v-if="tab==='history'" kind="writing" :id="String(article.id)" :row-version="article.rowVersion" :before-action="flush" @restored="restored" />

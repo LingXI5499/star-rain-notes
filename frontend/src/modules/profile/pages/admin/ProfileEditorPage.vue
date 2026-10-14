@@ -12,6 +12,9 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('profile')
+
 import { listPublicTutorials } from '../../../tutorial/api/tutorialApi'
 import { listPublicPosts } from '../../../blog/api/blogApi'
 import { listPublicWorks } from '../../../portfolio/api/portfolioApi'
@@ -260,7 +263,7 @@ onMounted(load)
       <section class="profile-editor__panel"><h2>基础介绍</h2>
         <form @submit.prevent="run(() => updateProfile({ ...basic }))">
           <div class="profile-editor__grid"><label>显示名称<input v-model.trim="basic.displayName" required maxlength="100" /></label><label>一句话介绍<input v-model.trim="basic.headline" maxlength="255" /></label><label>所在地<input v-model.trim="basic.locationText" maxlength="120" /></label></div>
-          <label>个人介绍</label><MarkdownEditor :key="editorKey" v-model="basic.bioMarkdown" /><button type="submit" :disabled="busy">保存基础介绍</button>
+          <label>个人介绍</label><MarkdownEditor :editor-context="loading ? null : editorContext(profile?.id || 'site-profile', 'bioMarkdown', profile?.rowVersion, profile?.bioMarkdown || '')" :key="editorKey" v-model="basic.bioMarkdown" /><button type="submit" :disabled="busy">保存基础介绍</button>
         </form>
       </section>
 

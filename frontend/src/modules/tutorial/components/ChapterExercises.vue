@@ -15,6 +15,9 @@ import { listCards, createCard, updateCard, deleteCard, reorderCards, listQuesti
 import { errorMessage } from '../../../shared/http'
 import { operationNotice } from '../support/operationResult'
 import MarkdownEditor from '../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('tutorial-exercise')
+
 /**
  * 组件输入；通过 defineProps 建立。
  */
@@ -241,11 +244,11 @@ onMounted(initialize);
    <section class="chapter-exercises__editor" aria-label="内容编辑区" :aria-busy="busy">
     <form v-if="kind === 'cards'" @submit.prevent.stop="saveCard">
      <header class="chapter-exercises__editor-head"><div><h2>{{ card.id ? '编辑卡片' : '新增卡片' }}</h2><p>一张卡片只承担一个回忆目标。知识含义改变时请新建卡片。</p></div><button class="primary-button" type="button" :disabled="busy" @click="saveCard">{{ busy ? '保存中…' : '保存卡片' }}</button></header>
-     <fieldset :disabled="busy" :inert="busy" class="chapter-exercises__fields"><label>回忆问题<textarea v-model="card.frontText" rows="3" maxlength="5000" required /></label><label>答案（Markdown）</label><MarkdownEditor ref="cardEditor" :key="`card-${editorKey}`" v-model="card.backMarkdown" placeholder="知识卡片答案…" /><label>状态<select v-model="card.status"><option value="ENABLED">启用</option><option value="DISABLED">停用</option></select></label></fieldset>
+     <fieldset :disabled="busy" :inert="busy" class="chapter-exercises__fields"><label>回忆问题<textarea v-model="card.frontText" rows="3" maxlength="5000" required /></label><label>答案（Markdown）</label><MarkdownEditor :editor-context="loading ? null : editorContext(card.id, 'backMarkdown', card.rowVersion, JSON.parse(savedCard).backMarkdown, `${chapterId}:card`)" ref="cardEditor" :key="`card-${editorKey}`" v-model="card.backMarkdown" placeholder="知识卡片答案…" /><label>状态<select v-model="card.status"><option value="ENABLED">启用</option><option value="DISABLED">停用</option></select></label></fieldset>
     </form>
     <form v-else @submit.prevent.stop="saveQuestion">
      <header class="chapter-exercises__editor-head"><div><h2>{{ question.id ? '编辑问题' : '新增问题' }}</h2><p>问题可以独立编写，也可以关联本章的多张知识卡片。</p></div><button class="primary-button" type="button" :disabled="busy" @click="saveQuestion">{{ busy ? '保存中…' : '保存问题' }}</button></header>
-     <fieldset :disabled="busy" :inert="busy" class="chapter-exercises__fields"><label>问题<textarea v-model="question.questionText" rows="3" maxlength="5000" required /></label><label>参考答案（Markdown）</label><MarkdownEditor ref="questionEditor" :key="`question-${editorKey}`" v-model="question.referenceAnswer" placeholder="章节问题参考答案…" /><fieldset class="chapter-exercises__relations"><legend>关联知识卡片（可选，可多选）</legend><p v-if="!cards.length">本章暂无知识卡片，仍可独立编写问题。</p><label v-for="c in cards" :key="c.id" class="chapter-exercises__check"><input v-model="question.knowledgeCardIds" type="checkbox" :value="c.id" />{{ c.frontText }}</label></fieldset><label>状态<select v-model="question.status"><option value="ENABLED">启用</option><option value="DISABLED">停用</option></select></label></fieldset>
+     <fieldset :disabled="busy" :inert="busy" class="chapter-exercises__fields"><label>问题<textarea v-model="question.questionText" rows="3" maxlength="5000" required /></label><label>参考答案（Markdown）</label><MarkdownEditor :editor-context="loading ? null : editorContext(question.id, 'referenceAnswer', question.rowVersion, JSON.parse(savedQuestion).referenceAnswer, `${chapterId}:question`)" ref="questionEditor" :key="`question-${editorKey}`" v-model="question.referenceAnswer" placeholder="章节问题参考答案…" /><fieldset class="chapter-exercises__relations"><legend>关联知识卡片（可选，可多选）</legend><p v-if="!cards.length">本章暂无知识卡片，仍可独立编写问题。</p><label v-for="c in cards" :key="c.id" class="chapter-exercises__check"><input v-model="question.knowledgeCardIds" type="checkbox" :value="c.id" />{{ c.frontText }}</label></fieldset><label>状态<select v-model="question.status"><option value="ENABLED">启用</option><option value="DISABLED">停用</option></select></label></fieldset>
     </form>
    </section>
   </div>
