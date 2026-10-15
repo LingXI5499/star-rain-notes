@@ -32,6 +32,17 @@ import org.junit.jupiter.api.Test;
  * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
  */
 class SeoCoreTest {
+    @Test
+    void optionalCoverDoesNotProduceNullOpenGraphOrStructuredImages() {
+        String html = new SeoHtmlRenderer().render(SeoPageModel.builder()
+            .canonicalUrl("https://example.org/portfolio/no-cover").contentType("PORTFOLIO")
+            .title("无封面作品").description("作品简介").robotsDirective("index,follow")
+            .bodyMarkdown("# 创作过程").coverUrl(null).build());
+        assertTrue(html.contains("无封面作品"));
+        assertTrue(html.contains("创作过程"));
+        assertFalse(html.contains("og:image"));
+        assertFalse(html.contains("\"image\":null"));
+    }
     /**
      * 规范UsesConfigured来源及拒绝不安全路由处理入口。
      * 关键处理步骤调用 <code>config.setPublicBaseUrl</code>、<code>service.canonical</code>。

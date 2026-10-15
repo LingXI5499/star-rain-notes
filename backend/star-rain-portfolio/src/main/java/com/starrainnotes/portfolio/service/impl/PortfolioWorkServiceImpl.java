@@ -412,9 +412,6 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             throw new WorkMediaNotFoundException();
         }
         WorkEntity work = lock(row.getWorkId());
-        if ("PUBLISHED".equals(work.getStatus()) && "COVER".equals(row.getUsageType()) && request.getUsageType() != WorkMediaUsage.COVER) {
-            throw new WorkStateInvalidException("已发布作品必须保留封面");
-        }
         validateMedia(row.getWorkId(), request, row.getId());
         boolean changed = !row.getMediaAssetId().equals(request.getMediaAssetId())
                 || !row.getUsageType().equals(request.getUsageType().name());
@@ -454,9 +451,6 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
             throw new WorkMediaNotFoundException();
         }
         WorkEntity work = lock(row.getWorkId());
-        if ("PUBLISHED".equals(work.getStatus()) && "COVER".equals(row.getUsageType())) {
-            throw new WorkStateInvalidException("已发布作品请更换封面，或先撤回后移除");
-        }
         media.deleteById(mediaId);
         detach(row);
         touch(work);
@@ -910,6 +904,10 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
      * @param work 作品；类型为 <code>WorkEntity</code>
      */
     private void validatePublish(WorkEntity work) {
+        if (work.getTitle() == null || work.getTitle().isBlank()
+                || java.util.Arrays.stream(WorkType.values()).noneMatch(type -> type.name().equals(work.getWorkType()))) {
+            throw new WorkStateInvalidException("发布前请补全标题与有效作品类型");
+        }
         mediaReferences.assertPublicContent(work.getBodyMarkdown());
         if (work.getSummary() == null || work.getSummary().isBlank()
                 || work.getCategoryId() == null || work.getFormatId() == null) {
@@ -921,8 +919,6 @@ public class PortfolioWorkServiceImpl implements PortfolioWorkService {
         }
         content.validateTaxonomy(work.getCategoryId(), work.getFormatId());
         content.validatePublication(work.getId());
-        boolean cover = mediaRows(work.getId()).stream().anyMatch(row -> WorkMediaUsage.COVER.name().equals(row.getUsageType()));
-        if (!cover) { throw new WorkStateInvalidException("发布前请选择公开封面"); }
         for (WorkMediaEntity row : mediaRows(work.getId())) {
             MediaAssetSummary asset = mediaAssets.get(row.getMediaAssetId());
             if (asset == null || !"PUBLIC".equals(asset.getAccessLevel())) {

@@ -14,6 +14,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.never;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.starrainnotes.account.api.CurrentActorApi;
@@ -23,6 +25,12 @@ import com.starrainnotes.media.api.dto.MediaReferenceCommand;
 import com.starrainnotes.portfolio.entity.WorkDetailEntity;
 import com.starrainnotes.portfolio.entity.WorkEntity;
 import com.starrainnotes.portfolio.entity.WorkMediaEntity;
+import com.starrainnotes.portfolio.entity.WorkLinkEntity;
+import com.starrainnotes.portfolio.dto.WorkMediaDTO;
+import com.starrainnotes.portfolio.enumeration.WorkMediaUsage;
+import com.starrainnotes.portfolio.exception.WorkInvalidException;
+import com.starrainnotes.portfolio.vo.WorkSectionVO;
+import com.starrainnotes.media.api.dto.MediaAssetSummary;
 import com.starrainnotes.portfolio.event.WorkEventPublisher;
 import com.starrainnotes.portfolio.exception.WorkNotFoundException;
 import com.starrainnotes.portfolio.exception.WorkStateInvalidException;
@@ -43,6 +51,129 @@ import org.mockito.ArgumentCaptor;
  * 以固定输入、模拟依赖或独立测试库验证生产代码，方法注释说明每个验证场景。
  */
 class PortfolioWorkServiceImplTest {
+    @Test
+    void completeMarkdownWorkPublishesWithoutCover() {
+        WorkEntity work = work("DRAFT", null);
+        when(works.byIdForUpdate(9L)).thenReturn(work);
+        when(media.listByWorkId(9L)).thenReturn(List.of());
+        var result = service.publish(9L);
+        assertThat(result.getStatus()).isEqualTo("PUBLISHED");
+        assertThat(result.getCoverUrl()).isNull();
+    }
+
+    @Test
+    void coverStillRequiresPublicAndUsableMedia() {
+        when(works.byIdForUpdate(9L)).thenReturn(work("DRAFT", null));
+        when(assets.get(77L)).thenReturn(MediaAssetSummary.builder().id(77L).mediaType("IMAGE")
+                .accessLevel("PRIVATE").status("ACTIVE").build());
+        assertThatThrownBy(() -> service.publish(9L)).isInstanceOf(WorkStateInvalidException.class)
+                .hasMessageContaining("媒体必须可公开访问");
+        when(assets.get(77L)).thenReturn(MediaAssetSummary.builder().id(77L).mediaType("IMAGE")
+                .accessLevel("PUBLIC").status("DISABLED").build());
+        doThrow(new WorkInvalidException("媒体不可用")).when(assets).assertUsable(77L);
+        assertThatThrownBy(() -> service.publish(9L)).isInstanceOf(WorkInvalidException.class);
+    }
+
+    @Test
+    void publishedWorkCanRemoveItsLastCoverAndDetachTheReference() {
+        WorkMediaEntity cover = media.listByWorkId(9L).getFirst();
+        when(media.selectById(3L)).thenReturn(cover);
+        when(works.byIdForUpdate(9L)).thenReturn(work("PUBLISHED", LocalDateTime.now()));
+        service.removeMedia(3L);
+        verify(media).deleteById(3L);
+        verify(references).detach(any(MediaReferenceCommand.class));
+        verify(works).touch(any());
+        verify(events).publish(any());
+    }
+
+    @Test
+    void publishedCoverCanBecomeAScreenshotWhileRetainingPublicMediaChecks() {
+        WorkEntity work = work("PUBLISHED", LocalDateTime.now());
+        WorkMediaEntity cover = media.listByWorkId(9L).getFirst();
+        when(media.selectById(3L)).thenReturn(cover);
+        when(works.byIdForUpdate(9L)).thenReturn(work);
+        when(works.selectById(9L)).thenReturn(work);
+        WorkMediaDTO request = WorkMediaDTO.builder().mediaAssetId(77L).usageType(WorkMediaUsage.SCREENSHOT).build();
+        assertThat(service.updateMedia(3L, request).getCoverUrl()).isNull();
+        assertThat(cover.getUsageType()).isEqualTo("SCREENSHOT");
+        verify(assets).assertUsable(77L);
+        verify(references).detach(any(MediaReferenceCommand.class));
+        verify(references).attach(any(MediaReferenceCommand.class));
+    }
+
+    @Test
+    void publishedCoverReplacementCannotUsePrivateMedia() {
+        WorkEntity work = work("PUBLISHED", LocalDateTime.now());
+        WorkMediaEntity cover = media.listByWorkId(9L).getFirst();
+        when(media.selectById(3L)).thenReturn(cover);
+        when(works.byIdForUpdate(9L)).thenReturn(work);
+        when(works.selectById(9L)).thenReturn(work);
+        when(assets.get(78L)).thenReturn(MediaAssetSummary.builder().id(78L).mediaType("IMAGE")
+                .accessLevel("PRIVATE").status("ACTIVE").build());
+        assertThatThrownBy(() -> service.updateMedia(3L, WorkMediaDTO.builder().mediaAssetId(78L)
+                .usageType(WorkMediaUsage.COVER).build())).isInstanceOf(WorkInvalidException.class);
+        verify(media, never()).updateContent(any());
+        verify(references, never()).detach(any());
+    }
+
+    @Test
+    void missingMarkdownAndBlocksCannotPublishEvenWithoutCover() {
+        WorkEntity work = work("DRAFT", null); work.setBodyMarkdown("  ");
+        when(works.byIdForUpdate(9L)).thenReturn(work);
+        when(media.listByWorkId(9L)).thenReturn(List.of());
+        assertThatThrownBy(() -> service.publish(9L)).isInstanceOf(WorkStateInvalidException.class)
+                .hasMessageContaining("正文或可见内容区块");
+    }
+
+    @Test
+    void legacyBlocksRemainThePublishAuthority() {
+        WorkEntity work = work("DRAFT", null); work.setBodyMarkdown("");
+        when(works.byIdForUpdate(9L)).thenReturn(work);
+        when(media.listByWorkId(9L)).thenReturn(List.of());
+        when(content.sections(9L, false)).thenReturn(List.of(WorkSectionVO.builder().id("8").visible(true).build()));
+        assertThat(service.publish(9L).getStatus()).isEqualTo("PUBLISHED");
+        verify(content).validatePublication(9L);
+    }
+
+    @Test
+    void hiddenOrInvalidLegacyBlocksStillFailTheirExistingPublicationRules() {
+        WorkEntity work = work("DRAFT", null);
+        when(works.byIdForUpdate(9L)).thenReturn(work);
+        when(content.sections(9L, false)).thenReturn(List.of(WorkSectionVO.builder().id("8").visible(false).build()));
+        doThrow(new WorkStateInvalidException("需要可见区块")).when(content).validatePublication(9L);
+        assertThatThrownBy(() -> service.publish(9L)).isInstanceOf(WorkStateInvalidException.class)
+                .hasMessageContaining("需要可见区块");
+    }
+
+    @Test
+    void missingTitleOrInvalidTypeCannotPublish() {
+        WorkEntity work = work("DRAFT", null);
+        when(works.byIdForUpdate(9L)).thenReturn(work);
+        work.setTitle("  ");
+        assertThatThrownBy(() -> service.publish(9L)).isInstanceOf(WorkStateInvalidException.class);
+        work.setTitle("作品"); work.setWorkType("INVALID");
+        assertThatThrownBy(() -> service.publish(9L)).isInstanceOf(WorkStateInvalidException.class);
+    }
+
+    @Test
+    void unsafeStoredLinksAndPrivateMarkdownMediaStillPreventPublication() {
+        when(works.byIdForUpdate(9L)).thenReturn(work("DRAFT", null));
+        WorkLinkEntity unsafe = new WorkLinkEntity(); unsafe.setUrl("javascript:alert(1)");
+        when(links.listByWorkId(9L)).thenReturn(List.of(unsafe));
+        assertThatThrownBy(() -> service.publish(9L)).isInstanceOf(WorkInvalidException.class);
+        when(links.listByWorkId(9L)).thenReturn(List.of());
+        doThrow(new WorkInvalidException("正文引用私有媒体")).when(references).assertPublicContent(any());
+        assertThatThrownBy(() -> service.publish(9L)).isInstanceOf(WorkInvalidException.class)
+                .hasMessageContaining("正文引用私有媒体");
+    }
+
+    @Test
+    void updatingBodyKeepsTheExistingWorkRecord() {
+        when(works.byIdForUpdate(9L)).thenReturn(work("DRAFT", null));
+        service.updateBody(9L, "# 修改正文");
+        verify(works).updateBody(any());
+        verify(works, never()).insert(any());
+    }
     /**
      * 内容。
      * 协作类型：<code>PortfolioContentService</code>。
