@@ -240,6 +240,7 @@ test('unsafe native conversion rolls back complex content and real preview does 
   expect(fixture.savedBodies).toEqual([])
   await preview.getByRole('button', { name: '关闭预览' }).click()
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
+  await expect.poll(() => fixture.savedBodies.length).toBe(1)
   expect(fixture.savedBodies.at(-1)).toContain('#include <iostream>')
   expect(fixture.savedBodies.at(-1)).toContain('::: code-group')
   expect(fixture.savedBodies.at(-1)).toContain('`a\\|b`')
@@ -252,6 +253,7 @@ test('all three native modes retain ordinary inline formatting', async ({ page, 
     await expectMode(page, value)
   }
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
+  await expect.poll(() => fixture.savedBodies.length).toBe(1)
   expect(fixture.savedBodies.at(-1)).toContain('**中文加粗**')
 })
 test('source headings and protected code are scoped and undoable', async ({ page, fixture }) => {
@@ -264,6 +266,7 @@ test('source headings and protected code are scoped and undoable', async ({ page
   await sourcePoint(page, '#include')
   await page.keyboard.press('Alt+2')
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
+  await expect.poll(() => fixture.savedBodies.length).toBe(1)
   expect(fixture.savedBodies.at(-1)).toContain('#include <iostream>')
   expect(fixture.savedBodies.at(-1)).not.toContain('## #include')
 })
@@ -283,6 +286,7 @@ test('source table editing preserves pipes and image property changes keep the m
   await page.getByLabel('图片尺寸').selectOption('full')
   await page.getByRole('button', { name: '应用图片属性', exact: true }).click()
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
+  await expect.poll(() => fixture.savedBodies.length).toBe(1)
   const saved = fixture.savedBodies.at(-1)
   expect(saved).toContain('转义\\|字符')
   expect(saved).toContain('`a\\|b`')
@@ -298,6 +302,7 @@ test('TSV has an explicit preview and inserts only after confirmation at the cap
   expect(fixture.savedBodies).toHaveLength(0)
   await page.getByRole('button',{name:'确认转换并插入',exact:true}).click()
   await page.getByRole('button',{name:'保存正文',exact:true}).click()
+  await expect.poll(() => fixture.savedBodies.length).toBe(1)
   expect(fixture.savedBodies.at(-1)).toContain('转义\\|字符');expect(fixture.savedBodies.at(-1)).toContain('Original body')
 })
 test('browser recovery survives reload and never saves until the user confirms server saving', async ({
@@ -316,6 +321,7 @@ test('browser recovery survives reload and never saves until the user confirms s
   await expect(page.locator('.vditor-sv[contenteditable=true]')).toContainText('Local offline text')
   expect(fixture.savedBodies).toHaveLength(0)
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
+  await expect.poll(() => fixture.savedBodies.length).toBe(1)
   expect(fixture.savedBodies.at(-1)).toContain('Local offline text')
 })
 test('Markdown import can be cancelled, then explicitly applied and exported without saving', async ({
