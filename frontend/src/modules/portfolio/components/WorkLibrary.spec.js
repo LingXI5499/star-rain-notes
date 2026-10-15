@@ -34,6 +34,26 @@ async function render(url = '/portfolio') {
  return { view, router }
 }
 describe('featured works and the lower archive', () => {
+ it('alternates up to three featured rows and keeps the archive count including featured works', async () => {
+  api.listPublicWorks.mockImplementation(params => Promise.resolve(params.pageSize === 3
+   ? { items: [chosen, { ...chosen, id: '3' }, { ...chosen, id: '4' }, { ...chosen, id: '5' }], total: 4 }
+   : { items: [chosen, ordinary], total: 25 }))
+  const { view } = await render()
+  const cards = view.findAll('.works-featured .works-card')
+  expect(cards).toHaveLength(3)
+  expect(cards.map(card => card.classes().includes('works-card--reverse'))).toEqual([false, true, false])
+  expect(view.findAll('.works-archive .works-card')).toHaveLength(2)
+  expect(view.find('.public-filters__summary').text()).toContain('25 件作品')
+  expect(view.find('.works-secondary-filters').attributes('open')).toBeUndefined()
+ })
+ it('shows a text cover placeholder and at most three technologies on ordinary cards', async () => {
+  api.listPublicWorks.mockResolvedValue({ items: [{ ...ordinary, techStack: 'Vue, Java，MySQL、Python' }], total: 1 })
+  const { view } = await render()
+  const card = view.find('.works-archive .works-card')
+  expect(card.find('.works-card__cover span').text()).toBe('普')
+  expect(card.findAll('.works-card__tags span').map(tag => tag.text())).toEqual(['Vue', 'Java', 'MySQL'])
+  expect(card.attributes('href')).toBe('/portfolio/ordinary')
+ })
  it('shows independently loaded selected works above filters, cards and pagination', async () => {
   const { view } = await render('/portfolio?categoryId=3&formatId=2&page=2')
   expect(api.listPublicWorks).toHaveBeenCalledWith({ page: 1, pageSize: 3, featured: true })
