@@ -4,6 +4,17 @@
 
 最终源码验收：386 项单元测试（71 个测试文件）通过。全量浏览器 28 项通过；最后增加“恢复前保留当前输入”补丁后，对草稿恢复、409 冲突、英语双编辑器执行的 3 项专项回归通过。证据为 `.local/editor-v3-final-recovery-unit.log`、`.local/editor-v3-delivery-browser.log`、`.local/editor-v3-final-recovery-browser.log`。其中 28 个浏览器用例并非与下表 T01–T28 一一对应，以下逐项说明实际证据和未验证范围。
 
+## 2026-10-15 菜单与全屏补充验收
+
+- 全量单元测试：72 个文件、390 项通过，见 `.local/editor-menu-final-unit.log`。
+- 全量浏览器：30 项通过，见 `.local/editor-menu-final-browser.log`，使用真实 Vditor 与 Windows Edge headless。
+- 菜单/桌面全屏/窄屏全屏/斜杠与选区弹层四项各连续执行三轮，共 12 次通过，见 `.local/editor-menu-overlays-browser.log`。
+- 桌面加入祖先 transform 条件，连续三次进入/退出全屏；每轮采样 16 个动画帧，检查编辑器紧贴视口且原正文 DOM 持续连接。检查原文、标题转换、焦点、外层滚动及 inert 状态恢复。
+- 窄屏从 390×700 调整为 320×560，检查菜单弹层边界、编辑器高度、Escape 优先关闭菜单、路由卸载释放全屏。全屏中媒体选择器仍能打开和关闭，深浅主题同步。
+- 快捷键自定义、三视图回退、MD 导入/导出、Word 下载、草稿恢复、409、双语字段隔离继续覆盖。PDF/Word 仍只做导出。
+
+截图在 `.local/editor-menu-desktop.png`、`.local/editor-menu-fullscreen-desktop.png`、`.local/editor-menu-fullscreen-mobile.png`。这些自动化证据不替代真实输入法、触摸及物理设备人工验收，也不代表服务器已经部署新版本。
+
 ## 28 项需求矩阵
 
 | 编号 | 场景 | 当前证据与边界 |
@@ -33,7 +44,7 @@
 | T23 | 围栏内质量检查 | 围栏教学示例不误报单元通过 |
 | T24 | MD 导入取消 | 浏览器取消不改正文；超过 2 MiB/非法 UTF-8/二进制拒绝单元通过；大文件人工体验待验 |
 | T25 | MD 往返 | UTF-8 / LF 字节等价单元通过、浏览器导出与导入通过；CRLF/CR 明示规范化为 LF |
-| T26 | 主题/全屏/卸载 | 原有 Observer 清理与监听释放实现保留；新增 worker/timer 清理实现及组件卸载测试，完整人工组合待验 |
+| T26 | 主题/全屏/卸载 | 整体 Teleport 全屏、主题同步、视口变化、连续切换与路由卸载浏览器通过；实例标记与监听释放单元通过，实际设备人工组合待验 |
 | T27 | 恶意 HTML 预览 | 真实共享阅读预览 XSS 浏览器、打印净化单元通过 |
 | T28 | 标题后撤销 | 真实原生 Vditor Ctrl+Z 浏览器通过；物理键盘待人工 |
 

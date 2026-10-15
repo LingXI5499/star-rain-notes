@@ -19,7 +19,7 @@ body :where(.public-shell, .admin-shell) :where(
   button, a.public-button, a.primary-button, a.secondary-button, a.english-rw__button,
   a[class*='__create'], [class*='__actions'] > a, .portfolio-card footer a
 ):not(:where(
-  .vditor button, .public-pagination button, .public-select button, .public-search button,
+  .vditor button, .editor-menubar button, .editor-menubar__menu button, .public-pagination button, .public-select button, .public-search button,
   .public-filter-tabs button, .public-toggle-filter button, .media-library__preview,
   .theme-words__display button, .admin-shell__header-action, .admin-shell__mobile-menu,
   .site-header button, .theme-control button, .vocabulary-card__display button,

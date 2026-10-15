@@ -22,6 +22,7 @@ const props = defineProps({
   pickImage: Function,
   getMedia: Function,
   context: Object,
+  compact: Boolean,
 })
 const mode = ref('ir'),
   panel = ref(''),
@@ -299,11 +300,11 @@ onBeforeUnmount(() => {
   clearTimeout(timer)
   host?.removeEventListener('click', clicked, true)
 })
-defineExpose({ openPreview })
+defineExpose({ openPreview,changeMode,show,openImage,mode })
 </script>
 <template>
-  <section class="editor-document-tools">
-    <nav aria-label="文档工具">
+  <section class="editor-document-tools" @keydown.esc="panel && ($event.stopPropagation(), panel = '')">
+    <nav v-if="!compact" aria-label="文档工具">
       <label
         >编辑视图<select
           aria-label="编辑视图"
@@ -326,6 +327,7 @@ defineExpose({ openPreview })
         素材公开检查
       </button>
     </nav>
+    <button v-if="compact && panel" type="button" @click="panel = ''">关闭工具面板</button>
     <p v-if="notice" role="status">{{ notice }}</p>
     <div v-if="panel === 'table'" class="editor-document-tools__panel">
       <p>

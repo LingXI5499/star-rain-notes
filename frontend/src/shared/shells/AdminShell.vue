@@ -15,7 +15,7 @@ import { useAuthStore } from '../../modules/account/stores/authStore'
 import { errorMessage } from '../../modules/account/api/http'
 import * as accountApi from '../../modules/account/api/accountApi'
 import { accountPath } from '../viewMode'
-import { applyManualTheme, readManualTheme, switchManualTheme, themeSwitching } from '../theme/manualTheme'
+import { appliedManualTheme, applyManualTheme, readManualTheme, switchManualTheme, themeSwitching } from '../theme/manualTheme'
 
 /*
  * 控制台外壳（唯一带侧栏的外壳），由账号树的 /useradmin/center 用户中心进入。
@@ -320,6 +320,7 @@ function isItemActive(item) {
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const theme = ref(readManualTheme('admin-theme'))
+watch(appliedManualTheme, value => { if (value?.key === 'admin-theme') theme.value = value.theme })
 /**
  * 应用Stored主题。
  * 主要协作：applyManualTheme。

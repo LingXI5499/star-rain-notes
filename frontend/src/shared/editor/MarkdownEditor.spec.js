@@ -30,6 +30,18 @@ describe('shared Markdown editor', () => {
   it('keeps the legacy blog import pointing to the same editor', () => {
     expect(LegacyMarkdownEditor).toBe(MarkdownEditor)
   })
+  it('moves the same editor for fullscreen and releases page state on unmount', async () => {
+    const wrapper = await editor()
+    await flushPromises()
+    const original = wrapper.find('[contenteditable]').element
+    await wrapper.find('.editor-menubar__fullscreen').trigger('click')
+    await flushPromises()
+    expect(document.querySelector('.markdown-editor--fullscreen [contenteditable]')).toBe(original)
+    expect(document.documentElement.classList.contains('is-vditor-fullscreen')).toBe(true)
+    wrapper.unmount()
+    expect(document.querySelector('.markdown-editor--fullscreen')).toBeNull()
+    expect(document.documentElement.classList.contains('is-vditor-fullscreen')).toBe(false)
+  })
   /**
    * editor的处理函数。
    * 主要协作：mount、.toBeTruthy、state.options.after。

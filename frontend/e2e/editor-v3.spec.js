@@ -1,4 +1,14 @@
 import { test, expect } from './fixtures'
+async function menu(page, group, name, scope = page, radio = false) {
+  await scope.getByRole('menubar', {name:'文档菜单'}).getByRole('menuitem', {name:group,exact:true}).click()
+  await page.getByRole('menu', {name:`${group}菜单`}).getByRole(radio?'menuitemradio':'menuitem', {name:new RegExp(`^${name}`)}).click()
+}
+async function mode(page, value) {
+  await menu(page, '视图', {ir:'即时渲染',sv:'源码',wysiwyg:'所见即所得'}[value], page, true)
+}
+async function expectMode(page, value) {
+  await expect(page.locator(`.vditor-toolbar [data-mode="${value}"].vditor-menu--current`)).toHaveCount(1)
+}
 const complex =
   '# 第一章\n\n**中文加粗** 与链接 [站点](https://example.com)\n\n$$\nx^2\n$$\n\n::: code-group C++|Java\n\n```cpp\n#include <iostream>\n```\n\n```java\nclass Test {}\n```\n\n:::\n\n| 中文 | 值 |\n| :--- | ---: |\n| 转义\\|字符 | `a\\|b` |\n\n![结构](/api/media/assets/19/content "图 wide")\n\n# 第二章\n\n末尾正文\n'
 async function sourcePoint(page, text) {
@@ -33,9 +43,100 @@ async function open(page) {
     '.vditor-ir [contenteditable="true"]:visible,.vditor-sv[contenteditable="true"]:visible',
   )
   await expect(input).toBeVisible({ timeout: 20000 })
-  await expect(page.getByRole('button', { name: 'H2', exact: true })).toBeEnabled()
+  await expect(page.getByRole('menubar').getByRole('menuitem', { name: '段落', exact: true })).toBeEnabled()
   return input
 }
+test('compact menus preserve selection and fullscreen keeps the same editor at the viewport', async ({page,fixture}) => {
+  const input = await open(page)
+  await expect(page.getByRole('menubar').getByRole('menuitem')).toHaveCount(7)
+  await expect(page.locator('.vditor-toolbar')).toBeHidden()
+  await expect(page.locator('.markdown-editor__image-actions')).toHaveCount(0)
+  await input.locator('p').filter({hasText:'Original body'}).click()
+  await menu(page,'段落','标题 2')
+  await expect(input.locator('h2')).toContainText('Original body')
+  const bar = page.getByRole('menubar')
+  await bar.getByRole('menuitem',{name:'文件',exact:true}).focus()
+  await page.keyboard.press('ArrowDown')
+  await expect(page.getByRole('menuitem',{name:'导入 Markdown…'})).toBeFocused()
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('menu')).toHaveCount(0)
+  await expect(bar.getByRole('menuitem',{name:'文件',exact:true})).toBeFocused()
+  await input.locator('h2').click()
+  await input.evaluate(element=>{element.dataset.fullscreenIdentity='same-editor';element.closest('.blog-edit__writing-card').style.transform='translateZ(0)'})
+  for (let cycle=0; cycle<3; cycle++) {
+    await bar.getByRole('button',{name:'全屏',exact:true}).evaluate(button=>button.addEventListener('click',()=>{window.fullscreenEntryScroll=document.querySelector('.admin-shell__content').scrollTop},{capture:true,once:true}))
+    await bar.getByRole('button',{name:'全屏',exact:true}).click()
+    const scroll = await page.evaluate(()=>window.fullscreenEntryScroll)
+    const full = page.getByRole('dialog',{name:'全屏文档编辑器'})
+    await expect(full).toBeVisible()
+    expect(await full.evaluate(element=>element.parentElement===document.body)).toBe(true)
+    expect(await page.locator('#app').evaluate(element=>element.inert)).toBe(true)
+    // Sample consecutive rendered frames to detect jumps or a replaced/hidden document tree.
+    const frames=await full.evaluate(async element=>{
+      const frames=[]
+      for(let frame=0;frame<16;frame++){
+        await new Promise(requestAnimationFrame)
+        const rect=element.getBoundingClientRect(),editable=element.querySelector('[data-fullscreen-identity]')
+        frames.push({x:rect.x,y:rect.y,width:rect.width,height:rect.height,viewport:innerHeight,connected:editable?.isConnected,editorHeight:editable?.getBoundingClientRect().height})
+      }
+      return frames
+    })
+    for(const frame of frames){expect(frame.x).toBe(0);expect(frame.y).toBe(0);expect(frame.height).toBe(frame.viewport);expect(frame.connected).toBe(true);expect(frame.editorHeight).toBeGreaterThan(300)}
+    await expect(full.locator('[data-fullscreen-identity]')).toContainText('Original body')
+    if(cycle===0){
+      await menu(page,'格式','上传图片')
+      // Cancelling the browser chooser leaves the editor intact; media actions are no longer persistent rows.
+      await menu(page,'格式','从媒体库选择图片')
+      const picker=page.getByRole('dialog',{name:'选择图片'})
+      await expect(picker).toBeVisible()
+      await expect(picker.getByRole('button',{name:'关闭媒体选择器'})).toBeEnabled()
+      await picker.getByRole('button',{name:'关闭媒体选择器'}).click()
+      await expect(picker).toBeHidden()
+      await expect(full).toBeVisible()
+      await menu(page,'主题','深色主题',page,true)
+      await expect(page.locator('html')).toHaveAttribute('data-theme','dark')
+      await page.screenshot({path:'../.local/editor-menu-fullscreen-desktop.png'})
+      await menu(page,'主题','浅色主题',page,true)
+    }
+    await full.locator('[data-fullscreen-identity]').click()
+    await page.keyboard.press('Escape')
+    await expect(full).toHaveCount(0)
+    expect(await page.locator('#app').evaluate(element=>element.inert)).toBe(false)
+    expect(await page.locator('.admin-shell__content').evaluate(element=>element.scrollTop)).toBe(scroll)
+    await expect(page.locator('[data-fullscreen-identity]')).toBeVisible()
+  }
+  await page.getByRole('button',{name:'保存正文',exact:true}).click()
+  await expect.poll(()=>fixture.savedBodies.length).toBe(1)
+  expect(fixture.savedBodies[0]).toContain('## Original body')
+  await page.locator('.admin-shell__content').evaluate(element=>element.scrollTop=0)
+  await page.screenshot({path:'../.local/editor-menu-desktop.png'})
+})
+test('fullscreen resizes on mobile and closes menus before exiting', async ({page}) => {
+  await page.setViewportSize({width:390,height:700})
+  const input=await open(page)
+  await input.locator('p').filter({hasText:'Original body'}).click()
+  await page.getByRole('menubar').getByRole('button',{name:'全屏',exact:true}).click()
+  const full=page.getByRole('dialog',{name:'全屏文档编辑器'})
+  await page.setViewportSize({width:320,height:560})
+  await expect(full).toHaveCSS('height','560px')
+  await full.getByRole('menuitem',{name:'格式',exact:true}).click()
+  const popup=page.getByRole('menu',{name:'格式菜单'})
+  const rect=await popup.boundingBox()
+  expect(rect.x).toBeGreaterThanOrEqual(0);expect(rect.x+rect.width).toBeLessThanOrEqual(320)
+  expect(rect.y+rect.height).toBeLessThanOrEqual(560)
+  await popup.getByRole('menuitem',{name:'加粗',exact:true}).focus()
+  await page.keyboard.press('Escape')
+  await expect(popup).toHaveCount(0);await expect(full).toBeVisible()
+  await page.screenshot({path:'../.local/editor-menu-fullscreen-mobile.png'})
+  await page.keyboard.press('Escape')
+  await expect(full).toHaveCount(0)
+  await input.locator('p').filter({hasText:'Original body'}).click()
+  await page.keyboard.press('Control+`')
+  await expect(full).toBeVisible()
+  await page.goto('/useradmin/blog')
+  expect(await page.locator('#app').evaluate(element=>element.inert)).toBe(false)
+  await expect(page.locator('html')).not.toHaveClass(/is-vditor-fullscreen/)
+})
 test('Alt headings replace levels, paragraph conversion and undo preserve content', async ({
   page,
   fixture,
@@ -117,6 +218,7 @@ test('floating toolbar restores selection and stays closed after Escape', async 
   await page.keyboard.press('Escape')
   await expect(toolbar).toHaveCount(0)
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
+  await expect.poll(() => fixture.savedBodies.length).toBe(1)
   expect(fixture.savedBodies.at(-1)).toContain('**Original body**')
 })
 test('unsafe native conversion rolls back complex content and real preview does not save or run HTML', async ({
@@ -125,11 +227,11 @@ test('unsafe native conversion rolls back complex content and real preview does 
 }) => {
   fixture.article.bodyMarkdown = complex + '\n<script>window.editorXss = 1</script>\n'
   await open(page)
-  await page.getByLabel('编辑视图').selectOption('sv')
-  await page.getByLabel('编辑视图').selectOption('ir')
-  await expect(page.getByLabel('编辑视图')).toHaveValue('sv')
+  await mode(page, 'sv')
+  await mode(page, 'ir')
+  await expectMode(page, 'sv')
   await expect(page.getByRole('status').filter({ hasText: '已恢复原文' })).toBeVisible()
-  await page.getByRole('button', { name: '阅读预览', exact: true }).click()
+  await menu(page, '视图', '阅读预览')
   const preview = page.getByRole('dialog', { name: '阅读预览' })
   await expect(preview.getByRole('heading', { name: '第一章', exact: true })).toBeVisible()
   await expect(preview.locator('[data-code-group]')).toHaveCount(1)
@@ -145,9 +247,9 @@ test('unsafe native conversion rolls back complex content and real preview does 
 test('all three native modes retain ordinary inline formatting', async ({ page, fixture }) => {
   fixture.article.bodyMarkdown = '# 标题\n\n**中文加粗** 与普通正文\n'
   await open(page)
-  for (const mode of ['sv', 'wysiwyg', 'ir']) {
-    await page.getByLabel('编辑视图').selectOption(mode)
-    await expect(page.getByLabel('编辑视图')).toHaveValue(mode)
+  for (const value of ['sv', 'wysiwyg', 'ir']) {
+    await mode(page, value)
+    await expectMode(page, value)
   }
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
   expect(fixture.savedBodies.at(-1)).toContain('**中文加粗**')
@@ -155,7 +257,7 @@ test('all three native modes retain ordinary inline formatting', async ({ page, 
 test('source headings and protected code are scoped and undoable', async ({ page, fixture }) => {
   fixture.article.bodyMarkdown = complex
   await open(page)
-  await page.getByLabel('编辑视图').selectOption('sv')
+  await mode(page, 'sv')
   const input = await sourcePoint(page, '末尾正文')
   await page.keyboard.press('Alt+3')
   await expect(input).toContainText('### 末尾正文')
@@ -171,12 +273,12 @@ test('source table editing preserves pipes and image property changes keep the m
 }) => {
   fixture.article.bodyMarkdown = complex
   await open(page)
-  await page.getByLabel('编辑视图').selectOption('sv')
+  await mode(page, 'sv')
   await sourcePoint(page, '转义')
-  await page.getByRole('button', { name: '编辑表格', exact: true }).click()
+  await menu(page, '格式', '编辑表格')
   await page.getByRole('button', { name: '下插行', exact: true }).click()
   await sourcePoint(page, '![结构]')
-  await page.getByRole('button', { name: '图片属性', exact: true }).click()
+  await menu(page, '格式', '图片属性')
   await page.getByLabel('替代文本').fill('更新的结构图')
   await page.getByLabel('图片尺寸').selectOption('full')
   await page.getByRole('button', { name: '应用图片属性', exact: true }).click()
@@ -189,8 +291,8 @@ test('source table editing preserves pipes and image property changes keep the m
   expect(saved).toContain('更新的结构图')
 })
 test('TSV has an explicit preview and inserts only after confirmation at the captured source caret',async({page,fixture})=>{
-  await open(page);await page.getByLabel('编辑视图').selectOption('sv');await sourcePoint(page,'Original body')
-  await page.getByRole('button',{name:'编辑表格',exact:true}).click();await page.getByText('粘贴 TSV 转表格',{exact:true}).click()
+  await open(page);await mode(page, 'sv');await sourcePoint(page,'Original body')
+  await menu(page, '格式', '编辑表格');await page.getByText('粘贴 TSV 转表格',{exact:true}).click()
   await page.getByLabel('TSV 数据').fill('中文\t值\n转义|字符\t1')
   await expect(page.getByLabel('TSV 转换预览')).toContainText('转义\\|字符')
   expect(fixture.savedBodies).toHaveLength(0)
@@ -240,7 +342,7 @@ test('Markdown import can be cancelled, then explicitly applied and exported wit
   await expect(page.locator('.vditor-sv[contenteditable=true]')).toContainText('新增 **正文**')
   expect(fixture.savedBodies).toHaveLength(0)
   const downloaded = page.waitForEvent('download')
-  await page.getByRole('button', { name: '导出 Markdown', exact: true }).click()
+  await menu(page, '文件', '导出 Markdown')
   expect((await downloaded).suggestedFilename()).toBe('导入标题.md')
 })
 test('Word export downloads a real docx and account shortcut settings apply only in the editor', async ({
@@ -248,14 +350,14 @@ test('Word export downloads a real docx and account shortcut settings apply only
   fixture,
 }) => {
   const input = await open(page)
-  await page.getByRole('button', { name: '快捷键 ?' }).click()
+  await menu(page, '帮助', '快捷键设置与帮助')
   await page.getByLabel('配置H2快捷键').fill('Alt+7')
   await page.getByRole('button', { name: '保存快捷键', exact: true }).click()
   await input.locator('p').filter({ hasText: 'Original body' }).click()
   await page.keyboard.press('Alt+7')
   await expect(input.locator('h2')).toContainText('Original body')
   const downloaded = page.waitForEvent('download')
-  await page.getByRole('button', { name: '导出 Word', exact: true }).click()
+  await menu(page, '文件', '导出 Word')
   expect((await downloaded).suggestedFilename()).toMatch(/\.docx$/)
   expect(fixture.savedBodies).toHaveLength(0)
 })
@@ -268,7 +370,7 @@ test('English and Chinese editors isolate focus and import suspends existing aut
   await expect(editors).toHaveCount(2)
   const en = editors.nth(0),
     zh = editors.nth(1)
-  await expect(en.getByRole('button', { name: 'H2', exact: true })).toBeEnabled()
+  await expect(en.getByRole('menubar').getByRole('menuitem', { name: '段落', exact: true })).toBeEnabled()
   await en.locator('.vditor-ir p').click()
   await page.keyboard.press('Alt+2')
   await expect(en.locator('.vditor-ir h2')).toContainText('English body')
@@ -323,7 +425,7 @@ for (const size of [5000, 50000, 100000, 200000])
     const body = part.repeat(Math.floor(size / part.length))
     fixture.article.bodyMarkdown = body + '补'.repeat(size - body.length) + '\n\n末段\n'
     await open(page)
-    await page.getByLabel('编辑视图').selectOption('sv')
+    await mode(page, 'sv')
     const input = await sourcePoint(page, '末段')
     await page.evaluate(() => {
       window.editorInputStart = performance.now()
@@ -340,7 +442,7 @@ for (const size of [5000, 50000, 100000, 200000])
         element.textContent.replace(/\u200b/g, '').includes('x末段'),
       ),
     ).toBe(true)
-    await page.getByRole('button', { name: '质量检查', exact: true }).click()
+    await menu(page, '编辑', '质量检查')
     await expect(page.getByRole('status').filter({ hasText: '条建议' })).toBeVisible({
       timeout: 15000,
     })

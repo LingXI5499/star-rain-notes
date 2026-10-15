@@ -33,4 +33,12 @@ describe('markdownEditorChrome', () => {
     setVditorFullscreenActive(false)
     expect(document.documentElement.classList.contains('is-vditor-fullscreen')).toBe(false)
   })
+  it('keeps fullscreen active when another editor releases its own flag', () => {
+    const first = Symbol(), second = Symbol()
+    setVditorFullscreenActive(true, first)
+    setVditorFullscreenActive(false, second)
+    expect(document.documentElement.classList.contains('is-vditor-fullscreen')).toBe(true)
+    setVditorFullscreenActive(false, first)
+    expect(document.documentElement.classList.contains('is-vditor-fullscreen')).toBe(false)
+  })
 })

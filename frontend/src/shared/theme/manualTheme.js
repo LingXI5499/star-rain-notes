@@ -16,6 +16,7 @@ export
    */
   const themeSwitching = ref(false)
 const colors = { light: '#0F3D36', dark: '#102C31' }
+export const appliedManualTheme = ref(null)
 
 export
   /**
@@ -40,6 +41,7 @@ export
   const value = theme === 'dark' ? 'dark' : 'light'
   document.documentElement.dataset.theme = value
   document.documentElement.style.colorScheme = value
+  appliedManualTheme.value = { theme: value, key }
   document.querySelector('meta[name="theme-color"]')?.setAttribute('content', colors[value])
   if (key) {
     try { localStorage.setItem(key, value) } catch { /* The choice still applies in this tab. */ }

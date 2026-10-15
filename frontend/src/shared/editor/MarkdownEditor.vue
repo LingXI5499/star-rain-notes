@@ -13,7 +13,7 @@
  */
 
 
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { resolveVditorEditorHeight, setVditorFullscreenActive } from '../markdown/markdownEditorChrome'
 import { createCodeGroupMarkdown, validateCodeGroupBlocks } from '../markdown/markdownCodeGroup'
 import { normalizePastedMath } from '../markdown/markdownMath'
@@ -27,6 +27,8 @@ import { normalizeVditorMarkdown } from './commands/editorDocument'
 import EditorRecovery from './EditorRecovery.vue'
 import EditorDiagnostics from './EditorDiagnostics.vue'
 import EditorFileTools from './EditorFileTools.vue'
+import EditorMenuBar from './EditorMenuBar.vue'
+import { applyManualTheme } from '../theme/manualTheme'
 
 /*
  * 文章正文编辑器 —— 对标 V1 `components/MarkdownEditor.vue`（Vditor，IR 即时渲染）。
@@ -48,8 +50,7 @@ import EditorFileTools from './EditorFileTools.vue'
  * 两个必须遵守的约束（V1 注释里写明的坑）：
  *   1. 高度必须是**数值**，不能用 'auto'。用 auto 时 Vditor 的大纲点击会去滚动 window，
  *      而控制台的可滚动容器是 `.admin-shell__content`，点了大纲不会有任何反应。
- *   2. 全屏要切 `html.is-vditor-fullscreen`。侧栏 z-index 是 30，全屏的编辑器仍是它的
- *      后代节点，不藏外壳就会被侧栏盖住。
+ *   2. 全屏移动整个编辑器到 body，保留实例；html 标记只负责锁定页面滚动。
  *
  * 懒加载：Vditor（含样式）与 MathJax 全部是动态 import / 运行时注入 script，
  * 主包只多出「什么时候去加载」的几行代码。
@@ -79,6 +80,69 @@ const emit = defineEmits(['update:modelValue','local-content-applied'])
  */
 const host = ref(null)
 const editorReady = ref(false), workbench = ref(null)
+const editorShell = ref(null), menuBar = ref(null), recovery = ref(null), diagnostics = ref(null), fileTools = ref(null)
+const fullscreen = ref(false), editorTheme = ref(document.documentElement.dataset.theme || 'light')
+const menuNotice = ref('')
+const fullscreenOwner = Symbol('markdown-editor')
+let background = null, backgroundInert = false, pageScroll = [], fullscreenGeneration = 0
+let themeKey = 'admin-theme'
+function releaseFullscreen() {
+  if (background) background.inert = backgroundInert
+  background = null
+  setVditorFullscreenActive(false, fullscreenOwner)
+}
+async function toggleFullscreen() {
+  if (!editorReady.value || disposed) return
+  const generation = ++fullscreenGeneration, entering = !fullscreen.value
+  const range = adapter.remember()
+  const innerScroll = [...host.value.querySelectorAll('.vditor-ir,.vditor-sv,.vditor-wysiwyg')].map(element => [element,element.scrollTop])
+  menuBar.value?.close(); workbench.value?.hide()
+  if (entering) {
+    pageScroll = []
+    for (let element = editorShell.value.parentElement; element; element = element.parentElement) pageScroll.push([element,element.scrollTop,element.scrollLeft])
+    background = editorShell.value.closest('#app') || editorShell.value.closest('.admin-shell,.public-shell')
+    if (background) { backgroundInert = background.inert; background.inert = true }
+    setVditorFullscreenActive(true, fullscreenOwner)
+  }
+  fullscreen.value = entering
+  if (!entering) releaseFullscreen()
+  await nextTick()
+  if (disposed || generation !== fullscreenGeneration) return
+  if (range) adapter.restore(range)
+  else editorShell.value.querySelector('.editor-menubar__fullscreen')?.focus({preventScroll:true})
+  for (const [element,top] of innerScroll) element.scrollTop = top
+  if (!entering) for (const [element,top,left] of pageScroll) { element.scrollTop = top; element.scrollLeft = left }
+}
+function editorEscape(event) {
+  if (event.defaultPrevented) return
+  if (codeGroupOpen.value) { codeGroupOpen.value = false; return }
+  if (tablePickerOpen.value) { tablePickerOpen.value = false; return }
+  if (fullscreen.value) { event.preventDefault(); void toggleFullscreen() }
+}
+function menuAction(id) {
+  menuNotice.value = ''
+  const tools = workbench.value?.documentTools
+  try {
+    if (id.startsWith('heading:')) workbench.value?.applyHeading(Number(id.slice(8)))
+    else if (id.startsWith('native:')) workbench.value?.format(id.slice(7))
+    else if (id.startsWith('mode:')) tools?.changeMode(id.slice(5))
+    else if (id.startsWith('theme:')) applyManualTheme(id.slice(6), themeKey)
+    else if (['table','code-group','upload','library'].includes(id)) workbenchAction({name:id,range:adapter.remember()})
+    else if (id.startsWith('export-') && id !== 'export-help') void fileTools.value?.exportFile(id.slice(7))
+    else if (id === 'copy-md') void fileTools.value?.exportFile('copy')
+    else if (id === 'import') fileTools.value?.openImport()
+    else if (id === 'recovery') void recovery.value?.inspect()
+    else if (id === 'diagnostics') diagnostics.value?.toggle()
+    else if (id === 'shortcuts') workbench.value?.openHelp()
+    else if (id === 'export-help') fileTools.value?.showHelp()
+    else if (id === 'copy-selection') void workbench.value?.copySelection()
+    else if (id === 'preview') tools?.openPreview()
+    else if (id === 'image') tools?.openImage()
+    else if (['outline','edit-table','media'].includes(id)) tools?.show(id === 'edit-table' ? 'table' : id)
+    else if (id === 'fullscreen') void toggleFullscreen()
+    else if (id === 'math' && !props.readOnly && adapter.restore()) adapter.insert('\n$$\nx^2\n$$\n')
+  } catch (error) { menuNotice.value = error.message }
+}
 const longDocument = computed(() => props.modelValue.length >= 100000)
 const adapter = createVditorAdapter(() => vditor, () => host.value)
 let workbenchRange = null
@@ -145,7 +209,6 @@ let vditor = null
 /* 程序化写入（初始化 / 外部改值）期间不回发 update:modelValue，避免与 v-model 互相打环 */
 let suppressing = false
 let ready = false
-let fullscreenObserver = null
 let themeObserver = null
 let pasteHost = null
 
@@ -446,31 +509,10 @@ function isDarkTheme() {
  * 正文排版用 light/dark。两者必须同时切，否则深色下会出现白底工具栏配深色代码块。
  */
 function syncTheme() {
+  editorTheme.value = document.documentElement.dataset.theme || 'light'
   if (!vditor || !ready) return
   const dark = isDarkTheme()
   vditor.setTheme(dark ? 'dark' : 'classic', dark ? 'dark' : 'light')
-}
-
-/**
- * 同步Fullscreen标记。
- * 主要协作：setVditorFullscreenActive、element.classList.contains。
- * @param element element；默认值、解构字段与可选参数见函数签名。
- */
-function syncFullscreenFlag(element) {
-  setVditorFullscreenActive(element.classList.contains('vditor--fullscreen'))
-}
-
-/* Vditor 全屏只是给它自己加 class，没有事件回调，因此用 MutationObserver 盯 class */
-/**
- * watchFullscreen的处理函数。
- * 主要协作：fullscreenObserver.disconnect、syncFullscreenFlag、fullscreenObserver.observe。
- * @param element element；默认值、解构字段与可选参数见函数签名。
- */
-function watchFullscreen(element) {
-  fullscreenObserver?.disconnect()
-  syncFullscreenFlag(element)
-  fullscreenObserver = new MutationObserver(() => syncFullscreenFlag(element))
-  fullscreenObserver.observe(element, { attributes: true, attributeFilter: ['class'] })
 }
 
 /* 控制台的主题开关写的是 <html data-theme>，这里跟着它走，不额外引主题 store */
@@ -593,11 +635,11 @@ function buildToolbar() {
     '|',
     'outline',
     'edit-mode',
-    'fullscreen',
+    { name: 'editor-fullscreen', tip: '全屏', hotkey: '⌘`', icon: '<span aria-hidden="true">⛶</span>', click: () => { void toggleFullscreen() } },
   ]
 }
 
-/* 工具栏按钮数量（'|' 是分隔符，不算按钮）：验收脚本读它确认工具栏没有被裁掉过 */
+/* Native commands remain mounted behind the compact menu for the pinned adapter and hotkeys. */
 const TOOLBAR_ITEM_COUNT = buildToolbar().filter((item) => item !== '|').length
 defineExpose({
   TOOLBAR_ITEM_COUNT,
@@ -658,7 +700,8 @@ async function mountEditor() {
     // Native formatting operations must reach their own undo checkpoint before the next command.
     undoDelay: 0,
     counter: { enable: false },
-    fullscreen: { index: 10000 },
+    // Vditor consumes Escape before it bubbles; use its public callback after hints are closed.
+    esc: () => { if (fullscreen.value) void toggleFullscreen() },
     /* 左侧文档大纲（V1 的「像阅读页目录一样」） */
     outline: { enable: true, position: 'left' },
     toolbar: buildToolbar(),
@@ -677,7 +720,6 @@ async function mountEditor() {
       }
       syncTheme()
       if (host.value) {
-        watchFullscreen(host.value)
         watchFormulaPaste(host.value)
       }
     },
@@ -688,6 +730,7 @@ async function mountEditor() {
  * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
  */
 onMounted(() => {
+  themeKey = editorShell.value?.closest('.public-shell') ? 'star-rain-theme' : 'admin-theme'
   document.addEventListener('selectionchange', rememberImageRange)
   watchTheme()
   void mountEditor().catch(() => { loadingError.value = '编辑器资源加载失败，正文未改变，请刷新页面重试。' })
@@ -696,6 +739,9 @@ watch(() => props.readOnly, value => { if (ready) { if (value) vditor.disabled()
 watch(() => JSON.stringify([props.editorContext?.accountId,props.editorContext?.module,props.editorContext?.documentId,props.editorContext?.field]), () => {
   imageOperation++;imageUploadController?.abort();uploadingImages.value=false;failedImages.value=[];imagePercent.value=null;imageError.value='';imageStatus.value='';savedImageRange=null;workbenchRange=null
   tablePickerOpen.value=false;codeGroupOpen.value=false;adapter.reset();workbench.value?.hide()
+  menuBar.value?.close()
+  menuNotice.value = ''
+  if (fullscreen.value) void toggleFullscreen()
 })
 
 /* 外部改值（加载文章、切换文章）→ 写回编辑器，写回期间不回发事件 */
@@ -732,14 +778,13 @@ onBeforeUnmount(() => {
   ready = false
   editorReady.value = false
   document.removeEventListener('pointerdown', onOutside)
-  fullscreenObserver?.disconnect()
-  fullscreenObserver = null
   themeObserver?.disconnect()
   themeObserver = null
   pasteHost?.removeEventListener('paste', onEditorPaste, true)
   pasteHost?.removeEventListener('drop', onEditorDrop, true)
   pasteHost = null
-  setVditorFullscreenActive(false)
+  ++fullscreenGeneration
+  releaseFullscreen()
   vditor?.destroy()
   vditor = null
 })
@@ -769,23 +814,23 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
 </script>
 
 <template>
-  <div class="markdown-editor">
-    <EditorWorkbench ref="workbench" :adapter="adapter" :host="host" :ready="editorReady" :model-value="modelValue" :context="editorContext" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :pick-image="pickImage" :get-media="getMedia" @action="workbenchAction" />
-    <EditorRecovery :context="editorContext" :source="modelValue" :read-only="readOnly || !editorReady" @restore="applyLocalContent" />
+  <Teleport to="body" :disabled="!fullscreen">
+  <div ref="editorShell" class="markdown-editor" :class="{'markdown-editor--fullscreen':fullscreen}" :role="fullscreen?'dialog':undefined" :aria-modal="fullscreen?true:undefined" :aria-label="fullscreen?'全屏文档编辑器':undefined" @keydown.esc="editorEscape">
+    <EditorMenuBar ref="menuBar" :ready="editorReady" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :busy="fileTools?.busy || uploadingImages" :fullscreen="fullscreen" :mode="workbench?.documentTools?.mode || 'ir'" :theme="editorTheme" :heading-keys="workbench?.keys" @capture="adapter.remember()" @action="menuAction" />
+    <div class="markdown-editor__panels">
+    <EditorWorkbench ref="workbench" compact :adapter="adapter" :host="host" :ready="editorReady" :model-value="modelValue" :context="editorContext" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :pick-image="pickImage" :get-media="getMedia" @action="workbenchAction" />
+    <EditorRecovery ref="recovery" compact :context="editorContext" :source="modelValue" :read-only="readOnly || !editorReady" @restore="applyLocalContent" />
     <p v-if="longDocument" role="status">正文超过 10 万字符，采用源码视图减少大规模渲染开销；阅读效果请使用预览。保存格式仍为 Markdown。</p>
-    <EditorDiagnostics :context="editorContext" :source="modelValue" :get-media="getMedia" />
-    <EditorFileTools :adapter="adapter" :context="editorContext" :ready="editorReady" :read-only="readOnly" @apply="applyLocalContent" />
+    <EditorDiagnostics ref="diagnostics" compact :context="editorContext" :source="modelValue" :get-media="getMedia" />
+    <EditorFileTools ref="fileTools" compact :adapter="adapter" :context="editorContext" :ready="editorReady" :read-only="readOnly" @apply="applyLocalContent" />
+    </div>
     <input ref="imageInput" class="markdown-editor__file-input" type="file" :accept="IMAGE_ACCEPT" multiple aria-label="上传正文图片" @change="onImageFiles" />
     <div ref="host" class="markdown-editor__host" />
-    <div class="markdown-editor__image-actions">
-      <button v-if="canUploadImages" type="button" class="secondary-button" :disabled="uploadingImages" @click="selectImageFiles">{{ uploadingImages ? '图片上传中…' : '上传图片' }}</button>
-      <button v-if="pickImage" type="button" class="secondary-button" @click="insertImage">从媒体库选择</button>
-      <span v-if="canUploadImages">可粘贴或拖入图片。图片默认仅授权用户可访问；正式发布前请确认素材公开权限。</span>
-    </div>
     <p v-if="imageStatus" class="markdown-editor__image-status" role="status">{{ imageStatus }}</p>
     <progress v-if="uploadingImages" :value="imagePercent ?? undefined" max="100" aria-label="图片上传进度" />
     <div v-if="failedImages.length"><p>失败文件保留在当前页面。超时或网络中断时，请先核对媒体库，避免重复上传。</p><button type="button" :disabled="uploadingImages || readOnly" @click="uploadImageFiles([...failedImages])">已核对媒体库，重试失败图片</button></div>
     <p v-if="imageError" class="markdown-editor__error" role="alert">{{ imageError }}</p>
+    <p v-if="menuNotice" class="markdown-editor__error" role="status">{{ menuNotice }}</p>
     <p v-if="loadingError" class="markdown-editor__error" role="alert">{{ loadingError }}</p>
 
     <div v-if="tablePickerOpen" ref="tablePickerRef" class="markdown-editor__popover">
@@ -838,6 +883,7 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
       <span>{{ lineCount }} 行</span>
     </div>
   </div>
+  </Teleport>
 </template>
 
 <style scoped>
@@ -850,15 +896,10 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
  */
 .markdown-editor__file-input { display: none; }
 /**
- * 样式范围：.markdown-editor__image-actions。
- * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
- */
-.markdown-editor__image-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; margin-top: 12px; }
-/**
- * 样式范围：.markdown-editor__image-actions span, .markdown-editor__image-status。
+ * 样式范围：.markdown-editor__image-status。
  * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
  */
-.markdown-editor__image-actions span, .markdown-editor__image-status { color: var(--text-muted); font-size: 12px; }
+.markdown-editor__image-status { color: var(--text-muted); font-size: 12px; }
 /**
  * 样式范围：.markdown-editor__error。
  */
@@ -875,6 +916,19 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   background: var(--bg-surface);
   overflow: hidden;
 }
+
+/* Move the same DOM instance to body; flex sizing keeps the document visible at every viewport height. */
+.markdown-editor--fullscreen {
+  position: fixed; inset: 0; z-index: 10000; width: 100%; height: 100vh; height: 100dvh;
+  display: flex; flex-direction: column; border: 0; border-radius: 0; box-sizing: border-box;
+  background: var(--bg-surface); animation: none; transition: none; transform: none;
+}
+.markdown-editor--fullscreen > :not(.markdown-editor__host) { flex-shrink: 0; }
+.markdown-editor--fullscreen .markdown-editor__panels { max-height: 35vh; overflow-y: auto; }
+.markdown-editor--fullscreen .markdown-editor__host { flex: 1; min-height: 0; height: auto !important; }
+.markdown-editor--fullscreen :deep(.vditor) { height: 100% !important; min-height: 0; border: 0; border-radius: 0; }
+.markdown-editor--fullscreen :deep(.vditor-content) { min-height: 0; }
+.markdown-editor__host :deep(.vditor-toolbar) { display: none !important; }
 
 /*
  * 数值高度由 Vditor 自己持有，滚动条归它内部的模式元素（.vditor-ir / .vditor-wysiwyg / .vditor-sv）。
@@ -1140,7 +1194,7 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
    * 溢出处理：纵向 hidden，横向 auto。
    */
   .markdown-editor__host :deep(.vditor-toolbar) {
-    display: flex !important;
+    display: none !important;
     flex-wrap: nowrap !important;
     justify-content: flex-start;
     overflow-x: auto;

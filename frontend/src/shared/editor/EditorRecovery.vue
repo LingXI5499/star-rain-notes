@@ -8,7 +8,7 @@ import {
   migrateDraft,
   registerDraftFlusher,
 } from './recovery/draftStore'
-const props = defineProps({ context: Object, source: String, readOnly: Boolean })
+const props = defineProps({ context: Object, source: String, readOnly: Boolean, compact: Boolean })
 const emit = defineEmits(['restore'])
 const notice = ref(''),
   record = ref(null),
@@ -193,14 +193,15 @@ onBeforeUnmount(() => {
   unregister()
   document.removeEventListener('visibilitychange', hidden)
 })
+defineExpose({inspect})
 </script>
 <template>
-  <section class="editor-recovery">
+  <section v-show="!compact || opened || notice || saving" class="editor-recovery">
     <div v-if="available">
-      <button type="button" @click="inspect">本地恢复点</button
+      <button v-if="!compact" type="button" @click="inspect">本地恢复点</button
       ><span role="status">{{ saving ? '正在备份…' : notice }}</span>
     </div>
-    <p v-else>当前字段未提供登录身份或文档上下文，本地备份未启用。</p>
+    <p v-else-if="!compact">当前字段未提供登录身份或文档上下文，本地备份未启用。</p>
     <dialog :open="opened" aria-label="本地草稿对比">
       <h3>本地恢复点与服务器正文</h3>
       <p>本地数据仅保存在此浏览器，未加密。共享电脑请在退出时清理；恢复不会自动保存或发布。</p>

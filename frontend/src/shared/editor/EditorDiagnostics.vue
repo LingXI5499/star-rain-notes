@@ -1,7 +1,7 @@
 <script setup>
 import { onBeforeUnmount, ref, watch } from 'vue'
 import { diagnoseMarkdown } from './diagnostics/markdownDiagnostics'
-const props = defineProps({ source: String, context: Object, getMedia: Function })
+const props = defineProps({ source: String, context: Object, getMedia: Function, compact: Boolean })
 const opened = ref(false),
   issues = ref([]),
   notice = ref(''),
@@ -124,10 +124,12 @@ onBeforeUnmount(() => {
   clearTimeout(timer)
   worker?.terminate()
 })
+defineExpose({toggle:()=>{opened.value=!opened.value}})
 </script>
 <template>
-  <section class="editor-diagnostics">
-    <button type="button" :aria-expanded="opened" @click="opened = !opened">质量检查</button>
+  <section v-show="!compact || opened" class="editor-diagnostics">
+    <button v-if="!compact" type="button" :aria-expanded="opened" @click="opened = !opened">质量检查</button>
+    <button v-else-if="opened" type="button" @click="opened=false">关闭质量检查</button>
     <div v-if="opened">
       <p role="status">
         {{

@@ -3,7 +3,7 @@ import { computed, onBeforeUnmount, ref, watch } from 'vue'
 import { appendMarkdown, downloadBlob, exportName, readMarkdownFile } from './export/markdownFiles'
 import { outlineSections } from './commands/editorStructure'
 import { normalizeVditorMarkdown } from './commands/editorDocument'
-const props = defineProps({ adapter: Object, context: Object, ready: Boolean, readOnly: Boolean })
+const props = defineProps({ adapter: Object, context: Object, ready: Boolean, readOnly: Boolean, compact: Boolean })
 const emit = defineEmits(['apply'])
 const input = ref(null),
   notice = ref(''),
@@ -19,6 +19,9 @@ let generation = 0,
   active = true,
   cleanupPrint = null
 const current = () => normalizeVditorMarkdown(props.adapter.markdown())
+const explanation=ref(false)
+function openImport(){if(props.ready&&!props.readOnly&&!busy.value)input.value?.click()}
+defineExpose({openImport,exportFile,busy,showHelp:()=>{explanation.value=true}})
 async function selected(event) {
   const file = event.target.files?.[0]
   event.target.value = ''
@@ -99,6 +102,7 @@ watch(
     incoming.value = null
     busy.value = false
     notice.value = ''
+    explanation.value = false
     cleanupPrint?.()
     cleanupPrint = null
   },
@@ -110,15 +114,16 @@ onBeforeUnmount(() => {
 })
 </script>
 <template>
-  <section class="editor-file-tools">
-    <nav aria-label="文档导入导出">
+  <section v-show="!compact || incoming!==null || notice || busy || explanation" class="editor-file-tools">
       <input
         ref="input"
         hidden
         type="file"
         accept=".md,.markdown,text/markdown"
         @change="selected"
-      /><button type="button" :disabled="!ready || readOnly || busy" @click="input.click()">
+      />
+    <nav v-if="!compact" aria-label="文档导入导出">
+      <button type="button" :disabled="!ready || readOnly || busy" @click="openImport">
         导入 Markdown</button
       ><button
         v-for="[kind, label] in [
@@ -135,7 +140,7 @@ onBeforeUnmount(() => {
         {{ label }}
       </button>
     </nav>
-    <details><summary>导出说明</summary><p>PDF 通过浏览器打印对话框另存为文件；Word 中公式保留源码，图片保留说明与链接。导出不会改变素材公开权限。</p></details>
+    <details v-if="!compact || explanation" :open="explanation"><summary>导出说明</summary><p>PDF 通过浏览器打印对话框另存为文件；Word 中公式保留源码，图片保留说明与链接。导出不会改变素材公开权限。</p><button v-if="compact" type="button" @click="explanation=false">关闭说明</button></details>
     <p v-if="notice" role="status">{{ notice }}</p>
     <dialog :open="incoming !== null" aria-label="Markdown 导入确认">
       <h3>导入 {{ filename }}</h3>

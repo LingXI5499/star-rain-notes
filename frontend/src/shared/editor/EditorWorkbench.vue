@@ -15,6 +15,7 @@ const props = defineProps({
   canPick: Boolean,
   pickImage: Function,
   getMedia: Function,
+  compact: Boolean,
 })
 const emit = defineEmits(['action'])
 const notice = ref(''),
@@ -69,6 +70,8 @@ function saveKeys(defaults = false) {
 }
 watch(() => props.context?.accountId, loadKeys, { immediate: true })
 const helpId = useId()
+const documentTools = ref(null)
+const popupElement = ref(null)
 watch(
   () => props.ready,
   (value) => {
@@ -233,9 +236,11 @@ async function copySelection() {
 function keydown(event) {
   if (!props.ready || props.readOnly || !props.adapter.selection()) return
   if (event.key === 'Escape') {
+    const hadPopup = Boolean(popup.value || help.value)
     dismissed = true
     hide()
     help.value = false
+    if (hadPopup) event.stopPropagation()
     return
   }
   if (event.key.length === 1 || ['Backspace', 'Delete', 'Enter'].includes(event.key))
@@ -273,8 +278,9 @@ function pointer() {
   dismissed = false
 }
 function outside(event) {
-  if (!props.host?.contains(event.target) && !event.target.closest('.editor-workbench')) hide()
+  if (!props.host?.contains(event.target) && !popupElement.value?.contains(event.target) && !event.target.closest('.editor-workbench')) hide()
 }
+function dismissPopup() { dismissed = true; hide() }
 watch(
   () => props.host,
   (host) => {
@@ -306,11 +312,12 @@ onBeforeUnmount(() => {
   window.removeEventListener('resize', update)
   window.removeEventListener('scroll', update, true)
 })
-defineExpose({ hide, applyHeading })
+function closeHelp(event){if(help.value){help.value=false;event.stopPropagation()}}
+defineExpose({ hide, applyHeading, format, copySelection, documentTools, keys, openHelp:()=>{help.value=true} })
 </script>
 <template>
-  <div class="editor-workbench" @keydown.esc="help = false">
-    <div class="editor-workbench__bar">
+  <div class="editor-workbench" @keydown.esc="closeHelp">
+    <div v-if="!compact" class="editor-workbench__bar">
       <span>写作工具</span
       ><button
         v-for="level in 7"
@@ -327,6 +334,8 @@ defineExpose({ hide, applyHeading })
     </div>
     <p v-if="notice" role="status">{{ notice }}</p>
     <EditorDocumentTools
+      ref="documentTools"
+      :compact="compact"
       :adapter="adapter"
       :host="host"
       :ready="ready"
@@ -336,12 +345,15 @@ defineExpose({ hide, applyHeading })
       :pick-image="pickImage"
       :get-media="getMedia"
     />
+    <Teleport to="body">
     <div
       v-if="popup && query !== null"
+      ref="popupElement"
       class="editor-workbench__popup"
       :style="popup"
       role="listbox"
       aria-label="段落命令"
+      @keydown.esc.prevent.stop="dismissPopup"
     >
       <button
         v-for="(item, index) in filtered"
@@ -358,10 +370,12 @@ defineExpose({ hide, applyHeading })
     </div>
     <div
       v-else-if="popup && selected"
+      ref="popupElement"
       class="editor-workbench__popup editor-workbench__floating"
       :style="popup"
       role="toolbar"
       aria-label="选区格式"
+      @keydown.esc.prevent.stop="dismissPopup"
     >
       <button
         v-for="[id, label] in [
@@ -390,6 +404,7 @@ defineExpose({ hide, applyHeading })
         </select></label
       ><button type="button" @pointerdown.prevent @click="copySelection">复制</button>
     </div>
+    </Teleport>
     <section v-if="help" :id="helpId" class="editor-workbench__panel" aria-label="快捷键帮助">
       <button type="button" @click="help = false">关闭</button
       ><label v-for="level in 7" :key="level"
@@ -447,6 +462,7 @@ button:disabled {
   box-shadow: 0 5px 24px #0003;
   border: 1px solid var(--border);
   border-radius: 8px;
+  font: 13px / 1.4 var(--font-family, system-ui);
 }
 .editor-workbench__popup [role='option'] {
   display: block;

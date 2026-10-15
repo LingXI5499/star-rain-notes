@@ -1813,15 +1813,12 @@
 
 /* --- 编辑器本体：Vditor（IR 即时渲染）自己持有 DOM，这里只留外壳与全屏规则 --- */
 
-/*
- * Vditor 全屏要逃出控制台的堆叠上下文。
- * 侧栏 z-index 是 30，而全屏的编辑器仍然是 .admin-shell__body 的后代节点——
- * position: fixed 不会让元素跳出祖先的堆叠上下文，因此必须把外壳藏起来。
- * 标记由 shared/markdown/markdownEditorChrome.js 的 setVditorFullscreenActive 打在 <html> 上。
- */
+/* Fullscreen editor is portaled to body; lock background scrolling while it is open. */
 html.is-vditor-fullscreen,
 html.is-vditor-fullscreen body {
   overflow: hidden !important;
+  animation: none !important;
+  transform: none !important;
 }
 
 /**
@@ -1833,21 +1830,6 @@ html.is-vditor-fullscreen .admin-shell__scrim,
 html.is-vditor-fullscreen .admin-shell__mobile-menu {
   visibility: hidden !important;
   pointer-events: none !important;
-}
-
-/**
- * 样式范围：html.is-vditor-fullscreen .vditor--fullscreen。
- * 相对视口定位，用于浮层或固定操作区域；层叠顺序由 z-index 决定。
- * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
- */
-html.is-vditor-fullscreen .vditor--fullscreen {
-  position: fixed !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100vh !important;
-  z-index: 10000 !important;
-  border-radius: 0 !important;
-  background: var(--bg-page);
 }
 
 /* --- 标签选择：已选 chips + 输入新标签 --- */
