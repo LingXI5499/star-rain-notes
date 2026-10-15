@@ -3,8 +3,8 @@
  * WorkDetailPage.vue：作品模块的页面组件。
  * 职责范围：作品分类、展示区块、代码库链接及关联媒体。
  * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
- * 根据路由区分公开详情与后台预览；有可见区块时渲染区块，否则渲染 Markdown 正文。
- * 详情不展示封面和在线访问入口，仅显示启用且 URL 安全的代码库链接；左栏目录跟随正文结构。
+ * 根据路由区分公开详情与后台预览；存在区块时优先渲染区块，否则渲染 Markdown 正文。
+ * 展示安全的相关链接与去重后的封面；左栏目录跟随正文结构。
  * 主要依赖：vue、vue-router、../api/portfolioApi、../../../shared/http、../../../shared/viewMode、../../blog/components/BlogProse.vue。
  * 主要响应式状态：route、work、outline、error、loading、links、navigation、stats。
  * 阅读入口：load（加载当前操作）。
@@ -23,6 +23,8 @@ import { estimateReadingStats } from '../../blog/support/display'
 import WorkSectionRenderer from '../components/WorkSectionRenderer.vue'
 import { stageLabels, safeWorkUrl } from '../support/workBlocks'
 import '../../../styles/reading-layout.css'
+import { workTechnologies, workLinkLabel } from '../support/workPresentation'
+import { workVisualMedia } from '../support/workVisualMedia'
 
 /**
  * 路由；通过 useRoute 建立。
@@ -53,11 +55,13 @@ const loading = ref(false)
  * 链接列表；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
-const links = computed(() => work.value?.links?.filter(item => item.enabled && item.linkType === 'GITHUB' && safeWorkUrl(item.url)) || [])
+const links = computed(() => work.value?.links?.filter(item => item.enabled && safeWorkUrl(item.url)) || [])
 /**
  * navigation；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
+const technologies = computed(() => workTechnologies(work.value))
+const visuals = computed(() => work.value ? workVisualMedia(work.value) : { cover: null, gallery: [] })
 const navigation = computed(() => work.value?.hasSections
   ? (work.value.sections || []).filter(item => item.visible !== false && item.title).map(item => ({ id: `work-section-${item.id}`, text: item.title, level: 2 }))
   : outline.value)
@@ -130,12 +134,14 @@ watch(() => [route.params.slug, route.params.workId], load, { immediate: true })
         <RouterLink :to="contentPath('/portfolio')">← 全部作品</RouterLink>
         <p class="public-eyebrow">SELECTED WORK · {{ typeLabel }}</p>
         <h1 class="public-display">{{ work.title }}</h1>
-        <p v-if="work.subtitle" class="work-detail__subtitle">{{ work.subtitle }}</p><div class="work-detail__meta"><span v-if="work.category">{{ work.category.name }}</span><span v-if="work.format">{{ work.format.name }}</span><span>{{ stageLabels[work.projectStatus] }}</span><span v-if="work.role">{{ work.role }}</span></div><div class="work-detail__tags"><span v-for="tag in work.tags || []" :key="tag.id">{{ tag.name }}</span></div><p class="work-detail__summary">{{ work.summary }}</p>
+        <p class="work-detail__summary">{{ work.summary }}</p>
+        <p v-if="work.subtitle" class="work-detail__subtitle">{{ work.subtitle }}</p><div class="work-detail__meta"><span v-if="work.category">{{ work.category.name }}</span><span v-if="work.format">{{ work.format.name }}</span><span>{{ stageLabels[work.projectStatus] }}</span><span v-if="work.role">{{ work.role }}</span></div><div class="work-detail__tags"><span v-for="tag in technologies" :key="tag">{{ tag }}</span></div>
         <div v-if="links.length" class="work-detail__links">
-          <a v-for="link in links" :key="link.id" :href="link.url" target="_blank" rel="noopener noreferrer">代码库{{ links.length > 1 && link.label ? ` · ${link.label}` : '' }} ↗</a>
+          <a v-for="link in links" :key="link.id" :href="link.url" target="_blank" rel="noopener noreferrer">{{ workLinkLabel(link) }} ↗</a>
         </div>
       </header>
-          <WorkSectionRenderer v-if="work.hasSections" :sections="work.sections" /><template v-else><BlogProse :markdown="work.bodyMarkdown || ''" @outline="outline = $event" /><div class="work-detail__gallery"><figure v-for="item in work.media?.filter(m => m.usageType === 'SCREENSHOT') || []" :key="item.id"><img :src="item.url" :alt="item.caption || work.title" /><figcaption>{{ item.caption }}</figcaption></figure></div><audio v-for="item in work.media?.filter(m => m.usageType === 'AUDIO') || []" :key="item.id" :src="item.url" controls /></template>
+          <figure v-if="visuals.cover" class="work-detail__cover"><img :src="visuals.cover" :alt="work.title" /></figure>
+          <WorkSectionRenderer v-if="work.hasSections" :sections="work.sections" /><template v-else><BlogProse :markdown="work.bodyMarkdown || ''" @outline="outline = $event" /><div class="work-detail__gallery"><figure v-for="item in visuals.gallery" :key="item.id"><img :src="item.url" :alt="item.caption || work.title" loading="lazy" /><figcaption>{{ item.caption }}</figcaption></figure></div><audio v-for="item in work.media?.filter(m => m.usageType === 'AUDIO') || []" :key="item.id" :src="item.url" controls /></template>
       <nav v-if="!preview" class="work-neighbors" aria-label="前后作品"><RouterLink v-if="work.previousWork" :to="contentPath(`/portfolio/${work.previousWork.slug}`)">← {{ work.previousWork.title }}</RouterLink><RouterLink v-if="work.nextWork" :to="contentPath(`/portfolio/${work.nextWork.slug}`)">{{ work.nextWork.title }} →</RouterLink></nav>
         </div>
       </div>
@@ -160,7 +166,14 @@ watch(() => [route.params.slug, route.params.workId], load, { immediate: true })
 /**
  * 样式范围：.work-detail。
  */
-.work-detail{width:100%;padding-block:34px 90px}
+.work-detail{width:100%;max-width:1200px;margin:auto;padding-block:34px 90px}
+.work-detail__cover{margin:0 0 36px}
+.work-detail__cover img{display:block;width:100%;height:auto;border-radius:16px}
+.work-detail__body :deep(.markdown-body),.work-detail__body :deep(.work-sections){max-width:800px;margin-inline:auto}
+.work-detail__links a:focus-visible{outline:2px solid var(--primary);outline-offset:4px}
+.work-detail__links a:hover{border-color:var(--primary);background:var(--bg-subtle)}
+.work-detail__body audio{width:100%;margin-top:20px}
+.work-detail__hero h1,.work-detail__links a{overflow-wrap:anywhere}
   /**
    * 样式范围：.work-detail__hero。
    */
