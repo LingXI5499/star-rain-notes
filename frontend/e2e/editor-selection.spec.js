@@ -1,0 +1,57 @@
+import { test, expect } from './fixtures'
+
+async function selectText(page, text = 'Original body') {
+  const input = page.locator('.vditor-ir [contenteditable=true]:visible')
+  await expect(input).toBeVisible({ timeout: 20000 })
+  await input.locator('p,h1,h2,h3,h4,h5,h6').filter({ hasText: text }).click()
+  await input.locator('p,h1,h2,h3,h4,h5,h6').filter({ hasText: text }).evaluate(element => {
+    element.closest('[contenteditable]').focus()
+    const range = document.createRange()
+    range.selectNodeContents(element)
+    const selection = getSelection()
+    selection.removeAllRanges()
+    selection.addRange(range)
+  })
+  const toolbar = page.getByRole('toolbar', { name: '选区格式' })
+  await expect(toolbar).toBeVisible()
+  return toolbar
+}
+
+test('styled selection toolbar preserves native actions without color controls', async ({ page, fixture }) => {
+  await page.goto('/useradmin/blog/editor/1')
+  let toolbar = await selectText(page)
+  await expect(toolbar.locator('input[type=color]')).toHaveCount(0)
+  await expect(toolbar.getByRole('button', { name: /颜色|荧光|下划线|清除格式/ })).toHaveCount(0)
+  const buttons = toolbar.getByRole('group', { name: '文字样式' }).getByRole('button')
+  const rows = await buttons.evaluateAll(elements => elements.map(element => element.getBoundingClientRect().top))
+  expect(new Set(rows).size).toBe(1)
+  await toolbar.screenshot({ path: '../.local/selection-toolbar-desktop.png' })
+  await toolbar.getByRole('button', { name: '加粗', exact: true }).click()
+  await expect(page.locator('.vditor-ir strong')).toContainText('Original body')
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: '保存正文', exact: true }).click()
+  await expect.poll(() => fixture.savedBodies.length).toBe(1)
+  expect(fixture.savedBodies[0]).toContain('**Original body**')
+  toolbar = await selectText(page)
+  await toolbar.getByLabel('选区标题级别').selectOption('2')
+  await expect(page.locator('.vditor-ir h2')).toContainText('Original body')
+})
+
+test('selection toolbar fits mobile fullscreen and follows the dark theme', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 560 })
+  await page.goto('/useradmin/blog/editor/1')
+  await expect(page.locator('.vditor-ir [contenteditable=true]:visible')).toBeVisible({ timeout: 20000 })
+  await page.getByRole('menubar').getByRole('button', { name: '全屏', exact: true }).click()
+  await page.getByRole('menubar').getByRole('menuitem', { name: '主题', exact: true }).click()
+  await page.getByRole('menuitemradio', { name: '深色主题' }).click()
+  const toolbar = await selectText(page)
+  const rect = await toolbar.boundingBox()
+  expect(rect.x).toBeGreaterThanOrEqual(0)
+  expect(rect.x + rect.width).toBeLessThanOrEqual(320)
+  expect(rect.y).toBeGreaterThanOrEqual(0)
+  expect(rect.y + rect.height).toBeLessThanOrEqual(560)
+  await page.screenshot({ path: '../.local/selection-toolbar-mobile.png' })
+  await toolbar.getByRole('button', { name: '关闭选区工具栏' }).click()
+  await expect(toolbar).toHaveCount(0)
+  await expect(page.getByRole('dialog', { name: '全屏文档编辑器' })).toBeVisible()
+})

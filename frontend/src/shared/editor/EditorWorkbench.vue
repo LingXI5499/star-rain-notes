@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, ref, watch, useId } from 'vue'
 import { defaultHeadingKeys, headingHotkey, validateHeadingKeys } from './commands/editorHotkeys'
 import { markdownBlocks } from './commands/editorStructure'
 import EditorDocumentTools from './EditorDocumentTools.vue'
+import EditorSelectionToolbar from './EditorSelectionToolbar.vue'
 
 const props = defineProps({
   adapter: { type: Object, required: true },
@@ -72,6 +73,7 @@ watch(() => props.context?.accountId, loadKeys, { immediate: true })
 const helpId = useId()
 const documentTools = ref(null)
 const popupElement = ref(null)
+const selectionState = ref({})
 watch(
   () => props.ready,
   (value) => {
@@ -115,9 +117,15 @@ const filtered = computed(() =>
 function position(range) {
   const rectangle = range.getBoundingClientRect?.() ||
     props.host?.getBoundingClientRect() || { left: 20, top: 100, bottom: 110 }
-  return {
+  if (query.value !== null) return {
     left: `${Math.max(8, Math.min(rectangle.left, window.innerWidth - 290))}px`,
-    top: `${Math.max(8, Math.min(rectangle.bottom + 8, window.innerHeight - (query.value !== null ? 280 : 70)))}px`,
+    top: `${Math.max(8, Math.min(rectangle.bottom + 8, window.innerHeight - 280))}px`,
+  }
+  const width = Math.min(360, window.innerWidth - 16)
+  const above = rectangle.top - 102
+  return {
+    left: `${Math.max(8, Math.min(rectangle.left, window.innerWidth - width - 8))}px`,
+    top: `${Math.max(8, Math.min(above >= 8 ? above : rectangle.bottom + 10, window.innerHeight - 100))}px`,
   }
 }
 function hide() {
@@ -129,10 +137,23 @@ function hide() {
 function update() {
   if (!props.ready || props.readOnly || composing || dismissed) return hide()
   const selection = props.adapter.selection()
-  if (!selection) return hide()
+  if (!selection) {
+    if (popupElement.value?.contains(document.activeElement)) return
+    return hide()
+  }
   props.adapter.remember()
   const range = selection.range
   selected.value = range.collapsed ? '' : range.toString().trim()
+  if (selected.value) {
+    const start = range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement
+    selectionState.value = {
+      heading: Number(start.closest('h1,h2,h3,h4,h5,h6')?.tagName.slice(1) || 0),
+      bold: Boolean(start.closest('strong,b')),
+      italic: Boolean(start.closest('em,i')),
+      strike: Boolean(start.closest('s,del')),
+      'inline-code': Boolean(start.closest('code')),
+    }
+  }
   const block = (
     range.startContainer.nodeType === 1 ? range.startContainer : range.startContainer.parentElement
   )?.closest('p,[data-type="p"]')
@@ -189,10 +210,6 @@ function applyHeading(level) {
     props.adapter.heading(level)
     hide()
   })
-}
-function selectHeading(event) {
-  applyHeading(Number(event.target.value))
-  event.target.value = ''
 }
 function format(name) {
   safe(() => {
@@ -377,32 +394,7 @@ defineExpose({ hide, applyHeading, format, copySelection, documentTools, keys, o
       aria-label="选区格式"
       @keydown.esc.prevent.stop="dismissPopup"
     >
-      <button
-        v-for="[id, label] in [
-          ['bold', '加粗'],
-          ['italic', '斜体'],
-          ['strike', '删除线'],
-          ['inline-code', '行内代码'],
-          ['link', '链接'],
-        ]"
-        :key="id"
-        type="button"
-        @pointerdown.prevent
-        @click="format(id)"
-      >
-        {{ label }}</button
-      ><label
-        >标题<select
-          aria-label="选区标题级别"
-          @pointerdown="adapter.remember()"
-            @change="selectHeading"
-        >
-          <option value="">选择</option>
-          <option v-for="level in 7" :key="level" :value="level - 1">
-            {{ level === 1 ? '正文' : `H${level - 1}` }}
-          </option>
-        </select></label
-      ><button type="button" @pointerdown.prevent @click="copySelection">复制</button>
+      <EditorSelectionToolbar :state="selectionState" @capture="adapter.remember()" @native="format" @heading="applyHeading" @copy="copySelection" @close="dismissPopup" />
     </div>
     </Teleport>
     <section v-if="help" :id="helpId" class="editor-workbench__panel" aria-label="快捷键帮助">
@@ -475,9 +467,13 @@ button:disabled {
   outline-offset: -2px;
 }
 .editor-workbench__floating {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
+  width: min(360px, calc(100vw - 16px));
+  max-height: calc(100dvh - 16px);
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  overflow-y: auto;
+  box-shadow: 0 12px 36px #10222f24, 0 2px 6px #10222f0d;
 }
 .editor-workbench__panel {
   padding: 12px;
