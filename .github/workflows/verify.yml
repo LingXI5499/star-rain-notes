@@ -191,7 +191,13 @@ jobs:
       STAR_RAIN_DB_URL: jdbc:mysql://127.0.0.1:3306/star_rain_real_e2e?serverTimezone=UTC&sslMode=DISABLED&allowPublicKeyRetrieval=true
       STAR_RAIN_DB_USERNAME: root
       STAR_RAIN_DB_PASSWORD: isolated_ci_only
-      STAR_RAIN_SMTP_ENABLED: 'false'
+      STAR_RAIN_SMTP_ENABLED: 'true'
+      STAR_RAIN_SMTP_HOST: 127.0.0.1
+      STAR_RAIN_SMTP_PORT: '12525'
+      STAR_RAIN_SMTP_AUTH: 'false'
+      STAR_RAIN_SMTP_SSL: 'false'
+      STAR_RAIN_SMTP_STARTTLS: 'false'
+      STAR_RAIN_MAIL_FROM: account-e2e@example.test
       STAR_RAIN_INDEXNOW_ENABLED: 'false'
       STAR_RAIN_MEDIA_ORPHAN_CLEANUP: 'false'
       STAR_RAIN_BOOTSTRAP_ADMIN_ENABLED: 'true'
@@ -199,12 +205,16 @@ jobs:
       STAR_RAIN_BOOTSTRAP_ADMIN_EMAIL: isolated-e2e@example.test
       STAR_RAIN_E2E_USERNAME: isolated_e2e_admin
       STAR_RAIN_E2E_REAL: 'true'
+      STAR_RAIN_FRONTEND_ORIGIN: http://127.0.0.1:5189
       STAR_RAIN_API_TARGET: http://127.0.0.1:8088
       STAR_RAIN_MEDIA_ROOT: /tmp/star-rain-e2e-media
     steps:
       - name: Generate isolated browser credentials
         shell: bash
         run: |
+          mail_key=$(openssl rand -base64 32)
+          echo "::add-mask::$mail_key"
+          echo "STAR_RAIN_MAIL_OUTBOX_KEY=$mail_key" >> "$GITHUB_ENV"
           password=$(openssl rand -hex 24)
           echo "::add-mask::$password"
           echo "STAR_RAIN_BOOTSTRAP_ADMIN_PASSWORD=$password" >> "$GITHUB_ENV"

@@ -124,7 +124,7 @@ async function requestEmailCode() {
   emailNotice.value = ''
   try {
     if (await sendEmailCode(sendAccountEmailCode)) {
-      emailNotice.value = '验证码邮件已发送至账户邮箱，10 分钟内有效。请查看收件箱及垃圾邮件。'
+      emailNotice.value = '验证码请求已受理，验证码 10 分钟内有效。请稍后查看账户邮箱及垃圾邮件。'
     }
   } catch (error) { emailError.value = errorMessage(error) }
 }
@@ -140,7 +140,7 @@ async function verifyEmail() {
   verifyingEmail.value = true
   emailError.value = ''
   try {
-    auth.currentUser = await confirmAccountEmail(emailCode.value)
+    if (!await auth.updateCurrent(() => confirmAccountEmail(emailCode.value))) return
     emailCode.value = ''
     emailNotice.value = '邮箱验证成功。'
   } catch (error) { emailError.value = errorMessage(error) }
@@ -159,11 +159,12 @@ watch(() => auth.currentUser?.displayName, (value) => { profile.displayName = va
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function saveProfile() {
+  if (savingProfile.value) return
   savingProfile.value = true
   profileError.value = ''
   profileNotice.value = ''
   try {
-    auth.currentUser = await updateAccount({ displayName: profile.displayName.trim() })
+    if (!await auth.updateCurrent(() => updateAccount({ displayName: profile.displayName.trim() }))) return
     profileNotice.value = '个人资料已保存。'
   } catch (error) {
     profileError.value = errorMessage(error)
@@ -179,12 +180,14 @@ async function saveProfile() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function savePassword() {
+  if (savingPassword.value) return
+  const identity = auth.identityVersion
   savingPassword.value = true
   passwordError.value = ''
   try {
     await changePassword({ ...password })
-    auth.currentUser = null
-    auth.initialized = false
+    if (identity !== auth.identityVersion) return
+    auth.expireSession()
     clearCsrf()
     await router.replace({ path: '/useradmin/login', query: { passwordChanged: '1' } })
   } catch (error) {

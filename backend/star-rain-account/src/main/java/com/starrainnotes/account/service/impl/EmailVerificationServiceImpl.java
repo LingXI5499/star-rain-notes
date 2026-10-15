@@ -108,7 +108,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     /**
      * 发送邮箱验证。
      * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
-     * 主要协作调用：<code>mail.requireDelivery</code>、<code>accounts.accountByEmail</code>。
+     * 主要协作调用：<code>mail.requireDelivery</code>、<code>sendCode</code>。
      * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
      *
      * @param rawEmail 原始邮箱；类型为 <code>String</code>
@@ -120,12 +120,9 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
     public EmailVerificationCodeVO send(String rawEmail, String ip) {
         mail.requireDelivery();
         String email = AccountRules.email(rawEmail);
-        AccountEntity existing = accounts.accountByEmail(email);
-        if (existing != null && (existing.getEmailVerifiedAt() != null || !"ACTIVE".equals(existing.getStatus()))) {
-            throw new ApiException("EMAIL_ALREADY_EXISTS", "该邮箱已注册，请直接登录", 409);
-        }
-        // 注册流程没有登录主体，失败审计的 actor 为空
-        return sendCode(email, ip, existing != null, null);
+        // Every valid mailbox follows exactly the same code, cooldown and encrypted delivery path.
+        // Ownership must be proven before registration can disclose a duplicate address.
+        return sendCode(email, ip, null);
     }
 
     /**
@@ -148,7 +145,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
             throw new ApiException("EMAIL_ALREADY_VERIFIED", "邮箱已经验证", 409);
         }
         mail.requireDelivery();
-        return sendCode(account.getEmail(), ip, true, account.getId());
+        return sendCode(account.getEmail(), ip, account.getId());
     }
 
     /**
@@ -158,11 +155,10 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
      *
      * @param email 邮箱；类型为 <code>String</code>
      * @param ip IP 地址；类型为 <code>String</code>
-     * @param existingAccount existing账号；类型为 <code>boolean</code>
      * @param actorId 操作者标识；类型为 <code>Long</code>
      * @return 类型为 <code>EmailVerificationCodeVO</code> 的处理结果
      */
-    private EmailVerificationCodeVO sendCode(String email, String ip, boolean existingAccount, Long actorId) {
+    private EmailVerificationCodeVO sendCode(String email, String ip, Long actorId) {
         LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         int requests = accounts.recentAuditCount(ip, "EMAIL_CODE_SENT", now.minusHours(1))
                 + accounts.recentAuditCount(ip, "EMAIL_CODE_DELIVERY_FAILED", now.minusHours(1));
@@ -192,7 +188,7 @@ public class EmailVerificationServiceImpl implements EmailVerificationService {
         deliver(email, code, actorId);
         mapper.saveCode(verification);
         audit.success(null, null, "EMAIL_CODE_SENT");
-        return new EmailVerificationCodeVO(VALID_SECONDS, RESEND_SECONDS, existingAccount);
+        return new EmailVerificationCodeVO(VALID_SECONDS, RESEND_SECONDS);
     }
 
     /*

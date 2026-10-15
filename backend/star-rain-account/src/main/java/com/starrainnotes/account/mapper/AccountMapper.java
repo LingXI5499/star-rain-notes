@@ -494,6 +494,9 @@ public interface AccountMapper {
      * @return 类型为 <code>PasswordResetEntity</code> 的处理结果
      */
     PasswordResetEntity resetByHashForUpdate(@Param("hash") String hash);
+
+    /** Resolves immutable ownership before acquiring account then token locks in a consistent order. */
+    PasswordResetEntity resetByHash(@Param("hash") String hash);
     /**
      * useReset处理入口。
      *

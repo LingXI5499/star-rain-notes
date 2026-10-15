@@ -37,6 +37,13 @@ const http = axios.create({ baseURL: '/api', withCredentials: true, timeout: 200
 let csrfToken = ''
 let csrfRequest = null
 let csrfEpoch = 0
+let accountEpoch = 0
+
+/** Invalidates late unauthorized responses belonging to an earlier identity flow. */
+export function invalidateAccountRequests() {
+  accountEpoch++
+  clearCsrf()
+}
 
 /**
  * 确保CSRF。
@@ -62,6 +69,7 @@ async function ensureCsrf() {
 }
 
 http.interceptors.request.use(async (config) => {
+  config.accountEpoch = accountEpoch
   const method = (config.method || 'get').toLowerCase()
   if (!['get', 'head', 'options'].includes(method)) {
     config.headers ||= {}
@@ -79,11 +87,11 @@ http.interceptors.response.use((response) => {
   else contentVersions.succeeded(response.config?.url, response.data?.data, response.headers?.['x-content-version'], response.config?.contentVersionOwner)
   return response
 }, (error) => {
-  if (error.response?.status === 401 && error.response?.data?.code === 'UNAUTHORIZED') {
+  if (error.config?.accountEpoch === accountEpoch && error.response?.status === 401 && error.response?.data?.code === 'UNAUTHORIZED') {
     clearCsrf()
     window.dispatchEvent(new Event('account-session-expired'))
   }
-  if (error.response?.data?.code === 'CSRF_INVALID') clearCsrf()
+  if (error.config?.accountEpoch === accountEpoch && error.response?.data?.code === 'CSRF_INVALID') clearCsrf()
   return Promise.reject(error)
 })
 
@@ -117,9 +125,11 @@ export
    * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
    */
   function errorMessage(error) {
+  if (error?.code === 'LOGOUT_CANCELED') return error.message
   if (isRequestCanceled(error)) return ''
   if (['ECONNABORTED', 'ETIMEDOUT'].includes(error?.code)) return '请求超时，请重试。'
   if (!error?.response) return '网络连接失败，请检查网络后重试。'
+  if (error.response.data?.code === 'INVALID_CREDENTIALS') return '用户名或密码错误。'
   if (error.response.status === 401) return '登录已失效，请重新登录。'
   if (error.response.data?.code === 'CSRF_INVALID') return '安全验证已过期，请重新提交。'
   if (error.response.status === 403) return '没有执行此操作的权限。'

@@ -9,6 +9,7 @@
  */
 
 
+import { useLatestAccountQuery } from '../support/useLatestAccountQuery'
 import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { listAudits } from '../api/accountApi'
@@ -54,20 +55,12 @@ const totalPages = computed(() => Math.max(1, Math.ceil(data.value.total / data.
  * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
+const latestQuery = useLatestAccountQuery({ data, error, loading })
 async function load() {
-  loading.value = true
-  error.value = ''
-  try {
+  return latestQuery(() => {
     const query = { ...filters, startTime: utcQueryTime(filters.startTime), endTime: utcQueryTime(filters.endTime) }
-    data.value = await listAudits({
-      ...Object.fromEntries(Object.entries(query).filter(([, value]) => value)),
-      page: page.value, pageSize: 20,
-    })
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  } finally {
-    loading.value = false
-  }
+    return listAudits({ ...Object.fromEntries(Object.entries(query).filter(([, value]) => value)), page: page.value, pageSize: 20 })
+  })
 }
 /**
  * 搜索的处理函数。

@@ -12,6 +12,7 @@ import { computed } from 'vue'
 import { RouterView, useRoute } from 'vue-router'
 import PublicShell from './shared/shells/PublicShell.vue'
 import AdminShell from './shared/shells/AdminShell.vue'
+import AccountPrivacyNotice from './modules/account/components/AccountPrivacyNotice.vue'
 import { routeLoadFailed, reloadRoute } from './shared/routeLoadFailure'
 
 /*
@@ -46,6 +47,7 @@ const shell = computed(() => {
 </script>
 
 <template>
+  <AccountPrivacyNotice />
   <div v-if="routeLoadFailed" class="route-load-error" role="alert">
     页面资源未能加载，请检查网络后重新加载。未保存的内容请先复制保留。
     <button type="button" @click="reloadRoute">重新加载</button>

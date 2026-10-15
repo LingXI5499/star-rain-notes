@@ -10,7 +10,7 @@
  */
 
 
-import { computed, reactive, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../stores/authStore'
 import * as api from '../api/accountApi'
@@ -58,6 +58,8 @@ const error = ref('')
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const notice = ref('')
+let formVersion = 0, disposed = false
+onBeforeUnmount(() => { disposed = true; formVersion++ })
 /**
  * show密码；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -85,6 +87,8 @@ const title = computed(() => ({
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
 watch(() => props.mode, () => {
+  formVersion++
+  busy.value = false
   error.value = ''
   notice.value = ''
   form.password = ''
@@ -112,9 +116,7 @@ async function requestRegistrationCode() {
   try {
     const result = await sendCode(() => api.sendRegistrationCode(form.email))
     if (result) {
-      notice.value = result.existingAccount
-        ? '该邮箱已有账户，验证码邮件已发送。请登录后在“我的账户 → 验证账户邮箱”完成验证，无需重新注册。'
-        : `验证码邮件已发送至 ${form.email}，10 分钟内有效。请查看收件箱及垃圾邮件。`
+      notice.value = '如果邮箱可接收邮件，请按邮件指引继续；如果已有账户，请直接登录或使用找回密码。'
     }
   } catch (cause) {
     error.value = errorMessage(cause)
@@ -129,13 +131,15 @@ async function requestRegistrationCode() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function submit() {
-  if (busy.value) return
+  if (busy.value || disposed) return
+  const version = formVersion
+  const valid = () => !disposed && version === formVersion
   busy.value = true
   error.value = ''
   notice.value = ''
   try {
     if (props.mode === 'login') {
-      await auth.login(form.identifier, form.password)
+      if (!await auth.login(form.identifier, form.password)) return
       /*
        * 登录成功后的落点分两种，这是本轮刻意改的地方：
        *   1. 守卫送来的（URL 带 redirect，例如未登录访问 /useradmin/center）——
@@ -144,6 +148,7 @@ async function submit() {
        *      后台是管理动作，绝大多数登录只是来看内容；直接弹进控制台会让人一进来
        *      就要先找「怎么回去」。进后台改由右上角用户菜单里的「进入后台」自己决定。
        */
+      if (!valid()) return
       const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : ''
       await router.replace(redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : accountPath('/'))
     } else if (props.mode === 'register') {
@@ -152,29 +157,32 @@ async function submit() {
         confirmPassword: form.confirmPassword,
         verificationCode: form.verificationCode,
       })
+      if (!valid()) return
       await router.replace({ path: accountPath('/login'), query: { registered: '1' } })
     } else if (props.mode === 'forgot') {
       await api.requestReset(form.email)
-      notice.value = '如果邮箱对应有效账户，重置邮件会发送到该邮箱。'
+      if (!valid()) return
+      notice.value = '请求已受理。如果邮箱对应有效账户，请按邮件指引继续；邮件送达可能需要一些时间。'
     } else if (props.mode === 'reset') {
       const token = typeof route.query.token === 'string' ? route.query.token : form.token
       await api.confirmReset({
         token, newPassword: form.newPassword, confirmPassword: form.confirmPassword,
       })
       clearCsrf()
+      if (!valid()) return
       await router.replace({ path: accountPath('/login'), query: { reset: '1' } })
     } else if (props.mode === 'invite') {
       const token = typeof route.query.token === 'string' ? route.query.token : form.token
       await api.acceptInvitation(token)
-      auth.currentUser = null
-      auth.initialized = true
+      auth.expireSession()
       clearCsrf()
+      if (!valid()) return
       await router.replace({ path: accountPath('/login'), query: { invited: '1' } })
     }
   } catch (cause) {
-    error.value = errorMessage(cause)
+    if (valid()) error.value = errorMessage(cause)
   } finally {
-    busy.value = false
+    if (valid()) busy.value = false
   }
 }
 
@@ -187,7 +195,7 @@ async function submit() {
 async function switchInvitationAccount() {
   error.value = ''
   try {
-    await auth.logout()
+    if (!await auth.logout()) return
     auth.initialized = true
     await router.replace({ path: accountPath('/login'), query: { redirect: route.fullPath } })
   } catch (cause) { error.value = errorMessage(cause) }

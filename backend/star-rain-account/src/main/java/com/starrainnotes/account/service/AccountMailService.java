@@ -17,6 +17,10 @@ public interface AccountMailService {
      */
     void requireDelivery();
 
+    /** Queue a reset request without checking account existence on the HTTP thread. */
+    void requestReset(String email);
+
+
     /**
      * 邀请地址处理入口。
      *

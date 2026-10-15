@@ -7,6 +7,7 @@ import {
   removeDraft,
   migrateDraft,
   registerDraftFlusher,
+  draftGeneration,
 } from './recovery/draftStore'
 const props = defineProps({ context: Object, source: String, readOnly: Boolean, compact: Boolean })
 const emit = defineEmits(['restore'])
@@ -54,6 +55,7 @@ async function flush() {
       pending = true
       report(error)
     }
+    return false
   } finally {
     if (active && n === epoch) saving.value = false
   }
@@ -63,7 +65,7 @@ async function load(next) {
   void flush()
   const old = context,
     n = ++epoch
-  context = next ? { ...next } : null
+  context = next ? { ...next, draftGeneration: draftGeneration(next.accountId) } : null
   latest = props.source || ''
   pending = false
   touched = false
@@ -101,7 +103,7 @@ watch(
 watch(
   () => [props.context?.baseline, props.context?.serverVersion],
   async () => {
-    context = props.context ? { ...props.context } : null
+    context = props.context ? { ...props.context, draftGeneration: context?.draftGeneration ?? draftGeneration(props.context.accountId) } : null
     if (!context || !draftKey(context) || !touched) return
     if (canonical(latest) === canonical(context.baseline) && !opened.value) {
       const owner = { ...context },

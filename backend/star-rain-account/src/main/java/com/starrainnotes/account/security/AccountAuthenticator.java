@@ -38,6 +38,8 @@ public class AccountAuthenticator implements AuthenticationProvider {
      * 密码Encoder。
      */
     private final PasswordEncoder passwordEncoder;
+    /** A real BCrypt comparison also runs for unknown and disabled accounts. */
+    private final String dummyHash;
 
     /**
      * 构造AccountAuthenticator，接收本类使用的依赖或初始化参数。
@@ -48,6 +50,7 @@ public class AccountAuthenticator implements AuthenticationProvider {
     public AccountAuthenticator(AccountMapper mapper, PasswordEncoder passwordEncoder) {
         this.mapper = mapper;
         this.passwordEncoder = passwordEncoder;
+        this.dummyHash = passwordEncoder.encode(java.util.UUID.randomUUID().toString());
     }
 
     /**
@@ -64,12 +67,10 @@ public class AccountAuthenticator implements AuthenticationProvider {
         String identifier = String.valueOf(authentication.getPrincipal()).trim();
         String password = String.valueOf(authentication.getCredentials());
         AccountEntity account = mapper.accountByIdentifier(identifier);
-        if (account == null || !"ACTIVE".equals(account.getStatus())) {
-            throw new BadCredentialsException("身份信息无效");
-        }
-        String hash = mapper.passwordHash(account.getId());
-        if (hash == null || !passwordEncoder.matches(password, hash)) {
-            throw new BadCredentialsException("身份信息无效");
+        String hash = account == null ? null : mapper.passwordHash(account.getId());
+        boolean matches = passwordEncoder.matches(password, hash == null ? dummyHash : hash);
+        if (account == null || !"ACTIVE".equals(account.getStatus()) || hash == null || !matches) {
+            throw new BadCredentialsException("用户名或密码错误");
         }
         Set<String> roles = Set.copyOf(mapper.roleCodes(account.getId()));
         Set<String> permissions = Set.copyOf(mapper.permissionCodes(account.getId()));

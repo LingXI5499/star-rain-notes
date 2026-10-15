@@ -411,3 +411,11 @@
 - 调整：`sr_tutorial_operation`。
 
 读取源码：[V2_040__tutorial_operation_failure_reason.sql](V2_040__tutorial_operation_failure_reason.sql)。
+
+## V2_047__account_request_throttle.sql
+
+新增 `sr_login_throttle`，使用 HMAC 键、窗口起点和预占次数进行 IP/账户双维度限流。行锁保证并发预占原子性；成功登录只退还自己的次数。索引支持清理过期计数，不删除审计或业务记录。
+
+本迁移追加在已存在的 V2_041～V2_046 之后，不修改它们的校验值。
+
+读取源码：[V2_047__account_request_throttle.sql](V2_047__account_request_throttle.sql)。

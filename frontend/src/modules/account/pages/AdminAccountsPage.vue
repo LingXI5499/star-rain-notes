@@ -9,6 +9,7 @@
  */
 
 
+import { useLatestAccountQuery } from '../support/useLatestAccountQuery'
 import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
@@ -90,16 +91,9 @@ const totalPages = computed(() => Math.max(1, Math.ceil(data.value.total / data.
  * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
+const latestQuery = useLatestAccountQuery({ data, error, loading })
 async function load() {
-  loading.value = true
-  error.value = ''
-  try {
-    data.value = await api.listAccounts({ ...filters, page: page.value, pageSize: 20 })
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  } finally {
-    loading.value = false
-  }
+  return latestQuery(() => api.listAccounts({ ...filters, page: page.value, pageSize: 20 }))
 }
 
 /**
@@ -136,6 +130,7 @@ function choose(account) {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function run(action, success) {
+  if (actionBusy.value) return
   actionBusy.value = true
   error.value = ''
   notice.value = ''
@@ -160,6 +155,7 @@ async function run(action, success) {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function toggleStatus(account) {
+  if (actionBusy.value) return
   const next = account.status === 'ACTIVE' ? 'DISABLED' : 'ACTIVE'
   if (!await confirmDialog.value.ask(`确定${next === 'DISABLED' ? '停用' : '启用'}账户 ${account.username} 吗？`)) return
   run(() => api.changeAccountStatus(account.id, next), '账户状态已更新。')
@@ -208,6 +204,7 @@ async function invite(account = selected.value) {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function removeAdministrator() {
+  if (actionBusy.value) return
   if (!selected.value || !await confirmDialog.value.ask(`取消 ${selected.value.username} 的管理员身份？其现有会话将失效，账户保留为普通用户。`)) return
   run(() => api.revokeAdministrator(selected.value.id), '管理员身份已取消。')
 }

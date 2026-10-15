@@ -66,12 +66,22 @@ public class AccountMailServiceImpl implements AccountMailService {
     public AccountMailServiceImpl(JavaMailSender sender, MailOutbox outbox,
                               @Value("${star-rain.account.smtp-enabled:false}") boolean enabled,
                               @Value("${star-rain.account.mail-from:}") String from,
-                              @Value("${star-rain.account.frontend-origin}") String frontendOrigin) {
+                              @Value("${star-rain.account.frontend-origin}") String frontendOrigin,
+                              @Value("${server.servlet.session.cookie.secure:false}") boolean secure) {
         this.sender = sender;
         this.outbox = outbox;
         this.enabled = enabled;
         this.from = from;
         this.frontendOrigin = frontendOrigin.replaceAll("/+$", "");
+        if (enabled && secure) {
+            URI origin = URI.create(this.frontendOrigin);
+            if (!"https".equalsIgnoreCase(origin.getScheme()) || origin.getHost() == null
+                    || Set.of("localhost", "127.0.0.1", "[::1]", "::1").contains(origin.getHost())
+                    || origin.getRawUserInfo() != null || origin.getRawQuery() != null
+                    || origin.getRawFragment() != null || !Set.of("", "/").contains(origin.getPath())) {
+                throw new IllegalStateException("Configure an HTTPS public frontend origin for account mail");
+            }
+        }
     }
 
     /**
@@ -85,6 +95,13 @@ public class AccountMailServiceImpl implements AccountMailService {
             throw new ApiException("MAIL_NOT_CONFIGURED", "邮件服务尚未配置", 503);
         }
         outbox.requireReady();
+    }
+
+    /** The worker resolves account existence after the generic request has committed. */
+    @Override
+    public void requestReset(String email) {
+        requireDelivery();
+        outbox.enqueueResetRequest(from, email, frontendOrigin);
     }
 
     /*

@@ -8,6 +8,7 @@ import {
   migrateDraft,
   clearAccountDrafts,
   allowDraftWrites,
+  draftGeneration,
 } from './draftStore'
 const owner = {
   accountId: 1,
@@ -67,5 +68,20 @@ describe('real IndexedDB transaction recovery', () => {
     allowDraftWrites(1)
     await writeDraft(owner, 'new session')
     expect(await accountDrafts(1)).toHaveLength(1)
+  })
+  it('AUTH-28: an old editor generation cannot recreate drafts after the same account logs in again', async () => {
+    const old = { ...owner, draftGeneration: draftGeneration(1) }
+    allowDraftWrites(1, false); await clearAccountDrafts(1); allowDraftWrites(1)
+    await writeDraft(old, 'late from previous session')
+    expect(await accountDrafts(1)).toHaveLength(0)
+    await writeDraft({ ...owner, draftGeneration: draftGeneration(1) }, 'new session')
+    expect(await accountDrafts(1)).toHaveLength(1)
+  })
+  it('AUTH-28: another tab blocks old writes through the shared browser generation', async () => {
+    const old = { ...owner, draftGeneration: draftGeneration(1) }
+    localStorage.setItem('star-rain-draft-owner:1', JSON.stringify({ generation: old.draftGeneration + 1, blocked: true }))
+    await writeDraft(old, 'stale tab')
+    expect(await accountDrafts(1)).toHaveLength(0)
+    allowDraftWrites(1)
   })
 })

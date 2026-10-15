@@ -37,11 +37,14 @@ class AccountProxyRateLimitTest extends MapperXmlIntegrationSupport {
                     org.springframework.security.authentication.UsernamePasswordAuthenticationToken.authenticated(principal, null, java.util.List.of()));
             var view = new com.starrainnotes.account.vo.CurrentAccountVO();
             org.mockito.Mockito.when(identity.view(1L)).thenReturn(view);
+            var throttle = org.mockito.Mockito.mock(com.starrainnotes.account.service.AccountThrottleService.class);
+            org.mockito.Mockito.when(throttle.reserveLogin("198.51.100.21", "isolated")).thenThrow(
+                    new com.starrainnotes.common.exception.ApiException("LOGIN_RATE_LIMITED", "请求过于频繁", 429));
             var service = new com.starrainnotes.account.service.impl.AccountAuthServiceImpl(mapper, identity, audit,
                     org.mockito.Mockito.mock(org.springframework.security.crypto.password.PasswordEncoder.class), authentication,
                     org.mockito.Mockito.mock(org.springframework.security.web.context.SecurityContextRepository.class),
                     org.mockito.Mockito.mock(com.starrainnotes.account.service.AccountMailService.class),
-                    org.mockito.Mockito.mock(com.starrainnotes.account.service.EmailVerificationService.class));
+                    org.mockito.Mockito.mock(com.starrainnotes.account.service.EmailVerificationService.class), throttle);
             var login = new com.starrainnotes.account.dto.LoginDTO(); login.setIdentifier("isolated"); login.setPassword("test-only-value");
             org.assertj.core.api.Assertions.assertThatThrownBy(() -> service.login(login, request, new org.springframework.mock.web.MockHttpServletResponse()))
                     .isInstanceOf(com.starrainnotes.common.exception.ApiException.class).hasMessageContaining("频繁");

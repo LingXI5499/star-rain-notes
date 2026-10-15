@@ -74,7 +74,7 @@ class AuditUpgradeMapperTest extends MapperXmlIntegrationSupport {
         try (var session = openSession()) {
             var source = session.getConfiguration().getEnvironment().getDataSource();
             var jdbc = new JdbcTemplate(source); var smtp = mock(JavaMailSender.class);
-            var outbox = new MailOutbox(jdbc, new ObjectMapper(), smtp, Base64.getEncoder().encodeToString(new byte[32]), true);
+            var outbox = new MailOutbox(jdbc, new ObjectMapper(), smtp, Base64.getEncoder().encodeToString(new byte[32]), true, session.getMapper(com.starrainnotes.account.mapper.AccountMapper.class), new DataSourceTransactionManager(jdbc.getDataSource()));
             String[] id = new String[1];
             new TransactionTemplate(new DataSourceTransactionManager(source)).executeWithoutResult(status -> {
                 id[0] = outbox.enqueue("sender@example.test", "recipient@example.test", "验证码", "one-time-secret-123456").substring(7);
@@ -93,7 +93,7 @@ class AuditUpgradeMapperTest extends MapperXmlIntegrationSupport {
             var smtp = mock(JavaMailSender.class);
             when(smtp.createMimeMessage()).thenAnswer(call -> new jakarta.mail.internet.MimeMessage(jakarta.mail.Session.getInstance(new java.util.Properties())));
             doThrow(new org.springframework.mail.MailSendException("injected test failure")).doNothing().when(smtp).send(any(jakarta.mail.internet.MimeMessage.class));
-            var outbox = new MailOutbox(jdbc, new ObjectMapper(), smtp, Base64.getEncoder().encodeToString(new byte[32]), true);
+            var outbox = new MailOutbox(jdbc, new ObjectMapper(), smtp, Base64.getEncoder().encodeToString(new byte[32]), true, session.getMapper(com.starrainnotes.account.mapper.AccountMapper.class), new DataSourceTransactionManager(jdbc.getDataSource()));
             var transaction = new TransactionTemplate(new DataSourceTransactionManager(jdbc.getDataSource()));
             String id = transaction.execute(status -> outbox.enqueue("sender@example.test", "recipient@example.test", "验证码", "isolated secret").substring(7));
             try {

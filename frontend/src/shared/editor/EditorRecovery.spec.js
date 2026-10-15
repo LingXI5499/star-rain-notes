@@ -1,7 +1,7 @@
 import {mount,flushPromises} from '@vue/test-utils'
 import {beforeEach,afterEach,it,expect,vi} from 'vitest'
 import EditorRecovery from './EditorRecovery.vue'
-const store=vi.hoisted(()=>({getDraft:vi.fn(),writeDraft:vi.fn(),removeDraft:vi.fn(),migrateDraft:vi.fn(),registerDraftFlusher:vi.fn(()=>()=>{}),draftKey:context=>context?.accountId!=null?JSON.stringify([context.accountId,context.documentId,context.field]):null}))
+const store=vi.hoisted(()=>({draftGeneration:()=>0,getDraft:vi.fn(),writeDraft:vi.fn(),removeDraft:vi.fn(),migrateDraft:vi.fn(),registerDraftFlusher:vi.fn(()=>()=>{}),draftKey:context=>context?.accountId!=null?JSON.stringify([context.accountId,context.documentId,context.field]):null}))
 vi.mock('./recovery/draftStore',()=>store)
 const context={accountId:1,module:'blog',documentId:'1',field:'body',baseline:'server',serverVersion:4}
 let wrapper
@@ -18,12 +18,12 @@ it('keeps new input and gives a visible quota failure without affecting the sour
   wrapper=mount(EditorRecovery,{props:{context,source:'server'}});await flushPromises()
   store.writeDraft.mockRejectedValue(new Error('QuotaExceededError'))
   await wrapper.setProps({source:'new input'});await vi.advanceTimersByTimeAsync(1801);await flushPromises()
-  expect(wrapper.text()).toContain('本地备份不可用');expect(wrapper.emitted('restore')).toBeUndefined();expect(store.writeDraft).toHaveBeenCalledWith(context,'new input')
+  expect(wrapper.text()).toContain('本地备份不可用');expect(wrapper.emitted('restore')).toBeUndefined();expect(store.writeDraft).toHaveBeenCalledWith(expect.objectContaining(context),'new input')
 })
 it('flushes the old document to its old owner during an identical-text account switch',async()=>{
   wrapper=mount(EditorRecovery,{props:{context,source:'server'}});await flushPromises();await wrapper.setProps({source:'unsaved'})
   await wrapper.setProps({context:{...context,accountId:2}});await flushPromises()
-  expect(store.writeDraft).toHaveBeenCalledWith(context,'unsaved');expect(store.getDraft).toHaveBeenLastCalledWith(expect.objectContaining({accountId:2}))
+  expect(store.writeDraft).toHaveBeenCalledWith(expect.objectContaining(context),'unsaved');expect(store.getDraft).toHaveBeenLastCalledWith(expect.objectContaining({accountId:2}))
 })
 it('does not clear a newer local edit when an older submitted snapshot is acknowledged',async()=>{
   wrapper=mount(EditorRecovery,{props:{context,source:'server'}});await flushPromises()
@@ -36,6 +36,6 @@ it('backs up current in-progress input before explicitly replacing it with an ol
   wrapper=mount(EditorRecovery,{props:{context,source:'server'}});await flushPromises()
   await wrapper.setProps({source:'latest unsaved input'})
   await wrapper.findAll('button').find(button=>button.text()==='载入此恢复点到编辑器').trigger('click');await flushPromises()
-  expect(store.writeDraft).toHaveBeenCalledWith(context,'latest unsaved input')
+  expect(store.writeDraft).toHaveBeenCalledWith(expect.objectContaining(context),'latest unsaved input')
   expect(wrapper.emitted('restore')).toEqual([['older local']])
 })

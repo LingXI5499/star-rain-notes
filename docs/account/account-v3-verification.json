@@ -1,0 +1,221 @@
+{
+  "recordedAt": "2026-10-15T20:25:39.446161+08:00",
+  "status": "Account V3.0 Freeze Candidate",
+  "base": "944071f8e07fdb6bd273923ba6136fc10c638c84",
+  "codeHead": "6218a6257731b24c6857f9bedc215c597cb9079d",
+  "backend": {
+    "tests": 844,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "command": "mvn -B -T2 verify",
+    "accountIntegrationTests": 8,
+    "database": "MySQL 8.0.34, newly initialized loopback instance on 13316; isolated star_rain_ci and random per-suite schema",
+    "migration": "2.047"
+  },
+  "frontend": {
+    "tests": 411,
+    "files": 75,
+    "failed": 0,
+    "build": "PASS",
+    "budget": "PASS"
+  },
+  "browser": {
+    "mocked": {
+      "passed": 32,
+      "failed": 0
+    },
+    "realBackend": {
+      "passed": 6,
+      "failed": 0,
+      "resetLinkFollowed": true,
+      "timeoutMs": 90000
+    },
+    "localChannel": "chrome",
+    "smtp": "Loopback SMTP protocol capture, no external relay"
+  },
+  "load": {
+    "accounts": 100,
+    "concurrency": 4,
+    "seconds": 10.543,
+    "all": {
+      "requests": 400,
+      "errors": 0,
+      "rateLimited": 0,
+      "medianMs": 10,
+      "p95Ms": 410
+    },
+    "login": {
+      "requests": 100,
+      "errors": 0,
+      "rateLimited": 0,
+      "medianMs": 380,
+      "p95Ms": 437
+    },
+    "reads": {
+      "requests": 300,
+      "errors": 0,
+      "rateLimited": 0,
+      "medianMs": 7,
+      "p95Ms": 22
+    }
+  },
+  "resources": {
+    "peakWorkingSetMiB": 371.8,
+    "logicalProcessors": 20,
+    "workingSetMiB": 371.8,
+    "wallSeconds": 11.06,
+    "javaMaxHeapMiB": 384,
+    "cpuSeconds": 41.5
+  },
+  "restore": {
+    "database": "sr_account_v3_restore_20261015",
+    "tables": [
+      {
+        "checksumMatches": true,
+        "sourceRows": 107,
+        "restoredRows": 107,
+        "table": "sr_account"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 107,
+        "restoredRows": 107,
+        "table": "sr_account_credential"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 3,
+        "restoredRows": 3,
+        "table": "sr_role"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 46,
+        "restoredRows": 46,
+        "table": "sr_permission"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 109,
+        "restoredRows": 109,
+        "table": "sr_account_role"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 65,
+        "restoredRows": 65,
+        "table": "sr_role_permission"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 0,
+        "restoredRows": 0,
+        "table": "sr_study_plan"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 0,
+        "restoredRows": 0,
+        "table": "sr_learning_session"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 0,
+        "restoredRows": 0,
+        "table": "sr_learning_progress"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 0,
+        "restoredRows": 0,
+        "table": "sr_english_vocabulary_memory"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 0,
+        "restoredRows": 0,
+        "table": "sr_english_writing_article"
+      },
+      {
+        "checksumMatches": true,
+        "sourceRows": 3,
+        "restoredRows": 3,
+        "table": "sr_media_asset"
+      }
+    ],
+    "media": {
+      "restoredFiles": 3,
+      "sourceFiles": 3,
+      "allFileHashesMatch": true
+    },
+    "backupBytes": 1350146,
+    "http": {
+      "adminLogin": 200,
+      "accountStatus": 200,
+      "adminListStatus": 200,
+      "mediaRead": 200,
+      "userLogin": 200,
+      "userPrivateRead": 200,
+      "userAdminDenied": 403
+    },
+    "limitation": "Learning and English source tables are empty in this local snapshot; nonempty production-linked data recovery is not verified.",
+    "passed": true
+  },
+  "notVerified": [
+    "GitHub Actions run",
+    "Production Nginx/HTTPS/Secure Cookie/firewall and control panel access",
+    "External SMTP provider and real mailbox",
+    "Production backup and nonempty linked learning/English data recovery",
+    "Actual deployment hardware resource acceptance"
+  ],
+  "localLogs": [
+    "backend-verify.log",
+    "frontend-test.log",
+    "frontend-build.log",
+    "browser-mocked.log",
+    "browser-real.log",
+    "load.json",
+    "load-resource.json",
+    "restore.json",
+    "protocol.json"
+  ],
+  "protocol": {
+    "login": 200,
+    "sessionIdRotated": true,
+    "cookieHttpOnly": true,
+    "cookieSameSite": "Lax",
+    "wrongCsrfStatus": 403,
+    "wrongCsrfDidNotWrite": true,
+    "oldSessionStatus": 401,
+    "noCsrfLogout": 403,
+    "logout": 200,
+    "loggedOutStatus": 401,
+    "publicStatuses": {
+      "/api/public/site/config": 200,
+      "/api/public/tutorials": 200,
+      "/api/public/blog/posts": 200,
+      "/api/public/portfolio/works": 200
+    },
+    "invalidCredentialResponsesIdentical": true,
+    "passed": true
+  },
+  "artifacts": {
+    "jar": {
+      "path": "backend/star-rain-boot/target/star-rain-boot-2.0.1.jar",
+      "sha256": "f179b18b7762ef7b948e52acb0a70a1cb7025593b963de4aa60a513165c6b0a4"
+    },
+    "frontendIndex": {
+      "path": "frontend/dist/index.html",
+      "sha256": "470fc5447b2c8815c3802b111105bc1e7c25a475b20a79d2703395e4030378af"
+    },
+    "frontendBuildIdentity": {
+      "batch": "V2.2",
+      "editorVersion": "V3",
+      "commit": "944071f8e07fdb6bd273923ba6136fc10c638c84",
+      "dirty": true
+    },
+    "note": "Artifacts were built from the development working tree before the staged local commits. Rebuild from the final commit and set STAR_RAIN_BUILD_COMMIT before production release."
+  },
+  "finalization": "Application code matches codeHead. Finalization adds reports, workflow/source-check admission, the browser reset-link origin assertion and a larger browser test timeout."
+}
