@@ -29,8 +29,4 @@ public class EmailVerificationCodeVO {
      * resend之后秒。
      */
     private int resendAfterSeconds;
-    /**
-     * existing账号。
-     */
-    private boolean existingAccount;
 }

@@ -65,6 +65,12 @@ star-rain:
       key: ${STAR_RAIN_INDEXNOW_KEY:}
   # 发信开关及前端来源；SMTP 发件人和管理员身份邮箱分别配置。
   account:
+    throttle:
+      # Prefer a dedicated random secret; the private outbox key is a compatible fallback.
+      key: ${STAR_RAIN_AUTH_THROTTLE_KEY:${STAR_RAIN_MAIL_OUTBOX_KEY:}}
+      source-limit: ${STAR_RAIN_LOGIN_SOURCE_LIMIT:100}
+      identity-limit: ${STAR_RAIN_LOGIN_IDENTITY_LIMIT:10}
+      window-seconds: ${STAR_RAIN_LOGIN_WINDOW_SECONDS:900}
     smtp-enabled: ${STAR_RAIN_SMTP_ENABLED:false}
     mail-from: ${STAR_RAIN_MAIL_FROM:}
     frontend-origin: ${STAR_RAIN_FRONTEND_ORIGIN:http://127.0.0.1:5174}
@@ -81,7 +87,7 @@ star-rain:
 # HTTP 服务监听与 Cookie 配置；宝塔通过反向代理访问服务端口。
 server:
   port: 8088
-  address: ${STAR_RAIN_SERVER_ADDRESS:0.0.0.0}
+  address: ${STAR_RAIN_SERVER_ADDRESS:127.0.0.1}
   # Enable NATIVE only behind the documented proxy boundary; standalone ignores headers.
   forward-headers-strategy: ${STAR_RAIN_FORWARD_HEADERS_STRATEGY:NONE}
   tomcat:

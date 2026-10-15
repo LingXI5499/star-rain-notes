@@ -142,7 +142,6 @@ class EmailVerificationServiceMailFailureTest {
      */
     @Test
     void registrationPathAuditsFailureWithoutAnActor() {
-        when(accounts.accountByEmail(EMAIL)).thenReturn(null);
         when(accounts.recentAuditCount(anyString(), anyString(), any(LocalDateTime.class))).thenReturn(0);
         when(mapper.findForUpdate(EMAIL)).thenReturn(freshVerification());
         when(encoder.encode(anyString())).thenReturn("hash");

@@ -620,6 +620,11 @@
         SELECT id, account_id, token_hash, status, expires_at
         FROM sr_password_reset WHERE token_hash = #{hash} FOR UPDATE
     </select>
+    <!-- Resolve immutable ownership without a lock; the service locks account before token. -->
+    <select id="resetByHash" resultType="com.starrainnotes.account.entity.PasswordResetEntity">
+        SELECT id, account_id, token_hash, status, expires_at
+        FROM sr_password_reset WHERE token_hash = #{hash}
+    </select>
     <!--
       useReset：useReset；更新语句。
       涉及数据表：sr_password_reset；关系条件与可见性筛选由下方 SQL 明确限定。

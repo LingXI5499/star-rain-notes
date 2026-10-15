@@ -22,6 +22,8 @@ import com.starrainnotes.account.vo.CurrentAccountVO;
 import com.starrainnotes.account.mapper.AccountMapper;
 import com.starrainnotes.account.context.AccountPrincipal;
 import com.starrainnotes.account.service.AccountAuditService;
+import com.starrainnotes.account.service.AccountThrottleService;
+import com.starrainnotes.account.vo.LoginReservation;
 import com.starrainnotes.account.service.AccountAuthService;
 import com.starrainnotes.account.service.AccountIdentityService;
 import com.starrainnotes.account.service.AccountMailService;
@@ -91,6 +93,8 @@ public class AccountAuthServiceImpl implements AccountAuthService {
      * 协作类型：<code>EmailVerificationService</code>。
      */
     private final EmailVerificationService emailVerification;
+    /** Independent, atomic source and identity reservations. */
+    private final AccountThrottleService throttle;
 
     /**
      * 构造AccountAuthServiceImpl，接收本类使用的依赖或初始化参数。
@@ -102,13 +106,15 @@ public class AccountAuthServiceImpl implements AccountAuthService {
      * @param authenticationManager 认证Manager；类型为 <code>AuthenticationManager</code>
      * @param contextRepository contextRepository；类型为 <code>SecurityContextRepository</code>
      * @param mail 邮件；类型为 <code>AccountMailService</code>
+     * @param throttle 独立事务中的原子来源和身份限流
      * @param emailVerification 邮箱验证；类型为 <code>EmailVerificationService</code>
      */
     public AccountAuthServiceImpl(AccountMapper mapper, AccountIdentityService identity,
                                   AccountAuditService audit, PasswordEncoder encoder,
                                   AuthenticationManager authenticationManager,
                                   SecurityContextRepository contextRepository,
-                                  AccountMailService mail, EmailVerificationService emailVerification) {
+                                  AccountMailService mail, EmailVerificationService emailVerification,
+                                  AccountThrottleService throttle) {
         this.mapper = mapper;
         this.identity = identity;
         this.audit = audit;
@@ -117,6 +123,7 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         this.contextRepository = contextRepository;
         this.mail = mail;
         this.emailVerification = emailVerification;
+        this.throttle = throttle;
     }
 
     /**
@@ -134,6 +141,7 @@ public class AccountAuthServiceImpl implements AccountAuthService {
         AccountRules.password(request.getPassword(), request.getConfirmPassword());
         String username = request.getUsername().trim();
         String email = AccountRules.email(request.getEmail());
+        String codeHash = emailVerification.verify(email, request.getVerificationCode());
         if (mapper.usernameCount(username) > 0) {
             throw new ApiException("USERNAME_ALREADY_EXISTS", "用户名已被使用", 409);
         }
@@ -141,7 +149,6 @@ public class AccountAuthServiceImpl implements AccountAuthService {
             throw new ApiException("EMAIL_ALREADY_EXISTS", "邮箱已被使用", 409);
         }
         RoleEntity userRole = requiredRole("USER");
-        String codeHash = emailVerification.verify(email, request.getVerificationCode());
         emailVerification.consume(email, codeHash);
         AccountEntity account = new AccountEntity();
         account.setUsername(username);
@@ -162,7 +169,7 @@ public class AccountAuthServiceImpl implements AccountAuthService {
 
     /**
      * 执行登录账号认证。
-     * 主要协作调用：<code>mapper.recentAuditCount</code>、<code>authenticationManager.authenticate</code>、<code>audit.failed</code>、<code>mapper.updateLastLogin</code>、<code>audit.success</code>。
+     * 主要协作调用：<code>throttle.reserveLogin</code>、<code>authenticationManager.authenticate</code>、<code>audit.failed</code>、<code>mapper.updateLastLogin</code>、<code>audit.success</code>。
      * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
      *
      * @param request 本次操作的请求参数对象；类型为 <code>LoginDTO</code>
@@ -173,11 +180,7 @@ public class AccountAuthServiceImpl implements AccountAuthService {
     @Override
     public CurrentAccountVO login(LoginDTO request, HttpServletRequest servletRequest,
                              HttpServletResponse servletResponse) {
-        String ip = servletRequest.getRemoteAddr();
-        if (mapper.recentAuditCount(ip, "LOGIN_FAILED",
-                LocalDateTime.now(ZoneOffset.UTC).minusMinutes(15)) >= 10) {
-            throw new ApiException("LOGIN_RATE_LIMITED", "登录尝试过于频繁，请稍后再试", 429);
-        }
+        LoginReservation reservation = throttle.reserveLogin(servletRequest.getRemoteAddr(), request.getIdentifier());
         Authentication authentication;
         try {
             authentication = authenticationManager.authenticate(
@@ -185,8 +188,9 @@ public class AccountAuthServiceImpl implements AccountAuthService {
                             request.getIdentifier().trim(), request.getPassword()));
         } catch (AuthenticationException exception) {
             audit.failed(null, null, "LOGIN_FAILED");
-            throw new ApiException("INVALID_CREDENTIALS", "身份信息无效", 401);
+            throw new ApiException("INVALID_CREDENTIALS", "用户名或密码错误", 401);
         }
+        throttle.loginSucceeded(reservation);
         AccountPrincipal principal = (AccountPrincipal) authentication.getPrincipal();
         mapper.updateLastLogin(principal.getAccountId());
         audit.success(principal.getAccountId(), principal.getAccountId(), "LOGIN_SUCCESS");
@@ -291,7 +295,7 @@ public class AccountAuthServiceImpl implements AccountAuthService {
     /**
      * 请求密码Reset处理入口。
      * 事务声明：<code>@Transactional</code>，该方法的数据库操作按此事务配置执行。
-     * 主要协作调用：<code>mail.requireDelivery</code>、<code>mapper.recentResetRequestsByIp</code>、<code>mapper.accountByEmail</code>、<code>mapper.expirePendingResets</code>、<code>mapper.insertReset</code>。
+     * 主要协作调用：<code>mail.requireDelivery</code>、<code>throttle.reserveReset</code>、<code>mail.requestReset</code>。
      * 实现中的显式失败类型包括 <code>ApiException</code>；具体触发条件见对应分支。
      *
      * @param request 本次操作的请求参数对象；类型为 <code>PasswordResetRequestDTO</code>
@@ -301,24 +305,12 @@ public class AccountAuthServiceImpl implements AccountAuthService {
     @Transactional
     public void requestPasswordReset(PasswordResetRequestDTO request, HttpServletRequest servletRequest) {
         mail.requireDelivery();
-        String ip = servletRequest.getRemoteAddr();
-        if (mapper.recentResetRequestsByIp(ip,
-                LocalDateTime.now(ZoneOffset.UTC).minusHours(1)) >= 5) {
-            throw new ApiException("PASSWORD_RESET_RATE_LIMITED", "请求过于频繁，请稍后再试", 429);
-        }
-        AccountEntity account = mapper.accountByEmail(AccountRules.email(request.getEmail()));
-        if (account != null && "ACTIVE".equals(account.getStatus())) {
-            mapper.expirePendingResets(account.getId());
-            String token = OneTimeTokens.create();
-            PasswordResetEntity reset = new PasswordResetEntity();
-            reset.setAccountId(account.getId());
-            reset.setTokenHash(OneTimeTokens.hash(token));
-            reset.setStatus("PENDING");
-            reset.setExpiresAt(LocalDateTime.now(ZoneOffset.UTC).plusMinutes(30));
-            mapper.insertReset(reset);
-            mail.sendReset(account.getEmail(), token);
-        }
-        audit.success(null, account == null ? null : account.getId(), "PASSWORD_RESET_REQUESTED");
+        String email = AccountRules.email(request.getEmail());
+        throttle.reserveReset(servletRequest.getRemoteAddr(), email);
+        // Resolve account existence only in the existing asynchronous encrypted outbox worker.
+        // Both known and unknown addresses perform the same HTTP-side work.
+        mail.requestReset(email);
+        audit.success(null, null, "PASSWORD_RESET_REQUESTED");
     }
 
     /**
@@ -333,17 +325,20 @@ public class AccountAuthServiceImpl implements AccountAuthService {
     @Transactional
     public void confirmPasswordReset(PasswordResetConfirmDTO request) {
         AccountRules.password(request.getNewPassword(), request.getConfirmPassword());
-        PasswordResetEntity reset = mapper.resetByHashForUpdate(OneTimeTokens.hash(request.getToken()));
-        if (reset == null) {
+        String tokenHash = OneTimeTokens.hash(request.getToken());
+        PasswordResetEntity reference = mapper.resetByHash(tokenHash);
+        if (reference == null) {
             throw new ApiException("INVALID_PASSWORD_RESET_TOKEN", "重置链接无效", 400);
         }
+        // Reset delivery and confirmation both lock account before token to avoid inversion.
+        AccountEntity account = mapper.accountByIdForUpdate(reference.getAccountId());
+        PasswordResetEntity reset = mapper.resetByHashForUpdate(tokenHash);
         if (!"PENDING".equals(reset.getStatus())) {
             throw new ApiException("PASSWORD_RESET_TOKEN_USED", "重置链接已使用", 409);
         }
         if (!reset.getExpiresAt().isAfter(LocalDateTime.now(ZoneOffset.UTC))) {
             throw new ApiException("PASSWORD_RESET_TOKEN_EXPIRED", "重置链接已过期", 409);
         }
-        AccountEntity account = mapper.accountByIdForUpdate(reset.getAccountId());
         if (account == null || !"ACTIVE".equals(account.getStatus())) {
             throw new ApiException("ACCOUNT_DISABLED", "账户不可用", 403);
         }
