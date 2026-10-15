@@ -1,0 +1,268 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { defineComponent } from 'vue'
+import { flushPromises, mount } from '@vue/test-utils'
+import { createRouter, createMemoryHistory, RouterView } from 'vue-router'
+import { createPinia } from 'pinia'
+import WorkEditorPage from './WorkEditorPage.vue'
+
+const api = vi.hoisted(() => Object.fromEntries(['addWorkLink', 'addWorkMedia', 'createWork', 'getAdminWork', 'orderWorkLinks',
+ 'removeWorkLink', 'removeWorkMedia', 'updateWork', 'updateWorkBody', 'updateWorkLink', 'updateWorkMedia',
+ 'getWorkTaxonomy', 'getWorkTemplates', 'bindWorkPrototype', 'publishWork', 'restoreWork', 'withdrawWork'].map(name => [name, vi.fn()])))
+vi.mock('../../api/portfolioApi', () => api)
+const Markdown = defineComponent({ name: 'MarkdownEditor', props: ['modelValue', 'editorContext', 'pickImage'], emits: ['update:modelValue'],
+ setup(props, { expose }) { expose({ getMarkdown: () => props.modelValue }) },
+ template: '<textarea data-markdown :value="modelValue" @input="$emit(\'update:modelValue\', $event.target.value)" />' })
+const Blocks = defineComponent({ name: 'WorkSectionEditor', props: ['work'], emits: ['updated', 'conflict'], setup(_, { expose }) { expose({ dirty: false, busy: false }) }, template: '<div data-block-workspace>区块工作区</div>' })
+const clone = value => JSON.parse(JSON.stringify(value))
+let server
+const initial = () => ({ id: '42', rowVersion: 0, title: '原作品', workType: 'SOFTWARE', slug: 'sample', summary: '简介', bodyMarkdown: '# 正文',
+ categoryId: '11', formatId: '22', projectStatus: 'COMPLETED', status: 'DRAFT', hasSections: false, sections: [], media: [], links: [], tags: [] })
+const response = () => { server.rowVersion++; return clone(server) }
+beforeEach(() => {
+ vi.resetAllMocks(); server = initial()
+ api.getWorkTaxonomy.mockResolvedValue({ categories: [{ id: '11', name: '工具' }], formats: [{ id: '22', name: 'Web 应用' }], tags: [] })
+ api.getAdminWork.mockImplementation(async () => clone(server))
+ api.getWorkTemplates.mockResolvedValue([])
+ api.createWork.mockImplementation(async data => { server = { ...initial(), ...data, bodyMarkdown: '' }; return clone(server) })
+ api.updateWork.mockImplementation(async (_, data) => { Object.assign(server, data); return response() })
+ api.updateWorkBody.mockImplementation(async (_, bodyMarkdown) => { server.bodyMarkdown = bodyMarkdown; return response() })
+ api.addWorkMedia.mockImplementation(async (_, data) => { server.media = [{ ...data, id: '70', url: '/media/cover.png' }]; return response() })
+ api.removeWorkMedia.mockImplementation(async () => { server.media = []; server.rowVersion++; return null })
+ api.addWorkLink.mockImplementation(async (_, data) => { server.links.push({ ...data, id: String(90 + server.links.length) }); return response() })
+ api.updateWorkLink.mockImplementation(async (id, data) => { Object.assign(server.links.find(link => link.id === id), data); return response() })
+ api.removeWorkLink.mockImplementation(async id => { server.links = server.links.filter(link => link.id !== id); server.rowVersion++; return null })
+ api.orderWorkLinks.mockImplementation(async (_, ids) => { server.links = ids.map((id, sortOrder) => ({ ...server.links.find(link => link.id === id), sortOrder })); return response() })
+ for (const [method, status] of [['publishWork', 'PUBLISHED'], ['restoreWork', 'PUBLISHED'], ['withdrawWork', 'WITHDRAWN']])
+  api[method].mockImplementation(async () => { server.status = status; return response() })
+})
+async function render(id = 'new') {
+ const router = createRouter({ history: createMemoryHistory(), routes: [
+  { path: '/useradmin/portfolio/editor/:workId', component: WorkEditorPage },
+  { path: '/useradmin/portfolio/manage', component: { template: '<p>管理</p>' } },
+  { path: '/useradmin/portfolio/preview/:workId', component: { template: '<p>预览</p>' } },
+ ] })
+ await router.push(`/useradmin/portfolio/editor/${id}`)
+ const root = mount(RouterView, { global: { plugins: [router, createPinia()], stubs: {
+  MarkdownEditor: Markdown, EditorRecovery: true, ContentHistoryPanel: true, WorkSectionEditor: Blocks,
+  MediaPicker: true, AppConfirmDialog: defineComponent({ setup(_, { expose }) { expose({ ask: vi.fn(async () => false) }) }, template: '<div />' }),
+ } } })
+ await flushPromises()
+ return { view: root.findComponent(WorkEditorPage), root, router }
+}
+const button = (view, text) => view.findAll('button').find(button => button.text() === text)
+const title = view => view.find('input[placeholder="例如：星雨笔录"]')
+const save = async view => { await button(view, '保存作品').trigger('click'); await flushPromises() }
+async function fillLink(view, label = '源码', url = 'https://github.com/example/work') {
+ await view.find('[aria-label="链接名称"]').setValue(label)
+ await view.find('[aria-label="链接地址"]').setValue(url)
+ await view.find('.work-editor__link').trigger('submit')
+}
+describe('single page work authoring', () => {
+ it('ignores late data from the previously selected work', async () => {
+  let resolve
+  api.getAdminWork.mockImplementation(id => id === '42' ? new Promise(done => { resolve = done }) : Promise.resolve({ ...initial(), id: '43', title: '下一个作品' }))
+  const { root, router } = await render('42')
+  await router.push('/useradmin/portfolio/editor/43'); await flushPromises()
+  const view = root.findComponent(WorkEditorPage)
+  expect(title(view).element.value).toBe('下一个作品')
+  resolve(initial()); await flushPromises()
+  expect(title(view).element.value).toBe('下一个作品')
+  root.unmount()
+ })
+ it('warns about an unbound prototype entry and preserves it in recovery data', async () => {
+  const { view, root } = await render('42')
+  await view.find('input[placeholder="index.html"]').setValue('preview/start.html')
+  await save(view)
+  expect(view.text()).toContain('原型入口尚未绑定')
+  const recovery = view.findComponent({ name: 'EditorRecovery' })
+  expect(JSON.parse(recovery.props('source')).prototypeEntry).toBe('preview/start.html')
+  root.unmount()
+ })
+ it('saves entry changes for an already bound prototype through the existing binding API', async () => {
+  server.prototypeAssetId = '81'; server.prototypeEntry = 'index.html'
+  api.bindWorkPrototype.mockImplementation(async (_, data) => { server.prototypeEntry = data.entryPath; return response() })
+  const { view, root } = await render('42')
+  await view.find('input[placeholder="index.html"]').setValue('demo/index.html')
+  await save(view)
+  expect(api.bindWorkPrototype).toHaveBeenCalledWith('42', { mediaAssetId: '81', entryPath: 'demo/index.html' })
+  expect(view.text()).toContain('作品已保存。')
+  root.unmount()
+ })
+ it('requires saving Markdown before opening the optional block workspace', async () => {
+  const { view, root } = await render('42')
+  await view.find('[data-markdown]').setValue('尚未保存的正文')
+  const toggle = view.findAll('input[type="checkbox"]').at(-1)
+  await toggle.setValue(true)
+  expect(view.find('[role="alert"]').text()).toContain('先保存当前修改')
+  expect(view.find('[data-block-workspace]').exists()).toBe(false)
+  expect(view.find('[data-markdown]').element.value).toBe('尚未保存的正文')
+  root.unmount()
+ })
+ it('keeps a pending cover after failure and reopens the saved Markdown unchanged', async () => {
+  const { view, root } = await render()
+  await title(view).setValue('图片作品'); await view.find('[data-markdown]').setValue('# 图片\n\n![作品](/media/cover.png)')
+  await button(view, '选择封面').trigger('click')
+  view.findComponent({ name: 'MediaPicker' }).vm.$emit('select', { id: '8', contentUrl: '/media/cover.png' }); await flushPromises()
+  api.addWorkMedia.mockRejectedValueOnce(new Error('failed cover'))
+  await save(view)
+  expect(view.find('[role="alert"]').text()).toContain('封面保存失败')
+  expect(view.find('.work-editor__cover img').attributes('src')).toBe('/media/cover.png')
+  await save(view)
+  expect(api.createWork).toHaveBeenCalledTimes(1)
+  root.unmount()
+  const reopened = await render('42')
+  expect(reopened.view.find('[data-markdown]').element.value).toBe('# 图片\n\n![作品](/media/cover.png)')
+  expect(reopened.view.find('.work-editor__cover img').attributes('src')).toBe('/media/cover.png')
+  reopened.root.unmount()
+ })
+ it('retains a saved draft and its input when publishing fails', async () => {
+  const { view, root } = await render('42')
+  api.publishWork.mockRejectedValueOnce(new Error('publish failed'))
+  await button(view, '保存并发布').trigger('click'); await flushPromises()
+  expect(view.find('[role="alert"]').text()).toContain('发布状态更新失败')
+  expect(view.find('[data-markdown]').element.value).toBe('# 正文')
+  expect(server.status).toBe('DRAFT')
+  root.unmount()
+ })
+ it('guards navigation to preview after creating a work when new input is unsaved', async () => {
+  const { view, root, router } = await render()
+  await title(view).setValue('新作品'); await save(view)
+  await title(view).setValue('未保存标题')
+  await router.push('/useradmin/portfolio/preview/42')
+  expect(router.currentRoute.value.path).toBe('/useradmin/portfolio/editor/42')
+  expect(title(view).element.value).toBe('未保存标题')
+  root.unmount()
+ })
+ it('lets an empty new work edit Markdown and stage cover and links before creating anything', async () => {
+  const { view, root } = await render()
+  expect(view.find('[data-markdown]').exists()).toBe(true)
+  expect(view.find('.work-editor__tabs').exists()).toBe(false)
+  await title(view).setValue('新作品'); await view.find('[data-markdown]').setValue('# 创作过程')
+  await fillLink(view)
+  await button(view, '选择封面').trigger('click')
+  view.findComponent({ name: 'MediaPicker' }).vm.$emit('select', { id: '8', contentUrl: '/media/cover.png' }); await flushPromises()
+  expect(api.createWork).not.toHaveBeenCalled(); expect(api.addWorkLink).not.toHaveBeenCalled(); expect(api.addWorkMedia).not.toHaveBeenCalled()
+  await save(view)
+  expect(api.createWork).toHaveBeenCalledTimes(1)
+  expect(api.updateWorkBody).toHaveBeenCalledWith('42', '# 创作过程')
+  expect(api.addWorkMedia).toHaveBeenCalledWith('42', expect.objectContaining({ mediaAssetId: '8' }))
+  expect(api.addWorkLink).toHaveBeenCalledWith('42', expect.objectContaining({ label: '源码' }))
+  expect(view.text()).toContain('作品已保存。')
+  root.unmount()
+ })
+ it('retains the new ID and all input when body saving fails, then retries the same draft', async () => {
+  api.updateWorkBody.mockRejectedValueOnce(new Error('failed'))
+  const { view, router, root } = await render()
+  await title(view).setValue('保留标题'); await view.find('[data-markdown]').setValue('不能丢失的正文')
+  await save(view)
+  expect(router.currentRoute.value.path).toBe('/useradmin/portfolio/editor/42')
+  expect(title(view).element.value).toBe('保留标题')
+  expect(view.find('[data-markdown]').element.value).toBe('不能丢失的正文')
+  expect(view.find('[role="alert"]').text()).toContain('Markdown 正文保存失败')
+  await save(view)
+  expect(api.createWork).toHaveBeenCalledTimes(1)
+  expect(api.updateWork).toHaveBeenCalledWith('42', expect.objectContaining({ title: '保留标题' }))
+  expect(server.bodyMarkdown).toBe('不能丢失的正文')
+  root.unmount()
+ })
+ it('resumes partially saved links without creating a duplicate link or work', async () => {
+  const { view, root } = await render()
+  await title(view).setValue('多链接作品'); await view.find('[data-markdown]').setValue('正文')
+  await fillLink(view, '源码'); await fillLink(view, '体验', 'https://example.com')
+  const implementation = api.addWorkLink.getMockImplementation()
+  api.addWorkLink.mockImplementationOnce(implementation).mockRejectedValueOnce(new Error('link failed'))
+  await save(view)
+  expect(server.links).toHaveLength(1)
+  expect(view.find('[role="alert"]').text()).toContain('相关链接保存失败')
+  await save(view)
+  expect(api.createWork).toHaveBeenCalledTimes(1)
+  expect(server.links.map(link => link.label)).toEqual(['源码', '体验'])
+  expect(api.addWorkLink).toHaveBeenCalledTimes(3)
+  root.unmount()
+ })
+ it('keeps input typed during saving and blocks duplicate submission and navigation', async () => {
+  let resolve
+  const { view, router, root } = await render('42')
+  api.updateWork.mockReturnValueOnce(new Promise(done => { resolve = done }))
+  await title(view).setValue('提交标题')
+  await button(view, '保存作品').trigger('click')
+  await title(view).setValue('保存中的新标题')
+  expect(button(view, '保存中…').attributes('disabled')).toBeDefined()
+  await router.push('/useradmin/portfolio/manage')
+  expect(router.currentRoute.value.path).toContain('/editor/42')
+  resolve(clone(server)); await flushPromises()
+  expect(title(view).element.value).toBe('保存中的新标题')
+  expect(view.text()).toContain('保存期间的新输入仍待保存')
+  const event = new Event('beforeunload', { cancelable: true }); window.dispatchEvent(event)
+  expect(event.defaultPrevented).toBe(true)
+  root.unmount()
+ })
+ it('saves before publishing, exposes the public path, and supports withdraw and restore', async () => {
+  const { view, root } = await render('42')
+  await button(view, '保存并发布').trigger('click'); await flushPromises()
+  expect(api.updateWorkBody.mock.invocationCallOrder[0]).toBeLessThan(api.publishWork.mock.invocationCallOrder[0])
+  expect(view.find('.work-editor__public a').attributes('href')).toBe('/portfolio/sample')
+  await button(view, '撤回发布').trigger('click'); await flushPromises()
+  expect(api.withdrawWork).toHaveBeenCalledWith('42')
+  await button(view, '恢复发布').trigger('click'); await flushPromises()
+  expect(api.restoreWork).toHaveBeenCalledWith('42')
+  root.unmount()
+ })
+ it('keeps a new incomplete work as a saved draft and reports publish requirements', async () => {
+  const { view, root } = await render()
+  await title(view).setValue('只有标题')
+  await button(view, '保存并发布').trigger('click'); await flushPromises()
+  expect(api.createWork).toHaveBeenCalledTimes(1)
+  expect(api.publishWork).not.toHaveBeenCalled()
+  expect(view.find('[role="alert"]').text()).toContain('草稿已保存')
+  root.unmount()
+ })
+ it('keeps legacy hidden blocks editable without offering an ignored Markdown body', async () => {
+  server.hasSections = true; server.sections = [{ id: '5', visible: false, sectionType: 'MARKDOWN', content: '旧区块' }]
+  const { view, root } = await render('42')
+  expect(view.find('[data-markdown]').exists()).toBe(false)
+  expect(view.find('[data-block-workspace]').exists()).toBe(true)
+  expect(view.text()).toContain('公开详情将优先展示区块')
+  await save(view)
+  expect(api.updateWorkBody).not.toHaveBeenCalled()
+  expect(server.sections).toHaveLength(1)
+  root.unmount()
+ })
+ it('keeps input on a version conflict and reads the server version without replacing the form', async () => {
+  const { view, root } = await render('42')
+  await title(view).setValue('我的版本')
+  api.updateWork.mockRejectedValueOnce({ response: { data: { code: 'CONTENT_VERSION_CONFLICT' } } })
+  await save(view)
+  await button(view, '核对服务器版本（保留当前输入）').trigger('click'); await flushPromises()
+  expect(title(view).element.value).toBe('我的版本')
+  expect(view.text()).toContain('服务器上的最新内容')
+  root.unmount()
+ })
+ it('stages link edits, disabling, ordering and removal and rejects unsafe URLs', async () => {
+  server.links = [{ id: '90', linkType: 'OTHER', label: '链接一', url: 'https://example.com/1', enabled: true, sortOrder: 0 },
+   { id: '91', linkType: 'DOC', label: '链接二', url: 'https://example.com/2', enabled: true, sortOrder: 1 }]
+  const { view, root } = await render('42')
+  await fillLink(view, '不安全', 'javascript:alert(1)')
+  expect(view.find('[role="alert"]').text()).toContain('有效的 HTTP / HTTPS')
+  await view.find('[aria-label="链接名称"]').setValue(''); await view.find('[aria-label="链接地址"]').setValue('')
+  await button(view, '编辑').trigger('click'); await view.find('[aria-label="链接名称"]').setValue('新名称')
+  await view.find('.work-editor__link').trigger('submit')
+  await view.find('[aria-label="下移链接"]').trigger('click')
+  await view.find('.work-editor__rows .work-check input').setValue(false)
+  await save(view)
+  expect(server.links.map(link => link.label)).toEqual(['链接二', '新名称'])
+  expect(server.links[0].enabled).toBe(false)
+  await button(view, '移除').trigger('click'); await save(view)
+  expect(server.links).toHaveLength(1)
+  root.unmount()
+ })
+ it('restores pending metadata with the existing recovery component while retaining Markdown', async () => {
+  const { view, root } = await render()
+  await view.find('[data-markdown]').setValue('当前正文')
+  view.findComponent({ name: 'EditorRecovery' }).vm.$emit('restore', JSON.stringify({ metadata: { title: '本地标题' }, links: [], link: {} }))
+  await flushPromises()
+  expect(title(view).element.value).toBe('本地标题')
+  expect(view.find('[data-markdown]').element.value).toBe('当前正文')
+  root.unmount()
+ })
+})

@@ -127,15 +127,17 @@ onMounted(loadFeatured)
    <p v-if="featuredLoading" class="works-state">正在加载精选作品…</p>
    <div v-else-if="featuredError" class="works-state" role="alert">{{ featuredError }} <button @click="loadFeatured">重新加载</button></div>
    <p v-else-if="!featuredWorks.length" class="works-featured__empty">精选作品正在整理中。</p>
-   <template v-else><WorkCard :work="featuredWorks[0]" prominent heading-level="h2" /><div v-if="featuredWorks.length > 1" class="works-grid works-featured__more"><WorkCard v-for="work in featuredWorks.slice(1)" :key="work.id" :work="work" heading-level="h2" /></div></template>
+   <div v-else class="works-featured__list"><WorkCard v-for="(work, index) in featuredWorks" :key="work.id" :work="work" prominent :reverse="index % 2 === 1" heading-level="h2" /></div>
   </section>
   <section class="works-archive" aria-labelledby="works-archive-title">
   <header class="works-archive__heading"><div><p class="public-eyebrow">EXPLORE THE ARCHIVE</p><h2 id="works-archive-title">全部作品</h2></div><p>按分类、形态和标签，找到感兴趣的作品。</p></header>
   <PublicFilterBar label="作品筛选" :active="activeFilters" :total="result.total" unit="件作品" @reset="resetFilters">
     <template #tabs><PublicFilterTabs label="作品分类" :model-value="route.query.categoryId || ''" :options="[{ value: '', label: '全部作品' }, ...taxonomy.categories.map(item => ({ value: item.id, label: item.name }))]" @update:model-value="filter('categoryId', $event)" /></template>
+    <details class="works-secondary-filters" :open="!!(route.query.formatId || route.query.tagId || route.query.featured)"><summary>更多筛选</summary><div>
     <PublicSelect label="作品形态" :model-value="route.query.formatId || ''" :options="[{ value: '', label: '全部形态' }, ...taxonomy.formats.map(item => ({ value: item.id, label: item.name }))]" @update:model-value="filter('formatId', $event)" />
     <PublicSelect label="标签" :model-value="route.query.tagId || ''" :options="[{ value: '', label: '全部标签' }, ...taxonomy.tags.map(item => ({ value: item.id, label: item.name }))]" @update:model-value="filter('tagId', $event)" />
     <PublicToggleFilter label="只看精选" :model-value="route.query.featured === 'true'" @update:model-value="filter('featured', $event ? 'true' : '')" />
+    </div></details>
   </PublicFilterBar>
   <div class="works-archive__results" :aria-busy="loading">
     <p v-if="loading" class="works-state" role="status">正在更新作品…</p>
@@ -176,6 +178,10 @@ onMounted(loadFeatured)
    * 样式范围：.works-featured。
    */
   .works-featured{margin-top:34px}
+.works-featured__list{display:grid;gap:30px}
+.works-secondary-filters summary{cursor:pointer;color:var(--primary);font-size:13px;padding:10px 0}
+.works-secondary-filters>div{display:flex;flex-wrap:wrap;align-items:end;gap:16px;padding:12px 0}
+.works-secondary-filters summary:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
   /**
    * 样式范围：.works-featured__more。
    */

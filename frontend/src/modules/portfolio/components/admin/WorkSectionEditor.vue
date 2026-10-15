@@ -167,7 +167,7 @@ async function pickImage() {
  * 主要协作：form.data.items.push、Object.fromEntries、.map。
  */
 function addItem() { form.data.items.push(Object.fromEntries(Object.keys(fields.value).map(key => [key, '']))) }
-defineExpose({ dirty, discardAllowed })
+defineExpose({ dirty, busy, discardAllowed })
 </script>
 <template>
  <div class="section-workspace">
