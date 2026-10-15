@@ -37,7 +37,12 @@ def main():
         raise SystemExit('Frontend build does not match the clean source commit')
     jar = source / 'backend/star-rain-boot/target/star-rain-boot-2.0.1.jar'
     with zipfile.ZipFile(jar) as archive:
-        info = archive.read('BOOT-INF/classes/META-INF/build-info.properties').decode('utf-8')
+        entries = set(archive.namelist())
+        candidates = entries.intersection({'META-INF/build-info.properties',
+                                          'BOOT-INF/classes/META-INF/build-info.properties'})
+        if len(candidates) != 1 or not any(name.startswith('BOOT-INF/lib/') for name in entries):
+            raise SystemExit('Expected an executable Spring Boot JAR with build metadata')
+        info = archive.read(candidates.pop()).decode('utf-8')
         backend_identity = dict(line.split('=', 1) for line in info.splitlines()
                                 if line and not line.startswith('#') and '=' in line)
     if backend_identity.get('build.commit') != commit:
