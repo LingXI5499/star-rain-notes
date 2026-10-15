@@ -8,6 +8,7 @@
  */
 
 import { computed, onUnmounted, ref } from 'vue'
+import { useAuthStore } from '../stores/authStore'
 
 export
   /**
@@ -37,7 +38,8 @@ export
    * 该值由依赖自动重新计算，不作为独立可写状态维护。
    */
   const remaining = computed(() => Math.max(0, Math.ceil((deadline.value - now.value) / 1000)))
-  let timer
+  const auth = useAuthStore()
+  let timer, disposed = false
 
   /**
    * 发送当前操作。
@@ -47,10 +49,12 @@ export
    * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
    */
   async function send(action) {
-    if (sending.value || remaining.value) return false
+    if (disposed || sending.value || remaining.value) return false
+    const identity = auth.identityVersion
     sending.value = true
     try {
       const result = await action()
+      if (disposed || identity !== auth.identityVersion) return false
       deadline.value = Date.now() + result.resendAfterSeconds * 1000
       now.value = Date.now()
       clearInterval(timer)
@@ -59,14 +63,17 @@ export
         if (!remaining.value) clearInterval(timer)
       }, 250)
       return result
+    } catch (error) {
+      if (disposed || identity !== auth.identityVersion) return false
+      throw error
     } finally {
-      sending.value = false
+      if (!disposed) sending.value = false
     }
   }
 
   /**
    * 组件销毁后执行剩余清理回调。
    */
-  onUnmounted(() => clearInterval(timer))
+  onUnmounted(() => { disposed = true; clearInterval(timer) })
   return { sending, remaining, send }
 }

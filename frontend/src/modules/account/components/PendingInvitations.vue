@@ -74,10 +74,11 @@ async function load() {
 async function accept(item) {
   if (busy.value || !await confirm.value.ask('接受这条管理员邀请？接受后将获得管理员身份，并需要重新登录。')) return
   busy.value = true; error.value = ''
+  const identity = auth.identityVersion
   try {
     await acceptMyInvitation(item.id)
-    auth.currentUser = null
-    auth.initialized = true
+    if (identity !== auth.identityVersion) return
+    auth.expireSession()
     clearCsrf()
     await router.replace({ path: '/useradmin/login', query: { invited: '1' } })
   } catch (cause) { error.value = errorMessage(cause) }

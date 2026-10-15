@@ -3,17 +3,42 @@ const DATABASE = 'star-rain-editor-drafts-v1',
 let opening
 const flushers = new Set()
 const blockedAccounts = new Set()
+const accountGenerations = new Map()
+const PRIVACY_PREFIX = 'star-rain-draft-owner:'
+function privacyState(account) {
+  try { return JSON.parse(localStorage.getItem(PRIVACY_PREFIX + account) || 'null') } catch { return null }
+}
+export const draftGeneration = account => Math.max(accountGenerations.get(String(account)) || 0, privacyState(account)?.generation || 0)
+const draftWritesBlocked = account => blockedAccounts.has(String(account)) || privacyState(account)?.blocked === true
 export const DRAFT_LIMITS = { points: 3, fields: 50 }
 export function allowDraftWrites(account, allowed = true) {
+  if (account == null) return
+  if (draftWritesBlocked(account) === allowed) {
+    const generation = draftGeneration(account) + 1
+    accountGenerations.set(String(account), generation)
+    try { localStorage.setItem(PRIVACY_PREFIX + account, JSON.stringify({ generation, blocked: !allowed })) } catch { /* IndexedDB errors remain visible to the caller. */ }
+  }
   if (allowed) blockedAccounts.delete(String(account))
   else blockedAccounts.add(String(account))
 }
+// A logout in another tab invalidates both in-memory identity and old editor generations.
+if (typeof window !== 'undefined') window.addEventListener('storage', event => {
+  if (!event.key?.startsWith(PRIVACY_PREFIX) || !event.newValue) return
+  try {
+    if (JSON.parse(event.newValue).blocked) {
+      blockedAccounts.add(event.key.slice(PRIVACY_PREFIX.length))
+      window.dispatchEvent(new Event('account-session-expired'))
+    }
+  } catch { /* Ignore malformed unrelated browser storage events. */ }
+})
 export function registerDraftFlusher(flush) {
   flushers.add(flush)
   return () => flushers.delete(flush)
 }
 export async function flushDrafts() {
-  await Promise.allSettled([...flushers].map((flush) => flush()))
+  const results = await Promise.allSettled([...flushers].map((flush) => flush()))
+  if (results.some(result => result.status === 'rejected' || result.value === false))
+    throw new Error('部分本地恢复稿未能写入，请检查并手动保存。')
 }
 export function draftKey(context) {
   if (context?.accountId == null || !context.module || context.documentId == null || !context.field)
@@ -26,8 +51,8 @@ export function draftKey(context) {
   ])
 }
 function open() {
-  if (!opening)
-    opening = new Promise((resolve, reject) => {
+  if (!opening) {
+    const pending = new Promise((resolve, reject) => {
       if (!globalThis.indexedDB) {
         reject(new Error('IndexedDB unavailable'))
         return
@@ -54,6 +79,9 @@ function open() {
         reject(new Error('Local database blocked'))
       }
     })
+    // Even a synchronous unavailable-storage rejection must reset the cached promise.
+    opening = pending.catch(error => { opening = null; throw error })
+  }
   return opening
 }
 const requestValue = (request) =>
@@ -93,7 +121,9 @@ export const accountDrafts = (account) =>
 export async function writeDraft(context, source, now = Date.now()) {
   const key = draftKey(context)
   if (!key) return
-  if (blockedAccounts.has(String(context.accountId))) return
+  const generation = context.draftGeneration ?? draftGeneration(context.accountId)
+  const valid = () => !draftWritesBlocked(context.accountId) && generation === draftGeneration(context.accountId)
+  if (!valid()) return
   const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(source))
   const hash = [...new Uint8Array(digest)]
     .map((value) => value.toString(16).padStart(2, '0'))
@@ -101,12 +131,13 @@ export async function writeDraft(context, source, now = Date.now()) {
   return transaction('readwrite', async (store) => {
     const account = String(context.accountId),
       old = await requestValue(store.get(key))
-    if (blockedAccounts.has(account)) return
+    if (!valid()) return
     if (!old) {
       const fields = await requestValue(store.index('account').getAll(account))
       if (fields.length >= DRAFT_LIMITS.fields)
         throw new Error('已有 50 个字段的本地草稿，请先确认并清理旧草稿；当前输入仍可手动保存。')
     }
+    if (!valid()) return
     const point = {
       source,
       baseline: context.baseline ?? '',
@@ -137,10 +168,14 @@ export async function migrateDraft(previous, next) {
   const from = draftKey(previous),
     to = draftKey(next)
   if (!from || !to || from === to || String(previous.accountId) !== String(next.accountId)) return
+  const generation = previous.draftGeneration ?? draftGeneration(previous.accountId)
+  const valid = () => !draftWritesBlocked(previous.accountId) && generation === draftGeneration(previous.accountId)
+  if (!valid()) return
   await transaction('readwrite', async (store) => {
     const record = await requestValue(store.get(from))
     if (!record) return
     const existing = await requestValue(store.get(to))
+    if (!valid()) return
     const points = [...(record.points || []), ...(existing?.points || [])]
       .sort((a, b) => b.time - a.time)
       .filter(

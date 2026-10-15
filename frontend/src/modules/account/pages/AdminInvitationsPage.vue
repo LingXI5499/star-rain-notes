@@ -9,6 +9,7 @@
  */
 
 
+import { useLatestAccountQuery } from '../support/useLatestAccountQuery'
 import { usePaginationScroll } from '../../../shared/composables/paginationScroll'
 import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
@@ -76,12 +77,9 @@ const statusLabel = (status) => ({ PENDING: '待接受', ACCEPTED: '已接受', 
  * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
+const latestQuery = useLatestAccountQuery({ data, error, loading })
 async function load() {
-  loading.value = true
-  error.value = ''
-  try { data.value = await api.listInvitations({ page: page.value, pageSize: 20 }) }
-  catch (cause) { error.value = errorMessage(cause) }
-  finally { loading.value = false }
+  return latestQuery(() => api.listInvitations({ page: page.value, pageSize: 20 }))
 }
 
 /**

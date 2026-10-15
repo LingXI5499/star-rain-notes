@@ -1,54 +1,126 @@
-/**
- * authStore.js：账号模块的状态仓库。
- * 职责范围：身份、会话、邮箱验证、角色权限和邀请策略。
- * 集中维护跨组件共享状态，并通过仓库动作完成读取或更新。
- * 主要依赖：pinia、../api/accountApi、../api/http。
- */
-
+/** Identity generations guard responses; server login/logout mutations execute in order. */
 import { defineStore } from 'pinia'
 import * as api from '../api/accountApi'
-import { clearCsrf } from '../api/http'
+import { invalidateAccountRequests } from '../../../shared/http'
+import * as drafts from '../../../shared/editor/recovery/draftStore'
 
+const mutations = new WeakMap()
+function mutate(store, operation) {
+  const pending = (mutations.get(store) || Promise.resolve()).catch(() => {}).then(operation)
+  mutations.set(store, pending)
+  return pending
+}
 export const useAuthStore = defineStore('account-auth', {
-  state: () => ({ currentUser: null, initialized: false }),
+  state: () => ({
+    currentUser: null, initialized: false, identityVersion: 0, readVersion: 0,
+    loginBusy: false, logoutBusy: false, cleanupAccounts: [], cleanupBusy: false, cleanupError: '',
+  }),
   getters: {
     hasPermission: (state) => (code) => state.currentUser?.permissions?.includes(code) ?? false,
     canManage: (state) => (code) => Boolean(state.currentUser?.roles?.includes('SUPER_ADMIN') && state.currentUser?.permissions?.includes(code)),
   },
   actions: {
-    async initialize() {
+    invalidateIdentity() {
+      this.identityVersion++
+      invalidateAccountRequests()
+    },
+    expireSession() {
+      this.invalidateIdentity()
+      if (this.currentUser?.id != null) drafts.allowDraftWrites(this.currentUser.id, false)
+      this.currentUser = null
+      this.initialized = true
+    },
+    async initialize() { return this.readAccount(true) },
+    async refresh() { return this.readAccount(false) },
+    async readAccount(anonymousAllowed) {
+      const identity = this.identityVersion, read = ++this.readVersion
       try {
-        this.currentUser = await api.currentAccount()
+        await mutations.get(this)
+        if (identity !== this.identityVersion || this.logoutBusy) return false
+        const user = await api.currentAccount()
+        if (identity !== this.identityVersion || read !== this.readVersion || this.logoutBusy) return false
+        this.currentUser = user
+        return true
       } catch (error) {
-        this.currentUser = null
-        if (error.response?.status !== 401) throw error
+        if (identity !== this.identityVersion || read !== this.readVersion) return false
+        if (error.response?.status === 401) this.currentUser = null
+        else throw error
+        if (!anonymousAllowed) throw error
       } finally {
-        this.initialized = true
+        if (identity === this.identityVersion && read === this.readVersion) this.initialized = true
       }
     },
     async login(identifier, password) {
-      this.currentUser = await api.login({ identifier, password })
-      const { allowDraftWrites } = await import('../../../shared/editor/recovery/draftStore')
-      allowDraftWrites(this.currentUser?.id)
-      clearCsrf()
-      this.initialized = true
+      if (this.loginBusy || this.logoutBusy) return false
+      this.loginBusy = true
+      this.invalidateIdentity()
+      const identity = this.identityVersion
+      try {
+        const user = await mutate(this, () => api.login({ identifier, password }))
+        if (identity !== this.identityVersion) return false
+        this.currentUser = user
+        drafts.allowDraftWrites(user?.id)
+        invalidateAccountRequests()
+        this.initialized = true
+        return true
+      } finally { this.loginBusy = false }
     },
-    async refresh() {
-      this.currentUser = await api.currentAccount()
-      this.initialized = true
+    /** A late profile/email response cannot restore an identity that has logged out. */
+    async updateCurrent(action) {
+      const identity = this.identityVersion, account = this.currentUser?.id
+      const user = await action()
+      if (identity !== this.identityVersion || account !== this.currentUser?.id || this.logoutBusy) return false
+      this.currentUser = user
+      return true
     },
     async logout() {
-      const { flushDrafts,accountDrafts,clearAccountDrafts,allowDraftWrites } = await import('../../../shared/editor/recovery/draftStore')
+      if (this.logoutBusy) return false
+      this.logoutBusy = true
       const account = this.currentUser?.id
-      await flushDrafts()
-      let drafts = []
-      try { if (account != null) drafts = await accountDrafts(account) } catch { /* Storage failure must not prevent a server logout. */ }
-      if (drafts.length && !window.confirm(`当前浏览器有 ${drafts.length} 个字段的本地恢复稿。确认退出并删除这些本地副本？尚未上传的内容将无法恢复。`)) throw new Error('已取消退出，本地恢复稿仍保留。')
-      allowDraftWrites(account,false)
-      try { await api.logout() } catch(error) { allowDraftWrites(account);throw error }
-      this.currentUser = null
-      clearCsrf()
-      if (drafts.length) await clearAccountDrafts(account).catch(() => {})
+      try {
+        let records = [], inspectionFailed = false
+        try {
+          await drafts.flushDrafts()
+          if (account != null) records = await drafts.accountDrafts(account)
+        } catch { inspectionFailed = true }
+        const message = inspectionFailed
+          ? '无法检查本浏览器的本地恢复稿。选择“确定”仍然退出（本地备份可能残留）；选择“取消”返回检查。'
+          : `当前浏览器有 ${records.length} 个字段的本地恢复稿。确认退出并删除这些本地副本？尚未上传的内容将无法恢复。`
+        if ((inspectionFailed || records.length) && !window.confirm(message)) {
+          throw Object.assign(new Error('已取消退出，请返回检查本地恢复稿。'), { code: 'LOGOUT_CANCELED' })
+        }
+        this.invalidateIdentity()
+        drafts.allowDraftWrites(account, false)
+        try {
+          await mutate(this, () => api.logout())
+        } catch (error) {
+          if (error.response?.status !== 401) {
+            drafts.allowDraftWrites(account)
+            throw error
+          }
+        }
+        this.expireSession()
+        if (account != null) {
+          if (!this.cleanupAccounts.includes(account)) this.cleanupAccounts.push(account)
+          await this.retryDraftCleanup()
+        }
+        return true
+      } finally { this.logoutBusy = false }
+    },
+    /** Deletion failures remain visible after navigation and can be retried independently. */
+    async retryDraftCleanup() {
+      if (this.cleanupBusy) return
+      this.cleanupBusy = true
+      this.cleanupError = ''
+      for (const account of [...this.cleanupAccounts]) {
+        try {
+          await drafts.clearAccountDrafts(account)
+          this.cleanupAccounts = this.cleanupAccounts.filter(item => item !== account)
+        } catch {
+          this.cleanupError = '服务端已退出，但本浏览器可能仍有本地副本。请重试清理；也可在浏览器站点设置中清除本站数据。公共电脑请勿保留恢复稿。'
+        }
+      }
+      this.cleanupBusy = false
     },
   },
 })

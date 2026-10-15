@@ -421,17 +421,10 @@ async function logout() {
   if (logoutBusy.value) return
   logoutBusy.value = true
   try {
-    await auth.logout()
-  } catch {
-    // 退出失败（会话已失效等）也把本地状态清掉，不要把人留在后台里
-    auth.currentUser = null
-  } finally {
-    logoutBusy.value = false
-    // 退出后回账号树前台（accountPath('/') = /useradmin），与前台账号菜单的退出落点统一。
-    // 之前这里落 /useradmin/login：同在账号树内，但「我刚退出了」被送到登录页，
-    // 与前台菜单的行为不一致；前台首页本来就不需要登录态，停在那里右上角自然变回「登录」。
-    await router.replace(accountPath('/'))
-  }
+    if (await auth.logout()) await router.replace(accountPath('/'))
+  } catch (cause) {
+    window.alert(errorMessage(cause))
+  } finally { logoutBusy.value = false }
 }
 
 /**
@@ -463,6 +456,7 @@ async function openPasswordDialog() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function submitPassword() {
+  if (passwordBusy.value) return
   const form = passwordForm.value
   if (!form.currentPassword || !form.newPassword) {
     passwordError.value = '请填写当前密码与新密码。'
@@ -478,7 +472,7 @@ async function submitPassword() {
     await accountApi.changePassword(form)
     // 后端在修改密码后立即失效会话，这里引导重新登录
     passwordDialog.value?.close()
-    auth.currentUser = null
+    auth.expireSession()
     await router.replace({ path: accountPath('/login'), query: { redirect: accountPath('/dashboard') } })
   } catch (cause) {
     passwordError.value = errorMessage(cause)

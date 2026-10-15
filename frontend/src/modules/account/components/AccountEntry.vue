@@ -162,7 +162,7 @@ async function logout() {
   busy.value = true
   failure.value = ''
   try {
-    await auth.logout()
+    if (!await auth.logout()) return
     // 退出后回到账号树前台（/useradmin），不是公开站也不是登录页：
     // 前台首页本来就不需要登录态，停在那里右上角自然变回「登录」，
     // 比被弹到登录页更符合「我只是退出了账号」的预期，也不会掉出账号外壳。
