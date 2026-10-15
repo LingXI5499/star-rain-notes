@@ -16,6 +16,9 @@ import { createWorkSection, updateWorkSection, removeWorkSection, orderWorkSecti
 import { blockTypes, itemFields, blockPayload, emptyBlock } from '../../support/workBlocks'
 import { errorMessage } from '../../../../shared/http'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('portfolio-section')
+
 import AppConfirmDialog from '../../../../shared/ui/AppConfirmDialog.vue'
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
@@ -181,7 +184,7 @@ defineExpose({ dirty, discardAllowed })
    <p v-if="error" role="alert" class="section-error">{{ error }}</p><p v-if="notice" role="status">{{ notice }}</p>
    <label>区块标题<input v-model="form.title" maxlength="255" placeholder="例如：项目背景" /></label>
    <label class="section-visible"><input v-model="form.visible" type="checkbox" />在公开页面展示</label>
-   <MarkdownEditor v-if="markdownType" :key="revision" ref="markdown" v-model="form.content" :pick-image="pickImage" />
+   <MarkdownEditor :editor-context="editorContext(selectedId, 'content', work.rowVersion, saved ? JSON.parse(saved).content : '', String(work.id))" v-if="markdownType" :key="revision" ref="markdown" v-model="form.content" :pick-image="pickImage" />
    <template v-else-if="form.sectionType === 'CODE'"><label>代码语言<input v-model="form.data.language" placeholder="java / javascript / sql" maxlength="50" /></label><label>代码<textarea v-model="form.content" class="code-input" rows="16" spellcheck="false" /></label></template>
    <template v-else-if="form.sectionType === 'QUOTE'"><label>引用内容<textarea v-model="form.content" rows="6" /></label><label>作者 / 来源<input v-model="form.data.author" maxlength="255" /></label></template>
    <template v-else-if="fields"><div v-for="(item,index) in form.data.items" :key="index" class="section-item"><header><strong>条目 {{ index + 1 }}</strong><button @click="form.data.items.splice(index,1)">移除条目</button></header><label v-for="(label,key) in fields" :key="key">{{ label }}<textarea v-if="key === 'description'" v-model="item[key]" rows="2" maxlength="2000" /><input v-else v-model="item[key]" :type="key === 'url' ? 'url' : 'text'" maxlength="2000" /></label></div><button @click="addItem">＋ 添加条目</button></template>

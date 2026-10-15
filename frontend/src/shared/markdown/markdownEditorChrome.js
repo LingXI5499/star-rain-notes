@@ -22,6 +22,7 @@
  * 下限 640：低于这个高度时 IR 模式的编辑区几乎看不到内容，
  * 600px 高的窗口（笔记本分屏）也要保证可用，所以不做「按比例缩到很小」的处理。
  */
+const fullscreenOwners = new Set()
 export
   /**
    * 解析VditorEditor高度。
@@ -32,20 +33,15 @@ export
   return Math.max(640, Number(viewportHeight) - 280)
 }
 
-/*
- * 全屏时需要给 <html> 打标记。
- *
- * Vditor 全屏是 position: fixed，但它仍然是 `.admin-shell__body` 的后代，
- * 而侧栏 `.admin-shell__sidebar` 的 z-index 是 30 —— 不把外壳藏起来，
- * 侧栏就会盖在编辑器上面（fixed 元素也不会超出祖先的堆叠上下文）。
- * 样式见 styles/admin.css 的 html.is-vditor-fullscreen 段。
- */
+// Owners isolate cleanup when a page contains more than one editor.
 export
   /**
    * 设置VditorFullscreen有效。
    * 主要协作：document.documentElement.classList.toggle、Boolean。
    * @param active 有效；默认值、解构字段与可选参数见函数签名。
    */
-  function setVditorFullscreenActive(active) {
-  document.documentElement.classList.toggle('is-vditor-fullscreen', Boolean(active))
+  function setVditorFullscreenActive(active, owner = 'legacy') {
+  if (active) fullscreenOwners.add(owner)
+  else fullscreenOwners.delete(owner)
+  document.documentElement.classList.toggle('is-vditor-fullscreen', fullscreenOwners.size > 0)
 }

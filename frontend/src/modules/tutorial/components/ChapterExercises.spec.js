@@ -8,6 +8,7 @@
 
 import { mount, flushPromises } from '@vue/test-utils'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { createPinia, setActivePinia } from 'pinia'
 import ChapterExercises from './ChapterExercises.vue'
 import { listCards, listQuestions, createCard, createQuestion, updateCard, updateQuestion, deleteCard, reorderCards } from '../api/tutorialApi'
 const editorDrafts = vi.hoisted(() => ({}))
@@ -18,7 +19,7 @@ vi.mock('../../../shared/editor/MarkdownEditor.vue', () => ({ default: {
  template: '<div />',
 } }))
 describe('chapter learning content editor', () => {
- beforeEach(() => { vi.restoreAllMocks(); vi.clearAllMocks(); window.confirm = vi.fn(); Object.keys(editorDrafts).forEach(key => delete editorDrafts[key]); listCards.mockResolvedValue([]); listQuestions.mockResolvedValue([]) })
+ beforeEach(() => { setActivePinia(createPinia()); vi.restoreAllMocks(); vi.clearAllMocks(); window.confirm = vi.fn(); Object.keys(editorDrafts).forEach(key => delete editorDrafts[key]); listCards.mockResolvedValue([]); listQuestions.mockResolvedValue([]) })
  it('saves the latest card Markdown even before the editor emits v-model', async () => {
   const wrapper = mount(ChapterExercises, { props: { chapterId: '9' } }); await flushPromises()
   await wrapper.find('textarea').setValue('Recall this')

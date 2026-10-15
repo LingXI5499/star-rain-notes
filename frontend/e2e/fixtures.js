@@ -18,7 +18,8 @@ export const test = base.extend({
     const browserErrors = []
     page.on('pageerror', error => { browserErrors.push(error.message); console.error('Browser application error:', error.message) })
     const state = { signedIn: true, user, article: post(), savedBodies: [], delayBody: null, blogDelays: {}, workDelays: {},
-      tags: [{ id: 1, name: 'Unused', slug: 'unused', status: 'ENABLED', postCount: 0 }], deletedTags: [] }
+      tags: [{ id: 1, name: 'Unused', slug: 'unused', status: 'ENABLED', postCount: 0 }], deletedTags: [], bodyFailure: false,
+      writing:{id:2,title:'Writing',bodyMarkdown:'English body\n',translationZhMarkdown:'中文正文\n',rowVersion:1,state:'DRAFT',visibility:'PRIVATE',keywords:[]},writingSaves:[] }
     await page.route('https://**/*', async route => {
       const url = new URL(route.request().url()), start = url.pathname.indexOf('/dist/')
       if (!url.pathname.includes('vditor') || start < 0) return route.abort()
@@ -37,6 +38,11 @@ export const test = base.extend({
       if (path === '/account/me') return state.signedIn ? ok(state.user) : fail(401, 'UNAUTHORIZED')
       if (path === '/auth/login') { state.signedIn = true; return ok(state.user) }
       if (path === '/auth/logout') { state.signedIn = false; return ok(null) }
+      if(path==='/public/english/taxonomy')return ok([])
+      if(path==='/account/english/writing/articles/2') {
+        if(method==='PUT'){const submitted=request.postDataJSON();state.writingSaves.push(submitted);state.writing={...state.writing,...submitted,rowVersion:state.writing.rowVersion+1}}
+        return ok(state.writing)
+      }
       if (path === '/public/site/config') return ok({ siteName: '星雨笔录', modules: [] })
       if (path === '/public/site/home') return ok({ config: { siteName: '星雨笔录' }, sections: [{ code: 'HERO' }] })
       if (path === '/public/seo/meta') {
@@ -50,6 +56,7 @@ export const test = base.extend({
       }
       if (path === '/admin/blog/posts') return ok({ items: [state.article], total: 1 })
       if (/^\/admin\/blog\/posts\/\d+\/body$/.test(path)) {
+        if(state.bodyFailure)return fail(409,'CONTENT_VERSION_CONFLICT')
         const payload = request.postDataJSON(); state.savedBodies.push(payload.bodyMarkdown)
         if (state.delayBody) await state.delayBody
         state.article = { ...state.article, bodyMarkdown: payload.bodyMarkdown }; return ok(state.article)

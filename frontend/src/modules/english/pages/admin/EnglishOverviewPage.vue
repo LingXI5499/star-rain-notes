@@ -12,6 +12,9 @@
 import { onMounted, reactive, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('english-overview')
+
 import { errorMessage } from '../../../../shared/http'
 import { accountPath } from '../../../../shared/viewMode'
 import { getAdminEnglishOverview, updateEnglishOverview } from '../../api/englishApi'
@@ -20,6 +23,7 @@ import { getAdminEnglishOverview, updateEnglishOverview } from '../../api/englis
  * form；通过 reactive 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
+const acceptedOverview = ref({})
 const form = reactive({ title: '', subtitle: '', introduction: '', roadmapMarkdown: '' })
 /**
  * editor；通过 ref 建立。
@@ -59,6 +63,7 @@ async function load() {
   error.value = ''
   try {
     const data = await getAdminEnglishOverview()
+    acceptedOverview.value = { ...data }
     for (const key of Object.keys(form)) form[key] = data[key] || ''
   } catch (cause) { error.value = errorMessage(cause) }
   finally { loading.value = false }
@@ -76,13 +81,11 @@ async function save() {
   saving.value = true
   error.value = ''
   notice.value = ''
+  const submitted = { ...form, title: form.title.trim(), roadmapMarkdown: editor.value?.getMarkdown?.() ?? form.roadmapMarkdown }
   try {
-    const data = await updateEnglishOverview({
-      ...form,
-      title: form.title.trim(),
-      roadmapMarkdown: editor.value?.getMarkdown?.() ?? form.roadmapMarkdown,
-    })
-    for (const key of Object.keys(form)) form[key] = data[key] || ''
+    const data = await updateEnglishOverview(submitted)
+    acceptedOverview.value = { ...data }
+    if (JSON.stringify({ ...form, title: form.title.trim(), roadmapMarkdown: editor.value?.getMarkdown?.() ?? form.roadmapMarkdown }) === JSON.stringify(submitted)) for (const key of Object.keys(form)) form[key] = data[key] || ''
     notice.value = '英语总览已保存。'
   } catch (cause) { error.value = errorMessage(cause) }
   finally { saving.value = false }
@@ -107,7 +110,7 @@ onMounted(load)
       <label>标题<input v-model="form.title" maxlength="200" required></label>
       <label>副标题<input v-model="form.subtitle" maxlength="500"></label>
       <label>介绍<textarea v-model="form.introduction" rows="5" maxlength="10000"></textarea></label>
-      <div class="english-overview-admin__editor"><span>长期学习路线</span><MarkdownEditor ref="editor" v-model="form.roadmapMarkdown" /></div>
+      <div class="english-overview-admin__editor"><span>长期学习路线</span><MarkdownEditor :editor-context="loading ? null : editorContext('overview', 'roadmapMarkdown', acceptedOverview.rowVersion, acceptedOverview.roadmapMarkdown || '')" ref="editor" v-model="form.roadmapMarkdown" /></div>
       <button type="submit" :disabled="saving">{{ saving ? '保存中…' : '保存总览' }}</button>
     </form>
   </main>

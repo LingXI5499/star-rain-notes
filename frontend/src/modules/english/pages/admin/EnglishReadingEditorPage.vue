@@ -12,6 +12,9 @@
 import { computed,nextTick,ref,watch } from 'vue'
 import { RouterLink,useRoute,useRouter } from 'vue-router'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('english-reading')
+
 import PublicSelect from '../../../../shared/ui/PublicSelect.vue'
 import PublicFilterTabs from '../../../../shared/ui/PublicFilterTabs.vue'
 import { accountPath } from '../../../../shared/viewMode'
@@ -91,8 +94,8 @@ watch(()=>[form.value.bodyMarkdown,form.value.sourceUrl],()=>{if(!initializing &
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function save(){if(busy.value)return false;if(englishEditor.value)form.value.bodyMarkdown=englishEditor.value.getMarkdown();if(chineseEditor.value)form.value.translationZhMarkdown=chineseEditor.value.getMarkdown();await nextTick();busy.value=true;error.value='';notice.value=''
- try { const payload={...form.value,rowVersion:article.value?.rowVersion};const saved=article.value?await updateReading(article.value.id,payload):await createReading(payload);await accept(saved);await loadRows();notice.value='正文与分类已保存。'
-  if(route.params.documentId==='new')await router.replace(accountPath('/english/manage/editor/reading/'+saved.id));return true
+ try { const payload={...form.value,rowVersion:article.value?.rowVersion};const saved=article.value?await updateReading(article.value.id,payload):await createReading(payload);const unchanged=JSON.stringify({...form.value,rowVersion:article.value?.rowVersion})===JSON.stringify(payload);if(unchanged)await accept(saved);else{article.value=saved;dirty.value=true}await loadRows();notice.value=unchanged?'正文与分类已保存。':'提交的正文已保存，后续输入仍待保存。'
+  if(route.params.documentId==='new' && !dirty.value)await router.replace(accountPath('/english/manage/editor/reading/'+saved.id));return true
  }catch(cause){error.value=errorMessage(cause);return false}finally{busy.value=false}}
 /**
  * 当前业务状态，合法取值由本模块状态定义和状态转换规则约束的处理函数。
@@ -160,7 +163,7 @@ async function restored(value){await accept(value);await loadRows();notice.value
  <section v-show="tab==='body'"><div class="english-rw__panel"><div class="english-rw__fields"><label>标题 · 可选<input v-model="form.title" maxlength="200" placeholder="Untitled Article"></label><label>摘要 · 可选<textarea v-model="form.summary" maxlength="1000" rows="2"></textarea></label></div><EnglishTaxonomyFields v-model="form" /></div>
  <div class="english-rw__panel"><h2>来源与公开权限</h2><p class="english-rw__muted">外部作品需要先确认公开依据。正文或来源变化后请重新核查。</p><div class="english-rw__fields"><PublicSelect v-model="form.contentOrigin" label="内容来源" :options="[{value:'EXTERNAL',label:'外部作品'},{value:'ORIGINAL',label:'本人原创'}]" /><PublicSelect v-model="form.rights.rightsStatus" label="版权核查状态" :options="[{value:'PENDING',label:'待核查'},{value:'CLEARED',label:'已核查可公开'},{value:'BLOCKED',label:'禁止公开'}]" /><label>来源名称<input v-model="form.sourceName" maxlength="200"></label><label>来源地址<input v-model="form.sourceUrl" type="url" maxlength="500"></label><label>原作者<input v-model="form.rights.originalAuthor" maxlength="200"></label><label>公开依据 · 仅管理端可见<textarea v-model="form.rights.rightsBasis" maxlength="1000" rows="3"></textarea></label><label>读者可见的许可说明<textarea v-model="form.rights.licenseNotice" maxlength="10000" rows="3"></textarea></label></div>
  </div>
- <section class="english-rw__panel"><h2>完整英文正文</h2><MarkdownEditor ref="englishEditor" v-model="form.bodyMarkdown" /></section><section class="english-rw__panel"><h2>完整中文译文 · 可选</h2><MarkdownEditor ref="chineseEditor" v-model="form.translationZhMarkdown" /></section></section>
+ <section class="english-rw__panel"><h2>完整英文正文</h2><MarkdownEditor :editor-context="loading ? null : editorContext(article?.id || route.params.documentId, 'bodyMarkdown', article?.rowVersion, article?.bodyMarkdown || '')" ref="englishEditor" v-model="form.bodyMarkdown" /></section><section class="english-rw__panel"><h2>完整中文译文 · 可选</h2><MarkdownEditor :editor-context="loading ? null : editorContext(article?.id || route.params.documentId, 'translationZhMarkdown', article?.rowVersion, article?.translationZhMarkdown || '')" ref="chineseEditor" v-model="form.translationZhMarkdown" /></section></section>
  <template v-if="tab==='alignments' || tab==='annotations'"><p v-if="dirty" class="english-rw__notice">请先保存正文，再选择片段。正文修改会使已有标注失效。</p><p class="english-rw__muted">{{tab==='alignments'?'在下方预览中依次选择英文、中文片段，可按一对多加入同组。':'在英文预览中选择少量值得精读的片段，填写人工解析。'}}</p>
  <EnglishBilingualProse :english="article.bodyMarkdown || ''" :chinese="article.translationZhMarkdown || ''" :mode="tab==='alignments'?'BOTH':'EN'" :selecting="!dirty" @selection="select" @invalid="error=$event" />
  <div v-if="tab==='alignments'" class="english-rw__panel"><h2>待建立的对齐组</h2><div v-for="(r,i) in selected" :key="i" class="english-rw__row"><span>{{r.language}} · {{r.expectedText}}</span><button class="english-rw__button" @click="selected.splice(i,1)">移除片段</button></div><button class="english-rw__button" :disabled="dirty" @click="addGroup">添加为一个对齐组</button><div v-for="[key,items] in groups" :key="key" class="english-rw__row"><div><p v-for="(r,i) in items" :key="i">{{r.language}} · {{r.expectedText}} <span v-if="r.status==='STALE'" class="english-rw__badge">已失效，请重新选择</span></p></div><button class="english-rw__button" @click="rows.alignments=rows.alignments.filter(r=>r.groupKey!==key)">移除整组</button></div><button class="english-rw__button english-rw__button--primary" :disabled="busy || dirty" @click="saveRows('alignments')">保存所有对齐组</button></div>

@@ -7,8 +7,8 @@
  * 阅读入口：applyTheme（应用主题）；setThemeMode（设置主题Mode）。
  */
 
-import { computed, ref } from 'vue'
-import { applyManualTheme, readManualTheme } from '../../../shared/theme/manualTheme'
+import { computed, ref, watch } from 'vue'
+import { appliedManualTheme, applyManualTheme, readManualTheme } from '../../../shared/theme/manualTheme'
 
 // Public pages and the console retain their own manual preferences.
 const STORAGE_KEY = 'star-rain-theme'
@@ -18,6 +18,7 @@ export const THEME_MODES = ['light', 'dark']
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const mode = ref(readManualTheme(STORAGE_KEY))
+watch(appliedManualTheme, value => { if (value?.key === STORAGE_KEY) mode.value = value.theme })
 export
   /**
    * resolved主题；通过 computed 建立。

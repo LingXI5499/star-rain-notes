@@ -20,6 +20,9 @@ import {
 import { errorMessage, bindEditingVersion } from '../../../../shared/http'
 import { accountPath } from '../../../../shared/viewMode'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('portfolio')
+
 import WorkSectionEditor from '../../components/admin/WorkSectionEditor.vue'
 import { stageLabels, linkTypes } from '../../support/workBlocks'
 import AppConfirmDialog from '../../../../shared/ui/AppConfirmDialog.vue'
@@ -378,7 +381,7 @@ onMounted(async () => { try { [taxonomy.value, templates.value] = await Promise.
       </section>
       <section v-show="tab === 'content'" class="work-content-panel"><WorkSectionEditor v-if="current" ref="sectionEditor" :work="current" @updated="current = $event" @conflict="versionConflict = true" /><p v-else class="work-editor__section">先保存基本信息，再编辑内容区块。</p></section>
       <section v-show="tab === 'taxonomy'" class="work-editor__panel"><label>作品分类<select v-model="form.categoryId"><option value="">请选择</option><option v-for="item in taxonomy.categories" :key="item.id" :value="item.id">{{ item.name }}</option></select></label><label>作品形态<select v-model="form.formatId"><option value="">请选择</option><option v-for="item in taxonomy.formats" :key="item.id" :value="item.id">{{ item.name }}</option></select></label><div class="wide"><h2>标签</h2><div class="work-tag-picker"><label v-for="item in taxonomy.tags" :key="item.id"><input v-model="form.tagIds" :value="item.id" type="checkbox" />{{ item.name }}</label></div></div></section>
-      <section v-if="current?.bodyMarkdown?.trim() && !current.sections?.length" v-show="tab === 'content'" class="work-editor__section"><h2>原有正文</h2><p>添加区块后，公开详情以区块内容为准。原有正文会保留。</p><MarkdownEditor :key="editorKey" ref="editor" v-model="form.bodyMarkdown" :pick-image="pickBodyImage" /></section>
+      <section v-if="current?.bodyMarkdown?.trim() && !current.sections?.length" v-show="tab === 'content'" class="work-editor__section"><h2>原有正文</h2><p>添加区块后，公开详情以区块内容为准。原有正文会保留。</p><MarkdownEditor :editor-context="loading ? null : editorContext(workId, 'bodyMarkdown', editVersion, savedForm ? JSON.parse(savedForm).bodyMarkdown : '')" :key="editorKey" ref="editor" v-model="form.bodyMarkdown" :pick-image="pickBodyImage" /></section>
       <section v-show="tab === 'media'" class="work-editor__section"><h2>作品封面</h2><p>从媒体库选择一张公开图片作为封面。</p><div class="work-editor__tools"><button type="button" @click="addMedia">{{ mediaItems.length ? '更换封面' : '选择封面' }}</button></div>
         <div class="work-editor__rows"><div v-for="item in mediaItems" :key="item.id"><img v-if="item.url" :src="item.url" :alt="item.caption || '作品封面'" /><span>当前封面</span><button type="button" @click="removeMedia(item)">移除</button></div></div>
       </section>

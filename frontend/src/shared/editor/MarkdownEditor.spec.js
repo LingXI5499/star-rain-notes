@@ -12,7 +12,7 @@ import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useAuthStore } from '../../modules/account/stores/authStore'
 const state = vi.hoisted(() => ({ options: null, insert: vi.fn(), upload: vi.fn() }))
-vi.mock('../../modules/media/api/mediaApi', () => ({ uploadMedia: state.upload }))
+vi.mock('../../modules/media/api/mediaApi', () => ({ uploadMedia: state.upload, getMedia: vi.fn() }))
 vi.mock('../markdown/mathJax', () => ({ prepareMathJax: vi.fn().mockResolvedValue(undefined) }))
 vi.mock('vditor', () => ({ default: class {
   constructor(host, options) { state.options = options; this.value = options.value; host.innerHTML = '<div contenteditable="true"><p>原文</p></div>' }
@@ -29,6 +29,18 @@ describe('shared Markdown editor', () => {
   beforeEach(() => { vi.clearAllMocks(); state.options = null; setActivePinia(createPinia()); useAuthStore().currentUser = { permissions: ['media:upload'] } })
   it('keeps the legacy blog import pointing to the same editor', () => {
     expect(LegacyMarkdownEditor).toBe(MarkdownEditor)
+  })
+  it('moves the same editor for fullscreen and releases page state on unmount', async () => {
+    const wrapper = await editor()
+    await flushPromises()
+    const original = wrapper.find('[contenteditable]').element
+    await wrapper.find('.editor-menubar__fullscreen').trigger('click')
+    await flushPromises()
+    expect(document.querySelector('.markdown-editor--fullscreen [contenteditable]')).toBe(original)
+    expect(document.documentElement.classList.contains('is-vditor-fullscreen')).toBe(true)
+    wrapper.unmount()
+    expect(document.querySelector('.markdown-editor--fullscreen')).toBeNull()
+    expect(document.documentElement.classList.contains('is-vditor-fullscreen')).toBe(false)
   })
   /**
    * editor的处理函数。
@@ -81,6 +93,17 @@ describe('shared Markdown editor', () => {
     expect(state.insert).not.toHaveBeenCalled()
     wrapper.unmount()
   })
+  it('aborts an old upload on a context switch even when both fields have identical text', async () => {
+    let resolve
+    state.upload.mockReturnValue(new Promise(done => { resolve = done }))
+    const wrapper = await editor()
+    await wrapper.setProps({editorContext:{accountId:1,module:'blog',documentId:'A',field:'body',baseline:'原文'}})
+    transfer(wrapper,'paste',[new File(['PNG'],'late.png')])
+    await wrapper.setProps({editorContext:{accountId:1,module:'blog',documentId:'B',field:'body',baseline:'原文'}})
+    expect(state.upload.mock.calls[0][2].signal.aborted).toBe(true)
+    resolve({originalName:'late.png',contentUrl:'/api/media/assets/20/content'});await flushPromises()
+    expect(state.insert).not.toHaveBeenCalled();wrapper.unmount()
+  })
   it('keeps the document untouched on upload failure and on unmount', async () => {
     state.upload.mockRejectedValue({ response: { status: 500, data: { code: 'MEDIA_STORAGE_WRITE_FAILED' } } })
     const wrapper = await editor()
@@ -106,5 +129,18 @@ describe('shared Markdown editor', () => {
     expect(state.insert).not.toHaveBeenCalled()
     expect(wrapper.text()).toContain('没有媒体上传权限')
     wrapper.unmount()
+  })
+  it('reuses and releases the same outside listener over a hundred table openings', async () => {
+    const add = vi.spyOn(document, 'addEventListener'), remove = vi.spyOn(document, 'removeEventListener')
+    const wrapper = await editor()
+    for (let index = 0; index < 100; index++) {
+      state.options.toolbar.find(item => item.name === 'table-size').click()
+      await flushPromises()
+      document.body.dispatchEvent(new Event('pointerdown', { bubbles: true }))
+      await flushPromises()
+    }
+    wrapper.unmount()
+    for (const [event, handler] of add.mock.calls.filter(([name]) => name === 'pointerdown')) expect(remove.mock.calls.some(([name, callback]) => name === event && callback === handler)).toBe(true)
+    add.mockRestore(); remove.mockRestore()
   })
 })

@@ -2,6 +2,7 @@
 # 只读取 Git 跟踪的当前源码，忽略本机运行数据；发现问题时不打印匹配到的隐私值。
 # PurePosixPath 统一处理 Git 返回的路径，避免 Windows 分隔符影响目录白名单。
 import pathlib
+import hashlib
 import re
 import subprocess
 import sys
@@ -20,12 +21,19 @@ secret_patterns = [
     re.compile(r'\bAKIA[A-Z0-9]{16}\b'),
     re.compile(r'(?<![\w.])[\w.+-]+@(?:qq|163|126|gmail|outlook|hotmail)\.com\b', re.I),
 ]
+# Word export bundles this exact upstream license snapshot. Its copyright includes
+# a publicly distributed author email; exempt only the email heuristic, never keys/tokens.
+# A changed snapshot must be reviewed and pinned again, not admitted by path alone.
+public_license_snapshots = {
+    'frontend/public/legal/editor-word-third-party-notices.txt':
+        '058f7c18088e046e163ec1c423775c00cedeffef55061d6187fa3a4599cbc8a2',
+}
 # 累积所有问题再统一报告，方便一次修正多个文件。
 errors = []
 # 逐文件验证目录范围、私有配置类型和内容特征；路径或类型不允许时不继续读取内容。
 for name in filter(None, paths):
     path = pathlib.PurePosixPath(name)
-    audit_document = name.startswith(('docs/audit/', 'docs/deployment/')) and name.endswith('.md')
+    audit_document = name.startswith(('docs/audit/', 'docs/deployment/', 'docs/editor/')) and name.endswith('.md')
     verification_tool = path.parts[0] == 'tools' and path.suffix in {'.py', '.mjs', '.txt'}
     if path.parts[0] not in {'backend', 'frontend', 'skills', '.github'} and name not in allowed_root_files and not audit_document and not verification_tool:
         errors.append((name, 'outside active source tree'))
@@ -50,9 +58,14 @@ for name in filter(None, paths):
         content = full.read_text(encoding='utf-8')
     except UnicodeDecodeError:
         continue
+    expected_license_hash = public_license_snapshots.get(name)
+    verified_license = bool(expected_license_hash and hashlib.sha256(content.encode('utf-8')).hexdigest() == expected_license_hash)
+    if expected_license_hash and not verified_license:
+        errors.append((name, 'third-party license snapshot differs from reviewed upstream content'))
     # 从 1 开始计数便于编辑器定位；只记录行号，不泄露该行的原文。
     for number, line in enumerate(content.splitlines(), 1):
-        if any(pattern.search(line) for pattern in secret_patterns):
+        patterns = secret_patterns[:-1] if verified_license else secret_patterns
+        if any(pattern.search(line) for pattern in patterns):
             errors.append((name, f'possible private value at line {number}'))
 # CI 通过退出码判定结果；错误写入 stderr，成功摘要写入 stdout。
 for name, reason in errors:

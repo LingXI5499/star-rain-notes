@@ -18,6 +18,9 @@ import { isReviewPending, operationNotice } from '../../support/operationResult'
 import { errorMessage } from '../../../../shared/http'
 import ChapterAuthorNav from '../../components/ChapterAuthorNav.vue'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
+import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
+const editorContext = useEditorContexts('tutorial-chapter')
+
 import AdminConfirmDialog from '../../../blog/components/admin/AdminConfirmDialog.vue'
 import MediaPicker from '../../../media/components/MediaPicker.vue'
 import { useMediaPicker } from '../../../media/support/useMediaPicker'
@@ -40,7 +43,8 @@ const tutorialId = computed(() => route.params.tutorialId)
  * 是否创建；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
-const isCreate = computed(() => route.params.chapterId === 'new')
+const createdChapterId = ref(null)
+const isCreate = computed(() => route.params.chapterId === 'new' && !createdChapterId.value)
 /**
  * form；通过 reactive 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -51,6 +55,7 @@ const form = reactive({ title: '', groupId: '', summary: '' })
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
 const body = ref('')
+const acceptedBody = ref('')
 /**
  * 记录版本号，用于区分不同修订或并发更新结果；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -143,6 +148,7 @@ async function load() {
   const id = tutorialId.value
   const chapterId = route.params.chapterId
   const create = chapterId === 'new'
+  createdChapterId.value = null
   loading.value = true
   error.value = ''
   form.title = ''; form.summary = ''; body.value = ''; rowVersion.value = null
@@ -164,7 +170,7 @@ async function load() {
       form.summary = chapter.summary || ''
       body.value = chapter.bodyMarkdown || ''
     }
-    savedSnapshot = snapshot()
+    savedSnapshot = snapshot(); acceptedBody.value = body.value
   } catch (cause) {
     if (token === loadToken) error.value = errorMessage(cause)
   } finally {
@@ -199,8 +205,10 @@ async function save() {
   saving.value = true
   error.value = ''
   notice.value = ''
+  const submitted = { ...form, title: form.title.trim(), summary: form.summary.trim(), bodyMarkdown }
+  const creating = isCreate.value
   try {
-    let chapterId = route.params.chapterId
+    let chapterId = createdChapterId.value || route.params.chapterId
     let result
     if (isCreate.value) {
       const chapter = await createChapter(form.groupId, {
@@ -208,18 +216,21 @@ async function save() {
       })
       result = chapter
       chapterId = chapter.id
+      if (!isReviewPending(chapter)) createdChapterId.value = chapter.id
       rowVersion.value = chapter.rowVersion
     } else {
-      const saved = await updateChapter(route.params.chapterId, {
+      const saved = await updateChapter(chapterId, {
         title: form.title.trim(), summary: form.summary.trim() || null, bodyMarkdown, rowVersion: rowVersion.value,
       })
       result = saved
       if (!isReviewPending(saved)) rowVersion.value = saved.rowVersion
     }
-    body.value = bodyMarkdown
-    savedSnapshot = snapshot()
+    if (!isReviewPending(result)) {
+      savedSnapshot = JSON.stringify(submitted)
+      acceptedBody.value = bodyMarkdown
+    }
     notice.value = operationNotice(result, '修改已保存；已发布内容同步更新，草稿内容保留为草稿。')
-    if (isCreate.value && !isReviewPending(result)) await router.replace(accountPath(`/tutorials/${tutorialId.value}/chapters/${chapterId}`))
+    if (creating && !isReviewPending(result)) await router.replace(accountPath(`/tutorials/${tutorialId.value}/chapters/${chapterId}`))
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -280,7 +291,7 @@ onBeforeUnmount(() => window.removeEventListener('keydown', onKeydown))
 
     <section v-else class="chapter-edit__writing">
       <input v-model="form.title" class="chapter-edit__title-input" maxlength="200" placeholder="输入章节标题" aria-label="章节标题" />
-      <MarkdownEditor ref="editorRef" v-model="body" placeholder="从 H1 开始撰写正文…" :pick-image="pickBodyImage" />
+      <MarkdownEditor :editor-context="loading ? null : editorContext(createdChapterId || route.params.chapterId, 'bodyMarkdown', rowVersion, acceptedBody, String(tutorialId))" ref="editorRef" v-model="body" placeholder="从 H1 开始撰写正文…" :pick-image="pickBodyImage" />
 
       <div class="chapter-edit__meta">
         <h2>章节信息</h2>
