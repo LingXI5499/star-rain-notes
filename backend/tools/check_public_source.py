@@ -33,9 +33,11 @@ errors = []
 # 逐文件验证目录范围、私有配置类型和内容特征；路径或类型不允许时不继续读取内容。
 for name in filter(None, paths):
     path = pathlib.PurePosixPath(name)
-    audit_document = name.startswith(('docs/audit/', 'docs/deployment/', 'docs/editor/')) and name.endswith('.md')
+    audit_document = name.startswith(('docs/audit/', 'docs/deployment/', 'docs/editor/', 'docs/account/')) and name.endswith('.md')
+    # Only the reviewed, secret-free account verification summary is admitted as JSON evidence.
+    verification_evidence = name == 'docs/account/account-v3-verification.json'
     verification_tool = path.parts[0] == 'tools' and path.suffix in {'.py', '.mjs', '.txt'}
-    if path.parts[0] not in {'backend', 'frontend', 'skills', '.github'} and name not in allowed_root_files and not audit_document and not verification_tool:
+    if path.parts[0] not in {'backend', 'frontend', 'skills', '.github'} and name not in allowed_root_files and not audit_document and not verification_tool and not verification_evidence:
         errors.append((name, 'outside active source tree'))
         continue
     # 大小写统一后判断敏感文件后缀；公开的 .env.example 是允许的模板。

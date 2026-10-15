@@ -4,6 +4,7 @@ import { createAccountTestSmtp } from '../../tools/account-test-smtp.mjs'
 import { randomBytes } from 'node:crypto'
 
 test.describe.configure({ mode: 'serial' })
+test.setTimeout(90000)
 const smtp = createAccountTestSmtp(), password = `Isolated-${randomBytes(18).toString('hex')}!`
 test.beforeAll(async () => { await smtp.start() })
 test.afterAll(async () => { console.log('Isolated SMTP capture counts:', smtp.metrics); await smtp.close() })
@@ -52,8 +53,10 @@ test('AUTH-01/03/06/13: real email registration, login, profile, password reset 
   await page.getByLabel('注册邮箱').fill(user.email)
   await page.locator('form button[type="submit"]').click()
   await expect(page.getByRole('status')).toContainText('请求已受理')
-  const token = await mail(user.email, /token=([A-Za-z0-9_-]+)/), nextPassword = `${password}2`
-  await page.goto(`/useradmin/reset-password?token=${token}`)
+  const resetLink = await mail(user.email, /(https?:\/\/[^\s]+\/useradmin\/reset-password\?token=[A-Za-z0-9_-]+)/)
+  expect(resetLink).toMatch(/^http:\/\/127\.0\.0\.1:5189\/useradmin\/reset-password\?token=/)
+  const nextPassword = `${password}2`
+  await page.goto(resetLink)
   await page.getByLabel('新密码', { exact: true }).fill(nextPassword)
   await page.getByLabel('确认新密码', { exact: true }).fill(nextPassword)
   await page.locator('form button[type="submit"]').click()

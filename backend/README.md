@@ -14,7 +14,7 @@ Java 21 / Spring Boot 3.5 / Maven 多模块应用，使用 MySQL 8、MyBatis Map
 
 Mapper XML 逐条说明读写目标、参数、结果类型、主键回填、行锁和动态条件；各模块 POM 标明聚合、依赖及插件职责。`application.yml` 与公开配置模板说明环境绑定和默认值，`tools/check_public_source.py` 说明扫描范围和失败报告方式。注释不包含真实配置或个人邮箱。
 
-已发布的 40 份迁移 SQL 保留原文，以免改变 Flyway 校验值；每份迁移的职责、涉及对象和结构变更说明见[迁移目录 README](star-rain-boot/src/main/resources/db/migration/README.md)。修改数据库应追加迁移，不能改已执行脚本。
+已发布的迁移 SQL 保留原文，以免改变 Flyway 校验值；每份迁移的职责、涉及对象和结构变更说明见[迁移目录 README](star-rain-boot/src/main/resources/db/migration/README.md)。修改数据库应追加迁移，不能改已执行脚本。
 
 ## 配置与启动
 
@@ -31,6 +31,9 @@ java -jar star-rain-boot/target/star-rain-boot-2.0.1.jar
 | --- | --- |
 | `STAR_RAIN_DB_URL / USERNAME / PASSWORD` | JDBC 连接、数据库用户与密码；三个完整变量均以 `STAR_RAIN_DB_` 开头 |
 | `STAR_RAIN_BOOTSTRAP_ADMIN_ENABLED / USERNAME / EMAIL / PASSWORD` | 首次创建唯一超级管理员；完整变量均以 `STAR_RAIN_BOOTSTRAP_ADMIN_` 开头，完成后关闭 ENABLED |
+| `STAR_RAIN_AUTH_THROTTLE_KEY` | 至少 32 字符的私密随机密钥；可回退到邮件队列密钥，Secure Cookie 环境下缺失会拒绝启动 |
+| `STAR_RAIN_MAIL_OUTBOX_KEY` | Base64 编码的 32 字节 AES 密钥，投递队列和重置请求依赖它；不能提交 Git |
+| `STAR_RAIN_LOGIN_SOURCE_LIMIT / IDENTITY_LIMIT / WINDOW_SECONDS` | 完整变量均以 STAR_RAIN_LOGIN_ 开头；默认来源 100、账户 10、窗口 900 秒，正确登录退还本次额度 |
 | `STAR_RAIN_SMTP_ENABLED` | 是否实际发送邮件；开发可关闭，注册验证需要可用邮件服务 |
 | `STAR_RAIN_SMTP_HOST / PORT / USERNAME / PASSWORD / AUTH / SSL / STARTTLS` | 邮件服务器参数，完整变量以 `STAR_RAIN_SMTP_` 开头 |
 | `STAR_RAIN_MAIL_FROM` | 发信邮箱，与管理员身份邮箱分开 |
@@ -39,7 +42,7 @@ java -jar star-rain-boot/target/star-rain-boot-2.0.1.jar
 | `STAR_RAIN_FRONTEND_INDEX_PATH` | dist/index.html 路径，生产建议绝对路径 |
 | `STAR_RAIN_MEDIA_ROOT` | 持久化媒体目录，默认 `../media` |
 | `STAR_RAIN_COOKIE_SECURE` | 生产 HTTPS 下开启，开发 HTTP 保持 false |
-| `STAR_RAIN_SERVER_ADDRESS` | 默认 0.0.0.0；单机 Nginx 部署设为 127.0.0.1 并隔离后端端口 |
+| `STAR_RAIN_SERVER_ADDRESS` | 默认 127.0.0.1；单机只允许本机 Nginx 访问，后端端口不得公开 |
 | `STAR_RAIN_FORWARD_HEADERS_STRATEGY / STAR_RAIN_TRUSTED_PROXIES` | 默认 NONE；仅在可信反代边界启用 NATIVE，信任精确代理地址正则，默认只含 loopback |
 | `STAR_RAIN_INDEXNOW_ENABLED / KEY` | 可选索引提交，未配置保持关闭；完整变量以 `STAR_RAIN_INDEXNOW_` 开头 |
 
@@ -86,7 +89,7 @@ location / {
 
 ## 迁移、审核及验证
 
-迁移位于 `star-rain-boot/src/main/resources/db/migration/`，当前版本 `2.040`。既有脚本不可修改，新增迁移只追加。本次新增教程操作的应用失败原因列，审批结论与业务应用状态分开记录。
+迁移位于 `star-rain-boot/src/main/resources/db/migration/`，当前版本 `2.047`。既有脚本不可修改，新增迁移只追加。本次新增教程操作的应用失败原因列，审批结论与业务应用状态分开记录。
 
 教程普通管理员变更通过 `review` 提交冻结操作；审批事务提交后，业务变更在独立事务中执行。失败不会撤销已提交的审批，审核详情展示 `FAILED` 或未完成的 `PENDING` 状态。超级管理员在详情页点击“重新核实并恢复”，系统重查审批目标、内容基线和版本；发生变化则拒绝执行，已经 `APPLIED` 的操作直接返回。恢复请求记录到审核轨迹，不自动重试写操作。恢复失败时先核实内容与服务日志；不要直接修改操作状态或数据库正文。
 
@@ -97,3 +100,5 @@ mvn verify
 需要数据库的测试读取 `STAR_RAIN_DB_*` 或本地 secret 文件。测试库应先启动一次应用完成 Flyway 迁移，测试用户需具有创建临时 schema 的权限。测试会在临时 schema 中验证升级、事务回滚和真实 Mapper SQL；不要连接生产库。不可达时相应用例跳过，需结合 skipped 数量判断覆盖情况。
 
 人工部署验收：备份数据库与媒体 → 上传新 JAR/dist → 配置实际公网来源和资源路径 → 启动并检查 Flyway → 验证权限、CSRF、上传、博客删除、教程审核与恢复 → 检查公开原始 HTML、robots、Sitemap、404 → 验证手机和双主题。回滚先停服务、恢复旧产物；数据库有状态回退需求时使用升级前备份。
+
+账户 V3.0 冻结候选的变更、测试证据与发布门槛见 [发布说明](../docs/account/account-v3-release.md)。新增 `V2_047` 仅创建短期限流计数表；既有账户、角色、学习记录和历史迁移保持不变。找回申请先加密入队，由后台工作器判断账户状态并生成一次性链接；“请求已受理”不代表 SMTP 已送达。
