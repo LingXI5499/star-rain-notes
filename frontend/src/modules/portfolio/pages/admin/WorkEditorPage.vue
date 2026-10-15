@@ -32,6 +32,7 @@ const emptyForm = () => ({ workType: 'SOFTWARE', title: '', subtitle: '', slug: 
 const form = reactive(emptyForm())
 const hasSections = computed(() => Boolean(current.value?.hasSections || current.value?.sections?.length))
 const advancedBlocks = ref(false), prototypeEntry = ref('index.html')
+const prototypeEntryDirty = computed(() => prototypeEntry.value !== (current.value?.prototypeEntry || 'index.html'))
 const coverChoice = ref(undefined), draftLinks = ref([])
 const link = reactive({ id: '', linkType: 'GITHUB', label: '', url: '' })
 const { pickerOpen, pickerType, pick, settle } = useMediaPicker()
@@ -48,12 +49,12 @@ const linkInputDirty = computed(() => {
  return !item || item.label !== link.label || item.url !== link.url || item.linkType !== link.linkType
 })
 const dirty = computed(() => Boolean(savedForm.value && (JSON.stringify(form) !== savedForm.value
- || coverChoice.value !== undefined || linkInputDirty.value || templateId.value
+ || coverChoice.value !== undefined || linkInputDirty.value || templateId.value || prototypeEntryDirty.value
  || linkSignature(draftLinks.value) !== linkSignature(current.value?.links || []))))
 // Reuse the account-scoped recovery store for metadata, pending cover and links as well as Markdown.
 const recoverySource = computed(() => {
  const { bodyMarkdown, ...metadata } = form
- return JSON.stringify({ metadata, cover: coverChoice.value, links: draftLinks.value, link: { ...link }, templateId: templateId.value })
+ return JSON.stringify({ metadata, cover: coverChoice.value, links: draftLinks.value, link: { ...link }, templateId: templateId.value, prototypeEntry: prototypeEntry.value })
 })
 const publicPath = computed(() => current.value?.status === 'PUBLISHED' ? `/portfolio/${encodeURIComponent(current.value.slug)}` : '')
 function acceptWork(work) {
@@ -65,12 +66,15 @@ function syncBody() {
  const latest = editor.value?.getMarkdown?.()
  if (!hasSections.value && typeof latest === 'string') form.bodyMarkdown = latest
 }
+let loadGeneration = 0
 async function load() {
+ const generation = ++loadGeneration, id = workId.value
  loading.value = true; error.value = ''
  try {
-  const options = await getWorkTaxonomy()
+  const [options, work] = await Promise.all([getWorkTaxonomy(), id ? getAdminWork(id) : Promise.resolve(null)])
+  if (generation !== loadGeneration) return
   taxonomy.value = options
-  if (workId.value) acceptWork(await getAdminWork(workId.value))
+  if (work) acceptWork(work)
   Object.assign(form, emptyForm())
   if (current.value) for (const key of Object.keys(form)) {
    if (key === 'tagIds') form.tagIds = current.value.tags?.map(tag => tag.id) || []
@@ -79,8 +83,8 @@ async function load() {
   coverChoice.value = undefined; templateId.value = ''; advancedBlocks.value = false; clearLink(); initializeLinks()
   prototypeEntry.value = current.value?.prototypeEntry || 'index.html'
   savedForm.value = JSON.stringify(form); savedEditorState.value = recoverySource.value; editorKey.value++
- } catch (cause) { error.value = editorError(cause) }
- finally { loading.value = false }
+ } catch (cause) { if (generation === loadGeneration) error.value = editorError(cause) }
+ finally { if (generation === loadGeneration) loading.value = false }
 }
 function payload(source) {
  const { workType, bodyMarkdown, ...metadata } = source
@@ -94,7 +98,7 @@ async function save() {
  if (!form.title.trim()) { error.value = '请填写作品标题。'; return false }
  if (linkInputDirty.value && !saveLink()) return false
  if (templateId.value && form.bodyMarkdown.trim()) { error.value = '当前已填写 Markdown，请取消区块模板后保存。'; return false }
- const submitted = JSON.parse(JSON.stringify(form)), selectedCover = coverChoice.value
+ const submitted = JSON.parse(JSON.stringify(form)), selectedCover = coverChoice.value, submittedEntry = prototypeEntry.value
  const submittedLinks = JSON.parse(JSON.stringify(draftLinks.value))
  const legacyBody = !hasSections.value && !templateId.value
  saving.value = true; error.value = ''; notice.value = ''
@@ -143,10 +147,17 @@ async function save() {
    || current.value.links?.[index]?.sortOrder !== index)) {
    step = '链接排序'; acceptWork(await orderWorkLinks(workId.value, submittedLinks.map(item => item.id)))
   }
+  if (current.value.prototypeAssetId && submittedEntry !== current.value.prototypeEntry) {
+   step = '原型入口'
+   await bindWorkPrototype(workId.value, { mediaAssetId: current.value.prototypeAssetId, entryPath: submittedEntry.trim() })
+   acceptWork(await getAdminWork(workId.value))
+  }
   savedForm.value = JSON.stringify(submitted)
   const { bodyMarkdown, ...metadata } = submitted
-  savedEditorState.value = JSON.stringify({ metadata, links: JSON.parse(JSON.stringify(draftLinks.value)), link: { ...link }, templateId: '' })
-  notice.value = dirty.value ? '提交的作品已保存；保存期间的新输入仍待保存。' : '作品已保存。'
+  savedEditorState.value = JSON.stringify({ metadata, links: JSON.parse(JSON.stringify(draftLinks.value)), link: { ...link }, templateId: '', prototypeEntry: current.value.prototypeEntry || 'index.html' })
+  notice.value = prototypeEntryDirty.value && !current.value.prototypeAssetId
+   ? '作品已保存；原型入口尚未绑定，请选择原型 ZIP 或将入口恢复为 index.html。'
+   : dirty.value ? '提交的作品已保存；保存期间的新输入仍待保存。' : '作品已保存。'
   return true
  } catch (cause) {
   error.value = `${step}保存失败：${editorError(cause)}${workId.value ? ' 已有草稿和当前输入已保留，可重试。' : ' 当前输入已保留。'}`
@@ -199,6 +210,18 @@ async function loadTemplates() {
  if (templates.value.length) return
  try { templates.value = await getWorkTemplates() } catch (cause) { error.value = editorError(cause) }
 }
+async function toggleAdvancedBlocks(event) {
+ if (event.target.checked && dirty.value) {
+  event.target.checked = false
+  error.value = '打开区块工作区前请先保存当前修改，避免未保存的 Markdown 被区块遮挡。'
+  return
+ }
+ if (!event.target.checked && sectionEditor.value && !await sectionEditor.value.discardAllowed()) {
+  event.target.checked = true
+  return
+ }
+ advancedBlocks.value = event.target.checked
+}
 function editorError(cause) {
  if (cause?.response?.data?.code === 'CONTENT_VERSION_CONFLICT') versionConflict.value = true
  return errorMessage(cause)
@@ -239,9 +262,10 @@ async function restoreRevision(snapshot) {
 function restoreEditorState(source) {
  try {
   const recovered = JSON.parse(source)
-  for (const key of Object.keys(form)) if (key !== 'bodyMarkdown' && Object.hasOwn(recovered.metadata || {}, key)) form[key] = recovered.metadata[key]
+  for (const key of Object.keys(form)) if (key !== 'bodyMarkdown' && !(key === 'workType' && workId.value) && Object.hasOwn(recovered.metadata || {}, key)) form[key] = recovered.metadata[key]
   coverChoice.value = recovered.cover; draftLinks.value = recovered.links || []
   Object.assign(link, recovered.link || {}); templateId.value = recovered.templateId || ''
+  prototypeEntry.value = recovered.prototypeEntry || 'index.html'
   notice.value = '本地基本信息、封面和链接已载入，请核对后保存。正文可在 Markdown 编辑器中单独恢复。'
  } catch { error.value = '本地恢复点格式无效，当前输入已保留。' }
 }
@@ -264,7 +288,7 @@ function beforeUnload(event) {
  if (dirty.value || saving.value || sectionEditor.value?.dirty || sectionEditor.value?.busy) { event.preventDefault(); event.returnValue = '' }
 }
 onMounted(() => { load(); window.addEventListener('beforeunload', beforeUnload) })
-onBeforeUnmount(() => window.removeEventListener('beforeunload', beforeUnload))
+onBeforeUnmount(() => { loadGeneration++; window.removeEventListener('beforeunload', beforeUnload) })
 </script>
 
 <template>
@@ -283,7 +307,7 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', beforeUnload))
     <label class="wide">技术栈<input v-model="form.techStack" maxlength="1000" placeholder="Java, Vue, MySQL（可选，逗号分隔）" /></label>
     <fieldset class="wide work-editor__cover" :disabled="saving"><legend>封面（可选）</legend><p>选择媒体库中的公开图片；没有封面也可以发布。</p><div class="work-editor__tools"><button type="button" @click="addMedia">{{ mediaItems.length ? '更换封面' : '选择封面' }}</button></div><div class="work-editor__rows"><div v-for="(item,index) in mediaItems" :key="item.id || index"><img v-if="item.url" :src="item.url" :alt="item.caption || '作品封面'" /><span>{{ coverChoice !== undefined ? '待保存封面' : '当前封面' }}</span><button type="button" @click="removeMedia">移除</button></div></div></fieldset>
    </section>
-   <section v-if="!hasSections" class="work-editor__section" aria-label="作品正文"><h2>作品正文</h2><p>自由记录作品、截图和创作过程。支持 Markdown 即时预览、媒体库图片与本地恢复。</p><MarkdownEditor :editor-context="editorContext(workId, 'bodyMarkdown', editVersion, savedForm ? JSON.parse(savedForm).bodyMarkdown : '')" :key="editorKey" ref="editor" v-model="form.bodyMarkdown" :pick-image="pickBodyImage" /></section>
+   <section v-if="!hasSections" class="work-editor__section" aria-label="作品正文"><h2>作品正文</h2><p>自由记录作品、截图和创作过程。支持 Markdown 即时预览、媒体库图片与本地恢复。</p><p v-if="templateId">已选择旧版区块模板。<button type="button" :disabled="saving" @click="templateId = ''">取消模板，使用 Markdown</button></p><MarkdownEditor :editor-context="editorContext(workId, 'bodyMarkdown', editVersion, savedForm ? JSON.parse(savedForm).bodyMarkdown : '')" :key="editorKey" ref="editor" v-model="form.bodyMarkdown" :pick-image="pickBodyImage" /></section>
    <section v-else class="work-editor__section"><h2>旧版区块正文</h2><p>此作品使用内容区块，公开详情将优先展示区块。原有 Markdown 保留，不会自动转换。请在下方工作区编辑正文。</p></section>
    <fieldset v-if="hasSections || (advancedBlocks && current)" :disabled="saving" class="work-content-panel"><WorkSectionEditor ref="sectionEditor" :work="current" @updated="acceptWork" @conflict="versionConflict = true" /></fieldset>
    <section class="work-editor__section" aria-label="相关链接"><h2>相关链接</h2><p>添加源码、在线体验、下载或演示，与作品一起保存。</p>
@@ -292,8 +316,8 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', beforeUnload))
    </section>
    <details class="work-editor__more"><summary>更多设置 · 分类、形态、精选与 SEO</summary>
     <section class="work-editor__panel">
-     <label>作品分类<select v-model="form.categoryId"><option value="">请选择（发布时必填）</option><option v-for="item in taxonomy.categories" :key="item.id" :value="item.id">{{ item.name }}</option></select></label>
-     <label>作品形态<select v-model="form.formatId"><option value="">请选择（发布时必填）</option><option v-for="item in taxonomy.formats" :key="item.id" :value="item.id">{{ item.name }}</option></select></label>
+     <label>作品分类<select v-model="form.categoryId" aria-label="作品分类"><option value="">请选择（发布时必填）</option><option v-for="item in taxonomy.categories" :key="item.id" :value="item.id">{{ item.name }}</option></select></label>
+     <label>作品形态<select v-model="form.formatId" aria-label="作品形态"><option value="">请选择（发布时必填）</option><option v-for="item in taxonomy.formats" :key="item.id" :value="item.id">{{ item.name }}</option></select></label>
      <label>副标题<input v-model="form.subtitle" maxlength="255" /></label><label>我的角色<input v-model="form.role" maxlength="255" /></label>
      <label>项目阶段<select v-model="form.projectStatus"><option v-for="(label,value) in stageLabels" :key="value" :value="value">{{ label }}</option></select></label><label>排序<input v-model.number="form.sortOrder" type="number" min="0" max="100000" /></label>
      <label>开始日期<input v-model="form.startedOn" type="date" /></label><label>结束日期<input v-model="form.endedOn" type="date" /></label>
@@ -303,7 +327,7 @@ onBeforeUnmount(() => window.removeEventListener('beforeunload', beforeUnload))
     </section>
     <section v-if="form.workType === 'SOFTWARE'" class="work-editor__section"><h2>静态原型</h2><p>公开 ZIP（不超过 25 MB），绑定前请先保存作品。</p><label>入口文件<input v-model="prototypeEntry" maxlength="500" placeholder="index.html" /></label><div class="work-editor__tools"><button :disabled="saving" @click="choosePrototype">{{ current?.prototypeAssetId ? '更换原型' : '选择原型 ZIP' }}</button><button v-if="current?.prototypeAssetId" :disabled="saving" @click="clearPrototype">解除绑定</button><RouterLink v-if="current?.prototypeUrl && current.status === 'PUBLISHED'" :to="accountPath(`/portfolio/${current.slug}/live`)">体验原型 →</RouterLink></div><p v-if="current?.prototypeAssetId">当前入口：{{ current.prototypeEntry }}</p></section>
     <details v-if="!workId" class="work-editor__section" @toggle="$event.target.open && loadTemplates()"><summary>使用原有区块模板（高级）</summary><p>默认使用 Markdown。选择区块模板后，正文将在旧版工作区编辑，不会自动转换 Markdown。</p><label>创作模板<select v-model="templateId" :disabled="!!form.bodyMarkdown.trim()"><option value="">不使用模板</option><option v-for="item in templates" :key="item.id" :value="item.id">{{ item.name }}</option></select></label></details>
-    <section v-if="current && !hasSections" class="work-editor__section"><label class="work-check"><input v-model="advancedBlocks" type="checkbox" />打开原有区块编辑工作区（高级）</label><p>保存任何区块后，公开详情会优先展示区块；原 Markdown 仍保留。</p></section>
+    <section v-if="current && !hasSections" class="work-editor__section"><label class="work-check"><input :checked="advancedBlocks" type="checkbox" @change="toggleAdvancedBlocks" />打开原有区块编辑工作区（高级）</label><p>保存任何区块后，公开详情会优先展示区块；原 Markdown 仍保留。</p></section>
     <ContentHistoryPanel v-if="workId" :base-path="`/admin/portfolio/works/${workId}`" @restore="restoreRevision" />
    </details>
    <EditorRecovery :context="editorContext(workId, 'editorForm', editVersion, savedEditorState)" :source="recoverySource" :read-only="saving" @restore="restoreEditorState" />

@@ -58,6 +58,46 @@ async function fillLink(view, label = '源码', url = 'https://github.com/exampl
  await view.find('.work-editor__link').trigger('submit')
 }
 describe('single page work authoring', () => {
+ it('ignores late data from the previously selected work', async () => {
+  let resolve
+  api.getAdminWork.mockImplementation(id => id === '42' ? new Promise(done => { resolve = done }) : Promise.resolve({ ...initial(), id: '43', title: '下一个作品' }))
+  const { root, router } = await render('42')
+  await router.push('/useradmin/portfolio/editor/43'); await flushPromises()
+  const view = root.findComponent(WorkEditorPage)
+  expect(title(view).element.value).toBe('下一个作品')
+  resolve(initial()); await flushPromises()
+  expect(title(view).element.value).toBe('下一个作品')
+  root.unmount()
+ })
+ it('warns about an unbound prototype entry and preserves it in recovery data', async () => {
+  const { view, root } = await render('42')
+  await view.find('input[placeholder="index.html"]').setValue('preview/start.html')
+  await save(view)
+  expect(view.text()).toContain('原型入口尚未绑定')
+  const recovery = view.findComponent({ name: 'EditorRecovery' })
+  expect(JSON.parse(recovery.props('source')).prototypeEntry).toBe('preview/start.html')
+  root.unmount()
+ })
+ it('saves entry changes for an already bound prototype through the existing binding API', async () => {
+  server.prototypeAssetId = '81'; server.prototypeEntry = 'index.html'
+  api.bindWorkPrototype.mockImplementation(async (_, data) => { server.prototypeEntry = data.entryPath; return response() })
+  const { view, root } = await render('42')
+  await view.find('input[placeholder="index.html"]').setValue('demo/index.html')
+  await save(view)
+  expect(api.bindWorkPrototype).toHaveBeenCalledWith('42', { mediaAssetId: '81', entryPath: 'demo/index.html' })
+  expect(view.text()).toContain('作品已保存。')
+  root.unmount()
+ })
+ it('requires saving Markdown before opening the optional block workspace', async () => {
+  const { view, root } = await render('42')
+  await view.find('[data-markdown]').setValue('尚未保存的正文')
+  const toggle = view.findAll('input[type="checkbox"]').at(-1)
+  await toggle.setValue(true)
+  expect(view.find('[role="alert"]').text()).toContain('先保存当前修改')
+  expect(view.find('[data-block-workspace]').exists()).toBe(false)
+  expect(view.find('[data-markdown]').element.value).toBe('尚未保存的正文')
+  root.unmount()
+ })
  it('keeps a pending cover after failure and reopens the saved Markdown unchanged', async () => {
   const { view, root } = await render()
   await title(view).setValue('图片作品'); await view.find('[data-markdown]').setValue('# 图片\n\n![作品](/media/cover.png)')

@@ -6,6 +6,8 @@ function mediaKey(url) {
 
 /** Leave authored content intact; suppress only automatically inserted duplicates. */
 export function workVisualMedia(work) {
+ if (!work.coverUrl && !(work.media || []).some(media => media.usageType === 'SCREENSHOT' && media.url))
+  return { cover: null, gallery: [] }
  const used = new Set()
  const sections = work.hasSections ? (work.sections || []).filter(section => section.visible !== false) : []
  const markdown = work.hasSections
