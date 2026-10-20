@@ -37,7 +37,7 @@ const route = useRoute(), state = ref(null), session = ref(null), plan = ref(nul
  * 错误；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
-const error = ref(''), busy = ref(false), loading = ref(true), outline = ref([]), drawerOpen = ref(false), article = ref(null), curriculum = ref(null)
+const error = ref(''), busy = ref(false), loading = ref(true), outline = ref([]), article = ref(null), curriculum = ref(null)
 /**
  * 章节标识；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
@@ -233,20 +233,19 @@ onBeforeUnmount(() => { studyClock.dispose(); clearInterval(timer); saveReading(
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
-watch(() => [chapterId.value, route.query.plan, route.query.task], (_, old) => { saveReading(old?.[0]); drawerOpen.value = false; load() })
+watch(() => [chapterId.value, route.query.plan, route.query.task], (_, old) => { saveReading(old?.[0]); load() })
 </script>
 <template>
  <section class="page-container tutorial-reader learning-reader">
   <p v-if="loading" role="status">正在恢复学习进度…</p>
   <p v-else-if="error && !state" class="learning-error" role="alert">{{ error }} <RouterLink :to="accountPath('/learning/plans')">返回学习计划</RouterLink></p>
   <template v-else-if="state && chapter">
-   <button class="tutorial-reader__drawer-toggle" :aria-expanded="drawerOpen" @click="drawerOpen = !drawerOpen">{{ drawerOpen ? '关闭目录' : '目录' }}</button><div v-if="drawerOpen" class="tutorial-reader__backdrop" @click="drawerOpen = false"></div>
-   <aside class="tutorial-reader__sidebar" :class="{ 'is-open': drawerOpen }">
+   <aside class="tutorial-reader__sidebar">
     <RouterLink :to="accountPath(plan ? `/learning/plans/${plan.id}` : `/tutorials/${tutorial.slug}`)" class="tutorial-reader__course">{{ plan?.name || tutorial.title }}</RouterLink>
     <div class="tutorial-reader__progress"><span :style="{ width: `${progress}%` }"></span></div><p class="tutorial-reader__progress-label">{{ plan ? `已完成 ${plan.completedChapters} / ${plan.totalChapters} 章` : `课程目录位置 ${index + 1} / ${chapters.length}` }}</p>
-    <nav ref="curriculum" class="curriculum" :aria-label="plan ? '计划章节目录' : '课程目录'"><section v-for="g in groups" :key="g.id" class="curriculum__group"><div class="curriculum__group-head"><h3>{{ g.title }}</h3><span>{{ g.chapters.length }}</span></div><ol class="curriculum__chapters"><li v-for="(c, i) in g.chapters" :key="c.id"><RouterLink :to="chapterRoute(c)" class="curriculum__chapter" :class="{ 'curriculum__chapter--active': String(c.id) === chapterId }" @click="drawerOpen = false"><span class="curriculum__index">{{ isComplete(c) ? '✓' : String(i + 1).padStart(2, '0') }}</span><span class="curriculum__title">{{ c.title }}</span></RouterLink></li></ol></section></nav>
+    <nav ref="curriculum" class="curriculum" data-reading-course :aria-label="plan ? '计划章节目录' : '课程目录'"><section v-for="g in groups" :key="g.id" class="curriculum__group"><div class="curriculum__group-head"><h3>{{ g.title }}</h3><span>{{ g.chapters.length }}</span></div><ol class="curriculum__chapters"><li v-for="(c, i) in g.chapters" :key="c.id"><RouterLink :to="chapterRoute(c)" class="curriculum__chapter" :class="{ 'curriculum__chapter--active': String(c.id) === chapterId }"><span class="curriculum__index">{{ isComplete(c) ? '✓' : String(i + 1).padStart(2, '0') }}</span><span class="curriculum__title">{{ c.title }}</span></RouterLink></li></ol></section></nav>
    </aside>
-   <article ref="article" class="tutorial-reader__article">
+   <article ref="article" class="tutorial-reader__article" data-reading-content>
     <nav class="tutorial-reader__breadcrumb" aria-label="面包屑"><RouterLink :to="accountPath('/learning/plans')">学习计划</RouterLink> / {{ tutorial.title }} / {{ group?.title }} / {{ state.title }}</nav>
     <header><p>DOCUMENTATION · {{ tutorial.title }}</p><h1>{{ state.title }}</h1><small>字数 {{ charCount }} · 预计阅读 {{ readMinutes }} 分钟</small></header>
     <div class="tutorial-reader__learning"><span>{{ state.completed ? '本章学习已完成' : '阅读正文 → 卡片回忆 → 问题表达' }}</span><RouterLink :to="accountPath('/learning/history')">学习历史 →</RouterLink></div>

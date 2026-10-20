@@ -34,6 +34,8 @@ public class RobotsServiceImpl implements RobotsService {
     public String robotsTxt() {
         return "User-agent: *\n"
             + "Allow: /\n"
+            // Vue 阅读页渲染正文依赖公开 API；私有及管理接口继续由 /api/ 规则排除。
+            + "Allow: /api/public/\n"
             + "Disallow: /api/\n"
             + "Disallow: /useradmin/\n"
             + "Disallow: /search\n"

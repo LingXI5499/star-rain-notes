@@ -12,6 +12,8 @@ import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import BlogProse from '../../../blog/components/BlogProse.vue'
 import { getGrammarCurriculum, getGrammarLesson } from '../../api/englishApi'
+import { useViewMode } from '../../../../shared/viewMode'
+const { contentPath } = useViewMode()
 
 /**
  * 路由；通过 useRoute 建立。
@@ -88,9 +90,9 @@ watch(() => route.params.slug, async (slug) => {
   <main class="grammar-lesson">
     <p v-if="loading" class="grammar-lesson__state">正在读取课时…</p><p v-else-if="error" class="grammar-lesson__state" role="alert">{{ error }}</p>
     <div v-else-if="lesson && curriculum" class="grammar-lesson__layout">
-      <aside class="grammar-lesson__course"><RouterLink to="/english/grammar" class="grammar-lesson__course-title">{{ curriculum.course.title }}</RouterLink><p>第 {{ coursePosition }} / {{ neighbors.length }} 课</p><section v-for="section in curriculum.sections" :key="section.id"><h2>{{ section.title }}</h2><RouterLink v-for="item in section.lessons" :key="item.id" :to="'/english/grammar/' + item.slug" :class="{ active: item.slug === lesson.slug }"><span>{{ item.slug }}</span>{{ item.title }}</RouterLink></section></aside>
-      <article><nav class="grammar-lesson__crumb"><RouterLink to="/english">英语</RouterLink><span>/</span><RouterLink to="/english/grammar">语法教程</RouterLink><span>/</span>{{ currentSection?.title }}</nav><details class="grammar-lesson__mobile-course"><summary>课程目录</summary><section v-for="section in curriculum.sections" :key="section.id"><h2>{{ section.title }}</h2><RouterLink v-for="item in section.lessons" :key="item.id" :to="'/english/grammar/' + item.slug">{{ item.slug }} · {{ item.title }}</RouterLink></section></details><header><p class="public-eyebrow">GRAMMAR LESSON · {{ lesson.slug }}</p><h1>{{ lesson.title }}</h1><p>{{ lesson.summary }}</p><small>{{ currentSection?.title }} · 第 {{ coursePosition }} / {{ neighbors.length }} 课</small></header><BlogProse :markdown="lesson.bodyMarkdown" /><nav class="grammar-lesson__prev-next"><RouterLink v-if="previous" :to="'/english/grammar/' + previous.slug"><small>上一篇</small><strong>← {{ previous.title }}</strong></RouterLink><span v-else></span><RouterLink v-if="next" :to="'/english/grammar/' + next.slug"><small>下一篇</small><strong>{{ next.title }} →</strong></RouterLink></nav></article>
-      <aside class="grammar-lesson__aside"><p>当前章节</p><strong>{{ currentSection?.title }}</strong><RouterLink to="/english/grammar">查看完整路线 →</RouterLink></aside>
+      <aside class="grammar-lesson__course" data-reading-course><RouterLink :to="contentPath('/english/grammar')" class="grammar-lesson__course-title">{{ curriculum.course.title }}</RouterLink><p>第 {{ coursePosition }} / {{ neighbors.length }} 课</p><section v-for="section in curriculum.sections" :key="section.id"><h2>{{ section.title }}</h2><RouterLink v-for="item in section.lessons" :key="item.id" :to="contentPath('/english/grammar/' + item.slug)" :class="{ active: item.slug === lesson.slug }"><span>{{ item.slug }}</span>{{ item.title }}</RouterLink></section></aside>
+      <article data-reading-content><nav class="grammar-lesson__crumb"><RouterLink :to="contentPath('/english')">英语</RouterLink><span>/</span><RouterLink :to="contentPath('/english/grammar')">语法教程</RouterLink><span>/</span>{{ currentSection?.title }}</nav><header><p class="public-eyebrow">GRAMMAR LESSON · {{ lesson.slug }}</p><h1>{{ lesson.title }}</h1><p>{{ lesson.summary }}</p><small>{{ currentSection?.title }} · 第 {{ coursePosition }} / {{ neighbors.length }} 课</small></header><BlogProse :markdown="lesson.bodyMarkdown" /><nav class="grammar-lesson__prev-next"><RouterLink v-if="previous" :to="contentPath('/english/grammar/' + previous.slug)"><small>上一篇</small><strong>← {{ previous.title }}</strong></RouterLink><span v-else></span><RouterLink v-if="next" :to="contentPath('/english/grammar/' + next.slug)"><small>下一篇</small><strong>{{ next.title }} →</strong></RouterLink></nav></article>
+      <aside class="grammar-lesson__aside"><p>当前章节</p><strong>{{ currentSection?.title }}</strong><RouterLink :to="contentPath('/english/grammar')">查看完整路线 →</RouterLink></aside>
     </div>
   </main>
 </template>
@@ -250,9 +252,9 @@ watch(() => route.params.slug, async (slug) => {
    */
   .grammar-lesson__aside{display:none}}
   /**
-   * 响应式或设备条件：(max-width:750px)；仅在该条件成立时覆盖基础样式。
+   * 响应式或设备条件：(max-width:768px)；仅在该条件成立时覆盖基础样式。
    */
-  @media(max-width:750px){
+  @media(max-width:768px){
   /**
    * 样式范围：.grammar-lesson__layout。
    */

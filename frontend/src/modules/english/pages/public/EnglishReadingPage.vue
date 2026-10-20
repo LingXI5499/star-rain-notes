@@ -87,7 +87,7 @@ watch(()=>[route.params.slug,props.kind],async()=>{
  finally{if(n===generation)loading.value=false}
 },{immediate:true})
 </script>
-<template><main class="english-rw">
+<template><main class="english-rw" :data-reading-content="item && !loading && !error ? '' : undefined">
  <RouterLink :to="contentPath('/english/' + (kind==='reading'?'reading':'writing'))">← 返回{{kind==='reading'?'阅读':'写作'}}中心</RouterLink>
  <p v-if="loading" class="english-rw__empty">正在读取文章…</p><p v-else-if="error" class="english-rw__error" role="alert">{{error}}</p>
  <template v-else-if="item"><header class="english-rw__hero"><div><p class="public-eyebrow">{{kind==='reading'?'READ & UNDERSTAND':'AUTHOR’S WRITING'}}</p><h1>{{item.title}}</h1><p>{{item.summary}}</p><div class="english-rw__actions"><RouterLink v-if="topic" class="english-rw__badge" :to="contentPath('/english/topics/' + topic.slug)">{{topic.name}}</RouterLink><span v-if="!item.translationZhMarkdown?.trim()" class="english-rw__muted">暂无中文译文</span></div></div></header>
@@ -95,7 +95,7 @@ watch(()=>[route.params.slug,props.kind],async()=>{
  <p v-if="auxiliaryNotice" class="english-rw__notice" role="status">{{auxiliaryNotice}}</p>
  <EnglishBilingualProse :english="item.bodyMarkdown" :chinese="item.translationZhMarkdown || ''" :mode="mode" :alignments="alignments" :annotations="showNotes && mode!=='ZH' ? annotations : []" @note="activeNote=$event" />
  <section v-if="annotations.length" class="english-rw__section"><h2>精选精读</h2><p class="english-rw__muted">点击正文中带虚线的片段，阅读人工解析。</p><article v-for="note in annotations" :key="note.id" class="english-rw__panel" :class="{'rw-reader__note--active':String(note.id)===String(activeNote)}"><button class="rw-reader__quote" :aria-expanded="String(note.id)===String(activeNote)" @click="activeNote=String(note.id)===String(activeNote)?'':String(note.id)">{{note.expectedText}}</button></article></section>
- <aside v-if="selectedNote" class="rw-reader__analysis" role="dialog" aria-label="精选精读解析" @keydown.escape="activeNote=''"><header><strong>精选精读</strong><button class="english-rw__button" aria-label="关闭精读解析" @click="activeNote=''">关闭</button></header><blockquote>{{selectedNote.expectedText}}</blockquote><BlogProse :markdown="selectedNote.analysisMarkdown" /></aside>
+ <aside v-if="selectedNote" data-reading-ignore class="rw-reader__analysis" role="dialog" aria-label="精选精读解析" @keydown.escape="activeNote=''"><header><strong>精选精读</strong><button class="english-rw__button" aria-label="关闭精读解析" @click="activeNote=''">关闭</button></header><blockquote>{{selectedNote.expectedText}}</blockquote><BlogProse :markdown="selectedNote.analysisMarkdown" /></aside>
  <section v-if="words.length" class="english-rw__section"><h2>本文词汇</h2><div v-for="[part,items] in groups" :key="part" class="english-rw__panel"><h3>{{pos[part] || part}}</h3><dl class="rw-reader__words"><template v-for="w in items" :key="w.id"><dt lang="en">{{w.word}}</dt><dd>{{w.meaningZh}}</dd></template></dl></div></section>
  <footer class="english-rw__panel"><h3>来源与许可说明</h3><p v-if="item.rights?.originalAuthor">原作者：{{item.rights.originalAuthor}}</p><p><a v-if="item.sourceUrl" :href="item.sourceUrl" target="_blank" rel="noopener noreferrer">{{item.sourceName || '查看原文来源'}}</a><span v-else>{{item.sourceName || '本站原创'}}</span></p><p v-if="item.rights?.licenseNotice">{{item.rights.licenseNotice}}</p><p><a v-if="contact" :href="'mailto:'+contact+'?subject='+encodeURIComponent('阅读文章版权反馈：'+item.title)">版权反馈与联系</a><RouterLink v-else :to="contentPath('/about#contact')">版权反馈与联系</RouterLink></p></footer>
  </template>

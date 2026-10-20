@@ -38,9 +38,9 @@
 }
 
 /**
- * 响应式或设备条件：(max-width: 720px)；仅在该条件成立时覆盖基础样式。
+ * 响应式或设备条件：(max-width: 768px)；仅在该条件成立时覆盖基础样式。
  */
-@media (max-width: 720px) {
+@media (max-width: 768px) {
   /**
    * 样式范围：.reading-layout。
    */
@@ -48,5 +48,6 @@
   /**
    * 样式范围：.reading-layout > .reading-layout__sidebar。
    */
-  .reading-layout > .reading-layout__sidebar { display: none; }
+  /* 高于 ReadingAside 的 scoped display:flex，避免生产 CSS 加载顺序让吸顶侧栏重新显示。 */
+  .reading-layout > .reading-layout__sidebar.reading-aside { display: none; }
 }

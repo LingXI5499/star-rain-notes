@@ -83,6 +83,11 @@ jobs:
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
+      - run: npm run build
+      - name: Check reading layout with production CSS
+        run: npm run test:e2e -- e2e/reading-layout.spec.js
+        env:
+          STAR_RAIN_E2E_PREVIEW: '1'
       - uses: actions/upload-artifact@v7
         if: failure()
         with:

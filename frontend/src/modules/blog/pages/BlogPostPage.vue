@@ -17,7 +17,6 @@ import { getPublicPost } from '../api/blogApi'
 import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import BlogProse from '../components/BlogProse.vue'
-import ReadingDrawer from '../components/ReadingDrawer.vue'
 import ReadingAside from '../components/ReadingAside.vue'
 import ReadingProgress from '../components/ReadingProgress.vue'
 import { estimateReadingStats, fullDate } from '../support/display'
@@ -147,7 +146,6 @@ watch(() => route.params.slug, load, { immediate: true })
     </div>
 
     <article v-else-if="post" class="article page-container">
-      <ReadingDrawer :key="post.id || post.slug" :items="outline" />
       <div class="article__reading reading-layout">
         <ReadingAside
           class="article__toc reading-layout__sidebar"
@@ -156,7 +154,7 @@ watch(() => route.params.slug, load, { immediate: true })
           :char-count="charCount"
           :read-minutes="readMinutes"
         />
-        <div class="article__body">
+        <div class="article__body" data-reading-content>
       <header class="article-hero">
         <nav>
           <RouterLink :to="contentPath('/blog')">博客时间线</RouterLink>

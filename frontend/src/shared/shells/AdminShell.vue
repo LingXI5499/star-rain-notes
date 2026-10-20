@@ -9,6 +9,7 @@
  */
 
 
+import GlobalReadingDirectory from '../reading/GlobalReadingDirectory.vue'
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '../../modules/account/stores/authStore'
@@ -600,6 +601,7 @@ async function submitPassword() {
       <main ref="contentRef" class="admin-shell__content">
         <slot />
       </main>
+      <GlobalReadingDirectory :root="contentRef" />
     </div>
 
     <dialog ref="passwordDialog" aria-labelledby="password-title" @cancel.prevent="closePasswordDialog">

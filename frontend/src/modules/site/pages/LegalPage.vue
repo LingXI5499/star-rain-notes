@@ -65,7 +65,7 @@ const sections = computed(() => [
 </script>
 
 <template>
-  <main class="legal-page">
+  <main class="legal-page" data-reading-content>
     <header>
       <p class="public-eyebrow">{{ privacy ? 'PRIVACY POLICY' : 'TERMS OF USE' }}</p>
       <h1>{{ title }}</h1>

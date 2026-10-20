@@ -391,7 +391,7 @@ onMounted(load)
 </script>
 
 <template>
-  <main class="profile-page">
+  <main class="profile-page" data-reading-content>
     <p v-if="loading" class="profile-page__state" role="status">正在读取作者资料…</p>
     <div v-else-if="error" class="profile-page__state" role="alert">
       <p>{{ error }}</p>

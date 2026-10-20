@@ -67,11 +67,11 @@ it('flushes the previous reading session when entering plan mode', async () => {
   await start(); now += 5000; mocks.route.query.plan = '1'; await flushPromises()
   expect(mocks.save).toHaveBeenCalledWith(97, expect.objectContaining({ studySecondsDelta: 5 }))
 })
-it('closes the mobile course directory with Escape and returns focus', async () => {
-  await start(); const trigger = wrapper.get('.tutorial-reader__drawer-toggle')
-  trigger.element.focus(); await trigger.trigger('click'); await flushPromises()
-  expect(trigger.attributes('aria-expanded')).toBe('true')
-  expect(document.activeElement).toBe(wrapper.get('.tutorial-reader__sidebar a').element)
-  document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' })); await flushPromises()
-  expect(trigger.attributes('aria-expanded')).toBe('false'); expect(document.activeElement).toBe(trigger.element)
+it('exposes the current chapter and course to the shared reading directory', async () => {
+  await start()
+  expect(wrapper.get('[data-reading-content] h1').text()).toBe('a')
+  expect(wrapper.find('[data-reading-course]').exists()).toBe(true)
+  expect(wrapper.find('.tutorial-reader__drawer-toggle').exists()).toBe(false)
+  await switchChapter('b')
+  expect(wrapper.get('[data-reading-content] h1').text()).toBe('b')
 })

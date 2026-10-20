@@ -8,6 +8,8 @@
 
 
 import PublicHeader from '../../modules/site/components/PublicHeader.vue'
+import { ref } from 'vue'
+import GlobalReadingDirectory from '../reading/GlobalReadingDirectory.vue'
 import PublicFooter from '../../modules/site/components/PublicFooter.vue'
 import AccountEntry from '../../modules/account/components/AccountEntry.vue'
 import MobilePublicNav from '../ui/MobilePublicNav.vue'
@@ -36,6 +38,7 @@ import '../../styles/public-theme.css'
  * 结构对齐 V1 `layouts/BaseLayout.vue`：Header → main（layout-shell）→ Footer。
  */
 const { isAccount } = useViewMode()
+const contentRoot = ref(null)
 </script>
 
 <template>
@@ -46,10 +49,11 @@ const { isAccount } = useViewMode()
         <AccountEntry v-if="isAccount" />
       </template>
     </PublicHeader>
-    <main class="public-main layout-shell">
+    <main ref="contentRoot" class="public-main layout-shell">
       <!-- 页面由 App.vue 以插槽传入（外壳不自己渲染 RouterView） -->
       <slot />
     </main>
+    <GlobalReadingDirectory :root="contentRoot" />
     <PublicFooter />
     <MobilePublicNav />
   </div>

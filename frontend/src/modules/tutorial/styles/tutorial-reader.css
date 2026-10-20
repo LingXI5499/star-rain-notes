@@ -208,11 +208,11 @@
   /**
    * 样式范围：.tutorial-reader__outline。
    */
-  .tutorial-reader__outline{display:none}}
+  .tutorial-reader > .tutorial-reader__outline{display:none}}
 /**
- * 响应式或设备条件：(max-width:720px)；仅在该条件成立时覆盖基础样式。
+ * 响应式或设备条件：(max-width:768px)；仅在该条件成立时覆盖基础样式。
  */
-@media(max-width:720px){
+@media(max-width:768px){
   /**
    * 样式范围：.tutorial-reader。
    */

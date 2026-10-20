@@ -67,6 +67,7 @@ class SeoCoreTest {
         config.setPublicBaseUrl("https://example.org/");
         String content = new RobotsServiceImpl(new CanonicalUrlResolver(config)).robotsTxt();
         assertTrue(content.contains("Disallow: /api/\n"));
+        assertTrue(content.contains("Allow: /api/public/\n"));
         assertTrue(content.contains("Disallow: /useradmin/\n"));
         assertTrue(content.endsWith("Sitemap: https://example.org/sitemap.xml\n"));
     }

@@ -13,7 +13,7 @@ const studyClock = createStudyClock()
  */
 
 
-import { computed, nextTick, onMounted, onUnmounted, ref, useId, watch } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import ChapterStudyPage from '../learning/ChapterStudyPage.vue'
 import '../../styles/study-exercises.css'
@@ -149,30 +149,6 @@ let progressSequence = 0
 let appliedProgressSequence = 0
 let progressSessionEnabled = false
 /**
- * drawerOpen；通过 ref 建立。
- * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
- */
-const drawerOpen = ref(false)
-const drawerTrigger = ref(null), sidebar = ref(null), drawerId = useId()
-let previousFocus = null
-watch(drawerOpen, async open => {
-  if (open) {
-    previousFocus = document.activeElement
-    await nextTick()
-    if (active && drawerOpen.value) sidebar.value?.querySelector('a,button')?.focus({ preventScroll: true })
-  } else if (active && previousFocus?.isConnected) previousFocus.focus({ preventScroll: true })
-})
-function onDirectoryKey(event) {
-  if (!drawerOpen.value) return
-  if (event.key === 'Escape') { event.preventDefault(); drawerOpen.value = false; return }
-  if (event.key !== 'Tab') return
-  const controls = [...(sidebar.value?.querySelectorAll('a,button,[tabindex="0"]') || [])]
-  const first = controls[0], last = controls.at(-1)
-  if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last?.focus() }
-  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first?.focus() }
-}
-document.addEventListener('keydown', onDirectoryKey)
-/**
  * 正文目录；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
  */
@@ -268,7 +244,6 @@ async function load() {
     lastSaveAt = Date.now()
     lastScrollRatio = 0
     outline.value = []
-    drawerOpen.value = false
     if (signedIn.value && !planMode.value) {
       try {
         const sequence = progressSequence
@@ -434,7 +409,7 @@ onUnmounted(() => {
   load.version += 1
   window.removeEventListener('scroll', onScroll)
   document.removeEventListener('visibilitychange', onVisibilityChange)
-  document.removeEventListener('keydown', onDirectoryKey)
+
   if (progressTimer) window.clearTimeout(progressTimer)
 })
 </script>
@@ -446,10 +421,7 @@ onUnmounted(() => {
     <p v-else-if="error && !chapter" role="alert">{{ error }}</p>
     <p v-else-if="!chapter">章节不存在或尚未公开。</p>
     <template v-else>
-      <button ref="drawerTrigger" class="tutorial-reader__drawer-toggle" type="button" :aria-expanded="drawerOpen" :aria-controls="drawerId" @click="drawerOpen = !drawerOpen">{{ drawerOpen ? '关闭目录' : '目录' }}</button>
-      <div v-if="drawerOpen" class="tutorial-reader__backdrop" @click="drawerOpen = false"></div>
-      <aside :id="drawerId" ref="sidebar" class="tutorial-reader__sidebar" :class="{ 'is-open': drawerOpen }"
-        :role="drawerOpen ? 'dialog' : undefined" :aria-modal="drawerOpen ? 'true' : undefined" aria-label="课程目录">
+      <aside class="tutorial-reader__sidebar" aria-label="课程目录">
         <RouterLink :to="tutorialPath(`/${tutorial.slug}`)" class="tutorial-reader__course">{{ tutorial.title }}</RouterLink>
         <div class="tutorial-reader__progress"><span :style="{ width: `${progress}%` }"></span></div><p class="tutorial-reader__progress-label">课程目录位置 {{ chapterIndex + 1 }} / {{ chapters.length }}</p>
         <!--
@@ -460,7 +432,7 @@ onUnmounted(() => {
           早先 V2 是「h2 + 一列纯文字」，标题会折成两行、没有序号也没有选中竖条，
           和 V1 差得比较远。
         -->
-        <nav ref="curriculumRef" class="curriculum" aria-label="课程目录">
+        <nav ref="curriculumRef" class="curriculum" data-reading-course aria-label="课程目录">
           <section v-for="item in tutorial.groups" :key="item.id" class="curriculum__group">
             <div class="curriculum__group-head">
               <h3>{{ item.title }}</h3>
@@ -472,7 +444,6 @@ onUnmounted(() => {
                   :to="tutorialPath(`/${tutorial.slug}/${entry.slug}`)"
                   class="curriculum__chapter"
                   :class="{ 'curriculum__chapter--active': entry.slug === chapter.slug }"
-                  @click="drawerOpen = false"
                 >
                   <span class="curriculum__index">{{ String(index + 1).padStart(2, '0') }}</span>
                   <span class="curriculum__title">{{ entry.title }}</span>
@@ -482,7 +453,7 @@ onUnmounted(() => {
           </section>
         </nav>
       </aside>
-      <article ref="articleElement" class="tutorial-reader__article" :aria-busy="chapterLoading">
+      <article ref="articleElement" class="tutorial-reader__article" data-reading-content :aria-busy="chapterLoading">
         <nav class="tutorial-reader__breadcrumb" aria-label="面包屑"><RouterLink :to="tutorialPath()">教程</RouterLink> / <RouterLink :to="tutorialPath(`/${tutorial.slug}`)">{{ tutorial.title }}</RouterLink> / {{ group?.title }} / {{ chapter.title }}</nav>
         <header><p>DOCUMENTATION · {{ tutorial.title }}</p><h1>{{ chapter.title }}</h1><small>字数 {{ charCount }} · 预计阅读 {{ readMinutes }} 分钟</small></header>
         <div v-if="signedIn" class="tutorial-reader__learning"><span>{{ reading?.completedAt ? '已完成' : `阅读位置 ${Math.round(Number(reading?.progressRatio || 0) * 100)}%` }}</span><RouterLink :to="accountPath(`/learning/chapters/${chapter.id}`)">{{ reading?.completedAt ? '查看章节学习' : '进入章节学习' }}</RouterLink><RouterLink :to="accountPath('/learning')">学习记录 →</RouterLink></div>

@@ -13,6 +13,7 @@
 
 
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
+const emit = defineEmits(['select'])
 
 /*
  * 文章目录（TOC）—— 从 V1 `components/ArticleOutline.vue` 移植成 JS。
@@ -105,6 +106,7 @@ async function refresh() {
  * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
  */
 function scrollTo(id) {
+  emit('select', id)
   const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
   document.getElementById(id)?.scrollIntoView({ behavior, block: 'start' })
 }

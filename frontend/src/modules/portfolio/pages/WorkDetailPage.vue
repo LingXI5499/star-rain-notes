@@ -18,7 +18,6 @@ import { errorMessage } from '../../../shared/http'
 import { useViewMode } from '../../../shared/viewMode'
 import BlogProse from '../../blog/components/BlogProse.vue'
 import ReadingAside from '../../blog/components/ReadingAside.vue'
-import ReadingDrawer from '../../blog/components/ReadingDrawer.vue'
 import { estimateReadingStats } from '../../blog/support/display'
 import WorkSectionRenderer from '../components/WorkSectionRenderer.vue'
 import { stageLabels, safeWorkUrl } from '../support/workBlocks'
@@ -126,10 +125,9 @@ watch(() => [route.params.slug, route.params.workId], load, { immediate: true })
     <p v-else-if="error" class="work-detail__state" role="alert">{{ error }} <RouterLink :to="contentPath('/portfolio')">返回作品列表</RouterLink></p>
     <template v-else-if="work">
       <p v-if="preview" class="work-preview">作品预览 · 仅展示可见区块，不改变发布状态</p>
-      <ReadingDrawer :key="work.id || work.slug" :items="navigation" />
       <div class="work-detail__reading reading-layout">
         <ReadingAside class="work-detail__navigation reading-layout__sidebar" navigation-style="curriculum" :items="navigation" :char-count="stats.charCount" :read-minutes="stats.readMinutes" />
-        <div class="work-detail__body">
+        <div class="work-detail__body" data-reading-content>
       <header class="work-detail__hero">
         <RouterLink :to="contentPath('/portfolio')">← 全部作品</RouterLink>
         <p class="public-eyebrow">SELECTED WORK · {{ typeLabel }}</p>
