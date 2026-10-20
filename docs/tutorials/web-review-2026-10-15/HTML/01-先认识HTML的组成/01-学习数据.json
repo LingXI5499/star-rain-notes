@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "reviewStatus": "READY_FOR_HUMAN_REVIEW",
+  "tutorialKey": "html",
+  "tutorialTitle": "HTML",
+  "groupKey": "html-01",
+  "groupTitle": "一.先认识 HTML 的组成",
+  "chapterKey": "html-syntax",
+  "outlineChapterTitle": "1.标签、元素、属性：先读懂一行 HTML",
+  "chapterTitle": "标签、元素、属性：先读懂一行 HTML",
+  "chapterFile": "01-标签元素属性.md",
+  "sortOrder": 1,
+  "knowledgeCards": [
+    {
+      "key": "html-syntax-k01",
+      "frontText": "标签与元素有什么区别？用一个 p 元素说明。",
+      "backMarkdown": "`<p>` 是开始标签，`</p>` 是结束标签；`<p>学习 HTML</p>` 这一整段是一个段落元素。标签是标记，元素是整体。空元素不采用这一完整配对形式。",
+      "sortOrder": 1,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-k02",
+      "frontText": "属性写在哪里？class=\"note\" 的属性名和属性值分别是什么？",
+      "backMarkdown": "属性写在开始标签内，常见形式为 `属性名=\"属性值\"`，多个属性用空格分隔。`class=\"note\"` 的属性名是 `class`，值是 `note`；属性不属于元素正文。",
+      "sortOrder": 2,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-k03",
+      "frontText": "为什么 class=\"warning\" 不会自动把段落变红？",
+      "backMarkdown": "`warning` 是作者选定的类名，只提供分类标记，没有内置颜色含义。需要匹配的 CSS 规则才能实现相应外观；没有相应样式时，修改这个类名不一定有可见变化。",
+      "sortOrder": 3,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-k04",
+      "frontText": "img 为什么没有结束标签？src 与 alt 分别负责什么？",
+      "backMarkdown": "`img` 是空元素，不能包含子内容，也没有 `</img>` 结束标签。`src` 指定图片资源地址，`alt` 提供图片的替代文本。HTML 中空元素末尾不必添加 `/`。",
+      "sortOrder": 4,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-k05",
+      "frontText": "选择 HTML 标签时，优先依据内容含义还是默认外观？",
+      "backMarkdown": "优先依据内容含义与实际行为。标题用标题元素，段落用 `p`，跳转用带 `href` 的 `a`。浏览器提供默认外观，但字号、颜色等可以另用 CSS 调整。",
+      "sortOrder": 5,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-k06",
+      "frontText": "HTML 注释怎样写？页面不显示注释，是否代表它保密？",
+      "backMarkdown": "写作 `<!-- 说明文字 -->`。它不作为正文呈现，但仍在页面源码中，可以被查看，因此不能存放密码等秘密。",
+      "sortOrder": 6,
+      "status": "ENABLED"
+    }
+  ],
+  "questions": [
+    {
+      "key": "html-syntax-q01",
+      "questionText": "在 <p class=\"note\">学习 HTML</p> 中，哪些部分是开始标签、内容和结束标签？整个元素是哪一段？",
+      "referenceAnswer": "开始标签是 `<p class=\"note\">`，内容是“学习 HTML”，结束标签是 `</p>`。整段 `<p class=\"note\">学习 HTML</p>` 构成一个 p 元素；不能只把开始标签称为整个元素。",
+      "knowledgeCardKeys": ["html-syntax-k01", "html-syntax-k02"],
+      "sortOrder": 1,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-q02",
+      "questionText": "class=\"note\" 中的属性名与属性值分别是什么？如果不写这个属性，段落元素是否仍然成立？",
+      "referenceAnswer": "属性名是 `class`，属性值是 `note`。不写这个属性，`<p>学习 HTML</p>` 依然是完整的段落元素；class 不是 p 必须具备的属性。",
+      "knowledgeCardKeys": ["html-syntax-k01", "html-syntax-k02"],
+      "sortOrder": 2,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-q03",
+      "questionText": "为什么 class=\"warning\" 不会自动把文字变成红色？",
+      "referenceAnswer": "class 的值是分类名称，warning 没有内置的颜色含义。当前示例没有对应 CSS 规则，因此把 note 换成 warning 后，文字仍使用原来的默认样式。",
+      "knowledgeCardKeys": ["html-syntax-k03"],
+      "sortOrder": 3,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-q04",
+      "questionText": "正文需要一个可以前往 notes.html 的链接，应该给 p 加 href，还是使用 a？为什么？",
+      "referenceAnswer": "使用 `<a href=\"notes.html\">阅读笔记</a>`。a 表达链接，href 配置目标位置。p 表达段落，为它添加 href 并不能使它获得原生链接的跳转语义和行为。",
+      "knowledgeCardKeys": ["html-syntax-k02", "html-syntax-k05"],
+      "sortOrder": 4,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-q05",
+      "questionText": "<img src=\"cover.png\" alt=\"笔记本封面\"> 为什么没有结束标签？src 和 alt 分别配置什么？",
+      "referenceAnswer": "img 是空元素，不包含子内容，也没有结束标签。src 指定图片资源地址 cover.png，alt 提供替代文本“笔记本封面”。不应在后面添加 `</img>`。",
+      "knowledgeCardKeys": ["html-syntax-k04"],
+      "sortOrder": 5,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-q06",
+      "questionText": "HTML 注释会作为正文显示吗？不显示是否意味着别人无法从源码中看到？",
+      "referenceAnswer": "不会作为正文显示，但仍存在于页面源码中。查看源码即可读到注释，因此不应在注释中存放密码等秘密。",
+      "knowledgeCardKeys": ["html-syntax-k06"],
+      "sortOrder": 6,
+      "status": "ENABLED"
+    },
+    {
+      "key": "html-syntax-q07",
+      "questionText": "第一段只是普通说明文字，能否仅为了让它变大，就把它改成 h1？应该先根据什么选择标签？",
+      "referenceAnswer": "不应仅为放大文字而改变内容语义。普通说明仍使用 p；先根据内容含义确定元素，再通过 CSS 调整字号等外观。h1 应承担主标题的内容职责。",
+      "knowledgeCardKeys": ["html-syntax-k05"],
+      "sortOrder": 7,
+      "status": "ENABLED"
+    }
+  ],
+  "exercises": [
+    {
+      "key": "html-syntax-e01",
+      "title": "拆解与修正",
+      "referenceAnswerMarkdown": "第二行：标签名 `p`；属性 `class` 的值为 `daily`，属性 `title` 的值为“今天的学习内容”；元素内容为“我认识了三个术语。”；结束标签为 `</p>`。\n\n第三行改为：\n\n```html\n<img src=\"cover.png\" alt=\"学习笔记封面\">\n```\n\n`src` 指定资源地址，`alt` 提供替代文本。图片是空元素，移除 `</img>`。本题不要求实际存在图片文件。",
+      "knowledgeCardKeys": ["html-syntax-k01", "html-syntax-k02", "html-syntax-k04"]
+    },
+    {
+      "key": "html-syntax-e02",
+      "title": "编写学习记录页",
+      "referenceFile": "examples/01-html-syntax/exercise-answer.html",
+      "referenceAnswerMarkdown": "保留完整文档结构，把 body 内容替换为：\n\n```html\n<h1>我的 HTML 学习记录</h1>\n<!-- 这一段记录当天所学。 -->\n<p class=\"learning-note\" title=\"第一天的记录\">今天我认识了标签、元素和属性。</p>\n<p>下一步学习元素之间的关系。</p>\n```\n\n不引入 CSS 或 JavaScript。检查标题与两段正文的顺序、文字、属性和注释；learning-note 本身不会产生特殊颜色。",
+      "knowledgeCardKeys": ["html-syntax-k01", "html-syntax-k02", "html-syntax-k03", "html-syntax-k05", "html-syntax-k06"]
+    }
+  ]
+}

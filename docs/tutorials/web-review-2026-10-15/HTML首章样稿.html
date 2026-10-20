@@ -1,0 +1,262 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>标签、元素、属性：先读懂一行 HTML · 星雨笔录样章</title><style>
+:root{color-scheme:light;--ink:#242b38;--muted:#687386;--line:#e1e6ed;--blue:#285db2;--paper:#fff;--bg:#f5f7fa}*{box-sizing:border-box}html{scroll-behavior:smooth;scroll-padding-top:24px}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.9 system-ui,-apple-system,"Segoe UI","Microsoft YaHei",sans-serif}a{color:var(--blue);text-underline-offset:4px}a:focus-visible,summary:focus-visible{outline:3px solid #4475cc;outline-offset:4px}.top{background:#15263e;color:#fff;padding:20px max(24px,calc((100vw - 1240px)/2));display:flex;align-items:center;justify-content:space-between;gap:20px}.brand{font-weight:700;letter-spacing:3px}.top small{color:#c4d1e6}.layout{max-width:1240px;margin:32px auto 80px;padding:0 24px;display:grid;grid-template-columns:230px minmax(0,1fr);gap:34px}.side{align-self:start;position:sticky;top:24px;font-size:13px;max-height:calc(100vh - 48px);overflow:auto}.side .label{color:var(--muted);font-size:12px;letter-spacing:2px;margin-bottom:14px}.side a{display:block;padding:5px 10px;color:#4f5d70;text-decoration:none;border-left:2px solid var(--line)}.side a.h3{padding-left:20px;font-size:12px}.side a:hover{border-color:var(--blue);color:var(--blue);background:#edf2fa}.side .tools{margin-top:22px;border-top:1px solid var(--line);padding-top:15px}.sheet{min-width:0}.intro,.article,.review{background:var(--paper);border:1px solid var(--line);border-radius:12px;padding:34px 42px;margin-bottom:22px}.eyebrow{font-size:12px;letter-spacing:2px;color:var(--blue);margin-bottom:10px}.intro h1{font-size:30px;line-height:1.45;letter-spacing:-.5px;margin:0 0 15px}.intro p{color:var(--muted);margin:0}.badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}.badges span{border:1px solid var(--line);border-radius:30px;font-size:12px;padding:3px 11px;color:#55657c}.article h2,.review h2{font-size:24px;line-height:1.5;margin:42px 0 20px;padding-bottom:12px;border-bottom:1px solid var(--line)}.article h2:first-child,.review h2:first-child{margin-top:0}.article h3{font-size:19px;margin:32px 0 14px;line-height:1.7}.article p{margin:14px 0}.article ul,.article ol{padding-left:25px}.article li{margin:7px 0}code{background:#eff2f7;border-radius:4px;padding:2px 5px;font: .88em/1.7 Consolas,"Cascadia Code",monospace;overflow-wrap:anywhere}pre{background:#152336;color:#e6edf7;border-radius:8px;padding:20px;overflow:auto;font-size:13px;line-height:1.8;tab-size:2}pre code{background:none;padding:0;color:inherit;white-space:pre;overflow-wrap:normal}.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;font-size:14px;margin:20px 0}th,td{padding:11px 12px;border:1px solid var(--line);text-align:left;vertical-align:top}th{background:#f4f6f9;font-weight:600}blockquote{border-left:3px solid #4c73ab;padding:2px 18px;background:#f1f5fb;margin:20px 0}.review .hint{font-size:14px;color:var(--muted);margin-top:-8px}.card,.question{border:1px solid var(--line);border-radius:8px;margin:12px 0;background:#fff}summary{cursor:pointer;padding:18px;line-height:1.65;list-style:none}summary::-webkit-details-marker{display:none}summary small{display:block;font-size:11px;color:var(--blue);letter-spacing:1px;margin-bottom:7px}summary span{display:block;font-size:15px;font-weight:600}summary em{display:block;font-size:11px;color:var(--muted);font-style:normal;margin-top:10px}details[open] summary{background:#f5f8fd;border-radius:8px 8px 0 0;border-bottom:1px solid var(--line)}.answer{padding:2px 20px 12px;font-size:14px}.mapping{color:var(--muted);font-size:12px}.foot{color:var(--muted);font-size:12px;line-height:1.9;padding:2px 8px}.foot a{margin-right:12px}.sources{font-size:13px}.sources li{margin:6px 0}.sample-notice{font-size:13px;border-left:3px solid #91aad0;padding-left:12px;margin-top:22px!important}.jump{display:flex;flex-wrap:wrap;gap:12px;margin-top:20px}.jump a{font-size:12px;font-weight:600;border:1px solid #cbd6e6;border-radius:5px;padding:5px 10px;text-decoration:none}.article .example-button{display:inline-block;background:#285db2;color:white;text-decoration:none;border-radius:5px;padding:8px 16px;font-size:14px;margin-bottom:12px}@media(max-width:900px){.layout{grid-template-columns:minmax(0,1fr);gap:18px;max-width:800px;margin-top:18px}.side{position:static;max-height:none}.side nav{display:none}.side .tools{display:flex;flex-wrap:wrap;gap:10px;margin:0;padding:0;border:0}.side .tools a{border:0;padding:0}.side .label{margin-bottom:8px}.intro,.article,.review{padding:25px}.intro h1{font-size:25px}}@media(max-width:480px){body{font-size:15px}.layout{padding:0 10px}.top{padding:14px 18px}.intro,.article,.review{padding:22px 17px;border-radius:8px}.intro h1{font-size:23px}.article h2,.review h2{font-size:21px}.article h3{font-size:17px}th,td{padding:8px}pre{padding:14px;font-size:12px}.top small{font-size:11px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{.side,.top,.jump,.example-button{display:none}.layout{display:block;max-width:none;margin:0;padding:0}body{background:white}.intro,.article,.review{border:0;padding:10px 0;break-inside:auto}pre{white-space:pre-wrap}details .answer{display:block}a{color:inherit}}
+</style></head><body><header class="top"><span class="brand">星雨笔录</span><small>HTML 教程 · 首章完整样稿</small></header><div class="layout"><aside class="side"><div class="label">本章导航</div><nav aria-label="本章导航"><a class="h2" href="#section-1">一、学习目标</a><a class="h2" href="#section-2">二、核心知识</a><a class="h3" href="#section-3">2.1 从一个段落分清标签、元素与属性</a><a class="h3" href="#section-4">2.2 标签按内容的用途选择</a><a class="h3" href="#section-5">2.3 属性写在开始标签内</a><a class="h3" href="#section-6">2.4 普通元素、空元素与注释</a><a class="h3" href="#section-7">2.5 修改代码，核对页面结果</a><a class="h2" href="#section-8">三、问题</a><a class="h2" href="#section-9">四、练习题</a><a class="h3" href="#section-10">4.1 拆解与修正</a><a class="h3" href="#section-11">4.2 编写学习记录页</a><a href="#cards">知识卡片</a><a href="#answers">问题参考答案</a><a href="#exercise-answers">练习参考解答</a></nav><div class="tools"><a href="HTML/01-先认识HTML的组成/01-标签元素属性.md">Markdown 正文</a><a href="HTML/01-先认识HTML的组成/01-学习数据.json">卡片与问题数据</a></div></aside><main class="sheet"><header class="intro"><div class="eyebrow">HTML / 一.先认识 HTML 的组成 / 第 1 章</div><h1>标签、元素、属性：先读懂一行 HTML</h1><p>从一个段落拆解标签、元素和属性，认识常见标签与属性的分工，并通过修改页面验证代码与显示结果的关系。</p><div class="badges"><span>5 个核心知识点</span><span>6 张知识卡片</span><span>7 道理解题</span><span>2 道练习</span></div><p class="sample-notice">本页是第一章的完整样稿，供检查写法与讲解深度。三套教程尚未全部完成。</p><div class="jump"><a href="#cards">查看知识卡片</a><a href="#answers">查看参考答案</a><a href="HTML/01-先认识HTML的组成/examples/01-html-syntax/index.html" target="_blank" rel="noopener">打开独立示例 ↗</a></div></header><article class="article"><h2 id="section-1">一、学习目标</h2>
+<ul>
+<li>能从一行 HTML 中指出开始标签、内容、结束标签、属性名和属性值。</li>
+<li>能根据内容用途选择标题、段落、链接和图片等常见标签。</li>
+<li>能区分普通元素与空元素，正确添加属性和注释。</li>
+<li>能修改一个简单页面，并说明文字、标签、属性分别改变了什么。</li>
+</ul>
+<h2 id="section-2">二、核心知识</h2>
+<h3 id="section-3">2.1 从一个段落分清标签、元素与属性</h3>
+<p>HTML 的全称是 HyperText Markup Language，即超文本标记语言。写 HTML，是用浏览器认识的标记表达内容的身份与结构：哪一段是标题，哪一段是正文，哪里可以跳转，哪里需要显示图片。</p>
+<p>先读这一行：</p>
+<pre><code class="language-html">&lt;p class=&quot;note&quot;&gt;这是一个段落。&lt;/p&gt;
+</code></pre>
+<p><code>p</code> 表示段落。这行代码可以拆成下面几部分：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>部分</th>
+<th>本例中的代码</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>开始标签</td>
+<td><code>&lt;p class=&quot;note&quot;&gt;</code></td>
+<td>段落从这里开始，也在这里声明属性</td>
+</tr>
+<tr>
+<td>标签名</td>
+<td><code>p</code></td>
+<td>指明元素类型是段落</td>
+</tr>
+<tr>
+<td>内容</td>
+<td><code>这是一个段落。</code></td>
+<td>段落中承载的文字</td>
+</tr>
+<tr>
+<td>结束标签</td>
+<td><code>&lt;/p&gt;</code></td>
+<td>这个段落到这里结束</td>
+</tr>
+<tr>
+<td>属性名</td>
+<td><code>class</code></td>
+<td>属性的名称</td>
+</tr>
+<tr>
+<td>属性值</td>
+<td><code>note</code></td>
+<td>给这个属性设置的值</td>
+</tr>
+</tbody>
+</table></div>
+<p><strong>标签是标记，元素是整体。</strong> <code>&lt;p class=&quot;note&quot;&gt;</code> 是开始标签，<code>&lt;/p&gt;</code> 是结束标签，而从开始标签到结束标签的这一整段，是一个 <code>p</code> 元素。平时说“添加一个 p 标签”，通常是在说添加一个段落元素；分析代码结构时，要知道这两个词的区别。</p>
+<p><code>class=&quot;note&quot;</code> 属于开始标签的一部分，用来补充元素信息，不属于段落正文。页面通常显示“这是一个段落。”，不会把 <code>class=&quot;note&quot;</code> 当成正文打印出来。</p>
+<p>再看没有属性的写法：</p>
+<pre><code class="language-html">&lt;p&gt;这是一个段落。&lt;/p&gt;
+</code></pre>
+<p>它依然是完整的段落元素。是否需要某个属性，由元素用途和属性规则决定；不能把“元素一定要有属性”当成语法要求。</p>
+<h3 id="section-4">2.2 标签按内容的用途选择</h3>
+<p>HTML 已经定义了许多标签。初学时先认识下面几种，不必一次背完全部标签：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>标签</th>
+<th>表达的内容</th>
+<th>简单写法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>h1</code>～<code>h6</code></td>
+<td>不同层级的标题</td>
+<td><code>&lt;h1&gt;我的学习笔记&lt;/h1&gt;</code></td>
+</tr>
+<tr>
+<td><code>p</code></td>
+<td>一个段落</td>
+<td><code>&lt;p&gt;今天开始学习 HTML。&lt;/p&gt;</code></td>
+</tr>
+<tr>
+<td><code>a</code></td>
+<td>指向其他位置的链接</td>
+<td><code>&lt;a href=&quot;notes.html&quot;&gt;阅读笔记&lt;/a&gt;</code></td>
+</tr>
+<tr>
+<td><code>img</code></td>
+<td>图片</td>
+<td><code>&lt;img src=&quot;cover.png&quot; alt=&quot;笔记本封面&quot;&gt;</code></td>
+</tr>
+<tr>
+<td><code>button</code></td>
+<td>供用户触发操作的按钮</td>
+<td><code>&lt;button type=&quot;button&quot;&gt;查看说明&lt;/button&gt;</code></td>
+</tr>
+<tr>
+<td><code>div</code></td>
+<td>没有额外内容语义的通用容器</td>
+<td><code>&lt;div&gt;一组相关内容&lt;/div&gt;</code></td>
+</tr>
+</tbody>
+</table></div>
+<p>选择标签时，先问“这是什么内容”。文章标题用标题元素，正文用段落，前往另一个页面用链接。不要因为 <code>h1</code> 默认看起来比较大，就把需要放大的所有文字都写成 <code>h1</code>；标题层级与具体字号是两个问题。</p>
+<p>浏览器会为许多标签提供默认样式，所以没有编写 CSS，也能看到标题和段落的外观差异。这只是浏览器提供的默认显示方式。后面学习 CSS 时，还可以改变它们的字号、颜色和间距。</p>
+<p><code>button</code> 能提供原生按钮的基础交互，但写出“查看说明”四个字，不会自动生成查看说明的业务逻辑。标签提供的能力与页面需要实现的具体功能，要分别理解。</p>
+<h3 id="section-5">2.3 属性写在开始标签内</h3>
+<p>常见的属性写法是 <code>属性名=&quot;属性值&quot;</code>。属性和标签名之间、多个属性之间，用空格分隔：</p>
+<pre><code class="language-html">&lt;p class=&quot;note&quot; title=&quot;这是补充说明&quot;&gt;把鼠标停在这段文字上试试。&lt;/p&gt;
+</code></pre>
+<p>这里有两个属性：<code>class</code> 的值是 <code>note</code>，<code>title</code> 的值是“这是补充说明”。本教程统一给属性值加引号，避免空格等字符造成歧义，也便于阅读。</p>
+<p>属性不能随便写到结束标签上。段落的结束标签仍然是 <code>&lt;/p&gt;</code>。</p>
+<p>属性大致可以先分成两类：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>类别</th>
+<th>常见属性</th>
+<th>用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>全局属性</td>
+<td><code>id</code>、<code>class</code>、<code>title</code>、<code>lang</code></td>
+<td>为各种 HTML 元素提供标识、分类、补充信息或语言声明</td>
+</tr>
+<tr>
+<td>与特定元素有关的属性</td>
+<td><code>a</code> 的 <code>href</code>，<code>img</code> 的 <code>src</code>、<code>alt</code></td>
+<td>配置链接目标、图片资源和替代文本等具体能力</td>
+</tr>
+</tbody>
+</table></div>
+<p>“全局”表示属性具有广泛的适用范围，不表示写在任何元素上都会产生相同的可见效果。完整的全局属性与 <code>data-*</code> 留到本组后续章节讲解。</p>
+<p>下面两行分别配置了链接和图片：</p>
+<pre><code class="language-html">&lt;a href=&quot;notes.html&quot;&gt;阅读笔记&lt;/a&gt;
+&lt;img src=&quot;cover.png&quot; alt=&quot;笔记本封面&quot;&gt;
+</code></pre>
+<p><code>href</code> 告诉链接跳到哪里；<code>src</code> 告诉图片从哪里加载；<code>alt</code> 提供图片的替代文本。先认清这些分工，后续章节再学习路径解析、图片选择和替代文本的具体写法。不能把给段落添加 <code>href</code> 当成创建链接的方法。</p>
+<p>还有一个很容易误解的地方：<strong><code>class=&quot;note&quot;</code> 只是把元素归入 <code>note</code> 这一类。</strong> <code>note</code> 是自己取的类名，没有“自动变红”的内置含义。本章示例没有对应的样式规则，所以加上它之后，文字不会自动改变颜色。</p>
+<p><code>title</code> 也只是补充信息。桌面浏览器可能在鼠标停留时显示提示，但不能保证所有输入设备都能以同样方式查看，因此重要说明应该直接写在页面内容中。</p>
+<h3 id="section-6">2.4 普通元素、空元素与注释</h3>
+<p>前面的 <code>p</code> 有开始标签和结束标签，文字写在二者之间。<code>img</code> 则属于空元素，不能包含子内容，也没有结束标签：</p>
+<pre><code class="language-html">&lt;!-- 普通段落元素：文字写在开始标签与结束标签之间。 --&gt;
+&lt;p&gt;记录今天学到的内容。&lt;/p&gt;
+
+&lt;!-- img 是空元素，图片地址与替代文本通过属性配置。 --&gt;
+&lt;img src=&quot;cover.png&quot; alt=&quot;笔记本封面&quot;&gt;
+</code></pre>
+<p>常见空元素还有 <code>input</code>、<code>br</code>、<code>hr</code>、<code>meta</code> 和 <code>link</code>。不要给它们添加 <code>&lt;/img&gt;</code>、<code>&lt;/input&gt;</code> 这样的结束标签。某些资料写作 <code>&lt;img ... /&gt;</code>，在 HTML 中末尾的斜线不是必需的，也不表示所有普通元素都可以靠加一个斜线来结束。</p>
+<p><code>&lt;!-- 说明文字 --&gt;</code> 是 HTML 注释，用于给阅读源码的人解释意图，浏览器不会把它作为正文显示。但注释仍然存在于页面源码中，不能用它保存密码或其他秘密。</p>
+<p>对于本章练习中的 <code>p</code>、<code>h1</code> 等元素，按示例写清开始与结束标签。HTML 确实允许部分元素在特定条件下省略某些标签，但不需要在第一章把这些省略规则混进来。</p>
+<h3 id="section-7">2.5 修改代码，核对页面结果</h3>
+<p>代码目录中的原例有一个标题和两个段落。下面保留它的学习内容，移除本章不需要的样式与脚本引用，得到可以单独打开的最小页面。</p>
+<p>新建 <code>index.html</code>，用 UTF-8 编码保存以下内容，再用浏览器打开。先原样保留外层文档结构，本章只观察 <code>body</code> 中的三个元素；文档各部分会在第三章解释。</p>
+<pre><code class="language-html">&lt;!doctype html&gt;
+&lt;html lang=&quot;zh-CN&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;utf-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+  &lt;title&gt;标签、元素与属性&lt;/title&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;h1&gt;我的第一张网页&lt;/h1&gt;
+  &lt;!-- note 只是类名；当前页面没有为它设置样式。 --&gt;
+  &lt;p class=&quot;note&quot; title=&quot;把鼠标停在这里&quot;&gt;这是一个段落。&lt;/p&gt;
+  &lt;p&gt;这是另一个段落。&lt;/p&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>打开后应看到一个大标题和两个段落。尖括号标记、属性和注释都不会作为正文打印出来；两个段落具有相同的默认外观。</p>
+<p>然后分别进行以下修改。每完成一项都保存文件并刷新浏览器，观察完再恢复原样，避免多个修改互相干扰：</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>修改</th>
+<th>应观察到的结果</th>
+<th>对应的知识</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>把第一段的文字改为“我知道元素是什么了”</td>
+<td>第一段文字改变，标题和第二段保持原样</td>
+<td>两个标签之间是这个元素的内容</td>
+</tr>
+<tr>
+<td>把第一段的 <code>class=&quot;note&quot;</code> 改为 <code>class=&quot;warning&quot;</code></td>
+<td>本例外观不变</td>
+<td>类名本身不规定颜色或字号</td>
+</tr>
+<tr>
+<td>把第一段开始与结束标签中的 <code>p</code> 都改为 <code>h2</code></td>
+<td>这段内容成为二级标题，默认外观通常也改变</td>
+<td>标签名决定元素类型</td>
+</tr>
+</tbody>
+</table></div>
+<p>第二项没有可见变化也是有效的实验结果。如果你的段落意外出现了颜色或其他样式，先确认打开的是这里独立保存的文件，并检查是否额外引入了 CSS。最后一项只用于观察元素类型的变化，实际写页面时仍应根据内容含义选择标题与段落。</p>
+<h2 id="section-8">三、问题</h2>
+<ol>
+<li>在 <code>&lt;p class=&quot;note&quot;&gt;学习 HTML&lt;/p&gt;</code> 中，哪些部分是开始标签、内容和结束标签？整个元素是哪一段？</li>
+<li><code>class=&quot;note&quot;</code> 中的属性名与属性值分别是什么？如果不写这个属性，段落元素是否仍然成立？</li>
+<li>为什么 <code>class=&quot;warning&quot;</code> 不会自动把文字变成红色？</li>
+<li>正文需要一个可以前往 <code>notes.html</code> 的链接，应该给 <code>p</code> 加 <code>href</code>，还是使用 <code>a</code>？为什么？</li>
+<li><code>&lt;img src=&quot;cover.png&quot; alt=&quot;笔记本封面&quot;&gt;</code> 为什么没有结束标签？<code>src</code> 和 <code>alt</code> 分别配置什么？</li>
+<li>HTML 注释会作为正文显示吗？不显示是否意味着别人无法从源码中看到？</li>
+<li>第一段只是普通说明文字，能否仅为了让它变大，就把它改成 <code>h1</code>？应该先根据什么选择标签？</li>
+</ol>
+<h2 id="section-9">四、练习题</h2>
+<h3 id="section-10">4.1 拆解与修正</h3>
+<p>阅读下面的代码：</p>
+<pre><code class="language-html">&lt;h1&gt;学习记录&lt;/h1&gt;
+&lt;p class=&quot;daily&quot; title=&quot;今天的学习内容&quot;&gt;我认识了三个术语。&lt;/p&gt;
+&lt;img src=&quot;cover.png&quot; alt=&quot;学习笔记封面&quot;&gt;&lt;/img&gt;
+</code></pre>
+<p>完成两项任务：</p>
+<ol>
+<li>写出第二行的标签名、两个属性名、各自的属性值、元素内容和结束标签。</li>
+<li>修正第三行的空元素写法，并说明 <code>src</code> 与 <code>alt</code> 的职责。</li>
+</ol>
+<p>**验收标准：**能指出 <code>p</code>、<code>class</code>、<code>daily</code>、<code>title</code> 及其对应值，不把属性当成正文；修正后保留 <code>img</code> 的两个属性并移除 <code>&lt;/img&gt;</code>。这是一道代码阅读题，不要求实际提供 <code>cover.png</code> 文件。</p>
+<h3 id="section-11">4.2 编写学习记录页</h3>
+<p>复制本章完整页面的外层结构，仅替换 <code>body</code> 中的内容，完成以下页面：</p>
+<ul>
+<li>一个主标题，内容为“我的 HTML 学习记录”。</li>
+<li>两个段落，内容依次为“今天我认识了标签、元素和属性。”与“下一步学习元素之间的关系。”。</li>
+<li>第一段添加 <code>class=&quot;learning-note&quot;</code> 和 <code>title=&quot;第一天的记录&quot;</code>。</li>
+<li>在第一段前添加一条注释，说明它记录当天所学。</li>
+</ul>
+<p>**验收标准：**浏览器显示一个标题和两个段落，顺序与文字正确；源码中能够找到要求的两个属性和注释；页面没有引入 CSS，第一段不会仅因类名而自动变色，注释和属性也没有被打印成正文。</p>
+</article><section class="review" id="cards"><h2>知识卡片</h2><p class="hint">先尝试回答，再展开背面。每张卡只检查一个概念或一组直接相关的概念。</p><details class="card"><summary><small>知识卡片 01</small><span>标签与元素有什么区别？用一个 p 元素说明。</span><em>展开背面</em></summary><div class="answer"><p><code>&lt;p&gt;</code> 是开始标签，<code>&lt;/p&gt;</code> 是结束标签；<code>&lt;p&gt;学习 HTML&lt;/p&gt;</code> 这一整段是一个段落元素。标签是标记，元素是整体。空元素不采用这一完整配对形式。</p>
+</div></details><details class="card"><summary><small>知识卡片 02</small><span>属性写在哪里？class=&quot;note&quot; 的属性名和属性值分别是什么？</span><em>展开背面</em></summary><div class="answer"><p>属性写在开始标签内，常见形式为 <code>属性名=&quot;属性值&quot;</code>，多个属性用空格分隔。<code>class=&quot;note&quot;</code> 的属性名是 <code>class</code>，值是 <code>note</code>；属性不属于元素正文。</p>
+</div></details><details class="card"><summary><small>知识卡片 03</small><span>为什么 class=&quot;warning&quot; 不会自动把段落变红？</span><em>展开背面</em></summary><div class="answer"><p><code>warning</code> 是作者选定的类名，只提供分类标记，没有内置颜色含义。需要匹配的 CSS 规则才能实现相应外观；没有相应样式时，修改这个类名不一定有可见变化。</p>
+</div></details><details class="card"><summary><small>知识卡片 04</small><span>img 为什么没有结束标签？src 与 alt 分别负责什么？</span><em>展开背面</em></summary><div class="answer"><p><code>img</code> 是空元素，不能包含子内容，也没有 <code>&lt;/img&gt;</code> 结束标签。<code>src</code> 指定图片资源地址，<code>alt</code> 提供图片的替代文本。HTML 中空元素末尾不必添加 <code>/</code>。</p>
+</div></details><details class="card"><summary><small>知识卡片 05</small><span>选择 HTML 标签时，优先依据内容含义还是默认外观？</span><em>展开背面</em></summary><div class="answer"><p>优先依据内容含义与实际行为。标题用标题元素，段落用 <code>p</code>，跳转用带 <code>href</code> 的 <code>a</code>。浏览器提供默认外观，但字号、颜色等可以另用 CSS 调整。</p>
+</div></details><details class="card"><summary><small>知识卡片 06</small><span>HTML 注释怎样写？页面不显示注释，是否代表它保密？</span><em>展开背面</em></summary><div class="answer"><p>写作 <code>&lt;!-- 说明文字 --&gt;</code>。它不作为正文呈现，但仍在页面源码中，可以被查看，因此不能存放密码等秘密。</p>
+</div></details></section><section class="review" id="answers"><h2>问题参考答案</h2><p class="hint">与正文七道问题一一对应；同时保留问题与卡片的关联。</p><details class="question"><summary><small>问题 1</small><span>在 &lt;p class=&quot;note&quot;&gt;学习 HTML&lt;/p&gt; 中，哪些部分是开始标签、内容和结束标签？整个元素是哪一段？</span></summary><div class="answer"><p>开始标签是 <code>&lt;p class=&quot;note&quot;&gt;</code>，内容是“学习 HTML”，结束标签是 <code>&lt;/p&gt;</code>。整段 <code>&lt;p class=&quot;note&quot;&gt;学习 HTML&lt;/p&gt;</code> 构成一个 p 元素；不能只把开始标签称为整个元素。</p>
+<p class="mapping">关联：卡片 1、卡片 2</p></div></details><details class="question"><summary><small>问题 2</small><span>class=&quot;note&quot; 中的属性名与属性值分别是什么？如果不写这个属性，段落元素是否仍然成立？</span></summary><div class="answer"><p>属性名是 <code>class</code>，属性值是 <code>note</code>。不写这个属性，<code>&lt;p&gt;学习 HTML&lt;/p&gt;</code> 依然是完整的段落元素；class 不是 p 必须具备的属性。</p>
+<p class="mapping">关联：卡片 1、卡片 2</p></div></details><details class="question"><summary><small>问题 3</small><span>为什么 class=&quot;warning&quot; 不会自动把文字变成红色？</span></summary><div class="answer"><p>class 的值是分类名称，warning 没有内置的颜色含义。当前示例没有对应 CSS 规则，因此把 note 换成 warning 后，文字仍使用原来的默认样式。</p>
+<p class="mapping">关联：卡片 3</p></div></details><details class="question"><summary><small>问题 4</small><span>正文需要一个可以前往 notes.html 的链接，应该给 p 加 href，还是使用 a？为什么？</span></summary><div class="answer"><p>使用 <code>&lt;a href=&quot;notes.html&quot;&gt;阅读笔记&lt;/a&gt;</code>。a 表达链接，href 配置目标位置。p 表达段落，为它添加 href 并不能使它获得原生链接的跳转语义和行为。</p>
+<p class="mapping">关联：卡片 2、卡片 5</p></div></details><details class="question"><summary><small>问题 5</small><span>&lt;img src=&quot;cover.png&quot; alt=&quot;笔记本封面&quot;&gt; 为什么没有结束标签？src 和 alt 分别配置什么？</span></summary><div class="answer"><p>img 是空元素，不包含子内容，也没有结束标签。src 指定图片资源地址 cover.png，alt 提供替代文本“笔记本封面”。不应在后面添加 <code>&lt;/img&gt;</code>。</p>
+<p class="mapping">关联：卡片 4</p></div></details><details class="question"><summary><small>问题 6</small><span>HTML 注释会作为正文显示吗？不显示是否意味着别人无法从源码中看到？</span></summary><div class="answer"><p>不会作为正文显示，但仍存在于页面源码中。查看源码即可读到注释，因此不应在注释中存放密码等秘密。</p>
+<p class="mapping">关联：卡片 6</p></div></details><details class="question"><summary><small>问题 7</small><span>第一段只是普通说明文字，能否仅为了让它变大，就把它改成 h1？应该先根据什么选择标签？</span></summary><div class="answer"><p>不应仅为放大文字而改变内容语义。普通说明仍使用 p；先根据内容含义确定元素，再通过 CSS 调整字号等外观。h1 应承担主标题的内容职责。</p>
+<p class="mapping">关联：卡片 5</p></div></details></section><section class="review" id="exercise-answers"><h2>练习参考解答</h2><p class="hint">先按正文的验收条件完成，再核对参考解答。</p><details class="question"><summary><small>练习 1</small><span>拆解与修正 · 参考解答</span></summary><div class="answer"><p>第二行：标签名 <code>p</code>；属性 <code>class</code> 的值为 <code>daily</code>，属性 <code>title</code> 的值为“今天的学习内容”；元素内容为“我认识了三个术语。”；结束标签为 <code>&lt;/p&gt;</code>。</p>
+<p>第三行改为：</p>
+<pre><code class="language-html">&lt;img src=&quot;cover.png&quot; alt=&quot;学习笔记封面&quot;&gt;
+</code></pre>
+<p><code>src</code> 指定资源地址，<code>alt</code> 提供替代文本。图片是空元素，移除 <code>&lt;/img&gt;</code>。本题不要求实际存在图片文件。</p>
+</div></details><details class="question"><summary><small>练习 2</small><span>编写学习记录页 · 参考解答</span></summary><div class="answer"><p>保留完整文档结构，把 body 内容替换为：</p>
+<pre><code class="language-html">&lt;h1&gt;我的 HTML 学习记录&lt;/h1&gt;
+&lt;!-- 这一段记录当天所学。 --&gt;
+&lt;p class=&quot;learning-note&quot; title=&quot;第一天的记录&quot;&gt;今天我认识了标签、元素和属性。&lt;/p&gt;
+&lt;p&gt;下一步学习元素之间的关系。&lt;/p&gt;
+</code></pre>
+<p>不引入 CSS 或 JavaScript。检查标题与两段正文的顺序、文字、属性和注释；learning-note 本身不会产生特殊颜色。</p>
+</div></details><p><a href="HTML/01-先认识HTML的组成/examples/01-html-syntax/exercise-answer.html" target="_blank" rel="noopener">打开第二道练习的完整参考页面 ↗</a></p></section><section class="review sources"><h2>编写依据</h2><p>目录与章节范围按项目根目录《web教程总纲.md》；主例对应提供代码库中的 html-syntax。标签与空元素边界按 HTML 标准核对。</p><ul><li><a href="https://html.spec.whatwg.org/multipage/syntax.html#elements-2" target="_blank" rel="noopener">WHATWG：HTML 元素语法</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Basic_HTML_syntax" target="_blank" rel="noopener">MDN：HTML 基本语法</a></li><li><a href="https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Global_attributes/class" target="_blank" rel="noopener">MDN：class 属性</a></li></ul></section><footer class="foot">验收样章 · 2026-10-15<br>正文、学习数据与运行示例均已保存在本地；本次未生成或执行 SQL。</footer></main></div></body></html>

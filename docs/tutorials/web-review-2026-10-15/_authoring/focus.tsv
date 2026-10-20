@@ -1,0 +1,44 @@
+key	question	answer
+html-01-01	标签、元素和属性分别指什么？class="note" 会自动让文字变色吗？	标签是尖括号包围的标记；普通元素通常由开始标签、内容和结束标签组成，img 等空元素没有结束标签；属性写在开始标签中，为元素补充信息。class="note" 只是类别标记，需要匹配的 CSS 规则才会产生对应外观。
+html-01-02	父子、兄弟与祖先后代关系如何区分？	父子是直接包含关系；兄弟共享直接父节点；祖先与后代可以隔一层，也可以隔多层，因此父元素也是祖先元素，子元素也是后代元素。缩进帮助人阅读，真正的关系由解析后的 DOM 树决定；浏览器还可能修复无效嵌套。
+html-01-03	DOCTYPE、html、head、meta、title、body 各承担什么职责？	DOCTYPE 让浏览器按标准模式解析；html 是根元素，lang 声明自然语言；head 放文档元数据；meta charset 声明编码，viewport 提供移动视口配置；title 是标签页标题；body 放页面主体。DOCTYPE 不是普通 HTML 元素，head 也不是页面顶栏。
+html-01-04	title、description 与 Favicon 分别出现在哪里？	title 定义文档标题，通常显示在浏览器标签页；meta name="description" 提供页面摘要，搜索引擎可能采用，也可能另行生成摘要；link rel="icon" 指向站点图标。三者都放在 head 中，正文标题仍由 h1 等元素表达。
+html-01-05	为什么源码回车不等于页面换行？如何在网页中显示 <p> 这段代码？	普通 HTML 文本中的连续空白通常折叠，段落结构用 p，语义上的换行用 br。显示代码中的小于号写 &lt;，必要时用 &amp; 表示与号；code 表达代码语义，pre 保留排版空白。不要用重复空格或 br 代替 CSS 布局。
+html-01-06	id、class、title、hidden 与 data-* 的用途有哪些差别？	id 在同一文档中应唯一，供锚点和 DOM 定位；class 可列出多个分类；title 提供补充信息但不能代替可访问名称；hidden 表示当前不呈现；data-* 保存页面自己的字符串数据。data-* 不会自动显示，读取与转换由后续脚本负责。
+html-01-07	手机页面为什么需要 viewport？它会自动完成响应式布局吗？	width=device-width 让布局视口宽度与设备的 CSS 像素宽度对应，initial-scale=1 设置初始缩放。缺少配置时移动浏览器可能按较宽的虚拟视口排版再缩小。viewport 只提供视口条件，元素宽度、换行与布局仍需 CSS 配合；不要禁用用户缩放。
+html-02-01	h1～h6 和 p 如何表达文章层级？能按字号大小选标题吗？	h1～h6 表达标题层级，p 表达段落。应先按内容关系安排标题，再用 CSS 调整外观；不能为了小字号直接跳到 h6。页面主题、章节标题和段落应能构成可理解的阅读顺序，标题元素中也不应放整篇正文。
+html-02-02	strong、em、b、i、blockquote 与 q 应如何选择？	strong 表达重要性，em 表达强调；b、i 各有自己的文本语义，不能简单等同于加粗和斜体命令。blockquote 用于独立引用，q 用于行内引用，引用出处应提供可见文字或链接；cite 属性本身不会自动显示来源。外观由 CSS 决定。
+html-02-03	普通导航链接、站外链接和页内锚点的 href 有什么不同？	a 的 href 可以是相对路径、完整 URL 或 #目标id。导航通常放在有明确名称的 nav 中；链接文字应说明目的。target="_blank" 会打开新浏览上下文，按需要显式添加 rel="noopener"；下载、跳转和按钮操作要按真实行为区分。
+html-02-04	./、../、/ 开头的路径分别参照哪里？	相对路径以当前文档的基准 URL 解析，./ 指当前目录，../ 返回上级目录；以 / 开头的路径从当前站点根路径解析。完整 URL 自带协议和主机。file 下的根路径行为与 HTTP 站点不同，迁移到子目录部署时也要检查引用结果。
+html-02-05	图片的 alt、title 与 figcaption 能互相替代吗？	alt 为无法看到图片的场景提供替代文本，纯装饰图片用 alt=""；title 只是补充信息；figcaption 是 figure 的可见图注。width 和 height 可以预留比例，减少布局跳动；替代文本应表达图片在当前上下文中的作用，而非机械描述文件名。
+html-02-06	srcset、sizes 与 picture 的职责分别是什么？	srcset 提供候选图片，sizes 描述相应条件下的显示宽度，让浏览器选择资源；picture 内的 source 可以按媒体条件或格式切换图像，适合艺术裁切或格式回退，最终仍需 img 承担显示与 alt。候选资源的描述符必须与实际图片宽度或密度一致。
+html-02-07	子目录中的笔记页应如何链接到首页与关于页？	假设首页为 index.html、关于页为 about.html、笔记为 notes/first.html：首页可链接 notes/first.html，笔记返回首页应写 ../index.html，去关于页写 ../about.html。每次跳转都从当前文档位置重新解析，不能把所有页面的 href 原样复制。
+html-02-08	页内目录为什么用 id？固定页头遮住目标标题时如何处理？	href="#css" 会定位到 id="css" 的元素并更新 URL 片段；id 应唯一，不能用 class 代替。CSS 的 scroll-margin-top 可为被滚动到的目标预留顶部距离。目录链接本身使用原生 a，保留键盘操作、复制地址和刷新恢复能力。
+html-03-01	什么时候用 ol，什么时候用 ul？li 应放在哪里？	步骤、排名等顺序有意义的项目用 ol；顺序可变的项目用 ul。两者的项目都用 li，子列表写在所属 li 内。列表标记的外观可以由 CSS 改变，但去掉数字或圆点不会改变列表本身的内容语义。
+html-03-02	dl、dt、dd 与 address 各表示什么？	dl 表达名称与描述的对应关系，dt 是名称，dd 是解释，可存在一对多等合法组合；address 表达最近 article 或 body 的联系信息，不是所有邮政地址的通用标签。联系信息中的邮件和电话可以分别使用 mailto:、tel: 链接。
+html-03-03	数据表格为什么需要 caption、th 和 scope？	table 表达二维数据关系；caption 说明表的主题，th 标记表头，scope="col" 或 "row" 声明简单表头的方向。thead、tbody、tfoot 组织行组，tr 组织一行。表格不应用来代替页面布局，也不应依赖颜色独自表达数据含义。
+html-03-04	rowspan 和 colspan 怎样影响后续单元格位置？	colspan 占据同一行的多个列槽位，rowspan 占据后续行的同一列槽位。被覆盖的槽位不能再插入普通单元格，否则各行会错位。合并后仍需检查表头关联，不能只看视觉边框是否整齐。
+html-03-05	复杂多级表头何时需要 headers 与 id？	简单表可用 scope 表达行列方向；多级表头或不规则关联可为 th 设置唯一 id，再让数据单元格的 headers 列出所有相关表头 id。headers 是空格分隔的 ID 列表，不是表头文字。表格越复杂，越要检查单个数据值是否能说明其分类与单位。
+html-03-06	为什么嵌套清单要放在 li 内，而不能直接作为 ol 的同级内容？	ol 的项目由 li 承载，子清单属于某一步的细分任务，应写进那一个 li 中。步骤顺序用外层 ol，步骤内部无固定顺序的材料用 ul。先验证 DOM 层级，再观察浏览器默认缩进；外观缩进并不能证明结构正确。
+html-04-01	为什么 disabled="false" 依然禁用控件？	disabled、checked、required 等是布尔属性，出现就表示真，字符串 false 不会关闭它。关闭应移除属性，或通过对应 DOM 布尔属性赋 false。aria-expanded="false" 之类 ARIA 属性采用字符串取值规则，不能套用 HTML 布尔属性规则。
+html-04-02	id、name、value 在表单提交中分别有什么作用？	id 用于页面定位与 label 关联，name 是提交字段名，value 是相应字段值。没有 name 或被 disabled 的控件通常不进入提交数据；未勾选的复选框不提交该选项。GET 把数据编码到 URL，POST 的具体编码还与 enctype 有关；本章不把 POST 等同于加密。
+html-04-03	input、textarea、button 如何选择？表单中的按钮为什么要写 type？	单行输入用 input，多行文字用 textarea，动作按钮用 button。表单中的普通 button 默认可能提交，非提交动作应显式写 type="button"；提交写 type="submit"。placeholder 仅是输入提示，不能代替持久可见的 label。
+html-04-04	label、fieldset、legend、optgroup 分别解决哪一层分组？	label 的 for 指向控件 id，为单个控件提供名称并扩大点击区域；fieldset 与 legend 组织一组相关控件；select 内的 optgroup 为选项分组。同一单选组使用相同 name，不同选项使用不同 value；仅靠视觉相邻不能建立这些关系。
+html-04-05	required、min、max、pattern 与 type 校验能保证后端数据安全吗？	这些约束改善浏览器端输入体验，并在原生提交时执行支持的约束校验；type=email 也只检查格式，不证明邮箱存在。脚本、直接请求都能绕过前端约束，服务端必须重新验证。number 的空值与 0 要分别处理，minlength 也不能代替所有业务规则。
+html-04-06	select、datalist、output 为什么不能互相替换？	select 从预设选项中选择；datalist 为 input 提供建议，通常仍允许输入列表之外的值；output 表达计算结果，不是普通输入框，也不会像命名输入控件那样自动提交结果。需要提交计算结果时应明确设计相应字段并在服务端核算。
+html-04-07	键盘可达、可访问名称与可见焦点分别怎样检查？	用 Tab 和 Shift+Tab 检查自然焦点顺序，用 Enter 或空格按原生控件规则激活。名称优先来自可见文本或 label，必要时用 aria-label 或 aria-labelledby 补充；CSS 需保留清晰焦点。不要通过正数 tabindex 重排整页，也不要让 div 模拟原生按钮却遗漏键盘行为。
+html-04-08	为什么 GET 搜索表单提交后只有 URL 参数，没有自动出现筛选结果？	原生 form 按 action 和 method 构造请求，name="q" 决定参数名，浏览器负责 URL 编码；浏览器不会替页面实现业务搜索。还需要服务器返回结果，或脚本读取查询参数后筛选。删掉 name 再提交，应发现 q 字段不再进入 URL。
+html-04-09	怎样把信息采集表的标签、分组、校验和提交串起来？	先为每个字段定义 name 和含义，再给控件唯一 id 与 label；按内容使用 fieldset 和 legend 分组，设置合适 type、autocomplete 与约束，最后明确 action、method 和提交按钮。验收既检查交互，也检查实际提交的键值，而不只看页面是否摆齐。
+html-04-10	确认密码为什么必须同时监听两个输入框，并清空旧的自定义错误？	HTML 没有声明“必须等于另一个字段”的通用属性，需要比较两个 value 并调用 setCustomValidity。两者一致时必须传空字符串以清除错误；任一输入框变化都可能改变结果，因此两个 input 事件都要触发校验。使用 minlength 和 required 补充单字段约束。
+html-05-01	div 的默认块级外观能说明它有什么内容语义吗？	div 是没有额外内容语义的通用容器，适合仅为分组或样式建立结构。默认显示为块级盒不等于“页面章节”；文章、导航或有标题的主题区域优先选择相应语义元素。display 改变布局盒，不能把 div 自动变成 button 的交互语义。
+html-05-02	header、nav、main、article、section、aside、footer 怎样按内容选择？	main 承载当前页面主要内容，nav 表达主要导航，article 表达可独立分发的内容，section 组织有主题的区域，aside 放相关但相对独立的内容。header 与 footer 的范围取决于所在页面或章节上下文，不能只按“在顶部或底部”机械选标签。
+html-05-03	details/summary 的展开状态由谁维护？open="false" 会关闭它吗？	浏览器原生维护 details 的展开状态，summary 提供可操作的摘要，open 出现就表示展开。open="false" 仍然展开，关闭应移除 open。可先完成无脚本版本，再按需要监听 toggle；摘要文字应说明内容，而不只写一个没有名称的图标。
+html-05-04	progress 与 meter 为什么不能都当作百分比进度条？	progress 表示任务完成进度，value 与 max 定义已完成和总量，缺少 value 表示进度未知；meter 表示已知范围内的测量值，可用 min、max、low、high、optimum 表达范围与评价。磁盘占用适合 meter，文件上传进度适合 progress。
+html-05-05	dialog 的 showModal() 与直接设置 open 有何区别？	showModal() 以模态方式打开 dialog，使页面其余部分进入相应的不可交互状态，并由浏览器管理相关焦点行为；直接设置 open 是非模态呈现。form method="dialog" 可关闭所在对话框并通过提交按钮 value 提供 returnValue，不会执行普通网络提交。
+html-05-06	popover 和模态 dialog 的核心区别是什么？	popover 用于浮层提示和轻量操作，支持通过 popovertarget 关联触发按钮；auto 浮层通常支持点击外部或 Escape 关闭。popover 不会自动把其余页面变成模态禁用状态，也不自动赋予菜单的完整键盘模式。需要模态任务时使用 dialog 并检查焦点。
+html-05-07	template 中的内容为什么不立即显示？克隆后还要做什么？	template 把可复用片段保存在 content 文档片段中，页面不会直接呈现。通过 template.content.cloneNode(true) 深克隆，再插入真实 DOM 才显示；每份实例的 id 必须避免冲突，addEventListener 添加的监听器也不会随 cloneNode 自动复制。
+html-05-08	怎样组合原生元素而不过早编写一整套自定义控件？	先按任务选择 details、表单控件、progress、meter 或 dialog，再补充标签、说明和最少样式。原生行为能处理基础键盘操作与状态，但组合后仍要检查标签关联、按钮 type、焦点顺序与错误反馈；原生并不意味着业务流程已经完整。
+html-05-09	音视频的 controls、autoplay、muted 与 track 各负责什么？	controls 显示浏览器播放控件，muted 设置静音，autoplay 请求自动播放但仍可能受浏览器策略限制；不要承诺有声媒体一定自动播放。track 加载 WebVTT 字幕，配合 kind、srclang、label 提供轨道信息；也应提供文字替代与可理解的内容说明。
+html-05-10	img 引用 SVG 与直接内联 SVG，有什么使用差别？	img 把 SVG 当作图像资源，使用 alt 提供替代文本；内联 SVG 是文档的一部分，可以按内部节点设置样式与交互，并用 title 等提供名称。音视频容器应保留合理比例与控件空间；SVG、位图、音视频的加载和可访问方式不能混为一谈。
+html-05-11	iframe 为什么是独立浏览上下文？怎样限制其能力？	iframe 加载自己的文档、窗口与导航状态。父子页面跨源时受同源策略约束，不能任意读取对方 DOM；sandbox 与 allow 可按任务限制或授予能力，title 应说明框架内容。不要把不可信内容同时授予可恢复原权限的能力组合，也不要把嵌入等同于复制 HTML。
+html-05-12	本地生成的视频、封面和字幕分别从哪里来，如何释放资源？	本例用 Canvas 绘制帧，captureStream 产生媒体流，MediaRecorder 收集片段，Blob 与对象 URL 提供 video 的播放地址；poster 是独立封面，track 读取本地 VTT 字幕。录制结束停止流轨道，替换旧视频时撤销旧对象 URL，并对不支持录制的环境给出反馈。
