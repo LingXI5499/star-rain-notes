@@ -1,0 +1,999 @@
+{
+  "id": "11",
+  "title": "食材、基础食物、基础饮料",
+  "layer": "基础通用词层",
+  "wordCount": 110,
+  "path": "/english/vocabulary/11/",
+  "words": [
+    {
+      "word": "cold",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "kold",
+      "phoneticUk": "kəʊld",
+      "translation": "冷的；冷淡的；冷",
+      "sceneMeaning": "冷的",
+      "examples": "[]"
+    },
+    {
+      "word": "cook",
+      "partOfSpeech": "v",
+      "phoneticUs": "kʊk",
+      "phoneticUk": "kʊk",
+      "translation": "烹调，煮；烧菜",
+      "sceneMeaning": "烹饪",
+      "examples": "[]"
+    },
+    {
+      "word": "drink",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "drɪŋk",
+      "phoneticUk": "drɪŋk",
+      "translation": "饮；喝；饮料",
+      "sceneMeaning": "喝",
+      "examples": "[]"
+    },
+    {
+      "word": "eat",
+      "partOfSpeech": "v",
+      "phoneticUs": "it",
+      "phoneticUk": "iːt",
+      "translation": "吃，喝；吃饭",
+      "sceneMeaning": "吃",
+      "examples": "[]"
+    },
+    {
+      "word": "food",
+      "partOfSpeech": "n",
+      "phoneticUs": "fud",
+      "phoneticUk": "fuːd",
+      "translation": "食物，食品，养料",
+      "sceneMeaning": "食物",
+      "examples": "[]"
+    },
+    {
+      "word": "fresh",
+      "partOfSpeech": "adj",
+      "phoneticUs": "frɛʃ",
+      "phoneticUk": "freʃ",
+      "translation": "新的；新鲜的",
+      "sceneMeaning": "新鲜的",
+      "examples": "[]"
+    },
+    {
+      "word": "healthy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɛlθi",
+      "phoneticUk": "'helθɪ",
+      "translation": "健康的；有益健康的",
+      "sceneMeaning": "健康的",
+      "examples": "[]"
+    },
+    {
+      "word": "hot",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hɑt",
+      "phoneticUk": "hɒt",
+      "translation": "热的；刺激的；辣的",
+      "sceneMeaning": "热的；辣的",
+      "examples": "[]"
+    },
+    {
+      "word": "lunch",
+      "partOfSpeech": "n",
+      "phoneticUs": "lʌntʃ",
+      "phoneticUk": "lʌn(t)ʃ",
+      "translation": "午餐，(美)便餐",
+      "sceneMeaning": "午餐",
+      "examples": "[]"
+    },
+    {
+      "word": "meal",
+      "partOfSpeech": "n",
+      "phoneticUs": "mil",
+      "phoneticUk": "miːl",
+      "translation": "膳食，一餐",
+      "sceneMeaning": "一餐；饭",
+      "examples": "[]"
+    },
+    {
+      "word": "new",
+      "partOfSpeech": "adj",
+      "phoneticUs": "nu",
+      "phoneticUk": "njuː",
+      "translation": "新的；新近出现的",
+      "sceneMeaning": "新的；新近出现的",
+      "examples": "[]"
+    },
+    {
+      "word": "order",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔrdɚ",
+      "phoneticUk": "'ɔːdə",
+      "translation": "次序；整齐；命令",
+      "sceneMeaning": "点餐；订购",
+      "examples": "[]"
+    },
+    {
+      "word": "serve",
+      "partOfSpeech": "vt",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "为…服务；招待",
+      "sceneMeaning": "端上；服务",
+      "examples": "[]"
+    },
+    {
+      "word": "water",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈwɔtɚ; ˈwɑtɚ",
+      "phoneticUk": "'wɔːtə",
+      "translation": "水；使湿，灌溉",
+      "sceneMeaning": "水",
+      "examples": "[]"
+    },
+    {
+      "word": "coffee",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɔfi",
+      "phoneticUk": "'kɒfɪ",
+      "translation": "咖啡，咖啡茶",
+      "sceneMeaning": "咖啡",
+      "examples": "[]"
+    },
+    {
+      "word": "regularly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "'reɡjələli",
+      "translation": "定期地，有规律地",
+      "sceneMeaning": "有规律地",
+      "examples": "[]"
+    },
+    {
+      "word": "heavily",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'hɛvɪli",
+      "phoneticUk": "'hevɪlɪ",
+      "translation": "重重地；大量地",
+      "sceneMeaning": "大量地；沉重地",
+      "examples": "[]"
+    },
+    {
+      "word": "milk",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "mɪlk",
+      "phoneticUk": "mɪlk",
+      "translation": "乳，牛奶；挤(奶)",
+      "sceneMeaning": "牛奶",
+      "examples": "[]"
+    },
+    {
+      "word": "beer",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪr",
+      "phoneticUk": "bɪə",
+      "translation": "啤酒",
+      "sceneMeaning": "啤酒",
+      "examples": "[]"
+    },
+    {
+      "word": "chocolate",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃɑklət",
+      "phoneticUk": "'tʃɒk(ə)lət",
+      "translation": "巧克力；巧克力糖",
+      "sceneMeaning": "巧克力；巧克力糖",
+      "examples": "[]"
+    },
+    {
+      "word": "dinner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪnɚ",
+      "phoneticUk": "'dɪnə",
+      "translation": "正餐，主餐；宴会",
+      "sceneMeaning": "晚餐；正餐",
+      "examples": "[]"
+    },
+    {
+      "word": "hunger",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hʌŋɡɚ",
+      "phoneticUk": "'hʌŋgə",
+      "translation": "饿，饥饿；渴望",
+      "sceneMeaning": "饿，饥饿；渴望",
+      "examples": "[]"
+    },
+    {
+      "word": "delicate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈdɛlɪkɪt",
+      "phoneticUk": "'delɪkət",
+      "translation": "纤细的；易碎的",
+      "sceneMeaning": "纤细的；易碎的",
+      "examples": "[]"
+    },
+    {
+      "word": "tender",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tɛndɚ",
+      "phoneticUk": "'tendə",
+      "translation": "嫩的；脆弱的",
+      "sceneMeaning": "嫩的；脆弱的",
+      "examples": "[]"
+    },
+    {
+      "word": "egg",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɛɡ",
+      "phoneticUk": "eg",
+      "translation": "蛋，鸡蛋，卵",
+      "sceneMeaning": "鸡蛋",
+      "examples": "[]"
+    },
+    {
+      "word": "fruit",
+      "partOfSpeech": "n",
+      "phoneticUs": "frut",
+      "phoneticUk": "fruːt",
+      "translation": "水果；果实；成果",
+      "sceneMeaning": "水果；果实",
+      "examples": "[]"
+    },
+    {
+      "word": "hungry",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hʌŋɡri",
+      "phoneticUk": "'hʌŋgrɪ",
+      "translation": "饥饿的；渴望的",
+      "sceneMeaning": "饥饿的",
+      "examples": "[]"
+    },
+    {
+      "word": "oil",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɔɪl",
+      "phoneticUk": "ɒɪl",
+      "translation": "油；石油；加油于",
+      "sceneMeaning": "油",
+      "examples": "[]"
+    },
+    {
+      "word": "raw",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɔ",
+      "phoneticUk": "rɔː",
+      "translation": "未煮过的；未加工的",
+      "sceneMeaning": "生的；未加工的",
+      "examples": "[]"
+    },
+    {
+      "word": "cake",
+      "partOfSpeech": "n",
+      "phoneticUs": "kek",
+      "phoneticUk": "keɪk",
+      "translation": "饼，糕，蛋糕",
+      "sceneMeaning": "蛋糕",
+      "examples": "[]"
+    },
+    {
+      "word": "fish",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fɪʃ",
+      "phoneticUk": "fɪʃ",
+      "translation": "鱼，鱼肉；钓鱼",
+      "sceneMeaning": "鱼；鱼肉",
+      "examples": "[]"
+    },
+    {
+      "word": "juice",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒus",
+      "phoneticUk": "dʒuːs",
+      "translation": "(水果等)汁，液",
+      "sceneMeaning": "果汁",
+      "examples": "[]"
+    },
+    {
+      "word": "nutritious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "nʊ'trɪʃəs",
+      "phoneticUk": "njʊ'trɪʃəs",
+      "translation": "营养的",
+      "sceneMeaning": "有营养的",
+      "examples": "[]"
+    },
+    {
+      "word": "pint",
+      "partOfSpeech": "n",
+      "phoneticUs": "paɪnt",
+      "phoneticUk": "paɪnt",
+      "translation": "品脱",
+      "sceneMeaning": "品脱",
+      "examples": "[]"
+    },
+    {
+      "word": "taste",
+      "partOfSpeech": "n",
+      "phoneticUs": "test",
+      "phoneticUk": "teɪst",
+      "translation": "味觉，品味",
+      "sceneMeaning": "品尝；尝起来",
+      "examples": "[]"
+    },
+    {
+      "word": "apple",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æpl",
+      "phoneticUk": "'æp(ə)l",
+      "translation": "苹果，苹果树",
+      "sceneMeaning": "苹果",
+      "examples": "[]"
+    },
+    {
+      "word": "bake",
+      "partOfSpeech": "v",
+      "phoneticUs": "bek",
+      "phoneticUk": "beɪk",
+      "translation": "烤，烘，焙；烧硬",
+      "sceneMeaning": "烘焙",
+      "examples": "[]"
+    },
+    {
+      "word": "bitter",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "痛苦的；严寒的",
+      "sceneMeaning": "苦的",
+      "examples": "[]"
+    },
+    {
+      "word": "chicken",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈtʃɪkən",
+      "phoneticUk": "'tʃɪkɪn",
+      "translation": "小鸡，小鸟；鸡肉",
+      "sceneMeaning": "鸡肉；鸡",
+      "examples": "[]"
+    },
+    {
+      "word": "delicious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'lɪʃəs",
+      "phoneticUk": "dɪ'lɪʃəs",
+      "translation": "美味的，怡人的",
+      "sceneMeaning": "美味的",
+      "examples": "[]"
+    },
+    {
+      "word": "mix",
+      "partOfSpeech": "v",
+      "phoneticUs": "mɪks",
+      "phoneticUk": "mɪks",
+      "translation": "使混合，混淆",
+      "sceneMeaning": "混合",
+      "examples": "[]"
+    },
+    {
+      "word": "orange",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrɪndʒ",
+      "phoneticUk": "'ɒrɪn(d)ʒ",
+      "translation": "橙(树)；柑(树)",
+      "sceneMeaning": "橙子；橙色",
+      "examples": "[]"
+    },
+    {
+      "word": "pie",
+      "partOfSpeech": "n",
+      "phoneticUs": "paɪ",
+      "phoneticUk": "paɪ",
+      "translation": "(西点)馅饼",
+      "sceneMeaning": "馅饼",
+      "examples": "[]"
+    },
+    {
+      "word": "snack",
+      "partOfSpeech": "n",
+      "phoneticUs": "snæk",
+      "phoneticUk": "snæk",
+      "translation": "零食，小吃",
+      "sceneMeaning": "小吃；零食",
+      "examples": "[]"
+    },
+    {
+      "word": "biscuit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɪskɪt",
+      "phoneticUk": "'bɪskɪt",
+      "translation": "(英)饼干；(美)软饼",
+      "sceneMeaning": "饼干",
+      "examples": "[]"
+    },
+    {
+      "word": "bread",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɛd",
+      "phoneticUk": "bred",
+      "translation": "面包；食物，粮食",
+      "sceneMeaning": "面包",
+      "examples": "[]"
+    },
+    {
+      "word": "breakfast",
+      "partOfSpeech": "n",
+      "phoneticUs": "'brɛkfəst",
+      "phoneticUk": "'brekfəst",
+      "translation": "早饭，早餐",
+      "sceneMeaning": "早餐",
+      "examples": "[]"
+    },
+    {
+      "word": "corn",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrn",
+      "phoneticUk": "kɔːn",
+      "translation": "谷物；(英)小麦",
+      "sceneMeaning": "玉米",
+      "examples": "[]"
+    },
+    {
+      "word": "dish",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪʃ",
+      "phoneticUk": "dɪʃ",
+      "translation": "碟，盘子；菜肴",
+      "sceneMeaning": "菜肴；盘子",
+      "examples": "[]"
+    },
+    {
+      "word": "fisherman",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɪʃɚmən",
+      "phoneticUk": "'fɪʃəmən",
+      "translation": "渔民，渔夫，打鱼人",
+      "sceneMeaning": "渔民，渔夫，打鱼人",
+      "examples": "[]"
+    },
+    {
+      "word": "flour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'flaʊɚ",
+      "phoneticUk": "'flaʊə",
+      "translation": "面粉，粉；粉状物质",
+      "sceneMeaning": "面粉",
+      "examples": "[]"
+    },
+    {
+      "word": "ingredient",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'ɡridɪənt",
+      "phoneticUk": "ɪnˈgri:diənt",
+      "translation": "成分，原料",
+      "sceneMeaning": "原料；成分",
+      "examples": "[]"
+    },
+    {
+      "word": "lamb",
+      "partOfSpeech": "n",
+      "phoneticUs": "læm",
+      "phoneticUk": "læm",
+      "translation": "羔羊，小羊；羔羊肉",
+      "sceneMeaning": "羔羊，小羊；羔羊肉",
+      "examples": "[]"
+    },
+    {
+      "word": "nut",
+      "partOfSpeech": "n",
+      "phoneticUs": "nʌt",
+      "phoneticUk": "nʌt",
+      "translation": "坚果，干果；螺母",
+      "sceneMeaning": "坚果",
+      "examples": "[]"
+    },
+    {
+      "word": "pork",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɔrk",
+      "phoneticUk": "pɔːk",
+      "translation": "猪肉",
+      "sceneMeaning": "猪肉",
+      "examples": "[]"
+    },
+    {
+      "word": "steam",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "stim",
+      "phoneticUk": "stiːm",
+      "translation": "蒸汽；蒸发；蒸",
+      "sceneMeaning": "蒸；冒蒸汽",
+      "examples": "[]"
+    },
+    {
+      "word": "toast",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tost",
+      "phoneticUk": "təʊst",
+      "translation": "烤面包；烘，烤",
+      "sceneMeaning": "烤面包；烘，烤",
+      "examples": "[]"
+    },
+    {
+      "word": "bakery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bekəri",
+      "phoneticUk": "ˈbeɪkəri",
+      "translation": "面包店",
+      "sceneMeaning": "面包店",
+      "examples": "[]"
+    },
+    {
+      "word": "banana",
+      "partOfSpeech": "n",
+      "phoneticUs": "bə'nænə",
+      "phoneticUk": "bə'nɑːnə",
+      "translation": "香蕉；芭蕉属植物",
+      "sceneMeaning": "香蕉",
+      "examples": "[]"
+    },
+    {
+      "word": "bean",
+      "partOfSpeech": "n",
+      "phoneticUs": "bin",
+      "phoneticUk": "biːn",
+      "translation": "豆，蚕豆",
+      "sceneMeaning": "豆；豆子",
+      "examples": "[]"
+    },
+    {
+      "word": "beef",
+      "partOfSpeech": "n",
+      "phoneticUs": "bif",
+      "phoneticUk": "biːf",
+      "translation": "牛肉；菜牛",
+      "sceneMeaning": "牛肉",
+      "examples": "[]"
+    },
+    {
+      "word": "beggar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɛɡɚ",
+      "phoneticUk": "'begə",
+      "translation": "乞丐，穷人",
+      "sceneMeaning": "乞丐，穷人",
+      "examples": "[]"
+    },
+    {
+      "word": "berry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɛri",
+      "phoneticUk": "'berɪ",
+      "translation": "浆果(如草莓等)",
+      "sceneMeaning": "浆果(如草莓等)",
+      "examples": "[]"
+    },
+    {
+      "word": "bitterly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'bɪtɚli",
+      "phoneticUk": "'bɪtəlɪ",
+      "translation": "苦苦地；悲痛地",
+      "sceneMeaning": "苦苦地；悲痛地",
+      "examples": "[]"
+    },
+    {
+      "word": "boil",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɔɪl",
+      "phoneticUk": "bɒɪl",
+      "translation": "沸腾；汽化vt煮沸",
+      "sceneMeaning": "煮沸",
+      "examples": "[]"
+    },
+    {
+      "word": "brandy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'brændi",
+      "phoneticUk": "'brændɪ",
+      "translation": "白兰地酒",
+      "sceneMeaning": "白兰地酒",
+      "examples": "[]"
+    },
+    {
+      "word": "butcher",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈbʊtʃər",
+      "phoneticUk": "ˈbʊtʃə(r)",
+      "translation": "屠夫；屠杀者",
+      "sceneMeaning": "屠夫；屠杀者",
+      "examples": "[]"
+    },
+    {
+      "word": "butter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bʌtɚ",
+      "phoneticUk": "'bʌtə",
+      "translation": "黄油；奶油",
+      "sceneMeaning": "黄油",
+      "examples": "[]"
+    },
+    {
+      "word": "cabbage",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈkæbɪdʒ",
+      "phoneticUk": "ˈkæbɪdʒ",
+      "translation": "洋白菜，卷心菜",
+      "sceneMeaning": "卷心菜",
+      "examples": "[]"
+    },
+    {
+      "word": "candy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kændi",
+      "phoneticUk": "'kændɪ",
+      "translation": "糖果；砂糖结晶",
+      "sceneMeaning": "糖果；砂糖结晶",
+      "examples": "[]"
+    },
+    {
+      "word": "carrot",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kærət",
+      "phoneticUk": "'kærət",
+      "translation": "胡罗卜",
+      "sceneMeaning": "胡萝卜",
+      "examples": "[]"
+    },
+    {
+      "word": "cement",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sə'mɛnt",
+      "phoneticUk": "sɪ'ment",
+      "translation": "水泥；胶泥；粘结",
+      "sceneMeaning": "水泥；胶泥；粘结；本场景常见用法：普通硅酸盐水泥",
+      "examples": "[]"
+    },
+    {
+      "word": "chap",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃæp",
+      "phoneticUk": "tʃæp",
+      "translation": "小伙子，小家伙，家伙",
+      "sceneMeaning": "小伙子，小家伙，家伙",
+      "examples": "[]"
+    },
+    {
+      "word": "cheese",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃiz",
+      "phoneticUk": "tʃiːz",
+      "translation": "奶酪，干酪",
+      "sceneMeaning": "奶酪",
+      "examples": "[]"
+    },
+    {
+      "word": "cherry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃɛri",
+      "phoneticUk": "'tʃerɪ",
+      "translation": "樱桃；樱桃树",
+      "sceneMeaning": "樱桃；樱桃树",
+      "examples": "[]"
+    },
+    {
+      "word": "chop",
+      "partOfSpeech": "v",
+      "phoneticUs": "tʃɑp",
+      "phoneticUk": "tʃɒp",
+      "translation": "砍，劈；切细；砍",
+      "sceneMeaning": "剁；切碎",
+      "examples": "[]"
+    },
+    {
+      "word": "cock",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɑk",
+      "phoneticUk": "kɒk",
+      "translation": "公鸡；雄禽；旋塞",
+      "sceneMeaning": "公鸡；雄禽；旋塞；本场景常见用法：水龙头；［鸟］鹤秧鸡",
+      "examples": "[]"
+    },
+    {
+      "word": "corner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɔrnɚ",
+      "phoneticUk": "'kɔːnə",
+      "translation": "角；犄角；边远地区",
+      "sceneMeaning": "角；犄角；边远地区",
+      "examples": "[]"
+    },
+    {
+      "word": "cucumber",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kjʊ,kʌmbɚ",
+      "phoneticUk": "'kjuːkʌmbə",
+      "translation": "黄瓜",
+      "sceneMeaning": "黄瓜",
+      "examples": "[]"
+    },
+    {
+      "word": "drunk",
+      "partOfSpeech": "adj",
+      "phoneticUs": "drʌŋk",
+      "phoneticUk": "drʌŋk",
+      "translation": "醉的；陶醉的",
+      "sceneMeaning": "醉的；陶醉的",
+      "examples": "[]"
+    },
+    {
+      "word": "flesh",
+      "partOfSpeech": "n",
+      "phoneticUs": "flɛʃ",
+      "phoneticUk": "fleʃ",
+      "translation": "肉，肌肉；肉体",
+      "sceneMeaning": "肉，肌肉；肉体",
+      "examples": "[]"
+    },
+    {
+      "word": "flourish",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈflɜːrɪʃ",
+      "phoneticUk": "'flʌrɪʃ",
+      "translation": "繁荣，茂盛，兴旺",
+      "sceneMeaning": "繁荣，茂盛，兴旺",
+      "examples": "[]"
+    },
+    {
+      "word": "fry",
+      "partOfSpeech": "v",
+      "phoneticUs": "fraɪ",
+      "phoneticUk": "fraɪ",
+      "translation": "油煎，油炸，油炒",
+      "sceneMeaning": "油炸；煎",
+      "examples": "[]"
+    },
+    {
+      "word": "goose",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡus",
+      "phoneticUk": "guːs",
+      "translation": "鹅，雌鹅",
+      "sceneMeaning": "鹅，雌鹅；本场景常见用法：鹅肉",
+      "examples": "[]"
+    },
+    {
+      "word": "grape",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡrep",
+      "phoneticUk": "greɪp",
+      "translation": "葡萄；葡萄藤",
+      "sceneMeaning": "葡萄",
+      "examples": "[]"
+    },
+    {
+      "word": "greedy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'gridi",
+      "phoneticUk": "'griːdɪ",
+      "translation": "贪吃的；贪婪的",
+      "sceneMeaning": "贪吃的；贪婪的",
+      "examples": "[]"
+    },
+    {
+      "word": "hamburger",
+      "partOfSpeech": "n",
+      "phoneticUs": "hæmbɝ​ɡɚ",
+      "phoneticUk": "ˈhæmbɜ:gə",
+      "translation": "汉堡包，牛肉饼",
+      "sceneMeaning": "汉堡包，牛肉饼",
+      "examples": "[]"
+    },
+    {
+      "word": "honey",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hʌni",
+      "phoneticUk": "'hʌnɪ",
+      "translation": "蜜，蜂蜜；甜，甜蜜",
+      "sceneMeaning": "蜜，蜂蜜；甜，甜蜜；本场景常见用法：水蜜桃",
+      "examples": "[]"
+    },
+    {
+      "word": "lemon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛmən",
+      "phoneticUk": "'lemən",
+      "translation": "柠檬，柠檬树",
+      "sceneMeaning": "柠檬",
+      "examples": "[]"
+    },
+    {
+      "word": "lightly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'laɪtli",
+      "phoneticUk": "'laɪtlɪ",
+      "translation": "轻轻地，轻松地",
+      "sceneMeaning": "轻轻地；少量地",
+      "examples": "[]"
+    },
+    {
+      "word": "lime",
+      "partOfSpeech": "n",
+      "phoneticUs": "laɪm",
+      "phoneticUk": "laɪm",
+      "translation": "石灰",
+      "sceneMeaning": "石灰；本场景常见用法：酸橙汁",
+      "examples": "[]"
+    },
+    {
+      "word": "loaf",
+      "partOfSpeech": "n",
+      "phoneticUs": "lof",
+      "phoneticUk": "ləʊf",
+      "translation": "一条面包，一个面包",
+      "sceneMeaning": "一条面包，一个面包；本场景常见用法：肉糜卷；肉馅糕",
+      "examples": "[]"
+    },
+    {
+      "word": "meat",
+      "partOfSpeech": "n",
+      "phoneticUs": "mit",
+      "phoneticUk": "miːt",
+      "translation": "肉",
+      "sceneMeaning": "肉",
+      "examples": "[]"
+    },
+    {
+      "word": "melon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛlən",
+      "phoneticUk": "'melən",
+      "translation": "瓜，甜瓜",
+      "sceneMeaning": "瓜，甜瓜；本场景常见用法：西瓜",
+      "examples": "[]"
+    },
+    {
+      "word": "mutton",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mʌtn",
+      "phoneticUk": "'mʌt(ə)n",
+      "translation": "羊肉",
+      "sceneMeaning": "羊肉；本场景常见用法：红烧羊肉；糊羊肉；烩羊肉",
+      "examples": "[]"
+    },
+    {
+      "word": "onion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʌnjən",
+      "phoneticUk": "'ʌnjən",
+      "translation": "洋葱，洋葱头",
+      "sceneMeaning": "洋葱",
+      "examples": "[]"
+    },
+    {
+      "word": "paradox",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pærədɑks",
+      "phoneticUk": "ˈpærədɒks",
+      "translation": "悖论；自相矛盾",
+      "sceneMeaning": "悖论；自相矛盾",
+      "examples": "[]"
+    },
+    {
+      "word": "pea",
+      "partOfSpeech": "n",
+      "phoneticUs": "pi",
+      "phoneticUk": "piː",
+      "translation": "豌豆；豌豆属植物",
+      "sceneMeaning": "豌豆",
+      "examples": "[]"
+    },
+    {
+      "word": "peach",
+      "partOfSpeech": "n",
+      "phoneticUs": "pitʃ",
+      "phoneticUk": "piːtʃ",
+      "translation": "桃子，桃树",
+      "sceneMeaning": "桃子",
+      "examples": "[]"
+    },
+    {
+      "word": "pear",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɛr",
+      "phoneticUk": "peə",
+      "translation": "梨子，梨树",
+      "sceneMeaning": "梨",
+      "examples": "[]"
+    },
+    {
+      "word": "potato",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'teto",
+      "phoneticUk": "pə'teɪtəʊ",
+      "translation": "马铃薯，土豆",
+      "sceneMeaning": "土豆",
+      "examples": "[]"
+    },
+    {
+      "word": "provoke",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'vok",
+      "phoneticUk": "prə'vəʊk",
+      "translation": "激起，挑起",
+      "sceneMeaning": "激起，挑起",
+      "examples": "[]"
+    },
+    {
+      "word": "roast",
+      "partOfSpeech": "vt&vi",
+      "phoneticUs": "rost",
+      "phoneticUk": "rəʊst",
+      "translation": "烤，炙，烘",
+      "sceneMeaning": "烤；烘",
+      "examples": "[]"
+    },
+    {
+      "word": "sausage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɔsɪdʒ",
+      "phoneticUk": "'sɒsɪdʒ",
+      "translation": "香肠，腊肠",
+      "sceneMeaning": "香肠，腊肠；本场景常见用法：牛肉香肠",
+      "examples": "[]"
+    },
+    {
+      "word": "slice",
+      "partOfSpeech": "n",
+      "phoneticUs": "slaɪs",
+      "phoneticUk": "slaɪs",
+      "translation": "薄片，切片；部分",
+      "sceneMeaning": "切片",
+      "examples": "[]"
+    },
+    {
+      "word": "sour",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'saʊɚ",
+      "phoneticUk": "saʊə",
+      "translation": "酸的；脾气坏的",
+      "sceneMeaning": "酸的",
+      "examples": "[]"
+    },
+    {
+      "word": "steamer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stimɚ",
+      "phoneticUk": "'stiːmə",
+      "translation": "轮船，汽船",
+      "sceneMeaning": "轮船，汽船",
+      "examples": "[]"
+    },
+    {
+      "word": "stir",
+      "partOfSpeech": "v",
+      "phoneticUs": "stɝ",
+      "phoneticUk": "stɜː",
+      "translation": "动；拨动；激动；搅动；煽动，激起",
+      "sceneMeaning": "搅拌",
+      "examples": "[]"
+    },
+    {
+      "word": "tasteless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'testləs",
+      "phoneticUk": "'teɪstləs",
+      "translation": "无味的",
+      "sceneMeaning": "无味的",
+      "examples": "[]"
+    },
+    {
+      "word": "vinegar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɪnɪɡɚ",
+      "phoneticUk": "'vɪnɪgə",
+      "translation": "醋",
+      "sceneMeaning": "醋",
+      "examples": "[]"
+    }
+  ]
+}

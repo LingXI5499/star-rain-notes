@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 下拉菜单打开后要支持 Escape、点击外部和焦点离开等合理关闭方式。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const menu = document.querySelector('#menu');
+document.addEventListener('click', e =&gt; { if (!menu.contains(e.target)) menu.hidden = true; });
+document.addEventListener('keydown', e =&gt; { if (e.key === 'Escape') menu.hidden = true; });
+</code></pre>
+<p><strong>学完能做：</strong> 实现可通过外部点击或失焦关闭的菜单。</p>

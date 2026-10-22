@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>keydown</code> 监听按键，配合 <code>event.key</code> 检测快捷键。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">document.addEventListener('keydown', e =&gt; {
+  if (e.ctrlKey &amp;&amp; e.key.toLowerCase() === 's') e.preventDefault();
+});
+</code></pre>
+<p><strong>学完能做：</strong> 根据键盘按键实现快捷操作。</p>

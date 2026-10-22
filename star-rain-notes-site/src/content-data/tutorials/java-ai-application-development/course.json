@@ -1,0 +1,890 @@
+{
+  "slug": "java-ai-application-development",
+  "title": "Java AI 应用开发",
+  "description": "Java 技术体系第四层：在 Spring Boot 之上接入 LLM、Prompt 工程、Spring AI、RAG、Tool Calling、MCP 与 Agent。",
+  "category": "Java全栈知识体系",
+  "categorySlug": "javaquanzhan",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 100,
+  "wordCount": 0,
+  "categoryId": "1",
+  "groups": [
+    {
+      "title": "Java AI 应用工程导论",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "从传统 Web 应用到 LLM 应用",
+          "description": "从传统 Web 应用到 LLM 应用",
+          "path": "/tutorials/java-ai-application-development/1-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "一次 AI 请求的完整链路",
+          "description": "一次 AI 请求的完整链路",
+          "path": "/tutorials/java-ai-application-development/1-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-3",
+          "title": "Java 在 AI 应用中的职责",
+          "description": "Java 在 AI 应用中的职责",
+          "path": "/tutorials/java-ai-application-development/1-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-4",
+          "title": "AI 应用架构与课程边界",
+          "description": "AI 应用架构与课程边界",
+          "path": "/tutorials/java-ai-application-development/1-4/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "LLM 基础与模型 API",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "Token、上下文窗口与费用",
+          "description": "Token、上下文窗口与费用",
+          "path": "/tutorials/java-ai-application-development/2-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "Transformer、Attention、训练与推理",
+          "description": "Transformer、Attention、训练与推理",
+          "path": "/tutorials/java-ai-application-development/2-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "消息结构与模型参数",
+          "description": "消息结构与模型参数",
+          "path": "/tutorials/java-ai-application-development/2-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-4",
+          "title": "第一个 Java 模型 API Demo",
+          "description": "第一个 Java 模型 API Demo",
+          "path": "/tutorials/java-ai-application-development/2-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-5",
+          "title": "API Key、供应商与环境配置",
+          "description": "API Key、供应商与环境配置",
+          "path": "/tutorials/java-ai-application-development/2-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-6",
+          "title": "超时、重试、限流与模型切换",
+          "description": "超时、重试、限流与模型切换",
+          "path": "/tutorials/java-ai-application-development/2-6/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Prompt Engineering 与结构化输出",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "Prompt 的基本结构",
+          "description": "Prompt 的基本结构",
+          "path": "/tutorials/java-ai-application-development/3-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "Few-shot 与边界样例",
+          "description": "Few-shot 与边界样例",
+          "path": "/tutorials/java-ai-application-development/3-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "上下文工程基础",
+          "description": "上下文工程基础",
+          "path": "/tutorials/java-ai-application-development/3-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "Structured Output：结构化输出",
+          "description": "Structured Output：结构化输出",
+          "path": "/tutorials/java-ai-application-development/3-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-5",
+          "title": "输出解析失败与纠错",
+          "description": "输出解析失败与纠错",
+          "path": "/tutorials/java-ai-application-development/3-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-6",
+          "title": "Prompt 版本化与回归测试",
+          "description": "Prompt 版本化与回归测试",
+          "path": "/tutorials/java-ai-application-development/3-6/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Spring AI 核心",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "Spring AI 工程初始化与依赖管理",
+          "description": "Spring AI 工程初始化与依赖管理",
+          "path": "/tutorials/java-ai-application-development/4-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "ChatModel 与 ChatClient",
+          "description": "ChatModel 与 ChatClient",
+          "path": "/tutorials/java-ai-application-development/4-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-3",
+          "title": "Message、Prompt Template 与变量绑定",
+          "description": "Message、Prompt Template 与变量绑定",
+          "path": "/tutorials/java-ai-application-development/4-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-4",
+          "title": "模型响应与异常映射",
+          "description": "模型响应与异常映射",
+          "path": "/tutorials/java-ai-application-development/4-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-5",
+          "title": "Advisors API",
+          "description": "Advisors API",
+          "path": "/tutorials/java-ai-application-development/4-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-6",
+          "title": "Spring AI Tool Calling 基本机制",
+          "description": "Spring AI Tool Calling 基本机制",
+          "path": "/tutorials/java-ai-application-development/4-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-7",
+          "title": "Spring AI Streaming",
+          "description": "Spring AI Streaming",
+          "path": "/tutorials/java-ai-application-development/4-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-8",
+          "title": "Provider 与模型能力差异",
+          "description": "Provider 与模型能力差异",
+          "path": "/tutorials/java-ai-application-development/4-8/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Vue 前端与 Java AI 接口联调",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "AI API 的接口设计",
+          "description": "AI API 的接口设计",
+          "path": "/tutorials/java-ai-application-development/5-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "前端对话组件",
+          "description": "前端对话组件",
+          "path": "/tutorials/java-ai-application-development/5-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "SSE 流式输出",
+          "description": "SSE 流式输出",
+          "path": "/tutorials/java-ai-application-development/5-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "流式交互中的异常与取消",
+          "description": "流式交互中的异常与取消",
+          "path": "/tutorials/java-ai-application-development/5-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "前后端安全边界",
+          "description": "前后端安全边界",
+          "path": "/tutorials/java-ai-application-development/5-5/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "对话记忆、会话与状态持久化",
+      "chapters": [
+        {
+          "slug": "6-1",
+          "title": "无状态模型与多轮对话",
+          "description": "无状态模型与多轮对话",
+          "path": "/tutorials/java-ai-application-development/6-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-2",
+          "title": "Chat Memory 与业务数据",
+          "description": "Chat Memory 与业务数据",
+          "path": "/tutorials/java-ai-application-development/6-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-3",
+          "title": "会话 ID 与用户隔离",
+          "description": "会话 ID 与用户隔离",
+          "path": "/tutorials/java-ai-application-development/6-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-4",
+          "title": "历史窗口、摘要与 Token 管理",
+          "description": "历史窗口、摘要与 Token 管理",
+          "path": "/tutorials/java-ai-application-development/6-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-5",
+          "title": "持久化、过期与删除",
+          "description": "持久化、过期与删除",
+          "path": "/tutorials/java-ai-application-development/6-5/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Embedding 与 Vector Store",
+      "chapters": [
+        {
+          "slug": "7-1",
+          "title": "Embedding 的用途",
+          "description": "Embedding 的用途",
+          "path": "/tutorials/java-ai-application-development/7-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-2",
+          "title": "相似度、Top-K 与阈值",
+          "description": "相似度、Top-K 与阈值",
+          "path": "/tutorials/java-ai-application-development/7-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-3",
+          "title": "Vector Store 的核心操作",
+          "description": "Vector Store 的核心操作",
+          "path": "/tutorials/java-ai-application-development/7-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-4",
+          "title": "向量存储方案选择",
+          "description": "向量存储方案选择",
+          "path": "/tutorials/java-ai-application-development/7-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-5",
+          "title": "Metadata Filter 与权限隔离",
+          "description": "Metadata Filter 与权限隔离",
+          "path": "/tutorials/java-ai-application-development/7-5/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "RAG：构建可引用的知识库",
+      "chapters": [
+        {
+          "slug": "8-1",
+          "title": "RAG 的完整链路",
+          "description": "RAG 的完整链路",
+          "path": "/tutorials/java-ai-application-development/8-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-2",
+          "title": "文档解析与数据摄取",
+          "description": "文档解析与数据摄取",
+          "path": "/tutorials/java-ai-application-development/8-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-3",
+          "title": "Chunking：文档切块",
+          "description": "Chunking：文档切块",
+          "path": "/tutorials/java-ai-application-development/8-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-4",
+          "title": "Embedding 与索引构建",
+          "description": "Embedding 与索引构建",
+          "path": "/tutorials/java-ai-application-development/8-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-5",
+          "title": "Retrieval：检索相关内容",
+          "description": "Retrieval：检索相关内容",
+          "path": "/tutorials/java-ai-application-development/8-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-6",
+          "title": "Context Assembly：上下文组装",
+          "description": "Context Assembly：上下文组装",
+          "path": "/tutorials/java-ai-application-development/8-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-7",
+          "title": "Citation：答案引用来源",
+          "description": "Citation：答案引用来源",
+          "path": "/tutorials/java-ai-application-development/8-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-8",
+          "title": "文档更新、删除与索引重建",
+          "description": "文档更新、删除与索引重建",
+          "path": "/tutorials/java-ai-application-development/8-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-9",
+          "title": "RAG 常见故障诊断",
+          "description": "RAG 常见故障诊断",
+          "path": "/tutorials/java-ai-application-development/8-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Advanced RAG 与检索评估",
+      "chapters": [
+        {
+          "slug": "9-1",
+          "title": "关键词检索与向量检索",
+          "description": "关键词检索与向量检索",
+          "path": "/tutorials/java-ai-application-development/9-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-2",
+          "title": "Hybrid Search 与结果融合",
+          "description": "Hybrid Search 与结果融合",
+          "path": "/tutorials/java-ai-application-development/9-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-3",
+          "title": "Query Rewrite 与问题分解",
+          "description": "Query Rewrite 与问题分解",
+          "path": "/tutorials/java-ai-application-development/9-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-4",
+          "title": "Reranking 与上下文压缩",
+          "description": "Reranking 与上下文压缩",
+          "path": "/tutorials/java-ai-application-development/9-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-5",
+          "title": "复杂文档与代码检索",
+          "description": "复杂文档与代码检索",
+          "path": "/tutorials/java-ai-application-development/9-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-6",
+          "title": "RAG 评测指标",
+          "description": "RAG 评测指标",
+          "path": "/tutorials/java-ai-application-development/9-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-7",
+          "title": "RAG 基线与优化方法",
+          "description": "RAG 基线与优化方法",
+          "path": "/tutorials/java-ai-application-development/9-7/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Tool Calling：让模型调用 Java 业务能力",
+      "chapters": [
+        {
+          "slug": "10-1",
+          "title": "Tool Calling 与普通函数调用的区别",
+          "description": "Tool Calling 与普通函数调用的区别",
+          "path": "/tutorials/java-ai-application-development/10-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-2",
+          "title": "定义 Java Tool",
+          "description": "定义 Java Tool",
+          "path": "/tutorials/java-ai-application-development/10-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-3",
+          "title": "Tool 参数校验与业务规则",
+          "description": "Tool 参数校验与业务规则",
+          "path": "/tutorials/java-ai-application-development/10-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-4",
+          "title": "Read Tool 与 Write Tool",
+          "description": "Read Tool 与 Write Tool",
+          "path": "/tutorials/java-ai-application-development/10-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-5",
+          "title": "Tool Error、重试与幂等",
+          "description": "Tool Error、重试与幂等",
+          "path": "/tutorials/java-ai-application-development/10-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-6",
+          "title": "把已有 Service 暴露给 AI",
+          "description": "把已有 Service 暴露给 AI",
+          "path": "/tutorials/java-ai-application-development/10-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-7",
+          "title": "多工具选择与工具权限",
+          "description": "多工具选择与工具权限",
+          "path": "/tutorials/java-ai-application-development/10-7/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "MCP：连接外部工具与上下文",
+      "chapters": [
+        {
+          "slug": "11-1",
+          "title": "MCP 解决什么问题",
+          "description": "MCP 解决什么问题",
+          "path": "/tutorials/java-ai-application-development/11-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-2",
+          "title": "MCP Host、Client 与 Server",
+          "description": "MCP Host、Client 与 Server",
+          "path": "/tutorials/java-ai-application-development/11-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-3",
+          "title": "Tools、Resources 与 Prompts",
+          "description": "Tools、Resources 与 Prompts",
+          "path": "/tutorials/java-ai-application-development/11-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-4",
+          "title": "MCP 传输与连接方式",
+          "description": "MCP 传输与连接方式",
+          "path": "/tutorials/java-ai-application-development/11-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-5",
+          "title": "使用 Spring AI 开发 MCP Server/Client",
+          "description": "使用 Spring AI 开发 MCP Server/Client",
+          "path": "/tutorials/java-ai-application-development/11-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-6",
+          "title": "MCP 安全与运维",
+          "description": "MCP 安全与运维",
+          "path": "/tutorials/java-ai-application-development/11-6/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Workflow 与 Agent 工程",
+      "chapters": [
+        {
+          "slug": "12-1",
+          "title": "Chatbot、Workflow 与 Agent",
+          "description": "Chatbot、Workflow 与 Agent",
+          "path": "/tutorials/java-ai-application-development/12-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-2",
+          "title": "Agent Loop",
+          "description": "Agent Loop",
+          "path": "/tutorials/java-ai-application-development/12-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-3",
+          "title": "确定性 Workflow 优先",
+          "description": "确定性 Workflow 优先",
+          "path": "/tutorials/java-ai-application-development/12-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-4",
+          "title": "Router、Planner 与 Executor",
+          "description": "Router、Planner 与 Executor",
+          "path": "/tutorials/java-ai-application-development/12-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-5",
+          "title": "ReAct、Plan-Execute 与 Reflection",
+          "description": "ReAct、Plan-Execute 与 Reflection",
+          "path": "/tutorials/java-ai-application-development/12-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-6",
+          "title": "Agent State 与持久化",
+          "description": "Agent State 与持久化",
+          "path": "/tutorials/java-ai-application-development/12-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-7",
+          "title": "Human-in-the-Loop",
+          "description": "Human-in-the-Loop",
+          "path": "/tutorials/java-ai-application-development/12-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-8",
+          "title": "Checkpoint、暂停、恢复与重试",
+          "description": "Checkpoint、暂停、恢复与重试",
+          "path": "/tutorials/java-ai-application-development/12-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-9",
+          "title": "Multi-Agent：适用场景与取舍",
+          "description": "Multi-Agent：适用场景与取舍",
+          "path": "/tutorials/java-ai-application-development/12-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "AI 安全、权限与可信边界",
+      "chapters": [
+        {
+          "slug": "13-1",
+          "title": "Prompt Injection 与不可信输入",
+          "description": "Prompt Injection 与不可信输入",
+          "path": "/tutorials/java-ai-application-development/13-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-2",
+          "title": "数据权限与 RAG 越权",
+          "description": "数据权限与 RAG 越权",
+          "path": "/tutorials/java-ai-application-development/13-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-3",
+          "title": "Tool 最小权限",
+          "description": "Tool 最小权限",
+          "path": "/tutorials/java-ai-application-development/13-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-4",
+          "title": "输出验证与业务安全",
+          "description": "输出验证与业务安全",
+          "path": "/tutorials/java-ai-application-development/13-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-5",
+          "title": "敏感信息与审计",
+          "description": "敏感信息与审计",
+          "path": "/tutorials/java-ai-application-development/13-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-6",
+          "title": "高风险动作的审批与回滚",
+          "description": "高风险动作的审批与回滚",
+          "path": "/tutorials/java-ai-application-development/13-6/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "评测、可观测性与生产工程",
+      "chapters": [
+        {
+          "slug": "14-1",
+          "title": "AI 应用评测基础",
+          "description": "AI 应用评测基础",
+          "path": "/tutorials/java-ai-application-development/14-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-2",
+          "title": "Prompt、RAG 与 Agent 分层评测",
+          "description": "Prompt、RAG 与 Agent 分层评测",
+          "path": "/tutorials/java-ai-application-development/14-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-3",
+          "title": "自动评估与人工复核",
+          "description": "自动评估与人工复核",
+          "path": "/tutorials/java-ai-application-development/14-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-4",
+          "title": "AI Observability",
+          "description": "AI Observability",
+          "path": "/tutorials/java-ai-application-development/14-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-5",
+          "title": "费用、延迟与容量控制",
+          "description": "费用、延迟与容量控制",
+          "path": "/tutorials/java-ai-application-development/14-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-6",
+          "title": "重试、缓存、降级与限流",
+          "description": "重试、缓存、降级与限流",
+          "path": "/tutorials/java-ai-application-development/14-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-7",
+          "title": "测试、发布与回归",
+          "description": "测试、发布与回归",
+          "path": "/tutorials/java-ai-application-development/14-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-8",
+          "title": "部署与故障排查",
+          "description": "部署与故障排查",
+          "path": "/tutorials/java-ai-application-development/14-8/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "综合项目与最终验收",
+      "chapters": [
+        {
+          "slug": "15-1",
+          "title": "项目一：Java AI 对话应用",
+          "description": "项目一：Java AI 对话应用",
+          "path": "/tutorials/java-ai-application-development/15-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "15-2",
+          "title": "项目二：流式 AI Web 应用",
+          "description": "项目二：流式 AI Web 应用",
+          "path": "/tutorials/java-ai-application-development/15-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "15-3",
+          "title": "项目三：带记忆的多轮对话",
+          "description": "项目三：带记忆的多轮对话",
+          "path": "/tutorials/java-ai-application-development/15-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "15-4",
+          "title": "项目四：星雨笔录 Markdown 知识助手",
+          "description": "项目四：星雨笔录 Markdown 知识助手",
+          "path": "/tutorials/java-ai-application-development/15-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "15-5",
+          "title": "项目五：业务 Tool Calling",
+          "description": "项目五：业务 Tool Calling",
+          "path": "/tutorials/java-ai-application-development/15-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "15-6",
+          "title": "项目六：MCP 工具服务",
+          "description": "项目六：MCP 工具服务",
+          "path": "/tutorials/java-ai-application-development/15-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "15-7",
+          "title": "项目七：可暂停与恢复的 Agent Workflow",
+          "description": "项目七：可暂停与恢复的 Agent Workflow",
+          "path": "/tutorials/java-ai-application-development/15-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "15-8",
+          "title": "项目八：AI 软件工程工作流助手",
+          "description": "项目八：AI 软件工程工作流助手",
+          "path": "/tutorials/java-ai-application-development/15-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "15-9",
+          "title": "项目九：项目复盘与技术证明",
+          "description": "项目九：项目复盘与技术证明",
+          "path": "/tutorials/java-ai-application-development/15-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/java-ai-application-development/",
+  "sortOrder": 6
+}

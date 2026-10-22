@@ -1,0 +1,161 @@
+[
+  {
+    "id": "68",
+    "title": "项目介绍",
+    "type": "MARKDOWN",
+    "html": "<p>先验证 Blender 建模、FBX 导入、材质和场景组织，再在基础沙盒上加入具有目标的探索流程。当前作品用于展示资源管线、脚本分工和玩法原型，不作为已经发布的完整游戏。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "69",
+    "title": "核心功能",
+    "type": "FEATURE_LIST",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "title": "角色控制",
+          "description": "使用 WASD 移动、空格跳跃与鼠标视角，管理重力、碰撞和光标锁定。"
+        },
+        {
+          "title": "探索目标",
+          "description": "通过 GameManager 管理碎片持有量、祭坛激活进度、传送门解锁及完成状态。"
+        },
+        {
+          "title": "交互与 HUD",
+          "description": "以交互接口、目标提示、拾取与环境控制器划分职责，HUD 订阅状态变化。"
+        },
+        {
+          "title": "资产与关卡",
+          "description": "保留 Blender 岩石生成脚本、blend 源文件、FBX 和 Unity Prefab；编辑器工具可构建玩法关卡。"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "70",
+    "title": "使用流程",
+    "type": "MARKDOWN",
+    "html": "<p>用匹配版本的 Unity 打开工程 → 加载 MainScene → 进入 Play Mode 检查角色与场景 → 收集碎片并尝试激活祭坛 → 解锁传送门；按需使用关卡构建菜单，操作前保存当前场景。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "71",
+    "title": "技术栈",
+    "type": "TECH_STACK",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "name": "Unity 6",
+          "group": ""
+        },
+        {
+          "name": "C#",
+          "group": ""
+        },
+        {
+          "name": "Unity Input System",
+          "group": ""
+        },
+        {
+          "name": "URP",
+          "group": ""
+        },
+        {
+          "name": "Blender",
+          "group": ""
+        },
+        {
+          "name": "FBX",
+          "group": ""
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "72",
+    "title": "关键实现",
+    "type": "MARKDOWN",
+    "html": "<p>玩法层由 Core、Player、Collectibles、Interaction、Environment 与 UI 脚本组成。事件驱动状态展示，编辑器构建工具组织场景内容。Assets、Packages、ProjectSettings 与 .meta 一起保留，Blender 源资产放在 art-source。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "73",
+    "title": "项目成果",
+    "type": "STATS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "label": "玩法脚本",
+          "value": "12 个"
+        },
+        {
+          "label": "资源 GUID",
+          "value": "56 个"
+        },
+        {
+          "label": "当前定位",
+          "value": "游戏原型"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "74",
+    "title": "验证与交付",
+    "type": "MARKDOWN",
+    "html": "<p>2026-10-15 整理版本保留 12 个玩法脚本、主场景与 56 个资源 GUID，静态检查未发现因精简造成的本地引用缺失。已有基础沙盒的移动、跳跃与鼠标操作记录；新增完整玩法未在本次重新执行 Play Mode 或独立构建验收。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "75",
+    "title": "当前阶段与使用边界",
+    "type": "MARKDOWN",
+    "html": "<p>当前仍为开发中的原型，没有完整商业关卡、存档、发行版本或跨设备性能保证。配图为基础沙盒阶段的真实截图，不能据此认定后续收集流程已经全部验收。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "76",
+    "title": "界面与效果",
+    "type": "GALLERY",
+    "html": "",
+    "data": {},
+    "media": [
+      {
+        "src": "/images/content/98328eda29a9352a.webp",
+        "caption": "基础沙盒阶段真实截图，不代表新增玩法完整验收"
+      }
+    ]
+  },
+  {
+    "id": "77",
+    "title": "源码与文档",
+    "type": "LINKS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/starfall-ruins",
+          "label": "查看项目源码",
+          "description": "GitHub 集合中的独立项目目录"
+        },
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/starfall-ruins/README.md",
+          "label": "运行与使用说明",
+          "description": "依赖、启动、测试和项目边界"
+        }
+      ]
+    },
+    "media": []
+  }
+]

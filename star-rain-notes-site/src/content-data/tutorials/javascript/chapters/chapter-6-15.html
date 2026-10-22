@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 提交按钮可与复选框状态绑定；验证码按钮倒计时期间要禁止重复触发。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">send.onclick = () =&gt; {
+  let left = 3; send.disabled = true;
+  const id = setInterval(() =&gt; { send.textContent = `${--left}s`; if (!left) { clearInterval(id); send.disabled = false; send.textContent = '发送'; } }, 1000);
+};
+</code></pre>
+<p><strong>学完能做：</strong> 实现协议勾选约束与验证码倒计时。</p>

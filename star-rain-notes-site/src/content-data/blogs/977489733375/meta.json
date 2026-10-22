@@ -1,0 +1,52 @@
+{
+  "slug": "977489733375",
+  "title": "B端、C端、G端与 ERP、CRM、WMS：企业业务系统常见术语全景指南",
+  "description": "在企业软件和互联网产品中，经常会遇到 **B端、C端、G端、ERP、CRM、SCM、WMS、MES、OA、SaaS** 等术语。\n\n这些概念看似零散，实际上主要回答四个问题：\n\n1. **系统给谁使用？**\n2. **业务发生在谁和谁之间？**\n3. **系统解决什么企业业务问题？**\n4. **软件通过什么方式部署和交付？**\n\n本文按照统一分类框架，对常见企业业务系统与行业术语进行梳理，帮助快速建立企业软件领域的整体认知。",
+  "publishedAt": "2026-09-08",
+  "updatedAt": "2026-10-09",
+  "wordCount": 6595,
+  "tags": [
+    {
+      "slug": "b",
+      "name": "B端系统"
+    },
+    {
+      "slug": "crm",
+      "name": "CRM"
+    },
+    {
+      "slug": "erp",
+      "name": "ERP"
+    },
+    {
+      "slug": "mes",
+      "name": "MES"
+    },
+    {
+      "slug": "oa",
+      "name": "OA"
+    },
+    {
+      "slug": "saas",
+      "name": "SaaS"
+    },
+    {
+      "slug": "scm",
+      "name": "SCM"
+    },
+    {
+      "slug": "wms",
+      "name": "WMS"
+    },
+    {
+      "slug": "tag-0ca0b6cbe9d1",
+      "name": "企业信息化"
+    },
+    {
+      "slug": "tag-0eb792512d0b",
+      "name": "企业软件"
+    }
+  ],
+  "topics": [],
+  "path": "/blog/posts/977489733375/"
+}

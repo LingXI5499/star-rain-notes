@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> <code>&amp;&amp;</code> 与 <code>||</code> 会短路；<code>?.</code> 安全访问可能为空的属性；<code>??</code> 只在 null/undefined 时取默认值。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const user = null;
+console.log(user?.name ?? '游客'); // 游客
+</code></pre>
+<p><strong>学完能做：</strong> 运用短路求值、可选链和空值合并。</p>

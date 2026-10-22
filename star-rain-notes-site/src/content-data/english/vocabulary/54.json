@@ -1,0 +1,1593 @@
+{
+  "id": "54",
+  "title": "系统 / 结构 / 功能 / 机制",
+  "layer": "抽象阅读与逻辑层",
+  "wordCount": 176,
+  "path": "/english/vocabulary/54/",
+  "words": [
+    {
+      "word": "access",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'æksɛs",
+      "phoneticUk": "'ækses",
+      "translation": "接近；通道，入口；获取；接近，入口",
+      "sceneMeaning": "访问；入口",
+      "examples": "[]"
+    },
+    {
+      "word": "process",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɑsɛs",
+      "phoneticUk": "'prəʊses",
+      "translation": "过程；工序；加工；过程，进程；；工序；工艺流程；处理",
+      "sceneMeaning": "过程；流程",
+      "examples": "[]"
+    },
+    {
+      "word": "performance",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'fɔrməns",
+      "phoneticUk": "pə'fɔːm(ə)ns",
+      "translation": "履行；演出；行为；演出；履行；表现",
+      "sceneMeaning": "性能；表现",
+      "examples": "[]"
+    },
+    {
+      "word": "essential",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'sɛnʃl",
+      "phoneticUk": "ɪ'senʃ(ə)l",
+      "translation": "必要的，本质的；必须的；本质的",
+      "sceneMeaning": "必要的，本质的；必须的；本质的；本场景常见用法：[计]基本信息",
+      "examples": "[]"
+    },
+    {
+      "word": "bring",
+      "partOfSpeech": "v",
+      "phoneticUs": "brɪŋ",
+      "phoneticUk": "brɪŋ",
+      "translation": "带来；引出；促使",
+      "sceneMeaning": "带来；引出；促使",
+      "examples": "[]"
+    },
+    {
+      "word": "build",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪld",
+      "phoneticUk": "bɪld",
+      "translation": "建筑；建立；创立",
+      "sceneMeaning": "建造；建立",
+      "examples": "[]"
+    },
+    {
+      "word": "building",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɪldɪŋ",
+      "phoneticUk": "'bɪldɪŋ",
+      "translation": "建筑物，大楼；建筑",
+      "sceneMeaning": "建筑物，大楼；建筑；本场景常见用法：建筑结构；房屋结构",
+      "examples": "[]"
+    },
+    {
+      "word": "control",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kən'trol",
+      "phoneticUk": "kən'trəʊl",
+      "translation": "控制，克制；控制",
+      "sceneMeaning": "控制",
+      "examples": "[]"
+    },
+    {
+      "word": "data",
+      "partOfSpeech": "n",
+      "phoneticUs": "'detə",
+      "phoneticUk": "'deɪtə",
+      "translation": "数据;；资料",
+      "sceneMeaning": "数据",
+      "examples": "[]"
+    },
+    {
+      "word": "develop",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vɛləp",
+      "phoneticUk": "dɪ'veləp",
+      "translation": "发展；形成；开发",
+      "sceneMeaning": "发展；开发",
+      "examples": "[]"
+    },
+    {
+      "word": "digital",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪdʒɪtl",
+      "phoneticUk": "'dɪdʒɪt(ə)l",
+      "translation": "数字的，计数的",
+      "sceneMeaning": "数字的",
+      "examples": "[]"
+    },
+    {
+      "word": "energy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛnɚdʒi",
+      "phoneticUk": "'enədʒɪ",
+      "translation": "活力；精力；能",
+      "sceneMeaning": "能量",
+      "examples": "[]"
+    },
+    {
+      "word": "environment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vaɪrənmənt",
+      "phoneticUk": "ɪn'vaɪrənm(ə)nt; en-",
+      "translation": "环境，外界；围绕",
+      "sceneMeaning": "环境",
+      "examples": "[]"
+    },
+    {
+      "word": "form",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fɔrm",
+      "phoneticUk": "fɔːm",
+      "translation": "形式；形状；形成",
+      "sceneMeaning": "形式；表格",
+      "examples": "[]"
+    },
+    {
+      "word": "former",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'fɔrmɚ",
+      "phoneticUk": "'fɔːmə",
+      "translation": "在前的；前者",
+      "sceneMeaning": "在前的；前者",
+      "examples": "[]"
+    },
+    {
+      "word": "generation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɛnə'reʃən",
+      "phoneticUk": "dʒenə'reɪʃ(ə)n",
+      "translation": "一代，一代人；产生；一代人；产生",
+      "sceneMeaning": "一代，一代人；产生；一代人；产生；本场景常见用法：产生机制",
+      "examples": "[]"
+    },
+    {
+      "word": "give",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡɪv",
+      "phoneticUk": "gɪv",
+      "translation": "做，作；送给",
+      "sceneMeaning": "做，作；送给",
+      "examples": "[]"
+    },
+    {
+      "word": "information",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnfɚ'meʃən",
+      "phoneticUk": "ɪnfə'meɪʃ(ə)n",
+      "translation": "消息，信息；通知",
+      "sceneMeaning": "信息",
+      "examples": "[]"
+    },
+    {
+      "word": "keep",
+      "partOfSpeech": "v",
+      "phoneticUs": "kip",
+      "phoneticUk": "kiːp",
+      "translation": "保持；坚持",
+      "sceneMeaning": "保持；坚持；本场景常见用法：与…保持联系",
+      "examples": "[]"
+    },
+    {
+      "word": "level",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'lɛvl",
+      "phoneticUk": "'lev(ə)l",
+      "translation": "水平面；水平的",
+      "sceneMeaning": "层级；水平",
+      "examples": "[]"
+    },
+    {
+      "word": "local",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈloʊkl",
+      "phoneticUk": "'ləʊk(ə)l",
+      "translation": "地方的；局部的",
+      "sceneMeaning": "局部的；本地的",
+      "examples": "[]"
+    },
+    {
+      "word": "main",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "meɪn",
+      "translation": "主要的，最重要的",
+      "sceneMeaning": "主要的，最重要的；本场景常见用法：主要结构",
+      "examples": "[]"
+    },
+    {
+      "word": "maintain",
+      "partOfSpeech": "v",
+      "phoneticUs": "men'ten",
+      "phoneticUk": "meɪn'teɪn; mən'teɪn",
+      "translation": "维持；赡养；维修；维持；主张",
+      "sceneMeaning": "维护；保持",
+      "examples": "[]"
+    },
+    {
+      "word": "manage",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mænɪdʒ",
+      "phoneticUk": "'mænɪdʒ",
+      "translation": "管理；设法；对付",
+      "sceneMeaning": "管理",
+      "examples": "[]"
+    },
+    {
+      "word": "manager",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mænɪdʒɚ",
+      "phoneticUk": "'mænɪdʒə",
+      "translation": "经理，管理人",
+      "sceneMeaning": "经理，管理人；本场景常见用法：程序管理器",
+      "examples": "[]"
+    },
+    {
+      "word": "measure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛʒɚ",
+      "phoneticUk": "'meʒə",
+      "translation": "量，测量；分量；测量",
+      "sceneMeaning": "测量；衡量",
+      "examples": "[]"
+    },
+    {
+      "word": "part",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɑrt",
+      "phoneticUk": "pɑːt",
+      "translation": "一部分；零件；本份",
+      "sceneMeaning": "部分；零件",
+      "examples": "[]"
+    },
+    {
+      "word": "produce",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'dus",
+      "phoneticUk": "prə'djuːs",
+      "translation": "生产；产生；展现",
+      "sceneMeaning": "生产；产生",
+      "examples": "[]"
+    },
+    {
+      "word": "simply",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'sɪmpli",
+      "phoneticUk": "'sɪmplɪ",
+      "translation": "简单地；朴素地",
+      "sceneMeaning": "简单地；朴素地",
+      "examples": "[]"
+    },
+    {
+      "word": "combination",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑmbɪ'neʃən",
+      "phoneticUk": "kɒmbɪ'neɪʃ(ə)n",
+      "translation": "结合，联合；化合；联合，结合",
+      "sceneMeaning": "结合，联合；化合；联合，结合；本场景常见用法：n. [数]排列组合",
+      "examples": "[]"
+    },
+    {
+      "word": "nuclear",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nuklɪɚ",
+      "phoneticUk": "'njuːklɪə",
+      "translation": "原子核的；核心的",
+      "sceneMeaning": "原子核的；核心的",
+      "examples": "[]"
+    },
+    {
+      "word": "application",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌæpləˈkeʃən",
+      "phoneticUk": "ˌæplɪ'keɪʃ(ə)n",
+      "translation": "请求，申请；施用；申请；应用",
+      "sceneMeaning": "应用；申请",
+      "examples": "[]"
+    },
+    {
+      "word": "flow",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "flo",
+      "phoneticUk": "fləʊ",
+      "translation": "流动；飘垂；涨潮；流动",
+      "sceneMeaning": "流动；流程",
+      "examples": "[]"
+    },
+    {
+      "word": "independent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪndɪ'pɛndənt",
+      "phoneticUk": ",ɪndɪ'pendənt",
+      "translation": "独立的；自主的",
+      "sceneMeaning": "独立的",
+      "examples": "[]"
+    },
+    {
+      "word": "management",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mænɪdʒmənt",
+      "phoneticUk": "'mænɪdʒm(ə)nt",
+      "translation": "管理；经营，处理",
+      "sceneMeaning": "管理",
+      "examples": "[]"
+    },
+    {
+      "word": "security",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'kjʊrəti",
+      "phoneticUk": "sɪ'kjʊərətɪ",
+      "translation": "安全，安全感；安全，安保",
+      "sceneMeaning": "安全；保障",
+      "examples": "[]"
+    },
+    {
+      "word": "vital",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vaɪtl",
+      "phoneticUk": "'vaɪt(ə)l",
+      "translation": "生命的；有生命力的；重要的",
+      "sceneMeaning": "生命的；有生命力的；重要的",
+      "examples": "[]"
+    },
+    {
+      "word": "complex",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kəm'plɛks; 'kɑm,plɛks",
+      "phoneticUk": "'kɒmpleks",
+      "translation": "结合的；复杂的；复杂的",
+      "sceneMeaning": "复杂的",
+      "examples": "[]"
+    },
+    {
+      "word": "condition",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'dɪʃən",
+      "phoneticUk": "kən'dɪʃ(ə)n",
+      "translation": "状况，状态；环境",
+      "sceneMeaning": "条件；状态",
+      "examples": "[]"
+    },
+    {
+      "word": "elementary",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɛlɪ'mɛntri",
+      "phoneticUk": "elɪ'ment(ə)rɪ",
+      "translation": "基本的；初级的",
+      "sceneMeaning": "基本的；初级的；本场景常见用法：基本操作；初等运算",
+      "examples": "[]"
+    },
+    {
+      "word": "core",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔr",
+      "phoneticUk": "kɔː",
+      "translation": "果实的心，核心",
+      "sceneMeaning": "核心",
+      "examples": "[]"
+    },
+    {
+      "word": "edge",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɛdʒ",
+      "phoneticUk": "edʒ",
+      "translation": "边缘，边；刀口",
+      "sceneMeaning": "边缘",
+      "examples": "[]"
+    },
+    {
+      "word": "generate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dʒɛnəret",
+      "phoneticUk": "'dʒenəreɪt",
+      "translation": "发生；引起；生殖；产生",
+      "sceneMeaning": "生成；产生",
+      "examples": "[]"
+    },
+    {
+      "word": "network",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nɛtwɝk",
+      "phoneticUk": "'netwɜːk",
+      "translation": "网状物；网络",
+      "sceneMeaning": "网络",
+      "examples": "[]"
+    },
+    {
+      "word": "construction",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'strʌkʃən",
+      "phoneticUk": "kən'strʌkʃ(ə)n",
+      "translation": "建造；建筑；建筑物；建筑",
+      "sceneMeaning": "建造；建筑；建筑物；建筑；本场景常见用法：建筑工程管理，施工管理",
+      "examples": "[]"
+    },
+    {
+      "word": "design",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'zaɪn",
+      "phoneticUk": "dɪ'zaɪn",
+      "translation": "设计；设计；图样",
+      "sceneMeaning": "设计",
+      "examples": "[]"
+    },
+    {
+      "word": "element",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛləmənt",
+      "phoneticUk": "'elɪm(ə)nt",
+      "translation": "成分；要素；元素；要素；元素",
+      "sceneMeaning": "要素；元素",
+      "examples": "[]"
+    },
+    {
+      "word": "exchange",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪks'tʃendʒ",
+      "phoneticUk": "ɪks'tʃeɪndʒ; eks-",
+      "translation": "交换；交流；交换；交换，交流",
+      "sceneMeaning": "交换",
+      "examples": "[]"
+    },
+    {
+      "word": "material",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'tɪrɪəl",
+      "phoneticUk": "mə'tɪərɪəl",
+      "translation": "材料；素材a物质的",
+      "sceneMeaning": "材料；资料",
+      "examples": "[]"
+    },
+    {
+      "word": "model",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑdl",
+      "phoneticUk": "'mɒdl",
+      "translation": "模型；模式；模特儿",
+      "sceneMeaning": "模型；模式",
+      "examples": "[]"
+    },
+    {
+      "word": "partly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'pɑrtli",
+      "phoneticUk": "'pɑːtlɪ",
+      "translation": "部分地，不完全地",
+      "sceneMeaning": "部分地，不完全地",
+      "examples": "[]"
+    },
+    {
+      "word": "principle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɪnsəpl",
+      "phoneticUk": "'prɪnsɪp(ə)l",
+      "translation": "原则，原理；主义；原则，原理",
+      "sceneMeaning": "原则",
+      "examples": "[]"
+    },
+    {
+      "word": "regulation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌrɛɡjəˈleʃən",
+      "phoneticUk": "regjʊ'leɪʃ(ə)n",
+      "translation": "规则，规章；管理；管理；规则",
+      "sceneMeaning": "调节；规章",
+      "examples": "[]"
+    },
+    {
+      "word": "reliable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'laɪəbl",
+      "phoneticUk": "rɪ'laɪəb(ə)l",
+      "translation": "可靠的，可信赖的",
+      "sceneMeaning": "可靠的",
+      "examples": "[]"
+    },
+    {
+      "word": "rely",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'laɪ",
+      "phoneticUk": "rɪ'laɪ",
+      "translation": "依赖，依靠；信赖",
+      "sceneMeaning": "依赖，依靠；信赖",
+      "examples": "[]"
+    },
+    {
+      "word": "separate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "(for v.) sɛpəˌret; (for adj.) sɛprɪt",
+      "phoneticUk": "(for v.) ˈsepəreɪt; (for adj.) ˈseprət",
+      "translation": "分离的；个别的",
+      "sceneMeaning": "分离",
+      "examples": "[]"
+    },
+    {
+      "word": "structure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'strʌktʃɚ",
+      "phoneticUk": "ˈstrʌktʃə(r)",
+      "translation": "结构",
+      "sceneMeaning": "结构",
+      "examples": "[]"
+    },
+    {
+      "word": "technical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tɛknɪkl",
+      "phoneticUk": "'teknɪk(ə)l",
+      "translation": "技术的，工艺的；技术的",
+      "sceneMeaning": "技术的",
+      "examples": "[]"
+    },
+    {
+      "word": "capacity",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'pæsəti",
+      "phoneticUk": "kə'pæsɪtɪ",
+      "translation": "容量；能力；能量",
+      "sceneMeaning": "容量；能力",
+      "examples": "[]"
+    },
+    {
+      "word": "interaction",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntə'rækʃən",
+      "phoneticUk": "ɪntər'ækʃ(ə)n",
+      "translation": "相互作用；干扰",
+      "sceneMeaning": "相互作用；互动",
+      "examples": "[]"
+    },
+    {
+      "word": "manual",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'mænjuəl",
+      "phoneticUk": "'mænjʊ(ə)l",
+      "translation": "体力的；手册",
+      "sceneMeaning": "手动的",
+      "examples": "[]"
+    },
+    {
+      "word": "pattern",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pætɚn",
+      "phoneticUk": "'pæt(ə)n",
+      "translation": "型，式样，模，模型；模式",
+      "sceneMeaning": "模式；规律",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'væljʊ'et",
+      "phoneticUk": "ɪ'væljʊeɪt",
+      "translation": "评价，估…的价；评价",
+      "sceneMeaning": "评价；评估",
+      "examples": "[]"
+    },
+    {
+      "word": "identity",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪ'dɛntəti",
+      "phoneticUk": "aɪ'dentɪtɪ",
+      "translation": "身份",
+      "sceneMeaning": "身份；本场景常见用法：身份管理；身份认证管理",
+      "examples": "[]"
+    },
+    {
+      "word": "transfer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "træns'fɝ",
+      "phoneticUk": "træns'fɜː; trɑːns-; -nz-",
+      "translation": "转移；调动vi转移；转换，调换",
+      "sceneMeaning": "转移；传输",
+      "examples": "[]"
+    },
+    {
+      "word": "dynamic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "daɪ'næmɪk",
+      "phoneticUk": "daɪ'næmɪk",
+      "translation": "有活力的；动力的",
+      "sceneMeaning": "动态的",
+      "examples": "[]"
+    },
+    {
+      "word": "erect",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'rɛkt",
+      "phoneticUk": "ɪ'rekt",
+      "translation": "建造；使竖立",
+      "sceneMeaning": "建造；使竖立",
+      "examples": "[]"
+    },
+    {
+      "word": "feature",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fitʃɚ",
+      "phoneticUk": "'fiːtʃə",
+      "translation": "特征，特色；面貌；特点",
+      "sceneMeaning": "特征；功能",
+      "examples": "[]"
+    },
+    {
+      "word": "partial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɑrʃəl",
+      "phoneticUk": "'pɑːʃ(ə)l",
+      "translation": "部分的；不公平的",
+      "sceneMeaning": "部分的；不公平的；本场景常见用法：偏微分方程",
+      "examples": "[]"
+    },
+    {
+      "word": "transmission",
+      "partOfSpeech": "n",
+      "phoneticUs": "træns'mɪʃən",
+      "phoneticUk": "trænz'mɪʃ(ə)n; trɑːnz-; -ns-",
+      "translation": "传送；传动；发射",
+      "sceneMeaning": "传送；传动；发射；本场景常见用法：信息传输",
+      "examples": "[]"
+    },
+    {
+      "word": "combine",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'baɪn",
+      "phoneticUk": "kəm'baɪn",
+      "translation": "使结合；兼有；联合，结合",
+      "sceneMeaning": "结合",
+      "examples": "[]"
+    },
+    {
+      "word": "divide",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vaɪd",
+      "phoneticUk": "dɪ'vaɪd",
+      "translation": "分；分配；分开；分开",
+      "sceneMeaning": "划分；分开",
+      "examples": "[]"
+    },
+    {
+      "word": "efficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃnt",
+      "phoneticUk": "ɪ'fɪʃ(ə)nt",
+      "translation": "效率高的，有能力的",
+      "sceneMeaning": "高效的",
+      "examples": "[]"
+    },
+    {
+      "word": "equipment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kwɪpmənt",
+      "phoneticUk": "ɪ'kwɪpm(ə)nt",
+      "translation": "装备，设备，配备",
+      "sceneMeaning": "设备",
+      "examples": "[]"
+    },
+    {
+      "word": "flexible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'flɛksəbl",
+      "phoneticUk": "'fleksɪb(ə)l",
+      "translation": "易弯曲的；灵活的；灵活的",
+      "sceneMeaning": "灵活的",
+      "examples": "[]"
+    },
+    {
+      "word": "foundation",
+      "partOfSpeech": "n",
+      "phoneticUs": "faʊn'deʃən",
+      "phoneticUk": "faʊn'deɪʃ(ə)n",
+      "translation": "基础；地基；基金；地基；基础；；基金会",
+      "sceneMeaning": "基础",
+      "examples": "[]"
+    },
+    {
+      "word": "identify",
+      "partOfSpeech": "v",
+      "phoneticUs": "aɪ'dɛntɪfaɪ",
+      "phoneticUk": "aɪ'dentɪfaɪ",
+      "translation": "认出，识别，鉴定；认出，识别；视为",
+      "sceneMeaning": "识别；确认",
+      "examples": "[]"
+    },
+    {
+      "word": "integrity",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɛɡrəti",
+      "phoneticUk": "ɪn'tegrɪtɪ",
+      "translation": "完整",
+      "sceneMeaning": "完整；本场景常见用法：结构完整性",
+      "examples": "[]"
+    },
+    {
+      "word": "machine",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'ʃin",
+      "phoneticUk": "mə'ʃiːn",
+      "translation": "机器；机械",
+      "sceneMeaning": "机器",
+      "examples": "[]"
+    },
+    {
+      "word": "organization",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɔrɡənə'zeʃən",
+      "phoneticUk": "ˌɔːɡənaɪ'zeɪʃn",
+      "translation": "组织；团体，机构",
+      "sceneMeaning": "组织；结构",
+      "examples": "[]"
+    },
+    {
+      "word": "organize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɔrɡənˌaɪz",
+      "phoneticUk": "ˈɔ:gənaɪz",
+      "translation": "组织，编组",
+      "sceneMeaning": "组织；安排",
+      "examples": "[]"
+    },
+    {
+      "word": "platform",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plæt'fɔrm",
+      "phoneticUk": "'plætfɔːm",
+      "translation": "平台；站台；讲台",
+      "sceneMeaning": "平台",
+      "examples": "[]"
+    },
+    {
+      "word": "signal",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'sɪgnl",
+      "phoneticUk": "'sɪgn(ə)l",
+      "translation": "信号；发信号；发信号，打信号；示意",
+      "sceneMeaning": "信号",
+      "examples": "[]"
+    },
+    {
+      "word": "stable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'stebl",
+      "phoneticUk": "'steɪb(ə)l",
+      "translation": "稳定的，不变的",
+      "sceneMeaning": "稳定的",
+      "examples": "[]"
+    },
+    {
+      "word": "connect",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'nɛkt",
+      "phoneticUk": "kə'nekt",
+      "translation": "连接，连结；联系",
+      "sceneMeaning": "连接",
+      "examples": "[]"
+    },
+    {
+      "word": "connection",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'nɛkʃən",
+      "phoneticUk": "kəˈnekʃn",
+      "translation": "连接，联系；连贯性",
+      "sceneMeaning": "连接；联系",
+      "examples": "[]"
+    },
+    {
+      "word": "dependent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'pɛndənt",
+      "phoneticUk": "di'pendənt",
+      "translation": "依靠的，依赖的",
+      "sceneMeaning": "依赖的",
+      "examples": "[]"
+    },
+    {
+      "word": "device",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'vaɪs",
+      "phoneticUk": "dɪˈvaɪs",
+      "translation": "器械，装置；设计；装置，设备",
+      "sceneMeaning": "设备",
+      "examples": "[]"
+    },
+    {
+      "word": "join",
+      "partOfSpeech": "v",
+      "phoneticUs": "dʒɔɪn",
+      "phoneticUk": "dʒɒɪn",
+      "translation": "参加；连接",
+      "sceneMeaning": "参加；连接；本场景常见用法：结合；连接",
+      "examples": "[]"
+    },
+    {
+      "word": "maintenance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mentənəns",
+      "phoneticUk": "'meɪnt(ə)nəns; -tɪn-",
+      "translation": "维持，保持；维修",
+      "sceneMeaning": "维护",
+      "examples": "[]"
+    },
+    {
+      "word": "requirement",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'kwaɪɚmənt",
+      "phoneticUk": "rɪ'kwaɪəm(ə)nt",
+      "translation": "需要；要求",
+      "sceneMeaning": "要求；需求",
+      "examples": "[]"
+    },
+    {
+      "word": "architect",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrkɪtɛkt",
+      "phoneticUk": "'ɑːkɪtekt",
+      "translation": "建筑师",
+      "sceneMeaning": "建筑师",
+      "examples": "[]"
+    },
+    {
+      "word": "central",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɛntrəl",
+      "phoneticUk": "'sentr(ə)l",
+      "translation": "中心的；主要的",
+      "sceneMeaning": "中心的；主要的",
+      "examples": "[]"
+    },
+    {
+      "word": "chain",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃen",
+      "phoneticUk": "tʃeɪn",
+      "translation": "链，链条，项圈",
+      "sceneMeaning": "链条；连锁",
+      "examples": "[]"
+    },
+    {
+      "word": "constructive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'strʌktɪv",
+      "phoneticUk": "kənˈstrʌktɪv",
+      "translation": "建设的，建设性的",
+      "sceneMeaning": "建设的，建设性的；本场景常见用法：[经]推定全损",
+      "examples": "[]"
+    },
+    {
+      "word": "cycle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'saɪkl",
+      "phoneticUk": "'saɪk(ə)l",
+      "translation": "n自行车，循环",
+      "sceneMeaning": "循环；周期",
+      "examples": "[]"
+    },
+    {
+      "word": "depend",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'pɛnd",
+      "phoneticUk": "dɪ'pend",
+      "translation": "依靠，依赖；相信",
+      "sceneMeaning": "依靠，依赖；相信",
+      "examples": "[]"
+    },
+    {
+      "word": "detect",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'tɛkt",
+      "phoneticUk": "dɪ'tekt",
+      "translation": "察觉，发觉；侦察；觉察；检测",
+      "sceneMeaning": "检测；发现",
+      "examples": "[]"
+    },
+    {
+      "word": "detection",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'tɛkʃən",
+      "phoneticUk": "dɪ'tekʃ(ə)n",
+      "translation": "察觉，发觉；侦察；侦查；察觉",
+      "sceneMeaning": "察觉，发觉；侦察；侦查；察觉；本场景常见用法：入侵侦测系统",
+      "examples": "[]"
+    },
+    {
+      "word": "division",
+      "partOfSpeech": "n",
+      "phoneticUs": "də'vɪʒən",
+      "phoneticUk": "dɪ'vɪʒ(ə)n",
+      "translation": "分，分配；除法；除法；部门",
+      "sceneMeaning": "分，分配；除法；除法；部门；本场景常见用法：频分复用；分频多路传输",
+      "examples": "[]"
+    },
+    {
+      "word": "essentially",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪ'sɛnʃəli",
+      "phoneticUk": "ɪ'senʃ(ə)lɪ",
+      "translation": "本质上，根本上",
+      "sceneMeaning": "本质上，根本上",
+      "examples": "[]"
+    },
+    {
+      "word": "feedback",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fidbæk",
+      "phoneticUk": "'fiːdbæk",
+      "translation": "回授，反馈，反应；反馈",
+      "sceneMeaning": "反馈",
+      "examples": "[]"
+    },
+    {
+      "word": "independence",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪndɪ'pɛndəns",
+      "phoneticUk": "ɪndɪ'pend(ə)ns",
+      "translation": "独立，自主，自立",
+      "sceneMeaning": "独立，自主，自立；本场景常见用法：函数无关",
+      "examples": "[]"
+    },
+    {
+      "word": "internal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'tɝnl",
+      "phoneticUk": "ɪn'tɜːn(ə)l",
+      "translation": "内的；国内的",
+      "sceneMeaning": "内部的",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanic",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'kænɪk",
+      "phoneticUk": "mɪ'kænɪk",
+      "translation": "技工，机械，机修工；机械师",
+      "sceneMeaning": "技工，机械，机修工；机械师；本场景常见用法：机械设计",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mɪ'kænɪkəl",
+      "phoneticUk": "mɪ'kænɪk(ə)l",
+      "translation": "机械的；力学的",
+      "sceneMeaning": "机械的；机制性的",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanism",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛkənɪzəm",
+      "phoneticUk": "'mekənɪzəm",
+      "translation": "机制，机能",
+      "sceneMeaning": "机制",
+      "examples": "[]"
+    },
+    {
+      "word": "normal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɔrml",
+      "phoneticUk": "'nɔːm(ə)l",
+      "translation": "正常的，普通的",
+      "sceneMeaning": "正常的，普通的；本场景常见用法：正常运行，常规操作",
+      "examples": "[]"
+    },
+    {
+      "word": "procedure",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'sidʒɚ",
+      "phoneticUk": "prə'siːdʒə",
+      "translation": "程序；手续；过程；程序",
+      "sceneMeaning": "程序；步骤",
+      "examples": "[]"
+    },
+    {
+      "word": "analyze",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ænə,laɪz",
+      "phoneticUk": "'ænə,laɪz",
+      "translation": "分析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "architecture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrkə'tɛktʃɚ",
+      "phoneticUk": "'ɑːkɪtektʃə",
+      "translation": "建筑学；建筑式样",
+      "sceneMeaning": "架构；建筑学",
+      "examples": "[]"
+    },
+    {
+      "word": "arrange",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'rendʒ",
+      "phoneticUk": "ə'reɪn(d)ʒ",
+      "translation": "筹备；整理；调解；安排，筹划",
+      "sceneMeaning": "安排；排列",
+      "examples": "[]"
+    },
+    {
+      "word": "attach",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'tætʃ",
+      "phoneticUk": "ə'tætʃ",
+      "translation": "缚，系，贴；附加",
+      "sceneMeaning": "附加；连接",
+      "examples": "[]"
+    },
+    {
+      "word": "base",
+      "partOfSpeech": "n",
+      "phoneticUs": "bes",
+      "phoneticUk": "beɪs",
+      "translation": "基础，底层；基地",
+      "sceneMeaning": "基础；底座",
+      "examples": "[]"
+    },
+    {
+      "word": "construct",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'strʌkt",
+      "phoneticUk": "kən'strʌkt",
+      "translation": "建造；建设；构筑",
+      "sceneMeaning": "建造；构建",
+      "examples": "[]"
+    },
+    {
+      "word": "detective",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'tɛktɪv",
+      "phoneticUk": "dɪ'tektɪv",
+      "translation": "侦探",
+      "sceneMeaning": "侦探；本场景常见用法：私家侦探",
+      "examples": "[]"
+    },
+    {
+      "word": "establish",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪˈstæblɪʃ",
+      "phoneticUk": "ɪ'stæblɪʃ; e-",
+      "translation": "建立，设立；确立；建立，创办，设立",
+      "sceneMeaning": "建立，设立；确立；建立，创办，设立；本场景常见用法：不能成立",
+      "examples": "[]"
+    },
+    {
+      "word": "external",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'stɝnl",
+      "phoneticUk": "ɪk'stɜːn(ə)l; ek-",
+      "translation": "外部的，外面的",
+      "sceneMeaning": "外部的",
+      "examples": "[]"
+    },
+    {
+      "word": "flexibility",
+      "partOfSpeech": "n",
+      "phoneticUs": ",flɛksə'bɪləti",
+      "phoneticUk": ",fleksɪ'bɪlɪtɪ",
+      "translation": "灵活性；适应性",
+      "sceneMeaning": "灵活性",
+      "examples": "[]"
+    },
+    {
+      "word": "function",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fʌŋkʃən",
+      "phoneticUk": "'fʌŋ(k)ʃ(ə)n",
+      "translation": "功能；职务；函数；功能；运行",
+      "sceneMeaning": "功能；作用",
+      "examples": "[]"
+    },
+    {
+      "word": "identification",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪˌdentɪfɪ'keʃn",
+      "phoneticUk": "aɪ,dentɪfɪ'keɪʃ(ə)n",
+      "translation": "身份证明；鉴定，识别；认同；",
+      "sceneMeaning": "身份证明；鉴定，识别；认同；；本场景常见用法：元件识别名",
+      "examples": "[]"
+    },
+    {
+      "word": "input",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪn'pʊt",
+      "phoneticUk": "'ɪnpʊt",
+      "translation": "输入；投入的资金",
+      "sceneMeaning": "输入",
+      "examples": "[]"
+    },
+    {
+      "word": "insecure",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪnsɪ'kjʊr",
+      "phoneticUk": ",ɪnsɪ'kjʊə;",
+      "translation": "不安全的",
+      "sceneMeaning": "不安全的",
+      "examples": "[]"
+    },
+    {
+      "word": "layer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'leɪr",
+      "phoneticUk": "'leɪə",
+      "translation": "层，层次；铺设者",
+      "sceneMeaning": "层；层级",
+      "examples": "[]"
+    },
+    {
+      "word": "link",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lɪŋk",
+      "phoneticUk": "lɪŋk",
+      "translation": "有环连接；环",
+      "sceneMeaning": "连接；联系",
+      "examples": "[]"
+    },
+    {
+      "word": "operate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɑpə'ret",
+      "phoneticUk": "'ɒpəreɪt",
+      "translation": "操作；施行手术",
+      "sceneMeaning": "运行；操作",
+      "examples": "[]"
+    },
+    {
+      "word": "operator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑpəretɚ",
+      "phoneticUk": "'ɒpəreɪtə",
+      "translation": "操作人员，接线员",
+      "sceneMeaning": "操作人员，接线员；本场景常见用法：[计]操作员站；操作员控制台",
+      "examples": "[]"
+    },
+    {
+      "word": "permission",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'mɪʃən",
+      "phoneticUk": "pə'mɪʃ(ə)n",
+      "translation": "允许，许可，同意",
+      "sceneMeaning": "许可；权限",
+      "examples": "[]"
+    },
+    {
+      "word": "regulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rɛɡjulet",
+      "phoneticUk": "'regjʊleɪt",
+      "translation": "管理，控制；调整；管理",
+      "sceneMeaning": "调节；监管",
+      "examples": "[]"
+    },
+    {
+      "word": "simplify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɪmplɪfaɪ",
+      "phoneticUk": "'sɪmplɪfaɪ",
+      "translation": "简化，使单纯；简化",
+      "sceneMeaning": "简化，使单纯；简化",
+      "examples": "[]"
+    },
+    {
+      "word": "stability",
+      "partOfSpeech": "n",
+      "phoneticUs": "stə'bɪləti",
+      "phoneticUk": "stə'bɪlɪtɪ",
+      "translation": "稳定，稳定性，巩固",
+      "sceneMeaning": "稳定性",
+      "examples": "[]"
+    },
+    {
+      "word": "transform",
+      "partOfSpeech": "v",
+      "phoneticUs": "træns'fɔrm",
+      "phoneticUk": "træns'fɔːm; trɑːns-; -nz-",
+      "translation": "改变；改造；变换；改变",
+      "sceneMeaning": "转变；转换",
+      "examples": "[]"
+    },
+    {
+      "word": "unit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'junɪt",
+      "phoneticUk": "'juːnɪt",
+      "translation": "单位；单元；部件",
+      "sceneMeaning": "单位；单元",
+      "examples": "[]"
+    },
+    {
+      "word": "unwilling",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ʌn'wɪlɪŋ",
+      "phoneticUk": "ʌnˈwɪlɪŋ",
+      "translation": "不愿意的",
+      "sceneMeaning": "不愿意的",
+      "examples": "[]"
+    },
+    {
+      "word": "update",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ʌp'det",
+      "phoneticUk": "ˌʌpˈdeɪt",
+      "translation": "更新；使现代化",
+      "sceneMeaning": "更新",
+      "examples": "[]"
+    },
+    {
+      "word": "ampere",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "安培",
+      "sceneMeaning": "安培",
+      "examples": "[]"
+    },
+    {
+      "word": "applicable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'æplɪkəbl",
+      "phoneticUk": "ə'plɪkəb(ə)l; 'æplɪk-",
+      "translation": "能应用的；适当的",
+      "sceneMeaning": "能应用的；适当的",
+      "examples": "[]"
+    },
+    {
+      "word": "arrangement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'rendʒmənt",
+      "phoneticUk": "ə'reɪn(d)ʒm(ə)nt",
+      "translation": "整理，排列；安排",
+      "sceneMeaning": "安排；排列",
+      "examples": "[]"
+    },
+    {
+      "word": "atom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ætəm",
+      "phoneticUk": "'ætəm",
+      "translation": "原子；微粒；微量",
+      "sceneMeaning": "原子；微粒；微量；本场景常见用法：中性原子",
+      "examples": "[]"
+    },
+    {
+      "word": "automatic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔtə'mætɪk",
+      "phoneticUk": "ɔːtə'mætɪk",
+      "translation": "自动的；机械的；自动的",
+      "sceneMeaning": "自动的",
+      "examples": "[]"
+    },
+    {
+      "word": "boundary",
+      "partOfSpeech": "n",
+      "phoneticUs": "'baʊndri",
+      "phoneticUk": "'baʊnd(ə)rɪ",
+      "translation": "分界线，边界",
+      "sceneMeaning": "边界",
+      "examples": "[]"
+    },
+    {
+      "word": "cent",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɛnt",
+      "phoneticUk": "sent",
+      "translation": "分；分币；百",
+      "sceneMeaning": "分；分币；百",
+      "examples": "[]"
+    },
+    {
+      "word": "component",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'ponənt",
+      "phoneticUk": "kəm'pəʊnənt",
+      "translation": "组成部分；分；组件；成分",
+      "sceneMeaning": "组成部分",
+      "examples": "[]"
+    },
+    {
+      "word": "context",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑntɛkst",
+      "phoneticUk": "'kɔntekst",
+      "translation": "背景，环境",
+      "sceneMeaning": "背景；语境",
+      "examples": "[]"
+    },
+    {
+      "word": "dam",
+      "partOfSpeech": "n",
+      "phoneticUs": "dæm",
+      "phoneticUk": "dæm",
+      "translation": "水坝，水堤；障碍物",
+      "sceneMeaning": "水坝，水堤；障碍物；本场景常见用法：坝基",
+      "examples": "[]"
+    },
+    {
+      "word": "dampen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dæmpən",
+      "phoneticUk": "'dæmp(ə)n",
+      "translation": "抑制",
+      "sceneMeaning": "抑制",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'fɪʃənsi",
+      "phoneticUk": "ɪ'fɪʃ(ə)nsɪ",
+      "translation": "效率；功效，效能",
+      "sceneMeaning": "效率",
+      "examples": "[]"
+    },
+    {
+      "word": "exterior",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'stɪrɪɚ",
+      "phoneticUk": "ɪk'stɪərɪə; ek-",
+      "translation": "外部的；对外的",
+      "sceneMeaning": "外部的；对外的；本场景常见用法：外方位，外部定向",
+      "examples": "[]"
+    },
+    {
+      "word": "framework",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fremwɝk",
+      "phoneticUk": "'freɪmwɜːk",
+      "translation": "框架，构架，结构",
+      "sceneMeaning": "框架",
+      "examples": "[]"
+    },
+    {
+      "word": "generator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɛnəretɚ",
+      "phoneticUk": "'dʒenəreɪtə",
+      "translation": "发电机；发生者",
+      "sceneMeaning": "发电机；发生者；本场景常见用法：信号（函数）发生器",
+      "examples": "[]"
+    },
+    {
+      "word": "hub",
+      "partOfSpeech": "n",
+      "phoneticUs": "hʌb",
+      "phoneticUk": "hʌb",
+      "translation": "中心",
+      "sceneMeaning": "中心",
+      "examples": "[]"
+    },
+    {
+      "word": "ignorance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪɡnərəns",
+      "phoneticUk": "'iɡnərəns",
+      "translation": "无知，愚昧",
+      "sceneMeaning": "无知，愚昧",
+      "examples": "[]"
+    },
+    {
+      "word": "institute",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɪnstɪtut",
+      "phoneticUk": "'ɪnstɪtjuːt",
+      "translation": "研究所；学院；建立；〔从事科研或教育等的〕机构；学院；研究院",
+      "sceneMeaning": "研究所；学院；建立；〔从事科研或教育等的〕机构；学院；研究院；本场景常见用法：国际经济研究所",
+      "examples": "[]"
+    },
+    {
+      "word": "knit",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪt",
+      "phoneticUk": "nɪt",
+      "translation": "把…编结；编织",
+      "sceneMeaning": "把…编结；编织",
+      "examples": "[]"
+    },
+    {
+      "word": "layout",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "布局，安排，设计",
+      "sceneMeaning": "布局",
+      "examples": "[]"
+    },
+    {
+      "word": "materialism",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'tɪrɪəlɪzəm",
+      "phoneticUk": "mə'tɪərɪəlɪz(ə)m",
+      "translation": "唯物主义",
+      "sceneMeaning": "唯物主义",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanically",
+      "partOfSpeech": "adv",
+      "phoneticUs": "mɪ'kænɪkəli",
+      "phoneticUk": "mɪ'kænɪkəlɪ",
+      "translation": "机械地",
+      "sceneMeaning": "机械地",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanics",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'kænɪks",
+      "phoneticUk": "mɪ'kænɪks",
+      "translation": "力学；技术性细节",
+      "sceneMeaning": "力学；技术性细节；本场景常见用法：结构力学",
+      "examples": "[]"
+    },
+    {
+      "word": "metric",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɛtrɪk",
+      "phoneticUk": "'metrɪk",
+      "translation": "公制的，米制的",
+      "sceneMeaning": "公制的，米制的",
+      "examples": "[]"
+    },
+    {
+      "word": "monitor",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɔnɪtɚ",
+      "phoneticUk": "'mɒnɪtə",
+      "translation": "班长；监视器；监控；监听",
+      "sceneMeaning": "监测；监督",
+      "examples": "[]"
+    },
+    {
+      "word": "nucleus",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nuklɪəs",
+      "phoneticUk": "'njuːklɪəs",
+      "translation": "核，核心；(原子)核",
+      "sceneMeaning": "核，核心；(原子)核；本场景常见用法：外侧膝状体核",
+      "examples": "[]"
+    },
+    {
+      "word": "operation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɑpə'reʃən",
+      "phoneticUk": "ɒpə'reɪʃ(ə)n",
+      "translation": "操作；手术；运算；手术；行动",
+      "sceneMeaning": "运行；操作",
+      "examples": "[]"
+    },
+    {
+      "word": "operational",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɑpə'reʃənl",
+      "phoneticUk": "ɒpə'reɪʃ(ə)n(ə)l",
+      "translation": "操作上的；可使用的",
+      "sceneMeaning": "操作上的；可使用的；本场景常见用法：经营管理",
+      "examples": "[]"
+    },
+    {
+      "word": "organ",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrɡən",
+      "phoneticUk": "'ɔːg(ə)n",
+      "translation": "器官；机构；管风琴；器官",
+      "sceneMeaning": "器官；机构；管风琴；器官",
+      "examples": "[]"
+    },
+    {
+      "word": "output",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aʊtpʊt",
+      "phoneticUk": "'aʊtpʊt",
+      "translation": "产量；输出量；输出",
+      "sceneMeaning": "输出",
+      "examples": "[]"
+    },
+    {
+      "word": "procession",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'sɛʃən",
+      "phoneticUk": "prə'seʃ(ə)n",
+      "translation": "队伍，行列",
+      "sceneMeaning": "队伍，行列；本场景常见用法：送葬",
+      "examples": "[]"
+    },
+    {
+      "word": "reliability",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ,laɪə'bɪləti",
+      "phoneticUk": "rɪ,laɪə'bɪlətɪ",
+      "translation": "可靠性",
+      "sceneMeaning": "可靠性",
+      "examples": "[]"
+    },
+    {
+      "word": "secure",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "sə'kjʊr",
+      "phoneticUk": "sɪ'kjʊə; sɪ'kjɔː",
+      "translation": "安心的；安全的；确保……安全",
+      "sceneMeaning": "安全的",
+      "examples": "[]"
+    },
+    {
+      "word": "sequence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sikwəns",
+      "phoneticUk": "'siːkw(ə)ns",
+      "translation": "连续，继续；次序",
+      "sceneMeaning": "序列；顺序",
+      "examples": "[]"
+    },
+    {
+      "word": "sole",
+      "partOfSpeech": "n",
+      "phoneticUs": "sol",
+      "phoneticUk": "səʊl",
+      "translation": "脚底，鞋底，袜底",
+      "sceneMeaning": "脚底，鞋底，袜底；本场景常见用法：全权处理",
+      "examples": "[]"
+    },
+    {
+      "word": "standardize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'stændɚdaɪz",
+      "phoneticUk": "'stændədaiz",
+      "translation": "使标准化",
+      "sceneMeaning": "使标准化",
+      "examples": "[]"
+    },
+    {
+      "word": "static",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'stætɪk",
+      "phoneticUk": "'stætɪk",
+      "translation": "静的；静态的",
+      "sceneMeaning": "静态的",
+      "examples": "[]"
+    },
+    {
+      "word": "structural",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'strʌktʃərəl",
+      "phoneticUk": "'strʌktʃ(ə)r(ə)l",
+      "translation": "结构的，构造的",
+      "sceneMeaning": "结构的",
+      "examples": "[]"
+    },
+    {
+      "word": "superficial",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",supɚ'fɪʃl",
+      "phoneticUk": ",suːpə'fɪʃ(ə)l; ,sjuː-",
+      "translation": "表面的；肤浅的；肤浅的",
+      "sceneMeaning": "表面的；肤浅的；肤浅的；本场景常见用法：浅层；表面层",
+      "examples": "[]"
+    },
+    {
+      "word": "unite",
+      "partOfSpeech": "v",
+      "phoneticUs": "ju'naɪt",
+      "phoneticUk": "juː'naɪt",
+      "translation": "联合；使联合",
+      "sceneMeaning": "联合；使联合",
+      "examples": "[]"
+    },
+    {
+      "word": "voltage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'voltɪdʒ",
+      "phoneticUk": "'vəʊltɪdʒ; 'vɒltɪdʒ",
+      "translation": "电压",
+      "sceneMeaning": "电压",
+      "examples": "[]"
+    }
+  ]
+}

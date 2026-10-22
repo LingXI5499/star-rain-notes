@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>parentElement</code>、<code>children</code>、<code>nextElementSibling</code> 访问关系；<code>cloneNode(true)</code> 可深度复制节点。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const el = document.querySelector('li');
+const copy = el.cloneNode(true);
+el.parentElement.append(copy);
+</code></pre>
+<p><strong>学完能做：</strong> 访问父子兄弟节点并安全复制、删除。</p>

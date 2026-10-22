@@ -1,0 +1,44 @@
+---
+import {essays,articlePath} from '../../utils/content';
+import {essayFacets} from '../../utils/essay-model';
+import JournalTimelineCard from './JournalTimelineCard.astro';
+import Pagination from './OriginalPagination.astro';
+import OriginalEssayPost from '../../layouts/OriginalEssayPost.astro';
+import '../../styles/essays.css';
+interface Props{kind:string;slug?:string;}
+const {kind,slug}=Astro.props;
+const {published,tags,months,genres,firstPublished}=essayFacets(essays);
+const article=published.find(a=>a.slug===slug);
+const date=(value:string,monthOnly=false)=>new Intl.DateTimeFormat('en',{month:monthOnly?'long':'short',year:'numeric',...(!monthOnly?{day:'numeric' as const}:{}),timeZone:'UTC'}).format(new Date(value));
+---
+{kind==='essays-article'&&article?<OriginalEssayPost article={article} siblings={published}/>:<section class="blog-page essays-page" lang="en" data-filter-scope data-static-pagination data-pagination-size="10" data-pagination-unit="essays">
+  <nav class="english-crumbs" aria-label="Breadcrumb"><a href="/english/">English</a><span aria-hidden="true">/</span><span aria-current="page">Essays</span></nav>
+  <header class="blog-hero"><div><p>PERSONAL JOURNAL · LIFE & LEARNING</p><h1>Essays on life,<br/>learning and growing.</h1></div><aside><strong>{published.length}</strong><span>published {published.length===1?'essay':'essays'}</span><p>Personal stories, small discoveries, and thoughts along the way.</p></aside></header>
+  <div class="blog-layout"><div class="blog-main">
+    <nav class="column-nav essays-columns" aria-label="Essay genres"><div class="column-nav__row">
+      <button type="button" class="column-nav__item is-active" data-filter="全部" aria-pressed="true">All essays</button>
+      {genres.length>1&&genres.map(genre=><button type="button" class="column-nav__item" data-filter={genre} data-category-slug={genre} aria-pressed="false">{genre}</button>)}
+    </div></nav>
+    <div class="essays-search"><label for="essay-search">Search essays</label><div><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg><input id="essay-search" type="search" placeholder="Search by title…" data-filter-query/></div></div>
+    <div class="essays-results"><span data-filter-status role="status" aria-live="polite">{published.length} {published.length===1?'essay':'essays'}</span><button type="button" data-filter-reset hidden>Clear filters</button></div>
+    <ol class="timeline">
+      {published.map((essay,index)=><li class="timeline__item" data-filter-item data-filter-text={essay.title} data-category={essay.genre||''} data-filter-tags={JSON.stringify(essay.tags||[])} data-published-at={essay.publishedAt} hidden={index>=10}>
+        <div class="timeline__date"><strong data-timeline-year hidden={index>0&&essay.publishedAt!.slice(0,4)===published[index-1].publishedAt!.slice(0,4)}>{essay.publishedAt!.slice(0,4)}</strong><span>{essay.publishedAt!.slice(5).replace('-','/')}</span></div><i class="timeline__node" aria-hidden="true"/>
+        <JournalTimelineCard {...essay} path={articlePath('essays',essay.slug)} tags={essay.tags||[]} publishedAt={essay.publishedAt!} locale="en"/>
+      </li>)}
+    </ol>
+    <div class="timeline-state essays-empty" data-filter-empty hidden={published.length>0}>
+      <svg viewBox="0 0 48 48" aria-hidden="true"><path d="M31 10 38 17 17 38 8 40 10 31ZM27 14 34 21M26 40H40"/></svg>
+      <h2>{published.length?'No essays found':'A new page is waiting.'}</h2><p>{published.length?'Try another title, tag, or month.':'Stories and reflections will find their home here.'}</p>
+    </div>
+    <Pagination total={published.length} size={10} unit="essays" locale="en"/>
+  </div><aside class="blog-rail" aria-label="Explore the journal">
+    <section class="blog-panel blog-panel--tags"><div class="blog-panel__head"><span>TAGS</span><small>{tags.length} tags</small></div>
+      {tags.length?<div class="blog-panel__tag-list">{tags.map(tag=><button type="button" data-filter-tag={tag.name} aria-pressed="false" title={`${tag.name} · ${tag.count} essays`}><span class="blog-panel__tag-name">{tag.name}</span><em>{tag.count}</em></button>)}</div>:<p class="blog-panel__empty">Tags will appear with the first essays.</p>}
+    </section>
+    <section class="blog-panel blog-panel--archive"><div class="blog-panel__head"><span>ARCHIVE</span><small>By month</small></div>
+      {months.length?<div class="blog-panel__months">{months.map(month=><button type="button" data-filter-month={month.value} aria-pressed="false"><span class="blog-panel__month-label">{date(month.value+'-01',true)}</span><strong>{month.count}<i>{month.count===1?'essay':'essays'}</i></strong></button>)}</div>:<p class="blog-panel__empty">No published months yet.</p>}
+    </section>
+    <section class="blog-panel blog-panel--stats"><div class="blog-panel__head"><span>STATS</span><small>The journal so far</small></div><dl class="blog-panel__stats"><div><dt>Essays</dt><dd>{published.length}</dd></div><div><dt>Tags</dt><dd>{tags.length}</dd></div><div><dt>First published</dt><dd class="blog-panel__stats-date">{firstPublished?date(firstPublished):'Not yet'}</dd></div></dl></section>
+  </aside></div>
+</section>}

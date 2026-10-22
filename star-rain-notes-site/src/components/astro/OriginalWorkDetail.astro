@@ -1,0 +1,13 @@
+---
+import {type Work,catalog,renderBody,readJSON} from '../../utils/content';
+import OriginalReadingAside from './OriginalReadingAside.astro';
+import OriginalWorkSections from './OriginalWorkSections.astro';
+interface Props{work:Work}
+const {work}=Astro.props;
+const body=await renderBody(`portfolio/${work.slug}/body.html`);
+const blocks=readJSON(`portfolio/${work.slug}/sections.json`) as {id:string;title:string;html:string}[];
+const navigation=blocks.length?blocks.filter(b=>b.title).map(b=>({id:`work-section-${b.id}`,title:b.title,depth:2})):body.toc;
+const charCount=body.text.replace(/\s/g,'').length,index=catalog.works.findIndex(w=>w.slug===work.slug),previous=catalog.works[index-1],next=catalog.works[index+1];
+const stages:Record<string,string>={ONLINE:'已上线',IN_PROGRESS:'持续开发',COMPLETED:'已完成',ARCHIVED:'已归档',BUILDING:'开发中'};
+---
+<article class="work-detail page-container"><div class="work-detail__reading reading-layout"><OriginalReadingAside class="work-detail__navigation reading-layout__sidebar" curriculum items={navigation} charCount={charCount} minutes={Math.max(1,Math.ceil(charCount/400))}/><div class="work-detail__body" data-reading-content><header class="work-detail__hero"><a href="/portfolio/">← 全部作品</a><p class="public-eyebrow">SELECTED WORK · {work.category}</p><h1 class="public-display">{work.title}</h1><p class="work-detail__summary">{work.description}</p><div class="work-detail__meta"><span>{work.category}</span>{'format'in work&&<span>{String(work.format)}</span>}<span>{stages[work.status]||work.status}</span></div><div class="work-detail__tags">{work.techStack.map((tag:string)=><span>{tag}</span>)}</div>{work.links.length>0&&<div class="work-detail__links">{work.links.map((link:{url:string;label:string})=><a href={link.url} target="_blank" rel="noopener noreferrer">{link.label} ↗</a>)}</div>}</header>{work.cover&&<figure class="work-detail__cover"><img src={work.cover} alt={work.title} width="1200" height="750"/></figure>}{blocks.length?<OriginalWorkSections slug={work.slug}/>:<><div class="blog-prose markdown-body" set:html={body.html}/><div class="work-detail__gallery">{work.screenshots.map((item:{src:string;alt:string})=><figure><img src={item.src} alt={item.alt} width="1200" height="750" loading="lazy"/><figcaption>{item.alt}</figcaption></figure>)}</div></>}<nav class="work-neighbors" aria-label="前后作品">{previous&&<a href={previous.path}>← {previous.title}</a>}{next&&<a href={next.path}>{next.title} →</a>}</nav></div></div></article>

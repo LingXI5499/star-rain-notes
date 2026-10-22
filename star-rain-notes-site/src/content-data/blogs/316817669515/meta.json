@@ -1,0 +1,44 @@
+{
+  "slug": "316817669515",
+  "title": "从仓库、银行到图书馆：操作系统三大经典并发问题，如何走进 Java Web？",
+  "description": "为什么电商订单需要消息队列？为什么资源够用也不一定能分配？为什么多个线程能一起读缓存，却不能随意同时修改？从生产者—消费者、银行家算法、读者—写者三个操作系统经典问题出发，以生活类比、PV 操作、伪代码和 C / Java / Python / C++ / JavaScript 五语言实现，理解它们如何迁移到 Spring Boot、任务调度、管理系统与高并发业务，并厘清 JVM 锁、数据库事务和分布式消息之间的边界。",
+  "publishedAt": "2026-10-08",
+  "updatedAt": "2026-10-09",
+  "wordCount": 26847,
+  "tags": [
+    {
+      "slug": "java",
+      "name": "Java"
+    },
+    {
+      "slug": "java-web",
+      "name": "Java Web"
+    },
+    {
+      "slug": "tag-5410b9c8f5a3",
+      "name": "并发编程"
+    },
+    {
+      "slug": "tag-360480034cc3",
+      "name": "操作系统"
+    },
+    {
+      "slug": "tag-1b71455f575d",
+      "name": "生产者消费者"
+    },
+    {
+      "slug": "tag-af84cfb6c1bb",
+      "name": "算法"
+    },
+    {
+      "slug": "tag-96bd5df3d39d",
+      "name": "读者写者"
+    },
+    {
+      "slug": "tag-6c5f2ad64bbc",
+      "name": "银行家算法"
+    }
+  ],
+  "topics": [],
+  "path": "/blog/posts/316817669515/"
+}

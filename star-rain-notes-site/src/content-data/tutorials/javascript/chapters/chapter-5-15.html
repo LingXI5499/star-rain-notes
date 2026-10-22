@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> 猜数字游戏维护目标值、剩余次数、结束状态，并允许重置。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let target = 7, left = 3;
+function guess(n) {
+  if (left &lt;= 0) return '已结束';
+  left--; return n === target ? '猜中' : (left ? '再试一次' : '机会用完');
+}
+</code></pre>
+<p><strong>学完能做：</strong> 管理猜测次数、胜负反馈和重启。</p>

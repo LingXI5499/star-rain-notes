@@ -1,0 +1,29 @@
+
+.career-snapshot:not(.__static_scope) {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-4);
+  margin: 0;
+}
+.career-snapshot__cell:not(.__static_scope) {
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+.career-snapshot__cell dt:not(.__static_scope) {
+  margin-bottom: var(--space-3);
+  color: var(--accent);
+  font: 700 9px var(--font-mono);
+  letter-spacing: 0.16em;
+}
+.career-snapshot__cell dd:not(.__static_scope) {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.7;
+}
+@media (max-width: 768px) {
+.career-snapshot:not(.__static_scope) { grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+}

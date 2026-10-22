@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 鼠标离开浮层后延迟关闭，重新进入时取消定时器，可避免鼠标移动时闪烁。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let closeTimer;
+menu.onmouseleave = () =&gt; closeTimer = setTimeout(() =&gt; menu.hidden = true, 200);
+menu.onmouseenter = () =&gt; clearTimeout(closeTimer);
+</code></pre>
+<p><strong>学完能做：</strong> 合理设置并清除浮层延迟关闭计时器。</p>

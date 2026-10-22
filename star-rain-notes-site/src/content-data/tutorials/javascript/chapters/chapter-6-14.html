@@ -1,0 +1,10 @@
+<p><strong>核心：</strong> 异步任务可用定时器模拟进度，每一步更新状态，完成后停止计时。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let progress = 0;
+const timer = setInterval(() =&gt; {
+  progress = Math.min(100, progress + 10);
+  console.log(progress + '%');
+  if (progress === 100) clearInterval(timer);
+}, 200);
+</code></pre>
+<p><strong>学完能做：</strong> 用异步状态模拟任务运行和进度反馈。</p>

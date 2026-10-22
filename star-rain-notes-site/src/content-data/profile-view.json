@@ -1,0 +1,47 @@
+{
+  "excerpt": "你好，我是零燨，一名软件工程专业学生，目前正在系统学习 Java 全栈开发，并持续探索 AI 大模型与 Agent 智能体开发。 我喜欢把零散的知识整理成能够反复学习、验证和继续生长的体系。对我而言，技术学习并不只是记住某个框架的使用方式，而是逐渐理解一个真实系统如何从需求出发，经过设计、编码、测试…",
+  "locationText": "",
+  "featuredContents": [
+    {
+      "id": "2",
+      "contentType": "PORTFOLIO",
+      "contentId": "5",
+      "title": "星雨笔录",
+      "summary": "星雨笔录是一个面向个人长期学习、知识整理与内容沉淀的全栈知识平台。项目以 Java 21 和 Spring Boot 3.5 构建后端服务，以 Vue 3、TypeScript 和 Vite 构建前端界面，提供系统化教程、英语学习、内容管理、学习记录以及后台发布管理等功能。项目已经部署在阿里云服务器，并通过 Nginx 提供网站访问和接口反向代理。",
+      "url": "/portfolio/625524871958/",
+      "coverUrl": "/images/content/bb43ae909bc6d49f.webp",
+      "available": true,
+      "sortOrder": 1
+    },
+    {
+      "id": "26",
+      "contentType": "TUTORIAL",
+      "contentId": "39",
+      "title": "JavaSE",
+      "summary": "以 JDK 21 为教学基线，覆盖 Java 基础语法、面向对象、核心 API、异常与泛型、集合、Lambda/Stream、IO/NIO、并发、网络、高级技术、JVM 与综合实验。",
+      "url": "/tutorials/java-se/",
+      "available": true,
+      "sortOrder": 2
+    },
+    {
+      "id": "27",
+      "contentType": "BLOG",
+      "contentId": "7",
+      "title": "从两个数比较到十大排序算法",
+      "summary": "第二个式子保证排序只改变位置、不增加、不删除也不篡改元素。 NIST 对排序的定义同样强调两个基本条件：结果必须满足预定顺序，并且结果必须是原始数据的一个排列。排序算法实际上存在几十种，选择哪一种与数据规模、可用内存、数据原有有序程度、键值范围以及比较和移动数据的成本有关。 获得元素之间的顺序关系。 这类算法不仅使用元素之间的大小关系，还会利用数据本身的结构信息。 下面所有代码均按升序排序。",
+      "url": "/blog/posts/663922942562/",
+      "available": true,
+      "sortOrder": 3
+    },
+    {
+      "id": "28",
+      "contentType": "BLOG",
+      "contentId": "3",
+      "title": "全球顶级软件产品生态：从超级 App 到 AI Agent，重新理解数字世界的入口之争",
+      "summary": "本文梳理全球顶级软件公司及产品生态，从社交、支付、内容、云计算到AI与开发工具，分析超级App、平台生态与AI Agent的演化，并探讨AI如何成为下一代数字世界统一入口。\n",
+      "url": "/blog/posts/362382304709/",
+      "available": true,
+      "sortOrder": 4
+    }
+  ]
+}

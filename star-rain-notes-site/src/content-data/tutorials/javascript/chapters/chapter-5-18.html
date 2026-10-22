@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 柱形图可以将数据值除以最大值，换算为百分比高度或宽度。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const scores = [30, 60, 90];
+const max = Math.max(...scores);
+const heights = scores.map(x =&gt; `${x / max * 100}%`);
+console.log(heights);
+</code></pre>
+<p><strong>学完能做：</strong> 将数据按比例映射为图形高度和标签。</p>

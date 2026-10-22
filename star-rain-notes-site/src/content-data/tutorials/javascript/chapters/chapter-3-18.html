@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>replace</code> 可配合捕获组重排文本；全局 <code>g</code> 正则配合 <code>test/exec</code> 使用时要注意 <code>lastIndex</code>。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">console.log('2026-10'.replace(/(\d{4})-(\d{2})/, '$2/$1')); // 10/2026
+const re = /a/g;
+console.log(re.test('a'), re.lastIndex); // true 1
+</code></pre>
+<p><strong>学完能做：</strong> 完成捕获、替换并注意全局正则的状态。</p>

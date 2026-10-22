@@ -1,0 +1,10 @@
+<p><strong>核心：</strong> 递归遍历树结构要处理“当前节点”和“子节点”，遇到叶节点自然停止向下遍历。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">function printMenu(items) {
+  for (const item of items) {
+    console.log(item.title);
+    if (item.children?.length) printMenu(item.children);
+  }
+}
+</code></pre>
+<p><strong>学完能做：</strong> 使用递归处理任意层级的菜单树。</p>

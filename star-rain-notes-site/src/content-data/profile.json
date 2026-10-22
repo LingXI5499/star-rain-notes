@@ -1,0 +1,78 @@
+{
+  "displayName": "零爔",
+  "headline": "软件工程专业学生｜Java 全栈学习者｜AI 大模型与智能体开发探索者",
+  "avatar": "/brand/author-avatar.webp",
+  "skills": [
+    {
+      "category": "DIRECTION",
+      "name": "Java 全栈"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "Spring Boot"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "Vue 3"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "软件工程"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "AI 大模型"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "Agent 智能体开发"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "DeepSeek"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "Claude Code"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "GPT"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "GLM"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "Kimi"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "提示词工程"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "RAG"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "开发工具"
+    },
+    {
+      "category": "DIRECTION",
+      "name": "前沿技术探索"
+    }
+  ],
+  "socialLinks": [
+    {
+      "label": "GitHub",
+      "url": "https://github.com/LingXI5499"
+    },
+    {
+      "label": "邮箱",
+      "url": "mailto:14717895499@163.com"
+    }
+  ],
+  "experiences": []
+}

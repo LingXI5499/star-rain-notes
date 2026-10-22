@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 同一轮代码先执行同步任务，微任务通常在进入下一个定时器任务前被处理。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">setTimeout(() =&gt; console.log(3), 0);
+queueMicrotask(() =&gt; console.log(2));
+console.log(1); // 输出顺序 1 2 3
+</code></pre>
+<p><strong>学完能做：</strong> 判断同步代码、Promise 和定时器的执行顺序。</p>

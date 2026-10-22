@@ -1,0 +1,2286 @@
+{
+  "id": "53",
+  "title": "心理 / 行为 / 认知 / 情绪",
+  "layer": "抽象阅读与逻辑层",
+  "wordCount": 253,
+  "path": "/english/vocabulary/53/",
+  "words": [
+    {
+      "word": "curiosity",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kjʊrɪ'ɑsəti",
+      "phoneticUk": "kjʊərɪ'ɒsɪtɪ",
+      "translation": "好奇，好奇心；珍品；好奇心",
+      "sceneMeaning": "好奇心",
+      "examples": "[]"
+    },
+    {
+      "word": "value",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'vælju",
+      "phoneticUk": "'væljuː",
+      "translation": "价值；价格；评价；重视",
+      "sceneMeaning": "价值观；价值",
+      "examples": "[]"
+    },
+    {
+      "word": "emotional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'moʃənl",
+      "phoneticUk": "ɪ'məʊʃ(ə)n(ə)l",
+      "translation": "感情的，情绪的；情绪(上)的，情感(上)的；激起感情的； 敏感的；情绪激动的〔尤指哭泣〕",
+      "sceneMeaning": "情绪的",
+      "examples": "[]"
+    },
+    {
+      "word": "negative",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɛɡətɪv",
+      "phoneticUk": "'negətɪv",
+      "translation": "否定的；消极的；消积的；否定的",
+      "sceneMeaning": "消极的；负面的",
+      "examples": "[]"
+    },
+    {
+      "word": "stress",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "strɛs",
+      "phoneticUk": "stres",
+      "translation": "压力；重音；着重",
+      "sceneMeaning": "压力",
+      "examples": "[]"
+    },
+    {
+      "word": "angry",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'æŋɡri",
+      "phoneticUk": "'æŋgrɪ",
+      "translation": "愤怒的，生气的",
+      "sceneMeaning": "愤怒的，生气的",
+      "examples": "[]"
+    },
+    {
+      "word": "attention",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'tɛnʃən",
+      "phoneticUk": "ə'tenʃ(ə)n",
+      "translation": "注意，留心；注意力",
+      "sceneMeaning": "注意力；关注",
+      "examples": "[]"
+    },
+    {
+      "word": "aware",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'wɛr",
+      "phoneticUk": "ə'weə",
+      "translation": "知道的，意识到的",
+      "sceneMeaning": "意识到的",
+      "examples": "[]"
+    },
+    {
+      "word": "believe",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪ'liv",
+      "phoneticUk": "bɪ'liːv",
+      "translation": "相信；认为",
+      "sceneMeaning": "相信；认为",
+      "examples": "[]"
+    },
+    {
+      "word": "choice",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɔɪs",
+      "phoneticUk": "tʃɒɪs",
+      "translation": "选择，抉择",
+      "sceneMeaning": "选择",
+      "examples": "[]"
+    },
+    {
+      "word": "control",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kən'trol",
+      "phoneticUk": "kən'trəʊl",
+      "translation": "控制，克制；控制",
+      "sceneMeaning": "控制",
+      "examples": "[]"
+    },
+    {
+      "word": "decision",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'sɪʒn",
+      "phoneticUk": "dɪ'sɪʒ(ə)n",
+      "translation": "决定，决心；果断",
+      "sceneMeaning": "决定",
+      "examples": "[]"
+    },
+    {
+      "word": "enjoy",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'dʒɔɪ",
+      "phoneticUk": "ɪn'dʒɒɪ; en-",
+      "translation": "享受；欣赏，喜爱",
+      "sceneMeaning": "享受；喜欢",
+      "examples": "[]"
+    },
+    {
+      "word": "expect",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'spɛkt",
+      "phoneticUk": "ɪk'spekt; ek-",
+      "translation": "预料，预期；等待",
+      "sceneMeaning": "期待；预期",
+      "examples": "[]"
+    },
+    {
+      "word": "express",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪk'sprɛs",
+      "phoneticUk": "ɪk'spres; ek-",
+      "translation": "表示；快车，快递",
+      "sceneMeaning": "表达",
+      "examples": "[]"
+    },
+    {
+      "word": "feel",
+      "partOfSpeech": "v",
+      "phoneticUs": "fiːl",
+      "phoneticUk": "fiːl",
+      "translation": "有知觉；触，摸",
+      "sceneMeaning": "有知觉；触，摸",
+      "examples": "[]"
+    },
+    {
+      "word": "feeling",
+      "partOfSpeech": "n",
+      "phoneticUs": "'filɪŋ",
+      "phoneticUk": "'fiːlɪŋ",
+      "translation": "感情；感觉，知觉",
+      "sceneMeaning": "感受；感觉",
+      "examples": "[]"
+    },
+    {
+      "word": "focus",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fokəs",
+      "phoneticUk": "'fəʊkəs",
+      "translation": "聚焦，注视；焦点",
+      "sceneMeaning": "关注点；焦点",
+      "examples": "[]"
+    },
+    {
+      "word": "forget",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɚ'ɡɛt",
+      "phoneticUk": "fə'get",
+      "translation": "忘记，遗忘",
+      "sceneMeaning": "忘记",
+      "examples": "[]"
+    },
+    {
+      "word": "happy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hæpɪ",
+      "phoneticUk": "'hæpɪ",
+      "translation": "快乐的；幸福的",
+      "sceneMeaning": "快乐的；幸福的",
+      "examples": "[]"
+    },
+    {
+      "word": "hope",
+      "partOfSpeech": "n&vt&vi",
+      "phoneticUs": "hop",
+      "phoneticUk": "həʊp",
+      "translation": "希望",
+      "sceneMeaning": "希望",
+      "examples": "[]"
+    },
+    {
+      "word": "idea",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪ'diə",
+      "phoneticUk": "aɪ'dɪə",
+      "translation": "想法；思想；意见",
+      "sceneMeaning": "想法；主意",
+      "examples": "[]"
+    },
+    {
+      "word": "interest",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪntrəst",
+      "phoneticUk": "'ɪnt(ə)rɪst",
+      "translation": "兴趣；利益；利息",
+      "sceneMeaning": "兴趣；利益",
+      "examples": "[]"
+    },
+    {
+      "word": "interesting",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪntrəstɪŋ",
+      "phoneticUk": "'ɪnt(ə)rɪstɪŋ",
+      "translation": "有趣的，引人入胜的",
+      "sceneMeaning": "有趣的，引人入胜的",
+      "examples": "[]"
+    },
+    {
+      "word": "know",
+      "partOfSpeech": "v",
+      "phoneticUs": "no",
+      "phoneticUk": "nəʊ",
+      "translation": "知道；认识；通晓",
+      "sceneMeaning": "知道；了解",
+      "examples": "[]"
+    },
+    {
+      "word": "learn",
+      "partOfSpeech": "vi&vt",
+      "phoneticUs": "lɝn",
+      "phoneticUk": "lɜːn",
+      "translation": "学，学习",
+      "sceneMeaning": "学习",
+      "examples": "[]"
+    },
+    {
+      "word": "memory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛməri",
+      "phoneticUk": "'mem(ə)rɪ",
+      "translation": "记忆；回忆；存储",
+      "sceneMeaning": "记忆",
+      "examples": "[]"
+    },
+    {
+      "word": "mind",
+      "partOfSpeech": "n",
+      "phoneticUs": "maɪnd",
+      "phoneticUk": "maɪnd",
+      "translation": "头脑；理智；记忆",
+      "sceneMeaning": "头脑；思想",
+      "examples": "[]"
+    },
+    {
+      "word": "need",
+      "partOfSpeech": "v",
+      "phoneticUs": "nid",
+      "phoneticUk": "niːd",
+      "translation": "需要；aux需要",
+      "sceneMeaning": "需要；需求",
+      "examples": "[]"
+    },
+    {
+      "word": "please",
+      "partOfSpeech": "v",
+      "phoneticUs": "pliz",
+      "phoneticUk": "pliːz",
+      "translation": "使高兴，请vi满意",
+      "sceneMeaning": "使高兴，请vi满意；本场景常见用法：感到满意",
+      "examples": "[]"
+    },
+    {
+      "word": "positive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɑzətɪv",
+      "phoneticUk": "'pɒzɪtɪv",
+      "translation": "确定的；积极的",
+      "sceneMeaning": "积极的；正面的",
+      "examples": "[]"
+    },
+    {
+      "word": "prefer",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɪ'fɝ",
+      "phoneticUk": "prɪ'fɜː",
+      "translation": "宁可，宁愿",
+      "sceneMeaning": "更喜欢",
+      "examples": "[]"
+    },
+    {
+      "word": "real",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'riəl",
+      "phoneticUk": "riːl",
+      "translation": "真的；现实的",
+      "sceneMeaning": "真的；现实的",
+      "examples": "[]"
+    },
+    {
+      "word": "realize",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪəˌlaɪz",
+      "phoneticUk": "'riːəlaɪz",
+      "translation": "实现；认识到",
+      "sceneMeaning": "意识到；实现",
+      "examples": "[]"
+    },
+    {
+      "word": "really",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "真正地；实在",
+      "sceneMeaning": "真正地；实在",
+      "examples": "[]"
+    },
+    {
+      "word": "reason",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈrizən",
+      "phoneticUk": "'riːz(ə)n",
+      "translation": "理由；理性；推理",
+      "sceneMeaning": "推理；思考",
+      "examples": "[]"
+    },
+    {
+      "word": "recognize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈrɛkəɡˌnaɪz",
+      "phoneticUk": "'rekəɡnaɪz",
+      "translation": "认识，认出；承认",
+      "sceneMeaning": "认出；承认",
+      "examples": "[]"
+    },
+    {
+      "word": "remember",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'mɛmbɚ",
+      "phoneticUk": "rɪ'membə",
+      "translation": "记得，想起；记住",
+      "sceneMeaning": "记得",
+      "examples": "[]"
+    },
+    {
+      "word": "say",
+      "partOfSpeech": "v",
+      "phoneticUs": "se",
+      "phoneticUk": "seɪ",
+      "translation": "比如说[用于举例]",
+      "sceneMeaning": "比如说[用于举例]",
+      "examples": "[]"
+    },
+    {
+      "word": "accept",
+      "partOfSpeech": "v",
+      "phoneticUs": "ækˈsɛpt; əkˈsɛpt",
+      "phoneticUk": "ə'ksept",
+      "translation": "接受；同意",
+      "sceneMeaning": "接受",
+      "examples": "[]"
+    },
+    {
+      "word": "afraid",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'fred",
+      "phoneticUk": "ə'freɪd",
+      "translation": "害怕的；担心的",
+      "sceneMeaning": "害怕的；担心的",
+      "examples": "[]"
+    },
+    {
+      "word": "behavior",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪ'hevjɚ",
+      "phoneticUk": "bɪˈheɪvjə",
+      "translation": "行为，举止，态度",
+      "sceneMeaning": "行为",
+      "examples": "[]"
+    },
+    {
+      "word": "fear",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fɪr",
+      "phoneticUk": "fɪə",
+      "translation": "害怕；担心；害怕",
+      "sceneMeaning": "恐惧",
+      "examples": "[]"
+    },
+    {
+      "word": "pleasure",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈplɛʒɚ",
+      "phoneticUk": "'pleʒə",
+      "translation": "愉快，快乐；乐事",
+      "sceneMeaning": "愉快，快乐；乐事；本场景常见用法：乐于；喜欢",
+      "examples": "[]"
+    },
+    {
+      "word": "pressure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛʃɚ",
+      "phoneticUk": "'preʃə",
+      "translation": "压力；压力；压，按",
+      "sceneMeaning": "压力",
+      "examples": "[]"
+    },
+    {
+      "word": "response",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'spɑns",
+      "phoneticUk": "rɪ'spɒns",
+      "translation": "作答，回答；响应；反应",
+      "sceneMeaning": "回应；反应",
+      "examples": "[]"
+    },
+    {
+      "word": "assume",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sum",
+      "phoneticUk": "ə'sjuːm",
+      "translation": "假定；承担；呈现；假定，认为",
+      "sceneMeaning": "假设；认为",
+      "examples": "[]"
+    },
+    {
+      "word": "reputation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛpju'teʃən",
+      "phoneticUk": "repjʊ'teɪʃ(ə)n",
+      "translation": "名誉，名声；好名声；名气，名声，名誉",
+      "sceneMeaning": "名誉，名声；好名声；名气，名声，名誉",
+      "examples": "[]"
+    },
+    {
+      "word": "adapt",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'dæpt",
+      "phoneticUk": "ə'dæpt",
+      "translation": "使适应；改编；适应于",
+      "sceneMeaning": "适应",
+      "examples": "[]"
+    },
+    {
+      "word": "desire",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'zaɪɚ",
+      "phoneticUk": "dɪ'zaɪə",
+      "translation": "相望；要求；愿望；渴望，欲望",
+      "sceneMeaning": "欲望；愿望",
+      "examples": "[]"
+    },
+    {
+      "word": "interpret",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'tɝprɪt",
+      "phoneticUk": "ɪn'tɜːprɪt",
+      "translation": "解释，说明；口译；解释",
+      "sceneMeaning": "解释；理解",
+      "examples": "[]"
+    },
+    {
+      "word": "motivate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'motə'vet",
+      "phoneticUk": "'məʊtɪveɪt",
+      "translation": "促动；激励，激发；促动，激发，诱导",
+      "sceneMeaning": "激励",
+      "examples": "[]"
+    },
+    {
+      "word": "attitude",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ætɪtʊd",
+      "phoneticUk": "'ætɪtjuːd",
+      "translation": "态度，看法；姿势",
+      "sceneMeaning": "态度",
+      "examples": "[]"
+    },
+    {
+      "word": "concept",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnsɛpt",
+      "phoneticUk": "'kɒnsept",
+      "translation": "概念，观念，设想；观点，观念",
+      "sceneMeaning": "概念",
+      "examples": "[]"
+    },
+    {
+      "word": "confidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnfɪdəns",
+      "phoneticUk": "'kɒnfɪd(ə)ns",
+      "translation": "信任；信赖；信心；信心",
+      "sceneMeaning": "信心",
+      "examples": "[]"
+    },
+    {
+      "word": "habit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hæbɪt",
+      "phoneticUk": "'hæbɪt",
+      "translation": "习惯；习性",
+      "sceneMeaning": "习惯",
+      "examples": "[]"
+    },
+    {
+      "word": "ignore",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪɡ'nɔr",
+      "phoneticUk": "ɪg'nɔː",
+      "translation": "不顾，不理，忽视；忽视，不顾",
+      "sceneMeaning": "不顾，不理，忽视；忽视，不顾",
+      "examples": "[]"
+    },
+    {
+      "word": "impression",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'prɛʃən",
+      "phoneticUk": "ɪm'preʃ(ə)n",
+      "translation": "印；印象；印记",
+      "sceneMeaning": "印象",
+      "examples": "[]"
+    },
+    {
+      "word": "mental",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɛntl",
+      "phoneticUk": "'ment(ə)l",
+      "translation": "智力的；精神的",
+      "sceneMeaning": "心理的；精神的",
+      "examples": "[]"
+    },
+    {
+      "word": "proud",
+      "partOfSpeech": "adj",
+      "phoneticUs": "praʊd",
+      "phoneticUk": "praʊd",
+      "translation": "骄傲的；自豪的",
+      "sceneMeaning": "骄傲的；自豪的",
+      "examples": "[]"
+    },
+    {
+      "word": "rational",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ræʃnəl",
+      "phoneticUk": "'ræʃ(ə)n(ə)l",
+      "translation": "理性的；出于理性的；神智清楚的",
+      "sceneMeaning": "理性的",
+      "examples": "[]"
+    },
+    {
+      "word": "temptation",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɛmp'teʃən",
+      "phoneticUk": "tem(p)'teɪʃ(ə)n",
+      "translation": "诱惑，引诱",
+      "sceneMeaning": "诱惑，引诱",
+      "examples": "[]"
+    },
+    {
+      "word": "action",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ækʃən",
+      "phoneticUk": "'ækʃ(ə)n",
+      "translation": "行动；作用；功能",
+      "sceneMeaning": "行动",
+      "examples": "[]"
+    },
+    {
+      "word": "aggressive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'ɡrɛsɪv",
+      "phoneticUk": "ə'gresɪv",
+      "translation": "侵略的；好斗的；挑衅的，好斗的；有上进心的",
+      "sceneMeaning": "攻击性的；积极进取的",
+      "examples": "[]"
+    },
+    {
+      "word": "character",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kærəktɚ",
+      "phoneticUk": "'kærəktə",
+      "translation": "性格；特性；角色；角色",
+      "sceneMeaning": "性格；品质",
+      "examples": "[]"
+    },
+    {
+      "word": "characteristic",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": ",kærəktə'rɪstɪk",
+      "phoneticUk": "kærəktə'rɪstɪk",
+      "translation": "特有的；特性；特点",
+      "sceneMeaning": "特有的；特性；特点；本场景常见用法：[计]响应特性",
+      "examples": "[]"
+    },
+    {
+      "word": "curious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kjʊrɪəs",
+      "phoneticUk": "'kjʊərɪəs",
+      "translation": "好奇的；稀奇古怪的；好奇的",
+      "sceneMeaning": "好奇的",
+      "examples": "[]"
+    },
+    {
+      "word": "dream",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "drim",
+      "phoneticUk": "driːm",
+      "translation": "梦；梦想；做梦",
+      "sceneMeaning": "梦；梦想；做梦；本场景常见用法：不可能实现的梦；不可能的梦想",
+      "examples": "[]"
+    },
+    {
+      "word": "exciting",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'saɪtɪŋ",
+      "phoneticUk": "ɪk'saɪtɪŋ; ek-",
+      "translation": "令人兴奋的",
+      "sceneMeaning": "令人兴奋的",
+      "examples": "[]"
+    },
+    {
+      "word": "excuse",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪk'skjʊs",
+      "phoneticUk": "ɪk'skjuːz; ek-",
+      "translation": "原谅；免除；借口",
+      "sceneMeaning": "原谅；免除；借口；本场景常见用法：合理解释，合理的辩解",
+      "examples": "[]"
+    },
+    {
+      "word": "imagine",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'mædʒɪn",
+      "phoneticUk": "ɪ'mædʒɪn",
+      "translation": "想象，设想；料想",
+      "sceneMeaning": "想象",
+      "examples": "[]"
+    },
+    {
+      "word": "interpretation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɝprɪ'teʃən",
+      "phoneticUk": "ɪntɜːprɪ'teɪʃ(ə)n",
+      "translation": "解释；口译；阐释，说明",
+      "sceneMeaning": "解释；理解",
+      "examples": "[]"
+    },
+    {
+      "word": "mystery",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈmɪstri",
+      "phoneticUk": "ˈmɪstri",
+      "translation": "神秘；神秘的事物；迷，神秘的事物",
+      "sceneMeaning": "神秘；神秘的事物；迷，神秘的事物",
+      "examples": "[]"
+    },
+    {
+      "word": "press",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɛs",
+      "phoneticUk": "pres",
+      "translation": "压，按，揿；催促",
+      "sceneMeaning": "压，按，揿；催促",
+      "examples": "[]"
+    },
+    {
+      "word": "mood",
+      "partOfSpeech": "n",
+      "phoneticUs": "mud",
+      "phoneticUk": "muːd",
+      "translation": "心情，情绪；语气；心情",
+      "sceneMeaning": "心情；情绪",
+      "examples": "[]"
+    },
+    {
+      "word": "cautious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɔʃəs",
+      "phoneticUk": "'kɔːʃəs",
+      "translation": "谨慎的",
+      "sceneMeaning": "谨慎的",
+      "examples": "[]"
+    },
+    {
+      "word": "cope",
+      "partOfSpeech": "v",
+      "phoneticUs": "kop",
+      "phoneticUk": "kəʊp",
+      "translation": "对付，应付",
+      "sceneMeaning": "应对",
+      "examples": "[]"
+    },
+    {
+      "word": "preference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛfrəns",
+      "phoneticUk": "'pref(ə)r(ə)ns",
+      "translation": "偏爱，优先；优先权；偏爱",
+      "sceneMeaning": "偏好",
+      "examples": "[]"
+    },
+    {
+      "word": "sensitive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɛnsətɪv",
+      "phoneticUk": "'sensɪtɪv",
+      "translation": "敏感的；灵敏的；敏感的",
+      "sceneMeaning": "敏感的",
+      "examples": "[]"
+    },
+    {
+      "word": "assure",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'ʃʊr",
+      "phoneticUk": "ə'ʃʊə; ə'ʃɔː",
+      "translation": "使确信；向…保证",
+      "sceneMeaning": "使确信；向…保证",
+      "examples": "[]"
+    },
+    {
+      "word": "bold",
+      "partOfSpeech": "adj",
+      "phoneticUs": "bold",
+      "phoneticUk": "bəʊld",
+      "translation": "大胆的；冒失的",
+      "sceneMeaning": "大胆的；冒失的",
+      "examples": "[]"
+    },
+    {
+      "word": "confuse",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fjʊz",
+      "phoneticUk": "kən'fjuːz",
+      "translation": "使混乱，混淆；使混淆，迷惑",
+      "sceneMeaning": "使混乱，混淆；使混淆，迷惑；本场景常见用法：混淆",
+      "examples": "[]"
+    },
+    {
+      "word": "identity",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪ'dɛntəti",
+      "phoneticUk": "aɪ'dentɪtɪ",
+      "translation": "身份",
+      "sceneMeaning": "身份；认同",
+      "examples": "[]"
+    },
+    {
+      "word": "relief",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'lif",
+      "phoneticUk": "rɪ'liːf",
+      "translation": "减轻；救济；援救",
+      "sceneMeaning": "减轻；救济；援救；本场景常见用法：安全阀；卸压阀",
+      "examples": "[]"
+    },
+    {
+      "word": "considerate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kənˈsɪdərɪt",
+      "phoneticUk": "kən'sɪd(ə)rət",
+      "translation": "考虑周到的；体谅的；体贴的；考虑周到的",
+      "sceneMeaning": "考虑周到的；体谅的；体贴的；考虑周到的",
+      "examples": "[]"
+    },
+    {
+      "word": "identical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "aɪ'dɛntɪkl",
+      "phoneticUk": "aɪ'dentɪk(ə)l",
+      "translation": "完全相同的；同一的；相同的",
+      "sceneMeaning": "完全相同的；同一的；相同的",
+      "examples": "[]"
+    },
+    {
+      "word": "insight",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪn'saɪt",
+      "phoneticUk": "'ɪnsaɪt",
+      "translation": "洞察力，洞悉",
+      "sceneMeaning": "洞察；见解",
+      "examples": "[]"
+    },
+    {
+      "word": "omit",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'mɪt",
+      "phoneticUk": "ə(ʊ)'mɪt",
+      "translation": "省略，省去；遗漏",
+      "sceneMeaning": "省略，省去；遗漏",
+      "examples": "[]"
+    },
+    {
+      "word": "preferable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɛfrəbl",
+      "phoneticUk": "'pref(ə)rəb(ə)l",
+      "translation": "更可取的，更好的",
+      "sceneMeaning": "更可取的，更好的",
+      "examples": "[]"
+    },
+    {
+      "word": "awareness",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'wɛrnəs",
+      "phoneticUk": "əˈweənəs",
+      "translation": "意识",
+      "sceneMeaning": "意识；认识",
+      "examples": "[]"
+    },
+    {
+      "word": "doubt",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "daʊt",
+      "phoneticUk": "daʊt",
+      "translation": "怀疑；疑虑；怀疑",
+      "sceneMeaning": "怀疑",
+      "examples": "[]"
+    },
+    {
+      "word": "passion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pæʃən",
+      "phoneticUk": "'pæʃ(ə)n",
+      "translation": "激情，热情；爱好；热情，激情",
+      "sceneMeaning": "激情，热情；爱好；热情，激情",
+      "examples": "[]"
+    },
+    {
+      "word": "psychological",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",saɪkə'lɑdʒɪkl",
+      "phoneticUk": "saɪkə'lɒdʒɪk(ə)l",
+      "translation": "心理的，心理学的；心理上的",
+      "sceneMeaning": "心理的，心理学的；心理上的；本场景常见用法：心理科学；心理学",
+      "examples": "[]"
+    },
+    {
+      "word": "reaction",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'ækʃən",
+      "phoneticUk": "rɪ'ækʃ(ə)n",
+      "translation": "反应；反作用",
+      "sceneMeaning": "反应",
+      "examples": "[]"
+    },
+    {
+      "word": "respond",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'spɑnd",
+      "phoneticUk": "rɪ'spɒnd",
+      "translation": "作答；响应",
+      "sceneMeaning": "回应",
+      "examples": "[]"
+    },
+    {
+      "word": "stable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'stebl",
+      "phoneticUk": "'steɪb(ə)l",
+      "translation": "稳定的，不变的",
+      "sceneMeaning": "稳定的",
+      "examples": "[]"
+    },
+    {
+      "word": "stressful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'strɛsfl",
+      "phoneticUk": "'stresfəl",
+      "translation": "充满著压力的，充满著紧张的",
+      "sceneMeaning": "充满著压力的，充满著紧张的",
+      "examples": "[]"
+    },
+    {
+      "word": "upset",
+      "partOfSpeech": "v",
+      "phoneticUs": "ʌp'sɛt",
+      "phoneticUk": "ʌp'set",
+      "translation": "弄翻，打翻，倾覆",
+      "sceneMeaning": "弄翻，打翻，倾覆；本场景常见用法：伤心；感到不安",
+      "examples": "[]"
+    },
+    {
+      "word": "anger",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'æŋɡɚ",
+      "phoneticUk": "'æŋgə",
+      "translation": "怒，愤怒；使发怒",
+      "sceneMeaning": "愤怒",
+      "examples": "[]"
+    },
+    {
+      "word": "appetite",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æpɪtaɪt",
+      "phoneticUk": "'æpɪtaɪt",
+      "translation": "食欲，胃口；欲望；欲望, 胃口",
+      "sceneMeaning": "食欲，胃口；欲望；欲望, 胃口",
+      "examples": "[]"
+    },
+    {
+      "word": "conscious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɑnʃəs",
+      "phoneticUk": "'kɒnʃəs",
+      "translation": "意识到的；有意的",
+      "sceneMeaning": "有意识的",
+      "examples": "[]"
+    },
+    {
+      "word": "doubtful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'daʊtfəl",
+      "phoneticUk": "'daʊtfʊl; -f(ə)l",
+      "translation": "难以预测的；怀疑的",
+      "sceneMeaning": "难以预测的；怀疑的",
+      "examples": "[]"
+    },
+    {
+      "word": "eager",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'igɚ",
+      "phoneticUk": "'iːgə",
+      "translation": "渴望的，热切的",
+      "sceneMeaning": "渴望的，热切的",
+      "examples": "[]"
+    },
+    {
+      "word": "embarrassed",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'bærəst",
+      "phoneticUk": "im'bærəst",
+      "translation": "尴尬的；窘迫的",
+      "sceneMeaning": "尴尬的；窘迫的；本场景常见用法：感到尴尬",
+      "examples": "[]"
+    },
+    {
+      "word": "expression",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'sprɛʃən",
+      "phoneticUk": "ɪkˈspreʃn",
+      "translation": "词句；表达；表情",
+      "sceneMeaning": "词句；表达；表情；本场景常见用法：表情；情绪表现",
+      "examples": "[]"
+    },
+    {
+      "word": "glad",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɡlæd",
+      "phoneticUk": "glæd",
+      "translation": "高兴的；乐意的",
+      "sceneMeaning": "高兴的；乐意的",
+      "examples": "[]"
+    },
+    {
+      "word": "gratitude",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡrætɪtud",
+      "phoneticUk": "'grætɪtjuːd",
+      "translation": "感激，感谢，感恩",
+      "sceneMeaning": "感激，感谢，感恩；本场景常见用法：表达感谢",
+      "examples": "[]"
+    },
+    {
+      "word": "judge",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒʌdʒ",
+      "phoneticUk": "dʒʌdʒ",
+      "translation": "法官；裁判员",
+      "sceneMeaning": "判断",
+      "examples": "[]"
+    },
+    {
+      "word": "notice",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'notɪs",
+      "phoneticUk": "'nəʊtɪs",
+      "translation": "注意；通知；注意",
+      "sceneMeaning": "注意到",
+      "examples": "[]"
+    },
+    {
+      "word": "pride",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "praɪd",
+      "phoneticUk": "praɪd",
+      "translation": "骄傲；自豪；自夸",
+      "sceneMeaning": "骄傲；自豪",
+      "examples": "[]"
+    },
+    {
+      "word": "psychologist",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪ'kɑlədʒɪst",
+      "phoneticUk": "saɪˈkɒlədʒɪst",
+      "translation": "心理学家",
+      "sceneMeaning": "心理学家；本场景常见用法：临床心理学家",
+      "examples": "[]"
+    },
+    {
+      "word": "reality",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'æləti",
+      "phoneticUk": "rɪ'ælɪtɪ",
+      "translation": "现实；真实",
+      "sceneMeaning": "现实；真实",
+      "examples": "[]"
+    },
+    {
+      "word": "reasonable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'riznəbl",
+      "phoneticUk": "'riːz(ə)nəb(ə)l",
+      "translation": "合情合理的；公道的",
+      "sceneMeaning": "合情合理的；公道的",
+      "examples": "[]"
+    },
+    {
+      "word": "recall",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rikɔl",
+      "phoneticUk": "rɪ'kɔːl",
+      "translation": "回想；叫回；收回",
+      "sceneMeaning": "回想；叫回；收回",
+      "examples": "[]"
+    },
+    {
+      "word": "trick",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trɪk",
+      "phoneticUk": "trɪk",
+      "translation": "诡计；窍门；哄骗",
+      "sceneMeaning": "诡计；窍门；哄骗",
+      "examples": "[]"
+    },
+    {
+      "word": "belief",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪ'lif",
+      "phoneticUk": "bɪ'liːf",
+      "translation": "信任，相信；信念",
+      "sceneMeaning": "信念；看法",
+      "examples": "[]"
+    },
+    {
+      "word": "deserve",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'zɝv",
+      "phoneticUk": "dɪ'zɜːv",
+      "translation": "应受，值得；值得",
+      "sceneMeaning": "应受，值得；值得",
+      "examples": "[]"
+    },
+    {
+      "word": "disorder",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "混乱，杂乱；骚乱",
+      "sceneMeaning": "混乱，杂乱；骚乱",
+      "examples": "[]"
+    },
+    {
+      "word": "genuine",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dʒɛnjʊɪn",
+      "phoneticUk": "'dʒenjʊɪn",
+      "translation": "真的；真正的；真正的",
+      "sceneMeaning": "真的；真正的；真正的",
+      "examples": "[]"
+    },
+    {
+      "word": "guilty",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡɪlti",
+      "phoneticUk": "'gɪltɪ",
+      "translation": "内疚的；有罪的",
+      "sceneMeaning": "内疚的；有罪的；本场景常见用法：内疚",
+      "examples": "[]"
+    },
+    {
+      "word": "happiness",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈhæpinəs",
+      "phoneticUk": "ˈhæpinəs",
+      "translation": "幸福，幸运；快乐",
+      "sceneMeaning": "幸福；快乐",
+      "examples": "[]"
+    },
+    {
+      "word": "hesitate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'hɛzɪtet",
+      "phoneticUk": "'hezɪteɪt",
+      "translation": "犹豫，踌躇；含糊",
+      "sceneMeaning": "犹豫",
+      "examples": "[]"
+    },
+    {
+      "word": "intention",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɛnʃən",
+      "phoneticUk": "ɪn'tenʃ(ə)n",
+      "translation": "意图，意向，目的；打算，意图",
+      "sceneMeaning": "意图",
+      "examples": "[]"
+    },
+    {
+      "word": "logic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɑdʒɪk",
+      "phoneticUk": "'lɒdʒɪk",
+      "translation": "逻辑，推理；逻辑性；逻辑",
+      "sceneMeaning": "逻辑",
+      "examples": "[]"
+    },
+    {
+      "word": "motor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'motɚ",
+      "phoneticUk": "'məʊtə",
+      "translation": "发动机；机动车",
+      "sceneMeaning": "发动机；机动车；本场景常见用法：[医]运动机能",
+      "examples": "[]"
+    },
+    {
+      "word": "nerve",
+      "partOfSpeech": "n",
+      "phoneticUs": "nɝv",
+      "phoneticUk": "nɜːv",
+      "translation": "神经；勇敢，胆量",
+      "sceneMeaning": "神经；勇敢，胆量；本场景常见用法：[解]交感神经",
+      "examples": "[]"
+    },
+    {
+      "word": "panic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pænɪk",
+      "phoneticUk": "'pænɪk",
+      "translation": "惊恐",
+      "sceneMeaning": "惊恐",
+      "examples": "[]"
+    },
+    {
+      "word": "patience",
+      "partOfSpeech": "n",
+      "phoneticUs": "'peʃns",
+      "phoneticUk": "'peɪʃ(ə)ns",
+      "translation": "忍耐，容忍，耐心",
+      "sceneMeaning": "耐心",
+      "examples": "[]"
+    },
+    {
+      "word": "patient",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'peʃnt",
+      "phoneticUk": "'peɪʃ(ə)nt",
+      "translation": "忍耐的；病人",
+      "sceneMeaning": "有耐心的",
+      "examples": "[]"
+    },
+    {
+      "word": "perception",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'sɛpʃən",
+      "phoneticUk": "pəˈsepʃn",
+      "translation": "感知",
+      "sceneMeaning": "感知；看法",
+      "examples": "[]"
+    },
+    {
+      "word": "personality",
+      "partOfSpeech": "n",
+      "phoneticUs": ",pɝsə'næləti",
+      "phoneticUk": "ˌpɜ:səˈnæləti",
+      "translation": "个性，性格",
+      "sceneMeaning": "个性；人格",
+      "examples": "[]"
+    },
+    {
+      "word": "regret",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'ɡrɛt",
+      "phoneticUk": "rɪ'gret",
+      "translation": "懊悔；抱歉；懊悔",
+      "sceneMeaning": "后悔",
+      "examples": "[]"
+    },
+    {
+      "word": "stereotype",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stɛrɪətaɪp",
+      "phoneticUk": "'steriətaip",
+      "translation": "老套，固定模式",
+      "sceneMeaning": "刻板印象",
+      "examples": "[]"
+    },
+    {
+      "word": "sympathetic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",sɪmpə'θɛtɪk",
+      "phoneticUk": "sɪmpə'θetɪk",
+      "translation": "同情的；和谐的",
+      "sceneMeaning": "同情的；和谐的；本场景常见用法：体恤处理，同情之考虑",
+      "examples": "[]"
+    },
+    {
+      "word": "thoughtful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'θɔtfl",
+      "phoneticUk": "'θɔːtfʊl; -f(ə)l",
+      "translation": "沉思的；体贴的",
+      "sceneMeaning": "沉思的；体贴的",
+      "examples": "[]"
+    },
+    {
+      "word": "uneasy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ʌn'izi",
+      "phoneticUk": "ʌn'iːzɪ",
+      "translation": "心神不安的，忧虑的",
+      "sceneMeaning": "心神不安的，忧虑的；本场景常见用法：担忧",
+      "examples": "[]"
+    },
+    {
+      "word": "anxiety",
+      "partOfSpeech": "n",
+      "phoneticUs": "æŋ'zaɪəti",
+      "phoneticUk": "æŋ'zaɪətɪ",
+      "translation": "焦虑，忧虑；渴望",
+      "sceneMeaning": "焦虑",
+      "examples": "[]"
+    },
+    {
+      "word": "attentive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'tɛntɪv",
+      "phoneticUk": "ə'tentɪv",
+      "translation": "注意的；有礼貌的",
+      "sceneMeaning": "注意的；有礼貌的",
+      "examples": "[]"
+    },
+    {
+      "word": "behave",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪ'hev",
+      "phoneticUk": "bɪ'heɪv",
+      "translation": "表现，举止；运转；表现",
+      "sceneMeaning": "表现；行为",
+      "examples": "[]"
+    },
+    {
+      "word": "calm",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kɑm",
+      "phoneticUk": "kɑːm",
+      "translation": "静的，平静的",
+      "sceneMeaning": "平静",
+      "examples": "[]"
+    },
+    {
+      "word": "concentrate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kɑnsn'tret",
+      "phoneticUk": "'kɒns(ə)ntreɪt",
+      "translation": "集中；聚集；浓缩",
+      "sceneMeaning": "集中注意力",
+      "examples": "[]"
+    },
+    {
+      "word": "confident",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɑnfɪdənt",
+      "phoneticUk": "'kɒnfɪd(ə)nt",
+      "translation": "确信的，自信的",
+      "sceneMeaning": "自信的",
+      "examples": "[]"
+    },
+    {
+      "word": "confusion",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'fjʊʒən",
+      "phoneticUk": "kən'fjuːʒ(ə)n",
+      "translation": "混乱；骚乱；混淆",
+      "sceneMeaning": "困惑；混乱",
+      "examples": "[]"
+    },
+    {
+      "word": "consciousness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnʃəsnəs",
+      "phoneticUk": "'kɒnʃəsnɪs",
+      "translation": "意识，觉悟；知觉；意识",
+      "sceneMeaning": "意识",
+      "examples": "[]"
+    },
+    {
+      "word": "courageous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kə'redʒəs",
+      "phoneticUk": "kə'reɪdʒəs",
+      "translation": "有勇气的",
+      "sceneMeaning": "有勇气的",
+      "examples": "[]"
+    },
+    {
+      "word": "daring",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɛrɪŋ",
+      "phoneticUk": "'deərɪŋ",
+      "translation": "大胆的，勇敢的",
+      "sceneMeaning": "大胆的，勇敢的",
+      "examples": "[]"
+    },
+    {
+      "word": "delight",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'laɪt",
+      "phoneticUk": "dɪ'laɪt",
+      "translation": "快乐；使高兴；高兴",
+      "sceneMeaning": "快乐；使高兴；高兴",
+      "examples": "[]"
+    },
+    {
+      "word": "deny",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'nai",
+      "phoneticUk": "dɪ'naɪ",
+      "translation": "否定；拒绝相信",
+      "sceneMeaning": "否定；拒绝相信",
+      "examples": "[]"
+    },
+    {
+      "word": "discourage",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪs'kɝɪdʒ",
+      "phoneticUk": "dɪs'kʌrɪdʒ",
+      "translation": "使泄气，使灰心；阻止；使气馁",
+      "sceneMeaning": "使泄气，使灰心；阻止；使气馁",
+      "examples": "[]"
+    },
+    {
+      "word": "distracted",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'stræktɪd",
+      "phoneticUk": "dɪˈstræktɪd",
+      "translation": "分心的",
+      "sceneMeaning": "分心的",
+      "examples": "[]"
+    },
+    {
+      "word": "distress",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'strɛs",
+      "phoneticUk": "dɪ'stres",
+      "translation": "忧虑，悲伤；不幸；使痛苦，悲痛",
+      "sceneMeaning": "忧虑，悲伤；不幸；使痛苦，悲痛",
+      "examples": "[]"
+    },
+    {
+      "word": "emotion",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'moʃən",
+      "phoneticUk": "ɪ'məʊʃ(ə)n",
+      "translation": "情感，感情；激动",
+      "sceneMeaning": "情绪",
+      "examples": "[]"
+    },
+    {
+      "word": "expectation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛkspɛk'teʃən",
+      "phoneticUk": "ekspek'teɪʃ(ə)n",
+      "translation": "期待，期望，预期；期望",
+      "sceneMeaning": "期待；预期",
+      "examples": "[]"
+    },
+    {
+      "word": "fond",
+      "partOfSpeech": "adj",
+      "phoneticUs": "fɑnd",
+      "phoneticUk": "fɒnd",
+      "translation": "喜爱的；溺爱的",
+      "sceneMeaning": "喜爱的；溺爱的",
+      "examples": "[]"
+    },
+    {
+      "word": "fuss",
+      "partOfSpeech": "n",
+      "phoneticUs": "fʌs",
+      "phoneticUk": "fʌs",
+      "translation": "大惊小怪",
+      "sceneMeaning": "大惊小怪",
+      "examples": "[]"
+    },
+    {
+      "word": "guilt",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡɪlt",
+      "phoneticUk": "gɪlt",
+      "translation": "有罪，犯罪行为",
+      "sceneMeaning": "内疚；罪责",
+      "examples": "[]"
+    },
+    {
+      "word": "hopeful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hopfl",
+      "phoneticUk": "'həʊpfʊl; -f(ə)l",
+      "translation": "有希望的",
+      "sceneMeaning": "有希望的",
+      "examples": "[]"
+    },
+    {
+      "word": "imagination",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ,mædʒɪ'neʃən",
+      "phoneticUk": "ɪ,mædʒɪ'neɪʃ(ə)n",
+      "translation": "想象；想象力；空想",
+      "sceneMeaning": "想象力",
+      "examples": "[]"
+    },
+    {
+      "word": "impressive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'prɛsɪv",
+      "phoneticUk": "ɪm'presɪv",
+      "translation": "给人印象深刻的",
+      "sceneMeaning": "给人印象深刻的",
+      "examples": "[]"
+    },
+    {
+      "word": "logical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɑdʒɪkl",
+      "phoneticUk": "'lɒdʒɪk(ə)l",
+      "translation": "逻辑的；符合逻辑的",
+      "sceneMeaning": "合逻辑的",
+      "examples": "[]"
+    },
+    {
+      "word": "motion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'moʃən",
+      "phoneticUk": "'məʊʃ(ə)n",
+      "translation": "运动；手势；提议",
+      "sceneMeaning": "运动；手势；提议；本场景常见用法：相对运动",
+      "examples": "[]"
+    },
+    {
+      "word": "nervous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɝvəs",
+      "phoneticUk": "'nɜːvəs",
+      "translation": "神经的；易激动的",
+      "sceneMeaning": "紧张的",
+      "examples": "[]"
+    },
+    {
+      "word": "passive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pæsɪv",
+      "phoneticUk": "'pæsɪv",
+      "translation": "被动的；消极的；被动的",
+      "sceneMeaning": "被动的",
+      "examples": "[]"
+    },
+    {
+      "word": "perceive",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɚ'siv",
+      "phoneticUk": "pə'siːv",
+      "translation": "察觉，发觉；理解；察觉",
+      "sceneMeaning": "感知；认为",
+      "examples": "[]"
+    },
+    {
+      "word": "prejudice",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɛdʒədɪs",
+      "phoneticUk": "'predʒʊdɪs",
+      "translation": "偏见，成见；偏见；使有偏见，使有成见",
+      "sceneMeaning": "偏见",
+      "examples": "[]"
+    },
+    {
+      "word": "puzzle",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pʌzl",
+      "phoneticUk": "'pʌz(ə)l",
+      "translation": "难题；谜；使迷惑；迷惑；难解之事，谜",
+      "sceneMeaning": "难题；谜；使迷惑；迷惑；难解之事，谜",
+      "examples": "[]"
+    },
+    {
+      "word": "react",
+      "partOfSpeech": "v",
+      "phoneticUs": "ri'ækt",
+      "phoneticUk": "rɪ'ækt",
+      "translation": "起反应；有影响；对……作出反应",
+      "sceneMeaning": "反应",
+      "examples": "[]"
+    },
+    {
+      "word": "restraint",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'strent",
+      "phoneticUk": "rɪ'streɪnt",
+      "translation": "抑制；遏制；克制",
+      "sceneMeaning": "抑制；遏制；克制",
+      "examples": "[]"
+    },
+    {
+      "word": "rude",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rud",
+      "phoneticUk": "ru:d",
+      "translation": "粗鲁的",
+      "sceneMeaning": "粗鲁的",
+      "examples": "[]"
+    },
+    {
+      "word": "satisfactory",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",sætɪs'fæktəri",
+      "phoneticUk": "sætɪs'fækt(ə)rɪ",
+      "translation": "令人满意的，良好的",
+      "sceneMeaning": "令人满意的，良好的",
+      "examples": "[]"
+    },
+    {
+      "word": "shock",
+      "partOfSpeech": "v",
+      "phoneticUs": "ʃɑk",
+      "phoneticUk": "ʃɒk",
+      "translation": "感到震惊",
+      "sceneMeaning": "感到震惊；本场景常见用法：[化]耐热震性；抗热冲辉",
+      "examples": "[]"
+    },
+    {
+      "word": "sympathy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪmpəθi",
+      "phoneticUk": "'simpəθi",
+      "translation": "同情心",
+      "sceneMeaning": "同情",
+      "examples": "[]"
+    },
+    {
+      "word": "unconscious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ʌn'kɑnʃəs",
+      "phoneticUk": "ʌn'kɒnʃəs",
+      "translation": "不省人事的",
+      "sceneMeaning": "无意识的；昏迷的",
+      "examples": "[]"
+    },
+    {
+      "word": "annoy",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'nɔɪ",
+      "phoneticUk": "ə'nɒɪ",
+      "translation": "使恼怒；打搅；使反感，厌烦",
+      "sceneMeaning": "使恼怒；打搅；使反感，厌烦",
+      "examples": "[]"
+    },
+    {
+      "word": "anxious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'æŋkʃəs",
+      "phoneticUk": "'æŋ(k)ʃəs",
+      "translation": "忧虑的；渴望的",
+      "sceneMeaning": "焦虑的",
+      "examples": "[]"
+    },
+    {
+      "word": "ashamed",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'ʃemd",
+      "phoneticUk": "ə'ʃeɪmd",
+      "translation": "惭愧(的)；羞耻(的)；羞耻的；内疚的；惭愧的",
+      "sceneMeaning": "惭愧(的)；羞耻(的)；羞耻的；内疚的；惭愧的；本场景常见用法：感到羞愧",
+      "examples": "[]"
+    },
+    {
+      "word": "assumption",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'sʌmpʃən",
+      "phoneticUk": "ə'sʌmpʃn",
+      "translation": "假定，假设",
+      "sceneMeaning": "假设",
+      "examples": "[]"
+    },
+    {
+      "word": "await",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'wet",
+      "phoneticUk": "ə'weɪt",
+      "translation": "等候，期待",
+      "sceneMeaning": "等候，期待",
+      "examples": "[]"
+    },
+    {
+      "word": "awkward",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔkwɚd",
+      "phoneticUk": "'ɔːkwəd",
+      "translation": "笨拙的；尴尬的",
+      "sceneMeaning": "笨拙的；尴尬的",
+      "examples": "[]"
+    },
+    {
+      "word": "backslide",
+      "partOfSpeech": "v",
+      "phoneticUs": ",bæk'slaid",
+      "phoneticUk": "'bækslaɪd",
+      "translation": "倒退，退步",
+      "sceneMeaning": "倒退，退步",
+      "examples": "[]"
+    },
+    {
+      "word": "brave",
+      "partOfSpeech": "adj",
+      "phoneticUs": "brev",
+      "phoneticUk": "breɪv",
+      "translation": "勇敢的，华丽的",
+      "sceneMeaning": "勇敢的，华丽的",
+      "examples": "[]"
+    },
+    {
+      "word": "certainty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɝtnti",
+      "phoneticUk": "'sɜːt(ə)ntɪ; -tɪn-",
+      "translation": "必然；肯定",
+      "sceneMeaning": "必然；肯定",
+      "examples": "[]"
+    },
+    {
+      "word": "complacency",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'plesnsi",
+      "phoneticUk": "kəmˈpleɪsnsi",
+      "translation": "自满，满足",
+      "sceneMeaning": "自满，满足",
+      "examples": "[]"
+    },
+    {
+      "word": "concentration",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnsn'treʃən",
+      "phoneticUk": "kɒns(ə)n'treɪʃ(ə)n",
+      "translation": "集中；专注；浓缩；集中",
+      "sceneMeaning": "专注；集中",
+      "examples": "[]"
+    },
+    {
+      "word": "confess",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fɛs",
+      "phoneticUk": "kən'fes",
+      "translation": "供认，承认；坦白",
+      "sceneMeaning": "供认，承认；坦白",
+      "examples": "[]"
+    },
+    {
+      "word": "congratulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'ɡrætʃulet",
+      "phoneticUk": "kən'grætjʊleɪt",
+      "translation": "祝贺，向…道喜",
+      "sceneMeaning": "祝贺，向…道喜；本场景常见用法：v. 感到庆幸",
+      "examples": "[]"
+    },
+    {
+      "word": "congratulation",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən,ɡrætʃu'leʃən",
+      "phoneticUk": "kəngrætjʊ'leɪʃ(ə)n",
+      "translation": "祝贺；祝贺词",
+      "sceneMeaning": "祝贺；祝贺词",
+      "examples": "[]"
+    },
+    {
+      "word": "conscience",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈkɑːnʃəns",
+      "phoneticUk": "'kɒnʃ(ə)ns",
+      "translation": "良心，道德心；良心",
+      "sceneMeaning": "良心，道德心；良心；本场景常见用法：问心无愧",
+      "examples": "[]"
+    },
+    {
+      "word": "courage",
+      "partOfSpeech": "n",
+      "phoneticUs": " 'kɝrɪdʒ",
+      "phoneticUk": "'kʌrɪdʒ",
+      "translation": "勇气，胆量，胆识",
+      "sceneMeaning": "勇气",
+      "examples": "[]"
+    },
+    {
+      "word": "cunning",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kʌnɪŋ",
+      "phoneticUk": "'kʌnɪŋ",
+      "translation": "狡猾的，狡诈的",
+      "sceneMeaning": "狡猾的，狡诈的",
+      "examples": "[]"
+    },
+    {
+      "word": "deceit",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'sit",
+      "phoneticUk": "dɪ'siːt",
+      "translation": "欺骗，欺诈",
+      "sceneMeaning": "欺骗，欺诈",
+      "examples": "[]"
+    },
+    {
+      "word": "depressing",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'prɛsɪŋ",
+      "phoneticUk": "dɪ'presɪŋ",
+      "translation": "令人沮丧的",
+      "sceneMeaning": "令人沮丧的",
+      "examples": "[]"
+    },
+    {
+      "word": "deprive",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'praɪv",
+      "phoneticUk": "dɪ'praɪv",
+      "translation": "剥夺，夺去，使丧失",
+      "sceneMeaning": "剥夺，夺去，使丧失",
+      "examples": "[]"
+    },
+    {
+      "word": "desirable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'zaɪərəbl",
+      "phoneticUk": "dɪ'zaɪərəb(ə)l",
+      "translation": "值得相望的；可取的",
+      "sceneMeaning": "值得相望的；可取的",
+      "examples": "[]"
+    },
+    {
+      "word": "despair",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'spɛr",
+      "phoneticUk": "dɪ'speə",
+      "translation": "绝望",
+      "sceneMeaning": "绝望；本场景常见用法：失望，丧失信心；对…绝望",
+      "examples": "[]"
+    },
+    {
+      "word": "disappoint",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dɪsə'pɔɪnt",
+      "phoneticUk": "dɪsə'pɒɪnt",
+      "translation": "使失望，使受挫折",
+      "sceneMeaning": "使失望，使受挫折",
+      "examples": "[]"
+    },
+    {
+      "word": "disappointing",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",dɪsə'pɔɪntɪŋ",
+      "phoneticUk": "dɪsə'pɒɪntɪŋ",
+      "translation": "令人失望的",
+      "sceneMeaning": "令人失望的",
+      "examples": "[]"
+    },
+    {
+      "word": "dislike",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "dɪs'laɪk",
+      "phoneticUk": "dɪs'laɪk",
+      "translation": "不喜爱，厌恶",
+      "sceneMeaning": "不喜爱，厌恶；本场景常见用法：反感；不喜欢",
+      "examples": "[]"
+    },
+    {
+      "word": "disorderly",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪs'ɔrdɚli",
+      "phoneticUk": "dɪsˈɔ:dəli",
+      "translation": "杂乱的",
+      "sceneMeaning": "杂乱的；本场景常见用法：扰乱社会治安的行为，妨碍治安行为",
+      "examples": "[]"
+    },
+    {
+      "word": "distract",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'strækt",
+      "phoneticUk": "dɪ'strækt",
+      "translation": "分心",
+      "sceneMeaning": "使分心",
+      "examples": "[]"
+    },
+    {
+      "word": "distraction",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'strækʃən",
+      "phoneticUk": "dɪˈstrækʃn",
+      "translation": "分心；消遣",
+      "sceneMeaning": "分心；干扰",
+      "examples": "[]"
+    },
+    {
+      "word": "doubtless",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'daʊtləs",
+      "phoneticUk": "'daʊtlɪs",
+      "translation": "无疑地；很可能",
+      "sceneMeaning": "无疑地；很可能",
+      "examples": "[]"
+    },
+    {
+      "word": "dread",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "drɛd",
+      "phoneticUk": "dred",
+      "translation": "畏惧；恐怖；惧怕",
+      "sceneMeaning": "畏惧；恐怖；惧怕",
+      "examples": "[]"
+    },
+    {
+      "word": "easygoing",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'izɪ,goɪŋ",
+      "phoneticUk": "'i:zɪˌgəʊɪŋ",
+      "translation": "脾气随和的，温和的",
+      "sceneMeaning": "脾气随和的，温和的",
+      "examples": "[]"
+    },
+    {
+      "word": "embarrass",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'bærəs",
+      "phoneticUk": "ɪm'bærəs; em-",
+      "translation": "使窘迫，使为难；尴尬",
+      "sceneMeaning": "使窘迫，使为难；尴尬",
+      "examples": "[]"
+    },
+    {
+      "word": "excite",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'saɪt",
+      "phoneticUk": "ɪk'saɪt; ek-",
+      "translation": "使激动；引起",
+      "sceneMeaning": "使激动；引起",
+      "examples": "[]"
+    },
+    {
+      "word": "expressiveness",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "ik'spresivnis",
+      "translation": "表达",
+      "sceneMeaning": "表达",
+      "examples": "[]"
+    },
+    {
+      "word": "fantasize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fæntəsaɪz",
+      "phoneticUk": "'fæntəsaɪz",
+      "translation": "想象，幻想",
+      "sceneMeaning": "想象，幻想",
+      "examples": "[]"
+    },
+    {
+      "word": "fascinate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fæsə'net",
+      "phoneticUk": "'fæsineit",
+      "translation": "强烈地吸引，迷住",
+      "sceneMeaning": "强烈地吸引，迷住",
+      "examples": "[]"
+    },
+    {
+      "word": "fearful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɪrfəl",
+      "phoneticUk": "'fɪəfʊl; -f(ə)l",
+      "translation": "害怕的，可怕的",
+      "sceneMeaning": "害怕的，可怕的",
+      "examples": "[]"
+    },
+    {
+      "word": "foolish",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fulɪʃ",
+      "phoneticUk": "'fuːlɪʃ",
+      "translation": "愚蠢的；鲁莽的",
+      "sceneMeaning": "愚蠢的；鲁莽的",
+      "examples": "[]"
+    },
+    {
+      "word": "forgive",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɚ'ɡɪv",
+      "phoneticUk": "fə'gɪv",
+      "translation": "原谅，饶恕，宽恕",
+      "sceneMeaning": "原谅，饶恕，宽恕",
+      "examples": "[]"
+    },
+    {
+      "word": "fortunate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɔrtʃənət",
+      "phoneticUk": "'fɔːtʃ(ə)nət",
+      "translation": "幸运的，侥幸的",
+      "sceneMeaning": "幸运的，侥幸的",
+      "examples": "[]"
+    },
+    {
+      "word": "frighten",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fraɪtn",
+      "phoneticUk": "'fraɪt(ə)n",
+      "translation": "使惊恐，吓唬；使惊恐，使恐慌",
+      "sceneMeaning": "使惊恐，吓唬；使惊恐，使恐慌",
+      "examples": "[]"
+    },
+    {
+      "word": "gaze",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡeɪz",
+      "phoneticUk": "geɪz",
+      "translation": "凝视，盯，注视",
+      "sceneMeaning": "凝视，盯，注视",
+      "examples": "[]"
+    },
+    {
+      "word": "grateful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡretfl",
+      "phoneticUk": "'greɪtfʊl; -f(ə)l",
+      "translation": "感激的；令人愉快的",
+      "sceneMeaning": "感激的；令人愉快的",
+      "examples": "[]"
+    },
+    {
+      "word": "grieve",
+      "partOfSpeech": "v",
+      "phoneticUs": "griv",
+      "phoneticUk": "griːv",
+      "translation": "使悲痛；悲痛",
+      "sceneMeaning": "使悲痛；悲痛",
+      "examples": "[]"
+    },
+    {
+      "word": "habitual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hə'bɪtʃuəl",
+      "phoneticUk": "hə'bɪtʃʊəl; -tjʊəl",
+      "translation": "习惯性的，惯常的",
+      "sceneMeaning": "习惯性的，惯常的；本场景常见用法：习惯性流产",
+      "examples": "[]"
+    },
+    {
+      "word": "hatred",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hetrɪd",
+      "phoneticUk": "'heɪtrɪd",
+      "translation": "憎恶，憎恨，仇恨",
+      "sceneMeaning": "憎恶，憎恨，仇恨",
+      "examples": "[]"
+    },
+    {
+      "word": "humour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hju:mə",
+      "phoneticUk": "'hjuːmə",
+      "translation": "幽默，诙谐，幽默感",
+      "sceneMeaning": "幽默，诙谐，幽默感",
+      "examples": "[]"
+    },
+    {
+      "word": "imaginary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'mædʒɪnɛri",
+      "phoneticUk": "ɪ'mædʒɪn(ə)rɪ",
+      "translation": "想象中的，假想的；虚构的，想象的",
+      "sceneMeaning": "想象中的，假想的；虚构的，想象的",
+      "examples": "[]"
+    },
+    {
+      "word": "indignant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'dɪɡnənt",
+      "phoneticUk": "ɪn'dɪgnənt",
+      "translation": "愤慨的，义愤的",
+      "sceneMeaning": "愤慨的，义愤的",
+      "examples": "[]"
+    },
+    {
+      "word": "instinct",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstɪŋkt",
+      "phoneticUk": "'ɪnstɪŋ(k)t",
+      "translation": "本能；直觉；生性",
+      "sceneMeaning": "本能",
+      "examples": "[]"
+    },
+    {
+      "word": "interpreter",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɝprɪtɚ",
+      "phoneticUk": "ɪn'tɜːprɪtə",
+      "translation": "译员，口译者",
+      "sceneMeaning": "译员，口译者",
+      "examples": "[]"
+    },
+    {
+      "word": "irrationally",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "ɪ'ræʃnəlɪ",
+      "translation": "不合理地，无理性地",
+      "sceneMeaning": "不合理地，无理性地",
+      "examples": "[]"
+    },
+    {
+      "word": "irritate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪrɪtet",
+      "phoneticUk": "'ɪrɪteɪt",
+      "translation": "激怒",
+      "sceneMeaning": "激怒",
+      "examples": "[]"
+    },
+    {
+      "word": "jealous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dʒɛləs",
+      "phoneticUk": "'dʒeləs",
+      "translation": "妒忌的；猜疑的",
+      "sceneMeaning": "妒忌的；猜疑的",
+      "examples": "[]"
+    },
+    {
+      "word": "logically",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'lɑdʒɪkli",
+      "phoneticUk": "'lɑdʒɪkli",
+      "translation": "合乎情理地，符合逻辑地",
+      "sceneMeaning": "合乎情理地，符合逻辑地",
+      "examples": "[]"
+    },
+    {
+      "word": "masculine",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mæskjəlɪn",
+      "phoneticUk": "'mæskjʊlɪn",
+      "translation": "男性的",
+      "sceneMeaning": "男性的",
+      "examples": "[]"
+    },
+    {
+      "word": "moan",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "mon",
+      "phoneticUk": "məʊn",
+      "translation": "呻吟声；呻吟",
+      "sceneMeaning": "呻吟声；呻吟",
+      "examples": "[]"
+    },
+    {
+      "word": "motivation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",motə'veʃən",
+      "phoneticUk": "ˌməʊtɪ'veɪʃn",
+      "translation": "激励，刺激",
+      "sceneMeaning": "动机；动力",
+      "examples": "[]"
+    },
+    {
+      "word": "motive",
+      "partOfSpeech": "n",
+      "phoneticUs": "'motɪv",
+      "phoneticUk": "'məʊtɪv",
+      "translation": "动机，目的",
+      "sceneMeaning": "动机，目的",
+      "examples": "[]"
+    },
+    {
+      "word": "mutter",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mʌtɚ",
+      "phoneticUk": "'mʌtə",
+      "translation": "轻声低语；抱怨",
+      "sceneMeaning": "轻声低语；抱怨",
+      "examples": "[]"
+    },
+    {
+      "word": "passively",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "'pæsivli",
+      "translation": "消极地",
+      "sceneMeaning": "消极地",
+      "examples": "[]"
+    },
+    {
+      "word": "patiently",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'peʃəntli",
+      "phoneticUk": "'peɪʃntlɪ",
+      "translation": "耐心地",
+      "sceneMeaning": "耐心地",
+      "examples": "[]"
+    },
+    {
+      "word": "pity",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pɪti",
+      "phoneticUk": "'pɪtɪ",
+      "translation": "怜悯；遗憾；同情",
+      "sceneMeaning": "怜悯；遗憾；同情；本场景常见用法：怜悯，同情",
+      "examples": "[]"
+    },
+    {
+      "word": "pretend",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɪ'tɛnd",
+      "phoneticUk": "prɪ'tend",
+      "translation": "假托，借口vi假装",
+      "sceneMeaning": "假托，借口vi假装",
+      "examples": "[]"
+    },
+    {
+      "word": "reject",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'dʒɛkt",
+      "phoneticUk": "rɪ'dʒekt",
+      "translation": "拒绝；丢掉；驳回；拒绝，驳回",
+      "sceneMeaning": "拒绝",
+      "examples": "[]"
+    },
+    {
+      "word": "ridiculous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'dɪkjələs",
+      "phoneticUk": "rɪ'dɪkjʊləs",
+      "translation": "荒谬的，可笑的",
+      "sceneMeaning": "荒谬的，可笑的",
+      "examples": "[]"
+    },
+    {
+      "word": "selfish",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɛlfɪʃ",
+      "phoneticUk": "'selfiʃ",
+      "translation": "自私的",
+      "sceneMeaning": "自私的",
+      "examples": "[]"
+    },
+    {
+      "word": "solemn",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɑləm",
+      "phoneticUk": "'sɒləm",
+      "translation": "庄严的；隆重的",
+      "sceneMeaning": "庄严的；隆重的",
+      "examples": "[]"
+    },
+    {
+      "word": "sorrow",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɑro",
+      "phoneticUk": "'sɒrəʊ",
+      "translation": "悲痛，悲哀，悲伤",
+      "sceneMeaning": "悲痛，悲哀，悲伤",
+      "examples": "[]"
+    },
+    {
+      "word": "spontaneous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "spɑn'tenɪəs",
+      "phoneticUk": "spɒnˈteɪniəs",
+      "translation": "自发的",
+      "sceneMeaning": "自发的",
+      "examples": "[]"
+    },
+    {
+      "word": "startle",
+      "partOfSpeech": "v",
+      "phoneticUs": "'stɑrtl",
+      "phoneticUk": "'stɑ:tl",
+      "translation": "吃惊",
+      "sceneMeaning": "吃惊",
+      "examples": "[]"
+    },
+    {
+      "word": "suspicious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sə'spɪʃəs",
+      "phoneticUk": "sə'spɪʃəs",
+      "translation": "怀疑的；可疑的",
+      "sceneMeaning": "怀疑的；可疑的",
+      "examples": "[]"
+    },
+    {
+      "word": "sympathize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɪmpə'θaɪz",
+      "phoneticUk": "'simpəθaiz",
+      "translation": "同情；同感，共鸣",
+      "sceneMeaning": "同情；同感，共鸣",
+      "examples": "[]"
+    },
+    {
+      "word": "tolerance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɑlərəns",
+      "phoneticUk": "'tɒl(ə)r(ə)ns",
+      "translation": "忍受，容忍；公差；宽容，容忍",
+      "sceneMeaning": "忍受，容忍；公差；宽容，容忍",
+      "examples": "[]"
+    },
+    {
+      "word": "trait",
+      "partOfSpeech": "n",
+      "phoneticUs": "tret",
+      "phoneticUk": "treɪt",
+      "translation": "性格",
+      "sceneMeaning": "性格；本场景常见用法：行为特性",
+      "examples": "[]"
+    },
+    {
+      "word": "tremble",
+      "partOfSpeech": "v",
+      "phoneticUs": "'trɛmbl",
+      "phoneticUk": "'tremb(ə)l",
+      "translation": "发抖，哆嗦；摇动；颤抖",
+      "sceneMeaning": "发抖，哆嗦；摇动；颤抖",
+      "examples": "[]"
+    },
+    {
+      "word": "uncertain",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ʌn'sɝtn",
+      "phoneticUk": "ʌnˈsɜ:tn",
+      "translation": "不确定的",
+      "sceneMeaning": "不确定的",
+      "examples": "[]"
+    },
+    {
+      "word": "undermine",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ʌndɚ'maɪn",
+      "phoneticUk": "ʌndə'maɪn",
+      "translation": "逐渐削弱; 逐渐动摇",
+      "sceneMeaning": "逐渐削弱; 逐渐动摇",
+      "examples": "[]"
+    },
+    {
+      "word": "vibrate",
+      "partOfSpeech": "v",
+      "phoneticUs": "vaɪ'breɪt",
+      "phoneticUk": "vaɪ'breɪt",
+      "translation": "使颤动；颤动",
+      "sceneMeaning": "使颤动；颤动",
+      "examples": "[]"
+    },
+    {
+      "word": "wit",
+      "partOfSpeech": "n",
+      "phoneticUs": "wɪt",
+      "phoneticUk": "wɪt",
+      "translation": "智力，才智，智能",
+      "sceneMeaning": "智力，才智，智能",
+      "examples": "[]"
+    }
+  ]
+}

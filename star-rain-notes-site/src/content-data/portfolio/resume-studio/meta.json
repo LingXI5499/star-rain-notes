@@ -1,0 +1,36 @@
+{
+  "slug": "resume-studio",
+  "title": "Resume Studio · 个人简历工作室",
+  "description": "仅在本机运行的简历编辑器，支持 A4 实时预览、岗位版本、本地自动保存和 JSON 备份，并直接导出包含中文文本、照片和链接的单页 PDF。",
+  "category": "工具",
+  "format": "Web 应用",
+  "techStack": [
+    "Vue 3",
+    "TypeScript",
+    "Express",
+    "IndexedDB",
+    "Playwright",
+    "PDF"
+  ],
+  "status": "COMPLETED",
+  "publishedAt": "2026-10-16",
+  "updatedAt": "2026-10-16",
+  "startedOn": null,
+  "endedOn": null,
+  "featured": false,
+  "cover": "/images/content/a37a97484b4be34f.webp",
+  "screenshots": [],
+  "links": [
+    {
+      "label": "项目源码",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/resume-studio",
+      "type": "GITHUB"
+    },
+    {
+      "label": "运行说明",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/resume-studio/README.md",
+      "type": "DOC"
+    }
+  ],
+  "path": "/portfolio/resume-studio/"
+}

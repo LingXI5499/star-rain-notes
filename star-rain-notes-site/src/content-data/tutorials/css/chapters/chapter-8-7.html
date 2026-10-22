@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 父层 <code>perspective</code> 赋予透视，卡片翻转时用 <code>backface-visibility</code> 隐藏背面。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.scene { perspective: 800px; }
+.card { transform-style: preserve-3d; transition: transform .5s; }
+.scene:hover .card { transform: rotateY(180deg); }
+.face { backface-visibility: hidden; }
+</code></pre>
+<p><strong>学完能做：</strong> 制作具有透视关系的 3D 翻转卡片。</p>

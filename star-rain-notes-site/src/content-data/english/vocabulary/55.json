@@ -1,0 +1,594 @@
+{
+  "id": "55",
+  "title": "词根词缀与构词系统",
+  "layer": "语言系统层",
+  "wordCount": 65,
+  "path": "/english/vocabulary/55/",
+  "words": [
+    {
+      "word": "stress",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "strɛs",
+      "phoneticUk": "stres",
+      "translation": "压力；重音；着重",
+      "sceneMeaning": "重音；压力",
+      "examples": "[]"
+    },
+    {
+      "word": "activity",
+      "partOfSpeech": "n",
+      "phoneticUs": "æk'tɪviti",
+      "phoneticUk": "æk'tɪvɪtɪ",
+      "translation": "活动；活力；行动",
+      "sceneMeaning": "活动；活跃",
+      "examples": "[]"
+    },
+    {
+      "word": "create",
+      "partOfSpeech": "v",
+      "phoneticUs": "krɪ'et",
+      "phoneticUk": "kriː'eɪt",
+      "translation": "创造；引起，产生",
+      "sceneMeaning": "创造；创作",
+      "examples": "[]"
+    },
+    {
+      "word": "decide",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'saɪd",
+      "phoneticUk": "dɪ'saɪd",
+      "translation": "决定，决心；解决",
+      "sceneMeaning": "决定",
+      "examples": "[]"
+    },
+    {
+      "word": "decision",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'sɪʒn",
+      "phoneticUk": "dɪ'sɪʒ(ə)n",
+      "translation": "决定，决心；果断",
+      "sceneMeaning": "决定；决策",
+      "examples": "[]"
+    },
+    {
+      "word": "develop",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vɛləp",
+      "phoneticUk": "dɪ'veləp",
+      "translation": "发展；形成；开发",
+      "sceneMeaning": "发展；开发",
+      "examples": "[]"
+    },
+    {
+      "word": "form",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fɔrm",
+      "phoneticUk": "fɔːm",
+      "translation": "形式；形状；形成",
+      "sceneMeaning": "形状；形成",
+      "examples": "[]"
+    },
+    {
+      "word": "improve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'pruv",
+      "phoneticUk": "ɪm'pruːv",
+      "translation": "使更好；改善",
+      "sceneMeaning": "改善；提高",
+      "examples": "[]"
+    },
+    {
+      "word": "information",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnfɚ'meʃən",
+      "phoneticUk": "ɪnfə'meɪʃ(ə)n",
+      "translation": "消息，信息；通知",
+      "sceneMeaning": "信息；资料",
+      "examples": "[]"
+    },
+    {
+      "word": "produce",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'dus",
+      "phoneticUk": "prə'djuːs",
+      "translation": "生产；产生；展现",
+      "sceneMeaning": "生产；产生",
+      "examples": "[]"
+    },
+    {
+      "word": "product",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑdʌkt",
+      "phoneticUk": "'prɒdʌkt",
+      "translation": "产品，产物；(乘)积",
+      "sceneMeaning": "产品；产物",
+      "examples": "[]"
+    },
+    {
+      "word": "sign",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪn",
+      "phoneticUk": "saɪn",
+      "translation": "符号；招牌；签名",
+      "sceneMeaning": "标记；信号",
+      "examples": "[]"
+    },
+    {
+      "word": "act",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ækt",
+      "phoneticUk": "ækt",
+      "translation": "行动；见效；行为",
+      "sceneMeaning": "行动；起作用；表演",
+      "examples": "[]"
+    },
+    {
+      "word": "development",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'vɛləpmənt",
+      "phoneticUk": "dɪ'veləpm(ə)nt",
+      "translation": "发展；开发；生长",
+      "sceneMeaning": "发展；开发",
+      "examples": "[]"
+    },
+    {
+      "word": "improvement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'prʊvmənt",
+      "phoneticUk": "ɪm'pruːvm(ə)nt",
+      "translation": "改进，改善；改进处",
+      "sceneMeaning": "改善；提高",
+      "examples": "[]"
+    },
+    {
+      "word": "action",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ækʃən",
+      "phoneticUk": "'ækʃ(ə)n",
+      "translation": "行动；作用；功能",
+      "sceneMeaning": "行动；作用；功能；本场景常见用法：联合行动；[机]接合动作；接合作用",
+      "examples": "[]"
+    },
+    {
+      "word": "creative",
+      "partOfSpeech": "adj",
+      "phoneticUs": "krɪ'etɪv",
+      "phoneticUk": "kriː'eɪtɪv",
+      "translation": "创造性的，创作的",
+      "sceneMeaning": "有创造力的",
+      "examples": "[]"
+    },
+    {
+      "word": "definitely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'dɛfɪnətli",
+      "phoneticUk": "'defɪnɪtlɪ",
+      "translation": "一定地，明确地",
+      "sceneMeaning": "一定地，明确地",
+      "examples": "[]"
+    },
+    {
+      "word": "general",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dʒɛnrəl",
+      "phoneticUk": "'dʒen(ə)r(ə)l",
+      "translation": "总的；一般的n将军",
+      "sceneMeaning": "总的；一般的n将军",
+      "examples": "[]"
+    },
+    {
+      "word": "press",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɛs",
+      "phoneticUk": "pres",
+      "translation": "压，按，揿；催促",
+      "sceneMeaning": "压；压迫",
+      "examples": "[]"
+    },
+    {
+      "word": "inform",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'fɔrm",
+      "phoneticUk": "ɪn'fɔːm",
+      "translation": "通知，向…报告",
+      "sceneMeaning": "通知；告知",
+      "examples": "[]"
+    },
+    {
+      "word": "define",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'faɪn",
+      "phoneticUk": "dɪ'faɪn",
+      "translation": "给…下定义；限定；确定；下定义",
+      "sceneMeaning": "定义；界定",
+      "examples": "[]"
+    },
+    {
+      "word": "definite",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɛfɪnət",
+      "phoneticUk": "'defɪnɪt",
+      "translation": "明确的；肯定的",
+      "sceneMeaning": "明确的；确定的",
+      "examples": "[]"
+    },
+    {
+      "word": "derive",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'raɪv",
+      "phoneticUk": "dɪ'raɪv",
+      "translation": "取得；起源；得到，导出",
+      "sceneMeaning": "取得；起源；得到，导出",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'væljʊ'et",
+      "phoneticUk": "ɪ'væljʊeɪt",
+      "translation": "评价，估…的价；评价",
+      "sceneMeaning": "评价；评估",
+      "examples": "[]"
+    },
+    {
+      "word": "scope",
+      "partOfSpeech": "n",
+      "phoneticUs": "skop",
+      "phoneticUk": "skəʊp",
+      "translation": "范围",
+      "sceneMeaning": "看；范围；仪器",
+      "examples": "[]"
+    },
+    {
+      "word": "definition",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɛfɪ'nɪʃən",
+      "phoneticUk": "defɪ'nɪʃ(ə)n",
+      "translation": "定义，释义；定界；定义",
+      "sceneMeaning": "定义；清晰度",
+      "examples": "[]"
+    },
+    {
+      "word": "organization",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɔrɡənə'zeʃən",
+      "phoneticUk": "ˌɔːɡənaɪ'zeɪʃn",
+      "translation": "组织；团体，机构",
+      "sceneMeaning": "组织；机构",
+      "examples": "[]"
+    },
+    {
+      "word": "organize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɔrɡənˌaɪz",
+      "phoneticUk": "ˈɔ:gənaɪz",
+      "translation": "组织，编组",
+      "sceneMeaning": "组织；安排",
+      "examples": "[]"
+    },
+    {
+      "word": "path",
+      "partOfSpeech": "n",
+      "phoneticUs": "pæθ",
+      "phoneticUk": "pɑːθ",
+      "translation": "路，小道；道路",
+      "sceneMeaning": "感觉；疾病；道路",
+      "examples": "[]"
+    },
+    {
+      "word": "active",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'æktɪv",
+      "phoneticUk": "'æktɪv",
+      "translation": "活跃的；积极的",
+      "sceneMeaning": "积极的；活跃的",
+      "examples": "[]"
+    },
+    {
+      "word": "connect",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'nɛkt",
+      "phoneticUk": "kə'nekt",
+      "translation": "连接，连结；联系",
+      "sceneMeaning": "连接；联系",
+      "examples": "[]"
+    },
+    {
+      "word": "connection",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'nɛkʃən",
+      "phoneticUk": "kəˈnekʃn",
+      "translation": "连接，联系；连贯性",
+      "sceneMeaning": "连接；关系",
+      "examples": "[]"
+    },
+    {
+      "word": "relative",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'rɛlətɪv",
+      "phoneticUk": "'relətɪv",
+      "translation": "有关系的；相对的；相对的；亲戚",
+      "sceneMeaning": "相对的；相关的",
+      "examples": "[]"
+    },
+    {
+      "word": "usage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'jusɪdʒ",
+      "phoneticUk": "'juːsɪdʒ",
+      "translation": "使用，对待；惯用法",
+      "sceneMeaning": "用法；惯用法",
+      "examples": "[]"
+    },
+    {
+      "word": "analysis",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'næləsɪs",
+      "phoneticUk": "ə'nælɪsɪs",
+      "translation": "分析，分解，解析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "photo",
+      "partOfSpeech": "n",
+      "phoneticUs": "'foto",
+      "phoneticUk": "'fəʊtəʊ",
+      "translation": "照片，相片",
+      "sceneMeaning": "光；照片",
+      "examples": "[]"
+    },
+    {
+      "word": "productive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'dʌktɪv",
+      "phoneticUk": "prəˈdʌktɪv",
+      "translation": "富有成效的",
+      "sceneMeaning": "多产的；富有成效的",
+      "examples": "[]"
+    },
+    {
+      "word": "actor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æktɚ",
+      "phoneticUk": "'æktə",
+      "translation": "男演员；演剧的人",
+      "sceneMeaning": "男演员；演剧的人",
+      "examples": "[]"
+    },
+    {
+      "word": "actress",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æktrɪs",
+      "phoneticUk": "'æktrɪs",
+      "translation": "女演员",
+      "sceneMeaning": "女演员",
+      "examples": "[]"
+    },
+    {
+      "word": "analyze",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ænə,laɪz",
+      "phoneticUk": "'ænə,laɪz",
+      "translation": "分析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "base",
+      "partOfSpeech": "n",
+      "phoneticUs": "bes",
+      "phoneticUk": "beɪs",
+      "translation": "基础，底层；基地",
+      "sceneMeaning": "词基；基础",
+      "examples": "[]"
+    },
+    {
+      "word": "coin",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔɪn",
+      "phoneticUk": "kɒɪn",
+      "translation": "硬币；铸造(硬币)",
+      "sceneMeaning": "硬币；铸造(硬币)；本场景常见用法：纪念币",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ,væljʊ'eʃən",
+      "phoneticUk": "ɪˌvæljuˈeɪʃn",
+      "translation": "评价，评估",
+      "sceneMeaning": "评价；评估",
+      "examples": "[]"
+    },
+    {
+      "word": "labour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'leibə",
+      "phoneticUk": "'leɪbə",
+      "translation": "劳动；工作；劳工",
+      "sceneMeaning": "劳动；工作；劳工；本场景常见用法：国际劳工组织",
+      "examples": "[]"
+    },
+    {
+      "word": "log",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔɡ",
+      "phoneticUk": "lɒg",
+      "translation": "原木，木料",
+      "sceneMeaning": "说；学科；逻辑",
+      "examples": "[]"
+    },
+    {
+      "word": "permission",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'mɪʃən",
+      "phoneticUk": "pə'mɪʃ(ə)n",
+      "translation": "允许，许可，同意",
+      "sceneMeaning": "许可；准许",
+      "examples": "[]"
+    },
+    {
+      "word": "relate",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'let",
+      "phoneticUk": "rɪ'leɪt",
+      "translation": "叙述；使联系",
+      "sceneMeaning": "联系；讲述",
+      "examples": "[]"
+    },
+    {
+      "word": "analyse",
+      "partOfSpeech": "v",
+      "phoneticUs": "'æn(ə)laɪz",
+      "phoneticUk": "'æn(ə)laɪz",
+      "translation": "分析，分解，解析",
+      "sceneMeaning": "分析，分解，解析",
+      "examples": "[]"
+    },
+    {
+      "word": "blend",
+      "partOfSpeech": "vt&vi&n",
+      "phoneticUs": "blɛnd",
+      "phoneticUk": "blend",
+      "translation": "混和",
+      "sceneMeaning": "混成词；混合",
+      "examples": "[]"
+    },
+    {
+      "word": "compound",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmpaʊnd",
+      "phoneticUk": "'kɒmpaʊnd",
+      "translation": "化合物；复合词",
+      "sceneMeaning": "复合词；化合物",
+      "examples": "[]"
+    },
+    {
+      "word": "connectivity",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑnɛk'tɪvɪti",
+      "phoneticUk": "kɒnek'tɪvɪtɪ",
+      "translation": "连接，联系",
+      "sceneMeaning": "连接，联系",
+      "examples": "[]"
+    },
+    {
+      "word": "conversion",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'vɝʒn",
+      "phoneticUk": "kən'vɜːʃ(ə)n",
+      "translation": "转变，转化；改变",
+      "sceneMeaning": "词类转换；转化",
+      "examples": "[]"
+    },
+    {
+      "word": "convert",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'vɝt",
+      "phoneticUk": "kən'vɜːt",
+      "translation": "使转变；使改变",
+      "sceneMeaning": "使转变；使改变",
+      "examples": "[]"
+    },
+    {
+      "word": "graph",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡræf",
+      "phoneticUk": "grɑːf; græf",
+      "translation": "(曲线)图，图表",
+      "sceneMeaning": "写；画；图",
+      "examples": "[]"
+    },
+    {
+      "word": "liter",
+      "partOfSpeech": "n",
+      "phoneticUs": "litɚ",
+      "phoneticUk": "ˈli:tə(r)",
+      "translation": "升(容量单位)",
+      "sceneMeaning": "文字；字母",
+      "examples": "[]"
+    },
+    {
+      "word": "organ",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrɡən",
+      "phoneticUk": "'ɔːg(ə)n",
+      "translation": "器官；机构；管风琴；器官",
+      "sceneMeaning": "器官；机构；管风琴；器官",
+      "examples": "[]"
+    },
+    {
+      "word": "organism",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrɡənɪzəm",
+      "phoneticUk": "'ɔːg(ə)nɪz(ə)m",
+      "translation": "生物体；有机体",
+      "sceneMeaning": "生物体；有机体",
+      "examples": "[]"
+    },
+    {
+      "word": "permit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pɚ'mɪt",
+      "phoneticUk": "pə'mɪt",
+      "translation": "允许；执照",
+      "sceneMeaning": "允许；许可",
+      "examples": "[]"
+    },
+    {
+      "word": "port",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɔrt",
+      "phoneticUk": "pɔːt",
+      "translation": "港，港口",
+      "sceneMeaning": "携带；港口",
+      "examples": "[]"
+    },
+    {
+      "word": "pronounce",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'naʊns",
+      "phoneticUk": "prə'naʊns",
+      "translation": "发…的音；宣布",
+      "sceneMeaning": "发…的音；宣布；本场景常见用法：对…发表意见",
+      "examples": "[]"
+    },
+    {
+      "word": "pronunciation",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə,nʌnsɪ'eʃən",
+      "phoneticUk": "prə,nʌnsɪ'eɪʃ(ə)n",
+      "translation": "发音，发音法",
+      "sceneMeaning": "发音；读音",
+      "examples": "[]"
+    },
+    {
+      "word": "relation",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'leʃən",
+      "phoneticUk": "rɪ'leɪʃ(ə)n",
+      "translation": "关系，联系；家属",
+      "sceneMeaning": "关系；联系",
+      "examples": "[]"
+    },
+    {
+      "word": "sphere",
+      "partOfSpeech": "n",
+      "phoneticUs": "sfɪr",
+      "phoneticUk": "sfɪə",
+      "translation": "球，圆体；范围；球体；范围",
+      "sceneMeaning": "球体；领域",
+      "examples": "[]"
+    },
+    {
+      "word": "stem",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "stɛm",
+      "phoneticUk": "stem",
+      "translation": "茎，(树)干；起源",
+      "sceneMeaning": "词干；茎",
+      "examples": "[]"
+    }
+  ]
+}

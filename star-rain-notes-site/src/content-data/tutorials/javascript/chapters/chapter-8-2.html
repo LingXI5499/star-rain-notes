@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 购物清单通过数量×单价计算小计，再汇总全部商品金额。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const cart = [{ name: '书', price: 20, quantity: 2 }, { name: '笔', price: 5, quantity: 3 }];
+const total = cart.reduce((s, x) =&gt; s + x.price * x.quantity, 0);
+console.log(total); // 55
+</code></pre>
+<p><strong>学完能做：</strong> 维护购物数量并计算单项与总金额。</p>

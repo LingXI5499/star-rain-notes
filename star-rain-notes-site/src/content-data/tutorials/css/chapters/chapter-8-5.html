@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 父容器设置 <code>overflow:hidden</code>，左右门板通过 <code>translateX</code> 分开形成双开门效果。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.door { display: flex; overflow: hidden; }
+.door &gt; div { flex: 1; transition: transform .4s; }
+.door:hover &gt; :first-child { transform: translateX(-100%); }
+.door:hover &gt; :last-child { transform: translateX(100%); }
+</code></pre>
+<p><strong>学完能做：</strong> 结合裁切和平移制作双开门效果。</p>

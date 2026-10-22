@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 原生节流可通过记录上次执行时间，判断当前是否达到间隔。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">function throttle(fn, delay) {
+  let last = 0;
+  return (...args) =&gt; { const now = Date.now(); if (now - last &gt;= delay) { last = now; fn(...args); } };
+}
+</code></pre>
+<p><strong>学完能做：</strong> 实现按时间间隔控制执行频率的节流。</p>

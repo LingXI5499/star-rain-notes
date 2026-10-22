@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 即时搜索在 <code>input</code> 事件中读取关键字并 <code>filter</code> 原始数据，再渲染结果。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const data = ['HTML', 'CSS', 'JavaScript'];
+search.oninput = () =&gt; { result.textContent = data.filter(x =&gt; x.toLowerCase().includes(search.value.toLowerCase())).join(', '); };
+</code></pre>
+<p><strong>学完能做：</strong> 根据输入实时过滤可见数据。</p>

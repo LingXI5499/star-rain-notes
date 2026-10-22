@@ -1,0 +1,1170 @@
+{
+  "id": "41",
+  "title": "历史 / 文明 / 社会发展",
+  "layer": "社会与世界主题层",
+  "wordCount": 129,
+  "path": "/english/vocabulary/41/",
+  "words": [
+    {
+      "word": "evidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛvɪdəns",
+      "phoneticUk": "'evɪd(ə)ns",
+      "translation": "根据；证据，证人；根据，证据，迹象",
+      "sceneMeaning": "证据",
+      "examples": "[]"
+    },
+    {
+      "word": "innovation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪnə'veʃən",
+      "phoneticUk": "ˌɪnəˈveɪʃn",
+      "translation": "改革，创新",
+      "sceneMeaning": "创新",
+      "examples": "[]"
+    },
+    {
+      "word": "ancient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈeɪnʃənt",
+      "phoneticUk": "'eɪnʃ(ə)nt",
+      "translation": "古代的，古老的；古代的",
+      "sceneMeaning": "古代的",
+      "examples": "[]"
+    },
+    {
+      "word": "source",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɔrs",
+      "phoneticUk": "sɔːs",
+      "translation": "来源",
+      "sceneMeaning": "来源；史料",
+      "examples": "[]"
+    },
+    {
+      "word": "age",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "edʒ",
+      "phoneticUk": "eɪdʒ",
+      "translation": "年龄；时代；变老",
+      "sceneMeaning": "时代；年龄",
+      "examples": "[]"
+    },
+    {
+      "word": "America",
+      "partOfSpeech": "n",
+      "phoneticUs": "əˈmɛrɪkə",
+      "phoneticUk": "ə'merɪkə",
+      "translation": "美洲；美国",
+      "sceneMeaning": "美洲；美国；本场景常见用法：美利坚联盟国",
+      "examples": "[]"
+    },
+    {
+      "word": "community",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mjʊnəti",
+      "phoneticUk": "kə'mjuːnɪtɪ",
+      "translation": "社区；社会；公社",
+      "sceneMeaning": "共同体；社区",
+      "examples": "[]"
+    },
+    {
+      "word": "crisis",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kraɪsɪs",
+      "phoneticUk": "'kraɪsɪs",
+      "translation": "危机；存亡之际；危机",
+      "sceneMeaning": "危机",
+      "examples": "[]"
+    },
+    {
+      "word": "culture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌltʃɚ",
+      "phoneticUk": "'kʌltʃə",
+      "translation": "文化，文明；教养",
+      "sceneMeaning": "文化",
+      "examples": "[]"
+    },
+    {
+      "word": "develop",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vɛləp",
+      "phoneticUk": "dɪ'veləp",
+      "translation": "发展；形成；开发",
+      "sceneMeaning": "发展；开发",
+      "examples": "[]"
+    },
+    {
+      "word": "fall",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɔl",
+      "phoneticUk": "fɔːl",
+      "translation": "落下；跌倒；陷落",
+      "sceneMeaning": "衰落；下降",
+      "examples": "[]"
+    },
+    {
+      "word": "future",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fjʊtʃɚ",
+      "phoneticUk": "'fjuːtʃə",
+      "translation": "将来，未来；前途",
+      "sceneMeaning": "未来",
+      "examples": "[]"
+    },
+    {
+      "word": "generation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɛnə'reʃən",
+      "phoneticUk": "dʒenə'reɪʃ(ə)n",
+      "translation": "一代，一代人；产生；一代人；产生",
+      "sceneMeaning": "一代人；世代",
+      "examples": "[]"
+    },
+    {
+      "word": "history",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈhɪstəri; ˈhɪstri",
+      "phoneticUk": "'hɪst(ə)rɪ",
+      "translation": "历史；个人经历",
+      "sceneMeaning": "历史",
+      "examples": "[]"
+    },
+    {
+      "word": "hit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hɪt",
+      "phoneticUk": "hɪt",
+      "translation": "打；碰撞；击；(唱片、电影或戏剧的) 成功；命中，击中",
+      "sceneMeaning": "打；碰撞；击；(唱片、电影或戏剧的) 成功；命中，击中",
+      "examples": "[]"
+    },
+    {
+      "word": "language",
+      "partOfSpeech": "n",
+      "phoneticUs": "'læŋɡwɪdʒ",
+      "phoneticUk": "'læŋgwɪdʒ",
+      "translation": "语言，语言课程",
+      "sceneMeaning": "语言",
+      "examples": "[]"
+    },
+    {
+      "word": "memory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛməri",
+      "phoneticUk": "'mem(ə)rɪ",
+      "translation": "记忆；回忆；存储",
+      "sceneMeaning": "记忆；回忆；存储；本场景常见用法：记忆棒",
+      "examples": "[]"
+    },
+    {
+      "word": "modern",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɑdɚn",
+      "phoneticUk": "'mɒd(ə)n",
+      "translation": "现代的，近代的",
+      "sceneMeaning": "现代的",
+      "examples": "[]"
+    },
+    {
+      "word": "past",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "pæst",
+      "phoneticUk": "pɑːst",
+      "translation": "过去的；过去",
+      "sceneMeaning": "过去；往事",
+      "examples": "[]"
+    },
+    {
+      "word": "present",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'prɛznt",
+      "phoneticUk": "'prez(ə)nt",
+      "translation": "现在的；目前",
+      "sceneMeaning": "现在；礼物",
+      "examples": "[]"
+    },
+    {
+      "word": "remember",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'mɛmbɚ",
+      "phoneticUk": "rɪ'membə",
+      "translation": "记得，想起；记住",
+      "sceneMeaning": "记得；纪念",
+      "examples": "[]"
+    },
+    {
+      "word": "conflict",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑnflɪkt",
+      "phoneticUk": "'kɒnflɪkt",
+      "translation": "争论；冲突；斗争；冲突",
+      "sceneMeaning": "冲突",
+      "examples": "[]"
+    },
+    {
+      "word": "development",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'vɛləpmənt",
+      "phoneticUk": "dɪ'veləpm(ə)nt",
+      "translation": "发展；开发；生长",
+      "sceneMeaning": "发展；开发",
+      "examples": "[]"
+    },
+    {
+      "word": "joy",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒɔɪ",
+      "phoneticUk": "dʒɒɪ",
+      "translation": "欢乐，喜悦；乐事",
+      "sceneMeaning": "欢乐，喜悦；乐事",
+      "examples": "[]"
+    },
+    {
+      "word": "century",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛntʃəri",
+      "phoneticUk": "ˈsentʃərɪ",
+      "translation": "世纪，百年",
+      "sceneMeaning": "世纪",
+      "examples": "[]"
+    },
+    {
+      "word": "leader",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lidɚ",
+      "phoneticUk": "'liːdə",
+      "translation": "领袖，领导人；首领",
+      "sceneMeaning": "领袖；领导人",
+      "examples": "[]"
+    },
+    {
+      "word": "spread",
+      "partOfSpeech": "v",
+      "phoneticUs": "sprɛd",
+      "phoneticUk": "spred",
+      "translation": "扩散；传播",
+      "sceneMeaning": "传播；扩散",
+      "examples": "[]"
+    },
+    {
+      "word": "generate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dʒɛnəret",
+      "phoneticUk": "'dʒenəreɪt",
+      "translation": "发生；引起；生殖；产生",
+      "sceneMeaning": "发生；引起；生殖；产生",
+      "examples": "[]"
+    },
+    {
+      "word": "leadership",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lidɚʃɪp",
+      "phoneticUk": "'liːdəʃɪp",
+      "translation": "领导",
+      "sceneMeaning": "领导；本场景常见用法：民主领导",
+      "examples": "[]"
+    },
+    {
+      "word": "decade",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɛked",
+      "phoneticUk": "'dekeɪd; dɪ'keɪd",
+      "translation": "十年，十年期",
+      "sceneMeaning": "十年；年代",
+      "examples": "[]"
+    },
+    {
+      "word": "period",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɪrɪəd",
+      "phoneticUk": "'pɪərɪəd",
+      "translation": "时期；学时；句号",
+      "sceneMeaning": "时期；阶段",
+      "examples": "[]"
+    },
+    {
+      "word": "record",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "(for v.) rɪˈkɔrd; (for n. adj.) ˈrɛkɚd",
+      "phoneticUk": "(for v.)rɪˈkɔːd; (for n.) ˈrekɔːd",
+      "translation": "记录；履历；记录",
+      "sceneMeaning": "记录",
+      "examples": "[]"
+    },
+    {
+      "word": "event",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'vɛnt",
+      "phoneticUk": "ɪ'vent",
+      "translation": "事件，大事；事变",
+      "sceneMeaning": "事件；大事",
+      "examples": "[]"
+    },
+    {
+      "word": "identity",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪ'dɛntəti",
+      "phoneticUk": "aɪ'dentɪtɪ",
+      "translation": "身份",
+      "sceneMeaning": "身份；认同",
+      "examples": "[]"
+    },
+    {
+      "word": "prevail",
+      "partOfSpeech": "v",
+      "phoneticUs": "pri'vel",
+      "phoneticUk": "prɪ'veɪl",
+      "translation": "胜，优胜；流行；流行，盛行",
+      "sceneMeaning": "胜，优胜；流行；流行，盛行",
+      "examples": "[]"
+    },
+    {
+      "word": "primitive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɪmətɪv",
+      "phoneticUk": "'prɪmɪtɪv",
+      "translation": "原始的；粗糙的；原始的；简单的；简单的，简陋的",
+      "sceneMeaning": "原始的；早期的",
+      "examples": "[]"
+    },
+    {
+      "word": "descend",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'sɛnd",
+      "phoneticUk": "dɪ'send",
+      "translation": "下来，下降；下倾",
+      "sceneMeaning": "下来，下降；下倾",
+      "examples": "[]"
+    },
+    {
+      "word": "identical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "aɪ'dɛntɪkl",
+      "phoneticUk": "aɪ'dentɪk(ə)l",
+      "translation": "完全相同的；同一的；相同的",
+      "sceneMeaning": "完全相同的；同一的；相同的",
+      "examples": "[]"
+    },
+    {
+      "word": "disaster",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'zæstɚ",
+      "phoneticUk": "dɪ'zɑːstə",
+      "translation": "灾难，灾祸；天灾",
+      "sceneMeaning": "灾难",
+      "examples": "[]"
+    },
+    {
+      "word": "discovery",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'skʌvəri",
+      "phoneticUk": "dɪ'skʌv(ə)rɪ",
+      "translation": "发现；被发现的事物",
+      "sceneMeaning": "发现",
+      "examples": "[]"
+    },
+    {
+      "word": "fight",
+      "partOfSpeech": "v",
+      "phoneticUs": "faɪt",
+      "phoneticUk": "faɪt",
+      "translation": "打(仗)；斗争",
+      "sceneMeaning": "打(仗)；斗争",
+      "examples": "[]"
+    },
+    {
+      "word": "grief",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡrif",
+      "phoneticUk": "gri:f",
+      "translation": "悲伤",
+      "sceneMeaning": "悲伤",
+      "examples": "[]"
+    },
+    {
+      "word": "presence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛzns",
+      "phoneticUk": "'prez(ə)ns",
+      "translation": "出席，到场；在",
+      "sceneMeaning": "出席，到场；在；本场景常见用法：商业存在",
+      "examples": "[]"
+    },
+    {
+      "word": "preserve",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɪ'zɝv",
+      "phoneticUk": "prɪ'zɜːv",
+      "translation": "保护；保存；腌渍；保护",
+      "sceneMeaning": "保护；保存",
+      "examples": "[]"
+    },
+    {
+      "word": "reform",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "rɪ'fɔrm",
+      "phoneticUk": "rɪ'fɔːm",
+      "translation": "改革，改良",
+      "sceneMeaning": "改革；改造",
+      "examples": "[]"
+    },
+    {
+      "word": "revolution",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛvə'lʊʃən",
+      "phoneticUk": "revə'luːʃ(ə)n",
+      "translation": "革命；旋转，绕转；革命",
+      "sceneMeaning": "革命；变革",
+      "examples": "[]"
+    },
+    {
+      "word": "discover",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'skʌvɚ",
+      "phoneticUk": "dɪ'skʌvə",
+      "translation": "发现；暴露，显示；发现",
+      "sceneMeaning": "发现；暴露，显示；发现",
+      "examples": "[]"
+    },
+    {
+      "word": "era",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪrə",
+      "phoneticUk": "'ɪərə",
+      "translation": "时代，年代；纪元；纪元，年代",
+      "sceneMeaning": "时代；纪元",
+      "examples": "[]"
+    },
+    {
+      "word": "historical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hɪ'stɔrɪkl",
+      "phoneticUk": "hɪ'stɒrɪk(ə)l",
+      "translation": "历史的，有关历史的",
+      "sceneMeaning": "历史的",
+      "examples": "[]"
+    },
+    {
+      "word": "migration",
+      "partOfSpeech": "n",
+      "phoneticUs": "maɪ'ɡreʃən",
+      "phoneticUk": "maɪˈgreɪʃn",
+      "translation": "迁移，移民",
+      "sceneMeaning": "迁徙；移民",
+      "examples": "[]"
+    },
+    {
+      "word": "settle",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɛtl",
+      "phoneticUk": "'set(ə)l",
+      "translation": "安排；安放；调停",
+      "sceneMeaning": "定居；解决",
+      "examples": "[]"
+    },
+    {
+      "word": "belief",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪ'lif",
+      "phoneticUk": "bɪ'liːf",
+      "translation": "信任，相信；信念",
+      "sceneMeaning": "信仰；看法",
+      "examples": "[]"
+    },
+    {
+      "word": "Christian",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪstʃən",
+      "phoneticUk": "'krɪstɪən; -tʃ(ə)n",
+      "translation": "基督教徒；信徒",
+      "sceneMeaning": "基督教徒；信徒；本场景常见用法：基督教科学箴言报",
+      "examples": "[]"
+    },
+    {
+      "word": "England",
+      "partOfSpeech": "n",
+      "phoneticUs": "'iŋɡlənd",
+      "phoneticUk": "ˈɪŋɡlənd",
+      "translation": "英格兰；英国",
+      "sceneMeaning": "英格兰；英国；本场景常见用法：英国国教",
+      "examples": "[]"
+    },
+    {
+      "word": "evolve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'vɑlv",
+      "phoneticUk": "ɪ'vɒlv",
+      "translation": "使进化；使发展；使发展",
+      "sceneMeaning": "演变；进化",
+      "examples": "[]"
+    },
+    {
+      "word": "independence",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪndɪ'pɛndəns",
+      "phoneticUk": "ɪndɪ'pend(ə)ns",
+      "translation": "独立，自主，自立",
+      "sceneMeaning": "独立",
+      "examples": "[]"
+    },
+    {
+      "word": "innovate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪnəvet",
+      "phoneticUk": "'ɪnəveɪt",
+      "translation": "创新，革新",
+      "sceneMeaning": "创新，革新",
+      "examples": "[]"
+    },
+    {
+      "word": "mankind",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæn'kaɪnd",
+      "phoneticUk": ",mæn'kaɪnd",
+      "translation": "人类",
+      "sceneMeaning": "人类",
+      "examples": "[]"
+    },
+    {
+      "word": "religious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'lɪdʒəs",
+      "phoneticUk": "rɪ'lɪdʒəs",
+      "translation": "宗教的；虔诚的",
+      "sceneMeaning": "宗教的；虔诚的；本场景常见用法：宗教文化",
+      "examples": "[]"
+    },
+    {
+      "word": "tale",
+      "partOfSpeech": "n",
+      "phoneticUs": "tel",
+      "phoneticUk": "teɪl",
+      "translation": "故事，传说",
+      "sceneMeaning": "故事，传说",
+      "examples": "[]"
+    },
+    {
+      "word": "tragedy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'trædʒədi",
+      "phoneticUk": "'trædʒɪdɪ",
+      "translation": "悲剧；惨事，惨案",
+      "sceneMeaning": "悲剧；惨事，惨案",
+      "examples": "[]"
+    },
+    {
+      "word": "transformation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",trænsfɚ'meʃən",
+      "phoneticUk": "trænsfə'meɪʃ(ə)n; trɑːns-; -nz-",
+      "translation": "变化；改造；转变",
+      "sceneMeaning": "转变；变革",
+      "examples": "[]"
+    },
+    {
+      "word": "ancestor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ænsɛstɚ",
+      "phoneticUk": "'ænsestə",
+      "translation": "祖宗，祖先",
+      "sceneMeaning": "祖先",
+      "examples": "[]"
+    },
+    {
+      "word": "battle",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bætl",
+      "phoneticUk": "'bæt(ə)l",
+      "translation": "战役；斗争；作战；战争，战役",
+      "sceneMeaning": "战役；战斗",
+      "examples": "[]"
+    },
+    {
+      "word": "Bible",
+      "partOfSpeech": "n",
+      "phoneticUs": "'baɪbl",
+      "phoneticUk": "'baɪb(ə)l",
+      "translation": "基督教《圣经》",
+      "sceneMeaning": "基督教《圣经》；本场景常见用法：美国圣经学会（1816年创立于美国纽约的基督教国际组织）",
+      "examples": "[]"
+    },
+    {
+      "word": "ceremony",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈsɛrəˌmoʊni",
+      "phoneticUk": "'serɪmənɪ",
+      "translation": "典礼，仪式；礼节；典礼，仪式",
+      "sceneMeaning": "典礼；仪式",
+      "examples": "[]"
+    },
+    {
+      "word": "emperor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛmpərɚ",
+      "phoneticUk": "'emp(ə)rə",
+      "translation": "皇帝",
+      "sceneMeaning": "皇帝",
+      "examples": "[]"
+    },
+    {
+      "word": "explore",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "ɪk'splɔr",
+      "phoneticUk": "ɪk'splɔː; ek-",
+      "translation": "探险，探索；探索",
+      "sceneMeaning": "探险，探索；探索",
+      "examples": "[]"
+    },
+    {
+      "word": "festival",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈfɛstəvəl",
+      "phoneticUk": "'festɪv(ə)l",
+      "translation": "节日；音乐节",
+      "sceneMeaning": "节日；庆典",
+      "examples": "[]"
+    },
+    {
+      "word": "funeral",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fjunərəl",
+      "phoneticUk": "'fjuːn(ə)r(ə)l",
+      "translation": "葬礼，丧礼，丧葬",
+      "sceneMeaning": "葬礼，丧礼，丧葬",
+      "examples": "[]"
+    },
+    {
+      "word": "God",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡɑd",
+      "phoneticUk": "ɡɒd",
+      "translation": "神，神像；上帝",
+      "sceneMeaning": "神，神像；上帝；本场景常见用法：上帝之子（70年代一个基督教原教旨主义教派）",
+      "examples": "[]"
+    },
+    {
+      "word": "invention",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vɛnʃən",
+      "phoneticUk": "ɪn'venʃ(ə)n",
+      "translation": "发明，创造；捏造",
+      "sceneMeaning": "发明",
+      "examples": "[]"
+    },
+    {
+      "word": "king",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɪŋ",
+      "phoneticUk": "kɪŋ",
+      "translation": "国王，君主",
+      "sceneMeaning": "国王",
+      "examples": "[]"
+    },
+    {
+      "word": "legend",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛdʒənd",
+      "phoneticUk": "'ledʒ(ə)nd",
+      "translation": "传说，传奇；传奇",
+      "sceneMeaning": "传说；传奇人物",
+      "examples": "[]"
+    },
+    {
+      "word": "myth",
+      "partOfSpeech": "n",
+      "phoneticUs": "mɪθ",
+      "phoneticUk": "mɪθ",
+      "translation": "神话",
+      "sceneMeaning": "神话；迷思",
+      "examples": "[]"
+    },
+    {
+      "word": "plague",
+      "partOfSpeech": "v",
+      "phoneticUs": "pleɡ",
+      "phoneticUk": "pleɪg",
+      "translation": "使困扰",
+      "sceneMeaning": "瘟疫；灾祸",
+      "examples": "[]"
+    },
+    {
+      "word": "queen",
+      "partOfSpeech": "n",
+      "phoneticUs": "kwin",
+      "phoneticUk": "kwiːn",
+      "translation": "王后；女王",
+      "sceneMeaning": "女王；王后",
+      "examples": "[]"
+    },
+    {
+      "word": "religion",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'lɪdʒən",
+      "phoneticUk": "rɪ'lɪdʒ(ə)n",
+      "translation": "宗教；宗教信仰",
+      "sceneMeaning": "宗教",
+      "examples": "[]"
+    },
+    {
+      "word": "Roman",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'romən",
+      "phoneticUk": "'rəʊmən",
+      "translation": "古罗马人；罗马的",
+      "sceneMeaning": "古罗马人；罗马的",
+      "examples": "[]"
+    },
+    {
+      "word": "socialize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'soʃəlaɪz",
+      "phoneticUk": "'səʊʃəlaɪz",
+      "translation": "交往，联谊",
+      "sceneMeaning": "交往，联谊",
+      "examples": "[]"
+    },
+    {
+      "word": "transform",
+      "partOfSpeech": "v",
+      "phoneticUs": "træns'fɔrm",
+      "phoneticUk": "træns'fɔːm; trɑːns-; -nz-",
+      "translation": "改变；改造；变换；改变",
+      "sceneMeaning": "改变；转变",
+      "examples": "[]"
+    },
+    {
+      "word": "unity",
+      "partOfSpeech": "n",
+      "phoneticUs": "'junəti",
+      "phoneticUk": "ˈjuːnəti",
+      "translation": "单一；统一；团结",
+      "sceneMeaning": "单一；统一；团结；本场景常见用法：国家统一，民族团结",
+      "examples": "[]"
+    },
+    {
+      "word": "antique",
+      "partOfSpeech": "n",
+      "phoneticUs": "æn'tik",
+      "phoneticUk": "æn'ti:k",
+      "translation": "古玩，古董",
+      "sceneMeaning": "古玩，古董",
+      "examples": "[]"
+    },
+    {
+      "word": "archive",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrkaɪv",
+      "phoneticUk": "'ɑ:kaɪv",
+      "translation": "档案馆，档案室；档案",
+      "sceneMeaning": "档案馆；档案",
+      "examples": "[]"
+    },
+    {
+      "word": "citizen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪtɪzn",
+      "phoneticUk": "'sɪtɪz(ə)n",
+      "translation": "公民；市民，居民；市民，城镇居民；公民",
+      "sceneMeaning": "公民；市民，居民；市民，城镇居民；公民；本场景常见用法：世界公民；全球公民",
+      "examples": "[]"
+    },
+    {
+      "word": "civil",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɪvl",
+      "phoneticUk": "'sɪv(ə)l; -ɪl",
+      "translation": "公民的；文职的",
+      "sceneMeaning": "公民的；文职的；本场景常见用法：公民社会；民间团体",
+      "examples": "[]"
+    },
+    {
+      "word": "civilization",
+      "partOfSpeech": "n",
+      "phoneticUs": ",sɪvələ'zeʃən",
+      "phoneticUk": "ˌsɪvɪlaɪˈzeɪʃən",
+      "translation": "文明，文化；开化；文明",
+      "sceneMeaning": "教化；文明社会",
+      "examples": "[]"
+    },
+    {
+      "word": "civilize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɪvəlaɪz",
+      "phoneticUk": "'sivilaiz",
+      "translation": "使文明；教育",
+      "sceneMeaning": "使文明；教育",
+      "examples": "[]"
+    },
+    {
+      "word": "civilized",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sɪvlˌaɪzd",
+      "phoneticUk": "ˈsɪvəlaɪzd",
+      "translation": "文明的",
+      "sceneMeaning": "文明的；开化的",
+      "examples": "[]"
+    },
+    {
+      "word": "colony",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑləni",
+      "phoneticUk": "'kɒlənɪ",
+      "translation": "殖民地；侨居地",
+      "sceneMeaning": "殖民地；群体",
+      "examples": "[]"
+    },
+    {
+      "word": "conquer",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kɑŋkɚ",
+      "phoneticUk": "'kɒŋkə",
+      "translation": "征服，战胜；破除",
+      "sceneMeaning": "征服",
+      "examples": "[]"
+    },
+    {
+      "word": "conquest",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑŋkwɛst",
+      "phoneticUk": "'kɒŋkwest",
+      "translation": "攻取，征服；克服",
+      "sceneMeaning": "征服；占领",
+      "examples": "[]"
+    },
+    {
+      "word": "contemporary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'tɛmpərɛri",
+      "phoneticUk": "kən'temp(ə)r(ər)ɪ",
+      "translation": "当代的，同时代的；当代的，现代的",
+      "sceneMeaning": "当代的；同时代的",
+      "examples": "[]"
+    },
+    {
+      "word": "custom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌstəm",
+      "phoneticUk": "'kʌstəm",
+      "translation": "习惯，风俗；海关",
+      "sceneMeaning": "习俗；惯例",
+      "examples": "[]"
+    },
+    {
+      "word": "defeat",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'fit",
+      "phoneticUk": "dɪ'fiːt",
+      "translation": "战胜，击败；挫败",
+      "sceneMeaning": "失败；战败",
+      "examples": "[]"
+    },
+    {
+      "word": "democracy",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪˈmɑkrəsi",
+      "phoneticUk": "dɪ'mɒkrəsɪ",
+      "translation": "民主，民主制",
+      "sceneMeaning": "民主；民主制度",
+      "examples": "[]"
+    },
+    {
+      "word": "devil",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɛvl",
+      "phoneticUk": "'dev(ə)l",
+      "translation": "魔鬼，恶魔",
+      "sceneMeaning": "魔鬼，恶魔",
+      "examples": "[]"
+    },
+    {
+      "word": "document",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɑkjəmənt",
+      "phoneticUk": "'dɒkjʊm(ə)nt",
+      "translation": "公文，文件；证件；文件",
+      "sceneMeaning": "文件；文献",
+      "examples": "[]"
+    },
+    {
+      "word": "empire",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛmpaɪr",
+      "phoneticUk": "'empaɪə",
+      "translation": "帝国",
+      "sceneMeaning": "帝国",
+      "examples": "[]"
+    },
+    {
+      "word": "Englishman",
+      "partOfSpeech": "n",
+      "phoneticUs": "'iŋɡliʃmən",
+      "phoneticUk": "'iŋɡliʃmən",
+      "translation": "英国男子",
+      "sceneMeaning": "英国男子",
+      "examples": "[]"
+    },
+    {
+      "word": "famine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæmɪn",
+      "phoneticUk": "'fæmɪn",
+      "translation": "饥荒；严重的缺乏",
+      "sceneMeaning": "饥荒",
+      "examples": "[]"
+    },
+    {
+      "word": "feast",
+      "partOfSpeech": "n",
+      "phoneticUs": "fist",
+      "phoneticUk": "fiːst",
+      "translation": "盛宴，筵席；节日",
+      "sceneMeaning": "盛宴，筵席；节日",
+      "examples": "[]"
+    },
+    {
+      "word": "hero",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɪro",
+      "phoneticUk": "'hɪərəʊ",
+      "translation": "男主角；英雄；勇士",
+      "sceneMeaning": "英雄",
+      "examples": "[]"
+    },
+    {
+      "word": "heroic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hə'roɪk",
+      "phoneticUk": "hɪ'rəʊɪk",
+      "translation": "英雄的；英勇的",
+      "sceneMeaning": "英雄的；英勇的",
+      "examples": "[]"
+    },
+    {
+      "word": "heroine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛroɪn",
+      "phoneticUk": "'herəʊɪn",
+      "translation": "女主角；女英雄",
+      "sceneMeaning": "女主角；女英雄",
+      "examples": "[]"
+    },
+    {
+      "word": "holy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'holi",
+      "phoneticUk": "'həʊlɪ",
+      "translation": "神圣的；圣洁的",
+      "sceneMeaning": "神圣的；圣洁的；本场景常见用法：n. 神圣罗马帝国",
+      "examples": "[]"
+    },
+    {
+      "word": "inherit",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'hɛrɪt",
+      "phoneticUk": "ɪn'herɪt",
+      "translation": "继承(传统等)；继承",
+      "sceneMeaning": "继承；遗传",
+      "examples": "[]"
+    },
+    {
+      "word": "invent",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'vɛnt",
+      "phoneticUk": "ɪn'vent",
+      "translation": "发明，创造；捏造",
+      "sceneMeaning": "发明，创造；捏造",
+      "examples": "[]"
+    },
+    {
+      "word": "inventor",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vɛntɚ",
+      "phoneticUk": "ɪn'ventə",
+      "translation": "发明者；发明家",
+      "sceneMeaning": "发明者；发明家",
+      "examples": "[]"
+    },
+    {
+      "word": "jewish",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dʒʊɪʃ",
+      "phoneticUk": "'dʒuːɪʃ",
+      "translation": "犹太人的",
+      "sceneMeaning": "犹太人的",
+      "examples": "[]"
+    },
+    {
+      "word": "kingdom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɪŋdəm",
+      "phoneticUk": "'kɪŋdəm",
+      "translation": "王国；领域，界",
+      "sceneMeaning": "王国",
+      "examples": "[]"
+    },
+    {
+      "word": "lord",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔrd",
+      "phoneticUk": "lɔːd",
+      "translation": "贵族；上帝",
+      "sceneMeaning": "贵族；上帝；本场景常见用法：艾克顿公爵（英国历史学家）",
+      "examples": "[]"
+    },
+    {
+      "word": "Marxism",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ma:ksizəm",
+      "phoneticUk": "'ma:ksizəm",
+      "translation": "马克思主义",
+      "sceneMeaning": "马克思主义",
+      "examples": "[]"
+    },
+    {
+      "word": "memorial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mə'morɪəl",
+      "phoneticUk": "mə'mɔːrɪəl",
+      "translation": "纪念的；记忆的",
+      "sceneMeaning": "纪念碑；纪念馆",
+      "examples": "[]"
+    },
+    {
+      "word": "memorize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mɛmə'raɪz",
+      "phoneticUk": "'meməraɪz",
+      "translation": "熟记，牢记",
+      "sceneMeaning": "熟记，牢记",
+      "examples": "[]"
+    },
+    {
+      "word": "monument",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑnjumənt",
+      "phoneticUk": "'mɒnjʊm(ə)nt",
+      "translation": "纪念碑；纪念馆",
+      "sceneMeaning": "纪念碑；纪念物",
+      "examples": "[]"
+    },
+    {
+      "word": "nationality",
+      "partOfSpeech": "n",
+      "phoneticUs": ",næʃə'næləti",
+      "phoneticUk": "næʃə'nælɪtɪ",
+      "translation": "国籍；民族，族",
+      "sceneMeaning": "国籍；民族性",
+      "examples": "[]"
+    },
+    {
+      "word": "navigation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nævə'geʃən",
+      "phoneticUk": "nævɪ'geɪʃ(ə)n",
+      "translation": "航行；航海术；导航",
+      "sceneMeaning": "航海；导航",
+      "examples": "[]"
+    },
+    {
+      "word": "occurrence",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kʌrəns",
+      "phoneticUk": "ə'kʌr(ə)ns",
+      "translation": "发生，出现；事件",
+      "sceneMeaning": "发生，出现；事件",
+      "examples": "[]"
+    },
+    {
+      "word": "peace",
+      "partOfSpeech": "n",
+      "phoneticUs": "pis",
+      "phoneticUk": "piːs",
+      "translation": "和平；和睦；平静",
+      "sceneMeaning": "和平",
+      "examples": "[]"
+    },
+    {
+      "word": "prince",
+      "partOfSpeech": "n",
+      "phoneticUs": "prɪns",
+      "phoneticUk": "prɪns",
+      "translation": "王子，亲王",
+      "sceneMeaning": "王子，亲王；本场景常见用法：查尔斯王子（英国王储）",
+      "examples": "[]"
+    },
+    {
+      "word": "progress",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑɡrɛs",
+      "phoneticUk": "'prəʊgres",
+      "translation": "前进，进展；进步",
+      "sceneMeaning": "进步；进展",
+      "examples": "[]"
+    },
+    {
+      "word": "province",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑvɪns",
+      "phoneticUk": "'prɒvɪns",
+      "translation": "省；领域，部门",
+      "sceneMeaning": "省；领域，部门；本场景常见用法：成矿区",
+      "examples": "[]"
+    },
+    {
+      "word": "rebel",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'bɛl",
+      "phoneticUk": "'reb(ə)l",
+      "translation": "造反；造反者",
+      "sceneMeaning": "造反；造反者",
+      "examples": "[]"
+    },
+    {
+      "word": "revolutionary",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'rɛvə'lʊʃə'nɛri",
+      "phoneticUk": "revə'luːʃ(ə)n(ə)rɪ",
+      "translation": "革命的；革命者",
+      "sceneMeaning": "革命的；革命者；本场景常见用法：n. 美国之革命战争",
+      "examples": "[]"
+    },
+    {
+      "word": "saint",
+      "partOfSpeech": "n",
+      "phoneticUs": "sent",
+      "phoneticUk": "seɪnt",
+      "translation": "圣人",
+      "sceneMeaning": "圣人",
+      "examples": "[]"
+    },
+    {
+      "word": "settlement",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛtlmənt",
+      "phoneticUk": "'set(ə)lm(ə)nt",
+      "translation": "解决；殖民，殖民地",
+      "sceneMeaning": "定居点；解决",
+      "examples": "[]"
+    },
+    {
+      "word": "transformer",
+      "partOfSpeech": "n",
+      "phoneticUs": "træns'fɔrmɚ",
+      "phoneticUk": "træns'fɔːmə; trɑːns-; -nz-",
+      "translation": "变压器，转换器",
+      "sceneMeaning": "变压器，转换器；本场景常见用法：电子变压器",
+      "examples": "[]"
+    },
+    {
+      "word": "treaty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'triti",
+      "phoneticUk": "'triːtɪ",
+      "translation": "条约；协议，协定",
+      "sceneMeaning": "条约",
+      "examples": "[]"
+    }
+  ]
+}

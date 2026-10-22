@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> 递归处理嵌套结构要有终止条件；有循环引用的数据不能无限向下遍历。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">function countNodes(node, seen = new WeakSet()) {
+  if (!node || typeof node !== 'object' || seen.has(node)) return 0;
+  seen.add(node);
+  return 1 + Object.values(node).reduce((n, x) =&gt; n + countNodes(x, seen), 0);
+}
+</code></pre>
+<p><strong>学完能做：</strong> 理解递归复制边界与循环引用风险。</p>

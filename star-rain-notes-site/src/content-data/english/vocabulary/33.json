@@ -1,0 +1,1098 @@
+{
+  "id": "33",
+  "title": "教学、训练、考试、评价系统",
+  "layer": "学习与工作主干层",
+  "wordCount": 121,
+  "path": "/english/vocabulary/33/",
+  "words": [
+    {
+      "word": "performance",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'fɔrməns",
+      "phoneticUk": "pə'fɔːm(ə)ns",
+      "translation": "履行；演出；行为；演出；履行；表现",
+      "sceneMeaning": "表现；绩效",
+      "examples": "[]"
+    },
+    {
+      "word": "project",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "prəˈdʒɛkt; prɑdʒɛkt",
+      "phoneticUk": "prəˈdʒekt; ˈprɒdʒekt",
+      "translation": "方案，工程；伸出；工程；课题、作业",
+      "sceneMeaning": "项目；课题",
+      "examples": "[]"
+    },
+    {
+      "word": "achieve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'tʃiv",
+      "phoneticUk": "ə'tʃiːv",
+      "translation": "完成，实现；达到；完成，实现",
+      "sceneMeaning": "完成，实现；达到；完成，实现",
+      "examples": "[]"
+    },
+    {
+      "word": "ability",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'bɪləti",
+      "phoneticUk": "ə'bɪlɪtɪ",
+      "translation": "能力；能耐，本领",
+      "sceneMeaning": "能力",
+      "examples": "[]"
+    },
+    {
+      "word": "activity",
+      "partOfSpeech": "n",
+      "phoneticUs": "æk'tɪviti",
+      "phoneticUk": "æk'tɪvɪtɪ",
+      "translation": "活动；活力；行动",
+      "sceneMeaning": "活动",
+      "examples": "[]"
+    },
+    {
+      "word": "ask",
+      "partOfSpeech": "v",
+      "phoneticUs": "æsk",
+      "phoneticUk": "ɑːsk",
+      "translation": "问；要求；邀请",
+      "sceneMeaning": "问；要求；邀请",
+      "examples": "[]"
+    },
+    {
+      "word": "attention",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'tɛnʃən",
+      "phoneticUk": "ə'tenʃ(ə)n",
+      "translation": "注意，留心；注意力",
+      "sceneMeaning": "注意力",
+      "examples": "[]"
+    },
+    {
+      "word": "better",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'bɛtɚ",
+      "phoneticUk": "'betə",
+      "translation": "较好的；更好地",
+      "sceneMeaning": "较好的；更好地；本场景常见用法：改进；改善",
+      "examples": "[]"
+    },
+    {
+      "word": "case",
+      "partOfSpeech": "n",
+      "phoneticUs": "kes",
+      "phoneticUk": "keɪs",
+      "translation": "情况；事实；病例",
+      "sceneMeaning": "案例；情况",
+      "examples": "[]"
+    },
+    {
+      "word": "course",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrs",
+      "phoneticUk": "kɔːs",
+      "translation": "课程；过程；一道菜",
+      "sceneMeaning": "课程",
+      "examples": "[]"
+    },
+    {
+      "word": "education",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛdʒu'keʃən",
+      "phoneticUk": "edjʊ'keɪʃ(ə)n",
+      "translation": "教育；训导；教育学",
+      "sceneMeaning": "教育",
+      "examples": "[]"
+    },
+    {
+      "word": "effective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɛktɪv",
+      "phoneticUk": "ɪ'fektɪv",
+      "translation": "有效的；有影响的",
+      "sceneMeaning": "有效的",
+      "examples": "[]"
+    },
+    {
+      "word": "explain",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'splen",
+      "phoneticUk": "ɪk'spleɪn",
+      "translation": "解释；为…辩解",
+      "sceneMeaning": "解释",
+      "examples": "[]"
+    },
+    {
+      "word": "improve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'pruv",
+      "phoneticUk": "ɪm'pruːv",
+      "translation": "使更好；改善",
+      "sceneMeaning": "提高；改进",
+      "examples": "[]"
+    },
+    {
+      "word": "knowledge",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nɑlɪdʒ",
+      "phoneticUk": "'nɒlɪdʒ",
+      "translation": "知识，学识；知道",
+      "sceneMeaning": "知识",
+      "examples": "[]"
+    },
+    {
+      "word": "learn",
+      "partOfSpeech": "vi&vt",
+      "phoneticUs": "lɝn",
+      "phoneticUk": "lɜːn",
+      "translation": "学，学习",
+      "sceneMeaning": "学习；学会",
+      "examples": "[]"
+    },
+    {
+      "word": "learned",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɝnd; lɝ​nɪd",
+      "phoneticUk": "'lɜːnd; ˈlɜ:nɪd",
+      "translation": "有学问的；学术上的",
+      "sceneMeaning": "有学问的；学术上的",
+      "examples": "[]"
+    },
+    {
+      "word": "learning",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɝnɪŋ",
+      "phoneticUk": "'lɜːnɪŋ",
+      "translation": "学习；学问，知识",
+      "sceneMeaning": "学习",
+      "examples": "[]"
+    },
+    {
+      "word": "letter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛtɚ",
+      "phoneticUk": "'letə",
+      "translation": "信；证书；字母",
+      "sceneMeaning": "信；证书；字母；本场景常见用法：介绍信",
+      "examples": "[]"
+    },
+    {
+      "word": "level",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'lɛvl",
+      "phoneticUk": "'lev(ə)l",
+      "translation": "水平面；水平的",
+      "sceneMeaning": "水平；级别",
+      "examples": "[]"
+    },
+    {
+      "word": "mark",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "",
+      "phoneticUk": "mɑːk",
+      "translation": "斑点；记号；标明",
+      "sceneMeaning": "分数；标记",
+      "examples": "[]"
+    },
+    {
+      "word": "memory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛməri",
+      "phoneticUk": "'mem(ə)rɪ",
+      "translation": "记忆；回忆；存储",
+      "sceneMeaning": "记忆",
+      "examples": "[]"
+    },
+    {
+      "word": "paper",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pepɚ",
+      "phoneticUk": "'peɪpə",
+      "translation": "纸；官方文件；文章",
+      "sceneMeaning": "试卷；论文",
+      "examples": "[]"
+    },
+    {
+      "word": "question",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɛstʃən",
+      "phoneticUk": "'kwestʃ(ə)n",
+      "translation": "发问；问题；疑问",
+      "sceneMeaning": "问题",
+      "examples": "[]"
+    },
+    {
+      "word": "answer",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ænsɚ",
+      "phoneticUk": "'ɑːnsə",
+      "translation": "回答；响应；适应",
+      "sceneMeaning": "答案；回答",
+      "examples": "[]"
+    },
+    {
+      "word": "basic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'besɪk",
+      "phoneticUk": "'beɪsɪk",
+      "translation": "基本的，基础的",
+      "sceneMeaning": "基本的，基础的；本场景常见用法：基础教育",
+      "examples": "[]"
+    },
+    {
+      "word": "effort",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛfɚt",
+      "phoneticUk": "'efət",
+      "translation": "努力；努力的成果",
+      "sceneMeaning": "努力；努力的成果",
+      "examples": "[]"
+    },
+    {
+      "word": "achievement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'tʃivmənt",
+      "phoneticUk": "ə'tʃiːvm(ə)nt",
+      "translation": "完成；成就，成绩",
+      "sceneMeaning": "成就；成绩",
+      "examples": "[]"
+    },
+    {
+      "word": "example",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪg'zæmpl",
+      "phoneticUk": "ɪg'zɑːmp(ə)l; eg-",
+      "translation": "例子，实例；模范",
+      "sceneMeaning": "例子",
+      "examples": "[]"
+    },
+    {
+      "word": "pursue",
+      "partOfSpeech": "v",
+      "phoneticUs": "pə'sʊ",
+      "phoneticUk": "pə'sjuː",
+      "translation": "追赶，追踪；进行；追求",
+      "sceneMeaning": "追赶，追踪；进行；追求",
+      "examples": "[]"
+    },
+    {
+      "word": "exercise",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛksɚsaɪz",
+      "phoneticUk": "'eksəsaɪz",
+      "translation": "锻炼，训练；练习",
+      "sceneMeaning": "练习；锻炼",
+      "examples": "[]"
+    },
+    {
+      "word": "motivate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'motə'vet",
+      "phoneticUk": "'məʊtɪveɪt",
+      "translation": "促动；激励，激发；促动，激发，诱导",
+      "sceneMeaning": "激励",
+      "examples": "[]"
+    },
+    {
+      "word": "practice",
+      "partOfSpeech": "n",
+      "phoneticUs": "'præktɪs",
+      "phoneticUk": "'præktɪs",
+      "translation": "实践；练习；业务",
+      "sceneMeaning": "练习",
+      "examples": "[]"
+    },
+    {
+      "word": "primarily",
+      "partOfSpeech": "adv",
+      "phoneticUs": "praɪ'mɛrəli",
+      "phoneticUk": "'praɪm(ə)rɪlɪ; praɪ'mer-",
+      "translation": "首先；主要地；主要地，首先",
+      "sceneMeaning": "首先；主要地；主要地，首先",
+      "examples": "[]"
+    },
+    {
+      "word": "improvement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'prʊvmənt",
+      "phoneticUk": "ɪm'pruːvm(ə)nt",
+      "translation": "改进，改善；改进处",
+      "sceneMeaning": "改进；提高",
+      "examples": "[]"
+    },
+    {
+      "word": "lesson",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛsn",
+      "phoneticUk": "'les(ə)n",
+      "translation": "功课，课；课程",
+      "sceneMeaning": "课程；一课",
+      "examples": "[]"
+    },
+    {
+      "word": "ultimately",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ʌltɪmətli",
+      "phoneticUk": "ˈʌltɪmətli",
+      "translation": "最后，最终",
+      "sceneMeaning": "最后，最终",
+      "examples": "[]"
+    },
+    {
+      "word": "acquire",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kwaɪr",
+      "phoneticUk": "ə'kwaɪə",
+      "translation": "取得；获得；学到；获得",
+      "sceneMeaning": "取得；获得；学到；获得",
+      "examples": "[]"
+    },
+    {
+      "word": "advanced",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əd'vænst",
+      "phoneticUk": "æd'vɑːnst",
+      "translation": "先进的；高级的；高级的",
+      "sceneMeaning": "高级的；先进的",
+      "examples": "[]"
+    },
+    {
+      "word": "correct",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "kə'rɛkt",
+      "phoneticUk": "kə'rekt",
+      "translation": "正确的；纠正",
+      "sceneMeaning": "纠正；改正",
+      "examples": "[]"
+    },
+    {
+      "word": "exam",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪg'zæm",
+      "phoneticUk": "ɪg'zæm; eg-",
+      "translation": "考试；检查，细查",
+      "sceneMeaning": "考试",
+      "examples": "[]"
+    },
+    {
+      "word": "gain",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡen",
+      "phoneticUk": "geɪn",
+      "translation": "获得；增加；增进",
+      "sceneMeaning": "获得；增加；增进",
+      "examples": "[]"
+    },
+    {
+      "word": "material",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'tɪrɪəl",
+      "phoneticUk": "mə'tɪərɪəl",
+      "translation": "材料；素材a物质的",
+      "sceneMeaning": "材料；资料",
+      "examples": "[]"
+    },
+    {
+      "word": "practical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'præktɪkl",
+      "phoneticUk": "'præktɪk(ə)l",
+      "translation": "实践的；实用的",
+      "sceneMeaning": "实践的；实用的",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'væljʊ'et",
+      "phoneticUk": "ɪ'væljʊeɪt",
+      "translation": "评价，估…的价；评价",
+      "sceneMeaning": "评价；评估",
+      "examples": "[]"
+    },
+    {
+      "word": "fluent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fluənt",
+      "phoneticUk": "'fluːənt",
+      "translation": "流利的，流畅的",
+      "sceneMeaning": "流利的",
+      "examples": "[]"
+    },
+    {
+      "word": "accurate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ækjərət",
+      "phoneticUk": "'ækjʊrət",
+      "translation": "准确的，正确无误的；精确的，准确的",
+      "sceneMeaning": "准确的",
+      "examples": "[]"
+    },
+    {
+      "word": "advance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "əd'væns",
+      "phoneticUk": "əd'vɑːns",
+      "translation": "前进；提高；进展；提前；前进",
+      "sceneMeaning": "前进；提高；进展；提前；前进；本场景常见用法：进步；改进",
+      "examples": "[]"
+    },
+    {
+      "word": "explanation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛksplə'neʃən",
+      "phoneticUk": "eksplə'neɪʃ(ə)n",
+      "translation": "解释，说明；辩解",
+      "sceneMeaning": "解释",
+      "examples": "[]"
+    },
+    {
+      "word": "grammar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'græmɚ",
+      "phoneticUk": "'græmə",
+      "translation": "语法；语法书",
+      "sceneMeaning": "语法",
+      "examples": "[]"
+    },
+    {
+      "word": "mostly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'mostli",
+      "phoneticUk": "'məʊs(t)lɪ",
+      "translation": "主要的，大部分",
+      "sceneMeaning": "主要的，大部分",
+      "examples": "[]"
+    },
+    {
+      "word": "task",
+      "partOfSpeech": "n",
+      "phoneticUs": "tæsk",
+      "phoneticUk": "tɑːsk",
+      "translation": "任务，工作",
+      "sceneMeaning": "任务",
+      "examples": "[]"
+    },
+    {
+      "word": "assignment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'saɪnmənt",
+      "phoneticUk": "ə'saɪnm(ə)nt",
+      "translation": "任务，指定的作业；作业",
+      "sceneMeaning": "作业；任务",
+      "examples": "[]"
+    },
+    {
+      "word": "basically",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'besɪkli",
+      "phoneticUk": "'beɪsɪk(ə)lɪ",
+      "translation": "基本上",
+      "sceneMeaning": "基本上；从基础上",
+      "examples": "[]"
+    },
+    {
+      "word": "objective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əb'dʒɛktɪv",
+      "phoneticUk": "əb'dʒektɪv",
+      "translation": "客观的；无偏见的",
+      "sceneMeaning": "客观的",
+      "examples": "[]"
+    },
+    {
+      "word": "participate",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɑr'tɪsə'pet",
+      "phoneticUk": "pɑː'tɪsɪpeɪt",
+      "translation": "参与，参加；分享；参与，参加",
+      "sceneMeaning": "参与",
+      "examples": "[]"
+    },
+    {
+      "word": "repeatedly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "rɪ'pitɪdli",
+      "phoneticUk": "rɪ'piːtɪdlɪ",
+      "translation": "重复地；一再",
+      "sceneMeaning": "重复地；一再",
+      "examples": "[]"
+    },
+    {
+      "word": "requirement",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'kwaɪɚmənt",
+      "phoneticUk": "rɪ'kwaɪəm(ə)nt",
+      "translation": "需要；要求",
+      "sceneMeaning": "要求",
+      "examples": "[]"
+    },
+    {
+      "word": "score",
+      "partOfSpeech": "n",
+      "phoneticUs": "skɔ",
+      "phoneticUk": "skɔː",
+      "translation": "得分，比数，成绩",
+      "sceneMeaning": "得分；评分",
+      "examples": "[]"
+    },
+    {
+      "word": "vocabulary",
+      "partOfSpeech": "n",
+      "phoneticUs": "və'kæbjəlɛri",
+      "phoneticUk": "və'kæbjələrɪ",
+      "translation": "词汇",
+      "sceneMeaning": "词汇",
+      "examples": "[]"
+    },
+    {
+      "word": "aim",
+      "partOfSpeech": "v",
+      "phoneticUs": "em",
+      "phoneticUk": "eɪm",
+      "translation": "瞄准，针对；致力",
+      "sceneMeaning": "目标；目的",
+      "examples": "[]"
+    },
+    {
+      "word": "chapter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃæptɚ",
+      "phoneticUk": "'tʃæptə",
+      "translation": "章，回，篇",
+      "sceneMeaning": "章节",
+      "examples": "[]"
+    },
+    {
+      "word": "coach",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kotʃ",
+      "phoneticUk": "kəʊtʃ",
+      "translation": "长途公共汽车；教练；当…的教练，训练，培训",
+      "sceneMeaning": "指导；训练",
+      "examples": "[]"
+    },
+    {
+      "word": "competent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɑmpɪtənt",
+      "phoneticUk": "'kɒmpɪt(ə)nt",
+      "translation": "有能力的；应该做的；胜任的，有能力的",
+      "sceneMeaning": "有能力的；应该做的；胜任的，有能力的；本场景常见用法：胜任的；有能力",
+      "examples": "[]"
+    },
+    {
+      "word": "error",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛrɚ",
+      "phoneticUk": "'erə",
+      "translation": "错误，谬误；差错",
+      "sceneMeaning": "错误；误差",
+      "examples": "[]"
+    },
+    {
+      "word": "feedback",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fidbæk",
+      "phoneticUk": "'fiːdbæk",
+      "translation": "回授，反馈，反应；反馈",
+      "sceneMeaning": "反馈",
+      "examples": "[]"
+    },
+    {
+      "word": "goal",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡol",
+      "phoneticUk": "gəʊl",
+      "translation": "球门；得分；目的",
+      "sceneMeaning": "目标",
+      "examples": "[]"
+    },
+    {
+      "word": "grade",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡred",
+      "phoneticUk": "greɪd",
+      "translation": "给…分等级；等级",
+      "sceneMeaning": "评分；分级",
+      "examples": "[]"
+    },
+    {
+      "word": "guidance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gaɪdns",
+      "phoneticUk": "'gaɪd(ə)ns",
+      "translation": "引导，指导，领导",
+      "sceneMeaning": "指导",
+      "examples": "[]"
+    },
+    {
+      "word": "guide",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡaɪd",
+      "phoneticUk": "gaɪd",
+      "translation": "导游者；给…导游",
+      "sceneMeaning": "指导；引导",
+      "examples": "[]"
+    },
+    {
+      "word": "instruct",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'strʌkt",
+      "phoneticUk": "ɪn'strʌkt",
+      "translation": "教；指示；通知；指导；教授；通知；命令；",
+      "sceneMeaning": "指导；教授",
+      "examples": "[]"
+    },
+    {
+      "word": "mistake",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "mɪ'stek",
+      "phoneticUk": "mɪ'steɪk",
+      "translation": "错误；误解，弄错",
+      "sceneMeaning": "错误",
+      "examples": "[]"
+    },
+    {
+      "word": "normal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɔrml",
+      "phoneticUk": "'nɔːm(ə)l",
+      "translation": "正常的，普通的",
+      "sceneMeaning": "正常的，普通的",
+      "examples": "[]"
+    },
+    {
+      "word": "outcome",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aʊt'kʌm",
+      "phoneticUk": "'aʊtkʌm",
+      "translation": "结果，后果，成果；结果",
+      "sceneMeaning": "结果；成果",
+      "examples": "[]"
+    },
+    {
+      "word": "rank",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ræŋk",
+      "phoneticUk": "ræŋk",
+      "translation": "排，横行；社会阶层；具有…等级[地位]；衔，阶层",
+      "sceneMeaning": "排名；排列",
+      "examples": "[]"
+    },
+    {
+      "word": "scale",
+      "partOfSpeech": "n",
+      "phoneticUs": "skel",
+      "phoneticUk": "skeɪl",
+      "translation": "天平，磅秤，秤；规模；比例",
+      "sceneMeaning": "量表；尺度",
+      "examples": "[]"
+    },
+    {
+      "word": "educate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɛdʒuket",
+      "phoneticUk": "'edjʊkeɪt",
+      "translation": "教育；培养；训练",
+      "sceneMeaning": "教育",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ,væljʊ'eʃən",
+      "phoneticUk": "ɪˌvæljuˈeɪʃn",
+      "translation": "评价，评估",
+      "sceneMeaning": "评价；评估",
+      "examples": "[]"
+    },
+    {
+      "word": "gradual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡrædʒuəl",
+      "phoneticUk": "'grædʒʊəl",
+      "translation": "逐渐的；渐进的",
+      "sceneMeaning": "逐渐的；渐进的",
+      "examples": "[]"
+    },
+    {
+      "word": "grasp",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡræsp",
+      "phoneticUk": "grɑːsp",
+      "translation": "抓紧；掌握；抓",
+      "sceneMeaning": "抓紧；掌握；抓；本场景常见用法：把握大局",
+      "examples": "[]"
+    },
+    {
+      "word": "inquire",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'kwaɪr",
+      "phoneticUk": "ɪn'kwaɪə",
+      "translation": "打听，询问；调查；询问",
+      "sceneMeaning": "打听，询问；调查；询问",
+      "examples": "[]"
+    },
+    {
+      "word": "object",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑbdʒɛkt",
+      "phoneticUk": "'ɒbdʒɪkt; -dʒekt",
+      "translation": "物，物体；目的",
+      "sceneMeaning": "物，物体；目的；本场景常见用法：面向目标程序设计",
+      "examples": "[]"
+    },
+    {
+      "word": "review",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'vju",
+      "phoneticUk": "rɪ'vjuː",
+      "translation": "再检查；复习；回顾",
+      "sceneMeaning": "复习；回顾",
+      "examples": "[]"
+    },
+    {
+      "word": "slide",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "slaɪd",
+      "phoneticUk": "slaɪd",
+      "translation": "滑；使滑动",
+      "sceneMeaning": "幻灯片",
+      "examples": "[]"
+    },
+    {
+      "word": "unit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'junɪt",
+      "phoneticUk": "'juːnɪt",
+      "translation": "单位；单元；部件",
+      "sceneMeaning": "单元；单位",
+      "examples": "[]"
+    },
+    {
+      "word": "accuracy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ækjərəsi",
+      "phoneticUk": "'ækjʊrəsɪ",
+      "translation": "准确(性)；准确度",
+      "sceneMeaning": "准确性",
+      "examples": "[]"
+    },
+    {
+      "word": "advocator",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "'ædvəkeɪtə",
+      "translation": "主张者，倡导者",
+      "sceneMeaning": "主张者，倡导者",
+      "examples": "[]"
+    },
+    {
+      "word": "assess",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sɛs",
+      "phoneticUk": "ə'ses",
+      "translation": "对(财产等)估价；评价",
+      "sceneMeaning": "评估",
+      "examples": "[]"
+    },
+    {
+      "word": "beginner",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪ'gɪnɚ",
+      "phoneticUk": "bɪ'gɪnə",
+      "translation": "初学者，生手",
+      "sceneMeaning": "初学者",
+      "examples": "[]"
+    },
+    {
+      "word": "blackboard",
+      "partOfSpeech": "n",
+      "phoneticUs": "'blækbɔrd",
+      "phoneticUk": "'blækbɔːd",
+      "translation": "黑板",
+      "sceneMeaning": "黑板",
+      "examples": "[]"
+    },
+    {
+      "word": "comprehension",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑmprɪ'hɛnʃən",
+      "phoneticUk": "kɒmprɪ'henʃ(ə)n",
+      "translation": "理解，理解力；领悟",
+      "sceneMeaning": "理解",
+      "examples": "[]"
+    },
+    {
+      "word": "correction",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'rɛkʃən",
+      "phoneticUk": "kə'rekʃ(ə)n",
+      "translation": "改正，纠正，修改",
+      "sceneMeaning": "纠正；改正",
+      "examples": "[]"
+    },
+    {
+      "word": "demonstrate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dɛmən'stret",
+      "phoneticUk": "'demənstreɪt",
+      "translation": "说明；论证；表露；证明；展示",
+      "sceneMeaning": "演示；证明",
+      "examples": "[]"
+    },
+    {
+      "word": "dialect",
+      "partOfSpeech": "n",
+      "phoneticUs": "'daɪə'lɛkt",
+      "phoneticUk": "'daɪəlekt",
+      "translation": "方言，土语，地方话",
+      "sceneMeaning": "方言，土语，地方话；本场景常见用法：中国方言",
+      "examples": "[]"
+    },
+    {
+      "word": "drill",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "drɪl",
+      "phoneticUk": "drɪl",
+      "translation": "钻头；操练；钻孔",
+      "sceneMeaning": "训练；操练",
+      "examples": "[]"
+    },
+    {
+      "word": "glide",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡlaɪd",
+      "phoneticUk": "glaɪd",
+      "translation": "滑动；消逝；滑行",
+      "sceneMeaning": "滑动；消逝；滑行",
+      "examples": "[]"
+    },
+    {
+      "word": "grammatical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "grə'mætɪkl",
+      "phoneticUk": "grə'mætɪk(ə)l",
+      "translation": "语法上的",
+      "sceneMeaning": "语法上的；本场景常见用法：语法结构",
+      "examples": "[]"
+    },
+    {
+      "word": "guideline",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡaɪdlaɪn",
+      "phoneticUk": "'gaɪdlaɪn",
+      "translation": "指导原则",
+      "sceneMeaning": "指导原则",
+      "examples": "[]"
+    },
+    {
+      "word": "hole",
+      "partOfSpeech": "n",
+      "phoneticUs": "hol",
+      "phoneticUk": "həʊl",
+      "translation": "洞；孔眼，裂开处",
+      "sceneMeaning": "洞；孔眼，裂开处",
+      "examples": "[]"
+    },
+    {
+      "word": "instruction",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'strʌkʃən",
+      "phoneticUk": "ɪn'strʌkʃ(ə)n",
+      "translation": "命令；教学；教训；用法说明；操作指南；命令，指示",
+      "sceneMeaning": "教学；指令",
+      "examples": "[]"
+    },
+    {
+      "word": "materialism",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'tɪrɪəlɪzəm",
+      "phoneticUk": "mə'tɪərɪəlɪz(ə)m",
+      "translation": "唯物主义",
+      "sceneMeaning": "唯物主义；本场景常见用法：n. 辩证唯物主义",
+      "examples": "[]"
+    },
+    {
+      "word": "memorial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mə'morɪəl",
+      "phoneticUk": "mə'mɔːrɪəl",
+      "translation": "纪念的；记忆的",
+      "sceneMeaning": "纪念的；记忆的；本场景常见用法：陵园；公墓",
+      "examples": "[]"
+    },
+    {
+      "word": "memorize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mɛmə'raɪz",
+      "phoneticUk": "'meməraɪz",
+      "translation": "熟记，牢记",
+      "sceneMeaning": "记忆；背诵",
+      "examples": "[]"
+    },
+    {
+      "word": "monitor",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɔnɪtɚ",
+      "phoneticUk": "'mɒnɪtə",
+      "translation": "班长；监视器；监控；监听",
+      "sceneMeaning": "监督；监测",
+      "examples": "[]"
+    },
+    {
+      "word": "motivation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",motə'veʃən",
+      "phoneticUk": "ˌməʊtɪ'veɪʃn",
+      "translation": "激励，刺激",
+      "sceneMeaning": "动机；动力",
+      "examples": "[]"
+    },
+    {
+      "word": "outstanding",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'aʊt'stændɪŋ",
+      "phoneticUk": "aʊt'stændɪŋ",
+      "translation": "突出的，杰出的",
+      "sceneMeaning": "突出的，杰出的；本场景常见用法：业绩；杰出成就",
+      "examples": "[]"
+    },
+    {
+      "word": "practically",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'præktɪkli",
+      "phoneticUk": "'præktɪk(ə)lɪ",
+      "translation": "实际上；几乎",
+      "sceneMeaning": "实践上；实际上",
+      "examples": "[]"
+    },
+    {
+      "word": "practise",
+      "partOfSpeech": "v",
+      "phoneticUs": "'præktɪs",
+      "phoneticUk": "'præktɪs",
+      "translation": "练习，实习，训练",
+      "sceneMeaning": "练习，实习，训练",
+      "examples": "[]"
+    },
+    {
+      "word": "pray",
+      "partOfSpeech": "vt&vi",
+      "phoneticUs": "pre",
+      "phoneticUk": "preɪ",
+      "translation": "请求；祈祷",
+      "sceneMeaning": "请求；祈祷",
+      "examples": "[]"
+    },
+    {
+      "word": "preposition",
+      "partOfSpeech": "n",
+      "phoneticUs": ",prɛpə'zɪʃən",
+      "phoneticUk": ",prepə'zɪʃ(ə)n",
+      "translation": "前置词，介词",
+      "sceneMeaning": "前置词，介词",
+      "examples": "[]"
+    },
+    {
+      "word": "prize",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "praɪz",
+      "phoneticUk": "praɪz",
+      "translation": "奖赏，奖金；珍视",
+      "sceneMeaning": "奖赏，奖金；珍视",
+      "examples": "[]"
+    },
+    {
+      "word": "progress",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑɡrɛs",
+      "phoneticUk": "'prəʊgres",
+      "translation": "前进，进展；进步",
+      "sceneMeaning": "进步；进展",
+      "examples": "[]"
+    },
+    {
+      "word": "progressive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'ɡrɛsɪv",
+      "phoneticUk": "prə'gresɪv",
+      "translation": "进步的；向前进的",
+      "sceneMeaning": "进步的；向前进的；本场景常见用法：民进党",
+      "examples": "[]"
+    },
+    {
+      "word": "pronounce",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'naʊns",
+      "phoneticUk": "prə'naʊns",
+      "translation": "发…的音；宣布",
+      "sceneMeaning": "发…的音；宣布",
+      "examples": "[]"
+    },
+    {
+      "word": "pronunciation",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə,nʌnsɪ'eʃən",
+      "phoneticUk": "prə,nʌnsɪ'eɪʃ(ə)n",
+      "translation": "发音，发音法",
+      "sceneMeaning": "发音",
+      "examples": "[]"
+    },
+    {
+      "word": "repeat",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'pit",
+      "phoneticUk": "rɪ'piːt",
+      "translation": "重说，重做；重复",
+      "sceneMeaning": "重复",
+      "examples": "[]"
+    },
+    {
+      "word": "repetition",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛpə'tɪʃən",
+      "phoneticUk": "repɪ'tɪʃ(ə)n",
+      "translation": "重复，反复",
+      "sceneMeaning": "重复，反复；本场景常见用法：复测法",
+      "examples": "[]"
+    },
+    {
+      "word": "resourceful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'sɔrsfl",
+      "phoneticUk": "rɪ'sɔːsfl",
+      "translation": "机智的",
+      "sceneMeaning": "机智的",
+      "examples": "[]"
+    },
+    {
+      "word": "revise",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'vaɪz",
+      "phoneticUk": "rɪ'vaɪz",
+      "translation": "修订，校订；修改；修订",
+      "sceneMeaning": "复习；修订",
+      "examples": "[]"
+    },
+    {
+      "word": "standardize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'stændɚdaɪz",
+      "phoneticUk": "'stændədaiz",
+      "translation": "使标准化",
+      "sceneMeaning": "使标准化",
+      "examples": "[]"
+    },
+    {
+      "word": "theoretical",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",θiə'rɛtɪkəl",
+      "phoneticUk": "θɪə'retɪk(ə)l",
+      "translation": "理论(上)的",
+      "sceneMeaning": "理论的",
+      "examples": "[]"
+    }
+  ]
+}

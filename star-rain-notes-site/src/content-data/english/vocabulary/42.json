@@ -1,0 +1,729 @@
+{
+  "id": "42",
+  "title": "中国传统文化",
+  "layer": "社会与世界主题层",
+  "wordCount": 80,
+  "path": "/english/vocabulary/42/",
+  "words": [
+    {
+      "word": "China",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "tʃaɪnə",
+      "translation": "中国",
+      "sceneMeaning": "中国",
+      "examples": "[]"
+    },
+    {
+      "word": "Chinese",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "",
+      "phoneticUk": ",tʃai'ni:z",
+      "translation": "中国的；中国人",
+      "sceneMeaning": "中文；中国人",
+      "examples": "[]"
+    },
+    {
+      "word": "culture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌltʃɚ",
+      "phoneticUk": "'kʌltʃə",
+      "translation": "文化，文明；教养",
+      "sceneMeaning": "文化",
+      "examples": "[]"
+    },
+    {
+      "word": "go",
+      "partOfSpeech": "v",
+      "phoneticUs": "go",
+      "phoneticUk": "gəʊ",
+      "translation": "去；走；变为",
+      "sceneMeaning": "围棋",
+      "examples": "[]"
+    },
+    {
+      "word": "offer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔfɚ",
+      "phoneticUk": "'ɒfə",
+      "translation": "提供；提出；提供",
+      "sceneMeaning": "提供；提出；提供",
+      "examples": "[]"
+    },
+    {
+      "word": "perform",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɚ'fɔrm",
+      "phoneticUk": "pə'fɔːm",
+      "translation": "履行，执行；演出",
+      "sceneMeaning": "表演；履行",
+      "examples": "[]"
+    },
+    {
+      "word": "romantic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ro'mæntɪk",
+      "phoneticUk": "rə(ʊ)'mæntɪk",
+      "translation": "浪漫的；传奇的",
+      "sceneMeaning": "浪漫的；传奇的",
+      "examples": "[]"
+    },
+    {
+      "word": "character",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kærəktɚ",
+      "phoneticUk": "'kærəktə",
+      "translation": "性格；特性；角色；角色",
+      "sceneMeaning": "汉字；人物；性格",
+      "examples": "[]"
+    },
+    {
+      "word": "fancy",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'fænsi",
+      "phoneticUk": "'fænsɪ",
+      "translation": "想象力；设想；爱好；华丽的；别致的",
+      "sceneMeaning": "想象力；设想；爱好；华丽的；别致的",
+      "examples": "[]"
+    },
+    {
+      "word": "symbol",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪmbl",
+      "phoneticUk": "'sɪmb(ə)l",
+      "translation": "象征；符号，记号；象征，标志",
+      "sceneMeaning": "象征；符号",
+      "examples": "[]"
+    },
+    {
+      "word": "pattern",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pætɚn",
+      "phoneticUk": "'pæt(ə)n",
+      "translation": "型，式样，模，模型；模式",
+      "sceneMeaning": "纹样；模式",
+      "examples": "[]"
+    },
+    {
+      "word": "fame",
+      "partOfSpeech": "n",
+      "phoneticUs": "fem",
+      "phoneticUk": "feɪm",
+      "translation": "名声，名望",
+      "sceneMeaning": "名声，名望",
+      "examples": "[]"
+    },
+    {
+      "word": "harmony",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɑrməni",
+      "phoneticUk": "'hɑːmənɪ",
+      "translation": "调合，协调，和谐；和谐",
+      "sceneMeaning": "和谐",
+      "examples": "[]"
+    },
+    {
+      "word": "fatal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fetl",
+      "phoneticUk": "'feɪt(ə)l",
+      "translation": "致命的；命运的；致命的，攸关的",
+      "sceneMeaning": "致命的；命运的；致命的，攸关的",
+      "examples": "[]"
+    },
+    {
+      "word": "virtue",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɝtʃʊ",
+      "phoneticUk": "'vɜːtjuː; -tʃuː",
+      "translation": "善；美德；优点",
+      "sceneMeaning": "美德；德行",
+      "examples": "[]"
+    },
+    {
+      "word": "bridge",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɪdʒ",
+      "phoneticUk": "brɪdʒ",
+      "translation": "桥，桥梁；桥牌",
+      "sceneMeaning": "桥；桥梁",
+      "examples": "[]"
+    },
+    {
+      "word": "honor",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɑnɚ",
+      "phoneticUk": "'ɒnə(r)",
+      "translation": "荣誉；崇敬，敬重，敬意",
+      "sceneMeaning": "荣誉；崇敬，敬重，敬意",
+      "examples": "[]"
+    },
+    {
+      "word": "medicine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛdsn",
+      "phoneticUk": "'meds(ə)n; 'medɪsɪn",
+      "translation": "内服药；医学",
+      "sceneMeaning": "中医；药物",
+      "examples": "[]"
+    },
+    {
+      "word": "painting",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pentɪŋ",
+      "phoneticUk": "'peɪntɪŋ",
+      "translation": "油画；绘画；着色",
+      "sceneMeaning": "绘画；画作",
+      "examples": "[]"
+    },
+    {
+      "word": "preserve",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɪ'zɝv",
+      "phoneticUk": "prɪ'zɜːv",
+      "translation": "保护；保存；腌渍；保护",
+      "sceneMeaning": "保护；保存",
+      "examples": "[]"
+    },
+    {
+      "word": "celebrate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɛlɪbret",
+      "phoneticUk": "'selɪbreɪt",
+      "translation": "庆祝；歌颂，赞美",
+      "sceneMeaning": "庆祝",
+      "examples": "[]"
+    },
+    {
+      "word": "India",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪndɪə",
+      "phoneticUk": "'ɪndɪə",
+      "translation": "印度",
+      "sceneMeaning": "印度",
+      "examples": "[]"
+    },
+    {
+      "word": "wise",
+      "partOfSpeech": "adj",
+      "phoneticUs": "waɪz",
+      "phoneticUk": "waɪz",
+      "translation": "聪明的，有智慧的",
+      "sceneMeaning": "聪明的，有智慧的",
+      "examples": "[]"
+    },
+    {
+      "word": "brush",
+      "partOfSpeech": "n",
+      "phoneticUs": "brʌʃ",
+      "phoneticUk": "brʌʃ",
+      "translation": "刷子，毛刷；画笔",
+      "sceneMeaning": "毛笔；刷子",
+      "examples": "[]"
+    },
+    {
+      "word": "court",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrt",
+      "phoneticUk": "kɔːt",
+      "translation": "法院，法庭；庭院",
+      "sceneMeaning": "法院，法庭；庭院",
+      "examples": "[]"
+    },
+    {
+      "word": "garden",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡɑrdn",
+      "phoneticUk": "'gɑːd(ə)n",
+      "translation": "花园，菜园；公园",
+      "sceneMeaning": "园林；花园",
+      "examples": "[]"
+    },
+    {
+      "word": "Greek",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "grik",
+      "phoneticUk": "griːk",
+      "translation": "希腊的；希腊人",
+      "sceneMeaning": "希腊的；希腊人；本场景常见用法：古典希腊；古典希腊语（指公元前5和4世纪古典雅文学中使用的希腊语）",
+      "examples": "[]"
+    },
+    {
+      "word": "luck",
+      "partOfSpeech": "n",
+      "phoneticUs": "lʌk",
+      "phoneticUk": "lʌk",
+      "translation": "运气；好运，幸运",
+      "sceneMeaning": "运气；好运，幸运",
+      "examples": "[]"
+    },
+    {
+      "word": "scholarship",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɑlɚʃɪp",
+      "phoneticUk": "'skɔləʃip",
+      "translation": "奖学金",
+      "sceneMeaning": "奖学金",
+      "examples": "[]"
+    },
+    {
+      "word": "tale",
+      "partOfSpeech": "n",
+      "phoneticUs": "tel",
+      "phoneticUk": "teɪl",
+      "translation": "故事，传说",
+      "sceneMeaning": "故事，传说",
+      "examples": "[]"
+    },
+    {
+      "word": "ancestor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ænsɛstɚ",
+      "phoneticUk": "'ænsestə",
+      "translation": "祖宗，祖先",
+      "sceneMeaning": "祖先",
+      "examples": "[]"
+    },
+    {
+      "word": "Australia",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɔ'streljə",
+      "phoneticUk": "ɒ'streɪlɪə",
+      "translation": "澳大利亚",
+      "sceneMeaning": "澳大利亚",
+      "examples": "[]"
+    },
+    {
+      "word": "ceremony",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈsɛrəˌmoʊni",
+      "phoneticUk": "'serɪmənɪ",
+      "translation": "典礼，仪式；礼节；典礼，仪式",
+      "sceneMeaning": "典礼；仪式",
+      "examples": "[]"
+    },
+    {
+      "word": "classical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'klæsɪkl",
+      "phoneticUk": "'klæsɪk(ə)l",
+      "translation": "古典的；经典的",
+      "sceneMeaning": "古典的；经典的",
+      "examples": "[]"
+    },
+    {
+      "word": "fan",
+      "partOfSpeech": "n",
+      "phoneticUs": "fæn",
+      "phoneticUk": "fæn",
+      "translation": "(运动等)狂热爱好者",
+      "sceneMeaning": "扇子；爱好者",
+      "examples": "[]"
+    },
+    {
+      "word": "festival",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈfɛstəvəl",
+      "phoneticUk": "'festɪv(ə)l",
+      "translation": "节日；音乐节",
+      "sceneMeaning": "节日；庆典",
+      "examples": "[]"
+    },
+    {
+      "word": "flag",
+      "partOfSpeech": "n",
+      "phoneticUs": "flæg",
+      "phoneticUk": "flæg",
+      "translation": "旗，旗帜；旗舰旗",
+      "sceneMeaning": "旗，旗帜；旗舰旗",
+      "examples": "[]"
+    },
+    {
+      "word": "ink",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪŋk",
+      "phoneticUk": "ɪŋk",
+      "translation": "墨水，油墨",
+      "sceneMeaning": "墨水；墨",
+      "examples": "[]"
+    },
+    {
+      "word": "knot",
+      "partOfSpeech": "n",
+      "phoneticUs": "nɑt",
+      "phoneticUk": "nɒt",
+      "translation": "(绳的)结，(树的)节",
+      "sceneMeaning": "结；绳结",
+      "examples": "[]"
+    },
+    {
+      "word": "legend",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛdʒənd",
+      "phoneticUk": "'ledʒ(ə)nd",
+      "translation": "传说，传奇；传奇",
+      "sceneMeaning": "传说；传奇",
+      "examples": "[]"
+    },
+    {
+      "word": "medal",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛdl",
+      "phoneticUk": "'med(ə)l",
+      "translation": "奖章，勋章，纪念章",
+      "sceneMeaning": "奖章，勋章，纪念章；本场景常见用法：国会荣誉勋章",
+      "examples": "[]"
+    },
+    {
+      "word": "myth",
+      "partOfSpeech": "n",
+      "phoneticUs": "mɪθ",
+      "phoneticUk": "mɪθ",
+      "translation": "神话",
+      "sceneMeaning": "神话；迷思",
+      "examples": "[]"
+    },
+    {
+      "word": "opera",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑprə",
+      "phoneticUk": "'ɒp(ə)rə",
+      "translation": "歌剧",
+      "sceneMeaning": "戏曲；歌剧",
+      "examples": "[]"
+    },
+    {
+      "word": "poetry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'poətri",
+      "phoneticUk": "'pəʊɪtrɪ",
+      "translation": "诗，诗歌，诗作",
+      "sceneMeaning": "诗；诗歌",
+      "examples": "[]"
+    },
+    {
+      "word": "praise",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "prez",
+      "phoneticUk": "preɪz",
+      "translation": "赞扬，赞美；赞扬",
+      "sceneMeaning": "赞扬，赞美；赞扬",
+      "examples": "[]"
+    },
+    {
+      "word": "seal",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sil",
+      "phoneticUk": "sil",
+      "translation": "封蜡；印记；封",
+      "sceneMeaning": "印章；封印",
+      "examples": "[]"
+    },
+    {
+      "word": "worship",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'wɝʃɪp",
+      "phoneticUk": "'wə:ʃip",
+      "translation": "礼拜；崇拜；崇拜",
+      "sceneMeaning": "祭拜；崇拜",
+      "examples": "[]"
+    },
+    {
+      "word": "academy",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kædəmi",
+      "phoneticUk": "ə'kædəmɪ",
+      "translation": "私立中学；专科院校",
+      "sceneMeaning": "书院；学院",
+      "examples": "[]"
+    },
+    {
+      "word": "alphabet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ælfə'bɛt",
+      "phoneticUk": "'ælfəbet",
+      "translation": "字母表，字母系统",
+      "sceneMeaning": "字母表，字母系统；本场景常见用法：国际音标；国际语音字母",
+      "examples": "[]"
+    },
+    {
+      "word": "ash",
+      "partOfSpeech": "n",
+      "phoneticUs": "æʃ",
+      "phoneticUk": "æʃ",
+      "translation": "灰，灰末；骨灰",
+      "sceneMeaning": "灰，灰末；骨灰；本场景常见用法：水曲柳",
+      "examples": "[]"
+    },
+    {
+      "word": "bless",
+      "partOfSpeech": "v",
+      "phoneticUs": "blɛs",
+      "phoneticUk": "bles",
+      "translation": "为…祝福；保佑，祝福",
+      "sceneMeaning": "为…祝福；保佑，祝福",
+      "examples": "[]"
+    },
+    {
+      "word": "bronze",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɑnz",
+      "phoneticUk": "brɒnz",
+      "translation": "青铜；青铜制品",
+      "sceneMeaning": "青铜；青铜器",
+      "examples": "[]"
+    },
+    {
+      "word": "church",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɝtʃ",
+      "phoneticUk": "tʃɜːtʃ",
+      "translation": "教堂，礼拜堂；教会",
+      "sceneMeaning": "教堂，礼拜堂；教会",
+      "examples": "[]"
+    },
+    {
+      "word": "civil",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɪvl",
+      "phoneticUk": "'sɪv(ə)l; -ɪl",
+      "translation": "公民的；文职的",
+      "sceneMeaning": "公民的；文职的",
+      "examples": "[]"
+    },
+    {
+      "word": "civilization",
+      "partOfSpeech": "n",
+      "phoneticUs": ",sɪvələ'zeʃən",
+      "phoneticUk": "ˌsɪvɪlaɪˈzeɪʃən",
+      "translation": "文明，文化；开化；文明",
+      "sceneMeaning": "文明",
+      "examples": "[]"
+    },
+    {
+      "word": "compass",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌmpəs",
+      "phoneticUk": "'kʌmpəs",
+      "translation": "罗盘，指南针；圆规",
+      "sceneMeaning": "指南针；罗盘",
+      "examples": "[]"
+    },
+    {
+      "word": "custom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌstəm",
+      "phoneticUk": "'kʌstəm",
+      "translation": "习惯，风俗；海关",
+      "sceneMeaning": "习俗；惯例",
+      "examples": "[]"
+    },
+    {
+      "word": "dragon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dræɡən",
+      "phoneticUk": "'dræg(ə)n",
+      "translation": "龙；凶暴的人",
+      "sceneMeaning": "龙",
+      "examples": "[]"
+    },
+    {
+      "word": "drum",
+      "partOfSpeech": "n",
+      "phoneticUs": "drʌm",
+      "phoneticUk": "drʌm",
+      "translation": "鼓；鼓状物，圆桶",
+      "sceneMeaning": "鼓",
+      "examples": "[]"
+    },
+    {
+      "word": "fable",
+      "partOfSpeech": "n",
+      "phoneticUs": "'febl",
+      "phoneticUk": "'feɪb(ə)l",
+      "translation": "寓言；虚构的故事",
+      "sceneMeaning": "寓言",
+      "examples": "[]"
+    },
+    {
+      "word": "fate",
+      "partOfSpeech": "n",
+      "phoneticUs": "fet",
+      "phoneticUk": "feɪt",
+      "translation": "命运，天数；命运",
+      "sceneMeaning": "命运",
+      "examples": "[]"
+    },
+    {
+      "word": "feast",
+      "partOfSpeech": "n",
+      "phoneticUs": "fist",
+      "phoneticUk": "fiːst",
+      "translation": "盛宴，筵席；节日",
+      "sceneMeaning": "盛宴，筵席；节日",
+      "examples": "[]"
+    },
+    {
+      "word": "fortune",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrtʃən",
+      "phoneticUk": "'fɔːtʃuːn; -tʃ(ə)n",
+      "translation": "命运，运气；财产",
+      "sceneMeaning": "运气；财富",
+      "examples": "[]"
+    },
+    {
+      "word": "gardener",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gɑrdənɚ",
+      "phoneticUk": "'ɡɑːdənə",
+      "translation": "园丁，花匠",
+      "sceneMeaning": "园丁，花匠",
+      "examples": "[]"
+    },
+    {
+      "word": "gentleman",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɛntlmən",
+      "phoneticUk": "'dʒent(ə)lmən",
+      "translation": "绅士；有教养的人",
+      "sceneMeaning": "君子；绅士",
+      "examples": "[]"
+    },
+    {
+      "word": "gunpowder",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡʌnpaʊdɚ",
+      "phoneticUk": "'gʌnpaʊdə",
+      "translation": "黑色火药；有烟火药",
+      "sceneMeaning": "火药",
+      "examples": "[]"
+    },
+    {
+      "word": "heaven",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛvn",
+      "phoneticUk": "'hev(ə)n",
+      "translation": "天堂；天，天空",
+      "sceneMeaning": "天堂；天，天空；本场景常见用法：天子",
+      "examples": "[]"
+    },
+    {
+      "word": "honour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔnə",
+      "phoneticUk": "'ɒnə",
+      "translation": "光荣；尊敬，敬意",
+      "sceneMeaning": "光荣；尊敬，敬意",
+      "examples": "[]"
+    },
+    {
+      "word": "humorous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hjumərəs",
+      "phoneticUk": "'hjuːm(ə)rəs",
+      "translation": "富于幽默的，诙谐的",
+      "sceneMeaning": "富于幽默的，诙谐的",
+      "examples": "[]"
+    },
+    {
+      "word": "idiom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪdɪəm",
+      "phoneticUk": "'ɪdɪəm",
+      "translation": "习语，成语",
+      "sceneMeaning": "成语；习语",
+      "examples": "[]"
+    },
+    {
+      "word": "inherit",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'hɛrɪt",
+      "phoneticUk": "ɪn'herɪt",
+      "translation": "继承(传统等)；继承",
+      "sceneMeaning": "继承；传承",
+      "examples": "[]"
+    },
+    {
+      "word": "kite",
+      "partOfSpeech": "n",
+      "phoneticUs": "kaɪt",
+      "phoneticUk": "kaɪt",
+      "translation": "风筝",
+      "sceneMeaning": "风筝",
+      "examples": "[]"
+    },
+    {
+      "word": "lantern",
+      "partOfSpeech": "n",
+      "phoneticUs": "'læntɚn",
+      "phoneticUk": "'læntən",
+      "translation": "提灯，灯笼",
+      "sceneMeaning": "灯笼",
+      "examples": "[]"
+    },
+    {
+      "word": "poet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'poət",
+      "phoneticUk": "'pəʊɪt",
+      "translation": "诗人",
+      "sceneMeaning": "诗人",
+      "examples": "[]"
+    },
+    {
+      "word": "scholar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɑlɚ",
+      "phoneticUk": "'skɒlə",
+      "translation": "学者(尤指文学方面)",
+      "sceneMeaning": "学者；士人",
+      "examples": "[]"
+    },
+    {
+      "word": "silk",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɪlk",
+      "phoneticUk": "sɪlk",
+      "translation": "蚕丝，丝，丝织品",
+      "sceneMeaning": "丝；丝绸",
+      "examples": "[]"
+    },
+    {
+      "word": "symbolize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɪmbəlaɪz",
+      "phoneticUk": "ˈsɪmbəlaɪz",
+      "translation": "象征",
+      "sceneMeaning": "象征",
+      "examples": "[]"
+    },
+    {
+      "word": "temple",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛmpl",
+      "phoneticUk": "ˈtempl",
+      "translation": "圣堂，神殿，庙宇",
+      "sceneMeaning": "寺庙；庙宇",
+      "examples": "[]"
+    },
+    {
+      "word": "waggon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wægən",
+      "phoneticUk": "'wæɡən",
+      "translation": "四轮运货马车",
+      "sceneMeaning": "四轮运货马车",
+      "examples": "[]"
+    },
+    {
+      "word": "weave",
+      "partOfSpeech": "v",
+      "phoneticUs": "wiv",
+      "phoneticUk": "wiːv",
+      "translation": "织，编；纺织",
+      "sceneMeaning": "编织；织造",
+      "examples": "[]"
+    }
+  ]
+}

@@ -1,0 +1,552 @@
+{
+  "slug": "java-delivery-deployment-ops",
+  "title": "Java 交付、部署与运维",
+  "description": "Java 技术体系配套工程化教程：覆盖测试体系与交付质量、Linux/Nginx 部署、Docker 与 Compose、CI/CD 版本发布、可观测性与故障排查。",
+  "category": "Java全栈知识体系",
+  "categorySlug": "javaquanzhan",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 64,
+  "wordCount": 0,
+  "categoryId": "1",
+  "groups": [
+    {
+      "title": "测试体系与交付质量",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "单元测试、集成测试、接口测试与端到端测试的区别",
+          "description": "单元测试、集成测试、接口测试与端到端测试的区别",
+          "path": "/tutorials/java-delivery-deployment-ops/1-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "JUnit Jupiter：测试组织、断言、生命周期与参数化测试",
+          "description": "JUnit Jupiter：测试组织、断言、生命周期与参数化测试",
+          "path": "/tutorials/java-delivery-deployment-ops/1-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-3",
+          "title": "Mockito：Mock、Stub、验证调用与测试边界",
+          "description": "Mockito：Mock、Stub、验证调用与测试边界",
+          "path": "/tutorials/java-delivery-deployment-ops/1-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-4",
+          "title": "Spring Boot Test、测试 Profile 与测试配置",
+          "description": "Spring Boot Test、测试 Profile 与测试配置",
+          "path": "/tutorials/java-delivery-deployment-ops/1-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-5",
+          "title": "MockMvc 与 Controller/API 测试",
+          "description": "MockMvc 与 Controller/API 测试",
+          "path": "/tutorials/java-delivery-deployment-ops/1-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-6",
+          "title": "Service 业务规则、Mapper、事务与异常路径测试",
+          "description": "Service 业务规则、Mapper、事务与异常路径测试",
+          "path": "/tutorials/java-delivery-deployment-ops/1-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-7",
+          "title": "权限、参数边界、重复提交与数据一致性测试",
+          "description": "权限、参数边界、重复提交与数据一致性测试",
+          "path": "/tutorials/java-delivery-deployment-ops/1-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-8",
+          "title": "测试数据准备、清理、隔离与可重复执行",
+          "description": "测试数据准备、清理、隔离与可重复执行",
+          "path": "/tutorials/java-delivery-deployment-ops/1-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-9",
+          "title": "测试金字塔、覆盖率与测试的实际价值",
+          "description": "测试金字塔、覆盖率与测试的实际价值",
+          "path": "/tutorials/java-delivery-deployment-ops/1-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-10",
+          "title": "代码评审、静态检查、格式化与构建失败定位",
+          "description": "代码评审、静态检查、格式化与构建失败定位",
+          "path": "/tutorials/java-delivery-deployment-ops/1-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-11",
+          "title": "数据库集成测试：真实依赖、测试库与容器化测试的取舍",
+          "description": "数据库集成测试：真实依赖、测试库与容器化测试的取舍",
+          "path": "/tutorials/java-delivery-deployment-ops/1-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-12",
+          "title": "回归测试：修复 Bug 后验证旧功能没有被破坏",
+          "description": "回归测试：修复 Bug 后验证旧功能没有被破坏",
+          "path": "/tutorials/java-delivery-deployment-ops/1-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-13",
+          "title": "性能测试基础：并发用户、吞吐量、响应时间与错误率",
+          "description": "性能测试基础：并发用户、吞吐量、响应时间与错误率",
+          "path": "/tutorials/java-delivery-deployment-ops/1-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-14",
+          "title": "测试不是追求“全部通过”的形式动作，而是验证需求、边界与风险",
+          "description": "测试不是追求“全部通过”的形式动作，而是验证需求、边界与风险",
+          "path": "/tutorials/java-delivery-deployment-ops/1-14/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Linux、Nginx 与 Java 项目部署",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "Linux 文件、目录、权限、用户与常用命令",
+          "description": "Linux 文件、目录、权限、用户与常用命令",
+          "path": "/tutorials/java-delivery-deployment-ops/2-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "进程、端口、网络连接、磁盘、内存与 CPU 的查看",
+          "description": "进程、端口、网络连接、磁盘、内存与 CPU 的查看",
+          "path": "/tutorials/java-delivery-deployment-ops/2-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "`ps`、`top`、`free`、`df`、`du`、`grep`、`tail`、`ss`、`curl` 等常用命令",
+          "description": "`ps`、`top`、`free`、`df`、`du`、`grep`、`tail`、`ss`、`curl` 等常用命令",
+          "path": "/tutorials/java-delivery-deployment-ops/2-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-4",
+          "title": "日志查看、进程启动/停止、退出码与故障初步定位",
+          "description": "日志查看、进程启动/停止、退出码与故障初步定位",
+          "path": "/tutorials/java-delivery-deployment-ops/2-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-5",
+          "title": "Nginx：静态资源、反向代理、域名与负载均衡基础",
+          "description": "Nginx：静态资源、反向代理、域名与负载均衡基础",
+          "path": "/tutorials/java-delivery-deployment-ops/2-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-6",
+          "title": "TLS 证书、HTTPS 跳转、主域名规范与基础安全配置",
+          "description": "TLS 证书、HTTPS 跳转、主域名规范与基础安全配置",
+          "path": "/tutorials/java-delivery-deployment-ops/2-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-7",
+          "title": "Spring Boot JAR 部署、环境配置、启动参数与优雅停止",
+          "description": "Spring Boot JAR 部署、环境配置、启动参数与优雅停止",
+          "path": "/tutorials/java-delivery-deployment-ops/2-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-8",
+          "title": "前端 `dist` 部署、Nginx 静态托管与后端 API 反向代理",
+          "description": "前端 `dist` 部署、Nginx 静态托管与后端 API 反向代理",
+          "path": "/tutorials/java-delivery-deployment-ops/2-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-9",
+          "title": "生产配置、日志路径、文件权限、防火墙端口与敏感信息保护",
+          "description": "生产配置、日志路径、文件权限、防火墙端口与敏感信息保护",
+          "path": "/tutorials/java-delivery-deployment-ops/2-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-10",
+          "title": "数据库初始化、备份、恢复演练与发布回滚",
+          "description": "数据库初始化、备份、恢复演练与发布回滚",
+          "path": "/tutorials/java-delivery-deployment-ops/2-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-11",
+          "title": "单体项目的发布流程、部署检查清单与验收",
+          "description": "单体项目的发布流程、部署检查清单与验收",
+          "path": "/tutorials/java-delivery-deployment-ops/2-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-12",
+          "title": "常见部署故障：端口未监听、反向代理错误、权限不足、环境变量缺失、数据库连接失败",
+          "description": "常见部署故障：端口未监听、反向代理错误、权限不足、环境变量缺失、数据库连接失败",
+          "path": "/tutorials/java-delivery-deployment-ops/2-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-13",
+          "title": "选择部署方式时比较维护成本与可恢复性，而不是把 Docker 视为唯一正确方案",
+          "description": "选择部署方式时比较维护成本与可恢复性，而不是把 Docker 视为唯一正确方案",
+          "path": "/tutorials/java-delivery-deployment-ops/2-13/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Docker 与 Compose",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "Docker 解决什么问题：镜像与容器的区别",
+          "description": "Docker 解决什么问题：镜像与容器的区别",
+          "path": "/tutorials/java-delivery-deployment-ops/3-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "镜像、容器、仓库、Dockerfile 与镜像构建",
+          "description": "镜像、容器、仓库、Dockerfile 与镜像构建",
+          "path": "/tutorials/java-delivery-deployment-ops/3-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "容器端口映射、环境变量、网络与数据卷",
+          "description": "容器端口映射、环境变量、网络与数据卷",
+          "path": "/tutorials/java-delivery-deployment-ops/3-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "Java 应用 Dockerfile：构建、运行、日志与信号处理",
+          "description": "Java 应用 Dockerfile：构建、运行、日志与信号处理",
+          "path": "/tutorials/java-delivery-deployment-ops/3-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-5",
+          "title": "前端静态资源与 Nginx 容器化",
+          "description": "前端静态资源与 Nginx 容器化",
+          "path": "/tutorials/java-delivery-deployment-ops/3-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-6",
+          "title": "Docker Compose：描述并启动多个应用服务",
+          "description": "Docker Compose：描述并启动多个应用服务",
+          "path": "/tutorials/java-delivery-deployment-ops/3-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-7",
+          "title": "Compose 中的服务依赖、网络、卷与环境配置",
+          "description": "Compose 中的服务依赖、网络、卷与环境配置",
+          "path": "/tutorials/java-delivery-deployment-ops/3-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-8",
+          "title": "数据持久化、镜像更新、容器重建与回滚",
+          "description": "数据持久化、镜像更新、容器重建与回滚",
+          "path": "/tutorials/java-delivery-deployment-ops/3-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-9",
+          "title": "镜像体积、运行用户、密钥保护与基础安全",
+          "description": "镜像体积、运行用户、密钥保护与基础安全",
+          "path": "/tutorials/java-delivery-deployment-ops/3-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-10",
+          "title": "容器健康检查、日志查看、资源限制与故障定位",
+          "description": "容器健康检查、日志查看、资源限制与故障定位",
+          "path": "/tutorials/java-delivery-deployment-ops/3-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-11",
+          "title": "何时使用 Docker，何时沿用 JAR + Nginx 部署",
+          "description": "何时使用 Docker，何时沿用 JAR + Nginx 部署",
+          "path": "/tutorials/java-delivery-deployment-ops/3-11/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "CI/CD 与版本发布",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "CI、持续交付、持续部署、构建、测试、制品与部署的概念",
+          "description": "CI、持续交付、持续部署、构建、测试、制品与部署的概念",
+          "path": "/tutorials/java-delivery-deployment-ops/4-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "GitHub Actions 等流水线工具的基本组成",
+          "description": "GitHub Actions 等流水线工具的基本组成",
+          "path": "/tutorials/java-delivery-deployment-ops/4-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-3",
+          "title": "提交代码后自动构建、执行测试与生成制品",
+          "description": "提交代码后自动构建、执行测试与生成制品",
+          "path": "/tutorials/java-delivery-deployment-ops/4-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-4",
+          "title": "前后端分别构建、版本标记与制品管理",
+          "description": "前后端分别构建、版本标记与制品管理",
+          "path": "/tutorials/java-delivery-deployment-ops/4-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-5",
+          "title": "环境变量、部署密钥与流水线中的敏感信息保护",
+          "description": "环境变量、部署密钥与流水线中的敏感信息保护",
+          "path": "/tutorials/java-delivery-deployment-ops/4-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-6",
+          "title": "自动部署的权限控制、失败处理与人工审批",
+          "description": "自动部署的权限控制、失败处理与人工审批",
+          "path": "/tutorials/java-delivery-deployment-ops/4-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-7",
+          "title": "数据库变更、发布顺序、回滚与兼容性检查",
+          "description": "数据库变更、发布顺序、回滚与兼容性检查",
+          "path": "/tutorials/java-delivery-deployment-ops/4-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-8",
+          "title": "小型项目适用的最小化 CI/CD 流程",
+          "description": "小型项目适用的最小化 CI/CD 流程",
+          "path": "/tutorials/java-delivery-deployment-ops/4-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-9",
+          "title": "CI/CD 不只是自动上传文件，还应提供可重复的构建和可验证的交付",
+          "description": "CI/CD 不只是自动上传文件，还应提供可重复的构建和可验证的交付",
+          "path": "/tutorials/java-delivery-deployment-ops/4-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "可观测性、故障排查与性能优化",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "性能指标：吞吐量、并发、响应时间、错误率、P95/P99",
+          "description": "性能指标：吞吐量、并发、响应时间、错误率、P95/P99",
+          "path": "/tutorials/java-delivery-deployment-ops/5-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "容量评估：CPU、内存、网络带宽、连接池与依赖服务上限",
+          "description": "容量评估：CPU、内存、网络带宽、连接池与依赖服务上限",
+          "path": "/tutorials/java-delivery-deployment-ops/5-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "日志、指标、链路追踪三类观测数据的区别",
+          "description": "日志、指标、链路追踪三类观测数据的区别",
+          "path": "/tutorials/java-delivery-deployment-ops/5-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "Spring Boot Actuator 与基础健康状态检查",
+          "description": "Spring Boot Actuator 与基础健康状态检查",
+          "path": "/tutorials/java-delivery-deployment-ops/5-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "Micrometer、Prometheus、Grafana、OpenTelemetry 的基本职责与适用场景",
+          "description": "Micrometer、Prometheus、Grafana、OpenTelemetry 的基本职责与适用场景",
+          "path": "/tutorials/java-delivery-deployment-ops/5-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-6",
+          "title": "CPU 使用率异常：进程、线程与热点代码的排查思路",
+          "description": "CPU 使用率异常：进程、线程与热点代码的排查思路",
+          "path": "/tutorials/java-delivery-deployment-ops/5-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-7",
+          "title": "内存持续增长、OOM、频繁 GC 与基础诊断",
+          "description": "内存持续增长、OOM、频繁 GC 与基础诊断",
+          "path": "/tutorials/java-delivery-deployment-ops/5-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-8",
+          "title": "请求变慢：从浏览器、Nginx、应用到数据库逐层定位",
+          "description": "请求变慢：从浏览器、Nginx、应用到数据库逐层定位",
+          "path": "/tutorials/java-delivery-deployment-ops/5-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-9",
+          "title": "数据库连接池耗尽、应用线程池耗尽与请求堆积",
+          "description": "数据库连接池耗尽、应用线程池耗尽与请求堆积",
+          "path": "/tutorials/java-delivery-deployment-ops/5-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-10",
+          "title": "慢 SQL、锁等待、索引使用不当与常见优化",
+          "description": "慢 SQL、锁等待、索引使用不当与常见优化",
+          "path": "/tutorials/java-delivery-deployment-ops/5-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-11",
+          "title": "文件、网络、配置、权限与依赖服务导致的部署故障",
+          "description": "文件、网络、配置、权限与依赖服务导致的部署故障",
+          "path": "/tutorials/java-delivery-deployment-ops/5-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-12",
+          "title": "线程转储、堆转储、GC 日志与 JVM 诊断工具的基本用途",
+          "description": "线程转储、堆转储、GC 日志与 JVM 诊断工具的基本用途",
+          "path": "/tutorials/java-delivery-deployment-ops/5-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-13",
+          "title": "JMeter 等压力测试工具与测试结果解读",
+          "description": "JMeter 等压力测试工具与测试结果解读",
+          "path": "/tutorials/java-delivery-deployment-ops/5-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-14",
+          "title": "性能优化流程：建立基线 → 找瓶颈 → 提出假设 → 验证 → 回归测试",
+          "description": "性能优化流程：建立基线 → 找瓶颈 → 提出假设 → 验证 → 回归测试",
+          "path": "/tutorials/java-delivery-deployment-ops/5-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-15",
+          "title": "超时、有限重试、限流与优雅失败的应用层基本原则",
+          "description": "超时、有限重试、限流与优雅失败的应用层基本原则",
+          "path": "/tutorials/java-delivery-deployment-ops/5-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-16",
+          "title": "先测量、再优化：避免只凭感觉调整参数",
+          "description": "先测量、再优化：避免只凭感觉调整参数",
+          "path": "/tutorials/java-delivery-deployment-ops/5-16/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-17",
+          "title": "故障记录：现象、影响、证据、根因、修复、验证与预防措施",
+          "description": "故障记录：现象、影响、证据、根因、修复、验证与预防措施",
+          "path": "/tutorials/java-delivery-deployment-ops/5-17/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/java-delivery-deployment-ops/",
+  "sortOrder": 3
+}

@@ -1,0 +1,64 @@
+{
+  "status": "PASS",
+  "method": "Live Chrome through browser control; actual static dist preview",
+  "layoutChecks": 44,
+  "viewportWidths": [
+    320,
+    390,
+    768,
+    1440
+  ],
+  "paths": [
+    "/english/",
+    "/english/vocabulary/",
+    "/english/vocabulary/t01/",
+    "/english/vocabulary/t01/t01-01/",
+    "/english/vocabulary/58/",
+    "/english/world/",
+    "/english/world/r01/",
+    "/english/world/r01/r01-01/",
+    "/english/essays/",
+    "/english/grammar/",
+    "/english/grammar/1-1/"
+  ],
+  "horizontalOverflowFailures": [],
+  "singleH1Failures": [],
+  "interactions": {
+    "primaryFilter": "人体与健康 → 96 条，首屏 24 条",
+    "secondaryFilter": "人体外部部位 → 9 条；食物 → 61 条 → 谷物 17 条",
+    "mobileControls": "390px 两个下拉框联动，切换一级分类清空二级选择并回到第一页",
+    "pagination": "基础概念 217 条；1–24 → 25–48；翻页回到结果区域",
+    "pageSizeAndLanguage": "切换分类保留 size=12、display=en，显示 12 条且中文隐藏",
+    "history": "后退从二级主题回到对应一级分类，选中项和结果恢复",
+    "worldArticlePagination": "隔离文章：14 篇，第 1 页 12 篇，第 2 页 2 篇；科技分类 1 篇；空主题显示空态",
+    "themeTransition": "真实浏览器捕捉 animating 阶段；clip-path: circle(5.52382% at 86.4103% 3.3175%)；完成后 busy 和 phase 清除",
+    "currentPreview": "用户已打开的 4399 词汇页已刷新；旧分类卡片 0，当前可见词条 24"
+  },
+  "isolatedArticleLayouts": [
+    {
+      "type": "world",
+      "width": 390,
+      "horizontalOverflow": false
+    },
+    {
+      "type": "essay",
+      "width": 390,
+      "horizontalOverflow": false
+    },
+    {
+      "type": "essay",
+      "width": 1440,
+      "horizontalOverflow": false
+    }
+  ],
+  "browserConsoleWarningsOrErrors": [],
+  "limitations": [
+    "正式世界/随笔清单仍为空；有内容的文章筛选分页在隔离副本中验收。",
+    "44 项布局覆盖代表页面，不等同于逐页截图检查全部 3275 页。"
+  ],
+  "revision": "two-level-filters-and-circular-theme-reveal",
+  "screenshots": [
+    "../.cache/english-filter-desktop.jpg",
+    "../.cache/english-theme-reveal.jpg"
+  ]
+}

@@ -1,0 +1,792 @@
+{
+  "id": "44",
+  "title": "军事 / 战争 / 和平 / 安全",
+  "layer": "社会与世界主题层",
+  "wordCount": 87,
+  "path": "/english/vocabulary/44/",
+  "words": [
+    {
+      "word": "aid",
+      "partOfSpeech": "n",
+      "phoneticUs": "ed",
+      "phoneticUk": "eɪd",
+      "translation": "帮助，救护；助手",
+      "sceneMeaning": "援助；帮助",
+      "examples": "[]"
+    },
+    {
+      "word": "chief",
+      "partOfSpeech": "adj",
+      "phoneticUs": "tʃif",
+      "phoneticUk": "tʃiːf",
+      "translation": "主要的；首席的",
+      "sceneMeaning": "主要的；首席的；本场景常见用法：统帅，总司令",
+      "examples": "[]"
+    },
+    {
+      "word": "company",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌmpəni",
+      "phoneticUk": "'kʌmp(ə)nɪ",
+      "translation": "公司，商号；同伴",
+      "sceneMeaning": "连；公司",
+      "examples": "[]"
+    },
+    {
+      "word": "generally",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'dʒɛnrəli",
+      "phoneticUk": "'dʒen(ə)rəlɪ",
+      "translation": "一般地；通常地",
+      "sceneMeaning": "一般地；通常地；本场景常见用法：公认会计原则",
+      "examples": "[]"
+    },
+    {
+      "word": "mobile",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈmobəl; ˈmoˌbaɪl; ˈmoˌbil",
+      "phoneticUk": "ˈməʊbaɪl",
+      "translation": "运动的；流动的",
+      "sceneMeaning": "运动的；流动的",
+      "examples": "[]"
+    },
+    {
+      "word": "order",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔrdɚ",
+      "phoneticUk": "'ɔːdə",
+      "translation": "次序；整齐；命令",
+      "sceneMeaning": "命令；秩序",
+      "examples": "[]"
+    },
+    {
+      "word": "protect",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'tɛkt",
+      "phoneticUk": "prə'tekt",
+      "translation": "保护，保卫，警戒",
+      "sceneMeaning": "保护",
+      "examples": "[]"
+    },
+    {
+      "word": "boss",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bɑs",
+      "phoneticUk": "bɒs",
+      "translation": "老板，上司；指挥",
+      "sceneMeaning": "老板，上司；指挥",
+      "examples": "[]"
+    },
+    {
+      "word": "security",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'kjʊrəti",
+      "phoneticUk": "sɪ'kjʊərətɪ",
+      "translation": "安全，安全感；安全，安保",
+      "sceneMeaning": "安全；保障",
+      "examples": "[]"
+    },
+    {
+      "word": "front",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "frʌnt",
+      "phoneticUk": "frʌnt",
+      "translation": "前面的；前部",
+      "sceneMeaning": "前线；正面",
+      "examples": "[]"
+    },
+    {
+      "word": "strategy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'strætədʒi",
+      "phoneticUk": "ˈstrætədʒɪ",
+      "translation": "战略；策略；策略，战略",
+      "sceneMeaning": "战略；策略",
+      "examples": "[]"
+    },
+    {
+      "word": "advanced",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əd'vænst",
+      "phoneticUk": "æd'vɑːnst",
+      "translation": "先进的；高级的；高级的",
+      "sceneMeaning": "先进的；高级的；高级的",
+      "examples": "[]"
+    },
+    {
+      "word": "general",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dʒɛnrəl",
+      "phoneticUk": "'dʒen(ə)r(ə)l",
+      "translation": "总的；一般的n将军",
+      "sceneMeaning": "将军",
+      "examples": "[]"
+    },
+    {
+      "word": "military",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɪlətɛri",
+      "phoneticUk": "'mɪlɪt(ə)rɪ",
+      "translation": "军事的；军人的；军队的，军事的",
+      "sceneMeaning": "军事的；军队的",
+      "examples": "[]"
+    },
+    {
+      "word": "officer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔfɪsɚ",
+      "phoneticUk": "'ɒfɪsə",
+      "translation": "官员；干事；军官",
+      "sceneMeaning": "军官；官员",
+      "examples": "[]"
+    },
+    {
+      "word": "campaign",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæm'pen",
+      "phoneticUk": "kæm'peɪn",
+      "translation": "战役；运动；活动",
+      "sceneMeaning": "战役；运动",
+      "examples": "[]"
+    },
+    {
+      "word": "shield",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ʃild",
+      "phoneticUk": "ʃiːld",
+      "translation": "盾；防护物；保护",
+      "sceneMeaning": "盾；防护物",
+      "examples": "[]"
+    },
+    {
+      "word": "advance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "əd'væns",
+      "phoneticUk": "əd'vɑːns",
+      "translation": "前进；提高；进展；提前；前进",
+      "sceneMeaning": "推进；前进",
+      "examples": "[]"
+    },
+    {
+      "word": "divide",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vaɪd",
+      "phoneticUk": "dɪ'vaɪd",
+      "translation": "分；分配；分开；分开",
+      "sceneMeaning": "分；分配；分开；分开",
+      "examples": "[]"
+    },
+    {
+      "word": "fight",
+      "partOfSpeech": "v",
+      "phoneticUs": "faɪt",
+      "phoneticUk": "faɪt",
+      "translation": "打(仗)；斗争",
+      "sceneMeaning": "打(仗)；斗争",
+      "examples": "[]"
+    },
+    {
+      "word": "recruit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'krut",
+      "phoneticUk": "rikru:t",
+      "translation": "招募，吸收；新兵，新成员",
+      "sceneMeaning": "新兵；招募对象",
+      "examples": "[]"
+    },
+    {
+      "word": "encounter",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪn'kaʊntɚ",
+      "phoneticUk": "ɪn'kaʊntə; en-",
+      "translation": "遭遇，遇到；遭遇",
+      "sceneMeaning": "遭遇，遇到；遭遇",
+      "examples": "[]"
+    },
+    {
+      "word": "intellectual",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": ",ɪntə'lɛktʃuəl",
+      "phoneticUk": ",ɪntə'lektʃʊəl; -tjʊəl",
+      "translation": "知识分子；智力的",
+      "sceneMeaning": "知识分子；智力的；本场景常见用法：世界知识产权组织（略作WIPO）",
+      "examples": "[]"
+    },
+    {
+      "word": "intelligence",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɛlɪdʒəns",
+      "phoneticUk": "ɪn'telɪdʒ(ə)ns",
+      "translation": "智力；理解力；情报；智力，智慧，理解力",
+      "sceneMeaning": "情报；智力",
+      "examples": "[]"
+    },
+    {
+      "word": "negotiate",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪ'ɡoʃɪet",
+      "phoneticUk": "nɪ'ɡəʊʃɪeɪt",
+      "translation": "谈判，协商，交涉",
+      "sceneMeaning": "谈判；协商",
+      "examples": "[]"
+    },
+    {
+      "word": "sword",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɔːrd",
+      "phoneticUk": "sɔːd",
+      "translation": "剑，刀",
+      "sceneMeaning": "剑，刀",
+      "examples": "[]"
+    },
+    {
+      "word": "withstand",
+      "partOfSpeech": "v",
+      "phoneticUs": "wɪð'stænd",
+      "phoneticUk": "wɪð'stænd",
+      "translation": "抵挡，反抗",
+      "sceneMeaning": "抵挡，反抗",
+      "examples": "[]"
+    },
+    {
+      "word": "attack",
+      "partOfSpeech": "vt&vi&n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "攻击，进攻",
+      "sceneMeaning": "攻击",
+      "examples": "[]"
+    },
+    {
+      "word": "command",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'mænd",
+      "phoneticUk": "kə'mɑːnd",
+      "translation": "命令，指挥；控制",
+      "sceneMeaning": "指挥；命令",
+      "examples": "[]"
+    },
+    {
+      "word": "confrontation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑnfrən'teʃən",
+      "phoneticUk": ",kɒnfrʌn'teɪʃn",
+      "translation": "冲突，对抗",
+      "sceneMeaning": "冲突，对抗；本场景常见用法：军事对峙",
+      "examples": "[]"
+    },
+    {
+      "word": "division",
+      "partOfSpeech": "n",
+      "phoneticUs": "də'vɪʒən",
+      "phoneticUk": "dɪ'vɪʒ(ə)n",
+      "translation": "分，分配；除法；除法；部门",
+      "sceneMeaning": "师；部门",
+      "examples": "[]"
+    },
+    {
+      "word": "rank",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ræŋk",
+      "phoneticUk": "ræŋk",
+      "translation": "排，横行；社会阶层；具有…等级[地位]；衔，阶层",
+      "sceneMeaning": "军衔；等级",
+      "examples": "[]"
+    },
+    {
+      "word": "resist",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "rɪ'zɪst",
+      "phoneticUk": "rɪ'zɪst",
+      "translation": "抵抗，抵制；抵抗，抗拒",
+      "sceneMeaning": "抵抗，抵制；抵抗，抗拒",
+      "examples": "[]"
+    },
+    {
+      "word": "tank",
+      "partOfSpeech": "n",
+      "phoneticUs": "tæŋk",
+      "phoneticUk": "tæŋk",
+      "translation": "坦克；大容器，槽；油箱，水箱",
+      "sceneMeaning": "坦克；罐",
+      "examples": "[]"
+    },
+    {
+      "word": "threat",
+      "partOfSpeech": "n",
+      "phoneticUs": "θrɛt",
+      "phoneticUk": "θret",
+      "translation": "威胁，恐吓，凶兆",
+      "sceneMeaning": "威胁",
+      "examples": "[]"
+    },
+    {
+      "word": "army",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrmi",
+      "phoneticUk": "'ɑːmɪ",
+      "translation": "军队；陆军",
+      "sceneMeaning": "陆军；军队",
+      "examples": "[]"
+    },
+    {
+      "word": "base",
+      "partOfSpeech": "n",
+      "phoneticUs": "bes",
+      "phoneticUk": "beɪs",
+      "translation": "基础，底层；基地",
+      "sceneMeaning": "基地；基础",
+      "examples": "[]"
+    },
+    {
+      "word": "battle",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bætl",
+      "phoneticUk": "'bæt(ə)l",
+      "translation": "战役；斗争；作战；战争，战役",
+      "sceneMeaning": "战斗；战役",
+      "examples": "[]"
+    },
+    {
+      "word": "dictate",
+      "partOfSpeech": "n / v / vt&vi",
+      "phoneticUs": "'dɪktet",
+      "phoneticUk": "dɪk'teɪt",
+      "translation": "口授；命令；命令，规定",
+      "sceneMeaning": "口授；命令；命令，规定",
+      "examples": "[]"
+    },
+    {
+      "word": "discipline",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dɪsəplɪn",
+      "phoneticUk": "'dɪsɪplɪn",
+      "translation": "纪律；训练；训练",
+      "sceneMeaning": "纪律；训练",
+      "examples": "[]"
+    },
+    {
+      "word": "guard",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡɑrd",
+      "phoneticUk": "gɑːd",
+      "translation": "守卫；看守；卫兵",
+      "sceneMeaning": "守卫；看守；卫兵；本场景常见用法：保安人员",
+      "examples": "[]"
+    },
+    {
+      "word": "hell",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɛl",
+      "phoneticUk": "hel",
+      "translation": "地狱；极大的痛苦",
+      "sceneMeaning": "地狱；极大的痛苦",
+      "examples": "[]"
+    },
+    {
+      "word": "intelligent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'tɛlɪdʒənt",
+      "phoneticUk": "ɪn'telɪdʒ(ə)nt",
+      "translation": "聪明的；理智的；有智慧的，聪明的，悟性强的",
+      "sceneMeaning": "聪明的；理智的；有智慧的，聪明的，悟性强的；本场景常见用法：智能控制器",
+      "examples": "[]"
+    },
+    {
+      "word": "invade",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'ved",
+      "phoneticUk": "ɪn'veɪd",
+      "translation": "入侵，侵略；侵袭；侵入，侵略",
+      "sceneMeaning": "入侵；侵略",
+      "examples": "[]"
+    },
+    {
+      "word": "invasion",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'veʒn",
+      "phoneticUk": "ɪn'veɪʒ(ə)n",
+      "translation": "入侵，侵略；侵犯",
+      "sceneMeaning": "入侵；侵略",
+      "examples": "[]"
+    },
+    {
+      "word": "marine",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mə'rin",
+      "phoneticUk": "mə'riːn",
+      "translation": "海的；海上的",
+      "sceneMeaning": "海军陆战队员",
+      "examples": "[]"
+    },
+    {
+      "word": "mission",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪʃən",
+      "phoneticUk": "'mɪʃ(ə)n",
+      "translation": "使命，任务；使团；使命，任务；代表团",
+      "sceneMeaning": "任务；使命",
+      "examples": "[]"
+    },
+    {
+      "word": "navy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nevi",
+      "phoneticUk": "'neɪvɪ",
+      "translation": "海军",
+      "sceneMeaning": "海军",
+      "examples": "[]"
+    },
+    {
+      "word": "occupation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɑkju'peʃən",
+      "phoneticUk": "ɒkjʊ'peɪʃ(ə)n",
+      "translation": "占领，占据；职业；职业，工作",
+      "sceneMeaning": "占领；职业",
+      "examples": "[]"
+    },
+    {
+      "word": "peaceful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pisfəl",
+      "phoneticUk": "'piːsfʊl; -f(ə)l",
+      "translation": "和平的；安静的；平静的；和平的",
+      "sceneMeaning": "和平的；安宁的",
+      "examples": "[]"
+    },
+    {
+      "word": "resistance",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'zɪstəns",
+      "phoneticUk": "rɪ'zɪst(ə)ns",
+      "translation": "抵抗；抵制；抵抗力；抵御，抵抗；抵抗力",
+      "sceneMeaning": "抵抗；阻力",
+      "examples": "[]"
+    },
+    {
+      "word": "union",
+      "partOfSpeech": "n",
+      "phoneticUs": "'junɪən",
+      "phoneticUk": "'juːnjən; -ɪən",
+      "translation": "联合；团结；协会",
+      "sceneMeaning": "联合；团结；协会；本场景常见用法：欧洲货币联盟",
+      "examples": "[]"
+    },
+    {
+      "word": "unit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'junɪt",
+      "phoneticUk": "'juːnɪt",
+      "translation": "单位；单元；部件",
+      "sceneMeaning": "部队；单位",
+      "examples": "[]"
+    },
+    {
+      "word": "arm",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɑrm",
+      "phoneticUk": "ɑːm",
+      "translation": "臂；臂状物；武器",
+      "sceneMeaning": "臂；臂状物；武器；本场景常见用法：携带武器；当兵",
+      "examples": "[]"
+    },
+    {
+      "word": "bomb",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bɑm",
+      "phoneticUk": "bɒm",
+      "translation": "炸弹；轰炸",
+      "sceneMeaning": "炸弹；轰炸；本场景常见用法：中子弹；中子辐射武器（等于neutron radiation weapon，N-bomb）",
+      "examples": "[]"
+    },
+    {
+      "word": "camp",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæmp",
+      "phoneticUk": "kæmp",
+      "translation": "野营，营地，兵营",
+      "sceneMeaning": "营地；阵营",
+      "examples": "[]"
+    },
+    {
+      "word": "captain",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈkæptən",
+      "phoneticUk": "'kæptɪn",
+      "translation": "陆军上尉；队长",
+      "sceneMeaning": "上尉；船长",
+      "examples": "[]"
+    },
+    {
+      "word": "civilian",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'vɪlɪən",
+      "phoneticUk": "sə'vɪlɪən",
+      "translation": "平民，百姓",
+      "sceneMeaning": "平民，百姓",
+      "examples": "[]"
+    },
+    {
+      "word": "colonel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɝnl",
+      "phoneticUk": "'kɜːn(ə)l",
+      "translation": "陆军上校；中校",
+      "sceneMeaning": "陆军上校；中校；本场景常见用法：[英]陆军中校；[美]陆军或空军、海军陆战队中校",
+      "examples": "[]"
+    },
+    {
+      "word": "commander",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mændɚ",
+      "phoneticUk": "kə'mɑːndə",
+      "translation": "司令官，指挥员",
+      "sceneMeaning": "指挥官",
+      "examples": "[]"
+    },
+    {
+      "word": "defence",
+      "partOfSpeech": "n",
+      "phoneticUs": "di'fens",
+      "phoneticUk": "dɪ'fens",
+      "translation": "防御；防务；辩护",
+      "sceneMeaning": "防御；防务；辩护；本场景常见用法：防御；保卫",
+      "examples": "[]"
+    },
+    {
+      "word": "defend",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'fɛnd",
+      "phoneticUk": "dɪ'fend",
+      "translation": "保卫，防守",
+      "sceneMeaning": "防御；保卫",
+      "examples": "[]"
+    },
+    {
+      "word": "drill",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "drɪl",
+      "phoneticUk": "drɪl",
+      "translation": "钻头；操练；钻孔",
+      "sceneMeaning": "操练；钻头",
+      "examples": "[]"
+    },
+    {
+      "word": "fleet",
+      "partOfSpeech": "n",
+      "phoneticUs": "flit",
+      "phoneticUk": "fliːt",
+      "translation": "舰队；船队，机群",
+      "sceneMeaning": "舰队；船队，机群；本场景常见用法：商船队",
+      "examples": "[]"
+    },
+    {
+      "word": "generalization",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dʒɛnrələ'zeʃən",
+      "phoneticUk": ",dʒenrələ'zeɪʃən",
+      "translation": "概括",
+      "sceneMeaning": "概括",
+      "examples": "[]"
+    },
+    {
+      "word": "hammer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'hæmɚ",
+      "phoneticUk": "'hæmə",
+      "translation": "锤，榔头；锤击",
+      "sceneMeaning": "锤，榔头；锤击；本场景常见用法：锤钻；冲击钻",
+      "examples": "[]"
+    },
+    {
+      "word": "helmet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛlmɪt",
+      "phoneticUk": "'helmɪt",
+      "translation": "头盔，钢盔",
+      "sceneMeaning": "头盔",
+      "examples": "[]"
+    },
+    {
+      "word": "injury",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "损害，伤害；受伤处",
+      "sceneMeaning": "损伤；伤害",
+      "examples": "[]"
+    },
+    {
+      "word": "missile",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪsl",
+      "phoneticUk": "'mɪsaɪl",
+      "translation": "发射物；导弹",
+      "sceneMeaning": "导弹",
+      "examples": "[]"
+    },
+    {
+      "word": "naval",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nevl",
+      "phoneticUk": "'neɪv(ə)l",
+      "translation": "海军的，军舰的",
+      "sceneMeaning": "海军的",
+      "examples": "[]"
+    },
+    {
+      "word": "occupy",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɑkjupaɪ",
+      "phoneticUk": "'ɒkjʊpaɪ",
+      "translation": "占领；占，占有",
+      "sceneMeaning": "占领；占据",
+      "examples": "[]"
+    },
+    {
+      "word": "operation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɑpə'reʃən",
+      "phoneticUk": "ɒpə'reɪʃ(ə)n",
+      "translation": "操作；手术；运算；手术；行动",
+      "sceneMeaning": "军事行动；操作",
+      "examples": "[]"
+    },
+    {
+      "word": "pacific",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "pə'sɪfɪk",
+      "phoneticUk": "pə'sɪfɪk",
+      "translation": "和平的；太平洋",
+      "sceneMeaning": "和平的；太平洋",
+      "examples": "[]"
+    },
+    {
+      "word": "peace",
+      "partOfSpeech": "n",
+      "phoneticUs": "pis",
+      "phoneticUk": "piːs",
+      "translation": "和平；和睦；平静",
+      "sceneMeaning": "和平",
+      "examples": "[]"
+    },
+    {
+      "word": "resistant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'zɪstənt",
+      "phoneticUk": "rɪ'zɪstənt",
+      "translation": "抵抗的，反抗的；抵抗的；抵制的",
+      "sceneMeaning": "抵抗的，反抗的；抵抗的；抵制的",
+      "examples": "[]"
+    },
+    {
+      "word": "retreat",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'trit",
+      "phoneticUk": "rɪ'triːt",
+      "translation": "(被迫)退却，后退；退避，后退；撤退",
+      "sceneMeaning": "撤退；退却",
+      "examples": "[]"
+    },
+    {
+      "word": "rocket",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'rɑkɪt",
+      "phoneticUk": "'rɒkɪt",
+      "translation": "n.；火箭，火箭发动机；火箭；猛增",
+      "sceneMeaning": "火箭；火箭弹",
+      "examples": "[]"
+    },
+    {
+      "word": "rod",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɑd",
+      "phoneticUk": "rɒd",
+      "translation": "杆，竿，棒",
+      "sceneMeaning": "杆，竿，棒；本场景常见用法：[机]连杆",
+      "examples": "[]"
+    },
+    {
+      "word": "scout",
+      "partOfSpeech": "n",
+      "phoneticUs": "skaʊt",
+      "phoneticUk": "skaʊt",
+      "translation": "侦察员，侦察机",
+      "sceneMeaning": "侦察员，侦察机",
+      "examples": "[]"
+    },
+    {
+      "word": "secure",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "sə'kjʊr",
+      "phoneticUk": "sɪ'kjʊə; sɪ'kjɔː",
+      "translation": "安心的；安全的；确保……安全",
+      "sceneMeaning": "安全的；可靠的",
+      "examples": "[]"
+    },
+    {
+      "word": "submarine",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": ",sʌbmə'rin",
+      "phoneticUk": "'sʌbməriːn; sʌbmə'riːn",
+      "translation": "水下的；潜水艇",
+      "sceneMeaning": "潜艇",
+      "examples": "[]"
+    },
+    {
+      "word": "surrender",
+      "partOfSpeech": "v",
+      "phoneticUs": "sə'rɛndɚ",
+      "phoneticUk": "sə'rendə",
+      "translation": "交出；投降",
+      "sceneMeaning": "投降；交出",
+      "examples": "[]"
+    },
+    {
+      "word": "treaty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'triti",
+      "phoneticUk": "'triːtɪ",
+      "translation": "条约；协议，协定",
+      "sceneMeaning": "条约",
+      "examples": "[]"
+    },
+    {
+      "word": "troop",
+      "partOfSpeech": "n",
+      "phoneticUs": "trʊp",
+      "phoneticUk": "truːp",
+      "translation": "军队；一群，大量",
+      "sceneMeaning": "军队；一群，大量",
+      "examples": "[]"
+    },
+    {
+      "word": "uniform",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'junɪfɔrm",
+      "phoneticUk": "'juːnɪfɔːm",
+      "translation": "一样的；制服",
+      "sceneMeaning": "制服；军装",
+      "examples": "[]"
+    },
+    {
+      "word": "veteran",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɛtərən",
+      "phoneticUk": "'vet(ə)r(ə)n",
+      "translation": "老兵，老手",
+      "sceneMeaning": "退伍军人；老兵",
+      "examples": "[]"
+    },
+    {
+      "word": "wound",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "wund",
+      "phoneticUk": "wuːnd",
+      "translation": "创伤，伤；使受伤",
+      "sceneMeaning": "伤口；创伤",
+      "examples": "[]"
+    }
+  ]
+}

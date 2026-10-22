@@ -1,0 +1,1620 @@
+{
+  "id": "50",
+  "title": "比较 / 程度 / 数量 / 关系",
+  "layer": "抽象阅读与逻辑层",
+  "wordCount": 179,
+  "path": "/english/vocabulary/50/",
+  "words": [
+    {
+      "word": "major",
+      "partOfSpeech": "adj / n / v",
+      "phoneticUs": "'medʒɚ",
+      "phoneticUk": "'meɪdʒə",
+      "translation": "较大的；专业；主要的；主修",
+      "sceneMeaning": "主要的；重大的",
+      "examples": "[]"
+    },
+    {
+      "word": "average",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ævərɪdʒ",
+      "phoneticUk": "'æv(ə)rɪdʒ",
+      "translation": "平均数；平均的；平常的",
+      "sceneMeaning": "平均数；平均水平",
+      "examples": "[]"
+    },
+    {
+      "word": "similar",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɪməlɚ",
+      "phoneticUk": "'sɪmɪlə",
+      "translation": "相似的，类似的；相似的",
+      "sceneMeaning": "相似的",
+      "examples": "[]"
+    },
+    {
+      "word": "opposite",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈɑpəzɪt; ˈɑpəsɪt",
+      "phoneticUk": "'ɒpəzɪt; -sɪt",
+      "translation": "对面的；对立物；相反的",
+      "sceneMeaning": "相反的；对面的",
+      "examples": "[]"
+    },
+    {
+      "word": "degree",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'ɡri",
+      "phoneticUk": "dɪˈgri:",
+      "translation": "程度；度；学位；程度",
+      "sceneMeaning": "程度；度数",
+      "examples": "[]"
+    },
+    {
+      "word": "rate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ret",
+      "phoneticUk": "reɪt",
+      "translation": "比率；速度；价格；比率，速率",
+      "sceneMeaning": "比率；速度",
+      "examples": "[]"
+    },
+    {
+      "word": "variety",
+      "partOfSpeech": "n",
+      "phoneticUs": "və'raɪəti",
+      "phoneticUk": "və'raɪətɪ",
+      "translation": "多样化；种类；变种；多样",
+      "sceneMeaning": "种类；多样性",
+      "examples": "[]"
+    },
+    {
+      "word": "advantage",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'væntɪdʒ",
+      "phoneticUk": "əd'vɑːntɪdʒ",
+      "translation": "优点，优势；好处",
+      "sceneMeaning": "优势；有利条件",
+      "examples": "[]"
+    },
+    {
+      "word": "amount",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'maʊnt",
+      "phoneticUk": "ə'maʊnt",
+      "translation": "总数；数量；和",
+      "sceneMeaning": "数量；总额",
+      "examples": "[]"
+    },
+    {
+      "word": "different",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪfrənt",
+      "phoneticUk": "'dɪf(ə)r(ə)nt",
+      "translation": "差异的；各种的",
+      "sceneMeaning": "不同的",
+      "examples": "[]"
+    },
+    {
+      "word": "exactly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪɡ'zæktli",
+      "phoneticUk": "ɪg'zæk(t)lɪ; eg-",
+      "translation": "确切地；恰恰正是",
+      "sceneMeaning": "确切地；恰恰正是",
+      "examples": "[]"
+    },
+    {
+      "word": "increase",
+      "partOfSpeech": "vt&vi&n",
+      "phoneticUs": "'ɪnkris",
+      "phoneticUk": "ɪn'kriːs",
+      "translation": "增加",
+      "sceneMeaning": "增加",
+      "examples": "[]"
+    },
+    {
+      "word": "kind",
+      "partOfSpeech": "n",
+      "phoneticUs": "kaɪnd",
+      "phoneticUk": "kaɪnd",
+      "translation": "种类",
+      "sceneMeaning": "种类；性质",
+      "examples": "[]"
+    },
+    {
+      "word": "least",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "list",
+      "phoneticUk": "liːst",
+      "translation": "最少的；最少",
+      "sceneMeaning": "最少的；最少；本场景常见用法：最小平方逼近",
+      "examples": "[]"
+    },
+    {
+      "word": "level",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'lɛvl",
+      "phoneticUk": "'lev(ə)l",
+      "translation": "水平面；水平的",
+      "sceneMeaning": "水平；层级",
+      "examples": "[]"
+    },
+    {
+      "word": "main",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "meɪn",
+      "translation": "主要的，最重要的",
+      "sceneMeaning": "主要的，最重要的",
+      "examples": "[]"
+    },
+    {
+      "word": "mean",
+      "partOfSpeech": "v",
+      "phoneticUs": "min",
+      "phoneticUk": "miːn",
+      "translation": "作…解释；意指",
+      "sceneMeaning": "平均值；含义",
+      "examples": "[]"
+    },
+    {
+      "word": "measure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛʒɚ",
+      "phoneticUk": "'meʒə",
+      "translation": "量，测量；分量；测量",
+      "sceneMeaning": "测量；衡量",
+      "examples": "[]"
+    },
+    {
+      "word": "number",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nʌmbɚ",
+      "phoneticUk": "'nʌmbə",
+      "translation": "数，数字；号码",
+      "sceneMeaning": "数字；数量",
+      "examples": "[]"
+    },
+    {
+      "word": "order",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔrdɚ",
+      "phoneticUk": "'ɔːdə",
+      "translation": "次序；整齐；命令",
+      "sceneMeaning": "顺序；秩序",
+      "examples": "[]"
+    },
+    {
+      "word": "range",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rendʒ",
+      "phoneticUk": "reɪn(d)ʒ",
+      "translation": "排，行；山脉；范围；范围；在范围内变化",
+      "sceneMeaning": "范围；区间",
+      "examples": "[]"
+    },
+    {
+      "word": "relationship",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'leʃən'ʃɪp",
+      "phoneticUk": "rɪ'leɪʃ(ə)nʃɪp",
+      "translation": "关系，联系",
+      "sceneMeaning": "关系",
+      "examples": "[]"
+    },
+    {
+      "word": "tend",
+      "partOfSpeech": "v",
+      "phoneticUs": "tɛnd",
+      "phoneticUk": "tend",
+      "translation": "照管，照料，护理",
+      "sceneMeaning": "照管，照料，护理",
+      "examples": "[]"
+    },
+    {
+      "word": "total",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "'totl",
+      "phoneticUk": "'təʊt(ə)l",
+      "translation": "总的；合计，总共",
+      "sceneMeaning": "总数；总量",
+      "examples": "[]"
+    },
+    {
+      "word": "type",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "taɪp",
+      "phoneticUk": "taɪp",
+      "translation": "型，类型；打字",
+      "sceneMeaning": "类型",
+      "examples": "[]"
+    },
+    {
+      "word": "trend",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trɛnd",
+      "phoneticUk": "trend",
+      "translation": "伸向；倾向；倾向",
+      "sceneMeaning": "趋势",
+      "examples": "[]"
+    },
+    {
+      "word": "various",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vɛrɪəs",
+      "phoneticUk": "'veərɪəs",
+      "translation": "各种各样的，不同的",
+      "sceneMeaning": "各种各样的，不同的；本场景常见用法：在不同的时代",
+      "examples": "[]"
+    },
+    {
+      "word": "gap",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡæp",
+      "phoneticUk": "gæp",
+      "translation": "缺口；间隔；差距；缝隙，缺口；差距",
+      "sceneMeaning": "差距；间隙",
+      "examples": "[]"
+    },
+    {
+      "word": "individual",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": ",ɪndɪ'vɪdʒuəl",
+      "phoneticUk": "ɪndɪ'vɪdjʊ(ə)l",
+      "translation": "个别的；独特的；个人",
+      "sceneMeaning": "个别的；独特的；个人；本场景常见用法：个体差异",
+      "examples": "[]"
+    },
+    {
+      "word": "diversity",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪˈvəsɪti",
+      "phoneticUk": "dai'və:səti",
+      "translation": "多样性；差异",
+      "sceneMeaning": "多样性；差异性",
+      "examples": "[]"
+    },
+    {
+      "word": "elementary",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɛlɪ'mɛntri",
+      "phoneticUk": "elɪ'ment(ə)rɪ",
+      "translation": "基本的；初级的",
+      "sceneMeaning": "基本的；初级的；本场景常见用法：基本操作；初等运算",
+      "examples": "[]"
+    },
+    {
+      "word": "limit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪmɪt",
+      "phoneticUk": "'lɪmɪt",
+      "translation": "限度；限制；范围",
+      "sceneMeaning": "限制；限度",
+      "examples": "[]"
+    },
+    {
+      "word": "majority",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'dʒɔrəti",
+      "phoneticUk": "mə'dʒɒrɪtɪ",
+      "translation": "多数，大多数；多数",
+      "sceneMeaning": "多数；大多数",
+      "examples": "[]"
+    },
+    {
+      "word": "minor",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'maɪnɚ",
+      "phoneticUk": "'maɪnə",
+      "translation": "较小的；较次要的；小的",
+      "sceneMeaning": "较小的；次要的",
+      "examples": "[]"
+    },
+    {
+      "word": "primary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'praɪmɛri",
+      "phoneticUk": "'praɪm(ə)rɪ",
+      "translation": "最初的；基本的；主要的，基本的",
+      "sceneMeaning": "最初的；基本的；主要的，基本的",
+      "examples": "[]"
+    },
+    {
+      "word": "unique",
+      "partOfSpeech": "adj",
+      "phoneticUs": "jʊ'nik",
+      "phoneticUk": "juː'niːk",
+      "translation": "唯一的，独一无二的；独特的，唯一的",
+      "sceneMeaning": "唯一的，独一无二的；独特的，唯一的；本场景常见用法：独特的销售主张",
+      "examples": "[]"
+    },
+    {
+      "word": "balance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bæləns",
+      "phoneticUk": "'bæl(ə)ns",
+      "translation": "使平衡；称；天平",
+      "sceneMeaning": "平衡",
+      "examples": "[]"
+    },
+    {
+      "word": "difference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪfrəns",
+      "phoneticUk": "'dɪf(ə)r(ə)ns",
+      "translation": "差别；差；分歧",
+      "sceneMeaning": "差异；不同",
+      "examples": "[]"
+    },
+    {
+      "word": "diverse",
+      "partOfSpeech": "adj",
+      "phoneticUs": "daɪ'vɝs",
+      "phoneticUk": "daɪ'vɜːs; 'daɪvɜːs",
+      "translation": "不一样的，相异的；各种各样的",
+      "sceneMeaning": "不一样的，相异的；各种各样的",
+      "examples": "[]"
+    },
+    {
+      "word": "entire",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'taɪɚ",
+      "phoneticUk": "ɪn'taɪə; en-",
+      "translation": "全部的，整个的",
+      "sceneMeaning": "全部的，整个的；本场景常见用法：总数",
+      "examples": "[]"
+    },
+    {
+      "word": "proportion",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'pɔrʃən",
+      "phoneticUk": "prə'pɔːʃ(ə)n",
+      "translation": "比，比率，部分；比例，部分",
+      "sceneMeaning": "比例；部分",
+      "examples": "[]"
+    },
+    {
+      "word": "sort",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sɔrt",
+      "phoneticUk": "sɔːt",
+      "translation": "种类；类别；整理",
+      "sceneMeaning": "种类；类别；整理",
+      "examples": "[]"
+    },
+    {
+      "word": "alternative",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɔl'tɝnətɪv",
+      "phoneticUk": "ɔːl'tɜːnətɪv; ɒl-",
+      "translation": "替换物；取舍，抉择；代替品",
+      "sceneMeaning": "替代方案；可选项",
+      "examples": "[]"
+    },
+    {
+      "word": "element",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛləmənt",
+      "phoneticUk": "'elɪm(ə)nt",
+      "translation": "成分；要素；元素；要素；元素",
+      "sceneMeaning": "要素；元素",
+      "examples": "[]"
+    },
+    {
+      "word": "factor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktɚ",
+      "phoneticUk": "'fæktə",
+      "translation": "因素；因子，系数",
+      "sceneMeaning": "因素",
+      "examples": "[]"
+    },
+    {
+      "word": "low",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "ləʊ",
+      "translation": "低的，矮的；低下的",
+      "sceneMeaning": "低的，矮的；低下的；本场景常见用法：质量低劣",
+      "examples": "[]"
+    },
+    {
+      "word": "match",
+      "partOfSpeech": "n",
+      "phoneticUs": "mætʃ",
+      "phoneticUk": "mætʃ",
+      "translation": "比赛，竞赛；对手",
+      "sceneMeaning": "匹配；相配",
+      "examples": "[]"
+    },
+    {
+      "word": "meaning",
+      "partOfSpeech": "n",
+      "phoneticUs": "'minɪŋ",
+      "phoneticUk": "'miːnɪŋ",
+      "translation": "意义，意思；意图",
+      "sceneMeaning": "意义，意思；意图；本场景常见用法：内涵意义；涵义",
+      "examples": "[]"
+    },
+    {
+      "word": "multiple",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mʌltəpl",
+      "phoneticUk": "'mʌltɪpl",
+      "translation": "复合的；并联的",
+      "sceneMeaning": "多个的；多重的",
+      "examples": "[]"
+    },
+    {
+      "word": "peak",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "pik",
+      "phoneticUk": "piːk",
+      "translation": "山顶，巅；最高的",
+      "sceneMeaning": "峰值；顶点",
+      "examples": "[]"
+    },
+    {
+      "word": "equivalent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'kwɪvələnt",
+      "phoneticUk": "ɪ'kwɪv(ə)l(ə)nt",
+      "translation": "相等的；等量的；相等的，相当的",
+      "sceneMeaning": "相等的；等量的；相等的，相当的；本场景常见用法：等效质量；[物]等值质量",
+      "examples": "[]"
+    },
+    {
+      "word": "margin",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑrdʒən",
+      "phoneticUk": "'mɑːdʒɪn",
+      "translation": "页边的空白；边缘；页边的空白，页边，白边",
+      "sceneMeaning": "差额；边缘",
+      "examples": "[]"
+    },
+    {
+      "word": "capacity",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'pæsəti",
+      "phoneticUk": "kə'pæsɪtɪ",
+      "translation": "容量；能力；能量",
+      "sceneMeaning": "容量；能力",
+      "examples": "[]"
+    },
+    {
+      "word": "interaction",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntə'rækʃən",
+      "phoneticUk": "ɪntər'ækʃ(ə)n",
+      "translation": "相互作用；干扰",
+      "sceneMeaning": "相互作用；互动",
+      "examples": "[]"
+    },
+    {
+      "word": "minority",
+      "partOfSpeech": "n",
+      "phoneticUs": "maɪ'nɔrəti",
+      "phoneticUk": "maɪ'nɒrɪtɪ; mɪ-",
+      "translation": "少数；少数民族",
+      "sceneMeaning": "少数；少数群体",
+      "examples": "[]"
+    },
+    {
+      "word": "preference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛfrəns",
+      "phoneticUk": "'pref(ə)r(ə)ns",
+      "translation": "偏爱，优先；优先权；偏爱",
+      "sceneMeaning": "偏好；优先选择",
+      "examples": "[]"
+    },
+    {
+      "word": "sufficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "səˈfɪʃənt",
+      "phoneticUk": "sə'fɪʃ(ə)nt",
+      "translation": "足够的，充分的；足够的",
+      "sceneMeaning": "足够的",
+      "examples": "[]"
+    },
+    {
+      "word": "vary",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈveri",
+      "phoneticUk": "'veərɪ",
+      "translation": "改变；使多样化；不同；变化",
+      "sceneMeaning": "变化；不同",
+      "examples": "[]"
+    },
+    {
+      "word": "density",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɛnsəti",
+      "phoneticUk": "'densɪtɪ",
+      "translation": "密集，稠密；密度；密度",
+      "sceneMeaning": "密度",
+      "examples": "[]"
+    },
+    {
+      "word": "fraction",
+      "partOfSpeech": "n",
+      "phoneticUs": "'frækʃən",
+      "phoneticUk": "'frækʃ(ə)n",
+      "translation": "小部分；片断；分数",
+      "sceneMeaning": "分数；小部分",
+      "examples": "[]"
+    },
+    {
+      "word": "pattern",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pætɚn",
+      "phoneticUk": "'pæt(ə)n",
+      "translation": "型，式样，模，模型；模式",
+      "sceneMeaning": "模式；规律",
+      "examples": "[]"
+    },
+    {
+      "word": "manner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mænɚ",
+      "phoneticUk": "'mænə",
+      "translation": "方式；态度；礼貌",
+      "sceneMeaning": "方式；态度；礼貌",
+      "examples": "[]"
+    },
+    {
+      "word": "pace",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pes",
+      "phoneticUk": "peɪs",
+      "translation": "步，步速；踱步",
+      "sceneMeaning": "速度；步调",
+      "examples": "[]"
+    },
+    {
+      "word": "scope",
+      "partOfSpeech": "n",
+      "phoneticUs": "skop",
+      "phoneticUk": "skəʊp",
+      "translation": "范围",
+      "sceneMeaning": "范围；余地",
+      "examples": "[]"
+    },
+    {
+      "word": "unlike",
+      "partOfSpeech": "adj / prep",
+      "phoneticUs": "'ʌn'laɪk",
+      "phoneticUk": "ʌn'laɪk",
+      "translation": "不同的；不象…",
+      "sceneMeaning": "不同的；不象…",
+      "examples": "[]"
+    },
+    {
+      "word": "contrary",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'kɑntrɛri",
+      "phoneticUk": "'kɒntrərɪ",
+      "translation": "相反的；相反",
+      "sceneMeaning": "相反的；相反",
+      "examples": "[]"
+    },
+    {
+      "word": "identical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "aɪ'dɛntɪkl",
+      "phoneticUk": "aɪ'dentɪk(ə)l",
+      "translation": "完全相同的；同一的；相同的",
+      "sceneMeaning": "完全相同的",
+      "examples": "[]"
+    },
+    {
+      "word": "inferior",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'fɪrɪɚ",
+      "phoneticUk": "ɪn'fɪərɪə",
+      "translation": "下等的；劣等的",
+      "sceneMeaning": "较差的；下级的",
+      "examples": "[]"
+    },
+    {
+      "word": "interval",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪntɚvl",
+      "phoneticUk": "'ɪntəv(ə)l",
+      "translation": "间隔；休息；间距",
+      "sceneMeaning": "间隔；区间",
+      "examples": "[]"
+    },
+    {
+      "word": "peculiar",
+      "partOfSpeech": "adj",
+      "phoneticUs": "pɪ'kjulɪɚ",
+      "phoneticUk": "pɪ'kjuːlɪə",
+      "translation": "特有的；特别的",
+      "sceneMeaning": "特有的；特别的；本场景常见用法：n. 旧时美国南部的黑奴制度",
+      "examples": "[]"
+    },
+    {
+      "word": "associate",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'soʃɪet",
+      "phoneticUk": "ə'səʊʃɪeɪt; -sɪeɪt",
+      "translation": "交往；伙伴，同事；把……联系起来；交往；",
+      "sceneMeaning": "交往；伙伴，同事；把……联系起来；交往；",
+      "examples": "[]"
+    },
+    {
+      "word": "corresponding",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",kɔrə'spɑndɪŋ",
+      "phoneticUk": ",kɒrɪ'spɒndɪŋ",
+      "translation": "相应的；符合的",
+      "sceneMeaning": "相应的；对应的",
+      "examples": "[]"
+    },
+    {
+      "word": "disadvantage",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɪsəd'væntɪdʒ",
+      "phoneticUk": "dɪsəd'vɑːntɪdʒ",
+      "translation": "不利，不利地位；不利情况，缺点",
+      "sceneMeaning": "劣势；不利条件",
+      "examples": "[]"
+    },
+    {
+      "word": "distance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪstəns",
+      "phoneticUk": "'dɪst(ə)ns",
+      "translation": "距离，间距；远处；距离",
+      "sceneMeaning": "距离；差距",
+      "examples": "[]"
+    },
+    {
+      "word": "quantity",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɑntəti",
+      "phoneticUk": "'kwɒntɪtɪ",
+      "translation": "量，数量，分量；量，数量",
+      "sceneMeaning": "数量",
+      "examples": "[]"
+    },
+    {
+      "word": "compare",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pɛr",
+      "phoneticUk": "kəm'peə",
+      "translation": "比较，对照；比作；比较，对照",
+      "sceneMeaning": "比较",
+      "examples": "[]"
+    },
+    {
+      "word": "connect",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'nɛkt",
+      "phoneticUk": "kə'nekt",
+      "translation": "连接，连结；联系",
+      "sceneMeaning": "连接；联系",
+      "examples": "[]"
+    },
+    {
+      "word": "connection",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'nɛkʃən",
+      "phoneticUk": "kəˈnekʃn",
+      "translation": "连接，联系；连贯性",
+      "sceneMeaning": "联系；连接",
+      "examples": "[]"
+    },
+    {
+      "word": "decrease",
+      "partOfSpeech": "vi&n",
+      "phoneticUs": "dɪ'kris",
+      "phoneticUk": "dɪ'kriːs",
+      "translation": "减少，减少",
+      "sceneMeaning": "减少",
+      "examples": "[]"
+    },
+    {
+      "word": "dependent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'pɛndənt",
+      "phoneticUk": "di'pendənt",
+      "translation": "依靠的，依赖的",
+      "sceneMeaning": "依靠的，依赖的；本场景常见用法：因变量；他变数；应变数",
+      "examples": "[]"
+    },
+    {
+      "word": "extent",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "广度；范围；程度",
+      "sceneMeaning": "程度；范围",
+      "examples": "[]"
+    },
+    {
+      "word": "fundamental",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",fʌndə'mɛntl",
+      "phoneticUk": "fʌndə'ment(ə)l",
+      "translation": "基础的，基本的",
+      "sceneMeaning": "基础的，基本的",
+      "examples": "[]"
+    },
+    {
+      "word": "interracial",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪntə'reʃl",
+      "phoneticUk": "ɪntə'reɪʃ(ə)l",
+      "translation": "种族间的",
+      "sceneMeaning": "种族间的",
+      "examples": "[]"
+    },
+    {
+      "word": "numerous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'numərəs",
+      "phoneticUk": "'njuːm(ə)rəs",
+      "translation": "为数众多的；许多",
+      "sceneMeaning": "许多的",
+      "examples": "[]"
+    },
+    {
+      "word": "relative",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'rɛlətɪv",
+      "phoneticUk": "'relətɪv",
+      "translation": "有关系的；相对的；相对的；亲戚",
+      "sceneMeaning": "相对的；相关的",
+      "examples": "[]"
+    },
+    {
+      "word": "association",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə,soʃɪ'eʃən",
+      "phoneticUk": "əsəʊsɪ'eɪʃ(ə)n; -ʃɪ-",
+      "translation": "协会，团体；联合",
+      "sceneMeaning": "关联；协会",
+      "examples": "[]"
+    },
+    {
+      "word": "bulk",
+      "partOfSpeech": "n",
+      "phoneticUs": "bʌlk",
+      "phoneticUk": "bʌlk",
+      "translation": "物体，容积，大批",
+      "sceneMeaning": "物体，容积，大批；本场景常见用法：容积密度，体积密度；单位体积重量",
+      "examples": "[]"
+    },
+    {
+      "word": "distinct",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'stɪŋkt",
+      "phoneticUk": "dɪ'stɪŋ(k)t",
+      "translation": "与其它不同的；明显的；有区别的",
+      "sceneMeaning": "明显不同的；清楚的",
+      "examples": "[]"
+    },
+    {
+      "word": "equal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ikwəl",
+      "phoneticUk": "'i:kwəl",
+      "translation": "相等的；平等的；相等的，平等的",
+      "sceneMeaning": "相等的；平等的",
+      "examples": "[]"
+    },
+    {
+      "word": "equality",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kwɑləti",
+      "phoneticUk": "ɪ'kwɒlɪtɪ; iː-",
+      "translation": "等同，平等；相等；平等",
+      "sceneMeaning": "平等；相等",
+      "examples": "[]"
+    },
+    {
+      "word": "estimate",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛstə,met",
+      "phoneticUk": "'estɪmeɪt",
+      "translation": "估计，评价；估计",
+      "sceneMeaning": "估计",
+      "examples": "[]"
+    },
+    {
+      "word": "exact",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪɡ'zækt",
+      "phoneticUk": "ɪg'zækt; eg-",
+      "translation": "确切的；精确的",
+      "sceneMeaning": "精确的",
+      "examples": "[]"
+    },
+    {
+      "word": "factory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktri",
+      "phoneticUk": "'fækt(ə)rɪ",
+      "translation": "工厂，制造厂",
+      "sceneMeaning": "工厂，制造厂；本场景常见用法：电工器材厂",
+      "examples": "[]"
+    },
+    {
+      "word": "foremost",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɔr'most",
+      "phoneticUk": "'fɔːməʊst",
+      "translation": "最初的；第一流的",
+      "sceneMeaning": "最初的；第一流的",
+      "examples": "[]"
+    },
+    {
+      "word": "grade",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡred",
+      "phoneticUk": "greɪd",
+      "translation": "给…分等级；等级",
+      "sceneMeaning": "等级；成绩",
+      "examples": "[]"
+    },
+    {
+      "word": "mass",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæs",
+      "phoneticUk": "mæs",
+      "translation": "众多；团；群众",
+      "sceneMeaning": "大量；质量",
+      "examples": "[]"
+    },
+    {
+      "word": "normal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɔrml",
+      "phoneticUk": "'nɔːm(ə)l",
+      "translation": "正常的，普通的",
+      "sceneMeaning": "正常的，普通的；本场景常见用法：正常价值；标准值",
+      "examples": "[]"
+    },
+    {
+      "word": "peer",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɪr",
+      "phoneticUk": "pɪə",
+      "translation": "同龄人",
+      "sceneMeaning": "同龄人",
+      "examples": "[]"
+    },
+    {
+      "word": "priority",
+      "partOfSpeech": "n",
+      "phoneticUs": "praɪ'ɔrəti",
+      "phoneticUk": "praɪ'ɒrətɪ",
+      "translation": "优先，优先权",
+      "sceneMeaning": "优先事项",
+      "examples": "[]"
+    },
+    {
+      "word": "rank",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ræŋk",
+      "phoneticUk": "ræŋk",
+      "translation": "排，横行；社会阶层；具有…等级[地位]；衔，阶层",
+      "sceneMeaning": "等级；排名",
+      "examples": "[]"
+    },
+    {
+      "word": "scale",
+      "partOfSpeech": "n",
+      "phoneticUs": "skel",
+      "phoneticUk": "skeɪl",
+      "translation": "天平，磅秤，秤；规模；比例",
+      "sceneMeaning": "规模；尺度",
+      "examples": "[]"
+    },
+    {
+      "word": "tendency",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛndənsi",
+      "phoneticUk": "'tend(ə)nsɪ",
+      "translation": "趋向，趋势，倾向",
+      "sceneMeaning": "趋势；倾向",
+      "examples": "[]"
+    },
+    {
+      "word": "volume",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɑljum",
+      "phoneticUk": "'vɒljuːm",
+      "translation": "卷，册；容积；音量",
+      "sceneMeaning": "体积；数量",
+      "examples": "[]"
+    },
+    {
+      "word": "bound",
+      "partOfSpeech": "adj",
+      "phoneticUs": "baʊnd",
+      "phoneticUk": "baʊnd",
+      "translation": "一定的；有义务的",
+      "sceneMeaning": "一定的；有义务的；本场景常见用法：上界；最大值",
+      "examples": "[]"
+    },
+    {
+      "word": "comparison",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'pærɪsn",
+      "phoneticUk": "kəm'pærɪs(ə)n",
+      "translation": "比较，对照；比似",
+      "sceneMeaning": "比较；对照",
+      "examples": "[]"
+    },
+    {
+      "word": "correspond",
+      "partOfSpeech": "v",
+      "phoneticUs": ",kɔrə'spɑnd",
+      "phoneticUk": "kɒrɪ'spɒnd",
+      "translation": "相符合；相当",
+      "sceneMeaning": "相符合；相当",
+      "examples": "[]"
+    },
+    {
+      "word": "dense",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɛns",
+      "phoneticUk": "dens",
+      "translation": "密集的；浓厚的",
+      "sceneMeaning": "密集的；浓厚的；本场景常见用法：稠密的人口",
+      "examples": "[]"
+    },
+    {
+      "word": "differ",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dɪfɚ",
+      "phoneticUk": "'dɪfə",
+      "translation": "不同，相异",
+      "sceneMeaning": "不同；相异",
+      "examples": "[]"
+    },
+    {
+      "word": "distribution",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪstrə'bjʊʃən",
+      "phoneticUk": "dɪstrɪ'bjuːʃ(ə)n",
+      "translation": "分发，分配；分布",
+      "sceneMeaning": "分布；分配",
+      "examples": "[]"
+    },
+    {
+      "word": "envy",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "'ɛnvi",
+      "phoneticUk": "'envɪ",
+      "translation": "妒忌；羡慕",
+      "sceneMeaning": "妒忌；羡慕",
+      "examples": "[]"
+    },
+    {
+      "word": "excess",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛk'sɛs",
+      "phoneticUk": "ɪk'ses; ek-; 'ekses",
+      "translation": "超越；过量；过度；过量，过度",
+      "sceneMeaning": "超越；过量；过度；过量，过度；本场景常见用法：超过；较…为多",
+      "examples": "[]"
+    },
+    {
+      "word": "gross",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɡros",
+      "phoneticUk": "grəʊs",
+      "translation": "总的；严重的",
+      "sceneMeaning": "总的；严重的",
+      "examples": "[]"
+    },
+    {
+      "word": "insufficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪnsə'fɪʃnt",
+      "phoneticUk": "ɪnsə'fɪʃ(ə)nt",
+      "translation": "不足的；不适当的",
+      "sceneMeaning": "不足的",
+      "examples": "[]"
+    },
+    {
+      "word": "link",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lɪŋk",
+      "phoneticUk": "lɪŋk",
+      "translation": "有环连接；环",
+      "sceneMeaning": "联系；链接",
+      "examples": "[]"
+    },
+    {
+      "word": "mode",
+      "partOfSpeech": "n",
+      "phoneticUs": "mod",
+      "phoneticUk": "məʊd",
+      "translation": "方式，样式",
+      "sceneMeaning": "众数；方式",
+      "examples": "[]"
+    },
+    {
+      "word": "overwhelming",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ovɚ'wɛlmɪŋ",
+      "phoneticUk": "ˌəʊvəˈwelmɪŋ",
+      "translation": "压倒性的",
+      "sceneMeaning": "压倒性的",
+      "examples": "[]"
+    },
+    {
+      "word": "percentage",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'sɛntɪdʒ",
+      "phoneticUk": "pə'sentɪdʒ",
+      "translation": "百分比，百分率",
+      "sceneMeaning": "百分比",
+      "examples": "[]"
+    },
+    {
+      "word": "plus",
+      "partOfSpeech": "adj / prep",
+      "phoneticUs": "plʌs",
+      "phoneticUk": "plʌs",
+      "translation": "加，加上；正的",
+      "sceneMeaning": "加，加上；正的",
+      "examples": "[]"
+    },
+    {
+      "word": "precise",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prɪ'saɪs",
+      "phoneticUk": "prɪ'saɪs",
+      "translation": "精确的，准确的",
+      "sceneMeaning": "准确的；精确的",
+      "examples": "[]"
+    },
+    {
+      "word": "relate",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'let",
+      "phoneticUk": "rɪ'leɪt",
+      "translation": "叙述；使联系",
+      "sceneMeaning": "关联；涉及",
+      "examples": "[]"
+    },
+    {
+      "word": "relativity",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛlə'tɪvəti",
+      "phoneticUk": "relə'tɪvɪtɪ",
+      "translation": "相关性；相对性",
+      "sceneMeaning": "相关性；相对性；本场景常见用法：[物]相对论",
+      "examples": "[]"
+    },
+    {
+      "word": "superior",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "səˈpɪriər",
+      "phoneticUk": "suːˈpɪərɪə",
+      "translation": "较高的；优越的；上级的，较高的；上级，长官",
+      "sceneMeaning": "更好的；上级的",
+      "examples": "[]"
+    },
+    {
+      "word": "surpass",
+      "partOfSpeech": "v",
+      "phoneticUs": "sə'pæs",
+      "phoneticUk": "səˈpɑ:s",
+      "translation": "超过",
+      "sceneMeaning": "超过",
+      "examples": "[]"
+    },
+    {
+      "word": "abundant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'bʌndənt",
+      "phoneticUk": "ə'bʌnd(ə)nt",
+      "translation": "丰富的；大量的；大量的，丰富的",
+      "sceneMeaning": "大量的；丰富的",
+      "examples": "[]"
+    },
+    {
+      "word": "alike",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'laɪk",
+      "phoneticUk": "ə'laɪk",
+      "translation": "同样的，相同的",
+      "sceneMeaning": "同样的，相同的",
+      "examples": "[]"
+    },
+    {
+      "word": "approximate",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "ə'prɑksɪmət",
+      "phoneticUk": "ə'prɒksɪmət",
+      "translation": "近似的；近似",
+      "sceneMeaning": "近似的",
+      "examples": "[]"
+    },
+    {
+      "word": "aspect",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æspɛkt",
+      "phoneticUk": "'æspekt",
+      "translation": "方面；样子，外表",
+      "sceneMeaning": "方面",
+      "examples": "[]"
+    },
+    {
+      "word": "boundary",
+      "partOfSpeech": "n",
+      "phoneticUs": "'baʊndri",
+      "phoneticUk": "'baʊnd(ə)rɪ",
+      "translation": "分界线，边界",
+      "sceneMeaning": "边界；界限",
+      "examples": "[]"
+    },
+    {
+      "word": "calculate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kælkjulet",
+      "phoneticUk": "'kælkjʊleɪt",
+      "translation": "计算；估计；计划；计算",
+      "sceneMeaning": "计算",
+      "examples": "[]"
+    },
+    {
+      "word": "centigrade",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɛntɪɡred",
+      "phoneticUk": "'sentɪgreɪd",
+      "translation": "百分度的",
+      "sceneMeaning": "百分度的",
+      "examples": "[]"
+    },
+    {
+      "word": "classify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'klæsɪfaɪ",
+      "phoneticUk": "'klæsɪfaɪ",
+      "translation": "把…分类；把…分类，把…分级",
+      "sceneMeaning": "分类",
+      "examples": "[]"
+    },
+    {
+      "word": "comparative",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kəm'pærətɪv",
+      "phoneticUk": "kəm'pærətɪv",
+      "translation": "比较的，相对的",
+      "sceneMeaning": "比较的；相对的",
+      "examples": "[]"
+    },
+    {
+      "word": "component",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'ponənt",
+      "phoneticUk": "kəm'pəʊnənt",
+      "translation": "组成部分；分；组件；成分",
+      "sceneMeaning": "组成部分",
+      "examples": "[]"
+    },
+    {
+      "word": "conjunction",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'dʒʌŋkʃən",
+      "phoneticUk": "kən'dʒʌŋ(k)ʃ(ə)n",
+      "translation": "接合，连接；连接词",
+      "sceneMeaning": "接合，连接；连接词",
+      "examples": "[]"
+    },
+    {
+      "word": "contrast",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑntræst",
+      "phoneticUk": "'kɒntrɑːst",
+      "translation": "对比，对照，悬殊；对照物；对比",
+      "sceneMeaning": "对比；差异",
+      "examples": "[]"
+    },
+    {
+      "word": "correspondent",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɔrə'spɑndənt",
+      "phoneticUk": "kɒrɪ'spɒnd(ə)nt",
+      "translation": "通信者；通讯员",
+      "sceneMeaning": "通信者；通讯员",
+      "examples": "[]"
+    },
+    {
+      "word": "dimension",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'mɛnʃ(ə)n; daɪ-",
+      "phoneticUk": "dɪ'menʃ(ə)n; daɪ-",
+      "translation": "尺寸，尺度；面积",
+      "sceneMeaning": "维度；方面",
+      "examples": "[]"
+    },
+    {
+      "word": "distinctive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'stɪŋktɪv",
+      "phoneticUk": "dɪˈstɪŋktɪv",
+      "translation": "独特的，与众不同的",
+      "sceneMeaning": "独特的，与众不同的；本场景常见用法：辨别属性；区别性特征",
+      "examples": "[]"
+    },
+    {
+      "word": "dominant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɑmɪnənt",
+      "phoneticUk": "ˈdɒmɪnənt",
+      "translation": "占优势的",
+      "sceneMeaning": "占主导的",
+      "examples": "[]"
+    },
+    {
+      "word": "domination",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɑmə'neʃən",
+      "phoneticUk": "ˌdɒmɪ'neɪʃn",
+      "translation": "主导",
+      "sceneMeaning": "主导",
+      "examples": "[]"
+    },
+    {
+      "word": "drift",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "drɪft",
+      "phoneticUk": "drɪft",
+      "translation": "漂流，漂泊；漂流",
+      "sceneMeaning": "漂流，漂泊；漂流；本场景常见用法：频率漂移；频漂",
+      "examples": "[]"
+    },
+    {
+      "word": "equation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kweʒn",
+      "phoneticUk": "ɪ'kweɪʒ(ə)n",
+      "translation": "方程(式)；等式",
+      "sceneMeaning": "方程(式)；等式；本场景常见用法：常微分方程",
+      "examples": "[]"
+    },
+    {
+      "word": "equivalence",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kwɪvələns",
+      "phoneticUk": "ɪ'kwɪv(ə)l(ə)ns",
+      "translation": "等值，相等",
+      "sceneMeaning": "等同；等值",
+      "examples": "[]"
+    },
+    {
+      "word": "exceed",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'sid",
+      "phoneticUk": "ɪk'siːd; ek-",
+      "translation": "超过，胜过；超出",
+      "sceneMeaning": "超过",
+      "examples": "[]"
+    },
+    {
+      "word": "frequency",
+      "partOfSpeech": "n",
+      "phoneticUs": "'frikwənsi",
+      "phoneticUk": "'friːkw(ə)nsɪ",
+      "translation": "屡次；次数；频率",
+      "sceneMeaning": "频率；频次",
+      "examples": "[]"
+    },
+    {
+      "word": "gauge",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "gedʒ",
+      "phoneticUk": "geɪdʒ",
+      "translation": "量，测量；量器",
+      "sceneMeaning": "量，测量；量器",
+      "examples": "[]"
+    },
+    {
+      "word": "gravity",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡrævəti",
+      "phoneticUk": "'grævɪtɪ",
+      "translation": "重力，引力；严重性",
+      "sceneMeaning": "重力，引力；严重性；本场景常见用法：量子重力；量子引力",
+      "examples": "[]"
+    },
+    {
+      "word": "league",
+      "partOfSpeech": "n",
+      "phoneticUs": "lig",
+      "phoneticUk": "liːg",
+      "translation": "同盟，联盟；联合会",
+      "sceneMeaning": "同盟，联盟；联合会；本场景常见用法：（美）职业棒球大联盟",
+      "examples": "[]"
+    },
+    {
+      "word": "marginalize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mɑrdʒɪnəlaɪz",
+      "phoneticUk": "'mɑːdʒɪn(ə)laɪz",
+      "translation": "边缘化，排斥",
+      "sceneMeaning": "边缘化，排斥",
+      "examples": "[]"
+    },
+    {
+      "word": "maximum",
+      "partOfSpeech": "a / adj / n",
+      "phoneticUs": "ˈmæksəməm",
+      "phoneticUk": "'mæksɪməm",
+      "translation": "最大量；最大的；最大值，最大量；最大值的，最大量的",
+      "sceneMeaning": "最大值；最高限度",
+      "examples": "[]"
+    },
+    {
+      "word": "minimum",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'mɪnɪməm",
+      "phoneticUk": "'mɪnɪməm",
+      "translation": "最小量；最小的",
+      "sceneMeaning": "最小值；最低限度",
+      "examples": "[]"
+    },
+    {
+      "word": "minus",
+      "partOfSpeech": "adj / prep",
+      "phoneticUs": "'maɪnəs",
+      "phoneticUk": "'maɪnəs",
+      "translation": "负的；减(去)",
+      "sceneMeaning": "负的；减(去)",
+      "examples": "[]"
+    },
+    {
+      "word": "multiply",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mʌltɪplaɪ",
+      "phoneticUk": "'mʌltɪplaɪ",
+      "translation": "使增加；乘",
+      "sceneMeaning": "使增加；乘",
+      "examples": "[]"
+    },
+    {
+      "word": "opponent",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'ponənt",
+      "phoneticUk": "ə'pəʊnənt",
+      "translation": "对手，敌手；对抗者；对手",
+      "sceneMeaning": "对手，敌手；对抗者；对手",
+      "examples": "[]"
+    },
+    {
+      "word": "oppose",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'poz",
+      "phoneticUk": "ə'pəʊz",
+      "translation": "反对；反抗",
+      "sceneMeaning": "反对；反抗",
+      "examples": "[]"
+    },
+    {
+      "word": "oppress",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'prɛs",
+      "phoneticUk": "ə'pres",
+      "translation": "压迫，压制；压抑",
+      "sceneMeaning": "压迫，压制；压抑",
+      "examples": "[]"
+    },
+    {
+      "word": "parallel",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pærəlɛl",
+      "phoneticUk": "'pærəlel",
+      "translation": "平行的；相同的",
+      "sceneMeaning": "平行的；类似的",
+      "examples": "[]"
+    },
+    {
+      "word": "pitch",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɪtʃ",
+      "phoneticUk": "pɪtʃ",
+      "translation": "沥青",
+      "sceneMeaning": "沥青；本场景常见用法：可变螺距；可变节距；变斜度",
+      "examples": "[]"
+    },
+    {
+      "word": "proportional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'pɔrʃənl",
+      "phoneticUk": "prə'pɔːʃ(ə)n(ə)l",
+      "translation": "比例的；相称的",
+      "sceneMeaning": "成比例的",
+      "examples": "[]"
+    },
+    {
+      "word": "ratio",
+      "partOfSpeech": "n",
+      "phoneticUs": "'reʃɪo",
+      "phoneticUk": "'reɪʃɪəʊ",
+      "translation": "比，比率",
+      "sceneMeaning": "比率；比例",
+      "examples": "[]"
+    },
+    {
+      "word": "relation",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'leʃən",
+      "phoneticUk": "rɪ'leɪʃ(ə)n",
+      "translation": "关系，联系；家属",
+      "sceneMeaning": "关系；联系",
+      "examples": "[]"
+    },
+    {
+      "word": "resemble",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'zɛmbl",
+      "phoneticUk": "rɪ'zemb(ə)l",
+      "translation": "像，类似；像，相似",
+      "sceneMeaning": "类似；像",
+      "examples": "[]"
+    },
+    {
+      "word": "rigorous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɪɡərəs",
+      "phoneticUk": "ˈrɪgərəs",
+      "translation": "严格的",
+      "sceneMeaning": "严格的",
+      "examples": "[]"
+    },
+    {
+      "word": "row",
+      "partOfSpeech": "n",
+      "phoneticUs": "ro",
+      "phoneticUk": "rəʊ",
+      "translation": "(一)排，(一)行",
+      "sceneMeaning": "(一)排，(一)行；本场景常见用法：行距",
+      "examples": "[]"
+    },
+    {
+      "word": "scarcely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'skɛrsli",
+      "phoneticUk": "'skeəslɪ",
+      "translation": "仅仅；几乎不",
+      "sceneMeaning": "仅仅；几乎不",
+      "examples": "[]"
+    },
+    {
+      "word": "sequence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sikwəns",
+      "phoneticUk": "'siːkw(ə)ns",
+      "translation": "连续，继续；次序",
+      "sceneMeaning": "顺序；序列",
+      "examples": "[]"
+    },
+    {
+      "word": "spoil",
+      "partOfSpeech": "v",
+      "phoneticUs": "spɔɪl",
+      "phoneticUk": "spɒɪl",
+      "translation": "损坏，糟蹋；宠坏",
+      "sceneMeaning": "损坏，糟蹋；宠坏",
+      "examples": "[]"
+    },
+    {
+      "word": "standardize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'stændɚdaɪz",
+      "phoneticUk": "'stændədaiz",
+      "translation": "使标准化",
+      "sceneMeaning": "使标准化",
+      "examples": "[]"
+    },
+    {
+      "word": "stripe",
+      "partOfSpeech": "n",
+      "phoneticUs": "straɪp",
+      "phoneticUk": "straɪp",
+      "translation": "条纹，条子",
+      "sceneMeaning": "条纹，条子",
+      "examples": "[]"
+    },
+    {
+      "word": "substitute",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'sʌbstɪtut",
+      "phoneticUk": "'sʌbstɪtjuːt",
+      "translation": "代替人；用…代替；代替者；代替",
+      "sceneMeaning": "替代品",
+      "examples": "[]"
+    },
+    {
+      "word": "sulfur",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sʌlfɚ",
+      "phoneticUk": "'sʌlfə",
+      "translation": "硫(磺)，硫黄",
+      "sceneMeaning": "硫(磺)，硫黄；本场景常见用法：元素硫",
+      "examples": "[]"
+    },
+    {
+      "word": "sum",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sʌm",
+      "phoneticUk": "sʌm",
+      "translation": "总数；金额；共计",
+      "sceneMeaning": "总和；金额",
+      "examples": "[]"
+    },
+    {
+      "word": "summarize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sʌməraɪz",
+      "phoneticUk": "'sʌməraiz",
+      "translation": "概括，概述，总结",
+      "sceneMeaning": "概括，概述，总结",
+      "examples": "[]"
+    },
+    {
+      "word": "supreme",
+      "partOfSpeech": "adj",
+      "phoneticUs": "suˈprim",
+      "phoneticUk": "suː'priːm",
+      "translation": "最高的；最大的",
+      "sceneMeaning": "最高的；最大的",
+      "examples": "[]"
+    },
+    {
+      "word": "tide",
+      "partOfSpeech": "n",
+      "phoneticUs": "taɪd",
+      "phoneticUk": "taɪd",
+      "translation": "潮，潮汐；潮流；潮水",
+      "sceneMeaning": "潮，潮汐；潮流；潮水",
+      "examples": "[]"
+    },
+    {
+      "word": "typewriter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'taɪpraɪtɚ",
+      "phoneticUk": "'taɪpraɪtə",
+      "translation": "打字机",
+      "sceneMeaning": "打字机",
+      "examples": "[]"
+    },
+    {
+      "word": "unite",
+      "partOfSpeech": "v",
+      "phoneticUs": "ju'naɪt",
+      "phoneticUk": "juː'naɪt",
+      "translation": "联合；使联合",
+      "sceneMeaning": "联合；使联合",
+      "examples": "[]"
+    },
+    {
+      "word": "variable",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'vɛrɪəbl",
+      "phoneticUk": "'veərɪəb(ə)l",
+      "translation": "易变的；变量",
+      "sceneMeaning": "变量；可变因素",
+      "examples": "[]"
+    },
+    {
+      "word": "variation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",vɛrɪ'eʃən",
+      "phoneticUk": "veərɪ'eɪʃ(ə)n",
+      "translation": "变化，变动；变异",
+      "sceneMeaning": "变化；差异",
+      "examples": "[]"
+    }
+  ]
+}

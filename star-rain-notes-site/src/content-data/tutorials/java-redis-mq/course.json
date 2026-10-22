@@ -1,0 +1,1480 @@
+{
+  "slug": "java-redis-mq",
+  "title": "Redis 与消息队列",
+  "description": "Java 后端中间件进阶：Redis 数据模型、缓存工程与一致性、消息队列通用原理与 RocketMQ/Kafka/RabbitMQ 实践。",
+  "category": "Java全栈知识体系",
+  "categorySlug": "javaquanzhan",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 175,
+  "wordCount": 0,
+  "categoryId": "1",
+  "groups": [
+    {
+      "title": "Redis 定位、数据模型与基本操作",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "Redis 是什么：内存数据结构服务器，而不只是简单的 Key-Value 缓存",
+          "description": "Redis 是什么：内存数据结构服务器，而不只是简单的 Key-Value 缓存",
+          "path": "/tutorials/java-redis-mq/1-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "Redis 与 MySQL：职责、数据模型、持久化和查询能力的区别",
+          "description": "Redis 与 MySQL：职责、数据模型、持久化和查询能力的区别",
+          "path": "/tutorials/java-redis-mq/1-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-3",
+          "title": "Redis 的常见用途：缓存、计数、排行榜、会话、共享状态与消息场景",
+          "description": "Redis 的常见用途：缓存、计数、排行榜、会话、共享状态与消息场景",
+          "path": "/tutorials/java-redis-mq/1-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-4",
+          "title": "Key 命名规范：业务前缀、对象标识、环境隔离与避免 Key 冲突",
+          "description": "Key 命名规范：业务前缀、对象标识、环境隔离与避免 Key 冲突",
+          "path": "/tutorials/java-redis-mq/1-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-5",
+          "title": "TTL：过期时间的设置、查询与更新",
+          "description": "TTL：过期时间的设置、查询与更新",
+          "path": "/tutorials/java-redis-mq/1-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-6",
+          "title": "常用命令：读写、删除、过期、批量操作与键空间观察",
+          "description": "常用命令：读写、删除、过期、批量操作与键空间观察",
+          "path": "/tutorials/java-redis-mq/1-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-7",
+          "title": "原子命令：为什么“先读取、再计算、再写回”可能产生并发问题",
+          "description": "原子命令：为什么“先读取、再计算、再写回”可能产生并发问题",
+          "path": "/tutorials/java-redis-mq/1-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-8",
+          "title": "Pipeline：减少网络往返的适用场景与限制",
+          "description": "Pipeline：减少网络往返的适用场景与限制",
+          "path": "/tutorials/java-redis-mq/1-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-9",
+          "title": "Redis 事务 `MULTI/EXEC`：执行特点及其与关系型数据库事务的区别",
+          "description": "Redis 事务 `MULTI/EXEC`：执行特点及其与关系型数据库事务的区别",
+          "path": "/tutorials/java-redis-mq/1-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-10",
+          "title": "Lua 脚本：将多个 Redis 操作组合成原子执行单元",
+          "description": "Lua 脚本：将多个 Redis 操作组合成原子执行单元",
+          "path": "/tutorials/java-redis-mq/1-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-11",
+          "title": "Redis 不等于关系型数据库：复杂关联查询与业务事实数据应如何取舍",
+          "description": "Redis 不等于关系型数据库：复杂关联查询与业务事实数据应如何取舍",
+          "path": "/tutorials/java-redis-mq/1-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-12",
+          "title": "选择 Redis 前先回答：为什么需要它、缓存什么、如何失效、故障时怎么办",
+          "description": "选择 Redis 前先回答：为什么需要它、缓存什么、如何失效、故障时怎么办",
+          "path": "/tutorials/java-redis-mq/1-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Redis 数据类型与业务场景",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "String：缓存对象、计数器、验证码与简单状态",
+          "description": "String：缓存对象、计数器、验证码与简单状态",
+          "path": "/tutorials/java-redis-mq/2-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "Hash：对象字段、用户资料与局部字段更新",
+          "description": "Hash：对象字段、用户资料与局部字段更新",
+          "path": "/tutorials/java-redis-mq/2-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "List：列表、阻塞式队列模型及其适用边界",
+          "description": "List：列表、阻塞式队列模型及其适用边界",
+          "path": "/tutorials/java-redis-mq/2-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-4",
+          "title": "Set：去重、交集、并集与共同关注等场景",
+          "description": "Set：去重、交集、并集与共同关注等场景",
+          "path": "/tutorials/java-redis-mq/2-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-5",
+          "title": "Sorted Set：排行榜、积分排名与按分值范围查询",
+          "description": "Sorted Set：排行榜、积分排名与按分值范围查询",
+          "path": "/tutorials/java-redis-mq/2-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-6",
+          "title": "Bitmap：签到、布尔状态与位级统计",
+          "description": "Bitmap：签到、布尔状态与位级统计",
+          "path": "/tutorials/java-redis-mq/2-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-7",
+          "title": "HyperLogLog：大规模基数估算与误差边界",
+          "description": "HyperLogLog：大规模基数估算与误差边界",
+          "path": "/tutorials/java-redis-mq/2-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-8",
+          "title": "GEO：地理位置存储与附近地点查询的基本能力",
+          "description": "GEO：地理位置存储与附近地点查询的基本能力",
+          "path": "/tutorials/java-redis-mq/2-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-9",
+          "title": "Stream：消息流、消费者组、待确认消息与消息重领的基本能力",
+          "description": "Stream：消息流、消费者组、待确认消息与消息重领的基本能力",
+          "path": "/tutorials/java-redis-mq/2-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-10",
+          "title": "TTL 与数据结构组合：例如排行榜是否需要过期、计数是否要重置",
+          "description": "TTL 与数据结构组合：例如排行榜是否需要过期、计数是否要重置",
+          "path": "/tutorials/java-redis-mq/2-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-11",
+          "title": "数据类型选择：围绕查询方式、更新方式、数据规模和准确性要求作决定",
+          "description": "数据类型选择：围绕查询方式、更新方式、数据规模和准确性要求作决定",
+          "path": "/tutorials/java-redis-mq/2-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-12",
+          "title": "常见误用：把所有对象序列化成一个大 String、创建过大的集合或无界增长的 List/Stream",
+          "description": "常见误用：把所有对象序列化成一个大 String、创建过大的集合或无界增长的 List/Stream",
+          "path": "/tutorials/java-redis-mq/2-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-13",
+          "title": "底层结构只学必要原理：哈希表、跳表、紧凑编码等如何影响操作成本",
+          "description": "底层结构只学必要原理：哈希表、跳表、紧凑编码等如何影响操作成本",
+          "path": "/tutorials/java-redis-mq/2-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-14",
+          "title": "版本边界：Redis 的内部编码会随版本演进，不将某个旧版本的底层实现当作永久不变的事实",
+          "description": "版本边界：Redis 的内部编码会随版本演进，不将某个旧版本的底层实现当作永久不变的事实",
+          "path": "/tutorials/java-redis-mq/2-14/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Java 与 Spring Boot 集成",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "Spring Data Redis 的定位与基本依赖",
+          "description": "Spring Data Redis 的定位与基本依赖",
+          "path": "/tutorials/java-redis-mq/3-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "Redis 连接配置、连接工厂与连接池",
+          "description": "Redis 连接配置、连接工厂与连接池",
+          "path": "/tutorials/java-redis-mq/3-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "`RedisTemplate` 与 `StringRedisTemplate` 的使用场景",
+          "description": "`RedisTemplate` 与 `StringRedisTemplate` 的使用场景",
+          "path": "/tutorials/java-redis-mq/3-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "Key、Value、Hash Key、Hash Value 的序列化配置",
+          "description": "Key、Value、Hash Key、Hash Value 的序列化配置",
+          "path": "/tutorials/java-redis-mq/3-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-5",
+          "title": "JSON 序列化、类型信息、兼容性与反序列化风险",
+          "description": "JSON 序列化、类型信息、兼容性与反序列化风险",
+          "path": "/tutorials/java-redis-mq/3-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-6",
+          "title": "常用数据类型操作：Value、Hash、List、Set、ZSet",
+          "description": "常用数据类型操作：Value、Hash、List、Set、ZSet",
+          "path": "/tutorials/java-redis-mq/3-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-7",
+          "title": "TTL 设置、过期策略与缓存更新",
+          "description": "TTL 设置、过期策略与缓存更新",
+          "path": "/tutorials/java-redis-mq/3-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-8",
+          "title": "Spring Cache：`@Cacheable`、`@CachePut`、`@CacheEvict` 的职责",
+          "description": "Spring Cache：`@Cacheable`、`@CachePut`、`@CacheEvict` 的职责",
+          "path": "/tutorials/java-redis-mq/3-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-9",
+          "title": "缓存 Key 设计、条件缓存、空值缓存与过期时间配置",
+          "description": "缓存 Key 设计、条件缓存、空值缓存与过期时间配置",
+          "path": "/tutorials/java-redis-mq/3-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-10",
+          "title": "`@Cacheable` 与代理机制的关系：自调用、方法可见性等常见限制",
+          "description": "`@Cacheable` 与代理机制的关系：自调用、方法可见性等常见限制",
+          "path": "/tutorials/java-redis-mq/3-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-11",
+          "title": "超时、连接异常、序列化异常与 Redis 不可用时的应用行为",
+          "description": "超时、连接异常、序列化异常与 Redis 不可用时的应用行为",
+          "path": "/tutorials/java-redis-mq/3-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-12",
+          "title": "Redis 命令执行的可观测性：日志、慢命令、连接池与耗时",
+          "description": "Redis 命令执行的可观测性：日志、慢命令、连接池与耗时",
+          "path": "/tutorials/java-redis-mq/3-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-13",
+          "title": "单元测试与集成测试：命中、未命中、过期、更新、删除和 Redis 故障",
+          "description": "单元测试与集成测试：命中、未命中、过期、更新、删除和 Redis 故障",
+          "path": "/tutorials/java-redis-mq/3-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-14",
+          "title": "安全配置：网络隔离、ACL/凭据、TLS（按环境需要）与敏感信息保护",
+          "description": "安全配置：网络隔离、ACL/凭据、TLS（按环境需要）与敏感信息保护",
+          "path": "/tutorials/java-redis-mq/3-14/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "缓存设计、缓存问题与数据一致性",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "缓存的收益与成本：延迟、内存、失效、一致性和额外运维复杂度",
+          "description": "缓存的收益与成本：延迟、内存、失效、一致性和额外运维复杂度",
+          "path": "/tutorials/java-redis-mq/4-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "Cache Aside：读时加载、更新数据库、删除缓存",
+          "description": "Cache Aside：读时加载、更新数据库、删除缓存",
+          "path": "/tutorials/java-redis-mq/4-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-3",
+          "title": "缓存写入策略：旁路缓存、读写穿透等术语的含义与常见边界",
+          "description": "缓存写入策略：旁路缓存、读写穿透等术语的含义与常见边界",
+          "path": "/tutorials/java-redis-mq/4-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-4",
+          "title": "数据库与缓存的更新顺序：为什么不存在适用于所有业务的万能顺序",
+          "description": "数据库与缓存的更新顺序：为什么不存在适用于所有业务的万能顺序",
+          "path": "/tutorials/java-redis-mq/4-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-5",
+          "title": "为什么常见做法是更新数据库后删除缓存，以及仍然可能失败的情况",
+          "description": "为什么常见做法是更新数据库后删除缓存，以及仍然可能失败的情况",
+          "path": "/tutorials/java-redis-mq/4-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-6",
+          "title": "并发读写中的旧值回填与缓存失效竞态",
+          "description": "并发读写中的旧值回填与缓存失效竞态",
+          "path": "/tutorials/java-redis-mq/4-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-7",
+          "title": "延迟双删：解决思路、依赖的假设与并非万能保证的原因",
+          "description": "延迟双删：解决思路、依赖的假设与并非万能保证的原因",
+          "path": "/tutorials/java-redis-mq/4-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-8",
+          "title": "缓存穿透：无效查询、空值缓存与布隆过滤器的边界",
+          "description": "缓存穿透：无效查询、空值缓存与布隆过滤器的边界",
+          "path": "/tutorials/java-redis-mq/4-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-9",
+          "title": "缓存击穿：热点 Key 失效、互斥重建与逻辑过期思路",
+          "description": "缓存击穿：热点 Key 失效、互斥重建与逻辑过期思路",
+          "path": "/tutorials/java-redis-mq/4-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-10",
+          "title": "缓存雪崩：集中失效、TTL 抖动、预热与限流",
+          "description": "缓存雪崩：集中失效、TTL 抖动、预热与限流",
+          "path": "/tutorials/java-redis-mq/4-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-11",
+          "title": "热 Key：访问集中、局部热点、拆分与读扩散的取舍",
+          "description": "热 Key：访问集中、局部热点、拆分与读扩散的取舍",
+          "path": "/tutorials/java-redis-mq/4-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-12",
+          "title": "大 Key：识别、拆分、渐进删除与避免阻塞式大操作",
+          "description": "大 Key：识别、拆分、渐进删除与避免阻塞式大操作",
+          "path": "/tutorials/java-redis-mq/4-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-13",
+          "title": "内存淘汰策略、过期删除与业务 TTL 的区别",
+          "description": "内存淘汰策略、过期删除与业务 TTL 的区别",
+          "path": "/tutorials/java-redis-mq/4-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-14",
+          "title": "缓存命中率、回源比例、数据新鲜度与内存使用的联合观察",
+          "description": "缓存命中率、回源比例、数据新鲜度与内存使用的联合观察",
+          "path": "/tutorials/java-redis-mq/4-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-15",
+          "title": "多级缓存：本地缓存 + Redis 的收益、失效传播与排查复杂度",
+          "description": "多级缓存：本地缓存 + Redis 的收益、失效传播与排查复杂度",
+          "path": "/tutorials/java-redis-mq/4-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-16",
+          "title": "强一致性要求：判断缓存是否适用；不能只靠设置 TTL 就宣称数据一致",
+          "description": "强一致性要求：判断缓存是否适用；不能只靠设置 TTL 就宣称数据一致",
+          "path": "/tutorials/java-redis-mq/4-16/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-17",
+          "title": "可靠失效的扩展方案：重试任务、Outbox 或订阅数据库变更的基本思路（具体消息/分布式设计在相关章节深化）",
+          "description": "可靠失效的扩展方案：重试任务、Outbox 或订阅数据库变更的基本思路（具体消息/分布式设计在相关章节深化）",
+          "path": "/tutorials/java-redis-mq/4-17/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Redis 持久化、高可用与运维",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "Redis 命令处理、事件循环与 I/O 多路复用的基本思路",
+          "description": "Redis 命令处理、事件循环与 I/O 多路复用的基本思路",
+          "path": "/tutorials/java-redis-mq/5-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "慢命令、大 Key、高复杂度操作对延迟的影响",
+          "description": "慢命令、大 Key、高复杂度操作对延迟的影响",
+          "path": "/tutorials/java-redis-mq/5-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "RDB：快照、恢复效率、备份用途与潜在数据丢失窗口",
+          "description": "RDB：快照、恢复效率、备份用途与潜在数据丢失窗口",
+          "path": "/tutorials/java-redis-mq/5-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "AOF：写命令追加、同步策略、重写与恢复",
+          "description": "AOF：写命令追加、同步策略、重写与恢复",
+          "path": "/tutorials/java-redis-mq/5-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "RDB 与 AOF：机制差异、组合方式与持久化取舍",
+          "description": "RDB 与 AOF：机制差异、组合方式与持久化取舍",
+          "path": "/tutorials/java-redis-mq/5-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-6",
+          "title": "关闭持久化的风险：缓存用途与重要业务数据的要求不同",
+          "description": "关闭持久化的风险：缓存用途与重要业务数据的要求不同",
+          "path": "/tutorials/java-redis-mq/5-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-7",
+          "title": "主从复制：复制流、断线重连与部分重同步的基本概念",
+          "description": "主从复制：复制流、断线重连与部分重同步的基本概念",
+          "path": "/tutorials/java-redis-mq/5-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-8",
+          "title": "异步复制意味着什么：故障切换时仍可能丢失最近写入",
+          "description": "异步复制意味着什么：故障切换时仍可能丢失最近写入",
+          "path": "/tutorials/java-redis-mq/5-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-9",
+          "title": "Sentinel：监控、故障判断、主节点切换与客户端发现",
+          "description": "Sentinel：监控、故障判断、主节点切换与客户端发现",
+          "path": "/tutorials/java-redis-mq/5-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-10",
+          "title": "Redis Cluster：哈希槽、分片、扩缩容与故障处理",
+          "description": "Redis Cluster：哈希槽、分片、扩缩容与故障处理",
+          "path": "/tutorials/java-redis-mq/5-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-11",
+          "title": "Sentinel 与 Cluster 的定位差异：高可用与数据分片不是同一个概念",
+          "description": "Sentinel 与 Cluster 的定位差异：高可用与数据分片不是同一个概念",
+          "path": "/tutorials/java-redis-mq/5-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-12",
+          "title": "备份、复制和高可用的区别：不能把“有副本”当成“已经做好备份”",
+          "description": "备份、复制和高可用的区别：不能把“有副本”当成“已经做好备份”",
+          "path": "/tutorials/java-redis-mq/5-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-13",
+          "title": "内存容量、碎片、淘汰、命中率、连接数、慢命令与延迟监控",
+          "description": "内存容量、碎片、淘汰、命中率、连接数、慢命令与延迟监控",
+          "path": "/tutorials/java-redis-mq/5-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-14",
+          "title": "故障排查：连接超时、内存飙升、延迟升高、主从切换与缓存集中失效",
+          "description": "故障排查：连接超时、内存飙升、延迟升高、主从切换与缓存集中失效",
+          "path": "/tutorials/java-redis-mq/5-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-15",
+          "title": "安全：禁止不必要的公网暴露、最小权限、认证、网络隔离与备份访问控制",
+          "description": "安全：禁止不必要的公网暴露、最小权限、认证、网络隔离与备份访问控制",
+          "path": "/tutorials/java-redis-mq/5-15/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Redis 分布式锁、限流与消息功能边界",
+      "chapters": [
+        {
+          "slug": "6-1",
+          "title": "进程内锁、数据库锁与 Redis 锁分别能解决什么问题",
+          "description": "进程内锁、数据库锁与 Redis 锁分别能解决什么问题",
+          "path": "/tutorials/java-redis-mq/6-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-2",
+          "title": "使用 `SET key value NX PX ...` 获取带租期的锁",
+          "description": "使用 `SET key value NX PX ...` 获取带租期的锁",
+          "path": "/tutorials/java-redis-mq/6-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-3",
+          "title": "用唯一请求标识作为锁值，避免误删其他客户端的锁",
+          "description": "用唯一请求标识作为锁值，避免误删其他客户端的锁",
+          "path": "/tutorials/java-redis-mq/6-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-4",
+          "title": "使用 Lua 原子校验锁值并释放锁",
+          "description": "使用 Lua 原子校验锁值并释放锁",
+          "path": "/tutorials/java-redis-mq/6-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-5",
+          "title": "锁过期、业务执行超时、进程暂停与锁失效风险",
+          "description": "锁过期、业务执行超时、进程暂停与锁失效风险",
+          "path": "/tutorials/java-redis-mq/6-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-6",
+          "title": "锁续期与 Redisson：基本机制及其不构成绝对正确性保证的原因",
+          "description": "锁续期与 Redisson：基本机制及其不构成绝对正确性保证的原因",
+          "path": "/tutorials/java-redis-mq/6-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-7",
+          "title": "需要强正确性时，数据库唯一约束、版本校验或围栏令牌等补充方案",
+          "description": "需要强正确性时，数据库唯一约束、版本校验或围栏令牌等补充方案",
+          "path": "/tutorials/java-redis-mq/6-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-8",
+          "title": "固定窗口、滑动窗口与令牌桶限流的基本思路",
+          "description": "固定窗口、滑动窗口与令牌桶限流的基本思路",
+          "path": "/tutorials/java-redis-mq/6-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-9",
+          "title": "使用 Redis 做共享计数、限流与简单去重时的原子性要求",
+          "description": "使用 Redis 做共享计数、限流与简单去重时的原子性要求",
+          "path": "/tutorials/java-redis-mq/6-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-10",
+          "title": "Redis Pub/Sub：发布订阅模型与实时广播用途",
+          "description": "Redis Pub/Sub：发布订阅模型与实时广播用途",
+          "path": "/tutorials/java-redis-mq/6-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-11",
+          "title": "Pub/Sub 的投递边界：离线订阅者会错过消息，不能当作可靠持久队列",
+          "description": "Pub/Sub 的投递边界：离线订阅者会错过消息，不能当作可靠持久队列",
+          "path": "/tutorials/java-redis-mq/6-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-12",
+          "title": "Redis Streams：消息记录、消费者组、ACK、Pending 与消息重领",
+          "description": "Redis Streams：消息记录、消费者组、ACK、Pending 与消息重领",
+          "path": "/tutorials/java-redis-mq/6-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-13",
+          "title": "Redis List、Pub/Sub、Streams 与专用 MQ 的差异",
+          "description": "Redis List、Pub/Sub、Streams 与专用 MQ 的差异",
+          "path": "/tutorials/java-redis-mq/6-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-14",
+          "title": "何时选择 Redis 消息能力，何时应使用 RocketMQ/Kafka/RabbitMQ 等专用消息系统",
+          "description": "何时选择 Redis 消息能力，何时应使用 RocketMQ/Kafka/RabbitMQ 等专用消息系统",
+          "path": "/tutorials/java-redis-mq/6-14/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "消息队列的定位、模型与选型",
+      "chapters": [
+        {
+          "slug": "7-1",
+          "title": "消息队列解决什么问题：异步处理、解耦、削峰与事件传播",
+          "description": "消息队列解决什么问题：异步处理、解耦、削峰与事件传播",
+          "path": "/tutorials/java-redis-mq/7-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-2",
+          "title": "Producer、Broker、Consumer、Topic、Queue/Partition 与 Consumer Group",
+          "description": "Producer、Broker、Consumer、Topic、Queue/Partition 与 Consumer Group",
+          "path": "/tutorials/java-redis-mq/7-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-3",
+          "title": "点对点、发布订阅、工作队列与事件驱动模式",
+          "description": "点对点、发布订阅、工作队列与事件驱动模式",
+          "path": "/tutorials/java-redis-mq/7-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-4",
+          "title": "同步调用与异步消息：响应时机、失败传播与用户体验差异",
+          "description": "同步调用与异步消息：响应时机、失败传播与用户体验差异",
+          "path": "/tutorials/java-redis-mq/7-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-5",
+          "title": "消息体、消息 Key、业务 ID、事件类型、时间戳与 Schema 版本",
+          "description": "消息体、消息 Key、业务 ID、事件类型、时间戳与 Schema 版本",
+          "path": "/tutorials/java-redis-mq/7-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-6",
+          "title": "消息队列不会自动创造吞吐能力：Broker、消费者与下游依然有容量上限",
+          "description": "消息队列不会自动创造吞吐能力：Broker、消费者与下游依然有容量上限",
+          "path": "/tutorials/java-redis-mq/7-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-7",
+          "title": "何时不需要 MQ：低复杂度同步业务、没有异步价值或缺乏运维能力的场景",
+          "description": "何时不需要 MQ：低复杂度同步业务、没有异步价值或缺乏运维能力的场景",
+          "path": "/tutorials/java-redis-mq/7-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-8",
+          "title": "选型维度：吞吐、延迟、顺序、保留、重放、路由、事务、生态与运维成本",
+          "description": "选型维度：吞吐、延迟、顺序、保留、重放、路由、事务、生态与运维成本",
+          "path": "/tutorials/java-redis-mq/7-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-9",
+          "title": "Redis Pub/Sub、Redis Streams 与专用 MQ 的语义差异",
+          "description": "Redis Pub/Sub、Redis Streams 与专用 MQ 的语义差异",
+          "path": "/tutorials/java-redis-mq/7-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-10",
+          "title": "RocketMQ、Kafka、RabbitMQ 的定位：先理解业务语义，再选择产品",
+          "description": "RocketMQ、Kafka、RabbitMQ 的定位：先理解业务语义，再选择产品",
+          "path": "/tutorials/java-redis-mq/7-10/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "消息可靠性、消费语义与故障治理",
+      "chapters": [
+        {
+          "slug": "8-1",
+          "title": "消息发送请求成功、Broker 接收、持久化与消费者处理成功是不同阶段",
+          "description": "消息发送请求成功、Broker 接收、持久化与消费者处理成功是不同阶段",
+          "path": "/tutorials/java-redis-mq/8-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-2",
+          "title": "生产者确认、发送失败、超时与“结果不确定”的问题",
+          "description": "生产者确认、发送失败、超时与“结果不确定”的问题",
+          "path": "/tutorials/java-redis-mq/8-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-3",
+          "title": "Broker 持久化、副本与可靠性配置的基本含义",
+          "description": "Broker 持久化、副本与可靠性配置的基本含义",
+          "path": "/tutorials/java-redis-mq/8-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-4",
+          "title": "消费确认、消费进度、Offset 与消息重新投递",
+          "description": "消费确认、消费进度、Offset 与消息重新投递",
+          "path": "/tutorials/java-redis-mq/8-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-5",
+          "title": "至多一次、至少一次与“恰好一次”的边界",
+          "description": "至多一次、至少一次与“恰好一次”的边界",
+          "path": "/tutorials/java-redis-mq/8-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-6",
+          "title": "为什么业务消费者必须考虑重复消息与幂等处理",
+          "description": "为什么业务消费者必须考虑重复消息与幂等处理",
+          "path": "/tutorials/java-redis-mq/8-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-7",
+          "title": "幂等方案：业务唯一键、去重表、状态检查与数据库唯一约束",
+          "description": "幂等方案：业务唯一键、去重表、状态检查与数据库唯一约束",
+          "path": "/tutorials/java-redis-mq/8-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-8",
+          "title": "全局顺序与局部顺序的代价差异",
+          "description": "全局顺序与局部顺序的代价差异",
+          "path": "/tutorials/java-redis-mq/8-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-9",
+          "title": "分区、队列、消息组与顺序消费的关系",
+          "description": "分区、队列、消息组与顺序消费的关系",
+          "path": "/tutorials/java-redis-mq/8-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-10",
+          "title": "重试策略、退避、最大重试次数与死信队列",
+          "description": "重试策略、退避、最大重试次数与死信队列",
+          "path": "/tutorials/java-redis-mq/8-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-11",
+          "title": "毒消息、持续失败、人工排查、补偿与重新投递",
+          "description": "毒消息、持续失败、人工排查、补偿与重新投递",
+          "path": "/tutorials/java-redis-mq/8-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-12",
+          "title": "延迟/定时消息与定时任务的适用边界",
+          "description": "延迟/定时消息与定时任务的适用边界",
+          "path": "/tutorials/java-redis-mq/8-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-13",
+          "title": "消息积压：生产速率、消费速率、队列/分区数量与下游瓶颈",
+          "description": "消息积压：生产速率、消费速率、队列/分区数量与下游瓶颈",
+          "path": "/tutorials/java-redis-mq/8-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-14",
+          "title": "消费者扩容、并发度、背压与批量消费",
+          "description": "消费者扩容、并发度、背压与批量消费",
+          "path": "/tutorials/java-redis-mq/8-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-15",
+          "title": "消息保留、重放、重复消费与数据清理策略",
+          "description": "消息保留、重放、重复消费与数据清理策略",
+          "path": "/tutorials/java-redis-mq/8-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-16",
+          "title": "监控指标：生产失败率、消费延迟、积压量、重试量、死信量与处理耗时",
+          "description": "监控指标：生产失败率、消费延迟、积压量、重试量、死信量与处理耗时",
+          "path": "/tutorials/java-redis-mq/8-16/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-17",
+          "title": "消息追踪：业务事件 ID、消息 ID、日志关联与端到端状态核对",
+          "description": "消息追踪：业务事件 ID、消息 ID、日志关联与端到端状态核对",
+          "path": "/tutorials/java-redis-mq/8-17/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-18",
+          "title": "“发送成功”不等于“下游业务已完成”，业务状态仍需可查询、可恢复",
+          "description": "“发送成功”不等于“下游业务已完成”，业务状态仍需可查询、可恢复",
+          "path": "/tutorials/java-redis-mq/8-18/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "RocketMQ：Java 业务消息主线",
+      "chapters": [
+        {
+          "slug": "9-1",
+          "title": "RocketMQ 的定位、基本架构与适用场景",
+          "description": "RocketMQ 的定位、基本架构与适用场景",
+          "path": "/tutorials/java-redis-mq/9-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-2",
+          "title": "NameServer、Broker、Producer、Consumer 等组件的职责（以所选版本官方架构为准）",
+          "description": "NameServer、Broker、Producer、Consumer 等组件的职责（以所选版本官方架构为准）",
+          "path": "/tutorials/java-redis-mq/9-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-3",
+          "title": "Topic、消息类型、Tag/过滤、消息 Key 与消费组",
+          "description": "Topic、消息类型、Tag/过滤、消息 Key 与消费组",
+          "path": "/tutorials/java-redis-mq/9-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-4",
+          "title": "Java 生产者：同步发送、异步发送、发送结果、超时与失败处理",
+          "description": "Java 生产者：同步发送、异步发送、发送结果、超时与失败处理",
+          "path": "/tutorials/java-redis-mq/9-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-5",
+          "title": "Java 消费者：消费组、并发消费、消费结果与失败处理",
+          "description": "Java 消费者：消费组、并发消费、消费结果与失败处理",
+          "path": "/tutorials/java-redis-mq/9-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-6",
+          "title": "普通消息：订单后续处理、通知与业务解耦",
+          "description": "普通消息：订单后续处理、通知与业务解耦",
+          "path": "/tutorials/java-redis-mq/9-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-7",
+          "title": "顺序消息：消息组、局部顺序、串行消费与吞吐量之间的取舍",
+          "description": "顺序消息：消息组、局部顺序、串行消费与吞吐量之间的取舍",
+          "path": "/tutorials/java-redis-mq/9-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-8",
+          "title": "延迟/定时消息：适用场景、支持的时间范围与版本差异",
+          "description": "延迟/定时消息：适用场景、支持的时间范围与版本差异",
+          "path": "/tutorials/java-redis-mq/9-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-9",
+          "title": "消费重试、死信队列与失败消息治理",
+          "description": "消费重试、死信队列与失败消息治理",
+          "path": "/tutorials/java-redis-mq/9-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-10",
+          "title": "事务消息：半消息、本地事务状态、回查与最终一致性",
+          "description": "事务消息：半消息、本地事务状态、回查与最终一致性",
+          "path": "/tutorials/java-redis-mq/9-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-11",
+          "title": "事务消息的边界：不能保证下游消费者业务一定成功",
+          "description": "事务消息的边界：不能保证下游消费者业务一定成功",
+          "path": "/tutorials/java-redis-mq/9-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-12",
+          "title": "消息发送与消费幂等：MQ 的重试机制不能替代业务幂等",
+          "description": "消息发送与消费幂等：MQ 的重试机制不能替代业务幂等",
+          "path": "/tutorials/java-redis-mq/9-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-13",
+          "title": "Spring Boot 集成、配置管理、连接与异常处理",
+          "description": "Spring Boot 集成、配置管理、连接与异常处理",
+          "path": "/tutorials/java-redis-mq/9-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-14",
+          "title": "本地 Demo：发送、消费、异常重试、重复消息与消息积压",
+          "description": "本地 Demo：发送、消费、异常重试、重复消息与消息积压",
+          "path": "/tutorials/java-redis-mq/9-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-15",
+          "title": "监控与排障：生产失败、消费延迟、重试与死信",
+          "description": "监控与排障：生产失败、消费延迟、重试与死信",
+          "path": "/tutorials/java-redis-mq/9-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-16",
+          "title": "版本边界：区分 RocketMQ 4.x 与 5.x 文档/API，不混用示例和配置",
+          "description": "版本边界：区分 RocketMQ 4.x 与 5.x 文档/API，不混用示例和配置",
+          "path": "/tutorials/java-redis-mq/9-16/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-17",
+          "title": "生产环境的 Topic/消费组规划、权限、容量与消息保留",
+          "description": "生产环境的 Topic/消费组规划、权限、容量与消息保留",
+          "path": "/tutorials/java-redis-mq/9-17/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Kafka：事件流与高吞吐消息系统",
+      "chapters": [
+        {
+          "slug": "10-1",
+          "title": "Kafka 的定位：事件流、日志型消息与高吞吐数据管道",
+          "description": "Kafka 的定位：事件流、日志型消息与高吞吐数据管道",
+          "path": "/tutorials/java-redis-mq/10-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-2",
+          "title": "Topic、Partition、Replica、Broker 与分区内有序",
+          "description": "Topic、Partition、Replica、Broker 与分区内有序",
+          "path": "/tutorials/java-redis-mq/10-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-3",
+          "title": "Producer、序列化、分区键与批量发送",
+          "description": "Producer、序列化、分区键与批量发送",
+          "path": "/tutorials/java-redis-mq/10-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-4",
+          "title": "Consumer Group、分区分配、Offset 与消费进度",
+          "description": "Consumer Group、分区分配、Offset 与消费进度",
+          "path": "/tutorials/java-redis-mq/10-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-5",
+          "title": "Rebalance：触发原因、消费暂停与稳定性影响",
+          "description": "Rebalance：触发原因、消费暂停与稳定性影响",
+          "path": "/tutorials/java-redis-mq/10-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-6",
+          "title": "消息保留、日志压缩、重放与事件数据建模",
+          "description": "消息保留、日志压缩、重放与事件数据建模",
+          "path": "/tutorials/java-redis-mq/10-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-7",
+          "title": "副本同步、ISR、生产者确认与可靠性配置的基本含义",
+          "description": "副本同步、ISR、生产者确认与可靠性配置的基本含义",
+          "path": "/tutorials/java-redis-mq/10-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-8",
+          "title": "消费重复、Offset 提交时机与业务幂等",
+          "description": "消费重复、Offset 提交时机与业务幂等",
+          "path": "/tutorials/java-redis-mq/10-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-9",
+          "title": "Kafka 事务与 Kafka 内部读写语义的边界",
+          "description": "Kafka 事务与 Kafka 内部读写语义的边界",
+          "path": "/tutorials/java-redis-mq/10-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-10",
+          "title": "消费延迟、分区倾斜、积压与吞吐量排查",
+          "description": "消费延迟、分区倾斜、积压与吞吐量排查",
+          "path": "/tutorials/java-redis-mq/10-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-11",
+          "title": "Kafka 与 RocketMQ 的定位差异：按业务模型、生态与运维能力选型",
+          "description": "Kafka 与 RocketMQ 的定位差异：按业务模型、生态与运维能力选型",
+          "path": "/tutorials/java-redis-mq/10-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-12",
+          "title": "学习边界：理解核心架构并完成基础 Demo；除非岗位/项目需要，不要求与 RocketMQ 同等深度",
+          "description": "学习边界：理解核心架构并完成基础 Demo；除非岗位/项目需要，不要求与 RocketMQ 同等深度",
+          "path": "/tutorials/java-redis-mq/10-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "RabbitMQ 与消息产品选型",
+      "chapters": [
+        {
+          "slug": "11-1",
+          "title": "RabbitMQ 的定位、AMQP 与路由模型",
+          "description": "RabbitMQ 的定位、AMQP 与路由模型",
+          "path": "/tutorials/java-redis-mq/11-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-2",
+          "title": "Exchange、Queue、Binding、Routing Key 与常见交换机类型",
+          "description": "Exchange、Queue、Binding、Routing Key 与常见交换机类型",
+          "path": "/tutorials/java-redis-mq/11-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-3",
+          "title": "Direct、Topic、Fanout 路由与发布订阅",
+          "description": "Direct、Topic、Fanout 路由与发布订阅",
+          "path": "/tutorials/java-redis-mq/11-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-4",
+          "title": "Publisher Confirms、Consumer ACK、持久化与重新投递",
+          "description": "Publisher Confirms、Consumer ACK、持久化与重新投递",
+          "path": "/tutorials/java-redis-mq/11-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-5",
+          "title": "Prefetch、消费者并发、死信与重试策略",
+          "description": "Prefetch、消费者并发、死信与重试策略",
+          "path": "/tutorials/java-redis-mq/11-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-6",
+          "title": "RabbitMQ 与 RocketMQ/Kafka 在路由、吞吐、保留和运维上的差异",
+          "description": "RabbitMQ 与 RocketMQ/Kafka 在路由、吞吐、保留和运维上的差异",
+          "path": "/tutorials/java-redis-mq/11-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-7",
+          "title": "RabbitMQ 何时值得深入：目标岗位、现有系统或项目确实使用时",
+          "description": "RabbitMQ 何时值得深入：目标岗位、现有系统或项目确实使用时",
+          "path": "/tutorials/java-redis-mq/11-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-8",
+          "title": "产品选型不以“哪个绝对最好”为答案，而以消息语义、吞吐、延迟、运维能力与团队经验作判断",
+          "description": "产品选型不以“哪个绝对最好”为答案，而以消息语义、吞吐、延迟、运维能力与团队经验作判断",
+          "path": "/tutorials/java-redis-mq/11-8/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "数据库与消息的可靠衔接",
+      "chapters": [
+        {
+          "slug": "12-1",
+          "title": "数据库事务与发送消息之间的“双写”问题",
+          "description": "数据库事务与发送消息之间的“双写”问题",
+          "path": "/tutorials/java-redis-mq/12-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-2",
+          "title": "先写数据库再发消息、先发消息再写数据库各自的失败窗口",
+          "description": "先写数据库再发消息、先发消息再写数据库各自的失败窗口",
+          "path": "/tutorials/java-redis-mq/12-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-3",
+          "title": "发送超时但 Broker 可能已接收：为什么简单重试可能产生重复消息",
+          "description": "发送超时但 Broker 可能已接收：为什么简单重试可能产生重复消息",
+          "path": "/tutorials/java-redis-mq/12-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-4",
+          "title": "事务消息：它解决什么问题，不能自动解决什么问题",
+          "description": "事务消息：它解决什么问题，不能自动解决什么问题",
+          "path": "/tutorials/java-redis-mq/12-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-5",
+          "title": "Outbox/本地消息表：业务数据与待发送事件在同一数据库事务中落库",
+          "description": "Outbox/本地消息表：业务数据与待发送事件在同一数据库事务中落库",
+          "path": "/tutorials/java-redis-mq/12-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-6",
+          "title": "后台投递、投递确认、重复发送与消费者幂等",
+          "description": "后台投递、投递确认、重复发送与消费者幂等",
+          "path": "/tutorials/java-redis-mq/12-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-7",
+          "title": "消息重试、死信、补偿、对账与人工介入",
+          "description": "消息重试、死信、补偿、对账与人工介入",
+          "path": "/tutorials/java-redis-mq/12-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-8",
+          "title": "事件 Schema 设计：事件 ID、聚合 ID、版本、时间和业务含义",
+          "description": "事件 Schema 设计：事件 ID、聚合 ID、版本、时间和业务含义",
+          "path": "/tutorials/java-redis-mq/12-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-9",
+          "title": "消费者状态检查：只允许合法状态转换，避免重复消息造成重复扣款/发货等副作用",
+          "description": "消费者状态检查：只允许合法状态转换，避免重复消息造成重复扣款/发货等副作用",
+          "path": "/tutorials/java-redis-mq/12-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-10",
+          "title": "最终一致性的基本思路：可重试、可幂等、可观测、可补偿",
+          "description": "最终一致性的基本思路：可重试、可幂等、可观测、可补偿",
+          "path": "/tutorials/java-redis-mq/12-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-11",
+          "title": "业务消息的保留、回放、脱敏与数据治理",
+          "description": "业务消息的保留、回放、脱敏与数据治理",
+          "path": "/tutorials/java-redis-mq/12-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-12",
+          "title": "详细的 Saga、TCC、跨服务事务和微服务一致性策略放入下一份分布式系统教程",
+          "description": "详细的 Saga、TCC、跨服务事务和微服务一致性策略放入下一份分布式系统教程",
+          "path": "/tutorials/java-redis-mq/12-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "综合实践：为 Java 业务引入缓存与异步消息",
+      "chapters": [
+        {
+          "slug": "13-1",
+          "title": "先建立一个普通 Spring Boot + MySQL 业务模块，明确业务事实数据与状态",
+          "description": "先建立一个普通 Spring Boot + MySQL 业务模块，明确业务事实数据与状态",
+          "path": "/tutorials/java-redis-mq/13-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-2",
+          "title": "为读取频繁且允许短暂旧值的数据引入 Redis 缓存",
+          "description": "为读取频繁且允许短暂旧值的数据引入 Redis 缓存",
+          "path": "/tutorials/java-redis-mq/13-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-3",
+          "title": "定义缓存 Key、TTL、更新/删除策略与缓存未命中行为",
+          "description": "定义缓存 Key、TTL、更新/删除策略与缓存未命中行为",
+          "path": "/tutorials/java-redis-mq/13-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-4",
+          "title": "模拟缓存穿透、击穿、雪崩和缓存失效失败",
+          "description": "模拟缓存穿透、击穿、雪崩和缓存失效失败",
+          "path": "/tutorials/java-redis-mq/13-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-5",
+          "title": "增加一个异步业务动作，例如订单通知或后台处理任务",
+          "description": "增加一个异步业务动作，例如订单通知或后台处理任务",
+          "path": "/tutorials/java-redis-mq/13-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-6",
+          "title": "选择 RocketMQ 完成生产者、Broker 与消费者的基本链路",
+          "description": "选择 RocketMQ 完成生产者、Broker 与消费者的基本链路",
+          "path": "/tutorials/java-redis-mq/13-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-7",
+          "title": "设计业务事件 ID、消费幂等、重试与死信处理",
+          "description": "设计业务事件 ID、消费幂等、重试与死信处理",
+          "path": "/tutorials/java-redis-mq/13-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-8",
+          "title": "模拟生产者超时、消费者宕机、重复消息、消费失败与消息积压",
+          "description": "模拟生产者超时、消费者宕机、重复消息、消费失败与消息积压",
+          "path": "/tutorials/java-redis-mq/13-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-9",
+          "title": "对比直接同步调用与异步消息的响应时间、失败传播与排障成本",
+          "description": "对比直接同步调用与异步消息的响应时间、失败传播与排障成本",
+          "path": "/tutorials/java-redis-mq/13-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-10",
+          "title": "记录 Redis 与 MQ 的关键指标、日志和业务状态",
+          "description": "记录 Redis 与 MQ 的关键指标、日志和业务状态",
+          "path": "/tutorials/java-redis-mq/13-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-11",
+          "title": "输出一份技术决策记录：为什么引入、备选方案、预期收益、代价和回滚方法",
+          "description": "输出一份技术决策记录：为什么引入、备选方案、预期收益、代价和回滚方法",
+          "path": "/tutorials/java-redis-mq/13-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-12",
+          "title": "只在 Demo 证明收益后再考虑把中间件引入真实项目，避免为使用技术而增加复杂度",
+          "description": "只在 Demo 证明收益后再考虑把中间件引入真实项目，避免为使用技术而增加复杂度",
+          "path": "/tutorials/java-redis-mq/13-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/java-redis-mq/",
+  "sortOrder": 4
+}

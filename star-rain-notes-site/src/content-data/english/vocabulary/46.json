@@ -1,0 +1,1287 @@
+{
+  "id": "46",
+  "title": "观点 / 立场 / 态度",
+  "layer": "抽象阅读与逻辑层",
+  "wordCount": 142,
+  "path": "/english/vocabulary/46/",
+  "words": [
+    {
+      "word": "curiosity",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kjʊrɪ'ɑsəti",
+      "phoneticUk": "kjʊərɪ'ɒsɪtɪ",
+      "translation": "好奇，好奇心；珍品；好奇心",
+      "sceneMeaning": "好奇心",
+      "examples": "[]"
+    },
+    {
+      "word": "value",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'vælju",
+      "phoneticUk": "'væljuː",
+      "translation": "价值；价格；评价；重视",
+      "sceneMeaning": "价值；价值观",
+      "examples": "[]"
+    },
+    {
+      "word": "position",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'zɪʃən",
+      "phoneticUk": "pə'zɪʃ(ə)n",
+      "translation": "位置；职位；姿势；职位",
+      "sceneMeaning": "立场；位置；职位",
+      "examples": "[]"
+    },
+    {
+      "word": "critical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'krɪtɪkl",
+      "phoneticUk": "'krɪtɪk(ə)l",
+      "translation": "决定性的；批评的；批评的，爱挑剔的",
+      "sceneMeaning": "批判的；关键的",
+      "examples": "[]"
+    },
+    {
+      "word": "opposite",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈɑpəzɪt; ˈɑpəsɪt",
+      "phoneticUk": "'ɒpəzɪt; -sɪt",
+      "translation": "对面的；对立物；相反的",
+      "sceneMeaning": "对面的；对立物；相反的；本场景常见用法：相反方向；敌对方向",
+      "examples": "[]"
+    },
+    {
+      "word": "negative",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɛɡətɪv",
+      "phoneticUk": "'negətɪv",
+      "translation": "否定的；消极的；消积的；否定的",
+      "sceneMeaning": "消极的；否定的",
+      "examples": "[]"
+    },
+    {
+      "word": "suppose",
+      "partOfSpeech": "v",
+      "phoneticUs": "sə'poz",
+      "phoneticUk": "sə'pəʊz",
+      "translation": "猜想；假定；让；料想，以为；假定；期望",
+      "sceneMeaning": "假定；认为",
+      "examples": "[]"
+    },
+    {
+      "word": "stress",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "strɛs",
+      "phoneticUk": "stres",
+      "translation": "压力；重音；着重",
+      "sceneMeaning": "强调；压力",
+      "examples": "[]"
+    },
+    {
+      "word": "agree",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'ɡri",
+      "phoneticUk": "ə'griː",
+      "translation": "同意；持相同意见",
+      "sceneMeaning": "同意；赞成",
+      "examples": "[]"
+    },
+    {
+      "word": "believe",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪ'liv",
+      "phoneticUk": "bɪ'liːv",
+      "translation": "相信；认为",
+      "sceneMeaning": "相信；认为",
+      "examples": "[]"
+    },
+    {
+      "word": "consider",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'sɪdɚ",
+      "phoneticUk": "kən'sɪdə",
+      "translation": "认为；考虑；关心",
+      "sceneMeaning": "认为；考虑",
+      "examples": "[]"
+    },
+    {
+      "word": "firm",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɝm",
+      "phoneticUk": "fɜːm",
+      "translation": "商行，商号，公司",
+      "sceneMeaning": "坚定的；牢固的",
+      "examples": "[]"
+    },
+    {
+      "word": "focus",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fokəs",
+      "phoneticUk": "'fəʊkəs",
+      "translation": "聚焦，注视；焦点",
+      "sceneMeaning": "重点；焦点",
+      "examples": "[]"
+    },
+    {
+      "word": "idea",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪ'diə",
+      "phoneticUk": "aɪ'dɪə",
+      "translation": "想法；思想；意见",
+      "sceneMeaning": "想法；主意；概念",
+      "examples": "[]"
+    },
+    {
+      "word": "interest",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪntrəst",
+      "phoneticUk": "'ɪnt(ə)rɪst",
+      "translation": "兴趣；利益；利息",
+      "sceneMeaning": "兴趣；利益",
+      "examples": "[]"
+    },
+    {
+      "word": "positive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɑzətɪv",
+      "phoneticUk": "'pɒzɪtɪv",
+      "translation": "确定的；积极的",
+      "sceneMeaning": "积极的；肯定的",
+      "examples": "[]"
+    },
+    {
+      "word": "question",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɛstʃən",
+      "phoneticUk": "'kwestʃ(ə)n",
+      "translation": "发问；问题；疑问",
+      "sceneMeaning": "质疑；询问",
+      "examples": "[]"
+    },
+    {
+      "word": "accept",
+      "partOfSpeech": "v",
+      "phoneticUs": "ækˈsɛpt; əkˈsɛpt",
+      "phoneticUk": "ə'ksept",
+      "translation": "接受；同意",
+      "sceneMeaning": "接受；认可",
+      "examples": "[]"
+    },
+    {
+      "word": "concern",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kən'sɝn",
+      "phoneticUk": "kən'sɜːn",
+      "translation": "关心，挂念；关系；重要的事情；与…有关，关于",
+      "sceneMeaning": "关切；担忧；事项",
+      "examples": "[]"
+    },
+    {
+      "word": "approach",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'protʃ",
+      "phoneticUk": "ə'prəʊtʃ",
+      "translation": "向…靠近；靠近；方法",
+      "sceneMeaning": "方式；态度；接近",
+      "examples": "[]"
+    },
+    {
+      "word": "argue",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɑrgjʊ",
+      "phoneticUk": "'ɑːgjuː",
+      "translation": "争论，争辩，辩论",
+      "sceneMeaning": "主张；争论",
+      "examples": "[]"
+    },
+    {
+      "word": "assume",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sum",
+      "phoneticUk": "ə'sjuːm",
+      "translation": "假定；承担；呈现；假定，认为",
+      "sceneMeaning": "假定；承担",
+      "examples": "[]"
+    },
+    {
+      "word": "debate",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "dɪ'bet",
+      "phoneticUk": "dɪ'beɪt",
+      "translation": "争论，辩论",
+      "sceneMeaning": "辩论；争论",
+      "examples": "[]"
+    },
+    {
+      "word": "interpret",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'tɝprɪt",
+      "phoneticUk": "ɪn'tɜːprɪt",
+      "translation": "解释，说明；口译；解释",
+      "sceneMeaning": "解释；理解",
+      "examples": "[]"
+    },
+    {
+      "word": "opinion",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'pɪnjən",
+      "phoneticUk": "ə'pɪnjən",
+      "translation": "意见，看法，主张",
+      "sceneMeaning": "意见；看法",
+      "examples": "[]"
+    },
+    {
+      "word": "attitude",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ætɪtʊd",
+      "phoneticUk": "'ætɪtjuːd",
+      "translation": "态度，看法；姿势",
+      "sceneMeaning": "态度；看法",
+      "examples": "[]"
+    },
+    {
+      "word": "claim",
+      "partOfSpeech": "v",
+      "phoneticUs": "klem",
+      "phoneticUk": "kleɪm",
+      "translation": "声称，主张；索取",
+      "sceneMeaning": "主张；声称",
+      "examples": "[]"
+    },
+    {
+      "word": "concept",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnsɛpt",
+      "phoneticUk": "'kɒnsept",
+      "translation": "概念，观念，设想；观点，观念",
+      "sceneMeaning": "概念；观念",
+      "examples": "[]"
+    },
+    {
+      "word": "confidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnfɪdəns",
+      "phoneticUk": "'kɒnfɪd(ə)ns",
+      "translation": "信任；信赖；信心；信心",
+      "sceneMeaning": "信心；信任",
+      "examples": "[]"
+    },
+    {
+      "word": "emphasis",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛmfəsɪs",
+      "phoneticUk": "'emfəsɪs",
+      "translation": "强调，重点，重要性",
+      "sceneMeaning": "强调；重点",
+      "examples": "[]"
+    },
+    {
+      "word": "favor",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fevɚ",
+      "phoneticUk": "'feɪvə",
+      "translation": "偏好, 较喜欢",
+      "sceneMeaning": "支持；偏爱",
+      "examples": "[]"
+    },
+    {
+      "word": "favour",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈfevɚ",
+      "phoneticUk": "'feɪvə",
+      "translation": "好感；赞同；恩惠",
+      "sceneMeaning": "好感；赞同；恩惠；本场景常见用法：赞成；支持；有利于",
+      "examples": "[]"
+    },
+    {
+      "word": "impression",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'prɛʃən",
+      "phoneticUk": "ɪm'preʃ(ə)n",
+      "translation": "印；印象；印记",
+      "sceneMeaning": "印象；感想",
+      "examples": "[]"
+    },
+    {
+      "word": "view",
+      "partOfSpeech": "v",
+      "phoneticUs": "vju",
+      "phoneticUk": "vju:",
+      "translation": "看待",
+      "sceneMeaning": "观点；看法；视野",
+      "examples": "[]"
+    },
+    {
+      "word": "crucial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'krʊʃəl",
+      "phoneticUk": "'kruːʃ(ə)l",
+      "translation": "至关重要的",
+      "sceneMeaning": "至关重要的",
+      "examples": "[]"
+    },
+    {
+      "word": "highlight",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'haɪlaɪt",
+      "phoneticUk": "'hailait",
+      "translation": "突出；强调；突出的部分",
+      "sceneMeaning": "突出；强调",
+      "examples": "[]"
+    },
+    {
+      "word": "interpretation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɝprɪ'teʃən",
+      "phoneticUk": "ɪntɜːprɪ'teɪʃ(ə)n",
+      "translation": "解释；口译；阐释，说明",
+      "sceneMeaning": "解释；理解",
+      "examples": "[]"
+    },
+    {
+      "word": "principle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɪnsəpl",
+      "phoneticUk": "'prɪnsɪp(ə)l",
+      "translation": "原则，原理；主义；原则，原理",
+      "sceneMeaning": "原则；准则",
+      "examples": "[]"
+    },
+    {
+      "word": "profound",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'faʊnd",
+      "phoneticUk": "prə'faʊnd",
+      "translation": "深厚的",
+      "sceneMeaning": "深厚的",
+      "examples": "[]"
+    },
+    {
+      "word": "trust",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trʌst",
+      "phoneticUk": "trʌst",
+      "translation": "信任；相信；委托",
+      "sceneMeaning": "信任；信赖",
+      "examples": "[]"
+    },
+    {
+      "word": "advocate",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈædvəkeɪt；-et",
+      "phoneticUk": "'ædvəkeɪt",
+      "translation": "倡导；提倡者，拥护者，鼓吹者",
+      "sceneMeaning": "倡导；提倡者，拥护者，鼓吹者",
+      "examples": "[]"
+    },
+    {
+      "word": "regardless",
+      "partOfSpeech": "adv",
+      "phoneticUs": "rɪ'ɡɑrdləs",
+      "phoneticUk": "rɪ'gɑːdlɪs",
+      "translation": "不顾一切地",
+      "sceneMeaning": "不顾一切地",
+      "examples": "[]"
+    },
+    {
+      "word": "commitment",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mɪtmənt",
+      "phoneticUk": "kə'mɪtm(ə)nt",
+      "translation": "承诺，保证",
+      "sceneMeaning": "承诺；投入",
+      "examples": "[]"
+    },
+    {
+      "word": "pledge",
+      "partOfSpeech": "n",
+      "phoneticUs": "plɛdʒ",
+      "phoneticUk": "pledʒ",
+      "translation": "保证，誓言",
+      "sceneMeaning": "保证，誓言",
+      "examples": "[]"
+    },
+    {
+      "word": "preference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛfrəns",
+      "phoneticUk": "'pref(ə)r(ə)ns",
+      "translation": "偏爱，优先；优先权；偏爱",
+      "sceneMeaning": "偏好；优先选择",
+      "examples": "[]"
+    },
+    {
+      "word": "conservative",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "kən'sɝvətɪv",
+      "phoneticUk": "kən'sɜːvətɪv",
+      "translation": "保守的；保守的人；保守的，传统的",
+      "sceneMeaning": "保守的；谨慎的",
+      "examples": "[]"
+    },
+    {
+      "word": "insist",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'sɪst",
+      "phoneticUk": "ɪn'sɪst",
+      "translation": "坚持；坚持要求；主张，坚持",
+      "sceneMeaning": "坚持认为；坚决要求",
+      "examples": "[]"
+    },
+    {
+      "word": "pose",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "poz",
+      "phoneticUk": "pəuz",
+      "translation": "摆姿势，装腔作势；姿势",
+      "sceneMeaning": "摆姿势，装腔作势；姿势",
+      "examples": "[]"
+    },
+    {
+      "word": "insight",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪn'saɪt",
+      "phoneticUk": "'ɪnsaɪt",
+      "translation": "洞察力，洞悉",
+      "sceneMeaning": "洞察；见解",
+      "examples": "[]"
+    },
+    {
+      "word": "awareness",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'wɛrnəs",
+      "phoneticUk": "əˈweənəs",
+      "translation": "意识",
+      "sceneMeaning": "意识；认识",
+      "examples": "[]"
+    },
+    {
+      "word": "disagree",
+      "partOfSpeech": "v",
+      "phoneticUs": ",dɪsə'ɡri",
+      "phoneticUk": "dɪsə'griː",
+      "translation": "有分歧；不一致",
+      "sceneMeaning": "不同意；有分歧",
+      "examples": "[]"
+    },
+    {
+      "word": "doubt",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "daʊt",
+      "phoneticUk": "daʊt",
+      "translation": "怀疑；疑虑；怀疑",
+      "sceneMeaning": "怀疑；疑问",
+      "examples": "[]"
+    },
+    {
+      "word": "loyalty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɔɪəlti",
+      "phoneticUk": "'lɒɪəltɪ",
+      "translation": "忠诚，忠心；忠诚，忠实",
+      "sceneMeaning": "忠诚；忠实",
+      "examples": "[]"
+    },
+    {
+      "word": "passion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pæʃən",
+      "phoneticUk": "'pæʃ(ə)n",
+      "translation": "激情，热情；爱好；热情，激情",
+      "sceneMeaning": "激情，热情；爱好；热情，激情",
+      "examples": "[]"
+    },
+    {
+      "word": "perspective",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'spɛktɪv",
+      "phoneticUk": "pə'spektɪv",
+      "translation": "透视；远景；观点；视角，观点；远景",
+      "sceneMeaning": "视角；观点；透视法",
+      "examples": "[]"
+    },
+    {
+      "word": "regard",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'ɡɑrd",
+      "phoneticUk": "rɪ'gɑːd",
+      "translation": "把…看作；尊敬",
+      "sceneMeaning": "把……看作；尊重",
+      "examples": "[]"
+    },
+    {
+      "word": "stressful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'strɛsfl",
+      "phoneticUk": "'stresfəl",
+      "translation": "充满著压力的，充满著紧张的",
+      "sceneMeaning": "充满著压力的，充满著紧张的",
+      "examples": "[]"
+    },
+    {
+      "word": "agreement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'grimənt",
+      "phoneticUk": "ə'griːm(ə)nt",
+      "translation": "协定，协议；同意",
+      "sceneMeaning": "同意；协议",
+      "examples": "[]"
+    },
+    {
+      "word": "approval",
+      "partOfSpeech": "n",
+      "phoneticUs": "əˈpruvl",
+      "phoneticUk": "ə'pruːv(ə)l",
+      "translation": "赞成，同意；批准；批准，认可；赞成，同意",
+      "sceneMeaning": "赞成；批准",
+      "examples": "[]"
+    },
+    {
+      "word": "conform",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fɔrm",
+      "phoneticUk": "kən'fɔ:m",
+      "translation": "相一致，遵守",
+      "sceneMeaning": "相一致，遵守",
+      "examples": "[]"
+    },
+    {
+      "word": "doubtful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'daʊtfəl",
+      "phoneticUk": "'daʊtfʊl; -f(ə)l",
+      "translation": "难以预测的；怀疑的",
+      "sceneMeaning": "难以预测的；怀疑的；本场景常见用法：怀疑的，可疑的；对…怀疑",
+      "examples": "[]"
+    },
+    {
+      "word": "faith",
+      "partOfSpeech": "n",
+      "phoneticUs": "feθ",
+      "phoneticUk": "feɪθ",
+      "translation": "信任，信心；信仰；信任",
+      "sceneMeaning": "信任；信念",
+      "examples": "[]"
+    },
+    {
+      "word": "lean",
+      "partOfSpeech": "v",
+      "phoneticUs": "lin",
+      "phoneticUk": "liːn",
+      "translation": "倾斜，屈身；靠",
+      "sceneMeaning": "倾斜，屈身；靠；本场景常见用法：vt. 倾向（偏向）",
+      "examples": "[]"
+    },
+    {
+      "word": "objective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əb'dʒɛktɪv",
+      "phoneticUk": "əb'dʒektɪv",
+      "translation": "客观的；无偏见的",
+      "sceneMeaning": "客观的；目标的",
+      "examples": "[]"
+    },
+    {
+      "word": "radically",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'rædɪkli",
+      "phoneticUk": "'rædɪklɪ",
+      "translation": "完全地，彻底地",
+      "sceneMeaning": "完全地，彻底地",
+      "examples": "[]"
+    },
+    {
+      "word": "reflect",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'flɛkt",
+      "phoneticUk": "rɪ'flekt",
+      "translation": "反射；反映；思考；反映",
+      "sceneMeaning": "反射；反映；思考；反映",
+      "examples": "[]"
+    },
+    {
+      "word": "reinforce",
+      "partOfSpeech": "v",
+      "phoneticUs": ",riɪn'fɔrs",
+      "phoneticUk": "riːɪn'fɔːs",
+      "translation": "增援，支援；加强；加强，强化",
+      "sceneMeaning": "增援，支援；加强；加强，强化",
+      "examples": "[]"
+    },
+    {
+      "word": "relieve",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'liv",
+      "phoneticUk": "rɪ'liːv",
+      "translation": "减轻，解除；救济；解除，减轻，缓解",
+      "sceneMeaning": "减轻，解除；救济；解除，减轻，缓解；本场景常见用法：减压，缓解压力",
+      "examples": "[]"
+    },
+    {
+      "word": "belief",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪ'lif",
+      "phoneticUk": "bɪ'liːf",
+      "translation": "信任，相信；信念",
+      "sceneMeaning": "信念；看法",
+      "examples": "[]"
+    },
+    {
+      "word": "consensus",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'sɛnsəs",
+      "phoneticUk": "kən'sensəs",
+      "translation": "一致意见",
+      "sceneMeaning": "共识",
+      "examples": "[]"
+    },
+    {
+      "word": "criticize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'krɪtə'saɪz",
+      "phoneticUk": "'krɪtɪsaɪz",
+      "translation": "批评；评论；非难；批评；评论",
+      "sceneMeaning": "批评；评论；非难；批评；评论",
+      "examples": "[]"
+    },
+    {
+      "word": "division",
+      "partOfSpeech": "n",
+      "phoneticUs": "də'vɪʒən",
+      "phoneticUk": "dɪ'vɪʒ(ə)n",
+      "translation": "分，分配；除法；除法；部门",
+      "sceneMeaning": "分歧；分裂",
+      "examples": "[]"
+    },
+    {
+      "word": "emphasize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɛmfəsaɪz",
+      "phoneticUk": "'emfəsaɪz",
+      "translation": "强调，着重；强调",
+      "sceneMeaning": "强调",
+      "examples": "[]"
+    },
+    {
+      "word": "misguided",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",mɪs'ɡaɪdɪd",
+      "phoneticUk": "ˌmɪs'ɡaɪdɪd",
+      "translation": "被误导的",
+      "sceneMeaning": "被误导的",
+      "examples": "[]"
+    },
+    {
+      "word": "nonsense",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "胡说，废话",
+      "sceneMeaning": "胡说，废话",
+      "examples": "[]"
+    },
+    {
+      "word": "perception",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'sɛpʃən",
+      "phoneticUk": "pəˈsepʃn",
+      "translation": "感知",
+      "sceneMeaning": "感知；看法",
+      "examples": "[]"
+    },
+    {
+      "word": "priority",
+      "partOfSpeech": "n",
+      "phoneticUs": "praɪ'ɔrəti",
+      "phoneticUk": "praɪ'ɒrətɪ",
+      "translation": "优先，优先权",
+      "sceneMeaning": "优先事项；重点",
+      "examples": "[]"
+    },
+    {
+      "word": "reflection",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'flɛkʃən",
+      "phoneticUk": "rɪ'flekʃ(ə)n",
+      "translation": "反射；映象；反映",
+      "sceneMeaning": "反思；反映",
+      "examples": "[]"
+    },
+    {
+      "word": "regarding",
+      "partOfSpeech": "prep",
+      "phoneticUs": "rɪ'ɡɑrdɪŋ",
+      "phoneticUk": "rɪ'gɑːdɪŋ",
+      "translation": "关于",
+      "sceneMeaning": "关于；本场景常见用法：器重；重视；尊重",
+      "examples": "[]"
+    },
+    {
+      "word": "resist",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "rɪ'zɪst",
+      "phoneticUk": "rɪ'zɪst",
+      "translation": "抵抗，抵制；抵抗，抗拒",
+      "sceneMeaning": "抵抗，抵制；抵抗，抗拒；本场景常见用法：抵制诱惑；不受引诱",
+      "examples": "[]"
+    },
+    {
+      "word": "stereotype",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stɛrɪətaɪp",
+      "phoneticUk": "'steriətaip",
+      "translation": "老套，固定模式",
+      "sceneMeaning": "刻板印象",
+      "examples": "[]"
+    },
+    {
+      "word": "tendency",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛndənsi",
+      "phoneticUk": "'tend(ə)nsɪ",
+      "translation": "趋向，趋势，倾向",
+      "sceneMeaning": "倾向；趋势",
+      "examples": "[]"
+    },
+    {
+      "word": "accord",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kɔrd",
+      "phoneticUk": "ə'kɔːd",
+      "translation": "使一致；给予",
+      "sceneMeaning": "使一致；给予",
+      "examples": "[]"
+    },
+    {
+      "word": "acknowledge",
+      "partOfSpeech": "v",
+      "phoneticUs": "ək'nɑlɪdʒ",
+      "phoneticUk": "ək'nɔlidʒ",
+      "translation": "承认(…的权威)",
+      "sceneMeaning": "承认(…的权威)",
+      "examples": "[]"
+    },
+    {
+      "word": "confident",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɑnfɪdənt",
+      "phoneticUk": "'kɒnfɪd(ə)nt",
+      "translation": "确信的，自信的",
+      "sceneMeaning": "自信的；确信的",
+      "examples": "[]"
+    },
+    {
+      "word": "consciousness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnʃəsnəs",
+      "phoneticUk": "'kɒnʃəsnɪs",
+      "translation": "意识，觉悟；知觉；意识",
+      "sceneMeaning": "意识；觉察",
+      "examples": "[]"
+    },
+    {
+      "word": "deny",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'nai",
+      "phoneticUk": "dɪ'naɪ",
+      "translation": "否定；拒绝相信",
+      "sceneMeaning": "否定；拒绝相信",
+      "examples": "[]"
+    },
+    {
+      "word": "enthusiasm",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'θuzɪæzəm",
+      "phoneticUk": "ɪn'θjuːzɪæz(ə)m; en-",
+      "translation": "热情，热心，热忱",
+      "sceneMeaning": "热情；热忱",
+      "examples": "[]"
+    },
+    {
+      "word": "favorable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fevərəbl",
+      "phoneticUk": "'feɪvərəbl",
+      "translation": "赞同的",
+      "sceneMeaning": "赞成的；有利的",
+      "examples": "[]"
+    },
+    {
+      "word": "impressive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'prɛsɪv",
+      "phoneticUk": "ɪm'presɪv",
+      "translation": "给人印象深刻的",
+      "sceneMeaning": "给人印象深刻的",
+      "examples": "[]"
+    },
+    {
+      "word": "neutral",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nʊtrəl",
+      "phoneticUk": "'njuːtr(ə)l",
+      "translation": "中立的；中性的；中立的",
+      "sceneMeaning": "中立的；中性的",
+      "examples": "[]"
+    },
+    {
+      "word": "object",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑbdʒɛkt",
+      "phoneticUk": "'ɒbdʒɪkt; -dʒekt",
+      "translation": "物，物体；目的",
+      "sceneMeaning": "物，物体；目的；本场景常见用法：面向目标程序设计",
+      "examples": "[]"
+    },
+    {
+      "word": "perceive",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɚ'siv",
+      "phoneticUk": "pə'siːv",
+      "translation": "察觉，发觉；理解；察觉",
+      "sceneMeaning": "感知；认为",
+      "examples": "[]"
+    },
+    {
+      "word": "prejudice",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɛdʒədɪs",
+      "phoneticUk": "'predʒʊdɪs",
+      "translation": "偏见，成见；偏见；使有偏见，使有成见",
+      "sceneMeaning": "偏见；成见",
+      "examples": "[]"
+    },
+    {
+      "word": "propose",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'poz",
+      "phoneticUk": "prə'pəʊz",
+      "translation": "提议；求婚",
+      "sceneMeaning": "提出；建议",
+      "examples": "[]"
+    },
+    {
+      "word": "remark",
+      "partOfSpeech": "vt&vi&n",
+      "phoneticUs": "rɪ'mɑrk",
+      "phoneticUk": "rɪ'mɑːk",
+      "translation": "评论，谈论",
+      "sceneMeaning": "评论，谈论",
+      "examples": "[]"
+    },
+    {
+      "word": "resistance",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'zɪstəns",
+      "phoneticUk": "rɪ'zɪst(ə)ns",
+      "translation": "抵抗；抵制；抵抗力；抵御，抵抗；抵抗力",
+      "sceneMeaning": "抵制；反抗",
+      "examples": "[]"
+    },
+    {
+      "word": "accent",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æksɛnt",
+      "phoneticUk": "'æks(ə)nt; -sent",
+      "translation": "口音，腔调；重音",
+      "sceneMeaning": "口音，腔调；重音",
+      "examples": "[]"
+    },
+    {
+      "word": "acceptable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ək'sɛptəbl",
+      "phoneticUk": "ək'septəb(ə)l",
+      "translation": "可接受的，合意的",
+      "sceneMeaning": "可接受的，合意的",
+      "examples": "[]"
+    },
+    {
+      "word": "acceptance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ək'sɛptəns",
+      "phoneticUk": "ək'sept(ə)ns",
+      "translation": "接受，验收；承认",
+      "sceneMeaning": "接受；认可",
+      "examples": "[]"
+    },
+    {
+      "word": "accordance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kɔrdns",
+      "phoneticUk": "ə'kɔːd(ə)ns",
+      "translation": "一致；和谐；授予",
+      "sceneMeaning": "一致；和谐；授予；本场景常见用法：依照；与…一致",
+      "examples": "[]"
+    },
+    {
+      "word": "affirmation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",æfɚ'meʃən",
+      "phoneticUk": ",æfə:'meiʃən",
+      "translation": "断言，肯定",
+      "sceneMeaning": "断言，肯定",
+      "examples": "[]"
+    },
+    {
+      "word": "angle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æŋɡl",
+      "phoneticUk": "'æŋg(ə)l",
+      "translation": "角，角度",
+      "sceneMeaning": "角度；立场",
+      "examples": "[]"
+    },
+    {
+      "word": "assumption",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'sʌmpʃən",
+      "phoneticUk": "ə'sʌmpʃn",
+      "translation": "假定，假设",
+      "sceneMeaning": "假设；想当然的看法",
+      "examples": "[]"
+    },
+    {
+      "word": "commission",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mɪʃən",
+      "phoneticUk": "kə'mɪʃ(ə)n",
+      "translation": "委任状；委员会",
+      "sceneMeaning": "委任状；委员会；本场景常见用法：纪委",
+      "examples": "[]"
+    },
+    {
+      "word": "confess",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fɛs",
+      "phoneticUk": "kən'fes",
+      "translation": "供认，承认；坦白",
+      "sceneMeaning": "供认，承认；坦白",
+      "examples": "[]"
+    },
+    {
+      "word": "consent",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kən'sɛnt",
+      "phoneticUk": "kən'sent",
+      "translation": "同意，赞成；同意；允许，同意；同意，赞同",
+      "sceneMeaning": "同意，赞成；同意；允许，同意；同意，赞同；本场景常见用法：知情同意，知会同意；知后同意",
+      "examples": "[]"
+    },
+    {
+      "word": "contempt",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'tɛmpt",
+      "phoneticUk": "kən'tem(p)t",
+      "translation": "轻蔑；藐视；受辱",
+      "sceneMeaning": "轻蔑；藐视；受辱；本场景常见用法：卑鄙到极点的",
+      "examples": "[]"
+    },
+    {
+      "word": "despise",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'spaɪz",
+      "phoneticUk": "dɪ'spaɪz",
+      "translation": "鄙视，蔑视",
+      "sceneMeaning": "鄙视，蔑视",
+      "examples": "[]"
+    },
+    {
+      "word": "disgust",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪs'ɡʌst",
+      "phoneticUk": "dɪs'gʌst",
+      "translation": "厌恶，憎恶",
+      "sceneMeaning": "厌恶，憎恶",
+      "examples": "[]"
+    },
+    {
+      "word": "doubtless",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'daʊtləs",
+      "phoneticUk": "'daʊtlɪs",
+      "translation": "无疑地；很可能",
+      "sceneMeaning": "无疑地；很可能",
+      "examples": "[]"
+    },
+    {
+      "word": "enthusiastic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn,θuzɪ'æstɪk",
+      "phoneticUk": "ɪn,θjuːzɪ'æstɪk; en-",
+      "translation": "热情的，热心的",
+      "sceneMeaning": "热情的，热心的",
+      "examples": "[]"
+    },
+    {
+      "word": "esteem",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'stim",
+      "phoneticUk": "is'ti:m",
+      "translation": "自尊",
+      "sceneMeaning": "自尊",
+      "examples": "[]"
+    },
+    {
+      "word": "faithful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'feθfəl",
+      "phoneticUk": "'feɪθfʊl; -f(ə)l",
+      "translation": "忠诚的；如实的",
+      "sceneMeaning": "忠诚的；如实的",
+      "examples": "[]"
+    },
+    {
+      "word": "favourable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'feivərəbl",
+      "phoneticUk": "'feɪv(ə)rəb(ə)l",
+      "translation": "有利的；赞成的",
+      "sceneMeaning": "有利的；赞成的",
+      "examples": "[]"
+    },
+    {
+      "word": "favourite",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fevərɪt",
+      "phoneticUk": "'feɪv(ə)rɪt",
+      "translation": "特别受喜爱的",
+      "sceneMeaning": "特别受喜爱的",
+      "examples": "[]"
+    },
+    {
+      "word": "frame",
+      "partOfSpeech": "n",
+      "phoneticUs": "frem",
+      "phoneticUk": "freɪm",
+      "translation": "框架，框子；构架；框架",
+      "sceneMeaning": "框架，框子；构架；框架；本场景常见用法：框架结构",
+      "examples": "[]"
+    },
+    {
+      "word": "framework",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fremwɝk",
+      "phoneticUk": "'freɪmwɜːk",
+      "translation": "框架，构架，结构",
+      "sceneMeaning": "框架，构架，结构；本场景常见用法：概念框架；基本概念",
+      "examples": "[]"
+    },
+    {
+      "word": "friction",
+      "partOfSpeech": "n",
+      "phoneticUs": "'frɪkʃən",
+      "phoneticUk": "'frɪkʃ(ə)n",
+      "translation": "摩擦，摩擦力",
+      "sceneMeaning": "摩擦，摩擦力；本场景常见用法：磨擦角",
+      "examples": "[]"
+    },
+    {
+      "word": "gaze",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡeɪz",
+      "phoneticUk": "geɪz",
+      "translation": "凝视，盯，注视",
+      "sceneMeaning": "凝视，盯，注视",
+      "examples": "[]"
+    },
+    {
+      "word": "honour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔnə",
+      "phoneticUk": "'ɒnə",
+      "translation": "光荣；尊敬，敬意",
+      "sceneMeaning": "光荣；尊敬，敬意",
+      "examples": "[]"
+    },
+    {
+      "word": "hostile",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈhɑstəl",
+      "phoneticUk": "'hɒstaɪl",
+      "translation": "敌方的；不友善的",
+      "sceneMeaning": "敌方的；不友善的",
+      "examples": "[]"
+    },
+    {
+      "word": "incline",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪn'klaɪn",
+      "phoneticUk": "ɪn'klaɪn",
+      "translation": "斜坡；使倾斜；倾向于",
+      "sceneMeaning": "斜坡；使倾斜；倾向于",
+      "examples": "[]"
+    },
+    {
+      "word": "indifferent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'dɪfrənt",
+      "phoneticUk": "ɪn'dɪf(ə)r(ə)nt",
+      "translation": "冷漠的；不积极的；冷漠的",
+      "sceneMeaning": "冷漠的；不积极的；冷漠的",
+      "examples": "[]"
+    },
+    {
+      "word": "interpreter",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɝprɪtɚ",
+      "phoneticUk": "ɪn'tɜːprɪtə",
+      "translation": "译员，口译者",
+      "sceneMeaning": "译员，口译者",
+      "examples": "[]"
+    },
+    {
+      "word": "loyal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɔɪəl",
+      "phoneticUk": "'lɒɪəl",
+      "translation": "忠诚的，忠心的",
+      "sceneMeaning": "忠诚的，忠心的",
+      "examples": "[]"
+    },
+    {
+      "word": "moderate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈmɑdərɪt; (for v.,) ˈmɑdərˌeɪt",
+      "phoneticUk": "'mɒd(ə)rət",
+      "translation": "温和的；有节制的",
+      "sceneMeaning": "温和的；适度的",
+      "examples": "[]"
+    },
+    {
+      "word": "okay",
+      "partOfSpeech": "(缩作OK)a&ad",
+      "phoneticUs": ",o'kɛi",
+      "phoneticUk": "'əʊ'keɪ",
+      "translation": "对，好",
+      "sceneMeaning": "对，好",
+      "examples": "[]"
+    },
+    {
+      "word": "oppose",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'poz",
+      "phoneticUk": "ə'pəʊz",
+      "translation": "反对；反抗",
+      "sceneMeaning": "反对；抵制",
+      "examples": "[]"
+    },
+    {
+      "word": "oriental",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",orɪ'ɛntəl",
+      "phoneticUk": "ɔːrɪ'ent(ə)l; ɒr-",
+      "translation": "东方的；东方国家的",
+      "sceneMeaning": "东方的；东方国家的；本场景常见用法：东方气质",
+      "examples": "[]"
+    },
+    {
+      "word": "outlook",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aʊtlʊk",
+      "phoneticUk": "'aʊtlʊk",
+      "translation": "观点，看法；展望",
+      "sceneMeaning": "观点；前景；展望",
+      "examples": "[]"
+    },
+    {
+      "word": "pessimistic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",pɛsɪ'mɪstɪk",
+      "phoneticUk": ",pesɪ'mɪstɪk",
+      "translation": "悲观的；厌世的",
+      "sceneMeaning": "悲观的；厌世的",
+      "examples": "[]"
+    },
+    {
+      "word": "reflexion",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'flɛkʃən",
+      "phoneticUk": "rɪ'flekʃ(ə)n",
+      "translation": "反射；映象；反映",
+      "sceneMeaning": "反射；映象；反映",
+      "examples": "[]"
+    },
+    {
+      "word": "refusal",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'fjuzl",
+      "phoneticUk": "rɪ'fjuːz(ə)l",
+      "translation": "拒绝",
+      "sceneMeaning": "拒绝",
+      "examples": "[]"
+    },
+    {
+      "word": "reject",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'dʒɛkt",
+      "phoneticUk": "rɪ'dʒekt",
+      "translation": "拒绝；丢掉；驳回；拒绝，驳回",
+      "sceneMeaning": "拒绝；否定",
+      "examples": "[]"
+    },
+    {
+      "word": "reservation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛzɚ'veʃən",
+      "phoneticUk": "ˌrezə'veɪʃn",
+      "translation": "预定",
+      "sceneMeaning": "保留意见；预订",
+      "examples": "[]"
+    },
+    {
+      "word": "resistant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'zɪstənt",
+      "phoneticUk": "rɪ'zɪstənt",
+      "translation": "抵抗的，反抗的；抵抗的；抵制的",
+      "sceneMeaning": "抵抗的，反抗的；抵抗的；抵制的",
+      "examples": "[]"
+    },
+    {
+      "word": "sincere",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sɪn'sɪr",
+      "phoneticUk": "sɪn'sɪə",
+      "translation": "真诚的；真挚的",
+      "sceneMeaning": "真诚的；真挚的",
+      "examples": "[]"
+    },
+    {
+      "word": "standpoint",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stændpɔɪnt",
+      "phoneticUk": "ˈstændpɔɪnt",
+      "translation": "立场",
+      "sceneMeaning": "立足点；观点",
+      "examples": "[]"
+    },
+    {
+      "word": "tone",
+      "partOfSpeech": "n",
+      "phoneticUs": "ton",
+      "phoneticUk": "təʊn",
+      "translation": "音；腔调；声调",
+      "sceneMeaning": "语气；基调",
+      "examples": "[]"
+    },
+    {
+      "word": "uncertain",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ʌn'sɝtn",
+      "phoneticUk": "ʌnˈsɜ:tn",
+      "translation": "不确定的",
+      "sceneMeaning": "不确定的",
+      "examples": "[]"
+    },
+    {
+      "word": "underline",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ʌndəlaɪn",
+      "phoneticUk": "ʌndə'laɪn",
+      "translation": "划线于…之下；强调",
+      "sceneMeaning": "划线于…之下；强调",
+      "examples": "[]"
+    }
+  ]
+}

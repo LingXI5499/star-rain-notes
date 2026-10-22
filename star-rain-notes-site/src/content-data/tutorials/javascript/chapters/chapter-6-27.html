@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> <code>history.pushState</code> 修改当前页历史记录但不自动发网络请求，<code>popstate</code> 用于响应前进后退。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">history.pushState({ tab: 2 }, '', '?tab=2');
+window.addEventListener('popstate', e =&gt; console.log(e.state));
+</code></pre>
+<p><strong>学完能做：</strong> 使用 History API 管理同页导航状态。</p>

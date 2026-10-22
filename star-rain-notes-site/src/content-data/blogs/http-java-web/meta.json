@@ -1,0 +1,61 @@
+{
+  "slug": "http-java-web",
+  "title": "从一次 HTTP 请求到高并发系统：Java Web 架构的六阶段演进",
+  "description": "一次 HTTP 请求如何从浏览器抵达 Spring MVC，再经 Controller、Service、Mapper 和 MySQL 返回响应？当请求从一个变成多个、从单机并发演进到集群和分布式系统时，线程池、数据库连接池、事务与锁、Redis、Nginx、消息队列、读写分离以及微服务分别解决什么问题？本文以 Java 全栈开发为主线，沿着“单次请求 → 单机并发 → 正确性与性能瓶颈 → 多实例集群 → 数据与异步扩展 → 微服务治理”六个阶段建立完整认知，并给出可验证的实操路线。",
+  "publishedAt": "2026-10-11",
+  "updatedAt": "2026-10-11",
+  "wordCount": 15841,
+  "tags": [
+    {
+      "slug": "java",
+      "name": "Java"
+    },
+    {
+      "slug": "javaweb",
+      "name": "JavaWeb"
+    },
+    {
+      "slug": "mysql",
+      "name": "MySQL"
+    },
+    {
+      "slug": "nginx",
+      "name": "Nginx"
+    },
+    {
+      "slug": "redis",
+      "name": "Redis"
+    },
+    {
+      "slug": "springboot",
+      "name": "SpringBoot"
+    },
+    {
+      "slug": "springmvc",
+      "name": "SpringMVC"
+    },
+    {
+      "slug": "tag-1wmvtet",
+      "name": "分布式系统"
+    },
+    {
+      "slug": "tag-1b4qne5",
+      "name": "后端开发"
+    },
+    {
+      "slug": "tag-79f44d",
+      "name": "系统架构"
+    },
+    {
+      "slug": "tag-vdok2e",
+      "name": "高并发"
+    }
+  ],
+  "topics": [
+    {
+      "slug": "java-web",
+      "name": "Java Web 系统架构原理与演进"
+    }
+  ],
+  "path": "/blog/posts/http-java-web/"
+}

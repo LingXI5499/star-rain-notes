@@ -1,0 +1,891 @@
+{
+  "id": "24",
+  "title": "景点 / 博物馆 / 参观",
+  "layer": "核心生活场景层",
+  "wordCount": 98,
+  "path": "/english/vocabulary/24/",
+  "words": [
+    {
+      "word": "ancient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈeɪnʃənt",
+      "phoneticUk": "'eɪnʃ(ə)nt",
+      "translation": "古代的，古老的；古代的",
+      "sceneMeaning": "古代的；古老的",
+      "examples": "[]"
+    },
+    {
+      "word": "British",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'brɪtɪʃ",
+      "phoneticUk": "'brɪtɪʃ",
+      "translation": "不列颠的，英联邦的",
+      "sceneMeaning": "不列颠的，英联邦的；本场景常见用法：不列颠博物馆",
+      "examples": "[]"
+    },
+    {
+      "word": "famous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'feməs",
+      "phoneticUk": "'feɪməs",
+      "translation": "著名的，出名的",
+      "sceneMeaning": "著名的",
+      "examples": "[]"
+    },
+    {
+      "word": "history",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈhɪstəri; ˈhɪstri",
+      "phoneticUk": "'hɪst(ə)rɪ",
+      "translation": "历史；个人经历",
+      "sceneMeaning": "历史；个人经历",
+      "examples": "[]"
+    },
+    {
+      "word": "modern",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɑdɚn",
+      "phoneticUk": "'mɒd(ə)n",
+      "translation": "现代的，近代的",
+      "sceneMeaning": "现代的",
+      "examples": "[]"
+    },
+    {
+      "word": "nice",
+      "partOfSpeech": "adj",
+      "phoneticUs": "naɪs",
+      "phoneticUk": "naɪs",
+      "translation": "美好的，令人愉快的",
+      "sceneMeaning": "美好的，令人愉快的",
+      "examples": "[]"
+    },
+    {
+      "word": "park",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɑrk",
+      "phoneticUk": "pɑːk",
+      "translation": "公园；停车场",
+      "sceneMeaning": "公园",
+      "examples": "[]"
+    },
+    {
+      "word": "popular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɑpjəlɚ",
+      "phoneticUk": "'pɒpjʊlə",
+      "translation": "民众的；流行的",
+      "sceneMeaning": "受欢迎的",
+      "examples": "[]"
+    },
+    {
+      "word": "sign",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪn",
+      "phoneticUk": "saɪn",
+      "translation": "符号；招牌；签名",
+      "sceneMeaning": "标志；指示牌",
+      "examples": "[]"
+    },
+    {
+      "word": "staff",
+      "partOfSpeech": "n",
+      "phoneticUs": "stæf",
+      "phoneticUk": "stɑːf",
+      "translation": "工作人员；参谋",
+      "sceneMeaning": "工作人员；员工",
+      "examples": "[]"
+    },
+    {
+      "word": "situation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",sɪtʃu'eʃən",
+      "phoneticUk": "ˌsɪtʃuˈeɪʃn",
+      "translation": "情况",
+      "sceneMeaning": "情况；本场景常见用法：现状",
+      "examples": "[]"
+    },
+    {
+      "word": "attract",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'trækt",
+      "phoneticUk": "ə'trækt",
+      "translation": "吸引；引起，诱惑",
+      "sceneMeaning": "吸引；引起，诱惑；本场景常见用法：吸引外商投资；对外招商",
+      "examples": "[]"
+    },
+    {
+      "word": "line",
+      "partOfSpeech": "n",
+      "phoneticUs": "laɪn",
+      "phoneticUk": "laɪn",
+      "translation": "线；排；路线；线条",
+      "sceneMeaning": "队伍；线",
+      "examples": "[]"
+    },
+    {
+      "word": "interpret",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'tɝprɪt",
+      "phoneticUk": "ɪn'tɜːprɪt",
+      "translation": "解释，说明；口译；解释",
+      "sceneMeaning": "解释；口译",
+      "examples": "[]"
+    },
+    {
+      "word": "display",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'sple",
+      "phoneticUk": "dɪ'spleɪ",
+      "translation": "陈列，展览；显示；展览",
+      "sceneMeaning": "陈列；展示",
+      "examples": "[]"
+    },
+    {
+      "word": "pass",
+      "partOfSpeech": "v",
+      "phoneticUs": "pæs",
+      "phoneticUk": "pɑːs",
+      "translation": "经过；通过；度过",
+      "sceneMeaning": "通行证；经过",
+      "examples": "[]"
+    },
+    {
+      "word": "view",
+      "partOfSpeech": "v",
+      "phoneticUs": "vju",
+      "phoneticUk": "vju:",
+      "translation": "看待",
+      "sceneMeaning": "观看；查看",
+      "examples": "[]"
+    },
+    {
+      "word": "appreciate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'priʃɪet",
+      "phoneticUk": "ə'priːʃɪeɪt; -sɪ-",
+      "translation": "欣赏；领会；感谢；感激；欣赏",
+      "sceneMeaning": "欣赏；感激",
+      "examples": "[]"
+    },
+    {
+      "word": "record",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "(for v.) rɪˈkɔrd; (for n. adj.) ˈrɛkɚd",
+      "phoneticUk": "(for v.)rɪˈkɔːd; (for n.) ˈrekɔːd",
+      "translation": "记录；履历；记录",
+      "sceneMeaning": "记录；录制",
+      "examples": "[]"
+    },
+    {
+      "word": "indispensable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪndɪ'spɛnsəbl",
+      "phoneticUk": "ɪndɪ'spensəb(ə)l",
+      "translation": "必不可少的，必需的；必不可少的",
+      "sceneMeaning": "必不可少的，必需的；必不可少的",
+      "examples": "[]"
+    },
+    {
+      "word": "attraction",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'trækʃən",
+      "phoneticUk": "ə'trækʃ(ə)n",
+      "translation": "吸引；吸引力；引力",
+      "sceneMeaning": "景点；吸引力",
+      "examples": "[]"
+    },
+    {
+      "word": "attractive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'træktɪv",
+      "phoneticUk": "ə'træktɪv",
+      "translation": "有吸引力的",
+      "sceneMeaning": "有吸引力的；本场景常见用法：造型美观",
+      "examples": "[]"
+    },
+    {
+      "word": "bridge",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɪdʒ",
+      "phoneticUk": "brɪdʒ",
+      "translation": "桥，桥梁；桥牌",
+      "sceneMeaning": "桥",
+      "examples": "[]"
+    },
+    {
+      "word": "painting",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pentɪŋ",
+      "phoneticUk": "'peɪntɪŋ",
+      "translation": "油画；绘画；着色",
+      "sceneMeaning": "绘画；油画",
+      "examples": "[]"
+    },
+    {
+      "word": "platform",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plæt'fɔrm",
+      "phoneticUk": "'plætfɔːm",
+      "translation": "平台；站台；讲台",
+      "sceneMeaning": "平台；站台",
+      "examples": "[]"
+    },
+    {
+      "word": "preserve",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɪ'zɝv",
+      "phoneticUk": "prɪ'zɜːv",
+      "translation": "保护；保存；腌渍；保护",
+      "sceneMeaning": "保护；保存",
+      "examples": "[]"
+    },
+    {
+      "word": "square",
+      "partOfSpeech": "n",
+      "phoneticUs": "skwɛr",
+      "phoneticUk": "skweə",
+      "translation": "正方形；广场",
+      "sceneMeaning": "广场；正方形",
+      "examples": "[]"
+    },
+    {
+      "word": "admission",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'mɪʃən",
+      "phoneticUk": "əd'mɪʃ(ə)n",
+      "translation": "允许进入；承认；承认；准许进(加)入；入场费",
+      "sceneMeaning": "入场；准许进入",
+      "examples": "[]"
+    },
+    {
+      "word": "collect",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'lɛkt",
+      "phoneticUk": "kə'lekt",
+      "translation": "收集；收款",
+      "sceneMeaning": "收藏；收集",
+      "examples": "[]"
+    },
+    {
+      "word": "collection",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'lɛkʃən",
+      "phoneticUk": "kə'lekʃ(ə)n",
+      "translation": "搜集，收集；收藏品",
+      "sceneMeaning": "收藏；藏品",
+      "examples": "[]"
+    },
+    {
+      "word": "enter",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɛntɚ",
+      "phoneticUk": "'entə",
+      "translation": "走进，进入；参加",
+      "sceneMeaning": "进入",
+      "examples": "[]"
+    },
+    {
+      "word": "entertaining",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɛntɚ'tenɪŋ",
+      "phoneticUk": "ˌentəˈteɪnɪŋ",
+      "translation": "有趣的，使人愉快的",
+      "sceneMeaning": "有趣的，使人愉快的",
+      "examples": "[]"
+    },
+    {
+      "word": "entrance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛntrəns",
+      "phoneticUk": "'entr(ə)ns",
+      "translation": "入口，门口；进入",
+      "sceneMeaning": "入口",
+      "examples": "[]"
+    },
+    {
+      "word": "historical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hɪ'stɔrɪkl",
+      "phoneticUk": "hɪ'stɒrɪk(ə)l",
+      "translation": "历史的，有关历史的",
+      "sceneMeaning": "历史的",
+      "examples": "[]"
+    },
+    {
+      "word": "notice",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'notɪs",
+      "phoneticUk": "'nəʊtɪs",
+      "translation": "注意；通知；注意",
+      "sceneMeaning": "通知；注意",
+      "examples": "[]"
+    },
+    {
+      "word": "admire",
+      "partOfSpeech": "v",
+      "phoneticUs": "ədˈmaɪr",
+      "phoneticUk": "əd'maɪə",
+      "translation": "钦佩，羡慕，赞赏；钦佩，称赞",
+      "sceneMeaning": "欣赏；钦佩",
+      "examples": "[]"
+    },
+    {
+      "word": "admit",
+      "partOfSpeech": "v",
+      "phoneticUs": "əd'mɪt",
+      "phoneticUk": "əd'mɪt",
+      "translation": "承认；准许…进入；承认；容许",
+      "sceneMeaning": "承认；准许…进入；承认；容许",
+      "examples": "[]"
+    },
+    {
+      "word": "architect",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrkɪtɛkt",
+      "phoneticUk": "'ɑːkɪtekt",
+      "translation": "建筑师",
+      "sceneMeaning": "建筑师",
+      "examples": "[]"
+    },
+    {
+      "word": "charming",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tʃɑrmɪŋ",
+      "phoneticUk": "'tʃɑːmɪŋ",
+      "translation": "迷人的，可爱的",
+      "sceneMeaning": "迷人的，可爱的",
+      "examples": "[]"
+    },
+    {
+      "word": "gallery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gæləri",
+      "phoneticUk": "'gæl(ə)rɪ",
+      "translation": "长廊，游廊；画廊；美术馆",
+      "sceneMeaning": "美术馆；画廊",
+      "examples": "[]"
+    },
+    {
+      "word": "garden",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡɑrdn",
+      "phoneticUk": "'gɑːd(ə)n",
+      "translation": "花园，菜园；公园",
+      "sceneMeaning": "花园",
+      "examples": "[]"
+    },
+    {
+      "word": "guide",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡaɪd",
+      "phoneticUk": "gaɪd",
+      "translation": "导游者；给…导游",
+      "sceneMeaning": "导游；指南",
+      "examples": "[]"
+    },
+    {
+      "word": "museum",
+      "partOfSpeech": "n",
+      "phoneticUs": "mju'ziəm",
+      "phoneticUk": "mjuː'zɪəm",
+      "translation": "博物馆；展览馆",
+      "sceneMeaning": "博物馆",
+      "examples": "[]"
+    },
+    {
+      "word": "noticeable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'notɪsəbl",
+      "phoneticUk": "'nəʊtɪsəb(ə)l",
+      "translation": "显而易见的；重要的",
+      "sceneMeaning": "显而易见的；重要的",
+      "examples": "[]"
+    },
+    {
+      "word": "restore",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'stɔr",
+      "phoneticUk": "rɪ'stɔː",
+      "translation": "恢复；归还；修补；修复",
+      "sceneMeaning": "修复；恢复",
+      "examples": "[]"
+    },
+    {
+      "word": "site",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪt",
+      "phoneticUk": "saɪt",
+      "translation": "地点，地基；场所；场所，地址",
+      "sceneMeaning": "地点；遗址；网站",
+      "examples": "[]"
+    },
+    {
+      "word": "apologize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'pɑlədʒaɪz",
+      "phoneticUk": "ə'pɒlədʒaɪz",
+      "translation": "道歉，谢罪，认错",
+      "sceneMeaning": "道歉，谢罪，认错；本场景常见用法：道歉",
+      "examples": "[]"
+    },
+    {
+      "word": "architecture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrkə'tɛktʃɚ",
+      "phoneticUk": "'ɑːkɪtektʃə",
+      "translation": "建筑学；建筑式样",
+      "sceneMeaning": "建筑；建筑学",
+      "examples": "[]"
+    },
+    {
+      "word": "cafeteria",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kæfə'tɪrɪə",
+      "phoneticUk": "kæfɪ'tɪərɪə",
+      "translation": "自助食堂",
+      "sceneMeaning": "自助餐厅；食堂",
+      "examples": "[]"
+    },
+    {
+      "word": "crowd",
+      "partOfSpeech": "n",
+      "phoneticUs": "kraʊd",
+      "phoneticUk": "kraʊd",
+      "translation": "群；大众；一伙人",
+      "sceneMeaning": "人群",
+      "examples": "[]"
+    },
+    {
+      "word": "explore",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "ɪk'splɔr",
+      "phoneticUk": "ɪk'splɔː; ek-",
+      "translation": "探险，探索；探索",
+      "sceneMeaning": "探索；参观",
+      "examples": "[]"
+    },
+    {
+      "word": "flash",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "flæʃ",
+      "phoneticUk": "flæʃ",
+      "translation": "闪光；闪，闪烁",
+      "sceneMeaning": "闪光灯；闪现",
+      "examples": "[]"
+    },
+    {
+      "word": "forbid",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɚ'bɪd",
+      "phoneticUk": "fə'bɪd",
+      "translation": "禁止，不许；阻止",
+      "sceneMeaning": "禁止，不许；阻止",
+      "examples": "[]"
+    },
+    {
+      "word": "gather",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɡæðɚ",
+      "phoneticUk": "'gæðə",
+      "translation": "聚集；集合vt收集",
+      "sceneMeaning": "聚集；集合vt收集",
+      "examples": "[]"
+    },
+    {
+      "word": "impress",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'prɛs",
+      "phoneticUk": "ɪm'pres",
+      "translation": "给…深刻印象",
+      "sceneMeaning": "给…深刻印象",
+      "examples": "[]"
+    },
+    {
+      "word": "impressive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'prɛsɪv",
+      "phoneticUk": "ɪm'presɪv",
+      "translation": "给人印象深刻的",
+      "sceneMeaning": "令人印象深刻的",
+      "examples": "[]"
+    },
+    {
+      "word": "overestimate",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ovər'ɛstɪmət",
+      "phoneticUk": "ˌəʊvər'estɪmeɪt",
+      "translation": "对（数量）估计过高",
+      "sceneMeaning": "对（数量）估计过高",
+      "examples": "[]"
+    },
+    {
+      "word": "palace",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pælis",
+      "phoneticUk": "'pælɪs",
+      "translation": "宫，宫殿",
+      "sceneMeaning": "宫殿",
+      "examples": "[]"
+    },
+    {
+      "word": "pop",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pɑp",
+      "phoneticUk": "pɒp",
+      "translation": "流行音乐，流行歌曲；突然出现，跳出",
+      "sceneMeaning": "流行音乐，流行歌曲；突然出现，跳出；本场景常见用法：听流行音乐",
+      "examples": "[]"
+    },
+    {
+      "word": "praise",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "prez",
+      "phoneticUk": "preɪz",
+      "translation": "赞扬，赞美；赞扬",
+      "sceneMeaning": "赞扬，赞美；赞扬",
+      "examples": "[]"
+    },
+    {
+      "word": "prohibitively",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "prəʊˈhɪbɪtɪvlɪ",
+      "translation": "过分地，非常地",
+      "sceneMeaning": "过分地，非常地",
+      "examples": "[]"
+    },
+    {
+      "word": "queue",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kju",
+      "phoneticUk": "kjuː",
+      "translation": "行列；排队等候",
+      "sceneMeaning": "排队",
+      "examples": "[]"
+    },
+    {
+      "word": "royal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɔɪəl",
+      "phoneticUk": "'rɒɪəl",
+      "translation": "王的；皇家的",
+      "sceneMeaning": "王的；皇家的；本场景常见用法：皇家宫殿",
+      "examples": "[]"
+    },
+    {
+      "word": "trail",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trel",
+      "phoneticUk": "treɪl",
+      "translation": "痕迹；小径；跟踪",
+      "sceneMeaning": "步道；小径",
+      "examples": "[]"
+    },
+    {
+      "word": "accessible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ək'sɛsəbl",
+      "phoneticUk": "əkˈsesəbl",
+      "translation": "易接近的",
+      "sceneMeaning": "可进入的；无障碍的",
+      "examples": "[]"
+    },
+    {
+      "word": "admiration",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ædmə'reʃən",
+      "phoneticUk": "ædmə'reɪʃ(ə)n",
+      "translation": "钦佩，称赞",
+      "sceneMeaning": "钦佩，称赞；本场景常见用法：钦佩；对…赞赏",
+      "examples": "[]"
+    },
+    {
+      "word": "album",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ælbəm",
+      "phoneticUk": "'ælbəm",
+      "translation": "粘贴簿，集邮簿，册",
+      "sceneMeaning": "粘贴簿，集邮簿，册；本场景常见用法：相册，影集",
+      "examples": "[]"
+    },
+    {
+      "word": "antique",
+      "partOfSpeech": "n",
+      "phoneticUs": "æn'tik",
+      "phoneticUk": "æn'ti:k",
+      "translation": "古玩，古董",
+      "sceneMeaning": "古董；古物",
+      "examples": "[]"
+    },
+    {
+      "word": "castle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæsl",
+      "phoneticUk": "'kɑːs(ə)l",
+      "translation": "城堡；巨大建筑物",
+      "sceneMeaning": "城堡",
+      "examples": "[]"
+    },
+    {
+      "word": "collective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kə'lɛktɪv",
+      "phoneticUk": "kə'lektɪv",
+      "translation": "集体的；集合性的",
+      "sceneMeaning": "集体的；集合性的",
+      "examples": "[]"
+    },
+    {
+      "word": "diamond",
+      "partOfSpeech": "n",
+      "phoneticUs": "'daɪəmənd",
+      "phoneticUk": "'daɪəmənd",
+      "translation": "金钢石，钻石；菱形",
+      "sceneMeaning": "金钢石，钻石；菱形",
+      "examples": "[]"
+    },
+    {
+      "word": "exhibit",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪɡ'zɪbɪt",
+      "phoneticUk": "ɪg'zɪbɪt; eg-",
+      "translation": "显示；陈列，展览",
+      "sceneMeaning": "展出；展示",
+      "examples": "[]"
+    },
+    {
+      "word": "exhibition",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛksɪ'bɪʃən",
+      "phoneticUk": "eksɪ'bɪʃ(ə)n",
+      "translation": "展览，陈列；展览会；展览",
+      "sceneMeaning": "展览；展出",
+      "examples": "[]"
+    },
+    {
+      "word": "exit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛɡzɪt",
+      "phoneticUk": "'eksɪt; 'egzɪt",
+      "translation": "出口；退场；退出",
+      "sceneMeaning": "离开；退出",
+      "examples": "[]"
+    },
+    {
+      "word": "flare",
+      "partOfSpeech": "v",
+      "phoneticUs": "flɛr",
+      "phoneticUk": "fleə",
+      "translation": "闪耀；使闪亮",
+      "sceneMeaning": "闪耀；使闪亮",
+      "examples": "[]"
+    },
+    {
+      "word": "flock",
+      "partOfSpeech": "n",
+      "phoneticUs": "flɑk",
+      "phoneticUk": "flɒk",
+      "translation": "羊群，群；大量",
+      "sceneMeaning": "羊群，群；大量；本场景常见用法：牛羊",
+      "examples": "[]"
+    },
+    {
+      "word": "gardener",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gɑrdənɚ",
+      "phoneticUk": "'ɡɑːdənə",
+      "translation": "园丁，花匠",
+      "sceneMeaning": "园丁，花匠",
+      "examples": "[]"
+    },
+    {
+      "word": "gate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡet",
+      "phoneticUk": "geɪt",
+      "translation": "大门；篱笆门",
+      "sceneMeaning": "大门；入口",
+      "examples": "[]"
+    },
+    {
+      "word": "ghost",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡost",
+      "phoneticUk": "gəʊst",
+      "translation": "鬼，灵魂；鬼魂",
+      "sceneMeaning": "鬼，灵魂；鬼魂；本场景常见用法：鬼像；重像",
+      "examples": "[]"
+    },
+    {
+      "word": "glitter",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɡlɪtɚ",
+      "phoneticUk": "'glɪtə",
+      "translation": "闪闪发光；闪光",
+      "sceneMeaning": "闪闪发光；闪光",
+      "examples": "[]"
+    },
+    {
+      "word": "glorious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡlɔriəs; 'ɡloriəs",
+      "phoneticUk": "'glɔːrɪəs",
+      "translation": "光荣的；壮丽的；辉煌的",
+      "sceneMeaning": "光荣的；壮丽的；辉煌的",
+      "examples": "[]"
+    },
+    {
+      "word": "glory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡlɔri",
+      "phoneticUk": "'glɔːrɪ",
+      "translation": "光荣；荣誉的事",
+      "sceneMeaning": "光荣；荣誉的事",
+      "examples": "[]"
+    },
+    {
+      "word": "honourable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔnərəbl",
+      "phoneticUk": "'ɒn(ə)rəb(ə)l",
+      "translation": "诚实的；光荣的",
+      "sceneMeaning": "诚实的；光荣的",
+      "examples": "[]"
+    },
+    {
+      "word": "jewel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒuəl",
+      "phoneticUk": "'dʒuːəl",
+      "translation": "宝石；宝石饰物",
+      "sceneMeaning": "宝石；宝石饰物",
+      "examples": "[]"
+    },
+    {
+      "word": "map",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæp",
+      "phoneticUk": "mæp",
+      "translation": "地图；图；天体图",
+      "sceneMeaning": "地图",
+      "examples": "[]"
+    },
+    {
+      "word": "marvellous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɑrvələs",
+      "phoneticUk": "'mɑːv(ə)ləs",
+      "translation": "奇迹般的；了不起的",
+      "sceneMeaning": "奇迹般的；了不起的",
+      "examples": "[]"
+    },
+    {
+      "word": "monument",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑnjumənt",
+      "phoneticUk": "'mɒnjʊm(ə)nt",
+      "translation": "纪念碑；纪念馆",
+      "sceneMeaning": "纪念碑；遗迹",
+      "examples": "[]"
+    },
+    {
+      "word": "observe",
+      "partOfSpeech": "v",
+      "phoneticUs": "əb'zɝv",
+      "phoneticUk": "əb'zɜːv",
+      "translation": "遵守；看到；说；遵守",
+      "sceneMeaning": "观察；遵守",
+      "examples": "[]"
+    },
+    {
+      "word": "parade",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pə'red",
+      "phoneticUk": "pə'reɪd",
+      "translation": "游行；检阅；游行",
+      "sceneMeaning": "游行；检阅；游行；本场景常见用法：狂欢节队伍",
+      "examples": "[]"
+    },
+    {
+      "word": "permit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pɚ'mɪt",
+      "phoneticUk": "pə'mɪt",
+      "translation": "允许；执照",
+      "sceneMeaning": "允许；许可",
+      "examples": "[]"
+    },
+    {
+      "word": "photograph",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fotəɡræf",
+      "phoneticUk": "'fəʊtəgrɑːf",
+      "translation": "照片，相片",
+      "sceneMeaning": "拍照；摄影",
+      "examples": "[]"
+    },
+    {
+      "word": "portrait",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɔrtrɪt",
+      "phoneticUk": "'pɔːtrɪt",
+      "translation": "消像，画像",
+      "sceneMeaning": "肖像；画像",
+      "examples": "[]"
+    },
+    {
+      "word": "prohibit",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'hɪbɪt",
+      "phoneticUk": "prə(ʊ)'hɪbɪt",
+      "translation": "禁止，阻止；禁止，阻止，防止",
+      "sceneMeaning": "禁止",
+      "examples": "[]"
+    },
+    {
+      "word": "reservation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛzɚ'veʃən",
+      "phoneticUk": "ˌrezə'veɪʃn",
+      "translation": "预定",
+      "sceneMeaning": "预约；预订",
+      "examples": "[]"
+    },
+    {
+      "word": "restriction",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'strɪkʃən",
+      "phoneticUk": "rɪ'strɪkʃn",
+      "translation": "限制，限定",
+      "sceneMeaning": "限制；规定",
+      "examples": "[]"
+    },
+    {
+      "word": "statue",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stætʃu",
+      "phoneticUk": "'stætjuː; -tʃuː",
+      "translation": "塑像，雕像，铸像",
+      "sceneMeaning": "雕像",
+      "examples": "[]"
+    },
+    {
+      "word": "temple",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛmpl",
+      "phoneticUk": "ˈtempl",
+      "translation": "圣堂，神殿，庙宇",
+      "sceneMeaning": "寺庙；神殿",
+      "examples": "[]"
+    },
+    {
+      "word": "tower",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'taʊɚ",
+      "phoneticUk": "'taʊə",
+      "translation": "塔；屹立，高耸",
+      "sceneMeaning": "塔；高楼",
+      "examples": "[]"
+    }
+  ]
+}

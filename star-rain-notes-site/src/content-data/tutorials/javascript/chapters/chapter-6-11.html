@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 节流（throttle）限定一段时间内最多执行的频率，适合滚动和尺寸变化事件。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let last = 0;
+function onScroll() { const now = Date.now(); if (now - last &lt; 200) return; last = now; console.log('处理滚动'); }
+</code></pre>
+<p><strong>学完能做：</strong> 理解节流对高频事件的调用限制。</p>

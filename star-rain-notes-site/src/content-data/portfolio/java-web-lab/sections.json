@@ -1,0 +1,165 @@
+[
+  {
+    "id": "21",
+    "title": "项目介绍",
+    "type": "MARKDOWN",
+    "html": "<p>从一次请求出发，把容易混淆的网络、容器、框架、业务和数据库职责放进同一条可观察的链路。学习者既能看概念关系，也能修改 SQL 检查具体数据结果。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "22",
+    "title": "核心功能",
+    "type": "FEATURE_LIST",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "title": "业务 SQL 实验",
+          "description": "46 个实验涵盖 CRUD、NULL、分页、连接、聚合、关联写入、多表事务和回滚，浏览器内即可执行。"
+        },
+        {
+          "title": "请求机制",
+          "description": "18 个运行机制节点说明容器、框架、Controller、Service、Mapper、JDBC 与 JSON 转换的关系。"
+        },
+        {
+          "title": "架构演示",
+          "description": "通过三维地球、资源池、库存竞争、集群分流、消息积压和熔断模型展示六阶段演进。"
+        },
+        {
+          "title": "知识与演讲",
+          "description": "提供 165 个概念节点、过程案例、工程案例、原创训练题，以及全屏演讲、播放与讲者笔记。"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "23",
+    "title": "使用流程",
+    "type": "MARKDOWN",
+    "html": "<p>选择业务实验 → 对照 HTTP、Controller、Service、Mapper 和 SQL → 编辑执行 SQL → 检查结果与约束 → 切换运行机制节点 → 进入架构演示或演讲模式。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "24",
+    "title": "技术栈",
+    "type": "TECH_STACK",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "name": "JavaScript",
+          "group": ""
+        },
+        {
+          "name": "Vite",
+          "group": ""
+        },
+        {
+          "name": "Three.js",
+          "group": ""
+        },
+        {
+          "name": "CodeMirror 6",
+          "group": ""
+        },
+        {
+          "name": "SQLite WASM",
+          "group": ""
+        },
+        {
+          "name": "Web Worker",
+          "group": ""
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "25",
+    "title": "关键实现",
+    "type": "MARKDOWN",
+    "html": "<p>内容、视图与确定性教学模型分离；Three.js 负责球面与示意路径，SVG 展示关系和 Trace。CodeMirror 承载代码阅读与 SQL 编辑，SQLite WASM 在 Worker 中运行独立种子数据库。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "26",
+    "title": "项目成果",
+    "type": "STATS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "label": "SQL 实验",
+          "value": "46 个"
+        },
+        {
+          "label": "运行机制",
+          "value": "18 个节点"
+        },
+        {
+          "label": "概念索引",
+          "value": "165 个"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "27",
+    "title": "验证与交付",
+    "type": "MARKDOWN",
+    "html": "<p>2026-10-15 整理版本通过 22 项测试与生产构建。全部 46 个 SQL 实验在新种子数据库中执行，包含 44 个正常执行和 2 个预期约束拒绝；测试核对分页、连接、关联写入和事务不变量。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "28",
+    "title": "当前阶段与使用边界",
+    "type": "MARKDOWN",
+    "html": "<p>项目本身是前端教学网站，不包含可运行 Spring Boot 服务，Java 片段只读。资源池、缓存、集群、队列和熔断属于明确简化的教学模型，不能据此推导真实生产容量或中间件性能。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "29",
+    "title": "界面与效果",
+    "type": "GALLERY",
+    "html": "",
+    "data": {},
+    "media": [
+      {
+        "src": "/images/content/b581700915b7b66b.webp",
+        "caption": "Java 业务与链路实验界面"
+      },
+      {
+        "src": "/images/content/2542de0d42009906.webp",
+        "caption": "代码阅读与 SQL 讲解"
+      }
+    ]
+  },
+  {
+    "id": "30",
+    "title": "源码与文档",
+    "type": "LINKS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/java-web-lab",
+          "label": "查看项目源码",
+          "description": "GitHub 集合中的独立项目目录"
+        },
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/java-web-lab/README.md",
+          "label": "运行与使用说明",
+          "description": "依赖、启动、测试和项目边界"
+        }
+      ]
+    },
+    "media": []
+  }
+]

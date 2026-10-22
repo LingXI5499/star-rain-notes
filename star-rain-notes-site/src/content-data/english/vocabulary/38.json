@@ -1,0 +1,1251 @@
+{
+  "id": "38",
+  "title": "经济 / 商业 / 市场 / 金融",
+  "layer": "社会与世界主题层",
+  "wordCount": 138,
+  "path": "/english/vocabulary/38/",
+  "words": [
+    {
+      "word": "save",
+      "partOfSpeech": "v",
+      "phoneticUs": "sev",
+      "phoneticUk": "seɪv",
+      "translation": "节省",
+      "sceneMeaning": "节省；储蓄",
+      "examples": "[]"
+    },
+    {
+      "word": "quality",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɑləti",
+      "phoneticUk": "'kwɒlɪtɪ",
+      "translation": "质量；品质，特性；品质",
+      "sceneMeaning": "质量；品质",
+      "examples": "[]"
+    },
+    {
+      "word": "financial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "faɪ'nænʃl",
+      "phoneticUk": "faɪ'nænʃ(ə)l; fɪ-",
+      "translation": "财政的，金融的；财政的，经济的",
+      "sceneMeaning": "金融的；财政的",
+      "examples": "[]"
+    },
+    {
+      "word": "value",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'vælju",
+      "phoneticUk": "'væljuː",
+      "translation": "价值；价格；评价；重视",
+      "sceneMeaning": "价值",
+      "examples": "[]"
+    },
+    {
+      "word": "innovation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪnə'veʃən",
+      "phoneticUk": "ˌɪnəˈveɪʃn",
+      "translation": "改革，创新",
+      "sceneMeaning": "创新",
+      "examples": "[]"
+    },
+    {
+      "word": "rate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ret",
+      "phoneticUk": "reɪt",
+      "translation": "比率；速度；价格；比率，速率",
+      "sceneMeaning": "利率；比率",
+      "examples": "[]"
+    },
+    {
+      "word": "decline",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'klaɪn",
+      "phoneticUk": "dɪ'klaɪn",
+      "translation": "下降，减少；拒绝",
+      "sceneMeaning": "下降；衰退",
+      "examples": "[]"
+    },
+    {
+      "word": "business",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈbɪznəs",
+      "phoneticUk": "ˈbɪznɪs",
+      "translation": "商业，生意；事务",
+      "sceneMeaning": "商业；生意；企业",
+      "examples": "[]"
+    },
+    {
+      "word": "buy",
+      "partOfSpeech": "v",
+      "phoneticUs": "baɪ",
+      "phoneticUk": "baɪ",
+      "translation": "买，购买；买",
+      "sceneMeaning": "购买",
+      "examples": "[]"
+    },
+    {
+      "word": "company",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌmpəni",
+      "phoneticUk": "'kʌmp(ə)nɪ",
+      "translation": "公司，商号；同伴",
+      "sceneMeaning": "公司",
+      "examples": "[]"
+    },
+    {
+      "word": "cost",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔst",
+      "phoneticUk": "kɒst",
+      "translation": "价格，代价；成本",
+      "sceneMeaning": "成本；费用",
+      "examples": "[]"
+    },
+    {
+      "word": "credit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɛdɪt",
+      "phoneticUk": "'kredɪt",
+      "translation": "信用贷款；信用",
+      "sceneMeaning": "信用；信贷",
+      "examples": "[]"
+    },
+    {
+      "word": "deal",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dil",
+      "phoneticUk": "diːl",
+      "translation": "买卖；待遇；给予",
+      "sceneMeaning": "交易；协议",
+      "examples": "[]"
+    },
+    {
+      "word": "economy",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kɑnəmi",
+      "phoneticUk": "ɪ'kɒnəmɪ",
+      "translation": "经济；节约，节省",
+      "sceneMeaning": "经济；节约",
+      "examples": "[]"
+    },
+    {
+      "word": "firm",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɝm",
+      "phoneticUk": "fɜːm",
+      "translation": "商行，商号，公司",
+      "sceneMeaning": "公司；事务所",
+      "examples": "[]"
+    },
+    {
+      "word": "grow",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡro",
+      "phoneticUk": "grəʊ",
+      "translation": "生长；变得；增长",
+      "sceneMeaning": "增长；成长",
+      "examples": "[]"
+    },
+    {
+      "word": "growth",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡroθ",
+      "phoneticUk": "grəʊθ",
+      "translation": "增长；增长量；生长",
+      "sceneMeaning": "增长；成长",
+      "examples": "[]"
+    },
+    {
+      "word": "importance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'pɔrtns",
+      "phoneticUk": "ɪm'pɔːt(ə)ns",
+      "translation": "重要；重要性",
+      "sceneMeaning": "重要；重要性",
+      "examples": "[]"
+    },
+    {
+      "word": "important",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'pɔrtnt",
+      "phoneticUk": "ɪm'pɔːt(ə)nt",
+      "translation": "重要的；有势力的",
+      "sceneMeaning": "重要的；有势力的",
+      "examples": "[]"
+    },
+    {
+      "word": "industry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪndəstri",
+      "phoneticUk": "'ɪndəstrɪ",
+      "translation": "工业，产业；勤劳",
+      "sceneMeaning": "产业；工业",
+      "examples": "[]"
+    },
+    {
+      "word": "interest",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪntrəst",
+      "phoneticUk": "'ɪnt(ə)rɪst",
+      "translation": "兴趣；利益；利息",
+      "sceneMeaning": "利息；兴趣",
+      "examples": "[]"
+    },
+    {
+      "word": "manage",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mænɪdʒ",
+      "phoneticUk": "'mænɪdʒ",
+      "translation": "管理；设法；对付",
+      "sceneMeaning": "管理；经营",
+      "examples": "[]"
+    },
+    {
+      "word": "market",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑrkɪt",
+      "phoneticUk": "'mɑːkɪt",
+      "translation": "市场；集市；销路",
+      "sceneMeaning": "市场",
+      "examples": "[]"
+    },
+    {
+      "word": "order",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔrdɚ",
+      "phoneticUk": "'ɔːdə",
+      "translation": "次序；整齐；命令",
+      "sceneMeaning": "订单；秩序",
+      "examples": "[]"
+    },
+    {
+      "word": "pay",
+      "partOfSpeech": "v",
+      "phoneticUs": "pe",
+      "phoneticUk": "peɪ",
+      "translation": "支付；付给；给予",
+      "sceneMeaning": "付款；支付",
+      "examples": "[]"
+    },
+    {
+      "word": "price",
+      "partOfSpeech": "n",
+      "phoneticUs": "praɪs",
+      "phoneticUk": "praɪs",
+      "translation": "价格，价钱；代价",
+      "sceneMeaning": "价格",
+      "examples": "[]"
+    },
+    {
+      "word": "produce",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'dus",
+      "phoneticUk": "prə'djuːs",
+      "translation": "生产；产生；展现",
+      "sceneMeaning": "生产；产生",
+      "examples": "[]"
+    },
+    {
+      "word": "product",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑdʌkt",
+      "phoneticUk": "'prɒdʌkt",
+      "translation": "产品，产物；(乘)积",
+      "sceneMeaning": "产品；产物",
+      "examples": "[]"
+    },
+    {
+      "word": "risk",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪsk",
+      "phoneticUk": "rɪsk",
+      "translation": "风险，危险，冒险",
+      "sceneMeaning": "风险",
+      "examples": "[]"
+    },
+    {
+      "word": "want",
+      "partOfSpeech": "n",
+      "phoneticUs": "wɑnt",
+      "phoneticUk": "wɒnt",
+      "translation": "需要；缺乏",
+      "sceneMeaning": "需要；缺乏",
+      "examples": "[]"
+    },
+    {
+      "word": "economic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˌikəˈnɑmɪk, ˌɛkəˈ-nɑmɪk",
+      "phoneticUk": ",iːkə'nɒmɪk; ek-",
+      "translation": "经济的，经济学的",
+      "sceneMeaning": "经济的；经济学的",
+      "examples": "[]"
+    },
+    {
+      "word": "income",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnkʌm",
+      "phoneticUk": "'ɪnkʌm",
+      "translation": "收入；收益；进款",
+      "sceneMeaning": "收入",
+      "examples": "[]"
+    },
+    {
+      "word": "poor",
+      "partOfSpeech": "adj",
+      "phoneticUs": "pʊr",
+      "phoneticUk": "pɔː; pʊə",
+      "translation": "贫穷的；贫乏的",
+      "sceneMeaning": "贫穷的；贫乏的",
+      "examples": "[]"
+    },
+    {
+      "word": "recession",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'sɛʃən",
+      "phoneticUk": "ri'seʃən",
+      "translation": "衰退",
+      "sceneMeaning": "经济衰退",
+      "examples": "[]"
+    },
+    {
+      "word": "debt",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɛt",
+      "phoneticUk": "det",
+      "translation": "债，债务，欠债；债务",
+      "sceneMeaning": "债务",
+      "examples": "[]"
+    },
+    {
+      "word": "goods",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡʊdz",
+      "phoneticUk": "ɡʊdz",
+      "translation": "货物，商品",
+      "sceneMeaning": "商品；货物",
+      "examples": "[]"
+    },
+    {
+      "word": "invest",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'vɛst",
+      "phoneticUk": "ɪn'vest",
+      "translation": "投资；投入；投资",
+      "sceneMeaning": "投资",
+      "examples": "[]"
+    },
+    {
+      "word": "loan",
+      "partOfSpeech": "n / vt",
+      "phoneticUs": "lon",
+      "phoneticUk": "ləʊn",
+      "translation": "贷款；暂借；借出；贷款",
+      "sceneMeaning": "贷款",
+      "examples": "[]"
+    },
+    {
+      "word": "loss",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔs",
+      "phoneticUk": "lɒs",
+      "translation": "遗失；损失；失败",
+      "sceneMeaning": "损失；亏损",
+      "examples": "[]"
+    },
+    {
+      "word": "security",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'kjʊrəti",
+      "phoneticUk": "sɪ'kjʊərətɪ",
+      "translation": "安全，安全感；安全，安保",
+      "sceneMeaning": "证券；安全",
+      "examples": "[]"
+    },
+    {
+      "word": "sustainable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sə'stenəbl",
+      "phoneticUk": "səˈsteɪnəbl",
+      "translation": "可持续的",
+      "sceneMeaning": "可持续的；可维持的",
+      "examples": "[]"
+    },
+    {
+      "word": "cash",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæʃ",
+      "phoneticUk": "kæʃ",
+      "translation": "现金，现款",
+      "sceneMeaning": "现金",
+      "examples": "[]"
+    },
+    {
+      "word": "contract",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑntrækt",
+      "phoneticUk": "'kɒntrækt",
+      "translation": "契约，合同；婚约；合同",
+      "sceneMeaning": "合同；契约",
+      "examples": "[]"
+    },
+    {
+      "word": "customer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌstəmɚ",
+      "phoneticUk": "'kʌstəmə",
+      "translation": "顾客，主顾",
+      "sceneMeaning": "顾客；客户",
+      "examples": "[]"
+    },
+    {
+      "word": "demand",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'mænd",
+      "phoneticUk": "dɪ'mɑːnd",
+      "translation": "要求；需要；询问；需求，要求；要求",
+      "sceneMeaning": "需求",
+      "examples": "[]"
+    },
+    {
+      "word": "consumption",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'sʌmpʃən",
+      "phoneticUk": "kən'sʌm(p)ʃ(ə)n",
+      "translation": "消耗量；消耗；消费，消耗",
+      "sceneMeaning": "消费；消耗",
+      "examples": "[]"
+    },
+    {
+      "word": "earn",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɝn",
+      "phoneticUk": "ɜːn",
+      "translation": "赚得，挣得；获得",
+      "sceneMeaning": "赚得；获得",
+      "examples": "[]"
+    },
+    {
+      "word": "employment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'plɔɪmənt",
+      "phoneticUk": "ɪm'plɒɪm(ə)nt; em-",
+      "translation": "工业；雇用；使用",
+      "sceneMeaning": "工业；雇用；使用",
+      "examples": "[]"
+    },
+    {
+      "word": "guarantee",
+      "partOfSpeech": "n / v",
+      "phoneticUs": ",ɡærən'ti",
+      "phoneticUk": "ˌɡærən'ti:",
+      "translation": "保证；担保物；担保；保证，担保",
+      "sceneMeaning": "保证；担保物；担保；保证，担保",
+      "examples": "[]"
+    },
+    {
+      "word": "hold",
+      "partOfSpeech": "v",
+      "phoneticUs": "hold",
+      "phoneticUk": "həʊld",
+      "translation": "拿住；掌握；拥有",
+      "sceneMeaning": "拿住；掌握；拥有",
+      "examples": "[]"
+    },
+    {
+      "word": "purchase",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pɝtʃəs",
+      "phoneticUk": "'pɜ:tʃəs",
+      "translation": "买，购买；买",
+      "sceneMeaning": "购买；采购",
+      "examples": "[]"
+    },
+    {
+      "word": "strategy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'strætədʒi",
+      "phoneticUk": "ˈstrætədʒɪ",
+      "translation": "战略；策略；策略，战略",
+      "sceneMeaning": "策略；战略",
+      "examples": "[]"
+    },
+    {
+      "word": "acquire",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kwaɪr",
+      "phoneticUk": "ə'kwaɪə",
+      "translation": "取得；获得；学到；获得",
+      "sceneMeaning": "取得；获得；学到；获得",
+      "examples": "[]"
+    },
+    {
+      "word": "commercial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kə'mɝʃəl",
+      "phoneticUk": "kə'mɜːʃ(ə)l",
+      "translation": "商业的；商品化的",
+      "sceneMeaning": "商业的",
+      "examples": "[]"
+    },
+    {
+      "word": "competition",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑmpə'tɪʃən",
+      "phoneticUk": "kɒmpɪ'tɪʃ(ə)n",
+      "translation": "竞争，比赛",
+      "sceneMeaning": "竞争；比赛",
+      "examples": "[]"
+    },
+    {
+      "word": "gain",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡen",
+      "phoneticUk": "geɪn",
+      "translation": "获得；增加；增进",
+      "sceneMeaning": "获得；增加；增进；本场景常见用法：经济成果，经济收益；经济增长",
+      "examples": "[]"
+    },
+    {
+      "word": "production",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'dʌkʃən",
+      "phoneticUk": "prə'dʌkʃ(ə)n",
+      "translation": "生产；产品；总产量",
+      "sceneMeaning": "生产；产品；总产量；本场景常见用法：生产效率",
+      "examples": "[]"
+    },
+    {
+      "word": "trade",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tred",
+      "phoneticUk": "treɪd",
+      "translation": "贸易；职业；交易",
+      "sceneMeaning": "交易；贸易",
+      "examples": "[]"
+    },
+    {
+      "word": "charge",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tʃɑrdʒ",
+      "phoneticUk": "tʃɑːdʒ",
+      "translation": "索价；控告；费用",
+      "sceneMeaning": "收费；索价",
+      "examples": "[]"
+    },
+    {
+      "word": "margin",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑrdʒən",
+      "phoneticUk": "'mɑːdʒɪn",
+      "translation": "页边的空白；边缘；页边的空白，页边，白边",
+      "sceneMeaning": "利润率；边际",
+      "examples": "[]"
+    },
+    {
+      "word": "label",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈlebəl",
+      "phoneticUk": "'leɪb(ə)l",
+      "translation": "标签；标记，符号",
+      "sceneMeaning": "标签；品牌",
+      "examples": "[]"
+    },
+    {
+      "word": "pension",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɛnʃən",
+      "phoneticUk": "'penʃ(ə)n",
+      "translation": "养老金",
+      "sceneMeaning": "养老金；本场景常见用法：企业年金；辅助退休金",
+      "examples": "[]"
+    },
+    {
+      "word": "stock",
+      "partOfSpeech": "n",
+      "phoneticUs": "stɑk",
+      "phoneticUk": "stɒk",
+      "translation": "原料；库存品；股本；股票；库存",
+      "sceneMeaning": "库存；股票",
+      "examples": "[]"
+    },
+    {
+      "word": "yield",
+      "partOfSpeech": "n / v / vt&vi",
+      "phoneticUs": "jild",
+      "phoneticUk": "jiːld",
+      "translation": "出产；产量；产生，得出〔结果、答案或资料",
+      "sceneMeaning": "收益率；产量",
+      "examples": "[]"
+    },
+    {
+      "word": "consume",
+      "partOfSpeech": "v",
+      "phoneticUs": "kənˈsum",
+      "phoneticUk": "kən'sjuːm",
+      "translation": "消耗，消费；消灭；消费，消耗",
+      "sceneMeaning": "消费；消耗",
+      "examples": "[]"
+    },
+    {
+      "word": "compete",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pit",
+      "phoneticUk": "kəm'piːt",
+      "translation": "比赛；竞争；对抗；竞争",
+      "sceneMeaning": "竞争",
+      "examples": "[]"
+    },
+    {
+      "word": "corporate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈkɔːrpərət",
+      "phoneticUk": "ˈkɔ:pərət",
+      "translation": "团体的；法人的",
+      "sceneMeaning": "团体的；法人的；本场景常见用法：企业的社会责任",
+      "examples": "[]"
+    },
+    {
+      "word": "employ",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'plɔɪ",
+      "phoneticUk": "ɪm'plɒɪ; em-",
+      "translation": "雇用；用；使忙于",
+      "sceneMeaning": "雇用；用；使忙于",
+      "examples": "[]"
+    },
+    {
+      "word": "employee",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'plɔɪi",
+      "phoneticUk": "emplɒɪ'iː; em'plɒɪiː; ɪm-",
+      "translation": "受雇者，雇员，雇工",
+      "sceneMeaning": "员工",
+      "examples": "[]"
+    },
+    {
+      "word": "expand",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'spænd",
+      "phoneticUk": "ɪk'spænd; ek-",
+      "translation": "扩大；使膨胀；扩大",
+      "sceneMeaning": "扩张；扩大",
+      "examples": "[]"
+    },
+    {
+      "word": "investment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vɛstmənt",
+      "phoneticUk": "ɪn'ves(t)m(ə)nt",
+      "translation": "投资，投资额，投入",
+      "sceneMeaning": "投资",
+      "examples": "[]"
+    },
+    {
+      "word": "retail",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ritel",
+      "phoneticUk": "'ri:teɪl",
+      "translation": "零售",
+      "sceneMeaning": "零售；本场景常见用法：零售商",
+      "examples": "[]"
+    },
+    {
+      "word": "revenue",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛvənu",
+      "phoneticUk": "'revənju:",
+      "translation": "收入",
+      "sceneMeaning": "收入；营收",
+      "examples": "[]"
+    },
+    {
+      "word": "agreement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'grimənt",
+      "phoneticUk": "ə'griːm(ə)nt",
+      "translation": "协定，协议；同意",
+      "sceneMeaning": "协议；一致",
+      "examples": "[]"
+    },
+    {
+      "word": "borrow",
+      "partOfSpeech": "v",
+      "phoneticUs": "'bɑro",
+      "phoneticUk": "'bɒrəʊ",
+      "translation": "借，借用，借人",
+      "sceneMeaning": "借入；借用",
+      "examples": "[]"
+    },
+    {
+      "word": "brand",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "brænd",
+      "phoneticUk": "brænd",
+      "translation": "商品；烙印；铭刻",
+      "sceneMeaning": "品牌",
+      "examples": "[]"
+    },
+    {
+      "word": "corporation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɔrpə'reʃən",
+      "phoneticUk": "kɔːpə'reɪʃ(ə)n",
+      "translation": "公司，企业；社团",
+      "sceneMeaning": "公司；法人企业",
+      "examples": "[]"
+    },
+    {
+      "word": "finance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'faɪnæns",
+      "phoneticUk": "faɪ'næns; fɪ-; 'faɪnæns",
+      "translation": "财政，金融；财源；财政；资助",
+      "sceneMeaning": "资助；为……融资",
+      "examples": "[]"
+    },
+    {
+      "word": "negotiate",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪ'ɡoʃɪet",
+      "phoneticUk": "nɪ'ɡəʊʃɪeɪt",
+      "translation": "谈判，协商，交涉",
+      "sceneMeaning": "谈判；协商",
+      "examples": "[]"
+    },
+    {
+      "word": "obtain",
+      "partOfSpeech": "v",
+      "phoneticUs": "əb'ten",
+      "phoneticUk": "əb'teɪn",
+      "translation": "获得，得到，买到；获得",
+      "sceneMeaning": "获得，得到，买到；获得；本场景常见用法：就业，找到工作",
+      "examples": "[]"
+    },
+    {
+      "word": "payment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pemənt",
+      "phoneticUk": "'peɪm(ə)nt",
+      "translation": "支付，支付的款项",
+      "sceneMeaning": "付款；支付",
+      "examples": "[]"
+    },
+    {
+      "word": "stake",
+      "partOfSpeech": "n",
+      "phoneticUs": "stek",
+      "phoneticUk": "steɪk",
+      "translation": "桩；赌金；奖品；风险",
+      "sceneMeaning": "桩；赌金；奖品；风险；本场景常见用法：股权",
+      "examples": "[]"
+    },
+    {
+      "word": "bid",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bɪd",
+      "phoneticUk": "bɪd",
+      "translation": "出价，投标",
+      "sceneMeaning": "出价，投标",
+      "examples": "[]"
+    },
+    {
+      "word": "depressed",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'prɛst",
+      "phoneticUk": "di'prest",
+      "translation": "萧条的；沮丧的",
+      "sceneMeaning": "萧条的；沮丧的",
+      "examples": "[]"
+    },
+    {
+      "word": "discount",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪs'kaʊnt",
+      "phoneticUk": "'diskaunt",
+      "translation": "折扣",
+      "sceneMeaning": "折扣",
+      "examples": "[]"
+    },
+    {
+      "word": "employer",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'plɔɪɚ",
+      "phoneticUk": "ɪm'plɒɪə; em-",
+      "translation": "雇佣者，雇主",
+      "sceneMeaning": "雇主",
+      "examples": "[]"
+    },
+    {
+      "word": "establishment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'stæblɪʃmənt",
+      "phoneticUk": "ɪ'stæblɪʃm(ə)nt; e-",
+      "translation": "建立，设立，确立；确立",
+      "sceneMeaning": "建立，设立，确立；确立；本场景常见用法：建立业务关系",
+      "examples": "[]"
+    },
+    {
+      "word": "fund",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fʌnd",
+      "phoneticUk": "fʌnd",
+      "translation": "资金；基金；存款；基金，储备；；提供资金",
+      "sceneMeaning": "基金；资金",
+      "examples": "[]"
+    },
+    {
+      "word": "inflation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'fleʃən",
+      "phoneticUk": "in'fleiʃən",
+      "translation": "通货膨胀",
+      "sceneMeaning": "通货膨胀",
+      "examples": "[]"
+    },
+    {
+      "word": "innovate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪnəvet",
+      "phoneticUk": "'ɪnəveɪt",
+      "translation": "创新，革新",
+      "sceneMeaning": "创新，革新",
+      "examples": "[]"
+    },
+    {
+      "word": "lend",
+      "partOfSpeech": "v",
+      "phoneticUs": "lɛnd",
+      "phoneticUk": "lend",
+      "translation": "把…借给，贷(款)",
+      "sceneMeaning": "借出；贷款",
+      "examples": "[]"
+    },
+    {
+      "word": "transaction",
+      "partOfSpeech": "n",
+      "phoneticUs": "træn'zækʃən",
+      "phoneticUk": "trænˈzækʃn",
+      "translation": "交易，业务，事务",
+      "sceneMeaning": "交易；业务",
+      "examples": "[]"
+    },
+    {
+      "word": "bond",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɑnd",
+      "phoneticUk": "bɒnd",
+      "translation": "联结，联系；公债",
+      "sceneMeaning": "债券；纽带",
+      "examples": "[]"
+    },
+    {
+      "word": "client",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klaɪənt",
+      "phoneticUk": "'klaɪənt",
+      "translation": "客户",
+      "sceneMeaning": "客户；委托人",
+      "examples": "[]"
+    },
+    {
+      "word": "condemn",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'dɛm",
+      "phoneticUk": "kən'dem",
+      "translation": "谴责，指责；判刑",
+      "sceneMeaning": "谴责，指责；判刑",
+      "examples": "[]"
+    },
+    {
+      "word": "costly",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɔstli",
+      "phoneticUk": "'kɒs(t)lɪ",
+      "translation": "昂贵的；价值高的",
+      "sceneMeaning": "昂贵的；代价高的",
+      "examples": "[]"
+    },
+    {
+      "word": "distribute",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'strɪbjut",
+      "phoneticUk": "dɪ'strɪbjuːt; 'dɪstrɪbjuːt",
+      "translation": "分发，分送；分布；分发",
+      "sceneMeaning": "分发，分送；分布；分发",
+      "examples": "[]"
+    },
+    {
+      "word": "distribution",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪstrə'bjʊʃən",
+      "phoneticUk": "dɪstrɪ'bjuːʃ(ə)n",
+      "translation": "分发，分配；分布",
+      "sceneMeaning": "分配；分销",
+      "examples": "[]"
+    },
+    {
+      "word": "import",
+      "partOfSpeech": "n / v / vt&n",
+      "phoneticUs": "'ɪmpɔt",
+      "phoneticUk": "ɪm'pɔːt",
+      "translation": "输入，进口；进口",
+      "sceneMeaning": "进口；进口商品",
+      "examples": "[]"
+    },
+    {
+      "word": "insurance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'ʃʊrəns",
+      "phoneticUk": "ɪn'ʃʊər(ə)ns",
+      "translation": "保险；保险费",
+      "sceneMeaning": "保险",
+      "examples": "[]"
+    },
+    {
+      "word": "labour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'leibə",
+      "phoneticUk": "'leɪbə",
+      "translation": "劳动；工作；劳工",
+      "sceneMeaning": "劳动；工作；劳工；本场景常见用法：劳动生产率",
+      "examples": "[]"
+    },
+    {
+      "word": "profit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɑfɪt",
+      "phoneticUk": "'prɒfɪt",
+      "translation": "益处；利润；得益",
+      "sceneMeaning": "利润；收益",
+      "examples": "[]"
+    },
+    {
+      "word": "profitable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɑfɪtəbl",
+      "phoneticUk": "ˈprɒfɪtəbl",
+      "translation": "有利可图的，有益的",
+      "sceneMeaning": "有利可图的",
+      "examples": "[]"
+    },
+    {
+      "word": "prosperity",
+      "partOfSpeech": "n",
+      "phoneticUs": "prɑ'spɛrəti",
+      "phoneticUk": "prɒ'sperɪtɪ",
+      "translation": "繁荣；昌盛，兴旺；繁荣",
+      "sceneMeaning": "繁荣；昌盛，兴旺；繁荣；本场景常见用法：经济繁荣；发展生产",
+      "examples": "[]"
+    },
+    {
+      "word": "regulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rɛɡjulet",
+      "phoneticUk": "'regjʊleɪt",
+      "translation": "管理，控制；调整；管理",
+      "sceneMeaning": "监管；调节",
+      "examples": "[]"
+    },
+    {
+      "word": "section",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛkʃən",
+      "phoneticUk": "'sekʃ(ə)n",
+      "translation": "切片；一段；部门",
+      "sceneMeaning": "切片；一段；部门",
+      "examples": "[]"
+    },
+    {
+      "word": "unaffordable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "ˌʌnə'fɔ:dəbl",
+      "translation": "买不起的，负担不起的",
+      "sceneMeaning": "买不起的，负担不起的",
+      "examples": "[]"
+    },
+    {
+      "word": "venture",
+      "partOfSpeech": "n&vi / v",
+      "phoneticUs": "'vɛntʃɚ",
+      "phoneticUk": "'ventʃə",
+      "translation": "冒险；敢于",
+      "sceneMeaning": "风险项目；企业",
+      "examples": "[]"
+    },
+    {
+      "word": "Asian",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈeʒən, ˈeʃən",
+      "phoneticUk": "'eiʃən",
+      "translation": "亚洲的；亚洲人",
+      "sceneMeaning": "亚洲的；亚洲人",
+      "examples": "[]"
+    },
+    {
+      "word": "asset",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æsɛt",
+      "phoneticUk": "'æset",
+      "translation": "有价值的人(或物)资产",
+      "sceneMeaning": "资产",
+      "examples": "[]"
+    },
+    {
+      "word": "bankrupt",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'bæŋkrʌpt",
+      "phoneticUk": "'bæŋkrʌpt",
+      "translation": "破产的，倒闭的",
+      "sceneMeaning": "破产的",
+      "examples": "[]"
+    },
+    {
+      "word": "capital",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæpɪtl",
+      "phoneticUk": "'kæpɪt(ə)l",
+      "translation": "资本，资金；首都",
+      "sceneMeaning": "资本；首都",
+      "examples": "[]"
+    },
+    {
+      "word": "commerce",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmɝs",
+      "phoneticUk": "'kɒmɜːs",
+      "translation": "商业，贸易；社交",
+      "sceneMeaning": "商业；贸易",
+      "examples": "[]"
+    },
+    {
+      "word": "competitiveness",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'pɛtətɪvnɪs",
+      "phoneticUk": "kəm'petətɪvnɪs",
+      "translation": "竞争力",
+      "sceneMeaning": "竞争力",
+      "examples": "[]"
+    },
+    {
+      "word": "competitor",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'pɛtɪtɚ",
+      "phoneticUk": "kəm'petitə",
+      "translation": "竞争者，对手",
+      "sceneMeaning": "竞争者；对手",
+      "examples": "[]"
+    },
+    {
+      "word": "deposit",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'pɑzɪt",
+      "phoneticUk": "dɪ'pɒzɪt",
+      "translation": "使沉淀；存放",
+      "sceneMeaning": "存款；押金",
+      "examples": "[]"
+    },
+    {
+      "word": "durable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dʊrəbl",
+      "phoneticUk": "'djʊərəb(ə)l",
+      "translation": "耐久的，耐用的；持久的，耐用的",
+      "sceneMeaning": "耐久的，耐用的；持久的，耐用的；本场景常见用法：耐用消费品",
+      "examples": "[]"
+    },
+    {
+      "word": "earnest",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "'ɜːnɪst",
+      "translation": "认真的，诚恳的",
+      "sceneMeaning": "认真的，诚恳的",
+      "examples": "[]"
+    },
+    {
+      "word": "economical",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɛkə'nɑmɪkl",
+      "phoneticUk": "iːkə'nɒmɪk(ə)l; ek-",
+      "translation": "节约的；经济学的",
+      "sceneMeaning": "节约的；经济学的；本场景常见用法：经济实用；经济实惠",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'fɪʃənsi",
+      "phoneticUk": "ɪ'fɪʃ(ə)nsɪ",
+      "translation": "效率；功效，效能",
+      "sceneMeaning": "效率",
+      "examples": "[]"
+    },
+    {
+      "word": "export",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈekspɔːrt；ɪkˈ-",
+      "phoneticUk": "ˈekspɔːt；ɪkˈ-",
+      "translation": "输出，出口；运走",
+      "sceneMeaning": "出口；出口商品",
+      "examples": "[]"
+    },
+    {
+      "word": "forecast",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fɔrkæst",
+      "phoneticUk": "'fɔːkɑːst",
+      "translation": "预测，预报；预示",
+      "sceneMeaning": "预测；预报",
+      "examples": "[]"
+    },
+    {
+      "word": "goodness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡʊdnəs",
+      "phoneticUk": "'gʊdnɪs",
+      "translation": "优良，德性，仁慈",
+      "sceneMeaning": "优良，德性，仁慈",
+      "examples": "[]"
+    },
+    {
+      "word": "index",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪndɛks",
+      "phoneticUk": "'ɪndeks",
+      "translation": "索引；指数；指标",
+      "sceneMeaning": "指数；索引",
+      "examples": "[]"
+    },
+    {
+      "word": "inflate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'flet",
+      "phoneticUk": "ɪn'fleɪt",
+      "translation": "(使)膨胀",
+      "sceneMeaning": "(使)膨胀",
+      "examples": "[]"
+    },
+    {
+      "word": "liability",
+      "partOfSpeech": "n",
+      "phoneticUs": "'laɪə'bɪləti",
+      "phoneticUk": "ˌlaɪəˈbɪləti",
+      "translation": "责任",
+      "sceneMeaning": "负债；责任",
+      "examples": "[]"
+    },
+    {
+      "word": "manufacturer",
+      "partOfSpeech": "n",
+      "phoneticUs": ",mænju'fæktʃərɚ",
+      "phoneticUk": ",mænjʊ'fæktʃ(ə)rə(r)",
+      "translation": "制造商；制造厂",
+      "sceneMeaning": "制造商",
+      "examples": "[]"
+    },
+    {
+      "word": "merchant",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɝtʃənt",
+      "phoneticUk": "'mɜːtʃ(ə)nt",
+      "translation": "商人；零售商",
+      "sceneMeaning": "商人；商户",
+      "examples": "[]"
+    },
+    {
+      "word": "possess",
+      "partOfSpeech": "v",
+      "phoneticUs": "pə'zɛs",
+      "phoneticUk": "pə'zes",
+      "translation": "占用，拥有(财产)",
+      "sceneMeaning": "占用，拥有(财产)",
+      "examples": "[]"
+    },
+    {
+      "word": "poverty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑvɚti",
+      "phoneticUk": "'pɒvətɪ",
+      "translation": "贫穷，贫困",
+      "sceneMeaning": "贫困",
+      "examples": "[]"
+    },
+    {
+      "word": "prosper",
+      "partOfSpeech": "v",
+      "phoneticUs": "'prɑspɚ",
+      "phoneticUk": "'prɒspə",
+      "translation": "繁荣",
+      "sceneMeaning": "繁荣",
+      "examples": "[]"
+    },
+    {
+      "word": "receipt",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'sit",
+      "phoneticUk": "rɪ'siːt",
+      "translation": "收到；收条，收据",
+      "sceneMeaning": "收据",
+      "examples": "[]"
+    },
+    {
+      "word": "retailer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ri:teilə",
+      "phoneticUk": "'riːteɪlə",
+      "translation": "零售商",
+      "sceneMeaning": "零售商",
+      "examples": "[]"
+    },
+    {
+      "word": "shortage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʃɔrtɪdʒ",
+      "phoneticUk": "'ʃɔːtɪdʒ",
+      "translation": "不足，缺少，不足额",
+      "sceneMeaning": "短缺",
+      "examples": "[]"
+    },
+    {
+      "word": "slave",
+      "partOfSpeech": "n",
+      "phoneticUs": "sleɪv",
+      "phoneticUk": "sleɪv",
+      "translation": "奴隶",
+      "sceneMeaning": "奴隶",
+      "examples": "[]"
+    },
+    {
+      "word": "startup",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stɑrt'ʌp",
+      "phoneticUk": "stɑ:tʌp",
+      "translation": "启动，开办",
+      "sceneMeaning": "初创企业",
+      "examples": "[]"
+    },
+    {
+      "word": "subsidize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sʌbsə'daɪz",
+      "phoneticUk": "'sʌbsɪdaɪz",
+      "translation": "提供补贴",
+      "sceneMeaning": "提供补贴",
+      "examples": "[]"
+    },
+    {
+      "word": "welfare",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wɛl'fɛr",
+      "phoneticUk": "'welfeə",
+      "translation": "幸福，福利；幸福；福利",
+      "sceneMeaning": "福利；福祉",
+      "examples": "[]"
+    }
+  ]
+}

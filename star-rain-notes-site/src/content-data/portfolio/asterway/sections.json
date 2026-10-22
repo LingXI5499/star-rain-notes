@@ -1,0 +1,169 @@
+[
+  {
+    "id": "40",
+    "title": "项目介绍",
+    "type": "MARKDOWN",
+    "html": "<p>探索一个把“设定目标—安排今日行动—持续专注—记录习惯—复盘调整”连接起来的成长工作台。原型用于展示产品流程与交互设计，不把页面数量等同于服务端系统已完成。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "41",
+    "title": "核心功能",
+    "type": "FEATURE_LIST",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "title": "成长行动",
+          "description": "目标下关联多个任务，结合周日程、习惯周矩阵、专注计时与成长复盘，统计来自本地行动记录。"
+        },
+        {
+          "title": "效率方法",
+          "description": "提供四象限、每日三件事、时间分块、番茄专注等方法，先预览计划，再确认与撤销。"
+        },
+        {
+          "title": "全局伙伴",
+          "description": "侧边伙伴可根据本地规则建立目标、任务和习惯，引用记忆、调整日程并设置站内提醒。"
+        },
+        {
+          "title": "社区原型",
+          "description": "展示图文、短视频、社群、消息、挑战、成就和个人主页，支持本地演示交互与数据备份。"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "42",
+    "title": "使用流程",
+    "type": "MARKDOWN",
+    "html": "<p>建立目标或应用成长模板 → 选择效率方法生成行动 → 确认日程 → 专注与习惯打卡 → 查看趋势、积分和复盘 → 通过全局伙伴调整下一步。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "43",
+    "title": "技术栈",
+    "type": "TECH_STACK",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "name": "Vue 3",
+          "group": ""
+        },
+        {
+          "name": "TypeScript",
+          "group": ""
+        },
+        {
+          "name": "Pinia",
+          "group": ""
+        },
+        {
+          "name": "Vue Router",
+          "group": ""
+        },
+        {
+          "name": "Zod",
+          "group": ""
+        },
+        {
+          "name": "Vitest",
+          "group": ""
+        },
+        {
+          "name": "Playwright",
+          "group": ""
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "44",
+    "title": "关键实现",
+    "type": "MARKDOWN",
+    "html": "<p>Vue 页面与共享组件承载 18 个产品页面；Pinia 维护统一业务状态，domain 层负责校验、统计和规则。计划建议具有确认、过期检查和冲突保护，撤销避免覆盖后续操作；数据保存于当前浏览器。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "45",
+    "title": "项目成果",
+    "type": "STATS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "label": "产品页面",
+          "value": "18 个"
+        },
+        {
+          "label": "成长模板",
+          "value": "27 组"
+        },
+        {
+          "label": "业务测试",
+          "value": "38 项"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "46",
+    "title": "验证与交付",
+    "type": "MARKDOWN",
+    "html": "<p>2026-10-15 整理版本通过 38 项业务测试、TypeScript 检查和生产构建。原项目 v0.4 验证记录包含 34 个桌面与手机浏览器场景。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "47",
+    "title": "当前阶段与使用边界",
+    "type": "MARKDOWN",
+    "html": "<p>当前仍是前端原型：成长伙伴没有接入开放大模型；账户、社区、消息、会员和支付没有真实服务端。提醒仅在应用打开时显示，数据不跨设备同步。示例用户、榜单和社区内容明确属于演示。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "48",
+    "title": "界面与效果",
+    "type": "GALLERY",
+    "html": "",
+    "data": {},
+    "media": [
+      {
+        "src": "/images/content/a84444c22ad3f8be.webp",
+        "caption": "今日行动总览（历史演示数据）"
+      },
+      {
+        "src": "/images/content/5b325e9a50e97c3e.webp",
+        "caption": "成长社区前端原型"
+      }
+    ]
+  },
+  {
+    "id": "49",
+    "title": "源码与文档",
+    "type": "LINKS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/asterway",
+          "label": "查看项目源码",
+          "description": "GitHub 集合中的独立项目目录"
+        },
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/asterway/README.md",
+          "label": "运行与使用说明",
+          "description": "依赖、启动、测试和项目边界"
+        }
+      ]
+    },
+    "media": []
+  }
+]

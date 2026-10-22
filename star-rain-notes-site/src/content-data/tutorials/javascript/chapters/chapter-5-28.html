@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> Toast 连续触发时先清除旧定时器，再安排新的关闭时间。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let timer;
+function toast(text) {
+  notice.textContent = text; notice.hidden = false;
+  clearTimeout(timer); timer = setTimeout(() =&gt; notice.hidden = true, 2000);
+}
+</code></pre>
+<p><strong>学完能做：</strong> 重复通知时重置 Toast 展示时长。</p>

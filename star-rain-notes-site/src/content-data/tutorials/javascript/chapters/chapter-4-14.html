@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> <code>FormData</code> 自动读取表单中有 <code>name</code> 的成功控件；提交前可禁用按钮避免重复提交。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const form = document.querySelector('form');
+form.addEventListener('submit', e =&gt; { e.preventDefault(); console.log(Object.fromEntries(new FormData(form))); });
+</code></pre>
+<p><strong>学完能做：</strong> 读取 FormData 并管理表单提交过程。</p>

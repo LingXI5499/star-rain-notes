@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 侧栏折叠本质是切换容器列宽；过渡时需考虑内容的最小宽度。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.app { display: grid; grid-template-columns: 240px minmax(0, 1fr); }
+.app.collapsed { grid-template-columns: 64px minmax(0, 1fr); }
+</code></pre>
+<p><strong>学完能做：</strong> 设计可收起、展开的侧边栏容器。</p>

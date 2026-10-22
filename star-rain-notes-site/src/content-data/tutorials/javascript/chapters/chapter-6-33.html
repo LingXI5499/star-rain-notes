@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> <code>Blob</code> 创建文本文件数据，临时对象 URL 和 <code>&lt;a download&gt;</code> 触发浏览器下载。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const url = URL.createObjectURL(new Blob(['你好'], { type: 'text/plain;charset=utf-8' }));
+const a = document.createElement('a');
+a.href = url; a.download = 'note.txt'; a.click();
+setTimeout(() =&gt; URL.revokeObjectURL(url), 1000);
+</code></pre>
+<p><strong>学完能做：</strong> 在浏览器端创建并下载文本文件。</p>

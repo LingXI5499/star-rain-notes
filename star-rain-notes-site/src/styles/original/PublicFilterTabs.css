@@ -1,0 +1,10 @@
+
+.public-filter-tabs:not(.__static_scope){display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-width:0}
+.public-filter-tabs button:not(.__static_scope){display:flex;align-items:center;gap:6px;min-height:34px;padding:7px 12px;border:1px solid transparent;border-radius:8px;background:transparent;color:var(--text-secondary);font:inherit;font-size:13px;line-height:1.5;cursor:pointer}
+.public-filter-tabs button:not(.__static_scope):hover{color:var(--primary);background:var(--bg-subtle)}
+.public-filter-tabs button[aria-pressed=true]:not(.__static_scope){color:var(--primary);border-color:color-mix(in srgb,var(--primary) 25%,var(--border));background:var(--primary-soft);font-weight:600}
+.public-filter-tabs small:not(.__static_scope){font-size:11px;opacity:.7}
+.public-filter-tabs button:not(.__static_scope):focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+@media(max-width:600px){
+.public-filter-tabs:not(.__static_scope){gap:4px}
+.public-filter-tabs button:not(.__static_scope){font-size:12px;padding:7px 10px}}

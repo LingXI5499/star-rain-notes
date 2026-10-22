@@ -1,0 +1,1269 @@
+{
+  "id": "49",
+  "title": "变化 / 趋势 / 过程 / 阶段",
+  "layer": "抽象阅读与逻辑层",
+  "wordCount": 140,
+  "path": "/english/vocabulary/49/",
+  "words": [
+    {
+      "word": "innovation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪnə'veʃən",
+      "phoneticUk": "ˌɪnəˈveɪʃn",
+      "translation": "改革，创新",
+      "sceneMeaning": "创新；革新",
+      "examples": "[]"
+    },
+    {
+      "word": "process",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɑsɛs",
+      "phoneticUk": "'prəʊses",
+      "translation": "过程；工序；加工；过程，进程；；工序；工艺流程；处理",
+      "sceneMeaning": "过程；流程",
+      "examples": "[]"
+    },
+    {
+      "word": "reduce",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'dʊs",
+      "phoneticUk": "rɪ'djuːs",
+      "translation": "减少，减小；简化；减少",
+      "sceneMeaning": "减少；降低",
+      "examples": "[]"
+    },
+    {
+      "word": "rate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ret",
+      "phoneticUk": "reɪt",
+      "translation": "比率；速度；价格；比率，速率",
+      "sceneMeaning": "速率；比率",
+      "examples": "[]"
+    },
+    {
+      "word": "decline",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'klaɪn",
+      "phoneticUk": "dɪ'klaɪn",
+      "translation": "下降，减少；拒绝",
+      "sceneMeaning": "下降；衰退",
+      "examples": "[]"
+    },
+    {
+      "word": "age",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "edʒ",
+      "phoneticUk": "eɪdʒ",
+      "translation": "年龄；时代；变老",
+      "sceneMeaning": "时代；年龄",
+      "examples": "[]"
+    },
+    {
+      "word": "become",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪ'kʌm",
+      "phoneticUk": "bɪ'kʌm",
+      "translation": "变成；成为，变得",
+      "sceneMeaning": "变成；成为，变得",
+      "examples": "[]"
+    },
+    {
+      "word": "better",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'bɛtɚ",
+      "phoneticUk": "'betə",
+      "translation": "较好的；更好地",
+      "sceneMeaning": "较好的；更好地；本场景常见用法：改进；改善",
+      "examples": "[]"
+    },
+    {
+      "word": "change",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃendʒ",
+      "phoneticUk": "tʃeɪn(d)ʒ",
+      "translation": "改变，变化；零钱",
+      "sceneMeaning": "变化；改变",
+      "examples": "[]"
+    },
+    {
+      "word": "continue",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'tɪnju",
+      "phoneticUk": "kən'tɪnjuː",
+      "translation": "继续，连续；延伸",
+      "sceneMeaning": "继续；持续",
+      "examples": "[]"
+    },
+    {
+      "word": "course",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrs",
+      "phoneticUk": "kɔːs",
+      "translation": "课程；过程；一道菜",
+      "sceneMeaning": "过程；路线",
+      "examples": "[]"
+    },
+    {
+      "word": "develop",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vɛləp",
+      "phoneticUk": "dɪ'veləp",
+      "translation": "发展；形成；开发",
+      "sceneMeaning": "发展；开发",
+      "examples": "[]"
+    },
+    {
+      "word": "fall",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɔl",
+      "phoneticUk": "fɔːl",
+      "translation": "落下；跌倒；陷落",
+      "sceneMeaning": "下降；秋天",
+      "examples": "[]"
+    },
+    {
+      "word": "grow",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡro",
+      "phoneticUk": "grəʊ",
+      "translation": "生长；变得；增长",
+      "sceneMeaning": "增长；成长",
+      "examples": "[]"
+    },
+    {
+      "word": "growth",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡroθ",
+      "phoneticUk": "grəʊθ",
+      "translation": "增长；增长量；生长",
+      "sceneMeaning": "增长；成长",
+      "examples": "[]"
+    },
+    {
+      "word": "improve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'pruv",
+      "phoneticUk": "ɪm'pruːv",
+      "translation": "使更好；改善",
+      "sceneMeaning": "改善；提高",
+      "examples": "[]"
+    },
+    {
+      "word": "increase",
+      "partOfSpeech": "vt&vi&n",
+      "phoneticUs": "'ɪnkris",
+      "phoneticUk": "ɪn'kriːs",
+      "translation": "增加",
+      "sceneMeaning": "增加；增长",
+      "examples": "[]"
+    },
+    {
+      "word": "increasingly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪn'krisɪŋli",
+      "phoneticUk": "ɪn'kriːsɪŋlɪ",
+      "translation": "日益，越来越多地",
+      "sceneMeaning": "日益，越来越多地",
+      "examples": "[]"
+    },
+    {
+      "word": "last",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "læst",
+      "phoneticUk": "lɑːst",
+      "translation": "最后的；最后",
+      "sceneMeaning": "持续；维持",
+      "examples": "[]"
+    },
+    {
+      "word": "make",
+      "partOfSpeech": "v",
+      "phoneticUs": "mek",
+      "phoneticUk": "meɪk",
+      "translation": "使；做，制造",
+      "sceneMeaning": "使；做，制造",
+      "examples": "[]"
+    },
+    {
+      "word": "remain",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'men",
+      "phoneticUk": "rɪ'meɪn",
+      "translation": "剩下，余留；保持",
+      "sceneMeaning": "保持；仍然是",
+      "examples": "[]"
+    },
+    {
+      "word": "tend",
+      "partOfSpeech": "v",
+      "phoneticUs": "tɛnd",
+      "phoneticUk": "tend",
+      "translation": "照管，照料，护理",
+      "sceneMeaning": "照管，照料，护理；本场景常见用法：走向；趋向；有助于；造成",
+      "examples": "[]"
+    },
+    {
+      "word": "development",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'vɛləpmənt",
+      "phoneticUk": "dɪ'veləpm(ə)nt",
+      "translation": "发展；开发；生长",
+      "sceneMeaning": "发展；开发",
+      "examples": "[]"
+    },
+    {
+      "word": "drop",
+      "partOfSpeech": "v",
+      "phoneticUs": "drɑp",
+      "phoneticUk": "drɒp",
+      "translation": "使落下；降低",
+      "sceneMeaning": "下降；滴",
+      "examples": "[]"
+    },
+    {
+      "word": "replace",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'ples",
+      "phoneticUk": "rɪ'pleɪs",
+      "translation": "代替",
+      "sceneMeaning": "替换；取代",
+      "examples": "[]"
+    },
+    {
+      "word": "shift",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ʃɪft",
+      "phoneticUk": "ʃɪft",
+      "translation": "替换，转移；转换",
+      "sceneMeaning": "转变；轮班",
+      "examples": "[]"
+    },
+    {
+      "word": "trend",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trɛnd",
+      "phoneticUk": "trend",
+      "translation": "伸向；倾向；倾向",
+      "sceneMeaning": "趋势；趋向",
+      "examples": "[]"
+    },
+    {
+      "word": "gradually",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'grædʒʊəli",
+      "phoneticUk": "'grædʒʊlɪ; 'grædjʊəlɪ",
+      "translation": "逐渐地，逐步地",
+      "sceneMeaning": "逐渐地",
+      "examples": "[]"
+    },
+    {
+      "word": "spread",
+      "partOfSpeech": "v",
+      "phoneticUs": "sprɛd",
+      "phoneticUk": "spred",
+      "translation": "扩散；传播",
+      "sceneMeaning": "传播；扩散",
+      "examples": "[]"
+    },
+    {
+      "word": "adapt",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'dæpt",
+      "phoneticUk": "ə'dæpt",
+      "translation": "使适应；改编；适应于",
+      "sceneMeaning": "适应；改编",
+      "examples": "[]"
+    },
+    {
+      "word": "divorce",
+      "partOfSpeech": "n / vi",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "离婚，离异；离婚",
+      "sceneMeaning": "离婚，离异；离婚",
+      "examples": "[]"
+    },
+    {
+      "word": "shed",
+      "partOfSpeech": "vt",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "流出；散发；脱落",
+      "sceneMeaning": "流出；散发；脱落",
+      "examples": "[]"
+    },
+    {
+      "word": "appear",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'pɪr",
+      "phoneticUk": "ə'pɪə",
+      "translation": "出现；来到；似乎",
+      "sceneMeaning": "出现；来到；似乎；本场景常见用法：以…出现",
+      "examples": "[]"
+    },
+    {
+      "word": "constant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɑnstənt",
+      "phoneticUk": "'kɒnst(ə)nt",
+      "translation": "经常的；永恒的；不断的，持续的",
+      "sceneMeaning": "持续的；不变的",
+      "examples": "[]"
+    },
+    {
+      "word": "constantly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'kɑnstəntli",
+      "phoneticUk": "'kɒnst(ə)ntlɪ",
+      "translation": "不断地，时常地",
+      "sceneMeaning": "不断地，时常地",
+      "examples": "[]"
+    },
+    {
+      "word": "improvement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'prʊvmənt",
+      "phoneticUk": "ɪm'pruːvm(ə)nt",
+      "translation": "改进，改善；改进处",
+      "sceneMeaning": "改进；改善",
+      "examples": "[]"
+    },
+    {
+      "word": "permanent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɝmənənt",
+      "phoneticUk": "'pɜːm(ə)nənt",
+      "translation": "永久的，持久的；永久的",
+      "sceneMeaning": "永久的；长期的",
+      "examples": "[]"
+    },
+    {
+      "word": "ultimately",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ʌltɪmətli",
+      "phoneticUk": "ˈʌltɪmətli",
+      "translation": "最后，最终",
+      "sceneMeaning": "最后，最终",
+      "examples": "[]"
+    },
+    {
+      "word": "advanced",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əd'vænst",
+      "phoneticUk": "æd'vɑːnst",
+      "translation": "先进的；高级的；高级的",
+      "sceneMeaning": "先进的；高级的；高级的",
+      "examples": "[]"
+    },
+    {
+      "word": "enhance",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'hæns",
+      "phoneticUk": "in'hɑ:ns",
+      "translation": "提高；加强；增加",
+      "sceneMeaning": "提高；加强；增加",
+      "examples": "[]"
+    },
+    {
+      "word": "eventually",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪ'vɛntʃuəli",
+      "phoneticUk": "ɪ'ventʃʊəlɪ",
+      "translation": "终于；最后",
+      "sceneMeaning": "最终；终于",
+      "examples": "[]"
+    },
+    {
+      "word": "final",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'faɪnl",
+      "phoneticUk": "'faɪn(ə)l",
+      "translation": "最后的；决定性的",
+      "sceneMeaning": "最后的；最终的",
+      "examples": "[]"
+    },
+    {
+      "word": "gain",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡen",
+      "phoneticUk": "geɪn",
+      "translation": "获得；增加；增进",
+      "sceneMeaning": "获得；增加；增进；本场景常见用法：力量增加；增加力量",
+      "examples": "[]"
+    },
+    {
+      "word": "peak",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "pik",
+      "phoneticUk": "piːk",
+      "translation": "山顶，巅；最高的",
+      "sceneMeaning": "高峰；顶点",
+      "examples": "[]"
+    },
+    {
+      "word": "period",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɪrɪəd",
+      "phoneticUk": "'pɪərɪəd",
+      "translation": "时期；学时；句号",
+      "sceneMeaning": "时期；阶段",
+      "examples": "[]"
+    },
+    {
+      "word": "stage",
+      "partOfSpeech": "n",
+      "phoneticUs": "stedʒ",
+      "phoneticUk": "steɪdʒ",
+      "translation": "舞台；戏剧；阶段",
+      "sceneMeaning": "阶段；舞台",
+      "examples": "[]"
+    },
+    {
+      "word": "vary",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈveri",
+      "phoneticUk": "'veərɪ",
+      "translation": "改变；使多样化；不同；变化",
+      "sceneMeaning": "变化；不同",
+      "examples": "[]"
+    },
+    {
+      "word": "accumulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kjumjəlet",
+      "phoneticUk": "ə'kjuːmjʊleɪt",
+      "translation": "积累；堆积；积累，增加",
+      "sceneMeaning": "积累；累积",
+      "examples": "[]"
+    },
+    {
+      "word": "extensive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'stɛnsɪv",
+      "phoneticUk": "ɪk'stensɪv; ek-",
+      "translation": "广阔的；广泛的",
+      "sceneMeaning": "广阔的；广泛的；本场景常见用法：粗放经营",
+      "examples": "[]"
+    },
+    {
+      "word": "pattern",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pætɚn",
+      "phoneticUk": "'pæt(ə)n",
+      "translation": "型，式样，模，模型；模式",
+      "sceneMeaning": "模式；规律",
+      "examples": "[]"
+    },
+    {
+      "word": "temporary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tɛmpə'rɛri",
+      "phoneticUk": "'temp(ə)rərɪ",
+      "translation": "暂时的，临时的",
+      "sceneMeaning": "暂时的",
+      "examples": "[]"
+    },
+    {
+      "word": "pace",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pes",
+      "phoneticUk": "peɪs",
+      "translation": "步，步速；踱步",
+      "sceneMeaning": "速度；节奏",
+      "examples": "[]"
+    },
+    {
+      "word": "interval",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪntɚvl",
+      "phoneticUk": "'ɪntəv(ə)l",
+      "translation": "间隔；休息；间距",
+      "sceneMeaning": "间隔；间歇",
+      "examples": "[]"
+    },
+    {
+      "word": "proceed",
+      "partOfSpeech": "v",
+      "phoneticUs": "pro'sid",
+      "phoneticUk": "prə'siːd",
+      "translation": "进行；继续进行",
+      "sceneMeaning": "进行；继续进行",
+      "examples": "[]"
+    },
+    {
+      "word": "span",
+      "partOfSpeech": "n",
+      "phoneticUs": "spæn",
+      "phoneticUk": "spæn",
+      "translation": "跨距；一段时间",
+      "sceneMeaning": "跨度；一段时间",
+      "examples": "[]"
+    },
+    {
+      "word": "wreck",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɛk",
+      "phoneticUk": "rek",
+      "translation": "失事；残骸；破坏",
+      "sceneMeaning": "失事；残骸；破坏",
+      "examples": "[]"
+    },
+    {
+      "word": "advance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "əd'væns",
+      "phoneticUk": "əd'vɑːns",
+      "translation": "前进；提高；进展；提前；前进",
+      "sceneMeaning": "进步；推进",
+      "examples": "[]"
+    },
+    {
+      "word": "continuous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'tɪnjʊəs",
+      "phoneticUk": "kən'tɪnjʊəs",
+      "translation": "连续不断的，持续的",
+      "sceneMeaning": "连续的；持续的",
+      "examples": "[]"
+    },
+    {
+      "word": "expand",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'spænd",
+      "phoneticUk": "ɪk'spænd; ek-",
+      "translation": "扩大；使膨胀；扩大",
+      "sceneMeaning": "扩大；扩展",
+      "examples": "[]"
+    },
+    {
+      "word": "immobile",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'mobl",
+      "phoneticUk": "ɪ'məʊbaɪl",
+      "translation": "稳定的，不变的",
+      "sceneMeaning": "稳定的，不变的",
+      "examples": "[]"
+    },
+    {
+      "word": "path",
+      "partOfSpeech": "n",
+      "phoneticUs": "pæθ",
+      "phoneticUk": "pɑːθ",
+      "translation": "路，小道；道路",
+      "sceneMeaning": "路径；道路",
+      "examples": "[]"
+    },
+    {
+      "word": "rapid",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ræpɪd",
+      "phoneticUk": "'ræpɪd",
+      "translation": "快的；急流",
+      "sceneMeaning": "快速的；迅速的",
+      "examples": "[]"
+    },
+    {
+      "word": "reform",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "rɪ'fɔrm",
+      "phoneticUk": "rɪ'fɔːm",
+      "translation": "改革，改良",
+      "sceneMeaning": "改革；改良",
+      "examples": "[]"
+    },
+    {
+      "word": "stable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'stebl",
+      "phoneticUk": "'steɪb(ə)l",
+      "translation": "稳定的，不变的",
+      "sceneMeaning": "稳定的",
+      "examples": "[]"
+    },
+    {
+      "word": "adjust",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'dʒʌst",
+      "phoneticUk": "ə'dʒʌst",
+      "translation": "调整，调节；校正",
+      "sceneMeaning": "调整；适应",
+      "examples": "[]"
+    },
+    {
+      "word": "appearance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'pɪrəns",
+      "phoneticUk": "ə'pɪər(ə)ns",
+      "translation": "出现，来到；外观；外表, 外观；出现",
+      "sceneMeaning": "出现；外观",
+      "examples": "[]"
+    },
+    {
+      "word": "decrease",
+      "partOfSpeech": "vi&n",
+      "phoneticUs": "dɪ'kris",
+      "phoneticUk": "dɪ'kriːs",
+      "translation": "减少，减少",
+      "sceneMeaning": "减少；下降",
+      "examples": "[]"
+    },
+    {
+      "word": "era",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪrə",
+      "phoneticUk": "'ɪərə",
+      "translation": "时代，年代；纪元；纪元，年代",
+      "sceneMeaning": "时代；纪元",
+      "examples": "[]"
+    },
+    {
+      "word": "evolutionary",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ivə'luʃənɛri",
+      "phoneticUk": "ˌi:vəˈlu:ʃənri",
+      "translation": "进化的；演变的",
+      "sceneMeaning": "进化的；演变的；本场景常见用法：进化过程，演化过程",
+      "examples": "[]"
+    },
+    {
+      "word": "imitate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪmɪtet",
+      "phoneticUk": "'ɪmɪteɪt",
+      "translation": "模仿，仿效；仿制；模仿",
+      "sceneMeaning": "模仿，仿效；仿制；模仿",
+      "examples": "[]"
+    },
+    {
+      "word": "phase",
+      "partOfSpeech": "n",
+      "phoneticUs": "fez",
+      "phoneticUk": "feɪz",
+      "translation": "阶段；方面；相位",
+      "sceneMeaning": "阶段；时期",
+      "examples": "[]"
+    },
+    {
+      "word": "recovery",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "重获；痊愈，恢复",
+      "sceneMeaning": "恢复；复苏",
+      "examples": "[]"
+    },
+    {
+      "word": "steady",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "'stɛdi",
+      "phoneticUk": "'stedɪ",
+      "translation": "稳固的；使稳定；稳定的，逐步的",
+      "sceneMeaning": "稳定的；持续的",
+      "examples": "[]"
+    },
+    {
+      "word": "subsequent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sʌbsɪkwənt",
+      "phoneticUk": "'sʌbsɪkw(ə)nt",
+      "translation": "随后的，后来的",
+      "sceneMeaning": "随后的，后来的",
+      "examples": "[]"
+    },
+    {
+      "word": "alter",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɔltɚ",
+      "phoneticUk": "'ɔːltə; 'ɒl-",
+      "translation": "改变，变更；改做；改变",
+      "sceneMeaning": "改变；修改",
+      "examples": "[]"
+    },
+    {
+      "word": "continual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'tɪnjuəl",
+      "phoneticUk": "kən'tɪnjʊəl",
+      "translation": "不断的；连续的",
+      "sceneMeaning": "不断的；连续的；本场景常见用法：持续改进",
+      "examples": "[]"
+    },
+    {
+      "word": "cycle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'saɪkl",
+      "phoneticUk": "'saɪk(ə)l",
+      "translation": "n自行车，循环",
+      "sceneMeaning": "循环；周期",
+      "examples": "[]"
+    },
+    {
+      "word": "evolution",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌɛvəˈluʃən; (occas.) ˌ ivəˈluʃən",
+      "phoneticUk": ",iːvə'luːʃ(ə)n; 'ev-",
+      "translation": "进化，演化；发展；演变，进化",
+      "sceneMeaning": "演化；发展",
+      "examples": "[]"
+    },
+    {
+      "word": "evolve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'vɑlv",
+      "phoneticUk": "ɪ'vɒlv",
+      "translation": "使进化；使发展；使发展",
+      "sceneMeaning": "演化；逐渐发展",
+      "examples": "[]"
+    },
+    {
+      "word": "initial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'nɪʃəl",
+      "phoneticUk": "ɪ'nɪʃəl",
+      "translation": "最初的；词首的",
+      "sceneMeaning": "最初的；开始的",
+      "examples": "[]"
+    },
+    {
+      "word": "initially",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪ'nɪʃəli",
+      "phoneticUk": "ɪ'nɪʃ(ə)lɪ",
+      "translation": "最初，起初",
+      "sceneMeaning": "最初；起初",
+      "examples": "[]"
+    },
+    {
+      "word": "innovate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪnəvet",
+      "phoneticUk": "'ɪnəveɪt",
+      "translation": "创新，革新",
+      "sceneMeaning": "创新，革新",
+      "examples": "[]"
+    },
+    {
+      "word": "procedure",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'sidʒɚ",
+      "phoneticUk": "prə'siːdʒə",
+      "translation": "程序；手续；过程；程序",
+      "sceneMeaning": "程序；步骤",
+      "examples": "[]"
+    },
+    {
+      "word": "recover",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'kʌvɚ",
+      "phoneticUk": "rɪ'kʌvə",
+      "translation": "重新获得；挽回；恢复；重新获得；寻回",
+      "sceneMeaning": "恢复；复原",
+      "examples": "[]"
+    },
+    {
+      "word": "swift",
+      "partOfSpeech": "adj",
+      "phoneticUs": "swɪft",
+      "phoneticUk": "swɪft",
+      "translation": "快的；反应快的；迅速的",
+      "sceneMeaning": "快的；反应快的；迅速的；本场景常见用法：快速增长",
+      "examples": "[]"
+    },
+    {
+      "word": "tendency",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛndənsi",
+      "phoneticUk": "'tend(ə)nsɪ",
+      "translation": "趋向，趋势，倾向",
+      "sceneMeaning": "倾向；趋势",
+      "examples": "[]"
+    },
+    {
+      "word": "transformation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",trænsfɚ'meʃən",
+      "phoneticUk": "trænsfə'meɪʃ(ə)n; trɑːns-; -nz-",
+      "translation": "变化；改造；转变",
+      "sceneMeaning": "转型；彻底变化",
+      "examples": "[]"
+    },
+    {
+      "word": "advancement",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'vænsmənt",
+      "phoneticUk": "əd'vɑːnsm(ə)nt",
+      "translation": "进步，提升",
+      "sceneMeaning": "进步，提升",
+      "examples": "[]"
+    },
+    {
+      "word": "breakthrough",
+      "partOfSpeech": "n",
+      "phoneticUs": "'brek'θrʊ",
+      "phoneticUk": "'breɪkθruː",
+      "translation": "突破",
+      "sceneMeaning": "突破；重大进展",
+      "examples": "[]"
+    },
+    {
+      "word": "direction",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "方向，方位；指导",
+      "sceneMeaning": "方向；趋势",
+      "examples": "[]"
+    },
+    {
+      "word": "disappear",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dɪsə'pɪr",
+      "phoneticUk": "dɪsə'pɪə",
+      "translation": "不见，失踪；消失；不见，消失",
+      "sceneMeaning": "消失；不见",
+      "examples": "[]"
+    },
+    {
+      "word": "downfall",
+      "partOfSpeech": "n",
+      "phoneticUs": "'daʊnfɔl",
+      "phoneticUk": "'daʊnfɔ:l",
+      "translation": "（雨等的）大下特下",
+      "sceneMeaning": "（雨等的）大下特下",
+      "examples": "[]"
+    },
+    {
+      "word": "duration",
+      "partOfSpeech": "n",
+      "phoneticUs": "du'reʃən",
+      "phoneticUk": "djʊ'reɪʃ(ə)n",
+      "translation": "持续，持久",
+      "sceneMeaning": "持续时间",
+      "examples": "[]"
+    },
+    {
+      "word": "emerge",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'mɝdʒ",
+      "phoneticUk": "ɪ'mɜːdʒ",
+      "translation": "出现，涌现；冒出；出现",
+      "sceneMeaning": "出现；兴起",
+      "examples": "[]"
+    },
+    {
+      "word": "emergence",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'mɝdʒəns",
+      "phoneticUk": "ɪ'mɜ:dʒəns",
+      "translation": "出现，发生",
+      "sceneMeaning": "出现；兴起",
+      "examples": "[]"
+    },
+    {
+      "word": "expansion",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'spænʃən",
+      "phoneticUk": "ɪk'spænʃ(ə)n; ek-",
+      "translation": "扩大，扩充；扩张",
+      "sceneMeaning": "扩张；扩大",
+      "examples": "[]"
+    },
+    {
+      "word": "extend",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'stɛnd",
+      "phoneticUk": "ɪk'stend; ek-",
+      "translation": "延长；扩大；致",
+      "sceneMeaning": "延伸；延长",
+      "examples": "[]"
+    },
+    {
+      "word": "extension",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'stɛnʃən",
+      "phoneticUk": "ɪk'stenʃ(ə)n; ek-",
+      "translation": "延长部分；伸展；分机",
+      "sceneMeaning": "延伸；扩展",
+      "examples": "[]"
+    },
+    {
+      "word": "formation",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɔr'meʃən",
+      "phoneticUk": "fɔː'meɪʃ(ə)n",
+      "translation": "形成；构成；形成物",
+      "sceneMeaning": "形成；构成",
+      "examples": "[]"
+    },
+    {
+      "word": "gradual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡrædʒuəl",
+      "phoneticUk": "'grædʒʊəl",
+      "translation": "逐渐的；渐进的",
+      "sceneMeaning": "逐渐的；渐进的",
+      "examples": "[]"
+    },
+    {
+      "word": "intermediate",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪntɚ'midɪət",
+      "phoneticUk": ",ɪntə'miːdɪət",
+      "translation": "中间的；中级的",
+      "sceneMeaning": "中间的；中级的",
+      "examples": "[]"
+    },
+    {
+      "word": "liberation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",lɪbə'reʃən",
+      "phoneticUk": "lɪbə'reɪʃ(ə)n",
+      "translation": "解放",
+      "sceneMeaning": "解放",
+      "examples": "[]"
+    },
+    {
+      "word": "push",
+      "partOfSpeech": "v",
+      "phoneticUs": "pʊʃ",
+      "phoneticUk": "pʊʃ",
+      "translation": "推，逼迫；推",
+      "sceneMeaning": "推，逼迫；推",
+      "examples": "[]"
+    },
+    {
+      "word": "reduction",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'dʌkʃən",
+      "phoneticUk": "rɪ'dʌkʃ(ə)n",
+      "translation": "减少，减小，缩减",
+      "sceneMeaning": "减少；降低",
+      "examples": "[]"
+    },
+    {
+      "word": "renew",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'nʊ",
+      "phoneticUk": "rɪ'njuː",
+      "translation": "使更新；更新；〔中止后〕重新开始，继续",
+      "sceneMeaning": "使更新；更新；〔中止后〕重新开始，继续",
+      "examples": "[]"
+    },
+    {
+      "word": "replacement",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'plesmənt",
+      "phoneticUk": "rɪˈpleɪsmənt",
+      "translation": "代替",
+      "sceneMeaning": "替换；替代物",
+      "examples": "[]"
+    },
+    {
+      "word": "retain",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'ten",
+      "phoneticUk": "rɪ'teɪn",
+      "translation": "保持，保留，保有；保留,留用",
+      "sceneMeaning": "保持，保留，保有；保留,留用",
+      "examples": "[]"
+    },
+    {
+      "word": "stability",
+      "partOfSpeech": "n",
+      "phoneticUs": "stə'bɪləti",
+      "phoneticUk": "stə'bɪlɪtɪ",
+      "translation": "稳定，稳定性，巩固",
+      "sceneMeaning": "稳定，稳定性，巩固",
+      "examples": "[]"
+    },
+    {
+      "word": "transform",
+      "partOfSpeech": "v",
+      "phoneticUs": "træns'fɔrm",
+      "phoneticUk": "træns'fɔːm; trɑːns-; -nz-",
+      "translation": "改变；改造；变换；改变",
+      "sceneMeaning": "转变；改造",
+      "examples": "[]"
+    },
+    {
+      "word": "accelerate",
+      "partOfSpeech": "v",
+      "phoneticUs": "əkˈsɛləˌret",
+      "phoneticUk": "ək'seləreɪt",
+      "translation": "(使)加快；促进；加速",
+      "sceneMeaning": "加速；促进",
+      "examples": "[]"
+    },
+    {
+      "word": "acceleration",
+      "partOfSpeech": "n",
+      "phoneticUs": "ək'sɛlə'reʃən",
+      "phoneticUk": "əkselə'reɪʃ(ə)n",
+      "translation": "加速；加速度",
+      "sceneMeaning": "加速；促进",
+      "examples": "[]"
+    },
+    {
+      "word": "decay",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'ke",
+      "phoneticUk": "dɪ'keɪ",
+      "translation": "腐烂；衰败；腐烂",
+      "sceneMeaning": "衰败；腐烂",
+      "examples": "[]"
+    },
+    {
+      "word": "destruction",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'strʌkʃən",
+      "phoneticUk": "dɪ'strʌkʃ(ə)n",
+      "translation": "破坏，毁灭，消灭；破坏",
+      "sceneMeaning": "破坏，毁灭，消灭；破坏",
+      "examples": "[]"
+    },
+    {
+      "word": "dip",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪp",
+      "phoneticUk": "dɪp",
+      "translation": "浸，蘸；浸一浸",
+      "sceneMeaning": "浸，蘸；浸一浸；本场景常见用法：电压骤降；电压突跌；电压下降；电压瞬时跌落",
+      "examples": "[]"
+    },
+    {
+      "word": "drift",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "drɪft",
+      "phoneticUk": "drɪft",
+      "translation": "漂流，漂泊；漂流",
+      "sceneMeaning": "漂流，漂泊；漂流；本场景常见用法：大陆漂移说",
+      "examples": "[]"
+    },
+    {
+      "word": "enlarge",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'lɑrdʒ",
+      "phoneticUk": "ɪn'lɑːdʒ; en-",
+      "translation": "扩大，扩展；放大",
+      "sceneMeaning": "扩大，扩展；放大",
+      "examples": "[]"
+    },
+    {
+      "word": "everlasting",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɛvɚ'læstɪŋ",
+      "phoneticUk": "ˌevəˈlɑ:stɪŋ",
+      "translation": "永恒的",
+      "sceneMeaning": "永恒的；本场景常见用法：永远地",
+      "examples": "[]"
+    },
+    {
+      "word": "extensively",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ik'stensivli",
+      "phoneticUk": "ɪk'stensɪvlɪ",
+      "translation": "广泛地",
+      "sceneMeaning": "广泛地",
+      "examples": "[]"
+    },
+    {
+      "word": "fade",
+      "partOfSpeech": "v",
+      "phoneticUs": "fed",
+      "phoneticUk": "feɪd",
+      "translation": "褪色；逐渐消失；逐渐消失",
+      "sceneMeaning": "褪色；逐渐消失；逐渐消失",
+      "examples": "[]"
+    },
+    {
+      "word": "frequency",
+      "partOfSpeech": "n",
+      "phoneticUs": "'frikwənsi",
+      "phoneticUk": "'friːkw(ə)nsɪ",
+      "translation": "屡次；次数；频率",
+      "sceneMeaning": "频率；发生率",
+      "examples": "[]"
+    },
+    {
+      "word": "impermanency",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "im'pə:mənənsi",
+      "translation": "非永久性",
+      "sceneMeaning": "非永久性",
+      "examples": "[]"
+    },
+    {
+      "word": "impermanent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'pɝmənənt",
+      "phoneticUk": "im'pə:mənənt",
+      "translation": "非永久（性）的；不持久的，暂时的",
+      "sceneMeaning": "非永久（性）的；不持久的，暂时的",
+      "examples": "[]"
+    },
+    {
+      "word": "invariably",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪn'vɛrɪəbli",
+      "phoneticUk": "ɪn'veərɪəblɪ",
+      "translation": "不变地，一直",
+      "sceneMeaning": "不变地，一直",
+      "examples": "[]"
+    },
+    {
+      "word": "lessen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'lɛsn",
+      "phoneticUk": "'les(ə)n",
+      "translation": "减少，减轻；缩小；减少",
+      "sceneMeaning": "减少，减轻；缩小；减少",
+      "examples": "[]"
+    },
+    {
+      "word": "meanwhile",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'minwaɪl",
+      "phoneticUk": "'miːnwaɪl",
+      "translation": "同时，当时",
+      "sceneMeaning": "与此同时",
+      "examples": "[]"
+    },
+    {
+      "word": "mend",
+      "partOfSpeech": "v",
+      "phoneticUs": "mɛnd",
+      "phoneticUk": "mend",
+      "translation": "修理，修补，缝补",
+      "sceneMeaning": "修理，修补，缝补；本场景常见用法：在好转中",
+      "examples": "[]"
+    },
+    {
+      "word": "modify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mɑdɪfaɪ",
+      "phoneticUk": "'mɒdɪfaɪ",
+      "translation": "更改，修改；修饰",
+      "sceneMeaning": "修改；调整",
+      "examples": "[]"
+    },
+    {
+      "word": "occurrence",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kʌrəns",
+      "phoneticUk": "ə'kʌr(ə)ns",
+      "translation": "发生，出现；事件",
+      "sceneMeaning": "发生，出现；事件；本场景常见用法：发生概率；事件概率",
+      "examples": "[]"
+    },
+    {
+      "word": "operation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɑpə'reʃən",
+      "phoneticUk": "ɒpə'reɪʃ(ə)n",
+      "translation": "操作；手术；运算；手术；行动",
+      "sceneMeaning": "操作；运行",
+      "examples": "[]"
+    },
+    {
+      "word": "persist",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɚ'sɪst",
+      "phoneticUk": "pə'sɪst",
+      "translation": "坚持，固执；持续",
+      "sceneMeaning": "持续；坚持",
+      "examples": "[]"
+    },
+    {
+      "word": "persistence",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'sɪstəns",
+      "phoneticUk": "pə'sɪstəns",
+      "translation": "坚持不懈",
+      "sceneMeaning": "坚持不懈",
+      "examples": "[]"
+    },
+    {
+      "word": "persistent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "pə'zɪstənt",
+      "phoneticUk": "pəˈsɪstənt",
+      "translation": "持续的；坚持的",
+      "sceneMeaning": "持续的；坚持的",
+      "examples": "[]"
+    },
+    {
+      "word": "procession",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'sɛʃən",
+      "phoneticUk": "prə'seʃ(ə)n",
+      "translation": "队伍，行列",
+      "sceneMeaning": "队伍，行列；本场景常见用法：送葬",
+      "examples": "[]"
+    },
+    {
+      "word": "progress",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑɡrɛs",
+      "phoneticUk": "'prəʊgres",
+      "translation": "前进，进展；进步",
+      "sceneMeaning": "进步；进展",
+      "examples": "[]"
+    },
+    {
+      "word": "refine",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "rɪ'faɪn",
+      "phoneticUk": "rɪ'faɪn",
+      "translation": "精炼，提纯；改善；精炼",
+      "sceneMeaning": "精炼，提纯；改善；精炼；本场景常见用法：精于；改进",
+      "examples": "[]"
+    },
+    {
+      "word": "rotation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ro'teʃən",
+      "phoneticUk": "rə(ʊ)'teɪʃ(ə)n",
+      "translation": "旋转，转动；循环",
+      "sceneMeaning": "旋转，转动；循环；本场景常见用法：自转速率",
+      "examples": "[]"
+    },
+    {
+      "word": "supplement",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "'sʌplɪmənt",
+      "phoneticUk": "'sʌplɪm(ə)nt",
+      "translation": "增补，补充",
+      "sceneMeaning": "增补，补充；本场景常见用法：营养补充品；营养增补剂",
+      "examples": "[]"
+    },
+    {
+      "word": "tide",
+      "partOfSpeech": "n",
+      "phoneticUs": "taɪd",
+      "phoneticUk": "taɪd",
+      "translation": "潮，潮汐；潮流；潮水",
+      "sceneMeaning": "潮，潮汐；潮流；潮水；本场景常见用法：扭转局势；转变运气",
+      "examples": "[]"
+    },
+    {
+      "word": "vanish",
+      "partOfSpeech": "v",
+      "phoneticUs": "'vænɪʃ",
+      "phoneticUk": "'vænɪʃ",
+      "translation": "突然不见，消失；消失",
+      "sceneMeaning": "突然不见，消失；消失",
+      "examples": "[]"
+    },
+    {
+      "word": "variation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",vɛrɪ'eʃən",
+      "phoneticUk": "veərɪ'eɪʃ(ə)n",
+      "translation": "变化，变动；变异",
+      "sceneMeaning": "变化；差异",
+      "examples": "[]"
+    }
+  ]
+}

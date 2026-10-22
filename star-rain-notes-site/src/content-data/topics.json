@@ -1,0 +1,42 @@
+[
+  {
+    "slug": "topic-g2e8or",
+    "name": "软件开发",
+    "description": "软件开发相关技术文章与学习笔记"
+  },
+  {
+    "slug": "web",
+    "name": "Web 前端界面设计与交互体系",
+    "description": "Web 前端界面设计与交互体系相关技术文章与学习笔记"
+  },
+  {
+    "slug": "java-web",
+    "name": "Java Web 系统架构原理与演进",
+    "description": "Java Web 系统架构原理与演进相关技术文章与学习笔记"
+  },
+  {
+    "slug": "data-structure",
+    "name": "数据结构",
+    "description": "线性表、树、图与常见算法的时间空间取舍"
+  },
+  {
+    "slug": "leetcode",
+    "name": "力扣",
+    "description": "力扣题解与算法练习记录"
+  },
+  {
+    "slug": "design-pattern",
+    "name": "设计模式",
+    "description": "从真实代码里看设计模式解决了什么问题"
+  },
+  {
+    "slug": "novel",
+    "name": "小说",
+    "description": "长篇与短篇写作"
+  },
+  {
+    "slug": "worldview",
+    "name": "世界观",
+    "description": "设定、地理、势力与时间线"
+  }
+]

@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 显示密码本质是依据一个布尔状态切换输入框 <code>type=password/text</code>。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const pwd = document.querySelector('#password');
+document.querySelector('#toggle').onclick = () =&gt; { pwd.type = pwd.type === 'password' ? 'text' : 'password'; };
+</code></pre>
+<p><strong>学完能做：</strong> 切换密码输入可见性并正确维护状态。</p>

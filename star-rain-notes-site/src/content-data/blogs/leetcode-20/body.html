@@ -1,0 +1,1303 @@
+<h2>一、题目描述</h2>
+<p><strong>题目：</strong> <a href="https://leetcode.cn/problems/valid-parentheses/">LeetCode 20. 有效的括号</a>　<strong>难度：</strong> 简单　<strong>知识点：</strong> 字符串、模拟、栈（Stack）</p>
+<p>给定一个字符串 <code>s</code>，其中只包含 <code>(</code>、<code>)</code>、<code>[</code>、<code>]</code>、<code>{</code>、<code>}</code> 六种字符，判断这个字符串是否有效。</p>
+<p>有效字符串必须同时满足：</p>
+<ol>
+<li><strong>类型正确：</strong> <code>(</code> 只能由 <code>)</code> 闭合，<code>[</code> 只能由 <code>]</code> 闭合，<code>{</code> 只能由 <code>}</code> 闭合。</li>
+<li><strong>顺序正确：</strong> 内层括号必须先闭合，外层括号才能闭合，不能交叉配对。</li>
+<li><strong>完全匹配：</strong> 不能有多余的右括号，也不能留下未闭合的左括号。</li>
+</ol>
+<p><strong>输入：</strong> 字符串 <code>s</code>，<code>1 ≤ s.length ≤ 10⁴</code>，并且只包含以上六种括号。</p>
+<p><strong>输出：</strong> 布尔值；有效返回 <code>true</code>，否则返回 <code>false</code>。</p>
+<p>例如，<code>"([])"</code> 合法，因为 <code>[]</code> 先闭合，外层的 <code>()</code> 再闭合；<code>"([)]"</code> 不合法，虽然三种括号中 <code>()</code> 与 <code>[]</code> 的数量都相等，但 <code>)</code> 出现时，最近一个尚未闭合的是 <code>[</code>，顺序被破坏了。</p>
+<p><strong>本题最关键的限制是：不能只检查数量，还要检查配对类型和嵌套顺序。</strong></p>
+<h2>二、测试用例</h2>
+<p>编写算法前，先明确怎样判断程序是否正确。测试分为<strong>黑盒测试</strong>和<strong>白盒测试</strong>：前者只看输入与输出，后者还要检查代码中的关键判断和执行路径是否被覆盖。</p>
+<h3>2.1 黑盒测试：根据题目规则设计输入与输出</h3>
+<p>黑盒测试不关心程序使用栈、数组还是字符串替换，只根据需求划分<strong>有效等价类、无效等价类以及边界值</strong>。下表的用例适用于后面的全部五种解法。</p>
+<table>
+<thead>
+<tr>
+<th>编号</th>
+<th>测试目的</th>
+<th>输入<code>s</code></th>
+<th>预期输出</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B01</td>
+<td>最短合法圆括号</td>
+<td><code>"()"</code></td>
+<td><code>true</code></td>
+<td>正确配对</td>
+</tr>
+<tr>
+<td>B02</td>
+<td>最短合法方括号</td>
+<td><code>"[]"</code></td>
+<td><code>true</code></td>
+<td>正确配对</td>
+</tr>
+<tr>
+<td>B03</td>
+<td>最短合法花括号</td>
+<td><code>"{}"</code></td>
+<td><code>true</code></td>
+<td>正确配对</td>
+</tr>
+<tr>
+<td>B04</td>
+<td>并列不同类型</td>
+<td><code>"()[]{}"</code></td>
+<td><code>true</code></td>
+<td>三对分别闭合</td>
+</tr>
+<tr>
+<td>B05</td>
+<td>多层嵌套</td>
+<td><code>"{[()]}"</code></td>
+<td><code>true</code></td>
+<td>由内向外闭合</td>
+</tr>
+<tr>
+<td>B06</td>
+<td>复杂合法嵌套</td>
+<td><code>"([{}])"</code></td>
+<td><code>true</code></td>
+<td>多类型嵌套顺序正确</td>
+</tr>
+<tr>
+<td>B07</td>
+<td>同类嵌套</td>
+<td><code>"((()))"</code></td>
+<td><code>true</code></td>
+<td>多层圆括号逐级闭合</td>
+</tr>
+<tr>
+<td>B08</td>
+<td>相邻与嵌套混合</td>
+<td><code>"([]){}"</code></td>
+<td><code>true</code></td>
+<td>两种结构混合</td>
+</tr>
+<tr>
+<td>B09</td>
+<td>配对类型错误</td>
+<td><code>"(]"</code></td>
+<td><code>false</code></td>
+<td>左右类型不相同</td>
+</tr>
+<tr>
+<td>B10</td>
+<td>交叉嵌套</td>
+<td><code>"([)]"</code></td>
+<td><code>false</code></td>
+<td>数量正确但闭合顺序错误</td>
+</tr>
+<tr>
+<td>B11</td>
+<td>第一个字符是右括号</td>
+<td><code>")("</code></td>
+<td><code>false</code></td>
+<td>无左括号可供配对</td>
+</tr>
+<tr>
+<td>B12</td>
+<td>中途出现多余右括号</td>
+<td><code>"())("</code></td>
+<td><code>false</code></td>
+<td>匹配完成后又出现<code>)</code></td>
+</tr>
+<tr>
+<td>B13</td>
+<td>末尾仍有未闭合括号</td>
+<td><code>"(("</code></td>
+<td><code>false</code></td>
+<td>两个左括号都没有闭合</td>
+</tr>
+<tr>
+<td>B14</td>
+<td>只有右括号</td>
+<td><code>"))"</code></td>
+<td><code>false</code></td>
+<td>没有左括号</td>
+</tr>
+<tr>
+<td>B15</td>
+<td>最短奇数输入</td>
+<td><code>"("</code></td>
+<td><code>false</code></td>
+<td>长度为 1，不可能成对</td>
+</tr>
+<tr>
+<td>B16</td>
+<td>奇数且类型混合</td>
+<td><code>"[]]"</code></td>
+<td><code>false</code></td>
+<td>多余一个右括号</td>
+</tr>
+<tr>
+<td>B17</td>
+<td>相同数量但顺序颠倒</td>
+<td><code>"]["</code></td>
+<td><code>false</code></td>
+<td>右括号先于左括号</td>
+</tr>
+<tr>
+<td>B18</td>
+<td>无法消除的交错结构</td>
+<td><code>"[(])"</code></td>
+<td><code>false</code></td>
+<td>括号交叉</td>
+</tr>
+<tr>
+<td>B19</td>
+<td>最大长度、深度嵌套</td>
+<td><code>"("</code>重复 5000 次，再<code>")"</code>重复 5000 次</td>
+<td><code>true</code></td>
+<td>长度 10000、嵌套深度 5000</td>
+</tr>
+<tr>
+<td>B20</td>
+<td>最大长度、左括号未闭合</td>
+<td><code>"("</code>重复 10000 次</td>
+<td><code>false</code></td>
+<td>所有括号都没有闭合</td>
+</tr>
+<tr>
+<td>B21</td>
+<td>最大长度、立即冲突</td>
+<td><code>")"</code>重复 10000 次</td>
+<td><code>false</code></td>
+<td>第一个字符就不合法</td>
+</tr>
+<tr>
+<td>B22</td>
+<td>最大长度、类型不符</td>
+<td><code>"("</code>重复 5000 次，再<code>"]"</code>重复 5000 次</td>
+<td><code>false</code></td>
+<td>首次闭合就类型冲突</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>输入范围说明：</strong> 题目规定字符串长度至少为 1，所以空字符串不属于官方测试范围。可以额外检验 <code>s = ""</code>：下文五种实现都会返回 <code>true</code>，表示空串没有不匹配的括号；这只是扩展约定，不能把它当作题目强制要求。</p>
+</blockquote>
+<h3>2.2 白盒测试：检查算法里的关键分支</h3>
+<p>黑盒测试能验证结果，却未必能证明每个分支都执行过。白盒测试要提前指出：<strong>哪个条件需要触发、用什么输入触发、应该走哪条路径</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>关注的执行路径</th>
+<th>代表用例</th>
+<th>要观察的现象</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>奇数长度的提前返回</td>
+<td>B15：<code>"("</code></td>
+<td>不必进入主循环，直接返回<code>false</code></td>
+</tr>
+<tr>
+<td>普通左括号入栈</td>
+<td>B05：<code>"{[()]}"</code></td>
+<td>先依次保存尚未闭合的括号</td>
+</tr>
+<tr>
+<td>三种括号类型的成功配对</td>
+<td>B04：<code>"()[]{}"</code></td>
+<td><code>()</code>、<code>[]</code>、<code>{}</code>三个判断都能通过</td>
+</tr>
+<tr>
+<td>栈为空时遇到右括号</td>
+<td>B17：<code>"]["</code></td>
+<td>不能执行<code>pop</code>，直接返回<code>false</code></td>
+</tr>
+<tr>
+<td>栈非空但类型不匹配</td>
+<td>B09：<code>"(]"</code></td>
+<td>取出的括号类型与当前字符冲突</td>
+</tr>
+<tr>
+<td>已经匹配成功，后面又出现右括号</td>
+<td>B12：<code>"())("</code></td>
+<td>不能因为前面出现合法括号就提前返回<code>true</code></td>
+</tr>
+<tr>
+<td>扫描结束但栈不为空</td>
+<td>B13：<code>"(("</code></td>
+<td>不能只看循环中是否出错</td>
+</tr>
+<tr>
+<td>多层嵌套导致反复消除</td>
+<td>B05：<code>"{[()]}"</code></td>
+<td>删除内层后必须重新查找外层配对</td>
+</tr>
+<tr>
+<td>一轮消除后字符串完全没变化</td>
+<td>B10：<code>"([)]"</code></td>
+<td>退出消除循环，残余非空则失败</td>
+</tr>
+<tr>
+<td>数组栈<code>top</code>加减与边界</td>
+<td>B05、B17、B13</td>
+<td>验证入栈、出栈、空栈及最终剩余状态</td>
+</tr>
+<tr>
+<td>映射规则查找成功与失败</td>
+<td>B04、B05</td>
+<td>分别走到右括号查表和左括号入栈分支</td>
+</tr>
+</tbody>
+</table>
+<p>这里列出的是<strong>应覆盖的测试路径</strong>，不是声称已经通过工具测得 100% 分支覆盖率。由于五种代码的条件分支存在差异，测试时应对照各自的实现逐项核查。</p>
+<h3>2.3 大规模与组合测试</h3>
+<p>只测试表中的二十几个输入还不够。还可以采用两种补充办法：</p>
+<ul>
+<li><strong>穷举短串：</strong> 对长度 1 到 6 的六种括号进行全排列，生成全部 <code>6¹ + 6² + … + 6⁶ = 55986</code> 个字符串，让五种方法的结果相互比较；如果结果不一致，输出导致差异的输入。（相互比较有助于发现问题，但不能单独证明所有结果正确。）</li>
+<li><strong>构造合法串再变形：</strong> 如果 <code>A</code>、<code>B</code> 有效，那么 <code>AB</code>、<code>(A)</code>、<code>[A]</code>、<code>{A}</code> 都有效；也可以故意删除、交换或替换某个字符，检查输出是否符合改变后的实际配对规则。注意修改一个字符<strong>不一定</strong>让字符串无效，因此每个变形后的预期结果仍需核对。</li>
+</ul>
+<p>接下来按“先做出正确结果，再逐步减少重复工作、改进代码表达和工程适应性”的思路研究五种写法。</p>
+<h2>三、解法一：暴力枚举与消除——先用最直观的办法做出来</h2>
+<h3>3.1 核心思想</h3>
+<p>拿到 <code>"{[()]}"</code>，先不考虑任何数据结构。人眼最容易发现的是中间的 <code>()</code>：这两个字符挨在一起，肯定构成有效的一对。把它们删掉，原字符串变成 <code>"{[]}"</code>；再删掉 <code>[]</code>，得到 <code>"{}"</code>；最后删掉 <code>{}</code>，字符串变为空。</p>
+<pre><code>{[()]}  →  {[]}  →  {}  →  ""
+</code></pre>
+<p>反过来，如果是 <code>"([)]"</code>，无论怎样检查，都找不到相邻的 <code>()</code>、<code>[]</code> 或 <code>{}</code>，也就无法继续消除，最后剩下非空字符串，因此无效。</p>
+<p>于是可以先得到一个完全直接的判断办法：<strong>反复查找并删除紧挨着的合法括号对，直到没有括号可以删除；若剩余字符串为空，则原字符串有效。</strong></p>
+<p>为什么这成立？有效的非空括号字符串一定存在一对“最内层”的相邻括号；删除这对不会改变其他括号的配对关系。一直删除下去，合法串可以化为空串；如果删不动时还有字符，说明存在无法匹配的结构。</p>
+<h3>3.2 执行步骤</h3>
+<ol>
+<li>读取字符串长度。如果长度是奇数，直接返回 <code>false</code>，因为每对括号都需要两个字符。</li>
+<li>保存一份当前待处理的字符串。后续删除操作只修改这份字符串；在 C 等允许原地修改的语言中，最好先复制输入，避免改变调用者的数据。</li>
+<li>从左到右<strong>枚举相邻的两个字符</strong>，寻找三种合法组合：<code>()</code>、<code>[]</code>、<code>{}</code>。<strong>只有这三种组合能够直接删除</strong>，例如 <code>(]</code> 和 <code>[)</code> 都不能删除。</li>
+<li>如果发现合法组合，删除它，使右侧字符向左靠拢。可以一次只删除一对，也可以在一次处理中删除多对；关键是只删除真正相邻且类型匹配的组合。</li>
+<li>删除后再次查找，因为原来隔开的字符可能刚刚变成一对。例如 <code>"([])"</code> 先删掉 <code>[]</code> 才会出现新的 <code>()</code>。</li>
+<li>当一轮检查中没有删除任何字符时停止。如果此时字符串长度为 <code>0</code>，返回 <code>true</code>；否则返回 <code>false</code>。</li>
+</ol>
+<p><strong>完整推演：</strong> <code>"([]){}"</code> → <code>"(){}"</code> → <code>"{}"</code> → <code>""</code>，结果是 <code>true</code>。而 <code>"(]"</code> 没有任何可删除的相邻组合，第一轮便停止，结果是 <code>false</code>。</p>
+<h3>3.3 代码实现</h3>
+<p>下面五份代码都是<strong>同一种消除规则</strong>，但一次删除的数量可能不同：C 实现每轮删一对，其他实现允许连续删除若干对。两者均会重复检查直到无法继续删除。</p>
+<p>::: code-group C|C++|Java|Python|JavaScript</p>
+<pre><code>#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+static bool isPair(char left, char right) {
+    return (left == '(' &amp;&amp; right == ')') ||
+           (left == '[' &amp;&amp; right == ']') ||
+           (left == '{' &amp;&amp; right == '}');
+}
+
+bool isValid(char *s) {
+    size_t n = strlen(s);
+    // 先过滤奇数长度，减少不必要的字符串处理。
+    if (n % 2 != 0) return false;
+    // 复制输入到可修改的缓冲区，避免修改传入的原字符串。
+    char *buf = malloc(n + 1);
+    if (buf == NULL) return false;
+    memcpy(buf, s, n + 1);
+
+    // 不断重复消除，直到这一轮再也找不到合法相邻括号对。
+    while (true) {
+        bool removed = false;
+        // 查找能直接配对的相邻字符，如 ()、[]、{}。
+        for (size_t i = 0; i + 1 &lt; n; ++i) {
+            // 找到第一对相邻合法括号，马上删除。
+            if (isPair(buf[i], buf[i + 1])) {
+                // 包括末尾 '\0' 一并左移。
+                // 把后面的字符整体左移两格，同时保留结尾字符串终止符。
+                memmove(buf + i, buf + i + 2, n - i - 1);
+                n -= 2;
+                removed = true;
+                break;
+            }
+        }
+        // 这一轮没有任何变化时停止；若还有残余字符就是无效。
+        if (!removed) break;
+    }
+
+    // 只有所有括号对都能消除，最终字符串才会变为空。
+    bool ok = (n == 0);
+    free(buf);
+    return ok;
+}
+</code></pre>
+<pre><code>#include &lt;string&gt;
+using namespace std;
+
+class Solution {
+public:
+    bool isValid(string s) {
+        // 先过滤奇数长度，减少不必要的字符串处理。
+        if (s.size() % 2 != 0) return false;
+        // 不断重复消除，直到这一轮再也找不到合法相邻括号对。
+        while (true) {
+            bool changed = false;
+            // 查找能直接配对的相邻字符，如 ()、[]、{}。
+            for (const string pair : {"()", "[]", "{}"}) {
+                size_t pos;
+                while ((pos = s.find(pair)) != string::npos) {
+                    // 从当前字符串里移除找到的两个字符。
+                    s.erase(pos, 2);
+                    changed = true;
+                }
+            }
+            // 这一轮没有任何变化时停止；若还有残余字符就是无效。
+            if (!changed) break;
+        }
+        // 只有所有括号对都能消除，最终字符串才会变为空。
+        return s.empty();
+    }
+};
+</code></pre>
+<pre><code>class Solution {
+    public boolean isValid(String s) {
+        // 先过滤奇数长度，减少不必要的字符串处理。
+        if (s.length() % 2 != 0) return false;
+        // 不断重复消除，直到这一轮再也找不到合法相邻括号对。
+        while (true) {
+            // 尝试删除三种括号对，得到变短后的新字符串。
+            String next = s.replace("()", "")
+                           .replace("[]", "")
+                           .replace("{}", "");
+            // 这一轮没有任何变化时停止；若还有残余字符就是无效。
+            if (next.equals(s)) return s.isEmpty();
+            s = next;
+        }
+    }
+}
+</code></pre>
+<pre><code>class Solution:
+    def isValid(self, s: str) -&gt; bool:
+        # 先过滤奇数长度，减少不必要的字符串处理。
+        if len(s) % 2 != 0:
+            return False
+        # 不断重复消除，直到这一轮再也找不到合法相邻括号对。
+        while True:
+            # 尝试删除三种括号对，得到变短后的新字符串。
+            next_s = s.replace('()', '').replace('[]', '').replace('{}', '')
+            # 这一轮没有任何变化时停止；若还有残余字符就是无效。
+            if next_s == s:
+                # 只有所有括号对都能消除，最终字符串才会变为空。
+                return not s
+            s = next_s
+</code></pre>
+<pre><code>var isValid = function(s) {
+    // 先过滤奇数长度，减少不必要的字符串处理。
+    if (s.length % 2 !== 0) return false;
+    // 不断重复消除，直到这一轮再也找不到合法相邻括号对。
+    while (true) {
+        // 尝试删除三种括号对，得到变短后的新字符串。
+        const next = s.replaceAll('()', '')
+                      .replaceAll('[]', '')
+                      .replaceAll('{}', '');
+        // 这一轮没有任何变化时停止；若还有残余字符就是无效。
+        if (next === s) return s.length === 0;
+        s = next;
+    }
+};
+</code></pre>
+<p>:::</p>
+<h3>3.4 复杂度分析</h3>
+<p>设字符串长度为 <code>n</code>。</p>
+<ul>
+<li><strong>时间复杂度：最坏 <code>O(n²)</code>。</strong> 每次扫描、查找或删除可能处理 <code>O(n)</code> 个字符；最坏情况下最多会进行 <code>n/2</code> 次有效消除。例如高度嵌套的字符串，外层括号往往要等内层先删除后才能配对。</li>
+<li><strong>辅助空间复杂度：<code>O(n)</code> 上界。</strong> C 版先复制输入；Java、Python、JavaScript 的字符串替换会构造新字符串；C++ 在删除过程中也可能产生临时字符串。具体实现的峰值内存因语言而异，但都可以用线性上界描述。</li>
+</ul>
+<p><strong>问题出在哪里？</strong> 我们反复扫描字符串，是为了不断找到“刚刚形成的相邻括号”。如果能在第一次读取字符时就记住哪些左括号还没闭合，也许根本不用反复扫描。这个发现自然引出栈。</p>
+<h2>四、解法二：标准栈——把平方级扫描优化成一次遍历</h2>
+<h3>4.1 核心思想</h3>
+<p>仔细看 <code>"{[()]}"</code> 的匹配顺序：最后出现的左括号 <code>(</code> 最先被 <code>)</code> 闭合；其次才是 <code>[</code>、<code>{</code>。也就是说，<strong>后出现、尚未闭合的左括号，必须先匹配</strong>。</p>
+<p>这种顺序叫<strong>后进先出</strong>（LIFO，Last In, First Out），恰好就是栈（Stack）的规则。栈只允许从栈顶放入元素（<code>push</code>），也从栈顶取走元素（<code>pop</code>）。</p>
+<p>因此，不再反复删除字符串，而是<strong>从左往右只扫描一次，用栈保存尚未匹配的左括号</strong>。遇到右括号，就检查它能否闭合栈顶最近的左括号。</p>
+<h3>4.2 执行步骤</h3>
+<ol>
+<li>判断字符串长度是否为奇数；若是，返回 <code>false</code>。</li>
+<li>创建一个空栈。规定：<strong>栈里每一个元素都是已经读到、但尚未匹配的左括号。</strong></li>
+<li>从左到右读取一个字符 <code>c</code>。如果 <code>c</code> 是 <code>(</code>、<code>[</code> 或 <code>{</code>，直接入栈；因为现在只有左括号，暂时无法判断它何时闭合。</li>
+<li>如果 <code>c</code> 是右括号，先检查栈是否为空。若栈为空，说明右括号出现在任何可匹配的左括号之前，立即返回 <code>false</code>，绝不能先执行 <code>pop</code>。</li>
+<li>栈非空时取出栈顶左括号，分别检查三种合法组合：<code>()</code>、<code>[]</code>、<code>{}</code>。若类型不同，例如栈顶是 <code>[</code> 却读到 <code>)</code>，立即返回 <code>false</code>。</li>
+<li>如果匹配成功，就继续读取下一个字符。<strong>不要因为成功匹配一对括号就返回 <code>true</code></strong>，后面还可能出现额外的右括号。</li>
+<li>全部字符读完后检查栈：栈为空，说明每个左括号都被正确闭合，返回 <code>true</code>；栈不为空，说明还有未闭合的左括号，返回 <code>false</code>。</li>
+</ol>
+<p>用 <code>"([)]"</code> 推演一次，栈从左到右表示“栈底 → 栈顶”：</p>
+<table>
+<thead>
+<tr>
+<th>当前字符</th>
+<th>动作</th>
+<th>剩余栈</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>(</code></td>
+<td>左括号入栈</td>
+<td><code>(</code></td>
+<td>继续</td>
+</tr>
+<tr>
+<td><code>[</code></td>
+<td>左括号入栈</td>
+<td><code>( [</code></td>
+<td>继续</td>
+</tr>
+<tr>
+<td><code>)</code></td>
+<td>弹出<code>[</code>，发现与<code>)</code>类型不同</td>
+<td><code>(</code></td>
+<td><code>false</code>，停止</td>
+</tr>
+</tbody>
+</table>
+<p>关键不在于 <code>()</code> 与 <code>[]</code> 有没有各出现一次，而在于<strong>当前右括号是否对应最近的那个未完成左括号</strong>。这就是栈比数量统计更合适的原因。</p>
+<h3>4.3 代码实现</h3>
+<p>注意这里保存的是<strong>原始左括号</strong>。Java 示例沿用现代 Java 推荐的 <code>ArrayDeque</code>，而不是历史遗留的 <code>Stack</code> 类；<code>Deque</code> 的 <code>push</code> / <code>pop</code> 操作同样可以实现栈。</p>
+<p>::: code-group C|C++|Java|Python|JavaScript</p>
+<pre><code>#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+bool isValid(char *s) {
+    size_t n = strlen(s);
+    // 括号必须成对出现；奇数长度不可能完全匹配。
+    if (n % 2 != 0) return false;
+
+    // 建立空栈，存储仍需要匹配的字符。
+    char *stack = malloc(n + 1);
+    if (stack == NULL) return false;
+    size_t top = 0;
+
+    // 从左到右扫描，每次只处理一个括号。
+    for (size_t i = 0; i &lt; n; ++i) {
+        char c = s[i];
+        // 左括号直接入栈，等待未来对应的右括号。
+        if (c == '(' || c == '[' || c == '{') {
+            stack[top++] = c;
+        } else {
+            // 先排除空栈，否则右括号没有匹配对象（也避免非法出栈）。
+            if (top == 0) {
+                free(stack);
+                return false;
+            }
+            // 取出最近一个未闭合的左括号，准备核对类型。
+            char left = stack[--top];
+            // 只有 ()、[]、{} 三种组合合法，其他组合一律失败。
+            if (!((left == '(' &amp;&amp; c == ')') ||
+                  (left == '[' &amp;&amp; c == ']') ||
+                  (left == '{' &amp;&amp; c == '}'))) {
+                free(stack);
+                return false;
+            }
+        }
+    }
+
+    // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+    bool ok = (top == 0);
+    free(stack);
+    return ok;
+}
+</code></pre>
+<pre><code>#include &lt;stack&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Solution {
+public:
+    bool isValid(string s) {
+        // 括号必须成对出现；奇数长度不可能完全匹配。
+        if (s.size() % 2 != 0) return false;
+        // 建立空栈，存储仍需要匹配的字符。
+        stack&lt;char&gt; st;
+
+        // 从左到右扫描，每次只处理一个括号。
+        for (char c : s) {
+            // 左括号直接入栈，等待未来对应的右括号。
+            if (c == '(' || c == '[' || c == '{') {
+                st.push(c);
+            } else {
+                // 先排除空栈，否则右括号没有匹配对象（也避免非法出栈）。
+                if (st.empty()) return false;
+                // 取出最近一个未闭合的左括号，准备核对类型。
+                char left = st.top();
+                st.pop();
+                // 只有 ()、[]、{} 三种组合合法，其他组合一律失败。
+                if (!((left == '(' &amp;&amp; c == ')') ||
+                      (left == '[' &amp;&amp; c == ']') ||
+                      (left == '{' &amp;&amp; c == '}'))) return false;
+            }
+        }
+        // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return st.empty();
+    }
+};
+</code></pre>
+<pre><code>import java.util.Stack;
+
+class Solution {
+    public boolean isValid(String s) {
+        // 括号必须成对出现；奇数长度不可能完全匹配。
+        if (s.length() % 2 != 0) return false;
+        // 建立空栈，存储仍需要匹配的字符。
+        Stack&lt;Character&gt; stack = new Stack&lt;&gt;();
+
+        // 从左到右扫描，每次只处理一个括号。
+        for (int i = 0; i &lt; s.length(); i++) {
+            char c = s.charAt(i);
+            // 左括号直接入栈，等待未来对应的右括号。
+            if (c == '(' || c == '[' || c == '{') {
+                stack.push(c);
+            } else {
+                // 先排除空栈，否则右括号没有匹配对象（也避免非法出栈）。
+                if (stack.isEmpty()) return false;
+                // 取出最近一个未闭合的左括号，准备核对类型。
+                char left = stack.pop();
+                // 只有 ()、[]、{} 三种组合合法，其他组合一律失败。
+                if (!((left == '(' &amp;&amp; c == ')') ||
+                      (left == '[' &amp;&amp; c == ']') ||
+                      (left == '{' &amp;&amp; c == '}'))) return false;
+            }
+        }
+        // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return stack.isEmpty();
+    }
+}
+</code></pre>
+<pre><code>class Solution:
+    def isValid(self, s: str) -&gt; bool:
+        # 括号必须成对出现；奇数长度不可能完全匹配。
+        if len(s) % 2 != 0:
+            return False
+        # 建立空栈，存储仍需要匹配的字符。
+        stack = []
+        # 从左到右扫描，每次只处理一个括号。
+        for c in s:
+            # 左括号直接入栈，等待未来对应的右括号。
+            if c in "([{":
+                stack.append(c)
+            else:
+                # 先排除空栈，否则右括号没有匹配对象（也避免非法出栈）。
+                if not stack:
+                    return False
+                # 取出最近一个未闭合的左括号，准备核对类型。
+                left = stack.pop()
+                # 只有 ()、[]、{} 三种组合合法，其他组合一律失败。
+                if not ((left == '(' and c == ')') or
+                        (left == '[' and c == ']') or
+                        (left == '{' and c == '}')):
+                    return False
+        # 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return not stack
+</code></pre>
+<pre><code>var isValid = function(s) {
+    // 括号必须成对出现；奇数长度不可能完全匹配。
+    if (s.length % 2 !== 0) return false;
+    // 建立空栈，存储仍需要匹配的字符。
+    const stack = [];
+
+    // 从左到右扫描，每次只处理一个括号。
+    for (const c of s) {
+        // 左括号直接入栈，等待未来对应的右括号。
+        if (c === '(' || c === '[' || c === '{') {
+            stack.push(c);
+        } else {
+            // 先排除空栈，否则右括号没有匹配对象（也避免非法出栈）。
+            if (stack.length === 0) return false;
+            // 取出最近一个未闭合的左括号，准备核对类型。
+            const left = stack.pop();
+            // 只有 ()、[]、{} 三种组合合法，其他组合一律失败。
+            if (!((left === '(' &amp;&amp; c === ')') ||
+                  (left === '[' &amp;&amp; c === ']') ||
+                  (left === '{' &amp;&amp; c === '}'))) return false;
+        }
+    }
+    // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+    return stack.length === 0;
+};
+</code></pre>
+<p>:::</p>
+<h3>4.4 复杂度分析</h3>
+<ul>
+<li><strong>时间复杂度：<code>O(n)</code>。</strong> 每个字符读取一次。左括号最多入栈一次，成功匹配时最多出栈一次，单次栈操作为常数时间。</li>
+<li><strong>辅助空间复杂度：最坏 <code>O(n)</code>。</strong> 当字符串前半部分全是左括号时，需要暂存大量待匹配元素。若同时最多有 <code>d</code> 个左括号未闭合，动态栈实际所需元素数量为 <code>O(d)</code>，最坏 <code>d = O(n)</code>。</li>
+</ul>
+<p><strong>优化发生在哪里？</strong> 暴力法删除内层括号后可能再次扫描剩余字符串；栈法把未闭合状态直接存起来，省去了反复寻找和移动字符的工作，最坏时间从 <code>O(n²)</code> 降到 <code>O(n)</code>。</p>
+<h2>五、解法三：提前保存右括号——把匹配判断简化为一次比较</h2>
+<h3>5.1 核心思想</h3>
+<p>标准栈法在读到 <code>)</code> 时，会先从栈顶拿出一个左括号，再判断它是不是 <code>(</code>。其实，我们可以在左括号入栈时就把它改成“<strong>未来应该看到什么</strong>”：</p>
+<table>
+<thead>
+<tr>
+<th>当前读到的左括号</th>
+<th>存入栈中的字符</th>
+<th>意思</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>(</code></td>
+<td><code>)</code></td>
+<td>等待一个<code>)</code></td>
+</tr>
+<tr>
+<td><code>[</code></td>
+<td><code>]</code></td>
+<td>等待一个<code>]</code></td>
+</tr>
+<tr>
+<td><code>{</code></td>
+<td><code>}</code></td>
+<td>等待一个<code>}</code></td>
+</tr>
+</tbody>
+</table>
+<p>栈仍然遵守后进先出，只是里面存的不再是“已经出现的左括号”，而是“<strong>尚未出现、但下一步应该匹配的右括号</strong>”。这样一来，读到真正的右括号时，只需比较它和栈顶字符是否相同。</p>
+<h3>5.2 执行步骤</h3>
+<ol>
+<li>如果字符串长度为奇数，返回 <code>false</code>。</li>
+<li>创建空栈，规定栈中存放的是<strong>期待出现的右括号</strong>。</li>
+<li>从左到右读取字符 <code>c</code>。若 <code>c</code> 为 <code>(</code>，则把 <code>)</code> 入栈；若为 <code>[</code>，把 <code>]</code> 入栈；若为 <code>{</code>，把 <code>}</code> 入栈。</li>
+<li>若 <code>c</code> 已经是右括号，先检查栈是否为空。空栈意味着没有正在等待它的左括号，返回 <code>false</code>。</li>
+<li>若栈不为空，弹出栈顶期待字符 <code>expected</code>，检查它是否等于 <code>c</code>。不相同就返回 <code>false</code>；相同才继续。</li>
+<li>扫描全部结束后，只有栈为空才能返回 <code>true</code>。只要还有期待字符没有出现，就说明至少有一对没有闭合。</li>
+</ol>
+<p><strong>例子：</strong> 读取 <code>"([])"</code>：</p>
+<table>
+<thead>
+<tr>
+<th>当前字符</th>
+<th>处理动作</th>
+<th>栈内期待的右括号（底 → 顶）</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>(</code></td>
+<td>保存将来需要的<code>)</code></td>
+<td><code>)</code></td>
+</tr>
+<tr>
+<td><code>[</code></td>
+<td>保存将来需要的<code>]</code></td>
+<td><code>) ]</code></td>
+</tr>
+<tr>
+<td><code>]</code></td>
+<td>与栈顶<code>]</code>相同，弹出</td>
+<td><code>)</code></td>
+</tr>
+<tr>
+<td><code>)</code></td>
+<td>与栈顶<code>)</code>相同，弹出</td>
+<td>空</td>
+</tr>
+<tr>
+<td>结束</td>
+<td>栈为空</td>
+<td>返回<code>true</code></td>
+</tr>
+</tbody>
+</table>
+<p>相较标准栈，改变的只是<strong>保存的信息</strong>，不是匹配顺序。不要误认为这种写法的渐进复杂度更低。</p>
+<h3>5.3 代码实现</h3>
+<p>留意 <code>stack.pop() != c</code> 这样的写法：在比较之前，必须保证栈非空，否则会发生无效出栈；代码中使用 <code>||</code> 的短路特性保障这一点。</p>
+<p>::: code-group C|C++|Java|Python|JavaScript</p>
+<pre><code>#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+bool isValid(char *s) {
+    size_t n = strlen(s);
+    // 括号必须成对出现；奇数长度不可能完全匹配。
+    if (n % 2 != 0) return false;
+    // 建立空栈，只保存「期望将来出现的右括号」。
+    char *stack = malloc(n + 1);
+    if (stack == NULL) return false;
+    size_t top = 0;
+
+    // 从左到右扫描，每次只处理一个括号。
+    for (size_t i = 0; i &lt; n; ++i) {
+        char c = s[i];
+        // 左括号不入栈本身，而是存入它期待的右括号。
+        if (c == '(') stack[top++] = ')';
+        else if (c == '[') stack[top++] = ']';
+        else if (c == '{') stack[top++] = '}';
+        // 空栈直接失败；否则取出栈顶期待字符，和当前字符比较。
+        else if (top == 0 || stack[--top] != c) {
+            free(stack);
+            return false;
+        }
+    }
+
+    // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+    bool ok = (top == 0);
+    free(stack);
+    return ok;
+}
+</code></pre>
+<pre><code>#include &lt;stack&gt;
+#include &lt;string&gt;
+using namespace std;
+
+class Solution {
+public:
+    bool isValid(string s) {
+        // 括号必须成对出现；奇数长度不可能完全匹配。
+        if (s.size() % 2 != 0) return false;
+        // 建立空栈，只保存「期望将来出现的右括号」。
+        stack&lt;char&gt; st;
+        // 从左到右扫描，每次只处理一个括号。
+        for (char c : s) {
+            // 左括号不入栈本身，而是存入它期待的右括号。
+            if (c == '(') st.push(')');
+            else if (c == '[') st.push(']');
+            else if (c == '{') st.push('}');
+            else {
+                // 先判断是否为空，再取出栈顶进行严格比较。
+                if (st.empty() || st.top() != c) return false;
+                st.pop();
+            }
+        }
+        // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return st.empty();
+    }
+};
+</code></pre>
+<pre><code>import java.util.ArrayDeque;
+import java.util.Deque;
+
+class Solution {
+    public boolean isValid(String s) {
+        // 括号必须成对出现；奇数长度不可能完全匹配。
+        if (s.length() % 2 != 0) return false;
+        // 建立空栈，只保存「期望将来出现的右括号」。
+        Deque&lt;Character&gt; stack = new ArrayDeque&lt;&gt;();
+        // 从左到右扫描，每次只处理一个括号。
+        for (int i = 0; i &lt; s.length(); i++) {
+            char c = s.charAt(i);
+            // 左括号不入栈本身，而是存入它期待的右括号。
+            if (c == '(') stack.push(')');
+            else if (c == '[') stack.push(']');
+            else if (c == '{') stack.push('}');
+            // 空栈直接失败；否则取出栈顶期待字符，和当前字符比较。
+            else if (stack.isEmpty() || stack.pop() != c) return false;
+        }
+        // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return stack.isEmpty();
+    }
+}
+</code></pre>
+<pre><code>class Solution:
+    def isValid(self, s: str) -&gt; bool:
+        # 括号必须成对出现；奇数长度不可能完全匹配。
+        if len(s) % 2 != 0:
+            return False
+        # 建立空栈，只保存「期望将来出现的右括号」。
+        stack = []
+        # 从左到右扫描，每次只处理一个括号。
+        for c in s:
+            # 左括号不入栈本身，而是存入它期待的右括号。
+            if c == '(':
+                stack.append(')')
+            elif c == '[':
+                stack.append(']')
+            elif c == '{':
+                stack.append('}')
+            # 空栈直接失败；否则取出栈顶期待字符，和当前字符比较。
+            elif not stack or stack.pop() != c:
+                return False
+        # 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return not stack
+</code></pre>
+<pre><code>var isValid = function(s) {
+    // 括号必须成对出现；奇数长度不可能完全匹配。
+    if (s.length % 2 !== 0) return false;
+    // 建立空栈，只保存「期望将来出现的右括号」。
+    const stack = [];
+    // 从左到右扫描，每次只处理一个括号。
+    for (const c of s) {
+        // 左括号不入栈本身，而是存入它期待的右括号。
+        if (c === '(') stack.push(')');
+        else if (c === '[') stack.push(']');
+        else if (c === '{') stack.push('}');
+        // 空栈直接失败；否则取出栈顶期待字符，和当前字符比较。
+        else if (stack.length === 0 || stack.pop() !== c) return false;
+    }
+    // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+    return stack.length === 0;
+};
+</code></pre>
+<p>:::</p>
+<h3>5.4 复杂度分析</h3>
+<ul>
+<li><strong>时间复杂度：<code>O(n)</code>。</strong> 每个字符最多触发一次入栈或者出栈操作。</li>
+<li><strong>辅助空间复杂度：最坏 <code>O(n)</code>。</strong> 最多保存 <code>O(n)</code> 个等待闭合的右括号。</li>
+</ul>
+<p><strong>这一轮的优化是什么？</strong> 不再每次从栈顶取到左括号后检查三种组合，而是提前记录其对应右括号，将配对判断收敛为<strong>一次相等性比较</strong>。这是代码逻辑与常数因子的简化，不是复杂度数量级的改变。</p>
+<h2>六、解法四：映射表 + 双端队列——把配对规则独立出来</h2>
+<h3>6.1 核心思想</h3>
+<p>前面通过 <code>if</code> / <code>else</code> 判断三种括号配对。对于题目限定的三种括号完全够用，但如果在编辑器、解释器或配置解析器中，需要把不同定界符的匹配规则集中管理，一张**映射表（Map）**会更清晰。</p>
+<pre><code>右括号 → 对应左括号
+   )   →    (
+   ]   →    [
+   }   →    {
+</code></pre>
+<p>这里将两项职责分开：<strong>栈负责匹配顺序</strong>，<strong>映射表负责匹配类型</strong>。栈里仍保存尚未闭合的左括号。</p>
+<p>Java 中，<code>Deque</code> 是双端队列接口，<code>ArrayDeque</code> 是常见实现，可以用 <code>push</code> / <code>pop</code> 当作栈。<code>Map&lt;Character, Character&gt;</code> 保存 <code>')' → '('</code> 等关系。由于题目只有三条规则，映射表属于常数规模。</p>
+<h3>6.2 执行步骤</h3>
+<ol>
+<li>判断字符串长度；奇数时直接返回 <code>false</code>。</li>
+<li>建立映射表：右括号 <code>)</code> 对应 <code>(</code>，<code>]</code> 对应 <code>[</code>，<code>}</code> 对应 <code>{</code>。</li>
+<li>创建空栈，用于保存所有已经读到但还没匹配的左括号。</li>
+<li>从左到右读取当前字符 <code>c</code>，先判断它是否存在于映射表的<strong>键</strong>中。</li>
+<li>如果 <code>c</code> <strong>不在映射表的键中</strong>，按照本题输入只包含六种括号的规定，它一定是左括号，于是将它入栈。（真实工程中若可能有其他字符，应单独验证或定义忽略规则。）</li>
+<li>如果 <code>c</code> 是右括号，先确认栈非空；若为空，立即返回 <code>false</code>。</li>
+<li>栈非空时，通过映射表查出 <code>c</code> 应该对应哪个左括号，再与栈顶最近的左括号比较；若不同，返回 <code>false</code>；否则取走这个左括号并继续。</li>
+<li>遍历完毕时，栈为空才返回 <code>true</code>，否则返回 <code>false</code>。</li>
+</ol>
+<p>例如读取 <code>"{[]}"</code>：先将 <code>{</code>、<code>[</code> 依次放入栈；读到 <code>]</code>，查表得到期望左括号是 <code>[</code>，与栈顶一致；再读到 <code>}</code>，查表得到 <code>{</code>，也与栈顶一致；最后栈为空。</p>
+<h3>6.3 代码实现</h3>
+<p>C 标准库没有直接内置 <code>HashMap</code> 和 <code>Deque</code>；在只有三种规则时，用 <code>switch</code> 查询对应关系、用字符数组保存待匹配括号即可。C++、Java、Python、JavaScript 则采用各自适合的映射容器。<strong>数据结构 API 可以不同，匹配规则与执行过程保持一致。</strong></p>
+<p>::: code-group C|C++|Java|Python|JavaScript</p>
+<pre><code>#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+/* C 标准库没有内置哈希映射；本题只有三种配对，用 switch 即可。 */
+static char expectedLeft(char right) {
+    switch (right) {
+        case ')': return '(';
+        case ']': return '[';
+        case '}': return '{';
+        default: return '\0';
+    }
+}
+
+bool isValid(char *s) {
+    size_t n = strlen(s);
+    // 括号必须成对出现；奇数长度不可能完全匹配。
+    if (n % 2 != 0) return false;
+    // 建立空栈，存储仍需要匹配的字符。
+    char *stack = malloc(n + 1);
+    if (stack == NULL) return false;
+    size_t top = 0;
+
+    // 从左到右扫描，每次只处理一个括号。
+    for (size_t i = 0; i &lt; n; ++i) {
+        char c = s[i];
+        // C 用 switch 查询这一个字符应匹配的左括号。
+        char left = expectedLeft(c);
+        // 非右括号即左括号，直接入栈。
+        if (left == '\0') {
+            stack[top++] = c;
+        } else {
+            // 先防空栈，再取出最近左括号检查是否符合映射关系。
+            if (top == 0 || stack[--top] != left) {
+                free(stack);
+                return false;
+            }
+        }
+    }
+
+    // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+    bool ok = (top == 0);
+    free(stack);
+    return ok;
+}
+</code></pre>
+<pre><code>#include &lt;deque&gt;
+#include &lt;string&gt;
+#include &lt;unordered_map&gt;
+using namespace std;
+
+class Solution {
+public:
+    bool isValid(string s) {
+        // 括号必须成对出现；奇数长度不可能完全匹配。
+        if (s.size() % 2 != 0) return false;
+        // 建立配对关系；查到右括号时可获得它要求的左括号。
+        const unordered_map&lt;char, char&gt; matching = {
+            {')', '('}, {']', '['}, {'}', '{'}
+        };
+        // 建立空栈，存储仍需要匹配的字符。
+        deque&lt;char&gt; stack;
+        // 从左到右扫描，每次只处理一个括号。
+        for (char c : s) {
+            // 判断当前字符是不是右括号；右括号需要检查规则表。
+            auto it = matching.find(c);
+            // 不是右括号，则按题目限定可认定为左括号，压入栈。
+            if (it == matching.end()) {
+                stack.push_back(c);
+            } else {
+                // 先排除空栈，否则右括号没有匹配对象（也避免非法出栈）。
+                if (stack.empty() || stack.back() != it-&gt;second)
+                    return false;
+                stack.pop_back();
+            }
+        }
+        // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return stack.empty();
+    }
+};
+</code></pre>
+<pre><code>import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.Map;
+
+class Solution {
+    public boolean isValid(String s) {
+        // 括号必须成对出现；奇数长度不可能完全匹配。
+        if (s.length() % 2 != 0) return false;
+        // 建立配对关系；查到右括号时可获得它要求的左括号。
+        Map&lt;Character, Character&gt; matching = Map.of(
+            ')', '(', ']', '[', '}', '{'
+        );
+        // 建立空栈，存储仍需要匹配的字符。
+        Deque&lt;Character&gt; stack = new ArrayDeque&lt;&gt;();
+        // 从左到右扫描，每次只处理一个括号。
+        for (int i = 0; i &lt; s.length(); i++) {
+            char c = s.charAt(i);
+            // 判断当前字符是不是右括号；右括号需要检查规则表。
+            if (matching.containsKey(c)) {
+                // 先排除空栈，否则右括号没有匹配对象（也避免非法出栈）。
+                if (stack.isEmpty() || stack.pop() != matching.get(c))
+                    return false;
+            } else {
+                stack.push(c);
+            }
+        }
+        // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return stack.isEmpty();
+    }
+}
+</code></pre>
+<pre><code>from collections import deque
+
+class Solution:
+    def isValid(self, s: str) -&gt; bool:
+        # 括号必须成对出现；奇数长度不可能完全匹配。
+        if len(s) % 2 != 0:
+            return False
+        # 建立配对关系；查到右括号时可获得它要求的左括号。
+        matching = {')': '(', ']': '[', '}': '{'}
+        # 建立空栈，存储仍需要匹配的字符。
+        stack = deque()
+        # 从左到右扫描，每次只处理一个括号。
+        for c in s:
+            # 判断当前字符是不是右括号；右括号需要检查规则表。
+            if c in matching:
+                # 先排除空栈，否则右括号没有匹配对象（也避免非法出栈）。
+                if not stack or stack.pop() != matching[c]:
+                    return False
+            else:
+                stack.append(c)
+        # 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return not stack
+</code></pre>
+<pre><code>var isValid = function(s) {
+    // 括号必须成对出现；奇数长度不可能完全匹配。
+    if (s.length % 2 !== 0) return false;
+    // 建立配对关系；查到右括号时可获得它要求的左括号。
+    const matching = new Map([
+        [')', '('], [']', '['], ['}', '{']
+    ]);
+    // JS 数组的 push/pop 即可实现末端栈操作。
+    // 建立空栈，存储仍需要匹配的字符。
+    const stack = [];
+    // 从左到右扫描，每次只处理一个括号。
+    for (const c of s) {
+        // 判断当前字符是不是右括号；右括号需要检查规则表。
+        if (matching.has(c)) {
+            // 先排除空栈，否则右括号没有匹配对象（也避免非法出栈）。
+            if (stack.length === 0 || stack.pop() !== matching.get(c))
+                return false;
+        } else {
+            stack.push(c);
+        }
+    }
+    // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+    return stack.length === 0;
+};
+</code></pre>
+<p>:::</p>
+<h3>6.4 复杂度分析</h3>
+<ul>
+<li><strong>时间复杂度：本题为 <code>O(n)</code>。</strong> 仅有三组固定规则，查表为常数级工作，遍历一次字符串即可完成判断。对于常规哈希表的通用分析，哈希查找通常按期望 <code>O(1)</code> 讨论。</li>
+<li><strong>辅助空间复杂度：最坏 <code>O(n)</code>。</strong> 栈可能暂存 <code>O(n)</code> 个左括号，映射表只保存三条规则，占 <code>O(1)</code>。</li>
+</ul>
+<p><strong>这一步不是“必然更快”。</strong> 构造映射表有额外成本，小规模固定规则时可能比简单的三个条件判断更慢。它的主要价值是<strong>规则集中、职责清楚、便于扩展</strong>。如果将来支持额外定界符，要同时检查这些定界符的词法含义以及嵌套规则，而不只是机械新增一个 Map 条目。</p>
+<h2>七、解法五：数组模拟栈——进一步控制内存与常数开销</h2>
+<h3>7.1 核心思想</h3>
+<p>栈不是必须由某个 <code>Stack</code> 类实现。栈真正需要的操作其实只有两个：<strong>从末尾放入一个元素、从末尾取走最近放入的元素</strong>。普通数组也能完成这两件事。</p>
+<p>先申请一个长度为 <code>n</code> 的字符数组 <code>stack</code>，再设置整数 <code>top = 0</code>。本文统一规定：</p>
+<ul>
+<li><code>stack[0]</code> 到 <code>stack[top - 1]</code> 是当前<strong>有效的栈元素</strong>。</li>
+<li><code>top</code> 表示栈里有多少元素，也等于<strong>下一次入栈要写入的位置</strong>。</li>
+<li><code>top == 0</code> 表示栈为空；<code>top &gt; 0</code> 才可以出栈。</li>
+</ul>
+<p>借用上一种“提前保存右括号”的思路，可以做到仅靠数组下标与字符比较就完成判断。</p>
+<h3>7.2 执行步骤</h3>
+<ol>
+<li>读取字符串长度 <code>n</code>。如果 <code>n</code> 是奇数，直接返回 <code>false</code>。</li>
+<li>建立容量为 <code>n</code> 的字符数组 <code>stack</code>，初始化 <code>top = 0</code>。最坏情况下每个字符都是左括号，因此 <code>n</code> 个槽位一定足够。</li>
+<li>从左向右处理当前字符 <code>c</code>。如果 <code>c</code> 是 <code>(</code>、<code>[</code> 或 <code>{</code>，先找出它对应的右括号 <code>expected</code>。</li>
+<li>把 <code>expected</code> 写入 <code>stack[top]</code>，随后执行 <code>top = top + 1</code>。<strong>先写再加</strong>，因为 <code>top</code> 原本指向下一处空位置。</li>
+<li>如果读到右括号，先判断 <code>top == 0</code> 是否成立。若成立，说明没有任何等待匹配的括号，直接返回 <code>false</code>，绝不能读取 <code>stack[-1]</code>。</li>
+<li>如果栈非空，先让 <code>top = top - 1</code>，然后读取 <code>stack[top]</code>，与当前右括号比较。若不同，返回 <code>false</code>；若相同，继续处理后面的字符。</li>
+<li>全部处理完后检查 <code>top</code>：等于 <code>0</code>，说明所有括号均已闭合，返回 <code>true</code>；否则返回 <code>false</code>。</li>
+</ol>
+<p><strong>特别容易混淆的细节：</strong> 如果已经保存两个字符，分别在数组下标 <code>0</code> 和 <code>1</code>，那么此时 <code>top = 2</code>。最近压入的字符在 <code>stack[1]</code>，而不是 <code>stack[2]</code>。因此出栈必须先减 <code>1</code>，才能读取正确的位置。</p>
+<table>
+<thead>
+<tr>
+<th>当前输入</th>
+<th>动作</th>
+<th>当前有效栈（底 → 顶）</th>
+<th><code>top</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>开始</td>
+<td>创建数组</td>
+<td>空</td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td><code>(</code></td>
+<td>写入<code>)</code>后<code>top++</code></td>
+<td><code>)</code></td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>[</code></td>
+<td>写入<code>]</code>后<code>top++</code></td>
+<td><code>) ]</code></td>
+<td><code>2</code></td>
+</tr>
+<tr>
+<td><code>]</code></td>
+<td>先<code>--top</code>，再读到<code>]</code></td>
+<td><code>)</code></td>
+<td><code>1</code></td>
+</tr>
+<tr>
+<td><code>)</code></td>
+<td>先<code>--top</code>，再读到<code>)</code></td>
+<td>空</td>
+<td><code>0</code></td>
+</tr>
+<tr>
+<td>结束</td>
+<td>判断<code>top == 0</code></td>
+<td>空</td>
+<td>返回<code>true</code></td>
+</tr>
+</tbody>
+</table>
+<p>数组里的旧字符即使没有被擦除，只要已经不在有效区间 <code>[0, top)</code> 中，就不再属于栈，也不影响最终结果。</p>
+<h3>7.3 代码实现</h3>
+<p>Java 的 <code>char[]</code> 可以直接存原始字符，避免 <code>Deque&lt;Character&gt;</code> 的泛型容器与可能的装箱开销；其他语言也可以用数组或类似的线性存储结构。C 语言没有标准库内建的栈，所以它前面几种写法实际上也已经借助数组实现栈；本节的优化重点尤其体现在 Java 等具有通用对象容器的语言中。</p>
+<p>::: code-group C|C++|Java|Python|JavaScript</p>
+<pre><code>#include &lt;stdbool.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+
+bool isValid(char *s) {
+    size_t n = strlen(s);
+    // 括号必须成对出现；奇数长度不可能完全匹配。
+    if (n % 2 != 0) return false;
+    // 一次准备 n 个槽位；top 表示有效元素个数（下一写入下标）。
+    char *stack = malloc(n + 1);
+    if (stack == NULL) return false;
+    size_t top = 0;
+
+    // 从左到右扫描，每次只处理一个括号。
+    for (size_t i = 0; i &lt; n; ++i) {
+        char c = s[i];
+        // 将期待字符写到 stack[top]，随后 top 加一。
+        if (c == '(') stack[top++] = ')';
+        else if (c == '[') stack[top++] = ']';
+        else if (c == '{') stack[top++] = '}';
+        // 空栈直接失败；否则取出栈顶期待字符，和当前字符比较。
+        else if (top == 0 || stack[--top] != c) {
+            free(stack);
+            return false;
+        }
+    }
+
+    // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+    bool ok = (top == 0);
+    free(stack);
+    return ok;
+}
+</code></pre>
+<pre><code>#include &lt;string&gt;
+#include &lt;vector&gt;
+using namespace std;
+
+class Solution {
+public:
+    bool isValid(string s) {
+        // 括号必须成对出现；奇数长度不可能完全匹配。
+        if (s.size() % 2 != 0) return false;
+        // 一次准备 n 个槽位；top 表示有效元素个数（下一写入下标）。
+        vector&lt;char&gt; stack(s.size());
+        size_t top = 0;
+
+        // 从左到右扫描，每次只处理一个括号。
+        for (char c : s) {
+            // 将期待字符写到 stack[top]，随后 top 加一。
+            if (c == '(') stack[top++] = ')';
+            else if (c == '[') stack[top++] = ']';
+            else if (c == '{') stack[top++] = '}';
+            // 空栈直接失败；否则取出栈顶期待字符，和当前字符比较。
+            else if (top == 0 || stack[--top] != c) return false;
+        }
+        // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return top == 0;
+    }
+};
+</code></pre>
+<pre><code>class Solution {
+    public boolean isValid(String s) {
+        int n = s.length();
+        // 括号必须成对出现；奇数长度不可能完全匹配。
+        if (n % 2 != 0) return false;
+        // 一次准备 n 个槽位；top 表示有效元素个数（下一写入下标）。
+        char[] stack = new char[n];
+        int top = 0;
+
+        // 从左到右扫描，每次只处理一个括号。
+        for (int i = 0; i &lt; n; i++) {
+            char c = s.charAt(i);
+            // 将期待字符写到 stack[top]，随后 top 加一。
+            if (c == '(') stack[top++] = ')';
+            else if (c == '[') stack[top++] = ']';
+            else if (c == '{') stack[top++] = '}';
+            // 空栈直接失败；否则取出栈顶期待字符，和当前字符比较。
+            else if (top == 0 || stack[--top] != c) return false;
+        }
+        // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return top == 0;
+    }
+}
+</code></pre>
+<pre><code>class Solution:
+    def isValid(self, s: str) -&gt; bool:
+        # 括号必须成对出现；奇数长度不可能完全匹配。
+        if len(s) % 2 != 0:
+            return False
+        # 一次准备 n 个槽位；top 表示有效元素个数（下一写入下标）。
+        stack = [None] * len(s)
+        matching = {'(': ')', '[': ']', '{': '}'}
+        top = 0
+
+        # 从左到右扫描，每次只处理一个括号。
+        for c in s:
+            # 将期待字符写到 stack[top]，随后 top 加一。
+            if c in matching:
+                stack[top] = matching[c]
+                # 入栈：已写入一个新元素，有效栈长度加一。
+                top += 1
+            else:
+                # 先判断是否为空，再取出栈顶进行严格比较。
+                if top == 0:
+                    return False
+                # 出栈：先缩小有效区间，再读取最后一个元素。
+                top -= 1
+                if stack[top] != c:
+                    return False
+        # 处理完所有字符后，只有没有遗留待匹配字符才有效。
+        return top == 0
+</code></pre>
+<pre><code>var isValid = function(s) {
+    // 括号必须成对出现；奇数长度不可能完全匹配。
+    if (s.length % 2 !== 0) return false;
+    // 一次准备 n 个槽位；top 表示有效元素个数（下一写入下标）。
+    const stack = new Array(s.length);
+    let top = 0;
+
+    // 从左到右扫描，每次只处理一个括号。
+    for (const c of s) {
+        // 将期待字符写到 stack[top]，随后 top 加一。
+        if (c === '(') stack[top++] = ')';
+        else if (c === '[') stack[top++] = ']';
+        else if (c === '{') stack[top++] = '}';
+        else if (top === 0 || stack[--top] !== c) return false;
+    }
+    // 处理完所有字符后，只有没有遗留待匹配字符才有效。
+    return top === 0;
+};
+</code></pre>
+<p>:::</p>
+<h3>7.4 复杂度分析</h3>
+<ul>
+<li><strong>时间复杂度：<code>O(n)</code>。</strong> 每个字符只处理一次，写入或读取指定数组下标是常数级操作。</li>
+<li><strong>辅助空间复杂度：<code>O(n)</code>。</strong> 实现一开始就申请了长度为 <code>n</code> 的字符数组；即使实际嵌套深度很浅，已经预分配的数组也不会因此缩小。</li>
+</ul>
+<p><strong>数组模拟栈并没有把 <code>O(n)</code> 优化为 <code>O(1)</code>。</strong> 它改善的是某些语言环境下的常数开销：省去部分集合操作、减少元素装箱与额外对象管理；但是否明显更快，需要在具体运行环境做基准测试，不能根据 LeetCode 的单次击败率下结论。</p>
+<h2>八、总结：不同情况下该选哪种方法？</h2>
+<p>五种方法的改进方向并不完全相同：<strong>暴力法 → 栈法</strong>是算法复杂度的提升；<strong>标准栈 → 提前存右括号</strong>是状态表示的简化；<strong>映射表 + 双端队列</strong>注重结构和扩展性；<strong>数组模拟栈</strong>主要减少特定语言实现中的常数开销。</p>
+<table>
+<thead>
+<tr>
+<th>解法</th>
+<th>时间复杂度</th>
+<th>辅助空间复杂度</th>
+<th>主要特点</th>
+<th>适用情况</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>① 暴力枚举消除</td>
+<td>最坏<code>O(n²)</code></td>
+<td><code>O(n)</code>上界</td>
+<td>反复删除合法相邻括号对</td>
+<td>初次理解问题、短串演示、对照验证</td>
+</tr>
+<tr>
+<td>② 标准栈</td>
+<td><code>O(n)</code></td>
+<td>最坏<code>O(n)</code></td>
+<td>保存未匹配的左括号，直观体现后进先出</td>
+<td>学习栈、面试解释正确性</td>
+</tr>
+<tr>
+<td>③ 提前存右括号</td>
+<td><code>O(n)</code></td>
+<td>最坏<code>O(n)</code></td>
+<td>保存期待字符，出栈只做相等比较</td>
+<td>LeetCode 常规提交、手写简洁实现</td>
+</tr>
+<tr>
+<td>④ 映射表 + 双端队列</td>
+<td><code>O(n)</code></td>
+<td>最坏<code>O(n)</code></td>
+<td>顺序与配对规则分离，便于维护</td>
+<td>Java 工程逻辑、可配置匹配规则</td>
+</tr>
+<tr>
+<td>⑤ 数组模拟栈</td>
+<td><code>O(n)</code></td>
+<td><code>O(n)</code>（预分配）</td>
+<td>自己管理数组与栈顶下标，控制常数开销</td>
+<td>算法竞赛、性能分析、理解栈底层实现</td>
+</tr>
+</tbody>
+</table>
+<h3>怎样判断该用哪一种？</h3>
+<p>遇到相似题目时，可以先问自己三个问题：</p>
+<ol>
+<li><strong>能不能直接化简？</strong> 例如不断删掉相邻的 <code>()</code>，这能迅速帮助你验证想法，但可能存在反复扫描的问题。</li>
+<li><strong>要不要记住“最近一个尚未完成的结构”？</strong> 如果下一次匹配必须优先处理最近的未完成对象，就应首先考虑<strong>栈</strong>。</li>
+<li><strong>真正想优化的是什么？</strong> 如果是减少重复扫描，换算法；如果是让判断更清晰，改变栈中保存的状态；如果是便于扩展，抽出映射规则；如果是降低集合开销，再考虑数组模拟栈。</li>
+</ol>
+<p><strong>最终记住一句话：括号匹配之所以想到栈，不是因为题目里有括号，而是因为“最后出现、尚未完成的左括号必须最先闭合”。</strong></p>
+<p>这套判断方式也适用于编辑器的括号高亮、简单表达式检查、嵌套结构解析等场景；如果输入涉及字符串字面量、转义字符或注释，还需要额外的词法规则，不能直接把本题代码原封不动搬过去。</p>

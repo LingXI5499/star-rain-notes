@@ -1,0 +1,46 @@
+---
+import { site } from '../utils/content';
+import '../styles/replica.css';
+import '../styles/static-compat.css';
+import '../styles/english-upgrade.css';
+import '../styles/theme-transition.css';
+import OriginalHeader from '../components/astro/OriginalHeader.astro';
+import OriginalFooter from '../components/astro/OriginalFooter.astro';
+import OriginalMobileNav from '../components/astro/OriginalMobileNav.astro';
+interface Props { title: string; description: string; noindex?: boolean; image?: string; schema?: Record<string, unknown> | Record<string, unknown>[]; canonicalPath?: string; article?: boolean; }
+const { title, description, noindex = false, image = site.ogImage, schema, canonicalPath, article=false } = Astro.props;
+const canonical = new URL(canonicalPath || Astro.url.pathname, Astro.site || site.url).href;
+const jsonld = [ { '@context':'https://schema.org', '@type':'WebSite', name:site.name, url:Astro.site?.href || site.url, inLanguage:'zh-CN' }, ...(schema ? (Array.isArray(schema) ? schema : [schema]) : []) ];
+---
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{title === site.name ? `${site.name} · ${site.tagline}` : `${title} · ${site.name}`}</title>
+    <meta name="description" content={description.slice(0, 180)} /><meta name="robots" content={noindex ? 'noindex,follow' : 'index,follow'} />
+    <link rel="canonical" href={canonical} /><link rel="icon" type="image/svg+xml" href="/brand/favicon.svg" />
+    <meta name="theme-color" content="#f4f3ed" /><meta property="og:type" content={article?'article':'website'} /><meta property="og:locale" content="zh_CN" />
+    <meta property="og:title" content={`${title} · ${site.name}`} /><meta property="og:description" content={description.slice(0,180)} />
+    <meta property="og:url" content={canonical} /><meta property="og:image" content={new URL(image, Astro.site || site.url).href} /><meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script is:inline>try{const t=localStorage.getItem('star-rain-theme');document.documentElement.dataset.theme=t==='dark'||(!t&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light'}catch{}</script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonld).replaceAll('<','\\u003c')} />
+    <slot name="head" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main-content">跳至正文</a>
+    <div class="public-shell"><OriginalHeader/><main id="main-content" class="public-main layout-shell"><slot /></main><OriginalFooter/><OriginalMobileNav/></div>
+    <button id="back-to-top" type="button" class="back-to-top" aria-label="返回顶部" hidden>↑</button>
+    <script>
+      import {installThemeToggle} from '../utils/theme-toggle';
+      import {installEnglishBrowsing} from '../utils/english-browse';
+      installThemeToggle();installEnglishBrowsing();
+      const menu=document.querySelector<HTMLButtonElement>('#menu-toggle'),mobile=document.querySelector<HTMLElement>('#mobile-nav');
+      menu?.addEventListener('click',()=>{if(mobile){mobile.hidden=!mobile.hidden;menu.setAttribute('aria-expanded',String(!mobile.hidden));menu.setAttribute('aria-label',mobile.hidden?'展开导航':'收起导航')}});
+      document.addEventListener('keydown',e=>{if(e.key==='Escape'&&mobile){mobile.hidden=true;menu?.setAttribute('aria-expanded','false')}});
+      const top=document.querySelector<HTMLButtonElement>('#back-to-top');window.addEventListener('scroll',()=>{if(top)top.hidden=scrollY<600;document.querySelector('.site-header')?.classList.toggle('site-header--scrolled',scrollY>16)},{passive:true});top?.addEventListener('click',()=>scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'}));
+      document.querySelectorAll<HTMLButtonElement>('[data-copy-code]').forEach(button=>button.addEventListener('click',async()=>{const en=!!button.closest('[lang="en"]');const code=button.closest('.code-block')?.querySelector('code')?.textContent||'';try{await navigator.clipboard.writeText(code);button.textContent=en?'Copied':'已复制';setTimeout(()=>button.textContent=en?'Copy':'复制',1800)}catch{button.textContent=en?'Select the code to copy':'请选中代码复制'}}));
+      import '../utils/filter';
+    </script>
+  </body>
+</html>

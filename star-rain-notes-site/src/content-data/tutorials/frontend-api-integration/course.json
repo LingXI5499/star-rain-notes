@@ -1,0 +1,375 @@
+{
+  "slug": "frontend-api-integration",
+  "title": "前后端通信与接口联调",
+  "description": "连接 Vue 与 Spring Boot 的全栈核心教程，覆盖 HTTP/REST、Fetch、Axios、文件传输、Cookie/Session/JWT、CORS、安全、SSE、WebSocket、OpenAPI 和完整联调排错链。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-09-23",
+  "chapterCount": 40,
+  "wordCount": 21645,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "HTTP、REST 与数据契约",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "HTTP Method、Resource、REST 与幂等性",
+          "description": "本章属于「前后端通信与接口联调 / HTTP、REST 与数据契约」，围绕「HTTP Method、Resource、REST 与幂等性」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-1-1/",
+          "wordCount": 579,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "Path、Query、Header、Body",
+          "description": "本章属于「前后端通信与接口联调 / HTTP、REST 与数据契约」，围绕「Path、Query、Header、Body」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-1-2/",
+          "wordCount": 561,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "Content-Type、Accept 与 JSON 协商",
+          "description": "本章属于「前后端通信与接口联调 / HTTP、REST 与数据契约」，围绕「Content-Type、Accept 与 JSON 协商」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-1-3/",
+          "wordCount": 573,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "DTO、VO、Result、PageResult 与 TypeScript Model",
+          "description": "本章属于「前后端通信与接口联调 / HTTP、REST 与数据契约」，围绕「DTO、VO、Result、PageResult 与 TypeScript Model」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-1-4/",
+          "wordCount": 615,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "REST、RPC、GraphQL 的定位与选型认知",
+          "description": "本章属于「前后端通信与接口联调 / HTTP、REST 与数据契约」，围绕「REST、RPC、GraphQL 的定位与选型认知」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-1-5/",
+          "wordCount": 567,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Fetch API",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "fetch、Request、Response 与 Promise",
+          "description": "本章属于「前后端通信与接口联调 / Fetch API」，围绕「fetch、Request、Response 与 Promise」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-2-1/",
+          "wordCount": 579,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "GET、POST、JSON Body 与 Headers",
+          "description": "本章属于「前后端通信与接口联调 / Fetch API」，围绕「GET、POST、JSON Body 与 Headers」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-2-2/",
+          "wordCount": 564,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "Response.json、text、blob 与错误",
+          "description": "本章属于「前后端通信与接口联调 / Fetch API」，围绕「Response.json、text、blob 与错误」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-2-3/",
+          "wordCount": 567,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "AbortController、取消请求与竞态",
+          "description": "本章属于「前后端通信与接口联调 / Fetch API」，围绕「AbortController、取消请求与竞态」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-2-4/",
+          "wordCount": 558,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "Fetch 封装、超时策略与边界",
+          "description": "本章属于「前后端通信与接口联调 / Fetch API」，围绕「Fetch 封装、超时策略与边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-2-5/",
+          "wordCount": 534,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Axios 工程封装",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "Axios Instance、baseURL、timeout",
+          "description": "本章属于「前后端通信与接口联调 / Axios 工程封装」，围绕「Axios Instance、baseURL、timeout」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-3-1/",
+          "wordCount": 577,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "params、data、headers",
+          "description": "本章属于「前后端通信与接口联调 / Axios 工程封装」，围绕「params、data、headers」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-3-2/",
+          "wordCount": 547,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "Request Interceptor",
+          "description": "本章属于「前后端通信与接口联调 / Axios 工程封装」，围绕「Request Interceptor」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-3-3/",
+          "wordCount": 544,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "Response Interceptor 与 Result 解包",
+          "description": "本章属于「前后端通信与接口联调 / Axios 工程封装」，围绕「Response Interceptor 与 Result 解包」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-3-4/",
+          "wordCount": 574,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "API Module、Generic Response 与 TypeScript",
+          "description": "本章属于「前后端通信与接口联调 / Axios 工程封装」，围绕「API Module、Generic Response 与 TypeScript」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-3-5/",
+          "wordCount": 598,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "表单、文件与复杂请求",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "FormData 与 multipart/form-data",
+          "description": "本章属于「前后端通信与接口联调 / 表单、文件与复杂请求」，围绕「FormData 与 multipart/form-data」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-4-1/",
+          "wordCount": 575,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "文件上传与 Spring MultipartFile",
+          "description": "本章属于「前后端通信与接口联调 / 表单、文件与复杂请求」，围绕「文件上传与 Spring MultipartFile」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-4-2/",
+          "wordCount": 563,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "Blob、ArrayBuffer 与文件下载",
+          "description": "本章属于「前后端通信与接口联调 / 表单、文件与复杂请求」，围绕「Blob、ArrayBuffer 与文件下载」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-4-3/",
+          "wordCount": 554,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "分页、排序、筛选、数组参数与编码",
+          "description": "本章属于「前后端通信与接口联调 / 表单、文件与复杂请求」，围绕「分页、排序、筛选、数组参数与编码」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-4-4/",
+          "wordCount": 539,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "日期时间、时区、枚举与字段约定",
+          "description": "本章属于「前后端通信与接口联调 / 表单、文件与复杂请求」，围绕「日期时间、时区、枚举与字段约定」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-4-5/",
+          "wordCount": 536,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "认证、Cookie、Session 与 JWT",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "Authentication 与 Authorization",
+          "description": "本章属于「前后端通信与接口联调 / 认证、Cookie、Session 与 JWT」，围绕「Authentication 与 Authorization」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-5-1/",
+          "wordCount": 586,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "Cookie、Session 与 withCredentials",
+          "description": "本章属于「前后端通信与接口联调 / 认证、Cookie、Session 与 JWT」，围绕「Cookie、Session 与 withCredentials」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-5-2/",
+          "wordCount": 592,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "JWT、Bearer Token",
+          "description": "本章属于「前后端通信与接口联调 / 认证、Cookie、Session 与 JWT」，围绕「JWT、Bearer Token」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-5-3/",
+          "wordCount": 547,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "Token 存储、过期与刷新",
+          "description": "本章属于「前后端通信与接口联调 / 认证、Cookie、Session 与 JWT」，围绕「Token 存储、过期与刷新」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-5-4/",
+          "wordCount": 541,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "401、403、退出与统一会话失效",
+          "description": "本章属于「前后端通信与接口联调 / 认证、Cookie、Session 与 JWT」，围绕「401、403、退出与统一会话失效」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-5-5/",
+          "wordCount": 553,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "CORS、安全、错误与代理",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "Same-Origin、CORS 与 Preflight",
+          "description": "本章属于「前后端通信与接口联调 / CORS、安全、错误与代理」，围绕「Same-Origin、CORS 与 Preflight」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-6-1/",
+          "wordCount": 572,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "Vite Proxy、Nginx Reverse Proxy",
+          "description": "本章属于「前后端通信与接口联调 / CORS、安全、错误与代理」，围绕「Vite Proxy、Nginx Reverse Proxy」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-6-2/",
+          "wordCount": 575,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "XSS、CSRF 与输入输出安全",
+          "description": "本章属于「前后端通信与接口联调 / CORS、安全、错误与代理」，围绕「XSS、CSRF 与输入输出安全」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-6-3/",
+          "wordCount": 539,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "HTTP、Network、Business Error 三层错误",
+          "description": "本章属于「前后端通信与接口联调 / CORS、安全、错误与代理」，围绕「HTTP、Network、Business Error 三层错误」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-6-4/",
+          "wordCount": 584,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "Retry、Timeout、Idempotency 与重复提交",
+          "description": "本章属于「前后端通信与接口联调 / CORS、安全、错误与代理」，围绕「Retry、Timeout、Idempotency 与重复提交」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-6-5/",
+          "wordCount": 584,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "实时通信",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "Polling、Long Polling、SSE、WebSocket 比较",
+          "description": "本章属于「前后端通信与接口联调 / 实时通信」，围绕「Polling、Long Polling、SSE、WebSocket 比较」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-7-1/",
+          "wordCount": 590,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "EventSource / SSE 与 AI 流式输出",
+          "description": "本章属于「前后端通信与接口联调 / 实时通信」，围绕「EventSource / SSE 与 AI 流式输出」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-7-2/",
+          "wordCount": 551,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "WebSocket Handshake 与双向消息",
+          "description": "本章属于「前后端通信与接口联调 / 实时通信」，围绕「WebSocket Handshake 与双向消息」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-7-3/",
+          "wordCount": 554,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "Heartbeat、Reconnect、消息顺序与断线恢复",
+          "description": "本章属于「前后端通信与接口联调 / 实时通信」，围绕「Heartbeat、Reconnect、消息顺序与断线恢复」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-7-4/",
+          "wordCount": 572,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "Spring Boot WebSocket / SSE 联调",
+          "description": "本章属于「前后端通信与接口联调 / 实时通信」，围绕「Spring Boot WebSocket / SSE 联调」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-7-5/",
+          "wordCount": 560,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Spring Boot 联调、契约与排错",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "Vue → HTTP → Controller → Service → Mapper → MySQL",
+          "description": "本章属于「前后端通信与接口联调 / Spring Boot 联调、契约与排错」，围绕「Vue → HTTP → Controller → Service → Mapper → MySQL」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-8-1/",
+          "wordCount": 619,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "@RequestBody、@RequestParam、@PathVariable",
+          "description": "本章属于「前后端通信与接口联调 / Spring Boot 联调、契约与排错」，围绕「@RequestBody、@RequestParam、@PathVariable」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-8-2/",
+          "wordCount": 619,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "Jackson、Validation、Global Exception",
+          "description": "本章属于「前后端通信与接口联调 / Spring Boot 联调、契约与排错」，围绕「Jackson、Validation、Global Exception」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-8-3/",
+          "wordCount": 601,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "OpenAPI / Swagger / springdoc 与接口契约",
+          "description": "本章属于「前后端通信与接口联调 / Spring Boot 联调、契约与排错」，围绕「OpenAPI / Swagger / springdoc 与接口契约」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-8-4/",
+          "wordCount": 589,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "DevTools + 后端日志 + SQL 排查 404/400/401/403/500",
+          "description": "本章属于「前后端通信与接口联调 / Spring Boot 联调、契约与排错」，围绕「DevTools + 后端日志 + SQL 排查 404/400/401/403/500」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/frontend-api-integration/chapter-8-5/",
+          "wordCount": 613,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/frontend-api-integration/",
+  "sortOrder": 19
+}

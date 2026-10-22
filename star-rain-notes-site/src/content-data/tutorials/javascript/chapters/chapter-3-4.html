@@ -1,0 +1,11 @@
+<p><strong>核心：</strong> 冒泡排序反复比较相邻元素并交换；一趟没有交换即可提前结束。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const a = [3, 1, 2];
+for (let i = 0; i &lt; a.length - 1; i++) {
+  let changed = false;
+  for (let j = 0; j &lt; a.length - 1 - i; j++) if (a[j] &gt; a[j + 1]) { [a[j], a[j + 1]] = [a[j + 1], a[j]]; changed = true; }
+  if (!changed) break;
+}
+console.log(a);
+</code></pre>
+<p><strong>学完能做：</strong> 用比较交换实现基础排序并提前退出。</p>

@@ -1,0 +1,1272 @@
+{
+  "slug": "java-se",
+  "title": "JavaSE",
+  "description": "以 JDK 21 为教学基线，覆盖 Java 基础语法、面向对象、核心 API、异常与泛型、集合、Lambda/Stream、IO/NIO、并发、网络、高级技术、JVM 与综合实验。",
+  "category": "Java全栈知识体系",
+  "categorySlug": "javaquanzhan",
+  "publishedAt": "2026-10-11",
+  "chapterCount": 149,
+  "wordCount": 18583,
+  "categoryId": "1",
+  "groups": [
+    {
+      "title": "学习指南",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "Java 程序设计学习路线与教程导航",
+          "description": "本章覆盖：教程定位、适用对象与学习目标；JDK 21 教学基线与版本边界；整套课程的 Group 结构与依赖关系；从基础语法到 OOP、API、集合、IO、并发、网络、JVM 的学习路径；每章建议的学习方式：阅读、手写、验证、复盘；JavaSE 与后续 JavaWeb / 数据库 / 框架课程的边界。",
+          "path": "/tutorials/java-se/chapter-1-1/",
+          "wordCount": 141,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Java 基础语法",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "Java 起源、发展与技术体系",
+          "description": "本章覆盖：Java 的定位：编程语言、平台与生态；Sun Microsystems、Oracle、James Gosling 与 Java 的历史关系；Java 的关键发展阶段与版本演进；Java SE、Jakarta EE、Java ME 的定位与关系；Java 语言、Java SE API、JDK、JVM、第三方框架的层次区别；JDK 21 作为本课程教学基线的原因与边界。",
+          "path": "/tutorials/java-se/chapter-2-1/",
+          "wordCount": 179,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "JDK、JRE、JVM 与跨平台原理",
+          "description": "本章覆盖：JDK、JRE、JVM 的定义与职责；JDK、运行时环境、标准类库与 JVM 的协作关系；Java 源文件、字节码、Class 文件与机器指令的关系；javac 编译与 java 启动的基本链路；JVM 为什么需要针对不同操作系统和硬件实现；“一次编译，到处运行”的机制、前提与边界。",
+          "path": "/tutorials/java-se/chapter-2-2/",
+          "wordCount": 140,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "JDK 21 安装、环境变量与命令行工具",
+          "description": "本章覆盖：JDK 发行版与 JDK 21 安装包选择；JDK 安装目录与 bin 等关键目录；JAVA_HOME 的作用；Path 环境变量的作用与配置；java、javac 等基础命令行工具；java -version、javac -version 与实际生效 JDK 的检查；多 JDK 并存时的版本冲突与排查思路。",
+          "path": "/tutorials/java-se/chapter-2-3/",
+          "wordCount": 145,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "IntelliJ IDEA、工程结构、运行与 Debug",
+          "description": "本章覆盖：IDE 与 IntelliJ IDEA 的定位；Project、Module、Source Root、Package、Class 的基本层级；创建 Java 工程、模块、包与类；IDEA 运行 Java 程序的基本过程；Run Configuration 的基本概念；断点、单步执行、变量查看与调用栈；编译错误、运行错误与 Debug 的基本排查方法。",
+          "path": "/tutorials/java-se/chapter-2-4/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "Java 程序结构、main 方法、命令行参数与编译运行",
+          "description": "本章覆盖：Java 源文件、类与 public 类的基本关系；类声明与最小 Java 程序结构；main 方法的标准签名与程序入口概念；String[] args 与命令行参数；源代码编译为 Class 文件的过程；类路径与 java 启动类的基本概念；编译期错误与运行期错误的初步区分。",
+          "path": "/tutorials/java-se/chapter-2-5/",
+          "wordCount": 134,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-6",
+          "title": "注释、Javadoc、关键字、标识符与命名规范",
+          "description": "本章覆盖：单行注释、多行注释、文档注释；注释与程序执行的关系；Javadoc 的用途与文档注释标签基础；Java 关键字、保留字与上下文关键字的基本认识；标识符的合法规则；类、方法、变量、常量、包的常用命名规范；高价值注释与低价值注释的区别。",
+          "path": "/tutorials/java-se/chapter-2-6/",
+          "wordCount": 121,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-7",
+          "title": "字面量、变量与作用域",
+          "description": "本章覆盖：整型、浮点型、字符、字符串、布尔和 null 字面量；字符与字符串字面量的区别；常见转义字符；变量的声明、初始化、赋值与重新赋值；局部变量读取前必须赋值；块作用域与变量可见范围；同名局部变量与作用域重叠规则。",
+          "path": "/tutorials/java-se/chapter-2-7/",
+          "wordCount": 109,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-8",
+          "title": "基本数据类型与引用类型初步",
+          "description": "本章覆盖：Java 数据类型的基本分类；byte、short、int、long；float、double；char、boolean；基本类型的取值范围与字面量后缀；引用类型的最初认识：变量保存引用而不是对象本体；基本类型与引用类型在赋值语义上的初步区别。",
+          "path": "/tutorials/java-se/chapter-2-8/",
+          "wordCount": 128,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-9",
+          "title": "进制、整数表示与整数溢出",
+          "description": "本章覆盖：bit、byte 与二进制表示；二进制、八进制、十进制、十六进制；Java 整数字面量的不同进制写法；有符号整数与二进制补码的基本思想；整数类型的有限范围；整数溢出与回绕现象；进制表示、数值本身与显示形式的区别。",
+          "path": "/tutorials/java-se/chapter-2-9/",
+          "wordCount": 111,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-10",
+          "title": "类型转换与表达式类型提升",
+          "description": "本章覆盖：自动类型转换；强制类型转换；窄化转换的数据丢失风险；整数表达式中的数值提升；byte、short、char 参与运算时的提升规则；浮点与整数混合运算的类型结果；复合赋值与普通赋值在隐式转换上的差异。",
+          "path": "/tutorials/java-se/chapter-2-10/",
+          "wordCount": 105,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-11",
+          "title": "运算符、短路逻辑与位运算",
+          "description": "本章覆盖：算术运算符与整数除法；赋值与复合赋值运算符；自增、自减运算符；关系运算符；逻辑运算符与短路求值；三元条件运算符；位与、位或、异或、取反与移位运算；运算符优先级、结合性与括号。",
+          "path": "/tutorials/java-se/chapter-2-11/",
+          "wordCount": 94,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-12",
+          "title": "Scanner 与控制台输入输出",
+          "description": "本章覆盖：标准输入、标准输出与标准错误的概念；System.out.print、println、printf；Scanner 的创建与基本读取方法；next、nextLine、nextInt、nextDouble 的差异；Scanner 混合读取时的换行问题；格式化输出的基础；控制台输入的边界与简单校验思路。",
+          "path": "/tutorials/java-se/chapter-2-12/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-13",
+          "title": "分支结构：if、switch 与 switch 表达式",
+          "description": "本章覆盖：布尔条件与分支控制；if、if-else、else-if 链；嵌套分支与条件组织；传统 switch 语句；case、default 与 fall-through；箭头形式 switch 规则；switch 表达式与 yield；if 与 switch 的选择边界。",
+          "path": "/tutorials/java-se/chapter-2-13/",
+          "wordCount": 128,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-14",
+          "title": "循环结构、break 与 continue",
+          "description": "本章覆盖：while 循环；do-while 循环；for 循环；循环的初始化、条件、更新与终止；break 与 continue；嵌套循环；无限循环与循环终止条件；常见循环边界错误。",
+          "path": "/tutorials/java-se/chapter-2-14/",
+          "wordCount": 89,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-15",
+          "title": "数组、二维数组与不规则数组",
+          "description": "本章覆盖：数组的定义、创建与初始化；数组长度与下标；数组元素访问与修改；数组遍历；数组变量的引用语义；二维数组的结构与访问；不规则二维数组；数组越界与 null 数组引用。",
+          "path": "/tutorials/java-se/chapter-2-15/",
+          "wordCount": 86,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-16",
+          "title": "方法、参数、返回值、方法重载与可变参数",
+          "description": "本章覆盖：方法的定义、调用与执行过程；返回值类型、return 与 void；形式参数与实际参数；参数传递的基本语义；方法签名与方法重载；重载解析的基础规则；可变参数的语法与本质；方法拆分与单一职责的基础思想。",
+          "path": "/tutorials/java-se/chapter-2-16/",
+          "wordCount": 105,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-17",
+          "title": "数组常见陷阱与基础问题求解",
+          "description": "本章覆盖：数组最大值、最小值、求和与统计；顺序查找；数组反转与元素交换；数组复制与新数组构造；数组去重的基础思路；下标、边界与 off-by-one 错误；原地修改与创建新数组的区别；从需求到循环、条件、变量的基础问题分解。",
+          "path": "/tutorials/java-se/chapter-2-17/",
+          "wordCount": 112,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "面向对象与类型系统",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "面向对象思想、类与对象",
+          "description": "本章覆盖：面向过程与面向对象的基本区别；类作为对象类型的定义；对象、实例与实例化；属性与行为的建模思想；new 创建对象的基本过程；一个类可以创建多个对象；对象之间通过方法协作的基本认识。",
+          "path": "/tutorials/java-se/chapter-3-1/",
+          "wordCount": 95,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "成员变量、成员方法与对象引用",
+          "description": "本章覆盖：实例成员变量；实例成员方法；对象引用变量；成员访问运算符 .；一个对象的状态由成员变量描述；多个引用指向同一对象；null 引用与 NullPointerException 初步。",
+          "path": "/tutorials/java-se/chapter-3-2/",
+          "wordCount": 93,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "Java 参数传递与引用语义",
+          "description": "本章覆盖：Java 参数传递统一采用值传递；基本类型参数传递的是数值副本；引用类型参数传递的是引用值副本；方法内部修改对象状态与重新给参数赋值的区别；返回对象引用的基本语义；参数传递中的常见误解；引用赋值、引用副本与对象共享状态；浅拷贝、深拷贝与引用拷贝的概念区别（不把 Cloneable/clone 作为主线机制）。",
+          "path": "/tutorials/java-se/chapter-3-3/",
+          "wordCount": 159,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "构造器与 this",
+          "description": "本章覆盖：构造器的作用与语法；默认构造器与显式构造器；构造器重载；对象初始化流程的基础认识；this 表示当前对象；this 访问成员变量与成员方法；this(...) 构造器调用基础。",
+          "path": "/tutorials/java-se/chapter-3-4/",
+          "wordCount": 92,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "封装、JavaBean 与实体类",
+          "description": "本章覆盖：封装的目标：隐藏内部状态、暴露稳定接口；private 成员变量；getter 与 setter；构造器与属性初始化；JavaBean 的常见约定；实体类 / 数据对象的基础定位；数据校验应该放在哪里的初步思考。",
+          "path": "/tutorials/java-se/chapter-3-5/",
+          "wordCount": 107,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "static、类成员与工具类",
+          "description": "本章覆盖：实例成员与静态成员；static 成员变量；static 方法；类名访问静态成员；静态上下文与实例上下文；共享类级状态；工具类的设计方式；static 的适用场景与滥用风险。",
+          "path": "/tutorials/java-se/chapter-3-6/",
+          "wordCount": 91,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-7",
+          "title": "package、import 与访问权限修饰符",
+          "description": "本章覆盖：包的作用与包名结构；package 声明；import 与全限定类名；同名类型与导入冲突；public、protected、包访问、private；同类、同包、子类、不同包下的访问范围；包结构与项目代码组织。",
+          "path": "/tutorials/java-se/chapter-3-7/",
+          "wordCount": 109,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-8",
+          "title": "继承与 Java 类继承体系",
+          "description": "本章覆盖：继承的语义与 extends；父类、子类、超类；成员继承的基本规则；Java 类的单继承；Object 作为类层次根类型；is-a 关系与继承适用条件；继承与组合的初步边界。",
+          "path": "/tutorials/java-se/chapter-3-8/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-9",
+          "title": "方法重写、@Override 与 super",
+          "description": "本章覆盖：方法重写的定义；重写方法的签名规则；返回类型与协变返回；访问权限与异常约束的基本边界；@Override 的作用；super 访问父类成员；重写与重载的区别。",
+          "path": "/tutorials/java-se/chapter-3-9/",
+          "wordCount": 84,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-10",
+          "title": "子类构造器与 this(...) / super(...)",
+          "description": "本章覆盖：子类对象创建时的构造链；super(...) 调用父类构造器；this(...) 调用本类其他构造器；构造器调用必须位于首条语句的规则；父类无参构造器与隐式 super()；构造器不能被继承或重写；初始化顺序的基础认识。",
+          "path": "/tutorials/java-se/chapter-3-10/",
+          "wordCount": 114,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-11",
+          "title": "Object：toString、equals 与 hashCode",
+          "description": "本章覆盖：Object 的根类型地位；toString 的默认行为与重写目的；== 与 equals 的区别；equals 的等价关系约定；hashCode 的作用；equals 与 hashCode 的一致性契约；对象相等性在集合中的影响。",
+          "path": "/tutorials/java-se/chapter-3-11/",
+          "wordCount": 113,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-12",
+          "title": "多态",
+          "description": "本章覆盖：父类型引用指向子类对象；编译时类型与运行时对象；方法调用的动态绑定；成员变量访问与方法调用的差异；多态的扩展性价值；面向父类型 / 接口编程的基础思想；多态使用中的类型边界。",
+          "path": "/tutorials/java-se/chapter-3-12/",
+          "wordCount": 92,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-13",
+          "title": "对象类型转换、instanceof 与模式匹配",
+          "description": "本章覆盖：向上转型；向下转型；ClassCastException；instanceof 类型判断；instanceof 模式匹配；类型转换前的安全检查；避免过度依赖类型判断的设计意识。",
+          "path": "/tutorials/java-se/chapter-3-13/",
+          "wordCount": 93,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-14",
+          "title": "final、常量与不可变对象",
+          "description": "本章覆盖：final 变量；final 方法；final 类；static final 常量；基本类型 final 与引用类型 final 的区别；不可变对象的基本条件；不可变性与线程安全、可维护性的关系。",
+          "path": "/tutorials/java-se/chapter-3-14/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-15",
+          "title": "抽象类、抽象方法与模板方法思想",
+          "description": "本章覆盖：abstract 类与抽象方法；抽象类不能直接实例化；抽象方法与子类实现责任；抽象类中的普通成员；抽象类构造器；抽象类作为公共骨架；模板方法思想：固定流程与可变步骤。",
+          "path": "/tutorials/java-se/chapter-3-15/",
+          "wordCount": 89,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-16",
+          "title": "接口、接口实现与面向接口编程",
+          "description": "本章覆盖：interface 的定位；接口中的抽象方法；implements 与接口实现；一个类实现多个接口；接口引用与多态；接口用于定义能力和契约；面向接口编程的基本价值；抽象类与接口的选择边界。",
+          "path": "/tutorials/java-se/chapter-3-16/",
+          "wordCount": 99,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-17",
+          "title": "接口默认方法、静态方法、私有方法与冲突规则",
+          "description": "本章覆盖：default 方法；接口 static 方法；接口 private 方法；默认方法存在的兼容性目的；类方法优先于接口默认方法；多个接口默认方法冲突；显式指定父接口默认实现。",
+          "path": "/tutorials/java-se/chapter-3-17/",
+          "wordCount": 89,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-18",
+          "title": "代码块、成员内部类、静态内部类、局部类与匿名内部类",
+          "description": "本章覆盖：普通代码块与作用域；实例初始化块；静态初始化块；成员内部类；静态嵌套类；局部类；匿名内部类；内部类访问外部类成员的基本规则。",
+          "path": "/tutorials/java-se/chapter-3-18/",
+          "wordCount": 69,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-19",
+          "title": "枚举 enum",
+          "description": "本章覆盖：枚举类型与有限固定实例；枚举常量；枚举字段、构造器与方法；values 与 valueOf；枚举与 switch；枚举实现接口；用枚举代替魔法字符串和整数常量。",
+          "path": "/tutorials/java-se/chapter-3-19/",
+          "wordCount": 84,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-20",
+          "title": "record 与不可变数据载体",
+          "description": "本章覆盖：record 的定位与声明语法；record component；自动生成的访问器、equals、hashCode、toString；规范构造器与紧凑构造器；record 的不可变数据载体语义；record 与普通类的区别；record 的适用场景与限制。",
+          "path": "/tutorials/java-se/chapter-3-20/",
+          "wordCount": 130,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Java 核心 API",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "String、字符串常量池与不可变性",
+          "description": "本章覆盖：String 的引用类型本质；字符串字面量与 String 对象；String 不可变性；字符串常量池的基本作用；== 与 equals 比较字符串；字符串拼接的基本行为；不可变字符串带来的安全性与复用价值；字符串字面量、new String(...) 与对象身份的区别；编译期常量拼接与运行期字符串拼接的区别；String.intern() 的作用与使用边界；“创建几个 String 对象”类面试题的版本与上下文边界。",
+          "path": "/tutorials/java-se/chapter-4-1/",
+          "wordCount": 206,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "String 常用 API、Text Block 与字符串处理",
+          "description": "本章覆盖：length、charAt、substring；indexOf、lastIndexOf、contains；startsWith、endsWith；equals、equalsIgnoreCase、compareTo；replace、split、trim、strip；大小写转换与空白判断；Text Block 多行字符串；常见文本解析与清洗思路。",
+          "path": "/tutorials/java-se/chapter-4-2/",
+          "wordCount": 177,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "StringBuilder、StringBuffer 与 StringJoiner",
+          "description": "本章覆盖：可变字符串的需求；StringBuilder 的核心 API；append、insert、delete、replace、reverse；容量、长度与扩容的基础认识；StringBuilder 与 String 拼接的选择；StringBuffer 的同步特性；StringJoiner 与分隔符拼接。",
+          "path": "/tutorials/java-se/chapter-4-3/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "包装类、自动装箱拆箱、缓存与字符串转换",
+          "description": "本章覆盖：八种包装类型；基本类型与包装类型的关系；自动装箱与自动拆箱；包装类缓存的基本现象；包装对象的 == 与 equals；parseXxx 与 valueOf；数字与字符串之间的转换；null 拆箱风险。",
+          "path": "/tutorials/java-se/chapter-4-4/",
+          "wordCount": 101,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "Math、Random 与常用数值工具",
+          "description": "本章覆盖：Math 常量与基础数学方法；abs、max、min、pow、sqrt；ceil、floor、round；随机数与伪随机的基本概念；Random 的创建与常用方法；随机整数范围的设计；随机数 API 使用中的边界与可重复性意识。",
+          "path": "/tutorials/java-se/chapter-4-5/",
+          "wordCount": 117,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "Arrays 工具类与数组操作",
+          "description": "本章覆盖：Arrays.toString 与 deepToString；Arrays.sort；Arrays.binarySearch；Arrays.copyOf 与 copyOfRange；Arrays.fill；Arrays.equals 与 deepEquals；数组工具方法与手写循环的选择。",
+          "path": "/tutorials/java-se/chapter-4-6/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "Objects、null 安全与对象工具 API",
+          "description": "本章覆盖：Objects.equals；Objects.deepEquals；Objects.hash 与 hashCode；Objects.requireNonNull；requireNonNullElse / ElseGet 的基本认识；isNull 与 nonNull；null 检查与 API 边界设计。",
+          "path": "/tutorials/java-se/chapter-4-7/",
+          "wordCount": 148,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "BigInteger 与 BigDecimal",
+          "description": "本章覆盖：基本整数类型的范围限制；BigInteger 的创建与算术运算；BigDecimal 的精确十进制语义；BigDecimal 的字符串构造与 valueOf；add、subtract、multiply、divide；scale、precision 与舍入模式；compareTo 与 equals 的区别；金额计算的基本原则。",
+          "path": "/tutorials/java-se/chapter-4-8/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-9",
+          "title": "java.time：LocalDate、LocalTime 与 LocalDateTime",
+          "description": "本章覆盖：现代日期时间 API 的设计目标；LocalDate；LocalTime；LocalDateTime；now、of、parse；plus / minus 与 with；日期时间字段读取；不可变性与线程安全。",
+          "path": "/tutorials/java-se/chapter-4-9/",
+          "wordCount": 104,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-10",
+          "title": "Instant、ZoneId、ZonedDateTime、Duration、Period 与 DateTimeFormatter",
+          "description": "本章覆盖：Instant 与时间线上的时间点；ZoneId 与时区；ZonedDateTime；本地时间与带时区时间的转换；Duration 表示基于时间的间隔；Period 表示基于日期的间隔；DateTimeFormatter 格式化与解析；时区、格式与业务时间语义的边界。",
+          "path": "/tutorials/java-se/chapter-4-10/",
+          "wordCount": 136,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-11",
+          "title": "正则表达式：Pattern、Matcher 与文本匹配",
+          "description": "本章覆盖：正则表达式的用途与匹配模型；普通字符、字符类与量词；边界、分组与转义；String.matches、split、replaceAll；Pattern 的编译；Matcher 的 matches、find、group；捕获组；输入校验与文本提取的适用边界。",
+          "path": "/tutorials/java-se/chapter-4-11/",
+          "wordCount": 131,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "异常与泛型",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "Java 异常体系、Checked Exception 与 Runtime Exception",
+          "description": "本章覆盖：Throwable 体系；Error 与 Exception；Checked Exception；RuntimeException 与未检查异常；异常对象携带的信息；编译器对受检异常的要求；异常用于异常情况而非普通流程控制。",
+          "path": "/tutorials/java-se/chapter-5-1/",
+          "wordCount": 114,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "try-catch-finally 与 multi-catch",
+          "description": "本章覆盖：try-catch 基本结构；多个 catch 的匹配顺序；multi-catch；finally 的执行语义；return 与 finally 的关键边界；异常对象与堆栈信息；局部恢复与无法恢复异常的区别。",
+          "path": "/tutorials/java-se/chapter-5-2/",
+          "wordCount": 104,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "throw、throws 与异常传播",
+          "description": "本章覆盖：throw 主动抛出异常；throws 声明异常；调用栈与异常向上传播；受检异常的声明与处理；运行时异常的传播；方法边界上的异常契约；捕获、转换、继续抛出的选择。",
+          "path": "/tutorials/java-se/chapter-5-3/",
+          "wordCount": 86,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "自定义异常与业务异常设计",
+          "description": "本章覆盖：为什么需要自定义异常；继承 Exception 与 RuntimeException 的选择；异常类的构造器；业务规则与异常类型；错误信息设计；异常与返回状态码的边界；异常类型颗粒度。",
+          "path": "/tutorials/java-se/chapter-5-4/",
+          "wordCount": 95,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "异常链、根因定位与异常处理策略",
+          "description": "本章覆盖：cause 与异常链；包装异常与保留根因；getCause 与堆栈跟踪；记录异常上下文；空 catch 与吞异常问题；在正确层次处理异常；用户信息、日志信息与技术细节的边界。",
+          "path": "/tutorials/java-se/chapter-5-5/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "泛型基础与类型安全",
+          "description": "本章覆盖：泛型要解决的问题；参数化类型；编译期类型检查；集合中的泛型使用；泛型与强制类型转换的关系；泛型不支持基本类型；类型推断的基础。",
+          "path": "/tutorials/java-se/chapter-5-6/",
+          "wordCount": 70,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "泛型类、泛型接口与泛型方法",
+          "description": "本章覆盖：类型参数声明；泛型类；泛型接口；泛型方法；静态方法与类级类型参数的边界；多类型参数；类型参数命名约定；泛型 API 的设计思路。",
+          "path": "/tutorials/java-se/chapter-5-7/",
+          "wordCount": 69,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-8",
+          "title": "泛型通配符、上下限与 PECS",
+          "description": "本章覆盖：泛型不变性；无界通配符 ?；? extends 上界通配符；? super 下界通配符；读取与写入能力差异；PECS 原则；通配符与类型参数的选择。",
+          "path": "/tutorials/java-se/chapter-5-8/",
+          "wordCount": 75,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-9",
+          "title": "类型擦除、原始类型与泛型限制",
+          "description": "本章覆盖：类型擦除的基本概念；擦除后的运行时类型信息边界；原始类型 raw type；unchecked warning；不能直接 new T() 的原因；不能创建泛型数组的核心原因；static 与类型参数限制；instanceof 与参数化类型的限制。",
+          "path": "/tutorials/java-se/chapter-5-9/",
+          "wordCount": 122,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Java 集合框架",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "Java Collections Framework 体系总览",
+          "description": "本章覆盖：集合框架解决的数据组织问题；Collection 与 Map 两大体系；List、Set、Queue、Deque；Map 的键值模型；接口、抽象实现与具体实现类；元素顺序、重复、排序与 null 的几个核心维度；集合与数组的选择边界。",
+          "path": "/tutorials/java-se/chapter-6-1/",
+          "wordCount": 118,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "Collection 接口与通用 API",
+          "description": "本章覆盖：add、addAll；remove、removeAll、retainAll；contains、containsAll；size、isEmpty、clear；toArray；Collection 的批量操作语义；equals 的集合语义基础。",
+          "path": "/tutorials/java-se/chapter-6-2/",
+          "wordCount": 125,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "Iterator、增强 for、forEach 与遍历安全删除",
+          "description": "本章覆盖：Iterator 的遍历模型；hasNext 与 next；Iterator.remove；增强 for 的本质；Iterable 与 iterator；forEach 与 Consumer；遍历过程中结构修改的风险；ConcurrentModificationException 的基本理解；fail-fast 的 best-effort 语义与 modCount 思想；不要把 ConcurrentModificationException 当作线程安全机制；并发集合迭代器与普通集合迭代器的一致性语义差异；不把“fail-safe”当作 JDK 正式术语。",
+          "path": "/tutorials/java-se/chapter-6-3/",
+          "wordCount": 269,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "List 接口与有序集合",
+          "description": "本章覆盖：List 的有序与可重复语义；基于索引的访问；get、set、add(index)、remove(index)；indexOf 与 lastIndexOf；subList；ListIterator 基础；List 实现类选择维度。",
+          "path": "/tutorials/java-se/chapter-6-4/",
+          "wordCount": 117,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "ArrayList 使用、扩容与底层数组",
+          "description": "本章覆盖：ArrayList 的动态数组模型；随机访问特性；尾部添加与中间插入/删除；容量与 size 的区别；扩容的概念与成本；ensureCapacity / trimToSize 的基本认识；时间复杂度的工程级理解；ArrayList 常见适用场景；JDK 21 默认构造的延迟分配与首次扩容行为；JDK 21 中扩容优先增长约 50% 的实现级理解；ArrayList 源码结论属于 JDK 实现细节，不等同于 List 接口契约。",
+          "path": "/tutorials/java-se/chapter-6-5/",
+          "wordCount": 204,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-6",
+          "title": "LinkedList、双向链表与双端操作",
+          "description": "本章覆盖：双向链表数据结构；LinkedList 作为 List；LinkedList 作为 Deque；头尾插入与删除；按索引访问的成本；节点遍历；LinkedList 与 ArrayList 的选型边界。",
+          "path": "/tutorials/java-se/chapter-6-6/",
+          "wordCount": 99,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-7",
+          "title": "Set 接口与集合去重模型",
+          "description": "本章覆盖：Set 的不重复语义；Set 与 List 的区别；add 返回值与重复判断；equals 与重复元素判定；HashSet、TreeSet 等实现差异；集合去重场景；可变对象作为 Set 元素的风险。",
+          "path": "/tutorials/java-se/chapter-6-7/",
+          "wordCount": 98,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-8",
+          "title": "HashSet、哈希表与 equals/hashCode",
+          "description": "本章覆盖：哈希表的桶模型；hashCode 到桶位置的基本思想；哈希冲突；HashSet 与 HashMap 的关系；equals/hashCode 对去重的影响；良好哈希函数的基本目标；可变字段参与 hashCode 的风险。",
+          "path": "/tutorials/java-se/chapter-6-8/",
+          "wordCount": 109,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-9",
+          "title": "TreeSet、Comparable 与 Comparator",
+          "description": "本章覆盖：TreeSet 的有序集合语义；自然顺序与 Comparable；compareTo 的约定；外部比较器 Comparator；reversed、thenComparing 等比较器组合；比较结果与元素唯一性的关系；compareTo 与 equals 一致性的影响。",
+          "path": "/tutorials/java-se/chapter-6-9/",
+          "wordCount": 133,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-10",
+          "title": "Queue、Deque 与队列模型",
+          "description": "本章覆盖：FIFO 队列模型；Queue 的 offer、poll、peek；add/remove/element 与 offer/poll/peek 的差异；Deque 双端队列；栈的 LIFO 模型与 Deque；队列在任务、缓冲、遍历中的典型作用。",
+          "path": "/tutorials/java-se/chapter-6-10/",
+          "wordCount": 119,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-11",
+          "title": "ArrayDeque 与 PriorityQueue",
+          "description": "本章覆盖：ArrayDeque 的循环数组思想；作为队列与栈使用；ArrayDeque 的 null 限制；PriorityQueue 的优先级队列模型；堆的基本概念；自然顺序与 Comparator；PriorityQueue 不保证整体遍历有序。",
+          "path": "/tutorials/java-se/chapter-6-11/",
+          "wordCount": 120,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-12",
+          "title": "Map 接口与键值模型",
+          "description": "本章覆盖：key-value 数据模型；键唯一与值可重复；put、get、remove；containsKey、containsValue；keySet、values、entrySet；Map.Entry；null 键值与具体实现差异；Map 适合的索引与映射场景。",
+          "path": "/tutorials/java-se/chapter-6-12/",
+          "wordCount": 132,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-13",
+          "title": "HashMap、哈希冲突、扩容与树化",
+          "description": "本章覆盖：HashMap 的数组 + 桶结构；hash 与索引定位的基本思想；put / get 的核心查找流程；哈希冲突与链式结构；负载因子与扩容；JDK 8+ 桶树化的概念；equals/hashCode 对 Map 键的要求；HashMap 非线程安全；容量保持 2 的幂、hash 扰动与索引计算的 JDK 21 实现思路；threshold、capacity、loadFactor 的关系；树化阈值、最小树化容量与退化为链表的实现级边界；扩容后元素索引迁移的 JDK 21 实现思路；null key / null value 与 HashMap API 语义；HashMap 源码细节必须明确标注为 JDK 21 实现，而不是 Map 接口规范。",
+          "path": "/tutorials/java-se/chapter-6-13/",
+          "wordCount": 294,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-14",
+          "title": "Map 高频 API：getOrDefault、compute、merge 与遍历",
+          "description": "本章覆盖：getOrDefault；putIfAbsent；computeIfAbsent；computeIfPresent；compute；merge；replace 与 replaceAll；Map.forEach 与 entrySet 遍历；计数、分组、缓存初始化等典型使用模式。",
+          "path": "/tutorials/java-se/chapter-6-14/",
+          "wordCount": 140,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-15",
+          "title": "LinkedHashMap 与 TreeMap",
+          "description": "本章覆盖：LinkedHashMap 的插入顺序；访问顺序 accessOrder；LRU 思想的基础；TreeMap 的排序映射；自然顺序与 Comparator；范围查询与导航方法基础；HashMap、LinkedHashMap、TreeMap 的选型。",
+          "path": "/tutorials/java-se/chapter-6-15/",
+          "wordCount": 125,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-16",
+          "title": "Collections、集合工厂与不可变集合",
+          "description": "本章覆盖：Collections 排序、反转、打乱、查找；Collections.min / max / frequency；不可修改视图与 unmodifiableXxx；List.of、Set.of、Map.of；copyOf 系列；固定内容集合与可变集合的区别；不可变集合中的 null 与重复限制。",
+          "path": "/tutorials/java-se/chapter-6-16/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-17",
+          "title": "集合选型、复杂度与常见陷阱",
+          "description": "本章覆盖：List / Set / Queue / Map 的语义选型；ArrayList 与 LinkedList；HashSet 与 TreeSet；HashMap、LinkedHashMap、TreeMap；常见操作的时间复杂度；null、重复、顺序、排序四个决策维度；可变对象作为哈希键的风险；并发环境下普通集合的边界。",
+          "path": "/tutorials/java-se/chapter-6-17/",
+          "wordCount": 155,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Lambda 与 Stream 函数式编程",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "函数式编程思想与函数式接口",
+          "description": "本章覆盖：行为作为参数的思想；函数式接口的定义；@FunctionalInterface；单一抽象方法 SAM；函数式接口中的默认/静态方法；匿名内部类与 Lambda 的关系；函数式接口在 API 设计中的作用。",
+          "path": "/tutorials/java-se/chapter-7-1/",
+          "wordCount": 104,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "Lambda 表达式基础",
+          "description": "本章覆盖：Lambda 的基本语法；参数列表；箭头 ->；表达式体与代码块体；目标类型 target type；Lambda 与函数式接口匹配；Lambda 对匿名内部类的简化边界。",
+          "path": "/tutorials/java-se/chapter-7-2/",
+          "wordCount": 87,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "Lambda 省略规则、变量捕获与 effectively final",
+          "description": "本章覆盖：单参数括号省略；单表达式花括号与 return 省略；参数类型推断；捕获局部变量；effectively final；实例变量与静态变量访问；变量捕获限制的设计意义。",
+          "path": "/tutorials/java-se/chapter-7-3/",
+          "wordCount": 87,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "Predicate、Function、Consumer、Supplier 等标准函数式接口",
+          "description": "本章覆盖：Predicate<T>；Function<T,R>；Consumer<T>；Supplier<T>；UnaryOperator 与 BinaryOperator；BiFunction、BiConsumer、BiPredicate；and、or、negate、compose、andThen；基本类型特化接口的意义。",
+          "path": "/tutorials/java-se/chapter-7-4/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "方法引用与构造器引用",
+          "description": "本章覆盖：静态方法引用；特定对象的实例方法引用；某类型任意对象的实例方法引用；构造器引用；数组构造器引用；方法引用与 Lambda 的等价条件；可读性与方法引用的使用边界。",
+          "path": "/tutorials/java-se/chapter-7-5/",
+          "wordCount": 86,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-6",
+          "title": "Stream 思想、惰性求值与 Stream 创建",
+          "description": "本章覆盖：Stream 与集合的区别；数据源、管道与终结操作；内部迭代；惰性求值；Stream 不存储数据；Stream 通常不可重复消费；Collection、数组与 Stream.of 创建流；无限流的基础认识。",
+          "path": "/tutorials/java-se/chapter-7-6/",
+          "wordCount": 105,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-7",
+          "title": "Stream 中间操作",
+          "description": "本章覆盖：filter；map 与 flatMap；distinct；sorted；limit 与 skip；peek 的定位；中间操作的惰性；无状态与有状态操作的基本区别。",
+          "path": "/tutorials/java-se/chapter-7-7/",
+          "wordCount": 84,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-8",
+          "title": "Stream 终结操作",
+          "description": "本章覆盖：forEach 与 forEachOrdered；count；min 与 max；findFirst 与 findAny；anyMatch、allMatch、noneMatch；reduce；toArray；短路终结操作。",
+          "path": "/tutorials/java-se/chapter-7-8/",
+          "wordCount": 112,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-9",
+          "title": "Collector、Collectors 与结果收集",
+          "description": "本章覆盖：collect 的归约思想；Collectors.toList / toSet；toMap；joining；counting、summing、averaging；groupingBy；partitioningBy；mapping / collectingAndThen 等组合思想。",
+          "path": "/tutorials/java-se/chapter-7-9/",
+          "wordCount": 142,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-10",
+          "title": "Optional 与空值处理",
+          "description": "本章覆盖：Optional 的定位；of、ofNullable、empty；isPresent / isEmpty；ifPresent / ifPresentOrElse；orElse、orElseGet、orElseThrow；map、flatMap、filter；Optional 作为返回值的适用边界；Optional 不应被滥用为所有字段类型。",
+          "path": "/tutorials/java-se/chapter-7-10/",
+          "wordCount": 171,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "File、IO、NIO 与 NIO.2",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "File 类与传统文件系统对象",
+          "description": "本章覆盖：File 表示路径而不是文件内容；绝对路径与相对路径；文件与目录存在性判断；创建文件与目录；删除与重命名；目录内容列表；文件属性基础；File API 的局限。",
+          "path": "/tutorials/java-se/chapter-8-1/",
+          "wordCount": 84,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "Path、Files 与 NIO.2",
+          "description": "本章覆盖：Path 的路径抽象；Path.of / Paths.get；resolve、relativize、normalize；Files.exists / isRegularFile / isDirectory；Files.createFile / createDirectories；Files.copy / move / delete；Path 与 File 的转换；为什么现代文件操作优先使用 Path / Files。",
+          "path": "/tutorials/java-se/chapter-8-2/",
+          "wordCount": 198,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "文件属性、目录遍历与 Files.walk",
+          "description": "本章覆盖：BasicFileAttributes；文件大小与时间属性；符号链接基础；Files.list；Files.walk；Files.find；遍历流的关闭；目录遍历中的异常与权限问题。",
+          "path": "/tutorials/java-se/chapter-8-3/",
+          "wordCount": 98,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "递归与文件树遍历",
+          "description": "本章覆盖：递归的定义；递归基线条件；递归调用栈；文件夹嵌套与树结构；递归遍历目录；文件搜索与统计；深层递归与 StackOverflowError 风险；递归与 Files.walk 的选择。",
+          "path": "/tutorials/java-se/chapter-8-4/",
+          "wordCount": 94,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "ASCII、Unicode、UTF-8 与 Charset",
+          "description": "本章覆盖：字符、字符集与编码的区别；ASCII；Unicode 码点；UTF-8 的变长编码思想；UTF-16 与 Java char 的关系基础；Charset；默认字符集；字符编码知识与 Java 字符串的边界。",
+          "path": "/tutorials/java-se/chapter-8-5/",
+          "wordCount": 102,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-6",
+          "title": "编码、解码与乱码问题",
+          "description": "本章覆盖：字符串到字节的编码；字节到字符串的解码；String.getBytes(Charset)；new String(bytes, Charset)；编码与解码字符集不一致导致乱码；文件编码、终端编码与源码编码的区别；不可表示字符与替换策略基础。",
+          "path": "/tutorials/java-se/chapter-8-6/",
+          "wordCount": 125,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-7",
+          "title": "Java IO 流体系总览",
+          "description": "本章覆盖：流的概念；输入流与输出流；字节流与字符流；节点流与处理流；InputStream / OutputStream；Reader / Writer；装饰器式组合的基本思想；按数据类型选择 IO 流。",
+          "path": "/tutorials/java-se/chapter-8-7/",
+          "wordCount": 98,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-8",
+          "title": "字节输入流与字节输出流",
+          "description": "本章覆盖：FileInputStream；FileOutputStream；read、write；单字节与字节数组读写；EOF 返回值；文件复制的基础流程；append 模式；二进制文件处理。",
+          "path": "/tutorials/java-se/chapter-8-8/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-9",
+          "title": "字符输入流与字符输出流",
+          "description": "本章覆盖：FileReader；FileWriter；Reader / Writer 的字符语义；字符数组读写；文本文件读取与写入；字符流与默认编码；何时不应该用字符流处理文件。",
+          "path": "/tutorials/java-se/chapter-8-9/",
+          "wordCount": 88,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-10",
+          "title": "缓冲流与转换流",
+          "description": "本章覆盖：BufferedInputStream / BufferedOutputStream；BufferedReader / BufferedWriter；缓冲的作用；readLine 与 newLine；InputStreamReader；OutputStreamWriter；字节流与字符流之间的桥梁；显式 Charset 的文本 IO。",
+          "path": "/tutorials/java-se/chapter-8-10/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-11",
+          "title": "打印流与数据流",
+          "description": "本章覆盖：PrintStream；PrintWriter；print、println、printf；DataInputStream；DataOutputStream；基本类型的二进制读写；写入顺序与读取顺序一致性；文本格式与二进制格式的选择。",
+          "path": "/tutorials/java-se/chapter-8-11/",
+          "wordCount": 123,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-12",
+          "title": "资源释放与 try-with-resources",
+          "description": "本章覆盖：Closeable 与 AutoCloseable；为什么 IO 资源必须关闭；传统 try-finally 关闭资源的问题；try-with-resources；多个资源的关闭顺序；抑制异常 suppressed exception；资源所有权与关闭责任。",
+          "path": "/tutorials/java-se/chapter-8-12/",
+          "wordCount": 128,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-13",
+          "title": "NIO：Buffer、Channel、Selector 与非阻塞 I/O",
+          "description": "本章覆盖：BIO、NIO、AIO 的概念边界：阻塞/非阻塞与同步/异步不要混为一谈；Buffer 的 capacity、limit、position；flip、clear、compact、rewind 的状态变化；ByteBuffer 的 allocate、wrap 与 direct buffer 基础；Channel 与传统 Stream 的差异；FileChannel 的 read、write、position、transferTo / transferFrom 基础；SocketChannel、ServerSocketChannel 与 DatagramChannel 的定位；SelectableChannel、Selector、SelectionKey；多路复用与单线程管理多个连接的事件循环思想；非阻塞 I/O 中 read / write 可能返回 0 的语义；AsynchronousChannel / AIO 只建立概念，不深入实现；DirectByteBuffer、MappedByteBuffer、零拷贝只作工程认知，不进入底层细节。",
+          "path": "/tutorials/java-se/chapter-8-13/",
+          "wordCount": 451,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-14",
+          "title": "对象流、序列化、反序列化与安全边界",
+          "description": "本章覆盖：Serializable；ObjectOutputStream / ObjectInputStream；对象图序列化；serialVersionUID；transient；反序列化兼容性问题；反序列化安全风险；序列化与长期数据格式的边界。",
+          "path": "/tutorials/java-se/chapter-8-14/",
+          "wordCount": 124,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-15",
+          "title": "Properties、配置文件与文件处理综合实践",
+          "description": "本章覆盖：Properties 的键值模型；load 与 store；.properties 文件；字符串键值限制；配置读取与默认值；文件路径与资源路径的基本区别；配置修改与持久化；将 Path、Charset、IO 与 Properties 组合使用。",
+          "path": "/tutorials/java-se/chapter-8-15/",
+          "wordCount": 121,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "多线程与并发编程",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "进程、线程、并发、并行、同步与异步",
+          "description": "本章覆盖：进程与线程；线程作为执行单元；并发与并行；同步与异步；阻塞与非阻塞的初步区别；共享资源与并发问题来源；多线程适合解决的问题与成本。",
+          "path": "/tutorials/java-se/chapter-9-1/",
+          "wordCount": 72,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "Thread 与 Runnable",
+          "description": "本章覆盖：Thread 类；Runnable 接口；start 与 run 的区别；线程名称与当前线程；继承 Thread 与实现 Runnable 的差异；任务与线程分离的思想；线程启动与调度的不确定性。",
+          "path": "/tutorials/java-se/chapter-9-2/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "Callable、Future 与 FutureTask",
+          "description": "本章覆盖：Runnable 无返回值的限制；Callable<V>；Future<V>；FutureTask；get 的阻塞行为；取消与完成状态；异步任务结果与异常传播。",
+          "path": "/tutorials/java-se/chapter-9-3/",
+          "wordCount": 85,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "线程生命周期、Thread API、中断与守护线程",
+          "description": "本章覆盖：Java 线程状态；NEW、RUNNABLE、BLOCKED、WAITING、TIMED_WAITING、TERMINATED；sleep；join；yield 的语义边界；interrupt 中断机制；isInterrupted / interrupted；daemon 守护线程。",
+          "path": "/tutorials/java-se/chapter-9-4/",
+          "wordCount": 143,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "线程安全、竞态条件与共享状态",
+          "description": "本章覆盖：共享可变状态；竞态条件；复合操作与 check-then-act；原子性问题；可见性问题初步；线程安全对象；无状态设计与不可变对象的并发价值；临界区概念。",
+          "path": "/tutorials/java-se/chapter-9-5/",
+          "wordCount": 83,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-6",
+          "title": "synchronized 同步代码块与同步方法",
+          "description": "本章覆盖：内置锁 / monitor；synchronized 代码块；synchronized 实例方法；synchronized 静态方法；锁对象选择；互斥与可见性；可重入性；同步范围过大的性能影响；synchronized 代码块与 monitorenter / monitorexit 的字节码关系；synchronized 方法与 ACC_SYNCHRONIZED 的关系；HotSpot 锁实现属于版本敏感实现细节；JDK 21 不把“偏向锁→轻量级锁→重量级锁”作为通用规范链路背诵。",
+          "path": "/tutorials/java-se/chapter-9-6/",
+          "wordCount": 235,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-7",
+          "title": "wait、notify、notifyAll 与线程协作",
+          "description": "本章覆盖：对象监视器等待集；wait；notify；notifyAll；必须持有监视器的规则；wait 与 sleep 的区别；条件循环与虚假唤醒；生产者消费者协作思想。",
+          "path": "/tutorials/java-se/chapter-9-7/",
+          "wordCount": 84,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-8",
+          "title": "Lock、ReentrantLock 与 Condition",
+          "description": "本章覆盖：Lock 接口；ReentrantLock；lock / unlock；tryLock；可中断获取锁；公平锁概念；Condition；await / signal / signalAll；ReentrantLock 与 synchronized 的能力差异与选型；ReentrantReadWriteLock 与读写锁模型；读多写少场景与读写锁的适用边界。",
+          "path": "/tutorials/java-se/chapter-9-8/",
+          "wordCount": 174,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-9",
+          "title": "Java Memory Model、happens-before、原子性、可见性与有序性",
+          "description": "本章覆盖：Java Memory Model 的定位；线程间共享变量的内存语义；原子性；可见性；有序性；happens-before 关系；synchronized、volatile、线程启动/终止的 happens-before 规则；JMM 与具体 CPU 缓存实现的边界。",
+          "path": "/tutorials/java-se/chapter-9-9/",
+          "wordCount": 132,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-10",
+          "title": "volatile 与内存可见性",
+          "description": "本章覆盖：volatile 的可见性语义；volatile 的有序性约束；volatile 不保证复合操作原子性；状态标志场景；double-check 思想中的可见性背景；volatile 与 synchronized 的区别；何时不能只用 volatile。",
+          "path": "/tutorials/java-se/chapter-9-10/",
+          "wordCount": 125,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-11",
+          "title": "Atomic 原子类与 CAS",
+          "description": "本章覆盖：CAS 的基本思想；AtomicInteger 等原子类；get、set、compareAndSet；incrementAndGet 等复合原子操作；无锁原子更新；ABA 问题的基本认识；原子类与锁的选择边界；AtomicReference；AtomicStampedReference 与 ABA 问题的解决思路；LongAdder 的分段累加思想与高竞争计数场景。",
+          "path": "/tutorials/java-se/chapter-9-11/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-12",
+          "title": "ThreadLocal 与线程本地变量",
+          "description": "本章覆盖：线程局部变量模型；ThreadLocal.set / get / remove；每个线程独立副本；上下文传递场景；线程池复用与 ThreadLocal 泄漏风险；remove 的重要性；ThreadLocal 与共享变量的区别；ThreadLocalMap 的高层结构；弱引用 key、强引用 value 与 stale entry；线程池复用时 ThreadLocal 数据串用和内存滞留的真实风险。",
+          "path": "/tutorials/java-se/chapter-9-12/",
+          "wordCount": 192,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-13",
+          "title": "死锁、活锁、饥饿与并发问题排查",
+          "description": "本章覆盖：死锁的定义；循环等待与锁顺序；死锁预防思路；活锁；饥饿；线程转储 thread dump；jstack / jcmd 的基础使用；并发问题的复现与最小化思路。",
+          "path": "/tutorials/java-se/chapter-9-13/",
+          "wordCount": 81,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-14",
+          "title": "Executor、ExecutorService 与线程池思想",
+          "description": "本章覆盖：任务提交与线程管理分离；Executor；ExecutorService；execute 与 submit；shutdown 与 shutdownNow；Future 与线程池；线程复用的收益；Executors 工厂方法的使用边界。",
+          "path": "/tutorials/java-se/chapter-9-14/",
+          "wordCount": 118,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-15",
+          "title": "ThreadPoolExecutor、任务队列与拒绝策略",
+          "description": "本章覆盖：corePoolSize；maximumPoolSize；keepAliveTime；BlockingQueue 任务队列；ThreadFactory；RejectedExecutionHandler；线程池任务提交流程；线程池参数与业务负载的关系；unit 与 allowCoreThreadTimeOut 等参数/行为的边界认识；AbortPolicy、CallerRunsPolicy、DiscardPolicy、DiscardOldestPolicy 四种内置拒绝策略；有界队列、无界队列与 SynchronousQueue 对线程池行为的影响；CPU 密集型与 I/O 密集型任务配置线程池的原则，而不是死背固定公式。",
+          "path": "/tutorials/java-se/chapter-9-15/",
+          "wordCount": 311,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-16",
+          "title": "ConcurrentHashMap、BlockingQueue 与并发集合",
+          "description": "本章覆盖：并发集合的设计目的；ConcurrentHashMap；并发 Map 的原子复合 API；BlockingQueue；put / take 与阻塞语义；ArrayBlockingQueue / LinkedBlockingQueue 基础；CopyOnWriteArrayList 的基本认识；普通集合 + 外部锁与并发集合的选择；JDK 7 Segment 分段锁只作历史对比；JDK 8+ / JDK 21 不再使用 Segment 作为主体结构；JDK 21 ConcurrentHashMap：空桶 CAS、桶级 synchronized、volatile/原子访问的高层实现；ConcurrentHashMap 扩容时多线程协助迁移的概念；SynchronousQueue 在线程池中的作用；CopyOnWriteArrayList 的快照迭代、读多写少场景与写放大成本；Collections.synchronizedXxx 与 java.util.concurrent 并发集合的定位差异。",
+          "path": "/tutorials/java-se/chapter-9-16/",
+          "wordCount": 427,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-17",
+          "title": "AQS、CountDownLatch、CyclicBarrier 与 Semaphore",
+          "description": "本章覆盖：AQS 作为同步器基础框架的概念定位；state 与等待队列的高层认识；CountDownLatch；CyclicBarrier；Semaphore；一次性门闩、阶段栅栏与许可控制的区别；常见同步器的场景选择。",
+          "path": "/tutorials/java-se/chapter-9-17/",
+          "wordCount": 110,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-18",
+          "title": "CompletableFuture 与异步任务编排",
+          "description": "本章覆盖：CompletableFuture 的异步结果模型；completedFuture / supplyAsync / runAsync；thenApply、thenAccept、thenRun；thenCompose 与 thenCombine；allOf 与 anyOf；exceptionally、handle、whenComplete；异步任务链中的线程池选择；阻塞 join/get 与非阻塞编排的区别；默认 ForkJoinPool.commonPool 与显式 Executor 的区别；异步链中的异常传播、超时与阻塞边界。",
+          "path": "/tutorials/java-se/chapter-9-18/",
+          "wordCount": 259,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Java 网络编程",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": "网络编程基础：IP、端口、协议与 Socket",
+          "description": "本章覆盖：网络通信中的主机与进程；IP 地址；端口；协议；TCP/IP 分层的最小认知；Socket 作为通信端点；客户端与服务端；本机回环地址与常见网络边界。",
+          "path": "/tutorials/java-se/chapter-10-1/",
+          "wordCount": 79,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "InetAddress、URI 与 URL",
+          "description": "本章覆盖：InetAddress 与主机地址解析；主机名与 IP 地址；URI 的统一资源标识概念；URL 作为可定位资源标识；scheme、host、port、path、query、fragment；URI 与 URL 的区别；网络地址解析中的异常。",
+          "path": "/tutorials/java-se/chapter-10-2/",
+          "wordCount": 120,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "UDP 与 Datagram API",
+          "description": "本章覆盖：UDP 的无连接数据报模型；DatagramSocket；DatagramPacket；发送与接收数据报；最大报文与数据截断意识；丢包、乱序、重复的可能性；UDP 适用场景与可靠性边界。",
+          "path": "/tutorials/java-se/chapter-10-3/",
+          "wordCount": 98,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "TCP、Socket 与 ServerSocket",
+          "description": "本章覆盖：TCP 的连接模型；客户端 Socket；服务端 ServerSocket；accept 建立连接；Socket 输入输出流；连接关闭；半关闭基础；TCP 可靠字节流的核心性质。",
+          "path": "/tutorials/java-se/chapter-10-4/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "TCP 字节流、消息边界与协议设计基础",
+          "description": "本章覆盖：TCP 是字节流而不是消息队列；一次 write 与一次 read 不必对应；粘包/拆包的工程表现；定长协议；分隔符协议；长度字段协议；文本协议与二进制协议；编码与网络字节数据。",
+          "path": "/tutorials/java-se/chapter-10-5/",
+          "wordCount": 91,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-6",
+          "title": "多客户端服务端与线程池通信",
+          "description": "本章覆盖：服务端持续 accept；一连接一任务模型；多线程处理客户端连接；线程池管理连接任务；共享状态与线程安全；连接异常与资源释放；并发客户端的容量边界。",
+          "path": "/tutorials/java-se/chapter-10-6/",
+          "wordCount": 80,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-7",
+          "title": "B/S 架构、HTTP 与简单 HTTP Server",
+          "description": "本章覆盖：C/S 与 B/S 的区别；HTTP 请求与响应；请求行、请求头、请求体；状态行、响应头、响应体；常见 HTTP 方法；状态码基础；文本协议与 CRLF；用 JavaSE 理解最小 HTTP 服务端的工作过程。",
+          "path": "/tutorials/java-se/chapter-10-7/",
+          "wordCount": 101,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-8",
+          "title": "Java HttpClient 与现代 HTTP 请求",
+          "description": "本章覆盖：java.net.http.HttpClient；HttpRequest；HttpResponse；GET 请求；POST 请求与 BodyPublisher；请求头与超时；同步 send 与异步 sendAsync；响应状态码与响应体处理。",
+          "path": "/tutorials/java-se/chapter-10-8/",
+          "wordCount": 122,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Java 高级技术",
+      "chapters": [
+        {
+          "slug": "chapter-11-1",
+          "title": "JUnit 5 单元测试基础",
+          "description": "本章覆盖：单元测试的目标；测试代码与业务代码分离；@Test；测试方法结构；Arrange-Act-Assert 思想；测试可重复性；正常路径与边界路径；JUnit 5 在 Java 项目中的定位。",
+          "path": "/tutorials/java-se/chapter-11-1/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-2",
+          "title": "JUnit 5 断言、生命周期、参数化测试与测试规范",
+          "description": "本章覆盖：assertEquals、assertTrue、assertThrows 等断言；@BeforeEach 与 @AfterEach；@BeforeAll 与 @AfterAll；@DisplayName；@ParameterizedTest；常见参数源；测试命名与单一行为验证；测试独立性与避免共享状态。",
+          "path": "/tutorials/java-se/chapter-11-2/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-3",
+          "title": "反射概述与 Class 对象",
+          "description": "本章覆盖：反射的定义与用途；Class 对象表示运行时类型；获取 Class 的几种方式；类名、包名、修饰符等类型信息；isInterface、isEnum、isRecord 等类型判断；反射与普通静态调用的区别；反射的性能、安全与封装边界。",
+          "path": "/tutorials/java-se/chapter-11-3/",
+          "wordCount": 119,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-4",
+          "title": "Constructor、Field 与 Method 反射",
+          "description": "本章覆盖：Constructor 元数据；反射创建对象；Field 元数据与字段读写；Method 元数据与方法调用；getXxx 与 getDeclaredXxx 的区别；访问控制与 setAccessible / trySetAccessible 的边界；反射调用异常；参数、返回值与注解信息读取基础。",
+          "path": "/tutorials/java-se/chapter-11-4/",
+          "wordCount": 145,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-5",
+          "title": "反射综合案例与框架思想",
+          "description": "本章覆盖：基于 Class 动态发现结构；约定驱动的对象创建；按字段名读取或写入对象状态；按方法签名调用行为；配置 + 反射的简单解耦；框架如何把“写死类型”变成“运行时发现”；反射滥用与类型安全损失。",
+          "path": "/tutorials/java-se/chapter-11-5/",
+          "wordCount": 99,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-6",
+          "title": "注解、自定义注解与元注解",
+          "description": "本章覆盖：注解的定义与用途；内置注解基础；自定义 @interface；注解元素类型与默认值；@Target；@Retention；@Documented；@Inherited 的语义边界。",
+          "path": "/tutorials/java-se/chapter-11-6/",
+          "wordCount": 95,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-7",
+          "title": "注解解析与反射协作",
+          "description": "本章覆盖：运行时注解的前提；AnnotatedElement；isAnnotationPresent；getAnnotation / getAnnotations；读取类、字段、方法上的注解；根据注解执行不同逻辑；注解 + 反射的配置化思想；编译期注解与运行时注解的边界。",
+          "path": "/tutorials/java-se/chapter-11-7/",
+          "wordCount": 134,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-8",
+          "title": "代理模式、JDK 动态代理与 InvocationHandler",
+          "description": "本章覆盖：代理模式的目标；静态代理思想；JDK 动态代理的接口前提；Proxy.newProxyInstance；InvocationHandler；方法调用拦截；前置/后置增强；代理对象与目标对象的职责边界。",
+          "path": "/tutorials/java-se/chapter-11-8/",
+          "wordCount": 106,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-9",
+          "title": "ServiceLoader、SPI 与插件化思想",
+          "description": "本章覆盖：SPI 的服务提供者机制；服务接口与实现分离；META-INF/services 基本约定；ServiceLoader.load；服务发现与遍历；一个接口多个实现；插件化与可扩展架构思想；ServiceLoader 的适用边界。",
+          "path": "/tutorials/java-se/chapter-11-9/",
+          "wordCount": 118,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "JVM 基础与运行机制",
+      "chapters": [
+        {
+          "slug": "chapter-12-1",
+          "title": "从 .java 到 .class 再到 JVM",
+          "description": "本章覆盖：Java 源代码；javac 编译；Class 文件与字节码；类加载；字节码解释执行与编译执行的高层关系；JVM 与操作系统 / CPU；Java 语言规范与 JVM 规范的边界。",
+          "path": "/tutorials/java-se/chapter-12-1/",
+          "wordCount": 88,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-2",
+          "title": "Class 文件、字节码与 javap 入门",
+          "description": "本章覆盖：Class 文件是结构化二进制格式；魔数与版本号；常量池的基本定位；字段表与方法表；Code 属性与字节码指令；操作数栈模型的初步认识；javap -c / -v 的基础使用；源码结构与字节码的对应观察。",
+          "path": "/tutorials/java-se/chapter-12-2/",
+          "wordCount": 103,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-3",
+          "title": "JVM 运行时数据区：线程栈、堆与方法区概念",
+          "description": "本章覆盖：程序计数器；Java 虚拟机栈；栈帧；局部变量表与操作数栈的高层概念；堆；方法区概念与 Metaspace 实现区别；运行时常量池；线程私有与线程共享区域；本地方法栈在 JVMS 运行时数据区中的定位；StackOverflowError 与栈深度问题；Java heap、Metaspace 与直接内存问题的边界；OutOfMemoryError 不是只有“Java 堆满了”一种原因。",
+          "path": "/tutorials/java-se/chapter-12-3/",
+          "wordCount": 191,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-4",
+          "title": "对象创建、引用与 HotSpot 对象内存基础",
+          "description": "本章覆盖：对象创建的高层步骤；对象内存分配；对象头、实例数据、对齐填充的 HotSpot 基础概念；引用变量与对象本体；对象身份与地址的区别；逃逸、栈上分配等高级实现细节的边界；规范事实与 HotSpot 实现细节的区分；TLAB 与对象分配的高层认识；Mark Word、类型指针等对象头内容只按 HotSpot/JDK 21 实现层理解。",
+          "path": "/tutorials/java-se/chapter-12-4/",
+          "wordCount": 164,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-5",
+          "title": "类加载生命周期、ClassLoader 与双亲委派模型",
+          "description": "本章覆盖：加载、验证、准备、解析、初始化；类初始化触发条件的基础；ClassLoader；Bootstrap、Platform、Application ClassLoader；双亲委派的基本过程；类的唯一性与类加载器；自定义类加载器的基础认识；classpath 与类加载查找的关系；Class.forName 与 ClassLoader.loadClass 在类初始化行为上的常见差异；线程上下文类加载器（TCCL）只作 SPI / 框架场景的基础认识。",
+          "path": "/tutorials/java-se/chapter-12-5/",
+          "wordCount": 222,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-6",
+          "title": "可达性分析、引用类型与垃圾回收判定",
+          "description": "本章覆盖：垃圾对象判定问题；GC Roots；可达性分析；强引用；软引用；弱引用；虚引用；finalization 的历史地位与不推荐边界。",
+          "path": "/tutorials/java-se/chapter-12-6/",
+          "wordCount": 70,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-7",
+          "title": "垃圾回收算法与常见 GC 概览",
+          "description": "本章覆盖：标记-清除；标记-复制；标记-整理；分代收集思想；Minor / Young GC 与 Old / Full GC 的术语边界；G1 基础定位；ZGC / Shenandoah 等低停顿收集器的高层认识；GC 选择属于 JVM 实现与运行参数层；JDK 21 默认垃圾收集器 G1；G1 Region、Young GC、Mixed GC 与停顿目标的高层模型；CMS 作为历史面试知识，不作为 JDK 21 当前主线垃圾收集器。",
+          "path": "/tutorials/java-se/chapter-12-7/",
+          "wordCount": 194,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-8",
+          "title": "JIT、HotSpot 与 JVM 监控诊断工具入门",
+          "description": "本章覆盖：解释执行与 JIT 编译；热点代码；HotSpot 的定位；分层编译的高层认识；jps；jcmd；jstack；jmap / jstat / JFR 等工具的用途边界；-Xms、-Xmx、-Xss 等常见内存参数的作用边界；-Xlog:gc 等统一日志基础；-XX:+HeapDumpOnOutOfMemoryError 等故障留证思路；OOM、CPU 飙高、死锁、频繁 GC 的基础排查链路。",
+          "path": "/tutorials/java-se/chapter-12-8/",
+          "wordCount": 190,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "JavaSE 综合实战实验室",
+      "chapters": [
+        {
+          "slug": "chapter-13-1",
+          "title": "订单状态流转与金额计算控制台系统",
+          "description": "本章覆盖：订单、订单项、金额等核心业务对象；订单状态机与合法状态流转；BigDecimal 金额计算；集合组织订单数据；业务异常与非法状态处理；文件持久化或配置读取；JUnit 验收与边界测试。",
+          "path": "/tutorials/java-se/chapter-13-1/",
+          "wordCount": 97,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-2",
+          "title": "库存预占、释放与过期处理模拟器",
+          "description": "本章覆盖：商品库存与库存记录模型；可用库存、预占库存、已扣减库存；预占与释放业务规则；超时释放；并发修改与线程安全；任务调度的简化实现；异常路径与数据一致性验收。",
+          "path": "/tutorials/java-se/chapter-13-2/",
+          "wordCount": 83,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-3",
+          "title": "本地日志分析与异常统计工具",
+          "description": "本章覆盖：日志文件读取与目录扫描；Charset 与文本解码；正则表达式提取字段；Map 计数与分组统计；日期时间解析；大文件逐行处理；结果排序、汇总与输出。",
+          "path": "/tutorials/java-se/chapter-13-3/",
+          "wordCount": 79,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-4",
+          "title": "多客户端 TCP 聊天与消息广播服务",
+          "description": "本章覆盖：客户端、服务端与连接会话模型；TCP 消息协议；多客户端连接管理；线程池与并发集合；消息广播；客户端异常断开与资源释放；服务端关闭与测试验收。",
+          "path": "/tutorials/java-se/chapter-13-4/",
+          "wordCount": 77,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-5",
+          "title": "并发任务调度与执行监控器",
+          "description": "本章覆盖：任务模型与任务状态；ExecutorService / ThreadPoolExecutor；任务队列与拒绝策略；Future / CompletableFuture；并发状态统计；任务失败与超时处理；执行日志与结果汇总。",
+          "path": "/tutorials/java-se/chapter-13-5/",
+          "wordCount": 114,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-6",
+          "title": "HTTP 数据采集、配置与本地缓存工具",
+          "description": "本章覆盖：HttpClient 请求与响应；URI 与请求参数；配置文件与 Properties；JSON 等外部格式只作为原始文本处理或明确限制范围；本地文件缓存；缓存过期策略的简化设计；网络异常、重试边界与测试。",
+          "path": "/tutorials/java-se/chapter-13-6/",
+          "wordCount": 106,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/java-se/",
+  "sortOrder": 1
+}

@@ -1,0 +1,46 @@
+{
+  "slug": "atlasflow",
+  "title": "AtlasFlow · 全球地图相册",
+  "description": "基于三维地球的互动摄影探索网站：点击地点寻找附近公开影像，在动态照片墙中浏览，并用摄像头手势聚合照片球、散开与平移。",
+  "category": "软件项目",
+  "format": "Web 应用",
+  "techStack": [
+    "Vue 3",
+    "TypeScript",
+    "Vite",
+    "MapLibre GL",
+    "GSAP",
+    "MediaPipe",
+    "Wikimedia Commons"
+  ],
+  "status": "COMPLETED",
+  "publishedAt": "2026-10-16",
+  "updatedAt": "2026-10-16",
+  "startedOn": null,
+  "endedOn": null,
+  "featured": false,
+  "cover": "/images/content/0d6e00e58cbcf922.webp",
+  "screenshots": [
+    {
+      "src": "/images/content/8a8ff2792ca2c4fa.webp",
+      "alt": "三维地球探索界面"
+    },
+    {
+      "src": "/images/content/5fc21c8d0aad43df.webp",
+      "alt": "附近公开影像照片墙"
+    }
+  ],
+  "links": [
+    {
+      "label": "项目源码",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/atlasflow",
+      "type": "GITHUB"
+    },
+    {
+      "label": "运行说明",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/atlasflow/README.md",
+      "type": "DOC"
+    }
+  ],
+  "path": "/portfolio/atlasflow/"
+}

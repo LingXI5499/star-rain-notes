@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 弹窗需要维护打开/关闭和确认结果，原生 <code>dialog</code> 可以简化焦点处理。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const dialog = document.querySelector('dialog');
+document.querySelector('#open').onclick = () =&gt; dialog.showModal();
+document.querySelector('#close').onclick = () =&gt; dialog.close('ok');
+</code></pre>
+<p><strong>学完能做：</strong> 打开、关闭弹窗并处理确认结果。</p>

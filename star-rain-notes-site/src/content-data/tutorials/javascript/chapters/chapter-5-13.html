@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 逐项验证时让错误消息与控件关联，并将焦点放到第一个错误字段。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const input = document.querySelector('#name');
+const error = document.querySelector('#nameError');
+input.setAttribute('aria-describedby', 'nameError');
+if (!input.value.trim()) { error.textContent = '请输入姓名'; input.focus(); }
+</code></pre>
+<p><strong>学完能做：</strong> 关联错误信息与对应输入控件。</p>

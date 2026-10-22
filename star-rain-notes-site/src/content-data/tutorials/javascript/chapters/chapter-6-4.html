@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> <code>async</code> 函数总是返回 Promise，<code>await</code> 暂停当前异步函数等待结果，<code>finally</code> 做收尾。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">async function load() {
+  try { return await Promise.resolve(42); }
+  finally { console.log('请求结束'); }
+}
+load().then(console.log);
+</code></pre>
+<p><strong>学完能做：</strong> 使用 async/await 编排异步流程和清理。</p>

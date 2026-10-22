@@ -1,0 +1,36 @@
+{
+  "slug": "musiclingxi",
+  "title": "MusicLingXi · 离线音乐播放器",
+  "description": "面向个人使用的 Android 离线播放器，使用原生 Web 技术组织播放界面，并通过原生媒体会话实现后台、通知与锁屏控制，支持同步歌词和播放模式。",
+  "category": "软件项目",
+  "format": "移动应用",
+  "techStack": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "Vite",
+    "Capacitor 8",
+    "Android MediaSession"
+  ],
+  "status": "COMPLETED",
+  "publishedAt": "2026-10-16",
+  "updatedAt": "2026-10-16",
+  "startedOn": null,
+  "endedOn": null,
+  "featured": false,
+  "cover": "/images/content/1fae31c6163412f3.webp",
+  "screenshots": [],
+  "links": [
+    {
+      "label": "项目源码",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/musiclingxi",
+      "type": "GITHUB"
+    },
+    {
+      "label": "运行说明",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/musiclingxi/README.md",
+      "type": "DOC"
+    }
+  ],
+  "path": "/portfolio/musiclingxi/"
+}

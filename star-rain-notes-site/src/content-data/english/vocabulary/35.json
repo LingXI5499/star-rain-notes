@@ -1,0 +1,810 @@
+{
+  "id": "35",
+  "title": "媒体 / 广告 / 信息传播",
+  "layer": "社会与世界主题层",
+  "wordCount": 89,
+  "path": "/english/vocabulary/35/",
+  "words": [
+    {
+      "word": "evidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛvɪdəns",
+      "phoneticUk": "'evɪd(ə)ns",
+      "translation": "根据；证据，证人；根据，证据，迹象",
+      "sceneMeaning": "证据",
+      "examples": "[]"
+    },
+    {
+      "word": "source",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɔrs",
+      "phoneticUk": "sɔːs",
+      "translation": "来源",
+      "sceneMeaning": "来源；消息来源",
+      "examples": "[]"
+    },
+    {
+      "word": "audience",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔdɪəns",
+      "phoneticUk": "'ɔːdɪəns",
+      "translation": "听众，观众，读者",
+      "sceneMeaning": "观众；受众",
+      "examples": "[]"
+    },
+    {
+      "word": "data",
+      "partOfSpeech": "n",
+      "phoneticUs": "'detə",
+      "phoneticUk": "'deɪtə",
+      "translation": "数据;；资料",
+      "sceneMeaning": "数据",
+      "examples": "[]"
+    },
+    {
+      "word": "digital",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪdʒɪtl",
+      "phoneticUk": "'dɪdʒɪt(ə)l",
+      "translation": "数字的，计数的",
+      "sceneMeaning": "数字的；数码的",
+      "examples": "[]"
+    },
+    {
+      "word": "fact",
+      "partOfSpeech": "n",
+      "phoneticUs": "fækt",
+      "phoneticUk": "fækt",
+      "translation": "事实；实际，实情",
+      "sceneMeaning": "事实",
+      "examples": "[]"
+    },
+    {
+      "word": "influence",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɪnfluəns",
+      "phoneticUk": "'ɪnflʊəns",
+      "translation": "影响；势力；影响",
+      "sceneMeaning": "影响；影响力",
+      "examples": "[]"
+    },
+    {
+      "word": "information",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnfɚ'meʃən",
+      "phoneticUk": "ɪnfə'meɪʃ(ə)n",
+      "translation": "消息，信息；通知",
+      "sceneMeaning": "信息",
+      "examples": "[]"
+    },
+    {
+      "word": "interview",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɪntɚvju",
+      "phoneticUk": "'ɪntəvjuː",
+      "translation": "接见；会见；面谈；面谈（试）；会见；；采访 ；面试",
+      "sceneMeaning": "采访；面试",
+      "examples": "[]"
+    },
+    {
+      "word": "message",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛsɪdʒ",
+      "phoneticUk": "'mesɪdʒ",
+      "translation": "信息，消息；启示",
+      "sceneMeaning": "信息；消息",
+      "examples": "[]"
+    },
+    {
+      "word": "news",
+      "partOfSpeech": "n",
+      "phoneticUs": "nuz",
+      "phoneticUk": "njuːz",
+      "translation": "新闻，消息",
+      "sceneMeaning": "新闻；消息",
+      "examples": "[]"
+    },
+    {
+      "word": "program",
+      "partOfSpeech": "n",
+      "phoneticUs": "'proɡræm",
+      "phoneticUk": "'prəʊɡræm",
+      "translation": "节目单；大纲；程序",
+      "sceneMeaning": "节目；程序",
+      "examples": "[]"
+    },
+    {
+      "word": "radio",
+      "partOfSpeech": "n",
+      "phoneticUs": "'redɪo",
+      "phoneticUk": "'reɪdɪəʊ",
+      "translation": "无线电；收音机",
+      "sceneMeaning": "广播；收音机",
+      "examples": "[]"
+    },
+    {
+      "word": "reach",
+      "partOfSpeech": "v",
+      "phoneticUs": "ritʃ",
+      "phoneticUk": "riːtʃ",
+      "translation": "抵达；伸出vi达到",
+      "sceneMeaning": "覆盖人数；影响范围",
+      "examples": "[]"
+    },
+    {
+      "word": "report",
+      "partOfSpeech": "vt&vi",
+      "phoneticUs": "rɪ'pɔrt",
+      "phoneticUk": "rɪ'pɔːt",
+      "translation": "报告；汇报",
+      "sceneMeaning": "报道；报告",
+      "examples": "[]"
+    },
+    {
+      "word": "traffic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'træfɪk",
+      "phoneticUk": "'træfɪk",
+      "translation": "交通，通行；交通量",
+      "sceneMeaning": "流量；交通",
+      "examples": "[]"
+    },
+    {
+      "word": "trend",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trɛnd",
+      "phoneticUk": "trend",
+      "translation": "伸向；倾向；倾向",
+      "sceneMeaning": "趋势；潮流",
+      "examples": "[]"
+    },
+    {
+      "word": "list",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɪst",
+      "phoneticUk": "lɪst",
+      "translation": "表，目录；列举",
+      "sceneMeaning": "表，目录；列举",
+      "examples": "[]"
+    },
+    {
+      "word": "opinion",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'pɪnjən",
+      "phoneticUk": "ə'pɪnjən",
+      "translation": "意见，看法，主张",
+      "sceneMeaning": "观点；意见",
+      "examples": "[]"
+    },
+    {
+      "word": "feed",
+      "partOfSpeech": "v",
+      "phoneticUs": "fid",
+      "phoneticUk": "fiːd",
+      "translation": "喂(养)；吃饲料",
+      "sceneMeaning": "信息流；动态",
+      "examples": "[]"
+    },
+    {
+      "word": "impression",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'prɛʃən",
+      "phoneticUk": "ɪm'preʃ(ə)n",
+      "translation": "印；印象；印记",
+      "sceneMeaning": "展示次数；印象",
+      "examples": "[]"
+    },
+    {
+      "word": "post",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "post",
+      "phoneticUk": "pəʊst",
+      "translation": "柱，桩，杆；贴出",
+      "sceneMeaning": "帖子；职位；邮政",
+      "examples": "[]"
+    },
+    {
+      "word": "commercial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kə'mɝʃəl",
+      "phoneticUk": "kə'mɜːʃ(ə)l",
+      "translation": "商业的；商品化的",
+      "sceneMeaning": "商业广告",
+      "examples": "[]"
+    },
+    {
+      "word": "press",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɛs",
+      "phoneticUk": "pres",
+      "translation": "压，按，揿；催促",
+      "sceneMeaning": "新闻界；出版社",
+      "examples": "[]"
+    },
+    {
+      "word": "privacy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'praɪvəsi",
+      "phoneticUk": "'prɪvəsɪ",
+      "translation": "隐私",
+      "sceneMeaning": "隐私",
+      "examples": "[]"
+    },
+    {
+      "word": "reliable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'laɪəbl",
+      "phoneticUk": "rɪ'laɪəb(ə)l",
+      "translation": "可靠的，可信赖的",
+      "sceneMeaning": "可靠的",
+      "examples": "[]"
+    },
+    {
+      "word": "inform",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'fɔrm",
+      "phoneticUk": "ɪn'fɔːm",
+      "translation": "通知，向…报告",
+      "sceneMeaning": "通知；告知",
+      "examples": "[]"
+    },
+    {
+      "word": "promote",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'mot",
+      "phoneticUk": "prə'məʊt",
+      "translation": "促进，发扬；提升；促进，提升；推销",
+      "sceneMeaning": "推广；促进；提升",
+      "examples": "[]"
+    },
+    {
+      "word": "release",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'lis",
+      "phoneticUk": "rɪ'liːs",
+      "translation": "释放；放松；发表；释放；发布",
+      "sceneMeaning": "释放；放松；发表；释放；发布；本场景常见用法：n. 通讯社或政府机构发布的新闻稿（等于press release）",
+      "examples": "[]"
+    },
+    {
+      "word": "reference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛfrəns",
+      "phoneticUk": "'ref(ə)r(ə)ns",
+      "translation": "参考；出处；提及",
+      "sceneMeaning": "参考；引用",
+      "examples": "[]"
+    },
+    {
+      "word": "campaign",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæm'pen",
+      "phoneticUk": "kæm'peɪn",
+      "translation": "战役；运动；活动",
+      "sceneMeaning": "宣传活动；运动",
+      "examples": "[]"
+    },
+    {
+      "word": "ad",
+      "partOfSpeech": "n",
+      "phoneticUs": "'e 'di",
+      "phoneticUk": "æd",
+      "translation": "广告",
+      "sceneMeaning": "广告；本场景常见用法：印刷广告，平面广告",
+      "examples": "[]"
+    },
+    {
+      "word": "column",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑləm",
+      "phoneticUk": "'kɒləm",
+      "translation": "柱，支柱，圆柱；专栏",
+      "sceneMeaning": "专栏；列",
+      "examples": "[]"
+    },
+    {
+      "word": "content",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'kɑntɛnt",
+      "phoneticUk": "kən'tent",
+      "translation": "满意的，满足的；内容",
+      "sceneMeaning": "内容",
+      "examples": "[]"
+    },
+    {
+      "word": "journal",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɝnl",
+      "phoneticUk": "'dʒɜːn(ə)l",
+      "translation": "日报，杂志；日志",
+      "sceneMeaning": "日报，杂志；日志",
+      "examples": "[]"
+    },
+    {
+      "word": "perspective",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'spɛktɪv",
+      "phoneticUk": "pə'spektɪv",
+      "translation": "透视；远景；观点；视角，观点；远景",
+      "sceneMeaning": "视角；观点",
+      "examples": "[]"
+    },
+    {
+      "word": "platform",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plæt'fɔrm",
+      "phoneticUk": "'plætfɔːm",
+      "translation": "平台；站台；讲台",
+      "sceneMeaning": "平台",
+      "examples": "[]"
+    },
+    {
+      "word": "agency",
+      "partOfSpeech": "n",
+      "phoneticUs": "'edʒənsi",
+      "phoneticUk": "'eɪdʒ(ə)nsɪ",
+      "translation": "经办；代理；代理处；机构",
+      "sceneMeaning": "代理机构；广告公司",
+      "examples": "[]"
+    },
+    {
+      "word": "article",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrtɪkl",
+      "phoneticUk": "'ɑːtɪk(ə)l",
+      "translation": "文章；条款；物品",
+      "sceneMeaning": "文章；条款",
+      "examples": "[]"
+    },
+    {
+      "word": "brand",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "brænd",
+      "phoneticUk": "brænd",
+      "translation": "商品；烙印；铭刻",
+      "sceneMeaning": "品牌",
+      "examples": "[]"
+    },
+    {
+      "word": "editor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛdɪtɚ",
+      "phoneticUk": "'edɪtə",
+      "translation": "编辑，编者，校订者",
+      "sceneMeaning": "编辑",
+      "examples": "[]"
+    },
+    {
+      "word": "engage",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'ɡedʒ",
+      "phoneticUk": "ɪn'geɪdʒ; en-",
+      "translation": "使从事于；聘用；从事；吸引",
+      "sceneMeaning": "使从事于；聘用；从事；吸引",
+      "examples": "[]"
+    },
+    {
+      "word": "ignorant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪɡnərənt",
+      "phoneticUk": "'ɪgn(ə)r(ə)nt",
+      "translation": "不知道的；无知的；无知的",
+      "sceneMeaning": "不知道的；无知的；无知的",
+      "examples": "[]"
+    },
+    {
+      "word": "image",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪmɪdʒ",
+      "phoneticUk": "'ɪmɪdʒ",
+      "translation": "像；形象；映象；形象，声誉，；印象",
+      "sceneMeaning": "图像；形象",
+      "examples": "[]"
+    },
+    {
+      "word": "newspaper",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nuzpepɚ",
+      "phoneticUk": "'njuːzpeɪpə; 'njuːs-",
+      "translation": "报纸，报",
+      "sceneMeaning": "报纸",
+      "examples": "[]"
+    },
+    {
+      "word": "objective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əb'dʒɛktɪv",
+      "phoneticUk": "əb'dʒektɪv",
+      "translation": "客观的；无偏见的",
+      "sceneMeaning": "客观的",
+      "examples": "[]"
+    },
+    {
+      "word": "comment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmɛnt",
+      "phoneticUk": "'kɒment",
+      "translation": "评论，意见；注释；评论",
+      "sceneMeaning": "评论；意见",
+      "examples": "[]"
+    },
+    {
+      "word": "cover",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kʌvɚ",
+      "phoneticUk": "'kʌvə",
+      "translation": "盖，包括；盖子",
+      "sceneMeaning": "盖，包括；盖子；本场景常见用法：覆盖",
+      "examples": "[]"
+    },
+    {
+      "word": "engagement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'ɡedʒmənt",
+      "phoneticUk": "ɪnˈgeɪdʒmənt",
+      "translation": "婚约",
+      "sceneMeaning": "互动；参与度",
+      "examples": "[]"
+    },
+    {
+      "word": "investigate",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "ɪn'vɛstɪɡet",
+      "phoneticUk": "ɪn'vestɪgeɪt",
+      "translation": "调查",
+      "sceneMeaning": "调查",
+      "examples": "[]"
+    },
+    {
+      "word": "investigation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn,vɛstɪ'ɡeʃən",
+      "phoneticUk": "ɪn,vestɪ'geɪʃ(ə)n",
+      "translation": "调查，调查研究",
+      "sceneMeaning": "调查",
+      "examples": "[]"
+    },
+    {
+      "word": "reporter",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'pɔrtɚ",
+      "phoneticUk": "rɪ'pɔːtə",
+      "translation": "记者，通讯员",
+      "sceneMeaning": "记者",
+      "examples": "[]"
+    },
+    {
+      "word": "advertisement",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ædvɚ'taɪzmənt",
+      "phoneticUk": "əd'vɜːtɪzm(ə)nt; -tɪs-",
+      "translation": "广告；公告；登广告",
+      "sceneMeaning": "广告",
+      "examples": "[]"
+    },
+    {
+      "word": "agent",
+      "partOfSpeech": "n",
+      "phoneticUs": "'edʒənt",
+      "phoneticUk": "'eɪdʒ(ə)nt",
+      "translation": "代理人，代理商；代理商",
+      "sceneMeaning": "代理人，代理商；代理商；本场景常见用法：控制媒体；调节体",
+      "examples": "[]"
+    },
+    {
+      "word": "banner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bænɚ",
+      "phoneticUk": "'bænə",
+      "translation": "旗，旗帜，横幅",
+      "sceneMeaning": "横幅；网页广告条",
+      "examples": "[]"
+    },
+    {
+      "word": "broadcast",
+      "partOfSpeech": "n",
+      "phoneticUs": "'brɔdkæst",
+      "phoneticUk": "'brɔːdkɑːst",
+      "translation": "广播，播音",
+      "sceneMeaning": "广播；播出",
+      "examples": "[]"
+    },
+    {
+      "word": "exposure",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'spoʒɚ",
+      "phoneticUk": "ɪk'spəʊʒə; ek-",
+      "translation": "暴露；揭露；曝光；暴露；揭露",
+      "sceneMeaning": "曝光；暴露",
+      "examples": "[]"
+    },
+    {
+      "word": "heading",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛdɪŋ",
+      "phoneticUk": "'hedɪŋ",
+      "translation": "标题，题词，题名",
+      "sceneMeaning": "标题，题词，题名；本场景常见用法：主题标目",
+      "examples": "[]"
+    },
+    {
+      "word": "impress",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'prɛs",
+      "phoneticUk": "ɪm'pres",
+      "translation": "给…深刻印象",
+      "sceneMeaning": "给…深刻印象",
+      "examples": "[]"
+    },
+    {
+      "word": "impressive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'prɛsɪv",
+      "phoneticUk": "ɪm'presɪv",
+      "translation": "给人印象深刻的",
+      "sceneMeaning": "给人印象深刻的",
+      "examples": "[]"
+    },
+    {
+      "word": "inquiry",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'kwaɪri; 'ɪn,kwaɪri; 'ɪnkwəri; 'ɪŋkwaɪri",
+      "phoneticUk": "ɪn'kwaɪrɪ",
+      "translation": "询问，打听；调查；询问",
+      "sceneMeaning": "询问，打听；调查；询问；本场景常见用法：调查委员会",
+      "examples": "[]"
+    },
+    {
+      "word": "listener",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪsənɚ",
+      "phoneticUk": "'lɪs(ə)nə",
+      "translation": "听者，听众之一",
+      "sceneMeaning": "听众",
+      "examples": "[]"
+    },
+    {
+      "word": "magazine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mæɡəzin",
+      "phoneticUk": "mægə'ziːn",
+      "translation": "杂志，期刊",
+      "sceneMeaning": "杂志",
+      "examples": "[]"
+    },
+    {
+      "word": "promotional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'moʃənl",
+      "phoneticUk": "prə'məʊʃənl",
+      "translation": "促销的",
+      "sceneMeaning": "促销的；本场景常见用法：宣传资料；宣传片",
+      "examples": "[]"
+    },
+    {
+      "word": "quote",
+      "partOfSpeech": "v",
+      "phoneticUs": "kwot",
+      "phoneticUk": "kwəʊt",
+      "translation": "引用，引证；报价",
+      "sceneMeaning": "引用；报价",
+      "examples": "[]"
+    },
+    {
+      "word": "reader",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ridɚ",
+      "phoneticUk": "'riːdə",
+      "translation": "读者；读物，读本",
+      "sceneMeaning": "读者",
+      "examples": "[]"
+    },
+    {
+      "word": "sway",
+      "partOfSpeech": "v",
+      "phoneticUs": "swe",
+      "phoneticUk": "sweɪ",
+      "translation": "摇动；摇；摇动；影响",
+      "sceneMeaning": "摇动；摇；摇动；影响",
+      "examples": "[]"
+    },
+    {
+      "word": "update",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ʌp'det",
+      "phoneticUk": "ˌʌpˈdeɪt",
+      "translation": "更新；使现代化",
+      "sceneMeaning": "更新；最新消息",
+      "examples": "[]"
+    },
+    {
+      "word": "accuracy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ækjərəsi",
+      "phoneticUk": "'ækjʊrəsɪ",
+      "translation": "准确(性)；准确度",
+      "sceneMeaning": "准确性",
+      "examples": "[]"
+    },
+    {
+      "word": "bore",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɔr",
+      "phoneticUk": "bɔː",
+      "translation": "使厌烦；钻，挖",
+      "sceneMeaning": "使厌烦；钻，挖",
+      "examples": "[]"
+    },
+    {
+      "word": "channel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃænl",
+      "phoneticUk": "'tʃæn(ə)l",
+      "translation": "海峡；渠道；频道",
+      "sceneMeaning": "频道；渠道",
+      "examples": "[]"
+    },
+    {
+      "word": "conversion",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'vɝʒn",
+      "phoneticUk": "kən'vɜːʃ(ə)n",
+      "translation": "转变，转化；改变",
+      "sceneMeaning": "转化；转换",
+      "examples": "[]"
+    },
+    {
+      "word": "deceive",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'siv",
+      "phoneticUk": "dɪ'siːv",
+      "translation": "欺骗，蒙蔽，行骗",
+      "sceneMeaning": "欺骗，蒙蔽，行骗",
+      "examples": "[]"
+    },
+    {
+      "word": "expose",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'spoz；ek-",
+      "phoneticUk": "ɪk'spəʊz; ek-",
+      "translation": "使暴露；揭露；暴露",
+      "sceneMeaning": "使暴露；揭露；暴露",
+      "examples": "[]"
+    },
+    {
+      "word": "gramme",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡræm",
+      "phoneticUk": "ɡræm",
+      "translation": "克(重量单位)",
+      "sceneMeaning": "克(重量单位)",
+      "examples": "[]"
+    },
+    {
+      "word": "headline",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛdlaɪn",
+      "phoneticUk": "'hedlaɪn",
+      "translation": "大字标题；新闻提要",
+      "sceneMeaning": "标题；头条",
+      "examples": "[]"
+    },
+    {
+      "word": "influential",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪnflu'ɛnʃl",
+      "phoneticUk": ",ɪnflʊ'enʃ(ə)l",
+      "translation": "有影响的；有权势的；有影响力的",
+      "sceneMeaning": "有影响的；有权势的；有影响力的",
+      "examples": "[]"
+    },
+    {
+      "word": "journalist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɝnəlɪst",
+      "phoneticUk": "'dʒɜːn(ə)lɪst",
+      "translation": "记者，新闻工作者",
+      "sceneMeaning": "记者；新闻工作者",
+      "examples": "[]"
+    },
+    {
+      "word": "messenger",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛsndʒɚ",
+      "phoneticUk": "'mesɪn(d)ʒə",
+      "translation": "送信者，信使",
+      "sceneMeaning": "送信者，信使",
+      "examples": "[]"
+    },
+    {
+      "word": "mislead",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mɪs'lid",
+      "phoneticUk": "mɪs'liːd",
+      "translation": "使误入岐途；误导",
+      "sceneMeaning": "误导",
+      "examples": "[]"
+    },
+    {
+      "word": "persuade",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɚ'swed",
+      "phoneticUk": "pə'sweɪd",
+      "translation": "说服；被说服",
+      "sceneMeaning": "说服",
+      "examples": "[]"
+    },
+    {
+      "word": "persuasion",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'sweʒn",
+      "phoneticUk": "pə'sweɪʒn",
+      "translation": "劝说",
+      "sceneMeaning": "劝说",
+      "examples": "[]"
+    },
+    {
+      "word": "programmer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'progræmɚ",
+      "phoneticUk": "'prəʊgræmə",
+      "translation": "程序设计员",
+      "sceneMeaning": "程序设计员",
+      "examples": "[]"
+    },
+    {
+      "word": "publicize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'pʌblɪsaɪz",
+      "phoneticUk": "'pʌblɪsaɪz",
+      "translation": "宣布",
+      "sceneMeaning": "宣布",
+      "examples": "[]"
+    },
+    {
+      "word": "publish",
+      "partOfSpeech": "v",
+      "phoneticUs": "'pʌblɪʃ",
+      "phoneticUk": "'pʌblɪʃ",
+      "translation": "公布；发表；出版",
+      "sceneMeaning": "出版；发布",
+      "examples": "[]"
+    },
+    {
+      "word": "quotation",
+      "partOfSpeech": "n",
+      "phoneticUs": "kwo'teʃən",
+      "phoneticUk": "kwə(ʊ)'teɪʃ(ə)n",
+      "translation": "引用；引文；报价单；引文",
+      "sceneMeaning": "引语；引用",
+      "examples": "[]"
+    },
+    {
+      "word": "transparent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "træns'pærənt",
+      "phoneticUk": "træn'spær(ə)nt; trɑːn-; -'speə-",
+      "translation": "透明的；易识破的",
+      "sceneMeaning": "透明的；易识破的；本场景常见用法：透明塑胶",
+      "examples": "[]"
+    },
+    {
+      "word": "verify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'vɛrɪfaɪ",
+      "phoneticUk": "'verɪfaɪ",
+      "translation": "证实，查证；证明",
+      "sceneMeaning": "核实；验证",
+      "examples": "[]"
+    },
+    {
+      "word": "witness",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈwɪtnɪs",
+      "phoneticUk": "ˈwɪtnɪs",
+      "translation": "证据；证人；目击；目击者，目击",
+      "sceneMeaning": "目击者；证人",
+      "examples": "[]"
+    }
+  ]
+}

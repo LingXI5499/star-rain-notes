@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>call/apply</code> 立即调用并指定 <code>this</code>，<code>bind</code> 返回绑定好 <code>this</code> 的新函数。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">function greet(msg) { return `${msg}，${this.name}`; }
+const u = { name: '小明' };
+console.log(greet.call(u, '你好'), greet.bind(u)('早上好'));
+</code></pre>
+<p><strong>学完能做：</strong> 使用 call、apply、bind 控制函数上下文。</p>

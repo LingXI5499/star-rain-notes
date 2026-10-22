@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> <code>IntersectionObserver</code> 观察元素是否进入视口，可实现懒加载、入场效果和阅读定位。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const observer = new IntersectionObserver(entries =&gt; {
+  entries.forEach(e =&gt; { if (e.isIntersecting) e.target.classList.add('visible'); });
+});
+observer.observe(document.querySelector('.card'));
+</code></pre>
+<p><strong>学完能做：</strong> 通过可见性观察实现进入视口响应。</p>

@@ -1,0 +1,920 @@
+{
+  "slug": "stl",
+  "title": "STL",
+  "description": "面向秋招、算法训练与真实 C++ 开发的 STL 教程体系，覆盖容器、迭代器、算法、Callable、Allocator、复杂度、失效规则、性能选型以及 C++20 Ranges 与 Views。",
+  "category": "通用编程与开发工具体系",
+  "categorySlug": "315825310246",
+  "publishedAt": "2026-08-28",
+  "chapterCount": 105,
+  "wordCount": 19629,
+  "categoryId": "3",
+  "groups": [
+    {
+      "title": "学习指南",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "STL 学习路线、课程边界与秋招定位",
+          "description": "本章覆盖：STL 的核心不是“背 vector API”，而是泛型组件之间的协议；Containers、Iterators、Algorithms、Function Objects、Allocators 的经典五层结构；STL 与整个 C++ Standard Library 的关系：STL 是核心思想与主要组件集合，但标准库范围更大；秋招高频：vector 扩容、map / unordered_map、迭代器失效、sort、lower_bound、priority_queue、复杂度；企业开发高频：容器选型、所有权、内存分配、缓存局部性、失效规则、算法组合、可读性；与 C++ 模板 / move / RAII 的前置关系；与数据结构算法课程的边界；C++17 / C++20 版本基线；学习方式：复杂度 → 语义 → API → 失效规则 → 实测 → 选型。",
+          "path": "/tutorials/stl/chapter-1-1/",
+          "wordCount": 352,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "STL 架构、泛型思想与标准库边界",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "STL 的诞生、设计目标与 Generic Programming",
+          "description": "本章覆盖：Alexander Stepanov 与 STL 的历史定位；Generic Programming；algorithm 与 data structure 解耦；template 作为泛型实现手段；value type；iterator abstraction；compile-time polymorphism；zero-overhead abstraction 的设计目标；STL 被并入 ISO C++ Standard Library 的历史；现代“STL”常泛指其中的容器 / 迭代器 / 算法等核心组件。",
+          "path": "/tutorials/stl/chapter-2-1/",
+          "wordCount": 240,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "Container、Iterator、Algorithm、Callable、Allocator 五层协作",
+          "description": "本章覆盖：container 提供数据组织；iterator 提供统一访问协议；algorithm 通过 iterator 操作范围；callable 提供策略与判断；allocator 提供内存获取策略；value_type；begin / end；half-open range `[first, last)`；为什么算法不需要知道底层容器具体类型；泛型接口的解耦价值。",
+          "path": "/tutorials/stl/chapter-2-2/",
+          "wordCount": 177,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "Standard Library、STL 与其他库组件边界",
+          "description": "本章覆盖：STL 经典组件；`std::string`；smart pointers；optional / variant；thread library；filesystem；chrono；ranges；标准库范围大于传统 STL；本课程主体聚焦泛型容器与算法体系；其他标准库组件由对应 C++ 课程章节负责。",
+          "path": "/tutorials/stl/chapter-2-3/",
+          "wordCount": 149,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "Value Semantics、Copy / Move 与 STL 元素类型",
+          "description": "本章覆盖：value semantics；CopyConstructible / MoveConstructible 的历史要求认知；move-only type；`unique_ptr` 进入容器；copy / move cost；container relocation；noexcept move；emplace 与对象构造；STL 使用者必须理解对象生命周期；类型能力决定某些容器 / 算法操作是否可用。",
+          "path": "/tutorials/stl/chapter-2-4/",
+          "wordCount": 193,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "Complexity Contract：STL API 的隐藏“性能接口”",
+          "description": "本章覆盖：Big-O；amortized complexity；average complexity；worst-case complexity；complexity guarantee 是 API contract 的一部分；`vector::push_back` 摊还常数；`map::find` 对数复杂度；`unordered_map::find` 平均常数；“O(1)”不代表一定比“O(log n)”快；常数因子、cache、allocation 同样重要。",
+          "path": "/tutorials/stl/chapter-2-5/",
+          "wordCount": 224,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-6",
+          "title": "Standard Guarantee 与 Implementation Detail",
+          "description": "本章覆盖：标准规定接口语义与复杂度要求；implementation freedom；vector 连续存储是标准保证；map 必须满足有序关联语义和复杂度，但标准不写死“必须红黑树”；unordered_map 具有 bucket interface 与平均复杂度要求，常见实现为哈希表；deque 的具体 block 大小不由标准固定；small vector 不是 std::vector 标准能力；libstdc++ / libc++ / MSVC STL 实现差异；面试时要明确“标准要求”和“主流实现”。",
+          "path": "/tutorials/stl/chapter-2-6/",
+          "wordCount": 240,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-7",
+          "title": "Header、Namespace、Feature 与版本可用性",
+          "description": "本章覆盖：`<vector>`；`<map>`；`<unordered_map>`；`<algorithm>`；`<iterator>`；`<numeric>`；`<functional>`；`<memory>`；`<ranges>`；`std` namespace；feature-test macro 的定位；C++17 / C++20 API 差异；不依赖 `bits/stdc++.h` 作为企业可移植代码基础；竞赛环境与企业代码规范的区别。",
+          "path": "/tutorials/stl/chapter-2-7/",
+          "wordCount": 218,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "顺序容器",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "Sequence Container 总览与选型地图",
+          "description": "本章覆盖：array；vector；deque；list；forward_list；sequence order；contiguous vs node-based；random access；front / back insertion；middle insertion；memory overhead；cache locality；先看访问模式和生命周期，再选容器。",
+          "path": "/tutorials/stl/chapter-3-1/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "std::array：固定长度连续容器",
+          "description": "本章覆盖：`std::array<T, N>`；compile-time size；stack / member storage 取决于对象所在位置；contiguous storage；random access；iterators；`.size()`；`.data()`；C array 的更安全包装；size 是类型的一部分；不支持运行时 resize。",
+          "path": "/tutorials/stl/chapter-3-2/",
+          "wordCount": 170,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "std::vector：连续动态数组模型",
+          "description": "本章覆盖：contiguous storage；dynamic size；size；capacity；random access；`data()`；`push_back`；`emplace_back`；insertion / erase；cache locality；vector 是多数动态序列的默认首选。",
+          "path": "/tutorials/stl/chapter-3-3/",
+          "wordCount": 149,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "vector size、capacity、reserve 与 resize",
+          "description": "本章覆盖：size vs capacity；`reserve`；`resize`；capacity growth；reallocation；default / value initialization；reserve 不改变 size；resize 会改变元素数量；预估数据量时 reserve 的价值；过度 reserve 造成浪费；`shrink_to_fit` 是 non-binding request。",
+          "path": "/tutorials/stl/chapter-3-4/",
+          "wordCount": 192,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "vector 扩容、Move / Copy 与迭代器失效",
+          "description": "本章覆盖：growth strategy 是实现细节；常见倍增策略不能写成标准保证；reallocation；move construction；noexcept move 与 copy fallback 的可能性；iterator invalidation；pointer / reference invalidation；insert / erase 的移动成本；保存 `vector` 元素地址的风险；这是秋招最高频 STL 原理题之一。",
+          "path": "/tutorials/stl/chapter-3-5/",
+          "wordCount": 205,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "vector insert、erase、emplace 与 erase-remove Idiom",
+          "description": "本章覆盖：insert；emplace；erase；erase range；remove algorithm 不真正改变容器 size；erase-remove idiom；C++20 `std::erase` / `std::erase_if`；middle modification O(n)；stable order；bulk operation；选错容器导致频繁中间移动的成本。",
+          "path": "/tutorials/stl/chapter-3-6/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-7",
+          "title": "std::deque：分段随机访问序列",
+          "description": "本章覆盖：double-ended queue；random access；front insertion；back insertion；segmented storage 常见实现；contiguous 不保证；`.data()` 不像 vector 那样提供整体连续区间；iterator invalidation 规则比 vector 更复杂；queue / sliding window 场景；需要两端高效增长且仍要索引访问时考虑 deque。",
+          "path": "/tutorials/stl/chapter-3-7/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-8",
+          "title": "std::list：双向链表容器",
+          "description": "本章覆盖：doubly linked list；bidirectional iterator；O(1) 已知位置 insert / erase；no random access；per-node allocation；poor cache locality；`splice`；iterator stability；为什么现代业务中 list 使用频率往往低于 vector；“中间插入 O(1)”不代表 list 就一定更快。",
+          "path": "/tutorials/stl/chapter-3-8/",
+          "wordCount": 196,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-9",
+          "title": "list splice、merge、sort 与节点操作",
+          "description": "本章覆盖：`splice`；node relinking；`merge`；`sort`；`unique`；list 自带成员算法的原因；generic `std::sort` 要求 random access iterator；node ownership transfer；allocator compatibility 边界；链表特有操作应建立在明确场景上。",
+          "path": "/tutorials/stl/chapter-3-9/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-10",
+          "title": "std::forward_list：单向链表与 before 模型",
+          "description": "本章覆盖：singly linked list；forward iterator；`before_begin`；`insert_after`；`erase_after`；no `.size()` 的历史 / 复杂度设计背景；lower node overhead；intrusive-like thinking 的连接；极少见于普通业务；作为理解 iterator category 与单向结构的重要容器。",
+          "path": "/tutorials/stl/chapter-3-10/",
+          "wordCount": 191,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-11",
+          "title": "Sequence Container 迭代器失效对比",
+          "description": "本章覆盖：array 基本稳定性；vector reallocation；vector erase / insert after position；deque 特殊规则；list node stability；forward_list node stability；reference / pointer / iterator 三类失效；end iterator 也可能失效；修改容器时循环 iterator 的安全写法；不靠记一句口诀，应回到具体 operation 查契约。",
+          "path": "/tutorials/stl/chapter-3-11/",
+          "wordCount": 218,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-12",
+          "title": "顺序容器企业选型：array / vector / deque / list 怎么选",
+          "description": "本章覆盖：固定大小：array；默认动态连续序列：vector；两端频繁增长：deque；稳定节点地址 / splice：list；memory footprint；cache locality；allocation count；iteration speed；insertion profile；iterator stability；benchmark；绝大多数“我不知道选什么”的场景先从 vector 开始评估。",
+          "path": "/tutorials/stl/chapter-3-12/",
+          "wordCount": 201,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "有序关联容器",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "Ordered Associative Container 总览",
+          "description": "本章覆盖：`set`；`multiset`；`map`；`multimap`；key ordering；unique vs duplicate key；logarithmic search / insert / erase；comparator；tree-like implementation；sorted traversal；需要顺序、范围查询或稳定对数性能时使用。",
+          "path": "/tutorials/stl/chapter-4-1/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "std::set 与 std::multiset",
+          "description": "本章覆盖：set stores key；unique key；multiset duplicate key；insert；find；erase；count；lower_bound；upper_bound；equal_range；ordered traversal；key element effectively const through iterator。",
+          "path": "/tutorials/stl/chapter-4-2/",
+          "wordCount": 170,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "std::map 与 Key-Value 模型",
+          "description": "本章覆盖：`std::map<Key, T>`；pair-like element；ordered key；unique key；find；insert；emplace；erase；range query；logarithmic complexity；sorted iteration；configuration / index / interval-like business scenarios。",
+          "path": "/tutorials/stl/chapter-4-3/",
+          "wordCount": 189,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "map::operator[]、at、find、contains 的差异",
+          "description": "本章覆盖：`operator[]`；missing key 会插入默认 mapped value；`at()`；`find()`；C++20 `contains()`；read vs write intent；`if (map[key])` 的隐式插入副作用；mapped type 默认构造要求；热路径查找应避免无意插入；API 选择应表达意图。",
+          "path": "/tutorials/stl/chapter-4-4/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "lower_bound、upper_bound、equal_range 与区间查询",
+          "description": "本章覆盖：lower_bound；upper_bound；equal_range；sorted invariant；range query；predecessor / successor 思想；interval boundary；multiset / multimap duplicate range；与 `<algorithm>` 同名函数的 iterator category / complexity 差异；秋招与算法题高频能力。",
+          "path": "/tutorials/stl/chapter-4-5/",
+          "wordCount": 203,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "Comparator、Strict Weak Ordering 与自定义排序",
+          "description": "本章覆盖：`std::less`；comparator；strict weak ordering；irreflexive；transitive；equivalence；comparator 决定 key equivalence；不应返回 `<=`；comparator 状态；lambda / function object comparator；错误 comparator 会破坏容器不变量，结果可能不可预测。",
+          "path": "/tutorials/stl/chapter-4-6/",
+          "wordCount": 195,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "Node Handle、extract、merge 与 Key 修改",
+          "description": "本章覆盖：C++17 node handle；`extract`；node ownership；modify key while extracted；`insert(node_handle)`；`merge`；avoid value reallocation / copy in some cases；allocator compatibility；set / map family；跨容器节点迁移；作为现代高级 API，不需要替代普通 insert / erase。",
+          "path": "/tutorials/stl/chapter-4-7/",
+          "wordCount": 215,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "map / set 实现认知：红黑树、平衡树与标准保证边界",
+          "description": "本章覆盖：ordered associative requirements；logarithmic complexity；bidirectional iteration；stable ordering；主流实现通常使用 red-black tree；标准不强制具体平衡树算法；tree rotation / recoloring 属于数据结构课程；node allocation；cache locality vs vector；面试回答应区分“为什么通常用红黑树”和“标准是否强制红黑树”。",
+          "path": "/tutorials/stl/chapter-4-8/",
+          "wordCount": 233,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "无序关联容器",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "Unordered Associative Container 总览",
+          "description": "本章覆盖：`unordered_set`；`unordered_multiset`；`unordered_map`；`unordered_multimap`；hash；bucket；equality；average constant complexity；worst-case linear complexity；no sorted traversal；lookup-heavy 场景。",
+          "path": "/tutorials/stl/chapter-5-1/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "std::unordered_map 基本模型",
+          "description": "本章覆盖：key-value；hash function；equality predicate；bucket；insert；find；erase；contains；no ordering guarantee；iterator traversal order；rehash may change order；不依赖“当前机器上碰巧稳定”的迭代顺序。",
+          "path": "/tutorials/stl/chapter-5-2/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "Hash、KeyEqual 与哈希一致性契约",
+          "description": "本章覆盖：`std::hash`；custom hash；key equality；equal keys must have same hash；collision；combine multiple fields；immutable key；hash quality；attack / adversarial input 的高层认知；不用对象地址作为逻辑值 key 的默认 hash 方案。",
+          "path": "/tutorials/stl/chapter-5-3/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "Bucket、Load Factor、reserve 与 rehash",
+          "description": "本章覆盖：bucket_count；load_factor；max_load_factor；`reserve`；`rehash`；insert triggering rehash；performance / memory trade-off；reserve by element count；rehash by bucket count intent；high load factor collision cost；over-allocation cost。",
+          "path": "/tutorials/stl/chapter-5-4/",
+          "wordCount": 214,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "unordered_map 迭代器失效与 Rehash 风险",
+          "description": "本章覆盖：rehash invalidates iterators；references / pointers to elements 的标准稳定性边界；erase invalidates erased element；insert may trigger rehash；保存 iterator 后继续插入的风险；loop mutation；reserve 可以减少 rehash 次数；concurrency 仍不安全；iterator invalidation 与 vector 的原因不同。",
+          "path": "/tutorials/stl/chapter-5-5/",
+          "wordCount": 226,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "unordered_multiset / unordered_multimap 与重复 Key",
+          "description": "本章覆盖：duplicate equivalent keys；`count`；equal_range；iteration grouping requirement 的标准认知；erase one / erase range；multi-value index；普通业务中 vector-of-values / map-of-vector 的替代设计；选 multi 容器还是显式建模应看业务语义。",
+          "path": "/tutorials/stl/chapter-5-6/",
+          "wordCount": 184,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "map vs unordered_map：秋招与企业选型",
+          "description": "本章覆盖：ordering；range query；average lookup；worst-case behavior；memory overhead；hash cost；comparison cost；cache locality；iterator stability；deterministic iteration；custom key；security / adversarial input；“unordered_map 一定更快”是错误结论。",
+          "path": "/tutorials/stl/chapter-5-7/",
+          "wordCount": 215,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-8",
+          "title": "哈希表实现认知：Separate Chaining、Open Addressing 与标准边界",
+          "description": "本章覆盖：bucket interface 暗示标准 unordered container 的抽象模型；主流标准库常使用 bucket / chaining 风格实现；open addressing 是常见哈希表技术，但标准 unordered_map 实现自由度受接口语义约束；collision resolution；bucket array；node allocation；flat hash map / robin hood hashing 属于非标准库实现生态；Abseil flat_hash_map 等工程替代只建立认知；标准容器选择与高性能第三方容器选择是不同层次问题。",
+          "path": "/tutorials/stl/chapter-5-8/",
+          "wordCount": 271,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "容器适配器",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "Container Adapter：在已有容器上限制接口",
+          "description": "本章覆盖：adapter pattern；underlying container；restricted interface；stack；queue；priority_queue；与 sequence container 的区别；不直接暴露 iterator；语义接口比底层容器全部能力更重要。",
+          "path": "/tutorials/stl/chapter-6-1/",
+          "wordCount": 142,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "std::stack：LIFO 与底层容器",
+          "description": "本章覆盖：LIFO；push；pop；top；empty；size；default underlying deque；vector / list 作为可选底层的边界；DFS / expression parsing；pop 不返回元素的异常安全 / 接口设计背景。",
+          "path": "/tutorials/stl/chapter-6-2/",
+          "wordCount": 123,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "std::queue：FIFO 与业务队列模型",
+          "description": "本章覆盖：FIFO；front；back；push；pop；default deque；BFS；producer-consumer 数据结构接口；std::queue 本身不是 thread-safe queue；网络 / 任务队列还需要同步与容量策略。",
+          "path": "/tutorials/stl/chapter-6-3/",
+          "wordCount": 122,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "std::priority_queue：Heap Adapter",
+          "description": "本章覆盖：priority queue；max heap default；comparator；top；push；pop；default vector；`std::less`；min heap with `std::greater`；heap operations logarithmic；top constant；Dijkstra / Top-K / scheduler；不支持任意元素 erase / decrease-key 的设计限制。",
+          "path": "/tutorials/stl/chapter-6-4/",
+          "wordCount": 206,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "priority_queue Comparator、Heap 与秋招高频模型",
+          "description": "本章覆盖：Compare 语义容易与“谁在 top”混淆；max heap；min heap；custom struct comparator；lambda comparator；heap invariant；`make_heap`；`push_heap`；`pop_heap`；adapter vs heap algorithms；Top-K complexity；面试中能解释底层 heap 而不是只会模板代码。",
+          "path": "/tutorials/stl/chapter-6-5/",
+          "wordCount": 196,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "迭代器、Range 与遍历模型",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "Iterator 是 STL 的核心抽象接口",
+          "description": "本章覆盖：iterator as generalized pointer；dereference；increment；equality；begin；end；half-open range；container / algorithm decoupling；iterator value type；algorithms consume iterator ranges；STL 泛型体系的真正连接层。",
+          "path": "/tutorials/stl/chapter-7-1/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "Iterator Categories / Concepts 总览",
+          "description": "本章覆盖：input iterator；output iterator；forward iterator；bidirectional iterator；random access iterator；contiguous iterator（C++20）；capability hierarchy；算法要求；iterator category 决定可用操作与复杂度；不是所有 iterator 都能 `it + n`。",
+          "path": "/tutorials/stl/chapter-7-2/",
+          "wordCount": 194,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "begin、end、cbegin、cend 与 const iteration",
+          "description": "本章覆盖：member begin / end；`std::begin`；`std::end`；cbegin；cend；const_iterator；mutable iterator；range-based for；generic code；array support；const correctness in traversal。",
+          "path": "/tutorials/stl/chapter-7-3/",
+          "wordCount": 158,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "Iterator Operations：advance、distance、next、prev",
+          "description": "本章覆盖：`std::advance`；`std::distance`；`std::next`；`std::prev`；category-dependent complexity；random access O(1)；list distance O(n)；negative advance restriction / category；不对 generic iterator 直接写 `+ n`；算法抽象与性能意识结合。",
+          "path": "/tutorials/stl/chapter-7-4/",
+          "wordCount": 198,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "Reverse Iterator 与反向遍历",
+          "description": "本章覆盖：`rbegin`；`rend`；reverse_iterator；base iterator；`base()` 的 off-by-one 关系；reverse search；erase after reverse find 的常见转换陷阱；const reverse iterator；优先可读算法而非手写下标倒序。",
+          "path": "/tutorials/stl/chapter-7-5/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-6",
+          "title": "Iterator Invalidation 总图",
+          "description": "本章覆盖：reallocation；erase；insert；rehash；node-based container；sequence container；end iterator；reference invalidation；pointer invalidation；safe erase while iterating；失效规则必须按 container + operation 精确判断。",
+          "path": "/tutorials/stl/chapter-7-6/",
+          "wordCount": 187,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-7",
+          "title": "Iterator Traits 与泛型算法类型信息",
+          "description": "本章覆盖：`std::iterator_traits`；value_type；difference_type；pointer；reference；iterator_category；generic dispatch 历史设计；custom iterator；C++20 iterator concepts；不要求业务开发手写复杂 iterator，但要能读库代码。",
+          "path": "/tutorials/stl/chapter-7-7/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-8",
+          "title": "Output Iterator 与 Inserter",
+          "description": "本章覆盖：output iterator；`back_inserter`；`front_inserter`；`inserter`；algorithm output range；`std::copy`；container growth；back insertion support；iterator adapter；避免手工 resize / index 的部分场景。",
+          "path": "/tutorials/stl/chapter-7-8/",
+          "wordCount": 174,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-9",
+          "title": "Range 的经典模型：为什么使用 [first, last)",
+          "description": "本章覆盖：half-open interval；empty range；distance；composability；begin == end；subrange；one-past-the-end；不能 dereference end；C++ / STL 中区间设计的一致性；算法边界错误与 off-by-one。",
+          "path": "/tutorials/stl/chapter-7-9/",
+          "wordCount": 148,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-10",
+          "title": "Custom Iterator 与 Iterator Debugging 基础",
+          "description": "本章覆盖：custom container iterator 的最小组成；iterator concept；dereference；increment；sentinel；invalid iterator；debug iterator；`_GLIBCXX_DEBUG` 等实现工具的定位；AddressSanitizer 与 iterator bug 的协作；ordinary business code 优先复用标准 range / view，而不是轻易自造复杂 iterator。",
+          "path": "/tutorials/stl/chapter-7-10/",
+          "wordCount": 225,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "STL Algorithms 核心算法体系",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "Algorithm 总览：Non-modifying、Modifying、Sorting、Numeric",
+          "description": "本章覆盖：`<algorithm>`；`<numeric>`；iterator range；predicate；comparator；algorithm does not own container；non-modifying；modifying；partition；sort / binary search；heap；min/max；numeric；“先找标准算法，再手写循环”。",
+          "path": "/tutorials/stl/chapter-8-1/",
+          "wordCount": 185,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "find、find_if、count、all_of、any_of、none_of",
+          "description": "本章覆盖：`find`；`find_if`；`count`；`count_if`；`all_of`；`any_of`；`none_of`；predicate；linear scan；expressive intent；map/set member find 与 generic find 的复杂度差异。",
+          "path": "/tutorials/stl/chapter-8-2/",
+          "wordCount": 145,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "for_each、transform 与数据转换",
+          "description": "本章覆盖：`for_each`；`transform`；unary transform；binary transform；side effect vs transformation；output iterator；in-place transform；pure transformation；lambda；readable pipeline；不用 for_each 强行代替所有 for loop。",
+          "path": "/tutorials/stl/chapter-8-3/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "copy、move、fill、generate 与批量写入",
+          "description": "本章覆盖：`copy`；`copy_if`；`move`；`fill`；`fill_n`；`generate`；`generate_n`；overlapping range 边界；copy_backward / move_backward；output range size；move algorithm 与 `std::move` cast 的区别。",
+          "path": "/tutorials/stl/chapter-8-4/",
+          "wordCount": 167,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "remove、remove_if、unique 与“算法不删除容器元素”",
+          "description": "本章覆盖：`remove`；`remove_if`；logical removal；returned new end；erase-remove idiom；`unique`；adjacent duplicates；sort + unique；C++20 `std::erase` / `std::erase_if`；容器结构修改与算法元素重排的边界；高频秋招题。",
+          "path": "/tutorials/stl/chapter-8-5/",
+          "wordCount": 173,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-6",
+          "title": "reverse、rotate、swap 与区间重排",
+          "description": "本章覆盖：`reverse`；`rotate`；`iter_swap`；`swap_ranges`；`std::swap`；sequence rearrangement；rotate use case；algorithm complexity；element move / swap；与容器 member swap 的边界。",
+          "path": "/tutorials/stl/chapter-8-6/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-7",
+          "title": "partition、stable_partition 与二分 Partition 思想",
+          "description": "本章覆盖：`partition`；`stable_partition`；predicate split；`partition_point`；stable order；memory / complexity trade-off；quickselect / classification 思想连接；binary search algorithms require partitioned range 的更一般认知；不是只有 sorted range 才能讨论 partition point。",
+          "path": "/tutorials/stl/chapter-8-7/",
+          "wordCount": 227,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-8",
+          "title": "sort、stable_sort 与排序契约",
+          "description": "本章覆盖：`std::sort`；random access iterator requirement；comparator；strict weak ordering；average / worst complexity 标准演进高层认知；`stable_sort`；stability；extra memory implementation trade-off；list 不支持 std::sort；custom struct sorting；面试不应只会 `sort(v.begin(), v.end())`。",
+          "path": "/tutorials/stl/chapter-8-8/",
+          "wordCount": 241,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-9",
+          "title": "partial_sort、nth_element 与 Top-K",
+          "description": "本章覆盖：`partial_sort`；`partial_sort_copy`；`nth_element`；order statistic；Top-K；median；full sort vs partial work；average linear selection 的实现层认知；priority_queue alternative；根据输出需求选择最少工作量。",
+          "path": "/tutorials/stl/chapter-8-9/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-10",
+          "title": "lower_bound、upper_bound、binary_search、equal_range",
+          "description": "本章覆盖：sorted / partitioned precondition；`lower_bound`；`upper_bound`；`binary_search`；`equal_range`；logarithmic comparisons；iterator traversal complexity；random access vs forward iterator；member lower_bound in map/set；comparator consistency；LeetCode / 秋招高频。",
+          "path": "/tutorials/stl/chapter-8-10/",
+          "wordCount": 240,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-11",
+          "title": "merge、includes、set_union / intersection / difference",
+          "description": "本章覆盖：sorted input precondition；`merge`；`inplace_merge`；`includes`；`set_union`；`set_intersection`；`set_difference`；`set_symmetric_difference`；multiset-like sequence semantics；comparator；two-pointer idea；数据合并 / 权限集合 / ID 列表场景。",
+          "path": "/tutorials/stl/chapter-8-11/",
+          "wordCount": 216,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-12",
+          "title": "Heap Algorithms：make_heap、push_heap、pop_heap、sort_heap",
+          "description": "本章覆盖：heap range；`make_heap`；`push_heap`；`pop_heap`；`sort_heap`；max heap；comparator；priority_queue relation；heap property；O(n) heap construction；push / pop logarithmic；了解 adapter 背后的算法层。",
+          "path": "/tutorials/stl/chapter-8-12/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-13",
+          "title": "min、max、minmax、min_element 与 Clamp",
+          "description": "本章覆盖：`min`；`max`；`minmax`；`min_element`；`max_element`；`minmax_element`；`clamp`；comparator；empty range boundary；pair return；business threshold；避免重复遍历时使用合适算法。",
+          "path": "/tutorials/stl/chapter-8-13/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-14",
+          "title": "Numeric Algorithms：accumulate、reduce、iota、scan",
+          "description": "本章覆盖：`<numeric>`；`accumulate`；initial value type；integer overflow / type deduction risk；`reduce`；execution policy 高层认知；associativity requirement；`iota`；`inner_product`；partial sum；inclusive / exclusive scan；parallelization 语义边界；金额 / 浮点累加的数值稳定性问题。",
+          "path": "/tutorials/stl/chapter-8-14/",
+          "wordCount": 231,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Callable、Comparator 与函数对象",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "Callable 在 STL 中的角色",
+          "description": "本章覆盖：function；function pointer；function object；lambda；member function pointer；predicate；comparator；projection（Ranges）；strategy injection；algorithm customization；callable 是“行为参数”。",
+          "path": "/tutorials/stl/chapter-9-1/",
+          "wordCount": 173,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "Lambda 与 STL Algorithm 组合",
+          "description": "本章覆盖：capture；parameter；return bool predicate；comparator lambda；transform lambda；stateful lambda；capture lifetime；mutable；generic lambda；可读性；简单一次性行为优先 lambda。",
+          "path": "/tutorials/stl/chapter-9-2/",
+          "wordCount": 151,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "Function Object 与 operator()",
+          "description": "本章覆盖：functor；class with `operator()`；state；reusable callable；template friendliness；inline opportunity；comparator object；hash object；historical STL design；lambda 本质上生成闭包对象的连接。",
+          "path": "/tutorials/stl/chapter-9-3/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "std::less、greater、equal_to 与透明比较器",
+          "description": "本章覆盖：`std::less`；`std::greater`；`std::equal_to`；`std::less<>`；transparent comparator；heterogeneous lookup；string vs string_view lookup；map/set；avoid temporary key construction；comparator state；透明比较是性能与接口设计高级点。",
+          "path": "/tutorials/stl/chapter-9-4/",
+          "wordCount": 202,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "Strict Weak Ordering：排序与有序容器共同契约",
+          "description": "本章覆盖：irreflexive；asymmetric implication；transitive；equivalence relation；bad comparator；`a <= b` 错误；floating NaN 的特殊思考；sort / set / map 共用契约；comparator bug 可能导致非预期结果甚至破坏算法前提；秋招高频原理。",
+          "path": "/tutorials/stl/chapter-9-5/",
+          "wordCount": 167,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-6",
+          "title": "Hash Function 与自定义 Key",
+          "description": "本章覆盖：`std::hash`；custom hasher；`operator==`；hash consistency；combine fields；immutable identity；string / enum / pair-like key；specialization `std::hash` 的合法边界；external hasher type；quality / distribution；unordered container 性能依赖 hash quality。",
+          "path": "/tutorials/stl/chapter-9-6/",
+          "wordCount": 223,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-7",
+          "title": "std::function、bind 与 invoke 的边界",
+          "description": "本章覆盖：`std::function`；type erasure；callable storage；possible allocation；`std::bind`；placeholders；lambda 通常更清晰；`std::invoke`；member pointer invocation；generic callback；性能敏感路径不机械使用 std::function。",
+          "path": "/tutorials/stl/chapter-9-7/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-8",
+          "title": "Projection、Key Extraction 与“按字段操作”",
+          "description": "本章覆盖：sort by field；find by condition；comparator duplication；projection concept；C++20 ranges projection；`ranges::sort(items, {}, &Type::field)`；member pointer；key extraction；减少手写 comparator；传统 algorithm 与 Ranges API 差异连接。",
+          "path": "/tutorials/stl/chapter-9-8/",
+          "wordCount": 204,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Allocator、Memory Resource 与内存策略",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": "STL 为什么需要 Allocator",
+          "description": "本章覆盖：separation of storage allocation and object construction；allocator template parameter；container memory policy；default `std::allocator`；allocate；deallocate；allocator_traits；element construction；historical complexity；普通业务通常不需要自定义 allocator。",
+          "path": "/tutorials/stl/chapter-10-1/",
+          "wordCount": 231,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "std::allocator 与 allocator_traits 高层模型",
+          "description": "本章覆盖：`std::allocator`；`std::allocator_traits`；rebind 的历史认知；allocate raw storage；construct / destroy 的版本演进；max_size；propagation traits；stateful allocator；container copy / move / swap 语义连接；库作者需要理解，普通使用者不应滥用。",
+          "path": "/tutorials/stl/chapter-10-2/",
+          "wordCount": 193,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "Node-based 与 Contiguous Container 的分配行为",
+          "description": "本章覆盖：vector bulk allocation；map/list per-node allocation 的常见实现；allocation count；fragmentation；cache locality；allocator overhead；object size；node overhead；small allocation；性能问题往往来自数据布局而不只是算法复杂度。",
+          "path": "/tutorials/stl/chapter-10-3/",
+          "wordCount": 184,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "std::pmr 与 Polymorphic Allocator",
+          "description": "本章覆盖：`<memory_resource>`；`std::pmr`；`polymorphic_allocator`；runtime memory resource；pmr container alias；memory resource lifetime；decouple container type from concrete resource；C++17；high-throughput / temporary arena 场景；复杂度来自生命周期与所有权，不是免费优化。",
+          "path": "/tutorials/stl/chapter-10-4/",
+          "wordCount": 227,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "monotonic_buffer_resource 与 Arena 场景",
+          "description": "本章覆盖：monotonic allocation；bulk release；no individual deallocation effect；upstream resource；request-scope / frame-scope temporary objects；parser / compiler / game frame；resource lifetime must outlive containers；memory peak；unsuitable for long-lived arbitrary deletion；benchmark before adoption。",
+          "path": "/tutorials/stl/chapter-10-5/",
+          "wordCount": 269,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-6",
+          "title": "unsynchronized_pool_resource / synchronized_pool_resource",
+          "description": "本章覆盖：pool resource；size classes；repeated small allocations；synchronized vs unsynchronized；thread safety；upstream resource；object lifetime；memory reuse；node-based container workload；concurrency cost；只在 allocation profile 证明有价值时采用。",
+          "path": "/tutorials/stl/chapter-10-6/",
+          "wordCount": 215,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-7",
+          "title": "自定义 Allocator、内存池与企业性能边界",
+          "description": "本章覆盖：custom allocator complexity；alignment；exception safety；propagation；allocator equality；lifetime；thread safety；NUMA / huge pages 只建立高性能系统认知；third-party allocator；jemalloc / tcmalloc 等属于更高层工程选择；“自研 allocator”不是初级项目的炫技点；先 profiler，再优化分配策略。",
+          "path": "/tutorials/stl/chapter-10-7/",
+          "wordCount": 227,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Complexity、Invalidation、Exception Safety 与性能",
+      "chapters": [
+        {
+          "slug": "chapter-11-1",
+          "title": "STL Complexity 总表的阅读方法",
+          "description": "本章覆盖：exact contract；amortized；average；logarithmic；linear；`N log N`；comparisons vs operations；allocator / hash / comparator cost；Big-O 只描述增长趋势；API documentation 中 Complexity 栏必须会看；容器选型要结合数据规模与访问模式。",
+          "path": "/tutorials/stl/chapter-11-1/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-2",
+          "title": "Cache Locality：为什么 vector 常常击败 list",
+          "description": "本章覆盖：contiguous memory；spatial locality；cache line；pointer chasing；branch prediction 高层认知；allocation overhead；iteration throughput；list O(1) insert 的隐藏成本；CPU 真实成本模型；complexity ≠ hardware performance；benchmark with realistic workload。",
+          "path": "/tutorials/stl/chapter-11-2/",
+          "wordCount": 217,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-3",
+          "title": "Iterator / Reference / Pointer Invalidation 全景",
+          "description": "本章覆盖：vector reallocation；deque；list；map/set；unordered rehash；erase；insert；end iterator；reference stability；pointer stability；dangling；修改容器 API 前先查 invalidation contract。",
+          "path": "/tutorials/stl/chapter-11-3/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-4",
+          "title": "Exception Safety of Containers",
+          "description": "本章覆盖：basic guarantee；strong guarantee；no-throw；element constructor throws；allocator throws；comparator throws；move throws；vector reallocation；rollback；unspecified effects 的文档阅读；container guarantee 与 element type 能力相关。",
+          "path": "/tutorials/stl/chapter-11-4/",
+          "wordCount": 203,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-5",
+          "title": "Reserve、Rehash、Batch Operation 与减少重复工作",
+          "description": "本章覆盖：vector reserve；string reserve 的连接；unordered reserve；batch insert；range insert；repeated allocation；repeated hash / compare；known size；amortization；不盲目预留巨大容量；数据规模与峰值内存平衡。",
+          "path": "/tutorials/stl/chapter-11-5/",
+          "wordCount": 164,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-6",
+          "title": "Emplace vs Insert：不要迷信“emplace 一定更快”",
+          "description": "本章覆盖：emplace；emplace_back；insert；push_back；perfect forwarding；temporary object；implicit conversion；duplicate key case；readability；benchmark；modern compiler optimization；先表达正确语义，再考虑构造次数。",
+          "path": "/tutorials/stl/chapter-11-6/",
+          "wordCount": 180,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-7",
+          "title": "Container Memory Overhead 与数据布局",
+          "description": "本章覆盖：element payload；capacity slack；node pointers；tree metadata；bucket array；allocator metadata；padding；millions of small objects；map / unordered_map 高 overhead；flat / sorted vector alternatives；memory budget 是服务端工程真实约束。",
+          "path": "/tutorials/stl/chapter-11-7/",
+          "wordCount": 203,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-8",
+          "title": "Stable Address、Stable Iterator 与对象引用设计",
+          "description": "本章覆盖：stable node address；list；map/set；vector reallocation；unordered reference stability around rehash 的契约；storing pointers into container；external index；ID instead of pointer；ownership；object pool；不要因为需要“引用元素”就无意识制造长期裸指针。",
+          "path": "/tutorials/stl/chapter-11-8/",
+          "wordCount": 207,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-9",
+          "title": "Container Alternatives：Sorted Vector、Flat Containers 与第三方实现认知",
+          "description": "本章覆盖：sorted vector + lower_bound；read-heavy small map；cache locality；batch build；insertion cost；Boost flat_map；C++23 flat_map / flat_set 的补充定位；Abseil flat_hash_map；Folly / LLVM small-vector-like containers；标准容器不是所有性能场景的唯一选择；企业选型要考虑生态、ABI、维护与可移植性。",
+          "path": "/tutorials/stl/chapter-11-9/",
+          "wordCount": 230,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-10",
+          "title": "STL Performance Review 与 Benchmark Checklist",
+          "description": "本章覆盖：data size；access pattern；mutation frequency；ordering requirement；ownership；iterator stability；allocation count；cache locality；hashing / comparison cost；reserve；copy / move；debug vs release；profiler；benchmark；用数据而不是“听说 unordered_map 更快”做结论。",
+          "path": "/tutorials/stl/chapter-11-10/",
+          "wordCount": 230,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "C++20 Ranges 与 Views",
+      "chapters": [
+        {
+          "slug": "chapter-12-1",
+          "title": "Ranges 为什么出现：从 Iterator Pair 到 Range Abstraction",
+          "description": "本章覆盖：classic `[first, last)`；range object；`std::ranges`；begin / end discovery；constrained algorithm；better diagnostics；composability；projection；classic algorithm 仍然重要；Ranges 是扩展，不是把旧 STL 全部废弃。",
+          "path": "/tutorials/stl/chapter-12-1/",
+          "wordCount": 181,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-2",
+          "title": "Range Concepts 与 borrowed_range 基础",
+          "description": "本章覆盖：`range`；`sized_range`；`contiguous_range`；`random_access_range`；`common_range`；`view`；`borrowed_range`；iterator / sentinel；lifetime；concept-based constraints；不要求初学者背所有 concept，但要会查约束。",
+          "path": "/tutorials/stl/chapter-12-2/",
+          "wordCount": 185,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-3",
+          "title": "std::ranges Algorithms 与返回类型",
+          "description": "本章覆盖：`ranges::sort`；`ranges::find`；range overload；iterator overload；projection；constrained algorithm；return result type；dangling protection；member pointer projection；fewer begin/end pairs；与传统 `<algorithm>` 的迁移思路。",
+          "path": "/tutorials/stl/chapter-12-3/",
+          "wordCount": 202,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-4",
+          "title": "View：Lazy、Non-owning 与 Composable",
+          "description": "本章覆盖：view；lazy evaluation；non-owning often, but not universally simple observer；lightweight range；pipeline；no immediate materialization；source lifetime；repeated traversal；side effect；view 不等于“免费 vector”；生命周期是 ranges 最大风险点之一。",
+          "path": "/tutorials/stl/chapter-12-4/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-5",
+          "title": "views::filter、transform、take、drop",
+          "description": "本章覆盖：`views::filter`；`views::transform`；`views::take`；`views::drop`；lazy pipeline；composition；predicate；transform callable；readable data processing；debugging pipeline；与 eager algorithm 的选择。",
+          "path": "/tutorials/stl/chapter-12-5/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-6",
+          "title": "iota、split、join 与序列生成 / 拆分",
+          "description": "本章覆盖：`views::iota`；lazy integer sequence；`views::split`；tokenization；`views::join`；nested ranges；delimiter；string-like data；conversion to owning result；C++20 implementation support / ergonomics 边界。",
+          "path": "/tutorials/stl/chapter-12-6/",
+          "wordCount": 187,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-7",
+          "title": "Range Lifetime、Dangling 与 View Ownership 陷阱",
+          "description": "本章覆盖：temporary range；dangling iterator；dangling view；borrowed_range；owning_view 的版本连接；string_view-like lifetime mindset；pipeline stored beyond source lifetime；lambda capture；container mutation invalidation；lazy evaluation delays bugs；先保证 lifetime，再谈优雅 pipeline。",
+          "path": "/tutorials/stl/chapter-12-7/",
+          "wordCount": 245,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-8",
+          "title": "Ranges Pipeline 与传统 Algorithm 的选型",
+          "description": "本章覆盖：simple one-shot algorithm；multi-step transformation；lazy pipeline；performance；readability；debugging；team compiler baseline；API stability；allocation；materialization；classic algorithms 仍是秋招和企业主干；ranges 作为 C++20 增强能力。",
+          "path": "/tutorials/stl/chapter-12-8/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-9",
+          "title": "C++23 Ranges 补充与版本边界",
+          "description": "本章覆盖：`ranges::to`；additional views；zip-like facilities 的版本认知；chunk / slide 等现代 view 的方向；library support matrix；feature-test；企业项目 C++17 / 20 兼容限制；不为新 API 重写稳定代码；只在工具链和可读性收益明确时采用；把“知道新特性”与“生产可用”分开。",
+          "path": "/tutorials/stl/chapter-12-9/",
+          "wordCount": 181,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "STL 综合实战实验室",
+      "chapters": [
+        {
+          "slug": "chapter-13-1",
+          "title": "秋招容器选型与复杂度审计",
+          "description": "本章覆盖：给出用户、订单、日志、排行榜、缓存、索引等业务场景；array / vector / deque / list；map / unordered_map；set / unordered_set；priority_queue；ordering；lookup；insertion；memory；iterator stability；输出选型理由而不是只给容器名。",
+          "path": "/tutorials/stl/chapter-13-1/",
+          "wordCount": 174,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-2",
+          "title": "高频日志统计与 Top-K 系统",
+          "description": "本章覆盖：vector；unordered_map；custom hash；reserve；priority_queue；sort / partial_sort / nth_element；Top-K；frequency count；memory overhead；complexity；benchmark；比较多种实现而不是只完成正确答案。",
+          "path": "/tutorials/stl/chapter-13-2/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-3",
+          "title": "订单索引与范围查询系统",
+          "description": "本章覆盖：map；unordered_map；multi-index 思想；lower_bound；upper_bound；equal_range；sorted vector alternative；insert / erase；iteration order；ID lookup；time range query；数据规模变化下重新评估结构。",
+          "path": "/tutorials/stl/chapter-13-3/",
+          "wordCount": 165,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-4",
+          "title": "STL Iterator Invalidation Bug 修复实验",
+          "description": "本章覆盖：vector 遍历中 erase；push_back 导致 reallocation；unordered_map insert 导致 rehash；保存失效 iterator；range-for 中结构修改；list erase；safe erase pattern；reserve；sanitizer / debug iterator；输出“为什么失效”而不是只修代码。",
+          "path": "/tutorials/stl/chapter-13-4/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-5",
+          "title": "C++20 Ranges 数据处理管线",
+          "description": "本章覆盖：filter；transform；take；sort materialization boundary；projection；classic algorithm 对照；lifetime；dangling view；readable pipeline；performance measurement；C++17 fallback 方案；判断什么时候 ranges 真正提升可维护性。",
+          "path": "/tutorials/stl/chapter-13-5/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-6",
+          "title": "STL 秋招综合工程与性能审计",
+          "description": "本章覆盖：一个存在容器误用的小型 C++ 项目；list 被错误用于高频遍历；vector 未 reserve 造成大量 reallocation；map / unordered_map 选型不合理；`operator[]` 意外插入；invalid comparator；iterator invalidation；unordered rehash；accidental copy；emplace 滥用；hash quality；Top-K 全量 sort；profiler / benchmark；输出 Complexity、Memory、Correctness、Maintainability 四维审计报告。",
+          "path": "/tutorials/stl/chapter-13-6/",
+          "wordCount": 286,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/stl/",
+  "sortOrder": 28
+}

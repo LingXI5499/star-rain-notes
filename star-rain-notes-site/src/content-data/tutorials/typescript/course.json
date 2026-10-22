@@ -1,0 +1,375 @@
+{
+  "slug": "typescript",
+  "title": "TypeScript",
+  "description": "面向 Vue 3 与 Java 全栈项目的 TypeScript 教程，覆盖类型系统、收窄、泛型、高级类型、声明文件、tsconfig、Vue 类型协作和 API 数据模型。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-09-23",
+  "chapterCount": 40,
+  "wordCount": 21658,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "类型系统基础",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "TypeScript 解决什么问题：静态类型与 JavaScript 运行时",
+          "description": "本章属于「TypeScript / 类型系统基础」，围绕「TypeScript 解决什么问题：静态类型与 JavaScript 运行时」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-1-1/",
+          "wordCount": 592,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "类型注解、类型推断与字面量类型",
+          "description": "本章属于「TypeScript / 类型系统基础」，围绕「类型注解、类型推断与字面量类型」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-1-2/",
+          "wordCount": 532,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "string、number、boolean、bigint、symbol",
+          "description": "本章属于「TypeScript / 类型系统基础」，围绕「string、number、boolean、bigint、symbol」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-1-3/",
+          "wordCount": 592,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "Array、Tuple、ReadonlyArray 与 readonly",
+          "description": "本章属于「TypeScript / 类型系统基础」，围绕「Array、Tuple、ReadonlyArray 与 readonly」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-1-4/",
+          "wordCount": 589,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "any、unknown、never、void、null、undefined",
+          "description": "本章属于「TypeScript / 类型系统基础」，围绕「any、unknown、never、void、null、undefined」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-1-5/",
+          "wordCount": 598,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "对象、函数与类",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "Object Type、Interface 与可选/只读属性",
+          "description": "本章属于「TypeScript / 对象、函数与类」，围绕「Object Type、Interface 与可选/只读属性」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-2-1/",
+          "wordCount": 572,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "type Alias、Intersection 与 Interface 的选择",
+          "description": "本章属于「TypeScript / 对象、函数与类」，围绕「type Alias、Intersection 与 Interface 的选择」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-2-2/",
+          "wordCount": 593,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "函数参数、返回值、Callback 与 Function Type",
+          "description": "本章属于「TypeScript / 对象、函数与类」，围绕「函数参数、返回值、Callback 与 Function Type」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-2-3/",
+          "wordCount": 578,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "函数重载、Call Signature 与真实 API 设计",
+          "description": "本章属于「TypeScript / 对象、函数与类」，围绕「函数重载、Call Signature 与真实 API 设计」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-2-4/",
+          "wordCount": 566,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "Class、Access Modifier、Abstract 与 implements",
+          "description": "本章属于「TypeScript / 对象、函数与类」，围绕「Class、Access Modifier、Abstract 与 implements」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-2-5/",
+          "wordCount": 608,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Union、Narrowing 与类型守卫",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "Union Type 与业务状态建模",
+          "description": "本章属于「TypeScript / Union、Narrowing 与类型守卫」，围绕「Union Type 与业务状态建模」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-3-1/",
+          "wordCount": 549,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "typeof、instanceof、in 与控制流收窄",
+          "description": "本章属于「TypeScript / Union、Narrowing 与类型守卫」，围绕「typeof、instanceof、in 与控制流收窄」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-3-2/",
+          "wordCount": 579,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "自定义 Type Predicate",
+          "description": "本章属于「TypeScript / Union、Narrowing 与类型守卫」，围绕「自定义 Type Predicate」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-3-3/",
+          "wordCount": 549,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "Discriminated Union 与状态机建模",
+          "description": "本章属于「TypeScript / Union、Narrowing 与类型守卫」，围绕「Discriminated Union 与状态机建模」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-3-4/",
+          "wordCount": 573,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "never 穷尽检查与不可能状态消除",
+          "description": "本章属于「TypeScript / Union、Narrowing 与类型守卫」，围绕「never 穷尽检查与不可能状态消除」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-3-5/",
+          "wordCount": 552,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "泛型与类型运算",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "Generic Function、Interface、Class",
+          "description": "本章属于「TypeScript / 泛型与类型运算」，围绕「Generic Function、Interface、Class」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-4-1/",
+          "wordCount": 581,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "Generic Constraint 与 extends",
+          "description": "本章属于「TypeScript / 泛型与类型运算」，围绕「Generic Constraint 与 extends」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-4-2/",
+          "wordCount": 563,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "keyof、typeof 与索引访问类型",
+          "description": "本章属于「TypeScript / 泛型与类型运算」，围绕「keyof、typeof 与索引访问类型」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-4-3/",
+          "wordCount": 545,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "泛型默认值、多类型参数与推断",
+          "description": "本章属于「TypeScript / 泛型与类型运算」，围绕「泛型默认值、多类型参数与推断」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-4-4/",
+          "wordCount": 530,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "Result、PageResult、Table、Form 的泛型业务建模",
+          "description": "本章属于「TypeScript / 泛型与类型运算」，围绕「Result、PageResult、Table、Form 的泛型业务建模」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-4-5/",
+          "wordCount": 593,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "高级类型与工具类型",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "Mapped Type",
+          "description": "本章属于「TypeScript / 高级类型与工具类型」，围绕「Mapped Type」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-5-1/",
+          "wordCount": 520,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "Conditional Type 与 infer",
+          "description": "本章属于「TypeScript / 高级类型与工具类型」，围绕「Conditional Type 与 infer」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-5-2/",
+          "wordCount": 553,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "Partial、Required、Readonly、Pick、Omit",
+          "description": "本章属于「TypeScript / 高级类型与工具类型」，围绕「Partial、Required、Readonly、Pick、Omit」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-5-3/",
+          "wordCount": 595,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "Record、Exclude、Extract、ReturnType、Parameters、Awaited",
+          "description": "本章属于「TypeScript / 高级类型与工具类型」，围绕「Record、Exclude、Extract、ReturnType、Parameters、Awaited」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-5-4/",
+          "wordCount": 646,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "Template Literal Type 与类型体操的工程边界",
+          "description": "本章属于「TypeScript / 高级类型与工具类型」，围绕「Template Literal Type 与类型体操的工程边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-5-5/",
+          "wordCount": 577,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "模块、声明文件与类型生态",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "ES Module 与 type-only import/export",
+          "description": "本章属于「TypeScript / 模块、声明文件与类型生态」，围绕「ES Module 与 type-only import/export」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-6-1/",
+          "wordCount": 586,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": ".d.ts 声明文件",
+          "description": "本章属于「TypeScript / 模块、声明文件与类型生态」，围绕「.d.ts 声明文件」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-6-2/",
+          "wordCount": 520,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "DefinitelyTyped 与 @types",
+          "description": "本章属于「TypeScript / 模块、声明文件与类型生态」，围绕「DefinitelyTyped 与 @types」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-6-3/",
+          "wordCount": 559,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "Module Augmentation 与 Global Declaration",
+          "description": "本章属于「TypeScript / 模块、声明文件与类型生态」，围绕「Module Augmentation 与 Global Declaration」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-6-4/",
+          "wordCount": 601,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "第三方库类型冲突与排错",
+          "description": "本章属于「TypeScript / 模块、声明文件与类型生态」，围绕「第三方库类型冲突与排错」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-6-5/",
+          "wordCount": 526,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "tsconfig 与编译工具链",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "target、module、lib、strict",
+          "description": "本章属于「TypeScript / tsconfig 与编译工具链」，围绕「target、module、lib、strict」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-7-1/",
+          "wordCount": 567,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "moduleResolution、baseUrl、paths",
+          "description": "本章属于「TypeScript / tsconfig 与编译工具链」，围绕「moduleResolution、baseUrl、paths」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-7-2/",
+          "wordCount": 585,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "strictNullChecks、noImplicitAny",
+          "description": "本章属于「TypeScript / tsconfig 与编译工具链」，围绕「strictNullChecks、noImplicitAny」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-7-3/",
+          "wordCount": 585,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "tsc、vue-tsc、Vite/esbuild 的职责分工",
+          "description": "本章属于「TypeScript / tsconfig 与编译工具链」，围绕「tsc、vue-tsc、Vite/esbuild 的职责分工」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-7-4/",
+          "wordCount": 582,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "Source Map、IDE 类型服务与构建错误定位",
+          "description": "本章属于「TypeScript / tsconfig 与编译工具链」，围绕「Source Map、IDE 类型服务与构建错误定位」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-7-5/",
+          "wordCount": 567,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Vue / API 工程与秋招",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "Vue Props、Emits、ref、reactive 的类型",
+          "description": "本章属于「TypeScript / Vue / API 工程与秋招」，围绕「Vue Props、Emits、ref、reactive 的类型」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-8-1/",
+          "wordCount": 583,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "Axios / Fetch、DTO、VO、PageResult 的接口类型",
+          "description": "本章属于「TypeScript / Vue / API 工程与秋招」，围绕「Axios / Fetch、DTO、VO、PageResult 的接口类型」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-8-2/",
+          "wordCount": 595,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "静态类型与 Runtime Validation 的边界",
+          "description": "本章属于「TypeScript / Vue / API 工程与秋招」，围绕「静态类型与 Runtime Validation 的边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-8-3/",
+          "wordCount": 568,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "TypeScript 常见编译错误与工程排错",
+          "description": "本章属于「TypeScript / Vue / API 工程与秋招」，围绕「TypeScript 常见编译错误与工程排错」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-8-4/",
+          "wordCount": 556,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "TypeScript 秋招高频题与综合验收",
+          "description": "本章属于「TypeScript / Vue / API 工程与秋招」，围绕「TypeScript 秋招高频题与综合验收」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/typescript/chapter-8-5/",
+          "wordCount": 553,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/typescript/",
+  "sortOrder": 15
+}

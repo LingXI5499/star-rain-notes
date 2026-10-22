@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> <code>throw</code> 主动抛出业务错误；验证数字不要用 <code>if (!n)</code> 误判合法的 0。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">function setCount(n) {
+  if (!Number.isInteger(n) || n &lt; 0) throw new Error('数量无效');
+  return n;
+}
+console.log(setCount(0)); // 0
+</code></pre>
+<p><strong>学完能做：</strong> 主动抛出错误并正确检查包含零的输入。</p>

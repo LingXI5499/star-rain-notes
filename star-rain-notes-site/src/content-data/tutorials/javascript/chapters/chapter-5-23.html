@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 拖放排序从 <code>dragstart</code> 保存被拖元素，到 <code>drop</code> 时移动节点或重排数组。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let dragging;
+list.addEventListener('dragstart', e =&gt; dragging = e.target.closest('li'));
+list.addEventListener('dragover', e =&gt; e.preventDefault());
+list.addEventListener('drop', e =&gt; { e.preventDefault(); const li = e.target.closest('li'); if (li &amp;&amp; li !== dragging) li.before(dragging); });
+</code></pre>
+<p><strong>学完能做：</strong> 在拖放后更新元素或数据顺序。</p>

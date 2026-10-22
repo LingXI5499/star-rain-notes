@@ -1,0 +1,562 @@
+{
+  "slug": "agent-advanced-production",
+  "title": "高级 Agent 工程、开源项目与生产实战",
+  "description": "Harness、Coding Agent、专项智能体、源码分析、安全、评测、部署与综合项目。",
+  "category": "智能体开发知识体系",
+  "categorySlug": "484381842269",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 64,
+  "wordCount": 0,
+  "categoryId": "4",
+  "groups": [
+    {
+      "title": "Agent Harness 与 Coding Agent",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "Harness Engineering：模型之外的运行时、工具与控制系统",
+          "description": "Harness Engineering：模型之外的运行时、工具与控制系统",
+          "path": "/tutorials/agent-advanced-production/1-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "Agent Loop、运行状态、事件、停止条件与执行预算",
+          "description": "Agent Loop、运行状态、事件、停止条件与执行预算",
+          "path": "/tutorials/agent-advanced-production/1-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-3",
+          "title": "文件系统、工作区、Shell、命令执行与代码搜索工具",
+          "description": "文件系统、工作区、Shell、命令执行与代码搜索工具",
+          "path": "/tutorials/agent-advanced-production/1-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-4",
+          "title": "计划文件、任务清单、检查点、上下文压缩与长任务推进",
+          "description": "计划文件、任务清单、检查点、上下文压缩与长任务推进",
+          "path": "/tutorials/agent-advanced-production/1-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-5",
+          "title": "Skills 加载、工具选择、子智能体委派与结果验证",
+          "description": "Skills 加载、工具选择、子智能体委派与结果验证",
+          "path": "/tutorials/agent-advanced-production/1-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-6",
+          "title": "沙箱、容器、资源限制、网络隔离与危险操作审批",
+          "description": "沙箱、容器、资源限制、网络隔离与危险操作审批",
+          "path": "/tutorials/agent-advanced-production/1-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-7",
+          "title": "Coding Agent：仓库理解、补丁生成、测试、Lint、审查与迭代修复",
+          "description": "Coding Agent：仓库理解、补丁生成、测试、Lint、审查与迭代修复",
+          "path": "/tutorials/agent-advanced-production/1-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-8",
+          "title": "后台任务、暂停恢复、失败续跑与任务状态管理",
+          "description": "后台任务、暂停恢复、失败续跑与任务状态管理",
+          "path": "/tutorials/agent-advanced-production/1-8/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "主流开源 Agent 项目与源码研读",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "开源项目选型：实际定位、许可证、依赖、活跃度与维护状态",
+          "description": "开源项目选型：实际定位、许可证、依赖、活跃度与维护状态",
+          "path": "/tutorials/agent-advanced-production/2-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "阿里生态 AgentScope：Runtime、工具、记忆、权限、沙箱与服务化",
+          "description": "阿里生态 AgentScope：Runtime、工具、记忆、权限、沙箱与服务化",
+          "path": "/tutorials/agent-advanced-production/2-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "通义生态 Qwen-Agent：Agent Loop、工具调用、RAG 与代码执行",
+          "description": "通义生态 Qwen-Agent：Agent Loop、工具调用、RAG 与代码执行",
+          "path": "/tutorials/agent-advanced-production/2-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-4",
+          "title": "字节 DeerFlow：长任务、Subagents、Skills、Memory 与 Sandbox",
+          "description": "字节 DeerFlow：长任务、Subagents、Skills、Memory 与 Sandbox",
+          "path": "/tutorials/agent-advanced-production/2-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-5",
+          "title": "字节 Coze Studio：平台架构、Workflow、插件与应用发布",
+          "description": "字节 Coze Studio：平台架构、Workflow、插件与应用发布",
+          "path": "/tutorials/agent-advanced-production/2-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-6",
+          "title": "CloudWeGo Eino：Go 语言编排框架的架构对照，不作为 Python 主线",
+          "description": "CloudWeGo Eino：Go 语言编排框架的架构对照，不作为 Python 主线",
+          "path": "/tutorials/agent-advanced-production/2-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-7",
+          "title": "OpenHands、SWE-agent：Coding Agent、工作区、工具与软件工程循环",
+          "description": "OpenHands、SWE-agent：Coding Agent、工作区、工具与软件工程循环",
+          "path": "/tutorials/agent-advanced-production/2-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-8",
+          "title": "MetaGPT、CAMEL 等项目：角色协作、SOP 与多智能体设计",
+          "description": "MetaGPT、CAMEL 等项目：角色协作、SOP 与多智能体设计",
+          "path": "/tutorials/agent-advanced-production/2-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-9",
+          "title": "源码阅读方法：入口、配置、状态、模型调用、工具执行与结果回传",
+          "description": "源码阅读方法：入口、配置、状态、模型调用、工具执行与结果回传",
+          "path": "/tutorials/agent-advanced-production/2-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-10",
+          "title": "绘制模块关系、关键调用链、状态流转并构建最小复现",
+          "description": "绘制模块关系、关键调用链、状态流转并构建最小复现",
+          "path": "/tutorials/agent-advanced-production/2-10/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "专项 Agent 与多模态应用",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "Deep Research Agent：规划、搜索、证据核验、引用与报告生成",
+          "description": "Deep Research Agent：规划、搜索、证据核验、引用与报告生成",
+          "path": "/tutorials/agent-advanced-production/3-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "Browser Agent：网页导航、搜索、内容抽取与状态判断",
+          "description": "Browser Agent：网页导航、搜索、内容抽取与状态判断",
+          "path": "/tutorials/agent-advanced-production/3-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "Computer Use / GUI Agent：截图、动作、观察与安全边界",
+          "description": "Computer Use / GUI Agent：截图、动作、观察与安全边界",
+          "path": "/tutorials/agent-advanced-production/3-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "Coding Agent：代码库分析、修改、测试与补丁验证",
+          "description": "Coding Agent：代码库分析、修改、测试与补丁验证",
+          "path": "/tutorials/agent-advanced-production/3-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-5",
+          "title": "数据分析 Agent：Python 执行、数据校验、分析与报告生成",
+          "description": "数据分析 Agent：Python 执行、数据校验、分析与报告生成",
+          "path": "/tutorials/agent-advanced-production/3-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-6",
+          "title": "语音与实时 Agent：音频输入、打断、流式输出与会话状态",
+          "description": "语音与实时 Agent：音频输入、打断、流式输出与会话状态",
+          "path": "/tutorials/agent-advanced-production/3-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-7",
+          "title": "多模态 Agent：图像、文档、音频与工具的组合",
+          "description": "多模态 Agent：图像、文档、音频与工具的组合",
+          "path": "/tutorials/agent-advanced-production/3-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-8",
+          "title": "专项 Agent 的权限、失败恢复、评测与适用边界",
+          "description": "专项 Agent 的权限、失败恢复、评测与适用边界",
+          "path": "/tutorials/agent-advanced-production/3-8/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "安全、权限与可信执行",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "Prompt Injection、间接注入与不可信内容处理",
+          "description": "Prompt Injection、间接注入与不可信内容处理",
+          "path": "/tutorials/agent-advanced-production/4-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "工具投毒、恶意 Skills、外部 MCP Server 与依赖供应链风险",
+          "description": "工具投毒、恶意 Skills、外部 MCP Server 与依赖供应链风险",
+          "path": "/tutorials/agent-advanced-production/4-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-3",
+          "title": "最小权限、身份传递、工具白名单与租户隔离",
+          "description": "最小权限、身份传递、工具白名单与租户隔离",
+          "path": "/tutorials/agent-advanced-production/4-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-4",
+          "title": "文件系统、路径穿越、Shell、代码执行与沙箱防护",
+          "description": "文件系统、路径穿越、Shell、代码执行与沙箱防护",
+          "path": "/tutorials/agent-advanced-production/4-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-5",
+          "title": "SSRF、外部 URL、网络访问限制与数据外传防护",
+          "description": "SSRF、外部 URL、网络访问限制与数据外传防护",
+          "path": "/tutorials/agent-advanced-production/4-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-6",
+          "title": "RAG 越权、跨用户数据泄露、敏感信息与隐私管理",
+          "description": "RAG 越权、跨用户数据泄露、敏感信息与隐私管理",
+          "path": "/tutorials/agent-advanced-production/4-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-7",
+          "title": "高风险动作审批、审计日志、撤销与补偿机制",
+          "description": "高风险动作审批、审计日志、撤销与补偿机制",
+          "path": "/tutorials/agent-advanced-production/4-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-8",
+          "title": "超时、重试、熔断、并发限制、预算与安全降级",
+          "description": "超时、重试、熔断、并发限制、预算与安全降级",
+          "path": "/tutorials/agent-advanced-production/4-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-9",
+          "title": "威胁建模、安全测试、攻击场景与故障演练",
+          "description": "威胁建模、安全测试、攻击场景与故障演练",
+          "path": "/tutorials/agent-advanced-production/4-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "评测、可观测性与持续改进",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "Golden Dataset、任务验收集与可重复评测",
+          "description": "Golden Dataset、任务验收集与可重复评测",
+          "path": "/tutorials/agent-advanced-production/5-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "Task Success、输出质量、业务结果与任务完成率",
+          "description": "Task Success、输出质量、业务结果与任务完成率",
+          "path": "/tutorials/agent-advanced-production/5-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "工具选择、参数正确性、工具成功率与执行轨迹评测",
+          "description": "工具选择、参数正确性、工具成功率与执行轨迹评测",
+          "path": "/tutorials/agent-advanced-production/5-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "RAG 召回、排序、Groundedness 与引用准确性评测",
+          "description": "RAG 召回、排序、Groundedness 与引用准确性评测",
+          "path": "/tutorials/agent-advanced-production/5-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "规则评测、人工评估、LLM-as-a-Judge 与评估偏差",
+          "description": "规则评测、人工评估、LLM-as-a-Judge 与评估偏差",
+          "path": "/tutorials/agent-advanced-production/5-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-6",
+          "title": "Langfuse、LangSmith、OpenTelemetry 的定位与接入",
+          "description": "Langfuse、LangSmith、OpenTelemetry 的定位与接入",
+          "path": "/tutorials/agent-advanced-production/5-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-7",
+          "title": "Trace、Span、模型调用、工具调用、检索、错误与上下文追踪",
+          "description": "Trace、Span、模型调用、工具调用、检索、错误与上下文追踪",
+          "path": "/tutorials/agent-advanced-production/5-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-8",
+          "title": "Token、成本、延迟、错误率、并发与任务效率指标",
+          "description": "Token、成本、延迟、错误率、并发与任务效率指标",
+          "path": "/tutorials/agent-advanced-production/5-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-9",
+          "title": "Bad Case 分类、根因分析、回归测试与评测驱动优化",
+          "description": "Bad Case 分类、根因分析、回归测试与评测驱动优化",
+          "path": "/tutorials/agent-advanced-production/5-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "服务化、部署与生产运维",
+      "chapters": [
+        {
+          "slug": "6-1",
+          "title": "FastAPI Agent 服务：接口设计、模块边界与依赖管理",
+          "description": "FastAPI Agent 服务：接口设计、模块边界与依赖管理",
+          "path": "/tutorials/agent-advanced-production/6-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-2",
+          "title": "REST、SSE、WebSocket、后台任务与运行状态查询",
+          "description": "REST、SSE、WebSocket、后台任务与运行状态查询",
+          "path": "/tutorials/agent-advanced-production/6-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-3",
+          "title": "数据库、Redis、检查点存储与消息队列的适用场景",
+          "description": "数据库、Redis、检查点存储与消息队列的适用场景",
+          "path": "/tutorials/agent-advanced-production/6-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-4",
+          "title": "模型网关、供应商切换、配额、限流与成本控制",
+          "description": "模型网关、供应商切换、配额、限流与成本控制",
+          "path": "/tutorials/agent-advanced-production/6-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-5",
+          "title": "Docker、环境配置、密钥管理与部署隔离",
+          "description": "Docker、环境配置、密钥管理与部署隔离",
+          "path": "/tutorials/agent-advanced-production/6-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-6",
+          "title": "CI/CD、自动化测试、版本发布、回滚与备份",
+          "description": "CI/CD、自动化测试、版本发布、回滚与备份",
+          "path": "/tutorials/agent-advanced-production/6-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-7",
+          "title": "健康检查、日志、指标、链路追踪、告警与故障排查",
+          "description": "健康检查、日志、指标、链路追踪、告警与故障排查",
+          "path": "/tutorials/agent-advanced-production/6-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-8",
+          "title": "并发、容量、可用性、数据保留与恢复演练",
+          "description": "并发、容量、可用性、数据保留与恢复演练",
+          "path": "/tutorials/agent-advanced-production/6-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-9",
+          "title": "认证授权、多租户、API 安全与生产服务边界",
+          "description": "认证授权、多租户、API 安全与生产服务边界",
+          "path": "/tutorials/agent-advanced-production/6-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "综合项目与进阶方向",
+      "chapters": [
+        {
+          "slug": "7-1",
+          "title": "项目一：MiniAgent Runtime——从零实现 Agent 核心循环",
+          "description": "项目一：MiniAgent Runtime——从零实现 Agent 核心循环",
+          "path": "/tutorials/agent-advanced-production/7-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-2",
+          "title": "项目二：工具型 Agent + MCP——接入真实外部系统",
+          "description": "项目二：工具型 Agent + MCP——接入真实外部系统",
+          "path": "/tutorials/agent-advanced-production/7-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-3",
+          "title": "项目三：Knowledge Agent——RAG、引用、权限与检索评测",
+          "description": "项目三：Knowledge Agent——RAG、引用、权限与检索评测",
+          "path": "/tutorials/agent-advanced-production/7-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-4",
+          "title": "项目四：LangGraph Workflow Agent——状态、检查点与人工审批",
+          "description": "项目四：LangGraph Workflow Agent——状态、检查点与人工审批",
+          "path": "/tutorials/agent-advanced-production/7-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-5",
+          "title": "项目五：Deep Research Agent——搜索、证据整合与报告",
+          "description": "项目五：Deep Research Agent——搜索、证据整合与报告",
+          "path": "/tutorials/agent-advanced-production/7-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-6",
+          "title": "项目六：Coding Agent——仓库分析、代码修改、测试与审查",
+          "description": "项目六：Coding Agent——仓库分析、代码修改、测试与审查",
+          "path": "/tutorials/agent-advanced-production/7-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-7",
+          "title": "项目七：Multi-Agent 系统——任务分工、并行协作与失败隔离",
+          "description": "项目七：Multi-Agent 系统——任务分工、并行协作与失败隔离",
+          "path": "/tutorials/agent-advanced-production/7-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-8",
+          "title": "项目八：生产级 Agent 服务——安全、评测、可观测性与部署",
+          "description": "项目八：生产级 Agent 服务——安全、评测、可观测性与部署",
+          "path": "/tutorials/agent-advanced-production/7-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-9",
+          "title": "项目复盘：架构图、测试集、真实指标、失败案例与技术取舍",
+          "description": "项目复盘：架构图、测试集、真实指标、失败案例与技术取舍",
+          "path": "/tutorials/agent-advanced-production/7-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-10",
+          "title": "进阶选修：模型微调、Function Calling 数据、Agentic RL 与训练评测",
+          "description": "进阶选修：模型微调、Function Calling 数据、Agentic RL 与训练评测",
+          "path": "/tutorials/agent-advanced-production/7-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-11",
+          "title": "进阶选修：本地模型运行与推理服务（如 Ollama、vLLM）的定位和适用场景",
+          "description": "进阶选修：本地模型运行与推理服务（如 Ollama、vLLM）的定位和适用场景",
+          "path": "/tutorials/agent-advanced-production/7-11/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/agent-advanced-production/",
+  "sortOrder": 25
+}

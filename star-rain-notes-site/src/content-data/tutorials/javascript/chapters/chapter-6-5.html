@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> <code>Promise.all</code> 并行等待多个 Promise，任何一个拒绝就会让整体拒绝。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const [user, posts] = await Promise.all([
+  Promise.resolve({ name: '小明' }),
+  Promise.resolve(['文章1'])
+]);
+</code></pre>
+<p><strong>学完能做：</strong> 通过 Promise.all 并发等待多个任务。</p>

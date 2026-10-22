@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 防抖（debounce）把高频调用合并，在最后一次触发停止一段时间后才执行。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let timer;
+function onSearch(value) {
+  clearTimeout(timer); timer = setTimeout(() =&gt; console.log(value), 300);
+}
+</code></pre>
+<p><strong>学完能做：</strong> 理解防抖只在连续触发停止后执行。</p>

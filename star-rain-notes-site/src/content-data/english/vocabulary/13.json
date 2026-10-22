@@ -1,0 +1,1188 @@
+{
+  "id": "13",
+  "title": "家与日常生活",
+  "layer": "核心生活场景层",
+  "wordCount": 131,
+  "path": "/english/vocabulary/13/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可获得的；有空的",
+      "examples": "[]"
+    },
+    {
+      "word": "private",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'praɪvət",
+      "phoneticUk": "'praɪvət",
+      "translation": "私人的；私下的；私人的",
+      "sceneMeaning": "私人的；私密的",
+      "examples": "[]"
+    },
+    {
+      "word": "regular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɛgjəlɚ",
+      "phoneticUk": "'regjʊlə",
+      "translation": "规则的；整齐的；有规律的，经常的",
+      "sceneMeaning": "规则的；整齐的；有规律的，经常的；本场景常见用法：定期地；经常地",
+      "examples": "[]"
+    },
+    {
+      "word": "child",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃaɪld",
+      "phoneticUk": "tʃaɪld",
+      "translation": "小孩，儿童；儿子",
+      "sceneMeaning": "孩子",
+      "examples": "[]"
+    },
+    {
+      "word": "community",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mjʊnəti",
+      "phoneticUk": "kə'mjuːnɪtɪ",
+      "translation": "社区；社会；公社",
+      "sceneMeaning": "社区；共同体",
+      "examples": "[]"
+    },
+    {
+      "word": "cook",
+      "partOfSpeech": "v",
+      "phoneticUs": "kʊk",
+      "phoneticUk": "kʊk",
+      "translation": "烹调，煮；烧菜",
+      "sceneMeaning": "做饭；烹饪",
+      "examples": "[]"
+    },
+    {
+      "word": "family",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæməli",
+      "phoneticUk": "'fæmɪlɪ; -m(ə)l-",
+      "translation": "家，家庭；家族",
+      "sceneMeaning": "家庭；家人",
+      "examples": "[]"
+    },
+    {
+      "word": "home",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "hom",
+      "phoneticUk": "həʊm",
+      "translation": "家；家乡；家庭的",
+      "sceneMeaning": "家；住所",
+      "examples": "[]"
+    },
+    {
+      "word": "house",
+      "partOfSpeech": "n",
+      "phoneticUs": "haʊs",
+      "phoneticUk": "haʊs",
+      "translation": "房屋，住宅；商号",
+      "sceneMeaning": "房子；住宅",
+      "examples": "[]"
+    },
+    {
+      "word": "key",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "kiː",
+      "translation": "钥匙；键；答案",
+      "sceneMeaning": "钥匙；关键",
+      "examples": "[]"
+    },
+    {
+      "word": "live",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "laɪv；lɪv",
+      "phoneticUk": "laɪv；lɪv",
+      "translation": "居住；活；活的",
+      "sceneMeaning": "居住；生活",
+      "examples": "[]"
+    },
+    {
+      "word": "living",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'lɪvɪŋ",
+      "phoneticUk": "'lɪvɪŋ",
+      "translation": "活的；生活，生计",
+      "sceneMeaning": "活的；生活，生计；本场景常见用法：客厅，起居室",
+      "examples": "[]"
+    },
+    {
+      "word": "lunch",
+      "partOfSpeech": "n",
+      "phoneticUs": "lʌntʃ",
+      "phoneticUk": "lʌn(t)ʃ",
+      "translation": "午餐，(美)便餐",
+      "sceneMeaning": "午餐",
+      "examples": "[]"
+    },
+    {
+      "word": "maintain",
+      "partOfSpeech": "v",
+      "phoneticUs": "men'ten",
+      "phoneticUk": "meɪn'teɪn; mən'teɪn",
+      "translation": "维持；赡养；维修；维持；主张",
+      "sceneMeaning": "维护；保持",
+      "examples": "[]"
+    },
+    {
+      "word": "meal",
+      "partOfSpeech": "n",
+      "phoneticUs": "mil",
+      "phoneticUk": "miːl",
+      "translation": "膳食，一餐",
+      "sceneMeaning": "一餐；饭",
+      "examples": "[]"
+    },
+    {
+      "word": "move",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "muv",
+      "phoneticUk": "muːv",
+      "translation": "移动；感动；动",
+      "sceneMeaning": "搬家；移动",
+      "examples": "[]"
+    },
+    {
+      "word": "own",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "on",
+      "phoneticUk": "əʊn",
+      "translation": "自己的；有，拥有",
+      "sceneMeaning": "拥有",
+      "examples": "[]"
+    },
+    {
+      "word": "chat",
+      "partOfSpeech": "v",
+      "phoneticUs": "tʃæt",
+      "phoneticUk": "tʃæt",
+      "translation": "聊天",
+      "sceneMeaning": "聊天",
+      "examples": "[]"
+    },
+    {
+      "word": "door",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɔr",
+      "phoneticUk": "dɔː",
+      "translation": "门，通道；一家",
+      "sceneMeaning": "门",
+      "examples": "[]"
+    },
+    {
+      "word": "kitchen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɪtʃɪn",
+      "phoneticUk": "'kɪtʃɪn; -tʃ(ə)n",
+      "translation": "厨房，灶间",
+      "sceneMeaning": "厨房",
+      "examples": "[]"
+    },
+    {
+      "word": "comfortable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kʌmftəbl",
+      "phoneticUk": "ˈkʌmftəbl",
+      "translation": "舒适的，安慰的",
+      "sceneMeaning": "舒适的",
+      "examples": "[]"
+    },
+    {
+      "word": "electric",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'lɛktrɪk",
+      "phoneticUk": "ɪ'lektrɪk",
+      "translation": "电的，电动的",
+      "sceneMeaning": "电的，电动的；本场景常见用法：电力系统",
+      "examples": "[]"
+    },
+    {
+      "word": "pursue",
+      "partOfSpeech": "v",
+      "phoneticUs": "pə'sʊ",
+      "phoneticUk": "pə'sjuː",
+      "translation": "追赶，追踪；进行；追求",
+      "sceneMeaning": "追赶，追踪；进行；追求",
+      "examples": "[]"
+    },
+    {
+      "word": "security",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'kjʊrəti",
+      "phoneticUk": "sɪ'kjʊərətɪ",
+      "translation": "安全，安全感；安全，安保",
+      "sceneMeaning": "安全；保障",
+      "examples": "[]"
+    },
+    {
+      "word": "neighborhood",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nebɚ,hʊd",
+      "phoneticUk": "'neɪbəhʊd",
+      "translation": "地区",
+      "sceneMeaning": "社区；邻近地区",
+      "examples": "[]"
+    },
+    {
+      "word": "regularly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "'reɡjələli",
+      "translation": "定期地，有规律地",
+      "sceneMeaning": "定期地；经常地",
+      "examples": "[]"
+    },
+    {
+      "word": "rent",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɛnt",
+      "phoneticUk": "rent",
+      "translation": "租金，租；出租",
+      "sceneMeaning": "租用；出租",
+      "examples": "[]"
+    },
+    {
+      "word": "address",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'drɛs",
+      "phoneticUk": "ə'dres",
+      "translation": "地址；演说；谈吐；解决",
+      "sceneMeaning": "地址；演讲",
+      "examples": "[]"
+    },
+    {
+      "word": "apartment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'pɑrtmənt",
+      "phoneticUk": "ə'pɑːtm(ə)nt",
+      "translation": "一套公寓房间；公寓",
+      "sceneMeaning": "公寓",
+      "examples": "[]"
+    },
+    {
+      "word": "clean",
+      "partOfSpeech": "adj",
+      "phoneticUs": "klin",
+      "phoneticUk": "kliːn",
+      "translation": "清洁的；纯洁的",
+      "sceneMeaning": "干净的",
+      "examples": "[]"
+    },
+    {
+      "word": "fix",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɪks",
+      "phoneticUk": "fɪks",
+      "translation": "使固定；决定",
+      "sceneMeaning": "修理；固定",
+      "examples": "[]"
+    },
+    {
+      "word": "gas",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡæs",
+      "phoneticUk": "gæs",
+      "translation": "煤气；气体；汽油",
+      "sceneMeaning": "燃气；气体",
+      "examples": "[]"
+    },
+    {
+      "word": "habit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hæbɪt",
+      "phoneticUk": "'hæbɪt",
+      "translation": "习惯；习性",
+      "sceneMeaning": "习惯",
+      "examples": "[]"
+    },
+    {
+      "word": "relax",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'læks",
+      "phoneticUk": "rɪ'læks",
+      "translation": "使松弛；松弛",
+      "sceneMeaning": "放松",
+      "examples": "[]"
+    },
+    {
+      "word": "dinner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪnɚ",
+      "phoneticUk": "'dɪnə",
+      "translation": "正餐，主餐；宴会",
+      "sceneMeaning": "晚餐；正餐",
+      "examples": "[]"
+    },
+    {
+      "word": "domestic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "də'mɛstɪk",
+      "phoneticUk": "də'mestɪk",
+      "translation": "本国的；家庭的；国内的",
+      "sceneMeaning": "家庭的；国内的",
+      "examples": "[]"
+    },
+    {
+      "word": "ease",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "iz",
+      "phoneticUk": "iːz",
+      "translation": "容易，舒适；缓和；轻松，舒适",
+      "sceneMeaning": "容易，舒适；缓和；轻松，舒适",
+      "examples": "[]"
+    },
+    {
+      "word": "electricity",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'lɛk'trɪsəti",
+      "phoneticUk": ",ɪlek'trɪsɪtɪ; ,el-; ,iːl-",
+      "translation": "电，电学；电流",
+      "sceneMeaning": "电；电力",
+      "examples": "[]"
+    },
+    {
+      "word": "owner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'onɚ",
+      "phoneticUk": "'əʊnə",
+      "translation": "物主，所有人",
+      "sceneMeaning": "物主，所有人",
+      "examples": "[]"
+    },
+    {
+      "word": "parent",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɛrənt",
+      "phoneticUk": "'peər(ə)nt",
+      "translation": "父亲，母亲，双亲",
+      "sceneMeaning": "父母之一",
+      "examples": "[]"
+    },
+    {
+      "word": "pleasant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'plɛznt",
+      "phoneticUk": "'plez(ə)nt",
+      "translation": "令人愉快的，舒适的",
+      "sceneMeaning": "令人愉快的，舒适的",
+      "examples": "[]"
+    },
+    {
+      "word": "privacy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'praɪvəsi",
+      "phoneticUk": "'prɪvəsɪ",
+      "translation": "隐私",
+      "sceneMeaning": "隐私；私密",
+      "examples": "[]"
+    },
+    {
+      "word": "rental",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛntl",
+      "phoneticUk": "'rent(ə)l",
+      "translation": "租金",
+      "sceneMeaning": "租金；本场景常见用法：房租",
+      "examples": "[]"
+    },
+    {
+      "word": "spare",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "spɛr",
+      "phoneticUk": "speə",
+      "translation": "节约；多余的；空闲的",
+      "sceneMeaning": "节约；多余的；空闲的",
+      "examples": "[]"
+    },
+    {
+      "word": "tidy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'taɪdi",
+      "phoneticUk": "'taɪdɪ",
+      "translation": "整洁的；整齐的",
+      "sceneMeaning": "整洁的",
+      "examples": "[]"
+    },
+    {
+      "word": "bill",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪl",
+      "phoneticUk": "bɪl",
+      "translation": "账单；招贴；票据",
+      "sceneMeaning": "账单；法案",
+      "examples": "[]"
+    },
+    {
+      "word": "comfort",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kʌmfɚt",
+      "phoneticUk": "'kʌmfət",
+      "translation": "舒适；安慰；安慰",
+      "sceneMeaning": "舒适；安慰；安慰",
+      "examples": "[]"
+    },
+    {
+      "word": "mess",
+      "partOfSpeech": "n",
+      "phoneticUs": "mɛs",
+      "phoneticUk": "mes",
+      "translation": "混乱，混杂，肮脏",
+      "sceneMeaning": "混乱，混杂，肮脏",
+      "examples": "[]"
+    },
+    {
+      "word": "quiet",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kwaɪət",
+      "phoneticUk": "'kwaɪət",
+      "translation": "寂静的；安静的",
+      "sceneMeaning": "安静的",
+      "examples": "[]"
+    },
+    {
+      "word": "routinely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "rʊ'tinli",
+      "phoneticUk": "ru:'ti:nlɪ",
+      "translation": "例行公事地",
+      "sceneMeaning": "例行公事地",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "日程；时间表",
+      "examples": "[]"
+    },
+    {
+      "word": "childhood",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃaɪldhʊd",
+      "phoneticUk": "'tʃaɪldhʊd",
+      "translation": "童年，幼年；早期",
+      "sceneMeaning": "童年，幼年；早期；本场景常见用法：幼儿期发展，儿童早期发展",
+      "examples": "[]"
+    },
+    {
+      "word": "dirty",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈdɝ​tɪ",
+      "phoneticUk": "'dɜːtɪ",
+      "translation": "脏的；下流的",
+      "sceneMeaning": "脏的",
+      "examples": "[]"
+    },
+    {
+      "word": "dust",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʌst",
+      "phoneticUk": "dʌst",
+      "translation": "尘土，灰尘；灰尘",
+      "sceneMeaning": "尘土，灰尘；灰尘",
+      "examples": "[]"
+    },
+    {
+      "word": "entertain",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ɛntɚ'ten",
+      "phoneticUk": "entə'teɪn",
+      "translation": "使欢乐；招待",
+      "sceneMeaning": "使欢乐；招待",
+      "examples": "[]"
+    },
+    {
+      "word": "entrance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛntrəns",
+      "phoneticUk": "'entr(ə)ns",
+      "translation": "入口，门口；进入",
+      "sceneMeaning": "入口；门口",
+      "examples": "[]"
+    },
+    {
+      "word": "heating",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hitɪŋ",
+      "phoneticUk": "'hiːtɪŋ",
+      "translation": "加热，供暖",
+      "sceneMeaning": "供暖；加热",
+      "examples": "[]"
+    },
+    {
+      "word": "maintenance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mentənəns",
+      "phoneticUk": "'meɪnt(ə)nəns; -tɪn-",
+      "translation": "维持，保持；维修",
+      "sceneMeaning": "维护；保养",
+      "examples": "[]"
+    },
+    {
+      "word": "movement",
+      "partOfSpeech": "n",
+      "phoneticUs": "'muvmənt",
+      "phoneticUk": "'muːvm(ə)nt",
+      "translation": "动作，活动；移动",
+      "sceneMeaning": "动作，活动；移动",
+      "examples": "[]"
+    },
+    {
+      "word": "relative",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'rɛlətɪv",
+      "phoneticUk": "'relətɪv",
+      "translation": "有关系的；相对的；相对的；亲戚",
+      "sceneMeaning": "亲戚；相对的",
+      "examples": "[]"
+    },
+    {
+      "word": "settle",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɛtl",
+      "phoneticUk": "'set(ə)l",
+      "translation": "安排；安放；调停",
+      "sceneMeaning": "安顿；定居；解决",
+      "examples": "[]"
+    },
+    {
+      "word": "convenient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'vinɪənt",
+      "phoneticUk": "kən'viːnɪənt",
+      "translation": "便利的；近便的；方便的",
+      "sceneMeaning": "方便的",
+      "examples": "[]"
+    },
+    {
+      "word": "garbage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡɑrbɪdʒ",
+      "phoneticUk": "'gɑːbɪdʒ",
+      "translation": "垃圾，污物，废料",
+      "sceneMeaning": "垃圾",
+      "examples": "[]"
+    },
+    {
+      "word": "garden",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡɑrdn",
+      "phoneticUk": "'gɑːd(ə)n",
+      "translation": "花园，菜园；公园",
+      "sceneMeaning": "花园",
+      "examples": "[]"
+    },
+    {
+      "word": "hall",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɔl",
+      "phoneticUk": "hɔːl",
+      "translation": "门厅；过道；会堂",
+      "sceneMeaning": "大厅；走廊",
+      "examples": "[]"
+    },
+    {
+      "word": "knock",
+      "partOfSpeech": "vi&vt&n",
+      "phoneticUs": "nɑk",
+      "phoneticUk": "nɒk",
+      "translation": "敲，击，打",
+      "sceneMeaning": "敲，击，打；本场景常见用法：敲门",
+      "examples": "[]"
+    },
+    {
+      "word": "lock",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lɑk",
+      "phoneticUk": "lɒk",
+      "translation": "锁；锁上，锁住",
+      "sceneMeaning": "锁上",
+      "examples": "[]"
+    },
+    {
+      "word": "repair",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "rɪ'pɛr",
+      "phoneticUk": "rɪ'peə",
+      "translation": "修理，修补",
+      "sceneMeaning": "修理",
+      "examples": "[]"
+    },
+    {
+      "word": "resident",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'rɛzɪdənt",
+      "phoneticUk": "ˈrezɪdənt",
+      "translation": "居住的；居民",
+      "sceneMeaning": "居民；住户",
+      "examples": "[]"
+    },
+    {
+      "word": "bath",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "bɑːθ",
+      "translation": "浴，洗澡；浴缸",
+      "sceneMeaning": "洗澡；浴缸",
+      "examples": "[]"
+    },
+    {
+      "word": "breakfast",
+      "partOfSpeech": "n",
+      "phoneticUs": "'brɛkfəst",
+      "phoneticUk": "'brekfəst",
+      "translation": "早饭，早餐",
+      "sceneMeaning": "早餐",
+      "examples": "[]"
+    },
+    {
+      "word": "decorate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dɛkəret",
+      "phoneticUk": "'dekəreɪt",
+      "translation": "装饰，装璜，修饰；装饰",
+      "sceneMeaning": "装饰",
+      "examples": "[]"
+    },
+    {
+      "word": "dirt",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɝt",
+      "phoneticUk": "dɜːt",
+      "translation": "尘，土；污物，污垢",
+      "sceneMeaning": "尘，土；污物，污垢",
+      "examples": "[]"
+    },
+    {
+      "word": "flat",
+      "partOfSpeech": "adj",
+      "phoneticUs": "flæt",
+      "phoneticUk": "flæt",
+      "translation": "平的，扁平的",
+      "sceneMeaning": "公寓；平的",
+      "examples": "[]"
+    },
+    {
+      "word": "furniture",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "家具；装置，设备",
+      "sceneMeaning": "家具",
+      "examples": "[]"
+    },
+    {
+      "word": "gross",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɡros",
+      "phoneticUk": "grəʊs",
+      "translation": "总的；严重的",
+      "sceneMeaning": "总的；严重的",
+      "examples": "[]"
+    },
+    {
+      "word": "host",
+      "partOfSpeech": "n",
+      "phoneticUs": "host",
+      "phoneticUk": "həʊst",
+      "translation": "主人；东道主",
+      "sceneMeaning": "主人；主持人",
+      "examples": "[]"
+    },
+    {
+      "word": "housewife",
+      "partOfSpeech": "n",
+      "phoneticUs": "'haʊs'waɪf",
+      "phoneticUk": "'haʊswaɪf",
+      "translation": "家庭主妇",
+      "sceneMeaning": "家庭主妇",
+      "examples": "[]"
+    },
+    {
+      "word": "invite",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'vaɪt",
+      "phoneticUk": "ɪn'vaɪt",
+      "translation": "邀请，聘请；招待",
+      "sceneMeaning": "邀请",
+      "examples": "[]"
+    },
+    {
+      "word": "liver",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪvɚ",
+      "phoneticUk": "'lɪvə",
+      "translation": "肝；肝脏",
+      "sceneMeaning": "肝；肝脏；本场景常见用法：肝癌",
+      "examples": "[]"
+    },
+    {
+      "word": "loosen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'lusn",
+      "phoneticUk": "'luːs(ə)n",
+      "translation": "解开；使松驰",
+      "sceneMeaning": "解开；使松驰",
+      "examples": "[]"
+    },
+    {
+      "word": "nasty",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'næsti",
+      "phoneticUk": "'nɑːstɪ",
+      "translation": "龌龊的；淫猥的",
+      "sceneMeaning": "龌龊的；淫猥的",
+      "examples": "[]"
+    },
+    {
+      "word": "noisy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɔɪzi",
+      "phoneticUk": "'nɒɪzɪ",
+      "translation": "嘈杂的；喧闹的",
+      "sceneMeaning": "吵闹的",
+      "examples": "[]"
+    },
+    {
+      "word": "outdoors",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'aʊt'dɔrz",
+      "phoneticUk": "aʊt'dɔːz",
+      "translation": "在户外，在野外",
+      "sceneMeaning": "在户外，在野外",
+      "examples": "[]"
+    },
+    {
+      "word": "picnic",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pɪknɪk",
+      "phoneticUk": "'pɪknɪk",
+      "translation": "郊游，野餐；野餐",
+      "sceneMeaning": "郊游，野餐；野餐",
+      "examples": "[]"
+    },
+    {
+      "word": "refresh",
+      "partOfSpeech": "v",
+      "phoneticUs": "ri'frɛʃ",
+      "phoneticUk": "rɪ'freʃ",
+      "translation": "使清新vi恢复精神",
+      "sceneMeaning": "使清新vi恢复精神",
+      "examples": "[]"
+    },
+    {
+      "word": "routine",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "rʊ'tin",
+      "phoneticUk": "ruː'tiːn",
+      "translation": "例行公事；日常的",
+      "sceneMeaning": "日常安排；常规",
+      "examples": "[]"
+    },
+    {
+      "word": "shower",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʃaʊɚ",
+      "phoneticUk": "'ʃaʊə",
+      "translation": "阵雨；(一)阵；淋浴",
+      "sceneMeaning": "淋浴；阵雨",
+      "examples": "[]"
+    },
+    {
+      "word": "slam",
+      "partOfSpeech": "v",
+      "phoneticUs": "slæm",
+      "phoneticUk": "slæm",
+      "translation": "使劲关，砰地放下",
+      "sceneMeaning": "使劲关，砰地放下",
+      "examples": "[]"
+    },
+    {
+      "word": "sweep",
+      "partOfSpeech": "v",
+      "phoneticUs": "swip",
+      "phoneticUk": "swiːp",
+      "translation": "扫；刮起；扫过",
+      "sceneMeaning": "扫；清扫",
+      "examples": "[]"
+    },
+    {
+      "word": "alarm",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'lɑrm",
+      "phoneticUk": "ə'lɑːm",
+      "translation": "惊恐，忧虑；警报",
+      "sceneMeaning": "警报；闹钟",
+      "examples": "[]"
+    },
+    {
+      "word": "amuse",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'mjuz",
+      "phoneticUk": "ə'mjuːz",
+      "translation": "逗…乐；给…娱乐",
+      "sceneMeaning": "逗…乐；给…娱乐",
+      "examples": "[]"
+    },
+    {
+      "word": "bathe",
+      "partOfSpeech": "v",
+      "phoneticUs": "beð",
+      "phoneticUk": "beɪð",
+      "translation": "给…洗澡；弄湿",
+      "sceneMeaning": "洗澡；沐浴",
+      "examples": "[]"
+    },
+    {
+      "word": "bathroom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæθrum",
+      "phoneticUk": "'bɑːθruːm; -rʊm",
+      "translation": "浴室；盥洗室",
+      "sceneMeaning": "浴室；卫生间",
+      "examples": "[]"
+    },
+    {
+      "word": "belong",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪ'lɔŋ",
+      "phoneticUk": "bɪ'lɒŋ",
+      "translation": "属于，附属",
+      "sceneMeaning": "属于，附属",
+      "examples": "[]"
+    },
+    {
+      "word": "ceiling",
+      "partOfSpeech": "n",
+      "phoneticUs": "'silɪŋ",
+      "phoneticUk": "'siːlɪŋ",
+      "translation": "天花板，顶蓬",
+      "sceneMeaning": "天花板",
+      "examples": "[]"
+    },
+    {
+      "word": "cellar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛlɚ",
+      "phoneticUk": "'selə",
+      "translation": "地窑，地下室",
+      "sceneMeaning": "地窑，地下室；本场景常见用法：地窖的门",
+      "examples": "[]"
+    },
+    {
+      "word": "chamber",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈtʃeɪmbər",
+      "phoneticUk": "'tʃeɪmbə",
+      "translation": "会议室；房间；腔",
+      "sceneMeaning": "会议室；房间；腔；本场景常见用法：加热室；高温室",
+      "examples": "[]"
+    },
+    {
+      "word": "corridor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɔrɪdɔr",
+      "phoneticUk": "'kɒrɪdɔː",
+      "translation": "走廊，回廊，通路",
+      "sceneMeaning": "走廊",
+      "examples": "[]"
+    },
+    {
+      "word": "cozy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kozi",
+      "phoneticUk": "'kozi",
+      "translation": "舒适的",
+      "sceneMeaning": "舒适温馨的",
+      "examples": "[]"
+    },
+    {
+      "word": "delightful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'laɪtfl",
+      "phoneticUk": "dɪ'laɪtfʊl",
+      "translation": "高兴的",
+      "sceneMeaning": "高兴的",
+      "examples": "[]"
+    },
+    {
+      "word": "downstairs",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'daʊn'stɛrz",
+      "phoneticUk": "daʊn'steəz",
+      "translation": "在楼下；楼下的",
+      "sceneMeaning": "在楼下；楼下的",
+      "examples": "[]"
+    },
+    {
+      "word": "exit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛɡzɪt",
+      "phoneticUk": "'eksɪt; 'egzɪt",
+      "translation": "出口；退场；退出",
+      "sceneMeaning": "出口；离开",
+      "examples": "[]"
+    },
+    {
+      "word": "farewell",
+      "partOfSpeech": "int / n",
+      "phoneticUs": ",fɛr'wɛl",
+      "phoneticUk": "feə'wel",
+      "translation": "再会；告别",
+      "sceneMeaning": "再会；告别",
+      "examples": "[]"
+    },
+    {
+      "word": "floor",
+      "partOfSpeech": "n",
+      "phoneticUs": "flɔr",
+      "phoneticUk": "flɔː",
+      "translation": "地板；楼层",
+      "sceneMeaning": "地板；楼层",
+      "examples": "[]"
+    },
+    {
+      "word": "garage",
+      "partOfSpeech": "n",
+      "phoneticUs": "gəˈrɑʒ; gəˈrɑdʒ",
+      "phoneticUk": "'gærɑː(d)ʒ; -ɪdʒ; gə'rɑːʒ",
+      "translation": "车库；加油站；车库",
+      "sceneMeaning": "车库",
+      "examples": "[]"
+    },
+    {
+      "word": "gardener",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gɑrdənɚ",
+      "phoneticUk": "'ɡɑːdənə",
+      "translation": "园丁，花匠",
+      "sceneMeaning": "园丁，花匠",
+      "examples": "[]"
+    },
+    {
+      "word": "gate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡet",
+      "phoneticUk": "geɪt",
+      "translation": "大门；篱笆门",
+      "sceneMeaning": "大门；登机口",
+      "examples": "[]"
+    },
+    {
+      "word": "guest",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡɛst",
+      "phoneticUk": "gest",
+      "translation": "客人，宾客；旅客",
+      "sceneMeaning": "客人",
+      "examples": "[]"
+    },
+    {
+      "word": "habitual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hə'bɪtʃuəl",
+      "phoneticUk": "hə'bɪtʃʊəl; -tjʊəl",
+      "translation": "习惯性的，惯常的",
+      "sceneMeaning": "习惯性的，惯常的；本场景常见用法：通常住址；惯常居所",
+      "examples": "[]"
+    },
+    {
+      "word": "hostess",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hostəs",
+      "phoneticUk": "'həʊstɪs; -es; həʊ'stes",
+      "translation": "女主人；空姐",
+      "sceneMeaning": "女主人；空姐；本场景常见用法：空中小姐",
+      "examples": "[]"
+    },
+    {
+      "word": "inhabit",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'hæbɪt",
+      "phoneticUk": "ɪn'hæbɪt",
+      "translation": "居住于，栖息于",
+      "sceneMeaning": "居住于，栖息于",
+      "examples": "[]"
+    },
+    {
+      "word": "inhabitant",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'hæbɪtənt",
+      "phoneticUk": "ɪn'hæbɪt(ə)nt",
+      "translation": "居民，住户",
+      "sceneMeaning": "居民，住户",
+      "examples": "[]"
+    },
+    {
+      "word": "invitation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌɪnvɪˈteɪʃn",
+      "phoneticUk": "ɪnvɪ'teɪʃ(ə)n",
+      "translation": "邀请，招待；请柬",
+      "sceneMeaning": "邀请，招待；请柬；本场景常见用法：邀请函",
+      "examples": "[]"
+    },
+    {
+      "word": "keyboard",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ki'bɔrd",
+      "phoneticUk": "'kiːbɔːd",
+      "translation": "键盘",
+      "sceneMeaning": "键盘；本场景常见用法：[计]快捷键",
+      "examples": "[]"
+    },
+    {
+      "word": "knob",
+      "partOfSpeech": "n",
+      "phoneticUs": "nɑb",
+      "phoneticUk": "nɒb",
+      "translation": "门把，拉手；旋纽",
+      "sceneMeaning": "门把，拉手；旋纽",
+      "examples": "[]"
+    },
+    {
+      "word": "laundry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɔndri",
+      "phoneticUk": "'lɔːndrɪ",
+      "translation": "洗衣房，洗衣店；要洗的衣服；刚洗过的衣物；洗衣房",
+      "sceneMeaning": "洗衣；待洗衣物",
+      "examples": "[]"
+    },
+    {
+      "word": "lavatory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lævətɔri",
+      "phoneticUk": "'lævət(ə)rɪ",
+      "translation": "盥洗室，厕所",
+      "sceneMeaning": "盥洗室，厕所",
+      "examples": "[]"
+    },
+    {
+      "word": "lively",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'laɪvli",
+      "phoneticUk": "'laɪvlɪ",
+      "translation": "活泼的；逼真的",
+      "sceneMeaning": "活泼的；逼真的",
+      "examples": "[]"
+    },
+    {
+      "word": "naughty",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɔti",
+      "phoneticUk": "'nɔːtɪ",
+      "translation": "顽皮的，淘气的",
+      "sceneMeaning": "顽皮的，淘气的",
+      "examples": "[]"
+    },
+    {
+      "word": "neighbour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'neɪbə(r); 'neɪbɚ",
+      "phoneticUk": "'neɪbə",
+      "translation": "邻居，邻国，邻人",
+      "sceneMeaning": "邻居，邻国，邻人",
+      "examples": "[]"
+    },
+    {
+      "word": "neighbourhood",
+      "partOfSpeech": "n",
+      "phoneticUs": "nebɚˌhʊd",
+      "phoneticUk": "ˈneɪbəhʊd",
+      "translation": "邻居关系；邻近",
+      "sceneMeaning": "邻居关系；邻近",
+      "examples": "[]"
+    },
+    {
+      "word": "ornament",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrnəmənt",
+      "phoneticUk": "'ɔːnəm(ə)nt",
+      "translation": "装饰物；装饰",
+      "sceneMeaning": "装饰物；装饰",
+      "examples": "[]"
+    },
+    {
+      "word": "ownership",
+      "partOfSpeech": "n",
+      "phoneticUs": "'onɚʃɪp",
+      "phoneticUk": "'əʊnəʃɪp",
+      "translation": "所有(权)，所有制",
+      "sceneMeaning": "所有(权)，所有制；本场景常见用法：居者有其屋；自置居所",
+      "examples": "[]"
+    },
+    {
+      "word": "refreshing",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ri'frɛʃɪŋ",
+      "phoneticUk": "rɪ'freʃɪŋ",
+      "translation": "恢复活力的",
+      "sceneMeaning": "恢复活力的",
+      "examples": "[]"
+    },
+    {
+      "word": "refuse",
+      "partOfSpeech": "v",
+      "phoneticUs": "ri'fjʊz",
+      "phoneticUk": "rɪ'fjuːz",
+      "translation": "拒绝",
+      "sceneMeaning": "拒绝；本场景常见用法：城市垃圾",
+      "examples": "[]"
+    },
+    {
+      "word": "residence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛzɪdəns",
+      "phoneticUk": "'rezɪd(ə)ns",
+      "translation": "居住；驻扎；住处",
+      "sceneMeaning": "居住；驻扎；住处；本场景常见用法：住宅小区",
+      "examples": "[]"
+    },
+    {
+      "word": "restless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɛstləs",
+      "phoneticUk": "ˈrestləs",
+      "translation": "不安定的，焦虑的",
+      "sceneMeaning": "不安定的，焦虑的",
+      "examples": "[]"
+    },
+    {
+      "word": "secure",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "sə'kjʊr",
+      "phoneticUk": "sɪ'kjʊə; sɪ'kjɔː",
+      "translation": "安心的；安全的；确保……安全",
+      "sceneMeaning": "安全的；牢固的",
+      "examples": "[]"
+    },
+    {
+      "word": "waken",
+      "partOfSpeech": "v",
+      "phoneticUs": "'wekən",
+      "phoneticUk": "'weɪk(ə)n",
+      "translation": "醒来；弄醒",
+      "sceneMeaning": "醒来；弄醒",
+      "examples": "[]"
+    },
+    {
+      "word": "yard",
+      "partOfSpeech": "n",
+      "phoneticUs": "jɑrd",
+      "phoneticUk": "jɑːd",
+      "translation": "院子，庭院；场地",
+      "sceneMeaning": "院子；码",
+      "examples": "[]"
+    }
+  ]
+}

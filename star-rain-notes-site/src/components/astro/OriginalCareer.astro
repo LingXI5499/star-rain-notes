@@ -1,0 +1,5 @@
+---
+interface Props{headline:string;focus:string[];featured?:string;status:string;}
+const {headline,focus,featured='星雨笔录',status}=Astro.props;
+---
+<dl class="career-snapshot"><div class="career-snapshot__cell"><dt>CURRENT</dt><dd>{headline}</dd></div><div class="career-snapshot__cell"><dt>DIRECTION</dt><dd>{focus.length?focus.join(' / '):'全栈软件工程'}</dd></div><div class="career-snapshot__cell"><dt>FEATURED</dt><dd>{featured}</dd></div><div class="career-snapshot__cell"><dt>STATUS</dt><dd>{status}</dd></div></dl>

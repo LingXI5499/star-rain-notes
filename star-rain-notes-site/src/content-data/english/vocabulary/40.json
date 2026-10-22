@@ -1,0 +1,999 @@
+{
+  "id": "40",
+  "title": "法律 / 权利 / 责任 / 社会秩序",
+  "layer": "社会与世界主题层",
+  "wordCount": 110,
+  "path": "/english/vocabulary/40/",
+  "words": [
+    {
+      "word": "evidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛvɪdəns",
+      "phoneticUk": "'evɪd(ə)ns",
+      "translation": "根据；证据，证人；根据，证据，迹象",
+      "sceneMeaning": "证据",
+      "examples": "[]"
+    },
+    {
+      "word": "case",
+      "partOfSpeech": "n",
+      "phoneticUs": "kes",
+      "phoneticUk": "keɪs",
+      "translation": "情况；事实；病例",
+      "sceneMeaning": "案件；案例",
+      "examples": "[]"
+    },
+    {
+      "word": "free",
+      "partOfSpeech": "adj",
+      "phoneticUs": "fri",
+      "phoneticUk": "friː",
+      "translation": "自由的；空闲的",
+      "sceneMeaning": "自由的；空闲的",
+      "examples": "[]"
+    },
+    {
+      "word": "just",
+      "partOfSpeech": "adv",
+      "phoneticUs": "dʒʌst",
+      "phoneticUk": "dʒʌst",
+      "translation": "刚才；只是；正好",
+      "sceneMeaning": "公正的；正义的",
+      "examples": "[]"
+    },
+    {
+      "word": "order",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔrdɚ",
+      "phoneticUk": "'ɔːdə",
+      "translation": "次序；整齐；命令",
+      "sceneMeaning": "秩序；命令",
+      "examples": "[]"
+    },
+    {
+      "word": "police",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'lis",
+      "phoneticUk": "pə'liːs",
+      "translation": "警察；警察当局",
+      "sceneMeaning": "警察；警方",
+      "examples": "[]"
+    },
+    {
+      "word": "protect",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'tɛkt",
+      "phoneticUk": "prə'tekt",
+      "translation": "保护，保卫，警戒",
+      "sceneMeaning": "保护",
+      "examples": "[]"
+    },
+    {
+      "word": "protection",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'tɛkʃən",
+      "phoneticUk": "prə'tekʃ(ə)n",
+      "translation": "保护，警戒",
+      "sceneMeaning": "保护",
+      "examples": "[]"
+    },
+    {
+      "word": "provide",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'vaɪd",
+      "phoneticUk": "prə'vaɪd",
+      "translation": "提供；装备，供给",
+      "sceneMeaning": "提供；装备，供给；本场景常见用法：自备；自办",
+      "examples": "[]"
+    },
+    {
+      "word": "responsible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'spɑnsəbl",
+      "phoneticUk": "ri'spɔnsəbl",
+      "translation": "负责的，有责任的",
+      "sceneMeaning": "负责的",
+      "examples": "[]"
+    },
+    {
+      "word": "conflict",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑnflɪkt",
+      "phoneticUk": "'kɒnflɪkt",
+      "translation": "争论；冲突；斗争；冲突",
+      "sceneMeaning": "冲突；矛盾",
+      "examples": "[]"
+    },
+    {
+      "word": "security",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'kjʊrəti",
+      "phoneticUk": "sɪ'kjʊərətɪ",
+      "translation": "安全，安全感；安全，安保",
+      "sceneMeaning": "安全；保障",
+      "examples": "[]"
+    },
+    {
+      "word": "suspect",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sʌspɛkt; (for v.) səˈspɛkt",
+      "phoneticUk": "ˈsʌspekt; (for v.) səˈspekt",
+      "translation": "怀疑；疑心；怀疑，猜想；嫌疑犯",
+      "sceneMeaning": "嫌疑人",
+      "examples": "[]"
+    },
+    {
+      "word": "appeal",
+      "partOfSpeech": "n / v / vi&n",
+      "phoneticUs": "ə'pil",
+      "phoneticUk": "ə'piːl",
+      "translation": "呼吁；申述；呼吁；吸引；呼吁；恳请，恳求",
+      "sceneMeaning": "上诉；呼吁",
+      "examples": "[]"
+    },
+    {
+      "word": "contract",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑntrækt",
+      "phoneticUk": "'kɒntrækt",
+      "translation": "契约，合同；婚约；合同",
+      "sceneMeaning": "合同；契约",
+      "examples": "[]"
+    },
+    {
+      "word": "blame",
+      "partOfSpeech": "v",
+      "phoneticUs": "blem",
+      "phoneticUk": "bleɪm",
+      "translation": "责备，把…归咎于；指责，责怪",
+      "sceneMeaning": "责备，把…归咎于；指责，责怪；本场景常见用法：对…应负责任；应该为某事负责任",
+      "examples": "[]"
+    },
+    {
+      "word": "claim",
+      "partOfSpeech": "v",
+      "phoneticUs": "klem",
+      "phoneticUk": "kleɪm",
+      "translation": "声称，主张；索取",
+      "sceneMeaning": "索赔；主张",
+      "examples": "[]"
+    },
+    {
+      "word": "legal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ligl",
+      "phoneticUk": "'liːg(ə)l",
+      "translation": "法律的；合法的；法律的",
+      "sceneMeaning": "法律的；合法的",
+      "examples": "[]"
+    },
+    {
+      "word": "responsibility",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪˌspɑːnsəˈbɪləti",
+      "phoneticUk": "ri,spɔnsə'biliti",
+      "translation": "责任",
+      "sceneMeaning": "责任",
+      "examples": "[]"
+    },
+    {
+      "word": "complaint",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'plent",
+      "phoneticUk": "kəm'pleɪnt",
+      "translation": "抱怨；怨言；控告；抱怨; 投诉",
+      "sceneMeaning": "投诉；控诉",
+      "examples": "[]"
+    },
+    {
+      "word": "justify",
+      "partOfSpeech": "v / vt",
+      "phoneticUs": "'dʒʌstə'fai",
+      "phoneticUk": "ˈdʒʌstɪfaɪ",
+      "translation": "证明…是正当的；证明……正当",
+      "sceneMeaning": "证明…是正当的；证明……正当",
+      "examples": "[]"
+    },
+    {
+      "word": "officer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔfɪsɚ",
+      "phoneticUk": "'ɒfɪsə",
+      "translation": "官员；干事；军官",
+      "sceneMeaning": "警官；官员",
+      "examples": "[]"
+    },
+    {
+      "word": "privacy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'praɪvəsi",
+      "phoneticUk": "'prɪvəsɪ",
+      "translation": "隐私",
+      "sceneMeaning": "隐私",
+      "examples": "[]"
+    },
+    {
+      "word": "regulation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌrɛɡjəˈleʃən",
+      "phoneticUk": "regjʊ'leɪʃ(ə)n",
+      "translation": "规则，规章；管理；管理；规则",
+      "sceneMeaning": "规定；监管",
+      "examples": "[]"
+    },
+    {
+      "word": "dispute",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dɪs'pjʊt",
+      "phoneticUk": "dɪ'spjuːt; 'dɪspjuːt",
+      "translation": "争论，争执；争论；辩论，争论",
+      "sceneMeaning": "争议；纠纷",
+      "examples": "[]"
+    },
+    {
+      "word": "illegal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'ligl",
+      "phoneticUk": "ɪ'liːg(ə)l",
+      "translation": "不合法的，非法的；非法的",
+      "sceneMeaning": "非法的",
+      "examples": "[]"
+    },
+    {
+      "word": "liable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'laɪəbl",
+      "phoneticUk": "'laɪəb(ə)l",
+      "translation": "易于…的；可能的",
+      "sceneMeaning": "负有法律责任的；可能的",
+      "examples": "[]"
+    },
+    {
+      "word": "penalty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɛnəlti",
+      "phoneticUk": "'pen(ə)ltɪ",
+      "translation": "惩罚",
+      "sceneMeaning": "处罚；罚金",
+      "examples": "[]"
+    },
+    {
+      "word": "accuse",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kjuz",
+      "phoneticUk": "ə'kjuːz",
+      "translation": "指责；归咎于",
+      "sceneMeaning": "指控；谴责",
+      "examples": "[]"
+    },
+    {
+      "word": "crime",
+      "partOfSpeech": "n",
+      "phoneticUs": "kraɪm",
+      "phoneticUk": "kraɪm",
+      "translation": "罪，罪行；犯罪",
+      "sceneMeaning": "犯罪；罪行",
+      "examples": "[]"
+    },
+    {
+      "word": "fairly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'fɛrli",
+      "phoneticUk": "'feəlɪ",
+      "translation": "相当；公平地",
+      "sceneMeaning": "相当；公平地",
+      "examples": "[]"
+    },
+    {
+      "word": "impose",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'poz",
+      "phoneticUk": "ɪm'pəʊz",
+      "translation": "把…强加；征(税)；强加",
+      "sceneMeaning": "把…强加；征(税)；强加",
+      "examples": "[]"
+    },
+    {
+      "word": "law",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔ",
+      "phoneticUk": "lɔː",
+      "translation": "法律，法令；法则",
+      "sceneMeaning": "法律；法学",
+      "examples": "[]"
+    },
+    {
+      "word": "promise",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɑmɪs",
+      "phoneticUk": "'prɒmɪs",
+      "translation": "诺言；指望；允诺",
+      "sceneMeaning": "承诺",
+      "examples": "[]"
+    },
+    {
+      "word": "respond",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'spɑnd",
+      "phoneticUk": "rɪ'spɒnd",
+      "translation": "作答；响应",
+      "sceneMeaning": "作答；响应",
+      "examples": "[]"
+    },
+    {
+      "word": "agreement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'grimənt",
+      "phoneticUk": "ə'griːm(ə)nt",
+      "translation": "协定，协议；同意",
+      "sceneMeaning": "协议；一致",
+      "examples": "[]"
+    },
+    {
+      "word": "article",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrtɪkl",
+      "phoneticUk": "'ɑːtɪk(ə)l",
+      "translation": "文章；条款；物品",
+      "sceneMeaning": "条款；文章",
+      "examples": "[]"
+    },
+    {
+      "word": "duty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʊti",
+      "phoneticUk": "'djuːtɪ",
+      "translation": "职责；责任；税",
+      "sceneMeaning": "义务；职责",
+      "examples": "[]"
+    },
+    {
+      "word": "fair",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "fɛr",
+      "phoneticUk": "feə",
+      "translation": "公平的；相当的；集市",
+      "sceneMeaning": "公平的；合理的",
+      "examples": "[]"
+    },
+    {
+      "word": "fine",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "faɪn",
+      "phoneticUk": "faɪn",
+      "translation": "美好的；纤细的；罚款",
+      "sceneMeaning": "罚款",
+      "examples": "[]"
+    },
+    {
+      "word": "judge",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒʌdʒ",
+      "phoneticUk": "dʒʌdʒ",
+      "translation": "法官；裁判员",
+      "sceneMeaning": "法官；裁判",
+      "examples": "[]"
+    },
+    {
+      "word": "promising",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɑmɪsɪŋ",
+      "phoneticUk": "'prɒmɪsɪŋ",
+      "translation": "有希望的，有前途的",
+      "sceneMeaning": "有希望的，有前途的",
+      "examples": "[]"
+    },
+    {
+      "word": "proof",
+      "partOfSpeech": "n",
+      "phoneticUs": "pruf",
+      "phoneticUk": "pruːf",
+      "translation": "证据；证明；校样",
+      "sceneMeaning": "证明；证据",
+      "examples": "[]"
+    },
+    {
+      "word": "reward",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'wɔrd",
+      "phoneticUk": "rɪ'wɔːd",
+      "translation": "报答；报酬；报答；报答，奖赏",
+      "sceneMeaning": "报答；报酬；报答；报答，奖赏",
+      "examples": "[]"
+    },
+    {
+      "word": "settle",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɛtl",
+      "phoneticUk": "'set(ə)l",
+      "translation": "安排；安放；调停",
+      "sceneMeaning": "解决；和解",
+      "examples": "[]"
+    },
+    {
+      "word": "appealing",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əˈpiːlɪŋ",
+      "phoneticUk": "əˈpi:lɪŋ",
+      "translation": "吸引人的",
+      "sceneMeaning": "吸引人的",
+      "examples": "[]"
+    },
+    {
+      "word": "code",
+      "partOfSpeech": "n",
+      "phoneticUs": "kod",
+      "phoneticUk": "kəʊd",
+      "translation": "准则；法典；代码；代码，密码",
+      "sceneMeaning": "法典；准则；代码",
+      "examples": "[]"
+    },
+    {
+      "word": "court",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrt",
+      "phoneticUk": "kɔːt",
+      "translation": "法院，法庭；庭院",
+      "sceneMeaning": "法院；法庭",
+      "examples": "[]"
+    },
+    {
+      "word": "criminal",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪmɪnl",
+      "phoneticUk": "'krɪmɪn(ə)l",
+      "translation": "犯人，罪犯，刑事犯",
+      "sceneMeaning": "刑事的；犯罪的",
+      "examples": "[]"
+    },
+    {
+      "word": "equality",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kwɑləti",
+      "phoneticUk": "ɪ'kwɒlɪtɪ; iː-",
+      "translation": "等同，平等；相等；平等",
+      "sceneMeaning": "平等",
+      "examples": "[]"
+    },
+    {
+      "word": "freedom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fridəm",
+      "phoneticUk": "'friːdəm",
+      "translation": "自由；自主",
+      "sceneMeaning": "自由",
+      "examples": "[]"
+    },
+    {
+      "word": "freely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'frili",
+      "phoneticUk": "'friːlɪ",
+      "translation": "自由地；直率地",
+      "sceneMeaning": "自由地；直率地",
+      "examples": "[]"
+    },
+    {
+      "word": "guilty",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡɪlti",
+      "phoneticUk": "'gɪltɪ",
+      "translation": "内疚的；有罪的",
+      "sceneMeaning": "有罪的；内疚的",
+      "examples": "[]"
+    },
+    {
+      "word": "investigate",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "ɪn'vɛstɪɡet",
+      "phoneticUk": "ɪn'vestɪgeɪt",
+      "translation": "调查",
+      "sceneMeaning": "调查",
+      "examples": "[]"
+    },
+    {
+      "word": "investigation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn,vɛstɪ'ɡeʃən",
+      "phoneticUk": "ɪn,vestɪ'geɪʃ(ə)n",
+      "translation": "调查，调查研究",
+      "sceneMeaning": "调查",
+      "examples": "[]"
+    },
+    {
+      "word": "justice",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒʌstɪs",
+      "phoneticUk": "'dʒʌstɪs",
+      "translation": "正义，公正；司法；公正",
+      "sceneMeaning": "正义；司法",
+      "examples": "[]"
+    },
+    {
+      "word": "neglect",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪ'glɛkt",
+      "phoneticUk": "nɪ'glekt",
+      "translation": "忽视，忽略；疏忽；疏忽；忽视",
+      "sceneMeaning": "忽视，忽略；疏忽；疏忽；忽视；本场景常见用法：玩忽职守；[法]失职；过失责任",
+      "examples": "[]"
+    },
+    {
+      "word": "property",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑpɚti",
+      "phoneticUk": "'prɒpətɪ",
+      "translation": "财产，资产；性质",
+      "sceneMeaning": "财产；房产",
+      "examples": "[]"
+    },
+    {
+      "word": "racial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'reʃl",
+      "phoneticUk": "'reɪʃ(ə)l",
+      "translation": "种族的，人种的",
+      "sceneMeaning": "种族的，人种的",
+      "examples": "[]"
+    },
+    {
+      "word": "violate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'vaɪəlet",
+      "phoneticUk": "'vaɪəleɪt",
+      "translation": "违反",
+      "sceneMeaning": "违反；侵犯",
+      "examples": "[]"
+    },
+    {
+      "word": "abuse",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'bjus",
+      "phoneticUk": "ə'bjuːz",
+      "translation": "滥用；虐待；滥用；虐待；滥用",
+      "sceneMeaning": "虐待；滥用",
+      "examples": "[]"
+    },
+    {
+      "word": "arrest",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'rɛst",
+      "phoneticUk": "ə'rest",
+      "translation": "逮捕，拘留；阻止；逮捕",
+      "sceneMeaning": "逮捕",
+      "examples": "[]"
+    },
+    {
+      "word": "compel",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pɛl",
+      "phoneticUk": "kəm'pel",
+      "translation": "强迫，迫使屈服；强迫",
+      "sceneMeaning": "强迫，迫使屈服；强迫",
+      "examples": "[]"
+    },
+    {
+      "word": "constitute",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kɑnstətut",
+      "phoneticUk": "'kɒnstɪtjuːt",
+      "translation": "组成",
+      "sceneMeaning": "组成；本场景常见用法：构成犯罪；进行犯罪",
+      "examples": "[]"
+    },
+    {
+      "word": "curse",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɝs",
+      "phoneticUk": "kɜːs",
+      "translation": "诅咒，咒骂；天谴",
+      "sceneMeaning": "诅咒，咒骂；天谴",
+      "examples": "[]"
+    },
+    {
+      "word": "dictate",
+      "partOfSpeech": "n / v / vt&vi",
+      "phoneticUs": "'dɪktet",
+      "phoneticUk": "dɪk'teɪt",
+      "translation": "口授；命令；命令，规定",
+      "sceneMeaning": "口授；命令；命令，规定",
+      "examples": "[]"
+    },
+    {
+      "word": "discrimination",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ,skrɪmɪ'neʃən",
+      "phoneticUk": "dɪ,skrɪmɪ'neɪʃ(ə)n",
+      "translation": "歧视",
+      "sceneMeaning": "歧视",
+      "examples": "[]"
+    },
+    {
+      "word": "enforce",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'fɔrs",
+      "phoneticUk": "ɪn'fɔːs; en-",
+      "translation": "实施，执行；强制",
+      "sceneMeaning": "执行；强制实施",
+      "examples": "[]"
+    },
+    {
+      "word": "guilt",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡɪlt",
+      "phoneticUk": "gɪlt",
+      "translation": "有罪，犯罪行为",
+      "sceneMeaning": "有罪，犯罪行为",
+      "examples": "[]"
+    },
+    {
+      "word": "lawyer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɔjɚ",
+      "phoneticUk": "'lɔːjə; 'lɒɪə",
+      "translation": "律师；法学家",
+      "sceneMeaning": "律师",
+      "examples": "[]"
+    },
+    {
+      "word": "murder",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "'mɝdɚ",
+      "phoneticUk": "'mɜːdə",
+      "translation": "谋杀，凶杀",
+      "sceneMeaning": "谋杀，凶杀",
+      "examples": "[]"
+    },
+    {
+      "word": "obey",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'be",
+      "phoneticUk": "ə(ʊ)'beɪ",
+      "translation": "顺从；服从",
+      "sceneMeaning": "遵守；服从",
+      "examples": "[]"
+    },
+    {
+      "word": "offense",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'fɛns",
+      "phoneticUk": "ə'fens",
+      "translation": "犯罪；冒犯",
+      "sceneMeaning": "违法行为；冒犯",
+      "examples": "[]"
+    },
+    {
+      "word": "pound",
+      "partOfSpeech": "n",
+      "phoneticUs": "paʊnd",
+      "phoneticUk": "paʊnd",
+      "translation": "磅；英磅",
+      "sceneMeaning": "磅；英磅；本场景常见用法：合乎法律的无礼要求",
+      "examples": "[]"
+    },
+    {
+      "word": "punish",
+      "partOfSpeech": "v",
+      "phoneticUs": "'pʌnɪʃ",
+      "phoneticUk": "'pʌnɪʃ",
+      "translation": "罚，惩罚，处罚",
+      "sceneMeaning": "惩罚",
+      "examples": "[]"
+    },
+    {
+      "word": "regulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rɛɡjulet",
+      "phoneticUk": "'regjʊleɪt",
+      "translation": "管理，控制；调整；管理",
+      "sceneMeaning": "规范；监管",
+      "examples": "[]"
+    },
+    {
+      "word": "sentence",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'sɛntəns",
+      "phoneticUk": "'sentəns",
+      "translation": "判决",
+      "sceneMeaning": "判刑；宣判",
+      "examples": "[]"
+    },
+    {
+      "word": "trial",
+      "partOfSpeech": "n",
+      "phoneticUs": "'traɪəl",
+      "phoneticUk": "'traɪəl",
+      "translation": "试，试验；审判",
+      "sceneMeaning": "审判；试验",
+      "examples": "[]"
+    },
+    {
+      "word": "aviation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",evɪ'eʃən",
+      "phoneticUk": "eɪvɪ'eɪʃ(ə)n",
+      "translation": "航空，航空学；航空",
+      "sceneMeaning": "航空，航空学；航空；本场景常见用法：国际民航组织",
+      "examples": "[]"
+    },
+    {
+      "word": "captive",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæptɪv",
+      "phoneticUk": "'kæptɪv",
+      "translation": "俘虏，被监禁的人",
+      "sceneMeaning": "俘虏，被监禁的人",
+      "examples": "[]"
+    },
+    {
+      "word": "civil",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɪvl",
+      "phoneticUk": "'sɪv(ə)l; -ɪl",
+      "translation": "公民的；文职的",
+      "sceneMeaning": "民事的；公民的",
+      "examples": "[]"
+    },
+    {
+      "word": "compensate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kɑmpɛnset",
+      "phoneticUk": "'kɒmpenseɪt",
+      "translation": "弥补，补偿",
+      "sceneMeaning": "赔偿；补偿",
+      "examples": "[]"
+    },
+    {
+      "word": "compensation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑmpɛn'seʃən",
+      "phoneticUk": "ˌkɒmpenˈseɪʃn",
+      "translation": "弥补，补偿",
+      "sceneMeaning": "赔偿；补偿",
+      "examples": "[]"
+    },
+    {
+      "word": "comply",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'plaɪ",
+      "phoneticUk": "kəm'plaɪ",
+      "translation": "遵从",
+      "sceneMeaning": "遵守；服从",
+      "examples": "[]"
+    },
+    {
+      "word": "constitution",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnstə'tʊʃən",
+      "phoneticUk": "kɒnstɪ'tjuːʃ(ə)n",
+      "translation": "章程；体质；构造",
+      "sceneMeaning": "宪法；章程",
+      "examples": "[]"
+    },
+    {
+      "word": "convict",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'vɪkt",
+      "phoneticUk": "kən'vɪkt",
+      "translation": "证明…有罪",
+      "sceneMeaning": "定罪",
+      "examples": "[]"
+    },
+    {
+      "word": "defend",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'fɛnd",
+      "phoneticUk": "dɪ'fend",
+      "translation": "保卫，防守",
+      "sceneMeaning": "辩护；防御",
+      "examples": "[]"
+    },
+    {
+      "word": "disservice",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪs'sɝvɪs",
+      "phoneticUk": "dɪsˈsɜ:vɪs",
+      "translation": "伤害，帮倒忙",
+      "sceneMeaning": "伤害，帮倒忙",
+      "examples": "[]"
+    },
+    {
+      "word": "entitle",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'taɪtl",
+      "phoneticUk": "ɪn'taɪt(ə)l; en-",
+      "translation": "给…权利(或资格)；使具有权利，使具有资格",
+      "sceneMeaning": "给…权利(或资格)；使具有权利，使具有资格",
+      "examples": "[]"
+    },
+    {
+      "word": "gang",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡæŋ",
+      "phoneticUk": "gæŋ",
+      "translation": "一帮，一伙",
+      "sceneMeaning": "一帮，一伙；本场景常见用法：犯罪集团",
+      "examples": "[]"
+    },
+    {
+      "word": "heir",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɛr",
+      "phoneticUk": "eə",
+      "translation": "后嗣，继承人",
+      "sceneMeaning": "后嗣，继承人",
+      "examples": "[]"
+    },
+    {
+      "word": "imprison",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'prɪzn",
+      "phoneticUk": "ɪm'prɪz(ə)n",
+      "translation": "关押，监禁；限制",
+      "sceneMeaning": "关押，监禁；限制",
+      "examples": "[]"
+    },
+    {
+      "word": "innocent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪnəsnt",
+      "phoneticUk": "'ɪnəs(ə)nt",
+      "translation": "清白的，幼稚的；无辜的；天真的",
+      "sceneMeaning": "无罪的；清白的",
+      "examples": "[]"
+    },
+    {
+      "word": "jail",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dʒel",
+      "phoneticUk": "dʒeɪl",
+      "translation": "监狱；监禁",
+      "sceneMeaning": "监狱；拘留所",
+      "examples": "[]"
+    },
+    {
+      "word": "jury",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒʊri",
+      "phoneticUk": "'dʒʊərɪ",
+      "translation": "陪审团；评奖团",
+      "sceneMeaning": "陪审团",
+      "examples": "[]"
+    },
+    {
+      "word": "liability",
+      "partOfSpeech": "n",
+      "phoneticUs": "'laɪə'bɪləti",
+      "phoneticUk": "ˌlaɪəˈbɪləti",
+      "translation": "责任",
+      "sceneMeaning": "法律责任；负债",
+      "examples": "[]"
+    },
+    {
+      "word": "liberty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪbɚti",
+      "phoneticUk": "'lɪbətɪ",
+      "translation": "自由；释放；许可",
+      "sceneMeaning": "自由；自由权",
+      "examples": "[]"
+    },
+    {
+      "word": "license",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'laɪsns",
+      "phoneticUk": "'laɪsns",
+      "translation": "许可；执照；准许",
+      "sceneMeaning": "许可证；许可",
+      "examples": "[]"
+    },
+    {
+      "word": "oblige",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'blaɪdʒ",
+      "phoneticUk": "ə'blaɪdʒ",
+      "translation": "迫使；施恩惠于",
+      "sceneMeaning": "迫使；施恩惠于",
+      "examples": "[]"
+    },
+    {
+      "word": "offend",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'fɛnd",
+      "phoneticUk": "ə'fend",
+      "translation": "冒犯；犯过错",
+      "sceneMeaning": "冒犯；犯过错；本场景常见用法：违犯；犯罪",
+      "examples": "[]"
+    },
+    {
+      "word": "ownership",
+      "partOfSpeech": "n",
+      "phoneticUs": "'onɚʃɪp",
+      "phoneticUk": "'əʊnəʃɪp",
+      "translation": "所有(权)，所有制",
+      "sceneMeaning": "所有权",
+      "examples": "[]"
+    },
+    {
+      "word": "permit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pɚ'mɪt",
+      "phoneticUk": "pə'mɪt",
+      "translation": "允许；执照",
+      "sceneMeaning": "许可证",
+      "examples": "[]"
+    },
+    {
+      "word": "preliminary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prɪ'lɪmɪnɛri",
+      "phoneticUk": "prɪ'lɪmɪn(ə)rɪ",
+      "translation": "预备的，初步的",
+      "sceneMeaning": "预备的，初步的；本场景常见用法：初步调查",
+      "examples": "[]"
+    },
+    {
+      "word": "prison",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɪzn",
+      "phoneticUk": "'prɪz(ə)n",
+      "translation": "监狱，监禁",
+      "sceneMeaning": "监狱",
+      "examples": "[]"
+    },
+    {
+      "word": "prisoner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɪznɚ",
+      "phoneticUk": "'prɪz(ə)nə",
+      "translation": "囚犯",
+      "sceneMeaning": "囚犯；犯人",
+      "examples": "[]"
+    },
+    {
+      "word": "provision",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'vɪʒn",
+      "phoneticUk": "prə'vɪʒ(ə)n",
+      "translation": "供应；预备；存粮",
+      "sceneMeaning": "规定；条文",
+      "examples": "[]"
+    },
+    {
+      "word": "settlement",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛtlmənt",
+      "phoneticUk": "'set(ə)lm(ə)nt",
+      "translation": "解决；殖民，殖民地",
+      "sceneMeaning": "和解；解决",
+      "examples": "[]"
+    },
+    {
+      "word": "suspicion",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "怀疑，疑心，猜疑",
+      "sceneMeaning": "怀疑，疑心，猜疑",
+      "examples": "[]"
+    },
+    {
+      "word": "swear",
+      "partOfSpeech": "v",
+      "phoneticUs": "swɛr",
+      "phoneticUk": "sweə",
+      "translation": "宣(誓)；诅咒",
+      "sceneMeaning": "宣(誓)；诅咒",
+      "examples": "[]"
+    },
+    {
+      "word": "witness",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈwɪtnɪs",
+      "phoneticUk": "ˈwɪtnɪs",
+      "translation": "证据；证人；目击；目击者，目击",
+      "sceneMeaning": "目击；见证",
+      "examples": "[]"
+    }
+  ]
+}

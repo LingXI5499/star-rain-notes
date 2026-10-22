@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 组件退出时应清除定时器并移除监听器、观察器，避免重复响应与资源泄漏。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const timer = setInterval(update, 1000);
+const controller = new AbortController();
+window.addEventListener('resize', update, { signal: controller.signal });
+function destroy() { clearInterval(timer); controller.abort(); }
+</code></pre>
+<p><strong>学完能做：</strong> 在组件退出时移除监听器和定时器。</p>

@@ -1,0 +1,53 @@
+{
+  "slug": "133785879948",
+  "title": "LeetCode 11｜盛最多水的容器：从暴力枚举到双指针优化",
+  "description": "本题求数组两线间“短板×宽度”的最大值。暴力法枚举全以 LeetCode 11「盛最多水的容器」为例，从最直观的暴力枚举出发，逐步推导标准双指针与双指针剪枝三种解法。结合短板效应、算法正确性证明、黑盒与白盒测试、详细执行步骤及复杂度分析，深入理解双指针算法的优化原理，并提供 C、C++、Java、Python、JavaScript 五种语言的完整注释实现。部组合（O(n²)），双指针法则通过每次移动较短的指针向中心靠拢，以 O(n) 时间高效求解，是本题最优解。",
+  "publishedAt": "2026-08-31",
+  "updatedAt": "2026-10-12",
+  "wordCount": 14948,
+  "tags": [
+    {
+      "slug": "leetcode",
+      "name": "LeetCode"
+    },
+    {
+      "slug": "tag-d30f3ac2398e",
+      "name": "双指针"
+    },
+    {
+      "slug": "tag-177g4f2",
+      "name": "复杂度分析"
+    },
+    {
+      "slug": "tag-1p0w09q",
+      "name": "多语言实现"
+    },
+    {
+      "slug": "tag-3pbk8y",
+      "name": "数据结构与算法"
+    },
+    {
+      "slug": "tag-685bb17fdb2b",
+      "name": "数组"
+    },
+    {
+      "slug": "tag-19z1z6g",
+      "name": "暴力枚举"
+    },
+    {
+      "slug": "tag-af84cfb6c1bb",
+      "name": "算法"
+    },
+    {
+      "slug": "tag-15lnn0f",
+      "name": "算法优化"
+    }
+  ],
+  "topics": [
+    {
+      "slug": "leetcode",
+      "name": "力扣"
+    }
+  ],
+  "path": "/blog/posts/133785879948/"
+}

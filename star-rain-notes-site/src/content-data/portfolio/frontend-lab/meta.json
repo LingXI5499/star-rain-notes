@@ -1,0 +1,45 @@
+{
+  "slug": "frontend-lab",
+  "title": "Frontend Lab · 界面实验室",
+  "description": "完全使用原生 HTML、CSS 和 JavaScript 构建的前端学习工作台，集合可运行实验、代码与效果对照、技术速查、开发手册和学习进度。",
+  "category": "工具",
+  "format": "Web 应用",
+  "techStack": [
+    "HTML",
+    "CSS",
+    "JavaScript",
+    "iframe Sandbox",
+    "LocalStorage",
+    "Playwright"
+  ],
+  "status": "COMPLETED",
+  "publishedAt": "2026-10-16",
+  "updatedAt": "2026-10-16",
+  "startedOn": null,
+  "endedOn": null,
+  "featured": false,
+  "cover": "/images/content/5cef38beea494932.webp",
+  "screenshots": [
+    {
+      "src": "/images/content/2643714175e9e24d.webp",
+      "alt": "源码与效果对照工作台"
+    },
+    {
+      "src": "/images/content/532d5504e72ace83.webp",
+      "alt": "开发手册与课程检索"
+    }
+  ],
+  "links": [
+    {
+      "label": "项目源码",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/frontend-lab",
+      "type": "GITHUB"
+    },
+    {
+      "label": "运行说明",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/frontend-lab/README.md",
+      "type": "DOC"
+    }
+  ],
+  "path": "/portfolio/frontend-lab/"
+}

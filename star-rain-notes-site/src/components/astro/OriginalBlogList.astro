@@ -1,0 +1,45 @@
+---
+import { catalog, topics, readJSON, type Blog } from '../../utils/content';
+import OriginalPagination from './OriginalPagination.astro';
+import OriginalArchiveCalendar from './OriginalArchiveCalendar.astro';
+import OriginalTagOverlay from './OriginalTagOverlay.astro';
+import JournalTimelineCard from './JournalTimelineCard.astro';
+interface Props { posts?: Blog[]; title?: string; description?: string; page?: number; archive?: boolean; activeTopic?: string; activeTag?: string; }
+const { posts = catalog.blogs, title, page = 1, archive = false, activeTopic = '', activeTag = '' } = Astro.props;
+const tags = readJSON('tags.json') as { name: string; slug: string; postCount: number }[];
+const months = [...new Set(catalog.blogs.map(b => b.publishedAt.slice(0, 7)))];
+const totalWords = Number(readJSON('blog-stats.json').wordCount);
+const first = catalog.blogs[catalog.blogs.length - 1].publishedAt;
+const days = Math.max(1, Math.ceil((Date.now() - Date.parse(first)) / 86400000));
+const columns = [{ slug: '', name: '首页' }, ...topics];
+const initialPosts = new Set(posts.slice((page - 1) * 10, page * 10).map(post => post.slug));
+---
+<section class="blog-page" data-blog-filter data-pagination-page={page}>
+  <header class="blog-hero"><div><p>{archive ? 'ARCHIVE · BY TIME' : 'JOURNAL · THINKING & PRACTICE'}</p><h1>{archive ? '归档浏览' : title || <>沿时间沉淀思考，<br/>让经验持续生长。</>}</h1></div><aside><strong>{catalog.blogs.length}</strong><span>篇公开文章</span><p>技术实践、学习路径与系统复盘。</p></aside></header>
+  <div class="blog-layout"><div class="blog-main">
+    {archive && <OriginalArchiveCalendar/>}
+    <nav hidden={archive} class="column-nav" aria-label="博客专栏" data-blog-columns>
+      <div class="column-nav__row">
+        <span class="column-nav__pill" aria-hidden="true" hidden></span>
+        {columns.map(topic => <a class:list={['column-nav__item', { 'column-nav__item--active': topic.slug === activeTopic }]} href={topic.slug ? `/blog/topics/${topic.slug}/` : '/blog/'} data-blog-topic={topic.slug} aria-current={topic.slug === activeTopic ? 'true' : undefined}>{topic.name}</a>)}
+        <div class="column-nav__more" hidden><button type="button" class="column-nav__more-trigger" aria-expanded="false" aria-controls="blog-column-menu" data-column-more><span aria-hidden="true">»</span>更多</button><ul class="column-nav__menu" id="blog-column-menu" hidden>{columns.map(topic => <li data-column-menu-item={topic.slug}><a href={topic.slug ? `/blog/topics/${topic.slug}/` : '/blog/'} data-blog-topic={topic.slug}>{topic.name}</a></li>)}</ul></div>
+      </div>
+      <div class="column-nav__probe-clip" aria-hidden="true"><div class="column-nav__probe">{columns.map(topic => <span class="column-nav__item" data-probe-item>{topic.name}</span>)}<span class="column-nav__more-trigger" data-probe-more><span>»</span>更多</span></div></div>
+    </nav>
+    <div class="blog-active" data-blog-active hidden={!activeTopic && !activeTag}><span>当前筛选</span><div data-blog-active-chips></div><button type="button" data-blog-reset>清除筛选</button><small data-blog-result-count role="status" aria-live="polite">{posts.length} 篇文章</small></div>
+    <ol class="timeline" data-stagger>
+      {catalog.blogs.map((post, index) => <li class="timeline__item" data-blog-post data-tags={post.tags.map(tag => tag.slug).join(',')} data-topics={post.topics.map(topic => topic.slug).join(',')} data-published-at={post.publishedAt} hidden={!initialPosts.has(post.slug)}>
+        <div class="timeline__date"><strong data-blog-year hidden={index > 0 && post.publishedAt.slice(0, 4) === catalog.blogs[index - 1].publishedAt.slice(0, 4)}>{post.publishedAt.slice(0, 4)}</strong><span>{post.publishedAt.slice(5).replace('-', '/')}</span></div><i class="timeline__node" aria-hidden="true"/>
+        <JournalTimelineCard {...post} tags={post.tags.map(tag=>tag.name)}/>
+      </li>)}
+    </ol>
+    <div class="timeline-state" data-blog-empty hidden={posts.length > 0}><p data-blog-empty-text>{activeTopic ? '该专栏暂无公开文章。' : '没有符合当前筛选条件的文章。'}</p><button type="button" data-blog-reset>清除筛选，查看全部文章</button></div>
+    <OriginalPagination total={posts.length} size={10} unit="篇"/>
+  </div><aside class="blog-rail">
+    <section class="blog-panel blog-panel--tags"><div class="blog-panel__head"><span>TAGS</span><small>{tags.length} 个标签</small></div><nav class="blog-panel__tag-nav" aria-label="博客标签导航"><button type="button" class="blog-panel__tag-all" data-open-tag-list aria-haspopup="dialog">标签筛选</button></nav><div class="blog-panel__tag-list">{tags.map(tag => <a class:list={['static-tag-button', { active: tag.slug === activeTag }]} href={`/blog/tags/${tag.slug}/`} data-blog-tag={tag.slug} data-tag-name={tag.name} aria-current={tag.slug === activeTag ? 'true' : undefined} title={`${tag.name} · ${tag.postCount} 篇博客`}><span class="blog-panel__tag-name">{tag.name}</span><em>{tag.postCount}</em></a>)}</div></section>
+    <section class="blog-panel blog-panel--archive"><div class="blog-panel__head"><span>ARCHIVE</span><small>文章归档</small></div><div class="blog-panel__months">{months.map(month => <a href={`/blog/archive/#month-${month}`} data-blog-month={month}><span class="blog-panel__month-label">{month.slice(0, 4)} 年 {month.slice(5)} 月</span><strong>{catalog.blogs.filter(b => b.publishedAt.startsWith(month)).length}<i>篇</i></strong></a>)}</div></section>
+    <section class="blog-panel blog-panel--stats"><div class="blog-panel__head"><span>STATS</span><small>写作统计</small></div><dl class="blog-panel__stats"><div><dt>文章总数</dt><dd>{catalog.blogs.length}<i>篇</i></dd></div><div><dt>全站字数</dt><dd>{(totalWords / 10000).toFixed(1)} 万<i>字</i></dd></div><div><dt>开始写作</dt><dd class="blog-panel__stats-date">{first.replaceAll('-', '/')}</dd></div><div><dt>已坚持</dt><dd>{days}<i>天</i></dd></div></dl></section>
+  </aside></div>
+  <OriginalTagOverlay tags={tags}/>
+</section>
+<script>import '../../utils/blog';</script>

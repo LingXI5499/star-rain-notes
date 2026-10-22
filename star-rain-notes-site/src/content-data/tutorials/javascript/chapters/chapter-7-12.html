@@ -1,0 +1,14 @@
+<p><strong>核心：</strong> 模块化可把静态数据、工具逻辑与程序入口拆到三个文件，降低耦合。</p>
+<p><strong>最小示例：</strong>
+<code>data.js</code></p>
+<pre><code class="language-js">export const nums = [1, 2, 3];
+</code></pre>
+<p><code>util.js</code></p>
+<pre><code class="language-js">export const sum = a =&gt; a.reduce((s, n) =&gt; s + n, 0);
+</code></pre>
+<p><code>main.js</code></p>
+<pre><code class="language-js">import { nums } from './data.js';
+import { sum } from './util.js';
+console.log(sum(nums)); // 6
+</code></pre>
+<p><strong>学完能做：</strong> 将数据、工具方法与入口拆为独立模块。</p>

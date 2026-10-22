@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 事件一般经历捕获→目标→冒泡；<code>event.target</code> 指原始触发元素，<code>currentTarget</code> 是当前处理节点。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">document.querySelector('#list').addEventListener('click', e =&gt; {
+  console.log('target:', e.target, 'current:', e.currentTarget);
+});
+</code></pre>
+<p><strong>学完能做：</strong> 理解事件传播三个阶段及事件目标。</p>

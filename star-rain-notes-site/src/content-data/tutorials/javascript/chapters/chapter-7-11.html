@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>extends</code> 继承类、<code>super()</code> 初始化父类部分、<code>static</code> 定义属于类而非实例的成员。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">class Animal { constructor(name) { this.name = name; } }
+class Cat extends Animal { constructor(name) { super(name); } static type = '猫'; }
+console.log(new Cat('咪咪').name, Cat.type);
+</code></pre>
+<p><strong>学完能做：</strong> 使用 extends、super 和 static 表达类型关系。</p>

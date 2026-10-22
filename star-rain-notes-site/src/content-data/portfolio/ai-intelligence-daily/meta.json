@@ -1,0 +1,37 @@
+{
+  "slug": "ai-intelligence-daily",
+  "title": "AI Intelligence Daily · AI 情报日报",
+  "description": "轻量 Python 信息聚合网站，集中整理 AI、编程、社会热点、政策与秋招公开信息，支持每日刷新、手动更新、内容去重和可选的 DeepSeek 摘要。",
+  "category": "工具",
+  "format": "Web 应用",
+  "techStack": [
+    "Python",
+    "FastAPI",
+    "Jinja2",
+    "SQLite",
+    "httpx",
+    "BeautifulSoup",
+    "DeepSeek API"
+  ],
+  "status": "COMPLETED",
+  "publishedAt": "2026-10-16",
+  "updatedAt": "2026-10-16",
+  "startedOn": null,
+  "endedOn": null,
+  "featured": false,
+  "cover": "/images/content/598f219ba543cad8.webp",
+  "screenshots": [],
+  "links": [
+    {
+      "label": "项目源码",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/ai-intelligence-daily",
+      "type": "GITHUB"
+    },
+    {
+      "label": "运行说明",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/ai-intelligence-daily/README.md",
+      "type": "DOC"
+    }
+  ],
+  "path": "/portfolio/ai-intelligence-daily/"
+}

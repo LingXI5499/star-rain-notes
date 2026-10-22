@@ -1,0 +1,1483 @@
+{
+  "slug": "java-enterprise-development",
+  "title": "Java 企业级开发",
+  "description": "Java 技术体系第二层：覆盖企业级开发工具链、Web/HTTP、Vue、数据库与 JDBC、Servlet、Spring、MVC、MyBatis、Spring Boot、业务分层与身份安全。",
+  "category": "Java全栈知识体系",
+  "categorySlug": "javaquanzhan",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 176,
+  "wordCount": 0,
+  "categoryId": "1",
+  "groups": [
+    {
+      "title": "Java 企业应用的技术演进与整体架构",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "JavaSE、Java EE、Jakarta EE 与 Spring 生态分别是什么",
+          "description": "JavaSE、Java EE、Jakarta EE 与 Spring 生态分别是什么",
+          "path": "/tutorials/java-enterprise-development/1-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "Java 企业应用演进：JDBC → Servlet/JSP → SSH/SSM → Spring Boot",
+          "description": "Java 企业应用演进：JDBC → Servlet/JSP → SSH/SSM → Spring Boot",
+          "path": "/tutorials/java-enterprise-development/1-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-3",
+          "title": "Java EE 与 Jakarta EE 的关系；Spring 不是 Jakarta EE 的新版本",
+          "description": "Java EE 与 Jakarta EE 的关系；Spring 不是 Jakarta EE 的新版本",
+          "path": "/tutorials/java-enterprise-development/1-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-4",
+          "title": "`javax.*` 与 `jakarta.*`：命名空间变化及兼容性",
+          "description": "`javax.*` 与 `jakarta.*`：命名空间变化及兼容性",
+          "path": "/tutorials/java-enterprise-development/1-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-5",
+          "title": "一次 Web 请求：浏览器 → Nginx → HTTP → Servlet 容器 → Spring MVC → Service → Mapper → MySQL",
+          "description": "一次 Web 请求：浏览器 → Nginx → HTTP → Servlet 容器 → Spring MVC → Service → Mapper → MySQL",
+          "path": "/tutorials/java-enterprise-development/1-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-6",
+          "title": "Web 服务器、Servlet 容器、应用框架、持久层与数据库各自负责什么",
+          "description": "Web 服务器、Servlet 容器、应用框架、持久层与数据库各自负责什么",
+          "path": "/tutorials/java-enterprise-development/1-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-7",
+          "title": "前后端分离：前端构建产物、后端 API 与数据交换",
+          "description": "前后端分离：前端构建产物、后端 API 与数据交换",
+          "path": "/tutorials/java-enterprise-development/1-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-8",
+          "title": "单体应用与模块化单体：本教程采用的基本工程形态",
+          "description": "单体应用与模块化单体：本教程采用的基本工程形态",
+          "path": "/tutorials/java-enterprise-development/1-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-9",
+          "title": "认识 JSP、Struts、EJB 等旧技术的历史作用与学习边界",
+          "description": "认识 JSP、Struts、EJB 等旧技术的历史作用与学习边界",
+          "path": "/tutorials/java-enterprise-development/1-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-10",
+          "title": "现代项目为什么通常使用 Spring Boot，而不从旧式 Java Web 项目开始搭建",
+          "description": "现代项目为什么通常使用 Spring Boot，而不从旧式 Java Web 项目开始搭建",
+          "path": "/tutorials/java-enterprise-development/1-10/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "开发工具链、构建与团队协作",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "IDE、JDK、构建工具、依赖仓库与版本控制的职责",
+          "description": "IDE、JDK、构建工具、依赖仓库与版本控制的职责",
+          "path": "/tutorials/java-enterprise-development/2-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "Maven 项目结构、`pom.xml`、坐标与依赖声明",
+          "description": "Maven 项目结构、`pom.xml`、坐标与依赖声明",
+          "path": "/tutorials/java-enterprise-development/2-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "Maven 依赖范围、传递依赖、依赖冲突与排查",
+          "description": "Maven 依赖范围、传递依赖、依赖冲突与排查",
+          "path": "/tutorials/java-enterprise-development/2-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-4",
+          "title": "Maven 生命周期：`validate`、`compile`、`test`、`package`、`verify`、`install`",
+          "description": "Maven 生命周期：`validate`、`compile`、`test`、`package`、`verify`、`install`",
+          "path": "/tutorials/java-enterprise-development/2-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-5",
+          "title": "Parent、`dependencyManagement`、BOM 与多模块工程",
+          "description": "Parent、`dependencyManagement`、BOM 与多模块工程",
+          "path": "/tutorials/java-enterprise-development/2-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-6",
+          "title": "Maven 插件、测试执行、资源处理与打包产物",
+          "description": "Maven 插件、测试执行、资源处理与打包产物",
+          "path": "/tutorials/java-enterprise-development/2-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-7",
+          "title": "Git 工作区、暂存区、本地仓库、远程仓库与提交记录",
+          "description": "Git 工作区、暂存区、本地仓库、远程仓库与提交记录",
+          "path": "/tutorials/java-enterprise-development/2-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-8",
+          "title": "团队协作：分支、Pull Request、代码评审与合并冲突",
+          "description": "团队协作：分支、Pull Request、代码评审与合并冲突",
+          "path": "/tutorials/java-enterprise-development/2-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-9",
+          "title": "`merge`、`rebase`、`revert`、`reset`、标签与版本回滚的边界",
+          "description": "`merge`、`rebase`、`revert`、`reset`、标签与版本回滚的边界",
+          "path": "/tutorials/java-enterprise-development/2-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-10",
+          "title": "日志基础：SLF4J、Logback、日志级别、异常堆栈与关联信息",
+          "description": "日志基础：SLF4J、Logback、日志级别、异常堆栈与关联信息",
+          "path": "/tutorials/java-enterprise-development/2-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-11",
+          "title": "配置管理：开发/测试/生产环境、环境变量与敏感配置保护",
+          "description": "配置管理：开发/测试/生产环境、环境变量与敏感配置保护",
+          "path": "/tutorials/java-enterprise-development/2-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-12",
+          "title": "IDEA 调试：断点、调用栈、变量观察与问题定位",
+          "description": "IDEA 调试：断点、调用栈、变量观察与问题定位",
+          "path": "/tutorials/java-enterprise-development/2-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-13",
+          "title": "代码格式、命名规范、提交信息与最小化变更",
+          "description": "代码格式、命名规范、提交信息与最小化变更",
+          "path": "/tutorials/java-enterprise-development/2-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-14",
+          "title": "依赖升级与安全更新：查看官方变更说明，不盲目升级",
+          "description": "依赖升级与安全更新：查看官方变更说明，不盲目升级",
+          "path": "/tutorials/java-enterprise-development/2-14/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Web、HTTP 与前后端通信",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "B/S 架构、浏览器、前端、后端、服务器与 API",
+          "description": "B/S 架构、浏览器、前端、后端、服务器与 API",
+          "path": "/tutorials/java-enterprise-development/3-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "IP、端口、域名、DNS、URL 与请求寻址的基本过程",
+          "description": "IP、端口、域名、DNS、URL 与请求寻址的基本过程",
+          "path": "/tutorials/java-enterprise-development/3-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "HTTP 请求与响应：请求行、状态行、Header、Body",
+          "description": "HTTP 请求与响应：请求行、状态行、Header、Body",
+          "path": "/tutorials/java-enterprise-development/3-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "GET、POST、PUT、PATCH、DELETE 与资源操作语义",
+          "description": "GET、POST、PUT、PATCH、DELETE 与资源操作语义",
+          "path": "/tutorials/java-enterprise-development/3-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-5",
+          "title": "HTTP 状态码、业务错误码与统一错误表达",
+          "description": "HTTP 状态码、业务错误码与统一错误表达",
+          "path": "/tutorials/java-enterprise-development/3-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-6",
+          "title": "JSON、表单、文件上传、字符编码与 `Content-Type`",
+          "description": "JSON、表单、文件上传、字符编码与 `Content-Type`",
+          "path": "/tutorials/java-enterprise-development/3-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-7",
+          "title": "Cookie、Session、Token 与登录状态的基本概念",
+          "description": "Cookie、Session、Token 与登录状态的基本概念",
+          "path": "/tutorials/java-enterprise-development/3-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-8",
+          "title": "HTTPS、TLS 证书与加密传输的基本原理",
+          "description": "HTTPS、TLS 证书与加密传输的基本原理",
+          "path": "/tutorials/java-enterprise-development/3-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-9",
+          "title": "同源策略、CORS、预检请求与常见跨域问题",
+          "description": "同源策略、CORS、预检请求与常见跨域问题",
+          "path": "/tutorials/java-enterprise-development/3-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-10",
+          "title": "REST API：资源路径、分页、筛选、排序与接口版本",
+          "description": "REST API：资源路径、分页、筛选、排序与接口版本",
+          "path": "/tutorials/java-enterprise-development/3-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-11",
+          "title": "浏览器开发者工具：请求、响应、Payload、Header、状态码与耗时",
+          "description": "浏览器开发者工具：请求、响应、Payload、Header、状态码与耗时",
+          "path": "/tutorials/java-enterprise-development/3-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-12",
+          "title": "前端请求超时、重复提交、错误反馈与取消请求的基本处理",
+          "description": "前端请求超时、重复提交、错误反馈与取消请求的基本处理",
+          "path": "/tutorials/java-enterprise-development/3-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-13",
+          "title": "代理、反向代理与 CDN 的用途；复杂网关治理不在本教程展开",
+          "description": "代理、反向代理与 CDN 的用途；复杂网关治理不在本教程展开",
+          "path": "/tutorials/java-enterprise-development/3-13/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "前端基础与 Vue 应用",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "HTML：文档结构、常用元素、表单与语义化标签",
+          "description": "HTML：文档结构、常用元素、表单与语义化标签",
+          "path": "/tutorials/java-enterprise-development/4-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "CSS：选择器、盒模型、定位、Flex、Grid 与响应式布局",
+          "description": "CSS：选择器、盒模型、定位、Flex、Grid 与响应式布局",
+          "path": "/tutorials/java-enterprise-development/4-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-3",
+          "title": "JavaScript：变量、函数、对象、数组、模块与常用语法",
+          "description": "JavaScript：变量、函数、对象、数组、模块与常用语法",
+          "path": "/tutorials/java-enterprise-development/4-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-4",
+          "title": "DOM、事件、表单交互与页面状态更新",
+          "description": "DOM、事件、表单交互与页面状态更新",
+          "path": "/tutorials/java-enterprise-development/4-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-5",
+          "title": "Promise、`async/await`、异步请求与错误处理",
+          "description": "Promise、`async/await`、异步请求与错误处理",
+          "path": "/tutorials/java-enterprise-development/4-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-6",
+          "title": "Fetch/Axios：发送请求、处理响应、统一错误与请求拦截",
+          "description": "Fetch/Axios：发送请求、处理响应、统一错误与请求拦截",
+          "path": "/tutorials/java-enterprise-development/4-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-7",
+          "title": "Vue 3：组件、模板、响应式数据、计算属性与生命周期",
+          "description": "Vue 3：组件、模板、响应式数据、计算属性与生命周期",
+          "path": "/tutorials/java-enterprise-development/4-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-8",
+          "title": "组件通信、事件、自定义组件与组件拆分",
+          "description": "组件通信、事件、自定义组件与组件拆分",
+          "path": "/tutorials/java-enterprise-development/4-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-9",
+          "title": "Vue Router：路由、动态路由、导航与路由守卫",
+          "description": "Vue Router：路由、动态路由、导航与路由守卫",
+          "path": "/tutorials/java-enterprise-development/4-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-10",
+          "title": "Pinia：共享状态、用户状态与跨页面数据",
+          "description": "Pinia：共享状态、用户状态与跨页面数据",
+          "path": "/tutorials/java-enterprise-development/4-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-11",
+          "title": "表单校验、加载状态、空状态、错误状态与反馈",
+          "description": "表单校验、加载状态、空状态、错误状态与反馈",
+          "path": "/tutorials/java-enterprise-development/4-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-12",
+          "title": "前后端联调：请求参数、响应结构、登录态、跨域与异常处理",
+          "description": "前后端联调：请求参数、响应结构、登录态、跨域与异常处理",
+          "path": "/tutorials/java-enterprise-development/4-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-13",
+          "title": "Vite、环境变量、开发服务器、构建与 `dist` 静态产物",
+          "description": "Vite、环境变量、开发服务器、构建与 `dist` 静态产物",
+          "path": "/tutorials/java-enterprise-development/4-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-14",
+          "title": "PC 与移动端适配、基础可访问性与页面性能意识",
+          "description": "PC 与移动端适配、基础可访问性与页面性能意识",
+          "path": "/tutorials/java-enterprise-development/4-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-15",
+          "title": "前端工程边界：组件、路由、状态、API 请求与样式分层",
+          "description": "前端工程边界：组件、路由、状态、API 请求与样式分层",
+          "path": "/tutorials/java-enterprise-development/4-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-16",
+          "title": "前端安全基础：不信任客户端校验、不在前端保存服务端密钥",
+          "description": "前端安全基础：不信任客户端校验、不在前端保存服务端密钥",
+          "path": "/tutorials/java-enterprise-development/4-16/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "关系型数据库、SQL 与 JDBC",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "数据库、表、行、列、主键、外键与关系模型",
+          "description": "数据库、表、行、列、主键、外键与关系模型",
+          "path": "/tutorials/java-enterprise-development/5-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "业务实体、关系基数与基础表结构设计",
+          "description": "业务实体、关系基数与基础表结构设计",
+          "path": "/tutorials/java-enterprise-development/5-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "DDL、DML、DQL、DCL 与常见 SQL",
+          "description": "DDL、DML、DQL、DCL 与常见 SQL",
+          "path": "/tutorials/java-enterprise-development/5-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "数据类型、主键、唯一约束、非空约束、默认值与外键",
+          "description": "数据类型、主键、唯一约束、非空约束、默认值与外键",
+          "path": "/tutorials/java-enterprise-development/5-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "`WHERE`、排序、分页、聚合、`GROUP BY` 与 `HAVING`",
+          "description": "`WHERE`、排序、分页、聚合、`GROUP BY` 与 `HAVING`",
+          "path": "/tutorials/java-enterprise-development/5-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-6",
+          "title": "`INNER JOIN`、`LEFT JOIN`、子查询与多表查询",
+          "description": "`INNER JOIN`、`LEFT JOIN`、子查询与多表查询",
+          "path": "/tutorials/java-enterprise-development/5-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-7",
+          "title": "数据库范式、冗余字段与常见反范式场景",
+          "description": "数据库范式、冗余字段与常见反范式场景",
+          "path": "/tutorials/java-enterprise-development/5-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-8",
+          "title": "索引的用途、B+Tree 的基本思想与索引并非越多越好",
+          "description": "索引的用途、B+Tree 的基本思想与索引并非越多越好",
+          "path": "/tutorials/java-enterprise-development/5-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-9",
+          "title": "联合索引、覆盖索引、最左匹配与索引失效的常见原因",
+          "description": "联合索引、覆盖索引、最左匹配与索引失效的常见原因",
+          "path": "/tutorials/java-enterprise-development/5-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-10",
+          "title": "`EXPLAIN`：初步阅读 SQL 执行计划",
+          "description": "`EXPLAIN`：初步阅读 SQL 执行计划",
+          "path": "/tutorials/java-enterprise-development/5-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-11",
+          "title": "事务、ACID、提交、回滚与隔离级别的基础概念",
+          "description": "事务、ACID、提交、回滚与隔离级别的基础概念",
+          "path": "/tutorials/java-enterprise-development/5-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-12",
+          "title": "JDBC：`Connection`、`PreparedStatement`、`ResultSet` 与资源释放",
+          "description": "JDBC：`Connection`、`PreparedStatement`、`ResultSet` 与资源释放",
+          "path": "/tutorials/java-enterprise-development/5-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-13",
+          "title": "参数化查询与 SQL 注入防护",
+          "description": "参数化查询与 SQL 注入防护",
+          "path": "/tutorials/java-enterprise-development/5-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-14",
+          "title": "DataSource、数据库连接池与 HikariCP 的作用",
+          "description": "DataSource、数据库连接池与 HikariCP 的作用",
+          "path": "/tutorials/java-enterprise-development/5-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-15",
+          "title": "分页查询、批量操作、慢 SQL 与基础优化思路",
+          "description": "分页查询、批量操作、慢 SQL 与基础优化思路",
+          "path": "/tutorials/java-enterprise-development/5-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-16",
+          "title": "数据库初始化脚本、测试数据与版本迁移工具的基本用途",
+          "description": "数据库初始化脚本、测试数据与版本迁移工具的基本用途",
+          "path": "/tutorials/java-enterprise-development/5-16/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-17",
+          "title": "数据备份、恢复、迁移与变更前的风险控制",
+          "description": "数据备份、恢复、迁移与变更前的风险控制",
+          "path": "/tutorials/java-enterprise-development/5-17/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-18",
+          "title": "MongoDB、Elasticsearch 等只做技术地图认知，深入内容不属于本教程主线",
+          "description": "MongoDB、Elasticsearch 等只做技术地图认知，深入内容不属于本教程主线",
+          "path": "/tutorials/java-enterprise-development/5-18/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Servlet、JSP 与 Tomcat",
+      "chapters": [
+        {
+          "slug": "6-1",
+          "title": "Web Server 与 Servlet Container 的区别",
+          "description": "Web Server 与 Servlet Container 的区别",
+          "path": "/tutorials/java-enterprise-development/6-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-2",
+          "title": "Tomcat 的定位、部署方式与基本目录结构",
+          "description": "Tomcat 的定位、部署方式与基本目录结构",
+          "path": "/tutorials/java-enterprise-development/6-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-3",
+          "title": "Servlet 接口、生命周期与 URL Mapping",
+          "description": "Servlet 接口、生命周期与 URL Mapping",
+          "path": "/tutorials/java-enterprise-development/6-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-4",
+          "title": "`HttpServletRequest`：参数、请求头、请求体与请求属性",
+          "description": "`HttpServletRequest`：参数、请求头、请求体与请求属性",
+          "path": "/tutorials/java-enterprise-development/6-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-5",
+          "title": "`HttpServletResponse`：状态码、响应头、响应体与字符编码",
+          "description": "`HttpServletResponse`：状态码、响应头、响应体与字符编码",
+          "path": "/tutorials/java-enterprise-development/6-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-6",
+          "title": "请求转发与重定向：`forward`、`sendRedirect`",
+          "description": "请求转发与重定向：`forward`、`sendRedirect`",
+          "path": "/tutorials/java-enterprise-development/6-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-7",
+          "title": "Filter、FilterChain 与 Listener 的用途",
+          "description": "Filter、FilterChain 与 Listener 的用途",
+          "path": "/tutorials/java-enterprise-development/6-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-8",
+          "title": "Cookie、Session、SessionId、超时与退出登录",
+          "description": "Cookie、Session、SessionId、超时与退出登录",
+          "path": "/tutorials/java-enterprise-development/6-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-9",
+          "title": "Servlet 请求处理中的线程安全问题",
+          "description": "Servlet 请求处理中的线程安全问题",
+          "path": "/tutorials/java-enterprise-development/6-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-10",
+          "title": "JSP、EL、JSTL 与服务端页面渲染的历史定位",
+          "description": "JSP、EL、JSTL 与服务端页面渲染的历史定位",
+          "path": "/tutorials/java-enterprise-development/6-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-11",
+          "title": "Tomcat 与 Servlet API 的关系",
+          "description": "Tomcat 与 Servlet API 的关系",
+          "path": "/tutorials/java-enterprise-development/6-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-12",
+          "title": "从 Servlet 手写接口到 MVC 框架：框架解决了什么问题",
+          "description": "从 Servlet 手写接口到 MVC 框架：框架解决了什么问题",
+          "path": "/tutorials/java-enterprise-development/6-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Spring Framework：IoC、DI 与 AOP",
+      "chapters": [
+        {
+          "slug": "7-1",
+          "title": "Spring Framework 的定位与模块体系",
+          "description": "Spring Framework 的定位与模块体系",
+          "path": "/tutorials/java-enterprise-development/7-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-2",
+          "title": "IoC：为什么把对象创建和管理交给容器",
+          "description": "IoC：为什么把对象创建和管理交给容器",
+          "path": "/tutorials/java-enterprise-development/7-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-3",
+          "title": "DI：构造器注入、Setter 注入、按类型注入与限定注入",
+          "description": "DI：构造器注入、Setter 注入、按类型注入与限定注入",
+          "path": "/tutorials/java-enterprise-development/7-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-4",
+          "title": "Bean 注册、组件扫描与 `@Component`、`@Service`、`@Repository`",
+          "description": "Bean 注册、组件扫描与 `@Component`、`@Service`、`@Repository`",
+          "path": "/tutorials/java-enterprise-development/7-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-5",
+          "title": "`BeanFactory`、`ApplicationContext` 与容器能力",
+          "description": "`BeanFactory`、`ApplicationContext` 与容器能力",
+          "path": "/tutorials/java-enterprise-development/7-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-6",
+          "title": "Bean Scope、实例化、依赖注入、初始化与销毁",
+          "description": "Bean Scope、实例化、依赖注入、初始化与销毁",
+          "path": "/tutorials/java-enterprise-development/7-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-7",
+          "title": "`@Configuration`、`@Bean` 与 Java 配置",
+          "description": "`@Configuration`、`@Bean` 与 Java 配置",
+          "path": "/tutorials/java-enterprise-development/7-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-8",
+          "title": "`BeanPostProcessor` 与 Spring 扩展点的基本认识",
+          "description": "`BeanPostProcessor` 与 Spring 扩展点的基本认识",
+          "path": "/tutorials/java-enterprise-development/7-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-9",
+          "title": "AOP：切面、切点、通知与横切关注点",
+          "description": "AOP：切面、切点、通知与横切关注点",
+          "path": "/tutorials/java-enterprise-development/7-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-10",
+          "title": "JDK 动态代理、CGLIB 与 Spring 代理的基本边界",
+          "description": "JDK 动态代理、CGLIB 与 Spring 代理的基本边界",
+          "path": "/tutorials/java-enterprise-development/7-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-11",
+          "title": "AOP 在日志、审计、权限与事务等场景中的应用",
+          "description": "AOP 在日志、审计、权限与事务等场景中的应用",
+          "path": "/tutorials/java-enterprise-development/7-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-12",
+          "title": "循环依赖与三级缓存：理解基本原理及适用边界",
+          "description": "循环依赖与三级缓存：理解基本原理及适用边界",
+          "path": "/tutorials/java-enterprise-development/7-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-13",
+          "title": "Spring 事件与模块解耦的基本用法",
+          "description": "Spring 事件与模块解耦的基本用法",
+          "path": "/tutorials/java-enterprise-development/7-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-14",
+          "title": "Spring 容器如何管理对象生命周期与依赖关系",
+          "description": "Spring 容器如何管理对象生命周期与依赖关系",
+          "path": "/tutorials/java-enterprise-development/7-14/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Spring MVC 与 REST API",
+      "chapters": [
+        {
+          "slug": "8-1",
+          "title": "MVC 思想与前端控制器模式",
+          "description": "MVC 思想与前端控制器模式",
+          "path": "/tutorials/java-enterprise-development/8-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-2",
+          "title": "`DispatcherServlet` 的请求处理主链",
+          "description": "`DispatcherServlet` 的请求处理主链",
+          "path": "/tutorials/java-enterprise-development/8-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-3",
+          "title": "`HandlerMapping`、`HandlerAdapter` 与 Controller 的协作",
+          "description": "`HandlerMapping`、`HandlerAdapter` 与 Controller 的协作",
+          "path": "/tutorials/java-enterprise-development/8-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-4",
+          "title": "`@Controller`、`@RestController` 与请求映射",
+          "description": "`@Controller`、`@RestController` 与请求映射",
+          "path": "/tutorials/java-enterprise-development/8-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-5",
+          "title": "Query、Path、Form、JSON Body 与 Multipart 参数绑定",
+          "description": "Query、Path、Form、JSON Body 与 Multipart 参数绑定",
+          "path": "/tutorials/java-enterprise-development/8-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-6",
+          "title": "`@RequestParam`、`@PathVariable`、`@RequestBody`",
+          "description": "`@RequestParam`、`@PathVariable`、`@RequestBody`",
+          "path": "/tutorials/java-enterprise-development/8-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-7",
+          "title": "Jackson、序列化/反序列化与 `HttpMessageConverter`",
+          "description": "Jackson、序列化/反序列化与 `HttpMessageConverter`",
+          "path": "/tutorials/java-enterprise-development/8-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-8",
+          "title": "DTO、参数校验、`@Valid`、`@Validated` 与格式转换",
+          "description": "DTO、参数校验、`@Valid`、`@Validated` 与格式转换",
+          "path": "/tutorials/java-enterprise-development/8-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-9",
+          "title": "统一响应模型、分页响应与 `ResponseEntity`",
+          "description": "统一响应模型、分页响应与 `ResponseEntity`",
+          "path": "/tutorials/java-enterprise-development/8-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-10",
+          "title": "全局异常处理、业务异常与 HTTP 状态码",
+          "description": "全局异常处理、业务异常与 HTTP 状态码",
+          "path": "/tutorials/java-enterprise-development/8-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-11",
+          "title": "Filter、HandlerInterceptor、AOP 的职责边界",
+          "description": "Filter、HandlerInterceptor、AOP 的职责边界",
+          "path": "/tutorials/java-enterprise-development/8-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-12",
+          "title": "文件上传、下载、大小限制与文件类型校验",
+          "description": "文件上传、下载、大小限制与文件类型校验",
+          "path": "/tutorials/java-enterprise-development/8-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-13",
+          "title": "跨域配置、预检请求与前后端联调",
+          "description": "跨域配置、预检请求与前后端联调",
+          "path": "/tutorials/java-enterprise-development/8-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-14",
+          "title": "OpenAPI、Swagger/Knife4j、Apifox/Postman 与接口契约",
+          "description": "OpenAPI、Swagger/Knife4j、Apifox/Postman 与接口契约",
+          "path": "/tutorials/java-enterprise-development/8-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-15",
+          "title": "REST API 设计、幂等性与向后兼容",
+          "description": "REST API 设计、幂等性与向后兼容",
+          "path": "/tutorials/java-enterprise-development/8-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-16",
+          "title": "字段命名、日期时间、枚举与错误响应规范",
+          "description": "字段命名、日期时间、枚举与错误响应规范",
+          "path": "/tutorials/java-enterprise-development/8-16/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-17",
+          "title": "接口文档与实现保持一致，避免“文档一套、代码一套”",
+          "description": "接口文档与实现保持一致，避免“文档一套、代码一套”",
+          "path": "/tutorials/java-enterprise-development/8-17/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "MyBatis、MyBatis-Plus 与本地事务",
+      "chapters": [
+        {
+          "slug": "9-1",
+          "title": "JDBC、手写 DAO、ORM 与 SQL Mapper 的演进",
+          "description": "JDBC、手写 DAO、ORM 与 SQL Mapper 的演进",
+          "path": "/tutorials/java-enterprise-development/9-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-2",
+          "title": "MyBatis 的定位、核心组件与执行链路",
+          "description": "MyBatis 的定位、核心组件与执行链路",
+          "path": "/tutorials/java-enterprise-development/9-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-3",
+          "title": "Mapper 动态代理：接口为什么可以直接调用",
+          "description": "Mapper 动态代理：接口为什么可以直接调用",
+          "path": "/tutorials/java-enterprise-development/9-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-4",
+          "title": "注解 SQL、XML Mapper、`namespace` 与结果映射",
+          "description": "注解 SQL、XML Mapper、`namespace` 与结果映射",
+          "path": "/tutorials/java-enterprise-development/9-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-5",
+          "title": "`#{}` 与 `${}`：参数绑定、安全性与使用边界",
+          "description": "`#{}` 与 `${}`：参数绑定、安全性与使用边界",
+          "path": "/tutorials/java-enterprise-development/9-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-6",
+          "title": "动态 SQL：`if`、`where`、`set`、`foreach`",
+          "description": "动态 SQL：`if`、`where`、`set`、`foreach`",
+          "path": "/tutorials/java-enterprise-development/9-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-7",
+          "title": "`resultMap`、一对一/一对多映射与 N+1 查询问题",
+          "description": "`resultMap`、一对一/一对多映射与 N+1 查询问题",
+          "path": "/tutorials/java-enterprise-development/9-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-8",
+          "title": "MyBatis 一级缓存、二级缓存与使用边界",
+          "description": "MyBatis 一级缓存、二级缓存与使用边界",
+          "path": "/tutorials/java-enterprise-development/9-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-9",
+          "title": "MyBatis-Plus：`BaseMapper`、Wrapper、分页与常用 CRUD",
+          "description": "MyBatis-Plus：`BaseMapper`、Wrapper、分页与常用 CRUD",
+          "path": "/tutorials/java-enterprise-development/9-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-10",
+          "title": "逻辑删除、自动填充、乐观锁与分页插件",
+          "description": "逻辑删除、自动填充、乐观锁与分页插件",
+          "path": "/tutorials/java-enterprise-development/9-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-11",
+          "title": "框架不能替代 SQL、索引与执行计划知识",
+          "description": "框架不能替代 SQL、索引与执行计划知识",
+          "path": "/tutorials/java-enterprise-development/9-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-12",
+          "title": "`@Transactional`：事务管理器、代理与事务边界",
+          "description": "`@Transactional`：事务管理器、代理与事务边界",
+          "path": "/tutorials/java-enterprise-development/9-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-13",
+          "title": "事务传播行为、隔离级别、回滚规则与常见失效原因",
+          "description": "事务传播行为、隔离级别、回滚规则与常见失效原因",
+          "path": "/tutorials/java-enterprise-development/9-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-14",
+          "title": "自调用、异常被吞、非代理调用与异步线程中的事务问题",
+          "description": "自调用、异常被吞、非代理调用与异步线程中的事务问题",
+          "path": "/tutorials/java-enterprise-development/9-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-15",
+          "title": "JPA、Hibernate、Spring Data JPA 与 MyBatis 的选型差异",
+          "description": "JPA、Hibernate、Spring Data JPA 与 MyBatis 的选型差异",
+          "path": "/tutorials/java-enterprise-development/9-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-16",
+          "title": "学习主次：以 MyBatis/MyBatis-Plus 为实践主线，JPA/Hibernate 以原理和选型对比为主",
+          "description": "学习主次：以 MyBatis/MyBatis-Plus 为实践主线，JPA/Hibernate 以原理和选型对比为主",
+          "path": "/tutorials/java-enterprise-development/9-16/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Spring Boot：现代 Java 后端工程",
+      "chapters": [
+        {
+          "slug": "10-1",
+          "title": "Spring Boot 解决传统 Spring 工程的哪些问题",
+          "description": "Spring Boot 解决传统 Spring 工程的哪些问题",
+          "path": "/tutorials/java-enterprise-development/10-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-2",
+          "title": "Spring Initializr、Starter 与依赖组合",
+          "description": "Spring Initializr、Starter 与依赖组合",
+          "path": "/tutorials/java-enterprise-development/10-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-3",
+          "title": "`@SpringBootApplication` 与启动类",
+          "description": "`@SpringBootApplication` 与启动类",
+          "path": "/tutorials/java-enterprise-development/10-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-4",
+          "title": "自动配置、条件装配与配置类生效条件",
+          "description": "自动配置、条件装配与配置类生效条件",
+          "path": "/tutorials/java-enterprise-development/10-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-5",
+          "title": "`SpringApplication.run`、容器刷新与 Web Server 启动",
+          "description": "`SpringApplication.run`、容器刷新与 Web Server 启动",
+          "path": "/tutorials/java-enterprise-development/10-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-6",
+          "title": "`application.yml`、Properties、Profile 与配置优先级",
+          "description": "`application.yml`、Properties、Profile 与配置优先级",
+          "path": "/tutorials/java-enterprise-development/10-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-7",
+          "title": "`@ConfigurationProperties` 与类型安全配置",
+          "description": "`@ConfigurationProperties` 与类型安全配置",
+          "path": "/tutorials/java-enterprise-development/10-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-8",
+          "title": "外部化配置、环境变量、密钥管理与配置不入仓库",
+          "description": "外部化配置、环境变量、密钥管理与配置不入仓库",
+          "path": "/tutorials/java-enterprise-development/10-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-9",
+          "title": "内嵌 Tomcat、可执行 JAR 与生产启动方式",
+          "description": "内嵌 Tomcat、可执行 JAR 与生产启动方式",
+          "path": "/tutorials/java-enterprise-development/10-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-10",
+          "title": "多模块 Spring Boot 项目的依赖、打包与启动边界",
+          "description": "多模块 Spring Boot 项目的依赖、打包与启动边界",
+          "path": "/tutorials/java-enterprise-development/10-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-11",
+          "title": "Actuator 与基础健康检查",
+          "description": "Actuator 与基础健康检查",
+          "path": "/tutorials/java-enterprise-development/10-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-12",
+          "title": "日志、异常、校验、序列化与常用组件整合",
+          "description": "日志、异常、校验、序列化与常用组件整合",
+          "path": "/tutorials/java-enterprise-development/10-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-13",
+          "title": "Spring Boot 与 Spring Framework 的关系",
+          "description": "Spring Boot 与 Spring Framework 的关系",
+          "path": "/tutorials/java-enterprise-development/10-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-14",
+          "title": "Jakarta 命名空间、依赖版本兼容与升级注意事项",
+          "description": "Jakarta 命名空间、依赖版本兼容与升级注意事项",
+          "path": "/tutorials/java-enterprise-development/10-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-15",
+          "title": "以官方 BOM 管理依赖，避免手动拼接不兼容版本",
+          "description": "以官方 BOM 管理依赖，避免手动拼接不兼容版本",
+          "path": "/tutorials/java-enterprise-development/10-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-16",
+          "title": "应用启动失败、Bean 创建失败、配置绑定失败与端口冲突的定位",
+          "description": "应用启动失败、Bean 创建失败、配置绑定失败与端口冲突的定位",
+          "path": "/tutorials/java-enterprise-development/10-16/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "业务分层、接口与代码组织",
+      "chapters": [
+        {
+          "slug": "11-1",
+          "title": "Controller、Service、Mapper/Repository 的职责与依赖方向",
+          "description": "Controller、Service、Mapper/Repository 的职责与依赖方向",
+          "path": "/tutorials/java-enterprise-development/11-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-2",
+          "title": "分层架构、模块边界与避免业务逻辑堆积在 Controller",
+          "description": "分层架构、模块边界与避免业务逻辑堆积在 Controller",
+          "path": "/tutorials/java-enterprise-development/11-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-3",
+          "title": "DTO、Entity/PO、VO、DO 与对象转换",
+          "description": "DTO、Entity/PO、VO、DO 与对象转换",
+          "path": "/tutorials/java-enterprise-development/11-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-4",
+          "title": "统一响应、错误码、分页模型与接口约定",
+          "description": "统一响应、错误码、分页模型与接口约定",
+          "path": "/tutorials/java-enterprise-development/11-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-5",
+          "title": "CRUD 之外的业务规则、状态流转与状态机",
+          "description": "CRUD 之外的业务规则、状态流转与状态机",
+          "path": "/tutorials/java-enterprise-development/11-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-6",
+          "title": "业务校验、数据库约束与非法状态变更防护",
+          "description": "业务校验、数据库约束与非法状态变更防护",
+          "path": "/tutorials/java-enterprise-development/11-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-7",
+          "title": "本地事务边界、跨表业务与数据一致性",
+          "description": "本地事务边界、跨表业务与数据一致性",
+          "path": "/tutorials/java-enterprise-development/11-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-8",
+          "title": "幂等性：重复提交、重复请求与重复执行的处理",
+          "description": "幂等性：重复提交、重复请求与重复执行的处理",
+          "path": "/tutorials/java-enterprise-development/11-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-9",
+          "title": "常用设计模式：策略、工厂、模板方法、代理、适配器、观察者、责任链",
+          "description": "常用设计模式：策略、工厂、模板方法、代理、适配器、观察者、责任链",
+          "path": "/tutorials/java-enterprise-development/11-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-10",
+          "title": "SOLID、封装、低耦合、高内聚与常见代码坏味道",
+          "description": "SOLID、封装、低耦合、高内聚与常见代码坏味道",
+          "path": "/tutorials/java-enterprise-development/11-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-11",
+          "title": "设计模式的适用场景与过度设计问题",
+          "description": "设计模式的适用场景与过度设计问题",
+          "path": "/tutorials/java-enterprise-development/11-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-12",
+          "title": "文件存储、文件元数据、上传下载与存储路径管理",
+          "description": "文件存储、文件元数据、上传下载与存储路径管理",
+          "path": "/tutorials/java-enterprise-development/11-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-13",
+          "title": "定时任务、邮件通知、审计日志与公共字段处理",
+          "description": "定时任务、邮件通知、审计日志与公共字段处理",
+          "path": "/tutorials/java-enterprise-development/11-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-14",
+          "title": "模块化单体的包结构与可维护性",
+          "description": "模块化单体的包结构与可维护性",
+          "path": "/tutorials/java-enterprise-development/11-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-15",
+          "title": "从需求、业务规则、数据模型、接口契约到验收条件的转换过程",
+          "description": "从需求、业务规则、数据模型、接口契约到验收条件的转换过程",
+          "path": "/tutorials/java-enterprise-development/11-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-16",
+          "title": "代码审查：正确性、安全性、可读性、可测试性与变更范围",
+          "description": "代码审查：正确性、安全性、可读性、可测试性与变更范围",
+          "path": "/tutorials/java-enterprise-development/11-16/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "身份认证、授权与应用安全",
+      "chapters": [
+        {
+          "slug": "12-1",
+          "title": "认证 Authentication 与授权 Authorization 的区别",
+          "description": "认证 Authentication 与授权 Authorization 的区别",
+          "path": "/tutorials/java-enterprise-development/12-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-2",
+          "title": "密码存储、加盐哈希与密码校验；不明文存储密码",
+          "description": "密码存储、加盐哈希与密码校验；不明文存储密码",
+          "path": "/tutorials/java-enterprise-development/12-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-3",
+          "title": "Session、Cookie、Token、JWT 的基本机制与取舍",
+          "description": "Session、Cookie、Token、JWT 的基本机制与取舍",
+          "path": "/tutorials/java-enterprise-development/12-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-4",
+          "title": "Access Token、Refresh Token、过期、续期与注销的设计",
+          "description": "Access Token、Refresh Token、过期、续期与注销的设计",
+          "path": "/tutorials/java-enterprise-development/12-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-5",
+          "title": "Spring Security 过滤器链、认证流程与 SecurityContext",
+          "description": "Spring Security 过滤器链、认证流程与 SecurityContext",
+          "path": "/tutorials/java-enterprise-development/12-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-6",
+          "title": "RBAC：用户、角色、权限与接口授权",
+          "description": "RBAC：用户、角色、权限与接口授权",
+          "path": "/tutorials/java-enterprise-development/12-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-7",
+          "title": "注册、登录、找回密码、修改密码、注销与会话管理",
+          "description": "注册、登录、找回密码、修改密码、注销与会话管理",
+          "path": "/tutorials/java-enterprise-development/12-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-8",
+          "title": "登录失败次数、验证码、防爆破与统一错误提示",
+          "description": "登录失败次数、验证码、防爆破与统一错误提示",
+          "path": "/tutorials/java-enterprise-development/12-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-9",
+          "title": "CORS、CSRF、XSS、SQL 注入、SSRF、路径穿越与文件上传风险",
+          "description": "CORS、CSRF、XSS、SQL 注入、SSRF、路径穿越与文件上传风险",
+          "path": "/tutorials/java-enterprise-development/12-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-10",
+          "title": "密钥、令牌、数据库密码与生产环境敏感配置保护",
+          "description": "密钥、令牌、数据库密码与生产环境敏感配置保护",
+          "path": "/tutorials/java-enterprise-development/12-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-11",
+          "title": "OAuth 2.0、OpenID Connect、单点登录的概念与适用场景",
+          "description": "OAuth 2.0、OpenID Connect、单点登录的概念与适用场景",
+          "path": "/tutorials/java-enterprise-development/12-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-12",
+          "title": "最小权限、审计日志与安全错误处理",
+          "description": "最小权限、审计日志与安全错误处理",
+          "path": "/tutorials/java-enterprise-development/12-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-13",
+          "title": "权限检查不能只依赖前端隐藏按钮；后端必须执行授权判断",
+          "description": "权限检查不能只依赖前端隐藏按钮；后端必须执行授权判断",
+          "path": "/tutorials/java-enterprise-development/12-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-14",
+          "title": "依赖漏洞、组件更新与安全公告的基本处理流程",
+          "description": "依赖漏洞、组件更新与安全公告的基本处理流程",
+          "path": "/tutorials/java-enterprise-development/12-14/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/java-enterprise-development/",
+  "sortOrder": 2
+}
