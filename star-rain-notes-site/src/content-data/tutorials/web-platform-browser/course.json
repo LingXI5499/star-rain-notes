@@ -1,0 +1,465 @@
+{
+  "slug": "web-platform-browser",
+  "title": "Web 平台与浏览器",
+  "description": "建立现代 Web 底层认知，覆盖 Web 标准、浏览器架构、URL 到页面展示、DOM/BOM、事件循环、渲染流水线、Web API、缓存存储、安全、性能、Accessibility 与 DevTools。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-09-23",
+  "chapterCount": 50,
+  "wordCount": 27441,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "Web 标准与平台全景",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "Internet、Web、Website、Web App 与 Web Platform",
+          "description": "本章属于「Web 平台与浏览器 / Web 标准与平台全景」，围绕「Internet、Web、Website、Web App 与 Web Platform」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-1-1/",
+          "wordCount": 607,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "W3C、WHATWG、ECMA 与浏览器厂商",
+          "description": "本章属于「Web 平台与浏览器 / Web 标准与平台全景」，围绕「W3C、WHATWG、ECMA 与浏览器厂商」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-1-2/",
+          "wordCount": 553,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "HTML、CSS、ECMAScript 与 Web API 的职责边界",
+          "description": "本章属于「Web 平台与浏览器 / Web 标准与平台全景」，围绕「HTML、CSS、ECMAScript 与 Web API 的职责边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-1-3/",
+          "wordCount": 583,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "浏览器兼容性、Baseline、Feature Detection 与 Polyfill",
+          "description": "本章属于「Web 平台与浏览器 / Web 标准与平台全景」，围绕「浏览器兼容性、Baseline、Feature Detection 与 Polyfill」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-1-4/",
+          "wordCount": 613,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "MPA、SPA、CSR、SSR、SSG 的架构定位",
+          "description": "本章属于「Web 平台与浏览器 / Web 标准与平台全景」，围绕「MPA、SPA、CSR、SSR、SSG 的架构定位」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-1-5/",
+          "wordCount": 562,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "输入 URL 到页面展示",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "URL、URI、Origin 与资源定位",
+          "description": "本章属于「Web 平台与浏览器 / 输入 URL 到页面展示」，围绕「URL、URI、Origin 与资源定位」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-2-1/",
+          "wordCount": 547,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "DNS、IP、端口与连接建立",
+          "description": "本章属于「Web 平台与浏览器 / 输入 URL 到页面展示」，围绕「DNS、IP、端口与连接建立」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-2-2/",
+          "wordCount": 532,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "TCP、TLS、HTTP 在浏览器导航中的协作",
+          "description": "本章属于「Web 平台与浏览器 / 输入 URL 到页面展示」，围绕「TCP、TLS、HTTP 在浏览器导航中的协作」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-2-3/",
+          "wordCount": 556,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "HTTP Request / Response、状态码与资源返回",
+          "description": "本章属于「Web 平台与浏览器 / 输入 URL 到页面展示」，围绕「HTTP Request / Response、状态码与资源返回」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-2-4/",
+          "wordCount": 577,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "主文档、子资源发现与 Network Waterfall",
+          "description": "本章属于「Web 平台与浏览器 / 输入 URL 到页面展示」，围绕「主文档、子资源发现与 Network Waterfall」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-2-5/",
+          "wordCount": 568,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "浏览器架构与 JavaScript 运行环境",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "Browser、Renderer、Network、GPU 进程模型",
+          "description": "本章属于「Web 平台与浏览器 / 浏览器架构与 JavaScript 运行环境」，围绕「Browser、Renderer、Network、GPU 进程模型」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-3-1/",
+          "wordCount": 596,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "Renderer Process、主线程与页面生命周期",
+          "description": "本章属于「Web 平台与浏览器 / 浏览器架构与 JavaScript 运行环境」，围绕「Renderer Process、主线程与页面生命周期」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-3-2/",
+          "wordCount": 578,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "JavaScript Engine、Call Stack 与宿主环境",
+          "description": "本章属于「Web 平台与浏览器 / 浏览器架构与 JavaScript 运行环境」，围绕「JavaScript Engine、Call Stack 与宿主环境」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-3-3/",
+          "wordCount": 593,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "Task、Microtask、Event Loop 与页面响应",
+          "description": "本章属于「Web 平台与浏览器 / 浏览器架构与 JavaScript 运行环境」，围绕「Task、Microtask、Event Loop 与页面响应」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-3-4/",
+          "wordCount": 587,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "Site Isolation、多进程隔离与崩溃边界",
+          "description": "本章属于「Web 平台与浏览器 / 浏览器架构与 JavaScript 运行环境」，围绕「Site Isolation、多进程隔离与崩溃边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-3-5/",
+          "wordCount": 572,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "DOM、BOM 与事件系统",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "DOM Tree、Node、Element、Document 与节点操作",
+          "description": "本章属于「Web 平台与浏览器 / DOM、BOM 与事件系统」，围绕「DOM Tree、Node、Element、Document 与节点操作」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-4-1/",
+          "wordCount": 594,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "BOM：window、location、history、navigator、screen",
+          "description": "本章属于「Web 平台与浏览器 / DOM、BOM 与事件系统」，围绕「BOM：window、location、history、navigator、screen」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-4-2/",
+          "wordCount": 624,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "Capture、Target、Bubble 事件流",
+          "description": "本章属于「Web 平台与浏览器 / DOM、BOM 与事件系统」，围绕「Capture、Target、Bubble 事件流」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-4-3/",
+          "wordCount": 564,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "事件委托、默认行为与 Event 对象",
+          "description": "本章属于「Web 平台与浏览器 / DOM、BOM 与事件系统」，围绕「事件委托、默认行为与 Event 对象」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-4-4/",
+          "wordCount": 543,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "MutationObserver 与 DOM 变化观察",
+          "description": "本章属于「Web 平台与浏览器 / DOM、BOM 与事件系统」，围绕「MutationObserver 与 DOM 变化观察」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-4-5/",
+          "wordCount": 564,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Rendering Pipeline 与性能基础",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "HTML Parser、CSS Parser、DOM、CSSOM、Render Tree",
+          "description": "本章属于「Web 平台与浏览器 / Rendering Pipeline 与性能基础」，围绕「HTML Parser、CSS Parser、DOM、CSSOM、Render Tree」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-5-1/",
+          "wordCount": 625,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "Style、Layout、Paint、Composite 渲染流水线",
+          "description": "本章属于「Web 平台与浏览器 / Rendering Pipeline 与性能基础」，围绕「Style、Layout、Paint、Composite 渲染流水线」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-5-2/",
+          "wordCount": 601,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "Reflow、Repaint、Composite 与性能代价",
+          "description": "本章属于「Web 平台与浏览器 / Rendering Pipeline 与性能基础」，围绕「Reflow、Repaint、Composite 与性能代价」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-5-3/",
+          "wordCount": 589,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "requestAnimationFrame、动画帧与主线程预算",
+          "description": "本章属于「Web 平台与浏览器 / Rendering Pipeline 与性能基础」，围绕「requestAnimationFrame、动画帧与主线程预算」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-5-4/",
+          "wordCount": 595,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "FCP、LCP、CLS、INP、TTFB 与 Core Web Vitals",
+          "description": "本章属于「Web 平台与浏览器 / Rendering Pipeline 与性能基础」，围绕「FCP、LCP、CLS、INP、TTFB 与 Core Web Vitals」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-5-5/",
+          "wordCount": 604,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "存储、缓存、离线与 PWA",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "Cookie、localStorage、sessionStorage 的区别",
+          "description": "本章属于「Web 平台与浏览器 / 存储、缓存、离线与 PWA」，围绕「Cookie、localStorage、sessionStorage 的区别」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-6-1/",
+          "wordCount": 603,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "IndexedDB：浏览器结构化客户端数据库",
+          "description": "本章属于「Web 平台与浏览器 / 存储、缓存、离线与 PWA」，围绕「IndexedDB：浏览器结构化客户端数据库」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-6-2/",
+          "wordCount": 558,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "HTTP Cache：Cache-Control、ETag、Last-Modified",
+          "description": "本章属于「Web 平台与浏览器 / 存储、缓存、离线与 PWA」，围绕「HTTP Cache：Cache-Control、ETag、Last-Modified」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-6-3/",
+          "wordCount": 618,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "Cache Storage、Service Worker 与离线能力",
+          "description": "本章属于「Web 平台与浏览器 / 存储、缓存、离线与 PWA」，围绕「Cache Storage、Service Worker 与离线能力」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-6-4/",
+          "wordCount": 585,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "PWA：Manifest、安装、离线与渐进增强",
+          "description": "本章属于「Web 平台与浏览器 / 存储、缓存、离线与 PWA」，围绕「PWA：Manifest、安装、离线与渐进增强」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-6-5/",
+          "wordCount": 561,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "常用 Web API",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "URL、URLSearchParams 与 URL 操作",
+          "description": "本章属于「Web 平台与浏览器 / 常用 Web API」，围绕「URL、URLSearchParams 与 URL 操作」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-7-1/",
+          "wordCount": 563,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "FormData、Blob、File、FileReader",
+          "description": "本章属于「Web 平台与浏览器 / 常用 Web API」，围绕「FormData、Blob、File、FileReader」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-7-2/",
+          "wordCount": 575,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "Clipboard API 与权限",
+          "description": "本章属于「Web 平台与浏览器 / 常用 Web API」，围绕「Clipboard API 与权限」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-7-3/",
+          "wordCount": 533,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "IntersectionObserver、ResizeObserver",
+          "description": "本章属于「Web 平台与浏览器 / 常用 Web API」，围绕「IntersectionObserver、ResizeObserver」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-7-4/",
+          "wordCount": 593,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "History、Navigation 与页面导航能力",
+          "description": "本章属于「Web 平台与浏览器 / 常用 Web API」，围绕「History、Navigation 与页面导航能力」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-7-5/",
+          "wordCount": 563,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "图形、媒体与并行能力",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "SVG：矢量图、DOM 与前端图形",
+          "description": "本章属于「Web 平台与浏览器 / 图形、媒体与并行能力」，围绕「SVG：矢量图、DOM 与前端图形」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-8-1/",
+          "wordCount": 538,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "Canvas 2D：像素绘制与动态图形",
+          "description": "本章属于「Web 平台与浏览器 / 图形、媒体与并行能力」，围绕「Canvas 2D：像素绘制与动态图形」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-8-2/",
+          "wordCount": 544,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "Audio、Video 与 Media API",
+          "description": "本章属于「Web 平台与浏览器 / 图形、媒体与并行能力」，围绕「Audio、Video 与 Media API」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-8-3/",
+          "wordCount": 550,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "Web Worker：把计算移出主线程",
+          "description": "本章属于「Web 平台与浏览器 / 图形、媒体与并行能力」，围绕「Web Worker：把计算移出主线程」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-8-4/",
+          "wordCount": 544,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "Web Components：Custom Elements 与 Shadow DOM",
+          "description": "本章属于「Web 平台与浏览器 / 图形、媒体与并行能力」，围绕「Web Components：Custom Elements 与 Shadow DOM」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-8-5/",
+          "wordCount": 604,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Web 安全与隐私",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "Same-Origin Policy：同源策略",
+          "description": "本章属于「Web 平台与浏览器 / Web 安全与隐私」，围绕「Same-Origin Policy：同源策略」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-9-1/",
+          "wordCount": 554,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "CORS：跨域资源共享与预检",
+          "description": "本章属于「Web 平台与浏览器 / Web 安全与隐私」，围绕「CORS：跨域资源共享与预检」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-9-2/",
+          "wordCount": 530,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "XSS：DOM 注入、输出编码与 CSP",
+          "description": "本章属于「Web 平台与浏览器 / Web 安全与隐私」，围绕「XSS：DOM 注入、输出编码与 CSP」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-9-3/",
+          "wordCount": 542,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "CSRF：Cookie 身份与跨站请求伪造",
+          "description": "本章属于「Web 平台与浏览器 / Web 安全与隐私」，围绕「CSRF：Cookie 身份与跨站请求伪造」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-9-4/",
+          "wordCount": 548,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "SameSite、Secure、HttpOnly、权限与隐私边界",
+          "description": "本章属于「Web 平台与浏览器 / Web 安全与隐私」，围绕「SameSite、Secure、HttpOnly、权限与隐私边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-9-5/",
+          "wordCount": 584,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Accessibility、设计、兼容性与 DevTools",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": "Semantic HTML、Accessibility Tree 与辅助技术",
+          "description": "本章属于「Web 平台与浏览器 / Accessibility、设计、兼容性与 DevTools」，围绕「Semantic HTML、Accessibility Tree 与辅助技术」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-10-1/",
+          "wordCount": 614,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "Keyboard、Focus、ARIA 与可访问表单",
+          "description": "本章属于「Web 平台与浏览器 / Accessibility、设计、兼容性与 DevTools」，围绕「Keyboard、Focus、ARIA 与可访问表单」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-10-2/",
+          "wordCount": 584,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "开发者设计基础：层级、对比、留白、Typography 与颜色",
+          "description": "本章属于「Web 平台与浏览器 / Accessibility、设计、兼容性与 DevTools」，围绕「开发者设计基础：层级、对比、留白、Typography 与颜色」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-10-3/",
+          "wordCount": 599,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "Chrome DevTools：Elements、Console、Sources、Network、Performance、Lighthouse",
+          "description": "本章属于「Web 平台与浏览器 / Accessibility、设计、兼容性与 DevTools」，围绕「Chrome DevTools：Elements、Console、Sources、Network、Performance、Lighthouse」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-10-4/",
+          "wordCount": 719,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "Progressive Enhancement、兼容性测试与生产验收",
+          "description": "本章属于「Web 平台与浏览器 / Accessibility、设计、兼容性与 DevTools」，围绕「Progressive Enhancement、兼容性测试与生产验收」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/web-platform-browser/chapter-10-5/",
+          "wordCount": 608,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/web-platform-browser/",
+  "sortOrder": 14
+}

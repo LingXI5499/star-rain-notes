@@ -1,0 +1,891 @@
+{
+  "slug": "git",
+  "title": "Git",
+  "description": "面向秋招与真实团队开发的 Git 教程体系，覆盖 Working Tree、Index、Commit Graph、Branch、Merge、Rebase、Remote、Reset/Revert/Reflog、恢复、内部原理、大仓库与企业工作流。",
+  "category": "通用编程与开发工具体系",
+  "categorySlug": "315825310246",
+  "publishedAt": "2026-08-28",
+  "chapterCount": 102,
+  "wordCount": 17397,
+  "categoryId": "3",
+  "groups": [
+    {
+      "title": "学习指南",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "Git 学习路线、课程边界与企业开发定位",
+          "description": "本章覆盖：Git 是分布式版本控制系统，不是代码托管网站；Git 与 GitHub / GitLab / Gitee 的关系；Git 的核心对象：Working Tree、Index、Repository、Object Database、Reference；秋招 / 实习常见要求中的 Git：版本管理、团队协作、分支管理、冲突解决、代码审查前置能力；企业真实开发中的 Git：Feature Branch、Release、Hotfix、Merge Request / Pull Request、CI/CD 前置；本课程与下一门 GitHub 教程的边界；学习主线：状态 → 提交 → 历史 → 分支 → 合并 → 远程 → 恢复 → 协作 → 内部原理；学习方法：每个命令都回答“改了哪一层”“HEAD 在哪里”“能否恢复”；不把“命令执行成功”当作“理解 Git”。",
+          "path": "/tutorials/git/chapter-1-1/",
+          "wordCount": 346,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Git、版本控制与底层认知模型",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "为什么需要版本控制：从文件备份到版本图",
+          "description": "本章覆盖：手工复制 `final_v2_final.zip` 的问题；版本历史；author / committer；change tracking；rollback；collaboration；audit trail；branch；distributed development；Version Control System 的核心目标。",
+          "path": "/tutorials/git/chapter-2-1/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "Centralized VCS 与 Distributed VCS",
+          "description": "本章覆盖：centralized version control；distributed version control；local repository；remote repository；clone；offline commit；history replication；SVN 与 Git 的高层模型差异；distributed 不等于“不需要中央协作仓库”；GitHub / GitLab 只是常见协作中心。",
+          "path": "/tutorials/git/chapter-2-2/",
+          "wordCount": 194,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "Git Repository、Working Tree、Index 三层模型",
+          "description": "本章覆盖：working tree；staging area / index；repository；tracked；untracked；staged；modified；committed；`git status`；`git add`；`git commit`；为什么 Git 可以只提交一部分修改。",
+          "path": "/tutorials/git/chapter-2-3/",
+          "wordCount": 142,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "Git Snapshot 模型：不是“每次只存 diff”",
+          "description": "本章覆盖：snapshot；file state；tree snapshot；unchanged content reuse；Git 历史从逻辑上看是一系列项目快照；diff 是查看变化的一种计算结果；commit 指向 tree；parent commit；snapshot 与 delta storage 的实现优化不要混为一谈；理解 snapshot 有助于理解 branch 和 checkout / switch。",
+          "path": "/tutorials/git/chapter-2-4/",
+          "wordCount": 194,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "Git Object Database：blob、tree、commit、tag",
+          "description": "本章覆盖：blob object；tree object；commit object；annotated tag object；content-addressable storage；SHA-1 / SHA-256 仓库格式演进认知；object id；immutable object；object graph；branch 不是“复制了一份代码”。",
+          "path": "/tutorials/git/chapter-2-5/",
+          "wordCount": 165,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-6",
+          "title": "Reference、Branch、HEAD 与名字系统",
+          "description": "本章覆盖：ref；branch ref；tag ref；remote-tracking ref；symbolic ref；HEAD；detached HEAD；`refs/heads/*`；`refs/tags/*`；`refs/remotes/*`；名字会移动，commit object 本身不可变。",
+          "path": "/tutorials/git/chapter-2-6/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-7",
+          "title": "Commit Graph：父子关系而不是“版本编号”",
+          "description": "本章覆盖：commit parent；root commit；linear history；divergent history；merge commit；DAG；ancestor；descendant；branch tip；reachable commit；Git 操作本质上经常是在修改图上的引用关系。",
+          "path": "/tutorials/git/chapter-2-7/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-8",
+          "title": "Git 配置体系：system、global、local",
+          "description": "本章覆盖：`git config`；system config；global config；local config；username；email；default branch；editor；autocrlf 的边界；credential helper；`--show-origin`；团队配置与个人配置的区别。",
+          "path": "/tutorials/git/chapter-2-8/",
+          "wordCount": 151,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-9",
+          "title": "Git 帮助系统、官方文档与命令阅读方法",
+          "description": "本章覆盖：`git help`；`git <command> --help`；short help `-h`；porcelain command；plumbing command；synopsis；options；examples；configuration section；environment；通过官方 reference 验证命令语义而不是只搜博客。",
+          "path": "/tutorials/git/chapter-2-9/",
+          "wordCount": 171,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Working Tree、Index 与 Commit 基础工作流",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "git init、仓库目录与 .git",
+          "description": "本章覆盖：`git init`；work tree；`.git`；bare repository 的后续连接；repository root；nested repository；existing project initialization；initial branch；`.git` 不是普通业务目录；删除 `.git` 与删除工作文件的区别。",
+          "path": "/tutorials/git/chapter-3-1/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "git status：读懂文件状态机",
+          "description": "本章覆盖：untracked；tracked；unmodified；modified；staged；staged + modified；deleted；renamed；branch status；ahead / behind；`git status --short`；状态是理解后续操作的第一入口。",
+          "path": "/tutorials/git/chapter-3-2/",
+          "wordCount": 144,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "git add：把内容写入 Index",
+          "description": "本章覆盖：`git add file`；`git add .`；`git add -A`；stage new file；stage modification；stage deletion；index stores content snapshot；add 不是“把文件上传到 Git”；多次 add 更新 index 中的版本；只提交一部分文件。",
+          "path": "/tutorials/git/chapter-3-3/",
+          "wordCount": 156,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "Partial Staging：git add -p",
+          "description": "本章覆盖：`git add -p`；hunk；split hunk；edit hunk；stage selected changes；一份文件拆成多个逻辑 commit；code review friendly history；避免把调试代码和功能修改绑在一起；partial staging 的风险：编译状态可能与 working tree 不同。",
+          "path": "/tutorials/git/chapter-3-4/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "git diff：Working Tree、Index、HEAD 三层比较",
+          "description": "本章覆盖：`git diff`；working tree vs index；`git diff --staged`；index vs HEAD；`git diff HEAD`；current work vs HEAD；patch；hunk；context line；`+` / `-`；commit 前必须知道自己将提交什么。",
+          "path": "/tutorials/git/chapter-3-5/",
+          "wordCount": 148,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "git commit：创建不可变版本节点",
+          "description": "本章覆盖：`git commit`；staged snapshot；commit object；tree；parent；author；committer；commit message；current branch ref moves forward；commit 不是 remote upload；一个 commit 应表达一个可解释的逻辑变化。",
+          "path": "/tutorials/git/chapter-3-6/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-7",
+          "title": "Commit Message 与可读历史",
+          "description": "本章覆盖：subject；body；imperative mood 的常见约定；Why 优先于重复代码 What；issue / ticket reference；Conventional Commits 的定位；feat / fix / docs / refactor 等约定；团队规范优先；可读 commit 是调试、review、release 的长期资产。",
+          "path": "/tutorials/git/chapter-3-7/",
+          "wordCount": 165,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-8",
+          "title": "git rm、git mv 与文件删除 / 重命名",
+          "description": "本章覆盖：`git rm`；staged deletion；`git rm --cached`；stop tracking；`git mv`；rename detection；Git 并不把 rename 作为独立对象永久存储；rename 通常由 diff/history 分析推断；文件系统移动 + add/rm 与 git mv 的结果关系。",
+          "path": "/tutorials/git/chapter-3-8/",
+          "wordCount": 157,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-9",
+          "title": ".gitignore：忽略不应进入版本库的文件",
+          "description": "本章覆盖：`.gitignore`；pattern；directory pattern；wildcard；negation；local IDE file；build output；log；secret；`.env`；already tracked file 不会因为写进 gitignore 自动取消跟踪；repository ignore vs global exclude。",
+          "path": "/tutorials/git/chapter-3-9/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-10",
+          "title": ".gitattributes：文本、二进制与仓库行为控制",
+          "description": "本章覆盖：`.gitattributes`；text；binary；line ending normalization；`eol`；diff driver；merge driver；export-ignore；Git LFS pointer rule 的后续连接；跨 Windows / Linux 协作中的文本一致性。",
+          "path": "/tutorials/git/chapter-3-10/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-11",
+          "title": "一个高质量 Commit 的完整检查链",
+          "description": "本章覆盖：status；diff；staged diff；test；formatting；secrets check；generated file check；commit message；atomic change；avoid unrelated changes；`git show` 自检；commit 之后仍可在 push 前整理历史。",
+          "path": "/tutorials/git/chapter-3-11/",
+          "wordCount": 160,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Commit Graph、HEAD、Branch 与 Tag",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "Branch 的本质：指向 Commit 的可移动引用",
+          "description": "本章覆盖：branch ref；branch tip；commit graph；lightweight pointer；create branch is cheap；branch does not copy project directory；current branch；HEAD；commit advances branch；branch naming。",
+          "path": "/tutorials/git/chapter-4-1/",
+          "wordCount": 165,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "git branch：创建、查看、重命名与删除",
+          "description": "本章覆盖：`git branch`；create branch；list；verbose；merged；no-merged；`-m`；`-d`；`-D`；local branch；deleting branch does not immediately erase reachable commit data。",
+          "path": "/tutorials/git/chapter-4-2/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "git switch 与 git checkout 的职责演进",
+          "description": "本章覆盖：`git switch`；switch branch；create and switch；`git checkout`；historical multi-purpose command；restore file；detached HEAD；modern teaching prefers switch / restore for clearer intent；old project scripts may still use checkout。",
+          "path": "/tutorials/git/chapter-4-3/",
+          "wordCount": 207,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "HEAD：当前检出位置与 Symbolic Reference",
+          "description": "本章覆盖：HEAD points to branch；symbolic reference；current commit；`HEAD~`；`HEAD^`；ancestor notation；detached HEAD；checkout commit；commits in detached HEAD；creating branch to retain detached work。",
+          "path": "/tutorials/git/chapter-4-4/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "Detached HEAD：什么时候发生、为什么不等于数据立刻丢失",
+          "description": "本章覆盖：checkout tag / commit；detached state；experiment；build historical version；commit in detached state；unreachable risk after moving away；reflog recovery；create branch；CI often operates on detached commit；detached HEAD 本身不是错误。",
+          "path": "/tutorials/git/chapter-4-5/",
+          "wordCount": 206,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "Branch Naming 与生命周期",
+          "description": "本章覆盖：feature branch；bugfix；hotfix；release branch；experiment branch；branch naming convention；ticket number；short-lived branch；long-lived branch；stale branch；naming should express work intent。",
+          "path": "/tutorials/git/chapter-4-6/",
+          "wordCount": 179,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "Tag：Lightweight 与 Annotated Tag",
+          "description": "本章覆盖：tag；lightweight tag；annotated tag；tag object；message；tagger；signed tag；version marker；release point；branch moves, tag normally does not；semantic versioning 只建立接口认知。",
+          "path": "/tutorials/git/chapter-4-7/",
+          "wordCount": 158,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "Relative Reference：^、~ 与 Revision Syntax",
+          "description": "本章覆盖：`HEAD^`；`HEAD~1`；first parent；merge parent；`HEAD^2`；`branch~3`；`A..B`；`A...B`；revision range；ancestry；log / diff / rebase / reset 共用 revision language。",
+          "path": "/tutorials/git/chapter-4-8/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-9",
+          "title": "Merge Base 与共同祖先",
+          "description": "本章覆盖：common ancestor；merge base；three-way merge；`git merge-base`；branch divergence；diff against merge base；code review change range；rebase starting point；fork point 高层认知；理解 merge base 才能真正理解三方合并。",
+          "path": "/tutorials/git/chapter-4-9/",
+          "wordCount": 179,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-10",
+          "title": "Reachability：为什么删除 Branch 后 Commit 可能仍然存在",
+          "description": "本章覆盖：reachable；unreachable；reflog reference；object retention；garbage collection；tag；remote-tracking ref；branch deletion；orphaned commit；recovery window；Git 的“删除”经常不是立即物理删除。",
+          "path": "/tutorials/git/chapter-4-10/",
+          "wordCount": 166,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Diff、Log、Show 与历史阅读",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "git log：从 Commit Graph 读取历史",
+          "description": "本章覆盖：`git log`；commit hash；author；date；message；`--oneline`；`--graph`；`--decorate`；`--all`；branch topology；first-parent；阅读历史是定位线上问题和审计修改的重要技能。",
+          "path": "/tutorials/git/chapter-5-1/",
+          "wordCount": 140,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "git show：查看一个对象或 Commit",
+          "description": "本章覆盖：`git show`；commit metadata；patch；tree-ish；tag；blob；`git show HEAD:file`；compare file content from historical commit；inspect without checkout；对象模型与日常命令的连接。",
+          "path": "/tutorials/git/chapter-5-2/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "git diff 的 Revision 比较",
+          "description": "本章覆盖：`git diff A B`；`git diff A..B`；`git diff A...B`；two-dot semantics in diff context；three-dot / merge base；branch change review；path filter；stat；name-only；word diff；不同命令中的 `..` / `...` 语义需查各命令文档。",
+          "path": "/tutorials/git/chapter-5-3/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "git log 的路径与内容搜索",
+          "description": "本章覆盖：path-limited log；`git log -- file`；`--follow`；rename history limitation；`-S`；pickaxe；`-G`；regex change search；谁引入 / 删除了某段代码；debugging regression；archaeology。",
+          "path": "/tutorials/git/chapter-5-4/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "git blame：逐行来源与使用边界",
+          "description": "本章覆盖：`git blame`；commit per line；author；line history；refactor noise；blame 用于理解上下文，不用于“追责”；code ownership context；bug archaeology；与 log / show 联合使用。",
+          "path": "/tutorials/git/chapter-5-5/",
+          "wordCount": 136,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "git shortlog、describe 与版本描述",
+          "description": "本章覆盖：`git shortlog`；grouped history；contributor summary；`git describe`；nearest tag；build version；dirty working tree 的扩展用法；release automation 接口；semantic versioning 不由 Git 强制；build metadata。",
+          "path": "/tutorials/git/chapter-5-6/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "Commit Range 与历史选择",
+          "description": "本章覆盖：`A..B`；commits reachable from B not A；symmetric difference `A...B`；`--left-right`；`--cherry`；branch comparison；release notes candidate commits；upstream divergence；history query；revision set thinking。",
+          "path": "/tutorials/git/chapter-5-7/",
+          "wordCount": 191,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-8",
+          "title": "历史阅读实战：从 Bug 回溯到引入 Commit",
+          "description": "本章覆盖：reproduce bug；identify suspicious code；blame；log -S / -G；show；compare；bisect connection；issue context；merge commit handling；final root cause note；“找到谁写的”不是最终目的，“找到为什么变化”才是目的。",
+          "path": "/tutorials/git/chapter-5-8/",
+          "wordCount": 168,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Merge、Conflict 与 Rebase",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "Fast-forward Merge 与 Three-way Merge",
+          "description": "本章覆盖：fast-forward；divergent branches；merge base；three-way merge；merge result；merge commit；`--ff`；`--no-ff`；history topology；merge strategy 高层认知。",
+          "path": "/tutorials/git/chapter-6-1/",
+          "wordCount": 138,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "git merge 的基本流程",
+          "description": "本章覆盖：switch target branch；`git merge source`；merge result；index；working tree；auto merge；conflict state；commit；abort；pre-merge clean working tree；merge changes current branch。",
+          "path": "/tutorials/git/chapter-6-2/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "Merge Conflict 的本质",
+          "description": "本章覆盖：both sides modify same logical region；delete / modify conflict；rename conflict；content conflict；conflict markers；ours；theirs；base；index stages 1 / 2 / 3 的底层认知；冲突不是 Git “坏了”，而是需要人决定最终内容。",
+          "path": "/tutorials/git/chapter-6-3/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "冲突解决标准流程",
+          "description": "本章覆盖：`git status`；inspect conflict；understand both intents；edit final content；run test；`git add`；continue commit；`git merge --abort`；merge tool；不机械选择“接受当前 / 接受传入”。",
+          "path": "/tutorials/git/chapter-6-4/",
+          "wordCount": 151,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "ours / theirs 的上下文语义",
+          "description": "本章覆盖：current branch；merged branch；merge context；rebase context 中 ours / theirs 直觉可能反转；conflict stage；用业务意图决定结果；不把 ours 永远理解成“我的代码”。",
+          "path": "/tutorials/git/chapter-6-5/",
+          "wordCount": 121,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-6",
+          "title": "Rebase 的本质：重放 Commit，重写历史",
+          "description": "本章覆盖：rebase；base；upstream；replay commits；new commit IDs；linear history；original commits not mutated；branch ref moves；conflict during replay；history rewriting；published history risk。",
+          "path": "/tutorials/git/chapter-6-6/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-7",
+          "title": "git rebase 基本流程与冲突处理",
+          "description": "本章覆盖：`git rebase main`；identify commits to replay；apply commits；conflict；`git add`；`git rebase --continue`；`--skip`；`--abort`；test after rebase；force push may be needed only when remote branch history was rewritten。",
+          "path": "/tutorials/git/chapter-6-7/",
+          "wordCount": 195,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-8",
+          "title": "Merge vs Rebase：不是“谁更高级”",
+          "description": "本章覆盖：preserve topology；linear history；public history；private feature branch；auditability；conflict timing；team policy；merge commit；rebase before integration；shared branch avoid casual rewrite；workflow consistency 优先于个人偏好。",
+          "path": "/tutorials/git/chapter-6-8/",
+          "wordCount": 206,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-9",
+          "title": "Interactive Rebase：squash、fixup、reword、drop、reorder",
+          "description": "本章覆盖：`git rebase -i`；pick；reword；edit；squash；fixup；drop；reorder；split commit；clean local history before review；不重写他人正在依赖的共享历史。",
+          "path": "/tutorials/git/chapter-6-9/",
+          "wordCount": 121,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-10",
+          "title": "Autosquash 与 fixup Commit",
+          "description": "本章覆盖：`git commit --fixup`；target commit；`rebase -i --autosquash`；review feedback；local history cleanup；fixup message；CI during review；final merge strategy；keeping review iterations vs final clean history；由团队工作流决定。",
+          "path": "/tutorials/git/chapter-6-10/",
+          "wordCount": 196,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-11",
+          "title": "Rebase --onto 与分支基线迁移",
+          "description": "本章覆盖：`--onto`；old base；new base；transplant commit range；stacked branches；branch created from wrong base；remove unwanted ancestor range；revision range；high-risk operation；reflog backup；先画 commit graph 再执行。",
+          "path": "/tutorials/git/chapter-6-11/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-12",
+          "title": "冲突预防与长期分支治理",
+          "description": "本章覆盖：small commits；short-lived branches；frequent integration；modular code；avoid unrelated formatting；generated files；lockfile conflict；schema / migration conflict；ownership boundaries；communication；Git 只能帮助合并，不能替代团队协调。",
+          "path": "/tutorials/git/chapter-6-12/",
+          "wordCount": 207,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Undo、Reset、Revert 与数据恢复",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "“撤销”先问：你要撤销哪一层",
+          "description": "本章覆盖：working tree；index；commit；branch ref；public remote history；untracked file；local unpublished commit；published commit；data recovery；先定位状态再选命令，避免 `reset --hard` 乱用。",
+          "path": "/tutorials/git/chapter-7-1/",
+          "wordCount": 156,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "git restore：恢复 Working Tree 与 Index",
+          "description": "本章覆盖：`git restore file`；source；worktree；staged；`--staged`；unstage；restore from HEAD；restore from commit；destructive overwrite；untracked file not restored；modern replacement for part of checkout behavior。",
+          "path": "/tutorials/git/chapter-7-2/",
+          "wordCount": 189,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "git commit --amend：修改最近一次 Commit",
+          "description": "本章覆盖：amend message；amend content；replace commit；new commit id；author / committer metadata；local commit cleanup；published history warning；accidental missing file；pre-push use；force push consequence。",
+          "path": "/tutorials/git/chapter-7-3/",
+          "wordCount": 182,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "git reset：soft、mixed、hard 的三层移动",
+          "description": "本章覆盖：reset target；move branch / HEAD；`--soft`；keep index and working tree；`--mixed`；reset index, keep working tree；`--hard`；reset index and working tree；destructive risk；reset affects local history；通过三层模型理解而不是死背口诀。",
+          "path": "/tutorials/git/chapter-7-4/",
+          "wordCount": 196,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "git revert：用新 Commit 反向撤销历史",
+          "description": "本章覆盖：revert commit；inverse patch；new commit；public history safe；conflict；revert merge commit；mainline parent；audit trail；production rollback；revert 不删除原 commit。",
+          "path": "/tutorials/git/chapter-7-5/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-6",
+          "title": "reset vs revert：本地重写与公开修复",
+          "description": "本章覆盖：unpublished history；published history；branch rewrite；collaboration；audit；force push；CI；rollback；revert for shared branch；reset for controlled local cleanup；没有“一律不能 reset”，关键是历史是否被共享。",
+          "path": "/tutorials/git/chapter-7-6/",
+          "wordCount": 177,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-7",
+          "title": "git reflog：Git 的本地操作日志",
+          "description": "本章覆盖：reflog；HEAD reflog；branch reflog；reset recovery；rebase recovery；detached commit recovery；branch deletion recovery；expiration；local only；remote collaborators 看不到你的 reflog；误操作时先停止继续破坏再查 reflog。",
+          "path": "/tutorials/git/chapter-7-7/",
+          "wordCount": 185,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-8",
+          "title": "恢复误删 Branch、Commit 与 Reset --hard 后的内容",
+          "description": "本章覆盖：deleted branch；orphan commit；reflog；object id；create rescue branch；`fsck` 的高级定位；hard reset recovery limitations；untracked file cannot be restored by Git if never stored；garbage collection；backup importance；Git 很强，但不是所有数据都能救。",
+          "path": "/tutorials/git/chapter-7-8/",
+          "wordCount": 210,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-9",
+          "title": "Clean、Untracked Files 与真正不可逆风险",
+          "description": "本章覆盖：`git clean`；`-n`；`-f`；`-d`；ignored files；untracked file；build artifacts；local configuration；destructive deletion；dry-run first；Git 无法恢复从未进入 object database 的普通未跟踪内容；操作前确认边界。",
+          "path": "/tutorials/git/chapter-7-9/",
+          "wordCount": 169,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Remote、Fetch、Pull、Push 与多人协作",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "Remote Repository 与 origin 只是一个名字",
+          "description": "本章覆盖：remote；URL；origin；upstream；multiple remotes；`git remote -v`；add / remove / rename；local repo independent；remote is not magical central state；remote name can be arbitrary。",
+          "path": "/tutorials/git/chapter-8-1/",
+          "wordCount": 159,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "Clone：复制仓库、建立 Remote 与初始追踪关系",
+          "description": "本章覆盖：`git clone`；object transfer；checkout；origin；remote-tracking branch；local default branch；shallow clone later；bare clone later；clone URL；credential；branch selection。",
+          "path": "/tutorials/git/chapter-8-2/",
+          "wordCount": 159,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "Fetch：获取远程对象与更新 Remote-tracking Ref",
+          "description": "本章覆盖：`git fetch`；object transfer；`origin/main`；local main not automatically changed；prune；tags；multiple remotes；inspect before merge；safe synchronization；fetch 是理解 pull 的关键。",
+          "path": "/tutorials/git/chapter-8-3/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "Pull：Fetch + Integration",
+          "description": "本章覆盖：`git pull`；fetch；merge default behavior / configured behavior；pull --rebase；fast-forward policy；divergent branch warning；local uncommitted changes；team config；不把 pull 理解成“下载最新代码”这么简单。",
+          "path": "/tutorials/git/chapter-8-4/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "Push：更新远程 Reference",
+          "description": "本章覆盖：`git push`；source ref；destination ref；upstream；`-u`；fast-forward check；non-fast-forward rejection；branch creation；branch deletion；tag push；push 不等于“同步整个仓库所有内容”。",
+          "path": "/tutorials/git/chapter-8-5/",
+          "wordCount": 158,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-6",
+          "title": "Remote-tracking Branch 与 Upstream Tracking",
+          "description": "本章覆盖：`origin/main`；remote-tracking ref；local branch；upstream branch；ahead；behind；`@{upstream}`；set upstream；fetch updates remote-tracking branch；push / pull defaults；local main 与 origin/main 是两个不同引用。",
+          "path": "/tutorials/git/chapter-8-6/",
+          "wordCount": 187,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-7",
+          "title": "HTTPS、SSH 与认证基础",
+          "description": "本章覆盖：HTTPS remote；SSH remote；credential；personal access token 作为平台边界认知；SSH key pair；public key；private key；ssh-agent；host verification；secret handling；Git 协议与托管平台账户认证的区别。",
+          "path": "/tutorials/git/chapter-8-7/",
+          "wordCount": 160,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-8",
+          "title": "Force Push 与 --force-with-lease",
+          "description": "本章覆盖：non-fast-forward update；`--force`；overwrite remote ref；collaborator work loss risk；`--force-with-lease`；expected remote state；rebased personal branch；protected branch platform boundary；shared branch；优先 lease 而不是无条件 force。",
+          "path": "/tutorials/git/chapter-8-8/",
+          "wordCount": 211,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-9",
+          "title": "多 Remote、Fork 模型与 Upstream 同步的 Git 侧原理",
+          "description": "本章覆盖：origin；upstream；fork remote；fetch upstream；update local branch；push origin；remote refspec；contribution workflow；GitHub fork UI 留到 GitHub 课程；Git 本身只看到多个 repository / ref；理解底层后不同托管平台都能迁移。",
+          "path": "/tutorials/git/chapter-8-9/",
+          "wordCount": 176,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Cherry-pick、Stash、Worktree、Bisect 等高级生产力",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "git cherry-pick：选择性重放 Commit",
+          "description": "本章覆盖：cherry-pick；source commit；new commit id；patch replay；hotfix；backport；conflict；`--continue`；`--abort`；repeated cherry-pick creates distinct history；不用 cherry-pick 代替正常分支集成。",
+          "path": "/tutorials/git/chapter-9-1/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "git stash：临时保存工作现场",
+          "description": "本章覆盖：stash；working tree；index；stash stack；push；list；show；apply；pop；drop；untracked option；stash 不是长期分支替代品。",
+          "path": "/tutorials/git/chapter-9-2/",
+          "wordCount": 103,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "Stash Conflict 与选择性 Stash",
+          "description": "本章覆盖：`stash -p`；keep index；include untracked；apply conflict；pop failure；stash branch；context drift；switching urgent task；small temporary work；长期工作应建立 branch / worktree。",
+          "path": "/tutorials/git/chapter-9-3/",
+          "wordCount": 156,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "git worktree：一个仓库同时检出多个工作目录",
+          "description": "本章覆盖：worktree；linked worktree；same repository object database；different branch checkout；hotfix while feature work remains；parallel build；branch cannot be checked out in multiple worktrees by default；cleanup；prune；比频繁 stash 更适合长期并行任务。",
+          "path": "/tutorials/git/chapter-9-4/",
+          "wordCount": 213,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "git bisect：二分定位引入 Bug 的 Commit",
+          "description": "本章覆盖：good commit；bad commit；binary search；midpoint；`git bisect start`；mark good / bad；culprit commit；logarithmic search；reproducible test；historical buildability；regression debugging。",
+          "path": "/tutorials/git/chapter-9-5/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-6",
+          "title": "git bisect run：用自动测试定位 Regression",
+          "description": "本章覆盖：automated script；exit status；good / bad / skip；unit test；build script；flaky test risk；binary search automation；CI reproduction；bad historical dependency；“可自动验证”会极大提升调试效率。",
+          "path": "/tutorials/git/chapter-9-6/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-7",
+          "title": "git rerere：复用曾经解决过的冲突",
+          "description": "本章覆盖：reuse recorded resolution；conflict resolution cache；repeated rebase；long-running branch；enable rerere；recorded preimage / postimage；verify reused resolution；repeated conflict workflow；niche but valuable。",
+          "path": "/tutorials/git/chapter-9-7/",
+          "wordCount": 194,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-8",
+          "title": "git notes 与补充元数据的边界",
+          "description": "本章覆盖：notes；attach metadata without rewriting commit；refs/notes；review / CI metadata historical use cases；distribution；push notes ref；hosting platform support varies；commit message vs note；low-frequency advanced feature；了解即可，不进入普通日常主线。",
+          "path": "/tutorials/git/chapter-9-8/",
+          "wordCount": 216,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-9",
+          "title": "git archive、bundle 与离线迁移",
+          "description": "本章覆盖：`git archive`；snapshot export；no `.git` history；`git bundle`；transport repository history as file；offline transfer；backup / migration；verify bundle；clone from bundle；air-gapped environment；与直接 zip 项目的差异。",
+          "path": "/tutorials/git/chapter-9-9/",
+          "wordCount": 192,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Git Internals、大仓库与性能",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": ".git 目录结构总览",
+          "description": "本章覆盖：HEAD；config；index；objects；refs；logs；hooks；packed-refs；FETCH_HEAD；ORIG_HEAD；MERGE_HEAD；不要求手改内部文件，但要认识故障定位入口。",
+          "path": "/tutorials/git/chapter-10-1/",
+          "wordCount": 114,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "Hash Object、Cat-file 与底层对象实验",
+          "description": "本章覆盖：`git hash-object`；`git cat-file`；object type；object size；blob content；tree object；commit object；plumbing command；通过实验验证“文件内容 → object id”；理解 object immutability。",
+          "path": "/tutorials/git/chapter-10-2/",
+          "wordCount": 155,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "Tree Object、Index 与 Write-tree / Commit-tree",
+          "description": "本章覆盖：index entries；`git ls-files --stage`；`git write-tree`；tree hierarchy；`git commit-tree`；parent；manual commit creation；porcelain vs plumbing；日常不需要这样提交，但能把 add / commit 的本质彻底看清。",
+          "path": "/tutorials/git/chapter-10-3/",
+          "wordCount": 167,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "Loose Object、Packfile 与 Delta Compression",
+          "description": "本章覆盖：loose object；packfile；pack index；delta compression；object reuse；Git 逻辑 snapshot 与物理 delta 压缩并不冲突；`git gc`；repack；transfer efficiency；不需要把 pack 实现细节作为初级面试死记。",
+          "path": "/tutorials/git/chapter-10-4/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "Garbage Collection、Prune 与对象生命周期",
+          "description": "本章覆盖：`git gc`；unreachable object；reflog retention；prune；pack；auto gc；recovery window；expired objects；repository maintenance；不在恢复误操作前先盲目执行 aggressive prune。",
+          "path": "/tutorials/git/chapter-10-5/",
+          "wordCount": 148,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-6",
+          "title": "Shallow Clone、Partial Clone 与 Sparse Checkout",
+          "description": "本章覆盖：shallow clone；`--depth`；limited history；deepen；partial clone；blob filtering；sparse checkout；working tree subset；monorepo；CI speed；某些历史操作在 shallow repo 受限。",
+          "path": "/tutorials/git/chapter-10-6/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-7",
+          "title": "Git LFS：大文件不应该直接塞进普通 Git 历史",
+          "description": "本章覆盖：Git LFS；pointer file；large object storage；tracking pattern；binary asset；model / media / design file；remote LFS service；cloning / checkout；storage quota platform boundary；已经进入普通历史的大文件需要历史清理才能真正减小仓库。",
+          "path": "/tutorials/git/chapter-10-7/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-8",
+          "title": "Repository Size、Binary History 与性能治理",
+          "description": "本章覆盖：large repository；binary delta limitation；generated artifact；dependency vendoring；build output；repository bloat；clone time；fetch time；status performance；ignore policy；LFS / artifact repository / package registry 的职责边界。",
+          "path": "/tutorials/git/chapter-10-8/",
+          "wordCount": 206,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-9",
+          "title": "Git Maintenance、Commit-graph 与大仓库加速认知",
+          "description": "本章覆盖：commit-graph file；reachability acceleration；changed-path Bloom filter 高层认知；multi-pack-index；background maintenance；`git maintenance`；fetch optimization；large monorepo；modern Git performance features；普通小仓库不需要手工过度优化。",
+          "path": "/tutorials/git/chapter-10-9/",
+          "wordCount": 209,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "企业 Git Workflow、安全与质量治理",
+      "chapters": [
+        {
+          "slug": "chapter-11-1",
+          "title": "Feature Branch Workflow",
+          "description": "本章覆盖：main branch；feature branch；short-lived branch；commit；update from main；review；integration；delete branch；small scope；most common team workflow building block；hosting platform PR / MR 留给下一课程。",
+          "path": "/tutorials/git/chapter-11-1/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-2",
+          "title": "Trunk-based Development 基础",
+          "description": "本章覆盖：trunk；short-lived branch；frequent integration；feature flag；small batch；CI；avoid long-lived divergence；release from trunk；organization discipline；并不是“所有人直接随便 push main”。",
+          "path": "/tutorials/git/chapter-11-2/",
+          "wordCount": 164,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-3",
+          "title": "Git Flow、Release Branch 与 Hotfix 的历史定位",
+          "description": "本章覆盖：develop；feature；release；hotfix；main；structured release；overhead；long-lived branches；merge complexity；适合特定版本发布模式；现代持续交付团队不一定适合完整 Git Flow。",
+          "path": "/tutorials/git/chapter-11-3/",
+          "wordCount": 139,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-4",
+          "title": "Squash Merge、Merge Commit、Rebase Merge 的历史结果",
+          "description": "本章覆盖：squash；merge commit；rebase-style linear integration；commit granularity；branch topology；revert behavior；bisectability；attribution；audit；hosting platform executes policy, Git commit graph 体现最终结果；没有 universally best strategy。",
+          "path": "/tutorials/git/chapter-11-4/",
+          "wordCount": 213,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-5",
+          "title": "Protected Main 的 Git 原理与平台边界",
+          "description": "本章覆盖：main should be stable；non-fast-forward；force update；direct push；review gate；CI gate；signed commit；branch protection is hosting platform feature；Git 本身不会自动阻止仓库管理员修改 ref；团队流程需要 Git + 平台治理共同完成。",
+          "path": "/tutorials/git/chapter-11-5/",
+          "wordCount": 179,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-6",
+          "title": "Secrets、Credentials 与“删掉 Commit 仍可能泄漏”",
+          "description": "本章覆盖：password；API key；private key；`.env`；gitignore；secret scanning platform boundary；already committed secret；rotate secret first；deleting file in newest commit does not remove old history；history rewrite；clone copies；Git history should be treated as durable published data。",
+          "path": "/tutorials/git/chapter-11-6/",
+          "wordCount": 248,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-7",
+          "title": "Commit Signing 与来源验证",
+          "description": "本章覆盖：signed commit；signed tag；GPG / SSH signing；verification；identity vs authorization；key management；release tag；supply chain；hosting verification badge platform boundary；signing improves provenance but does not prove code is safe。",
+          "path": "/tutorials/git/chapter-11-7/",
+          "wordCount": 211,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-8",
+          "title": "Git Hooks 与团队自动化边界",
+          "description": "本章覆盖：client-side hook；server-side hook；pre-commit；commit-msg；pre-push；formatting；lint；tests；secret detection；local hooks are not automatically cloned as active hooks；CI / server rule is stronger shared enforcement point；hooks should be fast and deterministic。",
+          "path": "/tutorials/git/chapter-11-8/",
+          "wordCount": 237,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-9",
+          "title": "企业 Git Code Review 前自检清单",
+          "description": "本章覆盖：branch base correct；clean status；focused commits；readable commit message；no secret；no debug artifact；no generated noise；diff reviewed；tests passed；conflict resolved；history policy satisfied；force push used safely if required；reviewer should be able to understand why the change exists。",
+          "path": "/tutorials/git/chapter-11-9/",
+          "wordCount": 262,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Git 综合实战实验室",
+      "chapters": [
+        {
+          "slug": "chapter-12-1",
+          "title": "从零建立真实软件项目 Git 仓库",
+          "description": "本章覆盖：initialize repository；configure identity；.gitignore；.gitattributes；initial commit；source / docs / test structure；meaningful commits；branch；diff inspection；tag first version；clone validation；输出仓库规范说明。",
+          "path": "/tutorials/git/chapter-12-1/",
+          "wordCount": 193,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-2",
+          "title": "Feature Branch + 冲突解决完整协作实验",
+          "description": "本章覆盖：main；two feature branches；divergent changes；fetch；merge；content conflict；inspect ours / theirs / base；manual resolution；test；commit；graph visualization；explain why conflict happened。",
+          "path": "/tutorials/git/chapter-12-2/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-3",
+          "title": "Rebase 与 Interactive Rebase 历史整理实验",
+          "description": "本章覆盖：dirty local history；fixup commits；reword；squash；reorder；split；rebase onto updated main；conflict；continue / abort；compare graph before / after；判断哪些历史可以改、哪些不能改。",
+          "path": "/tutorials/git/chapter-12-3/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-4",
+          "title": "Git Disaster Recovery：误删 Branch 与 Hard Reset 恢复",
+          "description": "本章覆盖：create commits；delete branch；reset --hard；detached commit；reflog；rescue branch；unreachable commit；restore working state；compare recoverable vs unrecoverable untracked data；输出操作事故报告与恢复依据。",
+          "path": "/tutorials/git/chapter-12-4/",
+          "wordCount": 180,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-5",
+          "title": "Regression Debugging：log + blame + bisect",
+          "description": "本章覆盖：introduce historical bug；reproduce；log；blame；`-S` / `-G`；bisect；automated test；locate first bad commit；show culprit diff；write root-cause note；verify fix does not rewrite evidence。",
+          "path": "/tutorials/git/chapter-12-5/",
+          "wordCount": 170,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-6",
+          "title": "企业 Git 综合仓库治理审计",
+          "description": "本章覆盖：repository with intentionally bad practices；committed secret；large binary；noisy commits；long-lived branch；accidental merge；wrong rebase；force push risk；inconsistent line endings；missing ignore；broken history readability；stale branches；recovery plan；workflow redesign；final output: Correctness / Recoverability / Collaboration / Security / Maintainability 五维审计。",
+          "path": "/tutorials/git/chapter-12-6/",
+          "wordCount": 336,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/git/",
+  "sortOrder": 29
+}

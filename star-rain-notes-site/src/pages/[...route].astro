@@ -1,0 +1,70 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import OriginalChapter from '../layouts/OriginalChapter.astro';
+import OriginalBlogPost from '../layouts/OriginalBlogPost.astro';
+import Tutorials from '../components/astro/OriginalTutorials.astro';
+import CourseDetail from '../components/astro/OriginalCourse.astro';
+import BlogList from '../components/astro/OriginalBlogList.astro';
+import Portfolio from '../components/astro/OriginalPortfolio.astro';
+import WorkDetail from '../components/astro/OriginalWorkDetail.astro';
+import English from '../components/astro/OriginalEnglish.astro';
+import About from '../components/astro/OriginalAbout.astro';
+import PageHeading from '../components/astro/PageHeading.astro';
+import StaticSearch from '../components/vue/StaticSearch.vue';
+import { getRoutes, type PageRoute } from '../utils/routes';
+import { catalog, profile, site, themes, grammar, topics, allTags } from '../utils/content';
+export function getStaticPaths(){return getRoutes().map(page=>({params:{route:page.route},props:page}));}
+type Props = PageRoute;
+const {kind,slug,course:courseSlug,page=1}=Astro.props;
+const blog=catalog.blogs.find(p=>p.slug===slug);
+const course=catalog.courses.find(c=>c.slug===(courseSlug||slug));
+const chapter=course?.groups.flatMap(g=>g.chapters).find(c=>c.slug===slug);
+const work=catalog.works.find(w=>w.slug===slug);
+const theme=themes.find(t=>t.id===slug);
+const lessons=grammar.sections.flatMap(s=>s.lessons);
+const lesson=lessons.find(l=>l.slug===slug);
+const topic=topics.find(t=>t.slug===slug);
+const tag=allTags.find(t=>t.slug===slug);
+const titles:Record<string,string>={tutorials:'教程 · 系统知识地图',blog:page>1?`技术博客 · 第 ${page} 页`:'技术博客',archive:'文章时间归档',portfolio:'项目作品集',english:'英语 · 语言与成长',vocabulary:'英语主题词汇',grammar:grammar.title,about:`关于${profile.displayName}`,search:'全站搜索',privacy:'隐私政策',terms:'服务条款'};
+let title=titles[kind]||'';
+let description=`${title}，浏览星雨笔录的知识、代码与成长记录。`;
+if(kind==='post'&&blog){title=blog.title;description=blog.description;}
+if(kind==='course'&&course){title=`${course.title}教程`;description=course.description;}
+if(kind==='chapter'&&course&&chapter){const duplicate=course.groups.flatMap(g=>g.chapters).filter(c=>c.title===chapter.title).length>1;const group=course.groups.find(g=>g.chapters.some(c=>c.slug===chapter.slug));title=`${chapter.title}${duplicate&&group?` · ${group.title}`:''} · ${course.title}`;description=`${course.title}：${chapter.description}`;}
+if(kind==='work'&&work){title=`${work.title} · 项目作品`;description=work.description;}
+if(kind==='theme'&&theme){title=`${theme.title} · 英语词汇`;description=`${theme.layer}：${theme.title}，${theme.wordCount} 条主题词汇的音标、词性与中文释义。`;}
+if(kind==='lesson'&&lesson){title=`${lesson.title} · 英语语法`;description=lesson.description;}
+if(kind==='topic'&&topic){title=`${topic.name}专题`;description=topic.description;}
+if(kind==='tag'&&tag){const duplicate=allTags.filter(t=>t.name===tag.name).length>1;const related=catalog.blogs.find(p=>p.tags.some(t=>t.slug===tag.slug));title=duplicate&&related?`${tag.name}标签 · ${related.title}`:`${tag.name}相关文章`;description=`浏览 ${tag.name} 标签下的技术文章、工程实践与学习笔记。`;}
+if(kind==='about')description=profile.headline;
+if(kind==='search')description='搜索星雨笔录的公开教程、博客、作品和英语资料，在知识之间建立连接。';
+if(kind==='privacy')description='了解星雨笔录静态网站如何处理访问数据、本地偏好、外部链接与公开留言。';
+if(kind==='terms')description='星雨笔录静态展示网站的使用说明、内容版权、引用规范和联系渠道。';
+const noindex=['search','privacy','terms'].includes(kind);
+const canonical=new URL(Astro.url.pathname,Astro.site||site.url).href;
+const schema:Record<string,unknown>[]=[{'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'首页',item:new URL('/',Astro.site||site.url).href},{'@type':'ListItem',position:2,name:title,item:canonical}]}];
+if(kind==='post'&&blog)schema.push({'@context':'https://schema.org','@type':'BlogPosting',headline:blog.title,description:blog.description,datePublished:blog.publishedAt,dateModified:blog.updatedAt,author:{'@type':'Person',name:profile.displayName,url:new URL('/about/',Astro.site||site.url).href},mainEntityOfPage:canonical});
+if(kind==='about')schema.push({'@context':'https://schema.org','@type':'Person',name:profile.displayName,description:profile.headline,url:canonical,sameAs:profile.socialLinks.filter(l=>l.url.startsWith('https://')).map(l=>l.url)});
+
+
+
+
+
+---
+<BaseLayout title={title} description={description} noindex={noindex} schema={schema} image={work?.cover||site.ogImage}>
+  {kind==='tutorials'&&<Tutorials/>}
+  {kind==='course'&&course&&<CourseDetail course={course}/>}
+  {kind==='chapter'&&course&&chapter&&<OriginalChapter course={course} chapter={chapter}/>}
+  {kind==='blog'&&<BlogList page={page}/>}
+  {kind==='topic'&&topic&&<BlogList title={topic.name} description={topic.description} posts={catalog.blogs.filter(p=>p.topics.some(t=>t.slug===slug))} activeTopic={topic.slug}/>}
+  {kind==='tag'&&tag&&<BlogList title={tag.name} description={description} posts={catalog.blogs.filter(p=>p.tags.some(t=>t.slug===slug))} activeTag={tag.slug}/>}
+  {kind==='post'&&blog&&<OriginalBlogPost post={blog}/>}
+  {kind==='archive'&&<BlogList archive/>}
+  {kind==='portfolio'&&<Portfolio/>}
+  {kind==='work'&&work&&<WorkDetail work={work}/>}
+  {['english','vocabulary','theme','grammar','lesson'].includes(kind)&&<English kind={kind} slug={slug}/>}
+  {kind==='about'&&<About/>}
+  {kind==='search'&&<><StaticSearch client:load/><noscript><p class="notice">搜索需要启用 JavaScript。你仍可直接浏览<a href="/tutorials/">教程目录</a>、<a href="/blog/archive/">文章归档</a>和<a href="/portfolio/">全部作品</a>。</p></noscript></>}
+  {kind==='privacy'&&<div class="legal"><PageHeading eyebrow="YOUR PRIVACY" title="隐私政策" description="适用于星雨笔录静态展示网站。更新日期：2026 年 10 月 21 日。"/><div class="prose"><h2>访问与本地偏好</h2><p>本站提供公开内容展示，无注册、登录和在线留言提交。主题偏好保存在浏览器的 localStorage 中，用于在下次访问时沿用深浅色设置。你可通过清理浏览器站点数据移除此设置。</p><h2>站内搜索</h2><p>搜索使用本站的静态索引，在你的浏览器内完成。关键词会显示在当前搜索页面的 URL 中，便于刷新与分享；本站没有用于接收搜索关键词的业务接口。访问服务器可能依据其配置记录请求路径等基础访问日志。</p><h2>公开内容与留言</h2><p>网站展示由维护者整理和发布的文章、作品资料及审核留言。留言页面只显示公开昵称、正文和日期。如果相关公开内容需要更正或移除，请通过关于页面的联系方式联系维护者。</p><h2>外部链接</h2><p>部分内容链接至 GitHub、作品演示或其他网站。访问这些链接时，相应服务将适用其自身的隐私政策。本站页面展示所需的图片、字体和文章内容由本站静态文件提供。</p><h2>联系</h2><p>如有隐私相关问题，请使用<a href="/about/">关于页面</a>列出的公开联系方式。</p></div></div>}
+  {kind==='terms'&&<div class="legal"><PageHeading eyebrow="USE & ATTRIBUTION" title="服务条款" description="星雨笔录公开内容的使用说明。更新日期：2026 年 10 月 21 日。"/><div class="prose"><h2>网站用途</h2><p>星雨笔录静态网站用于展示技术教程、学习笔记、项目作品及英语知识。所有内容面向公开浏览，不提供账号服务、个人学习记录或在线留言业务。</p><h2>内容与引用</h2><p>文章与项目中的文字、图片和代码具有相应的版权归属。引用时请标注作者及原文链接；第三方资料和开源项目应遵循其原始许可。需要转载完整内容时，请先通过关于页面联系作者。</p><h2>技术资料的适用性</h2><p>技术文章反映发布时的学习与实践记录。软件版本、环境与实际需求可能不同，执行代码或部署配置前，请结合当前项目核对并在适当的测试环境验证。</p><h2>作品与外部服务</h2><p>作品详情中的项目状态、功能说明和外部入口来自原站公开资料。外部网站的可用性、内容及服务由其维护者负责。</p><h2>反馈与更正</h2><p>如果发现错误、失效链接或版权问题，请通过<a href="/about/">公开联系方式</a>反馈。维护者可通过更新本地内容并重新发布网站修正资料。</p></div></div>}
+</BaseLayout>

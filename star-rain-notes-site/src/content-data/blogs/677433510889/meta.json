@@ -1,0 +1,40 @@
+{
+  "slug": "677433510889",
+  "title": "Java 全栈学完后到底能做什么？从淘宝、美团、12306、Salesforce、SAP 看真实企业项目",
+  "description": "学习 Java 全栈时，我们经常接触商城、外卖、ERP、CRM、票务系统等项目，但如果只停留在“商品 CRUD、订单 CRUD、用户 CRUD”，很难真正理解 Java 企业开发到底在解决什么问题。\n\n事实上，**淘宝、美团外卖、12306、Salesforce、SAP 等成熟系统，分别代表了电商交易、即时配送、票务交易、企业 SaaS、ERP 等典型软件形态**。\n\n本文不讨论教学 Demo，而是从这些真实成熟产品出发，分析它们背后的业务模型、系统复杂度以及 Java 技术体系可以承担的工程职责，从而回答一个更实际的问题：\n\n> **Java 全栈真正学完以后，到底可以开发什么？",
+  "publishedAt": "2026-09-08",
+  "updatedAt": "2026-10-09",
+  "wordCount": 7581,
+  "tags": [
+    {
+      "slug": "java",
+      "name": "Java"
+    },
+    {
+      "slug": "java-2",
+      "name": "Java全栈"
+    },
+    {
+      "slug": "spring-boot",
+      "name": "Spring Boot"
+    },
+    {
+      "slug": "tag-10c139c0dd32",
+      "name": "企业级开发"
+    },
+    {
+      "slug": "tag-a7e43c55c0f5",
+      "name": "系统设计"
+    },
+    {
+      "slug": "tag-4a47a7f88328",
+      "name": "软件工程"
+    },
+    {
+      "slug": "tag-55a0a9c369ed",
+      "name": "项目实战"
+    }
+  ],
+  "topics": [],
+  "path": "/blog/posts/677433510889/"
+}

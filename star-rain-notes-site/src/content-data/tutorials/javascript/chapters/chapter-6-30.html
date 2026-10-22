@@ -1,0 +1,10 @@
+<p><strong>核心：</strong> POST JSON 时设置 <code>Content-Type</code>、用 <code>JSON.stringify</code> 生成请求体，并检查响应状态码。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const res = await fetch('/api/items', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ title: '新文章' })
+});
+if (!res.ok) throw new Error(res.status);
+</code></pre>
+<p><strong>学完能做：</strong> 发送 JSON 请求体并正确判断 HTTP 响应。</p>

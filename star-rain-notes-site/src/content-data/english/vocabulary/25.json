@@ -1,0 +1,1089 @@
+{
+  "id": "25",
+  "title": "医院 / 健康 / 医疗",
+  "layer": "核心生活场景层",
+  "wordCount": 120,
+  "path": "/english/vocabulary/25/",
+  "words": [
+    {
+      "word": "physical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɪzɪkl",
+      "phoneticUk": "'fɪzɪk(ə)l",
+      "translation": "物质的；物理的；身体上的",
+      "sceneMeaning": "身体的；物理的",
+      "examples": "[]"
+    },
+    {
+      "word": "critical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'krɪtɪkl",
+      "phoneticUk": "'krɪtɪk(ə)l",
+      "translation": "决定性的；批评的；批评的，爱挑剔的",
+      "sceneMeaning": "危急的；关键的",
+      "examples": "[]"
+    },
+    {
+      "word": "regular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɛgjəlɚ",
+      "phoneticUk": "'regjʊlə",
+      "translation": "规则的；整齐的；有规律的，经常的",
+      "sceneMeaning": "规则的；整齐的；有规律的，经常的；本场景常见用法：定期检查",
+      "examples": "[]"
+    },
+    {
+      "word": "bad",
+      "partOfSpeech": "adj",
+      "phoneticUs": "bæd",
+      "phoneticUk": "bæd",
+      "translation": "坏的，恶的；严重的",
+      "sceneMeaning": "坏的，恶的；严重的",
+      "examples": "[]"
+    },
+    {
+      "word": "cold",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "kold",
+      "phoneticUk": "kəʊld",
+      "translation": "冷的；冷淡的；冷",
+      "sceneMeaning": "感冒；寒冷",
+      "examples": "[]"
+    },
+    {
+      "word": "cut",
+      "partOfSpeech": "v",
+      "phoneticUs": "kʌt",
+      "phoneticUk": "kʌt",
+      "translation": "切，割，剪；减少",
+      "sceneMeaning": "伤口；切口",
+      "examples": "[]"
+    },
+    {
+      "word": "health",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɛlθ",
+      "phoneticUk": "helθ",
+      "translation": "健康，健康状况",
+      "sceneMeaning": "健康",
+      "examples": "[]"
+    },
+    {
+      "word": "healthy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɛlθi",
+      "phoneticUk": "'helθɪ",
+      "translation": "健康的；有益健康的",
+      "sceneMeaning": "健康的",
+      "examples": "[]"
+    },
+    {
+      "word": "high",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "haɪ",
+      "phoneticUk": "haɪ",
+      "translation": "高的；高级的；高",
+      "sceneMeaning": "高的；高级的；高；本场景常见用法：高精度",
+      "examples": "[]"
+    },
+    {
+      "word": "measure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛʒɚ",
+      "phoneticUk": "'meʒə",
+      "translation": "量，测量；分量；测量",
+      "sceneMeaning": "测量；衡量",
+      "examples": "[]"
+    },
+    {
+      "word": "medical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɛdɪkl",
+      "phoneticUk": "'medɪk(ə)l",
+      "translation": "医学的；内科的",
+      "sceneMeaning": "医学的；医疗的",
+      "examples": "[]"
+    },
+    {
+      "word": "protect",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'tɛkt",
+      "phoneticUk": "prə'tekt",
+      "translation": "保护，保卫，警戒",
+      "sceneMeaning": "保护",
+      "examples": "[]"
+    },
+    {
+      "word": "risk",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪsk",
+      "phoneticUk": "rɪsk",
+      "translation": "风险，危险，冒险",
+      "sceneMeaning": "风险",
+      "examples": "[]"
+    },
+    {
+      "word": "sign",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪn",
+      "phoneticUk": "saɪn",
+      "translation": "符号；招牌；签名",
+      "sceneMeaning": "体征；迹象",
+      "examples": "[]"
+    },
+    {
+      "word": "doctor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɑktɚ",
+      "phoneticUk": "'dɒktə",
+      "translation": "医生，医师；博士",
+      "sceneMeaning": "医生",
+      "examples": "[]"
+    },
+    {
+      "word": "treat",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trit",
+      "phoneticUk": "triːt",
+      "translation": "对待；处理；款待",
+      "sceneMeaning": "治疗；对待",
+      "examples": "[]"
+    },
+    {
+      "word": "headache",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈhɛdˌek",
+      "phoneticUk": "'hedeɪk",
+      "translation": "头痛；头痛的事",
+      "sceneMeaning": "头痛",
+      "examples": "[]"
+    },
+    {
+      "word": "spread",
+      "partOfSpeech": "v",
+      "phoneticUs": "sprɛd",
+      "phoneticUk": "spred",
+      "translation": "扩散；传播",
+      "sceneMeaning": "传播；扩散",
+      "examples": "[]"
+    },
+    {
+      "word": "condition",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'dɪʃən",
+      "phoneticUk": "kən'dɪʃ(ə)n",
+      "translation": "状况，状态；环境",
+      "sceneMeaning": "状况；疾病",
+      "examples": "[]"
+    },
+    {
+      "word": "department",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'pɑrtmənt",
+      "phoneticUk": "dɪ'pɑːtm(ə)nt",
+      "translation": "部，司，局，处，系；部门",
+      "sceneMeaning": "科室；部门",
+      "examples": "[]"
+    },
+    {
+      "word": "exercise",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛksɚsaɪz",
+      "phoneticUk": "'eksəsaɪz",
+      "translation": "锻炼，训练；练习",
+      "sceneMeaning": "锻炼；练习",
+      "examples": "[]"
+    },
+    {
+      "word": "pain",
+      "partOfSpeech": "n",
+      "phoneticUs": "pen",
+      "phoneticUk": "peɪn",
+      "translation": "痛，疼痛；辛苦",
+      "sceneMeaning": "疼痛",
+      "examples": "[]"
+    },
+    {
+      "word": "regularly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "'reɡjələli",
+      "translation": "定期地，有规律地",
+      "sceneMeaning": "定期地；有规律地",
+      "examples": "[]"
+    },
+    {
+      "word": "severe",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sɪ'vɪr",
+      "phoneticUk": "sɪ'vɪə",
+      "translation": "严格的；严厉的；严重的",
+      "sceneMeaning": "严重的",
+      "examples": "[]"
+    },
+    {
+      "word": "blood",
+      "partOfSpeech": "n",
+      "phoneticUs": "blʌd",
+      "phoneticUk": "blʌd",
+      "translation": "血，血液；血统",
+      "sceneMeaning": "血，血液；血统；本场景常见用法：高血压",
+      "examples": "[]"
+    },
+    {
+      "word": "disease",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'ziz",
+      "phoneticUk": "dɪ'ziːz",
+      "translation": "病，疾病；病害",
+      "sceneMeaning": "疾病",
+      "examples": "[]"
+    },
+    {
+      "word": "expert",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɛkspɝt; (for adj., also) ɛksˈpɝt ; ɪkˈspɝt",
+      "phoneticUk": "'ekspɜːt",
+      "translation": "专家；熟练的；熟练的，内行的",
+      "sceneMeaning": "专家",
+      "examples": "[]"
+    },
+    {
+      "word": "hurt",
+      "partOfSpeech": "v",
+      "phoneticUs": "hɝ​t",
+      "phoneticUk": "hɜːt",
+      "translation": "使受伤；使痛心",
+      "sceneMeaning": "疼痛；伤害",
+      "examples": "[]"
+    },
+    {
+      "word": "mental",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɛntl",
+      "phoneticUk": "'ment(ə)l",
+      "translation": "智力的；精神的",
+      "sceneMeaning": "心理的；精神的",
+      "examples": "[]"
+    },
+    {
+      "word": "painful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'penfl",
+      "phoneticUk": "'peɪnfʊl; -f(ə)l",
+      "translation": "使痛的；费力的；痛苦的，疼痛的，令人不快的",
+      "sceneMeaning": "疼痛的；痛苦的",
+      "examples": "[]"
+    },
+    {
+      "word": "prevent",
+      "partOfSpeech": "v",
+      "phoneticUs": "pri'vɛnt",
+      "phoneticUk": "prɪ'vent",
+      "translation": "预防，防止；阻止；预防",
+      "sceneMeaning": "预防；阻止",
+      "examples": "[]"
+    },
+    {
+      "word": "immediate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'midɪət",
+      "phoneticUk": "ɪ'miːdɪət",
+      "translation": "立即的；直接的",
+      "sceneMeaning": "立即的；直接的",
+      "examples": "[]"
+    },
+    {
+      "word": "treatment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tritmənt",
+      "phoneticUk": "'triːtm(ə)nt",
+      "translation": "待遇；治疗，疗法；治疗；对待",
+      "sceneMeaning": "治疗；处理",
+      "examples": "[]"
+    },
+    {
+      "word": "instant",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɪnstənt",
+      "phoneticUk": "'ɪnst(ə)nt",
+      "translation": "瞬间；立即的；立即的；紧急的；速溶的，方便的",
+      "sceneMeaning": "瞬间；立即的；立即的；紧急的；速溶的，方便的",
+      "examples": "[]"
+    },
+    {
+      "word": "emergency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'mɝdʒənsi",
+      "phoneticUk": "ɪ'mɜːdʒ(ə)nsɪ",
+      "translation": "紧急情况，突然事件；紧急情况",
+      "sceneMeaning": "紧急情况",
+      "examples": "[]"
+    },
+    {
+      "word": "scan",
+      "partOfSpeech": "v",
+      "phoneticUs": "skæn",
+      "phoneticUk": "skæn",
+      "translation": "细看；浏览；扫描",
+      "sceneMeaning": "扫描；检查",
+      "examples": "[]"
+    },
+    {
+      "word": "acute",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'kjut",
+      "phoneticUk": "ə'kjuːt",
+      "translation": "尖的，锐的；敏锐的；敏锐的",
+      "sceneMeaning": "急性的；敏锐的",
+      "examples": "[]"
+    },
+    {
+      "word": "symptom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪmptəm",
+      "phoneticUk": "'sɪm(p)təm",
+      "translation": "症状",
+      "sceneMeaning": "症状",
+      "examples": "[]"
+    },
+    {
+      "word": "addiction",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'dɪkʃən",
+      "phoneticUk": "ə'dikʃən",
+      "translation": "上瘾",
+      "sceneMeaning": "上瘾；本场景常见用法：药物成瘾",
+      "examples": "[]"
+    },
+    {
+      "word": "drug",
+      "partOfSpeech": "n",
+      "phoneticUs": "drʌg",
+      "phoneticUk": "drʌg",
+      "translation": "药，药物，药材",
+      "sceneMeaning": "药物；毒品",
+      "examples": "[]"
+    },
+    {
+      "word": "examination",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪg'zæmə'neʃən",
+      "phoneticUk": "ɪg,zæmɪ'neɪʃ(ə)n; eg-",
+      "translation": "考试；检查，细查",
+      "sceneMeaning": "检查；考试",
+      "examples": "[]"
+    },
+    {
+      "word": "ill",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "ɪl",
+      "phoneticUk": "ɪl",
+      "translation": "有病的；坏的；坏",
+      "sceneMeaning": "生病的",
+      "examples": "[]"
+    },
+    {
+      "word": "medicine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛdsn",
+      "phoneticUk": "'meds(ə)n; 'medɪsɪn",
+      "translation": "内服药；医学",
+      "sceneMeaning": "药；医学",
+      "examples": "[]"
+    },
+    {
+      "word": "stable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'stebl",
+      "phoneticUk": "'steɪb(ə)l",
+      "translation": "稳定的，不变的",
+      "sceneMeaning": "稳定的",
+      "examples": "[]"
+    },
+    {
+      "word": "strain",
+      "partOfSpeech": "v",
+      "phoneticUs": "stren",
+      "phoneticUk": "streɪn",
+      "translation": "拉紧；尽力；扭伤，拉伤",
+      "sceneMeaning": "拉紧；尽力；扭伤，拉伤；本场景常见用法：菌株",
+      "examples": "[]"
+    },
+    {
+      "word": "admission",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'mɪʃən",
+      "phoneticUk": "əd'mɪʃ(ə)n",
+      "translation": "允许进入；承认；承认；准许进(加)入；入场费",
+      "sceneMeaning": "允许进入；承认；承认；准许进(加)入；入场费",
+      "examples": "[]"
+    },
+    {
+      "word": "escape",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪˈskep",
+      "phoneticUk": "ɪ'skeɪp; e-",
+      "translation": "逃跑；逸出；逃跑",
+      "sceneMeaning": "逃跑；逸出；逃跑",
+      "examples": "[]"
+    },
+    {
+      "word": "hospital",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɑspɪtl",
+      "phoneticUk": "'hɒspɪt(ə)l",
+      "translation": "医院",
+      "sceneMeaning": "医院",
+      "examples": "[]"
+    },
+    {
+      "word": "reception",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "rɪ'sɛpʃən",
+      "phoneticUk": "rɪ'sepʃ(ə)n",
+      "translation": "接待；招待会；接受；接待；反响",
+      "sceneMeaning": "接待处；接待",
+      "examples": "[]"
+    },
+    {
+      "word": "recovery",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "重获；痊愈，恢复",
+      "sceneMeaning": "恢复；康复",
+      "examples": "[]"
+    },
+    {
+      "word": "specialist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'spɛʃəlɪst",
+      "phoneticUk": "'speʃ(ə)lɪst",
+      "translation": "专家",
+      "sceneMeaning": "专家；专科医生",
+      "examples": "[]"
+    },
+    {
+      "word": "admit",
+      "partOfSpeech": "v",
+      "phoneticUs": "əd'mɪt",
+      "phoneticUk": "əd'mɪt",
+      "translation": "承认；准许…进入；承认；容许",
+      "sceneMeaning": "收治；承认",
+      "examples": "[]"
+    },
+    {
+      "word": "breath",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɛθ",
+      "phoneticUk": "breθ",
+      "translation": "气息，呼吸；气味",
+      "sceneMeaning": "呼吸；气息",
+      "examples": "[]"
+    },
+    {
+      "word": "examine",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪg'zæmɪn",
+      "phoneticUk": "ɪg'zæmɪn; eg-",
+      "translation": "检查，仔细观察",
+      "sceneMeaning": "检查；审查",
+      "examples": "[]"
+    },
+    {
+      "word": "exhaust",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪɡ'zɔst",
+      "phoneticUk": "ɪg'zɔːst; eg-",
+      "translation": "使筋疲力尽；用尽；使筋疲力尽",
+      "sceneMeaning": "使筋疲力尽；用尽；使筋疲力尽；本场景常见用法：排气温度，乏气温度",
+      "examples": "[]"
+    },
+    {
+      "word": "illness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪlnəs",
+      "phoneticUk": "ˈɪlnəs",
+      "translation": "病，疾病",
+      "sceneMeaning": "疾病；不适",
+      "examples": "[]"
+    },
+    {
+      "word": "immediately",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪ'midɪətli",
+      "phoneticUk": "ɪ'miːdɪətlɪ",
+      "translation": "立即；直接地",
+      "sceneMeaning": "立即；马上",
+      "examples": "[]"
+    },
+    {
+      "word": "patient",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'peʃnt",
+      "phoneticUk": "'peɪʃ(ə)nt",
+      "translation": "忍耐的；病人",
+      "sceneMeaning": "病人；患者",
+      "examples": "[]"
+    },
+    {
+      "word": "prescription",
+      "partOfSpeech": "n",
+      "phoneticUs": "prɪ'skrɪpʃən",
+      "phoneticUk": "prɪˈskrɪpʃn",
+      "translation": "处方",
+      "sceneMeaning": "处方",
+      "examples": "[]"
+    },
+    {
+      "word": "recover",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'kʌvɚ",
+      "phoneticUk": "rɪ'kʌvə",
+      "translation": "重新获得；挽回；恢复；重新获得；寻回",
+      "sceneMeaning": "恢复；康复",
+      "examples": "[]"
+    },
+    {
+      "word": "bang",
+      "partOfSpeech": "n",
+      "phoneticUs": "bæŋ",
+      "phoneticUk": "bæŋ",
+      "translation": "巨响，枪声；猛击",
+      "sceneMeaning": "巨响，枪声；猛击",
+      "examples": "[]"
+    },
+    {
+      "word": "breathe",
+      "partOfSpeech": "v",
+      "phoneticUs": "brið",
+      "phoneticUk": "briːð",
+      "translation": "呼吸",
+      "sceneMeaning": "呼吸",
+      "examples": "[]"
+    },
+    {
+      "word": "clinic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klɪnɪk",
+      "phoneticUk": "'klɪnɪk",
+      "translation": "诊所",
+      "sceneMeaning": "诊所；门诊部",
+      "examples": "[]"
+    },
+    {
+      "word": "cough",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kɔf",
+      "phoneticUk": "kɒf",
+      "translation": "咳，咳嗽；咳嗽",
+      "sceneMeaning": "咳嗽",
+      "examples": "[]"
+    },
+    {
+      "word": "cripple",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪpl",
+      "phoneticUk": "'krɪp(ə)l",
+      "translation": "跛子；残废的人",
+      "sceneMeaning": "跛子；残废的人",
+      "examples": "[]"
+    },
+    {
+      "word": "cure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kjʊr",
+      "phoneticUk": "kjʊə; kjɔː",
+      "translation": "医治；消除；治愈",
+      "sceneMeaning": "治愈",
+      "examples": "[]"
+    },
+    {
+      "word": "fitness",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈfɪtnɪs",
+      "phoneticUk": "ˈfɪtnəs",
+      "translation": "健康",
+      "sceneMeaning": "健康；适合",
+      "examples": "[]"
+    },
+    {
+      "word": "heal",
+      "partOfSpeech": "v",
+      "phoneticUs": "hil",
+      "phoneticUk": "hiːl",
+      "translation": "治愈；使和解",
+      "sceneMeaning": "愈合；治愈",
+      "examples": "[]"
+    },
+    {
+      "word": "height",
+      "partOfSpeech": "n",
+      "phoneticUs": "haɪt",
+      "phoneticUk": "haɪt",
+      "translation": "高，高度；高处",
+      "sceneMeaning": "身高；高度",
+      "examples": "[]"
+    },
+    {
+      "word": "insurance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'ʃʊrəns",
+      "phoneticUk": "ɪn'ʃʊər(ə)ns",
+      "translation": "保险；保险费",
+      "sceneMeaning": "保险",
+      "examples": "[]"
+    },
+    {
+      "word": "mild",
+      "partOfSpeech": "adj",
+      "phoneticUs": "maɪld",
+      "phoneticUk": "maɪld",
+      "translation": "和缓的；温柔的",
+      "sceneMeaning": "轻微的；温和的",
+      "examples": "[]"
+    },
+    {
+      "word": "nurse",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "nɝs",
+      "phoneticUk": "nɜːs",
+      "translation": "保姆；护士；看护",
+      "sceneMeaning": "护士",
+      "examples": "[]"
+    },
+    {
+      "word": "operate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɑpə'ret",
+      "phoneticUk": "'ɒpəreɪt",
+      "translation": "操作；施行手术",
+      "sceneMeaning": "动手术；操作",
+      "examples": "[]"
+    },
+    {
+      "word": "operator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑpəretɚ",
+      "phoneticUk": "'ɒpəreɪtə",
+      "translation": "操作人员，接线员",
+      "sceneMeaning": "操作人员，接线员；本场景常见用法：[计]操作员站；操作员控制台",
+      "examples": "[]"
+    },
+    {
+      "word": "register",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "'rɛdʒɪstɚ",
+      "phoneticUk": "'redʒɪstə",
+      "translation": "登记，注册",
+      "sceneMeaning": "登记；挂号",
+      "examples": "[]"
+    },
+    {
+      "word": "shortly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ʃɔrtli",
+      "phoneticUk": "'ʃɔːtlɪ",
+      "translation": "立刻；简短地",
+      "sceneMeaning": "立刻；简短地",
+      "examples": "[]"
+    },
+    {
+      "word": "spill",
+      "partOfSpeech": "v",
+      "phoneticUs": "spɪl",
+      "phoneticUk": "spɪl",
+      "translation": "使溢出；溢出",
+      "sceneMeaning": "使溢出；溢出",
+      "examples": "[]"
+    },
+    {
+      "word": "surgery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɝdʒəri",
+      "phoneticUk": "'sɜːdʒ(ə)rɪ",
+      "translation": "外科，外科手术",
+      "sceneMeaning": "外科手术；外科学",
+      "examples": "[]"
+    },
+    {
+      "word": "swell",
+      "partOfSpeech": "v",
+      "phoneticUs": "swɛl",
+      "phoneticUk": "swel",
+      "translation": "膨胀；隆起；增长",
+      "sceneMeaning": "膨胀；隆起；增长",
+      "examples": "[]"
+    },
+    {
+      "word": "therapy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'θɛrəpi",
+      "phoneticUk": "'θerəpi",
+      "translation": "疗法 治疗",
+      "sceneMeaning": "治疗；疗法",
+      "examples": "[]"
+    },
+    {
+      "word": "unbearable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ʌn'bɛrəbl",
+      "phoneticUk": "ʌnˈbeərəbl",
+      "translation": "无法忍受的",
+      "sceneMeaning": "无法忍受的",
+      "examples": "[]"
+    },
+    {
+      "word": "ache",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ek",
+      "phoneticUk": "eɪk",
+      "translation": "痛；想念；疼痛",
+      "sceneMeaning": "疼痛",
+      "examples": "[]"
+    },
+    {
+      "word": "agony",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æɡəni",
+      "phoneticUk": "'ægənɪ",
+      "translation": "极度痛苦",
+      "sceneMeaning": "极度痛苦",
+      "examples": "[]"
+    },
+    {
+      "word": "ambulance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æmbjələns",
+      "phoneticUk": "'æmbjʊl(ə)ns",
+      "translation": "救护车；野战医院",
+      "sceneMeaning": "救护车",
+      "examples": "[]"
+    },
+    {
+      "word": "appoint",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'pɔɪnt",
+      "phoneticUk": "ə'pɒɪnt",
+      "translation": "任命，委任；约定；任命，委派；约定，确定，指定",
+      "sceneMeaning": "任命；约定",
+      "examples": "[]"
+    },
+    {
+      "word": "appointment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'pɔɪntmənt",
+      "phoneticUk": "ə'pɒɪntm(ə)nt",
+      "translation": "任命；约定，约会；约会",
+      "sceneMeaning": "预约；约定",
+      "examples": "[]"
+    },
+    {
+      "word": "bacteria",
+      "partOfSpeech": "n",
+      "phoneticUs": "bæk'tɪrɪə",
+      "phoneticUk": "bæk'tɪərɪə",
+      "translation": "细菌",
+      "sceneMeaning": "细菌",
+      "examples": "[]"
+    },
+    {
+      "word": "blast",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "blæst",
+      "phoneticUk": "blɑːst",
+      "translation": "爆炸，冲击波；炸",
+      "sceneMeaning": "爆炸，冲击波；炸；本场景常见用法：爆发性损伤；冲击波伤",
+      "examples": "[]"
+    },
+    {
+      "word": "bleed",
+      "partOfSpeech": "v",
+      "phoneticUs": "blid",
+      "phoneticUk": "bliːd",
+      "translation": "出血，流血；泌脂",
+      "sceneMeaning": "流血",
+      "examples": "[]"
+    },
+    {
+      "word": "bruise",
+      "partOfSpeech": "n",
+      "phoneticUs": "bruz",
+      "phoneticUk": "bruːz",
+      "translation": "青肿，伤痕；擦伤",
+      "sceneMeaning": "青肿，伤痕；擦伤",
+      "examples": "[]"
+    },
+    {
+      "word": "bullet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bʊlɪt",
+      "phoneticUk": "'bʊlɪt",
+      "translation": "枪弹，子弹，弹丸",
+      "sceneMeaning": "枪弹，子弹，弹丸",
+      "examples": "[]"
+    },
+    {
+      "word": "burn",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bɝn",
+      "phoneticUk": "bɜːn",
+      "translation": "烧，燃烧；烧伤",
+      "sceneMeaning": "烧伤；灼伤",
+      "examples": "[]"
+    },
+    {
+      "word": "cruelty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krʊəlti",
+      "phoneticUk": "'krʊəltɪ",
+      "translation": "残暴，残酷",
+      "sceneMeaning": "残暴，残酷",
+      "examples": "[]"
+    },
+    {
+      "word": "discharge",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪs'tʃɑrdʒ",
+      "phoneticUk": "dɪs'tʃɑːdʒ",
+      "translation": "释放；排出；释放；释放；排出；批准离开; 命令离开",
+      "sceneMeaning": "准许出院；释放",
+      "examples": "[]"
+    },
+    {
+      "word": "dishonour",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪs'ɑnɚ",
+      "phoneticUk": "",
+      "translation": "不光彩；丢脸的人",
+      "sceneMeaning": "不光彩；丢脸的人",
+      "examples": "[]"
+    },
+    {
+      "word": "dismiss",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪs'mɪs",
+      "phoneticUk": "dɪs'mɪs",
+      "translation": "不再考虑；解雇",
+      "sceneMeaning": "不再考虑；解雇",
+      "examples": "[]"
+    },
+    {
+      "word": "dose",
+      "partOfSpeech": "n",
+      "phoneticUs": "dos",
+      "phoneticUk": "dəʊs",
+      "translation": "剂量，用量；一剂",
+      "sceneMeaning": "剂量",
+      "examples": "[]"
+    },
+    {
+      "word": "faint",
+      "partOfSpeech": "adj",
+      "phoneticUs": "fent",
+      "phoneticUk": "feɪnt",
+      "translation": "微弱的；虚弱的",
+      "sceneMeaning": "昏倒",
+      "examples": "[]"
+    },
+    {
+      "word": "fever",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fivɚ",
+      "phoneticUk": "'fiːvə",
+      "translation": "发热，发烧；狂热",
+      "sceneMeaning": "发烧；发热",
+      "examples": "[]"
+    },
+    {
+      "word": "flu",
+      "partOfSpeech": "n",
+      "phoneticUs": "flu",
+      "phoneticUk": "fluː",
+      "translation": "流行性感冒",
+      "sceneMeaning": "流感",
+      "examples": "[]"
+    },
+    {
+      "word": "furious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fjʊrɪəs",
+      "phoneticUk": "'fjʊərɪəs",
+      "translation": "狂怒的；狂暴的",
+      "sceneMeaning": "狂怒的；狂暴的",
+      "examples": "[]"
+    },
+    {
+      "word": "glow",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡlo",
+      "phoneticUk": "gləʊ",
+      "translation": "白热光；发白热光",
+      "sceneMeaning": "白热光；发白热光",
+      "examples": "[]"
+    },
+    {
+      "word": "hateful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hetfəl",
+      "phoneticUk": "'heɪtfʊl; -f(ə)l",
+      "translation": "可恨的，可恶的",
+      "sceneMeaning": "可恨的，可恶的",
+      "examples": "[]"
+    },
+    {
+      "word": "hospitalize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'hɑspɪtə'laɪz",
+      "phoneticUk": "'hɒspɪtəlaɪz",
+      "translation": "就医",
+      "sceneMeaning": "就医",
+      "examples": "[]"
+    },
+    {
+      "word": "infect",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'fɛkt",
+      "phoneticUk": "ɪn'fekt",
+      "translation": "传染；感染",
+      "sceneMeaning": "感染",
+      "examples": "[]"
+    },
+    {
+      "word": "injection",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'dʒɛkʃən",
+      "phoneticUk": "ɪn'dʒekʃ(ə)n",
+      "translation": "注射，注入；充满",
+      "sceneMeaning": "注射；针剂",
+      "examples": "[]"
+    },
+    {
+      "word": "injury",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "损害，伤害；受伤处",
+      "sceneMeaning": "伤害；损伤",
+      "examples": "[]"
+    },
+    {
+      "word": "instantly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɪnstəntli",
+      "phoneticUk": "'ɪnst(ə)ntlɪ",
+      "translation": "立即，即刻",
+      "sceneMeaning": "立即，即刻",
+      "examples": "[]"
+    },
+    {
+      "word": "operation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɑpə'reʃən",
+      "phoneticUk": "ɒpə'reɪʃ(ə)n",
+      "translation": "操作；手术；运算；手术；行动",
+      "sceneMeaning": "手术；操作",
+      "examples": "[]"
+    },
+    {
+      "word": "physician",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɪ'zɪʃən",
+      "phoneticUk": "fɪ'zɪʃ(ə)n",
+      "translation": "医生，内科医生",
+      "sceneMeaning": "医生；内科医生",
+      "examples": "[]"
+    },
+    {
+      "word": "pill",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɪl",
+      "phoneticUk": "pɪl",
+      "translation": "药丸，丸剂",
+      "sceneMeaning": "药丸",
+      "examples": "[]"
+    },
+    {
+      "word": "prescribe",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɪ'skraɪb",
+      "phoneticUk": "prɪ'skraɪb",
+      "translation": "命令；处(方)",
+      "sceneMeaning": "开处方；规定",
+      "examples": "[]"
+    },
+    {
+      "word": "pulse",
+      "partOfSpeech": "n",
+      "phoneticUs": "pʌls",
+      "phoneticUk": "pʌls",
+      "translation": "脉搏；脉冲，脉动",
+      "sceneMeaning": "脉搏",
+      "examples": "[]"
+    },
+    {
+      "word": "restless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɛstləs",
+      "phoneticUk": "ˈrestləs",
+      "translation": "不安定的，焦虑的",
+      "sceneMeaning": "不安定的，焦虑的",
+      "examples": "[]"
+    },
+    {
+      "word": "sore",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "sɔr",
+      "phoneticUk": "sɔː",
+      "translation": "痛的；恼火的；疮",
+      "sceneMeaning": "痛的；恼火的；疮；本场景常见用法：咽喉痛",
+      "examples": "[]"
+    },
+    {
+      "word": "specialize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'spɛʃəlaɪz",
+      "phoneticUk": "'speʃəlaiz",
+      "translation": "成为…专家；专攻；专业从事",
+      "sceneMeaning": "成为…专家；专攻；专业从事",
+      "examples": "[]"
+    },
+    {
+      "word": "toothache",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tuθek",
+      "phoneticUk": "ˈtu:θeɪk",
+      "translation": "牙痛，牙疼",
+      "sceneMeaning": "牙痛",
+      "examples": "[]"
+    },
+    {
+      "word": "virus",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vaɪrəs",
+      "phoneticUk": "'vaɪrəs",
+      "translation": "病毒",
+      "sceneMeaning": "病毒",
+      "examples": "[]"
+    },
+    {
+      "word": "weakness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wiknəs",
+      "phoneticUk": "ˈwiːknəs",
+      "translation": "虚弱，软弱；弱点",
+      "sceneMeaning": "虚弱，软弱；弱点",
+      "examples": "[]"
+    },
+    {
+      "word": "wound",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "wund",
+      "phoneticUk": "wuːnd",
+      "translation": "创伤，伤；使受伤",
+      "sceneMeaning": "伤口；创伤",
+      "examples": "[]"
+    }
+  ]
+}

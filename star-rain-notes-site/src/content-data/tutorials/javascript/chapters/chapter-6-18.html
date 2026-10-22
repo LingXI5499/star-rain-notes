@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> <code>requestAnimationFrame</code> 通常在浏览器下一次绘制前执行，适合逐帧更新视觉状态。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">function frame(time) {
+  box.style.transform = `translateX(${time / 20 % 200}px)`;
+  requestAnimationFrame(frame);
+}
+requestAnimationFrame(frame);
+</code></pre>
+<p><strong>学完能做：</strong> 使用 requestAnimationFrame 驱动逐帧更新。</p>

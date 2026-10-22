@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 把筛选条件保存到 URL 中，可复制链接分享，也可在刷新后恢复筛选状态。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const url = new URL(location.href);
+url.searchParams.set('category', 'books');
+history.replaceState(null, '', url);
+console.log(new URLSearchParams(location.search).get('category'));
+</code></pre>
+<p><strong>学完能做：</strong> 通过 URL 保留筛选参数并支持刷新恢复。</p>

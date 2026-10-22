@@ -1,0 +1,25 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ThemeHero from '../components/astro/ThemeHero.astro';
+import SectionHeading from '../components/astro/SectionHeading.astro';
+import { site, catalog, profile, home, dateLabel } from '../utils/content';
+const modules = [{label:'教程',en:'LEARN',desc:'从知识体系进入系统课程',href:'/tutorials/'},{label:'博客',en:'THINK',desc:'记录判断、方法与复盘',href:'/blog/'},{label:'作品',en:'BUILD',desc:'用真实项目验证学习',href:'/portfolio/'},{label:'英语',en:'GROW',desc:'长期积累语言能力',href:'/english/'}];
+const latest = home.find(s=>s.code==='LATEST')?.items || [];
+const featuredSlugs = home.find(s=>s.code==='TUTORIALS')?.items.map(i=>i.slug) || [];
+const featuredCourses = featuredSlugs.map(slug=>catalog.courses.find(c=>c.slug===slug)).filter((c): c is typeof catalog.courses[number]=>!!c);
+const featuredWorkSlugs = home.find(s=>s.code==='PORTFOLIO')?.items.map(i=>i.slug) || [];
+const featuredWorks = featuredWorkSlugs.map(slug=>catalog.works.find(w=>w.slug===slug)).filter((w): w is typeof catalog.works[number]=>!!w);
+const types: Record<string,string> = { TUTORIAL:'教程章节',BLOG:'博客记录',PORTFOLIO:'项目作品' };
+---
+<BaseLayout title={site.name} description={site.description}>
+  <div class="home-page">
+    <section class="home-hero" aria-labelledby="home-title"><ThemeHero/><div class="home-hero__copy"><p class="public-eyebrow home-hero__kicker">STAR RAIN NOTES</p><h1 id="home-title" class="public-display">{site.name}</h1><h2>{site.tagline}</h2><p class="home-hero__intro">{site.intro}</p><div class="home-hero__actions"><a class="public-button primary" href="/tutorials/">开始学习 <span aria-hidden="true">↗</span></a><a class="public-button" href="/portfolio/">查看作品 <span aria-hidden="true">→</span></a></div></div></section>
+    <nav class="home-rail" aria-label="站点主要内容">{modules.map((m,i)=><a href={m.href} class="public-interactive"><span>{String(i+1).padStart(2,'0')}</span><div><small>{m.en}</small><strong>{m.label}</strong><p>{m.desc}</p></div><i aria-hidden="true">→</i></a>)}</nav>
+    <div class="home-content">
+      <section class="home-section"><SectionHeading eyebrow="LATEST NOTES" title="最近更新" href="/search/"/><ol class="home-updates">{latest.map((item,i)=><li><a class="public-interactive" href={(item.path||'/search').replace(/\/$/,'')+'/'}><span class="home-updates__index">{String(i+1).padStart(2,'0')}</span><div><small>{types[item.type||'']||'内容更新'}</small><h3>{item.title}</h3></div><time datetime={item.publishedAt}>{dateLabel(item.publishedAt)}</time><i aria-hidden="true">↗</i></a></li>)}</ol></section>
+      <section class="home-section"><SectionHeading eyebrow="LEARNING MAP" title="精选知识体系" href="/tutorials/" link="进入教程中心"/><div class="home-systems">{featuredCourses.map((course,i)=><a class="home-system" href={course.path}><div><span>{String(i+1).padStart(2,'0')}</span><i aria-hidden="true">✦</i></div><h3>{course.title}</h3><p>{course.description}</p><strong>探索体系 →</strong></a>)}</div></section>
+      <section class="home-section"><SectionHeading eyebrow="SELECTED WORK" title="把学习做成作品" href="/portfolio/" link="全部作品"/><div class="home-projects">{featuredWorks.map((work,i)=><a class:list={['home-project',{'is-featured':i===0}]} href={work.path}><div class="home-project__cover">{work.cover && <img src={work.cover} alt={`${work.title}项目预览`} width="1000" height="650" loading="lazy"/>}</div><div class="home-project__body"><small>PROJECT {String(i+1).padStart(2,'0')}</small><h3>{work.title}</h3><p>{work.description}</p><strong>阅读项目复盘 →</strong></div></a>)}</div></section>
+      <section class="home-author"><div><p class="public-eyebrow">ABOUT THE AUTHOR</p><span aria-hidden="true">✦</span></div><div><h2>{profile.displayName}</h2><p>{profile.headline}</p><a href="/about/">认识作者与这套知识系统 →</a></div></section>
+    </div>
+  </div>
+</BaseLayout>

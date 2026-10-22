@@ -1,0 +1,376 @@
+{
+  "slug": "agent-fundamentals",
+  "title": "Agent 基础与从零构建",
+  "description": "Python Agent 工程基础、LLM 调用、Agent 原理与从零实现 MiniAgent。",
+  "category": "智能体开发知识体系",
+  "categorySlug": "484381842269",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 42,
+  "wordCount": 0,
+  "categoryId": "4",
+  "groups": [
+    {
+      "title": "AI Coding 与 Python 工程基础",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "AI Coding 工作流：需求分析、计划、实现、验证与复盘",
+          "description": "AI Coding 工作流：需求分析、计划、实现、验证与复盘",
+          "path": "/tutorials/agent-fundamentals/1-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "Codex、Claude Code 等编程智能体的使用",
+          "description": "Codex、Claude Code 等编程智能体的使用",
+          "path": "/tutorials/agent-fundamentals/1-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-3",
+          "title": "项目上下文：README、AGENTS.md、规则文件与 Skills",
+          "description": "项目上下文：README、AGENTS.md、规则文件与 Skills",
+          "path": "/tutorials/agent-fundamentals/1-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-4",
+          "title": "需求拆分、任务边界、验收标准与影响范围审查",
+          "description": "需求拆分、任务边界、验收标准与影响范围审查",
+          "path": "/tutorials/agent-fundamentals/1-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-5",
+          "title": "Python 项目结构、模块、包与导入",
+          "description": "Python 项目结构、模块、包与导入",
+          "path": "/tutorials/agent-fundamentals/1-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-6",
+          "title": "虚拟环境、uv、依赖管理、锁文件与项目配置",
+          "description": "虚拟环境、uv、依赖管理、锁文件与项目配置",
+          "path": "/tutorials/agent-fundamentals/1-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-7",
+          "title": "类型标注、dataclass、Pydantic 与数据校验",
+          "description": "类型标注、dataclass、Pydantic 与数据校验",
+          "path": "/tutorials/agent-fundamentals/1-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-8",
+          "title": "异步编程：async/await、asyncio、并发与任务取消",
+          "description": "异步编程：async/await、asyncio、并发与任务取消",
+          "path": "/tutorials/agent-fundamentals/1-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-9",
+          "title": "HTTP 客户端、FastAPI、REST、SSE 与流式响应",
+          "description": "HTTP 客户端、FastAPI、REST、SSE 与流式响应",
+          "path": "/tutorials/agent-fundamentals/1-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-10",
+          "title": "异常处理、日志、环境变量、密钥管理与配置分层",
+          "description": "异常处理、日志、环境变量、密钥管理与配置分层",
+          "path": "/tutorials/agent-fundamentals/1-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-11",
+          "title": "pytest、Mock、单元测试、集成测试与回归验证",
+          "description": "pytest、Mock、单元测试、集成测试与回归验证",
+          "path": "/tutorials/agent-fundamentals/1-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-12",
+          "title": "Git、代码格式化、Lint、静态类型检查与 AI 生成代码审查",
+          "description": "Git、代码格式化、Lint、静态类型检查与 AI 生成代码审查",
+          "path": "/tutorials/agent-fundamentals/1-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "大模型 API 与应用基础",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "LLM、模型供应商、模型 API 与 Provider 抽象",
+          "description": "LLM、模型供应商、模型 API 与 Provider 抽象",
+          "path": "/tutorials/agent-fundamentals/2-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "消息角色、上下文窗口、Token、延迟与调用成本",
+          "description": "消息角色、上下文窗口、Token、延迟与调用成本",
+          "path": "/tutorials/agent-fundamentals/2-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "Prompt 结构、指令层级、模板、Few-shot 与边界案例",
+          "description": "Prompt 结构、指令层级、模板、Few-shot 与边界案例",
+          "path": "/tutorials/agent-fundamentals/2-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-4",
+          "title": "结构化输出、JSON Schema、Pydantic 与结果校验",
+          "description": "结构化输出、JSON Schema、Pydantic 与结果校验",
+          "path": "/tutorials/agent-fundamentals/2-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-5",
+          "title": "Function Calling / Tool Calling 的请求、响应与执行流程",
+          "description": "Function Calling / Tool Calling 的请求、响应与执行流程",
+          "path": "/tutorials/agent-fundamentals/2-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-6",
+          "title": "流式输出、超时、取消、限流、有限重试与退避",
+          "description": "流式输出、超时、取消、限流、有限重试与退避",
+          "path": "/tutorials/agent-fundamentals/2-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-7",
+          "title": "模型能力差异、模型选择、路由与供应商切换",
+          "description": "模型能力差异、模型选择、路由与供应商切换",
+          "path": "/tutorials/agent-fundamentals/2-7/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Agent 核心概念与设计范式",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "Agent 的定义、发展脉络、类型与典型应用场景",
+          "description": "Agent 的定义、发展脉络、类型与典型应用场景",
+          "path": "/tutorials/agent-fundamentals/3-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "Agent 的基本架构：模型、指令、工具、上下文、状态与运行时",
+          "description": "Agent 的基本架构：模型、指令、工具、上下文、状态与运行时",
+          "path": "/tutorials/agent-fundamentals/3-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "Chatbot、普通程序、Workflow 与 Agent 的区别",
+          "description": "Chatbot、普通程序、Workflow 与 Agent 的区别",
+          "path": "/tutorials/agent-fundamentals/3-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "Agent Loop：感知、决策、行动、观察与终止",
+          "description": "Agent Loop：感知、决策、行动、观察与终止",
+          "path": "/tutorials/agent-fundamentals/3-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-5",
+          "title": "ReAct：推理与行动循环",
+          "description": "ReAct：推理与行动循环",
+          "path": "/tutorials/agent-fundamentals/3-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-6",
+          "title": "Plan-and-Execute：规划、执行、反馈与重规划",
+          "description": "Plan-and-Execute：规划、执行、反馈与重规划",
+          "path": "/tutorials/agent-fundamentals/3-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-7",
+          "title": "Reflection、Router、任务分解与结果验证",
+          "description": "Reflection、Router、任务分解与结果验证",
+          "path": "/tutorials/agent-fundamentals/3-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-8",
+          "title": "单智能体、多智能体与确定性工作流的选型原则",
+          "description": "单智能体、多智能体与确定性工作流的选型原则",
+          "path": "/tutorials/agent-fundamentals/3-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-9",
+          "title": "何时不需要 Agent：以简单、可控、可验证为优先",
+          "description": "何时不需要 Agent：以简单、可控、可验证为优先",
+          "path": "/tutorials/agent-fundamentals/3-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "从零实现 MiniAgent Runtime",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "MiniAgent 的需求、边界与最小架构",
+          "description": "MiniAgent 的需求、边界与最小架构",
+          "path": "/tutorials/agent-fundamentals/4-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "Model Adapter：统一模型调用接口",
+          "description": "Model Adapter：统一模型调用接口",
+          "path": "/tutorials/agent-fundamentals/4-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-3",
+          "title": "Message Model：消息、工具请求、工具结果与最终回答",
+          "description": "Message Model：消息、工具请求、工具结果与最终回答",
+          "path": "/tutorials/agent-fundamentals/4-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-4",
+          "title": "Tool Schema 与 Tool Registry：工具描述、注册、发现与分发",
+          "description": "Tool Schema 与 Tool Registry：工具描述、注册、发现与分发",
+          "path": "/tutorials/agent-fundamentals/4-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-5",
+          "title": "Agent Loop：模型调用、工具执行、结果回传与循环终止",
+          "description": "Agent Loop：模型调用、工具执行、结果回传与循环终止",
+          "path": "/tutorials/agent-fundamentals/4-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-6",
+          "title": "参数校验、工具异常、模型错误与失败恢复",
+          "description": "参数校验、工具异常、模型错误与失败恢复",
+          "path": "/tutorials/agent-fundamentals/4-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-7",
+          "title": "最大步数、超时、Token、费用预算与无限循环防护",
+          "description": "最大步数、超时、Token、费用预算与无限循环防护",
+          "path": "/tutorials/agent-fundamentals/4-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-8",
+          "title": "运行事件、日志、执行轨迹与流式输出",
+          "description": "运行事件、日志、执行轨迹与流式输出",
+          "path": "/tutorials/agent-fundamentals/4-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-9",
+          "title": "模拟模型、自动化测试、调试与 MiniAgent 迭代",
+          "description": "模拟模型、自动化测试、调试与 MiniAgent 迭代",
+          "path": "/tutorials/agent-fundamentals/4-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "工具系统与执行控制",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "工具设计：单一职责、清晰描述、参数模式与稳定返回值",
+          "description": "工具设计：单一职责、清晰描述、参数模式与稳定返回值",
+          "path": "/tutorials/agent-fundamentals/5-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "只读工具、写入工具、副作用与高风险操作",
+          "description": "只读工具、写入工具、副作用与高风险操作",
+          "path": "/tutorials/agent-fundamentals/5-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "工具权限、白名单、身份传递与最小权限",
+          "description": "工具权限、白名单、身份传递与最小权限",
+          "path": "/tutorials/agent-fundamentals/5-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "工具超时、重试、幂等、并发控制与速率限制",
+          "description": "工具超时、重试、幂等、并发控制与速率限制",
+          "path": "/tutorials/agent-fundamentals/5-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "工具结果验证、错误语义、审计日志与可追溯执行",
+          "description": "工具结果验证、错误语义、审计日志与可追溯执行",
+          "path": "/tutorials/agent-fundamentals/5-5/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/agent-fundamentals/",
+  "sortOrder": 22
+}

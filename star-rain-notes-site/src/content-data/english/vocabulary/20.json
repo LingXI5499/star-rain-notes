@@ -1,0 +1,1080 @@
+{
+  "id": "20",
+  "title": "交通 / 出行",
+  "layer": "核心生活场景层",
+  "wordCount": 119,
+  "path": "/english/vocabulary/20/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可用的；可获得的",
+      "examples": "[]"
+    },
+    {
+      "word": "private",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'praɪvət",
+      "phoneticUk": "'praɪvət",
+      "translation": "私人的；私下的；私人的",
+      "sceneMeaning": "私人的",
+      "examples": "[]"
+    },
+    {
+      "word": "able",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ebl",
+      "phoneticUk": "'eɪb(ə)l",
+      "translation": "有能力的；出色的",
+      "sceneMeaning": "有能力的；出色的",
+      "examples": "[]"
+    },
+    {
+      "word": "car",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɑr",
+      "phoneticUk": "kɑː",
+      "translation": "汽车，小汽车，轿车",
+      "sceneMeaning": "汽车",
+      "examples": "[]"
+    },
+    {
+      "word": "change",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃendʒ",
+      "phoneticUk": "tʃeɪn(d)ʒ",
+      "translation": "改变，变化；零钱",
+      "sceneMeaning": "换乘；改变",
+      "examples": "[]"
+    },
+    {
+      "word": "come",
+      "partOfSpeech": "v",
+      "phoneticUs": "kʌm",
+      "phoneticUk": "kʌm",
+      "translation": "来，来到；出现",
+      "sceneMeaning": "来",
+      "examples": "[]"
+    },
+    {
+      "word": "director",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪˈrɛktɚ; daɪˈrɛktɚ",
+      "phoneticUk": "dɪ'rektə; daɪ-",
+      "translation": "指导者；理事；导演",
+      "sceneMeaning": "指导者；理事；导演",
+      "examples": "[]"
+    },
+    {
+      "word": "fast",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "fæst",
+      "phoneticUk": "fɑːst",
+      "translation": "快的；偏快的；快",
+      "sceneMeaning": "快的",
+      "examples": "[]"
+    },
+    {
+      "word": "follow",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fɑlo",
+      "phoneticUk": "'fɒləʊ",
+      "translation": "跟随；结果是",
+      "sceneMeaning": "跟随；遵循",
+      "examples": "[]"
+    },
+    {
+      "word": "following",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɑloɪŋ",
+      "phoneticUk": "'fɒləʊɪŋ",
+      "translation": "接着的；下列的",
+      "sceneMeaning": "接着的；下列的",
+      "examples": "[]"
+    },
+    {
+      "word": "go",
+      "partOfSpeech": "v",
+      "phoneticUs": "go",
+      "phoneticUk": "gəʊ",
+      "translation": "去；走；变为",
+      "sceneMeaning": "去；走",
+      "examples": "[]"
+    },
+    {
+      "word": "guess",
+      "partOfSpeech": "vt&vi&n",
+      "phoneticUs": "ɡɛs",
+      "phoneticUk": "ges",
+      "translation": "猜测，推测",
+      "sceneMeaning": "猜测，推测",
+      "examples": "[]"
+    },
+    {
+      "word": "leave",
+      "partOfSpeech": "v",
+      "phoneticUs": "liv",
+      "phoneticUk": "liːv",
+      "translation": "离去；离开",
+      "sceneMeaning": "离开；留下",
+      "examples": "[]"
+    },
+    {
+      "word": "local",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈloʊkl",
+      "phoneticUk": "'ləʊk(ə)l",
+      "translation": "地方的；局部的",
+      "sceneMeaning": "本地的",
+      "examples": "[]"
+    },
+    {
+      "word": "park",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɑrk",
+      "phoneticUk": "pɑːk",
+      "translation": "公园；停车场",
+      "sceneMeaning": "停车",
+      "examples": "[]"
+    },
+    {
+      "word": "public",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'pʌblɪk",
+      "phoneticUk": "'pʌblɪk",
+      "translation": "公众的；公众",
+      "sceneMeaning": "公共的",
+      "examples": "[]"
+    },
+    {
+      "word": "ready",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɛdi",
+      "phoneticUk": "'redɪ",
+      "translation": "准备好的；愿意的",
+      "sceneMeaning": "准备好的；愿意的；本场景常见用法：待发运",
+      "examples": "[]"
+    },
+    {
+      "word": "sign",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪn",
+      "phoneticUk": "saɪn",
+      "translation": "符号；招牌；签名",
+      "sceneMeaning": "标志；符号",
+      "examples": "[]"
+    },
+    {
+      "word": "solar",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'solɚ",
+      "phoneticUk": "'səʊlə",
+      "translation": "太阳的，日光的",
+      "sceneMeaning": "太阳的，日光的；本场景常见用法：日全食",
+      "examples": "[]"
+    },
+    {
+      "word": "bus",
+      "partOfSpeech": "n",
+      "phoneticUs": "bʌs",
+      "phoneticUk": "bʌs",
+      "translation": "公共汽车",
+      "sceneMeaning": "公共汽车",
+      "examples": "[]"
+    },
+    {
+      "word": "drive",
+      "partOfSpeech": "v",
+      "phoneticUs": "draɪv",
+      "phoneticUk": "draɪv",
+      "translation": "驾驶；打入；驱",
+      "sceneMeaning": "驾驶",
+      "examples": "[]"
+    },
+    {
+      "word": "traffic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'træfɪk",
+      "phoneticUk": "'træfɪk",
+      "translation": "交通，通行；交通量",
+      "sceneMeaning": "交通；车流",
+      "examples": "[]"
+    },
+    {
+      "word": "card",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɑrd",
+      "phoneticUk": "kɑːd",
+      "translation": "卡，卡片，名片",
+      "sceneMeaning": "卡；交通卡",
+      "examples": "[]"
+    },
+    {
+      "word": "directly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "dəˈrektli",
+      "phoneticUk": "dɪ'rektlɪ; daɪ-",
+      "translation": "直接地；立即",
+      "sceneMeaning": "直接地",
+      "examples": "[]"
+    },
+    {
+      "word": "line",
+      "partOfSpeech": "n",
+      "phoneticUs": "laɪn",
+      "phoneticUk": "laɪn",
+      "translation": "线；排；路线；线条",
+      "sceneMeaning": "线路；线",
+      "examples": "[]"
+    },
+    {
+      "word": "limit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪmɪt",
+      "phoneticUk": "'lɪmɪt",
+      "translation": "限度；限制；范围",
+      "sceneMeaning": "限制；限度",
+      "examples": "[]"
+    },
+    {
+      "word": "accident",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æksədənt",
+      "phoneticUk": "'æksɪdənt",
+      "translation": "意外的；事故",
+      "sceneMeaning": "事故",
+      "examples": "[]"
+    },
+    {
+      "word": "bicycle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'baɪsɪkl",
+      "phoneticUk": "'baɪsɪkl",
+      "translation": "自行车，脚踏车",
+      "sceneMeaning": "自行车",
+      "examples": "[]"
+    },
+    {
+      "word": "bike",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "baɪk",
+      "phoneticUk": "baɪk",
+      "translation": "自行车；骑自行车",
+      "sceneMeaning": "自行车；摩托车",
+      "examples": "[]"
+    },
+    {
+      "word": "direct",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪˈrɛkt; daɪˈrɛkt",
+      "phoneticUk": "dəˈrekt; daɪˈrekt",
+      "translation": "直接的；直率的",
+      "sceneMeaning": "直接的",
+      "examples": "[]"
+    },
+    {
+      "word": "pass",
+      "partOfSpeech": "v",
+      "phoneticUs": "pæs",
+      "phoneticUk": "pɑːs",
+      "translation": "经过；通过；度过",
+      "sceneMeaning": "通行证；月票",
+      "examples": "[]"
+    },
+    {
+      "word": "passage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pæsɪdʒ",
+      "phoneticUk": "'pæsɪdʒ",
+      "translation": "通过；通路，通道",
+      "sceneMeaning": "通过；通路，通道；本场景常见用法：安全通行，安全通道",
+      "examples": "[]"
+    },
+    {
+      "word": "transfer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "træns'fɝ",
+      "phoneticUk": "træns'fɜː; trɑːns-; -nz-",
+      "translation": "转移；调动vi转移；转换，调换",
+      "sceneMeaning": "换乘；转移",
+      "examples": "[]"
+    },
+    {
+      "word": "transportation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",trænspɔr'teʃən",
+      "phoneticUk": "trænspɔː'teɪʃ(ə)n; trɑːns-",
+      "translation": "运输，运送，客运；运输",
+      "sceneMeaning": "交通运输",
+      "examples": "[]"
+    },
+    {
+      "word": "arrive",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'raɪv",
+      "phoneticUk": "ə'raɪv",
+      "translation": "到达；来临；达到",
+      "sceneMeaning": "到达",
+      "examples": "[]"
+    },
+    {
+      "word": "board",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bɔrd",
+      "phoneticUk": "bɔːd",
+      "translation": "板；上(船、车等)",
+      "sceneMeaning": "上车；登机",
+      "examples": "[]"
+    },
+    {
+      "word": "bridge",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɪdʒ",
+      "phoneticUk": "brɪdʒ",
+      "translation": "桥，桥梁；桥牌",
+      "sceneMeaning": "桥",
+      "examples": "[]"
+    },
+    {
+      "word": "dangerous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dendʒərəs",
+      "phoneticUk": "'deɪn(d)ʒ(ə)rəs",
+      "translation": "危险的，不安全的",
+      "sceneMeaning": "危险的",
+      "examples": "[]"
+    },
+    {
+      "word": "distance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪstəns",
+      "phoneticUk": "'dɪst(ə)ns",
+      "translation": "距离，间距；远处；距离",
+      "sceneMeaning": "距离",
+      "examples": "[]"
+    },
+    {
+      "word": "efficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃnt",
+      "phoneticUk": "ɪ'fɪʃ(ə)nt",
+      "translation": "效率高的，有能力的",
+      "sceneMeaning": "高效的",
+      "examples": "[]"
+    },
+    {
+      "word": "fuel",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fjuəl",
+      "phoneticUk": "fjʊəl",
+      "translation": "燃料；给…加燃料",
+      "sceneMeaning": "燃料",
+      "examples": "[]"
+    },
+    {
+      "word": "journey",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɝni",
+      "phoneticUk": "'dʒɜːnɪ",
+      "translation": "旅行，旅程；旅行",
+      "sceneMeaning": "旅程",
+      "examples": "[]"
+    },
+    {
+      "word": "launch",
+      "partOfSpeech": "v",
+      "phoneticUs": "lɔntʃ",
+      "phoneticUk": "lɔːntʃ",
+      "translation": "发射，投射；发动；发动",
+      "sceneMeaning": "发射，投射；发动；发动",
+      "examples": "[]"
+    },
+    {
+      "word": "platform",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plæt'fɔrm",
+      "phoneticUk": "'plætfɔːm",
+      "translation": "平台；站台；讲台",
+      "sceneMeaning": "站台；平台",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "时刻表；日程",
+      "examples": "[]"
+    },
+    {
+      "word": "signal",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'sɪgnl",
+      "phoneticUk": "'sɪgn(ə)l",
+      "translation": "信号；发信号；发信号，打信号；示意",
+      "sceneMeaning": "信号",
+      "examples": "[]"
+    },
+    {
+      "word": "terminal",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈtɜːrmɪnl",
+      "phoneticUk": "'tɜːmɪn(ə)l",
+      "translation": "末端的；末端；终点站，航空站",
+      "sceneMeaning": "终点站；航站楼",
+      "examples": "[]"
+    },
+    {
+      "word": "urban",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɝbən",
+      "phoneticUk": "'ɜːb(ə)n",
+      "translation": "a.；都市的,住在都市的",
+      "sceneMeaning": "城市的",
+      "examples": "[]"
+    },
+    {
+      "word": "vehicle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'viːɪkl",
+      "phoneticUk": "ˈviːɪk(ə)l",
+      "translation": "车辆，机动车；车辆",
+      "sceneMeaning": "车辆；交通工具",
+      "examples": "[]"
+    },
+    {
+      "word": "delay",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'le",
+      "phoneticUk": "dɪ'leɪ",
+      "translation": "推迟；耽搁；延误；推迟，延期",
+      "sceneMeaning": "延误；推迟",
+      "examples": "[]"
+    },
+    {
+      "word": "driver",
+      "partOfSpeech": "n",
+      "phoneticUs": "'draɪvɚ",
+      "phoneticUk": "'draɪvə",
+      "translation": "驾驶员，司机",
+      "sceneMeaning": "司机",
+      "examples": "[]"
+    },
+    {
+      "word": "fare",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɛr",
+      "phoneticUk": "feə",
+      "translation": "车费，船费，票价",
+      "sceneMeaning": "车费；票价",
+      "examples": "[]"
+    },
+    {
+      "word": "plane",
+      "partOfSpeech": "n",
+      "phoneticUs": "plen",
+      "phoneticUk": "pleɪn",
+      "translation": "平面；飞机",
+      "sceneMeaning": "飞机",
+      "examples": "[]"
+    },
+    {
+      "word": "rural",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rʊrəl",
+      "phoneticUk": "'rʊər(ə)l",
+      "translation": "农村的，田园的",
+      "sceneMeaning": "乡村的",
+      "examples": "[]"
+    },
+    {
+      "word": "Atlantic",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ət'læntɪk",
+      "phoneticUk": "æt'læntɪk",
+      "translation": "大西洋的；大西洋",
+      "sceneMeaning": "大西洋的；大西洋",
+      "examples": "[]"
+    },
+    {
+      "word": "convenient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'vinɪənt",
+      "phoneticUk": "kən'viːnɪənt",
+      "translation": "便利的；近便的；方便的",
+      "sceneMeaning": "方便的",
+      "examples": "[]"
+    },
+    {
+      "word": "cycle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'saɪkl",
+      "phoneticUk": "'saɪk(ə)l",
+      "translation": "n自行车，循环",
+      "sceneMeaning": "骑自行车；循环",
+      "examples": "[]"
+    },
+    {
+      "word": "gear",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡɪr",
+      "phoneticUk": "ɡɪə(r)",
+      "translation": "齿轮；使合适",
+      "sceneMeaning": "齿轮；使合适",
+      "examples": "[]"
+    },
+    {
+      "word": "highway",
+      "partOfSpeech": "n",
+      "phoneticUs": "'haɪwe",
+      "phoneticUk": "'haɪweɪ",
+      "translation": "公路；大路",
+      "sceneMeaning": "公路；高速路",
+      "examples": "[]"
+    },
+    {
+      "word": "motor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'motɚ",
+      "phoneticUk": "'məʊtə",
+      "translation": "发动机；机动车",
+      "sceneMeaning": "发动机；机动车；本场景常见用法：汽车；机动车辆",
+      "examples": "[]"
+    },
+    {
+      "word": "overtake",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ovɚ'tek",
+      "phoneticUk": "əʊvə'teɪk",
+      "translation": "追上，赶上；压倒；超车",
+      "sceneMeaning": "追上，赶上；压倒；超车",
+      "examples": "[]"
+    },
+    {
+      "word": "sail",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sel",
+      "phoneticUk": "seɪl",
+      "translation": "帆；船；航行",
+      "sceneMeaning": "帆；船；航行；本场景常见用法：行船；驾船",
+      "examples": "[]"
+    },
+    {
+      "word": "swift",
+      "partOfSpeech": "adj",
+      "phoneticUs": "swɪft",
+      "phoneticUk": "swɪft",
+      "translation": "快的；反应快的；迅速的",
+      "sceneMeaning": "快的；反应快的；迅速的",
+      "examples": "[]"
+    },
+    {
+      "word": "transport",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'trænspɔrt",
+      "phoneticUk": "træn'spɔːt; trɑːn-",
+      "translation": "运输",
+      "sceneMeaning": "交通；运输",
+      "examples": "[]"
+    },
+    {
+      "word": "airplane",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈerpleɪn",
+      "phoneticUk": "'eəpleɪn",
+      "translation": "飞机",
+      "sceneMeaning": "飞机",
+      "examples": "[]"
+    },
+    {
+      "word": "destination",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɛstɪ'neʃən",
+      "phoneticUk": ",destɪ'neɪʃ(ə)n",
+      "translation": "目的地，终点；目标",
+      "sceneMeaning": "目的地",
+      "examples": "[]"
+    },
+    {
+      "word": "direction",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "方向，方位；指导",
+      "sceneMeaning": "方向；指示",
+      "examples": "[]"
+    },
+    {
+      "word": "duration",
+      "partOfSpeech": "n",
+      "phoneticUs": "du'reʃən",
+      "phoneticUk": "djʊ'reɪʃ(ə)n",
+      "translation": "持续，持久",
+      "sceneMeaning": "持续时间；时长",
+      "examples": "[]"
+    },
+    {
+      "word": "gasoline",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gæsəlin",
+      "phoneticUk": "'gæsəliːn",
+      "translation": "(美)汽油",
+      "sceneMeaning": "汽油",
+      "examples": "[]"
+    },
+    {
+      "word": "helicopter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛlɪkɑptɚ",
+      "phoneticUk": "'helɪkɒptə",
+      "translation": "直升机",
+      "sceneMeaning": "直升机",
+      "examples": "[]"
+    },
+    {
+      "word": "jam",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒæm",
+      "phoneticUk": "dʒæm",
+      "translation": "果酱",
+      "sceneMeaning": "堵塞；果酱",
+      "examples": "[]"
+    },
+    {
+      "word": "locate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈloˌket; loˈket",
+      "phoneticUk": "lə(ʊ)'keɪt",
+      "translation": "探明，找出，查出；位于，定位",
+      "sceneMeaning": "定位；位于",
+      "examples": "[]"
+    },
+    {
+      "word": "location",
+      "partOfSpeech": "n",
+      "phoneticUs": "lo'keʃən",
+      "phoneticUk": "lə(ʊ)'keɪʃ(ə)n",
+      "translation": "位置，场所",
+      "sceneMeaning": "位置；地点",
+      "examples": "[]"
+    },
+    {
+      "word": "panel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pænl",
+      "phoneticUk": "'pæn(ə)l",
+      "translation": "专门小组；面，板",
+      "sceneMeaning": "专门小组；面，板；本场景常见用法：等离子显示板",
+      "examples": "[]"
+    },
+    {
+      "word": "passenger",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pæsɪndʒɚ",
+      "phoneticUk": "'pæsɪndʒə",
+      "translation": "乘客，旅客，过路人",
+      "sceneMeaning": "乘客",
+      "examples": "[]"
+    },
+    {
+      "word": "petrol",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɛtrəl",
+      "phoneticUk": "'petr(ə)l",
+      "translation": "(英)汽油",
+      "sceneMeaning": "(英)汽油；本场景常见用法：n. 加油站",
+      "examples": "[]"
+    },
+    {
+      "word": "railroad",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'relrod",
+      "phoneticUk": "'reɪlrəʊd",
+      "translation": "铁路；由铁路运输",
+      "sceneMeaning": "铁路；由铁路运输；本场景常见用法：铁路穿越；铁路公路交叉道口；铁路平交道",
+      "examples": "[]"
+    },
+    {
+      "word": "spacecraft",
+      "partOfSpeech": "n",
+      "phoneticUs": "'speskræft",
+      "phoneticUk": "'speɪskrɑːft",
+      "translation": "航天器，宇宙飞船",
+      "sceneMeaning": "航天器，宇宙飞船；本场景常见用法：载人飞船；人操纵的宇宙飞船",
+      "examples": "[]"
+    },
+    {
+      "word": "steer",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "stɪr",
+      "phoneticUk": "stɪə",
+      "translation": "驾驶",
+      "sceneMeaning": "驾驶",
+      "examples": "[]"
+    },
+    {
+      "word": "surf",
+      "partOfSpeech": "v",
+      "phoneticUs": "sɝf",
+      "phoneticUk": "sɜ:f",
+      "translation": "冲浪",
+      "sceneMeaning": "冲浪",
+      "examples": "[]"
+    },
+    {
+      "word": "aboard",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'bɔrd",
+      "phoneticUk": "ə'bɔːd",
+      "translation": "在船(车)上；上船",
+      "sceneMeaning": "在船(车)上；上船；本场景常见用法：上船；上飞机",
+      "examples": "[]"
+    },
+    {
+      "word": "accessible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ək'sɛsəbl",
+      "phoneticUk": "əkˈsesəbl",
+      "translation": "易接近的",
+      "sceneMeaning": "可到达的；可使用的",
+      "examples": "[]"
+    },
+    {
+      "word": "accidental",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",æksɪ'dɛntl",
+      "phoneticUk": "æksɪ'dent(ə)l",
+      "translation": "偶然的；非本质的",
+      "sceneMeaning": "偶然的；非本质的",
+      "examples": "[]"
+    },
+    {
+      "word": "aeroplane",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛrə'plen",
+      "phoneticUk": "'eərəpleɪn",
+      "translation": "飞机",
+      "sceneMeaning": "飞机",
+      "examples": "[]"
+    },
+    {
+      "word": "aircraft",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛr'kræft",
+      "phoneticUk": "'eəkrɑːft",
+      "translation": "飞机，飞行器",
+      "sceneMeaning": "飞机，飞行器；本场景常见用法：客机",
+      "examples": "[]"
+    },
+    {
+      "word": "airline",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛrlaɪn",
+      "phoneticUk": "'eəlaɪn",
+      "translation": "航空公司；航线",
+      "sceneMeaning": "航空公司；航线；本场景常见用法：飞机票",
+      "examples": "[]"
+    },
+    {
+      "word": "avenue",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ævənu",
+      "phoneticUk": "'æv(ə)njuː",
+      "translation": "林荫道，道路；大街",
+      "sceneMeaning": "大街；途径",
+      "examples": "[]"
+    },
+    {
+      "word": "boat",
+      "partOfSpeech": "n",
+      "phoneticUs": "bot",
+      "phoneticUk": "bəʊt",
+      "translation": "小船，艇；渔船",
+      "sceneMeaning": "船；小船",
+      "examples": "[]"
+    },
+    {
+      "word": "canal",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'næl",
+      "phoneticUk": "kə'næl",
+      "translation": "运河；沟渠；管",
+      "sceneMeaning": "运河；沟渠；管；本场景常见用法：消化道",
+      "examples": "[]"
+    },
+    {
+      "word": "collision",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'lɪʒən",
+      "phoneticUk": "kə'lɪʒ(ə)n",
+      "translation": "碰撞；冲突；冲突，抵触",
+      "sceneMeaning": "碰撞；冲突；冲突，抵触",
+      "examples": "[]"
+    },
+    {
+      "word": "conspicuous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'spɪkjʊəs",
+      "phoneticUk": "kən'spɪkjʊəs",
+      "translation": "显著地",
+      "sceneMeaning": "显著地",
+      "examples": "[]"
+    },
+    {
+      "word": "crash",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kræʃ",
+      "phoneticUk": "kræʃ",
+      "translation": "碰撞，坠落；碰撞；坠落;坠毁;撞击；〔汽车的〕撞车事故；〔飞机的〕坠毁，失事",
+      "sceneMeaning": "撞车；崩溃",
+      "examples": "[]"
+    },
+    {
+      "word": "cross",
+      "partOfSpeech": "v",
+      "phoneticUs": "krɔs",
+      "phoneticUk": "krɒs",
+      "translation": "穿过；使交叉",
+      "sceneMeaning": "穿过；横过",
+      "examples": "[]"
+    },
+    {
+      "word": "depart",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'pɑrt",
+      "phoneticUk": "dɪ'pɑːt",
+      "translation": "离开，起程；出发",
+      "sceneMeaning": "出发；离开",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiently",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃəntli",
+      "phoneticUk": "i'fiʃəntli",
+      "translation": "有效地",
+      "sceneMeaning": "高效地",
+      "examples": "[]"
+    },
+    {
+      "word": "exile",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛksaɪl",
+      "phoneticUk": "'eksaɪl",
+      "translation": "流放，放逐",
+      "sceneMeaning": "流放，放逐",
+      "examples": "[]"
+    },
+    {
+      "word": "fasten",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fæsən",
+      "phoneticUk": "'fɑːs(ə)n",
+      "translation": "扎牢，扣住",
+      "sceneMeaning": "扎牢，扣住",
+      "examples": "[]"
+    },
+    {
+      "word": "garage",
+      "partOfSpeech": "n",
+      "phoneticUs": "gəˈrɑʒ; gəˈrɑdʒ",
+      "phoneticUk": "'gærɑː(d)ʒ; -ɪdʒ; gə'rɑːʒ",
+      "translation": "车库；加油站；车库",
+      "sceneMeaning": "车库；修车厂",
+      "examples": "[]"
+    },
+    {
+      "word": "hillside",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɪl'saɪd",
+      "phoneticUk": "'hɪlsaɪd",
+      "translation": "(小山)山腰，山坡",
+      "sceneMeaning": "(小山)山腰，山坡",
+      "examples": "[]"
+    },
+    {
+      "word": "inefficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪnɪ'fɪʃnt",
+      "phoneticUk": "ɪnɪ'fɪʃ(ə)nt",
+      "translation": "效率低的，无能的",
+      "sceneMeaning": "效率低的，无能的",
+      "examples": "[]"
+    },
+    {
+      "word": "jet",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒɛt",
+      "phoneticUk": "jɛt",
+      "translation": "喷气式飞机；喷嘴",
+      "sceneMeaning": "喷气式飞机；喷嘴；本场景常见用法：喷气式飞机",
+      "examples": "[]"
+    },
+    {
+      "word": "lane",
+      "partOfSpeech": "n",
+      "phoneticUs": "len",
+      "phoneticUk": "leɪn",
+      "translation": "(乡间)小路；跑道",
+      "sceneMeaning": "车道；小巷",
+      "examples": "[]"
+    },
+    {
+      "word": "license",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'laɪsns",
+      "phoneticUk": "'laɪsns",
+      "translation": "许可；执照；准许",
+      "sceneMeaning": "执照；许可证",
+      "examples": "[]"
+    },
+    {
+      "word": "liner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'laɪnɚ",
+      "phoneticUk": "'laɪnə",
+      "translation": "班船，班机",
+      "sceneMeaning": "班船，班机；本场景常见用法：n. 定期客船",
+      "examples": "[]"
+    },
+    {
+      "word": "lorry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɔri",
+      "phoneticUk": "'lɒrɪ",
+      "translation": "运货汽车，卡车",
+      "sceneMeaning": "运货汽车，卡车；本场景常见用法：卡车司机",
+      "examples": "[]"
+    },
+    {
+      "word": "map",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæp",
+      "phoneticUk": "mæp",
+      "translation": "地图；图；天体图",
+      "sceneMeaning": "地图",
+      "examples": "[]"
+    },
+    {
+      "word": "Marxist",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɑrksɪst",
+      "phoneticUk": "",
+      "translation": "马克思主义的",
+      "sceneMeaning": "马克思主义的",
+      "examples": "[]"
+    },
+    {
+      "word": "navigation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nævə'geʃən",
+      "phoneticUk": "nævɪ'geɪʃ(ə)n",
+      "translation": "航行；航海术；导航",
+      "sceneMeaning": "导航；航行",
+      "examples": "[]"
+    },
+    {
+      "word": "plural",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'plʊrəl",
+      "phoneticUk": "'plʊər(ə)l",
+      "translation": "复数的；复数",
+      "sceneMeaning": "复数的；复数",
+      "examples": "[]"
+    },
+    {
+      "word": "rail",
+      "partOfSpeech": "n",
+      "phoneticUs": "rel",
+      "phoneticUk": "reɪl",
+      "translation": "横条，横杆；铁轨",
+      "sceneMeaning": "横条，横杆；铁轨；本场景常见用法：城市轨道交通；铁路直达运输",
+      "examples": "[]"
+    },
+    {
+      "word": "railway",
+      "partOfSpeech": "n",
+      "phoneticUs": "'relwe",
+      "phoneticUk": "'reɪlweɪ",
+      "translation": "铁路，铁道",
+      "sceneMeaning": "铁路，铁道；本场景常见用法：公路铁路交叉口；铁路平交道口",
+      "examples": "[]"
+    },
+    {
+      "word": "refuel",
+      "partOfSpeech": "v",
+      "phoneticUs": "ri'fjʊəl",
+      "phoneticUk": "ˌri:'fju:əl",
+      "translation": "（给）加油，加燃料",
+      "sceneMeaning": "（给）加油，加燃料",
+      "examples": "[]"
+    },
+    {
+      "word": "route",
+      "partOfSpeech": "n",
+      "phoneticUs": "raʊt",
+      "phoneticUk": "ruːt",
+      "translation": "路，路线，路程",
+      "sceneMeaning": "路线",
+      "examples": "[]"
+    },
+    {
+      "word": "shortcut",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʃɔrt,kʌt",
+      "phoneticUk": "'ʃɔ:tkʌt",
+      "translation": "捷径，近路",
+      "sceneMeaning": "捷径，近路",
+      "examples": "[]"
+    },
+    {
+      "word": "subway",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sʌbwe",
+      "phoneticUk": "'sʌbweɪ",
+      "translation": "地道；地下铁路",
+      "sceneMeaning": "地铁；地下通道",
+      "examples": "[]"
+    },
+    {
+      "word": "tunnel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʌnl",
+      "phoneticUk": "'tʌnl",
+      "translation": "隧道，坑道，地道",
+      "sceneMeaning": "隧道",
+      "examples": "[]"
+    },
+    {
+      "word": "unload",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ʌn'lod",
+      "phoneticUk": "ʌn'ləʊd",
+      "translation": "卸(货)；卸货",
+      "sceneMeaning": "卸(货)；卸货",
+      "examples": "[]"
+    },
+    {
+      "word": "van",
+      "partOfSpeech": "n",
+      "phoneticUs": "væn",
+      "phoneticUk": "væn",
+      "translation": "大篷车，运货车",
+      "sceneMeaning": "货车；面包车",
+      "examples": "[]"
+    },
+    {
+      "word": "wheel",
+      "partOfSpeech": "n",
+      "phoneticUs": "wil",
+      "phoneticUk": "wiːl",
+      "translation": "轮，车轮",
+      "sceneMeaning": "轮，车轮",
+      "examples": "[]"
+    }
+  ]
+}

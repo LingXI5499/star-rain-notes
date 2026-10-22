@@ -1,0 +1,1721 @@
+<h2>一、先建立正确认知：数据库“共享”不等于“团队协作”</h2>
+<h3>1.1 三种经常被混为一谈的共享</h3>
+<p>假设团队在开发一个“知识管理 + AI 问答”系统，包含前端、Java API、Python Agent、数据库和缓存。</p>
+<table>
+<thead>
+<tr>
+<th>共享对象</th>
+<th>实际含义</th>
+<th>正确工具</th>
+<th>常见误区</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>源代码共享</strong></td>
+<td>所有人能获取同一份经过审查的代码</td>
+<td>Git、Pull Request</td>
+<td>共享数据库不会同步代码</td>
+</tr>
+<tr>
+<td><strong>数据库结构共享</strong></td>
+<td>所有环境知道自己正在使用哪个 Schema 版本</td>
+<td>Flyway / Liquibase、SQL 迁移文件</td>
+<td>在 IDEA 手动建表，通知同事“你也加一下字段”</td>
+</tr>
+<tr>
+<td><strong>数据共享</strong></td>
+<td>团队针对一组受控测试数据开展联调</td>
+<td>集成环境数据库、测试数据集</td>
+<td>把所有开发人员的每次实验都塞进同一个数据库</td>
+</tr>
+</tbody>
+</table>
+<p><strong>一句话核心</strong>：数据库负责存储数据，Git 管理代码，数据库迁移工具管理结构变化，CI/CD 管理变化如何进入不同环境。</p>
+<h3>1.2 一个完整的软件交付链</h3>
+<pre><code>产品需求 / Issue
+       ↓
+开发者创建 feature/* 分支
+       ↓
+本地数据库 / 临时测试数据库
+       ↓
+提交代码 + 数据库迁移 SQL + 自动化测试
+       ↓
+Pull Request / Code Review
+       ↓
+CI：编译、单测、数据库集成测试、迁移校验
+       ↓
+合并主干
+       ↓
+共享 DEV / 集成环境自动迁移与联调
+       ↓
+TEST / QA 验收
+       ↓
+STAGING 预发布验证（接近生产）
+       ↓
+PROD：审批、备份、迁移、滚动发布、监控
+</code></pre>
+<p>日常开发中，<strong>可以有一个共享开发库，但它不是所有工作的唯一数据库</strong>。更成熟的做法是“个人隔离开发 + 自动化集成验证 + 共享联调环境”。</p>
+<h3>1.3 本文包含三种可选部署形态</h3>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>学习 / 演示</th>
+<th>小型研发团队</th>
+<th>企业生产</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据服务部署</td>
+<td>单台 ECS</td>
+<td>独立数据库 ECS / 托管服务</td>
+<td>托管 RDS、可用区冗余、容灾</td>
+</tr>
+<tr>
+<td>访问网络</td>
+<td>临时公网 + IP 白名单 + TLS</td>
+<td>VPC / VPN / 堡垒机</td>
+<td>私网、零信任、严格审计</td>
+</tr>
+<tr>
+<td>应用运行</td>
+<td>本地 IDEA / Python</td>
+<td>本地 + DEV 服务</td>
+<td>K8s / ECS / 容器或其他平台</td>
+</tr>
+<tr>
+<td>数据库账号</td>
+<td>独立开发账号</td>
+<td>成员账号 + 服务账号 + 迁移账号</td>
+<td>IAM 集成、凭据管理、自动轮换</td>
+</tr>
+<tr>
+<td>表结构变更</td>
+<td>SQL 文件入 Git</td>
+<td>Flyway + CI</td>
+<td>评审、灰度、可观测、可恢复</td>
+</tr>
+<tr>
+<td>备份</td>
+<td>手工备份</td>
+<td>定时备份与恢复测试</td>
+<td>RPO / RTO、PITR、异地容灾</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>决策优先级</strong>：先根据业务和团队规模选部署模式，再决定软件如何安装。安装成功只是起点，不是企业级的终点。</p>
+</blockquote>
+<h2>二、环境规划：CPU、内存、端口和产品选型</h2>
+<h3>2.1 这三类数据库究竟负责什么？</h3>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>数据模型</th>
+<th>擅长解决的问题</th>
+<th>常用默认端口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MySQL 8.4 LTS</td>
+<td>关系型</td>
+<td>业务表、事务、查询、经典 Java 后端</td>
+<td>3306</td>
+</tr>
+<tr>
+<td>PostgreSQL 17</td>
+<td>关系型 + JSONB 等</td>
+<td>复杂业务查询、GIS、JSONB、扩展生态</td>
+<td>5432</td>
+</tr>
+<tr>
+<td>pgvector</td>
+<td>PostgreSQL 扩展</td>
+<td>Embedding 存储、相似度查询、向量索引</td>
+<td>不单独监听端口</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>内存数据结构</td>
+<td>缓存、短期会话状态、计数、限流等</td>
+<td>6379</td>
+</tr>
+</tbody>
+</table>
+<p><strong>不要简单理解成“Python 必须用 PostgreSQL”或“AI 一定要 pgvector”</strong>。普通 LLM API 对话不要求向量库；文档检索、RAG、语义搜索、长期记忆才常常需要向量检索能力。MySQL 与 PostgreSQL 并非必须同时部署，两者可以是<strong>独立可选方案</strong>。</p>
+<h3>2.2 单台 2 GiB ECS 的边界</h3>
+<p>示例规格：2 vCPU、2 GiB RAM、40 GiB 系统盘。Linux 内可能显示约 1.8 GiB 可用物理内存，另有可能存在 Swap。</p>
+<p>建议：</p>
+<ol>
+<li>用来学习时可以分别安装 MySQL、Redis、PostgreSQL；<strong>不使用的重型数据库先停止</strong>。</li>
+<li>Redis 若仅作为轻量缓存，可先从 <code>128mb</code> 上限开始观察；<code>maxmemory</code> <strong>不等于进程的全部 RSS 内存上限</strong>。</li>
+<li>PostgreSQL 连接数、缓存、查询内存必须结合应用连接池调整；2 GiB 不适合高并发生产流量。</li>
+<li>Java、Python Agent、向量生成模型优先在开发电脑、其他计算实例或外部模型服务运行。</li>
+<li>数据量增长后，应把数据盘、备份、监控和计算资源分离；生产更推荐阿里云 RDS PostgreSQL/MySQL 等托管服务。</li>
+</ol>
+<h3>2.3 网络拓扑：优先选私网，公网直连只作为受控替代</h3>
+<p><strong>推荐：</strong></p>
+<pre><code>公司/开发者设备
+      │
+ VPN / SSO / 跳板机 / 堡垒机
+      │
+  阿里云 VPC 私有网络
+      ├─ API 服务（Java / Python）
+      ├─ PostgreSQL 或 MySQL（只开放私网）
+      └─ Redis（只开放私网）
+</code></pre>
+<p><strong>可用于临时教学演示的公网方案：</strong></p>
+<pre><code>开发者设备 --TLS--&gt; 具备公网 IP 的 ECS
+                          ├─ PostgreSQL : 5432
+                          └─ MySQL : 3306
+
+云安全组仅允许已批准的来源 IP /32；数据库仍要求账号认证、TLS。
+Redis 不应直接暴露到不可信公网。
+</code></pre>
+<p><em>补充</em>：<code>listen_addresses='*'</code> 或 <code>bind-address=0.0.0.0</code> 只是“服务监听所有网卡”，不是授权任意用户访问；数据库认证、Linux 防火墙、阿里云安全组是不同层次。</p>
+<h3>2.4 端口设计表</h3>
+<table>
+<thead>
+<tr>
+<th>端口</th>
+<th>服务</th>
+<th>开发环境</th>
+<th>生产环境建议</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TCP 22</td>
+<td>SSH</td>
+<td>仅授权管理来源</td>
+<td>通过堡垒机或可信管理网络</td>
+</tr>
+<tr>
+<td>TCP 3306</td>
+<td>MySQL</td>
+<td>私网优先，受控公网备选</td>
+<td>私网</td>
+</tr>
+<tr>
+<td>TCP 5432</td>
+<td>PostgreSQL</td>
+<td>私网优先，受控公网备选</td>
+<td>私网</td>
+</tr>
+<tr>
+<td>TCP 6379</td>
+<td>Redis</td>
+<td>回环 / VPC</td>
+<td>私网 + ACL / TLS（视产品和版本）</td>
+</tr>
+<tr>
+<td>TCP 80/443</td>
+<td>HTTP/HTTPS</td>
+<td>按应用需要开放</td>
+<td>通过 HTTPS、WAF/网关</td>
+</tr>
+<tr>
+<td>TCP 33060</td>
+<td>MySQL X Plugin</td>
+<td>用不到时可关闭</td>
+<td>按业务需求，勿无意公开</td>
+</tr>
+</tbody>
+</table>
+<h2>三、从零准备阿里云 ECS 与 Alibaba Cloud Linux 3</h2>
+<h3>3.1 在阿里云控制台创建实例</h3>
+<p>进入阿里云 ECS → 创建实例，按顺序选择：</p>
+<ol>
+<li>地域与可用区：靠近实际用户或团队的地域；生产应考虑多可用区。</li>
+<li>实例规格：实验可以 2 vCPU / 2 GiB；按负载估算生产规格。</li>
+<li>镜像：Alibaba Cloud Linux 3（64 位）。</li>
+<li>存储：系统盘与业务数据盘规划；生产尽量独立数据盘并启用云盘快照。</li>
+<li>网络：选择 VPC、交换机；仅教学公网直连才配置公网地址。</li>
+<li>登录认证：优先 SSH 密钥；若使用密码，设置高强度密码且不发送给他人。</li>
+<li>安全组：只配置必要入方向规则。<strong>不要为了“省事”开放所有端口。</strong></li>
+<li>创建后确认实例状态“运行中”，记录实例 ID、地域、私网 IP、公网 IP（若有），记录在团队的基础设施台账中，<strong>不要公开发布真实地址和凭据</strong>。</li>
+</ol>
+<p>本章使用通用示例：</p>
+<pre><code>操作系统：Alibaba Cloud Linux 3
+文档示例公网 IP：203.0.113.10
+示例可信办公出口：198.51.100.20/32
+SSH：22
+数据库开发环境名称：collab_dev
+</code></pre>
+<p>上面 <code>203.0.113.0/24</code>、<code>198.51.100.0/24</code> 是文档示例网段，不是真实服务地址。实际执行时需要替换为控制台显示的真实值。</p>
+<h3>3.2 安全组如何填</h3>
+<p>ECS → 网络与安全组 → 安全组 → 入方向：</p>
+<table>
+<thead>
+<tr>
+<th>优先级</th>
+<th>协议</th>
+<th>目的端口</th>
+<th>来源</th>
+<th>原因</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>TCP</td>
+<td>22</td>
+<td>已批准的办公 / VPN IP<code>/32</code>或 CIDR</td>
+<td>SSH 管理</td>
+</tr>
+<tr>
+<td>1</td>
+<td>TCP</td>
+<td>5432</td>
+<td>已批准的开发出口 IP<code>/32</code>（仅有公网直连需求时）</td>
+<td>PostgreSQL 访问</td>
+</tr>
+<tr>
+<td>1</td>
+<td>TCP</td>
+<td>3306</td>
+<td>已批准的开发出口 IP<code>/32</code>（仅有公网直连需求时）</td>
+<td>MySQL 访问</td>
+</tr>
+<tr>
+<td>—</td>
+<td>TCP</td>
+<td>6379</td>
+<td>不创建公网规则</td>
+<td>Redis 留在可信网络内</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><code>192.168.x.x</code> 一般是电脑的局域网地址，不是云安全组识别的公网出口地址。</li>
+<li><code>0.0.0.0/0</code> 表示<strong>所有 IPv4 来源</strong>，用于数据库管理端口会显著扩大攻击面，不适合作为企业默认配置。</li>
+<li>若开发人员公网 IP 不固定，推荐 VPN / 零信任接入 / 跳板机，而不是让安全组对全球开放。</li>
+<li>公网 IPv6 还要检查 IPv6 入方向规则，不能只看 IPv4。</li>
+</ul>
+<h3>3.3 使用 FinalShell 登录 Linux</h3>
+<p>在 Windows 打开 FinalShell，新增 SSH 连接：</p>
+<pre><code>连接名称：dev-db-ecs
+主机：&lt;ECS_PUBLIC_IP 或 PRIVATE_IP&gt;
+端口：22
+认证：SSH 私钥（推荐）/ 密码（临时实验）
+用户名：由云镜像与账户配置决定，例如 root 或非特权账户
+</code></pre>
+<p>首次连接时核验 SSH 主机指纹。连接失败按顺序查：主机地址 → 安全组 TCP 22 → 本地网络 → sshd → 操作系统防火墙 → 用户名/凭据。<strong>TCP timeout 与 Access denied 是不同故障阶段。</strong></p>
+<p>企业更建议为每位工程师创建独立 Linux 账号或接入集中身份管理，不共享 root 凭据。日常操作优先 <code>sudo</code>，重要管理动作留审计记录。</p>
+<h3>3.4 第一轮环境自检：命令、含义和预期</h3>
+<p>进入 Linux Shell 后执行：</p>
+<pre><code>whoami                         # 当前 Linux 用户
+cat /etc/os-release             # 发行版与版本
+uname -r                        # 内核版本
+uname -m                        # x86_64 / aarch64 等 CPU 架构
+free -h                         # 内存
+swapon --show                   # Swap 是否配置
+df -h                           # 磁盘空间
+lsblk                           # 云盘与分区
+ip -br addr                     # 网卡地址
+ss -lntp                        # 正在监听的 TCP 端口
+systemctl --failed              # 启动失败的 systemd 服务
+dnf repolist                    # 当前软件源
+</code></pre>
+<p><strong>核心原理</strong>：<code>RPM</code> 是软件包格式；<code>DNF</code> 负责查找、下载并解析依赖；<code>systemd</code> 管理 Linux 服务；<code>ss</code> 查询内核网络套接字；云安全组在云网络层控制流量。</p>
+<p>例如：</p>
+<pre><code>ss 显示 127.0.0.1:5432 → PostgreSQL 只监听本机 IPv4
+ss 显示 0.0.0.0:5432 → PostgreSQL 监听所有 IPv4 网卡
+ss 显示 [::]:5432       → 可能监听 IPv6（及系统相关的双栈行为）
+</code></pre>
+<p>这些输出<strong>只描述监听</strong>，不证明最终的远程权限或加密是否正确。</p>
+<h3>3.5 安装常用诊断工具</h3>
+<pre><code>dnf makecache
+dnf install -y vim curl wget tar unzip bind-utils iproute openssl
+</code></pre>
+<p>如果仓库连接失败，不要一股脑关闭软件包签名验证。先检查 DNS、网络、时间同步、仓库 URL 和证书。</p>
+<h3>3.6 Linux 防火墙：三道门</h3>
+<pre><code>云安全组（云平台 VPC 层）
+   ↓
+Linux 防火墙 firewalld / nftables
+   ↓
+数据库监听与认证规则
+</code></pre>
+<p>检查：</p>
+<pre><code>systemctl is-active firewalld
+firewall-cmd --list-all        # 仅 firewalld 正在运行时使用
+nft list ruleset              # 检查 nftables（若系统使用）
+</code></pre>
+<p><strong>不要直接关闭整台服务器防火墙来排错</strong>。如果需要开放端口，先明确可信来源，在相应 zone 添加限制规则并验证 SSH 不会失联。生产建议通过 IaC（如 Terraform）集中管理安全组。</p>
+<h3>3.7 可选：Swap 的意义和风险</h3>
+<p>Swap 是磁盘上的交换空间，可以缓解暂时的内存峰值，但磁盘比 RAM 慢得多，而且持续换页会显著拖慢数据库。</p>
+<p>先检查：</p>
+<pre><code>free -h
+swapon --show
+</code></pre>
+<p>如果已经存在可用 Swap，<strong>不要重复创建</strong>。对小型实验机，可以评估后增加 Swap；但“开启 Swap”不等于解决 OOM 根因。企业级数据库仍应靠内存容量规划、连接池和慢 SQL 优化。</p>
+<h3>3.8 学会看终端提示符，避免把 Linux 命令写成 SQL</h3>
+<table>
+<thead>
+<tr>
+<th>提示符</th>
+<th>所处环境</th>
+<th>示例命令</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>[root@host ~]#</code></td>
+<td>Linux Shell</td>
+<td><code>systemctl status postgresql-17</code></td>
+</tr>
+<tr>
+<td><code>[postgres@host ~]$</code></td>
+<td>Linux Shell</td>
+<td><code>psql</code></td>
+</tr>
+<tr>
+<td><code>postgres=#</code></td>
+<td>PostgreSQL<code>psql</code></td>
+<td><code>SELECT version();</code></td>
+</tr>
+<tr>
+<td><code>mysql&gt;</code></td>
+<td>MySQL 客户端</td>
+<td><code>SHOW DATABASES;</code></td>
+</tr>
+</tbody>
+</table>
+<p>在 <code>psql</code> 里执行 <code>su - postgres</code> 会提示 <code>syntax error</code>，因为它是 Linux Shell 命令，不是 SQL。</p>
+<h2>四、MySQL 8.4 LTS：从安装到可用的完整流程</h2>
+<blockquote>
+<p><strong>适用场景</strong>：Java / Spring Boot 业务项目、关系型事务系统。若项目最终选用 PostgreSQL 作为唯一主库，本章可作为独立的部署技能练习；不要求在资源有限的 ECS 上同时常驻 MySQL。</p>
+</blockquote>
+<h3>4.1 检查系统状态，防止覆盖既有环境</h3>
+<pre><code>rpm -qa | grep -Ei 'mysql|mariadb'
+command -v mysql || true
+ss -lntp | grep -E ':(3306|33060)\b' || true
+systemctl list-unit-files | grep -Ei 'mysql|mariadb' || true
+</code></pre>
+<p>已运行生产数据库时不要直接执行初始化、覆盖配置或删除目录。先备份、确认数据目录与业务依赖。</p>
+<h3>4.2 配置 MySQL 官方仓库</h3>
+<p>本次实践使用过 EL8 官方 MySQL 8.4 仓库 RPM；在 Alibaba Cloud Linux 3 上需额外关注兼容包、模块和发行版差异。仓库 RPM 文件名可能更新，使用前可从官方页面核对：<a href="https://dev.mysql.com/downloads/repo/yum/">https://dev.mysql.com/downloads/repo/yum/</a>。</p>
+<p>在确认架构为 x86_64、仓库可用的前提下，示例命令：</p>
+<pre><code># 某些 Alibaba Cloud Linux 3 环境需要兼容依赖；如无该包，先查具体依赖
+dnf install -y compat-openssl10
+
+# 下面是实践时使用的 8.4 EL8 仓库配置包；更新时以官网为准
+rpm -Uvh https://repo.mysql.com/mysql84-community-release-el8-1.noarch.rpm
+
+# 若 dnf 显示系统原生 MySQL 模块与官方仓库冲突，再执行：
+dnf module disable mysql -y
+
+# 确认目标软件包和依赖
+dnf list --available mysql-community-server
+
+dnf install -y mysql-community-server
+</code></pre>
+<p><strong>为什么要禁用系统模块？</strong> 同一软件名可能由操作系统模块流与第三方仓库分别提供；不处理会导致版本混用或依赖冲突。如果系统没有 <code>mysql</code> 模块，看到“没有匹配模块”时不要强行修改其他仓库。</p>
+<h3>4.3 启动、开机自启、检查端口</h3>
+<pre><code>systemctl enable --now mysqld
+systemctl is-active mysqld
+mysql --version
+systemctl status mysqld --no-pager
+ss -lntp | grep ':3306'
+</code></pre>
+<p><code>active</code> 才表示服务运行。只安装仓库配置 RPM 并不会产生 <code>mysqld.service</code>，要先安装 <code>mysql-community-server</code>。</p>
+<h3>4.4 初始化管理员账户</h3>
+<p>MySQL 官方 RPM 首次初始化可能生成临时 root 密码：</p>
+<pre><code># 输出含管理员临时凭据；只在自己可信的终端查看
+sudo grep 'temporary password' /var/log/mysqld.log | tail -n 1
+</code></pre>
+<p>随后：</p>
+<pre><code>mysql_secure_installation
+</code></pre>
+<p>按提示输入<strong>MySQL 管理员临时密码</strong>（不是 Linux SSH 密码），设置新密码，删除匿名用户和无用测试库，并禁用不必要的管理员远程登录。</p>
+<p>测试：</p>
+<pre><code>mysql -u root -p
+</code></pre>
+<p>进入 <code>mysql&gt;</code> 后：</p>
+<pre><code>SELECT VERSION();
+SHOW VARIABLES LIKE 'validate_password%';
+</code></pre>
+<p>若提示 <code>ERROR 1819</code>，说明新密码未满足当前验证策略：调整密码强度，不要为了省事关闭密码校验。若提示 <code>ERROR 1045</code>，优先核对账号、临时密码及是否将两条命令拼接到一行。</p>
+<p><strong>口令安全</strong>：不要输入 <code>mysql -uroot -p真实密码</code>，这种写法可能暴露在 Shell 历史、进程信息或共享屏幕里。密码也不要上传到 Git。</p>
+<h3>4.5 创建示例项目数据库</h3>
+<p>在 <code>mysql&gt;</code> 执行：</p>
+<pre><code>CREATE DATABASE IF NOT EXISTS collab_dev
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_0900_ai_ci;
+
+SHOW DATABASES;
+</code></pre>
+<ul>
+<li><code>utf8mb4</code>：支持完整 Unicode，包括常见 Emoji。</li>
+<li><code>COLLATE</code>：影响字符比较、排序及大小写敏感性。</li>
+<li>数据库名应结合环境，例如 <code>project_dev</code>、<code>project_test</code>，不要所有环境共用同一个库名。</li>
+</ul>
+<h3>4.6 MySQL 的企业级账号模型</h3>
+<p>不要按“谁来开发就直接授予整个实例 root”设计权限。推荐至少区分：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>示例</th>
+<th>权限范围</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>DBA 管理员</td>
+<td><code>root</code>/ 数据库管理员</td>
+<td>实例级管理，极少使用</td>
+</tr>
+<tr>
+<td>结构迁移服务账号</td>
+<td><code>svc_mysql_migrator</code></td>
+<td>目标数据库 DDL 与必要 DML</td>
+</tr>
+<tr>
+<td>应用运行账号</td>
+<td><code>svc_mysql_app</code></td>
+<td>SELECT / INSERT / UPDATE / DELETE</td>
+</tr>
+<tr>
+<td>只读分析账号</td>
+<td><code>svc_mysql_reader</code></td>
+<td>SELECT</td>
+</tr>
+<tr>
+<td>开发者个人账号</td>
+<td><code>dev_member_01</code></td>
+<td>限定开发库、限定来源，按岗位分配</td>
+</tr>
+</tbody>
+</table>
+<p>示例：下面 SQL 中的 <code>&lt;...&gt;</code> 是<strong>明确的占位符</strong>，不能原样当作实际账号密码；<code>10.20.%</code> 是示例私网来源模式，必须按真实 VPC 网段调整。密码在私密管理会话中输入，使用凭据管理服务存储和分发，尽量避免留在 SQL 历史及录屏中。</p>
+<pre><code>-- 以下是一种最小权限设计：只供示意，不在生产中直接复制占位符。
+CREATE USER 'svc_mysql_app'@'10.20.%'
+  IDENTIFIED BY '&lt;STRONG_SECRET_FROM_VAULT&gt;' REQUIRE SSL;
+
+CREATE USER 'svc_mysql_reader'@'10.20.%'
+  IDENTIFIED BY '&lt;DIFFERENT_STRONG_SECRET&gt;' REQUIRE SSL;
+
+GRANT SELECT, INSERT, UPDATE, DELETE ON collab_dev.*
+  TO 'svc_mysql_app'@'10.20.%';
+
+GRANT SELECT ON collab_dev.*
+  TO 'svc_mysql_reader'@'10.20.%';
+
+SHOW GRANTS FOR 'svc_mysql_app'@'10.20.%';
+</code></pre>
+<p>MySQL 的 <code>'username'@'host'</code> 是账号身份的一部分，<code>'app'@'localhost'</code> 和 <code>'app'@'%'</code> 可以是两个不同账号。企业生产更适合显式可信来源；通配符 <code>%</code> 不应成为默认选择。</p>
+<p>迁移账号需要独立审查与更高权限，交给 CI/CD 使用，<strong>不要将迁移账号密码配置到普通 Web 服务里</strong>。</p>
+<h3>4.7 MySQL 监听地址、TLS 与 X Plugin</h3>
+<p>先备份配置并查看：</p>
+<pre><code>cp -a /etc/my.cnf /etc/my.cnf.bak
+cat /etc/my.cnf
+</code></pre>
+<p>选择一种模式：</p>
+<pre><code>[mysqld]
+# 同机访问或 SSH 隧道
+bind-address=127.0.0.1
+</code></pre>
+<p>或<strong>仅当必须通过 VPC 网卡、可信公网远程访问时</strong>：</p>
+<pre><code>[mysqld]
+# 监听所有 IPv4 网卡；不代表可以关闭防火墙
+bind-address=0.0.0.0
+require_secure_transport=ON
+# 只有业务不依赖 MySQL X Protocol 时才考虑关闭：
+mysqlx=OFF
+</code></pre>
+<p>注意在同一配置段不要放置相互冲突的多个 <code>bind-address</code>。MySQL X Plugin 常见端口为 33060，不需要时可以关闭；若业务依赖它则不能关闭。</p>
+<pre><code>systemctl restart mysqld
+systemctl is-active mysqld
+ss -lntp | grep -E ':(3306|33060)\b'
+</code></pre>
+<p><strong>TLS 需要区分两件事</strong>：</p>
+<ol>
+<li><code>REQUIRE SSL</code> 或 <code>require_secure_transport=ON</code>：要求加密传输。</li>
+<li>客户端 <code>VERIFY_CA</code> / <code>VERIFY_IDENTITY</code>：验证数据库服务器的证书与身份，降低假服务器和中间人风险。</li>
+</ol>
+<p>生产必须管理可信 CA、证书续期与服务器名称；不要把“已加密”误当成“证书已可信验证”。</p>
+<h3>4.8 验证和切换到 PostgreSQL 时怎样保留 MySQL</h3>
+<pre><code>mysql -u root -p -e 'SELECT VERSION();'
+</code></pre>
+<p>如需暂时关闭，释放小规格 ECS 内存：</p>
+<pre><code>systemctl disable --now mysqld
+systemctl is-active mysqld  # 预期 inactive
+</code></pre>
+<p>这不会自动删除 MySQL 数据文件。<strong>停止服务 ≠ 备份 ≠ 卸载</strong>。对外提供服务之前确认所有应用已切换数据库连接。</p>
+<h2>五、Redis：缓存、数据过期、内存管理与安全</h2>
+<h3>5.1 Redis 在系统架构里的位置</h3>
+<pre><code>HTTP 请求 → Java/Python API
+                ├─ Redis 查询缓存（命中→快速返回）
+                └─ PostgreSQL/MySQL 业务查询（未命中→查询并回填）
+</code></pre>
+<p>常见用途：热点查询缓存、令牌/短期状态、计数、限流和某些轻量队列。<strong>是否能丢失数据，是选择淘汰与持久化策略的首要前提</strong>：不允许丢失的重要任务与消息不能随便使用缓存淘汰策略。</p>
+<h3>5.2 在 Alibaba Cloud Linux 3 安装</h3>
+<pre><code>rpm -qa | grep -i redis
+command -v redis-server || true
+dnf list --available redis
+
+# 确认有软件包再安装
+dnf install -y redis
+</code></pre>
+<p>不同仓库的实际服务名称可能不同：</p>
+<pre><code>systemctl list-unit-files | grep -i redis
+systemctl enable --now redis
+systemctl is-active redis
+redis-server --version
+redis-cli ping
+</code></pre>
+<p>预期 <code>redis-cli ping</code> 返回 <code>PONG</code>，只说明基础可用。若 Redis 配了 ACL/密码，需要按实际认证方法测试。</p>
+<h3>5.3 限制内存、选择淘汰策略</h3>
+<p>在仅承担缓存、允许旧数据被淘汰的<strong>小型演示实例</strong>中：</p>
+<pre><code>redis-cli CONFIG SET maxmemory 128mb
+redis-cli CONFIG SET maxmemory-policy allkeys-lru
+redis-cli CONFIG GET maxmemory
+redis-cli CONFIG GET maxmemory-policy
+</code></pre>
+<p>如果 Redis 正常采用配置文件启动，可尝试：</p>
+<pre><code>redis-cli CONFIG REWRITE
+</code></pre>
+<p>若提示失败，先通过 <code>systemctl cat redis</code> 找到实际配置文件及启动参数，然后在文件中设置：</p>
+<pre><code>maxmemory 128mb
+maxmemory-policy allkeys-lru
+</code></pre>
+<p><strong>几个容易忽视的事实</strong>：</p>
+<ul>
+<li><code>allkeys-lru</code> 近似淘汰较少使用的键，适用于纯缓存；并不是业务队列的通用策略。</li>
+<li><code>noeviction</code> 在内存用尽时可能拒绝写入，适合部分不能随便淘汰的数据，但仍需规划容量。</li>
+<li><code>maxmemory</code> 不是 Redis 进程 RSS 上限，内存碎片、连接、持久化等仍消耗额外内存。</li>
+<li>不同服务的 Redis 缓存键用统一前缀，例如 <code>project:module:entity:id</code>。</li>
+<li>应配合 TTL、监控命中率、内存、淘汰次数和延迟，不只设置一个固定数字。</li>
+</ul>
+<h3>5.4 检查 Redis 的监听与安全</h3>
+<pre><code>ss -lntp | grep ':6379'
+redis-cli CONFIG GET bind
+redis-cli CONFIG GET protected-mode
+redis-cli INFO memory
+</code></pre>
+<p>开发默认建议：</p>
+<pre><code>bind 127.0.0.1 -::1
+protected-mode yes
+</code></pre>
+<p>上面 <code>-::1</code> 在部分 Redis 配置中表示 IPv6 回环不可用时不导致启动失败；具体支持与实际配置以安装版本为准。若服务器内部其他机器需要 Redis，应改用<strong>可信私网接口 + 安全组 + ACL/TLS</strong>，不要裸露 6379 到互联网。</p>
+<p>需要远程调试时，推荐 SSH 端口转发、VPN 或应用管理接口。不要把“没有重要数据”当成允许 Redis 公网无认证的理由。</p>
+<h3>5.5 Redis 最小实践</h3>
+<pre><code>redis-cli
+</code></pre>
+<p>进入 Redis 客户端：</p>
+<pre><code>SET project:demo:hello "Hello Redis" EX 60
+GET project:demo:hello
+TTL project:demo:hello
+DEL project:demo:hello
+</code></pre>
+<p><code>EX 60</code>：设置 60 秒过期；<code>TTL</code>：查看过期时间；<code>DEL</code>：删除指定键。生产调试不要随手执行 <code>FLUSHALL</code>。</p>
+<h3>5.6 多服务 Redis 协作怎么治理</h3>
+<p>推荐“<strong>应用有自己前缀和权限边界</strong>”，避免所有服务共用一个高权限 Redis 密码。可以利用 Redis ACL 限定身份、命令和键模式；关键业务使用独立实例。不要认为 Redis 的逻辑数据库编号（如 DB 0/1）就是强隔离手段。</p>
+<p>Redis 若承担缓存：要定义失效策略、缓存穿透/击穿/雪崩应对；若承担持久队列：要重新评估 AOF/RDB、消费确认、幂等、故障恢复乃至更合适的消息中间件。</p>
+<h2>六、PostgreSQL 17 + pgvector：从安装到向量查询</h2>
+<h3>6.1 为什么选择 17，而不是系统默认 13？</h3>
+<p>在部分 Alibaba Cloud Linux 3 环境中：</p>
+<pre><code>dnf list --available 'postgresql*'
+</code></pre>
+<p>系统仓库可能提供 PostgreSQL 13 系列，而项目可能需要更新的长期维护大版本及特定 pgvector 软件包。<strong>不能只因为旧版“能装”就认为它适合新项目</strong>；版本选型应综合支持周期、插件兼容、驱动和升级路径。</p>
+<h3>6.2 安装 PGDG 社区仓库（需要留意发行版兼容性）</h3>
+<p>PGDG 是 PostgreSQL 社区的软件包仓库。<strong>Alibaba Cloud Linux 3 不是 PGDG 官方直接列出的标准受支持发行版</strong>；在兼容性允许的情况下可尝试 EL8 仓库，但生产场景应优先选择明确受支持的平台或托管数据库。</p>
+<p>基于 x86_64、EL8 兼容环境的实践示例：</p>
+<pre><code>dnf install -y \
+  https://download.postgresql.org/pub/repos/yum/reporpms/EL-8-x86_64/pgdg-redhat-repo-latest.noarch.rpm
+</code></pre>
+<p>如果出现类似错误：</p>
+<pre><code>... /redhat/rhel-3-x86_64/repodata/repomd.xml
+HTTP 404 Not Found
+</code></pre>
+<p>原因：仓库的 <code>$releasever</code> 被识别成 Alibaba Cloud Linux 的 <code>3</code>，而不是我们期望的 EL8 兼容路径。</p>
+<p><strong>仅在确认该机器使用 EL8 兼容 PGDG 仓库且报错确为上述原因时</strong>，修正 PGDG 专属配置文件：</p>
+<pre><code>cp -a /etc/yum.repos.d/pgdg-redhat-all.repo \
+      /etc/yum.repos.d/pgdg-redhat-all.repo.bak
+
+# 只改 PGDG 仓库，不能改整个操作系统的 releasever
+sed -i 's/\$releasever/8/g' \
+  /etc/yum.repos.d/pgdg-redhat-all.repo
+
+dnf clean metadata
+dnf makecache
+</code></pre>
+<p>之后验证目标包是否确实存在：</p>
+<pre><code>dnf list --available postgresql17-server pgvector_17
+</code></pre>
+<p>如果仓库包不存在、GPG 签名异常或依赖不兼容，<strong>不要使用 <code>--nogpgcheck</code>、<code>--skip-broken</code> 硬装</strong>；应重新选择支持的发行版/仓库或使用经过验证的替代部署方案。</p>
+<h3>6.3 安装 PostgreSQL 17 与 pgvector</h3>
+<pre><code># 存在冲突模块时才需要；具体以当前系统仓库为准
+dnf module disable postgresql -y
+
+dnf install -y postgresql17-server pgvector_17
+
+/usr/pgsql-17/bin/postgres --version
+rpm -q pgvector_17
+</code></pre>
+<p>软件包显示安装成功<strong>不代表数据库实例已经初始化</strong>，也不等于某个业务库自动启用了 <code>vector</code> 扩展。</p>
+<h3>6.4 初始化 PostgreSQL 集群、启动服务</h3>
+<p>首次安装且<strong>确定目标数据目录没有已有数据库</strong>时：</p>
+<pre><code>/usr/pgsql-17/bin/postgresql-17-setup initdb
+systemctl enable --now postgresql-17
+systemctl is-active postgresql-17
+ss -lntp | grep ':5432'
+</code></pre>
+<p>常见默认数据目录：<code>/var/lib/pgsql/17/data/</code>。不要对一个已经存储业务数据的目录重复 <code>initdb</code>。</p>
+<h3>6.5 正确登录 PostgreSQL</h3>
+<p>在 Linux root Shell：</p>
+<pre><code>su - postgres
+psql
+</code></pre>
+<p>进入 <code>postgres=#</code> 后：</p>
+<pre><code>SELECT version();
+SHOW data_directory;
+SHOW config_file;
+SHOW hba_file;
+</code></pre>
+<p>退出 <code>psql</code> 使用 <code>\q</code>，再用 Linux <code>exit</code> 返回原来的 Shell；如果误把 <code>su</code>、<code>systemctl</code> 输进 <code>psql</code>，它们会被解析为错误 SQL。</p>
+<h3>6.6 创建业务库与 pgvector 扩展</h3>
+<p>在 <code>postgres=#</code>：</p>
+<pre><code>CREATE DATABASE collab_dev WITH ENCODING 'UTF8' TEMPLATE template0;
+\c collab_dev
+CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public;
+
+SELECT extname, extversion
+FROM pg_extension
+WHERE extname = 'vector';
+</code></pre>
+<p><strong>原理</strong>：<code>pgvector_17</code> 是操作系统层面的扩展包；<code>CREATE EXTENSION vector</code> 是在<strong>某一个 PostgreSQL 数据库内部</strong>激活类型、函数和操作符。不同数据库要按需分别激活。</p>
+<h3>6.7 第一个 Embedding 向量演示</h3>
+<pre><code>SELECT '[1,2,3]'::vector &lt;-&gt; '[2,3,4]'::vector AS l2_distance;
+</code></pre>
+<p>输出应接近：</p>
+<pre><code>1.7320508075688772
+</code></pre>
+<p>这里 <code>&lt;-&gt;</code> 表示欧氏距离。真实 RAG 的 Embedding 通常是数百到数千维，维度取决于模型；不能混用不同 Embedding 模型生成的向量后直接当作可比较语义。</p>
+<p>创建一个用于教学的最小表（<strong>这一小段是管理员验证语法用的独立演示，不是下面企业权限模型的迁移流程</strong>）：</p>
+<pre><code>CREATE TABLE public.vector_demo (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    content TEXT NOT NULL,
+    embedding vector(3) NOT NULL
+);
+
+INSERT INTO public.vector_demo (content, embedding) VALUES
+('文档 A', '[1,2,3]'),
+('文档 B', '[2,3,4]'),
+('文档 C', '[8,9,10]');
+
+SELECT id, content, embedding &lt;-&gt; '[1,2,3]'::vector AS distance
+FROM public.vector_demo
+ORDER BY embedding &lt;-&gt; '[1,2,3]'::vector
+LIMIT 2;
+</code></pre>
+<p>生产数据应使用清晰的 Embedding 模型版本、维度、切分策略、租户隔离规则、过滤字段、重建索引方案；根据数据规模和延迟目标再选 HNSW/IVFFlat 等索引，而不是一开始就机械加索引。</p>
+<h2>七、PostgreSQL 网络访问、SCRAM 认证与 TLS</h2>
+<h3>7.1 一次远程连接会经过哪些关卡？</h3>
+<pre><code>IDEA / 应用
+  ↓ DNS / IP
+云安全组（源地址 + 5432）
+  ↓
+系统防火墙
+  ↓
+PostgreSQL listen_addresses
+  ↓
+TLS 握手（证书 + 加密）
+  ↓
+pg_hba.conf（连接来源 / 数据库 / 用户 / 方法）
+  ↓
+密码认证 SCRAM-SHA-256
+  ↓
+DATABASE / SCHEMA / TABLE 权限
+  ↓
+SQL 执行及事务提交
+</code></pre>
+<p>任何一层失败，报错都不同。<code>Test-NetConnection=True</code> 只能证明 TCP 端口可达，不代表账户密码或 SQL 权限正确。</p>
+<h3>7.2 配置监听地址</h3>
+<p>在 PostgreSQL 管理员的 <code>psql</code> 中：</p>
+<pre><code>SHOW listen_addresses;
+ALTER SYSTEM SET listen_addresses = '*';
+</code></pre>
+<p><code>*</code> 允许 PostgreSQL 在可用网卡上监听；<strong>企业更建议监听指定私网 IP</strong>，将公网直连视为经审批的备选。重启 PostgreSQL 才能应用这项参数。</p>
+<h3>7.3 生成可用于实验的自签名 TLS 证书</h3>
+<blockquote>
+<p>自签名证书仅适合受控实验；生产建议使用组织内部 PKI 或可信 CA，并制定轮换/吊销流程。示例中的域名、IP 均为占位符。<strong>绝不能把服务器私钥发给客户端或提交到 Git。</strong></p>
+</blockquote>
+<p>在 Linux root Shell 执行：</p>
+<pre><code># 替换域名和 IP；DNS/IP 必须与客户端最终连接目标一致
+openssl req -new -x509 -nodes -days 365 \
+  -newkey rsa:3072 \
+  -keyout /var/lib/pgsql/17/data/server.key \
+  -out /var/lib/pgsql/17/data/server.crt \
+  -subj '/CN=db.example.internal' \
+  -addext 'subjectAltName=DNS:db.example.internal,IP:203.0.113.10'
+
+chown postgres:postgres /var/lib/pgsql/17/data/server.key
+chown postgres:postgres /var/lib/pgsql/17/data/server.crt
+chmod 600 /var/lib/pgsql/17/data/server.key
+chmod 644 /var/lib/pgsql/17/data/server.crt
+</code></pre>
+<p>再进入管理员 <code>psql</code> 执行：</p>
+<pre><code>ALTER SYSTEM SET ssl = on;
+</code></pre>
+<p>返回 Linux root Shell 后：</p>
+<pre><code>systemctl restart postgresql-17
+systemctl is-active postgresql-17
+su - postgres -c "psql -tAc 'SHOW ssl;'"
+</code></pre>
+<p>期望返回 <code>on</code>。失败时先查看 <code>journalctl -u postgresql-17 -n 60 --no-pager</code>，检查证书文件路径、私钥权限和 <code>postgres</code> 账户读取权限。</p>
+<h3>7.4 理解 PostgreSQL 的 pg_hba.conf</h3>
+<p>查看配置位置：</p>
+<pre><code>su - postgres -c "psql -tAc 'SHOW hba_file;'"
+</code></pre>
+<p>常见路径：<code>/var/lib/pgsql/17/data/pg_hba.conf</code>。编辑前备份：</p>
+<pre><code>cp -a /var/lib/pgsql/17/data/pg_hba.conf \
+  /var/lib/pgsql/17/data/pg_hba.conf.bak
+vi /var/lib/pgsql/17/data/pg_hba.conf
+</code></pre>
+<p><strong>先说明一种与团队权限模型搭配的示例</strong>：第八章将创建 <code>app_rw</code> 这样的组角色；可以用 <code>+app_rw</code> 在 HBA 中匹配成员，而不是为每个成员写一条远程认证规则。</p>
+<pre><code># 仅允许受控办公/VPN网段中属于 app_rw 的登录角色通过 TLS 访问开发库
+# 198.51.100.0/24 是文档示例；企业必须替换为实际可信 CIDR
+hostssl  collab_dev  +app_rw        198.51.100.0/24  scram-sha-256
+
+# CI/CD 迁移角色只能从 CI 出口连接
+hostssl  collab_dev  svc_migrator   198.51.100.64/32 scram-sha-256
+
+# 应用服务账号只允许实际 VPC 网段
+hostssl  collab_dev  svc_app        10.20.0.0/16    scram-sha-256
+</code></pre>
+<blockquote>
+<p><strong>重要：</strong> 这三条示例需要按真实网络、角色和 CIDR 修改。可以使用每个成员的固定公网 <code>/32</code>，也可以统一 VPN 出口，后者可减轻成员频繁变更 IP 的运维工作。不要把示例网段原样当作真实办公出口。</p>
+</blockquote>
+<p><code>pg_hba.conf</code> <strong>从上到下使用第一条匹配规则</strong>，不会失败后自动尝试下一条。检查文件前面是否存在更宽松的 <code>host ... trust</code> 或其他规则；<strong>单纯在文件结尾增加严规则，并不能覆盖前面的宽规则</strong>。</p>
+<p>加载并验证：</p>
+<pre><code>systemctl reload postgresql-17
+su - postgres -c "psql -c 'SELECT line_number, type, database, user_name, address, error FROM pg_hba_file_rules ORDER BY line_number;'"
+</code></pre>
+<p>检查 <code>error</code> 列必须为 NULL，并核对规则顺序。<strong>如果要开放公网，必须先确认 TLS、HBA 和安全组互相匹配，再让数据库端口可达。</strong></p>
+<h3>7.5 TLS 的三个层级</h3>
+<table>
+<thead>
+<tr>
+<th>客户端模式</th>
+<th>做了什么</th>
+<th>是否验证服务器身份</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>sslmode=disable</code></td>
+<td>不要求 TLS</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>sslmode=require</code></td>
+<td>必须加密</td>
+<td>通常不充分，不能依赖它验证主机身份</td>
+</tr>
+<tr>
+<td><code>sslmode=verify-ca</code></td>
+<td>加密 + 验证可信 CA</td>
+<td>验证 CA，未完整验证主机名</td>
+</tr>
+<tr>
+<td><code>sslmode=verify-full</code></td>
+<td>加密 + CA + 主机名/IP 匹配</td>
+<td><strong>是，推荐</strong></td>
+</tr>
+</tbody>
+</table>
+<p>使用自签名实验证书时，可将<strong>公开证书</strong> <code>server.crt</code> 安全分发给客户端作为受信任证书（或采用由内部 CA 签发的服务器证书，再分发 CA 根证书），在客户端配置 <code>sslrootcert</code>、<code>verify-full</code>。是否能够严格验证取决于证书链、SAN 和 JDBC 驱动版本；务必实际测试。<strong>不要传播 <code>server.key</code>。</strong></p>
+<p>查看当前连接是否使用 TLS：</p>
+<pre><code>SELECT a.usename, a.datname, s.ssl, s.version, s.cipher
+FROM pg_stat_activity AS a
+JOIN pg_stat_ssl AS s ON a.pid = s.pid
+WHERE a.pid = pg_backend_pid();
+</code></pre>
+<h3>7.6 在 Windows 检查网络，读懂报错</h3>
+<pre><code>Test-NetConnection &lt;ECS_PUBLIC_IP&gt; -Port 5432
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>现象</th>
+<th>最可能故障层</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>TcpTestSucceeded: False</code></td>
+<td>IP/端口、安全组、主机防火墙、监听地址</td>
+</tr>
+<tr>
+<td><code>no pg_hba.conf entry</code></td>
+<td>HBA 没有匹配数据库 / 用户 / 源 IP / TLS 方式</td>
+</tr>
+<tr>
+<td><code>password authentication failed</code></td>
+<td>密码不匹配、账号认证问题</td>
+</tr>
+<tr>
+<td><code>permission denied for schema app</code></td>
+<td>Schema 权限不足</td>
+</tr>
+<tr>
+<td><code>permission denied for table ...</code></td>
+<td>表的 DML 权限、所有者或默认权限不匹配</td>
+</tr>
+<tr>
+<td><code>certificate verify failed</code></td>
+<td>CA 不被信任、过期或主机名不匹配</td>
+</tr>
+</tbody>
+</table>
+<p>常见具体错误：IDEA 将 <code>Database</code> 留成默认的 <code>postgres</code>，而 HBA 只允许 <code>collab_dev</code>，因此即使 <code>Host</code>、用户、密码都正确，仍可能提示 <code>no pg_hba.conf entry ... database "postgres"</code>。<strong>应修正客户端连接库名，而不是为了排错放开全部数据库。</strong></p>
+<h2>八、企业级 PostgreSQL 角色与权限模型：面向任意人数的团队</h2>
+<h3>8.1 为什么不按固定两个人创建“对称管理员账号”？</h3>
+<p>团队可能有后端、数据工程、测试、AI、运维、外包协作者；成员会入职、离职、轮岗。每新增一个人就复制大量 <code>GRANT</code> 语句，会造成权限漂移，且难以撤销。</p>
+<p><strong>可扩展做法：权限给角色组，个人和服务只加入对应角色组。</strong></p>
+<pre><code>PostgreSQL Cluster
+├── postgres                    # 超级管理员：只做实例运维
+├── svc_migrator (LOGIN)       # 数据库迁移：由 CI/CD 持有
+├── svc_app (LOGIN)            # 应用服务身份，不是员工
+├── app_rw (NOLOGIN)           # 读写权限集合
+├── app_ro (NOLOGIN)           # 只读权限集合
+├── dev_member_01 (LOGIN)      # 示例成员账号
+├── dev_member_02 (LOGIN)      # 示例成员账号
+└── qa_member_01 (LOGIN)       # 示例测试账号
+
+Database: collab_dev
+├── public                       # pgvector 扩展等公共对象
+└── app                          # 项目业务 Schema
+    ├── documents
+    └── ...
+</code></pre>
+<p><code>dev_member_01</code> 等是匿名编号示例，不对应现实姓名，实际可以由组织的 IAM、员工 ID 映射或自动化入职脚本生成。<strong>应用运行身份、迁移身份和人类身份必须分开</strong>。</p>
+<h3>8.2 权限矩阵（最小权限原则）</h3>
+<table>
+<thead>
+<tr>
+<th>操作</th>
+<th>DBA</th>
+<th>迁移账号</th>
+<th>应用账号</th>
+<th>开发者 RW</th>
+<th>测试 RO</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>连接目标库</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+<td>√</td>
+</tr>
+<tr>
+<td>SELECT / DML</td>
+<td>√</td>
+<td>按迁移需要</td>
+<td>√</td>
+<td>√</td>
+<td>SELECT</td>
+</tr>
+<tr>
+<td>CREATE / ALTER / DROP 表</td>
+<td>√</td>
+<td>√</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td>建其他数据库、管理全局角色</td>
+<td>√</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td>更改生产结构</td>
+<td>审批操作</td>
+<td>CI/CD 执行</td>
+<td>×</td>
+<td>×</td>
+<td>×</td>
+</tr>
+<tr>
+<td>生产账号登录</td>
+<td>受控</td>
+<td>受控</td>
+<td>程序自动</td>
+<td>默认禁止</td>
+<td>默认禁止</td>
+</tr>
+</tbody>
+</table>
+<p>这里的“迁移账号可以执行 DDL”不等于拥有 <code>SUPERUSER</code> 权限。它应该只拥有<strong>指定数据库/Schema 的结构管理权限</strong>。</p>
+<h3>8.3 创建组角色、服务角色和示例成员</h3>
+<p>在 Linux 上以超级管理员进入 <code>psql</code>：</p>
+<pre><code>su - postgres
+psql
+</code></pre>
+<p>先在 PostgreSQL 实例级别创建角色（Role 在一个 PostgreSQL Cluster 中共享）：</p>
+<pre><code>-- 权限组：不能直接登录
+CREATE ROLE app_rw NOLOGIN;
+CREATE ROLE app_ro NOLOGIN;
+
+-- 服务身份：可登录，但不是超级用户
+CREATE ROLE svc_migrator LOGIN;
+CREATE ROLE svc_app LOGIN;
+
+-- 团队成员：示例编号，可以按需要扩展到任意人数
+CREATE ROLE dev_member_01 LOGIN;
+CREATE ROLE dev_member_02 LOGIN;
+CREATE ROLE qa_member_01 LOGIN;
+
+-- 成员继承对应权限组的权限（PG17 支持指定继承行为）
+GRANT app_rw TO dev_member_01 WITH INHERIT TRUE, SET FALSE;
+GRANT app_rw TO dev_member_02 WITH INHERIT TRUE, SET FALSE;
+GRANT app_ro TO qa_member_01 WITH INHERIT TRUE, SET FALSE;
+</code></pre>
+<p><strong>设置密码不要在公开文章里写真实字符串。</strong> 对登录角色逐一执行交互式：</p>
+<pre><code>\password svc_migrator
+\password svc_app
+\password dev_member_01
+\password dev_member_02
+\password qa_member_01
+</code></pre>
+<p>每条 <code>\password</code> 都会在终端中提示输入两次，不直接出现在可复制的 SQL 语句里。生产建议把服务身份密码放到阿里云 KMS / Secrets Manager 或其他组织认可的密钥管理平台，避免配置文件硬编码。</p>
+<h3>8.4 建立业务 Schema、连接授权和历史对象授权</h3>
+<p>切换到项目库：</p>
+<pre><code>\c collab_dev
+</code></pre>
+<p>在<strong>新建的、可清理的示例库</strong>中执行：</p>
+<pre><code>-- 不让所有角色默认具备连接该库的权利
+REVOKE ALL ON DATABASE collab_dev FROM PUBLIC;
+
+-- 谁可以连接数据库
+GRANT CONNECT ON DATABASE collab_dev
+  TO app_rw, app_ro, svc_migrator, svc_app;
+
+-- 将业务 DDL 归于一个专门的迁移主体；业务应用不拥有 Schema
+CREATE SCHEMA app AUTHORIZATION svc_migrator;
+
+-- 仅允许组角色使用 Schema，不授予普通开发者 CREATE
+GRANT USAGE ON SCHEMA app TO app_rw, app_ro, svc_app;
+
+-- 现有表（如果以后已存在）授权
+GRANT SELECT, INSERT, UPDATE, DELETE ON ALL TABLES IN SCHEMA app
+  TO app_rw, svc_app;
+GRANT SELECT ON ALL TABLES IN SCHEMA app TO app_ro;
+
+-- 如果表使用序列/serial，也需要相应权限
+GRANT USAGE, SELECT ON ALL SEQUENCES IN SCHEMA app
+  TO app_rw, svc_app;
+
+-- 注意：由迁移账号创建的未来对象，要预设默认权限
+ALTER DEFAULT PRIVILEGES FOR ROLE svc_migrator IN SCHEMA app
+  GRANT SELECT, INSERT, UPDATE, DELETE ON TABLES TO app_rw, svc_app;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE svc_migrator IN SCHEMA app
+  GRANT SELECT ON TABLES TO app_ro;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE svc_migrator IN SCHEMA app
+  GRANT USAGE, SELECT ON SEQUENCES TO app_rw, svc_app;
+
+-- 收紧 public schema 的 DDL；Pg15+ 新库常已默认如此
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+</code></pre>
+<p>这套设计具有可扩展性：新增成员只需加入 <code>app_rw</code> 或 <code>app_ro</code>；新增表由 <code>svc_migrator</code> 创建后，默认权限生效。</p>
+<p><strong>重要细节</strong>：<code>ALTER DEFAULT PRIVILEGES</code> 仅影响<strong>之后创建</strong>的对象，且基于<strong>实际创建该对象的角色</strong>。如果 DBA 用 <code>postgres</code> 直接创建了某张新表，就不会自动应用 <code>FOR ROLE svc_migrator</code> 的默认授权；应坚持一个迁移执行身份。默认权限不能修复历史表，历史表须使用 <code>GRANT ... ON ALL TABLES</code> 显式补齐。参见 PostgreSQL 官方文档。</p>
+<h3>8.5 让 pgvector 与独立业务 Schema 协同工作</h3>
+<p>前面为了方便把 <code>vector</code> 扩展创建在 <code>public</code>。业务表统一创建在 <code>app</code>，可以显式写 <code>public.vector(1536)</code>，也可以对符合权限要求的账户设置 <code>search_path</code>：</p>
+<pre><code>ALTER ROLE dev_member_01 IN DATABASE collab_dev
+  SET search_path TO app, public;
+
+ALTER ROLE dev_member_02 IN DATABASE collab_dev
+  SET search_path TO app, public;
+
+ALTER ROLE svc_app IN DATABASE collab_dev
+  SET search_path TO app, public;
+
+ALTER ROLE svc_migrator IN DATABASE collab_dev
+  SET search_path TO app, public;
+</code></pre>
+<p><code>1536</code> 只是某类 Embedding 维度的示例，<strong>必须根据实际模型输出维度修改</strong>。更重要的是不允许不可信角色在应用默认 <code>search_path</code> 中的 Schema 创建对象，以降低对象名称劫持风险。</p>
+<h3>8.6 让迁移账号真正能执行迁移</h3>
+<p>迁移角色 <code>svc_migrator</code> 是 <code>app</code> Schema 所有者，但还必须具备该数据库的 <code>CONNECT</code> 权限（前面的示例已授予）。此后迁移任务使用该身份连接 <code>collab_dev</code>，在 <code>app</code> 下建立业务表。</p>
+<pre><code>-- 用迁移身份连接后执行（而不是用 postgres DBA 手动执行）：
+CREATE TABLE app.documents (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    title TEXT NOT NULL,
+    content TEXT NOT NULL,
+    embedding public.vector(3),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+</code></pre>
+<p>该表会由迁移身份持有，<code>app_rw</code>、<code>app_ro</code>、<code>svc_app</code> 获得前文设定的默认权限。生产应把上述建表 SQL 放入 Flyway 迁移文件，不能靠人在 IDEA 手工执行。</p>
+<h3>8.7 团队扩容、转岗、离职时怎么处理？</h3>
+<p>新成员加入：</p>
+<pre><code>-- 管理员批准并配置登录凭据后
+CREATE ROLE dev_member_03 LOGIN;
+GRANT app_rw TO dev_member_03 WITH INHERIT TRUE, SET FALSE;
+GRANT CONNECT ON DATABASE collab_dev TO app_rw; -- 如已存在，无需重复
+</code></pre>
+<p>转为只读：</p>
+<pre><code>REVOKE app_rw FROM dev_member_03;
+GRANT app_ro TO dev_member_03 WITH INHERIT TRUE, SET FALSE;
+</code></pre>
+<p>紧急禁用（例如离职）：</p>
+<pre><code>ALTER ROLE dev_member_03 NOLOGIN;
+REVOKE app_rw FROM dev_member_03;
+REVOKE app_ro FROM dev_member_03;
+</code></pre>
+<p><code>NOLOGIN</code> 主要阻止<strong>新连接</strong>；已有活动会话需要由管理员按需终止并撤销网络/VPN/系统访问，相关 Token 与凭据也应失效。确认对象所有权、依赖和审计要求后，再考虑彻底删除数据库角色。生产环境应实现可审计的入职/离职自动化。</p>
+<h3>8.8 什么时候需要更多隔离？</h3>
+<ul>
+<li><strong>测试团队</strong>：只读或独立 QA 数据库，不随意更改共享 DEV 数据。</li>
+<li><strong>外部合作方</strong>：单独隔离测试环境、IP/身份/审计；最小样例数据。</li>
+<li><strong>多租户 SaaS</strong>：数据库账号不能代替租户级授权；应在应用层校验租户，必要时结合 PostgreSQL RLS。</li>
+<li><strong>AI Agent 服务</strong>：工具调用执行 SQL 时必须限制可访问表/操作，不允许 LLM 把管理员数据库账号当成通用工具。</li>
+<li><strong>生产 CI/CD</strong>：单独迁移角色、独立审批环境、独立密钥和审计链路。</li>
+</ul>
+<h2>九、团队到底怎么协作：从 Issue 到上线的可执行流程</h2>
+<h3>9.1 为每一种环境定义独立边界</h3>
+<table>
+<thead>
+<tr>
+<th>环境</th>
+<th>目标</th>
+<th>数据来源</th>
+<th>谁能改表结构</th>
+<th>典型约束</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LOCAL</td>
+<td>独立开发和调试</td>
+<td>本地造数/脱敏数据</td>
+<td>开发者通过迁移测试</td>
+<td>可重建</td>
+</tr>
+<tr>
+<td>CI/EPHEMERAL</td>
+<td>每个 PR 自动验证</td>
+<td>自动初始化</td>
+<td>CI 迁移任务</td>
+<td>用后即销毁</td>
+</tr>
+<tr>
+<td>DEV</td>
+<td>跨模块共享联调</td>
+<td>受控共享测试数据</td>
+<td>合并后的迁移流水线</td>
+<td>禁止手工漂移</td>
+</tr>
+<tr>
+<td>TEST/QA</td>
+<td>测试与回归</td>
+<td>固定测试集</td>
+<td>测试发布流水线</td>
+<td>变更可追溯</td>
+</tr>
+<tr>
+<td>STAGING</td>
+<td>生产近似演练</td>
+<td>脱敏数据/模拟数据</td>
+<td>发布流水线</td>
+<td>尽量同生产版本</td>
+</tr>
+<tr>
+<td>PROD</td>
+<td>真实业务</td>
+<td>真实数据</td>
+<td>经审批的发布流水线</td>
+<td>最小权限、备份、监控</td>
+</tr>
+</tbody>
+</table>
+<p>这比“所有人连一台公网 ECS，共用一个库”更符合企业真实研发。共享 DEV 有价值，但<strong>不应替代 LOCAL、CI、TEST、STAGING、PROD 的独立边界</strong>。</p>
+<h3>9.2 Git 仓库建议结构</h3>
+<pre><code>project/
+├── frontend/                      # Web 前端
+├── backend/                       # Java Spring Boot
+│   ├── src/main/java/...
+│   └── src/main/resources/
+│       └── db/migration/           # Flyway 版本化 SQL
+│           ├── V1__init_schema.sql
+│           ├── V2__create_documents.sql
+│           └── V3__add_document_status.sql
+├── ai-service/                    # Python Agent / RAG
+├── infra/
+│   ├── docs/                       # 安装手册、网络图、值班手册
+│   ├── db/                         # 权限模板、初始化文档、备份演练
+│   └── ci/                         # 部署脚本/流水线定义
+├── .env.example                    # 只放变量名称和假的示例值
+├── .gitignore                      # 忽略真实 .env、密钥、备份
+└── README.md
+</code></pre>
+<p><strong>单一事实来源（Single Source of Truth）</strong>：每个应用所用 Schema 的正式迁移版本必须有唯一权威目录；跨多个服务时约定“哪一个服务/团队拥有哪部分 Schema”，避免各自另起一套未经协商的迁移脚本。</p>
+<h3>9.3 一个真实需求怎样推进？</h3>
+<p>以“文档增加状态字段”为例：</p>
+<ol>
+<li><strong>提出 Issue</strong>：说明字段用途、取值、API 兼容、现有数据的处理方式。</li>
+<li><strong>建分支</strong>：<code>feature/document-status</code>；本地数据库通过迁移达到基线版本。</li>
+<li><strong>编写迁移</strong>：新增 <code>V3__add_document_status.sql</code>，不要修改已上线的 <code>V1/V2</code> 历史文件。</li>
+<li><strong>提交业务代码</strong>：Java DTO/Entity/Mapper、Python 查询逻辑、前端字段显示一并修改。</li>
+<li><strong>跑测试</strong>：老数据是否能查、默认值是否合理、迁移可否从空库和已有库顺利执行。</li>
+<li><strong>发 PR</strong>：审查 SQL、索引、锁、兼容窗口、数据回填规模与回滚/前向修复方案。</li>
+<li><strong>CI 校验</strong>：临时 DB 运行全部迁移，再跑单测/集成测试。</li>
+<li><strong>合并主干</strong>：DEV 流水线执行迁移，团队进行联调；然后 TEST、STAGING、PROD 按发布策略推进。</li>
+</ol>
+<p><strong>数据库结构变更不是“在一个人的 IDEA 里改好，然后发截图给同事”。</strong> 它是代码变更的一部分，应能重复执行、审查、审计。</p>
+<h3>9.4 Flyway 实战：版本化 Schema</h3>
+<p>Flyway 会维护 Schema History 表，记录迁移版本、校验信息和执行结果。</p>
+<p>文件命名示例：</p>
+<pre><code>V1__create_documents.sql
+V2__add_search_index.sql
+V3__add_status_column.sql
+R__refresh_views.sql          # 可重复迁移，需理解重跑语义
+</code></pre>
+<p><strong>V1 示例</strong>：由 <code>svc_migrator</code> 在 <code>app</code> Schema 运行（本节以一个全新数据库为例，<strong>不要和第 8.6 节同名建表 Demo 重复执行</strong>）。</p>
+<pre><code>CREATE TABLE app.documents (
+    id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    body TEXT NOT NULL,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+</code></pre>
+<p><strong>V2 示例</strong>：</p>
+<pre><code>CREATE INDEX idx_documents_created_at
+ON app.documents(created_at DESC);
+</code></pre>
+<p><strong>V3 示例</strong>：</p>
+<pre><code>ALTER TABLE app.documents
+ADD COLUMN status VARCHAR(20) DEFAULT 'draft';
+</code></pre>
+<p>注意：这里刻意把 <code>status</code> 初始设置成允许 NULL 或带默认值的兼容变更。对真实大表、非空约束、索引创建、数据回填，要另行做锁与性能分析；例如 PostgreSQL 的 <code>CREATE INDEX CONCURRENTLY</code> 不能直接放入普通事务块，必须按 Flyway 的相应迁移执行方式处理。</p>
+<h3>9.5 为什么“Expand → Migrate → Contract”很重要？</h3>
+<p>企业系统有多个后端实例、老版本客户端和持续运行任务，一次性“删旧列、加新列”很可能让旧代码立刻报错。</p>
+<pre><code>Expand   → 先增加新列/新表，兼容旧代码
+Migrate  → 双写或分批迁移历史数据，验证读写一致
+Contract → 所有实例升级并确认无旧依赖后，再删除旧列/旧逻辑
+</code></pre>
+<p><strong>例子</strong>：原来只有 <code>username</code>，新版本想拆成 <code>given_name</code>、<code>family_name</code>。不应在同一瞬间删除 <code>username</code>，应按兼容窗口分阶段发布。</p>
+<h3>9.6 每个 PR 的数据库测试策略</h3>
+<p>建议至少覆盖四种场景：</p>
+<table>
+<thead>
+<tr>
+<th>测试</th>
+<th>必须验证什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fresh DB</td>
+<td>空数据库从 V1 一直迁移到最新是否成功</td>
+</tr>
+<tr>
+<td>Upgrade DB</td>
+<td>有旧版本表和样本数据时能否升级</td>
+</tr>
+<tr>
+<td>Cross-service</td>
+<td>Java / Python 服务是否使用兼容的 Schema / 数据类型</td>
+</tr>
+<tr>
+<td>Permission test</td>
+<td><code>svc_app</code>能 DML，但不能随意<code>ALTER TABLE</code></td>
+</tr>
+</tbody>
+</table>
+<p>如果团队使用 Docker/Testcontainers，可在 CI 为每个 PR 启动临时 PostgreSQL（含 pgvector）或 MySQL，而不必污染共享 DEV。生产部署不使用 Docker，也不影响 CI 使用临时容器进行数据库测试。</p>
+<h3>9.7 CI/CD 的推荐阶段</h3>
+<pre><code>CI 流水线
+  ① Lint / SAST / Secrets scan
+  ② Build / Unit Tests
+  ③ 启动隔离测试数据库
+  ④ 执行 Flyway migrate
+  ⑤ 数据库集成测试
+  ⑥ 静态检查 SQL 与权限
+  ⑦ 构建产物
+
+CD 流水线
+  ① 选择 DEV/TEST/STAGING/PROD
+  ② 校验目标环境、版本与审批
+  ③ 备份/快照与恢复预案
+  ④ 使用专门迁移凭据执行 migrate
+  ⑤ 验证迁移版本
+  ⑥ 发布应用（使用单独运行时凭据）
+  ⑦ 健康检查 / 指标观察 / 按策略回退应用
+</code></pre>
+<p><strong>凭据分离是重点</strong>：</p>
+<ul>
+<li><code>svc_migrator</code>：仅在迁移 Job/流水线阶段使用。</li>
+<li><code>svc_app</code>：Spring Boot、Python 应用的普通运行时连接。</li>
+<li><code>dev_member_xx</code>：人的 IDEA / DBeaver 调试账号，不应被生产应用使用。</li>
+</ul>
+<p>生产数据库的迁移不能仅靠在代码中自动 <code>ddl-auto=update</code>；Java JPA 可以考虑 <code>ddl-auto=validate</code>，只验证实体与数据库结构是否匹配。</p>
+<h3>9.8 数据冲突：多人同时测试到底怎么做？</h3>
+<p>同一个共享开发库内，不同开发者可能相互覆盖数据、改变状态或触发定时任务。因此建议：</p>
+<ul>
+<li>为测试记录设置隔离键，如 <code>test_run_id</code> 或 <code>scenario_id</code>，让自动化测试只清理自己创建的数据。</li>
+<li>使用<strong>幂等</strong> Seed 数据脚本：重复运行不会无限插入重复记录。</li>
+<li>测试账号、模拟租户与真实账号完全隔离。</li>
+<li>大型集成测试优先使用独立测试库或 CI 临时数据库。</li>
+<li>关键业务状态与并发场景使用事务、唯一约束、乐观锁/悲观锁等机制，不能靠团队约定“不同时点按钮”。</li>
+<li>不要直接将生产个人信息复制到测试库；必须进行脱敏、数据最小化与权限控制。</li>
+</ul>
+<h3>9.9 一个成员如何完成入职开发（Onboarding）？</h3>
+<pre><code>拿到仓库只读/写入权限
+  ↓
+配置本地 JDK / Python / IDEA / Git
+  ↓
+按 README 下载示例 .env.example
+  ↓
+申请个人数据库账号（不是应用账号）
+  ↓
+授予 app_rw 或 app_ro 权限组
+  ↓
+通过 VPN / 堡垒机 / 已批准 IP 连接 DEV
+  ↓
+执行 SELECT current_user / current_database
+  ↓
+本地执行迁移验证 + 单测
+  ↓
+完成第一个 PR
+</code></pre>
+<p>Offboarding 反向执行：Git/云平台/VPN/数据库/监控等权限同时收回，轮换相关共享服务凭据，留存必要审计日志。</p>
+<h2>十、IDEA、DBeaver、Java 与 Python 怎样连接数据库</h2>
+<h3>10.1 IDEA Database 窗口</h3>
+<p>打开 IDEA：<code>View → Tool Windows → Database</code>，新增 PostgreSQL 数据源，填入：</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>示例值</th>
+<th>解释</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Host</td>
+<td><code>&lt;DB_HOST&gt;</code></td>
+<td>ECS 私网 IP / 受控公网 IP / 托管数据库地址</td>
+</tr>
+<tr>
+<td>Port</td>
+<td><code>5432</code></td>
+<td>PostgreSQL 端口</td>
+</tr>
+<tr>
+<td>Database</td>
+<td><code>collab_dev</code></td>
+<td><strong>项目库名，不能误填<code>postgres</code></strong></td>
+</tr>
+<tr>
+<td>User</td>
+<td><code>dev_member_01</code></td>
+<td>单独分配给该成员的账号</td>
+</tr>
+<tr>
+<td>Password</td>
+<td>从安全渠道获得</td>
+<td>不写入公开教程</td>
+</tr>
+<tr>
+<td>SSL</td>
+<td><code>verify-full</code>（推荐）</td>
+<td>配置 CA/证书与主机名验证</td>
+</tr>
+</tbody>
+</table>
+<p>点击 <code>Test Connection</code>，成功后打开 SQL Console：</p>
+<pre><code>SELECT current_database(), current_user, version();
+SHOW search_path;
+</code></pre>
+<p>常用操作：</p>
+<pre><code>SELECT * FROM app.documents LIMIT 20;
+SELECT COUNT(*) FROM app.documents;
+</code></pre>
+<p>IDEA 结果表格支持浏览和编辑，但<strong>团队表结构应由 Flyway 负责</strong>。如果使用手动事务提交模式，未提交的 INSERT/UPDATE 对其他会话通常不可见。</p>
+<h3>10.2 用数据库实际验证权限</h3>
+<p>成员账号：</p>
+<pre><code>SELECT current_user;
+SELECT has_schema_privilege(current_user, 'app', 'USAGE');
+SELECT has_schema_privilege(current_user, 'app', 'CREATE');
+</code></pre>
+<p>在上文最小权限模型中，普通开发账号预期能使用 Schema，不能直接在共享 <code>app</code> Schema 随意创建结构。是否有表 DML 权限要对具体目标表继续验证：</p>
+<pre><code>SELECT has_table_privilege(current_user, 'app.documents', 'SELECT');
+SELECT has_table_privilege(current_user, 'app.documents', 'INSERT');
+</code></pre>
+<h3>10.3 Spring Boot 示例（Java）</h3>
+<p>环境变量由本地 <code>.env</code> 工具、操作系统或部署平台注入，不提交真实口令：</p>
+<pre><code>spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST}:${DB_PORT:5432}/${DB_NAME:collab_dev}?sslmode=verify-full
+    username: ${DB_APP_USER}
+    password: ${DB_APP_PASSWORD}
+    hikari:
+      maximum-pool-size: 5   # 小规格示例，按总实例数/并发调整
+  jpa:
+    hibernate:
+      ddl-auto: validate      # 不在共享/生产环境自动更新表结构
+</code></pre>
+<p>注意：JDBC 驱动的证书信任配置（例如 root certificate 路径）需按驱动版本和运行环境补齐。不能把 <code>sslmode=verify-full</code> 单独当作完成 TLS 配置的全部工作。</p>
+<h3>10.4 Python 示例（psycopg 3）</h3>
+<pre><code>import os
+import psycopg
+
+with psycopg.connect(
+    host=os.environ["DB_HOST"],
+    port=int(os.getenv("DB_PORT", "5432")),
+    dbname=os.getenv("DB_NAME", "collab_dev"),
+    user=os.environ["DB_APP_USER"],
+    password=os.environ["DB_APP_PASSWORD"],
+    sslmode="verify-full",
+    sslrootcert=os.environ["DB_SSL_ROOT_CERT"],
+) as conn:
+    with conn.cursor() as cur:
+        cur.execute("SELECT current_database(), current_user")
+        print(cur.fetchone())
+</code></pre>
+<p>如果数据库位于可信私网且暂时没有可验证证书，可以在<strong>受控实验环境</strong>中先使用 <code>sslmode=require</code> 验证网络，但这不等于已经完成生产要求的服务器身份验证。</p>
+<h3>10.5 Redis 连接示例</h3>
+<p>Java 可使用 Spring Data Redis；Python 常用 <code>redis-py</code>。Redis 的连接地址默认应为 <code>127.0.0.1</code>、VPC 私网地址或通过隧道映射的本地地址；别把公网示例变成 <code>redis://&lt;PUBLIC_IP&gt;:6379</code>。</p>
+<p>应用应设置连接超时、异常降级、TTL、键前缀及观察指标。数据库连接池和 Redis 客户端连接数需要基于所有应用实例的总和规划。</p>
+<h2>十一、资源管理与基础运维：2 GiB 演示机和生产集群的区别</h2>
+<h3>11.1 演示机的优先级</h3>
+<ol>
+<li>默认 PostgreSQL + Redis 运行；暂时不用 MySQL 时关闭它。</li>
+<li>控制连接数及应用连接池：例如三个应用实例各开 20 个连接，数据库并不是“只有一个应用在访问”。</li>
+<li>观察操作系统 OOM、Swap、磁盘和 I/O，尤其是向量索引建立和批量导入时。</li>
+<li>数据盘快满、磁盘延迟严重、内存持续吃紧时，<strong>及时扩容或拆分服务</strong>，不要只反复重启数据库。</li>
+</ol>
+<h3>11.2 PostgreSQL 调参仅给起点，不给“万能最优配置”</h3>
+<p>先查看：</p>
+<pre><code>SHOW shared_buffers;
+SHOW work_mem;
+SHOW maintenance_work_mem;
+SHOW max_connections;
+SHOW effective_cache_size;
+</code></pre>
+<p>2 GiB 演示机可根据实际负载试验较保守参数，例如 <code>shared_buffers=256MB</code>、<code>work_mem=4MB</code>、<code>maintenance_work_mem=64MB</code>、较低 <code>max_connections</code>。这些<strong>不是生产通用数值</strong>；<code>work_mem</code> 可能按排序/Hash 操作和并发放大，<code>effective_cache_size</code> 只是规划器估算值，不是内存硬限制。</p>
+<p>想查看当前进程：</p>
+<pre><code>free -h
+df -h
+ps -eo pid,user,rss,%mem,cmd --sort=-rss | head -20
+journalctl -u postgresql-17 -n 60 --no-pager
+journalctl -u redis -n 60 --no-pager
+</code></pre>
+<p>PostgreSQL SQL 侧：</p>
+<pre><code>SELECT datname, numbackends, xact_commit, xact_rollback
+FROM pg_stat_database
+ORDER BY datname;
+
+SELECT state, COUNT(*)
+FROM pg_stat_activity
+GROUP BY state;
+</code></pre>
+<h3>11.3 数据库的监控指标</h3>
+<table>
+<thead>
+<tr>
+<th>层级</th>
+<th>建议观察</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ECS</td>
+<td>CPU、RAM、Swap、磁盘容量、IOPS、网络带宽</td>
+</tr>
+<tr>
+<td>PostgreSQL</td>
+<td>活跃连接、锁等待、慢 SQL、长事务、复制延迟、缓存命中</td>
+</tr>
+<tr>
+<td>MySQL</td>
+<td>连接数、慢查询、InnoDB 指标、复制状态</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td><code>used_memory</code>、<code>maxmemory</code>、<code>evicted_keys</code>、命中率、延迟</td>
+</tr>
+<tr>
+<td>应用</td>
+<td>API 错误率、延迟 P95/P99、连接池等待、事务失败</td>
+</tr>
+<tr>
+<td>发布</td>
+<td>迁移版本、失败发布、备份恢复验证、配置漂移</td>
+</tr>
+</tbody>
+</table>
+<p>企业可接入云监控、Prometheus/Grafana、集中日志及告警；关键是明确阈值、值班人员与处理 Runbook，而不是只安装一个监控面板。</p>
+<h2>十二、数据库备份、恢复、升级和灾难演练</h2>
+<h3>12.1 备份的核心不在“有文件”，而在“能恢复”</h3>
+<p>备份体系应回答：</p>
+<ul>
+<li>多长时间备份一次？保留多久？</li>
+<li>数据库误删后最多能容忍丢失多少数据（RPO）？</li>
+<li>故障后多久必须恢复服务（RTO）？</li>
+<li>备份是否加密、异地保存，并与生产账户隔离？</li>
+<li>最近一次成功的恢复演练是什么时候？</li>
+</ul>
+<h3>12.2 PostgreSQL：逻辑备份与恢复演练</h3>
+<p>在 Linux root Shell：</p>
+<pre><code>install -d -m 700 -o postgres -g postgres /var/backups/postgresql
+
+# Linux 上的 postgres 用户执行，输出自定义归档格式
+su - postgres -c \
+  'pg_dump -Fc -d collab_dev -f /var/backups/postgresql/collab_dev.dump'
+
+ls -lh /var/backups/postgresql/collab_dev.dump
+</code></pre>
+<p><strong>恢复必须使用另外一个演练数据库，避免覆盖线上业务：</strong></p>
+<pre><code>su - postgres -c 'createdb collab_restore'
+su - postgres -c \
+  'pg_restore --no-owner --no-acl -d collab_restore /var/backups/postgresql/collab_dev.dump'
+</code></pre>
+<p>恢复成功后：</p>
+<pre><code>su - postgres -c \
+  "psql -d collab_restore -c 'SELECT COUNT(*) FROM public.vector_demo;'"
+</code></pre>
+<p>上面的 <code>vector_demo</code> 只在前面确实创建了该教学表时存在。通用恢复验证应检查<strong>实际业务表、约束、行数以及应用查询</strong>。pgvector 扩展在恢复目标环境必须可安装、可用；对某些备份的恢复顺序和角色依赖需要预先演练。</p>
+<p><code>pg_dump</code> 备份单库，并不包括所有实例级角色等全局对象。要恢复完整实例权限体系，还应结合 <code>pg_dumpall --globals-only</code>、运维脚本/基础设施声明或托管数据库的自动备份方案。生产如要求更小 RPO，应考虑物理备份 + WAL 归档/PITR，单次 <code>pg_dump</code> 无法代替连续恢复能力。</p>
+<h3>12.3 MySQL 逻辑备份</h3>
+<p>如 MySQL 在使用中：</p>
+<pre><code>mysqldump -u root -p \
+  --single-transaction --routines --triggers \
+  collab_dev &gt; collab_dev.sql
+</code></pre>
+<p>这是适合相应 InnoDB 场景的逻辑导出示例，并非所有引擎、规模或权限配置都通用。大库或生产需要评估一致性、锁、备份窗口、Binlog、PITR 和托管备份能力。</p>
+<h3>12.4 Redis 备份按数据职责选</h3>
+<p>仅承担缓存：可以允许重建，重点测试 Redis 故障时应用是否降级；若承担不能丢失的状态，则必须明确定义 AOF/RDB、故障切换、持久化和恢复流程。不要套用“Redis 是缓存，所以永远不用备份”的绝对说法。</p>
+<h3>12.5 升级前与升级后</h3>
+<p>数据库<strong>小版本补丁升级</strong>和<strong>主版本升级</strong>风险不同。主版本升级需明确 pgvector 插件兼容、驱动、DDL、扩展、数据格式、停机/切换方式及回滚策略。先在测试/预发布环境重放升级，不要在生产节点直接“dnf update 全装了再看”。</p>
+<h2>十三、常见报错总览：按故障层次处理</h2>
+<table>
+<thead>
+<tr>
+<th>报错/现象</th>
+<th>原因优先级</th>
+<th>推荐动作</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>SSH<code>Connection timed out</code></td>
+<td>TCP 22 不通</td>
+<td>公网地址、安全组、ssh 服务、防火墙</td>
+</tr>
+<tr>
+<td><code>Unit mysqld.service does not exist</code></td>
+<td>只添加仓库、未安装服务端</td>
+<td>检查<code>rpm -q mysql-community-server</code></td>
+</tr>
+<tr>
+<td>MySQL<code>ERROR 1045</code></td>
+<td>错密码 / Host 不匹配</td>
+<td>区分 Linux root 与 MySQL root、核对账号来源</td>
+</tr>
+<tr>
+<td>MySQL<code>ERROR 1819</code></td>
+<td>密码强度不足</td>
+<td>使用满足策略的强密码</td>
+</tr>
+<tr>
+<td>PGDG 仓库<code>rhel-3</code>404</td>
+<td>EL 仓库识别 Alibaba Cloud Linux 3 版本错误</td>
+<td>只针对兼容 PGDG 仓库修正 releasever</td>
+</tr>
+<tr>
+<td><code>postgresql-17.service not found</code></td>
+<td>未正确安装 PG17 或 unit 名称不同</td>
+<td><code>rpm -q</code>、<code>systemctl list-unit-files</code></td>
+</tr>
+<tr>
+<td><code>psql: syntax error near "su"</code></td>
+<td>在 SQL Console 里输入 Linux 命令</td>
+<td><code>\q</code>返回 Shell 再执行</td>
+</tr>
+<tr>
+<td><code>pgvector extension is not available</code></td>
+<td>扩展包/PG 大版本不匹配</td>
+<td>核对<code>pgvector_17</code>、PG17、extension 文件</td>
+</tr>
+<tr>
+<td><code>SHOW ssl = off</code></td>
+<td>TLS 未开启</td>
+<td>检查证书、<code>ALTER SYSTEM</code>、服务重启</td>
+</tr>
+<tr>
+<td>5432 端口<code>False</code></td>
+<td>网络层未通</td>
+<td><code>ss</code>、安全组、系统防火墙、监听</td>
+</tr>
+<tr>
+<td><code>no pg_hba.conf entry ... postgres</code></td>
+<td>客户端数据库名错误或 HBA 不匹配</td>
+<td>核对<code>Database=collab_dev</code>、IP、用户、TLS</td>
+</tr>
+<tr>
+<td><code>permission denied for schema</code></td>
+<td>没有 USAGE/CREATE</td>
+<td>检查 Schema 授权和当前用户</td>
+</tr>
+<tr>
+<td>能查询但不能建表</td>
+<td>角色只允许 DML</td>
+<td><strong>这是设计预期</strong>，DDL 走迁移流水线</td>
+</tr>
+<tr>
+<td>新表无法被应用查询</td>
+<td>默认权限绑定的创建者不对</td>
+<td>检查<code>FOR ROLE svc_migrator</code>与实际 owner</td>
+</tr>
+<tr>
+<td>Redis<code>PONG</code>但重启配置丢失</td>
+<td>CONFIG SET 仅修改运行时</td>
+<td>检查 redis.conf 或 CONFIG REWRITE 是否成功</td>
+</tr>
+<tr>
+<td>2 GiB ECS OOM</td>
+<td>并发/数据库/缓存超出内存</td>
+<td>查 OOM、连接池、批处理，扩容或拆分</td>
+</tr>
+</tbody>
+</table>
+<p>快速排错工具箱：</p>
+<pre><code>systemctl status postgresql-17 --no-pager
+systemctl status mysqld --no-pager
+systemctl status redis --no-pager
+ss -lntp | grep -E ':(22|3306|5432|6379)\b'
+free -h
+df -h
+journalctl -u postgresql-17 -n 80 --no-pager
+</code></pre>
+<pre><code>Test-NetConnection &lt;DB_HOST&gt; -Port 5432
+Test-NetConnection &lt;DB_HOST&gt; -Port 3306
+</code></pre>
+<pre><code>-- PostgreSQL 管理员查询
+SELECT line_number, type, database, user_name, address, error
+FROM pg_hba_file_rules
+ORDER BY line_number;
+</code></pre>
+<p>注意：<code>pg_hba_file_rules.error IS NULL</code> 只能说明解析未发现错误，不保证认证逻辑和网络边界符合预期，还要实际从各类客户端验证。</p>
+<h2>十四、不同企业场景下，怎么调整这套范式？</h2>
+<h3>14.1 场景 A：个人学习 / 大学课程 / 演示项目</h3>
+<ul>
+<li>一台轻量 ECS，安装一种主数据库 + Redis（按需）。</li>
+<li>开发者本地跑应用，数据库服务器主要提供持久化与受控访问。</li>
+<li>需要公网连接时，优先限定本机公网 <code>/32</code>、开启 TLS，不把 Redis 公网开放。</li>
+<li>可以手动做 SQL 实验，但保留迁移文件习惯。</li>
+<li>每日基础备份，周度恢复演练。</li>
+</ul>
+<h3>14.2 场景 B：5～15 人的 Java + Python + AI 团队</h3>
+<ul>
+<li>PostgreSQL + pgvector 作为统一业务/向量存储，Redis 缓存。</li>
+<li>个人开发使用本地/临时数据库；共享 DEV 专供跨模块联调。</li>
+<li>按团队角色授权：<code>app_rw</code>、<code>app_ro</code>；项目应用与迁移使用不同身份。</li>
+<li>Git PR + Flyway + CI 数据库测试成为强制门禁。</li>
+<li>应用开发与数据库容量规划分离，尽量使用 VPC 私网或 RDS。</li>
+<li>对外合作使用隔离测试数据集，不共享生产数据。</li>
+</ul>
+<h3>14.3 场景 C：多团队、多微服务、大型平台</h3>
+<ul>
+<li>根据数据边界明确<strong>服务拥有者</strong>：例如用户服务管理用户数据，文档服务管理文档数据。</li>
+<li>不应让所有微服务无限制地共享所有业务表；可以采用服务独立数据库、独立 Schema 或明确共享契约。</li>
+<li>共享数据通过 API、事件消息、只读数据产品或经设计的同步机制提供。</li>
+<li>schema migration 由各服务所属团队维护，并有跨服务兼容测试。</li>
+<li>引入集中身份、数据库审计、指标告警、容量管理、高可用与灾难恢复。</li>
+</ul>
+<h3>14.4 场景 D：多租户 SaaS + Agent / RAG 平台</h3>
+<ul>
+<li>每条业务记录明确 tenant 范围；所有查询都做租户鉴权。</li>
+<li>向量检索必须与租户过滤结合，不能只按全局向量相似度返回结果。</li>
+<li>Agent 工具的 SQL 权限应缩到最低，不把 LLM 生成的 SQL 当可信命令直接执行。</li>
+<li>凭据与用户上传文档需要隔离、加密、审计与生命周期清理。</li>
+<li>向量生成涉及模型版本、重嵌入、索引重建和语义回归测试。</li>
+<li>数据合规、保留周期、删除请求与组织级安全策略优先于“功能做出来就行”。</li>
+</ul>
+<h3>14.5 场景 E：仅 MySQL 项目，不做向量检索</h3>
+<p>完全没有必要因为“AI 热门”就把成熟 MySQL 业务强行迁移到 PostgreSQL。可以继续 MySQL + Redis，使用外部向量服务、独立检索引擎或适合自身需求的 AI 模块；需要评估的是<strong>实际约束和总拥有成本</strong>，而不是技术名字的新旧。</p>
+<h2>十五、部署与企业协作最终验收清单</h2>
+<h3>15.1 基础设施验收</h3>
+<ul>
+<li>[ ]  ECS 实例、系统版本、架构、磁盘与内存已核实</li>
+<li>[ ]  SSH 密钥/账号按人分配，管理权限可追溯</li>
+<li>[ ]  安全组只保留必要端口和受控来源</li>
+<li>[ ]  Linux 防火墙与数据库监听地址一致</li>
+<li>[ ]  数据盘、日志、备份容量与保留期已规划</li>
+<li>[ ]  systemd 启停、开机自启、日志查看正常</li>
+</ul>
+<h3>15.2 数据服务验收</h3>
+<ul>
+<li>[ ]  MySQL 8.4 服务/账号/权限/TLS（若启用 MySQL）</li>
+<li>[ ]  Redis PING 正常、内存策略与持久化策略符合用途</li>
+<li>[ ]  Redis 6379 未向不可信公网开放</li>
+<li>[ ]  PostgreSQL 17 初始化完成、服务正常</li>
+<li>[ ]  pgvector 扩展在目标数据库启用，并通过向量查询</li>
+<li>[ ]  账号不是超级管理员，业务连接遵循最小权限</li>
+<li>[ ]  客户端 TLS 身份验证经实际连接验证</li>
+</ul>
+<h3>15.3 团队治理验收</h3>
+<ul>
+<li>[ ]  LOCAL、CI、DEV、TEST、STAGING、PROD 边界明确</li>
+<li>[ ]  每名成员独立身份，加入相应权限组</li>
+<li>[ ]  应用运行账号与迁移账号分离</li>
+<li>[ ]  DDL 只通过经过评审的迁移流程进入共享环境</li>
+<li>[ ]  Git 仓库存储版本化 SQL，CI 测试空库和升级路径</li>
+<li>[ ]  已定义共享测试数据的隔离/清理/脱敏机制</li>
+<li>[ ]  已有 Onboarding / Offboarding / 密码轮换流程</li>
+<li>[ ]  备份有实际恢复演练，已确定 RPO / RTO</li>
+<li>[ ]  监控、日志、告警和事故 Runbook 可用</li>
+</ul>
+<p><strong>最低合格标准</strong>不是“IDEA 变绿、能连上数据库”，而是：<strong>新成员可以按文档独立接入；新变更可以经评审自动迁移；服务故障时能够定位；数据可以恢复；权限可以随时撤销。</strong></p>
+<h2>十六、全篇总结：从“会安装数据库”进化到“会交付数据基础设施”</h2>
+<p>最初我们学习的是：通过 FinalShell 登录 Linux、<code>dnf install</code>、<code>systemctl start</code>，让 MySQL、PostgreSQL 和 Redis 启动。</p>
+<p>再往上是理解：软件仓库、进程、端口、VPC、安全组、TLS、数据库身份、Schema 和事务。</p>
+<p>真正到了团队项目，还要继续回答：</p>
+<ol>
+<li><strong>谁可以访问什么数据？</strong> —— 权限、身份、环境隔离。</li>
+<li><strong>谁可以改表结构？</strong> —— Schema 所有权、迁移账号、PR 审查。</li>
+<li><strong>不同版本如何共存？</strong> —— 向前兼容、Expand/Migrate/Contract。</li>
+<li><strong>多人开发怎样互不干扰？</strong> —— 本地隔离、CI 临时库、共享 DEV 约束。</li>
+<li><strong>出错如何恢复？</strong> —— 日志、监控、备份、恢复演练。</li>
+<li><strong>系统扩容怎么办？</strong> —— 托管服务、连接池、容量与高可用规划。</li>
+</ol>
+<p><strong>一句话总结：安装数据库解决“今天能运行”，规范化数据基础设施解决“一个不断变化的团队，明天仍然能稳定交付”。</strong></p>
+<h2>十七、官方参考资料（建议持续核对）</h2>
+<ol>
+<li>PostgreSQL 官方文档（17）：<a href="https://www.postgresql.org/docs/17/">https://www.postgresql.org/docs/17/</a></li>
+<li>PostgreSQL 认证文件 <code>pg_hba.conf</code>：<a href="https://www.postgresql.org/docs/17/auth-pg-hba-conf.html">https://www.postgresql.org/docs/17/auth-pg-hba-conf.html</a></li>
+<li>PostgreSQL Schema 与安全：<a href="https://www.postgresql.org/docs/17/ddl-schemas.html">https://www.postgresql.org/docs/17/ddl-schemas.html</a></li>
+<li>PostgreSQL 角色与权限：<a href="https://www.postgresql.org/docs/17/sql-createrole.html">https://www.postgresql.org/docs/17/sql-createrole.html</a></li>
+<li>PostgreSQL 默认权限：<a href="https://www.postgresql.org/docs/17/sql-alterdefaultprivileges.html">https://www.postgresql.org/docs/17/sql-alterdefaultprivileges.html</a></li>
+<li>PostgreSQL 客户端连接与 TLS：<a href="https://www.postgresql.org/docs/17/libpq-connect.html">https://www.postgresql.org/docs/17/libpq-connect.html</a></li>
+<li>PostgreSQL 防止假冒服务器：<a href="https://www.postgresql.org/docs/17/preventing-server-spoofing.html">https://www.postgresql.org/docs/17/preventing-server-spoofing.html</a></li>
+<li>PostgreSQL RPM/Yum 安装：<a href="https://www.postgresql.org/download/linux/redhat/">https://www.postgresql.org/download/linux/redhat/</a></li>
+<li>pgvector 官方仓库：<a href="https://github.com/pgvector/pgvector">https://github.com/pgvector/pgvector</a></li>
+<li>MySQL 8.4 官方手册：<a href="https://dev.mysql.com/doc/refman/8.4/en/">https://dev.mysql.com/doc/refman/8.4/en/</a></li>
+<li>MySQL 加密连接：<a href="https://dev.mysql.com/doc/refman/8.4/en/using-encrypted-connections.html">https://dev.mysql.com/doc/refman/8.4/en/using-encrypted-connections.html</a></li>
+<li>MySQL Yum 仓库：<a href="https://dev.mysql.com/downloads/repo/yum/">https://dev.mysql.com/downloads/repo/yum/</a></li>
+<li>Redis 安全：<a href="https://redis.io/docs/latest/operate/oss_and_stack/management/security/">https://redis.io/docs/latest/operate/oss_and_stack/management/security/</a></li>
+<li>Redis 配置：<a href="https://redis.io/docs/latest/operate/oss_and_stack/management/config/">https://redis.io/docs/latest/operate/oss_and_stack/management/config/</a></li>
+<li>Redis 内存优化：<a href="https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/memory-optimization/">https://redis.io/docs/latest/operate/oss_and_stack/management/optimization/memory-optimization/</a></li>
+<li>Flyway 项目及迁移参考：<a href="https://github.com/flyway/flyway">https://github.com/flyway/flyway</a></li>
+<li>阿里云 ECS 产品文档：<a href="https://help.aliyun.com/zh/ecs/">https://help.aliyun.com/zh/ecs/</a></li>
+</ol>
+<blockquote>
+<p><strong>复现原则</strong>：本文故意保留了 Linux 发行版兼容性、数据库安全、版本化迁移以及团队治理中的关键限制。<strong>不要因为某条示例命令在一台实验机执行成功，就跳过生产环境的变更审批、备份、回滚预案与验证。</strong></p>
+</blockquote>

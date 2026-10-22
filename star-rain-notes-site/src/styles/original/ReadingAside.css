@@ -1,0 +1,64 @@
+
+.reading-aside:not(.__static_scope) {
+  position: sticky;
+  top: calc(var(--header-height) + var(--space-6));
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+.reading-aside__card:not(.__static_scope) {
+  padding: 0 0 var(--space-4);
+}
+.reading-aside__title:not(.__static_scope) {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin-bottom: var(--space-4);
+}
+.reading-aside__info:not(.__static_scope) {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+.reading-aside__info div:not(.__static_scope) {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: 13px;
+}
+.reading-aside__info dt:not(.__static_scope) {
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+.reading-aside__info dd:not(.__static_scope) {
+  margin: 0;
+  color: var(--text-primary);
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.reading-aside--curriculum:not(.__static_scope) {
+  top: 100px;
+  max-height: calc(100dvh - 120px);
+  overflow-y: auto;
+  padding-right: 16px;
+  border-right: 1px solid var(--border);
+  scrollbar-gutter: stable;
+}
+.reading-aside--curriculum .reading-aside__title:not(.__static_scope) {
+  color: var(--text-primary);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: normal;
+  text-transform: none;
+}
+.reading-aside--curriculum:not(.__static_scope) .article-outline--embedded {
+  max-height: none;
+  overflow: visible;
+}
+.reading-aside--curriculum .reading-aside__card + .reading-aside__card:not(.__static_scope) {
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border);
+}

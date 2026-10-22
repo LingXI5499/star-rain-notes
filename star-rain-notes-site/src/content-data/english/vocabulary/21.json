@@ -1,0 +1,567 @@
+{
+  "id": "21",
+  "title": "机场 / 火车站 / 长途出行",
+  "layer": "核心生活场景层",
+  "wordCount": 62,
+  "path": "/english/vocabulary/21/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可用的；有票的",
+      "examples": "[]"
+    },
+    {
+      "word": "book",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bʊk",
+      "phoneticUk": "bʊk",
+      "translation": "书，书籍；预定",
+      "sceneMeaning": "预订",
+      "examples": "[]"
+    },
+    {
+      "word": "international",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪntɚ'næʃnəl",
+      "phoneticUk": "ɪntə'næʃ(ə)n(ə)l",
+      "translation": "国际的，世界(性)的",
+      "sceneMeaning": "国际的",
+      "examples": "[]"
+    },
+    {
+      "word": "attend",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'tɛnd",
+      "phoneticUk": "ə'tend",
+      "translation": "出席；照顾，护理",
+      "sceneMeaning": "出席；照顾，护理",
+      "examples": "[]"
+    },
+    {
+      "word": "directly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "dəˈrektli",
+      "phoneticUk": "dɪ'rektlɪ; daɪ-",
+      "translation": "直接地；立即",
+      "sceneMeaning": "直接地",
+      "examples": "[]"
+    },
+    {
+      "word": "miss",
+      "partOfSpeech": "n",
+      "phoneticUs": "mɪs",
+      "phoneticUk": "mɪs",
+      "translation": "小姐",
+      "sceneMeaning": "错过；想念",
+      "examples": "[]"
+    },
+    {
+      "word": "claim",
+      "partOfSpeech": "v",
+      "phoneticUs": "klem",
+      "phoneticUk": "kleɪm",
+      "translation": "声称，主张；索取",
+      "sceneMeaning": "认领；声称",
+      "examples": "[]"
+    },
+    {
+      "word": "direct",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪˈrɛkt; daɪˈrɛkt",
+      "phoneticUk": "dəˈrekt; daɪˈrekt",
+      "translation": "直接的；直率的",
+      "sceneMeaning": "直达的；直接的",
+      "examples": "[]"
+    },
+    {
+      "word": "carry",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kæri",
+      "phoneticUk": "'kærɪ",
+      "translation": "携带；运载；传送",
+      "sceneMeaning": "携带；运载；传送",
+      "examples": "[]"
+    },
+    {
+      "word": "catch",
+      "partOfSpeech": "v",
+      "phoneticUs": "kætʃ",
+      "phoneticUk": "kætʃ",
+      "translation": "捉住；赶上；领会",
+      "sceneMeaning": "赶上；抓住",
+      "examples": "[]"
+    },
+    {
+      "word": "domestic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "də'mɛstɪk",
+      "phoneticUk": "də'mestɪk",
+      "translation": "本国的；家庭的；国内的",
+      "sceneMeaning": "国内的",
+      "examples": "[]"
+    },
+    {
+      "word": "reserve",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'zɝv",
+      "phoneticUk": "rɪ'zɜːv",
+      "translation": "储备，保留；预定；留出，预定",
+      "sceneMeaning": "预订；保留",
+      "examples": "[]"
+    },
+    {
+      "word": "transfer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "træns'fɝ",
+      "phoneticUk": "træns'fɜː; trɑːns-; -nz-",
+      "translation": "转移；调动vi转移；转换，调换",
+      "sceneMeaning": "换乘；中转",
+      "examples": "[]"
+    },
+    {
+      "word": "cancel",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kænsl",
+      "phoneticUk": "'kæns(ə)l",
+      "translation": "取消，撤消；删去；取消",
+      "sceneMeaning": "取消",
+      "examples": "[]"
+    },
+    {
+      "word": "arrive",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'raɪv",
+      "phoneticUk": "ə'raɪv",
+      "translation": "到达；来临；达到",
+      "sceneMeaning": "到达",
+      "examples": "[]"
+    },
+    {
+      "word": "board",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bɔrd",
+      "phoneticUk": "bɔːd",
+      "translation": "板；上(船、车等)",
+      "sceneMeaning": "登机；上车",
+      "examples": "[]"
+    },
+    {
+      "word": "counter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kaʊntɚ",
+      "phoneticUk": "'kaʊntə",
+      "translation": "柜台；计数器",
+      "sceneMeaning": "柜台",
+      "examples": "[]"
+    },
+    {
+      "word": "flight",
+      "partOfSpeech": "n",
+      "phoneticUs": "flaɪt",
+      "phoneticUk": "flaɪt",
+      "translation": "航班；飞行；逃跑",
+      "sceneMeaning": "航班；飞行",
+      "examples": "[]"
+    },
+    {
+      "word": "journey",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɝni",
+      "phoneticUk": "'dʒɜːnɪ",
+      "translation": "旅行，旅程；旅行",
+      "sceneMeaning": "旅程",
+      "examples": "[]"
+    },
+    {
+      "word": "platform",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plæt'fɔrm",
+      "phoneticUk": "'plætfɔːm",
+      "translation": "平台；站台；讲台",
+      "sceneMeaning": "站台；平台",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "时刻表；日程",
+      "examples": "[]"
+    },
+    {
+      "word": "terminal",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈtɜːrmɪnl",
+      "phoneticUk": "'tɜːmɪn(ə)l",
+      "translation": "末端的；末端；终点站，航空站",
+      "sceneMeaning": "航站楼；终点站",
+      "examples": "[]"
+    },
+    {
+      "word": "airport",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛr'pɔrt",
+      "phoneticUk": "'eəpɔːt",
+      "translation": "机场，航空站",
+      "sceneMeaning": "机场",
+      "examples": "[]"
+    },
+    {
+      "word": "conduct",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'dʌkt",
+      "phoneticUk": "'kɒndʌkt",
+      "translation": "举止，行为；指导",
+      "sceneMeaning": "举止，行为；指导",
+      "examples": "[]"
+    },
+    {
+      "word": "connect",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'nɛkt",
+      "phoneticUk": "kə'nekt",
+      "translation": "连接，连结；联系",
+      "sceneMeaning": "连接；转机",
+      "examples": "[]"
+    },
+    {
+      "word": "connection",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'nɛkʃən",
+      "phoneticUk": "kəˈnekʃn",
+      "translation": "连接，联系；连贯性",
+      "sceneMeaning": "中转；连接",
+      "examples": "[]"
+    },
+    {
+      "word": "delay",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'le",
+      "phoneticUk": "dɪ'leɪ",
+      "translation": "推迟；耽搁；延误；推迟，延期",
+      "sceneMeaning": "延误；推迟",
+      "examples": "[]"
+    },
+    {
+      "word": "coach",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kotʃ",
+      "phoneticUk": "kəʊtʃ",
+      "translation": "长途公共汽车；教练；当…的教练，训练，培训",
+      "sceneMeaning": "长途汽车；经济舱",
+      "examples": "[]"
+    },
+    {
+      "word": "tour",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "旅行，游历",
+      "sceneMeaning": "旅行；游览",
+      "examples": "[]"
+    },
+    {
+      "word": "valid",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vælɪd",
+      "phoneticUk": "'vælɪd",
+      "translation": "有效的；正当的；有效的",
+      "sceneMeaning": "有效的",
+      "examples": "[]"
+    },
+    {
+      "word": "destination",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɛstɪ'neʃən",
+      "phoneticUk": ",destɪ'neɪʃ(ə)n",
+      "translation": "目的地，终点；目标",
+      "sceneMeaning": "目的地",
+      "examples": "[]"
+    },
+    {
+      "word": "immigrant",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɪmɪɡrənt",
+      "phoneticUk": "'ɪmɪgr(ə)nt",
+      "translation": "移民；移民的",
+      "sceneMeaning": "移民；移民的；本场景常见用法：移民签证",
+      "examples": "[]"
+    },
+    {
+      "word": "inspect",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'spɛkt",
+      "phoneticUk": "ɪn'spekt",
+      "translation": "检查，审查；检阅",
+      "sceneMeaning": "检查",
+      "examples": "[]"
+    },
+    {
+      "word": "luggage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lʌɡɪdʒ",
+      "phoneticUk": "'lʌgɪdʒ",
+      "translation": "行李；皮箱，皮包",
+      "sceneMeaning": "行李",
+      "examples": "[]"
+    },
+    {
+      "word": "overweight",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ovə'wet",
+      "phoneticUk": "ˌəʊvə'weɪt",
+      "translation": "超重的",
+      "sceneMeaning": "超重的",
+      "examples": "[]"
+    },
+    {
+      "word": "passport",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pæspɔrt",
+      "phoneticUk": "'pɑːspɔːt",
+      "translation": "护照",
+      "sceneMeaning": "护照",
+      "examples": "[]"
+    },
+    {
+      "word": "pilot",
+      "partOfSpeech": "n",
+      "phoneticUs": "'paɪlət",
+      "phoneticUk": "'paɪlət",
+      "translation": "领航员；飞行员",
+      "sceneMeaning": "飞行员",
+      "examples": "[]"
+    },
+    {
+      "word": "affirm",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'fɝm",
+      "phoneticUk": "ə'fɜːm",
+      "translation": "断言，声明",
+      "sceneMeaning": "断言，声明",
+      "examples": "[]"
+    },
+    {
+      "word": "announce",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'naʊns",
+      "phoneticUk": "ə'naʊns",
+      "translation": "宣布，宣告，发表；宣布，声称",
+      "sceneMeaning": "宣布；广播",
+      "examples": "[]"
+    },
+    {
+      "word": "announcer",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'naʊnsɚ",
+      "phoneticUk": "ə'naʊnsə",
+      "translation": "宣告者；播音员",
+      "sceneMeaning": "宣告者；播音员",
+      "examples": "[]"
+    },
+    {
+      "word": "arrival",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'raɪvəl",
+      "phoneticUk": "ə'raɪv(ə)l",
+      "translation": "到达；到来；到达者",
+      "sceneMeaning": "到达",
+      "examples": "[]"
+    },
+    {
+      "word": "astronaut",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æstrə'nɔt",
+      "phoneticUk": "'æstrənɔːt",
+      "translation": "宇宙航行员，宇航员",
+      "sceneMeaning": "宇宙航行员，宇航员",
+      "examples": "[]"
+    },
+    {
+      "word": "aviate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'evɪet",
+      "phoneticUk": "'eɪvɪeɪt",
+      "translation": "驾驶飞机",
+      "sceneMeaning": "驾驶飞机",
+      "examples": "[]"
+    },
+    {
+      "word": "baggage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæɡɪdʒ",
+      "phoneticUk": "'bægɪdʒ",
+      "translation": "行李",
+      "sceneMeaning": "行李",
+      "examples": "[]"
+    },
+    {
+      "word": "cabin",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæbɪn",
+      "phoneticUk": "'kæbɪn",
+      "translation": "小屋；船舱，机舱",
+      "sceneMeaning": "客舱；小屋",
+      "examples": "[]"
+    },
+    {
+      "word": "carriage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kærɪdʒ",
+      "phoneticUk": "'kærɪdʒ",
+      "translation": "客车厢；四轮马车",
+      "sceneMeaning": "车厢；四轮马车",
+      "examples": "[]"
+    },
+    {
+      "word": "conductor",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'dʌktɚ",
+      "phoneticUk": "kən'dʌktə",
+      "translation": "售票员；(乐队)指挥",
+      "sceneMeaning": "列车员；指挥",
+      "examples": "[]"
+    },
+    {
+      "word": "cottage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑtɪdʒ",
+      "phoneticUk": "'kɒtɪdʒ",
+      "translation": "村舍，小屋",
+      "sceneMeaning": "村舍，小屋",
+      "examples": "[]"
+    },
+    {
+      "word": "crew",
+      "partOfSpeech": "n",
+      "phoneticUs": "krʊ",
+      "phoneticUk": "kruː",
+      "translation": "全体船员",
+      "sceneMeaning": "机组；全体船员",
+      "examples": "[]"
+    },
+    {
+      "word": "deck",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɛk",
+      "phoneticUk": "dek",
+      "translation": "甲板；舱面；层面",
+      "sceneMeaning": "甲板；舱面；层面",
+      "examples": "[]"
+    },
+    {
+      "word": "declare",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'klɛr",
+      "phoneticUk": "dɪ'kleə",
+      "translation": "断言；声明；表明",
+      "sceneMeaning": "申报；宣布",
+      "examples": "[]"
+    },
+    {
+      "word": "depart",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'pɑrt",
+      "phoneticUk": "dɪ'pɑːt",
+      "translation": "离开，起程；出发",
+      "sceneMeaning": "出发；离开",
+      "examples": "[]"
+    },
+    {
+      "word": "departure",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'pɑrtʃɚ",
+      "phoneticUk": "dɪ'pɑːtʃə",
+      "translation": "离开，出发，起程",
+      "sceneMeaning": "出发；离开",
+      "examples": "[]"
+    },
+    {
+      "word": "gate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡet",
+      "phoneticUk": "geɪt",
+      "translation": "大门；篱笆门",
+      "sceneMeaning": "登机口；大门",
+      "examples": "[]"
+    },
+    {
+      "word": "hut",
+      "partOfSpeech": "n",
+      "phoneticUs": "hʌt",
+      "phoneticUk": "hʌt",
+      "translation": "小屋，棚屋",
+      "sceneMeaning": "小屋，棚屋",
+      "examples": "[]"
+    },
+    {
+      "word": "madam",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mædəm",
+      "phoneticUk": "'mædəm",
+      "translation": "夫人，女士，太太",
+      "sceneMeaning": "夫人，女士，太太",
+      "examples": "[]"
+    },
+    {
+      "word": "missing",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɪsɪŋ",
+      "phoneticUk": "'mɪsɪŋ",
+      "translation": "缺掉的，失去的",
+      "sceneMeaning": "缺掉的，失去的",
+      "examples": "[]"
+    },
+    {
+      "word": "outskirt",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aʊt,skɝt ",
+      "phoneticUk": "'aʊtskɜːt",
+      "translation": "外边，郊区",
+      "sceneMeaning": "外边，郊区",
+      "examples": "[]"
+    },
+    {
+      "word": "reservation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛzɚ'veʃən",
+      "phoneticUk": "ˌrezə'veɪʃn",
+      "translation": "预定",
+      "sceneMeaning": "预订；预约",
+      "examples": "[]"
+    },
+    {
+      "word": "route",
+      "partOfSpeech": "n",
+      "phoneticUs": "raʊt",
+      "phoneticUk": "ruːt",
+      "translation": "路，路线，路程",
+      "sceneMeaning": "路线；航线",
+      "examples": "[]"
+    },
+    {
+      "word": "takeoff",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tekɔf",
+      "phoneticUk": "'teɪkɔ:f",
+      "translation": "起飞",
+      "sceneMeaning": "起飞",
+      "examples": "[]"
+    },
+    {
+      "word": "voyage",
+      "partOfSpeech": "n / n&vi",
+      "phoneticUs": "'vɔɪɪdʒ",
+      "phoneticUk": "'vɒɪɪdʒ",
+      "translation": "航海，航空；字",
+      "sceneMeaning": "航行；航程",
+      "examples": "[]"
+    }
+  ]
+}

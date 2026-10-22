@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>URL</code> 解析网址；<code>URLSearchParams</code> 读写查询参数，避免手工拼接编码。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const url = new URL('https://example.com/search?q=html');
+url.searchParams.set('page', '2');
+console.log(url.searchParams.get('q'), url.href);
+</code></pre>
+<p><strong>学完能做：</strong> 通过 URL API 解析、修改查询参数。</p>

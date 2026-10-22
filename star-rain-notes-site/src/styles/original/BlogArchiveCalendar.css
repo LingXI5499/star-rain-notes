@@ -1,0 +1,55 @@
+
+.archive-calendar:not(.__static_scope) {
+  margin-bottom: var(--space-6);
+  padding: var(--space-5);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--bg-surface);
+}
+.archive-calendar__head:not(.__static_scope) {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+.archive-calendar__head span:not(.__static_scope) { color: var(--text-muted); font-size: 11px;
+}
+.archive-calendar__head h2:not(.__static_scope) { margin: 3px 0 0; font-size: 19px;
+}
+.archive-calendar__head select:not(.__static_scope) { width: auto; max-width: 55%;
+}
+.archive-calendar__grid:not(.__static_scope) { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px;
+}
+.archive-calendar__weekday:not(.__static_scope) { padding: 5px; color: var(--text-muted); font-size: 11px; text-align: center;
+}
+.archive-calendar__day:not(.__static_scope) {
+  display: grid;
+  align-content: center;
+  gap: 2px;
+  min-height: 56px;
+  padding: 5px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--bg-page);
+  text-align: center;
+  cursor: pointer;
+}
+.archive-calendar__day small:not(.__static_scope) { color: var(--primary); font-size: 10px;
+}
+.archive-calendar__day:not(.__static_scope):disabled { border-color: transparent; color: var(--text-muted); background: transparent; opacity: 0.55; cursor: default;
+}
+.archive-calendar__day.is-selected:not(.__static_scope) { border-color: var(--primary); background: color-mix(in srgb, var(--primary) 12%, var(--bg-surface));
+}
+@media (max-width: 600px) {
+.archive-calendar:not(.__static_scope) { padding: var(--space-3);
+}
+.archive-calendar__head:not(.__static_scope) { align-items: stretch; flex-direction: column;
+}
+.archive-calendar__head select:not(.__static_scope) { max-width: 100%;
+}
+.archive-calendar__day:not(.__static_scope) { min-height: 44px; font-size: 12px;
+}
+.archive-calendar__day small:not(.__static_scope) { font-size: 9px;
+}
+}

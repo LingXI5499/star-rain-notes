@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 购物清单给每条记录稳定 ID，增删改只针对匹配 ID，并同步更新视图。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let list = [{ id: 1, name: '牛奶', done: false }];
+list = list.map(item =&gt; item.id === 1 ? { ...item, done: true } : item);
+list = list.filter(item =&gt; item.id !== 1);
+</code></pre>
+<p><strong>学完能做：</strong> 完成清单项编辑、状态切换及删除。</p>

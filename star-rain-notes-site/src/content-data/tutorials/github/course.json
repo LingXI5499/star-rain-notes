@@ -1,0 +1,944 @@
+{
+  "slug": "github",
+  "title": "GitHub",
+  "description": "面向秋招、真实团队研发与开源协作的 GitHub 教程体系，覆盖 Repository、Issues、Projects、Pull Request、Code Review、Rulesets、Actions/CI/CD、Release、Security、自动化、开源与求职项目展示。",
+  "category": "通用编程与开发工具体系",
+  "categorySlug": "315825310246",
+  "publishedAt": "2026-08-28",
+  "chapterCount": 108,
+  "wordCount": 17891,
+  "categoryId": "3",
+  "groups": [
+    {
+      "title": "学习指南",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "GitHub 学习路线、课程边界与企业开发定位",
+          "description": "本章覆盖：GitHub 是基于 Git 的软件开发协作平台，不等于 Git；Git Repository 与 GitHub Repository 的关系；GitHub 在软件生命周期中的位置：计划、开发、评审、构建、测试、安全、发布、协作；秋招常见能力：Git / GitHub、项目仓库、团队协作、PR、CI/CD、开源经历；企业主线：Issue → Branch → PR → Review → Check → Merge → Release / Deploy；个人项目主线：README → Issue → Commit → PR → Actions → Release → Portfolio；GitHub 功能与账户 / Organization / Plan / Repository Visibility 的关系；与 Git、CI/CD、DevOps、项目管理、安全课程的边界；学习方式：所有平台功能必须回到“解决了软件工程中的什么问题”。",
+          "path": "/tutorials/github/chapter-1-1/",
+          "wordCount": 381,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Repository 与 GitHub 仓库基础",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "GitHub Repository：代码仓库还是工程协作单元",
+          "description": "本章覆盖：repository；source code；Git history；default branch；issues；pull requests；actions；releases；security；insights；settings；一个成熟仓库不仅包含源代码，也包含协作规则和工程元数据。",
+          "path": "/tutorials/github/chapter-2-1/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "创建 Repository：Public、Private、初始化文件与默认分支",
+          "description": "本章覆盖：repository name；description；public / private；README；`.gitignore`；license；default branch；initialize repository；existing local repository push；repository visibility 与招聘展示 / 企业保密边界；不把敏感企业代码放进个人公开仓库。",
+          "path": "/tutorials/github/chapter-2-2/",
+          "wordCount": 190,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "Clone、Remote 与 GitHub URL",
+          "description": "本章覆盖：HTTPS clone URL；SSH clone URL；GitHub repository remote；origin；authentication；credential；SSH key；personal access token 的平台认证定位；GitHub 登录身份与 Git commit author identity 的区别；clone / fetch / push 本质仍由 Git 完成。",
+          "path": "/tutorials/github/chapter-2-3/",
+          "wordCount": 187,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "Repository 文件：README、LICENSE、CONTRIBUTING 与 SECURITY",
+          "description": "本章覆盖：`README.md`；`LICENSE`；`CONTRIBUTING.md`；`SECURITY.md`；`CODE_OF_CONDUCT.md`；`SUPPORT.md`；`.github/`；社区健康文件；文档也是工程接口；开源仓库与个人求职仓库所需文档不同。",
+          "path": "/tutorials/github/chapter-2-4/",
+          "wordCount": 140,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "README：让别人 30 秒理解项目",
+          "description": "本章覆盖：project positioning；screenshot / demo；feature；architecture；tech stack；quick start；configuration；database；API；testing；deployment；known limitations；roadmap；license；避免 README 变成无结构的技术名词堆砌。",
+          "path": "/tutorials/github/chapter-2-5/",
+          "wordCount": 184,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-6",
+          "title": "Repository Topics、About、Website 与可发现性",
+          "description": "本章覆盖：description；website；topics；language statistics；social preview 的平台边界；search discoverability；repository naming；pinned repositories 的后续连接；documentation URL；demo URL；求职项目要能从仓库首页直接找到运行结果。",
+          "path": "/tutorials/github/chapter-2-6/",
+          "wordCount": 180,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-7",
+          "title": "Repository Template 与项目初始化标准化",
+          "description": "本章覆盖：template repository；create from template；starter repository 的组织场景；scaffold；README template；issue / PR template；workflow template 的后续连接；team conventions；bootstrap new project；template 与 fork 的区别。",
+          "path": "/tutorials/github/chapter-2-7/",
+          "wordCount": 184,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-8",
+          "title": "Archive、Transfer、Delete 与仓库生命周期",
+          "description": "本章覆盖：archive repository；read-only state；transfer ownership；rename；delete；restore 的平台边界；redirects；forks；stars / watchers 等关联影响；production repository 不应随意删除；退役仓库应留下明确状态和替代方案。",
+          "path": "/tutorials/github/chapter-2-8/",
+          "wordCount": 165,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-9",
+          "title": "Repository Insights 与工程健康观察",
+          "description": "本章覆盖：contributors；traffic；forks；dependency graph 的安全章节连接；network；commit activity；community standards；pulse / activity 的版本变化边界；metrics ≠ software quality；用数据观察协作和使用情况，而不是追求“绿格子”。",
+          "path": "/tutorials/github/chapter-2-9/",
+          "wordCount": 169,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Issues、Milestones 与 Projects 项目协作",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "GitHub Issues：Bug、Feature、Task 与需求载体",
+          "description": "本章覆盖：issue；bug；feature；task；idea；assignee；label；milestone；comment；timeline；issue 不是论坛帖子，而是可追踪工作对象；一个高质量 issue 要能让其他人理解目标和验收条件。",
+          "path": "/tutorials/github/chapter-3-1/",
+          "wordCount": 125,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "高质量 Issue：背景、问题、范围与验收标准",
+          "description": "本章覆盖：context；current behavior；expected behavior；reproduction；scope；non-goal；acceptance criteria；screenshot / log；environment；risk；issue 应描述问题和结果，不应提前绑死所有实现细节。",
+          "path": "/tutorials/github/chapter-3-2/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "Issue Template 与 Issue Forms",
+          "description": "本章覆盖：`.github/ISSUE_TEMPLATE`；bug report；feature request；config.yml；issue form；YAML form；structured input；required field；dropdown；validation；通过模板减少缺失上下文；模板应帮助贡献者，而不是制造表格负担。",
+          "path": "/tutorials/github/chapter-3-3/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "Labels、Assignees 与 Triage",
+          "description": "本章覆盖：label taxonomy；type；priority；status；area；severity；assignee；triage；duplicate；invalid；good first issue；help wanted；label 不应同时承担所有项目字段语义。",
+          "path": "/tutorials/github/chapter-3-4/",
+          "wordCount": 136,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "Milestones 与版本目标",
+          "description": "本章覆盖：milestone；due date；issue；pull request；completion progress；release milestone；sprint-like use；milestone 与 Projects iteration 的区别；版本目标；不把所有长期 backlog 强行塞到一个 milestone。",
+          "path": "/tutorials/github/chapter-3-5/",
+          "wordCount": 159,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "Sub-issues、Dependencies 与工作拆分",
+          "description": "本章覆盖：parent issue；sub-issue；task decomposition；blocked by；blocking；dependency；hierarchy；progress；parallel development；large issue → smaller issues；一个 issue 的粒度应支持独立验收。",
+          "path": "/tutorials/github/chapter-3-6/",
+          "wordCount": 159,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-7",
+          "title": "GitHub Projects：Table、Board、Roadmap",
+          "description": "本章覆盖：Project；table view；board view；roadmap；issue / PR integration；draft item；custom field；filter；group；sort；项目视图不是 Jira 的简单复制，而是 GitHub 原生工作数据视图。",
+          "path": "/tutorials/github/chapter-3-7/",
+          "wordCount": 136,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-8",
+          "title": "Projects Fields、Iteration、Priority 与自动化",
+          "description": "本章覆盖：status；priority；estimate；iteration；date；single select；text / number；custom fields；built-in workflow；auto-add；auto-archive；只创建真正用于决策的字段，避免“表格行政化”。",
+          "path": "/tutorials/github/chapter-3-8/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-9",
+          "title": "Issue → Branch → PR → Project 的完整需求链",
+          "description": "本章覆盖：issue planning；create branch；commit；link pull request；closing keyword；fixes / closes / resolves；review；merge；auto-close issue；project status update；从需求到代码留下可追溯链路；企业开发的“可追溯性”比单个工具操作更重要。",
+          "path": "/tutorials/github/chapter-3-9/",
+          "wordCount": 179,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Pull Request 与 Code Review",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "Pull Request 的本质：提出一个可审查的变更集合",
+          "description": "本章覆盖：pull request；base branch；head branch；branch；fork；diff；commits；conversation；checks；files changed；mergeability；PR 是协作对象，不只是“合并按钮”。",
+          "path": "/tutorials/github/chapter-4-1/",
+          "wordCount": 130,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "创建高质量 Pull Request",
+          "description": "本章覆盖：PR title；summary；motivation；implementation；test evidence；screenshot；breaking change；migration note；risk；linked issue；reviewer context；PR 描述重点说明“为什么”和“怎么验证”。",
+          "path": "/tutorials/github/chapter-4-2/",
+          "wordCount": 156,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "Draft Pull Request 与早期协作",
+          "description": "本章覆盖：draft PR；work in progress；early feedback；CI；design discussion；reviewer notification；ready for review；stacked work；不用“等所有代码写完”才第一次暴露设计问题。",
+          "path": "/tutorials/github/chapter-4-3/",
+          "wordCount": 134,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "Files Changed、Diff 与 Review Navigation",
+          "description": "本章覆盖：unified diff；split diff；file filter；viewed；line comment；outdated comment；commit comparison；whitespace changes；generated files；review scope；reviewer 应先理解整体，再下沉到逐行问题。",
+          "path": "/tutorials/github/chapter-4-4/",
+          "wordCount": 161,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "Review Comment、Suggestion 与 Review State",
+          "description": "本章覆盖：comment；suggestion；batch review；approve；request changes；comment-only review；resolve conversation；pending review；suggested change；code review 的目标是降低缺陷和知识孤岛，不是展示“挑错能力”。",
+          "path": "/tutorials/github/chapter-4-5/",
+          "wordCount": 165,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "Code Review 应看什么：Correctness、Design、Test、Security、Maintainability",
+          "description": "本章覆盖：correctness；requirement match；API design；naming；readability；duplication；test coverage；error handling；security；performance；backward compatibility；migration；review 优先级：缺陷与设计问题 > 风格偏好。",
+          "path": "/tutorials/github/chapter-4-6/",
+          "wordCount": 180,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "Required Review 与 Approval 语义",
+          "description": "本章覆盖：required approving reviews；review dismissal；stale approval；code owner review；merge gate；admin / bypass 的组织策略；author cannot replace independent review in mature workflow；review policy 与团队风险等级有关；功能可用性受仓库和组织策略影响。",
+          "path": "/tutorials/github/chapter-4-7/",
+          "wordCount": 197,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "PR Checks：Build、Test、Lint、Scan",
+          "description": "本章覆盖：status check；check run；GitHub Actions；build；unit test；integration test；lint；code scanning；dependency review；required status check；merge only after required checks；自动化检查不替代人工设计审查。",
+          "path": "/tutorials/github/chapter-4-8/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-9",
+          "title": "Merge Commit、Squash Merge 与 Rebase Merge",
+          "description": "本章覆盖：merge commit；squash merge；rebase merge；resulting Git history；commit identity；revertability；bisectability；clean history；PR commit history；Git 原理来自前一门课程；repository policy 应统一而非每人随意选择。",
+          "path": "/tutorials/github/chapter-4-9/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-10",
+          "title": "Auto-merge、Merge Queue 与高并发主干集成",
+          "description": "本章覆盖：auto-merge；required checks；required reviews；merge queue；stale base；queue validation；high-traffic branch；serial integration；CI race；feature availability / plan boundary；规模小的个人项目不需要为了“企业感”机械启用复杂队列。",
+          "path": "/tutorials/github/chapter-4-10/",
+          "wordCount": 190,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-11",
+          "title": "Stacked Pull Requests 与大型变更拆分",
+          "description": "本章覆盖：stacked PR；dependency chain；small reviewable change；base on previous branch；incremental design；parallel review；update cascade；merge order；reduce giant PR；不是所有团队都采用 stacked workflow。",
+          "path": "/tutorials/github/chapter-4-11/",
+          "wordCount": 173,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-12",
+          "title": "PR 生命周期：从打开到合并后的清理",
+          "description": "本章覆盖：open；synchronize；review；requested changes；checks；resolve；ready；merge；linked issue close；delete branch；release note；follow-up issue；一个 PR 的“完成”包括验证和后续清理。",
+          "path": "/tutorials/github/chapter-4-12/",
+          "wordCount": 151,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Branch Protection、Rulesets 与 CODEOWNERS",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "为什么需要保护主分支",
+          "description": "本章覆盖：default branch；production branch；direct push risk；force push；deletion；required review；CI gate；accidental merge；policy enforcement；Git 能修改 ref，GitHub 负责在平台层施加团队规则。",
+          "path": "/tutorials/github/chapter-5-1/",
+          "wordCount": 157,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "Protected Branch 基础",
+          "description": "本章覆盖：branch protection rule；require pull request；required approvals；required status checks；require conversation resolution；force push restriction；deletion restriction；linear history option；signed commits option；不同功能 availability 需按当前 GitHub 方案核验。",
+          "path": "/tutorials/github/chapter-5-2/",
+          "wordCount": 228,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "Repository Rulesets：现代规则治理模型",
+          "description": "本章覆盖：ruleset；branch ruleset；tag ruleset；target pattern；enforcement status；bypass；required checks；commit metadata rules；branch / tag creation / deletion control；multiple rulesets may layer；ruleset 与传统 branch protection 的关系。",
+          "path": "/tutorials/github/chapter-5-3/",
+          "wordCount": 204,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "CODEOWNERS：代码责任域与自动 Reviewer",
+          "description": "本章覆盖：`CODEOWNERS`；file pattern；owner；team；order matching；repository location；automatic review request；required code owner review；ownership boundary；code owner 不意味着只有该人能修改代码；bus factor 与知识共享仍需治理。",
+          "path": "/tutorials/github/chapter-5-4/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "Required Status Checks 与 Merge Gate",
+          "description": "本章覆盖：status context；GitHub Actions job / external CI；successful check；expected source；branch up-to-date policy；merge blocked；flaky test；renamed check；workflow change；gate 必须稳定，否则规则会变成生产力障碍。",
+          "path": "/tutorials/github/chapter-5-5/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "Signed Commit、Linear History 与提交规则",
+          "description": "本章覆盖：verified signature；GPG / SSH signing；linear history；merge method；commit message rule；branch naming rule；metadata restriction；provenance；compliance；不把签名误解为代码安全证明。",
+          "path": "/tutorials/github/chapter-5-6/",
+          "wordCount": 157,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "Bypass、Admin 与紧急变更治理",
+          "description": "本章覆盖：bypass list；repository admin；emergency hotfix；audit；least privilege；temporary bypass；post-incident review；delegated bypass 的平台扩展认知；“管理员能绕过”不应成为日常流程。",
+          "path": "/tutorials/github/chapter-5-7/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-8",
+          "title": "个人项目也应有的最小治理规则",
+          "description": "本章覆盖：protect main；require PR where practical；CI pass；no force push；delete branch after merge；simple CODEOWNERS optional；dependency update checks；secret protection；不为了展示复杂度设置无法维护的企业级规则；求职项目强调“规则与项目规模匹配”。",
+          "path": "/tutorials/github/chapter-5-8/",
+          "wordCount": 189,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "GitHub Actions 与 CI/CD",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "GitHub Actions 的定位：Event-driven Automation",
+          "description": "本章覆盖：GitHub Actions；workflow；event；job；step；action；runner；CI；CD；automation；repository event triggers workflow；Actions 是 GitHub 平台自动化系统，不等于 CI/CD 的全部理论。",
+          "path": "/tutorials/github/chapter-6-1/",
+          "wordCount": 144,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "Workflow YAML 基本结构",
+          "description": "本章覆盖：`.github/workflows/*.yml`；`name`；`on`；`jobs`；`runs-on`；`steps`；`uses`；`run`；YAML indentation；workflow syntax；一个 workflow 应有清晰责任。",
+          "path": "/tutorials/github/chapter-6-2/",
+          "wordCount": 131,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "Events 与 Trigger",
+          "description": "本章覆盖：`push`；`pull_request`；`workflow_dispatch`；`schedule`；release event；issue / PR events 的扩展；branch filter；path filter；activity type；webhook event thinking；不让昂贵 workflow 在所有事件上无条件运行。",
+          "path": "/tutorials/github/chapter-6-3/",
+          "wordCount": 173,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "Job、Step、Runner 与执行环境",
+          "description": "本章覆盖：job；step；hosted runner；self-hosted runner；VM image；workspace；shell；environment variable；filesystem lifecycle；network；job isolation；runner 信任边界；self-hosted runner 需要额外安全治理。",
+          "path": "/tutorials/github/chapter-6-4/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "Marketplace Action、uses 与供应链风险",
+          "description": "本章覆盖：action；JavaScript action；Docker action；composite action；`uses: owner/repo@ref`；tag；commit SHA pinning；third-party action；marketplace；source review；dependency update；外部 Action 等同执行第三方代码，必须纳入供应链治理。",
+          "path": "/tutorials/github/chapter-6-5/",
+          "wordCount": 191,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-6",
+          "title": "Environment Variable、Context 与 Expression",
+          "description": "本章覆盖：`env`；`github` context；`runner`；`job`；`steps`；`needs`；`secrets`；`${{ }}`；expression；condition；untrusted input；context 值进入 shell 时需要注意命令注入风险。",
+          "path": "/tutorials/github/chapter-6-6/",
+          "wordCount": 141,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-7",
+          "title": "Secrets、Variables 与 GITHUB_TOKEN",
+          "description": "本章覆盖：repository secret；environment secret；organization secret；variable；`GITHUB_TOKEN`；token permission；least privilege；secret masking；fork PR security boundary；secrets should not be echoed；workflow permission 应显式最小化。",
+          "path": "/tutorials/github/chapter-6-7/",
+          "wordCount": 203,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-8",
+          "title": "Matrix Strategy 与多版本测试",
+          "description": "本章覆盖：strategy；matrix；OS matrix；JDK version；Node version；Python version；include / exclude；fail-fast；compatibility testing；parallel jobs；不为“看起来专业”测试无业务支持价值的版本组合。",
+          "path": "/tutorials/github/chapter-6-8/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-9",
+          "title": "Cache、Artifact 与构建产物",
+          "description": "本章覆盖：dependency cache；cache key；restore key；artifact；upload artifact；download artifact；build output；test report；retention；cache ≠ artifact；不缓存不可信或不稳定的可执行结果。",
+          "path": "/tutorials/github/chapter-6-9/",
+          "wordCount": 149,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-10",
+          "title": "Job Dependency、Outputs 与 Reusable Workflow",
+          "description": "本章覆盖：`needs`；job output；step output；reusable workflow；`workflow_call`；inputs；secrets；composite action；duplication reduction；centralized CI policy；不要把一个 workflow 写成数百行无法维护脚本。",
+          "path": "/tutorials/github/chapter-6-10/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-11",
+          "title": "Java 项目的 CI：Maven / Gradle Build + Test",
+          "description": "本章覆盖：checkout；setup Java；JDK version；dependency cache；Maven；Gradle；compile；unit test；package；test report；artifact；backend repository 的最小 CI；对应用户 Java 全栈求职项目的真实落地。",
+          "path": "/tutorials/github/chapter-6-11/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-12",
+          "title": "前端项目 CI：Node、Install、Lint、Test、Build",
+          "description": "本章覆盖：checkout；setup Node；package manager；lockfile；`npm ci` / equivalent deterministic install；lint；unit test；type check；build；artifact；dependency cache；frontend / full-stack repository CI。",
+          "path": "/tutorials/github/chapter-6-12/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-13",
+          "title": "Deployment、Environment 与审批 Gate",
+          "description": "本章覆盖：deployment；environment；environment protection；required reviewer；deployment branch / tag policy；secret scope；staging；production；manual approval；rollback strategy；GitHub Actions 能触发部署，但部署系统本身可能在云平台 / Server。",
+          "path": "/tutorials/github/chapter-6-13/",
+          "wordCount": 199,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-14",
+          "title": "Actions 安全：OIDC、最小权限与不可信 PR",
+          "description": "本章覆盖：OIDC；short-lived cloud credential；avoid long-lived cloud secret；`permissions`；untrusted fork pull request；`pull_request`；`pull_request_target` 高风险边界；action SHA pinning；dependency review；workflow code is production code；平台安全策略会持续演进，安全章节必须以当前官方文档复核。",
+          "path": "/tutorials/github/chapter-6-14/",
+          "wordCount": 238,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Releases、Environments、Pages 与 Packages",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "Tag 与 GitHub Release 的区别",
+          "description": "本章覆盖：Git tag；GitHub Release；release based on tag；release title；notes；asset；draft；prerelease；latest；tag date vs release date；Git tag 属于 Git，Release 属于 GitHub 平台发布对象。",
+          "path": "/tutorials/github/chapter-7-1/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "Release Notes 与版本变更说明",
+          "description": "本章覆盖：changelog；release notes；compare range；merged PR；contributor；breaking change；migration；bug fix；feature；generated release notes；用户关心“发生了什么”和“升级要做什么”。",
+          "path": "/tutorials/github/chapter-7-2/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "Release Asset 与二进制发布",
+          "description": "本章覆盖：JAR；ZIP；executable；checksum；signature；build artifact；release asset；Actions upload；source archive；reproducible build 的高层认知；不把临时 CI artifact 与正式 release asset 混为一谈。",
+          "path": "/tutorials/github/chapter-7-3/",
+          "wordCount": 157,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "Environment：Development、Staging、Production",
+          "description": "本章覆盖：environment；deployment；environment secret；protection rule；reviewer；deployment history；branch policy；URL；staged rollout；GitHub environment 是部署治理对象，不是应用 `.env` 文件。",
+          "path": "/tutorials/github/chapter-7-4/",
+          "wordCount": 159,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "GitHub Pages：静态站点与文档发布",
+          "description": "本章覆盖：GitHub Pages；static site；source branch / Actions deployment；custom domain；HTTPS；documentation；portfolio；static frontend；dynamic backend not hosted directly by Pages；求职项目文档 / Demo 的实际用途。",
+          "path": "/tutorials/github/chapter-7-5/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-6",
+          "title": "GitHub Packages：制品与包托管",
+          "description": "本章覆盖：package registry；npm；Maven；Gradle；container registry；package version；repository association；authentication；permissions；CI publish；package vs release asset。",
+          "path": "/tutorials/github/chapter-7-6/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-7",
+          "title": "GitHub Container Registry 基础",
+          "description": "本章覆盖：GHCR；OCI image；Docker image；tag；digest；package permission；Actions build / push；deployment pull；public / private；container security 的后续连接；不展开 Docker 本身教学。",
+          "path": "/tutorials/github/chapter-7-7/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-8",
+          "title": "Release Automation：Tag → Build → Test → Publish",
+          "description": "本章覆盖：tag trigger；version；CI；build；test；artifact；release；package；changelog；failure handling；一个可重复的发布流程比手工上传文件更可靠。",
+          "path": "/tutorials/github/chapter-7-8/",
+          "wordCount": 112,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-9",
+          "title": "版本发布策略与 Semantic Versioning 边界",
+          "description": "本章覆盖：major；minor；patch；prerelease；breaking change；compatibility；release branch；tag naming；GitHub 不强制 SemVer；团队应定义自己的版本策略；简历项目至少要能说明发布版本和变更。",
+          "path": "/tutorials/github/chapter-7-9/",
+          "wordCount": 136,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "GitHub Security 与软件供应链安全",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "Repository Security 总览：Code、Secret、Dependency、Workflow",
+          "description": "本章覆盖：code security；secret security；dependency security；Actions security；access control；supply chain；vulnerability；advisory；security tab；security capability may depend on repository visibility / plan；安全不是“上线前扫一次”。",
+          "path": "/tutorials/github/chapter-8-1/",
+          "wordCount": 199,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "Dependency Graph 与依赖可见性",
+          "description": "本章覆盖：dependency graph；manifest；lockfile；dependency；transitive dependency；package ecosystem；dependency submission API 的高级连接；SBOM 的后续认知；软件供应链从“我写了什么”扩展到“我引入了什么”。",
+          "path": "/tutorials/github/chapter-8-2/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "Dependabot Alerts、Security Updates 与 Version Updates",
+          "description": "本章覆盖：Dependabot alerts；vulnerability；security update PR；version update PR；`dependabot.yml`；update schedule；package ecosystem；group update；labels；reviewers；自动升级仍然必须经过测试和 review。",
+          "path": "/tutorials/github/chapter-8-3/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "Dependency Review：在合并之前审查依赖变化",
+          "description": "本章覆盖：dependency diff；added dependency；removed dependency；updated dependency；vulnerability；license；PR check；dependency review action；merge gate；比“上线后收到漏洞告警”更靠前的控制点。",
+          "path": "/tutorials/github/chapter-8-4/",
+          "wordCount": 157,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "Secret Scanning 与 Push Protection",
+          "description": "本章覆盖：secret；token；credential；scanning；push protection；block secret before entering history；validity check / provider support 的平台能力边界；false positive；bypass；rotate leaked secret；删除 commit 不能让已经泄露的密钥重新安全。",
+          "path": "/tutorials/github/chapter-8-5/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-6",
+          "title": "Code Scanning 与 CodeQL 高层模型",
+          "description": "本章覆盖：static analysis；CodeQL；query；database；alert；pull request integration；default setup；advanced setup；supported language；false positive / dismissal；code scanning 是辅助工具，不替代安全设计和人工 review。",
+          "path": "/tutorials/github/chapter-8-6/",
+          "wordCount": 177,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-7",
+          "title": "Security Advisory 与私密漏洞修复流程",
+          "description": "本章覆盖：repository security advisory；vulnerability report；private discussion；temporary private fork；coordinated disclosure；CVE 的平台连接；patched version；credit；public disclosure；普通个人项目也应知道如何接收漏洞报告。",
+          "path": "/tutorials/github/chapter-8-7/",
+          "wordCount": 182,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-8",
+          "title": "Actions Supply Chain Security",
+          "description": "本章覆盖：third-party action；commit SHA pinning；compromised tag；permissions；secrets；self-hosted runner；untrusted PR；dependency update；CodeQL / scanning for workflow；Actions workflow 本身也是供应链入口。",
+          "path": "/tutorials/github/chapter-8-8/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-9",
+          "title": "OIDC 与云部署身份",
+          "description": "本章覆盖：OpenID Connect；federated identity；short-lived token；trust policy；repository / branch / environment claims；cloud provider；secretless credential model；least privilege；long-lived cloud key risk；这是现代 CI/CD 安全的重要企业能力。",
+          "path": "/tutorials/github/chapter-8-9/",
+          "wordCount": 201,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-10",
+          "title": "Security Policy 与安全治理闭环",
+          "description": "本章覆盖：SECURITY.md；supported versions；reporting channel；vulnerability triage；severity；patch；dependency update；scan；release；incident；postmortem；安全工具只有进入流程才产生价值。",
+          "path": "/tutorials/github/chapter-8-10/",
+          "wordCount": 155,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Organization、Team、权限与企业协作",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "Personal Account、Organization 与 Enterprise 的层级",
+          "description": "本章覆盖：personal account；organization；enterprise account；repository ownership；team；member；outside collaborator；billing / policy 的边界；企业代码通常由 Organization 所有，而不是员工个人账户。",
+          "path": "/tutorials/github/chapter-9-1/",
+          "wordCount": 156,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "Repository Roles 与最小权限",
+          "description": "本章覆盖：read；triage；write；maintain；admin；custom role 的企业扩展边界；least privilege；collaborator；destructive permission；automation identity；权限不是越高越方便越好。",
+          "path": "/tutorials/github/chapter-9-2/",
+          "wordCount": 139,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "Teams 与代码责任域",
+          "description": "本章覆盖：team；nested team；repository access；mention；CODEOWNERS；platform team；backend team；frontend team；security team；ownership；team 应对应真实协作边界而不是组织架构复制。",
+          "path": "/tutorials/github/chapter-9-3/",
+          "wordCount": 143,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "Outside Collaborator 与外部贡献访问",
+          "description": "本章覆盖：external collaborator；contractor；partner；repository-specific access；least privilege；expiration / review；private repository；organization policy；onboarding；offboarding；企业协作必须考虑人员生命周期。",
+          "path": "/tutorials/github/chapter-9-4/",
+          "wordCount": 181,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "Authentication、2FA、SSH 与 Token 权限",
+          "description": "本章覆盖：password login；2FA；passkey 的平台方向认知；SSH key；personal access token；fine-grained token；classic token 的历史兼容边界；expiration；scope；secret rotation；企业账户可能有更严格组织策略。",
+          "path": "/tutorials/github/chapter-9-5/",
+          "wordCount": 152,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-6",
+          "title": "GitHub Apps、OAuth Apps 与机器身份",
+          "description": "本章覆盖：GitHub App；installation；permission；installation token；OAuth App；user authorization；webhook；machine identity；bot；automation；新系统集成通常优先考虑最小权限的 GitHub App 模型。",
+          "path": "/tutorials/github/chapter-9-6/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-7",
+          "title": "Audit Log 与组织审计认知",
+          "description": "本章覆盖：audit log；actor；action；repository；permission change；authentication event；security event；compliance；incident investigation；feature availability depends on account tier；个人项目理解概念即可。",
+          "path": "/tutorials/github/chapter-9-7/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-8",
+          "title": "Enterprise Repository Governance 总图",
+          "description": "本章覆盖：repository creation policy；visibility；ruleset；Actions policy；approved actions；secret policy；dependency security；team permission；audit；retention；organization-level governance；平台治理目标是让正确流程成为默认流程。",
+          "path": "/tutorials/github/chapter-9-8/",
+          "wordCount": 192,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "GitHub CLI、API、Webhooks 与自动化",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": "GitHub CLI：gh 的工程定位",
+          "description": "本章覆盖：`gh`；authentication；repository；issue；PR；workflow；release；API；terminal-first workflow；automation script；Git CLI 与 GitHub CLI 的职责区别。",
+          "path": "/tutorials/github/chapter-10-1/",
+          "wordCount": 130,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "gh repo、issue、pr 常用工作流",
+          "description": "本章覆盖：`gh repo`；`gh issue list`；`gh issue create`；`gh pr create`；`gh pr checkout`；`gh pr review`；`gh pr merge`；browser；scriptability；不需要记完整 CLI，重点是把平台操作自动化。",
+          "path": "/tutorials/github/chapter-10-2/",
+          "wordCount": 143,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "gh workflow、run、release 与 Actions 调试",
+          "description": "本章覆盖：workflow list；workflow run；run list；run view；log；rerun；artifact；release create；environment debugging；CLI 适合排查 CI 和发布流程。",
+          "path": "/tutorials/github/chapter-10-3/",
+          "wordCount": 117,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "REST API 基础",
+          "description": "本章覆盖：endpoint；HTTP；resource；authentication；pagination；rate limit；repository API；issue API；pull request API；Actions API；error response；通过 API 将 GitHub 接入内部系统。",
+          "path": "/tutorials/github/chapter-10-4/",
+          "wordCount": 148,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "GraphQL API 基础",
+          "description": "本章覆盖：graph；query；field selection；node；connection；cursor；pagination；one request for related data；REST vs GraphQL；Projects 等平台数据的自动化场景；不要求初学者手写复杂 schema。",
+          "path": "/tutorials/github/chapter-10-5/",
+          "wordCount": 144,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-6",
+          "title": "Webhooks：GitHub 主动通知外部系统",
+          "description": "本章覆盖：webhook；event；payload；delivery；endpoint；signature；secret；retry / redelivery；push / pull_request / issue event；webhook vs polling；外部 CI、机器人、通知系统常见入口。",
+          "path": "/tutorials/github/chapter-10-6/",
+          "wordCount": 145,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-7",
+          "title": "GitHub Apps 自动化架构",
+          "description": "本章覆盖：app；installation；webhook；API；permission；installation token；bot comment；automatic triage；status check；repository management；SaaS integration；比使用个人 PAT 更符合企业机器身份模型。",
+          "path": "/tutorials/github/chapter-10-7/",
+          "wordCount": 161,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-8",
+          "title": "自动化边界：Actions、API、App、Webhook 怎么选",
+          "description": "本章覆盖：repository-local automation → Actions；command-line human workflow → gh；external system pull data → API；GitHub event push to external system → webhook；reusable product integration → GitHub App；credential；runtime；reliability；observability；先选择最简单满足需求的自动化层。",
+          "path": "/tutorials/github/chapter-10-8/",
+          "wordCount": 236,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Fork、开源协作与社区治理",
+      "chapters": [
+        {
+          "slug": "chapter-11-1",
+          "title": "Fork：独立仓库副本与贡献模型",
+          "description": "本章覆盖：fork；upstream；origin；clone；sync；branch；pull request；permission boundary；open source contribution；fork 与 template repository 的区别。",
+          "path": "/tutorials/github/chapter-11-1/",
+          "wordCount": 127,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-2",
+          "title": "从 Fork 向 Upstream 提交 Pull Request",
+          "description": "本章覆盖：fork upstream project；clone fork；add upstream remote；create feature branch；commit；push origin；open PR；respond review；update branch；merge / close；贡献完成后同步 upstream。",
+          "path": "/tutorials/github/chapter-11-2/",
+          "wordCount": 155,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-3",
+          "title": "CONTRIBUTING、Code of Conduct 与社区规则",
+          "description": "本章覆盖：contribution guide；development setup；test command；style；commit / PR rule；code of conduct；support channel；security reporting；newcomer experience；成熟项目先告诉贡献者“怎么玩”，而不是让人猜规则。",
+          "path": "/tutorials/github/chapter-11-3/",
+          "wordCount": 165,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-4",
+          "title": "Good First Issue、Help Wanted 与贡献者入口",
+          "description": "本章覆盖：beginner-friendly issue；context；scope；acceptance criteria；mentor；label；documentation task；test task；onboarding；一个好 first issue 不是“把没人愿意做的杂活扔给新人”。",
+          "path": "/tutorials/github/chapter-11-4/",
+          "wordCount": 145,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-5",
+          "title": "Discussions、Issues 与 Support 的边界",
+          "description": "本章覆盖：GitHub Discussions；Q&A；idea；announcement；issue；bug；support；community conversation；searchable knowledge；不把所有提问都变成 issue；feature availability / repository setting 边界。",
+          "path": "/tutorials/github/chapter-11-5/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-6",
+          "title": "Release、Maintainer 与开源项目生命周期",
+          "description": "本章覆盖：maintainer；triage；review；release；deprecation；roadmap；issue backlog；stale contribution；security；bus factor；open source 是长期维护，不是“一次开源”。",
+          "path": "/tutorials/github/chapter-11-6/",
+          "wordCount": 135,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-7",
+          "title": "开源贡献的真实求职价值",
+          "description": "本章覆盖：contribution quality；issue understanding；communication；test；documentation；code review response；merged PR；long-term involvement；small meaningful contribution > fake contribution count；简历应说明解决了什么真实问题，而不是只写“参与开源”。",
+          "path": "/tutorials/github/chapter-11-7/",
+          "wordCount": 205,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "求职项目仓库、个人主页与工程展示",
+      "chapters": [
+        {
+          "slug": "chapter-12-1",
+          "title": "Recruiter / Interviewer 如何快速阅读一个 GitHub 项目",
+          "description": "本章覆盖：repository name；description；README first screen；live demo；screenshots；architecture；commit history；release；issue / PR；tests；Actions；reviewer 常常不会先读所有代码；首页必须快速回答“做了什么、怎么运行、技术难点是什么”。",
+          "path": "/tutorials/github/chapter-12-1/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-2",
+          "title": "求职仓库 README 信息架构",
+          "description": "本章覆盖：one-sentence positioning；project background；core features；screenshot / demo；architecture diagram；tech stack；module structure；quick start；config；database；API；test；deployment；engineering highlights；roadmap / limitations；不写自己没有真正使用的技术。",
+          "path": "/tutorials/github/chapter-12-2/",
+          "wordCount": 227,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-3",
+          "title": "Commit History：证明项目是“开发出来的”而不是一次性上传",
+          "description": "本章覆盖：incremental commits；meaningful change；refactor；bug fix；test；docs；feature；migration；release；avoid one giant initial commit for finished project；commit history 不能证明全部能力，但能提供工程过程证据。",
+          "path": "/tutorials/github/chapter-12-3/",
+          "wordCount": 173,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-4",
+          "title": "Issue + PR：把个人项目做出团队工程痕迹",
+          "description": "本章覆盖：self-created issue；bug report；feature issue；branch；PR；test evidence；review checklist；merge；close issue；不需要伪造“多人协作”；个人项目可以真实展示规范研发流程。",
+          "path": "/tutorials/github/chapter-12-4/",
+          "wordCount": 133,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-5",
+          "title": "Actions + Test + Release：形成可验证工程证据",
+          "description": "本章覆盖：CI badge 的边界；test；build；package；artifact；release；version；deployment；reproducibility；一个绿色 badge 本身不是能力，能解释 workflow 才是能力；面试时可以直接打开 workflow 和失败历史讲排错过程。",
+          "path": "/tutorials/github/chapter-12-5/",
+          "wordCount": 149,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-6",
+          "title": "GitHub Profile、Pinned Repositories 与个人技术品牌",
+          "description": "本章覆盖：profile README；pinned repository；repository ordering；concise introduction；target role；core skills；project links；blog / website；avoid exaggerated skill bars；activity graph 不是求职能力的唯一指标；让项目质量而不是花哨装饰成为重点。",
+          "path": "/tutorials/github/chapter-12-6/",
+          "wordCount": 193,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-7",
+          "title": "星雨笔录 / 药店系统的 GitHub 求职化验收标准",
+          "description": "本章覆盖：project positioning；public / private choice；README；architecture；database；API；screenshots；demo；setup guide；issue；PR；CI；tests；release；security；commit history；no fake Redis / MQ / microservice claims；让仓库内容与简历中的每一条项目描述可以互相验证。",
+          "path": "/tutorials/github/chapter-12-7/",
+          "wordCount": 215,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "GitHub 综合实战实验室",
+      "chapters": [
+        {
+          "slug": "chapter-13-1",
+          "title": "从空仓库建设一个企业级 Repository Baseline",
+          "description": "本章覆盖：repository；README；LICENSE / private boundary；CONTRIBUTING；SECURITY；issue templates；PR template；CODEOWNERS；branch / ruleset；Actions CI；Dependabot；release；final repository health checklist。",
+          "path": "/tutorials/github/chapter-13-1/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-2",
+          "title": "Issue → Branch → PR → Review → Merge 全链路",
+          "description": "本章覆盖：feature issue；acceptance criteria；branch；commit；draft PR；test；review comment；requested change；update；required checks；approve；merge；close issue；project status update。",
+          "path": "/tutorials/github/chapter-13-2/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-3",
+          "title": "Java Spring Boot 项目 GitHub Actions CI",
+          "description": "本章覆盖：JDK 21；Maven / Gradle；dependency cache；compile；unit test；package；artifact；pull request trigger；main push；status check；branch gate；failure debugging；与真实 Java 求职项目直接对接。",
+          "path": "/tutorials/github/chapter-13-3/",
+          "wordCount": 160,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-4",
+          "title": "Full-stack Project Release / Deployment Pipeline",
+          "description": "本章覆盖：backend build；frontend build；artifact；environment；staging；production approval；release tag；GitHub Release；deployment；secret / OIDC；rollback；smoke test；不要求 GitHub 承担所有服务器运维。",
+          "path": "/tutorials/github/chapter-13-4/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-5",
+          "title": "GitHub Security Audit",
+          "description": "本章覆盖：leaked secret scenario；dependency alert；Dependabot PR；dependency review；vulnerable Action；overly broad token permission；unsafe workflow trigger；branch rule；CODEOWNERS；security policy；patch release；输出 Access / Dependency / Secret / Workflow / Release 五维安全审计。",
+          "path": "/tutorials/github/chapter-13-5/",
+          "wordCount": 240,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-6",
+          "title": "求职级 GitHub 仓库综合改造",
+          "description": "本章覆盖：选择一个现有真实项目；repository homepage；README rewrite；architecture diagram；screenshots；issue backlog；PR workflow；ruleset；CI；tests；release；security；profile pin；project description；interview talking points；最终输出“招聘者 30 秒 / 面试官 10 分钟 / 开发者 30 分钟”三级验收结果。",
+          "path": "/tutorials/github/chapter-13-6/",
+          "wordCount": 229,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/github/",
+  "sortOrder": 30
+}

@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 对象属性沿原型链向上查找；<code>Object.getPrototypeOf</code> 可查看原型关系。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const parent = { say() { return 'Hi'; } };
+const child = Object.create(parent);
+console.log(child.say(), Object.getPrototypeOf(child) === parent);
+</code></pre>
+<p><strong>学完能做：</strong> 认识对象原型链及属性查找机制。</p>

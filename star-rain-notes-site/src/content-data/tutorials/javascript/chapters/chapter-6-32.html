@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> 本地文本可用 <code>file.text()</code>，图片可用 <code>URL.createObjectURL</code> 临时预览，用后释放 URL。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const file = fileInput.files[0];
+if (file?.type.startsWith('image/')) {
+  const old = preview.src; preview.src = URL.createObjectURL(file);
+  if (old.startsWith('blob:')) URL.revokeObjectURL(old);
+}
+</code></pre>
+<p><strong>学完能做：</strong> 选择文件后预览文本或图片。</p>

@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 自定义校验先判断规则，再显示错误提示；原生校验可配合 <code>setCustomValidity</code>。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const email = document.querySelector('#email');
+email.addEventListener('input', () =&gt; email.setCustomValidity(email.value.includes('@') ? '' : '缺少 @'));
+</code></pre>
+<p><strong>学完能做：</strong> 校验用户输入并提示异常字段。</p>

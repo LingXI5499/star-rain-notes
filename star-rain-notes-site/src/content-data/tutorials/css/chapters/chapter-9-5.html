@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 容器查询 <code>@container</code> 根据组件父容器宽度而非整个屏幕宽度适配。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.card-wrap { container-type: inline-size; }
+@container (min-width: 480px) { .card { display: grid; grid-template-columns: 120px 1fr; } }
+</code></pre>
+<p><strong>学完能做：</strong> 基于容器尺寸而非整个屏幕调整组件。</p>

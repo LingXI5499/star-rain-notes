@@ -1,0 +1,1071 @@
+{
+  "id": "39",
+  "title": "政治 / 政府 / 政策 / 治理",
+  "layer": "社会与世界主题层",
+  "wordCount": 118,
+  "path": "/english/vocabulary/39/",
+  "words": [
+    {
+      "word": "opposite",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈɑpəzɪt; ˈɑpəsɪt",
+      "phoneticUk": "'ɒpəzɪt; -sɪt",
+      "translation": "对面的；对立物；相反的",
+      "sceneMeaning": "对面的；对立物；相反的；本场景常见用法：相反极性",
+      "examples": "[]"
+    },
+    {
+      "word": "community",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mjʊnəti",
+      "phoneticUk": "kə'mjuːnɪtɪ",
+      "translation": "社区；社会；公社",
+      "sceneMeaning": "社区；共同体",
+      "examples": "[]"
+    },
+    {
+      "word": "country",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌntri",
+      "phoneticUk": "'kʌntrɪ",
+      "translation": "国家，国土；农村",
+      "sceneMeaning": "国家；乡村",
+      "examples": "[]"
+    },
+    {
+      "word": "crisis",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kraɪsɪs",
+      "phoneticUk": "'kraɪsɪs",
+      "translation": "危机；存亡之际；危机",
+      "sceneMeaning": "危机",
+      "examples": "[]"
+    },
+    {
+      "word": "education",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛdʒu'keʃən",
+      "phoneticUk": "edjʊ'keɪʃ(ə)n",
+      "translation": "教育；训导；教育学",
+      "sceneMeaning": "教育",
+      "examples": "[]"
+    },
+    {
+      "word": "government",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡʌvɚnmənt",
+      "phoneticUk": "'gʌv(ə)n,m(ə)nt; 'gʌvəm(ə)nt",
+      "translation": "政府；治理；政治",
+      "sceneMeaning": "政府；治理",
+      "examples": "[]"
+    },
+    {
+      "word": "local",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈloʊkl",
+      "phoneticUk": "'ləʊk(ə)l",
+      "translation": "地方的；局部的",
+      "sceneMeaning": "地方的；当地的",
+      "examples": "[]"
+    },
+    {
+      "word": "national",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'næʃnəl",
+      "phoneticUk": "'næʃ(ə)n(ə)l",
+      "translation": "民族的；国家的",
+      "sceneMeaning": "国家的；民族的",
+      "examples": "[]"
+    },
+    {
+      "word": "office",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔfɪs",
+      "phoneticUk": "'ɒfɪs",
+      "translation": "办公室；处，局，社",
+      "sceneMeaning": "职位；办公室",
+      "examples": "[]"
+    },
+    {
+      "word": "police",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'lis",
+      "phoneticUk": "pə'liːs",
+      "translation": "警察；警察当局",
+      "sceneMeaning": "警察；警察当局；本场景常见用法：当地警察派出所",
+      "examples": "[]"
+    },
+    {
+      "word": "power",
+      "partOfSpeech": "n",
+      "phoneticUs": "'paʊɚ",
+      "phoneticUk": "'paʊə",
+      "translation": "能力；力；权；幂",
+      "sceneMeaning": "权力；力量",
+      "examples": "[]"
+    },
+    {
+      "word": "program",
+      "partOfSpeech": "n",
+      "phoneticUs": "'proɡræm",
+      "phoneticUk": "'prəʊɡræm",
+      "translation": "节目单；大纲；程序",
+      "sceneMeaning": "计划；项目",
+      "examples": "[]"
+    },
+    {
+      "word": "public",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'pʌblɪk",
+      "phoneticUk": "'pʌblɪk",
+      "translation": "公众的；公众",
+      "sceneMeaning": "公共的；公众的",
+      "examples": "[]"
+    },
+    {
+      "word": "act",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ækt",
+      "phoneticUk": "ækt",
+      "translation": "行动；见效；行为",
+      "sceneMeaning": "法案；行为",
+      "examples": "[]"
+    },
+    {
+      "word": "president",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛzɪdənt",
+      "phoneticUk": "'prezɪd(ə)nt",
+      "translation": "总统；校长；会长",
+      "sceneMeaning": "总统；主席",
+      "examples": "[]"
+    },
+    {
+      "word": "leader",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lidɚ",
+      "phoneticUk": "'liːdə",
+      "translation": "领袖，领导人；首领",
+      "sceneMeaning": "领导人",
+      "examples": "[]"
+    },
+    {
+      "word": "political",
+      "partOfSpeech": "adj",
+      "phoneticUs": "pə'lɪtɪkl",
+      "phoneticUk": "pə'lɪtɪk(ə)l",
+      "translation": "政治的，政治上的",
+      "sceneMeaning": "政治的",
+      "examples": "[]"
+    },
+    {
+      "word": "security",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'kjʊrəti",
+      "phoneticUk": "sɪ'kjʊərətɪ",
+      "translation": "安全，安全感；安全，安保",
+      "sceneMeaning": "安全；保障",
+      "examples": "[]"
+    },
+    {
+      "word": "debate",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "dɪ'bet",
+      "phoneticUk": "dɪ'beɪt",
+      "translation": "争论，辩论",
+      "sceneMeaning": "辩论；讨论",
+      "examples": "[]"
+    },
+    {
+      "word": "department",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'pɑrtmənt",
+      "phoneticUk": "dɪ'pɑːtm(ə)nt",
+      "translation": "部，司，局，处，系；部门",
+      "sceneMeaning": "部门；部",
+      "examples": "[]"
+    },
+    {
+      "word": "majority",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'dʒɔrəti",
+      "phoneticUk": "mə'dʒɒrɪtɪ",
+      "translation": "多数，大多数；多数",
+      "sceneMeaning": "多数；大多数",
+      "examples": "[]"
+    },
+    {
+      "word": "policy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑləsi",
+      "phoneticUk": "'pɒləsɪ",
+      "translation": "政策，方针",
+      "sceneMeaning": "政策；方针",
+      "examples": "[]"
+    },
+    {
+      "word": "powerful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'paʊɚfl",
+      "phoneticUk": "'paʊəfʊl; -f(ə)l",
+      "translation": "强有力的；有权威的",
+      "sceneMeaning": "强有力的；有权威的",
+      "examples": "[]"
+    },
+    {
+      "word": "candidate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈkændɪˌdet, -dɪt",
+      "phoneticUk": "'kændɪdeɪt; -dət",
+      "translation": "候选人；投考者；申请求职者；投考者；候选人",
+      "sceneMeaning": "候选人",
+      "examples": "[]"
+    },
+    {
+      "word": "European",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'jʊrə'piən",
+      "phoneticUk": "jʊərə'piːən",
+      "translation": "欧洲的；欧洲人",
+      "sceneMeaning": "欧洲的；欧洲人；本场景常见用法：欧洲议会（缩写为EP）",
+      "examples": "[]"
+    },
+    {
+      "word": "federal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɛdərəl",
+      "phoneticUk": "'fed(ə)r(ə)l",
+      "translation": "联邦的；联盟的",
+      "sceneMeaning": "联邦的",
+      "examples": "[]"
+    },
+    {
+      "word": "officer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔfɪsɚ",
+      "phoneticUk": "'ɒfɪsə",
+      "translation": "官员；干事；军官",
+      "sceneMeaning": "官员；干事；军官；本场景常见用法：安全官员；安全人员",
+      "examples": "[]"
+    },
+    {
+      "word": "regulation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌrɛɡjəˈleʃən",
+      "phoneticUk": "regjʊ'leɪʃ(ə)n",
+      "translation": "规则，规章；管理；管理；规则",
+      "sceneMeaning": "法规；监管",
+      "examples": "[]"
+    },
+    {
+      "word": "secretary",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛkrətɛrɪ",
+      "phoneticUk": "'sekrɪt(ə)rɪ",
+      "translation": "秘书；书记；大臣",
+      "sceneMeaning": "部长；秘书",
+      "examples": "[]"
+    },
+    {
+      "word": "budget",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bʌdʒɪt",
+      "phoneticUk": "'bʌdʒit",
+      "translation": "预算；编预算",
+      "sceneMeaning": "预算",
+      "examples": "[]"
+    },
+    {
+      "word": "minority",
+      "partOfSpeech": "n",
+      "phoneticUs": "maɪ'nɔrəti",
+      "phoneticUk": "maɪ'nɒrɪtɪ; mɪ-",
+      "translation": "少数；少数民族",
+      "sceneMeaning": "少数；少数群体",
+      "examples": "[]"
+    },
+    {
+      "word": "campaign",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæm'pen",
+      "phoneticUk": "kæm'peɪn",
+      "translation": "战役；运动；活动",
+      "sceneMeaning": "竞选；开展运动",
+      "examples": "[]"
+    },
+    {
+      "word": "conservative",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "kən'sɝvətɪv",
+      "phoneticUk": "kən'sɜːvətɪv",
+      "translation": "保守的；保守的人；保守的，传统的",
+      "sceneMeaning": "保守的；保守主义的",
+      "examples": "[]"
+    },
+    {
+      "word": "assemble",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sɛmbl",
+      "phoneticUk": "ə'semb(ə)l",
+      "translation": "集合，召集；装配；集合；组装；集合",
+      "sceneMeaning": "集合，召集；装配；集合；组装；集合",
+      "examples": "[]"
+    },
+    {
+      "word": "authority",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'θɔrəti",
+      "phoneticUk": "ɔː'θɒrɪtɪ",
+      "translation": "当局，官方；权力",
+      "sceneMeaning": "权威；权限",
+      "examples": "[]"
+    },
+    {
+      "word": "bill",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪl",
+      "phoneticUk": "bɪl",
+      "translation": "账单；招贴；票据",
+      "sceneMeaning": "法案；账单",
+      "examples": "[]"
+    },
+    {
+      "word": "democratic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɛmə'krætɪk",
+      "phoneticUk": "demə'krætɪk",
+      "translation": "民主的，民主政体的；民主的",
+      "sceneMeaning": "民主的",
+      "examples": "[]"
+    },
+    {
+      "word": "law",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔ",
+      "phoneticUk": "lɔː",
+      "translation": "法律，法令；法则",
+      "sceneMeaning": "法律；法规",
+      "examples": "[]"
+    },
+    {
+      "word": "party",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑrti",
+      "phoneticUk": "'pɑːtɪ",
+      "translation": "党，党派；聚会",
+      "sceneMeaning": "政党；聚会",
+      "examples": "[]"
+    },
+    {
+      "word": "platform",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plæt'fɔrm",
+      "phoneticUk": "'plætfɔːm",
+      "translation": "平台；站台；讲台",
+      "sceneMeaning": "政纲；平台",
+      "examples": "[]"
+    },
+    {
+      "word": "reform",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "rɪ'fɔrm",
+      "phoneticUk": "rɪ'fɔːm",
+      "translation": "改革，改良",
+      "sceneMeaning": "改革",
+      "examples": "[]"
+    },
+    {
+      "word": "sponsor",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'spɑnsɚ",
+      "phoneticUk": "'spɒnsə",
+      "translation": "发起者；发起；赞助",
+      "sceneMeaning": "发起者；发起；赞助",
+      "examples": "[]"
+    },
+    {
+      "word": "vice",
+      "partOfSpeech": "n",
+      "phoneticUs": "vaɪs",
+      "phoneticUk": "vaɪs",
+      "translation": "罪恶；恶习；缺点",
+      "sceneMeaning": "罪恶；恶习；缺点；本场景常见用法：副省长",
+      "examples": "[]"
+    },
+    {
+      "word": "agency",
+      "partOfSpeech": "n",
+      "phoneticUs": "'edʒənsi",
+      "phoneticUk": "'eɪdʒ(ə)nsɪ",
+      "translation": "经办；代理；代理处；机构",
+      "sceneMeaning": "机构；代理处",
+      "examples": "[]"
+    },
+    {
+      "word": "approval",
+      "partOfSpeech": "n",
+      "phoneticUs": "əˈpruvl",
+      "phoneticUk": "ə'pruːv(ə)l",
+      "translation": "赞成，同意；批准；批准，认可；赞成，同意",
+      "sceneMeaning": "批准；认可",
+      "examples": "[]"
+    },
+    {
+      "word": "chairman",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃɛrmən",
+      "phoneticUk": "'tʃeəmən",
+      "translation": "主席；议长，会长",
+      "sceneMeaning": "主席；议长，会长；本场景常见用法：执行主席；执行总裁",
+      "examples": "[]"
+    },
+    {
+      "word": "committee",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mɪti",
+      "phoneticUk": "kə'mɪtɪ",
+      "translation": "委员会；全体委员；委员会",
+      "sceneMeaning": "委员会；全体委员；委员会；本场景常见用法：全国委员会",
+      "examples": "[]"
+    },
+    {
+      "word": "liberal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɪbərəl",
+      "phoneticUk": "'lɪb(ə)r(ə)l",
+      "translation": "心胸宽大的；慷慨的",
+      "sceneMeaning": "自由主义的；开明的",
+      "examples": "[]"
+    },
+    {
+      "word": "nation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'neʃən",
+      "phoneticUk": "'neɪʃ(ə)n",
+      "translation": "民族；国家",
+      "sceneMeaning": "国家；民族",
+      "examples": "[]"
+    },
+    {
+      "word": "negotiate",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪ'ɡoʃɪet",
+      "phoneticUk": "nɪ'ɡəʊʃɪeɪt",
+      "translation": "谈判，协商，交涉",
+      "sceneMeaning": "谈判；协商",
+      "examples": "[]"
+    },
+    {
+      "word": "official",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "官员的；官方的",
+      "sceneMeaning": "官方的；正式的",
+      "examples": "[]"
+    },
+    {
+      "word": "poll",
+      "partOfSpeech": "n",
+      "phoneticUs": "pol",
+      "phoneticUk": "pəʊl",
+      "translation": "民意调查",
+      "sceneMeaning": "民意调查；投票",
+      "examples": "[]"
+    },
+    {
+      "word": "representative",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'rɛprɪ'zɛntətɪv",
+      "phoneticUk": "reprɪ'zentətɪv",
+      "translation": "代表性的；代表",
+      "sceneMeaning": "代表；众议员",
+      "examples": "[]"
+    },
+    {
+      "word": "administration",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd,mɪnɪ'streʃən",
+      "phoneticUk": "ədmɪnɪ'streɪʃ(ə)n",
+      "translation": "管理；管理部门；管理；〔某一时期的〕政府",
+      "sceneMeaning": "政府；行政管理",
+      "examples": "[]"
+    },
+    {
+      "word": "central",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɛntrəl",
+      "phoneticUk": "'sentr(ə)l",
+      "translation": "中心的；主要的",
+      "sceneMeaning": "中心的；主要的；本场景常见用法：中央集权",
+      "examples": "[]"
+    },
+    {
+      "word": "consensus",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'sɛnsəs",
+      "phoneticUk": "kən'sensəs",
+      "translation": "一致意见",
+      "sceneMeaning": "共识",
+      "examples": "[]"
+    },
+    {
+      "word": "council",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kaʊnsl",
+      "phoneticUk": "'kaʊns(ə)l; -sɪl",
+      "translation": "理事会，委员会；议会",
+      "sceneMeaning": "委员会；理事会",
+      "examples": "[]"
+    },
+    {
+      "word": "elect",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'lɛkt",
+      "phoneticUk": "ɪ'lekt",
+      "translation": "选举，推选；选择",
+      "sceneMeaning": "选举；选择",
+      "examples": "[]"
+    },
+    {
+      "word": "native",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'netɪv",
+      "phoneticUk": "'neɪtɪv",
+      "translation": "本土的；本地人",
+      "sceneMeaning": "本土的；本地人；本场景常见用法：印第安人；美洲原住民",
+      "examples": "[]"
+    },
+    {
+      "word": "actor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æktɚ",
+      "phoneticUk": "'æktə",
+      "translation": "男演员；演剧的人",
+      "sceneMeaning": "男演员；演剧的人",
+      "examples": "[]"
+    },
+    {
+      "word": "actress",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æktrɪs",
+      "phoneticUk": "'æktrɪs",
+      "translation": "女演员",
+      "sceneMeaning": "女演员",
+      "examples": "[]"
+    },
+    {
+      "word": "African",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'æfrɪkən",
+      "phoneticUk": "'æfrɪk(ə)n",
+      "translation": "非洲的；非洲人",
+      "sceneMeaning": "非洲的；非洲人；本场景常见用法：n. 中非共和国",
+      "examples": "[]"
+    },
+    {
+      "word": "agent",
+      "partOfSpeech": "n",
+      "phoneticUs": "'edʒənt",
+      "phoneticUk": "'eɪdʒ(ə)nt",
+      "translation": "代理人，代理商；代理商",
+      "sceneMeaning": "代理人，代理商；代理商；本场景常见用法：工会代表；业务代表",
+      "examples": "[]"
+    },
+    {
+      "word": "authoritative",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'θɔrətetɪv",
+      "phoneticUk": "ɔː'θɒrɪtətɪv",
+      "translation": "权威的",
+      "sceneMeaning": "权威的；本场景常见用法：官方消息",
+      "examples": "[]"
+    },
+    {
+      "word": "constitute",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kɑnstətut",
+      "phoneticUk": "'kɒnstɪtjuːt",
+      "translation": "组成",
+      "sceneMeaning": "组成",
+      "examples": "[]"
+    },
+    {
+      "word": "county",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kaʊnti",
+      "phoneticUk": "'kaʊntɪ",
+      "translation": "英国的郡，美国的县",
+      "sceneMeaning": "英国的郡，美国的县；本场景常见用法：[法]郡议会",
+      "examples": "[]"
+    },
+    {
+      "word": "election",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'lɛkʃən",
+      "phoneticUk": "ɪ'lekʃ(ə)n",
+      "translation": "选举，选择权；当选",
+      "sceneMeaning": "选举",
+      "examples": "[]"
+    },
+    {
+      "word": "enforce",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'fɔrs",
+      "phoneticUk": "ɪn'fɔːs; en-",
+      "translation": "实施，执行；强制",
+      "sceneMeaning": "执行；实施",
+      "examples": "[]"
+    },
+    {
+      "word": "govern",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɡʌvɚn",
+      "phoneticUk": "'gʌv(ə)n",
+      "translation": "统治，治理；支配；管理，支配",
+      "sceneMeaning": "支配；影响",
+      "examples": "[]"
+    },
+    {
+      "word": "grand",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɡrænd",
+      "phoneticUk": "grænd",
+      "translation": "宏伟的；重大的",
+      "sceneMeaning": "宏伟的；重大的；本场景常见用法：（美国）大峡谷国家公园",
+      "examples": "[]"
+    },
+    {
+      "word": "initiative",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'nɪʃətɪv",
+      "phoneticUk": "i'niʃətiv",
+      "translation": "主动权，自主权",
+      "sceneMeaning": "倡议；主动权",
+      "examples": "[]"
+    },
+    {
+      "word": "inspection",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'spɛkʃən",
+      "phoneticUk": "ɪn'spekʃn",
+      "translation": "检查，审查；检阅",
+      "sceneMeaning": "检查；视察",
+      "examples": "[]"
+    },
+    {
+      "word": "minister",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪnɪstɚ",
+      "phoneticUk": "'mɪnɪstə",
+      "translation": "部长，大臣；公使",
+      "sceneMeaning": "部长；大臣",
+      "examples": "[]"
+    },
+    {
+      "word": "parliament",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑrləmənt",
+      "phoneticUk": "'pɑːləm(ə)nt",
+      "translation": "议会，国会",
+      "sceneMeaning": "议会；国会",
+      "examples": "[]"
+    },
+    {
+      "word": "propose",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'poz",
+      "phoneticUk": "prə'pəʊz",
+      "translation": "提议；求婚",
+      "sceneMeaning": "提出；提议",
+      "examples": "[]"
+    },
+    {
+      "word": "protest",
+      "partOfSpeech": "v / vt&vi&n",
+      "phoneticUs": "ˈproʊtest",
+      "phoneticUk": "'prəʊtest",
+      "translation": "抗议",
+      "sceneMeaning": "抗议；示威",
+      "examples": "[]"
+    },
+    {
+      "word": "regulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rɛɡjulet",
+      "phoneticUk": "'regjʊleɪt",
+      "translation": "管理，控制；调整；管理",
+      "sceneMeaning": "监管；规范",
+      "examples": "[]"
+    },
+    {
+      "word": "represent",
+      "partOfSpeech": "v",
+      "phoneticUs": ",rɛprɪ'zɛnt",
+      "phoneticUk": "reprɪ'zent",
+      "translation": "描绘；代表；象征；代表",
+      "sceneMeaning": "代表；体现",
+      "examples": "[]"
+    },
+    {
+      "word": "revolt",
+      "partOfSpeech": "vi&n",
+      "phoneticUs": "rɪ'volt",
+      "phoneticUk": "rɪ'vəʊlt",
+      "translation": "反抗，造反",
+      "sceneMeaning": "反抗，造反",
+      "examples": "[]"
+    },
+    {
+      "word": "stability",
+      "partOfSpeech": "n",
+      "phoneticUs": "stə'bɪləti",
+      "phoneticUk": "stə'bɪlɪtɪ",
+      "translation": "稳定，稳定性，巩固",
+      "sceneMeaning": "稳定",
+      "examples": "[]"
+    },
+    {
+      "word": "administrative",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əd'mɪnɪstretɪv",
+      "phoneticUk": "ədˈmɪnɪstrətɪv",
+      "translation": "管理的",
+      "sceneMeaning": "管理的；本场景常见用法：行政当局",
+      "examples": "[]"
+    },
+    {
+      "word": "affair",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'fɛr",
+      "phoneticUk": "ə'feə",
+      "translation": "事情，事件；事务",
+      "sceneMeaning": "事情，事件；事务",
+      "examples": "[]"
+    },
+    {
+      "word": "appoint",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'pɔɪnt",
+      "phoneticUk": "ə'pɒɪnt",
+      "translation": "任命，委任；约定；任命，委派；约定，确定，指定",
+      "sceneMeaning": "任命；指定",
+      "examples": "[]"
+    },
+    {
+      "word": "approve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'prʊv",
+      "phoneticUk": "ə'pruːv",
+      "translation": "赞成，称许；批准；赞成，同意",
+      "sceneMeaning": "批准；赞成",
+      "examples": "[]"
+    },
+    {
+      "word": "assembly",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'sɛmbli",
+      "phoneticUk": "ə'semblɪ",
+      "translation": "集合；集会；装配；装配",
+      "sceneMeaning": "集会；议会",
+      "examples": "[]"
+    },
+    {
+      "word": "bureau",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bjʊro",
+      "phoneticUk": "'bjʊərəʊ",
+      "translation": "局，司，处；社，所；局",
+      "sceneMeaning": "局；办事处",
+      "examples": "[]"
+    },
+    {
+      "word": "cabinet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæbɪnət",
+      "phoneticUk": "'kæbɪnɪt",
+      "translation": "橱，柜；内阁",
+      "sceneMeaning": "内阁；储物柜",
+      "examples": "[]"
+    },
+    {
+      "word": "cigaret",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "香烟，纸烟，卷烟",
+      "sceneMeaning": "香烟，纸烟，卷烟",
+      "examples": "[]"
+    },
+    {
+      "word": "citizen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪtɪzn",
+      "phoneticUk": "'sɪtɪz(ə)n",
+      "translation": "公民；市民，居民；市民，城镇居民；公民",
+      "sceneMeaning": "公民",
+      "examples": "[]"
+    },
+    {
+      "word": "communism",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmjʊ'nɪzəm",
+      "phoneticUk": "'kɒmjʊnɪz(ə)m",
+      "translation": "共产主义",
+      "sceneMeaning": "共产主义",
+      "examples": "[]"
+    },
+    {
+      "word": "communist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmjənɪst",
+      "phoneticUk": "'kɒmjʊnɪst",
+      "translation": "共产党员",
+      "sceneMeaning": "共产党员；本场景常见用法：共产国际",
+      "examples": "[]"
+    },
+    {
+      "word": "congress",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑŋɡrəs",
+      "phoneticUk": "'kɒŋgres",
+      "translation": "大会；国会，议会",
+      "sceneMeaning": "国会；代表大会",
+      "examples": "[]"
+    },
+    {
+      "word": "constitution",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnstə'tʊʃən",
+      "phoneticUk": "kɒnstɪ'tjuːʃ(ə)n",
+      "translation": "章程；体质；构造",
+      "sceneMeaning": "宪法；章程",
+      "examples": "[]"
+    },
+    {
+      "word": "countryside",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌntrɪsaɪd",
+      "phoneticUk": "'kʌntrɪsaɪd",
+      "translation": "乡下，农村",
+      "sceneMeaning": "乡下，农村",
+      "examples": "[]"
+    },
+    {
+      "word": "delegation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɛlɪ'ɡeʃən",
+      "phoneticUk": "delɪ'geɪʃ(ə)n",
+      "translation": "代表团",
+      "sceneMeaning": "代表团；本场景常见用法：授权；委任权",
+      "examples": "[]"
+    },
+    {
+      "word": "democracy",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪˈmɑkrəsi",
+      "phoneticUk": "dɪ'mɒkrəsɪ",
+      "translation": "民主，民主制",
+      "sceneMeaning": "民主；民主制度",
+      "examples": "[]"
+    },
+    {
+      "word": "dictator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪktetɚ",
+      "phoneticUk": "ˈdɪkˌteɪtə",
+      "translation": "独裁者；专制者",
+      "sceneMeaning": "独裁者；专制者",
+      "examples": "[]"
+    },
+    {
+      "word": "dissatisfy",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪs'sætɪs,fai",
+      "phoneticUk": "dɪ(s)'sætɪsfaɪ",
+      "translation": "使不满，使不平；不满意",
+      "sceneMeaning": "使不满，使不平；不满意",
+      "examples": "[]"
+    },
+    {
+      "word": "fundamentally",
+      "partOfSpeech": "adv",
+      "phoneticUs": ",fʌndə'mɛntəli",
+      "phoneticUk": ",fʌndə'mɛntəli",
+      "translation": "根本上",
+      "sceneMeaning": "根本上",
+      "examples": "[]"
+    },
+    {
+      "word": "Germany",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɝməni",
+      "phoneticUk": "'dʒɜːmənɪ",
+      "translation": "德意志，德国",
+      "sceneMeaning": "德意志，德国；本场景常见用法：德意志联邦共和国",
+      "examples": "[]"
+    },
+    {
+      "word": "governor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡʌvɚnɚ",
+      "phoneticUk": "'gʌv(ə)nə",
+      "translation": "州长；主管人员",
+      "sceneMeaning": "州长；总督",
+      "examples": "[]"
+    },
+    {
+      "word": "handsome",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hænsəm",
+      "phoneticUk": "'hæns(ə)m",
+      "translation": "英俊的；相当大的",
+      "sceneMeaning": "英俊的；相当大的",
+      "examples": "[]"
+    },
+    {
+      "word": "implement",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪmplɪmɛnt",
+      "phoneticUk": "'ɪmplɪmənt",
+      "translation": "实施，执行",
+      "sceneMeaning": "实施；执行",
+      "examples": "[]"
+    },
+    {
+      "word": "implementation",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "ɪmplɪmen'teɪʃ(ə)n",
+      "translation": "实现，履行",
+      "sceneMeaning": "实施；执行",
+      "examples": "[]"
+    },
+    {
+      "word": "lobby",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'lɑbi",
+      "phoneticUk": "'lɒbɪ",
+      "translation": "大堂；游说",
+      "sceneMeaning": "游说团体；大厅",
+      "examples": "[]"
+    },
+    {
+      "word": "mayor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'meɚ",
+      "phoneticUk": "ˈmeɪə",
+      "translation": "市长",
+      "sceneMeaning": "市长",
+      "examples": "[]"
+    },
+    {
+      "word": "ministry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪnɪstri",
+      "phoneticUk": "'mɪnɪstrɪ",
+      "translation": "(政府的)部",
+      "sceneMeaning": "部；内阁部门",
+      "examples": "[]"
+    },
+    {
+      "word": "nationality",
+      "partOfSpeech": "n",
+      "phoneticUs": ",næʃə'næləti",
+      "phoneticUk": "næʃə'nælɪtɪ",
+      "translation": "国籍；民族，族",
+      "sceneMeaning": "国籍；民族，族；本场景常见用法：少数民族",
+      "examples": "[]"
+    },
+    {
+      "word": "permit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pɚ'mɪt",
+      "phoneticUk": "pə'mɪt",
+      "translation": "允许；执照",
+      "sceneMeaning": "许可证；许可",
+      "examples": "[]"
+    },
+    {
+      "word": "politician",
+      "partOfSpeech": "n",
+      "phoneticUs": ",pɑlə'tɪʃən",
+      "phoneticUk": "pɒlɪ'tɪʃ(ə)n",
+      "translation": "政治家；政客",
+      "sceneMeaning": "政治家；政客",
+      "examples": "[]"
+    },
+    {
+      "word": "politics",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑlətɪks",
+      "phoneticUk": "'pɒlɪtɪks",
+      "translation": "政治，政治学；政纲",
+      "sceneMeaning": "政治；政治活动",
+      "examples": "[]"
+    },
+    {
+      "word": "reject",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'dʒɛkt",
+      "phoneticUk": "rɪ'dʒekt",
+      "translation": "拒绝；丢掉；驳回；拒绝，驳回",
+      "sceneMeaning": "拒绝；否决",
+      "examples": "[]"
+    },
+    {
+      "word": "republic",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'pʌblɪk",
+      "phoneticUk": "rɪ'pʌblɪk",
+      "translation": "共和国，共和政体",
+      "sceneMeaning": "共和国",
+      "examples": "[]"
+    },
+    {
+      "word": "resign",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'zaɪn",
+      "phoneticUk": "rɪ'zaɪn",
+      "translation": "放弃；辞职",
+      "sceneMeaning": "辞职；放弃",
+      "examples": "[]"
+    },
+    {
+      "word": "senate",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛnət",
+      "phoneticUk": "'senɪt",
+      "translation": "参议院，上院",
+      "sceneMeaning": "参议院",
+      "examples": "[]"
+    },
+    {
+      "word": "supervision",
+      "partOfSpeech": "n",
+      "phoneticUs": ",sʊpɚ'vɪʒən",
+      "phoneticUk": "ˌsju:pə'vɪʒn",
+      "translation": "监督",
+      "sceneMeaning": "监督；监管",
+      "examples": "[]"
+    },
+    {
+      "word": "transparent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "træns'pærənt",
+      "phoneticUk": "træn'spær(ə)nt; trɑːn-; -'speə-",
+      "translation": "透明的；易识破的",
+      "sceneMeaning": "透明的；易识破的；本场景常见用法：透明塑胶",
+      "examples": "[]"
+    },
+    {
+      "word": "vote",
+      "partOfSpeech": "v",
+      "phoneticUs": "vot; voʊt",
+      "phoneticUk": "vəʊt",
+      "translation": "投票，选举",
+      "sceneMeaning": "投票",
+      "examples": "[]"
+    }
+  ]
+}

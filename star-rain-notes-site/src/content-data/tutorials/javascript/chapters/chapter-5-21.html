@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 扩展轮播需同步当前索引、导航圆点、定时器，触摸时比较开始和结束坐标。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let index = 0; const total = 3;
+function go(step) { index = (index + step + total) % total; render(index); }
+function render(i) { console.log('展示第', i + 1, '张'); }
+</code></pre>
+<p><strong>学完能做：</strong> 加入导航圆点、暂停和触摸切换。</p>

@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 展开语法只做浅复制；<code>structuredClone</code> 可克隆常见可克隆数据结构的深层内容。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const a = { profile: { age: 18 } };
+const shallow = { ...a };
+const deep = structuredClone(a);
+console.log(shallow.profile === a.profile, deep.profile === a.profile); // true false
+</code></pre>
+<p><strong>学完能做：</strong> 识别引用共享并选择适当的复制方式。</p>

@@ -1,0 +1,5 @@
+---
+interface Props {total:number;size?:number;unit?:string;}
+const {total,size=12,unit='条'}=Astro.props;
+---
+<nav class="public-pagination" aria-label="内容分页"><span class="public-pagination__total" data-page-range>1–{Math.min(size,total)} / 共 {total.toLocaleString()} {unit}</span><div class="public-pagination__pages"><button type="button" class="public-pagination__arrow" data-page-previous disabled aria-label="上一页"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m12 5-5 5 5 5"/></svg></button>{Array.from({length:Math.ceil(total/size)},(_,i)=>i+1).map(n=><button type="button" data-page-number={n} aria-label={`第 ${n} 页`} aria-current={n===1?'page':undefined}>{n}</button>)}<button type="button" class="public-pagination__arrow" data-page-next disabled={total<=size} aria-label="下一页"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="m8 5 5 5-5 5"/></svg></button></div><div class="public-pagination__size"><span>每页</span><select data-page-size aria-label="每页数量">{[size,...[12,24,48].filter(n=>n!==size)].map(n=><option value={n} selected={n===size}>{n}</option>)}</select></div></nav>

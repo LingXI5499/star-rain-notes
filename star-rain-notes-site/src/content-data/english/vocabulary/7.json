@@ -1,0 +1,1620 @@
+{
+  "id": "7",
+  "title": "动物、植物、自然物",
+  "layer": "基础通用词层",
+  "wordCount": 179,
+  "path": "/english/vocabulary/7/",
+  "words": [
+    {
+      "word": "fresh",
+      "partOfSpeech": "adj",
+      "phoneticUs": "frɛʃ",
+      "phoneticUk": "freʃ",
+      "translation": "新的；新鲜的",
+      "sceneMeaning": "新鲜的；清新的",
+      "examples": "[]"
+    },
+    {
+      "word": "green",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɡrin",
+      "phoneticUk": "griːn",
+      "translation": "绿色的；绿色",
+      "sceneMeaning": "绿色的；环保的",
+      "examples": "[]"
+    },
+    {
+      "word": "grow",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡro",
+      "phoneticUk": "grəʊ",
+      "translation": "生长；变得；增长",
+      "sceneMeaning": "生长；种植",
+      "examples": "[]"
+    },
+    {
+      "word": "live",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "laɪv；lɪv",
+      "phoneticUk": "laɪv；lɪv",
+      "translation": "居住；活；活的",
+      "sceneMeaning": "居住；活；活的",
+      "examples": "[]"
+    },
+    {
+      "word": "living",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'lɪvɪŋ",
+      "phoneticUk": "'lɪvɪŋ",
+      "translation": "活的；生活，生计",
+      "sceneMeaning": "活着的；生活的",
+      "examples": "[]"
+    },
+    {
+      "word": "natural",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nætʃrəl",
+      "phoneticUk": "'nætʃ(ə)r(ə)l",
+      "translation": "自然界的；天然的",
+      "sceneMeaning": "自然的；天然的",
+      "examples": "[]"
+    },
+    {
+      "word": "nature",
+      "partOfSpeech": "n",
+      "phoneticUs": "'netʃɚ",
+      "phoneticUk": "'neɪtʃə",
+      "translation": "大自然；本性；性质",
+      "sceneMeaning": "自然；本性",
+      "examples": "[]"
+    },
+    {
+      "word": "protect",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'tɛkt",
+      "phoneticUk": "prə'tekt",
+      "translation": "保护，保卫，警戒",
+      "sceneMeaning": "保护",
+      "examples": "[]"
+    },
+    {
+      "word": "billion",
+      "partOfSpeech": "num",
+      "phoneticUs": "'bɪljən",
+      "phoneticUk": "'bɪljən",
+      "translation": "万亿(英)",
+      "sceneMeaning": "万亿(英)",
+      "examples": "[]"
+    },
+    {
+      "word": "death",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɛθ",
+      "phoneticUk": "deθ",
+      "translation": "死，死亡；灭亡",
+      "sceneMeaning": "死，死亡；灭亡",
+      "examples": "[]"
+    },
+    {
+      "word": "flow",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "flo",
+      "phoneticUk": "fləʊ",
+      "translation": "流动；飘垂；涨潮；流动",
+      "sceneMeaning": "流动",
+      "examples": "[]"
+    },
+    {
+      "word": "rarely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'rɛrli",
+      "phoneticUk": "'reəlɪ",
+      "translation": "很少，难得",
+      "sceneMeaning": "很少，难得",
+      "examples": "[]"
+    },
+    {
+      "word": "adapt",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'dæpt",
+      "phoneticUk": "ə'dæpt",
+      "translation": "使适应；改编；适应于",
+      "sceneMeaning": "适应；改编",
+      "examples": "[]"
+    },
+    {
+      "word": "born",
+      "partOfSpeech": "adj",
+      "phoneticUs": "bɔrn",
+      "phoneticUk": "bɔːn",
+      "translation": "天生的；出生的",
+      "sceneMeaning": "天生的；出生的",
+      "examples": "[]"
+    },
+    {
+      "word": "land",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lænd",
+      "phoneticUk": "lænd",
+      "translation": "陆地；土地；上岸",
+      "sceneMeaning": "陆地；土地；上岸；本场景常见用法：土地资源",
+      "examples": "[]"
+    },
+    {
+      "word": "die",
+      "partOfSpeech": "v",
+      "phoneticUs": "daɪ",
+      "phoneticUk": "daɪ",
+      "translation": "死，死亡；灭亡",
+      "sceneMeaning": "死，死亡；灭亡",
+      "examples": "[]"
+    },
+    {
+      "word": "feed",
+      "partOfSpeech": "v",
+      "phoneticUs": "fid",
+      "phoneticUk": "fiːd",
+      "translation": "喂(养)；吃饲料",
+      "sceneMeaning": "喂养；供给",
+      "examples": "[]"
+    },
+    {
+      "word": "field",
+      "partOfSpeech": "n",
+      "phoneticUs": "fild",
+      "phoneticUk": "fiːld",
+      "translation": "田野；田；运动场",
+      "sceneMeaning": "田野；领域",
+      "examples": "[]"
+    },
+    {
+      "word": "bear",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɛr",
+      "phoneticUk": "beə",
+      "translation": "熊；粗鲁的人",
+      "sceneMeaning": "熊",
+      "examples": "[]"
+    },
+    {
+      "word": "domestic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "də'mɛstɪk",
+      "phoneticUk": "də'mestɪk",
+      "translation": "本国的；家庭的；国内的",
+      "sceneMeaning": "家养的；国内的",
+      "examples": "[]"
+    },
+    {
+      "word": "earth",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɝθ",
+      "phoneticUk": "ɜːθ",
+      "translation": "地球；陆地，地面",
+      "sceneMeaning": "地球；泥土",
+      "examples": "[]"
+    },
+    {
+      "word": "organic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɔr'gænɪk",
+      "phoneticUk": "ɔː'gænɪk",
+      "translation": "有机体的；器官的",
+      "sceneMeaning": "有机的；器官的",
+      "examples": "[]"
+    },
+    {
+      "word": "plant",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "plænt",
+      "phoneticUk": "plɑːnt",
+      "translation": "植物；工厂；栽种；工厂",
+      "sceneMeaning": "种植",
+      "examples": "[]"
+    },
+    {
+      "word": "breed",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "brid",
+      "phoneticUk": "briːd",
+      "translation": "品种；使繁殖",
+      "sceneMeaning": "品种；使繁殖",
+      "examples": "[]"
+    },
+    {
+      "word": "absorb",
+      "partOfSpeech": "v",
+      "phoneticUs": "æbˈsɔrb; æbˈzɔrb; əbˈsɔrb",
+      "phoneticUk": "əb'zɔːb; -'sɔːb",
+      "translation": "吸收；使专心；吸收（液体、气体等）",
+      "sceneMeaning": "吸收",
+      "examples": "[]"
+    },
+    {
+      "word": "roar",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɔr",
+      "phoneticUk": "rɔː",
+      "translation": "吼叫；呼喊；吼",
+      "sceneMeaning": "吼叫；呼喊；吼",
+      "examples": "[]"
+    },
+    {
+      "word": "bird",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɝd",
+      "phoneticUk": "bɜːd",
+      "translation": "鸟，禽",
+      "sceneMeaning": "鸟",
+      "examples": "[]"
+    },
+    {
+      "word": "crop",
+      "partOfSpeech": "n",
+      "phoneticUs": "krɑp",
+      "phoneticUk": "krɒp",
+      "translation": "农作物，庄稼；一熟",
+      "sceneMeaning": "农作物；收成",
+      "examples": "[]"
+    },
+    {
+      "word": "dying",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'daɪɪŋ",
+      "phoneticUk": "'daɪɪŋ",
+      "translation": "垂死的；临终的",
+      "sceneMeaning": "垂死的；临终的",
+      "examples": "[]"
+    },
+    {
+      "word": "fruit",
+      "partOfSpeech": "n",
+      "phoneticUs": "frut",
+      "phoneticUk": "fruːt",
+      "translation": "水果；果实；成果",
+      "sceneMeaning": "水果；果实",
+      "examples": "[]"
+    },
+    {
+      "word": "kill",
+      "partOfSpeech": "v",
+      "phoneticUs": "kɪl",
+      "phoneticUk": "kɪl",
+      "translation": "杀死；扼杀；消磨",
+      "sceneMeaning": "杀死；扼杀；消磨",
+      "examples": "[]"
+    },
+    {
+      "word": "ocean",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "海洋；洋",
+      "sceneMeaning": "海洋",
+      "examples": "[]"
+    },
+    {
+      "word": "dig",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪɡ",
+      "phoneticUk": "dɪg",
+      "translation": "掘，挖；采掘",
+      "sceneMeaning": "掘，挖；采掘；本场景常见用法：◎挖深",
+      "examples": "[]"
+    },
+    {
+      "word": "fish",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fɪʃ",
+      "phoneticUk": "fɪʃ",
+      "translation": "鱼，鱼肉；钓鱼",
+      "sceneMeaning": "鱼；鱼肉",
+      "examples": "[]"
+    },
+    {
+      "word": "naturally",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'nætʃrəli",
+      "phoneticUk": "'nætʃ(ə)rəlɪ",
+      "translation": "自然地；天然地",
+      "sceneMeaning": "自然地；天然地",
+      "examples": "[]"
+    },
+    {
+      "word": "survive",
+      "partOfSpeech": "v",
+      "phoneticUs": "sɚ'vaɪv",
+      "phoneticUk": "sə'vaɪv",
+      "translation": "幸免于；活下来",
+      "sceneMeaning": "幸存；存活",
+      "examples": "[]"
+    },
+    {
+      "word": "swallow",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'swɑlo",
+      "phoneticUk": "'swɒləʊ",
+      "translation": "燕子；咽下，吞下",
+      "sceneMeaning": "燕子；吞咽",
+      "examples": "[]"
+    },
+    {
+      "word": "animal",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ænɪml",
+      "phoneticUk": "'ænɪm(ə)l",
+      "translation": "动物，兽；动物的",
+      "sceneMeaning": "动物",
+      "examples": "[]"
+    },
+    {
+      "word": "birth",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɝθ",
+      "phoneticUk": "bɜːθ",
+      "translation": "分娩，出生；出身",
+      "sceneMeaning": "分娩，出生；出身",
+      "examples": "[]"
+    },
+    {
+      "word": "chicken",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈtʃɪkən",
+      "phoneticUk": "'tʃɪkɪn",
+      "translation": "小鸡，小鸟；鸡肉",
+      "sceneMeaning": "鸡；鸡肉",
+      "examples": "[]"
+    },
+    {
+      "word": "dead",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɛd",
+      "phoneticUk": "ded",
+      "translation": "死的，无生命的",
+      "sceneMeaning": "死的；无生命的",
+      "examples": "[]"
+    },
+    {
+      "word": "deadly",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɛdli",
+      "phoneticUk": "'dedlɪ",
+      "translation": "致命的，死一般的",
+      "sceneMeaning": "致命的，死一般的",
+      "examples": "[]"
+    },
+    {
+      "word": "dog",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɔɡ",
+      "phoneticUk": "dɒg",
+      "translation": "狗，犬，犬科动物",
+      "sceneMeaning": "狗",
+      "examples": "[]"
+    },
+    {
+      "word": "fly",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "flaɪ",
+      "phoneticUk": "flaɪ",
+      "translation": "蝇，苍蝇；飞行",
+      "sceneMeaning": "飞；驾驶飞机",
+      "examples": "[]"
+    },
+    {
+      "word": "German",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "",
+      "phoneticUk": "'dʒɜːmən",
+      "translation": "德国的；德国人",
+      "sceneMeaning": "德国的；德国人；本场景常见用法：德国牧羊犬；阿尔萨斯狼犬；德国警犬（等于German police dog）",
+      "examples": "[]"
+    },
+    {
+      "word": "idle",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'aɪdl",
+      "phoneticUk": "'aɪd(ə)l",
+      "translation": "空闲的；懒散的",
+      "sceneMeaning": "空闲的；懒散的",
+      "examples": "[]"
+    },
+    {
+      "word": "moon",
+      "partOfSpeech": "n",
+      "phoneticUs": "mun",
+      "phoneticUk": "muːn",
+      "translation": "月球，月亮；卫星",
+      "sceneMeaning": "月亮",
+      "examples": "[]"
+    },
+    {
+      "word": "mountain",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈmaʊntn",
+      "phoneticUk": "ˈmaʊntən",
+      "translation": "山，山岳；山脉",
+      "sceneMeaning": "山；山脉",
+      "examples": "[]"
+    },
+    {
+      "word": "planet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plænɪt",
+      "phoneticUk": "'plænɪt",
+      "translation": "行星",
+      "sceneMeaning": "行星",
+      "examples": "[]"
+    },
+    {
+      "word": "rare",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɛr",
+      "phoneticUk": "reə",
+      "translation": "稀薄的；稀有的；罕有的，少见的",
+      "sceneMeaning": "稀有的；罕见的",
+      "examples": "[]"
+    },
+    {
+      "word": "rat",
+      "partOfSpeech": "n",
+      "phoneticUs": "ræt",
+      "phoneticUk": "ræt",
+      "translation": "老鼠，耗子",
+      "sceneMeaning": "老鼠，耗子；本场景常见用法：河鼠；（美）麝香鼠（等于muskrat）；[俚]岸滨小偷",
+      "examples": "[]"
+    },
+    {
+      "word": "reproduce",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": ",riprə'dus",
+      "phoneticUk": "riːprə'djuːs",
+      "translation": "繁殖，生殖；复制",
+      "sceneMeaning": "繁殖；复制",
+      "examples": "[]"
+    },
+    {
+      "word": "seize",
+      "partOfSpeech": "v",
+      "phoneticUs": "siz",
+      "phoneticUk": "siːz",
+      "translation": "抓住，逮捕；夺取；抓住",
+      "sceneMeaning": "抓住，逮捕；夺取；抓住",
+      "examples": "[]"
+    },
+    {
+      "word": "widespread",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈwʌɪdsprɛd",
+      "phoneticUk": "'waɪdspred",
+      "translation": "普遍的，广泛的",
+      "sceneMeaning": "普遍的，广泛的",
+      "examples": "[]"
+    },
+    {
+      "word": "acre",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ekɚ",
+      "phoneticUk": "'eɪkə",
+      "translation": "英亩(=607亩)",
+      "sceneMeaning": "英亩(=607亩)",
+      "examples": "[]"
+    },
+    {
+      "word": "basin",
+      "partOfSpeech": "n",
+      "phoneticUs": "'besn",
+      "phoneticUk": "'beɪs(ə)n",
+      "translation": "盆，洗脸盆；盆地",
+      "sceneMeaning": "盆，洗脸盆；盆地；本场景常见用法：洋盆；海洋盆地",
+      "examples": "[]"
+    },
+    {
+      "word": "beach",
+      "partOfSpeech": "n",
+      "phoneticUs": "bitʃ",
+      "phoneticUk": "biːtʃ",
+      "translation": "海滩，湖滩，河滩",
+      "sceneMeaning": "海滩",
+      "examples": "[]"
+    },
+    {
+      "word": "bite",
+      "partOfSpeech": "v",
+      "phoneticUs": "baɪt",
+      "phoneticUk": "baɪt",
+      "translation": "咬，叮，螫；剌穿",
+      "sceneMeaning": "咬；叮",
+      "examples": "[]"
+    },
+    {
+      "word": "branch",
+      "partOfSpeech": "n",
+      "phoneticUs": "bræntʃ",
+      "phoneticUk": "brɑːn(t)ʃ",
+      "translation": "树枝；分部；分科",
+      "sceneMeaning": "树枝；分支",
+      "examples": "[]"
+    },
+    {
+      "word": "bush",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "bʊʃ",
+      "translation": "灌木，灌木丛，矮树",
+      "sceneMeaning": "灌木，灌木丛，矮树",
+      "examples": "[]"
+    },
+    {
+      "word": "cat",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæt",
+      "phoneticUk": "kæt",
+      "translation": "猫，猫科，猫皮",
+      "sceneMeaning": "猫",
+      "examples": "[]"
+    },
+    {
+      "word": "flower",
+      "partOfSpeech": "n",
+      "phoneticUs": "'flaʊɚ",
+      "phoneticUk": "'flaʊə",
+      "translation": "花，花卉；开花",
+      "sceneMeaning": "花",
+      "examples": "[]"
+    },
+    {
+      "word": "forest",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrɪst",
+      "phoneticUk": "'fɒrɪst",
+      "translation": "森林；森林地带",
+      "sceneMeaning": "森林",
+      "examples": "[]"
+    },
+    {
+      "word": "grab",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡræb",
+      "phoneticUk": "ɡræb",
+      "translation": "抢先，抢占，抢夺",
+      "sceneMeaning": "抢先，抢占，抢夺",
+      "examples": "[]"
+    },
+    {
+      "word": "harvest",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'hɑrvɪst",
+      "phoneticUk": "'hɑːvɪst",
+      "translation": "收获，收成；收割；丰收，收获",
+      "sceneMeaning": "收获",
+      "examples": "[]"
+    },
+    {
+      "word": "hay",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "heɪ",
+      "translation": "干草",
+      "sceneMeaning": "干草；本场景常见用法：[医]枯草热；[医]花粉病",
+      "examples": "[]"
+    },
+    {
+      "word": "hunt",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hʌnt",
+      "phoneticUk": "hʌnt",
+      "translation": "打猎；搜寻；追猎",
+      "sceneMeaning": "打猎；搜寻",
+      "examples": "[]"
+    },
+    {
+      "word": "island",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aɪlənd",
+      "phoneticUk": "'aɪlənd",
+      "translation": "岛，岛屿",
+      "sceneMeaning": "岛屿",
+      "examples": "[]"
+    },
+    {
+      "word": "lake",
+      "partOfSpeech": "n",
+      "phoneticUs": "lek",
+      "phoneticUk": "leɪk",
+      "translation": "湖",
+      "sceneMeaning": "湖",
+      "examples": "[]"
+    },
+    {
+      "word": "lion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'laɪən",
+      "phoneticUk": "'laɪən",
+      "translation": "狮子；勇猛的人",
+      "sceneMeaning": "狮子",
+      "examples": "[]"
+    },
+    {
+      "word": "liver",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪvɚ",
+      "phoneticUk": "'lɪvə",
+      "translation": "肝；肝脏",
+      "sceneMeaning": "肝；肝脏；本场景常见用法：肝脏移植",
+      "examples": "[]"
+    },
+    {
+      "word": "marine",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mə'rin",
+      "phoneticUk": "mə'riːn",
+      "translation": "海的；海上的",
+      "sceneMeaning": "海洋的",
+      "examples": "[]"
+    },
+    {
+      "word": "Mediterranean",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": ",mɛdətə'renɪən",
+      "phoneticUk": "",
+      "translation": "地中海；地中海的",
+      "sceneMeaning": "地中海；地中海的",
+      "examples": "[]"
+    },
+    {
+      "word": "pet",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɛt",
+      "phoneticUk": "pet",
+      "translation": "爱畜；宠儿a宠爱的",
+      "sceneMeaning": "宠物",
+      "examples": "[]"
+    },
+    {
+      "word": "pigeon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɪdʒɪn",
+      "phoneticUk": "'pɪdʒɪn; 'pɪdʒ(ə)n",
+      "translation": "鸽子",
+      "sceneMeaning": "鸽子",
+      "examples": "[]"
+    },
+    {
+      "word": "poison",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pɔɪzn",
+      "phoneticUk": "'pɒɪz(ə)n",
+      "translation": "毒，毒药；毒害；使中毒",
+      "sceneMeaning": "毒，毒药；毒害；使中毒",
+      "examples": "[]"
+    },
+    {
+      "word": "ripe",
+      "partOfSpeech": "adj",
+      "phoneticUs": "raɪp",
+      "phoneticUk": "raɪp",
+      "translation": "熟的；时机成熟的",
+      "sceneMeaning": "熟的；时机成熟的",
+      "examples": "[]"
+    },
+    {
+      "word": "slope",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "slop",
+      "phoneticUk": "sləʊp",
+      "translation": "倾斜；斜面；倾斜",
+      "sceneMeaning": "倾斜；斜面；倾斜；本场景常见用法：岩石边坡；石坡；岩石坡；石流坡",
+      "examples": "[]"
+    },
+    {
+      "word": "soil",
+      "partOfSpeech": "v",
+      "phoneticUs": "sɔɪl",
+      "phoneticUk": "sɒɪl",
+      "translation": "弄脏；变脏",
+      "sceneMeaning": "土壤",
+      "examples": "[]"
+    },
+    {
+      "word": "steep",
+      "partOfSpeech": "adj",
+      "phoneticUs": "stip",
+      "phoneticUk": "stiːp",
+      "translation": "险峻的，陡峭的；陡峭的；急剧升/降的",
+      "sceneMeaning": "险峻的，陡峭的；陡峭的；急剧升/降的",
+      "examples": "[]"
+    },
+    {
+      "word": "survival",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɚ'vaɪvl",
+      "phoneticUk": "səˈvaɪvl",
+      "translation": "幸存",
+      "sceneMeaning": "幸存",
+      "examples": "[]"
+    },
+    {
+      "word": "thrive",
+      "partOfSpeech": "v",
+      "phoneticUs": "θraɪv",
+      "phoneticUk": "θraɪv",
+      "translation": "兴旺，繁荣，旺盛",
+      "sceneMeaning": "兴旺，繁荣，旺盛",
+      "examples": "[]"
+    },
+    {
+      "word": "wave",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "wev",
+      "phoneticUk": "weɪv",
+      "translation": "波；波涛；波动",
+      "sceneMeaning": "波；波涛；波动",
+      "examples": "[]"
+    },
+    {
+      "word": "Africa",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈæfrɪkə",
+      "phoneticUk": "'æfrɪkə",
+      "translation": "非洲",
+      "sceneMeaning": "非洲",
+      "examples": "[]"
+    },
+    {
+      "word": "angel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'endʒl",
+      "phoneticUk": "'eɪndʒ(ə)l",
+      "translation": "天使，神差，安琪儿",
+      "sceneMeaning": "天使，神差，安琪儿",
+      "examples": "[]"
+    },
+    {
+      "word": "ant",
+      "partOfSpeech": "n",
+      "phoneticUs": "ænt",
+      "phoneticUk": "ænt",
+      "translation": "蚂蚁",
+      "sceneMeaning": "蚂蚁",
+      "examples": "[]"
+    },
+    {
+      "word": "Arabian",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'rebiən",
+      "phoneticUk": "ə'reɪbɪən",
+      "translation": "阿拉伯的",
+      "sceneMeaning": "阿拉伯的；本场景常见用法：n. 阿拉伯沙漠",
+      "examples": "[]"
+    },
+    {
+      "word": "bat",
+      "partOfSpeech": "n",
+      "phoneticUs": "bæt",
+      "phoneticUk": "bæt",
+      "translation": "球拍；短棍；蝙蝠",
+      "sceneMeaning": "球拍；短棍；蝙蝠；本场景常见用法：板球拍",
+      "examples": "[]"
+    },
+    {
+      "word": "bay",
+      "partOfSpeech": "n",
+      "phoneticUs": "be",
+      "phoneticUk": "beɪ",
+      "translation": "湾；山脉中的凹处",
+      "sceneMeaning": "湾；山脉中的凹处",
+      "examples": "[]"
+    },
+    {
+      "word": "beast",
+      "partOfSpeech": "n",
+      "phoneticUs": "bist",
+      "phoneticUk": "biːst",
+      "translation": "兽，野兽；牲畜",
+      "sceneMeaning": "兽，野兽；牲畜；本场景常见用法：n. 野兽",
+      "examples": "[]"
+    },
+    {
+      "word": "bee",
+      "partOfSpeech": "n",
+      "phoneticUs": "bi",
+      "phoneticUk": "biː",
+      "translation": "蜂，密蜂；忙碌的人",
+      "sceneMeaning": "蜜蜂",
+      "examples": "[]"
+    },
+    {
+      "word": "bloom",
+      "partOfSpeech": "n",
+      "phoneticUs": "blum",
+      "phoneticUk": "bluːm",
+      "translation": "花；开花，开花期",
+      "sceneMeaning": "开花；繁荣",
+      "examples": "[]"
+    },
+    {
+      "word": "blossom",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'blɑsəm",
+      "phoneticUk": "'blɒs(ə)m",
+      "translation": "花，开花；开花",
+      "sceneMeaning": "花，开花；开花",
+      "examples": "[]"
+    },
+    {
+      "word": "bough",
+      "partOfSpeech": "n",
+      "phoneticUs": "baʊ",
+      "phoneticUk": "baʊ",
+      "translation": "树枝",
+      "sceneMeaning": "树枝",
+      "examples": "[]"
+    },
+    {
+      "word": "brood",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "brud",
+      "phoneticUk": "bruːd",
+      "translation": "同窝幼鸟；孵(蛋)",
+      "sceneMeaning": "同窝幼鸟；孵(蛋)",
+      "examples": "[]"
+    },
+    {
+      "word": "bud",
+      "partOfSpeech": "n",
+      "phoneticUs": "bʌd",
+      "phoneticUk": "bʌd",
+      "translation": "芽，萌芽；蓓蕾",
+      "sceneMeaning": "芽，萌芽；蓓蕾",
+      "examples": "[]"
+    },
+    {
+      "word": "butterfly",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bʌtɚflaɪ",
+      "phoneticUk": "'bʌtəflaɪ",
+      "translation": "蝴蝶",
+      "sceneMeaning": "蝴蝶",
+      "examples": "[]"
+    },
+    {
+      "word": "cage",
+      "partOfSpeech": "n",
+      "phoneticUs": "kedʒ",
+      "phoneticUk": "keɪdʒ",
+      "translation": "笼；鸟笼，囚笼",
+      "sceneMeaning": "笼；鸟笼，囚笼",
+      "examples": "[]"
+    },
+    {
+      "word": "camel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæml",
+      "phoneticUk": "'kæm(ə)l",
+      "translation": "骆驼",
+      "sceneMeaning": "骆驼",
+      "examples": "[]"
+    },
+    {
+      "word": "cave",
+      "partOfSpeech": "n",
+      "phoneticUs": "kev",
+      "phoneticUk": "keɪv",
+      "translation": "山洞，洞穴，窑洞",
+      "sceneMeaning": "山洞，洞穴，窑洞；本场景常见用法：芦笛岩",
+      "examples": "[]"
+    },
+    {
+      "word": "chase",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "tʃeɪs",
+      "translation": "追逐，追赶，追求",
+      "sceneMeaning": "追逐，追赶，追求",
+      "examples": "[]"
+    },
+    {
+      "word": "cherry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃɛri",
+      "phoneticUk": "'tʃerɪ",
+      "translation": "樱桃；樱桃树",
+      "sceneMeaning": "樱桃；樱桃树；本场景常见用法：野黑樱桃",
+      "examples": "[]"
+    },
+    {
+      "word": "claw",
+      "partOfSpeech": "n",
+      "phoneticUs": "klɔ",
+      "phoneticUk": "klɔː",
+      "translation": "爪，脚爪，螯",
+      "sceneMeaning": "爪，脚爪，螯",
+      "examples": "[]"
+    },
+    {
+      "word": "cliff",
+      "partOfSpeech": "n",
+      "phoneticUs": "klɪf",
+      "phoneticUk": "klɪf",
+      "translation": "悬崖，峭壁",
+      "sceneMeaning": "悬崖，峭壁",
+      "examples": "[]"
+    },
+    {
+      "word": "climb",
+      "partOfSpeech": "v",
+      "phoneticUs": "klaɪm",
+      "phoneticUk": "klaɪm",
+      "translation": "攀登，爬；爬",
+      "sceneMeaning": "攀爬",
+      "examples": "[]"
+    },
+    {
+      "word": "coast",
+      "partOfSpeech": "n",
+      "phoneticUs": "kost",
+      "phoneticUk": "kəʊst",
+      "translation": "海岸，海滨(地区)",
+      "sceneMeaning": "海岸",
+      "examples": "[]"
+    },
+    {
+      "word": "continent",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑntɪnənt",
+      "phoneticUk": "'kɒntɪnənt",
+      "translation": "大陆；陆地；洲",
+      "sceneMeaning": "大陆；陆地；洲；本场景常见用法：南极大陆；南极洲",
+      "examples": "[]"
+    },
+    {
+      "word": "cow",
+      "partOfSpeech": "n",
+      "phoneticUs": "kaʊ",
+      "phoneticUk": "kaʊ",
+      "translation": "母牛，奶牛；母兽",
+      "sceneMeaning": "奶牛；母牛",
+      "examples": "[]"
+    },
+    {
+      "word": "crawl",
+      "partOfSpeech": "v",
+      "phoneticUs": "krɔl",
+      "phoneticUk": "krɔːl",
+      "translation": "爬，爬行",
+      "sceneMeaning": "爬行",
+      "examples": "[]"
+    },
+    {
+      "word": "creep",
+      "partOfSpeech": "v",
+      "phoneticUs": "krip",
+      "phoneticUk": "kriːp",
+      "translation": "爬行；缓慢地行进",
+      "sceneMeaning": "爬行；缓慢地行进；本场景常见用法：蠕变特性",
+      "examples": "[]"
+    },
+    {
+      "word": "crow",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kro",
+      "phoneticUk": "krəʊ",
+      "translation": "鸦，乌鸦；啼",
+      "sceneMeaning": "鸦，乌鸦；啼；本场景常见用法：笔直地",
+      "examples": "[]"
+    },
+    {
+      "word": "crust",
+      "partOfSpeech": "n",
+      "phoneticUs": "krʌst",
+      "phoneticUk": "krʌst",
+      "translation": "面包皮；硬外皮",
+      "sceneMeaning": "面包皮；硬外皮；本场景常见用法：海洋地壳，大洋地壳",
+      "examples": "[]"
+    },
+    {
+      "word": "deer",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪr",
+      "phoneticUk": "dɪə",
+      "translation": "鹿",
+      "sceneMeaning": "鹿",
+      "examples": "[]"
+    },
+    {
+      "word": "desert",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "(for v.) dɪˈzɝ​t; (for n.) 'dɛzɚt",
+      "phoneticUk": "(for v.) dɪ'zɜːt; (for n.) 'dezət",
+      "translation": "沙漠；离弃；擅离；抛弃",
+      "sceneMeaning": "沙漠",
+      "examples": "[]"
+    },
+    {
+      "word": "donkey",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɔŋki",
+      "phoneticUk": "'dɒŋkɪ",
+      "translation": "驴；笨蛋",
+      "sceneMeaning": "驴；笨蛋",
+      "examples": "[]"
+    },
+    {
+      "word": "duck",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʌk",
+      "phoneticUk": "dʌk",
+      "translation": "鸭，雌鸭；鸭肉",
+      "sceneMeaning": "鸭",
+      "examples": "[]"
+    },
+    {
+      "word": "eagle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'igl",
+      "phoneticUk": "'iːg(ə)l",
+      "translation": "鹰",
+      "sceneMeaning": "鹰",
+      "examples": "[]"
+    },
+    {
+      "word": "elephant",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛlɪfənt",
+      "phoneticUk": "'elɪf(ə)nt",
+      "translation": "象",
+      "sceneMeaning": "大象",
+      "examples": "[]"
+    },
+    {
+      "word": "endanger",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'dendʒɚ",
+      "phoneticUk": "ɪnˈdeɪndʒə(r)",
+      "translation": "危及，危害，濒临危险",
+      "sceneMeaning": "危及，危害，濒临危险",
+      "examples": "[]"
+    },
+    {
+      "word": "feather",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɛðɚ",
+      "phoneticUk": "'feðə",
+      "translation": "羽毛；翎毛；羽状物",
+      "sceneMeaning": "羽毛；翎毛；羽状物",
+      "examples": "[]"
+    },
+    {
+      "word": "fertile",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈfɝtəl; (canadian) ˈfɝˌtaɪl",
+      "phoneticUk": "'fɜːtaɪl",
+      "translation": "肥沃的；多产的",
+      "sceneMeaning": "肥沃的；能繁殖的",
+      "examples": "[]"
+    },
+    {
+      "word": "fertilizer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɝtəlaɪzɚ",
+      "phoneticUk": "'fɜːtɪlaɪzə",
+      "translation": "肥料",
+      "sceneMeaning": "肥料；本场景常见用法：化肥厂",
+      "examples": "[]"
+    },
+    {
+      "word": "fox",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɑks",
+      "phoneticUk": "fɒks",
+      "translation": "狐狸；狡猾的人",
+      "sceneMeaning": "狐狸",
+      "examples": "[]"
+    },
+    {
+      "word": "frog",
+      "partOfSpeech": "n",
+      "phoneticUs": "frɔɡ",
+      "phoneticUk": "frɒg",
+      "translation": "蛙",
+      "sceneMeaning": "青蛙",
+      "examples": "[]"
+    },
+    {
+      "word": "fruitful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'frutfl",
+      "phoneticUk": "'fruːtfʊl; -f(ə)l",
+      "translation": "多产的；肥沃的",
+      "sceneMeaning": "多产的；肥沃的",
+      "examples": "[]"
+    },
+    {
+      "word": "fur",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɝ",
+      "phoneticUk": "fɜː",
+      "translation": "软毛；毛皮，裘皮",
+      "sceneMeaning": "软毛；毛皮，裘皮；本场景常见用法：海狗；腽肭兽；毛皮海豹",
+      "examples": "[]"
+    },
+    {
+      "word": "goat",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡot",
+      "phoneticUk": "gəʊt",
+      "translation": "山羊",
+      "sceneMeaning": "山羊",
+      "examples": "[]"
+    },
+    {
+      "word": "goose",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡus",
+      "phoneticUk": "guːs",
+      "translation": "鹅，雌鹅",
+      "sceneMeaning": "鹅，雌鹅；本场景常见用法：n. 野鹅，雁",
+      "examples": "[]"
+    },
+    {
+      "word": "grass",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡræs",
+      "phoneticUk": "grɑːs",
+      "translation": "草；牧草；草地",
+      "sceneMeaning": "草；草地",
+      "examples": "[]"
+    },
+    {
+      "word": "gulf",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡʌlf",
+      "phoneticUk": "gʌlf",
+      "translation": "海湾",
+      "sceneMeaning": "海湾；本场景常见用法：海湾合作委员会",
+      "examples": "[]"
+    },
+    {
+      "word": "hare",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɛr",
+      "phoneticUk": "heə",
+      "translation": "野兔",
+      "sceneMeaning": "野兔",
+      "examples": "[]"
+    },
+    {
+      "word": "hatch",
+      "partOfSpeech": "v",
+      "phoneticUs": "hætʃ",
+      "phoneticUk": "hætʃ",
+      "translation": "孵出；(蛋)孵化",
+      "sceneMeaning": "孵出；(蛋)孵化",
+      "examples": "[]"
+    },
+    {
+      "word": "hawk",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɔk",
+      "phoneticUk": "hɔːk",
+      "translation": "鹰，隼",
+      "sceneMeaning": "鹰，隼；本场景常见用法：食雀鹰；鹞",
+      "examples": "[]"
+    },
+    {
+      "word": "hedge",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɛdʒ",
+      "phoneticUk": "hedʒ",
+      "translation": "篱笆，树篱；障碍物",
+      "sceneMeaning": "篱笆，树篱；障碍物；本场景常见用法：[经]为防通货膨胀而套购",
+      "examples": "[]"
+    },
+    {
+      "word": "herd",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hɝd",
+      "phoneticUk": "hɜːd",
+      "translation": "兽群，牧群；放牧",
+      "sceneMeaning": "兽群，牧群；放牧",
+      "examples": "[]"
+    },
+    {
+      "word": "hill",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɪl",
+      "phoneticUk": "hɪl",
+      "translation": "小山，山岗；丘陵",
+      "sceneMeaning": "小山",
+      "examples": "[]"
+    },
+    {
+      "word": "horse",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɔrs",
+      "phoneticUk": "hɔːs",
+      "translation": "马；马科动物",
+      "sceneMeaning": "马",
+      "examples": "[]"
+    },
+    {
+      "word": "inhabit",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'hæbɪt",
+      "phoneticUk": "ɪn'hæbɪt",
+      "translation": "居住于，栖息于",
+      "sceneMeaning": "居住于，栖息于",
+      "examples": "[]"
+    },
+    {
+      "word": "insect",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnsɛkt",
+      "phoneticUk": "'ɪnsekt",
+      "translation": "昆虫，虫",
+      "sceneMeaning": "昆虫",
+      "examples": "[]"
+    },
+    {
+      "word": "jungle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒʌŋɡl",
+      "phoneticUk": "'dʒʌŋg(ə)l",
+      "translation": "丛林，密林，莽丛",
+      "sceneMeaning": "丛林，密林，莽丛",
+      "examples": "[]"
+    },
+    {
+      "word": "lawn",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔn",
+      "phoneticUk": "lɔːn",
+      "translation": "草地，草坪，草场",
+      "sceneMeaning": "草地，草坪，草场",
+      "examples": "[]"
+    },
+    {
+      "word": "leaf",
+      "partOfSpeech": "n",
+      "phoneticUs": "lif",
+      "phoneticUk": "liːf",
+      "translation": "叶，叶子",
+      "sceneMeaning": "叶子",
+      "examples": "[]"
+    },
+    {
+      "word": "lively",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'laɪvli",
+      "phoneticUk": "'laɪvlɪ",
+      "translation": "活泼的；逼真的",
+      "sceneMeaning": "活泼的；逼真的；本场景常见用法：布莱克·莱弗利（美剧演员）",
+      "examples": "[]"
+    },
+    {
+      "word": "mad",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mæd",
+      "phoneticUk": "mæd",
+      "translation": "发疯的；恼火的",
+      "sceneMeaning": "发疯的；恼火的",
+      "examples": "[]"
+    },
+    {
+      "word": "mainland",
+      "partOfSpeech": "n",
+      "phoneticUs": "'menlænd",
+      "phoneticUk": "'meɪnlənd; -lænd",
+      "translation": "大陆",
+      "sceneMeaning": "大陆",
+      "examples": "[]"
+    },
+    {
+      "word": "meadow",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛdo",
+      "phoneticUk": "'medəʊ",
+      "translation": "草地，牧草地",
+      "sceneMeaning": "草地，牧草地；本场景常见用法：高山草甸",
+      "examples": "[]"
+    },
+    {
+      "word": "mistress",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪstrəs",
+      "phoneticUk": "'mɪstrɪs",
+      "translation": "女主人；夫人",
+      "sceneMeaning": "女主人；夫人",
+      "examples": "[]"
+    },
+    {
+      "word": "monkey",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mʌŋki",
+      "phoneticUk": "'mʌŋkɪ",
+      "translation": "猴子，猿",
+      "sceneMeaning": "猴子",
+      "examples": "[]"
+    },
+    {
+      "word": "mosquito",
+      "partOfSpeech": "n",
+      "phoneticUs": "məˈskiːtoʊ",
+      "phoneticUk": "mɒ'skiːtəʊ",
+      "translation": "蚊子",
+      "sceneMeaning": "蚊子",
+      "examples": "[]"
+    },
+    {
+      "word": "mount",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "maʊnt",
+      "phoneticUk": "maʊnt",
+      "translation": "登上，爬上；…山",
+      "sceneMeaning": "登上，爬上；…山",
+      "examples": "[]"
+    },
+    {
+      "word": "mouse",
+      "partOfSpeech": "n",
+      "phoneticUs": "maʊs",
+      "phoneticUk": "maʊs",
+      "translation": "鼠，耗子",
+      "sceneMeaning": "老鼠；鼠标",
+      "examples": "[]"
+    },
+    {
+      "word": "mushroom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mʌʃrʊm",
+      "phoneticUk": "'mʌʃruːm; -rʊm",
+      "translation": "蘑菇，菌类植物",
+      "sceneMeaning": "蘑菇",
+      "examples": "[]"
+    },
+    {
+      "word": "nest",
+      "partOfSpeech": "n",
+      "phoneticUs": "nɛst",
+      "phoneticUk": "nest",
+      "translation": "巢，窝，穴",
+      "sceneMeaning": "巢，窝，穴",
+      "examples": "[]"
+    },
+    {
+      "word": "oak",
+      "partOfSpeech": "n",
+      "phoneticUs": "ok",
+      "phoneticUk": "əʊk",
+      "translation": "栎属植物；栎木",
+      "sceneMeaning": "橡树",
+      "examples": "[]"
+    },
+    {
+      "word": "overflow",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ovɚ'flo",
+      "phoneticUk": "ˌəʊvə'fləʊ",
+      "translation": "溢出，淹没",
+      "sceneMeaning": "溢出，淹没",
+      "examples": "[]"
+    },
+    {
+      "word": "owl",
+      "partOfSpeech": "n",
+      "phoneticUs": "aʊl",
+      "phoneticUk": "aʊl",
+      "translation": "猫头鹰，枭",
+      "sceneMeaning": "猫头鹰",
+      "examples": "[]"
+    },
+    {
+      "word": "pig",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɪɡ",
+      "phoneticUk": "pɪg",
+      "translation": "猪，小猪，野猪",
+      "sceneMeaning": "猪",
+      "examples": "[]"
+    },
+    {
+      "word": "pine",
+      "partOfSpeech": "n",
+      "phoneticUs": "paɪn",
+      "phoneticUk": "paɪn",
+      "translation": "松树，松木",
+      "sceneMeaning": "松树",
+      "examples": "[]"
+    },
+    {
+      "word": "poisonous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɔɪzənəs",
+      "phoneticUk": "'pɒɪzənəs",
+      "translation": "有毒的，有害的",
+      "sceneMeaning": "有毒的",
+      "examples": "[]"
+    },
+    {
+      "word": "pond",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɑnd",
+      "phoneticUk": "pɒnd",
+      "translation": "池塘",
+      "sceneMeaning": "池塘",
+      "examples": "[]"
+    },
+    {
+      "word": "rabbit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ræbɪt",
+      "phoneticUk": "'ræbɪt",
+      "translation": "兔子，野兔",
+      "sceneMeaning": "兔子",
+      "examples": "[]"
+    },
+    {
+      "word": "reproductive",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",riprə'dʌktɪv",
+      "phoneticUk": "ˌri:prəˈdʌktɪv",
+      "translation": "生殖的，再生的",
+      "sceneMeaning": "生殖的，再生的；本场景常见用法：繁殖性能；生殖能力",
+      "examples": "[]"
+    },
+    {
+      "word": "ridge",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪdʒ",
+      "phoneticUk": "rɪdʒ",
+      "translation": "脊；岭，山脉；垄",
+      "sceneMeaning": "脊；岭，山脉；垄；本场景常见用法：橡树岭国家实验室",
+      "examples": "[]"
+    },
+    {
+      "word": "saddle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sædl",
+      "phoneticUk": "'sæd(ə)l",
+      "translation": "鞍子，马鞍",
+      "sceneMeaning": "鞍子，马鞍；本场景常见用法：驯马，骑用马",
+      "examples": "[]"
+    },
+    {
+      "word": "seed",
+      "partOfSpeech": "n",
+      "phoneticUs": "sid",
+      "phoneticUk": "siːd",
+      "translation": "种(子)，籽，萌芽",
+      "sceneMeaning": "种子",
+      "examples": "[]"
+    },
+    {
+      "word": "shore",
+      "partOfSpeech": "n",
+      "phoneticUs": "ʃɔr",
+      "phoneticUk": "ʃɔː",
+      "translation": "滨，岸",
+      "sceneMeaning": "滨，岸",
+      "examples": "[]"
+    },
+    {
+      "word": "soak",
+      "partOfSpeech": "v",
+      "phoneticUs": "sok",
+      "phoneticUk": "səʊk",
+      "translation": "浸，泡；浸泡",
+      "sceneMeaning": "浸，泡；浸泡",
+      "examples": "[]"
+    },
+    {
+      "word": "sow",
+      "partOfSpeech": "v",
+      "phoneticUs": "so",
+      "phoneticUk": "səʊ",
+      "translation": "播(种)；播种",
+      "sceneMeaning": "播(种)；播种",
+      "examples": "[]"
+    },
+    {
+      "word": "stem",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "stɛm",
+      "phoneticUk": "stem",
+      "translation": "茎，(树)干；起源",
+      "sceneMeaning": "茎；柄",
+      "examples": "[]"
+    },
+    {
+      "word": "stiff",
+      "partOfSpeech": "adj",
+      "phoneticUs": "stɪf",
+      "phoneticUk": "stɪf",
+      "translation": "硬的；僵直的",
+      "sceneMeaning": "硬的；僵直的",
+      "examples": "[]"
+    },
+    {
+      "word": "sting",
+      "partOfSpeech": "v / vi&n",
+      "phoneticUs": "stɪŋ",
+      "phoneticUk": "stɪŋ",
+      "translation": "刺；刺痛；刺",
+      "sceneMeaning": "刺；刺痛；刺",
+      "examples": "[]"
+    },
+    {
+      "word": "submerge",
+      "partOfSpeech": "v",
+      "phoneticUs": "səb'mɝdʒ",
+      "phoneticUk": "səb'mɜːdʒ",
+      "translation": "浸没；潜入水中",
+      "sceneMeaning": "浸没；潜入水中",
+      "examples": "[]"
+    },
+    {
+      "word": "tame",
+      "partOfSpeech": "adj",
+      "phoneticUs": "teɪm",
+      "phoneticUk": "teɪm",
+      "translation": "驯服的；顺从的",
+      "sceneMeaning": "驯服的；顺从的",
+      "examples": "[]"
+    },
+    {
+      "word": "tropical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'trɑpɪkl",
+      "phoneticUk": "'trɒpɪk(ə)l",
+      "translation": "热带的",
+      "sceneMeaning": "热带的",
+      "examples": "[]"
+    },
+    {
+      "word": "trunk",
+      "partOfSpeech": "n",
+      "phoneticUs": "trʌŋk",
+      "phoneticUk": "trʌŋk",
+      "translation": "树干；大衣箱，皮箱",
+      "sceneMeaning": "树干；大衣箱，皮箱",
+      "examples": "[]"
+    },
+    {
+      "word": "weed",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "wid",
+      "phoneticUk": "wiːd",
+      "translation": "杂草，野草；除草",
+      "sceneMeaning": "杂草",
+      "examples": "[]"
+    },
+    {
+      "word": "wing",
+      "partOfSpeech": "n",
+      "phoneticUs": "wɪŋ",
+      "phoneticUk": "wɪŋ",
+      "translation": "翼，翅膀，翅",
+      "sceneMeaning": "翼，翅膀，翅",
+      "examples": "[]"
+    },
+    {
+      "word": "wooden",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'wʊdn",
+      "phoneticUk": "'wʊd(ə)n",
+      "translation": "木制的；呆板的",
+      "sceneMeaning": "木制的；僵硬的",
+      "examples": "[]"
+    },
+    {
+      "word": "worm",
+      "partOfSpeech": "n",
+      "phoneticUs": "wɝm",
+      "phoneticUk": "wɜːm",
+      "translation": "虫，蠕虫",
+      "sceneMeaning": "虫；蠕虫",
+      "examples": "[]"
+    }
+  ]
+}

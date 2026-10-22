@@ -1,0 +1,20 @@
+{
+  "slug": "983287142303",
+  "title": "Java 一共有多少种数据类型？——从 8 种基本类型到完整 Java 类型体系",
+  "description": "本文系统梳理 Java 的完整类型体系，从 **8 种基本数据类型** 出发，进一步介绍类、接口、数组、类型变量以及泛型中的参数化类型、通配符、交叉类型等概念，并解释 `String`、`Integer`、`void`、`var`、`null` 等常见易混点，帮助建立完整、严谨的 Java 类型系统认知。\n",
+  "publishedAt": "2026-09-04",
+  "updatedAt": "2026-10-09",
+  "wordCount": 11208,
+  "tags": [
+    {
+      "slug": "java",
+      "name": "Java"
+    },
+    {
+      "slug": "tag-df49776bfd52",
+      "name": "数据类型"
+    }
+  ],
+  "topics": [],
+  "path": "/blog/posts/983287142303/"
+}

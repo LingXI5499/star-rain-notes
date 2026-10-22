@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>display:none</code> 传统上无法直接过渡；可用 <code>opacity</code>/<code>grid-template-rows</code> 或新式离散过渡处理。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.panel { display: none; opacity: 0; transition: opacity .3s, display .3s allow-discrete; }
+.panel.open { display: block; opacity: 1; }
+@starting-style { .panel.open { opacity: 0; } }
+</code></pre>
+<p><strong>学完能做：</strong> 理解显示切换与展开过渡的实现条件。</p>

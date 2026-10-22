@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 两端按钮宽度不同时，用三列 Grid 的 <code>1fr auto 1fr</code> 让中间标题真正居中。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.mobile-header { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
+.mobile-header .right { justify-self: end; }
+</code></pre>
+<p><strong>学完能做：</strong> 解决左右按钮宽度不同导致的标题偏移。</p>

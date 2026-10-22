@@ -1,0 +1,422 @@
+[
+  {
+    "id": "1",
+    "title": "人体与感官",
+    "layer": "基础通用词层",
+    "wordCount": 170,
+    "path": "/english/vocabulary/1/"
+  },
+  {
+    "id": "2",
+    "title": "家庭成员、人物身份与社会称谓",
+    "layer": "基础通用词层",
+    "wordCount": 139,
+    "path": "/english/vocabulary/2/"
+  },
+  {
+    "id": "3",
+    "title": "颜色、形状、大小、材料、质地",
+    "layer": "基础通用词层",
+    "wordCount": 191,
+    "path": "/english/vocabulary/3/"
+  },
+  {
+    "id": "4",
+    "title": "时间、日期、年龄、频率、顺序",
+    "layer": "基础通用词层",
+    "wordCount": 158,
+    "path": "/english/vocabulary/4/"
+  },
+  {
+    "id": "5",
+    "title": "数量、程度、比较、倍数、范围",
+    "layer": "基础通用词层",
+    "wordCount": 158,
+    "path": "/english/vocabulary/5/"
+  },
+  {
+    "id": "6",
+    "title": "方向、方位、位置、空间关系",
+    "layer": "基础通用词层",
+    "wordCount": 158,
+    "path": "/english/vocabulary/6/"
+  },
+  {
+    "id": "7",
+    "title": "动物、植物、自然物",
+    "layer": "基础通用词层",
+    "wordCount": 179,
+    "path": "/english/vocabulary/7/"
+  },
+  {
+    "id": "8",
+    "title": "天气、季节、气候、自然现象",
+    "layer": "基础通用词层",
+    "wordCount": 81,
+    "path": "/english/vocabulary/8/"
+  },
+  {
+    "id": "9",
+    "title": "衣物、鞋帽、配饰、个人用品",
+    "layer": "基础通用词层",
+    "wordCount": 98,
+    "path": "/english/vocabulary/9/"
+  },
+  {
+    "id": "10",
+    "title": "家具、家电、器具、日用品",
+    "layer": "基础通用词层",
+    "wordCount": 164,
+    "path": "/english/vocabulary/10/"
+  },
+  {
+    "id": "11",
+    "title": "食材、基础食物、基础饮料",
+    "layer": "基础通用词层",
+    "wordCount": 110,
+    "path": "/english/vocabulary/11/"
+  },
+  {
+    "id": "12",
+    "title": "学科、课程、知识门类",
+    "layer": "基础通用词层",
+    "wordCount": 96,
+    "path": "/english/vocabulary/12/"
+  },
+  {
+    "id": "13",
+    "title": "家与日常生活",
+    "layer": "核心生活场景层",
+    "wordCount": 131,
+    "path": "/english/vocabulary/13/"
+  },
+  {
+    "id": "14",
+    "title": "宿舍 / 日常学习空间",
+    "layer": "核心生活场景层",
+    "wordCount": 81,
+    "path": "/english/vocabulary/14/"
+  },
+  {
+    "id": "15",
+    "title": "餐厅 / 饮食",
+    "layer": "核心生活场景层",
+    "wordCount": 89,
+    "path": "/english/vocabulary/15/"
+  },
+  {
+    "id": "16",
+    "title": "超市 / 购物",
+    "layer": "核心生活场景层",
+    "wordCount": 88,
+    "path": "/english/vocabulary/16/"
+  },
+  {
+    "id": "17",
+    "title": "银行 / 支付 / 金钱管理",
+    "layer": "核心生活场景层",
+    "wordCount": 81,
+    "path": "/english/vocabulary/17/"
+  },
+  {
+    "id": "18",
+    "title": "快递 / 网购 / 物流",
+    "layer": "核心生活场景层",
+    "wordCount": 64,
+    "path": "/english/vocabulary/18/"
+  },
+  {
+    "id": "19",
+    "title": "手机 / 网络 / 数字生活",
+    "layer": "核心生活场景层",
+    "wordCount": 86,
+    "path": "/english/vocabulary/19/"
+  },
+  {
+    "id": "20",
+    "title": "交通 / 出行",
+    "layer": "核心生活场景层",
+    "wordCount": 119,
+    "path": "/english/vocabulary/20/"
+  },
+  {
+    "id": "21",
+    "title": "机场 / 火车站 / 长途出行",
+    "layer": "核心生活场景层",
+    "wordCount": 62,
+    "path": "/english/vocabulary/21/"
+  },
+  {
+    "id": "22",
+    "title": "酒店 / 住宿",
+    "layer": "核心生活场景层",
+    "wordCount": 73,
+    "path": "/english/vocabulary/22/"
+  },
+  {
+    "id": "23",
+    "title": "旅行 / 旅游",
+    "layer": "核心生活场景层",
+    "wordCount": 89,
+    "path": "/english/vocabulary/23/"
+  },
+  {
+    "id": "24",
+    "title": "景点 / 博物馆 / 参观",
+    "layer": "核心生活场景层",
+    "wordCount": 98,
+    "path": "/english/vocabulary/24/"
+  },
+  {
+    "id": "25",
+    "title": "医院 / 健康 / 医疗",
+    "layer": "核心生活场景层",
+    "wordCount": 120,
+    "path": "/english/vocabulary/25/"
+  },
+  {
+    "id": "26",
+    "title": "运动 / 健身 / 身体状态",
+    "layer": "核心生活场景层",
+    "wordCount": 80,
+    "path": "/english/vocabulary/26/"
+  },
+  {
+    "id": "27",
+    "title": "学校 / 教室",
+    "layer": "学习与工作主干层",
+    "wordCount": 128,
+    "path": "/english/vocabulary/27/"
+  },
+  {
+    "id": "28",
+    "title": "图书馆 / 阅读 / 检索",
+    "layer": "学习与工作主干层",
+    "wordCount": 116,
+    "path": "/english/vocabulary/28/"
+  },
+  {
+    "id": "29",
+    "title": "实验室 / 科研",
+    "layer": "学习与工作主干层",
+    "wordCount": 179,
+    "path": "/english/vocabulary/29/"
+  },
+  {
+    "id": "30",
+    "title": "办公室 / 工作场景",
+    "layer": "学习与工作主干层",
+    "wordCount": 123,
+    "path": "/english/vocabulary/30/"
+  },
+  {
+    "id": "31",
+    "title": "求职 / 面试 / 职业发展",
+    "layer": "学习与工作主干层",
+    "wordCount": 102,
+    "path": "/english/vocabulary/31/"
+  },
+  {
+    "id": "32",
+    "title": "会议 / 沟通 / 合作",
+    "layer": "学习与工作主干层",
+    "wordCount": 108,
+    "path": "/english/vocabulary/32/"
+  },
+  {
+    "id": "33",
+    "title": "教学、训练、考试、评价系统",
+    "layer": "学习与工作主干层",
+    "wordCount": 121,
+    "path": "/english/vocabulary/33/"
+  },
+  {
+    "id": "34",
+    "title": "城市 / 社区 / 公共空间",
+    "layer": "社会与世界主题层",
+    "wordCount": 79,
+    "path": "/english/vocabulary/34/"
+  },
+  {
+    "id": "35",
+    "title": "媒体 / 广告 / 信息传播",
+    "layer": "社会与世界主题层",
+    "wordCount": 89,
+    "path": "/english/vocabulary/35/"
+  },
+  {
+    "id": "36",
+    "title": "环境 / 生态 / 资源 / 可持续性",
+    "layer": "社会与世界主题层",
+    "wordCount": 78,
+    "path": "/english/vocabulary/36/"
+  },
+  {
+    "id": "37",
+    "title": "农业 / 工业 / 制造 / 技术应用",
+    "layer": "社会与世界主题层",
+    "wordCount": 122,
+    "path": "/english/vocabulary/37/"
+  },
+  {
+    "id": "38",
+    "title": "经济 / 商业 / 市场 / 金融",
+    "layer": "社会与世界主题层",
+    "wordCount": 138,
+    "path": "/english/vocabulary/38/"
+  },
+  {
+    "id": "39",
+    "title": "政治 / 政府 / 政策 / 治理",
+    "layer": "社会与世界主题层",
+    "wordCount": 118,
+    "path": "/english/vocabulary/39/"
+  },
+  {
+    "id": "40",
+    "title": "法律 / 权利 / 责任 / 社会秩序",
+    "layer": "社会与世界主题层",
+    "wordCount": 110,
+    "path": "/english/vocabulary/40/"
+  },
+  {
+    "id": "41",
+    "title": "历史 / 文明 / 社会发展",
+    "layer": "社会与世界主题层",
+    "wordCount": 129,
+    "path": "/english/vocabulary/41/"
+  },
+  {
+    "id": "42",
+    "title": "中国传统文化",
+    "layer": "社会与世界主题层",
+    "wordCount": 80,
+    "path": "/english/vocabulary/42/"
+  },
+  {
+    "id": "43",
+    "title": "国际关系 / 全球化 / 外交",
+    "layer": "社会与世界主题层",
+    "wordCount": 52,
+    "path": "/english/vocabulary/43/"
+  },
+  {
+    "id": "44",
+    "title": "军事 / 战争 / 和平 / 安全",
+    "layer": "社会与世界主题层",
+    "wordCount": 87,
+    "path": "/english/vocabulary/44/"
+  },
+  {
+    "id": "45",
+    "title": "艺术 / 文学 / 音乐 / 影视 / 审美",
+    "layer": "社会与世界主题层",
+    "wordCount": 124,
+    "path": "/english/vocabulary/45/"
+  },
+  {
+    "id": "46",
+    "title": "观点 / 立场 / 态度",
+    "layer": "抽象阅读与逻辑层",
+    "wordCount": 142,
+    "path": "/english/vocabulary/46/"
+  },
+  {
+    "id": "47",
+    "title": "判断 / 评价 / 证据 / 论证",
+    "layer": "抽象阅读与逻辑层",
+    "wordCount": 141,
+    "path": "/english/vocabulary/47/"
+  },
+  {
+    "id": "48",
+    "title": "因果 / 条件 / 目的 / 结果",
+    "layer": "抽象阅读与逻辑层",
+    "wordCount": 149,
+    "path": "/english/vocabulary/48/"
+  },
+  {
+    "id": "49",
+    "title": "变化 / 趋势 / 过程 / 阶段",
+    "layer": "抽象阅读与逻辑层",
+    "wordCount": 140,
+    "path": "/english/vocabulary/49/"
+  },
+  {
+    "id": "50",
+    "title": "比较 / 程度 / 数量 / 关系",
+    "layer": "抽象阅读与逻辑层",
+    "wordCount": 179,
+    "path": "/english/vocabulary/50/"
+  },
+  {
+    "id": "51",
+    "title": "问题 / 风险 / 限制 / 解决",
+    "layer": "抽象阅读与逻辑层",
+    "wordCount": 188,
+    "path": "/english/vocabulary/51/"
+  },
+  {
+    "id": "52",
+    "title": "选择 / 决策 / 方法 / 策略",
+    "layer": "抽象阅读与逻辑层",
+    "wordCount": 147,
+    "path": "/english/vocabulary/52/"
+  },
+  {
+    "id": "53",
+    "title": "心理 / 行为 / 认知 / 情绪",
+    "layer": "抽象阅读与逻辑层",
+    "wordCount": 253,
+    "path": "/english/vocabulary/53/"
+  },
+  {
+    "id": "54",
+    "title": "系统 / 结构 / 功能 / 机制",
+    "layer": "抽象阅读与逻辑层",
+    "wordCount": 176,
+    "path": "/english/vocabulary/54/"
+  },
+  {
+    "id": "55",
+    "title": "词根词缀与构词系统",
+    "layer": "语言系统层",
+    "wordCount": 65,
+    "path": "/english/vocabulary/55/"
+  },
+  {
+    "id": "56",
+    "title": "一词多义与高频搭配系统",
+    "layer": "语言系统层",
+    "wordCount": 84,
+    "path": "/english/vocabulary/56/"
+  },
+  {
+    "id": "57",
+    "title": "功能词 / 连接词 / 介词系统",
+    "layer": "语言系统层",
+    "wordCount": 191,
+    "path": "/english/vocabulary/57/"
+  },
+  {
+    "id": "58",
+    "title": "高频语法输出句型系统",
+    "layer": "语言系统层",
+    "wordCount": 0,
+    "path": "/english/vocabulary/58/"
+  },
+  {
+    "id": "59",
+    "title": "阅读篇章结构与题型表达系统",
+    "layer": "语言系统层",
+    "wordCount": 139,
+    "path": "/english/vocabulary/59/"
+  },
+  {
+    "id": "60",
+    "title": "写作 / 翻译 / 口语高频表达系统",
+    "layer": "语言系统层",
+    "wordCount": 13,
+    "path": "/english/vocabulary/60/"
+  }
+]

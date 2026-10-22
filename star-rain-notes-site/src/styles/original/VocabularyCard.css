@@ -1,0 +1,48 @@
+
+.vocabulary-card:not(.__static_scope){display:flex;flex-direction:column;gap:18px;min-height:330px;padding:22px;border:1px solid var(--border);border-radius:18px;background:var(--bg-surface);box-shadow:var(--shadow-sm);transition:border-color .18s,box-shadow .18s}
+.vocabulary-card:not(.__static_scope):hover{border-color:var(--border-strong);box-shadow:var(--shadow-md)}
+.vocabulary-card.vocabulary-card--selected:not(.__static_scope){border-color:var(--primary);box-shadow:0 0 0 1px var(--primary)}
+.vocabulary-card__toolbar:not(.__static_scope),.vocabulary-card__heading:not(.__static_scope),.vocabulary-card__footer:not(.__static_scope),.vocabulary-card__actions:not(.__static_scope),.vocabulary-card__phonetics:not(.__static_scope){display:flex;align-items:center;gap:10px}
+.vocabulary-card__toolbar:not(.__static_scope),.vocabulary-card__footer:not(.__static_scope){justify-content:space-between}
+.vocabulary-card__display:not(.__static_scope){display:inline-flex;padding:3px;border:1px solid var(--border);border-radius:10px;background:var(--bg-subtle)}
+.vocabulary-card__display button:not(.__static_scope){min-height:30px;padding:4px 8px;border:0;border-radius:7px;background:transparent;color:var(--text-muted);font-size:12px;cursor:pointer}
+.vocabulary-card__display button:not(.__static_scope):hover{color:var(--text-primary)}
+.vocabulary-card__display button.active:not(.__static_scope){background:var(--bg-surface);color:var(--primary)}
+.vocabulary-card__display button:not(.__static_scope):focus-visible{outline:2px solid var(--primary);outline-offset:1px}
+.vocabulary-card__display button:not(.__static_scope):disabled{cursor:wait;opacity:.65}
+.vocabulary-card__status:not(.__static_scope){font-size:11px;color:var(--text-secondary);padding:4px 8px;border-radius:6px;background:var(--bg-subtle)}
+.vocabulary-card__status.active:not(.__static_scope){color:var(--primary)}
+.vocabulary-card__heading:not(.__static_scope){flex-wrap:wrap}
+.vocabulary-card__heading h2:not(.__static_scope){margin:0;font-size:26px;line-height:1.2}
+.vocabulary-card__pos:not(.__static_scope){font-size:12px;color:var(--accent)}
+.vocabulary-card__speak:not(.__static_scope){margin-left:auto;border:0;background:transparent;color:var(--primary);cursor:pointer}
+.vocabulary-card__speak:not(.__static_scope):disabled{cursor:wait;opacity:.7}
+.vocabulary-card__phonetics:not(.__static_scope){flex-wrap:wrap;color:var(--text-muted);font-size:13px;margin-top:8px}
+.vocabulary-card__muted:not(.__static_scope){font-size:13px;color:var(--text-muted)}
+.vocabulary-card__examples:not(.__static_scope){display:grid;gap:6px;margin-top:12px;font-size:14px;line-height:1.65;color:var(--text-secondary)}
+.vocabulary-card__chinese:not(.__static_scope){padding-top:14px;border-top:1px dashed var(--border)}
+.vocabulary-card__translation:not(.__static_scope){font-size:17px;line-height:1.7;color:var(--text-primary)}
+.vocabulary-card__scene:not(.__static_scope){display:grid;gap:4px;margin-top:10px;font-size:14px;line-height:1.6;color:var(--text-secondary)}
+.vocabulary-card__scene span:not(.__static_scope){font-size:11px;color:var(--text-muted);letter-spacing:.06em}
+.vocabulary-card__footer:not(.__static_scope){align-items:flex-end;margin-top:auto;padding-top:14px;border-top:1px solid var(--border)}
+.vocabulary-card__progress:not(.__static_scope){display:grid;gap:3px;font-size:12px;color:var(--text-muted)}
+.vocabulary-card__progress strong:not(.__static_scope){color:var(--text-primary);font-size:20px}
+.vocabulary-card__actions:not(.__static_scope){flex-wrap:wrap;justify-content:flex-end}
+.vocabulary-card__actions button:not(.__static_scope){min-height:36px;padding:7px 12px;border:1px solid var(--primary);border-radius:9px;background:transparent;color:var(--primary);cursor:pointer}
+.vocabulary-card__actions button:not(.__static_scope):hover{background:var(--primary-soft)}
+.vocabulary-card__actions button.selected:not(.__static_scope){background:var(--primary);color:var(--on-primary)}
+.vocabulary-card__actions button:not(.__static_scope):focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+.vocabulary-card__actions button.joined:not(.__static_scope){border-color:var(--border-strong);color:var(--text-muted);cursor:default}
+.vocabulary-card__actions button.danger:not(.__static_scope){border-color:var(--accent);color:var(--accent)}
+.vocabulary-card__actions button:not(.__static_scope):disabled{cursor:default;opacity:.8}
+@media (max-width:420px){
+.vocabulary-card:not(.__static_scope){min-height:0;padding:18px}
+.vocabulary-card__toolbar:not(.__static_scope){align-items:flex-start;flex-direction:column}
+.vocabulary-card__display:not(.__static_scope){width:100%}
+.vocabulary-card__display button:not(.__static_scope){flex:1}
+.vocabulary-card__footer:not(.__static_scope){align-items:flex-start;flex-direction:column}
+.vocabulary-card__actions:not(.__static_scope){width:100%;justify-content:stretch}
+.vocabulary-card__actions button:not(.__static_scope){flex:1}
+}
+@media(prefers-reduced-motion:reduce){
+.vocabulary-card:not(.__static_scope){transition:none}}

@@ -1,0 +1,657 @@
+{
+  "slug": "algorithm",
+  "title": "算法",
+  "description": "以 Java 系统学习数据结构与算法：25 个专题模块、300 道力扣题，从暴力推导优化，覆盖数组、哈希、双指针、二分、链表、树、堆、回溯、贪心、图与动态规划。",
+  "category": "计算机基础知识",
+  "categorySlug": "724893225146",
+  "publishedAt": "2026-10-22",
+  "chapterCount": 64,
+  "wordCount": 0,
+  "categoryId": "2",
+  "sortOrder": 7,
+  "groups": [
+    {
+      "title": "第 0 章｜Java 刷题与复杂度导学",
+      "chapters": [
+        {
+          "slug": "0-1",
+          "title": "Java 刷题与复杂度导学",
+          "description": "Java 刷题与复杂度导学",
+          "path": "/tutorials/algorithm/0-1/",
+          "wordCount": 825,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M01｜数组、矩阵与基础模拟",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "Java 刷题导学、下标与有效前缀、矩阵基础与投票",
+          "description": "Java 刷题导学、下标与有效前缀、矩阵基础与投票",
+          "path": "/tutorials/algorithm/1-1/",
+          "wordCount": 1637,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "矩阵标记、旋转与螺旋边界",
+          "description": "矩阵标记、旋转与螺旋边界",
+          "path": "/tutorials/algorithm/1-2/",
+          "wordCount": 1042,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M02｜字符串处理与规则解析",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "字符扫描、反转与整数解析的溢出边界",
+          "description": "字符扫描、反转与整数解析的溢出边界",
+          "path": "/tutorials/algorithm/2-1/",
+          "wordCount": 1463,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "IP与版本解析、游程计数与单词反转",
+          "description": "IP与版本解析、游程计数与单词反转",
+          "path": "/tutorials/algorithm/2-2/",
+          "wordCount": 754,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M03｜哈希表、集合与计数映射",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "Set/Map、频次数组、补数与重复状态",
+          "description": "Set/Map、频次数组、补数与重复状态",
+          "path": "/tutorials/algorithm/3-1/",
+          "wordCount": 1621,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "双向映射、分组键、连续序列与四数统计",
+          "description": "双向映射、分组键、连续序列与四数统计",
+          "path": "/tutorials/algorithm/3-2/",
+          "wordCount": 1058,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M04｜双指针与原地扫描",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "原地压缩、回文容错、轮转与有序双指针",
+          "description": "原地压缩、回文容错、轮转与有序双指针",
+          "path": "/tutorials/algorithm/4-1/",
+          "wordCount": 1260,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "三路划分、容器单调性、多数求和与去重",
+          "description": "三路划分、容器单调性、多数求和与去重",
+          "path": "/tutorials/algorithm/4-2/",
+          "wordCount": 901,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M05｜前缀和、区间计数与差分",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "一维/二维前缀和与半开区间",
+          "description": "一维/二维前缀和与半开区间",
+          "path": "/tutorials/algorithm/5-1/",
+          "wordCount": 970,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "前后缀乘积、前缀频次与平衡状态",
+          "description": "前后缀乘积、前缀频次与平衡状态",
+          "path": "/tutorials/algorithm/5-2/",
+          "wordCount": 595,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "同余与负余数、差分增减和容量检查",
+          "description": "同余与负余数、差分增减和容量检查",
+          "path": "/tutorials/algorithm/5-3/",
+          "wordCount": 770,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M06｜滑动窗口与连续区间约束",
+      "chapters": [
+        {
+          "slug": "6-1",
+          "title": "定长窗口、频次匹配与无重复子串",
+          "description": "定长窗口、频次匹配与无重复子串",
+          "path": "/tutorials/algorithm/6-1/",
+          "wordCount": 1019,
+          "hasBody": true
+        },
+        {
+          "slug": "6-2",
+          "title": "最长/最短合法窗口、频次约束与收缩",
+          "description": "最长/最短合法窗口、频次约束与收缩",
+          "path": "/tutorials/algorithm/6-2/",
+          "wordCount": 794,
+          "hasBody": true
+        },
+        {
+          "slug": "6-3",
+          "title": "正数乘积、最小覆盖与atMost计数之差",
+          "description": "正数乘积、最小覆盖与atMost计数之差",
+          "path": "/tutorials/algorithm/6-3/",
+          "wordCount": 628,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M07｜二分查找、边界与答案二分",
+      "chapters": [
+        {
+          "slug": "7-1",
+          "title": "查找边界、平台API与二维有序查找",
+          "description": "查找边界、平台API与二维有序查找",
+          "path": "/tutorials/algorithm/7-1/",
+          "wordCount": 1156,
+          "hasBody": true
+        },
+        {
+          "slug": "7-2",
+          "title": "峰值、旋转、成对单元素与答案二分",
+          "description": "峰值、旋转、成对单元素与答案二分",
+          "path": "/tutorials/algorithm/7-2/",
+          "wordCount": 973,
+          "hasBody": true
+        },
+        {
+          "slug": "7-3",
+          "title": "容量、天数、距离的check函数及单调证明",
+          "description": "容量、天数、距离的check函数及单调证明",
+          "path": "/tutorials/algorithm/7-3/",
+          "wordCount": 839,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M08｜排序、分区与分治基础",
+      "chapters": [
+        {
+          "slug": "8-1",
+          "title": "排序稳定性、计数/排名、递归分治与区间",
+          "description": "排序稳定性、计数/排名、递归分治与区间",
+          "path": "/tutorials/algorithm/8-1/",
+          "wordCount": 924,
+          "hasBody": true
+        },
+        {
+          "slug": "8-2",
+          "title": "归并/快排、区间插入、排列与自定义比较",
+          "description": "归并/快排、区间插入、排列与自定义比较",
+          "path": "/tutorials/algorithm/8-2/",
+          "wordCount": 727,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M09｜链表：引用、指针与节点重组",
+      "chapters": [
+        {
+          "slug": "9-1",
+          "title": "节点引用、反转/合并、快慢指针与相交",
+          "description": "节点引用、反转/合并、快慢指针与相交",
+          "path": "/tutorials/algorithm/9-1/",
+          "wordCount": 1275,
+          "hasBody": true
+        },
+        {
+          "slug": "9-2",
+          "title": "倒数节点、局部交换、环入口与数位进位",
+          "description": "倒数节点、局部交换、环入口与数位进位",
+          "path": "/tutorials/algorithm/9-2/",
+          "wordCount": 758,
+          "hasBody": true
+        },
+        {
+          "slug": "9-3",
+          "title": "随机指针复制、链表排序、LRU与K组反转",
+          "description": "随机指针复制、链表排序、LRU与K组反转",
+          "path": "/tutorials/algorithm/9-3/",
+          "wordCount": 748,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M10｜栈、队列、环形队列与表达式",
+      "chapters": [
+        {
+          "slug": "10-1",
+          "title": "栈队列接口、括号、双栈队列与消除",
+          "description": "栈队列接口、括号、双栈队列与消除",
+          "path": "/tutorials/algorithm/10-1/",
+          "wordCount": 970,
+          "hasBody": true
+        },
+        {
+          "slug": "10-2",
+          "title": "最小栈、循环队列与栈序列验证",
+          "description": "最小栈、循环队列与栈序列验证",
+          "path": "/tutorials/algorithm/10-2/",
+          "wordCount": 574,
+          "hasBody": true
+        },
+        {
+          "slug": "10-3",
+          "title": "路径简化、逆波兰式、解码与计算器",
+          "description": "路径简化、逆波兰式、解码与计算器",
+          "path": "/tutorials/algorithm/10-3/",
+          "wordCount": 748,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M11｜单调栈与单调队列",
+      "chapters": [
+        {
+          "slug": "11-1",
+          "title": "单调栈、循环数组、股票跨度与字典序",
+          "description": "单调栈、循环数组、股票跨度与字典序",
+          "path": "/tutorials/algorithm/11-1/",
+          "wordCount": 1102,
+          "hasBody": true
+        },
+        {
+          "slug": "11-2",
+          "title": "接雨水、单调队列与柱状图矩形",
+          "description": "接雨水、单调队列与柱状图矩形",
+          "path": "/tutorials/algorithm/11-2/",
+          "wordCount": 590,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M12｜树的遍历、构造与序列化",
+      "chapters": [
+        {
+          "slug": "12-1",
+          "title": "三种DFS与层序边界",
+          "description": "三种DFS与层序边界",
+          "path": "/tutorials/algorithm/12-1/",
+          "wordCount": 989,
+          "hasBody": true
+        },
+        {
+          "slug": "12-2",
+          "title": "层序视图、逐层统计与原地展开",
+          "description": "层序视图、逐层统计与原地展开",
+          "path": "/tutorials/algorithm/12-2/",
+          "wordCount": 817,
+          "hasBody": true
+        },
+        {
+          "slug": "12-3",
+          "title": "遍历重建与序列化往返",
+          "description": "遍历重建与序列化往返",
+          "path": "/tutorials/algorithm/12-3/",
+          "wordCount": 694,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M13｜树的结构、路径与递归信息汇总",
+      "chapters": [
+        {
+          "slug": "13-1",
+          "title": "递归契约、深度、对称、翻转与平衡",
+          "description": "递归契约、深度、对称、翻转与平衡",
+          "path": "/tutorials/algorithm/13-1/",
+          "wordCount": 1094,
+          "hasBody": true
+        },
+        {
+          "slug": "13-2",
+          "title": "直径、子树、路径和与数位路径",
+          "description": "直径、子树、路径和与数位路径",
+          "path": "/tutorials/algorithm/13-2/",
+          "wordCount": 911,
+          "hasBody": true
+        },
+        {
+          "slug": "13-3",
+          "title": "前缀路径计数、LCA与最大单支贡献",
+          "description": "前缀路径计数、LCA与最大单支贡献",
+          "path": "/tutorials/algorithm/13-3/",
+          "wordCount": 617,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M14｜二叉搜索树与有序性",
+      "chapters": [
+        {
+          "slug": "14-1",
+          "title": "BST全局范围、搜索/插入、建树与验证",
+          "description": "BST全局范围、搜索/插入、建树与验证",
+          "path": "/tutorials/algorithm/14-1/",
+          "wordCount": 1023,
+          "hasBody": true
+        },
+        {
+          "slug": "14-2",
+          "title": "中序排名、迭代器、删除与裁剪",
+          "description": "中序排名、迭代器、删除与裁剪",
+          "path": "/tutorials/algorithm/14-2/",
+          "wordCount": 790,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M15｜堆、优先队列与有序数据流",
+      "chapters": [
+        {
+          "slug": "15-1",
+          "title": "堆序、比较器、动态第K大与TopK",
+          "description": "堆序、比较器、动态第K大与TopK",
+          "path": "/tutorials/algorithm/15-1/",
+          "wordCount": 976,
+          "hasBody": true
+        },
+        {
+          "slug": "15-2",
+          "title": "词频、候选数对、矩阵排名与连续取极值",
+          "description": "词频、候选数对、矩阵排名与连续取极值",
+          "path": "/tutorials/algorithm/15-2/",
+          "wordCount": 817,
+          "hasBody": true
+        },
+        {
+          "slug": "15-3",
+          "title": "信息流、双堆中位数与多路链表归并",
+          "description": "信息流、双堆中位数与多路链表归并",
+          "path": "/tutorials/algorithm/15-3/",
+          "wordCount": 590,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M16｜回溯搜索、剪枝与约束枚举",
+      "chapters": [
+        {
+          "slug": "16-1",
+          "title": "子集/组合/排列、路径与撤销",
+          "description": "子集/组合/排列、路径与撤销",
+          "path": "/tutorials/algorithm/16-1/",
+          "wordCount": 724,
+          "hasBody": true
+        },
+        {
+          "slug": "16-2",
+          "title": "括号约束、组合求和与同层去重",
+          "description": "括号约束、组合求和与同层去重",
+          "path": "/tutorials/algorithm/16-2/",
+          "wordCount": 719,
+          "hasBody": true
+        },
+        {
+          "slug": "16-3",
+          "title": "分割、网格路径、剪枝与N皇后",
+          "description": "分割、网格路径、剪枝与N皇后",
+          "path": "/tutorials/algorithm/16-3/",
+          "wordCount": 722,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M17｜贪心：局部选择、交换论证与反例",
+      "chapters": [
+        {
+          "slug": "17-1",
+          "title": "排序匹配、局部证明、股票多次交易与区间",
+          "description": "排序匹配、局部证明、股票多次交易与区间",
+          "path": "/tutorials/algorithm/17-1/",
+          "wordCount": 1298,
+          "hasBody": true
+        },
+        {
+          "slug": "17-2",
+          "title": "跳跃覆盖、累计差、摆动、队列重建与冷却",
+          "description": "跳跃覆盖、累计差、摆动、队列重建与冷却",
+          "path": "/tutorials/algorithm/17-2/",
+          "wordCount": 1061,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M18｜图的表示与遍历：网格、连通块和多源最短步数",
+      "chapters": [
+        {
+          "slug": "18-1",
+          "title": "图表示、连通遍历、边界搜索与图克隆",
+          "description": "图表示、连通遍历、边界搜索与图克隆",
+          "path": "/tutorials/algorithm/18-1/",
+          "wordCount": 1411,
+          "hasBody": true
+        },
+        {
+          "slug": "18-2",
+          "title": "多源BFS、最短变换、逆向可达与二分图",
+          "description": "多源BFS、最短变换、逆向可达与二分图",
+          "path": "/tutorials/algorithm/18-2/",
+          "wordCount": 1093,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M19｜图进阶：拓扑、并查集、最短路与最小生成树",
+      "chapters": [
+        {
+          "slug": "19-1",
+          "title": "拓扑队列、三色判环与并查集基础",
+          "description": "拓扑队列、三色判环与并查集基础",
+          "path": "/tutorials/algorithm/19-1/",
+          "wordCount": 752,
+          "hasBody": true
+        },
+        {
+          "slug": "19-2",
+          "title": "连通/等式/账户合并与最小生成树",
+          "description": "连通/等式/账户合并与最小生成树",
+          "path": "/tutorials/algorithm/19-2/",
+          "wordCount": 813,
+          "hasBody": true
+        },
+        {
+          "slug": "19-3",
+          "title": "Dijkstra、概率/瓶颈路径与限边数松弛",
+          "description": "Dijkstra、概率/瓶颈路径与限边数松弛",
+          "path": "/tutorials/algorithm/19-3/",
+          "wordCount": 799,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M20｜动态规划入门：状态、转移、滚动数组与状态机",
+      "chapters": [
+        {
+          "slug": "20-1",
+          "title": "DP状态、初始化、滚动数组与线性选择",
+          "description": "DP状态、初始化、滚动数组与线性选择",
+          "path": "/tutorials/algorithm/20-1/",
+          "wordCount": 1271,
+          "hasBody": true
+        },
+        {
+          "slug": "20-2",
+          "title": "环形互斥、按值归并、乘积正负与解码",
+          "description": "环形互斥、按值归并、乘积正负与解码",
+          "path": "/tutorials/algorithm/20-2/",
+          "wordCount": 741,
+          "hasBody": true
+        },
+        {
+          "slug": "20-3",
+          "title": "前缀切分、股票状态、树形DP与连续计数",
+          "description": "前缀切分、股票状态、树形DP与连续计数",
+          "path": "/tutorials/algorithm/20-3/",
+          "wordCount": 986,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M21｜二维动态规划：路径、编辑、匹配与区间边界",
+      "chapters": [
+        {
+          "slug": "21-1",
+          "title": "二维状态、空边界、网格路径与障碍",
+          "description": "二维状态、空边界、网格路径与障碍",
+          "path": "/tutorials/algorithm/21-1/",
+          "wordCount": 896,
+          "hasBody": true
+        },
+        {
+          "slug": "21-2",
+          "title": "三角/下降路径、最大与计数正方形",
+          "description": "三角/下降路径、最大与计数正方形",
+          "path": "/tutorials/algorithm/21-2/",
+          "wordCount": 774,
+          "hasBody": true
+        },
+        {
+          "slug": "21-3",
+          "title": "LCS/编辑、交错与限步出界计数",
+          "description": "LCS/编辑、交错与限步出界计数",
+          "path": "/tutorials/algorithm/21-3/",
+          "wordCount": 942,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M22｜动态规划进阶：背包、子序列与回文区间",
+      "chapters": [
+        {
+          "slug": "22-1",
+          "title": "完全/零一背包、最少件数与目标可达",
+          "description": "完全/零一背包、最少件数与目标可达",
+          "path": "/tutorials/algorithm/22-1/",
+          "wordCount": 734,
+          "hasBody": true
+        },
+        {
+          "slug": "22-2",
+          "title": "组合/排列计数、石头分组与双容量",
+          "description": "组合/排列计数、石头分组与双容量",
+          "path": "/tutorials/algorithm/22-2/",
+          "wordCount": 754,
+          "hasBody": true
+        },
+        {
+          "slug": "22-3",
+          "title": "LIS长度/计数与等差/定差子序列",
+          "description": "LIS长度/计数与等差/定差子序列",
+          "path": "/tutorials/algorithm/22-3/",
+          "wordCount": 843,
+          "hasBody": true
+        },
+        {
+          "slug": "22-4",
+          "title": "公共连续子数组、回文子串与回文子序列",
+          "description": "公共连续子数组、回文子串与回文子序列",
+          "path": "/tutorials/algorithm/22-4/",
+          "wordCount": 792,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M23｜位运算与必要数论：二进制、整除与快速幂",
+      "chapters": [
+        {
+          "slug": "23-1",
+          "title": "二进制、位计数、异或抵消、移位与gcd",
+          "description": "二进制、位计数、异或抵消、移位与gcd",
+          "path": "/tutorials/algorithm/23-1/",
+          "wordCount": 1084,
+          "hasBody": true
+        },
+        {
+          "slug": "23-2",
+          "title": "埃氏筛、快速幂与异或分组",
+          "description": "埃氏筛、快速幂与异或分组",
+          "path": "/tutorials/algorithm/23-2/",
+          "wordCount": 561,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M24｜字符串算法进阶：Trie、KMP与滚动哈希",
+      "chapters": [
+        {
+          "slug": "24-1",
+          "title": "KMP前缀表、周期判定与Trie基础",
+          "description": "KMP前缀表、周期判定与Trie基础",
+          "path": "/tutorials/algorithm/24-1/",
+          "wordCount": 648,
+          "hasBody": true
+        },
+        {
+          "slug": "24-2",
+          "title": "Trie通配检索、词根替换与定长窗口编码",
+          "description": "Trie通配检索、词根替换与定长窗口编码",
+          "path": "/tutorials/algorithm/24-2/",
+          "wordCount": 619,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "M25｜动态区间查询入门：树状数组、线段树与有序区间",
+      "chapters": [
+        {
+          "slug": "25-1",
+          "title": "树状数组、线段树、位置查询与TreeMap日历",
+          "description": "树状数组、线段树、位置查询与TreeMap日历",
+          "path": "/tutorials/algorithm/25-1/",
+          "wordCount": 620,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/algorithm/"
+}

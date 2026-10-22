@@ -1,0 +1,148 @@
+[
+  {
+    "id": "50",
+    "title": "项目介绍",
+    "type": "MARKDOWN",
+    "html": "<p>将简洁的个人离线播放需求落实成可构建的 Android 工程，重点处理播放顺序、Web 与原生适配器分工，以及离开 WebView 后的媒体控制。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "51",
+    "title": "核心功能",
+    "type": "FEATURE_LIST",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "title": "播放与队列",
+          "description": "搜索内置清单、切歌、拖动进度、查看队列，支持列表循环、单曲循环与随机一轮不重复。"
+        },
+        {
+          "title": "同步歌词",
+          "description": "解析 LRC 时间标签，高亮当前行并自动居中，可点击歌词跳转；无歌词时提供明确降级。"
+        },
+        {
+          "title": "原生后台",
+          "description": "Android 通过 MediaSessionService 和前台媒体服务维持播放，处理通知、锁屏控制与音频焦点。"
+        },
+        {
+          "title": "状态记忆",
+          "description": "保存最后曲目、音量、模式和明暗主题；冷启动恢复状态但不会自动开始播放。"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "52",
+    "title": "使用流程",
+    "type": "MARKDOWN",
+    "html": "<p>安装依赖 → 在浏览器预览界面 → 自行导入本地音频并校验清单 → 按需放入歌词 → 同步 Android 资源与插件 → 构建 APK 并在真机检查后台播放。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "53",
+    "title": "技术栈",
+    "type": "TECH_STACK",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "name": "HTML",
+          "group": ""
+        },
+        {
+          "name": "CSS",
+          "group": ""
+        },
+        {
+          "name": "JavaScript",
+          "group": ""
+        },
+        {
+          "name": "Vite",
+          "group": ""
+        },
+        {
+          "name": "Capacitor 8",
+          "group": ""
+        },
+        {
+          "name": "Android MediaSession",
+          "group": ""
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "54",
+    "title": "关键实现",
+    "type": "MARKDOWN",
+    "html": "<p>业务界面使用 ES modules 与原生 CSS；统一播放服务在浏览器 HTMLAudioElement 和 Android 原生适配器之间选择。播放模式纯函数与共享顺序游标负责重复、随机和上一首历史，避免两个适配器同时发声。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "55",
+    "title": "项目成果",
+    "type": "STATS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "label": "自动测试",
+          "value": "43 项"
+        },
+        {
+          "label": "媒体清单",
+          "value": "77 个占位"
+        },
+        {
+          "label": "运行平台",
+          "value": "Android / Web"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "56",
+    "title": "验证与交付",
+    "type": "MARKDOWN",
+    "html": "<p>2026-10-15 整理版本通过 43 项测试、77 首占位清单资源检查、无歌词降级检查、Web 生产构建及 Android 插件/资源同步。此轮不代表所有 Android 真机与系统版本均已完成体验验收。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "57",
+    "title": "当前阶段与使用边界",
+    "type": "MARKDOWN",
+    "html": "<p>公开仓库只有 77 个零字节音频占位文件，不含真实音频及歌词正文，克隆后会显示“暂无音频 / 暂无歌词”。需要自行提供可使用的音频。没有联网曲库、账号、推荐或云同步。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "58",
+    "title": "源码与文档",
+    "type": "LINKS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/musiclingxi",
+          "label": "查看项目源码",
+          "description": "GitHub 集合中的独立项目目录"
+        },
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/musiclingxi/README.md",
+          "label": "运行与使用说明",
+          "description": "依赖、启动、测试和项目边界"
+        }
+      ]
+    },
+    "media": []
+  }
+]

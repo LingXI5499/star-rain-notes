@@ -1,0 +1,31 @@
+
+.vocabulary-page:not(.__static_scope){max-width:1200px;margin:auto;padding-bottom:70px}
+.vocabulary-page__hero:not(.__static_scope){margin-bottom:26px}
+.vocabulary-page h1:not(.__static_scope){margin:8px 0 10px;font-size:clamp(36px,5vw,48px)}
+.vocabulary-page__subtitle:not(.__static_scope){max-width:42rem;color:var(--text-secondary)}
+.vocabulary-page__state:not(.__static_scope){padding:48px 0;color:var(--text-secondary)}
+.vocabulary-page__state button:not(.__static_scope){margin-left:10px;padding:6px 12px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);cursor:pointer}
+.vocabulary-page__study-nav:not(.__static_scope){display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:0 0 28px}
+.vocabulary-page__study-nav a:not(.__static_scope){display:grid;gap:4px;padding:18px;border:1px solid var(--border);border-radius:14px;background:var(--bg-surface)}
+.vocabulary-page__study-nav a:not(.__static_scope):hover{border-color:var(--primary)}
+.vocabulary-page__study-nav strong:not(.__static_scope){font-size:17px;color:var(--text-primary)}
+.vocabulary-page__study-nav span:not(.__static_scope){font-size:13px;color:var(--text-muted)}
+.vocabulary-page__study-nav em:not(.__static_scope){font-size:12px;font-style:normal;color:var(--accent)}
+.vocabulary-page__chips:not(.__static_scope){display:flex;flex-wrap:wrap;gap:10px;margin-bottom:28px}
+.vocabulary-page__chips button:not(.__static_scope){padding:8px 14px;border:1px solid var(--border);border-radius:999px;background:var(--bg-surface);color:var(--text-secondary);cursor:pointer}
+.vocabulary-page__chips button:not(.__static_scope):hover{border-color:var(--primary);color:var(--primary)}
+.vocabulary-page__chips button.active:not(.__static_scope){border-color:var(--primary);background:var(--primary);color:var(--on-primary)}
+.vocabulary-page__group:not(.__static_scope){margin-bottom:36px}
+.vocabulary-page__group h2:not(.__static_scope){margin:0 0 14px;font-size:18px;color:var(--text-primary)}
+.vocabulary-page__grid:not(.__static_scope){display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:12px}
+.vocabulary-page__card:not(.__static_scope){display:grid;gap:8px;padding:16px;border:1px solid var(--border);border-radius:14px;background:var(--bg-surface);color:var(--text-primary)}
+.vocabulary-page__card:not(.__static_scope):hover{border-color:var(--primary);transform:translateY(-2px)}
+.vocabulary-page__card-name:not(.__static_scope){font-size:16px;font-weight:650;line-height:1.4}
+.vocabulary-page__card-count:not(.__static_scope){font-size:13px;color:var(--text-muted)}
+@media (max-width:1180px){
+.vocabulary-page__grid:not(.__static_scope){grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:900px){
+.vocabulary-page__grid:not(.__static_scope){grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:640px){
+.vocabulary-page__study-nav:not(.__static_scope){grid-template-columns:1fr}
+.vocabulary-page__grid:not(.__static_scope){grid-template-columns:repeat(2,minmax(0,1fr))}}

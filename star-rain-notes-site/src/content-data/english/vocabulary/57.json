@@ -1,0 +1,1728 @@
+{
+  "id": "57",
+  "title": "功能词 / 连接词 / 介词系统",
+  "layer": "语言系统层",
+  "wordCount": 191,
+  "path": "/english/vocabulary/57/",
+  "words": [
+    {
+      "word": "a",
+      "partOfSpeech": "art",
+      "phoneticUs": "ə; e",
+      "phoneticUk": "ə; eɪ",
+      "translation": "一(个)；每一(个)",
+      "sceneMeaning": "一个；一类",
+      "examples": "[]"
+    },
+    {
+      "word": "about",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ə'baʊt",
+      "phoneticUk": "ə'baʊt",
+      "translation": "关于；在…周围",
+      "sceneMeaning": "关于；大约",
+      "examples": "[]"
+    },
+    {
+      "word": "across",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ə'krɔs",
+      "phoneticUk": "ə'krɒs",
+      "translation": "横过；在…对面",
+      "sceneMeaning": "穿过；在对面",
+      "examples": "[]"
+    },
+    {
+      "word": "after",
+      "partOfSpeech": "prep",
+      "phoneticUs": "'æftɚ",
+      "phoneticUk": "'ɑːftə",
+      "translation": "在…以后；次于",
+      "sceneMeaning": "在……之后；追赶",
+      "examples": "[]"
+    },
+    {
+      "word": "again",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'ɡɛn",
+      "phoneticUk": "ə'gen; ə'geɪn",
+      "translation": "又一次；而且",
+      "sceneMeaning": "又一次；而且",
+      "examples": "[]"
+    },
+    {
+      "word": "against",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ə'ɡɛnst",
+      "phoneticUk": "ə'genst; ə'geɪnst",
+      "translation": "倚在；逆，对着",
+      "sceneMeaning": "反对；靠着；逆着",
+      "examples": "[]"
+    },
+    {
+      "word": "all",
+      "partOfSpeech": "adj / prep",
+      "phoneticUs": "ɔl",
+      "phoneticUk": "ɔːl",
+      "translation": "全部的；全部",
+      "sceneMeaning": "全部；所有",
+      "examples": "[]"
+    },
+    {
+      "word": "alone",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "ə'lon",
+      "phoneticUk": "ə'ləʊn",
+      "translation": "单独的；单独地",
+      "sceneMeaning": "单独的；单独地",
+      "examples": "[]"
+    },
+    {
+      "word": "along",
+      "partOfSpeech": "adv / prep",
+      "phoneticUs": "ə'lɔŋ",
+      "phoneticUk": "ə'lɒŋ",
+      "translation": "沿着；向前",
+      "sceneMeaning": "沿着；顺着",
+      "examples": "[]"
+    },
+    {
+      "word": "also",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɔlso",
+      "phoneticUk": "'ɔːlsəʊ",
+      "translation": "亦，也；而且，还",
+      "sceneMeaning": "亦，也；而且，还",
+      "examples": "[]"
+    },
+    {
+      "word": "although",
+      "partOfSpeech": "conj",
+      "phoneticUs": "ɔl'ðo",
+      "phoneticUk": "ɔːl'ðəʊ; ɒl-",
+      "translation": "尽管，虽然",
+      "sceneMeaning": "虽然；尽管",
+      "examples": "[]"
+    },
+    {
+      "word": "among",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ə'mʌŋ",
+      "phoneticUk": "ə'mʌŋ",
+      "translation": "在…之中",
+      "sceneMeaning": "在……之中",
+      "examples": "[]"
+    },
+    {
+      "word": "and",
+      "partOfSpeech": "conj",
+      "phoneticUs": "ənd, ən,ænd",
+      "phoneticUk": "ənd; (ə)n; ænd",
+      "translation": "和，又，并，则",
+      "sceneMeaning": "和；并且",
+      "examples": "[]"
+    },
+    {
+      "word": "another",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'nʌðɚ",
+      "phoneticUk": "ə'nʌðə",
+      "translation": "再一个的；别的",
+      "sceneMeaning": "另一个；再一个",
+      "examples": "[]"
+    },
+    {
+      "word": "any",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɛni",
+      "phoneticUk": "'enɪ",
+      "translation": "什么，一些；任何的",
+      "sceneMeaning": "任何；一些",
+      "examples": "[]"
+    },
+    {
+      "word": "anyone",
+      "partOfSpeech": "pron",
+      "phoneticUs": "'ɛnɪ'wʌn",
+      "phoneticUk": "'enɪwʌn",
+      "translation": "任何人",
+      "sceneMeaning": "任何人；有人",
+      "examples": "[]"
+    },
+    {
+      "word": "anything",
+      "partOfSpeech": "pron",
+      "phoneticUs": "'ɛnɪ'θɪŋ",
+      "phoneticUk": "'enɪθɪŋ",
+      "translation": "任何事物；一切",
+      "sceneMeaning": "任何事物；某事物",
+      "examples": "[]"
+    },
+    {
+      "word": "around",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ə'raʊnd",
+      "phoneticUk": "ə'raʊnd",
+      "translation": "在…周围",
+      "sceneMeaning": "在周围；大约",
+      "examples": "[]"
+    },
+    {
+      "word": "as",
+      "partOfSpeech": "conj",
+      "phoneticUs": "æz,əz",
+      "phoneticUk": "æz; əz",
+      "translation": "当…的时候",
+      "sceneMeaning": "当……时；因为；如同",
+      "examples": "[]"
+    },
+    {
+      "word": "at",
+      "partOfSpeech": "prep",
+      "phoneticUs": "",
+      "phoneticUk": "æt; ət",
+      "translation": "在…里；在…时",
+      "sceneMeaning": "在；以；向",
+      "examples": "[]"
+    },
+    {
+      "word": "away",
+      "partOfSpeech": "adv",
+      "phoneticUs": "əˈwe",
+      "phoneticUk": "ə'weɪ",
+      "translation": "离开，远离；…去",
+      "sceneMeaning": "离开，远离；…去",
+      "examples": "[]"
+    },
+    {
+      "word": "be",
+      "partOfSpeech": "aux",
+      "phoneticUs": "bi",
+      "phoneticUk": "biː",
+      "translation": "v&vi是，在，做",
+      "sceneMeaning": "是；处于",
+      "examples": "[]"
+    },
+    {
+      "word": "because",
+      "partOfSpeech": "conj",
+      "phoneticUs": "bɪ'kɔz",
+      "phoneticUk": "bɪ'kɒz",
+      "translation": "由于，因为",
+      "sceneMeaning": "因为",
+      "examples": "[]"
+    },
+    {
+      "word": "before",
+      "partOfSpeech": "prep",
+      "phoneticUs": "bɪ'fɔr",
+      "phoneticUk": "bɪ'fɔː",
+      "translation": "在…以前；向…",
+      "sceneMeaning": "在……之前",
+      "examples": "[]"
+    },
+    {
+      "word": "being",
+      "partOfSpeech": "n",
+      "phoneticUs": "'biɪŋ",
+      "phoneticUk": "'biːɪŋ",
+      "translation": "存在；生物；生命",
+      "sceneMeaning": "正在是；存在",
+      "examples": "[]"
+    },
+    {
+      "word": "between",
+      "partOfSpeech": "prep",
+      "phoneticUs": "bɪ'twin",
+      "phoneticUk": "bɪ'twiːn",
+      "translation": "在…中间",
+      "sceneMeaning": "在两者之间",
+      "examples": "[]"
+    },
+    {
+      "word": "both",
+      "partOfSpeech": "pron",
+      "phoneticUs": "boθ",
+      "phoneticUk": "bəʊθ",
+      "translation": "两者(都)",
+      "sceneMeaning": "两者都",
+      "examples": "[]"
+    },
+    {
+      "word": "but",
+      "partOfSpeech": "conj",
+      "phoneticUs": "bʌt",
+      "phoneticUk": "bʌt; bət",
+      "translation": "但是，可是",
+      "sceneMeaning": "但是；而是",
+      "examples": "[]"
+    },
+    {
+      "word": "by",
+      "partOfSpeech": "prep",
+      "phoneticUs": "baɪ",
+      "phoneticUk": "baɪ",
+      "translation": "在…旁；被，由",
+      "sceneMeaning": "由；被；在旁边；到……为止",
+      "examples": "[]"
+    },
+    {
+      "word": "can",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæn",
+      "phoneticUk": "kæn",
+      "translation": "罐头，听头；容器",
+      "sceneMeaning": "能够；可以",
+      "examples": "[]"
+    },
+    {
+      "word": "could",
+      "partOfSpeech": "aux",
+      "phoneticUs": "kʊd",
+      "phoneticUk": "kəd; kʊd",
+      "translation": "v(can的过去式)",
+      "sceneMeaning": "能够；可以；可能",
+      "examples": "[]"
+    },
+    {
+      "word": "do",
+      "partOfSpeech": "aux / v",
+      "phoneticUs": "du",
+      "phoneticUk": "duː",
+      "translation": "v；做，干，办",
+      "sceneMeaning": "做；用于疑问/否定/强调",
+      "examples": "[]"
+    },
+    {
+      "word": "down",
+      "partOfSpeech": "adv",
+      "phoneticUs": "daʊn",
+      "phoneticUk": "daʊn",
+      "translation": "向下，在下面",
+      "sceneMeaning": "沿着……向下",
+      "examples": "[]"
+    },
+    {
+      "word": "during",
+      "partOfSpeech": "prep",
+      "phoneticUs": "'dʊrɪŋ",
+      "phoneticUk": "'djʊərɪŋ",
+      "translation": "在…期间",
+      "sceneMeaning": "在……期间",
+      "examples": "[]"
+    },
+    {
+      "word": "each",
+      "partOfSpeech": "adj / pron",
+      "phoneticUs": "itʃ",
+      "phoneticUk": "iːtʃ",
+      "translation": "各，各自；各",
+      "sceneMeaning": "每个；各自",
+      "examples": "[]"
+    },
+    {
+      "word": "either",
+      "partOfSpeech": "pron",
+      "phoneticUs": "'iðɚ",
+      "phoneticUk": "'aɪðə; 'iː-",
+      "translation": "(两者)任何一个",
+      "sceneMeaning": "两者之一；任一",
+      "examples": "[]"
+    },
+    {
+      "word": "else",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "ɛls",
+      "phoneticUk": "els",
+      "translation": "其它，另外；别的",
+      "sceneMeaning": "其它，另外；别的",
+      "examples": "[]"
+    },
+    {
+      "word": "enough",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "ɪ'nʌf",
+      "phoneticUk": "ɪ'nʌf",
+      "translation": "足够的；足够地",
+      "sceneMeaning": "足够的",
+      "examples": "[]"
+    },
+    {
+      "word": "ever",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɛvɚ",
+      "phoneticUk": "'evə",
+      "translation": "在任何时候；曾经",
+      "sceneMeaning": "在任何时候；曾经",
+      "examples": "[]"
+    },
+    {
+      "word": "every",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɛvri",
+      "phoneticUk": "'evrɪ",
+      "translation": "每一的；每隔…的",
+      "sceneMeaning": "每一个",
+      "examples": "[]"
+    },
+    {
+      "word": "everyone",
+      "partOfSpeech": "pron",
+      "phoneticUs": "'ɛvrɪwʌn",
+      "phoneticUk": "'evrɪwʌn",
+      "translation": "每人，人人",
+      "sceneMeaning": "每个人",
+      "examples": "[]"
+    },
+    {
+      "word": "everything",
+      "partOfSpeech": "pron",
+      "phoneticUs": "'ɛvrɪ'θɪŋ",
+      "phoneticUk": "'evrɪθɪŋ",
+      "translation": "每件事，事事",
+      "sceneMeaning": "一切；所有事物",
+      "examples": "[]"
+    },
+    {
+      "word": "few",
+      "partOfSpeech": "adj",
+      "phoneticUs": "fju",
+      "phoneticUk": "fjuː",
+      "translation": "很少的；少数的",
+      "sceneMeaning": "少数的",
+      "examples": "[]"
+    },
+    {
+      "word": "from",
+      "partOfSpeech": "prep",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "从…来；离开",
+      "sceneMeaning": "从；来自",
+      "examples": "[]"
+    },
+    {
+      "word": "further",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'fɝðɚ",
+      "phoneticUk": "'fɜːðə",
+      "translation": "更远地；更远的",
+      "sceneMeaning": "更远地；更远的",
+      "examples": "[]"
+    },
+    {
+      "word": "get",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡɛt",
+      "phoneticUk": "get",
+      "translation": "变得，成为；到达",
+      "sceneMeaning": "变得，成为；到达",
+      "examples": "[]"
+    },
+    {
+      "word": "good",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɡʊd",
+      "phoneticUk": "gʊd",
+      "translation": "好的；有本事的",
+      "sceneMeaning": "好的；有本事的",
+      "examples": "[]"
+    },
+    {
+      "word": "have",
+      "partOfSpeech": "v",
+      "phoneticUs": "hæv; (also, as before 'to') hæf",
+      "phoneticUk": "hæv",
+      "translation": "aux已经；有；吃",
+      "sceneMeaning": "有；已经",
+      "examples": "[]"
+    },
+    {
+      "word": "he",
+      "partOfSpeech": "pron",
+      "phoneticUs": "hi",
+      "phoneticUk": "hiː",
+      "translation": "(主格)他",
+      "sceneMeaning": "他",
+      "examples": "[]"
+    },
+    {
+      "word": "her",
+      "partOfSpeech": "pron",
+      "phoneticUs": "hɚ",
+      "phoneticUk": "hɜː",
+      "translation": "(宾格)她；她的",
+      "sceneMeaning": "她；她的",
+      "examples": "[]"
+    },
+    {
+      "word": "him",
+      "partOfSpeech": "pron",
+      "phoneticUs": "hɪm",
+      "phoneticUk": "hɪm",
+      "translation": "(宾格)他",
+      "sceneMeaning": "他；给他",
+      "examples": "[]"
+    },
+    {
+      "word": "his",
+      "partOfSpeech": "pron",
+      "phoneticUs": "hɪz",
+      "phoneticUk": "hɪz",
+      "translation": "他的，他的东西",
+      "sceneMeaning": "他的",
+      "examples": "[]"
+    },
+    {
+      "word": "how",
+      "partOfSpeech": "adv",
+      "phoneticUs": "haʊ",
+      "phoneticUk": "haʊ",
+      "translation": "怎么；怎样；多少",
+      "sceneMeaning": "怎么；怎样；多少",
+      "examples": "[]"
+    },
+    {
+      "word": "I",
+      "partOfSpeech": "pron",
+      "phoneticUs": "",
+      "phoneticUk": "aɪ",
+      "translation": "(主格)我",
+      "sceneMeaning": "我",
+      "examples": "[]"
+    },
+    {
+      "word": "if",
+      "partOfSpeech": "conj",
+      "phoneticUs": "ɪf",
+      "phoneticUk": "ɪf",
+      "translation": "假如，如果",
+      "sceneMeaning": "如果；是否",
+      "examples": "[]"
+    },
+    {
+      "word": "in",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ɪn",
+      "phoneticUk": "ɪn",
+      "translation": "在…里ad进，入",
+      "sceneMeaning": "在……里面；处于",
+      "examples": "[]"
+    },
+    {
+      "word": "instead",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪn'stɛd",
+      "phoneticUk": "ɪn'sted",
+      "translation": "代替，顶替；反而",
+      "sceneMeaning": "相反；代替",
+      "examples": "[]"
+    },
+    {
+      "word": "into",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ˈɪntu",
+      "phoneticUk": "'ɪntʊ; 'ɪntə",
+      "translation": "进，入；进入到",
+      "sceneMeaning": "进入；变成",
+      "examples": "[]"
+    },
+    {
+      "word": "it",
+      "partOfSpeech": "pron",
+      "phoneticUs": "aɪ ti",
+      "phoneticUk": "aɪ ti",
+      "translation": "这，那，它",
+      "sceneMeaning": "它；这件事",
+      "examples": "[]"
+    },
+    {
+      "word": "its",
+      "partOfSpeech": "pron",
+      "phoneticUs": "ɪts",
+      "phoneticUk": "ɪts",
+      "translation": "它的",
+      "sceneMeaning": "它的",
+      "examples": "[]"
+    },
+    {
+      "word": "like",
+      "partOfSpeech": "v",
+      "phoneticUs": "laɪk",
+      "phoneticUk": "laɪk",
+      "translation": "喜欢；喜爱；希望",
+      "sceneMeaning": "像；例如",
+      "examples": "[]"
+    },
+    {
+      "word": "likely",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'laɪkli",
+      "phoneticUk": "'laɪklɪ",
+      "translation": "可能的；很可能",
+      "sceneMeaning": "可能的；很可能",
+      "examples": "[]"
+    },
+    {
+      "word": "little",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɪtl",
+      "phoneticUk": "'lɪt(ə)l",
+      "translation": "小的；少；幼小的",
+      "sceneMeaning": "少量的；小的",
+      "examples": "[]"
+    },
+    {
+      "word": "many",
+      "partOfSpeech": "adj / pron",
+      "phoneticUs": "'mɛni",
+      "phoneticUk": "'menɪ",
+      "translation": "许多的；许多人",
+      "sceneMeaning": "许多",
+      "examples": "[]"
+    },
+    {
+      "word": "may",
+      "partOfSpeech": "v",
+      "phoneticUs": "me",
+      "phoneticUk": "meɪ",
+      "translation": "aux可能；可以，祝",
+      "sceneMeaning": "可以；可能",
+      "examples": "[]"
+    },
+    {
+      "word": "maybe",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'mebi",
+      "phoneticUk": "'meɪbiː; -bɪ",
+      "translation": "大概，或许；也许",
+      "sceneMeaning": "大概，或许；也许",
+      "examples": "[]"
+    },
+    {
+      "word": "me",
+      "partOfSpeech": "pron",
+      "phoneticUs": "mi",
+      "phoneticUk": "miː",
+      "translation": "(宾格)我",
+      "sceneMeaning": "我；给我",
+      "examples": "[]"
+    },
+    {
+      "word": "might",
+      "partOfSpeech": "v",
+      "phoneticUs": "maɪt",
+      "phoneticUk": "maɪt",
+      "translation": "aux可能，会，也许",
+      "sceneMeaning": "可能；也许",
+      "examples": "[]"
+    },
+    {
+      "word": "much",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "mʌtʃ",
+      "phoneticUk": "mʌtʃ",
+      "translation": "非常，很；许多的",
+      "sceneMeaning": "许多；大量",
+      "examples": "[]"
+    },
+    {
+      "word": "must",
+      "partOfSpeech": "v",
+      "phoneticUs": "mʌst",
+      "phoneticUk": "mʌst",
+      "translation": "aux必须；必然要",
+      "sceneMeaning": "必须；一定",
+      "examples": "[]"
+    },
+    {
+      "word": "my",
+      "partOfSpeech": "pron",
+      "phoneticUs": "maɪ",
+      "phoneticUk": "maɪ",
+      "translation": "我的",
+      "sceneMeaning": "我的",
+      "examples": "[]"
+    },
+    {
+      "word": "near",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "nɪr",
+      "phoneticUk": "nɪə",
+      "translation": "近，接近；近的",
+      "sceneMeaning": "在……附近",
+      "examples": "[]"
+    },
+    {
+      "word": "no",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "no",
+      "phoneticUk": "nəʊ",
+      "translation": "不；并不；没有",
+      "sceneMeaning": "没有；不",
+      "examples": "[]"
+    },
+    {
+      "word": "not",
+      "partOfSpeech": "adv",
+      "phoneticUs": "nɑt",
+      "phoneticUk": "nɒt",
+      "translation": "不，没有",
+      "sceneMeaning": "不，没有；本场景常见用法：没东西；什么都没有",
+      "examples": "[]"
+    },
+    {
+      "word": "of",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ʌv; əv",
+      "phoneticUk": "ɒv; (ə)v",
+      "translation": "…的；由于",
+      "sceneMeaning": "……的；属于",
+      "examples": "[]"
+    },
+    {
+      "word": "off",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɔf",
+      "phoneticUk": "ɒf",
+      "translation": "(离)开；(停)止",
+      "sceneMeaning": "离开；脱离",
+      "examples": "[]"
+    },
+    {
+      "word": "on",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ɑn",
+      "phoneticUk": "ɒn",
+      "translation": "在…上；在…旁",
+      "sceneMeaning": "在……上；关于；开启",
+      "examples": "[]"
+    },
+    {
+      "word": "once",
+      "partOfSpeech": "adv / n",
+      "phoneticUs": "wʌns",
+      "phoneticUk": "wʌns",
+      "translation": "一次；曾经；一次",
+      "sceneMeaning": "一旦；曾经",
+      "examples": "[]"
+    },
+    {
+      "word": "one",
+      "partOfSpeech": "num / pron",
+      "phoneticUs": "wʌn",
+      "phoneticUk": "wʌn",
+      "translation": "一；一个人",
+      "sceneMeaning": "一个人；某人；一",
+      "examples": "[]"
+    },
+    {
+      "word": "only",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'onli",
+      "phoneticUk": "'əʊnlɪ",
+      "translation": "只，仅仅；唯一的",
+      "sceneMeaning": "只，仅仅；唯一的",
+      "examples": "[]"
+    },
+    {
+      "word": "or",
+      "partOfSpeech": "conj",
+      "phoneticUs": "ɔr",
+      "phoneticUk": "ɔː",
+      "translation": "或，或者；即",
+      "sceneMeaning": "或者；否则",
+      "examples": "[]"
+    },
+    {
+      "word": "other",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ʌðɚ",
+      "phoneticUk": "'ʌðə",
+      "translation": "另外的；其余的",
+      "sceneMeaning": "其他的",
+      "examples": "[]"
+    },
+    {
+      "word": "our",
+      "partOfSpeech": "pron",
+      "phoneticUs": "aʊr",
+      "phoneticUk": "aʊə",
+      "translation": "我们的",
+      "sceneMeaning": "我们的",
+      "examples": "[]"
+    },
+    {
+      "word": "out",
+      "partOfSpeech": "adv",
+      "phoneticUs": "aʊt",
+      "phoneticUk": "aʊt",
+      "translation": "出，在外；现出来",
+      "sceneMeaning": "从……里面出去",
+      "examples": "[]"
+    },
+    {
+      "word": "outside",
+      "partOfSpeech": "n",
+      "phoneticUs": ",aʊt'saɪd",
+      "phoneticUk": "aʊt'saɪd; 'aʊtsaɪd",
+      "translation": "外部；外表a外部的",
+      "sceneMeaning": "在……外面",
+      "examples": "[]"
+    },
+    {
+      "word": "over",
+      "partOfSpeech": "prep",
+      "phoneticUs": "'ovɚ",
+      "phoneticUk": "'əʊvə",
+      "translation": "在…上方；超过",
+      "sceneMeaning": "在……上方；超过；结束",
+      "examples": "[]"
+    },
+    {
+      "word": "past",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "pæst",
+      "phoneticUk": "pɑːst",
+      "translation": "过去的；过去",
+      "sceneMeaning": "经过；晚于；超过",
+      "examples": "[]"
+    },
+    {
+      "word": "people",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pipl",
+      "phoneticUk": "'piːp(ə)l",
+      "translation": "人民，民族；人",
+      "sceneMeaning": "人民，民族；人",
+      "examples": "[]"
+    },
+    {
+      "word": "probably",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "或许，大概",
+      "sceneMeaning": "或许，大概",
+      "examples": "[]"
+    },
+    {
+      "word": "willing",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'wɪlɪŋ",
+      "phoneticUk": "'wɪlɪŋ",
+      "translation": "愿意的，心甘情愿的",
+      "sceneMeaning": "愿意的，心甘情愿的",
+      "examples": "[]"
+    },
+    {
+      "word": "worst",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "wɝst",
+      "phoneticUk": "wə:st",
+      "translation": "最坏的；最坏地",
+      "sceneMeaning": "最坏的；最坏地",
+      "examples": "[]"
+    },
+    {
+      "word": "behind",
+      "partOfSpeech": "prep",
+      "phoneticUs": "bɪ'haɪnd",
+      "phoneticUk": "bɪ'haɪnd",
+      "translation": "在…后面",
+      "sceneMeaning": "在……后面；落后于",
+      "examples": "[]"
+    },
+    {
+      "word": "beyond",
+      "partOfSpeech": "prep",
+      "phoneticUs": "bɪ'jɑnd",
+      "phoneticUk": "bɪ'jɒnd",
+      "translation": "在…的那边",
+      "sceneMeaning": "超过；在……之外",
+      "examples": "[]"
+    },
+    {
+      "word": "despite",
+      "partOfSpeech": "prep",
+      "phoneticUs": "dɪ'spaɪt",
+      "phoneticUk": "dɪ'spaɪt",
+      "translation": "不管，不顾；尽管",
+      "sceneMeaning": "尽管",
+      "examples": "[]"
+    },
+    {
+      "word": "for",
+      "partOfSpeech": "prep",
+      "phoneticUs": "fɚ; strong form fɔr",
+      "phoneticUk": "fə(r); strong form fɔ:(r)",
+      "translation": "为；给；因为",
+      "sceneMeaning": "为了；对于；持续",
+      "examples": "[]"
+    },
+    {
+      "word": "half",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "hæf",
+      "phoneticUk": "hɑːf",
+      "translation": "半，一半；一半的",
+      "sceneMeaning": "一半的",
+      "examples": "[]"
+    },
+    {
+      "word": "more",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "mɔr",
+      "phoneticUk": "mɔː",
+      "translation": "更多的；更",
+      "sceneMeaning": "更多的；更；本场景常见用法：不只一个",
+      "examples": "[]"
+    },
+    {
+      "word": "myself",
+      "partOfSpeech": "pron",
+      "phoneticUs": "maɪ'sɛlf",
+      "phoneticUk": "maɪ'self",
+      "translation": "我自己；我亲自",
+      "sceneMeaning": "我自己",
+      "examples": "[]"
+    },
+    {
+      "word": "nothing",
+      "partOfSpeech": "adv / n",
+      "phoneticUs": "'nʌθɪŋ",
+      "phoneticUk": "'nʌθɪŋ",
+      "translation": "没有东西；毫不",
+      "sceneMeaning": "没有什么；无事",
+      "examples": "[]"
+    },
+    {
+      "word": "ought",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɔt",
+      "phoneticUk": "ɔːt",
+      "translation": "aux应当，应该",
+      "sceneMeaning": "aux应当，应该；本场景常见用法：应该懂得多一些",
+      "examples": "[]"
+    },
+    {
+      "word": "ourselves",
+      "partOfSpeech": "pron",
+      "phoneticUs": "ɑr'sɛlvz",
+      "phoneticUk": "aʊə'selvz",
+      "translation": "我们自己",
+      "sceneMeaning": "我们自己",
+      "examples": "[]"
+    },
+    {
+      "word": "per",
+      "partOfSpeech": "prep",
+      "phoneticUs": "pɚ",
+      "phoneticUk": "pɜː",
+      "translation": "每",
+      "sceneMeaning": "每；按照",
+      "examples": "[]"
+    },
+    {
+      "word": "throughout",
+      "partOfSpeech": "adv / prep",
+      "phoneticUs": "θrʊ'aʊt",
+      "phoneticUk": "θruː'aʊt",
+      "translation": "遍及；到处",
+      "sceneMeaning": "贯穿；遍及",
+      "examples": "[]"
+    },
+    {
+      "word": "unless",
+      "partOfSpeech": "conj",
+      "phoneticUs": "ən'lɛs",
+      "phoneticUk": "ʌn'les",
+      "translation": "除非，如果不",
+      "sceneMeaning": "除非",
+      "examples": "[]"
+    },
+    {
+      "word": "ahead",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'hɛd",
+      "phoneticUk": "ə'hed",
+      "translation": "在前；向前；提前",
+      "sceneMeaning": "在前；向前；提前",
+      "examples": "[]"
+    },
+    {
+      "word": "merely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'mɪrli",
+      "phoneticUk": "'mɪəlɪ",
+      "translation": "仅仅，只不过",
+      "sceneMeaning": "仅仅，只不过",
+      "examples": "[]"
+    },
+    {
+      "word": "prominent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɑmɪnənt",
+      "phoneticUk": "'prɒmɪnənt",
+      "translation": "实起的；突出的；杰出的；突出的，凸起的",
+      "sceneMeaning": "实起的；突出的；杰出的；突出的，凸起的",
+      "examples": "[]"
+    },
+    {
+      "word": "via",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ˈvaɪə, ˈviə",
+      "phoneticUk": "ˈvaɪə，ˈviːə",
+      "translation": "经过；通过；通过",
+      "sceneMeaning": "经由；通过",
+      "examples": "[]"
+    },
+    {
+      "word": "anywhere",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɛnɪwɛr",
+      "phoneticUk": "'enɪweə",
+      "translation": "在什么地方",
+      "sceneMeaning": "在什么地方",
+      "examples": "[]"
+    },
+    {
+      "word": "certainly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'sɝtnli",
+      "phoneticUk": "ˈsəːt(ə)nli",
+      "translation": "一定，必定；当然",
+      "sceneMeaning": "一定，必定；当然",
+      "examples": "[]"
+    },
+    {
+      "word": "dozen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʌzn",
+      "phoneticUk": "'dʌz(ə)n",
+      "translation": "一打，十二个",
+      "sceneMeaning": "一打，十二个",
+      "examples": "[]"
+    },
+    {
+      "word": "everywhere",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɛvrɪwɛr",
+      "phoneticUk": "'evrɪweə",
+      "translation": "到处，处处",
+      "sceneMeaning": "到处，处处",
+      "examples": "[]"
+    },
+    {
+      "word": "except",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ɪk'sɛpt",
+      "phoneticUk": "ɪk'sept; ek-",
+      "translation": "除…之外",
+      "sceneMeaning": "除……之外",
+      "examples": "[]"
+    },
+    {
+      "word": "herself",
+      "partOfSpeech": "pron",
+      "phoneticUs": "hɝ'sɛlf",
+      "phoneticUk": "hɜː'self",
+      "translation": "她自己；她亲自",
+      "sceneMeaning": "她自己",
+      "examples": "[]"
+    },
+    {
+      "word": "normally",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'nɔrmli",
+      "phoneticUk": "'nɔːm(ə)lɪ",
+      "translation": "通常，正常地",
+      "sceneMeaning": "通常，正常地",
+      "examples": "[]"
+    },
+    {
+      "word": "somewhat",
+      "partOfSpeech": "adv / pron",
+      "phoneticUs": "'sʌmwʌt",
+      "phoneticUk": "'sʌmwɒt",
+      "translation": "一点儿；有点",
+      "sceneMeaning": "一点儿；有点",
+      "examples": "[]"
+    },
+    {
+      "word": "besides",
+      "partOfSpeech": "adv",
+      "phoneticUs": "bɪ'saɪdz",
+      "phoneticUk": "bɪ'saɪdz",
+      "translation": "而且prep除…之外",
+      "sceneMeaning": "除……之外；而且",
+      "examples": "[]"
+    },
+    {
+      "word": "spite",
+      "partOfSpeech": "n",
+      "phoneticUs": "spaɪt",
+      "phoneticUk": "spaɪt",
+      "translation": "n.；恶意,怨恨,不顾；vt.；刁难,欺侮",
+      "sceneMeaning": "n.；恶意,怨恨,不顾；vt.；刁难,欺侮",
+      "examples": "[]"
+    },
+    {
+      "word": "therefore",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ðɛrfɔr",
+      "phoneticUk": "'ðeəfɔː",
+      "translation": "因此，所以",
+      "sceneMeaning": "因此；所以",
+      "examples": "[]"
+    },
+    {
+      "word": "exception",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'sɛpʃən",
+      "phoneticUk": "ɪk'sepʃ(ə)n; ek-",
+      "translation": "例外，除外；例外",
+      "sceneMeaning": "例外，除外；例外",
+      "examples": "[]"
+    },
+    {
+      "word": "unlike",
+      "partOfSpeech": "adj / prep",
+      "phoneticUs": "'ʌn'laɪk",
+      "phoneticUk": "ʌn'laɪk",
+      "translation": "不同的；不象…",
+      "sceneMeaning": "不同的；不象…",
+      "examples": "[]"
+    },
+    {
+      "word": "consequently",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'kɑnsəkwɛntli",
+      "phoneticUk": "'kɒnsɪkw(ə)ntlɪ",
+      "translation": "因此，因而，所以；结果",
+      "sceneMeaning": "因此；结果",
+      "examples": "[]"
+    },
+    {
+      "word": "above",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ə'bʌv",
+      "phoneticUk": "ə'bʌv",
+      "translation": "在…上面；高于",
+      "sceneMeaning": "在……上方；高于",
+      "examples": "[]"
+    },
+    {
+      "word": "abruptly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'brʌptli",
+      "phoneticUk": "ə'brʌptlɪ",
+      "translation": "突然地",
+      "sceneMeaning": "突然地",
+      "examples": "[]"
+    },
+    {
+      "word": "inner",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪnɚ",
+      "phoneticUk": "ɪnə",
+      "translation": "内部的；内心的",
+      "sceneMeaning": "内部的；内心的",
+      "examples": "[]"
+    },
+    {
+      "word": "inside",
+      "partOfSpeech": "n / prep",
+      "phoneticUs": "'ɪn'saɪd",
+      "phoneticUk": "ɪn'saɪd",
+      "translation": "在…里面；内部",
+      "sceneMeaning": "在……里面",
+      "examples": "[]"
+    },
+    {
+      "word": "itself",
+      "partOfSpeech": "pron",
+      "phoneticUs": "ɪt'sɛlf",
+      "phoneticUk": "ɪt'self",
+      "translation": "它自己；自身",
+      "sceneMeaning": "它自己；本身",
+      "examples": "[]"
+    },
+    {
+      "word": "nine",
+      "partOfSpeech": "num",
+      "phoneticUs": "naɪn",
+      "phoneticUk": "naɪn",
+      "translation": "九，九个",
+      "sceneMeaning": "九，九个",
+      "examples": "[]"
+    },
+    {
+      "word": "nobody",
+      "partOfSpeech": "pron",
+      "phoneticUs": "'nəubədi, -bɔdi",
+      "phoneticUk": "'nəʊbədɪ",
+      "translation": "谁也不；无人",
+      "sceneMeaning": "没有人；无名小卒",
+      "examples": "[]"
+    },
+    {
+      "word": "barely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'bɛrli",
+      "phoneticUk": "ˈbeəli",
+      "translation": "仅仅，几乎不",
+      "sceneMeaning": "仅仅，几乎不",
+      "examples": "[]"
+    },
+    {
+      "word": "elaborate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'læbəret",
+      "phoneticUk": "ɪ'læb(ə)rət",
+      "translation": "复杂的；精心制作的",
+      "sceneMeaning": "复杂的；精心制作的",
+      "examples": "[]"
+    },
+    {
+      "word": "everybody",
+      "partOfSpeech": "pron",
+      "phoneticUs": "'ɛvrɪbɑdi",
+      "phoneticUk": "'evrɪbɒdɪ",
+      "translation": "每人，人人",
+      "sceneMeaning": "每个人",
+      "examples": "[]"
+    },
+    {
+      "word": "existence",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪɡ'zɪstəns",
+      "phoneticUk": "ɪg'zɪst(ə)ns; eg-",
+      "translation": "存在，实在；生存",
+      "sceneMeaning": "存在，实在；生存",
+      "examples": "[]"
+    },
+    {
+      "word": "farther",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'fɑrðɚ",
+      "phoneticUk": "'fɑːðə",
+      "translation": "更远地；更远的",
+      "sceneMeaning": "更远地；更远的",
+      "examples": "[]"
+    },
+    {
+      "word": "hate",
+      "partOfSpeech": "v",
+      "phoneticUs": "het",
+      "phoneticUk": "heɪt",
+      "translation": "恨，憎恨；不喜欢",
+      "sceneMeaning": "恨，憎恨；不喜欢",
+      "examples": "[]"
+    },
+    {
+      "word": "himself",
+      "partOfSpeech": "pron",
+      "phoneticUs": "hɪm'sɛlf",
+      "phoneticUk": "hɪm'self",
+      "translation": "他自己；他亲自",
+      "sceneMeaning": "他自己",
+      "examples": "[]"
+    },
+    {
+      "word": "indeed",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪn'did",
+      "phoneticUk": "ɪn'diːd",
+      "translation": "真正地；确实",
+      "sceneMeaning": "确实；甚至",
+      "examples": "[]"
+    },
+    {
+      "word": "mine",
+      "partOfSpeech": "pron",
+      "phoneticUs": "maɪn",
+      "phoneticUk": "maɪn",
+      "translation": "我的",
+      "sceneMeaning": "我的东西",
+      "examples": "[]"
+    },
+    {
+      "word": "nor",
+      "partOfSpeech": "conj",
+      "phoneticUs": "nɔr",
+      "phoneticUk": "nɔː; nə",
+      "translation": "也不；不",
+      "sceneMeaning": "也不",
+      "examples": "[]"
+    },
+    {
+      "word": "somebody",
+      "partOfSpeech": "pron",
+      "phoneticUs": "'sʌmbədi",
+      "phoneticUk": "'sʌmbədɪ",
+      "translation": "某人，有人",
+      "sceneMeaning": "某人",
+      "examples": "[]"
+    },
+    {
+      "word": "concerning",
+      "partOfSpeech": "prep",
+      "phoneticUs": "kən'sɝnɪŋ",
+      "phoneticUk": "kən'sɜːnɪŋ",
+      "translation": "关于",
+      "sceneMeaning": "关于；本场景常见用法：对…表示担心/忧虑；使（自己）关心…",
+      "examples": "[]"
+    },
+    {
+      "word": "none",
+      "partOfSpeech": "adv / pron",
+      "phoneticUs": "nʌn",
+      "phoneticUk": "nʌn",
+      "translation": "没有人；毫不",
+      "sceneMeaning": "没有人；毫不",
+      "examples": "[]"
+    },
+    {
+      "word": "oneself",
+      "partOfSpeech": "pron",
+      "phoneticUs": "wʌn'sɛlf",
+      "phoneticUk": "wʌn'self",
+      "translation": "自己；亲自",
+      "sceneMeaning": "某人自己",
+      "examples": "[]"
+    },
+    {
+      "word": "otherwise",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ʌðɚwaɪz",
+      "phoneticUk": "'ʌðəwaɪz",
+      "translation": "另外；要不然",
+      "sceneMeaning": "否则；在其他方面",
+      "examples": "[]"
+    },
+    {
+      "word": "pregnant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɛɡnənt",
+      "phoneticUk": "ˈpregnənt",
+      "translation": "怀孕的",
+      "sceneMeaning": "怀孕的",
+      "examples": "[]"
+    },
+    {
+      "word": "regarding",
+      "partOfSpeech": "prep",
+      "phoneticUs": "rɪ'ɡɑrdɪŋ",
+      "phoneticUk": "rɪ'gɑːdɪŋ",
+      "translation": "关于",
+      "sceneMeaning": "关于",
+      "examples": "[]"
+    },
+    {
+      "word": "solely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'solli",
+      "phoneticUk": "ˈsəʊlli",
+      "translation": "单独地，唯一地",
+      "sceneMeaning": "单独地，唯一地",
+      "examples": "[]"
+    },
+    {
+      "word": "accordingly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'kɔrdɪŋli",
+      "phoneticUk": "ə'kɔːdɪŋlɪ",
+      "translation": "因此，所以；照着",
+      "sceneMeaning": "因此；相应地",
+      "examples": "[]"
+    },
+    {
+      "word": "anyway",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɛnɪ'we",
+      "phoneticUk": "'enɪweɪ",
+      "translation": "无论如何",
+      "sceneMeaning": "无论如何",
+      "examples": "[]"
+    },
+    {
+      "word": "below",
+      "partOfSpeech": "prep",
+      "phoneticUs": "bɪ'lo",
+      "phoneticUk": "bɪ'ləʊ",
+      "translation": "在…下面(以下)",
+      "sceneMeaning": "在……下面；低于",
+      "examples": "[]"
+    },
+    {
+      "word": "beneath",
+      "partOfSpeech": "prep",
+      "phoneticUs": "bɪˈniːθ",
+      "phoneticUk": "bɪ'niːθ",
+      "translation": "在…下方",
+      "sceneMeaning": "在……下方；不值得",
+      "examples": "[]"
+    },
+    {
+      "word": "beside",
+      "partOfSpeech": "prep",
+      "phoneticUs": "bɪ'saɪd",
+      "phoneticUk": "bɪ'saɪd",
+      "translation": "在…旁边",
+      "sceneMeaning": "在……旁边",
+      "examples": "[]"
+    },
+    {
+      "word": "dear",
+      "partOfSpeech": "adj / int",
+      "phoneticUs": "dɪr",
+      "phoneticUk": "dɪə",
+      "translation": "亲爱的；啊",
+      "sceneMeaning": "亲爱的；啊；本场景常见用法：断交信",
+      "examples": "[]"
+    },
+    {
+      "word": "elsewhere",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "els'weə; 'elsweə",
+      "translation": "在别处，向别处",
+      "sceneMeaning": "在别处，向别处",
+      "examples": "[]"
+    },
+    {
+      "word": "however",
+      "partOfSpeech": "adv",
+      "phoneticUs": "haʊ'ɛvɚ",
+      "phoneticUk": "haʊ'evə",
+      "translation": "然而；不管怎样",
+      "sceneMeaning": "然而；不过",
+      "examples": "[]"
+    },
+    {
+      "word": "mineral",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'mɪnərəl",
+      "phoneticUk": "'mɪn(ə)r(ə)l",
+      "translation": "矿物；矿物的",
+      "sceneMeaning": "矿物；矿物的",
+      "examples": "[]"
+    },
+    {
+      "word": "neither",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈniðɚ; ˈnaɪðɚ",
+      "phoneticUk": "ˈnaɪðə; ˈniːðə",
+      "translation": "(两者)都不的",
+      "sceneMeaning": "两者都不",
+      "examples": "[]"
+    },
+    {
+      "word": "nowhere",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'no'wɛr",
+      "phoneticUk": "'nəʊhweə",
+      "translation": "任何地方都不",
+      "sceneMeaning": "任何地方都不",
+      "examples": "[]"
+    },
+    {
+      "word": "onto",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ˈɑnˌtu, -tə, ˈɔn-",
+      "phoneticUk": "'ɒntuː",
+      "translation": "到…上",
+      "sceneMeaning": "到……上面",
+      "examples": "[]"
+    },
+    {
+      "word": "outer",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'aʊtɚ",
+      "phoneticUk": "'aʊtə",
+      "translation": "外部的，外面的",
+      "sceneMeaning": "外部的，外面的",
+      "examples": "[]"
+    },
+    {
+      "word": "outward",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'aʊtwɚd",
+      "phoneticUk": "'aʊtwəd",
+      "translation": "外面的；向外的",
+      "sceneMeaning": "外面的；向外的",
+      "examples": "[]"
+    },
+    {
+      "word": "plus",
+      "partOfSpeech": "adj / prep",
+      "phoneticUs": "plʌs",
+      "phoneticUk": "plʌs",
+      "translation": "加，加上；正的",
+      "sceneMeaning": "加，加上；正的",
+      "examples": "[]"
+    },
+    {
+      "word": "underneath",
+      "partOfSpeech": "adv",
+      "phoneticUs": ",ʌndɚ'niθ",
+      "phoneticUk": "ʌndə'niːθ",
+      "translation": "在下面，在底下",
+      "sceneMeaning": "在……底下",
+      "examples": "[]"
+    },
+    {
+      "word": "undoubtedly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ʌn'daʊtɪdli",
+      "phoneticUk": "ʌn'daʊtɪdlɪ",
+      "translation": "无容置疑，肯定地；无疑",
+      "sceneMeaning": "无容置疑，肯定地；无疑",
+      "examples": "[]"
+    },
+    {
+      "word": "adjective",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ædʒɪktɪv",
+      "phoneticUk": "'ædʒɪktɪv",
+      "translation": "形容词；形容词的",
+      "sceneMeaning": "形容词；形容词的",
+      "examples": "[]"
+    },
+    {
+      "word": "adverb",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ædvɝb",
+      "phoneticUk": "'ædvɜːb",
+      "translation": "副词",
+      "sceneMeaning": "副词",
+      "examples": "[]"
+    },
+    {
+      "word": "afterward",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ˈæftərwərd",
+      "phoneticUk": "'ɑːftəwəd",
+      "translation": "后来，以后",
+      "sceneMeaning": "后来，以后",
+      "examples": "[]"
+    },
+    {
+      "word": "amongst",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ə'mʌŋst",
+      "phoneticUk": "ə'mʌŋst",
+      "translation": "在…之中(=among)",
+      "sceneMeaning": "在…之中(=among)",
+      "examples": "[]"
+    },
+    {
+      "word": "anybody",
+      "partOfSpeech": "prep",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "任何人",
+      "sceneMeaning": "任何人；有人",
+      "examples": "[]"
+    },
+    {
+      "word": "anyhow",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɛnɪ'haʊ",
+      "phoneticUk": "'enɪhaʊ",
+      "translation": "无论如何",
+      "sceneMeaning": "无论如何",
+      "examples": "[]"
+    },
+    {
+      "word": "darling",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɑrlɪŋ",
+      "phoneticUk": "'dɑːlɪŋ",
+      "translation": "亲爱的人；宠儿",
+      "sceneMeaning": "亲爱的人；宠儿；本场景常见用法：小宝贝；小爱人",
+      "examples": "[]"
+    },
+    {
+      "word": "furthermore",
+      "partOfSpeech": "adv",
+      "phoneticUs": ",fɝðɚ'mɔr",
+      "phoneticUk": "fɜːðə'mɔː",
+      "translation": "而且，此外",
+      "sceneMeaning": "此外；而且",
+      "examples": "[]"
+    },
+    {
+      "word": "groundlessly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "'graundlisli",
+      "translation": "无缘无故地，无根据地",
+      "sceneMeaning": "无缘无故地，无根据地",
+      "examples": "[]"
+    },
+    {
+      "word": "hers",
+      "partOfSpeech": "pron",
+      "phoneticUs": "hɝz",
+      "phoneticUk": "hɜːz",
+      "translation": "她的(所有物)",
+      "sceneMeaning": "她的东西",
+      "examples": "[]"
+    },
+    {
+      "word": "indoors",
+      "partOfSpeech": "adv",
+      "phoneticUs": ",ɪn'dɔrz",
+      "phoneticUk": "ɪn'dɔːz",
+      "translation": "在室内，在屋里",
+      "sceneMeaning": "在室内，在屋里",
+      "examples": "[]"
+    },
+    {
+      "word": "inward",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'ɪnwɚd",
+      "phoneticUk": "'ɪnwəd",
+      "translation": "里面的；向内",
+      "sceneMeaning": "里面的；向内",
+      "examples": "[]"
+    },
+    {
+      "word": "July",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒʊˈlaɪ",
+      "phoneticUk": "dʒʊˈlaɪ",
+      "translation": "七月",
+      "sceneMeaning": "七月",
+      "examples": "[]"
+    },
+    {
+      "word": "likewise",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'laɪkwaɪz",
+      "phoneticUk": "'laɪkwaɪz",
+      "translation": "同样地；也，又",
+      "sceneMeaning": "同样地",
+      "examples": "[]"
+    },
+    {
+      "word": "meanwhile",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'minwaɪl",
+      "phoneticUk": "'miːnwaɪl",
+      "translation": "同时，当时",
+      "sceneMeaning": "与此同时",
+      "examples": "[]"
+    },
+    {
+      "word": "miner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'maɪnɚ",
+      "phoneticUk": "'maɪnə",
+      "translation": "矿工",
+      "sceneMeaning": "矿工",
+      "examples": "[]"
+    },
+    {
+      "word": "moreover",
+      "partOfSpeech": "adv",
+      "phoneticUs": "mɔr'ovɚ",
+      "phoneticUk": "mɔːr'əʊvə",
+      "translation": "再者，加之，此外",
+      "sceneMeaning": "此外；而且",
+      "examples": "[]"
+    },
+    {
+      "word": "namely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'nemli",
+      "phoneticUk": "'neɪmlɪ",
+      "translation": "即，也就是",
+      "sceneMeaning": "即；也就是",
+      "examples": "[]"
+    },
+    {
+      "word": "nevertheless",
+      "partOfSpeech": "adv / conj",
+      "phoneticUs": ",nɛvɚðə'lɛs",
+      "phoneticUk": "nevəðə'les",
+      "translation": "然而；仍然",
+      "sceneMeaning": "然而；尽管如此",
+      "examples": "[]"
+    },
+    {
+      "word": "oh",
+      "partOfSpeech": "int",
+      "phoneticUs": "o",
+      "phoneticUk": "əʊ",
+      "translation": "嗬，哦，唉呀",
+      "sceneMeaning": "嗬，哦，唉呀",
+      "examples": "[]"
+    },
+    {
+      "word": "ours",
+      "partOfSpeech": "pron",
+      "phoneticUs": "ɑrz",
+      "phoneticUk": "aʊəz",
+      "translation": "我们的",
+      "sceneMeaning": "我们的东西",
+      "examples": "[]"
+    },
+    {
+      "word": "pronoun",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pronaʊn",
+      "phoneticUk": "'prəʊnaʊn",
+      "translation": "代名词",
+      "sceneMeaning": "代名词",
+      "examples": "[]"
+    },
+    {
+      "word": "respective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'spɛktɪv",
+      "phoneticUk": "rɪ'spektɪv",
+      "translation": "各自的，各个的",
+      "sceneMeaning": "各自的，各个的",
+      "examples": "[]"
+    },
+    {
+      "word": "respectively",
+      "partOfSpeech": "adv",
+      "phoneticUs": "rɪ'spɛktɪvli",
+      "phoneticUk": "rɪ'spektɪvlɪ",
+      "translation": "各自地，分别地；各自地",
+      "sceneMeaning": "各自地，分别地；各自地",
+      "examples": "[]"
+    },
+    {
+      "word": "similarly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'sɪməlɚli",
+      "phoneticUk": "",
+      "translation": "类似地，相似地",
+      "sceneMeaning": "类似地",
+      "examples": "[]"
+    },
+    {
+      "word": "sometime",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'sʌmtaɪm",
+      "phoneticUk": "'sʌmtaɪm",
+      "translation": "在某一时候；从前",
+      "sceneMeaning": "在某一时候；从前",
+      "examples": "[]"
+    },
+    {
+      "word": "whilst",
+      "partOfSpeech": "conj&n",
+      "phoneticUs": "hwailst",
+      "phoneticUk": "waɪlst",
+      "translation": "当…的时候",
+      "sceneMeaning": "当…的时候",
+      "examples": "[]"
+    }
+  ]
+}

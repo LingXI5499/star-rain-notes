@@ -1,0 +1,24 @@
+
+.tutorial-detail:not(.__static_scope){display:grid;grid-template-columns:minmax(0,820px) minmax(210px,260px);justify-content:center;gap:48px;align-items:start;padding-block:36px}
+.tutorial-detail__main:not(.__static_scope){min-width:0}
+.tutorial-detail__breadcrumb:not(.__static_scope){color:var(--text-muted);margin-bottom:28px}
+.tutorial-detail__breadcrumb a:not(.__static_scope){color:var(--primary)}
+.tutorial-detail h1:not(.__static_scope){font-size:clamp(32px,4vw,44px);line-height:1.2}
+.tutorial-detail__summary:not(.__static_scope){font-size:17px;line-height:1.8;color:var(--text-secondary);margin:20px 0 10px}
+.tutorial-detail__meta:not(.__static_scope){color:var(--text-muted);margin-bottom:30px}
+.tutorial-detail__start:not(.__static_scope),.tutorial-detail__aside>a:not(.__static_scope){display:inline-block;padding:13px 20px;border-radius:999px;background:var(--primary);color:var(--on-primary);font-weight:700;margin-bottom:36px}
+.tutorial-detail__main h2:not(.__static_scope){font-size:24px;margin-bottom:16px}
+.tutorial-detail__group:not(.__static_scope){border:1px solid var(--border);border-radius:16px;background:var(--bg-surface);overflow:hidden;margin-bottom:18px}
+.tutorial-detail__group h3:not(.__static_scope){padding:16px 20px;background:var(--bg-subtle);font-size:17px}
+.tutorial-detail__group a:not(.__static_scope){display:flex;align-items:center;gap:16px;padding:14px 20px;border-top:1px solid var(--border);color:var(--text-primary)}
+.tutorial-detail__group a:not(.__static_scope):hover{color:var(--primary);background:var(--bg-subtle)}
+.tutorial-detail__group a span:not(.__static_scope):last-child{margin-left:auto}
+.tutorial-detail__group a span:not(.__static_scope):first-child{color:var(--text-muted)}
+.tutorial-detail__aside:not(.__static_scope){position:sticky;top:100px;padding:22px;border:1px solid var(--border);border-radius:16px;background:var(--bg-surface)}
+.tutorial-detail__aside h2:not(.__static_scope){font-size:18px}
+.tutorial-detail__aside dl:not(.__static_scope){display:grid;grid-template-columns:1fr auto;gap:12px;margin:20px 0;color:var(--text-secondary)}
+.tutorial-detail__aside dd:not(.__static_scope){text-align:right}
+.tutorial-detail__aside>a:not(.__static_scope){margin:0}
+@media(max-width:850px){
+.tutorial-detail:not(.__static_scope){grid-template-columns:1fr}
+.tutorial-detail__aside:not(.__static_scope){position:static}}

@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> GET 列表应该明确区分“加载中、加载成功但为空、请求失败”三种状态。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">async function loadList() {
+  status.textContent = '加载中';
+  try { const r = await fetch('/api/items'); if (!r.ok) throw new Error(r.status); const items = await r.json(); status.textContent = items.length ? '加载成功' : '暂无数据'; }
+  catch { status.textContent = '加载失败'; }
+}
+</code></pre>
+<p><strong>学完能做：</strong> 处理列表请求的加载中、空结果和失败。</p>

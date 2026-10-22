@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 搜索建议需要在输入时筛选，在点击或键盘选中时提交当前建议。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const suggestions = ['Java', 'JavaScript', 'Java Web'];
+search.oninput = () =&gt; { matches = suggestions.filter(x =&gt; x.toLowerCase().startsWith(search.value.toLowerCase())); console.log(matches); };
+let matches = [];
+</code></pre>
+<p><strong>学完能做：</strong> 制作可键盘或鼠标选择的搜索建议。</p>

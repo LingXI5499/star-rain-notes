@@ -1,0 +1,165 @@
+[
+  {
+    "id": "11",
+    "title": "项目介绍",
+    "type": "MARKDOWN",
+    "html": "<p>前端初学者常能复制代码，却难以解释代码与界面的关系。这个项目把真实运行效果、源码、知识解释和动手修改放在同一工作台中，让观察、修改和验证形成连续学习流程。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "12",
+    "title": "核心功能",
+    "type": "FEATURE_LIST",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "title": "实验与路线",
+          "description": "263 个实验覆盖 HTML、CSS、JavaScript、网页布局与综合实践，配合前置知识、观察重点和练习。"
+        },
+        {
+          "title": "编辑运行",
+          "description": "切换 HTML/CSS/JS，修改源码并运行，查看控制台反馈，在电脑、平板和手机宽度之间切换。"
+        },
+        {
+          "title": "逐条对照",
+          "description": "将元素、CSS 声明、计算样式、实际尺寸和 JavaScript 阅读顺序与预览画面联系起来。"
+        },
+        {
+          "title": "学习与导出",
+          "description": "本地保存草稿、收藏和进度；导出可独立打开的完整 HTML，按需加载开发手册。"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "13",
+    "title": "使用流程",
+    "type": "MARKDOWN",
+    "html": "<p>从学习路线选择实验 → 阅读目标与源码 → 修改参数或代码 → 运行并观察页面、控制台和测量结果 → 完成自测 → 收藏、记录进度或导出页面。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "14",
+    "title": "技术栈",
+    "type": "TECH_STACK",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "name": "HTML",
+          "group": ""
+        },
+        {
+          "name": "CSS",
+          "group": ""
+        },
+        {
+          "name": "JavaScript",
+          "group": ""
+        },
+        {
+          "name": "iframe Sandbox",
+          "group": ""
+        },
+        {
+          "name": "LocalStorage",
+          "group": ""
+        },
+        {
+          "name": "Playwright",
+          "group": ""
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "15",
+    "title": "关键实现",
+    "type": "MARKDOWN",
+    "html": "<p>采用数据与界面分离的原生脚本组织课程；运行器使用 iframe srcdoc 与 sandbox 隔离，不授予同源权限，并限制外部网络。控制台消息校验来源和运行 token。草稿与进度保存在当前浏览器，手册章节按需加载。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "16",
+    "title": "项目成果",
+    "type": "STATS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "label": "可运行实验",
+          "value": "263 个"
+        },
+        {
+          "label": "学习章节",
+          "value": "24 章"
+        },
+        {
+          "label": "技术速查",
+          "value": "283 条"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "17",
+    "title": "验证与交付",
+    "type": "MARKDOWN",
+    "html": "<p>2026-10-15 整理版本通过 263 个实验的初始运行及整站浏览器回归，覆盖草稿、错误提示、收藏、进度、自测、导出、响应式和直接打开文件。手册检查覆盖 1,009 份教学数据，另有 24 章教学规则检查。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "18",
+    "title": "当前阶段与使用边界",
+    "type": "MARKDOWN",
+    "html": "<p>不提供后端账户或跨设备同步，不自动判断任意开放练习的正确性。运行器中的存储、剪贴板和网络能力受隔离限制。手册保留第三方课程和官方资料来源，不把所有来源材料标为原创。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "19",
+    "title": "界面与效果",
+    "type": "GALLERY",
+    "html": "",
+    "data": {},
+    "media": [
+      {
+        "src": "/images/content/2643714175e9e24d.webp",
+        "caption": "源码与效果对照工作台"
+      },
+      {
+        "src": "/images/content/532d5504e72ace83.webp",
+        "caption": "开发手册与课程检索"
+      }
+    ]
+  },
+  {
+    "id": "20",
+    "title": "源码与文档",
+    "type": "LINKS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/frontend-lab",
+          "label": "查看项目源码",
+          "description": "GitHub 集合中的独立项目目录"
+        },
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/frontend-lab/README.md",
+          "label": "运行与使用说明",
+          "description": "依赖、启动、测试和项目边界"
+        }
+      ]
+    },
+    "media": []
+  }
+]

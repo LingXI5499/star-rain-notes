@@ -1,0 +1,1118 @@
+{
+  "slug": "css",
+  "title": "CSS",
+  "description": "CSS 选择器、级联、盒模型、Flex/Grid 布局、定位、动画、响应式与页面组件设计；各章提供最小示例与实操目标。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-10-15",
+  "chapterCount": 131,
+  "wordCount": 26072,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "一.CSS 写法与选择器分类",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "CSS 规则：选谁、改什么、改成多少",
+          "description": "读懂选择器、属性和属性值构成的样式声明。",
+          "path": "/tutorials/css/chapter-1-1/",
+          "wordCount": 119,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "样式写在哪里：行内、style、外部 CSS",
+          "description": "选择行内样式、内嵌样式表或外部文件。",
+          "path": "/tutorials/css/chapter-1-2/",
+          "wordCount": 184,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "选择器分类 ①：标签、类、ID、通配与并集",
+          "description": "使用标签、类、ID、通配和并集选择器。",
+          "path": "/tutorials/css/chapter-1-3/",
+          "wordCount": 196,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "选择器分类 ②：属性存在、相等、包含",
+          "description": "按属性存在、属性值或包含关系定位元素。",
+          "path": "/tutorials/css/chapter-1-4/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "后代、子代、并集与交集选择器",
+          "description": "区分后代、直接子代、并集与复合选择。",
+          "path": "/tutorials/css/chapter-1-5/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-6",
+          "title": "选择器分类 ③：伪类状态与伪元素",
+          "description": "识别交互状态伪类和内容伪元素。",
+          "path": "/tutorials/css/chapter-1-6/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-7",
+          "title": "选择器与伪类",
+          "description": "根据状态和结构组合常用伪类条件。",
+          "path": "/tutorials/css/chapter-1-7/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-8",
+          "title": "链接状态、键盘焦点与 LVHA",
+          "description": "设计链接不同状态与可见键盘焦点。",
+          "path": "/tutorials/css/chapter-1-8/",
+          "wordCount": 238,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-9",
+          "title": "伪元素与生成内容",
+          "description": "使用 ::before、::after 添加装饰内容。",
+          "path": "/tutorials/css/chapter-1-9/",
+          "wordCount": 144,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-10",
+          "title": ":has 与关系选择器",
+          "description": "根据子元素关系使用 :has 选择父级。",
+          "path": "/tutorials/css/chapter-1-10/",
+          "wordCount": 129,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-11",
+          "title": "nth-child 隔行变色",
+          "description": "使用 :nth-child 创建交替行样式。",
+          "path": "/tutorials/css/chapter-1-11/",
+          "wordCount": 136,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "二.冲突、继承与公共样式",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "级联、继承与优先级",
+          "description": "判断级联来源、继承与优先级如何决定样式。",
+          "path": "/tutorials/css/chapter-2-1/",
+          "wordCount": 132,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "优先级的三列比较与继承",
+          "description": "按 ID、类/伪类、元素三类比较选择器权重。",
+          "path": "/tutorials/css/chapter-2-2/",
+          "wordCount": 167,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "@layer 管理样式层",
+          "description": "使用 @layer 划分公共样式与组件样式优先级。",
+          "path": "/tutorials/css/chapter-2-3/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "基础重置与可访问焦点",
+          "description": "建立基础重置规则并保留可访问焦点。",
+          "path": "/tutorials/css/chapter-2-4/",
+          "wordCount": 194,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "三.颜色、文字与背景",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "颜色、渐变与透明度",
+          "description": "设置色值、渐变和透明效果。",
+          "path": "/tutorials/css/chapter-3-1/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "字体与排版",
+          "description": "控制字体族、字号、字重、对齐及间距。",
+          "path": "/tutorials/css/chapter-3-2/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "font 简写、行高与基线",
+          "description": "使用字体简写并理解行高与文字基线。",
+          "path": "/tutorials/css/chapter-3-3/",
+          "wordCount": 128,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "换行、断词与阅读宽度",
+          "description": "控制文本折行、长词处理和段落阅读宽度。",
+          "path": "/tutorials/css/chapter-3-4/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "背景图层与混合",
+          "description": "叠加背景图片、颜色和混合效果。",
+          "path": "/tutorials/css/chapter-3-5/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "背景平铺、定位、cover 与 contain",
+          "description": "控制背景图片位置、平铺与缩放策略。",
+          "path": "/tutorials/css/chapter-3-6/",
+          "wordCount": 181,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-7",
+          "title": "object-fit 与图片裁切",
+          "description": "利用 object-fit 控制图片填充与裁切。",
+          "path": "/tutorials/css/chapter-3-7/",
+          "wordCount": 155,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-8",
+          "title": "图片基线空隙与 vertical-align",
+          "description": "排查行内图片底部空隙与垂直对齐。",
+          "path": "/tutorials/css/chapter-3-8/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-9",
+          "title": "opacity 与透明背景的区别",
+          "description": "区分整体透明与仅背景透明。",
+          "path": "/tutorials/css/chapter-3-9/",
+          "wordCount": 143,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-10",
+          "title": "边框、圆角与阴影",
+          "description": "组合边框、圆角、盒阴影和文字阴影。",
+          "path": "/tutorials/css/chapter-3-10/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-11",
+          "title": "滤镜与裁剪",
+          "description": "掌握常见滤镜效果与裁剪方式。",
+          "path": "/tutorials/css/chapter-3-11/",
+          "wordCount": 138,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-12",
+          "title": "CSS 精灵图与负背景定位",
+          "description": "使用背景定位显示精灵图指定区域。",
+          "path": "/tutorials/css/chapter-3-12/",
+          "wordCount": 160,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-13",
+          "title": "字体图标的原生 SVG 替代",
+          "description": "使用 SVG 图标替代依赖字体的图标方案。",
+          "path": "/tutorials/css/chapter-3-13/",
+          "wordCount": 153,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "四.单位、盒模型与尺寸",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "px、rem、em 与视口单位",
+          "description": "根据场景选用固定、相对字体和视口单位。",
+          "path": "/tutorials/css/chapter-4-1/",
+          "wordCount": 164,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "盒模型与间距",
+          "description": "区分内容、内边距、边框和外边距。",
+          "path": "/tutorials/css/chapter-4-2/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "box-sizing 与实际宽度",
+          "description": "理解 box-sizing 对尺寸计算的影响。",
+          "path": "/tutorials/css/chapter-4-3/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "content-box 与 border-box 的尺寸计算",
+          "description": "计算两种盒模型下元素的实际占位。",
+          "path": "/tutorials/css/chapter-4-4/",
+          "wordCount": 249,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "calc、min、max 与 clamp",
+          "description": "使用数值函数实现可伸缩的尺寸限制。",
+          "path": "/tutorials/css/chapter-4-5/",
+          "wordCount": 161,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "aspect-ratio 与比例盒",
+          "description": "使用 aspect-ratio 保持组件宽高比例。",
+          "path": "/tutorials/css/chapter-4-6/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "逻辑属性与书写方向",
+          "description": "理解逻辑方向属性与不同书写方向。",
+          "path": "/tutorials/css/chapter-4-7/",
+          "wordCount": 151,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "自定义属性与设计令牌",
+          "description": "定义并复用 CSS 自定义属性与设计令牌。",
+          "path": "/tutorials/css/chapter-4-8/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-9",
+          "title": "Less 的变量、计算与嵌套如何转成 CSS",
+          "description": "将 Less 常见变量、计算和嵌套迁移为原生 CSS。",
+          "path": "/tutorials/css/chapter-4-9/",
+          "wordCount": 147,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "五.文档流与溢出",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "文档流 ①：不定位时，盒子怎样排队",
+          "description": "预测块级与行内内容在普通文档流中的位置。",
+          "path": "/tutorials/css/chapter-5-1/",
+          "wordCount": 121,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "文档流 ②：block、inline、inline-block 对照",
+          "description": "比较三种常见 display 类型的排布行为。",
+          "path": "/tutorials/css/chapter-5-2/",
+          "wordCount": 198,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "display 与文档流",
+          "description": "理解 display 对元素布局参与方式的影响。",
+          "path": "/tutorials/css/chapter-5-3/",
+          "wordCount": 155,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "块、行内与行内块的尺寸差异",
+          "description": "判断块级、行内、行内块的尺寸控制差异。",
+          "path": "/tutorials/css/chapter-5-4/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "外边距折叠",
+          "description": "识别相邻块级外边距折叠现象。",
+          "path": "/tutorials/css/chapter-5-5/",
+          "wordCount": 121,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "外边距合并与父子塌陷",
+          "description": "处理父子外边距折叠造成的布局偏移。",
+          "path": "/tutorials/css/chapter-5-6/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "溢出、滚动与截断",
+          "description": "选择滚动、隐藏、裁切与文本省略策略。",
+          "path": "/tutorials/css/chapter-5-7/",
+          "wordCount": 167,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "六.Flex 与 Grid 布局",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "Flex 入门：父盒排队，主轴与交叉轴",
+          "description": "辨认 Flex 主轴、交叉轴及父子职责。",
+          "path": "/tutorials/css/chapter-6-1/",
+          "wordCount": 170,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "Flexbox 一行排列",
+          "description": "实现单行横向排列及对齐。",
+          "path": "/tutorials/css/chapter-6-2/",
+          "wordCount": 149,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "Flex 伸缩与 min-width",
+          "description": "控制项目伸缩、基准尺寸和最小宽度。",
+          "path": "/tutorials/css/chapter-6-3/",
+          "wordCount": 139,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "Grid 入门：列、轨道、间隙与 fr",
+          "description": "理解网格轨道、间隙和 fr 分配。",
+          "path": "/tutorials/css/chapter-6-4/",
+          "wordCount": 157,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "Grid 行列布局",
+          "description": "通过行列规则构建二维网格。",
+          "path": "/tutorials/css/chapter-6-5/",
+          "wordCount": 182,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-6",
+          "title": "Grid 命名区域",
+          "description": "用命名区域表达页面分区关系。",
+          "path": "/tutorials/css/chapter-6-6/",
+          "wordCount": 224,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-7",
+          "title": "auto-fit 与自适应卡片",
+          "description": "实现随容器宽度自动增减列数的卡片。",
+          "path": "/tutorials/css/chapter-6-7/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-8",
+          "title": "Flex：导航与自动外边距",
+          "description": "实现导航项分布与自动推开的区域。",
+          "path": "/tutorials/css/chapter-6-8/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-9",
+          "title": "Flex：搜索栏固定与伸缩三段式",
+          "description": "构建两端固定、中间伸缩的搜索栏。",
+          "path": "/tutorials/css/chapter-6-9/",
+          "wordCount": 155,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-10",
+          "title": "Flex：操作按钮组靠右",
+          "description": "将按钮组推到容器末端。",
+          "path": "/tutorials/css/chapter-6-10/",
+          "wordCount": 121,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-11",
+          "title": "Flex：不同内容的等高卡片",
+          "description": "实现不同文字长度卡片的等高排列。",
+          "path": "/tutorials/css/chapter-6-11/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-12",
+          "title": "Flex：水平垂直居中的加载区",
+          "description": "使用 Flex 将加载提示水平垂直居中。",
+          "path": "/tutorials/css/chapter-6-12/",
+          "wordCount": 161,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-13",
+          "title": "Flex：响应式换行标签",
+          "description": "构建空间不足自动换行的标签组。",
+          "path": "/tutorials/css/chapter-6-13/",
+          "wordCount": 121,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-14",
+          "title": "Flex：头像、姓名与尾部时间",
+          "description": "对齐头像、姓名与靠右时间信息。",
+          "path": "/tutorials/css/chapter-6-14/",
+          "wordCount": 177,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-15",
+          "title": "Flex：自然换行的多列页脚",
+          "description": "实现可自动折行的多栏页脚。",
+          "path": "/tutorials/css/chapter-6-15/",
+          "wordCount": 167,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-16",
+          "title": "Flex：纵向卡片底部操作对齐",
+          "description": "将卡片按钮固定对齐到底部。",
+          "path": "/tutorials/css/chapter-6-16/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-17",
+          "title": "Grid 等分、跨列与自动排列对照",
+          "description": "对比等分列、跨列与自动放置的效果。",
+          "path": "/tutorials/css/chapter-6-17/",
+          "wordCount": 204,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "七.定位、浮动与层叠",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "文档流 ③：relative 留位，absolute 不留位",
+          "description": "区分相对定位保留占位和绝对定位脱离文档流。",
+          "path": "/tutorials/css/chapter-7-1/",
+          "wordCount": 174,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "定位与吸顶",
+          "description": "实现相对定位、固定定位与粘性吸顶。",
+          "path": "/tutorials/css/chapter-7-2/",
+          "wordCount": 184,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "文档流 ④：float 为文字环绕而设计",
+          "description": "理解 float 与文字环绕的原始用途。",
+          "path": "/tutorials/css/chapter-7-3/",
+          "wordCount": 132,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "浮动包围、clearfix 与 flow-root",
+          "description": "解决浮动导致的父容器高度问题。",
+          "path": "/tutorials/css/chapter-7-4/",
+          "wordCount": 159,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "flow-root 与浮动包含",
+          "description": "使用 flow-root 创建新的布局格式化上下文。",
+          "path": "/tutorials/css/chapter-7-5/",
+          "wordCount": 134,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-6",
+          "title": "z-index 与层叠上下文",
+          "description": "定位层级冲突并识别层叠上下文。",
+          "path": "/tutorials/css/chapter-7-6/",
+          "wordCount": 158,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-7",
+          "title": "旧式双栏与三栏对照",
+          "description": "辨认传统双栏、三栏方案与现代布局的差别。",
+          "path": "/tutorials/css/chapter-7-7/",
+          "wordCount": 158,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "八.状态、变换与动画",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "悬浮、焦点与状态",
+          "description": "根据悬浮、焦点等状态切换视觉反馈。",
+          "path": "/tutorials/css/chapter-8-1/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "变换、旋转与缩放",
+          "description": "控制平移、旋转和缩放变换。",
+          "path": "/tutorials/css/chapter-8-2/",
+          "wordCount": 135,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "多重变换的顺序与原点",
+          "description": "理解变换顺序和 transform-origin 的作用。",
+          "path": "/tutorials/css/chapter-8-3/",
+          "wordCount": 194,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "过渡与动画",
+          "description": "区分 transition 与关键帧 animation 的使用场景。",
+          "path": "/tutorials/css/chapter-8-4/",
+          "wordCount": 215,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "双开门：溢出裁切与左右平移",
+          "description": "结合裁切和平移制作双开门效果。",
+          "path": "/tutorials/css/chapter-8-5/",
+          "wordCount": 284,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-6",
+          "title": "倾斜装饰与内容反向倾斜",
+          "description": "利用倾斜与反向倾斜保持文字正常。",
+          "path": "/tutorials/css/chapter-8-6/",
+          "wordCount": 170,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-7",
+          "title": "3D 透视、背面隐藏与翻转卡片",
+          "description": "制作具有透视关系的 3D 翻转卡片。",
+          "path": "/tutorials/css/chapter-8-7/",
+          "wordCount": 266,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-8",
+          "title": "空间坐标、rotate3d 与 translateZ",
+          "description": "理解三维旋转轴与 Z 轴位移。",
+          "path": "/tutorials/css/chapter-8-8/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-9",
+          "title": "动画延迟、方向、填充与暂停",
+          "description": "控制动画延迟、方向、保持状态与暂停。",
+          "path": "/tutorials/css/chapter-8-9/",
+          "wordCount": 223,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-10",
+          "title": "steps 精灵帧动画",
+          "description": "使用 steps 制作逐帧动画。",
+          "path": "/tutorials/css/chapter-8-10/",
+          "wordCount": 167,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-11",
+          "title": "多组动画与嵌套变换",
+          "description": "协调多个动画与内外层不同变换。",
+          "path": "/tutorials/css/chapter-8-11/",
+          "wordCount": 133,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-12",
+          "title": "无缝走马灯：重复轨道与暂停",
+          "description": "构建可循环、可悬停暂停的走马灯。",
+          "path": "/tutorials/css/chapter-8-12/",
+          "wordCount": 242,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-13",
+          "title": "尊重减少动画偏好",
+          "description": "根据用户减少动效偏好调整动画。",
+          "path": "/tutorials/css/chapter-8-13/",
+          "wordCount": 225,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-14",
+          "title": "焦点与悬停提示框过渡",
+          "description": "制作鼠标与键盘均可触发的提示过渡。",
+          "path": "/tutorials/css/chapter-8-14/",
+          "wordCount": 185,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-15",
+          "title": "display 切换与可过渡展开",
+          "description": "理解显示切换与展开过渡的实现条件。",
+          "path": "/tutorials/css/chapter-8-15/",
+          "wordCount": 272,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-16",
+          "title": "六个面组成的 3D 立方体",
+          "description": "通过六个面和三维变换组成立方体。",
+          "path": "/tutorials/css/chapter-8-16/",
+          "wordCount": 265,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-17",
+          "title": "骨架闪烁与呼吸动画",
+          "description": "实现加载骨架屏及轻量呼吸反馈。",
+          "path": "/tutorials/css/chapter-8-17/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-18",
+          "title": "图片裁切与悬停缩放",
+          "description": "组合图片裁切与悬停放大交互。",
+          "path": "/tutorials/css/chapter-8-18/",
+          "wordCount": 198,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "九.屏幕适配与渐进增强",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "响应式：三栏变一栏",
+          "description": "通过断点将多栏界面调整为单栏。",
+          "path": "/tutorials/css/chapter-9-1/",
+          "wordCount": 195,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "移动优先断点与媒体查询顺序",
+          "description": "采用移动优先方式组织媒体查询。",
+          "path": "/tutorials/css/chapter-9-2/",
+          "wordCount": 198,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "rem 设计稿换算与根字号",
+          "description": "理解基于根字号的尺寸换算。",
+          "path": "/tutorials/css/chapter-9-3/",
+          "wordCount": 136,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "vw、vh 与移动浏览器的 dvh",
+          "description": "正确处理视口单位与移动浏览器动态高度。",
+          "path": "/tutorials/css/chapter-9-4/",
+          "wordCount": 133,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "容器查询：组件自己适配",
+          "description": "基于容器尺寸而非整个屏幕调整组件。",
+          "path": "/tutorials/css/chapter-9-5/",
+          "wordCount": 206,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-6",
+          "title": "滚动吸附与横向画廊",
+          "description": "实现滚动吸附的横向内容区。",
+          "path": "/tutorials/css/chapter-9-6/",
+          "wordCount": 216,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-7",
+          "title": "@supports 与渐进增强",
+          "description": "使用 @supports 为新特性提供兼容退路。",
+          "path": "/tutorials/css/chapter-9-7/",
+          "wordCount": 164,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-8",
+          "title": "打印样式与屏幕样式",
+          "description": "根据打印场景调整不必要的屏幕元素。",
+          "path": "/tutorials/css/chapter-9-8/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-9",
+          "title": "横竖屏、视口与局部溢出",
+          "description": "识别横竖屏切换及局部横向溢出问题。",
+          "path": "/tutorials/css/chapter-9-9/",
+          "wordCount": 173,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "十.从尺寸图到页面区域",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": "上传布局图：960px 版心的逐层计算",
+          "description": "将给定宽度图拆解为版心、列宽和间距。",
+          "path": "/tutorials/css/chapter-10-1/",
+          "wordCount": 135,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "版心：最大宽度与左右留白",
+          "description": "设置版心最大宽度与居中留白。",
+          "path": "/tutorials/css/chapter-10-2/",
+          "wordCount": 174,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "单栏阅读",
+          "description": "构建适合长文章的单列阅读区。",
+          "path": "/tutorials/css/chapter-10-3/",
+          "wordCount": 126,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "双栏布局",
+          "description": "设计主内容与侧栏的双列结构。",
+          "path": "/tutorials/css/chapter-10-4/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "三栏布局",
+          "description": "实现主内容、导航和辅助信息三列结构。",
+          "path": "/tutorials/css/chapter-10-5/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-6",
+          "title": "规则网格",
+          "description": "使用规则行列构建卡片矩阵。",
+          "path": "/tutorials/css/chapter-10-6/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-7",
+          "title": "瀑布流布局",
+          "description": "识别瀑布流视觉特点及实现局限。",
+          "path": "/tutorials/css/chapter-10-7/",
+          "wordCount": 177,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-8",
+          "title": "信息流布局",
+          "description": "组织按时间或内容顺序滚动的信息流。",
+          "path": "/tutorials/css/chapter-10-8/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-9",
+          "title": "仪表盘布局",
+          "description": "规划指标、图表和操作区的仪表盘。",
+          "path": "/tutorials/css/chapter-10-9/",
+          "wordCount": 173,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-10",
+          "title": "左右分屏工作区",
+          "description": "创建两侧并排的编辑与预览工作区。",
+          "path": "/tutorials/css/chapter-10-10/",
+          "wordCount": 194,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-11",
+          "title": "全屏沉浸布局",
+          "description": "设计占据视口的沉浸式界面。",
+          "path": "/tutorials/css/chapter-10-11/",
+          "wordCount": 136,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-12",
+          "title": "分区式展示页",
+          "description": "使用连续版块组织产品展示页面。",
+          "path": "/tutorials/css/chapter-10-12/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-13",
+          "title": "表格管理布局",
+          "description": "组合筛选、操作栏和数据表格。",
+          "path": "/tutorials/css/chapter-10-13/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-14",
+          "title": "任务看板布局",
+          "description": "实现按状态分列的任务看板。",
+          "path": "/tutorials/css/chapter-10-14/",
+          "wordCount": 170,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-15",
+          "title": "移动端底部导航",
+          "description": "构建移动端固定底部导航区。",
+          "path": "/tutorials/css/chapter-10-15/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-16",
+          "title": "正文在左、附加信息在右",
+          "description": "建立正文为主、右侧信息为辅的布局。",
+          "path": "/tutorials/css/chapter-10-16/",
+          "wordCount": 152,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-17",
+          "title": "可折叠侧栏工作台",
+          "description": "设计可收起、展开的侧边栏容器。",
+          "path": "/tutorials/css/chapter-10-17/",
+          "wordCount": 193,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-18",
+          "title": "分屏登录表单的响应式骨架",
+          "description": "实现登录页左右分屏及窄屏回退。",
+          "path": "/tutorials/css/chapter-10-18/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-19",
+          "title": "使用伪元素连接的时间线",
+          "description": "利用伪元素绘制节点连接时间线。",
+          "path": "/tutorials/css/chapter-10-19/",
+          "wordCount": 295,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-20",
+          "title": "消息滚动区与底部输入区",
+          "description": "实现可滚动消息区和底部固定输入区。",
+          "path": "/tutorials/css/chapter-10-20/",
+          "wordCount": 180,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-21",
+          "title": "主媒体、参数与下方介绍",
+          "description": "组合主媒体、属性参数与详细说明区域。",
+          "path": "/tutorials/css/chapter-10-21/",
+          "wordCount": 174,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-22",
+          "title": "嵌套目录与内容区域",
+          "description": "建立树形目录与内容展示区的嵌套布局。",
+          "path": "/tutorials/css/chapter-10-22/",
+          "wordCount": 176,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "十一.可复用的小组件布局",
+      "chapters": [
+        {
+          "slug": "chapter-11-1",
+          "title": "头部组合：标识、导航、搜索与用户区",
+          "description": "组合标志、导航、搜索和用户入口。",
+          "path": "/tutorials/css/chapter-11-1/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-2",
+          "title": "Banner、分类侧栏与信息卡",
+          "description": "拼接横幅、分类栏与展示卡片。",
+          "path": "/tutorials/css/chapter-11-2/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-3",
+          "title": "模块标题、筛选与更多入口",
+          "description": "创建模块标题、筛选操作和更多链接。",
+          "path": "/tutorials/css/chapter-11-3/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-4",
+          "title": "课程卡片：封面、标题、元信息与角标",
+          "description": "设计课程卡片的封面、信息与状态角标。",
+          "path": "/tutorials/css/chapter-11-4/",
+          "wordCount": 238,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-5",
+          "title": "产品悬停：上浮、阴影与详情揭示",
+          "description": "实现悬停上浮、阴影和附加信息展示。",
+          "path": "/tutorials/css/chapter-11-5/",
+          "wordCount": 222,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-6",
+          "title": "多列页脚与服务保障条",
+          "description": "搭建多列页脚与保障信息条。",
+          "path": "/tutorials/css/chapter-11-6/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-7",
+          "title": "图片上的标题与渐变遮罩",
+          "description": "制作图片文字叠加及可读性遮罩。",
+          "path": "/tutorials/css/chapter-11-7/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-8",
+          "title": "移动标题栏：两侧不等宽时的真正居中",
+          "description": "解决左右按钮宽度不同导致的标题偏移。",
+          "path": "/tutorials/css/chapter-11-8/",
+          "wordCount": 212,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-9",
+          "title": "图文列表：缩略图、弹性文本与尾部动作",
+          "description": "制作缩略图、标题正文与尾部操作的列表项。",
+          "path": "/tutorials/css/chapter-11-9/",
+          "wordCount": 200,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-10",
+          "title": "固定下载条、底部导航与安全区",
+          "description": "适配固定底栏与移动设备安全区域。",
+          "path": "/tutorials/css/chapter-11-10/",
+          "wordCount": 192,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-11",
+          "title": "十二列栅格：原生替代 Bootstrap",
+          "description": "理解十二列栅格的划分和跨列规则。",
+          "path": "/tutorials/css/chapter-11-11/",
+          "wordCount": 195,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-12",
+          "title": "按钮变体与响应式数据表",
+          "description": "统一按钮样式并处理窄屏数据表格。",
+          "path": "/tutorials/css/chapter-11-12/",
+          "wordCount": 190,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-13",
+          "title": "空状态、成功失败与状态徽章",
+          "description": "设计空列表、操作结果和状态标记。",
+          "path": "/tutorials/css/chapter-11-13/",
+          "wordCount": 174,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-14",
+          "title": "卡券、虚线分割与缺口装饰",
+          "description": "实现卡券的虚线分割与票据缺口效果。",
+          "path": "/tutorials/css/chapter-11-14/",
+          "wordCount": 188,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/css/",
+  "sortOrder": 11
+}

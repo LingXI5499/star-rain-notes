@@ -1,0 +1,152 @@
+[
+  {
+    "id": "59",
+    "title": "项目介绍",
+    "type": "MARKDOWN",
+    "html": "<p>用一个轻量网页代替在多个站点之间反复切换，围绕固定频率、可观察刷新和可降级摘要形成个人情报入口，而不是扩展成重型实时舆情系统。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "60",
+    "title": "核心功能",
+    "type": "FEATURE_LIST",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "title": "多来源采集",
+          "description": "使用独立 Collector 处理 GitHub Trending、Hacker News、百度热搜、中国政府网及秋招公开 JSON。"
+        },
+        {
+          "title": "受控刷新",
+          "description": "服务运行时每天北京时间 08:00 刷新一次，其余时间不轮询；可通过首页主动刷新。"
+        },
+        {
+          "title": "去重与状态",
+          "description": "记录采集进度，使用指纹去重和 SQLite 保存最近数据；单个来源失败不使整次任务失效。"
+        },
+        {
+          "title": "可选 AI 摘要",
+          "description": "配置 DeepSeek Key 后调用模型生成摘要；没有 Key 时仍能运行并返回本地规则摘要。"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "61",
+    "title": "使用流程",
+    "type": "MARKDOWN",
+    "html": "<p>打开首页查看最近日报 → 按需立即刷新 → 观察各来源进度 → 浏览去重后的信息与原始链接 → 查看摘要。服务持续运行时由每日定时任务触发相同流程。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "62",
+    "title": "技术栈",
+    "type": "TECH_STACK",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "name": "Python",
+          "group": ""
+        },
+        {
+          "name": "FastAPI",
+          "group": ""
+        },
+        {
+          "name": "Jinja2",
+          "group": ""
+        },
+        {
+          "name": "SQLite",
+          "group": ""
+        },
+        {
+          "name": "httpx",
+          "group": ""
+        },
+        {
+          "name": "BeautifulSoup",
+          "group": ""
+        },
+        {
+          "name": "DeepSeek API",
+          "group": ""
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "63",
+    "title": "关键实现",
+    "type": "MARKDOWN",
+    "html": "<p>FastAPI 提供页面与刷新 API，Jinja2 渲染首页。Collector 与刷新服务分离，自动与手动刷新共享同一任务锁；SQLite 使用指纹去重和 WAL。摘要服务把外部模型调用与无 Key 的规则回退隔离。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "64",
+    "title": "项目成果",
+    "type": "STATS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "label": "数据来源",
+          "value": "5 类入口"
+        },
+        {
+          "label": "自动刷新",
+          "value": "每日 08:00"
+        },
+        {
+          "label": "自动测试",
+          "value": "13 项"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "65",
+    "title": "验证与交付",
+    "type": "MARKDOWN",
+    "html": "<p>2026-10-15 整理版本通过 13 项自动测试，覆盖数据库去重、模型指纹、采集解析器、任务互斥、日报落库和每日调度边界。测试不代表外部来源在任何时间均可采集。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "66",
+    "title": "当前阶段与使用边界",
+    "type": "MARKDOWN",
+    "html": "<p>需要服务持续运行才能定时刷新。来源页面结构、网络和模型服务可能变化，采集失败保留最近数据。仅访问公开信息，没有登录绕过、验证码规避或私人数据采集。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "67",
+    "title": "源码与文档",
+    "type": "LINKS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/ai-intelligence-daily",
+          "label": "查看项目源码",
+          "description": "GitHub 集合中的独立项目目录"
+        },
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/ai-intelligence-daily/README.md",
+          "label": "运行与使用说明",
+          "description": "依赖、启动、测试和项目边界"
+        }
+      ]
+    },
+    "media": []
+  }
+]

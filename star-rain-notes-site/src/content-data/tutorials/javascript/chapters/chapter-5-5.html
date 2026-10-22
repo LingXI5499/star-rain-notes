@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 标签页根据当前选中的索引显示对应内容，其余内容隐藏。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const tabs = document.querySelectorAll('.tab');
+const panels = document.querySelectorAll('.panel');
+tabs.forEach((tab, i) =&gt; tab.onclick = () =&gt; { panels.forEach((p, j) =&gt; p.hidden = i !== j); });
+</code></pre>
+<p><strong>学完能做：</strong> 按激活项切换标签内容。</p>

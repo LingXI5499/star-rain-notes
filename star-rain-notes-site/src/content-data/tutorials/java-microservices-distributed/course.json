@@ -1,0 +1,1533 @@
+{
+  "slug": "java-microservices-distributed",
+  "title": "Java 微服务与分布式",
+  "description": "Java 技术体系第三层：分布式系统核心问题、服务边界、Spring Cloud 生态、容错治理、数据一致性与可观测性。",
+  "category": "Java全栈知识体系",
+  "categorySlug": "javaquanzhan",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 181,
+  "wordCount": 0,
+  "categoryId": "1",
+  "groups": [
+    {
+      "title": "从单体到微服务：架构演进与取舍",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "单体应用：一个部署单元内包含多个业务模块",
+          "description": "单体应用：一个部署单元内包含多个业务模块",
+          "path": "/tutorials/java-microservices-distributed/1-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "分层架构与模块化单体：在单次部署中保持清晰的模块边界",
+          "description": "分层架构与模块化单体：在单次部署中保持清晰的模块边界",
+          "path": "/tutorials/java-microservices-distributed/1-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-3",
+          "title": "SOA 与微服务：服务粒度、治理方式和团队边界的区别",
+          "description": "SOA 与微服务：服务粒度、治理方式和团队边界的区别",
+          "path": "/tutorials/java-microservices-distributed/1-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-4",
+          "title": "微服务的主要收益：独立部署、独立扩缩容、明确的数据/业务所有权",
+          "description": "微服务的主要收益：独立部署、独立扩缩容、明确的数据/业务所有权",
+          "path": "/tutorials/java-microservices-distributed/1-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-5",
+          "title": "微服务的主要成本：网络调用、部分失败、分布式一致性、运维与测试复杂度",
+          "description": "微服务的主要成本：网络调用、部分失败、分布式一致性、运维与测试复杂度",
+          "path": "/tutorials/java-microservices-distributed/1-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-6",
+          "title": "何时继续使用单体：团队小、业务边界尚不清晰、独立发布价值不明显",
+          "description": "何时继续使用单体：团队小、业务边界尚不清晰、独立发布价值不明显",
+          "path": "/tutorials/java-microservices-distributed/1-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-7",
+          "title": "何时考虑拆分：模块耦合成为瓶颈、团队并行受阻、资源需求差异明显",
+          "description": "何时考虑拆分：模块耦合成为瓶颈、团队并行受阻、资源需求差异明显",
+          "path": "/tutorials/java-microservices-distributed/1-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-8",
+          "title": "“按业务能力拆分”与“按技术层拆分”的区别",
+          "description": "“按业务能力拆分”与“按技术层拆分”的区别",
+          "path": "/tutorials/java-microservices-distributed/1-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-9",
+          "title": "为什么不能简单地把每个 Controller、数据库表或 CRUD 模块都拆成服务",
+          "description": "为什么不能简单地把每个 Controller、数据库表或 CRUD 模块都拆成服务",
+          "path": "/tutorials/java-microservices-distributed/1-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-10",
+          "title": "模块化单体如何为未来拆分做准备：接口边界、依赖方向与数据所有权",
+          "description": "模块化单体如何为未来拆分做准备：接口边界、依赖方向与数据所有权",
+          "path": "/tutorials/java-microservices-distributed/1-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-11",
+          "title": "微服务不是“服务越多越先进”：服务数量与治理成本的关系",
+          "description": "微服务不是“服务越多越先进”：服务数量与治理成本的关系",
+          "path": "/tutorials/java-microservices-distributed/1-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-12",
+          "title": "架构决策记录：问题、备选方案、选择理由、代价与验证方式",
+          "description": "架构决策记录：问题、备选方案、选择理由、代价与验证方式",
+          "path": "/tutorials/java-microservices-distributed/1-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "分布式系统的核心问题",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "分布式系统：多个进程/节点通过网络协作完成业务",
+          "description": "分布式系统：多个进程/节点通过网络协作完成业务",
+          "path": "/tutorials/java-microservices-distributed/2-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "本地方法调用与远程调用的差别：延迟、序列化、超时与失败",
+          "description": "本地方法调用与远程调用的差别：延迟、序列化、超时与失败",
+          "path": "/tutorials/java-microservices-distributed/2-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "部分失败：调用方、被调用方、网络或依赖组件可能只坏一部分",
+          "description": "部分失败：调用方、被调用方、网络或依赖组件可能只坏一部分",
+          "path": "/tutorials/java-microservices-distributed/2-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-4",
+          "title": "超时：连接超时、读取超时、整体请求期限与超时预算",
+          "description": "超时：连接超时、读取超时、整体请求期限与超时预算",
+          "path": "/tutorials/java-microservices-distributed/2-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-5",
+          "title": "重试：只对适合的故障重试，控制次数、退避与随机抖动",
+          "description": "重试：只对适合的故障重试，控制次数、退避与随机抖动",
+          "path": "/tutorials/java-microservices-distributed/2-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-6",
+          "title": "重试风暴：为什么重试可能把局部故障扩大成系统故障",
+          "description": "重试风暴：为什么重试可能把局部故障扩大成系统故障",
+          "path": "/tutorials/java-microservices-distributed/2-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-7",
+          "title": "幂等性：超时不代表服务端没有执行，重复请求必须有业务处理策略",
+          "description": "幂等性：超时不代表服务端没有执行，重复请求必须有业务处理策略",
+          "path": "/tutorials/java-microservices-distributed/2-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-8",
+          "title": "故障隔离与故障域：避免一个依赖故障拖垮整条调用链",
+          "description": "故障隔离与故障域：避免一个依赖故障拖垮整条调用链",
+          "path": "/tutorials/java-microservices-distributed/2-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-9",
+          "title": "一致性、可用性与分区容错：CAP 的适用语境与常见误读",
+          "description": "一致性、可用性与分区容错：CAP 的适用语境与常见误读",
+          "path": "/tutorials/java-microservices-distributed/2-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-10",
+          "title": "强一致性、最终一致性与业务可以接受的数据延迟",
+          "description": "强一致性、最终一致性与业务可以接受的数据延迟",
+          "path": "/tutorials/java-microservices-distributed/2-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-11",
+          "title": "时钟偏差、时间戳与跨节点时间判断的风险",
+          "description": "时钟偏差、时间戳与跨节点时间判断的风险",
+          "path": "/tutorials/java-microservices-distributed/2-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-12",
+          "title": "网络分区、脑裂与重复主节点的基本概念",
+          "description": "网络分区、脑裂与重复主节点的基本概念",
+          "path": "/tutorials/java-microservices-distributed/2-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-13",
+          "title": "可靠性目标：可用性、错误率、延迟分位数与恢复时间",
+          "description": "可靠性目标：可用性、错误率、延迟分位数与恢复时间",
+          "path": "/tutorials/java-microservices-distributed/2-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-14",
+          "title": "设计系统时显式回答：失败会发生什么、用户看到什么、如何恢复",
+          "description": "设计系统时显式回答：失败会发生什么、用户看到什么、如何恢复",
+          "path": "/tutorials/java-microservices-distributed/2-14/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "服务边界、领域模型与数据所有权",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "以业务能力划分服务，而不是按 Controller/DAO 等技术层划分",
+          "description": "以业务能力划分服务，而不是按 Controller/DAO 等技术层划分",
+          "path": "/tutorials/java-microservices-distributed/3-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "业务领域、子域、限界上下文（Bounded Context）的基本概念",
+          "description": "业务领域、子域、限界上下文（Bounded Context）的基本概念",
+          "path": "/tutorials/java-microservices-distributed/3-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "服务职责、内聚、耦合与依赖方向",
+          "description": "服务职责、内聚、耦合与依赖方向",
+          "path": "/tutorials/java-microservices-distributed/3-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "服务契约：接口输入、输出、错误语义、权限与兼容性",
+          "description": "服务契约：接口输入、输出、错误语义、权限与兼容性",
+          "path": "/tutorials/java-microservices-distributed/3-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-5",
+          "title": "每个服务的数据所有权：谁负责写入、校验与维护数据",
+          "description": "每个服务的数据所有权：谁负责写入、校验与维护数据",
+          "path": "/tutorials/java-microservices-distributed/3-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-6",
+          "title": "服务独立数据存储的意义与代价",
+          "description": "服务独立数据存储的意义与代价",
+          "path": "/tutorials/java-microservices-distributed/3-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-7",
+          "title": "为什么跨服务直接访问对方数据库会造成耦合",
+          "description": "为什么跨服务直接访问对方数据库会造成耦合",
+          "path": "/tutorials/java-microservices-distributed/3-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-8",
+          "title": "跨服务查询：API 聚合、面向查询的视图与异步数据投影的基本思路",
+          "description": "跨服务查询：API 聚合、面向查询的视图与异步数据投影的基本思路",
+          "path": "/tutorials/java-microservices-distributed/3-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-9",
+          "title": "服务间共享 DTO/公共库的版本耦合风险",
+          "description": "服务间共享 DTO/公共库的版本耦合风险",
+          "path": "/tutorials/java-microservices-distributed/3-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-10",
+          "title": "API 向后兼容：新增字段、可选字段、弃用字段与渐进迁移",
+          "description": "API 向后兼容：新增字段、可选字段、弃用字段与渐进迁移",
+          "path": "/tutorials/java-microservices-distributed/3-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-11",
+          "title": "服务拆分前的检查清单：边界、数据、调用、发布、监控与团队责任",
+          "description": "服务拆分前的检查清单：边界、数据、调用、发布、监控与团队责任",
+          "path": "/tutorials/java-microservices-distributed/3-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-12",
+          "title": "不强制完整 DDD：先掌握业务边界和数据所有权，再按需要深入领域驱动设计",
+          "description": "不强制完整 DDD：先掌握业务边界和数据所有权，再按需要深入领域驱动设计",
+          "path": "/tutorials/java-microservices-distributed/3-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "服务间通信与 API 契约",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "同步 HTTP/RPC 与异步消息的职责差异",
+          "description": "同步 HTTP/RPC 与异步消息的职责差异",
+          "path": "/tutorials/java-microservices-distributed/4-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "同步调用适合即时结果；异步消息适合解耦、延后处理和事件传播",
+          "description": "同步调用适合即时结果；异步消息适合解耦、延后处理和事件传播",
+          "path": "/tutorials/java-microservices-distributed/4-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-3",
+          "title": "粗粒度服务接口：避免把单体内的每次方法调用都改成远程请求",
+          "description": "粗粒度服务接口：避免把单体内的每次方法调用都改成远程请求",
+          "path": "/tutorials/java-microservices-distributed/4-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-4",
+          "title": "REST API 与服务间接口：资源语义、错误码、分页和版本演进",
+          "description": "REST API 与服务间接口：资源语义、错误码、分页和版本演进",
+          "path": "/tutorials/java-microservices-distributed/4-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-5",
+          "title": "声明式 HTTP 客户端：接口定义、参数绑定、序列化与错误映射",
+          "description": "声明式 HTTP 客户端：接口定义、参数绑定、序列化与错误映射",
+          "path": "/tutorials/java-microservices-distributed/4-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-6",
+          "title": "OpenFeign 的用途、调用链与配置边界（按所选 Spring Cloud 版本确认支持情况）",
+          "description": "OpenFeign 的用途、调用链与配置边界（按所选 Spring Cloud 版本确认支持情况）",
+          "path": "/tutorials/java-microservices-distributed/4-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-7",
+          "title": "请求超时、连接池、并发上限与调用方资源消耗",
+          "description": "请求超时、连接池、并发上限与调用方资源消耗",
+          "path": "/tutorials/java-microservices-distributed/4-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-8",
+          "title": "传递调用上下文：Trace ID、用户/租户上下文与敏感数据边界",
+          "description": "传递调用上下文：Trace ID、用户/租户上下文与敏感数据边界",
+          "path": "/tutorials/java-microservices-distributed/4-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-9",
+          "title": "API 契约测试、消费者兼容性与服务升级顺序",
+          "description": "API 契约测试、消费者兼容性与服务升级顺序",
+          "path": "/tutorials/java-microservices-distributed/4-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-10",
+          "title": "避免聊天式调用：一次业务请求中连续多次远程调用的延迟叠加",
+          "description": "避免聊天式调用：一次业务请求中连续多次远程调用的延迟叠加",
+          "path": "/tutorials/java-microservices-distributed/4-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-11",
+          "title": "同步调用与消息事件的组合：同步完成关键校验，异步执行非即时副作用",
+          "description": "同步调用与消息事件的组合：同步完成关键校验，异步执行非即时副作用",
+          "path": "/tutorials/java-microservices-distributed/4-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-12",
+          "title": "何时选用 RPC 框架：考虑生态、协议、性能需求和团队维护能力，而不是默认引入",
+          "description": "何时选用 RPC 框架：考虑生态、协议、性能需求和团队维护能力，而不是默认引入",
+          "path": "/tutorials/java-microservices-distributed/4-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "服务注册发现与配置管理",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "服务实例、注册中心、健康状态与服务发现",
+          "description": "服务实例、注册中心、健康状态与服务发现",
+          "path": "/tutorials/java-microservices-distributed/5-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "静态地址与动态注册发现的差异",
+          "description": "静态地址与动态注册发现的差异",
+          "path": "/tutorials/java-microservices-distributed/5-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "服务注册、心跳、实例下线、健康检查与过期实例",
+          "description": "服务注册、心跳、实例下线、健康检查与过期实例",
+          "path": "/tutorials/java-microservices-distributed/5-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "客户端发现与服务端发现的基本概念",
+          "description": "客户端发现与服务端发现的基本概念",
+          "path": "/tutorials/java-microservices-distributed/5-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "Nacos 的职责：服务发现与配置管理",
+          "description": "Nacos 的职责：服务发现与配置管理",
+          "path": "/tutorials/java-microservices-distributed/5-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-6",
+          "title": "服务名、命名空间、分组、集群与环境隔离",
+          "description": "服务名、命名空间、分组、集群与环境隔离",
+          "path": "/tutorials/java-microservices-distributed/5-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-7",
+          "title": "配置中心：配置集中管理、变更发布、动态刷新与审计",
+          "description": "配置中心：配置集中管理、变更发布、动态刷新与审计",
+          "path": "/tutorials/java-microservices-distributed/5-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-8",
+          "title": "配置优先级、默认值、密钥管理与配置变更风险",
+          "description": "配置优先级、默认值、密钥管理与配置变更风险",
+          "path": "/tutorials/java-microservices-distributed/5-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-9",
+          "title": "注册中心不可用时，已有实例、缓存列表与新实例发现可能受到的影响",
+          "description": "注册中心不可用时，已有实例、缓存列表与新实例发现可能受到的影响",
+          "path": "/tutorials/java-microservices-distributed/5-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-10",
+          "title": "健康检查并不保证业务请求一定成功",
+          "description": "健康检查并不保证业务请求一定成功",
+          "path": "/tutorials/java-microservices-distributed/5-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-11",
+          "title": "服务发现故障排查：注册失败、实例不健康、地址不可达与命名空间不一致",
+          "description": "服务发现故障排查：注册失败、实例不健康、地址不可达与命名空间不一致",
+          "path": "/tutorials/java-microservices-distributed/5-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-12",
+          "title": "Nacos 是常见实践选项，不是所有 Spring Cloud 项目唯一可选的注册中心",
+          "description": "Nacos 是常见实践选项，不是所有 Spring Cloud 项目唯一可选的注册中心",
+          "path": "/tutorials/java-microservices-distributed/5-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Spring Cloud Gateway 与统一入口",
+      "chapters": [
+        {
+          "slug": "6-1",
+          "title": "API Gateway 解决什么问题：统一入口、路由、跨横切能力与外部接口边界",
+          "description": "API Gateway 解决什么问题：统一入口、路由、跨横切能力与外部接口边界",
+          "path": "/tutorials/java-microservices-distributed/6-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-2",
+          "title": "Gateway 与 Nginx：网络层反向代理和应用层 API 网关的职责差异",
+          "description": "Gateway 与 Nginx：网络层反向代理和应用层 API 网关的职责差异",
+          "path": "/tutorials/java-microservices-distributed/6-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-3",
+          "title": "路由、Predicate、Filter 与请求转发",
+          "description": "路由、Predicate、Filter 与请求转发",
+          "path": "/tutorials/java-microservices-distributed/6-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-4",
+          "title": "按路径、请求头或其他条件路由的基本思路",
+          "description": "按路径、请求头或其他条件路由的基本思路",
+          "path": "/tutorials/java-microservices-distributed/6-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-5",
+          "title": "统一认证入口、限流、跨域、请求头处理与审计",
+          "description": "统一认证入口、限流、跨域、请求头处理与审计",
+          "path": "/tutorials/java-microservices-distributed/6-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-6",
+          "title": "网关不替代服务端的授权校验：内部服务仍需保护自身接口",
+          "description": "网关不替代服务端的授权校验：内部服务仍需保护自身接口",
+          "path": "/tutorials/java-microservices-distributed/6-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-7",
+          "title": "网关超时、连接池、负载与单点风险",
+          "description": "网关超时、连接池、负载与单点风险",
+          "path": "/tutorials/java-microservices-distributed/6-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-8",
+          "title": "避免在网关堆积全部业务逻辑，保持路由层职责清晰",
+          "description": "避免在网关堆积全部业务逻辑，保持路由层职责清晰",
+          "path": "/tutorials/java-microservices-distributed/6-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-9",
+          "title": "Gateway 日志与 Trace ID：如何关联入口请求和下游服务",
+          "description": "Gateway 日志与 Trace ID：如何关联入口请求和下游服务",
+          "path": "/tutorials/java-microservices-distributed/6-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-10",
+          "title": "路由配置错误、路径重写错误、下游不可达与 502/503/504 的排查",
+          "description": "路由配置错误、路径重写错误、下游不可达与 502/503/504 的排查",
+          "path": "/tutorials/java-microservices-distributed/6-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "6-11",
+          "title": "何时只需要 Nginx 反向代理，何时需要专门的 API Gateway",
+          "description": "何时只需要 Nginx 反向代理，何时需要专门的 API Gateway",
+          "path": "/tutorials/java-microservices-distributed/6-11/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "负载均衡与服务调用",
+      "chapters": [
+        {
+          "slug": "7-1",
+          "title": "负载均衡的目的：分配请求、利用多个实例并改善可用性",
+          "description": "负载均衡的目的：分配请求、利用多个实例并改善可用性",
+          "path": "/tutorials/java-microservices-distributed/7-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-2",
+          "title": "客户端负载均衡与服务端负载均衡",
+          "description": "客户端负载均衡与服务端负载均衡",
+          "path": "/tutorials/java-microservices-distributed/7-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-3",
+          "title": "轮询、随机、权重等策略的基本概念",
+          "description": "轮询、随机、权重等策略的基本概念",
+          "path": "/tutorials/java-microservices-distributed/7-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-4",
+          "title": "Spring Cloud LoadBalancer 的职责与基本使用场景",
+          "description": "Spring Cloud LoadBalancer 的职责与基本使用场景",
+          "path": "/tutorials/java-microservices-distributed/7-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-5",
+          "title": "实例健康、权重、实例变化与流量分配",
+          "description": "实例健康、权重、实例变化与流量分配",
+          "path": "/tutorials/java-microservices-distributed/7-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-6",
+          "title": "负载均衡不能解决慢 SQL、线程池耗尽或所有实例共同故障",
+          "description": "负载均衡不能解决慢 SQL、线程池耗尽或所有实例共同故障",
+          "path": "/tutorials/java-microservices-distributed/7-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-7",
+          "title": "连接池、最大并发、排队与下游容量之间的关系",
+          "description": "连接池、最大并发、排队与下游容量之间的关系",
+          "path": "/tutorials/java-microservices-distributed/7-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-8",
+          "title": "调用链延迟预算：入口、网关、服务、数据库和外部依赖共同消耗时间",
+          "description": "调用链延迟预算：入口、网关、服务、数据库和外部依赖共同消耗时间",
+          "path": "/tutorials/java-microservices-distributed/7-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-9",
+          "title": "服务调用的异常分类：业务错误、调用失败、超时与不可用",
+          "description": "服务调用的异常分类：业务错误、调用失败、超时与不可用",
+          "path": "/tutorials/java-microservices-distributed/7-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "7-10",
+          "title": "服务调用排查：从调用方日志、实例列表、网络连通性到被调用方指标",
+          "description": "服务调用排查：从调用方日志、实例列表、网络连通性到被调用方指标",
+          "path": "/tutorials/java-microservices-distributed/7-10/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Spring Cloud 生态与版本兼容",
+      "chapters": [
+        {
+          "slug": "8-1",
+          "title": "Spring Cloud 的定位：为分布式系统常见模式提供抽象和集成",
+          "description": "Spring Cloud 的定位：为分布式系统常见模式提供抽象和集成",
+          "path": "/tutorials/java-microservices-distributed/8-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-2",
+          "title": "Spring Boot、Spring Cloud 与 Spring Cloud Alibaba 的关系",
+          "description": "Spring Boot、Spring Cloud 与 Spring Cloud Alibaba 的关系",
+          "path": "/tutorials/java-microservices-distributed/8-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-3",
+          "title": "Spring Cloud Netflix、Spring Cloud Gateway、LoadBalancer、CircuitBreaker 等项目的职责边界",
+          "description": "Spring Cloud Netflix、Spring Cloud Gateway、LoadBalancer、CircuitBreaker 等项目的职责边界",
+          "path": "/tutorials/java-microservices-distributed/8-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-4",
+          "title": "Spring Cloud Alibaba 的常见组件：Nacos、Sentinel、Seata、RocketMQ 集成",
+          "description": "Spring Cloud Alibaba 的常见组件：Nacos、Sentinel、Seata、RocketMQ 集成",
+          "path": "/tutorials/java-microservices-distributed/8-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-5",
+          "title": "不要把 Spring Cloud 理解成单一框架或一组必须全部安装的组件",
+          "description": "不要把 Spring Cloud 理解成单一框架或一组必须全部安装的组件",
+          "path": "/tutorials/java-microservices-distributed/8-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-6",
+          "title": "版本管理：Spring Boot、Spring Cloud Release Train、Spring Cloud Alibaba 的兼容关系",
+          "description": "版本管理：Spring Boot、Spring Cloud Release Train、Spring Cloud Alibaba 的兼容关系",
+          "path": "/tutorials/java-microservices-distributed/8-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-7",
+          "title": "使用官方 BOM/依赖管理，避免手动混搭不兼容版本",
+          "description": "使用官方 BOM/依赖管理，避免手动混搭不兼容版本",
+          "path": "/tutorials/java-microservices-distributed/8-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-8",
+          "title": "旧资料中的 Ribbon、Hystrix、Zuul 等组件：理解其历史角色，新项目按当前版本官方支持方案选型",
+          "description": "旧资料中的 Ribbon、Hystrix、Zuul 等组件：理解其历史角色，新项目按当前版本官方支持方案选型",
+          "path": "/tutorials/java-microservices-distributed/8-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-9",
+          "title": "Nacos 配置接入方式、启动流程和配置行为可能随版本变化",
+          "description": "Nacos 配置接入方式、启动流程和配置行为可能随版本变化",
+          "path": "/tutorials/java-microservices-distributed/8-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-10",
+          "title": "依赖冲突、类缺失、自动配置失败与启动异常的定位",
+          "description": "依赖冲突、类缺失、自动配置失败与启动异常的定位",
+          "path": "/tutorials/java-microservices-distributed/8-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-11",
+          "title": "选型流程：先定 Spring Boot 版本，再查对应 Spring Cloud 与 Spring Cloud Alibaba 兼容表",
+          "description": "选型流程：先定 Spring Boot 版本，再查对应 Spring Cloud 与 Spring Cloud Alibaba 兼容表",
+          "path": "/tutorials/java-microservices-distributed/8-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "8-12",
+          "title": "生产项目中固定并记录依赖版本，升级时验证兼容性与回滚路径",
+          "description": "生产项目中固定并记录依赖版本，升级时验证兼容性与回滚路径",
+          "path": "/tutorials/java-microservices-distributed/8-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "服务容错与流量治理",
+      "chapters": [
+        {
+          "slug": "9-1",
+          "title": "超时预算：上下游超时配置不能互相矛盾",
+          "description": "超时预算：上下游超时配置不能互相矛盾",
+          "path": "/tutorials/java-microservices-distributed/9-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-2",
+          "title": "有限重试：最大次数、退避、随机抖动与只重试安全操作",
+          "description": "有限重试：最大次数、退避、随机抖动与只重试安全操作",
+          "path": "/tutorials/java-microservices-distributed/9-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-3",
+          "title": "熔断器：关闭、打开、半开状态与恢复探测",
+          "description": "熔断器：关闭、打开、半开状态与恢复探测",
+          "path": "/tutorials/java-microservices-distributed/9-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-4",
+          "title": "熔断与重试的区别：一个阻止持续调用，一个重新尝试失败操作",
+          "description": "熔断与重试的区别：一个阻止持续调用，一个重新尝试失败操作",
+          "path": "/tutorials/java-microservices-distributed/9-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-5",
+          "title": "隔离：线程池/信号量隔离与限制故障扩散",
+          "description": "隔离：线程池/信号量隔离与限制故障扩散",
+          "path": "/tutorials/java-microservices-distributed/9-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-6",
+          "title": "限流：按接口、用户、租户或资源设置流量上限",
+          "description": "限流：按接口、用户、租户或资源设置流量上限",
+          "path": "/tutorials/java-microservices-distributed/9-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-7",
+          "title": "降级与兜底：明确允许损失的功能和业务语义",
+          "description": "降级与兜底：明确允许损失的功能和业务语义",
+          "path": "/tutorials/java-microservices-distributed/9-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-8",
+          "title": "Sentinel：流量控制、熔断降级与规则管理的基本定位",
+          "description": "Sentinel：流量控制、熔断降级与规则管理的基本定位",
+          "path": "/tutorials/java-microservices-distributed/9-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-9",
+          "title": "Spring Cloud CircuitBreaker 与 Resilience4j 的定位；按技术栈择一实践",
+          "description": "Spring Cloud CircuitBreaker 与 Resilience4j 的定位；按技术栈择一实践",
+          "path": "/tutorials/java-microservices-distributed/9-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-10",
+          "title": "不要同时堆叠多个治理组件而不明确责任边界",
+          "description": "不要同时堆叠多个治理组件而不明确责任边界",
+          "path": "/tutorials/java-microservices-distributed/9-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-11",
+          "title": "舱壁隔离、背压与线程池/连接池容量的关系",
+          "description": "舱壁隔离、背压与线程池/连接池容量的关系",
+          "path": "/tutorials/java-microservices-distributed/9-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-12",
+          "title": "服务雪崩：超时、重试、线程池耗尽和下游过载如何相互放大",
+          "description": "服务雪崩：超时、重试、线程池耗尽和下游过载如何相互放大",
+          "path": "/tutorials/java-microservices-distributed/9-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-13",
+          "title": "负载均衡、健康检查与容错之间的配合",
+          "description": "负载均衡、健康检查与容错之间的配合",
+          "path": "/tutorials/java-microservices-distributed/9-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-14",
+          "title": "降级不能把支付失败伪装成支付成功，也不能破坏核心业务正确性",
+          "description": "降级不能把支付失败伪装成支付成功，也不能破坏核心业务正确性",
+          "path": "/tutorials/java-microservices-distributed/9-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "9-15",
+          "title": "故障演练：下游超时、服务实例退出、依赖过载与恢复验证",
+          "description": "故障演练：下游超时、服务实例退出、依赖过载与恢复验证",
+          "path": "/tutorials/java-microservices-distributed/9-15/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "分布式数据一致性与业务流程",
+      "chapters": [
+        {
+          "slug": "10-1",
+          "title": "单体本地事务与跨服务业务流程的区别",
+          "description": "单体本地事务与跨服务业务流程的区别",
+          "path": "/tutorials/java-microservices-distributed/10-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-2",
+          "title": "为什么跨服务调用无法直接共享一个普通数据库事务",
+          "description": "为什么跨服务调用无法直接共享一个普通数据库事务",
+          "path": "/tutorials/java-microservices-distributed/10-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-3",
+          "title": "业务一致性要求：哪些数据必须立即一致，哪些可以最终一致",
+          "description": "业务一致性要求：哪些数据必须立即一致，哪些可以最终一致",
+          "path": "/tutorials/java-microservices-distributed/10-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-4",
+          "title": "事件驱动与最终一致性：业务状态、事件、重试和补偿",
+          "description": "事件驱动与最终一致性：业务状态、事件、重试和补偿",
+          "path": "/tutorials/java-microservices-distributed/10-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-5",
+          "title": "Outbox/本地消息表的定位：保证业务数据与待发送事件在本地事务中一起落库",
+          "description": "Outbox/本地消息表的定位：保证业务数据与待发送事件在本地事务中一起落库",
+          "path": "/tutorials/java-microservices-distributed/10-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-6",
+          "title": "消费幂等、业务状态检查、重试、对账与人工修复",
+          "description": "消费幂等、业务状态检查、重试、对账与人工修复",
+          "path": "/tutorials/java-microservices-distributed/10-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-7",
+          "title": "Saga：多个本地事务与补偿操作组成的长流程",
+          "description": "Saga：多个本地事务与补偿操作组成的长流程",
+          "path": "/tutorials/java-microservices-distributed/10-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-8",
+          "title": "TCC：Try、Confirm、Cancel、资源预留与业务侵入性",
+          "description": "TCC：Try、Confirm、Cancel、资源预留与业务侵入性",
+          "path": "/tutorials/java-microservices-distributed/10-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-9",
+          "title": "XA/两阶段提交的基本概念、协调者与资源管理器",
+          "description": "XA/两阶段提交的基本概念、协调者与资源管理器",
+          "path": "/tutorials/java-microservices-distributed/10-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-10",
+          "title": "Seata 的定位：分布式事务协调框架及 AT、TCC、Saga、XA 等模式",
+          "description": "Seata 的定位：分布式事务协调框架及 AT、TCC、Saga、XA 等模式",
+          "path": "/tutorials/java-microservices-distributed/10-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-11",
+          "title": "AT 模式：代理数据源、undo log 与回滚机制的基本思路",
+          "description": "AT 模式：代理数据源、undo log 与回滚机制的基本思路",
+          "path": "/tutorials/java-microservices-distributed/10-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-12",
+          "title": "Saga 的补偿逻辑由业务定义；补偿不一定等同于物理回滚",
+          "description": "Saga 的补偿逻辑由业务定义；补偿不一定等同于物理回滚",
+          "path": "/tutorials/java-microservices-distributed/10-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-13",
+          "title": "TCC 的接口设计、幂等、空回滚与悬挂等边界问题",
+          "description": "TCC 的接口设计、幂等、空回滚与悬挂等边界问题",
+          "path": "/tutorials/java-microservices-distributed/10-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-14",
+          "title": "分布式事务的代价：锁/资源占用、性能、运维和异常状态处理",
+          "description": "分布式事务的代价：锁/资源占用、性能、运维和异常状态处理",
+          "path": "/tutorials/java-microservices-distributed/10-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-15",
+          "title": "选型顺序：优先本地事务；能用可靠消息、幂等和补偿解决时，不急于引入全局事务协调器",
+          "description": "选型顺序：优先本地事务；能用可靠消息、幂等和补偿解决时，不急于引入全局事务协调器",
+          "path": "/tutorials/java-microservices-distributed/10-15/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-16",
+          "title": "不存在适用于所有业务的“最强分布式事务方案”",
+          "description": "不存在适用于所有业务的“最强分布式事务方案”",
+          "path": "/tutorials/java-microservices-distributed/10-16/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-17",
+          "title": "事务异常处理：超时、回查、重复通知、部分成功与人工补偿",
+          "description": "事务异常处理：超时、回查、重复通知、部分成功与人工补偿",
+          "path": "/tutorials/java-microservices-distributed/10-17/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "10-18",
+          "title": "Redis/MQ 相关机制的基础概念不在此重复；本章关注跨服务业务一致性设计",
+          "description": "Redis/MQ 相关机制的基础概念不在此重复；本章关注跨服务业务一致性设计",
+          "path": "/tutorials/java-microservices-distributed/10-18/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "分布式 ID、任务执行与数据扩展",
+      "chapters": [
+        {
+          "slug": "11-1",
+          "title": "为什么多服务、多实例需要唯一标识",
+          "description": "为什么多服务、多实例需要唯一标识",
+          "path": "/tutorials/java-microservices-distributed/11-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-2",
+          "title": "数据库自增 ID、UUID、号段模式与雪花类 ID 的特点",
+          "description": "数据库自增 ID、UUID、号段模式与雪花类 ID 的特点",
+          "path": "/tutorials/java-microservices-distributed/11-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-3",
+          "title": "唯一性、趋势递增、可读性、时钟依赖与分片需求",
+          "description": "唯一性、趋势递增、可读性、时钟依赖与分片需求",
+          "path": "/tutorials/java-microservices-distributed/11-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-4",
+          "title": "雪花类 ID 的时钟回拨风险与运维注意事项",
+          "description": "雪花类 ID 的时钟回拨风险与运维注意事项",
+          "path": "/tutorials/java-microservices-distributed/11-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-5",
+          "title": "分布式锁与业务幂等的区别：锁不是业务正确性的唯一保障",
+          "description": "分布式锁与业务幂等的区别：锁不是业务正确性的唯一保障",
+          "path": "/tutorials/java-microservices-distributed/11-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-6",
+          "title": "多实例定时任务的重复执行问题",
+          "description": "多实例定时任务的重复执行问题",
+          "path": "/tutorials/java-microservices-distributed/11-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-7",
+          "title": "任务分片、抢占、租约、失败重试与执行记录",
+          "description": "任务分片、抢占、租约、失败重试与执行记录",
+          "path": "/tutorials/java-microservices-distributed/11-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-8",
+          "title": "分布式任务调度平台的适用条件与维护成本",
+          "description": "分布式任务调度平台的适用条件与维护成本",
+          "path": "/tutorials/java-microservices-distributed/11-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-9",
+          "title": "数据分片/分库分表的动机：数据量、吞吐、单机限制与运维复杂度",
+          "description": "数据分片/分库分表的动机：数据量、吞吐、单机限制与运维复杂度",
+          "path": "/tutorials/java-microservices-distributed/11-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-10",
+          "title": "分片键、路由、跨分片查询、全局索引与扩容迁移的难点",
+          "description": "分片键、路由、跨分片查询、全局索引与扩容迁移的难点",
+          "path": "/tutorials/java-microservices-distributed/11-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-11",
+          "title": "读写分离与分库分表不是免费的性能提升；需评估一致性与业务查询模式",
+          "description": "读写分离与分库分表不是免费的性能提升；需评估一致性与业务查询模式",
+          "path": "/tutorials/java-microservices-distributed/11-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-12",
+          "title": "先优化 SQL、索引、连接池与数据模型，再判断是否需要分片",
+          "description": "先优化 SQL、索引、连接池与数据模型，再判断是否需要分片",
+          "path": "/tutorials/java-microservices-distributed/11-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "11-13",
+          "title": "本章只掌握 ID、任务与数据扩展的核心概念；具体中间件按真实项目选学",
+          "description": "本章只掌握 ID、任务与数据扩展的核心概念；具体中间件按真实项目选学",
+          "path": "/tutorials/java-microservices-distributed/11-13/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "跨服务可观测性",
+      "chapters": [
+        {
+          "slug": "12-1",
+          "title": "日志、指标、链路追踪分别回答什么问题",
+          "description": "日志、指标、链路追踪分别回答什么问题",
+          "path": "/tutorials/java-microservices-distributed/12-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-2",
+          "title": "Trace ID、Span、父子调用关系与跨服务关联",
+          "description": "Trace ID、Span、父子调用关系与跨服务关联",
+          "path": "/tutorials/java-microservices-distributed/12-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-3",
+          "title": "OpenTelemetry：采集与传递遥测数据的标准化框架",
+          "description": "OpenTelemetry：采集与传递遥测数据的标准化框架",
+          "path": "/tutorials/java-microservices-distributed/12-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-4",
+          "title": "Micrometer：Java 应用指标仪表化的基本角色",
+          "description": "Micrometer：Java 应用指标仪表化的基本角色",
+          "path": "/tutorials/java-microservices-distributed/12-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-5",
+          "title": "Prometheus 与 Grafana：指标采集、查询、面板与告警的基本职责",
+          "description": "Prometheus 与 Grafana：指标采集、查询、面板与告警的基本职责",
+          "path": "/tutorials/java-microservices-distributed/12-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-6",
+          "title": "分布式日志关联、日志级别、敏感信息脱敏与保留策略",
+          "description": "分布式日志关联、日志级别、敏感信息脱敏与保留策略",
+          "path": "/tutorials/java-microservices-distributed/12-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-7",
+          "title": "核心指标：请求量、错误率、P95/P99、线程池、连接池与依赖延迟",
+          "description": "核心指标：请求量、错误率、P95/P99、线程池、连接池与依赖延迟",
+          "path": "/tutorials/java-microservices-distributed/12-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-8",
+          "title": "服务发现与网关指标：实例健康、路由失败与入口错误",
+          "description": "服务发现与网关指标：实例健康、路由失败与入口错误",
+          "path": "/tutorials/java-microservices-distributed/12-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-9",
+          "title": "MQ 指标：消费延迟、积压、重试与死信（具体 MQ 指标在上一份教程学习）",
+          "description": "MQ 指标：消费延迟、积压、重试与死信（具体 MQ 指标在上一份教程学习）",
+          "path": "/tutorials/java-microservices-distributed/12-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-10",
+          "title": "采样、存储成本、基数爆炸与遥测数据的取舍",
+          "description": "采样、存储成本、基数爆炸与遥测数据的取舍",
+          "path": "/tutorials/java-microservices-distributed/12-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-11",
+          "title": "从 Trace 找慢请求，再结合日志与指标确认根因",
+          "description": "从 Trace 找慢请求，再结合日志与指标确认根因",
+          "path": "/tutorials/java-microservices-distributed/12-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-12",
+          "title": "监控告警应关联业务影响和处理手册，而不只是“CPU 高了”",
+          "description": "监控告警应关联业务影响和处理手册，而不只是“CPU 高了”",
+          "path": "/tutorials/java-microservices-distributed/12-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "12-13",
+          "title": "以 SLI/SLO 的基本概念表达服务质量目标，不要求一开始建设复杂平台",
+          "description": "以 SLI/SLO 的基本概念表达服务质量目标，不要求一开始建设复杂平台",
+          "path": "/tutorials/java-microservices-distributed/12-13/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "微服务测试、发布与故障复盘",
+      "chapters": [
+        {
+          "slug": "13-1",
+          "title": "单元测试、集成测试、契约测试与端到端测试的边界",
+          "description": "单元测试、集成测试、契约测试与端到端测试的边界",
+          "path": "/tutorials/java-microservices-distributed/13-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-2",
+          "title": "服务契约测试：验证提供者与消费者对接口的理解一致",
+          "description": "服务契约测试：验证提供者与消费者对接口的理解一致",
+          "path": "/tutorials/java-microservices-distributed/13-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-3",
+          "title": "使用 Stub/Mock 模拟下游失败，验证超时、重试和降级逻辑",
+          "description": "使用 Stub/Mock 模拟下游失败，验证超时、重试和降级逻辑",
+          "path": "/tutorials/java-microservices-distributed/13-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-4",
+          "title": "测试环境的服务依赖、配置隔离与可重复部署",
+          "description": "测试环境的服务依赖、配置隔离与可重复部署",
+          "path": "/tutorials/java-microservices-distributed/13-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-5",
+          "title": "多服务联调：版本兼容、接口字段变化与部署顺序",
+          "description": "多服务联调：版本兼容、接口字段变化与部署顺序",
+          "path": "/tutorials/java-microservices-distributed/13-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-6",
+          "title": "灰度发布、金丝雀发布与回滚的基本概念",
+          "description": "灰度发布、金丝雀发布与回滚的基本概念",
+          "path": "/tutorials/java-microservices-distributed/13-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-7",
+          "title": "数据库/接口变更的向后兼容与渐进迁移",
+          "description": "数据库/接口变更的向后兼容与渐进迁移",
+          "path": "/tutorials/java-microservices-distributed/13-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-8",
+          "title": "故障注入：服务不可用、网络超时、延迟升高与依赖过载",
+          "description": "故障注入：服务不可用、网络超时、延迟升高与依赖过载",
+          "path": "/tutorials/java-microservices-distributed/13-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-9",
+          "title": "演练目标：验证告警、影响范围、恢复路径和业务正确性",
+          "description": "演练目标：验证告警、影响范围、恢复路径和业务正确性",
+          "path": "/tutorials/java-microservices-distributed/13-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-10",
+          "title": "故障复盘：时间线、影响、证据、根因、修复和预防措施",
+          "description": "故障复盘：时间线、影响、证据、根因、修复和预防措施",
+          "path": "/tutorials/java-microservices-distributed/13-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-11",
+          "title": "复盘不以追责为目的，而以改进系统与流程为目标",
+          "description": "复盘不以追责为目的，而以改进系统与流程为目标",
+          "path": "/tutorials/java-microservices-distributed/13-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "13-12",
+          "title": "版本升级前核对官方变更说明、兼容矩阵、测试结果和回滚方案",
+          "description": "版本升级前核对官方变更说明、兼容矩阵、测试结果和回滚方案",
+          "path": "/tutorials/java-microservices-distributed/13-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "综合实践：把模块化单体逐步演进为微服务",
+      "chapters": [
+        {
+          "slug": "14-1",
+          "title": "先建立清晰的模块化单体：例如订单、库存、通知等业务模块",
+          "description": "先建立清晰的模块化单体：例如订单、库存、通知等业务模块",
+          "path": "/tutorials/java-microservices-distributed/14-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-2",
+          "title": "识别一个确有拆分价值的模块，说明拆分动机与预期收益",
+          "description": "识别一个确有拆分价值的模块，说明拆分动机与预期收益",
+          "path": "/tutorials/java-microservices-distributed/14-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-3",
+          "title": "定义服务边界、接口契约、数据所有权和错误语义",
+          "description": "定义服务边界、接口契约、数据所有权和错误语义",
+          "path": "/tutorials/java-microservices-distributed/14-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-4",
+          "title": "将目标模块独立部署，避免继续直接访问其他服务的数据库",
+          "description": "将目标模块独立部署，避免继续直接访问其他服务的数据库",
+          "path": "/tutorials/java-microservices-distributed/14-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-5",
+          "title": "使用 Nacos 完成服务注册发现与配置管理（按选定版本兼容矩阵搭建）",
+          "description": "使用 Nacos 完成服务注册发现与配置管理（按选定版本兼容矩阵搭建）",
+          "path": "/tutorials/java-microservices-distributed/14-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-6",
+          "title": "使用 Spring Cloud Gateway 作为外部统一入口",
+          "description": "使用 Spring Cloud Gateway 作为外部统一入口",
+          "path": "/tutorials/java-microservices-distributed/14-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-7",
+          "title": "使用服务间 HTTP 客户端完成调用，并配置合理的超时",
+          "description": "使用服务间 HTTP 客户端完成调用，并配置合理的超时",
+          "path": "/tutorials/java-microservices-distributed/14-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-8",
+          "title": "添加有限重试、熔断/限流和明确的降级行为",
+          "description": "添加有限重试、熔断/限流和明确的降级行为",
+          "path": "/tutorials/java-microservices-distributed/14-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-9",
+          "title": "设计跨服务业务流程：本地事务、Outbox、消息事件或补偿方案",
+          "description": "设计跨服务业务流程：本地事务、Outbox、消息事件或补偿方案",
+          "path": "/tutorials/java-microservices-distributed/14-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-10",
+          "title": "为请求链路增加 Trace ID、日志关联和关键指标",
+          "description": "为请求链路增加 Trace ID、日志关联和关键指标",
+          "path": "/tutorials/java-microservices-distributed/14-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-11",
+          "title": "模拟服务宕机、超时、重复请求、部分成功和配置错误",
+          "description": "模拟服务宕机、超时、重复请求、部分成功和配置错误",
+          "path": "/tutorials/java-microservices-distributed/14-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-12",
+          "title": "验证告警、故障隔离、恢复流程与业务数据正确性",
+          "description": "验证告警、故障隔离、恢复流程与业务数据正确性",
+          "path": "/tutorials/java-microservices-distributed/14-12/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-13",
+          "title": "对比拆分前后的开发、测试、部署、排障和维护成本",
+          "description": "对比拆分前后的开发、测试、部署、排障和维护成本",
+          "path": "/tutorials/java-microservices-distributed/14-13/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-14",
+          "title": "输出架构决策记录：为何拆、拆了什么、带来什么成本、如何验证",
+          "description": "输出架构决策记录：为何拆、拆了什么、带来什么成本、如何验证",
+          "path": "/tutorials/java-microservices-distributed/14-14/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "14-15",
+          "title": "最终结论可以是“暂时不拆”：能基于证据说明模块化单体更合适，也算完成架构判断",
+          "description": "最终结论可以是“暂时不拆”：能基于证据说明模块化单体更合适，也算完成架构判断",
+          "path": "/tutorials/java-microservices-distributed/14-15/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/java-microservices-distributed/",
+  "sortOrder": 5
+}

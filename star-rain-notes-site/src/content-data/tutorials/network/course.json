@@ -1,0 +1,342 @@
+{
+  "slug": "network",
+  "title": "网络",
+  "description": "按照知识依赖顺序系统学习计算机网络：分层模型、IP 与路由、TCP/UDP、DNS、HTTP/HTTPS、Web 安全、企业网络排障，以及 Java 与 Python 网络编程。",
+  "category": "计算机基础知识",
+  "categorySlug": "724893225146",
+  "publishedAt": "2026-10-22",
+  "chapterCount": 34,
+  "wordCount": 0,
+  "categoryId": "2",
+  "sortOrder": 8,
+  "groups": [
+    {
+      "title": "网络基础与通信全景",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "计算机网络与分层模型",
+          "description": "计算机网络与分层模型",
+          "path": "/tutorials/network/1-1/",
+          "wordCount": 322,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "数据封装与一次网络请求的完整过程",
+          "description": "数据封装与一次网络请求的完整过程",
+          "path": "/tutorials/network/1-2/",
+          "wordCount": 435,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "局域网、IP 地址与路由",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "以太网、MAC 地址与局域网通信",
+          "description": "以太网、MAC 地址与局域网通信",
+          "path": "/tutorials/network/2-1/",
+          "wordCount": 290,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "ARP、IPv4、IPv6 与子网划分",
+          "description": "ARP、IPv4、IPv6 与子网划分",
+          "path": "/tutorials/network/2-2/",
+          "wordCount": 351,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "路由、默认网关、NAT 与网络配置",
+          "description": "路由、默认网关、NAT 与网络配置",
+          "path": "/tutorials/network/2-3/",
+          "wordCount": 442,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "传输层：端口、TCP 与 UDP",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "端口、传输层与 TCP/UDP 基础",
+          "description": "端口、传输层与 TCP/UDP 基础",
+          "path": "/tutorials/network/3-1/",
+          "wordCount": 390,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "TCP 连接建立、关闭与状态",
+          "description": "TCP 连接建立、关闭与状态",
+          "path": "/tutorials/network/3-2/",
+          "wordCount": 472,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "TCP 可靠传输、流量控制与拥塞控制",
+          "description": "TCP 可靠传输、流量控制与拥塞控制",
+          "path": "/tutorials/network/3-3/",
+          "wordCount": 366,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "TCP 实际开发问题：粘包、超时与连接失效",
+          "description": "TCP 实际开发问题：粘包、超时与连接失效",
+          "path": "/tutorials/network/3-4/",
+          "wordCount": 448,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "DNS 与常见应用层协议",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "DNS 域名解析",
+          "description": "DNS 域名解析",
+          "path": "/tutorials/network/4-1/",
+          "wordCount": 379,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "常见网络基础协议与服务",
+          "description": "常见网络基础协议与服务",
+          "path": "/tutorials/network/4-2/",
+          "wordCount": 343,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "HTTP、HTTPS 与现代 Web 通信",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "HTTP 基础与报文结构",
+          "description": "HTTP 基础与报文结构",
+          "path": "/tutorials/network/5-1/",
+          "wordCount": 499,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "HTTP 方法、状态码与 REST API",
+          "description": "HTTP 方法、状态码与 REST API",
+          "path": "/tutorials/network/5-2/",
+          "wordCount": 441,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "HTTPS、TLS 与数字证书",
+          "description": "HTTPS、TLS 与数字证书",
+          "path": "/tutorials/network/5-3/",
+          "wordCount": 503,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "HTTP/1.1、HTTP/2、HTTP/3 与 QUIC",
+          "description": "HTTP/1.1、HTTP/2、HTTP/3 与 QUIC",
+          "path": "/tutorials/network/5-4/",
+          "wordCount": 370,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "实时通信：WebSocket、SSE、轮询与 gRPC",
+          "description": "实时通信：WebSocket、SSE、轮询与 gRPC",
+          "path": "/tutorials/network/5-5/",
+          "wordCount": 427,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "浏览器网络、认证边界与 Web 安全",
+      "chapters": [
+        {
+          "slug": "6-1",
+          "title": "浏览器请求链路、缓存与性能",
+          "description": "浏览器请求链路、缓存与性能",
+          "path": "/tutorials/network/6-1/",
+          "wordCount": 484,
+          "hasBody": true
+        },
+        {
+          "slug": "6-2",
+          "title": "同源策略、CORS 与跨域",
+          "description": "同源策略、CORS 与跨域",
+          "path": "/tutorials/network/6-2/",
+          "wordCount": 469,
+          "hasBody": true
+        },
+        {
+          "slug": "6-3",
+          "title": "Cookie、Session、Token、JWT 与 CSRF",
+          "description": "Cookie、Session、Token、JWT 与 CSRF",
+          "path": "/tutorials/network/6-3/",
+          "wordCount": 459,
+          "hasBody": true
+        },
+        {
+          "slug": "6-4",
+          "title": "常见网络安全风险与防护",
+          "description": "常见网络安全风险与防护",
+          "path": "/tutorials/network/6-4/",
+          "wordCount": 455,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "企业网络架构、性能与故障排查",
+      "chapters": [
+        {
+          "slug": "7-1",
+          "title": "企业应用的网络请求路径",
+          "description": "企业应用的网络请求路径",
+          "path": "/tutorials/network/7-1/",
+          "wordCount": 317,
+          "hasBody": true
+        },
+        {
+          "slug": "7-2",
+          "title": "超时、重试、连接池与可靠调用",
+          "description": "超时、重试、连接池与可靠调用",
+          "path": "/tutorials/network/7-2/",
+          "wordCount": 339,
+          "hasBody": true
+        },
+        {
+          "slug": "7-3",
+          "title": "网络性能与可观测性",
+          "description": "网络性能与可观测性",
+          "path": "/tutorials/network/7-3/",
+          "wordCount": 326,
+          "hasBody": true
+        },
+        {
+          "slug": "7-4",
+          "title": "网络工具与分层故障排查",
+          "description": "网络工具与分层故障排查",
+          "path": "/tutorials/network/7-4/",
+          "wordCount": 680,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Socket、I/O 模型与网络服务基础",
+      "chapters": [
+        {
+          "slug": "8-1",
+          "title": "Socket 通信与应用层消息协议",
+          "description": "Socket 通信与应用层消息协议",
+          "path": "/tutorials/network/8-1/",
+          "wordCount": 410,
+          "hasBody": true
+        },
+        {
+          "slug": "8-2",
+          "title": "阻塞、非阻塞、I/O 多路复用与并发",
+          "description": "阻塞、非阻塞、I/O 多路复用与并发",
+          "path": "/tutorials/network/8-2/",
+          "wordCount": 500,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Java 网络编程",
+      "chapters": [
+        {
+          "slug": "9-1",
+          "title": "Java TCP、UDP 与 Socket API",
+          "description": "Java TCP、UDP 与 Socket API",
+          "path": "/tutorials/network/9-1/",
+          "wordCount": 454,
+          "hasBody": true
+        },
+        {
+          "slug": "9-2",
+          "title": "Java HTTP 客户端与 REST API 调用",
+          "description": "Java HTTP 客户端与 REST API 调用",
+          "path": "/tutorials/network/9-2/",
+          "wordCount": 493,
+          "hasBody": true
+        },
+        {
+          "slug": "9-3",
+          "title": "Java NIO 与高并发网络编程入门",
+          "description": "Java NIO 与高并发网络编程入门",
+          "path": "/tutorials/network/9-3/",
+          "wordCount": 384,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Python 网络编程",
+      "chapters": [
+        {
+          "slug": "10-1",
+          "title": "Python Socket、TCP 与 UDP",
+          "description": "Python Socket、TCP 与 UDP",
+          "path": "/tutorials/network/10-1/",
+          "wordCount": 487,
+          "hasBody": true
+        },
+        {
+          "slug": "10-2",
+          "title": "Python HTTP 客户端与 TLS",
+          "description": "Python HTTP 客户端与 TLS",
+          "path": "/tutorials/network/10-2/",
+          "wordCount": 342,
+          "hasBody": true
+        },
+        {
+          "slug": "10-3",
+          "title": "Python asyncio 与异步网络 I/O",
+          "description": "Python asyncio 与异步网络 I/O",
+          "path": "/tutorials/network/10-3/",
+          "wordCount": 512,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "综合实践与能力验收",
+      "chapters": [
+        {
+          "slug": "11-1",
+          "title": "网络原理综合实践",
+          "description": "网络原理综合实践",
+          "path": "/tutorials/network/11-1/",
+          "wordCount": 529,
+          "hasBody": true
+        },
+        {
+          "slug": "11-2",
+          "title": "秋招面试与真实开发能力验收",
+          "description": "秋招面试与真实开发能力验收",
+          "path": "/tutorials/network/11-2/",
+          "wordCount": 628,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/network/"
+}

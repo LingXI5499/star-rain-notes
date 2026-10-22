@@ -1,0 +1,1278 @@
+{
+  "id": "47",
+  "title": "判断 / 评价 / 证据 / 论证",
+  "layer": "抽象阅读与逻辑层",
+  "wordCount": 141,
+  "path": "/english/vocabulary/47/",
+  "words": [
+    {
+      "word": "major",
+      "partOfSpeech": "adj / n / v",
+      "phoneticUs": "'medʒɚ",
+      "phoneticUk": "'meɪdʒə",
+      "translation": "较大的；专业；主要的；主修",
+      "sceneMeaning": "主要的；重大的",
+      "examples": "[]"
+    },
+    {
+      "word": "quality",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɑləti",
+      "phoneticUk": "'kwɒlɪtɪ",
+      "translation": "质量；品质，特性；品质",
+      "sceneMeaning": "质量；品质；特征",
+      "examples": "[]"
+    },
+    {
+      "word": "merit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛrɪt",
+      "phoneticUk": "'merɪt",
+      "translation": "长处，优点；功过；优点，成绩；值得",
+      "sceneMeaning": "优点；价值",
+      "examples": "[]"
+    },
+    {
+      "word": "value",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'vælju",
+      "phoneticUk": "'væljuː",
+      "translation": "价值；价格；评价；重视",
+      "sceneMeaning": "价值；重要性",
+      "examples": "[]"
+    },
+    {
+      "word": "evidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛvɪdəns",
+      "phoneticUk": "'evɪd(ə)ns",
+      "translation": "根据；证据，证人；根据，证据，迹象",
+      "sceneMeaning": "证据；迹象",
+      "examples": "[]"
+    },
+    {
+      "word": "benefit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bɛnɪfɪt",
+      "phoneticUk": "'benɪfɪt",
+      "translation": "利益；恩惠；津贴；有益于，有助于",
+      "sceneMeaning": "益处；好处",
+      "examples": "[]"
+    },
+    {
+      "word": "performance",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'fɔrməns",
+      "phoneticUk": "pə'fɔːm(ə)ns",
+      "translation": "履行；演出；行为；演出；履行；表现",
+      "sceneMeaning": "表现；性能",
+      "examples": "[]"
+    },
+    {
+      "word": "significant",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "sɪɡ'nɪfɪkənt",
+      "phoneticUk": "sɪg'nɪfɪk(ə)nt",
+      "translation": "有意义的；重要的；重要的",
+      "sceneMeaning": "重要的；显著的",
+      "examples": "[]"
+    },
+    {
+      "word": "survey",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈsɝˌve; (for v.) sɝˈve",
+      "phoneticUk": "ˈsəːveɪ; (for v.) səˈveɪ",
+      "translation": "俯瞰；检查；测量；调查；审视，仔细考虑；调查；勘测，测量，测绘",
+      "sceneMeaning": "调查；概述",
+      "examples": "[]"
+    },
+    {
+      "word": "degree",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'ɡri",
+      "phoneticUk": "dɪˈgri:",
+      "translation": "程度；度；学位；程度",
+      "sceneMeaning": "程度；学位",
+      "examples": "[]"
+    },
+    {
+      "word": "criticism",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪtə'sɪzəm",
+      "phoneticUk": "'krɪtɪsɪz(ə)m",
+      "translation": "批评；批判；评论；批评",
+      "sceneMeaning": "批评；批判；评论；批评；本场景常见用法：反向批评；逆向评论",
+      "examples": "[]"
+    },
+    {
+      "word": "source",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɔrs",
+      "phoneticUk": "sɔːs",
+      "translation": "来源",
+      "sceneMeaning": "来源；出处",
+      "examples": "[]"
+    },
+    {
+      "word": "advantage",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'væntɪdʒ",
+      "phoneticUk": "əd'vɑːntɪdʒ",
+      "translation": "优点，优势；好处",
+      "sceneMeaning": "优势；有利条件",
+      "examples": "[]"
+    },
+    {
+      "word": "case",
+      "partOfSpeech": "n",
+      "phoneticUs": "kes",
+      "phoneticUk": "keɪs",
+      "translation": "情况；事实；病例",
+      "sceneMeaning": "案例；情况；案件",
+      "examples": "[]"
+    },
+    {
+      "word": "data",
+      "partOfSpeech": "n",
+      "phoneticUs": "'detə",
+      "phoneticUk": "'deɪtə",
+      "translation": "数据;；资料",
+      "sceneMeaning": "数据；资料",
+      "examples": "[]"
+    },
+    {
+      "word": "find",
+      "partOfSpeech": "v",
+      "phoneticUs": "faɪnd",
+      "phoneticUk": "faɪnd",
+      "translation": "找到；发觉；找出",
+      "sceneMeaning": "找到；发觉；找出；本场景常见用法：在…中表现出",
+      "examples": "[]"
+    },
+    {
+      "word": "finding",
+      "partOfSpeech": "n",
+      "phoneticUs": "'faɪndɪŋ",
+      "phoneticUk": "'faɪndɪŋ",
+      "translation": "发现；调查的结果",
+      "sceneMeaning": "发现；研究结果",
+      "examples": "[]"
+    },
+    {
+      "word": "interview",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɪntɚvju",
+      "phoneticUk": "'ɪntəvjuː",
+      "translation": "接见；会见；面谈；面谈（试）；会见；；采访 ；面试",
+      "sceneMeaning": "访谈；面试",
+      "examples": "[]"
+    },
+    {
+      "word": "just",
+      "partOfSpeech": "adv",
+      "phoneticUs": "dʒʌst",
+      "phoneticUk": "dʒʌst",
+      "translation": "刚才；只是；正好",
+      "sceneMeaning": "刚才；只是；正好",
+      "examples": "[]"
+    },
+    {
+      "word": "measure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛʒɚ",
+      "phoneticUk": "'meʒə",
+      "translation": "量，测量；分量；测量",
+      "sceneMeaning": "衡量标准；措施",
+      "examples": "[]"
+    },
+    {
+      "word": "question",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɛstʃən",
+      "phoneticUk": "'kwestʃ(ə)n",
+      "translation": "发问；问题；疑问",
+      "sceneMeaning": "质疑；询问",
+      "examples": "[]"
+    },
+    {
+      "word": "worth",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "wɝθ",
+      "phoneticUk": "wɜːθ",
+      "translation": "值…的；价值",
+      "sceneMeaning": "价值；值得",
+      "examples": "[]"
+    },
+    {
+      "word": "gender",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɛndɚ",
+      "phoneticUk": "'dʒendə(r)",
+      "translation": "性别",
+      "sceneMeaning": "性别",
+      "examples": "[]"
+    },
+    {
+      "word": "achievement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'tʃivmənt",
+      "phoneticUk": "ə'tʃiːvm(ə)nt",
+      "translation": "完成；成就，成绩",
+      "sceneMeaning": "成就；成绩",
+      "examples": "[]"
+    },
+    {
+      "word": "argue",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɑrgjʊ",
+      "phoneticUk": "'ɑːgjuː",
+      "translation": "争论，争辩，辩论",
+      "sceneMeaning": "论证；争辩",
+      "examples": "[]"
+    },
+    {
+      "word": "example",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪg'zæmpl",
+      "phoneticUk": "ɪg'zɑːmp(ə)l; eg-",
+      "translation": "例子，实例；模范",
+      "sceneMeaning": "例子；范例",
+      "examples": "[]"
+    },
+    {
+      "word": "challenge",
+      "partOfSpeech": ". v / n",
+      "phoneticUs": "'tʃælɪndʒ",
+      "phoneticUk": "'tʃælɪn(d)ʒ",
+      "translation": "挑战；要求，需要；挑战；质疑",
+      "sceneMeaning": "质疑；挑战",
+      "examples": "[]"
+    },
+    {
+      "word": "condition",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'dɪʃən",
+      "phoneticUk": "kən'dɪʃ(ə)n",
+      "translation": "状况，状态；环境",
+      "sceneMeaning": "条件；状况",
+      "examples": "[]"
+    },
+    {
+      "word": "indicate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪndɪket",
+      "phoneticUk": "'ɪndɪkeɪt",
+      "translation": "标示，表示；表明；表明",
+      "sceneMeaning": "表明；指示",
+      "examples": "[]"
+    },
+    {
+      "word": "minor",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'maɪnɚ",
+      "phoneticUk": "'maɪnə",
+      "translation": "较小的；较次要的；小的",
+      "sceneMeaning": "次要的；较小的",
+      "examples": "[]"
+    },
+    {
+      "word": "argument",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrɡjumənt",
+      "phoneticUk": "'ɑːgjʊm(ə)nt",
+      "translation": "争论，辩论；理由",
+      "sceneMeaning": "论点；争论",
+      "examples": "[]"
+    },
+    {
+      "word": "claim",
+      "partOfSpeech": "v",
+      "phoneticUs": "klem",
+      "phoneticUk": "kleɪm",
+      "translation": "声称，主张；索取",
+      "sceneMeaning": "主张；声明",
+      "examples": "[]"
+    },
+    {
+      "word": "significance",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɪɡ'nɪfɪkəns",
+      "phoneticUk": "sɪg'nɪfɪk(ə)ns",
+      "translation": "意义，意味；重要性",
+      "sceneMeaning": "重要性；意义",
+      "examples": "[]"
+    },
+    {
+      "word": "factor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktɚ",
+      "phoneticUk": "'fæktə",
+      "translation": "因素；因子，系数",
+      "sceneMeaning": "因素；要素",
+      "examples": "[]"
+    },
+    {
+      "word": "figure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɪɡjɚ",
+      "phoneticUk": "'fɪgə",
+      "translation": "数字；外形；人物；人物；数字",
+      "sceneMeaning": "数字；图表；人物",
+      "examples": "[]"
+    },
+    {
+      "word": "interpretation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɝprɪ'teʃən",
+      "phoneticUk": "ɪntɜːprɪ'teɪʃ(ə)n",
+      "translation": "解释；口译；阐释，说明",
+      "sceneMeaning": "解释；解读",
+      "examples": "[]"
+    },
+    {
+      "word": "justify",
+      "partOfSpeech": "v / vt",
+      "phoneticUs": "'dʒʌstə'fai",
+      "phoneticUk": "ˈdʒʌstɪfaɪ",
+      "translation": "证明…是正当的；证明……正当",
+      "sceneMeaning": "证明……合理；为……辩护",
+      "examples": "[]"
+    },
+    {
+      "word": "reliable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'laɪəbl",
+      "phoneticUk": "rɪ'laɪəb(ə)l",
+      "translation": "可靠的，可信赖的",
+      "sceneMeaning": "可靠的",
+      "examples": "[]"
+    },
+    {
+      "word": "rely",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'laɪ",
+      "phoneticUk": "rɪ'laɪ",
+      "translation": "依赖，依靠；信赖",
+      "sceneMeaning": "依赖，依靠；信赖",
+      "examples": "[]"
+    },
+    {
+      "word": "statistics",
+      "partOfSpeech": "n",
+      "phoneticUs": "stə'tɪstɪks",
+      "phoneticUk": "stə'tɪstɪks",
+      "translation": "统计学；数据",
+      "sceneMeaning": "统计数据；统计学",
+      "examples": "[]"
+    },
+    {
+      "word": "sufficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "səˈfɪʃənt",
+      "phoneticUk": "sə'fɪʃ(ə)nt",
+      "translation": "足够的，充分的；足够的",
+      "sceneMeaning": "足够的；充分的",
+      "examples": "[]"
+    },
+    {
+      "word": "reference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛfrəns",
+      "phoneticUk": "'ref(ə)r(ə)ns",
+      "translation": "参考；出处；提及",
+      "sceneMeaning": "参考；引用",
+      "examples": "[]"
+    },
+    {
+      "word": "reveal",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'vil",
+      "phoneticUk": "rɪ'viːl",
+      "translation": "展现；揭示，揭露；揭露，揭示",
+      "sceneMeaning": "揭示；透露",
+      "examples": "[]"
+    },
+    {
+      "word": "rigid",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɪdʒɪd",
+      "phoneticUk": "'rɪdʒɪd",
+      "translation": "刚硬的；僵硬的",
+      "sceneMeaning": "刚硬的；僵硬的；本场景常见用法：刚性联接",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'væljʊ'et",
+      "phoneticUk": "ɪ'væljʊeɪt",
+      "translation": "评价，估…的价；评价",
+      "sceneMeaning": "评价；评估",
+      "examples": "[]"
+    },
+    {
+      "word": "scope",
+      "partOfSpeech": "n",
+      "phoneticUs": "skop",
+      "phoneticUk": "skəʊp",
+      "translation": "范围",
+      "sceneMeaning": "范围；适用范围",
+      "examples": "[]"
+    },
+    {
+      "word": "accurate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ækjərət",
+      "phoneticUk": "'ækjʊrət",
+      "translation": "准确的，正确无误的；精确的，准确的",
+      "sceneMeaning": "准确的",
+      "examples": "[]"
+    },
+    {
+      "word": "convincing",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'vɪnsɪŋ",
+      "phoneticUk": "kən'vɪnsɪŋ",
+      "translation": "令人信服的",
+      "sceneMeaning": "令人信服的",
+      "examples": "[]"
+    },
+    {
+      "word": "disadvantage",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɪsəd'væntɪdʒ",
+      "phoneticUk": "dɪsəd'vɑːntɪdʒ",
+      "translation": "不利，不利地位；不利情况，缺点",
+      "sceneMeaning": "劣势；不利条件",
+      "examples": "[]"
+    },
+    {
+      "word": "explanation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛksplə'neʃən",
+      "phoneticUk": "eksplə'neɪʃ(ə)n",
+      "translation": "解释，说明；辩解",
+      "sceneMeaning": "解释；说明",
+      "examples": "[]"
+    },
+    {
+      "word": "prove",
+      "partOfSpeech": "v",
+      "phoneticUs": "pruv",
+      "phoneticUk": "pruːv",
+      "translation": "证明；结果是",
+      "sceneMeaning": "证明",
+      "examples": "[]"
+    },
+    {
+      "word": "seemingly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'simɪŋli",
+      "phoneticUk": "'siːmɪŋlɪ",
+      "translation": "表面上看",
+      "sceneMeaning": "表面上看",
+      "examples": "[]"
+    },
+    {
+      "word": "vice",
+      "partOfSpeech": "n",
+      "phoneticUs": "vaɪs",
+      "phoneticUk": "vaɪs",
+      "translation": "罪恶；恶习；缺点",
+      "sceneMeaning": "罪恶；恶习；缺点；本场景常见用法：固有缺陷；内在缺陷",
+      "examples": "[]"
+    },
+    {
+      "word": "background",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bækɡraʊnd",
+      "phoneticUk": "'bækgraʊnd",
+      "translation": "背景，后景，经历；背景",
+      "sceneMeaning": "背景；经历",
+      "examples": "[]"
+    },
+    {
+      "word": "beneficial",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",bɛnɪ'fɪʃl",
+      "phoneticUk": "benɪ'fɪʃ(ə)l",
+      "translation": "有利的，有益的",
+      "sceneMeaning": "有利的，有益的",
+      "examples": "[]"
+    },
+    {
+      "word": "compare",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pɛr",
+      "phoneticUk": "kəm'peə",
+      "translation": "比较，对照；比作；比较，对照",
+      "sceneMeaning": "比较；相比",
+      "examples": "[]"
+    },
+    {
+      "word": "confirm",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fɝm",
+      "phoneticUk": "kən'fɜːm",
+      "translation": "证实，肯定；批准；证实",
+      "sceneMeaning": "确认；证实",
+      "examples": "[]"
+    },
+    {
+      "word": "critic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪtɪk",
+      "phoneticUk": "'krɪtɪk",
+      "translation": "批评家，爱挑剔的人；批评家，评论家",
+      "sceneMeaning": "批评家，爱挑剔的人；批评家，评论家",
+      "examples": "[]"
+    },
+    {
+      "word": "extent",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "广度；范围；程度",
+      "sceneMeaning": "程度；范围",
+      "examples": "[]"
+    },
+    {
+      "word": "infer",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'fɝ",
+      "phoneticUk": "ɪn'fɜː",
+      "translation": "推论，推断；猜想",
+      "sceneMeaning": "推断；推论",
+      "examples": "[]"
+    },
+    {
+      "word": "judge",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒʌdʒ",
+      "phoneticUk": "dʒʌdʒ",
+      "translation": "法官；裁判员",
+      "sceneMeaning": "判断；评价；审判",
+      "examples": "[]"
+    },
+    {
+      "word": "objective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əb'dʒɛktɪv",
+      "phoneticUk": "əb'dʒektɪv",
+      "translation": "客观的；无偏见的",
+      "sceneMeaning": "客观的；基于事实的",
+      "examples": "[]"
+    },
+    {
+      "word": "proof",
+      "partOfSpeech": "n",
+      "phoneticUs": "pruf",
+      "phoneticUk": "pruːf",
+      "translation": "证据；证明；校样",
+      "sceneMeaning": "证据；证明",
+      "examples": "[]"
+    },
+    {
+      "word": "reasonable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'riznəbl",
+      "phoneticUk": "'riːz(ə)nəb(ə)l",
+      "translation": "合情合理的；公道的",
+      "sceneMeaning": "合理的；适度的",
+      "examples": "[]"
+    },
+    {
+      "word": "worthy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "wɜði",
+      "phoneticUk": "ˈwəːði",
+      "translation": "有价值的；值得的",
+      "sceneMeaning": "有价值的；值得的",
+      "examples": "[]"
+    },
+    {
+      "word": "analysis",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'næləsɪs",
+      "phoneticUk": "ə'nælɪsɪs",
+      "translation": "分析，分解，解析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "clarify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'klærəfaɪ",
+      "phoneticUk": "'klærɪfaɪ",
+      "translation": "澄清，阐明",
+      "sceneMeaning": "澄清，阐明",
+      "examples": "[]"
+    },
+    {
+      "word": "criticize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'krɪtə'saɪz",
+      "phoneticUk": "'krɪtɪsaɪz",
+      "translation": "批评；评论；非难；批评；评论",
+      "sceneMeaning": "批评；评论",
+      "examples": "[]"
+    },
+    {
+      "word": "error",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛrɚ",
+      "phoneticUk": "'erə",
+      "translation": "错误，谬误；差错",
+      "sceneMeaning": "错误；误差",
+      "examples": "[]"
+    },
+    {
+      "word": "estimate",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛstə,met",
+      "phoneticUk": "'estɪmeɪt",
+      "translation": "估计，评价；估计",
+      "sceneMeaning": "估计；估算",
+      "examples": "[]"
+    },
+    {
+      "word": "examine",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪg'zæmɪn",
+      "phoneticUk": "ɪg'zæmɪn; eg-",
+      "translation": "检查，仔细观察",
+      "sceneMeaning": "检查；考察",
+      "examples": "[]"
+    },
+    {
+      "word": "implication",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪmplɪ'keʃən",
+      "phoneticUk": "ɪmplɪ'keɪʃ(ə)n",
+      "translation": "含义，暗示，暗指；含义，暗示",
+      "sceneMeaning": "含义；影响",
+      "examples": "[]"
+    },
+    {
+      "word": "logic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɑdʒɪk",
+      "phoneticUk": "'lɒdʒɪk",
+      "translation": "逻辑，推理；逻辑性；逻辑",
+      "sceneMeaning": "逻辑；道理",
+      "examples": "[]"
+    },
+    {
+      "word": "mention",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "'mɛnʃən",
+      "phoneticUk": "'menʃ(ə)n",
+      "translation": "提及，说起",
+      "sceneMeaning": "提及，说起",
+      "examples": "[]"
+    },
+    {
+      "word": "mistake",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "mɪ'stek",
+      "phoneticUk": "mɪ'steɪk",
+      "translation": "错误；误解，弄错",
+      "sceneMeaning": "错误；误会",
+      "examples": "[]"
+    },
+    {
+      "word": "refer",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'fɝ",
+      "phoneticUk": "rɪ'fɜː",
+      "translation": "使求助于；谈到",
+      "sceneMeaning": "提及；参考",
+      "examples": "[]"
+    },
+    {
+      "word": "relevant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɛləvənt",
+      "phoneticUk": "ˈreləvənt",
+      "translation": "有关的，贴切的；有关的，切题的",
+      "sceneMeaning": "相关的；切题的",
+      "examples": "[]"
+    },
+    {
+      "word": "valid",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vælɪd",
+      "phoneticUk": "'vælɪd",
+      "translation": "有效的；正当的；有效的",
+      "sceneMeaning": "有效的；有根据的",
+      "examples": "[]"
+    },
+    {
+      "word": "analyze",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ænə,laɪz",
+      "phoneticUk": "'ænə,laɪz",
+      "translation": "分析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "chart",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɑrt",
+      "phoneticUk": "tʃɑːt",
+      "translation": "图，图表；海图",
+      "sceneMeaning": "图表；航图",
+      "examples": "[]"
+    },
+    {
+      "word": "comparison",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'pærɪsn",
+      "phoneticUk": "kəm'pærɪs(ə)n",
+      "translation": "比较，对照；比似",
+      "sceneMeaning": "比较；对照",
+      "examples": "[]"
+    },
+    {
+      "word": "conclusion",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'kluʒn",
+      "phoneticUk": "kən'kluːʒ(ə)n",
+      "translation": "结论，推论；结尾；结论",
+      "sceneMeaning": "结论；结束",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ,væljʊ'eʃən",
+      "phoneticUk": "ɪˌvæljuˈeɪʃn",
+      "translation": "评价，评估",
+      "sceneMeaning": "评价；评估",
+      "examples": "[]"
+    },
+    {
+      "word": "explosion",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'sploʒən",
+      "phoneticUk": "ɪk'spləʊʒ(ə)n; ek-",
+      "translation": "爆炸，爆发，炸裂；爆炸",
+      "sceneMeaning": "爆炸，爆发，炸裂；爆炸；本场景常见用法：防爆",
+      "examples": "[]"
+    },
+    {
+      "word": "incorrect",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪnkə'rɛkt",
+      "phoneticUk": "ɪnkə'rekt",
+      "translation": "不正确的，错误的",
+      "sceneMeaning": "不正确的，错误的；本场景常见用法：政治上不正确的；不合时宜的",
+      "examples": "[]"
+    },
+    {
+      "word": "indication",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪndɪ'keʃən",
+      "phoneticUk": "ɪndɪ'keɪʃ(ə)n",
+      "translation": "指示；表示；表明",
+      "sceneMeaning": "指示；表示；表明；本场景常见用法：目测（指示）；可见指示",
+      "examples": "[]"
+    },
+    {
+      "word": "inquire",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'kwaɪr",
+      "phoneticUk": "ɪn'kwaɪə",
+      "translation": "打听，询问；调查；询问",
+      "sceneMeaning": "打听，询问；调查；询问",
+      "examples": "[]"
+    },
+    {
+      "word": "insufficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪnsə'fɪʃnt",
+      "phoneticUk": "ɪnsə'fɪʃ(ə)nt",
+      "translation": "不足的；不适当的",
+      "sceneMeaning": "不足的；不充分的",
+      "examples": "[]"
+    },
+    {
+      "word": "link",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lɪŋk",
+      "phoneticUk": "lɪŋk",
+      "translation": "有环连接；环",
+      "sceneMeaning": "联系；链接",
+      "examples": "[]"
+    },
+    {
+      "word": "logical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɑdʒɪkl",
+      "phoneticUk": "'lɒdʒɪk(ə)l",
+      "translation": "逻辑的；符合逻辑的",
+      "sceneMeaning": "合乎逻辑的",
+      "examples": "[]"
+    },
+    {
+      "word": "precise",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prɪ'saɪs",
+      "phoneticUk": "prɪ'saɪs",
+      "translation": "精确的，准确的",
+      "sceneMeaning": "精确的；严谨的",
+      "examples": "[]"
+    },
+    {
+      "word": "undervalue",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ʌndɚ'vælju",
+      "phoneticUk": "ʌndə'væljuː",
+      "translation": "低估",
+      "sceneMeaning": "低估",
+      "examples": "[]"
+    },
+    {
+      "word": "unknown",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ʌn'non",
+      "phoneticUk": "ʌn'nəʊn",
+      "translation": "不知道的；未知的",
+      "sceneMeaning": "不知道的；未知的",
+      "examples": "[]"
+    },
+    {
+      "word": "worthwhile",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'wɝθ'waɪl",
+      "phoneticUk": "wɜːθ'waɪl",
+      "translation": "值得花时间的；有价值的",
+      "sceneMeaning": "值得花时间的；有价值的",
+      "examples": "[]"
+    },
+    {
+      "word": "accuracy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ækjərəsi",
+      "phoneticUk": "'ækjʊrəsɪ",
+      "translation": "准确(性)；准确度",
+      "sceneMeaning": "准确性；精确度",
+      "examples": "[]"
+    },
+    {
+      "word": "apology",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'pɑlədʒi",
+      "phoneticUk": "ə'pɒlədʒɪ",
+      "translation": "道歉，认错，谢罪",
+      "sceneMeaning": "道歉，认错，谢罪",
+      "examples": "[]"
+    },
+    {
+      "word": "assess",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sɛs",
+      "phoneticUk": "ə'ses",
+      "translation": "对(财产等)估价；评价",
+      "sceneMeaning": "评估；估价",
+      "examples": "[]"
+    },
+    {
+      "word": "assumption",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'sʌmpʃən",
+      "phoneticUk": "ə'sʌmpʃn",
+      "translation": "假定，假设",
+      "sceneMeaning": "假设；前提",
+      "examples": "[]"
+    },
+    {
+      "word": "aural",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "耳的，听觉的",
+      "sceneMeaning": "耳的，听觉的",
+      "examples": "[]"
+    },
+    {
+      "word": "behalf",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪ'hæf",
+      "phoneticUk": "bɪ'hɑːf",
+      "translation": "利益，维护，支持",
+      "sceneMeaning": "利益，维护，支持；本场景常见用法：为…之利益；代表…",
+      "examples": "[]"
+    },
+    {
+      "word": "bogus",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'bogəs",
+      "phoneticUk": "'bəʊɡəs",
+      "translation": "假冒的",
+      "sceneMeaning": "假冒的",
+      "examples": "[]"
+    },
+    {
+      "word": "cite",
+      "partOfSpeech": "v",
+      "phoneticUs": "saɪt",
+      "phoneticUk": "sait",
+      "translation": "引用",
+      "sceneMeaning": "引用；列举",
+      "examples": "[]"
+    },
+    {
+      "word": "conclude",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'klud",
+      "phoneticUk": "kən'kluːd",
+      "translation": "推断出；结束",
+      "sceneMeaning": "得出结论；结束",
+      "examples": "[]"
+    },
+    {
+      "word": "context",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑntɛkst",
+      "phoneticUk": "'kɔntekst",
+      "translation": "背景，环境",
+      "sceneMeaning": "语境；背景",
+      "examples": "[]"
+    },
+    {
+      "word": "contradiction",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑntrə'dɪkʃən",
+      "phoneticUk": "kɒntrə'dɪkʃ(ə)n",
+      "translation": "矛盾，不一致；否认",
+      "sceneMeaning": "矛盾；反驳",
+      "examples": "[]"
+    },
+    {
+      "word": "contrast",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑntræst",
+      "phoneticUk": "'kɒntrɑːst",
+      "translation": "对比，对照，悬殊；对照物；对比",
+      "sceneMeaning": "对比；差异",
+      "examples": "[]"
+    },
+    {
+      "word": "convince",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'vɪns",
+      "phoneticUk": "kən'vɪns",
+      "translation": "使确信，使信服；使相信",
+      "sceneMeaning": "使确信，使信服；使相信",
+      "examples": "[]"
+    },
+    {
+      "word": "deduce",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'dʊs",
+      "phoneticUk": "dɪ'djuːs",
+      "translation": "演绎，推论，推断",
+      "sceneMeaning": "演绎，推论，推断；本场景常见用法：推断；从…得出结论",
+      "examples": "[]"
+    },
+    {
+      "word": "defect",
+      "partOfSpeech": "n",
+      "phoneticUs": "‘dɪfɛkt",
+      "phoneticUk": "'diːfekt; dɪ'fekt",
+      "translation": "缺点，缺陷，欠缺",
+      "sceneMeaning": "缺陷；毛病",
+      "examples": "[]"
+    },
+    {
+      "word": "demonstrate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dɛmən'stret",
+      "phoneticUk": "'demənstreɪt",
+      "translation": "说明；论证；表露；证明；展示",
+      "sceneMeaning": "证明；展示",
+      "examples": "[]"
+    },
+    {
+      "word": "diagram",
+      "partOfSpeech": "n",
+      "phoneticUs": "'daɪəɡræm",
+      "phoneticUk": "'daɪəgræm",
+      "translation": "图解，图表，简图",
+      "sceneMeaning": "图解，图表，简图；本场景常见用法：示功图；指示图",
+      "examples": "[]"
+    },
+    {
+      "word": "disclose",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪs'kloz",
+      "phoneticUk": "dɪs'kləʊz",
+      "translation": "揭开，揭发；透露",
+      "sceneMeaning": "揭开，揭发；透露",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'fɪʃənsi",
+      "phoneticUk": "ɪ'fɪʃ(ə)nsɪ",
+      "translation": "效率；功效，效能",
+      "sceneMeaning": "效率；效能",
+      "examples": "[]"
+    },
+    {
+      "word": "evident",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɛvɪdənt",
+      "phoneticUk": "'evɪd(ə)nt",
+      "translation": "明显的，明白的；明显的",
+      "sceneMeaning": "明显的，明白的；明显的；本场景常见用法：不言而喻的；不证自明的",
+      "examples": "[]"
+    },
+    {
+      "word": "experiment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'sperɪmənt",
+      "phoneticUk": "ɪk'sperɪm(ə)nt; ek-",
+      "translation": "实验；试验",
+      "sceneMeaning": "实验；试验",
+      "examples": "[]"
+    },
+    {
+      "word": "feasible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fizəbl",
+      "phoneticUk": "'fiːzɪb(ə)l",
+      "translation": "可行的；可能的；可行的；可能的；可用的",
+      "sceneMeaning": "可行的；可能的；可行的；可能的；可用的；本场景常见用法：可行解释；适宜解",
+      "examples": "[]"
+    },
+    {
+      "word": "flaw",
+      "partOfSpeech": "n",
+      "phoneticUs": "flɔ",
+      "phoneticUk": "flɔː",
+      "translation": "缺点；错误",
+      "sceneMeaning": "缺陷；瑕疵",
+      "examples": "[]"
+    },
+    {
+      "word": "humble",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hʌmbl",
+      "phoneticUk": "'hʌmbl",
+      "translation": "谦逊的；地位低下的",
+      "sceneMeaning": "谦逊的；地位低下的",
+      "examples": "[]"
+    },
+    {
+      "word": "illustrate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪləstret",
+      "phoneticUk": "'ɪləstreɪt",
+      "translation": "(用图等)说明；说明,阐明",
+      "sceneMeaning": "说明；举例说明",
+      "examples": "[]"
+    },
+    {
+      "word": "illustration",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪlə'streʃən",
+      "phoneticUk": "ɪlə'streɪʃ(ə)n",
+      "translation": "说明，图解；例证",
+      "sceneMeaning": "说明；插图",
+      "examples": "[]"
+    },
+    {
+      "word": "invalid",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈɪnvəlɪd；ɪnˈvælɪd",
+      "phoneticUk": "ɪn'vælɪd",
+      "translation": "无效的",
+      "sceneMeaning": "无效的；站不住脚的",
+      "examples": "[]"
+    },
+    {
+      "word": "judgement",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒʌdʒmənt",
+      "phoneticUk": "'dʒʌdʒm(ə)nt",
+      "translation": "意见；审判；判断；判断，决定",
+      "sceneMeaning": "意见；审判；判断；判断，决定；本场景常见用法：价值判断",
+      "examples": "[]"
+    },
+    {
+      "word": "kilogram",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɪləɡræm",
+      "phoneticUk": "ˈkɪləɡræm",
+      "translation": "千克，公斤",
+      "sceneMeaning": "千克，公斤",
+      "examples": "[]"
+    },
+    {
+      "word": "limitation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",lɪmɪ'teʃən",
+      "phoneticUk": "lɪmɪ'teɪʃ(ə)n",
+      "translation": "限制；限度，局限",
+      "sceneMeaning": "限制；局限",
+      "examples": "[]"
+    },
+    {
+      "word": "logically",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'lɑdʒɪkli",
+      "phoneticUk": "'lɑdʒɪkli",
+      "translation": "合乎情理地，符合逻辑地",
+      "sceneMeaning": "合乎情理地，符合逻辑地",
+      "examples": "[]"
+    },
+    {
+      "word": "misunderstand",
+      "partOfSpeech": "v",
+      "phoneticUs": ",mɪsʌndɚ'stænd",
+      "phoneticUk": ",mɪsʌndə'stænd",
+      "translation": "误解，误会，曲解；误解",
+      "sceneMeaning": "误解，误会，曲解；误解",
+      "examples": "[]"
+    },
+    {
+      "word": "observation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɑbzɚ'veʃən",
+      "phoneticUk": "ɒbzə'veɪʃ(ə)n",
+      "translation": "注意；观察；观察力",
+      "sceneMeaning": "观察；评论",
+      "examples": "[]"
+    },
+    {
+      "word": "overlook",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ovɚ'lʊk",
+      "phoneticUk": "əʊvə'lʊk",
+      "translation": "眺望；看漏；放任",
+      "sceneMeaning": "眺望；看漏；放任",
+      "examples": "[]"
+    },
+    {
+      "word": "overstate",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ovɚ'stet",
+      "phoneticUk": "əʊvə'steɪt",
+      "translation": "夸张，夸大",
+      "sceneMeaning": "夸张，夸大",
+      "examples": "[]"
+    },
+    {
+      "word": "persuade",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɚ'swed",
+      "phoneticUk": "pə'sweɪd",
+      "translation": "说服；被说服",
+      "sceneMeaning": "说服；被说服",
+      "examples": "[]"
+    },
+    {
+      "word": "pitch",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɪtʃ",
+      "phoneticUk": "pɪtʃ",
+      "translation": "沥青",
+      "sceneMeaning": "沥青",
+      "examples": "[]"
+    },
+    {
+      "word": "possession",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'zɛʃən",
+      "phoneticUk": "pə'zeʃ(ə)n",
+      "translation": "有，所有；占有物",
+      "sceneMeaning": "有，所有；占有物",
+      "examples": "[]"
+    },
+    {
+      "word": "precision",
+      "partOfSpeech": "n",
+      "phoneticUs": "prɪ'sɪʒn",
+      "phoneticUk": "prɪ'sɪʒ(ə)n",
+      "translation": "精确，精密，精密度",
+      "sceneMeaning": "精确性；精准",
+      "examples": "[]"
+    },
+    {
+      "word": "prize",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "praɪz",
+      "phoneticUk": "praɪz",
+      "translation": "奖赏，奖金；珍视",
+      "sceneMeaning": "奖赏，奖金；珍视",
+      "examples": "[]"
+    },
+    {
+      "word": "reliability",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ,laɪə'bɪləti",
+      "phoneticUk": "rɪ,laɪə'bɪlətɪ",
+      "translation": "可靠性",
+      "sceneMeaning": "可靠性",
+      "examples": "[]"
+    },
+    {
+      "word": "showmanship",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʃomənʃɪp",
+      "phoneticUk": "ˈʃəʊmənʃɪp",
+      "translation": "主持演出的技巧",
+      "sceneMeaning": "主持演出的技巧",
+      "examples": "[]"
+    },
+    {
+      "word": "uncover",
+      "partOfSpeech": "v",
+      "phoneticUs": "ʌn'kʌvɚ",
+      "phoneticUk": "ʌn'kʌvə",
+      "translation": "揭开…的盖子",
+      "sceneMeaning": "揭开…的盖子",
+      "examples": "[]"
+    },
+    {
+      "word": "verify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'vɛrɪfaɪ",
+      "phoneticUk": "'verɪfaɪ",
+      "translation": "证实，查证；证明",
+      "sceneMeaning": "核实；验证",
+      "examples": "[]"
+    },
+    {
+      "word": "weaken",
+      "partOfSpeech": "v",
+      "phoneticUs": "'wikən",
+      "phoneticUk": "'wiːk(ə)n",
+      "translation": "削弱；变弱；减少，减弱",
+      "sceneMeaning": "削弱；变弱；减少，减弱",
+      "examples": "[]"
+    },
+    {
+      "word": "weakness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wiknəs",
+      "phoneticUk": "ˈwiːknəs",
+      "translation": "虚弱，软弱；弱点",
+      "sceneMeaning": "弱点；不足",
+      "examples": "[]"
+    },
+    {
+      "word": "worthless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈwərthləs",
+      "phoneticUk": "ˈwəːθlɪs",
+      "translation": "无价值的，无用的",
+      "sceneMeaning": "无价值的，无用的",
+      "examples": "[]"
+    }
+  ]
+}

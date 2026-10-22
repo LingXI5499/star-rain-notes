@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 分类筛选应保留完整数据源，通过当前分类和其他条件派生可见列表。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const goods = [{ cat: '书', price: 20 }, { cat: '笔', price: 5 }];
+let currentCat = '书';
+console.log(goods.filter(x =&gt; x.cat === currentCat &amp;&amp; x.price &lt;= 30));
+</code></pre>
+<p><strong>学完能做：</strong> 组合分类和其他筛选条件且保持数据源稳定。</p>

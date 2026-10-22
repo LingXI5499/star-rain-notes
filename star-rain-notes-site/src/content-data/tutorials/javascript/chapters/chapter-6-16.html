@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 倒计时应按目标时间减去当前时间计算剩余秒数，避免只靠计数累减产生误差。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const deadline = Date.now() + 60_000;
+const secondsLeft = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+console.log(secondsLeft);
+</code></pre>
+<p><strong>学完能做：</strong> 根据时间戳计算倒计时并处理结束条件。</p>

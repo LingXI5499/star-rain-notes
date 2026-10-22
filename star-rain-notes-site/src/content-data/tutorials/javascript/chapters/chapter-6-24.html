@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>sessionStorage</code> 通常随当前页面会话结束清除；复杂数据需先 JSON 序列化。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const settings = { dark: true };
+sessionStorage.setItem('settings', JSON.stringify(settings));
+console.log(JSON.parse(sessionStorage.getItem('settings')));
+</code></pre>
+<p><strong>学完能做：</strong> 区分会话存储与持久存储并存取对象。</p>

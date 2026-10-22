@@ -1,0 +1,729 @@
+{
+  "id": "26",
+  "title": "运动 / 健身 / 身体状态",
+  "layer": "核心生活场景层",
+  "wordCount": 80,
+  "path": "/english/vocabulary/26/",
+  "words": [
+    {
+      "word": "professional",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "prə'fɛʃənl",
+      "phoneticUk": "prə'feʃ(ə)n(ə)l",
+      "translation": "职业的；专业人员；专业的",
+      "sceneMeaning": "专业的；职业的",
+      "examples": "[]"
+    },
+    {
+      "word": "regular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɛgjəlɚ",
+      "phoneticUk": "'regjʊlə",
+      "translation": "规则的；整齐的；有规律的，经常的",
+      "sceneMeaning": "规则的；整齐的；有规律的，经常的；本场景常见用法：常规性的锻炼；经常操练，按时训练",
+      "examples": "[]"
+    },
+    {
+      "word": "audience",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔdɪəns",
+      "phoneticUk": "'ɔːdɪəns",
+      "translation": "听众，观众，读者",
+      "sceneMeaning": "观众；听众",
+      "examples": "[]"
+    },
+    {
+      "word": "energy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛnɚdʒi",
+      "phoneticUk": "'enədʒɪ",
+      "translation": "活力；精力；能",
+      "sceneMeaning": "能量；精力",
+      "examples": "[]"
+    },
+    {
+      "word": "fast",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "fæst",
+      "phoneticUk": "fɑːst",
+      "translation": "快的；偏快的；快",
+      "sceneMeaning": "快的",
+      "examples": "[]"
+    },
+    {
+      "word": "healthy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɛlθi",
+      "phoneticUk": "'helθɪ",
+      "translation": "健康的；有益健康的",
+      "sceneMeaning": "健康的",
+      "examples": "[]"
+    },
+    {
+      "word": "lose",
+      "partOfSpeech": "v",
+      "phoneticUs": "luz",
+      "phoneticUk": "luːz",
+      "translation": "失去；迷失；输掉",
+      "sceneMeaning": "输；丢失",
+      "examples": "[]"
+    },
+    {
+      "word": "play",
+      "partOfSpeech": "v",
+      "phoneticUs": "ple",
+      "phoneticUk": "pleɪ",
+      "translation": "玩，游戏；演奏",
+      "sceneMeaning": "打球；玩",
+      "examples": "[]"
+    },
+    {
+      "word": "exercise",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛksɚsaɪz",
+      "phoneticUk": "'eksəsaɪz",
+      "translation": "锻炼，训练；练习",
+      "sceneMeaning": "锻炼；练习",
+      "examples": "[]"
+    },
+    {
+      "word": "practice",
+      "partOfSpeech": "n",
+      "phoneticUs": "'præktɪs",
+      "phoneticUk": "'præktɪs",
+      "translation": "实践；练习；业务",
+      "sceneMeaning": "练习；实践",
+      "examples": "[]"
+    },
+    {
+      "word": "quick",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kwɪk",
+      "phoneticUk": "kwɪk",
+      "translation": "快的；敏捷的",
+      "sceneMeaning": "快的；敏捷的",
+      "examples": "[]"
+    },
+    {
+      "word": "regularly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "'reɡjələli",
+      "translation": "定期地，有规律地",
+      "sceneMeaning": "定期地；有规律地",
+      "examples": "[]"
+    },
+    {
+      "word": "balance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bæləns",
+      "phoneticUk": "'bæl(ə)ns",
+      "translation": "使平衡；称；天平",
+      "sceneMeaning": "平衡",
+      "examples": "[]"
+    },
+    {
+      "word": "field",
+      "partOfSpeech": "n",
+      "phoneticUs": "fild",
+      "phoneticUk": "fiːld",
+      "translation": "田野；田；运动场",
+      "sceneMeaning": "场地；领域",
+      "examples": "[]"
+    },
+    {
+      "word": "catch",
+      "partOfSpeech": "v",
+      "phoneticUs": "kætʃ",
+      "phoneticUk": "kætʃ",
+      "translation": "捉住；赶上；领会",
+      "sceneMeaning": "接住；抓住",
+      "examples": "[]"
+    },
+    {
+      "word": "competition",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑmpə'tɪʃən",
+      "phoneticUk": "kɒmpɪ'tɪʃ(ə)n",
+      "translation": "竞争，比赛",
+      "sceneMeaning": "比赛；竞争",
+      "examples": "[]"
+    },
+    {
+      "word": "match",
+      "partOfSpeech": "n",
+      "phoneticUs": "mætʃ",
+      "phoneticUk": "mætʃ",
+      "translation": "比赛，竞赛；对手",
+      "sceneMeaning": "比赛；匹配",
+      "examples": "[]"
+    },
+    {
+      "word": "race",
+      "partOfSpeech": "n",
+      "phoneticUs": "res",
+      "phoneticUk": "reɪs",
+      "translation": "比赛，竞赛，竞争",
+      "sceneMeaning": "赛跑；竞赛",
+      "examples": "[]"
+    },
+    {
+      "word": "track",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "træk",
+      "phoneticUk": "træk",
+      "translation": "行踪；路径；轨道；足迹；追踪，〔循着踪迹、气味等〕找寻",
+      "sceneMeaning": "跑道；轨道",
+      "examples": "[]"
+    },
+    {
+      "word": "fatigue",
+      "partOfSpeech": "n",
+      "phoneticUs": "fə'tig",
+      "phoneticUk": "fə'tiːg",
+      "translation": "疲劳，劳累；疲劳，疲乏",
+      "sceneMeaning": "疲劳",
+      "examples": "[]"
+    },
+    {
+      "word": "vigorous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vɪɡərəs",
+      "phoneticUk": "'vɪg(ə)rəs",
+      "translation": "朝气蓬勃的",
+      "sceneMeaning": "朝气蓬勃的",
+      "examples": "[]"
+    },
+    {
+      "word": "clumsy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'klʌmzi",
+      "phoneticUk": "'klʌmzɪ",
+      "translation": "笨拙的；愚笨的；笨拙的，不圆滑的",
+      "sceneMeaning": "笨拙的；愚笨的；笨拙的，不圆滑的",
+      "examples": "[]"
+    },
+    {
+      "word": "compete",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pit",
+      "phoneticUk": "kəm'piːt",
+      "translation": "比赛；竞争；对抗；竞争",
+      "sceneMeaning": "竞争；比赛",
+      "examples": "[]"
+    },
+    {
+      "word": "distance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪstəns",
+      "phoneticUk": "'dɪst(ə)ns",
+      "translation": "距离，间距；远处；距离",
+      "sceneMeaning": "距离",
+      "examples": "[]"
+    },
+    {
+      "word": "equipment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kwɪpmənt",
+      "phoneticUk": "ɪ'kwɪpm(ə)nt",
+      "translation": "装备，设备，配备",
+      "sceneMeaning": "设备；装备",
+      "examples": "[]"
+    },
+    {
+      "word": "fun",
+      "partOfSpeech": "n",
+      "phoneticUs": "fʌn",
+      "phoneticUk": "fʌn",
+      "translation": "乐趣，娱乐；玩笑",
+      "sceneMeaning": "乐趣，娱乐；玩笑",
+      "examples": "[]"
+    },
+    {
+      "word": "game",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡem",
+      "phoneticUk": "geɪm",
+      "translation": "游戏；比赛；猎物",
+      "sceneMeaning": "比赛；游戏",
+      "examples": "[]"
+    },
+    {
+      "word": "active",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'æktɪv",
+      "phoneticUk": "'æktɪv",
+      "translation": "活跃的；积极的",
+      "sceneMeaning": "活跃的；主动的",
+      "examples": "[]"
+    },
+    {
+      "word": "beat",
+      "partOfSpeech": "vt&vi",
+      "phoneticUs": "bit",
+      "phoneticUk": "biːt",
+      "translation": "打，敲；打败",
+      "sceneMeaning": "击败；打",
+      "examples": "[]"
+    },
+    {
+      "word": "energetic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɛnɚ'dʒɛtɪk",
+      "phoneticUk": "ˌenəˈdʒetɪk",
+      "translation": "精力充沛的",
+      "sceneMeaning": "精力充沛的",
+      "examples": "[]"
+    },
+    {
+      "word": "football",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fʊtbɔl",
+      "phoneticUk": "'fʊtbɔːl",
+      "translation": "足球比赛；足球",
+      "sceneMeaning": "橄榄球；足球",
+      "examples": "[]"
+    },
+    {
+      "word": "judge",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒʌdʒ",
+      "phoneticUk": "dʒʌdʒ",
+      "translation": "法官；裁判员",
+      "sceneMeaning": "裁判；法官",
+      "examples": "[]"
+    },
+    {
+      "word": "outdoor",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'aʊt'dɔr",
+      "phoneticUk": "'aʊtdɔː",
+      "translation": "户外的，室外的",
+      "sceneMeaning": "户外的，室外的",
+      "examples": "[]"
+    },
+    {
+      "word": "pool",
+      "partOfSpeech": "n",
+      "phoneticUs": "pul",
+      "phoneticUk": "puːl",
+      "translation": "水塘，游泳池，水池",
+      "sceneMeaning": "游泳池",
+      "examples": "[]"
+    },
+    {
+      "word": "score",
+      "partOfSpeech": "n",
+      "phoneticUs": "skɔ",
+      "phoneticUk": "skɔː",
+      "translation": "得分，比数，成绩",
+      "sceneMeaning": "得分；进球",
+      "examples": "[]"
+    },
+    {
+      "word": "strengthen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'strɛŋθn",
+      "phoneticUk": "'streŋθ(ə)n; -ŋkθ(ə)n",
+      "translation": "加强，巩固",
+      "sceneMeaning": "加强，巩固",
+      "examples": "[]"
+    },
+    {
+      "word": "breath",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɛθ",
+      "phoneticUk": "breθ",
+      "translation": "气息，呼吸；气味",
+      "sceneMeaning": "呼吸；气息",
+      "examples": "[]"
+    },
+    {
+      "word": "coach",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kotʃ",
+      "phoneticUk": "kəʊtʃ",
+      "translation": "长途公共汽车；教练；当…的教练，训练，培训",
+      "sceneMeaning": "教练；长途汽车",
+      "examples": "[]"
+    },
+    {
+      "word": "contest",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kən'tɛst",
+      "phoneticUk": "'kɒntest",
+      "translation": "争夺，争取；辩驳；比赛",
+      "sceneMeaning": "争夺，争取；辩驳；比赛；本场景常见用法：加入竞赛；参加比赛",
+      "examples": "[]"
+    },
+    {
+      "word": "court",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrt",
+      "phoneticUk": "kɔːt",
+      "translation": "法院，法庭；庭院",
+      "sceneMeaning": "球场；法院",
+      "examples": "[]"
+    },
+    {
+      "word": "cycle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'saɪkl",
+      "phoneticUk": "'saɪk(ə)l",
+      "translation": "n自行车，循环",
+      "sceneMeaning": "骑自行车；循环",
+      "examples": "[]"
+    },
+    {
+      "word": "fit",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɪt",
+      "phoneticUk": "fɪt",
+      "translation": "适合；安装；适合",
+      "sceneMeaning": "健康的；适合的",
+      "examples": "[]"
+    },
+    {
+      "word": "goal",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡol",
+      "phoneticUk": "gəʊl",
+      "translation": "球门；得分；目的",
+      "sceneMeaning": "目标；进球",
+      "examples": "[]"
+    },
+    {
+      "word": "gym",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒɪm",
+      "phoneticUk": "dʒim",
+      "translation": "体育馆，健身房",
+      "sceneMeaning": "健身房；体育馆",
+      "examples": "[]"
+    },
+    {
+      "word": "swift",
+      "partOfSpeech": "adj",
+      "phoneticUs": "swɪft",
+      "phoneticUk": "swɪft",
+      "translation": "快的；反应快的；迅速的",
+      "sceneMeaning": "快的；反应快的；迅速的",
+      "examples": "[]"
+    },
+    {
+      "word": "actor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æktɚ",
+      "phoneticUk": "'æktə",
+      "translation": "男演员；演剧的人",
+      "sceneMeaning": "男演员；演剧的人",
+      "examples": "[]"
+    },
+    {
+      "word": "ball",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɔl",
+      "phoneticUk": "bɔːl",
+      "translation": "球，球状物；舞会",
+      "sceneMeaning": "球",
+      "examples": "[]"
+    },
+    {
+      "word": "basketball",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæskɪtbɔl",
+      "phoneticUk": "'bɑːskɪtbɔːl",
+      "translation": "篮球；篮球运动",
+      "sceneMeaning": "篮球；篮球运动",
+      "examples": "[]"
+    },
+    {
+      "word": "endure",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'dʊr",
+      "phoneticUk": "ɪn'djʊə; en-; -'djɔː",
+      "translation": "忍受；容忍；忍耐；容忍",
+      "sceneMeaning": "忍受；容忍；忍耐；容忍",
+      "examples": "[]"
+    },
+    {
+      "word": "fan",
+      "partOfSpeech": "n",
+      "phoneticUs": "fæn",
+      "phoneticUk": "fæn",
+      "translation": "(运动等)狂热爱好者",
+      "sceneMeaning": "球迷；风扇",
+      "examples": "[]"
+    },
+    {
+      "word": "fitness",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈfɪtnɪs",
+      "phoneticUk": "ˈfɪtnəs",
+      "translation": "健康",
+      "sceneMeaning": "健身；健康",
+      "examples": "[]"
+    },
+    {
+      "word": "flexibility",
+      "partOfSpeech": "n",
+      "phoneticUs": ",flɛksə'bɪləti",
+      "phoneticUk": ",fleksɪ'bɪlɪtɪ",
+      "translation": "灵活性；适应性",
+      "sceneMeaning": "柔韧性；灵活性",
+      "examples": "[]"
+    },
+    {
+      "word": "genius",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒinjəs",
+      "phoneticUk": "'dʒiːnɪəs",
+      "translation": "天才，天赋，天资",
+      "sceneMeaning": "天才，天赋，天资",
+      "examples": "[]"
+    },
+    {
+      "word": "overload",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ovɚ'lod",
+      "phoneticUk": "ˌəʊvə'ləʊd",
+      "translation": "负担太重",
+      "sceneMeaning": "负担太重",
+      "examples": "[]"
+    },
+    {
+      "word": "tire",
+      "partOfSpeech": "v",
+      "phoneticUs": "'taɪɚ",
+      "phoneticUk": "taɪə",
+      "translation": "疲劳，累；厌倦",
+      "sceneMeaning": "疲劳，累；厌倦；本场景常见用法：自行车轮胎",
+      "examples": "[]"
+    },
+    {
+      "word": "athlete",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æθlit",
+      "phoneticUk": "'æθliːt",
+      "translation": "运动员；田径运动员",
+      "sceneMeaning": "运动员",
+      "examples": "[]"
+    },
+    {
+      "word": "badminton",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bædmɪntən",
+      "phoneticUk": "'bædmɪnt(ə)n",
+      "translation": "羽毛球",
+      "sceneMeaning": "羽毛球",
+      "examples": "[]"
+    },
+    {
+      "word": "bounce",
+      "partOfSpeech": "v",
+      "phoneticUs": "baʊns",
+      "phoneticUk": "baʊns",
+      "translation": "反跳，弹起；跳起",
+      "sceneMeaning": "反跳，弹起；跳起；本场景常见用法：拍球",
+      "examples": "[]"
+    },
+    {
+      "word": "champion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃæmpɪən",
+      "phoneticUk": "'tʃæmpɪən",
+      "translation": "冠军，得胜者",
+      "sceneMeaning": "冠军，得胜者；本场景常见用法：公开(锦标)赛冠军",
+      "examples": "[]"
+    },
+    {
+      "word": "chess",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɛs",
+      "phoneticUk": "tʃes",
+      "translation": "棋；国际象棋",
+      "sceneMeaning": "棋；国际象棋；本场景常见用法：棋赛",
+      "examples": "[]"
+    },
+    {
+      "word": "climb",
+      "partOfSpeech": "v",
+      "phoneticUs": "klaɪm",
+      "phoneticUk": "klaɪm",
+      "translation": "攀登，爬；爬",
+      "sceneMeaning": "攀登；爬",
+      "examples": "[]"
+    },
+    {
+      "word": "cricket",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪkɪt",
+      "phoneticUk": "'krɪkɪt",
+      "translation": "板球；蟋蟀",
+      "sceneMeaning": "板球；蟋蟀",
+      "examples": "[]"
+    },
+    {
+      "word": "defeat",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'fit",
+      "phoneticUk": "dɪ'fiːt",
+      "translation": "战胜，击败；挫败",
+      "sceneMeaning": "失败；击败",
+      "examples": "[]"
+    },
+    {
+      "word": "endurance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'dʊrəns",
+      "phoneticUk": "in'djuərəns",
+      "translation": "耐力",
+      "sceneMeaning": "耐力",
+      "examples": "[]"
+    },
+    {
+      "word": "fasten",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fæsən",
+      "phoneticUk": "'fɑːs(ə)n",
+      "translation": "扎牢，扣住",
+      "sceneMeaning": "扎牢，扣住",
+      "examples": "[]"
+    },
+    {
+      "word": "gambling",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gæmblɪŋ",
+      "phoneticUk": "'ɡæmblɪŋ",
+      "translation": "赌博",
+      "sceneMeaning": "赌博",
+      "examples": "[]"
+    },
+    {
+      "word": "glove",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡlʌv",
+      "phoneticUk": "glʌv",
+      "translation": "手套",
+      "sceneMeaning": "手套",
+      "examples": "[]"
+    },
+    {
+      "word": "golf",
+      "partOfSpeech": "n",
+      "phoneticUs": "gɔlf",
+      "phoneticUk": "gɒlf",
+      "translation": "高尔夫球",
+      "sceneMeaning": "高尔夫球；本场景常见用法：打高尔夫球",
+      "examples": "[]"
+    },
+    {
+      "word": "helmet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛlmɪt",
+      "phoneticUk": "'helmɪt",
+      "translation": "头盔，钢盔",
+      "sceneMeaning": "头盔",
+      "examples": "[]"
+    },
+    {
+      "word": "injury",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "损害，伤害；受伤处",
+      "sceneMeaning": "伤害；损伤",
+      "examples": "[]"
+    },
+    {
+      "word": "joke",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dʒok",
+      "phoneticUk": "dʒəʊk",
+      "translation": "笑话；说笑话",
+      "sceneMeaning": "笑话；说笑话；本场景常见用法：开玩笑",
+      "examples": "[]"
+    },
+    {
+      "word": "manly",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mænli",
+      "phoneticUk": "'mænlɪ",
+      "translation": "男子气概的，果断的",
+      "sceneMeaning": "男子气概的，果断的",
+      "examples": "[]"
+    },
+    {
+      "word": "player",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pleɚ",
+      "phoneticUk": "'pleɪə",
+      "translation": "游戏的人；比赛者",
+      "sceneMeaning": "运动员；玩家",
+      "examples": "[]"
+    },
+    {
+      "word": "playground",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ple'graʊnd",
+      "phoneticUk": "'pleɪgraʊnd",
+      "translation": "操场，运动场",
+      "sceneMeaning": "操场，运动场",
+      "examples": "[]"
+    },
+    {
+      "word": "scratch",
+      "partOfSpeech": "n / vt&vi&n",
+      "phoneticUs": "skrætʃ",
+      "phoneticUk": "skrætʃ",
+      "translation": "搔；抓；抓，划痕",
+      "sceneMeaning": "搔；抓；抓，划痕；本场景常见用法：耐划伤性",
+      "examples": "[]"
+    },
+    {
+      "word": "sportsman",
+      "partOfSpeech": "n",
+      "phoneticUs": "'spɔrtsmən",
+      "phoneticUk": "'spɔːtsmən",
+      "translation": "运动员",
+      "sceneMeaning": "运动员",
+      "examples": "[]"
+    },
+    {
+      "word": "stretch",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "strɛtʃ",
+      "phoneticUk": "stretʃ",
+      "translation": "伸展；伸",
+      "sceneMeaning": "伸展；拉伸",
+      "examples": "[]"
+    },
+    {
+      "word": "sweater",
+      "partOfSpeech": "n",
+      "phoneticUs": "'swɛtɚ",
+      "phoneticUk": "'swetə",
+      "translation": "厚运动衫，毛线衫",
+      "sceneMeaning": "厚运动衫，毛线衫",
+      "examples": "[]"
+    },
+    {
+      "word": "triumph",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'traɪʌmf",
+      "phoneticUk": "'traɪʌmf",
+      "translation": "凯旋；胜利；成功；胜利",
+      "sceneMeaning": "凯旋；胜利；成功；胜利",
+      "examples": "[]"
+    },
+    {
+      "word": "uniform",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'junɪfɔrm",
+      "phoneticUk": "'juːnɪfɔːm",
+      "translation": "一样的；制服",
+      "sceneMeaning": "队服；制服",
+      "examples": "[]"
+    }
+  ]
+}

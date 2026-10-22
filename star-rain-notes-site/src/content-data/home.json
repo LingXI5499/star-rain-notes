@@ -1,0 +1,96 @@
+[
+  {
+    "code": "HERO",
+    "title": "首页介绍",
+    "items": []
+  },
+  {
+    "code": "LATEST",
+    "title": "最近更新",
+    "items": [
+      {
+        "title": "AtlasFlow · 全球地图相册",
+        "path": "/portfolio/atlasflow",
+        "publishedAt": "2026-10-16",
+        "type": "PORTFOLIO"
+      },
+      {
+        "title": "Frontend Lab · 界面实验室",
+        "path": "/portfolio/frontend-lab",
+        "publishedAt": "2026-10-16",
+        "type": "PORTFOLIO"
+      },
+      {
+        "title": "Java Web Lab · 全栈链路与业务实验室",
+        "path": "/portfolio/java-web-lab",
+        "publishedAt": "2026-10-16",
+        "type": "PORTFOLIO"
+      },
+      {
+        "title": "Resume Studio · 个人简历工作室",
+        "path": "/portfolio/resume-studio",
+        "publishedAt": "2026-10-16",
+        "type": "PORTFOLIO"
+      },
+      {
+        "title": "HTML",
+        "path": "/tutorials/html",
+        "publishedAt": "2026-10-15",
+        "type": "TUTORIAL"
+      },
+      {
+        "title": "从零构建企业级数据库协作环境：阿里云 Linux 3 部署 MySQL、Redis、PostgreSQL 与 pgvector 全指南",
+        "path": "/blog/posts/linux-3-mysql-redis-postgresql-pgvector",
+        "publishedAt": "2026-10-13",
+        "type": "BLOG"
+      }
+    ]
+  },
+  {
+    "code": "TUTORIALS",
+    "title": "精选知识体系",
+    "items": [
+      {
+        "slug": "389330587493",
+        "title": "软件工程导论",
+        "publishedAt": "2026-08-28"
+      },
+      {
+        "slug": "998270514751",
+        "title": "计算机系统知识",
+        "publishedAt": "2026-09-01"
+      },
+      {
+        "slug": "html",
+        "title": "HTML",
+        "publishedAt": "2026-10-15"
+      }
+    ]
+  },
+  {
+    "code": "PORTFOLIO",
+    "title": "把学习做成作品",
+    "items": [
+      {
+        "slug": "625524871958",
+        "title": "星雨笔录",
+        "publishedAt": "2026-08-28"
+      },
+      {
+        "slug": "163657625159",
+        "title": "速安药房 · 单店药店即时配送管理系统",
+        "publishedAt": "2026-09-06"
+      },
+      {
+        "slug": "atlasflow",
+        "title": "AtlasFlow · 全球地图相册",
+        "publishedAt": "2026-10-16"
+      }
+    ]
+  },
+  {
+    "code": "PROFILE",
+    "title": "关于作者",
+    "items": []
+  }
+]

@@ -1,0 +1,927 @@
+{
+  "id": "31",
+  "title": "求职 / 面试 / 职业发展",
+  "layer": "学习与工作主干层",
+  "wordCount": 102,
+  "path": "/english/vocabulary/31/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "有空的；可获得的",
+      "examples": "[]"
+    },
+    {
+      "word": "potential",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "pə'tɛnʃl",
+      "phoneticUk": "pəˈtenʃl",
+      "translation": "潜在的；潜力；有可能的；潜在的",
+      "sceneMeaning": "潜力；可能性",
+      "examples": "[]"
+    },
+    {
+      "word": "position",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'zɪʃən",
+      "phoneticUk": "pə'zɪʃ(ə)n",
+      "translation": "位置；职位；姿势；职位",
+      "sceneMeaning": "职位；位置",
+      "examples": "[]"
+    },
+    {
+      "word": "professional",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "prə'fɛʃənl",
+      "phoneticUk": "prə'feʃ(ə)n(ə)l",
+      "translation": "职业的；专业人员；专业的",
+      "sceneMeaning": "专业的；职业的",
+      "examples": "[]"
+    },
+    {
+      "word": "benefit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bɛnɪfɪt",
+      "phoneticUk": "'benɪfɪt",
+      "translation": "利益；恩惠；津贴；有益于，有助于",
+      "sceneMeaning": "福利；好处",
+      "examples": "[]"
+    },
+    {
+      "word": "apply",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'plaɪ",
+      "phoneticUk": "ə'plaɪ",
+      "translation": "应用，实施，使用；申请；应用",
+      "sceneMeaning": "申请；应用",
+      "examples": "[]"
+    },
+    {
+      "word": "degree",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'ɡri",
+      "phoneticUk": "dɪˈgri:",
+      "translation": "程度；度；学位；程度",
+      "sceneMeaning": "学位；程度",
+      "examples": "[]"
+    },
+    {
+      "word": "achieve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'tʃiv",
+      "phoneticUk": "ə'tʃiːv",
+      "translation": "完成，实现；达到；完成，实现",
+      "sceneMeaning": "完成，实现；达到；完成，实现",
+      "examples": "[]"
+    },
+    {
+      "word": "ability",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'bɪləti",
+      "phoneticUk": "ə'bɪlɪtɪ",
+      "translation": "能力；能耐，本领",
+      "sceneMeaning": "能力",
+      "examples": "[]"
+    },
+    {
+      "word": "career",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'rɪr",
+      "phoneticUk": "kə'rɪə",
+      "translation": "生涯，职业，经历",
+      "sceneMeaning": "职业；事业",
+      "examples": "[]"
+    },
+    {
+      "word": "chance",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃæns",
+      "phoneticUk": "tʃɑːns",
+      "translation": "机会，机遇；可能性",
+      "sceneMeaning": "机会，机遇；可能性",
+      "examples": "[]"
+    },
+    {
+      "word": "develop",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vɛləp",
+      "phoneticUk": "dɪ'veləp",
+      "translation": "发展；形成；开发",
+      "sceneMeaning": "发展；开发",
+      "examples": "[]"
+    },
+    {
+      "word": "experience",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'spɪrɪəns",
+      "phoneticUk": "ɪk'spɪərɪəns; ek-",
+      "translation": "经验，感受；经历",
+      "sceneMeaning": "经验；经历",
+      "examples": "[]"
+    },
+    {
+      "word": "improve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'pruv",
+      "phoneticUk": "ɪm'pruːv",
+      "translation": "使更好；改善",
+      "sceneMeaning": "提高；改进",
+      "examples": "[]"
+    },
+    {
+      "word": "interview",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɪntɚvju",
+      "phoneticUk": "'ɪntəvjuː",
+      "translation": "接见；会见；面谈；面谈（试）；会见；；采访 ；面试",
+      "sceneMeaning": "面试；采访",
+      "examples": "[]"
+    },
+    {
+      "word": "job",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "dʒɒb",
+      "translation": "职业；工作；零活",
+      "sceneMeaning": "工作；职位",
+      "examples": "[]"
+    },
+    {
+      "word": "offer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔfɚ",
+      "phoneticUk": "'ɒfə",
+      "translation": "提供；提出；提供",
+      "sceneMeaning": "录用通知；报价",
+      "examples": "[]"
+    },
+    {
+      "word": "open",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "'opən",
+      "phoneticUk": "'əʊp(ə)n",
+      "translation": "开的；开放的；开",
+      "sceneMeaning": "开的；开放的；开",
+      "examples": "[]"
+    },
+    {
+      "word": "opportunity",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌɑpɚˈtunɪti, -ˈtju-",
+      "phoneticUk": "ɒpə'tjuːnɪtɪ",
+      "translation": "机会，良机",
+      "sceneMeaning": "机会",
+      "examples": "[]"
+    },
+    {
+      "word": "responsible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'spɑnsəbl",
+      "phoneticUk": "ri'spɔnsəbl",
+      "translation": "负责的，有责任的",
+      "sceneMeaning": "负责的",
+      "examples": "[]"
+    },
+    {
+      "word": "accept",
+      "partOfSpeech": "v",
+      "phoneticUs": "ækˈsɛpt; əkˈsɛpt",
+      "phoneticUk": "ə'ksept",
+      "translation": "接受；同意",
+      "sceneMeaning": "接受",
+      "examples": "[]"
+    },
+    {
+      "word": "development",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'vɛləpmənt",
+      "phoneticUk": "dɪ'veləpm(ə)nt",
+      "translation": "发展；开发；生长",
+      "sceneMeaning": "发展；成长",
+      "examples": "[]"
+    },
+    {
+      "word": "achievement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'tʃivmənt",
+      "phoneticUk": "ə'tʃiːvm(ə)nt",
+      "translation": "完成；成就，成绩",
+      "sceneMeaning": "成就",
+      "examples": "[]"
+    },
+    {
+      "word": "application",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌæpləˈkeʃən",
+      "phoneticUk": "ˌæplɪ'keɪʃ(ə)n",
+      "translation": "请求，申请；施用；申请；应用",
+      "sceneMeaning": "申请；应用",
+      "examples": "[]"
+    },
+    {
+      "word": "ambitious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "æm'bɪʃəs",
+      "phoneticUk": "æm'biʃəs",
+      "translation": "有雄心的，野心勃勃的",
+      "sceneMeaning": "有抱负的",
+      "examples": "[]"
+    },
+    {
+      "word": "challenge",
+      "partOfSpeech": ". v / n",
+      "phoneticUs": "'tʃælɪndʒ",
+      "phoneticUk": "'tʃælɪn(d)ʒ",
+      "translation": "挑战；要求，需要；挑战；质疑",
+      "sceneMeaning": "挑战",
+      "examples": "[]"
+    },
+    {
+      "word": "contract",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑntrækt",
+      "phoneticUk": "'kɒntrækt",
+      "translation": "契约，合同；婚约；合同",
+      "sceneMeaning": "合同",
+      "examples": "[]"
+    },
+    {
+      "word": "encourage",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'kɝrɪdʒ",
+      "phoneticUk": "ɪn'kʌrɪdʒ; en-",
+      "translation": "鼓励，支持，助长；鼓励",
+      "sceneMeaning": "鼓励，支持，助长；鼓励",
+      "examples": "[]"
+    },
+    {
+      "word": "prepare",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "prɪ'pɛr",
+      "phoneticUk": "prɪ'peə",
+      "translation": "准备，预备；做准备",
+      "sceneMeaning": "准备",
+      "examples": "[]"
+    },
+    {
+      "word": "recommend",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rɛkə'mɛnd",
+      "phoneticUk": "rekə'mend",
+      "translation": "推荐，介绍；劝告；推荐；劝告；使受欢迎",
+      "sceneMeaning": "推荐",
+      "examples": "[]"
+    },
+    {
+      "word": "retirement",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'taɪɚmənt",
+      "phoneticUk": "rɪˈtaɪəmənt",
+      "translation": "退休",
+      "sceneMeaning": "退休",
+      "examples": "[]"
+    },
+    {
+      "word": "attitude",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ætɪtʊd",
+      "phoneticUk": "'ætɪtjuːd",
+      "translation": "态度，看法；姿势",
+      "sceneMeaning": "态度",
+      "examples": "[]"
+    },
+    {
+      "word": "confidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnfɪdəns",
+      "phoneticUk": "'kɒnfɪd(ə)ns",
+      "translation": "信任；信赖；信心；信心",
+      "sceneMeaning": "信任；信赖；信心；信心；本场景常见用法：置信概率，信赖机率",
+      "examples": "[]"
+    },
+    {
+      "word": "graduate",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈɡrædʒuˌet",
+      "phoneticUk": "ˈɡradʒʊeɪt",
+      "translation": "毕业生；大学毕业",
+      "sceneMeaning": "毕业",
+      "examples": "[]"
+    },
+    {
+      "word": "hire",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'haɪɚ",
+      "phoneticUk": "'haɪə",
+      "translation": "租借；租用，雇用；雇佣",
+      "sceneMeaning": "雇用",
+      "examples": "[]"
+    },
+    {
+      "word": "network",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nɛtwɝk",
+      "phoneticUk": "'netwɜːk",
+      "translation": "网状物；网络",
+      "sceneMeaning": "建立人脉",
+      "examples": "[]"
+    },
+    {
+      "word": "opening",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'opənɪŋ",
+      "phoneticUk": "'əʊp(ə)nɪŋ",
+      "translation": "开始的；开始",
+      "sceneMeaning": "空缺职位；开端",
+      "examples": "[]"
+    },
+    {
+      "word": "permanent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɝmənənt",
+      "phoneticUk": "'pɜːm(ə)nənt",
+      "translation": "永久的，持久的；永久的",
+      "sceneMeaning": "长期的；永久的",
+      "examples": "[]"
+    },
+    {
+      "word": "post",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "post",
+      "phoneticUk": "pəʊst",
+      "translation": "柱，桩，杆；贴出",
+      "sceneMeaning": "岗位；职位",
+      "examples": "[]"
+    },
+    {
+      "word": "responsibility",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪˌspɑːnsəˈbɪləti",
+      "phoneticUk": "ri,spɔnsə'biliti",
+      "translation": "责任",
+      "sceneMeaning": "责任",
+      "examples": "[]"
+    },
+    {
+      "word": "candidate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈkændɪˌdet, -dɪt",
+      "phoneticUk": "'kændɪdeɪt; -dət",
+      "translation": "候选人；投考者；申请求职者；投考者；候选人",
+      "sceneMeaning": "候选人；应聘者",
+      "examples": "[]"
+    },
+    {
+      "word": "preparation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",prɛpə'reʃən",
+      "phoneticUk": ",prepə'reɪʃ(ə)n",
+      "translation": "准备，预备；制备",
+      "sceneMeaning": "准备，预备；制备；本场景常见用法：心理准备",
+      "examples": "[]"
+    },
+    {
+      "word": "profession",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'fɛʃən",
+      "phoneticUk": "prə'feʃ(ə)n",
+      "translation": "职业",
+      "sceneMeaning": "职业；专业",
+      "examples": "[]"
+    },
+    {
+      "word": "promote",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'mot",
+      "phoneticUk": "prə'məʊt",
+      "translation": "促进，发扬；提升；促进，提升；推销",
+      "sceneMeaning": "晋升；促进",
+      "examples": "[]"
+    },
+    {
+      "word": "reference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛfrəns",
+      "phoneticUk": "'ref(ə)r(ə)ns",
+      "translation": "参考；出处；提及",
+      "sceneMeaning": "推荐人；参考",
+      "examples": "[]"
+    },
+    {
+      "word": "temporary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tɛmpə'rɛri",
+      "phoneticUk": "'temp(ə)rərɪ",
+      "translation": "暂时的，临时的",
+      "sceneMeaning": "临时的",
+      "examples": "[]"
+    },
+    {
+      "word": "pose",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "poz",
+      "phoneticUk": "pəuz",
+      "translation": "摆姿势，装腔作势；姿势",
+      "sceneMeaning": "摆姿势，装腔作势；姿势",
+      "examples": "[]"
+    },
+    {
+      "word": "ambition",
+      "partOfSpeech": "n",
+      "phoneticUs": "æm'bɪʃən",
+      "phoneticUk": "æm'bɪʃ(ə)n",
+      "translation": "雄心，抱负，野心",
+      "sceneMeaning": "抱负；野心",
+      "examples": "[]"
+    },
+    {
+      "word": "anticipate",
+      "partOfSpeech": "v",
+      "phoneticUs": "æn'tɪsə'pet",
+      "phoneticUk": "æn'tɪsɪpeɪt",
+      "translation": "预料，预期，期望；预感",
+      "sceneMeaning": "预料，预期，期望；预感",
+      "examples": "[]"
+    },
+    {
+      "word": "boost",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bʊst",
+      "phoneticUk": "bu:st",
+      "translation": "推动；促使，促进",
+      "sceneMeaning": "推动；促使，促进",
+      "examples": "[]"
+    },
+    {
+      "word": "clever",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'klɛvɚ",
+      "phoneticUk": "'klevə",
+      "translation": "聪明的；机敏的",
+      "sceneMeaning": "聪明的；机敏的",
+      "examples": "[]"
+    },
+    {
+      "word": "flexible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'flɛksəbl",
+      "phoneticUk": "'fleksɪb(ə)l",
+      "translation": "易弯曲的；灵活的；灵活的",
+      "sceneMeaning": "灵活的",
+      "examples": "[]"
+    },
+    {
+      "word": "qualify",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈkwɑləˌfaɪ",
+      "phoneticUk": "'kwɒlɪfaɪ",
+      "translation": "使具有资格；使……有资格",
+      "sceneMeaning": "使具备资格；合格",
+      "examples": "[]"
+    },
+    {
+      "word": "recruit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'krut",
+      "phoneticUk": "rikru:t",
+      "translation": "招募，吸收；新兵，新成员",
+      "sceneMeaning": "招聘；招募",
+      "examples": "[]"
+    },
+    {
+      "word": "skilled",
+      "partOfSpeech": "adj",
+      "phoneticUs": "skɪld",
+      "phoneticUk": "skɪld",
+      "translation": "有技能的，熟练的",
+      "sceneMeaning": "熟练的；有技能的",
+      "examples": "[]"
+    },
+    {
+      "word": "suit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sut",
+      "phoneticUk": "sju:t; su:t",
+      "translation": "起拆，诉讼；适合",
+      "sceneMeaning": "起拆，诉讼；适合",
+      "examples": "[]"
+    },
+    {
+      "word": "accomplish",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kɑmplɪʃ",
+      "phoneticUk": "ə'kʌmplɪʃ; ə'kɒm-",
+      "translation": "达到(目的)；完成；完成",
+      "sceneMeaning": "达到(目的)；完成；完成",
+      "examples": "[]"
+    },
+    {
+      "word": "background",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bækɡraʊnd",
+      "phoneticUk": "'bækgraʊnd",
+      "translation": "背景，后景，经历；背景",
+      "sceneMeaning": "背景",
+      "examples": "[]"
+    },
+    {
+      "word": "beneficial",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",bɛnɪ'fɪʃl",
+      "phoneticUk": "benɪ'fɪʃ(ə)l",
+      "translation": "有利的，有益的",
+      "sceneMeaning": "有利的，有益的",
+      "examples": "[]"
+    },
+    {
+      "word": "commencement",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mɛnsmənt",
+      "phoneticUk": "kə'mensm(ə)nt",
+      "translation": "毕业典礼",
+      "sceneMeaning": "毕业典礼",
+      "examples": "[]"
+    },
+    {
+      "word": "negotiate",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪ'ɡoʃɪet",
+      "phoneticUk": "nɪ'ɡəʊʃɪeɪt",
+      "translation": "谈判，协商，交涉",
+      "sceneMeaning": "谈判；协商",
+      "examples": "[]"
+    },
+    {
+      "word": "odd",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɑd",
+      "phoneticUk": "ɒd",
+      "translation": "奇数的；单只的",
+      "sceneMeaning": "奇数的；单只的",
+      "examples": "[]"
+    },
+    {
+      "word": "requirement",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'kwaɪɚmənt",
+      "phoneticUk": "rɪ'kwaɪəm(ə)nt",
+      "translation": "需要；要求",
+      "sceneMeaning": "要求",
+      "examples": "[]"
+    },
+    {
+      "word": "resume",
+      "partOfSpeech": "v",
+      "phoneticUs": "",
+      "phoneticUk": "rɪˈzjuːm; ˈrɛzjʊmeɪ",
+      "translation": "恢复；重新开始",
+      "sceneMeaning": "简历",
+      "examples": "[]"
+    },
+    {
+      "word": "retire",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'taɪɚ",
+      "phoneticUk": "rɪ'taɪə",
+      "translation": "退下；引退；就寝",
+      "sceneMeaning": "退休",
+      "examples": "[]"
+    },
+    {
+      "word": "diploma",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'plomə",
+      "phoneticUk": "dɪˈpləʊmə",
+      "translation": "文凭",
+      "sceneMeaning": "文凭",
+      "examples": "[]"
+    },
+    {
+      "word": "goal",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡol",
+      "phoneticUk": "gəʊl",
+      "translation": "球门；得分；目的",
+      "sceneMeaning": "目标",
+      "examples": "[]"
+    },
+    {
+      "word": "personality",
+      "partOfSpeech": "n",
+      "phoneticUs": ",pɝsə'næləti",
+      "phoneticUk": "ˌpɜ:səˈnæləti",
+      "translation": "个性，性格",
+      "sceneMeaning": "个性；人格",
+      "examples": "[]"
+    },
+    {
+      "word": "qualification",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kwɑlɪfɪ'keʃən",
+      "phoneticUk": ",kwɔlifi'keiʃən",
+      "translation": "资格(证明)，合格证书",
+      "sceneMeaning": "资格；资历",
+      "examples": "[]"
+    },
+    {
+      "word": "recommendation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛkəmɛn'deʃən",
+      "phoneticUk": ",rekəmen'deɪʃ(ə)n",
+      "translation": "推荐，介绍；劝告",
+      "sceneMeaning": "推荐；推荐信",
+      "examples": "[]"
+    },
+    {
+      "word": "submit",
+      "partOfSpeech": "v",
+      "phoneticUs": "səb'mɪt",
+      "phoneticUk": "səb'mɪt",
+      "translation": "使服从；服从；提交",
+      "sceneMeaning": "提交",
+      "examples": "[]"
+    },
+    {
+      "word": "attach",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'tætʃ",
+      "phoneticUk": "ə'tætʃ",
+      "translation": "缚，系，贴；附加",
+      "sceneMeaning": "附上；连接",
+      "examples": "[]"
+    },
+    {
+      "word": "certificate",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɚˈtɪfɪkɪt; (for v.,) sɚˈtɪfɪˌket",
+      "phoneticUk": "səˈtɪfɪkɪt; (for v.,) səˈtɪfɪˌkeɪt",
+      "translation": "证书，证件，执照",
+      "sceneMeaning": "证书",
+      "examples": "[]"
+    },
+    {
+      "word": "confident",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɑnfɪdənt",
+      "phoneticUk": "'kɒnfɪd(ə)nt",
+      "translation": "确信的，自信的",
+      "sceneMeaning": "自信的",
+      "examples": "[]"
+    },
+    {
+      "word": "devote",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vot",
+      "phoneticUk": "dɪ'vəʊt",
+      "translation": "将…奉献，致力于；奉献，致力于",
+      "sceneMeaning": "将…奉献，致力于；奉献，致力于",
+      "examples": "[]"
+    },
+    {
+      "word": "expectation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛkspɛk'teʃən",
+      "phoneticUk": "ekspek'teɪʃ(ə)n",
+      "translation": "期待，期望，预期；期望",
+      "sceneMeaning": "期望",
+      "examples": "[]"
+    },
+    {
+      "word": "flexibility",
+      "partOfSpeech": "n",
+      "phoneticUs": ",flɛksə'bɪləti",
+      "phoneticUk": ",fleksɪ'bɪlɪtɪ",
+      "translation": "灵活性；适应性",
+      "sceneMeaning": "灵活性；适应性；本场景常见用法：操作弹性；运行灵活性",
+      "examples": "[]"
+    },
+    {
+      "word": "hobby",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɑbi",
+      "phoneticUk": "'hɒbɪ",
+      "translation": "业余爱好，癖好",
+      "sceneMeaning": "业余爱好，癖好",
+      "examples": "[]"
+    },
+    {
+      "word": "initiative",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'nɪʃətɪv",
+      "phoneticUk": "i'niʃətiv",
+      "translation": "主动权，自主权",
+      "sceneMeaning": "主动性；倡议",
+      "examples": "[]"
+    },
+    {
+      "word": "occupation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɑkju'peʃən",
+      "phoneticUk": "ɒkjʊ'peɪʃ(ə)n",
+      "translation": "占领，占据；职业；职业，工作",
+      "sceneMeaning": "职业；占用",
+      "examples": "[]"
+    },
+    {
+      "word": "promotional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'moʃənl",
+      "phoneticUk": "prə'məʊʃənl",
+      "translation": "促销的",
+      "sceneMeaning": "促销的；本场景常见用法：宣传刊物",
+      "examples": "[]"
+    },
+    {
+      "word": "undertake",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ʌndɚ'tek",
+      "phoneticUk": "ʌndə'teɪk",
+      "translation": "从事；承担；保证；承担",
+      "sceneMeaning": "从事；承担；保证；承担",
+      "examples": "[]"
+    },
+    {
+      "word": "acceptable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ək'sɛptəbl",
+      "phoneticUk": "ək'septəb(ə)l",
+      "translation": "可接受的，合意的",
+      "sceneMeaning": "可接受的，合意的；本场景常见用法：可接受的性能；合格性能",
+      "examples": "[]"
+    },
+    {
+      "word": "acceptance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ək'sɛptəns",
+      "phoneticUk": "ək'sept(ə)ns",
+      "translation": "接受，验收；承认",
+      "sceneMeaning": "接受；录用接受",
+      "examples": "[]"
+    },
+    {
+      "word": "applicable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'æplɪkəbl",
+      "phoneticUk": "ə'plɪkəb(ə)l; 'æplɪk-",
+      "translation": "能应用的；适当的",
+      "sceneMeaning": "能应用的；适当的",
+      "examples": "[]"
+    },
+    {
+      "word": "applicant",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æplɪkənt",
+      "phoneticUk": "'æplikənt",
+      "translation": "申请人",
+      "sceneMeaning": "申请人",
+      "examples": "[]"
+    },
+    {
+      "word": "attain",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'ten",
+      "phoneticUk": "ə'teɪn",
+      "translation": "达到，获得，完成",
+      "sceneMeaning": "达到，获得，完成",
+      "examples": "[]"
+    },
+    {
+      "word": "capable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kepəbl",
+      "phoneticUk": "'keɪpəb(ə)l",
+      "translation": "有能力的，有才能的；能干的，有能力的",
+      "sceneMeaning": "有能力的，有才能的；能干的，有能力的；本场景常见用法：有行为能力人",
+      "examples": "[]"
+    },
+    {
+      "word": "deed",
+      "partOfSpeech": "n",
+      "phoneticUs": "did",
+      "phoneticUk": "diːd",
+      "translation": "行为；功绩；契约",
+      "sceneMeaning": "行为；功绩；契约",
+      "examples": "[]"
+    },
+    {
+      "word": "description",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'skrɪpʃən",
+      "phoneticUk": "dɪ'skrɪpʃ(ə)n",
+      "translation": "描写，形容；种类",
+      "sceneMeaning": "描述；说明",
+      "examples": "[]"
+    },
+    {
+      "word": "initiate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'nɪʃɪet",
+      "phoneticUk": "ɪ'nɪʃɪeɪt",
+      "translation": "开始，发起",
+      "sceneMeaning": "开始，发起",
+      "examples": "[]"
+    },
+    {
+      "word": "motivation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",motə'veʃən",
+      "phoneticUk": "ˌməʊtɪ'veɪʃn",
+      "translation": "激励，刺激",
+      "sceneMeaning": "动机；动力",
+      "examples": "[]"
+    },
+    {
+      "word": "Negro",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nigro",
+      "phoneticUk": "'niːgrəʊ",
+      "translation": "黑人",
+      "sceneMeaning": "黑人",
+      "examples": "[]"
+    },
+    {
+      "word": "pat",
+      "partOfSpeech": "n&vt&n",
+      "phoneticUs": "pæt",
+      "phoneticUk": "pæt",
+      "translation": "轻拍",
+      "sceneMeaning": "轻拍",
+      "examples": "[]"
+    },
+    {
+      "word": "refusal",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'fjuzl",
+      "phoneticUk": "rɪ'fjuːz(ə)l",
+      "translation": "拒绝",
+      "sceneMeaning": "拒绝",
+      "examples": "[]"
+    },
+    {
+      "word": "reject",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'dʒɛkt",
+      "phoneticUk": "rɪ'dʒekt",
+      "translation": "拒绝；丢掉；驳回；拒绝，驳回",
+      "sceneMeaning": "拒绝",
+      "examples": "[]"
+    },
+    {
+      "word": "resign",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'zaɪn",
+      "phoneticUk": "rɪ'zaɪn",
+      "translation": "放弃；辞职",
+      "sceneMeaning": "辞职",
+      "examples": "[]"
+    },
+    {
+      "word": "retrain",
+      "partOfSpeech": "v",
+      "phoneticUs": "",
+      "phoneticUk": "ˌri:ˈtreɪn",
+      "translation": "再教育；再训练",
+      "sceneMeaning": "再教育；再训练",
+      "examples": "[]"
+    },
+    {
+      "word": "skillful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'skɪlfəl",
+      "phoneticUk": "'skilful",
+      "translation": "灵巧的，娴熟的",
+      "sceneMeaning": "灵巧的，娴熟的",
+      "examples": "[]"
+    },
+    {
+      "word": "undergo",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ʌndɚ'ɡo",
+      "phoneticUk": "ʌndə'gəʊ",
+      "translation": "经历，经受，忍受；承受",
+      "sceneMeaning": "经历，经受，忍受；承受",
+      "examples": "[]"
+    },
+    {
+      "word": "weaken",
+      "partOfSpeech": "v",
+      "phoneticUs": "'wikən",
+      "phoneticUk": "'wiːk(ə)n",
+      "translation": "削弱；变弱；减少，减弱",
+      "sceneMeaning": "削弱；变弱；减少，减弱",
+      "examples": "[]"
+    },
+    {
+      "word": "weakness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wiknəs",
+      "phoneticUk": "ˈwiːknəs",
+      "translation": "虚弱，软弱；弱点",
+      "sceneMeaning": "弱点",
+      "examples": "[]"
+    }
+  ]
+}

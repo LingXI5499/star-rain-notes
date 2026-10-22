@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 轮播图核心是当前索引：上一张加数组长度取模，下一张对长度取模。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const pics = ['a.jpg', 'b.jpg', 'c.jpg'];
+let index = 0;
+function next() { index = (index + 1) % pics.length; return pics[index]; }
+</code></pre>
+<p><strong>学完能做：</strong> 实现上一张、下一张的索引切换。</p>

@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>input</code> 每次输入变化触发，<code>change</code> 通常确认改变后触发；中文输入可检测 <code>isComposing</code>。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">document.querySelector('#search').addEventListener('input', e =&gt; {
+  if (!e.isComposing) console.log(e.target.value);
+});
+</code></pre>
+<p><strong>学完能做：</strong> 区分输入、变更、焦点与中文输入组合事件。</p>

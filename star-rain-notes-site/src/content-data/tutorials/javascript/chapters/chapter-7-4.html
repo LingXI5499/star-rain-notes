@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 普通函数的 <code>this</code> 由调用方式决定；箭头函数没有自己的 <code>this</code>，从外围词法作用域获取。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const obj = { value: 1, get() { return this.value; } };
+console.log(obj.get()); // 1
+</code></pre>
+<p><strong>学完能做：</strong> 判断 this 的调用上下文及箭头函数行为。</p>

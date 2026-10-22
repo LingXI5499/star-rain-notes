@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 提示文字可同时响应 <code>:hover</code> 和 <code>:focus-within</code>，保证鼠标与键盘都能触发。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.tip { opacity: 0; transition: opacity .2s; }
+.help:hover .tip, .help:focus-within .tip { opacity: 1; }
+</code></pre>
+<p><strong>学完能做：</strong> 制作鼠标与键盘均可触发的提示过渡。</p>

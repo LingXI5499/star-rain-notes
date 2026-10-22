@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> ATM 的状态是余额；存取款前要校验金额为正、余额充足。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let balance = 100;
+function withdraw(n) {
+  if (!Number.isFinite(n) || n &lt;= 0 || n &gt; balance) return false;
+  balance -= n; return true;
+}
+</code></pre>
+<p><strong>学完能做：</strong> 设计余额状态变化并校验交易条件。</p>

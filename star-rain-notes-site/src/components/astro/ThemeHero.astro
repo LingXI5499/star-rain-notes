@@ -1,0 +1,10 @@
+---
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+interface Props { src?: string; }
+const { src = '/brand/themes/home-hero.webp' } = Astro.props;
+const images = import.meta.glob<{ default: ImageMetadata }>('../../../public/brand/themes/*.webp', { eager: true });
+const image = images[`../../../public${src}`]?.default;
+if (!image) throw new Error(`Missing local hero image: ${src}`);
+---
+<div class="theme-stage" aria-hidden="true"><Image class="theme-stage__image" src={image} alt="" widths={[480,768,1071]} sizes="(max-width: 680px) calc(100vw - 40px), 1071px" quality={80} format="webp" decoding="async" fetchpriority="high" loading="eager"/><div class="theme-stage__veil"></div><div class="theme-stage__fog"></div></div>

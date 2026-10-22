@@ -1,0 +1,1125 @@
+{
+  "id": "45",
+  "title": "艺术 / 文学 / 音乐 / 影视 / 审美",
+  "layer": "社会与世界主题层",
+  "wordCount": 124,
+  "path": "/english/vocabulary/45/",
+  "words": [
+    {
+      "word": "performance",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'fɔrməns",
+      "phoneticUk": "pə'fɔːm(ə)ns",
+      "translation": "履行；演出；行为；演出；履行；表现",
+      "sceneMeaning": "表演；演出",
+      "examples": "[]"
+    },
+    {
+      "word": "literature",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɪtərəˌtʃʊr",
+      "phoneticUk": "'lɪt(ə)rətʃə",
+      "translation": "文学；文献；文学，文学作品；文献；文献",
+      "sceneMeaning": "文学；文献",
+      "examples": "[]"
+    },
+    {
+      "word": "art",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɑrt",
+      "phoneticUk": "ɑːt",
+      "translation": "艺术，美术；技术",
+      "sceneMeaning": "艺术；美术",
+      "examples": "[]"
+    },
+    {
+      "word": "audience",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔdɪəns",
+      "phoneticUk": "'ɔːdɪəns",
+      "translation": "听众，观众，读者",
+      "sceneMeaning": "观众；听众",
+      "examples": "[]"
+    },
+    {
+      "word": "beautiful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'bjʊtəfəl",
+      "phoneticUk": "'bjuːtɪfʊl; -f(ə)l",
+      "translation": "美的，美丽的",
+      "sceneMeaning": "美的，美丽的；本场景常见用法：美丽的景色，美丽景观",
+      "examples": "[]"
+    },
+    {
+      "word": "create",
+      "partOfSpeech": "v",
+      "phoneticUs": "krɪ'et",
+      "phoneticUk": "kriː'eɪt",
+      "translation": "创造；引起，产生",
+      "sceneMeaning": "创造；创作",
+      "examples": "[]"
+    },
+    {
+      "word": "director",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪˈrɛktɚ; daɪˈrɛktɚ",
+      "phoneticUk": "dɪ'rektə; daɪ-",
+      "translation": "指导者；理事；导演",
+      "sceneMeaning": "导演；主管",
+      "examples": "[]"
+    },
+    {
+      "word": "film",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɪlm",
+      "phoneticUk": "fɪlm",
+      "translation": "影片；胶卷；薄层",
+      "sceneMeaning": "电影；胶片",
+      "examples": "[]"
+    },
+    {
+      "word": "form",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fɔrm",
+      "phoneticUk": "fɔːm",
+      "translation": "形式；形状；形成",
+      "sceneMeaning": "形式；形态",
+      "examples": "[]"
+    },
+    {
+      "word": "former",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'fɔrmɚ",
+      "phoneticUk": "'fɔːmə",
+      "translation": "在前的；前者",
+      "sceneMeaning": "在前的；前者",
+      "examples": "[]"
+    },
+    {
+      "word": "music",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mjuzɪk",
+      "phoneticUk": "'mjuːzɪk",
+      "translation": "音乐，乐曲，乐谱",
+      "sceneMeaning": "音乐",
+      "examples": "[]"
+    },
+    {
+      "word": "overall",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": ",ovə'rɔl",
+      "phoneticUk": "'əʊvərɔːl",
+      "translation": "工装裤；全面的",
+      "sceneMeaning": "工装裤；全面的",
+      "examples": "[]"
+    },
+    {
+      "word": "picture",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pɪktʃɚ",
+      "phoneticUk": "'pɪktʃə",
+      "translation": "画，图片；画",
+      "sceneMeaning": "画，图片；画；本场景常见用法：n. 电影",
+      "examples": "[]"
+    },
+    {
+      "word": "play",
+      "partOfSpeech": "v",
+      "phoneticUs": "ple",
+      "phoneticUk": "pleɪ",
+      "translation": "玩，游戏；演奏",
+      "sceneMeaning": "剧本；戏剧",
+      "examples": "[]"
+    },
+    {
+      "word": "line",
+      "partOfSpeech": "n",
+      "phoneticUs": "laɪn",
+      "phoneticUk": "laɪn",
+      "translation": "线；排；路线；线条",
+      "sceneMeaning": "线条；行",
+      "examples": "[]"
+    },
+    {
+      "word": "draw",
+      "partOfSpeech": "v",
+      "phoneticUs": "drɔ",
+      "phoneticUk": "drɔː",
+      "translation": "画，划；拖；拨出",
+      "sceneMeaning": "画；绘制",
+      "examples": "[]"
+    },
+    {
+      "word": "fiction",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɪkʃən",
+      "phoneticUk": "'fɪkʃ(ə)n",
+      "translation": "小说；虚构，杜撰；小说，虚构的文学作品",
+      "sceneMeaning": "小说；虚构作品",
+      "examples": "[]"
+    },
+    {
+      "word": "interpret",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'tɝprɪt",
+      "phoneticUk": "ɪn'tɜːprɪt",
+      "translation": "解释，说明；口译；解释",
+      "sceneMeaning": "诠释；解读",
+      "examples": "[]"
+    },
+    {
+      "word": "balance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bæləns",
+      "phoneticUk": "'bæl(ə)ns",
+      "translation": "使平衡；称；天平",
+      "sceneMeaning": "平衡",
+      "examples": "[]"
+    },
+    {
+      "word": "camera",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæmərə",
+      "phoneticUk": "'kæm(ə)rə",
+      "translation": "照相机，摄影机",
+      "sceneMeaning": "相机；摄影机",
+      "examples": "[]"
+    },
+    {
+      "word": "craft",
+      "partOfSpeech": "n",
+      "phoneticUs": "kræft",
+      "phoneticUk": "krɑːft",
+      "translation": "工艺；手艺，行业",
+      "sceneMeaning": "工艺；手艺",
+      "examples": "[]"
+    },
+    {
+      "word": "direct",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪˈrɛkt; daɪˈrɛkt",
+      "phoneticUk": "dəˈrekt; daɪˈrekt",
+      "translation": "直接的；直率的",
+      "sceneMeaning": "导演；指导",
+      "examples": "[]"
+    },
+    {
+      "word": "perform",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɚ'fɔrm",
+      "phoneticUk": "pə'fɔːm",
+      "translation": "履行，执行；演出",
+      "sceneMeaning": "表演；演出",
+      "examples": "[]"
+    },
+    {
+      "word": "proportion",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'pɔrʃən",
+      "phoneticUk": "prə'pɔːʃ(ə)n",
+      "translation": "比，比率，部分；比例，部分",
+      "sceneMeaning": "比例；部分",
+      "examples": "[]"
+    },
+    {
+      "word": "appreciate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'priʃɪet",
+      "phoneticUk": "ə'priːʃɪeɪt; -sɪ-",
+      "translation": "欣赏；领会；感谢；感激；欣赏",
+      "sceneMeaning": "欣赏；感激",
+      "examples": "[]"
+    },
+    {
+      "word": "character",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kærəktɚ",
+      "phoneticUk": "'kærəktə",
+      "translation": "性格；特性；角色；角色",
+      "sceneMeaning": "人物；性格",
+      "examples": "[]"
+    },
+    {
+      "word": "characteristic",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": ",kærəktə'rɪstɪk",
+      "phoneticUk": "kærəktə'rɪstɪk",
+      "translation": "特有的；特性；特点",
+      "sceneMeaning": "特有的；特性；特点；本场景常见用法：工作特性",
+      "examples": "[]"
+    },
+    {
+      "word": "creative",
+      "partOfSpeech": "adj",
+      "phoneticUs": "krɪ'etɪv",
+      "phoneticUk": "kriː'eɪtɪv",
+      "translation": "创造性的，创作的",
+      "sceneMeaning": "创造性的",
+      "examples": "[]"
+    },
+    {
+      "word": "design",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'zaɪn",
+      "phoneticUk": "dɪ'zaɪn",
+      "translation": "设计；设计；图样",
+      "sceneMeaning": "设计",
+      "examples": "[]"
+    },
+    {
+      "word": "drawing",
+      "partOfSpeech": "n",
+      "phoneticUs": "'drɔɪŋ",
+      "phoneticUk": "'drɔː(r)ɪŋ",
+      "translation": "图画，素描；绘图",
+      "sceneMeaning": "素描；图画",
+      "examples": "[]"
+    },
+    {
+      "word": "essay",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛse",
+      "phoneticUk": "'eseɪ",
+      "translation": "短文，散文，小品文；散文，文章",
+      "sceneMeaning": "随笔；论文",
+      "examples": "[]"
+    },
+    {
+      "word": "interpretation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɝprɪ'teʃən",
+      "phoneticUk": "ɪntɜːprɪ'teɪʃ(ə)n",
+      "translation": "解释；口译；阐释，说明",
+      "sceneMeaning": "解读；诠释",
+      "examples": "[]"
+    },
+    {
+      "word": "stage",
+      "partOfSpeech": "n",
+      "phoneticUs": "stedʒ",
+      "phoneticUk": "steɪdʒ",
+      "translation": "舞台；戏剧；阶段",
+      "sceneMeaning": "舞台；阶段",
+      "examples": "[]"
+    },
+    {
+      "word": "symbol",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪmbl",
+      "phoneticUk": "'sɪmb(ə)l",
+      "translation": "象征；符号，记号；象征，标志",
+      "sceneMeaning": "象征；符号",
+      "examples": "[]"
+    },
+    {
+      "word": "pattern",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pætɚn",
+      "phoneticUk": "'pæt(ə)n",
+      "translation": "型，式样，模，模型；模式",
+      "sceneMeaning": "图案；模式",
+      "examples": "[]"
+    },
+    {
+      "word": "harmony",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɑrməni",
+      "phoneticUk": "'hɑːmənɪ",
+      "translation": "调合，协调，和谐；和谐",
+      "sceneMeaning": "和声；和谐",
+      "examples": "[]"
+    },
+    {
+      "word": "inspire",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'spaɪɚ",
+      "phoneticUk": "ɪn'spaɪə",
+      "translation": "鼓舞；给…以灵感；激发；鼓舞；使产生灵感",
+      "sceneMeaning": "鼓舞；给…以灵感；激发；鼓舞；使产生灵感",
+      "examples": "[]"
+    },
+    {
+      "word": "artistic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɑr'tɪstɪk",
+      "phoneticUk": "ɑː'tɪstɪk",
+      "translation": "艺术的；艺术家的",
+      "sceneMeaning": "艺术的；有艺术感的",
+      "examples": "[]"
+    },
+    {
+      "word": "color",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌlɚ",
+      "phoneticUk": "'kʌlə(r)",
+      "translation": "颜色，彩色；颜料",
+      "sceneMeaning": "颜色；色彩",
+      "examples": "[]"
+    },
+    {
+      "word": "creativity",
+      "partOfSpeech": "n",
+      "phoneticUs": ",krie'tɪvəti",
+      "phoneticUk": "ˌkri:eɪ'tɪvətɪ",
+      "translation": "创造力",
+      "sceneMeaning": "创造力",
+      "examples": "[]"
+    },
+    {
+      "word": "movie",
+      "partOfSpeech": "n",
+      "phoneticUs": "'muvi",
+      "phoneticUk": "'muːvɪ",
+      "translation": "电影；电影院",
+      "sceneMeaning": "电影",
+      "examples": "[]"
+    },
+    {
+      "word": "painting",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pentɪŋ",
+      "phoneticUk": "'peɪntɪŋ",
+      "translation": "油画；绘画；着色",
+      "sceneMeaning": "绘画；画作",
+      "examples": "[]"
+    },
+    {
+      "word": "perspective",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'spɛktɪv",
+      "phoneticUk": "pə'spektɪv",
+      "translation": "透视；远景；观点；视角，观点；远景",
+      "sceneMeaning": "透视；视角",
+      "examples": "[]"
+    },
+    {
+      "word": "appreciation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə,priʃɪ'eʃən",
+      "phoneticUk": "ə,pri:ʃi'eiʃən",
+      "translation": "感激",
+      "sceneMeaning": "感激；本场景常见用法：审美",
+      "examples": "[]"
+    },
+    {
+      "word": "collection",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'lɛkʃən",
+      "phoneticUk": "kə'lekʃ(ə)n",
+      "translation": "搜集，收集；收藏品",
+      "sceneMeaning": "收藏；作品集",
+      "examples": "[]"
+    },
+    {
+      "word": "critic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪtɪk",
+      "phoneticUk": "'krɪtɪk",
+      "translation": "批评家，爱挑剔的人；批评家，评论家",
+      "sceneMeaning": "评论家；批评者",
+      "examples": "[]"
+    },
+    {
+      "word": "dramatic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "drə'mætɪk",
+      "phoneticUk": "drə'mætɪk",
+      "translation": "引人注目的，戏剧的",
+      "sceneMeaning": "戏剧的；引人注目的",
+      "examples": "[]"
+    },
+    {
+      "word": "dramatically",
+      "partOfSpeech": "adv",
+      "phoneticUs": "drə'mætɪkli",
+      "phoneticUk": "drə'mætɪklɪ",
+      "translation": "戏剧性地，引人注目地",
+      "sceneMeaning": "戏剧性地，引人注目地",
+      "examples": "[]"
+    },
+    {
+      "word": "inspiration",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌɪnspəˈreʃən",
+      "phoneticUk": "ˌɪnspə'reɪʃn",
+      "translation": "灵感",
+      "sceneMeaning": "灵感；启发",
+      "examples": "[]"
+    },
+    {
+      "word": "literary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "lɪtərɛri",
+      "phoneticUk": "'lɪt(ə)(rə)rɪ",
+      "translation": "文学(上)的",
+      "sceneMeaning": "文学的",
+      "examples": "[]"
+    },
+    {
+      "word": "movement",
+      "partOfSpeech": "n",
+      "phoneticUs": "'muvmənt",
+      "phoneticUk": "'muːvm(ə)nt",
+      "translation": "动作，活动；移动",
+      "sceneMeaning": "艺术运动；运动",
+      "examples": "[]"
+    },
+    {
+      "word": "paint",
+      "partOfSpeech": "v",
+      "phoneticUs": "",
+      "phoneticUk": "peɪnt",
+      "translation": "画；油漆；绘画",
+      "sceneMeaning": "绘画；涂色",
+      "examples": "[]"
+    },
+    {
+      "word": "reality",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'æləti",
+      "phoneticUk": "rɪ'ælɪtɪ",
+      "translation": "现实；真实",
+      "sceneMeaning": "现实；真实",
+      "examples": "[]"
+    },
+    {
+      "word": "setting",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛtɪŋ",
+      "phoneticUk": "'setɪŋ",
+      "translation": "安装，调整；环境；背景，环境",
+      "sceneMeaning": "背景；环境",
+      "examples": "[]"
+    },
+    {
+      "word": "taste",
+      "partOfSpeech": "n",
+      "phoneticUs": "test",
+      "phoneticUk": "teɪst",
+      "translation": "味觉，品味",
+      "sceneMeaning": "审美；品味；味道",
+      "examples": "[]"
+    },
+    {
+      "word": "visual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vɪʒʊəl",
+      "phoneticUk": "'vɪʒjʊəl; -zj-",
+      "translation": "看的；看得见的",
+      "sceneMeaning": "视觉的",
+      "examples": "[]"
+    },
+    {
+      "word": "abstract",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'æbstrækt",
+      "phoneticUk": "'æbstrækt",
+      "translation": "抽象的；摘要",
+      "sceneMeaning": "抽象的；摘要；本场景常见用法：抽象画；抽象绘画",
+      "examples": "[]"
+    },
+    {
+      "word": "architect",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrkɪtɛkt",
+      "phoneticUk": "'ɑːkɪtekt",
+      "translation": "建筑师",
+      "sceneMeaning": "建筑师；本场景常见用法：n. 造园技师；环境美化设计家",
+      "examples": "[]"
+    },
+    {
+      "word": "artist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrtɪst",
+      "phoneticUk": "'ɑːtɪst",
+      "translation": "艺术家，美术家",
+      "sceneMeaning": "艺术家",
+      "examples": "[]"
+    },
+    {
+      "word": "beauty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bjuti",
+      "phoneticUk": "'bjuːtɪ",
+      "translation": "美，美丽；美人",
+      "sceneMeaning": "美；美人",
+      "examples": "[]"
+    },
+    {
+      "word": "composition",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑmpə'zɪʃən",
+      "phoneticUk": "kɒmpə'zɪʃ(ə)n",
+      "translation": "构成；作品；写作",
+      "sceneMeaning": "构图；作品；作文",
+      "examples": "[]"
+    },
+    {
+      "word": "drama",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "一出戏剧，剧本",
+      "sceneMeaning": "戏剧；戏剧性事件",
+      "examples": "[]"
+    },
+    {
+      "word": "dull",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dʌl",
+      "phoneticUk": "dʌl",
+      "translation": "枯燥的；不鲜明的",
+      "sceneMeaning": "枯燥的；不鲜明的",
+      "examples": "[]"
+    },
+    {
+      "word": "gallery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gæləri",
+      "phoneticUk": "'gæl(ə)rɪ",
+      "translation": "长廊，游廊；画廊；美术馆",
+      "sceneMeaning": "画廊；展厅",
+      "examples": "[]"
+    },
+    {
+      "word": "museum",
+      "partOfSpeech": "n",
+      "phoneticUs": "mju'ziəm",
+      "phoneticUk": "mjuː'zɪəm",
+      "translation": "博物馆；展览馆",
+      "sceneMeaning": "博物馆",
+      "examples": "[]"
+    },
+    {
+      "word": "musical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mjuzɪkl",
+      "phoneticUk": "'mjuːzɪk(ə)l",
+      "translation": "音乐的；和谐的",
+      "sceneMeaning": "音乐的；悦耳的",
+      "examples": "[]"
+    },
+    {
+      "word": "realistic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",riə'lɪstɪk",
+      "phoneticUk": "ˌri:əˈlɪstɪk",
+      "translation": "现实的，实际的",
+      "sceneMeaning": "现实的，实际的；本场景常见用法：写实绘画",
+      "examples": "[]"
+    },
+    {
+      "word": "talent",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tælənt",
+      "phoneticUk": "'tælənt",
+      "translation": "天才；才能；人才",
+      "sceneMeaning": "天才；才能；人才；本场景常见用法：艺术才能",
+      "examples": "[]"
+    },
+    {
+      "word": "actor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æktɚ",
+      "phoneticUk": "'æktə",
+      "translation": "男演员；演剧的人",
+      "sceneMeaning": "演员",
+      "examples": "[]"
+    },
+    {
+      "word": "actress",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æktrɪs",
+      "phoneticUk": "'æktrɪs",
+      "translation": "女演员",
+      "sceneMeaning": "女演员",
+      "examples": "[]"
+    },
+    {
+      "word": "architecture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrkə'tɛktʃɚ",
+      "phoneticUk": "'ɑːkɪtektʃə",
+      "translation": "建筑学；建筑式样",
+      "sceneMeaning": "建筑；建筑学",
+      "examples": "[]"
+    },
+    {
+      "word": "capture",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kæptʃɚ",
+      "phoneticUk": "'kæptʃə",
+      "translation": "捕获，俘获；夺得",
+      "sceneMeaning": "捕获，俘获；夺得；本场景常见用法：激发...的想象力",
+      "examples": "[]"
+    },
+    {
+      "word": "cinema",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪnəmə",
+      "phoneticUk": "'sɪnɪmə; -mɑː",
+      "translation": "电影院；电影，影片",
+      "sceneMeaning": "电影；电影院",
+      "examples": "[]"
+    },
+    {
+      "word": "compose",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'poz",
+      "phoneticUk": "kəm'pəʊz",
+      "translation": "组成，构成；创作",
+      "sceneMeaning": "作曲；构成",
+      "examples": "[]"
+    },
+    {
+      "word": "dance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dæns",
+      "phoneticUk": "dɑːns",
+      "translation": "跳舞；摇晃；舞",
+      "sceneMeaning": "舞蹈",
+      "examples": "[]"
+    },
+    {
+      "word": "flag",
+      "partOfSpeech": "n",
+      "phoneticUs": "flæg",
+      "phoneticUk": "flæg",
+      "translation": "旗，旗帜；旗舰旗",
+      "sceneMeaning": "旗，旗帜；旗舰旗",
+      "examples": "[]"
+    },
+    {
+      "word": "imagination",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ,mædʒɪ'neʃən",
+      "phoneticUk": "ɪ,mædʒɪ'neɪʃ(ə)n",
+      "translation": "想象；想象力；空想",
+      "sceneMeaning": "想象力",
+      "examples": "[]"
+    },
+    {
+      "word": "install",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'stɔl",
+      "phoneticUk": "ɪnˈstɔ:l",
+      "translation": "安装，设置；安装",
+      "sceneMeaning": "安装，设置；安装",
+      "examples": "[]"
+    },
+    {
+      "word": "installation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstə'leʃən",
+      "phoneticUk": "ɪnstə'leɪʃ(ə)n",
+      "translation": "安装；装置；设施；安装；就职；就职仪式",
+      "sceneMeaning": "装置艺术；安装",
+      "examples": "[]"
+    },
+    {
+      "word": "legend",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛdʒənd",
+      "phoneticUk": "'ledʒ(ə)nd",
+      "translation": "传说，传奇；传奇",
+      "sceneMeaning": "传说；传奇",
+      "examples": "[]"
+    },
+    {
+      "word": "makeup",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mek,ʌp",
+      "phoneticUk": "'meɪkʌp",
+      "translation": "化妆品",
+      "sceneMeaning": "化妆；妆容",
+      "examples": "[]"
+    },
+    {
+      "word": "myth",
+      "partOfSpeech": "n",
+      "phoneticUs": "mɪθ",
+      "phoneticUk": "mɪθ",
+      "translation": "神话",
+      "sceneMeaning": "神话；迷思",
+      "examples": "[]"
+    },
+    {
+      "word": "novel",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈnɑːvl",
+      "phoneticUk": "'nɒv(ə)l",
+      "translation": "小说；新的",
+      "sceneMeaning": "小说",
+      "examples": "[]"
+    },
+    {
+      "word": "opera",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑprə",
+      "phoneticUk": "'ɒp(ə)rə",
+      "translation": "歌剧",
+      "sceneMeaning": "歌剧；戏曲",
+      "examples": "[]"
+    },
+    {
+      "word": "plot",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "plɑt",
+      "phoneticUk": "plɒt",
+      "translation": "小块土地；密谋",
+      "sceneMeaning": "情节；阴谋",
+      "examples": "[]"
+    },
+    {
+      "word": "poetry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'poətri",
+      "phoneticUk": "'pəʊɪtrɪ",
+      "translation": "诗，诗歌，诗作",
+      "sceneMeaning": "诗歌",
+      "examples": "[]"
+    },
+    {
+      "word": "review",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'vju",
+      "phoneticUk": "rɪ'vjuː",
+      "translation": "再检查；复习；回顾",
+      "sceneMeaning": "评论；回顾",
+      "examples": "[]"
+    },
+    {
+      "word": "rhythm",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɪðəm",
+      "phoneticUk": "'rɪð(ə)m",
+      "translation": "韵律，格律；节奏",
+      "sceneMeaning": "节奏；韵律",
+      "examples": "[]"
+    },
+    {
+      "word": "tune",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tun",
+      "phoneticUk": "tjuːn",
+      "translation": "调子；和谐；调谐",
+      "sceneMeaning": "调子；和谐；调谐",
+      "examples": "[]"
+    },
+    {
+      "word": "amplify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'æmplɪfaɪ",
+      "phoneticUk": "'æmplɪfaɪ",
+      "translation": "放大，增强；扩大",
+      "sceneMeaning": "放大，增强；扩大",
+      "examples": "[]"
+    },
+    {
+      "word": "band",
+      "partOfSpeech": "n",
+      "phoneticUs": "bænd",
+      "phoneticUk": "bænd",
+      "translation": "乐队；带；波段",
+      "sceneMeaning": "乐队；带子",
+      "examples": "[]"
+    },
+    {
+      "word": "concert",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnsɚt",
+      "phoneticUk": "'kɒnsət",
+      "translation": "音乐会，演奏会",
+      "sceneMeaning": "音乐会",
+      "examples": "[]"
+    },
+    {
+      "word": "contrast",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑntræst",
+      "phoneticUk": "'kɒntrɑːst",
+      "translation": "对比，对照，悬殊；对照物；对比",
+      "sceneMeaning": "对比；反差",
+      "examples": "[]"
+    },
+    {
+      "word": "creature",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kritʃɚ",
+      "phoneticUk": "'kriːtʃə",
+      "translation": "生物，动物，家畜",
+      "sceneMeaning": "生物，动物，家畜",
+      "examples": "[]"
+    },
+    {
+      "word": "document",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɑkjəmənt",
+      "phoneticUk": "'dɒkjʊm(ə)nt",
+      "translation": "公文，文件；证件；文件",
+      "sceneMeaning": "公文，文件；证件；文件；本场景常见用法：设计文件",
+      "examples": "[]"
+    },
+    {
+      "word": "drawer",
+      "partOfSpeech": "n",
+      "phoneticUs": "drɔr",
+      "phoneticUk": "drɔ:(r)",
+      "translation": "抽屉",
+      "sceneMeaning": "抽屉",
+      "examples": "[]"
+    },
+    {
+      "word": "drum",
+      "partOfSpeech": "n",
+      "phoneticUs": "drʌm",
+      "phoneticUk": "drʌm",
+      "translation": "鼓；鼓状物，圆桶",
+      "sceneMeaning": "鼓",
+      "examples": "[]"
+    },
+    {
+      "word": "entertainment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛntɚ'tenmənt",
+      "phoneticUk": "ˌentəˈteɪnmənt",
+      "translation": "娱乐",
+      "sceneMeaning": "娱乐；本场景常见用法：娱乐设计",
+      "examples": "[]"
+    },
+    {
+      "word": "exhibit",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪɡ'zɪbɪt",
+      "phoneticUk": "ɪg'zɪbɪt; eg-",
+      "translation": "显示；陈列，展览",
+      "sceneMeaning": "展出；展示",
+      "examples": "[]"
+    },
+    {
+      "word": "exhibition",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛksɪ'bɪʃən",
+      "phoneticUk": "eksɪ'bɪʃ(ə)n",
+      "translation": "展览，陈列；展览会；展览",
+      "sceneMeaning": "展览",
+      "examples": "[]"
+    },
+    {
+      "word": "handwriting",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hænd'raɪtɪŋ",
+      "phoneticUk": "'hændraɪtɪŋ",
+      "translation": "笔迹，手迹，书法",
+      "sceneMeaning": "笔迹，手迹，书法",
+      "examples": "[]"
+    },
+    {
+      "word": "illustration",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪlə'streʃən",
+      "phoneticUk": "ɪlə'streɪʃ(ə)n",
+      "translation": "说明，图解；例证",
+      "sceneMeaning": "插画；说明",
+      "examples": "[]"
+    },
+    {
+      "word": "installment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'stɔlmənt",
+      "phoneticUk": "ɪn'stɔ:lmənt",
+      "translation": "分期付款",
+      "sceneMeaning": "分期付款；本场景常见用法：分期付款",
+      "examples": "[]"
+    },
+    {
+      "word": "instrument",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstrəmənt",
+      "phoneticUk": "'ɪnstrʊm(ə)nt",
+      "translation": "仪器；工具；乐器；仪器，器械，工具",
+      "sceneMeaning": "乐器；工具",
+      "examples": "[]"
+    },
+    {
+      "word": "interpreter",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɝprɪtɚ",
+      "phoneticUk": "ɪn'tɜːprɪtə",
+      "translation": "译员，口译者",
+      "sceneMeaning": "译员，口译者",
+      "examples": "[]"
+    },
+    {
+      "word": "jazz",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒæz",
+      "phoneticUk": "dʒæz",
+      "translation": "爵士音乐，爵士舞曲",
+      "sceneMeaning": "爵士音乐，爵士舞曲",
+      "examples": "[]"
+    },
+    {
+      "word": "lens",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɛnz",
+      "phoneticUk": "lenz",
+      "translation": "透镜，镜片；镜头",
+      "sceneMeaning": "透镜，镜片；镜头；本场景常见用法：摄影机镜头；摄像头",
+      "examples": "[]"
+    },
+    {
+      "word": "masterpiece",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mæstəpis",
+      "phoneticUk": "'mɑːstəpiːs",
+      "translation": "杰作，名著",
+      "sceneMeaning": "杰作",
+      "examples": "[]"
+    },
+    {
+      "word": "metre",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈmitɚ",
+      "phoneticUk": "'mi:tə(r)",
+      "translation": "米，公尺",
+      "sceneMeaning": "米，公尺；本场景常见用法：立方米",
+      "examples": "[]"
+    },
+    {
+      "word": "musician",
+      "partOfSpeech": "n",
+      "phoneticUs": "mjʊ'zɪʃən",
+      "phoneticUk": "mjuː'zɪʃ(ə)n",
+      "translation": "音乐家；作曲家",
+      "sceneMeaning": "音乐家",
+      "examples": "[]"
+    },
+    {
+      "word": "optical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɑptɪkl",
+      "phoneticUk": "'ɒptɪk(ə)l",
+      "translation": "眼的；光学的",
+      "sceneMeaning": "眼的；光学的；本场景常见用法：[化]光学设计",
+      "examples": "[]"
+    },
+    {
+      "word": "orchestra",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "管弦乐队",
+      "sceneMeaning": "管弦乐队",
+      "examples": "[]"
+    },
+    {
+      "word": "painter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pentɚ",
+      "phoneticUk": "'peɪntə",
+      "translation": "漆工，画家，绘画者",
+      "sceneMeaning": "漆工，画家，绘画者；本场景常见用法：n. 风景画家；山水画家",
+      "examples": "[]"
+    },
+    {
+      "word": "photograph",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fotəɡræf",
+      "phoneticUk": "'fəʊtəgrɑːf",
+      "translation": "照片，相片",
+      "sceneMeaning": "照片，相片；本场景常见用法：航空照片；航摄像片",
+      "examples": "[]"
+    },
+    {
+      "word": "piano",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɪ'æno",
+      "phoneticUk": "pɪ'ænəʊ",
+      "translation": "钢琴",
+      "sceneMeaning": "钢琴",
+      "examples": "[]"
+    },
+    {
+      "word": "poem",
+      "partOfSpeech": "n",
+      "phoneticUs": "'poəm",
+      "phoneticUk": "'pəʊɪm",
+      "translation": "诗，韵文，诗体文",
+      "sceneMeaning": "诗；诗篇",
+      "examples": "[]"
+    },
+    {
+      "word": "poet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'poət",
+      "phoneticUk": "'pəʊɪt",
+      "translation": "诗人",
+      "sceneMeaning": "诗人",
+      "examples": "[]"
+    },
+    {
+      "word": "portrait",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɔrtrɪt",
+      "phoneticUk": "'pɔːtrɪt",
+      "translation": "消像，画像",
+      "sceneMeaning": "肖像；画像",
+      "examples": "[]"
+    },
+    {
+      "word": "sequence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sikwəns",
+      "phoneticUk": "'siːkw(ə)ns",
+      "translation": "连续，继续；次序",
+      "sceneMeaning": "片段；序列",
+      "examples": "[]"
+    },
+    {
+      "word": "shoot",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ʃut",
+      "phoneticUk": "ʃuːt",
+      "translation": "发射；射中；发芽",
+      "sceneMeaning": "发射；射中；发芽；本场景常见用法：拍摄一个镜头；拍摄电影",
+      "examples": "[]"
+    },
+    {
+      "word": "shot",
+      "partOfSpeech": "n",
+      "phoneticUs": "ʃɑt",
+      "phoneticUk": "ʃɒt",
+      "translation": "发射；弹丸；射门",
+      "sceneMeaning": "镜头；拍摄",
+      "examples": "[]"
+    },
+    {
+      "word": "sketch",
+      "partOfSpeech": "n",
+      "phoneticUs": "skɛtʃ",
+      "phoneticUk": "sketʃ",
+      "translation": "略图；速写；概略",
+      "sceneMeaning": "草图；小品",
+      "examples": "[]"
+    },
+    {
+      "word": "statue",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stætʃu",
+      "phoneticUk": "'stætjuː; -tʃuː",
+      "translation": "塑像，雕像，铸像",
+      "sceneMeaning": "雕像",
+      "examples": "[]"
+    },
+    {
+      "word": "trumpet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'trʌmpɪt",
+      "phoneticUk": "'trʌmpɪt",
+      "translation": "喇叭，小号",
+      "sceneMeaning": "喇叭，小号",
+      "examples": "[]"
+    }
+  ]
+}

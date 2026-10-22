@@ -1,0 +1,873 @@
+{
+  "id": "12",
+  "title": "学科、课程、知识门类",
+  "layer": "基础通用词层",
+  "wordCount": 96,
+  "path": "/english/vocabulary/12/",
+  "words": [
+    {
+      "word": "major",
+      "partOfSpeech": "adj / n / v",
+      "phoneticUs": "'medʒɚ",
+      "phoneticUk": "'meɪdʒə",
+      "translation": "较大的；专业；主要的；主修",
+      "sceneMeaning": "专业；主修学生",
+      "examples": "[]"
+    },
+    {
+      "word": "academic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ækə'dɛmɪk",
+      "phoneticUk": "ækə'demɪk",
+      "translation": "学院的；学术的；学术的",
+      "sceneMeaning": "学术的；学院的",
+      "examples": "[]"
+    },
+    {
+      "word": "professional",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "prə'fɛʃənl",
+      "phoneticUk": "prə'feʃ(ə)n(ə)l",
+      "translation": "职业的；专业人员；专业的",
+      "sceneMeaning": "专业的；职业的",
+      "examples": "[]"
+    },
+    {
+      "word": "physical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɪzɪkl",
+      "phoneticUk": "'fɪzɪk(ə)l",
+      "translation": "物质的；物理的；身体上的",
+      "sceneMeaning": "物理的；身体的",
+      "examples": "[]"
+    },
+    {
+      "word": "project",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "prəˈdʒɛkt; prɑdʒɛkt",
+      "phoneticUk": "prəˈdʒekt; ˈprɒdʒekt",
+      "translation": "方案，工程；伸出；工程；课题、作业",
+      "sceneMeaning": "项目；课题",
+      "examples": "[]"
+    },
+    {
+      "word": "apply",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'plaɪ",
+      "phoneticUk": "ə'plaɪ",
+      "translation": "应用，实施，使用；申请；应用",
+      "sceneMeaning": "应用；申请",
+      "examples": "[]"
+    },
+    {
+      "word": "literature",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɪtərəˌtʃʊr",
+      "phoneticUk": "'lɪt(ə)rətʃə",
+      "translation": "文学；文献；文学，文学作品；文献；文献",
+      "sceneMeaning": "文学；文献",
+      "examples": "[]"
+    },
+    {
+      "word": "American",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "əˈmɛrɪkən",
+      "phoneticUk": "əmerɪkən",
+      "translation": "美洲的；美国人",
+      "sceneMeaning": "美洲的；美国人；本场景常见用法：美式英语",
+      "examples": "[]"
+    },
+    {
+      "word": "art",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɑrt",
+      "phoneticUk": "ɑːt",
+      "translation": "艺术，美术；技术",
+      "sceneMeaning": "艺术；美术",
+      "examples": "[]"
+    },
+    {
+      "word": "business",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈbɪznəs",
+      "phoneticUk": "ˈbɪznɪs",
+      "translation": "商业，生意；事务",
+      "sceneMeaning": "商业；生意",
+      "examples": "[]"
+    },
+    {
+      "word": "Chinese",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "",
+      "phoneticUk": ",tʃai'ni:z",
+      "translation": "中国的；中国人",
+      "sceneMeaning": "中文；中国人",
+      "examples": "[]"
+    },
+    {
+      "word": "class",
+      "partOfSpeech": "n",
+      "phoneticUs": "klæs",
+      "phoneticUk": "klɑːs",
+      "translation": "班，班级；阶级",
+      "sceneMeaning": "班级；课",
+      "examples": "[]"
+    },
+    {
+      "word": "computer",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'pjutɚ",
+      "phoneticUk": "kəm'pjuːtə",
+      "translation": "计算机，电脑",
+      "sceneMeaning": "计算机",
+      "examples": "[]"
+    },
+    {
+      "word": "course",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrs",
+      "phoneticUk": "kɔːs",
+      "translation": "课程；过程；一道菜",
+      "sceneMeaning": "课程；过程",
+      "examples": "[]"
+    },
+    {
+      "word": "education",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛdʒu'keʃən",
+      "phoneticUk": "edjʊ'keɪʃ(ə)n",
+      "translation": "教育；训导；教育学",
+      "sceneMeaning": "教育",
+      "examples": "[]"
+    },
+    {
+      "word": "English",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɪŋɡlɪʃ",
+      "phoneticUk": "'ɪŋɡlɪʃ",
+      "translation": "英语；英国人的",
+      "sceneMeaning": "英语；英文",
+      "examples": "[]"
+    },
+    {
+      "word": "explain",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'splen",
+      "phoneticUk": "ɪk'spleɪn",
+      "translation": "解释；为…辩解",
+      "sceneMeaning": "解释",
+      "examples": "[]"
+    },
+    {
+      "word": "history",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈhɪstəri; ˈhɪstri",
+      "phoneticUk": "'hɪst(ə)rɪ",
+      "translation": "历史；个人经历",
+      "sceneMeaning": "历史",
+      "examples": "[]"
+    },
+    {
+      "word": "information",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnfɚ'meʃən",
+      "phoneticUk": "ɪnfə'meɪʃ(ə)n",
+      "translation": "消息，信息；通知",
+      "sceneMeaning": "信息",
+      "examples": "[]"
+    },
+    {
+      "word": "knowledge",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nɑlɪdʒ",
+      "phoneticUk": "'nɒlɪdʒ",
+      "translation": "知识，学识；知道",
+      "sceneMeaning": "知识",
+      "examples": "[]"
+    },
+    {
+      "word": "language",
+      "partOfSpeech": "n",
+      "phoneticUs": "'læŋɡwɪdʒ",
+      "phoneticUk": "'læŋgwɪdʒ",
+      "translation": "语言，语言课程",
+      "sceneMeaning": "语言",
+      "examples": "[]"
+    },
+    {
+      "word": "learn",
+      "partOfSpeech": "vi&vt",
+      "phoneticUs": "lɝn",
+      "phoneticUk": "lɜːn",
+      "translation": "学，学习",
+      "sceneMeaning": "学习；学会",
+      "examples": "[]"
+    },
+    {
+      "word": "letter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛtɚ",
+      "phoneticUk": "'letə",
+      "translation": "信；证书；字母",
+      "sceneMeaning": "信；证书；字母",
+      "examples": "[]"
+    },
+    {
+      "word": "measure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛʒɚ",
+      "phoneticUk": "'meʒə",
+      "translation": "量，测量；分量；测量",
+      "sceneMeaning": "测量；衡量",
+      "examples": "[]"
+    },
+    {
+      "word": "music",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mjuzɪk",
+      "phoneticUk": "'mjuːzɪk",
+      "translation": "音乐，乐曲，乐谱",
+      "sceneMeaning": "音乐",
+      "examples": "[]"
+    },
+    {
+      "word": "particularly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "pɚ'tɪkjəlɚli",
+      "phoneticUk": "pə'tɪkjʊləlɪ",
+      "translation": "特别，尤其，格外",
+      "sceneMeaning": "特别，尤其，格外",
+      "examples": "[]"
+    },
+    {
+      "word": "man",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæn",
+      "phoneticUk": "mæn",
+      "translation": "男人；人；人类",
+      "sceneMeaning": "男人；人；人类",
+      "examples": "[]"
+    },
+    {
+      "word": "scientific",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",saɪən'tɪfɪk",
+      "phoneticUk": "saɪən'tɪfɪk",
+      "translation": "科学(上)的",
+      "sceneMeaning": "科学的",
+      "examples": "[]"
+    },
+    {
+      "word": "management",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mænɪdʒmənt",
+      "phoneticUk": "'mænɪdʒm(ə)nt",
+      "translation": "管理；经营，处理",
+      "sceneMeaning": "管理；经营",
+      "examples": "[]"
+    },
+    {
+      "word": "chemical",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'kɛmɪkl",
+      "phoneticUk": "'kemɪk(ə)l",
+      "translation": "化学的；化学制品",
+      "sceneMeaning": "化学的",
+      "examples": "[]"
+    },
+    {
+      "word": "commonly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'kɑmənli",
+      "phoneticUk": "'kɒmənlɪ",
+      "translation": "普通地，一般地",
+      "sceneMeaning": "普通地，一般地",
+      "examples": "[]"
+    },
+    {
+      "word": "minor",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'maɪnɚ",
+      "phoneticUk": "'maɪnə",
+      "translation": "较小的；较次要的；小的",
+      "sceneMeaning": "辅修科目；未成年人",
+      "examples": "[]"
+    },
+    {
+      "word": "account",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kaʊnt",
+      "phoneticUk": "ə'kaʊnt",
+      "translation": "记述；解释；帐目",
+      "sceneMeaning": "记述；解释；帐目；本场景常见用法：账户管理",
+      "examples": "[]"
+    },
+    {
+      "word": "concept",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnsɛpt",
+      "phoneticUk": "'kɒnsept",
+      "translation": "概念，观念，设想；观点，观念",
+      "sceneMeaning": "概念",
+      "examples": "[]"
+    },
+    {
+      "word": "lesson",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛsn",
+      "phoneticUk": "'les(ə)n",
+      "translation": "功课，课；课程",
+      "sceneMeaning": "课；教训",
+      "examples": "[]"
+    },
+    {
+      "word": "method",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛθəd",
+      "phoneticUk": "'meθəd",
+      "translation": "方法，办法；教学法",
+      "sceneMeaning": "方法",
+      "examples": "[]"
+    },
+    {
+      "word": "physics",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɪzɪks",
+      "phoneticUk": "'fɪzɪks",
+      "translation": "物理学；物理，物理学",
+      "sceneMeaning": "物理学",
+      "examples": "[]"
+    },
+    {
+      "word": "creative",
+      "partOfSpeech": "adj",
+      "phoneticUs": "krɪ'etɪv",
+      "phoneticUk": "kriː'eɪtɪv",
+      "translation": "创造性的，创作的",
+      "sceneMeaning": "有创造力的",
+      "examples": "[]"
+    },
+    {
+      "word": "drawing",
+      "partOfSpeech": "n",
+      "phoneticUs": "'drɔɪŋ",
+      "phoneticUk": "'drɔː(r)ɪŋ",
+      "translation": "图画，素描；绘图",
+      "sceneMeaning": "绘画；图画",
+      "examples": "[]"
+    },
+    {
+      "word": "exam",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪg'zæm",
+      "phoneticUk": "ɪg'zæm; eg-",
+      "translation": "考试；检查，细查",
+      "sceneMeaning": "考试",
+      "examples": "[]"
+    },
+    {
+      "word": "practical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'præktɪkl",
+      "phoneticUk": "'præktɪk(ə)l",
+      "translation": "实践的；实用的",
+      "sceneMeaning": "实际的；实用的",
+      "examples": "[]"
+    },
+    {
+      "word": "principle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɪnsəpl",
+      "phoneticUk": "'prɪnsɪp(ə)l",
+      "translation": "原则，原理；主义；原则，原理",
+      "sceneMeaning": "原则；原理",
+      "examples": "[]"
+    },
+    {
+      "word": "statistics",
+      "partOfSpeech": "n",
+      "phoneticUs": "stə'tɪstɪks",
+      "phoneticUk": "stə'tɪstɪks",
+      "translation": "统计学；数据",
+      "sceneMeaning": "统计学；统计数据",
+      "examples": "[]"
+    },
+    {
+      "word": "theory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'θiəri",
+      "phoneticUk": "'θɪərɪ",
+      "translation": "理论",
+      "sceneMeaning": "理论",
+      "examples": "[]"
+    },
+    {
+      "word": "define",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'faɪn",
+      "phoneticUk": "dɪ'faɪn",
+      "translation": "给…下定义；限定；确定；下定义",
+      "sceneMeaning": "定义；界定",
+      "examples": "[]"
+    },
+    {
+      "word": "biology",
+      "partOfSpeech": "n",
+      "phoneticUs": "baɪ'ɑlədʒi",
+      "phoneticUk": "baɪ'ɒlədʒɪ",
+      "translation": "生物学；生态学",
+      "sceneMeaning": "生物学",
+      "examples": "[]"
+    },
+    {
+      "word": "law",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔ",
+      "phoneticUk": "lɔː",
+      "translation": "法律，法令；法则",
+      "sceneMeaning": "法律；法学",
+      "examples": "[]"
+    },
+    {
+      "word": "medicine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛdsn",
+      "phoneticUk": "'meds(ə)n; 'medɪsɪn",
+      "translation": "内服药；医学",
+      "sceneMeaning": "医学；药",
+      "examples": "[]"
+    },
+    {
+      "word": "moral",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɔrəl",
+      "phoneticUk": "'mɒr(ə)l",
+      "translation": "道德的；合乎道德的；精神上的, 道德的",
+      "sceneMeaning": "道德的；合乎道德的；精神上的, 道德的；本场景常见用法：道德哲学；伦理学",
+      "examples": "[]"
+    },
+    {
+      "word": "painting",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pentɪŋ",
+      "phoneticUk": "'peɪntɪŋ",
+      "translation": "油画；绘画；着色",
+      "sceneMeaning": "绘画；油画",
+      "examples": "[]"
+    },
+    {
+      "word": "psychological",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",saɪkə'lɑdʒɪkl",
+      "phoneticUk": "saɪkə'lɒdʒɪk(ə)l",
+      "translation": "心理的，心理学的；心理上的",
+      "sceneMeaning": "心理的，心理学的；心理上的；本场景常见用法：心理科学；心理学",
+      "examples": "[]"
+    },
+    {
+      "word": "assignment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'saɪnmənt",
+      "phoneticUk": "ə'saɪnm(ə)nt",
+      "translation": "任务，指定的作业；作业",
+      "sceneMeaning": "作业；任务",
+      "examples": "[]"
+    },
+    {
+      "word": "Australian",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɑ'strelɪən",
+      "phoneticUk": "",
+      "translation": "澳大利亚的",
+      "sceneMeaning": "澳大利亚的；本场景常见用法：澳大利亚国立大学",
+      "examples": "[]"
+    },
+    {
+      "word": "biological",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",baɪə'lɑdʒɪkl",
+      "phoneticUk": "ˌbaɪəˈlɒdʒɪkl",
+      "translation": "生物的",
+      "sceneMeaning": "生物学的",
+      "examples": "[]"
+    },
+    {
+      "word": "compare",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pɛr",
+      "phoneticUk": "kəm'peə",
+      "translation": "比较，对照；比作；比较，对照",
+      "sceneMeaning": "比较",
+      "examples": "[]"
+    },
+    {
+      "word": "engineer",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛndʒɪ'nɪr",
+      "phoneticUk": "endʒɪ'nɪə",
+      "translation": "工程师，技师",
+      "sceneMeaning": "工程师，技师；本场景常见用法：化学工程师",
+      "examples": "[]"
+    },
+    {
+      "word": "engineering",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛndʒə'nɪrɪŋ",
+      "phoneticUk": "endʒɪ'nɪərɪŋ",
+      "translation": "工程，工程学",
+      "sceneMeaning": "工程学",
+      "examples": "[]"
+    },
+    {
+      "word": "finance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'faɪnæns",
+      "phoneticUk": "faɪ'næns; fɪ-; 'faɪnæns",
+      "translation": "财政，金融；财源；财政；资助",
+      "sceneMeaning": "金融；财政",
+      "examples": "[]"
+    },
+    {
+      "word": "historical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hɪ'stɔrɪkl",
+      "phoneticUk": "hɪ'stɒrɪk(ə)l",
+      "translation": "历史的，有关历史的",
+      "sceneMeaning": "历史的",
+      "examples": "[]"
+    },
+    {
+      "word": "literary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "lɪtərɛri",
+      "phoneticUk": "'lɪt(ə)(rə)rɪ",
+      "translation": "文学(上)的",
+      "sceneMeaning": "文学的",
+      "examples": "[]"
+    },
+    {
+      "word": "psychologist",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪ'kɑlədʒɪst",
+      "phoneticUk": "saɪˈkɒlədʒɪst",
+      "translation": "心理学家",
+      "sceneMeaning": "心理学家；本场景常见用法：临床心理学家",
+      "examples": "[]"
+    },
+    {
+      "word": "chemistry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɛmɪstri",
+      "phoneticUk": "'kemɪstrɪ",
+      "translation": "化学",
+      "sceneMeaning": "化学",
+      "examples": "[]"
+    },
+    {
+      "word": "describe",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'skraɪb",
+      "phoneticUk": "dɪ'skraɪb",
+      "translation": "形容；描写，描绘",
+      "sceneMeaning": "描述",
+      "examples": "[]"
+    },
+    {
+      "word": "drama",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "一出戏剧，剧本",
+      "sceneMeaning": "戏剧",
+      "examples": "[]"
+    },
+    {
+      "word": "grade",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡred",
+      "phoneticUk": "greɪd",
+      "translation": "给…分等级；等级",
+      "sceneMeaning": "成绩；年级",
+      "examples": "[]"
+    },
+    {
+      "word": "logic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɑdʒɪk",
+      "phoneticUk": "'lɒdʒɪk",
+      "translation": "逻辑，推理；逻辑性；逻辑",
+      "sceneMeaning": "逻辑，推理；逻辑性；逻辑；本场景常见用法：数理逻辑",
+      "examples": "[]"
+    },
+    {
+      "word": "mathematics",
+      "partOfSpeech": "n",
+      "phoneticUs": ",mæθə'mætɪks",
+      "phoneticUk": "mæθ(ə)'mætɪks",
+      "translation": "数学",
+      "sceneMeaning": "数学",
+      "examples": "[]"
+    },
+    {
+      "word": "analyze",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ænə,laɪz",
+      "phoneticUk": "'ænə,laɪz",
+      "translation": "分析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "arithmetic",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'rɪθmətɪk",
+      "phoneticUk": "ə'rɪθmətɪk",
+      "translation": "算术，四则运算",
+      "sceneMeaning": "算术，四则运算；本场景常见用法：理论计算",
+      "examples": "[]"
+    },
+    {
+      "word": "discipline",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dɪsəplɪn",
+      "phoneticUk": "'dɪsɪplɪn",
+      "translation": "纪律；训练；训练",
+      "sceneMeaning": "学科；纪律",
+      "examples": "[]"
+    },
+    {
+      "word": "educate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɛdʒuket",
+      "phoneticUk": "'edjʊkeɪt",
+      "translation": "教育；培养；训练",
+      "sceneMeaning": "教育；培养；训练",
+      "examples": "[]"
+    },
+    {
+      "word": "lecture",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "'lɛktʃɚ",
+      "phoneticUk": "'lektʃə",
+      "translation": "演讲，讲课",
+      "sceneMeaning": "讲座；授课",
+      "examples": "[]"
+    },
+    {
+      "word": "logical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɑdʒɪkl",
+      "phoneticUk": "'lɒdʒɪk(ə)l",
+      "translation": "逻辑的；符合逻辑的",
+      "sceneMeaning": "合乎逻辑的",
+      "examples": "[]"
+    },
+    {
+      "word": "review",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'vju",
+      "phoneticUk": "rɪ'vjuː",
+      "translation": "再检查；复习；回顾",
+      "sceneMeaning": "复习；评论",
+      "examples": "[]"
+    },
+    {
+      "word": "academy",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kædəmi",
+      "phoneticUk": "ə'kædəmɪ",
+      "translation": "私立中学；专科院校",
+      "sceneMeaning": "私立中学；专科院校；本场景常见用法：管理学会；管理科学院",
+      "examples": "[]"
+    },
+    {
+      "word": "calculate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kælkjulet",
+      "phoneticUk": "'kælkjʊleɪt",
+      "translation": "计算；估计；计划；计算",
+      "sceneMeaning": "计算",
+      "examples": "[]"
+    },
+    {
+      "word": "Canadian",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kə'nedɪən",
+      "phoneticUk": "kə'neɪdɪən",
+      "translation": "加拿大的",
+      "sceneMeaning": "加拿大的",
+      "examples": "[]"
+    },
+    {
+      "word": "chemist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɛmɪst",
+      "phoneticUk": "'kemɪst",
+      "translation": "化学家；药剂师",
+      "sceneMeaning": "化学家；药剂师",
+      "examples": "[]"
+    },
+    {
+      "word": "classification",
+      "partOfSpeech": "n",
+      "phoneticUs": ",klæsɪfɪ'keʃən",
+      "phoneticUk": ",klæsɪfɪ'keɪʃ(ə)n",
+      "translation": "分类；分级；分类法；分类，级别",
+      "sceneMeaning": "分类；分级；分类法；分类，级别；本场景常见用法：生态的分类",
+      "examples": "[]"
+    },
+    {
+      "word": "classify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'klæsɪfaɪ",
+      "phoneticUk": "'klæsɪfaɪ",
+      "translation": "把…分类；把…分类，把…分级",
+      "sceneMeaning": "分类",
+      "examples": "[]"
+    },
+    {
+      "word": "compute",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pjʊt",
+      "phoneticUk": "kəm'pjuːt",
+      "translation": "计算，估计，估算",
+      "sceneMeaning": "计算，估计，估算",
+      "examples": "[]"
+    },
+    {
+      "word": "experiment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'sperɪmənt",
+      "phoneticUk": "ɪk'sperɪm(ə)nt; ek-",
+      "translation": "实验；试验",
+      "sceneMeaning": "实验",
+      "examples": "[]"
+    },
+    {
+      "word": "formula",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrmjələ",
+      "phoneticUk": "'fɔːmjʊlə",
+      "translation": "公式，式",
+      "sceneMeaning": "公式，式；本场景常见用法：数学公式",
+      "examples": "[]"
+    },
+    {
+      "word": "geography",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒɪ'ɑɡrəfi",
+      "phoneticUk": "dʒɪ'ɒgrəfɪ",
+      "translation": "地理，地理学",
+      "sceneMeaning": "地理学",
+      "examples": "[]"
+    },
+    {
+      "word": "geometry",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒɪ'ɑmətri",
+      "phoneticUk": "dʒɪ'ɒmɪtrɪ",
+      "translation": "几何，几何学",
+      "sceneMeaning": "几何学",
+      "examples": "[]"
+    },
+    {
+      "word": "Latin",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'lætn",
+      "phoneticUk": "'lætɪn",
+      "translation": "拉丁的；拉丁语",
+      "sceneMeaning": "拉丁的；拉丁语；本场景常见用法：拉丁语言",
+      "examples": "[]"
+    },
+    {
+      "word": "logically",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'lɑdʒɪkli",
+      "phoneticUk": "'lɑdʒɪkli",
+      "translation": "合乎情理地，符合逻辑地",
+      "sceneMeaning": "逻辑上",
+      "examples": "[]"
+    },
+    {
+      "word": "mathematical",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",mæθə'mætɪkl",
+      "phoneticUk": "mæθ(ə)'mætɪk(ə)l",
+      "translation": "数学的，数学上的",
+      "sceneMeaning": "数学的",
+      "examples": "[]"
+    },
+    {
+      "word": "maths",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæθs",
+      "phoneticUk": "mæθs",
+      "translation": "(英)数学",
+      "sceneMeaning": "(英)数学",
+      "examples": "[]"
+    },
+    {
+      "word": "observe",
+      "partOfSpeech": "v",
+      "phoneticUs": "əb'zɝv",
+      "phoneticUk": "əb'zɜːv",
+      "translation": "遵守；看到；说；遵守",
+      "sceneMeaning": "观察；遵守",
+      "examples": "[]"
+    },
+    {
+      "word": "oral",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔrəl",
+      "phoneticUk": "'ɔːr(ə)l",
+      "translation": "口头的；口的",
+      "sceneMeaning": "口头的；口的",
+      "examples": "[]"
+    },
+    {
+      "word": "philosopher",
+      "partOfSpeech": "n",
+      "phoneticUs": "fə'lɑsəfɚ",
+      "phoneticUk": "fɪ'lɒsəfə",
+      "translation": "哲学家",
+      "sceneMeaning": "哲学家",
+      "examples": "[]"
+    },
+    {
+      "word": "philosophy",
+      "partOfSpeech": "n",
+      "phoneticUs": "fə'lɑsəfi",
+      "phoneticUk": "fɪ'lɒsəfɪ",
+      "translation": "哲学；哲理；人生观",
+      "sceneMeaning": "哲学",
+      "examples": "[]"
+    },
+    {
+      "word": "physicist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɪzɪsɪst",
+      "phoneticUk": "'fɪzɪsɪst",
+      "translation": "物理学家",
+      "sceneMeaning": "物理学家；本场景常见用法：核物理学家",
+      "examples": "[]"
+    },
+    {
+      "word": "practically",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'præktɪkli",
+      "phoneticUk": "'præktɪk(ə)lɪ",
+      "translation": "实际上；几乎",
+      "sceneMeaning": "实际上；实用地",
+      "examples": "[]"
+    },
+    {
+      "word": "theoretical",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",θiə'rɛtɪkəl",
+      "phoneticUk": "θɪə'retɪk(ə)l",
+      "translation": "理论(上)的",
+      "sceneMeaning": "理论的",
+      "examples": "[]"
+    }
+  ]
+}

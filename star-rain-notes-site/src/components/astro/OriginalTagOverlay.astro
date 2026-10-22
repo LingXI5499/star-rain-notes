@@ -1,0 +1,22 @@
+---
+interface Tag { slug: string; name: string; postCount: number; }
+interface Props { tags: Tag[]; }
+const { tags } = Astro.props;
+---
+<div class="tag-overlay" data-tag-overlay hidden>
+  <section class="tag-overlay__card" role="dialog" aria-modal="true" aria-labelledby="tag-overlay-title" tabindex="-1">
+    <header class="tag-overlay__head">
+      <div><p class="tag-overlay__eyebrow">TAGS · 标签筛选</p><h2 id="tag-overlay-title">按标签筛选</h2><span>{tags.length} 个标签 · {tags.reduce((sum, tag) => sum + tag.postCount, 0)} 次文章引用</span></div>
+      <button class="tag-overlay__close" type="button" aria-label="关闭标签筛选" data-tag-close>×</button>
+    </header>
+    <div class="tag-overlay__modes" role="group" aria-label="标签组合方式">
+      <button type="button" data-tag-mode="single" class="is-active" aria-pressed="true">单标签<small>选一个，看这个标签下的文章</small></button>
+      <button type="button" data-tag-mode="multi" aria-pressed="false">多标签<small>选多个，命中任一标签的文章</small></button>
+    </div>
+    <div class="tag-overlay__search"><input type="search" placeholder="搜索标签名称" aria-label="搜索标签名称" data-tag-search/><span data-tag-search-count>{tags.length} / {tags.length}</span></div>
+    <div class="tag-overlay__body"><p class="tag-overlay__empty" data-tag-search-empty hidden>没有匹配的标签，换个词试试。</p><div class="tag-overlay__list">
+      {tags.map(tag => <button type="button" data-tag-option={tag.slug} data-tag-name={tag.name} aria-pressed="false" aria-label={`${tag.name}，${tag.postCount} 篇博客`}><span class="tag-overlay__mark" aria-hidden="true"></span><span class="tag-overlay__name">{tag.name}</span><em>{tag.postCount}</em></button>)}
+    </div></div>
+    <footer class="tag-overlay__foot"><div class="tag-overlay__picked" data-tag-picked aria-live="polite"><span>未选择标签，应用后显示所有文章。</span></div><div class="tag-overlay__actions"><button type="button" data-tag-clear>清空</button><button type="button" class="primary-button" data-tag-apply>应用筛选</button></div></footer>
+  </section>
+</div>

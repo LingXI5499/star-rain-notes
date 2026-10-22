@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1",
+    "tutorialCount": 6,
+    "name": "Java全栈知识体系",
+    "slug": "javaquanzhan"
+  },
+  {
+    "id": "2",
+    "tutorialCount": 1,
+    "name": "计算机基础知识",
+    "slug": "724893225146"
+  },
+  {
+    "id": "6",
+    "tutorialCount": 1,
+    "name": "Python全栈知识体系",
+    "slug": "869229878202"
+  },
+  {
+    "id": "7",
+    "tutorialCount": 12,
+    "name": "前端开发",
+    "slug": "546626728421"
+  },
+  {
+    "id": "4",
+    "tutorialCount": 4,
+    "name": "智能体开发知识体系",
+    "slug": "484381842269"
+  },
+  {
+    "id": "3",
+    "tutorialCount": 6,
+    "name": "通用编程与开发工具体系",
+    "slug": "315825310246"
+  }
+]

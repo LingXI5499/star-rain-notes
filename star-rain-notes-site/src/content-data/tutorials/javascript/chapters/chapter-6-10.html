@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 实现防抖的关键是每次调用都 <code>clearTimeout</code> 旧计时器，并重新 <code>setTimeout</code>。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">function debounce(fn, delay) {
+  let t;
+  return (...args) =&gt; { clearTimeout(t); t = setTimeout(() =&gt; fn(...args), delay); };
+}
+</code></pre>
+<p><strong>学完能做：</strong> 实现可重复触发的原生防抖函数。</p>

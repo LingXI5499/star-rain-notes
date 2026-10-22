@@ -1,0 +1,46 @@
+{
+  "slug": "asterway",
+  "title": "Asterway · 星行纪",
+  "description": "个人成长产品的前端原型，整合目标、任务、日程、习惯、专注、复盘和成长社区，并用本地规则伙伴把计划、记忆与站内提醒串联起来。",
+  "category": "软件项目",
+  "format": "原型",
+  "techStack": [
+    "Vue 3",
+    "TypeScript",
+    "Pinia",
+    "Vue Router",
+    "Zod",
+    "Vitest",
+    "Playwright"
+  ],
+  "status": "DEVELOPING",
+  "publishedAt": "2026-10-16",
+  "updatedAt": "2026-10-16",
+  "startedOn": null,
+  "endedOn": null,
+  "featured": false,
+  "cover": "/images/content/8ed8ebfd3f2cb1aa.webp",
+  "screenshots": [
+    {
+      "src": "/images/content/a84444c22ad3f8be.webp",
+      "alt": "今日行动总览（历史演示数据）"
+    },
+    {
+      "src": "/images/content/5b325e9a50e97c3e.webp",
+      "alt": "成长社区前端原型"
+    }
+  ],
+  "links": [
+    {
+      "label": "项目源码",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/asterway",
+      "type": "GITHUB"
+    },
+    {
+      "label": "运行说明",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/asterway/README.md",
+      "type": "DOC"
+    }
+  ],
+  "path": "/portfolio/asterway/"
+}

@@ -1,0 +1,45 @@
+{
+  "slug": "java-web-lab",
+  "title": "Java Web Lab · 全栈链路与业务实验室",
+  "description": "面向 Java Web 学习与技术讲解的交互实验网站，将 HTTP、框架节点、业务代码与可执行 SQL 对应起来，并用六阶段模型解释并发、集群、异步与治理。",
+  "category": "工具",
+  "format": "Web 应用",
+  "techStack": [
+    "JavaScript",
+    "Vite",
+    "Three.js",
+    "CodeMirror 6",
+    "SQLite WASM",
+    "Web Worker"
+  ],
+  "status": "COMPLETED",
+  "publishedAt": "2026-10-16",
+  "updatedAt": "2026-10-16",
+  "startedOn": null,
+  "endedOn": null,
+  "featured": false,
+  "cover": "/images/content/eb4035bf8533b447.webp",
+  "screenshots": [
+    {
+      "src": "/images/content/b581700915b7b66b.webp",
+      "alt": "Java 业务与链路实验界面"
+    },
+    {
+      "src": "/images/content/2542de0d42009906.webp",
+      "alt": "代码阅读与 SQL 讲解"
+    }
+  ],
+  "links": [
+    {
+      "label": "项目源码",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/java-web-lab",
+      "type": "GITHUB"
+    },
+    {
+      "label": "运行说明",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/java-web-lab/README.md",
+      "type": "DOC"
+    }
+  ],
+  "path": "/portfolio/java-web-lab/"
+}

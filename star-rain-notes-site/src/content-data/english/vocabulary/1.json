@@ -1,0 +1,1539 @@
+{
+  "id": "1",
+  "title": "人体与感官",
+  "layer": "基础通用词层",
+  "wordCount": 170,
+  "path": "/english/vocabulary/1/",
+  "words": [
+    {
+      "word": "physical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɪzɪkl",
+      "phoneticUk": "'fɪzɪk(ə)l",
+      "translation": "物质的；物理的；身体上的",
+      "sceneMeaning": "身体的；物理的",
+      "examples": "[]"
+    },
+    {
+      "word": "back",
+      "partOfSpeech": "adv",
+      "phoneticUs": "bæk",
+      "phoneticUk": "bæk",
+      "translation": "在后；回原处；回",
+      "sceneMeaning": "背部；后面",
+      "examples": "[]"
+    },
+    {
+      "word": "bit",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪt",
+      "phoneticUk": "bɪt",
+      "translation": "一点，一些，小片",
+      "sceneMeaning": "一点，一些，小片",
+      "examples": "[]"
+    },
+    {
+      "word": "body",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɑdi",
+      "phoneticUk": "'bɒdɪ",
+      "translation": "身体；主体；尸体",
+      "sceneMeaning": "身体；躯体",
+      "examples": "[]"
+    },
+    {
+      "word": "brain",
+      "partOfSpeech": "n",
+      "phoneticUs": "bren",
+      "phoneticUk": "breɪn",
+      "translation": "脑，脑髓；脑力",
+      "sceneMeaning": "大脑；智力",
+      "examples": "[]"
+    },
+    {
+      "word": "cry",
+      "partOfSpeech": "v",
+      "phoneticUs": "kraɪ",
+      "phoneticUk": "kraɪ",
+      "translation": "哭，哭泣；叫喊",
+      "sceneMeaning": "哭；喊叫",
+      "examples": "[]"
+    },
+    {
+      "word": "eye",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪ",
+      "phoneticUk": "aɪ",
+      "translation": "眼睛；眼力；鉴赏力",
+      "sceneMeaning": "眼睛；视力",
+      "examples": "[]"
+    },
+    {
+      "word": "face",
+      "partOfSpeech": "n",
+      "phoneticUs": "fes",
+      "phoneticUk": "feɪs",
+      "translation": "脸；表面；外表",
+      "sceneMeaning": "脸；面部",
+      "examples": "[]"
+    },
+    {
+      "word": "feel",
+      "partOfSpeech": "v",
+      "phoneticUs": "fiːl",
+      "phoneticUk": "fiːl",
+      "translation": "有知觉；触，摸",
+      "sceneMeaning": "感觉；摸起来",
+      "examples": "[]"
+    },
+    {
+      "word": "feeling",
+      "partOfSpeech": "n",
+      "phoneticUs": "'filɪŋ",
+      "phoneticUk": "'fiːlɪŋ",
+      "translation": "感情；感觉，知觉",
+      "sceneMeaning": "感情；感觉，知觉；本场景常见用法：强烈的感情",
+      "examples": "[]"
+    },
+    {
+      "word": "head",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hɛd",
+      "phoneticUk": "hed",
+      "translation": "头；上端；率领",
+      "sceneMeaning": "头；头部；首脑",
+      "examples": "[]"
+    },
+    {
+      "word": "health",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɛlθ",
+      "phoneticUk": "helθ",
+      "translation": "健康，健康状况",
+      "sceneMeaning": "健康；卫生",
+      "examples": "[]"
+    },
+    {
+      "word": "healthy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɛlθi",
+      "phoneticUk": "'helθɪ",
+      "translation": "健康的；有益健康的",
+      "sceneMeaning": "健康的；有益健康的",
+      "examples": "[]"
+    },
+    {
+      "word": "hear",
+      "partOfSpeech": "v",
+      "phoneticUs": "hɪr",
+      "phoneticUk": "hɪə",
+      "translation": "听见；审讯；听说",
+      "sceneMeaning": "听见；得知",
+      "examples": "[]"
+    },
+    {
+      "word": "heart",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɑrt",
+      "phoneticUk": "hɑːt",
+      "translation": "心，内心；勇气",
+      "sceneMeaning": "心脏；内心",
+      "examples": "[]"
+    },
+    {
+      "word": "help",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hɛlp",
+      "phoneticUk": "help",
+      "translation": "帮助；援助；帮手",
+      "sceneMeaning": "帮助；援助；帮手；本场景常见用法：感谢您的帮助",
+      "examples": "[]"
+    },
+    {
+      "word": "look",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lʊk",
+      "phoneticUk": "lʊk",
+      "translation": "看，显得；看",
+      "sceneMeaning": "看；显得",
+      "examples": "[]"
+    },
+    {
+      "word": "medical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɛdɪkl",
+      "phoneticUk": "'medɪk(ə)l",
+      "translation": "医学的；内科的",
+      "sceneMeaning": "医学的；医疗的",
+      "examples": "[]"
+    },
+    {
+      "word": "touch",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tʌtʃ",
+      "phoneticUk": "tʌtʃ",
+      "translation": "触摸；触动；感动；触",
+      "sceneMeaning": "触摸；感动",
+      "examples": "[]"
+    },
+    {
+      "word": "doctor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɑktɚ",
+      "phoneticUk": "'dɒktə",
+      "translation": "医生，医师；博士",
+      "sceneMeaning": "医生；博士",
+      "examples": "[]"
+    },
+    {
+      "word": "sound",
+      "partOfSpeech": "adj",
+      "phoneticUs": "saʊnd",
+      "phoneticUk": "saʊnd",
+      "translation": "健康的；完好的",
+      "sceneMeaning": "声音；声响",
+      "examples": "[]"
+    },
+    {
+      "word": "treat",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trit",
+      "phoneticUk": "triːt",
+      "translation": "对待；处理；款待",
+      "sceneMeaning": "治疗；对待",
+      "examples": "[]"
+    },
+    {
+      "word": "clearly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'klɪrli",
+      "phoneticUk": "'klɪəlɪ",
+      "translation": "明白地，清晰地",
+      "sceneMeaning": "清楚地；明显地",
+      "examples": "[]"
+    },
+    {
+      "word": "hand",
+      "partOfSpeech": "n",
+      "phoneticUs": "hænd",
+      "phoneticUk": "hænd",
+      "translation": "手；人手；指针",
+      "sceneMeaning": "手；指针；帮助",
+      "examples": "[]"
+    },
+    {
+      "word": "hardly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'hɑrdli",
+      "phoneticUk": "'hɑːdlɪ",
+      "translation": "几乎不，简直不",
+      "sceneMeaning": "几乎不，简直不",
+      "examples": "[]"
+    },
+    {
+      "word": "listen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'lɪsn",
+      "phoneticUk": "'lɪs(ə)n",
+      "translation": "听，留神听；听从",
+      "sceneMeaning": "听；倾听",
+      "examples": "[]"
+    },
+    {
+      "word": "pain",
+      "partOfSpeech": "n",
+      "phoneticUs": "pen",
+      "phoneticUk": "peɪn",
+      "translation": "痛，疼痛；辛苦",
+      "sceneMeaning": "疼痛；痛苦",
+      "examples": "[]"
+    },
+    {
+      "word": "suffer",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sʌfɚ",
+      "phoneticUk": "'sʌfə(r)",
+      "translation": "受苦；遭受（痛苦）",
+      "sceneMeaning": "遭受；忍受",
+      "examples": "[]"
+    },
+    {
+      "word": "blood",
+      "partOfSpeech": "n",
+      "phoneticUs": "blʌd",
+      "phoneticUk": "blʌd",
+      "translation": "血，血液；血统",
+      "sceneMeaning": "血液；血统",
+      "examples": "[]"
+    },
+    {
+      "word": "disease",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'ziz",
+      "phoneticUk": "dɪ'ziːz",
+      "translation": "病，疾病；病害",
+      "sceneMeaning": "疾病；病害",
+      "examples": "[]"
+    },
+    {
+      "word": "hurt",
+      "partOfSpeech": "v",
+      "phoneticUs": "hɝ​t",
+      "phoneticUk": "hɜːt",
+      "translation": "使受伤；使痛心",
+      "sceneMeaning": "伤害；疼痛",
+      "examples": "[]"
+    },
+    {
+      "word": "mental",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɛntl",
+      "phoneticUk": "'ment(ə)l",
+      "translation": "智力的；精神的",
+      "sceneMeaning": "精神的；心理的",
+      "examples": "[]"
+    },
+    {
+      "word": "painful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'penfl",
+      "phoneticUk": "'peɪnfʊl; -f(ə)l",
+      "translation": "使痛的；费力的；痛苦的，疼痛的，令人不快的",
+      "sceneMeaning": "疼痛的；痛苦的",
+      "examples": "[]"
+    },
+    {
+      "word": "vision",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɪʒən",
+      "phoneticUk": "'vɪʒ(ə)n",
+      "translation": "视；想象力；梦幻",
+      "sceneMeaning": "视力；视野；远见",
+      "examples": "[]"
+    },
+    {
+      "word": "foot",
+      "partOfSpeech": "n",
+      "phoneticUs": "fʊt",
+      "phoneticUk": "fʊt",
+      "translation": "脚；最下部；英尺",
+      "sceneMeaning": "脚；英尺",
+      "examples": "[]"
+    },
+    {
+      "word": "hair",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɛr",
+      "phoneticUk": "heə",
+      "translation": "头发，毛发；毛",
+      "sceneMeaning": "头发；毛发",
+      "examples": "[]"
+    },
+    {
+      "word": "sensitive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɛnsətɪv",
+      "phoneticUk": "'sensɪtɪv",
+      "translation": "敏感的；灵敏的；敏感的",
+      "sceneMeaning": "敏感的；体贴的",
+      "examples": "[]"
+    },
+    {
+      "word": "echo",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛko",
+      "phoneticUk": "'ekəʊ",
+      "translation": "回声，反响；重复",
+      "sceneMeaning": "回声，反响；重复",
+      "examples": "[]"
+    },
+    {
+      "word": "squeeze",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "skwiz",
+      "phoneticUk": "skwiːz",
+      "translation": "榨，挤；压榨；压，榨",
+      "sceneMeaning": "榨，挤；压榨；压，榨",
+      "examples": "[]"
+    },
+    {
+      "word": "awake",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "ə'wek",
+      "phoneticUk": "ə'weɪk",
+      "translation": "醒着的；唤醒",
+      "sceneMeaning": "醒着的",
+      "examples": "[]"
+    },
+    {
+      "word": "broad",
+      "partOfSpeech": "adj",
+      "phoneticUs": "brɔd",
+      "phoneticUk": "brɔːd",
+      "translation": "宽的，阔的；广泛的；宽的",
+      "sceneMeaning": "宽的，阔的；广泛的；宽的",
+      "examples": "[]"
+    },
+    {
+      "word": "ill",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "ɪl",
+      "phoneticUk": "ɪl",
+      "translation": "有病的；坏的；坏",
+      "sceneMeaning": "生病的；坏的",
+      "examples": "[]"
+    },
+    {
+      "word": "medicine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛdsn",
+      "phoneticUk": "'meds(ə)n; 'medɪsɪn",
+      "translation": "内服药；医学",
+      "sceneMeaning": "药；医学",
+      "examples": "[]"
+    },
+    {
+      "word": "strain",
+      "partOfSpeech": "v",
+      "phoneticUs": "stren",
+      "phoneticUk": "streɪn",
+      "translation": "拉紧；尽力；扭伤，拉伤",
+      "sceneMeaning": "拉紧；尽力；扭伤，拉伤",
+      "examples": "[]"
+    },
+    {
+      "word": "asleep",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'slip",
+      "phoneticUk": "ə'sliːp",
+      "translation": "睡着的，睡熟的",
+      "sceneMeaning": "睡着的",
+      "examples": "[]"
+    },
+    {
+      "word": "blind",
+      "partOfSpeech": "adj",
+      "phoneticUs": "blaɪnd",
+      "phoneticUk": "blaɪnd",
+      "translation": "瞎的；盲目的",
+      "sceneMeaning": "失明的；盲目的",
+      "examples": "[]"
+    },
+    {
+      "word": "conscious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɑnʃəs",
+      "phoneticUk": "'kɒnʃəs",
+      "translation": "意识到的；有意的",
+      "sceneMeaning": "有意识的；清醒的",
+      "examples": "[]"
+    },
+    {
+      "word": "finger",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɪŋɡɚ",
+      "phoneticUk": "'fɪŋgə",
+      "translation": "手指；指状物",
+      "sceneMeaning": "手指",
+      "examples": "[]"
+    },
+    {
+      "word": "kindness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kaɪndnəs",
+      "phoneticUk": "'kaɪn(d)nɪs",
+      "translation": "仁慈，好意",
+      "sceneMeaning": "仁慈，好意",
+      "examples": "[]"
+    },
+    {
+      "word": "sensible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɛnsəbl",
+      "phoneticUk": "'sensɪb(ə)l",
+      "translation": "感觉得到的；明智的；明智的",
+      "sceneMeaning": "感觉得到的；明智的；明智的",
+      "examples": "[]"
+    },
+    {
+      "word": "survive",
+      "partOfSpeech": "v",
+      "phoneticUs": "sɚ'vaɪv",
+      "phoneticUk": "sə'vaɪv",
+      "translation": "幸免于；活下来",
+      "sceneMeaning": "幸存；存活",
+      "examples": "[]"
+    },
+    {
+      "word": "swallow",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'swɑlo",
+      "phoneticUk": "'swɒləʊ",
+      "translation": "燕子；咽下，吞下",
+      "sceneMeaning": "吞咽；咽下",
+      "examples": "[]"
+    },
+    {
+      "word": "taste",
+      "partOfSpeech": "n",
+      "phoneticUs": "test",
+      "phoneticUk": "teɪst",
+      "translation": "味觉，品味",
+      "sceneMeaning": "尝；有……味道",
+      "examples": "[]"
+    },
+    {
+      "word": "visual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vɪʒʊəl",
+      "phoneticUk": "'vɪʒjʊəl; -zj-",
+      "translation": "看的；看得见的",
+      "sceneMeaning": "视觉的；看得见的",
+      "examples": "[]"
+    },
+    {
+      "word": "breath",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɛθ",
+      "phoneticUk": "breθ",
+      "translation": "气息，呼吸；气味",
+      "sceneMeaning": "呼吸；气息",
+      "examples": "[]"
+    },
+    {
+      "word": "examine",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪg'zæmɪn",
+      "phoneticUk": "ɪg'zæmɪn; eg-",
+      "translation": "检查，仔细观察",
+      "sceneMeaning": "检查；审查",
+      "examples": "[]"
+    },
+    {
+      "word": "eyesight",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aɪsaɪt",
+      "phoneticUk": "'aɪsaɪt",
+      "translation": "视力，目力",
+      "sceneMeaning": "视力，目力",
+      "examples": "[]"
+    },
+    {
+      "word": "gesture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɛstʃɚ",
+      "phoneticUk": "'dʒestʃə",
+      "translation": "姿势，手势；姿态；手势，姿势",
+      "sceneMeaning": "姿势，手势；姿态；手势，姿势",
+      "examples": "[]"
+    },
+    {
+      "word": "glance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡlæns",
+      "phoneticUk": "glɑːns",
+      "translation": "看一下；一瞥",
+      "sceneMeaning": "瞥一眼；扫视",
+      "examples": "[]"
+    },
+    {
+      "word": "hinder",
+      "partOfSpeech": "v",
+      "phoneticUs": "'hɪndɚ",
+      "phoneticUk": "'hɪndə",
+      "translation": "阻碍",
+      "sceneMeaning": "阻碍",
+      "examples": "[]"
+    },
+    {
+      "word": "illness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪlnəs",
+      "phoneticUk": "ˈɪlnəs",
+      "translation": "病，疾病",
+      "sceneMeaning": "疾病；不适",
+      "examples": "[]"
+    },
+    {
+      "word": "loud",
+      "partOfSpeech": "adj",
+      "phoneticUs": "laʊd",
+      "phoneticUk": "laʊd",
+      "translation": "响亮的；吵闹的",
+      "sceneMeaning": "响亮的；吵闹的；本场景常见用法：大声笑",
+      "examples": "[]"
+    },
+    {
+      "word": "muscle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mʌsl",
+      "phoneticUk": "'mʌs(ə)l",
+      "translation": "肌肉，肌；体力",
+      "sceneMeaning": "肌肉；力量",
+      "examples": "[]"
+    },
+    {
+      "word": "obviously",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɑbvɪəsli",
+      "phoneticUk": "'ɒbvɪəslɪ",
+      "translation": "明显地，显然地",
+      "sceneMeaning": "明显地，显然地",
+      "examples": "[]"
+    },
+    {
+      "word": "patient",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'peʃnt",
+      "phoneticUk": "'peɪʃ(ə)nt",
+      "translation": "忍耐的；病人",
+      "sceneMeaning": "病人；患者",
+      "examples": "[]"
+    },
+    {
+      "word": "recover",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'kʌvɚ",
+      "phoneticUk": "rɪ'kʌvə",
+      "translation": "重新获得；挽回；恢复；重新获得；寻回",
+      "sceneMeaning": "恢复；康复",
+      "examples": "[]"
+    },
+    {
+      "word": "stroke",
+      "partOfSpeech": "n",
+      "phoneticUs": "strok",
+      "phoneticUk": "strəʊk",
+      "translation": "打，击；鸣声；中风",
+      "sceneMeaning": "打，击；鸣声；中风",
+      "examples": "[]"
+    },
+    {
+      "word": "visible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vɪzəbl",
+      "phoneticUk": "ˈvɪzəbl",
+      "translation": "可见的，看得见的；看得见的",
+      "sceneMeaning": "可见的，看得见的；看得见的",
+      "examples": "[]"
+    },
+    {
+      "word": "ankle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æŋkl",
+      "phoneticUk": "'æŋk(ə)l",
+      "translation": "踝，踝节部",
+      "sceneMeaning": "踝，踝节部",
+      "examples": "[]"
+    },
+    {
+      "word": "bite",
+      "partOfSpeech": "v",
+      "phoneticUs": "baɪt",
+      "phoneticUk": "baɪt",
+      "translation": "咬，叮，螫；剌穿",
+      "sceneMeaning": "咬；叮",
+      "examples": "[]"
+    },
+    {
+      "word": "bone",
+      "partOfSpeech": "n",
+      "phoneticUs": "bon",
+      "phoneticUk": "bəʊn",
+      "translation": "骨，骨骼",
+      "sceneMeaning": "骨头",
+      "examples": "[]"
+    },
+    {
+      "word": "breast",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɛst",
+      "phoneticUk": "brest",
+      "translation": "乳房；胸脯，胸膛",
+      "sceneMeaning": "乳房；胸脯，胸膛",
+      "examples": "[]"
+    },
+    {
+      "word": "breathe",
+      "partOfSpeech": "v",
+      "phoneticUs": "brið",
+      "phoneticUk": "briːð",
+      "translation": "呼吸",
+      "sceneMeaning": "呼吸",
+      "examples": "[]"
+    },
+    {
+      "word": "choke",
+      "partOfSpeech": "v",
+      "phoneticUs": "tʃok",
+      "phoneticUk": "tʃəʊk",
+      "translation": "使窒息；塞满；使窒息",
+      "sceneMeaning": "使窒息；塞满；使窒息",
+      "examples": "[]"
+    },
+    {
+      "word": "cough",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kɔf",
+      "phoneticUk": "kɒf",
+      "translation": "咳，咳嗽；咳嗽",
+      "sceneMeaning": "咳嗽",
+      "examples": "[]"
+    },
+    {
+      "word": "cure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kjʊr",
+      "phoneticUk": "kjʊə; kjɔː",
+      "translation": "医治；消除；治愈",
+      "sceneMeaning": "治愈；治疗",
+      "examples": "[]"
+    },
+    {
+      "word": "deaf",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɛf",
+      "phoneticUk": "def",
+      "translation": "聋的；不愿听的",
+      "sceneMeaning": "失聪的；聋的",
+      "examples": "[]"
+    },
+    {
+      "word": "glimpse",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡlɪmps",
+      "phoneticUk": "glɪm(p)s",
+      "translation": "瞥见；一瞥，一看",
+      "sceneMeaning": "瞥见；一瞥，一看",
+      "examples": "[]"
+    },
+    {
+      "word": "gum",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡʌm",
+      "phoneticUk": "gʌm",
+      "translation": "口香糖；树胶；牙龈",
+      "sceneMeaning": "口香糖；树胶；牙龈",
+      "examples": "[]"
+    },
+    {
+      "word": "handy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hændi",
+      "phoneticUk": "'hændɪ",
+      "translation": "手边的；便于使用的",
+      "sceneMeaning": "手边的；便于使用的",
+      "examples": "[]"
+    },
+    {
+      "word": "heading",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛdɪŋ",
+      "phoneticUk": "'hedɪŋ",
+      "translation": "标题，题词，题名",
+      "sceneMeaning": "标题，题词，题名；本场景常见用法：抽穗期；出穗期",
+      "examples": "[]"
+    },
+    {
+      "word": "heal",
+      "partOfSpeech": "v",
+      "phoneticUs": "hil",
+      "phoneticUk": "hiːl",
+      "translation": "治愈；使和解",
+      "sceneMeaning": "治愈；康复",
+      "examples": "[]"
+    },
+    {
+      "word": "insult",
+      "partOfSpeech": "v / vt&n",
+      "phoneticUs": "ɪn'sʌlt",
+      "phoneticUk": "ɪn'sʌlt",
+      "translation": "侮辱，凌辱；侮辱",
+      "sceneMeaning": "侮辱，凌辱；侮辱；本场景常见用法：雪上加霜；伤害之外又加侮辱",
+      "examples": "[]"
+    },
+    {
+      "word": "leg",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɛɡ",
+      "phoneticUk": "leg",
+      "translation": "腿，腿部",
+      "sceneMeaning": "腿；桌腿",
+      "examples": "[]"
+    },
+    {
+      "word": "lip",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɪp",
+      "phoneticUk": "lɪp",
+      "translation": "嘴唇",
+      "sceneMeaning": "嘴唇",
+      "examples": "[]"
+    },
+    {
+      "word": "listener",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪsənɚ",
+      "phoneticUk": "'lɪs(ə)nə",
+      "translation": "听者，听众之一",
+      "sceneMeaning": "听者，听众之一",
+      "examples": "[]"
+    },
+    {
+      "word": "lung",
+      "partOfSpeech": "n",
+      "phoneticUs": "lʌŋ",
+      "phoneticUk": "lʌŋ",
+      "translation": "肺脏，肺",
+      "sceneMeaning": "肺",
+      "examples": "[]"
+    },
+    {
+      "word": "miserable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɪzrəbl",
+      "phoneticUk": "'mɪz(ə)rəb(ə)l",
+      "translation": "痛苦的，悲惨的；痛苦的",
+      "sceneMeaning": "痛苦的，悲惨的；痛苦的",
+      "examples": "[]"
+    },
+    {
+      "word": "mouth",
+      "partOfSpeech": "n",
+      "phoneticUs": "maʊθ",
+      "phoneticUk": "maʊθ",
+      "translation": "嘴，口，口腔",
+      "sceneMeaning": "嘴；口",
+      "examples": "[]"
+    },
+    {
+      "word": "neck",
+      "partOfSpeech": "n",
+      "phoneticUs": "nɛk",
+      "phoneticUk": "nek",
+      "translation": "颈，脖子",
+      "sceneMeaning": "脖子；颈部",
+      "examples": "[]"
+    },
+    {
+      "word": "nose",
+      "partOfSpeech": "n",
+      "phoneticUs": "noz",
+      "phoneticUk": "nəʊz",
+      "translation": "鼻子；突出部分",
+      "sceneMeaning": "鼻子",
+      "examples": "[]"
+    },
+    {
+      "word": "nurse",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "nɝs",
+      "phoneticUk": "nɜːs",
+      "translation": "保姆；护士；看护",
+      "sceneMeaning": "护士；保育员",
+      "examples": "[]"
+    },
+    {
+      "word": "survival",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɚ'vaɪvl",
+      "phoneticUk": "səˈvaɪvl",
+      "translation": "幸存",
+      "sceneMeaning": "幸存",
+      "examples": "[]"
+    },
+    {
+      "word": "thorough",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈθʌrəʊ; θʌro",
+      "phoneticUk": "'θʌrə",
+      "translation": "彻底的；详尽的",
+      "sceneMeaning": "彻底的；详尽的",
+      "examples": "[]"
+    },
+    {
+      "word": "tire",
+      "partOfSpeech": "v",
+      "phoneticUs": "'taɪɚ",
+      "phoneticUk": "taɪə",
+      "translation": "疲劳，累；厌倦",
+      "sceneMeaning": "疲劳，累；厌倦；本场景常见用法：厌倦；厌烦",
+      "examples": "[]"
+    },
+    {
+      "word": "unconscious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ʌn'kɑnʃəs",
+      "phoneticUk": "ʌn'kɒnʃəs",
+      "translation": "不省人事的",
+      "sceneMeaning": "无意识的；昏迷的",
+      "examples": "[]"
+    },
+    {
+      "word": "ache",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ek",
+      "phoneticUk": "eɪk",
+      "translation": "痛；想念；疼痛",
+      "sceneMeaning": "疼痛",
+      "examples": "[]"
+    },
+    {
+      "word": "alive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'laɪv",
+      "phoneticUk": "ə'laɪv",
+      "translation": "活着的；活跃的",
+      "sceneMeaning": "活着的；有活力的",
+      "examples": "[]"
+    },
+    {
+      "word": "aloud",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'laʊd",
+      "phoneticUk": "ə'laʊd",
+      "translation": "出声地，大声地",
+      "sceneMeaning": "出声地，大声地",
+      "examples": "[]"
+    },
+    {
+      "word": "arm",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɑrm",
+      "phoneticUk": "ɑːm",
+      "translation": "臂；臂状物；武器",
+      "sceneMeaning": "手臂；武器",
+      "examples": "[]"
+    },
+    {
+      "word": "ax",
+      "partOfSpeech": "n",
+      "phoneticUs": "æks",
+      "phoneticUk": "æks",
+      "translation": "斧子",
+      "sceneMeaning": "斧子",
+      "examples": "[]"
+    },
+    {
+      "word": "bark",
+      "partOfSpeech": "n / vi",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "吠叫声；吠，叫",
+      "sceneMeaning": "吠叫声；吠，叫",
+      "examples": "[]"
+    },
+    {
+      "word": "beard",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪrd",
+      "phoneticUk": "bɪəd",
+      "translation": "胡须，络腮胡子",
+      "sceneMeaning": "胡须，络腮胡子；本场景常见用法：大胡子",
+      "examples": "[]"
+    },
+    {
+      "word": "bleed",
+      "partOfSpeech": "v",
+      "phoneticUs": "blid",
+      "phoneticUk": "bliːd",
+      "translation": "出血，流血；泌脂",
+      "sceneMeaning": "流血；出血",
+      "examples": "[]"
+    },
+    {
+      "word": "brisk",
+      "partOfSpeech": "adj",
+      "phoneticUs": "brɪsk",
+      "phoneticUk": "brɪsk",
+      "translation": "活泼的；清新的",
+      "sceneMeaning": "活泼的；清新的",
+      "examples": "[]"
+    },
+    {
+      "word": "brook",
+      "partOfSpeech": "n",
+      "phoneticUs": "brʊk",
+      "phoneticUk": "brʊk",
+      "translation": "小河，溪流",
+      "sceneMeaning": "小河，溪流",
+      "examples": "[]"
+    },
+    {
+      "word": "brow",
+      "partOfSpeech": "n",
+      "phoneticUs": "braʊ",
+      "phoneticUk": "braʊ",
+      "translation": "额；眉，眉毛",
+      "sceneMeaning": "额；眉，眉毛",
+      "examples": "[]"
+    },
+    {
+      "word": "cheek",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃik",
+      "phoneticUk": "tʃiːk",
+      "translation": "面颊，脸蛋；脸颊",
+      "sceneMeaning": "脸颊",
+      "examples": "[]"
+    },
+    {
+      "word": "cheer",
+      "partOfSpeech": "v",
+      "phoneticUs": "tʃɪr",
+      "phoneticUk": "tʃɪə",
+      "translation": "使振作；欢呼",
+      "sceneMeaning": "使振作；欢呼",
+      "examples": "[]"
+    },
+    {
+      "word": "chest",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɛst",
+      "phoneticUk": "tʃest",
+      "translation": "胸腔，胸膛；箱子",
+      "sceneMeaning": "胸部；箱子",
+      "examples": "[]"
+    },
+    {
+      "word": "chew",
+      "partOfSpeech": "v",
+      "phoneticUs": "tʃʊ",
+      "phoneticUk": "tʃuː",
+      "translation": "咀嚼，嚼碎",
+      "sceneMeaning": "咀嚼",
+      "examples": "[]"
+    },
+    {
+      "word": "chin",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɪn",
+      "phoneticUk": "tʃɪn",
+      "translation": "颏，下巴",
+      "sceneMeaning": "下巴",
+      "examples": "[]"
+    },
+    {
+      "word": "clap",
+      "partOfSpeech": "v",
+      "phoneticUs": "klæp",
+      "phoneticUk": "klæp",
+      "translation": "拍手；拍，轻拍",
+      "sceneMeaning": "拍手；拍，轻拍；本场景常见用法：看见；注视",
+      "examples": "[]"
+    },
+    {
+      "word": "depress",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'prɛs",
+      "phoneticUk": "dɪ'pres",
+      "translation": "使沮丧；按下",
+      "sceneMeaning": "使沮丧；按下",
+      "examples": "[]"
+    },
+    {
+      "word": "disable",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪs'ebl",
+      "phoneticUk": "dɪs'eɪb(ə)l",
+      "translation": "使无能，使伤残",
+      "sceneMeaning": "使无能，使伤残",
+      "examples": "[]"
+    },
+    {
+      "word": "dive",
+      "partOfSpeech": "v",
+      "phoneticUs": "daɪv",
+      "phoneticUk": "daɪv",
+      "translation": "跳水；潜水；俯冲",
+      "sceneMeaning": "跳水；潜水；俯冲",
+      "examples": "[]"
+    },
+    {
+      "word": "ear",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪr",
+      "phoneticUk": "ɪə",
+      "translation": "耳朵；听力，听觉",
+      "sceneMeaning": "耳朵；听觉",
+      "examples": "[]"
+    },
+    {
+      "word": "elbow",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛlbo",
+      "phoneticUk": "'elbəʊ",
+      "translation": "肘，肘部；弯管",
+      "sceneMeaning": "肘，肘部；弯管",
+      "examples": "[]"
+    },
+    {
+      "word": "exclaim",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'sklem",
+      "phoneticUk": "ɪk'skleɪm; ek-",
+      "translation": "呼喊；惊叫",
+      "sceneMeaning": "呼喊；惊叫",
+      "examples": "[]"
+    },
+    {
+      "word": "fever",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fivɚ",
+      "phoneticUk": "'fiːvə",
+      "translation": "发热，发烧；狂热",
+      "sceneMeaning": "发烧；热病",
+      "examples": "[]"
+    },
+    {
+      "word": "fist",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɪst",
+      "phoneticUk": "fɪst",
+      "translation": "拳(头)",
+      "sceneMeaning": "拳(头)",
+      "examples": "[]"
+    },
+    {
+      "word": "flesh",
+      "partOfSpeech": "n",
+      "phoneticUs": "flɛʃ",
+      "phoneticUk": "fleʃ",
+      "translation": "肉，肌肉；肉体",
+      "sceneMeaning": "肉，肌肉；肉体；本场景常见用法：轻伤，皮肉之伤；皮肉伤",
+      "examples": "[]"
+    },
+    {
+      "word": "footstep",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fʊtstɛp",
+      "phoneticUk": "'fʊtstep",
+      "translation": "脚步；脚步声；足迹",
+      "sceneMeaning": "脚步；脚步声；足迹",
+      "examples": "[]"
+    },
+    {
+      "word": "forefinger",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrfɪŋɡɚ",
+      "phoneticUk": "'fɔːfɪŋgə",
+      "translation": "食指",
+      "sceneMeaning": "食指",
+      "examples": "[]"
+    },
+    {
+      "word": "forehead",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔr'hɛd",
+      "phoneticUk": "'fɔːhed; 'fɒrɪd",
+      "translation": "额头，前部",
+      "sceneMeaning": "额头，前部",
+      "examples": "[]"
+    },
+    {
+      "word": "gasp",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡæsp",
+      "phoneticUk": "gɑːsp",
+      "translation": "气喘，喘息",
+      "sceneMeaning": "气喘，喘息",
+      "examples": "[]"
+    },
+    {
+      "word": "glare",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡlɛr",
+      "phoneticUk": "gleə",
+      "translation": "瞪眼",
+      "sceneMeaning": "瞪眼",
+      "examples": "[]"
+    },
+    {
+      "word": "groan",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡron",
+      "phoneticUk": "grəʊn",
+      "translation": "哼，呻吟；呻吟",
+      "sceneMeaning": "哼，呻吟；呻吟",
+      "examples": "[]"
+    },
+    {
+      "word": "handkerchief",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hæŋkɚtʃɪf",
+      "phoneticUk": "'hæŋkətʃɪf",
+      "translation": "手帕",
+      "sceneMeaning": "手帕",
+      "examples": "[]"
+    },
+    {
+      "word": "heel",
+      "partOfSpeech": "n",
+      "phoneticUs": "hil",
+      "phoneticUk": "hiːl",
+      "translation": "脚后跟，踵，后跟",
+      "sceneMeaning": "脚后跟，踵，后跟；本场景常见用法：致命要害；薄弱环节",
+      "examples": "[]"
+    },
+    {
+      "word": "hello",
+      "partOfSpeech": "int",
+      "phoneticUs": "hɛˈlo, hə-",
+      "phoneticUk": "hə'ləʊ; he-",
+      "translation": "喂",
+      "sceneMeaning": "喂",
+      "examples": "[]"
+    },
+    {
+      "word": "helpless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɛlpləs",
+      "phoneticUk": "'helplɪs",
+      "translation": "无助的；无能的",
+      "sceneMeaning": "无助的；无能的",
+      "examples": "[]"
+    },
+    {
+      "word": "impatient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "不耐烦的，急躁的",
+      "sceneMeaning": "不耐烦的，急躁的",
+      "examples": "[]"
+    },
+    {
+      "word": "injure",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪndʒɚ",
+      "phoneticUk": "'ɪndʒə",
+      "translation": "伤害，损害，损伤；使受伤",
+      "sceneMeaning": "伤害；损害",
+      "examples": "[]"
+    },
+    {
+      "word": "injury",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "损害，伤害；受伤处",
+      "sceneMeaning": "伤害；损伤",
+      "examples": "[]"
+    },
+    {
+      "word": "jaw",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒɔ",
+      "phoneticUk": "dʒɔː",
+      "translation": "颌，颚",
+      "sceneMeaning": "颌，颚；本场景常见用法：颌骨",
+      "examples": "[]"
+    },
+    {
+      "word": "kiss",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kɪs",
+      "phoneticUk": "kɪs",
+      "translation": "吻；接吻",
+      "sceneMeaning": "吻；接吻",
+      "examples": "[]"
+    },
+    {
+      "word": "knee",
+      "partOfSpeech": "n",
+      "phoneticUs": "ni",
+      "phoneticUk": "niː",
+      "translation": "膝，膝盖，膝关节",
+      "sceneMeaning": "膝盖",
+      "examples": "[]"
+    },
+    {
+      "word": "kneel",
+      "partOfSpeech": "v",
+      "phoneticUs": "nil",
+      "phoneticUk": "niːl",
+      "translation": "跪，跪下，跪着",
+      "sceneMeaning": "跪，跪下，跪着",
+      "examples": "[]"
+    },
+    {
+      "word": "lame",
+      "partOfSpeech": "adj",
+      "phoneticUs": "lem",
+      "phoneticUk": "leɪm",
+      "translation": "跛的；瘸的，残废的",
+      "sceneMeaning": "跛的；瘸的，残废的",
+      "examples": "[]"
+    },
+    {
+      "word": "lap",
+      "partOfSpeech": "n",
+      "phoneticUs": "læp",
+      "phoneticUk": "læp",
+      "translation": "膝部；一圈；〔坐着时的〕大腿部",
+      "sceneMeaning": "膝部；一圈；〔坐着时的〕大腿部",
+      "examples": "[]"
+    },
+    {
+      "word": "laugh",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "læf",
+      "phoneticUk": "lɑːf",
+      "translation": "笑，发笑；笑",
+      "sceneMeaning": "笑；嘲笑",
+      "examples": "[]"
+    },
+    {
+      "word": "laughter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'læftɚ",
+      "phoneticUk": "'lɑːftə",
+      "translation": "笑，笑声",
+      "sceneMeaning": "笑，笑声",
+      "examples": "[]"
+    },
+    {
+      "word": "lick",
+      "partOfSpeech": "v",
+      "phoneticUs": "lɪk",
+      "phoneticUk": "lɪk",
+      "translation": "舔；舔吃",
+      "sceneMeaning": "舔；舔吃",
+      "examples": "[]"
+    },
+    {
+      "word": "limb",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɪm",
+      "phoneticUk": "lɪm",
+      "translation": "肢，臂，翼；树枝",
+      "sceneMeaning": "肢，臂，翼；树枝",
+      "examples": "[]"
+    },
+    {
+      "word": "mercy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɝsi",
+      "phoneticUk": "'mɜːsɪ",
+      "translation": "仁慈，慈悲，恩惠",
+      "sceneMeaning": "仁慈，慈悲，恩惠",
+      "examples": "[]"
+    },
+    {
+      "word": "mortal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɔrtl",
+      "phoneticUk": "'mɔːt(ə)l",
+      "translation": "终有一死的；致死的",
+      "sceneMeaning": "终有一死的；致死的",
+      "examples": "[]"
+    },
+    {
+      "word": "mourn",
+      "partOfSpeech": "v",
+      "phoneticUs": "mɔrn",
+      "phoneticUk": "mɔːn",
+      "translation": "哀痛，哀悼",
+      "sceneMeaning": "哀痛，哀悼",
+      "examples": "[]"
+    },
+    {
+      "word": "mouthful",
+      "partOfSpeech": "n",
+      "phoneticUs": "'maʊθ'fʊl",
+      "phoneticUk": "'maʊθfʊl; -f(ə)l",
+      "translation": "满口，一口，少量",
+      "sceneMeaning": "满口，一口，少量",
+      "examples": "[]"
+    },
+    {
+      "word": "nod",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɑd",
+      "phoneticUk": "nɒd",
+      "translation": "点(头)；点头表示",
+      "sceneMeaning": "点(头)；点头表示",
+      "examples": "[]"
+    },
+    {
+      "word": "pardon",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pɑrdn",
+      "phoneticUk": "ˈpɑːdn",
+      "translation": "原谅；赦免；原谅",
+      "sceneMeaning": "原谅；赦免；原谅",
+      "examples": "[]"
+    },
+    {
+      "word": "pinch",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɪntʃ",
+      "phoneticUk": "pɪn(t)ʃ",
+      "translation": "捏，拧，掐掉",
+      "sceneMeaning": "捏，拧，掐掉",
+      "examples": "[]"
+    },
+    {
+      "word": "pulse",
+      "partOfSpeech": "n",
+      "phoneticUs": "pʌls",
+      "phoneticUk": "pʌls",
+      "translation": "脉搏；脉冲，脉动",
+      "sceneMeaning": "脉搏；脉冲",
+      "examples": "[]"
+    },
+    {
+      "word": "rib",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪb",
+      "phoneticUk": "rɪb",
+      "translation": "肋，肋骨",
+      "sceneMeaning": "肋，肋骨",
+      "examples": "[]"
+    },
+    {
+      "word": "rifle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'raɪfl",
+      "phoneticUk": "'raɪf(ə)l",
+      "translation": "步枪，来复枪",
+      "sceneMeaning": "步枪，来复枪",
+      "examples": "[]"
+    },
+    {
+      "word": "rouse",
+      "partOfSpeech": "v",
+      "phoneticUs": "raʊz",
+      "phoneticUk": "raʊz",
+      "translation": "唤醒，唤起；惊起",
+      "sceneMeaning": "唤醒，唤起；惊起",
+      "examples": "[]"
+    },
+    {
+      "word": "shiver",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ʃɪvɚ",
+      "phoneticUk": "'ʃɪvə",
+      "translation": "颤抖，哆嗦；冷颤",
+      "sceneMeaning": "颤抖，哆嗦；冷颤",
+      "examples": "[]"
+    },
+    {
+      "word": "shriek",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ʃrik",
+      "phoneticUk": "ʃriːk",
+      "translation": "尖声喊叫；尖叫声",
+      "sceneMeaning": "尖声喊叫；尖叫声",
+      "examples": "[]"
+    },
+    {
+      "word": "sore",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "sɔr",
+      "phoneticUk": "sɔː",
+      "translation": "痛的；恼火的；疮",
+      "sceneMeaning": "痛的；恼火的；疮；本场景常见用法：咽喉痛",
+      "examples": "[]"
+    },
+    {
+      "word": "suck",
+      "partOfSpeech": "v",
+      "phoneticUs": "sʌk",
+      "phoneticUk": "sʌk",
+      "translation": "吸，吮，啜；吸收",
+      "sceneMeaning": "吸，吮，啜；吸收",
+      "examples": "[]"
+    },
+    {
+      "word": "throat",
+      "partOfSpeech": "n",
+      "phoneticUs": "θrot",
+      "phoneticUk": "θrəʊt",
+      "translation": "咽喉，喉咙；嗓音",
+      "sceneMeaning": "喉咙；咽喉",
+      "examples": "[]"
+    },
+    {
+      "word": "toe",
+      "partOfSpeech": "n",
+      "phoneticUs": "to",
+      "phoneticUk": "təʊ",
+      "translation": "脚趾，足尖",
+      "sceneMeaning": "脚趾",
+      "examples": "[]"
+    },
+    {
+      "word": "tumor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tjʊmɚ",
+      "phoneticUk": "'tju:mə",
+      "translation": "瘤",
+      "sceneMeaning": "瘤",
+      "examples": "[]"
+    },
+    {
+      "word": "upbringing",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʌpbrɪŋɪŋ",
+      "phoneticUk": "ˈʌpbrɪŋɪŋ",
+      "translation": "养育，培养，教养",
+      "sceneMeaning": "养育，培养，教养",
+      "examples": "[]"
+    },
+    {
+      "word": "visibility",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɪzə'bɪləti",
+      "phoneticUk": ",vizi'biliti",
+      "translation": "能见度",
+      "sceneMeaning": "能见度",
+      "examples": "[]"
+    },
+    {
+      "word": "whisper",
+      "partOfSpeech": "v",
+      "phoneticUs": "'wɪspɚ",
+      "phoneticUk": "'wɪspə",
+      "translation": "低声地讲；低语",
+      "sceneMeaning": "低语；耳语",
+      "examples": "[]"
+    },
+    {
+      "word": "whistle",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'wɪsl",
+      "phoneticUk": "'wɪs(ə)l",
+      "translation": "口哨；吹口哨",
+      "sceneMeaning": "口哨；吹口哨；本场景常见用法：告发；揭发",
+      "examples": "[]"
+    },
+    {
+      "word": "wound",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "wund",
+      "phoneticUk": "wuːnd",
+      "translation": "创伤，伤；使受伤",
+      "sceneMeaning": "伤口；创伤",
+      "examples": "[]"
+    },
+    {
+      "word": "wrist",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪst",
+      "phoneticUk": "rɪst",
+      "translation": "腕，腕关节",
+      "sceneMeaning": "腕，腕关节",
+      "examples": "[]"
+    },
+    {
+      "word": "yawn",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "jɔn",
+      "phoneticUk": "jɔːn",
+      "translation": "打呵欠；呵欠",
+      "sceneMeaning": "打呵欠；呵欠",
+      "examples": "[]"
+    }
+  ]
+}

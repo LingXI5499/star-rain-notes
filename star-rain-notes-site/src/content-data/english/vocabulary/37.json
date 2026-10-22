@@ -1,0 +1,1107 @@
+{
+  "id": "37",
+  "title": "农业 / 工业 / 制造 / 技术应用",
+  "layer": "社会与世界主题层",
+  "wordCount": 122,
+  "path": "/english/vocabulary/37/",
+  "words": [
+    {
+      "word": "quality",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɑləti",
+      "phoneticUk": "'kwɒlɪtɪ",
+      "translation": "质量；品质，特性；品质",
+      "sceneMeaning": "质量；品质",
+      "examples": "[]"
+    },
+    {
+      "word": "innovation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪnə'veʃən",
+      "phoneticUk": "ˌɪnəˈveɪʃn",
+      "translation": "改革，创新",
+      "sceneMeaning": "创新",
+      "examples": "[]"
+    },
+    {
+      "word": "process",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɑsɛs",
+      "phoneticUk": "'prəʊses",
+      "translation": "过程；工序；加工；过程，进程；；工序；工艺流程；处理",
+      "sceneMeaning": "加工；处理",
+      "examples": "[]"
+    },
+    {
+      "word": "cost",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔst",
+      "phoneticUk": "kɒst",
+      "translation": "价格，代价；成本",
+      "sceneMeaning": "成本；花费",
+      "examples": "[]"
+    },
+    {
+      "word": "data",
+      "partOfSpeech": "n",
+      "phoneticUs": "'detə",
+      "phoneticUk": "'deɪtə",
+      "translation": "数据;；资料",
+      "sceneMeaning": "数据",
+      "examples": "[]"
+    },
+    {
+      "word": "develop",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vɛləp",
+      "phoneticUk": "dɪ'veləp",
+      "translation": "发展；形成；开发",
+      "sceneMeaning": "开发；发展",
+      "examples": "[]"
+    },
+    {
+      "word": "digital",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪdʒɪtl",
+      "phoneticUk": "'dɪdʒɪt(ə)l",
+      "translation": "数字的，计数的",
+      "sceneMeaning": "数字的；数码的",
+      "examples": "[]"
+    },
+    {
+      "word": "energy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛnɚdʒi",
+      "phoneticUk": "'enədʒɪ",
+      "translation": "活力；精力；能",
+      "sceneMeaning": "能源；能量",
+      "examples": "[]"
+    },
+    {
+      "word": "grow",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡro",
+      "phoneticUk": "grəʊ",
+      "translation": "生长；变得；增长",
+      "sceneMeaning": "种植；生长",
+      "examples": "[]"
+    },
+    {
+      "word": "important",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'pɔrtnt",
+      "phoneticUk": "ɪm'pɔːt(ə)nt",
+      "translation": "重要的；有势力的",
+      "sceneMeaning": "重要的；有势力的",
+      "examples": "[]"
+    },
+    {
+      "word": "industry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪndəstri",
+      "phoneticUk": "'ɪndəstrɪ",
+      "translation": "工业，产业；勤劳",
+      "sceneMeaning": "工业；行业",
+      "examples": "[]"
+    },
+    {
+      "word": "maintain",
+      "partOfSpeech": "v",
+      "phoneticUs": "men'ten",
+      "phoneticUk": "meɪn'teɪn; mən'teɪn",
+      "translation": "维持；赡养；维修；维持；主张",
+      "sceneMeaning": "维护；保持",
+      "examples": "[]"
+    },
+    {
+      "word": "part",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɑrt",
+      "phoneticUk": "pɑːt",
+      "translation": "一部分；零件；本份",
+      "sceneMeaning": "部件；部分",
+      "examples": "[]"
+    },
+    {
+      "word": "power",
+      "partOfSpeech": "n",
+      "phoneticUs": "'paʊɚ",
+      "phoneticUk": "'paʊə",
+      "translation": "能力；力；权；幂",
+      "sceneMeaning": "动力；电力；权力",
+      "examples": "[]"
+    },
+    {
+      "word": "produce",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'dus",
+      "phoneticUk": "prə'djuːs",
+      "translation": "生产；产生；展现",
+      "sceneMeaning": "生产；制造",
+      "examples": "[]"
+    },
+    {
+      "word": "product",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑdʌkt",
+      "phoneticUk": "'prɒdʌkt",
+      "translation": "产品，产物；(乘)积",
+      "sceneMeaning": "产品",
+      "examples": "[]"
+    },
+    {
+      "word": "nuclear",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nuklɪɚ",
+      "phoneticUk": "'njuːklɪə",
+      "translation": "原子核的；核心的",
+      "sceneMeaning": "原子核的；核心的；本场景常见用法：原子能发电厂",
+      "examples": "[]"
+    },
+    {
+      "word": "application",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌæpləˈkeʃən",
+      "phoneticUk": "ˌæplɪ'keɪʃ(ə)n",
+      "translation": "请求，申请；施用；申请；应用",
+      "sceneMeaning": "应用；申请",
+      "examples": "[]"
+    },
+    {
+      "word": "electric",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'lɛktrɪk",
+      "phoneticUk": "ɪ'lektrɪk",
+      "translation": "电的，电动的",
+      "sceneMeaning": "电的，电动的；本场景常见用法：电力系统",
+      "examples": "[]"
+    },
+    {
+      "word": "plastic",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'plæstɪk",
+      "phoneticUk": "'plæstɪk",
+      "translation": "可塑的；塑料；塑料的",
+      "sceneMeaning": "塑料",
+      "examples": "[]"
+    },
+    {
+      "word": "chemical",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'kɛmɪkl",
+      "phoneticUk": "'kemɪk(ə)l",
+      "translation": "化学的；化学制品",
+      "sceneMeaning": "化学品",
+      "examples": "[]"
+    },
+    {
+      "word": "motivate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'motə'vet",
+      "phoneticUk": "'məʊtɪveɪt",
+      "translation": "促动；激励，激发；促动，激发，诱导",
+      "sceneMeaning": "促动；激励，激发；促动，激发，诱导",
+      "examples": "[]"
+    },
+    {
+      "word": "network",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nɛtwɝk",
+      "phoneticUk": "'netwɜːk",
+      "translation": "网状物；网络",
+      "sceneMeaning": "网络",
+      "examples": "[]"
+    },
+    {
+      "word": "design",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'zaɪn",
+      "phoneticUk": "dɪ'zaɪn",
+      "translation": "设计；设计；图样",
+      "sceneMeaning": "设计",
+      "examples": "[]"
+    },
+    {
+      "word": "engine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛndʒɪn",
+      "phoneticUk": "'endʒɪn",
+      "translation": "发动机，引擎；机车；引擎，发动机",
+      "sceneMeaning": "发动机；引擎",
+      "examples": "[]"
+    },
+    {
+      "word": "industrial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'dʌstrɪəl",
+      "phoneticUk": "ɪn'dʌstrɪəl",
+      "translation": "工业的；产业的",
+      "sceneMeaning": "工业的；行业的",
+      "examples": "[]"
+    },
+    {
+      "word": "material",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'tɪrɪəl",
+      "phoneticUk": "mə'tɪərɪəl",
+      "translation": "材料；素材a物质的",
+      "sceneMeaning": "材料；素材",
+      "examples": "[]"
+    },
+    {
+      "word": "partly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'pɑrtli",
+      "phoneticUk": "'pɑːtlɪ",
+      "translation": "部分地，不完全地",
+      "sceneMeaning": "部分地，不完全地",
+      "examples": "[]"
+    },
+    {
+      "word": "plant",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "plænt",
+      "phoneticUk": "plɑːnt",
+      "translation": "植物；工厂；栽种；工厂",
+      "sceneMeaning": "种植；安置",
+      "examples": "[]"
+    },
+    {
+      "word": "production",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'dʌkʃən",
+      "phoneticUk": "prə'dʌkʃ(ə)n",
+      "translation": "生产；产品；总产量",
+      "sceneMeaning": "生产；产量",
+      "examples": "[]"
+    },
+    {
+      "word": "regulation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌrɛɡjəˈleʃən",
+      "phoneticUk": "regjʊ'leɪʃ(ə)n",
+      "translation": "规则，规章；管理；管理；规则",
+      "sceneMeaning": "法规；监管",
+      "examples": "[]"
+    },
+    {
+      "word": "reliable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'laɪəbl",
+      "phoneticUk": "rɪ'laɪəb(ə)l",
+      "translation": "可靠的，可信赖的",
+      "sceneMeaning": "可靠的",
+      "examples": "[]"
+    },
+    {
+      "word": "workshop",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wɝkʃɑp",
+      "phoneticUk": "'wɜːkʃɒp",
+      "translation": "车间，工场；创作室",
+      "sceneMeaning": "车间；研讨会",
+      "examples": "[]"
+    },
+    {
+      "word": "capacity",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'pæsəti",
+      "phoneticUk": "kə'pæsɪtɪ",
+      "translation": "容量；能力；能量",
+      "sceneMeaning": "产能；容量",
+      "examples": "[]"
+    },
+    {
+      "word": "yield",
+      "partOfSpeech": "n / v / vt&vi",
+      "phoneticUs": "jild",
+      "phoneticUk": "jiːld",
+      "translation": "出产；产量；产生，得出〔结果、答案或资料",
+      "sceneMeaning": "产量；收益",
+      "examples": "[]"
+    },
+    {
+      "word": "assemble",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sɛmbl",
+      "phoneticUk": "ə'semb(ə)l",
+      "translation": "集合，召集；装配；集合；组装；集合",
+      "sceneMeaning": "装配；集合",
+      "examples": "[]"
+    },
+    {
+      "word": "partial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɑrʃəl",
+      "phoneticUk": "'pɑːʃ(ə)l",
+      "translation": "部分的；不公平的",
+      "sceneMeaning": "部分的；不公平的；本场景常见用法：部分产品；部分乘积",
+      "examples": "[]"
+    },
+    {
+      "word": "crop",
+      "partOfSpeech": "n",
+      "phoneticUs": "krɑp",
+      "phoneticUk": "krɒp",
+      "translation": "农作物，庄稼；一熟",
+      "sceneMeaning": "农作物；收成",
+      "examples": "[]"
+    },
+    {
+      "word": "efficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃnt",
+      "phoneticUk": "ɪ'fɪʃ(ə)nt",
+      "translation": "效率高的，有能力的",
+      "sceneMeaning": "高效的",
+      "examples": "[]"
+    },
+    {
+      "word": "equipment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kwɪpmənt",
+      "phoneticUk": "ɪ'kwɪpm(ə)nt",
+      "translation": "装备，设备，配备",
+      "sceneMeaning": "设备",
+      "examples": "[]"
+    },
+    {
+      "word": "fuel",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fjuəl",
+      "phoneticUk": "fjʊəl",
+      "translation": "燃料；给…加燃料",
+      "sceneMeaning": "燃料",
+      "examples": "[]"
+    },
+    {
+      "word": "greenhouse",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡrinhaʊs",
+      "phoneticUk": "'griːnhaʊs",
+      "translation": "温室，玻璃暖房",
+      "sceneMeaning": "温室",
+      "examples": "[]"
+    },
+    {
+      "word": "machine",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'ʃin",
+      "phoneticUk": "mə'ʃiːn",
+      "translation": "机器；机械",
+      "sceneMeaning": "机器",
+      "examples": "[]"
+    },
+    {
+      "word": "mill",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "mɪl",
+      "translation": "磨坊；制造厂；工厂",
+      "sceneMeaning": "磨坊；制造厂；工厂；本场景常见用法：纺织厂",
+      "examples": "[]"
+    },
+    {
+      "word": "platform",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plæt'fɔrm",
+      "phoneticUk": "'plætfɔːm",
+      "translation": "平台；站台；讲台",
+      "sceneMeaning": "平台",
+      "examples": "[]"
+    },
+    {
+      "word": "robot",
+      "partOfSpeech": "n",
+      "phoneticUs": "'robɑt",
+      "phoneticUk": "'rəʊbɒt",
+      "translation": "机器人；自动机",
+      "sceneMeaning": "机器人",
+      "examples": "[]"
+    },
+    {
+      "word": "terminal",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈtɜːrmɪnl",
+      "phoneticUk": "'tɜːmɪn(ə)l",
+      "translation": "末端的；末端；终点站，航空站",
+      "sceneMeaning": "终端；航站楼",
+      "examples": "[]"
+    },
+    {
+      "word": "auto",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔto",
+      "phoneticUk": "'ɔːtəʊ",
+      "translation": "(口语)汽车",
+      "sceneMeaning": "(口语)汽车；本场景常见用法：微机绘图软件（Computer Aided Design）",
+      "examples": "[]"
+    },
+    {
+      "word": "device",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'vaɪs",
+      "phoneticUk": "dɪˈvaɪs",
+      "translation": "器械，装置；设计；装置，设备",
+      "sceneMeaning": "设备；装置",
+      "examples": "[]"
+    },
+    {
+      "word": "electronics",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ,lɛk'trɑnɪks",
+      "phoneticUk": "ɪlek'trɒnɪks; el-",
+      "translation": "电子学",
+      "sceneMeaning": "电子产品；电子学",
+      "examples": "[]"
+    },
+    {
+      "word": "engineer",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛndʒɪ'nɪr",
+      "phoneticUk": "endʒɪ'nɪə",
+      "translation": "工程师，技师",
+      "sceneMeaning": "工程师，技师；本场景常见用法：机械工程师",
+      "examples": "[]"
+    },
+    {
+      "word": "engineering",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛndʒə'nɪrɪŋ",
+      "phoneticUk": "endʒɪ'nɪərɪŋ",
+      "translation": "工程，工程学",
+      "sceneMeaning": "工程；工程学",
+      "examples": "[]"
+    },
+    {
+      "word": "faculty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæklti",
+      "phoneticUk": "'fæk(ə)ltɪ",
+      "translation": "才能，能力；系，科",
+      "sceneMeaning": "才能，能力；系，科",
+      "examples": "[]"
+    },
+    {
+      "word": "mainstream",
+      "partOfSpeech": "n",
+      "phoneticUs": "'menstrim",
+      "phoneticUk": "'meɪnstri:m",
+      "translation": "主流",
+      "sceneMeaning": "主流",
+      "examples": "[]"
+    },
+    {
+      "word": "maintenance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mentənəns",
+      "phoneticUk": "'meɪnt(ə)nəns; -tɪn-",
+      "translation": "维持，保持；维修",
+      "sceneMeaning": "维护；保养",
+      "examples": "[]"
+    },
+    {
+      "word": "factory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktri",
+      "phoneticUk": "'fækt(ə)rɪ",
+      "translation": "工厂，制造厂",
+      "sceneMeaning": "工厂",
+      "examples": "[]"
+    },
+    {
+      "word": "farm",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɑrm",
+      "phoneticUk": "fɑːm",
+      "translation": "农场，农庄；饲养场",
+      "sceneMeaning": "农场",
+      "examples": "[]"
+    },
+    {
+      "word": "hardware",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɑrdwɛr",
+      "phoneticUk": "'hɑːdweə",
+      "translation": "五金器具；硬件",
+      "sceneMeaning": "硬件",
+      "examples": "[]"
+    },
+    {
+      "word": "innovate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪnəvet",
+      "phoneticUk": "'ɪnəveɪt",
+      "translation": "创新，革新",
+      "sceneMeaning": "创新，革新",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanic",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'kænɪk",
+      "phoneticUk": "mɪ'kænɪk",
+      "translation": "技工，机械，机修工；机械师",
+      "sceneMeaning": "技工，机械，机修工；机械师；本场景常见用法：机械设计",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mɪ'kænɪkəl",
+      "phoneticUk": "mɪ'kænɪk(ə)l",
+      "translation": "机械的；力学的",
+      "sceneMeaning": "机械的",
+      "examples": "[]"
+    },
+    {
+      "word": "motor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'motɚ",
+      "phoneticUk": "'məʊtə",
+      "translation": "发动机；机动车",
+      "sceneMeaning": "电动机；马达",
+      "examples": "[]"
+    },
+    {
+      "word": "procedure",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'sidʒɚ",
+      "phoneticUk": "prə'siːdʒə",
+      "translation": "程序；手续；过程；程序",
+      "sceneMeaning": "程序；步骤",
+      "examples": "[]"
+    },
+    {
+      "word": "productive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'dʌktɪv",
+      "phoneticUk": "prəˈdʌktɪv",
+      "translation": "富有成效的",
+      "sceneMeaning": "富有成效的；本场景常见用法：生产维修",
+      "examples": "[]"
+    },
+    {
+      "word": "repair",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "rɪ'pɛr",
+      "phoneticUk": "rɪ'peə",
+      "translation": "修理，修补",
+      "sceneMeaning": "修理；维修",
+      "examples": "[]"
+    },
+    {
+      "word": "battery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæt(ə)rɪ",
+      "phoneticUk": "'bætri",
+      "translation": "电池；一套，一组",
+      "sceneMeaning": "电池",
+      "examples": "[]"
+    },
+    {
+      "word": "certificate",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɚˈtɪfɪkɪt; (for v.,) sɚˈtɪfɪˌket",
+      "phoneticUk": "səˈtɪfɪkɪt; (for v.,) səˈtɪfɪˌkeɪt",
+      "translation": "证书，证件，执照",
+      "sceneMeaning": "证书，证件，执照；本场景常见用法：检验证明书；检查证明",
+      "examples": "[]"
+    },
+    {
+      "word": "circuit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɝkɪt",
+      "phoneticUk": "'sɜːkɪt",
+      "translation": "电路；环行；巡行",
+      "sceneMeaning": "电路；巡回",
+      "examples": "[]"
+    },
+    {
+      "word": "corn",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrn",
+      "phoneticUk": "kɔːn",
+      "translation": "谷物；(英)小麦",
+      "sceneMeaning": "玉米",
+      "examples": "[]"
+    },
+    {
+      "word": "cultivate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kʌltɪvet",
+      "phoneticUk": "'kʌltɪveɪt",
+      "translation": "耕；种植；培养；培养， 养成",
+      "sceneMeaning": "耕种；培养",
+      "examples": "[]"
+    },
+    {
+      "word": "harvest",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'hɑrvɪst",
+      "phoneticUk": "'hɑːvɪst",
+      "translation": "收获，收成；收割；丰收，收获",
+      "sceneMeaning": "收获",
+      "examples": "[]"
+    },
+    {
+      "word": "import",
+      "partOfSpeech": "n / v / vt&n",
+      "phoneticUs": "'ɪmpɔt",
+      "phoneticUk": "ɪm'pɔːt",
+      "translation": "输入，进口；进口",
+      "sceneMeaning": "进口；进口商品",
+      "examples": "[]"
+    },
+    {
+      "word": "inspect",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'spɛkt",
+      "phoneticUk": "ɪn'spekt",
+      "translation": "检查，审查；检阅",
+      "sceneMeaning": "检查；检验",
+      "examples": "[]"
+    },
+    {
+      "word": "inspection",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'spɛkʃən",
+      "phoneticUk": "ɪn'spekʃn",
+      "translation": "检查，审查；检阅",
+      "sceneMeaning": "检查；检验",
+      "examples": "[]"
+    },
+    {
+      "word": "install",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'stɔl",
+      "phoneticUk": "ɪnˈstɔ:l",
+      "translation": "安装，设置；安装",
+      "sceneMeaning": "安装",
+      "examples": "[]"
+    },
+    {
+      "word": "installation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstə'leʃən",
+      "phoneticUk": "ɪnstə'leɪʃ(ə)n",
+      "translation": "安装；装置；设施；安装；就职；就职仪式",
+      "sceneMeaning": "安装；装置；设施；安装；就职；就职仪式；本场景常见用法：电气安装技术；电气装置",
+      "examples": "[]"
+    },
+    {
+      "word": "invention",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vɛnʃən",
+      "phoneticUk": "ɪn'venʃ(ə)n",
+      "translation": "发明，创造；捏造",
+      "sceneMeaning": "发明",
+      "examples": "[]"
+    },
+    {
+      "word": "operate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɑpə'ret",
+      "phoneticUk": "'ɒpəreɪt",
+      "translation": "操作；施行手术",
+      "sceneMeaning": "操作；运行",
+      "examples": "[]"
+    },
+    {
+      "word": "radiation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",redɪ'eʃən",
+      "phoneticUk": "reɪdɪ'eɪʃ(ə)n",
+      "translation": "放射，发射；辐射能",
+      "sceneMeaning": "放射，发射；辐射能",
+      "examples": "[]"
+    },
+    {
+      "word": "steel",
+      "partOfSpeech": "n",
+      "phoneticUs": "stil",
+      "phoneticUk": "stiːl",
+      "translation": "钢，钢铁",
+      "sceneMeaning": "钢",
+      "examples": "[]"
+    },
+    {
+      "word": "agriculture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æɡrɪkʌltʃɚ",
+      "phoneticUk": "'ægrɪkʌltʃə",
+      "translation": "农业，农艺；农学",
+      "sceneMeaning": "农业",
+      "examples": "[]"
+    },
+    {
+      "word": "assembly",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'sɛmbli",
+      "phoneticUk": "ə'semblɪ",
+      "translation": "集合；集会；装配；装配",
+      "sceneMeaning": "集合；集会；装配；装配；本场景常见用法：机器装配；机器组合",
+      "examples": "[]"
+    },
+    {
+      "word": "automatic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔtə'mætɪk",
+      "phoneticUk": "ɔːtə'mætɪk",
+      "translation": "自动的；机械的；自动的",
+      "sceneMeaning": "自动的",
+      "examples": "[]"
+    },
+    {
+      "word": "automation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɔtə'meʃən",
+      "phoneticUk": "ɔːtə'meɪʃ(ə)n",
+      "translation": "自动，自动化",
+      "sceneMeaning": "自动化",
+      "examples": "[]"
+    },
+    {
+      "word": "automobile",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɔtəmə'bil",
+      "phoneticUk": "'ɔːtəməbiːl",
+      "translation": "汽车，机动车",
+      "sceneMeaning": "汽车，机动车；本场景常见用法：汽车制造厂",
+      "examples": "[]"
+    },
+    {
+      "word": "cast",
+      "partOfSpeech": "v",
+      "phoneticUs": "kæst",
+      "phoneticUk": "kɑːst",
+      "translation": "投，扔，抛；浇铸",
+      "sceneMeaning": "投，扔，抛；浇铸；本场景常见用法：球墨铸铁",
+      "examples": "[]"
+    },
+    {
+      "word": "cattle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kætl",
+      "phoneticUk": "'kæt(ə)l",
+      "translation": "牛；牲口，家畜",
+      "sceneMeaning": "牛；牲畜",
+      "examples": "[]"
+    },
+    {
+      "word": "component",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'ponənt",
+      "phoneticUk": "kəm'pəʊnənt",
+      "translation": "组成部分；分；组件；成分",
+      "sceneMeaning": "零部件；组成部分",
+      "examples": "[]"
+    },
+    {
+      "word": "corner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɔrnɚ",
+      "phoneticUk": "'kɔːnə",
+      "translation": "角；犄角；边远地区",
+      "sceneMeaning": "角；犄角；边远地区",
+      "examples": "[]"
+    },
+    {
+      "word": "dairy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɛri",
+      "phoneticUk": "'deərɪ",
+      "translation": "牛奶场；乳制品",
+      "sceneMeaning": "牛奶场；乳制品；本场景常见用法：乳品业，乳品加工业；乳制品行业",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'fɪʃənsi",
+      "phoneticUk": "ɪ'fɪʃ(ə)nsɪ",
+      "translation": "效率；功效，效能",
+      "sceneMeaning": "效率",
+      "examples": "[]"
+    },
+    {
+      "word": "export",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈekspɔːrt；ɪkˈ-",
+      "phoneticUk": "ˈekspɔːt；ɪkˈ-",
+      "translation": "输出，出口；运走",
+      "sceneMeaning": "出口；出口产品",
+      "examples": "[]"
+    },
+    {
+      "word": "farmer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɑmɚ",
+      "phoneticUk": "'fɑːmə",
+      "translation": "农民，农夫；农场主",
+      "sceneMeaning": "农民；农场主",
+      "examples": "[]"
+    },
+    {
+      "word": "fertile",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈfɝtəl; (canadian) ˈfɝˌtaɪl",
+      "phoneticUk": "'fɜːtaɪl",
+      "translation": "肥沃的；多产的",
+      "sceneMeaning": "肥沃的；多产的",
+      "examples": "[]"
+    },
+    {
+      "word": "fertilizer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɝtəlaɪzɚ",
+      "phoneticUk": "'fɜːtɪlaɪzə",
+      "translation": "肥料",
+      "sceneMeaning": "肥料",
+      "examples": "[]"
+    },
+    {
+      "word": "germ",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒɝm",
+      "phoneticUk": "dʒɜːm",
+      "translation": "微生物，细菌，幼芽",
+      "sceneMeaning": "微生物，细菌，幼芽",
+      "examples": "[]"
+    },
+    {
+      "word": "grain",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡren",
+      "phoneticUk": "greɪn",
+      "translation": "谷物，谷粒；颗粒；谷物，粮食",
+      "sceneMeaning": "谷物；颗粒",
+      "examples": "[]"
+    },
+    {
+      "word": "industrialize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'dʌstrɪəlaɪz",
+      "phoneticUk": "ɪnˈdʌstrɪəlʌɪz",
+      "translation": "使工业化",
+      "sceneMeaning": "使工业化",
+      "examples": "[]"
+    },
+    {
+      "word": "inspector",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'spɛktɚ",
+      "phoneticUk": "ɪn'spektə",
+      "translation": "检查员",
+      "sceneMeaning": "检查员；本场景常见用法：质量检验员",
+      "examples": "[]"
+    },
+    {
+      "word": "invent",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'vɛnt",
+      "phoneticUk": "ɪn'vent",
+      "translation": "发明，创造；捏造",
+      "sceneMeaning": "发明，创造；捏造",
+      "examples": "[]"
+    },
+    {
+      "word": "inventor",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vɛntɚ",
+      "phoneticUk": "ɪn'ventə",
+      "translation": "发明者；发明家",
+      "sceneMeaning": "发明者；发明家",
+      "examples": "[]"
+    },
+    {
+      "word": "laser",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lezɚ",
+      "phoneticUk": "'leɪzə",
+      "translation": "激光",
+      "sceneMeaning": "激光；本场景常见用法：[光]半导体激光（等于diode laser）",
+      "examples": "[]"
+    },
+    {
+      "word": "locomotive",
+      "partOfSpeech": "n",
+      "phoneticUs": ",lokə'motɪv",
+      "phoneticUk": "ləʊkə'məʊtɪv",
+      "translation": "火车头，机车",
+      "sceneMeaning": "火车头，机车；本场景常见用法：机车发动机；机车蒸汽机",
+      "examples": "[]"
+    },
+    {
+      "word": "manufacture",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mænjə'fæktʃɚ",
+      "phoneticUk": "mænjʊ'fæktʃə",
+      "translation": "制造；制造；产品；制造，生产",
+      "sceneMeaning": "制造；生产",
+      "examples": "[]"
+    },
+    {
+      "word": "manufacturer",
+      "partOfSpeech": "n",
+      "phoneticUs": ",mænju'fæktʃərɚ",
+      "phoneticUk": ",mænjʊ'fæktʃ(ə)rə(r)",
+      "translation": "制造商；制造厂",
+      "sceneMeaning": "制造商",
+      "examples": "[]"
+    },
+    {
+      "word": "metal",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛtl",
+      "phoneticUk": "'met(ə)l",
+      "translation": "金属，金属制品",
+      "sceneMeaning": "金属",
+      "examples": "[]"
+    },
+    {
+      "word": "motive",
+      "partOfSpeech": "n",
+      "phoneticUs": "'motɪv",
+      "phoneticUk": "'məʊtɪv",
+      "translation": "动机，目的",
+      "sceneMeaning": "动机，目的",
+      "examples": "[]"
+    },
+    {
+      "word": "output",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aʊtpʊt",
+      "phoneticUk": "'aʊtpʊt",
+      "translation": "产量；输出量；输出",
+      "sceneMeaning": "产出；输出",
+      "examples": "[]"
+    },
+    {
+      "word": "ox",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɑks",
+      "phoneticUk": "ɒks",
+      "translation": "牛；公牛，阉牛",
+      "sceneMeaning": "牛；公牛，阉牛",
+      "examples": "[]"
+    },
+    {
+      "word": "packet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pækɪt",
+      "phoneticUk": "'pækɪt",
+      "translation": "小包(裹)，小捆",
+      "sceneMeaning": "小包(裹)，小捆",
+      "examples": "[]"
+    },
+    {
+      "word": "plantation",
+      "partOfSpeech": "n",
+      "phoneticUs": "plæn'teʃən",
+      "phoneticUk": "plæn'teɪʃ(ə)n; plɑːn-",
+      "translation": "种植园；栽植",
+      "sceneMeaning": "种植园",
+      "examples": "[]"
+    },
+    {
+      "word": "plough",
+      "partOfSpeech": "n / vt&vi",
+      "phoneticUs": "plaʊ",
+      "phoneticUk": "plaʊ",
+      "translation": "犁；犁，耕",
+      "sceneMeaning": "犁；犁，耕",
+      "examples": "[]"
+    },
+    {
+      "word": "rear",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪr",
+      "phoneticUk": "rɪə",
+      "translation": "后部，后面；背面",
+      "sceneMeaning": "后部，后面；背面",
+      "examples": "[]"
+    },
+    {
+      "word": "repave",
+      "partOfSpeech": "v",
+      "phoneticUs": "",
+      "phoneticUk": "ri:'peɪv",
+      "translation": "再铺，重新铺砌",
+      "sceneMeaning": "再铺，重新铺砌",
+      "examples": "[]"
+    },
+    {
+      "word": "seed",
+      "partOfSpeech": "n",
+      "phoneticUs": "sid",
+      "phoneticUk": "siːd",
+      "translation": "种(子)，籽，萌芽",
+      "sceneMeaning": "种子",
+      "examples": "[]"
+    },
+    {
+      "word": "semiconductor",
+      "partOfSpeech": "n",
+      "phoneticUs": ",sɛmɪkən'dʌktɚ",
+      "phoneticUk": ",semɪkən'dʌktə",
+      "translation": "n.；半导体",
+      "sceneMeaning": "半导体",
+      "examples": "[]"
+    },
+    {
+      "word": "sow",
+      "partOfSpeech": "v",
+      "phoneticUs": "so",
+      "phoneticUk": "səʊ",
+      "translation": "播(种)；播种",
+      "sceneMeaning": "播(种)；播种",
+      "examples": "[]"
+    },
+    {
+      "word": "textile",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'tɛkstaɪl",
+      "phoneticUk": "'tekstaɪl",
+      "translation": "n.；纺织品；纺织的",
+      "sceneMeaning": "纺织品；纺织业",
+      "examples": "[]"
+    },
+    {
+      "word": "tractor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'træktɚ",
+      "phoneticUk": "'træktə",
+      "translation": "拖拉机；牵引车",
+      "sceneMeaning": "拖拉机",
+      "examples": "[]"
+    },
+    {
+      "word": "transistor",
+      "partOfSpeech": "n",
+      "phoneticUs": "træn'zɪstɚ",
+      "phoneticUk": "træn'zɪstə; trɑːn-; -'sɪ-",
+      "translation": "晶体管",
+      "sceneMeaning": "晶体管",
+      "examples": "[]"
+    },
+    {
+      "word": "weld",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "wɛld",
+      "phoneticUk": "weld",
+      "translation": "焊接，熔接",
+      "sceneMeaning": "焊接，熔接；本场景常见用法：焊缝成形",
+      "examples": "[]"
+    },
+    {
+      "word": "wheat",
+      "partOfSpeech": "n",
+      "phoneticUs": "wit",
+      "phoneticUk": "wiːt",
+      "translation": "小麦",
+      "sceneMeaning": "小麦",
+      "examples": "[]"
+    }
+  ]
+}

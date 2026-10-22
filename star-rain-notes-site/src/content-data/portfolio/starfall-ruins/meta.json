@@ -1,0 +1,41 @@
+{
+  "slug": "starfall-ruins",
+  "title": "Starfall Ruins · 星陨遗迹",
+  "description": "Unity 与 Blender 结合的三维游戏原型，围绕移动跳跃、星碎片收集、祭坛激活和传送门解锁组织探索流程，同时保留场景构建工具和岩石资产源文件。",
+  "category": "实验与研究",
+  "format": "游戏",
+  "techStack": [
+    "Unity 6",
+    "C#",
+    "Unity Input System",
+    "URP",
+    "Blender",
+    "FBX"
+  ],
+  "status": "DEVELOPING",
+  "publishedAt": "2026-10-16",
+  "updatedAt": "2026-10-16",
+  "startedOn": null,
+  "endedOn": null,
+  "featured": false,
+  "cover": "/images/content/d40b54f4c2f82571.webp",
+  "screenshots": [
+    {
+      "src": "/images/content/98328eda29a9352a.webp",
+      "alt": "基础沙盒阶段真实截图，不代表新增玩法完整验收"
+    }
+  ],
+  "links": [
+    {
+      "label": "项目源码",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/starfall-ruins",
+      "type": "GITHUB"
+    },
+    {
+      "label": "运行说明",
+      "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/starfall-ruins/README.md",
+      "type": "DOC"
+    }
+  ],
+  "path": "/portfolio/starfall-ruins/"
+}

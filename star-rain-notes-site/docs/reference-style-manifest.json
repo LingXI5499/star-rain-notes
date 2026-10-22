@@ -1,0 +1,221 @@
+{
+  "date": "2026-10-21",
+  "reference": "https://yulanlin.cn/",
+  "components": [
+    {
+      "component": "ArticleOutline",
+      "source": "modules/blog/components/ArticleOutline.vue",
+      "sha256": "02537ea33e80431714db42ced122219d15cee69d35d860697cd572fc1e648846"
+    },
+    {
+      "component": "BlogArchiveCalendar",
+      "source": "modules/blog/components/BlogArchiveCalendar.vue",
+      "sha256": "aa1a473e7428c0faf40a5a62dbdf761d42f911b9e3d431dd04612110e1291eee"
+    },
+    {
+      "component": "BlogArchivePage",
+      "source": "modules/blog/pages/BlogArchivePage.vue",
+      "sha256": "f2e0cbfca8e90fd0190bc36a6d26e9e4ab07fb57460439783ed42457218879d3"
+    },
+    {
+      "component": "BlogColumnNav",
+      "source": "modules/blog/components/BlogColumnNav.vue",
+      "sha256": "590c236671e979987079549034cf60ad1123c4b1b2c1d213d9177b62f4c93b16"
+    },
+    {
+      "component": "BlogListPage",
+      "source": "modules/blog/pages/BlogListPage.vue",
+      "sha256": "5cc09ad1d6990b28cd498b8518aff7c799c77d527afc84f4bbc7d041f8aedc0e"
+    },
+    {
+      "component": "BlogPostPage",
+      "source": "modules/blog/pages/BlogPostPage.vue",
+      "sha256": "9c2a2ce63c08a06e9bddb8ed3dc224c0879f80cd36bbf84d05bf7d32b14c1bf8"
+    },
+    {
+      "component": "BlogSidebar",
+      "source": "modules/blog/components/BlogSidebar.vue",
+      "sha256": "e9a0050053c05888f3eb480612590ef16cd63f777149a43aa4fccf1b005f8cb9"
+    },
+    {
+      "component": "BlogTagOverlay",
+      "source": "modules/blog/components/BlogTagOverlay.vue",
+      "sha256": "a97580b75378c46cfad0cd2c22f21145f6703465d1f14489352699c27504805a"
+    },
+    {
+      "component": "BlogTimeline",
+      "source": "modules/blog/components/BlogTimeline.vue",
+      "sha256": "2714732f49cea8bd36b2cd4c4e2347d6ba03718ca26d3ba7eaefee1a63046b25"
+    },
+    {
+      "component": "BlogTopicPage",
+      "source": "modules/blog/pages/BlogTopicPage.vue",
+      "sha256": "eba4e863b8b07c602dbb03e7715e58ba55f77d1d709871f1a546e8d065e720b4"
+    },
+    {
+      "component": "CareerSnapshot",
+      "source": "modules/profile/components/CareerSnapshot.vue",
+      "sha256": "26a48465e2898271e6603ededa3d6de3cf0ae26b474f97b1dfcc2c0a59b3bb76"
+    },
+    {
+      "component": "EnglishHomePage",
+      "source": "modules/english/pages/public/EnglishHomePage.vue",
+      "sha256": "ecb0ea0c03d0606a0593a904e66e39a77ea3a9990f382877200553403221ea9f"
+    },
+    {
+      "component": "GrammarLessonPage",
+      "source": "modules/english/pages/public/GrammarLessonPage.vue",
+      "sha256": "a5e40886b26a82041313f71ec8ca0520d789af936994e2c19966777c67858c5a"
+    },
+    {
+      "component": "GrammarPage",
+      "source": "modules/english/pages/public/GrammarPage.vue",
+      "sha256": "07ed3db0ac938c0d5de797c2884f6844d908bd74fdae730667f78046a53f282e"
+    },
+    {
+      "component": "HomePage",
+      "source": "modules/site/pages/HomePage.vue",
+      "sha256": "940095ae8e5ce3406584811344d0c9276f7de26def86a840990406469c2c5538"
+    },
+    {
+      "component": "MessageBoardPage",
+      "source": "modules/message/pages/MessageBoardPage.vue",
+      "sha256": "6829e57524fd5eaf580e240d234eec5cec4e847cea48dde86b64c81c41a308fb"
+    },
+    {
+      "component": "MobilePublicNav",
+      "source": "shared/ui/MobilePublicNav.vue",
+      "sha256": "dfc290d731c2709dde58e2378e19cf9c3fd734401cd353338c4ed77f42a70d84"
+    },
+    {
+      "component": "ProfilePage",
+      "source": "modules/profile/pages/ProfilePage.vue",
+      "sha256": "26c5a62ddd705f5061ae1d53bb9d45c7fca2ae46406c93897c822b48e0f79d2b"
+    },
+    {
+      "component": "PublicFilterBar",
+      "source": "shared/ui/PublicFilterBar.vue",
+      "sha256": "a3bfe4d7f4194be78f37a2b9025efebf09c48ab72eda93b28c83409f7096b20c"
+    },
+    {
+      "component": "PublicFilterTabs",
+      "source": "shared/ui/PublicFilterTabs.vue",
+      "sha256": "18c01db816a55530f0a13491fc91b794bd846686de3cecf7fe7da39cc1a083ba"
+    },
+    {
+      "component": "PublicFooter",
+      "source": "modules/site/components/PublicFooter.vue",
+      "sha256": "f0fbed035faa725db0452f05f0c3e1eac78364d7b56da625ab9648d7375ca045"
+    },
+    {
+      "component": "PublicHeader",
+      "source": "modules/site/components/PublicHeader.vue",
+      "sha256": "9c5f5d625cd4c74d8ca3384122308f4401f4397936fec060229dd01a7beb3717"
+    },
+    {
+      "component": "PublicPagination",
+      "source": "shared/ui/PublicPagination.vue",
+      "sha256": "3f770654a9576161412e268d2c16d291e3ed367d00e81c812dcdd7f50d59a3bd"
+    },
+    {
+      "component": "PublicSearch",
+      "source": "shared/ui/PublicSearch.vue",
+      "sha256": "4cf76ab5543c0559f5c16cd5c018742cd2cec2b1acbc53b32a7719e48e95072d"
+    },
+    {
+      "component": "PublicSelect",
+      "source": "shared/ui/PublicSelect.vue",
+      "sha256": "e62de205077e9c5ccb36caebfdf3889174a151be6c100731ba8506fcccf4ba88"
+    },
+    {
+      "component": "PublicShell",
+      "source": "shared/shells/PublicShell.vue",
+      "sha256": "b6f299a3a4818b1874ae0ac94cb27051861a44ef76403e512b435f790cb5f98d"
+    },
+    {
+      "component": "ReadingAside",
+      "source": "modules/blog/components/ReadingAside.vue",
+      "sha256": "b3c13c0f28b755a466fab47f9ef439c4643dd4ec0bc7272fb6f237a5bedae7e9"
+    },
+    {
+      "component": "ReadingProgress",
+      "source": "modules/blog/components/ReadingProgress.vue",
+      "sha256": "db29ceb9752eb9913048aa9813c4bc5888177bb48ad7cbf26cf414f1fbf60596"
+    },
+    {
+      "component": "SearchLauncher",
+      "source": "modules/site/components/SearchLauncher.vue",
+      "sha256": "00f7b39086e477683b3170d27bf749be43014d2c28c2ad81ac1a6f9e21cfb10f"
+    },
+    {
+      "component": "SearchResultPage",
+      "source": "modules/search/pages/SearchResultPage.vue",
+      "sha256": "3cb106174ff5409af7203f3f7ef0805f6974647cdef61b0af36fec9eaa05f9c5"
+    },
+    {
+      "component": "TechFlow",
+      "source": "modules/profile/components/TechFlow.vue",
+      "sha256": "775b73d4eddd7c2c4620a9e1a7110221fc5af5c7d706320720a6d729a045a46f"
+    },
+    {
+      "component": "ThemeControl",
+      "source": "modules/site/components/ThemeControl.vue",
+      "sha256": "04ee0a0d104881f95cc055ee5f2dba2087c1f7f12e14e1603cff5e87fc7b0c7b"
+    },
+    {
+      "component": "ThemeHero",
+      "source": "modules/site/components/ThemeHero.vue",
+      "sha256": "2d6cae37a87c974da5bd140b75c70aab3e21789627fa5bab0a1205c4eb7e8004"
+    },
+    {
+      "component": "TutorialCatalogPage",
+      "source": "modules/tutorial/pages/public/TutorialCatalogPage.vue",
+      "sha256": "ae9903598d59130193c6e960713bd308b640d4c2e9ef26052bc1d6c0c3fcd966"
+    },
+    {
+      "component": "TutorialChapterPage",
+      "source": "modules/tutorial/styles/tutorial-reader.css",
+      "sha256": "27acfcf725e7b71e30e96e85e01b46eed014d673ac696aaaa1c37f386cdab352"
+    },
+    {
+      "component": "TutorialDetailPage",
+      "source": "modules/tutorial/pages/public/TutorialDetailPage.vue",
+      "sha256": "ab236bc8778aca91ab21ce477acbb63a9f27d4571f1161d2f2bf3f1aab67b6c9"
+    },
+    {
+      "component": "VocabularyCard",
+      "source": "modules/english/components/VocabularyCard.vue",
+      "sha256": "2fec2eb428b2376a592dd0b339c70449c6c4205cff62ec60300e9f25211b5320"
+    },
+    {
+      "component": "VocabularyPage",
+      "source": "modules/english/pages/public/VocabularyPage.vue",
+      "sha256": "68b1f864729e0ec58daeffd90bf3830f0dda3402eb595773c1303a392b45c48a"
+    },
+    {
+      "component": "VocabularyThemePage",
+      "source": "modules/english/pages/public/VocabularyThemePage.vue",
+      "sha256": "61f8bec98da9dacb14075a7b6c2cc68c0f5d6ca85314a5b3b19af97796e4f900"
+    },
+    {
+      "component": "WorkCard",
+      "source": "modules/portfolio/components/WorkCard.vue",
+      "sha256": "06c45a201158e10604084dfbfbee0d6be2d0d977c747a632104b39fbf2d632c0"
+    },
+    {
+      "component": "WorkDetailPage",
+      "source": "modules/portfolio/pages/WorkDetailPage.vue",
+      "sha256": "82c63e5b9b93e0fc253990484608458cfec10519914e02060a329d8b007eeaae"
+    },
+    {
+      "component": "WorkLibrary",
+      "source": "modules/portfolio/components/WorkLibrary.vue",
+      "sha256": "0d69c9d36852f8bdf74b79763306769413db3040b1e56849b4ab310a704b7b41"
+    },
+    {
+      "component": "WorkSectionRenderer",
+      "source": "modules/portfolio/components/WorkSectionRenderer.vue",
+      "sha256": "242ba3d1673577e9cc92fad8b829de996ac66cfb002291ace364eebe6dbd8771"
+    }
+  ]
+}

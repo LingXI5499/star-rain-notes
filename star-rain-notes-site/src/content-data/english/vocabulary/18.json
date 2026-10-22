@@ -1,0 +1,585 @@
+{
+  "id": "18",
+  "title": "快递 / 网购 / 物流",
+  "layer": "核心生活场景层",
+  "wordCount": 64,
+  "path": "/english/vocabulary/18/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可用的；可获得的",
+      "examples": "[]"
+    },
+    {
+      "word": "express",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪk'sprɛs",
+      "phoneticUk": "ɪk'spres; ek-",
+      "translation": "表示；快车，快递",
+      "sceneMeaning": "特快的；明确的",
+      "examples": "[]"
+    },
+    {
+      "word": "important",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'pɔrtnt",
+      "phoneticUk": "ɪm'pɔːt(ə)nt",
+      "translation": "重要的；有势力的",
+      "sceneMeaning": "重要的；有势力的",
+      "examples": "[]"
+    },
+    {
+      "word": "lose",
+      "partOfSpeech": "v",
+      "phoneticUs": "luz",
+      "phoneticUk": "luːz",
+      "translation": "失去；迷失；输掉",
+      "sceneMeaning": "失去；迷失；输掉",
+      "examples": "[]"
+    },
+    {
+      "word": "message",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛsɪdʒ",
+      "phoneticUk": "'mesɪdʒ",
+      "translation": "信息，消息；启示",
+      "sceneMeaning": "消息；信息",
+      "examples": "[]"
+    },
+    {
+      "word": "order",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔrdɚ",
+      "phoneticUk": "'ɔːdə",
+      "translation": "次序；整齐；命令",
+      "sceneMeaning": "订单；命令",
+      "examples": "[]"
+    },
+    {
+      "word": "receive",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'siv",
+      "phoneticUk": "rɪ'siːv",
+      "translation": "收到；得到；接待",
+      "sceneMeaning": "收到；接收",
+      "examples": "[]"
+    },
+    {
+      "word": "store",
+      "partOfSpeech": "n",
+      "phoneticUs": "stɔr",
+      "phoneticUk": "stɔː",
+      "translation": "贮藏；贮存品；商店",
+      "sceneMeaning": "贮藏；贮存品；商店；本场景常见用法：储存信息；商店信息",
+      "examples": "[]"
+    },
+    {
+      "word": "damage",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dæmɪdʒ",
+      "phoneticUk": "'dæmɪdʒ",
+      "translation": "损害，毁坏；损害",
+      "sceneMeaning": "损坏；损害",
+      "examples": "[]"
+    },
+    {
+      "word": "international",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪntɚ'næʃnəl",
+      "phoneticUk": "ɪntə'næʃ(ə)n(ə)l",
+      "translation": "国际的，世界(性)的",
+      "sceneMeaning": "国际的",
+      "examples": "[]"
+    },
+    {
+      "word": "loss",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔs",
+      "phoneticUk": "lɒs",
+      "translation": "遗失；损失；失败",
+      "sceneMeaning": "丢失；损失",
+      "examples": "[]"
+    },
+    {
+      "word": "mail",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "mel",
+      "phoneticUk": "meɪl",
+      "translation": "邮件；邮寄",
+      "sceneMeaning": "邮件；邮政",
+      "examples": "[]"
+    },
+    {
+      "word": "gift",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡɪft",
+      "phoneticUk": "gɪft",
+      "translation": "礼物，赠品；天赋；礼物；天赋",
+      "sceneMeaning": "礼物，赠品；天赋；礼物；天赋；本场景常见用法：礼品包装",
+      "examples": "[]"
+    },
+    {
+      "word": "policy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑləsi",
+      "phoneticUk": "'pɒləsɪ",
+      "translation": "政策，方针",
+      "sceneMeaning": "政策；规则",
+      "examples": "[]"
+    },
+    {
+      "word": "address",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'drɛs",
+      "phoneticUk": "ə'dres",
+      "translation": "地址；演说；谈吐；解决",
+      "sceneMeaning": "地址；处理",
+      "examples": "[]"
+    },
+    {
+      "word": "post",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "post",
+      "phoneticUk": "pəʊst",
+      "translation": "柱，桩，杆；贴出",
+      "sceneMeaning": "邮政；帖子；岗位",
+      "examples": "[]"
+    },
+    {
+      "word": "purchase",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pɝtʃəs",
+      "phoneticUk": "'pɜ:tʃəs",
+      "translation": "买，购买；买",
+      "sceneMeaning": "购买；采购",
+      "examples": "[]"
+    },
+    {
+      "word": "domestic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "də'mɛstɪk",
+      "phoneticUk": "də'mestɪk",
+      "translation": "本国的；家庭的；国内的",
+      "sceneMeaning": "国内的；家用的",
+      "examples": "[]"
+    },
+    {
+      "word": "exchange",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪks'tʃendʒ",
+      "phoneticUk": "ɪks'tʃeɪndʒ; eks-",
+      "translation": "交换；交流；交换；交换，交流",
+      "sceneMeaning": "换货；交换",
+      "examples": "[]"
+    },
+    {
+      "word": "track",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "træk",
+      "phoneticUk": "træk",
+      "translation": "行踪；路径；轨道；足迹；追踪，〔循着踪迹、气味等〕找寻",
+      "sceneMeaning": "追踪；跟踪",
+      "examples": "[]"
+    },
+    {
+      "word": "unlikely",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ʌn'laɪkli",
+      "phoneticUk": "ʌn'laɪklɪ",
+      "translation": "未必的，未必可能的",
+      "sceneMeaning": "未必的，未必可能的",
+      "examples": "[]"
+    },
+    {
+      "word": "status",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈstætəs; ˈstetəs",
+      "phoneticUk": "'steɪtəs",
+      "translation": "地位，身分；地位",
+      "sceneMeaning": "状态；身份",
+      "examples": "[]"
+    },
+    {
+      "word": "label",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈlebəl",
+      "phoneticUk": "'leɪb(ə)l",
+      "translation": "标签；标记，符号",
+      "sceneMeaning": "贴标签；标注",
+      "examples": "[]"
+    },
+    {
+      "word": "stock",
+      "partOfSpeech": "n",
+      "phoneticUs": "stɑk",
+      "phoneticUk": "stɒk",
+      "translation": "原料；库存品；股本；股票；库存",
+      "sceneMeaning": "库存；存货",
+      "examples": "[]"
+    },
+    {
+      "word": "transportation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",trænspɔr'teʃən",
+      "phoneticUk": "trænspɔː'teɪʃ(ə)n; trɑːns-",
+      "translation": "运输，运送，客运；运输",
+      "sceneMeaning": "运输；交通",
+      "examples": "[]"
+    },
+    {
+      "word": "cancel",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kænsl",
+      "phoneticUk": "'kæns(ə)l",
+      "translation": "取消，撤消；删去；取消",
+      "sceneMeaning": "取消",
+      "examples": "[]"
+    },
+    {
+      "word": "arrive",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'raɪv",
+      "phoneticUk": "ə'raɪv",
+      "translation": "到达；来临；达到",
+      "sceneMeaning": "到达",
+      "examples": "[]"
+    },
+    {
+      "word": "platform",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plæt'fɔrm",
+      "phoneticUk": "'plætfɔːm",
+      "translation": "平台；站台；讲台",
+      "sceneMeaning": "平台",
+      "examples": "[]"
+    },
+    {
+      "word": "box",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɑks",
+      "phoneticUk": "bɒks",
+      "translation": "箱，盒；包箱",
+      "sceneMeaning": "盒子；箱子",
+      "examples": "[]"
+    },
+    {
+      "word": "collect",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'lɛkt",
+      "phoneticUk": "kə'lekt",
+      "translation": "收集；收款",
+      "sceneMeaning": "领取；收集",
+      "examples": "[]"
+    },
+    {
+      "word": "confirm",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fɝm",
+      "phoneticUk": "kən'fɜːm",
+      "translation": "证实，肯定；批准；证实",
+      "sceneMeaning": "确认",
+      "examples": "[]"
+    },
+    {
+      "word": "delay",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'le",
+      "phoneticUk": "dɪ'leɪ",
+      "translation": "推迟；耽搁；延误；推迟，延期",
+      "sceneMeaning": "延迟",
+      "examples": "[]"
+    },
+    {
+      "word": "duty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʊti",
+      "phoneticUk": "'djuːtɪ",
+      "translation": "职责；责任；税",
+      "sceneMeaning": "关税；责任",
+      "examples": "[]"
+    },
+    {
+      "word": "pack",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pæk",
+      "phoneticUk": "pæk",
+      "translation": "捆扎；挤满；包",
+      "sceneMeaning": "包装；打包",
+      "examples": "[]"
+    },
+    {
+      "word": "payment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pemənt",
+      "phoneticUk": "'peɪm(ə)nt",
+      "translation": "支付，支付的款项",
+      "sceneMeaning": "付款",
+      "examples": "[]"
+    },
+    {
+      "word": "reception",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "rɪ'sɛpʃən",
+      "phoneticUk": "rɪ'sepʃ(ə)n",
+      "translation": "接待；招待会；接受；接待；反响",
+      "sceneMeaning": "接待；招待会；接受；接待；反响",
+      "examples": "[]"
+    },
+    {
+      "word": "deliver",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'lɪvɚ",
+      "phoneticUk": "dɪ'lɪvə",
+      "translation": "投递，送交；发表；发表",
+      "sceneMeaning": "递送；交付",
+      "examples": "[]"
+    },
+    {
+      "word": "delivery",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'lɪvəri",
+      "phoneticUk": "dɪ'lɪv(ə)rɪ",
+      "translation": "投递；交付；分娩",
+      "sceneMeaning": "递送；配送",
+      "examples": "[]"
+    },
+    {
+      "word": "parcel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑrsl",
+      "phoneticUk": "'pɑːs(ə)l",
+      "translation": "包裹，小包，邮包",
+      "sceneMeaning": "包裹",
+      "examples": "[]"
+    },
+    {
+      "word": "border",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "边，边缘；边界",
+      "sceneMeaning": "边境；边界",
+      "examples": "[]"
+    },
+    {
+      "word": "dump",
+      "partOfSpeech": "v",
+      "phoneticUs": "dʌmp",
+      "phoneticUk": "dʌmp",
+      "translation": "倾卸，倾倒；倾销；扔下，倾倒；倾销",
+      "sceneMeaning": "倾卸，倾倒；倾销；扔下，倾倒；倾销",
+      "examples": "[]"
+    },
+    {
+      "word": "envelope",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "'envələʊp; 'ɒn-",
+      "translation": "信封；封套；封皮",
+      "sceneMeaning": "信封",
+      "examples": "[]"
+    },
+    {
+      "word": "freight",
+      "partOfSpeech": "n",
+      "phoneticUs": "fret",
+      "phoneticUk": "freɪt",
+      "translation": "货运；货物；运费",
+      "sceneMeaning": "货运；货物",
+      "examples": "[]"
+    },
+    {
+      "word": "import",
+      "partOfSpeech": "n / v / vt&n",
+      "phoneticUs": "'ɪmpɔt",
+      "phoneticUk": "ɪm'pɔːt",
+      "translation": "输入，进口；进口",
+      "sceneMeaning": "进口；进口商品",
+      "examples": "[]"
+    },
+    {
+      "word": "overseas",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": ",ovɚ'siz",
+      "phoneticUk": "əʊvə'siːz",
+      "translation": "海外；在海外的",
+      "sceneMeaning": "海外的；国外的",
+      "examples": "[]"
+    },
+    {
+      "word": "package",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pækɪdʒ",
+      "phoneticUk": "'pækɪdʒ",
+      "translation": "包裹，包，捆",
+      "sceneMeaning": "包裹；包装",
+      "examples": "[]"
+    },
+    {
+      "word": "prompt",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "prɑmpt",
+      "phoneticUk": "prɒm(p)t",
+      "translation": "及时的；敦促；迅速的；立刻的；及时的；促使；激励",
+      "sceneMeaning": "及时的；敦促；迅速的；立刻的；及时的；促使；激励；本场景常见用法：限时专送",
+      "examples": "[]"
+    },
+    {
+      "word": "cargo",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑrɡo",
+      "phoneticUk": "'kɑːgəʊ",
+      "translation": "船货，货物",
+      "sceneMeaning": "货物",
+      "examples": "[]"
+    },
+    {
+      "word": "carrier",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kærɪɚ",
+      "phoneticUk": "'kærɪə",
+      "translation": "运输工具；运载工具",
+      "sceneMeaning": "承运人；载体",
+      "examples": "[]"
+    },
+    {
+      "word": "cart",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɑrt",
+      "phoneticUk": "kɑːt",
+      "translation": "二轮运货马车",
+      "sceneMeaning": "购物车；手推车",
+      "examples": "[]"
+    },
+    {
+      "word": "depart",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'pɑrt",
+      "phoneticUk": "dɪ'pɑːt",
+      "translation": "离开，起程；出发",
+      "sceneMeaning": "离开；启程",
+      "examples": "[]"
+    },
+    {
+      "word": "export",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈekspɔːrt；ɪkˈ-",
+      "phoneticUk": "ˈekspɔːt；ɪkˈ-",
+      "translation": "输出，出口；运走",
+      "sceneMeaning": "出口；出口商品",
+      "examples": "[]"
+    },
+    {
+      "word": "liberate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'lɪbə'ret",
+      "phoneticUk": "'lɪbəreɪt",
+      "translation": "解放；释放",
+      "sceneMeaning": "解放；释放",
+      "examples": "[]"
+    },
+    {
+      "word": "merchant",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɝtʃənt",
+      "phoneticUk": "'mɜːtʃ(ə)nt",
+      "translation": "商人；零售商",
+      "sceneMeaning": "商家；商人",
+      "examples": "[]"
+    },
+    {
+      "word": "messenger",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛsndʒɚ",
+      "phoneticUk": "'mesɪn(d)ʒə",
+      "translation": "送信者，信使",
+      "sceneMeaning": "送信者，信使",
+      "examples": "[]"
+    },
+    {
+      "word": "Mister",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "先生",
+      "sceneMeaning": "先生",
+      "examples": "[]"
+    },
+    {
+      "word": "packet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pækɪt",
+      "phoneticUk": "'pækɪt",
+      "translation": "小包(裹)，小捆",
+      "sceneMeaning": "小包；数据包",
+      "examples": "[]"
+    },
+    {
+      "word": "postage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'postɪdʒ",
+      "phoneticUk": "'pəʊstɪdʒ",
+      "translation": "邮费，邮资",
+      "sceneMeaning": "邮费",
+      "examples": "[]"
+    },
+    {
+      "word": "postman",
+      "partOfSpeech": "n",
+      "phoneticUs": "'postmən",
+      "phoneticUk": "'pəʊs(t)mən",
+      "translation": "邮递员",
+      "sceneMeaning": "邮递员",
+      "examples": "[]"
+    },
+    {
+      "word": "receiver",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'sivɚ",
+      "phoneticUk": "rɪ'siːvə",
+      "translation": "收受者，收件人",
+      "sceneMeaning": "收件人；接收器",
+      "examples": "[]"
+    },
+    {
+      "word": "storage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stɔrɪdʒ",
+      "phoneticUk": "'stɔːrɪdʒ",
+      "translation": "贮藏；贮藏量",
+      "sceneMeaning": "储存；仓储",
+      "examples": "[]"
+    },
+    {
+      "word": "telegram",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛlɪɡræm",
+      "phoneticUk": "'telɪgræm",
+      "translation": "电报",
+      "sceneMeaning": "电报",
+      "examples": "[]"
+    },
+    {
+      "word": "undo",
+      "partOfSpeech": "v",
+      "phoneticUs": "ʌn'du",
+      "phoneticUk": "ʌn'duː",
+      "translation": "解开，打开；取消",
+      "sceneMeaning": "解开，打开；取消",
+      "examples": "[]"
+    },
+    {
+      "word": "wrap",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ræp",
+      "phoneticUk": "ræp",
+      "translation": "裹，包，捆；披肩",
+      "sceneMeaning": "包；裹",
+      "examples": "[]"
+    }
+  ]
+}

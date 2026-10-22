@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 移动优先先写小屏样式，再用 <code>min-width</code> 从小到大逐步增强。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.cards { display: grid; grid-template-columns: 1fr; }
+@media (min-width: 768px) { .cards { grid-template-columns: repeat(3, 1fr); } }
+</code></pre>
+<p><strong>学完能做：</strong> 采用移动优先方式组织媒体查询。</p>

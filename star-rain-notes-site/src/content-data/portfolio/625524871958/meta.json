@@ -1,0 +1,52 @@
+{
+  "slug": "625524871958",
+  "title": "星雨笔录",
+  "description": "星雨笔录是一个面向个人长期学习、知识整理与内容沉淀的全栈知识平台。项目以 Java 21 和 Spring Boot 3.5 构建后端服务，以 Vue 3、TypeScript 和 Vite 构建前端界面，提供系统化教程、英语学习、内容管理、学习记录以及后台发布管理等功能。项目已经部署在阿里云服务器，并通过 Nginx 提供网站访问和接口反向代理。",
+  "category": "软件项目",
+  "format": "Web 应用",
+  "techStack": [
+    "Java",
+    "Spring Boot 3.5",
+    "Mybatis-Plus",
+    "MySql 8",
+    "Flyway",
+    "Vue 3",
+    "TypeScript",
+    "Vite",
+    "Nginx"
+  ],
+  "status": "ONLINE",
+  "publishedAt": "2026-08-28",
+  "updatedAt": "2026-10-11",
+  "startedOn": "2026-04-01",
+  "endedOn": "2026-08-28",
+  "featured": true,
+  "cover": "/images/content/bb43ae909bc6d49f.webp",
+  "screenshots": [
+    {
+      "src": "/images/content/cda8f53760af1d78.webp",
+      "alt": "教程分类页 · 按学习主题与知识体系整理教程分类，帮助用户快速进入对应专题。"
+    },
+    {
+      "src": "/images/content/98cf3d7e746c5e95.webp",
+      "alt": "教程阅读页 · 提供正文阅读、章节目录与上下篇导航，让长篇学习内容保持清晰的阅读节奏。"
+    },
+    {
+      "src": "/images/content/e4b7138362c44391.webp",
+      "alt": "博客首页 · 以卡片化列表呈现最新文章、标签和摘要，方便浏览与检索技术笔记。"
+    }
+  ],
+  "links": [
+    {
+      "label": "查看代码",
+      "url": "https://github.com/LingXI5499/star-rain-notes",
+      "type": "GITHUB"
+    },
+    {
+      "label": "访问作品",
+      "url": "https://yulanlin.cn",
+      "type": "DEMO"
+    }
+  ],
+  "path": "/portfolio/625524871958/"
+}

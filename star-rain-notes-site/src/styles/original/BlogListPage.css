@@ -1,0 +1,86 @@
+
+.blog-hero:not(.__static_scope) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 230px;
+  align-items: end;
+  gap: var(--space-9);
+  margin-bottom: var(--space-9);
+  padding-bottom: var(--space-8);
+  border-bottom: 1px solid var(--border);
+}
+.blog-hero > div > p:not(.__static_scope) {
+  margin-bottom: 12px;
+  color: var(--accent);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+}
+.blog-hero h1:not(.__static_scope) {
+  font-size: clamp(38px, 5vw, 62px);
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+.blog-hero > aside:not(.__static_scope) {
+  padding-left: var(--space-5);
+  border-left: 1px solid var(--border);
+}
+.blog-hero aside strong:not(.__static_scope) {
+  display: block;
+  color: var(--primary);
+  font-size: 34px;
+}
+.blog-hero aside span:not(.__static_scope) {
+  color: var(--text-muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+.blog-hero aside p:not(.__static_scope) {
+  margin-top: 12px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.7;
+}
+.blog-layout:not(.__static_scope) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--aside-width);
+  align-items: start;
+  gap: var(--layout-gap);
+}
+.blog-main:not(.__static_scope) {
+  min-width: 0;
+}
+.blog-active:not(.__static_scope) {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: var(--space-5);
+}
+.blog-active > span:not(.__static_scope) {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+.blog-active button:not(.__static_scope) {
+  padding: 5px 10px;
+  border: 1px solid color-mix(in srgb, var(--primary) 25%, var(--border));
+  border-radius: 999px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  cursor: pointer;
+}
+.blog-active__clear:not(.__static_scope) {
+  border-color: var(--border) !important;
+  color: var(--text-muted) !important;
+  background: transparent !important;
+}
+@media (max-width: 960px) {
+.blog-layout:not(.__static_scope) { grid-template-columns: 1fr;
+}
+}
+@media (max-width: 680px) {
+.blog-hero:not(.__static_scope) { grid-template-columns: 1fr;
+}
+.blog-hero > aside:not(.__static_scope) { display: none;
+}
+}

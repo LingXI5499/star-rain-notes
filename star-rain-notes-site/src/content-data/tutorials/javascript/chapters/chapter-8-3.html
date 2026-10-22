@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 测验应用记录当前题号与正确数量，结束后计算分数并重置状态。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const answers = ['A', 'C', 'B'];
+const inputs = ['A', 'B', 'B'];
+const score = inputs.filter((x, i) =&gt; x === answers[i]).length;
+console.log(`答对 ${score} / ${answers.length} 题`);
+</code></pre>
+<p><strong>学完能做：</strong> 实现答题流程、分数统计和重新开始。</p>

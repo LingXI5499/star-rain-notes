@@ -1,0 +1,169 @@
+[
+  {
+    "id": "1",
+    "title": "项目介绍",
+    "type": "MARKDOWN",
+    "html": "<p>把地图探索与影像浏览连接起来，让用户从“选择一个地方”自然过渡到“观看这个地方附近的影像”。核心工作集中在坐标到屏幕的转场、真实照片检索和多种输入方式的统一。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "2",
+    "title": "核心功能",
+    "type": "FEATURE_LIST",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "title": "地球探索",
+          "description": "旋转、缩放真实三维地球，通过任意坐标或精选城市发起探索。"
+        },
+        {
+          "title": "真实地理影像",
+          "description": "按地理标记检索 Wikimedia Commons 图片，分页获取元数据，保留作者、许可和原始来源。"
+        },
+        {
+          "title": "沉浸照片空间",
+          "description": "照片从所选坐标浮现，进入支持拖动、滚轮、键盘、详情与高清预览的照片墙。"
+        },
+        {
+          "title": "手势交互",
+          "description": "用户主动开启摄像头后，在本地识别握拳、张掌、点赞与 V 手势，控制照片球和照片墙。"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "3",
+    "title": "使用流程",
+    "type": "MARKDOWN",
+    "html": "<p>选择城市或点击地球 → 探索附近影像 → 观看照片浮现转场 → 浏览与放大照片 → 按需开启手势 → 返回原地球视角。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "4",
+    "title": "技术栈",
+    "type": "TECH_STACK",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "name": "Vue 3",
+          "group": ""
+        },
+        {
+          "name": "TypeScript",
+          "group": ""
+        },
+        {
+          "name": "Vite",
+          "group": ""
+        },
+        {
+          "name": "MapLibre GL",
+          "group": ""
+        },
+        {
+          "name": "GSAP",
+          "group": ""
+        },
+        {
+          "name": "MediaPipe",
+          "group": ""
+        },
+        {
+          "name": "Wikimedia Commons",
+          "group": ""
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "5",
+    "title": "关键实现",
+    "type": "MARKDOWN",
+    "html": "<p>Vue 组件组织地图、照片墙、转场与手势面板；显式体验状态管理请求切换、分页和返回。照片服务通过 provider 接口隔离；MediaPipe Worker 串行推理，避免占用主线程和堆积视频帧。缩略图按需准备，地图与照片署名保持可见。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "6",
+    "title": "项目成果",
+    "type": "STATS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "label": "单地点图片上限",
+          "value": "200 张"
+        },
+        {
+          "label": "测试通过",
+          "value": "33 项"
+        },
+        {
+          "label": "摄像头交互",
+          "value": "本地识别"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "7",
+    "title": "验证与交付",
+    "type": "MARKDOWN",
+    "html": "<p>2026-10-15 整理版本在新目录通过 33 项单元测试、TypeScript 检查和生产构建。原项目另有公开照片查询与手势样本的验证记录。实体摄像头效果仍受光照和硬件影响。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "8",
+    "title": "当前阶段与使用边界",
+    "type": "MARKDOWN",
+    "html": "<p>地图和照片需要外网；坐标附近可能没有足够的地理照片。手势需 HTTPS 或 localhost、摄像头和主动授权。风景优先属于排序规则，不是图像内容识别；没有用户账户或云相册。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "9",
+    "title": "界面与效果",
+    "type": "GALLERY",
+    "html": "",
+    "data": {},
+    "media": [
+      {
+        "src": "/images/content/8a8ff2792ca2c4fa.webp",
+        "caption": "三维地球探索界面"
+      },
+      {
+        "src": "/images/content/5fc21c8d0aad43df.webp",
+        "caption": "附近公开影像照片墙"
+      }
+    ]
+  },
+  {
+    "id": "10",
+    "title": "源码与文档",
+    "type": "LINKS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/atlasflow",
+          "label": "查看项目源码",
+          "description": "GitHub 集合中的独立项目目录"
+        },
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/atlasflow/README.md",
+          "label": "运行与使用说明",
+          "description": "依赖、启动、测试和项目边界"
+        }
+      ]
+    },
+    "media": []
+  }
+]

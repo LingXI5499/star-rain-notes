@@ -1,0 +1,1161 @@
+{
+  "id": "27",
+  "title": "学校 / 教室",
+  "layer": "学习与工作主干层",
+  "wordCount": 128,
+  "path": "/english/vocabulary/27/",
+  "words": [
+    {
+      "word": "major",
+      "partOfSpeech": "adj / n / v",
+      "phoneticUs": "'medʒɚ",
+      "phoneticUk": "'meɪdʒə",
+      "translation": "较大的；专业；主要的；主修",
+      "sceneMeaning": "专业；主修学生",
+      "examples": "[]"
+    },
+    {
+      "word": "average",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ævərɪdʒ",
+      "phoneticUk": "'æv(ə)rɪdʒ",
+      "translation": "平均数；平均的；平常的",
+      "sceneMeaning": "平均的；普通的",
+      "examples": "[]"
+    },
+    {
+      "word": "academic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ækə'dɛmɪk",
+      "phoneticUk": "ækə'demɪk",
+      "translation": "学院的；学术的；学术的",
+      "sceneMeaning": "学术的；学校的",
+      "examples": "[]"
+    },
+    {
+      "word": "excellent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɛksələnt",
+      "phoneticUk": "'eks(ə)l(ə)nt",
+      "translation": "优秀的，杰出的；卓越的，杰出的，极好的",
+      "sceneMeaning": "优秀的",
+      "examples": "[]"
+    },
+    {
+      "word": "project",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "prəˈdʒɛkt; prɑdʒɛkt",
+      "phoneticUk": "prəˈdʒekt; ˈprɒdʒekt",
+      "translation": "方案，工程；伸出；工程；课题、作业",
+      "sceneMeaning": "项目；课题",
+      "examples": "[]"
+    },
+    {
+      "word": "degree",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'ɡri",
+      "phoneticUk": "dɪˈgri:",
+      "translation": "程度；度；学位；程度",
+      "sceneMeaning": "学位；程度",
+      "examples": "[]"
+    },
+    {
+      "word": "particular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "pɚ'tɪkjəlɚ",
+      "phoneticUk": "pəˈtɪkjʊlə(r)",
+      "translation": "特殊的；特定的；特别的，特指的；讲究的；挑剔的，吹毛求疵的",
+      "sceneMeaning": "特殊的；特定的；特别的，特指的；讲究的；挑剔的，吹毛求疵的",
+      "examples": "[]"
+    },
+    {
+      "word": "activity",
+      "partOfSpeech": "n",
+      "phoneticUs": "æk'tɪviti",
+      "phoneticUk": "æk'tɪvɪtɪ",
+      "translation": "活动；活力；行动",
+      "sceneMeaning": "活动",
+      "examples": "[]"
+    },
+    {
+      "word": "build",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪld",
+      "phoneticUk": "bɪld",
+      "translation": "建筑；建立；创立",
+      "sceneMeaning": "建筑；建立；创立",
+      "examples": "[]"
+    },
+    {
+      "word": "building",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɪldɪŋ",
+      "phoneticUk": "'bɪldɪŋ",
+      "translation": "建筑物，大楼；建筑",
+      "sceneMeaning": "建筑物；楼",
+      "examples": "[]"
+    },
+    {
+      "word": "class",
+      "partOfSpeech": "n",
+      "phoneticUs": "klæs",
+      "phoneticUk": "klɑːs",
+      "translation": "班，班级；阶级",
+      "sceneMeaning": "班级；课",
+      "examples": "[]"
+    },
+    {
+      "word": "college",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑlɪdʒ",
+      "phoneticUk": "'kɒlɪdʒ",
+      "translation": "学院；大学",
+      "sceneMeaning": "学院；大学；本场景常见用法：大学毕业生；大专以上学历",
+      "examples": "[]"
+    },
+    {
+      "word": "course",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrs",
+      "phoneticUk": "kɔːs",
+      "translation": "课程；过程；一道菜",
+      "sceneMeaning": "课程；过程",
+      "examples": "[]"
+    },
+    {
+      "word": "credit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɛdɪt",
+      "phoneticUk": "'kredɪt",
+      "translation": "信用贷款；信用",
+      "sceneMeaning": "学分；信用",
+      "examples": "[]"
+    },
+    {
+      "word": "discuss",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'skʌs",
+      "phoneticUk": "dɪ'skʌs",
+      "translation": "讨论，谈论；论述",
+      "sceneMeaning": "讨论",
+      "examples": "[]"
+    },
+    {
+      "word": "explain",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'splen",
+      "phoneticUk": "ɪk'spleɪn",
+      "translation": "解释；为…辩解",
+      "sceneMeaning": "解释",
+      "examples": "[]"
+    },
+    {
+      "word": "Japanese",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": ",dʒæpə'niz",
+      "phoneticUk": "ˌdʒæpə'ni:z",
+      "translation": "日本的；日本人",
+      "sceneMeaning": "日本的；日本人；本场景常见用法：[医]日本脑炎；乙型脑炎",
+      "examples": "[]"
+    },
+    {
+      "word": "learn",
+      "partOfSpeech": "vi&vt",
+      "phoneticUs": "lɝn",
+      "phoneticUk": "lɜːn",
+      "translation": "学，学习",
+      "sceneMeaning": "学习；学会",
+      "examples": "[]"
+    },
+    {
+      "word": "letter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛtɚ",
+      "phoneticUk": "'letə",
+      "translation": "信；证书；字母",
+      "sceneMeaning": "信；证书；字母；本场景常见用法：介绍信",
+      "examples": "[]"
+    },
+    {
+      "word": "mark",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "",
+      "phoneticUk": "mɑːk",
+      "translation": "斑点；记号；标明",
+      "sceneMeaning": "分数；标记",
+      "examples": "[]"
+    },
+    {
+      "word": "office",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔfɪs",
+      "phoneticUk": "'ɒfɪs",
+      "translation": "办公室；处，局，社",
+      "sceneMeaning": "办公室；办事处",
+      "examples": "[]"
+    },
+    {
+      "word": "present",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'prɛznt",
+      "phoneticUk": "'prez(ə)nt",
+      "translation": "现在的；目前",
+      "sceneMeaning": "出席的；现在的",
+      "examples": "[]"
+    },
+    {
+      "word": "talk",
+      "partOfSpeech": "v",
+      "phoneticUs": "tɔk",
+      "phoneticUk": "tɔːk",
+      "translation": "讲话；谈论",
+      "sceneMeaning": "讲话；谈论",
+      "examples": "[]"
+    },
+    {
+      "word": "formal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɔrml",
+      "phoneticUk": "'fɔːm(ə)l",
+      "translation": "正式的；礼仪上的",
+      "sceneMeaning": "正式的",
+      "examples": "[]"
+    },
+    {
+      "word": "library",
+      "partOfSpeech": "n",
+      "phoneticUs": "laɪˌbrɛrɪ",
+      "phoneticUk": "ˈlaɪbrərɪ",
+      "translation": "图书馆；藏书",
+      "sceneMeaning": "图书馆",
+      "examples": "[]"
+    },
+    {
+      "word": "recession",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'sɛʃən",
+      "phoneticUk": "ri'seʃən",
+      "translation": "衰退",
+      "sceneMeaning": "衰退",
+      "examples": "[]"
+    },
+    {
+      "word": "senior",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'sinɪɚ",
+      "phoneticUk": "'siːnɪə; 'siːnjə",
+      "translation": "年少的；地位较高的；老年人",
+      "sceneMeaning": "高年级生；毕业班学生",
+      "examples": "[]"
+    },
+    {
+      "word": "attend",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'tɛnd",
+      "phoneticUk": "ə'tend",
+      "translation": "出席；照顾，护理",
+      "sceneMeaning": "出席；上课",
+      "examples": "[]"
+    },
+    {
+      "word": "broken",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'brokən",
+      "phoneticUk": "'brəʊk(ə)n",
+      "translation": "被打碎的，骨折的",
+      "sceneMeaning": "被打碎的，骨折的",
+      "examples": "[]"
+    },
+    {
+      "word": "postgraduate",
+      "partOfSpeech": "n",
+      "phoneticUs": "post'ɡrædjet",
+      "phoneticUk": "ˌpəʊstˈgrædʒuət",
+      "translation": "研究生",
+      "sceneMeaning": "研究生",
+      "examples": "[]"
+    },
+    {
+      "word": "pursue",
+      "partOfSpeech": "v",
+      "phoneticUs": "pə'sʊ",
+      "phoneticUk": "pə'sjuː",
+      "translation": "追赶，追踪；进行；追求",
+      "sceneMeaning": "追赶，追踪；进行；追求",
+      "examples": "[]"
+    },
+    {
+      "word": "break",
+      "partOfSpeech": "v",
+      "phoneticUs": "brek",
+      "phoneticUk": "breɪk",
+      "translation": "打破；损坏；破坏",
+      "sceneMeaning": "课间休息；间断",
+      "examples": "[]"
+    },
+    {
+      "word": "debate",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "dɪ'bet",
+      "phoneticUk": "dɪ'beɪt",
+      "translation": "争论，辩论",
+      "sceneMeaning": "辩论",
+      "examples": "[]"
+    },
+    {
+      "word": "exercise",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛksɚsaɪz",
+      "phoneticUk": "'eksəsaɪz",
+      "translation": "锻炼，训练；练习",
+      "sceneMeaning": "练习；锻炼",
+      "examples": "[]"
+    },
+    {
+      "word": "minor",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'maɪnɚ",
+      "phoneticUk": "'maɪnə",
+      "translation": "较小的；较次要的；小的",
+      "sceneMeaning": "辅修科目；未成年人",
+      "examples": "[]"
+    },
+    {
+      "word": "perfect",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈpɝfɪkt; (for v.) pɝˈfɛkt",
+      "phoneticUk": "ˈpəːfɪkt; (for v.) pəˈfekt",
+      "translation": "完美的；完全的",
+      "sceneMeaning": "完美的；完全的；本场景常见用法：现在完成式",
+      "examples": "[]"
+    },
+    {
+      "word": "graduate",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈɡrædʒuˌet",
+      "phoneticUk": "ˈɡradʒʊeɪt",
+      "translation": "毕业生；大学毕业",
+      "sceneMeaning": "毕业",
+      "examples": "[]"
+    },
+    {
+      "word": "lesson",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛsn",
+      "phoneticUk": "'les(ə)n",
+      "translation": "功课，课；课程",
+      "sceneMeaning": "课；教训",
+      "examples": "[]"
+    },
+    {
+      "word": "campus",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæmpəs",
+      "phoneticUk": "'kæmpəs",
+      "translation": "校园，学校场地",
+      "sceneMeaning": "校园",
+      "examples": "[]"
+    },
+    {
+      "word": "classroom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klæs'rʊm; 'klæs'rʊm",
+      "phoneticUk": "'klɑːsruːm; -rʊm",
+      "translation": "教室，课堂",
+      "sceneMeaning": "教室",
+      "examples": "[]"
+    },
+    {
+      "word": "club",
+      "partOfSpeech": "n",
+      "phoneticUs": "klʌb",
+      "phoneticUk": "klʌb",
+      "translation": "俱乐部，夜总会",
+      "sceneMeaning": "社团；俱乐部",
+      "examples": "[]"
+    },
+    {
+      "word": "competition",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑmpə'tɪʃən",
+      "phoneticUk": "kɒmpɪ'tɪʃ(ə)n",
+      "translation": "竞争，比赛",
+      "sceneMeaning": "比赛；竞争",
+      "examples": "[]"
+    },
+    {
+      "word": "exam",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪg'zæm",
+      "phoneticUk": "ɪg'zæm; eg-",
+      "translation": "考试；检查，细查",
+      "sceneMeaning": "考试",
+      "examples": "[]"
+    },
+    {
+      "word": "period",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɪrɪəd",
+      "phoneticUk": "'pɪərɪəd",
+      "translation": "时期；学时；句号",
+      "sceneMeaning": "课时；时期",
+      "examples": "[]"
+    },
+    {
+      "word": "regulation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌrɛɡjəˈleʃən",
+      "phoneticUk": "regjʊ'leɪʃ(ə)n",
+      "translation": "规则，规章；管理；管理；规则",
+      "sceneMeaning": "规章；条例",
+      "examples": "[]"
+    },
+    {
+      "word": "workshop",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wɝkʃɑp",
+      "phoneticUk": "'wɜːkʃɒp",
+      "translation": "车间，工场；创作室",
+      "sceneMeaning": "工作坊；实践课",
+      "examples": "[]"
+    },
+    {
+      "word": "award",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'wɔrd",
+      "phoneticUk": "ə'wɔːd",
+      "translation": "奖，奖品；判定；授予；判给；奖(金)",
+      "sceneMeaning": "奖，奖品；判定；授予；判给；奖(金)",
+      "examples": "[]"
+    },
+    {
+      "word": "tolerate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'tɑləret",
+      "phoneticUk": "'tɒləreɪt",
+      "translation": "忍受，容忍，宽恕",
+      "sceneMeaning": "忍受，容忍，宽恕",
+      "examples": "[]"
+    },
+    {
+      "word": "assign",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'saɪn",
+      "phoneticUk": "ə'saɪn",
+      "translation": "指派；分配；指定；布置；分配",
+      "sceneMeaning": "布置；分配",
+      "examples": "[]"
+    },
+    {
+      "word": "presence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛzns",
+      "phoneticUk": "'prez(ə)ns",
+      "translation": "出席，到场；在",
+      "sceneMeaning": "出席，到场；在",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "课程表；日程",
+      "examples": "[]"
+    },
+    {
+      "word": "admission",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'mɪʃən",
+      "phoneticUk": "əd'mɪʃ(ə)n",
+      "translation": "允许进入；承认；承认；准许进(加)入；入场费",
+      "sceneMeaning": "录取；准入",
+      "examples": "[]"
+    },
+    {
+      "word": "assignment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'saɪnmənt",
+      "phoneticUk": "ə'saɪnm(ə)nt",
+      "translation": "任务，指定的作业；作业",
+      "sceneMeaning": "作业；任务",
+      "examples": "[]"
+    },
+    {
+      "word": "commencement",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mɛnsmənt",
+      "phoneticUk": "kə'mensm(ə)nt",
+      "translation": "毕业典礼",
+      "sceneMeaning": "毕业典礼",
+      "examples": "[]"
+    },
+    {
+      "word": "enroll",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'rol",
+      "phoneticUk": "inˈrəul",
+      "translation": "注册",
+      "sceneMeaning": "注册；入学",
+      "examples": "[]"
+    },
+    {
+      "word": "institution",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪnstɪ'tuʃən",
+      "phoneticUk": "ɪnstɪ'tjuːʃ(ə)n",
+      "translation": "协会；制度，习俗；社会公共机构；制度；设立，制定",
+      "sceneMeaning": "协会；制度，习俗；社会公共机构；制度；设立，制定；本场景常见用法：高等学校；高等院校",
+      "examples": "[]"
+    },
+    {
+      "word": "ordinary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔrdnɛri",
+      "phoneticUk": "'ɔːdɪn(ə)rɪ; -d(ə)n-",
+      "translation": "平常的；平凡的",
+      "sceneMeaning": "平常的；平凡的；本场景常见用法：常微分方程",
+      "examples": "[]"
+    },
+    {
+      "word": "participate",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɑr'tɪsə'pet",
+      "phoneticUk": "pɑː'tɪsɪpeɪt",
+      "translation": "参与，参加；分享；参与，参加",
+      "sceneMeaning": "参加；参与",
+      "examples": "[]"
+    },
+    {
+      "word": "score",
+      "partOfSpeech": "n",
+      "phoneticUs": "skɔ",
+      "phoneticUk": "skɔː",
+      "translation": "得分，比数，成绩",
+      "sceneMeaning": "分数；得分",
+      "examples": "[]"
+    },
+    {
+      "word": "sophisticated",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sə'fɪstɪketɪd",
+      "phoneticUk": "sə'fɪstɪkeɪtɪd",
+      "translation": "老于世故的；高级的；复杂的；世故的",
+      "sceneMeaning": "老于世故的；高级的；复杂的；世故的",
+      "examples": "[]"
+    },
+    {
+      "word": "strict",
+      "partOfSpeech": "adj",
+      "phoneticUs": "strɪkt",
+      "phoneticUk": "strɪkt",
+      "translation": "严格的",
+      "sceneMeaning": "严格的",
+      "examples": "[]"
+    },
+    {
+      "word": "absence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æbsns",
+      "phoneticUk": "'æbs(ə)ns",
+      "translation": "缺席，不在场；缺乏",
+      "sceneMeaning": "缺席；不存在",
+      "examples": "[]"
+    },
+    {
+      "word": "admit",
+      "partOfSpeech": "v",
+      "phoneticUs": "əd'mɪt",
+      "phoneticUk": "əd'mɪt",
+      "translation": "承认；准许…进入；承认；容许",
+      "sceneMeaning": "承认；准许…进入；承认；容许",
+      "examples": "[]"
+    },
+    {
+      "word": "diploma",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'plomə",
+      "phoneticUk": "dɪˈpləʊmə",
+      "translation": "文凭",
+      "sceneMeaning": "毕业文凭",
+      "examples": "[]"
+    },
+    {
+      "word": "discussion",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'skʌʃən",
+      "phoneticUk": "dɪ'skʌʃ(ə)n",
+      "translation": "讨论，谈论；论述",
+      "sceneMeaning": "讨论",
+      "examples": "[]"
+    },
+    {
+      "word": "dropout",
+      "partOfSpeech": "n",
+      "phoneticUs": "'drɑpaʊt",
+      "phoneticUk": "ˈdrɒpaʊt",
+      "translation": "辍学者",
+      "sceneMeaning": "辍学者；本场景常见用法：辍学",
+      "examples": "[]"
+    },
+    {
+      "word": "fee",
+      "partOfSpeech": "n",
+      "phoneticUs": "fi",
+      "phoneticUk": "fiː",
+      "translation": "费，酬金；赏金",
+      "sceneMeaning": "费用",
+      "examples": "[]"
+    },
+    {
+      "word": "grade",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡred",
+      "phoneticUk": "greɪd",
+      "translation": "给…分等级；等级",
+      "sceneMeaning": "年级；成绩",
+      "examples": "[]"
+    },
+    {
+      "word": "instruct",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'strʌkt",
+      "phoneticUk": "ɪn'strʌkt",
+      "translation": "教；指示；通知；指导；教授；通知；命令；",
+      "sceneMeaning": "指导；教授",
+      "examples": "[]"
+    },
+    {
+      "word": "lab",
+      "partOfSpeech": "n",
+      "phoneticUs": "læb",
+      "phoneticUk": "læb",
+      "translation": "实验室，研究室",
+      "sceneMeaning": "实验室",
+      "examples": "[]"
+    },
+    {
+      "word": "lazy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lezi",
+      "phoneticUk": "'leɪzɪ",
+      "translation": "懒惰的，懒散的",
+      "sceneMeaning": "懒惰的",
+      "examples": "[]"
+    },
+    {
+      "word": "master",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mæstɚ",
+      "phoneticUk": "'mɑːstə",
+      "translation": "主人；能手；硕士",
+      "sceneMeaning": "主人；能手；硕士；本场景常见用法：硕士学位；研究生",
+      "examples": "[]"
+    },
+    {
+      "word": "scholarship",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɑlɚʃɪp",
+      "phoneticUk": "'skɔləʃip",
+      "translation": "奖学金",
+      "sceneMeaning": "奖学金；学问",
+      "examples": "[]"
+    },
+    {
+      "word": "submit",
+      "partOfSpeech": "v",
+      "phoneticUs": "səb'mɪt",
+      "phoneticUk": "səb'mɪt",
+      "translation": "使服从；服从；提交",
+      "sceneMeaning": "提交",
+      "examples": "[]"
+    },
+    {
+      "word": "tuition",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʊ'ɪʃən",
+      "phoneticUk": "tjuˈɪʃn",
+      "translation": "学费",
+      "sceneMeaning": "学费；教学",
+      "examples": "[]"
+    },
+    {
+      "word": "undergraduate",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ʌndɚ'ɡrædʒuət",
+      "phoneticUk": "ʌndə'grædjʊət",
+      "translation": "大学在校生",
+      "sceneMeaning": "本科生",
+      "examples": "[]"
+    },
+    {
+      "word": "wedding",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wɛdɪŋ",
+      "phoneticUk": "ˈwedɪŋ",
+      "translation": "婚礼",
+      "sceneMeaning": "婚礼；本场景常见用法：n. 结婚典礼",
+      "examples": "[]"
+    },
+    {
+      "word": "cafeteria",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kæfə'tɪrɪə",
+      "phoneticUk": "kæfɪ'tɪərɪə",
+      "translation": "自助食堂",
+      "sceneMeaning": "食堂；自助餐厅",
+      "examples": "[]"
+    },
+    {
+      "word": "ceremony",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈsɛrəˌmoʊni",
+      "phoneticUk": "'serɪmənɪ",
+      "translation": "典礼，仪式；礼节；典礼，仪式",
+      "sceneMeaning": "典礼；仪式",
+      "examples": "[]"
+    },
+    {
+      "word": "certificate",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɚˈtɪfɪkɪt; (for v.,) sɚˈtɪfɪˌket",
+      "phoneticUk": "səˈtɪfɪkɪt; (for v.,) səˈtɪfɪˌkeɪt",
+      "translation": "证书，证件，执照",
+      "sceneMeaning": "证书；证明",
+      "examples": "[]"
+    },
+    {
+      "word": "cheat",
+      "partOfSpeech": "v",
+      "phoneticUs": "tʃit",
+      "phoneticUk": "tʃiːt",
+      "translation": "骗取；哄；行骗；欺骗, 作弊",
+      "sceneMeaning": "作弊；欺骗",
+      "examples": "[]"
+    },
+    {
+      "word": "discipline",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dɪsəplɪn",
+      "phoneticUk": "'dɪsɪplɪn",
+      "translation": "纪律；训练；训练",
+      "sceneMeaning": "纪律；学科",
+      "examples": "[]"
+    },
+    {
+      "word": "dormitory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɔrmətɔri",
+      "phoneticUk": "ˈdɔːmətri",
+      "translation": "集体寝室；宿舍；宿舍",
+      "sceneMeaning": "宿舍",
+      "examples": "[]"
+    },
+    {
+      "word": "enrollment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'rolmənt",
+      "phoneticUk": "ɪn'rəʊlmənt",
+      "translation": "入学人数",
+      "sceneMeaning": "入学；注册人数",
+      "examples": "[]"
+    },
+    {
+      "word": "gradual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡrædʒuəl",
+      "phoneticUk": "'grædʒʊəl",
+      "translation": "逐渐的；渐进的",
+      "sceneMeaning": "逐渐的；渐进的",
+      "examples": "[]"
+    },
+    {
+      "word": "junior",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'dʒunɪɚ",
+      "phoneticUk": "'dʒuːnɪə",
+      "translation": "年少的；晚辈",
+      "sceneMeaning": "低年级生；三年级学生",
+      "examples": "[]"
+    },
+    {
+      "word": "laboratory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'læbrə'tɔri",
+      "phoneticUk": "lə'bɒrə,t(ə)rɪ; 'læb(ə)rə,t(ə)rɪ",
+      "translation": "实验室，研究室",
+      "sceneMeaning": "实验室",
+      "examples": "[]"
+    },
+    {
+      "word": "lecture",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "'lɛktʃɚ",
+      "phoneticUk": "'lektʃə",
+      "translation": "演讲，讲课",
+      "sceneMeaning": "讲座；授课",
+      "examples": "[]"
+    },
+    {
+      "word": "modest",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɑdɪst",
+      "phoneticUk": "'mɒdɪst",
+      "translation": "有节制的；谦虚的",
+      "sceneMeaning": "有节制的；谦虚的",
+      "examples": "[]"
+    },
+    {
+      "word": "permission",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'mɪʃən",
+      "phoneticUk": "pə'mɪʃ(ə)n",
+      "translation": "允许，许可，同意",
+      "sceneMeaning": "许可；允许",
+      "examples": "[]"
+    },
+    {
+      "word": "principal",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'prɪnsəpl",
+      "phoneticUk": "'prɪnsəp(ə)l",
+      "translation": "主要的；负责人",
+      "sceneMeaning": "校长；负责人",
+      "examples": "[]"
+    },
+    {
+      "word": "punish",
+      "partOfSpeech": "v",
+      "phoneticUs": "'pʌnɪʃ",
+      "phoneticUk": "'pʌnɪʃ",
+      "translation": "罚，惩罚，处罚",
+      "sceneMeaning": "惩罚",
+      "examples": "[]"
+    },
+    {
+      "word": "register",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "'rɛdʒɪstɚ",
+      "phoneticUk": "'redʒɪstə",
+      "translation": "登记，注册",
+      "sceneMeaning": "登记；注册",
+      "examples": "[]"
+    },
+    {
+      "word": "remarkable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'mɑrkəbl",
+      "phoneticUk": "rɪ'mɑːkəb(ə)l",
+      "translation": "异常的，非凡的",
+      "sceneMeaning": "异常的，非凡的；本场景常见用法：显著发展",
+      "examples": "[]"
+    },
+    {
+      "word": "review",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'vju",
+      "phoneticUk": "rɪ'vjuː",
+      "translation": "再检查；复习；回顾",
+      "sceneMeaning": "复习；回顾",
+      "examples": "[]"
+    },
+    {
+      "word": "absent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈæbsənt",
+      "phoneticUk": "'æbs(ə)nt",
+      "translation": "不在场的；缺乏的；缺席的",
+      "sceneMeaning": "缺席的；不存在的",
+      "examples": "[]"
+    },
+    {
+      "word": "academy",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kædəmi",
+      "phoneticUk": "ə'kædəmɪ",
+      "translation": "私立中学；专科院校",
+      "sceneMeaning": "私立中学；专科院校；本场景常见用法：国家科学院",
+      "examples": "[]"
+    },
+    {
+      "word": "assess",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sɛs",
+      "phoneticUk": "ə'ses",
+      "translation": "对(财产等)估价；评价",
+      "sceneMeaning": "评估",
+      "examples": "[]"
+    },
+    {
+      "word": "attendance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'tɛndəns",
+      "phoneticUk": "ə'tend(ə)ns",
+      "translation": "出席人数",
+      "sceneMeaning": "出勤；参加",
+      "examples": "[]"
+    },
+    {
+      "word": "bell",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɛl",
+      "phoneticUk": "bel",
+      "translation": "钟，铃，门铃；钟声",
+      "sceneMeaning": "铃；钟",
+      "examples": "[]"
+    },
+    {
+      "word": "blackboard",
+      "partOfSpeech": "n",
+      "phoneticUs": "'blækbɔrd",
+      "phoneticUk": "'blækbɔːd",
+      "translation": "黑板",
+      "sceneMeaning": "黑板",
+      "examples": "[]"
+    },
+    {
+      "word": "boast",
+      "partOfSpeech": "v",
+      "phoneticUs": "bost",
+      "phoneticUk": "bəʊst",
+      "translation": "自夸；吹嘘",
+      "sceneMeaning": "自夸；吹嘘",
+      "examples": "[]"
+    },
+    {
+      "word": "chalk",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɔk",
+      "phoneticUk": "tʃɔːk",
+      "translation": "白垩；粉笔",
+      "sceneMeaning": "粉笔",
+      "examples": "[]"
+    },
+    {
+      "word": "classification",
+      "partOfSpeech": "n",
+      "phoneticUs": ",klæsɪfɪ'keʃən",
+      "phoneticUk": ",klæsɪfɪ'keɪʃ(ə)n",
+      "translation": "分类；分级；分类法；分类，级别",
+      "sceneMeaning": "分类；分级；分类法；分类，级别；本场景常见用法：分类过程",
+      "examples": "[]"
+    },
+    {
+      "word": "classmate",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klæsmet",
+      "phoneticUk": "'klɑːsmeɪt",
+      "translation": "同班同学",
+      "sceneMeaning": "同班同学",
+      "examples": "[]"
+    },
+    {
+      "word": "cooperate",
+      "partOfSpeech": "v",
+      "phoneticUs": "koʊˈɑːpəreɪt",
+      "phoneticUk": "kəʊ'ɒpəreɪt",
+      "translation": "合作，协作；配合",
+      "sceneMeaning": "合作",
+      "examples": "[]"
+    },
+    {
+      "word": "demonstrate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dɛmən'stret",
+      "phoneticUk": "'demənstreɪt",
+      "translation": "说明；论证；表露；证明；展示",
+      "sceneMeaning": "演示；证明",
+      "examples": "[]"
+    },
+    {
+      "word": "diligent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪlɪdʒənt",
+      "phoneticUk": "'dɪlɪdʒ(ə)nt",
+      "translation": "勤勉的，勤奋的；勤奋的",
+      "sceneMeaning": "勤奋的",
+      "examples": "[]"
+    },
+    {
+      "word": "divine",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'vaɪn",
+      "phoneticUk": "dɪˈvaɪn",
+      "translation": "神圣的",
+      "sceneMeaning": "神圣的；本场景常见用法：祭礼；礼拜",
+      "examples": "[]"
+    },
+    {
+      "word": "extracurricular",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɛkstrəkə'rɪkjəlɚ",
+      "phoneticUk": "ekstrəkə'rɪkjʊlə",
+      "translation": "课外的",
+      "sceneMeaning": "课外的",
+      "examples": "[]"
+    },
+    {
+      "word": "gymnasium",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒɪm'nezɪəm",
+      "phoneticUk": "dʒɪm'neɪzɪəm",
+      "translation": "体育馆，健身房",
+      "sceneMeaning": "体育馆；健身房",
+      "examples": "[]"
+    },
+    {
+      "word": "headmaster",
+      "partOfSpeech": "n",
+      "phoneticUs": ",hɛd'mæstɚ",
+      "phoneticUk": "hed'mɑːstə",
+      "translation": "校长",
+      "sceneMeaning": "男校长",
+      "examples": "[]"
+    },
+    {
+      "word": "memorial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mə'morɪəl",
+      "phoneticUk": "mə'mɔːrɪəl",
+      "translation": "纪念的；记忆的",
+      "sceneMeaning": "纪念的；记忆的；本场景常见用法：陵园；公墓",
+      "examples": "[]"
+    },
+    {
+      "word": "memorize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mɛmə'raɪz",
+      "phoneticUk": "'meməraɪz",
+      "translation": "熟记，牢记",
+      "sceneMeaning": "记忆；背诵",
+      "examples": "[]"
+    },
+    {
+      "word": "monitor",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɔnɪtɚ",
+      "phoneticUk": "'mɒnɪtə",
+      "translation": "班长；监视器；监控；监听",
+      "sceneMeaning": "班长；显示器；监控器",
+      "examples": "[]"
+    },
+    {
+      "word": "notebook",
+      "partOfSpeech": "n",
+      "phoneticUs": "'notbʊk",
+      "phoneticUk": "'nəʊtbʊk",
+      "translation": "笔记本，期票簿",
+      "sceneMeaning": "笔记本",
+      "examples": "[]"
+    },
+    {
+      "word": "noun",
+      "partOfSpeech": "n",
+      "phoneticUs": "naʊn",
+      "phoneticUk": "naʊn",
+      "translation": "名词",
+      "sceneMeaning": "名词",
+      "examples": "[]"
+    },
+    {
+      "word": "optional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɑpʃənl",
+      "phoneticUk": "'ɒpʃ(ə)n(ə)l",
+      "translation": "可以任意选择的",
+      "sceneMeaning": "可选的；选修的",
+      "examples": "[]"
+    },
+    {
+      "word": "oriental",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",orɪ'ɛntəl",
+      "phoneticUk": "ɔːrɪ'ent(ə)l; ɒr-",
+      "translation": "东方的；东方国家的",
+      "sceneMeaning": "东方的；东方国家的；本场景常见用法：文华东方酒店",
+      "examples": "[]"
+    },
+    {
+      "word": "playground",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ple'graʊnd",
+      "phoneticUk": "'pleɪgraʊnd",
+      "translation": "操场，运动场",
+      "sceneMeaning": "操场；游乐场",
+      "examples": "[]"
+    },
+    {
+      "word": "prize",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "praɪz",
+      "phoneticUk": "praɪz",
+      "translation": "奖赏，奖金；珍视",
+      "sceneMeaning": "奖赏，奖金；珍视",
+      "examples": "[]"
+    },
+    {
+      "word": "punctual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pʌŋtʃʊəl",
+      "phoneticUk": "'pʌŋ(k)tʃʊəl; -tjʊəl",
+      "translation": "严守时刻的；准时的；准时的",
+      "sceneMeaning": "准时的",
+      "examples": "[]"
+    },
+    {
+      "word": "pupil",
+      "partOfSpeech": "n",
+      "phoneticUs": "pjupl",
+      "phoneticUk": "'pjuːpɪl; -p(ə)l",
+      "translation": "学生，小学生",
+      "sceneMeaning": "小学生；学生",
+      "examples": "[]"
+    },
+    {
+      "word": "revenge",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'vɛndʒ",
+      "phoneticUk": "rɪ'vendʒ",
+      "translation": "报仇",
+      "sceneMeaning": "报仇",
+      "examples": "[]"
+    },
+    {
+      "word": "revise",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'vaɪz",
+      "phoneticUk": "rɪ'vaɪz",
+      "translation": "修订，校订；修改；修订",
+      "sceneMeaning": "复习；修改",
+      "examples": "[]"
+    },
+    {
+      "word": "rigorous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɪɡərəs",
+      "phoneticUk": "ˈrɪgərəs",
+      "translation": "严格的",
+      "sceneMeaning": "严格的",
+      "examples": "[]"
+    },
+    {
+      "word": "scholar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɑlɚ",
+      "phoneticUk": "'skɒlə",
+      "translation": "学者(尤指文学方面)",
+      "sceneMeaning": "学者(尤指文学方面)；本场景常见用法：研究学者；研究员",
+      "examples": "[]"
+    },
+    {
+      "word": "uniform",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'junɪfɔrm",
+      "phoneticUk": "'juːnɪfɔːm",
+      "translation": "一样的；制服",
+      "sceneMeaning": "校服；制服",
+      "examples": "[]"
+    }
+  ]
+}

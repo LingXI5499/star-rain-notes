@@ -1,0 +1,783 @@
+{
+  "id": "19",
+  "title": "手机 / 网络 / 数字生活",
+  "layer": "核心生活场景层",
+  "wordCount": 86,
+  "path": "/english/vocabulary/19/",
+  "words": [
+    {
+      "word": "save",
+      "partOfSpeech": "v",
+      "phoneticUs": "sev",
+      "phoneticUk": "seɪv",
+      "translation": "节省",
+      "sceneMeaning": "保存；节省",
+      "examples": "[]"
+    },
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可用的；可获得的",
+      "examples": "[]"
+    },
+    {
+      "word": "contact",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑntækt",
+      "phoneticUk": "'kɒntækt",
+      "translation": "使接触；与…联系；联系，接触；〔写信、打电话〕联系〔某人〕",
+      "sceneMeaning": "联系人；联系",
+      "examples": "[]"
+    },
+    {
+      "word": "private",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'praɪvət",
+      "phoneticUk": "'praɪvət",
+      "translation": "私人的；私下的；私人的",
+      "sceneMeaning": "私人的；私密的",
+      "examples": "[]"
+    },
+    {
+      "word": "call",
+      "partOfSpeech": "v",
+      "phoneticUs": "kɔl",
+      "phoneticUk": "kɔːl",
+      "translation": "把…叫做；叫，喊",
+      "sceneMeaning": "打电话；呼叫",
+      "examples": "[]"
+    },
+    {
+      "word": "computer",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'pjutɚ",
+      "phoneticUk": "kəm'pjuːtə",
+      "translation": "计算机，电脑",
+      "sceneMeaning": "计算机",
+      "examples": "[]"
+    },
+    {
+      "word": "data",
+      "partOfSpeech": "n",
+      "phoneticUs": "'detə",
+      "phoneticUk": "'deɪtə",
+      "translation": "数据;；资料",
+      "sceneMeaning": "数据",
+      "examples": "[]"
+    },
+    {
+      "word": "digital",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪdʒɪtl",
+      "phoneticUk": "'dɪdʒɪt(ə)l",
+      "translation": "数字的，计数的",
+      "sceneMeaning": "数字的",
+      "examples": "[]"
+    },
+    {
+      "word": "follow",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fɑlo",
+      "phoneticUk": "'fɒləʊ",
+      "translation": "跟随；结果是",
+      "sceneMeaning": "关注；跟随",
+      "examples": "[]"
+    },
+    {
+      "word": "following",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɑloɪŋ",
+      "phoneticUk": "'fɒləʊɪŋ",
+      "translation": "接着的；下列的",
+      "sceneMeaning": "接着的；下列的",
+      "examples": "[]"
+    },
+    {
+      "word": "key",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "kiː",
+      "translation": "钥匙；键；答案",
+      "sceneMeaning": "钥匙；键；答案；本场景常见用法：[计]公开密钥",
+      "examples": "[]"
+    },
+    {
+      "word": "like",
+      "partOfSpeech": "v",
+      "phoneticUs": "laɪk",
+      "phoneticUk": "laɪk",
+      "translation": "喜欢；喜爱；希望",
+      "sceneMeaning": "点赞；喜欢",
+      "examples": "[]"
+    },
+    {
+      "word": "memory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛməri",
+      "phoneticUk": "'mem(ə)rɪ",
+      "translation": "记忆；回忆；存储",
+      "sceneMeaning": "内存；记忆",
+      "examples": "[]"
+    },
+    {
+      "word": "message",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛsɪdʒ",
+      "phoneticUk": "'mesɪdʒ",
+      "translation": "信息，消息；启示",
+      "sceneMeaning": "消息；信息",
+      "examples": "[]"
+    },
+    {
+      "word": "mobile",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈmobəl; ˈmoˌbaɪl; ˈmoˌbil",
+      "phoneticUk": "ˈməʊbaɪl",
+      "translation": "运动的；流动的",
+      "sceneMeaning": "移动的；手机的",
+      "examples": "[]"
+    },
+    {
+      "word": "phone",
+      "partOfSpeech": "n",
+      "phoneticUs": "fon",
+      "phoneticUk": "fəʊn",
+      "translation": "电话，电话机；耳机",
+      "sceneMeaning": "电话；手机",
+      "examples": "[]"
+    },
+    {
+      "word": "power",
+      "partOfSpeech": "n",
+      "phoneticUs": "'paʊɚ",
+      "phoneticUk": "'paʊə",
+      "translation": "能力；力；权；幂",
+      "sceneMeaning": "电力；权力",
+      "examples": "[]"
+    },
+    {
+      "word": "program",
+      "partOfSpeech": "n",
+      "phoneticUs": "'proɡræm",
+      "phoneticUk": "'prəʊɡræm",
+      "translation": "节目单；大纲；程序",
+      "sceneMeaning": "程序；项目",
+      "examples": "[]"
+    },
+    {
+      "word": "public",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'pʌblɪk",
+      "phoneticUk": "'pʌblɪk",
+      "translation": "公众的；公众",
+      "sceneMeaning": "公共的；公开的",
+      "examples": "[]"
+    },
+    {
+      "word": "cell",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɛl",
+      "phoneticUk": "sel",
+      "translation": "细胞；小房间",
+      "sceneMeaning": "细胞；小房间；本场景常见用法：手机（等于cellular phone）",
+      "examples": "[]"
+    },
+    {
+      "word": "piece",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pis",
+      "phoneticUk": "piːs",
+      "translation": "碎片，块；拼合",
+      "sceneMeaning": "碎片，块；拼合",
+      "examples": "[]"
+    },
+    {
+      "word": "application",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌæpləˈkeʃən",
+      "phoneticUk": "ˌæplɪ'keɪʃ(ə)n",
+      "translation": "请求，申请；施用；申请；应用",
+      "sceneMeaning": "应用；申请",
+      "examples": "[]"
+    },
+    {
+      "word": "security",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'kjʊrəti",
+      "phoneticUk": "sɪ'kjʊərətɪ",
+      "translation": "安全，安全感；安全，安保",
+      "sceneMeaning": "安全；保障",
+      "examples": "[]"
+    },
+    {
+      "word": "powerful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'paʊɚfl",
+      "phoneticUk": "'paʊəfʊl; -f(ə)l",
+      "translation": "强有力的；有权威的",
+      "sceneMeaning": "强有力的；有权威的；本场景常见用法：强力电机",
+      "examples": "[]"
+    },
+    {
+      "word": "account",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kaʊnt",
+      "phoneticUk": "ə'kaʊnt",
+      "translation": "记述；解释；帐目",
+      "sceneMeaning": "账号；账户",
+      "examples": "[]"
+    },
+    {
+      "word": "camera",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæmərə",
+      "phoneticUk": "'kæm(ə)rə",
+      "translation": "照相机，摄影机",
+      "sceneMeaning": "相机；摄像头",
+      "examples": "[]"
+    },
+    {
+      "word": "name",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "nem",
+      "phoneticUk": "neɪm",
+      "translation": "名字；名誉；说出",
+      "sceneMeaning": "名字；名誉；说出；本场景常见用法：用户名",
+      "examples": "[]"
+    },
+    {
+      "word": "network",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nɛtwɝk",
+      "phoneticUk": "'netwɜːk",
+      "translation": "网状物；网络",
+      "sceneMeaning": "网络",
+      "examples": "[]"
+    },
+    {
+      "word": "post",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "post",
+      "phoneticUk": "pəʊst",
+      "translation": "柱，桩，杆；贴出",
+      "sceneMeaning": "帖子；发布",
+      "examples": "[]"
+    },
+    {
+      "word": "screen",
+      "partOfSpeech": "v",
+      "phoneticUs": "skrin",
+      "phoneticUk": "skri:n",
+      "translation": "筛查",
+      "sceneMeaning": "屏幕",
+      "examples": "[]"
+    },
+    {
+      "word": "privacy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'praɪvəsi",
+      "phoneticUk": "'prɪvəsɪ",
+      "translation": "隐私",
+      "sceneMeaning": "隐私",
+      "examples": "[]"
+    },
+    {
+      "word": "charge",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tʃɑrdʒ",
+      "phoneticUk": "tʃɑːdʒ",
+      "translation": "索价；控告；费用",
+      "sceneMeaning": "充电；收费",
+      "examples": "[]"
+    },
+    {
+      "word": "transmission",
+      "partOfSpeech": "n",
+      "phoneticUs": "træns'mɪʃən",
+      "phoneticUk": "trænz'mɪʃ(ə)n; trɑːnz-; -ns-",
+      "translation": "传送；传动；发射",
+      "sceneMeaning": "传送；传动；发射；本场景常见用法：传输网络；电力网",
+      "examples": "[]"
+    },
+    {
+      "word": "transmit",
+      "partOfSpeech": "v",
+      "phoneticUs": "trænzˈmɪt",
+      "phoneticUk": "trænz'mɪt; trɑːnz-; -ns-",
+      "translation": "传送，传达；发射",
+      "sceneMeaning": "传送，传达；发射",
+      "examples": "[]"
+    },
+    {
+      "word": "cable",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kebl",
+      "phoneticUk": "'keɪb(ə)l",
+      "translation": "缆，索；电缆；电报",
+      "sceneMeaning": "电缆；数据线",
+      "examples": "[]"
+    },
+    {
+      "word": "net",
+      "partOfSpeech": "n",
+      "phoneticUs": "nɛt",
+      "phoneticUk": "net",
+      "translation": "网，网状物；通信网",
+      "sceneMeaning": "网，网状物；通信网",
+      "examples": "[]"
+    },
+    {
+      "word": "platform",
+      "partOfSpeech": "n",
+      "phoneticUs": "'plæt'fɔrm",
+      "phoneticUk": "'plætfɔːm",
+      "translation": "平台；站台；讲台",
+      "sceneMeaning": "平台",
+      "examples": "[]"
+    },
+    {
+      "word": "signal",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'sɪgnl",
+      "phoneticUk": "'sɪgn(ə)l",
+      "translation": "信号；发信号；发信号，打信号；示意",
+      "sceneMeaning": "信号",
+      "examples": "[]"
+    },
+    {
+      "word": "virtually",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ˈvɜrtʃuəli",
+      "phoneticUk": "ˈvəːtʃʊəli",
+      "translation": "实际上，事实上；几乎，差不多",
+      "sceneMeaning": "虚拟地；几乎",
+      "examples": "[]"
+    },
+    {
+      "word": "cloud",
+      "partOfSpeech": "n",
+      "phoneticUs": "klaʊd",
+      "phoneticUk": "klaʊd",
+      "translation": "云；云状物；阴影",
+      "sceneMeaning": "云端；云",
+      "examples": "[]"
+    },
+    {
+      "word": "connect",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'nɛkt",
+      "phoneticUk": "kə'nekt",
+      "translation": "连接，连结；联系",
+      "sceneMeaning": "连接",
+      "examples": "[]"
+    },
+    {
+      "word": "download",
+      "partOfSpeech": "v",
+      "phoneticUs": ",daʊn'lod",
+      "phoneticUk": "'daʊnləʊd",
+      "translation": "下载",
+      "sceneMeaning": "下载",
+      "examples": "[]"
+    },
+    {
+      "word": "image",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪmɪdʒ",
+      "phoneticUk": "'ɪmɪdʒ",
+      "translation": "像；形象；映象；形象，声誉，；印象",
+      "sceneMeaning": "图像；形象",
+      "examples": "[]"
+    },
+    {
+      "word": "smart",
+      "partOfSpeech": "adj",
+      "phoneticUs": "smɑrt",
+      "phoneticUk": "smɑːt",
+      "translation": "巧妙的；洒脱的",
+      "sceneMeaning": "智能的；聪明的",
+      "examples": "[]"
+    },
+    {
+      "word": "tap",
+      "partOfSpeech": "vt&vi&n",
+      "phoneticUs": "tæp",
+      "phoneticUk": "tæp",
+      "translation": "轻叩",
+      "sceneMeaning": "轻点；敲击",
+      "examples": "[]"
+    },
+    {
+      "word": "code",
+      "partOfSpeech": "n",
+      "phoneticUs": "kod",
+      "phoneticUk": "kəʊd",
+      "translation": "准则；法典；代码；代码，密码",
+      "sceneMeaning": "代码；密码",
+      "examples": "[]"
+    },
+    {
+      "word": "comment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmɛnt",
+      "phoneticUk": "'kɒment",
+      "translation": "评论，意见；注释；评论",
+      "sceneMeaning": "评论",
+      "examples": "[]"
+    },
+    {
+      "word": "copy",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑpi",
+      "phoneticUk": "'kɒpɪ",
+      "translation": "抄件；抄写，复制",
+      "sceneMeaning": "复制",
+      "examples": "[]"
+    },
+    {
+      "word": "hardware",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɑrdwɛr",
+      "phoneticUk": "'hɑːdweə",
+      "translation": "五金器具；硬件",
+      "sceneMeaning": "硬件",
+      "examples": "[]"
+    },
+    {
+      "word": "photo",
+      "partOfSpeech": "n",
+      "phoneticUs": "'foto",
+      "phoneticUk": "'fəʊtəʊ",
+      "translation": "照片，相片",
+      "sceneMeaning": "照片",
+      "examples": "[]"
+    },
+    {
+      "word": "programming",
+      "partOfSpeech": "n",
+      "phoneticUs": "'proɡræmɪŋ",
+      "phoneticUk": "'prəugræmiŋ",
+      "translation": "〔计算机的〕程序编写，程序设计；程序；；〔电视或广播〕节目；电视[广播]节目策划，编排",
+      "sceneMeaning": "〔计算机的〕程序编写，程序设计；程序；；〔电视或广播〕节目；电视[广播]节目策划，编排；本场景常见用法：应用程序设计",
+      "examples": "[]"
+    },
+    {
+      "word": "battery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæt(ə)rɪ",
+      "phoneticUk": "'bætri",
+      "translation": "电池；一套，一组",
+      "sceneMeaning": "电池；电量",
+      "examples": "[]"
+    },
+    {
+      "word": "file",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "faɪl",
+      "phoneticUk": "faɪl",
+      "translation": "档案；把…归档",
+      "sceneMeaning": "文件",
+      "examples": "[]"
+    },
+    {
+      "word": "geographic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",dʒiə'ɡræfɪk",
+      "phoneticUk": ",dʒɪə'græfɪk",
+      "translation": "地理的",
+      "sceneMeaning": "地理的；本场景常见用法：[地]地理信息系统",
+      "examples": "[]"
+    },
+    {
+      "word": "install",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'stɔl",
+      "phoneticUk": "ɪnˈstɔ:l",
+      "translation": "安装，设置；安装",
+      "sceneMeaning": "安装",
+      "examples": "[]"
+    },
+    {
+      "word": "installation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstə'leʃən",
+      "phoneticUk": "ɪnstə'leɪʃ(ə)n",
+      "translation": "安装；装置；设施；安装；就职；就职仪式",
+      "sceneMeaning": "安装；装置；设施；安装；就职；就职仪式",
+      "examples": "[]"
+    },
+    {
+      "word": "link",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lɪŋk",
+      "phoneticUk": "lɪŋk",
+      "translation": "有环连接；环",
+      "sceneMeaning": "链接；联系",
+      "examples": "[]"
+    },
+    {
+      "word": "panel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pænl",
+      "phoneticUk": "'pæn(ə)l",
+      "translation": "专门小组；面，板",
+      "sceneMeaning": "专门小组；面，板；本场景常见用法：液晶显示屏幕",
+      "examples": "[]"
+    },
+    {
+      "word": "portable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɔrtəbl",
+      "phoneticUk": "'pɔːtəb(ə)l",
+      "translation": "轻便的；手提的",
+      "sceneMeaning": "便携的",
+      "examples": "[]"
+    },
+    {
+      "word": "register",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "'rɛdʒɪstɚ",
+      "phoneticUk": "'redʒɪstə",
+      "translation": "登记，注册",
+      "sceneMeaning": "注册；登记",
+      "examples": "[]"
+    },
+    {
+      "word": "update",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ʌp'det",
+      "phoneticUk": "ˌʌpˈdeɪt",
+      "translation": "更新；使现代化",
+      "sceneMeaning": "更新",
+      "examples": "[]"
+    },
+    {
+      "word": "virtual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "[ˈvɜ:rtʃuəl]",
+      "phoneticUk": "ˈvɜ:tʃuəl",
+      "translation": "虚拟的",
+      "sceneMeaning": "虚拟的；实际上的",
+      "examples": "[]"
+    },
+    {
+      "word": "applicable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'æplɪkəbl",
+      "phoneticUk": "ə'plɪkəb(ə)l; 'æplɪk-",
+      "translation": "能应用的；适当的",
+      "sceneMeaning": "能应用的；适当的",
+      "examples": "[]"
+    },
+    {
+      "word": "automatic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔtə'mætɪk",
+      "phoneticUk": "ɔːtə'mætɪk",
+      "translation": "自动的；机械的；自动的",
+      "sceneMeaning": "自动的",
+      "examples": "[]"
+    },
+    {
+      "word": "block",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "blɑk",
+      "phoneticUk": "blɒk",
+      "translation": "街区；堵塞，拦阻；阻碍",
+      "sceneMeaning": "屏蔽；阻止",
+      "examples": "[]"
+    },
+    {
+      "word": "booth",
+      "partOfSpeech": "n",
+      "phoneticUs": "bʊθ",
+      "phoneticUk": "buːð; buːθ",
+      "translation": "货摊；公用电话亭",
+      "sceneMeaning": "货摊；公用电话亭",
+      "examples": "[]"
+    },
+    {
+      "word": "channel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃænl",
+      "phoneticUk": "'tʃæn(ə)l",
+      "translation": "海峡；渠道；频道",
+      "sceneMeaning": "频道；渠道",
+      "examples": "[]"
+    },
+    {
+      "word": "compute",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pjʊt",
+      "phoneticUk": "kəm'pjuːt",
+      "translation": "计算，估计，估算",
+      "sceneMeaning": "计算，估计，估算",
+      "examples": "[]"
+    },
+    {
+      "word": "delete",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'lit",
+      "phoneticUk": "dɪ'liːt",
+      "translation": "删除；擦掉",
+      "sceneMeaning": "删除",
+      "examples": "[]"
+    },
+    {
+      "word": "dial",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'daɪəl",
+      "phoneticUk": "'daɪəl",
+      "translation": "钟面；拨号盘；拨",
+      "sceneMeaning": "钟面；拨号盘；拨；本场景常见用法：转盘电话机；自动电话（等于dial phone）",
+      "examples": "[]"
+    },
+    {
+      "word": "disk",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪsk",
+      "phoneticUk": "dɪsk",
+      "translation": "圆盘，唱片；磁盘",
+      "sceneMeaning": "圆盘，唱片；磁盘",
+      "examples": "[]"
+    },
+    {
+      "word": "document",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɑkjəmənt",
+      "phoneticUk": "'dɒkjʊm(ə)nt",
+      "translation": "公文，文件；证件；文件",
+      "sceneMeaning": "文档；文件",
+      "examples": "[]"
+    },
+    {
+      "word": "intimate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈɪntəmɪt",
+      "phoneticUk": "'ɪntɪmət",
+      "translation": "亲密的；个人的",
+      "sceneMeaning": "亲密的；个人的",
+      "examples": "[]"
+    },
+    {
+      "word": "keyboard",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ki'bɔrd",
+      "phoneticUk": "'kiːbɔːd",
+      "translation": "键盘",
+      "sceneMeaning": "键盘",
+      "examples": "[]"
+    },
+    {
+      "word": "messenger",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛsndʒɚ",
+      "phoneticUk": "'mesɪn(d)ʒə",
+      "translation": "送信者，信使",
+      "sceneMeaning": "送信者，信使",
+      "examples": "[]"
+    },
+    {
+      "word": "microcomputer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'maɪkrokəm'pjʊtɚ",
+      "phoneticUk": "'maɪkrə(ʊ)kɒm,pjuːtə",
+      "translation": "微型计算机，微机",
+      "sceneMeaning": "微型计算机，微机",
+      "examples": "[]"
+    },
+    {
+      "word": "microphone",
+      "partOfSpeech": "n",
+      "phoneticUs": "'maɪkrə'fon",
+      "phoneticUk": "'maɪkrəfəʊn",
+      "translation": "话筒，麦克风",
+      "sceneMeaning": "麦克风",
+      "examples": "[]"
+    },
+    {
+      "word": "mouse",
+      "partOfSpeech": "n",
+      "phoneticUs": "maʊs",
+      "phoneticUk": "maʊs",
+      "translation": "鼠，耗子",
+      "sceneMeaning": "鼠标；老鼠",
+      "examples": "[]"
+    },
+    {
+      "word": "paste",
+      "partOfSpeech": "n",
+      "phoneticUs": "pest",
+      "phoneticUk": "peɪst",
+      "translation": "糊，酱；浆湖",
+      "sceneMeaning": "粘贴",
+      "examples": "[]"
+    },
+    {
+      "word": "programmer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'progræmɚ",
+      "phoneticUk": "'prəʊgræmə",
+      "translation": "程序设计员",
+      "sceneMeaning": "程序设计员；本场景常见用法：n. 应用程序员",
+      "examples": "[]"
+    },
+    {
+      "word": "publicize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'pʌblɪsaɪz",
+      "phoneticUk": "'pʌblɪsaɪz",
+      "translation": "宣布",
+      "sceneMeaning": "宣布",
+      "examples": "[]"
+    },
+    {
+      "word": "secure",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "sə'kjʊr",
+      "phoneticUk": "sɪ'kjʊə; sɪ'kjɔː",
+      "translation": "安心的；安全的；确保……安全",
+      "sceneMeaning": "安全的",
+      "examples": "[]"
+    },
+    {
+      "word": "storage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stɔrɪdʒ",
+      "phoneticUk": "'stɔːrɪdʒ",
+      "translation": "贮藏；贮藏量",
+      "sceneMeaning": "存储；储存",
+      "examples": "[]"
+    },
+    {
+      "word": "torture",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'tɔrtʃɚ",
+      "phoneticUk": "'tɔːtʃə",
+      "translation": "拷问；折磨；拷打",
+      "sceneMeaning": "拷问；折磨；拷打",
+      "examples": "[]"
+    },
+    {
+      "word": "virus",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vaɪrəs",
+      "phoneticUk": "'vaɪrəs",
+      "translation": "病毒",
+      "sceneMeaning": "病毒",
+      "examples": "[]"
+    },
+    {
+      "word": "wire",
+      "partOfSpeech": "n",
+      "phoneticUs": "'waɪɚ",
+      "phoneticUk": "waɪə",
+      "translation": "金属线；电缆；电信",
+      "sceneMeaning": "金属线；电缆；电信；本场景常见用法：不锈钢丝",
+      "examples": "[]"
+    }
+  ]
+}

@@ -1,0 +1,167 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-10-21T15:19:39.584Z",
+  "base": "http://127.0.0.1:4321/",
+  "checks": [
+    {
+      "path": "/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/tutorials/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/tutorials/389330587493/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/tutorials/java-se/chapter-4-3/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/blog/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/blog/page/2/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/blog/topics/java-web/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/blog/tags/java/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/blog/archive/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/blog/posts/linux-3-mysql-redis-postgresql-pgvector/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/portfolio/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/portfolio/625524871958/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/english/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/english/vocabulary/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/english/vocabulary/1/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/english/grammar/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/english/grammar/1-1/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/about/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/messages/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/search/?q=Java",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/privacy/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/terms/",
+      "status": 200,
+      "staticHTML": true
+    },
+    {
+      "path": "/_astro/OriginalHeader.astro_astro_type_script_index_0_lang.JDw7xnkH.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8",
+      "compression": "gzip",
+      "ok": true
+    },
+    {
+      "path": "/_astro/BaseLayout.astro_astro_type_script_index_0_lang.7Yt_btQP.js",
+      "status": 200,
+      "contentType": "text/javascript; charset=utf-8",
+      "compression": "gzip",
+      "ok": true
+    },
+    {
+      "path": "/_astro/BaseLayout.Cn172uEY.css",
+      "status": 200,
+      "contentType": "text/css; charset=utf-8",
+      "compression": "gzip",
+      "ok": true
+    },
+    {
+      "path": "/_astro/home-hero.BcxyBGtJ_20qF0j.webp",
+      "status": 200,
+      "contentType": "image/webp",
+      "compression": null,
+      "ok": true
+    },
+    {
+      "path": "/robots.txt",
+      "status": 200
+    },
+    {
+      "path": "/sitemap-index.xml",
+      "status": 200
+    },
+    {
+      "path": "/search-index.json",
+      "status": 200
+    },
+    {
+      "path": "/__static-verification-missing__/",
+      "status": 404
+    },
+    {
+      "path": "/blog?tag=java",
+      "status": 301,
+      "location": "/blog/?tag=java"
+    }
+  ],
+  "errors": []
+}

@@ -1,0 +1,981 @@
+{
+  "id": "32",
+  "title": "会议 / 沟通 / 合作",
+  "layer": "学习与工作主干层",
+  "wordCount": 108,
+  "path": "/english/vocabulary/32/",
+  "words": [
+    {
+      "word": "evidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛvɪdəns",
+      "phoneticUk": "'evɪd(ə)ns",
+      "translation": "根据；证据，证人；根据，证据，迹象",
+      "sceneMeaning": "证据",
+      "examples": "[]"
+    },
+    {
+      "word": "effect",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'fɛkt",
+      "phoneticUk": "ɪ'fekt",
+      "translation": "结果；效果，效力；影响",
+      "sceneMeaning": "结果；效果，效力；影响；本场景常见用法：直接效应",
+      "examples": "[]"
+    },
+    {
+      "word": "agree",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'ɡri",
+      "phoneticUk": "ə'griː",
+      "translation": "同意；持相同意见",
+      "sceneMeaning": "同意",
+      "examples": "[]"
+    },
+    {
+      "word": "ask",
+      "partOfSpeech": "v",
+      "phoneticUs": "æsk",
+      "phoneticUk": "ɑːsk",
+      "translation": "问；要求；邀请",
+      "sceneMeaning": "问；要求；邀请",
+      "examples": "[]"
+    },
+    {
+      "word": "audience",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔdɪəns",
+      "phoneticUk": "'ɔːdɪəns",
+      "translation": "听众，观众，读者",
+      "sceneMeaning": "听众；观众",
+      "examples": "[]"
+    },
+    {
+      "word": "clear",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "klɪr",
+      "phoneticUk": "klɪə",
+      "translation": "清晰的；清除",
+      "sceneMeaning": "清楚的",
+      "examples": "[]"
+    },
+    {
+      "word": "communicate",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'mjunɪket",
+      "phoneticUk": "kə'mjuːnɪkeɪt",
+      "translation": "通讯；传达；传播",
+      "sceneMeaning": "沟通；传达",
+      "examples": "[]"
+    },
+    {
+      "word": "communication",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə,mjunɪ'keʃən",
+      "phoneticUk": "kəmjuːnɪ'keɪʃ(ə)n",
+      "translation": "通讯；传达；交通",
+      "sceneMeaning": "沟通",
+      "examples": "[]"
+    },
+    {
+      "word": "conversation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑnvɚ'seʃən",
+      "phoneticUk": "kɒnvə'seɪʃ(ə)n",
+      "translation": "会话，非正式会谈",
+      "sceneMeaning": "谈话",
+      "examples": "[]"
+    },
+    {
+      "word": "decide",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'saɪd",
+      "phoneticUk": "dɪ'saɪd",
+      "translation": "决定，决心；解决",
+      "sceneMeaning": "决定",
+      "examples": "[]"
+    },
+    {
+      "word": "decision",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'sɪʒn",
+      "phoneticUk": "dɪ'sɪʒ(ə)n",
+      "translation": "决定，决心；果断",
+      "sceneMeaning": "决定",
+      "examples": "[]"
+    },
+    {
+      "word": "discuss",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'skʌs",
+      "phoneticUk": "dɪ'skʌs",
+      "translation": "讨论，谈论；论述",
+      "sceneMeaning": "讨论",
+      "examples": "[]"
+    },
+    {
+      "word": "effective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɛktɪv",
+      "phoneticUk": "ɪ'fektɪv",
+      "translation": "有效的；有影响的",
+      "sceneMeaning": "有效的",
+      "examples": "[]"
+    },
+    {
+      "word": "explain",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'splen",
+      "phoneticUk": "ɪk'spleɪn",
+      "translation": "解释；为…辩解",
+      "sceneMeaning": "解释",
+      "examples": "[]"
+    },
+    {
+      "word": "group",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡrup",
+      "phoneticUk": "gruːp",
+      "translation": "小组，群；聚集",
+      "sceneMeaning": "小组；群体",
+      "examples": "[]"
+    },
+    {
+      "word": "idea",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪ'diə",
+      "phoneticUk": "aɪ'dɪə",
+      "translation": "想法；思想；意见",
+      "sceneMeaning": "想法",
+      "examples": "[]"
+    },
+    {
+      "word": "meet",
+      "partOfSpeech": "v",
+      "phoneticUs": "mit",
+      "phoneticUk": "miːt",
+      "translation": "遇见；相遇",
+      "sceneMeaning": "会见；满足",
+      "examples": "[]"
+    },
+    {
+      "word": "meeting",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mitɪŋ",
+      "phoneticUk": "'miːtɪŋ",
+      "translation": "聚集，会合，会见",
+      "sceneMeaning": "会议；会面",
+      "examples": "[]"
+    },
+    {
+      "word": "point",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɔɪnt",
+      "phoneticUk": "pɒɪnt",
+      "translation": "点；要点；细目；分",
+      "sceneMeaning": "观点；要点",
+      "examples": "[]"
+    },
+    {
+      "word": "question",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɛstʃən",
+      "phoneticUk": "'kwestʃ(ə)n",
+      "translation": "发问；问题；疑问",
+      "sceneMeaning": "问题",
+      "examples": "[]"
+    },
+    {
+      "word": "relationship",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'leʃən'ʃɪp",
+      "phoneticUk": "rɪ'leɪʃ(ə)nʃɪp",
+      "translation": "关系，联系",
+      "sceneMeaning": "关系",
+      "examples": "[]"
+    },
+    {
+      "word": "talk",
+      "partOfSpeech": "v",
+      "phoneticUs": "tɔk",
+      "phoneticUk": "tɔːk",
+      "translation": "讲话；谈论",
+      "sceneMeaning": "讲话；谈论；本场景常见用法：讨论；详尽地商议；说服",
+      "examples": "[]"
+    },
+    {
+      "word": "answer",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ænsɚ",
+      "phoneticUk": "'ɑːnsə",
+      "translation": "回答；响应；适应",
+      "sceneMeaning": "回答；答案",
+      "examples": "[]"
+    },
+    {
+      "word": "conflict",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑnflɪkt",
+      "phoneticUk": "'kɒnflɪkt",
+      "translation": "争论；冲突；斗争；冲突",
+      "sceneMeaning": "冲突",
+      "examples": "[]"
+    },
+    {
+      "word": "formal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɔrml",
+      "phoneticUk": "'fɔːm(ə)l",
+      "translation": "正式的；礼仪上的",
+      "sceneMeaning": "正式的",
+      "examples": "[]"
+    },
+    {
+      "word": "response",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'spɑns",
+      "phoneticUk": "rɪ'spɒns",
+      "translation": "作答，回答；响应；反应",
+      "sceneMeaning": "回应",
+      "examples": "[]"
+    },
+    {
+      "word": "argue",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɑrgjʊ",
+      "phoneticUk": "'ɑːgjuː",
+      "translation": "争论，争辩，辩论",
+      "sceneMeaning": "争论；论证",
+      "examples": "[]"
+    },
+    {
+      "word": "clearly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'klɪrli",
+      "phoneticUk": "'klɪəlɪ",
+      "translation": "明白地，清晰地",
+      "sceneMeaning": "清楚地",
+      "examples": "[]"
+    },
+    {
+      "word": "directly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "dəˈrektli",
+      "phoneticUk": "dɪ'rektlɪ; daɪ-",
+      "translation": "直接地；立即",
+      "sceneMeaning": "直接地",
+      "examples": "[]"
+    },
+    {
+      "word": "debate",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "dɪ'bet",
+      "phoneticUk": "dɪ'beɪt",
+      "translation": "争论，辩论",
+      "sceneMeaning": "辩论",
+      "examples": "[]"
+    },
+    {
+      "word": "issue",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɪʃu",
+      "phoneticUk": "'ɪʃuː; 'ɪsjuː",
+      "translation": "问题；发行；发行；发表〔声明〕；问题",
+      "sceneMeaning": "问题；议题",
+      "examples": "[]"
+    },
+    {
+      "word": "opinion",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'pɪnjən",
+      "phoneticUk": "ə'pɪnjən",
+      "translation": "意见，看法，主张",
+      "sceneMeaning": "意见",
+      "examples": "[]"
+    },
+    {
+      "word": "recommend",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rɛkə'mɛnd",
+      "phoneticUk": "rekə'mend",
+      "translation": "推荐，介绍；劝告；推荐；劝告；使受欢迎",
+      "sceneMeaning": "推荐；建议",
+      "examples": "[]"
+    },
+    {
+      "word": "solution",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'luʃən",
+      "phoneticUk": "sə'luːʃ(ə)n",
+      "translation": "解决，解答；溶解；解决，解答，解决办法",
+      "sceneMeaning": "解决方案",
+      "examples": "[]"
+    },
+    {
+      "word": "argument",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑrɡjumənt",
+      "phoneticUk": "'ɑːgjʊm(ə)nt",
+      "translation": "争论，辩论；理由",
+      "sceneMeaning": "论点；争论",
+      "examples": "[]"
+    },
+    {
+      "word": "direct",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪˈrɛkt; daɪˈrɛkt",
+      "phoneticUk": "dəˈrekt; daɪˈrekt",
+      "translation": "直接的；直率的",
+      "sceneMeaning": "直接的",
+      "examples": "[]"
+    },
+    {
+      "word": "responsibility",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪˌspɑːnsəˈbɪləti",
+      "phoneticUk": "ri,spɔnsə'biliti",
+      "translation": "责任",
+      "sceneMeaning": "责任",
+      "examples": "[]"
+    },
+    {
+      "word": "view",
+      "partOfSpeech": "v",
+      "phoneticUs": "vju",
+      "phoneticUk": "vju:",
+      "translation": "看待",
+      "sceneMeaning": "观点；看法",
+      "examples": "[]"
+    },
+    {
+      "word": "action",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ækʃən",
+      "phoneticUk": "'ækʃ(ə)n",
+      "translation": "行动；作用；功能",
+      "sceneMeaning": "行动；措施",
+      "examples": "[]"
+    },
+    {
+      "word": "construction",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'strʌkʃən",
+      "phoneticUk": "kən'strʌkʃ(ə)n",
+      "translation": "建造；建筑；建筑物；建筑",
+      "sceneMeaning": "建造；建筑；建筑物；建筑；本场景常见用法：建设中",
+      "examples": "[]"
+    },
+    {
+      "word": "minute",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪnɪt",
+      "phoneticUk": "'mɪnɪt",
+      "translation": "分，分钟；一会儿",
+      "sceneMeaning": "分钟；会议记录",
+      "examples": "[]"
+    },
+    {
+      "word": "trust",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trʌst",
+      "phoneticUk": "trʌst",
+      "translation": "信任；相信；委托",
+      "sceneMeaning": "信任",
+      "examples": "[]"
+    },
+    {
+      "word": "workshop",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wɝkʃɑp",
+      "phoneticUk": "'wɜːkʃɒp",
+      "translation": "车间，工场；创作室",
+      "sceneMeaning": "工作坊",
+      "examples": "[]"
+    },
+    {
+      "word": "dispute",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dɪs'pjʊt",
+      "phoneticUk": "dɪ'spjuːt; 'dɪspjuːt",
+      "translation": "争论，争执；争论；辩论，争论",
+      "sceneMeaning": "争论，争执；争论；辩论，争论；本场景常见用法：争论，辩论",
+      "examples": "[]"
+    },
+    {
+      "word": "interaction",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntə'rækʃən",
+      "phoneticUk": "ɪntər'ækʃ(ə)n",
+      "translation": "相互作用；干扰",
+      "sceneMeaning": "互动",
+      "examples": "[]"
+    },
+    {
+      "word": "convey",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən've",
+      "phoneticUk": "kən'veɪ",
+      "translation": "传送；运送；传播；传达，传递",
+      "sceneMeaning": "传送；运送；传播；传达，传递",
+      "examples": "[]"
+    },
+    {
+      "word": "disagree",
+      "partOfSpeech": "v",
+      "phoneticUs": ",dɪsə'ɡri",
+      "phoneticUk": "dɪsə'griː",
+      "translation": "有分歧；不一致",
+      "sceneMeaning": "不同意",
+      "examples": "[]"
+    },
+    {
+      "word": "efficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃnt",
+      "phoneticUk": "ɪ'fɪʃ(ə)nt",
+      "translation": "效率高的，有能力的",
+      "sceneMeaning": "高效的",
+      "examples": "[]"
+    },
+    {
+      "word": "joint",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "dʒɔɪnt",
+      "phoneticUk": "dʒɒɪnt",
+      "translation": "接头，接缝；关节；联合的",
+      "sceneMeaning": "接头，接缝；关节；联合的",
+      "examples": "[]"
+    },
+    {
+      "word": "perspective",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'spɛktɪv",
+      "phoneticUk": "pə'spektɪv",
+      "translation": "透视；远景；观点；视角，观点；远景",
+      "sceneMeaning": "视角；观点",
+      "examples": "[]"
+    },
+    {
+      "word": "respond",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'spɑnd",
+      "phoneticUk": "rɪ'spɒnd",
+      "translation": "作答；响应",
+      "sceneMeaning": "回应",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "日程；时间表",
+      "examples": "[]"
+    },
+    {
+      "word": "task",
+      "partOfSpeech": "n",
+      "phoneticUs": "tæsk",
+      "phoneticUk": "tɑːsk",
+      "translation": "任务，工作",
+      "sceneMeaning": "任务",
+      "examples": "[]"
+    },
+    {
+      "word": "agreement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'grimənt",
+      "phoneticUk": "ə'griːm(ə)nt",
+      "translation": "协定，协议；同意",
+      "sceneMeaning": "协议；一致",
+      "examples": "[]"
+    },
+    {
+      "word": "conference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnfərəns",
+      "phoneticUk": "'kɒnf(ə)r(ə)ns",
+      "translation": "会议，讨论会",
+      "sceneMeaning": "会议；大会",
+      "examples": "[]"
+    },
+    {
+      "word": "confirm",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fɝm",
+      "phoneticUk": "kən'fɜːm",
+      "translation": "证实，肯定；批准；证实",
+      "sceneMeaning": "确认",
+      "examples": "[]"
+    },
+    {
+      "word": "negotiate",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪ'ɡoʃɪet",
+      "phoneticUk": "nɪ'ɡəʊʃɪeɪt",
+      "translation": "谈判，协商，交涉",
+      "sceneMeaning": "谈判；协商",
+      "examples": "[]"
+    },
+    {
+      "word": "note",
+      "partOfSpeech": "n",
+      "phoneticUs": "not",
+      "phoneticUk": "nəʊt",
+      "translation": "笔记；便条；注释",
+      "sceneMeaning": "笔记；便条",
+      "examples": "[]"
+    },
+    {
+      "word": "participate",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɑr'tɪsə'pet",
+      "phoneticUk": "pɑː'tɪsɪpeɪt",
+      "translation": "参与，参加；分享；参与，参加",
+      "sceneMeaning": "参与，参加；分享；参与，参加；本场景常见用法：参与社会活动",
+      "examples": "[]"
+    },
+    {
+      "word": "partner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑrtnɚ",
+      "phoneticUk": "'pɑːtnə",
+      "translation": "伙伴；搭挡；配偶",
+      "sceneMeaning": "伙伴；合作方",
+      "examples": "[]"
+    },
+    {
+      "word": "somehow",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'sʌmhaʊ",
+      "phoneticUk": "'sʌmhaʊ",
+      "translation": "由于某种原因",
+      "sceneMeaning": "由于某种原因",
+      "examples": "[]"
+    },
+    {
+      "word": "brief",
+      "partOfSpeech": "adj",
+      "phoneticUs": "brif",
+      "phoneticUk": "briːf",
+      "translation": "简短的；短暂的",
+      "sceneMeaning": "简短的",
+      "examples": "[]"
+    },
+    {
+      "word": "clarify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'klærəfaɪ",
+      "phoneticUk": "'klærɪfaɪ",
+      "translation": "澄清，阐明",
+      "sceneMeaning": "澄清；说明",
+      "examples": "[]"
+    },
+    {
+      "word": "comment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmɛnt",
+      "phoneticUk": "'kɒment",
+      "translation": "评论，意见；注释；评论",
+      "sceneMeaning": "评论；意见",
+      "examples": "[]"
+    },
+    {
+      "word": "consensus",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'sɛnsəs",
+      "phoneticUk": "kən'sensəs",
+      "translation": "一致意见",
+      "sceneMeaning": "共识",
+      "examples": "[]"
+    },
+    {
+      "word": "constructive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'strʌktɪv",
+      "phoneticUk": "kənˈstrʌktɪv",
+      "translation": "建设的，建设性的",
+      "sceneMeaning": "建设性的",
+      "examples": "[]"
+    },
+    {
+      "word": "discussion",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'skʌʃən",
+      "phoneticUk": "dɪ'skʌʃ(ə)n",
+      "translation": "讨论，谈论；论述",
+      "sceneMeaning": "讨论",
+      "examples": "[]"
+    },
+    {
+      "word": "feedback",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fidbæk",
+      "phoneticUk": "'fiːdbæk",
+      "translation": "回授，反馈，反应；反馈",
+      "sceneMeaning": "反馈",
+      "examples": "[]"
+    },
+    {
+      "word": "pointless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɔɪntləs",
+      "phoneticUk": "'pɒɪntlɪs",
+      "translation": "无意义的",
+      "sceneMeaning": "无意义的",
+      "examples": "[]"
+    },
+    {
+      "word": "recommendation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛkəmɛn'deʃən",
+      "phoneticUk": ",rekəmen'deɪʃ(ə)n",
+      "translation": "推荐，介绍；劝告",
+      "sceneMeaning": "推荐；建议",
+      "examples": "[]"
+    },
+    {
+      "word": "session",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛʃən",
+      "phoneticUk": "'seʃ(ə)n",
+      "translation": "会议，一段时间；开会，会议",
+      "sceneMeaning": "会议；一段时间",
+      "examples": "[]"
+    },
+    {
+      "word": "affectionate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'fɛkʃənət",
+      "phoneticUk": "ə'fekʃ(ə)nət",
+      "translation": "深情的，柔情的",
+      "sceneMeaning": "深情的，柔情的",
+      "examples": "[]"
+    },
+    {
+      "word": "compromise",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmprəmaɪz",
+      "phoneticUk": "'kɒmprəmaɪz",
+      "translation": "妥协，和解",
+      "sceneMeaning": "妥协",
+      "examples": "[]"
+    },
+    {
+      "word": "construct",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'strʌkt",
+      "phoneticUk": "kən'strʌkt",
+      "translation": "建造；建设；构筑",
+      "sceneMeaning": "建造；建设；构筑；本场景常见用法：结构效度；建构效度",
+      "examples": "[]"
+    },
+    {
+      "word": "cooperative",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ko'ɑpərətɪv",
+      "phoneticUk": "kəʊ'ɒpərətɪv",
+      "translation": "合作的",
+      "sceneMeaning": "合作的",
+      "examples": "[]"
+    },
+    {
+      "word": "deadline",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈdedlaɪn",
+      "phoneticUk": "ˈdedlaɪn",
+      "translation": "最后期限",
+      "sceneMeaning": "截止日期",
+      "examples": "[]"
+    },
+    {
+      "word": "frown",
+      "partOfSpeech": "v",
+      "phoneticUs": "fraʊn",
+      "phoneticUk": "fraʊn",
+      "translation": "皱眉，蹙额；皱眉",
+      "sceneMeaning": "皱眉，蹙额；皱眉",
+      "examples": "[]"
+    },
+    {
+      "word": "honest",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɑnɪst",
+      "phoneticUk": "'ɒnɪst",
+      "translation": "诚实的；可敬的",
+      "sceneMeaning": "诚实的；可敬的；本场景常见用法：善良",
+      "examples": "[]"
+    },
+    {
+      "word": "host",
+      "partOfSpeech": "n",
+      "phoneticUs": "host",
+      "phoneticUk": "həʊst",
+      "translation": "主人；东道主",
+      "sceneMeaning": "主持人；主人",
+      "examples": "[]"
+    },
+    {
+      "word": "inquire",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'kwaɪr",
+      "phoneticUk": "ɪn'kwaɪə",
+      "translation": "打听，询问；调查；询问",
+      "sceneMeaning": "打听，询问；调查；询问",
+      "examples": "[]"
+    },
+    {
+      "word": "listener",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪsənɚ",
+      "phoneticUk": "'lɪs(ə)nə",
+      "translation": "听者，听众之一",
+      "sceneMeaning": "听众",
+      "examples": "[]"
+    },
+    {
+      "word": "proposal",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'pozl",
+      "phoneticUk": "prə'pəʊz(ə)l",
+      "translation": "提议，建议；求婚；提议",
+      "sceneMeaning": "提议；方案",
+      "examples": "[]"
+    },
+    {
+      "word": "propose",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'poz",
+      "phoneticUk": "prə'pəʊz",
+      "translation": "提议；求婚",
+      "sceneMeaning": "提议",
+      "examples": "[]"
+    },
+    {
+      "word": "reply",
+      "partOfSpeech": "vi&n",
+      "phoneticUs": "rɪ'plai",
+      "phoneticUk": "rɪ'plaɪ",
+      "translation": "回答，答复",
+      "sceneMeaning": "回答，答复；本场景常见用法：速复",
+      "examples": "[]"
+    },
+    {
+      "word": "appointment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'pɔɪntmənt",
+      "phoneticUk": "ə'pɒɪntm(ə)nt",
+      "translation": "任命；约定，约会；约会",
+      "sceneMeaning": "预约；任命",
+      "examples": "[]"
+    },
+    {
+      "word": "bow",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "baʊ",
+      "phoneticUk": "baʊ",
+      "translation": "弓；蝴蝶结；鞠躬；鞠躬",
+      "sceneMeaning": "弓；蝴蝶结；鞠躬；鞠躬",
+      "examples": "[]"
+    },
+    {
+      "word": "comrade",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmræd",
+      "phoneticUk": "'kɒmreɪd",
+      "translation": "同志，亲密的同伴",
+      "sceneMeaning": "同志，亲密的同伴",
+      "examples": "[]"
+    },
+    {
+      "word": "conclude",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'klud",
+      "phoneticUk": "kən'kluːd",
+      "translation": "推断出；结束",
+      "sceneMeaning": "得出结论；结束",
+      "examples": "[]"
+    },
+    {
+      "word": "cooperate",
+      "partOfSpeech": "v",
+      "phoneticUs": "koʊˈɑːpəreɪt",
+      "phoneticUk": "kəʊ'ɒpəreɪt",
+      "translation": "合作，协作；配合",
+      "sceneMeaning": "合作",
+      "examples": "[]"
+    },
+    {
+      "word": "coordinate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ko'ɔrdɪnet",
+      "phoneticUk": "kəʊ'ɔ:dɪneɪt",
+      "translation": "使协调，调节",
+      "sceneMeaning": "协调",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiently",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃəntli",
+      "phoneticUk": "i'fiʃəntli",
+      "translation": "有效地",
+      "sceneMeaning": "高效地",
+      "examples": "[]"
+    },
+    {
+      "word": "evident",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɛvɪdənt",
+      "phoneticUk": "'evɪd(ə)nt",
+      "translation": "明显的，明白的；明显的",
+      "sceneMeaning": "明显的，明白的；明显的；本场景常见用法：不言而喻的；不证自明的",
+      "examples": "[]"
+    },
+    {
+      "word": "greet",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡrit",
+      "phoneticUk": "griːt",
+      "translation": "问候，招呼；反应",
+      "sceneMeaning": "问候，招呼；反应",
+      "examples": "[]"
+    },
+    {
+      "word": "greeting",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡritɪŋ",
+      "phoneticUk": "'griːtɪŋ",
+      "translation": "问候，招呼，致敬",
+      "sceneMeaning": "问候，招呼，致敬",
+      "examples": "[]"
+    },
+    {
+      "word": "hasty",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hesti",
+      "phoneticUk": "'heɪstɪ",
+      "translation": "急速的；仓促的",
+      "sceneMeaning": "急速的；仓促的",
+      "examples": "[]"
+    },
+    {
+      "word": "hostess",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hostəs",
+      "phoneticUk": "'həʊstɪs; -es; həʊ'stes",
+      "translation": "女主人；空姐",
+      "sceneMeaning": "女主人；空姐",
+      "examples": "[]"
+    },
+    {
+      "word": "interrupt",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪntə'rʌpt",
+      "phoneticUk": "ɪntə'rʌpt",
+      "translation": "打断，打扰；中止",
+      "sceneMeaning": "打断",
+      "examples": "[]"
+    },
+    {
+      "word": "mutual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mjutʃuəl",
+      "phoneticUk": "'mjuːtʃʊəl; -tjʊəl",
+      "translation": "相互的；共同的；相互的",
+      "sceneMeaning": "相互的；共同的；相互的；本场景常见用法：相互合作；互助合作",
+      "examples": "[]"
+    },
+    {
+      "word": "mutually",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'mjutʃuəli",
+      "phoneticUk": "ˈmjuːtʃuəli",
+      "translation": "互相地",
+      "sceneMeaning": "相互地；共同地",
+      "examples": "[]"
+    },
+    {
+      "word": "okay",
+      "partOfSpeech": "(缩作OK)a&ad",
+      "phoneticUs": ",o'kɛi",
+      "phoneticUk": "'əʊ'keɪ",
+      "translation": "对，好",
+      "sceneMeaning": "对，好",
+      "examples": "[]"
+    },
+    {
+      "word": "persuade",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɚ'swed",
+      "phoneticUk": "pə'sweɪd",
+      "translation": "说服；被说服",
+      "sceneMeaning": "说服",
+      "examples": "[]"
+    },
+    {
+      "word": "persuasion",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'sweʒn",
+      "phoneticUk": "pə'sweɪʒn",
+      "translation": "劝说",
+      "sceneMeaning": "劝说",
+      "examples": "[]"
+    },
+    {
+      "word": "quarrel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɔrəl",
+      "phoneticUk": "'kwɒr(ə)l",
+      "translation": "争吵，吵架，口角",
+      "sceneMeaning": "争吵，吵架，口角；本场景常见用法：争论；为…争吵",
+      "examples": "[]"
+    },
+    {
+      "word": "resolution",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛzə'luʃən",
+      "phoneticUk": "rezə'luːʃ(ə)n",
+      "translation": "坚决，坚定；决定",
+      "sceneMeaning": "决议；解决",
+      "examples": "[]"
+    },
+    {
+      "word": "respectful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'spɛktfəl",
+      "phoneticUk": "rɪˈspektfl",
+      "translation": "有礼貌的，尊重的",
+      "sceneMeaning": "尊重人的",
+      "examples": "[]"
+    },
+    {
+      "word": "sum",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sʌm",
+      "phoneticUk": "sʌm",
+      "translation": "总数；金额；共计",
+      "sceneMeaning": "总数；金额；共计；本场景常见用法：[数]直和",
+      "examples": "[]"
+    },
+    {
+      "word": "summarize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sʌməraɪz",
+      "phoneticUk": "'sʌməraiz",
+      "translation": "概括，概述，总结",
+      "sceneMeaning": "总结",
+      "examples": "[]"
+    },
+    {
+      "word": "troop",
+      "partOfSpeech": "n",
+      "phoneticUs": "trʊp",
+      "phoneticUk": "truːp",
+      "translation": "军队；一群，大量",
+      "sceneMeaning": "军队；一群，大量",
+      "examples": "[]"
+    }
+  ]
+}

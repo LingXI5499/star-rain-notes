@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 频道栏可让目标导航项滚入可视范围，活动下划线根据元素位置更新。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const active = document.querySelector('.channel.active');
+active?.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+</code></pre>
+<p><strong>学完能做：</strong> 使横向导航滚动并同步当前指示线。</p>

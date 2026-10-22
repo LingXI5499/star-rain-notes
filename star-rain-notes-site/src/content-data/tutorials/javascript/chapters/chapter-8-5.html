@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 专注时钟维护剩余秒数与运行状态，暂停时清理定时器，重置时恢复初值。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let remaining = 25 * 60, timer = null;
+function start() { if (timer !== null) return; timer = setInterval(() =&gt; { if (remaining &gt; 0) remaining--; else pause(); }, 1000); }
+function pause() { clearInterval(timer); timer = null; }
+</code></pre>
+<p><strong>学完能做：</strong> 实现开始、暂停、重置的专注计时器。</p>

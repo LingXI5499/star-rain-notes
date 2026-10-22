@@ -1,0 +1,330 @@
+{
+  "slug": "element-plus-echarts",
+  "title": "Element Plus 与 ECharts",
+  "description": "面向 Java 企业后台的 Vue UI 与数据可视化教程，覆盖 Element Plus 表单、表格、分页、弹层、上传、后台 Layout、ECharts 图表与经营 Dashboard。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-09-23",
+  "chapterCount": 35,
+  "wordCount": 19104,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "Element Plus 基础、布局与主题",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "安装、全量 / 按需引入",
+          "description": "本章属于「Element Plus 与 ECharts / Element Plus 基础、布局与主题」，围绕「安装、全量 / 按需引入」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-1-1/",
+          "wordCount": 539,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "Button、Icon、Tag、Badge",
+          "description": "本章属于「Element Plus 与 ECharts / Element Plus 基础、布局与主题」，围绕「Button、Icon、Tag、Badge」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-1-2/",
+          "wordCount": 572,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "Container、Row/Col、Space",
+          "description": "本章属于「Element Plus 与 ECharts / Element Plus 基础、布局与主题」，围绕「Container、Row/Col、Space」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-1-3/",
+          "wordCount": 578,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "Config Provider、Locale",
+          "description": "本章属于「Element Plus 与 ECharts / Element Plus 基础、布局与主题」，围绕「Config Provider、Locale」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-1-4/",
+          "wordCount": 572,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "CSS Variables、Theme 与样式覆盖边界",
+          "description": "本章属于「Element Plus 与 ECharts / Element Plus 基础、布局与主题」，围绕「CSS Variables、Theme 与样式覆盖边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-1-5/",
+          "wordCount": 584,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Form 与输入组件",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "Form、FormItem、model、rules、prop",
+          "description": "本章属于「Element Plus 与 ECharts / Form 与输入组件」，围绕「Form、FormItem、model、rules、prop」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-2-1/",
+          "wordCount": 589,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "Input、InputNumber、Select、Radio、Checkbox",
+          "description": "本章属于「Element Plus 与 ECharts / Form 与输入组件」，围绕「Input、InputNumber、Select、Radio、Checkbox」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-2-2/",
+          "wordCount": 616,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "Switch、Slider、Rate",
+          "description": "本章属于「Element Plus 与 ECharts / Form 与输入组件」，围绕「Switch、Slider、Rate」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-2-3/",
+          "wordCount": 553,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "DatePicker、TimePicker 与 Java 时间类型",
+          "description": "本章属于「Element Plus 与 ECharts / Form 与输入组件」，围绕「DatePicker、TimePicker 与 Java 时间类型」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-2-4/",
+          "wordCount": 589,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "validate、resetFields、异步提交与错误反馈",
+          "description": "本章属于「Element Plus 与 ECharts / Form 与输入组件」，围绕「validate、resetFields、异步提交与错误反馈」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-2-5/",
+          "wordCount": 589,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Table、Pagination 与列表页",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "Table、TableColumn、formatter",
+          "description": "本章属于「Element Plus 与 ECharts / Table、Pagination 与列表页」，围绕「Table、TableColumn、formatter」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-3-1/",
+          "wordCount": 591,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "Scope Slot、操作列与状态列",
+          "description": "本章属于「Element Plus 与 ECharts / Table、Pagination 与列表页」，围绕「Scope Slot、操作列与状态列」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-3-2/",
+          "wordCount": 561,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "Selection、Sort、Filter",
+          "description": "本章属于「Element Plus 与 ECharts / Table、Pagination 与列表页」，围绕「Selection、Sort、Filter」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-3-3/",
+          "wordCount": 573,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "Pagination 与 PageResult",
+          "description": "本章属于「Element Plus 与 ECharts / Table、Pagination 与列表页」，围绕「Pagination 与 PageResult」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-3-4/",
+          "wordCount": 573,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "查询表单 + Table + Pagination 标准 CRUD",
+          "description": "本章属于「Element Plus 与 ECharts / Table、Pagination 与列表页」，围绕「查询表单 + Table + Pagination 标准 CRUD」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-3-5/",
+          "wordCount": 591,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "弹层、反馈、上传与复杂组件",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "Dialog、Drawer",
+          "description": "本章属于「Element Plus 与 ECharts / 弹层、反馈、上传与复杂组件」，围绕「Dialog、Drawer」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-4-1/",
+          "wordCount": 542,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "Message、Notification、MessageBox",
+          "description": "本章属于「Element Plus 与 ECharts / 弹层、反馈、上传与复杂组件」，围绕「Message、Notification、MessageBox」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-4-2/",
+          "wordCount": 596,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "Upload 与文件预览",
+          "description": "本章属于「Element Plus 与 ECharts / 弹层、反馈、上传与复杂组件」，围绕「Upload 与文件预览」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-4-3/",
+          "wordCount": 536,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "Tree、Cascader、Transfer",
+          "description": "本章属于「Element Plus 与 ECharts / 弹层、反馈、上传与复杂组件」，围绕「Tree、Cascader、Transfer」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-4-4/",
+          "wordCount": 569,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "Tabs、Breadcrumb、Menu、Descriptions、Empty、Result",
+          "description": "本章属于「Element Plus 与 ECharts / 弹层、反馈、上传与复杂组件」，围绕「Tabs、Breadcrumb、Menu、Descriptions、Empty、Result」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-4-5/",
+          "wordCount": 641,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "企业后台 UI 架构",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "Admin Layout",
+          "description": "本章属于「Element Plus 与 ECharts / 企业后台 UI 架构」，围绕「Admin Layout」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-5-1/",
+          "wordCount": 531,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "菜单、Router Meta、Active State 与 Breadcrumb",
+          "description": "本章属于「Element Plus 与 ECharts / 企业后台 UI 架构」，围绕「菜单、Router Meta、Active State 与 Breadcrumb」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-5-2/",
+          "wordCount": 606,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "Loading、Skeleton、Empty、Error",
+          "description": "本章属于「Element Plus 与 ECharts / 企业后台 UI 架构」，围绕「Loading、Skeleton、Empty、Error」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-5-3/",
+          "wordCount": 582,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "Base Component、Business Component 与二次封装",
+          "description": "本章属于「Element Plus 与 ECharts / 企业后台 UI 架构」，围绕「Base Component、Business Component 与二次封装」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-5-4/",
+          "wordCount": 606,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "Accessibility、Keyboard、Focus 与组件库可访问性",
+          "description": "本章属于「Element Plus 与 ECharts / 企业后台 UI 架构」，围绕「Accessibility、Keyboard、Focus 与组件库可访问性」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-5-5/",
+          "wordCount": 606,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "ECharts 核心",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "init、option、setOption、dispose、resize",
+          "description": "本章属于「Element Plus 与 ECharts / ECharts 核心」，围绕「init、option、setOption、dispose、resize」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-6-1/",
+          "wordCount": 607,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "Line、Bar、Pie",
+          "description": "本章属于「Element Plus 与 ECharts / ECharts 核心」，围绕「Line、Bar、Pie」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-6-2/",
+          "wordCount": 535,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "Axis、Legend、Tooltip、Dataset",
+          "description": "本章属于「Element Plus 与 ECharts / ECharts 核心」，围绕「Axis、Legend、Tooltip、Dataset」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-6-3/",
+          "wordCount": 580,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "Spring Boot VO → JSON → ECharts",
+          "description": "本章属于「Element Plus 与 ECharts / ECharts 核心」，围绕「Spring Boot VO → JSON → ECharts」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-6-4/",
+          "wordCount": 574,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "图表组件封装、Watch、Resize 与性能",
+          "description": "本章属于「Element Plus 与 ECharts / ECharts 核心」，围绕「图表组件封装、Watch、Resize 与性能」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-6-5/",
+          "wordCount": 565,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Dashboard 与综合验收",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "营业额、订单量与用户增长趋势",
+          "description": "本章属于「Element Plus 与 ECharts / Dashboard 与综合验收」，围绕「营业额、订单量与用户增长趋势」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-7-1/",
+          "wordCount": 546,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "销量 TopN 与横向柱状图",
+          "description": "本章属于「Element Plus 与 ECharts / Dashboard 与综合验收」，围绕「销量 TopN 与横向柱状图」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-7-2/",
+          "wordCount": 540,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "完成率、占比、Gauge/Pie 与指标卡",
+          "description": "本章属于「Element Plus 与 ECharts / Dashboard 与综合验收」，围绕「完成率、占比、Gauge/Pie 与指标卡」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-7-3/",
+          "wordCount": 564,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "Dashboard 并发请求、加载与错误恢复",
+          "description": "本章属于「Element Plus 与 ECharts / Dashboard 与综合验收」，围绕「Dashboard 并发请求、加载与错误恢复」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-7-4/",
+          "wordCount": 567,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "Element Plus / ECharts 秋招题与后台综合验收",
+          "description": "本章属于「Element Plus 与 ECharts / Dashboard 与综合验收」，围绕「Element Plus / ECharts 秋招题与后台综合验收」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/element-plus-echarts/chapter-7-5/",
+          "wordCount": 591,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/element-plus-echarts/",
+  "sortOrder": 20
+}

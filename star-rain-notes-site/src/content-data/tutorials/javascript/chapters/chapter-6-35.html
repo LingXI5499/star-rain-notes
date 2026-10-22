@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 资源切换可以由数组与当前索引驱动，避免为每张图片写重复逻辑。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const images = ['one.jpg', 'two.jpg', 'three.jpg'];
+let i = 0;
+nextBtn.onclick = () =&gt; { i = (i + 1) % images.length; img.src = images[i]; };
+</code></pre>
+<p><strong>学完能做：</strong> 用资源数组控制本地图片的展示状态。</p>
