@@ -1,0 +1,16 @@
+---
+interface Props {
+  title:string; description:string; path:string; tags:string[];
+  publishedAt:string; updatedAt?:string|null; locale?:'zh'|'en';
+}
+const {title,description,path,tags,publishedAt,updatedAt,locale='zh'}=Astro.props;
+const date=updatedAt||publishedAt;
+const label=locale==='en'?new Intl.DateTimeFormat('en',{day:'numeric',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(date)):date.replaceAll('-','/');
+---
+<a href={path} class="timeline-card public-interactive">
+  <div class="timeline-card__content">
+    <div class="timeline-card__tags">{tags.map(tag=><span>{tag}</span>)}</div>
+    <h2>{title}</h2><p>{description}</p>
+    <footer><time datetime={date}>{label}</time><strong>{locale==='en'?'Read essay':'阅读全文'} <i aria-hidden="true">→</i></strong></footer>
+  </div>
+</a>

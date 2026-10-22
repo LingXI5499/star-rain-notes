@@ -1,0 +1,12 @@
+---
+import {articlePath,type EnglishArticle} from '../../utils/english-model';
+import OriginalPagination from './OriginalPagination.astro';
+interface Props{articles:EnglishArticle[];module:'world'|'essays';emptyText?:string;}
+const {articles,module,emptyText='该主题正在整理内容。'}=Astro.props;
+---
+<section class="english-articles" data-filter-scope data-static-pagination data-pagination-size="12" data-pagination-unit="篇文章">
+  <label class="english-search">搜索文章标题<input type="search" data-filter-query placeholder="输入文章标题…" /></label><p data-filter-status aria-live="polite">{articles.length} 篇已发布文章</p>
+  <div class="english-article-grid">{articles.map((a,index)=><article class="english-article-card" data-filter-item data-filter-text={a.title} hidden={index>=12}>{a.cover&&<img src={a.cover} alt={a.title} loading="lazy" decoding="async"/>}<time datetime={a.publishedAt||undefined}>{a.publishedAt}</time><h2><a href={articlePath(module,a.slug)}>{a.title}</a></h2><p>{a.description}</p></article>)}</div>
+  {articles.length>0&&<OriginalPagination total={articles.length} unit="篇文章"/>}
+  <p class="static-empty" data-filter-empty hidden={articles.length>0} role="status">{articles.length?'没有匹配的文章。':emptyText}</p>
+</section>

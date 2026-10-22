@@ -1,0 +1,22 @@
+---
+import {renderBody,type EnglishArticle,worldTaxonomy,findTopic,taxonomyPath,articlePath} from '../../utils/content';
+import Breadcrumbs from './EnglishBreadcrumbs.astro';
+interface Props{article:EnglishArticle;module:'world'|'essays';siblings:EnglishArticle[];}
+const {article,module,siblings}=Astro.props;
+const body=await renderBody(article.bodyPath);
+const translation=article.translationBodyPath?await renderBody(article.translationBodyPath):undefined;
+const classification=module==='world'?findTopic(worldTaxonomy,article.topicCode):undefined;
+const index=siblings.findIndex(a=>a.slug===article.slug);
+const moduleTitle=module==='world'?'世界':'随笔';
+const crumbs=[{title:moduleTitle,path:`/english/${module}/`},...(classification?[{title:classification.category.title,path:taxonomyPath('world',classification.category.code)},{title:classification.topic.title,path:taxonomyPath('world',classification.category.code,classification.topic.code)}]:[]),{title:article.title}];
+---
+<div class="english-module english-reading"><Breadcrumbs items={crumbs}/><article>
+  <header class="english-module__heading"><p class="public-eyebrow">{module==='world'?'WORLD · READING':'PERSONAL ESSAYS'}</p><h1>{article.title}</h1><p>{article.description}</p><div class="english-metadata">{article.publishedAt&&<time datetime={article.publishedAt}>发布于 {article.publishedAt}</time>}{article.updatedAt&&<time datetime={article.updatedAt}>更新于 {article.updatedAt}</time>}{article.author&&<span>作者：{article.author}</span>}{article.genre&&<span>文体：{article.genre}</span>}{article.purpose&&<span>目的：{article.purpose}</span>}{article.difficulty&&<span>难度：{article.difficulty}</span>}{article.series&&<span>专栏：{article.series}</span>}{article.tags?.length&&<span>标签：{article.tags.join('、')}</span>}</div>
+    {article.source&&<p class="english-source">来源：{article.source.url?<a href={article.source.url} target="_blank" rel="noopener noreferrer">{article.source.title}</a>:article.source.title}</p>}
+    {classification&&<p><a href={taxonomyPath('world',classification.category.code,classification.topic.code)}>{classification.category.title} / {classification.topic.title}</a></p>}
+  </header>
+  {body.toc.length>0&&<details class="english-toc"><summary>文章目录</summary><nav aria-label="文章目录">{body.toc.map(t=><a href={`#${t.id}`}>{t.title}</a>)}</nav></details>}
+  <div class="blog-prose markdown-body" lang={article.language||'en'} set:html={body.html}/>
+  {translation&&<details class="english-translation"><summary>中文翻译</summary><div class="blog-prose markdown-body" lang="zh-CN" set:html={translation.html.replace(/id="([^"]+)"/g,'id="translation-$1"').replace(/href="#([^"]+)"/g,'href="#translation-$1"')}/></details>}
+  <nav class="english-article-nav" aria-label="文章导航">{siblings[index-1]&&<a href={articlePath(module,siblings[index-1].slug)}>← {siblings[index-1].title}</a>}<a href={classification?taxonomyPath('world',classification.category.code,classification.topic.code):`/english/${module}/`}>返回{classification?'主题':moduleTitle}</a>{siblings[index+1]&&<a href={articlePath(module,siblings[index+1].slug)}>{siblings[index+1].title} →</a>}</nav>
+</article></div>

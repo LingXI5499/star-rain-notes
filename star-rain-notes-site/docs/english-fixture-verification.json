@@ -1,0 +1,126 @@
+{
+  "status": "PASS",
+  "isolated": true,
+  "productionSourcesChanged": false,
+  "publishedFixtures": 26,
+  "draftFixtures": 2,
+  "checks": [
+    {
+      "slug": "integration-world-published",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-draft",
+      "draftHidden": true
+    },
+    {
+      "slug": "integration-world-extra-01",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-02",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-03",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-04",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-05",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-06",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-07",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-08",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-09",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-10",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-11",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-12",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-world-extra-13",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-older",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-newer",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-draft",
+      "draftHidden": true
+    },
+    {
+      "slug": "integration-essay-extra-01",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-extra-02",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-extra-03",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-extra-04",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-extra-05",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-extra-06",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-extra-07",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-extra-08",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-extra-09",
+      "publishedPageSEOAndBody": true
+    },
+    {
+      "slug": "integration-essay-extra-10",
+      "publishedPageSEOAndBody": true
+    }
+  ],
+  "chronologicalEssays": true,
+  "essayJournalList": true,
+  "essayReadingLayout": true,
+  "worldListFiltersAndPagination": true,
+  "errors": []
+}

@@ -1,12 +1,10 @@
 ---
 import {catalog,renderBody,type Blog} from '../utils/content';
-import OriginalReadingAside from '../components/astro/OriginalReadingAside.astro';
+import JournalPost from './JournalPost.astro';
 interface Props{post:Blog;}
 const {post}=Astro.props;
 const body=await renderBody(`blogs/${post.slug}/body.html`);
 const charCount='wordCount'in post?Number(post.wordCount):body.text.replace(/\s/g,'').length,minutes=Math.max(1,Math.ceil(charCount/400));
 const index=catalog.blogs.findIndex(b=>b.slug===post.slug),previous=catalog.blogs[index+1],next=catalog.blogs[index-1];
-const date=(d:string)=>`${d.slice(0,4)}年${Number(d.slice(5,7))}月${Number(d.slice(8,10))}日`;
 ---
-<section class="article-page"><div class="reading-progress" aria-hidden="true"><span data-reading-progress></span></div><article class="article page-container"><div class="article__reading reading-layout"><OriginalReadingAside class="article__toc reading-layout__sidebar" curriculum items={body.toc} charCount={charCount} minutes={minutes}/><div class="article__body" data-reading-content><header class="article-hero"><nav><a href="/blog/">博客时间线</a><span aria-hidden="true">/</span><span>文章详情</span></nav>{post.tags.length>0&&<div class="article-hero__tags">{post.tags.map(tag=><a href={`/blog/tags/${tag.slug}/`}># {tag.name}</a>)}</div>}{post.topics.length>0&&<div class="article-hero__topics"><span>专题</span>{post.topics.map(topic=><a href={`/blog/topics/${topic.slug}/`}>{topic.name}</a>)}</div>}<h1>{post.title}</h1><p class="article-hero__summary">{post.description}</p><div class="article-hero__meta"><span>发布于 {date(post.publishedAt)}</span><span>字数 {charCount} · 预计阅读 {minutes} 分钟</span>{post.updatedAt!==post.publishedAt&&<span>更新于 {date(post.updatedAt)}</span>}</div></header>{body.toc.length>0&&<details class="static-toc"><summary>本页导航</summary><nav>{body.toc.map(h=><a href={`#${h.id}`}>{h.title}</a>)}</nav></details>}<div class="blog-prose markdown-body" set:html={body.html}/><nav class="article__neighbors" aria-label="相邻文章">{previous?<a href={previous.path}><small>上一篇</small><strong>← {previous.title}</strong></a>:<span/>}{next&&<a class="article__neighbors-next" href={next.path}><small>下一篇</small><strong>{next.title} →</strong></a>}</nav><p class="article__back"><a href="/blog/">← 返回博客时间线</a></p></div></div></article></section>
-<script>const bar=document.querySelector<HTMLElement>('[data-reading-progress]');window.addEventListener('scroll',()=>{if(bar)bar.style.width=`${Math.min(100,scrollY/(document.documentElement.scrollHeight-innerHeight)*100)}%`},{passive:true});</script>
+<JournalPost {...post} body={body} charCount={charCount} minutes={minutes} tags={post.tags.map(tag=>({name:tag.name,path:`/blog/tags/${tag.slug}/`}))} topics={post.topics.map(topic=>({name:topic.name,path:`/blog/topics/${topic.slug}/`}))} previous={previous} next={next} returnPath="/blog/" returnLabel="博客时间线"/>

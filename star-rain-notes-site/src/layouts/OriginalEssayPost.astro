@@ -1,0 +1,18 @@
+---
+import {renderBody,articlePath,type EnglishArticle} from '../utils/content';
+import {englishWordCount} from '../utils/essay-model';
+import {load} from 'cheerio';
+import JournalPost from './JournalPost.astro';
+interface Props {article:EnglishArticle;siblings:EnglishArticle[];}
+const {article,siblings}=Astro.props;
+const body=await renderBody(article.bodyPath);
+const translation=article.translationBodyPath?await renderBody(article.translationBodyPath):undefined;
+const prose=load(body.html);
+prose('.code-block__head').remove();prose('br').replaceWith(' ');
+prose('p,h1,h2,h3,h4,h5,h6,li,pre,td,th,blockquote,figcaption').append(' ');
+const charCount=englishWordCount(prose.text()),minutes=Math.max(1,Math.ceil(charCount/200));
+const index=siblings.findIndex(a=>a.slug===article.slug);
+const neighbor=(a?:EnglishArticle)=>a?{title:a.title,path:articlePath('essays',a.slug)}:undefined;
+const extra=[['Author',article.author],['Genre',article.genre],['Series',article.series],['Purpose',article.purpose],['Level',article.difficulty]].filter((row):row is [string,string]=>!!row[1]).map(([label,value])=>({label,value}));
+---
+<JournalPost {...article} body={body} publishedAt={article.publishedAt!} tags={(article.tags||[]).map(name=>({name,path:`/english/essays/?tag=${encodeURIComponent(name)}`}))} charCount={charCount} minutes={minutes} previous={neighbor(siblings[index+1])} next={neighbor(siblings[index-1])} returnPath="/english/essays/" returnLabel="Essays" locale="en" language={article.language||'en'} extra={extra} translation={translation}/>

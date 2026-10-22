@@ -1,0 +1,15 @@
+{
+  "status": "PASS",
+  "generatedTaxonomyPages": 345,
+  "legacyPages": 60,
+  "grammarLessons": 42,
+  "emptyNoindexPages": 175,
+  "searchCounts": {
+    "英语词汇": 185,
+    "英语阅读": 161,
+    "英语旧词汇": 60,
+    "英语随笔": 1,
+    "英语语法": 42
+  },
+  "errors": []
+}

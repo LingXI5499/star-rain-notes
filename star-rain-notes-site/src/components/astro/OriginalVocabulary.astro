@@ -1,0 +1,22 @@
+---
+import {vocabularyTaxonomy as taxonomy,vocabularyEntries,themes,findCategory,findTopic,entriesForCategory,entriesForTopic,taxonomyPath} from '../../utils/content';
+import Breadcrumbs from './EnglishBreadcrumbs.astro';
+import WordList from './EnglishWordList.astro';
+import TaxonomyFilters from './EnglishTaxonomyFilters.astro';
+interface Props {kind:string;slug?:string;}
+const {kind,slug}=Astro.props;
+const found=findTopic(taxonomy,slug),category=kind==='vocabulary-category'?findCategory(taxonomy,slug):found?.category;
+const topic=found?.topic,legacy=kind==='theme'?themes.find(t=>t.id===slug):undefined;
+const entries=legacy?vocabularyEntries.filter(e=>e.source.legacyThemeId===legacy.id):topic?entriesForTopic(vocabularyEntries,topic.code):category?entriesForCategory(vocabularyEntries,category):vocabularyEntries.filter(e=>e.migrationStatus==='confirmed');
+const mapped=legacy?[...new Set(entries.flatMap(e=>e.topicCodes))].map(code=>findTopic(taxonomy,code)!):[];
+const confirmed=vocabularyEntries.filter(e=>e.migrationStatus==='confirmed').length;
+const counts=Object.fromEntries(taxonomy.categories.flatMap(c=>[[c.code,entriesForCategory(vocabularyEntries,c).length],...c.topics.map(t=>[t.code,entriesForTopic(vocabularyEntries,t.code).length])]));
+---
+<div class="english-module english-browse" data-english-page={legacy?undefined:'vocabulary'}>
+  <Breadcrumbs items={legacy?[{title:'词汇',path:'/english/vocabulary/'},{title:`旧主题 · ${legacy.title}`}]:category?[{title:'词汇',path:'/english/vocabulary/'},{title:category.title,path:topic?taxonomyPath('vocabulary',category.code):undefined},...(topic?[{title:topic.title}]:[])]:[{title:'词汇'}]}/>
+  <header class="english-module__heading"><p class="public-eyebrow">VOCABULARY</p><h1>{legacy?`${legacy.title} · 旧词汇主题`:'词汇'}</h1><p>{legacy?'旧词汇路径完整保留，分类整理不会改变原词条。':'按分类与主题筛选，直接浏览单词、音标和释义。'}</p></header>
+  {legacy&&<aside class="notice"><p>该主题实际保留 {entries.length} 条记录，其中 {entries.filter(e=>e.migrationStatus==='confirmed').length} 条已映射。尚未确认分类的词条仍在本页完整展示。</p>{mapped.length>0?<><p>已确认的新主题入口：</p><div class="english-links">{mapped.map(({category,topic})=><a href={taxonomyPath('vocabulary',category.code,topic.code)}>{topic.code} {topic.title}</a>)}</div></>:<p>{entries.length?'该主题暂未形成可靠的新分类映射。':'此旧主题原始数据为空。'}</p>}<a href="/english/vocabulary/">返回新词汇总览 →</a></aside>}
+  {!legacy&&<><TaxonomyFilters module="vocabulary" taxonomy={taxonomy} categoryCode={category?.code} topicCode={topic?.code} counts={counts} total={confirmed}/><h2 class="english-results-title">{topic?.title||category?.title||'全部词汇'}</h2><p class="english-browse-status" data-english-navigation-status role="status" aria-live="polite"></p></>}
+  <WordList entries={entries}/>
+  {!legacy&&<details class="english-legacy"><summary>旧词汇资料与整理说明</summary><p>{taxonomy.categories.length} 个一级分类，{taxonomy.categories.flatMap(c=>c.topics).length} 个已识别二级主题。旧资料共 {vocabularyEntries.length.toLocaleString()} 条来源记录，已确认分类 {confirmed.toLocaleString()} 条，其余仍在旧主题中可查。参考图标注 168 个二级主题，缺失项待核对。</p><div class="english-links">{themes.map(t=><a href={t.path}>{t.title}（{vocabularyEntries.filter(e=>e.source.legacyThemeId===t.id).length}）</a>)}</div></details>}
+</div>

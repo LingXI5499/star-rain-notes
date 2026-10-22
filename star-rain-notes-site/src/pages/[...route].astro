@@ -8,6 +8,11 @@ import BlogList from '../components/astro/OriginalBlogList.astro';
 import Portfolio from '../components/astro/OriginalPortfolio.astro';
 import WorkDetail from '../components/astro/OriginalWorkDetail.astro';
 import English from '../components/astro/OriginalEnglish.astro';
+import EnglishHome from '../components/astro/EnglishHome.astro';
+import Vocabulary from '../components/astro/OriginalVocabulary.astro';
+import World from '../components/astro/OriginalWorld.astro';
+import Essays from '../components/astro/OriginalEssays.astro';
+import { englishPageMeta } from '../utils/english-page';
 import About from '../components/astro/OriginalAbout.astro';
 import PageHeading from '../components/astro/PageHeading.astro';
 import StaticSearch from '../components/vue/StaticSearch.vue';
@@ -40,18 +45,25 @@ if(kind==='about')description=profile.headline;
 if(kind==='search')description='搜索星雨笔录的公开教程、博客、作品和英语资料，在知识之间建立连接。';
 if(kind==='privacy')description='了解星雨笔录静态网站如何处理访问数据、本地偏好、外部链接与公开留言。';
 if(kind==='terms')description='星雨笔录静态展示网站的使用说明、内容版权、引用规范和联系渠道。';
-const noindex=['search','privacy','terms'].includes(kind);
+const englishMeta=englishPageMeta(kind,slug);
+if(englishMeta){title=englishMeta.title;description=englishMeta.description;}
+const noindex=['search','privacy','terms'].includes(kind)||!!englishMeta?.noindex;
 const canonical=new URL(Astro.url.pathname,Astro.site||site.url).href;
 const schema:Record<string,unknown>[]=[{'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{'@type':'ListItem',position:1,name:'首页',item:new URL('/',Astro.site||site.url).href},{'@type':'ListItem',position:2,name:title,item:canonical}]}];
 if(kind==='post'&&blog)schema.push({'@context':'https://schema.org','@type':'BlogPosting',headline:blog.title,description:blog.description,datePublished:blog.publishedAt,dateModified:blog.updatedAt,author:{'@type':'Person',name:profile.displayName,url:new URL('/about/',Astro.site||site.url).href},mainEntityOfPage:canonical});
 if(kind==='about')schema.push({'@context':'https://schema.org','@type':'Person',name:profile.displayName,description:profile.headline,url:canonical,sameAs:profile.socialLinks.filter(l=>l.url.startsWith('https://')).map(l=>l.url)});
+if(englishMeta){
+  schema[0]={'@context':'https://schema.org','@type':'BreadcrumbList',itemListElement:[{title:'首页',path:'/'},...englishMeta.crumbs].map((c,index)=>({'@type':'ListItem',position:index+1,name:c.title,item:new URL(c.path,Astro.site||site.url).href}))};
+  const article=englishMeta.article;
+  if(article)schema.push({'@context':'https://schema.org','@type':englishMeta.module==='essays'?'BlogPosting':'Article',headline:article.title,description:article.description,mainEntityOfPage:canonical,inLanguage:article.language||'en',...(article.publishedAt?{datePublished:article.publishedAt}:{}),...(article.updatedAt?{dateModified:article.updatedAt}:{}),...(article.author?{author:{'@type':'Person',name:article.author}}:{}),...(article.source?{isBasedOn:article.source.url||article.source.title}:{})});
+}
 
 
 
 
 
 ---
-<BaseLayout title={title} description={description} noindex={noindex} schema={schema} image={work?.cover||site.ogImage}>
+<BaseLayout title={title} description={description} noindex={noindex} schema={schema} image={englishMeta?.article?.cover||work?.cover||site.ogImage} article={!!englishMeta?.article}>
   {kind==='tutorials'&&<Tutorials/>}
   {kind==='course'&&course&&<CourseDetail course={course}/>}
   {kind==='chapter'&&course&&chapter&&<OriginalChapter course={course} chapter={chapter}/>}
@@ -62,7 +74,11 @@ if(kind==='about')schema.push({'@context':'https://schema.org','@type':'Person',
   {kind==='archive'&&<BlogList archive/>}
   {kind==='portfolio'&&<Portfolio/>}
   {kind==='work'&&work&&<WorkDetail work={work}/>}
-  {['english','vocabulary','theme','grammar','lesson'].includes(kind)&&<English kind={kind} slug={slug}/>}
+  {kind==='english'&&<EnglishHome/>}
+  {(kind==='vocabulary'||kind==='theme'||kind.startsWith('vocabulary-'))&&<Vocabulary kind={kind} slug={slug}/>}
+  {(kind==='world'||kind.startsWith('world-'))&&<World kind={kind} slug={slug}/>}
+  {(kind==='essays'||kind.startsWith('essays-'))&&<Essays kind={kind} slug={slug}/>}
+  {['grammar','lesson'].includes(kind)&&<English kind={kind} slug={slug}/>}
   {kind==='about'&&<About/>}
   {kind==='search'&&<><StaticSearch client:load/><noscript><p class="notice">搜索需要启用 JavaScript。你仍可直接浏览<a href="/tutorials/">教程目录</a>、<a href="/blog/archive/">文章归档</a>和<a href="/portfolio/">全部作品</a>。</p></noscript></>}
   {kind==='privacy'&&<div class="legal"><PageHeading eyebrow="YOUR PRIVACY" title="隐私政策" description="适用于星雨笔录静态展示网站。更新日期：2026 年 10 月 21 日。"/><div class="prose"><h2>访问与本地偏好</h2><p>本站提供公开内容展示，无注册、登录和在线留言提交。主题偏好保存在浏览器的 localStorage 中，用于在下次访问时沿用深浅色设置。你可通过清理浏览器站点数据移除此设置。</p><h2>站内搜索</h2><p>搜索使用本站的静态索引，在你的浏览器内完成。关键词会显示在当前搜索页面的 URL 中，便于刷新与分享；本站没有用于接收搜索关键词的业务接口。访问服务器可能依据其配置记录请求路径等基础访问日志。</p><h2>公开内容与留言</h2><p>网站展示由维护者整理和发布的文章、作品资料及审核留言。留言页面只显示公开昵称、正文和日期。如果相关公开内容需要更正或移除，请通过关于页面的联系方式联系维护者。</p><h2>外部链接</h2><p>部分内容链接至 GitHub、作品演示或其他网站。访问这些链接时，相应服务将适用其自身的隐私政策。本站页面展示所需的图片、字体和文章内容由本站静态文件提供。</p><h2>联系</h2><p>如有隐私相关问题，请使用<a href="/about/">关于页面</a>列出的公开联系方式。</p></div></div>}

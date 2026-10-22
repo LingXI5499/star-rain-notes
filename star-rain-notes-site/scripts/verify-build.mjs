@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load } from 'cheerio';
+import { verifyEnglishBuild } from './verify-english-build.mjs';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const dist=path.join(root,'dist');
 function walk(dir){return fs.readdirSync(dir,{withFileTypes:true}).flatMap(e=>e.isDirectory()?walk(path.join(dir,e.name)):[path.join(dir,e.name)])}
@@ -37,7 +38,8 @@ const sitemapText=sitemapFiles.map(f=>fs.readFileSync(f,'utf8')).join('\n');
 for(const excluded of ['/404/','/404.html','/search/','/privacy/','/terms/'])if(sitemapText.includes(excluded+'</loc>'))errors.push(`Sitemap contains excluded ${excluded}`);
 if(!sitemapFiles.length||!fs.existsSync(path.join(dist,'robots.txt')))errors.push('Missing sitemap or robots.txt');
 const index=JSON.parse(fs.readFileSync(path.join(dist,'search-index.json'),'utf8'));for(const entry of index)if(!fileSet.has(resolve(entry.path)))errors.push(`Search index broken URL ${entry.path}`);
-const report={status:errors.length?'FAIL':'PASS',date:'2026-10-21',pages:htmlFiles.length,checkedLinksAndResources:links,images,searchEntries:index.length,sitemapFiles:sitemapFiles.map(f=>path.basename(f)),errors};
+const englishReport=verifyEnglishBuild();errors.push(...englishReport.errors);
+const report={status:errors.length?'FAIL':'PASS',date:new Date().toISOString().slice(0,10),pages:htmlFiles.length,checkedLinksAndResources:links,images,searchEntries:index.length,sitemapFiles:sitemapFiles.map(f=>path.basename(f)),errors};
 fs.writeFileSync(path.join(root,'docs/build-verification.json'),JSON.stringify(report,null,2));
 if(errors.length){console.error(errors.slice(0,60).join('\n'));console.error(`${errors.length} build errors. See docs/build-verification.json`);process.exit(1)}
 console.log(`Build PASS: ${htmlFiles.length} pages, ${links} links/resources, ${images} image references, ${index.length} search entries; SEO and static HTML verified.`);

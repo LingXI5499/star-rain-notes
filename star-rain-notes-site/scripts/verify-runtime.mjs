@@ -3,15 +3,18 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { load } from 'cheerio';
+import {englishRoutes} from '../src/utils/english-model.ts';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const base = new URL(process.argv[2] || 'http://127.0.0.1:4321/');
 const json = relative => JSON.parse(fs.readFileSync(path.join(root, relative), 'utf8'));
 const catalog = json('src/content-data/catalog.json');
 const themes = json('src/content-data/english/themes.json');
 const paths = ['/', '/tutorials/', catalog.courses[0].path, '/tutorials/java-se/chapter-4-3/', '/blog/', '/blog/page/2/', '/blog/topics/java-web/', '/blog/tags/java/', '/blog/archive/', catalog.blogs[0].path, '/portfolio/', catalog.works[0].path, '/english/', '/english/vocabulary/', themes[0].path, '/english/grammar/', '/english/grammar/1-1/', '/about/', '/search/?q=Java', '/privacy/', '/terms/'];
+const english=name=>json(`src/content-data/english/${name}.json`);
+paths.push('/english/world/','/english/essays/',...englishRoutes(english('vocabulary-taxonomy'),english('world-taxonomy'),english('world-articles').articles,english('essays').articles).map(r=>'/'+r.route+'/'),...themes.map(t=>t.path),...english('grammar').sections.flatMap(s=>s.lessons.map(l=>l.path)));
 const checks = [], errors = [];
 let home = '';
-for (const pathname of paths) {
+for (const pathname of new Set(paths)) {
   const response = await fetch(new URL(pathname, base));
   const html = await response.text();
   const ok = response.status === 200 && html.includes('<h1') && !html.includes('/@vite/client');

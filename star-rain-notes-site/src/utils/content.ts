@@ -8,6 +8,18 @@ import themes from '../content-data/english/themes.json';
 import grammar from '../content-data/english/grammar.json';
 import topics from '../content-data/topics.json';
 import homeData from '../content-data/home.json';
+import vocabularyTaxonomy from '../content-data/english/vocabulary-taxonomy.json';
+import worldTaxonomy from '../content-data/english/world-taxonomy.json';
+import vocabularyData from '../content-data/english/vocabulary-entries.json';
+import worldData from '../content-data/english/world-articles.json';
+import essaysData from '../content-data/english/essays.json';
+import type { VocabularyEntry, EnglishArticle } from './english-model';
+
+export { vocabularyTaxonomy, worldTaxonomy };
+export * from './english-model';
+export const vocabularyEntries = vocabularyData.entries as VocabularyEntry[];
+export const worldArticles = worldData.articles as EnglishArticle[];
+export const essays = essaysData.articles as EnglishArticle[];
 
 export { site, profile, themes, grammar, topics };
 export const home = homeData as { code:string; title:string; items:{ slug?:string; title:string; path?:string; publishedAt:string; type?:string }[] }[];

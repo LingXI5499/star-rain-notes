@@ -1,0 +1,2695 @@
+{
+  "sourceRecords": 7053,
+  "migratedRecords": 7053,
+  "confirmed": 1750,
+  "needsReview": 1163,
+  "unclassified": 4140,
+  "suspectedExactDuplicateRecords": 2242,
+  "repeatedSpellingRecords": 4345,
+  "removedRecords": 0,
+  "mergedRecords": 0,
+  "normalizedExampleRecords": 7053,
+  "taxonomyDifference": {
+    "expectedFromImage": 168,
+    "enumerated": 167,
+    "status": "needs-confirmation"
+  },
+  "byLegacy": [
+    {
+      "id": "1",
+      "title": "人体与感官",
+      "declared": 170,
+      "detailDeclared": 170,
+      "actual": 170,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 3
+      },
+      "empty": false,
+      "confirmed": 37,
+      "topicCodes": [
+        "T17-02",
+        "T02-08",
+        "T02-07",
+        "T02-02",
+        "T01-04",
+        "T02-01",
+        "T01-09",
+        "T18-06",
+        "T02-04",
+        "T02-03",
+        "T02-06",
+        "T08-05",
+        "T09-07",
+        "T05-06",
+        "T03-11"
+      ]
+    },
+    {
+      "id": "2",
+      "title": "家庭成员、人物身份与社会称谓",
+      "declared": 139,
+      "detailDeclared": 139,
+      "actual": 139,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 49,
+      "topicCodes": [
+        "T08-02",
+        "T08-01",
+        "T08-04",
+        "T12-04",
+        "T12-01",
+        "T16-03",
+        "T10-02",
+        "T02-08",
+        "T16-01",
+        "T12-08",
+        "T09-05",
+        "T09-02",
+        "T08-03",
+        "T02-05",
+        "T07-08",
+        "T17-06",
+        "T08-07",
+        "T09-03",
+        "T08-06",
+        "T12-02",
+        "T17-07",
+        "T13-09",
+        "T10-03"
+      ]
+    },
+    {
+      "id": "3",
+      "title": "颜色、形状、大小、材料、质地",
+      "declared": 191,
+      "detailDeclared": 191,
+      "actual": 191,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 6,
+        "phoneticUk": 5
+      },
+      "empty": false,
+      "confirmed": 49,
+      "topicCodes": [
+        "T01-08",
+        "T01-06",
+        "T01-04",
+        "T02-07",
+        "T18-11",
+        "T18-02",
+        "T13-06",
+        "T01-03",
+        "T01-09",
+        "T08-06",
+        "T01-10",
+        "T01-07",
+        "T09-07",
+        "T04-01",
+        "T09-03",
+        "T09-01",
+        "T01-01",
+        "T03-05",
+        "T02-04",
+        "T01-05"
+      ]
+    },
+    {
+      "id": "4",
+      "title": "时间、日期、年龄、频率、顺序",
+      "declared": 158,
+      "detailDeclared": 158,
+      "actual": 158,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 4,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 37,
+      "topicCodes": [
+        "T14-01",
+        "T01-02",
+        "T01-01",
+        "T18-08",
+        "T08-07",
+        "T08-02",
+        "T01-03",
+        "T14-05",
+        "T01-09",
+        "T09-01"
+      ]
+    },
+    {
+      "id": "5",
+      "title": "数量、程度、比较、倍数、范围",
+      "declared": 158,
+      "detailDeclared": 158,
+      "actual": 158,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 47,
+      "topicCodes": [
+        "T18-10",
+        "T18-08",
+        "T01-10",
+        "T10-03",
+        "T17-02",
+        "T01-04",
+        "T01-05",
+        "T18-11",
+        "T01-03",
+        "T15-04",
+        "T01-11",
+        "T17-01",
+        "T09-01"
+      ]
+    },
+    {
+      "id": "6",
+      "title": "方向、方位、位置、空间关系",
+      "declared": 158,
+      "detailDeclared": 158,
+      "actual": 158,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 5,
+        "phoneticUk": 3
+      },
+      "empty": false,
+      "confirmed": 36,
+      "topicCodes": [
+        "T09-05",
+        "T13-05",
+        "T03-12",
+        "T18-01",
+        "T01-05",
+        "T15-01",
+        "T07-07",
+        "T01-04",
+        "T15-02",
+        "T16-02",
+        "T04-01",
+        "T18-09",
+        "T06-03",
+        "T01-08",
+        "T01-07",
+        "T01-09",
+        "T08-06",
+        "T18-12",
+        "T18-10",
+        "T17-02"
+      ]
+    },
+    {
+      "id": "7",
+      "title": "动物、植物、自然物",
+      "declared": 179,
+      "detailDeclared": 179,
+      "actual": 179,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 5,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 42,
+      "topicCodes": [
+        "T01-06",
+        "T02-05",
+        "T06-01",
+        "T02-02",
+        "T04-05",
+        "T03-04",
+        "T03-09",
+        "T04-02",
+        "T03-01",
+        "T11-08",
+        "T18-02",
+        "T03-11",
+        "T03-10",
+        "T17-07",
+        "T03-07",
+        "T15-02",
+        "T13-02",
+        "T03-08",
+        "T18-01",
+        "T04-04"
+      ]
+    },
+    {
+      "id": "8",
+      "title": "天气、季节、气候、自然现象",
+      "declared": 81,
+      "detailDeclared": 81,
+      "actual": 81,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 12,
+      "topicCodes": [
+        "T01-10",
+        "T10-03",
+        "T18-10",
+        "T03-02",
+        "T09-07",
+        "T18-01",
+        "T01-02",
+        "T06-07",
+        "T03-03"
+      ]
+    },
+    {
+      "id": "9",
+      "title": "衣物、鞋帽、配饰、个人用品",
+      "declared": 98,
+      "detailDeclared": 98,
+      "actual": 98,
+      "difference": 0,
+      "missingFields": {},
+      "empty": false,
+      "confirmed": 18,
+      "topicCodes": [
+        "T18-06",
+        "T05-01",
+        "T05-02",
+        "T09-03",
+        "T05-03",
+        "T02-01",
+        "T02-03",
+        "T05-04",
+        "T05-05",
+        "T06-06",
+        "T07-08"
+      ]
+    },
+    {
+      "id": "10",
+      "title": "家具、家电、器具、日用品",
+      "declared": 164,
+      "detailDeclared": 164,
+      "actual": 164,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 4,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 34,
+      "topicCodes": [
+        "T01-08",
+        "T01-02",
+        "T06-08",
+        "T13-09",
+        "T12-04",
+        "T17-06",
+        "T06-04",
+        "T06-09",
+        "T01-01",
+        "T06-06",
+        "T12-01",
+        "T11-08",
+        "T18-02",
+        "T06-05",
+        "T04-01",
+        "T04-08",
+        "T13-06",
+        "T13-04",
+        "T04-09"
+      ]
+    },
+    {
+      "id": "11",
+      "title": "食材、基础食物、基础饮料",
+      "declared": 110,
+      "detailDeclared": 110,
+      "actual": 110,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 43,
+      "topicCodes": [
+        "T04-10",
+        "T04-06",
+        "T04-02",
+        "T02-06",
+        "T09-05",
+        "T04-05",
+        "T04-01",
+        "T04-09",
+        "T04-08",
+        "T04-04",
+        "T15-01",
+        "T02-02",
+        "T07-06",
+        "T04-07"
+      ]
+    },
+    {
+      "id": "12",
+      "title": "学科、课程、知识门类",
+      "declared": 96,
+      "detailDeclared": 96,
+      "actual": 96,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 50,
+      "topicCodes": [
+        "T10-03",
+        "T12-03",
+        "T17-02",
+        "T13-07",
+        "T12-07",
+        "T15-01",
+        "T11-01",
+        "T17-01",
+        "T10-04",
+        "T18-08",
+        "T10-08",
+        "T18-04",
+        "T14-01",
+        "T10-05",
+        "T10-09",
+        "T01-04",
+        "T13-04",
+        "T12-04",
+        "T17-03",
+        "T10-06",
+        "T17-04",
+        "T16-02",
+        "T09-06",
+        "T13-06",
+        "T12-05",
+        "T18-10",
+        "T17-06",
+        "T12-09",
+        "T13-05",
+        "T18-05",
+        "T18-09",
+        "T17-05",
+        "T01-07"
+      ]
+    },
+    {
+      "id": "13",
+      "title": "家与日常生活",
+      "declared": 131,
+      "detailDeclared": 131,
+      "actual": 131,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 4,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 42,
+      "topicCodes": [
+        "T18-07",
+        "T01-02",
+        "T08-08",
+        "T06-01",
+        "T05-06",
+        "T04-10",
+        "T06-02",
+        "T15-08",
+        "T08-01",
+        "T11-07",
+        "T12-08",
+        "T12-05",
+        "T18-01",
+        "T06-09",
+        "T08-03",
+        "T02-10",
+        "T06-07",
+        "T06-04",
+        "T08-06",
+        "T02-02",
+        "T13-08",
+        "T06-03",
+        "T12-02",
+        "T09-01",
+        "T11-01",
+        "T05-07",
+        "T08-04",
+        "T09-07"
+      ]
+    },
+    {
+      "id": "14",
+      "title": "宿舍 / 日常学习空间",
+      "declared": 81,
+      "detailDeclared": 81,
+      "actual": 81,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 18,
+      "topicCodes": [
+        "T01-02",
+        "T10-01",
+        "T10-06",
+        "T12-04",
+        "T10-05",
+        "T12-05",
+        "T06-04",
+        "T11-08",
+        "T18-04",
+        "T12-07",
+        "T17-01",
+        "T10-02",
+        "T12-02",
+        "T10-07",
+        "T09-04"
+      ]
+    },
+    {
+      "id": "15",
+      "title": "餐厅 / 饮食",
+      "declared": 89,
+      "detailDeclared": 89,
+      "actual": 89,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 25,
+      "topicCodes": [
+        "T18-06",
+        "T10-04",
+        "T12-08",
+        "T18-01",
+        "T04-06",
+        "T09-03",
+        "T18-10",
+        "T18-11",
+        "T17-01",
+        "T01-03",
+        "T04-01",
+        "T04-09",
+        "T01-08",
+        "T04-10",
+        "T04-08",
+        "T08-06",
+        "T18-07",
+        "T07-06"
+      ]
+    },
+    {
+      "id": "16",
+      "title": "超市 / 购物",
+      "declared": 88,
+      "detailDeclared": 88,
+      "actual": 88,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1
+      },
+      "empty": false,
+      "confirmed": 24,
+      "topicCodes": [
+        "T18-07",
+        "T12-08",
+        "T18-08",
+        "T18-06",
+        "T12-07",
+        "T07-02",
+        "T09-05",
+        "T01-06",
+        "T01-04",
+        "T18-10",
+        "T17-01",
+        "T18-12",
+        "T07-11",
+        "T13-04",
+        "T04-01",
+        "T17-06",
+        "T18-02"
+      ]
+    },
+    {
+      "id": "17",
+      "title": "银行 / 支付 / 金钱管理",
+      "declared": 81,
+      "detailDeclared": 81,
+      "actual": 81,
+      "difference": 0,
+      "missingFields": {},
+      "empty": false,
+      "confirmed": 25,
+      "topicCodes": [
+        "T12-09",
+        "T01-03",
+        "T12-11",
+        "T12-08",
+        "T18-07",
+        "T17-01",
+        "T16-02",
+        "T16-03",
+        "T01-04"
+      ]
+    },
+    {
+      "id": "18",
+      "title": "快递 / 网购 / 物流",
+      "declared": 64,
+      "detailDeclared": 64,
+      "actual": 64,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 14,
+      "topicCodes": [
+        "T18-07",
+        "T07-02",
+        "T15-08",
+        "T12-08",
+        "T07-07",
+        "T18-01",
+        "T16-02",
+        "T07-11",
+        "T12-07",
+        "T08-03"
+      ]
+    },
+    {
+      "id": "19",
+      "title": "手机 / 网络 / 数字生活",
+      "declared": 86,
+      "detailDeclared": 86,
+      "actual": 86,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1
+      },
+      "empty": false,
+      "confirmed": 19,
+      "topicCodes": [
+        "T18-07",
+        "T11-01",
+        "T17-01",
+        "T01-03",
+        "T05-06",
+        "T11-02",
+        "T13-06",
+        "T11-07",
+        "T11-08",
+        "T11-04",
+        "T01-08"
+      ]
+    },
+    {
+      "id": "20",
+      "title": "交通 / 出行",
+      "declared": 119,
+      "detailDeclared": 119,
+      "actual": 119,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 27,
+      "topicCodes": [
+        "T18-07",
+        "T07-05",
+        "T13-05",
+        "T18-01",
+        "T07-08",
+        "T07-07",
+        "T07-06",
+        "T07-04",
+        "T18-06",
+        "T01-05",
+        "T03-01",
+        "T12-04",
+        "T15-08"
+      ]
+    },
+    {
+      "id": "21",
+      "title": "机场 / 火车站 / 长途出行",
+      "declared": 62,
+      "detailDeclared": 62,
+      "actual": 62,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 15,
+      "topicCodes": [
+        "T07-07",
+        "T18-01",
+        "T07-09",
+        "T18-06",
+        "T15-07",
+        "T05-05",
+        "T03-01",
+        "T07-06",
+        "T07-08",
+        "T08-03"
+      ]
+    },
+    {
+      "id": "22",
+      "title": "酒店 / 住宿",
+      "declared": 73,
+      "detailDeclared": 73,
+      "actual": 73,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 27,
+      "topicCodes": [
+        "T12-08",
+        "T05-06",
+        "T18-01",
+        "T12-04",
+        "T18-12",
+        "T07-10",
+        "T06-07",
+        "T17-06",
+        "T18-09",
+        "T07-09",
+        "T07-07",
+        "T18-07",
+        "T14-04",
+        "T04-10",
+        "T12-03",
+        "T06-06",
+        "T06-02",
+        "T06-03",
+        "T11-01",
+        "T05-01",
+        "T05-07"
+      ]
+    },
+    {
+      "id": "23",
+      "title": "旅行 / 旅游",
+      "declared": 89,
+      "detailDeclared": 89,
+      "actual": 89,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 31,
+      "topicCodes": [
+        "T14-02",
+        "T10-08",
+        "T07-05",
+        "T13-06",
+        "T07-09",
+        "T15-01",
+        "T12-09",
+        "T07-07",
+        "T18-01",
+        "T12-05",
+        "T18-06",
+        "T05-05",
+        "T11-08",
+        "T12-10",
+        "T15-08"
+      ]
+    },
+    {
+      "id": "24",
+      "title": "景点 / 博物馆 / 参观",
+      "declared": 98,
+      "detailDeclared": 98,
+      "actual": 98,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1
+      },
+      "empty": false,
+      "confirmed": 21,
+      "topicCodes": [
+        "T14-01",
+        "T07-03",
+        "T18-04",
+        "T13-06",
+        "T07-07",
+        "T01-07",
+        "T14-06",
+        "T07-09",
+        "T08-06",
+        "T18-12",
+        "T01-04",
+        "T13-04",
+        "T01-10",
+        "T11-08",
+        "T09-03",
+        "T15-08"
+      ]
+    },
+    {
+      "id": "25",
+      "title": "医院 / 健康 / 医疗",
+      "declared": 120,
+      "detailDeclared": 120,
+      "actual": 120,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 3
+      },
+      "empty": false,
+      "confirmed": 39,
+      "topicCodes": [
+        "T17-02",
+        "T01-02",
+        "T01-04",
+        "T02-08",
+        "T12-04",
+        "T10-05",
+        "T02-07",
+        "T02-02",
+        "T02-09",
+        "T10-06",
+        "T02-04",
+        "T12-09",
+        "T18-02",
+        "T09-07"
+      ]
+    },
+    {
+      "id": "26",
+      "title": "运动 / 健身 / 身体状态",
+      "declared": 80,
+      "detailDeclared": 80,
+      "actual": 80,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 28,
+      "topicCodes": [
+        "T12-03",
+        "T10-05",
+        "T01-02",
+        "T13-01",
+        "T02-06",
+        "T17-06",
+        "T13-08",
+        "T16-03",
+        "T02-04",
+        "T07-05",
+        "T18-06",
+        "T13-02",
+        "T13-03",
+        "T13-05",
+        "T05-03",
+        "T10-01",
+        "T05-01"
+      ]
+    },
+    {
+      "id": "27",
+      "title": "学校 / 教室",
+      "declared": 128,
+      "detailDeclared": 128,
+      "actual": 128,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1
+      },
+      "empty": false,
+      "confirmed": 39,
+      "topicCodes": [
+        "T01-10",
+        "T10-03",
+        "T18-10",
+        "T10-04",
+        "T18-08",
+        "T18-04",
+        "T15-01",
+        "T10-05",
+        "T10-09",
+        "T12-01",
+        "T10-07",
+        "T12-11",
+        "T02-07",
+        "T17-05",
+        "T10-01",
+        "T13-01",
+        "T10-06",
+        "T12-05",
+        "T08-07",
+        "T10-02",
+        "T09-03",
+        "T12-02",
+        "T14-04",
+        "T13-02",
+        "T13-03",
+        "T09-04",
+        "T05-01"
+      ]
+    },
+    {
+      "id": "28",
+      "title": "图书馆 / 阅读 / 检索",
+      "declared": 116,
+      "detailDeclared": 116,
+      "actual": 116,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 4,
+        "phoneticUk": 3
+      },
+      "empty": false,
+      "confirmed": 19,
+      "topicCodes": [
+        "T18-07",
+        "T18-05",
+        "T13-07",
+        "T01-03",
+        "T10-07",
+        "T12-09",
+        "T09-06",
+        "T18-10",
+        "T18-03",
+        "T11-08",
+        "T16-07",
+        "T08-03"
+      ]
+    },
+    {
+      "id": "29",
+      "title": "实验室 / 科研",
+      "declared": 179,
+      "detailDeclared": 179,
+      "actual": 179,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 47,
+      "topicCodes": [
+        "T18-05",
+        "T17-02",
+        "T13-07",
+        "T18-08",
+        "T01-04",
+        "T10-02",
+        "T10-04",
+        "T17-03",
+        "T01-11",
+        "T13-06",
+        "T01-08",
+        "T17-06",
+        "T18-03",
+        "T18-10",
+        "T12-02",
+        "T17-05",
+        "T18-02",
+        "T18-07",
+        "T17-01",
+        "T15-01",
+        "T08-03",
+        "T18-11",
+        "T01-07",
+        "T05-03",
+        "T01-09"
+      ]
+    },
+    {
+      "id": "30",
+      "title": "办公室 / 工作场景",
+      "declared": 123,
+      "detailDeclared": 123,
+      "actual": 123,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 36,
+      "topicCodes": [
+        "T12-03",
+        "T12-04",
+        "T11-01",
+        "T17-06",
+        "T18-02",
+        "T12-01",
+        "T16-03",
+        "T12-08",
+        "T09-02",
+        "T16-02",
+        "T18-06",
+        "T12-09",
+        "T18-07",
+        "T12-05",
+        "T06-04",
+        "T18-04",
+        "T11-08",
+        "T01-01",
+        "T08-04",
+        "T12-02",
+        "T17-01",
+        "T11-04",
+        "T02-02",
+        "T18-12"
+      ]
+    },
+    {
+      "id": "31",
+      "title": "求职 / 面试 / 职业发展",
+      "declared": 102,
+      "detailDeclared": 102,
+      "actual": 102,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3
+      },
+      "empty": false,
+      "confirmed": 25,
+      "topicCodes": [
+        "T18-07",
+        "T01-05",
+        "T12-03",
+        "T01-10",
+        "T10-03",
+        "T18-10",
+        "T18-08",
+        "T16-02",
+        "T02-04",
+        "T18-02",
+        "T18-06",
+        "T08-07",
+        "T13-09",
+        "T18-12",
+        "T10-06"
+      ]
+    },
+    {
+      "id": "32",
+      "title": "会议 / 沟通 / 合作",
+      "declared": 108,
+      "detailDeclared": 108,
+      "actual": 108,
+      "difference": 0,
+      "missingFields": {},
+      "empty": false,
+      "confirmed": 25,
+      "topicCodes": [
+        "T18-05",
+        "T18-08",
+        "T18-12",
+        "T08-06",
+        "T18-06",
+        "T18-04",
+        "T16-02",
+        "T09-02",
+        "T12-05",
+        "T12-02",
+        "T18-09",
+        "T03-09",
+        "T08-04",
+        "T16-05"
+      ]
+    },
+    {
+      "id": "33",
+      "title": "教学、训练、考试、评价系统",
+      "declared": 121,
+      "detailDeclared": 121,
+      "actual": 121,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2
+      },
+      "empty": false,
+      "confirmed": 41,
+      "topicCodes": [
+        "T08-06",
+        "T09-04",
+        "T10-04",
+        "T18-04",
+        "T10-05",
+        "T10-09",
+        "T01-05",
+        "T10-06",
+        "T01-02",
+        "T18-07",
+        "T18-08",
+        "T01-08",
+        "T09-06",
+        "T18-10",
+        "T18-11",
+        "T12-05",
+        "T18-06",
+        "T10-02",
+        "T10-01",
+        "T18-05",
+        "T18-12"
+      ]
+    },
+    {
+      "id": "34",
+      "title": "城市 / 社区 / 公共空间",
+      "declared": 79,
+      "detailDeclared": 79,
+      "actual": 79,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2
+      },
+      "empty": false,
+      "confirmed": 25,
+      "topicCodes": [
+        "T15-03",
+        "T08-08",
+        "T12-07",
+        "T07-03",
+        "T15-01",
+        "T10-07",
+        "T15-08",
+        "T17-06",
+        "T12-04",
+        "T01-07",
+        "T02-08",
+        "T14-06",
+        "T03-12",
+        "T08-03",
+        "T15-04",
+        "T14-04",
+        "T10-01",
+        "T06-01",
+        "T06-03"
+      ]
+    },
+    {
+      "id": "35",
+      "title": "媒体 / 广告 / 信息传播",
+      "declared": 89,
+      "detailDeclared": 89,
+      "actual": 89,
+      "difference": 0,
+      "missingFields": {},
+      "empty": false,
+      "confirmed": 20,
+      "topicCodes": [
+        "T18-05",
+        "T01-03",
+        "T18-08",
+        "T12-03",
+        "T16-07",
+        "T11-07",
+        "T18-04",
+        "T10-07",
+        "T01-04",
+        "T13-06"
+      ]
+    },
+    {
+      "id": "36",
+      "title": "环境 / 生态 / 资源 / 可持续性",
+      "declared": 78,
+      "detailDeclared": 78,
+      "actual": 78,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 23,
+      "topicCodes": [
+        "T18-08",
+        "T03-12",
+        "T03-02",
+        "T01-08",
+        "T09-05",
+        "T12-08",
+        "T14-02",
+        "T09-04",
+        "T03-04",
+        "T03-05",
+        "T17-03",
+        "T03-03",
+        "T18-12",
+        "T15-06"
+      ]
+    },
+    {
+      "id": "37",
+      "title": "农业 / 工业 / 制造 / 技术应用",
+      "declared": 122,
+      "detailDeclared": 122,
+      "actual": 122,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2
+      },
+      "empty": false,
+      "confirmed": 46,
+      "topicCodes": [
+        "T18-08",
+        "T01-03",
+        "T02-05",
+        "T12-06",
+        "T18-11",
+        "T01-08",
+        "T10-04",
+        "T17-03",
+        "T13-06",
+        "T09-05",
+        "T01-10",
+        "T17-06",
+        "T18-02",
+        "T11-09",
+        "T17-07",
+        "T11-01",
+        "T06-09",
+        "T04-01",
+        "T12-07",
+        "T11-08",
+        "T15-01",
+        "T17-04",
+        "T18-06"
+      ]
+    },
+    {
+      "id": "38",
+      "title": "经济 / 商业 / 市场 / 金融",
+      "declared": 138,
+      "detailDeclared": 138,
+      "actual": 138,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2
+      },
+      "empty": false,
+      "confirmed": 58,
+      "topicCodes": [
+        "T12-09",
+        "T12-08",
+        "T12-04",
+        "T12-11",
+        "T12-06",
+        "T12-07",
+        "T17-06",
+        "T03-12",
+        "T09-05",
+        "T18-07",
+        "T18-06",
+        "T13-01",
+        "T12-03",
+        "T09-07",
+        "T15-02",
+        "T15-03",
+        "T16-02",
+        "T18-02",
+        "T16-06"
+      ]
+    },
+    {
+      "id": "39",
+      "title": "政治 / 政府 / 政策 / 治理",
+      "declared": 118,
+      "detailDeclared": 118,
+      "actual": 118,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 31,
+      "topicCodes": [
+        "T08-08",
+        "T15-01",
+        "T16-01",
+        "T15-04",
+        "T12-01",
+        "T16-03",
+        "T12-04",
+        "T12-09",
+        "T12-08",
+        "T16-02",
+        "T18-06",
+        "T13-05",
+        "T15-02",
+        "T18-11",
+        "T08-03",
+        "T08-05",
+        "T18-12"
+      ]
+    },
+    {
+      "id": "40",
+      "title": "法律 / 权利 / 责任 / 社会秩序",
+      "declared": 110,
+      "detailDeclared": 110,
+      "actual": 110,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 22,
+      "topicCodes": [
+        "T18-05",
+        "T16-03",
+        "T18-07",
+        "T16-02",
+        "T11-07",
+        "T15-04",
+        "T08-03"
+      ]
+    },
+    {
+      "id": "41",
+      "title": "历史 / 文明 / 社会发展",
+      "declared": 129,
+      "detailDeclared": 129,
+      "actual": 129,
+      "difference": 0,
+      "missingFields": {},
+      "empty": false,
+      "confirmed": 43,
+      "topicCodes": [
+        "T18-05",
+        "T14-01",
+        "T08-02",
+        "T15-01",
+        "T08-08",
+        "T14-02",
+        "T18-08",
+        "T13-05",
+        "T10-08",
+        "T09-04",
+        "T01-01",
+        "T08-03",
+        "T01-10",
+        "T18-10",
+        "T18-03",
+        "T09-01",
+        "T15-07",
+        "T14-04",
+        "T16-05",
+        "T14-05",
+        "T08-07",
+        "T08-06",
+        "T16-01",
+        "T11-04",
+        "T14-06",
+        "T15-04",
+        "T12-04",
+        "T15-06"
+      ]
+    },
+    {
+      "id": "42",
+      "title": "中国传统文化",
+      "declared": 80,
+      "detailDeclared": 80,
+      "actual": 80,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2
+      },
+      "empty": false,
+      "confirmed": 22,
+      "topicCodes": [
+        "T15-01",
+        "T14-02",
+        "T18-07",
+        "T09-03",
+        "T13-09",
+        "T07-04",
+        "T13-06",
+        "T14-05",
+        "T16-03",
+        "T13-07",
+        "T10-03",
+        "T10-09",
+        "T18-11",
+        "T14-04",
+        "T08-03"
+      ]
+    },
+    {
+      "id": "43",
+      "title": "国际关系 / 全球化 / 外交",
+      "declared": 52,
+      "detailDeclared": 52,
+      "actual": 52,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 11,
+      "topicCodes": [
+        "T18-08",
+        "T15-01",
+        "T09-07",
+        "T14-02",
+        "T12-02",
+        "T15-04",
+        "T15-07",
+        "T15-06"
+      ]
+    },
+    {
+      "id": "44",
+      "title": "军事 / 战争 / 和平 / 安全",
+      "declared": 87,
+      "detailDeclared": 87,
+      "actual": 87,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 19,
+      "topicCodes": [
+        "T12-04",
+        "T18-06",
+        "T16-05",
+        "T10-06",
+        "T12-05",
+        "T12-03",
+        "T15-06",
+        "T05-01",
+        "T02-07"
+      ]
+    },
+    {
+      "id": "45",
+      "title": "艺术 / 文学 / 音乐 / 影视 / 审美",
+      "declared": 124,
+      "detailDeclared": 124,
+      "actual": 124,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 38,
+      "topicCodes": [
+        "T13-07",
+        "T13-05",
+        "T13-04",
+        "T13-06",
+        "T18-11",
+        "T09-03",
+        "T18-08",
+        "T01-06",
+        "T18-06",
+        "T03-12",
+        "T14-06",
+        "T11-08",
+        "T03-08",
+        "T17-04",
+        "T06-04",
+        "T14-03",
+        "T12-08"
+      ]
+    },
+    {
+      "id": "46",
+      "title": "观点 / 立场 / 态度",
+      "declared": 142,
+      "detailDeclared": 142,
+      "actual": 142,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 33,
+      "topicCodes": [
+        "T01-05",
+        "T18-12",
+        "T18-05",
+        "T18-07",
+        "T09-02",
+        "T02-04",
+        "T09-04",
+        "T13-09",
+        "T09-07",
+        "T01-10",
+        "T18-03",
+        "T18-08",
+        "T17-05",
+        "T18-11",
+        "T09-03",
+        "T15-01"
+      ]
+    },
+    {
+      "id": "47",
+      "title": "判断 / 评价 / 证据 / 论证",
+      "declared": 141,
+      "detailDeclared": 141,
+      "actual": 141,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 31,
+      "topicCodes": [
+        "T18-05",
+        "T01-10",
+        "T10-03",
+        "T18-10",
+        "T12-03",
+        "T08-02",
+        "T10-06",
+        "T01-03",
+        "T18-04",
+        "T17-01",
+        "T09-06",
+        "T01-11",
+        "T18-09",
+        "T08-06",
+        "T18-12",
+        "T17-05",
+        "T02-03",
+        "T18-06",
+        "T01-04",
+        "T18-03",
+        "T18-08"
+      ]
+    },
+    {
+      "id": "48",
+      "title": "因果 / 条件 / 目的 / 结果",
+      "declared": 149,
+      "detailDeclared": 149,
+      "actual": 149,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 34,
+      "topicCodes": [
+        "T18-08",
+        "T18-09",
+        "T17-06",
+        "T02-09",
+        "T18-06",
+        "T03-01",
+        "T01-10",
+        "T08-04",
+        "T08-06",
+        "T12-02",
+        "T18-02",
+        "T18-11",
+        "T09-05",
+        "T09-01",
+        "T13-06"
+      ]
+    },
+    {
+      "id": "49",
+      "title": "变化 / 趋势 / 过程 / 阶段",
+      "declared": 140,
+      "detailDeclared": 140,
+      "actual": 140,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 5,
+        "phoneticUk": 4
+      },
+      "empty": false,
+      "confirmed": 33,
+      "topicCodes": [
+        "T18-08",
+        "T08-02",
+        "T17-06",
+        "T18-02",
+        "T08-07",
+        "T01-02",
+        "T18-07",
+        "T13-05",
+        "T18-10",
+        "T07-04",
+        "T06-09"
+      ]
+    },
+    {
+      "id": "50",
+      "title": "比较 / 程度 / 数量 / 关系",
+      "declared": 179,
+      "detailDeclared": 179,
+      "actual": 179,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 45,
+      "topicCodes": [
+        "T18-10",
+        "T01-10",
+        "T17-02",
+        "T01-04",
+        "T18-08",
+        "T01-05",
+        "T01-11",
+        "T18-11",
+        "T17-03",
+        "T18-06",
+        "T01-03",
+        "T08-06",
+        "T08-04",
+        "T12-02",
+        "T15-04",
+        "T17-06",
+        "T18-02",
+        "T16-02",
+        "T17-01",
+        "T01-02",
+        "T18-12"
+      ]
+    },
+    {
+      "id": "51",
+      "title": "问题 / 风险 / 限制 / 解决",
+      "declared": 188,
+      "detailDeclared": 188,
+      "actual": 188,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 25,
+      "topicCodes": [
+        "T18-07",
+        "T18-08",
+        "T18-09",
+        "T12-04",
+        "T03-12",
+        "T18-06",
+        "T09-07",
+        "T02-09",
+        "T02-07",
+        "T09-06",
+        "T17-06",
+        "T18-02",
+        "T18-05",
+        "T06-09",
+        "T17-01",
+        "T18-04",
+        "T18-12",
+        "T16-02"
+      ]
+    },
+    {
+      "id": "52",
+      "title": "选择 / 决策 / 方法 / 策略",
+      "declared": 147,
+      "detailDeclared": 147,
+      "actual": 147,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 5,
+        "phoneticUk": 3
+      },
+      "empty": false,
+      "confirmed": 41,
+      "topicCodes": [
+        "T18-07",
+        "T18-05",
+        "T18-08",
+        "T18-12",
+        "T18-06",
+        "T12-04",
+        "T13-06",
+        "T09-06",
+        "T18-10",
+        "T07-04",
+        "T12-05",
+        "T01-02",
+        "T18-11",
+        "T17-01",
+        "T01-05",
+        "T17-05"
+      ]
+    },
+    {
+      "id": "53",
+      "title": "心理 / 行为 / 认知 / 情绪",
+      "declared": 253,
+      "detailDeclared": 253,
+      "actual": 253,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 5,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 70,
+      "topicCodes": [
+        "T09-01",
+        "T09-04",
+        "T18-05",
+        "T18-06",
+        "T10-05",
+        "T18-07",
+        "T09-05",
+        "T09-03",
+        "T08-03",
+        "T01-10",
+        "T18-10",
+        "T13-09",
+        "T09-07",
+        "T08-06",
+        "T18-09",
+        "T02-02",
+        "T18-03",
+        "T09-02",
+        "T18-12",
+        "T17-05",
+        "T09-06",
+        "T08-02"
+      ]
+    },
+    {
+      "id": "54",
+      "title": "系统 / 结构 / 功能 / 机制",
+      "declared": 176,
+      "detailDeclared": 176,
+      "actual": 176,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 3,
+        "phoneticUk": 2
+      },
+      "empty": false,
+      "confirmed": 39,
+      "topicCodes": [
+        "T18-08",
+        "T01-03",
+        "T03-12",
+        "T01-05",
+        "T12-04",
+        "T01-04",
+        "T18-11",
+        "T17-06",
+        "T17-03",
+        "T13-06",
+        "T01-08",
+        "T01-10",
+        "T09-06",
+        "T18-10",
+        "T18-07",
+        "T18-03",
+        "T18-05",
+        "T08-03",
+        "T18-02",
+        "T02-02"
+      ]
+    },
+    {
+      "id": "55",
+      "title": "词根词缀与构词系统",
+      "declared": 65,
+      "detailDeclared": 65,
+      "actual": 65,
+      "difference": 0,
+      "missingFields": {},
+      "empty": false,
+      "confirmed": 0,
+      "topicCodes": []
+    },
+    {
+      "id": "56",
+      "title": "一词多义与高频搭配系统",
+      "declared": 84,
+      "detailDeclared": 84,
+      "actual": 84,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 2
+      },
+      "empty": false,
+      "confirmed": 0,
+      "topicCodes": []
+    },
+    {
+      "id": "57",
+      "title": "功能词 / 连接词 / 介词系统",
+      "declared": 191,
+      "detailDeclared": 191,
+      "actual": 191,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 7,
+        "phoneticUk": 4
+      },
+      "empty": false,
+      "confirmed": 0,
+      "topicCodes": []
+    },
+    {
+      "id": "58",
+      "title": "高频语法输出句型系统",
+      "declared": 0,
+      "detailDeclared": 0,
+      "actual": 0,
+      "difference": 0,
+      "missingFields": {},
+      "empty": true,
+      "confirmed": 0,
+      "topicCodes": []
+    },
+    {
+      "id": "59",
+      "title": "阅读篇章结构与题型表达系统",
+      "declared": 139,
+      "detailDeclared": 139,
+      "actual": 139,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUs": 1
+      },
+      "empty": false,
+      "confirmed": 0,
+      "topicCodes": []
+    },
+    {
+      "id": "60",
+      "title": "写作 / 翻译 / 口语高频表达系统",
+      "declared": 13,
+      "detailDeclared": 13,
+      "actual": 13,
+      "difference": 0,
+      "missingFields": {
+        "phoneticUk": 1
+      },
+      "empty": false,
+      "confirmed": 0,
+      "topicCodes": []
+    }
+  ],
+  "byTopic": [
+    {
+      "code": "T01-01",
+      "title": "时间、日期与历法",
+      "count": 19
+    },
+    {
+      "code": "T01-02",
+      "title": "时间顺序与频率",
+      "count": 27
+    },
+    {
+      "code": "T01-03",
+      "title": "数字、基数与序数",
+      "count": 23
+    },
+    {
+      "code": "T01-04",
+      "title": "数量、测量与单位",
+      "count": 33
+    },
+    {
+      "code": "T01-05",
+      "title": "空间、方位与位置",
+      "count": 21
+    },
+    {
+      "code": "T01-06",
+      "title": "颜色与色调",
+      "count": 12
+    },
+    {
+      "code": "T01-07",
+      "title": "形状与几何外观",
+      "count": 7
+    },
+    {
+      "code": "T01-08",
+      "title": "材料与物质",
+      "count": 26
+    },
+    {
+      "code": "T01-09",
+      "title": "尺寸与质地",
+      "count": 9
+    },
+    {
+      "code": "T01-10",
+      "title": "状态与程度",
+      "count": 34
+    },
+    {
+      "code": "T01-11",
+      "title": "比较、倍数与范围",
+      "count": 13
+    },
+    {
+      "code": "T02-01",
+      "title": "人体外部部位",
+      "count": 9
+    },
+    {
+      "code": "T02-02",
+      "title": "器官、骨骼与肌肉",
+      "count": 11
+    },
+    {
+      "code": "T02-03",
+      "title": "感官与身体知觉",
+      "count": 4
+    },
+    {
+      "code": "T02-04",
+      "title": "身体动作与姿势",
+      "count": 14
+    },
+    {
+      "code": "T02-05",
+      "title": "生命阶段与生长",
+      "count": 6
+    },
+    {
+      "code": "T02-06",
+      "title": "身体状态与生理需要",
+      "count": 4
+    },
+    {
+      "code": "T02-07",
+      "title": "疾病、伤害与症状",
+      "count": 23
+    },
+    {
+      "code": "T02-08",
+      "title": "医疗人物与机构",
+      "count": 13
+    },
+    {
+      "code": "T02-09",
+      "title": "诊断治疗与保健",
+      "count": 12
+    },
+    {
+      "code": "T02-10",
+      "title": "个人卫生与身体护理",
+      "count": 2
+    },
+    {
+      "code": "T03-01",
+      "title": "宇宙与天体",
+      "count": 4
+    },
+    {
+      "code": "T03-02",
+      "title": "季节、天气与气候",
+      "count": 4
+    },
+    {
+      "code": "T03-03",
+      "title": "自然现象与灾害",
+      "count": 6
+    },
+    {
+      "code": "T03-04",
+      "title": "地形、地貌与水域",
+      "count": 10
+    },
+    {
+      "code": "T03-05",
+      "title": "天然资源与矿物",
+      "count": 3
+    },
+    {
+      "code": "T03-06",
+      "title": "动物概念与主要类群",
+      "count": 0
+    },
+    {
+      "code": "T03-07",
+      "title": "野生动物",
+      "count": 3
+    },
+    {
+      "code": "T03-08",
+      "title": "家养动物与宠物",
+      "count": 4
+    },
+    {
+      "code": "T03-09",
+      "title": "鸟类、鱼类与昆虫实例",
+      "count": 6
+    },
+    {
+      "code": "T03-10",
+      "title": "植物类别",
+      "count": 1
+    },
+    {
+      "code": "T03-11",
+      "title": "植物部位与生长",
+      "count": 5
+    },
+    {
+      "code": "T03-12",
+      "title": "环境、生态与保护",
+      "count": 12
+    },
+    {
+      "code": "T04-01",
+      "title": "谷物、面食与主食",
+      "count": 17
+    },
+    {
+      "code": "T04-02",
+      "title": "肉类、蛋与乳制品",
+      "count": 10
+    },
+    {
+      "code": "T04-03",
+      "title": "水产与海鲜",
+      "count": 0
+    },
+    {
+      "code": "T04-04",
+      "title": "蔬菜与食用菌",
+      "count": 5
+    },
+    {
+      "code": "T04-05",
+      "title": "水果与坚果",
+      "count": 10
+    },
+    {
+      "code": "T04-06",
+      "title": "饮料",
+      "count": 4
+    },
+    {
+      "code": "T04-07",
+      "title": "调味品与烹饪",
+      "count": 1
+    },
+    {
+      "code": "T04-08",
+      "title": "烹饪方法与动作",
+      "count": 5
+    },
+    {
+      "code": "T04-09",
+      "title": "餐具与厨房器具",
+      "count": 3
+    },
+    {
+      "code": "T04-10",
+      "title": "用餐与餐厅",
+      "count": 7
+    },
+    {
+      "code": "T05-01",
+      "title": "衣服类型与款式",
+      "count": 9
+    },
+    {
+      "code": "T05-02",
+      "title": "鞋袜",
+      "count": 1
+    },
+    {
+      "code": "T05-03",
+      "title": "帽子、围巾、手套与饰品",
+      "count": 6
+    },
+    {
+      "code": "T05-04",
+      "title": "眼镜、首饰与手表",
+      "count": 1
+    },
+    {
+      "code": "T05-05",
+      "title": "背包、钱包与行李",
+      "count": 6
+    },
+    {
+      "code": "T05-06",
+      "title": "随身小件及配件",
+      "count": 4
+    },
+    {
+      "code": "T05-07",
+      "title": "穿脱、穿搭与洗护",
+      "count": 2
+    },
+    {
+      "code": "T06-01",
+      "title": "住宅类型与居住方式",
+      "count": 8
+    },
+    {
+      "code": "T06-02",
+      "title": "房间与室内空间",
+      "count": 5
+    },
+    {
+      "code": "T06-03",
+      "title": "建筑构件与设施",
+      "count": 6
+    },
+    {
+      "code": "T06-04",
+      "title": "家具、桌椅与收纳",
+      "count": 8
+    },
+    {
+      "code": "T06-05",
+      "title": "家用电器",
+      "count": 3
+    },
+    {
+      "code": "T06-06",
+      "title": "床上用品与家用纺织品",
+      "count": 7
+    },
+    {
+      "code": "T06-07",
+      "title": "浴室与卫浴用品",
+      "count": 5
+    },
+    {
+      "code": "T06-08",
+      "title": "清洁、洗涤与家务工具",
+      "count": 2
+    },
+    {
+      "code": "T06-09",
+      "title": "维修工具与家庭安全",
+      "count": 7
+    },
+    {
+      "code": "T06-10",
+      "title": "家庭活动与生活情境",
+      "count": 0
+    },
+    {
+      "code": "T07-01",
+      "title": "公共机构与办事地点",
+      "count": 0
+    },
+    {
+      "code": "T07-02",
+      "title": "商店及商业场所",
+      "count": 2
+    },
+    {
+      "code": "T07-03",
+      "title": "公共服务与设施",
+      "count": 2
+    },
+    {
+      "code": "T07-04",
+      "title": "道路、桥梁与标志",
+      "count": 4
+    },
+    {
+      "code": "T07-05",
+      "title": "陆上交通工具",
+      "count": 10
+    },
+    {
+      "code": "T07-06",
+      "title": "航空与水上交通工具",
+      "count": 10
+    },
+    {
+      "code": "T07-07",
+      "title": "乘车、换乘与出行流程",
+      "count": 20
+    },
+    {
+      "code": "T07-08",
+      "title": "驾驶、道路规则与修车",
+      "count": 6
+    },
+    {
+      "code": "T07-09",
+      "title": "旅游观光与景点",
+      "count": 9
+    },
+    {
+      "code": "T07-10",
+      "title": "酒店、住宿与服务",
+      "count": 4
+    },
+    {
+      "code": "T07-11",
+      "title": "快递、物流与配送",
+      "count": 3
+    },
+    {
+      "code": "T08-01",
+      "title": "家庭成员与亲属",
+      "count": 11
+    },
+    {
+      "code": "T08-02",
+      "title": "年龄、性别与身份",
+      "count": 7
+    },
+    {
+      "code": "T08-03",
+      "title": "社会身份与称谓",
+      "count": 20
+    },
+    {
+      "code": "T08-04",
+      "title": "人际关系与角色",
+      "count": 13
+    },
+    {
+      "code": "T08-05",
+      "title": "人物外貌与形象",
+      "count": 2
+    },
+    {
+      "code": "T08-06",
+      "title": "社交礼节与沟通行为",
+      "count": 20
+    },
+    {
+      "code": "T08-07",
+      "title": "人生仪式与重要事件",
+      "count": 8
+    },
+    {
+      "code": "T08-08",
+      "title": "家庭生活与社区组织",
+      "count": 4
+    },
+    {
+      "code": "T09-01",
+      "title": "基本情绪与心情",
+      "count": 25
+    },
+    {
+      "code": "T09-02",
+      "title": "持久情感与情感关系",
+      "count": 14
+    },
+    {
+      "code": "T09-03",
+      "title": "性格与个人特征",
+      "count": 22
+    },
+    {
+      "code": "T09-04",
+      "title": "记忆、注意与认知",
+      "count": 15
+    },
+    {
+      "code": "T09-05",
+      "title": "需求、意愿与动机",
+      "count": 15
+    },
+    {
+      "code": "T09-06",
+      "title": "好坏、评价与价值判断",
+      "count": 11
+    },
+    {
+      "code": "T09-07",
+      "title": "压力、焦虑与自我调节",
+      "count": 13
+    },
+    {
+      "code": "T10-01",
+      "title": "学校、教室与校园设施",
+      "count": 8
+    },
+    {
+      "code": "T10-02",
+      "title": "教师学生与学校角色",
+      "count": 11
+    },
+    {
+      "code": "T10-03",
+      "title": "学段、学位与教育制度",
+      "count": 10
+    },
+    {
+      "code": "T10-04",
+      "title": "学科与知识门类",
+      "count": 19
+    },
+    {
+      "code": "T10-05",
+      "title": "学习工具与学习活动",
+      "count": 19
+    },
+    {
+      "code": "T10-06",
+      "title": "教学、考试与评价",
+      "count": 14
+    },
+    {
+      "code": "T10-07",
+      "title": "阅读、写作与图书资料",
+      "count": 9
+    },
+    {
+      "code": "T10-08",
+      "title": "语言名称与交流",
+      "count": 4
+    },
+    {
+      "code": "T10-09",
+      "title": "字母、语言与语言单位",
+      "count": 7
+    },
+    {
+      "code": "T11-01",
+      "title": "计算机设备与硬件",
+      "count": 10
+    },
+    {
+      "code": "T11-02",
+      "title": "移动设备与电子产品",
+      "count": 1
+    },
+    {
+      "code": "T11-03",
+      "title": "操作系统、软件与应用",
+      "count": 0
+    },
+    {
+      "code": "T11-04",
+      "title": "数字文件、数据与存储",
+      "count": 3
+    },
+    {
+      "code": "T11-05",
+      "title": "互联网、网站与网络连接",
+      "count": 0
+    },
+    {
+      "code": "T11-06",
+      "title": "网络社交、消息与媒体",
+      "count": 0
+    },
+    {
+      "code": "T11-07",
+      "title": "密码、网络安全与隐私",
+      "count": 5
+    },
+    {
+      "code": "T11-08",
+      "title": "数字操作与交互动作",
+      "count": 17
+    },
+    {
+      "code": "T11-09",
+      "title": "人工智能、机器人与新技术",
+      "count": 1
+    },
+    {
+      "code": "T12-01",
+      "title": "办公设备与办公场所",
+      "count": 6
+    },
+    {
+      "code": "T12-02",
+      "title": "会议、团队与职场交流",
+      "count": 15
+    },
+    {
+      "code": "T12-03",
+      "title": "职业、求职与招聘",
+      "count": 14
+    },
+    {
+      "code": "T12-04",
+      "title": "企业、组织与管理",
+      "count": 35
+    },
+    {
+      "code": "T12-05",
+      "title": "项目、任务与工作流程",
+      "count": 13
+    },
+    {
+      "code": "T12-06",
+      "title": "制造、服务与行业",
+      "count": 5
+    },
+    {
+      "code": "T12-07",
+      "title": "商品、市场与贸易",
+      "count": 19
+    },
+    {
+      "code": "T12-08",
+      "title": "购物、消费与支付",
+      "count": 36
+    },
+    {
+      "code": "T12-09",
+      "title": "银行、个人理财与金融",
+      "count": 24
+    },
+    {
+      "code": "T12-10",
+      "title": "货币名称与货币单位",
+      "count": 1
+    },
+    {
+      "code": "T12-11",
+      "title": "经济趋势与经营评价",
+      "count": 10
+    },
+    {
+      "code": "T13-01",
+      "title": "体育项目与比赛",
+      "count": 13
+    },
+    {
+      "code": "T13-02",
+      "title": "运动器材与场馆",
+      "count": 4
+    },
+    {
+      "code": "T13-03",
+      "title": "健康训练与运动表现",
+      "count": 3
+    },
+    {
+      "code": "T13-04",
+      "title": "音乐、歌曲与乐器",
+      "count": 11
+    },
+    {
+      "code": "T13-05",
+      "title": "电影、影视与舞台表演",
+      "count": 17
+    },
+    {
+      "code": "T13-06",
+      "title": "绘画、摄影与设计",
+      "count": 24
+    },
+    {
+      "code": "T13-07",
+      "title": "文学作品与阅读娱乐",
+      "count": 16
+    },
+    {
+      "code": "T13-08",
+      "title": "电子游戏、玩具与娱乐",
+      "count": 3
+    },
+    {
+      "code": "T13-09",
+      "title": "户外爱好与休闲活动",
+      "count": 7
+    },
+    {
+      "code": "T14-01",
+      "title": "历史时期与重大事件",
+      "count": 10
+    },
+    {
+      "code": "T14-02",
+      "title": "世界文明与文化传统",
+      "count": 9
+    },
+    {
+      "code": "T14-03",
+      "title": "中国传统文化",
+      "count": 1
+    },
+    {
+      "code": "T14-04",
+      "title": "宗教信仰与宗教建筑",
+      "count": 7
+    },
+    {
+      "code": "T14-05",
+      "title": "节日、民俗与庆祝仪式",
+      "count": 6
+    },
+    {
+      "code": "T14-06",
+      "title": "文化遗产、艺术场馆与博物馆",
+      "count": 7
+    },
+    {
+      "code": "T14-07",
+      "title": "文化传播、习俗与价值",
+      "count": 0
+    },
+    {
+      "code": "T15-01",
+      "title": "国家与地区名称",
+      "count": 25
+    },
+    {
+      "code": "T15-02",
+      "title": "大洲与地理区域",
+      "count": 4
+    },
+    {
+      "code": "T15-03",
+      "title": "城市、首都与行政区",
+      "count": 2
+    },
+    {
+      "code": "T15-04",
+      "title": "国籍、民族与文化身份",
+      "count": 9
+    },
+    {
+      "code": "T15-05",
+      "title": "国旗、国徽与国家象征",
+      "count": 0
+    },
+    {
+      "code": "T15-06",
+      "title": "国际关系与外交",
+      "count": 4
+    },
+    {
+      "code": "T15-07",
+      "title": "全球化与跨境流动",
+      "count": 3
+    },
+    {
+      "code": "T15-08",
+      "title": "地图、地址与地理定位",
+      "count": 7
+    },
+    {
+      "code": "T16-01",
+      "title": "政府、行政与选举",
+      "count": 14
+    },
+    {
+      "code": "T16-02",
+      "title": "法律、权利与义务",
+      "count": 18
+    },
+    {
+      "code": "T16-03",
+      "title": "司法、执法与公共安全",
+      "count": 17
+    },
+    {
+      "code": "T16-04",
+      "title": "公共事业与社会服务",
+      "count": 0
+    },
+    {
+      "code": "T16-05",
+      "title": "军事、国防、战争与和平",
+      "count": 13
+    },
+    {
+      "code": "T16-06",
+      "title": "社会现象、问题与趋势",
+      "count": 1
+    },
+    {
+      "code": "T16-07",
+      "title": "公共信息、媒体与新闻",
+      "count": 8
+    },
+    {
+      "code": "T17-01",
+      "title": "数学、统计与计算",
+      "count": 30
+    },
+    {
+      "code": "T17-02",
+      "title": "物理、力与能量",
+      "count": 10
+    },
+    {
+      "code": "T17-03",
+      "title": "化学、元素与反应",
+      "count": 13
+    },
+    {
+      "code": "T17-04",
+      "title": "生物、遗传与生命科学",
+      "count": 3
+    },
+    {
+      "code": "T17-05",
+      "title": "实验、研究与数据分析",
+      "count": 15
+    },
+    {
+      "code": "T17-06",
+      "title": "工程、机械与制造",
+      "count": 41
+    },
+    {
+      "code": "T17-07",
+      "title": "农业、林业、渔业与畜牧",
+      "count": 7
+    },
+    {
+      "code": "T17-08",
+      "title": "能源、电力与基础设施",
+      "count": 0
+    },
+    {
+      "code": "T17-09",
+      "title": "环境工程与可持续技术",
+      "count": 0
+    },
+    {
+      "code": "T18-01",
+      "title": "日常动作与位置移动",
+      "count": 23
+    },
+    {
+      "code": "T18-02",
+      "title": "接触、操作与制造",
+      "count": 24
+    },
+    {
+      "code": "T18-03",
+      "title": "感知与信息获取",
+      "count": 16
+    },
+    {
+      "code": "T18-04",
+      "title": "交流、提问与信息传递",
+      "count": 21
+    },
+    {
+      "code": "T18-05",
+      "title": "思考、认知与判断",
+      "count": 32
+    },
+    {
+      "code": "T18-06",
+      "title": "意愿、目标与选择",
+      "count": 48
+    },
+    {
+      "code": "T18-07",
+      "title": "持有、给予与转移",
+      "count": 38
+    },
+    {
+      "code": "T18-08",
+      "title": "变化、过程与结果",
+      "count": 74
+    },
+    {
+      "code": "T18-09",
+      "title": "原因、条件与逻辑关系",
+      "count": 19
+    },
+    {
+      "code": "T18-10",
+      "title": "比较、评价与程度",
+      "count": 46
+    },
+    {
+      "code": "T18-11",
+      "title": "系统、结构与功能",
+      "count": 31
+    },
+    {
+      "code": "T18-12",
+      "title": "交际意图与语言功能",
+      "count": 30
+    }
+  ],
+  "emptyTopics": [
+    "T03-06",
+    "T04-03",
+    "T06-10",
+    "T07-01",
+    "T11-03",
+    "T11-05",
+    "T11-06",
+    "T14-07",
+    "T15-05",
+    "T16-04",
+    "T17-08",
+    "T17-09"
+  ]
+}

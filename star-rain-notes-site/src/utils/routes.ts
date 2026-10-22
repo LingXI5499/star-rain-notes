@@ -1,4 +1,4 @@
-import { catalog, themes, grammar, topics, allTags } from './content';
+import { catalog, themes, grammar, topics, allTags, vocabularyTaxonomy, worldTaxonomy, worldArticles, essays, englishRoutes } from './content';
 export interface PageRoute { route: string; kind: string; slug?: string; course?: string; page?: number; }
 export const pageSize = 10;
 export function getRoutes(): PageRoute[] {
@@ -6,6 +6,7 @@ export function getRoutes(): PageRoute[] {
     {route:'tutorials',kind:'tutorials'}, {route:'blog',kind:'blog'}, {route:'blog/archive',kind:'archive'},
     {route:'portfolio',kind:'portfolio'}, {route:'english',kind:'english'}, {route:'english/vocabulary',kind:'vocabulary'},
     {route:'english/grammar',kind:'grammar'}, {route:'about',kind:'about'},
+    {route:'english/world',kind:'world'}, {route:'english/essays',kind:'essays'},
     {route:'search',kind:'search'}, {route:'privacy',kind:'privacy'}, {route:'terms',kind:'terms'},
   ];
   for(let page=2;page<=Math.ceil(catalog.blogs.length/pageSize);page++) routes.push({route:`blog/page/${page}`,kind:'blog',page});
@@ -16,5 +17,8 @@ export function getRoutes(): PageRoute[] {
   catalog.works.forEach(work=>routes.push({route:work.path.slice(1,-1),kind:'work',slug:work.slug}));
   themes.forEach(theme=>routes.push({route:theme.path.slice(1,-1),kind:'theme',slug:theme.id}));
   grammar.sections.forEach(section=>section.lessons.forEach(lesson=>routes.push({route:lesson.path.slice(1,-1),kind:'lesson',slug:lesson.slug})));
+  routes.push(...englishRoutes(vocabularyTaxonomy,worldTaxonomy,worldArticles,essays));
+  const seen=new Set<string>();
+  for(const page of routes){if(seen.has(page.route))throw new Error(`Duplicate static route: ${page.route}`);seen.add(page.route);}
   return routes;
 }

@@ -3,6 +3,7 @@ import { catalog, topics, readJSON, type Blog } from '../../utils/content';
 import OriginalPagination from './OriginalPagination.astro';
 import OriginalArchiveCalendar from './OriginalArchiveCalendar.astro';
 import OriginalTagOverlay from './OriginalTagOverlay.astro';
+import JournalTimelineCard from './JournalTimelineCard.astro';
 interface Props { posts?: Blog[]; title?: string; description?: string; page?: number; archive?: boolean; activeTopic?: string; activeTag?: string; }
 const { posts = catalog.blogs, title, page = 1, archive = false, activeTopic = '', activeTag = '' } = Astro.props;
 const tags = readJSON('tags.json') as { name: string; slug: string; postCount: number }[];
@@ -29,7 +30,7 @@ const initialPosts = new Set(posts.slice((page - 1) * 10, page * 10).map(post =>
     <ol class="timeline" data-stagger>
       {catalog.blogs.map((post, index) => <li class="timeline__item" data-blog-post data-tags={post.tags.map(tag => tag.slug).join(',')} data-topics={post.topics.map(topic => topic.slug).join(',')} data-published-at={post.publishedAt} hidden={!initialPosts.has(post.slug)}>
         <div class="timeline__date"><strong data-blog-year hidden={index > 0 && post.publishedAt.slice(0, 4) === catalog.blogs[index - 1].publishedAt.slice(0, 4)}>{post.publishedAt.slice(0, 4)}</strong><span>{post.publishedAt.slice(5).replace('-', '/')}</span></div><i class="timeline__node" aria-hidden="true"/>
-        <a href={post.path} class="timeline-card public-interactive"><div class="timeline-card__content"><div class="timeline-card__tags">{post.tags.map(tag => <span>{tag.name}</span>)}</div><h2>{post.title}</h2><p>{post.description}</p><footer><time datetime={post.updatedAt || post.publishedAt}>{(post.updatedAt || post.publishedAt).replaceAll('-', '/')}</time><strong>阅读全文 <i aria-hidden="true">→</i></strong></footer></div></a>
+        <JournalTimelineCard {...post} tags={post.tags.map(tag=>tag.name)}/>
       </li>)}
     </ol>
     <div class="timeline-state" data-blog-empty hidden={posts.length > 0}><p data-blog-empty-text>{activeTopic ? '该专栏暂无公开文章。' : '没有符合当前筛选条件的文章。'}</p><button type="button" data-blog-reset>清除筛选，查看全部文章</button></div>

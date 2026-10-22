@@ -1,0 +1,14 @@
+---
+import {taxonomyPath,type EnglishTaxonomy} from '../../utils/english-model';
+interface Props {module:'vocabulary'|'world';taxonomy:EnglishTaxonomy;categoryCode?:string;topicCode?:string;counts:Record<string,number>;total:number;}
+const {module,taxonomy,categoryCode,topicCode,counts,total}=Astro.props;
+const category=taxonomy.categories.find(c=>c.code===categoryCode);
+---
+<section class="english-taxonomy-filters" data-english-filters aria-label="两级分类筛选">
+  <div class="english-filter-selects">
+    <label>一级分类<select data-english-primary aria-label="一级分类"><option value={taxonomyPath(module)} selected={!category}>全部分类（{total}）</option>{taxonomy.categories.map(c=><option value={taxonomyPath(module,c.code)} selected={c.code===categoryCode}>{c.title}（{counts[c.code]||0}）</option>)}</select></label>
+    <label>二级主题<select data-english-secondary aria-label="二级主题" disabled={!category}><option value={taxonomyPath(module,category?.code)} selected={!topicCode}>全部主题</option>{category?.topics.map(t=><option value={taxonomyPath(module,category.code,t.code)} selected={t.code===topicCode}>{t.title}（{counts[t.code]||0}）</option>)}</select></label>
+  </div>
+  <div class="english-filter-row"><span class="english-filter-label">一级分类</span><nav class="english-filter-options" aria-label="一级分类"><a data-english-filter href={taxonomyPath(module)} aria-current={!category?'true':undefined}>全部<span>{total}</span></a>{taxonomy.categories.map(c=><a data-english-filter href={taxonomyPath(module,c.code)} aria-current={c.code===categoryCode?'true':undefined}>{c.title}<span>{counts[c.code]||0}</span></a>)}</nav></div>
+  <div class="english-filter-row"><span class="english-filter-label">二级主题</span><nav class="english-filter-options" aria-label="二级主题"><a data-english-filter href={taxonomyPath(module,category?.code)} aria-current={!topicCode?'true':undefined}>全部主题</a>{category?category.topics.map(t=><a data-english-filter href={taxonomyPath(module,category.code,t.code)} aria-current={t.code===topicCode?'true':undefined}>{t.title}<span>{counts[t.code]||0}</span></a>):<span class="english-filter-hint">选择一级分类后，可继续筛选主题</span>}</nav></div>
+</section>
