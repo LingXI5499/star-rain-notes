@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 立即执行函数（IIFE）定义后立刻调用，避免变量泄漏到外部作用域。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">(() =&gt; {
+  const secret = '局部变量';
+  console.log(secret);
+})();
+</code></pre>
+<p><strong>学完能做：</strong> 通过立即执行函数隔离局部变量。</p>

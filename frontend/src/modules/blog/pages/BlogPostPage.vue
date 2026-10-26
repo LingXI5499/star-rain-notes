@@ -22,19 +22,7 @@ import ReadingProgress from '../components/ReadingProgress.vue'
 import { estimateReadingStats, fullDate } from '../support/display'
 import '../../../styles/reading-layout.css'
 
-/*
- * BLOG-002 阅读文章（对齐 V1 `views/blog/BlogDetailView.vue`）。
- *
- * 信息架构：居中大标题 + 标签 + 元信息（发布 / 字数 / 预计阅读 / 更新）
- * → 左侧「本页导航」与阅读统计 → 右侧正文。
- * 窄屏时侧栏换成底部抽屉，正文优先。
- *
- * 按 slug 读取：后端对草稿、已撤回与不存在的 slug 一律返回 BLOG_POST_NOT_FOUND，
- * 因此这里只需要区分「404」与「其它错误」，不去猜文章状态。
- *
- * 这一页在两条路径树上复用（/blog/posts/:slug 与 /useradmin/blog/posts/:slug），
- * 因此返回列表 / 按标签跳转的地址用 contentPath() 按当前模式取。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 /**
  * 路由；通过 useRoute 建立。

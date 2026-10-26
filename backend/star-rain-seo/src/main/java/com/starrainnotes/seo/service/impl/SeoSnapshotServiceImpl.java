@@ -54,14 +54,14 @@ public class SeoSnapshotServiceImpl implements SeoSnapshotService, SeoPageApi, S
 
     /**
      * 读取依据路由。
-     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 公开可见性检查中的内容未找到异常由 provider 转为空结果；不加入其读取事务，避免 rollback-only 将正常 404 变成 500。
      * 主要协作调用：<code>canonical.canonical</code>、<code>mapper.active</code>。
      *
      * @param routePath 路由路径；类型为 <code>String</code>
      * @return 可选结果；没有匹配值时由空 Optional 表达
      */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Optional<SeoPageSnapshot> getByRoute(String routePath) {
         canonical.canonical(routePath);
         return publiclyVisible(routePath) ? Optional.ofNullable(mapper.active(routePath)) : Optional.empty();
@@ -69,14 +69,14 @@ public class SeoSnapshotServiceImpl implements SeoSnapshotService, SeoPageApi, S
 
     /**
      * 读取Meta依据路由。
-     * 事务声明：<code>@Transactional(readOnly = true)</code>，该方法的数据库操作按此事务配置执行。
+     * 公开可见性检查中的内容未找到异常由 provider 转为空结果；不加入其读取事务，避免 rollback-only 将正常 404 变成 500。
      * 主要协作调用：<code>canonical.canonical</code>、<code>mapper.activeMeta</code>。
      *
      * @param routePath 路由路径；类型为 <code>String</code>
      * @return 可选结果；没有匹配值时由空 Optional 表达
      */
     @Override
-    @Transactional(readOnly = true)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Optional<SeoPageSnapshot> getMetaByRoute(String routePath) {
         canonical.canonical(routePath);
         return publiclyVisible(routePath) ? Optional.ofNullable(mapper.activeMeta(routePath)) : Optional.empty();

@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> <code>ResizeObserver</code> 观察元素自身大小变化，不依赖窗口 resize。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const ro = new ResizeObserver(entries =&gt; {
+  console.log(entries[0].contentRect.width);
+});
+ro.observe(document.querySelector('.panel'));
+</code></pre>
+<p><strong>学完能做：</strong> 通过元素尺寸观察更新组件布局。</p>

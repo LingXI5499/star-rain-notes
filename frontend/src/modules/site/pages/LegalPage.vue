@@ -17,7 +17,7 @@ import { useViewMode } from '../../../shared/viewMode'
  * 组件输入；通过 defineProps 建立。
  */
 const props = defineProps({ kind: { type: String, required: true } })
-const { isAccount, contentPath } = useViewMode()
+const { contentPath } = useViewMode()
 /**
  * privacy；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
@@ -60,7 +60,7 @@ const accountPrivacy = [
  */
 const sections = computed(() => [
   ...(privacy.value ? privacySections : terms),
-  ...(isAccount.value ? (privacy.value ? accountPrivacy : accountTerms) : []),
+  ...(privacy.value ? accountPrivacy : accountTerms),
 ])
 </script>
 
@@ -70,7 +70,7 @@ const sections = computed(() => [
       <p class="public-eyebrow">{{ privacy ? 'PRIVACY POLICY' : 'TERMS OF USE' }}</p>
       <h1>{{ title }}</h1>
       <p class="legal-page__meta">版本 1.0 · 更新于 2026 年 10 月 7 日</p>
-      <p>{{ isAccount ? '账号服务端 · 包含公开访问规则及账号、学习服务补充说明。' : '公开展示端 · 说明访问规则与信息处理范围，不展示任何真实注册用户信息。' }}</p>
+      <p>包含公开访问规则及账号、学习服务补充说明。</p>
       <nav aria-label="协议与政策">
         <RouterLink :to="contentPath('/terms')" :aria-current="!privacy ? 'page' : undefined">用户协议</RouterLink>
         <RouterLink :to="contentPath('/privacy')" :aria-current="privacy ? 'page' : undefined">隐私政策</RouterLink>

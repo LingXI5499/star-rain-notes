@@ -1,0 +1,988 @@
+<h2>引言</h2>
+<p>软件开发中的很多术语属于不同的分类维度。</p>
+<p>例如：</p>
+<blockquote>
+<p>这是一个面向企业客户、采用 SaaS 模式交付的 CRM 系统。</p>
+</blockquote>
+<p>其中：</p>
+<ul>
+<li><strong>B端</strong>：说明系统服务企业用户；</li>
+<li><strong>CRM</strong>：说明系统负责客户关系管理；</li>
+<li><strong>SaaS</strong>：说明软件以在线服务形式交付。</li>
+</ul>
+<p>因此，理解这些术语时，不能只记英文全称，而应该明确：</p>
+<blockquote>
+<p><strong>它描述的到底是用户、业务、商业关系，还是部署方式。</strong></p>
+</blockquote>
+<hr />
+<h1>一、企业软件术语统一分类</h1>
+<pre><code class="language-text">企业软件与互联网产品
+│
+├── 1. 按服务对象分类
+│   ├── C端：Consumer
+│   ├── B端：Business
+│   └── G端：Government
+│
+├── 2. 按商业关系分类
+│   ├── B2B：Business → Business
+│   ├── B2C：Business → Consumer
+│   ├── C2C：Consumer → Consumer
+│   └── O2O：Online → Offline
+│
+├── 3. 按企业业务职能分类
+│   ├── ERP：企业资源管理
+│   ├── CRM：客户关系管理
+│   ├── SCM：供应链管理
+│   ├── SRM：供应商关系管理
+│   ├── WMS：仓储管理
+│   ├── TMS：运输管理
+│   ├── OMS：订单管理
+│   ├── MES：制造执行
+│   ├── OA：办公协同
+│   └── HRM / HCM：人力资源管理
+│
+└── 4. 按部署与交付方式分类
+    ├── On-Premises：本地部署
+    ├── Hosted：托管部署
+    ├── SaaS：软件即服务
+    ├── Private Cloud：私有云
+    ├── Public Cloud：公有云
+    └── Hybrid：混合部署
+</code></pre>
+<hr />
+<h1>二、按服务对象分类：B端、C端、G端</h1>
+<h2>2.1 C端：Consumer</h2>
+<p><strong>C = Consumer，消费者。</strong></p>
+<p>C端产品主要面向普通个人用户。</p>
+<p>常见场景：</p>
+<ul>
+<li>电商购物</li>
+<li>社交</li>
+<li>音乐</li>
+<li>视频</li>
+<li>外卖</li>
+<li>在线社区</li>
+</ul>
+<p>C端通常更加关注：</p>
+<ul>
+<li>UI 与 UX</li>
+<li>用户增长</li>
+<li>活跃度</li>
+<li>留存率</li>
+<li>转化率</li>
+<li>使用体验</li>
+</ul>
+<p>可以理解为：</p>
+<blockquote>
+<p><strong>C端重点解决普通用户“愿不愿意使用、好不好使用”的问题。</strong></p>
+</blockquote>
+<hr />
+<h2>2.2 B端：Business</h2>
+<p><strong>B = Business，企业。</strong></p>
+<p>B端系统主要面向：</p>
+<ul>
+<li>企业</li>
+<li>商家</li>
+<li>组织</li>
+<li>企业内部员工</li>
+</ul>
+<p>例如：</p>
+<ul>
+<li>企业后台管理系统</li>
+<li>ERP</li>
+<li>CRM</li>
+<li>OA</li>
+<li>WMS</li>
+<li>财务系统</li>
+</ul>
+<p>B端通常更加关注：</p>
+<ul>
+<li>业务流程</li>
+<li>权限控制</li>
+<li>数据准确性</li>
+<li>工作效率</li>
+<li>系统稳定性</li>
+<li>可维护性</li>
+</ul>
+<p>例如一个商城可能同时存在：</p>
+<pre><code class="language-text">消费者商城
+    ↓
+   C端
+
+商家管理后台
+    ↓
+   B端
+</code></pre>
+<hr />
+<h2>2.3 G端：Government</h2>
+<p><strong>G = Government，政府。</strong></p>
+<p>G端主要服务政府部门和公共管理机构。</p>
+<p>常见系统包括：</p>
+<ul>
+<li>政务服务平台</li>
+<li>税务系统</li>
+<li>社保系统</li>
+<li>行政审批系统</li>
+<li>城市管理平台</li>
+</ul>
+<p>G端通常特别关注：</p>
+<ul>
+<li>信息安全</li>
+<li>权限管理</li>
+<li>审计追踪</li>
+<li>合规要求</li>
+<li>数据可靠性</li>
+<li>长期稳定运行</li>
+</ul>
+<hr />
+<h1>三、按商业关系分类</h1>
+<p>这一类描述的是：</p>
+<blockquote>
+<p><strong>业务发生在谁和谁之间。</strong></p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>模式</th>
+<th>英文</th>
+<th>含义</th>
+<th>常见场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>B2B</td>
+<td>Business to Business</td>
+<td>企业对企业</td>
+<td>企业采购、供应链平台</td>
+</tr>
+<tr>
+<td>B2C</td>
+<td>Business to Consumer</td>
+<td>企业对消费者</td>
+<td>电商零售、品牌商城</td>
+</tr>
+<tr>
+<td>C2C</td>
+<td>Consumer to Consumer</td>
+<td>个人对个人</td>
+<td>二手交易</td>
+</tr>
+<tr>
+<td>O2O</td>
+<td>Online to Offline</td>
+<td>线上连接线下</td>
+<td>外卖、团购、预约</td>
+</tr>
+</tbody>
+</table>
+<p>例如：</p>
+<pre><code class="language-text">供应商 → 企业
+      B2B
+</code></pre>
+<pre><code class="language-text">商城 → 消费者
+      B2C
+</code></pre>
+<hr />
+<h1>四、ERP：企业资源计划系统</h1>
+<p><strong>ERP = Enterprise Resource Planning</strong></p>
+<p>中文：</p>
+<blockquote>
+<p><strong>企业资源计划系统。</strong></p>
+</blockquote>
+<p>ERP 用于统一管理企业内部核心资源和业务流程。</p>
+<p>常见模块包括：</p>
+<ul>
+<li>采购</li>
+<li>销售</li>
+<li>库存</li>
+<li>财务</li>
+<li>供应商</li>
+<li>客户</li>
+<li>生产</li>
+<li>人力资源</li>
+</ul>
+<p>典型流程：</p>
+<pre><code class="language-text">采购商品
+   ↓
+商品入库
+   ↓
+形成库存
+   ↓
+销售商品
+   ↓
+产生订单
+   ↓
+库存减少
+   ↓
+财务收款
+</code></pre>
+<p>ERP 的核心价值是：</p>
+<blockquote>
+<p><strong>把原本分散在不同部门的数据和流程统一起来。</strong></p>
+</blockquote>
+<p>可以把 ERP 理解为企业内部的综合业务管理平台。</p>
+<hr />
+<h1>五、CRM：客户关系管理系统</h1>
+<p><strong>CRM = Customer Relationship Management</strong></p>
+<p>中文：</p>
+<blockquote>
+<p><strong>客户关系管理系统。</strong></p>
+</blockquote>
+<p>CRM 主要围绕客户和销售过程展开。</p>
+<p>常见功能：</p>
+<ul>
+<li>客户资料</li>
+<li>销售线索</li>
+<li>客户跟进</li>
+<li>商机管理</li>
+<li>合同管理</li>
+<li>售后服务</li>
+</ul>
+<p>典型流程：</p>
+<pre><code class="language-text">销售线索
+   ↓
+客户建档
+   ↓
+销售跟进
+   ↓
+形成商机
+   ↓
+成交
+   ↓
+客户维护
+</code></pre>
+<p>简单区分：</p>
+<pre><code class="language-text">ERP → 管企业资源
+
+CRM → 管客户关系
+</code></pre>
+<hr />
+<h1>六、SCM：供应链管理系统</h1>
+<p><strong>SCM = Supply Chain Management</strong></p>
+<p>中文：</p>
+<blockquote>
+<p><strong>供应链管理系统。</strong></p>
+</blockquote>
+<p>SCM 管理商品或原材料从供应端到客户端的完整流转过程。</p>
+<pre><code class="language-text">供应商
+  ↓
+采购
+  ↓
+生产
+  ↓
+仓储
+  ↓
+运输
+  ↓
+销售
+  ↓
+客户
+</code></pre>
+<p>主要涉及：</p>
+<ul>
+<li>供应商</li>
+<li>采购</li>
+<li>库存</li>
+<li>物流</li>
+<li>配送</li>
+<li>供应链计划</li>
+</ul>
+<p>ERP 更关注企业内部整体资源，而 SCM 更关注：</p>
+<blockquote>
+<p><strong>企业上下游之间的协同。</strong></p>
+</blockquote>
+<hr />
+<h1>七、SRM：供应商关系管理系统</h1>
+<p><strong>SRM = Supplier Relationship Management</strong></p>
+<p>中文：</p>
+<blockquote>
+<p><strong>供应商关系管理系统。</strong></p>
+</blockquote>
+<p>主要负责：</p>
+<ul>
+<li>供应商档案</li>
+<li>供应商准入</li>
+<li>询价与报价</li>
+<li>采购协同</li>
+<li>合同管理</li>
+<li>供应商评价</li>
+</ul>
+<p>可以和 CRM 对比：</p>
+<pre><code class="language-text">SRM → 管供应商
+
+CRM → 管客户
+</code></pre>
+<hr />
+<h1>八、WMS：仓库管理系统</h1>
+<p><strong>WMS = Warehouse Management System</strong></p>
+<p>中文：</p>
+<blockquote>
+<p><strong>仓库管理系统。</strong></p>
+</blockquote>
+<p>WMS 负责商品在仓库内部的流转。</p>
+<p>典型功能：</p>
+<ul>
+<li>入库</li>
+<li>出库</li>
+<li>库存查询</li>
+<li>库位管理</li>
+<li>库存盘点</li>
+<li>库存调拨</li>
+<li>拣货</li>
+</ul>
+<p>典型流程：</p>
+<pre><code class="language-text">商品到仓
+   ↓
+入库
+   ↓
+分配库位
+   ↓
+形成库存
+   ↓
+收到出库任务
+   ↓
+拣货
+   ↓
+出库
+</code></pre>
+<p>简单理解：</p>
+<blockquote>
+<p><strong>WMS 专门解决仓库内部“货在哪里、还有多少、怎么进出”的问题。</strong></p>
+</blockquote>
+<hr />
+<h1>九、TMS：运输管理系统</h1>
+<p><strong>TMS = Transportation Management System</strong></p>
+<p>中文：</p>
+<blockquote>
+<p><strong>运输管理系统。</strong></p>
+</blockquote>
+<p>主要负责商品离开仓库之后的运输过程。</p>
+<p>常见功能：</p>
+<ul>
+<li>运输任务</li>
+<li>车辆管理</li>
+<li>司机管理</li>
+<li>配送路线</li>
+<li>运费管理</li>
+<li>运输状态跟踪</li>
+</ul>
+<p>可以简单区分：</p>
+<pre><code class="language-text">WMS → 管仓库内部
+
+TMS → 管运输过程
+</code></pre>
+<hr />
+<h1>十、OMS：订单管理系统</h1>
+<p><strong>OMS = Order Management System</strong></p>
+<p>中文：</p>
+<blockquote>
+<p><strong>订单管理系统。</strong></p>
+</blockquote>
+<p>OMS 负责订单从产生到结束的完整生命周期。</p>
+<pre><code class="language-text">创建订单
+   ↓
+支付
+   ↓
+审核
+   ↓
+发货
+   ↓
+配送
+   ↓
+完成
+   ↓
+售后
+</code></pre>
+<p>在电商系统中，经常形成：</p>
+<pre><code class="language-text">商城
+ ↓
+OMS
+ ↓
+WMS
+ ↓
+TMS
+ ↓
+客户
+</code></pre>
+<p>OMS 因此常常是连接交易、仓储和物流的重要业务枢纽。</p>
+<hr />
+<h1>十一、MES：制造执行系统</h1>
+<p><strong>MES = Manufacturing Execution System</strong></p>
+<p>中文：</p>
+<blockquote>
+<p><strong>制造执行系统。</strong></p>
+</blockquote>
+<p>MES 主要应用于工厂和制造业生产现场。</p>
+<p>常见管理对象：</p>
+<ul>
+<li>生产任务</li>
+<li>工单</li>
+<li>生产线</li>
+<li>设备</li>
+<li>工艺</li>
+<li>质量检测</li>
+<li>生产进度</li>
+</ul>
+<p>ERP 与 MES 的关系可以简单理解为：</p>
+<pre><code class="language-text">ERP
+负责计划和资源协调
+     ↓
+MES
+负责生产现场执行
+</code></pre>
+<p>例如：</p>
+<blockquote>
+<p>ERP 决定生产多少，MES 负责车间具体怎么生产。</p>
+</blockquote>
+<hr />
+<h1>十二、OA：办公自动化系统</h1>
+<p><strong>OA = Office Automation</strong></p>
+<p>中文：</p>
+<blockquote>
+<p><strong>办公自动化系统。</strong></p>
+</blockquote>
+<p>主要解决企业内部办公与审批协作问题。</p>
+<p>常见功能：</p>
+<ul>
+<li>请假</li>
+<li>报销</li>
+<li>审批</li>
+<li>考勤</li>
+<li>公告</li>
+<li>会议</li>
+<li>公文</li>
+</ul>
+<p>例如：</p>
+<pre><code class="language-text">员工提交申请
+     ↓
+部门负责人审批
+     ↓
+人事审批
+     ↓
+流程完成
+</code></pre>
+<p>OA 中非常重要的一个概念是：</p>
+<blockquote>
+<p><strong>Workflow，工作流。</strong></p>
+</blockquote>
+<p>即按照既定规则推动业务流程自动流转。</p>
+<hr />
+<h1>十三、HRM 与 HCM：人力资源管理</h1>
+<h2>HRM</h2>
+<p><strong>HRM = Human Resource Management</strong></p>
+<p>主要包括：</p>
+<ul>
+<li>员工档案</li>
+<li>部门</li>
+<li>招聘</li>
+<li>考勤</li>
+<li>薪酬</li>
+<li>绩效</li>
+</ul>
+<hr />
+<h2>HCM</h2>
+<p><strong>HCM = Human Capital Management</strong></p>
+<p>相比 HRM，HCM 通常更加关注：</p>
+<ul>
+<li>人才发展</li>
+<li>培训</li>
+<li>绩效体系</li>
+<li>能力模型</li>
+<li>职业发展</li>
+<li>人才战略</li>
+</ul>
+<p>可以简单理解为：</p>
+<blockquote>
+<p>HRM 更偏人事管理，HCM 更强调人才作为企业资本进行长期管理。</p>
+</blockquote>
+<hr />
+<h1>十四、POS：销售终端系统</h1>
+<p><strong>POS = Point of Sale</strong></p>
+<p>中文一般称为：</p>
+<blockquote>
+<p><strong>销售终端系统 / 收银系统。</strong></p>
+</blockquote>
+<p>典型流程：</p>
+<pre><code class="language-text">扫描商品
+   ↓
+计算价格
+   ↓
+应用优惠
+   ↓
+支付
+   ↓
+生成销售记录
+   ↓
+扣减库存
+</code></pre>
+<p>常见于：</p>
+<ul>
+<li>超市</li>
+<li>便利店</li>
+<li>餐饮</li>
+<li>零售门店</li>
+</ul>
+<hr />
+<h1>十五、软件部署与交付方式</h1>
+<p>企业软件除了“做什么”，还需要考虑：</p>
+<blockquote>
+<p><strong>软件部署在哪里，以及客户如何获得和使用它。</strong></p>
+</blockquote>
+<hr />
+<h2>15.1 On-Premises：本地部署</h2>
+<p><strong>On-Premises</strong> 指软件部署在客户自己的服务器、数据中心或机房中。</p>
+<pre><code class="language-text">企业服务器
+   ↓
+安装系统
+   ↓
+安装数据库
+   ↓
+企业自行维护
+</code></pre>
+<p>特点：</p>
+<ul>
+<li>数据控制能力强</li>
+<li>定制能力强</li>
+<li>运维成本较高</li>
+<li>升级相对复杂</li>
+</ul>
+<p>传统大型企业软件经常采用这种模式。</p>
+<hr />
+<h2>15.2 Hosted：托管部署</h2>
+<p><strong>Hosted</strong> 指系统由软件厂商或第三方服务商负责服务器托管和运行维护。</p>
+<p>客户仍然拥有相对独立的系统环境，但无需自行维护底层服务器。</p>
+<p>可以理解为：</p>
+<pre><code class="language-text">On-Premises
+服务器自己维护
+
+Hosted
+服务器别人帮你维护
+</code></pre>
+<hr />
+<h2>15.3 SaaS：软件即服务</h2>
+<p><strong>SaaS = Software as a Service</strong></p>
+<p>用户通常不需要安装或维护软件，而是直接：</p>
+<pre><code class="language-text">注册账号
+   ↓
+购买服务
+   ↓
+网页登录
+   ↓
+直接使用
+</code></pre>
+<p>例如：</p>
+<pre><code class="language-text">CRM
+ERP
+OA
+项目管理系统
+</code></pre>
+<p>都可以采用 SaaS 形式提供。</p>
+<p>需要注意：</p>
+<blockquote>
+<p><strong>SaaS 描述的是软件交付方式，而不是软件的业务类型。</strong></p>
+</blockquote>
+<p>因此可以存在：</p>
+<pre><code class="language-text">SaaS ERP
+
+SaaS CRM
+
+SaaS OA
+</code></pre>
+<hr />
+<h1>十六、公有云、私有云与混合云</h1>
+<h2>Public Cloud：公有云</h2>
+<p>企业使用云厂商提供的公共云基础设施。</p>
+<p>例如：</p>
+<ul>
+<li>云服务器</li>
+<li>云数据库</li>
+<li>对象存储</li>
+</ul>
+<p>优点通常是：</p>
+<ul>
+<li>部署快</li>
+<li>扩展方便</li>
+<li>前期成本低</li>
+</ul>
+<hr />
+<h2>Private Cloud：私有云</h2>
+<p>云环境专门提供给某个企业或组织使用。</p>
+<p>通常更加关注：</p>
+<ul>
+<li>数据安全</li>
+<li>内部控制</li>
+<li>合规</li>
+<li>定制能力</li>
+</ul>
+<hr />
+<h2>Hybrid Cloud：混合云</h2>
+<p>混合使用：</p>
+<pre><code class="language-text">本地数据中心
++
+私有云
++
+公有云
+</code></pre>
+<p>例如：</p>
+<blockquote>
+<p>核心数据库放在企业内部，部分业务服务运行在公有云。</p>
+</blockquote>
+<hr />
+<h1>十七、IaaS、PaaS、SaaS</h1>
+<p>这三个属于：</p>
+<blockquote>
+<p><strong>云计算服务模型。</strong></p>
+</blockquote>
+<pre><code class="language-text">IaaS
+Infrastructure as a Service
+基础设施即服务
+
+PaaS
+Platform as a Service
+平台即服务
+
+SaaS
+Software as a Service
+软件即服务
+</code></pre>
+<p>可以这样理解：</p>
+<pre><code class="language-text">IaaS
+给你服务器等基础设施
+        ↓
+你自己搭环境和应用
+
+PaaS
+给你应用运行平台
+        ↓
+你主要负责开发程序
+
+SaaS
+连应用都已经做好
+        ↓
+用户直接使用
+</code></pre>
+<p>简单类比：</p>
+<pre><code class="language-text">IaaS → 给你厨房
+
+PaaS → 给你厨房和厨具
+
+SaaS → 饭已经做好，直接吃
+</code></pre>
+<p>专业上则可以理解为：</p>
+<blockquote>
+<p>越接近 SaaS，用户需要管理的底层基础设施越少。</p>
+</blockquote>
+<hr />
+<h1>十八、企业业务系统之间的关系</h1>
+<p>企业中的这些系统并不是完全独立存在的。</p>
+<p>一个典型业务链路可能是：</p>
+<pre><code class="language-text">                       CRM
+                        │
+                      客户
+                        │
+                        ↓
+供应商 → SRM → 采购 → ERP → OMS
+                    │        │
+                    │        ↓
+                    │       WMS
+                    │        ↓
+                    │       TMS
+                    │        ↓
+                    │       客户
+                    │
+                    ├── 财务
+                    ├── HRM
+                    └── OA
+</code></pre>
+<p>制造企业还可能存在：</p>
+<pre><code class="language-text">ERP
+ ↓
+MES
+ ↓
+生产现场
+</code></pre>
+<p>因此可以认为：</p>
+<blockquote>
+<p><strong>ERP 往往负责企业整体资源与核心流程，而 CRM、WMS、MES、OMS 等系统负责更加专业的业务领域。</strong></p>
+</blockquote>
+<hr />
+<h1>十九、常见企业软件术语速查表</h1>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>缩写</th>
+<th>英文</th>
+<th>核心作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>服务对象</td>
+<td>C端</td>
+<td>Consumer</td>
+<td>面向个人消费者</td>
+</tr>
+<tr>
+<td>服务对象</td>
+<td>B端</td>
+<td>Business</td>
+<td>面向企业或组织</td>
+</tr>
+<tr>
+<td>服务对象</td>
+<td>G端</td>
+<td>Government</td>
+<td>面向政府机构</td>
+</tr>
+<tr>
+<td>商业关系</td>
+<td>B2B</td>
+<td>Business to Business</td>
+<td>企业对企业</td>
+</tr>
+<tr>
+<td>商业关系</td>
+<td>B2C</td>
+<td>Business to Consumer</td>
+<td>企业对消费者</td>
+</tr>
+<tr>
+<td>商业关系</td>
+<td>C2C</td>
+<td>Consumer to Consumer</td>
+<td>个人对个人</td>
+</tr>
+<tr>
+<td>商业关系</td>
+<td>O2O</td>
+<td>Online to Offline</td>
+<td>线上连接线下</td>
+</tr>
+<tr>
+<td>企业管理</td>
+<td>ERP</td>
+<td>Enterprise Resource Planning</td>
+<td>企业整体资源管理</td>
+</tr>
+<tr>
+<td>客户</td>
+<td>CRM</td>
+<td>Customer Relationship Management</td>
+<td>客户与销售管理</td>
+</tr>
+<tr>
+<td>供应链</td>
+<td>SCM</td>
+<td>Supply Chain Management</td>
+<td>供应链整体管理</td>
+</tr>
+<tr>
+<td>供应商</td>
+<td>SRM</td>
+<td>Supplier Relationship Management</td>
+<td>供应商关系管理</td>
+</tr>
+<tr>
+<td>仓储</td>
+<td>WMS</td>
+<td>Warehouse Management System</td>
+<td>仓库与库存管理</td>
+</tr>
+<tr>
+<td>运输</td>
+<td>TMS</td>
+<td>Transportation Management System</td>
+<td>物流运输管理</td>
+</tr>
+<tr>
+<td>订单</td>
+<td>OMS</td>
+<td>Order Management System</td>
+<td>订单生命周期管理</td>
+</tr>
+<tr>
+<td>制造</td>
+<td>MES</td>
+<td>Manufacturing Execution System</td>
+<td>生产现场执行</td>
+</tr>
+<tr>
+<td>办公</td>
+<td>OA</td>
+<td>Office Automation</td>
+<td>办公与审批</td>
+</tr>
+<tr>
+<td>人力</td>
+<td>HRM</td>
+<td>Human Resource Management</td>
+<td>人力资源管理</td>
+</tr>
+<tr>
+<td>人力</td>
+<td>HCM</td>
+<td>Human Capital Management</td>
+<td>人力资本管理</td>
+</tr>
+<tr>
+<td>零售</td>
+<td>POS</td>
+<td>Point of Sale</td>
+<td>销售与收银</td>
+</tr>
+<tr>
+<td>部署</td>
+<td>On-Premises</td>
+<td>On-Premises</td>
+<td>本地部署</td>
+</tr>
+<tr>
+<td>部署</td>
+<td>Hosted</td>
+<td>Hosted Deployment</td>
+<td>托管部署</td>
+</tr>
+<tr>
+<td>云部署</td>
+<td>Public Cloud</td>
+<td>Public Cloud</td>
+<td>公有云</td>
+</tr>
+<tr>
+<td>云部署</td>
+<td>Private Cloud</td>
+<td>Private Cloud</td>
+<td>私有云</td>
+</tr>
+<tr>
+<td>云部署</td>
+<td>Hybrid Cloud</td>
+<td>Hybrid Cloud</td>
+<td>混合云</td>
+</tr>
+<tr>
+<td>云服务</td>
+<td>IaaS</td>
+<td>Infrastructure as a Service</td>
+<td>基础设施即服务</td>
+</tr>
+<tr>
+<td>云服务</td>
+<td>PaaS</td>
+<td>Platform as a Service</td>
+<td>平台即服务</td>
+</tr>
+<tr>
+<td>云服务</td>
+<td>SaaS</td>
+<td>Software as a Service</td>
+<td>软件即服务</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h1>二十、如何快速判断一个陌生系统</h1>
+<p>面对一个陌生企业软件，可以依次问四个问题。</p>
+<h2>1. 谁在使用？</h2>
+<pre><code class="language-text">个人用户 → C端
+
+企业 / 商家 → B端
+
+政府机构 → G端
+</code></pre>
+<h2>2. 谁和谁发生业务？</h2>
+<pre><code class="language-text">企业 ↔ 企业 → B2B
+
+企业 → 消费者 → B2C
+
+个人 ↔ 个人 → C2C
+</code></pre>
+<h2>3. 系统解决什么问题？</h2>
+<pre><code class="language-text">企业整体资源 → ERP
+
+客户 → CRM
+
+供应链 → SCM
+
+供应商 → SRM
+
+仓库 → WMS
+
+运输 → TMS
+
+订单 → OMS
+
+生产 → MES
+
+办公 → OA
+
+员工 → HRM
+</code></pre>
+<h2>4. 软件如何提供？</h2>
+<pre><code class="language-text">部署到企业自己服务器
+→ On-Premises
+
+服务商负责托管
+→ Hosted
+
+通过互联网直接使用软件
+→ SaaS
+</code></pre>
+<hr />
+<h1>总结</h1>
+<p>企业软件领域虽然存在大量英文缩写，但可以通过四个维度快速建立体系。</p>
+<h3>服务对象</h3>
+<pre><code class="language-text">C端 → 消费者
+
+B端 → 企业
+
+G端 → 政府
+</code></pre>
+<h3>商业关系</h3>
+<pre><code class="language-text">B2B → 企业对企业
+
+B2C → 企业对消费者
+
+C2C → 个人对个人
+
+O2O → 线上连接线下
+</code></pre>
+<h3>企业业务系统</h3>
+<pre><code class="language-text">ERP → 企业整体资源
+
+CRM → 客户
+
+SCM → 供应链
+
+SRM → 供应商
+
+WMS → 仓库
+
+TMS → 运输
+
+OMS → 订单
+
+MES → 制造
+
+OA → 办公
+
+HRM → 人力资源
+</code></pre>
+<h3>部署与交付</h3>
+<pre><code class="language-text">On-Premises → 本地部署
+
+Hosted → 托管部署
+
+Public / Private / Hybrid Cloud
+→ 云部署方式
+
+IaaS / PaaS / SaaS
+→ 云计算服务模型
+</code></pre>
+<p>真正需要掌握的并不是所有缩写本身，而是理解：</p>
+<blockquote>
+<p><strong>一个企业软件服务谁、解决什么业务问题、位于企业业务链路的什么位置，以及通过什么方式部署和交付。</strong></p>
+</blockquote>
+<p>当这些关系能够连接起来时，ERP、CRM、WMS、MES 等术语就不再是孤立的英文缩写，而是一套完整的企业信息化体系。</p>

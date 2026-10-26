@@ -19,22 +19,7 @@ import { useViewMode } from '../../../shared/viewMode'
 import BlogTimeline from '../components/BlogTimeline.vue'
 import BlogPagination from '../components/BlogPagination.vue'
 
-/*
- * BLOG-005 前台专题页（路径形状与 V1 的 /blog 一致，见验收文档第五节「与 V1 的对齐 / 有意不同」）。
- *
- * 专题是人工策展的**有序**合集，所以这一页与 `/blog/archive?topic=` 不是同一件事：
- *   本页     按后端给的策展顺序（sr_blog_topic_post.sort_order）原样渲染，不重排；
- *   归档页   把专题当成一个筛选维度，顺序仍然是发布时间倒序。
- *
- * 专题与它的文章由同一个接口返回（`/public/blog/topics/{slug}`）：
- * 分两次请求会出现「标题已经是专题 A、列表还是专题 B」的中间态。
- *
- * 后端对「不存在 / 已停用 / 没有已发布成员」三种情况都返回 404，前端不去区分 ——
- * 区分它们等于把后台的分类状态暴露给匿名读者。
- *
- * 这一页在两条路径树上复用（/blog/topics/:slug 与 /useradmin/blog/topics/:slug），
- * 因此列表内链接与翻页地址都用 contentPath() 生成。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 /**
  * 路由；通过 useRoute 建立。

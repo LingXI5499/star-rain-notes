@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 颜色工具通过数值转换展示 HEX/RGB，并用 Clipboard API 复制结果。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const r = 255, g = 128, b = 0;
+const hex = '#' + [r, g, b].map(n =&gt; n.toString(16).padStart(2, '0')).join('');
+console.log(hex); // #ff8000
+// 用户点击按钮时：await navigator.clipboard.writeText(hex)
+</code></pre>
+<p><strong>学完能做：</strong> 实现颜色格式转换、预览与复制操作。</p>

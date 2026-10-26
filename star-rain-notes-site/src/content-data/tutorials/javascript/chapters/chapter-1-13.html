@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> <code>Math.random()</code> 产生 [0,1) 的随机数；结合 <code>Math.floor</code> 可取整数。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const n = Math.floor(Math.random() * 10) + 1; // 1~10
+const picks = [...new Set([2, 3, 2])]; // 去重后 [2,3]
+</code></pre>
+<p><strong>学完能做：</strong> 生成指定范围随机数并避免重复抽取。</p>

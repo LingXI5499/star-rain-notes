@@ -1,0 +1,801 @@
+{
+  "id": "16",
+  "title": "超市 / 购物",
+  "layer": "核心生活场景层",
+  "wordCount": 88,
+  "path": "/english/vocabulary/16/",
+  "words": [
+    {
+      "word": "save",
+      "partOfSpeech": "v",
+      "phoneticUs": "sev",
+      "phoneticUk": "seɪv",
+      "translation": "节省",
+      "sceneMeaning": "节省；保存",
+      "examples": "[]"
+    },
+    {
+      "word": "quality",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɑləti",
+      "phoneticUk": "'kwɒlɪtɪ",
+      "translation": "质量；品质，特性；品质",
+      "sceneMeaning": "质量；品质",
+      "examples": "[]"
+    },
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "有货的；可获得的",
+      "examples": "[]"
+    },
+    {
+      "word": "value",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'vælju",
+      "phoneticUk": "'væljuː",
+      "translation": "价值；价格；评价；重视",
+      "sceneMeaning": "价值",
+      "examples": "[]"
+    },
+    {
+      "word": "complain",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'plen",
+      "phoneticUk": "kəm'pleɪn",
+      "translation": "抱怨，拆苦；控告；抱怨",
+      "sceneMeaning": "投诉；抱怨",
+      "examples": "[]"
+    },
+    {
+      "word": "buy",
+      "partOfSpeech": "v",
+      "phoneticUs": "baɪ",
+      "phoneticUk": "baɪ",
+      "translation": "买，购买；买",
+      "sceneMeaning": "购买",
+      "examples": "[]"
+    },
+    {
+      "word": "care",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kɛr",
+      "phoneticUk": "keə",
+      "translation": "关心，介意；小心",
+      "sceneMeaning": "关心，介意；小心；本场景常见用法：保健品",
+      "examples": "[]"
+    },
+    {
+      "word": "change",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃendʒ",
+      "phoneticUk": "tʃeɪn(d)ʒ",
+      "translation": "改变，变化；零钱",
+      "sceneMeaning": "零钱；变化",
+      "examples": "[]"
+    },
+    {
+      "word": "check",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tʃɛk",
+      "phoneticUk": "tʃek",
+      "translation": "检查；制止；检查",
+      "sceneMeaning": "检查；核对",
+      "examples": "[]"
+    },
+    {
+      "word": "choose",
+      "partOfSpeech": "v",
+      "phoneticUs": "tʃuz",
+      "phoneticUk": "tʃuːz",
+      "translation": "选择，挑选；情愿",
+      "sceneMeaning": "选择",
+      "examples": "[]"
+    },
+    {
+      "word": "cost",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔst",
+      "phoneticUk": "kɒst",
+      "translation": "价格，代价；成本",
+      "sceneMeaning": "花费；值",
+      "examples": "[]"
+    },
+    {
+      "word": "deal",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dil",
+      "phoneticUk": "diːl",
+      "translation": "买卖；待遇；给予",
+      "sceneMeaning": "交易；优惠",
+      "examples": "[]"
+    },
+    {
+      "word": "expensive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'spɛnsɪv",
+      "phoneticUk": "ɪk'spensɪv; ek-",
+      "translation": "昂贵的，花钱多的",
+      "sceneMeaning": "昂贵的",
+      "examples": "[]"
+    },
+    {
+      "word": "fresh",
+      "partOfSpeech": "adj",
+      "phoneticUs": "frɛʃ",
+      "phoneticUk": "freʃ",
+      "translation": "新的；新鲜的",
+      "sceneMeaning": "新鲜的",
+      "examples": "[]"
+    },
+    {
+      "word": "local",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈloʊkl",
+      "phoneticUk": "'ləʊk(ə)l",
+      "translation": "地方的；局部的",
+      "sceneMeaning": "本地的",
+      "examples": "[]"
+    },
+    {
+      "word": "market",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑrkɪt",
+      "phoneticUk": "'mɑːkɪt",
+      "translation": "市场；集市；销路",
+      "sceneMeaning": "市场",
+      "examples": "[]"
+    },
+    {
+      "word": "offer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔfɚ",
+      "phoneticUk": "'ɒfə",
+      "translation": "提供；提出；提供",
+      "sceneMeaning": "报价；优惠",
+      "examples": "[]"
+    },
+    {
+      "word": "pay",
+      "partOfSpeech": "v",
+      "phoneticUs": "pe",
+      "phoneticUk": "peɪ",
+      "translation": "支付；付给；给予",
+      "sceneMeaning": "支付",
+      "examples": "[]"
+    },
+    {
+      "word": "point",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɔɪnt",
+      "phoneticUk": "pɒɪnt",
+      "translation": "点；要点；细目；分",
+      "sceneMeaning": "积分；点",
+      "examples": "[]"
+    },
+    {
+      "word": "popular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɑpjəlɚ",
+      "phoneticUk": "'pɒpjʊlə",
+      "translation": "民众的；流行的",
+      "sceneMeaning": "受欢迎的",
+      "examples": "[]"
+    },
+    {
+      "word": "price",
+      "partOfSpeech": "n",
+      "phoneticUs": "praɪs",
+      "phoneticUk": "praɪs",
+      "translation": "价格，价钱；代价",
+      "sceneMeaning": "价格",
+      "examples": "[]"
+    },
+    {
+      "word": "product",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑdʌkt",
+      "phoneticUk": "'prɒdʌkt",
+      "translation": "产品，产物；(乘)积",
+      "sceneMeaning": "产品",
+      "examples": "[]"
+    },
+    {
+      "word": "store",
+      "partOfSpeech": "n",
+      "phoneticUs": "stɔr",
+      "phoneticUk": "stɔː",
+      "translation": "贮藏；贮存品；商店",
+      "sceneMeaning": "商店；储存",
+      "examples": "[]"
+    },
+    {
+      "word": "limited",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɪmɪtɪd",
+      "phoneticUk": "'lɪmɪtɪd",
+      "translation": "有限的",
+      "sceneMeaning": "有限的",
+      "examples": "[]"
+    },
+    {
+      "word": "card",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɑrd",
+      "phoneticUk": "kɑːd",
+      "translation": "卡，卡片，名片",
+      "sceneMeaning": "卡片；银行卡",
+      "examples": "[]"
+    },
+    {
+      "word": "goods",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡʊdz",
+      "phoneticUk": "ɡʊdz",
+      "translation": "货物，商品",
+      "sceneMeaning": "商品；货物",
+      "examples": "[]"
+    },
+    {
+      "word": "grocery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡrosəri",
+      "phoneticUk": "'grəʊs(ə)rɪ",
+      "translation": "食品杂货店；杂货店",
+      "sceneMeaning": "食品杂货店；杂货",
+      "examples": "[]"
+    },
+    {
+      "word": "line",
+      "partOfSpeech": "n",
+      "phoneticUs": "laɪn",
+      "phoneticUk": "laɪn",
+      "translation": "线；排；路线；线条",
+      "sceneMeaning": "队伍；线",
+      "examples": "[]"
+    },
+    {
+      "word": "cash",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæʃ",
+      "phoneticUk": "kæʃ",
+      "translation": "现金，现款",
+      "sceneMeaning": "现金",
+      "examples": "[]"
+    },
+    {
+      "word": "customer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌstəmɚ",
+      "phoneticUk": "'kʌstəmə",
+      "translation": "顾客，主顾",
+      "sceneMeaning": "顾客",
+      "examples": "[]"
+    },
+    {
+      "word": "demand",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'mænd",
+      "phoneticUk": "dɪ'mɑːnd",
+      "translation": "要求；需要；询问；需求，要求；要求",
+      "sceneMeaning": "需求",
+      "examples": "[]"
+    },
+    {
+      "word": "cheap",
+      "partOfSpeech": "adj",
+      "phoneticUs": "tʃip",
+      "phoneticUk": "tʃiːp",
+      "translation": "廉价的；劣质的",
+      "sceneMeaning": "便宜的；劣质的",
+      "examples": "[]"
+    },
+    {
+      "word": "purchase",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pɝtʃəs",
+      "phoneticUk": "'pɜ:tʃəs",
+      "translation": "买，购买；买",
+      "sceneMeaning": "购买",
+      "examples": "[]"
+    },
+    {
+      "word": "exchange",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪks'tʃendʒ",
+      "phoneticUk": "ɪks'tʃeɪndʒ; eks-",
+      "translation": "交换；交流；交换；交换，交流",
+      "sceneMeaning": "交换；换货",
+      "examples": "[]"
+    },
+    {
+      "word": "item",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aɪtəm",
+      "phoneticUk": "'aɪtəm",
+      "translation": "条，条款；一条；〔尤指清单上、一群或一组事物中的〕一项，一件，一条",
+      "sceneMeaning": "物品；项目",
+      "examples": "[]"
+    },
+    {
+      "word": "organic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɔr'gænɪk",
+      "phoneticUk": "ɔː'gænɪk",
+      "translation": "有机体的；器官的",
+      "sceneMeaning": "有机的",
+      "examples": "[]"
+    },
+    {
+      "word": "reliable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'laɪəbl",
+      "phoneticUk": "rɪ'laɪəb(ə)l",
+      "translation": "可靠的，可信赖的",
+      "sceneMeaning": "可靠的",
+      "examples": "[]"
+    },
+    {
+      "word": "promote",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'mot",
+      "phoneticUk": "prə'məʊt",
+      "translation": "促进，发扬；提升；促进，提升；推销",
+      "sceneMeaning": "促销；促进",
+      "examples": "[]"
+    },
+    {
+      "word": "scan",
+      "partOfSpeech": "v",
+      "phoneticUs": "skæn",
+      "phoneticUk": "skæn",
+      "translation": "细看；浏览；扫描",
+      "sceneMeaning": "扫描",
+      "examples": "[]"
+    },
+    {
+      "word": "label",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈlebəl",
+      "phoneticUk": "'leɪb(ə)l",
+      "translation": "标签；标记，符号",
+      "sceneMeaning": "标签",
+      "examples": "[]"
+    },
+    {
+      "word": "original",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'rɪdʒənl",
+      "phoneticUk": "ə'rɪdʒɪn(ə)l; ɒ-",
+      "translation": "最初的；新颖的；原始的，最初的",
+      "sceneMeaning": "最初的；新颖的；原始的，最初的",
+      "examples": "[]"
+    },
+    {
+      "word": "stock",
+      "partOfSpeech": "n",
+      "phoneticUs": "stɑk",
+      "phoneticUk": "stɒk",
+      "translation": "原料；库存品；股本；股票；库存",
+      "sceneMeaning": "库存；存货",
+      "examples": "[]"
+    },
+    {
+      "word": "bargain",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈbɑːɡɪn",
+      "phoneticUk": "ˈbɑːɡɪn",
+      "translation": "交易；议价；成交；便宜货，减价品",
+      "sceneMeaning": "便宜货；交易",
+      "examples": "[]"
+    },
+    {
+      "word": "bill",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪl",
+      "phoneticUk": "bɪl",
+      "translation": "账单；招贴；票据",
+      "sceneMeaning": "钞票；账单",
+      "examples": "[]"
+    },
+    {
+      "word": "color",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌlɚ",
+      "phoneticUk": "'kʌlə(r)",
+      "translation": "颜色，彩色；颜料",
+      "sceneMeaning": "颜色",
+      "examples": "[]"
+    },
+    {
+      "word": "counter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kaʊntɚ",
+      "phoneticUk": "'kaʊntə",
+      "translation": "柜台；计数器",
+      "sceneMeaning": "柜台；计数器",
+      "examples": "[]"
+    },
+    {
+      "word": "quantity",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɑntəti",
+      "phoneticUk": "'kwɒntɪtɪ",
+      "translation": "量，数量，分量；量，数量",
+      "sceneMeaning": "数量",
+      "examples": "[]"
+    },
+    {
+      "word": "brand",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "brænd",
+      "phoneticUk": "brænd",
+      "translation": "商品；烙印；铭刻",
+      "sceneMeaning": "品牌",
+      "examples": "[]"
+    },
+    {
+      "word": "compare",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pɛr",
+      "phoneticUk": "kəm'peə",
+      "translation": "比较，对照；比作；比较，对照",
+      "sceneMeaning": "比较",
+      "examples": "[]"
+    },
+    {
+      "word": "count",
+      "partOfSpeech": "v",
+      "phoneticUs": "kaʊnt",
+      "phoneticUk": "kaʊnt",
+      "translation": "计算；数，计数",
+      "sceneMeaning": "计算；数，计数",
+      "examples": "[]"
+    },
+    {
+      "word": "pack",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pæk",
+      "phoneticUk": "pæk",
+      "translation": "捆扎；挤满；包",
+      "sceneMeaning": "包装；打包",
+      "examples": "[]"
+    },
+    {
+      "word": "payment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pemənt",
+      "phoneticUk": "'peɪm(ə)nt",
+      "translation": "支付，支付的款项",
+      "sceneMeaning": "付款",
+      "examples": "[]"
+    },
+    {
+      "word": "reasonable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'riznəbl",
+      "phoneticUk": "'riːz(ə)nəb(ə)l",
+      "translation": "合情合理的；公道的",
+      "sceneMeaning": "合理的；公道的",
+      "examples": "[]"
+    },
+    {
+      "word": "reward",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'wɔrd",
+      "phoneticUk": "rɪ'wɔːd",
+      "translation": "报答；报酬；报答；报答，奖赏",
+      "sceneMeaning": "报答；报酬；报答；报答，奖赏",
+      "examples": "[]"
+    },
+    {
+      "word": "silly",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɪli",
+      "phoneticUk": "'sɪlɪ",
+      "translation": "傻的，愚蠢的",
+      "sceneMeaning": "傻的，愚蠢的",
+      "examples": "[]"
+    },
+    {
+      "word": "bake",
+      "partOfSpeech": "v",
+      "phoneticUs": "bek",
+      "phoneticUk": "beɪk",
+      "translation": "烤，烘，焙；烧硬",
+      "sceneMeaning": "烤，烘，焙；烧硬；本场景常见用法：烤面包",
+      "examples": "[]"
+    },
+    {
+      "word": "bid",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bɪd",
+      "phoneticUk": "bɪd",
+      "translation": "出价，投标",
+      "sceneMeaning": "出价，投标",
+      "examples": "[]"
+    },
+    {
+      "word": "convenient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'vinɪənt",
+      "phoneticUk": "kən'viːnɪənt",
+      "translation": "便利的；近便的；方便的",
+      "sceneMeaning": "方便的",
+      "examples": "[]"
+    },
+    {
+      "word": "deliver",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'lɪvɚ",
+      "phoneticUk": "dɪ'lɪvə",
+      "translation": "投递，送交；发表；发表",
+      "sceneMeaning": "递送；配送",
+      "examples": "[]"
+    },
+    {
+      "word": "delivery",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'lɪvəri",
+      "phoneticUk": "dɪ'lɪv(ə)rɪ",
+      "translation": "投递；交付；分娩",
+      "sceneMeaning": "配送；递送",
+      "examples": "[]"
+    },
+    {
+      "word": "discount",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪs'kaʊnt",
+      "phoneticUk": "'diskaunt",
+      "translation": "折扣",
+      "sceneMeaning": "打折；减价",
+      "examples": "[]"
+    },
+    {
+      "word": "pointless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɔɪntləs",
+      "phoneticUk": "'pɒɪntlɪs",
+      "translation": "无意义的",
+      "sceneMeaning": "无意义的",
+      "examples": "[]"
+    },
+    {
+      "word": "shelf",
+      "partOfSpeech": "n",
+      "phoneticUs": "ʃɛlf",
+      "phoneticUk": "ʃelf",
+      "translation": "搁板，架子",
+      "sceneMeaning": "货架；架子",
+      "examples": "[]"
+    },
+    {
+      "word": "assistant",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'sɪstənt",
+      "phoneticUk": "ə'sɪst(ə)nt",
+      "translation": "助手，助理；助教",
+      "sceneMeaning": "售货员；助手",
+      "examples": "[]"
+    },
+    {
+      "word": "beg",
+      "partOfSpeech": "vt&vi",
+      "phoneticUs": "bɛɡ",
+      "phoneticUk": "beg",
+      "translation": "乞求；请求",
+      "sceneMeaning": "乞求；请求",
+      "examples": "[]"
+    },
+    {
+      "word": "coin",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔɪn",
+      "phoneticUk": "kɒɪn",
+      "translation": "硬币；铸造(硬币)",
+      "sceneMeaning": "硬币",
+      "examples": "[]"
+    },
+    {
+      "word": "drag",
+      "partOfSpeech": "v",
+      "phoneticUs": "dræg",
+      "phoneticUk": "dræg",
+      "translation": "拖，拉；拖曳",
+      "sceneMeaning": "拖，拉；拖曳；本场景常见用法：减阻",
+      "examples": "[]"
+    },
+    {
+      "word": "ingredient",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'ɡridɪənt",
+      "phoneticUk": "ɪnˈgri:diənt",
+      "translation": "成分，原料",
+      "sceneMeaning": "成分；原料",
+      "examples": "[]"
+    },
+    {
+      "word": "package",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pækɪdʒ",
+      "phoneticUk": "'pækɪdʒ",
+      "translation": "包裹，包，捆",
+      "sceneMeaning": "包装；包裹",
+      "examples": "[]"
+    },
+    {
+      "word": "pop",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pɑp",
+      "phoneticUk": "pɒp",
+      "translation": "流行音乐，流行歌曲；突然出现，跳出",
+      "sceneMeaning": "流行音乐，流行歌曲；突然出现，跳出",
+      "examples": "[]"
+    },
+    {
+      "word": "promotional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'moʃənl",
+      "phoneticUk": "prə'məʊʃənl",
+      "translation": "促销的",
+      "sceneMeaning": "促销的；本场景常见用法：促销活动",
+      "examples": "[]"
+    },
+    {
+      "word": "queue",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kju",
+      "phoneticUk": "kjuː",
+      "translation": "行列；排队等候",
+      "sceneMeaning": "排队",
+      "examples": "[]"
+    },
+    {
+      "word": "sacrifice",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "'sækrɪfaɪs",
+      "phoneticUk": "'sækrɪfaɪs",
+      "translation": "牺牲；南祭",
+      "sceneMeaning": "牺牲；南祭",
+      "examples": "[]"
+    },
+    {
+      "word": "bag",
+      "partOfSpeech": "n",
+      "phoneticUs": "bæɡ",
+      "phoneticUk": "bæg",
+      "translation": "袋，包，钱包，背包",
+      "sceneMeaning": "袋子；包",
+      "examples": "[]"
+    },
+    {
+      "word": "bakery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bekəri",
+      "phoneticUk": "ˈbeɪkəri",
+      "translation": "面包店",
+      "sceneMeaning": "面包店",
+      "examples": "[]"
+    },
+    {
+      "word": "basket",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæskɪt",
+      "phoneticUk": "'bɑːskɪt",
+      "translation": "篮，篓，筐",
+      "sceneMeaning": "篮子",
+      "examples": "[]"
+    },
+    {
+      "word": "cart",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɑrt",
+      "phoneticUk": "kɑːt",
+      "translation": "二轮运货马车",
+      "sceneMeaning": "购物车；手推车",
+      "examples": "[]"
+    },
+    {
+      "word": "clerk",
+      "partOfSpeech": "n",
+      "phoneticUs": "klɝk",
+      "phoneticUk": "klɑːk",
+      "translation": "店员；办事员，职员",
+      "sceneMeaning": "店员；职员",
+      "examples": "[]"
+    },
+    {
+      "word": "grocer",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡrosɚ",
+      "phoneticUk": "'grəʊsə",
+      "translation": "食品商；杂货商",
+      "sceneMeaning": "食品商；杂货商",
+      "examples": "[]"
+    },
+    {
+      "word": "manufacturer",
+      "partOfSpeech": "n",
+      "phoneticUs": ",mænju'fæktʃərɚ",
+      "phoneticUk": ",mænjʊ'fæktʃ(ə)rə(r)",
+      "translation": "制造商；制造厂",
+      "sceneMeaning": "制造商",
+      "examples": "[]"
+    },
+    {
+      "word": "origin",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrɪdʒɪn",
+      "phoneticUk": "'ɒrɪdʒɪn",
+      "translation": "起源，由来；出身；起源",
+      "sceneMeaning": "产地；起源",
+      "examples": "[]"
+    },
+    {
+      "word": "overcharge",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ovɚ'tʃɑrdʒ",
+      "phoneticUk": "ˌəʊvəˈtʃɑ:dʒ",
+      "translation": "向……多收费",
+      "sceneMeaning": "多收费",
+      "examples": "[]"
+    },
+    {
+      "word": "packet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pækɪt",
+      "phoneticUk": "'pækɪt",
+      "translation": "小包(裹)，小捆",
+      "sceneMeaning": "小包(裹)，小捆",
+      "examples": "[]"
+    },
+    {
+      "word": "receipt",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'sit",
+      "phoneticUk": "rɪ'siːt",
+      "translation": "收到；收条，收据",
+      "sceneMeaning": "收据",
+      "examples": "[]"
+    },
+    {
+      "word": "reliability",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ,laɪə'bɪləti",
+      "phoneticUk": "rɪ,laɪə'bɪlətɪ",
+      "translation": "可靠性",
+      "sceneMeaning": "可靠性；本场景常见用法：可靠性分配",
+      "examples": "[]"
+    },
+    {
+      "word": "restock",
+      "partOfSpeech": "v",
+      "phoneticUs": "",
+      "phoneticUk": "ˌri:'stɒk",
+      "translation": "重新进货，再储存",
+      "sceneMeaning": "补货；重新进货",
+      "examples": "[]"
+    },
+    {
+      "word": "storage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stɔrɪdʒ",
+      "phoneticUk": "'stɔːrɪdʒ",
+      "translation": "贮藏；贮藏量",
+      "sceneMeaning": "贮藏；贮藏量",
+      "examples": "[]"
+    },
+    {
+      "word": "tag",
+      "partOfSpeech": "n",
+      "phoneticUs": "tæɡ",
+      "phoneticUk": "tæg",
+      "translation": "附加语；标签",
+      "sceneMeaning": "附加语；标签；本场景常见用法：价格标签；标价",
+      "examples": "[]"
+    }
+  ]
+}

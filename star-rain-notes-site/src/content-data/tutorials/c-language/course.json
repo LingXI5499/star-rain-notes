@@ -1,0 +1,963 @@
+{
+  "slug": "c-language",
+  "title": "C语言",
+  "description": "以 ISO C17 为核心教学基线，覆盖基础语法、函数、数组与字符串、指针、聚合类型、动态内存、预处理与多文件、标准库、文件 I/O、工程实践与综合实验。",
+  "category": "通用编程与开发工具体系",
+  "categorySlug": "315825310246",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 111,
+  "wordCount": 10480,
+  "categoryId": "3",
+  "groups": [
+    {
+      "title": "学习指南",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "C 语言程序设计学习路线与教程导航",
+          "description": "本章覆盖：课程定位：以标准 C 语言、内存模型、指针和工程基础为主线；建议教学基线：ISO C17；C23 作为明确标注的现代特性补充；核心学习路径：语法 → 函数 → 数组/字符串 → 指针 → 聚合类型 → 动态内存 → 预处理/多文件 → 标准库/文件 → 工程与系统视角；C 语言与数据结构、操作系统、嵌入式、Linux/POSIX、C++ 的课程边界；学习方法：手写、编译器警告、调试器、Sanitizer、代码阅读与错误复现；学完后的去向：数据结构与算法、计算机组成/操作系统、嵌入式、Linux 系统编程、C++。",
+          "path": "/tutorials/c-language/chapter-1-1/",
+          "wordCount": 243,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "C 语言、标准与开发工具链",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "C 语言起源、定位、标准演进与应用边界",
+          "description": "本章覆盖：C 语言、Dennis Ritchie、Bell Labs 与 UNIX 的历史关系；C 的过程式、编译型、通用系统编程语言定位；C89/C90、C99、C11、C17、C23 的标准演进；ISO C 标准与 GCC/Clang/MSVC/嵌入式编译器实现的区别；Hosted environment 与 Freestanding environment 的基本区别；C 在操作系统、嵌入式、数据库、网络库、编译器等领域的典型角色；本课程为什么以 C17 为核心、C23 作为补充。",
+          "path": "/tutorials/c-language/chapter-2-1/",
+          "wordCount": 228,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "从源代码到可执行文件：预处理、编译、汇编与链接",
+          "description": "本章覆盖：.c 源文件与头文件的角色；预处理阶段；编译阶段；汇编阶段；目标文件 object file；链接阶段与可执行文件；编译错误、链接错误、运行时错误的区别。",
+          "path": "/tutorials/c-language/chapter-2-2/",
+          "wordCount": 81,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "GCC / Clang 环境、标准模式与常用编译选项",
+          "description": "本章覆盖：GCC 与 Clang 的定位；gcc/clang 的最小编译命令；-std=c17 与标准模式；-Wall、-Wextra、-Wpedantic 等警告选项；-o、-c、-E、-S 的作用；调试构建 -g 与优化级别 -O0/-O2 的基本认识；GNU 扩展与 ISO C 的边界。",
+          "path": "/tutorials/c-language/chapter-2-3/",
+          "wordCount": 134,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "C 程序基本结构、main 函数与程序终止",
+          "description": "本章覆盖：include 指令、声明、函数定义与 main；int main(void)；int main(int argc, char *argv[])；return 0 与 EXIT_SUCCESS / EXIT_FAILURE；命令行参数 argc / argv 的基础语义；标准 C 对 main 形式的边界。",
+          "path": "/tutorials/c-language/chapter-2-4/",
+          "wordCount": 141,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "注释、关键字、标识符与代码命名规范",
+          "description": "本章覆盖：// 与 /* ... */ 注释；关键字与标识符；标识符合法规则；保留标识符的基本边界；变量、函数、类型、宏、常量的命名习惯；可读代码与高价值注释。",
+          "path": "/tutorials/c-language/chapter-2-5/",
+          "wordCount": 77,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-6",
+          "title": "翻译单元、声明、定义与符号的初步认识",
+          "description": "本章覆盖：Translation Unit（翻译单元）；声明 declaration 与定义 definition；函数原型的作用；对象与函数符号；头文件不是独立编译单元；多文件程序为何需要声明与链接。",
+          "path": "/tutorials/c-language/chapter-2-6/",
+          "wordCount": 99,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "基础语法、表达式与流程控制",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "字面量、变量、初始化与赋值",
+          "description": "本章覆盖：整数、浮点、字符、字符串字面量；变量声明；初始化与赋值的区别；未初始化自动变量的风险；块内变量与可见范围初步；常见转义字符。",
+          "path": "/tutorials/c-language/chapter-3-1/",
+          "wordCount": 69,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "C 基本数据类型与 sizeof",
+          "description": "本章覆盖：char、short、int、long、long long；signed 与 unsigned；float、double、long double；_Bool / bool 的版本差异；void；sizeof 运算符；类型大小由实现决定，不能死背所有平台固定字节数。",
+          "path": "/tutorials/c-language/chapter-3-2/",
+          "wordCount": 131,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "整数范围、字符类型与固定宽度整数",
+          "description": "本章覆盖：limits.h 中的整数范围宏；CHAR_BIT；char / signed char / unsigned char 的区别；char 的 signedness 由实现决定；stdint.h 的 int8_t/int32_t/uint32_t 等类型；int_leastN_t、int_fastN_t 的概念；size_t、ptrdiff_t 的基础定位。",
+          "path": "/tutorials/c-language/chapter-3-3/",
+          "wordCount": 171,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "浮点类型、精度与浮点比较",
+          "description": "本章覆盖：float/double/long double；float.h；有限精度与舍入误差；浮点数不能简单等同于十进制实数；直接使用 == 比较浮点数的风险；NaN、Infinity 只建立基础认知。",
+          "path": "/tutorials/c-language/chapter-3-4/",
+          "wordCount": 100,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "字符、转义序列与文本编码边界",
+          "description": "本章覆盖：字符常量与字符数组中的字符；常见转义序列；'0' 与 0 的区别；ASCII 作为常见字符编码子集；C char 与文本编码不是同一概念；UTF-8 字节序列与 char 数组的基本关系；多字节字符/宽字符不进入核心深入。",
+          "path": "/tutorials/c-language/chapter-3-5/",
+          "wordCount": 109,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "隐式转换、整数提升与常用算术转换",
+          "description": "本章覆盖：整数提升 integer promotions；usual arithmetic conversions；有符号与无符号混合运算；窄化转换；浮点与整数之间的转换；显式强制类型转换；转换导致截断、回绕或精度损失的风险。",
+          "path": "/tutorials/c-language/chapter-3-6/",
+          "wordCount": 111,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-7",
+          "title": "算术、关系与逻辑运算符",
+          "description": "本章覆盖：+、-、*、/、%；整数除法；<、<=、>、>=、==、!=；&&、||、!；短路求值；真假值：0 与非 0；运算符优先级与括号。",
+          "path": "/tutorials/c-language/chapter-3-7/",
+          "wordCount": 70,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-8",
+          "title": "位运算与位级数据处理",
+          "description": "本章覆盖：&、|、^、~；<< 与 >>；掩码 mask；置位、清位、翻转与读取位；unsigned 类型更适合位运算的原因；移位的边界与未定义/实现定义风险；位操作在标志位和寄存器中的典型意义。",
+          "path": "/tutorials/c-language/chapter-3-8/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-9",
+          "title": "赋值、自增自减、条件与逗号运算符",
+          "description": "本章覆盖：= 与复合赋值；++ 与 --；条件运算符 ?:；逗号运算符；sizeof 不一定求值操作数的典型场景；复杂表达式可读性与副作用控制。",
+          "path": "/tutorials/c-language/chapter-3-9/",
+          "wordCount": 69,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-10",
+          "title": "printf 与格式化输出",
+          "description": "本章覆盖：printf 基本使用；%d、%u、%ld、%lld；%f、%e、%g；%c、%s、%p；字段宽度与精度；格式说明符与参数类型必须匹配；inttypes.h 的 PRI 宏基础。",
+          "path": "/tutorials/c-language/chapter-3-10/",
+          "wordCount": 92,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-11",
+          "title": "scanf 与格式化输入的规则和陷阱",
+          "description": "本章覆盖：scanf 的返回值；格式字符串与地址参数；%d、%lf、%c、%s；空白字符匹配规则；%s 的缓冲区越界风险；读取失败后输入流状态；复杂输入优先 fgets + 解析的工程原则。",
+          "path": "/tutorials/c-language/chapter-3-11/",
+          "wordCount": 92,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-12",
+          "title": "条件分支：if、else 与 switch",
+          "description": "本章覆盖：if / else if / else；嵌套分支；switch / case / default；break 与 fall-through；case 标签必须满足的常量表达式要求；条件表达式的可读性。",
+          "path": "/tutorials/c-language/chapter-3-12/",
+          "wordCount": 95,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-13",
+          "title": "循环：while、do-while、for、break 与 continue",
+          "description": "本章覆盖：while；do-while；for；break；continue；嵌套循环；无限循环；off-by-one 与循环边界错误。",
+          "path": "/tutorials/c-language/chapter-3-13/",
+          "wordCount": 69,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-14",
+          "title": "表达式求值顺序、副作用与未定义行为入门",
+          "description": "本章覆盖：副作用 side effect；求值顺序不等于代码书写顺序；sequenced before 的基础概念；同一对象在无序副作用中的风险；未定义行为 undefined behavior 的初步概念；不要通过编译器“当前碰巧输出什么”推断语言保证。",
+          "path": "/tutorials/c-language/chapter-3-14/",
+          "wordCount": 123,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "函数、作用域、存储期与链接",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "函数声明、函数定义与函数原型",
+          "description": "本章覆盖：函数声明；函数定义；函数原型 prototype；返回类型与参数类型；调用前可见声明；函数签名在 C 中的实际组成与 C++ 概念区别。",
+          "path": "/tutorials/c-language/chapter-4-1/",
+          "wordCount": 70,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "参数传递：C 只有值传递",
+          "description": "本章覆盖：实参与形参；标量值的副本；指针值作为参数时仍然是值传递；通过指针修改调用者对象；数组形参调整为指针类型；“引用传递”不是 C 的语言机制。",
+          "path": "/tutorials/c-language/chapter-4-2/",
+          "wordCount": 74,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "返回值、void 与多结果输出",
+          "description": "本章覆盖：return；void 函数；返回标量值；返回结构体；使用输出参数返回多个结果；不能返回已经结束生命周期的局部对象地址。",
+          "path": "/tutorials/c-language/chapter-4-3/",
+          "wordCount": 66,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "递归、调用栈与递归边界",
+          "description": "本章覆盖：递归定义；基线条件；递归调用过程；每次函数调用拥有独立自动对象；递归深度与栈空间风险；递归与迭代的选择。",
+          "path": "/tutorials/c-language/chapter-4-4/",
+          "wordCount": 59,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "块作用域、函数作用域、文件作用域与原型作用域",
+          "description": "本章覆盖：block scope；function scope；file scope；function prototype scope；同名标识符的遮蔽 shadowing；作用域与生命周期不是同一概念。",
+          "path": "/tutorials/c-language/chapter-4-5/",
+          "wordCount": 98,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "存储期：automatic、static、thread 与 allocated",
+          "description": "本章覆盖：automatic storage duration；static storage duration；thread storage duration 的标准概念；allocated storage duration；对象生命周期 lifetime；静态存储期对象的零初始化；标准存储期与“栈/堆”实现术语的区别。",
+          "path": "/tutorials/c-language/chapter-4-6/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "static、extern 与链接属性",
+          "description": "本章覆盖：external linkage；internal linkage；no linkage；文件作用域 static 对象；static 函数；extern 声明；跨翻译单元共享符号。",
+          "path": "/tutorials/c-language/chapter-4-7/",
+          "wordCount": 91,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "声明、定义与 tentative definition",
+          "description": "本章覆盖：对象声明与对象定义；函数声明与函数定义；tentative definition；重复定义导致的链接问题；头文件里为什么通常不放普通外部对象定义；extern 声明与单一定义原则的 C 语境。",
+          "path": "/tutorials/c-language/chapter-4-8/",
+          "wordCount": 99,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-9",
+          "title": "inline 函数与宏函数的边界",
+          "description": "本章覆盖：inline 的语言语义；inline 不等于强制内联；static inline 的常见头文件用法；inline 与外部定义的复杂边界只建立工程认知；inline 函数与函数式宏的类型安全差异。",
+          "path": "/tutorials/c-language/chapter-4-9/",
+          "wordCount": 99,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-10",
+          "title": "可变参数函数与 stdarg.h",
+          "description": "本章覆盖：省略号 ... 参数；va_list；va_start；va_arg；va_end；默认参数提升；可变参数缺乏类型信息带来的风险。",
+          "path": "/tutorials/c-language/chapter-4-10/",
+          "wordCount": 70,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "数组与字符串",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "一维数组：声明、初始化与访问",
+          "description": "本章覆盖：数组类型；数组长度；初始化列表；未显式初始化元素的规则；下标访问；数组连续存储的标准语义；数组越界是未定义行为。",
+          "path": "/tutorials/c-language/chapter-5-1/",
+          "wordCount": 63,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "数组遍历、长度计算与边界管理",
+          "description": "本章覆盖：基于下标遍历；sizeof(array) / sizeof(array[0])；长度只在数组本体可见位置可直接推导；循环边界；哨兵值与显式长度；API 中传递 pointer + length 的常见设计。",
+          "path": "/tutorials/c-language/chapter-5-2/",
+          "wordCount": 103,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "二维数组、多维数组与行主序",
+          "description": "本章覆盖：二维数组声明；初始化；多维下标；行主序存储；二维数组作为函数参数；第二维等类型信息的重要性。",
+          "path": "/tutorials/c-language/chapter-5-3/",
+          "wordCount": 53,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "数组到指针转换与函数形参数组调整",
+          "description": "本章覆盖：大多数表达式中的 array-to-pointer conversion；sizeof、& 等典型不发生转换的场景；函数参数中的 T a[] 与 T *a；数组长度信息不会随指针自动传递；数组对象与指针对象不是同一类型。",
+          "path": "/tutorials/c-language/chapter-5-4/",
+          "wordCount": 109,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "C 字符串、字符数组与字符串字面量",
+          "description": "本章覆盖：C 字符串是以 '\\0' 结尾的字符序列；char 数组保存字符串；字符串字面量；字符串字面量不可修改的可移植性规则；数组容量与字符串长度的区别；缺失终止空字符的风险。",
+          "path": "/tutorials/c-language/chapter-5-5/",
+          "wordCount": 87,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "fgets、puts 与安全的行输入",
+          "description": "本章覆盖：fgets 的缓冲区大小参数；fgets 可能保留换行符；检测并移除换行符；输入行超过缓冲区时的处理意识；puts；为什么教学与工程中常优先 fgets 而非无界字符串读取。",
+          "path": "/tutorials/c-language/chapter-5-6/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "string.h：长度、复制、拼接与比较",
+          "description": "本章覆盖：strlen；strcpy / strncpy 的语义与风险；strcat / strncat 的语义与风险；strcmp / strncmp；目标缓冲区容量必须由程序员管理；n 系列函数不是自动安全方案。",
+          "path": "/tutorials/c-language/chapter-5-7/",
+          "wordCount": 101,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-8",
+          "title": "字符串查找、分割与转换",
+          "description": "本章覆盖：strchr / strrchr；strstr；strtok 的状态性与修改输入行为；strspn / strcspn 的基础用途；atoi 的错误处理缺陷；数值解析优先 strtol / strtod。",
+          "path": "/tutorials/c-language/chapter-5-8/",
+          "wordCount": 99,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-9",
+          "title": "内存块操作：memcpy、memmove、memset 与 memcmp",
+          "description": "本章覆盖：字节序列操作与字符串操作的区别；memcpy；memmove 与重叠区域；memset；memcmp；sizeof 与缓冲区长度；对非平凡对象表示进行比较/清零时的边界。",
+          "path": "/tutorials/c-language/chapter-5-9/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-10",
+          "title": "数组与字符串常见问题求解",
+          "description": "本章覆盖：最大值、最小值、统计；数组反转与元素移动；字符串长度与反转的手写思路；字符频次统计；子串与分隔符解析；边界、容量与终止符检查。",
+          "path": "/tutorials/c-language/chapter-5-10/",
+          "wordCount": 70,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "指针体系",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "地址、指针类型与取地址运算符",
+          "description": "本章覆盖：对象地址；指针对象；& 取地址；指针声明；指针类型描述其所指对象类型；打印指针使用 %p 并转换为 void *。",
+          "path": "/tutorials/c-language/chapter-6-1/",
+          "wordCount": 59,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "解引用、通过指针访问与修改对象",
+          "description": "本章覆盖：* 解引用；读取所指对象；修改所指对象；指针必须指向有效对象或合法位置才能解引用；指针本身的值与所指对象的值。",
+          "path": "/tutorials/c-language/chapter-6-2/",
+          "wordCount": 61,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "空指针、无效指针、野指针与悬空指针",
+          "description": "本章覆盖：null pointer 的语义；NULL；未初始化指针；悬空指针 dangling pointer；释放后指针；返回局部对象地址；不能把“地址看起来非 0”当作有效性证明。",
+          "path": "/tutorials/c-language/chapter-6-3/",
+          "wordCount": 89,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "指针算术、数组边界与 one-past",
+          "description": "本章覆盖：p + n / p - n；指针差 ptrdiff_t；只有同一数组对象内的指针算术具有规定语义；one-past pointer 可以形成但不能解引用；关系比较的边界；越界指针算术的未定义行为风险。",
+          "path": "/tutorials/c-language/chapter-6-4/",
+          "wordCount": 98,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "数组与指针：相似性、转换与本质区别",
+          "description": "本章覆盖：数组名在表达式中的转换；指针变量可以重新赋值，数组对象不可以；sizeof(array) 与 sizeof(pointer)；&array 与 array 的类型区别；指针遍历数组；数组不是“本质上就是指针”。",
+          "path": "/tutorials/c-language/chapter-6-5/",
+          "wordCount": 107,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-6",
+          "title": "指针数组与数组指针",
+          "description": "本章覆盖：T *a[N]；T (*p)[N]；括号对声明解析的影响；二维数组行指针；指针数组处理字符串列表；sizeof 与步长差异。",
+          "path": "/tutorials/c-language/chapter-6-6/",
+          "wordCount": 66,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-7",
+          "title": "二级指针与多级间接访问",
+          "description": "本章覆盖：T **；指向指针的指针；通过二级指针修改调用者指针；动态创建对象并通过输出参数返回；argv 与 char **；多级指针并不等价于二维数组。",
+          "path": "/tutorials/c-language/chapter-6-7/",
+          "wordCount": 75,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-8",
+          "title": "const 与指针组合",
+          "description": "本章覆盖：pointer to const；const pointer；const pointer to const；从右向左/基于声明器结构阅读；const 限制的是通过该左值进行修改的能力；接口中使用 const 表达只读契约。",
+          "path": "/tutorials/c-language/chapter-6-8/",
+          "wordCount": 109,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-9",
+          "title": "void * 与通用对象指针",
+          "description": "本章覆盖：void * 可保存对象指针；对象指针与 void * 的标准转换；void * 不能直接解引用；malloc 返回 void *；通用容器/回调接口中的 void *；函数指针与 void * 不能按对象指针规则混用。",
+          "path": "/tutorials/c-language/chapter-6-9/",
+          "wordCount": 102,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-10",
+          "title": "函数指针、回调函数与 qsort 风格接口",
+          "description": "本章覆盖：函数地址与函数指针；函数指针声明；通过函数指针调用函数；函数指针作为参数；callback 回调；比较器函数；策略切换与解耦。",
+          "path": "/tutorials/c-language/chapter-6-10/",
+          "wordCount": 69,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-11",
+          "title": "指针参数、输出参数与接口设计",
+          "description": "本章覆盖：通过 T * 修改一个对象；通过 T ** 修改一个指针；pointer + length；pointer + capacity；NULL 是否允许由接口契约明确；返回错误码 + 输出参数的常见 C API 设计。",
+          "path": "/tutorials/c-language/chapter-6-11/",
+          "wordCount": 98,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-12",
+          "title": "复杂声明阅读与指针安全检查",
+          "description": "本章覆盖：声明器 declarator 的基本阅读方法；指向函数的指针；返回指针的函数；数组与函数指针组合；先 typedef 再简化复杂声明的工程方式；检查生命周期、边界、空指针和所有权。",
+          "path": "/tutorials/c-language/chapter-6-12/",
+          "wordCount": 93,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "struct、union、enum、typedef 与数据布局",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "结构体 struct 与自定义记录类型",
+          "description": "本章覆盖：struct 定义；结构体变量；成员访问 .；不同成员拥有独立存储；结构体整体赋值；结构体作为领域数据模型。",
+          "path": "/tutorials/c-language/chapter-7-1/",
+          "wordCount": 59,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "结构体初始化与指定初始化器",
+          "description": "本章覆盖：聚合初始化；部分初始化；designated initializer；嵌套结构体初始化；零初始化；初始化与后续赋值的区别。",
+          "path": "/tutorials/c-language/chapter-7-2/",
+          "wordCount": 67,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "结构体指针、->、嵌套结构体与结构体数组",
+          "description": "本章覆盖：struct T *；->；结构体数组；结构体中的指针成员；嵌套结构体；自引用结构体需要使用指针。",
+          "path": "/tutorials/c-language/chapter-7-3/",
+          "wordCount": 54,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "结构体作为参数和返回值",
+          "description": "本章覆盖：按值传递结构体；通过指针传递结构体；const struct T *；返回结构体值；大对象复制成本是工程考虑而非语言正确性问题；接口选择基于所有权与修改意图。",
+          "path": "/tutorials/c-language/chapter-7-4/",
+          "wordCount": 83,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "结构体内存对齐、填充与 offsetof",
+          "description": "本章覆盖：alignment 对齐概念；padding 填充；结构体成员顺序影响 sizeof 的常见实现现象；_Alignof / alignof 的版本边界；offsetof；不要把某个平台对齐规则写成 ISO C 永恒保证；协议/文件格式不能直接依赖未经定义的结构体内存布局。",
+          "path": "/tutorials/c-language/chapter-7-5/",
+          "wordCount": 133,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-6",
+          "title": "联合体 union 与共享存储",
+          "description": "本章覆盖：union 成员共享存储；union 大小与对齐；一次存储一个活动表示的基本思路；使用 union 节省存储的场景；类型重解释涉及的可移植性边界；tagged union 思想。",
+          "path": "/tutorials/c-language/chapter-7-6/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-7",
+          "title": "枚举 enum 与命名整数常量",
+          "description": "本章覆盖：enum 定义；枚举常量；枚举对象；enum 用于状态、类型标签；枚举底层表示的实现相关性；避免魔法数字。",
+          "path": "/tutorials/c-language/chapter-7-7/",
+          "wordCount": 58,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-8",
+          "title": "typedef 与类型别名",
+          "description": "本章覆盖：typedef 不是创建新运行时类型；为 struct 建立别名；指针 typedef 的可读性与陷阱；函数指针 typedef；固定宽度整数类型本质也是 typedef 名称；API 设计中的类型命名。",
+          "path": "/tutorials/c-language/chapter-7-8/",
+          "wordCount": 100,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-9",
+          "title": "位域 bit-field 与硬件/协议边界",
+          "description": "本章覆盖：位域语法；节省表示空间的用途；位域类型与布局限制；位域排列顺序和对齐具有实现相关性；不要直接把位域内存布局当作可移植网络/文件协议格式；嵌入式寄存器映射使用时必须理解编译器/ABI 约束。",
+          "path": "/tutorials/c-language/chapter-7-9/",
+          "wordCount": 100,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-10",
+          "title": "Flexible Array Member 与变长结构体对象",
+          "description": "本章覆盖：结构体末尾 flexible array member；sizeof 不包含灵活数组实际元素空间；按 sizeof(struct)+N*sizeof(element) 分配；通过一个分配块组织头部与尾部数据；容量和长度必须另行维护；适用场景与越界风险。",
+          "path": "/tutorials/c-language/chapter-7-10/",
+          "wordCount": 127,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "动态内存、对象生命周期与内存安全",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "C 对象生命周期与“栈/堆/静态区”工程模型",
+          "description": "本章覆盖：标准中的 object、storage duration、lifetime；automatic/static/allocated storage duration；工程实现中常说的 stack / heap / data / bss / code；“局部变量一定在栈上”等说法不是 ISO C 语言保证；对象生命周期结束后继续访问是未定义行为；指针有效性依赖所指对象生命周期。",
+          "path": "/tutorials/c-language/chapter-8-1/",
+          "wordCount": 179,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "malloc：动态分配与 sizeof 惯用写法",
+          "description": "本章覆盖：malloc；返回 void *；分配失败返回空指针；sizeof *ptr 的惯用写法；分配得到的存储内容初始值不确定；C 中不需要强制转换 malloc 返回值。",
+          "path": "/tutorials/c-language/chapter-8-2/",
+          "wordCount": 83,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "calloc：数组分配与零字节初始化",
+          "description": "本章覆盖：calloc(count, size)；分配数组空间；字节置零的语义；“全 0 位模式”等于所有类型数值 0 的边界；count * size 溢出风险由实现/函数接口处理程度需要核对；malloc + memset 与 calloc 不应机械视为完全等价。",
+          "path": "/tutorials/c-language/chapter-8-3/",
+          "wordCount": 123,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "realloc：扩缩容、失败语义与安全更新",
+          "description": "本章覆盖：realloc；可能原地调整，也可能移动；成功后旧指针失效的条件；失败时原块保持有效；使用临时指针避免丢失原内存；size 为 0 的版本/实现边界；动态数组扩容。",
+          "path": "/tutorials/c-language/chapter-8-4/",
+          "wordCount": 86,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "free、所有权与资源释放责任",
+          "description": "本章覆盖：free；只能释放合适的动态分配块；每个成功所有权通常对应一次释放责任；double free；free 后原指针成为悬空指针；将本地变量设为 NULL 不能自动修复其他别名指针；明确 ownership 所有权转移。",
+          "path": "/tutorials/c-language/chapter-8-5/",
+          "wordCount": 110,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-6",
+          "title": "动态数组与容量管理",
+          "description": "本章覆盖：length 与 capacity；按元素个数分配；扩容策略；realloc 安全模式；插入/删除导致元素移动；动态数组是理解真实容器实现的基础。",
+          "path": "/tutorials/c-language/chapter-8-6/",
+          "wordCount": 77,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-7",
+          "title": "动态结构体、字符串与对象图",
+          "description": "本章覆盖：动态分配单个结构体；结构体内部动态成员；深释放与嵌套所有权；动态字符串；对象图中谁拥有谁；部分构造失败时的清理。",
+          "path": "/tutorials/c-language/chapter-8-7/",
+          "wordCount": 63,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-8",
+          "title": "内存泄漏、Use-After-Free、越界与 Double Free",
+          "description": "本章覆盖：memory leak；use-after-free；double free；heap buffer overflow；stack buffer overflow；uninitialized read；invalid free；错误通常会在远离根因的位置表现。",
+          "path": "/tutorials/c-language/chapter-8-8/",
+          "wordCount": 129,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-9",
+          "title": "分配尺寸计算、整数溢出与安全容量检查",
+          "description": "本章覆盖：count * sizeof(element)；size_t；乘法溢出会导致少分配；扩容前检查最大容量；SIZE_MAX；不要把 signed int 直接当所有容量/长度类型；C23 checked integer arithmetic 作为补充了解。",
+          "path": "/tutorials/c-language/chapter-8-9/",
+          "wordCount": 125,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "预处理器、头文件、多文件程序与链接",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "C 预处理器与 preprocessing token",
+          "description": "本章覆盖：预处理发生在正式翻译之前；#include；#define；#if 等预处理指令；宏展开与 C 语法解析是不同阶段；预处理器本质上不理解普通 C 类型系统。",
+          "path": "/tutorials/c-language/chapter-9-1/",
+          "wordCount": 80,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "对象式宏与符号常量",
+          "description": "本章覆盖：object-like macro；宏常量；括号与替换文本；宏没有类型；优先使用 enum / const object / inline function 的场景；宏适合条件编译和编译期配置。",
+          "path": "/tutorials/c-language/chapter-9-2/",
+          "wordCount": 95,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "函数式宏、重复求值与副作用陷阱",
+          "description": "本章覆盖：function-like macro；参数和整体表达式加括号；宏参数可能重复求值；++/函数调用等带副作用实参风险；宏与 inline 函数的差异；不要用宏制造隐藏控制流。",
+          "path": "/tutorials/c-language/chapter-9-3/",
+          "wordCount": 91,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "条件编译与平台配置",
+          "description": "本章覆盖：#if / #ifdef / #ifndef；#elif / #else / #endif；defined；功能开关；平台差异；Debug/Release 条件；条件编译过度会降低可维护性。",
+          "path": "/tutorials/c-language/chapter-9-4/",
+          "wordCount": 93,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "#include、头文件与接口声明",
+          "description": "本章覆盖：系统头文件与用户头文件；头文件放公开声明；源文件放实现；头文件应自包含；include 顺序与依赖；不要依赖其他头文件间接 include。",
+          "path": "/tutorials/c-language/chapter-9-5/",
+          "wordCount": 75,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-6",
+          "title": "Include Guard 与重复包含",
+          "description": "本章覆盖：#ifndef / #define / #endif 头文件保护；为何一个头文件可能被多次间接包含；重复声明与重复定义的区别；#pragma once 属于常见扩展而不是 ISO C 核心机制。",
+          "path": "/tutorials/c-language/chapter-9-6/",
+          "wordCount": 94,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-7",
+          "title": "宏字符串化 #、记号连接 ## 与可变参数宏",
+          "description": "本章覆盖：# 字符串化；## token pasting；__VA_ARGS__；日志宏的基础设计；宏调试困难与使用边界；C23 宏新增能力只作版本补充。",
+          "path": "/tutorials/c-language/chapter-9-7/",
+          "wordCount": 75,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-8",
+          "title": "多文件工程：.h / .c 分层与模块化设计",
+          "description": "本章覆盖：public header；private implementation；一个功能模块的 .h + .c；函数声明与实现分离；内部辅助函数使用 static；减少全局可见符号；模块依赖方向。",
+          "path": "/tutorials/c-language/chapter-9-8/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-9",
+          "title": "编译、目标文件、静态库与链接基础",
+          "description": "本章覆盖：分别编译多个 .c；目标文件 .o/.obj；链接多个目标文件；undefined reference / duplicate symbol；静态库 archive 的基础概念；链接顺序的工具链相关性；构建系统深入留给工程化课程。",
+          "path": "/tutorials/c-language/chapter-9-9/",
+          "wordCount": 114,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "C 标准库、错误处理与文件 I/O",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": "C 标准库总览与 Hosted / Freestanding 边界",
+          "description": "本章覆盖：标准库通过头文件暴露接口；stdio.h、stdlib.h、string.h、stdint.h 等主干头文件；Hosted implementation 提供完整标准库要求；Freestanding implementation 只保证标准规定的子集；标准库、POSIX API、Windows API 不是同一层；第三方库不属于 C 标准库。",
+          "path": "/tutorials/c-language/chapter-10-1/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "stdio.h：标准流、缓冲与格式化 I/O",
+          "description": "本章覆盖：stdin、stdout、stderr；printf / fprintf；scanf / fscanf 的定位；字符 I/O 与行 I/O；I/O 缓冲的基础概念；fflush 的适用边界；错误返回值检查。",
+          "path": "/tutorials/c-language/chapter-10-2/",
+          "wordCount": 100,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "健壮输入与字符串转数值：fgets、strtol、strtoul、strtod",
+          "description": "本章覆盖：先读取完整文本再解析；strtol；endptr；errno 与 ERANGE；范围检查；拒绝多余非法字符；atoi 无法可靠报告错误。",
+          "path": "/tutorials/c-language/chapter-10-3/",
+          "wordCount": 72,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "stdlib.h：程序控制、随机数、qsort 与 bsearch",
+          "description": "本章覆盖：EXIT_SUCCESS / EXIT_FAILURE；exit；rand / srand 的基础与非密码学属性；qsort；bsearch；比较函数回调；标准库算法与自写算法的边界。",
+          "path": "/tutorials/c-language/chapter-10-4/",
+          "wordCount": 94,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "ctype.h：字符分类与大小写转换",
+          "description": "本章覆盖：isalpha / isdigit / isspace；isalnum 等分类函数；tolower / toupper；传入值必须满足 unsigned char 或 EOF 的契约；ASCII 假设与 locale 边界。",
+          "path": "/tutorials/c-language/chapter-10-5/",
+          "wordCount": 104,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-6",
+          "title": "math.h 与常用数学函数",
+          "description": "本章覆盖：sqrt、pow、fabs；floor、ceil、round；三角函数基础；isnan / isinf 的基础；浮点错误与 errno/fenv 的深入边界；部分平台链接 math library 的工具链要求。",
+          "path": "/tutorials/c-language/chapter-10-6/",
+          "wordCount": 105,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-7",
+          "title": "time.h：时间、计时与日期基础",
+          "description": "本章覆盖：time_t；time；clock；difftime；struct tm；localtime / gmtime；strftime；线程安全替代函数可能属于平台扩展。",
+          "path": "/tutorials/c-language/chapter-10-7/",
+          "wordCount": 86,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-8",
+          "title": "assert、errno、perror 与 strerror",
+          "description": "本章覆盖：assert 用于程序员假设，不用于普通用户输入校验；NDEBUG；errno 的读取时机；函数返回值优先判断错误；perror；strerror；错误码、errno 与返回值的协作。",
+          "path": "/tutorials/c-language/chapter-10-8/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-9",
+          "title": "limits.h、stdint.h、inttypes.h、stddef.h 与类型支持",
+          "description": "本章覆盖：整数范围宏；固定宽度整数类型；INTN_C / UINTN_C 基础；PRI / SCN 格式宏；size_t；ptrdiff_t；offsetof；NULL 的版本边界。",
+          "path": "/tutorials/c-language/chapter-10-9/",
+          "wordCount": 86,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-10",
+          "title": "文本文件：FILE、fopen、fclose、fprintf、fgets",
+          "description": "本章覆盖：FILE *；fopen 模式；打开失败检查；文本读写；fclose；资源释放；文本模式的实现差异基础。",
+          "path": "/tutorials/c-language/chapter-10-10/",
+          "wordCount": 57,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-11",
+          "title": "二进制文件：fread、fwrite 与数据格式设计",
+          "description": "本章覆盖：binary mode；fread；fwrite；元素个数与元素大小；返回值检查；结构体直接 fwrite 的可移植性问题；端序、填充、类型宽度导致文件格式不稳定。",
+          "path": "/tutorials/c-language/chapter-10-11/",
+          "wordCount": 86,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-12",
+          "title": "文件位置、EOF、错误状态与缓冲",
+          "description": "本章覆盖：fseek / ftell / rewind；SEEK_SET / SEEK_CUR / SEEK_END；feof；ferror；clearerr；为什么不能用 while (!feof(fp)) 作为通用读取模式；缓冲、flush 与 close。",
+          "path": "/tutorials/c-language/chapter-10-12/",
+          "wordCount": 120,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "C 工程实践、系统视角与高频面试边界",
+      "chapters": [
+        {
+          "slug": "chapter-11-1",
+          "title": "Undefined、Unspecified、Implementation-defined 与诊断",
+          "description": "本章覆盖：undefined behavior；unspecified behavior；implementation-defined behavior；constraint violation 与诊断；可移植程序不能依赖未被标准保证的偶然行为；编译成功不等于程序没有未定义行为。",
+          "path": "/tutorials/c-language/chapter-11-1/",
+          "wordCount": 137,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-2",
+          "title": "有符号/无符号、整数溢出与比较陷阱",
+          "description": "本章覆盖：unsigned 模运算；signed integer overflow 是未定义行为；有符号与无符号比较；size_t 与 int 混用；边界检查先后顺序；整数溢出可能转化为内存安全漏洞。",
+          "path": "/tutorials/c-language/chapter-11-2/",
+          "wordCount": 95,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-3",
+          "title": "const、volatile、restrict 的语义与误区",
+          "description": "本章覆盖：const 表达通过特定左值不可修改；volatile 用于可能被实现之外因素改变或具有特殊副作用的访问语义；volatile 常见于内存映射 I/O、信号/中断相关对象；volatile 不提供原子性，也不是通用线程同步方案；restrict 用于表达指针别名约束并帮助优化；违反 restrict 契约可能导致未定义行为。",
+          "path": "/tutorials/c-language/chapter-11-3/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-4",
+          "title": "对象表示、字节序与大小端",
+          "description": "本章覆盖：object representation；unsigned char 可观察对象字节表示；大端/小端属于实现/硬件特征，不是 ISO C 固定规定；整数序列化不能直接假设本机端序；union/指针转换判断端序的可移植性边界；网络/文件格式应显式定义字节序。",
+          "path": "/tutorials/c-language/chapter-11-4/",
+          "wordCount": 130,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-5",
+          "title": "结构体对齐、ABI 与二进制接口边界",
+          "description": "本章覆盖：alignment 与 padding 回顾；ABI 决定具体调用约定和布局细节；#pragma pack 属于编译器扩展；跨编译器/平台共享二进制结构需要明确协议；不能把 sizeof(struct) 当作稳定网络协议长度；offsetof 可用于受控布局检查。",
+          "path": "/tutorials/c-language/chapter-11-5/",
+          "wordCount": 130,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-6",
+          "title": "安全输入、缓冲区长度与边界驱动编程",
+          "description": "本章覆盖：所有数组/缓冲区操作明确 capacity；优先 length-aware API；fgets + 解析；字符串复制前验证目标空间；处理截断、EOF、非法输入；不要依赖 gets 等不安全/已移除接口。",
+          "path": "/tutorials/c-language/chapter-11-6/",
+          "wordCount": 101,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-7",
+          "title": "编译器警告：把 Warning 当成学习工具",
+          "description": "本章覆盖：-Wall；-Wextra；-Wpedantic；-Wconversion；-Wshadow；理解警告而不是机械关闭警告；必要时最小化复现 warning。",
+          "path": "/tutorials/c-language/chapter-11-7/",
+          "wordCount": 84,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-8",
+          "title": "GDB / LLDB 基础调试：断点、单步、栈帧与内存",
+          "description": "本章覆盖：Debug build；breakpoint；step / next；print / display；backtrace；查看指针和数组；崩溃后从调用栈定位根因。",
+          "path": "/tutorials/c-language/chapter-11-8/",
+          "wordCount": 83,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-9",
+          "title": "AddressSanitizer 与 UndefinedBehaviorSanitizer",
+          "description": "本章覆盖：AddressSanitizer 检测越界、Use-After-Free 等内存错误；UndefinedBehaviorSanitizer 检测部分未定义行为；-fsanitize=address；-fsanitize=undefined；Sanitizer 不是形式证明，也不能覆盖所有输入；修根因而不是忽略报告。",
+          "path": "/tutorials/c-language/chapter-11-9/",
+          "wordCount": 161,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-10",
+          "title": "标准 C、编译器扩展、平台 API 与 C23 现代特性边界",
+          "description": "本章覆盖：ISO C 与 GNU C 扩展；POSIX / Linux API 不属于 ISO C；Windows API 不属于 ISO C；嵌入式编译器可能提供硬件扩展；C23 的 nullptr、bool/true/false、typeof、constexpr、attributes、#embed 等只作明确版本补充；课程核心不因新标准出现而静默改变 C17 语义。",
+          "path": "/tutorials/c-language/chapter-11-10/",
+          "wordCount": 168,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "C 综合实战实验室",
+      "chapters": [
+        {
+          "slug": "chapter-12-1",
+          "title": "命令行文本统计与日志分析工具",
+          "description": "本章覆盖：命令行参数；文件读取；字符串解析；字符分类；动态统计数组；错误处理；输出统计结果。",
+          "path": "/tutorials/c-language/chapter-12-1/",
+          "wordCount": 48,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-2",
+          "title": "安全 CSV / 分隔文本解析器",
+          "description": "本章覆盖：fgets 行读取；缓冲区边界；字段切分；动态字符串/数组；非法输入处理；结构体建模；结果写回文件。",
+          "path": "/tutorials/c-language/chapter-12-2/",
+          "wordCount": 56,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-3",
+          "title": "动态数组库 mini-vector",
+          "description": "本章覆盖：void * 或明确元素类型两种设计路线；length / capacity；malloc / realloc / free；append / remove / get；所有权约定；错误码；Sanitizer 验证。",
+          "path": "/tutorials/c-language/chapter-12-3/",
+          "wordCount": 102,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-4",
+          "title": "配置文件读取与模块化参数系统",
+          "description": "本章覆盖：.h/.c 模块划分；key=value 文本解析；结构体保存配置；strtol 等可靠转换；默认值与错误报告；文件 I/O；接口封装。",
+          "path": "/tutorials/c-language/chapter-12-4/",
+          "wordCount": 71,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-5",
+          "title": "动态链式任务队列（数据结构课程桥梁）",
+          "description": "本章覆盖：自引用结构体；节点动态分配；头/尾指针；插入、删除、遍历；所有权与释放；这里只训练 C 指针和内存，不展开完整数据结构理论。",
+          "path": "/tutorials/c-language/chapter-12-5/",
+          "wordCount": 67,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-6",
+          "title": "二进制记录文件与显式序列化工具",
+          "description": "本章覆盖：结构体作为内存模型；显式字段编码；固定宽度整数；端序处理；fread / fwrite；避免直接 dump struct 的可移植性问题；版本字段与校验。",
+          "path": "/tutorials/c-language/chapter-12-6/",
+          "wordCount": 79,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-7",
+          "title": "回调驱动的命令处理器",
+          "description": "本章覆盖：函数指针；命令表结构体数组；回调注册；字符串匹配；参数解析；模块化命令实现；模拟事件分发机制。",
+          "path": "/tutorials/c-language/chapter-12-7/",
+          "wordCount": 54,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-8",
+          "title": "内存安全故障实验室",
+          "description": "本章覆盖：故意制造数组越界；Use-After-Free；double free；整数溢出导致错误分配；悬空指针；使用编译器 warning、GDB、ASan/UBSan 定位；为每类错误写根因报告。",
+          "path": "/tutorials/c-language/chapter-12-8/",
+          "wordCount": 99,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/c-language/",
+  "sortOrder": 26
+}

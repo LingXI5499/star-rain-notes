@@ -1,0 +1,1332 @@
+{
+  "id": "52",
+  "title": "选择 / 决策 / 方法 / 策略",
+  "layer": "抽象阅读与逻辑层",
+  "wordCount": 147,
+  "path": "/english/vocabulary/52/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可用的；可获得的",
+      "examples": "[]"
+    },
+    {
+      "word": "evidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛvɪdəns",
+      "phoneticUk": "'evɪd(ə)ns",
+      "translation": "根据；证据，证人；根据，证据，迹象",
+      "sceneMeaning": "证据",
+      "examples": "[]"
+    },
+    {
+      "word": "process",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɑsɛs",
+      "phoneticUk": "'prəʊses",
+      "translation": "过程；工序；加工；过程，进程；；工序；工艺流程；处理",
+      "sceneMeaning": "过程；流程",
+      "examples": "[]"
+    },
+    {
+      "word": "benefit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bɛnɪfɪt",
+      "phoneticUk": "'benɪfɪt",
+      "translation": "利益；恩惠；津贴；有益于，有助于",
+      "sceneMeaning": "利益；好处",
+      "examples": "[]"
+    },
+    {
+      "word": "advice",
+      "partOfSpeech": "n",
+      "phoneticUs": "ædˈvaɪs; əd'vaɪs",
+      "phoneticUk": "əd'vaɪs",
+      "translation": "劝告；忠告；意见；建议",
+      "sceneMeaning": "建议",
+      "examples": "[]"
+    },
+    {
+      "word": "advantage",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'væntɪdʒ",
+      "phoneticUk": "əd'vɑːntɪdʒ",
+      "translation": "优点，优势；好处",
+      "sceneMeaning": "优势",
+      "examples": "[]"
+    },
+    {
+      "word": "choice",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɔɪs",
+      "phoneticUk": "tʃɒɪs",
+      "translation": "选择，抉择",
+      "sceneMeaning": "选择",
+      "examples": "[]"
+    },
+    {
+      "word": "choose",
+      "partOfSpeech": "v",
+      "phoneticUs": "tʃuz",
+      "phoneticUk": "tʃuːz",
+      "translation": "选择，挑选；情愿",
+      "sceneMeaning": "选择",
+      "examples": "[]"
+    },
+    {
+      "word": "consider",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'sɪdɚ",
+      "phoneticUk": "kən'sɪdə",
+      "translation": "认为；考虑；关心",
+      "sceneMeaning": "考虑",
+      "examples": "[]"
+    },
+    {
+      "word": "cost",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔst",
+      "phoneticUk": "kɒst",
+      "translation": "价格，代价；成本",
+      "sceneMeaning": "成本；代价",
+      "examples": "[]"
+    },
+    {
+      "word": "data",
+      "partOfSpeech": "n",
+      "phoneticUs": "'detə",
+      "phoneticUk": "'deɪtə",
+      "translation": "数据;；资料",
+      "sceneMeaning": "数据",
+      "examples": "[]"
+    },
+    {
+      "word": "decide",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'saɪd",
+      "phoneticUk": "dɪ'saɪd",
+      "translation": "决定，决心；解决",
+      "sceneMeaning": "决定",
+      "examples": "[]"
+    },
+    {
+      "word": "decision",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'sɪʒn",
+      "phoneticUk": "dɪ'sɪʒ(ə)n",
+      "translation": "决定，决心；果断",
+      "sceneMeaning": "决定；决策",
+      "examples": "[]"
+    },
+    {
+      "word": "effective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɛktɪv",
+      "phoneticUk": "ɪ'fektɪv",
+      "translation": "有效的；有影响的",
+      "sceneMeaning": "有效的",
+      "examples": "[]"
+    },
+    {
+      "word": "how",
+      "partOfSpeech": "adv",
+      "phoneticUs": "haʊ",
+      "phoneticUk": "haʊ",
+      "translation": "怎么；怎样；多少",
+      "sceneMeaning": "怎么；怎样；多少",
+      "examples": "[]"
+    },
+    {
+      "word": "information",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnfɚ'meʃən",
+      "phoneticUk": "ɪnfə'meɪʃ(ə)n",
+      "translation": "消息，信息；通知",
+      "sceneMeaning": "信息",
+      "examples": "[]"
+    },
+    {
+      "word": "just",
+      "partOfSpeech": "adv",
+      "phoneticUs": "dʒʌst",
+      "phoneticUk": "dʒʌst",
+      "translation": "刚才；只是；正好",
+      "sceneMeaning": "刚才；只是；正好",
+      "examples": "[]"
+    },
+    {
+      "word": "manage",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mænɪdʒ",
+      "phoneticUk": "'mænɪdʒ",
+      "translation": "管理；设法；对付",
+      "sceneMeaning": "管理",
+      "examples": "[]"
+    },
+    {
+      "word": "measure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛʒɚ",
+      "phoneticUk": "'meʒə",
+      "translation": "量，测量；分量；测量",
+      "sceneMeaning": "措施",
+      "examples": "[]"
+    },
+    {
+      "word": "medium",
+      "partOfSpeech": "n",
+      "phoneticUs": "'midɪəm",
+      "phoneticUk": "'miːdɪəm",
+      "translation": "媒质；中间a中等的",
+      "sceneMeaning": "媒质；中间a中等的；本场景常见用法：传送介质",
+      "examples": "[]"
+    },
+    {
+      "word": "opportunity",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌɑpɚˈtunɪti, -ˈtju-",
+      "phoneticUk": "ɒpə'tjuːnɪtɪ",
+      "translation": "机会，良机",
+      "sceneMeaning": "机会",
+      "examples": "[]"
+    },
+    {
+      "word": "prefer",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɪ'fɝ",
+      "phoneticUk": "prɪ'fɜː",
+      "translation": "宁可，宁愿",
+      "sceneMeaning": "宁可，宁愿；本场景常见用法：宁愿；更喜欢",
+      "examples": "[]"
+    },
+    {
+      "word": "reason",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈrizən",
+      "phoneticUk": "'riːz(ə)n",
+      "translation": "理由；理性；推理",
+      "sceneMeaning": "理由；原因",
+      "examples": "[]"
+    },
+    {
+      "word": "risk",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪsk",
+      "phoneticUk": "rɪsk",
+      "translation": "风险，危险，冒险",
+      "sceneMeaning": "风险",
+      "examples": "[]"
+    },
+    {
+      "word": "man",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæn",
+      "phoneticUk": "mæn",
+      "translation": "男人；人；人类",
+      "sceneMeaning": "男人；人；人类",
+      "examples": "[]"
+    },
+    {
+      "word": "approach",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'protʃ",
+      "phoneticUk": "ə'prəʊtʃ",
+      "translation": "向…靠近；靠近；方法",
+      "sceneMeaning": "方法；途径",
+      "examples": "[]"
+    },
+    {
+      "word": "management",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mænɪdʒmənt",
+      "phoneticUk": "'mænɪdʒm(ə)nt",
+      "translation": "管理；经营，处理",
+      "sceneMeaning": "管理",
+      "examples": "[]"
+    },
+    {
+      "word": "pick",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɪk",
+      "phoneticUk": "pɪk",
+      "translation": "镐，鹤嘴锄",
+      "sceneMeaning": "镐，鹤嘴锄；本场景常见用法：挑挑拣拣",
+      "examples": "[]"
+    },
+    {
+      "word": "policy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑləsi",
+      "phoneticUk": "'pɒləsɪ",
+      "translation": "政策，方针",
+      "sceneMeaning": "政策；方针",
+      "examples": "[]"
+    },
+    {
+      "word": "recommend",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rɛkə'mɛnd",
+      "phoneticUk": "rekə'mend",
+      "translation": "推荐，介绍；劝告；推荐；劝告；使受欢迎",
+      "sceneMeaning": "推荐；建议",
+      "examples": "[]"
+    },
+    {
+      "word": "solution",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'luʃən",
+      "phoneticUk": "sə'luːʃ(ə)n",
+      "translation": "解决，解答；溶解；解决，解答，解决办法",
+      "sceneMeaning": "解决方案",
+      "examples": "[]"
+    },
+    {
+      "word": "balance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bæləns",
+      "phoneticUk": "'bæl(ə)ns",
+      "translation": "使平衡；称；天平",
+      "sceneMeaning": "平衡",
+      "examples": "[]"
+    },
+    {
+      "word": "executive",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɪɡ'zɛkjətɪv",
+      "phoneticUk": "ɪg'zekjʊtɪv; eg-",
+      "translation": "执行的；执行者",
+      "sceneMeaning": "执行的；执行者；本场景常见用法：执行副总裁",
+      "examples": "[]"
+    },
+    {
+      "word": "leadership",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lidɚʃɪp",
+      "phoneticUk": "'liːdəʃɪp",
+      "translation": "领导",
+      "sceneMeaning": "领导力",
+      "examples": "[]"
+    },
+    {
+      "word": "method",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛθəd",
+      "phoneticUk": "'meθəd",
+      "translation": "方法，办法；教学法",
+      "sceneMeaning": "方法",
+      "examples": "[]"
+    },
+    {
+      "word": "rational",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ræʃnəl",
+      "phoneticUk": "'ræʃ(ə)n(ə)l",
+      "translation": "理性的；出于理性的；神智清楚的",
+      "sceneMeaning": "理性的",
+      "examples": "[]"
+    },
+    {
+      "word": "strategy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'strætədʒi",
+      "phoneticUk": "ˈstrætədʒɪ",
+      "translation": "战略；策略；策略，战略",
+      "sceneMeaning": "策略",
+      "examples": "[]"
+    },
+    {
+      "word": "alternative",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɔl'tɝnətɪv",
+      "phoneticUk": "ɔːl'tɜːnətɪv; ɒl-",
+      "translation": "替换物；取舍，抉择；代替品",
+      "sceneMeaning": "替代选择",
+      "examples": "[]"
+    },
+    {
+      "word": "consideration",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən,sɪdə'reʃən",
+      "phoneticUk": "kənsɪdə'reɪʃ(ə)n",
+      "translation": "考虑，思考；体贴",
+      "sceneMeaning": "考虑因素",
+      "examples": "[]"
+    },
+    {
+      "word": "design",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'zaɪn",
+      "phoneticUk": "dɪ'zaɪn",
+      "translation": "设计；设计；图样",
+      "sceneMeaning": "设计",
+      "examples": "[]"
+    },
+    {
+      "word": "factor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktɚ",
+      "phoneticUk": "'fæktə",
+      "translation": "因素；因子，系数",
+      "sceneMeaning": "因素",
+      "examples": "[]"
+    },
+    {
+      "word": "final",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'faɪnl",
+      "phoneticUk": "'faɪn(ə)l",
+      "translation": "最后的；决定性的",
+      "sceneMeaning": "最终的",
+      "examples": "[]"
+    },
+    {
+      "word": "justify",
+      "partOfSpeech": "v / vt",
+      "phoneticUs": "'dʒʌstə'fai",
+      "phoneticUk": "ˈdʒʌstɪfaɪ",
+      "translation": "证明…是正当的；证明……正当",
+      "sceneMeaning": "证明……合理",
+      "examples": "[]"
+    },
+    {
+      "word": "model",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑdl",
+      "phoneticUk": "'mɒdl",
+      "translation": "模型；模式；模特儿",
+      "sceneMeaning": "模型；模式",
+      "examples": "[]"
+    },
+    {
+      "word": "practical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'præktɪkl",
+      "phoneticUk": "'præktɪk(ə)l",
+      "translation": "实践的；实用的",
+      "sceneMeaning": "实际的；实用的",
+      "examples": "[]"
+    },
+    {
+      "word": "principle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɪnsəpl",
+      "phoneticUk": "'prɪnsɪp(ə)l",
+      "translation": "原则，原理；主义；原则，原理",
+      "sceneMeaning": "原则",
+      "examples": "[]"
+    },
+    {
+      "word": "preference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛfrəns",
+      "phoneticUk": "'pref(ə)r(ə)ns",
+      "translation": "偏爱，优先；优先权；偏爱",
+      "sceneMeaning": "偏好",
+      "examples": "[]"
+    },
+    {
+      "word": "adopt",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'dɑpt",
+      "phoneticUk": "ə'dɒpt",
+      "translation": "收养；采用；采取",
+      "sceneMeaning": "采用；采纳",
+      "examples": "[]"
+    },
+    {
+      "word": "appropriate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əˈpropriɪt",
+      "phoneticUk": "ə'prəʊprɪət",
+      "translation": "适当的，恰当的",
+      "sceneMeaning": "适当的",
+      "examples": "[]"
+    },
+    {
+      "word": "optimistic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɑptɪ'mɪstɪk",
+      "phoneticUk": "ɒptɪ'mɪstɪk",
+      "translation": "乐观的；乐观主义的；乐观的",
+      "sceneMeaning": "乐观的；乐观主义的；乐观的；本场景常见用法：乐观估计；最乐观时间",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'væljʊ'et",
+      "phoneticUk": "ɪ'væljʊeɪt",
+      "translation": "评价，估…的价；评价",
+      "sceneMeaning": "评价；评估",
+      "examples": "[]"
+    },
+    {
+      "word": "prior",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'praɪɚ",
+      "phoneticUk": "'praɪə",
+      "translation": "在先的；优先的",
+      "sceneMeaning": "在先的；优先的",
+      "examples": "[]"
+    },
+    {
+      "word": "deliberate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'lɪbərət",
+      "phoneticUk": "dɪ'lɪb(ə)rət",
+      "translation": "故意的",
+      "sceneMeaning": "深思熟虑的；故意的",
+      "examples": "[]"
+    },
+    {
+      "word": "disadvantage",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɪsəd'væntɪdʒ",
+      "phoneticUk": "dɪsəd'vɑːntɪdʒ",
+      "translation": "不利，不利地位；不利情况，缺点",
+      "sceneMeaning": "劣势；不利条件",
+      "examples": "[]"
+    },
+    {
+      "word": "efficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃnt",
+      "phoneticUk": "ɪ'fɪʃ(ə)nt",
+      "translation": "效率高的，有能力的",
+      "sceneMeaning": "高效的",
+      "examples": "[]"
+    },
+    {
+      "word": "flexible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'flɛksəbl",
+      "phoneticUk": "'fleksɪb(ə)l",
+      "translation": "易弯曲的；灵活的；灵活的",
+      "sceneMeaning": "灵活的",
+      "examples": "[]"
+    },
+    {
+      "word": "organize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɔrɡənˌaɪz",
+      "phoneticUk": "ˈɔ:gənaɪz",
+      "translation": "组织，编组",
+      "sceneMeaning": "组织；安排",
+      "examples": "[]"
+    },
+    {
+      "word": "path",
+      "partOfSpeech": "n",
+      "phoneticUs": "pæθ",
+      "phoneticUk": "pɑːθ",
+      "translation": "路，小道；道路",
+      "sceneMeaning": "路径；道路",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "日程；计划表",
+      "examples": "[]"
+    },
+    {
+      "word": "suit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sut",
+      "phoneticUk": "sju:t; su:t",
+      "translation": "起拆，诉讼；适合",
+      "sceneMeaning": "起拆，诉讼；适合",
+      "examples": "[]"
+    },
+    {
+      "word": "adjust",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'dʒʌst",
+      "phoneticUk": "ə'dʒʌst",
+      "translation": "调整，调节；校正",
+      "sceneMeaning": "调整",
+      "examples": "[]"
+    },
+    {
+      "word": "advisable",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'vaɪzəbl",
+      "phoneticUk": "əd'vaɪzəb(ə)l",
+      "translation": "明智的；可取的",
+      "sceneMeaning": "明智的；可取的",
+      "examples": "[]"
+    },
+    {
+      "word": "determine",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'tɝmɪn",
+      "phoneticUk": "dɪ'tɜːmɪn",
+      "translation": "决定；查明；决心；决定；下决心",
+      "sceneMeaning": "确定；决定",
+      "examples": "[]"
+    },
+    {
+      "word": "ideal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "aɪ'diəl",
+      "phoneticUk": "aɪ'dɪəl; aɪ'diːəl",
+      "translation": "理想的；观念的",
+      "sceneMeaning": "理想的；观念的",
+      "examples": "[]"
+    },
+    {
+      "word": "judge",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒʌdʒ",
+      "phoneticUk": "dʒʌdʒ",
+      "translation": "法官；裁判员",
+      "sceneMeaning": "判断",
+      "examples": "[]"
+    },
+    {
+      "word": "negotiate",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪ'ɡoʃɪet",
+      "phoneticUk": "nɪ'ɡəʊʃɪeɪt",
+      "translation": "谈判，协商，交涉",
+      "sceneMeaning": "谈判",
+      "examples": "[]"
+    },
+    {
+      "word": "objective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əb'dʒɛktɪv",
+      "phoneticUk": "əb'dʒektɪv",
+      "translation": "客观的；无偏见的",
+      "sceneMeaning": "目标；目的",
+      "examples": "[]"
+    },
+    {
+      "word": "plan",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "plæn",
+      "phoneticUk": "plæn",
+      "translation": "计划，打算",
+      "sceneMeaning": "计划",
+      "examples": "[]"
+    },
+    {
+      "word": "purpose",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɝpəs",
+      "phoneticUk": "'pɜːpəs",
+      "translation": "目的；意图；效果",
+      "sceneMeaning": "目的",
+      "examples": "[]"
+    },
+    {
+      "word": "reasonable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'riznəbl",
+      "phoneticUk": "'riːz(ə)nəb(ə)l",
+      "translation": "合情合理的；公道的",
+      "sceneMeaning": "合理的",
+      "examples": "[]"
+    },
+    {
+      "word": "stale",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "stel",
+      "phoneticUk": "steɪl",
+      "translation": "陈腐的；走了气的；乏味的，没有新意的",
+      "sceneMeaning": "陈腐的；走了气的；乏味的，没有新意的",
+      "examples": "[]"
+    },
+    {
+      "word": "technique",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɛk'nik",
+      "phoneticUk": "tek'ni:k",
+      "translation": "技巧，手艺；技术，技能",
+      "sceneMeaning": "技巧；技术",
+      "examples": "[]"
+    },
+    {
+      "word": "ultimate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ʌltəmət",
+      "phoneticUk": "'ʌltɪmət",
+      "translation": "最后的，最终的",
+      "sceneMeaning": "最后的，最终的",
+      "examples": "[]"
+    },
+    {
+      "word": "advise",
+      "partOfSpeech": "v",
+      "phoneticUs": "əd'vaɪz",
+      "phoneticUk": "əd'vaɪz",
+      "translation": "劝告；建议；通知",
+      "sceneMeaning": "建议",
+      "examples": "[]"
+    },
+    {
+      "word": "analysis",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'næləsɪs",
+      "phoneticUk": "ə'nælɪsɪs",
+      "translation": "分析，分解，解析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "considerable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'sɪdərəbl",
+      "phoneticUk": "kən'sɪd(ə)rəb(ə)l",
+      "translation": "相当大的；重要的；相当大(或多)的",
+      "sceneMeaning": "相当大的；重要的；相当大(或多)的",
+      "examples": "[]"
+    },
+    {
+      "word": "crazy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'krezi",
+      "phoneticUk": "'kreɪzɪ",
+      "translation": "疯狂的，荒唐的",
+      "sceneMeaning": "疯狂的，荒唐的",
+      "examples": "[]"
+    },
+    {
+      "word": "estimate",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛstə,met",
+      "phoneticUk": "'estɪmeɪt",
+      "translation": "估计，评价；估计",
+      "sceneMeaning": "估计",
+      "examples": "[]"
+    },
+    {
+      "word": "execute",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɛksɪkjut",
+      "phoneticUk": "'eksɪkjuːt",
+      "translation": "将…处死；实施",
+      "sceneMeaning": "执行",
+      "examples": "[]"
+    },
+    {
+      "word": "feedback",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fidbæk",
+      "phoneticUk": "'fiːdbæk",
+      "translation": "回授，反馈，反应；反馈",
+      "sceneMeaning": "反馈",
+      "examples": "[]"
+    },
+    {
+      "word": "goal",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡol",
+      "phoneticUk": "gəʊl",
+      "translation": "球门；得分；目的",
+      "sceneMeaning": "目标",
+      "examples": "[]"
+    },
+    {
+      "word": "guidance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gaɪdns",
+      "phoneticUk": "'gaɪd(ə)ns",
+      "translation": "引导，指导，领导",
+      "sceneMeaning": "引导，指导，领导；本场景常见用法：[空][海]制导系统",
+      "examples": "[]"
+    },
+    {
+      "word": "guide",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡaɪd",
+      "phoneticUk": "gaɪd",
+      "translation": "导游者；给…导游",
+      "sceneMeaning": "指导",
+      "examples": "[]"
+    },
+    {
+      "word": "intention",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɛnʃən",
+      "phoneticUk": "ɪn'tenʃ(ə)n",
+      "translation": "意图，意向，目的；打算，意图",
+      "sceneMeaning": "意图；打算",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanism",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛkənɪzəm",
+      "phoneticUk": "'mekənɪzəm",
+      "translation": "机制，机能",
+      "sceneMeaning": "机制",
+      "examples": "[]"
+    },
+    {
+      "word": "misguided",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",mɪs'ɡaɪdɪd",
+      "phoneticUk": "ˌmɪs'ɡaɪdɪd",
+      "translation": "被误导的",
+      "sceneMeaning": "被误导的",
+      "examples": "[]"
+    },
+    {
+      "word": "option",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑpʃən",
+      "phoneticUk": "'ɒpʃ(ə)n",
+      "translation": "选择，选择权；选择",
+      "sceneMeaning": "选项",
+      "examples": "[]"
+    },
+    {
+      "word": "predict",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɪ'dɪkt",
+      "phoneticUk": "prɪ'dɪkt",
+      "translation": "预言，预告，预测；预言，预测，预告",
+      "sceneMeaning": "预测",
+      "examples": "[]"
+    },
+    {
+      "word": "priority",
+      "partOfSpeech": "n",
+      "phoneticUs": "praɪ'ɔrəti",
+      "phoneticUk": "praɪ'ɒrətɪ",
+      "translation": "优先，优先权",
+      "sceneMeaning": "优先事项",
+      "examples": "[]"
+    },
+    {
+      "word": "procedure",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'sidʒɚ",
+      "phoneticUk": "prə'siːdʒə",
+      "translation": "程序；手续；过程；程序",
+      "sceneMeaning": "程序；步骤",
+      "examples": "[]"
+    },
+    {
+      "word": "recommendation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛkəmɛn'deʃən",
+      "phoneticUk": ",rekəmen'deɪʃ(ə)n",
+      "translation": "推荐，介绍；劝告",
+      "sceneMeaning": "推荐；建议",
+      "examples": "[]"
+    },
+    {
+      "word": "scheme",
+      "partOfSpeech": "n",
+      "phoneticUs": "skim",
+      "phoneticUk": "skiːm",
+      "translation": "计划，规划；诡计",
+      "sceneMeaning": "计划，规划；诡计；本场景常见用法：[计]调制方案",
+      "examples": "[]"
+    },
+    {
+      "word": "advisory",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'vaɪzəri",
+      "phoneticUk": "əd'vaɪzərɪ",
+      "translation": "报告，警告",
+      "sceneMeaning": "报告，警告",
+      "examples": "[]"
+    },
+    {
+      "word": "analyze",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ænə,laɪz",
+      "phoneticUk": "'ænə,laɪz",
+      "translation": "分析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "arrange",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'rendʒ",
+      "phoneticUk": "ə'reɪn(d)ʒ",
+      "translation": "筹备；整理；调解；安排，筹划",
+      "sceneMeaning": "安排",
+      "examples": "[]"
+    },
+    {
+      "word": "calculation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kælkju'leʃən",
+      "phoneticUk": "kælkjʊ'leɪʃ(ə)n",
+      "translation": "计算，计算结果",
+      "sceneMeaning": "计算",
+      "examples": "[]"
+    },
+    {
+      "word": "complement",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈkɑːmplɪment",
+      "phoneticUk": "'kɒmplɪm(ə)nt",
+      "translation": "补充",
+      "sceneMeaning": "补充；本场景常见用法：求补系统",
+      "examples": "[]"
+    },
+    {
+      "word": "conclusion",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'kluʒn",
+      "phoneticUk": "kən'kluːʒ(ə)n",
+      "translation": "结论，推论；结尾；结论",
+      "sceneMeaning": "结论",
+      "examples": "[]"
+    },
+    {
+      "word": "direction",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "方向，方位；指导",
+      "sceneMeaning": "方向",
+      "examples": "[]"
+    },
+    {
+      "word": "discard",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪsˈkɑːrd",
+      "phoneticUk": "dɪ'skɑːd",
+      "translation": "丢弃，抛弃，遗弃",
+      "sceneMeaning": "丢弃，抛弃，遗弃",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ,væljʊ'eʃən",
+      "phoneticUk": "ɪˌvæljuˈeɪʃn",
+      "translation": "评价，评估",
+      "sceneMeaning": "评价；评估",
+      "examples": "[]"
+    },
+    {
+      "word": "instance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstəns",
+      "phoneticUk": "'ɪnst(ə)ns",
+      "translation": "例子，实例，事例；情况，例子",
+      "sceneMeaning": "例子，实例，事例；情况，例子",
+      "examples": "[]"
+    },
+    {
+      "word": "pilot",
+      "partOfSpeech": "n",
+      "phoneticUs": "'paɪlət",
+      "phoneticUk": "'paɪlət",
+      "translation": "领航员；飞行员",
+      "sceneMeaning": "试点；试验项目",
+      "examples": "[]"
+    },
+    {
+      "word": "proposal",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'pozl",
+      "phoneticUk": "prə'pəʊz(ə)l",
+      "translation": "提议，建议；求婚；提议",
+      "sceneMeaning": "提案；建议",
+      "examples": "[]"
+    },
+    {
+      "word": "review",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'vju",
+      "phoneticUk": "rɪ'vjuː",
+      "translation": "再检查；复习；回顾",
+      "sceneMeaning": "审查；回顾",
+      "examples": "[]"
+    },
+    {
+      "word": "sake",
+      "partOfSpeech": "n",
+      "phoneticUs": "[sek]",
+      "phoneticUk": "seɪk",
+      "translation": "缘故，理由",
+      "sceneMeaning": "缘故，理由",
+      "examples": "[]"
+    },
+    {
+      "word": "selection",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɪ'lɛkʃən",
+      "phoneticUk": "sɪ'lekʃn",
+      "translation": "选择，挑选",
+      "sceneMeaning": "选择；挑选",
+      "examples": "[]"
+    },
+    {
+      "word": "selective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sɪ'lɛktɪv",
+      "phoneticUk": "si'lektiv",
+      "translation": "选择的,精选的",
+      "sceneMeaning": "选择性的",
+      "examples": "[]"
+    },
+    {
+      "word": "simplify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɪmplɪfaɪ",
+      "phoneticUk": "'sɪmplɪfaɪ",
+      "translation": "简化，使单纯；简化",
+      "sceneMeaning": "简化",
+      "examples": "[]"
+    },
+    {
+      "word": "trial",
+      "partOfSpeech": "n",
+      "phoneticUs": "'traɪəl",
+      "phoneticUk": "'traɪəl",
+      "translation": "试，试验；审判",
+      "sceneMeaning": "试验；尝试",
+      "examples": "[]"
+    },
+    {
+      "word": "utilize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'juːtəlaɪz",
+      "phoneticUk": "ˈjuːtɪˌlaɪz",
+      "translation": "利用",
+      "sceneMeaning": "利用",
+      "examples": "[]"
+    },
+    {
+      "word": "abandon",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'bændən",
+      "phoneticUk": "ə'bænd(ə)n",
+      "translation": "丢弃；放弃，抛弃",
+      "sceneMeaning": "放弃",
+      "examples": "[]"
+    },
+    {
+      "word": "approve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'prʊv",
+      "phoneticUk": "ə'pruːv",
+      "translation": "赞成，称许；批准；赞成，同意",
+      "sceneMeaning": "批准",
+      "examples": "[]"
+    },
+    {
+      "word": "arrangement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'rendʒmənt",
+      "phoneticUk": "ə'reɪn(d)ʒm(ə)nt",
+      "translation": "整理，排列；安排",
+      "sceneMeaning": "安排",
+      "examples": "[]"
+    },
+    {
+      "word": "assess",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sɛs",
+      "phoneticUk": "ə'ses",
+      "translation": "对(财产等)估价；评价",
+      "sceneMeaning": "评估",
+      "examples": "[]"
+    },
+    {
+      "word": "calculate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kælkjulet",
+      "phoneticUk": "'kælkjʊleɪt",
+      "translation": "计算；估计；计划；计算",
+      "sceneMeaning": "计算",
+      "examples": "[]"
+    },
+    {
+      "word": "calculator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kælkjuletɚ",
+      "phoneticUk": "'kælkjʊleɪtə",
+      "translation": "计算器，计算者",
+      "sceneMeaning": "计算器，计算者；本场景常见用法：科学用计算器",
+      "examples": "[]"
+    },
+    {
+      "word": "complicate",
+      "partOfSpeech": "vt",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "使复杂；使陷入",
+      "sceneMeaning": "使复杂；使陷入",
+      "examples": "[]"
+    },
+    {
+      "word": "conclude",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'klud",
+      "phoneticUk": "kən'kluːd",
+      "translation": "推断出；结束",
+      "sceneMeaning": "得出结论",
+      "examples": "[]"
+    },
+    {
+      "word": "coordinate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ko'ɔrdɪnet",
+      "phoneticUk": "kəʊ'ɔ:dɪneɪt",
+      "translation": "使协调，调节",
+      "sceneMeaning": "协调",
+      "examples": "[]"
+    },
+    {
+      "word": "counsel",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kaʊnsl",
+      "phoneticUk": "'kaʊns(ə)l",
+      "translation": "忠告，建议",
+      "sceneMeaning": "忠告，建议",
+      "examples": "[]"
+    },
+    {
+      "word": "counseling",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kaʊnslɪŋ",
+      "phoneticUk": "'kaʊnsəlɪŋ",
+      "translation": "咨询服务",
+      "sceneMeaning": "咨询服务",
+      "examples": "[]"
+    },
+    {
+      "word": "devise",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vaɪz",
+      "phoneticUk": "dɪ'vaɪz",
+      "translation": "设计，发明",
+      "sceneMeaning": "设计，发明",
+      "examples": "[]"
+    },
+    {
+      "word": "displease",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪs'pliz",
+      "phoneticUk": "dɪs'pliːz",
+      "translation": "使不愉快，使生气",
+      "sceneMeaning": "使不愉快，使生气",
+      "examples": "[]"
+    },
+    {
+      "word": "experiment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'sperɪmənt",
+      "phoneticUk": "ɪk'sperɪm(ə)nt; ek-",
+      "translation": "实验；试验",
+      "sceneMeaning": "实验",
+      "examples": "[]"
+    },
+    {
+      "word": "feasible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fizəbl",
+      "phoneticUk": "'fiːzɪb(ə)l",
+      "translation": "可行的；可能的；可行的；可能的；可用的",
+      "sceneMeaning": "可行的",
+      "examples": "[]"
+    },
+    {
+      "word": "forecast",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fɔrkæst",
+      "phoneticUk": "'fɔːkɑːst",
+      "translation": "预测，预报；预示",
+      "sceneMeaning": "预测",
+      "examples": "[]"
+    },
+    {
+      "word": "foreseeable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "fɔr'siəbl",
+      "phoneticUk": "fɔː'siːəbl",
+      "translation": "可以预见的",
+      "sceneMeaning": "可以预见的",
+      "examples": "[]"
+    },
+    {
+      "word": "formula",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrmjələ",
+      "phoneticUk": "'fɔːmjʊlə",
+      "translation": "公式，式",
+      "sceneMeaning": "公式，式",
+      "examples": "[]"
+    },
+    {
+      "word": "framework",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fremwɝk",
+      "phoneticUk": "'freɪmwɜːk",
+      "translation": "框架，构架，结构",
+      "sceneMeaning": "框架",
+      "examples": "[]"
+    },
+    {
+      "word": "guideline",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡaɪdlaɪn",
+      "phoneticUk": "'gaɪdlaɪn",
+      "translation": "指导原则",
+      "sceneMeaning": "指导原则",
+      "examples": "[]"
+    },
+    {
+      "word": "implement",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪmplɪmɛnt",
+      "phoneticUk": "'ɪmplɪmənt",
+      "translation": "实施，执行",
+      "sceneMeaning": "实施",
+      "examples": "[]"
+    },
+    {
+      "word": "implementation",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "ɪmplɪmen'teɪʃ(ə)n",
+      "translation": "实现，履行",
+      "sceneMeaning": "实施",
+      "examples": "[]"
+    },
+    {
+      "word": "instrument",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstrəmənt",
+      "phoneticUk": "'ɪnstrʊm(ə)nt",
+      "translation": "仪器；工具；乐器；仪器，器械，工具",
+      "sceneMeaning": "工具；手段",
+      "examples": "[]"
+    },
+    {
+      "word": "judgement",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒʌdʒmənt",
+      "phoneticUk": "'dʒʌdʒm(ə)nt",
+      "translation": "意见；审判；判断；判断，决定",
+      "sceneMeaning": "意见；审判；判断；判断，决定；本场景常见用法：价值判断",
+      "examples": "[]"
+    },
+    {
+      "word": "miscalculation",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "ˌmɪskælkjʊ'leɪʃn",
+      "translation": "算错，误算",
+      "sceneMeaning": "算错，误算",
+      "examples": "[]"
+    },
+    {
+      "word": "misguide",
+      "partOfSpeech": "v",
+      "phoneticUs": "mɪs'gaɪd",
+      "phoneticUk": "mɪs'gaɪd",
+      "translation": "误导",
+      "sceneMeaning": "误导",
+      "examples": "[]"
+    },
+    {
+      "word": "monitor",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɔnɪtɚ",
+      "phoneticUk": "'mɒnɪtə",
+      "translation": "班长；监视器；监控；监听",
+      "sceneMeaning": "监测；监督",
+      "examples": "[]"
+    },
+    {
+      "word": "optional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɑpʃənl",
+      "phoneticUk": "'ɒpʃ(ə)n(ə)l",
+      "translation": "可以任意选择的",
+      "sceneMeaning": "可选择的",
+      "examples": "[]"
+    },
+    {
+      "word": "preferentially",
+      "partOfSpeech": "adv",
+      "phoneticUs": ",prefə'renʃəli",
+      "phoneticUk": ",prefə'renʃəli",
+      "translation": "优先地",
+      "sceneMeaning": "优先地",
+      "examples": "[]"
+    },
+    {
+      "word": "reassess",
+      "partOfSpeech": "v",
+      "phoneticUs": "'riə'sɛs",
+      "phoneticUk": "ˌri:əˈses",
+      "translation": "重新评估",
+      "sceneMeaning": "重新评估",
+      "examples": "[]"
+    },
+    {
+      "word": "reject",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'dʒɛkt",
+      "phoneticUk": "rɪ'dʒekt",
+      "translation": "拒绝；丢掉；驳回；拒绝，驳回",
+      "sceneMeaning": "拒绝；否决",
+      "examples": "[]"
+    },
+    {
+      "word": "resourceful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'sɔrsfl",
+      "phoneticUk": "rɪ'sɔːsfl",
+      "translation": "机智的",
+      "sceneMeaning": "机智的",
+      "examples": "[]"
+    },
+    {
+      "word": "revise",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'vaɪz",
+      "phoneticUk": "rɪ'vaɪz",
+      "translation": "修订，校订；修改；修订",
+      "sceneMeaning": "修订",
+      "examples": "[]"
+    },
+    {
+      "word": "route",
+      "partOfSpeech": "n",
+      "phoneticUs": "raʊt",
+      "phoneticUk": "ruːt",
+      "translation": "路，路线，路程",
+      "sceneMeaning": "路线",
+      "examples": "[]"
+    },
+    {
+      "word": "simplicity",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɪm'plɪsəti",
+      "phoneticUk": "sɪm'plɪsɪtɪ",
+      "translation": "简单，简易；朴素；简单",
+      "sceneMeaning": "简单，简易；朴素；简单",
+      "examples": "[]"
+    },
+    {
+      "word": "systematical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "有系统的；有计划的",
+      "sceneMeaning": "有系统的；有计划的",
+      "examples": "[]"
+    }
+  ]
+}

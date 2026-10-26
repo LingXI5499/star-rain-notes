@@ -1,0 +1,1620 @@
+{
+  "id": "29",
+  "title": "实验室 / 科研",
+  "layer": "学习与工作主干层",
+  "wordCount": 179,
+  "path": "/english/vocabulary/29/",
+  "words": [
+    {
+      "word": "evidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛvɪdəns",
+      "phoneticUk": "'evɪd(ə)ns",
+      "translation": "根据；证据，证人；根据，证据，迹象",
+      "sceneMeaning": "证据",
+      "examples": "[]"
+    },
+    {
+      "word": "significant",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "sɪɡ'nɪfɪkənt",
+      "phoneticUk": "sɪg'nɪfɪk(ə)nt",
+      "translation": "有意义的；重要的；重要的",
+      "sceneMeaning": "显著的；重要的",
+      "examples": "[]"
+    },
+    {
+      "word": "physical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɪzɪkl",
+      "phoneticUk": "'fɪzɪk(ə)l",
+      "translation": "物质的；物理的；身体上的",
+      "sceneMeaning": "物理的；身体的",
+      "examples": "[]"
+    },
+    {
+      "word": "project",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "prəˈdʒɛkt; prɑdʒɛkt",
+      "phoneticUk": "prəˈdʒekt; ˈprɒdʒekt",
+      "translation": "方案，工程；伸出；工程；课题、作业",
+      "sceneMeaning": "项目；课题",
+      "examples": "[]"
+    },
+    {
+      "word": "alcohol",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ælkəhɔl",
+      "phoneticUk": "'ælkəhɒl",
+      "translation": "酒精，乙醇；酒精",
+      "sceneMeaning": "酒精，乙醇；酒精；本场景常见用法：酒精浓度",
+      "examples": "[]"
+    },
+    {
+      "word": "apply",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'plaɪ",
+      "phoneticUk": "ə'plaɪ",
+      "translation": "应用，实施，使用；申请；应用",
+      "sceneMeaning": "应用；施加",
+      "examples": "[]"
+    },
+    {
+      "word": "literature",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɪtərəˌtʃʊr",
+      "phoneticUk": "'lɪt(ə)rətʃə",
+      "translation": "文学；文献；文学，文学作品；文献；文献",
+      "sceneMeaning": "文献；文学",
+      "examples": "[]"
+    },
+    {
+      "word": "control",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kən'trol",
+      "phoneticUk": "kən'trəʊl",
+      "translation": "控制，克制；控制",
+      "sceneMeaning": "对照；控制",
+      "examples": "[]"
+    },
+    {
+      "word": "data",
+      "partOfSpeech": "n",
+      "phoneticUs": "'detə",
+      "phoneticUk": "'deɪtə",
+      "translation": "数据;；资料",
+      "sceneMeaning": "数据",
+      "examples": "[]"
+    },
+    {
+      "word": "develop",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vɛləp",
+      "phoneticUk": "dɪ'veləp",
+      "translation": "发展；形成；开发",
+      "sceneMeaning": "开发；发展",
+      "examples": "[]"
+    },
+    {
+      "word": "find",
+      "partOfSpeech": "v",
+      "phoneticUs": "faɪnd",
+      "phoneticUk": "faɪnd",
+      "translation": "找到；发觉；找出",
+      "sceneMeaning": "找到；发觉；找出",
+      "examples": "[]"
+    },
+    {
+      "word": "finding",
+      "partOfSpeech": "n",
+      "phoneticUs": "'faɪndɪŋ",
+      "phoneticUk": "'faɪndɪŋ",
+      "translation": "发现；调查的结果",
+      "sceneMeaning": "研究发现",
+      "examples": "[]"
+    },
+    {
+      "word": "found",
+      "partOfSpeech": "v",
+      "phoneticUs": "faʊnd",
+      "phoneticUk": "faʊnd",
+      "translation": "创立，创办；建立",
+      "sceneMeaning": "创立，创办；建立",
+      "examples": "[]"
+    },
+    {
+      "word": "measure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛʒɚ",
+      "phoneticUk": "'meʒə",
+      "translation": "量，测量；分量；测量",
+      "sceneMeaning": "测量；衡量",
+      "examples": "[]"
+    },
+    {
+      "word": "paper",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pepɚ",
+      "phoneticUk": "'peɪpə",
+      "translation": "纸；官方文件；文章",
+      "sceneMeaning": "论文；文章",
+      "examples": "[]"
+    },
+    {
+      "word": "present",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'prɛznt",
+      "phoneticUk": "'prez(ə)nt",
+      "translation": "现在的；目前",
+      "sceneMeaning": "展示；报告",
+      "examples": "[]"
+    },
+    {
+      "word": "professor",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "教授",
+      "sceneMeaning": "教授",
+      "examples": "[]"
+    },
+    {
+      "word": "program",
+      "partOfSpeech": "n",
+      "phoneticUs": "'proɡræm",
+      "phoneticUk": "'prəʊɡræm",
+      "translation": "节目单；大纲；程序",
+      "sceneMeaning": "项目；程序",
+      "examples": "[]"
+    },
+    {
+      "word": "risk",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪsk",
+      "phoneticUk": "rɪsk",
+      "translation": "风险，危险，冒险",
+      "sceneMeaning": "风险",
+      "examples": "[]"
+    },
+    {
+      "word": "pressure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛʃɚ",
+      "phoneticUk": "'preʃə",
+      "translation": "压力；压力；压，按",
+      "sceneMeaning": "压力",
+      "examples": "[]"
+    },
+    {
+      "word": "scientific",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",saɪən'tɪfɪk",
+      "phoneticUk": "saɪən'tɪfɪk",
+      "translation": "科学(上)的",
+      "sceneMeaning": "科学的",
+      "examples": "[]"
+    },
+    {
+      "word": "solid",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'sɑlɪd",
+      "phoneticUk": "'sɒlɪd",
+      "translation": "固体的；固体；扎实的，坚实的",
+      "sceneMeaning": "固体",
+      "examples": "[]"
+    },
+    {
+      "word": "chemical",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'kɛmɪkl",
+      "phoneticUk": "'kemɪk(ə)l",
+      "translation": "化学的；化学制品",
+      "sceneMeaning": "化学的",
+      "examples": "[]"
+    },
+    {
+      "word": "condition",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'dɪʃən",
+      "phoneticUk": "kən'dɪʃ(ə)n",
+      "translation": "状况，状态；环境",
+      "sceneMeaning": "条件；状态",
+      "examples": "[]"
+    },
+    {
+      "word": "solution",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'luʃən",
+      "phoneticUk": "sə'luːʃ(ə)n",
+      "translation": "解决，解答；溶解；解决，解答，解决办法",
+      "sceneMeaning": "溶液；解决方案",
+      "examples": "[]"
+    },
+    {
+      "word": "truth",
+      "partOfSpeech": "n",
+      "phoneticUs": "trʊθ",
+      "phoneticUk": "truːθ",
+      "translation": "真理；真实；真实性",
+      "sceneMeaning": "真理；真实；真实性；本场景常见用法：真理符合论；对应的真理理论",
+      "examples": "[]"
+    },
+    {
+      "word": "balance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bæləns",
+      "phoneticUk": "'bæl(ə)ns",
+      "translation": "使平衡；称；天平",
+      "sceneMeaning": "天平；平衡",
+      "examples": "[]"
+    },
+    {
+      "word": "expert",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɛkspɝt; (for adj., also) ɛksˈpɝt ; ɪkˈspɝt",
+      "phoneticUk": "'ekspɜːt",
+      "translation": "专家；熟练的；熟练的，内行的",
+      "sceneMeaning": "专家",
+      "examples": "[]"
+    },
+    {
+      "word": "gas",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡæs",
+      "phoneticUk": "gæs",
+      "translation": "煤气；气体；汽油",
+      "sceneMeaning": "气体",
+      "examples": "[]"
+    },
+    {
+      "word": "heat",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hit",
+      "phoneticUk": "hiːt",
+      "translation": "热，炎热；变热",
+      "sceneMeaning": "加热",
+      "examples": "[]"
+    },
+    {
+      "word": "method",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛθəd",
+      "phoneticUk": "'meθəd",
+      "translation": "方法，办法；教学法",
+      "sceneMeaning": "方法",
+      "examples": "[]"
+    },
+    {
+      "word": "significance",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɪɡ'nɪfɪkəns",
+      "phoneticUk": "sɪg'nɪfɪk(ə)ns",
+      "translation": "意义，意味；重要性",
+      "sceneMeaning": "意义，意味；重要性；本场景常见用法：统计显著性；统计数据",
+      "examples": "[]"
+    },
+    {
+      "word": "contain",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'ten",
+      "phoneticUk": "kən'teɪn",
+      "translation": "包含，容纳；等于",
+      "sceneMeaning": "包含，容纳；等于",
+      "examples": "[]"
+    },
+    {
+      "word": "design",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'zaɪn",
+      "phoneticUk": "dɪ'zaɪn",
+      "translation": "设计；设计；图样",
+      "sceneMeaning": "设计",
+      "examples": "[]"
+    },
+    {
+      "word": "factor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktɚ",
+      "phoneticUk": "'fæktə",
+      "translation": "因素；因子，系数",
+      "sceneMeaning": "因素",
+      "examples": "[]"
+    },
+    {
+      "word": "material",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'tɪrɪəl",
+      "phoneticUk": "mə'tɪərɪəl",
+      "translation": "材料；素材a物质的",
+      "sceneMeaning": "材料；资料",
+      "examples": "[]"
+    },
+    {
+      "word": "model",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑdl",
+      "phoneticUk": "'mɒdl",
+      "translation": "模型；模式；模特儿",
+      "sceneMeaning": "模型；模式",
+      "examples": "[]"
+    },
+    {
+      "word": "press",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɛs",
+      "phoneticUk": "pres",
+      "translation": "压，按，揿；催促",
+      "sceneMeaning": "压，按，揿；催促",
+      "examples": "[]"
+    },
+    {
+      "word": "record",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "(for v.) rɪˈkɔrd; (for n. adj.) ˈrɛkɚd",
+      "phoneticUk": "(for v.)rɪˈkɔːd; (for n.) ˈrekɔːd",
+      "translation": "记录；履历；记录",
+      "sceneMeaning": "记录",
+      "examples": "[]"
+    },
+    {
+      "word": "reliable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'laɪəbl",
+      "phoneticUk": "rɪ'laɪəb(ə)l",
+      "translation": "可靠的，可信赖的",
+      "sceneMeaning": "可靠的",
+      "examples": "[]"
+    },
+    {
+      "word": "rely",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'laɪ",
+      "phoneticUk": "rɪ'laɪ",
+      "translation": "依赖，依靠；信赖",
+      "sceneMeaning": "依赖，依靠；信赖",
+      "examples": "[]"
+    },
+    {
+      "word": "separate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "(for v.) sɛpəˌret; (for adj.) sɛprɪt",
+      "phoneticUk": "(for v.) ˈsepəreɪt; (for adj.) ˈseprət",
+      "translation": "分离的；个别的",
+      "sceneMeaning": "分离；分开",
+      "examples": "[]"
+    },
+    {
+      "word": "statistics",
+      "partOfSpeech": "n",
+      "phoneticUs": "stə'tɪstɪks",
+      "phoneticUk": "stə'tɪstɪks",
+      "translation": "统计学；数据",
+      "sceneMeaning": "统计学；数据；本场景常见用法：统计分析",
+      "examples": "[]"
+    },
+    {
+      "word": "technical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tɛknɪkl",
+      "phoneticUk": "'teknɪk(ə)l",
+      "translation": "技术的，工艺的；技术的",
+      "sceneMeaning": "技术的",
+      "examples": "[]"
+    },
+    {
+      "word": "theory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'θiəri",
+      "phoneticUk": "'θɪərɪ",
+      "translation": "理论",
+      "sceneMeaning": "理论",
+      "examples": "[]"
+    },
+    {
+      "word": "workshop",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wɝkʃɑp",
+      "phoneticUk": "'wɜːkʃɒp",
+      "translation": "车间，工场；创作室",
+      "sceneMeaning": "工作坊；研讨班",
+      "examples": "[]"
+    },
+    {
+      "word": "consistent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'sɪstənt",
+      "phoneticUk": "kən'sɪst(ə)nt",
+      "translation": "坚持的，一贯的；一致的",
+      "sceneMeaning": "一致的；持续的",
+      "examples": "[]"
+    },
+    {
+      "word": "density",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɛnsəti",
+      "phoneticUk": "'densɪtɪ",
+      "translation": "密集，稠密；密度；密度",
+      "sceneMeaning": "密度",
+      "examples": "[]"
+    },
+    {
+      "word": "substance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sʌbstəns",
+      "phoneticUk": "'sʌbst(ə)ns",
+      "translation": "物质；实质；本旨",
+      "sceneMeaning": "物质",
+      "examples": "[]"
+    },
+    {
+      "word": "substantial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "səbˈstænʃəl",
+      "phoneticUk": "səb'stænʃ(ə)l",
+      "translation": "物质的；坚固的；大量的",
+      "sceneMeaning": "物质的；坚固的；大量的；本场景常见用法：确实证据",
+      "examples": "[]"
+    },
+    {
+      "word": "disguise",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪs'ɡaɪz",
+      "phoneticUk": "dɪs'gaɪz",
+      "translation": "隐瞒，掩埋；假装",
+      "sceneMeaning": "隐瞒，掩埋；假装",
+      "examples": "[]"
+    },
+    {
+      "word": "evaluate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'væljʊ'et",
+      "phoneticUk": "ɪ'væljʊeɪt",
+      "translation": "评价，估…的价；评价",
+      "sceneMeaning": "评估",
+      "examples": "[]"
+    },
+    {
+      "word": "label",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈlebəl",
+      "phoneticUk": "'leɪb(ə)l",
+      "translation": "标签；标记，符号",
+      "sceneMeaning": "贴标签；标注",
+      "examples": "[]"
+    },
+    {
+      "word": "disposal",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'spozl",
+      "phoneticUk": "dɪ'spəʊz(ə)l",
+      "translation": "丢掉，处理，销毁",
+      "sceneMeaning": "处理；处置",
+      "examples": "[]"
+    },
+    {
+      "word": "intensive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'tɛnsɪv",
+      "phoneticUk": "ɪn'tensɪv",
+      "translation": "加强的；精耕细作的",
+      "sceneMeaning": "加强的；精耕细作的；本场景常见用法：深入研究",
+      "examples": "[]"
+    },
+    {
+      "word": "accurate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ækjərət",
+      "phoneticUk": "'ækjʊrət",
+      "translation": "准确的，正确无误的；精确的，准确的",
+      "sceneMeaning": "准确的",
+      "examples": "[]"
+    },
+    {
+      "word": "cancer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kænsɚ",
+      "phoneticUk": "'kænsə",
+      "translation": "癌，癌症，肿瘤",
+      "sceneMeaning": "癌，癌症，肿瘤；本场景常见用法：癌症研究；肿瘤研究",
+      "examples": "[]"
+    },
+    {
+      "word": "equipment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kwɪpmənt",
+      "phoneticUk": "ɪ'kwɪpm(ə)nt",
+      "translation": "装备，设备，配备",
+      "sceneMeaning": "设备",
+      "examples": "[]"
+    },
+    {
+      "word": "identify",
+      "partOfSpeech": "v",
+      "phoneticUs": "aɪ'dɛntɪfaɪ",
+      "phoneticUk": "aɪ'dentɪfaɪ",
+      "translation": "认出，识别，鉴定；认出，识别；视为",
+      "sceneMeaning": "识别；鉴定",
+      "examples": "[]"
+    },
+    {
+      "word": "journal",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɝnl",
+      "phoneticUk": "'dʒɜːn(ə)l",
+      "translation": "日报，杂志；日志",
+      "sceneMeaning": "期刊；日志",
+      "examples": "[]"
+    },
+    {
+      "word": "machine",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'ʃin",
+      "phoneticUk": "mə'ʃiːn",
+      "translation": "机器；机械",
+      "sceneMeaning": "机器",
+      "examples": "[]"
+    },
+    {
+      "word": "presence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛzns",
+      "phoneticUk": "'prez(ə)ns",
+      "translation": "出席，到场；在",
+      "sceneMeaning": "出席，到场；在",
+      "examples": "[]"
+    },
+    {
+      "word": "prove",
+      "partOfSpeech": "v",
+      "phoneticUs": "pruv",
+      "phoneticUk": "pruːv",
+      "translation": "证明；结果是",
+      "sceneMeaning": "证明",
+      "examples": "[]"
+    },
+    {
+      "word": "reaction",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'ækʃən",
+      "phoneticUk": "rɪ'ækʃ(ə)n",
+      "translation": "反应；反作用",
+      "sceneMeaning": "反应",
+      "examples": "[]"
+    },
+    {
+      "word": "biological",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",baɪə'lɑdʒɪkl",
+      "phoneticUk": "ˌbaɪəˈlɒdʒɪkl",
+      "translation": "生物的",
+      "sceneMeaning": "生物学的",
+      "examples": "[]"
+    },
+    {
+      "word": "collect",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'lɛkt",
+      "phoneticUk": "kə'lekt",
+      "translation": "收集；收款",
+      "sceneMeaning": "收集",
+      "examples": "[]"
+    },
+    {
+      "word": "compare",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pɛr",
+      "phoneticUk": "kəm'peə",
+      "translation": "比较，对照；比作；比较，对照",
+      "sceneMeaning": "比较",
+      "examples": "[]"
+    },
+    {
+      "word": "conference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnfərəns",
+      "phoneticUk": "'kɒnf(ə)r(ə)ns",
+      "translation": "会议，讨论会",
+      "sceneMeaning": "会议；学术会议",
+      "examples": "[]"
+    },
+    {
+      "word": "confirm",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fɝm",
+      "phoneticUk": "kən'fɜːm",
+      "translation": "证实，肯定；批准；证实",
+      "sceneMeaning": "确认；证实",
+      "examples": "[]"
+    },
+    {
+      "word": "device",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'vaɪs",
+      "phoneticUk": "dɪˈvaɪs",
+      "translation": "器械，装置；设计；装置，设备",
+      "sceneMeaning": "装置；设备",
+      "examples": "[]"
+    },
+    {
+      "word": "hydrogen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'haɪdrədʒən",
+      "phoneticUk": "'haɪdrədʒ(ə)n",
+      "translation": "氢",
+      "sceneMeaning": "氢",
+      "examples": "[]"
+    },
+    {
+      "word": "intake",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪn'tek",
+      "phoneticUk": "ˈɪnteɪk",
+      "translation": "摄入",
+      "sceneMeaning": "摄入；本场景常见用法：热量摄取",
+      "examples": "[]"
+    },
+    {
+      "word": "participate",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɑr'tɪsə'pet",
+      "phoneticUk": "pɑː'tɪsɪpeɪt",
+      "translation": "参与，参加；分享；参与，参加",
+      "sceneMeaning": "参与，参加；分享；参与，参加；本场景常见用法：参与社会活动",
+      "examples": "[]"
+    },
+    {
+      "word": "technique",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɛk'nik",
+      "phoneticUk": "tek'ni:k",
+      "translation": "技巧，手艺；技术，技能",
+      "sceneMeaning": "技术；技巧",
+      "examples": "[]"
+    },
+    {
+      "word": "abstract",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'æbstrækt",
+      "phoneticUk": "'æbstrækt",
+      "translation": "抽象的；摘要",
+      "sceneMeaning": "摘要",
+      "examples": "[]"
+    },
+    {
+      "word": "analysis",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'næləsɪs",
+      "phoneticUk": "ə'nælɪsɪs",
+      "translation": "分析，分解，解析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "bulk",
+      "partOfSpeech": "n",
+      "phoneticUs": "bʌlk",
+      "phoneticUk": "bʌlk",
+      "translation": "物体，容积，大批",
+      "sceneMeaning": "物体，容积，大批；本场景常见用法：疏松物质",
+      "examples": "[]"
+    },
+    {
+      "word": "cool",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kul",
+      "phoneticUk": "kuːl",
+      "translation": "凉的，冷静的",
+      "sceneMeaning": "冷却",
+      "examples": "[]"
+    },
+    {
+      "word": "error",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛrɚ",
+      "phoneticUk": "'erə",
+      "translation": "错误，谬误；差错",
+      "sceneMeaning": "误差；错误",
+      "examples": "[]"
+    },
+    {
+      "word": "experimental",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɛk'spɛrɪ'mɛntəl",
+      "phoneticUk": "ɪk,sperɪ'ment(ə)l; ek-",
+      "translation": "实验的，试验的",
+      "sceneMeaning": "实验的",
+      "examples": "[]"
+    },
+    {
+      "word": "factory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktri",
+      "phoneticUk": "'fækt(ə)rɪ",
+      "translation": "工厂，制造厂",
+      "sceneMeaning": "工厂，制造厂；本场景常见用法：电工器材厂",
+      "examples": "[]"
+    },
+    {
+      "word": "fund",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fʌnd",
+      "phoneticUk": "fʌnd",
+      "translation": "资金；基金；存款；基金，储备；；提供资金",
+      "sceneMeaning": "资金；基金；存款；基金，储备；；提供资金",
+      "examples": "[]"
+    },
+    {
+      "word": "investigate",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "ɪn'vɛstɪɡet",
+      "phoneticUk": "ɪn'vestɪgeɪt",
+      "translation": "调查",
+      "sceneMeaning": "调查；研究",
+      "examples": "[]"
+    },
+    {
+      "word": "investigation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn,vɛstɪ'ɡeʃən",
+      "phoneticUk": "ɪn,vestɪ'geɪʃ(ə)n",
+      "translation": "调查，调查研究",
+      "sceneMeaning": "调查，调查研究；本场景常见用法：试验研究",
+      "examples": "[]"
+    },
+    {
+      "word": "lab",
+      "partOfSpeech": "n",
+      "phoneticUs": "læb",
+      "phoneticUk": "læb",
+      "translation": "实验室，研究室",
+      "sceneMeaning": "实验室",
+      "examples": "[]"
+    },
+    {
+      "word": "magnificent",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæg'nɪfəsnt",
+      "phoneticUk": "mæg'nɪfɪs(ə)nt",
+      "translation": "壮丽的；华丽的",
+      "sceneMeaning": "壮丽的；华丽的",
+      "examples": "[]"
+    },
+    {
+      "word": "mass",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæs",
+      "phoneticUk": "mæs",
+      "translation": "众多；团；群众",
+      "sceneMeaning": "质量；大量",
+      "examples": "[]"
+    },
+    {
+      "word": "measurable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɛʒərəbl",
+      "phoneticUk": "'meʒ(ə)rəb(ə)l",
+      "translation": "可测量的",
+      "sceneMeaning": "可测量的；本场景常见用法：[数]可测集",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mɪ'kænɪkəl",
+      "phoneticUk": "mɪ'kænɪk(ə)l",
+      "translation": "机械的；力学的",
+      "sceneMeaning": "机械的",
+      "examples": "[]"
+    },
+    {
+      "word": "mix",
+      "partOfSpeech": "v",
+      "phoneticUs": "mɪks",
+      "phoneticUk": "mɪks",
+      "translation": "使混合，混淆",
+      "sceneMeaning": "混合",
+      "examples": "[]"
+    },
+    {
+      "word": "procedure",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'sidʒɚ",
+      "phoneticUk": "prə'siːdʒə",
+      "translation": "程序；手续；过程；程序",
+      "sceneMeaning": "步骤；程序",
+      "examples": "[]"
+    },
+    {
+      "word": "programming",
+      "partOfSpeech": "n",
+      "phoneticUs": "'proɡræmɪŋ",
+      "phoneticUk": "'prəugræmiŋ",
+      "translation": "〔计算机的〕程序编写，程序设计；程序；；〔电视或广播〕节目；电视[广播]节目策划，编排",
+      "sceneMeaning": "〔计算机的〕程序编写，程序设计；程序；；〔电视或广播〕节目；电视[广播]节目策划，编排；本场景常见用法：程序设计技术",
+      "examples": "[]"
+    },
+    {
+      "word": "scale",
+      "partOfSpeech": "n",
+      "phoneticUs": "skel",
+      "phoneticUk": "skeɪl",
+      "translation": "天平，磅秤，秤；规模；比例",
+      "sceneMeaning": "秤；尺度",
+      "examples": "[]"
+    },
+    {
+      "word": "valid",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vælɪd",
+      "phoneticUk": "'vælɪd",
+      "translation": "有效的；正当的；有效的",
+      "sceneMeaning": "有效的；有根据的",
+      "examples": "[]"
+    },
+    {
+      "word": "volume",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɑljum",
+      "phoneticUk": "'vɒljuːm",
+      "translation": "卷，册；容积；音量",
+      "sceneMeaning": "体积；容量；卷",
+      "examples": "[]"
+    },
+    {
+      "word": "analyze",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ænə,laɪz",
+      "phoneticUk": "'ænə,laɪz",
+      "translation": "分析",
+      "sceneMeaning": "分析",
+      "examples": "[]"
+    },
+    {
+      "word": "assistant",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'sɪstənt",
+      "phoneticUk": "ə'sɪst(ə)nt",
+      "translation": "助手，助理；助教",
+      "sceneMeaning": "助手；助理",
+      "examples": "[]"
+    },
+    {
+      "word": "base",
+      "partOfSpeech": "n",
+      "phoneticUs": "bes",
+      "phoneticUk": "beɪs",
+      "translation": "基础，底层；基地",
+      "sceneMeaning": "碱；基础",
+      "examples": "[]"
+    },
+    {
+      "word": "calculation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kælkju'leʃən",
+      "phoneticUk": "kælkjʊ'leɪʃ(ə)n",
+      "translation": "计算，计算结果",
+      "sceneMeaning": "计算",
+      "examples": "[]"
+    },
+    {
+      "word": "Canada",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kænədə",
+      "phoneticUk": "'kænədə",
+      "translation": "加拿大",
+      "sceneMeaning": "加拿大",
+      "examples": "[]"
+    },
+    {
+      "word": "concentrate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kɑnsn'tret",
+      "phoneticUk": "'kɒns(ə)ntreɪt",
+      "translation": "集中；聚集；浓缩",
+      "sceneMeaning": "浓缩；集中",
+      "examples": "[]"
+    },
+    {
+      "word": "concrete",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'kɑŋkrit",
+      "phoneticUk": "'kɒŋkriːt",
+      "translation": "混凝土；具体物；具体的",
+      "sceneMeaning": "混凝土；具体物；具体的",
+      "examples": "[]"
+    },
+    {
+      "word": "crystal",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪstl",
+      "phoneticUk": "'krɪst(ə)l",
+      "translation": "水晶，结晶体；晶粒",
+      "sceneMeaning": "水晶，结晶体；晶粒；本场景常见用法：液晶体显示",
+      "examples": "[]"
+    },
+    {
+      "word": "dense",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɛns",
+      "phoneticUk": "dens",
+      "translation": "密集的；浓厚的",
+      "sceneMeaning": "密集的；浓厚的；本场景常见用法：密实混凝土",
+      "examples": "[]"
+    },
+    {
+      "word": "filter",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fɪltɚ",
+      "phoneticUk": "'fɪltə",
+      "translation": "过滤；滤纸",
+      "sceneMeaning": "过滤",
+      "examples": "[]"
+    },
+    {
+      "word": "identification",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪˌdentɪfɪ'keʃn",
+      "phoneticUk": "aɪ,dentɪfɪ'keɪʃ(ə)n",
+      "translation": "身份证明；鉴定，识别；认同；",
+      "sceneMeaning": "身份证明；鉴定，识别；认同；；本场景常见用法：危害确认；危害识别",
+      "examples": "[]"
+    },
+    {
+      "word": "isolate",
+      "partOfSpeech": "v",
+      "phoneticUs": "aɪslˌet",
+      "phoneticUk": "'aɪsəleɪt",
+      "translation": "使隔离，使孤立",
+      "sceneMeaning": "使隔离，使孤立",
+      "examples": "[]"
+    },
+    {
+      "word": "laboratory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'læbrə'tɔri",
+      "phoneticUk": "lə'bɒrə,t(ə)rɪ; 'læb(ə)rə,t(ə)rɪ",
+      "translation": "实验室，研究室",
+      "sceneMeaning": "实验室",
+      "examples": "[]"
+    },
+    {
+      "word": "liquid",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'lɪkwɪd",
+      "phoneticUk": "'lɪkwɪd",
+      "translation": "液体；液体的",
+      "sceneMeaning": "液体",
+      "examples": "[]"
+    },
+    {
+      "word": "mile",
+      "partOfSpeech": "n",
+      "phoneticUs": "maɪl",
+      "phoneticUk": "maɪl",
+      "translation": "英里",
+      "sceneMeaning": "英里",
+      "examples": "[]"
+    },
+    {
+      "word": "precise",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prɪ'saɪs",
+      "phoneticUk": "prɪ'saɪs",
+      "translation": "精确的，准确的",
+      "sceneMeaning": "精确的",
+      "examples": "[]"
+    },
+    {
+      "word": "proposal",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'pozl",
+      "phoneticUk": "prə'pəʊz(ə)l",
+      "translation": "提议，建议；求婚；提议",
+      "sceneMeaning": "提案；开题报告",
+      "examples": "[]"
+    },
+    {
+      "word": "react",
+      "partOfSpeech": "v",
+      "phoneticUs": "ri'ækt",
+      "phoneticUk": "rɪ'ækt",
+      "translation": "起反应；有影响；对……作出反应",
+      "sceneMeaning": "反应",
+      "examples": "[]"
+    },
+    {
+      "word": "recorder",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'kɔrdɚ",
+      "phoneticUk": "rɪ'kɔːdə",
+      "translation": "记录者；录音机",
+      "sceneMeaning": "记录者；录音机",
+      "examples": "[]"
+    },
+    {
+      "word": "review",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'vju",
+      "phoneticUk": "rɪ'vjuː",
+      "translation": "再检查；复习；回顾",
+      "sceneMeaning": "综述；审查",
+      "examples": "[]"
+    },
+    {
+      "word": "specimen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'spɛsəmən",
+      "phoneticUk": "'spesɪmɪn",
+      "translation": "样本，标本，样品",
+      "sceneMeaning": "标本；样本",
+      "examples": "[]"
+    },
+    {
+      "word": "statistical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "stə'tɪstɪkl",
+      "phoneticUk": "stə'tɪstɪk(ə)l",
+      "translation": "统计的，统计学的",
+      "sceneMeaning": "统计的",
+      "examples": "[]"
+    },
+    {
+      "word": "technician",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɛk'nɪʃən",
+      "phoneticUk": "tek'nɪʃ(ə)n",
+      "translation": "技术员，技师",
+      "sceneMeaning": "技术员",
+      "examples": "[]"
+    },
+    {
+      "word": "trial",
+      "partOfSpeech": "n",
+      "phoneticUs": "'traɪəl",
+      "phoneticUk": "'traɪəl",
+      "translation": "试，试验；审判",
+      "sceneMeaning": "试验；审判",
+      "examples": "[]"
+    },
+    {
+      "word": "vitamin",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vaɪtəmɪn",
+      "phoneticUk": "'vɪtəmɪn; 'vaɪt-",
+      "translation": "维生素，维他命",
+      "sceneMeaning": "维生素，维他命",
+      "examples": "[]"
+    },
+    {
+      "word": "accessary",
+      "partOfSpeech": "n",
+      "phoneticUs": "æk'sɛsəri",
+      "phoneticUk": "ək'sesərɪ",
+      "translation": "同谋，从犯",
+      "sceneMeaning": "同谋，从犯",
+      "examples": "[]"
+    },
+    {
+      "word": "accuracy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ækjərəsi",
+      "phoneticUk": "'ækjʊrəsɪ",
+      "translation": "准确(性)；准确度",
+      "sceneMeaning": "准确性",
+      "examples": "[]"
+    },
+    {
+      "word": "acid",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æsɪd",
+      "phoneticUk": "'æsɪd",
+      "translation": "酸；酸的，酸性的",
+      "sceneMeaning": "酸",
+      "examples": "[]"
+    },
+    {
+      "word": "analyse",
+      "partOfSpeech": "v",
+      "phoneticUs": "'æn(ə)laɪz",
+      "phoneticUk": "'æn(ə)laɪz",
+      "translation": "分析，分解，解析",
+      "sceneMeaning": "分析，分解，解析",
+      "examples": "[]"
+    },
+    {
+      "word": "apparatus",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌæpəˈrætəs",
+      "phoneticUk": "ˌæpəˈreɪtəs",
+      "translation": "器械，仪器；器官",
+      "sceneMeaning": "仪器；装置",
+      "examples": "[]"
+    },
+    {
+      "word": "calculate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kælkjulet",
+      "phoneticUk": "'kælkjʊleɪt",
+      "translation": "计算；估计；计划；计算",
+      "sceneMeaning": "计算",
+      "examples": "[]"
+    },
+    {
+      "word": "calculator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kælkjuletɚ",
+      "phoneticUk": "'kælkjʊleɪtə",
+      "translation": "计算器，计算者",
+      "sceneMeaning": "计算器，计算者；本场景常见用法：科学用计算器",
+      "examples": "[]"
+    },
+    {
+      "word": "classify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'klæsɪfaɪ",
+      "phoneticUk": "'klæsɪfaɪ",
+      "translation": "把…分类；把…分类，把…分级",
+      "sceneMeaning": "分类",
+      "examples": "[]"
+    },
+    {
+      "word": "compound",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑmpaʊnd",
+      "phoneticUk": "'kɒmpaʊnd",
+      "translation": "化合物；复合词",
+      "sceneMeaning": "化合物；复合物",
+      "examples": "[]"
+    },
+    {
+      "word": "concentration",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnsn'treʃən",
+      "phoneticUk": "kɒns(ə)n'treɪʃ(ə)n",
+      "translation": "集中；专注；浓缩；集中",
+      "sceneMeaning": "浓度；集中",
+      "examples": "[]"
+    },
+    {
+      "word": "consist",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'sɪst",
+      "phoneticUk": "kən'sɪst",
+      "translation": "由…组成；在于；由……组成",
+      "sceneMeaning": "由…组成；在于；由……组成",
+      "examples": "[]"
+    },
+    {
+      "word": "container",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'tenɚ",
+      "phoneticUk": "kən'teɪnə",
+      "translation": "容器；集装箱",
+      "sceneMeaning": "容器",
+      "examples": "[]"
+    },
+    {
+      "word": "cube",
+      "partOfSpeech": "n",
+      "phoneticUs": "kjʊb",
+      "phoneticUk": "kjuːb",
+      "translation": "立方形；立方",
+      "sceneMeaning": "立方形；立方",
+      "examples": "[]"
+    },
+    {
+      "word": "dispose",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'spoz",
+      "phoneticUk": "dɪ'spəʊz",
+      "translation": "去掉，丢掉；销毁",
+      "sceneMeaning": "去掉，丢掉；销毁；本场景常见用法：处理；转让；解决；吃光；除掉；卖掉",
+      "examples": "[]"
+    },
+    {
+      "word": "dissolve",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'zɑlv",
+      "phoneticUk": "dɪ'zɒlv",
+      "translation": "使溶解；解散",
+      "sceneMeaning": "溶解",
+      "examples": "[]"
+    },
+    {
+      "word": "experiment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'sperɪmənt",
+      "phoneticUk": "ɪk'sperɪm(ə)nt; ek-",
+      "translation": "实验；试验",
+      "sceneMeaning": "做实验",
+      "examples": "[]"
+    },
+    {
+      "word": "explosive",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɪk'splosɪv; ɪk'splozɪv",
+      "phoneticUk": "ɪk'spləʊsɪv; ek-",
+      "translation": "炸药；爆炸的",
+      "sceneMeaning": "炸药；爆炸的；本场景常见用法：爆炸混合物",
+      "examples": "[]"
+    },
+    {
+      "word": "flock",
+      "partOfSpeech": "n",
+      "phoneticUs": "flɑk",
+      "phoneticUk": "flɒk",
+      "translation": "羊群，群；大量",
+      "sceneMeaning": "羊群，群；大量；本场景常见用法：牛羊",
+      "examples": "[]"
+    },
+    {
+      "word": "gaseous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡæsɪəs",
+      "phoneticUk": "'gæsɪəs; 'geɪsɪəs",
+      "translation": "气体的，气态的",
+      "sceneMeaning": "气体的，气态的",
+      "examples": "[]"
+    },
+    {
+      "word": "gauge",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "gedʒ",
+      "phoneticUk": "geɪdʒ",
+      "translation": "量，测量；量器",
+      "sceneMeaning": "量，测量；量器",
+      "examples": "[]"
+    },
+    {
+      "word": "glove",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡlʌv",
+      "phoneticUk": "glʌv",
+      "translation": "手套",
+      "sceneMeaning": "手套",
+      "examples": "[]"
+    },
+    {
+      "word": "grant",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡrænt",
+      "phoneticUk": "grɑːnt",
+      "translation": "授给物；授予；授予；允许",
+      "sceneMeaning": "研究经费；拨款",
+      "examples": "[]"
+    },
+    {
+      "word": "grave",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɡrev",
+      "phoneticUk": "greɪv",
+      "translation": "坟墓；严重的",
+      "sceneMeaning": "坟墓；严重的",
+      "examples": "[]"
+    },
+    {
+      "word": "grip",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡrɪp",
+      "phoneticUk": "grɪp",
+      "translation": "握紧，抓牢；紧握",
+      "sceneMeaning": "握紧，抓牢；紧握",
+      "examples": "[]"
+    },
+    {
+      "word": "hazard",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hæzɚd",
+      "phoneticUk": "'hæzəd",
+      "translation": "危险；公害；危险",
+      "sceneMeaning": "危险；危害",
+      "examples": "[]"
+    },
+    {
+      "word": "instrument",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstrəmənt",
+      "phoneticUk": "'ɪnstrʊm(ə)nt",
+      "translation": "仪器；工具；乐器；仪器，器械，工具",
+      "sceneMeaning": "仪器；工具",
+      "examples": "[]"
+    },
+    {
+      "word": "keeper",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kipɚ",
+      "phoneticUk": "'kiːpə",
+      "translation": "看护人；饲养员",
+      "sceneMeaning": "看护人；饲养员",
+      "examples": "[]"
+    },
+    {
+      "word": "liquor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪkɚ",
+      "phoneticUk": "'lɪkə",
+      "translation": "酒；溶液，液剂",
+      "sceneMeaning": "酒；溶液，液剂；本场景常见用法：[医]醇制溶液；含醇液",
+      "examples": "[]"
+    },
+    {
+      "word": "magnetic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mæg'nɛtɪk",
+      "phoneticUk": "mæg'netɪk",
+      "translation": "磁的，有吸引力的",
+      "sceneMeaning": "磁的，有吸引力的；本场景常见用法：磁力分离器",
+      "examples": "[]"
+    },
+    {
+      "word": "mask",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "mæsk",
+      "phoneticUk": "mɑːsk",
+      "translation": "面具；伪装；掩饰",
+      "sceneMeaning": "口罩；面具",
+      "examples": "[]"
+    },
+    {
+      "word": "materialism",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'tɪrɪəlɪzəm",
+      "phoneticUk": "mə'tɪərɪəlɪz(ə)m",
+      "translation": "唯物主义",
+      "sceneMeaning": "唯物主义；本场景常见用法：n. 辩证唯物主义",
+      "examples": "[]"
+    },
+    {
+      "word": "measurement",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛʒɚmənt",
+      "phoneticUk": "'meʒəm(ə)nt",
+      "translation": "衡量，测量；尺寸",
+      "sceneMeaning": "测量；尺寸",
+      "examples": "[]"
+    },
+    {
+      "word": "microscope",
+      "partOfSpeech": "n",
+      "phoneticUs": "'maɪkrəskop",
+      "phoneticUk": "'maɪkrəskəʊp",
+      "translation": "显微镜",
+      "sceneMeaning": "显微镜",
+      "examples": "[]"
+    },
+    {
+      "word": "mixture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪkstʃɚ",
+      "phoneticUk": "'mɪkstʃə",
+      "translation": "混合；混合物",
+      "sceneMeaning": "混合物",
+      "examples": "[]"
+    },
+    {
+      "word": "molecule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑlɪkjul",
+      "phoneticUk": "'mɒlɪkjuːl",
+      "translation": "分子，克分子",
+      "sceneMeaning": "分子，克分子",
+      "examples": "[]"
+    },
+    {
+      "word": "observation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɑbzɚ'veʃən",
+      "phoneticUk": "ɒbzə'veɪʃ(ə)n",
+      "translation": "注意；观察；观察力",
+      "sceneMeaning": "观察",
+      "examples": "[]"
+    },
+    {
+      "word": "observe",
+      "partOfSpeech": "v",
+      "phoneticUs": "əb'zɝv",
+      "phoneticUk": "əb'zɜːv",
+      "translation": "遵守；看到；说；遵守",
+      "sceneMeaning": "观察",
+      "examples": "[]"
+    },
+    {
+      "word": "observer",
+      "partOfSpeech": "n",
+      "phoneticUs": "əb'zɝvɚ",
+      "phoneticUk": "əb'zɜːvə",
+      "translation": "观察员，观测者",
+      "sceneMeaning": "观察员，观测者",
+      "examples": "[]"
+    },
+    {
+      "word": "optical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɑptɪkl",
+      "phoneticUk": "'ɒptɪk(ə)l",
+      "translation": "眼的；光学的",
+      "sceneMeaning": "眼的；光学的",
+      "examples": "[]"
+    },
+    {
+      "word": "pipe",
+      "partOfSpeech": "n",
+      "phoneticUs": "paɪp",
+      "phoneticUk": "paɪp",
+      "translation": "管子，导管；烟斗",
+      "sceneMeaning": "管子，导管；烟斗；本场景常见用法：无缝钢管",
+      "examples": "[]"
+    },
+    {
+      "word": "precision",
+      "partOfSpeech": "n",
+      "phoneticUs": "prɪ'sɪʒn",
+      "phoneticUk": "prɪ'sɪʒ(ə)n",
+      "translation": "精确，精密，精密度",
+      "sceneMeaning": "精确度；精密性",
+      "examples": "[]"
+    },
+    {
+      "word": "programmer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'progræmɚ",
+      "phoneticUk": "'prəʊgræmə",
+      "translation": "程序设计员",
+      "sceneMeaning": "程序设计员",
+      "examples": "[]"
+    },
+    {
+      "word": "publication",
+      "partOfSpeech": "n",
+      "phoneticUs": ",pʌblɪ'keʃən",
+      "phoneticUk": ",pʌblɪ'keɪʃ(ə)n",
+      "translation": "公布；出版；出版物",
+      "sceneMeaning": "出版物；发表",
+      "examples": "[]"
+    },
+    {
+      "word": "publish",
+      "partOfSpeech": "v",
+      "phoneticUs": "'pʌblɪʃ",
+      "phoneticUk": "'pʌblɪʃ",
+      "translation": "公布；发表；出版",
+      "sceneMeaning": "发表；出版",
+      "examples": "[]"
+    },
+    {
+      "word": "pump",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pʌmp",
+      "phoneticUk": "pʌmp",
+      "translation": "泵；用抽机抽",
+      "sceneMeaning": "泵；用抽机抽",
+      "examples": "[]"
+    },
+    {
+      "word": "reliability",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ,laɪə'bɪləti",
+      "phoneticUk": "rɪ,laɪə'bɪlətɪ",
+      "translation": "可靠性",
+      "sceneMeaning": "可靠性；本场景常见用法：可靠性分析",
+      "examples": "[]"
+    },
+    {
+      "word": "sample",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sæmpl",
+      "phoneticUk": "'sɑːmp(ə)l",
+      "translation": "样品；实例，标本",
+      "sceneMeaning": "样品；样本",
+      "examples": "[]"
+    },
+    {
+      "word": "scholar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɑlɚ",
+      "phoneticUk": "'skɒlə",
+      "translation": "学者(尤指文学方面)",
+      "sceneMeaning": "学者",
+      "examples": "[]"
+    },
+    {
+      "word": "separately",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'sɛprətli",
+      "phoneticUk": "ˈseprətli",
+      "translation": "分别地，另行",
+      "sceneMeaning": "分别地，另行",
+      "examples": "[]"
+    },
+    {
+      "word": "standardize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'stændɚdaɪz",
+      "phoneticUk": "'stændədaiz",
+      "translation": "使标准化",
+      "sceneMeaning": "标准化",
+      "examples": "[]"
+    },
+    {
+      "word": "synthetic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sɪn'θɛtɪk",
+      "phoneticUk": "sɪn'θetɪk",
+      "translation": "综合的；合成的；合成的，人造的",
+      "sceneMeaning": "综合的；合成的；合成的，人造的",
+      "examples": "[]"
+    },
+    {
+      "word": "tag",
+      "partOfSpeech": "n",
+      "phoneticUs": "tæɡ",
+      "phoneticUk": "tæg",
+      "translation": "附加语；标签",
+      "sceneMeaning": "附加语；标签",
+      "examples": "[]"
+    },
+    {
+      "word": "telescope",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛlɪskop",
+      "phoneticUk": "'telɪskəʊp",
+      "translation": "望远镜",
+      "sceneMeaning": "望远镜",
+      "examples": "[]"
+    },
+    {
+      "word": "theoretical",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",θiə'rɛtɪkəl",
+      "phoneticUk": "θɪə'retɪk(ə)l",
+      "translation": "理论(上)的",
+      "sceneMeaning": "理论的",
+      "examples": "[]"
+    },
+    {
+      "word": "thermometer",
+      "partOfSpeech": "n",
+      "phoneticUs": "θɚ'mɑmɪtɚ",
+      "phoneticUk": "θə'mɒmɪtə",
+      "translation": "温度计，寒暑表",
+      "sceneMeaning": "温度计",
+      "examples": "[]"
+    },
+    {
+      "word": "tube",
+      "partOfSpeech": "n",
+      "phoneticUs": "tub",
+      "phoneticUk": "tjuːb",
+      "translation": "管；电子管，显像管",
+      "sceneMeaning": "管；试管",
+      "examples": "[]"
+    },
+    {
+      "word": "variable",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'vɛrɪəbl",
+      "phoneticUk": "'veərɪəb(ə)l",
+      "translation": "易变的；变量",
+      "sceneMeaning": "变量",
+      "examples": "[]"
+    },
+    {
+      "word": "verify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'vɛrɪfaɪ",
+      "phoneticUk": "'verɪfaɪ",
+      "translation": "证实，查证；证明",
+      "sceneMeaning": "验证",
+      "examples": "[]"
+    },
+    {
+      "word": "vessel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɛsl",
+      "phoneticUk": "'ves(ə)l",
+      "translation": "容器；船，飞船；管",
+      "sceneMeaning": "容器；船，飞船；管；本场景常见用法：反应锅",
+      "examples": "[]"
+    }
+  ]
+}

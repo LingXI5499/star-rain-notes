@@ -1,0 +1,738 @@
+{
+  "id": "8",
+  "title": "天气、季节、气候、自然现象",
+  "layer": "基础通用词层",
+  "wordCount": 81,
+  "path": "/english/vocabulary/8/",
+  "words": [
+    {
+      "word": "degree",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'ɡri",
+      "phoneticUk": "dɪˈgri:",
+      "translation": "程度；度；学位；程度",
+      "sceneMeaning": "度数；程度；学位",
+      "examples": "[]"
+    },
+    {
+      "word": "clear",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "klɪr",
+      "phoneticUk": "klɪə",
+      "translation": "清晰的；清除",
+      "sceneMeaning": "变晴；清除",
+      "examples": "[]"
+    },
+    {
+      "word": "cold",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "kold",
+      "phoneticUk": "kəʊld",
+      "translation": "冷的；冷淡的；冷",
+      "sceneMeaning": "冷的；冷淡的",
+      "examples": "[]"
+    },
+    {
+      "word": "extremely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪk'strimli",
+      "phoneticUk": "ɪk'striːmlɪ; ek-",
+      "translation": "极端，极其，非常",
+      "sceneMeaning": "极其；非常",
+      "examples": "[]"
+    },
+    {
+      "word": "fall",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɔl",
+      "phoneticUk": "fɔːl",
+      "translation": "落下；跌倒；陷落",
+      "sceneMeaning": "秋天；落下",
+      "examples": "[]"
+    },
+    {
+      "word": "hot",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hɑt",
+      "phoneticUk": "hɒt",
+      "translation": "热的；刺激的；辣的",
+      "sceneMeaning": "热的",
+      "examples": "[]"
+    },
+    {
+      "word": "pressure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛʃɚ",
+      "phoneticUk": "'preʃə",
+      "translation": "压力；压力；压，按",
+      "sceneMeaning": "压力；气压",
+      "examples": "[]"
+    },
+    {
+      "word": "climate",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klaɪmət",
+      "phoneticUk": "ˈklaɪmət",
+      "translation": "气候；风土，地带",
+      "sceneMeaning": "气候",
+      "examples": "[]"
+    },
+    {
+      "word": "gradually",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'grædʒʊəli",
+      "phoneticUk": "'grædʒʊlɪ; 'grædjʊəlɪ",
+      "translation": "逐渐地，逐步地",
+      "sceneMeaning": "逐渐地",
+      "examples": "[]"
+    },
+    {
+      "word": "phenomenon",
+      "partOfSpeech": "n",
+      "phoneticUs": "fə'nɑmɪnən",
+      "phoneticUk": "fɪ'nɒmɪnən",
+      "translation": "现象",
+      "sceneMeaning": "现象",
+      "examples": "[]"
+    },
+    {
+      "word": "severe",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sɪ'vɪr",
+      "phoneticUk": "sɪ'vɪə",
+      "translation": "严格的；严厉的；严重的",
+      "sceneMeaning": "严重的；严厉的",
+      "examples": "[]"
+    },
+    {
+      "word": "heat",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hit",
+      "phoneticUk": "hiːt",
+      "translation": "热，炎热；变热",
+      "sceneMeaning": "热；高温",
+      "examples": "[]"
+    },
+    {
+      "word": "slightly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'slaɪtli",
+      "phoneticUk": "ˈslaɪtli",
+      "translation": "轻微地",
+      "sceneMeaning": "轻微地",
+      "examples": "[]"
+    },
+    {
+      "word": "extreme",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'strim",
+      "phoneticUk": "ɪk'striːm; ek-",
+      "translation": "极度的；尽头的",
+      "sceneMeaning": "极端的",
+      "examples": "[]"
+    },
+    {
+      "word": "intense",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'tɛns",
+      "phoneticUk": "ɪn'tens",
+      "translation": "强烈的；紧张的；强烈的",
+      "sceneMeaning": "强烈的；紧张的；强烈的；本场景常见用法：酷寒；严寒",
+      "examples": "[]"
+    },
+    {
+      "word": "pour",
+      "partOfSpeech": "v",
+      "phoneticUs": "pɔr",
+      "phoneticUk": "pɔː",
+      "translation": "灌，倒；倾泻",
+      "sceneMeaning": "倾倒；倾盆而下",
+      "examples": "[]"
+    },
+    {
+      "word": "burst",
+      "partOfSpeech": "v / vi&n",
+      "phoneticUs": "bɝst",
+      "phoneticUk": "bɜːst",
+      "translation": "使爆裂；爆炸",
+      "sceneMeaning": "使爆裂；爆炸",
+      "examples": "[]"
+    },
+    {
+      "word": "condense",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'dɛns",
+      "phoneticUk": "kən'dens",
+      "translation": "压缩，使缩短",
+      "sceneMeaning": "凝结；浓缩",
+      "examples": "[]"
+    },
+    {
+      "word": "air",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɛr",
+      "phoneticUk": "eə",
+      "translation": "空气；空中；外观",
+      "sceneMeaning": "空气；空中",
+      "examples": "[]"
+    },
+    {
+      "word": "atmosphere",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ætməsfɪr",
+      "phoneticUk": "'ætməsfɪə",
+      "translation": "大气；空气；气氛；气氛；大气；空气",
+      "sceneMeaning": "大气；气氛",
+      "examples": "[]"
+    },
+    {
+      "word": "disaster",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'zæstɚ",
+      "phoneticUk": "dɪ'zɑːstə",
+      "translation": "灾难，灾祸；天灾",
+      "sceneMeaning": "灾难",
+      "examples": "[]"
+    },
+    {
+      "word": "cloud",
+      "partOfSpeech": "n",
+      "phoneticUs": "klaʊd",
+      "phoneticUk": "klaʊd",
+      "translation": "云；云状物；阴影",
+      "sceneMeaning": "云",
+      "examples": "[]"
+    },
+    {
+      "word": "dry",
+      "partOfSpeech": "adj",
+      "phoneticUs": "draɪ",
+      "phoneticUk": "draɪ",
+      "translation": "干的，干燥的",
+      "sceneMeaning": "干燥的",
+      "examples": "[]"
+    },
+    {
+      "word": "ice",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "aɪs",
+      "phoneticUk": "aɪs",
+      "translation": "冰，冰块；冰镇",
+      "sceneMeaning": "冰",
+      "examples": "[]"
+    },
+    {
+      "word": "spring",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sprɪŋ",
+      "phoneticUk": "sprɪŋ",
+      "translation": "跳，跃；跳跃；泉",
+      "sceneMeaning": "春天；泉水",
+      "examples": "[]"
+    },
+    {
+      "word": "cool",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kul",
+      "phoneticUk": "kuːl",
+      "translation": "凉的，冷静的",
+      "sceneMeaning": "凉爽的；冷静的",
+      "examples": "[]"
+    },
+    {
+      "word": "dim",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪm",
+      "phoneticUk": "dɪm",
+      "translation": "昏暗的；朦胧的",
+      "sceneMeaning": "昏暗的；朦胧的",
+      "examples": "[]"
+    },
+    {
+      "word": "harsh",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hɑrʃ",
+      "phoneticUk": "hɑːʃ",
+      "translation": "严厉的；刺耳的；严酷的",
+      "sceneMeaning": "严厉的；刺耳的；严酷的",
+      "examples": "[]"
+    },
+    {
+      "word": "rain",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "reɪn",
+      "phoneticUk": "reɪn",
+      "translation": "雨，雨水；下雨",
+      "sceneMeaning": "下雨",
+      "examples": "[]"
+    },
+    {
+      "word": "stroke",
+      "partOfSpeech": "n",
+      "phoneticUs": "strok",
+      "phoneticUk": "strəʊk",
+      "translation": "打，击；鸣声；中风",
+      "sceneMeaning": "打，击；鸣声；中风；本场景常见用法：雷击",
+      "examples": "[]"
+    },
+    {
+      "word": "warmth",
+      "partOfSpeech": "n",
+      "phoneticUs": "wɔrmθ",
+      "phoneticUk": "wɔːmθ",
+      "translation": "暖和，温暖；热烈",
+      "sceneMeaning": "暖和，温暖；热烈",
+      "examples": "[]"
+    },
+    {
+      "word": "annually",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ænjuəli",
+      "phoneticUk": "'ænjʊəlɪ",
+      "translation": "每年，一年一次",
+      "sceneMeaning": "每年；一年一次地",
+      "examples": "[]"
+    },
+    {
+      "word": "autumn",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔtəm",
+      "phoneticUk": "'ɔːtəm",
+      "translation": "秋，秋季",
+      "sceneMeaning": "秋天",
+      "examples": "[]"
+    },
+    {
+      "word": "blow",
+      "partOfSpeech": "v",
+      "phoneticUs": "blo",
+      "phoneticUk": "bləʊ",
+      "translation": "吹，吹动；吹响",
+      "sceneMeaning": "吹；刮",
+      "examples": "[]"
+    },
+    {
+      "word": "daylight",
+      "partOfSpeech": "n",
+      "phoneticUs": "'delaɪt",
+      "phoneticUk": "'deɪlaɪt",
+      "translation": "白昼，日光；黎明",
+      "sceneMeaning": "日光；白昼",
+      "examples": "[]"
+    },
+    {
+      "word": "flood",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "flʌd",
+      "phoneticUk": "flʌd",
+      "translation": "洪水；淹没",
+      "sceneMeaning": "淹没；泛滥",
+      "examples": "[]"
+    },
+    {
+      "word": "freeze",
+      "partOfSpeech": "v",
+      "phoneticUs": "friz",
+      "phoneticUk": "friːz",
+      "translation": "冻；结冻；使结冰",
+      "sceneMeaning": "结冰；冻结",
+      "examples": "[]"
+    },
+    {
+      "word": "gentle",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dʒɛntl",
+      "phoneticUk": "'dʒent(ə)l",
+      "translation": "和蔼的；轻柔的",
+      "sceneMeaning": "和蔼的；轻柔的；本场景常见用法：微风；[气象]蒲福三级风",
+      "examples": "[]"
+    },
+    {
+      "word": "humid",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hjumɪd",
+      "phoneticUk": "'hjuːmɪd",
+      "translation": "湿的，湿气重的",
+      "sceneMeaning": "潮湿的",
+      "examples": "[]"
+    },
+    {
+      "word": "jump",
+      "partOfSpeech": "v",
+      "phoneticUs": "dʒʌmp",
+      "phoneticUk": "dʒʌmp",
+      "translation": "跳；暴涨；跳过",
+      "sceneMeaning": "跳；暴涨；跳过；本场景常见用法：[俚语]",
+      "examples": "[]"
+    },
+    {
+      "word": "leap",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lip",
+      "phoneticUk": "liːp",
+      "translation": "跳，跃；跳跃",
+      "sceneMeaning": "跳，跃；跳跃",
+      "examples": "[]"
+    },
+    {
+      "word": "mild",
+      "partOfSpeech": "adj",
+      "phoneticUs": "maɪld",
+      "phoneticUk": "maɪld",
+      "translation": "和缓的；温柔的",
+      "sceneMeaning": "温和的；轻微的",
+      "examples": "[]"
+    },
+    {
+      "word": "occasionally",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "偶然；非经常地",
+      "sceneMeaning": "偶尔；有时",
+      "examples": "[]"
+    },
+    {
+      "word": "passionate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pæʃənət",
+      "phoneticUk": "ˈpæʃənət",
+      "translation": "热情的",
+      "sceneMeaning": "热情的",
+      "examples": "[]"
+    },
+    {
+      "word": "shower",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʃaʊɚ",
+      "phoneticUk": "'ʃaʊə",
+      "translation": "阵雨；(一)阵；淋浴",
+      "sceneMeaning": "阵雨；淋浴",
+      "examples": "[]"
+    },
+    {
+      "word": "wind",
+      "partOfSpeech": "v",
+      "phoneticUs": "wɪnd; (for v.) waɪnd",
+      "phoneticUk": "wɪnd; (for v.) waɪnd",
+      "translation": "绕，缠绕；卷曲",
+      "sceneMeaning": "风",
+      "examples": "[]"
+    },
+    {
+      "word": "atmospheric",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ætməs'fɛrɪk",
+      "phoneticUk": "ætməs'ferɪk",
+      "translation": "大气的；大气层的",
+      "sceneMeaning": "大气的；有氛围的",
+      "examples": "[]"
+    },
+    {
+      "word": "bolt",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bolt",
+      "phoneticUk": "bəʊlt",
+      "translation": "螺栓；插销；闩门",
+      "sceneMeaning": "螺栓；插销；闩门；本场景常见用法：闪电球",
+      "examples": "[]"
+    },
+    {
+      "word": "breeze",
+      "partOfSpeech": "n",
+      "phoneticUs": "briz",
+      "phoneticUk": "briːz",
+      "translation": "微风，和风",
+      "sceneMeaning": "微风",
+      "examples": "[]"
+    },
+    {
+      "word": "chill",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tʃɪl",
+      "phoneticUk": "tʃɪl",
+      "translation": "使变冷；寒冷",
+      "sceneMeaning": "使变冷；寒冷",
+      "examples": "[]"
+    },
+    {
+      "word": "cloudy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'klaʊdi",
+      "phoneticUk": "'klaʊdɪ",
+      "translation": "多云的；云一般的",
+      "sceneMeaning": "多云的",
+      "examples": "[]"
+    },
+    {
+      "word": "damp",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dæmp",
+      "phoneticUk": "dæmp",
+      "translation": "潮湿的，有湿气的",
+      "sceneMeaning": "潮湿的，有湿气的",
+      "examples": "[]"
+    },
+    {
+      "word": "dew",
+      "partOfSpeech": "n",
+      "phoneticUs": "du",
+      "phoneticUk": "'djuː",
+      "translation": "露，露水",
+      "sceneMeaning": "露水",
+      "examples": "[]"
+    },
+    {
+      "word": "drip",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "drɪp",
+      "phoneticUk": "drɪp",
+      "translation": "滴下；漏水；水滴",
+      "sceneMeaning": "滴下；漏水；水滴",
+      "examples": "[]"
+    },
+    {
+      "word": "drought",
+      "partOfSpeech": "n",
+      "phoneticUs": "draʊt",
+      "phoneticUk": "draʊt",
+      "translation": "旱灾，干旱",
+      "sceneMeaning": "干旱",
+      "examples": "[]"
+    },
+    {
+      "word": "drown",
+      "partOfSpeech": "v",
+      "phoneticUs": "draʊn",
+      "phoneticUk": "draʊn",
+      "translation": "淹死，溺死",
+      "sceneMeaning": "淹死，溺死",
+      "examples": "[]"
+    },
+    {
+      "word": "earthquake",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɝθ'kwek",
+      "phoneticUk": "'ɜːθkweɪk",
+      "translation": "地震；大震荡",
+      "sceneMeaning": "地震",
+      "examples": "[]"
+    },
+    {
+      "word": "evaporate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'væpəret",
+      "phoneticUk": "ɪ'væpəreɪt",
+      "translation": "使蒸发；蒸发",
+      "sceneMeaning": "蒸发",
+      "examples": "[]"
+    },
+    {
+      "word": "explode",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'splod",
+      "phoneticUk": "ɪk'spləʊd; ek-",
+      "translation": "使爆炸；爆炸",
+      "sceneMeaning": "使爆炸；爆炸",
+      "examples": "[]"
+    },
+    {
+      "word": "Fahrenheit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'færən'haɪt",
+      "phoneticUk": "'fær(ə)nhaɪt; 'fɑː-",
+      "translation": "华氏温度计",
+      "sceneMeaning": "华氏温度计",
+      "examples": "[]"
+    },
+    {
+      "word": "fog",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɔɡ",
+      "phoneticUk": "fɒg",
+      "translation": "雾；烟雾，尘雾",
+      "sceneMeaning": "雾",
+      "examples": "[]"
+    },
+    {
+      "word": "forecast",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fɔrkæst",
+      "phoneticUk": "'fɔːkɑːst",
+      "translation": "预测，预报；预示",
+      "sceneMeaning": "预测；预报",
+      "examples": "[]"
+    },
+    {
+      "word": "frost",
+      "partOfSpeech": "n",
+      "phoneticUs": "frɔst",
+      "phoneticUk": "frɒst",
+      "translation": "冰冻，严寒；霜",
+      "sceneMeaning": "霜",
+      "examples": "[]"
+    },
+    {
+      "word": "gallon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡælən",
+      "phoneticUk": "'gælən",
+      "translation": "加仑",
+      "sceneMeaning": "加仑",
+      "examples": "[]"
+    },
+    {
+      "word": "lightning",
+      "partOfSpeech": "n",
+      "phoneticUs": "'laɪtnɪŋ",
+      "phoneticUk": "'laɪtnɪŋ",
+      "translation": "闪电，闪电放电",
+      "sceneMeaning": "闪电",
+      "examples": "[]"
+    },
+    {
+      "word": "melt",
+      "partOfSpeech": "v / vi / vt",
+      "phoneticUs": "mɛlt",
+      "phoneticUk": "melt",
+      "translation": "融化；使融化",
+      "sceneMeaning": "融化",
+      "examples": "[]"
+    },
+    {
+      "word": "mist",
+      "partOfSpeech": "n",
+      "phoneticUs": "mɪst",
+      "phoneticUk": "mɪst",
+      "translation": "薄雾",
+      "sceneMeaning": "薄雾",
+      "examples": "[]"
+    },
+    {
+      "word": "moist",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mɔɪst",
+      "phoneticUk": "mɒɪst",
+      "translation": "湿润的；多雨的",
+      "sceneMeaning": "湿润的；多雨的；本场景常见用法：湿润气候",
+      "examples": "[]"
+    },
+    {
+      "word": "moisture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɔɪstʃɚ",
+      "phoneticUk": "'mɒɪstʃə",
+      "translation": "潮湿，湿气；温度",
+      "sceneMeaning": "潮湿，湿气；温度",
+      "examples": "[]"
+    },
+    {
+      "word": "odour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'əudə",
+      "phoneticUk": "'əʊdə",
+      "translation": "气味，香气；味道",
+      "sceneMeaning": "气味，香气；味道",
+      "examples": "[]"
+    },
+    {
+      "word": "overwhelm",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ovɚ'wɛlm",
+      "phoneticUk": "əʊvə'welm",
+      "translation": "压倒，战胜",
+      "sceneMeaning": "压倒，战胜",
+      "examples": "[]"
+    },
+    {
+      "word": "rainbow",
+      "partOfSpeech": "n",
+      "phoneticUs": "'renbo",
+      "phoneticUk": "'reɪnbəʊ",
+      "translation": "虹，彩虹",
+      "sceneMeaning": "彩虹",
+      "examples": "[]"
+    },
+    {
+      "word": "rainy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'reni",
+      "phoneticUk": "'reɪnɪ",
+      "translation": "下雨的，多雨的",
+      "sceneMeaning": "多雨的；下雨的",
+      "examples": "[]"
+    },
+    {
+      "word": "shade",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ʃed",
+      "phoneticUk": "ʃeɪd",
+      "translation": "荫；遮光物；荫蔽；阴凉处",
+      "sceneMeaning": "阴影；遮蔽处",
+      "examples": "[]"
+    },
+    {
+      "word": "spray",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "spreɪ",
+      "phoneticUk": "spreɪ",
+      "translation": "浪花；喷雾；喷",
+      "sceneMeaning": "浪花；喷雾；喷；本场景常见用法：喷雾嘴；水雾喷嘴",
+      "examples": "[]"
+    },
+    {
+      "word": "threaten",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "'θrɛtn",
+      "phoneticUk": "'θret(ə)n",
+      "translation": "威胁，恐吓；威胁",
+      "sceneMeaning": "威胁；预示危险",
+      "examples": "[]"
+    },
+    {
+      "word": "thunder",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'θʌndɚ",
+      "phoneticUk": "'θʌndə",
+      "translation": "雷；打雷；吼出",
+      "sceneMeaning": "打雷；轰响",
+      "examples": "[]"
+    },
+    {
+      "word": "turbine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɝbaɪn",
+      "phoneticUk": "'tɜːbaɪn; -ɪn",
+      "translation": "叶轮机，汽轮机",
+      "sceneMeaning": "叶轮机，汽轮机",
+      "examples": "[]"
+    },
+    {
+      "word": "vapour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vepɚ",
+      "phoneticUk": "'veɪpə",
+      "translation": "汽，蒸气",
+      "sceneMeaning": "汽，蒸气",
+      "examples": "[]"
+    },
+    {
+      "word": "volcano",
+      "partOfSpeech": "n",
+      "phoneticUs": "vɑl'keno",
+      "phoneticUk": "vɒl'keɪnəʊ",
+      "translation": "火山",
+      "sceneMeaning": "火山",
+      "examples": "[]"
+    },
+    {
+      "word": "volt",
+      "partOfSpeech": "n",
+      "phoneticUs": "volt",
+      "phoneticUk": "vəʊlt; vɒlt",
+      "translation": "伏特，伏",
+      "sceneMeaning": "伏特，伏",
+      "examples": "[]"
+    }
+  ]
+}

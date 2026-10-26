@@ -1,5 +1,8 @@
 # Publish the active source, authored skills and verification configuration.
+# Keep local history out of the published repository.
+/history/
 /*
+!/star-rain-notes-site/
 !/backend/
 !/frontend/
 !/.github/
@@ -7,6 +10,9 @@
 !/docs/
 !/tools/
 !/README.md
+!/AGENTS.md
+!/一键启动.cmd
+!/start-dev.ps1
 !/LICENSE
 !/.gitignore
 !/.gitattributes

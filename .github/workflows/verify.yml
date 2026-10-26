@@ -2,10 +2,10 @@
 # 定义前后端与自建技能的独立检查，不连接部署数据库。
 # 工作流的显示名称；作业由下面的事件触发。
 name: Verify
-# 主分支、codex 分支推送和 PR 执行检查，也支持手动触发。
+# 主分支、项目工作分支推送和 PR 执行检查，也支持手动触发。
 on:
   push:
-    branches: [main, 'codex/**']
+    branches: [main, 'LIngXI/**', 'LIngXI-*']
   pull_request:
   workflow_dispatch:
 # 工作流令牌只有读取仓库内容权限。
@@ -19,6 +19,25 @@ concurrency:
   cancel-in-progress: true
 # 前后端分别校验；后端使用独立数据库，不连接部署数据库。
 jobs:
+  static-site:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: star-rain-notes-site
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: star-rain-notes-site/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+
   # 技能包独立检查：验证 Python 脚本语法与文章结构检查器，不生成发布或部署产物。
   skills:
     runs-on: ubuntu-latest

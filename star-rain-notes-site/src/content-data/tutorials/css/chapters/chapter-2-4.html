@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 可用 <code>box-sizing</code> 和基础 margin 重置统一盒模型；不要清除键盘焦点而不补替代样式。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">*, *::before, *::after { box-sizing: border-box; }
+body { margin: 0; }
+:focus-visible { outline: 2px solid #f90; }
+</code></pre>
+<p><strong>学完能做：</strong> 建立基础重置规则并保留可访问焦点。</p>

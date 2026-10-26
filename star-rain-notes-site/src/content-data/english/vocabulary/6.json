@@ -1,0 +1,1431 @@
+{
+  "id": "6",
+  "title": "方向、方位、位置、空间关系",
+  "layer": "基础通用词层",
+  "wordCount": 158,
+  "path": "/english/vocabulary/6/",
+  "words": [
+    {
+      "word": "long",
+      "partOfSpeech": "v",
+      "phoneticUs": "lɔŋ",
+      "phoneticUk": "lɒŋ",
+      "translation": "渴望，极想念；渴望",
+      "sceneMeaning": "渴望，极想念；渴望",
+      "examples": "[]"
+    },
+    {
+      "word": "position",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'zɪʃən",
+      "phoneticUk": "pə'zɪʃ(ə)n",
+      "translation": "位置；职位；姿势；职位",
+      "sceneMeaning": "安置；定位",
+      "examples": "[]"
+    },
+    {
+      "word": "opposite",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈɑpəzɪt; ˈɑpəsɪt",
+      "phoneticUk": "'ɒpəzɪt; -sɪt",
+      "translation": "对面的；对立物；相反的",
+      "sceneMeaning": "对面的；相反的",
+      "examples": "[]"
+    },
+    {
+      "word": "area",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛrɪə",
+      "phoneticUk": "'eərɪə",
+      "translation": "面积；地区；领域",
+      "sceneMeaning": "区域；面积",
+      "examples": "[]"
+    },
+    {
+      "word": "around",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ə'raʊnd",
+      "phoneticUk": "ə'raʊnd",
+      "translation": "在…周围",
+      "sceneMeaning": "在周围；大约",
+      "examples": "[]"
+    },
+    {
+      "word": "back",
+      "partOfSpeech": "adv",
+      "phoneticUs": "bæk",
+      "phoneticUk": "bæk",
+      "translation": "在后；回原处；回",
+      "sceneMeaning": "后面；背部",
+      "examples": "[]"
+    },
+    {
+      "word": "close",
+      "partOfSpeech": "v",
+      "phoneticUs": "kloz",
+      "phoneticUk": "kləʊs",
+      "translation": "关，闭；结束",
+      "sceneMeaning": "接近的；亲密的",
+      "examples": "[]"
+    },
+    {
+      "word": "come",
+      "partOfSpeech": "v",
+      "phoneticUs": "kʌm",
+      "phoneticUk": "kʌm",
+      "translation": "来，来到；出现",
+      "sceneMeaning": "来；到达",
+      "examples": "[]"
+    },
+    {
+      "word": "director",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪˈrɛktɚ; daɪˈrɛktɚ",
+      "phoneticUk": "dɪ'rektə; daɪ-",
+      "translation": "指导者；理事；导演",
+      "sceneMeaning": "指导者；理事；导演",
+      "examples": "[]"
+    },
+    {
+      "word": "down",
+      "partOfSpeech": "adv",
+      "phoneticUs": "daʊn",
+      "phoneticUk": "daʊn",
+      "translation": "向下，在下面",
+      "sceneMeaning": "向下；下降",
+      "examples": "[]"
+    },
+    {
+      "word": "environment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vaɪrənmənt",
+      "phoneticUk": "ɪn'vaɪrənm(ə)nt; en-",
+      "translation": "环境，外界；围绕",
+      "sceneMeaning": "环境；周围状况",
+      "examples": "[]"
+    },
+    {
+      "word": "far",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "fɑr",
+      "phoneticUk": "fɑː",
+      "translation": "远的；远，遥远",
+      "sceneMeaning": "远的；遥远的",
+      "examples": "[]"
+    },
+    {
+      "word": "follow",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fɑlo",
+      "phoneticUk": "'fɒləʊ",
+      "translation": "跟随；结果是",
+      "sceneMeaning": "跟随；遵循",
+      "examples": "[]"
+    },
+    {
+      "word": "following",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɑloɪŋ",
+      "phoneticUk": "'fɒləʊɪŋ",
+      "translation": "接着的；下列的",
+      "sceneMeaning": "接着的；下列的；本场景常见用法：在下面；在下文中",
+      "examples": "[]"
+    },
+    {
+      "word": "forward",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'fɔrwɚd",
+      "phoneticUk": "'fɔːwəd",
+      "translation": "向前；今后，往后",
+      "sceneMeaning": "向前；今后",
+      "examples": "[]"
+    },
+    {
+      "word": "go",
+      "partOfSpeech": "v",
+      "phoneticUs": "go",
+      "phoneticUk": "gəʊ",
+      "translation": "去；走；变为",
+      "sceneMeaning": "去；走；进行",
+      "examples": "[]"
+    },
+    {
+      "word": "here",
+      "partOfSpeech": "adv",
+      "phoneticUs": "hɪr",
+      "phoneticUk": "hɪə",
+      "translation": "这里；向这里",
+      "sceneMeaning": "在这里；到这里",
+      "examples": "[]"
+    },
+    {
+      "word": "high",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "haɪ",
+      "phoneticUk": "haɪ",
+      "translation": "高的；高级的；高",
+      "sceneMeaning": "高的；高级的；高",
+      "examples": "[]"
+    },
+    {
+      "word": "in",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ɪn",
+      "phoneticUk": "ɪn",
+      "translation": "在…里ad进，入",
+      "sceneMeaning": "在…里ad进，入",
+      "examples": "[]"
+    },
+    {
+      "word": "lead",
+      "partOfSpeech": "n",
+      "phoneticUs": "lid",
+      "phoneticUk": "liːd",
+      "translation": "铅，铅制品",
+      "sceneMeaning": "带领；通向",
+      "examples": "[]"
+    },
+    {
+      "word": "leading",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lidɪŋ",
+      "phoneticUk": "'liːdɪŋ",
+      "translation": "指导的；最主要的",
+      "sceneMeaning": "指导的；最主要的",
+      "examples": "[]"
+    },
+    {
+      "word": "leave",
+      "partOfSpeech": "v",
+      "phoneticUs": "liv",
+      "phoneticUk": "liːv",
+      "translation": "离去；离开",
+      "sceneMeaning": "离开；留下",
+      "examples": "[]"
+    },
+    {
+      "word": "left",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "lɛft",
+      "phoneticUk": "left",
+      "translation": "左边的；在左边",
+      "sceneMeaning": "向左；在左边",
+      "examples": "[]"
+    },
+    {
+      "word": "lower",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "'loɚ",
+      "phoneticUk": "'ləʊə",
+      "translation": "较低的；放下",
+      "sceneMeaning": "下面的；较低的",
+      "examples": "[]"
+    },
+    {
+      "word": "move",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "muv",
+      "phoneticUk": "muːv",
+      "translation": "移动；感动；动",
+      "sceneMeaning": "移动；搬家；感动",
+      "examples": "[]"
+    },
+    {
+      "word": "near",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "nɪr",
+      "phoneticUk": "nɪə",
+      "translation": "近，接近；近的",
+      "sceneMeaning": "近的；接近的",
+      "examples": "[]"
+    },
+    {
+      "word": "out",
+      "partOfSpeech": "adv",
+      "phoneticUs": "aʊt",
+      "phoneticUk": "aʊt",
+      "translation": "出，在外；现出来",
+      "sceneMeaning": "出，在外；现出来；本场景常见用法：[口语]就在附近地区",
+      "examples": "[]"
+    },
+    {
+      "word": "outside",
+      "partOfSpeech": "n",
+      "phoneticUs": ",aʊt'saɪd",
+      "phoneticUk": "aʊt'saɪd; 'aʊtsaɪd",
+      "translation": "外部；外表a外部的",
+      "sceneMeaning": "在外面；向外面",
+      "examples": "[]"
+    },
+    {
+      "word": "place",
+      "partOfSpeech": "n",
+      "phoneticUs": "ples",
+      "phoneticUk": "pleɪs",
+      "translation": "地方，地点；住所",
+      "sceneMeaning": "地方；位置",
+      "examples": "[]"
+    },
+    {
+      "word": "reach",
+      "partOfSpeech": "v",
+      "phoneticUs": "ritʃ",
+      "phoneticUk": "riːtʃ",
+      "translation": "抵达；伸出vi达到",
+      "sceneMeaning": "到达；伸手够到",
+      "examples": "[]"
+    },
+    {
+      "word": "situation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",sɪtʃu'eʃən",
+      "phoneticUk": "ˌsɪtʃuˈeɪʃn",
+      "translation": "情况",
+      "sceneMeaning": "情况；本场景常见用法：近况",
+      "examples": "[]"
+    },
+    {
+      "word": "approach",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'protʃ",
+      "phoneticUk": "ə'prəʊtʃ",
+      "translation": "向…靠近；靠近；方法",
+      "sceneMeaning": "接近；靠近；处理",
+      "examples": "[]"
+    },
+    {
+      "word": "directly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "dəˈrektli",
+      "phoneticUk": "dɪ'rektlɪ; daɪ-",
+      "translation": "直接地；立即",
+      "sceneMeaning": "直接地；立即",
+      "examples": "[]"
+    },
+    {
+      "word": "leader",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lidɚ",
+      "phoneticUk": "'liːdə",
+      "translation": "领袖，领导人；首领",
+      "sceneMeaning": "领袖，领导人；首领；本场景常见用法：反对派领袖；反对党领导",
+      "examples": "[]"
+    },
+    {
+      "word": "spread",
+      "partOfSpeech": "v",
+      "phoneticUs": "sprɛd",
+      "phoneticUk": "spred",
+      "translation": "扩散；传播",
+      "sceneMeaning": "展开；传播",
+      "examples": "[]"
+    },
+    {
+      "word": "France",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "frɑːns",
+      "translation": "法国，法兰西",
+      "sceneMeaning": "法国，法兰西；本场景常见用法：环法自行车赛",
+      "examples": "[]"
+    },
+    {
+      "word": "middle",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'mɪdl",
+      "phoneticUk": "'mɪd(ə)l",
+      "translation": "中部；中部的",
+      "sceneMeaning": "中间的；中部的",
+      "examples": "[]"
+    },
+    {
+      "word": "neighborhood",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nebɚ,hʊd",
+      "phoneticUk": "'neɪbəhʊd",
+      "translation": "地区",
+      "sceneMeaning": "街区；邻近地区",
+      "examples": "[]"
+    },
+    {
+      "word": "ahead",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'hɛd",
+      "phoneticUk": "ə'hed",
+      "translation": "在前；向前；提前",
+      "sceneMeaning": "在前；向前；提前",
+      "examples": "[]"
+    },
+    {
+      "word": "direct",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪˈrɛkt; daɪˈrɛkt",
+      "phoneticUk": "dəˈrekt; daɪˈrekt",
+      "translation": "直接的；直率的",
+      "sceneMeaning": "直接的；直达的",
+      "examples": "[]"
+    },
+    {
+      "word": "edge",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɛdʒ",
+      "phoneticUk": "edʒ",
+      "translation": "边缘，边；刀口",
+      "sceneMeaning": "边缘；优势",
+      "examples": "[]"
+    },
+    {
+      "word": "front",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "frʌnt",
+      "phoneticUk": "frʌnt",
+      "translation": "前面的；前部",
+      "sceneMeaning": "前面；正面",
+      "examples": "[]"
+    },
+    {
+      "word": "leadership",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lidɚʃɪp",
+      "phoneticUk": "'liːdəʃɪp",
+      "translation": "领导",
+      "sceneMeaning": "领导；本场景常见用法：在…领导下",
+      "examples": "[]"
+    },
+    {
+      "word": "pass",
+      "partOfSpeech": "v",
+      "phoneticUs": "pæs",
+      "phoneticUk": "pɑːs",
+      "translation": "经过；通过；度过",
+      "sceneMeaning": "经过；通过；传递",
+      "examples": "[]"
+    },
+    {
+      "word": "passage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pæsɪdʒ",
+      "phoneticUk": "'pæsɪdʒ",
+      "translation": "通过；通路，通道",
+      "sceneMeaning": "通过；通路，通道",
+      "examples": "[]"
+    },
+    {
+      "word": "apart",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'pɑrt",
+      "phoneticUk": "ə'pɑːt",
+      "translation": "相隔；分开；除去",
+      "sceneMeaning": "分开地；相隔",
+      "examples": "[]"
+    },
+    {
+      "word": "ground",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡraʊnd",
+      "phoneticUk": "graʊnd",
+      "translation": "地；场地；根据",
+      "sceneMeaning": "地面；理由；场地",
+      "examples": "[]"
+    },
+    {
+      "word": "region",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ridʒən",
+      "phoneticUk": "'riːdʒ(ə)n",
+      "translation": "地区，地带；领域",
+      "sceneMeaning": "地区；区域",
+      "examples": "[]"
+    },
+    {
+      "word": "separate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "(for v.) sɛpəˌret; (for adj.) sɛprɪt",
+      "phoneticUk": "(for v.) ˈsepəreɪt; (for adj.) ˈseprət",
+      "translation": "分离的；个别的",
+      "sceneMeaning": "分开；隔开",
+      "examples": "[]"
+    },
+    {
+      "word": "margin",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑrdʒən",
+      "phoneticUk": "'mɑːdʒɪn",
+      "translation": "页边的空白；边缘；页边的空白，页边，白边",
+      "sceneMeaning": "边缘；利润；余地",
+      "examples": "[]"
+    },
+    {
+      "word": "contrary",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'kɑntrɛri",
+      "phoneticUk": "'kɒntrərɪ",
+      "translation": "相反的；相反",
+      "sceneMeaning": "相反的；相反；本场景常见用法：相反",
+      "examples": "[]"
+    },
+    {
+      "word": "scrape",
+      "partOfSpeech": "vt&vi&n",
+      "phoneticUs": "skrep",
+      "phoneticUk": "skreɪp",
+      "translation": "刮，擦",
+      "sceneMeaning": "刮，擦；本场景常见用法：东拼西凑",
+      "examples": "[]"
+    },
+    {
+      "word": "above",
+      "partOfSpeech": "prep",
+      "phoneticUs": "ə'bʌv",
+      "phoneticUk": "ə'bʌv",
+      "translation": "在…上面；高于",
+      "sceneMeaning": "在上方；上述",
+      "examples": "[]"
+    },
+    {
+      "word": "arrive",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'raɪv",
+      "phoneticUk": "ə'raɪv",
+      "translation": "到达；来临；达到",
+      "sceneMeaning": "到达；来临",
+      "examples": "[]"
+    },
+    {
+      "word": "closely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'klosli",
+      "phoneticUk": "'kləʊslɪ",
+      "translation": "紧密地，接近地",
+      "sceneMeaning": "密切地；仔细地",
+      "examples": "[]"
+    },
+    {
+      "word": "distance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪstəns",
+      "phoneticUk": "'dɪst(ə)ns",
+      "translation": "距离，间距；远处；距离",
+      "sceneMeaning": "距离；疏远",
+      "examples": "[]"
+    },
+    {
+      "word": "inner",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪnɚ",
+      "phoneticUk": "ɪnə",
+      "translation": "内部的；内心的",
+      "sceneMeaning": "内部的；内心的",
+      "examples": "[]"
+    },
+    {
+      "word": "inside",
+      "partOfSpeech": "n / prep",
+      "phoneticUs": "'ɪn'saɪd",
+      "phoneticUk": "ɪn'saɪd",
+      "translation": "在…里面；内部",
+      "sceneMeaning": "在里面；向里面",
+      "examples": "[]"
+    },
+    {
+      "word": "path",
+      "partOfSpeech": "n",
+      "phoneticUs": "pæθ",
+      "phoneticUk": "pɑːθ",
+      "translation": "路，小道；道路",
+      "sceneMeaning": "小路；路径；路线",
+      "examples": "[]"
+    },
+    {
+      "word": "bottom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɑtəm",
+      "phoneticUk": "'bɒtəm",
+      "translation": "底，底部，根基",
+      "sceneMeaning": "底部；底端",
+      "examples": "[]"
+    },
+    {
+      "word": "connect",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'nɛkt",
+      "phoneticUk": "kə'nekt",
+      "translation": "连接，连结；联系",
+      "sceneMeaning": "连接；联系",
+      "examples": "[]"
+    },
+    {
+      "word": "enter",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɛntɚ",
+      "phoneticUk": "'entə",
+      "translation": "走进，进入；参加",
+      "sceneMeaning": "进入；报名参加",
+      "examples": "[]"
+    },
+    {
+      "word": "entrance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛntrəns",
+      "phoneticUk": "'entr(ə)ns",
+      "translation": "入口，门口；进入",
+      "sceneMeaning": "入口；进入",
+      "examples": "[]"
+    },
+    {
+      "word": "length",
+      "partOfSpeech": "n",
+      "phoneticUs": "[leŋθ]",
+      "phoneticUk": "leŋθ",
+      "translation": "长，长度；一段",
+      "sceneMeaning": "长度；距离",
+      "examples": "[]"
+    },
+    {
+      "word": "lie",
+      "partOfSpeech": "v",
+      "phoneticUs": "",
+      "phoneticUk": "laɪ",
+      "translation": "躺，平放；位于",
+      "sceneMeaning": "躺，平放；位于；本场景常见用法：即将来临；在前面",
+      "examples": "[]"
+    },
+    {
+      "word": "movement",
+      "partOfSpeech": "n",
+      "phoneticUs": "'muvmənt",
+      "phoneticUk": "'muːvm(ə)nt",
+      "translation": "动作，活动；移动",
+      "sceneMeaning": "动作，活动；移动",
+      "examples": "[]"
+    },
+    {
+      "word": "nearby",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": ",nɪr'baɪ",
+      "phoneticUk": "'nɪəbaɪ",
+      "translation": "附近的；在附近",
+      "sceneMeaning": "在附近",
+      "examples": "[]"
+    },
+    {
+      "word": "northeast",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'nɔrθ'ist",
+      "phoneticUk": ",nɔ:θ'i:st",
+      "translation": "东北；位于东北的",
+      "sceneMeaning": "东北；位于东北的",
+      "examples": "[]"
+    },
+    {
+      "word": "surroundings",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'raʊndɪŋz",
+      "phoneticUk": "sə'raʊndɪŋz",
+      "translation": "周围的事物，环境",
+      "sceneMeaning": "周围环境",
+      "examples": "[]"
+    },
+    {
+      "word": "Asia",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈeʒə;ˈeʃə",
+      "phoneticUk": "ˈeɪʒə;ˈeɪʃə",
+      "translation": "亚洲",
+      "sceneMeaning": "亚洲",
+      "examples": "[]"
+    },
+    {
+      "word": "central",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɛntrəl",
+      "phoneticUk": "'sentr(ə)l",
+      "translation": "中心的；主要的",
+      "sceneMeaning": "中心的；主要的",
+      "examples": "[]"
+    },
+    {
+      "word": "frontier",
+      "partOfSpeech": "n",
+      "phoneticUs": "frʌn'tɪr",
+      "phoneticUk": "'frʌntɪə; frʌn'tɪə",
+      "translation": "边境；边疆；新领域；边境",
+      "sceneMeaning": "边境；边疆；新领域；边境",
+      "examples": "[]"
+    },
+    {
+      "word": "guide",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡaɪd",
+      "phoneticUk": "gaɪd",
+      "translation": "导游者；给…导游",
+      "sceneMeaning": "引导；指导",
+      "examples": "[]"
+    },
+    {
+      "word": "horizon",
+      "partOfSpeech": "n",
+      "phoneticUs": "hə'raɪzn",
+      "phoneticUk": "hə'raɪz(ə)n",
+      "translation": "地平线；眼界，见识",
+      "sceneMeaning": "地平线；眼界，见识；本场景常见用法：在地平线上；即将来临的",
+      "examples": "[]"
+    },
+    {
+      "word": "north",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "nɔrθ",
+      "phoneticUk": "nɔːθ",
+      "translation": "北，北方；北方的",
+      "sceneMeaning": "向北；在北方",
+      "examples": "[]"
+    },
+    {
+      "word": "pull",
+      "partOfSpeech": "v",
+      "phoneticUs": "pʊl",
+      "phoneticUk": "pʊl",
+      "translation": "拉，拖；拉，拉力",
+      "sceneMeaning": "拉，拖；拉，拉力；本场景常见用法：把…开到路边；开到路边；靠岸",
+      "examples": "[]"
+    },
+    {
+      "word": "site",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪt",
+      "phoneticUk": "saɪt",
+      "translation": "地点，地基；场所；场所，地址",
+      "sceneMeaning": "地点；场所；网站",
+      "examples": "[]"
+    },
+    {
+      "word": "altitude",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æltɪtud",
+      "phoneticUk": "'æltɪtjuːd",
+      "translation": "高，高度；高处；海拔, 高度",
+      "sceneMeaning": "高，高度；高处；海拔, 高度",
+      "examples": "[]"
+    },
+    {
+      "word": "attach",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'tætʃ",
+      "phoneticUk": "ə'tætʃ",
+      "translation": "缚，系，贴；附加",
+      "sceneMeaning": "系上；附上",
+      "examples": "[]"
+    },
+    {
+      "word": "backward",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'bækwɚd",
+      "phoneticUk": "'bækwəd",
+      "translation": "向后的；倒的；倒；向后",
+      "sceneMeaning": "向后；落后地",
+      "examples": "[]"
+    },
+    {
+      "word": "below",
+      "partOfSpeech": "prep",
+      "phoneticUs": "bɪ'lo",
+      "phoneticUk": "bɪ'ləʊ",
+      "translation": "在…下面(以下)",
+      "sceneMeaning": "在下方；以下",
+      "examples": "[]"
+    },
+    {
+      "word": "border",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "边，边缘；边界",
+      "sceneMeaning": "边界；国界",
+      "examples": "[]"
+    },
+    {
+      "word": "bound",
+      "partOfSpeech": "adj",
+      "phoneticUs": "baʊnd",
+      "phoneticUk": "baʊnd",
+      "translation": "一定的；有义务的",
+      "sceneMeaning": "一定的；有义务的；本场景常见用法：下界",
+      "examples": "[]"
+    },
+    {
+      "word": "breadth",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɛdθ",
+      "phoneticUk": "bredθ; -t-",
+      "translation": "宽度，幅度；幅面",
+      "sceneMeaning": "宽度，幅度；幅面",
+      "examples": "[]"
+    },
+    {
+      "word": "corn",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrn",
+      "phoneticUk": "kɔːn",
+      "translation": "谷物；(英)小麦",
+      "sceneMeaning": "谷物；(英)小麦",
+      "examples": "[]"
+    },
+    {
+      "word": "depth",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɛpθ",
+      "phoneticUk": "depθ",
+      "translation": "深度；深厚；深处",
+      "sceneMeaning": "深度；深处",
+      "examples": "[]"
+    },
+    {
+      "word": "direction",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "方向，方位；指导",
+      "sceneMeaning": "方向；指导；说明",
+      "examples": "[]"
+    },
+    {
+      "word": "distant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪstənt",
+      "phoneticUk": "'dɪst(ə)nt",
+      "translation": "在远处的，疏远的；遥远的",
+      "sceneMeaning": "遥远的；疏远的",
+      "examples": "[]"
+    },
+    {
+      "word": "east",
+      "partOfSpeech": "adv / n",
+      "phoneticUs": "ist",
+      "phoneticUk": "iːst",
+      "translation": "东；东部；在东方",
+      "sceneMeaning": "向东；在东方",
+      "examples": "[]"
+    },
+    {
+      "word": "eastern",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'istɚn",
+      "phoneticUk": "'iːst(ə)n",
+      "translation": "东方的；朝东的",
+      "sceneMeaning": "东方的；朝东的；本场景常见用法：中东的",
+      "examples": "[]"
+    },
+    {
+      "word": "extend",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'stɛnd",
+      "phoneticUk": "ɪk'stend; ek-",
+      "translation": "延长；扩大；致",
+      "sceneMeaning": "延伸；扩大",
+      "examples": "[]"
+    },
+    {
+      "word": "external",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'stɝnl",
+      "phoneticUk": "ɪk'stɜːn(ə)l; ek-",
+      "translation": "外部的，外面的",
+      "sceneMeaning": "外部的，外面的；本场景常见用法：外环境",
+      "examples": "[]"
+    },
+    {
+      "word": "forth",
+      "partOfSpeech": "adv",
+      "phoneticUs": "fɔrθ",
+      "phoneticUk": "fɔːθ",
+      "translation": "向前；向外，往外",
+      "sceneMeaning": "向前；向外，往外",
+      "examples": "[]"
+    },
+    {
+      "word": "height",
+      "partOfSpeech": "n",
+      "phoneticUs": "haɪt",
+      "phoneticUk": "haɪt",
+      "translation": "高，高度；高处",
+      "sceneMeaning": "高度；高处",
+      "examples": "[]"
+    },
+    {
+      "word": "interior",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'tɪrɪɚ",
+      "phoneticUk": "ɪn'tɪɜːrɪə",
+      "translation": "内的；内地的n内部",
+      "sceneMeaning": "内的；内地的n内部；本场景常见用法：内表面；内面",
+      "examples": "[]"
+    },
+    {
+      "word": "landing",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lændɪŋ",
+      "phoneticUk": "'lændɪŋ",
+      "translation": "上岸，登陆，着陆",
+      "sceneMeaning": "上岸，登陆，着陆；本场景常见用法：着陆位置；登陆地带；着陆地点",
+      "examples": "[]"
+    },
+    {
+      "word": "lay",
+      "partOfSpeech": "v",
+      "phoneticUs": "le",
+      "phoneticUk": "leɪ",
+      "translation": "置放；铺设；设置",
+      "sceneMeaning": "置放；铺设；设置",
+      "examples": "[]"
+    },
+    {
+      "word": "locate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈloˌket; loˈket",
+      "phoneticUk": "lə(ʊ)'keɪt",
+      "translation": "探明，找出，查出；位于，定位",
+      "sceneMeaning": "定位；位于",
+      "examples": "[]"
+    },
+    {
+      "word": "location",
+      "partOfSpeech": "n",
+      "phoneticUs": "lo'keʃən",
+      "phoneticUk": "lə(ʊ)'keɪʃ(ə)n",
+      "translation": "位置，场所",
+      "sceneMeaning": "位置；地点",
+      "examples": "[]"
+    },
+    {
+      "word": "northern",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɔrðɚn",
+      "phoneticUk": "'nɔːð(ə)n",
+      "translation": "北方的，北部的",
+      "sceneMeaning": "北方的，北部的；本场景常见用法：北领地，北部领地；北部地方",
+      "examples": "[]"
+    },
+    {
+      "word": "northwest",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'nɔrθ'wɛst",
+      "phoneticUk": ",nɔ:θ'west",
+      "translation": "西北；位于西北的",
+      "sceneMeaning": "西北；位于西北的；本场景常见用法：西北地区（美国的）",
+      "examples": "[]"
+    },
+    {
+      "word": "outer",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'aʊtɚ",
+      "phoneticUk": "'aʊtə",
+      "translation": "外部的，外面的",
+      "sceneMeaning": "外部的；外围的",
+      "examples": "[]"
+    },
+    {
+      "word": "thereby",
+      "partOfSpeech": "adv",
+      "phoneticUs": ",ðɛr'baɪ",
+      "phoneticUk": "ðeə'baɪ",
+      "translation": "因此，从而，由此",
+      "sceneMeaning": "因此，从而，由此",
+      "examples": "[]"
+    },
+    {
+      "word": "axis",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æksɪs",
+      "phoneticUk": "'æksɪs",
+      "translation": "轴，轴线；中心线",
+      "sceneMeaning": "轴；轴线",
+      "examples": "[]"
+    },
+    {
+      "word": "bind",
+      "partOfSpeech": "v",
+      "phoneticUs": "baɪnd",
+      "phoneticUk": "baɪnd",
+      "translation": "捆绑；包扎；装钉",
+      "sceneMeaning": "捆绑；包扎；装钉",
+      "examples": "[]"
+    },
+    {
+      "word": "bosom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bʊzəm",
+      "phoneticUk": "'bʊz(ə)m",
+      "translation": "胸，胸部；内心",
+      "sceneMeaning": "胸，胸部；内心",
+      "examples": "[]"
+    },
+    {
+      "word": "boundary",
+      "partOfSpeech": "n",
+      "phoneticUs": "'baʊndri",
+      "phoneticUk": "'baʊnd(ə)rɪ",
+      "translation": "分界线，边界",
+      "sceneMeaning": "边界；界限",
+      "examples": "[]"
+    },
+    {
+      "word": "brim",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɪm",
+      "phoneticUk": "brɪm",
+      "translation": "边，边缘；帽沿",
+      "sceneMeaning": "边，边缘；帽沿",
+      "examples": "[]"
+    },
+    {
+      "word": "canoe",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'nu",
+      "phoneticUk": "kə'nuː",
+      "translation": "独木舟，皮艇，划子",
+      "sceneMeaning": "独木舟，皮艇，划子",
+      "examples": "[]"
+    },
+    {
+      "word": "ceiling",
+      "partOfSpeech": "n",
+      "phoneticUs": "'silɪŋ",
+      "phoneticUk": "'siːlɪŋ",
+      "translation": "天花板，顶蓬",
+      "sceneMeaning": "天花板；上限",
+      "examples": "[]"
+    },
+    {
+      "word": "cent",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɛnt",
+      "phoneticUk": "sent",
+      "translation": "分；分币；百",
+      "sceneMeaning": "分；分币；百",
+      "examples": "[]"
+    },
+    {
+      "word": "centre",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sɛntɚ",
+      "phoneticUk": "'sentə",
+      "translation": "中心；中枢；集中",
+      "sceneMeaning": "中心；中枢；集中；本场景常见用法：中锋；中锋区域",
+      "examples": "[]"
+    },
+    {
+      "word": "chimney",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃɪmni",
+      "phoneticUk": "'tʃɪmnɪ",
+      "translation": "烟囱，烟筒；玻璃罩",
+      "sceneMeaning": "烟囱，烟筒；玻璃罩",
+      "examples": "[]"
+    },
+    {
+      "word": "climb",
+      "partOfSpeech": "v",
+      "phoneticUs": "klaɪm",
+      "phoneticUk": "klaɪm",
+      "translation": "攀登，爬；爬",
+      "sceneMeaning": "攀爬；上升",
+      "examples": "[]"
+    },
+    {
+      "word": "conversely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'kɑnvɝsli",
+      "phoneticUk": "'kɒnvɜːslɪ; kən'vɜːslɪ",
+      "translation": "相反地",
+      "sceneMeaning": "相反地",
+      "examples": "[]"
+    },
+    {
+      "word": "coordinate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ko'ɔrdɪnet",
+      "phoneticUk": "kəʊ'ɔ:dɪneɪt",
+      "translation": "使协调，调节",
+      "sceneMeaning": "坐标；同等者",
+      "examples": "[]"
+    },
+    {
+      "word": "corner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɔrnɚ",
+      "phoneticUk": "'kɔːnə",
+      "translation": "角；犄角；边远地区",
+      "sceneMeaning": "角落；拐角",
+      "examples": "[]"
+    },
+    {
+      "word": "crack",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kræk",
+      "phoneticUk": "kræk",
+      "translation": "裂缝，裂纹；爆裂",
+      "sceneMeaning": "裂缝，裂纹；爆裂",
+      "examples": "[]"
+    },
+    {
+      "word": "cross",
+      "partOfSpeech": "v",
+      "phoneticUs": "krɔs",
+      "phoneticUk": "krɒs",
+      "translation": "穿过；使交叉",
+      "sceneMeaning": "穿过；越过",
+      "examples": "[]"
+    },
+    {
+      "word": "cubic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kjubɪk",
+      "phoneticUk": "'kjuːbɪk",
+      "translation": "立方形的；立方的",
+      "sceneMeaning": "立方形的；立方的",
+      "examples": "[]"
+    },
+    {
+      "word": "diameter",
+      "partOfSpeech": "n",
+      "phoneticUs": "daɪ'æmɪtɚ",
+      "phoneticUk": "daɪ'æmɪtə",
+      "translation": "直径",
+      "sceneMeaning": "直径；本场景常见用法：外直径",
+      "examples": "[]"
+    },
+    {
+      "word": "dimension",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'mɛnʃ(ə)n; daɪ-",
+      "phoneticUk": "dɪ'menʃ(ə)n; daɪ-",
+      "translation": "尺寸，尺度；面积",
+      "sceneMeaning": "维度；尺寸；方面",
+      "examples": "[]"
+    },
+    {
+      "word": "downstairs",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'daʊn'stɛrz",
+      "phoneticUk": "daʊn'steəz",
+      "translation": "在楼下；楼下的",
+      "sceneMeaning": "在楼下；楼下的",
+      "examples": "[]"
+    },
+    {
+      "word": "downward",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'daʊnwɚd",
+      "phoneticUk": "'daʊnwəd",
+      "translation": "向下的；向下地",
+      "sceneMeaning": "向下的；向下地",
+      "examples": "[]"
+    },
+    {
+      "word": "exit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛɡzɪt",
+      "phoneticUk": "'eksɪt; 'egzɪt",
+      "translation": "出口；退场；退出",
+      "sceneMeaning": "离开；退出",
+      "examples": "[]"
+    },
+    {
+      "word": "floor",
+      "partOfSpeech": "n",
+      "phoneticUs": "flɔr",
+      "phoneticUk": "flɔː",
+      "translation": "地板；楼层",
+      "sceneMeaning": "地板；楼层",
+      "examples": "[]"
+    },
+    {
+      "word": "grind",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɡraɪnd",
+      "phoneticUk": "graɪnd",
+      "translation": "磨(碎)；磨快",
+      "sceneMeaning": "磨(碎)；磨快",
+      "examples": "[]"
+    },
+    {
+      "word": "hi",
+      "partOfSpeech": "int",
+      "phoneticUs": "haɪ",
+      "phoneticUk": "haɪ",
+      "translation": "嗨(表示问候等)",
+      "sceneMeaning": "嗨(表示问候等)",
+      "examples": "[]"
+    },
+    {
+      "word": "horizontal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɔrə'zɑntl",
+      "phoneticUk": "hɒrɪ'zɒnt(ə)l",
+      "translation": "地平的；水平的",
+      "sceneMeaning": "水平的；横向的",
+      "examples": "[]"
+    },
+    {
+      "word": "kilometre",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɪ'lɔmɪtɚ",
+      "phoneticUk": "'kɪlə,miːtə; kɪ'lɒmɪtə",
+      "translation": "千米，公里",
+      "sceneMeaning": "千米，公里",
+      "examples": "[]"
+    },
+    {
+      "word": "ladder",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lædɚ",
+      "phoneticUk": "'lædə",
+      "translation": "梯子，梯状物",
+      "sceneMeaning": "梯子，梯状物；本场景常见用法：爬上梯子；[口语]上绞架",
+      "examples": "[]"
+    },
+    {
+      "word": "lane",
+      "partOfSpeech": "n",
+      "phoneticUs": "len",
+      "phoneticUk": "leɪn",
+      "translation": "(乡间)小路；跑道",
+      "sceneMeaning": "小路；车道；航道",
+      "examples": "[]"
+    },
+    {
+      "word": "lengthy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɛŋθi",
+      "phoneticUk": "'leŋθɪ",
+      "translation": "长的，漫长的",
+      "sceneMeaning": "长的，漫长的",
+      "examples": "[]"
+    },
+    {
+      "word": "midst",
+      "partOfSpeech": "n",
+      "phoneticUs": "mɪdst",
+      "phoneticUk": "mɪdst",
+      "translation": "中部，中间，当中",
+      "sceneMeaning": "中部，中间，当中",
+      "examples": "[]"
+    },
+    {
+      "word": "Oceania",
+      "partOfSpeech": "n",
+      "phoneticUs": ",oʃɪ'ænɪə",
+      "phoneticUk": ",əʊsɪ'ɑːnɪə; -ʃɪ-",
+      "translation": "大洋洲",
+      "sceneMeaning": "大洋洲",
+      "examples": "[]"
+    },
+    {
+      "word": "oppose",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'poz",
+      "phoneticUk": "ə'pəʊz",
+      "translation": "反对；反抗",
+      "sceneMeaning": "反对；反抗",
+      "examples": "[]"
+    },
+    {
+      "word": "orbit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔrbɪt",
+      "phoneticUk": "'ɔːbɪt",
+      "translation": "运行轨道；环绕",
+      "sceneMeaning": "运行轨道；环绕；本场景常见用法：近地轨道",
+      "examples": "[]"
+    },
+    {
+      "word": "outwards",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'aʊtwɚdz",
+      "phoneticUk": "'aʊtwədz",
+      "translation": "向外，往海外",
+      "sceneMeaning": "向外，往海外",
+      "examples": "[]"
+    },
+    {
+      "word": "parallel",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pærəlɛl",
+      "phoneticUk": "'pærəlel",
+      "translation": "平行的；相同的",
+      "sceneMeaning": "平行的；相似的",
+      "examples": "[]"
+    },
+    {
+      "word": "penetrate",
+      "partOfSpeech": "vi / vt",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "穿过；穿入",
+      "sceneMeaning": "穿过；穿入",
+      "examples": "[]"
+    },
+    {
+      "word": "radius",
+      "partOfSpeech": "n",
+      "phoneticUs": "'redɪəs",
+      "phoneticUk": "'reɪdɪəs",
+      "translation": "半径",
+      "sceneMeaning": "半径",
+      "examples": "[]"
+    },
+    {
+      "word": "rear",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪr",
+      "phoneticUk": "rɪə",
+      "translation": "后部，后面；背面",
+      "sceneMeaning": "后部，后面；背面；本场景常见用法：后侧；背部",
+      "examples": "[]"
+    },
+    {
+      "word": "reverse",
+      "partOfSpeech": "a / n / v",
+      "phoneticUs": "rɪ'vɝs",
+      "phoneticUk": "rɪ'vɜːs",
+      "translation": "颠倒，翻转；背面；相反情况；正相反；相反的",
+      "sceneMeaning": "颠倒，翻转；背面；相反情况；正相反；相反的；本场景常见用法：反向",
+      "examples": "[]"
+    },
+    {
+      "word": "rotate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rotet",
+      "phoneticUk": "rə(ʊ)'teɪt",
+      "translation": "旋转；使旋转",
+      "sceneMeaning": "旋转；使旋转",
+      "examples": "[]"
+    },
+    {
+      "word": "rotation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ro'teʃən",
+      "phoneticUk": "rə(ʊ)'teɪʃ(ə)n",
+      "translation": "旋转，转动；循环",
+      "sceneMeaning": "旋转，转动；循环；本场景常见用法：转动方向",
+      "examples": "[]"
+    },
+    {
+      "word": "route",
+      "partOfSpeech": "n",
+      "phoneticUs": "raʊt",
+      "phoneticUk": "ruːt",
+      "translation": "路，路线，路程",
+      "sceneMeaning": "路线；途径",
+      "examples": "[]"
+    },
+    {
+      "word": "scatter",
+      "partOfSpeech": "v",
+      "phoneticUs": "'skætɚ",
+      "phoneticUk": "'skætə",
+      "translation": "使消散；撒；散播",
+      "sceneMeaning": "使消散；撒；散播",
+      "examples": "[]"
+    },
+    {
+      "word": "separately",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'sɛprətli",
+      "phoneticUk": "ˈseprətli",
+      "translation": "分别地，另行",
+      "sceneMeaning": "分别地，另行",
+      "examples": "[]"
+    },
+    {
+      "word": "sideways",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'saɪdwez",
+      "phoneticUk": "'saɪdweɪz",
+      "translation": "斜着，斜向一边地；向侧面",
+      "sceneMeaning": "斜着，斜向一边地；向侧面",
+      "examples": "[]"
+    },
+    {
+      "word": "storey",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stɔri",
+      "phoneticUk": "'stɔːrɪ",
+      "translation": "(层)楼",
+      "sceneMeaning": "(层)楼",
+      "examples": "[]"
+    },
+    {
+      "word": "suspend",
+      "partOfSpeech": "v",
+      "phoneticUs": "sə'spɛnd",
+      "phoneticUk": "sə'spend",
+      "translation": "吊，悬；推迟",
+      "sceneMeaning": "吊，悬；推迟；本场景常见用法：停产",
+      "examples": "[]"
+    },
+    {
+      "word": "swing",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "swɪŋ",
+      "phoneticUk": "swɪŋ",
+      "translation": "摇摆；回转；摇摆",
+      "sceneMeaning": "摇摆；回转；摇摆",
+      "examples": "[]"
+    },
+    {
+      "word": "upper",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ʌpɚ",
+      "phoneticUk": "'ʌpə",
+      "translation": "上面的；地位较高的",
+      "sceneMeaning": "上面的；较高的",
+      "examples": "[]"
+    },
+    {
+      "word": "upward",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ʌpwɚd",
+      "phoneticUk": "'ʌpwəd",
+      "translation": "向上的，上升的",
+      "sceneMeaning": "向上的，上升的；本场景常见用法：上进心；向上倾向",
+      "examples": "[]"
+    },
+    {
+      "word": "velocity",
+      "partOfSpeech": "n",
+      "phoneticUs": "vəˈlɑsəti",
+      "phoneticUk": "vəˈlɒsəti",
+      "translation": "速度，速率",
+      "sceneMeaning": "速度，速率；本场景常见用法：线速度",
+      "examples": "[]"
+    },
+    {
+      "word": "vertical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vɝtɪkl",
+      "phoneticUk": "'vɜːtɪk(ə)l",
+      "translation": "垂直的，竖式的",
+      "sceneMeaning": "垂直的；竖直的",
+      "examples": "[]"
+    },
+    {
+      "word": "width",
+      "partOfSpeech": "n",
+      "phoneticUs": "wɪdθ",
+      "phoneticUk": "wɪtθ; wɪdθ",
+      "translation": "宽阔，广阔；宽度",
+      "sceneMeaning": "宽度；广度",
+      "examples": "[]"
+    },
+    {
+      "word": "zone",
+      "partOfSpeech": "n",
+      "phoneticUs": "zon",
+      "phoneticUk": "zəʊn",
+      "translation": "地区，区域，范围",
+      "sceneMeaning": "地带；区域",
+      "examples": "[]"
+    }
+  ]
+}

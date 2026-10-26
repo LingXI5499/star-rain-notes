@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> <code>z-index</code> 不是全局绝对排序；定位、变换等可能创建新的层叠上下文。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.overlay { position: fixed; z-index: 100; }
+.panel { position: relative; z-index: 1; }
+</code></pre>
+<p><strong>学完能做：</strong> 定位层级冲突并识别层叠上下文。</p>

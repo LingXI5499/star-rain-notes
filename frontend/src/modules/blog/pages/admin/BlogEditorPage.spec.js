@@ -27,10 +27,10 @@ const deferred = () => { let resolve, reject; const promise = new Promise((a, b)
 let wrapper, router
 async function start(id = '1') {
   router = createRouter({ history: createMemoryHistory(), routes: [
-    { path: '/useradmin/blog/editor/:postId', component: BlogEditorPage },
+    { path: '/blog/editor/:postId', component: BlogEditorPage },
     { path: '/:pathMatch(.*)*', component: { template: '<p>Other page</p>' } },
   ] })
-  await router.push(`/useradmin/blog/editor/${id}`)
+  await router.push(`/blog/editor/${id}`)
   wrapper = mount(RouterView, { global: { plugins: [router], stubs: {
     MarkdownEditor: Editor, AdminConfirmDialog: Confirm, MediaPicker: true,
     BlogTagPicker: true, BlogStatusPill: true,
@@ -42,7 +42,7 @@ async function dirtyLeave(expected = true) {
   api.ask.mockResolvedValue(false)
   await router.push('/elsewhere')
   expect(api.ask).toHaveBeenCalledTimes(expected ? 1 : 0)
-  expect(router.currentRoute.value.path).toBe(expected ? '/useradmin/blog/editor/1' : '/elsewhere')
+  expect(router.currentRoute.value.path).toBe(expected ? '/blog/editor/1' : '/elsewhere')
 }
 beforeEach(() => {
   setActivePinia(createPinia())
@@ -82,7 +82,7 @@ describe('blog editor reliability', () => {
   it('asks only once for the return button', async () => {
     await start(); await wrapper.get('[aria-label="正文"]').setValue('B')
     api.ask.mockResolvedValue(true); await click('返回列表')
-    expect(api.ask).toHaveBeenCalledTimes(1); expect(router.currentRoute.value.path).toBe('/useradmin/blog/manage')
+    expect(api.ask).toHaveBeenCalledTimes(1); expect(router.currentRoute.value.path).toBe('/blog/manage')
   })
   it('retains edits made during a body request', async () => {
     await start(); const request = deferred(); api.updatePostBody.mockReturnValue(request.promise)
@@ -109,7 +109,7 @@ describe('blog editor reliability', () => {
     await start('new'); await wrapper.get('[aria-label="文章标题"]').setValue('Draft')
     await wrapper.get('[aria-label="正文"]').setValue('B')
     api.updatePostBody.mockRejectedValue(new Error('offline')); await click('保存文章')
-    expect(router.currentRoute.value.path).toBe('/useradmin/blog/editor/2')
+    expect(router.currentRoute.value.path).toBe('/blog/editor/2')
     expect(wrapper.get('[aria-label="正文"]').element.value).toBe('B')
     expect(wrapper.get('[role="status"]').text()).toContain('草稿')
     expect(api.ask).not.toHaveBeenCalled()
@@ -117,7 +117,7 @@ describe('blog editor reliability', () => {
   })
   it('blocks another article while a save is in flight and prevents duplicate saves', async () => {
     await start(); const request = deferred(); api.updatePostBody.mockReturnValue(request.promise)
-    await click('保存正文'); await router.push('/useradmin/blog/editor/2')
+    await click('保存正文'); await router.push('/blog/editor/2')
     expect(router.currentRoute.value.params.postId).toBe('1')
     expect(api.updatePostBody).toHaveBeenCalledTimes(1)
     request.resolve(article()); await flushPromises()
@@ -129,7 +129,7 @@ describe('blog editor reliability', () => {
   })
   it('guards an article parameter update with dirty input', async () => {
     await start(); await wrapper.get('[aria-label="正文"]').setValue('B')
-    await router.push('/useradmin/blog/editor/2')
+    await router.push('/blog/editor/2')
     expect(api.ask).toHaveBeenCalledTimes(1); expect(router.currentRoute.value.params.postId).toBe('1')
   })
   it('captures body and metadata once for save all', async () => {

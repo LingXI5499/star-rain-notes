@@ -3,14 +3,12 @@
  * TutorialCatalogPage.vue：教程与学习模块的页面组件。
  * 职责范围：课程目录、章节版本、审核工作区、阅读进度、知识卡片和答题记录。
  * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
- * 主要依赖：../../../../shared/ui/PublicSearch.vue、../../../../shared/ui/PublicFilterBar.vue、../../../../shared/ui/PublicPagination.vue、../../../../shared/composables/publicListState、vue、vue-router。
- * 主要响应式状态：route、router、categories、allTutorials、selectedSlug、search、page、pageSize。
- * 阅读入口：tutorialPath（教程路径的处理函数）；changePage（change分页的处理函数）；changeSize（change大小的处理函数）；searchTutorials（搜索Tutorials的处理函数）；resetFilters（重置筛选条件）。
+ * 主要依赖：../../../../shared/ui/PublicPagination.vue、../../../../shared/composables/publicListState、vue、vue-router。
+ * 主要响应式状态：route、router、categories、allTutorials、selectedSlug、page、pageSize。
+ * 阅读入口：tutorialPath（教程路径的处理函数）；changePage（change分页的处理函数）；changeSize（change大小的处理函数）。
  */
 
 
-import PublicSearch from '../../../../shared/ui/PublicSearch.vue'
-import PublicFilterBar from '../../../../shared/ui/PublicFilterBar.vue'
 import PublicPagination from '../../../../shared/ui/PublicPagination.vue'
 import { publicPage, publicPageSize, sizeQuery } from '../../../../shared/composables/publicListState'
 
@@ -18,7 +16,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
 import { listPublicCategories, listPublicTutorials } from '../../api/tutorialApi'
 import { errorMessage } from '../../../../shared/http'
-import { VIEW_MODE, accountPath, resolveViewMode } from '../../../../shared/viewMode'
+import { accountPath } from '../../../../shared/viewMode'
 
 /**
  * 路由；通过 useRoute 建立。
@@ -44,11 +42,6 @@ const allTutorials = ref([])
  */
 const selectedSlug = ref(String(route.query.categorySlug || ''))
 /**
- * 搜索；通过 ref 建立。
- * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
- */
-const search = ref(String(route.query.q || ''))
-/**
  * 分页页码；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
@@ -71,12 +64,11 @@ const error = ref('')
 
 /**
  * 教程路径的处理函数。
- * 主要协作：resolveViewMode、accountPath。
+ * 主要协作：accountPath。
  * @param slug 公开固定链接的路径标识；默认值、解构字段与可选参数见函数签名。
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
-const tutorialPath = (slug) => resolveViewMode(route.path) === VIEW_MODE.ACCOUNT
-  ? accountPath(`/tutorials/${slug}`) : `/tutorials/${slug}`
+const tutorialPath = (slug) => accountPath(`/tutorials/${slug}`)
 
 /**
  * 选中分类；通过 computed 建立。
@@ -135,17 +127,6 @@ function changePage(next) { router.push({ query: { ...route.query, page: next > 
  * @param size 大小；默认值、解构字段与可选参数见函数签名。
  */
 function changeSize(size) { router.push({ query: sizeQuery(route.query, size, 12) }) }
-/**
- * 搜索Tutorials的处理函数。
- * 主要协作：router.push。
- * @param value 值；默认值、解构字段与可选参数见函数签名。
- */
-function searchTutorials(value) { router.push({ query: { ...route.query, q: value || undefined, page: undefined } }) }
-/**
- * 重置筛选条件。
- * 主要协作：router.push。
- */
-function resetFilters() { router.push({ query: { pageSize: route.query.pageSize } }) }
 
 /**
  * 分类数量的处理函数。
@@ -193,7 +174,7 @@ function selectCategory(slug) { router.push({ query: { ...route.query, categoryS
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
-watch(() => route.query, () => { selectedSlug.value = String(route.query.categorySlug || ''); search.value = String(route.query.q || '') }, { immediate: true })
+watch(() => route.query, () => { selectedSlug.value = String(route.query.categorySlug || '') }, { immediate: true })
 /**
  * 监听指定依赖的变化，并执行回调中的刷新或同步逻辑；监听源和选项决定触发时机。
  */
@@ -270,7 +251,6 @@ onMounted(load)
 
         </div>
 
-        <PublicFilterBar label="教程筛选" :total="filtered.length" unit="门教程" :active="Boolean(selectedSlug || route.query.q)" @reset="resetFilters"><PublicSearch v-model="search" label="筛选当前教程" placeholder="搜索教程标题或简介" @search="searchTutorials" /></PublicFilterBar>
         <p v-if="loading" class="tutorial-catalog__empty">正在加载教程…</p>
         <p v-else-if="error" class="tutorial-catalog__empty" role="alert">{{ error }}</p>
         <p v-else-if="!displayed.length" class="tutorial-catalog__empty">当前分类暂无匹配教程。</p>

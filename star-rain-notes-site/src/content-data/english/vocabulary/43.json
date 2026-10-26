@@ -1,0 +1,477 @@
+{
+  "id": "43",
+  "title": "国际关系 / 全球化 / 外交",
+  "layer": "社会与世界主题层",
+  "wordCount": 52,
+  "path": "/english/vocabulary/43/",
+  "words": [
+    {
+      "word": "crisis",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kraɪsɪs",
+      "phoneticUk": "'kraɪsɪs",
+      "translation": "危机；存亡之际；危机",
+      "sceneMeaning": "危机",
+      "examples": "[]"
+    },
+    {
+      "word": "influence",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɪnfluəns",
+      "phoneticUk": "'ɪnflʊəns",
+      "translation": "影响；势力；影响",
+      "sceneMeaning": "影响力",
+      "examples": "[]"
+    },
+    {
+      "word": "interest",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪntrəst",
+      "phoneticUk": "'ɪnt(ə)rɪst",
+      "translation": "兴趣；利益；利息",
+      "sceneMeaning": "利益；兴趣",
+      "examples": "[]"
+    },
+    {
+      "word": "power",
+      "partOfSpeech": "n",
+      "phoneticUs": "'paʊɚ",
+      "phoneticUk": "'paʊə",
+      "translation": "能力；力；权；幂",
+      "sceneMeaning": "大国；权力",
+      "examples": "[]"
+    },
+    {
+      "word": "recognize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈrɛkəɡˌnaɪz",
+      "phoneticUk": "'rekəɡnaɪz",
+      "translation": "认识，认出；承认",
+      "sceneMeaning": "承认；识别",
+      "examples": "[]"
+    },
+    {
+      "word": "conflict",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑnflɪkt",
+      "phoneticUk": "'kɒnflɪkt",
+      "translation": "争论；冲突；斗争；冲突",
+      "sceneMeaning": "冲突",
+      "examples": "[]"
+    },
+    {
+      "word": "international",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪntɚ'næʃnəl",
+      "phoneticUk": "ɪntə'næʃ(ə)n(ə)l",
+      "translation": "国际的，世界(性)的",
+      "sceneMeaning": "国际的",
+      "examples": "[]"
+    },
+    {
+      "word": "powerful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'paʊɚfl",
+      "phoneticUk": "'paʊəfʊl; -f(ə)l",
+      "translation": "强有力的；有权威的",
+      "sceneMeaning": "强有力的；有权威的",
+      "examples": "[]"
+    },
+    {
+      "word": "foreign",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɔrən",
+      "phoneticUk": "'fɒrɪn",
+      "translation": "外国的；外来的",
+      "sceneMeaning": "外国的；外交的",
+      "examples": "[]"
+    },
+    {
+      "word": "humanity",
+      "partOfSpeech": "n",
+      "phoneticUs": "hjʊ'mænəti",
+      "phoneticUk": "hju:'mæniti",
+      "translation": "人类〔总称〕；人性",
+      "sceneMeaning": "人类〔总称〕；人性",
+      "examples": "[]"
+    },
+    {
+      "word": "region",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ridʒən",
+      "phoneticUk": "'riːdʒ(ə)n",
+      "translation": "地区，地带；领域",
+      "sceneMeaning": "地区；区域",
+      "examples": "[]"
+    },
+    {
+      "word": "tension",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛnʃən",
+      "phoneticUk": "'tenʃ(ə)n",
+      "translation": "n.；紧张,不安,拉紧,张力；紧张",
+      "sceneMeaning": "紧张关系；张力",
+      "examples": "[]"
+    },
+    {
+      "word": "conventional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'vɛnʃənl",
+      "phoneticUk": "kən'venʃ(ə)n(ə)l",
+      "translation": "普通的；习惯的；传统的",
+      "sceneMeaning": "普通的；习惯的；传统的",
+      "examples": "[]"
+    },
+    {
+      "word": "dispute",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dɪs'pjʊt",
+      "phoneticUk": "dɪ'spjuːt; 'dɪspjuːt",
+      "translation": "争论，争执；争论；辩论，争论",
+      "sceneMeaning": "争端；纠纷",
+      "examples": "[]"
+    },
+    {
+      "word": "consultant",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'sʌltənt",
+      "phoneticUk": "kən'sʌlt(ə)nt",
+      "translation": "顾问",
+      "sceneMeaning": "顾问；本场景常见用法：管理顾问",
+      "examples": "[]"
+    },
+    {
+      "word": "agreement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'grimənt",
+      "phoneticUk": "ə'griːm(ə)nt",
+      "translation": "协定，协议；同意",
+      "sceneMeaning": "协议",
+      "examples": "[]"
+    },
+    {
+      "word": "conference",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnfərəns",
+      "phoneticUk": "'kɒnf(ə)r(ə)ns",
+      "translation": "会议，讨论会",
+      "sceneMeaning": "会议；大会",
+      "examples": "[]"
+    },
+    {
+      "word": "nation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'neʃən",
+      "phoneticUk": "'neɪʃ(ə)n",
+      "translation": "民族；国家",
+      "sceneMeaning": "国家；民族",
+      "examples": "[]"
+    },
+    {
+      "word": "negotiate",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪ'ɡoʃɪet",
+      "phoneticUk": "nɪ'ɡəʊʃɪeɪt",
+      "translation": "谈判，协商，交涉",
+      "sceneMeaning": "谈判；协商",
+      "examples": "[]"
+    },
+    {
+      "word": "partner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑrtnɚ",
+      "phoneticUk": "'pɑːtnə",
+      "translation": "伙伴；搭挡；配偶",
+      "sceneMeaning": "伙伴；合作方",
+      "examples": "[]"
+    },
+    {
+      "word": "frontier",
+      "partOfSpeech": "n",
+      "phoneticUs": "frʌn'tɪr",
+      "phoneticUk": "'frʌntɪə; frʌn'tɪə",
+      "translation": "边境；边疆；新领域；边境",
+      "sceneMeaning": "边境；边疆；新领域；边境；本场景常见用法：边境贸易",
+      "examples": "[]"
+    },
+    {
+      "word": "globe",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡlob",
+      "phoneticUk": "gləʊb",
+      "translation": "地球，世界；地界仪",
+      "sceneMeaning": "地球，世界；地界仪；本场景常见用法：n. 地球；地球仪",
+      "examples": "[]"
+    },
+    {
+      "word": "resolve",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'zɑlv",
+      "phoneticUk": "rɪ'zɒlv",
+      "translation": "解决；决心；决心；解决；下决心",
+      "sceneMeaning": "解决；决议",
+      "examples": "[]"
+    },
+    {
+      "word": "border",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "边，边缘；边界",
+      "sceneMeaning": "边界；边境",
+      "examples": "[]"
+    },
+    {
+      "word": "diplomatic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",dɪplə'mætɪk",
+      "phoneticUk": "dɪplə'mætɪk",
+      "translation": "外交的",
+      "sceneMeaning": "外交的；有策略的",
+      "examples": "[]"
+    },
+    {
+      "word": "immigrant",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɪmɪɡrənt",
+      "phoneticUk": "'ɪmɪgr(ə)nt",
+      "translation": "移民；移民的",
+      "sceneMeaning": "移民；移入者",
+      "examples": "[]"
+    },
+    {
+      "word": "interference",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntɚ'fɪrəns",
+      "phoneticUk": "ɪntə'fɪər(ə)ns",
+      "translation": "干涉，干预；阻碍",
+      "sceneMeaning": "干涉，干预；阻碍",
+      "examples": "[]"
+    },
+    {
+      "word": "mission",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪʃən",
+      "phoneticUk": "'mɪʃ(ə)n",
+      "translation": "使命，任务；使团；使命，任务；代表团",
+      "sceneMeaning": "外交使团；任务",
+      "examples": "[]"
+    },
+    {
+      "word": "passport",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pæspɔrt",
+      "phoneticUk": "'pɑːspɔːt",
+      "translation": "护照",
+      "sceneMeaning": "护照",
+      "examples": "[]"
+    },
+    {
+      "word": "rival",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'raɪvl",
+      "phoneticUk": "'raɪvl",
+      "translation": "竞争者；竞争的；对手",
+      "sceneMeaning": "竞争对手",
+      "examples": "[]"
+    },
+    {
+      "word": "tense",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɛns",
+      "phoneticUk": "tens",
+      "translation": "时态，时",
+      "sceneMeaning": "时态，时",
+      "examples": "[]"
+    },
+    {
+      "word": "territory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛrətɔri",
+      "phoneticUk": "'terɪt(ə)rɪ",
+      "translation": "领土，版图；领域；领土，领域",
+      "sceneMeaning": "领土；地区",
+      "examples": "[]"
+    },
+    {
+      "word": "unity",
+      "partOfSpeech": "n",
+      "phoneticUs": "'junəti",
+      "phoneticUk": "ˈjuːnəti",
+      "translation": "单一；统一；团结",
+      "sceneMeaning": "单一；统一；团结；本场景常见用法：国家统一，民族团结",
+      "examples": "[]"
+    },
+    {
+      "word": "boundary",
+      "partOfSpeech": "n",
+      "phoneticUs": "'baʊndri",
+      "phoneticUk": "'baʊnd(ə)rɪ",
+      "translation": "分界线，边界",
+      "sceneMeaning": "边界；界限",
+      "examples": "[]"
+    },
+    {
+      "word": "brute",
+      "partOfSpeech": "n",
+      "phoneticUs": "brut",
+      "phoneticUk": "bruːt",
+      "translation": "禽兽，畜生",
+      "sceneMeaning": "禽兽，畜生；本场景常见用法：强力",
+      "examples": "[]"
+    },
+    {
+      "word": "collision",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'lɪʒən",
+      "phoneticUk": "kə'lɪʒ(ə)n",
+      "translation": "碰撞；冲突；冲突，抵触",
+      "sceneMeaning": "碰撞；冲突；冲突，抵触",
+      "examples": "[]"
+    },
+    {
+      "word": "confine",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'faɪn",
+      "phoneticUk": "kən'faɪn",
+      "translation": "限制；禁闭",
+      "sceneMeaning": "限制；禁闭",
+      "examples": "[]"
+    },
+    {
+      "word": "convention",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'vɛnʃən",
+      "phoneticUk": "kən'venʃ(ə)n",
+      "translation": "习俗，惯例；公约",
+      "sceneMeaning": "公约；惯例",
+      "examples": "[]"
+    },
+    {
+      "word": "cooperate",
+      "partOfSpeech": "v",
+      "phoneticUs": "koʊˈɑːpəreɪt",
+      "phoneticUk": "kəʊ'ɒpəreɪt",
+      "translation": "合作，协作；配合",
+      "sceneMeaning": "合作",
+      "examples": "[]"
+    },
+    {
+      "word": "delegation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɛlɪ'ɡeʃən",
+      "phoneticUk": "delɪ'geɪʃ(ə)n",
+      "translation": "代表团",
+      "sceneMeaning": "代表团",
+      "examples": "[]"
+    },
+    {
+      "word": "foreigner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrənɚ",
+      "phoneticUk": "'fɒrɪnə",
+      "translation": "外国人",
+      "sceneMeaning": "外国人",
+      "examples": "[]"
+    },
+    {
+      "word": "forum",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrəm",
+      "phoneticUk": "'fɔːrəm",
+      "translation": "论坛",
+      "sceneMeaning": "论坛",
+      "examples": "[]"
+    },
+    {
+      "word": "Indian",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɪndɪən",
+      "phoneticUk": "'ɪndɪən",
+      "translation": "印度的；印度人",
+      "sceneMeaning": "印度的；印度人",
+      "examples": "[]"
+    },
+    {
+      "word": "influential",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪnflu'ɛnʃl",
+      "phoneticUk": ",ɪnflʊ'enʃ(ə)l",
+      "translation": "有影响的；有权势的；有影响力的",
+      "sceneMeaning": "有影响的；有权势的；有影响力的",
+      "examples": "[]"
+    },
+    {
+      "word": "interdependence",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntɚdɪ'pɛndəns",
+      "phoneticUk": ",ɪntədɪ'pendəns",
+      "translation": "相互依靠",
+      "sceneMeaning": "相互依存",
+      "examples": "[]"
+    },
+    {
+      "word": "intervention",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntɚ'vɛnʃən",
+      "phoneticUk": "ˌɪntə'venʃn",
+      "translation": "干涉",
+      "sceneMeaning": "干涉",
+      "examples": "[]"
+    },
+    {
+      "word": "realm",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɛlm",
+      "phoneticUk": "relm",
+      "translation": "王国，国土；领域",
+      "sceneMeaning": "王国，国土；领域",
+      "examples": "[]"
+    },
+    {
+      "word": "resolution",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛzə'luʃən",
+      "phoneticUk": "rezə'luːʃ(ə)n",
+      "translation": "坚决，坚定；决定",
+      "sceneMeaning": "决议；解决",
+      "examples": "[]"
+    },
+    {
+      "word": "settlement",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛtlmənt",
+      "phoneticUk": "'set(ə)lm(ə)nt",
+      "translation": "解决；殖民，殖民地",
+      "sceneMeaning": "解决；和解",
+      "examples": "[]"
+    },
+    {
+      "word": "treaty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'triti",
+      "phoneticUk": "'triːtɪ",
+      "translation": "条约；协议，协定",
+      "sceneMeaning": "条约",
+      "examples": "[]"
+    },
+    {
+      "word": "unrest",
+      "partOfSpeech": "n",
+      "phoneticUs": "ʌn'rɛst",
+      "phoneticUk": "ʌn'rest",
+      "translation": "不安定，动荡",
+      "sceneMeaning": "不安定，动荡",
+      "examples": "[]"
+    },
+    {
+      "word": "withdraw",
+      "partOfSpeech": "v",
+      "phoneticUs": "wɪð'drɔ",
+      "phoneticUk": "wɪð'drɔː",
+      "translation": "收回；撤回vi撤退",
+      "sceneMeaning": "撤出；退出",
+      "examples": "[]"
+    }
+  ]
+}

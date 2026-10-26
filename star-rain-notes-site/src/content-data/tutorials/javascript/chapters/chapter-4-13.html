@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>AbortController</code> 的 <code>signal</code> 可以关联多个监听器，<code>abort()</code> 时统一解绑。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const controller = new AbortController();
+window.addEventListener('resize', () =&gt; console.log('变化'), { signal: controller.signal });
+controller.abort();
+</code></pre>
+<p><strong>学完能做：</strong> 使用 AbortController 批量清理监听。</p>

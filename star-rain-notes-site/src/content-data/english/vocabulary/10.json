@@ -1,0 +1,1485 @@
+{
+  "id": "10",
+  "title": "家具、家电、器具、日用品",
+  "layer": "基础通用词层",
+  "wordCount": 164,
+  "path": "/english/vocabulary/10/",
+  "words": [
+    {
+      "word": "can",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæn",
+      "phoneticUk": "kæn",
+      "translation": "罐头，听头；容器",
+      "sceneMeaning": "罐头；金属罐",
+      "examples": "[]"
+    },
+    {
+      "word": "electronic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪˌlekˈtrɑːnɪk",
+      "phoneticUk": "ɪˌlekˈtrɒnɪk",
+      "translation": "电子的",
+      "sceneMeaning": "电子的",
+      "examples": "[]"
+    },
+    {
+      "word": "fire",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "faɪr",
+      "phoneticUk": "'faɪə",
+      "translation": "火；火灾；开火",
+      "sceneMeaning": "火；火灾；开火",
+      "examples": "[]"
+    },
+    {
+      "word": "paper",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pepɚ",
+      "phoneticUk": "'peɪpə",
+      "translation": "纸；官方文件；文章",
+      "sceneMeaning": "纸；论文",
+      "examples": "[]"
+    },
+    {
+      "word": "radio",
+      "partOfSpeech": "n",
+      "phoneticUs": "'redɪo",
+      "phoneticUk": "'reɪdɪəʊ",
+      "translation": "无线电；收音机",
+      "sceneMeaning": "收音机；无线电",
+      "examples": "[]"
+    },
+    {
+      "word": "saw",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sɔ",
+      "phoneticUk": "sɔː",
+      "translation": "锯子；锯，锯开",
+      "sceneMeaning": "锯子；锯，锯开；本场景常见用法：电锯",
+      "examples": "[]"
+    },
+    {
+      "word": "store",
+      "partOfSpeech": "n",
+      "phoneticUs": "stɔr",
+      "phoneticUk": "stɔː",
+      "translation": "贮藏；贮存品；商店",
+      "sceneMeaning": "储存；存放",
+      "examples": "[]"
+    },
+    {
+      "word": "electric",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'lɛktrɪk",
+      "phoneticUk": "ɪ'lektrɪk",
+      "translation": "电的，电动的",
+      "sceneMeaning": "电的；用电的",
+      "examples": "[]"
+    },
+    {
+      "word": "plastic",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'plæstɪk",
+      "phoneticUk": "'plæstɪk",
+      "translation": "可塑的；塑料；塑料的",
+      "sceneMeaning": "塑料的；塑料",
+      "examples": "[]"
+    },
+    {
+      "word": "light",
+      "partOfSpeech": "adj",
+      "phoneticUs": "laɪt",
+      "phoneticUk": "laɪt",
+      "translation": "轻的，少量的",
+      "sceneMeaning": "灯；光",
+      "examples": "[]"
+    },
+    {
+      "word": "regularly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "'reɡjələli",
+      "translation": "定期地，有规律地",
+      "sceneMeaning": "定期地；经常地",
+      "examples": "[]"
+    },
+    {
+      "word": "clean",
+      "partOfSpeech": "adj",
+      "phoneticUs": "klin",
+      "phoneticUk": "kliːn",
+      "translation": "清洁的；纯洁的",
+      "sceneMeaning": "清洁",
+      "examples": "[]"
+    },
+    {
+      "word": "clock",
+      "partOfSpeech": "n",
+      "phoneticUs": "klɑk",
+      "phoneticUk": "klɒk",
+      "translation": "钟，仪表",
+      "sceneMeaning": "钟",
+      "examples": "[]"
+    },
+    {
+      "word": "fix",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɪks",
+      "phoneticUk": "fɪks",
+      "translation": "使固定；决定",
+      "sceneMeaning": "修理；固定",
+      "examples": "[]"
+    },
+    {
+      "word": "domestic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "də'mɛstɪk",
+      "phoneticUk": "də'mestɪk",
+      "translation": "本国的；家庭的；国内的",
+      "sceneMeaning": "家用的；国内的",
+      "examples": "[]"
+    },
+    {
+      "word": "electricity",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'lɛk'trɪsəti",
+      "phoneticUk": ",ɪlek'trɪsɪtɪ; ,el-; ,iːl-",
+      "translation": "电，电学；电流",
+      "sceneMeaning": "电，电学；电流；本场景常见用法：正电；阳电",
+      "examples": "[]"
+    },
+    {
+      "word": "fancy",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'fænsi",
+      "phoneticUk": "'fænsɪ",
+      "translation": "想象力；设想；爱好；华丽的；别致的",
+      "sceneMeaning": "想象力；设想；爱好；华丽的；别致的",
+      "examples": "[]"
+    },
+    {
+      "word": "household",
+      "partOfSpeech": "n",
+      "phoneticUs": "'haʊshold",
+      "phoneticUk": "'haʊshəʊld",
+      "translation": "家庭，户；家务；家庭，一家人",
+      "sceneMeaning": "家庭的；家用的",
+      "examples": "[]"
+    },
+    {
+      "word": "practical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'præktɪkl",
+      "phoneticUk": "'præktɪk(ə)l",
+      "translation": "实践的；实用的",
+      "sceneMeaning": "实用的；实际的",
+      "examples": "[]"
+    },
+    {
+      "word": "remote",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'mot",
+      "phoneticUk": "rɪ'məʊt",
+      "translation": "相隔很远的；冷淡的",
+      "sceneMeaning": "遥控器；遥远的",
+      "examples": "[]"
+    },
+    {
+      "word": "tissue",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɪʃu",
+      "phoneticUk": "'tɪʃuː; 'tɪsjuː",
+      "translation": "薄绢；薄纸；组织",
+      "sceneMeaning": "纸巾；组织",
+      "examples": "[]"
+    },
+    {
+      "word": "charge",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tʃɑrdʒ",
+      "phoneticUk": "tʃɑːdʒ",
+      "translation": "索价；控告；费用",
+      "sceneMeaning": "充电；收费",
+      "examples": "[]"
+    },
+    {
+      "word": "manual",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'mænjuəl",
+      "phoneticUk": "'mænjʊ(ə)l",
+      "translation": "体力的；手册",
+      "sceneMeaning": "手工的；手动的",
+      "examples": "[]"
+    },
+    {
+      "word": "switch",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "swɪtʃ",
+      "phoneticUk": "swɪtʃ",
+      "translation": "开关；转换；转换；转变，改变",
+      "sceneMeaning": "转换；开关",
+      "examples": "[]"
+    },
+    {
+      "word": "tackle",
+      "partOfSpeech": "v",
+      "phoneticUs": "'tækl",
+      "phoneticUk": "'tæk(ə)l",
+      "translation": "处理",
+      "sceneMeaning": "处理；本场景常见用法：n. 渔具；钓鱼用具",
+      "examples": "[]"
+    },
+    {
+      "word": "bed",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɛd",
+      "phoneticUk": "bed",
+      "translation": "床，床位；圃；河床",
+      "sceneMeaning": "床",
+      "examples": "[]"
+    },
+    {
+      "word": "equipment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kwɪpmənt",
+      "phoneticUk": "ɪ'kwɪpm(ə)nt",
+      "translation": "装备，设备，配备",
+      "sceneMeaning": "设备；装备",
+      "examples": "[]"
+    },
+    {
+      "word": "machine",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'ʃin",
+      "phoneticUk": "mə'ʃiːn",
+      "translation": "机器；机械",
+      "sceneMeaning": "机器",
+      "examples": "[]"
+    },
+    {
+      "word": "box",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɑks",
+      "phoneticUk": "bɒks",
+      "translation": "箱，盒；包箱",
+      "sceneMeaning": "盒子；箱子",
+      "examples": "[]"
+    },
+    {
+      "word": "chair",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɛr",
+      "phoneticUk": "tʃeə",
+      "translation": "椅子；主席",
+      "sceneMeaning": "椅子",
+      "examples": "[]"
+    },
+    {
+      "word": "cup",
+      "partOfSpeech": "n",
+      "phoneticUs": "kʌp",
+      "phoneticUk": "kʌp",
+      "translation": "杯子；(一)杯；奖杯",
+      "sceneMeaning": "杯子",
+      "examples": "[]"
+    },
+    {
+      "word": "device",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'vaɪs",
+      "phoneticUk": "dɪˈvaɪs",
+      "translation": "器械，装置；设计；装置，设备",
+      "sceneMeaning": "设备；装置",
+      "examples": "[]"
+    },
+    {
+      "word": "electronics",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ,lɛk'trɑnɪks",
+      "phoneticUk": "ɪlek'trɒnɪks; el-",
+      "translation": "电子学",
+      "sceneMeaning": "电子学；本场景常见用法：便携式电子设备",
+      "examples": "[]"
+    },
+    {
+      "word": "pair",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pɛr",
+      "phoneticUk": "peə",
+      "translation": "一对；成对，配对",
+      "sceneMeaning": "一对；成对，配对；本场景常见用法：电子对",
+      "examples": "[]"
+    },
+    {
+      "word": "stuff",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "stʌf",
+      "phoneticUk": "stʌf",
+      "translation": "材料；装，填，塞",
+      "sceneMeaning": "材料；装，填，塞；本场景常见用法：用…把…堵住；用…装/填/塞",
+      "examples": "[]"
+    },
+    {
+      "word": "usage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'jusɪdʒ",
+      "phoneticUk": "'juːsɪdʒ",
+      "translation": "使用，对待；惯用法",
+      "sceneMeaning": "使用，对待；惯用法",
+      "examples": "[]"
+    },
+    {
+      "word": "appliance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'plaɪəns",
+      "phoneticUk": "ə'plaɪəns",
+      "translation": "用具，器具，器械",
+      "sceneMeaning": "家用电器；装置",
+      "examples": "[]"
+    },
+    {
+      "word": "bake",
+      "partOfSpeech": "v",
+      "phoneticUs": "bek",
+      "phoneticUk": "beɪk",
+      "translation": "烤，烘，焙；烧硬",
+      "sceneMeaning": "烘烤",
+      "examples": "[]"
+    },
+    {
+      "word": "bench",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɛntʃ",
+      "phoneticUk": "ben(t)ʃ",
+      "translation": "长凳，条凳；工作台",
+      "sceneMeaning": "长凳",
+      "examples": "[]"
+    },
+    {
+      "word": "brush",
+      "partOfSpeech": "n",
+      "phoneticUs": "brʌʃ",
+      "phoneticUk": "brʌʃ",
+      "translation": "刷子，毛刷；画笔",
+      "sceneMeaning": "刷子；画笔",
+      "examples": "[]"
+    },
+    {
+      "word": "cover",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kʌvɚ",
+      "phoneticUk": "'kʌvə",
+      "translation": "盖，包括；盖子",
+      "sceneMeaning": "覆盖；包含",
+      "examples": "[]"
+    },
+    {
+      "word": "load",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lod",
+      "phoneticUk": "ləʊd",
+      "translation": "装；装满；负载",
+      "sceneMeaning": "装；装满；负载",
+      "examples": "[]"
+    },
+    {
+      "word": "plate",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pleɪt",
+      "phoneticUk": "pleɪt",
+      "translation": "板，片，盘；电镀",
+      "sceneMeaning": "盘子；板",
+      "examples": "[]"
+    },
+    {
+      "word": "repair",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "rɪ'pɛr",
+      "phoneticUk": "rɪ'peə",
+      "translation": "修理，修补",
+      "sceneMeaning": "修理",
+      "examples": "[]"
+    },
+    {
+      "word": "sheet",
+      "partOfSpeech": "n",
+      "phoneticUs": "ʃit",
+      "phoneticUk": "ʃiːt",
+      "translation": "被单；纸张；薄板",
+      "sceneMeaning": "床单；纸张",
+      "examples": "[]"
+    },
+    {
+      "word": "shelf",
+      "partOfSpeech": "n",
+      "phoneticUs": "ʃɛlf",
+      "phoneticUk": "ʃelf",
+      "translation": "搁板，架子",
+      "sceneMeaning": "架子",
+      "examples": "[]"
+    },
+    {
+      "word": "arrange",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'rendʒ",
+      "phoneticUk": "ə'reɪn(d)ʒ",
+      "translation": "筹备；整理；调解；安排，筹划",
+      "sceneMeaning": "安排；整理",
+      "examples": "[]"
+    },
+    {
+      "word": "battery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæt(ə)rɪ",
+      "phoneticUk": "'bætri",
+      "translation": "电池；一套，一组",
+      "sceneMeaning": "电池",
+      "examples": "[]"
+    },
+    {
+      "word": "bucket",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bʌkɪt",
+      "phoneticUk": "'bʌkɪt",
+      "translation": "水桶；吊桶；铲斗",
+      "sceneMeaning": "桶",
+      "examples": "[]"
+    },
+    {
+      "word": "bunch",
+      "partOfSpeech": "n",
+      "phoneticUs": "bʌntʃ",
+      "phoneticUk": "bʌn(t)ʃ",
+      "translation": "束，球，串；一群",
+      "sceneMeaning": "束，球，串；一群",
+      "examples": "[]"
+    },
+    {
+      "word": "calendar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæləndɚ",
+      "phoneticUk": "'kælɪndə",
+      "translation": "日历，历书；历法",
+      "sceneMeaning": "日历",
+      "examples": "[]"
+    },
+    {
+      "word": "curtain",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɝtn",
+      "phoneticUk": "'kɜːt(ə)n",
+      "translation": "帘，窗帘；幕(布)",
+      "sceneMeaning": "窗帘",
+      "examples": "[]"
+    },
+    {
+      "word": "desk",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "书桌，办公桌",
+      "sceneMeaning": "书桌；办公桌",
+      "examples": "[]"
+    },
+    {
+      "word": "equip",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'kwɪp",
+      "phoneticUk": "ɪ'kwɪp",
+      "translation": "装备，配备",
+      "sceneMeaning": "配备；装备",
+      "examples": "[]"
+    },
+    {
+      "word": "fan",
+      "partOfSpeech": "n",
+      "phoneticUs": "fæn",
+      "phoneticUk": "fæn",
+      "translation": "(运动等)狂热爱好者",
+      "sceneMeaning": "风扇；粉丝",
+      "examples": "[]"
+    },
+    {
+      "word": "furniture",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "家具；装置，设备",
+      "sceneMeaning": "家具",
+      "examples": "[]"
+    },
+    {
+      "word": "glass",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡlæs",
+      "phoneticUk": "glɑːs",
+      "translation": "玻璃；玻璃杯",
+      "sceneMeaning": "玻璃杯；玻璃",
+      "examples": "[]"
+    },
+    {
+      "word": "hang",
+      "partOfSpeech": "v",
+      "phoneticUs": "hæŋ",
+      "phoneticUk": "hæŋ",
+      "translation": "挂，悬；吊死",
+      "sceneMeaning": "悬挂",
+      "examples": "[]"
+    },
+    {
+      "word": "install",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'stɔl",
+      "phoneticUk": "ɪnˈstɔ:l",
+      "translation": "安装，设置；安装",
+      "sceneMeaning": "安装",
+      "examples": "[]"
+    },
+    {
+      "word": "installation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstə'leʃən",
+      "phoneticUk": "ɪnstə'leɪʃ(ə)n",
+      "translation": "安装；装置；设施；安装；就职；就职仪式",
+      "sceneMeaning": "安装；装置；设施；安装；就职；就职仪式；本场景常见用法：电气装置",
+      "examples": "[]"
+    },
+    {
+      "word": "magnet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mægnɪt",
+      "phoneticUk": "ˈmæɡnɪt",
+      "translation": "磁铁，磁石，磁体",
+      "sceneMeaning": "磁铁，磁石，磁体",
+      "examples": "[]"
+    },
+    {
+      "word": "muddy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mʌdi",
+      "phoneticUk": "'mʌdɪ",
+      "translation": "多泥的，泥泞的",
+      "sceneMeaning": "多泥的，泥泞的",
+      "examples": "[]"
+    },
+    {
+      "word": "needle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nidl",
+      "phoneticUk": "'niːd(ə)l",
+      "translation": "针，缝补，编织针",
+      "sceneMeaning": "针",
+      "examples": "[]"
+    },
+    {
+      "word": "operate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɑpə'ret",
+      "phoneticUk": "'ɒpəreɪt",
+      "translation": "操作；施行手术",
+      "sceneMeaning": "操作；运转",
+      "examples": "[]"
+    },
+    {
+      "word": "oven",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʌvn",
+      "phoneticUk": "'ʌv(ə)n",
+      "translation": "炉，灶；烘箱",
+      "sceneMeaning": "烤箱",
+      "examples": "[]"
+    },
+    {
+      "word": "pad",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pæd",
+      "phoneticUk": "pæd",
+      "translation": "垫；本子；填塞",
+      "sceneMeaning": "垫；本子；填塞；本场景常见用法：电热垫；取暖电毯",
+      "examples": "[]"
+    },
+    {
+      "word": "portable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɔrtəbl",
+      "phoneticUk": "'pɔːtəb(ə)l",
+      "translation": "轻便的；手提的",
+      "sceneMeaning": "便携式的",
+      "examples": "[]"
+    },
+    {
+      "word": "pot",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɑt",
+      "phoneticUk": "pɒt",
+      "translation": "锅，壶，罐，盆",
+      "sceneMeaning": "锅；壶",
+      "examples": "[]"
+    },
+    {
+      "word": "refrigerator",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'frɪdʒəretɚ",
+      "phoneticUk": "rɪ'frɪdʒəreɪtə",
+      "translation": "冰箱，冷藏库",
+      "sceneMeaning": "冰箱",
+      "examples": "[]"
+    },
+    {
+      "word": "satellite",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sætəlaɪt",
+      "phoneticUk": "'sætəlaɪt",
+      "translation": "卫星；人造卫星",
+      "sceneMeaning": "卫星；人造卫星；本场景常见用法：卫星电视",
+      "examples": "[]"
+    },
+    {
+      "word": "spark",
+      "partOfSpeech": "n",
+      "phoneticUs": "spɑrk",
+      "phoneticUk": "spɑːk",
+      "translation": "火花，；火星",
+      "sceneMeaning": "火花，；火星",
+      "examples": "[]"
+    },
+    {
+      "word": "stove",
+      "partOfSpeech": "n",
+      "phoneticUs": "stov",
+      "phoneticUk": "stəʊv",
+      "translation": "炉，火炉，电炉",
+      "sceneMeaning": "炉子；灶",
+      "examples": "[]"
+    },
+    {
+      "word": "string",
+      "partOfSpeech": "n",
+      "phoneticUs": "strɪŋ",
+      "phoneticUk": "strɪŋ",
+      "translation": "线，细绳；一串",
+      "sceneMeaning": "线，细绳；一串；本场景常见用法：弦乐器",
+      "examples": "[]"
+    },
+    {
+      "word": "sweep",
+      "partOfSpeech": "v",
+      "phoneticUs": "swip",
+      "phoneticUk": "swiːp",
+      "translation": "扫；刮起；扫过",
+      "sceneMeaning": "扫；席卷",
+      "examples": "[]"
+    },
+    {
+      "word": "thread",
+      "partOfSpeech": "n",
+      "phoneticUs": "θrɛd",
+      "phoneticUk": "θred",
+      "translation": "线；丝；螺纹；头绪",
+      "sceneMeaning": "线；思路",
+      "examples": "[]"
+    },
+    {
+      "word": "vacuum",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vækjʊəm",
+      "phoneticUk": "'vækjʊəm",
+      "translation": "真空；真空吸尘器",
+      "sceneMeaning": "真空；吸尘器",
+      "examples": "[]"
+    },
+    {
+      "word": "alarm",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'lɑrm",
+      "phoneticUk": "ə'lɑːm",
+      "translation": "惊恐，忧虑；警报",
+      "sceneMeaning": "闹钟；警报",
+      "examples": "[]"
+    },
+    {
+      "word": "aluminium",
+      "partOfSpeech": "n",
+      "phoneticUs": ",æljə'mɪnɪəm",
+      "phoneticUk": "æl(j)ʊ'mɪnɪəm",
+      "translation": "铝",
+      "sceneMeaning": "铝；本场景常见用法：[金属材料]铝线；铝丝",
+      "examples": "[]"
+    },
+    {
+      "word": "anchor",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'æŋkɚ",
+      "phoneticUk": "'æŋkə",
+      "translation": "锚；抛锚，停泊",
+      "sceneMeaning": "锚；抛锚，停泊；本场景常见用法：锚固装置",
+      "examples": "[]"
+    },
+    {
+      "word": "automatic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔtə'mætɪk",
+      "phoneticUk": "ɔːtə'mætɪk",
+      "translation": "自动的；机械的；自动的",
+      "sceneMeaning": "自动的",
+      "examples": "[]"
+    },
+    {
+      "word": "bag",
+      "partOfSpeech": "n",
+      "phoneticUs": "bæɡ",
+      "phoneticUk": "bæg",
+      "translation": "袋，包，钱包，背包",
+      "sceneMeaning": "袋子；包",
+      "examples": "[]"
+    },
+    {
+      "word": "bakery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bekəri",
+      "phoneticUk": "ˈbeɪkəri",
+      "translation": "面包店",
+      "sceneMeaning": "面包店",
+      "examples": "[]"
+    },
+    {
+      "word": "balloon",
+      "partOfSpeech": "n",
+      "phoneticUs": "bə'lun",
+      "phoneticUk": "bə'luːn",
+      "translation": "气球，玩具气球",
+      "sceneMeaning": "气球，玩具气球；本场景常见用法：[外科学]气囊血管成形术；球囊成形术（等于percutaneous transluminal angioplasty）",
+      "examples": "[]"
+    },
+    {
+      "word": "barrel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bærəl",
+      "phoneticUk": "'bær(ə)l",
+      "translation": "桶；圆筒；枪管",
+      "sceneMeaning": "桶；圆筒；枪管；本场景常见用法：机筒",
+      "examples": "[]"
+    },
+    {
+      "word": "basket",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæskɪt",
+      "phoneticUk": "'bɑːskɪt",
+      "translation": "篮，篓，筐",
+      "sceneMeaning": "篮子",
+      "examples": "[]"
+    },
+    {
+      "word": "beam",
+      "partOfSpeech": "n",
+      "phoneticUs": "bim",
+      "phoneticUk": "biːm",
+      "translation": "梁；横梁；束，柱",
+      "sceneMeaning": "梁；横梁；束，柱；本场景常见用法：电子束",
+      "examples": "[]"
+    },
+    {
+      "word": "bind",
+      "partOfSpeech": "v",
+      "phoneticUs": "baɪnd",
+      "phoneticUk": "baɪnd",
+      "translation": "捆绑；包扎；装钉",
+      "sceneMeaning": "捆绑；包扎；装钉",
+      "examples": "[]"
+    },
+    {
+      "word": "blade",
+      "partOfSpeech": "n",
+      "phoneticUs": "bled",
+      "phoneticUk": "bleɪd",
+      "translation": "刀刃，刀片；叶片",
+      "sceneMeaning": "刀刃，刀片；叶片；本场景常见用法：刀片",
+      "examples": "[]"
+    },
+    {
+      "word": "blanket",
+      "partOfSpeech": "n",
+      "phoneticUs": "'blæŋkɪt",
+      "phoneticUk": "'blæŋkɪt",
+      "translation": "毛毯，毯子，羊毛毯",
+      "sceneMeaning": "毯子；毛毯",
+      "examples": "[]"
+    },
+    {
+      "word": "boil",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɔɪl",
+      "phoneticUk": "bɒɪl",
+      "translation": "沸腾；汽化vt煮沸",
+      "sceneMeaning": "煮沸",
+      "examples": "[]"
+    },
+    {
+      "word": "bottle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɑtl",
+      "phoneticUk": "'bɒt(ə)l",
+      "translation": "瓶，酒瓶；一瓶",
+      "sceneMeaning": "瓶子",
+      "examples": "[]"
+    },
+    {
+      "word": "bowl",
+      "partOfSpeech": "n",
+      "phoneticUs": "bol",
+      "phoneticUk": "bəʊl",
+      "translation": "碗，钵；碗状物",
+      "sceneMeaning": "碗",
+      "examples": "[]"
+    },
+    {
+      "word": "brake",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "brek",
+      "phoneticUk": "breɪk",
+      "translation": "闸，刹车；制动",
+      "sceneMeaning": "闸，刹车；制动；本场景常见用法：电磁制动器；电磁闸",
+      "examples": "[]"
+    },
+    {
+      "word": "bristle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'brɪsl",
+      "phoneticUk": "'brɪs(ə)l",
+      "translation": "短而硬的毛；鬃毛",
+      "sceneMeaning": "短而硬的毛；鬃毛；本场景常见用法：鬃毛画笔",
+      "examples": "[]"
+    },
+    {
+      "word": "broom",
+      "partOfSpeech": "n",
+      "phoneticUs": "brum",
+      "phoneticUk": "bruːm",
+      "translation": "扫帚",
+      "sceneMeaning": "扫帚",
+      "examples": "[]"
+    },
+    {
+      "word": "bulb",
+      "partOfSpeech": "n",
+      "phoneticUs": "bʌlb",
+      "phoneticUk": "bʌlb",
+      "translation": "电灯泡；球状物",
+      "sceneMeaning": "电灯泡；球状物；本场景常见用法：n. 电灯泡",
+      "examples": "[]"
+    },
+    {
+      "word": "cabinet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæbɪnət",
+      "phoneticUk": "'kæbɪnɪt",
+      "translation": "橱，柜；内阁",
+      "sceneMeaning": "柜子；内阁",
+      "examples": "[]"
+    },
+    {
+      "word": "candle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kændl",
+      "phoneticUk": "'kænd(ə)l",
+      "translation": "蜡烛；烛形物；烛光",
+      "sceneMeaning": "蜡烛；烛形物；烛光",
+      "examples": "[]"
+    },
+    {
+      "word": "cannon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kænən",
+      "phoneticUk": "'kænən",
+      "translation": "大炮，火炮；榴弹炮",
+      "sceneMeaning": "大炮，火炮；榴弹炮",
+      "examples": "[]"
+    },
+    {
+      "word": "canvas",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kænvəs",
+      "phoneticUk": "'kænvəs",
+      "translation": "粗帆布；一块油画布",
+      "sceneMeaning": "粗帆布；一块油画布",
+      "examples": "[]"
+    },
+    {
+      "word": "carpet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑrpɪt",
+      "phoneticUk": "'kɑːpɪt",
+      "translation": "地毯，毡毯，毛毯",
+      "sceneMeaning": "地毯",
+      "examples": "[]"
+    },
+    {
+      "word": "clay",
+      "partOfSpeech": "n",
+      "phoneticUs": "kle",
+      "phoneticUk": "kleɪ",
+      "translation": "粘土，泥土；肉体",
+      "sceneMeaning": "粘土，泥土；肉体；本场景常见用法：[化]陶土",
+      "examples": "[]"
+    },
+    {
+      "word": "crane",
+      "partOfSpeech": "n",
+      "phoneticUs": "kren",
+      "phoneticUk": "kreɪn",
+      "translation": "起重机，摄影升降机",
+      "sceneMeaning": "起重机，摄影升降机；本场景常见用法：岸边集装箱起重机；码头区集装箱起重机",
+      "examples": "[]"
+    },
+    {
+      "word": "cupboard",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌbɚd",
+      "phoneticUk": "'kʌbəd",
+      "translation": "碗柜，碗碟橱；食橱",
+      "sceneMeaning": "橱柜",
+      "examples": "[]"
+    },
+    {
+      "word": "cushion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʊʃən",
+      "phoneticUk": "'kʊʃ(ə)n",
+      "translation": "垫子，坐垫，靠垫",
+      "sceneMeaning": "垫子，坐垫，靠垫；本场景常见用法：气垫",
+      "examples": "[]"
+    },
+    {
+      "word": "dishwasher",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪʃwɔʃɚ",
+      "phoneticUk": "'dɪʃwɒʃə",
+      "translation": "洗碗机",
+      "sceneMeaning": "洗碗机",
+      "examples": "[]"
+    },
+    {
+      "word": "disk",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪsk",
+      "phoneticUk": "dɪsk",
+      "translation": "圆盘，唱片；磁盘",
+      "sceneMeaning": "圆盘，唱片；磁盘",
+      "examples": "[]"
+    },
+    {
+      "word": "ditch",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪtʃ",
+      "phoneticUk": "dɪtʃ",
+      "translation": "沟，沟渠，渠道",
+      "sceneMeaning": "沟，沟渠，渠道",
+      "examples": "[]"
+    },
+    {
+      "word": "drawer",
+      "partOfSpeech": "n",
+      "phoneticUs": "drɔr",
+      "phoneticUk": "drɔ:(r)",
+      "translation": "抽屉",
+      "sceneMeaning": "抽屉",
+      "examples": "[]"
+    },
+    {
+      "word": "electrical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'lɛktrɪkl",
+      "phoneticUk": "ɪ'lektrɪk(ə)l",
+      "translation": "电的，电气科学的",
+      "sceneMeaning": "电的，电气科学的；本场景常见用法：电气设备；电力设备；电器设备",
+      "examples": "[]"
+    },
+    {
+      "word": "fence",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɛns",
+      "phoneticUk": "fens",
+      "translation": "栅栏",
+      "sceneMeaning": "栅栏",
+      "examples": "[]"
+    },
+    {
+      "word": "flame",
+      "partOfSpeech": "n",
+      "phoneticUs": "flem",
+      "phoneticUk": "fleɪm",
+      "translation": "火焰；光辉；热情",
+      "sceneMeaning": "火焰；光辉；热情",
+      "examples": "[]"
+    },
+    {
+      "word": "float",
+      "partOfSpeech": "v",
+      "phoneticUs": "flot",
+      "phoneticUk": "fləʊt",
+      "translation": "漂浮；使漂浮",
+      "sceneMeaning": "漂浮；使漂浮；本场景常见用法：浮动开关",
+      "examples": "[]"
+    },
+    {
+      "word": "fluid",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fluɪd",
+      "phoneticUk": "'fluːɪd",
+      "translation": "流体，液体",
+      "sceneMeaning": "流体，液体",
+      "examples": "[]"
+    },
+    {
+      "word": "flush",
+      "partOfSpeech": "v",
+      "phoneticUs": "flʌʃ",
+      "phoneticUk": "flʌʃ",
+      "translation": "奔流；(脸)发红",
+      "sceneMeaning": "奔流；(脸)发红",
+      "examples": "[]"
+    },
+    {
+      "word": "fold",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fold",
+      "phoneticUk": "fəʊld",
+      "translation": "折叠；合拢；褶",
+      "sceneMeaning": "折叠",
+      "examples": "[]"
+    },
+    {
+      "word": "fork",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɔrk",
+      "phoneticUk": "fɔːk",
+      "translation": "餐叉；叉；分叉",
+      "sceneMeaning": "叉子",
+      "examples": "[]"
+    },
+    {
+      "word": "fridge",
+      "partOfSpeech": "n",
+      "phoneticUs": "frɪdʒ",
+      "phoneticUk": "frɪdʒ",
+      "translation": "电冰箱",
+      "sceneMeaning": "冰箱",
+      "examples": "[]"
+    },
+    {
+      "word": "furnace",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɝnɪs",
+      "phoneticUk": "'fɜːnɪs",
+      "translation": "炉子，熔炉；鼓风炉",
+      "sceneMeaning": "炉子，熔炉；鼓风炉；本场景常见用法：电炉；电阻炉",
+      "examples": "[]"
+    },
+    {
+      "word": "furnish",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fɝnɪʃ",
+      "phoneticUk": "'fɜːnɪʃ",
+      "translation": "供应，提供；装备",
+      "sceneMeaning": "为……配备家具",
+      "examples": "[]"
+    },
+    {
+      "word": "glue",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡlu",
+      "phoneticUk": "gluː",
+      "translation": "胶，胶水；胶合",
+      "sceneMeaning": "胶水",
+      "examples": "[]"
+    },
+    {
+      "word": "groundsheet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'graʊnd'ʃit",
+      "phoneticUk": "'graʊn(d)ʃiːt",
+      "translation": "防潮布",
+      "sceneMeaning": "防潮布",
+      "examples": "[]"
+    },
+    {
+      "word": "gun",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡʌn",
+      "phoneticUk": "gʌn",
+      "translation": "枪，炮，手枪",
+      "sceneMeaning": "枪，炮，手枪；本场景常见用法：电子枪",
+      "examples": "[]"
+    },
+    {
+      "word": "harness",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'hɑrnɪs",
+      "phoneticUk": "'hɑːnɪs",
+      "translation": "治理；马具，挽具",
+      "sceneMeaning": "治理；马具，挽具",
+      "examples": "[]"
+    },
+    {
+      "word": "hook",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hʊk",
+      "phoneticUk": "hʊk",
+      "translation": "钩，挂钩；钩住",
+      "sceneMeaning": "钩，挂钩；钩住",
+      "examples": "[]"
+    },
+    {
+      "word": "horn",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɔrn",
+      "phoneticUk": "hɔːn",
+      "translation": "号角；警报器；角",
+      "sceneMeaning": "号角；警报器；角",
+      "examples": "[]"
+    },
+    {
+      "word": "insert",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɪnsɝt",
+      "phoneticUk": "ɪn'sɜːt",
+      "translation": "插入；嵌入；登载",
+      "sceneMeaning": "插入；嵌入；登载",
+      "examples": "[]"
+    },
+    {
+      "word": "instrument",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstrəmənt",
+      "phoneticUk": "'ɪnstrʊm(ə)nt",
+      "translation": "仪器；工具；乐器；仪器，器械，工具",
+      "sceneMeaning": "仪器；乐器",
+      "examples": "[]"
+    },
+    {
+      "word": "iron",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'aɪɚn",
+      "phoneticUk": "'aɪən",
+      "translation": "铁；烙铁；烫(衣)",
+      "sceneMeaning": "熨斗；铁",
+      "examples": "[]"
+    },
+    {
+      "word": "jar",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒɑr",
+      "phoneticUk": "dʒɑː",
+      "translation": "罐子，坛子，广口瓶",
+      "sceneMeaning": "罐子",
+      "examples": "[]"
+    },
+    {
+      "word": "kettle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɛtl",
+      "phoneticUk": "'ket(ə)l",
+      "translation": "水壶，水锅",
+      "sceneMeaning": "水壶",
+      "examples": "[]"
+    },
+    {
+      "word": "knife",
+      "partOfSpeech": "n",
+      "phoneticUs": "naɪf",
+      "phoneticUk": "naɪf",
+      "translation": "小刀，刀，餐刀",
+      "sceneMeaning": "刀",
+      "examples": "[]"
+    },
+    {
+      "word": "lamp",
+      "partOfSpeech": "n",
+      "phoneticUs": "læmp",
+      "phoneticUk": "læmp",
+      "translation": "灯",
+      "sceneMeaning": "灯",
+      "examples": "[]"
+    },
+    {
+      "word": "laser",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lezɚ",
+      "phoneticUk": "'leɪzə",
+      "translation": "激光",
+      "sceneMeaning": "激光；本场景常见用法：激光切割机",
+      "examples": "[]"
+    },
+    {
+      "word": "lever",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛvɚ",
+      "phoneticUk": "'liːvə",
+      "translation": "杆，杠杆；控制杆",
+      "sceneMeaning": "杆，杠杆；控制杆",
+      "examples": "[]"
+    },
+    {
+      "word": "lid",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɪd",
+      "phoneticUk": "lɪd",
+      "translation": "盖子，盖，囊盖",
+      "sceneMeaning": "盖子，盖，囊盖",
+      "examples": "[]"
+    },
+    {
+      "word": "mend",
+      "partOfSpeech": "v",
+      "phoneticUs": "mɛnd",
+      "phoneticUk": "mend",
+      "translation": "修理，修补，缝补",
+      "sceneMeaning": "修理，修补，缝补",
+      "examples": "[]"
+    },
+    {
+      "word": "metal",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛtl",
+      "phoneticUk": "'met(ə)l",
+      "translation": "金属，金属制品",
+      "sceneMeaning": "金属的；金属",
+      "examples": "[]"
+    },
+    {
+      "word": "mirror",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɪrɚ",
+      "phoneticUk": "'mɪrə",
+      "translation": "镜子；反映，反射",
+      "sceneMeaning": "镜子",
+      "examples": "[]"
+    },
+    {
+      "word": "mug",
+      "partOfSpeech": "n",
+      "phoneticUs": "mʌɡ",
+      "phoneticUk": "mʌg",
+      "translation": "大杯",
+      "sceneMeaning": "马克杯",
+      "examples": "[]"
+    },
+    {
+      "word": "nail",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "nel",
+      "phoneticUk": "neɪl",
+      "translation": "钉；指甲；钉",
+      "sceneMeaning": "钉；指甲；钉",
+      "examples": "[]"
+    },
+    {
+      "word": "oar",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɔr",
+      "phoneticUk": "ɔː",
+      "translation": "浆，橹",
+      "sceneMeaning": "浆，橹",
+      "examples": "[]"
+    },
+    {
+      "word": "ornament",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrnəmənt",
+      "phoneticUk": "'ɔːnəm(ə)nt",
+      "translation": "装饰物；装饰",
+      "sceneMeaning": "装饰物；装饰",
+      "examples": "[]"
+    },
+    {
+      "word": "pan",
+      "partOfSpeech": "n",
+      "phoneticUs": "pæn",
+      "phoneticUk": "pæn",
+      "translation": "平底锅，盘子",
+      "sceneMeaning": "平底锅",
+      "examples": "[]"
+    },
+    {
+      "word": "patch",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pætʃ",
+      "phoneticUk": "pætʃ",
+      "translation": "补钉；碎片；补缀",
+      "sceneMeaning": "补钉；碎片；补缀",
+      "examples": "[]"
+    },
+    {
+      "word": "pillow",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɪlo",
+      "phoneticUk": "'pɪləʊ",
+      "translation": "枕头",
+      "sceneMeaning": "枕头",
+      "examples": "[]"
+    },
+    {
+      "word": "plug",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "plʌɡ",
+      "phoneticUk": "plʌg",
+      "translation": "塞子；插头；塞",
+      "sceneMeaning": "插入；堵塞",
+      "examples": "[]"
+    },
+    {
+      "word": "punch",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "",
+      "phoneticUk": "pʌn(t)ʃ",
+      "translation": "冲出；冲压机",
+      "sceneMeaning": "冲出；冲压机",
+      "examples": "[]"
+    },
+    {
+      "word": "radar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'redɑr",
+      "phoneticUk": "'reɪdɑː",
+      "translation": "雷达，无线电探测器",
+      "sceneMeaning": "雷达，无线电探测器",
+      "examples": "[]"
+    },
+    {
+      "word": "rag",
+      "partOfSpeech": "n",
+      "phoneticUs": "ræɡ",
+      "phoneticUk": "ræg",
+      "translation": "破布，碎布，抹布",
+      "sceneMeaning": "破布，碎布，抹布",
+      "examples": "[]"
+    },
+    {
+      "word": "rearrange",
+      "partOfSpeech": "v",
+      "phoneticUs": ",riə'rendʒ",
+      "phoneticUk": "ˌri:ə'reɪndʒ",
+      "translation": "重新安排",
+      "sceneMeaning": "重新安排",
+      "examples": "[]"
+    },
+    {
+      "word": "recharge",
+      "partOfSpeech": "v",
+      "phoneticUs": "ri:'tʃɑ:dʒ, 'ri:tʃɑ:dʒ",
+      "phoneticUk": "ˌri:'tʃɑ:dʒ",
+      "translation": "再充电",
+      "sceneMeaning": "再充电",
+      "examples": "[]"
+    },
+    {
+      "word": "roller",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rolɚ",
+      "phoneticUk": "'rəʊlə",
+      "translation": "滚柱，滚筒，滚轴",
+      "sceneMeaning": "滚柱，滚筒，滚轴；本场景常见用法：球面滚子",
+      "examples": "[]"
+    },
+    {
+      "word": "rug",
+      "partOfSpeech": "n",
+      "phoneticUs": "rʌɡ",
+      "phoneticUk": "rʌg",
+      "translation": "小地毯；毛毯",
+      "sceneMeaning": "小地毯",
+      "examples": "[]"
+    },
+    {
+      "word": "scissors",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪzɚz",
+      "phoneticUk": "'sɪzəz",
+      "translation": "剪刀，剪子",
+      "sceneMeaning": "剪刀",
+      "examples": "[]"
+    },
+    {
+      "word": "screw",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "skru",
+      "phoneticUk": "skruː",
+      "translation": "螺旋，螺丝；拧紧",
+      "sceneMeaning": "螺旋，螺丝；拧紧",
+      "examples": "[]"
+    },
+    {
+      "word": "spade",
+      "partOfSpeech": "n",
+      "phoneticUs": "sped",
+      "phoneticUk": "speɪd",
+      "translation": "铲，铁锹",
+      "sceneMeaning": "铲，铁锹",
+      "examples": "[]"
+    },
+    {
+      "word": "storage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stɔrɪdʒ",
+      "phoneticUk": "'stɔːrɪdʒ",
+      "translation": "贮藏；贮藏量",
+      "sceneMeaning": "贮藏；贮藏量；本场景常见用法：存储设备；储藏设备",
+      "examples": "[]"
+    },
+    {
+      "word": "strip",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "strɪp",
+      "phoneticUk": "strɪp",
+      "translation": "剥；夺去；条带",
+      "sceneMeaning": "剥；夺去；条带；本场景常见用法：铁带，钢带；金属条",
+      "examples": "[]"
+    },
+    {
+      "word": "tin",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɪn",
+      "phoneticUk": "tɪn",
+      "translation": "锡；罐头",
+      "sceneMeaning": "锡；罐头；本场景常见用法：锡罐，锡杯；马口铁罐头",
+      "examples": "[]"
+    },
+    {
+      "word": "torch",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɔrtʃ",
+      "phoneticUk": "tɔːtʃ",
+      "translation": "火炬，火把；手电筒",
+      "sceneMeaning": "火炬，火把；手电筒；本场景常见用法：手电筒",
+      "examples": "[]"
+    },
+    {
+      "word": "whip",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "wɪp",
+      "phoneticUk": "wɪp",
+      "translation": "鞭笞；搅打；鞭子",
+      "sceneMeaning": "鞭笞；搅打；鞭子",
+      "examples": "[]"
+    },
+    {
+      "word": "wire",
+      "partOfSpeech": "n",
+      "phoneticUs": "'waɪɚ",
+      "phoneticUk": "waɪə",
+      "translation": "金属线；电缆；电信",
+      "sceneMeaning": "电线；金属丝",
+      "examples": "[]"
+    },
+    {
+      "word": "wooden",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'wʊdn",
+      "phoneticUk": "'wʊd(ə)n",
+      "translation": "木制的；呆板的",
+      "sceneMeaning": "木制的",
+      "examples": "[]"
+    }
+  ]
+}

@@ -80,7 +80,7 @@ async function accept(item) {
     if (identity !== auth.identityVersion) return
     auth.expireSession()
     clearCsrf()
-    await router.replace({ path: '/useradmin/login', query: { invited: '1' } })
+    await router.replace({ path: '/login', query: { invited: '1' } })
   } catch (cause) { error.value = errorMessage(cause) }
   finally { busy.value = false }
 }

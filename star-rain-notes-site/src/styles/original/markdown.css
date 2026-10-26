@@ -1,0 +1,55 @@
+
+
+
+
+
+
+
+:is(.markdown-body, .blog-prose, .markdown-editor) .math-source--inline,
+:is(.markdown-body, .blog-prose, .markdown-editor) mjx-container {
+  color: currentcolor;
+}
+
+
+:is(.markdown-body, .blog-prose, .markdown-editor) .math-source--display,
+:is(.markdown-body, .blog-prose, .markdown-editor) .language-math {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.3em 0.2em;
+  scrollbar-width: thin;
+}
+
+
+:is(.markdown-body, .blog-prose, .markdown-editor) .math-source--display > mjx-container,
+:is(.markdown-body, .blog-prose, .markdown-editor) .language-math > mjx-container {
+  width: max-content;
+  min-width: 100%;
+  text-align: center;
+}
+
+
+:is(.markdown-body, .blog-prose, .markdown-editor) .math-source--error,
+:is(.markdown-body, .blog-prose, .markdown-editor) .vditor-reset--error {
+  color: var(--danger) !important;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+
+
+.markdown-body .markdown-img {
+  height: auto;
+  border-radius: 10px;
+}
+
+
+.markdown-body .markdown-img--normal {
+  max-width: 100%;
+}
+
+
+.markdown-body .markdown-img--wide,
+.markdown-body .markdown-img--full {
+  width: 100%;
+}

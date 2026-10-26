@@ -1,0 +1,5 @@
+---
+interface Props { items:{title:string;path?:string}[]; }
+const {items}=Astro.props;
+---
+<nav class="english-crumbs" aria-label="面包屑"><a href="/english/">英语</a>{items.map(item=><><span aria-hidden="true">/</span>{item.path?<a href={item.path}>{item.title}</a>:<span aria-current="page">{item.title}</span>}</>)}</nav>

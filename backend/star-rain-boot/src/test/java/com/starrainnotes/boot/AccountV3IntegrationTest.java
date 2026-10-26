@@ -57,6 +57,17 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 @org.springframework.test.annotation.DirtiesContext(classMode = org.springframework.test.annotation.DirtiesContext.ClassMode.AFTER_CLASS)
 @EnabledIfEnvironmentVariable(named = "STAR_RAIN_DB_URL", matches = ".*/star_rain_(ci|account_ci)(\\?.*)?")
 class AccountV3IntegrationTest {
+    @Test
+    void missingPublicContentReturns404InsteadOfRollbackFailure() throws Exception {
+        Client anonymous = new Client();
+        for (String path : List.of("/blog/posts/missing-route-regression",
+                "/tutorials/missing-route-regression/first", "/portfolio/missing-route-regression")) {
+            assertThat(anonymous.get(path).getResponse().getStatus()).as(path).isEqualTo(404);
+            assertThat(anonymous.get("/api/public/seo/meta?route=" + path).getResponse().getStatus())
+                    .as("metadata " + path).isEqualTo(404);
+        }
+    }
+
     private static final String SCHEMA = "sr_account_v3_test_" + UUID.randomUUID().toString().replace("-", "");
     private static final String PASSWORD = "Isolated-Test-Pass-5499!";
     private static final String NEW_PASSWORD = "Isolated-New-Pass-5499!";
@@ -200,7 +211,7 @@ class AccountV3IntegrationTest {
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM sr_password_reset WHERE account_id=?", Integer.class, id(name))).isEqualTo(1);
         smtpFailure = false;
         jdbc.update("UPDATE sr_mail_outbox SET next_attempt_at=UTC_TIMESTAMP(3)"); outbox.deliver();
-        String token = mailValue(email, "token=([A-Za-z0-9_-]+)");
+        String token = mailValue(email, "https://account-ci\\.example\\.test/reset-password\\?token=([A-Za-z0-9_-]+)");
         assertThat(jdbc.queryForObject("SELECT COUNT(*) FROM sr_password_reset WHERE account_id=?", Integer.class, id(name))).isEqualTo(1);
         List<Integer> statuses = concurrent(2, index -> new Client().send("POST", "/api/auth/password-reset/confirm",
                 Map.of("token", token, "newPassword", NEW_PASSWORD, "confirmPassword", NEW_PASSWORD)).getResponse().getStatus());
@@ -262,7 +273,7 @@ class AccountV3IntegrationTest {
     void expiredResetAndUnknownAddressCooldownDoNotRevealIdentity() throws Exception {
         String name = register(), email = name + "@example.test"; Client client = new Client();
         client.send("POST", "/api/auth/password-reset/request", Map.of("email", email)); outbox.deliver();
-        String token = mailValue(email, "token=([A-Za-z0-9_-]+)");
+        String token = mailValue(email, "https://account-ci\\.example\\.test/reset-password\\?token=([A-Za-z0-9_-]+)");
         jdbc.update("UPDATE sr_password_reset SET expires_at=DATE_SUB(UTC_TIMESTAMP(3),INTERVAL 1 SECOND) WHERE account_id=?", id(name));
         assertThat(client.send("POST", "/api/auth/password-reset/confirm", Map.of("token", token,
                 "newPassword", NEW_PASSWORD, "confirmPassword", NEW_PASSWORD)).getResponse().getStatus()).isEqualTo(409);

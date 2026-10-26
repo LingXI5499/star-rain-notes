@@ -18,7 +18,7 @@ async function selectText(page, text = 'Original body') {
 }
 
 test('styled selection toolbar preserves native actions without color controls', async ({ page, fixture }) => {
-  await page.goto('/useradmin/blog/editor/1')
+  await page.goto('/blog/editor/1')
   let toolbar = await selectText(page)
   await expect(toolbar.locator('input[type=color]')).toHaveCount(0)
   await expect(toolbar.getByRole('button', { name: /颜色|荧光|下划线|清除格式/ })).toHaveCount(0)
@@ -39,7 +39,7 @@ test('styled selection toolbar preserves native actions without color controls',
 
 test('selection toolbar fits mobile fullscreen and follows the dark theme', async ({ page }) => {
   await page.setViewportSize({ width: 320, height: 560 })
-  await page.goto('/useradmin/blog/editor/1')
+  await page.goto('/blog/editor/1')
   await expect(page.locator('.vditor-ir [contenteditable=true]:visible')).toBeVisible({ timeout: 20000 })
   await page.getByRole('menubar').getByRole('button', { name: '全屏', exact: true }).click()
   await page.getByRole('menubar').getByRole('menuitem', { name: '主题', exact: true }).click()

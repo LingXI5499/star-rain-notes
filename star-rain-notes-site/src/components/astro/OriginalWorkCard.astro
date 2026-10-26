@@ -1,0 +1,7 @@
+---
+import {type Work} from '../../utils/content';
+interface Props{work:Work;prominent?:boolean;reverse?:boolean;}
+const {work,prominent=false,reverse=false}=Astro.props;
+const Heading=prominent?'h2':'h3';
+---
+<a href={work.path} class:list={['works-card',{'works-card--prominent':prominent,'works-card--reverse':reverse}]}><div class="works-card__cover">{work.cover?<img src={work.cover} alt={work.title} loading={prominent?'eager':'lazy'} width="1200" height="750"/>:<span aria-hidden="true">{work.title.slice(0,1)}</span>}</div><div class="works-card__body"><p class="works-card__kind">{work.category} {'format'in work&&<span>/ {String(work.format)}</span>}</p><Heading class="works-card__title">{work.title}</Heading><p class="works-card__summary">{work.description}</p>{work.techStack.length>0&&<div class="works-card__tags">{work.techStack.map((tag:string)=><span>{tag}</span>)}</div>}<span class="works-card__explore">探索作品 <span aria-hidden="true">↗</span></span></div></a>

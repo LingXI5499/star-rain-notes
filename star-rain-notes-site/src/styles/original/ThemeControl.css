@@ -1,0 +1,34 @@
+
+.theme-control:not(.__static_scope) {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color .2s, background-color .2s, border-color .2s;
+}
+.theme-control:not(.__static_scope):hover { color: var(--primary); background: var(--primary-soft); border-color: var(--border);
+}
+.theme-control:not(.__static_scope):focus-visible { outline: 2px solid var(--primary); outline-offset: 3px;
+}
+.theme-control:not(.__static_scope):disabled { cursor: default;
+}
+.theme-control svg:not(.__static_scope) { grid-area: 1 / 1; transition: opacity .26s, transform .46s var(--ease-out);
+}
+.theme-control__moon:not(.__static_scope) { opacity: 1; transform: rotate(0) scale(1);
+}
+.theme-control__sun:not(.__static_scope) { opacity: 0; transform: rotate(-78deg) scale(.56);
+}
+.theme-control[data-theme-icon='dark'] .theme-control__moon:not(.__static_scope) { opacity: 0; transform: rotate(72deg) scale(.56);
+}
+.theme-control[data-theme-icon='dark'] .theme-control__sun:not(.__static_scope) { opacity: 1; transform: rotate(0) scale(1);
+}
+@media (prefers-reduced-motion: reduce) {
+.theme-control:not(.__static_scope), .theme-control svg:not(.__static_scope) { transition: none;
+}
+}

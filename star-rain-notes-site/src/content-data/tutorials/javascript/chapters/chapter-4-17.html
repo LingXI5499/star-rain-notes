@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>style</code> 是行内样式，<code>getComputedStyle</code> 读计算样式；<code>offsetWidth</code> 等读布局尺寸。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const box = document.querySelector('#box');
+box.style.width = '200px';
+console.log(getComputedStyle(box).width, box.getBoundingClientRect().width);
+</code></pre>
+<p><strong>学完能做：</strong> 区分行内样式、计算样式与布局尺寸。</p>

@@ -1,0 +1,1116 @@
+{
+  "id": "30",
+  "title": "办公室 / 工作场景",
+  "layer": "学习与工作主干层",
+  "wordCount": 123,
+  "path": "/english/vocabulary/30/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可用的；有空的",
+      "examples": "[]"
+    },
+    {
+      "word": "professional",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "prə'fɛʃənl",
+      "phoneticUk": "prə'feʃ(ə)n(ə)l",
+      "translation": "职业的；专业人员；专业的",
+      "sceneMeaning": "专业的；职业的",
+      "examples": "[]"
+    },
+    {
+      "word": "benefit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bɛnɪfɪt",
+      "phoneticUk": "'benɪfɪt",
+      "translation": "利益；恩惠；津贴；有益于，有助于",
+      "sceneMeaning": "福利；好处",
+      "examples": "[]"
+    },
+    {
+      "word": "performance",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'fɔrməns",
+      "phoneticUk": "pə'fɔːm(ə)ns",
+      "translation": "履行；演出；行为；演出；履行；表现",
+      "sceneMeaning": "表现；绩效",
+      "examples": "[]"
+    },
+    {
+      "word": "project",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "prəˈdʒɛkt; prɑdʒɛkt",
+      "phoneticUk": "prəˈdʒekt; ˈprɒdʒekt",
+      "translation": "方案，工程；伸出；工程；课题、作业",
+      "sceneMeaning": "项目",
+      "examples": "[]"
+    },
+    {
+      "word": "company",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌmpəni",
+      "phoneticUk": "'kʌmp(ə)nɪ",
+      "translation": "公司，商号；同伴",
+      "sceneMeaning": "公司",
+      "examples": "[]"
+    },
+    {
+      "word": "computer",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'pjutɚ",
+      "phoneticUk": "kəm'pjuːtə",
+      "translation": "计算机，电脑",
+      "sceneMeaning": "电脑",
+      "examples": "[]"
+    },
+    {
+      "word": "director",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪˈrɛktɚ; daɪˈrɛktɚ",
+      "phoneticUk": "dɪ'rektə; daɪ-",
+      "translation": "指导者；理事；导演",
+      "sceneMeaning": "主管；董事",
+      "examples": "[]"
+    },
+    {
+      "word": "firm",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɝm",
+      "phoneticUk": "fɜːm",
+      "translation": "商行，商号，公司",
+      "sceneMeaning": "公司；事务所",
+      "examples": "[]"
+    },
+    {
+      "word": "leave",
+      "partOfSpeech": "v",
+      "phoneticUs": "liv",
+      "phoneticUk": "liːv",
+      "translation": "离去；离开",
+      "sceneMeaning": "休假；许可",
+      "examples": "[]"
+    },
+    {
+      "word": "make",
+      "partOfSpeech": "v",
+      "phoneticUs": "mek",
+      "phoneticUk": "meɪk",
+      "translation": "使；做，制造",
+      "sceneMeaning": "使；做，制造",
+      "examples": "[]"
+    },
+    {
+      "word": "manage",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mænɪdʒ",
+      "phoneticUk": "'mænɪdʒ",
+      "translation": "管理；设法；对付",
+      "sceneMeaning": "管理；经营",
+      "examples": "[]"
+    },
+    {
+      "word": "manager",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mænɪdʒɚ",
+      "phoneticUk": "'mænɪdʒə",
+      "translation": "经理，管理人",
+      "sceneMeaning": "经理",
+      "examples": "[]"
+    },
+    {
+      "word": "office",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔfɪs",
+      "phoneticUk": "'ɒfɪs",
+      "translation": "办公室；处，局，社",
+      "sceneMeaning": "办公室；办事处",
+      "examples": "[]"
+    },
+    {
+      "word": "police",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'lis",
+      "phoneticUk": "pə'liːs",
+      "translation": "警察；警察当局",
+      "sceneMeaning": "警察；警察当局；本场景常见用法：当地警察派出所",
+      "examples": "[]"
+    },
+    {
+      "word": "receive",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'siv",
+      "phoneticUk": "rɪ'siːv",
+      "translation": "收到；得到；接待",
+      "sceneMeaning": "收到；得到；接待",
+      "examples": "[]"
+    },
+    {
+      "word": "report",
+      "partOfSpeech": "vt&vi",
+      "phoneticUs": "rɪ'pɔrt",
+      "phoneticUk": "rɪ'pɔːt",
+      "translation": "报告；汇报",
+      "sceneMeaning": "报告；汇报",
+      "examples": "[]"
+    },
+    {
+      "word": "responsible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'spɑnsəbl",
+      "phoneticUk": "ri'spɔnsəbl",
+      "translation": "负责的，有责任的",
+      "sceneMeaning": "负责的",
+      "examples": "[]"
+    },
+    {
+      "word": "staff",
+      "partOfSpeech": "n",
+      "phoneticUs": "stæf",
+      "phoneticUk": "stɑːf",
+      "translation": "工作人员；参谋",
+      "sceneMeaning": "全体员工",
+      "examples": "[]"
+    },
+    {
+      "word": "formal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɔrml",
+      "phoneticUk": "'fɔːm(ə)l",
+      "translation": "正式的；礼仪上的",
+      "sceneMeaning": "正式的",
+      "examples": "[]"
+    },
+    {
+      "word": "man",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæn",
+      "phoneticUk": "mæn",
+      "translation": "男人；人；人类",
+      "sceneMeaning": "男人；人；人类",
+      "examples": "[]"
+    },
+    {
+      "word": "shift",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ʃɪft",
+      "phoneticUk": "ʃɪft",
+      "translation": "替换，转移；转换",
+      "sceneMeaning": "轮班；转变",
+      "examples": "[]"
+    },
+    {
+      "word": "management",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mænɪdʒmənt",
+      "phoneticUk": "'mænɪdʒm(ə)nt",
+      "translation": "管理；经营，处理",
+      "sceneMeaning": "管理；经营，处理；本场景常见用法：生产管理",
+      "examples": "[]"
+    },
+    {
+      "word": "print",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "prɪnt",
+      "phoneticUk": "prɪnt",
+      "translation": "印刷；印刷；正片",
+      "sceneMeaning": "打印；印刷",
+      "examples": "[]"
+    },
+    {
+      "word": "complete",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "kəm'plit",
+      "phoneticUk": "kəm'pliːt",
+      "translation": "完整的；完成的；完成；完整的，彻底的",
+      "sceneMeaning": "完成",
+      "examples": "[]"
+    },
+    {
+      "word": "contract",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑntrækt",
+      "phoneticUk": "'kɒntrækt",
+      "translation": "契约，合同；婚约；合同",
+      "sceneMeaning": "合同",
+      "examples": "[]"
+    },
+    {
+      "word": "customer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌstəmɚ",
+      "phoneticUk": "'kʌstəmə",
+      "translation": "顾客，主顾",
+      "sceneMeaning": "顾客",
+      "examples": "[]"
+    },
+    {
+      "word": "department",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'pɑrtmənt",
+      "phoneticUk": "dɪ'pɑːtm(ə)nt",
+      "translation": "部，司，局，处，系；部门",
+      "sceneMeaning": "部门",
+      "examples": "[]"
+    },
+    {
+      "word": "policy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑləsi",
+      "phoneticUk": "'pɒləsɪ",
+      "translation": "政策，方针",
+      "sceneMeaning": "政策；规定",
+      "examples": "[]"
+    },
+    {
+      "word": "prepare",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "prɪ'pɛr",
+      "phoneticUk": "prɪ'peə",
+      "translation": "准备，预备；做准备",
+      "sceneMeaning": "准备",
+      "examples": "[]"
+    },
+    {
+      "word": "confidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnfɪdəns",
+      "phoneticUk": "'kɒnfɪd(ə)ns",
+      "translation": "信任；信赖；信心；信心",
+      "sceneMeaning": "信任；信赖；信心；信心；本场景常见用法：秘密地",
+      "examples": "[]"
+    },
+    {
+      "word": "employment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'plɔɪmənt",
+      "phoneticUk": "ɪm'plɒɪm(ə)nt; em-",
+      "translation": "工业；雇用；使用",
+      "sceneMeaning": "工业；雇用；使用；本场景常见用法：职业介绍所",
+      "examples": "[]"
+    },
+    {
+      "word": "permanent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɝmənənt",
+      "phoneticUk": "'pɜːm(ə)nənt",
+      "translation": "永久的，持久的；永久的",
+      "sceneMeaning": "永久的；长期的",
+      "examples": "[]"
+    },
+    {
+      "word": "responsibility",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪˌspɑːnsəˈbɪləti",
+      "phoneticUk": "ri,spɔnsə'biliti",
+      "translation": "责任",
+      "sceneMeaning": "责任",
+      "examples": "[]"
+    },
+    {
+      "word": "screen",
+      "partOfSpeech": "v",
+      "phoneticUs": "skrin",
+      "phoneticUk": "skri:n",
+      "translation": "筛查",
+      "sceneMeaning": "屏幕",
+      "examples": "[]"
+    },
+    {
+      "word": "strategy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'strætədʒi",
+      "phoneticUk": "ˈstrætədʒɪ",
+      "translation": "战略；策略；策略，战略",
+      "sceneMeaning": "策略",
+      "examples": "[]"
+    },
+    {
+      "word": "busy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'bɪzi",
+      "phoneticUk": "'bɪzɪ",
+      "translation": "忙的，繁忙的",
+      "sceneMeaning": "忙的，繁忙的",
+      "examples": "[]"
+    },
+    {
+      "word": "record",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "(for v.) rɪˈkɔrd; (for n. adj.) ˈrɛkɚd",
+      "phoneticUk": "(for v.)rɪˈkɔːd; (for n.) ˈrekɔːd",
+      "translation": "记录；履历；记录",
+      "sceneMeaning": "记录",
+      "examples": "[]"
+    },
+    {
+      "word": "secretary",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛkrətɛrɪ",
+      "phoneticUk": "'sekrɪt(ə)rɪ",
+      "translation": "秘书；书记；大臣",
+      "sceneMeaning": "秘书",
+      "examples": "[]"
+    },
+    {
+      "word": "budget",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bʌdʒɪt",
+      "phoneticUk": "'bʌdʒit",
+      "translation": "预算；编预算",
+      "sceneMeaning": "预算",
+      "examples": "[]"
+    },
+    {
+      "word": "scan",
+      "partOfSpeech": "v",
+      "phoneticUs": "skæn",
+      "phoneticUk": "skæn",
+      "translation": "细看；浏览；扫描",
+      "sceneMeaning": "扫描",
+      "examples": "[]"
+    },
+    {
+      "word": "temporary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tɛmpə'rɛri",
+      "phoneticUk": "'temp(ə)rərɪ",
+      "translation": "暂时的，临时的",
+      "sceneMeaning": "临时的",
+      "examples": "[]"
+    },
+    {
+      "word": "urgent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɝdʒənt",
+      "phoneticUk": "ˈɜːdʒənt",
+      "translation": "紧急的；强求的",
+      "sceneMeaning": "紧急的",
+      "examples": "[]"
+    },
+    {
+      "word": "consultant",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'sʌltənt",
+      "phoneticUk": "kən'sʌlt(ə)nt",
+      "translation": "顾问",
+      "sceneMeaning": "顾问",
+      "examples": "[]"
+    },
+    {
+      "word": "consult",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'sʌlt",
+      "phoneticUk": "kən'sʌlt",
+      "translation": "请教，查阅；咨询",
+      "sceneMeaning": "请教，查阅；咨询",
+      "examples": "[]"
+    },
+    {
+      "word": "urge",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɝdʒ",
+      "phoneticUk": "'ɜːdʒ",
+      "translation": "推进；催促；冲动",
+      "sceneMeaning": "推进；催促；冲动",
+      "examples": "[]"
+    },
+    {
+      "word": "authority",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'θɔrəti",
+      "phoneticUk": "ɔː'θɒrɪtɪ",
+      "translation": "当局，官方；权力",
+      "sceneMeaning": "权力；权威",
+      "examples": "[]"
+    },
+    {
+      "word": "divide",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vaɪd",
+      "phoneticUk": "dɪ'vaɪd",
+      "translation": "分；分配；分开；分开",
+      "sceneMeaning": "分；分配；分开；分开",
+      "examples": "[]"
+    },
+    {
+      "word": "efficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃnt",
+      "phoneticUk": "ɪ'fɪʃ(ə)nt",
+      "translation": "效率高的，有能力的",
+      "sceneMeaning": "高效的",
+      "examples": "[]"
+    },
+    {
+      "word": "employ",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'plɔɪ",
+      "phoneticUk": "ɪm'plɒɪ; em-",
+      "translation": "雇用；用；使忙于",
+      "sceneMeaning": "雇用；用；使忙于",
+      "examples": "[]"
+    },
+    {
+      "word": "employee",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'plɔɪi",
+      "phoneticUk": "emplɒɪ'iː; em'plɒɪiː; ɪm-",
+      "translation": "受雇者，雇员，雇工",
+      "sceneMeaning": "员工",
+      "examples": "[]"
+    },
+    {
+      "word": "helpful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɛlpfl",
+      "phoneticUk": "'helpfʊl; -f(ə)l",
+      "translation": "给予帮助的；有用的",
+      "sceneMeaning": "给予帮助的；有用的",
+      "examples": "[]"
+    },
+    {
+      "word": "organization",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɔrɡənə'zeʃən",
+      "phoneticUk": "ˌɔːɡənaɪ'zeɪʃn",
+      "translation": "组织；团体，机构",
+      "sceneMeaning": "组织；机构",
+      "examples": "[]"
+    },
+    {
+      "word": "organize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɔrɡənˌaɪz",
+      "phoneticUk": "ˈɔ:gənaɪz",
+      "translation": "组织，编组",
+      "sceneMeaning": "组织；整理",
+      "examples": "[]"
+    },
+    {
+      "word": "personnel",
+      "partOfSpeech": "n",
+      "phoneticUs": ",pɝsə'nɛl",
+      "phoneticUk": "pɜːsə'nel",
+      "translation": "全体人员，全体职员",
+      "sceneMeaning": "人员；人事部门",
+      "examples": "[]"
+    },
+    {
+      "word": "routinely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "rʊ'tinli",
+      "phoneticUk": "ru:'ti:nlɪ",
+      "translation": "例行公事地",
+      "sceneMeaning": "例行公事地",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "安排；排期",
+      "examples": "[]"
+    },
+    {
+      "word": "task",
+      "partOfSpeech": "n",
+      "phoneticUs": "tæsk",
+      "phoneticUk": "tɑːsk",
+      "translation": "任务，工作",
+      "sceneMeaning": "任务",
+      "examples": "[]"
+    },
+    {
+      "word": "assignment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'saɪnmənt",
+      "phoneticUk": "ə'saɪnm(ə)nt",
+      "translation": "任务，指定的作业；作业",
+      "sceneMeaning": "任务；分派",
+      "examples": "[]"
+    },
+    {
+      "word": "chair",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɛr",
+      "phoneticUk": "tʃeə",
+      "translation": "椅子；主席",
+      "sceneMeaning": "椅子",
+      "examples": "[]"
+    },
+    {
+      "word": "charity",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃærəti",
+      "phoneticUk": "'tʃærɪtɪ",
+      "translation": "施舍；慈善事业；慈善机构",
+      "sceneMeaning": "施舍；慈善事业；慈善机构",
+      "examples": "[]"
+    },
+    {
+      "word": "notice",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'notɪs",
+      "phoneticUk": "'nəʊtɪs",
+      "translation": "注意；通知；注意",
+      "sceneMeaning": "通知",
+      "examples": "[]"
+    },
+    {
+      "word": "plan",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "plæn",
+      "phoneticUk": "plæn",
+      "translation": "计划，打算",
+      "sceneMeaning": "计划",
+      "examples": "[]"
+    },
+    {
+      "word": "reception",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "rɪ'sɛpʃən",
+      "phoneticUk": "rɪ'sepʃ(ə)n",
+      "translation": "接待；招待会；接受；接待；反响",
+      "sceneMeaning": "接待处；接待",
+      "examples": "[]"
+    },
+    {
+      "word": "brief",
+      "partOfSpeech": "adj",
+      "phoneticUs": "brif",
+      "phoneticUk": "briːf",
+      "translation": "简短的；短暂的",
+      "sceneMeaning": "向……简要说明",
+      "examples": "[]"
+    },
+    {
+      "word": "copy",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑpi",
+      "phoneticUk": "'kɒpɪ",
+      "translation": "抄件；抄写，复制",
+      "sceneMeaning": "复制；复印",
+      "examples": "[]"
+    },
+    {
+      "word": "division",
+      "partOfSpeech": "n",
+      "phoneticUs": "də'vɪʒən",
+      "phoneticUk": "dɪ'vɪʒ(ə)n",
+      "translation": "分，分配；除法；除法；部门",
+      "sceneMeaning": "分部；部门",
+      "examples": "[]"
+    },
+    {
+      "word": "employer",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'plɔɪɚ",
+      "phoneticUk": "ɪm'plɒɪə; em-",
+      "translation": "雇佣者，雇主",
+      "sceneMeaning": "雇主",
+      "examples": "[]"
+    },
+    {
+      "word": "goal",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡol",
+      "phoneticUk": "gəʊl",
+      "translation": "球门；得分；目的",
+      "sceneMeaning": "目标",
+      "examples": "[]"
+    },
+    {
+      "word": "internal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'tɝnl",
+      "phoneticUk": "ɪn'tɜːn(ə)l",
+      "translation": "内的；国内的",
+      "sceneMeaning": "内的；国内的；本场景常见用法：内燃机",
+      "examples": "[]"
+    },
+    {
+      "word": "noticeable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'notɪsəbl",
+      "phoneticUk": "'nəʊtɪsəb(ə)l",
+      "translation": "显而易见的；重要的",
+      "sceneMeaning": "显而易见的；重要的",
+      "examples": "[]"
+    },
+    {
+      "word": "priority",
+      "partOfSpeech": "n",
+      "phoneticUs": "praɪ'ɔrəti",
+      "phoneticUk": "praɪ'ɒrətɪ",
+      "translation": "优先，优先权",
+      "sceneMeaning": "优先事项",
+      "examples": "[]"
+    },
+    {
+      "word": "procedure",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'sidʒɚ",
+      "phoneticUk": "prə'siːdʒə",
+      "translation": "程序；手续；过程；程序",
+      "sceneMeaning": "流程；步骤",
+      "examples": "[]"
+    },
+    {
+      "word": "productive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'dʌktɪv",
+      "phoneticUk": "prəˈdʌktɪv",
+      "translation": "富有成效的",
+      "sceneMeaning": "有成效的",
+      "examples": "[]"
+    },
+    {
+      "word": "scheme",
+      "partOfSpeech": "n",
+      "phoneticUs": "skim",
+      "phoneticUk": "skiːm",
+      "translation": "计划，规划；诡计",
+      "sceneMeaning": "计划，规划；诡计",
+      "examples": "[]"
+    },
+    {
+      "word": "submit",
+      "partOfSpeech": "v",
+      "phoneticUs": "səb'mɪt",
+      "phoneticUk": "səb'mɪt",
+      "translation": "使服从；服从；提交",
+      "sceneMeaning": "提交",
+      "examples": "[]"
+    },
+    {
+      "word": "wage",
+      "partOfSpeech": "v",
+      "phoneticUs": "wedʒ",
+      "phoneticUk": "weɪdʒ",
+      "translation": "开展(运动)",
+      "sceneMeaning": "工资",
+      "examples": "[]"
+    },
+    {
+      "word": "arrange",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'rendʒ",
+      "phoneticUk": "ə'reɪn(d)ʒ",
+      "translation": "筹备；整理；调解；安排，筹划",
+      "sceneMeaning": "安排；整理",
+      "examples": "[]"
+    },
+    {
+      "word": "assistant",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'sɪstənt",
+      "phoneticUk": "ə'sɪst(ə)nt",
+      "translation": "助手，助理；助教",
+      "sceneMeaning": "助理",
+      "examples": "[]"
+    },
+    {
+      "word": "attach",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'tætʃ",
+      "phoneticUk": "ə'tætʃ",
+      "translation": "缚，系，贴；附加",
+      "sceneMeaning": "附上；连接",
+      "examples": "[]"
+    },
+    {
+      "word": "branch",
+      "partOfSpeech": "n",
+      "phoneticUs": "bræntʃ",
+      "phoneticUk": "brɑːn(t)ʃ",
+      "translation": "树枝；分部；分科",
+      "sceneMeaning": "分支机构；分部",
+      "examples": "[]"
+    },
+    {
+      "word": "calendar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæləndɚ",
+      "phoneticUk": "'kælɪndə",
+      "translation": "日历，历书；历法",
+      "sceneMeaning": "日历",
+      "examples": "[]"
+    },
+    {
+      "word": "client",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klaɪənt",
+      "phoneticUk": "'klaɪənt",
+      "translation": "客户",
+      "sceneMeaning": "客户",
+      "examples": "[]"
+    },
+    {
+      "word": "deadline",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈdedlaɪn",
+      "phoneticUk": "ˈdedlaɪn",
+      "translation": "最后期限",
+      "sceneMeaning": "截止日期",
+      "examples": "[]"
+    },
+    {
+      "word": "desk",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "书桌，办公桌",
+      "sceneMeaning": "办公桌",
+      "examples": "[]"
+    },
+    {
+      "word": "expense",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'spɛns",
+      "phoneticUk": "ɪk'spens; ek-",
+      "translation": "花费，消费；费用",
+      "sceneMeaning": "费用；开支",
+      "examples": "[]"
+    },
+    {
+      "word": "extension",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'stɛnʃən",
+      "phoneticUk": "ɪk'stenʃ(ə)n; ek-",
+      "translation": "延长部分；伸展；分机",
+      "sceneMeaning": "分机；扩展",
+      "examples": "[]"
+    },
+    {
+      "word": "file",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "faɪl",
+      "phoneticUk": "faɪl",
+      "translation": "档案；把…归档",
+      "sceneMeaning": "文件；档案",
+      "examples": "[]"
+    },
+    {
+      "word": "Friday",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "'fraɪdeɪ; (occas.,) ˈfraɪdi",
+      "translation": "星期五",
+      "sceneMeaning": "星期五",
+      "examples": "[]"
+    },
+    {
+      "word": "headquarters",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛdkwɔrtɚz",
+      "phoneticUk": "hed'kwɔːtəz",
+      "translation": "司令部；总部",
+      "sceneMeaning": "总部",
+      "examples": "[]"
+    },
+    {
+      "word": "overtime",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ovə'taɪm",
+      "phoneticUk": "'əʊvətaɪm",
+      "translation": "超时的，加班的",
+      "sceneMeaning": "加班；加班费",
+      "examples": "[]"
+    },
+    {
+      "word": "review",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'vju",
+      "phoneticUk": "rɪ'vjuː",
+      "translation": "再检查；复习；回顾",
+      "sceneMeaning": "审阅；复查",
+      "examples": "[]"
+    },
+    {
+      "word": "routine",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "rʊ'tin",
+      "phoneticUk": "ruː'tiːn",
+      "translation": "例行公事；日常的",
+      "sceneMeaning": "常规的",
+      "examples": "[]"
+    },
+    {
+      "word": "section",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛkʃən",
+      "phoneticUk": "'sekʃ(ə)n",
+      "translation": "切片；一段；部门",
+      "sceneMeaning": "科室；部分",
+      "examples": "[]"
+    },
+    {
+      "word": "version",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɝʒn",
+      "phoneticUk": "'vɜːʃ(ə)n",
+      "translation": "译文；说法；改写本；版本",
+      "sceneMeaning": "译文；说法；改写本；版本",
+      "examples": "[]"
+    },
+    {
+      "word": "accompany",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kʌmpəni",
+      "phoneticUk": "ə'kʌmpənɪ",
+      "translation": "陪伴，陪同；伴随；陪伴",
+      "sceneMeaning": "陪伴，陪同；伴随；陪伴",
+      "examples": "[]"
+    },
+    {
+      "word": "approve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'prʊv",
+      "phoneticUk": "ə'pruːv",
+      "translation": "赞成，称许；批准；赞成，同意",
+      "sceneMeaning": "批准；认可",
+      "examples": "[]"
+    },
+    {
+      "word": "assist",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sɪst",
+      "phoneticUk": "ə'sɪst",
+      "translation": "援助，帮助；搀扶",
+      "sceneMeaning": "协助",
+      "examples": "[]"
+    },
+    {
+      "word": "auxiliary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɔːɡ'zɪlɪəri",
+      "phoneticUk": "ɔːg'zɪlɪərɪ; ɒg-",
+      "translation": "辅助的；附属的",
+      "sceneMeaning": "辅助的；附属的",
+      "examples": "[]"
+    },
+    {
+      "word": "clerk",
+      "partOfSpeech": "n",
+      "phoneticUs": "klɝk",
+      "phoneticUk": "klɑːk",
+      "translation": "店员；办事员，职员",
+      "sceneMeaning": "职员；办事员",
+      "examples": "[]"
+    },
+    {
+      "word": "colleague",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑliɡ",
+      "phoneticUk": "'kɒliːg",
+      "translation": "同事，同僚；同事",
+      "sceneMeaning": "同事",
+      "examples": "[]"
+    },
+    {
+      "word": "companion",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'pænɪən",
+      "phoneticUk": "kəm'pænjən",
+      "translation": "同伴；共事者；伴侣",
+      "sceneMeaning": "同伴；共事者；伴侣",
+      "examples": "[]"
+    },
+    {
+      "word": "compute",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'pjʊt",
+      "phoneticUk": "kəm'pjuːt",
+      "translation": "计算，估计，估算",
+      "sceneMeaning": "计算，估计，估算",
+      "examples": "[]"
+    },
+    {
+      "word": "coordinate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ko'ɔrdɪnet",
+      "phoneticUk": "kəʊ'ɔ:dɪneɪt",
+      "translation": "使协调，调节",
+      "sceneMeaning": "协调",
+      "examples": "[]"
+    },
+    {
+      "word": "delegation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɛlɪ'ɡeʃən",
+      "phoneticUk": "delɪ'geɪʃ(ə)n",
+      "translation": "代表团",
+      "sceneMeaning": "代表团；本场景常见用法：授权；委任权",
+      "examples": "[]"
+    },
+    {
+      "word": "document",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɑkjəmənt",
+      "phoneticUk": "'dɒkjʊm(ə)nt",
+      "translation": "公文，文件；证件；文件",
+      "sceneMeaning": "文件；文档",
+      "examples": "[]"
+    },
+    {
+      "word": "downsize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'daʊnsaɪz",
+      "phoneticUk": "'daʊnsaɪz",
+      "translation": "裁员",
+      "sceneMeaning": "裁员",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'fɪʃənsi",
+      "phoneticUk": "ɪ'fɪʃ(ə)nsɪ",
+      "translation": "效率；功效，效能",
+      "sceneMeaning": "效率",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiently",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃəntli",
+      "phoneticUk": "i'fiʃəntli",
+      "translation": "有效地",
+      "sceneMeaning": "高效地",
+      "examples": "[]"
+    },
+    {
+      "word": "fold",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fold",
+      "phoneticUk": "fəʊld",
+      "translation": "折叠；合拢；褶",
+      "sceneMeaning": "折叠；合拢；褶",
+      "examples": "[]"
+    },
+    {
+      "word": "fulfil",
+      "partOfSpeech": "v",
+      "phoneticUs": "ful'fil",
+      "phoneticUk": "fʊl'fɪl",
+      "translation": "履行；满足；完成",
+      "sceneMeaning": "履行；满足；完成",
+      "examples": "[]"
+    },
+    {
+      "word": "headquarter",
+      "partOfSpeech": "v",
+      "phoneticUs": "'hɛd'kwɔrtɚ",
+      "phoneticUk": "'hedkwɔːtə",
+      "translation": "设立总部，在…设立总部",
+      "sceneMeaning": "设立总部，在…设立总部",
+      "examples": "[]"
+    },
+    {
+      "word": "keyboard",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ki'bɔrd",
+      "phoneticUk": "'kiːbɔːd",
+      "translation": "键盘",
+      "sceneMeaning": "键盘",
+      "examples": "[]"
+    },
+    {
+      "word": "lobby",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'lɑbi",
+      "phoneticUk": "'lɒbɪ",
+      "translation": "大堂；游说",
+      "sceneMeaning": "大厅",
+      "examples": "[]"
+    },
+    {
+      "word": "monitor",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɔnɪtɚ",
+      "phoneticUk": "'mɒnɪtə",
+      "translation": "班长；监视器；监控；监听",
+      "sceneMeaning": "显示器；监视器",
+      "examples": "[]"
+    },
+    {
+      "word": "mouse",
+      "partOfSpeech": "n",
+      "phoneticUs": "maʊs",
+      "phoneticUk": "maʊs",
+      "translation": "鼠，耗子",
+      "sceneMeaning": "鼠标",
+      "examples": "[]"
+    },
+    {
+      "word": "organ",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrɡən",
+      "phoneticUk": "'ɔːg(ə)n",
+      "translation": "器官；机构；管风琴；器官",
+      "sceneMeaning": "器官；机构；管风琴；器官",
+      "examples": "[]"
+    },
+    {
+      "word": "outgoing",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'aʊt'goɪŋ",
+      "phoneticUk": "'aʊtgəʊɪŋ",
+      "translation": "开朗的；外向的；外出的",
+      "sceneMeaning": "开朗的；外向的；外出的",
+      "examples": "[]"
+    },
+    {
+      "word": "progress",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑɡrɛs",
+      "phoneticUk": "'prəʊgres",
+      "translation": "前进，进展；进步",
+      "sceneMeaning": "进展",
+      "examples": "[]"
+    },
+    {
+      "word": "progressive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'ɡrɛsɪv",
+      "phoneticUk": "prə'gresɪv",
+      "translation": "进步的；向前进的",
+      "sceneMeaning": "进步的；向前进的；本场景常见用法：逐行扫描",
+      "examples": "[]"
+    },
+    {
+      "word": "reject",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'dʒɛkt",
+      "phoneticUk": "rɪ'dʒekt",
+      "translation": "拒绝；丢掉；驳回；拒绝，驳回",
+      "sceneMeaning": "拒绝；驳回",
+      "examples": "[]"
+    },
+    {
+      "word": "signature",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪgnətʃɚ",
+      "phoneticUk": "'sɪgnətʃə",
+      "translation": "署名，签字，签名；签名",
+      "sceneMeaning": "签名",
+      "examples": "[]"
+    },
+    {
+      "word": "typist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'taɪpɪst",
+      "phoneticUk": "'taɪpɪst",
+      "translation": "打字员",
+      "sceneMeaning": "打字员",
+      "examples": "[]"
+    }
+  ]
+}

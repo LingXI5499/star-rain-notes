@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>@layer</code> 分层管理样式；普通声明中，后声明的层级优先于先声明的层级。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">@layer reset, components;
+@layer reset { button { padding: 0; } }
+@layer components { button { padding: 8px; } }
+</code></pre>
+<p><strong>学完能做：</strong> 使用 @layer 划分公共样式与组件样式优先级。</p>

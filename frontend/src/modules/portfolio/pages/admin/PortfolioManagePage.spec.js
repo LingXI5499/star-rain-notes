@@ -20,8 +20,8 @@ vi.mock('../../api/portfolioApi', () => ({
 }))
 describe('portfolio management metadata compatibility', () => {
  it('renders new works without legacy type details and keeps the legacy fallback', async () => {
-  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/useradmin/portfolio/manage', component: PortfolioManagePage }] })
-  await router.push('/useradmin/portfolio/manage')
+  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/portfolio/manage', component: PortfolioManagePage }] })
+  await router.push('/portfolio/manage')
   const view = mount(PortfolioManagePage, { global: { plugins: [router], stubs: { AppConfirmDialog: true } } }); await flushPromises()
   expect(view.findAll('.portfolio-card')).toHaveLength(2)
   expect(view.text()).toContain('规划中'); expect(view.text()).toContain('全栈开发')

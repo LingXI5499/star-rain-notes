@@ -25,7 +25,7 @@ import '../../styles/englishRw.css'
 /**
  * 路由；通过 useRoute 建立。
  */
-const route=useRoute(),router=useRouter(),auth=useAuthStore(),{contentPath,isAccount}=useViewMode()
+const route=useRoute(),router=useRouter(),auth=useAuthStore(),{contentPath}=useViewMode()
 /**
  * 原始；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -40,7 +40,7 @@ const page=computed(()=>publicPage(route.query.page)),size=computed(()=>publicPa
  * signed内部；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
-const signedIn=computed(()=>isAccount.value && Boolean(auth.currentUser))
+const signedIn=computed(()=>Boolean(auth.currentUser))
 let generation=0
 /**
  * 加载当前操作。

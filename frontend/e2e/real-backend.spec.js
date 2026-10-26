@@ -22,6 +22,36 @@ test.beforeEach(async ({ page }) => {
     catch { await route.abort() }
   })
 })
+
+test('canonical route refreshes, legacy tokens and public HTTP status retain their boundaries', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.locator('.public-shell .account-entry')).toBeVisible()
+  await expect(page.locator('.admin-shell')).toHaveCount(0)
+  for (const path of ['/blog/manage', '/tutorials/manage', '/portfolio/manage']) {
+    const response = await page.goto(path)
+    expect(response.status()).toBe(200)
+    expect(response.headers()['x-robots-tag']).toContain('noindex')
+    await expect(page).toHaveURL(new RegExp(path + '$'))
+    await expect(page.locator('meta[name="robots"]')).toHaveAttribute('content', 'noindex,nofollow')
+  }
+  await page.goto('/useradmin/reset-password?token=a%2Bb%3D#reset')
+  await expect(page).toHaveURL(/\/reset-password\?token=/)
+  expect(new URL(page.url()).searchParams.get('token')).toBe('a+b=')
+  expect(new URL(page.url()).hash).toBe('#reset')
+  for (const path of ['/blog/posts/missing-route-regression', '/tutorials/missing-route-regression/first', '/portfolio/missing-route-regression']) {
+    expect((await page.request.get(path)).status()).toBe(404)
+  }
+  for (const path of ['/', '/blog', '/tutorials', '/portfolio', '/about', '/messages']) {
+    const response = await page.request.get(path)
+    expect(response.status()).toBe(200)
+    expect(await response.text()).toContain('rel="canonical"')
+    expect(await response.text()).not.toContain('href="https://yulanlin.cn/useradmin')
+  }
+  const sitemap = await (await page.request.get('/sitemap.xml')).text()
+  expect(sitemap).not.toContain('/useradmin')
+  expect(sitemap).not.toContain('/manage')
+  expect((await page.request.get('/assets/missing-route-regression.js')).status()).toBe(404)
+})
 async function article(page) {
   const slug = `real-audit-${Date.now()}`
   const created = await write(page, 'POST', '/api/admin/blog/posts', { title: 'Real audit article', summary: 'Test summary', slug })
@@ -33,7 +63,7 @@ async function article(page) {
 }
 test('two editors reject a stale save and preserve typed text', async ({ page, context }) => {
   const item = await article(page), other = await context.newPage()
-  await page.goto(`/useradmin/blog/editor/${item.id}`); await other.goto(`/useradmin/blog/editor/${item.id}`)
+  await page.goto(`/blog/editor/${item.id}`); await other.goto(`/blog/editor/${item.id}`)
   await expect(page.getByLabel('文章标题')).toHaveValue(item.title)
   await expect(other.getByLabel('文章标题')).toHaveValue(item.title)
   await page.getByLabel('文章标题').fill('First client saved')
@@ -64,7 +94,7 @@ test('withdrawal removes HTML, metadata, sitemap and search visibility', async (
 })
 test('a later read cannot silently advance the visible editor baseline', async ({ page }) => {
   const item = await article(page)
-  await page.goto(`/useradmin/blog/editor/${item.id}`)
+  await page.goto(`/blog/editor/${item.id}`)
   await expect(page.getByLabel('文章标题')).toHaveValue(item.title)
   let peerSaved = false
   await page.route(`**/api/admin/blog/posts/${item.id}`, async route => {

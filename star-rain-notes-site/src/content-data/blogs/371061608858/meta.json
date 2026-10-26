@@ -1,0 +1,56 @@
+{
+  "slug": "371061608858",
+  "title": "前端技术发展史：从静态文档到现代 Web 应用平台",
+  "description": "前端技术的发展，并不是 HTML、CSS、JavaScript、jQuery、Vue、React、TypeScript、Vite 等技术简单地一代替代一代，而是 Web 从“浏览超文本文档”逐步演化为“运行复杂软件应用”的过程。最初的 Web 只需要解决信息如何通过网络被访问，随后逐渐出现页面样式、用户交互、异步通信、组件化、状态管理、模块化、工程化、类型系统、服务器渲染以及全栈 Web Framework。本文按照时间与技术演化关系，梳理现代前端三十多年的发展历程，并解释每项重要技术为什么出现、解决了什么问题，以及它们在今天前端体系中的位置。",
+  "publishedAt": "2026-09-18",
+  "updatedAt": "2026-10-09",
+  "wordCount": 23567,
+  "tags": [
+    {
+      "slug": "ajax",
+      "name": "Ajax"
+    },
+    {
+      "slug": "css",
+      "name": "CSS"
+    },
+    {
+      "slug": "html",
+      "name": "HTML"
+    },
+    {
+      "slug": "javascript",
+      "name": "JavaScript"
+    },
+    {
+      "slug": "jquery",
+      "name": "JQuery"
+    },
+    {
+      "slug": "node-js",
+      "name": "Node.js"
+    },
+    {
+      "slug": "react",
+      "name": "React"
+    },
+    {
+      "slug": "vite",
+      "name": "Vite"
+    },
+    {
+      "slug": "vue",
+      "name": "Vue"
+    },
+    {
+      "slug": "web",
+      "name": "Web"
+    },
+    {
+      "slug": "tag-866a4fa82c25",
+      "name": "前端"
+    }
+  ],
+  "topics": [],
+  "path": "/blog/posts/371061608858/"
+}

@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 同步调用栈先执行；Promise 回调通常进入微任务队列，定时器回调属于后续任务。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">console.log('A');
+setTimeout(() =&gt; console.log('C'), 0);
+Promise.resolve().then(() =&gt; console.log('B'));
+// A B C
+</code></pre>
+<p><strong>学完能做：</strong> 理解事件循环中的任务与微任务调度。</p>

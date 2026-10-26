@@ -52,7 +52,7 @@ class ModuleFrameHeadersTest {
             assertThat(response.getHeader("X-Frame-Options")).isEqualTo("SAMEORIGIN");
         }
         for (String path : List.of("/api/admin/accounts", "/api/public/portfolio/works/demo",
-                "/api/public/portfolio/works/demo/live-other/index.html", "/useradmin/login")) {
+                "/api/public/portfolio/works/demo/live-other/index.html", "/login", "/useradmin/login")) {
             var response = new MockHttpServletResponse();
             writer.writeHeaders(new MockHttpServletRequest("GET", path), response);
             assertThat(response.getHeader("X-Frame-Options")).isEqualTo("DENY");

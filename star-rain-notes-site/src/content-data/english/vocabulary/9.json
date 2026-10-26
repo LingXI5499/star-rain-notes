@@ -1,0 +1,891 @@
+{
+  "id": "9",
+  "title": "衣物、鞋帽、配饰、个人用品",
+  "layer": "基础通用词层",
+  "wordCount": 98,
+  "path": "/english/vocabulary/9/",
+  "words": [
+    {
+      "word": "choose",
+      "partOfSpeech": "v",
+      "phoneticUs": "tʃuz",
+      "phoneticUk": "tʃuːz",
+      "translation": "选择，挑选；情愿",
+      "sceneMeaning": "选择",
+      "examples": "[]"
+    },
+    {
+      "word": "daily",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'delɪ",
+      "phoneticUk": "'deɪlɪ",
+      "translation": "每日的；日报",
+      "sceneMeaning": "每日的；日常的",
+      "examples": "[]"
+    },
+    {
+      "word": "expensive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'spɛnsɪv",
+      "phoneticUk": "ɪk'spensɪv; ek-",
+      "translation": "昂贵的，花钱多的",
+      "sceneMeaning": "昂贵的",
+      "examples": "[]"
+    },
+    {
+      "word": "personal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɝsənl",
+      "phoneticUk": "'pɜːs(ə)n(ə)l",
+      "translation": "个人的；本人的",
+      "sceneMeaning": "个人的；私人的",
+      "examples": "[]"
+    },
+    {
+      "word": "put",
+      "partOfSpeech": "v",
+      "phoneticUs": "pʊt",
+      "phoneticUk": "pʊt",
+      "translation": "放，摆；使处于",
+      "sceneMeaning": "放；穿上",
+      "examples": "[]"
+    },
+    {
+      "word": "formal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɔrml",
+      "phoneticUk": "'fɔːm(ə)l",
+      "translation": "正式的；礼仪上的",
+      "sceneMeaning": "正式的",
+      "examples": "[]"
+    },
+    {
+      "word": "comfortable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kʌmftəbl",
+      "phoneticUk": "ˈkʌmftəbl",
+      "translation": "舒适的，安慰的",
+      "sceneMeaning": "舒适的",
+      "examples": "[]"
+    },
+    {
+      "word": "pocket",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑkɪt",
+      "phoneticUk": "'pɒkɪt",
+      "translation": "衣袋；袖珍的",
+      "sceneMeaning": "口袋",
+      "examples": "[]"
+    },
+    {
+      "word": "cheap",
+      "partOfSpeech": "adj",
+      "phoneticUs": "tʃip",
+      "phoneticUk": "tʃiːp",
+      "translation": "廉价的；劣质的",
+      "sceneMeaning": "便宜的；劣质的",
+      "examples": "[]"
+    },
+    {
+      "word": "clean",
+      "partOfSpeech": "adj",
+      "phoneticUs": "klin",
+      "phoneticUk": "kliːn",
+      "translation": "清洁的；纯洁的",
+      "sceneMeaning": "干净的",
+      "examples": "[]"
+    },
+    {
+      "word": "wear",
+      "partOfSpeech": "v",
+      "phoneticUs": "wɛr",
+      "phoneticUk": "weə",
+      "translation": "磨损",
+      "sceneMeaning": "穿；戴",
+      "examples": "[]"
+    },
+    {
+      "word": "carry",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kæri",
+      "phoneticUk": "'kærɪ",
+      "translation": "携带；运载；传送",
+      "sceneMeaning": "携带",
+      "examples": "[]"
+    },
+    {
+      "word": "match",
+      "partOfSpeech": "n",
+      "phoneticUs": "mætʃ",
+      "phoneticUk": "mætʃ",
+      "translation": "比赛，竞赛；对手",
+      "sceneMeaning": "搭配；匹配",
+      "examples": "[]"
+    },
+    {
+      "word": "elegant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɛləgənt",
+      "phoneticUk": "'elɪg(ə)nt",
+      "translation": "优雅的",
+      "sceneMeaning": "优雅的",
+      "examples": "[]"
+    },
+    {
+      "word": "bare",
+      "partOfSpeech": "adj",
+      "phoneticUs": "bɛr",
+      "phoneticUk": "beə",
+      "translation": "赤裸的；仅仅的",
+      "sceneMeaning": "赤裸的；仅仅的",
+      "examples": "[]"
+    },
+    {
+      "word": "clothes",
+      "partOfSpeech": "n",
+      "phoneticUs": "kloz",
+      "phoneticUk": "kləʊ(ð)z",
+      "translation": "衣服，服装；被褥",
+      "sceneMeaning": "衣服",
+      "examples": "[]"
+    },
+    {
+      "word": "hide",
+      "partOfSpeech": "v",
+      "phoneticUs": "haɪd",
+      "phoneticUk": "haɪd",
+      "translation": "把…藏起来；隐瞒",
+      "sceneMeaning": "把…藏起来；隐瞒",
+      "examples": "[]"
+    },
+    {
+      "word": "ring",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪŋ",
+      "phoneticUk": "rɪŋ",
+      "translation": "拳击台",
+      "sceneMeaning": "戒指；环",
+      "examples": "[]"
+    },
+    {
+      "word": "suit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sut",
+      "phoneticUk": "sju:t; su:t",
+      "translation": "起拆，诉讼；适合",
+      "sceneMeaning": "西装；套装",
+      "examples": "[]"
+    },
+    {
+      "word": "brand",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "brænd",
+      "phoneticUk": "brænd",
+      "translation": "商品；烙印；铭刻",
+      "sceneMeaning": "品牌",
+      "examples": "[]"
+    },
+    {
+      "word": "clothing",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kloðɪŋ",
+      "phoneticUk": "'kləʊðɪŋ",
+      "translation": "衣服，被褥",
+      "sceneMeaning": "服装",
+      "examples": "[]"
+    },
+    {
+      "word": "dirty",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈdɝ​tɪ",
+      "phoneticUk": "'dɜːtɪ",
+      "translation": "脏的；下流的",
+      "sceneMeaning": "脏的",
+      "examples": "[]"
+    },
+    {
+      "word": "dress",
+      "partOfSpeech": "n",
+      "phoneticUs": "drɛs",
+      "phoneticUk": "dres",
+      "translation": "女服，童装；服装",
+      "sceneMeaning": "穿衣；装扮",
+      "examples": "[]"
+    },
+    {
+      "word": "dry",
+      "partOfSpeech": "adj",
+      "phoneticUs": "draɪ",
+      "phoneticUk": "draɪ",
+      "translation": "干的，干燥的",
+      "sceneMeaning": "弄干；变干",
+      "examples": "[]"
+    },
+    {
+      "word": "fashion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæʃən",
+      "phoneticUk": "'fæʃ(ə)n",
+      "translation": "样子，方式；风尚",
+      "sceneMeaning": "时尚；流行",
+      "examples": "[]"
+    },
+    {
+      "word": "pack",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pæk",
+      "phoneticUk": "pæk",
+      "translation": "捆扎；挤满；包",
+      "sceneMeaning": "打包；包装",
+      "examples": "[]"
+    },
+    {
+      "word": "boot",
+      "partOfSpeech": "n",
+      "phoneticUs": "but",
+      "phoneticUk": "buːt",
+      "translation": "靴子，长统靴",
+      "sceneMeaning": "靴子",
+      "examples": "[]"
+    },
+    {
+      "word": "casual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kæʒʊəl",
+      "phoneticUk": "'kæʒjʊəl; -zj-",
+      "translation": "偶然的；随便的；漫不经心的，随便的；偶然的",
+      "sceneMeaning": "休闲的；随便的",
+      "examples": "[]"
+    },
+    {
+      "word": "fit",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɪt",
+      "phoneticUk": "fɪt",
+      "translation": "适合；安装；适合",
+      "sceneMeaning": "合身；适合",
+      "examples": "[]"
+    },
+    {
+      "word": "kick",
+      "partOfSpeech": "vi&vt&n",
+      "phoneticUs": "kɪk",
+      "phoneticUk": "kɪk",
+      "translation": "踢",
+      "sceneMeaning": "踢",
+      "examples": "[]"
+    },
+    {
+      "word": "personality",
+      "partOfSpeech": "n",
+      "phoneticUs": ",pɝsə'næləti",
+      "phoneticUk": "ˌpɜ:səˈnæləti",
+      "translation": "个性，性格",
+      "sceneMeaning": "个性，性格；本场景常见用法：人格形成",
+      "examples": "[]"
+    },
+    {
+      "word": "remove",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'muv",
+      "phoneticUk": "rɪ'muːv",
+      "translation": "移动，搬开；脱掉；消除，移除",
+      "sceneMeaning": "脱下；移除",
+      "examples": "[]"
+    },
+    {
+      "word": "shave",
+      "partOfSpeech": "v",
+      "phoneticUs": "ʃev",
+      "phoneticUk": "ʃeɪv",
+      "translation": "剃，刮；修面",
+      "sceneMeaning": "剃，刮；修面",
+      "examples": "[]"
+    },
+    {
+      "word": "bundle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bʌndl",
+      "phoneticUk": "'bʌnd(ə)l",
+      "translation": "捆，包，束；包袱",
+      "sceneMeaning": "捆，包，束；包袱",
+      "examples": "[]"
+    },
+    {
+      "word": "cap",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæp",
+      "phoneticUk": "kæp",
+      "translation": "帽子，便帽；帽状物",
+      "sceneMeaning": "帽子；盖子",
+      "examples": "[]"
+    },
+    {
+      "word": "conceal",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'sil",
+      "phoneticUk": "kən'siːl",
+      "translation": "把…隐藏起来",
+      "sceneMeaning": "把…隐藏起来",
+      "examples": "[]"
+    },
+    {
+      "word": "cordial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɔrdʒəl",
+      "phoneticUk": "'kɔːdɪəl",
+      "translation": "真诚的，诚恳的",
+      "sceneMeaning": "真诚的，诚恳的",
+      "examples": "[]"
+    },
+    {
+      "word": "cotton",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑtn",
+      "phoneticUk": "'kɒt(ə)n",
+      "translation": "棉；棉线；棉布",
+      "sceneMeaning": "棉；棉布",
+      "examples": "[]"
+    },
+    {
+      "word": "fashionable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fæʃnəbl",
+      "phoneticUk": "'fæʃ(ə)nəb(ə)l",
+      "translation": "流行的，时髦的",
+      "sceneMeaning": "时髦的",
+      "examples": "[]"
+    },
+    {
+      "word": "hospitable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hɑ'spɪtəbl",
+      "phoneticUk": "hɑ'spɪtəbl",
+      "translation": "热情友好的",
+      "sceneMeaning": "热情友好的",
+      "examples": "[]"
+    },
+    {
+      "word": "jacket",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒækɪt",
+      "phoneticUk": "'dʒækɪt",
+      "translation": "短上衣，茄克衫",
+      "sceneMeaning": "夹克；短外套",
+      "examples": "[]"
+    },
+    {
+      "word": "loosen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'lusn",
+      "phoneticUk": "'luːs(ə)n",
+      "translation": "解开；使松驰",
+      "sceneMeaning": "解开；使松驰",
+      "examples": "[]"
+    },
+    {
+      "word": "neat",
+      "partOfSpeech": "adj",
+      "phoneticUs": "nit",
+      "phoneticUk": "niːt",
+      "translation": "整洁的；熟练的",
+      "sceneMeaning": "整洁的；熟练的",
+      "examples": "[]"
+    },
+    {
+      "word": "needy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nidi",
+      "phoneticUk": "'ni:dɪ",
+      "translation": "贫穷的",
+      "sceneMeaning": "贫穷的",
+      "examples": "[]"
+    },
+    {
+      "word": "overcoat",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ovɚkot",
+      "phoneticUk": "'əʊvəkəʊt",
+      "translation": "外衣，大衣",
+      "sceneMeaning": "外衣，大衣",
+      "examples": "[]"
+    },
+    {
+      "word": "proper",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɑpɚ",
+      "phoneticUk": "'prɒpə",
+      "translation": "适合的；合乎体统的",
+      "sceneMeaning": "适合的；合乎体统的",
+      "examples": "[]"
+    },
+    {
+      "word": "rid",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪd",
+      "phoneticUk": "rɪd",
+      "translation": "使摆脱，使去掉",
+      "sceneMeaning": "使摆脱，使去掉",
+      "examples": "[]"
+    },
+    {
+      "word": "waterproof",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'wɔtɚpruf",
+      "phoneticUk": "'wɔːtəpruːf",
+      "translation": "不透水的，防水的",
+      "sceneMeaning": "防水的",
+      "examples": "[]"
+    },
+    {
+      "word": "accustom",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kʌstəm",
+      "phoneticUk": "ə'kʌstəm",
+      "translation": "使习惯",
+      "sceneMeaning": "使习惯",
+      "examples": "[]"
+    },
+    {
+      "word": "bag",
+      "partOfSpeech": "n",
+      "phoneticUs": "bæɡ",
+      "phoneticUk": "bæg",
+      "translation": "袋，包，钱包，背包",
+      "sceneMeaning": "包；袋子",
+      "examples": "[]"
+    },
+    {
+      "word": "belt",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɛlt",
+      "phoneticUk": "belt",
+      "translation": "带，腰带；皮带；区",
+      "sceneMeaning": "腰带；带状物",
+      "examples": "[]"
+    },
+    {
+      "word": "bury",
+      "partOfSpeech": "v",
+      "phoneticUs": "'bɛri",
+      "phoneticUk": "'berɪ",
+      "translation": "埋葬，葬；埋藏",
+      "sceneMeaning": "埋葬，葬；埋藏",
+      "examples": "[]"
+    },
+    {
+      "word": "button",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bʌtn",
+      "phoneticUk": "[ˈbʌtn]",
+      "translation": "扣子；按钮；扣紧",
+      "sceneMeaning": "扣纽扣",
+      "examples": "[]"
+    },
+    {
+      "word": "canvas",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kænvəs",
+      "phoneticUk": "'kænvəs",
+      "translation": "粗帆布；一块油画布",
+      "sceneMeaning": "粗帆布；一块油画布；本场景常见用法：帆布鞋",
+      "examples": "[]"
+    },
+    {
+      "word": "carriage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kærɪdʒ",
+      "phoneticUk": "'kærɪdʒ",
+      "translation": "客车厢；四轮马车",
+      "sceneMeaning": "客车厢；四轮马车",
+      "examples": "[]"
+    },
+    {
+      "word": "clasp",
+      "partOfSpeech": "n",
+      "phoneticUs": "klæsp",
+      "phoneticUk": "klɑːsp",
+      "translation": "扣子，钩子；别针",
+      "sceneMeaning": "扣子，钩子；别针",
+      "examples": "[]"
+    },
+    {
+      "word": "cloak",
+      "partOfSpeech": "n",
+      "phoneticUs": "klok",
+      "phoneticUk": "kləʊk",
+      "translation": "斗篷；覆盖(物)",
+      "sceneMeaning": "斗篷；覆盖(物)",
+      "examples": "[]"
+    },
+    {
+      "word": "clothe",
+      "partOfSpeech": "v",
+      "phoneticUs": "kloð",
+      "phoneticUk": "kləʊð",
+      "translation": "给…穿衣服",
+      "sceneMeaning": "给…穿衣服",
+      "examples": "[]"
+    },
+    {
+      "word": "coat",
+      "partOfSpeech": "n",
+      "phoneticUs": "kot",
+      "phoneticUk": "kəʊt",
+      "translation": "外套，上衣；表皮",
+      "sceneMeaning": "外套；大衣",
+      "examples": "[]"
+    },
+    {
+      "word": "collar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑlɚ",
+      "phoneticUk": "'kɒlə",
+      "translation": "衣领，项圈",
+      "sceneMeaning": "衣领；项圈",
+      "examples": "[]"
+    },
+    {
+      "word": "comb",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kom",
+      "phoneticUk": "kəʊm",
+      "translation": "梳子；梳理",
+      "sceneMeaning": "梳子",
+      "examples": "[]"
+    },
+    {
+      "word": "compress",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'prɛs",
+      "phoneticUk": "kəm'pres",
+      "translation": "压紧，压缩",
+      "sceneMeaning": "压紧，压缩",
+      "examples": "[]"
+    },
+    {
+      "word": "ear",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪr",
+      "phoneticUk": "ɪə",
+      "translation": "耳朵；听力，听觉",
+      "sceneMeaning": "耳朵；听力，听觉",
+      "examples": "[]"
+    },
+    {
+      "word": "elastic",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɪ'læstɪk",
+      "phoneticUk": "ɪ'læstɪk",
+      "translation": "松紧带；有弹性的",
+      "sceneMeaning": "松紧带；有弹性的",
+      "examples": "[]"
+    },
+    {
+      "word": "fabric",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæbrɪk",
+      "phoneticUk": "'fæbrɪk",
+      "translation": "织物，纺织品；结构",
+      "sceneMeaning": "织物；面料",
+      "examples": "[]"
+    },
+    {
+      "word": "fold",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fold",
+      "phoneticUk": "fəʊld",
+      "translation": "折叠；合拢；褶",
+      "sceneMeaning": "折叠",
+      "examples": "[]"
+    },
+    {
+      "word": "glove",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡlʌv",
+      "phoneticUk": "glʌv",
+      "translation": "手套",
+      "sceneMeaning": "手套",
+      "examples": "[]"
+    },
+    {
+      "word": "gown",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡaʊn",
+      "phoneticUk": "gaʊn",
+      "translation": "长袍，长外衣",
+      "sceneMeaning": "长袍，长外衣；本场景常见用法：新娘服装，新娘礼服",
+      "examples": "[]"
+    },
+    {
+      "word": "hat",
+      "partOfSpeech": "n",
+      "phoneticUs": "hæt",
+      "phoneticUk": "hæt",
+      "translation": "帽子(一般指有边的)",
+      "sceneMeaning": "帽子",
+      "examples": "[]"
+    },
+    {
+      "word": "helmet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛlmɪt",
+      "phoneticUk": "'helmɪt",
+      "translation": "头盔，钢盔",
+      "sceneMeaning": "头盔",
+      "examples": "[]"
+    },
+    {
+      "word": "iron",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'aɪɚn",
+      "phoneticUk": "'aɪən",
+      "translation": "铁；烙铁；烫(衣)",
+      "sceneMeaning": "熨烫；铁",
+      "examples": "[]"
+    },
+    {
+      "word": "lace",
+      "partOfSpeech": "n",
+      "phoneticUs": "les",
+      "phoneticUk": "leɪs",
+      "translation": "鞋带，系带；花边",
+      "sceneMeaning": "鞋带，系带；花边；本场景常见用法：鞋带",
+      "examples": "[]"
+    },
+    {
+      "word": "leather",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛðɚ",
+      "phoneticUk": "'leðə",
+      "translation": "皮革；皮革制品",
+      "sceneMeaning": "皮革",
+      "examples": "[]"
+    },
+    {
+      "word": "linen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪnɪn",
+      "phoneticUk": "'lɪnɪn",
+      "translation": "亚麻布；亚麻织物",
+      "sceneMeaning": "亚麻布；亚麻织物",
+      "examples": "[]"
+    },
+    {
+      "word": "loose",
+      "partOfSpeech": "adj",
+      "phoneticUs": "lus",
+      "phoneticUk": "luːs",
+      "translation": "松的；宽松的",
+      "sceneMeaning": "宽松的；松的",
+      "examples": "[]"
+    },
+    {
+      "word": "mask",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "mæsk",
+      "phoneticUk": "mɑːsk",
+      "translation": "面具；伪装；掩饰",
+      "sceneMeaning": "口罩；面具",
+      "examples": "[]"
+    },
+    {
+      "word": "mud",
+      "partOfSpeech": "n",
+      "phoneticUs": "mʌd",
+      "phoneticUk": "mʌd",
+      "translation": "软泥，泥浆",
+      "sceneMeaning": "软泥，泥浆",
+      "examples": "[]"
+    },
+    {
+      "word": "naked",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nekɪd",
+      "phoneticUk": "'neɪkɪd",
+      "translation": "裸体的；无遮敝的",
+      "sceneMeaning": "裸体的；无遮敝的",
+      "examples": "[]"
+    },
+    {
+      "word": "necklace",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nɛkləs",
+      "phoneticUk": "'neklɪs",
+      "translation": "项链，项圈",
+      "sceneMeaning": "项链",
+      "examples": "[]"
+    },
+    {
+      "word": "noble",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nobl",
+      "phoneticUk": "'nəʊb(ə)l",
+      "translation": "贵族的；高尚的",
+      "sceneMeaning": "贵族的；高尚的",
+      "examples": "[]"
+    },
+    {
+      "word": "nylon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'naɪlɑn",
+      "phoneticUk": "'naɪlɒn",
+      "translation": "尼龙，耐纶",
+      "sceneMeaning": "尼龙",
+      "examples": "[]"
+    },
+    {
+      "word": "purse",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɝs",
+      "phoneticUk": "pɜːs",
+      "translation": "钱包，小钱袋，手袋",
+      "sceneMeaning": "钱包；手提包",
+      "examples": "[]"
+    },
+    {
+      "word": "rack",
+      "partOfSpeech": "n",
+      "phoneticUs": "ræk",
+      "phoneticUk": "ræk",
+      "translation": "搁物架；行李架",
+      "sceneMeaning": "搁物架；行李架；本场景常见用法：衣架",
+      "examples": "[]"
+    },
+    {
+      "word": "removal",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'muvl",
+      "phoneticUk": "rɪ'muːv(ə)l",
+      "translation": "移动；迁移；除掉",
+      "sceneMeaning": "移动；迁移；除掉；本场景常见用法：除热系统",
+      "examples": "[]"
+    },
+    {
+      "word": "ribbon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɪbən",
+      "phoneticUk": "'rɪbən",
+      "translation": "缎带，丝带；带",
+      "sceneMeaning": "缎带，丝带；带",
+      "examples": "[]"
+    },
+    {
+      "word": "sack",
+      "partOfSpeech": "n",
+      "phoneticUs": "sæk",
+      "phoneticUk": "sæk",
+      "translation": "袋，麻袋；开除",
+      "sceneMeaning": "袋，麻袋；开除",
+      "examples": "[]"
+    },
+    {
+      "word": "sew",
+      "partOfSpeech": "v",
+      "phoneticUs": "so",
+      "phoneticUk": "səʊ",
+      "translation": "缝制；缝纫",
+      "sceneMeaning": "缝制；缝纫",
+      "examples": "[]"
+    },
+    {
+      "word": "silk",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɪlk",
+      "phoneticUk": "sɪlk",
+      "translation": "蚕丝，丝，丝织品",
+      "sceneMeaning": "丝绸",
+      "examples": "[]"
+    },
+    {
+      "word": "sleeve",
+      "partOfSpeech": "n",
+      "phoneticUs": "sliv",
+      "phoneticUk": "sliːv",
+      "translation": "袖子，袖套",
+      "sceneMeaning": "袖子",
+      "examples": "[]"
+    },
+    {
+      "word": "stocking",
+      "partOfSpeech": "n",
+      "phoneticUs": "'stɑkɪŋ",
+      "phoneticUk": "'stɒkɪŋ",
+      "translation": "长(统)袜",
+      "sceneMeaning": "长(统)袜",
+      "examples": "[]"
+    },
+    {
+      "word": "strap",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "stræp",
+      "phoneticUk": "stræp",
+      "translation": "带子；捆扎",
+      "sceneMeaning": "带子；捆扎；本场景常见用法：皮带，皮表带",
+      "examples": "[]"
+    },
+    {
+      "word": "sweater",
+      "partOfSpeech": "n",
+      "phoneticUs": "'swɛtɚ",
+      "phoneticUk": "'swetə",
+      "translation": "厚运动衫，毛线衫",
+      "sceneMeaning": "毛衣",
+      "examples": "[]"
+    },
+    {
+      "word": "thrust",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "θrʌst",
+      "phoneticUk": "θrʌst",
+      "translation": "插，刺；插；讽刺",
+      "sceneMeaning": "插，刺；插；讽刺",
+      "examples": "[]"
+    },
+    {
+      "word": "tighten",
+      "partOfSpeech": "v",
+      "phoneticUs": "'taɪtn",
+      "phoneticUk": "'taɪtn",
+      "translation": "使变紧",
+      "sceneMeaning": "使变紧；本场景常见用法：节约度日；束紧腰带",
+      "examples": "[]"
+    },
+    {
+      "word": "towel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'taʊəl",
+      "phoneticUk": "'taʊəl",
+      "translation": "毛巾，手巾",
+      "sceneMeaning": "毛巾",
+      "examples": "[]"
+    },
+    {
+      "word": "tyre",
+      "partOfSpeech": "n",
+      "phoneticUs": "'taɪɚ",
+      "phoneticUk": "'taɪə",
+      "translation": "轮胎，车胎",
+      "sceneMeaning": "轮胎，车胎",
+      "examples": "[]"
+    },
+    {
+      "word": "uniform",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'junɪfɔrm",
+      "phoneticUk": "'juːnɪfɔːm",
+      "translation": "一样的；制服",
+      "sceneMeaning": "制服",
+      "examples": "[]"
+    },
+    {
+      "word": "wool",
+      "partOfSpeech": "n",
+      "phoneticUs": "wʊl",
+      "phoneticUk": "wʊl",
+      "translation": "羊毛；毛线，绒线",
+      "sceneMeaning": "羊毛",
+      "examples": "[]"
+    }
+  ]
+}

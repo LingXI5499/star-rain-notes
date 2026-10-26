@@ -1,0 +1,2 @@
+<h2>TCP 连接建立、关闭与状态</h2>
+<ul><li>TCP 首部中的端口、序列号、确认号、标志位与窗口字段。</li><li>三次握手：SYN、SYN-ACK、ACK 与连接状态变化。</li><li>三次握手的目的：同步初始序列号、确认双方收发能力并处理旧连接请求。</li><li>SYN 重传、半连接队列、全连接队列、`listen` backlog 与 `accept()` 的关系。</li><li>四次挥手：FIN、ACK、半关闭与双方独立关闭发送方向。</li><li>ACK 与 FIN 在某些条件下合并，因此抓包不一定总是四个独立报文。</li><li>`ESTABLISHED`、`TIME_WAIT`、`CLOSE_WAIT`、`FIN_WAIT`、`LAST_ACK` 等常见状态。</li><li>`TIME_WAIT` 的作用，以及大量 `TIME_WAIT`、`CLOSE_WAIT` 时的排查方向。</li><li>无监听端口时的连接拒绝、RST 与防火墙静默丢包导致的超时差异。</li></ul>

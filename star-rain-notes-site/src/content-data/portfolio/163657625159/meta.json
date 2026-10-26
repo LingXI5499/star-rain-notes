@@ -1,0 +1,34 @@
+{
+  "slug": "163657625159",
+  "title": "速安药房 · 单店药店即时配送管理系统",
+  "description": "基于 Spring Boot 3 + Vue 3 + MyBatis-Plus + MySQL 的前后端分离业务系统，覆盖用户选药、购物车、地址、订单、库存、骑手配送、订单状态机与后台数据看板，重点实践事务一致性、业务状态流转和权限边界。",
+  "category": "软件项目",
+  "format": "Web 应用",
+  "techStack": [
+    "Java 17",
+    "Spring Boot 3",
+    "Mybatis-Plus",
+    "MySQL 8",
+    "Vue3",
+    "TypeScript",
+    "Pinia",
+    "Element Plus",
+    "Echarts"
+  ],
+  "status": "COMPLETED",
+  "publishedAt": "2026-09-06",
+  "updatedAt": "2026-10-09",
+  "startedOn": "2026-06-20",
+  "endedOn": "2026-07-05",
+  "featured": false,
+  "cover": "/images/content/f06d729d5ae2f8a4.webp",
+  "screenshots": [],
+  "links": [
+    {
+      "label": "查看代码",
+      "url": "https://github.com/LingXI5499/pharmacy-delivery-system",
+      "type": "GITHUB"
+    }
+  ],
+  "path": "/portfolio/163657625159/"
+}

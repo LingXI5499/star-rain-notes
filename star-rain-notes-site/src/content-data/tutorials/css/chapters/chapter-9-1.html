@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 使用媒体查询在窄屏时重新定义 Grid 列数，让三栏变一栏。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.layout { display: grid; grid-template-columns: repeat(3, 1fr); }
+@media (max-width: 640px) { .layout { grid-template-columns: 1fr; } }
+</code></pre>
+<p><strong>学完能做：</strong> 通过断点将多栏界面调整为单栏。</p>

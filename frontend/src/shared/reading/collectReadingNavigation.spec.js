@@ -21,11 +21,11 @@ describe('global reading directory', () => {
     document.querySelector('details').open = true
     expect(collectReadingNavigation(document.getElementById('reading-test'), '/').items.map(item => item.text)).toEqual(['中文', 'Hidden answer'])
   })
-  it('retains hidden desktop course links, account prefixes and the active chapter', () => {
-    const navigation = read('<nav data-reading-course style="display:none"><section><h3>Basics</h3><a href="/useradmin/tutorials/java/first?plan=1">01 First</a><a href="/useradmin/tutorials/java/second?plan=1">02 Second</a></section></nav>', '/useradmin/tutorials/java/first')
+  it('retains canonical desktop course links and the active chapter', () => {
+    const navigation = read('<nav data-reading-course style="display:none"><section><h3>Basics</h3><a href="/tutorials/java/first?plan=1">01 First</a><a href="/tutorials/java/second?plan=1">02 Second</a></section></nav>', '/tutorials/java/first')
     expect(navigation.courses).toEqual([{ title: 'Basics', links: [
-      { to: '/useradmin/tutorials/java/first?plan=1', text: '01 First', current: true },
-      { to: '/useradmin/tutorials/java/second?plan=1', text: '02 Second', current: false },
+      { to: '/tutorials/java/first?plan=1', text: '01 First', current: true },
+      { to: '/tutorials/java/second?plan=1', text: '02 Second', current: false },
     ] }])
   })
 })

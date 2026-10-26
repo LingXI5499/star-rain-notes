@@ -474,7 +474,7 @@ onMounted(load)
         class="primary-button tutorial-manage__create"
         type="button"
         :disabled="!activeCategoryId"
-        @click="router.push({ path: '/useradmin/tutorials/editor/new', query: { categoryId: activeCategoryId } })"
+        @click="router.push({ path: '/tutorials/editor/new', query: { categoryId: activeCategoryId } })"
       >新建教程</button>
     </header>
 
@@ -534,7 +534,7 @@ onMounted(load)
               class="primary-button tutorial-manage__create"
               type="button"
               :disabled="!activeCategoryId"
-              @click="router.push({ path: '/useradmin/tutorials/editor/new', query: { categoryId: activeCategoryId } })"
+              @click="router.push({ path: '/tutorials/editor/new', query: { categoryId: activeCategoryId } })"
             >新建教程</button>
           </div>
         </header>
@@ -559,8 +559,8 @@ onMounted(load)
               :key="item.id"
               class="tutorial-manage__card"
               tabindex="0"
-              @click="router.push(`/useradmin/tutorials/${item.id}/curriculum`)"
-              @keydown.enter.self="router.push(`/useradmin/tutorials/${item.id}/curriculum`)"
+              @click="router.push(`/tutorials/${item.id}/curriculum`)"
+              @keydown.enter.self="router.push(`/tutorials/${item.id}/curriculum`)"
               :draggable="false"
               @dragstart="draggingTutorialId = String(item.id)"
               @dragover.prevent
@@ -582,11 +582,11 @@ onMounted(load)
               <button
                 type="button"
                 class="tutorial-manage__enter"
-                @click.stop="router.push(`/useradmin/tutorials/${item.id}/curriculum`)"
+                @click.stop="router.push(`/tutorials/${item.id}/curriculum`)"
               >管理课程结构 <span aria-hidden="true">→</span></button>
               <div class="tutorial-manage__card-actions" @click.stop>
-                <button type="button" @click="router.push(`/useradmin/tutorials/editor/${item.id}`)">编辑</button>
-                <button type="button" @click="router.push(`/useradmin/tutorials/${item.id}/preview`)">预览</button>
+                <button type="button" @click="router.push(`/tutorials/editor/${item.id}`)">编辑</button>
+                <button type="button" @click="router.push(`/tutorials/${item.id}/preview`)">预览</button>
                 <button type="button" @click="openMoveDialog(item)">更换体系</button>
                 <button v-if="auth.hasPermission('tutorial:edit')" type="button" :disabled="!!busyId || isPending(item) || item.editingStatus === 'IN_REVIEW'" @click="act(item, item.publicationStatus === 'PUBLISHED' ? 'withdraw' : 'publish')">{{ item.publicationStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button>
                 <button v-if="auth.hasPermission('tutorial:edit')" type="button" class="danger" :disabled="busyId === String(item.id)" @click="act(item, 'delete')">删除</button>

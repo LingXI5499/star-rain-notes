@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 编辑页面最好区分已保存数据与草稿，取消时丢弃草稿而不修改原数据。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let saved = { name: '小明' };
+let draft = { ...saved };
+draft.name = '小红';
+draft = { ...saved }; // 取消恢复
+</code></pre>
+<p><strong>学完能做：</strong> 实现编辑草稿、保存与取消恢复。</p>

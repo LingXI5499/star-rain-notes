@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> <code>addEventListener('click', ...)</code> 订阅点击事件；修改元素文本即可更新页面。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let count = 0;
+document.querySelector('#btn').addEventListener('click', () =&gt; {
+  document.querySelector('#count').textContent = ++count;
+});
+</code></pre>
+<p><strong>学完能做：</strong> 响应点击并同步更新计数显示。</p>

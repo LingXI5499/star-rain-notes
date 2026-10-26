@@ -28,7 +28,7 @@ beforeEach(() => {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function render(url = '/portfolio') {
- const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/portfolio', component: WorkLibrary }, { path: '/useradmin/portfolio', component: WorkLibrary }] })
+ const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/portfolio', component: WorkLibrary }, { path: '/portfolio', component: WorkLibrary }] })
  await router.push(url)
  const view = mount(WorkLibrary, { global: { plugins: [router] } }); await flushPromises()
  return { view, router }
@@ -65,14 +65,14 @@ describe('featured works and the lower archive', () => {
   expect(view.find('.works-library').element.children[2].className).toBe('works-archive')
  })
  it('changes only the archive query and resets its page when filtering in the account tree', async () => {
-  const { view, router } = await render('/useradmin/portfolio?page=2&formatId=2')
+  const { view, router } = await render('/portfolio?page=2&formatId=2')
   await view.findAll('.public-filter-tabs button').find(button => button.text() === '工具').trigger('click'); await flushPromises()
-  expect(router.currentRoute.value.path).toBe('/useradmin/portfolio')
+  expect(router.currentRoute.value.path).toBe('/portfolio')
   expect(router.currentRoute.value.query).toEqual({ categoryId: '3', formatId: '2' })
   await view.find('[aria-label="下一页"]').trigger('click'); await flushPromises()
   expect(api.listPublicWorks).toHaveBeenLastCalledWith(expect.objectContaining({ page: 2, pageSize: 12, categoryId: '3', formatId: '2' }))
   expect(api.listPublicWorks.mock.calls.filter(([params]) => params.pageSize === 3)).toHaveLength(1)
-  expect(view.find('.works-featured a').attributes('href')).toBe('/useradmin/portfolio/chosen')
+  expect(view.find('.works-featured a').attributes('href')).toBe('/portfolio/chosen')
  })
  it('keeps ordinary works in the archive when no selected works have been configured', async () => {
   api.listPublicWorks.mockImplementation(params => Promise.resolve(params.pageSize === 3 ? { items: [], total: 0 } : { items: [ordinary], total: 1 }))

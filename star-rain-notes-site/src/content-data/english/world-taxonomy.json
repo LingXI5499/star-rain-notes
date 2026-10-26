@@ -1,0 +1,1016 @@
+{
+  "schemaVersion": 1,
+  "taxonomyId": "english-world-reading",
+  "categories": [
+    {
+      "code": "R01",
+      "slug": "r01",
+      "title": "自然科学",
+      "titleEn": "Natural Sciences",
+      "order": 1,
+      "topics": [
+        {
+          "code": "R01-01",
+          "slug": "r01-01",
+          "title": "数学与统计",
+          "order": 1
+        },
+        {
+          "code": "R01-02",
+          "slug": "r01-02",
+          "title": "物理学",
+          "order": 2
+        },
+        {
+          "code": "R01-03",
+          "slug": "r01-03",
+          "title": "化学",
+          "order": 3
+        },
+        {
+          "code": "R01-04",
+          "slug": "r01-04",
+          "title": "生物学",
+          "order": 4
+        },
+        {
+          "code": "R01-05",
+          "slug": "r01-05",
+          "title": "天文学",
+          "order": 5
+        },
+        {
+          "code": "R01-06",
+          "slug": "r01-06",
+          "title": "地球科学",
+          "order": 6
+        },
+        {
+          "code": "R01-07",
+          "slug": "r01-07",
+          "title": "科学方法与实验",
+          "order": 7
+        },
+        {
+          "code": "R01-08",
+          "slug": "r01-08",
+          "title": "科学发现与研究",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "code": "R02",
+      "slug": "r02",
+      "title": "科技与工程",
+      "titleEn": "Technology & Engineering",
+      "order": 2,
+      "topics": [
+        {
+          "code": "R02-01",
+          "slug": "r02-01",
+          "title": "人工智能",
+          "order": 1
+        },
+        {
+          "code": "R02-02",
+          "slug": "r02-02",
+          "title": "计算机科学",
+          "order": 2
+        },
+        {
+          "code": "R02-03",
+          "slug": "r02-03",
+          "title": "软件工程",
+          "order": 3
+        },
+        {
+          "code": "R02-04",
+          "slug": "r02-04",
+          "title": "互联网与通信",
+          "order": 4
+        },
+        {
+          "code": "R02-05",
+          "slug": "r02-05",
+          "title": "网络与信息安全",
+          "order": 5
+        },
+        {
+          "code": "R02-06",
+          "slug": "r02-06",
+          "title": "机器人与自动化",
+          "order": 6
+        },
+        {
+          "code": "R02-07",
+          "slug": "r02-07",
+          "title": "电子与半导体",
+          "order": 7
+        },
+        {
+          "code": "R02-08",
+          "slug": "r02-08",
+          "title": "机械与工程制造",
+          "order": 8
+        },
+        {
+          "code": "R02-09",
+          "slug": "r02-09",
+          "title": "航空航天",
+          "order": 9
+        },
+        {
+          "code": "R02-10",
+          "slug": "r02-10",
+          "title": "交通技术",
+          "order": 10
+        },
+        {
+          "code": "R02-11",
+          "slug": "r02-11",
+          "title": "材料科学与工程",
+          "order": 11
+        },
+        {
+          "code": "R02-12",
+          "slug": "r02-12",
+          "title": "新兴技术",
+          "order": 12
+        }
+      ]
+    },
+    {
+      "code": "R03",
+      "slug": "r03",
+      "title": "环境与生态",
+      "titleEn": "Environment & Ecology",
+      "order": 3,
+      "topics": [
+        {
+          "code": "R03-01",
+          "slug": "r03-01",
+          "title": "气候变化",
+          "order": 1
+        },
+        {
+          "code": "R03-02",
+          "slug": "r03-02",
+          "title": "生态系统",
+          "order": 2
+        },
+        {
+          "code": "R03-03",
+          "slug": "r03-03",
+          "title": "环境污染",
+          "order": 3
+        },
+        {
+          "code": "R03-04",
+          "slug": "r03-04",
+          "title": "生物多样性",
+          "order": 4
+        },
+        {
+          "code": "R03-05",
+          "slug": "r03-05",
+          "title": "自然资源",
+          "order": 5
+        },
+        {
+          "code": "R03-06",
+          "slug": "r03-06",
+          "title": "生态保护",
+          "order": 6
+        },
+        {
+          "code": "R03-07",
+          "slug": "r03-07",
+          "title": "能源与可持续发展",
+          "order": 7
+        },
+        {
+          "code": "R03-08",
+          "slug": "r03-08",
+          "title": "农业与食物系统",
+          "order": 8
+        },
+        {
+          "code": "R03-09",
+          "slug": "r03-09",
+          "title": "自然灾害与环境风险",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "R04",
+      "slug": "r04",
+      "title": "健康与生命",
+      "titleEn": "Health & Life",
+      "order": 4,
+      "topics": [
+        {
+          "code": "R04-01",
+          "slug": "r04-01",
+          "title": "人体与生理",
+          "order": 1
+        },
+        {
+          "code": "R04-02",
+          "slug": "r04-02",
+          "title": "医学与疾病",
+          "order": 2
+        },
+        {
+          "code": "R04-03",
+          "slug": "r04-03",
+          "title": "公共卫生",
+          "order": 3
+        },
+        {
+          "code": "R04-04",
+          "slug": "r04-04",
+          "title": "营养与饮食",
+          "order": 4
+        },
+        {
+          "code": "R04-05",
+          "slug": "r04-05",
+          "title": "运动与健身",
+          "order": 5
+        },
+        {
+          "code": "R04-06",
+          "slug": "r04-06",
+          "title": "睡眠与恢复",
+          "order": 6
+        },
+        {
+          "code": "R04-07",
+          "slug": "r04-07",
+          "title": "衰老与长寿",
+          "order": 7
+        },
+        {
+          "code": "R04-08",
+          "slug": "r04-08",
+          "title": "医疗技术",
+          "order": 8
+        },
+        {
+          "code": "R04-09",
+          "slug": "r04-09",
+          "title": "心理健康与精神医学",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "R05",
+      "slug": "r05",
+      "title": "教育与学习",
+      "titleEn": "Education & Learning",
+      "order": 5,
+      "topics": [
+        {
+          "code": "R05-01",
+          "slug": "r05-01",
+          "title": "基础教育",
+          "order": 1
+        },
+        {
+          "code": "R05-02",
+          "slug": "r05-02",
+          "title": "高等教育",
+          "order": 2
+        },
+        {
+          "code": "R05-03",
+          "slug": "r05-03",
+          "title": "语言学习",
+          "order": 3
+        },
+        {
+          "code": "R05-04",
+          "slug": "r05-04",
+          "title": "学习科学",
+          "order": 4
+        },
+        {
+          "code": "R05-05",
+          "slug": "r05-05",
+          "title": "教学方法",
+          "order": 5
+        },
+        {
+          "code": "R05-06",
+          "slug": "r05-06",
+          "title": "教育公平",
+          "order": 6
+        },
+        {
+          "code": "R05-07",
+          "slug": "r05-07",
+          "title": "教育技术",
+          "order": 7
+        },
+        {
+          "code": "R05-08",
+          "slug": "r05-08",
+          "title": "终身学习",
+          "order": 8
+        },
+        {
+          "code": "R05-09",
+          "slug": "r05-09",
+          "title": "学术生活",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "R06",
+      "slug": "r06",
+      "title": "个人成长与心理",
+      "titleEn": "Personal Growth & Psychology",
+      "order": 6,
+      "topics": [
+        {
+          "code": "R06-01",
+          "slug": "r06-01",
+          "title": "认知与决策",
+          "order": 1
+        },
+        {
+          "code": "R06-02",
+          "slug": "r06-02",
+          "title": "情绪与心理",
+          "order": 2
+        },
+        {
+          "code": "R06-03",
+          "slug": "r06-03",
+          "title": "自我认知",
+          "order": 3
+        },
+        {
+          "code": "R06-04",
+          "slug": "r06-04",
+          "title": "行为与习惯",
+          "order": 4
+        },
+        {
+          "code": "R06-05",
+          "slug": "r06-05",
+          "title": "动机与目标",
+          "order": 5
+        },
+        {
+          "code": "R06-06",
+          "slug": "r06-06",
+          "title": "时间管理",
+          "order": 6
+        },
+        {
+          "code": "R06-07",
+          "slug": "r06-07",
+          "title": "压力与适应",
+          "order": 7
+        },
+        {
+          "code": "R06-08",
+          "slug": "r06-08",
+          "title": "人格与个体差异",
+          "order": 8
+        },
+        {
+          "code": "R06-09",
+          "slug": "r06-09",
+          "title": "人生阶段与成长",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "R07",
+      "slug": "r07",
+      "title": "社会与人际",
+      "titleEn": "Society & Relationships",
+      "order": 7,
+      "topics": [
+        {
+          "code": "R07-01",
+          "slug": "r07-01",
+          "title": "家庭与亲密关系",
+          "order": 1
+        },
+        {
+          "code": "R07-02",
+          "slug": "r07-02",
+          "title": "友谊与社交",
+          "order": 2
+        },
+        {
+          "code": "R07-03",
+          "slug": "r07-03",
+          "title": "社区生活",
+          "order": 3
+        },
+        {
+          "code": "R07-04",
+          "slug": "r07-04",
+          "title": "城市与乡村",
+          "order": 4
+        },
+        {
+          "code": "R07-05",
+          "slug": "r07-05",
+          "title": "人口与代际",
+          "order": 5
+        },
+        {
+          "code": "R07-06",
+          "slug": "r07-06",
+          "title": "社会公平与不平等",
+          "order": 6
+        },
+        {
+          "code": "R07-07",
+          "slug": "r07-07",
+          "title": "公益与志愿服务",
+          "order": 7
+        },
+        {
+          "code": "R07-08",
+          "slug": "r07-08",
+          "title": "社会变迁",
+          "order": 8
+        },
+        {
+          "code": "R07-09",
+          "slug": "r07-09",
+          "title": "社会行为与群体",
+          "order": 9
+        },
+        {
+          "code": "R07-10",
+          "slug": "r07-10",
+          "title": "公共安全与社会风险",
+          "order": 10
+        }
+      ]
+    },
+    {
+      "code": "R08",
+      "slug": "r08",
+      "title": "经济与商业",
+      "titleEn": "Economy & Business",
+      "order": 8,
+      "topics": [
+        {
+          "code": "R08-01",
+          "slug": "r08-01",
+          "title": "宏观经济",
+          "order": 1
+        },
+        {
+          "code": "R08-02",
+          "slug": "r08-02",
+          "title": "金融与投资",
+          "order": 2
+        },
+        {
+          "code": "R08-03",
+          "slug": "r08-03",
+          "title": "市场与消费",
+          "order": 3
+        },
+        {
+          "code": "R08-04",
+          "slug": "r08-04",
+          "title": "企业与管理",
+          "order": 4
+        },
+        {
+          "code": "R08-05",
+          "slug": "r08-05",
+          "title": "商业模式",
+          "order": 5
+        },
+        {
+          "code": "R08-06",
+          "slug": "r08-06",
+          "title": "国际贸易",
+          "order": 6
+        },
+        {
+          "code": "R08-07",
+          "slug": "r08-07",
+          "title": "创新与创业",
+          "order": 7
+        },
+        {
+          "code": "R08-08",
+          "slug": "r08-08",
+          "title": "经济发展",
+          "order": 8
+        },
+        {
+          "code": "R08-09",
+          "slug": "r08-09",
+          "title": "产业与供应链",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "R09",
+      "slug": "r09",
+      "title": "职业与劳动",
+      "titleEn": "Work & Careers",
+      "order": 9,
+      "topics": [
+        {
+          "code": "R09-01",
+          "slug": "r09-01",
+          "title": "职业选择",
+          "order": 1
+        },
+        {
+          "code": "R09-02",
+          "slug": "r09-02",
+          "title": "求职与招聘",
+          "order": 2
+        },
+        {
+          "code": "R09-03",
+          "slug": "r09-03",
+          "title": "职业技能",
+          "order": 3
+        },
+        {
+          "code": "R09-04",
+          "slug": "r09-04",
+          "title": "职场沟通",
+          "order": 4
+        },
+        {
+          "code": "R09-05",
+          "slug": "r09-05",
+          "title": "工作方式",
+          "order": 5
+        },
+        {
+          "code": "R09-06",
+          "slug": "r09-06",
+          "title": "劳动关系与权益",
+          "order": 6
+        },
+        {
+          "code": "R09-07",
+          "slug": "r09-07",
+          "title": "职业变迁",
+          "order": 7
+        },
+        {
+          "code": "R09-08",
+          "slug": "r09-08",
+          "title": "工作与生活平衡",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "code": "R10",
+      "slug": "r10",
+      "title": "政治与法律",
+      "titleEn": "Politics & Law",
+      "order": 10,
+      "topics": [
+        {
+          "code": "R10-01",
+          "slug": "r10-01",
+          "title": "国家与政治制度",
+          "order": 1
+        },
+        {
+          "code": "R10-02",
+          "slug": "r10-02",
+          "title": "法律与司法",
+          "order": 2
+        },
+        {
+          "code": "R10-03",
+          "slug": "r10-03",
+          "title": "公共政策",
+          "order": 3
+        },
+        {
+          "code": "R10-04",
+          "slug": "r10-04",
+          "title": "公共治理",
+          "order": 4
+        },
+        {
+          "code": "R10-05",
+          "slug": "r10-05",
+          "title": "外交与国际关系",
+          "order": 5
+        },
+        {
+          "code": "R10-06",
+          "slug": "r10-06",
+          "title": "国际组织",
+          "order": 6
+        },
+        {
+          "code": "R10-07",
+          "slug": "r10-07",
+          "title": "权利与义务",
+          "order": 7
+        },
+        {
+          "code": "R10-08",
+          "slug": "r10-08",
+          "title": "国际安全与冲突",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "code": "R11",
+      "slug": "r11",
+      "title": "历史与地理",
+      "titleEn": "History & Geography",
+      "order": 11,
+      "topics": [
+        {
+          "code": "R11-01",
+          "slug": "r11-01",
+          "title": "世界历史",
+          "order": 1
+        },
+        {
+          "code": "R11-02",
+          "slug": "r11-02",
+          "title": "区域与国家历史",
+          "order": 2
+        },
+        {
+          "code": "R11-03",
+          "slug": "r11-03",
+          "title": "文明史",
+          "order": 3
+        },
+        {
+          "code": "R11-04",
+          "slug": "r11-04",
+          "title": "考古与文物",
+          "order": 4
+        },
+        {
+          "code": "R11-05",
+          "slug": "r11-05",
+          "title": "历史人物",
+          "order": 5
+        },
+        {
+          "code": "R11-06",
+          "slug": "r11-06",
+          "title": "自然地理",
+          "order": 6
+        },
+        {
+          "code": "R11-07",
+          "slug": "r11-07",
+          "title": "人文地理",
+          "order": 7
+        },
+        {
+          "code": "R11-08",
+          "slug": "r11-08",
+          "title": "区域与国家研究",
+          "order": 8
+        },
+        {
+          "code": "R11-09",
+          "slug": "r11-09",
+          "title": "人口地理",
+          "order": 9
+        },
+        {
+          "code": "R11-10",
+          "slug": "r11-10",
+          "title": "历史研究方法",
+          "order": 10
+        }
+      ]
+    },
+    {
+      "code": "R12",
+      "slug": "r12",
+      "title": "文化与传统",
+      "titleEn": "Culture & Traditions",
+      "order": 12,
+      "topics": [
+        {
+          "code": "R12-01",
+          "slug": "r12-01",
+          "title": "节日与庆典",
+          "order": 1
+        },
+        {
+          "code": "R12-02",
+          "slug": "r12-02",
+          "title": "民俗与社会习惯",
+          "order": 2
+        },
+        {
+          "code": "R12-03",
+          "slug": "r12-03",
+          "title": "宗教与信仰",
+          "order": 3
+        },
+        {
+          "code": "R12-04",
+          "slug": "r12-04",
+          "title": "文化遗产",
+          "order": 4
+        },
+        {
+          "code": "R12-05",
+          "slug": "r12-05",
+          "title": "跨文化交流",
+          "order": 5
+        },
+        {
+          "code": "R12-06",
+          "slug": "r12-06",
+          "title": "文化认同",
+          "order": 6
+        },
+        {
+          "code": "R12-07",
+          "slug": "r12-07",
+          "title": "饮食文化",
+          "order": 7
+        },
+        {
+          "code": "R12-08",
+          "slug": "r12-08",
+          "title": "传统技艺",
+          "order": 8
+        },
+        {
+          "code": "R12-09",
+          "slug": "r12-09",
+          "title": "礼仪与社会规范",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "R13",
+      "slug": "r13",
+      "title": "语言文学与艺术",
+      "titleEn": "Language, Literature & Arts",
+      "order": 13,
+      "topics": [
+        {
+          "code": "R13-01",
+          "slug": "r13-01",
+          "title": "语言与语言学",
+          "order": 1
+        },
+        {
+          "code": "R13-02",
+          "slug": "r13-02",
+          "title": "文学与小说",
+          "order": 2
+        },
+        {
+          "code": "R13-03",
+          "slug": "r13-03",
+          "title": "诗歌",
+          "order": 3
+        },
+        {
+          "code": "R13-04",
+          "slug": "r13-04",
+          "title": "绘画与视觉艺术",
+          "order": 4
+        },
+        {
+          "code": "R13-05",
+          "slug": "r13-05",
+          "title": "摄影",
+          "order": 5
+        },
+        {
+          "code": "R13-06",
+          "slug": "r13-06",
+          "title": "音乐与舞蹈",
+          "order": 6
+        },
+        {
+          "code": "R13-07",
+          "slug": "r13-07",
+          "title": "电影与戏剧",
+          "order": 7
+        },
+        {
+          "code": "R13-08",
+          "slug": "r13-08",
+          "title": "设计与建筑",
+          "order": 8
+        },
+        {
+          "code": "R13-09",
+          "slug": "r13-09",
+          "title": "艺术欣赏与批评",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "R14",
+      "slug": "r14",
+      "title": "媒体与传播",
+      "titleEn": "Media & Communication",
+      "order": 14,
+      "topics": [
+        {
+          "code": "R14-01",
+          "slug": "r14-01",
+          "title": "新闻与新闻业",
+          "order": 1
+        },
+        {
+          "code": "R14-02",
+          "slug": "r14-02",
+          "title": "社交媒体",
+          "order": 2
+        },
+        {
+          "code": "R14-03",
+          "slug": "r14-03",
+          "title": "广告与传播",
+          "order": 3
+        },
+        {
+          "code": "R14-04",
+          "slug": "r14-04",
+          "title": "信息传播",
+          "order": 4
+        },
+        {
+          "code": "R14-05",
+          "slug": "r14-05",
+          "title": "媒体素养",
+          "order": 5
+        },
+        {
+          "code": "R14-06",
+          "slug": "r14-06",
+          "title": "公共舆论",
+          "order": 6
+        },
+        {
+          "code": "R14-07",
+          "slug": "r14-07",
+          "title": "数字内容创作",
+          "order": 7
+        },
+        {
+          "code": "R14-08",
+          "slug": "r14-08",
+          "title": "信息伦理",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "code": "R15",
+      "slug": "r15",
+      "title": "日常生活",
+      "titleEn": "Everyday Life",
+      "order": 15,
+      "topics": [
+        {
+          "code": "R15-01",
+          "slug": "r15-01",
+          "title": "衣着与个人生活",
+          "order": 1
+        },
+        {
+          "code": "R15-02",
+          "slug": "r15-02",
+          "title": "食物与烹饪",
+          "order": 2
+        },
+        {
+          "code": "R15-03",
+          "slug": "r15-03",
+          "title": "住房与居住",
+          "order": 3
+        },
+        {
+          "code": "R15-04",
+          "slug": "r15-04",
+          "title": "交通出行",
+          "order": 4
+        },
+        {
+          "code": "R15-05",
+          "slug": "r15-05",
+          "title": "旅游与探索",
+          "order": 5
+        },
+        {
+          "code": "R15-06",
+          "slug": "r15-06",
+          "title": "购物与消费",
+          "order": 6
+        },
+        {
+          "code": "R15-07",
+          "slug": "r15-07",
+          "title": "休闲与娱乐",
+          "order": 7
+        },
+        {
+          "code": "R15-08",
+          "slug": "r15-08",
+          "title": "家庭生活管理",
+          "order": 8
+        },
+        {
+          "code": "R15-09",
+          "slug": "r15-09",
+          "title": "公共与生活服务",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "R16",
+      "slug": "r16",
+      "title": "哲学与思想",
+      "titleEn": "Philosophy & Ideas",
+      "order": 16,
+      "topics": [
+        {
+          "code": "R16-01",
+          "slug": "r16-01",
+          "title": "形而上学",
+          "order": 1
+        },
+        {
+          "code": "R16-02",
+          "slug": "r16-02",
+          "title": "认识论",
+          "order": 2
+        },
+        {
+          "code": "R16-03",
+          "slug": "r16-03",
+          "title": "伦理学",
+          "order": 3
+        },
+        {
+          "code": "R16-04",
+          "slug": "r16-04",
+          "title": "逻辑与批判性思维",
+          "order": 4
+        },
+        {
+          "code": "R16-05",
+          "slug": "r16-05",
+          "title": "意识与心灵哲学",
+          "order": 5
+        },
+        {
+          "code": "R16-06",
+          "slug": "r16-06",
+          "title": "自由与政治哲学",
+          "order": 6
+        },
+        {
+          "code": "R16-07",
+          "slug": "r16-07",
+          "title": "价值与人生意义",
+          "order": 7
+        },
+        {
+          "code": "R16-08",
+          "slug": "r16-08",
+          "title": "思想史",
+          "order": 8
+        }
+      ]
+    }
+  ],
+  "primaryCount": 16,
+  "secondaryCount": 144
+}

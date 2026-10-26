@@ -117,7 +117,7 @@ describe('vocabulary toolbar and working filters', () => {
     await button(wrapper, '个人筛选').trigger('click')
     expect(wrapper.findAll('select')).toHaveLength(0)
     expect(wrapper.text()).toContain('搜索可直接使用')
-    expect(wrapper.find('.theme-words__login a').attributes('href')).toContain('/useradmin/login?redirect=')
+    expect(wrapper.find('.theme-words__login a').attributes('href')).toContain('/login?redirect=')
     await wrapper.find('input[type=search]').setValue('quality')
     await wrapper.find('form').trigger('submit'); await flushPromises()
     expect(api.learningWords).toHaveBeenLastCalledWith(expect.objectContaining({ q: 'quality' }))

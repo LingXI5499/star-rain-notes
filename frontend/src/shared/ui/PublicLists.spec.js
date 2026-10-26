@@ -23,7 +23,7 @@ vi.mock('../../modules/tutorial/api/tutorialApi', () => api)
 vi.mock('../../modules/english/api/englishApi', () => api)
 vi.mock('../../modules/search/api/searchApi', () => api)
 vi.mock('../../modules/blog/api/blogApi', () => api)
-vi.mock('../../shared/viewMode', () => ({ VIEW_MODE: { ACCOUNT: 'ACCOUNT' }, resolveViewMode: path => path.startsWith('/useradmin') ? 'ACCOUNT' : 'PUBLIC', accountPath: path => '/useradmin' + path, useViewMode: () => ({ contentPath: path => path }) }))
+vi.mock('../../shared/viewMode', () => ({ accountPath: path => path, useViewMode: () => ({ contentPath: path => path }) }))
 const mounted = []
 /**
  * 渲染当前操作。

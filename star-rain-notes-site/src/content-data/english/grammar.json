@@ -1,0 +1,354 @@
+{
+  "title": "英语语法完整教程",
+  "subtitle": "从语言基础单位到复杂句法分析",
+  "summary": "以现代英语语法结构为核心，从词法、短语和句子结构逐步扩展到动词、从句、非谓语、特殊句式与语篇级分析。",
+  "introduction": "建立完整英语语法知识框架，理解英语句子的生成逻辑，掌握复杂句子的结构分析能力，并支撑高级英文阅读与表达。",
+  "roadmapMarkdown": "1. 词法基础\n2. 短语结构\n3. 基本句型\n4. 动词系统\n5. 从句体系\n6. 非谓语体系\n7. 特殊句式\n8. 复杂句分析\n9. 综合应用",
+  "publishStatus": "PUBLISHED",
+  "sections": [
+    {
+      "title": "第一章 英语语法总论",
+      "lessons": [
+        {
+          "slug": "1-1",
+          "title": "语言结构基础",
+          "description": "英语语言组成层次、词与句子的关系、语法规则和句法结构特点。",
+          "section": "第一章 英语语法总论",
+          "path": "/english/grammar/1-1/"
+        },
+        {
+          "slug": "1-2",
+          "title": "英语句子分析方法",
+          "description": "句子成分、主干与修饰成分、层级结构及语法树基础。",
+          "section": "第一章 英语语法总论",
+          "path": "/english/grammar/1-2/"
+        }
+      ]
+    },
+    {
+      "title": "第二章 词法体系（Word Level）",
+      "lessons": [
+        {
+          "slug": "2-1",
+          "title": "名词系统",
+          "description": "名词分类、数与所有格，以及名词的句法功能。",
+          "section": "第二章 词法体系（Word Level）",
+          "path": "/english/grammar/2-1/"
+        },
+        {
+          "slug": "2-2",
+          "title": "代词系统",
+          "description": "人称、物主、反身、指示、疑问、不定及关系代词。",
+          "section": "第二章 词法体系（Word Level）",
+          "path": "/english/grammar/2-2/"
+        },
+        {
+          "slug": "2-3",
+          "title": "冠词系统",
+          "description": "不定冠词、定冠词、零冠词及其使用逻辑。",
+          "section": "第二章 词法体系（Word Level）",
+          "path": "/english/grammar/2-3/"
+        },
+        {
+          "slug": "2-4",
+          "title": "动词系统基础",
+          "description": "实义、系、助、情态动词及及物性。",
+          "section": "第二章 词法体系（Word Level）",
+          "path": "/english/grammar/2-4/"
+        },
+        {
+          "slug": "2-5",
+          "title": "形容词系统",
+          "description": "形容词功能、位置、比较等级与多形容词排序。",
+          "section": "第二章 词法体系（Word Level）",
+          "path": "/english/grammar/2-5/"
+        },
+        {
+          "slug": "2-6",
+          "title": "副词系统",
+          "description": "副词分类、修饰关系及位置变化。",
+          "section": "第二章 词法体系（Word Level）",
+          "path": "/english/grammar/2-6/"
+        },
+        {
+          "slug": "2-7",
+          "title": "介词系统",
+          "description": "时间、地点、方式介词与介词短语结构。",
+          "section": "第二章 词法体系（Word Level）",
+          "path": "/english/grammar/2-7/"
+        },
+        {
+          "slug": "2-8",
+          "title": "连词系统",
+          "description": "并列连词、从属连词与连接结构分析。",
+          "section": "第二章 词法体系（Word Level）",
+          "path": "/english/grammar/2-8/"
+        }
+      ]
+    },
+    {
+      "title": "第三章 短语结构体系",
+      "lessons": [
+        {
+          "slug": "3-1",
+          "title": "名词短语",
+          "description": "名词短语组成、限定与修饰关系及长短语分析。",
+          "section": "第三章 短语结构体系",
+          "path": "/english/grammar/3-1/"
+        },
+        {
+          "slug": "3-2",
+          "title": "动词短语",
+          "description": "动词中心结构、宾语补语关系与搭配结构。",
+          "section": "第三章 短语结构体系",
+          "path": "/english/grammar/3-2/"
+        },
+        {
+          "slug": "3-3",
+          "title": "形容词短语",
+          "description": "形容词中心结构与程度修饰结构。",
+          "section": "第三章 短语结构体系",
+          "path": "/english/grammar/3-3/"
+        },
+        {
+          "slug": "3-4",
+          "title": "副词短语",
+          "description": "副词组合结构与状语表达方式。",
+          "section": "第三章 短语结构体系",
+          "path": "/english/grammar/3-4/"
+        },
+        {
+          "slug": "3-5",
+          "title": "介词短语",
+          "description": "介词短语功能、后置修饰及多层结构分析。",
+          "section": "第三章 短语结构体系",
+          "path": "/english/grammar/3-5/"
+        }
+      ]
+    },
+    {
+      "title": "第四章 基本句型体系",
+      "lessons": [
+        {
+          "slug": "4-1",
+          "title": "句子核心结构",
+          "description": "主语、谓语、宾语、表语、补语、定语和状语。",
+          "section": "第四章 基本句型体系",
+          "path": "/english/grammar/4-1/"
+        },
+        {
+          "slug": "4-2",
+          "title": "五大基本句型",
+          "description": "SV、SVC、SVO、SVOO和SVOC结构。",
+          "section": "第四章 基本句型体系",
+          "path": "/english/grammar/4-2/"
+        },
+        {
+          "slug": "4-3",
+          "title": "句子扩展机制",
+          "description": "修饰、并列、从句与非谓语扩展。",
+          "section": "第四章 基本句型体系",
+          "path": "/english/grammar/4-3/"
+        }
+      ]
+    },
+    {
+      "title": "第五章 动词高级体系",
+      "lessons": [
+        {
+          "slug": "5-1",
+          "title": "时态系统",
+          "description": "一般、进行、完成、完成进行时态及组合逻辑。",
+          "section": "第五章 动词高级体系",
+          "path": "/english/grammar/5-1/"
+        },
+        {
+          "slug": "5-2",
+          "title": "语态系统",
+          "description": "主动、被动语态及特殊被动结构。",
+          "section": "第五章 动词高级体系",
+          "path": "/english/grammar/5-2/"
+        },
+        {
+          "slug": "5-3",
+          "title": "情态动词系统",
+          "description": "能力、可能、必要、推测与义务表达。",
+          "section": "第五章 动词高级体系",
+          "path": "/english/grammar/5-3/"
+        },
+        {
+          "slug": "5-4",
+          "title": "虚拟语气系统",
+          "description": "条件虚拟、愿望、假设与特殊虚拟结构。",
+          "section": "第五章 动词高级体系",
+          "path": "/english/grammar/5-4/"
+        }
+      ]
+    },
+    {
+      "title": "第六章 从句体系",
+      "lessons": [
+        {
+          "slug": "6-1",
+          "title": "从句基础理论",
+          "description": "主句从句、限定性与非限定性及连接方式。",
+          "section": "第六章 从句体系",
+          "path": "/english/grammar/6-1/"
+        },
+        {
+          "slug": "6-2",
+          "title": "名词性从句",
+          "description": "主语、宾语、表语和同位语从句。",
+          "section": "第六章 从句体系",
+          "path": "/english/grammar/6-2/"
+        },
+        {
+          "slug": "6-3",
+          "title": "定语从句",
+          "description": "关系词、限制性与非限制性定语从句及复杂关系结构。",
+          "section": "第六章 从句体系",
+          "path": "/english/grammar/6-3/"
+        },
+        {
+          "slug": "6-4",
+          "title": "状语从句",
+          "description": "时间、原因、条件、让步、目的、结果和比较状语从句。",
+          "section": "第六章 从句体系",
+          "path": "/english/grammar/6-4/"
+        }
+      ]
+    },
+    {
+      "title": "第七章 非谓语动词体系",
+      "lessons": [
+        {
+          "slug": "7-1",
+          "title": "非谓语动词理论",
+          "description": "谓语与非谓语区别、产生原因及句法功能。",
+          "section": "第七章 非谓语动词体系",
+          "path": "/english/grammar/7-1/"
+        },
+        {
+          "slug": "7-2",
+          "title": "不定式",
+          "description": "不定式基本形式、三类功能与复合结构。",
+          "section": "第七章 非谓语动词体系",
+          "path": "/english/grammar/7-2/"
+        },
+        {
+          "slug": "7-3",
+          "title": "动名词",
+          "description": "动名词结构、名词功能、逻辑主语与固定搭配。",
+          "section": "第七章 非谓语动词体系",
+          "path": "/english/grammar/7-3/"
+        },
+        {
+          "slug": "7-4",
+          "title": "分词",
+          "description": "现在与过去分词、定语状语功能及独立结构。",
+          "section": "第七章 非谓语动词体系",
+          "path": "/english/grammar/7-4/"
+        }
+      ]
+    },
+    {
+      "title": "第八章 特殊句式体系",
+      "lessons": [
+        {
+          "slug": "8-1",
+          "title": "倒装结构",
+          "description": "完全、部分、否定与条件倒装。",
+          "section": "第八章 特殊句式体系",
+          "path": "/english/grammar/8-1/"
+        },
+        {
+          "slug": "8-2",
+          "title": "强调结构",
+          "description": "强调句、强调成分与特殊强调表达。",
+          "section": "第八章 特殊句式体系",
+          "path": "/english/grammar/8-2/"
+        },
+        {
+          "slug": "8-3",
+          "title": "省略结构",
+          "description": "主语、谓语、从句和比较结构省略。",
+          "section": "第八章 特殊句式体系",
+          "path": "/english/grammar/8-3/"
+        },
+        {
+          "slug": "8-4",
+          "title": "插入语结构",
+          "description": "插入成分、语气表达与评价结构。",
+          "section": "第八章 特殊句式体系",
+          "path": "/english/grammar/8-4/"
+        },
+        {
+          "slug": "8-5",
+          "title": "同位语结构",
+          "description": "名词同位语、同位语从句与复杂同位结构。",
+          "section": "第八章 特殊句式体系",
+          "path": "/english/grammar/8-5/"
+        },
+        {
+          "slug": "8-6",
+          "title": "独立主格结构",
+          "description": "独立主格组成、分词独立结构与逻辑关系。",
+          "section": "第八章 特殊句式体系",
+          "path": "/english/grammar/8-6/"
+        }
+      ]
+    },
+    {
+      "title": "第九章 复杂句法分析体系",
+      "lessons": [
+        {
+          "slug": "9-1",
+          "title": "长句拆解方法",
+          "description": "寻找核心谓语、分析主干、修饰范围与嵌套结构。",
+          "section": "第九章 复杂句法分析体系",
+          "path": "/english/grammar/9-1/"
+        },
+        {
+          "slug": "9-2",
+          "title": "多层结构分析",
+          "description": "多重从句、非谓语、长名词短语与插入结构。",
+          "section": "第九章 复杂句法分析体系",
+          "path": "/english/grammar/9-2/"
+        },
+        {
+          "slug": "9-3",
+          "title": "语义逻辑分析",
+          "description": "因果、转折、条件和推理关系。",
+          "section": "第九章 复杂句法分析体系",
+          "path": "/english/grammar/9-3/"
+        }
+      ]
+    },
+    {
+      "title": "第十章 高级语法综合应用",
+      "lessons": [
+        {
+          "slug": "10-1",
+          "title": "复杂句生成",
+          "description": "简单句扩展、复合句构造与高级表达组织。",
+          "section": "第十章 高级语法综合应用",
+          "path": "/english/grammar/10-1/"
+        },
+        {
+          "slug": "10-2",
+          "title": "语篇语法",
+          "description": "句间关系、信息组织、衔接与连贯。",
+          "section": "第十章 高级语法综合应用",
+          "path": "/english/grammar/10-2/"
+        },
+        {
+          "slug": "10-3",
+          "title": "语法综合训练体系",
+          "description": "句子分析、结构转换、错误识别和综合应用。",
+          "section": "第十章 高级语法综合应用",
+          "path": "/english/grammar/10-3/"
+        }
+      ]
+    }
+  ]
+}

@@ -49,10 +49,10 @@ async function start() {
   const router = createRouter({
     history: createMemoryHistory(),
     routes: [
-      { path: '/useradmin/tutorials/:tutorialId/chapters/:chapterId', component: ChapterEditPage },
+      { path: '/tutorials/:tutorialId/chapters/:chapterId', component: ChapterEditPage },
     ],
   })
-  await router.push('/useradmin/tutorials/1/chapters/2')
+  await router.push('/tutorials/1/chapters/2')
   wrapper = mount(ChapterEditPage, {
     global: {
       plugins: [createPinia(), router],

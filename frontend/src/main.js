@@ -30,10 +30,7 @@ window.addEventListener('account-session-expired', () => {
    */
   const auth = useAuthStore(pinia)
   auth.expireSession()
-  /*
-   * 会话失效只可能发生在需要登录态的路由（全部在账号树），因此这里直接把登录页写成
-   * accountPath('/login')。若将来公开树也出现需要登录态的页面，这里要改成按 to.path 解析模式。
-   */
+  // 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
   if (router.currentRoute.value.meta.requiresAuth) {
     router.replace({
       path: accountPath('/login'),

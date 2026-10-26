@@ -10,7 +10,7 @@
 
 HTML 入口、静态 404、品牌 SVG、构建配置和 `.env.example` 也有对应注释。`VITE_*` 值会进入浏览器产物，只能保存公开信息；依赖目录、生成产物和二进制图片不属于项目源码注释范围。
 
-Vue 3、Vite、Vue Router、Pinia。公开页面与 `/useradmin` 共用单域名，首页直接加载，管理及其他页面按需加载。Markdown 经净化后渲染，支持代码高亮、公式、表格和目录。
+Vue 3、Vite、Vue Router、Pinia。公开页面与 账号及管理路由（如 `/login`、`/center`、`/learning`、`/blog/manage`） 共用单域名，首页直接加载，管理及其他页面按需加载。Markdown 经净化后渲染，支持代码高亮、公式、表格和目录。
 
 教程阅读使用章节目录、正文和页内导航三栏。博客与作品详情使用左侧导航、右侧正文两栏，手机端可展开目录。作品详情仅在配置有效代码库地址时展示代码库按钮，详情页不展示封面与在线访问入口。
 
@@ -91,3 +91,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ```
+
+## 统一路由
+
+`/` 使用现有 HomePage 和带账号入口的前台外壳；认证页直接使用 `/login` 等路径，个人与管理页面直接使用 `/center`、`/learning/**`、`/blog/manage` 等。`viewMode.js` 仅保留规范路径工具，不再生成双路由树或按 URL 隐藏账号入口。路由清单仅生成一份页面记录；旧 `/useradmin/**` 在独立兼容记录中重定向，保留 query、hash 和登录返回目标。
+
+SEO 和公开统计依据 `authPage`、`requiresAuth`、`permission`、`superAdminOnly`、`console` 等路由元数据排除私有页面。部署必须同步后端邮件、robots 和 Nginx 规则，尤其是管理页先于公开 SEO 网关匹配，详见 [路由统一说明](../docs/deployment/route-unification.md)。

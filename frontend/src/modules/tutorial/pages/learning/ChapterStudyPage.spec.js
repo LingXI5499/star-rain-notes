@@ -32,8 +32,8 @@ const state = () => ({ chapterId: 'c1', title: 'First', bodyMarkdown: '# Body', 
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function mountReader(id = 'c1') {
- const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/useradmin/tutorials/:tutorialSlug/:chapterSlug', component: { template: '<div />' } }, { path: '/useradmin/learning/:pathMatch(.*)*', component: { template: '<div />' } }] })
- await router.push('/useradmin/tutorials/tutorial/first?plan=p&task=forged'); await router.isReady()
+ const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/tutorials/:tutorialSlug/:chapterSlug', component: { template: '<div />' } }, { path: '/learning/:pathMatch(.*)*', component: { template: '<div />' } }] })
+ await router.push('/tutorials/tutorial/first?plan=p&task=forged'); await router.isReady()
  const wrapper = mount(ChapterStudyPage, { props: { chapterId: id, tutorial }, global: { plugins: [router], stubs: { BlogProse: true, ReadingAside: true, RecallSession: true, QuestionAnswers: true } } }); await flushPromises()
  return wrapper
 }

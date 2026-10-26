@@ -11,13 +11,7 @@
 import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
 
-/*
- * 标签列表。
- *
- * Tag 是无序的多维分类，所以这里只渲染一排标签，没有序号、没有排序操作。
- * linkable=true 时每个标签链到按标签筛选的归档页；归档页地址按当前路径树生成
- * （公开树 /blog/archive，账号树 /useradmin/blog/archive）。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 defineProps({
   tags: { type: Array, default: () => [] },

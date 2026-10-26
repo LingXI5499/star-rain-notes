@@ -1,0 +1,1431 @@
+{
+  "id": "4",
+  "title": "时间、日期、年龄、频率、顺序",
+  "layer": "基础通用词层",
+  "wordCount": 158,
+  "path": "/english/vocabulary/4/",
+  "words": [
+    {
+      "word": "due",
+      "partOfSpeech": "adj",
+      "phoneticUs": "du",
+      "phoneticUk": "djuː",
+      "translation": "预期的；应给的；到期的",
+      "sceneMeaning": "预期的；应给的；到期的",
+      "examples": "[]"
+    },
+    {
+      "word": "current",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kɝ​ənt",
+      "phoneticUk": "'kʌr(ə)nt",
+      "translation": "当前的；通用的；当前的",
+      "sceneMeaning": "当前的；流动的",
+      "examples": "[]"
+    },
+    {
+      "word": "ancient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈeɪnʃənt",
+      "phoneticUk": "'eɪnʃ(ə)nt",
+      "translation": "古代的，古老的；古代的",
+      "sceneMeaning": "古代的；古老的",
+      "examples": "[]"
+    },
+    {
+      "word": "regular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rɛgjəlɚ",
+      "phoneticUk": "'regjʊlə",
+      "translation": "规则的；整齐的；有规律的，经常的",
+      "sceneMeaning": "定期的；有规律的",
+      "examples": "[]"
+    },
+    {
+      "word": "after",
+      "partOfSpeech": "prep",
+      "phoneticUs": "'æftɚ",
+      "phoneticUk": "'ɑːftə",
+      "translation": "在…以后；次于",
+      "sceneMeaning": "在…以后；次于",
+      "examples": "[]"
+    },
+    {
+      "word": "age",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "edʒ",
+      "phoneticUk": "eɪdʒ",
+      "translation": "年龄；时代；变老",
+      "sceneMeaning": "变老；使老化",
+      "examples": "[]"
+    },
+    {
+      "word": "already",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɔl'rɛdi",
+      "phoneticUk": "ɔːl'redɪ",
+      "translation": "早已，已经",
+      "sceneMeaning": "已经",
+      "examples": "[]"
+    },
+    {
+      "word": "always",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɔlwez",
+      "phoneticUk": "'ɔːlweɪz; -ɪz",
+      "translation": "总是，一直；永远",
+      "sceneMeaning": "总是；一直",
+      "examples": "[]"
+    },
+    {
+      "word": "before",
+      "partOfSpeech": "prep",
+      "phoneticUs": "bɪ'fɔr",
+      "phoneticUk": "bɪ'fɔː",
+      "translation": "在…以前；向…",
+      "sceneMeaning": "以前；在前面",
+      "examples": "[]"
+    },
+    {
+      "word": "beginning",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪ'ɡɪnɪŋ",
+      "phoneticUk": "bɪ'gɪnɪŋ",
+      "translation": "开始，开端；起源",
+      "sceneMeaning": "开始；开端",
+      "examples": "[]"
+    },
+    {
+      "word": "continue",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'tɪnju",
+      "phoneticUk": "kən'tɪnjuː",
+      "translation": "继续，连续；延伸",
+      "sceneMeaning": "继续；持续",
+      "examples": "[]"
+    },
+    {
+      "word": "daily",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'delɪ",
+      "phoneticUk": "'deɪlɪ",
+      "translation": "每日的；日报",
+      "sceneMeaning": "每日的；日常的",
+      "examples": "[]"
+    },
+    {
+      "word": "day",
+      "partOfSpeech": "n",
+      "phoneticUs": "de",
+      "phoneticUk": "deɪ",
+      "translation": "(一)天，白昼，白天",
+      "sceneMeaning": "天；日子；白天",
+      "examples": "[]"
+    },
+    {
+      "word": "early",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'ɝli",
+      "phoneticUk": "'ɜːlɪ",
+      "translation": "早；早的，早期的",
+      "sceneMeaning": "早的；早期的",
+      "examples": "[]"
+    },
+    {
+      "word": "end",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɛnd",
+      "phoneticUk": "end",
+      "translation": "末端；目标；结束",
+      "sceneMeaning": "结束；终止",
+      "examples": "[]"
+    },
+    {
+      "word": "even",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ivən",
+      "phoneticUk": "'iːv(ə)n",
+      "translation": "甚至；甚至更，还",
+      "sceneMeaning": "甚至；甚至更，还",
+      "examples": "[]"
+    },
+    {
+      "word": "evening",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ivnɪŋ",
+      "phoneticUk": "'iːv(ə)nɪŋ",
+      "translation": "傍晚，黄昏，晚上",
+      "sceneMeaning": "傍晚；晚上",
+      "examples": "[]"
+    },
+    {
+      "word": "ever",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɛvɚ",
+      "phoneticUk": "'evə",
+      "translation": "在任何时候；曾经",
+      "sceneMeaning": "在任何时候；曾经；本场景常见用法：永远；始终",
+      "examples": "[]"
+    },
+    {
+      "word": "finally",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'faɪnəli",
+      "phoneticUk": "'faɪnəlɪ",
+      "translation": "最后；不可更改的",
+      "sceneMeaning": "最后；终于",
+      "examples": "[]"
+    },
+    {
+      "word": "first",
+      "partOfSpeech": "adv / num",
+      "phoneticUs": "fɝst",
+      "phoneticUk": "fɜːst",
+      "translation": "第一；最初",
+      "sceneMeaning": "第一的；最初的",
+      "examples": "[]"
+    },
+    {
+      "word": "follow",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fɑlo",
+      "phoneticUk": "'fɒləʊ",
+      "translation": "跟随；结果是",
+      "sceneMeaning": "跟随；结果是",
+      "examples": "[]"
+    },
+    {
+      "word": "following",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɑloɪŋ",
+      "phoneticUk": "'fɒləʊɪŋ",
+      "translation": "接着的；下列的",
+      "sceneMeaning": "接下来的；下列的",
+      "examples": "[]"
+    },
+    {
+      "word": "former",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'fɔrmɚ",
+      "phoneticUk": "'fɔːmə",
+      "translation": "在前的；前者",
+      "sceneMeaning": "以前的；前者的",
+      "examples": "[]"
+    },
+    {
+      "word": "four",
+      "partOfSpeech": "num",
+      "phoneticUs": "fɔr",
+      "phoneticUk": "fɔː",
+      "translation": "四，四个，第四",
+      "sceneMeaning": "四，四个，第四；本场景常见用法：每四年一次",
+      "examples": "[]"
+    },
+    {
+      "word": "future",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fjʊtʃɚ",
+      "phoneticUk": "'fjuːtʃə",
+      "translation": "将来，未来；前途",
+      "sceneMeaning": "未来；前途",
+      "examples": "[]"
+    },
+    {
+      "word": "hour",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aʊɚ",
+      "phoneticUk": "'aʊə",
+      "translation": "小时；时间，时刻",
+      "sceneMeaning": "小时；时间",
+      "examples": "[]"
+    },
+    {
+      "word": "last",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "læst",
+      "phoneticUk": "lɑːst",
+      "translation": "最后的；最后",
+      "sceneMeaning": "最后的；最近的",
+      "examples": "[]"
+    },
+    {
+      "word": "life",
+      "partOfSpeech": "n",
+      "phoneticUs": "laɪf",
+      "phoneticUk": "laɪf",
+      "translation": "生命；一生；寿命",
+      "sceneMeaning": "生命；一生；寿命",
+      "examples": "[]"
+    },
+    {
+      "word": "modern",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɑdɚn",
+      "phoneticUk": "'mɒd(ə)n",
+      "translation": "现代的，近代的",
+      "sceneMeaning": "现代的；新式的",
+      "examples": "[]"
+    },
+    {
+      "word": "never",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'nɛvɚ",
+      "phoneticUk": "'nevə",
+      "translation": "永不，决不；不",
+      "sceneMeaning": "从不；绝不",
+      "examples": "[]"
+    },
+    {
+      "word": "next",
+      "partOfSpeech": "adj",
+      "phoneticUs": "nɛkst",
+      "phoneticUk": "nekst",
+      "translation": "紧接的；贴近的",
+      "sceneMeaning": "紧接的；贴近的",
+      "examples": "[]"
+    },
+    {
+      "word": "night",
+      "partOfSpeech": "n",
+      "phoneticUs": "naɪt",
+      "phoneticUk": "naɪt",
+      "translation": "夜，夜间",
+      "sceneMeaning": "夜晚；晚上",
+      "examples": "[]"
+    },
+    {
+      "word": "now",
+      "partOfSpeech": "adv",
+      "phoneticUs": "naʊ",
+      "phoneticUk": "naʊ",
+      "translation": "现在；立刻；于是",
+      "sceneMeaning": "现在；如今",
+      "examples": "[]"
+    },
+    {
+      "word": "often",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ɔf(tə)n; 'ɑf(tə)n",
+      "phoneticUk": "'ɒf(tə)n",
+      "translation": "经常，常常",
+      "sceneMeaning": "经常",
+      "examples": "[]"
+    },
+    {
+      "word": "order",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɔrdɚ",
+      "phoneticUk": "'ɔːdə",
+      "translation": "次序；整齐；命令",
+      "sceneMeaning": "顺序；命令；订单",
+      "examples": "[]"
+    },
+    {
+      "word": "past",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "pæst",
+      "phoneticUk": "pɑːst",
+      "translation": "过去的；过去",
+      "sceneMeaning": "过去；往事",
+      "examples": "[]"
+    },
+    {
+      "word": "present",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'prɛznt",
+      "phoneticUk": "'prez(ə)nt",
+      "translation": "现在的；目前",
+      "sceneMeaning": "现在；礼物",
+      "examples": "[]"
+    },
+    {
+      "word": "recent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'risnt",
+      "phoneticUk": "'riːs(ə)nt",
+      "translation": "新近的，最近的",
+      "sceneMeaning": "新近的，最近的；本场景常见用法：最近几年中",
+      "examples": "[]"
+    },
+    {
+      "word": "recently",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'risntli",
+      "phoneticUk": "'riːsntlɪ",
+      "translation": "最近，新近",
+      "sceneMeaning": "最近，新近",
+      "examples": "[]"
+    },
+    {
+      "word": "remain",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'men",
+      "phoneticUk": "rɪ'meɪn",
+      "translation": "剩下，余留；保持",
+      "sceneMeaning": "保持；仍然是",
+      "examples": "[]"
+    },
+    {
+      "word": "ago",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'ɡo",
+      "phoneticUk": "ə'gəʊ",
+      "translation": "以前",
+      "sceneMeaning": "以前",
+      "examples": "[]"
+    },
+    {
+      "word": "begin",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪ'ɡɪn",
+      "phoneticUk": "bɪ'gɪn",
+      "translation": "开始",
+      "sceneMeaning": "开始",
+      "examples": "[]"
+    },
+    {
+      "word": "birthday",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɝθde",
+      "phoneticUk": "'bɜːθdeɪ",
+      "translation": "生日，诞生的日期",
+      "sceneMeaning": "生日",
+      "examples": "[]"
+    },
+    {
+      "word": "currently",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'kɝrəntlɪ",
+      "phoneticUk": "'kʌrəntlɪ",
+      "translation": "当前；一般地",
+      "sceneMeaning": "当前；一般地",
+      "examples": "[]"
+    },
+    {
+      "word": "later",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'letɚ",
+      "phoneticUk": "'leɪtə",
+      "translation": "后来；过一会儿",
+      "sceneMeaning": "后来；以后",
+      "examples": "[]"
+    },
+    {
+      "word": "century",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛntʃəri",
+      "phoneticUk": "ˈsentʃərɪ",
+      "translation": "世纪，百年",
+      "sceneMeaning": "世纪；百年",
+      "examples": "[]"
+    },
+    {
+      "word": "frequently",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'frikwəntli",
+      "phoneticUk": "'friːkw(ə)ntlɪ",
+      "translation": "时常，常常",
+      "sceneMeaning": "频繁地",
+      "examples": "[]"
+    },
+    {
+      "word": "late",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "let",
+      "phoneticUk": "leɪt",
+      "translation": "迟的；迟，晚",
+      "sceneMeaning": "晚的；迟到的",
+      "examples": "[]"
+    },
+    {
+      "word": "rarely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'rɛrli",
+      "phoneticUk": "'reəlɪ",
+      "translation": "很少，难得",
+      "sceneMeaning": "很少；难得",
+      "examples": "[]"
+    },
+    {
+      "word": "adult",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ædʌlt",
+      "phoneticUk": "'ædʌlt; ə'dʌlt",
+      "translation": "成年人；成年的",
+      "sceneMeaning": "成年人；成年的；本场景常见用法：成熟的成年人",
+      "examples": "[]"
+    },
+    {
+      "word": "annual",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ænjuəl",
+      "phoneticUk": "'ænjʊəl",
+      "translation": "每年的；年报",
+      "sceneMeaning": "每年的；年度的",
+      "examples": "[]"
+    },
+    {
+      "word": "everyday",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɛvrɪde",
+      "phoneticUk": "'evrɪdeɪ; -'deɪ",
+      "translation": "每天的，日常的",
+      "sceneMeaning": "每天的，日常的；本场景常见用法：日常用品",
+      "examples": "[]"
+    },
+    {
+      "word": "finish",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fɪnɪʃ",
+      "phoneticUk": "'fɪnɪʃ",
+      "translation": "完成，结束；结束",
+      "sceneMeaning": "完成；结束",
+      "examples": "[]"
+    },
+    {
+      "word": "month",
+      "partOfSpeech": "n",
+      "phoneticUs": "mʌnθ",
+      "phoneticUk": "mʌnθ",
+      "translation": "月，月份",
+      "sceneMeaning": "月；月份",
+      "examples": "[]"
+    },
+    {
+      "word": "exist",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪɡ'zɪst",
+      "phoneticUk": "ɪg'zɪst; eg-",
+      "translation": "存在；生存，生活",
+      "sceneMeaning": "存在；生存，生活",
+      "examples": "[]"
+    },
+    {
+      "word": "permanent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɝmənənt",
+      "phoneticUk": "'pɜːm(ə)nənt",
+      "translation": "永久的，持久的；永久的",
+      "sceneMeaning": "永久的；固定的",
+      "examples": "[]"
+    },
+    {
+      "word": "previous",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'privɪəs",
+      "phoneticUk": "'priːvɪəs",
+      "translation": "先的；前的；在前；之前的",
+      "sceneMeaning": "以前的；先前的",
+      "examples": "[]"
+    },
+    {
+      "word": "decade",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɛked",
+      "phoneticUk": "'dekeɪd; dɪ'keɪd",
+      "translation": "十年，十年期",
+      "sceneMeaning": "十年",
+      "examples": "[]"
+    },
+    {
+      "word": "final",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'faɪnl",
+      "phoneticUk": "'faɪn(ə)l",
+      "translation": "最后的；决定性的",
+      "sceneMeaning": "最后的；最终的",
+      "examples": "[]"
+    },
+    {
+      "word": "January",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒænjʊ'ɛri",
+      "phoneticUk": "'dʒænjʊ(ə)rɪ",
+      "translation": "一月",
+      "sceneMeaning": "一月",
+      "examples": "[]"
+    },
+    {
+      "word": "June",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒun",
+      "phoneticUk": "dʒu:n",
+      "translation": "六月",
+      "sceneMeaning": "六月",
+      "examples": "[]"
+    },
+    {
+      "word": "minute",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪnɪt",
+      "phoneticUk": "'mɪnɪt",
+      "translation": "分，分钟；一会儿",
+      "sceneMeaning": "分钟；片刻",
+      "examples": "[]"
+    },
+    {
+      "word": "moment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'momənt",
+      "phoneticUk": "'məʊm(ə)nt",
+      "translation": "片刻，瞬间，时刻",
+      "sceneMeaning": "片刻；时刻",
+      "examples": "[]"
+    },
+    {
+      "word": "morning",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɔrnɪŋ",
+      "phoneticUk": "'mɔːnɪŋ",
+      "translation": "早晨，上午",
+      "sceneMeaning": "早晨；上午",
+      "examples": "[]"
+    },
+    {
+      "word": "period",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɪrɪəd",
+      "phoneticUk": "'pɪərɪəd",
+      "translation": "时期；学时；句号",
+      "sceneMeaning": "时期；一段时间；课时",
+      "examples": "[]"
+    },
+    {
+      "word": "prosperous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɑspərəs",
+      "phoneticUk": "'prɒsp(ə)rəs",
+      "translation": "繁荣的，昌盛的",
+      "sceneMeaning": "繁荣的，昌盛的；本场景常见用法：繁荣昌盛",
+      "examples": "[]"
+    },
+    {
+      "word": "seldom",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'sɛldəm",
+      "phoneticUk": "'seldəm",
+      "translation": "很少，罕见",
+      "sceneMeaning": "很少；不常",
+      "examples": "[]"
+    },
+    {
+      "word": "decent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'disnt",
+      "phoneticUk": "'diːs(ə)nt",
+      "translation": "正派的；体面的；正派的，体面的",
+      "sceneMeaning": "正派的；体面的；正派的，体面的",
+      "examples": "[]"
+    },
+    {
+      "word": "temporary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tɛmpə'rɛri",
+      "phoneticUk": "'temp(ə)rərɪ",
+      "translation": "暂时的，临时的",
+      "sceneMeaning": "临时的；暂时的",
+      "examples": "[]"
+    },
+    {
+      "word": "pace",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pes",
+      "phoneticUk": "peɪs",
+      "translation": "步，步速；踱步",
+      "sceneMeaning": "步速；节奏",
+      "examples": "[]"
+    },
+    {
+      "word": "interval",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪntɚvl",
+      "phoneticUk": "'ɪntəv(ə)l",
+      "translation": "间隔；休息；间距",
+      "sceneMeaning": "间隔；间歇",
+      "examples": "[]"
+    },
+    {
+      "word": "occasion",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'keʒn",
+      "phoneticUk": "ə'keɪʒ(ə)n",
+      "translation": "场合，时刻；时机；场合",
+      "sceneMeaning": "场合，时刻；时机；场合",
+      "examples": "[]"
+    },
+    {
+      "word": "date",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "det",
+      "phoneticUk": "deɪt",
+      "translation": "日期；注…日期",
+      "sceneMeaning": "日期；约会；枣",
+      "examples": "[]"
+    },
+    {
+      "word": "extraordinary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɛkˈstrɔrdənˌɛri; ɪkˈstrɔrdəˌnɛri; ˌɛkstrəˈɔrdəˌnɛri",
+      "phoneticUk": "ɪkˈstrɔːd(ə)n(ə)ri; ekˈstrɔːd(ə)n(ə)ri; ˌekstrəˈɔːdɪn(ə)ri",
+      "translation": "非同寻常的，特别的；非凡的",
+      "sceneMeaning": "非同寻常的，特别的；非凡的",
+      "examples": "[]"
+    },
+    {
+      "word": "Japan",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʒə'pæn",
+      "phoneticUk": "dʒə'pæn",
+      "translation": "日本，日本国",
+      "sceneMeaning": "日本，日本国；本场景常见用法：日本民主党",
+      "examples": "[]"
+    },
+    {
+      "word": "March",
+      "partOfSpeech": "n",
+      "phoneticUs": "mɑrtʃ",
+      "phoneticUk": "mɑːtʃ",
+      "translation": "三月",
+      "sceneMeaning": "三月",
+      "examples": "[]"
+    },
+    {
+      "word": "Monday",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈmʌnde; ˈmʌndɪ",
+      "phoneticUk": "ˈmʌndeɪ; ˈmʌndi",
+      "translation": "星期一",
+      "sceneMeaning": "星期一；本场景常见用法：星期一的早晨",
+      "examples": "[]"
+    },
+    {
+      "word": "November",
+      "partOfSpeech": "n",
+      "phoneticUs": "no'vɛmbɚ",
+      "phoneticUk": "nə(ʊ)'vembə",
+      "translation": "十一月",
+      "sceneMeaning": "十一月",
+      "examples": "[]"
+    },
+    {
+      "word": "presence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛzns",
+      "phoneticUk": "'prez(ə)ns",
+      "translation": "出席，到场；在",
+      "sceneMeaning": "出席，到场；在",
+      "examples": "[]"
+    },
+    {
+      "word": "previously",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'priviəsli",
+      "phoneticUk": "'pri:vɪəslɪ",
+      "translation": "事先",
+      "sceneMeaning": "事先",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "安排；预定",
+      "examples": "[]"
+    },
+    {
+      "word": "afternoon",
+      "partOfSpeech": "n",
+      "phoneticUs": ",æftɚ'nun",
+      "phoneticUk": "ɑːftə'nuːn",
+      "translation": "下午，午后",
+      "sceneMeaning": "下午",
+      "examples": "[]"
+    },
+    {
+      "word": "childhood",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃaɪldhʊd",
+      "phoneticUk": "'tʃaɪldhʊd",
+      "translation": "童年，幼年；早期",
+      "sceneMeaning": "童年",
+      "examples": "[]"
+    },
+    {
+      "word": "December",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'sɛmbɚ",
+      "phoneticUk": "dɪ'sembə",
+      "translation": "十二月",
+      "sceneMeaning": "十二月",
+      "examples": "[]"
+    },
+    {
+      "word": "delay",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'le",
+      "phoneticUk": "dɪ'leɪ",
+      "translation": "推迟；耽搁；延误；推迟，延期",
+      "sceneMeaning": "推迟；延误",
+      "examples": "[]"
+    },
+    {
+      "word": "frequent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'frikwənt",
+      "phoneticUk": "'friːkw(ə)nt",
+      "translation": "时常发生的；经常的",
+      "sceneMeaning": "频繁的",
+      "examples": "[]"
+    },
+    {
+      "word": "October",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɑk'tobɚ",
+      "phoneticUk": "ɒk'təʊbə",
+      "translation": "十月",
+      "sceneMeaning": "十月",
+      "examples": "[]"
+    },
+    {
+      "word": "repeatedly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "rɪ'pitɪdli",
+      "phoneticUk": "rɪ'piːtɪdlɪ",
+      "translation": "重复地；一再",
+      "sceneMeaning": "重复地；一再",
+      "examples": "[]"
+    },
+    {
+      "word": "spring",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sprɪŋ",
+      "phoneticUk": "sprɪŋ",
+      "translation": "跳，跃；跳跃；泉",
+      "sceneMeaning": "春天；泉；弹簧",
+      "examples": "[]"
+    },
+    {
+      "word": "Christmas",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "ˈkrɪsməs",
+      "translation": "圣诞节",
+      "sceneMeaning": "圣诞节；本场景常见用法：圣诞节的晚上",
+      "examples": "[]"
+    },
+    {
+      "word": "eight",
+      "partOfSpeech": "num",
+      "phoneticUs": "et",
+      "phoneticUk": "eɪt",
+      "translation": "八，八个，第八",
+      "sceneMeaning": "八，八个，第八",
+      "examples": "[]"
+    },
+    {
+      "word": "endless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɛndləs",
+      "phoneticUk": "'endlɪs",
+      "translation": "无止境的",
+      "sceneMeaning": "无止境的",
+      "examples": "[]"
+    },
+    {
+      "word": "February",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɛbrʊ'ɛri",
+      "phoneticUk": "'febrʊərɪ; 'febjʊərɪ",
+      "translation": "二月",
+      "sceneMeaning": "二月",
+      "examples": "[]"
+    },
+    {
+      "word": "hurry",
+      "partOfSpeech": "v",
+      "phoneticUs": "'hɝrɪ",
+      "phoneticUk": "'hʌrɪ",
+      "translation": "赶紧；催促",
+      "sceneMeaning": "赶快；匆忙",
+      "examples": "[]"
+    },
+    {
+      "word": "irregular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'rɛɡjəlɚ",
+      "phoneticUk": "ɪ'regjʊlə",
+      "translation": "不规则的；不整齐的；不规律的",
+      "sceneMeaning": "不规则的；不定期的",
+      "examples": "[]"
+    },
+    {
+      "word": "latter",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lætɚ",
+      "phoneticUk": "'lætə",
+      "translation": "(两者中)后者的",
+      "sceneMeaning": "后者的；较后的",
+      "examples": "[]"
+    },
+    {
+      "word": "ninth",
+      "partOfSpeech": "num",
+      "phoneticUs": "naɪnθ",
+      "phoneticUk": "'naɪnθ",
+      "translation": "第九；九分之一",
+      "sceneMeaning": "第九；九分之一",
+      "examples": "[]"
+    },
+    {
+      "word": "nowadays",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'naʊədez",
+      "phoneticUk": "'naʊədeɪz",
+      "translation": "现今，现在",
+      "sceneMeaning": "现今，现在",
+      "examples": "[]"
+    },
+    {
+      "word": "rare",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɛr",
+      "phoneticUk": "reə",
+      "translation": "稀薄的；稀有的；罕有的，少见的",
+      "sceneMeaning": "稀薄的；稀有的；罕有的，少见的",
+      "examples": "[]"
+    },
+    {
+      "word": "youth",
+      "partOfSpeech": "n",
+      "phoneticUs": "jʊθ",
+      "phoneticUk": "juːθ",
+      "translation": "青春；青年们；青年",
+      "sceneMeaning": "青年时期；年轻人",
+      "examples": "[]"
+    },
+    {
+      "word": "arrange",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'rendʒ",
+      "phoneticUk": "ə'reɪn(d)ʒ",
+      "translation": "筹备；整理；调解；安排，筹划",
+      "sceneMeaning": "安排；整理",
+      "examples": "[]"
+    },
+    {
+      "word": "autumn",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔtəm",
+      "phoneticUk": "'ɔːtəm",
+      "translation": "秋，秋季",
+      "sceneMeaning": "秋天",
+      "examples": "[]"
+    },
+    {
+      "word": "calendar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæləndɚ",
+      "phoneticUk": "'kælɪndə",
+      "translation": "日历，历书；历法",
+      "sceneMeaning": "日历；历法",
+      "examples": "[]"
+    },
+    {
+      "word": "dawn",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɔn",
+      "phoneticUk": "dɔːn",
+      "translation": "黎明；开端；破晓",
+      "sceneMeaning": "黎明；开端",
+      "examples": "[]"
+    },
+    {
+      "word": "daylight",
+      "partOfSpeech": "n",
+      "phoneticUs": "'delaɪt",
+      "phoneticUk": "'deɪlaɪt",
+      "translation": "白昼，日光；黎明",
+      "sceneMeaning": "白昼，日光；黎明；本场景常见用法：夏令时；日光节约时间",
+      "examples": "[]"
+    },
+    {
+      "word": "deadline",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈdedlaɪn",
+      "phoneticUk": "ˈdedlaɪn",
+      "translation": "最后期限",
+      "sceneMeaning": "截止日期；最后期限",
+      "examples": "[]"
+    },
+    {
+      "word": "duration",
+      "partOfSpeech": "n",
+      "phoneticUs": "du'reʃən",
+      "phoneticUk": "djʊ'reɪʃ(ə)n",
+      "translation": "持续，持久",
+      "sceneMeaning": "持续时间",
+      "examples": "[]"
+    },
+    {
+      "word": "eleven",
+      "partOfSpeech": "num",
+      "phoneticUs": "ɪ'lɛvn",
+      "phoneticUk": "ɪ'lev(ə)n",
+      "translation": "十一，十一个",
+      "sceneMeaning": "十一，十一个",
+      "examples": "[]"
+    },
+    {
+      "word": "ending",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛndɪŋ",
+      "phoneticUk": "'endɪŋ",
+      "translation": "结尾，结局；死亡",
+      "sceneMeaning": "结尾，结局；死亡；本场景常见用法：终点；结束点",
+      "examples": "[]"
+    },
+    {
+      "word": "fifteen",
+      "partOfSpeech": "num",
+      "phoneticUs": ",fɪf'tin",
+      "phoneticUk": "fɪf'tiːn; 'fɪftiːn",
+      "translation": "十五；十五个",
+      "sceneMeaning": "十五；十五个",
+      "examples": "[]"
+    },
+    {
+      "word": "lately",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "最近，不久前",
+      "sceneMeaning": "最近，不久前",
+      "examples": "[]"
+    },
+    {
+      "word": "midday",
+      "partOfSpeech": "n",
+      "phoneticUs": ",mɪd'de",
+      "phoneticUk": "mɪd'deɪ",
+      "translation": "正午，中午",
+      "sceneMeaning": "正午，中午",
+      "examples": "[]"
+    },
+    {
+      "word": "midnight",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɪdnaɪt",
+      "phoneticUk": "'mɪdnaɪt",
+      "translation": "午夜，子夜，夜半",
+      "sceneMeaning": "午夜",
+      "examples": "[]"
+    },
+    {
+      "word": "monthly",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'mʌnθli",
+      "phoneticUk": "'mʌnθlɪ",
+      "translation": "每月的；每月",
+      "sceneMeaning": "每月的",
+      "examples": "[]"
+    },
+    {
+      "word": "noon",
+      "partOfSpeech": "n",
+      "phoneticUs": "nun",
+      "phoneticUk": "nuːn",
+      "translation": "正午，中午",
+      "sceneMeaning": "中午；正午",
+      "examples": "[]"
+    },
+    {
+      "word": "occasionally",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "偶然；非经常地",
+      "sceneMeaning": "偶尔；间或",
+      "examples": "[]"
+    },
+    {
+      "word": "postpone",
+      "partOfSpeech": "v",
+      "phoneticUs": "po'spon",
+      "phoneticUk": "pəʊs(t)'pəʊn; pə'spəʊn",
+      "translation": "延迟，推迟，延缓",
+      "sceneMeaning": "推迟；延期",
+      "examples": "[]"
+    },
+    {
+      "word": "preceding",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prisidɪŋ",
+      "phoneticUk": "prɪ'siːdɪŋ",
+      "translation": "在前的；在先的",
+      "sceneMeaning": "在前的；在先的",
+      "examples": "[]"
+    },
+    {
+      "word": "prime",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "praɪm",
+      "phoneticUk": "praɪm",
+      "translation": "首要的；春，青春",
+      "sceneMeaning": "首要的；春，青春",
+      "examples": "[]"
+    },
+    {
+      "word": "routine",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "rʊ'tin",
+      "phoneticUk": "ruː'tiːn",
+      "translation": "例行公事；日常的",
+      "sceneMeaning": "常规；日常程序",
+      "examples": "[]"
+    },
+    {
+      "word": "rush",
+      "partOfSpeech": "v",
+      "phoneticUs": "rʌʃ",
+      "phoneticUk": "rʌʃ",
+      "translation": "冲，奔；催促",
+      "sceneMeaning": "冲；匆忙做",
+      "examples": "[]"
+    },
+    {
+      "word": "shortly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ʃɔrtli",
+      "phoneticUk": "'ʃɔːtlɪ",
+      "translation": "立刻；简短地",
+      "sceneMeaning": "立刻；简短地；本场景常见用法：不久以后；没过多久",
+      "examples": "[]"
+    },
+    {
+      "word": "yearly",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'jɪrli",
+      "phoneticUk": "'jɪəlɪ; 'jɜː-",
+      "translation": "每年的；一年一度",
+      "sceneMeaning": "每年的",
+      "examples": "[]"
+    },
+    {
+      "word": "afterward",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ˈæftərwərd",
+      "phoneticUk": "'ɑːftəwəd",
+      "translation": "后来，以后",
+      "sceneMeaning": "后来；之后",
+      "examples": "[]"
+    },
+    {
+      "word": "appointment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'pɔɪntmənt",
+      "phoneticUk": "ə'pɒɪntm(ə)nt",
+      "translation": "任命；约定，约会；约会",
+      "sceneMeaning": "约会；预约；任命",
+      "examples": "[]"
+    },
+    {
+      "word": "April",
+      "partOfSpeech": "n",
+      "phoneticUs": "'eprəl",
+      "phoneticUk": "'eɪprəl",
+      "translation": "四月",
+      "sceneMeaning": "四月；本场景常见用法：愚人节（4月1日）",
+      "examples": "[]"
+    },
+    {
+      "word": "astonish",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'stɑnɪʃ",
+      "phoneticUk": "ə'stɒnɪʃ",
+      "translation": "使惊讶，使吃惊；使惊讶，使大为吃惊",
+      "sceneMeaning": "使惊讶，使吃惊；使惊讶，使大为吃惊",
+      "examples": "[]"
+    },
+    {
+      "word": "August",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɔɡəst",
+      "phoneticUk": "ɔ:ˈgʌst",
+      "translation": "八月",
+      "sceneMeaning": "八月",
+      "examples": "[]"
+    },
+    {
+      "word": "beginner",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪ'gɪnɚ",
+      "phoneticUk": "bɪ'gɪnə",
+      "translation": "初学者，生手",
+      "sceneMeaning": "初学者，生手",
+      "examples": "[]"
+    },
+    {
+      "word": "cease",
+      "partOfSpeech": "vi&vi&n",
+      "phoneticUs": "sis",
+      "phoneticUk": "siːs",
+      "translation": "停止，停息",
+      "sceneMeaning": "停止，停息",
+      "examples": "[]"
+    },
+    {
+      "word": "dash",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dæʃ",
+      "phoneticUk": "dæʃ",
+      "translation": "使猛撞；溅；猛冲",
+      "sceneMeaning": "使猛撞；溅；猛冲；本场景常见用法：v. 匆忙完成",
+      "examples": "[]"
+    },
+    {
+      "word": "eve",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "iːv",
+      "translation": "前夜，前夕，前一刻",
+      "sceneMeaning": "前夜，前夕，前一刻",
+      "examples": "[]"
+    },
+    {
+      "word": "everlasting",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɛvɚ'læstɪŋ",
+      "phoneticUk": "ˌevəˈlɑ:stɪŋ",
+      "translation": "永恒的",
+      "sceneMeaning": "永恒的；本场景常见用法：开天辟地以来，自古以来",
+      "examples": "[]"
+    },
+    {
+      "word": "forever",
+      "partOfSpeech": "adv",
+      "phoneticUs": "fɚ'ɛvɚ",
+      "phoneticUk": "fə'revə",
+      "translation": "永远，总是，老是",
+      "sceneMeaning": "永远，总是，老是；本场景常见用法：永远持续",
+      "examples": "[]"
+    },
+    {
+      "word": "fortnight",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrtnaɪt",
+      "phoneticUk": "'fɔːtnaɪt",
+      "translation": "两星期，十四天",
+      "sceneMeaning": "两星期，十四天",
+      "examples": "[]"
+    },
+    {
+      "word": "fortunately",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'fɔrtʃənətli",
+      "phoneticUk": "ˈfɔːtʃənətli",
+      "translation": "幸运地，幸亏；幸运地",
+      "sceneMeaning": "幸运地，幸亏；幸运地",
+      "examples": "[]"
+    },
+    {
+      "word": "frequency",
+      "partOfSpeech": "n",
+      "phoneticUs": "'frikwənsi",
+      "phoneticUk": "'friːkw(ə)nsɪ",
+      "translation": "屡次；次数；频率",
+      "sceneMeaning": "频率；频繁",
+      "examples": "[]"
+    },
+    {
+      "word": "haste",
+      "partOfSpeech": "n",
+      "phoneticUs": "hest",
+      "phoneticUk": "heɪst",
+      "translation": "急速，急忙；草率",
+      "sceneMeaning": "急速，急忙；草率",
+      "examples": "[]"
+    },
+    {
+      "word": "keenly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ki:nli",
+      "phoneticUk": "ki:nlɪ",
+      "translation": "敏锐地",
+      "sceneMeaning": "敏锐地",
+      "examples": "[]"
+    },
+    {
+      "word": "lag",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "læɡ",
+      "phoneticUk": "læg",
+      "translation": "走得慢；落后",
+      "sceneMeaning": "走得慢；落后；本场景常见用法：滞后时间；时滞；时延；迟延时间",
+      "examples": "[]"
+    },
+    {
+      "word": "lifetime",
+      "partOfSpeech": "n",
+      "phoneticUs": "'laɪftaɪm",
+      "phoneticUk": "'laɪftaɪm",
+      "translation": "一生，终身",
+      "sceneMeaning": "一生，终身",
+      "examples": "[]"
+    },
+    {
+      "word": "mature",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "mə'tʃʊr",
+      "phoneticUk": "mə'tʃʊə",
+      "translation": "成熟的；使成熟",
+      "sceneMeaning": "成熟；使成熟",
+      "examples": "[]"
+    },
+    {
+      "word": "meantime",
+      "partOfSpeech": "adv / n",
+      "phoneticUs": "'min'taɪm",
+      "phoneticUk": "'miːntaɪm",
+      "translation": "其时，其间；当时",
+      "sceneMeaning": "其时，其间；当时",
+      "examples": "[]"
+    },
+    {
+      "word": "merry",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɛri",
+      "phoneticUk": "'merɪ",
+      "translation": "欢乐的，愉快的",
+      "sceneMeaning": "欢乐的，愉快的",
+      "examples": "[]"
+    },
+    {
+      "word": "nap",
+      "partOfSpeech": "n",
+      "phoneticUs": "næp",
+      "phoneticUk": "næp",
+      "translation": "小睡，打盹，瞌睡",
+      "sceneMeaning": "小睡，打盹，瞌睡",
+      "examples": "[]"
+    },
+    {
+      "word": "newly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'nuli",
+      "phoneticUk": "'njuːlɪ",
+      "translation": "新近，最近",
+      "sceneMeaning": "新近，最近",
+      "examples": "[]"
+    },
+    {
+      "word": "nineteen",
+      "partOfSpeech": "num",
+      "phoneticUs": ",naɪn'tin",
+      "phoneticUk": "naɪn'tiːn; 'naɪntiːn",
+      "translation": "十九，十九个",
+      "sceneMeaning": "十九，十九个",
+      "examples": "[]"
+    },
+    {
+      "word": "occasional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'keʒənl",
+      "phoneticUk": "ə'keɪʒ(ə)n(ə)l",
+      "translation": "偶然的；临时的",
+      "sceneMeaning": "偶尔的；临时的",
+      "examples": "[]"
+    },
+    {
+      "word": "orderly",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔrdɚli",
+      "phoneticUk": "'ɔːd(ə)lɪ",
+      "translation": "整洁的；有秩序的",
+      "sceneMeaning": "整洁的；有秩序的",
+      "examples": "[]"
+    },
+    {
+      "word": "outset",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aʊtsɛt",
+      "phoneticUk": "'aʊtset",
+      "translation": "开始，开端",
+      "sceneMeaning": "开始，开端",
+      "examples": "[]"
+    },
+    {
+      "word": "overnight",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ovənaɪt",
+      "phoneticUk": "əʊvə'naɪt",
+      "translation": "一夜；突然",
+      "sceneMeaning": "一夜；突然",
+      "examples": "[]"
+    },
+    {
+      "word": "pause",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "pɔz",
+      "phoneticUk": "pɔːz",
+      "translation": "中止，暂停",
+      "sceneMeaning": "暂停；停顿",
+      "examples": "[]"
+    },
+    {
+      "word": "presently",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'prɛzntli",
+      "phoneticUk": "'prez(ə)ntlɪ",
+      "translation": "一会儿；目前",
+      "sceneMeaning": "一会儿；目前",
+      "examples": "[]"
+    },
+    {
+      "word": "repeat",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'pit",
+      "phoneticUk": "rɪ'piːt",
+      "translation": "重说，重做；重复",
+      "sceneMeaning": "重复；重做",
+      "examples": "[]"
+    },
+    {
+      "word": "repetition",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛpə'tɪʃən",
+      "phoneticUk": "repɪ'tɪʃ(ə)n",
+      "translation": "重复，反复",
+      "sceneMeaning": "重复，反复；本场景常见用法：[电]重复频；换帧频率",
+      "examples": "[]"
+    },
+    {
+      "word": "secondary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɛkəndɛri",
+      "phoneticUk": "'sek(ə)nd(ə)rɪ",
+      "translation": "第二的；次要的",
+      "sceneMeaning": "第二的；次要的；本场景常见用法：二次精炼",
+      "examples": "[]"
+    },
+    {
+      "word": "sequence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sikwəns",
+      "phoneticUk": "'siːkw(ə)ns",
+      "translation": "连续，继续；次序",
+      "sceneMeaning": "顺序；一连串",
+      "examples": "[]"
+    },
+    {
+      "word": "trim",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "trɪm",
+      "phoneticUk": "trɪm",
+      "translation": "整齐的；使整齐",
+      "sceneMeaning": "整齐的；使整齐；本场景常见用法：内部装饰",
+      "examples": "[]"
+    }
+  ]
+}

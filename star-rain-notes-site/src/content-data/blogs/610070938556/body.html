@@ -1,0 +1,2407 @@
+<h2>一、Java 日期时间体系总览</h2>
+<p>Java 现代日期时间 API 位于：</p>
+<pre><code>java.time
+</code></pre>
+<p>真正需要建立的是下面这套认知：</p>
+<pre><code>日期
+ ↓
+LocalDate
+
+时间
+ ↓
+LocalTime
+
+日期 + 时间
+ ↓
+LocalDateTime
+
+格式转换
+ ↓
+DateTimeFormatter
+
+日期差
+ ↓
+Period
+
+精确时间差
+ ↓
+Duration / ChronoUnit
+
+绝对时间点
+ ↓
+Instant
+
+时区
+ ↓
+ZoneId
+
+日期时间 + 时区
+ ↓
+ZonedDateTime / OffsetDateTime
+</code></pre>
+<h2>二、LocalDate：日期</h2>
+<p><code>LocalDate</code> 表示：</p>
+<pre><code>2026-09-17
+</code></pre>
+<p>它只有：</p>
+<pre><code>年 + 月 + 日
+</code></pre>
+<p>没有时分秒，也没有时区。</p>
+<h3>2.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>当前日期</td>
+<td><code>LocalDate</code></td>
+<td><code>now()</code></td>
+<td>无</td>
+<td>获取系统当前日期</td>
+</tr>
+<tr>
+<td>2</td>
+<td>指定日期</td>
+<td><code>LocalDate</code></td>
+<td><code>of()</code></td>
+<td><code>int year, int month, int dayOfMonth</code></td>
+<td>创建指定日期</td>
+</tr>
+<tr>
+<td>3</td>
+<td>解析后的日期</td>
+<td><code>LocalDate</code></td>
+<td><code>parse()</code></td>
+<td><code>CharSequence text</code></td>
+<td>字符串转日期</td>
+</tr>
+<tr>
+<td>4</td>
+<td>年份</td>
+<td><code>int</code></td>
+<td><code>getYear()</code></td>
+<td>无</td>
+<td>获取年份</td>
+</tr>
+<tr>
+<td>5</td>
+<td>月份数字</td>
+<td><code>int</code></td>
+<td><code>getMonthValue()</code></td>
+<td>无</td>
+<td>获取月份，范围 1~12</td>
+</tr>
+<tr>
+<td>6</td>
+<td>月份枚举</td>
+<td><code>Month</code></td>
+<td><code>getMonth()</code></td>
+<td>无</td>
+<td>获取月份枚举</td>
+</tr>
+<tr>
+<td>7</td>
+<td>日</td>
+<td><code>int</code></td>
+<td><code>getDayOfMonth()</code></td>
+<td>无</td>
+<td>获取当月第几天</td>
+</tr>
+<tr>
+<td>8</td>
+<td>星期</td>
+<td><code>DayOfWeek</code></td>
+<td><code>getDayOfWeek()</code></td>
+<td>无</td>
+<td>获取星期</td>
+</tr>
+<tr>
+<td>9</td>
+<td>新日期</td>
+<td><code>LocalDate</code></td>
+<td><code>plusDays()</code></td>
+<td><code>long daysToAdd</code></td>
+<td>增加天数</td>
+</tr>
+<tr>
+<td>10</td>
+<td>新日期</td>
+<td><code>LocalDate</code></td>
+<td><code>plusMonths()</code></td>
+<td><code>long monthsToAdd</code></td>
+<td>增加月份</td>
+</tr>
+<tr>
+<td>11</td>
+<td>新日期</td>
+<td><code>LocalDate</code></td>
+<td><code>plusYears()</code></td>
+<td><code>long yearsToAdd</code></td>
+<td>增加年份</td>
+</tr>
+<tr>
+<td>12</td>
+<td>新日期</td>
+<td><code>LocalDate</code></td>
+<td><code>minusDays()</code></td>
+<td><code>long daysToSubtract</code></td>
+<td>减少天数</td>
+</tr>
+<tr>
+<td>13</td>
+<td>新日期</td>
+<td><code>LocalDate</code></td>
+<td><code>minusMonths()</code></td>
+<td><code>long monthsToSubtract</code></td>
+<td>减少月份</td>
+</tr>
+<tr>
+<td>14</td>
+<td>新日期</td>
+<td><code>LocalDate</code></td>
+<td><code>minusYears()</code></td>
+<td><code>long yearsToSubtract</code></td>
+<td>减少年份</td>
+</tr>
+<tr>
+<td>15</td>
+<td>新日期</td>
+<td><code>LocalDate</code></td>
+<td><code>withYear()</code></td>
+<td><code>int year</code></td>
+<td>修改年份</td>
+</tr>
+<tr>
+<td>16</td>
+<td>新日期</td>
+<td><code>LocalDate</code></td>
+<td><code>withMonth()</code></td>
+<td><code>int month</code></td>
+<td>修改月份</td>
+</tr>
+<tr>
+<td>17</td>
+<td>新日期</td>
+<td><code>LocalDate</code></td>
+<td><code>withDayOfMonth()</code></td>
+<td><code>int dayOfMonth</code></td>
+<td>修改日期</td>
+</tr>
+<tr>
+<td>18</td>
+<td>是否更早</td>
+<td><code>boolean</code></td>
+<td><code>isBefore()</code></td>
+<td><code>ChronoLocalDate other</code></td>
+<td>判断是否在另一个日期之前</td>
+</tr>
+<tr>
+<td>19</td>
+<td>是否更晚</td>
+<td><code>boolean</code></td>
+<td><code>isAfter()</code></td>
+<td><code>ChronoLocalDate other</code></td>
+<td>判断是否在另一个日期之后</td>
+</tr>
+<tr>
+<td>20</td>
+<td>是否相等</td>
+<td><code>boolean</code></td>
+<td><code>isEqual()</code></td>
+<td><code>ChronoLocalDate other</code></td>
+<td>判断日期是否相同</td>
+</tr>
+<tr>
+<td>21</td>
+<td>本月天数</td>
+<td><code>int</code></td>
+<td><code>lengthOfMonth()</code></td>
+<td>无</td>
+<td>获取当前月份天数</td>
+</tr>
+<tr>
+<td>22</td>
+<td>是否闰年</td>
+<td><code>boolean</code></td>
+<td><code>isLeapYear()</code></td>
+<td>无</td>
+<td>判断当前年份是否为闰年</td>
+</tr>
+<tr>
+<td>23</td>
+<td>当天零点</td>
+<td><code>LocalDateTime</code></td>
+<td><code>atStartOfDay()</code></td>
+<td>无</td>
+<td>转换为当天 00:00 的日期时间</td>
+</tr>
+</tbody>
+</table>
+<h3>2.2 示例</h3>
+<pre><code>import java.time.LocalDate;
+
+public class LocalDateDemo {
+    public static void main(String[] args) {
+
+        LocalDate today = LocalDate.now();
+
+        LocalDate birthday =
+                LocalDate.of(2004, 5, 20);
+
+        LocalDate date =
+                LocalDate.parse("2026-09-17");
+
+        System.out.println(date.getYear());
+        System.out.println(date.getMonthValue());
+        System.out.println(date.getMonth());
+        System.out.println(date.getDayOfMonth());
+        System.out.println(date.getDayOfWeek());
+
+        System.out.println(date.plusDays(10));
+        System.out.println(date.plusMonths(1));
+        System.out.println(date.plusYears(1));
+
+        System.out.println(date.minusDays(7));
+        System.out.println(date.minusMonths(1));
+        System.out.println(date.minusYears(1));
+
+        System.out.println(date.withYear(2030));
+        System.out.println(date.withMonth(12));
+        System.out.println(date.withDayOfMonth(1));
+
+        LocalDate future = LocalDate.of(2030, 1, 1);
+
+        System.out.println(date.isBefore(future));
+        System.out.println(date.isAfter(future));
+        System.out.println(date.isEqual(future));
+
+        System.out.println(date.lengthOfMonth());
+        System.out.println(date.isLeapYear());
+
+        System.out.println(date.atStartOfDay());
+    }
+}
+</code></pre>
+<h2>三、LocalTime：时间</h2>
+<p><code>LocalTime</code> 表示：</p>
+<pre><code>10:30:45
+</code></pre>
+<p>包含：</p>
+<pre><code>时 + 分 + 秒 + 纳秒
+</code></pre>
+<p>不包含日期和时区。</p>
+<h3>3.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>24</td>
+<td>当前时间</td>
+<td><code>LocalTime</code></td>
+<td><code>now()</code></td>
+<td>无</td>
+<td>获取当前时间</td>
+</tr>
+<tr>
+<td>25</td>
+<td>指定时间</td>
+<td><code>LocalTime</code></td>
+<td><code>of()</code></td>
+<td><code>int hour, int minute</code></td>
+<td>创建指定时分</td>
+</tr>
+<tr>
+<td>26</td>
+<td>指定时间</td>
+<td><code>LocalTime</code></td>
+<td><code>of()</code></td>
+<td><code>int hour, int minute, int second</code></td>
+<td>创建指定时分秒</td>
+</tr>
+<tr>
+<td>27</td>
+<td>时间对象</td>
+<td><code>LocalTime</code></td>
+<td><code>parse()</code></td>
+<td><code>CharSequence text</code></td>
+<td>字符串转时间</td>
+</tr>
+<tr>
+<td>28</td>
+<td>小时</td>
+<td><code>int</code></td>
+<td><code>getHour()</code></td>
+<td>无</td>
+<td>获取小时</td>
+</tr>
+<tr>
+<td>29</td>
+<td>分钟</td>
+<td><code>int</code></td>
+<td><code>getMinute()</code></td>
+<td>无</td>
+<td>获取分钟</td>
+</tr>
+<tr>
+<td>30</td>
+<td>秒</td>
+<td><code>int</code></td>
+<td><code>getSecond()</code></td>
+<td>无</td>
+<td>获取秒</td>
+</tr>
+<tr>
+<td>31</td>
+<td>新时间</td>
+<td><code>LocalTime</code></td>
+<td><code>plusHours()</code></td>
+<td><code>long hoursToAdd</code></td>
+<td>增加小时</td>
+</tr>
+<tr>
+<td>32</td>
+<td>新时间</td>
+<td><code>LocalTime</code></td>
+<td><code>plusMinutes()</code></td>
+<td><code>long minutesToAdd</code></td>
+<td>增加分钟</td>
+</tr>
+<tr>
+<td>33</td>
+<td>新时间</td>
+<td><code>LocalTime</code></td>
+<td><code>minusHours()</code></td>
+<td><code>long hoursToSubtract</code></td>
+<td>减少小时</td>
+</tr>
+<tr>
+<td>34</td>
+<td>新时间</td>
+<td><code>LocalTime</code></td>
+<td><code>minusMinutes()</code></td>
+<td><code>long minutesToSubtract</code></td>
+<td>减少分钟</td>
+</tr>
+<tr>
+<td>35</td>
+<td>是否更早</td>
+<td><code>boolean</code></td>
+<td><code>isBefore()</code></td>
+<td><code>LocalTime other</code></td>
+<td>比较时间先后</td>
+</tr>
+<tr>
+<td>36</td>
+<td>是否更晚</td>
+<td><code>boolean</code></td>
+<td><code>isAfter()</code></td>
+<td><code>LocalTime other</code></td>
+<td>比较时间先后</td>
+</tr>
+</tbody>
+</table>
+<h3>3.2 示例</h3>
+<pre><code>import java.time.LocalTime;
+
+public class LocalTimeDemo {
+    public static void main(String[] args) {
+
+        LocalTime now = LocalTime.now();
+
+        LocalTime start =
+                LocalTime.of(8, 30);
+
+        LocalTime end =
+                LocalTime.of(18, 0, 0);
+
+        LocalTime time =
+                LocalTime.parse("12:30:45");
+
+        System.out.println(time.getHour());
+        System.out.println(time.getMinute());
+        System.out.println(time.getSecond());
+
+        System.out.println(time.plusHours(2));
+        System.out.println(time.plusMinutes(30));
+
+        System.out.println(time.minusHours(1));
+        System.out.println(time.minusMinutes(10));
+
+        System.out.println(start.isBefore(end));
+        System.out.println(start.isAfter(end));
+    }
+}
+</code></pre>
+<h2>四、LocalDateTime：日期 + 时间</h2>
+<p>这是 Java Web 开发中非常常用的日期类型。</p>
+<pre><code>2026-09-17T10:30:20
+</code></pre>
+<p>常见业务：</p>
+<pre><code>用户创建时间
+文章发布时间
+订单创建时间
+更新时间
+登录时间
+支付时间
+</code></pre>
+<h3>4.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>37</td>
+<td>当前日期时间</td>
+<td><code>LocalDateTime</code></td>
+<td><code>now()</code></td>
+<td>无</td>
+<td>获取当前日期时间</td>
+</tr>
+<tr>
+<td>38</td>
+<td>指定日期时间</td>
+<td><code>LocalDateTime</code></td>
+<td><code>of()</code></td>
+<td><code>year, month, day, hour, minute</code></td>
+<td>创建指定日期时间</td>
+</tr>
+<tr>
+<td>39</td>
+<td>日期时间</td>
+<td><code>LocalDateTime</code></td>
+<td><code>parse()</code></td>
+<td><code>CharSequence text</code></td>
+<td>解析字符串</td>
+</tr>
+<tr>
+<td>40</td>
+<td>日期</td>
+<td><code>LocalDate</code></td>
+<td><code>toLocalDate()</code></td>
+<td>无</td>
+<td>提取日期部分</td>
+</tr>
+<tr>
+<td>41</td>
+<td>时间</td>
+<td><code>LocalTime</code></td>
+<td><code>toLocalTime()</code></td>
+<td>无</td>
+<td>提取时间部分</td>
+</tr>
+<tr>
+<td>42</td>
+<td>新对象</td>
+<td><code>LocalDateTime</code></td>
+<td><code>plusDays()</code></td>
+<td><code>long days</code></td>
+<td>增加天数</td>
+</tr>
+<tr>
+<td>43</td>
+<td>新对象</td>
+<td><code>LocalDateTime</code></td>
+<td><code>plusHours()</code></td>
+<td><code>long hours</code></td>
+<td>增加小时</td>
+</tr>
+<tr>
+<td>44</td>
+<td>新对象</td>
+<td><code>LocalDateTime</code></td>
+<td><code>plusMinutes()</code></td>
+<td><code>long minutes</code></td>
+<td>增加分钟</td>
+</tr>
+<tr>
+<td>45</td>
+<td>新对象</td>
+<td><code>LocalDateTime</code></td>
+<td><code>minusDays()</code></td>
+<td><code>long days</code></td>
+<td>减少天数</td>
+</tr>
+<tr>
+<td>46</td>
+<td>是否更早</td>
+<td><code>boolean</code></td>
+<td><code>isBefore()</code></td>
+<td><code>ChronoLocalDateTime&lt;?&gt; other</code></td>
+<td>比较日期时间</td>
+</tr>
+<tr>
+<td>47</td>
+<td>是否更晚</td>
+<td><code>boolean</code></td>
+<td><code>isAfter()</code></td>
+<td><code>ChronoLocalDateTime&lt;?&gt; other</code></td>
+<td>比较日期时间</td>
+</tr>
+<tr>
+<td>48</td>
+<td>带时区时间</td>
+<td><code>ZonedDateTime</code></td>
+<td><code>atZone()</code></td>
+<td><code>ZoneId zone</code></td>
+<td>给日期时间绑定时区</td>
+</tr>
+</tbody>
+</table>
+<h3>4.2 示例</h3>
+<pre><code>import java.time.LocalDateTime;
+
+public class LocalDateTimeDemo {
+
+    public static void main(String[] args) {
+
+        LocalDateTime now =
+                LocalDateTime.now();
+
+        LocalDateTime time =
+                LocalDateTime.of(
+                        2026,
+                        9,
+                        17,
+                        10,
+                        30
+                );
+
+        System.out.println(now);
+
+        System.out.println(
+                time.toLocalDate()
+        );
+
+        System.out.println(
+                time.toLocalTime()
+        );
+
+        System.out.println(
+                time.plusDays(7)
+        );
+
+        System.out.println(
+                time.plusHours(2)
+        );
+
+        System.out.println(
+                time.plusMinutes(30)
+        );
+
+        System.out.println(
+                time.minusDays(1)
+        );
+
+        System.out.println(
+                now.isBefore(time)
+        );
+
+        System.out.println(
+                now.isAfter(time)
+        );
+    }
+}
+</code></pre>
+<h2>五、日期时间对象为什么都是不可变对象</h2>
+<p><code>LocalDate</code>、<code>LocalTime</code>、<code>LocalDateTime</code> 等核心类都是不可变对象。</p>
+<p>这和 <code>String</code> 非常相似。</p>
+<p>例如：</p>
+<pre><code>LocalDate date =
+        LocalDate.of(2026, 9, 17);
+
+date.plusDays(1);
+
+System.out.println(date);
+</code></pre>
+<p>结果仍然是：</p>
+<pre><code>2026-09-17
+</code></pre>
+<p>因为：</p>
+<pre><code>date.plusDays(1);
+</code></pre>
+<p>不会修改原对象，而是返回一个新的 <code>LocalDate</code>。</p>
+<p>正确：</p>
+<pre><code>date = date.plusDays(1);
+</code></pre>
+<p>或者：</p>
+<pre><code>LocalDate tomorrow =
+        date.plusDays(1);
+</code></pre>
+<p>所以一定要形成条件反射：</p>
+<blockquote>
+<p><code>plusXxx()</code>、<code>minusXxx()</code>、<code>withXxx()</code> 大多数情况下都会返回一个新对象。</p>
+</blockquote>
+<h2>六、DateTimeFormatter：格式化</h2>
+<p><code>DateTimeFormatter</code> 负责：</p>
+<pre><code>时间对象 ⇄ String
+</code></pre>
+<p>这是 Java 日期时间开发必须熟练掌握的工具。</p>
+<h3>6.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>49</td>
+<td>格式器</td>
+<td><code>DateTimeFormatter</code></td>
+<td><code>ofPattern()</code></td>
+<td><code>String pattern</code></td>
+<td>根据模式创建格式器</td>
+</tr>
+<tr>
+<td>50</td>
+<td>格式化字符串</td>
+<td><code>String</code></td>
+<td><code>format()</code></td>
+<td><code>TemporalAccessor temporal</code></td>
+<td>时间对象转字符串</td>
+</tr>
+<tr>
+<td>51</td>
+<td>日期</td>
+<td><code>LocalDate</code></td>
+<td><code>LocalDate.parse()</code></td>
+<td><code>CharSequence text, DateTimeFormatter formatter</code></td>
+<td>按指定格式解析日期</td>
+</tr>
+<tr>
+<td>52</td>
+<td>日期时间</td>
+<td><code>LocalDateTime</code></td>
+<td><code>LocalDateTime.parse()</code></td>
+<td><code>CharSequence text, DateTimeFormatter formatter</code></td>
+<td>按指定格式解析日期时间</td>
+</tr>
+</tbody>
+</table>
+<h3>6.2 常用格式符号</h3>
+<table>
+<thead>
+<tr>
+<th>格式字符</th>
+<th>含义</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>yyyy</code></td>
+<td>年</td>
+<td><code>2026</code></td>
+</tr>
+<tr>
+<td><code>MM</code></td>
+<td>月</td>
+<td><code>09</code></td>
+</tr>
+<tr>
+<td><code>dd</code></td>
+<td>日</td>
+<td><code>17</code></td>
+</tr>
+<tr>
+<td><code>HH</code></td>
+<td>24 小时制小时</td>
+<td><code>18</code></td>
+</tr>
+<tr>
+<td><code>hh</code></td>
+<td>12 小时制小时</td>
+<td><code>06</code></td>
+</tr>
+<tr>
+<td><code>mm</code></td>
+<td>分钟</td>
+<td><code>30</code></td>
+</tr>
+<tr>
+<td><code>ss</code></td>
+<td>秒</td>
+<td><code>45</code></td>
+</tr>
+</tbody>
+</table>
+<p>必须注意：</p>
+<pre><code>MM = 月
+mm = 分钟
+
+HH = 24 小时制
+hh = 12 小时制
+</code></pre>
+<h3>6.3 时间对象 → String</h3>
+<pre><code>import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class FormatterDemo {
+
+    public static void main(String[] args) {
+
+        LocalDateTime now =
+                LocalDateTime.now();
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(
+                        "yyyy-MM-dd HH:mm:ss"
+                );
+
+        String result =
+                now.format(formatter);
+
+        System.out.println(result);
+    }
+}
+</code></pre>
+<p>结果：</p>
+<pre><code>2026-09-17 10:30:21
+</code></pre>
+<h3>6.4 String → LocalDateTime</h3>
+<pre><code>String str =
+        "2026-09-17 18:30:00";
+
+DateTimeFormatter formatter =
+        DateTimeFormatter.ofPattern(
+                "yyyy-MM-dd HH:mm:ss"
+        );
+
+LocalDateTime time =
+        LocalDateTime.parse(
+                str,
+                formatter
+        );
+
+System.out.println(time);
+</code></pre>
+<p>必须记住这条转换链：</p>
+<pre><code>String
+  ↓ parse()
+LocalDateTime
+
+LocalDateTime
+  ↓ format()
+String
+</code></pre>
+<h2>七、Period：日期之间相差多久</h2>
+<p><code>Period</code> 主要用于：</p>
+<pre><code>年
+月
+日
+</code></pre>
+<p>适合：</p>
+<pre><code>年龄
+入职年限
+两个日期之间相差多少年月日
+</code></pre>
+<h3>7.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>53</td>
+<td>日期差</td>
+<td><code>Period</code></td>
+<td><code>between()</code></td>
+<td><code>LocalDate startDate, LocalDate endDate</code></td>
+<td>计算两个日期之间的年月日差</td>
+</tr>
+<tr>
+<td>54</td>
+<td>年</td>
+<td><code>int</code></td>
+<td><code>getYears()</code></td>
+<td>无</td>
+<td>获取年份部分</td>
+</tr>
+<tr>
+<td>55</td>
+<td>月</td>
+<td><code>int</code></td>
+<td><code>getMonths()</code></td>
+<td>无</td>
+<td>获取月份部分</td>
+</tr>
+<tr>
+<td>56</td>
+<td>日</td>
+<td><code>int</code></td>
+<td><code>getDays()</code></td>
+<td>无</td>
+<td>获取天数部分</td>
+</tr>
+</tbody>
+</table>
+<h3>7.2 示例：计算年龄</h3>
+<pre><code>import java.time.LocalDate;
+import java.time.Period;
+
+public class PeriodDemo {
+
+    public static void main(String[] args) {
+
+        LocalDate birthday =
+                LocalDate.of(2004, 5, 20);
+
+        LocalDate today =
+                LocalDate.now();
+
+        Period period =
+                Period.between(
+                        birthday,
+                        today
+                );
+
+        System.out.println(
+                period.getYears()
+        );
+
+        System.out.println(
+                period.getMonths()
+        );
+
+        System.out.println(
+                period.getDays()
+        );
+    }
+}
+</code></pre>
+<h2>八、Duration：精确时间间隔</h2>
+<p><code>Duration</code> 主要计算：</p>
+<pre><code>时
+分
+秒
+纳秒
+</code></pre>
+<p>适合：</p>
+<pre><code>任务耗时
+视频时长
+接口执行时间
+登录持续时间
+订单倒计时
+</code></pre>
+<h3>8.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>57</td>
+<td>时间差</td>
+<td><code>Duration</code></td>
+<td><code>between()</code></td>
+<td><code>Temporal startInclusive, Temporal endExclusive</code></td>
+<td>计算时间间隔</td>
+</tr>
+<tr>
+<td>58</td>
+<td>Duration</td>
+<td><code>Duration</code></td>
+<td><code>ofSeconds()</code></td>
+<td><code>long seconds</code></td>
+<td>根据秒数创建 Duration</td>
+</tr>
+<tr>
+<td>59</td>
+<td>小时数</td>
+<td><code>long</code></td>
+<td><code>toHours()</code></td>
+<td>无</td>
+<td>转换为完整小时数</td>
+</tr>
+<tr>
+<td>60</td>
+<td>分钟数</td>
+<td><code>long</code></td>
+<td><code>toMinutes()</code></td>
+<td>无</td>
+<td>转换为完整分钟数</td>
+</tr>
+<tr>
+<td>61</td>
+<td>天数</td>
+<td><code>long</code></td>
+<td><code>toDays()</code></td>
+<td>无</td>
+<td>转换为完整天数</td>
+</tr>
+<tr>
+<td>62</td>
+<td>秒数</td>
+<td><code>long</code></td>
+<td><code>getSeconds()</code></td>
+<td>无</td>
+<td>获取总秒数</td>
+</tr>
+</tbody>
+</table>
+<h3>8.2 示例</h3>
+<pre><code>import java.time.Duration;
+import java.time.LocalDateTime;
+
+public class DurationDemo {
+
+    public static void main(String[] args) {
+
+        LocalDateTime start =
+                LocalDateTime.of(
+                        2026, 9, 17,
+                        10, 0
+                );
+
+        LocalDateTime end =
+                LocalDateTime.of(
+                        2026, 9, 17,
+                        12, 30
+                );
+
+        Duration duration =
+                Duration.between(
+                        start,
+                        end
+                );
+
+        System.out.println(
+                duration.toHours()
+        );
+
+        System.out.println(
+                duration.toMinutes()
+        );
+
+        System.out.println(
+                duration.getSeconds()
+        );
+    }
+}
+</code></pre>
+<p>结果：</p>
+<pre><code>2
+150
+9000
+</code></pre>
+<p>注意：</p>
+<pre><code>duration.toHours();
+</code></pre>
+<p>返回的是<strong>完整小时数</strong>。</p>
+<p>所以：</p>
+<pre><code>2小时30分钟
+</code></pre>
+<p>得到：</p>
+<pre><code>2
+</code></pre>
+<p>而不是：</p>
+<pre><code>2.5
+</code></pre>
+<h2>九、ChronoUnit：直接计算时间单位差</h2>
+<p><code>ChronoUnit</code> 非常适合直接问：</p>
+<pre><code>相差多少天？
+相差多少小时？
+相差多少分钟？
+</code></pre>
+<h3>9.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>63</td>
+<td>差值</td>
+<td><code>long</code></td>
+<td><code>ChronoUnit.YEARS.between()</code></td>
+<td><code>Temporal start, Temporal end</code></td>
+<td>计算年份差</td>
+</tr>
+<tr>
+<td>64</td>
+<td>差值</td>
+<td><code>long</code></td>
+<td><code>ChronoUnit.MONTHS.between()</code></td>
+<td><code>Temporal start, Temporal end</code></td>
+<td>计算月份差</td>
+</tr>
+<tr>
+<td>65</td>
+<td>差值</td>
+<td><code>long</code></td>
+<td><code>ChronoUnit.DAYS.between()</code></td>
+<td><code>Temporal start, Temporal end</code></td>
+<td>计算天数差</td>
+</tr>
+<tr>
+<td>66</td>
+<td>差值</td>
+<td><code>long</code></td>
+<td><code>ChronoUnit.HOURS.between()</code></td>
+<td><code>Temporal start, Temporal end</code></td>
+<td>计算小时差</td>
+</tr>
+<tr>
+<td>67</td>
+<td>差值</td>
+<td><code>long</code></td>
+<td><code>ChronoUnit.MINUTES.between()</code></td>
+<td><code>Temporal start, Temporal end</code></td>
+<td>计算分钟差</td>
+</tr>
+<tr>
+<td>68</td>
+<td>差值</td>
+<td><code>long</code></td>
+<td><code>ChronoUnit.SECONDS.between()</code></td>
+<td><code>Temporal start, Temporal end</code></td>
+<td>计算秒数差</td>
+</tr>
+</tbody>
+</table>
+<h3>9.2 示例</h3>
+<pre><code>import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+
+public class ChronoUnitDemo {
+
+    public static void main(String[] args) {
+
+        LocalDate start =
+                LocalDate.of(
+                        2026,
+                        9,
+                        1
+                );
+
+        LocalDate end =
+                LocalDate.of(
+                        2026,
+                        9,
+                        17
+                );
+
+        long days =
+                ChronoUnit.DAYS.between(
+                        start,
+                        end
+                );
+
+        System.out.println(days);
+    }
+}
+</code></pre>
+<p>结果：</p>
+<pre><code>16
+</code></pre>
+<p>计算分钟：</p>
+<pre><code>long minutes =
+        ChronoUnit.MINUTES.between(
+                LocalDateTime.of(
+                        2026, 9, 17,
+                        10, 0
+                ),
+                LocalDateTime.of(
+                        2026, 9, 17,
+                        12, 30
+                )
+        );
+
+System.out.println(minutes);
+</code></pre>
+<p>结果：</p>
+<pre><code>150
+</code></pre>
+<h2>十、Period、Duration、ChronoUnit 怎么选</h2>
+<table>
+<thead>
+<tr>
+<th>场景</th>
+<th>推荐 API</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>22 年 3 个月</td>
+<td><code>Period</code></td>
+</tr>
+<tr>
+<td>2 小时 30 分钟</td>
+<td><code>Duration</code></td>
+</tr>
+<tr>
+<td>相差多少天</td>
+<td><code>ChronoUnit.DAYS</code></td>
+</tr>
+<tr>
+<td>相差多少分钟</td>
+<td><code>ChronoUnit.MINUTES</code></td>
+</tr>
+<tr>
+<td>计算年龄</td>
+<td><code>Period</code></td>
+</tr>
+<tr>
+<td>接口执行时间</td>
+<td><code>Duration</code></td>
+</tr>
+<tr>
+<td>两日期相差天数</td>
+<td><code>ChronoUnit</code></td>
+</tr>
+</tbody>
+</table>
+<p>形成这个理解：</p>
+<pre><code>Period
+→ 人类日期单位：年月日
+
+Duration
+→ 精确时间间隔：时分秒
+
+ChronoUnit
+→ 直接得到某个单位的数字差值
+</code></pre>
+<h2>十一、Instant：时间戳与绝对时间点</h2>
+<p><code>Instant</code> 表示：</p>
+<blockquote>
+<p>UTC 时间线上的一个绝对时间点。</p>
+</blockquote>
+<p>例如：</p>
+<pre><code>Instant.now();
+</code></pre>
+<p>可能得到：</p>
+<pre><code>2026-09-17T02:30:00Z
+</code></pre>
+<p>其中：</p>
+<pre><code>Z = UTC
+</code></pre>
+<h3>11.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>69</td>
+<td>当前时间点</td>
+<td><code>Instant</code></td>
+<td><code>now()</code></td>
+<td>无</td>
+<td>获取当前 UTC 时间点</td>
+</tr>
+<tr>
+<td>70</td>
+<td>Instant</td>
+<td><code>Instant</code></td>
+<td><code>ofEpochMilli()</code></td>
+<td><code>long epochMilli</code></td>
+<td>毫秒时间戳转 Instant</td>
+</tr>
+<tr>
+<td>71</td>
+<td>毫秒时间戳</td>
+<td><code>long</code></td>
+<td><code>toEpochMilli()</code></td>
+<td>无</td>
+<td>Instant 转毫秒时间戳</td>
+</tr>
+<tr>
+<td>72</td>
+<td>新 Instant</td>
+<td><code>Instant</code></td>
+<td><code>plusSeconds()</code></td>
+<td><code>long secondsToAdd</code></td>
+<td>增加秒数</td>
+</tr>
+<tr>
+<td>73</td>
+<td>是否更早</td>
+<td><code>boolean</code></td>
+<td><code>isBefore()</code></td>
+<td><code>Instant other</code></td>
+<td>比较绝对时间点</td>
+</tr>
+<tr>
+<td>74</td>
+<td>是否更晚</td>
+<td><code>boolean</code></td>
+<td><code>isAfter()</code></td>
+<td><code>Instant other</code></td>
+<td>比较绝对时间点</td>
+</tr>
+</tbody>
+</table>
+<h3>11.2 示例</h3>
+<pre><code>import java.time.Instant;
+
+public class InstantDemo {
+
+    public static void main(String[] args) {
+
+        Instant now =
+                Instant.now();
+
+        System.out.println(now);
+
+        long timestamp =
+                now.toEpochMilli();
+
+        System.out.println(timestamp);
+
+        Instant instant =
+                Instant.ofEpochMilli(
+                        timestamp
+                );
+
+        System.out.println(instant);
+
+        Instant future =
+                now.plusSeconds(60);
+
+        System.out.println(
+                now.isBefore(future)
+        );
+
+        System.out.println(
+                future.isAfter(now)
+        );
+    }
+}
+</code></pre>
+<h2>十二、ZoneId：时区</h2>
+<p>世界各地时区不同，例如：</p>
+<pre><code>北京：UTC+8
+东京：UTC+9
+纽约：UTC-4 / UTC-5
+洛杉矶：UTC-7 / UTC-8
+</code></pre>
+<p><code>LocalDateTime</code> 本身并不知道自己的时区。</p>
+<p>例如：</p>
+<pre><code>LocalDateTime.of(
+        2026,
+        9,
+        17,
+        10,
+        0
+);
+</code></pre>
+<p>只表示：</p>
+<pre><code>2026-09-17 10:00
+</code></pre>
+<p>但不知道它究竟是：</p>
+<pre><code>北京 10:00
+东京 10:00
+纽约 10:00
+</code></pre>
+<p>所以需要：</p>
+<pre><code>ZoneId
+</code></pre>
+<h3>12.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>75</td>
+<td>系统默认时区</td>
+<td><code>ZoneId</code></td>
+<td><code>systemDefault()</code></td>
+<td>无</td>
+<td>获取 JVM 默认时区</td>
+</tr>
+<tr>
+<td>76</td>
+<td>指定时区</td>
+<td><code>ZoneId</code></td>
+<td><code>of()</code></td>
+<td><code>String zoneId</code></td>
+<td>根据地区名称获取时区</td>
+</tr>
+<tr>
+<td>77</td>
+<td>所有时区 ID</td>
+<td><code>Set&lt;String&gt;</code></td>
+<td><code>getAvailableZoneIds()</code></td>
+<td>无</td>
+<td>获取 Java 支持的时区 ID</td>
+</tr>
+</tbody>
+</table>
+<h3>12.2 示例</h3>
+<pre><code>import java.time.ZoneId;
+
+public class ZoneIdDemo {
+
+    public static void main(String[] args) {
+
+        ZoneId system =
+                ZoneId.systemDefault();
+
+        System.out.println(system);
+
+        ZoneId shanghai =
+                ZoneId.of(
+                        "Asia/Shanghai"
+                );
+
+        ZoneId tokyo =
+                ZoneId.of(
+                        "Asia/Tokyo"
+                );
+
+        ZoneId newYork =
+                ZoneId.of(
+                        "America/New_York"
+                );
+
+        System.out.println(shanghai);
+        System.out.println(tokyo);
+        System.out.println(newYork);
+    }
+}
+</code></pre>
+<p>实际开发更推荐：</p>
+<pre><code>Asia/Shanghai
+America/New_York
+Europe/London
+</code></pre>
+<p>而不是仅写：</p>
+<pre><code>GMT+8
+</code></pre>
+<p>因为地区型时区能够正确处理：</p>
+<pre><code>夏令时 DST
+历史时区变化
+地区时区规则
+</code></pre>
+<h2>十三、ZonedDateTime：日期时间 + 时区</h2>
+<p>可以简单理解为：</p>
+<pre><code>LocalDateTime + ZoneId
+</code></pre>
+<p>例如：</p>
+<pre><code>2026-09-17T10:00+08:00[Asia/Shanghai]
+</code></pre>
+<h3>13.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>78</td>
+<td>当前带时区时间</td>
+<td><code>ZonedDateTime</code></td>
+<td><code>now()</code></td>
+<td>无</td>
+<td>获取当前系统时区日期时间</td>
+</tr>
+<tr>
+<td>79</td>
+<td>带时区时间</td>
+<td><code>ZonedDateTime</code></td>
+<td><code>of()</code></td>
+<td><code>LocalDateTime localDateTime, ZoneId zone</code></td>
+<td>将日期时间绑定时区</td>
+</tr>
+<tr>
+<td>80</td>
+<td>新时区时间</td>
+<td><code>ZonedDateTime</code></td>
+<td><code>withZoneSameInstant()</code></td>
+<td><code>ZoneId zone</code></td>
+<td>保持同一瞬间转换时区</td>
+</tr>
+<tr>
+<td>81</td>
+<td>时区</td>
+<td><code>ZoneId</code></td>
+<td><code>getZone()</code></td>
+<td>无</td>
+<td>获取时区</td>
+</tr>
+<tr>
+<td>82</td>
+<td>绝对时间点</td>
+<td><code>Instant</code></td>
+<td><code>toInstant()</code></td>
+<td>无</td>
+<td>转换为 Instant</td>
+</tr>
+<tr>
+<td>83</td>
+<td>本地日期时间</td>
+<td><code>LocalDateTime</code></td>
+<td><code>toLocalDateTime()</code></td>
+<td>无</td>
+<td>去掉时区信息</td>
+</tr>
+</tbody>
+</table>
+<h3>13.2 示例：北京时间转换为纽约时间</h3>
+<pre><code>import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+public class ZonedDateTimeDemo {
+
+    public static void main(String[] args) {
+
+        LocalDateTime local =
+                LocalDateTime.of(
+                        2026,
+                        9,
+                        17,
+                        20,
+                        0
+                );
+
+        ZoneId china =
+                ZoneId.of(
+                        "Asia/Shanghai"
+                );
+
+        ZonedDateTime chinaTime =
+                local.atZone(china);
+
+        System.out.println(chinaTime);
+
+        ZonedDateTime newYorkTime =
+                chinaTime.withZoneSameInstant(
+                        ZoneId.of(
+                                "America/New_York"
+                        )
+                );
+
+        System.out.println(newYorkTime);
+    }
+}
+</code></pre>
+<p>其中：</p>
+<pre><code>withZoneSameInstant()
+</code></pre>
+<p>表示：</p>
+<blockquote>
+<p>保持现实世界中的同一个瞬间不变，只改变观察这个时间点所使用的时区。</p>
+</blockquote>
+<h2>十四、OffsetDateTime：日期时间 + UTC 偏移量</h2>
+<p><code>OffsetDateTime</code> 例如：</p>
+<pre><code>2026-09-17T10:30:00+08:00
+</code></pre>
+<p>它记录：</p>
+<pre><code>日期
++
+时间
++
+UTC 偏移量
+</code></pre>
+<p>与 <code>ZonedDateTime</code> 的区别：</p>
+<pre><code>OffsetDateTime
+2026-09-17T10:00+08:00
+
+ZonedDateTime
+2026-09-17T10:00+08:00[Asia/Shanghai]
+</code></pre>
+<p>前者只知道：</p>
+<pre><code>+08:00
+</code></pre>
+<p>后者知道：</p>
+<pre><code>Asia/Shanghai
+</code></pre>
+<h3>14.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>84</td>
+<td>当前偏移日期时间</td>
+<td><code>OffsetDateTime</code></td>
+<td><code>now()</code></td>
+<td>无</td>
+<td>获取当前日期时间和 UTC 偏移量</td>
+</tr>
+<tr>
+<td>85</td>
+<td>绝对时间点</td>
+<td><code>Instant</code></td>
+<td><code>toInstant()</code></td>
+<td>无</td>
+<td>转换为 Instant</td>
+</tr>
+</tbody>
+</table>
+<h3>14.2 示例</h3>
+<pre><code>import java.time.Instant;
+import java.time.OffsetDateTime;
+
+public class OffsetDateTimeDemo {
+
+    public static void main(String[] args) {
+
+        OffsetDateTime now =
+                OffsetDateTime.now();
+
+        System.out.println(now);
+
+        Instant instant =
+                now.toInstant();
+
+        System.out.println(instant);
+    }
+}
+</code></pre>
+<h2>十五、TemporalAdjusters：日期规则计算</h2>
+<p>真实业务中经常需要：</p>
+<pre><code>本月第一天
+本月最后一天
+下个月第一天
+今年最后一天
+下一个星期一
+</code></pre>
+<p>这时可以使用：</p>
+<pre><code>TemporalAdjusters
+</code></pre>
+<h3>15.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>86</td>
+<td>调整器</td>
+<td><code>TemporalAdjuster</code></td>
+<td><code>firstDayOfMonth()</code></td>
+<td>无</td>
+<td>本月第一天</td>
+</tr>
+<tr>
+<td>87</td>
+<td>调整器</td>
+<td><code>TemporalAdjuster</code></td>
+<td><code>lastDayOfMonth()</code></td>
+<td>无</td>
+<td>本月最后一天</td>
+</tr>
+<tr>
+<td>88</td>
+<td>调整器</td>
+<td><code>TemporalAdjuster</code></td>
+<td><code>firstDayOfNextMonth()</code></td>
+<td>无</td>
+<td>下个月第一天</td>
+</tr>
+<tr>
+<td>89</td>
+<td>调整器</td>
+<td><code>TemporalAdjuster</code></td>
+<td><code>firstDayOfYear()</code></td>
+<td>无</td>
+<td>今年第一天</td>
+</tr>
+<tr>
+<td>90</td>
+<td>调整器</td>
+<td><code>TemporalAdjuster</code></td>
+<td><code>lastDayOfYear()</code></td>
+<td>无</td>
+<td>今年最后一天</td>
+</tr>
+<tr>
+<td>91</td>
+<td>调整器</td>
+<td><code>TemporalAdjuster</code></td>
+<td><code>next()</code></td>
+<td><code>DayOfWeek dayOfWeek</code></td>
+<td>下一个指定星期</td>
+</tr>
+<tr>
+<td>92</td>
+<td>调整器</td>
+<td><code>TemporalAdjuster</code></td>
+<td><code>nextOrSame()</code></td>
+<td><code>DayOfWeek dayOfWeek</code></td>
+<td>当天或下一个指定星期</td>
+</tr>
+<tr>
+<td>93</td>
+<td>调整器</td>
+<td><code>TemporalAdjuster</code></td>
+<td><code>previous()</code></td>
+<td><code>DayOfWeek dayOfWeek</code></td>
+<td>上一个指定星期</td>
+</tr>
+</tbody>
+</table>
+<h3>15.2 示例</h3>
+<pre><code>import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.temporal.TemporalAdjusters;
+
+public class AdjusterDemo {
+
+    public static void main(String[] args) {
+
+        LocalDate today =
+                LocalDate.now();
+
+        LocalDate firstDay =
+                today.with(
+                        TemporalAdjusters
+                                .firstDayOfMonth()
+                );
+
+        LocalDate lastDay =
+                today.with(
+                        TemporalAdjusters
+                                .lastDayOfMonth()
+                );
+
+        LocalDate nextMonday =
+                today.with(
+                        TemporalAdjusters.next(
+                                DayOfWeek.MONDAY
+                        )
+                );
+
+        System.out.println(firstDay);
+        System.out.println(lastDay);
+        System.out.println(nextMonday);
+    }
+}
+</code></pre>
+<h2>十六、YearMonth：年月</h2>
+<p><code>YearMonth</code> 很适合表示：</p>
+<pre><code>账单月份
+工资月份
+统计月份
+某个月有多少天
+</code></pre>
+<p>例如：</p>
+<pre><code>2026-09
+</code></pre>
+<h3>16.1 API 表</h3>
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>返回值</th>
+<th>返回值类型</th>
+<th>方法名</th>
+<th>参数列表</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>94</td>
+<td>指定年月</td>
+<td><code>YearMonth</code></td>
+<td><code>of()</code></td>
+<td><code>int year, int month</code></td>
+<td>创建指定年月</td>
+</tr>
+<tr>
+<td>95</td>
+<td>月份天数</td>
+<td><code>int</code></td>
+<td><code>lengthOfMonth()</code></td>
+<td>无</td>
+<td>获取该月天数</td>
+</tr>
+<tr>
+<td>96</td>
+<td>月末日期</td>
+<td><code>LocalDate</code></td>
+<td><code>atEndOfMonth()</code></td>
+<td>无</td>
+<td>获取该月最后一天</td>
+</tr>
+</tbody>
+</table>
+<h3>16.2 示例</h3>
+<pre><code>import java.time.YearMonth;
+
+public class YearMonthDemo {
+
+    public static void main(String[] args) {
+
+        YearMonth month =
+                YearMonth.of(
+                        2026,
+                        2
+                );
+
+        System.out.println(month);
+
+        System.out.println(
+                month.lengthOfMonth()
+        );
+
+        System.out.println(
+                month.atEndOfMonth()
+        );
+    }
+}
+</code></pre>
+<p>结果：</p>
+<pre><code>2026-02
+28
+2026-02-28
+</code></pre>
+<h2>十七、DayOfWeek 与 Month</h2>
+<p><code>DayOfWeek</code> 和 <code>Month</code> 都属于枚举类型。</p>
+<p>例如：</p>
+<pre><code>DayOfWeek.MONDAY
+Month.JANUARY
+</code></pre>
+<p>示例：</p>
+<pre><code>import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+
+public class EnumDemo {
+
+    public static void main(String[] args) {
+
+        LocalDate date =
+                LocalDate.of(
+                        2026,
+                        9,
+                        17
+                );
+
+        DayOfWeek week =
+                date.getDayOfWeek();
+
+        Month month =
+                date.getMonth();
+
+        System.out.println(week);
+        System.out.println(month);
+
+        if (date.getDayOfWeek()
+                == DayOfWeek.SATURDAY) {
+
+            System.out.println("星期六");
+        }
+    }
+}
+</code></pre>
+<h2>十八、日期时间类型转换关系</h2>
+<p>整个 Java 日期时间体系最重要的一张图：</p>
+<pre><code>               LocalDate
+             2026-09-17
+                  │
+                  │ atStartOfDay()
+                  ↓
+            LocalDateTime
+      2026-09-17T10:30:00
+                  │
+                  │ atZone()
+                  ↓
+           ZonedDateTime
+2026-09-17T10:30+08:00[Asia/Shanghai]
+                  │
+                  │ toInstant()
+                  ↓
+               Instant
+          全球绝对时间点
+                  │
+                  │ toEpochMilli()
+                  ↓
+                long
+              时间戳
+</code></pre>
+<p>字符串转换关系：</p>
+<pre><code>String
+ ↑      ↓
+format  parse
+ ↑      ↓
+LocalDate / LocalDateTime
+</code></pre>
+<p>理解这张图，比死记大量方法更重要。</p>
+<h2>十九、Java Web 中常见日期字段</h2>
+<p>例如用户实体：</p>
+<pre><code>public class User {
+
+    private Long id;
+
+    private String username;
+
+    private LocalDate birthday;
+
+    private LocalDateTime createTime;
+
+    private LocalDateTime updateTime;
+}
+</code></pre>
+<p>对应关系：</p>
+<pre><code>birthday
+→ LocalDate
+
+createTime
+→ LocalDateTime
+
+updateTime
+→ LocalDateTime
+</code></pre>
+<p>如果系统涉及：</p>
+<pre><code>跨国业务
+全球服务器
+分布式系统
+不同地区用户
+</code></pre>
+<p>则应进一步考虑：</p>
+<pre><code>Instant
+OffsetDateTime
+ZonedDateTime
+</code></pre>
+<h2>二十、MySQL 与 Java 日期类型映射</h2>
+<p>常见对应关系：</p>
+<table>
+<thead>
+<tr>
+<th>Java 类型</th>
+<th>MySQL 类型</th>
+<th>常见业务</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>LocalDate</code></td>
+<td><code>DATE</code></td>
+<td>生日、日期</td>
+</tr>
+<tr>
+<td><code>LocalTime</code></td>
+<td><code>TIME</code></td>
+<td>营业时间</td>
+</tr>
+<tr>
+<td><code>LocalDateTime</code></td>
+<td><code>DATETIME</code></td>
+<td>创建时间、更新时间</td>
+</tr>
+<tr>
+<td><code>Instant</code></td>
+<td><code>TIMESTAMP</code>/ UTC 时间存储方案</td>
+<td>跨时区绝对时间</td>
+</tr>
+</tbody>
+</table>
+<p>例如：</p>
+<pre><code>private LocalDateTime createTime;
+</code></pre>
+<p>数据库：</p>
+<pre><code>create_time DATETIME
+</code></pre>
+<p>在 Spring Boot + MyBatis 中通常可以直接完成类型映射。</p>
+<h2>二十一、旧日期 API：Date、Calendar、SimpleDateFormat</h2>
+<p>旧 Java 项目经常看到：</p>
+<pre><code>java.util.Date
+java.util.Calendar
+java.text.SimpleDateFormat
+</code></pre>
+<p>现代 Java 更推荐：</p>
+<pre><code>Date
+↓
+Instant
+
+Calendar
+↓
+LocalDateTime / ZonedDateTime
+
+SimpleDateFormat
+↓
+DateTimeFormatter
+</code></pre>
+<p>这些旧 API 目前主要达到：</p>
+<blockquote>
+<p>能看懂、能维护、会转换即可。</p>
+</blockquote>
+<h2>二十二、Date 与现代 API 转换</h2>
+<h3>22.1 Date → Instant</h3>
+<pre><code>Date date =
+        new Date();
+
+Instant instant =
+        date.toInstant();
+</code></pre>
+<h3>22.2 Instant → Date</h3>
+<pre><code>Instant instant =
+        Instant.now();
+
+Date date =
+        Date.from(instant);
+</code></pre>
+<h3>22.3 Date → LocalDateTime</h3>
+<pre><code>Date date =
+        new Date();
+
+LocalDateTime dateTime =
+        LocalDateTime.ofInstant(
+                date.toInstant(),
+                ZoneId.systemDefault()
+        );
+</code></pre>
+<h2>二十三、为什么不推荐继续主学 SimpleDateFormat</h2>
+<p>旧代码：</p>
+<pre><code>SimpleDateFormat formatter =
+        new SimpleDateFormat(
+                "yyyy-MM-dd HH:mm:ss"
+        );
+</code></pre>
+<p>一个重要问题：</p>
+<blockquote>
+<p><code>SimpleDateFormat</code> 不是线程安全的。</p>
+</blockquote>
+<p>在 Web 应用中，如果多个线程共享同一个实例，可能发生线程安全问题。</p>
+<p>现代 Java：</p>
+<pre><code>DateTimeFormatter formatter =
+        DateTimeFormatter.ofPattern(
+                "yyyy-MM-dd HH:mm:ss"
+        );
+</code></pre>
+<p><code>DateTimeFormatter</code>：</p>
+<pre><code>不可变
+线程安全
+</code></pre>
+<p>所以现代 Java 项目应优先使用：</p>
+<pre><code>java.time
+</code></pre>
+<h2>二十四、看到业务应该立即想到什么类型</h2>
+<h3>生日</h3>
+<pre><code>LocalDate
+</code></pre>
+<h3>每天 18:00</h3>
+<pre><code>LocalTime
+</code></pre>
+<h3>2026-09-17 18:30</h3>
+<pre><code>LocalDateTime
+</code></pre>
+<h3>全球唯一时间点</h3>
+<pre><code>Instant
+</code></pre>
+<h3>北京 / 东京 / 纽约时区</h3>
+<pre><code>ZoneId
+</code></pre>
+<h3>带时区日期时间</h3>
+<pre><code>ZonedDateTime
+</code></pre>
+<h3>REST API 中携带 UTC 偏移量</h3>
+<pre><code>OffsetDateTime
+</code></pre>
+<h3>日期格式转换</h3>
+<pre><code>DateTimeFormatter
+</code></pre>
+<h3>22 岁 3 个月</h3>
+<pre><code>Period
+</code></pre>
+<h3>运行了 2 小时 30 分钟</h3>
+<pre><code>Duration
+</code></pre>
+<h3>相差 16 天</h3>
+<pre><code>ChronoUnit.DAYS
+</code></pre>
+<h2>二十五、96 个核心 API 总结</h2>
+<p>本文共整理：</p>
+<pre><code>96 个核心日期时间 API / 常用调用
+</code></pre>
+<p>可以按优先级学习。</p>
+<h3>第一优先级：Java SE 必须熟练</h3>
+<pre><code>LocalDate
+LocalTime
+LocalDateTime
+DateTimeFormatter
+Period
+Duration
+ChronoUnit
+</code></pre>
+<h3>第二优先级：Java Web 必须理解并逐渐熟练</h3>
+<pre><code>Instant
+ZoneId
+ZonedDateTime
+OffsetDateTime
+</code></pre>
+<h3>第三优先级：业务增强</h3>
+<pre><code>TemporalAdjusters
+YearMonth
+DayOfWeek
+Month
+</code></pre>
+<h3>兼容旧代码</h3>
+<pre><code>Date
+Calendar
+SimpleDateFormat
+</code></pre>
+<h2>二十六、综合案例：订单支付超时系统</h2>
+<p>需求：</p>
+<blockquote>
+<p>用户创建订单后，必须在 30 分钟内完成支付，否则订单自动过期。同时需要展示订单创建时间、过期时间以及剩余支付分钟数。</p>
+</blockquote>
+<p>这个案例会综合使用：</p>
+<pre><code>LocalDateTime
+plusMinutes()
+isAfter()
+Duration
+DateTimeFormatter
+format()
+</code></pre>
+<h3>26.1 完整代码</h3>
+<pre><code>import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class OrderTimeDemo {
+
+    public static void main(String[] args) {
+
+        // =========================
+        // 1. 创建订单
+        // =========================
+
+        LocalDateTime createTime =
+                LocalDateTime.now();
+
+
+        // =========================
+        // 2. 30 分钟后过期
+        // =========================
+
+        LocalDateTime expireTime =
+                createTime.plusMinutes(30);
+
+
+        // =========================
+        // 3. 获取当前时间
+        // =========================
+
+        LocalDateTime now =
+                LocalDateTime.now();
+
+
+        // =========================
+        // 4. 判断订单是否过期
+        // =========================
+
+        boolean expired =
+                now.isAfter(expireTime);
+
+
+        // =========================
+        // 5. 计算剩余时间
+        // =========================
+
+        long remainingMinutes = 0;
+
+        if (!expired) {
+
+            Duration duration =
+                    Duration.between(
+                            now,
+                            expireTime
+                    );
+
+            remainingMinutes =
+                    duration.toMinutes();
+        }
+
+
+        // =========================
+        // 6. 创建格式器
+        // =========================
+
+        DateTimeFormatter formatter =
+                DateTimeFormatter.ofPattern(
+                        "yyyy-MM-dd HH:mm:ss"
+                );
+
+
+        // =========================
+        // 7. 日期时间转字符串
+        // =========================
+
+        String createTimeText =
+                createTime.format(formatter);
+
+        String expireTimeText =
+                expireTime.format(formatter);
+
+
+        // =========================
+        // 8. 输出订单信息
+        // =========================
+
+        System.out.println(
+                "订单创建时间：" +
+                createTimeText
+        );
+
+        System.out.println(
+                "订单过期时间：" +
+                expireTimeText
+        );
+
+        if (expired) {
+
+            System.out.println(
+                    "订单状态：已过期"
+            );
+
+        } else {
+
+            System.out.println(
+                    "订单状态：待支付"
+            );
+
+            System.out.println(
+                    "剩余时间：" +
+                    remainingMinutes +
+                    "分钟"
+            );
+        }
+    }
+}
+</code></pre>
+<h2>二十七、综合案例执行链</h2>
+<p>上面的程序，本质上就是：</p>
+<pre><code>LocalDateTime.now()
+        ↓
+获得订单创建时间
+
+plusMinutes(30)
+        ↓
+计算过期时间
+
+LocalDateTime.now()
+        ↓
+获得当前时间
+
+isAfter()
+        ↓
+判断订单是否过期
+
+Duration.between()
+        ↓
+计算剩余时间
+
+DateTimeFormatter
+        ↓
+定义显示格式
+
+format()
+        ↓
+转换成前端需要的字符串
+</code></pre>
+<p>这就是日期 API 在真实业务中的使用方式。</p>
+<h2>二十八、升级到真实 Spring Boot 业务</h2>
+<p>未来订单实体可能是：</p>
+<pre><code>public class Order {
+
+    private Long id;
+
+    private LocalDateTime createTime;
+
+    private LocalDateTime expireTime;
+
+    private LocalDateTime payTime;
+}
+</code></pre>
+<p>创建订单：</p>
+<pre><code>LocalDateTime now =
+        LocalDateTime.now();
+
+order.setCreateTime(now);
+
+order.setExpireTime(
+        now.plusMinutes(30)
+);
+</code></pre>
+<p>判断订单是否过期：</p>
+<pre><code>if (LocalDateTime.now()
+        .isAfter(
+                order.getExpireTime()
+        )) {
+
+    order.setStatus(
+            "CANCELLED"
+    );
+}
+</code></pre>
+<p>支付：</p>
+<pre><code>order.setPayTime(
+        LocalDateTime.now()
+);
+</code></pre>
+<p>因此日期时间 API 的本质并不是：</p>
+<blockquote>
+<p>“做日期计算题”。</p>
+</blockquote>
+<p>而是：</p>
+<blockquote>
+<p><strong>描述业务世界中的时间状态、时间顺序和时间规则。</strong></p>
+</blockquote>
+<h2>二十九、最终知识结构</h2>
+<p>最后把 Java 日期 API 压缩成这一张认知图：</p>
+<pre><code>日期
+└── LocalDate
+
+时间
+└── LocalTime
+
+日期 + 时间
+└── LocalDateTime
+
+格式转换
+└── DateTimeFormatter
+
+年月日差
+└── Period
+
+时分秒间隔
+└── Duration
+
+指定单位差值
+└── ChronoUnit
+
+绝对时间点
+└── Instant
+
+时区
+└── ZoneId
+
+日期时间 + 地区时区
+└── ZonedDateTime
+
+日期时间 + UTC偏移量
+└── OffsetDateTime
+
+复杂日期规则
+└── TemporalAdjusters
+
+年月
+└── YearMonth
+
+星期
+└── DayOfWeek
+
+月份
+└── Month
+</code></pre>
+<p>真正掌握的标准不是能背出 96 个 API，而是面对业务需求时能够立即判断：</p>
+<pre><code>需要什么日期类型？
+需要什么时间类型？
+是否涉及时区？
+是否需要格式化？
+是否需要计算时间差？
+是否需要比较先后？
+是否需要转成时间戳？
+</code></pre>
+<p>当这些问题能够自然映射到对应 API 时，Java 日期时间体系就真正进入了你的长期记忆。</p>
+<h2>三十、自测题</h2>
+<p>学完本文后，可以不看答案完成下面几个任务：</p>
+<ol>
+<li>获取今天日期。</li>
+<li>获取当前日期时间。</li>
+<li>创建 <code>2026-12-01</code>。</li>
+<li>计算 100 天后的日期。</li>
+<li>判断两个日期谁更早。</li>
+<li>把 <code>2026-09-17 18:30:00</code> 转成 <code>LocalDateTime</code>。</li>
+<li>把 <code>LocalDateTime</code> 格式化成字符串。</li>
+<li>根据生日计算年龄。</li>
+<li>计算两个时间之间相差多少分钟。</li>
+<li>获取本月最后一天。</li>
+<li>将北京时间转换成纽约时间。</li>
+<li>将 <code>Instant</code> 转换成毫秒时间戳。</li>
+<li>编写一个 30 分钟订单过期逻辑。</li>
+</ol>
+<p>如果这些任务能够独立完成，Java 日期时间 API 的核心部分就已经掌握。</p>

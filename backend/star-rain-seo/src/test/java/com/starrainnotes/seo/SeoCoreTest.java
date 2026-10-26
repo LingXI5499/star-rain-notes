@@ -68,7 +68,15 @@ class SeoCoreTest {
         String content = new RobotsServiceImpl(new CanonicalUrlResolver(config)).robotsTxt();
         assertTrue(content.contains("Disallow: /api/\n"));
         assertTrue(content.contains("Allow: /api/public/\n"));
-        assertTrue(content.contains("Disallow: /useradmin/\n"));
+        assertFalse(content.contains("/useradmin"));
+        for (String path : java.util.List.of("/login", "/reset-password", "/invitation/", "/center",
+                "/learning", "/accounts", "/blog/manage", "/tutorials/manage", "/portfolio/manage")) {
+            assertTrue(content.contains("Disallow: " + path + "\n"), path);
+        }
+        assertFalse(content.contains("Disallow: /blog\n"));
+        assertFalse(content.contains("Disallow: /tutorials\n"));
+        assertFalse(content.contains("Disallow: /portfolio\n"));
+        assertFalse(content.contains("Disallow: /english\n"));
         assertTrue(content.endsWith("Sitemap: https://example.org/sitemap.xml\n"));
     }
 

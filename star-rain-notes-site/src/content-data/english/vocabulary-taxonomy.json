@@ -1,0 +1,1174 @@
+{
+  "schemaVersion": 1,
+  "taxonomyId": "english-vocabulary",
+  "categories": [
+    {
+      "code": "T01",
+      "slug": "t01",
+      "title": "基础概念、数量与描述",
+      "titleEn": "Basic Concepts, Quantity & Description",
+      "order": 1,
+      "topics": [
+        {
+          "code": "T01-01",
+          "slug": "t01-01",
+          "title": "时间、日期与历法",
+          "order": 1
+        },
+        {
+          "code": "T01-02",
+          "slug": "t01-02",
+          "title": "时间顺序与频率",
+          "order": 2
+        },
+        {
+          "code": "T01-03",
+          "slug": "t01-03",
+          "title": "数字、基数与序数",
+          "order": 3
+        },
+        {
+          "code": "T01-04",
+          "slug": "t01-04",
+          "title": "数量、测量与单位",
+          "order": 4
+        },
+        {
+          "code": "T01-05",
+          "slug": "t01-05",
+          "title": "空间、方位与位置",
+          "order": 5
+        },
+        {
+          "code": "T01-06",
+          "slug": "t01-06",
+          "title": "颜色与色调",
+          "order": 6
+        },
+        {
+          "code": "T01-07",
+          "slug": "t01-07",
+          "title": "形状与几何外观",
+          "order": 7
+        },
+        {
+          "code": "T01-08",
+          "slug": "t01-08",
+          "title": "材料与物质",
+          "order": 8
+        },
+        {
+          "code": "T01-09",
+          "slug": "t01-09",
+          "title": "尺寸与质地",
+          "order": 9
+        },
+        {
+          "code": "T01-10",
+          "slug": "t01-10",
+          "title": "状态与程度",
+          "order": 10
+        },
+        {
+          "code": "T01-11",
+          "slug": "t01-11",
+          "title": "比较、倍数与范围",
+          "order": 11
+        }
+      ]
+    },
+    {
+      "code": "T02",
+      "slug": "t02",
+      "title": "人体与健康",
+      "titleEn": "Body & Health",
+      "order": 2,
+      "topics": [
+        {
+          "code": "T02-01",
+          "slug": "t02-01",
+          "title": "人体外部部位",
+          "order": 1
+        },
+        {
+          "code": "T02-02",
+          "slug": "t02-02",
+          "title": "器官、骨骼与肌肉",
+          "order": 2
+        },
+        {
+          "code": "T02-03",
+          "slug": "t02-03",
+          "title": "感官与身体知觉",
+          "order": 3
+        },
+        {
+          "code": "T02-04",
+          "slug": "t02-04",
+          "title": "身体动作与姿势",
+          "order": 4
+        },
+        {
+          "code": "T02-05",
+          "slug": "t02-05",
+          "title": "生命阶段与生长",
+          "order": 5
+        },
+        {
+          "code": "T02-06",
+          "slug": "t02-06",
+          "title": "身体状态与生理需要",
+          "order": 6
+        },
+        {
+          "code": "T02-07",
+          "slug": "t02-07",
+          "title": "疾病、伤害与症状",
+          "order": 7
+        },
+        {
+          "code": "T02-08",
+          "slug": "t02-08",
+          "title": "医疗人物与机构",
+          "order": 8
+        },
+        {
+          "code": "T02-09",
+          "slug": "t02-09",
+          "title": "诊断治疗与保健",
+          "order": 9
+        },
+        {
+          "code": "T02-10",
+          "slug": "t02-10",
+          "title": "个人卫生与身体护理",
+          "order": 10
+        }
+      ]
+    },
+    {
+      "code": "T03",
+      "slug": "t03",
+      "title": "自然、地球与宇宙",
+      "titleEn": "Nature, Earth & Space",
+      "order": 3,
+      "topics": [
+        {
+          "code": "T03-01",
+          "slug": "t03-01",
+          "title": "宇宙与天体",
+          "order": 1
+        },
+        {
+          "code": "T03-02",
+          "slug": "t03-02",
+          "title": "季节、天气与气候",
+          "order": 2
+        },
+        {
+          "code": "T03-03",
+          "slug": "t03-03",
+          "title": "自然现象与灾害",
+          "order": 3
+        },
+        {
+          "code": "T03-04",
+          "slug": "t03-04",
+          "title": "地形、地貌与水域",
+          "order": 4
+        },
+        {
+          "code": "T03-05",
+          "slug": "t03-05",
+          "title": "天然资源与矿物",
+          "order": 5
+        },
+        {
+          "code": "T03-06",
+          "slug": "t03-06",
+          "title": "动物概念与主要类群",
+          "order": 6
+        },
+        {
+          "code": "T03-07",
+          "slug": "t03-07",
+          "title": "野生动物",
+          "order": 7
+        },
+        {
+          "code": "T03-08",
+          "slug": "t03-08",
+          "title": "家养动物与宠物",
+          "order": 8
+        },
+        {
+          "code": "T03-09",
+          "slug": "t03-09",
+          "title": "鸟类、鱼类与昆虫实例",
+          "order": 9
+        },
+        {
+          "code": "T03-10",
+          "slug": "t03-10",
+          "title": "植物类别",
+          "order": 10
+        },
+        {
+          "code": "T03-11",
+          "slug": "t03-11",
+          "title": "植物部位与生长",
+          "order": 11
+        },
+        {
+          "code": "T03-12",
+          "slug": "t03-12",
+          "title": "环境、生态与保护",
+          "order": 12
+        }
+      ]
+    },
+    {
+      "code": "T04",
+      "slug": "t04",
+      "title": "食物、烹饪与餐饮",
+      "titleEn": "Food, Cooking & Eating",
+      "order": 4,
+      "topics": [
+        {
+          "code": "T04-01",
+          "slug": "t04-01",
+          "title": "谷物、面食与主食",
+          "order": 1
+        },
+        {
+          "code": "T04-02",
+          "slug": "t04-02",
+          "title": "肉类、蛋与乳制品",
+          "order": 2
+        },
+        {
+          "code": "T04-03",
+          "slug": "t04-03",
+          "title": "水产与海鲜",
+          "order": 3
+        },
+        {
+          "code": "T04-04",
+          "slug": "t04-04",
+          "title": "蔬菜与食用菌",
+          "order": 4
+        },
+        {
+          "code": "T04-05",
+          "slug": "t04-05",
+          "title": "水果与坚果",
+          "order": 5
+        },
+        {
+          "code": "T04-06",
+          "slug": "t04-06",
+          "title": "饮料",
+          "order": 6
+        },
+        {
+          "code": "T04-07",
+          "slug": "t04-07",
+          "title": "调味品与烹饪",
+          "order": 7
+        },
+        {
+          "code": "T04-08",
+          "slug": "t04-08",
+          "title": "烹饪方法与动作",
+          "order": 8
+        },
+        {
+          "code": "T04-09",
+          "slug": "t04-09",
+          "title": "餐具与厨房器具",
+          "order": 9
+        },
+        {
+          "code": "T04-10",
+          "slug": "t04-10",
+          "title": "用餐与餐厅",
+          "order": 10
+        }
+      ]
+    },
+    {
+      "code": "T05",
+      "slug": "t05",
+      "title": "衣着与个人用品",
+      "titleEn": "Clothing & Personal Belongings",
+      "order": 5,
+      "topics": [
+        {
+          "code": "T05-01",
+          "slug": "t05-01",
+          "title": "衣服类型与款式",
+          "order": 1
+        },
+        {
+          "code": "T05-02",
+          "slug": "t05-02",
+          "title": "鞋袜",
+          "order": 2
+        },
+        {
+          "code": "T05-03",
+          "slug": "t05-03",
+          "title": "帽子、围巾、手套与饰品",
+          "order": 3
+        },
+        {
+          "code": "T05-04",
+          "slug": "t05-04",
+          "title": "眼镜、首饰与手表",
+          "order": 4
+        },
+        {
+          "code": "T05-05",
+          "slug": "t05-05",
+          "title": "背包、钱包与行李",
+          "order": 5
+        },
+        {
+          "code": "T05-06",
+          "slug": "t05-06",
+          "title": "随身小件及配件",
+          "order": 6
+        },
+        {
+          "code": "T05-07",
+          "slug": "t05-07",
+          "title": "穿脱、穿搭与洗护",
+          "order": 7
+        }
+      ]
+    },
+    {
+      "code": "T06",
+      "slug": "t06",
+      "title": "家庭、住宅与家居",
+      "titleEn": "Home, Housing & Domestic Life",
+      "order": 6,
+      "topics": [
+        {
+          "code": "T06-01",
+          "slug": "t06-01",
+          "title": "住宅类型与居住方式",
+          "order": 1
+        },
+        {
+          "code": "T06-02",
+          "slug": "t06-02",
+          "title": "房间与室内空间",
+          "order": 2
+        },
+        {
+          "code": "T06-03",
+          "slug": "t06-03",
+          "title": "建筑构件与设施",
+          "order": 3
+        },
+        {
+          "code": "T06-04",
+          "slug": "t06-04",
+          "title": "家具、桌椅与收纳",
+          "order": 4
+        },
+        {
+          "code": "T06-05",
+          "slug": "t06-05",
+          "title": "家用电器",
+          "order": 5
+        },
+        {
+          "code": "T06-06",
+          "slug": "t06-06",
+          "title": "床上用品与家用纺织品",
+          "order": 6
+        },
+        {
+          "code": "T06-07",
+          "slug": "t06-07",
+          "title": "浴室与卫浴用品",
+          "order": 7
+        },
+        {
+          "code": "T06-08",
+          "slug": "t06-08",
+          "title": "清洁、洗涤与家务工具",
+          "order": 8
+        },
+        {
+          "code": "T06-09",
+          "slug": "t06-09",
+          "title": "维修工具与家庭安全",
+          "order": 9
+        },
+        {
+          "code": "T06-10",
+          "slug": "t06-10",
+          "title": "家庭活动与生活情境",
+          "order": 10
+        }
+      ]
+    },
+    {
+      "code": "T07",
+      "slug": "t07",
+      "title": "城市、交通与出行",
+      "titleEn": "Places, Transport & Travel",
+      "order": 7,
+      "topics": [
+        {
+          "code": "T07-01",
+          "slug": "t07-01",
+          "title": "公共机构与办事地点",
+          "order": 1
+        },
+        {
+          "code": "T07-02",
+          "slug": "t07-02",
+          "title": "商店及商业场所",
+          "order": 2
+        },
+        {
+          "code": "T07-03",
+          "slug": "t07-03",
+          "title": "公共服务与设施",
+          "order": 3
+        },
+        {
+          "code": "T07-04",
+          "slug": "t07-04",
+          "title": "道路、桥梁与标志",
+          "order": 4
+        },
+        {
+          "code": "T07-05",
+          "slug": "t07-05",
+          "title": "陆上交通工具",
+          "order": 5
+        },
+        {
+          "code": "T07-06",
+          "slug": "t07-06",
+          "title": "航空与水上交通工具",
+          "order": 6
+        },
+        {
+          "code": "T07-07",
+          "slug": "t07-07",
+          "title": "乘车、换乘与出行流程",
+          "order": 7
+        },
+        {
+          "code": "T07-08",
+          "slug": "t07-08",
+          "title": "驾驶、道路规则与修车",
+          "order": 8
+        },
+        {
+          "code": "T07-09",
+          "slug": "t07-09",
+          "title": "旅游观光与景点",
+          "order": 9
+        },
+        {
+          "code": "T07-10",
+          "slug": "t07-10",
+          "title": "酒店、住宿与服务",
+          "order": 10
+        },
+        {
+          "code": "T07-11",
+          "slug": "t07-11",
+          "title": "快递、物流与配送",
+          "order": 11
+        }
+      ]
+    },
+    {
+      "code": "T08",
+      "slug": "t08",
+      "title": "人物、家庭与社会交往",
+      "titleEn": "People, Family & Social Life",
+      "order": 8,
+      "topics": [
+        {
+          "code": "T08-01",
+          "slug": "t08-01",
+          "title": "家庭成员与亲属",
+          "order": 1
+        },
+        {
+          "code": "T08-02",
+          "slug": "t08-02",
+          "title": "年龄、性别与身份",
+          "order": 2
+        },
+        {
+          "code": "T08-03",
+          "slug": "t08-03",
+          "title": "社会身份与称谓",
+          "order": 3
+        },
+        {
+          "code": "T08-04",
+          "slug": "t08-04",
+          "title": "人际关系与角色",
+          "order": 4
+        },
+        {
+          "code": "T08-05",
+          "slug": "t08-05",
+          "title": "人物外貌与形象",
+          "order": 5
+        },
+        {
+          "code": "T08-06",
+          "slug": "t08-06",
+          "title": "社交礼节与沟通行为",
+          "order": 6
+        },
+        {
+          "code": "T08-07",
+          "slug": "t08-07",
+          "title": "人生仪式与重要事件",
+          "order": 7
+        },
+        {
+          "code": "T08-08",
+          "slug": "t08-08",
+          "title": "家庭生活与社区组织",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "code": "T09",
+      "slug": "t09",
+      "title": "心理、情绪与人格",
+      "titleEn": "Psychology, Emotion & Personality",
+      "order": 9,
+      "topics": [
+        {
+          "code": "T09-01",
+          "slug": "t09-01",
+          "title": "基本情绪与心情",
+          "order": 1
+        },
+        {
+          "code": "T09-02",
+          "slug": "t09-02",
+          "title": "持久情感与情感关系",
+          "order": 2
+        },
+        {
+          "code": "T09-03",
+          "slug": "t09-03",
+          "title": "性格与个人特征",
+          "order": 3
+        },
+        {
+          "code": "T09-04",
+          "slug": "t09-04",
+          "title": "记忆、注意与认知",
+          "order": 4
+        },
+        {
+          "code": "T09-05",
+          "slug": "t09-05",
+          "title": "需求、意愿与动机",
+          "order": 5
+        },
+        {
+          "code": "T09-06",
+          "slug": "t09-06",
+          "title": "好坏、评价与价值判断",
+          "order": 6
+        },
+        {
+          "code": "T09-07",
+          "slug": "t09-07",
+          "title": "压力、焦虑与自我调节",
+          "order": 7
+        }
+      ]
+    },
+    {
+      "code": "T10",
+      "slug": "t10",
+      "title": "学校、教育与语言",
+      "titleEn": "Education, Learning & Languages",
+      "order": 10,
+      "topics": [
+        {
+          "code": "T10-01",
+          "slug": "t10-01",
+          "title": "学校、教室与校园设施",
+          "order": 1
+        },
+        {
+          "code": "T10-02",
+          "slug": "t10-02",
+          "title": "教师学生与学校角色",
+          "order": 2
+        },
+        {
+          "code": "T10-03",
+          "slug": "t10-03",
+          "title": "学段、学位与教育制度",
+          "order": 3
+        },
+        {
+          "code": "T10-04",
+          "slug": "t10-04",
+          "title": "学科与知识门类",
+          "order": 4
+        },
+        {
+          "code": "T10-05",
+          "slug": "t10-05",
+          "title": "学习工具与学习活动",
+          "order": 5
+        },
+        {
+          "code": "T10-06",
+          "slug": "t10-06",
+          "title": "教学、考试与评价",
+          "order": 6
+        },
+        {
+          "code": "T10-07",
+          "slug": "t10-07",
+          "title": "阅读、写作与图书资料",
+          "order": 7
+        },
+        {
+          "code": "T10-08",
+          "slug": "t10-08",
+          "title": "语言名称与交流",
+          "order": 8
+        },
+        {
+          "code": "T10-09",
+          "slug": "t10-09",
+          "title": "字母、语言与语言单位",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "T11",
+      "slug": "t11",
+      "title": "信息技术与数字生活",
+      "titleEn": "Information Technology & Digital Life",
+      "order": 11,
+      "topics": [
+        {
+          "code": "T11-01",
+          "slug": "t11-01",
+          "title": "计算机设备与硬件",
+          "order": 1
+        },
+        {
+          "code": "T11-02",
+          "slug": "t11-02",
+          "title": "移动设备与电子产品",
+          "order": 2
+        },
+        {
+          "code": "T11-03",
+          "slug": "t11-03",
+          "title": "操作系统、软件与应用",
+          "order": 3
+        },
+        {
+          "code": "T11-04",
+          "slug": "t11-04",
+          "title": "数字文件、数据与存储",
+          "order": 4
+        },
+        {
+          "code": "T11-05",
+          "slug": "t11-05",
+          "title": "互联网、网站与网络连接",
+          "order": 5
+        },
+        {
+          "code": "T11-06",
+          "slug": "t11-06",
+          "title": "网络社交、消息与媒体",
+          "order": 6
+        },
+        {
+          "code": "T11-07",
+          "slug": "t11-07",
+          "title": "密码、网络安全与隐私",
+          "order": 7
+        },
+        {
+          "code": "T11-08",
+          "slug": "t11-08",
+          "title": "数字操作与交互动作",
+          "order": 8
+        },
+        {
+          "code": "T11-09",
+          "slug": "t11-09",
+          "title": "人工智能、机器人与新技术",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "T12",
+      "slug": "t12",
+      "title": "工作、商业与金融",
+      "titleEn": "Work, Business & Money",
+      "order": 12,
+      "topics": [
+        {
+          "code": "T12-01",
+          "slug": "t12-01",
+          "title": "办公设备与办公场所",
+          "order": 1
+        },
+        {
+          "code": "T12-02",
+          "slug": "t12-02",
+          "title": "会议、团队与职场交流",
+          "order": 2
+        },
+        {
+          "code": "T12-03",
+          "slug": "t12-03",
+          "title": "职业、求职与招聘",
+          "order": 3
+        },
+        {
+          "code": "T12-04",
+          "slug": "t12-04",
+          "title": "企业、组织与管理",
+          "order": 4
+        },
+        {
+          "code": "T12-05",
+          "slug": "t12-05",
+          "title": "项目、任务与工作流程",
+          "order": 5
+        },
+        {
+          "code": "T12-06",
+          "slug": "t12-06",
+          "title": "制造、服务与行业",
+          "order": 6
+        },
+        {
+          "code": "T12-07",
+          "slug": "t12-07",
+          "title": "商品、市场与贸易",
+          "order": 7
+        },
+        {
+          "code": "T12-08",
+          "slug": "t12-08",
+          "title": "购物、消费与支付",
+          "order": 8
+        },
+        {
+          "code": "T12-09",
+          "slug": "t12-09",
+          "title": "银行、个人理财与金融",
+          "order": 9
+        },
+        {
+          "code": "T12-10",
+          "slug": "t12-10",
+          "title": "货币名称与货币单位",
+          "order": 10
+        },
+        {
+          "code": "T12-11",
+          "slug": "t12-11",
+          "title": "经济趋势与经营评价",
+          "order": 11
+        }
+      ]
+    },
+    {
+      "code": "T13",
+      "slug": "t13",
+      "title": "运动、艺术与休闲",
+      "titleEn": "Sport, Arts & Leisure",
+      "order": 13,
+      "topics": [
+        {
+          "code": "T13-01",
+          "slug": "t13-01",
+          "title": "体育项目与比赛",
+          "order": 1
+        },
+        {
+          "code": "T13-02",
+          "slug": "t13-02",
+          "title": "运动器材与场馆",
+          "order": 2
+        },
+        {
+          "code": "T13-03",
+          "slug": "t13-03",
+          "title": "健康训练与运动表现",
+          "order": 3
+        },
+        {
+          "code": "T13-04",
+          "slug": "t13-04",
+          "title": "音乐、歌曲与乐器",
+          "order": 4
+        },
+        {
+          "code": "T13-05",
+          "slug": "t13-05",
+          "title": "电影、影视与舞台表演",
+          "order": 5
+        },
+        {
+          "code": "T13-06",
+          "slug": "t13-06",
+          "title": "绘画、摄影与设计",
+          "order": 6
+        },
+        {
+          "code": "T13-07",
+          "slug": "t13-07",
+          "title": "文学作品与阅读娱乐",
+          "order": 7
+        },
+        {
+          "code": "T13-08",
+          "slug": "t13-08",
+          "title": "电子游戏、玩具与娱乐",
+          "order": 8
+        },
+        {
+          "code": "T13-09",
+          "slug": "t13-09",
+          "title": "户外爱好与休闲活动",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "T14",
+      "slug": "t14",
+      "title": "历史、文化与信仰",
+      "titleEn": "History, Culture & Belief",
+      "order": 14,
+      "topics": [
+        {
+          "code": "T14-01",
+          "slug": "t14-01",
+          "title": "历史时期与重大事件",
+          "order": 1
+        },
+        {
+          "code": "T14-02",
+          "slug": "t14-02",
+          "title": "世界文明与文化传统",
+          "order": 2
+        },
+        {
+          "code": "T14-03",
+          "slug": "t14-03",
+          "title": "中国传统文化",
+          "order": 3
+        },
+        {
+          "code": "T14-04",
+          "slug": "t14-04",
+          "title": "宗教信仰与宗教建筑",
+          "order": 4
+        },
+        {
+          "code": "T14-05",
+          "slug": "t14-05",
+          "title": "节日、民俗与庆祝仪式",
+          "order": 5
+        },
+        {
+          "code": "T14-06",
+          "slug": "t14-06",
+          "title": "文化遗产、艺术场馆与博物馆",
+          "order": 6
+        },
+        {
+          "code": "T14-07",
+          "slug": "t14-07",
+          "title": "文化传播、习俗与价值",
+          "order": 7
+        }
+      ]
+    },
+    {
+      "code": "T15",
+      "slug": "t15",
+      "title": "国家、地理与国际事务",
+      "titleEn": "Countries, Regions & Global Affairs",
+      "order": 15,
+      "topics": [
+        {
+          "code": "T15-01",
+          "slug": "t15-01",
+          "title": "国家与地区名称",
+          "order": 1
+        },
+        {
+          "code": "T15-02",
+          "slug": "t15-02",
+          "title": "大洲与地理区域",
+          "order": 2
+        },
+        {
+          "code": "T15-03",
+          "slug": "t15-03",
+          "title": "城市、首都与行政区",
+          "order": 3
+        },
+        {
+          "code": "T15-04",
+          "slug": "t15-04",
+          "title": "国籍、民族与文化身份",
+          "order": 4
+        },
+        {
+          "code": "T15-05",
+          "slug": "t15-05",
+          "title": "国旗、国徽与国家象征",
+          "order": 5
+        },
+        {
+          "code": "T15-06",
+          "slug": "t15-06",
+          "title": "国际关系与外交",
+          "order": 6
+        },
+        {
+          "code": "T15-07",
+          "slug": "t15-07",
+          "title": "全球化与跨境流动",
+          "order": 7
+        },
+        {
+          "code": "T15-08",
+          "slug": "t15-08",
+          "title": "地图、地址与地理定位",
+          "order": 8
+        }
+      ]
+    },
+    {
+      "code": "T16",
+      "slug": "t16",
+      "title": "政治、法律与公共生活",
+      "titleEn": "Politics, Law & Society",
+      "order": 16,
+      "topics": [
+        {
+          "code": "T16-01",
+          "slug": "t16-01",
+          "title": "政府、行政与选举",
+          "order": 1
+        },
+        {
+          "code": "T16-02",
+          "slug": "t16-02",
+          "title": "法律、权利与义务",
+          "order": 2
+        },
+        {
+          "code": "T16-03",
+          "slug": "t16-03",
+          "title": "司法、执法与公共安全",
+          "order": 3
+        },
+        {
+          "code": "T16-04",
+          "slug": "t16-04",
+          "title": "公共事业与社会服务",
+          "order": 4
+        },
+        {
+          "code": "T16-05",
+          "slug": "t16-05",
+          "title": "军事、国防、战争与和平",
+          "order": 5
+        },
+        {
+          "code": "T16-06",
+          "slug": "t16-06",
+          "title": "社会现象、问题与趋势",
+          "order": 6
+        },
+        {
+          "code": "T16-07",
+          "slug": "t16-07",
+          "title": "公共信息、媒体与新闻",
+          "order": 7
+        }
+      ]
+    },
+    {
+      "code": "T17",
+      "slug": "t17",
+      "title": "科学、工程与生产",
+      "titleEn": "Science, Engineering & Production",
+      "order": 17,
+      "topics": [
+        {
+          "code": "T17-01",
+          "slug": "t17-01",
+          "title": "数学、统计与计算",
+          "order": 1
+        },
+        {
+          "code": "T17-02",
+          "slug": "t17-02",
+          "title": "物理、力与能量",
+          "order": 2
+        },
+        {
+          "code": "T17-03",
+          "slug": "t17-03",
+          "title": "化学、元素与反应",
+          "order": 3
+        },
+        {
+          "code": "T17-04",
+          "slug": "t17-04",
+          "title": "生物、遗传与生命科学",
+          "order": 4
+        },
+        {
+          "code": "T17-05",
+          "slug": "t17-05",
+          "title": "实验、研究与数据分析",
+          "order": 5
+        },
+        {
+          "code": "T17-06",
+          "slug": "t17-06",
+          "title": "工程、机械与制造",
+          "order": 6
+        },
+        {
+          "code": "T17-07",
+          "slug": "t17-07",
+          "title": "农业、林业、渔业与畜牧",
+          "order": 7
+        },
+        {
+          "code": "T17-08",
+          "slug": "t17-08",
+          "title": "能源、电力与基础设施",
+          "order": 8
+        },
+        {
+          "code": "T17-09",
+          "slug": "t17-09",
+          "title": "环境工程与可持续技术",
+          "order": 9
+        }
+      ]
+    },
+    {
+      "code": "T18",
+      "slug": "t18",
+      "title": "动作、逻辑与抽象表达",
+      "titleEn": "Actions, Logic & Abstract Vocabulary",
+      "order": 18,
+      "topics": [
+        {
+          "code": "T18-01",
+          "slug": "t18-01",
+          "title": "日常动作与位置移动",
+          "order": 1
+        },
+        {
+          "code": "T18-02",
+          "slug": "t18-02",
+          "title": "接触、操作与制造",
+          "order": 2
+        },
+        {
+          "code": "T18-03",
+          "slug": "t18-03",
+          "title": "感知与信息获取",
+          "order": 3
+        },
+        {
+          "code": "T18-04",
+          "slug": "t18-04",
+          "title": "交流、提问与信息传递",
+          "order": 4
+        },
+        {
+          "code": "T18-05",
+          "slug": "t18-05",
+          "title": "思考、认知与判断",
+          "order": 5
+        },
+        {
+          "code": "T18-06",
+          "slug": "t18-06",
+          "title": "意愿、目标与选择",
+          "order": 6
+        },
+        {
+          "code": "T18-07",
+          "slug": "t18-07",
+          "title": "持有、给予与转移",
+          "order": 7
+        },
+        {
+          "code": "T18-08",
+          "slug": "t18-08",
+          "title": "变化、过程与结果",
+          "order": 8
+        },
+        {
+          "code": "T18-09",
+          "slug": "t18-09",
+          "title": "原因、条件与逻辑关系",
+          "order": 9
+        },
+        {
+          "code": "T18-10",
+          "slug": "t18-10",
+          "title": "比较、评价与程度",
+          "order": 10
+        },
+        {
+          "code": "T18-11",
+          "slug": "t18-11",
+          "title": "系统、结构与功能",
+          "order": 11
+        },
+        {
+          "code": "T18-12",
+          "slug": "t18-12",
+          "title": "交际意图与语言功能",
+          "order": 12
+        }
+      ]
+    }
+  ],
+  "declaredPrimaryCount": 18,
+  "declaredSecondaryCountFromReference": 168,
+  "enumeratedSecondaryCount": 167,
+  "countStatus": "needs-confirmation"
+}

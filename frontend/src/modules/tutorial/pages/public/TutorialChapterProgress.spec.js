@@ -14,7 +14,7 @@ let wrapper, now
 beforeEach(() => {
   vi.resetAllMocks(); now = 100000; vi.spyOn(Date, 'now').mockImplementation(() => now)
   vi.spyOn(performance, 'now').mockImplementation(() => now)
-  mocks.route = reactive({ path: '/useradmin/tutorials/course/a', params: { tutorialSlug: 'course', chapterSlug: 'a' }, query: {} })
+  mocks.route = reactive({ path: '/tutorials/course/a', params: { tutorialSlug: 'course', chapterSlug: 'a' }, query: {} })
   mocks.tutorial.mockResolvedValue({ slug: 'course', title: 'Course', groups: [{ chapters: [] }] })
   mocks.chapter.mockImplementation(async (_, slug) => ({ id: slug.charCodeAt(0), slug, title: slug, bodyMarkdown: '' }))
   mocks.get.mockResolvedValue({ progressRatio: 0.1 }); mocks.save.mockResolvedValue({ progressRatio: 0.2 })

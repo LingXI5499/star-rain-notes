@@ -21,7 +21,7 @@ import BlogProse from '../../../blog/components/BlogProse.vue'
 import ReadingAside from '../../../blog/components/ReadingAside.vue'
 import { getPublicTutorial, getPublicChapter } from '../../api/tutorialApi'
 import { errorMessage } from '../../../../shared/http'
-import { VIEW_MODE, accountPath, resolveViewMode } from '../../../../shared/viewMode'
+import { accountPath } from '../../../../shared/viewMode'
 import { getChapterProgress, getOwnAnswer, getOwnReferenceAnswer, saveChapterProgress, saveOwnAnswer } from '../../api/learningApi'
 import { useAuthStore } from '../../../account/stores/authStore'
 
@@ -89,27 +89,22 @@ const articleElement = ref(null)
  */
 const auth = useAuthStore()
 /**
- * 账号Mode；通过 computed 建立。
- * 该值由依赖自动重新计算，不作为独立可写状态维护。
- */
-const accountMode = computed(() => resolveViewMode(route.path) === VIEW_MODE.ACCOUNT)
-/**
  * 计划Mode；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
-const planMode = computed(() => accountMode.value && !!route.query.plan)
+const planMode = computed(() => !!route.query.plan)
 /**
  * signed内部；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。
  */
-const signedIn = computed(() => accountMode.value && Boolean(auth.currentUser))
+const signedIn = computed(() => Boolean(auth.currentUser))
 /**
  * 教程路径的处理函数。
  * 主要协作：accountPath。
  * @param suffix = '' suffix；默认值、解构字段与可选参数见函数签名。
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
-const tutorialPath = (suffix = '') => accountMode.value ? accountPath(`/tutorials${suffix}`) : `/tutorials${suffix}`
+const tutorialPath = (suffix = '') => accountPath(`/tutorials${suffix}`)
 /*
  * 把当前章节滚进侧栏的可视区 —— 照抄 V1 TutorialCurriculumList 的 revealActive。
  * 深链接进入某章、或点上/下篇切换后，目录会自己跟到当前位置；

@@ -23,8 +23,8 @@ import { taxonomyStatusLabel } from '../../support/display'
  * 标签管理（BLOG-004）。
  *
  * 原先标签与专题挤在同一页，用户要求拆开：
- *   本页只做标签（`/useradmin/blog/taxonomy`，保留原路径，后台导航不用改），
- *   专题搬到 `/useradmin/blog/topics`（BlogTopicManagePage），两页互相给入口。
+ *   本页只做标签（`/blog/taxonomy`，保留原路径，后台导航不用改），
+ *   专题搬到 `/blog/topics`（BlogTopicManagePage），两页互相给入口。
  *
  * 标签不像专题那样有成员与顺序，只有「名称 + 被引用次数 + 启用状态」，
  * 所以这里是一张卡片网格 + 分页：50 多个标签一屏铺满要滚很久，翻页比滚动好找。
@@ -344,8 +344,8 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
         <span>标签只有名称与被引用次数，没有顺序；下架用停用，历史绑定会保留。</span>
       </div>
       <div class="content-admin__hero-actions">
-        <RouterLink to="/useradmin/blog/manage">← 返回博客管理</RouterLink>
-        <RouterLink to="/useradmin/blog/topics">专题管理 →</RouterLink>
+        <RouterLink to="/blog/manage">← 返回博客管理</RouterLink>
+        <RouterLink to="/blog/topics">专题管理 →</RouterLink>
         <button class="primary-button" type="button" @click="openTagDialog()">＋ 新建标签</button>
       </div>
     </header>

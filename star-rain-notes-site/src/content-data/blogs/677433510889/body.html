@@ -1,0 +1,1149 @@
+<p><code>Java</code> <code>Java全栈</code> <code>企业级开发</code> <code>Spring Boot</code> <code>微服务</code> <code>系统设计</code> <code>软件工程</code> <code>项目实战</code></p>
+<hr />
+<h1>一、先明确一个重要事实</h1>
+<p>讨论成熟产品时，需要避免一个常见误区：</p>
+<blockquote>
+<p>淘宝、美团、Salesforce 这样的系统，并不是“一个 Java 项目”。</p>
+</blockquote>
+<p>大型互联网系统通常是：</p>
+<pre><code class="language-text">Java
+Go
+C++
+Python
+JavaScript
+数据库
+缓存
+消息队列
+搜索引擎
+大数据
+云计算
+……
+</code></pre>
+<p>共同组成的庞大技术体系。</p>
+<p>因此本文所讨论的不是：</p>
+<blockquote>
+<p>“这个产品是不是全部用 Java 写的？”</p>
+</blockquote>
+<p>而是：</p>
+<blockquote>
+<p><strong>“Java 企业开发在这种产品中能够承担什么类型的业务和系统能力？”</strong></p>
+</blockquote>
+<p>对于有公开技术资料确认 Java 使用情况的案例，会明确说明；没有公开资料支撑的部分，只分析业务系统本身，不推测具体实现语言。</p>
+<hr />
+<h1>二、案例一：淘宝——大型电商交易平台</h1>
+<p>淘宝是理解 Java 企业开发非常典型的案例。</p>
+<p>阿里公开的技术资料显示，淘宝早期采用 LAMP 架构，随着业务规模增长，应用体系逐渐迁移到 Java，并进一步演化为分布式架构，引入缓存、分布式文件系统、服务框架、消息中间件和分布式数据层等基础设施。</p>
+<h2>2.1 用户看到的淘宝很简单</h2>
+<p>用户看到的是：</p>
+<pre><code class="language-text">搜索商品
+↓
+查看详情
+↓
+加入购物车
+↓
+提交订单
+↓
+付款
+↓
+收货
+</code></pre>
+<p>但后台实际上可能涉及几十甚至上百个业务域。</p>
+<p>最核心的一组至少包括：</p>
+<pre><code class="language-text">用户
+商品
+商家
+价格
+库存
+购物车
+订单
+支付
+优惠
+物流
+售后
+搜索
+推荐
+评价
+风控
+</code></pre>
+<p>这已经不是：</p>
+<pre><code class="language-text">ProductController
+OrderController
+UserController
+</code></pre>
+<p>三个 Controller 能解决的问题。</p>
+<hr />
+<h2>2.2 一次“提交订单”背后发生什么</h2>
+<p>假设用户购买：</p>
+<pre><code class="language-text">MacBook × 1
+</code></pre>
+<p>真正的订单链路可能近似：</p>
+<pre><code class="language-text">用户提交订单
+      ↓
+校验登录状态
+      ↓
+校验商品是否存在
+      ↓
+校验商品是否下架
+      ↓
+读取实时价格
+      ↓
+计算优惠
+      ↓
+校验库存
+      ↓
+锁定库存
+      ↓
+创建订单
+      ↓
+生成支付信息
+      ↓
+等待付款
+      ↓
+支付成功
+      ↓
+通知订单系统
+      ↓
+库存正式扣减
+      ↓
+通知仓储发货
+</code></pre>
+<p>所以真正的电商核心并不是：</p>
+<pre><code class="language-sql">INSERT INTO orders ...
+</code></pre>
+<p>而是：</p>
+<blockquote>
+<p><strong>交易流程与数据一致性。</strong></p>
+</blockquote>
+<hr />
+<h2>2.3 Java 全栈在这里能做什么？</h2>
+<p>一个 Java 后端工程师可能负责：</p>
+<pre><code class="language-text">商品服务
+订单服务
+库存服务
+会员服务
+优惠服务
+交易服务
+售后服务
+</code></pre>
+<p>典型技术可能包括：</p>
+<pre><code class="language-text">Spring Boot
+MyBatis
+MySQL
+Redis
+消息队列
+Elasticsearch
+RPC
+微服务
+</code></pre>
+<p>随着淘宝规模扩大，其架构也从集中式应用逐渐发展为可水平扩展的分布式体系。</p>
+<p>这说明：</p>
+<blockquote>
+<p><strong>Java 不只是拿来写商城 CRUD，而是可以支撑大型交易业务。</strong></p>
+</blockquote>
+<hr />
+<h1>三、案例二：美团外卖——订单 + 商家 + 骑手 + 实时配送</h1>
+<p>美团外卖比普通商城更复杂。</p>
+<p>因为电商主要处理：</p>
+<pre><code class="language-text">人
++
+货
++
+订单
+</code></pre>
+<p>而外卖还增加了：</p>
+<pre><code class="language-text">商家
+骑手
+位置
+时间
+配送
+实时状态
+</code></pre>
+<p>形成：</p>
+<pre><code class="language-text">消费者
+   │
+   ↓
+  订单
+   │
+   ↓
+  商家
+   │
+   ↓
+  骑手
+   │
+   ↓
+  配送
+</code></pre>
+<hr />
+<h2>3.1 一份外卖订单的生命周期</h2>
+<p>用户点击：</p>
+<pre><code class="language-text">提交订单
+</code></pre>
+<p>之后可能经历：</p>
+<pre><code class="language-text">待支付
+↓
+已支付
+↓
+等待商家接单
+↓
+商家已接单
+↓
+备餐中
+↓
+等待骑手
+↓
+骑手已接单
+↓
+骑手到店
+↓
+骑手取餐
+↓
+配送中
+↓
+已送达
+↓
+订单完成
+</code></pre>
+<p>这时候最重要的已经不是 CRUD，而是：</p>
+<blockquote>
+<p><strong>State Machine —— 状态机。</strong></p>
+</blockquote>
+<hr />
+<h2>3.2 美团真实订单系统是怎么演进的？</h2>
+<p>美团技术团队公开介绍过外卖订单中心的演进。</p>
+<p>业务早期，订单功能和其他模块共同存在于应用中；随着订单规模和业务复杂度增长，订单系统被拆成独立系统，通过 RPC 对外提供服务，并通过 MQ 通知其他系统订单状态变化。公开资料还明确提到了 Spring、MyBatis、分库分表和 Elasticsearch 等技术。</p>
+<p>其演进过程非常值得 Java 学习者理解：</p>
+<pre><code class="language-text">业务刚开始
+↓
+单体项目
+
+业务增长
+↓
+模块越来越复杂
+
+继续增长
+↓
+订单系统独立
+
+继续增长
+↓
+RPC
+MQ
+分库分表
+ES
+横向扩容
+</code></pre>
+<p>这其实就是：</p>
+<blockquote>
+<p><strong>单体 → 服务化 → 分布式</strong></p>
+</blockquote>
+<p>最真实的演进逻辑。</p>
+<hr />
+<h2>3.3 为什么需要消息队列？</h2>
+<p>比如订单状态变成：</p>
+<pre><code class="language-text">已支付
+</code></pre>
+<p>很多系统都会关心：</p>
+<pre><code class="language-text">商家系统
+骑手系统
+营销系统
+消息系统
+财务系统
+</code></pre>
+<p>如果订单服务直接一个一个调用：</p>
+<pre><code class="language-text">OrderService
+ ↓
+调用商家
+ ↓
+调用骑手
+ ↓
+调用营销
+ ↓
+调用消息
+ ↓
+调用财务
+</code></pre>
+<p>耦合会越来越严重。</p>
+<p>于是可以：</p>
+<pre><code class="language-text">订单支付成功
+       ↓
+      MQ
+  ┌────┼────┬────┐
+  ↓    ↓    ↓    ↓
+商家  配送  消息  财务
+</code></pre>
+<p>这就是：</p>
+<blockquote>
+<p><strong>Event Driven Architecture —— 事件驱动架构</strong></p>
+</blockquote>
+<p>开始出现的地方。</p>
+<hr />
+<h1>四、案例三：12306——典型票务交易系统</h1>
+<p>12306 是非常适合理解企业系统复杂度的案例。</p>
+<p>官方系统目前提供：</p>
+<ul>
+<li>余票查询</li>
+<li>购票</li>
+<li>退票</li>
+<li>改签</li>
+<li>中转换乘</li>
+<li>餐饮订单</li>
+<li>正晚点查询</li>
+<li>常旅客服务</li>
+</ul>
+<p>等大量铁路客运业务。</p>
+<p>这里不讨论其内部具体使用什么语言，而是看：</p>
+<blockquote>
+<p><strong>如果让 Java 全栈工程师设计一套类似票务系统，需要解决什么问题？</strong></p>
+</blockquote>
+<hr />
+<h1>五、12306真正难的不是“买票页面”</h1>
+<p>一个普通教学项目可能设计：</p>
+<pre><code class="language-text">User
+Train
+Ticket
+Order
+</code></pre>
+<p>然后：</p>
+<pre><code class="language-text">查询车票
+新增订单
+付款
+</code></pre>
+<p>真正票务系统的核心问题却是：</p>
+<blockquote>
+<p><strong>有限资源在大量并发用户之间如何正确分配。</strong></p>
+</blockquote>
+<hr />
+<h2>5.1 一张座位不是一个简单库存</h2>
+<p>比如：</p>
+<pre><code class="language-text">北京
+ ↓
+石家庄
+ ↓
+郑州
+ ↓
+武汉
+ ↓
+长沙
+ ↓
+广州
+</code></pre>
+<p>一张：</p>
+<pre><code class="language-text">北京 → 广州
+</code></pre>
+<p>的座位实际上涉及多个区间。</p>
+<p>如果有人买：</p>
+<pre><code class="language-text">北京 → 郑州
+</code></pre>
+<p>另一个人完全可能继续购买：</p>
+<pre><code class="language-text">郑州 → 广州
+</code></pre>
+<p>所以：</p>
+<blockquote>
+<p>票务库存不是简单的 <code>stock--</code>。</p>
+</blockquote>
+<p>而是：</p>
+<pre><code class="language-text">车次
++
+日期
++
+席别
++
+座位
++
+区间
+</code></pre>
+<p>共同决定。</p>
+<p>这已经属于：</p>
+<blockquote>
+<p><strong>复杂资源库存模型。</strong></p>
+</blockquote>
+<hr />
+<h1>六、票务系统还会遇到什么？</h1>
+<p>例如某趟车只剩：</p>
+<pre><code class="language-text">1 张票
+</code></pre>
+<p>此时：</p>
+<pre><code class="language-text">用户A ─┐
+用户B ─┼→ 同时购买
+用户C ─┘
+</code></pre>
+<p>最终必须保证：</p>
+<pre><code class="language-text">只有一个人成功
+</code></pre>
+<p>不能：</p>
+<pre><code class="language-text">1张票
+卖给3个人
+</code></pre>
+<p>这就是：</p>
+<blockquote>
+<p><strong>并发一致性问题。</strong></p>
+</blockquote>
+<p>类似场景还存在于：</p>
+<pre><code class="language-text">演唱会抢票
+酒店房间
+机票
+医院挂号
+秒杀商品
+预约名额
+</code></pre>
+<p>因此 Java 学到：</p>
+<pre><code class="language-text">事务
+Redis
+锁
+消息队列
+高并发
+分布式
+</code></pre>
+<p>以后，真正能解决的是这一类问题。</p>
+<hr />
+<h1>七、案例四：Salesforce——真正的企业 SaaS CRM</h1>
+<p>如果淘宝代表大型互联网交易系统，那么 Salesforce 非常适合代表：</p>
+<blockquote>
+<p><strong>企业级 SaaS。</strong></p>
+</blockquote>
+<p>Salesforce 的核心产品覆盖：</p>
+<pre><code class="language-text">销售
+客户
+客服
+营销
+企业业务应用
+</code></pre>
+<p>其官方架构文档明确描述 Salesforce Platform 是：</p>
+<blockquote>
+<p><strong>Multitenant + Metadata-Driven</strong></p>
+</blockquote>
+<p>也就是：</p>
+<pre><code class="language-text">多租户
++
+元数据驱动
+</code></pre>
+<p>的平台。</p>
+<hr />
+<h1>八、为什么 Salesforce 对 Java 学习者特别有价值？</h1>
+<p>假设你开发一个 CRM：</p>
+<pre><code class="language-text">客户
+联系人
+销售线索
+商机
+合同
+销售记录
+</code></pre>
+<p>如果只给一家企业使用：</p>
+<pre><code class="language-text">CRM
+↓
+A公司
+</code></pre>
+<p>相对简单。</p>
+<p>但 Salesforce 这种 SaaS 平台需要：</p>
+<pre><code class="language-text">               CRM平台
+                  │
+      ┌───────────┼───────────┐
+      ↓           ↓           ↓
+    公司A       公司B       公司C
+</code></pre>
+<p>问题立刻变成：</p>
+<pre><code class="language-text">A公司不能看到B公司数据
+B公司可以拥有自己的员工
+每家公司有自己的角色权限
+不同公司可以拥有不同配置
+不同公司可以定义不同业务规则
+</code></pre>
+<p>这就是：</p>
+<blockquote>
+<p><strong>Multi-Tenancy —— 多租户架构。</strong></p>
+</blockquote>
+<p>Salesforce 官方架构说明其平台使用租户标识实现数据与元数据隔离，并允许不同组织独立配置业务。</p>
+<hr />
+<h1>九、Salesforce 的另一个重要启示：权限不是简单 Role 表</h1>
+<p>企业软件中的权限远比：</p>
+<pre><code class="language-text">管理员
+普通用户
+</code></pre>
+<p>复杂。</p>
+<p>例如销售公司：</p>
+<pre><code class="language-text">CEO
+↓
+销售总监
+↓
+区域经理
+↓
+销售主管
+↓
+销售人员
+</code></pre>
+<p>可能要求：</p>
+<pre><code class="language-text">销售人员
+只能看自己的客户
+
+销售主管
+能看自己团队客户
+
+区域经理
+能看整个区域
+
+CEO
+能看所有数据
+</code></pre>
+<p>这就是：</p>
+<blockquote>
+<p><strong>Data Permission —— 数据权限。</strong></p>
+</blockquote>
+<p>企业 SaaS 真正困难的地方之一就是：</p>
+<pre><code class="language-text">身份认证
++
+功能权限
++
+角色权限
++
+数据权限
++
+租户隔离
+</code></pre>
+<p>而不是简单：</p>
+<pre><code class="language-java">if (role.equals("admin"))
+</code></pre>
+<hr />
+<h1>十、Salesforce 和 Java 有什么实际关系？</h1>
+<p>Salesforce 官方工程团队公开介绍过其核心应用从 JDK 11 向 JDK 17 的大规模迁移，该升级涉及 Sales Cloud、Service Cloud、Marketing Cloud 等核心应用。</p>
+<p>这就是一个非常真实的例子：</p>
+<blockquote>
+<p><strong>Java 可以作为大型 SaaS 企业应用的重要运行基础。</strong></p>
+</blockquote>
+<hr />
+<h1>十一、案例五：SAP——企业 ERP 的典型代表</h1>
+<p>如果想知道：</p>
+<blockquote>
+<p>企业为什么需要 Java？</p>
+</blockquote>
+<p>SAP 这种 ERP 产品非常值得研究。</p>
+<p>SAP Cloud ERP 当前覆盖：</p>
+<pre><code class="language-text">财务
+供应链
+销售
+项目
+服务
+人力资源
+</code></pre>
+<p>并支持：</p>
+<pre><code class="language-text">Order-to-Cash
+订单到收款
+
+Procure-to-Pay
+采购到付款
+</code></pre>
+<p>等完整端到端企业流程。</p>
+<hr />
+<h1>十二、ERP 到底复杂在哪里？</h1>
+<p>假设企业采购：</p>
+<pre><code class="language-text">100台电脑
+</code></pre>
+<p>整个业务可能是：</p>
+<pre><code class="language-text">采购申请
+↓
+采购审批
+↓
+采购订单
+↓
+供应商发货
+↓
+仓库收货
+↓
+质检
+↓
+入库
+↓
+库存增加
+↓
+收到发票
+↓
+形成应付账款
+↓
+财务付款
+</code></pre>
+<p>其中涉及：</p>
+<pre><code class="language-text">采购
+供应商
+库存
+仓库
+财务
+审批
+</code></pre>
+<p>多个业务域。</p>
+<p>所以 ERP 不是：</p>
+<pre><code class="language-text">商品管理系统
++
+会员管理系统
++
+订单管理系统
+</code></pre>
+<p>而是：</p>
+<blockquote>
+<p><strong>企业业务流程之间的数据联动。</strong></p>
+</blockquote>
+<hr />
+<h1>十三、一次销售又是另一条链</h1>
+<p>例如：</p>
+<pre><code class="language-text">客户报价
+↓
+销售订单
+↓
+库存检查
+↓
+出库
+↓
+物流
+↓
+客户收货
+↓
+开票
+↓
+产生应收
+↓
+客户付款
+</code></pre>
+<p>这就是：</p>
+<blockquote>
+<p><strong>Order-to-Cash，O2C。</strong></p>
+</blockquote>
+<p>SAP 官方产品资料也将 Order-to-Cash、Procure-to-Pay 等作为 ERP 的核心端到端业务流程。</p>
+<hr />
+<h1>十四、Java 在 SAP 生态中是什么位置？</h1>
+<p>不能简单说：</p>
+<blockquote>
+<p>SAP ERP 全部是 Java。</p>
+</blockquote>
+<p>这是错误的。</p>
+<p>SAP 拥有自己的 ABAP 技术体系。</p>
+<p>但 SAP 官方目前仍提供 Java 运行平台，S/4HANA 中存在运行于 Java 平台的特定组件；SAP BTP 也正式支持 Java，并将 Java 与 Node.js 列为多数应用场景推荐的主要开发语言。</p>
+<p>这说明 Java 适合处理的正是：</p>
+<blockquote>
+<p><strong>企业级业务应用、集成、服务和云端业务扩展。</strong></p>
+</blockquote>
+<hr />
+<h1>十五、把五个真实产品放在一起看</h1>
+<table>
+<thead>
+<tr>
+<th>真实产品</th>
+<th>类型</th>
+<th>核心问题</th>
+<th>对 Java 学习的启示</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>淘宝</td>
+<td>电商交易平台</td>
+<td>商品、交易、库存、高并发</td>
+<td>分布式交易系统</td>
+</tr>
+<tr>
+<td>美团外卖</td>
+<td>O2O 即时配送</td>
+<td>订单、商家、骑手、状态流转</td>
+<td>RPC、MQ、服务拆分</td>
+</tr>
+<tr>
+<td>12306</td>
+<td>票务系统</td>
+<td>有限库存、并发抢购、订单</td>
+<td>并发与一致性</td>
+</tr>
+<tr>
+<td>Salesforce</td>
+<td>SaaS CRM</td>
+<td>客户、租户、权限、配置</td>
+<td>多租户 SaaS</td>
+</tr>
+<tr>
+<td>SAP</td>
+<td>ERP</td>
+<td>采购、销售、库存、财务</td>
+<td>企业业务建模</td>
+</tr>
+</tbody>
+</table>
+<p>这五种系统实际上已经覆盖了 Java 企业开发非常重要的几个方向。</p>
+<hr />
+<h1>十六、所以 Java 全栈学完到底可以做什么？</h1>
+<p>现在再回答这个问题，就不能只说：</p>
+<pre><code class="language-text">商城
+ERP
+CRM
+</code></pre>
+<p>而应该这样理解。</p>
+<hr />
+<h2>16.1 可以开发类似淘宝的交易系统</h2>
+<p>不是说：</p>
+<blockquote>
+<p>一个人重新开发淘宝。</p>
+</blockquote>
+<p>而是开发：</p>
+<blockquote>
+<p><strong>具有淘宝同类核心业务模型的电商系统。</strong></p>
+</blockquote>
+<p>例如：</p>
+<pre><code class="language-text">用户
+商品
+SKU
+购物车
+库存
+订单
+优惠
+支付
+物流
+售后
+</code></pre>
+<p>个人能够做：</p>
+<pre><code class="language-text">完整中小型商城
+</code></pre>
+<p>团队进一步发展：</p>
+<pre><code class="language-text">大型分布式电商平台
+</code></pre>
+<hr />
+<h1>十七、可以开发类似美团的即时业务系统</h1>
+<p>例如：</p>
+<pre><code class="language-text">用户
+商户
+商品
+订单
+配送
+骑手
+支付
+消息
+</code></pre>
+<p>还可以进一步应用于：</p>
+<pre><code class="language-text">跑腿
+同城配送
+药品配送
+生鲜配送
+快递
+上门服务
+</code></pre>
+<p>这些本质上都是：</p>
+<blockquote>
+<p><strong>订单 + 状态 + 调度 + 实时业务。</strong></p>
+</blockquote>
+<hr />
+<h1>十八、可以开发类似12306的预约与票务系统</h1>
+<p>同类项目包括：</p>
+<pre><code class="language-text">演唱会票务
+电影票
+体育比赛票务
+医院挂号
+会议预约
+酒店预订
+机票预订
+课程抢课
+停车位预约
+</code></pre>
+<p>核心问题都是：</p>
+<pre><code class="language-text">有限资源
++
+大量用户
++
+并发竞争
++
+交易一致性
+</code></pre>
+<hr />
+<h1>十九、可以开发类似 Salesforce 的企业 SaaS</h1>
+<p>例如：</p>
+<pre><code class="language-text">SaaS CRM
+SaaS ERP
+SaaS OA
+SaaS 项目管理
+SaaS 招聘管理
+SaaS 资产管理
+</code></pre>
+<p>系统核心变成：</p>
+<pre><code class="language-text">租户
+组织
+用户
+角色
+权限
+数据隔离
+订阅
+套餐
+计费
+</code></pre>
+<p>这是真正非常典型的 B 端企业产品。</p>
+<hr />
+<h1>二十、可以开发类似 SAP 的 ERP 系统</h1>
+<p>例如针对一个具体行业：</p>
+<pre><code class="language-text">零售 ERP
+制造 ERP
+医药 ERP
+餐饮 ERP
+服装 ERP
+建筑 ERP
+</code></pre>
+<p>核心模块可能：</p>
+<pre><code class="language-text">商品
+供应商
+客户
+采购
+销售
+仓储
+库存
+财务
+员工
+审批
+</code></pre>
+<p>关键能力则是：</p>
+<blockquote>
+<p><strong>把真实企业流程建模成软件。</strong></p>
+</blockquote>
+<hr />
+<h1>二十一、还有一类不能忽略：银行与支付系统</h1>
+<p>虽然本文没有把某个银行系统作为独立案例，但 Java 在金融企业后台中的应用同样非常典型。</p>
+<p>例如一个转账系统：</p>
+<pre><code class="language-text">用户A
+-100元
+
+用户B
++100元
+</code></pre>
+<p>真正要求的是：</p>
+<pre><code class="language-text">要么两个操作全部成功
+
+要么两个全部失败
+</code></pre>
+<p>进一步还会面对：</p>
+<pre><code class="language-text">重复支付
+重复请求
+退款
+账务
+清算
+对账
+风控
+幂等
+</code></pre>
+<p>这也是 Java 企业开发特别擅长处理的一类：</p>
+<blockquote>
+<p><strong>强业务规则 + 高数据一致性系统。</strong></p>
+</blockquote>
+<hr />
+<h1>二十二、真正的 Java 项目不是按页面分类，而是按业务域分类</h1>
+<p>初学阶段经常：</p>
+<pre><code class="language-text">商品管理
+订单管理
+用户管理
+</code></pre>
+<p>到了真正企业开发，更应该看到：</p>
+<pre><code class="language-text">商品域
+交易域
+库存域
+支付域
+会员域
+营销域
+物流域
+风控域
+</code></pre>
+<p>这就是：</p>
+<blockquote>
+<p><strong>Domain —— 业务领域。</strong></p>
+</blockquote>
+<p>再继续学习：</p>
+<pre><code class="language-text">DDD
+Domain-Driven Design
+领域驱动设计
+</code></pre>
+<p>你就会逐渐理解：</p>
+<blockquote>
+<p>为什么大型项目不能一直按照 Controller、Service、Mapper 的数量无限堆下去。</p>
+</blockquote>
+<hr />
+<h1>二十三、Java 技术学习实际上对应着真实问题</h1>
+<p>现在可以重新理解 Java 后端技术。</p>
+<h3>MySQL</h3>
+<p>解决：</p>
+<blockquote>
+<p>业务数据持久化。</p>
+</blockquote>
+<hr />
+<h3>Redis</h3>
+<p>解决：</p>
+<pre><code class="language-text">缓存
+热点数据
+Session
+计数
+库存
+分布式协调
+</code></pre>
+<hr />
+<h3>消息队列</h3>
+<p>解决：</p>
+<pre><code class="language-text">异步
+削峰
+业务解耦
+事件通知
+</code></pre>
+<hr />
+<h3>Elasticsearch</h3>
+<p>解决：</p>
+<pre><code class="language-text">全文搜索
+复杂查询
+大规模检索
+</code></pre>
+<p>美团订单系统公开案例中，就使用 ES 解决分库分表之后部分复杂查询问题。</p>
+<hr />
+<h3>微服务</h3>
+<p>解决：</p>
+<pre><code class="language-text">系统规模扩大
+↓
+业务模块过多
+↓
+团队协作困难
+↓
+部署相互影响
+</code></pre>
+<p>最终：</p>
+<pre><code class="language-text">订单服务
+商品服务
+库存服务
+会员服务
+</code></pre>
+<p>独立开发和部署。</p>
+<p>淘宝和美团公开的技术演进都体现了类似的过程：早期架构相对集中，随着业务规模增长逐渐服务化、分布式化。</p>
+<hr />
+<h1>二十四、一个人能做到淘宝、美团吗？</h1>
+<p>当然不能。</p>
+<p>真正的：</p>
+<pre><code class="language-text">淘宝
+美团
+Salesforce
+SAP
+</code></pre>
+<p>都是：</p>
+<pre><code class="language-text">庞大团队
++
+多年演进
++
+海量基础设施
++
+真实业务规模
+</code></pre>
+<p>共同形成的。</p>
+<p>但是个人完全可以开发：</p>
+<blockquote>
+<p><strong>它们的“缩小但完整版本”。</strong></p>
+</blockquote>
+<p>这和“Demo”完全不是一回事。</p>
+<hr />
+<h1>二十五、什么叫缩小但真实？</h1>
+<p>例如你做“淘宝型项目”。</p>
+<p>不要：</p>
+<pre><code class="language-text">商品CRUD
++
+订单CRUD
+
+结束
+</code></pre>
+<p>而应该做到：</p>
+<pre><code class="language-text">用户
+↓
+商品/SPU/SKU
+↓
+购物车
+↓
+订单
+↓
+库存锁定
+↓
+支付状态
+↓
+出库
+↓
+物流
+↓
+退款
+↓
+售后
+</code></pre>
+<p>虽然：</p>
+<pre><code class="language-text">用户只有100个
+</code></pre>
+<p>而不是：</p>
+<pre><code class="language-text">用户1亿个
+</code></pre>
+<p>但：</p>
+<blockquote>
+<p><strong>业务模型是真实的。</strong></p>
+</blockquote>
+<p>这就是一个有价值的项目。</p>
+<hr />
+<h1>二十六、真正值得开发的 Java 项目</h1>
+<p>如果按照成熟产品原型来设计，可以做：</p>
+<table>
+<thead>
+<tr>
+<th>项目</th>
+<th>对标成熟业务</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>完整电商交易平台</td>
+<td>淘宝 / 京东</td>
+</tr>
+<tr>
+<td>即时配送平台</td>
+<td>美团 / 饿了么</td>
+</tr>
+<tr>
+<td>票务预约平台</td>
+<td>12306 / 大麦</td>
+</tr>
+<tr>
+<td>企业 CRM SaaS</td>
+<td>Salesforce</td>
+</tr>
+<tr>
+<td>进销存 ERP</td>
+<td>SAP ERP 类业务</td>
+</tr>
+<tr>
+<td>企业协同 OA</td>
+<td>钉钉 / 企业办公系统</td>
+</tr>
+<tr>
+<td>招聘管理 SaaS</td>
+<td>企业 ATS</td>
+</tr>
+<tr>
+<td>仓储物流系统</td>
+<td>WMS / TMS</td>
+</tr>
+<tr>
+<td>支付订单平台</td>
+<td>支付交易系统</td>
+</tr>
+<tr>
+<td>企业知识平台</td>
+<td>企业 Wiki + AI</td>
+</tr>
+</tbody>
+</table>
+<p>这里的“对标”指：</p>
+<blockquote>
+<p><strong>学习其业务模型，而不是复制产品规模。</strong></p>
+</blockquote>
+<hr />
+<h1>二十七、Java 全栈最终应该获得什么能力？</h1>
+<p>最终不应该是：</p>
+<blockquote>
+<p>给我数据库表，我能把 CRUD 写出来。</p>
+</blockquote>
+<p>而应该变成：</p>
+<p>老板说：</p>
+<blockquote>
+<p>我需要一个供应商采购系统。</p>
+</blockquote>
+<p>你能够自己分析：</p>
+<pre><code class="language-text">Supplier
+供应商
+
+Product
+商品
+
+PurchaseRequisition
+采购申请
+
+PurchaseOrder
+采购订单
+
+Receipt
+收货单
+
+Inventory
+库存
+
+Invoice
+发票
+
+AccountPayable
+应付账款
+</code></pre>
+<p>然后继续设计：</p>
+<pre><code class="language-text">采购申请
+↓
+审批
+↓
+采购订单
+↓
+供应商发货
+↓
+仓库收货
+↓
+入库
+↓
+应付
+↓
+付款
+</code></pre>
+<p>最后才开始：</p>
+<pre><code class="language-text">数据库设计
+↓
+API
+↓
+Spring Boot
+↓
+Vue
+↓
+MySQL
+↓
+Redis
+↓
+部署
+</code></pre>
+<p>这才是真正的软件开发。</p>
+<hr />
+<h1>总结</h1>
+<p>现在重新回答：</p>
+<blockquote>
+<p><strong>Java 全栈学完以后到底能写什么？</strong></p>
+</blockquote>
+<p>答案并不是：</p>
+<pre><code class="language-text">学生管理系统
+图书管理系统
+商城Demo
+</code></pre>
+<p>而是可以参与甚至独立开发缩小规模的：</p>
+<pre><code class="language-text">淘宝型电商交易系统
+美团型即时配送系统
+12306型票务预约系统
+Salesforce型企业SaaS
+SAP型ERP业务系统
+企业OA
+物流仓储
+支付交易
+招聘平台
+企业知识平台
+</code></pre>
+<p>成熟产品真正值得学习的不是它们有多少页面，而是它们背后的：</p>
+<pre><code class="language-text">业务模型
+↓
+状态流转
+↓
+数据关系
+↓
+事务一致性
+↓
+权限体系
+↓
+并发控制
+↓
+系统拆分
+↓
+分布式架构
+</code></pre>
+<p>Java 全栈学习的真正终点也不是：</p>
+<blockquote>
+<p><strong>“会 Spring Boot。”</strong></p>
+</blockquote>
+<p>而是：</p>
+<blockquote>
+<p><strong>能够把现实世界复杂的业务问题抽象、建模，并最终实现成稳定运行的软件系统。</strong></p>
+</blockquote>
+<p>这才是淘宝、美团、Salesforce、SAP 这些成熟系统真正能带给 Java 学习者的启示。</p>

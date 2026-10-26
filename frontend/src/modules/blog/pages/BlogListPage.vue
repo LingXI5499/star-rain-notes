@@ -21,27 +21,7 @@ import BlogSidebar from '../components/BlogSidebar.vue'
 import BlogColumnNav from '../components/BlogColumnNav.vue'
 import BlogPagination from '../components/BlogPagination.vue'
 
-/*
- * BLOG-001 前台博客列表（对齐 V1 `views/blog/BlogView.vue`）。
- *
- * 视觉与信息架构：标题区（+ 公开文章总数）→ 左侧顶部专栏栏 → 时间线 → 右侧 TAGS（标签）/ ARCHIVE（归档）/ STATS 侧栏。
- *
- * 筛选条件写回 URL（`?topic=` / `?tag=` / `?month=YYYY-MM` / `?page=`），
- * 「某专栏下的文章」「某标签下的文章」「某个月的文章」都是可直接分享的地址，前进后退也不会丢状态。
- *
- * 顶部专栏栏**不再跳转 /blog/topics/:slug**：用户要求「上方的固定专栏不需要跳转新页面，
- * 就在原基础上切换下方的博客列表即可」，因此专栏条目指向本页 + `?topic=`，
- * 由下面的 watch 原地换掉列表内容（专题页 /blog/topics/:slug 仍然存在，正文里的专题标记还用它）。
- *
- * 时间筛选走归档接口：`/public/blog/archive` 才支持 year/month，
- * 列表接口 `BlogPublicQueryDTO` 明确忽略这两个参数。
- * 因此这里按「有没有选月份」在两个接口之间切换，而不是把参数丢给一个会静默忽略它的接口。
- *
- * 匿名可读：这条路由没有 requiresAuth，后端 URL 边界也把 /api/public/blog/** 放行。
- *
- * 这一页在两条路径树上复用（/blog 与 /useradmin/blog），因此写回 URL 时用 contentPath()
- * 按当前模式取地址，而不是写死 /blog —— 写死会让账号模式下的筛选操作把人踢回公开树。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 /**
  * 路由；通过 useRoute 建立。

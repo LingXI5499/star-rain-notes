@@ -1,0 +1,344 @@
+{
+  "slug": "agent-core-protocols",
+  "title": "Agent 核心能力与协议生态",
+  "description": "工具系统、上下文与记忆、RAG、MCP、Skills、A2A 等 Agent 核心能力与协议生态。",
+  "category": "智能体开发知识体系",
+  "categorySlug": "484381842269",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 38,
+  "wordCount": 0,
+  "categoryId": "4",
+  "groups": [
+    {
+      "title": "上下文工程、记忆与状态",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "Context Engineering：上下文的构建、选择与排序",
+          "description": "Context Engineering：上下文的构建、选择与排序",
+          "path": "/tutorials/agent-core-protocols/1-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "上下文窗口、Token 预算、信息优先级与上下文污染",
+          "description": "上下文窗口、Token 预算、信息优先级与上下文污染",
+          "path": "/tutorials/agent-core-protocols/1-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-3",
+          "title": "短期记忆、对话历史、会话状态与多轮交互",
+          "description": "短期记忆、对话历史、会话状态与多轮交互",
+          "path": "/tutorials/agent-core-protocols/1-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-4",
+          "title": "长期记忆、用户偏好、结构化事实与检索式记忆",
+          "description": "长期记忆、用户偏好、结构化事实与检索式记忆",
+          "path": "/tutorials/agent-core-protocols/1-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-5",
+          "title": "摘要、压缩、裁剪、工具结果卸载与上下文重建",
+          "description": "摘要、压缩、裁剪、工具结果卸载与上下文重建",
+          "path": "/tutorials/agent-core-protocols/1-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-6",
+          "title": "记忆的写入、更新、遗忘、冲突处理与过期策略",
+          "description": "记忆的写入、更新、遗忘、冲突处理与过期策略",
+          "path": "/tutorials/agent-core-protocols/1-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-7",
+          "title": "多用户、多会话、租户隔离与状态持久化",
+          "description": "多用户、多会话、租户隔离与状态持久化",
+          "path": "/tutorials/agent-core-protocols/1-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-8",
+          "title": "记忆质量评估：相关性、准确性、隐私与可控性",
+          "description": "记忆质量评估：相关性、准确性、隐私与可控性",
+          "path": "/tutorials/agent-core-protocols/1-8/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "RAG 与 Agentic RAG",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "RAG 的架构、适用场景与 Agent 的组合方式",
+          "description": "RAG 的架构、适用场景与 Agent 的组合方式",
+          "path": "/tutorials/agent-core-protocols/2-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "文档摄取、解析、切块、元数据与索引构建",
+          "description": "文档摄取、解析、切块、元数据与索引构建",
+          "path": "/tutorials/agent-core-protocols/2-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "Embedding、向量存储、关键词检索与混合检索",
+          "description": "Embedding、向量存储、关键词检索与混合检索",
+          "path": "/tutorials/agent-core-protocols/2-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-4",
+          "title": "Top-K、Metadata Filter、重排序与上下文组装",
+          "description": "Top-K、Metadata Filter、重排序与上下文组装",
+          "path": "/tutorials/agent-core-protocols/2-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-5",
+          "title": "Query Rewrite、问题分解、多路检索与检索路由",
+          "description": "Query Rewrite、问题分解、多路检索与检索路由",
+          "path": "/tutorials/agent-core-protocols/2-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-6",
+          "title": "引用溯源、证据约束、拒绝无依据回答与无答案处理",
+          "description": "引用溯源、证据约束、拒绝无依据回答与无答案处理",
+          "path": "/tutorials/agent-core-protocols/2-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-7",
+          "title": "Agentic RAG：由 Agent 选择检索策略并决定下一步动作",
+          "description": "Agentic RAG：由 Agent 选择检索策略并决定下一步动作",
+          "path": "/tutorials/agent-core-protocols/2-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-8",
+          "title": "知识库更新、删除、权限过滤与索引一致性",
+          "description": "知识库更新、删除、权限过滤与索引一致性",
+          "path": "/tutorials/agent-core-protocols/2-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-9",
+          "title": "Recall@K、MRR、Groundedness、引用准确性与 Bad Case 分析",
+          "description": "Recall@K、MRR、Groundedness、引用准确性与 Bad Case 分析",
+          "path": "/tutorials/agent-core-protocols/2-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "MCP 协议与 Python 实践",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "MCP 的目标、协议边界、架构与核心角色",
+          "description": "MCP 的目标、协议边界、架构与核心角色",
+          "path": "/tutorials/agent-core-protocols/3-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "MCP Host、Client、Server、能力发现与生命周期",
+          "description": "MCP Host、Client、Server、能力发现与生命周期",
+          "path": "/tutorials/agent-core-protocols/3-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "MCP Tools、Resources、Prompts 的区别与使用场景",
+          "description": "MCP Tools、Resources、Prompts 的区别与使用场景",
+          "path": "/tutorials/agent-core-protocols/3-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "MCP 请求、响应、错误处理与传输方式",
+          "description": "MCP 请求、响应、错误处理与传输方式",
+          "path": "/tutorials/agent-core-protocols/3-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-5",
+          "title": "stdio 与 Streamable HTTP：连接方式、部署与取舍",
+          "description": "stdio 与 Streamable HTTP：连接方式、部署与取舍",
+          "path": "/tutorials/agent-core-protocols/3-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-6",
+          "title": "使用官方 Python SDK 开发 MCP Server 与 Client",
+          "description": "使用官方 Python SDK 开发 MCP Server 与 Client",
+          "path": "/tutorials/agent-core-protocols/3-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-7",
+          "title": "将现有 Python 函数、API 与业务能力封装为 MCP 工具",
+          "description": "将现有 Python 函数、API 与业务能力封装为 MCP 工具",
+          "path": "/tutorials/agent-core-protocols/3-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-8",
+          "title": "MCP 认证、授权、可信边界、工具过滤与审计",
+          "description": "MCP 认证、授权、可信边界、工具过滤与审计",
+          "path": "/tutorials/agent-core-protocols/3-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-9",
+          "title": "MCP 与普通 REST API、函数调用之间的关系与选型边界",
+          "description": "MCP 与普通 REST API、函数调用之间的关系与选型边界",
+          "path": "/tutorials/agent-core-protocols/3-9/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Agent Skills、A2A 与协议协作",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "Agent Skills：指令、资源、脚本与渐进式加载",
+          "description": "Agent Skills：指令、资源、脚本与渐进式加载",
+          "path": "/tutorials/agent-core-protocols/4-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "Skills 的目录结构、说明文件、触发条件与可复用设计",
+          "description": "Skills 的目录结构、说明文件、触发条件与可复用设计",
+          "path": "/tutorials/agent-core-protocols/4-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-3",
+          "title": "Skills 与 Tools、MCP、AGENTS.md 的职责边界与配合",
+          "description": "Skills 与 Tools、MCP、AGENTS.md 的职责边界与配合",
+          "path": "/tutorials/agent-core-protocols/4-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-4",
+          "title": "Skills 的测试、版本管理、权限边界与恶意内容风险",
+          "description": "Skills 的测试、版本管理、权限边界与恶意内容风险",
+          "path": "/tutorials/agent-core-protocols/4-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-5",
+          "title": "A2A 的定位：远程 Agent 发现、任务委派、通信与结果交付",
+          "description": "A2A 的定位：远程 Agent 发现、任务委派、通信与结果交付",
+          "path": "/tutorials/agent-core-protocols/4-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-6",
+          "title": "Agent 间身份、任务状态、失败处理与协作边界",
+          "description": "Agent 间身份、任务状态、失败处理与协作边界",
+          "path": "/tutorials/agent-core-protocols/4-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-7",
+          "title": "MCP、Skills、A2A 及其他 Agent 协议的关系与适用场景",
+          "description": "MCP、Skills、A2A 及其他 Agent 协议的关系与适用场景",
+          "path": "/tutorials/agent-core-protocols/4-7/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "外部系统接入与工具能力扩展",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "搜索、文件、数据库、业务 API 与第三方服务工具",
+          "description": "搜索、文件、数据库、业务 API 与第三方服务工具",
+          "path": "/tutorials/agent-core-protocols/5-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "API 认证、分页、限流、错误码与响应数据规范化",
+          "description": "API 认证、分页、限流、错误码与响应数据规范化",
+          "path": "/tutorials/agent-core-protocols/5-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "Browser / Search 工具的使用、来源核验与结果抽取",
+          "description": "Browser / Search 工具的使用、来源核验与结果抽取",
+          "path": "/tutorials/agent-core-protocols/5-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "工具组合、工具选择、结果合并与调用成本控制",
+          "description": "工具组合、工具选择、结果合并与调用成本控制",
+          "path": "/tutorials/agent-core-protocols/5-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "外部内容作为不可信输入：注入、数据泄露与执行风险",
+          "description": "外部内容作为不可信输入：注入、数据泄露与执行风险",
+          "path": "/tutorials/agent-core-protocols/5-5/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/agent-core-protocols/",
+  "sortOrder": 23
+}

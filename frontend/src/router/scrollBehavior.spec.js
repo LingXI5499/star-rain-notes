@@ -2,7 +2,7 @@
 import { expect, it } from 'vitest'
 import { resolveScrollPosition } from './scrollBehavior'
 it.each(['/portfolio', '/blog', '/blog/archive', '/tutorials', '/search',
-  '/english/vocabulary', '/useradmin/blog/manage', '/useradmin/blog/taxonomy', '/useradmin/portfolio/manage'])
+  '/english/vocabulary', '/blog/manage', '/blog/taxonomy', '/portfolio/manage'])
   ('preserves scroll when %s updates filters or resets its page', path => {
     expect(resolveScrollPosition({ path, fullPath: path + '?tag=2' }, { path, fullPath: path + '?page=3' })).toBe(false)
   })

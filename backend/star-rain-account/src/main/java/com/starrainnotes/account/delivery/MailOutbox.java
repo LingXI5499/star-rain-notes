@@ -139,7 +139,7 @@ public class MailOutbox {
             accounts.insertReset(reset);
             Payload prepared = new Payload(request.getFrom(), request.getRecipient(), request.getSubject(),
                     "请在 30 分钟内打开以下链接重置密码：\n" + request.getBody()
-                    + "/useradmin/reset-password?token=" + token + "\n如果并非本人操作，请忽略此邮件。", null);
+                    + "/reset-password?token=" + token + "\n如果并非本人操作，请忽略此邮件。", null);
             try {
                 String cipher = encrypt(json.writeValueAsBytes(prepared));
                 if (jdbc.update("UPDATE sr_mail_outbox SET payload_cipher=? WHERE id=? AND lease_token=?",

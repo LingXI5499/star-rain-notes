@@ -10,12 +10,12 @@ vi.mock('../../modules/account/stores/authStore', () => ({ useAuthStore: () => (
 let wrapper
 afterEach(() => wrapper?.unmount())
 it('does not reset the admin content when filters change', async () => {
-  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/useradmin/:pathMatch(.*)*', component: { template: '<p />' } }] })
-  await router.push('/useradmin/blog/manage?page=3')
+  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/:pathMatch(.*)*', component: { template: '<p />' } }] })
+  await router.push('/blog/manage?page=3')
   wrapper = mount(Shell, { global: { plugins: [router] } }); await flushPromises()
   const content = wrapper.get('.admin-shell__content').element; content.scrollTo = vi.fn()
-  await router.push('/useradmin/blog/manage?tag=2'); await flushPromises()
+  await router.push('/blog/manage?tag=2'); await flushPromises()
   expect(content.scrollTo).not.toHaveBeenCalled()
-  await router.push('/useradmin/blog/taxonomy'); await flushPromises()
+  await router.push('/blog/taxonomy'); await flushPromises()
   expect(content.scrollTo).toHaveBeenCalledWith({ top: 0, behavior: 'auto' })
 })

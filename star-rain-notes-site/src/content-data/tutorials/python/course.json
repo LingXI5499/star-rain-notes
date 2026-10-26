@@ -1,0 +1,1045 @@
+{
+  "slug": "python",
+  "title": "Python",
+  "description": "以 Python 3.14 系列为教学基线，覆盖语言基础、对象语义、内置容器、函数、模块与包、异常与 IO、面向对象、迭代器与生成器、类型提示、并发、工程实践、CPython 运行机制与综合实验。",
+  "category": "Python全栈知识体系",
+  "categorySlug": "869229878202",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 120,
+  "wordCount": 10698,
+  "categoryId": "6",
+  "groups": [
+    {
+      "title": "学习指南",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "Python 程序设计学习路线与教程导航",
+          "description": "本章覆盖：课程定位：语言基础、Pythonic 编程、工程基础与 CPython 运行机制；教学基线：Python 3.14 系列；当前核验维护版本为 3.14.7；学习路径：基础语法 → 内置类型 → 函数 → 模块 → 异常/IO → OOP → 迭代器/生成器 → 类型系统 → 并发 → 工程与运行时；Python 语言、CPython 实现、标准库、PyPI 第三方生态的边界；Python 与数据结构算法、Web 框架、数据分析、AI/Agent 课程的边界；学习方法：解释器实验、单元测试、类型检查、调试、性能测量与源码阅读。",
+          "path": "/tutorials/python/chapter-1-1/",
+          "wordCount": 242,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Python、解释器与开发环境",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "Python 起源、定位、版本体系与生态",
+          "description": "本章覆盖：Python、Guido van Rossum 与语言发展历史；Python 作为动态、强类型、通用高级语言的定位；Python 语言规范与 CPython / PyPy 等实现的区别；Python 2 与 Python 3 的历史边界；Python 3.14 作为当前课程基线；标准库、PyPI、Web、数据、自动化、AI/Agent 等生态定位。",
+          "path": "/tutorials/python/chapter-2-1/",
+          "wordCount": 165,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "安装 Python 3.14、解释器、REPL 与运行脚本",
+          "description": "本章覆盖：Python 官方发行版与操作系统安装方式；python / python3 / py 启动命令的环境差异；交互式解释器 REPL；运行 .py 脚本；python -m 的模块运行方式；python --version 与解释器路径检查。",
+          "path": "/tutorials/python/chapter-2-2/",
+          "wordCount": 114,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "源代码、字节码、解释器与 CPython 执行链",
+          "description": "本章覆盖：.py 源文件；解析、编译为 code object / bytecode 的高层过程；__pycache__ 与 .pyc 的基础定位；Python 虚拟机执行字节码的高层认识；字节码属于 CPython 实现细节，不是跨实现稳定 ABI；解释型语言不等于“完全没有编译阶段”。",
+          "path": "/tutorials/python/chapter-2-3/",
+          "wordCount": 134,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "IDE、项目目录、终端与调试运行",
+          "description": "本章覆盖：VS Code / PyCharm 等 IDE 的角色；项目目录与工作目录；选择正确 Python Interpreter；终端运行与 IDE 运行的环境差异；断点、单步执行、变量查看和调用栈；解释器路径错误与环境错配的常见排查。",
+          "path": "/tutorials/python/chapter-2-4/",
+          "wordCount": 112,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "源文件编码、缩进、注释、标识符与命名规范",
+          "description": "本章覆盖：Python 3 源码编码与 UTF-8；缩进具有语法意义；单行注释与文档字符串的区别；标识符与关键字；PEP 8 常见命名约定；可读性优先与一致代码风格。",
+          "path": "/tutorials/python/chapter-2-5/",
+          "wordCount": 80,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-6",
+          "title": "脚本、模块、包与应用入口的整体关系",
+          "description": "本章覆盖：脚本 script 与模块 module；包 package；__name__；__main__；python file.py 与 python -m package.module 的差异；从单文件脚本到可维护 Python 项目的结构演进。",
+          "path": "/tutorials/python/chapter-2-6/",
+          "wordCount": 116,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "基础语法、对象语义与流程控制",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "名字、对象、赋值与动态类型",
+          "description": "本章覆盖：Python 变量更准确地理解为名字绑定 name binding；对象拥有身份、类型和值；赋值让名字绑定到对象；动态类型意味着名字可绑定不同类型对象；类型属于对象而不是变量槽位；del 删除绑定而不是“手动释放对象”。",
+          "path": "/tutorials/python/chapter-3-1/",
+          "wordCount": 113,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "数字、布尔值、None 与基本字面量",
+          "description": "本章覆盖：int；float；complex 的基础认识；bool；None；整数没有 Java/C 固定宽度溢出的相同语义；浮点仍受二进制浮点精度限制。",
+          "path": "/tutorials/python/chapter-3-2/",
+          "wordCount": 76,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "可变对象、不可变对象与对象身份",
+          "description": "本章覆盖：mutable 与 immutable；int、str、tuple 等常见不可变对象；list、dict、set 等常见可变对象；id() 的用途与边界；对象可变性对共享引用和函数调用的影响；“变量值改变”与“对象原地修改”的区别。",
+          "path": "/tutorials/python/chapter-3-3/",
+          "wordCount": 118,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "==、is、哈希性与相等语义",
+          "description": "本章覆盖：== 比较值相等语义；is 比较对象身份；None 通常使用 is / is not；hashable 的基本要求；不可变不自动等于一定可哈希；相等对象与哈希值契约的基础。",
+          "path": "/tutorials/python/chapter-3-4/",
+          "wordCount": 85,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "运算符、比较链与逻辑短路",
+          "description": "本章覆盖：算术运算符；//、%、**；比较运算符；链式比较；and、or、not；短路求值；运算符优先级与可读性。",
+          "path": "/tutorials/python/chapter-3-5/",
+          "wordCount": 59,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "Truth Value Testing 与条件表达式",
+          "description": "本章覆盖：真值测试；False、None、数值 0、空容器等常见 falsy 值；自定义对象通过 __bool__ / __len__ 参与真值判断；条件表达式 x if condition else y；不要机械写 == True / == False。",
+          "path": "/tutorials/python/chapter-3-6/",
+          "wordCount": 113,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-7",
+          "title": "print、input、格式化字符串与 f-string",
+          "description": "本章覆盖：print；input；str 与 repr 的输出差异基础；f-string；格式说明符；对齐、宽度、精度；用户输入默认是字符串。",
+          "path": "/tutorials/python/chapter-3-7/",
+          "wordCount": 70,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-8",
+          "title": "if / elif / else 分支结构",
+          "description": "本章覆盖：if；elif；else；嵌套条件；真值语义；early return / guard clause 的可读性思想。",
+          "path": "/tutorials/python/chapter-3-8/",
+          "wordCount": 60,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-9",
+          "title": "for、while、range、break、continue 与循环 else",
+          "description": "本章覆盖：for 基于可迭代对象而非 C 风格计数器；range；while；break；continue；循环 else；常见无限循环与边界错误。",
+          "path": "/tutorials/python/chapter-3-9/",
+          "wordCount": 72,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-10",
+          "title": "enumerate、zip 与并行遍历",
+          "description": "本章覆盖：enumerate 代替手动下标计数；zip 并行遍历；zip 的最短输入停止语义；strict=True 的使用意义；多变量解包与循环结合。",
+          "path": "/tutorials/python/chapter-3-10/",
+          "wordCount": 74,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-11",
+          "title": "序列解包、星号解包与模式绑定",
+          "description": "本章覆盖：元组/序列解包；扩展解包 *rest；交换变量；函数调用中的 * 与 ** 展开；嵌套解包；解包数量不匹配异常。",
+          "path": "/tutorials/python/chapter-3-11/",
+          "wordCount": 58,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-12",
+          "title": "match / case 结构化模式匹配",
+          "description": "本章覆盖：match / case 基本语法；字面值模式；捕获模式与通配符 _；序列模式；映射模式；类模式基础；guard 条件与 if/elif 的选择边界。",
+          "path": "/tutorials/python/chapter-3-12/",
+          "wordCount": 75,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "内置容器、字符串与二进制数据",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "str：Unicode 字符串、索引、切片与不可变性",
+          "description": "本章覆盖：Python str 表示 Unicode 文本；索引与切片；字符串不可变；常用查找、替换、拆分、拼接方法；join 通常优于循环反复拼接；字符数、字节数与显示宽度不是同一概念。",
+          "path": "/tutorials/python/chapter-4-1/",
+          "wordCount": 91,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "编码与解码：str、bytes 与 UTF-8",
+          "description": "本章覆盖：文本 str 与二进制 bytes 的边界；encode；decode；UTF-8；UnicodeDecodeError / UnicodeEncodeError；文件、网络和 API 边界需要明确编码。",
+          "path": "/tutorials/python/chapter-4-2/",
+          "wordCount": 101,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "list：动态序列、常用操作与复杂度意识",
+          "description": "本章覆盖：创建、索引、切片；append、extend、insert；remove、pop、clear；sort 与 sorted 的区别；list 作为动态数组的 CPython 高层实现认知；头部插入删除与尾部 append 的复杂度差异。",
+          "path": "/tutorials/python/chapter-4-3/",
+          "wordCount": 116,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "tuple、range 与不可变序列",
+          "description": "本章覆盖：tuple；单元素 tuple 的逗号；packing / unpacking；tuple 不可变但成员对象仍可能可变；range 的惰性整数序列；tuple 作为记录与不可变键的适用边界。",
+          "path": "/tutorials/python/chapter-4-4/",
+          "wordCount": 95,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "dict：映射模型、常用 API 与插入顺序",
+          "description": "本章覆盖：key-value 映射；get、setdefault、update；keys、values、items；字典键必须可哈希；Python 语言保证 dict 保持插入顺序；字典查找平均复杂度与哈希表的高层认识。",
+          "path": "/tutorials/python/chapter-4-5/",
+          "wordCount": 108,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "set 与 frozenset：去重和集合运算",
+          "description": "本章覆盖：set 的唯一元素语义；add、remove、discard；并、交、差、对称差；子集与超集；frozenset；集合元素必须可哈希。",
+          "path": "/tutorials/python/chapter-4-6/",
+          "wordCount": 73,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "切片、复制与序列修改",
+          "description": "本章覆盖：slice(start, stop, step)；负索引；切片赋值；浅复制 list[:] / copy()；切片通常创建新序列对象；大序列切片的内存成本。",
+          "path": "/tutorials/python/chapter-4-7/",
+          "wordCount": 80,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "浅拷贝、深拷贝与 copy 模块",
+          "description": "本章覆盖：赋值只复制引用绑定；shallow copy；deepcopy；嵌套可变对象共享；循环引用处理的高层认识；深拷贝不是所有对象的通用最佳方案。",
+          "path": "/tutorials/python/chapter-4-8/",
+          "wordCount": 76,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-9",
+          "title": "bytes、bytearray 与 memoryview",
+          "description": "本章覆盖：bytes 不可变字节序列；bytearray 可变字节序列；索引得到整数的语义；二进制协议、文件和网络数据；memoryview 避免部分不必要复制；文本 API 与二进制 API 不应混用。",
+          "path": "/tutorials/python/chapter-4-9/",
+          "wordCount": 97,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-10",
+          "title": "collections：deque、Counter、defaultdict 与 namedtuple",
+          "description": "本章覆盖：deque 双端队列；Counter 计数；defaultdict 默认工厂；namedtuple 轻量记录类型；何时优先使用内置容器；何时使用 collections 提供的专用容器。",
+          "path": "/tutorials/python/chapter-4-10/",
+          "wordCount": 94,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "函数、作用域、闭包与装饰器",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "函数定义、调用、返回值与函数对象",
+          "description": "本章覆盖：def；函数调用；return；无显式 return 返回 None；函数本身也是对象；函数可以赋值、传参和返回。",
+          "path": "/tutorials/python/chapter-5-1/",
+          "wordCount": 61,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "位置参数、关键字参数与默认参数",
+          "description": "本章覆盖：positional arguments；keyword arguments；default arguments；参数绑定规则；默认值在函数定义时求值；API 参数设计的可读性。",
+          "path": "/tutorials/python/chapter-5-2/",
+          "wordCount": 92,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "*args、**kwargs、位置仅限参数与关键字仅限参数",
+          "description": "本章覆盖：*args；**kwargs；参数收集与展开；/ 定义 positional-only parameters；* 定义 keyword-only parameters；稳定公共 API 的参数约束。",
+          "path": "/tutorials/python/chapter-5-3/",
+          "wordCount": 98,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "可变默认参数陷阱与安全默认值模式",
+          "description": "本章覆盖：默认参数对象只创建一次；list/dict 作为默认值导致状态共享；None 作为哨兵值；不可变默认值通常更安全；理解问题根因而不是死背写法。",
+          "path": "/tutorials/python/chapter-5-4/",
+          "wordCount": 76,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "Python 参数传递：Call by Sharing / Assignment",
+          "description": "本章覆盖：函数形参绑定到调用时传入的对象；不是 C 式值拷贝模型的简单翻版；也不是语言级“引用传递”；修改可变对象会被调用者观察到；重新绑定形参不会重绑定调用者名字；与浅拷贝/深拷贝的关系。",
+          "path": "/tutorials/python/chapter-5-5/",
+          "wordCount": 95,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "LEGB、global 与 nonlocal",
+          "description": "本章覆盖：Local；Enclosing；Global；Builtins；global；nonlocal；读取名字与赋值名字对作用域解析的影响。",
+          "path": "/tutorials/python/chapter-5-6/",
+          "wordCount": 74,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "闭包 Closure 与状态封装",
+          "description": "本章覆盖：嵌套函数；自由变量 free variable；闭包保留外层环境；nonlocal 修改闭包状态；闭包作为函数工厂；late binding 问题与解决思路。",
+          "path": "/tutorials/python/chapter-5-7/",
+          "wordCount": 81,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-8",
+          "title": "lambda 与高阶函数",
+          "description": "本章覆盖：lambda 表达式；单表达式限制；函数作为参数；map/filter 的定位；sorted(key=...)；可读性优先于炫技。",
+          "path": "/tutorials/python/chapter-5-8/",
+          "wordCount": 70,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-9",
+          "title": "装饰器：函数包装、@ 语法与 functools.wraps",
+          "description": "本章覆盖：装饰器本质是可调用对象转换；@decorator 语法；wrapper；闭包与装饰器；functools.wraps 保留元数据；日志、鉴权、缓存、计时等横切场景。",
+          "path": "/tutorials/python/chapter-5-9/",
+          "wordCount": 87,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-10",
+          "title": "带参数装饰器、类装饰器与装饰器组合",
+          "description": "本章覆盖：decorator factory；多层闭包；多个装饰器的应用顺序；类装饰器；装饰器参数与被装饰对象参数区分；过度装饰导致调试困难的边界。",
+          "path": "/tutorials/python/chapter-5-10/",
+          "wordCount": 75,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "模块、包、环境与依赖管理",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "模块、import 与名字空间",
+          "description": "本章覆盖：模块对象；import module；from module import name；as 别名；模块名字空间；重复 import 与模块缓存基础。",
+          "path": "/tutorials/python/chapter-6-1/",
+          "wordCount": 74,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "__name__、__main__ 与应用入口",
+          "description": "本章覆盖：__name__；if __name__ == '__main__'；模块被导入与直接运行；python -m；将可复用逻辑与入口代码分离。",
+          "path": "/tutorials/python/chapter-6-2/",
+          "wordCount": 73,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "包、__init__.py、绝对导入与相对导入",
+          "description": "本章覆盖：package；__init__.py；子模块；绝对导入；显式相对导入；不要依赖运行工作目录碰巧正确。",
+          "path": "/tutorials/python/chapter-6-3/",
+          "wordCount": 58,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "import 搜索路径、sys.path 与循环导入",
+          "description": "本章覆盖：import 搜索路径的高层模型；sys.path；当前工作目录与包根目录；循环导入形成的部分初始化模块；通过重构依赖方向消除循环导入；不要把修改 sys.path 当长期项目结构方案。",
+          "path": "/tutorials/python/chapter-6-4/",
+          "wordCount": 97,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "venv：项目隔离与解释器环境",
+          "description": "本章覆盖：为什么不同项目需要依赖隔离；python -m venv；激活与退出环境；虚拟环境中的解释器和 site-packages；IDE 选择虚拟环境解释器；虚拟环境不等于容器。",
+          "path": "/tutorials/python/chapter-6-5/",
+          "wordCount": 89,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-6",
+          "title": "pip、PyPI 与依赖安装",
+          "description": "本章覆盖：python -m pip；install / uninstall / list / show；PyPI；版本约束；直接依赖与传递依赖；不要在错误解释器环境中 pip install。",
+          "path": "/tutorials/python/chapter-6-6/",
+          "wordCount": 89,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-7",
+          "title": "pyproject.toml 与现代 Python 项目结构",
+          "description": "本章覆盖：pyproject.toml 的 [build-system]、[project]、[tool] 高层结构；src layout 与 tests 目录；项目元数据和依赖声明；构建后端概念；wheel 与 source distribution 基础；打包/发布流程只建立工程认知，不深入 PyPI 发布维护。",
+          "path": "/tutorials/python/chapter-6-7/",
+          "wordCount": 148,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "异常、上下文管理、文件与数据交换",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "异常体系、Traceback 与常见异常类型",
+          "description": "本章覆盖：BaseException 与 Exception；TypeError、ValueError、KeyError、IndexError；AttributeError、ImportError、OSError；traceback 调用链；异常对象携带错误上下文；不要使用 except: 吞掉所有异常。",
+          "path": "/tutorials/python/chapter-7-1/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "try / except / else / finally",
+          "description": "本章覆盖：try；except；多个异常处理分支；else；finally；异常匹配与继承关系；清理逻辑与业务恢复逻辑的区别。",
+          "path": "/tutorials/python/chapter-7-2/",
+          "wordCount": 65,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "raise、异常链与自定义异常",
+          "description": "本章覆盖：raise；重新抛出；raise ... from ...；__cause__ 与异常链的概念；自定义 Exception 子类；业务异常类型不应过度碎片化。",
+          "path": "/tutorials/python/chapter-7-3/",
+          "wordCount": 80,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "with、上下文管理器与资源生命周期",
+          "description": "本章覆盖：with 语句；__enter__；__exit__；资源获取与释放；文件、锁、事务等典型场景；异常发生时仍执行退出逻辑。",
+          "path": "/tutorials/python/chapter-7-4/",
+          "wordCount": 67,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "contextlib 与自定义上下文管理器",
+          "description": "本章覆盖：contextlib.contextmanager；yield 前后分别对应进入/退出；closing；suppress 的谨慎使用；ExitStack 的高层用途；类式与生成器式上下文管理器的选择。",
+          "path": "/tutorials/python/chapter-7-5/",
+          "wordCount": 104,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-6",
+          "title": "open、文本文件、编码与缓冲",
+          "description": "本章覆盖：open；文本模式；encoding；read / readline / readlines；write / writelines；with open(...)；newline 与平台差异基础。",
+          "path": "/tutorials/python/chapter-7-6/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-7",
+          "title": "二进制文件、bytes 与流式读写",
+          "description": "本章覆盖：rb / wb；bytes；分块读取；seek / tell；大文件避免一次性全部读取；文本编码与二进制内容边界。",
+          "path": "/tutorials/python/chapter-7-7/",
+          "wordCount": 60,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-8",
+          "title": "pathlib、shutil 与 tempfile",
+          "description": "本章覆盖：Path；路径拼接与遍历；exists / is_file / is_dir；read_text / write_text 的适用场景；shutil 复制/移动/删除；tempfile 临时文件与目录。",
+          "path": "/tutorials/python/chapter-7-8/",
+          "wordCount": 99,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-9",
+          "title": "JSON、CSV 与 pickle",
+          "description": "本章覆盖：json.dumps / loads；json.dump / load；JSON 类型映射；csv.reader / writer；pickle 的 Python 对象序列化；绝不反序列化不可信 pickle 数据。",
+          "path": "/tutorials/python/chapter-7-9/",
+          "wordCount": 103,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-10",
+          "title": "re 正则表达式与文本提取",
+          "description": "本章覆盖：re.search / match / fullmatch；findall / finditer；sub / split；分组与命名分组；raw string 与转义；简单解析优先普通字符串 API，复杂模式再用正则。",
+          "path": "/tutorials/python/chapter-7-10/",
+          "wordCount": 105,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "面向对象与 Python 数据模型",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "类、对象、实例属性与类属性",
+          "description": "本章覆盖：class；实例对象；实例属性；类属性；属性查找的高层顺序；共享类属性与实例覆盖。",
+          "path": "/tutorials/python/chapter-8-1/",
+          "wordCount": 48,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "__init__、self 与对象初始化",
+          "description": "本章覆盖：__new__ 与 __init__ 的职责边界基础；self；实例初始化；构造参数；不要把 __init__ 理解为真正分配对象内存的构造器；可变默认参数同样影响方法。",
+          "path": "/tutorials/python/chapter-8-2/",
+          "wordCount": 87,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "实例方法、classmethod 与 staticmethod",
+          "description": "本章覆盖：instance method；classmethod；staticmethod；cls 与 self；替代构造器场景；不要为“像 Java”而滥用 staticmethod。",
+          "path": "/tutorials/python/chapter-8-3/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "属性封装、property 与命名约定",
+          "description": "本章覆盖：Python 更偏向约定式封装；_name；__name name mangling；@property；setter / deleter；将方法逐步演进为受控属性。",
+          "path": "/tutorials/python/chapter-8-4/",
+          "wordCount": 85,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "继承、方法重写与 super()",
+          "description": "本章覆盖：单继承；方法重写；super()；父类初始化；继承用于 is-a 关系；组合优于继承的常见场景。",
+          "path": "/tutorials/python/chapter-8-5/",
+          "wordCount": 53,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-6",
+          "title": "多继承、MRO 与 cooperative super",
+          "description": "本章覆盖：multiple inheritance；Method Resolution Order；__mro__；C3 linearization 的高层认识；super() 按 MRO 链协作；Mixin 模式。",
+          "path": "/tutorials/python/chapter-8-6/",
+          "wordCount": 101,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-7",
+          "title": "鸭子类型、多态与协议式编程",
+          "description": "本章覆盖：duck typing；“看行为而不是只看继承树”；多态调用；EAFP 与 LBYL 的工程边界；抽象接口与动态对象模型；与 typing.Protocol 的后续衔接。",
+          "path": "/tutorials/python/chapter-8-7/",
+          "wordCount": 86,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-8",
+          "title": "常用魔术方法：repr、str、eq、hash、len、bool、call",
+          "description": "本章覆盖：__repr__；__str__；__eq__；__hash__；__len__；__bool__；__call__。",
+          "path": "/tutorials/python/chapter-8-8/",
+          "wordCount": 66,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-9",
+          "title": "容器与运算符协议：getitem、iter、contains 与运算符重载",
+          "description": "本章覆盖：__getitem__ / __setitem__；__iter__；__contains__；__add__ 等运算符方法；遵守现有类型直觉；不要为了语法酷炫而滥用运算符重载。",
+          "path": "/tutorials/python/chapter-8-9/",
+          "wordCount": 93,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-10",
+          "title": "属性访问协议：__getattribute__、__getattr__ 与 descriptors",
+          "description": "本章覆盖：__getattribute__；__getattr__；__setattr__；descriptor protocol：__get__ / __set__ / __delete__；函数、property 等与描述符机制的关系；ORM / 验证框架等依赖属性协议的工程背景。",
+          "path": "/tutorials/python/chapter-8-10/",
+          "wordCount": 137,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-11",
+          "title": "__slots__、对象属性存储与内存边界",
+          "description": "本章覆盖：普通实例通常拥有 __dict__；__slots__ 的基本作用；__slots__ 可能减少部分实例属性存储开销；__slots__ 会改变动态添加属性能力；继承与 slots 组合需要谨慎；不要把 __slots__ 当通用性能银弹。",
+          "path": "/tutorials/python/chapter-8-11/",
+          "wordCount": 119,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-12",
+          "title": "抽象基类、元类与类创建机制基础",
+          "description": "本章覆盖：abc.ABC；@abstractmethod；type 既是常见对象类型又可参与动态创建类；metaclass 的高层概念；类创建钩子属于高级扩展机制；元类理解即可，不作为日常业务代码默认工具。",
+          "path": "/tutorials/python/chapter-8-12/",
+          "wordCount": 103,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "迭代器、生成器与惰性计算",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "Iterable、Iterator 与迭代协议",
+          "description": "本章覆盖：iterable；iterator；iter()；next()；__iter__ / __next__；StopIteration。",
+          "path": "/tutorials/python/chapter-9-1/",
+          "wordCount": 71,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "for 循环背后的迭代机制",
+          "description": "本章覆盖：for 调用 iter()；反复 next()；StopIteration 结束循环；容器可重复迭代与迭代器一次消费的区别；自定义可迭代对象。",
+          "path": "/tutorials/python/chapter-9-2/",
+          "wordCount": 74,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "generator、yield 与生成器状态",
+          "description": "本章覆盖：生成器函数；yield；调用生成器函数返回 generator object；局部状态暂停与恢复；生成器也是迭代器；惰性产生数据。",
+          "path": "/tutorials/python/chapter-9-3/",
+          "wordCount": 70,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "yield from 与生成器委托",
+          "description": "本章覆盖：yield from；委托子迭代器；组合生成器；StopIteration.value 的高级语义只作了解；send/throw/close 不作为业务主线深入。",
+          "path": "/tutorials/python/chapter-9-4/",
+          "wordCount": 85,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "列表、集合、字典推导式",
+          "description": "本章覆盖：list comprehension；set comprehension；dict comprehension；条件过滤；多层循环；推导式内部作用域。",
+          "path": "/tutorials/python/chapter-9-5/",
+          "wordCount": 79,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-6",
+          "title": "生成器表达式与内存友好的流水线",
+          "description": "本章覆盖：generator expression；与列表推导式的区别；一次消费；配合 sum / any / all；避免不必要中间列表；惰性计算并不自动等于更快。",
+          "path": "/tutorials/python/chapter-9-6/",
+          "wordCount": 79,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-7",
+          "title": "itertools 与迭代器组合工具",
+          "description": "本章覆盖：chain；islice；count；cycle / repeat；product / permutations / combinations；groupby 的相邻分组语义；惰性迭代工具的组合思想。",
+          "path": "/tutorials/python/chapter-9-7/",
+          "wordCount": 100,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "类型提示、数据建模与静态分析",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": "类型提示与渐进式类型系统",
+          "description": "本章覆盖：type annotation；动态运行语义与静态类型检查是两层机制；类型提示通常不会自动在运行时强制校验；渐进式 typing；函数参数与返回值注解；变量注解。",
+          "path": "/tutorials/python/chapter-10-1/",
+          "wordCount": 86,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "容器、Union、None 与 Callable 类型",
+          "description": "本章覆盖：list[str] / dict[str, int]；tuple；set；X | Y union syntax；T | None；Callable；Any 与 object 的语义区别基础。",
+          "path": "/tutorials/python/chapter-10-2/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "TypeAlias、Literal、Final、ClassVar 与 Annotated",
+          "description": "本章覆盖：type alias；Python 3.12+ type statement 的版本语义；Literal；Final；ClassVar；Annotated 作为附加元数据机制。",
+          "path": "/tutorials/python/chapter-10-3/",
+          "wordCount": 89,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "泛型、TypeVar 与参数化类型",
+          "description": "本章覆盖：generic function；TypeVar；generic class；Python 3.12+ 泛型参数语法基础；约束与 bound；静态类型关系不改变对象运行时本质。",
+          "path": "/tutorials/python/chapter-10-4/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "Protocol 与结构化子类型",
+          "description": "本章覆盖：typing.Protocol；structural subtyping；与鸭子类型的关系；静态表达“只要有这些行为即可”；runtime_checkable 的边界；Protocol 与 ABC 的选择。",
+          "path": "/tutorials/python/chapter-10-5/",
+          "wordCount": 105,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-6",
+          "title": "TypedDict 与结构化字典数据",
+          "description": "本章覆盖：TypedDict；必需键与非必需键；字典运行时仍是普通 dict；适合 JSON 风格数据建模；与 dataclass / Pydantic 等对象模型的边界。",
+          "path": "/tutorials/python/chapter-10-6/",
+          "wordCount": 81,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-7",
+          "title": "dataclasses：样板代码消除与数据对象",
+          "description": "本章覆盖：@dataclass；field；default_factory；frozen；order；slots；数据对象与复杂领域行为类的选择边界。",
+          "path": "/tutorials/python/chapter-10-7/",
+          "wordCount": 77,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-8",
+          "title": "Python 3.14 注解延迟求值与运行时类型反射边界",
+          "description": "本章覆盖：Python 3.14 默认采用延迟注解求值的新语义；__annotations__ 不应被旧版本经验机械推断；typing.get_type_hints；forward reference；类型检查器与运行时框架读取注解的差异；版本敏感结论必须按 3.14 文档验证。",
+          "path": "/tutorials/python/chapter-10-8/",
+          "wordCount": 136,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "并发、并行与 asyncio",
+      "chapters": [
+        {
+          "slug": "chapter-11-1",
+          "title": "并发、并行、线程、进程与协程的选择模型",
+          "description": "本章覆盖：concurrency vs parallelism；I/O-bound；CPU-bound；thread；process；coroutine；先按任务性质选模型，不背单一万能方案。",
+          "path": "/tutorials/python/chapter-11-1/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-2",
+          "title": "threading：Thread、start、join 与线程生命周期",
+          "description": "本章覆盖：threading.Thread；target / args；start；join；daemon thread；线程异常与主线程关系基础。",
+          "path": "/tutorials/python/chapter-11-2/",
+          "wordCount": 73,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-3",
+          "title": "Lock、RLock、Condition、Event 与 Semaphore",
+          "description": "本章覆盖：race condition；Lock；RLock；Condition；Event；Semaphore；with lock 的资源管理方式。",
+          "path": "/tutorials/python/chapter-11-3/",
+          "wordCount": 74,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-4",
+          "title": "queue 与线程安全的生产者消费者",
+          "description": "本章覆盖：queue.Queue；put / get；task_done / join；有界队列与背压基础；生产者消费者模型；优先消息传递而不是共享复杂可变状态。",
+          "path": "/tutorials/python/chapter-11-4/",
+          "wordCount": 79,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-5",
+          "title": "GIL、CPython 线程模型与 free-threaded build",
+          "description": "本章覆盖：GIL 是 CPython 实现机制，不是 Python 语言规范；常规 CPython 中同一时刻通常只有一个线程执行 Python 字节码；阻塞 I/O 期间解释器可释放 GIL；I/O 密集任务仍可受益于线程；Python 3.14 支持可选 free-threaded build；free-threaded 并非默认构建，不能据此宣布“GIL 已经消失”。",
+          "path": "/tutorials/python/chapter-11-5/",
+          "wordCount": 171,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-6",
+          "title": "concurrent.futures 与 ThreadPoolExecutor",
+          "description": "本章覆盖：Executor；Future；submit；map；ThreadPoolExecutor；结果、异常与取消；高层任务 API 通常优于手写线程管理。",
+          "path": "/tutorials/python/chapter-11-6/",
+          "wordCount": 80,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-7",
+          "title": "multiprocessing：进程、启动方式与进程间数据",
+          "description": "本章覆盖：multiprocessing.Process；独立进程地址空间；spawn / fork / forkserver 的平台与版本差异；Queue / Pipe；进程启动成本；if __name__ == '__main__' 的重要性。",
+          "path": "/tutorials/python/chapter-11-7/",
+          "wordCount": 115,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-8",
+          "title": "ProcessPoolExecutor 与 CPU 密集任务",
+          "description": "本章覆盖：ProcessPoolExecutor；利用多个 CPU 核心；任务与参数需要可序列化的常见要求；进程池启动和 IPC 成本；小任务不一定适合进程池；线程池与进程池的选型。",
+          "path": "/tutorials/python/chapter-11-8/",
+          "wordCount": 89,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-9",
+          "title": "async / await 与 coroutine",
+          "description": "本章覆盖：async def；coroutine object；await；asyncio.run；协作式调度；调用 coroutine 不等于已经执行。",
+          "path": "/tutorials/python/chapter-11-9/",
+          "wordCount": 75,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-10",
+          "title": "Task、Future、Event Loop 与任务调度",
+          "description": "本章覆盖：event loop；asyncio.create_task；Task；asyncio.Future 与 concurrent.futures.Future 的区别；sleep / I/O 等待时让出控制权；不要在事件循环中执行长时间阻塞代码。",
+          "path": "/tutorials/python/chapter-11-10/",
+          "wordCount": 122,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-11",
+          "title": "gather、TaskGroup、取消、超时与异常传播",
+          "description": "本章覆盖：asyncio.gather；TaskGroup；structured concurrency 的高层思想；task.cancel；CancelledError；asyncio.timeout / wait_for 的边界；并发任务异常传播与资源清理。",
+          "path": "/tutorials/python/chapter-11-11/",
+          "wordCount": 128,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "常用标准库与工程实践",
+      "chapters": [
+        {
+          "slug": "chapter-12-1",
+          "title": "datetime、time 与时间处理",
+          "description": "本章覆盖：datetime.date / datetime.datetime；timedelta；timezone-aware 与 naive datetime；zoneinfo；strftime / strptime；time.perf_counter 用于耗时测量。",
+          "path": "/tutorials/python/chapter-12-1/",
+          "wordCount": 129,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-2",
+          "title": "functools：缓存、偏函数与函数工具",
+          "description": "本章覆盖：lru_cache / cache；partial；reduce；wraps 回顾；singledispatch 的基础认识；缓存需要考虑参数可哈希与内存占用。",
+          "path": "/tutorials/python/chapter-12-2/",
+          "wordCount": 83,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-3",
+          "title": "heapq、bisect 与常用算法型标准库",
+          "description": "本章覆盖：heapq 最小堆；heappush / heappop；nlargest / nsmallest；bisect；有序序列插入与查找；这些工具是算法能力的 API 支撑，不替代完整算法课程。",
+          "path": "/tutorials/python/chapter-12-3/",
+          "wordCount": 95,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-4",
+          "title": "os、sys 与运行环境交互",
+          "description": "本章覆盖：os.environ；os.getcwd；os.path 与 pathlib 的定位差异；sys.argv；sys.path；sys.stdin / stdout / stderr；sys.exit。",
+          "path": "/tutorials/python/chapter-12-4/",
+          "wordCount": 100,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-5",
+          "title": "argparse 与命令行程序",
+          "description": "本章覆盖：ArgumentParser；位置参数；可选参数；类型转换；choices / required；自动 help；命令行工具的输入边界设计。",
+          "path": "/tutorials/python/chapter-12-5/",
+          "wordCount": 74,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-6",
+          "title": "subprocess：调用外部程序与安全边界",
+          "description": "本章覆盖：subprocess.run；参数列表；capture_output / text；check；timeout；shell=False 的默认安全价值；避免把不可信输入拼进 shell 命令。",
+          "path": "/tutorials/python/chapter-12-6/",
+          "wordCount": 98,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-7",
+          "title": "logging：日志级别、Logger、Handler 与 Formatter",
+          "description": "本章覆盖：DEBUG / INFO / WARNING / ERROR / CRITICAL；logger；handler；formatter；模块级 logger；日志与 print 调试的区别。",
+          "path": "/tutorials/python/chapter-12-7/",
+          "wordCount": 90,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-8",
+          "title": "unittest 与 pytest 测试基础",
+          "description": "本章覆盖：unittest.TestCase 与断言；setUp / tearDown；测试正常路径、边界和异常；pytest 作为高价值第三方测试工具；pytest fixture / parametrize 只建立实用基础；测试框架不是业务逻辑的一部分。",
+          "path": "/tutorials/python/chapter-12-8/",
+          "wordCount": 123,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-9",
+          "title": "pdb、traceback 与调试",
+          "description": "本章覆盖：breakpoint()；pdb；断点与单步；查看调用栈；traceback 模块；通过最小复现定位异常。",
+          "path": "/tutorials/python/chapter-12-9/",
+          "wordCount": 59,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-10",
+          "title": "PEP 8、代码质量、格式化与静态检查工具链",
+          "description": "本章覆盖：PEP 8 风格；PEP 257 文档字符串基础；formatter / linter / type checker 的职责差异；Black / Ruff / mypy 等作为工程工具示例；自动工具不能替代正确设计；团队项目应统一配置而非每个人各自一套风格。",
+          "path": "/tutorials/python/chapter-12-10/",
+          "wordCount": 121,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "CPython 运行机制、内存与性能",
+      "chapters": [
+        {
+          "slug": "chapter-13-1",
+          "title": "Python 数据模型、对象身份与 CPython 对象实现边界",
+          "description": "本章覆盖：Python 语言层的 object / type / value / identity；CPython 中 PyObject 等属于实现层；引用关系与对象图；不要把 CPython 内部结构当成所有 Python 实现保证；实现细节可以用于理解性能，但必须标注版本。",
+          "path": "/tutorials/python/chapter-13-1/",
+          "wordCount": 126,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-2",
+          "title": "引用计数与循环垃圾回收",
+          "description": "本章覆盖：CPython 引用计数的高层机制；引用计数归零通常触发对象回收；循环引用需要循环 GC；gc 模块；资源释放仍应依靠 context manager，而不是等待 GC；其他 Python 实现的 GC 策略可能不同。",
+          "path": "/tutorials/python/chapter-13-2/",
+          "wordCount": 106,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-3",
+          "title": "名字空间、frame、call stack 与函数调用",
+          "description": "本章覆盖：module globals；function locals；frame object 的高层认识；调用栈；traceback 与 frame 的关系；闭包 cell 对象只作实现认知。",
+          "path": "/tutorials/python/chapter-13-3/",
+          "wordCount": 91,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-4",
+          "title": "CPython 字节码与 dis",
+          "description": "本章覆盖：compile；code object；dis.dis；字节码指令；3.11+ adaptive/specialized interpreter 的高层认识；字节码会跨 Python 版本变化，不能作为稳定接口。",
+          "path": "/tutorials/python/chapter-13-4/",
+          "wordCount": 107,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-5",
+          "title": "list / dict / set 的 CPython 实现与复杂度边界",
+          "description": "本章覆盖：list 动态数组高层实现；dict / set 哈希表高层实现；平均 O(1) 不等于任何情况恒定时间；字典保持插入顺序是语言语义，但具体表结构是实现细节；容器增长策略不得死背为跨版本固定实现；性能结论应配合实际基准验证。",
+          "path": "/tutorials/python/chapter-13-5/",
+          "wordCount": 113,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-6",
+          "title": "内存占用、对象共享与常见“缓存”误区",
+          "description": "本章覆盖：sys.getsizeof 的边界；容器大小不自动包含所有递归引用对象；字符串驻留 interning 属于实现/优化细节；小整数对象复用等现象不能当业务正确性依据；使用 is 判断数值/字符串相等是错误做法；性能优化不能依赖偶然缓存行为。",
+          "path": "/tutorials/python/chapter-13-6/",
+          "wordCount": 122,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-7",
+          "title": "timeit、cProfile 与性能定位",
+          "description": "本章覆盖：先测量再优化；timeit 微基准；cProfile；pstats；算法复杂度通常比语法微优化更重要；I/O、网络和数据库瓶颈需要端到端观察。",
+          "path": "/tutorials/python/chapter-13-7/",
+          "wordCount": 77,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-8",
+          "title": "Python 性能优化的边界与优化路线",
+          "description": "本章覆盖：选择正确数据结构和算法；减少不必要对象和复制；生成器降低峰值内存但不保证更快；I/O 并发与 CPU 并行采用不同方案；第三方 C/C++/Rust 扩展和 NumPy 等属于后续专项；不要在没有 profile 证据时进行复杂微优化。",
+          "path": "/tutorials/python/chapter-13-8/",
+          "wordCount": 116,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Python 综合实战实验室",
+      "chapters": [
+        {
+          "slug": "chapter-14-1",
+          "title": "命令行日志分析器",
+          "description": "本章覆盖：argparse；pathlib；文件流式读取；正则表达式；Counter / dict 统计；datetime；logging；单元测试。",
+          "path": "/tutorials/python/chapter-14-1/",
+          "wordCount": 74,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-2",
+          "title": "本地配置与任务管理 CLI",
+          "description": "本章覆盖：模块化项目结构；dataclass / TypedDict；JSON 或 TOML 配置；命令行参数；异常体系；日志；pyproject.toml。",
+          "path": "/tutorials/python/chapter-14-2/",
+          "wordCount": 76,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-3",
+          "title": "异步批量 HTTP 数据采集器",
+          "description": "本章覆盖：async / await；TaskGroup 或 gather；并发数量控制；超时与取消；JSON 数据；文件缓存；HTTP 第三方客户端可作为项目依赖，不把其 API 写进 Python 核心。",
+          "path": "/tutorials/python/chapter-14-3/",
+          "wordCount": 96,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-4",
+          "title": "多线程文件处理与任务队列",
+          "description": "本章覆盖：ThreadPoolExecutor；queue；文件遍历；线程安全结果汇总；异常传播；性能对比；适合 I/O 密集任务。",
+          "path": "/tutorials/python/chapter-14-4/",
+          "wordCount": 66,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-5",
+          "title": "多进程 CPU 计算任务调度器",
+          "description": "本章覆盖：ProcessPoolExecutor；CPU 密集任务；可序列化任务参数；进程池初始化；任务失败处理；线程池/进程池基准对比。",
+          "path": "/tutorials/python/chapter-14-5/",
+          "wordCount": 70,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-6",
+          "title": "插件式文本处理框架",
+          "description": "本章覆盖：包与模块；抽象基类 / Protocol；装饰器注册或配置注册；动态导入基础；函数对象与回调；日志和异常隔离；插件接口设计。",
+          "path": "/tutorials/python/chapter-14-6/",
+          "wordCount": 67,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-7",
+          "title": "可测试的文件同步与备份工具",
+          "description": "本章覆盖：pathlib / shutil；hash 或时间戳策略；dry-run；logging；unittest / pytest；临时目录测试；异常与恢复策略。",
+          "path": "/tutorials/python/chapter-14-7/",
+          "wordCount": 80,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-8",
+          "title": "Python Agent 工具层前置实验",
+          "description": "本章覆盖：纯 Python 工具函数建模；类型提示与 Protocol；异步 I/O；JSON 输入输出；超时、重试与错误分类；日志与测试；不引入完整 Agent 框架，只训练后续 AI/Agent 开发所需 Python 基础。",
+          "path": "/tutorials/python/chapter-14-8/",
+          "wordCount": 106,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/python/",
+  "sortOrder": 9
+}

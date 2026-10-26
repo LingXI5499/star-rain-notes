@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 闰年条件：能被 4 整除且不能被 100 整除，或能被 400 整除；要测试边界年份。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const y = 2000;
+const leap = y % 400 === 0 || (y % 4 === 0 &amp;&amp; y % 100 !== 0);
+console.log(leap); // true
+</code></pre>
+<p><strong>学完能做：</strong> 用边界案例验证条件分支的正确性。</p>

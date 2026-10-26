@@ -32,7 +32,7 @@ afterEach(() => wrapper?.unmount())
 async function setup(path = '/search?q=record&type=ENGLISH') {
   const router = createRouter({ history: createMemoryHistory(), routes: [
     { path: '/search', component: SearchResultPage },
-    { path: '/useradmin/search', component: SearchResultPage },
+    { path: '/search', component: SearchResultPage },
     { path: '/:rest(.*)', component: { template: '<div />' } },
   ] })
   await router.push(path)
@@ -58,8 +58,8 @@ describe('English site search', () => {
     expect(api.search).toHaveBeenLastCalledWith('record', 'ENGLISH', 1, 20, expect.any(AbortSignal))
   })
   it('keeps vocabulary query parameters when linking within the account path tree', async () => {
-    await setup('/useradmin/search?q=record&type=ENGLISH')
-    expect(wrapper.find('a[href="/useradmin/english/vocabulary/4?q=record"]').exists()).toBe(true)
-    expect(wrapper.find('a[href="/useradmin/english/writing/author/writing-12"]').exists()).toBe(true)
+    await setup('/search?q=record&type=ENGLISH')
+    expect(wrapper.find('a[href="/english/vocabulary/4?q=record"]').exists()).toBe(true)
+    expect(wrapper.find('a[href="/english/writing/author/writing-12"]').exists()).toBe(true)
   })
 })

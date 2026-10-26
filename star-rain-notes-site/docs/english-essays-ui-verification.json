@@ -1,0 +1,418 @@
+{
+  "status": "PASS",
+  "checkedAt": "2026-10-22T15:07:59.859Z",
+  "officialEssayCount": 0,
+  "fixtureEssayCount": 12,
+  "fixturesIsolated": true,
+  "checks": [
+    {
+      "name": "second page",
+      "passed": true,
+      "observed": {
+        "range": "11–12 of 12 essays",
+        "visible": 2,
+        "yearVisible": 1
+      }
+    },
+    {
+      "name": "tag resets page",
+      "passed": true,
+      "observed": {
+        "active": "true",
+        "url": "http://127.0.0.1:4402/english/essays/?tag=integration",
+        "visible": 7
+      }
+    },
+    {
+      "name": "combined tag and month",
+      "passed": true,
+      "observed": {
+        "url": "http://127.0.0.1:4402/english/essays/?tag=integration&month=2026-09",
+        "visible": 5
+      }
+    },
+    {
+      "name": "combined genre with no matches",
+      "passed": true,
+      "observed": {
+        "emptyVisible": true,
+        "resetVisible": true,
+        "visible": 0
+      }
+    },
+    {
+      "name": "title search after clearing facets",
+      "passed": true,
+      "observed": {
+        "titles": [
+          "Integration fixture integration-essay-newer"
+        ],
+        "url": "http://127.0.0.1:4402/english/essays/?q=newer"
+      }
+    },
+    {
+      "name": "search restores on reload",
+      "passed": true,
+      "observed": {
+        "input": "newer",
+        "visible": 1
+      }
+    },
+    {
+      "name": "page size",
+      "passed": true,
+      "observed": {
+        "range": "1–12 of 12 essays",
+        "url": "http://127.0.0.1:4402/english/essays/?size=12",
+        "visible": 12
+      }
+    },
+    {
+      "name": "shared filter URL and page clamp",
+      "passed": true,
+      "observed": {
+        "month": "true",
+        "range": "1–5 of 5 essays",
+        "tag": "true",
+        "visible": 5
+      }
+    },
+    {
+      "name": "translation and English reading controls",
+      "passed": true,
+      "observed": {
+        "expanded": true,
+        "ids": [
+          "section-1",
+          "translation-section-1"
+        ],
+        "labels": [
+          "Contents",
+          "Reading info"
+        ],
+        "translationLang": "zh-CN"
+      }
+    },
+    {
+      "name": "chronological essay neighbors",
+      "passed": true,
+      "observed": {
+        "next": "/english/essays/integration-essay-newer/",
+        "title": "Integration fixture integration-essay-older",
+        "url": "http://127.0.0.1:4402/english/essays/integration-essay-older/"
+      }
+    },
+    {
+      "name": "detail tag links to independent essay filter",
+      "passed": true,
+      "observed": {
+        "active": "true",
+        "url": "http://127.0.0.1:4402/english/essays/?tag=integration",
+        "visible": 7
+      }
+    },
+    {
+      "name": "mobile contents disclosure",
+      "passed": true,
+      "observed": {
+        "expanded": true,
+        "links": 1
+      }
+    },
+    {
+      "name": "mobile contents anchor and reading progress",
+      "passed": true,
+      "observed": {
+        "hash": "#section-1",
+        "progress": "width: 5%;"
+      }
+    },
+    {
+      "name": "English singular result count in final build",
+      "passed": true,
+      "observed": {
+        "range": "1–1 of 1 essay",
+        "status": "1 essay"
+      }
+    },
+    {
+      "name": "Chinese blog defaults preserved",
+      "passed": true,
+      "observed": {
+        "back": "← 返回博客时间线",
+        "body": 38215,
+        "contents": "本页导航"
+      }
+    }
+  ],
+  "layouts": [
+    {
+      "route": "/english/essays/",
+      "h1": 1,
+      "lang": "en",
+      "scrollWidth": 305,
+      "title": "Essays on life,learning and growing.",
+      "width": 320,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/essays/integration-essay-newer/",
+      "h1": 1,
+      "lang": "en",
+      "scrollWidth": 305,
+      "title": "Integration fixture integration-essay-newer",
+      "width": 320,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/blog/",
+      "h1": 1,
+      "scrollWidth": 305,
+      "title": "沿时间沉淀思考，让经验持续生长。",
+      "width": 320,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/blog/posts/linux-3-mysql-redis-postgresql-pgvector/",
+      "h1": 1,
+      "scrollWidth": 305,
+      "title": "从零构建企业级数据库协作环境：阿里云 Linux 3 部署 MySQL、Redis、PostgreSQL 与 pgvector 全指南",
+      "width": 320,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/grammar/1-1/",
+      "h1": 1,
+      "scrollWidth": 305,
+      "title": "语言结构基础",
+      "width": 320,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/vocabulary/",
+      "h1": 1,
+      "scrollWidth": 305,
+      "title": "词汇",
+      "width": 320,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/essays/",
+      "h1": 1,
+      "lang": "en",
+      "scrollWidth": 375,
+      "title": "Essays on life,learning and growing.",
+      "width": 390,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/essays/integration-essay-newer/",
+      "h1": 1,
+      "lang": "en",
+      "scrollWidth": 375,
+      "title": "Integration fixture integration-essay-newer",
+      "width": 390,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/blog/",
+      "h1": 1,
+      "scrollWidth": 375,
+      "title": "沿时间沉淀思考，让经验持续生长。",
+      "width": 390,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/blog/posts/linux-3-mysql-redis-postgresql-pgvector/",
+      "h1": 1,
+      "scrollWidth": 375,
+      "title": "从零构建企业级数据库协作环境：阿里云 Linux 3 部署 MySQL、Redis、PostgreSQL 与 pgvector 全指南",
+      "width": 390,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/grammar/1-1/",
+      "h1": 1,
+      "scrollWidth": 375,
+      "title": "语言结构基础",
+      "width": 390,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/vocabulary/",
+      "h1": 1,
+      "scrollWidth": 375,
+      "title": "词汇",
+      "width": 390,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/essays/",
+      "h1": 1,
+      "lang": "en",
+      "scrollWidth": 753,
+      "title": "Essays on life,learning and growing.",
+      "width": 768,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/essays/integration-essay-newer/",
+      "h1": 1,
+      "lang": "en",
+      "scrollWidth": 753,
+      "title": "Integration fixture integration-essay-newer",
+      "width": 768,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/blog/",
+      "h1": 1,
+      "scrollWidth": 753,
+      "title": "沿时间沉淀思考，让经验持续生长。",
+      "width": 768,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/blog/posts/linux-3-mysql-redis-postgresql-pgvector/",
+      "h1": 1,
+      "scrollWidth": 753,
+      "title": "从零构建企业级数据库协作环境：阿里云 Linux 3 部署 MySQL、Redis、PostgreSQL 与 pgvector 全指南",
+      "width": 768,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/grammar/1-1/",
+      "h1": 1,
+      "scrollWidth": 753,
+      "title": "语言结构基础",
+      "width": 768,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/vocabulary/",
+      "h1": 1,
+      "scrollWidth": 753,
+      "title": "词汇",
+      "width": 768,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/essays/",
+      "h1": 1,
+      "lang": "en",
+      "scrollWidth": 1425,
+      "title": "Essays on life,learning and growing.",
+      "width": 1440,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/essays/integration-essay-newer/",
+      "h1": 1,
+      "lang": "en",
+      "scrollWidth": 1425,
+      "title": "Integration fixture integration-essay-newer",
+      "width": 1440,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/blog/",
+      "h1": 1,
+      "scrollWidth": 1425,
+      "title": "沿时间沉淀思考，让经验持续生长。",
+      "width": 1440,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/blog/posts/linux-3-mysql-redis-postgresql-pgvector/",
+      "h1": 1,
+      "scrollWidth": 1425,
+      "title": "从零构建企业级数据库协作环境：阿里云 Linux 3 部署 MySQL、Redis、PostgreSQL 与 pgvector 全指南",
+      "width": 1440,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/grammar/1-1/",
+      "h1": 1,
+      "scrollWidth": 1425,
+      "title": "语言结构基础",
+      "width": 1440,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/vocabulary/",
+      "h1": 1,
+      "scrollWidth": 1425,
+      "title": "词汇",
+      "width": 1440,
+      "passed": true,
+      "source": "isolated"
+    },
+    {
+      "route": "/english/essays/",
+      "source": "production",
+      "empty": true,
+      "h1": 1,
+      "published": 0,
+      "scrollWidth": 305,
+      "width": 320,
+      "passed": true
+    },
+    {
+      "route": "/english/essays/",
+      "source": "production",
+      "empty": true,
+      "h1": 1,
+      "published": 0,
+      "scrollWidth": 375,
+      "width": 390,
+      "passed": true
+    },
+    {
+      "route": "/english/essays/",
+      "source": "production",
+      "empty": true,
+      "h1": 1,
+      "published": 0,
+      "scrollWidth": 753,
+      "width": 768,
+      "passed": true
+    },
+    {
+      "route": "/english/essays/",
+      "source": "production",
+      "empty": true,
+      "h1": 1,
+      "published": 0,
+      "scrollWidth": 1425,
+      "width": 1440,
+      "passed": true
+    }
+  ],
+  "screenshots": [
+    ".cache/english-essays-desktop.jpg",
+    ".cache/english-essays-mobile.jpg"
+  ]
+}

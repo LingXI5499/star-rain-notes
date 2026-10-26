@@ -84,10 +84,7 @@ const stageText = () => {
  */
 onMounted(async () => {
   try {
-    /*
-     * 未登录时不打学习汇总接口（账号树接口对匿名返回 401）：
-     * 直接跳过，四格统计保持 0，等账号树里登录后再进来就会有数。
-     */
+    // 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
     const [content, learning] = await Promise.all([
       getEnglishOverview(),
       auth.currentUser ? loadVocabularySummary() : Promise.resolve(null),

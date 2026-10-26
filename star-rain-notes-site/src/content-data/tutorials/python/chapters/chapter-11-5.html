@@ -1,0 +1,9 @@
+<h2>本章知识点</h2>
+<ul>
+<li>GIL 是 CPython 实现机制，不是 Python 语言规范</li>
+<li>常规 CPython 中同一时刻通常只有一个线程执行 Python 字节码</li>
+<li>阻塞 I/O 期间解释器可释放 GIL</li>
+<li>I/O 密集任务仍可受益于线程</li>
+<li>Python 3.14 支持可选 free-threaded build</li>
+<li>free-threaded 并非默认构建，不能据此宣布“GIL 已经消失”</li>
+</ul>

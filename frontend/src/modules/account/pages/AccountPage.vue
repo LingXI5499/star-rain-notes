@@ -189,7 +189,7 @@ async function savePassword() {
     if (identity !== auth.identityVersion) return
     auth.expireSession()
     clearCsrf()
-    await router.replace({ path: '/useradmin/login', query: { passwordChanged: '1' } })
+    await router.replace({ path: '/login', query: { passwordChanged: '1' } })
   } catch (error) {
     passwordError.value = errorMessage(error)
   } finally {

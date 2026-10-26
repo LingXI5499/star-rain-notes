@@ -427,7 +427,7 @@ defineExpose({ openPreview,changeMode,show,openImage,mode })
     <div v-if="panel === 'media'" class="editor-document-tools__panel">
       <p>不会自动公开素材；发布仍由服务器检查权限。</p>
       <p v-for="item in media" :key="item.id">
-        <a :href="`/useradmin/media/${item.id}`" target="_blank" rel="noopener"
+        <a :href="`/media/${item.id}`" target="_blank" rel="noopener"
           >素材 {{ item.id }}</a
         >：{{ item.accessLevel }}
       </p>

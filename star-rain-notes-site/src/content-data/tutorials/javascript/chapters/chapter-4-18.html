@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> <code>clientX/Y</code> 相对视口、<code>pageX/Y</code> 相对文档；元素局部坐标可减去 <code>getBoundingClientRect()</code>。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">document.querySelector('#box').addEventListener('click', e =&gt; {
+  const r = e.currentTarget.getBoundingClientRect();
+  console.log(e.clientX - r.left, e.clientY - r.top);
+});
+</code></pre>
+<p><strong>学完能做：</strong> 区分相对视口、文档和元素的鼠标坐标。</p>

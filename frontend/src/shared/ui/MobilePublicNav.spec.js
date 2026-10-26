@@ -4,7 +4,7 @@
  * 使用模拟接口、固定输入或组件挂载验证行为，测试标题与断言说明期望结果。
  * 主要依赖：@vue/test-utils、vue-router、vitest、./MobilePublicNav.vue、../../modules/tutorial/api/tutorialApi。
  * 阅读入口：open（打开当前操作）；button（button的处理函数）。
- * 验证场景：mobile public navigation；returns to the top when tapping the active home entry；keeps account-tree navigation in the account tree；opens the active section menu and closes it after navigation；offers all secondary pages without exposing an account entry in public mode。
+ * 验证场景：mobile public navigation；returns to the top when tapping the active home entry；uses canonical navigation from every public page；opens the active section menu and closes it after navigation；offers secondary pages and the account center from the homepage。
  */
 
 import { mount, flushPromises } from '@vue/test-utils'
@@ -37,30 +37,30 @@ afterEach(() => { wrapper?.unmount(); document.body.innerHTML=''; document.body.
 describe('mobile public navigation', () => {
   it('returns to the top when tapping the active home entry', async () => {
     const scroll = vi.spyOn(window, 'scrollTo').mockImplementation(() => {})
-    await open('/useradmin'); await button('首页').trigger('click')
+    await open('/'); await button('首页').trigger('click')
     expect(scroll).toHaveBeenCalledWith(expect.objectContaining({ top: 0 }))
     scroll.mockRestore()
   })
-  it('keeps account-tree navigation in the account tree', async () => {
-    await open('/useradmin/english')
+  it('uses canonical navigation from every public page', async () => {
+    await open('/english')
     await button('博客').trigger('click'); await flushPromises()
-    expect(router.currentRoute.value.path).toBe('/useradmin/blog')
+    expect(router.currentRoute.value.path).toBe('/blog')
   })
   it('opens the active section menu and closes it after navigation', async () => {
-    await open('/useradmin/english/vocabulary')
+    await open('/english/vocabulary')
     await button('英语').trigger('click'); await flushPromises()
     const sheet=document.querySelector('[role="dialog"]')
     expect(sheet.getAttribute('aria-label')).toBe('英语导航')
-    const reading=sheet.querySelector('a[href="/useradmin/english/reading"]')
+    const reading=sheet.querySelector('a[href="/english/reading"]')
     reading.click(); await flushPromises()
-    expect(router.currentRoute.value.path).toBe('/useradmin/english/reading')
+    expect(router.currentRoute.value.path).toBe('/english/reading')
     expect(document.querySelector('[role="dialog"]')).toBeNull(); expect(document.body.style.overflow).toBe('')
   })
-  it('offers all secondary pages without exposing an account entry in public mode', async () => {
+  it('offers secondary pages and the account center from the homepage', async () => {
     await open('/'); await button('更多').trigger('click'); await flushPromises()
     const sheet=document.querySelector('[role="dialog"]')
     for(const path of ['/portfolio','/messages','/about','/search']) expect(sheet.querySelector(`a[href="${path}"]`)).not.toBeNull()
-    expect(sheet.textContent).not.toContain('用户中心')
+    expect(sheet.querySelector('a[href="/center"]')).not.toBeNull()
   })
   it('restores focus and the previous body scrolling mode on Escape', async () => {
     document.body.style.overflow='scroll'

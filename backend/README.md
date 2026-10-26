@@ -53,31 +53,70 @@ Session Cookie 为 `STAR_RAIN_V2_SESSION`，HttpOnly、SameSite=Lax。注册只�
 以下 Nginx 片段假设前端 dist 位于 `/srv/star-rain/frontend/dist`，后端只监听本机 8088。放入已经配置证书的 HTTPS server；根据自己的目录修改 root，并补齐日志、限流、超时和响应头。HTTPS 重定向、HSTS 与 CSP 应结合实际域名及图片、公式、原型资源验证后配置。
 
 ```nginx
-root /srv/star-rain/frontend/dist;
-client_max_body_size 520m;
-
-location /api/ {
+location ^~ /api/ {
     proxy_pass http://127.0.0.1:8088;
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_read_timeout 120s;
 }
-location /assets/ {
+location ^~ /actuator/ { return 404; }
+location ^~ /assets/ {
     try_files $uri =404;
     expires 1y;
     add_header Cache-Control "public, immutable";
+    add_header Referrer-Policy no-referrer always;
 }
-location /brand/ { try_files $uri =404; }
-location = /index.html { add_header Cache-Control "no-cache"; }
-location ~ ^/(useradmin(?:/|$)|english(?:/|$)|terms/?$|privacy/?$) {
-    try_files $uri /index.html;
-    add_header X-Robots-Tag "noindex, nofollow";
+location ^~ /brand/ { try_files $uri =404; }
+location ^~ /legal/ { try_files $uri =404; }
+location = /build-info.json {
+    try_files $uri =404;
+    add_header Cache-Control no-cache;
+    add_header Referrer-Policy no-referrer always;
 }
+location = /index.html {
+    add_header Cache-Control no-cache;
+    add_header Referrer-Policy no-referrer always;
+}
+# Redirect old bookmarks/mail links before serving HTML. $args keeps encoded tokens/return URLs.
+# Browsers retain the original fragment when Location supplies no new fragment.
+location ~ ^/useradmin(?:/(?<legacy_path>.*))?$ {
+    return 308 /$legacy_path$is_args$args;
+}
+# Verification files and missing static files must never fall back to the SPA.
+location ~ ^/(?:baidu_verify_[A-Za-z0-9_-]+|google[A-Za-z0-9_-]+)\.html$ { try_files $uri =404; }
+location = /BingSiteAuth.xml { try_files $uri =404; }
+location ~* \.(?:js|mjs|css|map|png|jpg|jpeg|gif|svg|webp|ico|woff2?|ttf|wasm|html)$ {
+    try_files $uri =404;
+}
+# Account/management routes precede the backend public SEO gateway, including overlapping paths.
+location ~ ^/(?:(?:login|register|forgot-password|reset-password)/?$|invitation/accept/?$|(?:center|learning|dashboard|accounts|invitations|audits|permissions|site|analytics|media|reviews|profile)(?:/|$)|blog/(?:manage/?$|taxonomy/?$|topics/?$|editor/[^/]+/?$)|tutorials/(?:(?:manage|cards|questions|exercises)/?$|editor/[^/]+/?$|[^/]+/(?:preview|curriculum)/?$|[^/]+/chapters/[^/]+(?:/(?:cards|questions|exercises))?/?$)|portfolio/(?:manage/?$|(?:editor|preview)/[^/]+/?$)|messages/manage/?$|english/(?:manage(?:/|$)|writing/articles/(?:new/?$|[^/]+/(?:edit|revisions)/?$))) {
+    # Serving index as an existing file avoids an internal redirect losing X-Robots-Tag.
+    try_files /index.html =404;
+    add_header Cache-Control no-cache;
+    add_header X-Robots-Tag "noindex, nofollow" always;
+    add_header Referrer-Policy no-referrer always;
+}
+location ~ ^/portfolio/[^/]+/live/?$ {
+    try_files /index.html =404;
+    add_header Cache-Control no-cache;
+    add_header X-Robots-Tag "noindex, nofollow" always;
+    add_header Referrer-Policy no-referrer always;
+}
+# Public English/legal/search pages remain client-rendered. Public English must stay indexable.
+location ~ ^/(?:english(?:/|$)|terms/?$|privacy/?$|search/?$) {
+    try_files /index.html =404;
+    add_header Cache-Control no-cache;
+    add_header Referrer-Policy no-referrer always;
+}
+# Public HTML, robots and sitemap use backend SEO snapshots and retain real 404 responses.
 location / {
     proxy_pass http://127.0.0.1:8088;
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-Proto $scheme;
     proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_set_header X-Real-IP $remote_addr;
 }
 ```
 

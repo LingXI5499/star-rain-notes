@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>mouseover</code> 在进入子元素时可能重复触发，<code>mouseenter</code> 不会因子元素冒泡触发。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const box = document.querySelector('#box');
+box.addEventListener('mouseover', () =&gt; console.log('over'));
+box.addEventListener('mouseenter', () =&gt; console.log('enter'));
+</code></pre>
+<p><strong>学完能做：</strong> 区分鼠标进入子元素时的两类事件行为。</p>

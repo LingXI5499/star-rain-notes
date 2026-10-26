@@ -4,3 +4,12 @@
 *.yml text eol=lf
 *.yaml text eol=lf
 *.env.example text eol=lf
+star-rain-notes-site/**/*.json text eol=lf
+star-rain-notes-site/**/*.html text eol=lf
+star-rain-notes-site/**/*.mjs text eol=lf
+star-rain-notes-site/**/*.ts text eol=lf
+star-rain-notes-site/**/*.vue text eol=lf
+star-rain-notes-site/**/*.astro text eol=lf
+star-rain-notes-site/**/*.css text eol=lf
+star-rain-notes-site/**/*.py text eol=lf
+star-rain-notes-site/**/*.md text eol=lf

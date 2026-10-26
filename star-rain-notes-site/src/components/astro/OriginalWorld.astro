@@ -1,0 +1,20 @@
+---
+import {worldTaxonomy as taxonomy,worldArticles,publishedArticles,findCategory,findTopic,articlesForCategory,articlesForTopic,taxonomyPath} from '../../utils/content';
+import Breadcrumbs from './EnglishBreadcrumbs.astro';
+import ArticleList from './EnglishArticleList.astro';
+import Article from './EnglishArticle.astro';
+import TaxonomyFilters from './EnglishTaxonomyFilters.astro';
+interface Props {kind:string;slug?:string;}
+const {kind,slug}=Astro.props;
+const found=findTopic(taxonomy,slug),category=kind==='world-category'?findCategory(taxonomy,slug):found?.category,topic=found?.topic;
+const published=publishedArticles(worldArticles),article=published.find(a=>a.slug===slug);
+const articles=topic?articlesForTopic(worldArticles,topic.code):category?articlesForCategory(worldArticles,category):published;
+const counts=Object.fromEntries(taxonomy.categories.flatMap(c=>[[c.code,articlesForCategory(worldArticles,c).length],...c.topics.map(t=>[t.code,articlesForTopic(worldArticles,t.code).length])]));
+---
+{kind==='world-article'&&article?<Article article={article} module="world" siblings={articlesForTopic(worldArticles,article.topicCode!)}/>:<div class="english-module english-browse" data-english-page="world">
+  <Breadcrumbs items={category?[{title:'世界',path:'/english/world/'},{title:category.title,path:topic?taxonomyPath('world',category.code):undefined},...(topic?[{title:topic.title}]:[])]:[{title:'世界'}]}/>
+  <header class="english-module__heading"><p class="public-eyebrow">WORLD</p><h1>世界</h1><p>通过英语探索外部世界，按知识领域与主题筛选阅读文章。</p></header>
+  <TaxonomyFilters module="world" taxonomy={taxonomy} categoryCode={category?.code} topicCode={topic?.code} counts={counts} total={published.length}/>
+  <h2 class="english-results-title">{topic?.title||category?.title||'全部文章'}</h2><p class="english-browse-status" data-english-navigation-status role="status" aria-live="polite"></p>
+  <ArticleList module="world" articles={articles}/>
+</div>}

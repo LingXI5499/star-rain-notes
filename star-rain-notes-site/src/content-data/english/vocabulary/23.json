@@ -1,0 +1,810 @@
+{
+  "id": "23",
+  "title": "旅行 / 旅游",
+  "layer": "核心生活场景层",
+  "wordCount": 89,
+  "path": "/english/vocabulary/23/",
+  "words": [
+    {
+      "word": "cost",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔst",
+      "phoneticUk": "kɒst",
+      "translation": "价格，代价；成本",
+      "sceneMeaning": "费用；成本",
+      "examples": "[]"
+    },
+    {
+      "word": "culture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌltʃɚ",
+      "phoneticUk": "'kʌltʃə",
+      "translation": "文化，文明；教养",
+      "sceneMeaning": "文化",
+      "examples": "[]"
+    },
+    {
+      "word": "expensive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'spɛnsɪv",
+      "phoneticUk": "ɪk'spensɪv; ek-",
+      "translation": "昂贵的，花钱多的",
+      "sceneMeaning": "昂贵的",
+      "examples": "[]"
+    },
+    {
+      "word": "experience",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'spɪrɪəns",
+      "phoneticUk": "ɪk'spɪərɪəns; ek-",
+      "translation": "经验，感受；经历",
+      "sceneMeaning": "经历；体验",
+      "examples": "[]"
+    },
+    {
+      "word": "language",
+      "partOfSpeech": "n",
+      "phoneticUs": "'læŋɡwɪdʒ",
+      "phoneticUk": "'læŋgwɪdʒ",
+      "translation": "语言，语言课程",
+      "sceneMeaning": "语言",
+      "examples": "[]"
+    },
+    {
+      "word": "let",
+      "partOfSpeech": "v",
+      "phoneticUs": "lɛt",
+      "phoneticUk": "let",
+      "translation": "允许，让；使",
+      "sceneMeaning": "允许，让；使；本场景常见用法：v. 放出；泄露；出租",
+      "examples": "[]"
+    },
+    {
+      "word": "local",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈloʊkl",
+      "phoneticUk": "'ləʊk(ə)l",
+      "translation": "地方的；局部的",
+      "sceneMeaning": "当地的；本地的",
+      "examples": "[]"
+    },
+    {
+      "word": "popular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɑpjəlɚ",
+      "phoneticUk": "'pɒpjʊlə",
+      "translation": "民众的；流行的",
+      "sceneMeaning": "受欢迎的",
+      "examples": "[]"
+    },
+    {
+      "word": "book",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bʊk",
+      "phoneticUk": "bʊk",
+      "translation": "书，书籍；预定",
+      "sceneMeaning": "预订",
+      "examples": "[]"
+    },
+    {
+      "word": "bus",
+      "partOfSpeech": "n",
+      "phoneticUs": "bʌs",
+      "phoneticUk": "bʌs",
+      "translation": "公共汽车",
+      "sceneMeaning": "公交车；大巴",
+      "examples": "[]"
+    },
+    {
+      "word": "international",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪntɚ'næʃnəl",
+      "phoneticUk": "ɪntə'næʃ(ə)n(ə)l",
+      "translation": "国际的，世界(性)的",
+      "sceneMeaning": "国际的",
+      "examples": "[]"
+    },
+    {
+      "word": "directly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "dəˈrektli",
+      "phoneticUk": "dɪ'rektlɪ; daɪ-",
+      "translation": "直接地；立即",
+      "sceneMeaning": "直接地",
+      "examples": "[]"
+    },
+    {
+      "word": "recommend",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rɛkə'mɛnd",
+      "phoneticUk": "rekə'mend",
+      "translation": "推荐，介绍；劝告；推荐；劝告；使受欢迎",
+      "sceneMeaning": "推荐",
+      "examples": "[]"
+    },
+    {
+      "word": "rent",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɛnt",
+      "phoneticUk": "rent",
+      "translation": "租金，租；出租",
+      "sceneMeaning": "租用；出租",
+      "examples": "[]"
+    },
+    {
+      "word": "bicycle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'baɪsɪkl",
+      "phoneticUk": "'baɪsɪkl",
+      "translation": "自行车，脚踏车",
+      "sceneMeaning": "自行车",
+      "examples": "[]"
+    },
+    {
+      "word": "camera",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæmərə",
+      "phoneticUk": "'kæm(ə)rə",
+      "translation": "照相机，摄影机",
+      "sceneMeaning": "照相机；摄像头",
+      "examples": "[]"
+    },
+    {
+      "word": "tourist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʊrɪst",
+      "phoneticUk": "'tʊərɪst",
+      "translation": "旅游者，观光者",
+      "sceneMeaning": "旅游的；游客的",
+      "examples": "[]"
+    },
+    {
+      "word": "view",
+      "partOfSpeech": "v",
+      "phoneticUs": "vju",
+      "phoneticUk": "vju:",
+      "translation": "看待",
+      "sceneMeaning": "景色；看法",
+      "examples": "[]"
+    },
+    {
+      "word": "Britain",
+      "partOfSpeech": "n",
+      "phoneticUs": "'brɪtən",
+      "phoneticUk": "'brɪt(ə)n",
+      "translation": "不列颠，英国",
+      "sceneMeaning": "不列颠，英国",
+      "examples": "[]"
+    },
+    {
+      "word": "domestic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "də'mɛstɪk",
+      "phoneticUk": "də'mestɪk",
+      "translation": "本国的；家庭的；国内的",
+      "sceneMeaning": "国内的；家庭的",
+      "examples": "[]"
+    },
+    {
+      "word": "foreign",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɔrən",
+      "phoneticUk": "'fɒrɪn",
+      "translation": "外国的；外来的",
+      "sceneMeaning": "外国的；陌生的",
+      "examples": "[]"
+    },
+    {
+      "word": "remote",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'mot",
+      "phoneticUk": "rɪ'məʊt",
+      "translation": "相隔很远的；冷淡的",
+      "sceneMeaning": "偏远的；远程的",
+      "examples": "[]"
+    },
+    {
+      "word": "rental",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛntl",
+      "phoneticUk": "'rent(ə)l",
+      "translation": "租金",
+      "sceneMeaning": "租金；本场景常见用法：汽车出租",
+      "examples": "[]"
+    },
+    {
+      "word": "budget",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bʌdʒɪt",
+      "phoneticUk": "'bʌdʒit",
+      "translation": "预算；编预算",
+      "sceneMeaning": "预算",
+      "examples": "[]"
+    },
+    {
+      "word": "emergency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'mɝdʒənsi",
+      "phoneticUk": "ɪ'mɜːdʒ(ə)nsɪ",
+      "translation": "紧急情况，突然事件；紧急情况",
+      "sceneMeaning": "紧急情况",
+      "examples": "[]"
+    },
+    {
+      "word": "prospect",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑspɛkt",
+      "phoneticUk": "'prɒspekt",
+      "translation": "展望；前景，前程；前景；前途",
+      "sceneMeaning": "展望；前景，前程；前景；前途",
+      "examples": "[]"
+    },
+    {
+      "word": "reserve",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'zɝv",
+      "phoneticUk": "rɪ'zɜːv",
+      "translation": "储备，保留；预定；留出，预定",
+      "sceneMeaning": "预订；保留",
+      "examples": "[]"
+    },
+    {
+      "word": "transfer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "træns'fɝ",
+      "phoneticUk": "træns'fɜː; trɑːns-; -nz-",
+      "translation": "转移；调动vi转移；转换，调换",
+      "sceneMeaning": "换乘；转移",
+      "examples": "[]"
+    },
+    {
+      "word": "transportation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",trænspɔr'teʃən",
+      "phoneticUk": "trænspɔː'teɪʃ(ə)n; trɑːns-",
+      "translation": "运输，运送，客运；运输",
+      "sceneMeaning": "交通；运输",
+      "examples": "[]"
+    },
+    {
+      "word": "arrive",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'raɪv",
+      "phoneticUk": "ə'raɪv",
+      "translation": "到达；来临；达到",
+      "sceneMeaning": "到达",
+      "examples": "[]"
+    },
+    {
+      "word": "dangerous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dendʒərəs",
+      "phoneticUk": "'deɪn(d)ʒ(ə)rəs",
+      "translation": "危险的，不安全的",
+      "sceneMeaning": "危险的",
+      "examples": "[]"
+    },
+    {
+      "word": "flight",
+      "partOfSpeech": "n",
+      "phoneticUs": "flaɪt",
+      "phoneticUk": "flaɪt",
+      "translation": "航班；飞行；逃跑",
+      "sceneMeaning": "航班；飞行",
+      "examples": "[]"
+    },
+    {
+      "word": "holiday",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɑləde",
+      "phoneticUk": "'hɒlɪdeɪ; -dɪ",
+      "translation": "假日，节日；假期",
+      "sceneMeaning": "假日；假期",
+      "examples": "[]"
+    },
+    {
+      "word": "Italian",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪˈtæljən",
+      "phoneticUk": "ɪˈtælɪən",
+      "translation": "意大利的n意大利人",
+      "sceneMeaning": "意大利的n意大利人；本场景常见用法：意大利食品；意大利菜",
+      "examples": "[]"
+    },
+    {
+      "word": "journey",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɝni",
+      "phoneticUk": "'dʒɜːnɪ",
+      "translation": "旅行，旅程；旅行",
+      "sceneMeaning": "旅程；旅行",
+      "examples": "[]"
+    },
+    {
+      "word": "path",
+      "partOfSpeech": "n",
+      "phoneticUs": "pæθ",
+      "phoneticUk": "pɑːθ",
+      "translation": "路，小道；道路",
+      "sceneMeaning": "小路；路径",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "时间表；日程",
+      "examples": "[]"
+    },
+    {
+      "word": "terminal",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ˈtɜːrmɪnl",
+      "phoneticUk": "'tɜːmɪn(ə)l",
+      "translation": "末端的；末端；终点站，航空站",
+      "sceneMeaning": "航站楼；终点站",
+      "examples": "[]"
+    },
+    {
+      "word": "abroad",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'brɔd",
+      "phoneticUk": "ə'brɔːd",
+      "translation": "(在)国外；到处",
+      "sceneMeaning": "在国外；到国外",
+      "examples": "[]"
+    },
+    {
+      "word": "airport",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛr'pɔrt",
+      "phoneticUk": "'eəpɔːt",
+      "translation": "机场，航空站",
+      "sceneMeaning": "机场",
+      "examples": "[]"
+    },
+    {
+      "word": "delay",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'le",
+      "phoneticUk": "dɪ'leɪ",
+      "translation": "推迟；耽搁；延误；推迟，延期",
+      "sceneMeaning": "延误；推迟",
+      "examples": "[]"
+    },
+    {
+      "word": "pack",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pæk",
+      "phoneticUk": "pæk",
+      "translation": "捆扎；挤满；包",
+      "sceneMeaning": "打包；收拾行李",
+      "examples": "[]"
+    },
+    {
+      "word": "plan",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "plæn",
+      "phoneticUk": "plæn",
+      "translation": "计划，打算",
+      "sceneMeaning": "计划",
+      "examples": "[]"
+    },
+    {
+      "word": "accommodation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə,kɑmə'deʃən",
+      "phoneticUk": "əkɒmə'deɪʃ(ə)n",
+      "translation": "招待设备；预定铺位",
+      "sceneMeaning": "住宿",
+      "examples": "[]"
+    },
+    {
+      "word": "coach",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kotʃ",
+      "phoneticUk": "kəʊtʃ",
+      "translation": "长途公共汽车；教练；当…的教练，训练，培训",
+      "sceneMeaning": "长途汽车；教练",
+      "examples": "[]"
+    },
+    {
+      "word": "convenient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'vinɪənt",
+      "phoneticUk": "kən'viːnɪənt",
+      "translation": "便利的；近便的；方便的",
+      "sceneMeaning": "方便的",
+      "examples": "[]"
+    },
+    {
+      "word": "frontier",
+      "partOfSpeech": "n",
+      "phoneticUs": "frʌn'tɪr",
+      "phoneticUk": "'frʌntɪə; frʌn'tɪə",
+      "translation": "边境；边疆；新领域；边境",
+      "sceneMeaning": "边境；边疆；新领域；边境",
+      "examples": "[]"
+    },
+    {
+      "word": "guidance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'gaɪdns",
+      "phoneticUk": "'gaɪd(ə)ns",
+      "translation": "引导，指导，领导",
+      "sceneMeaning": "引导，指导，领导；本场景常见用法：交通指南；航路指示",
+      "examples": "[]"
+    },
+    {
+      "word": "guide",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡaɪd",
+      "phoneticUk": "gaɪd",
+      "translation": "导游者；给…导游",
+      "sceneMeaning": "导游；指南",
+      "examples": "[]"
+    },
+    {
+      "word": "tour",
+      "partOfSpeech": "n&vi",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "旅行，游历",
+      "sceneMeaning": "旅行；参观",
+      "examples": "[]"
+    },
+    {
+      "word": "border",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "边，边缘；边界",
+      "sceneMeaning": "边境；边界",
+      "examples": "[]"
+    },
+    {
+      "word": "destination",
+      "partOfSpeech": "n",
+      "phoneticUs": ",dɛstɪ'neʃən",
+      "phoneticUk": ",destɪ'neɪʃ(ə)n",
+      "translation": "目的地，终点；目标",
+      "sceneMeaning": "目的地",
+      "examples": "[]"
+    },
+    {
+      "word": "excursion",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'skɝʒn",
+      "phoneticUk": "ɪk'skɜːʃ(ə)n; ek-",
+      "translation": "远足；短途旅行",
+      "sceneMeaning": "远足；短途旅行",
+      "examples": "[]"
+    },
+    {
+      "word": "expense",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'spɛns",
+      "phoneticUk": "ɪk'spens; ek-",
+      "translation": "花费，消费；费用",
+      "sceneMeaning": "费用；开支",
+      "examples": "[]"
+    },
+    {
+      "word": "explore",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "ɪk'splɔr",
+      "phoneticUk": "ɪk'splɔː; ek-",
+      "translation": "探险，探索；探索",
+      "sceneMeaning": "探索；考察",
+      "examples": "[]"
+    },
+    {
+      "word": "insurance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'ʃʊrəns",
+      "phoneticUk": "ɪn'ʃʊər(ə)ns",
+      "translation": "保险；保险费",
+      "sceneMeaning": "保险",
+      "examples": "[]"
+    },
+    {
+      "word": "luggage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lʌɡɪdʒ",
+      "phoneticUk": "'lʌgɪdʒ",
+      "translation": "行李；皮箱，皮包",
+      "sceneMeaning": "行李",
+      "examples": "[]"
+    },
+    {
+      "word": "passport",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pæspɔrt",
+      "phoneticUk": "'pɑːspɔːt",
+      "translation": "护照",
+      "sceneMeaning": "护照",
+      "examples": "[]"
+    },
+    {
+      "word": "phrase",
+      "partOfSpeech": "n",
+      "phoneticUs": "frez",
+      "phoneticUk": "freɪz",
+      "translation": "短语；习惯用语",
+      "sceneMeaning": "短语；说法",
+      "examples": "[]"
+    },
+    {
+      "word": "scenery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sinəri",
+      "phoneticUk": "'siːn(ə)rɪ",
+      "translation": "舞台布景；风景",
+      "sceneMeaning": "风景；景色",
+      "examples": "[]"
+    },
+    {
+      "word": "wander",
+      "partOfSpeech": "v",
+      "phoneticUs": "'wɑndɚ",
+      "phoneticUk": "'wɒndə",
+      "translation": "漫游；迷路；离题",
+      "sceneMeaning": "闲逛；漫步",
+      "examples": "[]"
+    },
+    {
+      "word": "adventure",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'vɛntʃɚ",
+      "phoneticUk": "əd'ventʃə",
+      "translation": "冒险；惊险活动",
+      "sceneMeaning": "冒险；奇遇",
+      "examples": "[]"
+    },
+    {
+      "word": "album",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ælbəm",
+      "phoneticUk": "'ælbəm",
+      "translation": "粘贴簿，集邮簿，册",
+      "sceneMeaning": "粘贴簿，集邮簿，册",
+      "examples": "[]"
+    },
+    {
+      "word": "arrival",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'raɪvəl",
+      "phoneticUk": "ə'raɪv(ə)l",
+      "translation": "到达；到来；到达者",
+      "sceneMeaning": "到达；抵达",
+      "examples": "[]"
+    },
+    {
+      "word": "baggage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæɡɪdʒ",
+      "phoneticUk": "'bægɪdʒ",
+      "translation": "行李",
+      "sceneMeaning": "行李",
+      "examples": "[]"
+    },
+    {
+      "word": "camp",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæmp",
+      "phoneticUk": "kæmp",
+      "translation": "野营，营地，兵营",
+      "sceneMeaning": "露营",
+      "examples": "[]"
+    },
+    {
+      "word": "depart",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'pɑrt",
+      "phoneticUk": "dɪ'pɑːt",
+      "translation": "离开，起程；出发",
+      "sceneMeaning": "出发；离开",
+      "examples": "[]"
+    },
+    {
+      "word": "departure",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'pɑrtʃɚ",
+      "phoneticUk": "dɪ'pɑːtʃə",
+      "translation": "离开，出发，起程",
+      "sceneMeaning": "出发；离开",
+      "examples": "[]"
+    },
+    {
+      "word": "desperate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɛspərət",
+      "phoneticUk": "'desp(ə)rət",
+      "translation": "拼死的；绝望的",
+      "sceneMeaning": "拼死的；绝望的",
+      "examples": "[]"
+    },
+    {
+      "word": "dock",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɑk",
+      "phoneticUk": "dɒk",
+      "translation": "船坞；码头；船厂",
+      "sceneMeaning": "船坞；码头；船厂",
+      "examples": "[]"
+    },
+    {
+      "word": "dollar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɑlɚ",
+      "phoneticUk": "'dɒlə",
+      "translation": "元(货币单位)",
+      "sceneMeaning": "元(货币单位)",
+      "examples": "[]"
+    },
+    {
+      "word": "dwelling",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dwɛlɪŋ",
+      "phoneticUk": "'dwelɪŋ",
+      "translation": "住处，寓所",
+      "sceneMeaning": "住处，寓所",
+      "examples": "[]"
+    },
+    {
+      "word": "exile",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛksaɪl",
+      "phoneticUk": "'eksaɪl",
+      "translation": "流放，放逐",
+      "sceneMeaning": "流放，放逐",
+      "examples": "[]"
+    },
+    {
+      "word": "foreigner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrənɚ",
+      "phoneticUk": "'fɒrɪnə",
+      "translation": "外国人",
+      "sceneMeaning": "外国人",
+      "examples": "[]"
+    },
+    {
+      "word": "harbour",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hɑrbɚ",
+      "phoneticUk": "ˈhɑ:bə(r)",
+      "translation": "海港，港口；庇护",
+      "sceneMeaning": "海港，港口；庇护；本场景常见用法：港湾工程，港口工程；海港工程",
+      "examples": "[]"
+    },
+    {
+      "word": "lonely",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lonli",
+      "phoneticUk": "'ləʊnlɪ",
+      "translation": "孤独的；荒凉的",
+      "sceneMeaning": "孤独的；荒凉的",
+      "examples": "[]"
+    },
+    {
+      "word": "loudspeaker",
+      "partOfSpeech": "n",
+      "phoneticUs": ",laʊd'spikɚ",
+      "phoneticUk": "laʊd'spiːkə",
+      "translation": "扬声器，喇叭",
+      "sceneMeaning": "扬声器，喇叭",
+      "examples": "[]"
+    },
+    {
+      "word": "map",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæp",
+      "phoneticUk": "mæp",
+      "translation": "地图；图；天体图",
+      "sceneMeaning": "地图",
+      "examples": "[]"
+    },
+    {
+      "word": "optional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɑpʃənl",
+      "phoneticUk": "'ɒpʃ(ə)n(ə)l",
+      "translation": "可以任意选择的",
+      "sceneMeaning": "可选择的",
+      "examples": "[]"
+    },
+    {
+      "word": "photograph",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fotəɡræf",
+      "phoneticUk": "'fəʊtəgrɑːf",
+      "translation": "照片，相片",
+      "sceneMeaning": "拍照；摄影",
+      "examples": "[]"
+    },
+    {
+      "word": "port",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɔrt",
+      "phoneticUk": "pɔːt",
+      "translation": "港，港口",
+      "sceneMeaning": "港口；端口",
+      "examples": "[]"
+    },
+    {
+      "word": "porter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɔrtɚ",
+      "phoneticUk": "'pɔːtə",
+      "translation": "搬运工人；搬运工",
+      "sceneMeaning": "搬运工人；搬运工",
+      "examples": "[]"
+    },
+    {
+      "word": "railway",
+      "partOfSpeech": "n",
+      "phoneticUs": "'relwe",
+      "phoneticUk": "'reɪlweɪ",
+      "translation": "铁路，铁道",
+      "sceneMeaning": "铁路，铁道；本场景常见用法：铁路运输",
+      "examples": "[]"
+    },
+    {
+      "word": "reframe",
+      "partOfSpeech": "v",
+      "phoneticUs": "",
+      "phoneticUk": "rɪ'freɪm",
+      "translation": "再构造(图画、照片等)",
+      "sceneMeaning": "再构造(图画、照片等)",
+      "examples": "[]"
+    },
+    {
+      "word": "reservation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛzɚ'veʃən",
+      "phoneticUk": "ˌrezə'veɪʃn",
+      "translation": "预定",
+      "sceneMeaning": "预订；预约",
+      "examples": "[]"
+    },
+    {
+      "word": "route",
+      "partOfSpeech": "n",
+      "phoneticUs": "raʊt",
+      "phoneticUk": "ruːt",
+      "translation": "路，路线，路程",
+      "sceneMeaning": "路线；路径",
+      "examples": "[]"
+    },
+    {
+      "word": "sightseeing",
+      "partOfSpeech": "n",
+      "phoneticUs": "'saɪtsiɪŋ",
+      "phoneticUk": "'saɪtsiːɪŋ",
+      "translation": "观光，游览；观光",
+      "sceneMeaning": "观光，游览；观光；本场景常见用法：观光旅游",
+      "examples": "[]"
+    },
+    {
+      "word": "subway",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sʌbwe",
+      "phoneticUk": "'sʌbweɪ",
+      "translation": "地道；地下铁路",
+      "sceneMeaning": "地铁",
+      "examples": "[]"
+    },
+    {
+      "word": "tent",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɛnt",
+      "phoneticUk": "tent",
+      "translation": "帐篷",
+      "sceneMeaning": "帐篷",
+      "examples": "[]"
+    }
+  ]
+}

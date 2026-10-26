@@ -8,12 +8,7 @@
  */
 
 
-/*
- * 工程证据卡片网格 —— 从 V1 `components/about/EvidenceGrid.vue` 移植。
- *
- * V1 用 `<a href>`，V2 必须是 RouterLink：账号树下要落在 /useradmin 前缀，
- * 所以 `to` 由调用方经 useViewMode().contentPath() 生成，本组件不做路径加工。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 import { RouterLink } from 'vue-router'
 
 defineProps({

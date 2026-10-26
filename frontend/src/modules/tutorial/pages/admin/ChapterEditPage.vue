@@ -133,7 +133,7 @@ function dirty() { return savedSnapshot !== '' && savedSnapshot !== snapshot() }
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
 function returnPath() {
-  return `/useradmin/tutorials/${encodeURIComponent(tutorialId.value)}/curriculum`
+  return `/tutorials/${encodeURIComponent(tutorialId.value)}/curriculum`
 }
 
 /**

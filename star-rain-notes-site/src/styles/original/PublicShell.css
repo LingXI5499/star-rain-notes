@@ -1,0 +1,18 @@
+
+.public-shell:not(.__static_scope) {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+.public-main:not(.__static_scope) {
+  flex: 1;
+  min-height: calc(100svh - 64px);
+  width: 100%;
+  padding-block: var(--space-10);
+}
+@media (max-width: 768px) {
+.public-shell:not(.__static_scope) { padding-bottom: calc(84px + env(safe-area-inset-bottom));
+}
+.public-main:not(.__static_scope) { padding-block: 24px;
+}
+}

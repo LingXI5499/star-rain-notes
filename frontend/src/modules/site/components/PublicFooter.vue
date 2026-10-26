@@ -15,20 +15,7 @@ import { useViewMode } from '../../../shared/viewMode'
 import { useSiteBranding } from '../support/siteBranding'
 import { usePublicSocialLinks } from '../support/publicSocialLinks'
 
-/*
- * 公开站页脚：
- * 品牌区（名称 + 标语 + 一句话）→ EXPLORE 导航 / CONNECT → 版权与返回顶部 → 备案信息。
- *
- *   - 品牌名下的英文标语来自站点配置 footerText，品牌区那句话是固定文案。
- *   - CONNECT 显示作者公开社交链接，
- *     数据来自公开作者资料，整会话只请求一次。
- *   - 域名与备案信息由部署者通过构建环境配置。
- *
- * 导航目标与顶栏同一口径，按当前路径树生成（公开树 /blog、账号树 /useradmin/blog）：
- * 页脚是同一套内容在两条树上复用，链接必须跟着树走，否则页脚会把账号外壳点掉。
- *
- * 硬约束：本文件不出现任何账号入口字样。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 const branding = useSiteBranding()
 const social = usePublicSocialLinks()

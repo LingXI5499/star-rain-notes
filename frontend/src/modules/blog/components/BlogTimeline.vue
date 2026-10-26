@@ -15,29 +15,7 @@ import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
 import { dateOnly, summaryText, timelineGroups } from '../support/display'
 
-/*
- * 前台文章时间线 —— 对齐 V1 `views/blog/BlogView.vue` 的时间轴列表。
- *
- * 左侧是年份 + 月.日 的轴上刻度（年份只在跨年时出现一次），中间是节点圆点，
- * 右侧是卡片：标签行 / 标题 / 摘要 / 时间 / 「阅读全文 →」。
- * 首页、博客列表、归档页三处共用这一个组件，避免三份写法各自漂移。
- *
- * 时间显示优先用更新日期；首次发布或缺少更新时间时显示发布时间，
- * 不把发布时间误标成更新时间。
- *
- * 卡片链接按当前路径树生成：账号模式下必须落在 /useradmin/blog/posts/:slug，
- * 否则列表里点开一篇就掉回公开树、把账号外壳丢了。
- *
- * 「灵动」这一层（用户要求保留卡片结构、只加质感）分两处：
- *   1. 悬停编排：卡片上浮 4px + 顶边主色细线展开 + 标题转主色 + 箭头右移，
- *      圆点同时放大并加一圈光晕；
- *   2. 入场错峰沿用公开外壳的 `[data-stagger]`（见 styles/public-theme.css），
- *      这里只负责把标记挂在列表根节点上。
- * 全部是观感层，不碰数据与路由。
- *
- * 卡片左侧曾试过一版几何纹样封面块，用户看过后明确「没必要」，已删除：
- * 封面来源不稳定（现有文章都没有 coverUrl），生成纹样又只是装饰，反而压缩了正文宽度。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 /**
  * 组件输入；通过 defineProps 建立。

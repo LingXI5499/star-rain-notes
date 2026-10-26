@@ -248,7 +248,7 @@ function resetHistory() {
  * @param item item；默认值、解构字段与可选参数见函数签名。
  */
 function openDetail(item) {
-  router.push(`/useradmin/reviews/${item.reviewId}`)
+  router.push(`/reviews/${item.reviewId}`)
 }
 
 /*

@@ -2,7 +2,7 @@
 import { test, expect } from './fixtures'
 
 async function editor(page) {
-  await page.goto('/useradmin/blog/editor/1')
+  await page.goto('/blog/editor/1')
   await expect(page.getByLabel('文章标题')).toHaveValue('Article A')
   const input = page.locator('.vditor-ir [contenteditable="true"]')
   await expect(input).toBeVisible()
@@ -10,7 +10,7 @@ async function editor(page) {
 }
 test('login and logout use the account workflow', async ({ page, fixture }) => {
   fixture.signedIn = false
-  await page.goto('/useradmin/login')
+  await page.goto('/login')
   await page.locator('input[autocomplete="username"]').fill('fixture_admin')
   await page.locator('input[autocomplete="current-password"]').fill('isolated-fixture-password')
   await page.locator('button[type="submit"]').click()
@@ -22,7 +22,7 @@ test('login and logout use the account workflow', async ({ page, fixture }) => {
 })
 test('sidebar navigation and the return button share the unsaved guard', async ({ page }) => {
   await editor(page); await page.getByLabel('文章标题').fill('Unsaved title')
-  await page.locator('a[href="/useradmin/blog/taxonomy"]').first().click()
+  await page.locator('a[href="/blog/taxonomy"]').first().click()
   await expect(page.getByRole('dialog')).toBeVisible()
   await page.getByRole('dialog').getByRole('button', { name: '取消' }).click()
   await expect(page).toHaveURL(/\/editor\/1$/)
@@ -37,7 +37,7 @@ test('new Vditor input during saving stays dirty', async ({ page, fixture }) => 
   await expect.poll(() => fixture.savedBodies.length).toBe(1)
   await input.click(); await page.keyboard.press('Control+End'); await page.keyboard.type(' New unsaved content')
   finish(); await expect(page.getByRole('button', { name: '保存正文', exact: true })).toBeEnabled()
-  await page.locator('a[href="/useradmin/blog/taxonomy"]').first().click()
+  await page.locator('a[href="/blog/taxonomy"]').first().click()
   await expect(page.getByRole('dialog')).toBeVisible()
   await page.getByRole('dialog').getByRole('button', { name: '取消' }).click()
   await expect(input).toContainText('New unsaved content')
@@ -45,8 +45,8 @@ test('new Vditor input during saving stays dirty', async ({ page, fixture }) => 
 })
 test('a user without blog editing permission is redirected before loading the editor', async ({ page, fixture }) => {
   fixture.user = { id: 9, username: 'reader', roles: ['USER'], permissions: [] }
-  await page.goto('/useradmin/blog/editor/1')
-  await expect(page).toHaveURL(/\/useradmin\/center$/)
+  await page.goto('/blog/editor/1')
+  await expect(page).toHaveURL(/\/center$/)
   await expect(page.getByLabel('文章标题')).toHaveCount(0)
 })
 test('missing public content and SEO safely show noindex', async ({ page }) => {
@@ -85,7 +85,7 @@ test('portfolio filters retain the current scroll position and URL state', async
   await expect.poll(() => page.evaluate(value => Math.abs(scrollY - value), beforeReload)).toBeLessThan(10)
 })
 test('unused tag deletion uses exact-name confirmation', async ({ page, fixture }) => {
-  await page.goto('/useradmin/blog/taxonomy')
+  await page.goto('/blog/taxonomy')
   await page.getByRole('button', { name: '删除', exact: true }).click()
   await page.getByLabel('输入Unused以确认').fill('Unused')
   await page.getByRole('dialog').getByRole('button', { name: '删除', exact: true }).click()
@@ -102,7 +102,7 @@ test('portfolio mobile directory has numbered links, Escape and focus return', a
   await expect(trigger).toBeFocused(); await expect(page.locator('main')).toHaveCount(1)
 })
 test('browser back honors the editor guard and can safely retry after cancellation', async ({ page }) => {
-  await page.goto('/useradmin/blog/manage')
+  await page.goto('/blog/manage')
   await page.getByRole('button', { name: '编辑', exact: true }).first().click()
   await expect(page).toHaveURL(/\/editor\/1$/)
   await page.getByLabel('文章标题').fill('Unsaved history edit')

@@ -38,7 +38,7 @@ async function sourcePoint(page, text) {
   return input
 }
 async function open(page) {
-  await page.goto('/useradmin/blog/editor/1')
+  await page.goto('/blog/editor/1')
   const input = page.locator(
     '.vditor-ir [contenteditable="true"]:visible,.vditor-sv[contenteditable="true"]:visible',
   )
@@ -133,7 +133,7 @@ test('fullscreen resizes on mobile and closes menus before exiting', async ({pag
   await input.locator('p').filter({hasText:'Original body'}).click()
   await page.keyboard.press('Control+`')
   await expect(full).toBeVisible()
-  await page.goto('/useradmin/blog')
+  await page.goto('/blog')
   expect(await page.locator('#app').evaluate(element=>element.inert)).toBe(false)
   await expect(page.locator('html')).not.toHaveClass(/is-vditor-fullscreen/)
 })
@@ -371,7 +371,7 @@ test('English and Chinese editors isolate focus and import suspends existing aut
   page,
   fixture,
 }) => {
-  await page.goto('/useradmin/english/writing/articles/2/edit')
+  await page.goto('/english/writing/articles/2/edit')
   const editors = page.locator('.markdown-editor')
   await expect(editors).toHaveCount(2)
   const en = editors.nth(0),

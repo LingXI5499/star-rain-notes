@@ -37,11 +37,11 @@ beforeEach(() => {
 })
 async function render(id = 'new') {
  const router = createRouter({ history: createMemoryHistory(), routes: [
-  { path: '/useradmin/portfolio/editor/:workId', component: WorkEditorPage },
-  { path: '/useradmin/portfolio/manage', component: { template: '<p>管理</p>' } },
-  { path: '/useradmin/portfolio/preview/:workId', component: { template: '<p>预览</p>' } },
+  { path: '/portfolio/editor/:workId', component: WorkEditorPage },
+  { path: '/portfolio/manage', component: { template: '<p>管理</p>' } },
+  { path: '/portfolio/preview/:workId', component: { template: '<p>预览</p>' } },
  ] })
- await router.push(`/useradmin/portfolio/editor/${id}`)
+ await router.push(`/portfolio/editor/${id}`)
  const root = mount(RouterView, { global: { plugins: [router, createPinia()], stubs: {
   MarkdownEditor: Markdown, EditorRecovery: true, ContentHistoryPanel: true, WorkSectionEditor: Blocks,
   MediaPicker: true, AppConfirmDialog: defineComponent({ setup(_, { expose }) { expose({ ask: vi.fn(async () => false) }) }, template: '<div />' }),
@@ -62,7 +62,7 @@ describe('single page work authoring', () => {
   let resolve
   api.getAdminWork.mockImplementation(id => id === '42' ? new Promise(done => { resolve = done }) : Promise.resolve({ ...initial(), id: '43', title: '下一个作品' }))
   const { root, router } = await render('42')
-  await router.push('/useradmin/portfolio/editor/43'); await flushPromises()
+  await router.push('/portfolio/editor/43'); await flushPromises()
   const view = root.findComponent(WorkEditorPage)
   expect(title(view).element.value).toBe('下一个作品')
   resolve(initial()); await flushPromises()
@@ -128,8 +128,8 @@ describe('single page work authoring', () => {
   const { view, root, router } = await render()
   await title(view).setValue('新作品'); await save(view)
   await title(view).setValue('未保存标题')
-  await router.push('/useradmin/portfolio/preview/42')
-  expect(router.currentRoute.value.path).toBe('/useradmin/portfolio/editor/42')
+  await router.push('/portfolio/preview/42')
+  expect(router.currentRoute.value.path).toBe('/portfolio/editor/42')
   expect(title(view).element.value).toBe('未保存标题')
   root.unmount()
  })
@@ -155,7 +155,7 @@ describe('single page work authoring', () => {
   const { view, router, root } = await render()
   await title(view).setValue('保留标题'); await view.find('[data-markdown]').setValue('不能丢失的正文')
   await save(view)
-  expect(router.currentRoute.value.path).toBe('/useradmin/portfolio/editor/42')
+  expect(router.currentRoute.value.path).toBe('/portfolio/editor/42')
   expect(title(view).element.value).toBe('保留标题')
   expect(view.find('[data-markdown]').element.value).toBe('不能丢失的正文')
   expect(view.find('[role="alert"]').text()).toContain('Markdown 正文保存失败')
@@ -188,7 +188,7 @@ describe('single page work authoring', () => {
   await button(view, '保存作品').trigger('click')
   await title(view).setValue('保存中的新标题')
   expect(button(view, '保存中…').attributes('disabled')).toBeDefined()
-  await router.push('/useradmin/portfolio/manage')
+  await router.push('/portfolio/manage')
   expect(router.currentRoute.value.path).toContain('/editor/42')
   resolve(clone(server)); await flushPromises()
   expect(title(view).element.value).toBe('保存中的新标题')

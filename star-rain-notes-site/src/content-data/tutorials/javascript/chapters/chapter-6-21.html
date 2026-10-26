@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 浏览器 File API 可以通过用户主动选择的文件读取本地文本，不能任意读取用户磁盘。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">fileInput.onchange = async () =&gt; {
+  const file = fileInput.files[0];
+  if (file) console.log(await file.text());
+};
+</code></pre>
+<p><strong>学完能做：</strong> 读取用户选择的本地文本文件。</p>

@@ -1,0 +1,392 @@
+{
+  "slug": "agent-frameworks-multiagent",
+  "title": "Agent 框架、工作流与多智能体",
+  "description": "深入学习 LangGraph，比较主流 Python 框架，掌握状态化编排与多智能体协作。",
+  "category": "智能体开发知识体系",
+  "categorySlug": "484381842269",
+  "publishedAt": "2026-09-22",
+  "chapterCount": 44,
+  "wordCount": 0,
+  "categoryId": "4",
+  "groups": [
+    {
+      "title": "Workflow 与状态化编排",
+      "chapters": [
+        {
+          "slug": "1-1",
+          "title": "Workflow 与 Agent 的组合：确定性流程和模型决策的边界",
+          "description": "Workflow 与 Agent 的组合：确定性流程和模型决策的边界",
+          "path": "/tutorials/agent-frameworks-multiagent/1-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-2",
+          "title": "节点、边、状态、条件路由与状态转换",
+          "description": "节点、边、状态、条件路由与状态转换",
+          "path": "/tutorials/agent-frameworks-multiagent/1-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-3",
+          "title": "顺序、并行、分支、循环、聚合与终止条件",
+          "description": "顺序、并行、分支、循环、聚合与终止条件",
+          "path": "/tutorials/agent-frameworks-multiagent/1-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-4",
+          "title": "Router、Planner、Executor、Validator 与 Finalizer 的职责",
+          "description": "Router、Planner、Executor、Validator 与 Finalizer 的职责",
+          "path": "/tutorials/agent-frameworks-multiagent/1-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-5",
+          "title": "重试、回退、超时、失败分支与幂等恢复",
+          "description": "重试、回退、超时、失败分支与幂等恢复",
+          "path": "/tutorials/agent-frameworks-multiagent/1-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-6",
+          "title": "Checkpoint、暂停、恢复、持久化与长任务状态",
+          "description": "Checkpoint、暂停、恢复、持久化与长任务状态",
+          "path": "/tutorials/agent-frameworks-multiagent/1-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-7",
+          "title": "Human-in-the-Loop：审批、拒绝、人工修改与恢复执行",
+          "description": "Human-in-the-Loop：审批、拒绝、人工修改与恢复执行",
+          "path": "/tutorials/agent-frameworks-multiagent/1-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "1-8",
+          "title": "工作流可视化、运行轨迹、调试与测试",
+          "description": "工作流可视化、运行轨迹、调试与测试",
+          "path": "/tutorials/agent-frameworks-multiagent/1-8/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "LangChain 与 LangGraph 主线",
+      "chapters": [
+        {
+          "slug": "2-1",
+          "title": "LangChain 的定位、核心抽象与组件边界",
+          "description": "LangChain 的定位、核心抽象与组件边界",
+          "path": "/tutorials/agent-frameworks-multiagent/2-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-2",
+          "title": "模型、Prompt、Messages、Tools、结构化输出与 Middleware",
+          "description": "模型、Prompt、Messages、Tools、结构化输出与 Middleware",
+          "path": "/tutorials/agent-frameworks-multiagent/2-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-3",
+          "title": "LangGraph 的定位、StateGraph 与运行机制",
+          "description": "LangGraph 的定位、StateGraph 与运行机制",
+          "path": "/tutorials/agent-frameworks-multiagent/2-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-4",
+          "title": "State、Node、Edge、条件路由与状态更新",
+          "description": "State、Node、Edge、条件路由与状态更新",
+          "path": "/tutorials/agent-frameworks-multiagent/2-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-5",
+          "title": "ToolNode、工具执行、错误处理与循环控制",
+          "description": "ToolNode、工具执行、错误处理与循环控制",
+          "path": "/tutorials/agent-frameworks-multiagent/2-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-6",
+          "title": "并行节点、子图、复用组件与复杂工作流",
+          "description": "并行节点、子图、复用组件与复杂工作流",
+          "path": "/tutorials/agent-frameworks-multiagent/2-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-7",
+          "title": "Checkpoint、Thread、持久化、恢复与状态隔离",
+          "description": "Checkpoint、Thread、持久化、恢复与状态隔离",
+          "path": "/tutorials/agent-frameworks-multiagent/2-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-8",
+          "title": "Interrupt、人工审批、Streaming 与运行时事件",
+          "description": "Interrupt、人工审批、Streaming 与运行时事件",
+          "path": "/tutorials/agent-frameworks-multiagent/2-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-9",
+          "title": "Memory、Store、上下文管理、Middleware 与护栏",
+          "description": "Memory、Store、上下文管理、Middleware 与护栏",
+          "path": "/tutorials/agent-frameworks-multiagent/2-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "2-10",
+          "title": "LangGraph 的测试、追踪、调试、部署与完整项目实践",
+          "description": "LangGraph 的测试、追踪、调试、部署与完整项目实践",
+          "path": "/tutorials/agent-frameworks-multiagent/2-10/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "主流 Python Agent 框架全景",
+      "chapters": [
+        {
+          "slug": "3-1",
+          "title": "框架分类与选型：Agent SDK、编排框架、数据框架和平台",
+          "description": "框架分类与选型：Agent SDK、编排框架、数据框架和平台",
+          "path": "/tutorials/agent-frameworks-multiagent/3-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-2",
+          "title": "OpenAI Agents SDK：Runner、Tools、Handoffs、Guardrails、Sessions 与 Tracing",
+          "description": "OpenAI Agents SDK：Runner、Tools、Handoffs、Guardrails、Sessions 与 Tracing",
+          "path": "/tutorials/agent-frameworks-multiagent/3-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-3",
+          "title": "Google ADK：Agents、Workflow、Tools、Session、评测与部署",
+          "description": "Google ADK：Agents、Workflow、Tools、Session、评测与部署",
+          "path": "/tutorials/agent-frameworks-multiagent/3-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-4",
+          "title": "Microsoft Agent Framework：Agents、Workflows、State、Skills 与人工介入",
+          "description": "Microsoft Agent Framework：Agents、Workflows、State、Skills 与人工介入",
+          "path": "/tutorials/agent-frameworks-multiagent/3-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-5",
+          "title": "CrewAI：Agents、Tasks、Crews 与 Flows",
+          "description": "CrewAI：Agents、Tasks、Crews 与 Flows",
+          "path": "/tutorials/agent-frameworks-multiagent/3-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-6",
+          "title": "PydanticAI：类型安全、依赖注入、结构化结果与工具",
+          "description": "PydanticAI：类型安全、依赖注入、结构化结果与工具",
+          "path": "/tutorials/agent-frameworks-multiagent/3-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-7",
+          "title": "AgentScope Python：Runtime、Toolkit、Memory、MCP、Skills 与服务化",
+          "description": "AgentScope Python：Runtime、Toolkit、Memory、MCP、Skills 与服务化",
+          "path": "/tutorials/agent-frameworks-multiagent/3-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-8",
+          "title": "Qwen-Agent：工具调用、RAG、代码解释器与通义模型生态",
+          "description": "Qwen-Agent：工具调用、RAG、代码解释器与通义模型生态",
+          "path": "/tutorials/agent-frameworks-multiagent/3-8/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-9",
+          "title": "LlamaIndex、Haystack：数据接入、检索、RAG 与 Agent 工作流",
+          "description": "LlamaIndex、Haystack：数据接入、检索、RAG 与 Agent 工作流",
+          "path": "/tutorials/agent-frameworks-multiagent/3-9/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-10",
+          "title": "Agno、Hugging Face smolagents：轻量 Agent、团队与代码执行范式",
+          "description": "Agno、Hugging Face smolagents：轻量 Agent、团队与代码执行范式",
+          "path": "/tutorials/agent-frameworks-multiagent/3-10/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-11",
+          "title": "AutoGen、Semantic Kernel、MetaGPT、CAMEL：历史演进与代表性设计",
+          "description": "AutoGen、Semantic Kernel、MetaGPT、CAMEL：历史演进与代表性设计",
+          "path": "/tutorials/agent-frameworks-multiagent/3-11/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "3-12",
+          "title": "同一任务的跨框架实现、能力比较、维护状态与迁移取舍",
+          "description": "同一任务的跨框架实现、能力比较、维护状态与迁移取舍",
+          "path": "/tutorials/agent-frameworks-multiagent/3-12/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "多智能体架构与协作",
+      "chapters": [
+        {
+          "slug": "4-1",
+          "title": "何时需要 Multi-Agent：收益、成本与复杂度判断",
+          "description": "何时需要 Multi-Agent：收益、成本与复杂度判断",
+          "path": "/tutorials/agent-frameworks-multiagent/4-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-2",
+          "title": "Supervisor-Worker、中心化调度与专家 Agent",
+          "description": "Supervisor-Worker、中心化调度与专家 Agent",
+          "path": "/tutorials/agent-frameworks-multiagent/4-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-3",
+          "title": "Handoff、Agent-as-a-Tool 与任务委派",
+          "description": "Handoff、Agent-as-a-Tool 与任务委派",
+          "path": "/tutorials/agent-frameworks-multiagent/4-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-4",
+          "title": "顺序协作、并行执行、结果聚合与 Evaluator-Optimizer",
+          "description": "顺序协作、并行执行、结果聚合与 Evaluator-Optimizer",
+          "path": "/tutorials/agent-frameworks-multiagent/4-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-5",
+          "title": "共享状态、消息传递、上下文隔离与冲突处理",
+          "description": "共享状态、消息传递、上下文隔离与冲突处理",
+          "path": "/tutorials/agent-frameworks-multiagent/4-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-6",
+          "title": "多智能体权限、超时、失败隔离、预算与终止条件",
+          "description": "多智能体权限、超时、失败隔离、预算与终止条件",
+          "path": "/tutorials/agent-frameworks-multiagent/4-6/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-7",
+          "title": "LangGraph、OpenAI Agents SDK、Google ADK、CrewAI 等框架中的协作实现",
+          "description": "LangGraph、OpenAI Agents SDK、Google ADK、CrewAI 等框架中的协作实现",
+          "path": "/tutorials/agent-frameworks-multiagent/4-7/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "4-8",
+          "title": "多智能体评测：任务成功率、轨迹、成本与单 Agent 基线比较",
+          "description": "多智能体评测：任务成功率、轨迹、成本与单 Agent 基线比较",
+          "path": "/tutorials/agent-frameworks-multiagent/4-8/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "低代码与可视化 Agent 平台",
+      "chapters": [
+        {
+          "slug": "5-1",
+          "title": "代码框架与低代码 Agent 平台的差异及适用边界",
+          "description": "代码框架与低代码 Agent 平台的差异及适用边界",
+          "path": "/tutorials/agent-frameworks-multiagent/5-1/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-2",
+          "title": "Coze Studio：应用、插件、知识库、工作流与发布",
+          "description": "Coze Studio：应用、插件、知识库、工作流与发布",
+          "path": "/tutorials/agent-frameworks-multiagent/5-2/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-3",
+          "title": "Dify：应用编排、知识库、工具与应用部署",
+          "description": "Dify：应用编排、知识库、工具与应用部署",
+          "path": "/tutorials/agent-frameworks-multiagent/5-3/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-4",
+          "title": "n8n：自动化工作流、API 集成与 Agent 节点",
+          "description": "n8n：自动化工作流、API 集成与 Agent 节点",
+          "path": "/tutorials/agent-frameworks-multiagent/5-4/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-5",
+          "title": "平台 API、自定义节点与 Python Agent 服务集成",
+          "description": "平台 API、自定义节点与 Python Agent 服务集成",
+          "path": "/tutorials/agent-frameworks-multiagent/5-5/",
+          "wordCount": 0,
+          "hasBody": true
+        },
+        {
+          "slug": "5-6",
+          "title": "可视化平台与代码实现的迁移、可维护性和供应商依赖",
+          "description": "可视化平台与代码实现的迁移、可维护性和供应商依赖",
+          "path": "/tutorials/agent-frameworks-multiagent/5-6/",
+          "wordCount": 0,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/agent-frameworks-multiagent/",
+  "sortOrder": 24
+}

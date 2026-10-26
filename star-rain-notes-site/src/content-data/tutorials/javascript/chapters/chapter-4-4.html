@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> <code>querySelectorAll</code> 返回 <code>NodeList</code>（非数组）；<code>Array.from</code> 把它转为数组后可用 <code>map</code>。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const texts = Array.from(document.querySelectorAll('p')).map(p =&gt; p.textContent);
+console.log(texts);
+</code></pre>
+<p><strong>学完能做：</strong> 将 NodeList 等类数组集合转换为数组。</p>

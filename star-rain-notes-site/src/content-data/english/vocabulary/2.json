@@ -1,0 +1,1260 @@
+{
+  "id": "2",
+  "title": "家庭成员、人物身份与社会称谓",
+  "layer": "基础通用词层",
+  "wordCount": 139,
+  "path": "/english/vocabulary/2/",
+  "words": [
+    {
+      "word": "couple",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌpl",
+      "phoneticUk": "'kʌp(ə)l",
+      "translation": "夫妇；(一)对；几个；夫妻，情侣",
+      "sceneMeaning": "夫妇；(一)对；几个；夫妻，情侣；本场景常见用法：新婚夫妻",
+      "examples": "[]"
+    },
+    {
+      "word": "audience",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔdɪəns",
+      "phoneticUk": "'ɔːdɪəns",
+      "translation": "听众，观众，读者",
+      "sceneMeaning": "观众；听众",
+      "examples": "[]"
+    },
+    {
+      "word": "care",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kɛr",
+      "phoneticUk": "keə",
+      "translation": "关心，介意；小心",
+      "sceneMeaning": "关心；照顾",
+      "examples": "[]"
+    },
+    {
+      "word": "child",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃaɪld",
+      "phoneticUk": "tʃaɪld",
+      "translation": "小孩，儿童；儿子",
+      "sceneMeaning": "孩子；儿童",
+      "examples": "[]"
+    },
+    {
+      "word": "familiar",
+      "partOfSpeech": "adj",
+      "phoneticUs": "fə'mɪljɚ",
+      "phoneticUk": "fə'mɪlɪə",
+      "translation": "熟悉的；冒昧的；熟悉的",
+      "sceneMeaning": "熟悉的",
+      "examples": "[]"
+    },
+    {
+      "word": "family",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæməli",
+      "phoneticUk": "'fæmɪlɪ; -m(ə)l-",
+      "translation": "家，家庭；家族",
+      "sceneMeaning": "家庭；家人",
+      "examples": "[]"
+    },
+    {
+      "word": "father",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɑðɚ",
+      "phoneticUk": "'fɑːðə",
+      "translation": "父亲；神父；创始人",
+      "sceneMeaning": "父亲",
+      "examples": "[]"
+    },
+    {
+      "word": "friend",
+      "partOfSpeech": "n",
+      "phoneticUs": "frɛnd",
+      "phoneticUk": "frend",
+      "translation": "朋友，友人",
+      "sceneMeaning": "朋友",
+      "examples": "[]"
+    },
+    {
+      "word": "generation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɛnə'reʃən",
+      "phoneticUk": "dʒenə'reɪʃ(ə)n",
+      "translation": "一代，一代人；产生；一代人；产生",
+      "sceneMeaning": "一代人；产生",
+      "examples": "[]"
+    },
+    {
+      "word": "lead",
+      "partOfSpeech": "n",
+      "phoneticUs": "lid",
+      "phoneticUk": "liːd",
+      "translation": "铅，铅制品",
+      "sceneMeaning": "铅，铅制品；本场景常见用法：在…的领导下",
+      "examples": "[]"
+    },
+    {
+      "word": "love",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lʌv",
+      "phoneticUk": "lʌv",
+      "translation": "爱，喜欢；爱",
+      "sceneMeaning": "爱，喜欢；爱",
+      "examples": "[]"
+    },
+    {
+      "word": "manager",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mænɪdʒɚ",
+      "phoneticUk": "'mænɪdʒə",
+      "translation": "经理，管理人",
+      "sceneMeaning": "经理；管理者",
+      "examples": "[]"
+    },
+    {
+      "word": "mother",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mʌðɚ",
+      "phoneticUk": "'mʌðə",
+      "translation": "母亲，妈妈",
+      "sceneMeaning": "母亲",
+      "examples": "[]"
+    },
+    {
+      "word": "office",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔfɪs",
+      "phoneticUk": "'ɒfɪs",
+      "translation": "办公室；处，局，社",
+      "sceneMeaning": "办公室；处，局，社",
+      "examples": "[]"
+    },
+    {
+      "word": "old",
+      "partOfSpeech": "adj",
+      "phoneticUs": "old",
+      "phoneticUk": "əʊld",
+      "translation": "老的；…岁的",
+      "sceneMeaning": "老的；旧的",
+      "examples": "[]"
+    },
+    {
+      "word": "person",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɝsn",
+      "phoneticUk": "'pɜːs(ə)n",
+      "translation": "人；人身；本人",
+      "sceneMeaning": "人；人身；本人；本场景常见用法：少年人；未成年人",
+      "examples": "[]"
+    },
+    {
+      "word": "personal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɝsənl",
+      "phoneticUk": "'pɜːs(ə)n(ə)l",
+      "translation": "个人的；本人的",
+      "sceneMeaning": "个人的；私人的",
+      "examples": "[]"
+    },
+    {
+      "word": "police",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'lis",
+      "phoneticUk": "pə'liːs",
+      "translation": "警察；警察当局",
+      "sceneMeaning": "警察；警方",
+      "examples": "[]"
+    },
+    {
+      "word": "professor",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "教授",
+      "sceneMeaning": "教授",
+      "examples": "[]"
+    },
+    {
+      "word": "public",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'pʌblɪk",
+      "phoneticUk": "'pʌblɪk",
+      "translation": "公众的；公众",
+      "sceneMeaning": "公众；民众",
+      "examples": "[]"
+    },
+    {
+      "word": "raise",
+      "partOfSpeech": "v",
+      "phoneticUs": "rez",
+      "phoneticUk": "reɪz",
+      "translation": "举起；引起；提高；提高；筹款；抚养",
+      "sceneMeaning": "抚养；提高；举起",
+      "examples": "[]"
+    },
+    {
+      "word": "recognize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˈrɛkəɡˌnaɪz",
+      "phoneticUk": "'rekəɡnaɪz",
+      "translation": "认识，认出；承认",
+      "sceneMeaning": "认出；承认",
+      "examples": "[]"
+    },
+    {
+      "word": "doctor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɑktɚ",
+      "phoneticUk": "'dɒktə",
+      "translation": "医生，医师；博士",
+      "sceneMeaning": "医生；博士",
+      "examples": "[]"
+    },
+    {
+      "word": "husband",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hʌzbənd",
+      "phoneticUk": "'hʌzbənd",
+      "translation": "丈夫",
+      "sceneMeaning": "丈夫",
+      "examples": "[]"
+    },
+    {
+      "word": "man",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæn",
+      "phoneticUk": "mæn",
+      "translation": "男人；人；人类",
+      "sceneMeaning": "男人；人；人类；本场景常见用法：情人；丈夫；老头子；父亲",
+      "examples": "[]"
+    },
+    {
+      "word": "president",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛzɪdənt",
+      "phoneticUk": "'prezɪd(ə)nt",
+      "translation": "总统；校长；会长",
+      "sceneMeaning": "总统；校长；主席",
+      "examples": "[]"
+    },
+    {
+      "word": "boss",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bɑs",
+      "phoneticUk": "bɒs",
+      "translation": "老板，上司；指挥",
+      "sceneMeaning": "老板，上司；指挥",
+      "examples": "[]"
+    },
+    {
+      "word": "leader",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lidɚ",
+      "phoneticUk": "'liːdə",
+      "translation": "领袖，领导人；首领",
+      "sceneMeaning": "领导者；首领",
+      "examples": "[]"
+    },
+    {
+      "word": "married",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mærɪd",
+      "phoneticUk": "'mærɪd",
+      "translation": "已婚的；婚姻的",
+      "sceneMeaning": "已婚的",
+      "examples": "[]"
+    },
+    {
+      "word": "adult",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ædʌlt",
+      "phoneticUk": "'ædʌlt; ə'dʌlt",
+      "translation": "成年人；成年的",
+      "sceneMeaning": "成年人",
+      "examples": "[]"
+    },
+    {
+      "word": "customer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌstəmɚ",
+      "phoneticUk": "'kʌstəmə",
+      "translation": "顾客，主顾",
+      "sceneMeaning": "顾客；客户",
+      "examples": "[]"
+    },
+    {
+      "word": "daughter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɔtɚ",
+      "phoneticUk": "'dɔːtə",
+      "translation": "女儿",
+      "sceneMeaning": "女儿",
+      "examples": "[]"
+    },
+    {
+      "word": "expert",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɛkspɝt; (for adj., also) ɛksˈpɝt ; ɪkˈspɝt",
+      "phoneticUk": "'ekspɜːt",
+      "translation": "专家；熟练的；熟练的，内行的",
+      "sceneMeaning": "专家",
+      "examples": "[]"
+    },
+    {
+      "word": "generate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dʒɛnəret",
+      "phoneticUk": "'dʒenəreɪt",
+      "translation": "发生；引起；生殖；产生",
+      "sceneMeaning": "发生；引起；生殖；产生",
+      "examples": "[]"
+    },
+    {
+      "word": "member",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛmbɚ",
+      "phoneticUk": "'membə",
+      "translation": "成员，会员",
+      "sceneMeaning": "成员；会员",
+      "examples": "[]"
+    },
+    {
+      "word": "boy",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɔɪ",
+      "phoneticUk": "bɒɪ",
+      "translation": "男孩，少年；家伙",
+      "sceneMeaning": "男孩，少年；家伙",
+      "examples": "[]"
+    },
+    {
+      "word": "engine",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛndʒɪn",
+      "phoneticUk": "'endʒɪn",
+      "translation": "发动机，引擎；机车；引擎，发动机",
+      "sceneMeaning": "发动机，引擎；机车；引擎，发动机；本场景常见用法：内燃机",
+      "examples": "[]"
+    },
+    {
+      "word": "female",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fimel",
+      "phoneticUk": "'fiːmeɪl",
+      "translation": "雌性的动物；女子",
+      "sceneMeaning": "女性的；雌性的",
+      "examples": "[]"
+    },
+    {
+      "word": "kid",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɪd",
+      "phoneticUk": "kɪd",
+      "translation": "小孩，儿童，少年",
+      "sceneMeaning": "小孩；年轻人",
+      "examples": "[]"
+    },
+    {
+      "word": "officer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔfɪsɚ",
+      "phoneticUk": "'ɒfɪsə",
+      "translation": "官员；干事；军官",
+      "sceneMeaning": "官员；军官；警官",
+      "examples": "[]"
+    },
+    {
+      "word": "parent",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɛrənt",
+      "phoneticUk": "'peər(ə)nt",
+      "translation": "父亲，母亲，双亲",
+      "sceneMeaning": "父亲或母亲；家长",
+      "examples": "[]"
+    },
+    {
+      "word": "strange",
+      "partOfSpeech": "adj",
+      "phoneticUs": "strendʒ",
+      "phoneticUk": "streɪn(d)ʒ",
+      "translation": "陌生的；奇怪的",
+      "sceneMeaning": "陌生的；奇怪的",
+      "examples": "[]"
+    },
+    {
+      "word": "trust",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "trʌst",
+      "phoneticUk": "trʌst",
+      "translation": "信任；相信；委托",
+      "sceneMeaning": "信任；相信",
+      "examples": "[]"
+    },
+    {
+      "word": "identity",
+      "partOfSpeech": "n",
+      "phoneticUs": "aɪ'dɛntəti",
+      "phoneticUk": "aɪ'dentɪtɪ",
+      "translation": "身份",
+      "sceneMeaning": "身份；本场景常见用法：个人统合，个人身份；人格同一性",
+      "examples": "[]"
+    },
+    {
+      "word": "acquaintance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kwentəns",
+      "phoneticUk": "ə'kweɪnt(ə)ns",
+      "translation": "认识；了解；熟人",
+      "sceneMeaning": "认识；了解；熟人",
+      "examples": "[]"
+    },
+    {
+      "word": "fool",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ful",
+      "phoneticUk": "fuːl",
+      "translation": "蠢人，傻子；欺骗",
+      "sceneMeaning": "蠢人，傻子；欺骗",
+      "examples": "[]"
+    },
+    {
+      "word": "friendly",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'frɛndli",
+      "phoneticUk": "'fren(d)lɪ",
+      "translation": "友好的，友谊的",
+      "sceneMeaning": "友好的",
+      "examples": "[]"
+    },
+    {
+      "word": "identify",
+      "partOfSpeech": "v",
+      "phoneticUs": "aɪ'dɛntɪfaɪ",
+      "phoneticUk": "aɪ'dentɪfaɪ",
+      "translation": "认出，识别，鉴定；认出，识别；视为",
+      "sceneMeaning": "确认身份；识别",
+      "examples": "[]"
+    },
+    {
+      "word": "infant",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɪnfənt",
+      "phoneticUk": "'ɪnf(ə)nt",
+      "translation": "婴儿；婴儿的",
+      "sceneMeaning": "婴儿；婴儿的；本场景常见用法：早产儿",
+      "examples": "[]"
+    },
+    {
+      "word": "vice",
+      "partOfSpeech": "n",
+      "phoneticUs": "vaɪs",
+      "phoneticUk": "vaɪs",
+      "translation": "罪恶；恶习；缺点",
+      "sceneMeaning": "罪恶；恶习；缺点；本场景常见用法：副总统；副主席",
+      "examples": "[]"
+    },
+    {
+      "word": "brother",
+      "partOfSpeech": "n",
+      "phoneticUs": "'brʌðɚ",
+      "phoneticUk": "'brʌðə",
+      "translation": "兄弟；同事，同胞",
+      "sceneMeaning": "兄弟",
+      "examples": "[]"
+    },
+    {
+      "word": "careful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɛrfl",
+      "phoneticUk": "'keəfʊl; -f(ə)l",
+      "translation": "仔细的；细致的",
+      "sceneMeaning": "仔细的；细致的；本场景常见用法：小心；照顾",
+      "examples": "[]"
+    },
+    {
+      "word": "careless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɛrləs",
+      "phoneticUk": "'keələs",
+      "translation": "粗心的，漫不经心的；粗心的",
+      "sceneMeaning": "粗心的，漫不经心的；粗心的",
+      "examples": "[]"
+    },
+    {
+      "word": "childhood",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʃaɪldhʊd",
+      "phoneticUk": "'tʃaɪldhʊd",
+      "translation": "童年，幼年；早期",
+      "sceneMeaning": "童年，幼年；早期；本场景常见用法：幼儿教育；儿童早期教育",
+      "examples": "[]"
+    },
+    {
+      "word": "driver",
+      "partOfSpeech": "n",
+      "phoneticUs": "'draɪvɚ",
+      "phoneticUk": "'draɪvə",
+      "translation": "驾驶员，司机",
+      "sceneMeaning": "司机；驾驶员",
+      "examples": "[]"
+    },
+    {
+      "word": "engineer",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɛndʒɪ'nɪr",
+      "phoneticUk": "endʒɪ'nɪə",
+      "translation": "工程师，技师",
+      "sceneMeaning": "工程师",
+      "examples": "[]"
+    },
+    {
+      "word": "engineering",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛndʒə'nɪrɪŋ",
+      "phoneticUk": "endʒɪ'nɪərɪŋ",
+      "translation": "工程，工程学",
+      "sceneMeaning": "工程，工程学；本场景常见用法：逆向工程",
+      "examples": "[]"
+    },
+    {
+      "word": "grandmother",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡrænmʌðɚ",
+      "phoneticUk": "'græn(d)mʌðə",
+      "translation": "祖母，外祖母",
+      "sceneMeaning": "祖母；外祖母",
+      "examples": "[]"
+    },
+    {
+      "word": "male",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "mel",
+      "phoneticUk": "meɪl",
+      "translation": "男的，雄的；男子",
+      "sceneMeaning": "男性的；雄性的",
+      "examples": "[]"
+    },
+    {
+      "word": "marriage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mærɪdʒ",
+      "phoneticUk": "'mærɪdʒ",
+      "translation": "结婚，婚姻；婚礼",
+      "sceneMeaning": "结婚，婚姻；婚礼",
+      "examples": "[]"
+    },
+    {
+      "word": "partner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑrtnɚ",
+      "phoneticUk": "'pɑːtnə",
+      "translation": "伙伴；搭挡；配偶",
+      "sceneMeaning": "伙伴；合作者；配偶",
+      "examples": "[]"
+    },
+    {
+      "word": "relative",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'rɛlətɪv",
+      "phoneticUk": "'relətɪv",
+      "translation": "有关系的；相对的；相对的；亲戚",
+      "sceneMeaning": "亲戚；亲属",
+      "examples": "[]"
+    },
+    {
+      "word": "specialist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'spɛʃəlɪst",
+      "phoneticUk": "'speʃ(ə)lɪst",
+      "translation": "专家",
+      "sceneMeaning": "专家；专科医生",
+      "examples": "[]"
+    },
+    {
+      "word": "voluntary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vɑləntɛri",
+      "phoneticUk": "'vɒlənt(ə)rɪ",
+      "translation": "自愿的，志愿的；自愿的，主动的",
+      "sceneMeaning": "自愿的，志愿的；自愿的，主动的",
+      "examples": "[]"
+    },
+    {
+      "word": "aunt",
+      "partOfSpeech": "n",
+      "phoneticUs": "ænt",
+      "phoneticUk": "ɑːnt",
+      "translation": "伯母，婶母，姑母",
+      "sceneMeaning": "姑姨婶舅母",
+      "examples": "[]"
+    },
+    {
+      "word": "baby",
+      "partOfSpeech": "n",
+      "phoneticUs": "bebɪ",
+      "phoneticUk": "'beɪbɪ",
+      "translation": "婴儿；孩子气的人",
+      "sceneMeaning": "婴儿；幼崽",
+      "examples": "[]"
+    },
+    {
+      "word": "dishonest",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪs'ɑnɪst",
+      "phoneticUk": "dɪsˈɒnɪst",
+      "translation": "不诚实的",
+      "sceneMeaning": "不诚实的",
+      "examples": "[]"
+    },
+    {
+      "word": "fellow",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɛlo",
+      "phoneticUk": "'feləʊ",
+      "translation": "人，家伙；伙伴",
+      "sceneMeaning": "人，家伙；伙伴；本场景常见用法：n. 老兄；老朋友",
+      "examples": "[]"
+    },
+    {
+      "word": "folk",
+      "partOfSpeech": "n",
+      "phoneticUs": "fok",
+      "phoneticUk": "fəʊk",
+      "translation": "人们，家属，亲属",
+      "sceneMeaning": "人们，家属，亲属",
+      "examples": "[]"
+    },
+    {
+      "word": "introduce",
+      "partOfSpeech": "v",
+      "phoneticUs": "ˌɪntrə'dus",
+      "phoneticUk": "ɪntrə'djuːs",
+      "translation": "介绍；引进，传入",
+      "sceneMeaning": "介绍；引入",
+      "examples": "[]"
+    },
+    {
+      "word": "introduction",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntrə'dʌkʃən",
+      "phoneticUk": ",ɪntrə'dʌkʃ(ə)n",
+      "translation": "介绍；引进；引言",
+      "sceneMeaning": "介绍；引进；引言",
+      "examples": "[]"
+    },
+    {
+      "word": "master",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mæstɚ",
+      "phoneticUk": "'mɑːstə",
+      "translation": "主人；能手；硕士",
+      "sceneMeaning": "主人；能手；硕士；本场景常见用法：工商管理学硕士",
+      "examples": "[]"
+    },
+    {
+      "word": "niece",
+      "partOfSpeech": "n",
+      "phoneticUs": "nis",
+      "phoneticUk": "niːs",
+      "translation": "侄女，外甥女",
+      "sceneMeaning": "侄女，外甥女",
+      "examples": "[]"
+    },
+    {
+      "word": "personality",
+      "partOfSpeech": "n",
+      "phoneticUs": ",pɝsə'næləti",
+      "phoneticUk": "ˌpɜ:səˈnæləti",
+      "translation": "个性，性格",
+      "sceneMeaning": "个性，性格",
+      "examples": "[]"
+    },
+    {
+      "word": "resident",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'rɛzɪdənt",
+      "phoneticUk": "ˈrezɪdənt",
+      "translation": "居住的；居民",
+      "sceneMeaning": "居民；住户",
+      "examples": "[]"
+    },
+    {
+      "word": "stranger",
+      "partOfSpeech": "n",
+      "phoneticUs": "'strendʒɚ",
+      "phoneticUk": "'streɪn(d)ʒə",
+      "translation": "陌生人；新来者",
+      "sceneMeaning": "陌生人；外来者",
+      "examples": "[]"
+    },
+    {
+      "word": "twin",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "twɪn",
+      "phoneticUk": "twɪn",
+      "translation": "孪生的；孪生儿",
+      "sceneMeaning": "孪生的；孪生儿",
+      "examples": "[]"
+    },
+    {
+      "word": "youth",
+      "partOfSpeech": "n",
+      "phoneticUs": "jʊθ",
+      "phoneticUk": "juːθ",
+      "translation": "青春；青年们；青年",
+      "sceneMeaning": "青春；青年们；青年；本场景常见用法：共产主义青年团",
+      "examples": "[]"
+    },
+    {
+      "word": "ancestor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ænsɛstɚ",
+      "phoneticUk": "'ænsestə",
+      "translation": "祖宗，祖先",
+      "sceneMeaning": "祖先",
+      "examples": "[]"
+    },
+    {
+      "word": "bride",
+      "partOfSpeech": "n",
+      "phoneticUs": "braɪd",
+      "phoneticUk": "braɪd",
+      "translation": "新娘",
+      "sceneMeaning": "新娘；本场景常见用法：童养媳；年轻的新娘",
+      "examples": "[]"
+    },
+    {
+      "word": "caregiver",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈkerɡɪvər",
+      "phoneticUk": "'keəgɪvə",
+      "translation": "照料者",
+      "sceneMeaning": "照料者",
+      "examples": "[]"
+    },
+    {
+      "word": "childish",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tʃaɪldɪʃ",
+      "phoneticUk": "'tʃaɪldɪʃ",
+      "translation": "孩子的；幼稚的",
+      "sceneMeaning": "孩子的；幼稚的",
+      "examples": "[]"
+    },
+    {
+      "word": "client",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klaɪənt",
+      "phoneticUk": "'klaɪənt",
+      "translation": "客户",
+      "sceneMeaning": "客户；委托人",
+      "examples": "[]"
+    },
+    {
+      "word": "elder",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɛldɚ",
+      "phoneticUk": "'eldə",
+      "translation": "年龄较大的；长者",
+      "sceneMeaning": "长者；前辈",
+      "examples": "[]"
+    },
+    {
+      "word": "friendship",
+      "partOfSpeech": "n",
+      "phoneticUs": "'frɛndʃɪp",
+      "phoneticUk": "'fren(d)ʃɪp",
+      "translation": "友谊，友好",
+      "sceneMeaning": "友谊，友好",
+      "examples": "[]"
+    },
+    {
+      "word": "funny",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fʌni",
+      "phoneticUk": "'fʌnɪ",
+      "translation": "古怪的；滑稽的",
+      "sceneMeaning": "古怪的；滑稽的",
+      "examples": "[]"
+    },
+    {
+      "word": "girl",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡɝl",
+      "phoneticUk": "gɜːl",
+      "translation": "女孩子，姑娘；女儿",
+      "sceneMeaning": "女孩子，姑娘；女儿；本场景常见用法：n. 女朋友",
+      "examples": "[]"
+    },
+    {
+      "word": "grandfather",
+      "partOfSpeech": "n",
+      "phoneticUs": "'græn'fɑðɚ",
+      "phoneticUk": "'græn(d)fɑːðə",
+      "translation": "祖父；外祖父",
+      "sceneMeaning": "祖父；外祖父",
+      "examples": "[]"
+    },
+    {
+      "word": "homemaker",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hommekɚ",
+      "phoneticUk": "ˈhəʊmmeɪkə(r)",
+      "translation": "主妇",
+      "sceneMeaning": "主妇",
+      "examples": "[]"
+    },
+    {
+      "word": "host",
+      "partOfSpeech": "n",
+      "phoneticUs": "host",
+      "phoneticUk": "həʊst",
+      "translation": "主人；东道主",
+      "sceneMeaning": "主人；主持人",
+      "examples": "[]"
+    },
+    {
+      "word": "invite",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'vaɪt",
+      "phoneticUk": "ɪn'vaɪt",
+      "translation": "邀请，聘请；招待",
+      "sceneMeaning": "邀请",
+      "examples": "[]"
+    },
+    {
+      "word": "lady",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ledi",
+      "phoneticUk": "'leɪdɪ",
+      "translation": "女士，夫人；贵妇人",
+      "sceneMeaning": "女士，夫人；贵妇人；本场景常见用法：n. 小姐；女士；未婚妻；女朋友",
+      "examples": "[]"
+    },
+    {
+      "word": "nurse",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "nɝs",
+      "phoneticUk": "nɜːs",
+      "translation": "保姆；护士；看护",
+      "sceneMeaning": "护士",
+      "examples": "[]"
+    },
+    {
+      "word": "privilege",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈprɪvəlɪdʒ",
+      "phoneticUk": "ˈprɪvəlɪdʒ",
+      "translation": "特权，优惠",
+      "sceneMeaning": "特权，优惠",
+      "examples": "[]"
+    },
+    {
+      "word": "represent",
+      "partOfSpeech": "v",
+      "phoneticUs": ",rɛprɪ'zɛnt",
+      "phoneticUk": "reprɪ'zent",
+      "translation": "描绘；代表；象征；代表",
+      "sceneMeaning": "代表；象征",
+      "examples": "[]"
+    },
+    {
+      "word": "amaze",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'mez",
+      "phoneticUk": "ə'meɪz",
+      "translation": "使惊奇，使惊愕；使吃惊",
+      "sceneMeaning": "使惊奇，使惊愕；使吃惊",
+      "examples": "[]"
+    },
+    {
+      "word": "barber",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɑrbɚ",
+      "phoneticUk": "'bɑːbə",
+      "translation": "理发师",
+      "sceneMeaning": "理发师",
+      "examples": "[]"
+    },
+    {
+      "word": "beggar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɛɡɚ",
+      "phoneticUk": "'begə",
+      "translation": "乞丐，穷人",
+      "sceneMeaning": "乞丐，穷人",
+      "examples": "[]"
+    },
+    {
+      "word": "beloved",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "bɪ'lʌvd",
+      "phoneticUk": "bɪ'lʌvɪd; -'lʌvd",
+      "translation": "为…的爱的；爱人",
+      "sceneMeaning": "为…的爱的；爱人",
+      "examples": "[]"
+    },
+    {
+      "word": "betray",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪ'tre",
+      "phoneticUk": "bɪ'treɪ",
+      "translation": "背叛；辜负；泄漏",
+      "sceneMeaning": "背叛；辜负；泄漏",
+      "examples": "[]"
+    },
+    {
+      "word": "bull",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "bʊl",
+      "translation": "公牛；雄的象",
+      "sceneMeaning": "公牛；雄的象",
+      "examples": "[]"
+    },
+    {
+      "word": "carpenter",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈkɑːrpəntər",
+      "phoneticUk": "ˈkɑːpəntə(r)",
+      "translation": "木工，木匠；木匠",
+      "sceneMeaning": "木工，木匠；木匠",
+      "examples": "[]"
+    },
+    {
+      "word": "citizen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪtɪzn",
+      "phoneticUk": "'sɪtɪz(ə)n",
+      "translation": "公民；市民，居民；市民，城镇居民；公民",
+      "sceneMeaning": "公民；市民",
+      "examples": "[]"
+    },
+    {
+      "word": "classmate",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klæsmet",
+      "phoneticUk": "'klɑːsmeɪt",
+      "translation": "同班同学",
+      "sceneMeaning": "同班同学",
+      "examples": "[]"
+    },
+    {
+      "word": "colleague",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑliɡ",
+      "phoneticUk": "'kɒliːg",
+      "translation": "同事，同僚；同事",
+      "sceneMeaning": "同事；同行",
+      "examples": "[]"
+    },
+    {
+      "word": "cousin",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌzn",
+      "phoneticUk": "'kʌz(ə)n",
+      "translation": "堂(或表)兄弟(姐妹)",
+      "sceneMeaning": "堂兄弟姐妹；表兄弟姐妹",
+      "examples": "[]"
+    },
+    {
+      "word": "coward",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kaʊɚd",
+      "phoneticUk": "'kaʊəd",
+      "translation": "懦夫；胆怯者",
+      "sceneMeaning": "懦夫；胆怯者",
+      "examples": "[]"
+    },
+    {
+      "word": "dumb",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dʌm",
+      "phoneticUk": "dʌm",
+      "translation": "哑的；无言的",
+      "sceneMeaning": "哑的；无言的",
+      "examples": "[]"
+    },
+    {
+      "word": "enemy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛnəmi",
+      "phoneticUk": "'enəmɪ",
+      "translation": "敌人；仇敌；敌兵",
+      "sceneMeaning": "敌人；仇敌；敌兵",
+      "examples": "[]"
+    },
+    {
+      "word": "farmer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɑmɚ",
+      "phoneticUk": "'fɑːmə",
+      "translation": "农民，农夫；农场主",
+      "sceneMeaning": "农民；农场主",
+      "examples": "[]"
+    },
+    {
+      "word": "fireman",
+      "partOfSpeech": "n",
+      "phoneticUs": "'faɪrmən",
+      "phoneticUk": "'faɪəmən",
+      "translation": "消防队员；司炉工",
+      "sceneMeaning": "消防队员；司炉工",
+      "examples": "[]"
+    },
+    {
+      "word": "gracious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡreʃəs",
+      "phoneticUk": "'greɪʃəs",
+      "translation": "有礼貌的；仁慈的",
+      "sceneMeaning": "有礼貌的；仁慈的",
+      "examples": "[]"
+    },
+    {
+      "word": "granddaughter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡrændɔtɚ",
+      "phoneticUk": "'grændɔːtə",
+      "translation": "孙女，外孙女",
+      "sceneMeaning": "孙女；外孙女",
+      "examples": "[]"
+    },
+    {
+      "word": "grandson",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡrænsʌn",
+      "phoneticUk": "'græn(d)sʌn",
+      "translation": "孙子，外孙子",
+      "sceneMeaning": "孙子；外孙",
+      "examples": "[]"
+    },
+    {
+      "word": "guest",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡɛst",
+      "phoneticUk": "gest",
+      "translation": "客人，宾客；旅客",
+      "sceneMeaning": "客人；嘉宾",
+      "examples": "[]"
+    },
+    {
+      "word": "haircut",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɛrkʌt",
+      "phoneticUk": "'heəkʌt",
+      "translation": "理发",
+      "sceneMeaning": "理发",
+      "examples": "[]"
+    },
+    {
+      "word": "hen",
+      "partOfSpeech": "n",
+      "phoneticUs": "hɛn",
+      "phoneticUk": "hen",
+      "translation": "母鸡，雌禽",
+      "sceneMeaning": "母鸡，雌禽",
+      "examples": "[]"
+    },
+    {
+      "word": "honeymoon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hʌnɪmun",
+      "phoneticUk": "'hʌnɪmuːn",
+      "translation": "蜜月",
+      "sceneMeaning": "蜜月",
+      "examples": "[]"
+    },
+    {
+      "word": "hostess",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hostəs",
+      "phoneticUk": "'həʊstɪs; -es; həʊ'stes",
+      "translation": "女主人；空姐",
+      "sceneMeaning": "女主人；空姐",
+      "examples": "[]"
+    },
+    {
+      "word": "invitation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌɪnvɪˈteɪʃn",
+      "phoneticUk": "ɪnvɪ'teɪʃ(ə)n",
+      "translation": "邀请，招待；请柬",
+      "sceneMeaning": "邀请，招待；请柬；本场景常见用法：邀请函",
+      "examples": "[]"
+    },
+    {
+      "word": "liar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'laɪɚ",
+      "phoneticUk": "'laɪə",
+      "translation": "说谎的人",
+      "sceneMeaning": "说谎的人",
+      "examples": "[]"
+    },
+    {
+      "word": "lieutenant",
+      "partOfSpeech": "n",
+      "phoneticUs": "lu'tɛnənt",
+      "phoneticUk": "lef'tenənt",
+      "translation": "陆军中尉；副职官员",
+      "sceneMeaning": "陆军中尉；副职官员；本场景常见用法：海军少校",
+      "examples": "[]"
+    },
+    {
+      "word": "lover",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lʌvɚ",
+      "phoneticUk": "'lʌvə",
+      "translation": "爱好者；情人；情侣",
+      "sceneMeaning": "爱好者；情人；情侣",
+      "examples": "[]"
+    },
+    {
+      "word": "marry",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mæri",
+      "phoneticUk": "'mærɪ",
+      "translation": "娶，嫁；结婚",
+      "sceneMeaning": "结婚；嫁；娶",
+      "examples": "[]"
+    },
+    {
+      "word": "mate",
+      "partOfSpeech": "n",
+      "phoneticUs": "met",
+      "phoneticUk": "meɪt",
+      "translation": "伙伴，同事；配偶",
+      "sceneMeaning": "伙伴，同事；配偶",
+      "examples": "[]"
+    },
+    {
+      "word": "murderer",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɝdərɚ",
+      "phoneticUk": "'mɜːd(ə)rə(r)",
+      "translation": "杀人犯，凶手",
+      "sceneMeaning": "杀人犯，凶手",
+      "examples": "[]"
+    },
+    {
+      "word": "mute",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "mjut",
+      "phoneticUk": "mjuːt",
+      "translation": "缄默的；哑巴",
+      "sceneMeaning": "缄默的；哑巴",
+      "examples": "[]"
+    },
+    {
+      "word": "nephew",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nɛfju",
+      "phoneticUk": "'nefjuː; 'nevjuː",
+      "translation": "侄子，外甥",
+      "sceneMeaning": "侄子，外甥",
+      "examples": "[]"
+    },
+    {
+      "word": "nursery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nɝsəri",
+      "phoneticUk": "'nɜːs(ə)rɪ",
+      "translation": "托儿所；苗圃",
+      "sceneMeaning": "托儿所；苗圃",
+      "examples": "[]"
+    },
+    {
+      "word": "orphan",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrfn",
+      "phoneticUk": "'ɔːf(ə)n",
+      "translation": "孤儿",
+      "sceneMeaning": "孤儿",
+      "examples": "[]"
+    },
+    {
+      "word": "paw",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "脚爪，爪子",
+      "sceneMeaning": "脚爪，爪子",
+      "examples": "[]"
+    },
+    {
+      "word": "peasant",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɛznt",
+      "phoneticUk": "'pez(ə)nt",
+      "translation": "农民",
+      "sceneMeaning": "农民",
+      "examples": "[]"
+    },
+    {
+      "word": "pillar",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɪlɚ",
+      "phoneticUk": "'pɪlə",
+      "translation": "柱，柱子；栋梁",
+      "sceneMeaning": "柱，柱子；栋梁",
+      "examples": "[]"
+    },
+    {
+      "word": "pioneer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": ",paɪə'nɪr",
+      "phoneticUk": "paɪə'nɪə",
+      "translation": "拓荒者；先驱者；开拓，开发",
+      "sceneMeaning": "拓荒者；先驱者；开拓，开发",
+      "examples": "[]"
+    },
+    {
+      "word": "policeman",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'lismən",
+      "phoneticUk": "pə'liːsmən",
+      "translation": "警察",
+      "sceneMeaning": "警察",
+      "examples": "[]"
+    },
+    {
+      "word": "princess",
+      "partOfSpeech": "n",
+      "phoneticUs": "prɪnˌsɛs",
+      "phoneticUk": "prɪn'ses",
+      "translation": "公主，王妃",
+      "sceneMeaning": "公主，王妃",
+      "examples": "[]"
+    },
+    {
+      "word": "pupil",
+      "partOfSpeech": "n",
+      "phoneticUs": "pjupl",
+      "phoneticUk": "'pjuːpɪl; -p(ə)l",
+      "translation": "学生，小学生",
+      "sceneMeaning": "小学生；学生",
+      "examples": "[]"
+    },
+    {
+      "word": "specialize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'spɛʃəlaɪz",
+      "phoneticUk": "'speʃəlaiz",
+      "translation": "成为…专家；专攻；专业从事",
+      "sceneMeaning": "成为…专家；专攻；专业从事",
+      "examples": "[]"
+    },
+    {
+      "word": "widow",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wɪdo",
+      "phoneticUk": "'wɪdəʊ",
+      "translation": "寡妇",
+      "sceneMeaning": "寡妇",
+      "examples": "[]"
+    }
+  ]
+}

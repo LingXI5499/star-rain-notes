@@ -1,0 +1,375 @@
+{
+  "slug": "wechat-mini-program",
+  "title": "微信小程序",
+  "description": "面向 Java 后端开发者的小程序教程，覆盖 WXML/WXSS/JSON 配置、组件与生命周期、网络请求、存储、微信登录、支付、文件、地图、实时通知、性能和发布流程。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-09-23",
+  "chapterCount": 40,
+  "wordCount": 20809,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "平台、工具与 JSON 配置",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "小程序定位、宿主环境与 H5/Vue 区别",
+          "description": "本章属于「微信小程序 / 平台、工具与 JSON 配置」，围绕「小程序定位、宿主环境与 H5/Vue 区别」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-1-1/",
+          "wordCount": 545,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "账号、AppID、开发者工具、模拟器与真机",
+          "description": "本章属于「微信小程序 / 平台、工具与 JSON 配置」，围绕「账号、AppID、开发者工具、模拟器与真机」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-1-2/",
+          "wordCount": 551,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "app.js、app.json、app.wxss、pages、components",
+          "description": "本章属于「微信小程序 / 平台、工具与 JSON 配置」，围绕「app.js、app.json、app.wxss、pages、components」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-1-3/",
+          "wordCount": 611,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "app.json、page.json、project.config.json",
+          "description": "本章属于「微信小程序 / 平台、工具与 JSON 配置」，围绕「app.json、page.json、project.config.json」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-1-4/",
+          "wordCount": 602,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "逻辑层、渲染层、双线程模型与通信桥",
+          "description": "本章属于「微信小程序 / 平台、工具与 JSON 配置」，围绕「逻辑层、渲染层、双线程模型与通信桥」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-1-5/",
+          "wordCount": 539,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "WXML、WXSS 与页面渲染",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "WXML 数据绑定与模板语法",
+          "description": "本章属于「微信小程序 / WXML、WXSS 与页面渲染」，围绕「WXML 数据绑定与模板语法」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-2-1/",
+          "wordCount": 529,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "wx:if、hidden、wx:for、wx:key",
+          "description": "本章属于「微信小程序 / WXML、WXSS 与页面渲染」，围绕「wx:if、hidden、wx:for、wx:key」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-2-2/",
+          "wordCount": 568,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "WXSS、rpx、全局与页面样式",
+          "description": "本章属于「微信小程序 / WXML、WXSS 与页面渲染」，围绕「WXSS、rpx、全局与页面样式」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-2-3/",
+          "wordCount": 538,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "Template、WXS 的定位与边界",
+          "description": "本章属于「微信小程序 / WXML、WXSS 与页面渲染」，围绕「Template、WXS 的定位与边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-2-4/",
+          "wordCount": 544,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "data、setData 与渲染性能",
+          "description": "本章属于「微信小程序 / WXML、WXSS 与页面渲染」，围绕「data、setData 与渲染性能」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-2-5/",
+          "wordCount": 541,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "事件、生命周期与组件",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "bind、catch、capture",
+          "description": "本章属于「微信小程序 / 事件、生命周期与组件」，围绕「bind、catch、capture」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-3-1/",
+          "wordCount": 540,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "Page 生命周期",
+          "description": "本章属于「微信小程序 / 事件、生命周期与组件」，围绕「Page 生命周期」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-3-2/",
+          "wordCount": 510,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "App 生命周期",
+          "description": "本章属于「微信小程序 / 事件、生命周期与组件」，围绕「App 生命周期」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-3-3/",
+          "wordCount": 507,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "Component properties、data、methods、lifetimes",
+          "description": "本章属于「微信小程序 / 事件、生命周期与组件」，围绕「Component properties、data、methods、lifetimes」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-3-4/",
+          "wordCount": 612,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "triggerEvent、slot 与组件通信",
+          "description": "本章属于「微信小程序 / 事件、生命周期与组件」，围绕「triggerEvent、slot 与组件通信」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-3-5/",
+          "wordCount": 552,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "导航、TabBar、状态与存储",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "navigateTo、redirectTo、switchTab、reLaunch、navigateBack",
+          "description": "本章属于「微信小程序 / 导航、TabBar、状态与存储」，围绕「navigateTo、redirectTo、switchTab、reLaunch、navigateBack」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-4-1/",
+          "wordCount": 650,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "页面栈、参数与返回传值",
+          "description": "本章属于「微信小程序 / 导航、TabBar、状态与存储」，围绕「页面栈、参数与返回传值」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-4-2/",
+          "wordCount": 524,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "TabBar 与导航结构",
+          "description": "本章属于「微信小程序 / 导航、TabBar、状态与存储」，围绕「TabBar 与导航结构」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-4-3/",
+          "wordCount": 524,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "Storage 同步 / 异步 API",
+          "description": "本章属于「微信小程序 / 导航、TabBar、状态与存储」，围绕「Storage 同步 / 异步 API」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-4-4/",
+          "wordCount": 536,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "全局状态、页面状态与刷新策略",
+          "description": "本章属于「微信小程序 / 导航、TabBar、状态与存储」，围绕「全局状态、页面状态与刷新策略」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-4-5/",
+          "wordCount": 533,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "网络、API 与文件",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "wx.request 与 HTTP/JSON",
+          "description": "本章属于「微信小程序 / 网络、API 与文件」，围绕「wx.request 与 HTTP/JSON」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-5-1/",
+          "wordCount": 545,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "请求工具封装、baseURL、header 与统一错误",
+          "description": "本章属于「微信小程序 / 网络、API 与文件」，围绕「请求工具封装、baseURL、header 与统一错误」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-5-2/",
+          "wordCount": 563,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "Token 注入、登录失效与重试边界",
+          "description": "本章属于「微信小程序 / 网络、API 与文件」，围绕「Token 注入、登录失效与重试边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-5-3/",
+          "wordCount": 536,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "chooseMedia、uploadFile 与 MultipartFile",
+          "description": "本章属于「微信小程序 / 网络、API 与文件」，围绕「chooseMedia、uploadFile 与 MultipartFile」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-5-4/",
+          "wordCount": 593,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "downloadFile、openDocument 与文件业务",
+          "description": "本章属于「微信小程序 / 网络、API 与文件」，围绕「downloadFile、openDocument 与文件业务」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-5-5/",
+          "wordCount": 575,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "微信登录、鉴权与支付",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "wx.login code → Java 后端 → 微信服务",
+          "description": "本章属于「微信小程序 / 微信登录、鉴权与支付」，围绕「wx.login code → Java 后端 → 微信服务」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-6-1/",
+          "wordCount": 558,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "openid、unionid、session_key",
+          "description": "本章属于「微信小程序 / 微信登录、鉴权与支付」，围绕「openid、unionid、session_key」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-6-2/",
+          "wordCount": 564,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "业务用户、Token、用户上下文与鉴权",
+          "description": "本章属于「微信小程序 / 微信登录、鉴权与支付」，围绕「业务用户、Token、用户上下文与鉴权」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-6-3/",
+          "wordCount": 543,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "微信支付预支付、调起、回调、验签与幂等概览",
+          "description": "本章属于「微信小程序 / 微信登录、鉴权与支付」，围绕「微信支付预支付、调起、回调、验签与幂等概览」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-6-4/",
+          "wordCount": 549,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "手机号 / 用户信息等敏感能力与隐私授权",
+          "description": "本章属于「微信小程序 / 微信登录、鉴权与支付」，围绕「手机号 / 用户信息等敏感能力与隐私授权」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-6-5/",
+          "wordCount": 540,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "平台能力、性能与隐私",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "Location、Map 与授权",
+          "description": "本章属于「微信小程序 / 平台能力、性能与隐私」，围绕「Location、Map 与授权」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-7-1/",
+          "wordCount": 531,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "扫码、电话、剪贴板、订阅消息",
+          "description": "本章属于「微信小程序 / 平台能力、性能与隐私」，围绕「扫码、电话、剪贴板、订阅消息」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-7-2/",
+          "wordCount": 528,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "主包、分包与按需加载",
+          "description": "本章属于「微信小程序 / 平台能力、性能与隐私」，围绕「主包、分包与按需加载」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-7-3/",
+          "wordCount": 516,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "启动、setData、图片、列表与网络性能",
+          "description": "本章属于「微信小程序 / 平台能力、性能与隐私」，围绕「启动、setData、图片、列表与网络性能」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-7-4/",
+          "wordCount": 549,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "隐私协议、权限声明、审核与兼容性",
+          "description": "本章属于「微信小程序 / 平台能力、性能与隐私」，围绕「隐私协议、权限声明、审核与兼容性」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-7-5/",
+          "wordCount": 534,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "外卖项目实战、实时通信与发布",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "店铺状态、分类、菜品与套餐浏览",
+          "description": "本章属于「微信小程序 / 外卖项目实战、实时通信与发布」，围绕「店铺状态、分类、菜品与套餐浏览」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-8-1/",
+          "wordCount": 535,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "购物车、地址簿、订单确认与提交",
+          "description": "本章属于「微信小程序 / 外卖项目实战、实时通信与发布」，围绕「购物车、地址簿、订单确认与提交」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-8-2/",
+          "wordCount": 535,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "订单状态、催单与 WebSocket / 实时通知",
+          "description": "本章属于「微信小程序 / 外卖项目实战、实时通信与发布」，围绕「订单状态、催单与 WebSocket / 实时通知」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-8-3/",
+          "wordCount": 556,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "开发版、体验版、审核版、线上版",
+          "description": "本章属于「微信小程序 / 外卖项目实战、实时通信与发布」，围绕「开发版、体验版、审核版、线上版」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-8-4/",
+          "wordCount": 535,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "小程序 → Spring Boot → MySQL 全链路秋招验收",
+          "description": "本章属于「微信小程序 / 外卖项目实战、实时通信与发布」，围绕「小程序 → Spring Boot → MySQL 全链路秋招验收」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/wechat-mini-program/chapter-8-5/",
+          "wordCount": 571,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/wechat-mini-program/",
+  "sortOrder": 21
+}

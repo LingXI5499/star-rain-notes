@@ -1,0 +1,126 @@
+{
+  "id": "60",
+  "title": "写作 / 翻译 / 口语高频表达系统",
+  "layer": "语言系统层",
+  "wordCount": 13,
+  "path": "/english/vocabulary/60/",
+  "words": [
+    {
+      "word": "actually",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'æktʃuəli",
+      "phoneticUk": "'æktjʊəlɪ; -tʃʊ-",
+      "translation": "实际上；竟然",
+      "sceneMeaning": "实际上；其实",
+      "examples": "[]"
+    },
+    {
+      "word": "especially",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪ'spɛʃəli",
+      "phoneticUk": "ɪ'speʃ(ə)lɪ; e-",
+      "translation": "特别，尤其，格外",
+      "sceneMeaning": "尤其；特别",
+      "examples": "[]"
+    },
+    {
+      "word": "besides",
+      "partOfSpeech": "adv",
+      "phoneticUs": "bɪ'saɪdz",
+      "phoneticUk": "bɪ'saɪdz",
+      "translation": "而且prep除…之外",
+      "sceneMeaning": "此外；而且",
+      "examples": "[]"
+    },
+    {
+      "word": "therefore",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ðɛrfɔr",
+      "phoneticUk": "'ðeəfɔː",
+      "translation": "因此，所以",
+      "sceneMeaning": "因此",
+      "examples": "[]"
+    },
+    {
+      "word": "consequently",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'kɑnsəkwɛntli",
+      "phoneticUk": "'kɒnsɪkw(ə)ntlɪ",
+      "translation": "因此，因而，所以；结果",
+      "sceneMeaning": "因此；结果",
+      "examples": "[]"
+    },
+    {
+      "word": "thus",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ðʌs",
+      "phoneticUk": "ðʌs",
+      "translation": "如此，这样；因而",
+      "sceneMeaning": "因此；由此",
+      "examples": "[]"
+    },
+    {
+      "word": "furthermore",
+      "partOfSpeech": "adv",
+      "phoneticUs": ",fɝðɚ'mɔr",
+      "phoneticUk": "fɜːðə'mɔː",
+      "translation": "而且，此外",
+      "sceneMeaning": "此外；而且",
+      "examples": "[]"
+    },
+    {
+      "word": "hence",
+      "partOfSpeech": "adv",
+      "phoneticUs": "hɛns",
+      "phoneticUk": "hens",
+      "translation": "因此，所以；今后",
+      "sceneMeaning": "因此；所以",
+      "examples": "[]"
+    },
+    {
+      "word": "likewise",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'laɪkwaɪz",
+      "phoneticUk": "'laɪkwaɪz",
+      "translation": "同样地；也，又",
+      "sceneMeaning": "同样地",
+      "examples": "[]"
+    },
+    {
+      "word": "meanwhile",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'minwaɪl",
+      "phoneticUk": "'miːnwaɪl",
+      "translation": "同时，当时",
+      "sceneMeaning": "与此同时",
+      "examples": "[]"
+    },
+    {
+      "word": "moreover",
+      "partOfSpeech": "adv",
+      "phoneticUs": "mɔr'ovɚ",
+      "phoneticUk": "mɔːr'əʊvə",
+      "translation": "再者，加之，此外",
+      "sceneMeaning": "此外；而且",
+      "examples": "[]"
+    },
+    {
+      "word": "nevertheless",
+      "partOfSpeech": "adv / conj",
+      "phoneticUs": ",nɛvɚðə'lɛs",
+      "phoneticUk": "nevəðə'les",
+      "translation": "然而；仍然",
+      "sceneMeaning": "然而；尽管如此",
+      "examples": "[]"
+    },
+    {
+      "word": "similarly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'sɪməlɚli",
+      "phoneticUk": "",
+      "translation": "类似地，相似地",
+      "sceneMeaning": "类似地",
+      "examples": "[]"
+    }
+  ]
+}

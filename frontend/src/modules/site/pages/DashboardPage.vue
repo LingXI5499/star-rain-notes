@@ -83,11 +83,7 @@ function statusLabel(item) {
   return item.status || '未知'
 }
 
-/*
- * 最近内容的编辑地址。三条路径都走 accountPath，不再写死 `/useradmin/...`：
- * 账号树前缀只允许在 viewMode.js 里存在一处，写死在页面里的话，
- * 一旦前缀调整（或将来支持多入口），这里会静默指向不存在的地址。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 function editorPath(item) {
   if (item.type === 'TUTORIAL') return accountPath(`/tutorials/editor/${item.id}`)
   if (item.type === 'PORTFOLIO') return accountPath(`/portfolio/editor/${item.id}`)

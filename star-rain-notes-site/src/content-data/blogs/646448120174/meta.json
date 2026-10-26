@@ -1,0 +1,25 @@
+{
+  "slug": "646448120174",
+  "title": "一次点击到底发生了什么？Java 全栈请求从浏览器到 MySQL 的完整链路",
+  "description": "学习 Java 全栈时，我们往往会分别接触 Vue、HTTP、Nginx、Spring Boot、Spring MVC、Controller、Service、MyBatis、MySQL、Redis、消息队列等技术。真正困难的并不是记住这些名词，而是理解它们在一个真实项目中如何连接。本文沿着一次真实用户操作，把“打开网站”和“调用后端 API”两条链路串起来：从浏览器、网络、Nginx、Tomcat、Spring MVC，到 Controller、Service、MyBatis、JDBC、MySQL，再返回 Vue 页面；同时把 Redis、MQ、WebSocket、定时任务、安全、事务、异常处理与可观察性放回它们真正所在的位置。",
+  "publishedAt": "2026-09-25",
+  "updatedAt": "2026-10-09",
+  "wordCount": 11799,
+  "tags": [
+    {
+      "slug": "java-2",
+      "name": "Java全栈"
+    },
+    {
+      "slug": "tag-aa31322d4f8e",
+      "name": "前后端联调"
+    }
+  ],
+  "topics": [
+    {
+      "slug": "java-web",
+      "name": "Java Web 系统架构原理与演进"
+    }
+  ],
+  "path": "/blog/posts/646448120174/"
+}

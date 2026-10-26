@@ -1,0 +1,21 @@
+node_modules/
+dist/
+.astro/
+.cache/
+artifacts/
+.env
+*.log
+# Local one-time source conversion scripts and diagnostic reports are not releases.
+/scripts/gen_tutorials.py
+/scripts/parse_algorithm.py
+/scripts/parse_network.py
+/scripts/set_tutorial_order.py
+/scripts/split_enterprise.py
+/docs/lighthouse-*.report.*
+/docs/*-preview.jpg
+/docs/*-preview.png
+/docs/tutorials-preview.png
+/docs/reference-style-manifest.json
+/docs/runtime-verification.json
+/docs/asset-report.json
+/docs/download-report.json

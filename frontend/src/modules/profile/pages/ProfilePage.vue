@@ -20,29 +20,7 @@ import { getPublicTutorial } from '../../tutorial/api/tutorialApi'
 import CareerSnapshot from '../components/CareerSnapshot.vue'
 import TechFlow from '../components/TechFlow.vue'
 
-/*
- * 公开「关于」页 —— 逐块对齐 V1 `views/about/AboutView.vue` 的信息架构：
- *
- *   主视觉（主题插画 + 圆形羽化头像 + 眉标/姓名/headline/bio 摘要/标语/操作按钮）
- *   → CURRENT / DIRECTION / FEATURED / STATUS 四格速览
- *   → 此刻关注（CURRENT FOCUS 标签流）
- *   → sticky 章节胶囊导航（01…06）
- *   → 代表作品（首项跨栏大卡）
- *   → 双栏阅读区（左 ON THIS PAGE 锚点 + 右 技术方向 / 学习与实践 / 知识内容）
- *   → 个人说明（PERSONAL NOTE）
- *   → 保持联系（LET'S KEEP IN TOUCH）
- *   → 编辑原则引言块（EDITORIAL PRINCIPLE）
- *
- * 与 V1 的差别只有数据来源，V1 一次 `fetchPublicAbout()` 拿到的是一份**为关于页定制的聚合**
- * （selectedProjects / selectedTutorials / selectedBlogs / technicalDirectionMarkdown /
- * journeyMarkdown / currentFocus / publicEmail / githubUrl / resumeUrl）；
- * V2 的 `/public/profile` 只给「作者档案」本身：
- * displayName / headline / bioMarkdown / avatarUrl / locationText / resumeUrl /
- * experiences / skills / socialLinks / featuredContents。
- * V2 没有的字段一律不编造，降级方式见下面各处中文注释。
- *
- * 链接一律走 `contentPath`：账号树（/useradmin）下同一页要落在账号树前缀里。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 /**
  * 资料；通过 ref 建立。

@@ -73,7 +73,7 @@ ZIP 旁的 `.sha256` 用于上传后校验 ZIP；解压后在包根目录执行 
 - `/api/` 转发 `http://127.0.0.1:8088`；原样保留 Cookie、CSRF 头，设置 Host、X-Forwarded-Proto。
 - `X-Forwarded-For` 使用 `$remote_addr` **覆盖**外来值，不使用任意客户端提供的值；不扩大 Tomcat 可信代理范围。
 - `/assets/`、`/brand/`、`/legal/` 从 dist 提供，缺失文件返回 404；`/assets/` 不能回退为 HTML。
-- `/useradmin`、英语、协议、搜索、作品原型 live 页面使用 SPA 回退；公开首页/教程/博客/作品、robots、sitemap 交给后端 SEO，保留真实 404。
+- 账号及管理路由（如 `/login`、`/center`、`/learning`、`/blog/manage`）、英语、协议、搜索、作品原型 live 页面使用 SPA 回退；公开首页/教程/博客/作品、robots、sitemap 交给后端 SEO，保留真实 404。
 - 媒体只能经过 `/api` 权限入口，不能公开整个媒体目录；管理端口和 `/actuator/` 不代理到公网。
 
 检查并重载：`nginx -t` 成功后才运行 `systemctl reload nginx`，宝塔也可使用面板的配置检查/重载。若现有部署还有其他可信代理、CDN或多机链路，此模板不直接适用，应先核对真实边界，不能直接扩大 XFF 信任。
@@ -113,7 +113,7 @@ curl --fail https://notes.example.com/api/public/site/config
 1. 匿名教程/博客/作品可读；不存在的公开内容仍为 404。
 2. 登录前后 Session ID 变化；Cookie 为 Secure、HttpOnly、SameSite=Lax；刷新后仍登录。
 3. 个人中心修改显示名，缺失/错误 CSRF 写入被拒绝；正常登出后个人接口 401。
-4. 测试邮箱完成验证码注册和找回；邮件链接为实际 HTTPS 域名下 `/useradmin/reset-password`；旧密码/旧会话失效。
+4. 测试邮箱完成验证码注册和找回；邮件链接为实际 HTTPS 域名下 `/reset-password`；旧密码/旧会话失效。
 5. 超管查询账户、邀请/撤销/接受管理员、启停测试账号；普通用户直接访问管理员接口 403；最后一名超管不能停用。
 6. 编辑器输入、手动保存、上传和媒体读取正常；有本地恢复稿退出时有明确选择，清理失败提示可重试。
 7. 确认 8088、MySQL 与管理端口未直接对公网开放，宝塔面板访问受限；伪造 XFF 不能改变真实源 IP。
@@ -125,3 +125,9 @@ curl --fail https://notes.example.com/api/public/site/config
 停止新写入与应用，切回保留的旧 JAR/dist 和匹配配置。新增限流表可以保留，禁止删除 Flyway 历史。新队列中未物化的 `RESET_REQUEST` 不能交给旧工作器，回退前应在新版本排空；无法排空时按已验证备份恢复方案处理，不删除邮件来假装成功。需要回退数据库状态时，使用升级前备份，并明确备份之后新数据如何处理。
 
 本地已通过的 844 项后端、411 项前端、32 项浏览器回归、6 项真实后端浏览器测试及本地恢复记录见包内报告。正式环境 HTTPS/Nginx、外部 SMTP、真实 CI、生产数据备份恢复和实际硬件验收仍须记录。全部门槛完成并由站点维护者确认后，才将状态从 Freeze Candidate 改为 FROZEN。
+
+## 路由统一后的部署补充
+
+使用当前 `nginx-site.example.conf` 的 location 顺序，替换旧前缀 SPA 规则：旧地址 308 重定向 → 静态资源真实 404 → 认证/个人/后台 SPA → 作品 live SPA → 公开英语/协议/搜索 SPA → 后端公开 SEO。管理页 `/blog/manage`、`/tutorials/manage`、`/portfolio/manage` 及编辑/预览/章节管理路径必须先于公开内容网关；不能仅删除旧规则。SPA 直接读取 index 文件，避免内部跳转丢失私有页的 X-Robots-Tag。
+
+新重置邮件为 `/reset-password?token=...`，新邀请邮件为 `/invitation/accept?token=...`；异步发件箱同样使用新路径。已有旧链接保留兼容。只在用户批准实际部署后应用配置，先 `nginx -t` 再 reload，并核对公开 HTML、真实 404、规范跳转及 query/hash；详细清单见 [路由统一说明](route-unification.md)。

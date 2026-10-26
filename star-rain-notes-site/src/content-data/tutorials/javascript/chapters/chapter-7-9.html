@@ -1,0 +1,10 @@
+<p><strong>核心：</strong> ES Modules 用 <code>export</code> 暴露变量/函数，用 <code>import</code> 在其他文件中复用。</p>
+<p><strong>最小示例：</strong>
+<code>math.js</code></p>
+<pre><code class="language-js">export const add = (a, b) =&gt; a + b;
+</code></pre>
+<p><code>main.js</code></p>
+<pre><code class="language-js">import { add } from './math.js';
+console.log(add(1, 2)); // 3
+</code></pre>
+<p><strong>学完能做：</strong> 用 export/import 拆分和复用模块。</p>

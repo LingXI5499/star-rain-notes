@@ -1,0 +1,1350 @@
+{
+  "id": "48",
+  "title": "因果 / 条件 / 目的 / 结果",
+  "layer": "抽象阅读与逻辑层",
+  "wordCount": 149,
+  "path": "/english/vocabulary/48/",
+  "words": [
+    {
+      "word": "means",
+      "partOfSpeech": "n",
+      "phoneticUs": "minz",
+      "phoneticUk": "miːnz",
+      "translation": "方法，手段，工具；方法",
+      "sceneMeaning": "手段；方法",
+      "examples": "[]"
+    },
+    {
+      "word": "potential",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "pə'tɛnʃl",
+      "phoneticUk": "pəˈtenʃl",
+      "translation": "潜在的；潜力；有可能的；潜在的",
+      "sceneMeaning": "潜在的；可能的",
+      "examples": "[]"
+    },
+    {
+      "word": "impact",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'pækt",
+      "phoneticUk": "'ɪmpækt",
+      "translation": "影响，作用；冲击；影响",
+      "sceneMeaning": "影响；冲击",
+      "examples": "[]"
+    },
+    {
+      "word": "process",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɑsɛs",
+      "phoneticUk": "'prəʊses",
+      "translation": "过程；工序；加工；过程，进程；；工序；工艺流程；处理",
+      "sceneMeaning": "过程；流程",
+      "examples": "[]"
+    },
+    {
+      "word": "require",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'kwaɪr",
+      "phoneticUk": "rɪ'kwaɪə",
+      "translation": "需要；要求，命令；要求，命令",
+      "sceneMeaning": "需要；要求",
+      "examples": "[]"
+    },
+    {
+      "word": "avoid",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'vɔɪd",
+      "phoneticUk": "ə'vɒɪd",
+      "translation": "避免，躲开；撤消；避免",
+      "sceneMeaning": "避免；防止",
+      "examples": "[]"
+    },
+    {
+      "word": "effect",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'fɛkt",
+      "phoneticUk": "ɪ'fekt",
+      "translation": "结果；效果，效力；影响",
+      "sceneMeaning": "效果；影响",
+      "examples": "[]"
+    },
+    {
+      "word": "ensure",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'ʃʊr",
+      "phoneticUk": "ɪn'ʃɔː; -'ʃʊə; en-",
+      "translation": "保证；保护；赋予；确保",
+      "sceneMeaning": "确保；保证",
+      "examples": "[]"
+    },
+    {
+      "word": "source",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɔrs",
+      "phoneticUk": "sɔːs",
+      "translation": "来源",
+      "sceneMeaning": "来源；根源",
+      "examples": "[]"
+    },
+    {
+      "word": "allow",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'laʊ",
+      "phoneticUk": "ə'laʊ",
+      "translation": "允许，准许；任",
+      "sceneMeaning": "允许；使可能",
+      "examples": "[]"
+    },
+    {
+      "word": "as",
+      "partOfSpeech": "conj",
+      "phoneticUs": "æz,əz",
+      "phoneticUk": "æz; əz",
+      "translation": "当…的时候",
+      "sceneMeaning": "因为；当……时；作为",
+      "examples": "[]"
+    },
+    {
+      "word": "because",
+      "partOfSpeech": "conj",
+      "phoneticUs": "bɪ'kɔz",
+      "phoneticUk": "bɪ'kɒz",
+      "translation": "由于，因为",
+      "sceneMeaning": "因为",
+      "examples": "[]"
+    },
+    {
+      "word": "case",
+      "partOfSpeech": "n",
+      "phoneticUs": "kes",
+      "phoneticUk": "keɪs",
+      "translation": "情况；事实；病例",
+      "sceneMeaning": "情况；案例；条件",
+      "examples": "[]"
+    },
+    {
+      "word": "cause",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔz",
+      "phoneticUk": "kɔːz",
+      "translation": "原因，理由；事业",
+      "sceneMeaning": "原因；事业",
+      "examples": "[]"
+    },
+    {
+      "word": "certain",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɝtn",
+      "phoneticUk": "'sɜːt(ə)n; -tɪn",
+      "translation": "确实的；肯定的",
+      "sceneMeaning": "确实的；肯定的；本场景常见用法：一定的效果；确定效应",
+      "examples": "[]"
+    },
+    {
+      "word": "create",
+      "partOfSpeech": "v",
+      "phoneticUs": "krɪ'et",
+      "phoneticUk": "kriː'eɪt",
+      "translation": "创造；引起，产生",
+      "sceneMeaning": "创造；造成",
+      "examples": "[]"
+    },
+    {
+      "word": "environment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vaɪrənmənt",
+      "phoneticUk": "ɪn'vaɪrənm(ə)nt; en-",
+      "translation": "环境，外界；围绕",
+      "sceneMeaning": "环境；条件",
+      "examples": "[]"
+    },
+    {
+      "word": "generation",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒɛnə'reʃən",
+      "phoneticUk": "dʒenə'reɪʃ(ə)n",
+      "translation": "一代，一代人；产生；一代人；产生",
+      "sceneMeaning": "一代，一代人；产生；一代人；产生",
+      "examples": "[]"
+    },
+    {
+      "word": "happen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'hæpən",
+      "phoneticUk": "'hæp(ə)n",
+      "translation": "发生；碰巧，恰好",
+      "sceneMeaning": "发生；碰巧，恰好",
+      "examples": "[]"
+    },
+    {
+      "word": "help",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hɛlp",
+      "phoneticUk": "help",
+      "translation": "帮助；援助；帮手",
+      "sceneMeaning": "帮助；援助；帮手",
+      "examples": "[]"
+    },
+    {
+      "word": "how",
+      "partOfSpeech": "adv",
+      "phoneticUs": "haʊ",
+      "phoneticUk": "haʊ",
+      "translation": "怎么；怎样；多少",
+      "sceneMeaning": "怎么；怎样；多少",
+      "examples": "[]"
+    },
+    {
+      "word": "influence",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɪnfluəns",
+      "phoneticUk": "'ɪnflʊəns",
+      "translation": "影响；势力；影响",
+      "sceneMeaning": "影响；作用",
+      "examples": "[]"
+    },
+    {
+      "word": "lead",
+      "partOfSpeech": "n",
+      "phoneticUs": "lid",
+      "phoneticUk": "liːd",
+      "translation": "铅，铅制品",
+      "sceneMeaning": "导致；引导",
+      "examples": "[]"
+    },
+    {
+      "word": "necessary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈnɛsəˌsɛri",
+      "phoneticUk": "ˈnɛsɪsərɪ",
+      "translation": "必要的；必然的",
+      "sceneMeaning": "必要的；必需的",
+      "examples": "[]"
+    },
+    {
+      "word": "need",
+      "partOfSpeech": "v",
+      "phoneticUs": "nid",
+      "phoneticUk": "niːd",
+      "translation": "需要；aux需要",
+      "sceneMeaning": "需要；必须",
+      "examples": "[]"
+    },
+    {
+      "word": "produce",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'dus",
+      "phoneticUk": "prə'djuːs",
+      "translation": "生产；产生；展现",
+      "sceneMeaning": "产生；生产",
+      "examples": "[]"
+    },
+    {
+      "word": "product",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑdʌkt",
+      "phoneticUk": "'prɒdʌkt",
+      "translation": "产品，产物；(乘)积",
+      "sceneMeaning": "产物；结果；产品",
+      "examples": "[]"
+    },
+    {
+      "word": "provide",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'vaɪd",
+      "phoneticUk": "prə'vaɪd",
+      "translation": "提供；装备，供给",
+      "sceneMeaning": "提供；装备，供给；本场景常见用法：规定禁止；预防",
+      "examples": "[]"
+    },
+    {
+      "word": "reason",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ˈrizən",
+      "phoneticUk": "'riːz(ə)n",
+      "translation": "理由；理性；推理",
+      "sceneMeaning": "理由；原因",
+      "examples": "[]"
+    },
+    {
+      "word": "relationship",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'leʃən'ʃɪp",
+      "phoneticUk": "rɪ'leɪʃ(ə)nʃɪp",
+      "translation": "关系，联系",
+      "sceneMeaning": "关系；关联",
+      "examples": "[]"
+    },
+    {
+      "word": "affect",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'fɛkt",
+      "phoneticUk": "ə'fekt",
+      "translation": "影响；感动",
+      "sceneMeaning": "影响；作用于",
+      "examples": "[]"
+    },
+    {
+      "word": "necessarily",
+      "partOfSpeech": "adv",
+      "phoneticUs": ",nɛsə'sɛrəli",
+      "phoneticUk": "'nesəs(ə)rɪlɪ; ,nesə'serɪlɪ",
+      "translation": "必然，必定",
+      "sceneMeaning": "必然，必定",
+      "examples": "[]"
+    },
+    {
+      "word": "pressure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛʃɚ",
+      "phoneticUk": "'preʃə",
+      "translation": "压力；压力；压，按",
+      "sceneMeaning": "压力；促因",
+      "examples": "[]"
+    },
+    {
+      "word": "situation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",sɪtʃu'eʃən",
+      "phoneticUk": "ˌsɪtʃuˈeɪʃn",
+      "translation": "情况",
+      "sceneMeaning": "情况；局面",
+      "examples": "[]"
+    },
+    {
+      "word": "approach",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'protʃ",
+      "phoneticUk": "ə'prəʊtʃ",
+      "translation": "向…靠近；靠近；方法",
+      "sceneMeaning": "方法；途径",
+      "examples": "[]"
+    },
+    {
+      "word": "attract",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'trækt",
+      "phoneticUk": "ə'trækt",
+      "translation": "吸引；引起，诱惑",
+      "sceneMeaning": "吸引；引起，诱惑",
+      "examples": "[]"
+    },
+    {
+      "word": "seek",
+      "partOfSpeech": "v",
+      "phoneticUs": "sik",
+      "phoneticUk": "siːk",
+      "translation": "寻找，探索；试图",
+      "sceneMeaning": "寻求；试图",
+      "examples": "[]"
+    },
+    {
+      "word": "condition",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'dɪʃən",
+      "phoneticUk": "kən'dɪʃ(ə)n",
+      "translation": "状况，状态；环境",
+      "sceneMeaning": "条件；状况",
+      "examples": "[]"
+    },
+    {
+      "word": "limit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪmɪt",
+      "phoneticUk": "'lɪmɪt",
+      "translation": "限度；限制；范围",
+      "sceneMeaning": "限制；界限",
+      "examples": "[]"
+    },
+    {
+      "word": "motivate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'motə'vet",
+      "phoneticUk": "'məʊtɪveɪt",
+      "translation": "促动；激励，激发；促动，激发，诱导",
+      "sceneMeaning": "促动；激励，激发；促动，激发，诱导",
+      "examples": "[]"
+    },
+    {
+      "word": "accident",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æksədənt",
+      "phoneticUk": "'æksɪdənt",
+      "translation": "意外的；事故",
+      "sceneMeaning": "意外的；事故",
+      "examples": "[]"
+    },
+    {
+      "word": "direct",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪˈrɛkt; daɪˈrɛkt",
+      "phoneticUk": "dəˈrekt; daɪˈrekt",
+      "translation": "直接的；直率的",
+      "sceneMeaning": "直接的",
+      "examples": "[]"
+    },
+    {
+      "word": "facility",
+      "partOfSpeech": "n",
+      "phoneticUs": "fə'sɪləti",
+      "phoneticUk": "fə'sɪləti",
+      "translation": "设备；容易；便利；设施",
+      "sceneMeaning": "设备；容易；便利；设施；本场景常见用法：生产设备，生产设施",
+      "examples": "[]"
+    },
+    {
+      "word": "generate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dʒɛnəret",
+      "phoneticUk": "'dʒenəreɪt",
+      "translation": "发生；引起；生殖；产生",
+      "sceneMeaning": "产生；生成",
+      "examples": "[]"
+    },
+    {
+      "word": "leadership",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lidɚʃɪp",
+      "phoneticUk": "'liːdəʃɪp",
+      "translation": "领导",
+      "sceneMeaning": "领导；本场景常见用法：教育领导",
+      "examples": "[]"
+    },
+    {
+      "word": "method",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛθəd",
+      "phoneticUk": "'meθəd",
+      "translation": "方法，办法；教学法",
+      "sceneMeaning": "方法；办法",
+      "examples": "[]"
+    },
+    {
+      "word": "prevent",
+      "partOfSpeech": "v",
+      "phoneticUs": "pri'vɛnt",
+      "phoneticUk": "prɪ'vent",
+      "translation": "预防，防止；阻止；预防",
+      "sceneMeaning": "阻止；预防",
+      "examples": "[]"
+    },
+    {
+      "word": "strategy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'strætədʒi",
+      "phoneticUk": "ˈstrætədʒɪ",
+      "translation": "战略；策略；策略，战略",
+      "sceneMeaning": "策略；战略",
+      "examples": "[]"
+    },
+    {
+      "word": "alternative",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɔl'tɝnətɪv",
+      "phoneticUk": "ɔːl'tɜːnətɪv; ɒl-",
+      "translation": "替换物；取舍，抉择；代替品",
+      "sceneMeaning": "替代选择；备选方案",
+      "examples": "[]"
+    },
+    {
+      "word": "basis",
+      "partOfSpeech": "n",
+      "phoneticUs": "'besɪs",
+      "phoneticUk": "'beɪsɪs",
+      "translation": "基础，根据",
+      "sceneMeaning": "基础；依据",
+      "examples": "[]"
+    },
+    {
+      "word": "contribute",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'trɪbjut",
+      "phoneticUk": "kən'trɪbjuːt; 'kɒntrɪbjuːt",
+      "translation": "捐献，捐助；投稿；捐款，贡献",
+      "sceneMeaning": "促成；贡献",
+      "examples": "[]"
+    },
+    {
+      "word": "design",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'zaɪn",
+      "phoneticUk": "dɪ'zaɪn",
+      "translation": "设计；设计；图样",
+      "sceneMeaning": "设计；意图",
+      "examples": "[]"
+    },
+    {
+      "word": "factor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktɚ",
+      "phoneticUk": "'fæktə",
+      "translation": "因素；因子，系数",
+      "sceneMeaning": "因素；要素",
+      "examples": "[]"
+    },
+    {
+      "word": "ground",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡraʊnd",
+      "phoneticUk": "graʊnd",
+      "translation": "地；场地；根据",
+      "sceneMeaning": "理由；地面",
+      "examples": "[]"
+    },
+    {
+      "word": "rely",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'laɪ",
+      "phoneticUk": "rɪ'laɪ",
+      "translation": "依赖，依靠；信赖",
+      "sceneMeaning": "依靠；依赖",
+      "examples": "[]"
+    },
+    {
+      "word": "stimulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'stɪmjə'let",
+      "phoneticUk": "'stɪmjʊleɪt",
+      "translation": "刺激，激励，激发；刺激",
+      "sceneMeaning": "刺激，激励，激发；刺激；本场景常见用法：刺激国内需求",
+      "examples": "[]"
+    },
+    {
+      "word": "universal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'jʊnə'vɝsl",
+      "phoneticUk": "juːnɪ'vɜːs(ə)l",
+      "translation": "宇宙的；普遍的；宇宙的，全世界的；普遍的",
+      "sceneMeaning": "宇宙的；普遍的；宇宙的，全世界的；普遍的；本场景常见用法：万有引力",
+      "examples": "[]"
+    },
+    {
+      "word": "interaction",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntə'rækʃən",
+      "phoneticUk": "ɪntər'ækʃ(ə)n",
+      "translation": "相互作用；干扰",
+      "sceneMeaning": "相互作用；互动",
+      "examples": "[]"
+    },
+    {
+      "word": "sufficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "səˈfɪʃənt",
+      "phoneticUk": "sə'fɪʃ(ə)nt",
+      "translation": "足够的，充分的；足够的",
+      "sceneMeaning": "充分的；足够的",
+      "examples": "[]"
+    },
+    {
+      "word": "therefore",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ðɛrfɔr",
+      "phoneticUk": "'ðeəfɔː",
+      "translation": "因此，所以",
+      "sceneMeaning": "因此；所以",
+      "examples": "[]"
+    },
+    {
+      "word": "derive",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'raɪv",
+      "phoneticUk": "dɪ'raɪv",
+      "translation": "取得；起源；得到，导出",
+      "sceneMeaning": "源自；获得",
+      "examples": "[]"
+    },
+    {
+      "word": "exception",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'sɛpʃən",
+      "phoneticUk": "ɪk'sepʃ(ə)n; ek-",
+      "translation": "例外，除外；例外",
+      "sceneMeaning": "例外；除外情况",
+      "examples": "[]"
+    },
+    {
+      "word": "original",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'rɪdʒənl",
+      "phoneticUk": "ə'rɪdʒɪn(ə)l; ɒ-",
+      "translation": "最初的；新颖的；原始的，最初的",
+      "sceneMeaning": "最初的；新颖的；原始的，最初的；本场景常见用法：初衷；原始意图",
+      "examples": "[]"
+    },
+    {
+      "word": "consequently",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'kɑnsəkwɛntli",
+      "phoneticUk": "'kɒnsɪkw(ə)ntlɪ",
+      "translation": "因此，因而，所以；结果",
+      "sceneMeaning": "因此；结果",
+      "examples": "[]"
+    },
+    {
+      "word": "lest",
+      "partOfSpeech": "conj",
+      "phoneticUs": "lɛst",
+      "phoneticUk": "lest",
+      "translation": "惟恐，以免",
+      "sceneMeaning": "惟恐，以免",
+      "examples": "[]"
+    },
+    {
+      "word": "associate",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'soʃɪet",
+      "phoneticUk": "ə'səʊʃɪeɪt; -sɪeɪt",
+      "translation": "交往；伙伴，同事；把……联系起来；交往；",
+      "sceneMeaning": "交往；伙伴，同事；把……联系起来；交往；",
+      "examples": "[]"
+    },
+    {
+      "word": "boost",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bʊst",
+      "phoneticUk": "bu:st",
+      "translation": "推动；促使，促进",
+      "sceneMeaning": "推动；促使，促进",
+      "examples": "[]"
+    },
+    {
+      "word": "magic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mædʒɪk",
+      "phoneticUk": "'mædʒɪk",
+      "translation": "魔法，巫术；戏法",
+      "sceneMeaning": "魔法，巫术；戏法；本场景常见用法：adv. 不可思议地",
+      "examples": "[]"
+    },
+    {
+      "word": "affection",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'fɛkʃən",
+      "phoneticUk": "ə'fekʃ(ə)n",
+      "translation": "慈爱，爱；爱慕",
+      "sceneMeaning": "慈爱，爱；爱慕",
+      "examples": "[]"
+    },
+    {
+      "word": "connection",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'nɛkʃən",
+      "phoneticUk": "kəˈnekʃn",
+      "translation": "连接，联系；连贯性",
+      "sceneMeaning": "联系；连接",
+      "examples": "[]"
+    },
+    {
+      "word": "consequence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnsəkwɛns",
+      "phoneticUk": "'kɒnsɪkw(ə)ns",
+      "translation": "结果，后果；结果，成果",
+      "sceneMeaning": "后果；结果",
+      "examples": "[]"
+    },
+    {
+      "word": "dependent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɪ'pɛndənt",
+      "phoneticUk": "di'pendənt",
+      "translation": "依靠的，依赖的",
+      "sceneMeaning": "依靠的，依赖的；本场景常见用法：依赖于；依靠",
+      "examples": "[]"
+    },
+    {
+      "word": "determine",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'tɝmɪn",
+      "phoneticUk": "dɪ'tɜːmɪn",
+      "translation": "决定；查明；决心；决定；下决心",
+      "sceneMeaning": "决定；确定",
+      "examples": "[]"
+    },
+    {
+      "word": "intend",
+      "partOfSpeech": "v / vt",
+      "phoneticUs": "ɪn'tɛnd",
+      "phoneticUk": "ɪn'tend",
+      "translation": "想要，打算；意指；打算",
+      "sceneMeaning": "打算；意图",
+      "examples": "[]"
+    },
+    {
+      "word": "objective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "əb'dʒɛktɪv",
+      "phoneticUk": "əb'dʒektɪv",
+      "translation": "客观的；无偏见的",
+      "sceneMeaning": "目标；目的",
+      "examples": "[]"
+    },
+    {
+      "word": "plan",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "plæn",
+      "phoneticUk": "plæn",
+      "translation": "计划，打算",
+      "sceneMeaning": "计划；方案",
+      "examples": "[]"
+    },
+    {
+      "word": "purpose",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɝpəs",
+      "phoneticUk": "'pɜːpəs",
+      "translation": "目的；意图；效果",
+      "sceneMeaning": "目的；意图",
+      "examples": "[]"
+    },
+    {
+      "word": "requirement",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'kwaɪɚmənt",
+      "phoneticUk": "rɪ'kwaɪəm(ə)nt",
+      "translation": "需要；要求",
+      "sceneMeaning": "要求；必要条件",
+      "examples": "[]"
+    },
+    {
+      "word": "usage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'jusɪdʒ",
+      "phoneticUk": "'juːsɪdʒ",
+      "translation": "使用，对待；惯用法",
+      "sceneMeaning": "使用，对待；惯用法；本场景常见用法：使用率",
+      "examples": "[]"
+    },
+    {
+      "word": "utility",
+      "partOfSpeech": "n",
+      "phoneticUs": "ju'tɪləti",
+      "phoneticUk": "juːˈtɪlɪtɪ",
+      "translation": "效用，有用，实用；公用事业〔如煤气、电力等〕",
+      "sceneMeaning": "效用；实用性",
+      "examples": "[]"
+    },
+    {
+      "word": "aim",
+      "partOfSpeech": "v",
+      "phoneticUs": "em",
+      "phoneticUk": "eɪm",
+      "translation": "瞄准，针对；致力",
+      "sceneMeaning": "目标；目的",
+      "examples": "[]"
+    },
+    {
+      "word": "arouse",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'raʊz",
+      "phoneticUk": "ə'raʊz",
+      "translation": "引起，唤起；唤醒",
+      "sceneMeaning": "引起，唤起；唤醒",
+      "examples": "[]"
+    },
+    {
+      "word": "association",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə,soʃɪ'eʃən",
+      "phoneticUk": "əsəʊsɪ'eɪʃ(ə)n; -ʃɪ-",
+      "translation": "协会，团体；联合",
+      "sceneMeaning": "关联；协会",
+      "examples": "[]"
+    },
+    {
+      "word": "attempt",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'tɛmpt",
+      "phoneticUk": "ə'tem(p)t",
+      "translation": "尝试，试图；企图",
+      "sceneMeaning": "尝试；企图",
+      "examples": "[]"
+    },
+    {
+      "word": "chain",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃen",
+      "phoneticUk": "tʃeɪn",
+      "translation": "链，链条，项圈",
+      "sceneMeaning": "链条；连锁",
+      "examples": "[]"
+    },
+    {
+      "word": "depend",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'pɛnd",
+      "phoneticUk": "dɪ'pend",
+      "translation": "依靠，依赖；相信",
+      "sceneMeaning": "依赖；取决于",
+      "examples": "[]"
+    },
+    {
+      "word": "goal",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡol",
+      "phoneticUk": "gəʊl",
+      "translation": "球门；得分；目的",
+      "sceneMeaning": "目标；目的",
+      "examples": "[]"
+    },
+    {
+      "word": "intention",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɛnʃən",
+      "phoneticUk": "ɪn'tenʃ(ə)n",
+      "translation": "意图，意向，目的；打算，意图",
+      "sceneMeaning": "意图；打算",
+      "examples": "[]"
+    },
+    {
+      "word": "interfere",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ɪntɚ'fɪr",
+      "phoneticUk": "ɪntə'fɪə",
+      "translation": "干涉，干预；妨碍",
+      "sceneMeaning": "干涉，干预；妨碍",
+      "examples": "[]"
+    },
+    {
+      "word": "mechanism",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛkənɪzəm",
+      "phoneticUk": "'mekənɪzəm",
+      "translation": "机制，机能",
+      "sceneMeaning": "机制；机理",
+      "examples": "[]"
+    },
+    {
+      "word": "motor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'motɚ",
+      "phoneticUk": "'məʊtə",
+      "translation": "发动机；机动车",
+      "sceneMeaning": "发动机；机动车；本场景常见用法：[医]运动机能",
+      "examples": "[]"
+    },
+    {
+      "word": "option",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑpʃən",
+      "phoneticUk": "'ɒpʃ(ə)n",
+      "translation": "选择，选择权；选择",
+      "sceneMeaning": "选择；选项",
+      "examples": "[]"
+    },
+    {
+      "word": "outcome",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aʊt'kʌm",
+      "phoneticUk": "'aʊtkʌm",
+      "translation": "结果，后果，成果；结果",
+      "sceneMeaning": "结果；成果",
+      "examples": "[]"
+    },
+    {
+      "word": "qualification",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kwɑlɪfɪ'keʃən",
+      "phoneticUk": ",kwɔlifi'keiʃən",
+      "translation": "资格(证明)，合格证书",
+      "sceneMeaning": "资格；限定条件",
+      "examples": "[]"
+    },
+    {
+      "word": "series",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪriz",
+      "phoneticUk": "'sɪəriːz; -rɪz",
+      "translation": "连续，系列；丛书",
+      "sceneMeaning": "连续，系列；丛书；本场景常见用法：成批生产；连续生产",
+      "examples": "[]"
+    },
+    {
+      "word": "site",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪt",
+      "phoneticUk": "saɪt",
+      "translation": "地点，地基；场所；场所，地址",
+      "sceneMeaning": "地点，地基；场所；场所，地址；本场景常见用法：厂址选择；基地选择；位置选择",
+      "examples": "[]"
+    },
+    {
+      "word": "thus",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ðʌs",
+      "phoneticUk": "ðʌs",
+      "translation": "如此，这样；因而",
+      "sceneMeaning": "因此；从而",
+      "examples": "[]"
+    },
+    {
+      "word": "accordingly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ə'kɔrdɪŋli",
+      "phoneticUk": "ə'kɔːdɪŋlɪ",
+      "translation": "因此，所以；照着",
+      "sceneMeaning": "因此；相应地",
+      "examples": "[]"
+    },
+    {
+      "word": "attribute",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'trɪbjut",
+      "phoneticUk": "ə'trɪbjuːt",
+      "translation": "把…归因于；属性；归因于",
+      "sceneMeaning": "把…归因于；属性；归因于",
+      "examples": "[]"
+    },
+    {
+      "word": "conclusion",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'kluʒn",
+      "phoneticUk": "kən'kluːʒ(ə)n",
+      "translation": "结论，推论；结尾；结论",
+      "sceneMeaning": "结局；结论",
+      "examples": "[]"
+    },
+    {
+      "word": "contribution",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑntrɪ'bjuʃən",
+      "phoneticUk": "kɒntrɪ'bjuːʃ(ə)n",
+      "translation": "贡献；捐款",
+      "sceneMeaning": "贡献；促成因素",
+      "examples": "[]"
+    },
+    {
+      "word": "donation",
+      "partOfSpeech": "n",
+      "phoneticUs": "do'neʃən",
+      "phoneticUk": "dəu'neiʃən",
+      "translation": "捐赠",
+      "sceneMeaning": "捐赠",
+      "examples": "[]"
+    },
+    {
+      "word": "facilitate",
+      "partOfSpeech": "v",
+      "phoneticUs": "fə'sɪlə'tet",
+      "phoneticUk": "fəˈsɪlɪteɪt",
+      "translation": "使便利，促进",
+      "sceneMeaning": "促进；使便利",
+      "examples": "[]"
+    },
+    {
+      "word": "formulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'fɔrmjə'let",
+      "phoneticUk": "'fɔːmjʊleɪt",
+      "translation": "规定，制定",
+      "sceneMeaning": "规定，制定",
+      "examples": "[]"
+    },
+    {
+      "word": "function",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fʌŋkʃən",
+      "phoneticUk": "'fʌŋ(k)ʃ(ə)n",
+      "translation": "功能；职务；函数；功能；运行",
+      "sceneMeaning": "功能；作用",
+      "examples": "[]"
+    },
+    {
+      "word": "indirect",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪndə'rɛkt",
+      "phoneticUk": "ɪndɪ'rekt; ɪndaɪ-",
+      "translation": "间接的；不坦率的",
+      "sceneMeaning": "间接的",
+      "examples": "[]"
+    },
+    {
+      "word": "induce",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'dus",
+      "phoneticUk": "ɪn'djuːs",
+      "translation": "引诱",
+      "sceneMeaning": "引起；诱导",
+      "examples": "[]"
+    },
+    {
+      "word": "inevitable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'ɛvɪtəbl",
+      "phoneticUk": "ɪn'evɪtəb(ə)l",
+      "translation": "不可避免的，必然的；不可避免的",
+      "sceneMeaning": "不可避免的",
+      "examples": "[]"
+    },
+    {
+      "word": "instance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnstəns",
+      "phoneticUk": "'ɪnst(ə)ns",
+      "translation": "例子，实例，事例；情况，例子",
+      "sceneMeaning": "例子，实例，事例；情况，例子",
+      "examples": "[]"
+    },
+    {
+      "word": "intentional",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'tɛnʃənl",
+      "phoneticUk": "ɪn'tenʃ(ə)n(ə)l",
+      "translation": "故意的，有意识的",
+      "sceneMeaning": "有意的；故意的",
+      "examples": "[]"
+    },
+    {
+      "word": "joyful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dʒɔɪfl",
+      "phoneticUk": "'dʒɒɪfʊl; -f(ə)l",
+      "translation": "十分喜悦的，快乐的",
+      "sceneMeaning": "十分喜悦的，快乐的",
+      "examples": "[]"
+    },
+    {
+      "word": "keen",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kin",
+      "phoneticUk": "kiːn",
+      "translation": "热心的；激烈的",
+      "sceneMeaning": "热心的；激烈的；本场景常见用法：剧烈竞争",
+      "examples": "[]"
+    },
+    {
+      "word": "link",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lɪŋk",
+      "phoneticUk": "lɪŋk",
+      "translation": "有环连接；环",
+      "sceneMeaning": "联系；环节",
+      "examples": "[]"
+    },
+    {
+      "word": "motion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'moʃən",
+      "phoneticUk": "'məʊʃ(ə)n",
+      "translation": "运动；手势；提议",
+      "sceneMeaning": "运动；手势；提议；本场景常见用法：运动方程",
+      "examples": "[]"
+    },
+    {
+      "word": "object",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑbdʒɛkt",
+      "phoneticUk": "'ɒbdʒɪkt; -dʒekt",
+      "translation": "物，物体；目的",
+      "sceneMeaning": "物，物体；目的；本场景常见用法：面向目标程序设计",
+      "examples": "[]"
+    },
+    {
+      "word": "occur",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kɝ",
+      "phoneticUk": "ə'kɜː",
+      "translation": "发生；出现，存在",
+      "sceneMeaning": "发生；出现，存在",
+      "examples": "[]"
+    },
+    {
+      "word": "sake",
+      "partOfSpeech": "n",
+      "phoneticUs": "[sek]",
+      "phoneticUk": "seɪk",
+      "translation": "缘故，理由",
+      "sceneMeaning": "缘故，理由",
+      "examples": "[]"
+    },
+    {
+      "word": "sway",
+      "partOfSpeech": "v",
+      "phoneticUs": "swe",
+      "phoneticUk": "sweɪ",
+      "translation": "摇动；摇；摇动；影响",
+      "sceneMeaning": "摇动；摇；摇动；影响",
+      "examples": "[]"
+    },
+    {
+      "word": "unintended",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ʌnɪn'tɛndɪd",
+      "phoneticUk": "ˌʌnɪnˈtendɪd",
+      "translation": "意想不到的",
+      "sceneMeaning": "非故意的；意外的",
+      "examples": "[]"
+    },
+    {
+      "word": "accidental",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",æksɪ'dɛntl",
+      "phoneticUk": "æksɪ'dent(ə)l",
+      "translation": "偶然的；非本质的",
+      "sceneMeaning": "意外的；偶然的",
+      "examples": "[]"
+    },
+    {
+      "word": "circumstance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɝkəmstæns",
+      "phoneticUk": "ˈsɜːkəmstəns; ˈsɜːkəmstɑːns; ˈsɜːkəmstæns",
+      "translation": "情况，条件；境遇；环境，境遇",
+      "sceneMeaning": "情形；条件",
+      "examples": "[]"
+    },
+    {
+      "word": "context",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑntɛkst",
+      "phoneticUk": "'kɔntekst",
+      "translation": "背景，环境",
+      "sceneMeaning": "背景；语境",
+      "examples": "[]"
+    },
+    {
+      "word": "cord",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrd",
+      "phoneticUk": "kɔːd",
+      "translation": "细绳，粗线，索",
+      "sceneMeaning": "细绳，粗线，索",
+      "examples": "[]"
+    },
+    {
+      "word": "determination",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪˌtɜːrmɪˈneɪʃn",
+      "phoneticUk": "dɪ,tɜːmɪ'neɪʃ(ə)n",
+      "translation": "决心；决定；确定；意志",
+      "sceneMeaning": "决定；决心",
+      "examples": "[]"
+    },
+    {
+      "word": "devise",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'vaɪz",
+      "phoneticUk": "dɪ'vaɪz",
+      "translation": "设计，发明",
+      "sceneMeaning": "设计，发明",
+      "examples": "[]"
+    },
+    {
+      "word": "donate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'donet",
+      "phoneticUk": "də(ʊ)'neɪt",
+      "translation": "捐赠",
+      "sceneMeaning": "捐赠",
+      "examples": "[]"
+    },
+    {
+      "word": "enable",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'nebl",
+      "phoneticUk": "ɪn'eɪb(ə)l; en-",
+      "translation": "使能够，使可能；使能够……",
+      "sceneMeaning": "使能够；使成为可能",
+      "examples": "[]"
+    },
+    {
+      "word": "fascination",
+      "partOfSpeech": "n",
+      "phoneticUs": ",fæsɪ'neʃən",
+      "phoneticUk": ",fæsɪ'neɪʃ(ə)n",
+      "translation": "魅力；入迷",
+      "sceneMeaning": "魅力；入迷",
+      "examples": "[]"
+    },
+    {
+      "word": "fragment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fræɡmənt",
+      "phoneticUk": "'frægm(ə)nt",
+      "translation": "碎片，破片，碎块",
+      "sceneMeaning": "碎片，破片，碎块；本场景常见用法：限制酶断片",
+      "examples": "[]"
+    },
+    {
+      "word": "hasten",
+      "partOfSpeech": "v",
+      "phoneticUs": "'hesn",
+      "phoneticUk": "'heɪs(ə)n",
+      "translation": "催促；赶紧",
+      "sceneMeaning": "催促；赶紧",
+      "examples": "[]"
+    },
+    {
+      "word": "incentive",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'sɛntɪv",
+      "phoneticUk": "ɪn'sentɪv",
+      "translation": "动机，刺激",
+      "sceneMeaning": "激励；诱因",
+      "examples": "[]"
+    },
+    {
+      "word": "influential",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪnflu'ɛnʃl",
+      "phoneticUk": ",ɪnflʊ'enʃ(ə)l",
+      "translation": "有影响的；有权势的；有影响力的",
+      "sceneMeaning": "有影响的；有权势的；有影响力的",
+      "examples": "[]"
+    },
+    {
+      "word": "interconnect",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ɪntɚkə'nɛkt",
+      "phoneticUk": "ɪntəkə'nekt",
+      "translation": "相互联系",
+      "sceneMeaning": "相互联系",
+      "examples": "[]"
+    },
+    {
+      "word": "interdependence",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntɚdɪ'pɛndəns",
+      "phoneticUk": ",ɪntədɪ'pendəns",
+      "translation": "相互依靠",
+      "sceneMeaning": "相互依赖",
+      "examples": "[]"
+    },
+    {
+      "word": "motivation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",motə'veʃən",
+      "phoneticUk": "ˌməʊtɪ'veɪʃn",
+      "translation": "激励，刺激",
+      "sceneMeaning": "动机；动力",
+      "examples": "[]"
+    },
+    {
+      "word": "motive",
+      "partOfSpeech": "n",
+      "phoneticUs": "'motɪv",
+      "phoneticUk": "'məʊtɪv",
+      "translation": "动机，目的",
+      "sceneMeaning": "动机；原因",
+      "examples": "[]"
+    },
+    {
+      "word": "necessity",
+      "partOfSpeech": "n",
+      "phoneticUs": "nə'sɛsəti",
+      "phoneticUk": "nɪ'sesɪtɪ",
+      "translation": "必要性；必然性",
+      "sceneMeaning": "必要性；必然性；本场景常见用法：出于需要，必定",
+      "examples": "[]"
+    },
+    {
+      "word": "needless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "不需要的",
+      "sceneMeaning": "不需要的",
+      "examples": "[]"
+    },
+    {
+      "word": "origin",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrɪdʒɪn",
+      "phoneticUk": "'ɒrɪdʒɪn",
+      "translation": "起源，由来；出身；起源",
+      "sceneMeaning": "起源；来源",
+      "examples": "[]"
+    },
+    {
+      "word": "originate",
+      "partOfSpeech": "v",
+      "phoneticUs": "əˈrɪdʒəˌnet",
+      "phoneticUk": "ə'rɪdʒɪneɪt",
+      "translation": "开始",
+      "sceneMeaning": "起源；产生",
+      "examples": "[]"
+    },
+    {
+      "word": "provision",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'vɪʒn",
+      "phoneticUk": "prə'vɪʒ(ə)n",
+      "translation": "供应；预备；存粮",
+      "sceneMeaning": "规定；条件；供应",
+      "examples": "[]"
+    },
+    {
+      "word": "restriction",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'strɪkʃən",
+      "phoneticUk": "rɪ'strɪkʃn",
+      "translation": "限制，限定",
+      "sceneMeaning": "限制；约束",
+      "examples": "[]"
+    },
+    {
+      "word": "sequence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sikwəns",
+      "phoneticUk": "'siːkw(ə)ns",
+      "translation": "连续，继续；次序",
+      "sceneMeaning": "顺序；序列",
+      "examples": "[]"
+    },
+    {
+      "word": "spur",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "spɝ",
+      "phoneticUk": "spɜː",
+      "translation": "刺激物；刺激",
+      "sceneMeaning": "刺激物；刺激",
+      "examples": "[]"
+    },
+    {
+      "word": "stem",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "stɛm",
+      "phoneticUk": "stem",
+      "translation": "茎，(树)干；起源",
+      "sceneMeaning": "起源于；阻止",
+      "examples": "[]"
+    },
+    {
+      "word": "subdivision",
+      "partOfSpeech": "n",
+      "phoneticUs": ",sʌbdɪ'vɪʒn",
+      "phoneticUk": "ˌsʌbdɪˈvɪʒn",
+      "translation": "分支; 分部",
+      "sceneMeaning": "分支; 分部",
+      "examples": "[]"
+    },
+    {
+      "word": "tempt",
+      "partOfSpeech": "v",
+      "phoneticUs": "tɛmpt",
+      "phoneticUk": "tem(p)t",
+      "translation": "引诱，诱惑；吸引",
+      "sceneMeaning": "引诱，诱惑；吸引",
+      "examples": "[]"
+    },
+    {
+      "word": "tempting",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tɛmptɪŋ",
+      "phoneticUk": "ˈtemptɪŋ",
+      "translation": "诱人的，吸引人的",
+      "sceneMeaning": "诱人的，吸引人的",
+      "examples": "[]"
+    },
+    {
+      "word": "trigger",
+      "partOfSpeech": "v",
+      "phoneticUs": "'trɪɡɚ",
+      "phoneticUk": "'trɪgə",
+      "translation": "引发，引起",
+      "sceneMeaning": "触发因素；扳机",
+      "examples": "[]"
+    }
+  ]
+}

@@ -17,8 +17,8 @@ beforeEach(() => {
 })
 afterEach(() => wrapper?.unmount())
 async function start() {
-  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/useradmin/blog/taxonomy', component: Page }] })
-  await router.push('/useradmin/blog/taxonomy')
+  const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/blog/taxonomy', component: Page }] })
+  await router.push('/blog/taxonomy')
   wrapper = mount(Page, { global: { plugins: [router], stubs: { AdminConfirmDialog: Confirm } } })
   await flushPromises()
 }

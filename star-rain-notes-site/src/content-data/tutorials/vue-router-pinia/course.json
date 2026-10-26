@@ -1,0 +1,285 @@
+{
+  "slug": "vue-router-pinia",
+  "title": "Vue Router 与 Pinia",
+  "description": "围绕 Vue 单页应用的路由和全局状态管理，系统掌握 Vue Router 4、导航守卫、动态路由、Pinia、持久化、权限菜单与后台应用架构。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-09-23",
+  "chapterCount": 30,
+  "wordCount": 15744,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "Vue Router 基础",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "SPA 与前端路由 / Spring MVC 后端路由",
+          "description": "本章属于「Vue Router 与 Pinia / Vue Router 基础」，围绕「SPA 与前端路由 / Spring MVC 后端路由」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-1-1/",
+          "wordCount": 563,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "createRouter、createWebHistory、routes",
+          "description": "本章属于「Vue Router 与 Pinia / Vue Router 基础」，围绕「createRouter、createWebHistory、routes」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-1-2/",
+          "wordCount": 605,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "router-link、router-view、命名路由",
+          "description": "本章属于「Vue Router 与 Pinia / Vue Router 基础」，围绕「router-link、router-view、命名路由」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-1-3/",
+          "wordCount": 581,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "push、replace、back",
+          "description": "本章属于「Vue Router 与 Pinia / Vue Router 基础」，围绕「push、replace、back」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-1-4/",
+          "wordCount": 548,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "params、query、hash 与 URL 状态",
+          "description": "本章属于「Vue Router 与 Pinia / Vue Router 基础」，围绕「params、query、hash 与 URL 状态」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-1-5/",
+          "wordCount": 566,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Router 进阶",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "Nested Routes 与后台 Layout",
+          "description": "本章属于「Vue Router 与 Pinia / Router 进阶」，围绕「Nested Routes 与后台 Layout」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-2-1/",
+          "wordCount": 557,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "Route Meta、Title、Breadcrumb",
+          "description": "本章属于「Vue Router 与 Pinia / Router 进阶」，围绕「Route Meta、Title、Breadcrumb」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-2-2/",
+          "wordCount": 572,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "Redirect、Alias、404",
+          "description": "本章属于「Vue Router 与 Pinia / Router 进阶」，围绕「Redirect、Alias、404」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-2-3/",
+          "wordCount": 548,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "Route Lazy Loading",
+          "description": "本章属于「Vue Router 与 Pinia / Router 进阶」，围绕「Route Lazy Loading」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-2-4/",
+          "wordCount": 542,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "Dynamic Route：addRoute / removeRoute",
+          "description": "本章属于「Vue Router 与 Pinia / Router 进阶」，围绕「Dynamic Route：addRoute / removeRoute」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-2-5/",
+          "wordCount": 593,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "导航守卫与认证",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "beforeEach、beforeResolve、afterEach",
+          "description": "本章属于「Vue Router 与 Pinia / 导航守卫与认证」，围绕「beforeEach、beforeResolve、afterEach」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-3-1/",
+          "wordCount": 595,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "beforeEnter 与组件级 Guard",
+          "description": "本章属于「Vue Router 与 Pinia / 导航守卫与认证」，围绕「beforeEnter 与组件级 Guard」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-3-2/",
+          "wordCount": 553,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "登录态、requiresAuth 与重定向",
+          "description": "本章属于「Vue Router 与 Pinia / 导航守卫与认证」，围绕「登录态、requiresAuth 与重定向」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-3-3/",
+          "wordCount": 553,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "权限判断、401/403 与后端安全边界",
+          "description": "本章属于「Vue Router 与 Pinia / 导航守卫与认证」，围绕「权限判断、401/403 与后端安全边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-3-4/",
+          "wordCount": 550,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "导航解析流程与无限重定向排错",
+          "description": "本章属于「Vue Router 与 Pinia / 导航守卫与认证」，围绕「导航解析流程与无限重定向排错」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-3-5/",
+          "wordCount": 535,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Pinia 核心",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "局部状态、全局状态与服务端状态",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 核心」，围绕「局部状态、全局状态与服务端状态」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-4-1/",
+          "wordCount": 538,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "defineStore、State",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 核心」，围绕「defineStore、State」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-4-2/",
+          "wordCount": 544,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "Getters",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 核心」，围绕「Getters」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-4-3/",
+          "wordCount": 514,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "Actions",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 核心」，围绕「Actions」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-4-4/",
+          "wordCount": 514,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "storeToRefs 与 $reset",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 核心」，围绕「storeToRefs 与 $reset」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-4-5/",
+          "wordCount": 547,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Pinia 工程化",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "User Store",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 工程化」，围绕「User Store」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-5-1/",
+          "wordCount": 521,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "LocalStorage / SessionStorage 持久化",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 工程化」，围绕「LocalStorage / SessionStorage 持久化」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-5-2/",
+          "wordCount": 584,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "多 Store 拆分与循环依赖",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 工程化」，围绕「多 Store 拆分与循环依赖」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-5-3/",
+          "wordCount": 533,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "Pinia Plugin",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 工程化」，围绕「Pinia Plugin」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-5-4/",
+          "wordCount": 527,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "Store 测试与 DevTools",
+          "description": "本章属于「Vue Router 与 Pinia / Pinia 工程化」，围绕「Store 测试与 DevTools」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-5-5/",
+          "wordCount": 542,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Router + Pinia 综合架构",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "登录 API → Store → Guard → 页面访问",
+          "description": "本章属于「Vue Router 与 Pinia / Router + Pinia 综合架构」，围绕「登录 API → Store → Guard → 页面访问」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-6-1/",
+          "wordCount": 568,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "Sidebar、Breadcrumb 与 Router Meta",
+          "description": "本章属于「Vue Router 与 Pinia / Router + Pinia 综合架构」，围绕「Sidebar、Breadcrumb 与 Router Meta」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-6-2/",
+          "wordCount": 589,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "动态菜单、动态路由与后端权限",
+          "description": "本章属于「Vue Router 与 Pinia / Router + Pinia 综合架构」，围绕「动态菜单、动态路由与后端权限」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-6-3/",
+          "wordCount": 544,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "刷新恢复、退出清理与多标签页状态",
+          "description": "本章属于「Vue Router 与 Pinia / Router + Pinia 综合架构」，围绕「刷新恢复、退出清理与多标签页状态」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-6-4/",
+          "wordCount": 550,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "Router / Pinia 秋招题与后台权限实战",
+          "description": "本章属于「Vue Router 与 Pinia / Router + Pinia 综合架构」，围绕「Router / Pinia 秋招题与后台权限实战」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue-router-pinia/chapter-6-5/",
+          "wordCount": 568,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/vue-router-pinia/",
+  "sortOrder": 18
+}

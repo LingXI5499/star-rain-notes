@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 账本保存每笔收支，通过增删记录和求和得到余额。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let bills = [{ id: 1, amount: 100 }, { id: 2, amount: -30 }];
+const balance = bills.reduce((sum, item) =&gt; sum + item.amount, 0);
+console.log(balance); // 70
+</code></pre>
+<p><strong>学完能做：</strong> 完成收支记录的增删与汇总。</p>

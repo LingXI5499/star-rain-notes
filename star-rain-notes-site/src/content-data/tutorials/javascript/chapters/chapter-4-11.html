@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 事件委托把监听器放在父容器，通过 <code>closest</code> 找到真正需要处理的动态子项。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">document.querySelector('#list').addEventListener('click', e =&gt; {
+  const li = e.target.closest('li');
+  if (li) li.remove();
+});
+</code></pre>
+<p><strong>学完能做：</strong> 通过父元素统一处理动态生成子项事件。</p>

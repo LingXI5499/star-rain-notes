@@ -1,0 +1,465 @@
+{
+  "slug": "vue3",
+  "title": "Vue 3",
+  "description": "以 Vue 3 Composition API、SFC 与 TypeScript 为主线，覆盖模板、响应式、组件通信、生命周期、Composable、异步数据、工程架构、性能、测试与秋招高频原理。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-09-23",
+  "chapterCount": 50,
+  "wordCount": 25780,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "Vue 3、SFC 与 Composition API",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "Vue 的声明式 UI、响应式与组件化",
+          "description": "本章属于「Vue 3 / Vue 3、SFC 与 Composition API」，围绕「Vue 的声明式 UI、响应式与组件化」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-1-1/",
+          "wordCount": 549,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "createApp、App.vue 与应用启动",
+          "description": "本章属于「Vue 3 / Vue 3、SFC 与 Composition API」，围绕「createApp、App.vue 与应用启动」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-1-2/",
+          "wordCount": 564,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "SFC：template、script、style 与 scoped",
+          "description": "本章属于「Vue 3 / Vue 3、SFC 与 Composition API」，围绕「SFC：template、script、style 与 scoped」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-1-3/",
+          "wordCount": 594,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "<script setup> 与 Composition API",
+          "description": "本章属于「Vue 3 / Vue 3、SFC 与 Composition API」，围绕「<script setup> 与 Composition API」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-1-4/",
+          "wordCount": 582,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "Options API 与 Composition API 的边界",
+          "description": "本章属于「Vue 3 / Vue 3、SFC 与 Composition API」，围绕「Options API 与 Composition API 的边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-1-5/",
+          "wordCount": 582,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "模板语法与指令",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "文本插值、表达式与模板上下文",
+          "description": "本章属于「Vue 3 / 模板语法与指令」，围绕「文本插值、表达式与模板上下文」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-2-1/",
+          "wordCount": 524,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "v-bind、class、style",
+          "description": "本章属于「Vue 3 / 模板语法与指令」，围绕「v-bind、class、style」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-2-2/",
+          "wordCount": 536,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "v-if、v-show",
+          "description": "本章属于「Vue 3 / 模板语法与指令」，围绕「v-if、v-show」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-2-3/",
+          "wordCount": 515,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "v-for、key",
+          "description": "本章属于「Vue 3 / 模板语法与指令」，围绕「v-for、key」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-2-4/",
+          "wordCount": 509,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "v-on、事件修饰符、自定义指令",
+          "description": "本章属于「Vue 3 / 模板语法与指令」，围绕「v-on、事件修饰符、自定义指令」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-2-5/",
+          "wordCount": 530,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "响应式系统",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "ref 与模板自动解包",
+          "description": "本章属于「Vue 3 / 响应式系统」，围绕「ref 与模板自动解包」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-3-1/",
+          "wordCount": 510,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "reactive、Proxy 与对象响应式",
+          "description": "本章属于「Vue 3 / 响应式系统」，围绕「reactive、Proxy 与对象响应式」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-3-2/",
+          "wordCount": 540,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "computed",
+          "description": "本章属于「Vue 3 / 响应式系统」，围绕「computed」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-3-3/",
+          "wordCount": 504,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "watch、watchEffect",
+          "description": "本章属于「Vue 3 / 响应式系统」，围绕「watch、watchEffect」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-3-4/",
+          "wordCount": 531,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "toRef、toRefs、shallowRef、nextTick",
+          "description": "本章属于「Vue 3 / 响应式系统」，围绕「toRef、toRefs、shallowRef、nextTick」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-3-5/",
+          "wordCount": 576,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "事件、表单与双向绑定",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "DOM Event 与组件事件",
+          "description": "本章属于「Vue 3 / 事件、表单与双向绑定」，围绕「DOM Event 与组件事件」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-4-1/",
+          "wordCount": 524,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "v-model 与表单控件",
+          "description": "本章属于「Vue 3 / 事件、表单与双向绑定」，围绕「v-model 与表单控件」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-4-2/",
+          "wordCount": 521,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "v-model 修饰符与自定义组件双向绑定",
+          "description": "本章属于「Vue 3 / 事件、表单与双向绑定」，围绕「v-model 修饰符与自定义组件双向绑定」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-4-3/",
+          "wordCount": 545,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "表单状态、校验与防重复提交",
+          "description": "本章属于「Vue 3 / 事件、表单与双向绑定」，围绕「表单状态、校验与防重复提交」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-4-4/",
+          "wordCount": 524,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "表单组件设计与错误展示",
+          "description": "本章属于「Vue 3 / 事件、表单与双向绑定」，围绕「表单组件设计与错误展示」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-4-5/",
+          "wordCount": 518,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "组件与通信",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "组件树、注册与组件边界",
+          "description": "本章属于「Vue 3 / 组件与通信」，围绕「组件树、注册与组件边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-5-1/",
+          "wordCount": 513,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "Props",
+          "description": "本章属于「Vue 3 / 组件与通信」，围绕「Props」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-5-2/",
+          "wordCount": 495,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "Emits",
+          "description": "本章属于「Vue 3 / 组件与通信」，围绕「Emits」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-5-3/",
+          "wordCount": 495,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "Template Ref 与 defineExpose",
+          "description": "本章属于「Vue 3 / 组件与通信」，围绕「Template Ref 与 defineExpose」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-5-4/",
+          "wordCount": 552,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "Provide / Inject",
+          "description": "本章属于「Vue 3 / 组件与通信」，围绕「Provide / Inject」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-5-5/",
+          "wordCount": 522,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Slots 与高级组件能力",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "Default Slot、Named Slot",
+          "description": "本章属于「Vue 3 / Slots 与高级组件能力」，围绕「Default Slot、Named Slot」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-6-1/",
+          "wordCount": 550,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "Scoped Slot",
+          "description": "本章属于「Vue 3 / Slots 与高级组件能力」，围绕「Scoped Slot」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-6-2/",
+          "wordCount": 517,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "Dynamic Component",
+          "description": "本章属于「Vue 3 / Slots 与高级组件能力」，围绕「Dynamic Component」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-6-3/",
+          "wordCount": 535,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "KeepAlive",
+          "description": "本章属于「Vue 3 / Slots 与高级组件能力」，围绕「KeepAlive」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-6-4/",
+          "wordCount": 514,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "Teleport、Async Component 与 Suspense",
+          "description": "本章属于「Vue 3 / Slots 与高级组件能力」，围绕「Teleport、Async Component 与 Suspense」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-6-5/",
+          "wordCount": 583,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "生命周期与 Composable",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "创建、挂载、更新、卸载生命周期",
+          "description": "本章属于「Vue 3 / 生命周期与 Composable」，围绕「创建、挂载、更新、卸载生命周期」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-7-1/",
+          "wordCount": 535,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "onMounted、onUpdated、onUnmounted",
+          "description": "本章属于「Vue 3 / 生命周期与 Composable」，围绕「onMounted、onUpdated、onUnmounted」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-7-2/",
+          "wordCount": 583,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "Timer、Event、Observer、Request 的资源清理",
+          "description": "本章属于「Vue 3 / 生命周期与 Composable」，围绕「Timer、Event、Observer、Request 的资源清理」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-7-3/",
+          "wordCount": 589,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "Composable：useXxx",
+          "description": "本章属于「Vue 3 / 生命周期与 Composable」，围绕「Composable：useXxx」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-7-4/",
+          "wordCount": 541,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "Composable、Utility、Store 的职责边界",
+          "description": "本章属于「Vue 3 / 生命周期与 Composable」，围绕「Composable、Utility、Store 的职责边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-7-5/",
+          "wordCount": 577,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "异步数据与业务页面",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "loading、data、error 三态",
+          "description": "本章属于「Vue 3 / 异步数据与业务页面」，围绕「loading、data、error 三态」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-8-1/",
+          "wordCount": 544,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "列表查询、分页、筛选与请求竞态",
+          "description": "本章属于「Vue 3 / 异步数据与业务页面」，围绕「列表查询、分页、筛选与请求竞态」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-8-2/",
+          "wordCount": 529,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "空状态、错误状态、重试与 Skeleton",
+          "description": "本章属于「Vue 3 / 异步数据与业务页面」，围绕「空状态、错误状态、重试与 Skeleton」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-8-3/",
+          "wordCount": 544,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "API Model、View Model 与字段转换",
+          "description": "本章属于「Vue 3 / 异步数据与业务页面」，围绕「API Model、View Model 与字段转换」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-8-4/",
+          "wordCount": 553,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "CRUD 页面完整状态流",
+          "description": "本章属于「Vue 3 / 异步数据与业务页面」，围绕「CRUD 页面完整状态流」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-8-5/",
+          "wordCount": 517,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Vue 工程架构与 TypeScript",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "Views、Business Components、Base Components 分层",
+          "description": "本章属于「Vue 3 / Vue 工程架构与 TypeScript」，围绕「Views、Business Components、Base Components 分层」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-9-1/",
+          "wordCount": 616,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "API Layer、Composable、Store 与组件职责",
+          "description": "本章属于「Vue 3 / Vue 工程架构与 TypeScript」，围绕「API Layer、Composable、Store 与组件职责」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-9-2/",
+          "wordCount": 583,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "Vue + TypeScript 类型设计",
+          "description": "本章属于「Vue 3 / Vue 工程架构与 TypeScript」，围绕「Vue + TypeScript 类型设计」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-9-3/",
+          "wordCount": 547,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "Markdown、v-html、DOMPurify 与 XSS",
+          "description": "本章属于「Vue 3 / Vue 工程架构与 TypeScript」，围绕「Markdown、v-html、DOMPurify 与 XSS」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-9-4/",
+          "wordCount": 580,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "CSR、SSR、SSG、Nuxt 与 SEO 生态认知",
+          "description": "本章属于「Vue 3 / Vue 工程架构与 TypeScript」，围绕「CSR、SSR、SSG、Nuxt 与 SEO 生态认知」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-9-5/",
+          "wordCount": 565,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Vue 原理、性能、测试与秋招",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": "Virtual DOM、VNode、Render 与 Diff",
+          "description": "本章属于「Vue 3 / Vue 原理、性能、测试与秋招」，围绕「Virtual DOM、VNode、Render 与 Diff」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-10-1/",
+          "wordCount": 573,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "Scheduler、Batch Update、nextTick",
+          "description": "本章属于「Vue 3 / Vue 原理、性能、测试与秋招」，围绕「Scheduler、Batch Update、nextTick」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-10-2/",
+          "wordCount": 579,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "computed、lazy component、大列表与性能",
+          "description": "本章属于「Vue 3 / Vue 原理、性能、测试与秋招」，围绕「computed、lazy component、大列表与性能」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-10-3/",
+          "wordCount": 576,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "Vue DevTools、组件测试与 Bug 排查",
+          "description": "本章属于「Vue 3 / Vue 原理、性能、测试与秋招」，围绕「Vue DevTools、组件测试与 Bug 排查」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-10-4/",
+          "wordCount": 555,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "Vue 3 秋招高频题与 CRUD 项目验收",
+          "description": "本章属于「Vue 3 / Vue 原理、性能、测试与秋招」，围绕「Vue 3 秋招高频题与 CRUD 项目验收」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/vue3/chapter-10-5/",
+          "wordCount": 543,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/vue3/",
+  "sortOrder": 17
+}

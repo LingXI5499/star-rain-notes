@@ -1,0 +1,21 @@
+---
+import OriginalPagination from './OriginalPagination.astro';
+import type {VocabularyEntry} from '../../utils/english-model';
+interface Props { entries:VocabularyEntry[]; }
+const {entries}=Astro.props;
+const exampleLabel=(value:unknown):string=>typeof value==='string'?value:typeof value==='object'&&value?Object.values(value).filter(v=>typeof v==='string').join(' — '):'';
+---
+<section class="theme-words english-word-list" data-filter-scope data-static-pagination data-pagination-size="24" data-pagination-unit="条记录">
+  <div class="english-tools"><label>搜索单词或释义<input type="search" data-filter-query placeholder="单词、中文释义或语境…" /></label><div class="theme-words__display" role="group" aria-label="词卡显示语言"><button type="button" data-word-display="all" aria-pressed="true">全部</button><button type="button" data-word-display="en" aria-pressed="false">英文</button><button type="button" data-word-display="zh" aria-pressed="false">中文</button></div></div>
+  <p data-filter-status aria-live="polite">{entries.length} 条记录</p>
+  <div class="theme-words__grid">{entries.map((word,index)=><article class="vocabulary-card" data-filter-item hidden={index>=24} data-entry-id={word.entryId}>
+    <div class="vocabulary-card__toolbar"><span class="vocabulary-card__status">{word.migrationStatus==='confirmed'?'已映射':word.migrationStatus==='needs-review'?'分类待复核':'分类整理中'}</span></div>
+    <section class="vocabulary-card__english" aria-label="英文信息"><h2>{word.word}</h2><p>{word.partOfSpeech}</p>{word.phoneticUk&&<p>英 /{word.phoneticUk}/</p>}{word.phoneticUs&&<p>美 /{word.phoneticUs}/</p>}</section>
+    <section class="vocabulary-card__chinese" aria-label="中文信息"><p class="vocabulary-card__translation">{word.translation}</p>{word.sceneMeaning&&word.sceneMeaning!==word.translation&&<p class="vocabulary-card__scene"><span>本主题用法</span>{word.sceneMeaning}</p>}</section>
+    {word.examples.some(e=>exampleLabel(e).trim())&&<div class="english-examples">{word.examples.filter(e=>exampleLabel(e).trim()).map(e=><p>{exampleLabel(e)}</p>)}</div>}
+    <small class="english-source">来源：旧主题 {word.source.legacyThemeId} · 记录 {word.source.legacyIndex+1}</small>
+  </article>)}</div>
+  {entries.length>0&&<OriginalPagination total={entries.length} size={24} unit="条记录"/>}
+  <p class="static-empty" data-filter-empty hidden={entries.length>0} role="status">{entries.length?'没有符合条件的词汇。':'词条整理中。你可以返回主题目录或浏览保留的旧词汇资料。'}</p>
+  <noscript><p class="notice">启用 JavaScript 可搜索、翻页和切换词卡语言；当前展示前 24 条。</p></noscript>
+</section>

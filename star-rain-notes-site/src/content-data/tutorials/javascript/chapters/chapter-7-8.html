@@ -1,0 +1,9 @@
+<p><strong>核心：</strong> <code>class</code> 是原型式对象模型的语法形式；实例数据与共享方法分别放在实例和原型上。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">class User {
+  constructor(name) { this.name = name; }
+  hello() { return `你好，${this.name}`; }
+}
+console.log(new User('小明').hello());
+</code></pre>
+<p><strong>学完能做：</strong> 使用 class 定义实例方法并理解其原型本质。</p>

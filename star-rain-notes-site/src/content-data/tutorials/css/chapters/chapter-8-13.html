@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 用 <code>prefers-reduced-motion</code> 响应减少动画的系统偏好，让页面更舒适。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</code></pre>
+<p><strong>学完能做：</strong> 根据用户减少动效偏好调整动画。</p>

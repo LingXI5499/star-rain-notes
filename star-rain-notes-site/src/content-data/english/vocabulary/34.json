@@ -1,0 +1,720 @@
+{
+  "id": "34",
+  "title": "城市 / 社区 / 公共空间",
+  "layer": "社会与世界主题层",
+  "wordCount": 79,
+  "path": "/english/vocabulary/34/",
+  "words": [
+    {
+      "word": "access",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'æksɛs",
+      "phoneticUk": "'ækses",
+      "translation": "接近；通道，入口；获取；接近，入口",
+      "sceneMeaning": "接近；通道，入口；获取；接近，入口；本场景常见用法：公共存取",
+      "examples": "[]"
+    },
+    {
+      "word": "build",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɪld",
+      "phoneticUk": "bɪld",
+      "translation": "建筑；建立；创立",
+      "sceneMeaning": "建筑；建立；创立",
+      "examples": "[]"
+    },
+    {
+      "word": "building",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɪldɪŋ",
+      "phoneticUk": "'bɪldɪŋ",
+      "translation": "建筑物，大楼；建筑",
+      "sceneMeaning": "建筑物；楼",
+      "examples": "[]"
+    },
+    {
+      "word": "city",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪti",
+      "phoneticUk": "'sɪtɪ",
+      "translation": "城市，都市",
+      "sceneMeaning": "城市",
+      "examples": "[]"
+    },
+    {
+      "word": "community",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mjʊnəti",
+      "phoneticUk": "kə'mjuːnɪtɪ",
+      "translation": "社区；社会；公社",
+      "sceneMeaning": "社区；共同体",
+      "examples": "[]"
+    },
+    {
+      "word": "local",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈloʊkl",
+      "phoneticUk": "'ləʊk(ə)l",
+      "translation": "地方的；局部的",
+      "sceneMeaning": "当地的；本地的",
+      "examples": "[]"
+    },
+    {
+      "word": "market",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑrkɪt",
+      "phoneticUk": "'mɑːkɪt",
+      "translation": "市场；集市；销路",
+      "sceneMeaning": "市场",
+      "examples": "[]"
+    },
+    {
+      "word": "park",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɑrk",
+      "phoneticUk": "pɑːk",
+      "translation": "公园；停车场",
+      "sceneMeaning": "公园",
+      "examples": "[]"
+    },
+    {
+      "word": "population",
+      "partOfSpeech": "n",
+      "phoneticUs": ",pɑpju'leʃən",
+      "phoneticUk": "pɒpjʊ'leɪʃ(ə)n",
+      "translation": "人口；全体居民",
+      "sceneMeaning": "人口；族群",
+      "examples": "[]"
+    },
+    {
+      "word": "public",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'pʌblɪk",
+      "phoneticUk": "'pʌblɪk",
+      "translation": "公众的；公众",
+      "sceneMeaning": "公共的；公开的",
+      "examples": "[]"
+    },
+    {
+      "word": "sign",
+      "partOfSpeech": "n",
+      "phoneticUs": "saɪn",
+      "phoneticUk": "saɪn",
+      "translation": "符号；招牌；签名",
+      "sceneMeaning": "标志；指示牌",
+      "examples": "[]"
+    },
+    {
+      "word": "district",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪstrɪkt",
+      "phoneticUk": "'dɪstrɪkt",
+      "translation": "区；地区，区域；区",
+      "sceneMeaning": "区；地区",
+      "examples": "[]"
+    },
+    {
+      "word": "library",
+      "partOfSpeech": "n",
+      "phoneticUs": "laɪˌbrɛrɪ",
+      "phoneticUk": "ˈlaɪbrərɪ",
+      "translation": "图书馆；藏书",
+      "sceneMeaning": "图书馆",
+      "examples": "[]"
+    },
+    {
+      "word": "security",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'kjʊrəti",
+      "phoneticUk": "sɪ'kjʊərətɪ",
+      "translation": "安全，安全感；安全，安保",
+      "sceneMeaning": "安全；安保",
+      "examples": "[]"
+    },
+    {
+      "word": "neighborhood",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nebɚ,hʊd",
+      "phoneticUk": "'neɪbəhʊd",
+      "translation": "地区",
+      "sceneMeaning": "社区；街区",
+      "examples": "[]"
+    },
+    {
+      "word": "rent",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɛnt",
+      "phoneticUk": "rent",
+      "translation": "租金，租；出租",
+      "sceneMeaning": "租金，租；出租；本场景常见用法：房屋出租；公寓招租；吉屋出租",
+      "examples": "[]"
+    },
+    {
+      "word": "accident",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æksədənt",
+      "phoneticUk": "'æksɪdənt",
+      "translation": "意外的；事故",
+      "sceneMeaning": "事故；意外",
+      "examples": "[]"
+    },
+    {
+      "word": "address",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'drɛs",
+      "phoneticUk": "ə'dres",
+      "translation": "地址；演说；谈吐；解决",
+      "sceneMeaning": "地址；讲话",
+      "examples": "[]"
+    },
+    {
+      "word": "facility",
+      "partOfSpeech": "n",
+      "phoneticUs": "fə'sɪləti",
+      "phoneticUk": "fə'sɪləti",
+      "translation": "设备；容易；便利；设施",
+      "sceneMeaning": "设施；设备",
+      "examples": "[]"
+    },
+    {
+      "word": "commercial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kə'mɝʃəl",
+      "phoneticUk": "kə'mɜːʃ(ə)l",
+      "translation": "商业的；商品化的",
+      "sceneMeaning": "商业的",
+      "examples": "[]"
+    },
+    {
+      "word": "construction",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'strʌkʃən",
+      "phoneticUk": "kən'strʌkʃ(ə)n",
+      "translation": "建造；建筑；建筑物；建筑",
+      "sceneMeaning": "建设；施工",
+      "examples": "[]"
+    },
+    {
+      "word": "regulation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌrɛɡjəˈleʃən",
+      "phoneticUk": "regjʊ'leɪʃ(ə)n",
+      "translation": "规则，规章；管理；管理；规则",
+      "sceneMeaning": "规定；管理",
+      "examples": "[]"
+    },
+    {
+      "word": "rental",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛntl",
+      "phoneticUk": "'rent(ə)l",
+      "translation": "租金",
+      "sceneMeaning": "租赁物；租金",
+      "examples": "[]"
+    },
+    {
+      "word": "emergency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'mɝdʒənsi",
+      "phoneticUk": "ɪ'mɜːdʒ(ə)nsɪ",
+      "translation": "紧急情况，突然事件；紧急情况",
+      "sceneMeaning": "紧急情况",
+      "examples": "[]"
+    },
+    {
+      "word": "transportation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",trænspɔr'teʃən",
+      "phoneticUk": "trænspɔː'teɪʃ(ə)n; trɑːns-",
+      "translation": "运输，运送，客运；运输",
+      "sceneMeaning": "交通；运输",
+      "examples": "[]"
+    },
+    {
+      "word": "French",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "",
+      "phoneticUk": "fren(t)ʃ",
+      "translation": "法国的；法国人",
+      "sceneMeaning": "法国的；法国人；本场景常见用法：法国大革命",
+      "examples": "[]"
+    },
+    {
+      "word": "square",
+      "partOfSpeech": "n",
+      "phoneticUs": "skwɛr",
+      "phoneticUk": "skweə",
+      "translation": "正方形；广场",
+      "sceneMeaning": "广场；正方形",
+      "examples": "[]"
+    },
+    {
+      "word": "urban",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɝbən",
+      "phoneticUk": "'ɜːb(ə)n",
+      "translation": "a.；都市的,住在都市的",
+      "sceneMeaning": "城市的",
+      "examples": "[]"
+    },
+    {
+      "word": "entrance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛntrəns",
+      "phoneticUk": "'entr(ə)ns",
+      "translation": "入口，门口；进入",
+      "sceneMeaning": "入口",
+      "examples": "[]"
+    },
+    {
+      "word": "hospital",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɑspɪtl",
+      "phoneticUk": "'hɒspɪt(ə)l",
+      "translation": "医院",
+      "sceneMeaning": "医院",
+      "examples": "[]"
+    },
+    {
+      "word": "maintenance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mentənəns",
+      "phoneticUk": "'meɪnt(ə)nəns; -tɪn-",
+      "translation": "维持，保持；维修",
+      "sceneMeaning": "维护；保养",
+      "examples": "[]"
+    },
+    {
+      "word": "rural",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rʊrəl",
+      "phoneticUk": "'rʊər(ə)l",
+      "translation": "农村的，田园的",
+      "sceneMeaning": "农村的；乡村的",
+      "examples": "[]"
+    },
+    {
+      "word": "settle",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɛtl",
+      "phoneticUk": "'set(ə)l",
+      "translation": "安排；安放；调停",
+      "sceneMeaning": "定居；安顿；解决",
+      "examples": "[]"
+    },
+    {
+      "word": "utility",
+      "partOfSpeech": "n",
+      "phoneticUs": "ju'tɪləti",
+      "phoneticUk": "juːˈtɪlɪtɪ",
+      "translation": "效用，有用，实用；公用事业〔如煤气、电力等〕",
+      "sceneMeaning": "公共事业；实用性",
+      "examples": "[]"
+    },
+    {
+      "word": "voluntary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vɑləntɛri",
+      "phoneticUk": "'vɒlənt(ə)rɪ",
+      "translation": "自愿的，志愿的；自愿的，主动的",
+      "sceneMeaning": "自愿的，志愿的；自愿的，主动的；本场景常见用法：自愿捐款",
+      "examples": "[]"
+    },
+    {
+      "word": "bench",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɛntʃ",
+      "phoneticUk": "ben(t)ʃ",
+      "translation": "长凳，条凳；工作台",
+      "sceneMeaning": "长椅；法官席",
+      "examples": "[]"
+    },
+    {
+      "word": "brick",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɪk",
+      "phoneticUk": "brɪk",
+      "translation": "砖，砖块；砖状物",
+      "sceneMeaning": "砖，砖块；砖状物",
+      "examples": "[]"
+    },
+    {
+      "word": "convenient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'vinɪənt",
+      "phoneticUk": "kən'viːnɪənt",
+      "translation": "便利的；近便的；方便的",
+      "sceneMeaning": "方便的",
+      "examples": "[]"
+    },
+    {
+      "word": "drain",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dren",
+      "phoneticUk": "dreɪn",
+      "translation": "排去；放水；耗竭",
+      "sceneMeaning": "排去；放水；耗竭；本场景常见用法：排水管道",
+      "examples": "[]"
+    },
+    {
+      "word": "museum",
+      "partOfSpeech": "n",
+      "phoneticUs": "mju'ziəm",
+      "phoneticUk": "mjuː'zɪəm",
+      "translation": "博物馆；展览馆",
+      "sceneMeaning": "博物馆",
+      "examples": "[]"
+    },
+    {
+      "word": "noise",
+      "partOfSpeech": "n",
+      "phoneticUs": "nɔɪz",
+      "phoneticUk": "nɒɪz",
+      "translation": "喧闹声；响声；噪声",
+      "sceneMeaning": "噪音",
+      "examples": "[]"
+    },
+    {
+      "word": "pollution",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'luʃən",
+      "phoneticUk": "pə'luːʃ(ə)n",
+      "translation": "污染",
+      "sceneMeaning": "污染",
+      "examples": "[]"
+    },
+    {
+      "word": "property",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑpɚti",
+      "phoneticUk": "'prɒpətɪ",
+      "translation": "财产，资产；性质",
+      "sceneMeaning": "房产；财产",
+      "examples": "[]"
+    },
+    {
+      "word": "resident",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'rɛzɪdənt",
+      "phoneticUk": "ˈrezɪdənt",
+      "translation": "居住的；居民",
+      "sceneMeaning": "居民；住户",
+      "examples": "[]"
+    },
+    {
+      "word": "clinic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klɪnɪk",
+      "phoneticUk": "'klɪnɪk",
+      "translation": "诊所",
+      "sceneMeaning": "诊所；门诊部",
+      "examples": "[]"
+    },
+    {
+      "word": "construct",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'strʌkt",
+      "phoneticUk": "kən'strʌkt",
+      "translation": "建造；建设；构筑",
+      "sceneMeaning": "建造；建设；构筑",
+      "examples": "[]"
+    },
+    {
+      "word": "crowd",
+      "partOfSpeech": "n",
+      "phoneticUs": "kraʊd",
+      "phoneticUk": "kraʊd",
+      "translation": "群；大众；一伙人",
+      "sceneMeaning": "人群",
+      "examples": "[]"
+    },
+    {
+      "word": "elevator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛlɪvetɚ",
+      "phoneticUk": "'elɪveɪtə",
+      "translation": "电梯；升降机",
+      "sceneMeaning": "电梯",
+      "examples": "[]"
+    },
+    {
+      "word": "facilitate",
+      "partOfSpeech": "v",
+      "phoneticUs": "fə'sɪlə'tet",
+      "phoneticUk": "fəˈsɪlɪteɪt",
+      "translation": "使便利，促进",
+      "sceneMeaning": "使便利，促进",
+      "examples": "[]"
+    },
+    {
+      "word": "racially",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "'reʃəli",
+      "translation": "种族上地",
+      "sceneMeaning": "种族上地",
+      "examples": "[]"
+    },
+    {
+      "word": "accessible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ək'sɛsəbl",
+      "phoneticUk": "əkˈsesəbl",
+      "translation": "易接近的",
+      "sceneMeaning": "可到达的；无障碍的",
+      "examples": "[]"
+    },
+    {
+      "word": "accidental",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",æksɪ'dɛntl",
+      "phoneticUk": "æksɪ'dent(ə)l",
+      "translation": "偶然的；非本质的",
+      "sceneMeaning": "偶然的；非本质的",
+      "examples": "[]"
+    },
+    {
+      "word": "avenue",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ævənu",
+      "phoneticUk": "'æv(ə)njuː",
+      "translation": "林荫道，道路；大街",
+      "sceneMeaning": "大街；林荫道",
+      "examples": "[]"
+    },
+    {
+      "word": "barn",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɑrn",
+      "phoneticUk": "bɑːn",
+      "translation": "谷仓；牲口棚",
+      "sceneMeaning": "谷仓；牲口棚；本场景常见用法：挡光板；谷仓门",
+      "examples": "[]"
+    },
+    {
+      "word": "block",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "blɑk",
+      "phoneticUk": "blɒk",
+      "translation": "街区；堵塞，拦阻；阻碍",
+      "sceneMeaning": "街区；块",
+      "examples": "[]"
+    },
+    {
+      "word": "cathedral",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'θidrəl",
+      "phoneticUk": "kə'θiːdr(ə)l",
+      "translation": "总教堂；大教堂",
+      "sceneMeaning": "总教堂；大教堂",
+      "examples": "[]"
+    },
+    {
+      "word": "citizen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪtɪzn",
+      "phoneticUk": "'sɪtɪz(ə)n",
+      "translation": "公民；市民，居民；市民，城镇居民；公民",
+      "sceneMeaning": "公民；市民",
+      "examples": "[]"
+    },
+    {
+      "word": "crush",
+      "partOfSpeech": "v",
+      "phoneticUs": "krʌʃ",
+      "phoneticUk": "krʌʃ",
+      "translation": "压碎，碾碎；镇压",
+      "sceneMeaning": "压碎，碾碎；镇压",
+      "examples": "[]"
+    },
+    {
+      "word": "exit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɛɡzɪt",
+      "phoneticUk": "'eksɪt; 'egzɪt",
+      "translation": "出口；退场；退出",
+      "sceneMeaning": "出口；离开",
+      "examples": "[]"
+    },
+    {
+      "word": "fountain",
+      "partOfSpeech": "n",
+      "phoneticUs": "'faʊntn",
+      "phoneticUk": "ˈfaʊntən",
+      "translation": "泉水，喷泉；源泉",
+      "sceneMeaning": "喷泉",
+      "examples": "[]"
+    },
+    {
+      "word": "garage",
+      "partOfSpeech": "n",
+      "phoneticUs": "gəˈrɑʒ; gəˈrɑdʒ",
+      "phoneticUk": "'gærɑː(d)ʒ; -ɪdʒ; gə'rɑːʒ",
+      "translation": "车库；加油站；车库",
+      "sceneMeaning": "车库；修车厂",
+      "examples": "[]"
+    },
+    {
+      "word": "gate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡet",
+      "phoneticUk": "geɪt",
+      "translation": "大门；篱笆门",
+      "sceneMeaning": "大门；入口",
+      "examples": "[]"
+    },
+    {
+      "word": "inhabitant",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'hæbɪtənt",
+      "phoneticUk": "ɪn'hæbɪt(ə)nt",
+      "translation": "居民，住户",
+      "sceneMeaning": "居民，住户",
+      "examples": "[]"
+    },
+    {
+      "word": "landlady",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lændledi",
+      "phoneticUk": "'læn(d)leɪdɪ",
+      "translation": "女房东；女地主",
+      "sceneMeaning": "女房东；女地主",
+      "examples": "[]"
+    },
+    {
+      "word": "landlord",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lændlɔrd",
+      "phoneticUk": "'læn(d)lɔːd",
+      "translation": "地主；房东，店主",
+      "sceneMeaning": "房东；业主",
+      "examples": "[]"
+    },
+    {
+      "word": "lane",
+      "partOfSpeech": "n",
+      "phoneticUs": "len",
+      "phoneticUk": "leɪn",
+      "translation": "(乡间)小路；跑道",
+      "sceneMeaning": "小巷；车道",
+      "examples": "[]"
+    },
+    {
+      "word": "map",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæp",
+      "phoneticUk": "mæp",
+      "translation": "地图；图；天体图",
+      "sceneMeaning": "地图",
+      "examples": "[]"
+    },
+    {
+      "word": "monument",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑnjumənt",
+      "phoneticUk": "'mɒnjʊm(ə)nt",
+      "translation": "纪念碑；纪念馆",
+      "sceneMeaning": "纪念碑；纪念物",
+      "examples": "[]"
+    },
+    {
+      "word": "permit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "pɚ'mɪt",
+      "phoneticUk": "pə'mɪt",
+      "translation": "允许；执照",
+      "sceneMeaning": "许可证",
+      "examples": "[]"
+    },
+    {
+      "word": "playground",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ple'graʊnd",
+      "phoneticUk": "'pleɪgraʊnd",
+      "translation": "操场，运动场",
+      "sceneMeaning": "操场；游乐场",
+      "examples": "[]"
+    },
+    {
+      "word": "residence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'rɛzɪdəns",
+      "phoneticUk": "'rezɪd(ə)ns",
+      "translation": "居住；驻扎；住处",
+      "sceneMeaning": "居住；驻扎；住处；本场景常见用法：住宅小区",
+      "examples": "[]"
+    },
+    {
+      "word": "route",
+      "partOfSpeech": "n",
+      "phoneticUs": "raʊt",
+      "phoneticUk": "ruːt",
+      "translation": "路，路线，路程",
+      "sceneMeaning": "路线；路径",
+      "examples": "[]"
+    },
+    {
+      "word": "shelter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʃɛltɚ",
+      "phoneticUk": "'ʃeltə",
+      "translation": "隐蔽处；掩蔽，庇护",
+      "sceneMeaning": "避难所；庇护",
+      "examples": "[]"
+    },
+    {
+      "word": "stair",
+      "partOfSpeech": "n",
+      "phoneticUs": "stɛr",
+      "phoneticUk": "steə",
+      "translation": "楼梯",
+      "sceneMeaning": "楼梯",
+      "examples": "[]"
+    },
+    {
+      "word": "subway",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sʌbwe",
+      "phoneticUk": "'sʌbweɪ",
+      "translation": "地道；地下铁路",
+      "sceneMeaning": "地铁；地下通道",
+      "examples": "[]"
+    },
+    {
+      "word": "tower",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'taʊɚ",
+      "phoneticUk": "'taʊə",
+      "translation": "塔；屹立，高耸",
+      "sceneMeaning": "塔；高楼",
+      "examples": "[]"
+    },
+    {
+      "word": "treasure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'trɛʒɚ",
+      "phoneticUk": "'treʒə",
+      "translation": "财富；珍宝；珍视；珍爱",
+      "sceneMeaning": "财富；珍宝；珍视；珍爱",
+      "examples": "[]"
+    },
+    {
+      "word": "welfare",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wɛl'fɛr",
+      "phoneticUk": "'welfeə",
+      "translation": "幸福，福利；幸福；福利",
+      "sceneMeaning": "福利；福祉",
+      "examples": "[]"
+    },
+    {
+      "word": "workman",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wɝkmən",
+      "phoneticUk": "'wɜːkmən",
+      "translation": "工人，劳动者，工匠",
+      "sceneMeaning": "工人，劳动者，工匠",
+      "examples": "[]"
+    }
+  ]
+}

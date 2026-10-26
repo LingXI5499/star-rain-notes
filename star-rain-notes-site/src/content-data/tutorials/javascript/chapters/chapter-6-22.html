@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> <code>canvas</code> 的 2D 上下文可绘图，<code>toDataURL</code> 可导出图片数据。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const canvas = document.querySelector('canvas');
+const ctx = canvas.getContext('2d');
+ctx.fillRect(10, 10, 80, 40);
+console.log(canvas.toDataURL('image/png'));
+</code></pre>
+<p><strong>学完能做：</strong> 使用 Canvas 绘制简单图形并导出。</p>

@@ -1,0 +1,1353 @@
+<blockquote>
+<p>学操作系统时，一个困惑经常出现：我明白了仓库有生产者和消费者，也会手写几个信号量，但<strong>这套模型究竟有什么用？</strong> 以后写的是电商、库存管理、药店管理系统，又不是开仓库。</p>
+<p>答案是：<strong>算法模型不是业务模板，而是一套识别并发矛盾的思维工具。</strong> 现实业务的名字会变化，但“任务来得太快”“资源分出去后可能不够用”“多人读写同一份数据”等问题会反复出现。能认出矛盾，才能选择合适的技术。</p>
+</blockquote>
+<h2>一、先认出问题：仓库、银行、图书馆</h2>
+<p>同样有很多人同时做事，却存在三类完全不同的矛盾：</p>
+<table>
+<thead>
+<tr>
+<th>生活中的故事</th>
+<th>操作系统经典问题</th>
+<th>一句话核心矛盾</th>
+<th>在软件里首先想到</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>仓库不断入货，员工不断取货</td>
+<td><strong>生产者—消费者</strong>（Producer–Consumer）</td>
+<td>活儿来得快，处理不过来怎么办？</td>
+<td>缓冲队列、阻塞、背压、任务异步化</td>
+</tr>
+<tr>
+<td>银行同时给多人放贷</td>
+<td><strong>银行家算法</strong>（Banker's Algorithm）</td>
+<td>现在有资源，分出去后还能让大家完成吗？</td>
+<td>安全状态、资源预留、死锁避免</td>
+</tr>
+<tr>
+<td>多人在图书馆读书，有人要改书</td>
+<td><strong>读者—写者</strong>（Readers–Writers）</td>
+<td>谁可以同时读，谁必须独占修改？</td>
+<td>读写锁、共享状态、数据一致性</td>
+</tr>
+</tbody>
+</table>
+<p>需要先厘清三个基础概念：</p>
+<ul>
+<li><strong>互斥（Mutual Exclusion）</strong>：同一时刻只让一个执行单元进入特定临界区，解决“不能同时改”的冲突。</li>
+<li><strong>同步（Synchronization）</strong>：某个操作必须等条件满足才能继续，解决“还没轮到你”的先后关系。</li>
+<li><strong>信号量（Semaphore）</strong>：维护许可证的同步工具。经典 <strong>P / wait</strong> 表示申请，<strong>V / signal</strong> 表示释放；没有可用许可证时，申请者需要等待。</li>
+</ul>
+<p>它们与业务有联系，但不要机械套用：生产者—消费者和读者—写者是经典同步问题；银行家算法主要研究<strong>死锁避免</strong>，并不是生产消费模型的另一种写法。</p>
+<p>阅读下面代码时，请以 <strong>Java 为主线</strong>，再使用语言标签对照 C、Python、C++、JavaScript：关注不同语言如何表达相同的约束，而不是背诵 15 份语法。</p>
+<h2>二、生产者—消费者：解决“任务产生和处理速度不一致”</h2>
+<h3>1. 原理：有界仓库与三条约束</h3>
+<p>把容量为 <code>N=3</code> 的缓冲区看成仓库：生产者不断放入商品，消费者不断取走商品。</p>
+<pre><code>Producer A ──┐                 ┌── Consumer 1
+             ├─&gt; [ 有界缓冲区 ] ┤
+Producer B ──┘     容量 N       └── Consumer 2
+</code></pre>
+<p>如果仓库没有商品，消费者不能凭空取走；如果仓库已经装满，生产者不能强行塞入；多个线程操作同一个数组或队列时，又不能把下标、元素、数量修改到一半就被其他线程打乱。</p>
+<p>因此需要三个信号量：</p>
+<table>
+<thead>
+<tr>
+<th>信号量</th>
+<th>初始值</th>
+<th>约束</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>empty</code></td>
+<td><code>N</code></td>
+<td>剩余多少个可用空位</td>
+</tr>
+<tr>
+<td><code>full</code></td>
+<td><code>0</code></td>
+<td>已经有多少个可领取商品</td>
+</tr>
+<tr>
+<td><code>mutex</code></td>
+<td><code>1</code></td>
+<td>同一时刻只能有一个线程修改缓冲区</td>
+</tr>
+</tbody>
+</table>
+<p>在操作都完成、没有“已申请但尚未入队/出队”的过渡状态时，可以把状态理解为 <code>empty + full = N</code>。实际执行到两个 P/V 之间时，许可证可能被线程临时持有，不能用这条等式直接推断任意瞬间的内部计数。</p>
+<p><strong>关键点：同步与互斥缺一不可。</strong> <code>empty/full</code> 负责等待可生产或可消费的条件；<code>mutex</code> 负责保护共享队列自身。</p>
+<h3>2. PV 伪代码：为什么顺序不能反？</h3>
+<pre><code>producer():
+    repeat:
+        item = produce()       // 在临界区外准备商品
+        P(empty)               // 先等待仓库有位置
+        P(mutex)               // 再独占队列
+        queue.push(item)       // 临界区：修改共享数据
+        V(mutex)               // 尽快退出临界区
+        V(full)                // 通知：多了一件商品
+
+consumer():
+    repeat:
+        P(full)                // 先等待仓库有商品
+        P(mutex)               // 再独占队列
+        item = queue.pop()     // 临界区：修改共享数据
+        V(mutex)               // 释放队列访问权
+        V(empty)               // 通知：多了一个空位
+        consume(item)          // 在临界区外处理商品
+</code></pre>
+<p><strong>反例：先 <code>P(mutex)</code> 再 <code>P(empty)</code>。</strong> 假设仓库满了，生产者拿着队列锁等待空位；消费者虽然可以取货，却拿不到队列锁，双方互等，出现死锁。正确顺序是<strong>先等业务条件，再进入临界区</strong>。</p>
+<blockquote>
+<p>从业务角度看，“生产”可以是 HTTP 接收请求、创建一个导入任务；“消费”则是后台线程发送通知、计算报表或处理文件，并不要求真的存在商品。</p>
+</blockquote>
+<h3>3. 五种语言：同一个有限缓冲区</h3>
+<p>下面都演示容量为 3、生产 8 个整数、消费 8 个整数。<strong>C 与 C++ 使用显式同步原语；Java 与 Python 用标准库阻塞队列；JavaScript 用 Promise 模拟有界异步队列。</strong> 它们实现同一业务约束，但底层并发机制并不完全相同。每个标签中的代码都可以单独运行。</p>
+<p>::: code-group C|Java|Python|C++|JavaScript</p>
+<pre><code>// Linux / POSIX：gcc -std=c11 -pthread main.c -o pc
+#include &lt;pthread.h&gt;
+#include &lt;semaphore.h&gt;
+#include &lt;stdio.h&gt;
+
+#define SIZE 3
+#define TOTAL 8
+
+int buffer[SIZE], head = 0, tail = 0, count = 0;
+sem_t empty, full, mutex;
+
+void *producer(void *arg) {
+    (void)arg;
+    for (int item = 1; item &lt;= TOTAL; ++item) {
+        sem_wait(&amp;empty);               // P(empty)：满了就等待
+        sem_wait(&amp;mutex);               // P(mutex)：独占缓冲区
+        buffer[tail] = item;
+        tail = (tail + 1) % SIZE;      // 环形队列，尾指针回绕
+        ++count;
+        printf("生产 %d，库存 %d\n", item, count);
+        sem_post(&amp;mutex);               // V(mutex)：退出临界区
+        sem_post(&amp;full);                // V(full)：通知有商品
+    }
+    return NULL;
+}
+
+void *consumer(void *arg) {
+    (void)arg;
+    for (int i = 0; i &lt; TOTAL; ++i) {
+        sem_wait(&amp;full);                // P(full)：空了就等待
+        sem_wait(&amp;mutex);
+        int item = buffer[head];
+        head = (head + 1) % SIZE;
+        --count;
+        printf("消费 %d，库存 %d\n", item, count);
+        sem_post(&amp;mutex);
+        sem_post(&amp;empty);               // V(empty)：通知有空位
+    }
+    return NULL;
+}
+
+int main(void) {
+    pthread_t p, c;
+    sem_init(&amp;empty, 0, SIZE);          // 初始 3 个空位
+    sem_init(&amp;full, 0, 0);              // 初始 0 件商品
+    sem_init(&amp;mutex, 0, 1);            // 二元信号量模拟互斥
+    pthread_create(&amp;p, NULL, producer, NULL);
+    pthread_create(&amp;c, NULL, consumer, NULL);
+    pthread_join(p, NULL);
+    pthread_join(c, NULL);
+    sem_destroy(&amp;empty);
+    sem_destroy(&amp;full);
+    sem_destroy(&amp;mutex);
+    return 0;
+}
+</code></pre>
+<pre><code>import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+
+public class ProducerConsumerDemo {
+    public static void main(String[] args) throws InterruptedException {
+        // 容量为 3 的线程安全阻塞队列：已封装 PV/锁等同步细节
+        BlockingQueue&lt;Integer&gt; queue = new ArrayBlockingQueue&lt;&gt;(3);
+
+        Thread producer = new Thread(() -&gt; {
+            try {
+                for (int item = 1; item &lt;= 8; item++) {
+                    queue.put(item); // 满时阻塞，直到消费者取走元素
+                    System.out.println("生产 " + item);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // 保留中断语义
+            }
+        }, "Producer");
+
+        Thread consumer = new Thread(() -&gt; {
+            try {
+                for (int i = 0; i &lt; 8; i++) {
+                    int item = queue.take(); // 空时阻塞
+                    System.out.println("消费 " + item);
+                }
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        }, "Consumer");
+
+        producer.start();
+        consumer.start();
+        producer.join();                 // 等待两个线程结束
+        consumer.join();
+    }
+}
+</code></pre>
+<pre><code># Python 3：标准库 Queue 自带线程安全及阻塞语义
+import threading
+from queue import Queue
+
+buffer = Queue(maxsize=3)  # 固定容量，防止无限积压
+
+
+def producer():
+    for item in range(1, 9):
+        buffer.put(item)  # 满时等待，直到有空位置
+        print(f"生产 {item}")
+
+
+def consumer():
+    for _ in range(8):
+        item = buffer.get()  # 空时等待，直到有商品
+        try:
+            print(f"消费 {item}")
+        finally:
+            buffer.task_done()  # 声明该任务已处理完成
+
+
+p = threading.Thread(target=producer, name="Producer")
+c = threading.Thread(target=consumer, name="Consumer")
+p.start()
+c.start()
+p.join()
+c.join()
+buffer.join()  # 等待所有入队任务都 task_done()
+</code></pre>
+<pre><code>// C++20：g++ -std=c++20 -pthread main.cpp -o pc
+#include &lt;iostream&gt;
+#include &lt;mutex&gt;
+#include &lt;queue&gt;
+#include &lt;semaphore&gt;
+#include &lt;thread&gt;
+
+std::queue&lt;int&gt; buffer;
+std::mutex mutex;                           // 保护队列
+std::counting_semaphore&lt;3&gt; emptySlots(3);  // 初始 3 个空位
+std::counting_semaphore&lt;3&gt; fullSlots(0);   // 初始 0 件商品
+
+void produce() {
+    for (int item = 1; item &lt;= 8; ++item) {
+        emptySlots.acquire();              // P(empty)
+        {
+            std::lock_guard&lt;std::mutex&gt; lock(mutex);
+            buffer.push(item);
+            std::cout &lt;&lt; "生产 " &lt;&lt; item &lt;&lt; '\n';
+        }                                   // RAII 自动解锁
+        fullSlots.release();               // V(full)
+    }
+}
+
+void consume() {
+    for (int i = 0; i &lt; 8; ++i) {
+        fullSlots.acquire();               // P(full)
+        {
+            std::lock_guard&lt;std::mutex&gt; lock(mutex);
+            int item = buffer.front();
+            buffer.pop();
+            std::cout &lt;&lt; "消费 " &lt;&lt; item &lt;&lt; '\n';
+        }
+        emptySlots.release();              // V(empty)
+    }
+}
+
+int main() {
+    std::thread p(produce), c(consume);
+    p.join();
+    c.join();
+}
+</code></pre>
+<pre><code>// Node.js：这里协调异步任务，不是创建 OS 线程
+class AsyncBoundedQueue {
+  constructor(capacity) {
+    this.capacity = capacity;
+    this.items = [];
+    this.waitingProducers = []; // 等空位的 Promise 唤醒函数
+    this.waitingConsumers = []; // 等商品的 Promise 唤醒函数
+  }
+
+  async put(item) {
+    while (this.items.length &gt;= this.capacity) {
+      await new Promise(resolve =&gt; this.waitingProducers.push(resolve));
+    }
+    this.items.push(item);
+    this.waitingConsumers.shift()?.(); // 唤醒一个消费者
+  }
+
+  async take() {
+    while (this.items.length === 0) {
+      await new Promise(resolve =&gt; this.waitingConsumers.push(resolve));
+    }
+    const item = this.items.shift();
+    this.waitingProducers.shift()?.(); // 释放一个空位
+    return item;
+  }
+}
+
+const queue = new AsyncBoundedQueue(3);
+const delay = ms =&gt; new Promise(resolve =&gt; setTimeout(resolve, ms));
+
+async function producer() {
+  for (let item = 1; item &lt;= 8; item++) {
+    await queue.put(item);
+    console.log('生产', item);
+    await delay(5);
+  }
+}
+
+async function consumer() {
+  for (let i = 0; i &lt; 8; i++) {
+    const item = await queue.take();
+    console.log('消费', item);
+    await delay(10);
+  }
+}
+
+Promise.all([producer(), consumer()]).catch(console.error);
+</code></pre>
+<p>:::</p>
+<p><strong>读代码时锁定这四件事：</strong></p>
+<ol>
+<li><strong>任务从哪里来？</strong> C/Java/C++ 的生产线程、Python 的生产函数、JS 的异步生产函数。</li>
+<li><strong>谁保存待办任务？</strong> 一个容量有限的 <code>buffer</code> / <code>queue</code>。</li>
+<li><strong>什么时候等待？</strong> 满了等待 <code>put</code>，空了等待 <code>take</code>，或显式执行信号量的 P 操作。</li>
+<li><strong>谁保证正确性？</strong> <code>Semaphore</code>、<code>BlockingQueue</code>、<code>Queue</code>、<code>mutex</code> 等各语言的同步机制。</li>
+</ol>
+<p>Java <code>ArrayBlockingQueue.put()</code>、Python <code>Queue.put()</code> 会在满时等待；<code>take()</code>、<code>get()</code> 会在空时等待。这让业务代码不必再重复造一个三信号量仓库。Java 生产环境还应考虑中断、关闭、重试和线程池的拒绝策略。JavaScript 示例则要特别注意：它演示的是 <strong>Node.js 事件循环中的异步等待</strong>，不是多个 OS 线程在共享同一块内存；真正的 JS 多线程还涉及 Worker / <code>worker_threads</code>。</p>
+<p><strong>一个值得记住的工程原则：</strong> 队列<strong>缓解短时流量峰值</strong>，不会凭空增加处理能力。若每秒产生 1000 件任务而系统只能处理 600 件，长期看积压仍会增长；必须增加处理能力、限流或拒绝新任务。</p>
+<h2>三、银行家算法：解决“资源够用，却未必分得安全”</h2>
+<h3>1. 原理：银行家为什么要考虑未来？</h3>
+<p>银行还有钱，不意味着任何人的借款申请都能马上批准。银行更关心：<strong>这次借款以后，能否安排一个合理的还款顺序，让所有客户最终满足需求、依次归还资源？</strong></p>
+<p>在操作系统中，每个进程事先声明自己所需的各类资源最大数量。系统分配资源前，会<strong>假装分配一次</strong>，再检查是否存在一个所有进程都能依次完成的顺序（安全序列）。</p>
+<ul>
+<li><strong>安全状态</strong>：至少存在一条安全序列，按该序列有能力满足所有进程的剩余需求。</li>
+<li><strong>不安全状态</strong>：找不到这样的保证；<strong>不等于已经死锁</strong>，但未来有可能发生死锁。</li>
+<li><strong>死锁</strong>：一组执行单元互相等待对方占有的资源，无法继续推进。</li>
+</ul>
+<p>四个核心数据结构（设有 <code>n</code> 个进程、<code>m</code> 类资源）：</p>
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>形状</th>
+<th>表示什么</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>Available[m]</code></td>
+<td>一维数组</td>
+<td>系统当前还剩多少可用资源</td>
+</tr>
+<tr>
+<td><code>Max[n][m]</code></td>
+<td>二维矩阵</td>
+<td>每个进程事先声明的最大资源需求</td>
+</tr>
+<tr>
+<td><code>Allocation[n][m]</code></td>
+<td>二维矩阵</td>
+<td>每个进程已经持有的资源</td>
+</tr>
+<tr>
+<td><code>Need[n][m]</code></td>
+<td>二维矩阵</td>
+<td>每个进程以后还需要多少资源</td>
+</tr>
+</tbody>
+</table>
+<p>公式是：</p>
+<p>这是一个含有 <strong>5 个进程和 3 类资源</strong> 的经典例子（向量的三个分量分别代表资源 A、B、C）：</p>
+<table>
+<thead>
+<tr>
+<th>进程</th>
+<th>Allocation</th>
+<th>Max</th>
+<th>Need</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P0</td>
+<td>(0,1,0)</td>
+<td>(7,5,3)</td>
+<td>(7,4,3)</td>
+</tr>
+<tr>
+<td>P1</td>
+<td>(2,0,0)</td>
+<td>(3,2,2)</td>
+<td>(1,2,2)</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>(3,0,2)</td>
+<td>(9,0,2)</td>
+<td>(6,0,0)</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>(2,1,1)</td>
+<td>(2,2,2)</td>
+<td>(0,1,1)</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>(0,0,2)</td>
+<td>(4,3,3)</td>
+<td>(4,3,1)</td>
+</tr>
+</tbody>
+</table>
+<p>当前剩余资源为 <code>Available = [3,3,2]</code>。例如 P1 只需要 <code>[1,2,2]</code>，因此当前就能让它完成。假设它完成后释放原本持有的 <code>[2,0,0]</code>，则模拟可用资源增加至 <code>[5,3,2]</code>。</p>
+<p>沿着这条思路，我们能找到以下安全序列：</p>
+<table>
+<thead>
+<tr>
+<th>完成进程</th>
+<th>完成前 Work</th>
+<th>归还 Allocation</th>
+<th>完成后 Work</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>P1</td>
+<td>[3,3,2]</td>
+<td>[2,0,0]</td>
+<td>[5,3,2]</td>
+</tr>
+<tr>
+<td>P3</td>
+<td>[5,3,2]</td>
+<td>[2,1,1]</td>
+<td>[7,4,3]</td>
+</tr>
+<tr>
+<td>P4</td>
+<td>[7,4,3]</td>
+<td>[0,0,2]</td>
+<td>[7,4,5]</td>
+</tr>
+<tr>
+<td>P0</td>
+<td>[7,4,5]</td>
+<td>[0,1,0]</td>
+<td>[7,5,5]</td>
+</tr>
+<tr>
+<td>P2</td>
+<td>[7,5,5]</td>
+<td>[3,0,2]</td>
+<td>[10,5,7]</td>
+</tr>
+</tbody>
+</table>
+<p>所以 <strong>P1 → P3 → P4 → P0 → P2</strong> 是一条安全序列。这里 <code>Work += Allocation</code>，因为“拿到剩余 Need 再执行完并归还全部资源”的<strong>净变化</strong>，就是释放它原本持有的 Allocation。</p>
+<h3>2. 安全性检查与资源请求伪代码</h3>
+<pre><code>safe_check():
+    Work   = copy(Available)
+    Finish = [false] * n
+    sequence = []
+
+    while sequence.length &lt; n:
+        find an unfinished process Pi with Need[i] &lt;= Work
+        if no such Pi: return UNSAFE
+        Work = Work + Allocation[i]    // 假设 Pi 执行完成
+        Finish[i] = true
+        append Pi to sequence
+    return SAFE(sequence)
+
+request(Pi, Request):
+    if Request &gt; Need[i]:    reject_as_invalid()
+    if Request &gt; Available: wait_for_resources()
+    // 仅仅"当前够用"还不够
+    Available      -= Request
+    Allocation[i]  += Request
+    Need[i]        -= Request
+    if safe_check() == SAFE:
+        commit_allocation()
+    else:
+        undo_all_three_changes()       // 回滚
+        reject_or_wait()
+</code></pre>
+<p>所有 <code>&lt;=</code> 比较都是<strong>逐资源维度</strong>进行的，A 资源不能凭空代替 B 资源。</p>
+<p>再看两笔具体请求：</p>
+<ul>
+<li><strong>P4 请求 <code>[3,3,0]</code></strong>：当前资源确实足够，试分配后 <code>Available=[0,0,2]</code>，但没有任何进程的剩余需求能被它满足，因此<strong>不安全，回滚</strong>。</li>
+<li><strong>P1 请求 <code>[1,0,2]</code></strong>：试分配后 <code>Available=[2,3,0]</code>，仍然可以按 <code>P1 → P3 → P4 → P0 → P2</code> 完成，所以<strong>批准</strong>。</li>
+</ul>
+<p>这就是银行家算法的核心判断：<strong>资源数量够不够，与分配结果安不安全，是两个不同的问题。</strong></p>
+<h3>3. 五种语言：同一资源矩阵、同一次试分配</h3>
+<p>下面五份独立程序共享同一组测试数据：先尝试 P4 的不安全请求，再尝试 P1 的安全请求，方便比较不同语言的二维数组、循环、状态回滚实现。</p>
+<p>::: code-group C|Java|Python|C++|JavaScript</p>
+<pre><code>// C11：gcc -std=c11 main.c -o banker
+#include &lt;stdio.h&gt;
+#define N 5  // 进程数
+#define M 3  // 资源类型数
+
+int allocation[N][M] = {
+    {0,1,0}, {2,0,0}, {3,0,2}, {2,1,1}, {0,0,2}
+};
+int maximum[N][M] = {
+    {7,5,3}, {3,2,2}, {9,0,2}, {2,2,2}, {4,3,3}
+};
+int available[M] = {3,3,2};
+int need[N][M];
+
+// 安全性算法：将找到的安全序列写入 sequence
+int safe(int sequence[N]) {
+    int work[M], finish[N] = {0}, done = 0;
+    for (int j = 0; j &lt; M; j++) work[j] = available[j];
+
+    while (done &lt; N) {
+        int progressed = 0;
+        for (int i = 0; i &lt; N; i++) {
+            if (finish[i]) continue;
+            int feasible = 1;
+            for (int j = 0; j &lt; M; j++) {
+                if (need[i][j] &gt; work[j]) feasible = 0;
+            }
+            if (!feasible) continue;
+
+            // 假设 Pi 执行完毕，归还原来持有的资源
+            for (int j = 0; j &lt; M; j++) work[j] += allocation[i][j];
+            finish[i] = 1;
+            sequence[done++] = i;
+            progressed = 1;
+        }
+        if (!progressed) return 0; // 没有安全序列
+    }
+    return 1;
+}
+
+int request_resources(int pid, const int req[M]) {
+    for (int j = 0; j &lt; M; j++) {
+        if (req[j] &lt; 0 || req[j] &gt; need[pid][j] ||
+            req[j] &gt; available[j]) return 0;
+    }
+    // 试分配：先更新三个矩阵/向量
+    for (int j = 0; j &lt; M; j++) {
+        available[j] -= req[j];
+        allocation[pid][j] += req[j];
+        need[pid][j] -= req[j];
+    }
+    int seq[N];
+    if (safe(seq)) {
+        printf("批准 P%d，安全序列：", pid);
+        for (int i = 0; i &lt; N; i++) printf("P%d ", seq[i]);
+        putchar('\n');
+        return 1;
+    }
+    // 不安全：执行相反操作，完整回滚
+    for (int j = 0; j &lt; M; j++) {
+        available[j] += req[j];
+        allocation[pid][j] -= req[j];
+        need[pid][j] += req[j];
+    }
+    printf("拒绝 P%d：试分配后不安全，已回滚\n", pid);
+    return 0;
+}
+
+int main(void) {
+    for (int i = 0; i &lt; N; i++)
+        for (int j = 0; j &lt; M; j++)
+            need[i][j] = maximum[i][j] - allocation[i][j];
+
+    int seq[N];
+    printf("初始状态：%s\n", safe(seq) ? "安全" : "不安全");
+    int unsafe_request[M] = {3,3,0};
+    int safe_request[M] = {1,0,2};
+    request_resources(4, unsafe_request); // 资源够，但不安全
+    request_resources(1, safe_request);   // 安全，可以批准
+    return 0;
+}
+</code></pre>
+<pre><code>import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class BankerDemo {
+    static class Banker {
+        private final int[][] allocation = {
+            {0,1,0}, {2,0,0}, {3,0,2}, {2,1,1}, {0,0,2}
+        };
+        private final int[][] max = {
+            {7,5,3}, {3,2,2}, {9,0,2}, {2,2,2}, {4,3,3}
+        };
+        private final int[] available = {3,3,2};
+        private final int[][] need = new int[5][3];
+
+        Banker() {
+            // Need = Max - Allocation
+            for (int i = 0; i &lt; 5; i++)
+                for (int j = 0; j &lt; 3; j++)
+                    need[i][j] = max[i][j] - allocation[i][j];
+        }
+
+        // 返回安全序列；null 代表当前没有找到安全序列
+        synchronized List&lt;Integer&gt; safeSequence() {
+            int[] work = available.clone(); // 仅模拟，不改实际资源
+            boolean[] finish = new boolean[5];
+            List&lt;Integer&gt; sequence = new ArrayList&lt;&gt;();
+
+            while (sequence.size() &lt; 5) {
+                boolean progress = false;
+                for (int i = 0; i &lt; 5; i++) {
+                    if (finish[i]) continue;
+                    boolean enough = true;
+                    for (int j = 0; j &lt; 3; j++) {
+                        if (need[i][j] &gt; work[j]) enough = false;
+                    }
+                    if (!enough) continue;
+
+                    // 假设 Pi 完成，释放 Allocation[i]
+                    for (int j = 0; j &lt; 3; j++)
+                        work[j] += allocation[i][j];
+                    finish[i] = true;
+                    sequence.add(i);
+                    progress = true;
+                }
+                if (!progress) return null;
+            }
+            return sequence;
+        }
+
+        synchronized boolean request(int pid, int[] req) {
+            if (pid &lt; 0 || pid &gt;= 5 || req == null || req.length != 3)
+                throw new IllegalArgumentException("请求参数不合法");
+            for (int j = 0; j &lt; 3; j++) {
+                if (req[j] &lt; 0 || req[j] &gt; need[pid][j])
+                    throw new IllegalArgumentException("超过合法需求");
+                if (req[j] &gt; available[j]) return false; // 当前不足
+            }
+            // 试分配
+            for (int j = 0; j &lt; 3; j++) {
+                available[j] -= req[j];
+                allocation[pid][j] += req[j];
+                need[pid][j] -= req[j];
+            }
+            List&lt;Integer&gt; seq = safeSequence();
+            if (seq != null) {
+                System.out.println("批准 P" + pid + "，安全序列=" + seq);
+                return true;
+            }
+            // 不安全就撤销试分配
+            for (int j = 0; j &lt; 3; j++) {
+                available[j] += req[j];
+                allocation[pid][j] -= req[j];
+                need[pid][j] += req[j];
+            }
+            System.out.println("拒绝 P" + pid + "：不安全，已回滚");
+            return false;
+        }
+    }
+
+    public static void main(String[] args) {
+        Banker banker = new Banker();
+        System.out.println("初始安全序列=" + banker.safeSequence());
+        banker.request(4, new int[]{3,3,0}); // 不安全
+        banker.request(1, new int[]{1,0,2}); // 安全
+    }
+}
+</code></pre>
+<pre><code># Python 3：二维列表直接表达银行家算法的资源矩阵
+class Banker:
+    def __init__(self):
+        self.alloc = [[0, 1, 0], [2, 0, 0], [3, 0, 2],
+                      [2, 1, 1], [0, 0, 2]]
+        maximum = [[7, 5, 3], [3, 2, 2], [9, 0, 2],
+                   [2, 2, 2], [4, 3, 3]]
+        self.available = [3, 3, 2]
+        # Need = Max - Allocation
+        self.need = [[maximum[i][j] - self.alloc[i][j]
+                      for j in range(3)] for i in range(5)]
+
+    def safe_sequence(self):
+        work = self.available.copy()   # 模拟资源，不污染真实状态
+        finish = [False] * 5
+        sequence = []
+        while len(sequence) &lt; 5:
+            progress = False
+            for i in range(5):
+                if finish[i]:
+                    continue
+                if not all(self.need[i][j] &lt;= work[j] for j in range(3)):
+                    continue
+                # 假设进程执行完毕，归还先前占有的资源
+                work = [work[j] + self.alloc[i][j] for j in range(3)]
+                finish[i] = True
+                sequence.append(i)
+                progress = True
+            if not progress:
+                return None  # 没有安全序列
+        return sequence
+
+    def request(self, pid, req):
+        if not 0 &lt;= pid &lt; 5 or len(req) != 3:
+            raise ValueError("请求参数不合法")
+        if any(req[j] &lt; 0 or req[j] &gt; self.need[pid][j]
+               for j in range(3)):
+            raise ValueError("请求超出声明的需求")
+        if any(req[j] &gt; self.available[j] for j in range(3)):
+            return False  # 当前资源不够
+
+        # 试分配；如果最终不安全，必须逐项回滚
+        for j in range(3):
+            self.available[j] -= req[j]
+            self.alloc[pid][j] += req[j]
+            self.need[pid][j] -= req[j]
+
+        seq = self.safe_sequence()
+        if seq is not None:
+            print(f"批准 P{pid}，安全序列={seq}")
+            return True
+
+        for j in range(3):
+            self.available[j] += req[j]
+            self.alloc[pid][j] -= req[j]
+            self.need[pid][j] += req[j]
+        print(f"拒绝 P{pid}：不安全，已回滚")
+        return False
+
+
+banker = Banker()
+print("初始安全序列=", banker.safe_sequence())
+banker.request(4, [3, 3, 0])  # 资源够，但不安全
+banker.request(1, [1, 0, 2])  # 安全，可以批准
+</code></pre>
+<pre><code>// C++17：g++ -std=c++17 main.cpp -o banker
+#include &lt;array&gt;
+#include &lt;iostream&gt;
+#include &lt;optional&gt;
+#include &lt;vector&gt;
+
+constexpr int N = 5, M = 3;
+using Row = std::array&lt;int, M&gt;;
+
+class Banker {
+    std::array&lt;Row, N&gt; alloc{{
+        Row{0,1,0}, Row{2,0,0}, Row{3,0,2}, Row{2,1,1}, Row{0,0,2}
+    }};
+    std::array&lt;Row, N&gt; maximum{{
+        Row{7,5,3}, Row{3,2,2}, Row{9,0,2}, Row{2,2,2}, Row{4,3,3}
+    }};
+    std::array&lt;Row, N&gt; need{};
+    Row available{3,3,2};
+
+public:
+    Banker() {
+        for (int i = 0; i &lt; N; ++i)
+            for (int j = 0; j &lt; M; ++j)
+                need[i][j] = maximum[i][j] - alloc[i][j];
+    }
+
+    // optional为空 =&gt; 无安全序列
+    std::optional&lt;std::vector&lt;int&gt;&gt; safeSequence() const {
+        Row work = available;
+        std::array&lt;bool, N&gt; finish{};
+        std::vector&lt;int&gt; seq;
+        while (seq.size() &lt; N) {
+            bool progress = false;
+            for (int i = 0; i &lt; N; ++i) {
+                if (finish[i]) continue;
+                bool enough = true;
+                for (int j = 0; j &lt; M; ++j)
+                    if (need[i][j] &gt; work[j]) enough = false;
+                if (!enough) continue;
+                // 模拟 Pi 完成并归还当前持有的资源
+                for (int j = 0; j &lt; M; ++j) work[j] += alloc[i][j];
+                finish[i] = true;
+                seq.push_back(i);
+                progress = true;
+            }
+            if (!progress) return std::nullopt;
+        }
+        return seq;
+    }
+
+    bool request(int pid, Row req) {
+        if (pid &lt; 0 || pid &gt;= N) return false;
+        for (int j = 0; j &lt; M; ++j)
+            if (req[j] &lt; 0 || req[j] &gt; need[pid][j] ||
+                req[j] &gt; available[j]) return false;
+        // 先试分配
+        for (int j = 0; j &lt; M; ++j) {
+            available[j] -= req[j];
+            alloc[pid][j] += req[j];
+            need[pid][j] -= req[j];
+        }
+        auto seq = safeSequence();
+        if (seq) {
+            std::cout &lt;&lt; "批准 P" &lt;&lt; pid &lt;&lt; "，安全序列：";
+            for (int p : *seq) std::cout &lt;&lt; 'P' &lt;&lt; p &lt;&lt; ' ';
+            std::cout &lt;&lt; '\n';
+            return true;
+        }
+        // 回滚试分配
+        for (int j = 0; j &lt; M; ++j) {
+            available[j] += req[j];
+            alloc[pid][j] -= req[j];
+            need[pid][j] += req[j];
+        }
+        std::cout &lt;&lt; "拒绝 P" &lt;&lt; pid &lt;&lt; "：不安全，已回滚\n";
+        return false;
+    }
+};
+
+int main() {
+    Banker banker;
+    std::cout &lt;&lt; "初始状态："
+              &lt;&lt; (banker.safeSequence() ? "安全" : "不安全") &lt;&lt; '\n';
+    banker.request(4, Row{3,3,0});
+    banker.request(1, Row{1,0,2});
+}
+</code></pre>
+<pre><code>// Node.js / 浏览器均可运行：银行家算法是纯计算，无需线程
+class Banker {
+  constructor() {
+    this.alloc = [[0,1,0],[2,0,0],[3,0,2],[2,1,1],[0,0,2]];
+    const max = [[7,5,3],[3,2,2],[9,0,2],[2,2,2],[4,3,3]];
+    this.available = [3,3,2];
+    // Need = Max - Allocation
+    this.need = max.map((row, i) =&gt; row.map((n, j) =&gt; n - this.alloc[i][j]));
+  }
+
+  safeSequence() {
+    const work = [...this.available]; // 复制：不会影响真实可用量
+    const finished = Array(5).fill(false);
+    const sequence = [];
+    while (sequence.length &lt; 5) {
+      let progress = false;
+      for (let i = 0; i &lt; 5; i++) {
+        if (finished[i]) continue;
+        if (!this.need[i].every((n, j) =&gt; n &lt;= work[j])) continue;
+        // 假设进程完成，回收原来已分配的资源
+        this.alloc[i].forEach((n, j) =&gt; { work[j] += n; });
+        finished[i] = true;
+        sequence.push(i);
+        progress = true;
+      }
+      if (!progress) return null;
+    }
+    return sequence;
+  }
+
+  request(pid, req) {
+    if (!Number.isInteger(pid) || pid &lt; 0 || pid &gt;= 5 || req.length !== 3)
+      throw new Error('请求参数不合法');
+    if (req.some((n, j) =&gt; !Number.isInteger(n) || n &lt; 0 || n &gt; this.need[pid][j]))
+      throw new Error('请求超出声明的需求');
+    if (req.some((n, j) =&gt; n &gt; this.available[j])) return false;
+
+    for (let j = 0; j &lt; 3; j++) {
+      this.available[j] -= req[j];
+      this.alloc[pid][j] += req[j];
+      this.need[pid][j] -= req[j];
+    }
+    const sequence = this.safeSequence();
+    if (sequence !== null) {
+      console.log(`批准 P${pid}，安全序列=${sequence}`);
+      return true;
+    }
+    // 不安全：撤销试分配
+    for (let j = 0; j &lt; 3; j++) {
+      this.available[j] += req[j];
+      this.alloc[pid][j] -= req[j];
+      this.need[pid][j] += req[j];
+    }
+    console.log(`拒绝 P${pid}：不安全，已回滚`);
+    return false;
+  }
+}
+
+const banker = new Banker();
+console.log('初始安全序列=', banker.safeSequence());
+banker.request(4, [3,3,0]); // 不安全
+banker.request(1, [1,0,2]); // 安全
+</code></pre>
+<p>:::</p>
+<p><strong>真正需要理解的不是语法，而是三个状态变化：</strong></p>
+<pre><code>Available[j]     -= Request[j]
+Allocation[i][j] += Request[j]
+Need[i][j]       -= Request[j]
+</code></pre>
+<p>这三行是<strong>试分配</strong>。安全就保留，不安全就做相反操作<strong>回滚</strong>。每次模拟安全序列都必须复制 <code>Available</code> 到 <code>Work</code>，不能把模拟检查误当成真实资源发放。</p>
+<p>安全性算法在这种逐进程扫描的直接实现中，最坏时间复杂度为 <strong>O(n²m)</strong>。以上代码是教学模型，默认资源需求数据已经合法，并未实现真实资源分配器所需的进程注册、释放、等待队列、异常退出和完整输入校验。</p>
+<p>它为什么不常直接出现在电商系统里？因为它要求任务<strong>提前声明最大资源需求</strong>，而真实 Web 请求的完整资源需求通常难以准确预知。因此电商一般使用线程池上限、连接池、配额、限流和数据库事务等措施管理资源；这些措施与银行家算法共享“不能无限分配”的思想，却<strong>不是</strong>银行家算法的直接实现。</p>
+<h2>四、读者—写者：解决“可以多人看，不能一起乱改”</h2>
+<h3>1. 原理：读共享、写独占</h3>
+<p>想象一份药品分类配置，许多用户同时查询它；管理员偶尔修改它：</p>
+<table>
+<thead>
+<tr>
+<th>同时发生的操作</th>
+<th>允许吗？</th>
+<th>理由</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>读者 + 读者</td>
+<td>✅ 允许</td>
+<td>都只读，不改变共享状态</td>
+</tr>
+<tr>
+<td>读者 + 写者</td>
+<td>❌ 不允许</td>
+<td>读取时可能看到修改中的不一致状态</td>
+</tr>
+<tr>
+<td>写者 + 写者</td>
+<td>❌ 不允许</td>
+<td>两次修改可能互相覆盖、破坏约束</td>
+</tr>
+</tbody>
+</table>
+<p>若只用一把普通互斥锁包住所有读操作，数据虽安全，但<strong>读者也被迫排队</strong>。如果读操作很多、写操作较少，这会损失本来可以并发的读取能力。</p>
+<p>经典读者优先解法使用 <code>readCount</code> 与两个互斥信号量：</p>
+<ul>
+<li><code>countMutex</code>：保护“正在读的人数”的计数。</li>
+<li><code>resource</code>：第一个读者申请，最后一个读者释放；写者必须独占。</li>
+</ul>
+<h3>2. PV 伪代码：第一个读者进门，最后一个读者关门</h3>
+<pre><code>reader():
+    P(countMutex)
+    readCount++
+    if readCount == 1:
+        P(resource)              // 第一个读者挡住写者
+    V(countMutex)
+
+    read_shared_data()           // 其他读者也可以进入
+
+    P(countMutex)
+    readCount--
+    if readCount == 0:
+        V(resource)              // 最后一个读者放行写者
+    V(countMutex)
+
+writer():
+    P(resource)                  // 必须单独拿到资源
+    modify_shared_data()
+    V(resource)
+</code></pre>
+<p><strong>潜在问题：写者饥饿。</strong> 如果读者持续涌入，计数器可能长期不归零，写者一直进不去。所以真实并发工具还有公平锁、写者优先等策略：它们都保证读写互斥，但<strong>谁先获得执行权不一定完全相同</strong>。</p>
+<h3>3. 五种语言：读写锁的不同实现</h3>
+<p>这组示例都演示多个读取任务与一次修改操作，但实现层级有所不同：C 的 <code>pthread_rwlock_t</code>、Java 的公平 <code>ReentrantReadWriteLock</code>、Python 用 <code>Condition</code> 自己实现<strong>写者优先</strong>、C++ 的 <code>shared_mutex</code>、JavaScript 用 Promise 队列协调异步读写。不同标准库对公平性和饥饿没有统一保证，<strong>不要把其中一个语言的唤醒顺序推断为所有语言都相同</strong>。</p>
+<p>::: code-group C|Java|Python|C++|JavaScript</p>
+<pre><code>// Linux / POSIX：gcc -std=c11 -pthread main.c -o rw
+#define _POSIX_C_SOURCE 200809L
+#include &lt;pthread.h&gt;
+#include &lt;stdio.h&gt;
+#include &lt;time.h&gt;
+
+pthread_rwlock_t rwlock = PTHREAD_RWLOCK_INITIALIZER;
+int document = 0;  // 共享文档
+
+void pause_briefly(void) {
+    struct timespec ts = {.tv_sec = 0, .tv_nsec = 30000000};
+    nanosleep(&amp;ts, NULL);
+}
+
+void *reader(void *arg) {
+    int id = *(int *)arg;
+    pthread_rwlock_rdlock(&amp;rwlock); // 读锁：可与其他读者共享
+    printf("R%d 读取到 %d\n", id, document);
+    pause_briefly();             // 模拟长时间读取
+    pthread_rwlock_unlock(&amp;rwlock);
+    return NULL;
+}
+
+void *writer(void *arg) {
+    int value = *(int *)arg;
+    pthread_rwlock_wrlock(&amp;rwlock); // 写锁：独占，阻止读/写
+    document = value;
+    printf("W 写入 %d\n", document);
+    pause_briefly();
+    pthread_rwlock_unlock(&amp;rwlock);
+    return NULL;
+}
+
+int main(void) {
+    pthread_t r1, r2, w, r3;
+    int ids[] = {1, 2, 3}, value = 100;
+    pthread_create(&amp;r1, NULL, reader, &amp;ids[0]);
+    pthread_create(&amp;r2, NULL, reader, &amp;ids[1]);
+    pthread_create(&amp;w, NULL, writer, &amp;value);
+    pthread_create(&amp;r3, NULL, reader, &amp;ids[2]);
+    pthread_join(r1, NULL);
+    pthread_join(r2, NULL);
+    pthread_join(w, NULL);
+    pthread_join(r3, NULL);
+    pthread_rwlock_destroy(&amp;rwlock);
+    return 0;
+}
+</code></pre>
+<pre><code>import java.util.concurrent.locks.ReentrantReadWriteLock;
+
+public class ReadersWritersDemo {
+    private int document = 0;
+    // true：启用公平排队策略，减少长期饥饿的风险
+    private final ReentrantReadWriteLock rw = new ReentrantReadWriteLock(true);
+
+    public void read() {
+        rw.readLock().lock(); // 允许多个线程同时持有读锁
+        try {
+            System.out.println(Thread.currentThread().getName()
+                    + " 读取到 " + document);
+            Thread.sleep(30); // 演示同时读取
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            rw.readLock().unlock(); // 必须释放，防止写者永远等待
+        }
+    }
+
+    public void write(int value) {
+        rw.writeLock().lock(); // 独占：排斥所有读者和其他写者
+        try {
+            document = value;
+            System.out.println("W 写入 " + document);
+        } finally {
+            rw.writeLock().unlock();
+        }
+    }
+
+    public static void main(String[] args) throws InterruptedException {
+        ReadersWritersDemo demo = new ReadersWritersDemo();
+        Thread r1 = new Thread(demo::read, "R1");
+        Thread r2 = new Thread(demo::read, "R2");
+        Thread w = new Thread(() -&gt; demo.write(100), "W");
+        Thread r3 = new Thread(demo::read, "R3");
+        r1.start(); r2.start(); w.start(); r3.start();
+        r1.join(); r2.join(); w.join(); r3.join();
+    }
+}
+</code></pre>
+<pre><code># Python 3：Condition 实现“写者等待时阻止新读者进入”
+import threading
+import time
+
+
+class ReadWriteLock:
+    def __init__(self):
+        self.cond = threading.Condition()
+        self.readers = 0
+        self.writer_active = False
+        self.waiting_writers = 0
+
+    def acquire_read(self):
+        with self.cond:
+            # 有写者正在执行或已经等待，新读者暂时等待
+            while self.writer_active or self.waiting_writers &gt; 0:
+                self.cond.wait()
+            self.readers += 1
+
+    def release_read(self):
+        with self.cond:
+            self.readers -= 1
+            if self.readers == 0:
+                self.cond.notify_all()  # 最后一个读者唤醒等待者
+
+    def acquire_write(self):
+        with self.cond:
+            self.waiting_writers += 1
+            try:
+                while self.writer_active or self.readers &gt; 0:
+                    self.cond.wait()
+                self.writer_active = True  # 写者独占
+            finally:
+                self.waiting_writers -= 1
+
+    def release_write(self):
+        with self.cond:
+            self.writer_active = False
+            self.cond.notify_all()  # 通知等待的读者和写者
+
+
+rw = ReadWriteLock()
+document = 0
+
+
+def read(name):
+    rw.acquire_read()
+    try:
+        print(f"{name} 读取到 {document}")
+        time.sleep(0.03)
+    finally:
+        rw.release_read()
+
+
+def write(value):
+    global document
+    rw.acquire_write()
+    try:
+        document = value
+        print(f"W 写入 {document}")
+    finally:
+        rw.release_write()
+
+
+threads = [
+    threading.Thread(target=read, args=("R1",)),
+    threading.Thread(target=read, args=("R2",)),
+    threading.Thread(target=write, args=(100,)),
+    threading.Thread(target=read, args=("R3",)),
+]
+for t in threads:
+    t.start()
+for t in threads:
+    t.join()
+</code></pre>
+<pre><code>// C++17：g++ -std=c++17 -pthread main.cpp -o rw
+#include &lt;chrono&gt;
+#include &lt;iostream&gt;
+#include &lt;mutex&gt;
+#include &lt;shared_mutex&gt;
+#include &lt;thread&gt;
+
+std::shared_mutex rwMutex;  // 多读、单写的共享互斥量
+std::mutex outputMutex;     // 只用于保护控制台输出
+int document = 0;
+
+void readDocument(int id) {
+    std::shared_lock&lt;std::shared_mutex&gt; lock(rwMutex); // 共享读锁
+    {
+        std::lock_guard&lt;std::mutex&gt; out(outputMutex);
+        std::cout &lt;&lt; "R" &lt;&lt; id &lt;&lt; " 读取到 " &lt;&lt; document &lt;&lt; '\n';
+    }
+    std::this_thread::sleep_for(std::chrono::milliseconds(30));
+}  // RAII：退出作用域时释放读锁
+
+void writeDocument(int value) {
+    std::unique_lock&lt;std::shared_mutex&gt; lock(rwMutex); // 独占写锁
+    document = value;
+    {
+        std::lock_guard&lt;std::mutex&gt; out(outputMutex);
+        std::cout &lt;&lt; "W 写入 " &lt;&lt; document &lt;&lt; '\n';
+    }
+}  // RAII：释放写锁
+
+int main() {
+    std::thread r1(readDocument, 1), r2(readDocument, 2);
+    std::thread w(writeDocument, 100), r3(readDocument, 3);
+    r1.join(); r2.join(); w.join(); r3.join();
+}
+</code></pre>
+<pre><code>// Node.js：串行化异步读写操作；并非共享内存线程锁
+class AsyncRWLock {
+  constructor() {
+    this.readers = 0;
+    this.writing = false;
+    this.waiters = []; // 按请求到达顺序排队
+  }
+
+  acquireRead() { return this.enqueue('read'); }
+  acquireWrite() { return this.enqueue('write'); }
+
+  enqueue(kind) {
+    return new Promise(resolve =&gt; {
+      this.waiters.push({ kind, resolve });
+      this.drain();
+    });
+  }
+
+  drain() {
+    // 写操作尚未结束，不能批准任何新任务
+    if (this.writing) return;
+    // 如果已有读者，仍可批准队首连续的读者；
+    // 但绝不能跨过排队中的写者
+    if (this.readers &gt; 0) {
+      while (this.waiters[0]?.kind === 'read') {
+        const job = this.waiters.shift();
+        this.readers++;
+        job.resolve(() =&gt; { this.readers--; this.drain(); });
+      }
+      return;
+    }
+
+    if (this.waiters[0]?.kind === 'write') {
+      const job = this.waiters.shift();
+      this.writing = true;
+      job.resolve(() =&gt; { // 返回一个“释放写锁”的函数
+        this.writing = false;
+        this.drain();
+      });
+    } else {
+      // 合并队首连续的读者，让他们并发执行
+      while (this.waiters[0]?.kind === 'read') {
+        const job = this.waiters.shift();
+        this.readers++;
+        job.resolve(() =&gt; { // 返回“释放读锁”的函数
+          this.readers--;
+          this.drain();
+        });
+      }
+    }
+  }
+}
+
+const rw = new AsyncRWLock();
+let document = 0;
+const delay = ms =&gt; new Promise(resolve =&gt; setTimeout(resolve, ms));
+
+async function read(name) {
+  const unlock = await rw.acquireRead();
+  try {
+    console.log(name, '读取到', document);
+    await delay(30);
+  } finally {
+    unlock();
+  }
+}
+
+async function write(value) {
+  const unlock = await rw.acquireWrite();
+  try {
+    document = value;
+    console.log('W 写入', document);
+    await delay(10);
+  } finally {
+    unlock();
+  }
+}
+
+Promise.all([read('R1'), read('R2'), write(100), read('R3')])
+  .catch(console.error);
+</code></pre>
+<p>:::</p>
+<p><strong>抓住三个核心机制：</strong></p>
+<ol>
+<li><strong>读共享：</strong> 多个读者可以同时拥有访问权限，因此读取密集时比“一把互斥锁串行所有人”更合适。</li>
+<li><strong>写独占：</strong> 写者必须等现有读者退出，并阻止其他写者与自己重叠。</li>
+<li><strong>公平与饥饿：</strong> 读者优先可能饿死写者；写者优先可能使读者长期等待；公平策略力求减少长期饥饿，但通常会增加排队或调度成本。</li>
+</ol>
+<p>特别注意 JavaScript 示例：<code>await</code> 可让多个<strong>逻辑上的读取任务</strong>交错等待，<strong>不代表同一 Node.js 事件循环里的 JavaScript 代码正在 CPU 上多线程并行</strong>。C、Java、Python、C++ 示例涉及线程；而 Python 的 GIL 也不意味着可以省略所有共享状态同步，尤其在 I/O 等待时。</p>
+<h2>五、从操作系统抽象，走向 Java Web 真实业务</h2>
+<p>学习这三个模型，最终需要建立的是<strong>业务矛盾 → 识别模型 → 选用工程工具</strong>的推理链，而不是把伪代码一字不改地塞进 <code>ServiceImpl</code>。</p>
+<h3>1. 电商订单：生产者—消费者怎样落地？</h3>
+<p>用户在 Vue 页面点击“下单”，请求经过 Spring MVC Controller、Service、Mapper，到 MySQL 创建订单。然后可能需要发送通知、计算积分、触发履约任务。哪些事情必须同步完成，哪些可以异步？</p>
+<pre><code>Vue / Axios
+    │ POST /orders
+    ▼
+Spring MVC Controller
+    │
+    ▼
+OrderService ───→ MySQL 创建订单（关键事务）
+    │
+    ├──→ 可靠记录待发布事件（例如事务 Outbox）
+    │
+    └──→ 返回下单结果（按业务接口契约）
+                    │
+                    ▼
+             事件发布器 / MQ
+                    │
+              [消息队列：缓冲]
+                    │
+           ┌────────┴────────┐
+           ▼                 ▼
+       通知服务            积分服务
+       消费事件            消费事件
+</code></pre>
+<p>角色对应：<strong>订单业务产生事件 = 生产者；消息中间件 = 队列；通知/积分服务 = 消费者。</strong> 常见工具是 <code>BlockingQueue</code>、<code>ThreadPoolExecutor</code>、Spring 异步执行，以及跨服务使用的 RabbitMQ/Kafka 等。</p>
+<p>不过，<strong>普通内存队列不等于可靠消息系统</strong>：服务重启可能丢任务、消费者可能重复处理。订单与事件要避免“数据库已提交，但消息没发出去”的不一致，通常需要事务 Outbox 等可靠投递设计；消费者也应考虑幂等、重试、失败处理与积压监控。消息队列本身也不能代替数据库的库存一致性控制。</p>
+<h3>2. 管理系统：批量导入、文件处理与邮件通知</h3>
+<ul>
+<li><strong>药店管理系统</strong>：管理员一次上传 5 万条药品数据。HTTP 接口完成鉴权、文件保存和导入任务登记；后台工作线程分批解析、校验、入库，页面查询任务进度。这就是典型的“提交任务—后台消费任务”。</li>
+<li><strong>知识平台/博客系统</strong>：文章发布后生成搜索索引、清理缓存、通知订阅者；正文发布作为核心事务，耗时的派生操作放到后台任务链路。</li>
+<li><strong>商品图片服务</strong>：用户上传原图是生产事件；压缩、生成缩略图、审核是消费任务。工作线程数、队列容量和重试机制需要按磁盘与 CPU 能力设计。</li>
+</ul>
+<p>要谨慎区分：<strong>异步只改变完成时机，不天然保证事务正确、处理成功或结果顺序。</strong></p>
+<h3>3. 资源管理：银行家算法带来的“先检查再分配”意识</h3>
+<ul>
+<li><strong>AI 推理任务平台</strong>：GPU 显存有限，任务请求 GPU 配额。可以先估算需求、排队、做准入控制，并在任务结束后释放配额。如果任务的最大需求已知且条件满足，才可能使用接近银行家算法的安全检查。</li>
+<li><strong>批处理系统</strong>：内存、临时文件空间、外部 API 配额都是有限资源。需要控制同一时刻运行多少任务，避免无上限地接收和执行。</li>
+<li><strong>数据库连接池</strong>：并发请求必须等待可用连接或超时失败；实际通常用连接池和超时机制，而不是银行家安全性矩阵。</li>
+</ul>
+<p>这里要分清三个概念：<strong>限流（限制到达速率）</strong>、<strong>并发限制（限制同时运行的数量）<strong>和</strong>死锁避免（避免进入潜在循环等待的不安全状态）</strong>，不能互相替代。</p>
+<h3>4. 缓存与配置：读者—写者怎样落地？</h3>
+<ul>
+<li><strong>单个 Spring Boot 实例内的共享配置</strong>：多个 HTTP 线程读取同一个可变缓存，后台定期整体更新。读多写少时，可考虑 <code>ReentrantReadWriteLock</code>、不可变快照加原子引用，甚至使用线程安全缓存组件。</li>
+<li><strong>本地统计数据</strong>：读线程查询共享内存结构，写线程更新结构。先识别是否可能读到中间状态，再决定使用锁、原子操作还是不可变对象。</li>
+<li><strong>跨服务器共享数据</strong>：如果数据在 MySQL 或 Redis，<strong>Java JVM 内的读写锁不能跨进程保护它</strong>，此时需要数据库事务、行锁、乐观锁（版本号）、原子更新命令等机制。</li>
+</ul>
+<p><strong>一个典型高并发反例：最后一件商品被 100 人同时购买。</strong> 这主要是<strong>数据库并发更新</strong>问题，不是给 <code>OrderService</code> 加一把 Java 读写锁就万事大吉。MySQL 中可以用条件更新表达“库存大于 0 才允许扣减”：</p>
+<pre><code>UPDATE sku_stock
+SET stock = stock - 1
+WHERE sku_id = ? AND stock &gt; 0;
+</code></pre>
+<p>之后检查<strong>影响行数是否为 1</strong>，并把后续订单状态处理纳入正确的事务与业务流程。真实电商还需要处理支付、取消、释放预占、重试和幂等。多台服务器访问同一数据库时，数据库原子更新才能覆盖所有实例；单 JVM 的本地锁无法代替它。</p>
+<h3>5. 一张表，把抽象模型和技术工具对齐</h3>
+<table>
+<thead>
+<tr>
+<th>业务现象</th>
+<th>应首先想到的模型/原则</th>
+<th>Java / Spring 常用工具</th>
+<th>必须认清的边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HTTP 高峰产生大量后台任务</td>
+<td>生产者—消费者、削峰填谷</td>
+<td><code>BlockingQueue</code>、线程池、MQ</td>
+<td>队列可能积压、丢消息、重复消费</td>
+</tr>
+<tr>
+<td>任务同时抢占内存、连接或 GPU</td>
+<td>有限资源分配、死锁避免</td>
+<td><code>Semaphore</code>、连接池、资源配额、调度器</td>
+<td>并发限制不等于银行家算法</td>
+</tr>
+<tr>
+<td>多线程频繁读取、偶尔修改 JVM 数据</td>
+<td>读者—写者</td>
+<td><code>ReentrantReadWriteLock</code>、不可变快照</td>
+<td>JVM 锁不自动跨服务器</td>
+</tr>
+<tr>
+<td>多实例同时修改 MySQL 库存</td>
+<td>原子性、隔离性、并发控制</td>
+<td>条件<code>UPDATE</code>、事务、版本号</td>
+<td>数据库一致性不能只靠 Java 锁</td>
+</tr>
+<tr>
+<td>多个服务需要订阅订单事件</td>
+<td>生产者—消费者的跨服务扩展</td>
+<td>RabbitMQ、Kafka、Outbox</td>
+<td>需要可靠投递、消费幂等、失败恢复</td>
+</tr>
+</tbody>
+</table>
+<h2>结语：不要背仓库的故事，要学会认出“问题的形状”</h2>
+<p>三道经典题最终教会我们的，并不是把“仓库”“银行”“图书馆”这三个比喻记住，而是学会对真实业务连续追问：</p>
+<p><strong>任务是不是产生得比处理得快？</strong> 如果是，考虑缓冲、背压、异步消费。<strong>资源现在能分，未来还安全吗？</strong> 如果资源有严格需求与占有关系，考虑安全性和死锁。<strong>数据能否同时被多人访问？</strong> 如果涉及共享可变状态，考虑读共享、写独占，以及事务边界。</p>
+<blockquote>
+<p><strong>真正的迁移能力：从业务问题识别计算机科学模型，再利用语言、框架和中间件写出可靠的软件。</strong></p>
+</blockquote>
+<p><strong>延伸阅读与资料</strong></p>
+<ul>
+<li><a href="https://yulanlin.cn/">星雨笔录 · Star Rain Notes</a>：本文拟发布站点。</li>
+<li><a href="https://github.com/LingXI5499/star-rain-notes">星雨笔录 GitHub 仓库</a>：该站在 v1.4.0 开始支持 <code>::: code-group</code> 语言切换；本文代码组按仓库约定写法组织。</li>
+<li><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/BlockingQueue.html">Java BlockingQueue API</a></li>
+<li><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/concurrent/locks/ReentrantReadWriteLock.html">Java ReentrantReadWriteLock API</a></li>
+<li><a href="https://docs.python.org/3/library/queue.html">Python queue 标准库</a></li>
+<li><a href="https://en.cppreference.com/w/cpp/thread/shared_mutex.html">C++ std::shared_mutex</a></li>
+</ul>
+<p><strong>代码运行环境提示：</strong> C 示例面向 Linux/POSIX（<code>gcc -std=c11 -pthread</code>），C++ 示例需要 C++20（可运行全部示例），Java 代码使用 JDK 21，Python 使用 3.x 标准库，JavaScript 使用 Node.js。每个代码语言 Tab 都是一份独立小程序；并发程序的打印顺序由调度决定，<strong>不是固定输出顺序</strong>。银行家算法属于确定性计算，其安全性判断不依赖线程调度。</p>

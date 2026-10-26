@@ -18,23 +18,7 @@ import { getPublicSiteHome } from '../api/siteApi'
 import ThemeHero from '../components/ThemeHero.vue'
 import { useSiteBranding } from '../support/siteBranding'
 
-/*
- * 公开站首页 —— 逐块对齐 V1 `views/HomeView.vue` 的信息架构：
- *
- *   主视觉（主题插画 + 站名 + 副标题 + 介绍 + 两个入口）
- *   → 四个模块导轨（教程 / 博客 / 作品 / 英语）
- *   → 最近更新（跨教程、博客、作品的混合列表）
- *   → 精选知识体系
- *   → 把学习做成作品
- *   → 关于作者
- *
- * 与 V1 的差别只在数据来源：V1 的首页是一次 `fetchHome()` 拿到的定制聚合，
- * V2 改成 Site 模块的「首页区块」模型 —— 区块的启停、顺序、展示条数由后台配置决定，
- * 前端只负责按区块代码选渲染方式。因此这里**不硬编码区块顺序**，
- * 但每个代码的视觉样式与 V1 一致（区块标题的英文眉标也按代码映射，而不是直接显示代码本身）。
- *
- * 链接一律走 `contentPath`：账号模式下同一个首页要落在 /useradmin 前缀下。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 const branding = useSiteBranding()
 /**

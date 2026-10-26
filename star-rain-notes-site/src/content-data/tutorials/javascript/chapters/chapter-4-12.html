@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> <code>CustomEvent</code> 可携带 <code>detail</code> 数据，实现不直接引用彼此的组件通知。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">document.addEventListener('cart:add', e =&gt; console.log(e.detail));
+document.dispatchEvent(new CustomEvent('cart:add', { detail: { id: 1 } }));
+</code></pre>
+<p><strong>学完能做：</strong> 发送与监听自定义事件传递组件信息。</p>

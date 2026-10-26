@@ -1,0 +1,23 @@
+
+.public-pagination:not(.__static_scope){display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:28px 0 0;padding:16px 0 0;border-top:1px solid var(--border);font-size:12px;color:var(--text-muted);line-height:1.5;min-width:0}
+.public-pagination__total:not(.__static_scope){font-variant-numeric:tabular-nums}
+.public-pagination__pages:not(.__static_scope){display:flex;align-items:center;gap:4px}
+.public-pagination__pages button:not(.__static_scope){display:grid;place-items:center;width:36px;min-width:36px;min-height:36px;padding:0;border:1px solid transparent;border-radius:9px;background:transparent;color:var(--text-secondary);font:inherit;font-size:13px;line-height:1;cursor:pointer}
+.public-pagination__pages button:not(.__static_scope):hover:not(:disabled){color:var(--primary);border-color:var(--border-strong);background:var(--bg-surface)}
+.public-pagination__pages button[aria-current=page]:not(.__static_scope){border-color:var(--primary);background:var(--primary);color:var(--on-primary);font-weight:600}
+.public-pagination__pages button[aria-current=page]:not(.__static_scope):hover:not(:disabled){background:var(--primary);color:var(--on-primary)}
+.public-pagination__pages button:not(.__static_scope):disabled{opacity:.4;cursor:default}
+.public-pagination__pages button:not(.__static_scope):focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.public-pagination__pages button.public-pagination__arrow:not(.__static_scope){border-color:var(--border);background:var(--bg-surface)}
+.public-pagination__arrow svg:not(.__static_scope){width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.5}
+.public-pagination__gap:not(.__static_scope){width:18px;text-align:center}
+.public-pagination__size:not(.__static_scope){display:flex;align-items:center;gap:8px}
+.public-pagination__size:not(.__static_scope) .public-select{width:94px}
+.public-pagination__size:not(.__static_scope) .public-select__trigger{font-size:12px}
+@media(max-width:700px){
+.public-pagination:not(.__static_scope){justify-content:center;gap:14px}
+.public-pagination__total:not(.__static_scope){margin-right:auto}
+.public-pagination__size:not(.__static_scope){margin-left:auto}
+.public-pagination__pages:not(.__static_scope){order:3;flex-basis:100%;justify-content:center}}
+@media(max-width:420px){
+.public-pagination__pages button.is-neighbour:not(.__static_scope){display:none}}

@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 手风琴通过当前展开项的索引或状态控制内容显隐。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const items = [...document.querySelectorAll('.accordion-item')];
+items.forEach((item, i) =&gt; item.querySelector('button').onclick = () =&gt; {
+  items.forEach((x, j) =&gt; { x.querySelector('.body').hidden = i !== j; });
+});
+</code></pre>
+<p><strong>学完能做：</strong> 实现互斥或独立展开的折叠列表。</p>

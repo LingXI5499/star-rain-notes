@@ -251,7 +251,7 @@ onBeforeUnmount(() => { clearTimeout(searchTimer); headerObserver?.disconnect();
           <PublicSelect v-model="direction" label="评价方向" :options="[{ value: 'ANY', label: '任一方向' }, { value: 'EN_TO_ZH', label: '英译中' }, { value: 'ZH_TO_EN', label: '中译英' }, { value: 'AUDIO_TO_BOTH', label: '听音辨词' }]" @update:model-value="filters" />
           <PublicSelect v-model="lastRating" label="最近评价" :options="[{ value: 'ANY', label: '全部评价' }, { value: 'FORGOT', label: '忘记' }, { value: 'UNCERTAIN', label: '模糊' }, { value: 'KNOW', label: '掌握' }]" @update:model-value="filters" />
         </template>
-        <p v-else class="theme-words__login">搜索可直接使用；登录后可按学习状态、熟练度、计划和评价筛选。<RouterLink :to="{ path: '/useradmin/login', query: { redirect: route.fullPath } }">去登录 →</RouterLink></p>
+        <p v-else class="theme-words__login">搜索可直接使用；登录后可按学习状态、熟练度、计划和评价筛选。<RouterLink :to="{ path: '/login', query: { redirect: route.fullPath } }">去登录 →</RouterLink></p>
       </div>
       <div class="theme-words__toolbar">
         <div class="theme-words__display" role="group" aria-label="全部词卡显示"><span>显示</span><button v-for="option in displayOptions" :key="option.value" :class="{ 'is-active': displayMode === option.value }" :aria-pressed="displayMode === option.value" @click="globalDisplay(option.value)">{{ option.label }}</button></div>

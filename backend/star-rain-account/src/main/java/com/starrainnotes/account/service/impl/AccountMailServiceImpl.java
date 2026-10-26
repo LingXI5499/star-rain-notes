@@ -104,14 +104,7 @@ public class AccountMailServiceImpl implements AccountMailService {
         outbox.enqueueResetRequest(from, email, frontendOrigin);
     }
 
-    /*
-     * 邮件里的落地链接必须带账号树前缀 /useradmin。
-     *
-     * 入口改成「一个域名 + 两条路径树」之后，公开树里根本不存在重置密码与接受邀请的页面，
-     * 只有账号树才有；链接不带前缀会被落成公开树首页，等于邮件里的链接直接失效。
-     * 前缀在这里写死而不做成配置，是因为它与前端 shared/viewMode.js 的 ACCOUNT_PREFIX 是同一个契约，
-     * 拆成两处配置只会让两边悄悄漂移。
-     */
+    // 新邮件统一使用规范路径；旧邮件由站点入口重定向兼容。
     /**
      * 重置地址。
      *
@@ -119,7 +112,7 @@ public class AccountMailServiceImpl implements AccountMailService {
      * @return 类型为 <code>String</code> 的处理结果
      */
     public String resetUrl(String token) {
-        return frontendOrigin + "/useradmin/reset-password?token=" + token;
+        return frontendOrigin + "/reset-password?token=" + token;
     }
 
     /**
@@ -130,7 +123,7 @@ public class AccountMailServiceImpl implements AccountMailService {
      */
     @Override
     public String invitationUrl(String token) {
-        return frontendOrigin + "/useradmin/invitation/accept?token=" + token;
+        return frontendOrigin + "/invitation/accept?token=" + token;
     }
 
     /**

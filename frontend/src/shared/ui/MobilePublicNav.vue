@@ -19,7 +19,7 @@ import { listPublicTags } from '../../modules/blog/api/blogApi'
  * 路由；通过 useRoute 建立。
  */
 const route = useRoute(), router = useRouter()
-const { contentPath, isAccount } = useViewMode()
+const { contentPath } = useViewMode()
 /**
  * open；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -164,7 +164,7 @@ onBeforeUnmount(() => { generation++; unlock(); document.removeEventListener('ke
         <header><strong>{{ title }}</strong><button type="button" aria-label="关闭导航" @click="close()">×</button></header>
         <nav v-if="open === 'more'" aria-label="更多页面">
           <RouterLink v-for="item in more" :key="item.path" :to="contentPath(item.path)"><span><strong>{{ item.label }}</strong><small>{{ item.description }}</small></span><span aria-hidden="true">→</span></RouterLink>
-          <RouterLink v-if="isAccount" :to="accountPath('/center')"><strong>用户中心</strong><span aria-hidden="true">→</span></RouterLink>
+          <RouterLink :to="accountPath('/center')"><strong>用户中心</strong><span aria-hidden="true">→</span></RouterLink>
         </nav>
         <nav v-else-if="open === 'english'" aria-label="英语模块">
           <RouterLink :to="contentPath('/english')"><strong>英语中心</strong><span aria-hidden="true">→</span></RouterLink>

@@ -216,7 +216,7 @@ function toggleCategory(value) {
  * @param asset 资产；默认值、解构字段与可选参数见函数签名。
  */
 function openDetail(asset) {
-  router.push(`/useradmin/media/${asset.id}`)
+  router.push(`/media/${asset.id}`)
 }
 
 // 「打开」走后端给的 contentUrl，路径规则由后端决定，前端不自己拼
@@ -332,7 +332,7 @@ usePaginationScroll(() => page.value, () => loading.value)
           <p v-if="loading" class="loading" role="status">正在加载媒体…</p>
 
           <div v-if="view === 'grid'" class="media-library__grid">
-            <article v-for="asset in data.items" :key="asset.id" class="media-library__card" tabindex="0" :aria-label="`查看媒体：${asset.originalName}`" @click="router.push(`/useradmin/media/${asset.id}`)" @keydown.enter.self="router.push(`/useradmin/media/${asset.id}`)">
+            <article v-for="asset in data.items" :key="asset.id" class="media-library__card" tabindex="0" :aria-label="`查看媒体：${asset.originalName}`" @click="router.push(`/media/${asset.id}`)" @keydown.enter.self="router.push(`/media/${asset.id}`)">
               <button
                 class="media-library__preview"
                 type="button"

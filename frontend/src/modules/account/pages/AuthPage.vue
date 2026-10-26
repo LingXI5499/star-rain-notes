@@ -16,7 +16,7 @@ import { useAuthStore } from '../stores/authStore'
 import * as api from '../api/accountApi'
 import { clearCsrf, errorMessage } from '../api/http'
 import { useEmailCode } from '../support/useEmailCode'
-// 认证页全部落在账号树，路径一律由 viewMode 的 accountPath() 推出来，不写死 '/useradmin' 字面量
+// 认证页和登录返回目标统一使用规范路径。
 import { accountPath } from '../../../shared/viewMode'
 
 /**
@@ -140,17 +140,10 @@ async function submit() {
   try {
     if (props.mode === 'login') {
       if (!await auth.login(form.identifier, form.password)) return
-      /*
-       * 登录成功后的落点分两种，这是本轮刻意改的地方：
-       *   1. 守卫送来的（URL 带 redirect，例如未登录访问 /useradmin/center）——
-       *      按 redirect 回到他原本要去的那一页，不能把人丢到别处；
-       *   2. 自己点「登录」进来的 —— 留在 / 回到账号树前台（/useradmin），**不进后台**。
-       *      后台是管理动作，绝大多数登录只是来看内容；直接弹进控制台会让人一进来
-       *      就要先找「怎么回去」。进后台改由右上角用户菜单里的「进入后台」自己决定。
-       */
+      // 登录后优先回到原目标；直接登录则返回首页，由用户自行进入后台。
       if (!valid()) return
       const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : ''
-      await router.replace(redirect.startsWith('/') && !redirect.startsWith('//') ? redirect : accountPath('/'))
+      await router.replace(redirect.startsWith('/') && !redirect.startsWith('//') ? accountPath(redirect) : accountPath('/'))
     } else if (props.mode === 'register') {
       await api.register({
         username: form.username, email: form.email, password: form.password,

@@ -18,40 +18,7 @@ import * as accountApi from '../../modules/account/api/accountApi'
 import { accountPath } from '../viewMode'
 import { appliedManualTheme, applyManualTheme, readManualTheme, switchManualTheme, themeSwitching } from '../theme/manualTheme'
 
-/*
- * 控制台外壳（唯一带侧栏的外壳），由账号树的 /useradmin/center 用户中心进入。
- *
- * 侧栏是**数据驱动的五组导航**，每组一个标题、组内层级一致（一级项 + 一级子项），
- * 按角色与权限隐藏 —— 是「看不见」，不是「点了报 403」：
- *
- *   概览    仪表盘、访问统计                 仅 SUPER_ADMIN
- *   内容    教程工作台、博客管理（+标签管理/专题管理）、英语内容（+五个方向）、
- *           作品管理、媒体库、作者资料       ADMIN 及以上，逐项按权限
- *   协作    审核中心、留言管理                按 review:read / message:read-admin
- *   站点    站点设置                          仅 SUPER_ADMIN
- *   账户    我的账户、学习记录（+今日/计划/复习/历史）、
- *           账户管理、管理员邀请、审计日志    按各自权限
- *
- * 上一版有三个真实缺陷，这次一并修掉：
- *   1. 「仪表盘 / 访问统计 / 我的账户 / 学习记录」四项裸露在标题之上 ——
- *      注释里分了「通用 / 统计总览」两组，模板里却从来没渲染过那两行标题。
- *   2. 同一块地方有两个名字：折叠态写「治理」，展开态写「站点治理」，
- *      页面内部又自称「站点治理」。现在组名只有一处定义。
- *   3. 分组深度不一致：内容编辑是平铺的 8 项，站点治理却是「折叠父项 + 子项」。
- *      现在统一为「组标题 + 一级项」，只有真正存在子页面的项才挂子项。
- *      同时删掉了 `item.pending` 那两条永不成立的「建设中」死分支。
- *
- * 子项（标签管理/专题管理、英语五个方向、学习四页）过去「有路由无入口」，
- * 只能靠手输地址访问；现在挂在各自父项下，父项所在组展开时可见。
- *
- * 返回前台指向**账号树前台**（accountPath('/') = /useradmin），不是裸 '/'：
- *   裸 '/' 是公开树首页，那是给大众的匿名站，一进去右上角账号区就整个消失了
- *   （公开树按设计永远匿名）。控制台里的「返回前台」是「从后台回到我刚才浏览内容的地方」，
- *   那个地方是账号树前台，因此必须用 accountPath('/') 带上前缀，不能写裸 '/'。
- *   路径由 viewMode.js 的工具函数生成，账号树的字面量只在 viewMode.js 里存在一处。
- * 仍然用整页链接（<a>）而不是 RouterLink：离开控制台时整页重载会顺带丢掉控制台自己的
- *   运行态（侧栏折叠、导航滚动位置、已挂载的各控制台 store），比 SPA 内跳更干净。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 /**
  * 路由；通过 useRoute 建立。
  */
@@ -561,8 +528,8 @@ async function submitPassword() {
           <span class="admin-shell__header-title-short">控制台</span>
         </div>
         <div class="admin-shell__header-actions">
-          <!-- 返回前台 = 回账号树前台 /useradmin（accountPath('/')），不是公开树 '/'，理由见文件头注释 -->
-          <a class="admin-shell__header-action" :href="accountPath('/')" title="返回前台（账号树首页）">
+          <!-- 返回网站首页 -->
+          <a class="admin-shell__header-action" :href="accountPath('/')" title="返回前台">
             <span class="admin-shell__header-action-long">返回前台</span>
             <span class="admin-shell__header-action-short">前台</span>
           </a>

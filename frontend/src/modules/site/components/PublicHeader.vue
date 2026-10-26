@@ -16,17 +16,7 @@ import ThemeControl from './ThemeControl.vue'
 import { useViewMode } from '../../../shared/viewMode'
 import { useSiteBranding } from '../support/siteBranding'
 
-/*
- * 前台顶部导航 —— 对齐 V1 `components/PublicHeader.vue`：
- * 粘性、滚动后收窄并加下边框，品牌 + 内容导航 + 搜索 + 主题 + 账号区。
- *
- * 品牌名与 Logo 来自 Site 公共配置；尚未配置时显示本地默认标识。
- * 导航目标按**当前路径树**生成：公开树指向 /blog，账号树指向 /useradmin/blog。
- *      写死 /blog 的话，在 /useradmin 里点「博客」会掉回公开树、把账号外壳丢掉。
- *
- * 账号区不在这里实现：它由 PublicShell 通过 `account` 插槽传进来，且只在账号模式挂载。
- * 本文件因此不出现任何账号相关的链接或状态，也不引用 auth store。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 /**
  * 路由；通过 useRoute 建立。
  */
@@ -223,6 +213,7 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
  */
 .site-header__link {
   font-size: 15px;
+  white-space: nowrap;
   color: var(--text-secondary);
   padding-block: var(--space-1);
   border-bottom: 2px solid transparent;
@@ -272,6 +263,14 @@ onBeforeUnmount(() => window.removeEventListener('scroll', onScroll))
   align-items: center;
   gap: var(--space-2);
   margin-left: auto;
+}
+
+/* Account entry is present on every page; give navigation its own row on narrow desktops. */
+@media (min-width: 769px) and (max-width: 1100px) {
+  .site-header, .site-header--scrolled { height: auto; padding-block: 8px; }
+  .site-header__inner { flex-wrap: wrap; gap: 8px 16px; }
+  .site-header__brand { flex-shrink: 0; }
+  .site-header__nav { order: 3; flex-basis: 100%; justify-content: center; gap: 24px; }
 }
 
 /**

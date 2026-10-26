@@ -15,7 +15,7 @@ describe('current plan navigation', () => {
  })
  it('continues from the first incomplete chapter at the normal tutorial URL', () => {
   const plan = {id:'p',tutorialSlug:'course',chapters:[{chapterId:'1',chapterSlug:'done',completed:true},{chapterId:'2',chapterSlug:'next',completed:false}]}
-  expect(planChapterRoute(plan,nextPlanChapter(plan))).toEqual({path:'/useradmin/tutorials/course/next',query:{plan:'p'}})
+  expect(planChapterRoute(plan,nextPlanChapter(plan))).toEqual({path:'/tutorials/course/next',query:{plan:'p'}})
   expect(() => planChapterRoute(plan, {chapterId:'withdrawn'})).toThrow('章节已撤回')
  })
 })

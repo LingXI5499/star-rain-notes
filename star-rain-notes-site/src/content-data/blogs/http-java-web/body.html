@@ -1,0 +1,788 @@
+<blockquote>
+<p><strong>本文定位</strong>：这是一篇架构认知总览，而非照着安装一堆中间件的部署手册。目标是弄清楚：<strong>压力从哪里来、瓶颈出现在哪里、技术怎样解决问题、又引入了什么新问题</strong>。</p>
+<p><strong>适用基线</strong>：常见的 Spring Boot + Spring MVC + 内嵌 Tomcat + MyBatis + MySQL 单体应用。文中的配置与流量数字均用于阐明原理，不是可直接套用的生产容量承诺。</p>
+</blockquote>
+<h2>一、先看全貌：六个阶段到底在演进什么？</h2>
+<pre><code>阶段 1  单次请求：一次数据从哪里来、经过哪里、去往哪里？
+          │  Spring MVC / Controller / Service / Mapper / MySQL
+          ▼
+阶段 2  单机并发：多个请求怎样同时推进？
+          │  Tomcat 工作线程 / 并发 / HikariCP 连接池
+          ▼
+阶段 3  正确性与性能：多个请求竞争资源怎么办？
+          │  事务 / 锁 / MVCC / 幂等 / Redis / 限流
+          ▼
+阶段 4  应用扩展：一台机器确实不够了怎么办？
+          │  Nginx / 负载均衡 / Spring Boot 多实例集群
+          ▼
+阶段 5  数据与异步：数据库和下游服务成为瓶颈怎么办？
+          │  SQL 优化 / 读写分离 / 分片 / RabbitMQ、Kafka
+          ▼
+阶段 6  大型系统治理：很多团队、服务和机器如何协作？
+             微服务 / 网关 / 服务发现 / 熔断 / 可观测性
+</code></pre>
+<p><strong>特别说明：这是一条学习路线，不是软件必须遵循的升级顺序。</strong> 有的单体应用先引入缓存；有的系统先部署两个实例；有的业务永远不需要微服务。技术选型必须由业务需求和真实测量决定。</p>
+<h3>1.1 先区分四个很容易混淆的概念</h3>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>一句话解释</th>
+<th>直观例子</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>并发（Concurrency）</td>
+<td>多个任务在同一时间段内交错推进</td>
+<td>100 个 HTTP 请求都在处理或等待</td>
+</tr>
+<tr>
+<td>并行（Parallelism）</td>
+<td>多个任务在同一时刻实际执行</td>
+<td>多核 CPU 同时运行不同计算任务</td>
+</tr>
+<tr>
+<td>吞吐量（Throughput）</td>
+<td>单位时间完成多少任务</td>
+<td>每秒成功完成 800 次请求，即约 800 RPS</td>
+</tr>
+<tr>
+<td>响应时间（Latency）</td>
+<td>一个请求从发起到完成耗费多久</td>
+<td>平均 120 ms，P95 为 300 ms</td>
+</tr>
+</tbody>
+</table>
+<p>还要明确：<strong>在线用户数 ≠ 同时请求数 ≠ 每秒请求数 ≠ 数据库连接数</strong>。一万人登录网站，不代表一万人在同一毫秒都发出了请求，更不代表必须准备一万个数据库连接。</p>
+<h3>1.2 理解吞吐量、响应时间和在途请求数</h3>
+<p>在系统稳定、统计口径一致时，Little 定律可以写成：</p>
+<pre><code>平均在途请求数 L ≈ 完成吞吐量 λ × 平均停留时间 W
+例如：1000 请求/秒 × 0.2 秒 ≈ 200 个在途请求
+</code></pre>
+<p>这里的 <strong>200 是平均在途请求数，不一定是 200 个工作线程</strong>。不同的网络模型、异步机制和队列结构，决定了请求与线程如何对应。</p>
+<p>如果服务端响应越来越慢，即便请求到达率不变，在途请求和排队压力也可能持续增长。这解释了为什么“数据库突然慢了”，整个接口层也可能跟着超时。</p>
+<h2>二、阶段一：从一次 HTTP 请求开始——打通完整执行链路</h2>
+<h3>2.1 一个真实例子</h3>
+<p>用户在 Vue 页面点击“查看文章”，Axios 发出：</p>
+<pre><code>GET /api/articles/1001 HTTP/1.1
+Host: example.com
+Accept: application/json
+</code></pre>
+<p>在典型的 Spring Boot 单体项目里，概念链路如下：</p>
+<pre><code>Vue / Axios
+    ↓ HTTP/HTTPS
+Nginx（如果部署了反向代理）
+    ↓
+Tomcat：接收连接、解析 HTTP、调度请求
+    ↓
+Servlet Filter（过滤器，可有多个）
+    ↓
+DispatcherServlet（Spring MVC 前端控制器）
+    ↓
+HandlerMapping（查找处理器和对应拦截器链）
+    ↓
+HandlerAdapter（完成参数绑定并调用处理方法）
+    ↓
+Controller：接收参数，调用业务
+    ↓
+Service：执行业务规则、协调事务
+    ↓
+Mapper / MyBatis：生成并执行 SQL
+    ↓
+JDBC / 连接池 → MySQL
+    ↑
+Mapper → Service → Controller
+    ↑
+HttpMessageConverter / Jackson：对象转 JSON
+    ↑
+HTTP 响应 → 浏览器页面更新
+</code></pre>
+<p>这里的 <code>Mapper XML</code> <strong>不是每次调用都必须经过的固定一层</strong>：MyBatis 既可以使用 XML 映射，也可以采用注解等方式定义 SQL。并且不是所有请求都需要查数据库，例如健康检查、缓存命中或纯计算接口。</p>
+<h3>2.2 用最小代码串起来</h3>
+<pre><code>// Controller：负责 HTTP 入口
+@RestController
+@RequestMapping("/api/articles")
+public class ArticleController {
+    private final ArticleService articleService;
+
+    public ArticleController(ArticleService articleService) {
+        this.articleService = articleService;
+    }
+
+    @GetMapping("/{id}")
+    public ArticleVO getArticle(@PathVariable Long id) {
+        return articleService.getArticle(id);
+    }
+}
+</code></pre>
+<pre><code>// Service：负责业务
+@Service
+public class ArticleService {
+    private final ArticleMapper articleMapper;
+
+    public ArticleService(ArticleMapper articleMapper) {
+        this.articleMapper = articleMapper;
+    }
+
+    public ArticleVO getArticle(Long id) {
+        Article article = articleMapper.selectById(id);
+        if (article == null) {
+            throw new IllegalArgumentException("文章不存在");
+        }
+        return new ArticleVO(article.getId(), article.getTitle());
+    }
+}
+</code></pre>
+<pre><code>&lt;!-- MyBatis XML：可选的一种 SQL 映射方式 --&gt;
+&lt;select id="selectById" resultType="com.example.Article"&gt;
+    SELECT id, title
+    FROM article
+    WHERE id = #{id}
+&lt;/select&gt;
+</code></pre>
+<p><code>ArticleMapper</code> 接口、<code>Article</code>、<code>ArticleVO</code> 及异常处理代码在此省略；示例旨在说明层次职责。</p>
+<h3>2.3 这个阶段一定要回答的五个问题</h3>
+<ol>
+<li><strong>HTTP 数据放在哪里？</strong> Path、Query、Header、Cookie、Body；JSON 与 <code>multipart/form-data</code> 是请求体的不同表示方式。</li>
+<li><strong>Spring Boot 和 Spring MVC 是什么关系？</strong> Spring Boot 负责应用启动与自动配置等便利能力；Spring MVC 负责 Servlet Web 请求处理框架。</li>
+<li><strong>谁真正把请求分配给 Controller？</strong> <code>DispatcherServlet</code> 协调处理流程，通过 <code>HandlerMapping</code> 与 <code>HandlerAdapter</code> 等组件完成匹配、调用。</li>
+<li><strong>Service 为什么单独存在？</strong> 把业务规则从 HTTP 协议细节和 SQL 实现中分离，便于测试、复用和维护。</li>
+<li><strong>响应如何产生？</strong> Controller 返回 Java 对象，合适的消息转换器可将其序列化为 JSON，再作为 HTTP 响应体输出。</li>
+</ol>
+<p><strong>阶段结论：一次请求是一条执行路径。</strong> 下一步不是重新发明 Controller，而是研究：多个执行路径为什么能够同时存在？</p>
+<p>参考：<a href="#">Spring MVC DispatcherServlet</a>、<a href="#">Spring MVC 请求处理流程</a>。</p>
+<h2>三、阶段二：从单次请求到多个并发请求——线程池和连接池</h2>
+<h3>3.1 三个用户同时请求，会发生什么？</h3>
+<p>假设用户 A、B、C 几乎同时调用同一个接口。在典型同步阻塞的 Spring MVC + Tomcat 工作模式下，Tomcat 可以安排不同的工作线程来处理这些请求：</p>
+<pre><code>请求 A → Tomcat 工作线程 T1 → Controller → Service → SQL
+请求 B → Tomcat 工作线程 T2 → Controller → Service → SQL
+请求 C → Tomcat 工作线程 T3 → Controller → Service → SQL
+                         ↓
+                    竞争共享资源
+</code></pre>
+<p><strong>线程是 JVM 中承载程序执行的单位之一，并不是每个用户固定绑定一个线程。</strong> 浏览器保持 TCP 连接也不等于一个连接始终独占一个工作线程。以常见同步处理为例，线程在执行业务、等待同步数据库调用时通常仍被占用；不同的异步或虚拟线程模型另有差异。</p>
+<h3>3.2 Tomcat 工作线程池（Thread Pool）解决什么？</h3>
+<p>建立和销毁线程需要成本。Tomcat 将工作线程作为可复用资源管理，让请求在可用线程上执行。超过处理能力时，可能发生等待、排队、超时或拒绝连接。</p>
+<p>这涉及三个概念：</p>
+<ul>
+<li><strong><code>maxThreads</code></strong>：Connector 可用工作线程的上限之一；</li>
+<li><strong><code>maxConnections</code></strong>：同时接受和处理连接的数量上限；</li>
+<li><strong><code>acceptCount</code></strong>：操作系统连接等待队列相关的配置。</li>
+</ul>
+<p>三者不等价，更不是“把 <code>maxThreads</code> 设为 1000，接口就能达到 1000 RPS”。还要考虑连接复用、队列、CPU 和下游等待。参见 <a href="#">Tomcat HTTP Connector</a>。</p>
+<h3>3.3 HikariCP 数据库连接池（Connection Pool）解决什么？</h3>
+<p>数据库连接不是普通的 Java 对象，它关联真实的数据库会话及资源，建立和复用都需要管理。</p>
+<pre><code>请求线程 T1 ──┐
+请求线程 T2 ──┤
+请求线程 T3 ──┼── 获取/归还 JDBC Connection ── MySQL
+请求线程 T4 ──┤           HikariCP
+请求线程 T5 ──┘
+</code></pre>
+<p>假设有 <strong>100 个正在处理的请求</strong>，但连接池最大只有 <strong>20 个连接</strong>。当连接全部被借走时，后续需要连接的线程可能等待；超过 <code>connectionTimeout</code> 后，获取连接失败。线程池与连接池各自限制不同资源，不能互相替代。参见 <a href="#">HikariCP 配置说明</a>。</p>
+<pre><code># 仅演示参数含义，不是通用生产调优模板
+server:
+  tomcat:
+    threads:
+      max: 200
+spring:
+  datasource:
+    hikari:
+      maximum-pool-size: 20
+      connection-timeout: 3000
+</code></pre>
+<p><strong>为什么不是把连接池调得越大越好？</strong> MySQL 自身也受 CPU、锁、I/O、内存和执行计划限制。连接数过多可能加剧争用；连接池大小必须根据 SQL 耗时、数据库容量、应用实例数和压测数据确定。</p>
+<h3>3.4 一定要理解线程安全</h3>
+<p>Spring 中的 Service 通常是单例 Bean。多个线程可以同时执行同一个 Service 实例的方法。</p>
+<pre><code>@Service
+public class WrongCounterService {
+    private int count = 0; // 共享可变状态
+
+    public void increase() {
+        count++; // 不是线程安全的原子操作
+    }
+}
+</code></pre>
+<p><code>count++</code> 包含读、加、写，可能发生更新丢失。真实业务计数往往应根据一致性要求采用数据库原子更新、Redis 原子命令或其他并发协调方式，而不是把重要状态简单放在 Service 成员变量中。</p>
+<p><strong>阶段结论：并发带来执行能力，也带来等待与共享状态竞争。</strong> 下一阶段要同时研究“正确性”和“性能”。</p>
+<h2>四、阶段三：并发造成竞争与瓶颈——事务、锁、MVCC、缓存和限流</h2>
+<h3>4.1 正确性问题：100 人争抢 1 件商品</h3>
+<p>设库存 <code>stock = 1</code>。一种错误的业务逻辑是：</p>
+<pre><code>请求 A 查询库存 → 得到 1
+请求 B 查询库存 → 得到 1
+A 判断有货 → 创建订单
+B 判断有货 → 创建订单
+A 更新库存为 0
+B 更新库存为 0
+</code></pre>
+<p>结果可能是 <strong>产生两笔成功订单，但库存只扣减一次</strong>。这叫竞态条件（Race Condition）。</p>
+<p>正确思路之一：把“判断库存是否充足”和“扣减库存”合并为数据库中的条件更新。</p>
+<pre><code>UPDATE product
+SET stock = stock - 1
+WHERE id = 1001 AND stock &gt; 0;
+</code></pre>
+<p>在 MyBatis 中检查受影响行数：等于 1 才表示本次成功扣减。订单创建与库存扣减应纳入适当的数据库事务边界，保证发生失败时按预期回滚。</p>
+<pre><code>@Transactional
+public void createOrder(Long productId) {
+    int affected = productMapper.decreaseStock(productId);
+    if (affected != 1) {
+        throw new IllegalStateException("库存不足");
+    }
+    orderMapper.insertOrder(productId);
+}
+</code></pre>
+<p>这里假设两个 Mapper 在同一事务管理器管理的数据库事务中执行，并省略实际的用户、金额、订单主键和唯一约束等字段。默认 Spring 事务对运行时异常回滚；它也不是万能的跨服务分布式事务。参见 <a href="#">Spring 事务文档</a>。</p>
+<h3>4.2 相关技术怎么分类？</h3>
+<table>
+<thead>
+<tr>
+<th>技术</th>
+<th>主要解决什么问题</th>
+<th>典型应用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>数据库事务</td>
+<td>多个数据库操作作为一个逻辑工作单元</td>
+<td>创建订单 + 扣减库存</td>
+</tr>
+<tr>
+<td>悲观锁</td>
+<td>获取锁后排他地修改共享数据</td>
+<td><code>SELECT ... FOR UPDATE</code></td>
+</tr>
+<tr>
+<td>乐观锁</td>
+<td>更新前检测版本是否变化</td>
+<td><code>UPDATE ... WHERE version = ?</code></td>
+</tr>
+<tr>
+<td>MVCC</td>
+<td>通过多版本支持一致性读取、改善读写并发</td>
+<td>InnoDB 一致性普通<code>SELECT</code></td>
+</tr>
+<tr>
+<td>唯一约束</td>
+<td>从数据库层阻止重复记录</td>
+<td>相同支付流水号只允许一条</td>
+</tr>
+<tr>
+<td>幂等性</td>
+<td>同一业务请求重复提交时仍得到期望的业务效果</td>
+<td>网络重试不能重复扣款</td>
+</tr>
+<tr>
+<td>分布式锁</td>
+<td>跨应用实例协调对共享资源的操作</td>
+<td>必须跨节点互斥的特殊业务</td>
+</tr>
+</tbody>
+</table>
+<p><strong>锁、MVCC 与事务不是同义词。</strong> InnoDB 的普通一致性读和锁定读行为不同；锁的范围还与索引、查询条件和隔离级别有关。参见 <a href="#">InnoDB 锁</a>、<a href="#">一致性读</a>。</p>
+<h3>4.3 性能问题：同一篇热门文章被反复读取</h3>
+<p>用户 A、B、C 都请求文章 <code>1001</code>，如果每次都访问 MySQL，就会产生重复查询。对于<strong>热点、读多写少、允许一定缓存时效性</strong>的数据，可采用 Redis 旁路缓存（Cache-Aside）：</p>
+<pre><code>GET /api/articles/1001
+        ↓
+    查询 Redis
+     /      \
+  命中      未命中
+   ↓           ↓
+返回缓存      查询 MySQL
+               ↓
+          写入 Redis（带 TTL）
+               ↓
+             返回
+</code></pre>
+<pre><code>读取：先查 Redis → 未命中查 MySQL → 回填缓存
+写入：先更新 MySQL → 再按策略删除或更新缓存
+</code></pre>
+<p>注意：缓存会引入<strong>数据过期、缓存击穿、缓存雪崩、缓存穿透、数据库与缓存一致性</strong>等新问题。Redis 不能取代数据库中对重要业务状态的正确性约束。参见 <a href="#">Redis Cache-Aside 官方说明</a>。</p>
+<h3>4.4 保护问题：如果请求速度超过处理能力？</h3>
+<p>假设应用稳定处理能力低于突发流量，若无限排队，请求可能越积越多。此时可采用：</p>
+<ul>
+<li><strong>限流（Rate Limiting）</strong>：限制用户、IP 或接口的请求速率；</li>
+<li><strong>超时（Timeout）</strong>：限制请求等待下游的时间；</li>
+<li><strong>隔离（Bulkhead）</strong>：避免一个慢业务耗尽所有工作资源；</li>
+<li><strong>熔断（Circuit Breaker）</strong>：下游连续故障时快速失败；</li>
+<li><strong>降级（Degradation）</strong>：暂时关闭非核心功能，保住关键链路。</li>
+</ul>
+<p>超出限流额度时常见状态码是 <code>429 Too Many Requests</code>；服务器暂时不可用时可能是 <code>503 Service Unavailable</code>。具体状态码取决于失败原因和 API 设计。</p>
+<p><strong>阶段结论：高并发首先要求数据正确，其次才是速度。缓存解决一类重复读问题，限流解决过载保护，但两者都不等于无限扩容。</strong></p>
+<h2>五、阶段四：单台机器不够——Nginx 负载均衡与应用集群</h2>
+<h3>5.1 什么时候考虑加机器？</h3>
+<p>假设经过 SQL 优化、缓存、线程池与 GC 排查，单台应用服务器的 CPU、内存或处理能力仍然接近上限，才有较充分的理由横向扩容（Horizontal Scaling）。</p>
+<ul>
+<li><strong>纵向扩容</strong>：把一台机器从 2 核升级到 8 核；</li>
+<li><strong>横向扩容</strong>：部署多个 Spring Boot 实例，由负载均衡器分发请求。</li>
+</ul>
+<pre><code>                  浏览器 / APP
+                       │
+                       ▼
+                 Nginx（入口）
+                    /      \
+                   ▼        ▼
+            Spring Boot A  Spring Boot B
+                   \       /
+                    ▼     ▼
+             Redis / MySQL / OSS
+</code></pre>
+<p>两个实例可以运行<strong>同一套完整单体应用代码</strong>。因此：</p>
+<blockquote>
+<p><strong>多实例集群 ≠ 微服务；单体应用也完全可以是分布式部署。</strong></p>
+</blockquote>
+<h3>5.2 Nginx 怎样将请求分给不同实例？</h3>
+<pre><code>upstream backend_cluster {
+    server 10.0.0.11:8080;
+    server 10.0.0.12:8080;
+}
+
+server {
+    listen 80;
+    location /api/ {
+        proxy_pass http://backend_cluster;
+    }
+}
+</code></pre>
+<p>这是一份演示 <code>upstream</code> 和 <code>proxy_pass</code> 的简化片段；实际生产还需要 HTTPS、转发头、超时、健康检查、日志等配置。Nginx 可采用轮询、最少连接等策略。参见 <a href="#">NGINX HTTP Load Balancing</a>。</p>
+<h3>5.3 为什么“增加一台服务器”不是结束？</h3>
+<p>多个实例之间会出现<strong>共享状态</strong>问题：</p>
+<table>
+<thead>
+<tr>
+<th>新问题</th>
+<th>原因</th>
+<th>常见解决思路</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用户 A 在实例 1 登录，下一次到实例 2</td>
+<td>本地 Session 不共享</td>
+<td>Redis Session 或无状态认证方案</td>
+</tr>
+<tr>
+<td>实例 1 保存头像，实例 2 找不到</td>
+<td>文件保存在各自磁盘上</td>
+<td>对象存储 OSS / 共享文件存储</td>
+</tr>
+<tr>
+<td>两台机器缓存内容不一致</td>
+<td>各自维护本地缓存</td>
+<td>统一缓存策略与失效机制</td>
+</tr>
+<tr>
+<td>两个实例共同拖慢 MySQL</td>
+<td>下游数据库仍是一个瓶颈</td>
+<td>控制总连接数、优化查询与缓存</td>
+</tr>
+<tr>
+<td>一个实例崩溃</td>
+<td>故障可能影响部分请求</td>
+<td>故障检测、流量摘除、必要时重试</td>
+</tr>
+</tbody>
+</table>
+<p>例如每台实例 HikariCP 上限 20，扩到 5 台，<strong>理论上应用侧可同时建立的数据库连接上限就可能达到 100</strong>（不含其他客户端）。因此扩容应用服务器必须重新审视数据库容量。</p>
+<p><strong>阶段结论：集群扩展的是应用执行能力，不一定同时扩展持久化能力。</strong> 当瓶颈转移到数据库、邮件、AI 生成等下游服务时，要进入下一阶段。</p>
+<h2>六、阶段五：数据库与耗时任务成为瓶颈——读写分离、分片和消息队列</h2>
+<p>这个阶段有两条彼此独立、可以按需组合的路线：<strong>扩展数据访问能力</strong>，以及<strong>改变任务处理时间结构</strong>。</p>
+<h3>6.1 先做 SQL 优化，不要一遇到慢查询就分库分表</h3>
+<p>常见排查顺序：</p>
+<pre><code>慢接口
+  ↓
+查调用日志、慢 SQL、EXPLAIN 执行计划
+  ↓
+检查索引、返回列、查询条件、分页方式
+  ↓
+检查事务时间、锁等待、连接池和数据库 CPU/I/O
+  ↓
+确有必要才引入 Redis、读副本或数据分片
+</code></pre>
+<p>例如 <code>SELECT *</code> 可能读取不必要的列；缺少合适索引可能让查询扫描大量记录；偏移量很大的分页可能很慢。但“加索引”也并不是无代价操作，索引会影响存储与写入。</p>
+<h3>6.2 读写分离（Read/Write Splitting）</h3>
+<p>如果系统绝大多数流量都是查询，可以配置 MySQL 源库和一个或多个副本：</p>
+<pre><code>                   Java 应用
+                  /       \
+               写入        部分读取
+                ▼             ▼
+           MySQL 源库  ──复制──→  MySQL 副本
+              INSERT             SELECT
+              UPDATE
+              DELETE
+</code></pre>
+<p>MySQL 复制默认是异步的，副本可能短暂落后于源库。因此用户“刚修改头像，立刻刷新看不到”，就是需要警惕的<strong>读己之写一致性</strong>问题。重要查询可设计为走源库或采用其他一致性策略。参见 <a href="#">MySQL 8.4 Replication</a>。</p>
+<h3>6.3 分库分表（Sharding）</h3>
+<p>当单库的数据量或写入吞吐已形成实质瓶颈，可能按某个业务键分片：</p>
+<pre><code>user_id 取模 → 分片路由
+user_id = 1001 → 数据库 A
+user_id = 1002 → 数据库 B
+user_id = 1003 → 数据库 C
+</code></pre>
+<p>这只是路由思路的示例，并非推荐直接使用简单取模作为所有系统的分片策略。</p>
+<p>分片带来的代价包括：跨片查询、全局唯一 ID、扩容迁移、热点分片、跨片事务和复杂统计。对于个人知识平台，通常应该先把单库的索引、备份和 SQL 优化做好。</p>
+<h3>6.4 消息队列（MQ）改变什么？</h3>
+<p>假设用户注册成功后，系统要发邮件、生成缩略图或者做全文索引。若这些任务全都在请求线程里同步执行，就会延长用户等待时间。</p>
+<p><strong>同步模式：</strong></p>
+<pre><code>注册请求 → 写 MySQL → 发邮件（等待）→ 建索引（等待）→ 返回
+</code></pre>
+<p><strong>异步模式：</strong></p>
+<pre><code>注册请求 → 写 MySQL → 发布任务消息 → 返回“注册完成”
+                               │
+                               ▼
+                          RabbitMQ 队列
+                               │
+                       消费者异步发送邮件/建索引
+</code></pre>
+<p>这里要特别注意：注册成功表示核心注册事务已完成；邮件发送成功是另一件事，不应混为一个业务状态。</p>
+<table>
+<thead>
+<tr>
+<th>MQ 能力</th>
+<th>含义</th>
+<th>必须一起考虑的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>异步</td>
+<td>非关键任务不阻塞请求</td>
+<td>异步任务什么时候真正完成？</td>
+</tr>
+<tr>
+<td>解耦</td>
+<td>服务之间通过消息沟通</td>
+<td>消息结构如何版本化？</td>
+</tr>
+<tr>
+<td>削峰</td>
+<td>高峰任务先排队，消费者逐步处理</td>
+<td>队列积压是否失控？</td>
+</tr>
+<tr>
+<td>重试</td>
+<td>失败任务可再次尝试</td>
+<td>消费者是否幂等？</td>
+</tr>
+<tr>
+<td>持久化与确认</td>
+<td>降低消息丢失风险</td>
+<td>投递确认、消费者确认、失败处理如何设计？</td>
+</tr>
+</tbody>
+</table>
+<p>RabbitMQ 官方 Work Queues 教程详细介绍任务分发、确认与预取（prefetch），参见 <a href="#">RabbitMQ Java Work Queues</a>。</p>
+<p><strong>最关键的限制：MQ 不能凭空制造处理能力。</strong> 如果消息每秒进入 1000 条、消费者每秒只能处理 100 条，队列还是会持续积压。</p>
+<p>另外，“数据库提交成功，但消息发送失败”也是一个经典一致性问题。可进一步学习 <strong>Transactional Outbox（事务发件箱）</strong> 等方案；不应仅靠盲目重试就假定数据一定一致。</p>
+<p><strong>阶段结论：读写分离扩展一部分读取能力，分片改变数据分布，MQ 改变任务执行时序。三者解决的是完全不同的瓶颈。</strong></p>
+<h2>七、阶段六：微服务与分布式治理——系统大了如何继续开发和运行？</h2>
+<h3>7.1 微服务为什么出现？</h3>
+<p>某个电商系统最初可能只有一个 Spring Boot 工程：</p>
+<pre><code>E-Commerce（一个应用、一次整体部署）
+├── 用户模块
+├── 商品模块
+├── 订单模块
+├── 支付模块
+└── 物流模块
+</code></pre>
+<p>随着业务、开发团队、发布频率和扩容需求增加，可以考虑按业务边界拆分：</p>
+<pre><code>                API Gateway
+                     │
+        ┌────────────┼────────────┐
+        ▼            ▼            ▼
+      用户服务      订单服务      商品服务
+        │            │            │
+      用户数据      订单数据      商品数据
+</code></pre>
+<p>理想情况下，各服务能独立开发、测试、部署和按需扩容。但跨服务边界从原来的 Java 方法调用变为网络调用，复杂度显著提高。Martin Fowler 对微服务的介绍强调独立部署，同时也指出远程调用与服务边界会带来成本，参见 <a href="#">Microservices</a>。</p>
+<h3>7.2 从单体迁移到微服务，多出来哪些基础设施？</h3>
+<table>
+<thead>
+<tr>
+<th>技术类别</th>
+<th>核心问题</th>
+<th>代表技术</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>API 网关</td>
+<td>谁统一接入、路由、鉴权和限流？</td>
+<td>Spring Cloud Gateway</td>
+</tr>
+<tr>
+<td>服务注册与发现</td>
+<td>服务 IP、端口变化时如何定位？</td>
+<td>Nacos / Consul</td>
+</tr>
+<tr>
+<td>远程调用</td>
+<td>服务之间怎样传递请求？</td>
+<td>HTTP / OpenFeign / gRPC</td>
+</tr>
+<tr>
+<td>配置管理</td>
+<td>多服务配置如何统一管理？</td>
+<td>Nacos / Spring Cloud Config</td>
+</tr>
+<tr>
+<td>容错治理</td>
+<td>下游慢、超时、故障如何避免连锁崩溃？</td>
+<td>超时、重试、熔断、隔离</td>
+</tr>
+<tr>
+<td>数据一致性</td>
+<td>不同服务各有数据库如何协调事务？</td>
+<td>Saga / Outbox / 幂等</td>
+</tr>
+<tr>
+<td>部署编排</td>
+<td>大量实例如何部署、升级、恢复？</td>
+<td>Docker / Kubernetes</td>
+</tr>
+<tr>
+<td>可观测性</td>
+<td>一次请求横跨 5 个服务，到底哪里慢？</td>
+<td>OpenTelemetry 等</td>
+</tr>
+</tbody>
+</table>
+<h3>7.3 分布式不等于微服务；微服务不等于高并发</h3>
+<ul>
+<li><strong>分布式系统</strong>：组件运行在多个网络节点上，相互协作。</li>
+<li><strong>集群</strong>：多个实例共同承担某类工作，常用于吞吐量与可用性。</li>
+<li><strong>微服务</strong>：按较独立的业务能力拆分服务，强调服务边界、独立交付和治理。</li>
+</ul>
+<p>一套完整的单体应用复制到两台服务器，已经是多节点部署，但仍是单体架构；一个拆成 20 个服务的系统，也可能因数据库瓶颈或糟糕的调用链而表现更差。</p>
+<h3>7.4 分布式环境中的几个“隐藏成本”</h3>
+<ol>
+<li><strong>网络不可靠</strong>：远程调用会超时、失败或收到不确定结果。</li>
+<li><strong>局部故障</strong>：一个服务异常，不代表整个系统都宕机。</li>
+<li><strong>重复执行</strong>：超时后重试，可能导致重复订单与重复扣费。</li>
+<li><strong>跨服务一致性</strong>：不能简单假设一个本地 <code>@Transactional</code> 能覆盖多个独立数据库。</li>
+<li><strong>观测困难</strong>：仅看某个 Controller 的日志很难知道全链路耗时。</li>
+<li><strong>运维复杂</strong>：服务数量越多，发布、配置、监控和权限管理越复杂。</li>
+</ol>
+<p>因此，<strong>是否采用微服务，应主要由领域边界、团队组织、发布周期、扩容特征和容错要求共同决定</strong>，而不是“用户突破某个固定数字就必须拆”。</p>
+<p><strong>阶段结论：微服务不是性能升级按钮，而是一组业务拆分与工程治理的架构取舍。</strong></p>
+<h2>八、贯穿六个阶段的一条主线：可观测性与容量规划</h2>
+<p>不监测，就无法证明“性能已经提高”。需要把系统现象转换为指标。</p>
+<table>
+<thead>
+<tr>
+<th>指标</th>
+<th>英文</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>吞吐量</td>
+<td>RPS / TPS</td>
+<td>每秒完成的请求或事务数量，须定义统计口径</td>
+</tr>
+<tr>
+<td>延迟</td>
+<td>P50 / P95 / P99</td>
+<td>第 50、95、99 百分位请求耗时</td>
+</tr>
+<tr>
+<td>错误率</td>
+<td>Error Rate</td>
+<td>失败请求占比，区分业务失败与系统失败</td>
+</tr>
+<tr>
+<td>CPU / 内存</td>
+<td>CPU / Memory</td>
+<td>应用和服务器资源使用情况</td>
+</tr>
+<tr>
+<td>JVM 垃圾回收</td>
+<td>GC</td>
+<td>停顿时间、频率、堆使用情况</td>
+</tr>
+<tr>
+<td>工作线程</td>
+<td>Thread Pool</td>
+<td>活跃线程、排队、拒绝情况</td>
+</tr>
+<tr>
+<td>数据库连接池</td>
+<td>HikariCP</td>
+<td>活跃连接、空闲连接、等待线程、获取连接耗时</td>
+</tr>
+<tr>
+<td>数据库</td>
+<td>SQL / Locks</td>
+<td>慢查询、扫描量、锁等待和事务时长</td>
+</tr>
+<tr>
+<td>Redis</td>
+<td>Hit Ratio</td>
+<td>缓存命中率、延迟、内存使用</td>
+</tr>
+<tr>
+<td>MQ</td>
+<td>Queue Lag</td>
+<td>队列长度、最老消息等待时间、消费速率</td>
+</tr>
+<tr>
+<td>分布式调用</td>
+<td>Trace</td>
+<td>一次请求跨服务的时间链条</td>
+</tr>
+</tbody>
+</table>
+<p>典型工具对应：</p>
+<pre><code>业务压测：k6 / JMeter
+应用指标：Spring Boot Actuator + Micrometer
+指标存储与展示：Prometheus + Grafana
+分布式追踪：OpenTelemetry
+数据库诊断：慢 SQL 日志、EXPLAIN、Performance Schema
+</code></pre>
+<p>OpenTelemetry 将 <strong>Traces（追踪）</strong>、<strong>Metrics（指标）</strong>、<strong>Logs（日志）</strong> 作为观察系统的重要信号，参见 <a href="#">OpenTelemetry Signals</a>。Spring Boot 可通过 Actuator 与 Micrometer 输出应用指标，参见 <a href="#">Spring Boot Metrics</a>。</p>
+<h3>8.1 一个简化的容量诊断示例</h3>
+<p>假设某查询接口在低负载下响应 30ms，压测后 P95 变为 2 秒，错误率也开始升高。不要马上决定“上微服务”，而应依次问：</p>
+<ol>
+<li>CPU 是否接近饱和？是否存在 GC 频繁停顿？</li>
+<li>Tomcat 工作线程是否被慢调用长期占用？</li>
+<li>HikariCP 是否存在大量等待连接的线程？</li>
+<li>SQL 执行计划是否合理？是否发生锁等待？</li>
+<li>是否大量重复读取热点数据？缓存是否合适？</li>
+<li>数据库正常而应用 CPU 饱和，是否适合增加应用实例？</li>
+<li>增加实例后数据库是否反而成为新瓶颈？</li>
+</ol>
+<p>这一系列判断比背诵技术名词更加接近真正的软件架构工作。</p>
+<h2>九、六个阶段的技术地图与学习验收标准</h2>
+<table>
+<thead>
+<tr>
+<th>阶段</th>
+<th>必学概念</th>
+<th>典型技术</th>
+<th>能证明“我已理解”的表现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1 单次请求</td>
+<td>HTTP、Servlet、MVC、分层、ORM/Mapper</td>
+<td>Spring MVC、MyBatis</td>
+<td>能口述一次请求从浏览器到数据库再返回的完整路径</td>
+</tr>
+<tr>
+<td>2 单机并发</td>
+<td>线程、共享变量、线程池、连接池、阻塞</td>
+<td>Tomcat、HikariCP</td>
+<td>能解释为什么 100 个请求不需要 100 个数据库连接</td>
+</tr>
+<tr>
+<td>3 争用与瓶颈</td>
+<td>竞态、事务、锁、MVCC、幂等、缓存、限流</td>
+<td>MySQL、Redis</td>
+<td>能解释库存超卖与缓存击穿的根因和应对方式</td>
+</tr>
+<tr>
+<td>4 集群扩展</td>
+<td>反向代理、负载均衡、无状态、共享存储</td>
+<td>Nginx、多 Spring Boot 实例、OSS</td>
+<td>能解释为什么单体集群不等于微服务，以及 Session/文件问题</td>
+</tr>
+<tr>
+<td>5 数据与异步</td>
+<td>SQL 优化、复制延迟、数据分片、队列积压</td>
+<td>MySQL Replication、RabbitMQ</td>
+<td>能选择同步、异步、缓存、读副本而不过度设计</td>
+</tr>
+<tr>
+<td>6 分布式治理</td>
+<td>远程调用、超时、熔断、一致性、观测</td>
+<td>Gateway、Nacos、OpenTelemetry</td>
+<td>能解释微服务的收益、代价和适用前提</td>
+</tr>
+</tbody>
+</table>
+<h3>建议的六篇专题专栏规划</h3>
+<ol>
+<li><strong>《Java Web 一次 HTTP 请求的完整生命周期》</strong>：Servlet、DispatcherServlet、Filter、Interceptor、参数绑定与响应。</li>
+<li><strong>《Tomcat 如何处理多个并发请求》</strong>：线程、线程池、连接池、阻塞、线程安全、压力测试。</li>
+<li><strong>《从库存超卖到高并发保护》</strong>：事务、锁、MVCC、幂等、Redis 与限流。</li>
+<li><strong>《从一台 Spring Boot 到多实例集群》</strong>：Nginx、负载均衡、无状态服务、Session 与文件存储。</li>
+<li><strong>《数据库扩展与消息队列》</strong>：索引、读写分离、分库分表、RabbitMQ、削峰与消息一致性。</li>
+<li><strong>《微服务与分布式系统入门》</strong>：服务拆分、注册发现、网关、容错、可观测性和架构取舍。</li>
+</ol>
+<p>本篇作为专栏<strong>第 0 篇：总览与知识地图</strong>最合适。每一篇专题可以进一步按照“原理 → 真实场景 → 代码实验 → 压测验证 → 复盘”展开。</p>
+<h2>十、第一次实操：用最小实验亲眼看到并发</h2>
+<p>认知先建立，后续实操不必一次完成。第一轮只需要：</p>
+<ol>
+<li>写一个 <code>GET /api/test/sleep</code>，让它在演示环境中同步等待约 1 秒；</li>
+<li>用 k6 或 JMeter 分别发出 1、10、50、100 个并发请求；</li>
+<li>记录 RPS、平均响应时间、P95、错误率；</li>
+<li>在日志里打印当前线程名称，观察线程复用；</li>
+<li>再给接口增加真实 MySQL 查询，观察连接池等待；</li>
+<li>最后比较“调整线程配置”与“优化慢 SQL”分别会带来什么差异。</li>
+</ol>
+<pre><code>@RestController
+@RequestMapping("/api/test")
+public class ConcurrencyDemoController {
+
+    @GetMapping("/sleep")
+    public String sleep() throws InterruptedException {
+        String thread = Thread.currentThread().getName();
+        Thread.sleep(1000); // 仅供测试，生产业务不要无意义阻塞
+        return "handled by " + thread;
+    }
+}
+</code></pre>
+<blockquote>
+<p><strong>实验安全边界</strong>：只在本机或自己授权的测试环境进行压测，不要针对线上生产站点、他人服务或者共享数据库直接施加高并发请求。压测前准备监控、请求上限和退出条件。k6 的并发虚拟用户模型与固定到达率模型也要区分，参见 <a href="#">k6 Scenarios</a>。</p>
+</blockquote>
+<p><strong>实验完成后的复盘题：</strong></p>
+<ul>
+<li>为什么 100 个请求不一定同时占用 100 个 CPU 核心？</li>
+<li>为什么调大 <code>maxThreads</code> 后响应时间可能反而变长？</li>
+<li>为什么调大 HikariCP 不一定使 SQL 更快？</li>
+<li>为什么加了 Redis 还需要事务与唯一索引？</li>
+<li>为什么部署两台 Spring Boot 仍然可能被同一个 MySQL 拖垮？</li>
+<li>为什么微服务增加了服务之间的超时、重试和一致性问题？</li>
+</ul>
+<h2>十一、最后的认知总结</h2>
+<p>如果把整篇文章压缩成六句话：</p>
+<ol>
+<li><strong>单次请求阶段</strong>：先知道请求怎样从网络到 Controller、Service、Mapper，再返回响应。</li>
+<li><strong>单机并发阶段</strong>：Tomcat 线程池让多个请求推进，连接池管理昂贵的数据库连接。</li>
+<li><strong>竞争与瓶颈阶段</strong>：事务、锁和幂等保障数据正确；缓存和限流改善性能与稳定性。</li>
+<li><strong>应用集群阶段</strong>：Nginx 将请求分散到多个实例，但会产生共享状态和下游容量问题。</li>
+<li><strong>数据与异步阶段</strong>：数据库复制和分片扩展数据能力；MQ 将可异步的任务从主链路拆出。</li>
+<li><strong>分布式治理阶段</strong>：微服务服务于业务拆分和独立交付，也必须付出远程调用与治理成本。</li>
+</ol>
+<p>所以，高并发系统的本质并不是“技术栈越多，系统就越高级”，而是：</p>
+<blockquote>
+<p><strong>先观察请求，找到瓶颈；先保障正确，再优化性能；能用简单机制解决，就不要引入无依据的复杂架构。</strong></p>
+</blockquote>
+<p>这条原则适用于个人博客、企业管理系统、电商平台，也适用于未来需要实时消息、异步任务与 AI 模型调用的应用。</p>
+<h2>十二、权威参考资料与后续延伸阅读</h2>
+<p>本文主要依据官方文档与经典架构资料组织；链接会随软件版本变化，学习时以当前项目对应版本为准。</p>
+<p>建议优先阅读以下原始资料，按本文阶段顺序查阅即可：</p>
+<ol>
+<li><strong>请求链路与单机并发</strong>：<a href="#">Spring MVC DispatcherServlet</a>、<a href="#">Tomcat HTTP Connector</a>、<a href="#">HikariCP</a>。</li>
+<li><strong>事务、数据正确性与缓存</strong>：<a href="#">Spring 事务</a>、<a href="#">MySQL InnoDB Locking</a>、<a href="#">Redis Cache-Aside</a>。</li>
+<li><strong>集群与数据扩展</strong>：<a href="#">NGINX HTTP Load Balancing</a>、<a href="#">MySQL Replication</a>。</li>
+<li><strong>异步与分布式治理</strong>：<a href="#">RabbitMQ Java Work Queues</a>、<a href="#">Microservices</a>、<a href="#">OpenTelemetry Signals</a>。</li>
+<li><strong>监控与压测</strong>：<a href="#">Spring Boot Metrics</a>、<a href="#">k6 Scenarios</a>。</li>
+</ol>
+<p>[1]    <a href="https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html">https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet.html</a> Spring Framework - DispatcherServlet</p>
+<p>[2]    <a href="https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/sequence.html">https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-servlet/sequence.html</a> Spring Framework - Processing</p>
+<p>[3]    <a href="https://tomcat.apache.org/tomcat-10.1-doc/config/http.html">https://tomcat.apache.org/tomcat-10.1-doc/config/http.html</a> Apache Tomcat 10.1 - HTTP Connector</p>
+<p>[4]    <a href="https://github.com/brettwooldridge/HikariCP">https://github.com/brettwooldridge/HikariCP</a> HikariCP - Configuration</p>
+<p>[5]    <a href="https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html">https://docs.spring.io/spring-framework/reference/data-access/transaction/declarative/annotations.html</a> Spring Framework - Transactional</p>
+<p>[6]    <a href="https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html">https://dev.mysql.com/doc/refman/8.4/en/innodb-locking.html</a> MySQL 8.4 - InnoDB Locking</p>
+<p>[7]    <a href="https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html">https://dev.mysql.com/doc/refman/8.4/en/innodb-consistent-read.html</a> MySQL 8.4 - Consistent Read</p>
+<p>[8]    <a href="https://redis.io/docs/latest/develop/use-cases/cache-aside/">https://redis.io/docs/latest/develop/use-cases/cache-aside/</a> Redis - Cache-Aside</p>
+<p>[9]    <a href="https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/">https://docs.nginx.com/nginx/admin-guide/load-balancer/http-load-balancer/</a> NGINX - HTTP Load Balancing</p>
+<p>[10]    <a href="https://dev.mysql.com/doc/refman/8.4/en/replication.html">https://dev.mysql.com/doc/refman/8.4/en/replication.html</a> MySQL 8.4 - Replication</p>
+<p>[11]    <a href="https://www.rabbitmq.com/tutorials/tutorial-two-java">https://www.rabbitmq.com/tutorials/tutorial-two-java</a> RabbitMQ - Work Queues Java</p>
+<p>[12]    <a href="https://martinfowler.com/articles/microservices.html">https://martinfowler.com/articles/microservices.html</a> Martin Fowler - Microservices</p>
+<p>[13]    <a href="https://opentelemetry.io/docs/concepts/signals/">https://opentelemetry.io/docs/concepts/signals/</a> OpenTelemetry - Signals</p>
+<p>[14]    <a href="https://docs.spring.io/spring-boot/reference/actuator/metrics.html">https://docs.spring.io/spring-boot/reference/actuator/metrics.html</a> Spring Boot - Metrics</p>
+<p>[15]    <a href="https://grafana.com/docs/k6/latest/using-k6/scenarios/">https://grafana.com/docs/k6/latest/using-k6/scenarios/</a> Grafana k6 - Scenarios</p>

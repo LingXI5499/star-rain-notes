@@ -297,7 +297,7 @@ async function removeChapter(chapter) {
  * 主要协作：router.push。
  */
 function newChapter() {
-  router.push({ path: `/useradmin/tutorials/${tutorialId.value}/chapters/new`, query: { group: activeGroupId.value } })
+  router.push({ path: `/tutorials/${tutorialId.value}/chapters/new`, query: { group: activeGroupId.value } })
 }
 /**
  * edit章节的处理函数。
@@ -305,7 +305,7 @@ function newChapter() {
  * @param chapter 章节；默认值、解构字段与可选参数见函数签名。
  */
 function editChapter(chapter) {
-  router.push(`/useradmin/tutorials/${tutorialId.value}/chapters/${chapter.id}`)
+  router.push(`/tutorials/${tutorialId.value}/chapters/${chapter.id}`)
 }
 /**
  * edit学习内容的处理函数。
@@ -314,7 +314,7 @@ function editChapter(chapter) {
  * @param kind kind；默认值、解构字段与可选参数见函数签名。
  */
 function editLearningContent(chapter, kind) {
-  router.push(`/useradmin/tutorials/${tutorialId.value}/chapters/${chapter.id}/${kind}`)
+  router.push(`/tutorials/${tutorialId.value}/chapters/${chapter.id}/${kind}`)
 }
 
 /**
@@ -331,7 +331,7 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
 <template>
   <main class="page-container curriculum-admin">
     <nav class="curriculum-admin__breadcrumb" aria-label="面包屑">
-      <button type="button" @click="router.push('/useradmin/tutorials/manage')">教程工作台</button>
+      <button type="button" @click="router.push('/tutorials/manage')">教程工作台</button>
       <span>/</span>
       <span>{{ curriculum?.tutorial.categoryName || '知识体系' }}</span>
       <span>/</span>
@@ -347,7 +347,7 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
         <p>左侧管理并列分组，右侧显示当前分组直属章节。</p>
       </div>
       <div class="curriculum-admin__hero-actions">
-        <button type="button" @click="router.push('/useradmin/tutorials/manage')">返回教程工作台</button>
+        <button type="button" @click="router.push('/tutorials/manage')">返回教程工作台</button>
         <button class="primary-button curriculum-admin__create" type="button" :disabled="!activeGroupId" @click="newChapter">新建章节</button>
       </div>
     </header>
@@ -440,7 +440,7 @@ watch(() => route.query.group, value => { if (groups.value.some(group => String(
               </span>
               <div class="curriculum-admin__chapter-actions" @click.stop>
                 <button type="button" @click="editChapter(chapter)">编辑</button>
-                <button type="button" @click="router.push(`/useradmin/tutorials/${tutorialId}/preview?chapter=${chapter.id}`)">预览</button>
+                <button type="button" @click="router.push(`/tutorials/${tutorialId}/preview?chapter=${chapter.id}`)">预览</button>
                 <button type="button" @click="editLearningContent(chapter, 'cards')">知识卡片</button>
                 <button type="button" @click="editLearningContent(chapter, 'questions')">章节问题</button>
                 <button v-if="auth.hasPermission('tutorial:edit') || auth.hasPermission('tutorial:publish')" type="button" :disabled="!!busyId || pending || curriculum?.tutorial.editingStatus === 'IN_REVIEW'" @click="chapter.status === 'PUBLISHED' && curriculum?.tutorial.publicationStatus === 'PUBLISHED' ? withdrawPublishedChapter(chapter) : publishChanges(chapter)">{{ chapter.status === 'PUBLISHED' && curriculum?.tutorial.publicationStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button>

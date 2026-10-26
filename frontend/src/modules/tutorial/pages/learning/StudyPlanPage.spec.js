@@ -23,8 +23,8 @@ const tutorial = { id: 't1', title: 'Tutorial', slug: 'tutorial', groups: [{ id:
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function mountPage(planId = 'new') {
- const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/useradmin/learning/plans/:planId?', component: { template: '<div />' } }, { path: '/useradmin/tutorials/:tutorialSlug/:chapterSlug', component: { template: '<div />' } }, { path: '/useradmin/learning/history', component: { template: '<div />' } }] })
- await router.push(`/useradmin/learning/plans${planId ? `/${planId}` : ''}`); await router.isReady()
+ const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/learning/plans/:planId?', component: { template: '<div />' } }, { path: '/tutorials/:tutorialSlug/:chapterSlug', component: { template: '<div />' } }, { path: '/learning/history', component: { template: '<div />' } }] })
+ await router.push(`/learning/plans${planId ? `/${planId}` : ''}`); await router.isReady()
  const wrapper = mount(StudyPlanPage, { global: { plugins: [router], stubs: { LearningNav: true } } }); await flushPromises()
  return { wrapper, router }
 }
@@ -52,7 +52,7 @@ describe('study plan creation workflow', () => {
   const { wrapper, router } = await mountPage('')
   expect(wrapper.findAll('.learning-plan-card')).toHaveLength(1); expect(wrapper.text()).not.toContain('Ended plan')
   await wrapper.findAll('button').find(b => b.text() === '继续学习').trigger('click'); await flushPromises()
-  expect(startStudyTask).toHaveBeenCalledWith('task'); expect(router.currentRoute.value.path).toBe('/useradmin/tutorials/tutorial/second'); expect(router.currentRoute.value.query.plan).toBe('p1')
+  expect(startStudyTask).toHaveBeenCalledWith('task'); expect(router.currentRoute.value.path).toBe('/tutorials/tutorial/second'); expect(router.currentRoute.value.query.plan).toBe('p1')
  })
  it('refreshes and removes a plan completed elsewhere before continuing study', async () => {
   listStudyPlans.mockResolvedValueOnce([{ id: 'p1', status: 'ACTIVE', name: 'Finishing plan' }]).mockResolvedValue([])
@@ -69,7 +69,7 @@ describe('study plan creation workflow', () => {
   await wrapper.findAll('button').find(b => b.text() === '再学一次').trigger('click'); await flushPromises()
   expect(transitionStudyPlan.mock.calls).toEqual([['p1', 'restart'], ['p1', 'activate']])
   expect(createStudyPlan).not.toHaveBeenCalled(); expect(startStudyTask).toHaveBeenCalledWith('round2task')
-  expect(router.currentRoute.value.path).toBe('/useradmin/tutorials/tutorial/ready'); expect(router.currentRoute.value.query.plan).toBe('p1')
+  expect(router.currentRoute.value.path).toBe('/tutorials/tutorial/ready'); expect(router.currentRoute.value.query.plan).toBe('p1')
  })
  it('blocks an empty or ineligible range and previews a valid chapter with no questions', async () => {
   const { wrapper } = await mountPage()
@@ -124,7 +124,7 @@ describe('study plan creation workflow', () => {
   previewStudyPlan.mockImplementation(() => new Promise(resolve => { finishPreview = resolve }))
   const { wrapper, router } = await mountPage(); await fillPlan(wrapper)
   await wrapper.find('form').trigger('submit'); await flushPromises()
-  await router.push('/useradmin/learning/plans/p1'); await flushPromises()
+  await router.push('/learning/plans/p1'); await flushPromises()
   finishPreview({ tasks: [{ sequenceNo: 1, cardCount: 2, questionCount: 0, chapters: [{ chapterTitle: 'Ready' }] }] }); await flushPromises()
   expect(wrapper.text()).not.toContain('任务预览'); expect(wrapper.text()).not.toContain('保存并启动')
  })

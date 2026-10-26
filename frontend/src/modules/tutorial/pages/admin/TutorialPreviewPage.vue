@@ -95,7 +95,7 @@ watch(() => route.params.tutorialId, load, { immediate: true })
 
 <template>
   <main class="page-container tutorial-preview">
-    <header class="tutorial-preview__header"><div><p class="eyebrow">CONTENT PREVIEW · 内容预览</p><h1>{{ tutorial?.title || '教程预览' }}</h1><p>预览当前已保存内容；管理员待审核的修改通过后才会生效。</p></div><button type="button" @click="router.push(`/useradmin/tutorials/${route.params.tutorialId}/curriculum`)">返回课程结构</button></header>
+    <header class="tutorial-preview__header"><div><p class="eyebrow">CONTENT PREVIEW · 内容预览</p><h1>{{ tutorial?.title || '教程预览' }}</h1><p>预览当前已保存内容；管理员待审核的修改通过后才会生效。</p></div><button type="button" @click="router.push(`/tutorials/${route.params.tutorialId}/curriculum`)">返回课程结构</button></header>
     <p v-if="loading">正在生成预览…</p><p v-else-if="error" class="error" role="alert">{{ error }}</p>
     <div v-else-if="tutorial" class="tutorial-preview__layout">
       <aside class="tutorial-preview__curriculum"><h2>课程目录</h2><section v-for="group in tutorial.groups" :key="group.id"><h3>{{ group.title }}</h3><button v-for="chapter in group.chapters" :key="chapter.id" type="button" :class="{ active: chapter.slug === selectedSlug }" @click="selectChapter(chapter.slug)">{{ chapter.title }}</button></section></aside>

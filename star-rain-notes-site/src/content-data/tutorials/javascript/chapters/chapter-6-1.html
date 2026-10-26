@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>try</code> 捕获同步代码或被 await 的异步异常；<code>finally</code> 无论成功失败都执行清理。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">try { JSON.parse('{bad'); }
+catch (e) { console.log('解析失败'); }
+finally { console.log('结束'); }
+</code></pre>
+<p><strong>学完能做：</strong> 捕获异常并使用 finally 完成必要清理。</p>

@@ -463,8 +463,8 @@ onMounted(refresh)
         <span>左侧是专题与展示顺序，右侧是选中专题的文章与顺序；空专题可以删除。</span>
       </div>
       <div class="content-admin__hero-actions">
-        <RouterLink to="/useradmin/blog/manage">← 返回博客管理</RouterLink>
-        <RouterLink to="/useradmin/blog/taxonomy">标签管理 →</RouterLink>
+        <RouterLink to="/blog/manage">← 返回博客管理</RouterLink>
+        <RouterLink to="/blog/taxonomy">标签管理 →</RouterLink>
         <button class="primary-button" type="button" @click="openTopicDialog()">＋ 新建专题</button>
       </div>
     </header>

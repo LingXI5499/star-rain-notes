@@ -15,16 +15,7 @@ import {
 } from '../lib/vocabularyStudyStorage'
 import { globalDisplayMode, stableReviewDirection } from '../lib/vocabularyDisplay'
 
-/*
- * 英语模块 API。
- *
- * 词汇记忆体系按登录状态分流，分流点在 api 层（页面组件不判登录态）：
- *   游客   —— 记忆/复习/显示/设置都写浏览器 IndexedDB（见 lib/vocabularyStudyStorage）
- *   已登录 —— 走 /account/english/vocabulary，服务端按 account_id 隔离
- * 分流判断不能只依赖 Pinia：路由设计上**公开树刻意不初始化会话**，因此在 /english/** 下
- * authStore 永远是空的。这里的做法是先看 authStore 是否已初始化，未初始化时用一次
- * 「读账号设置」探测会话——401 即游客。探测结果缓存，并在 account-session-expired 时失效。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 
 let accountProbe = null
 

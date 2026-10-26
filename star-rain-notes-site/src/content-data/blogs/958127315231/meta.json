@@ -1,0 +1,40 @@
+{
+  "slug": "958127315231",
+  "title": "Java 核心 API 速查：数组、String、日期时间与 BigDecimal",
+  "description": "JavaSE 基础阶段高频核心知识速查。\nJDK：21\n范围：数组、二维数组、`Arrays`、`String`、`StringBuilder`、`java.time`、`BigDecimal`",
+  "publishedAt": "2026-09-09",
+  "updatedAt": "2026-10-09",
+  "wordCount": 17142,
+  "tags": [
+    {
+      "slug": "api",
+      "name": "API"
+    },
+    {
+      "slug": "java",
+      "name": "Java"
+    },
+    {
+      "slug": "string",
+      "name": "String"
+    },
+    {
+      "slug": "stringbuilder",
+      "name": "StringBuilder"
+    },
+    {
+      "slug": "tag-685bb17fdb2b",
+      "name": "数组"
+    },
+    {
+      "slug": "tag-70d0c1b33626",
+      "name": "日期"
+    },
+    {
+      "slug": "tag-8b6ff498515b",
+      "name": "时间"
+    }
+  ],
+  "topics": [],
+  "path": "/blog/posts/958127315231/"
+}

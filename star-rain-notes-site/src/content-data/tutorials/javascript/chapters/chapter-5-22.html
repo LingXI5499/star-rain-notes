@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 放大镜将鼠标坐标限制在容器范围，再按两张图片尺寸比例换算大图位置。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const x = Math.max(0, Math.min(mouseX, boxWidth));
+const zoomX = x * bigWidth / boxWidth;
+console.log(zoomX);
+</code></pre>
+<p><strong>学完能做：</strong> 通过坐标和比例限制放大镜移动范围。</p>

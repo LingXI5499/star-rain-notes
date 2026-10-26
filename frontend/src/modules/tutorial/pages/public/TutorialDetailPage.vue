@@ -13,7 +13,7 @@ import { computed, ref, watch } from 'vue'
 import { RouterLink, useRoute } from 'vue-router'
 import { getPublicTutorial } from '../../api/tutorialApi'
 import { errorMessage } from '../../../../shared/http'
-import { VIEW_MODE, accountPath, resolveViewMode } from '../../../../shared/viewMode'
+import { accountPath } from '../../../../shared/viewMode'
 
 /**
  * 路由；通过 useRoute 建立。
@@ -36,12 +36,11 @@ const error = ref('')
 const loading = ref(true)
 /**
  * 教程路径的处理函数。
- * 主要协作：resolveViewMode、accountPath。
+ * 主要协作：accountPath。
  * @param suffix = '' suffix；默认值、解构字段与可选参数见函数签名。
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
-const tutorialPath = (suffix = '') => resolveViewMode(route.path) === VIEW_MODE.ACCOUNT
-  ? accountPath(`/tutorials${suffix}`) : `/tutorials${suffix}`
+const tutorialPath = (suffix = '') => accountPath(`/tutorials${suffix}`)
 /**
  * 章节列表；通过 computed 建立。
  * 该值由依赖自动重新计算，不作为独立可写状态维护。

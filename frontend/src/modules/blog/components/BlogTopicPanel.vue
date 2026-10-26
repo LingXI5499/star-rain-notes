@@ -11,14 +11,7 @@
 import { RouterLink } from 'vue-router'
 import { useViewMode } from '../../../shared/viewMode'
 
-/*
- * 专题面板。
- *
- * Topic 是有序策展，所以这里按顺序渲染并显示序号 —— 序号就是专题的意义所在。
- * linkable=true 时链到**专题页**（/blog/topics/:slug，账号树 /useradmin/blog/topics/:slug），
- * 而不是按专题筛选的归档页：专题页按策展顺序展示，归档页只会按发布时间倒序，
- * 后者把专题降级成了一个筛选标签。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 defineProps({
   topics: { type: Array, default: () => [] },

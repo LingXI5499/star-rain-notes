@@ -1,0 +1,1242 @@
+<p>在学习 Java 时，我们经常会看到一句话：</p>
+<blockquote>
+<p>Java 有 8 种基本数据类型。</p>
+</blockquote>
+<p>这句话本身没有错，但它只回答了“<strong>Java 有多少种基本数据类型</strong>”，并没有回答“<strong>Java 一共有多少种数据类型</strong>”。</p>
+<p>如果把 Java 的完整类型系统展开，我们会发现：</p>
+<ul>
+<li><code>byte</code>、<code>int</code>、<code>double</code> 等只是基本类型；</li>
+<li><code>String</code>、<code>Student</code>、<code>ArrayList</code> 属于类类型；</li>
+<li><code>List</code>、<code>Runnable</code> 属于接口类型；</li>
+<li><code>int[]</code>、<code>String[]</code> 属于数组类型；</li>
+<li>泛型中的 <code>T</code> 属于类型变量；</li>
+<li><code>List&lt;String&gt;</code> 属于参数化类型；</li>
+<li><code>? extends Number</code>、<code>Number &amp; Comparable&lt;?&gt;</code> 等则属于 Java 泛型和类型推导体系中的高级类型结构。</li>
+</ul>
+<p>因此，<strong>Java 并不存在一个“所有具体类型加起来一共 N 种”的固定答案</strong>。</p>
+<p>原因很简单：程序员可以不断定义新的类、接口、数组组合和泛型类型。</p>
+<p>这篇文章将从 Java 语言规范的视角，把 Java 类型体系完整梳理一遍。</p>
+<h2>一、先给出结论：Java 类型到底有多少种？</h2>
+<p>如果问题是：</p>
+<blockquote>
+<p>Java 有多少种基本数据类型？</p>
+</blockquote>
+<p>答案是：</p>
+<p><strong>8 种。</strong></p>
+<pre><code>byte
+short
+int
+long
+float
+double
+char
+boolean
+</code></pre>
+<p>如果问题是：</p>
+<blockquote>
+<p>Java 的类型主要分为哪两大类？</p>
+</blockquote>
+<p>最标准的回答是：</p>
+<pre><code>Java Type
+├── Primitive Type      基本类型
+└── Reference Type      引用类型
+</code></pre>
+<p>其中引用类型进一步包括：</p>
+<pre><code>Reference Type
+├── Class Type          类类型
+├── Interface Type      接口类型
+├── Type Variable       类型变量
+└── Array Type          数组类型
+</code></pre>
+<p>此外，Java 语言中还存在一个特殊的：</p>
+<pre><code>null type
+</code></pre>
+<p>但它不是普通意义上可以声明变量的类型，也不应该简单地和基本类型、引用类型并列理解。</p>
+<p>所以，真正严谨的结论是：</p>
+<blockquote>
+<p><strong>Java 固定只有 8 种基本类型；引用类型则没有固定数量，因此 Java 的所有具体类型不存在一个固定总数。</strong></p>
+</blockquote>
+<h2>二、Java 类型体系总览</h2>
+<p>先建立整体认识：</p>
+<pre><code>Java 类型系统
+│
+├── 1. Primitive Type 基本类型
+│   │
+│   ├── Numeric Type 数值类型
+│   │   │
+│   │   ├── Integral Type 整数类型
+│   │   │   ├── byte
+│   │   │   ├── short
+│   │   │   ├── int
+│   │   │   ├── long
+│   │   │   └── char
+│   │   │
+│   │   └── Floating-Point Type 浮点类型
+│   │       ├── float
+│   │       └── double
+│   │
+│   └── boolean
+│
+└── 2. Reference Type 引用类型
+    │
+    ├── Class Type 类类型
+    │   ├── 普通 class
+    │   ├── enum
+    │   └── record
+    │
+    ├── Interface Type 接口类型
+    │   ├── 普通 interface
+    │   └── annotation interface
+    │
+    ├── Type Variable 类型变量
+    │   └── T / E / K / V ...
+    │
+    └── Array Type 数组类型
+        ├── int[]
+        ├── String[]
+        ├── Student[]
+        └── int[][] ...
+</code></pre>
+<p>除此之外，Java 的泛型和类型推导机制中还会出现：</p>
+<pre><code>Parameterized Type   参数化类型
+Raw Type             原始类型
+Wildcard             通配符
+Intersection Type    交叉类型
+null type            null 的特殊类型
+</code></pre>
+<p>这些概念不能全部简单理解成与 <code>int</code>、<code>String</code> 同一级别的“普通数据类型”，但它们共同构成了 Java 完整的类型系统。</p>
+<h2>三、基本数据类型：固定只有 8 种</h2>
+<p>Java 的基本类型，也叫：</p>
+<pre><code>Primitive Type
+</code></pre>
+<p>它们不是对象，不属于类体系，也不继承 <code>Object</code>。</p>
+<p>8 种基本类型如下：</p>
+<table>
+<thead>
+<tr>
+<th>分类</th>
+<th>类型</th>
+<th>位数</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>整数</td>
+<td><code>byte</code></td>
+<td>8</td>
+<td><code>byte a = 10;</code></td>
+</tr>
+<tr>
+<td>整数</td>
+<td><code>short</code></td>
+<td>16</td>
+<td><code>short b = 1000;</code></td>
+</tr>
+<tr>
+<td>整数</td>
+<td><code>int</code></td>
+<td>32</td>
+<td><code>int c = 100000;</code></td>
+</tr>
+<tr>
+<td>整数</td>
+<td><code>long</code></td>
+<td>64</td>
+<td><code>long d = 100L;</code></td>
+</tr>
+<tr>
+<td>浮点</td>
+<td><code>float</code></td>
+<td>32</td>
+<td><code>float e = 3.14F;</code></td>
+</tr>
+<tr>
+<td>浮点</td>
+<td><code>double</code></td>
+<td>64</td>
+<td><code>double f = 3.14;</code></td>
+</tr>
+<tr>
+<td>字符</td>
+<td><code>char</code></td>
+<td>16</td>
+<td><code>char g = 'A';</code></td>
+</tr>
+<tr>
+<td>布尔</td>
+<td><code>boolean</code></td>
+<td>JVM 规范不按普通整数位宽定义其存储实现</td>
+<td><code>boolean h = true;</code></td>
+</tr>
+</tbody>
+</table>
+<h2>四、整数类型其实有 5 种</h2>
+<p>很多教程会说：</p>
+<pre><code>整数类型：
+byte
+short
+int
+long
+</code></pre>
+<p>从日常编程角度这样说没有问题。</p>
+<p>但是从 Java 类型系统角度，<code>char</code> 也属于：</p>
+<pre><code>Integral Type
+</code></pre>
+<p>因此更加严谨的分类是：</p>
+<pre><code>Integral Type
+├── byte
+├── short
+├── int
+├── long
+└── char
+</code></pre>
+<p>例如：</p>
+<pre><code>char c = 'A';
+</code></pre>
+<p>字符 <code>'A'</code> 对应 Unicode 编码值，因此 <code>char</code> 可以参与部分整数运算。</p>
+<p>例如：</p>
+<pre><code>char c = 'A';
+
+System.out.println((int) c);
+</code></pre>
+<p>输出：</p>
+<pre><code>65
+</code></pre>
+<p>所以 <code>char</code> 虽然通常用于表示字符，但从 Java 语言的类型分类来看，它属于整数类型体系。</p>
+<h2>五、浮点类型：float 与 double</h2>
+<p>Java 有两种浮点类型：</p>
+<pre><code>float
+double
+</code></pre>
+<h3>float</h3>
+<pre><code>float price = 3.14F;
+</code></pre>
+<p>必须注意：</p>
+<pre><code>3.14
+</code></pre>
+<p>默认是 <code>double</code>。</p>
+<p>因此赋值给 <code>float</code> 时通常需要：</p>
+<pre><code>3.14F
+</code></pre>
+<h3>double</h3>
+<pre><code>double pi = 3.1415926;
+</code></pre>
+<p>Java 浮点字面量默认就是 <code>double</code>。</p>
+<p>在一般科学计算和普通业务计算中，<code>double</code> 使用更加广泛。</p>
+<p>但是对于金融金额：</p>
+<pre><code>double money = 0.1 + 0.2;
+</code></pre>
+<p>可能出现浮点精度问题，因此通常会使用：</p>
+<pre><code>BigDecimal
+</code></pre>
+<p>注意：</p>
+<pre><code>BigDecimal
+</code></pre>
+<p>不是基本类型，而是一个类。</p>
+<h2>六、boolean：逻辑类型</h2>
+<p>Java 中只有一个布尔基本类型：</p>
+<pre><code>boolean
+</code></pre>
+<p>只有两个逻辑值：</p>
+<pre><code>true
+false
+</code></pre>
+<p>例如：</p>
+<pre><code>boolean login = true;
+
+if (login) {
+    System.out.println("登录成功");
+}
+</code></pre>
+<p>与 C 语言不同，Java 不允许直接把整数当作布尔值。</p>
+<p>下面代码错误：</p>
+<pre><code>int a = 1;
+
+if (a) {
+}
+</code></pre>
+<p>Java 要求 <code>if</code> 条件必须最终产生布尔结果。</p>
+<p>正确：</p>
+<pre><code>if (a != 0) {
+}
+</code></pre>
+<h2>七、引用类型是什么？</h2>
+<p>除了 8 种基本类型之外，Java 中大量类型都属于：</p>
+<pre><code>Reference Type
+</code></pre>
+<p>例如：</p>
+<pre><code>String name = "LingXi";
+
+Student student = new Student();
+
+List&lt;String&gt; list = new ArrayList&lt;&gt;();
+
+int[] numbers = new int[10];
+</code></pre>
+<p>其中：</p>
+<pre><code>String
+Student
+List&lt;String&gt;
+ArrayList&lt;String&gt;
+int[]
+</code></pre>
+<p>全部属于引用类型体系。</p>
+<p>引用变量通常保存的不是对象内容本身，而是对对象的引用。</p>
+<p>可以简单理解：</p>
+<pre><code>变量
+  │
+  ↓
+引用
+  │
+  ↓
+堆中的对象
+</code></pre>
+<p>例如：</p>
+<pre><code>Student student = new Student();
+</code></pre>
+<p>可以抽象理解为：</p>
+<pre><code>student
+   │
+   │ 引用
+   ↓
+Student 对象
+</code></pre>
+<h2>八、类类型：Class Type</h2>
+<p>最常见的引用类型就是类类型。</p>
+<p>例如：</p>
+<pre><code>String
+Object
+Integer
+Scanner
+ArrayList
+Thread
+Student
+User
+Order
+</code></pre>
+<p>假设我们定义：</p>
+<pre><code>class Student {
+
+    String name;
+    int age;
+}
+</code></pre>
+<p>那么：</p>
+<pre><code>Student student = new Student();
+</code></pre>
+<p>这里的：</p>
+<pre><code>Student
+</code></pre>
+<p>就是一个类类型。</p>
+<h2>九、普通 class、enum、record 都属于类体系</h2>
+<p>Java 中的类类型不只是普通 <code>class</code>。</p>
+<p>还包括一些特殊形式。</p>
+<h3>普通类</h3>
+<pre><code>class Student {
+}
+</code></pre>
+<p><code>Student</code> 是类类型。</p>
+<h3>枚举类型 enum</h3>
+<pre><code>enum Gender {
+
+    MALE,
+    FEMALE
+}
+</code></pre>
+<p>可以：</p>
+<pre><code>Gender gender = Gender.MALE;
+</code></pre>
+<p><code>Gender</code> 属于一种特殊的类类型。</p>
+<h3>记录类型 record</h3>
+<p>Java 中还可以定义：</p>
+<pre><code>record Student(String name, int age) {
+}
+</code></pre>
+<p>使用：</p>
+<pre><code>Student student = new Student("LingXi", 21);
+</code></pre>
+<p><code>record</code> 也是一种特殊的类声明形式，其产生的类型仍属于类类型体系。</p>
+<p>因此可以这样理解：</p>
+<pre><code>Class Type
+├── 普通 class
+├── enum
+└── record
+</code></pre>
+<h2>十、接口类型：Interface Type</h2>
+<p>接口本身也是一种引用类型。</p>
+<p>例如：</p>
+<pre><code>interface Flyable {
+
+    void fly();
+}
+</code></pre>
+<p>定义：</p>
+<pre><code>class Bird implements Flyable {
+
+    @Override
+    public void fly() {
+        System.out.println("Flying...");
+    }
+}
+</code></pre>
+<p>可以：</p>
+<pre><code>Flyable bird = new Bird();
+</code></pre>
+<p>这里：</p>
+<pre><code>Flyable
+</code></pre>
+<p>就是接口类型。</p>
+<p>Java 标准库中大量类型都是接口，例如：</p>
+<pre><code>List
+Set
+Map
+Runnable
+Comparable
+Serializable
+Collection
+</code></pre>
+<p>例如：</p>
+<pre><code>List&lt;String&gt; list = new ArrayList&lt;&gt;();
+</code></pre>
+<p>变量声明类型：</p>
+<pre><code>List&lt;String&gt;
+</code></pre>
+<p>属于接口类型。</p>
+<p>对象实际类型：</p>
+<pre><code>ArrayList&lt;String&gt;
+</code></pre>
+<p>属于类类型。</p>
+<p>这也是 Java 面向接口编程的重要基础。</p>
+<h2>十一、注解也是特殊的接口类型</h2>
+<p>Java 中：</p>
+<pre><code>@interface MyAnnotation {
+}
+</code></pre>
+<p>定义的是注解类型。</p>
+<p>常见注解包括：</p>
+<pre><code>@Override
+@Deprecated
+@SuppressWarnings
+@Test
+</code></pre>
+<p>从 Java 类型系统角度，可以把它理解为特殊的接口类型。</p>
+<p>因此：</p>
+<pre><code>Interface Type
+├── 普通 interface
+└── annotation interface
+</code></pre>
+<h2>十二、数组也是引用类型</h2>
+<p>这是 Java 初学阶段非常重要的一点：</p>
+<blockquote>
+<p><code>int</code> 是基本类型，但 <code>int[]</code> 是引用类型。</p>
+</blockquote>
+<p>例如：</p>
+<pre><code>int[] numbers = new int[10];
+</code></pre>
+<p>其中：</p>
+<pre><code>int
+</code></pre>
+<p>属于：</p>
+<pre><code>Primitive Type
+</code></pre>
+<p>但是：</p>
+<pre><code>int[]
+</code></pre>
+<p>属于：</p>
+<pre><code>Array Type
+→ Reference Type
+</code></pre>
+<p>同理：</p>
+<pre><code>String[] names;
+Student[] students;
+int[][] matrix;
+</code></pre>
+<p>全部属于数组类型，也全部属于引用类型。</p>
+<h2>十三、为什么 Java 的类型总数无法固定？</h2>
+<p>假设 Java 只有：</p>
+<pre><code>int[]
+</code></pre>
+<p>这一种数组类型，那还可以统计。</p>
+<p>问题是数组维度可以不断变化：</p>
+<pre><code>int[]
+int[][]
+int[][][]
+int[][][][]
+...
+</code></pre>
+<p>对象类型也可以不断定义：</p>
+<pre><code>class Student {
+}
+
+class Teacher {
+}
+
+class User {
+}
+
+class Order {
+}
+</code></pre>
+<p>每定义一个新的类，就产生一个新的类型。</p>
+<p>所以：</p>
+<blockquote>
+<p>Java 的所有具体引用类型没有固定数量。</p>
+</blockquote>
+<p>这就是为什么“Java 一共有多少种数据类型”不能简单回答一个数字。</p>
+<h2>十四、类型变量：Type Variable</h2>
+<p>泛型出现之后，还需要理解：</p>
+<pre><code>Type Variable
+</code></pre>
+<p>例如：</p>
+<pre><code>class Box&lt;T&gt; {
+
+    T value;
+}
+</code></pre>
+<p>这里的：</p>
+<pre><code>T
+</code></pre>
+<p>就是一个类型变量。</p>
+<p>它代表：</p>
+<blockquote>
+<p>以后由具体使用者决定这里是什么类型。</p>
+</blockquote>
+<p>例如：</p>
+<pre><code>Box&lt;String&gt; box1 = new Box&lt;&gt;();
+
+Box&lt;Integer&gt; box2 = new Box&lt;&gt;();
+</code></pre>
+<p>此时：</p>
+<pre><code>T → String
+</code></pre>
+<p>或者：</p>
+<pre><code>T → Integer
+</code></pre>
+<p>常见泛型类型变量名称有：</p>
+<pre><code>T   Type
+E   Element
+K   Key
+V   Value
+R   Result
+</code></pre>
+<p>例如：</p>
+<pre><code>Map&lt;K, V&gt;
+</code></pre>
+<h2>十五、参数化类型：Parameterized Type</h2>
+<p>例如：</p>
+<pre><code>List&lt;String&gt;
+List&lt;Integer&gt;
+Map&lt;String, Integer&gt;
+Optional&lt;Student&gt;
+</code></pre>
+<p>都属于参数化后的泛型类型。</p>
+<p>例如：</p>
+<pre><code>List&lt;String&gt; names = new ArrayList&lt;&gt;();
+</code></pre>
+<p>这里可以理解成：</p>
+<pre><code>泛型声明：
+
+List&lt;E&gt;
+
+        ↓
+
+把 E 替换为 String
+
+        ↓
+
+List&lt;String&gt;
+</code></pre>
+<p>因此：</p>
+<pre><code>List&lt;String&gt;
+</code></pre>
+<p>属于参数化类型。</p>
+<p>但是需要注意：</p>
+<blockquote>
+<p>参数化类型并不是 Java 顶层类型分类中新增加的第三大类。</p>
+</blockquote>
+<p><code>List&lt;String&gt;</code> 本质仍然建立在类或接口类型体系之上。</p>
+<h2>十六、Raw Type：原始类型</h2>
+<p>看下面两种写法：</p>
+<pre><code>List&lt;String&gt; list = new ArrayList&lt;&gt;();
+</code></pre>
+<p>以及：</p>
+<pre><code>List list = new ArrayList();
+</code></pre>
+<p>第二种没有提供泛型参数：</p>
+<pre><code>List
+</code></pre>
+<p>这叫：</p>
+<pre><code>Raw Type
+原始类型
+</code></pre>
+<p>Raw Type 主要用于兼容 Java 5 引入泛型之前的旧代码。</p>
+<p>现代 Java 开发中通常不建议使用。</p>
+<p>因为它会失去泛型提供的编译期类型安全。</p>
+<p>例如：</p>
+<pre><code>List list = new ArrayList();
+
+list.add("Hello");
+list.add(100);
+list.add(new Student());
+</code></pre>
+<p>编译器很难提供严格的元素类型约束。</p>
+<p>而：</p>
+<pre><code>List&lt;String&gt; list = new ArrayList&lt;&gt;();
+</code></pre>
+<p>只能正常添加字符串：</p>
+<pre><code>list.add("Hello");
+</code></pre>
+<p>下面会直接编译错误：</p>
+<pre><code>list.add(100);
+</code></pre>
+<h2>十七、Wildcard：泛型通配符</h2>
+<p>Java 泛型中还有：</p>
+<pre><code>?
+? extends T
+? super T
+</code></pre>
+<p>例如：</p>
+<pre><code>List&lt;?&gt; list;
+</code></pre>
+<p>表示：</p>
+<blockquote>
+<p>一个元素具体类型未知的 List。</p>
+</blockquote>
+<p>再例如：</p>
+<pre><code>List&lt;? extends Number&gt;
+</code></pre>
+<p>表示：</p>
+<blockquote>
+<p>List 中元素类型是 Number 或 Number 的某个子类型。</p>
+</blockquote>
+<p>例如可能是：</p>
+<pre><code>List&lt;Integer&gt;
+List&lt;Double&gt;
+List&lt;Long&gt;
+</code></pre>
+<p>再例如：</p>
+<pre><code>List&lt;? super Integer&gt;
+</code></pre>
+<p>表示：</p>
+<blockquote>
+<p>元素类型是 Integer 或 Integer 的某个父类型。</p>
+</blockquote>
+<p>泛型中经常会提到：</p>
+<pre><code>PECS
+</code></pre>
+<p>即：</p>
+<pre><code>Producer Extends
+Consumer Super
+</code></pre>
+<p>简单理解：</p>
+<pre><code>读取数据为主：
+? extends T
+
+写入数据为主：
+? super T
+</code></pre>
+<p>这是 Java 泛型中非常重要的知识点。</p>
+<h2>十八、Intersection Type：交叉类型</h2>
+<p>Java 还存在：</p>
+<pre><code>Intersection Type
+</code></pre>
+<p>即：</p>
+<pre><code>A &amp; B
+</code></pre>
+<p>表示一个类型必须同时满足多个约束。</p>
+<p>例如：</p>
+<pre><code>&lt;T extends Number &amp; Comparable&lt;T&gt;&gt;
+</code></pre>
+<p>其中：</p>
+<pre><code>Number &amp; Comparable&lt;T&gt;
+</code></pre>
+<p>就是交叉类型结构。</p>
+<p>意思是：</p>
+<pre><code>T 必须：
+
+是 Number 的子类型
+
+并且
+
+实现 Comparable&lt;T&gt;
+</code></pre>
+<p>例如：</p>
+<pre><code>public static &lt;T extends Number &amp; Comparable&lt;T&gt;&gt;
+void print(T value) {
+
+    System.out.println(value);
+}
+</code></pre>
+<p>交叉类型还可能出现在强制类型转换中：</p>
+<pre><code>(Runnable &amp; java.io.Serializable) () -&gt; {
+    System.out.println("Hello");
+};
+</code></pre>
+<p>这里要求 Lambda 对象同时满足：</p>
+<pre><code>Runnable
++
+Serializable
+</code></pre>
+<h2>十九、null 是什么类型？</h2>
+<p>这是 Java 类型系统中很容易被忽略的一个特殊概念。</p>
+<p>例如：</p>
+<pre><code>String name = null;
+
+Student student = null;
+
+Object object = null;
+</code></pre>
+<p>为什么 <code>null</code> 可以赋值给不同的引用类型？</p>
+<p>因为 Java 语言中存在一个特殊的：</p>
+<pre><code>null type
+</code></pre>
+<p>它唯一对应的值就是：</p>
+<pre><code>null
+</code></pre>
+<p>但是不能写：</p>
+<pre><code>null value;
+</code></pre>
+<p>因为：</p>
+<pre><code>null
+</code></pre>
+<p>不是一个可以直接作为类型名称使用的关键字类型。</p>
+<p>所以更加准确地说：</p>
+<blockquote>
+<p><code>null</code> 是空引用字面量，它具有一个特殊的 null type，并可以转换成引用类型。</p>
+</blockquote>
+<h2>二十、基本类型与引用类型最核心的区别</h2>
+<p>例如：</p>
+<pre><code>int a = 10;
+</code></pre>
+<p>和：</p>
+<pre><code>Student student = new Student();
+</code></pre>
+<p>虽然都叫“变量”，但两者属于完全不同的类型体系。</p>
+<p>可以粗略理解：</p>
+<pre><code>基本类型变量
+
+a
+↓
+10
+</code></pre>
+<p>而引用类型：</p>
+<pre><code>student
+   │
+   ↓
+对象引用
+   │
+   ↓
+Student 对象
+</code></pre>
+<p>常见区别如下：</p>
+<table>
+<thead>
+<tr>
+<th>对比项</th>
+<th>基本类型</th>
+<th>引用类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>示例</td>
+<td><code>int</code></td>
+<td><code>String</code></td>
+</tr>
+<tr>
+<td>是否对象</td>
+<td>否</td>
+<td>通常用于引用对象/数组</td>
+</tr>
+<tr>
+<td>是否继承 Object</td>
+<td>否</td>
+<td>类和数组等进入引用体系</td>
+</tr>
+<tr>
+<td>默认值</td>
+<td><code>0</code>、<code>false</code>等</td>
+<td><code>null</code></td>
+</tr>
+<tr>
+<td>能否为 null</td>
+<td>不能</td>
+<td>可以</td>
+</tr>
+<tr>
+<td>泛型中直接使用</td>
+<td>不能</td>
+<td>可以</td>
+</tr>
+</tbody>
+</table>
+<p>例如：</p>
+<pre><code>List&lt;int&gt; list;
+</code></pre>
+<p>错误。</p>
+<p>必须：</p>
+<pre><code>List&lt;Integer&gt; list;
+</code></pre>
+<p>因为 Java 泛型使用的是引用类型体系。</p>
+<h2>二十一、包装类不是基本类型</h2>
+<p>Java 为 8 种基本类型分别提供了包装类。</p>
+<table>
+<thead>
+<tr>
+<th>基本类型</th>
+<th>包装类</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>byte</code></td>
+<td><code>Byte</code></td>
+</tr>
+<tr>
+<td><code>short</code></td>
+<td><code>Short</code></td>
+</tr>
+<tr>
+<td><code>int</code></td>
+<td><code>Integer</code></td>
+</tr>
+<tr>
+<td><code>long</code></td>
+<td><code>Long</code></td>
+</tr>
+<tr>
+<td><code>float</code></td>
+<td><code>Float</code></td>
+</tr>
+<tr>
+<td><code>double</code></td>
+<td><code>Double</code></td>
+</tr>
+<tr>
+<td><code>char</code></td>
+<td><code>Character</code></td>
+</tr>
+<tr>
+<td><code>boolean</code></td>
+<td><code>Boolean</code></td>
+</tr>
+</tbody>
+</table>
+<p>例如：</p>
+<pre><code>int age = 21;
+
+Integer boxedAge = 21;
+</code></pre>
+<p>这两个类型完全不同。</p>
+<pre><code>int
+↓
+Primitive Type
+</code></pre>
+<p>而：</p>
+<pre><code>Integer
+↓
+Class Type
+↓
+Reference Type
+</code></pre>
+<p>Java 可以通过：</p>
+<pre><code>Autoboxing
+自动装箱
+</code></pre>
+<p>自动完成：</p>
+<pre><code>Integer a = 10;
+</code></pre>
+<p>逻辑上相当于把：</p>
+<pre><code>int
+</code></pre>
+<p>包装成：</p>
+<pre><code>Integer
+</code></pre>
+<p>反过来则叫：</p>
+<pre><code>Unboxing
+自动拆箱
+</code></pre>
+<p>例如：</p>
+<pre><code>Integer a = 10;
+
+int b = a;
+</code></pre>
+<h2>二十二、String 到底是什么类型？</h2>
+<p>很多 Java 初学者会产生疑问：</p>
+<pre><code>String name = "LingXi";
+</code></pre>
+<p>看起来和：</p>
+<pre><code>int age = 21;
+</code></pre>
+<p>非常像。</p>
+<p>于是容易误认为：</p>
+<pre><code>String 是一种基本数据类型
+</code></pre>
+<p>这是错误的。</p>
+<p><code>String</code> 的真实身份是：</p>
+<pre><code>java.lang.String
+↓
+Class Type
+↓
+Reference Type
+</code></pre>
+<p>也就是说：</p>
+<blockquote>
+<p><code>String</code> 是 Java 提供的一个类。</p>
+</blockquote>
+<p>只不过 Java 对字符串字面量提供了非常方便的语法：</p>
+<pre><code>String name = "LingXi";
+</code></pre>
+<p>所以使用体验看起来很像基本类型。</p>
+<h2>二十三、Object 是所有类型的父类吗？</h2>
+<p>经常看到一句话：</p>
+<blockquote>
+<p>Object 是 Java 所有类型的父类。</p>
+</blockquote>
+<p>这句话也需要修正。</p>
+<p>更加准确的是：</p>
+<blockquote>
+<p><code>Object</code> 是 Java 类层次结构中的根类，大多数对象最终都属于 Object 体系。</p>
+</blockquote>
+<p>例如：</p>
+<pre><code>Object
+↑
+String
+Integer
+Student
+ArrayList
+Thread
+...
+</code></pre>
+<p>但是：</p>
+<pre><code>int
+double
+boolean
+char
+</code></pre>
+<p>这些基本类型不是类。</p>
+<p>所以：</p>
+<pre><code>int
+</code></pre>
+<p>并不继承：</p>
+<pre><code>Object
+</code></pre>
+<p>例如：</p>
+<pre><code>int a = 10;
+</code></pre>
+<p>这里 <code>a</code> 不是对象。</p>
+<p>但是自动装箱之后：</p>
+<pre><code>Integer a = 10;
+</code></pre>
+<p>此时：</p>
+<pre><code>Integer
+↓
+Number
+↓
+Object
+</code></pre>
+<p>就进入了对象类型体系。</p>
+<h2>二十四、void 是不是第 9 种基本数据类型？</h2>
+<p>不是。</p>
+<p>有些旧教程会把：</p>
+<pre><code>void
+</code></pre>
+<p>和 8 种基本类型放在一起。</p>
+<p>例如：</p>
+<pre><code>public void test() {
+
+}
+</code></pre>
+<p>这里：</p>
+<pre><code>void
+</code></pre>
+<p>表示：</p>
+<blockquote>
+<p>这个方法不返回任何值。</p>
+</blockquote>
+<p>但是不能：</p>
+<pre><code>void value;
+</code></pre>
+<p>因此：</p>
+<blockquote>
+<p><code>void</code> 不属于 Java 的 8 种基本数据类型。</p>
+</blockquote>
+<p>学习时最好不要背：</p>
+<pre><code>Java 有 9 种基本类型，包括 void
+</code></pre>
+<p>正确答案始终是：</p>
+<pre><code>8 种基本类型
+</code></pre>
+<h2>二十五、var 是不是一种数据类型？</h2>
+<p>也不是。</p>
+<p>Java 10 引入了局部变量类型推断：</p>
+<pre><code>var name = "LingXi";
+</code></pre>
+<p>编译器会推断：</p>
+<pre><code>name 的类型是 String
+</code></pre>
+<p>等价理解：</p>
+<pre><code>String name = "LingXi";
+</code></pre>
+<p>再例如：</p>
+<pre><code>var age = 21;
+</code></pre>
+<p>编译器推断：</p>
+<pre><code>int
+</code></pre>
+<p>再例如：</p>
+<pre><code>var list = new ArrayList&lt;String&gt;();
+</code></pre>
+<p>推断为：</p>
+<pre><code>ArrayList&lt;String&gt;
+</code></pre>
+<p>所以：</p>
+<pre><code>var
+</code></pre>
+<p>不是数据类型。</p>
+<p>它只是：</p>
+<pre><code>局部变量类型推断语法
+</code></pre>
+<h2>二十六、为什么泛型不能直接使用 int？</h2>
+<p>例如：</p>
+<pre><code>List&lt;int&gt; numbers;
+</code></pre>
+<p>会编译失败。</p>
+<p>因为 Java 泛型的类型参数要求使用引用类型。</p>
+<p>所以必须写：</p>
+<pre><code>List&lt;Integer&gt; numbers;
+</code></pre>
+<p>Java 会通过自动装箱，把：</p>
+<pre><code>int
+</code></pre>
+<p>转换为：</p>
+<pre><code>Integer
+</code></pre>
+<p>例如：</p>
+<pre><code>List&lt;Integer&gt; numbers = new ArrayList&lt;&gt;();
+
+numbers.add(10);
+</code></pre>
+<p>实际上这里发生了：</p>
+<pre><code>10
+↓
+int
+↓
+自动装箱
+↓
+Integer
+</code></pre>
+<p>这也是理解基本类型与引用类型区别之后非常自然的一个结论。</p>
+<h2>二十七、为什么 Java 类型没有固定总数？</h2>
+<p>现在可以回答最开始的问题。</p>
+<p>Java 固定的基本类型只有：</p>
+<pre><code>8 种
+</code></pre>
+<p>但是程序员可以不断创建：</p>
+<pre><code>class Student {
+}
+
+class Teacher {
+}
+
+class User {
+}
+
+class Order {
+}
+
+class Product {
+}
+</code></pre>
+<p>于是：</p>
+<pre><code>Student
+Teacher
+User
+Order
+Product
+</code></pre>
+<p>全部成为新的类型。</p>
+<p>还可以产生：</p>
+<pre><code>Student[]
+Student[][]
+List&lt;Student&gt;
+Map&lt;String, Student&gt;
+Optional&lt;Student&gt;
+</code></pre>
+<p>所以 Java 的具体类型数量理论上可以不断增加。</p>
+<p>因此不能说：</p>
+<pre><code>Java 一共有 8 种数据类型
+</code></pre>
+<p>更加准确的说法应该是：</p>
+<blockquote>
+<p>Java 一共有 8 种基本数据类型，而引用类型没有固定数量。</p>
+</blockquote>
+<h2>二十八、完整 Java 类型知识结构</h2>
+<p>最后把整个知识体系整理成一棵树：</p>
+<pre><code>Java Type System
+│
+├── Primitive Type
+│   │
+│   ├── Numeric Type
+│   │   │
+│   │   ├── Integral Type
+│   │   │   ├── byte
+│   │   │   ├── short
+│   │   │   ├── int
+│   │   │   ├── long
+│   │   │   └── char
+│   │   │
+│   │   └── Floating-Point Type
+│   │       ├── float
+│   │       └── double
+│   │
+│   └── boolean
+│
+└── Reference Type
+    │
+    ├── Class Type
+    │   ├── 普通 class
+    │   ├── enum
+    │   └── record
+    │
+    ├── Interface Type
+    │   ├── interface
+    │   └── annotation interface
+    │
+    ├── Type Variable
+    │   └── T / E / K / V ...
+    │
+    └── Array Type
+        ├── int[]
+        ├── String[]
+        ├── Student[]
+        └── int[][] ...
+</code></pre>
+<p>围绕这套核心类型系统，还会出现：</p>
+<pre><code>Parameterized Type
+Raw Type
+Wildcard
+Intersection Type
+null type
+</code></pre>
+<p>它们主要出现在：</p>
+<pre><code>泛型
+类型推导
+类型转换
+编译器类型检查
+</code></pre>
+<p>等更加高级的 Java 场景中。</p>
+<h2>二十九、考试、面试应该怎么回答？</h2>
+<p>不同问题，要给不同层级的答案。</p>
+<h3>问：Java 有多少种基本数据类型？</h3>
+<p>回答：</p>
+<blockquote>
+<p>Java 有 8 种基本数据类型：<code>byte</code>、<code>short</code>、<code>int</code>、<code>long</code>、<code>float</code>、<code>double</code>、<code>char</code>、<code>boolean</code>。</p>
+</blockquote>
+<h3>问：Java 数据类型分为哪两大类？</h3>
+<p>回答：</p>
+<blockquote>
+<p>Java 类型主要分为基本类型和引用类型。</p>
+</blockquote>
+<pre><code>Primitive Type
+Reference Type
+</code></pre>
+<h3>问：Java 的引用类型有哪些？</h3>
+<p>回答：</p>
+<blockquote>
+<p>Java 引用类型主要包括类类型、接口类型、类型变量和数组类型。</p>
+</blockquote>
+<pre><code>Class Type
+Interface Type
+Type Variable
+Array Type
+</code></pre>
+<h3>问：String 是基本类型吗？</h3>
+<p>回答：</p>
+<blockquote>
+<p>不是。<code>String</code> 是 <code>java.lang.String</code> 类，因此属于引用类型中的类类型。</p>
+</blockquote>
+<h3>问：数组是基本类型还是引用类型？</h3>
+<p>回答：</p>
+<blockquote>
+<p>数组属于引用类型。即使数组元素是 <code>int</code>，<code>int[]</code> 本身依然是引用类型。</p>
+</blockquote>
+<h3>问：Integer 是基本类型吗？</h3>
+<p>回答：</p>
+<blockquote>
+<p>不是。<code>Integer</code> 是 <code>int</code> 对应的包装类，属于类类型。</p>
+</blockquote>
+<h3>问：void 是基本类型吗？</h3>
+<p>回答：</p>
+<blockquote>
+<p>不是。<code>void</code> 用于表示方法没有返回值，不属于 Java 的 8 种基本类型。</p>
+</blockquote>
+<h3>问：var 是类型吗？</h3>
+<p>回答：</p>
+<blockquote>
+<p>不是。<code>var</code> 是局部变量类型推断语法，变量最终仍然拥有具体的静态类型。</p>
+</blockquote>
+<h2>三十、最终总结</h2>
+<p>如果只记一句话：</p>
+<blockquote>
+<p><strong>Java 固定只有 8 种基本数据类型，但 Java 的所有具体类型没有固定总数量。</strong></p>
+</blockquote>
+<p>8 种基本类型：</p>
+<pre><code>byte
+short
+int
+long
+float
+double
+char
+boolean
+</code></pre>
+<p>Java 类型体系最核心的结构：</p>
+<pre><code>Java Type
+├── Primitive Type
+└── Reference Type
+</code></pre>
+<p>引用类型主要包括：</p>
+<pre><code>Class Type
+Interface Type
+Type Variable
+Array Type
+</code></pre>
+<p>除此之外，还应该理解：</p>
+<pre><code>Parameterized Type
+Raw Type
+Wildcard
+Intersection Type
+null type
+</code></pre>
+<p>最终真正需要建立的思维不是：</p>
+<pre><code>Java = 背 8 个数据类型
+</code></pre>
+<p>而是：</p>
+<pre><code>Java 类型系统
+      │
+      ├── 基本值
+      │
+      ├── 对象
+      │
+      ├── 接口抽象
+      │
+      ├── 数组
+      │
+      ├── 泛型
+      │
+      └── 编译器类型约束
+</code></pre>
+<p>当这套类型体系真正建立起来之后，后续学习：</p>
+<pre><code>面向对象
+集合框架
+泛型
+反射
+Lambda
+Stream
+Java API
+Spring
+</code></pre>
+<p>都会更加自然。</p>
+<p>因为它们本质上都建立在 Java 的类型系统之上。</p>

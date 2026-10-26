@@ -7,6 +7,7 @@
  */
 
 import http from '../../shared/http'
+import { isPrivateRoute } from '../../shared/routeVisibility'
 
 /**
  * meta的处理函数。
@@ -58,7 +59,7 @@ export
     request?.abort()
     const current = new AbortController()
     request = current
-    if (to.path.startsWith('/useradmin') || to.path === '/search') {
+    if (isPrivateRoute(to) || to.path === '/search') {
       document.title = to.path === '/search' ? '搜索 | 星雨笔录' : '星雨笔录 · 用户中心'
       meta('description').content = ''
       meta('robots').content = 'noindex,nofollow'

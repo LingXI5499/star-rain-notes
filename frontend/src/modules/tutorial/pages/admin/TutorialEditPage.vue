@@ -129,7 +129,7 @@ async function save() {
       : await updateTutorial(route.params.tutorialId, payload)
     savedSnapshot = snapshot()
     savedAndLeaving = true
-    await router.push({ path: '/useradmin/tutorials/manage', query: { category: tutorial.categoryId || form.categoryId, review: isReviewPending(tutorial) ? 'pending' : undefined } })
+    await router.push({ path: '/tutorials/manage', query: { category: tutorial.categoryId || form.categoryId, review: isReviewPending(tutorial) ? 'pending' : undefined } })
   } catch (cause) {
     error.value = errorMessage(cause)
   } finally {
@@ -143,7 +143,7 @@ async function save() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function leave() {
-  await router.push('/useradmin/tutorials/manage')
+  await router.push('/tutorials/manage')
 }
 
 /**

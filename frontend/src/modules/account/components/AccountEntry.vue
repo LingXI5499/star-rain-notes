@@ -88,9 +88,9 @@ const initial = computed(() => {
 /*
  * 「进入后台」的落点是**角色感知**的，不能写死一个地址。
  *
- * 原因：/useradmin/dashboard（仪表盘）在路由表里带 superAdminOnly，只有超管放行
+ * 原因：/dashboard（仪表盘）在路由表里带 superAdminOnly，只有超管放行
  * （见 router/index.js 的守卫）。菜单若统一指向它，USER / ADMIN 点下去会被守卫改写成
- * /useradmin/center —— 从用户视角就是「点了没反应 / 点了又跳回原地」，
+ * /center —— 从用户视角就是「点了没反应 / 点了又跳回原地」，
  * 而这正是所有者「按角色区分后台完善度」的口径要避免的。
  *
  * 因此这里直接复用它自己的能力判定 auth.canManage('account:read')：与守卫里
@@ -163,9 +163,9 @@ async function logout() {
   failure.value = ''
   try {
     if (!await auth.logout()) return
-    // 退出后回到账号树前台（/useradmin），不是公开站也不是登录页：
+    // 退出后回到首页 /，账号入口恢复为登录按钮。
     // 前台首页本来就不需要登录态，停在那里右上角自然变回「登录」，
-    // 比被弹到登录页更符合「我只是退出了账号」的预期，也不会掉出账号外壳。
+    // 比被弹到登录页更符合「我只是退出了账号」的预期，保持正常的前台导航。
     await router.replace(accountPath('/'))
   } catch (error) {
     failure.value = errorMessage(error)
@@ -194,10 +194,10 @@ async function logout() {
         <div v-if="open" class="account-entry__menu" role="menu">
           <!--
             下拉菜单**恰好三项**，按「去后台 / 看自己 / 离开」三种去向分组，不重复顶栏导航：
-              1) 进入后台 —— 唯一一个把人从账号树前台送进控制台的入口，目标是角色感知的
+              1) 进入后台 —— 唯一一个把人从前台送进控制台的入口，目标是角色感知的
                  （见 consolePath：超管去仪表盘，其余角色去控制台首页），因此谁点都不会被弹回。
                  前台不再另设「控制台」按钮，同一个目的地只在菜单里出现一次。
-              2) 查看个人资料 —— 前台自己的账户页（/useradmin/center）。
+              2) 查看个人资料 —— 前台自己的账户页（/center）。
                  它和「进入后台」并列而不是并成一个，是因为看资料是高频动作，
                  不该逼人先进控制台再从侧栏找回来；两条路各自最短。
                  （非超管角色的第 1 项会落到同一个 /center，这是有意的：他的后台首页就是这里，
@@ -210,7 +210,7 @@ async function logout() {
             进入后台
           </RouterLink>
           <!--
-            学习记录是**前台页面**（/useradmin/learning，在公开外壳里渲染，不在控制台侧栏），
+            学习记录是**前台页面**（/learning，在公开外壳里渲染，不在控制台侧栏），
             所以它是这个菜单里唯一一份「与后台无关、但我自己的数据」的入口。
             放在「进入后台」之后，是因为它承接的是「我要继续学」这个高频动作。
           -->

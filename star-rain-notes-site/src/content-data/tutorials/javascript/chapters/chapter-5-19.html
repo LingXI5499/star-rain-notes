@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 缩略图列表点击后只需更新当前图片地址；事件委托可减少监听器数量。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">document.querySelector('#thumbs').onclick = e =&gt; {
+  const img = e.target.closest('img');
+  if (img) document.querySelector('#mainPic').src = img.src;
+};
+</code></pre>
+<p><strong>学完能做：</strong> 根据缩略图点击结果切换主图片。</p>

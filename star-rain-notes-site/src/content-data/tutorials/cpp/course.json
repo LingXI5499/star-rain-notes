@@ -1,0 +1,1234 @@
+{
+  "slug": "cpp",
+  "title": "C++",
+  "description": "以 C++20 为教学主基线、C++17 为企业兼容底线，覆盖类型与函数、类与对象、RAII、拷贝与移动、所有权、模板、现代 C++、异常、编译链接、并发、调试、测试与性能工程。",
+  "category": "通用编程与开发工具体系",
+  "categorySlug": "315825310246",
+  "publishedAt": "2026-08-28",
+  "chapterCount": 143,
+  "wordCount": 25148,
+  "categoryId": "3",
+  "groups": [
+    {
+      "title": "学习指南",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "C++ 学习路线、课程边界与企业开发定位",
+          "description": "本章覆盖：C++ 语言、标准库、STL、编译器、操作系统 API 之间的层次关系；C++ 与 C 的关系：兼容历史很多，但不是“带 class 的 C”；C++20 教学主基线、C++17 企业兼容底线、C++23 选择性补充；秋招高频主线：对象生命周期、指针/引用、OOP、虚函数、RAII、拷贝/移动、模板、并发、内存模型、编译链接；企业真实主线：Linux 工具链、CMake、调试、Sanitizer、测试、性能分析、代码规范；STL 独立课程边界：vector/map/unordered_map/iterator/algorithm/ranges 等不在本课程重复展开；数据结构与算法、操作系统、网络、Linux 系统编程是并行知识体系；学习方法：编译器警告 → 最小实验 → Debug → Sanitizer → 反汇编/ABI 按需验证；学完后的去向：STL、Linux 系统编程、网络编程、数据库/存储、机器人、游戏、图形、AI Infra。",
+          "path": "/tutorials/cpp/chapter-1-1/",
+          "wordCount": 406,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "C++、标准与开发工具链",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "C++ 起源、定位、标准演进与应用领域",
+          "description": "本章覆盖：Bjarne Stroustrup 与 C with Classes；C++ 的多范式定位：过程式、面向对象、泛型、函数式风格、系统编程；C++98 / 03、C++11、C++14、C++17、C++20、C++23 的关键阶段；ISO C++ 标准与具体编译器实现的区别；零成本抽象（zero-overhead abstraction）的设计思想；C++ 在基础软件、数据库、浏览器、游戏引擎、机器人、交易系统、AI Infra 中的典型角色；“现代 C++”不是只会新语法，而是更安全地管理生命周期、所有权和抽象成本；企业项目为什么常长期停留在 C++17 / C++20 而不是永远追最新标准。",
+          "path": "/tutorials/cpp/chapter-2-1/",
+          "wordCount": 288,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "GCC、Clang、MSVC 与 C++ 标准模式",
+          "description": "本章覆盖：GCC / G++；Clang / Clang++；MSVC；编译器前端、优化器、链接器的高层关系；`-std=c++17`；`-std=c++20`；GNU extension 与标准模式；MSVC `/std:c++20`；不同编译器对标准特性的支持差异；使用多个编译器交叉验证可移植性。",
+          "path": "/tutorials/cpp/chapter-2-2/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "从 .cpp 到可执行文件：预处理、编译、汇编与链接",
+          "description": "本章覆盖：`.cpp`；`.h` / `.hpp`；preprocessing；compilation；assembly；object file；linker；executable / shared library；compile error；link error；runtime error；为什么“声明有了但定义没链接进来”会报 undefined reference。",
+          "path": "/tutorials/cpp/chapter-2-3/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "最小 C++ 程序、main 与命令行参数",
+          "description": "本章覆盖：`#include`；`int main()`；`int main(int argc, char* argv[])`；`return 0`；`std::cout`；namespace qualification；命令行参数；标准程序入口；hosted environment 基础；C++ 程序与操作系统进程入口不是同一层概念。",
+          "path": "/tutorials/cpp/chapter-2-4/",
+          "wordCount": 161,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "编译警告、标准模式与高质量编译选项",
+          "description": "本章覆盖：`-Wall`；`-Wextra`；`-Wpedantic`；`-Wconversion` 的使用边界；`-Werror` 的团队使用边界；`-O0` / `-O2` / `-O3`；`-g`；debug build vs release build；警告不是“可忽略提示”；不依赖未定义行为通过编译器“碰巧运行”。",
+          "path": "/tutorials/cpp/chapter-2-5/",
+          "wordCount": 155,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-6",
+          "title": "IDE、编辑器、终端与 Linux C++ 开发环境",
+          "description": "本章覆盖：CLion / Visual Studio / VS Code / Vim 等工具的角色；compiler toolchain；terminal；project directory；build directory；source / include / test 目录；Linux 环境下编译运行；Windows / Linux 工具链差异；WSL 的定位；IDE 只是工具入口，编译器和构建系统才是工程事实。",
+          "path": "/tutorials/cpp/chapter-2-6/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-7",
+          "title": "GDB / LLDB 调试基础",
+          "description": "本章覆盖：breakpoint；run；continue；step；next；finish；backtrace；frame；print；watch；core dump 基础；debug symbol；优化后调试行为变化；从崩溃地址回到调用栈的基本思路。",
+          "path": "/tutorials/cpp/chapter-2-7/",
+          "wordCount": 125,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-8",
+          "title": "Sanitizer 与动态错误检测",
+          "description": "本章覆盖：AddressSanitizer；UndefinedBehaviorSanitizer；ThreadSanitizer；LeakSanitizer 的平台差异；use-after-free；out-of-bounds；double free；data race；sanitizer build；Sanitizer 与单元测试组合；Sanitizer 不能证明程序没有所有错误；企业开发中“先复现、再用工具缩小范围”的排错思路。",
+          "path": "/tutorials/cpp/chapter-2-8/",
+          "wordCount": 214,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "基础语法、类型与流程控制",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "Token、标识符、关键字、注释与代码风格",
+          "description": "本章覆盖：token 的高层认识；identifier；keyword；contextual keyword；单行注释；多行注释；命名规则；保留标识符边界；snake_case / camelCase / PascalCase 的团队约定；ClangFormat 等自动格式化工具的定位。",
+          "path": "/tutorials/cpp/chapter-3-1/",
+          "wordCount": 138,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "变量、初始化与赋值",
+          "description": "本章覆盖：declaration；definition；initialization；assignment；default initialization；value initialization；direct initialization；copy initialization；list initialization；未初始化基本类型的风险；“初始化不是第一次赋值”的对象生命周期意义。",
+          "path": "/tutorials/cpp/chapter-3-2/",
+          "wordCount": 191,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "基本整数类型与取值范围",
+          "description": "本章覆盖：`char`；`signed char`；`unsigned char`；`short`；`int`；`long`；`long long`；signed / unsigned；`sizeof`；实现相关大小；`<cstdint>` 固定宽度类型；`std::size_t`；不死背所有平台的字节数。",
+          "path": "/tutorials/cpp/chapter-3-3/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "浮点类型、精度与数值比较",
+          "description": "本章覆盖：`float`；`double`；`long double`；IEEE 754 高层认知；浮点舍入误差；NaN / infinity 基础；epsilon；直接 `==` 比较浮点数的风险；数值业务中“误差模型”比套固定 epsilon 更重要；金额场景不应机械使用 double。",
+          "path": "/tutorials/cpp/chapter-3-4/",
+          "wordCount": 137,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "bool、char、字符编码与文本边界",
+          "description": "本章覆盖：`bool`；`true` / `false`；`char`；character literal；string literal；escape sequence；ASCII 基础；UTF-8 与 `char` 字节序列；`char8_t` 的版本定位；C++ 字符类型不等于完整 Unicode 文本处理方案；文本国际化不在基础语法中深挖。",
+          "path": "/tutorials/cpp/chapter-3-5/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "字面量、后缀与用户自定义字面量边界",
+          "description": "本章覆盖：integer literal；floating literal；character literal；string literal；`u` / `l` / `ll`；`f`；raw string literal；digit separator；binary literal；user-defined literal 的定位；UDL 属于扩展表达能力，不作为初学必背机制。",
+          "path": "/tutorials/cpp/chapter-3-6/",
+          "wordCount": 177,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-7",
+          "title": "自动类型转换、提升与窄化",
+          "description": "本章覆盖：integral promotion；usual arithmetic conversions；signed / unsigned 混合；floating conversion；narrowing；list initialization 对 narrowing 的限制；隐式转换链；精度丢失；overflow 与 unsigned wrap；编译警告识别危险转换。",
+          "path": "/tutorials/cpp/chapter-3-7/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-8",
+          "title": "显式类型转换：static_cast 等四种 cast",
+          "description": "本章覆盖：`static_cast`；`const_cast`；`reinterpret_cast`；`dynamic_cast`；C-style cast；不同 cast 表达不同意图；`static_cast` 常规数值 / 层级转换；`dynamic_cast` 与多态类型；`reinterpret_cast` 的低级边界；`const_cast` 不能合法修改真正 const 对象；新代码避免不透明的 C-style cast。",
+          "path": "/tutorials/cpp/chapter-3-8/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-9",
+          "title": "算术、关系、逻辑与条件运算符",
+          "description": "本章覆盖：arithmetic operator；integer division；remainder；comparison；equality；logical operator；short-circuit；conditional operator；operator precedence；associativity；复杂表达式优先加括号提升可读性。",
+          "path": "/tutorials/cpp/chapter-3-9/",
+          "wordCount": 171,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-10",
+          "title": "自增、自减、赋值与表达式副作用",
+          "description": "本章覆盖：prefix `++`；postfix `++`；compound assignment；expression side effect；sequencing 基础；不同子表达式求值顺序问题；避免依赖复杂求值顺序；undefined behavior 历史陷阱；简单代码优于面试式“谜题表达式”。",
+          "path": "/tutorials/cpp/chapter-3-10/",
+          "wordCount": 146,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-11",
+          "title": "位运算与底层标志处理",
+          "description": "本章覆盖：`&`；`|`；`^`；`~`；`<<`；`>>`；bit mask；set / clear / toggle / test bit；unsigned 类型与位操作；enum flag 的工程场景；寄存器 / 协议字段 / 权限位；shift 边界与未定义行为。",
+          "path": "/tutorials/cpp/chapter-3-11/",
+          "wordCount": 122,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-12",
+          "title": "if、switch 与分支设计",
+          "description": "本章覆盖：`if`；`else if`；`else`；`switch`；`case`；`default`；fallthrough；`[[fallthrough]]`；initializer in if / switch；early return；guard clause；大型状态机不应无限堆叠 if-else。",
+          "path": "/tutorials/cpp/chapter-3-12/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-13",
+          "title": "for、while、do-while、break 与 continue",
+          "description": "本章覆盖：`for`；`while`；`do-while`；loop condition；`break`；`continue`；nested loop；infinite loop；off-by-one；range-based for 的最小认识；遍历容器细节留给 STL 课程。",
+          "path": "/tutorials/cpp/chapter-3-13/",
+          "wordCount": 134,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-14",
+          "title": "enum、enum class 与状态建模",
+          "description": "本章覆盖：unscoped enum；scoped enum `enum class`；underlying type；name scope；implicit conversion；enum class 避免名称污染；状态码 / 类型码；flags 的边界；enum 与业务状态机；不用魔法整数表达业务状态。",
+          "path": "/tutorials/cpp/chapter-3-14/",
+          "wordCount": 143,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-15",
+          "title": "struct、union 与聚合类型基础",
+          "description": "本章覆盖：`struct`；`class` 默认访问权限差异；aggregate；aggregate initialization；`union`；active member；anonymous union 的边界；tagged union 思想；C 风格 POD 认知的历史边界；简单数据载体；复杂变体优先考虑更安全的抽象。",
+          "path": "/tutorials/cpp/chapter-3-15/",
+          "wordCount": 155,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "函数、引用、const 与重载",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "函数声明、定义、调用与返回值",
+          "description": "本章覆盖：function declaration；function definition；parameter；argument；return type；function prototype；call expression；stack frame 高层认知；return by value；`void`；声明与定义分离。",
+          "path": "/tutorials/cpp/chapter-4-1/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "参数传递：值、指针与引用",
+          "description": "本章覆盖：pass by value；pointer parameter；reference parameter；copy cost；nullable vs non-null intent；input / output parameter；const reference；小型 trivially copyable 类型按值传递；大对象常用 `const T&`；API 设计要表达所有权和可空性。",
+          "path": "/tutorials/cpp/chapter-4-2/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "左值引用与引用基本语义",
+          "description": "本章覆盖：`T&`；reference 必须绑定对象；alias；reference 不等于“自动解引用指针”；reference initialization；引用作为函数参数；引用作为返回值；dangling reference；const reference 可绑定临时对象；引用本身不是独立所有者。",
+          "path": "/tutorials/cpp/chapter-4-3/",
+          "wordCount": 149,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "const 对象与 const correctness",
+          "description": "本章覆盖：`const`；const object；const reference；pointer to const；const pointer；top-level const；low-level const；API 输入参数 const；const correctness；const 不是线程安全保证；logical constness 的高层认知。",
+          "path": "/tutorials/cpp/chapter-4-4/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "const 成员函数、mutable 与逻辑常量性",
+          "description": "本章覆盖：const member function；`this` 的 const 限定；const overload；`mutable`；cache / lazy computation 场景；logical constness；不能在 const 成员函数随意修改对象状态；mutable 不应成为逃避设计的工具；线程安全缓存仍需要同步。",
+          "path": "/tutorials/cpp/chapter-4-5/",
+          "wordCount": 159,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "函数重载与 overload resolution 基础",
+          "description": "本章覆盖：function overloading；signature；name lookup；candidate function；viable function；best match；exact match；promotion；conversion；const overload；ambiguous call；default argument 与 overload 的冲突风险。",
+          "path": "/tutorials/cpp/chapter-4-6/",
+          "wordCount": 181,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "默认参数与接口设计",
+          "description": "本章覆盖：default argument；默认参数放在声明处；trailing parameters；default argument 与 function overload；virtual function default argument 的静态绑定风险；API 版本演进；不用大量默认参数制造“万能函数”；配置对象替代过长参数列表的思路。",
+          "path": "/tutorials/cpp/chapter-4-7/",
+          "wordCount": 164,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "inline、constexpr 函数与编译期计算基础",
+          "description": "本章覆盖：`inline` 的语言语义不是“保证内联优化”；multiple definition allowance；header 中函数定义；`constexpr`；constant evaluation；constexpr function；compile-time vs runtime；`consteval` 的 C++20 定位；`constinit` 的定位；编译期计算应服务于正确性和成本，而不是炫技。",
+          "path": "/tutorials/cpp/chapter-4-8/",
+          "wordCount": 199,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-9",
+          "title": "auto、decltype 与返回类型推导",
+          "description": "本章覆盖：`auto`；type deduction；top-level const 的推导；reference 的推导；`decltype`；`decltype(auto)`；trailing return type；readability；auto 适合复杂明显类型；不用 auto 隐藏关键业务类型和所有权。",
+          "path": "/tutorials/cpp/chapter-4-9/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-10",
+          "title": "函数指针、callable 与 std::function 边界",
+          "description": "本章覆盖：function pointer；pointer syntax；callback；callable object；lambda callable；`std::function`；type erasure 高层认知；std::function 的分配 / 间接调用成本可能性；高性能路径是否需要模板 / function_ref 类方案按项目评估；详细函数对象与算法配合留给 STL。",
+          "path": "/tutorials/cpp/chapter-4-10/",
+          "wordCount": 185,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-11",
+          "title": "Lambda 表达式：捕获、参数与生命周期",
+          "description": "本章覆盖：lambda syntax；capture list；capture by value；capture by reference；init capture；mutable lambda；generic lambda；return type deduction；捕获 this；C++20 `[=, this]` 等版本差异认知；reference capture 的生命周期风险；callback 异步执行时尤其警惕悬空捕获。",
+          "path": "/tutorials/cpp/chapter-4-11/",
+          "wordCount": 202,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-12",
+          "title": "函数接口设计：所有权、可空性与异常边界",
+          "description": "本章覆盖：参数语义优先于参数写法；value 表示复制 / 转移输入；`const T&` 表示借用只读；`T&` 表示非空可修改借用；`T*` 常用于可空或数组 / C API 边界；`unique_ptr` 参数表达所有权转移；`shared_ptr` 参数不应机械使用；return by value；error result 与 exception 的选择；API contract；让类型系统表达意图。",
+          "path": "/tutorials/cpp/chapter-4-12/",
+          "wordCount": 188,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "类、对象与 C++ 对象模型",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "class、对象、成员与访问控制",
+          "description": "本章覆盖：`class`；object；data member；member function；`public`；`private`；`protected`；encapsulation；invariant；struct vs class 的默认访问差异；不把“所有字段 private”机械等同于优秀封装。",
+          "path": "/tutorials/cpp/chapter-5-1/",
+          "wordCount": 149,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "构造函数与对象初始化",
+          "description": "本章覆盖：constructor；default constructor；parameterized constructor；delegating constructor；defaulted constructor；deleted constructor；object initialization；constructor body 执行前成员已初始化；initialization list；构造函数建立对象 invariant。",
+          "path": "/tutorials/cpp/chapter-5-2/",
+          "wordCount": 208,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "成员初始化列表与初始化顺序",
+          "description": "本章覆盖：member initializer list；data member declaration order；实际初始化顺序与 initializer list 书写顺序；base class initialization；const member；reference member；避免“先默认构造再赋值”；编译器 reorder warning；初始化依赖关系；成员声明顺序应反映依赖。",
+          "path": "/tutorials/cpp/chapter-5-3/",
+          "wordCount": 187,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "析构函数与确定性销毁",
+          "description": "本章覆盖：destructor；scope exit；automatic object；deterministic destruction；resource cleanup；destructor 调用顺序；local object reverse destruction order；base / member destruction；destructor 不应抛异常的工程原则；RAII 的基础连接。",
+          "path": "/tutorials/cpp/chapter-5-4/",
+          "wordCount": 189,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "this 指针与成员函数调用模型",
+          "description": "本章覆盖：`this`；implicit object parameter 的高层认知；`this->`；返回 `*this`；method chaining；const member function 与 this；constructor / destructor 中 this 的边界；lambda 捕获 this；不把 this 当作对象所有权指针。",
+          "path": "/tutorials/cpp/chapter-5-5/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "static 数据成员与 static 成员函数",
+          "description": "本章覆盖：static data member；static member function；class-wide state；inline static variable；initialization；no `this`；singleton 不是 static member 的必然用途；global state 风险；static local 与 thread-safe initialization 基础；生命周期与并发访问要单独考虑。",
+          "path": "/tutorials/cpp/chapter-5-6/",
+          "wordCount": 204,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "friend、访问边界与封装权衡",
+          "description": "本章覆盖：friend function；friend class；operator overload 中的 friend 场景；friend 不是继承；friend 不会传递；封装边界；测试 / serializer / tightly-coupled helper 的使用边界；不用 friend 修补糟糕的数据暴露设计。",
+          "path": "/tutorials/cpp/chapter-5-7/",
+          "wordCount": 149,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-8",
+          "title": "Operator Overloading：语义一致性与边界",
+          "description": "本章覆盖：overloaded operator；member vs non-member；`operator==`；arithmetic operator；stream operator；assignment operator；subscript operator；call operator；某些 operator 不能重载；保持与内建类型直觉一致；不设计“惊讶语义”。",
+          "path": "/tutorials/cpp/chapter-5-8/",
+          "wordCount": 179,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-9",
+          "title": "对象大小、对齐与 Padding",
+          "description": "本章覆盖：`sizeof`；alignment；`alignof`；padding；member order；object size；empty class size；standard-layout 的高层认知；ABI / platform dependence；cache line 与对象布局只建立工程连接；不根据单平台结果推断标准保证。",
+          "path": "/tutorials/cpp/chapter-5-9/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-10",
+          "title": "对象生命周期、storage 与 lifetime 的区别",
+          "description": "本章覆盖：storage；object lifetime；automatic storage duration；static storage duration；thread storage duration；dynamic storage duration；object construction；object destruction；storage 存在不等于对象 lifetime 已开始；placement new 的后续连接；lifetime bug 是 C++ 内存错误核心来源之一。",
+          "path": "/tutorials/cpp/chapter-5-10/",
+          "wordCount": 229,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-11",
+          "title": "trivial、standard-layout 与对象性质的工程认知",
+          "description": "本章覆盖：trivial type；trivially copyable；standard-layout；aggregate；POD 的历史术语边界；`memcpy` 对象的合法性不能只看“看起来简单”；serialization；binary compatibility；C interop；type trait 的详细使用放模板章节。",
+          "path": "/tutorials/cpp/chapter-5-11/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-12",
+          "title": "临时对象、materialization 与生命周期延长",
+          "description": "本章覆盖：temporary object；prvalue materialization 高层认知；temporary lifetime；const reference lifetime extension；reference member 的危险边界；function return temporary；chained expression；dangling view / reference；不依赖模糊的临时对象直觉写接口。",
+          "path": "/tutorials/cpp/chapter-5-12/",
+          "wordCount": 202,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-13",
+          "title": "placement new、显式析构与底层对象构造边界",
+          "description": "本章覆盖：placement new；raw storage；object construction in storage；explicit destructor call；allocator / container 实现背景；alignment；lifetime rule；普通业务代码极少直接使用；错误使用容易造成 UB；作为理解 STL allocator / memory pool 的前置知识。",
+          "path": "/tutorials/cpp/chapter-5-13/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-14",
+          "title": "C++ 对象模型与实现层：vptr、vtable、ABI 的事实边界",
+          "description": "本章覆盖：C++ 标准定义虚函数语义，不要求特定 vtable 实现；vptr / vtable 是主流 ABI 常见实现；name mangling；ABI；object layout；virtual dispatch；compiler explorer / debugger 验证实现；不把“虚表一定在对象开头”写成语言定律；不同编译器 / ABI 可能不同；面试回答要区分“标准语义”和“常见实现”。",
+          "path": "/tutorials/cpp/chapter-5-14/",
+          "wordCount": 187,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "继承、多态与面向对象设计",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "继承基础：is-a、访问控制与基类子对象",
+          "description": "本章覆盖：base class；derived class；public inheritance；protected inheritance；private inheritance；base subobject；is-a；public inheritance 表达 substitutability；composition 往往比继承更稳健；不为代码复用机械使用继承。",
+          "path": "/tutorials/cpp/chapter-6-1/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "构造、析构与继承层次的初始化顺序",
+          "description": "本章覆盖：base constructor；derived constructor；member initialization；virtual base 的高层认知；constructor order；destructor reverse order；基类成员先于派生类成员准备；构造期间对象动态类型边界；不在构造/析构期间依赖正常虚分派语义。",
+          "path": "/tutorials/cpp/chapter-6-2/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "虚函数、override 与运行时多态",
+          "description": "本章覆盖：`virtual`；`override`；`final`；dynamic dispatch；static type；dynamic type；base pointer / reference；overriding；signature matching；推荐始终使用 override 防止误写。",
+          "path": "/tutorials/cpp/chapter-6-3/",
+          "wordCount": 145,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "虚析构函数与多态删除",
+          "description": "本章覆盖：virtual destructor；delete through base pointer；undefined behavior risk；polymorphic base；protected non-virtual destructor 的特殊设计边界；interface class；smart pointer + polymorphism；rule: intended polymorphic deletion requires virtual destructor；不机械给所有类加 virtual destructor。",
+          "path": "/tutorials/cpp/chapter-6-4/",
+          "wordCount": 251,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "纯虚函数、抽象类与接口设计",
+          "description": "本章覆盖：pure virtual function；abstract class；interface-like base；implementation inheritance；default implementation；pure virtual destructor 的定义要求；dependency inversion；stable interface；不让接口暴露不必要的数据成员；ABI 稳定性只建立认知。",
+          "path": "/tutorials/cpp/chapter-6-5/",
+          "wordCount": 198,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-6",
+          "title": "Object Slicing、向上转型与向下转型",
+          "description": "本章覆盖：object slicing；pass derived by value to base；upcast；downcast；`dynamic_cast`；RTTI；polymorphic type requirement；reference cast failure；pointer cast failure；更优设计通常避免频繁向下转型。",
+          "path": "/tutorials/cpp/chapter-6-6/",
+          "wordCount": 164,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-7",
+          "title": "Multiple Inheritance 与 Diamond Problem",
+          "description": "本章覆盖：multiple inheritance；ambiguous base；diamond；virtual inheritance；shared virtual base；construction complexity；interface multiple inheritance；data-bearing multiple inheritance 的复杂性；了解框架 / Qt / COM 等历史场景；新业务设计优先组合与窄接口。",
+          "path": "/tutorials/cpp/chapter-6-7/",
+          "wordCount": 205,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-8",
+          "title": "Composition、Aggregation 与“优先组合”",
+          "description": "本章覆盖：composition；ownership；delegation；dependency injection 高层思路；has-a；strategy object；policy object 的高层认知；composition vs inheritance；测试替换；业务模型中优先组合而不是深继承树。",
+          "path": "/tutorials/cpp/chapter-6-8/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-9",
+          "title": "SOLID 在 C++ 中的适用边界",
+          "description": "本章覆盖：SRP；OCP；LSP；ISP；DIP；C++ value semantics 与传统 OOP 的差异；不把 SOLID 变成绝对教条；template / static polymorphism 也能解耦；性能敏感代码需要在抽象与成本之间平衡；先解决真实变化点。",
+          "path": "/tutorials/cpp/chapter-6-9/",
+          "wordCount": 128,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-10",
+          "title": "Runtime Polymorphism 与 Static Polymorphism 对比",
+          "description": "本章覆盖：virtual dispatch；runtime polymorphism；template；CRTP 的高层认知；compile-time polymorphism；code size；dynamic flexibility；performance / ABI trade-off；Concepts 对静态多态可读性的改善；不是“模板一定比虚函数快”，必须根据场景和测量判断。",
+          "path": "/tutorials/cpp/chapter-6-10/",
+          "wordCount": 186,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "生命周期、RAII、拷贝与移动语义",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "RAII：C++ 资源管理的核心模型",
+          "description": "本章覆盖：Resource Acquisition Is Initialization；constructor acquires resource；destructor releases resource；scope-bound lifetime；file / lock / memory / socket wrapper；exception safety；deterministic cleanup；ownership；RAII 不等于“只管理内存”；现代 C++ 资源安全的主线。",
+          "path": "/tutorials/cpp/chapter-7-1/",
+          "wordCount": 224,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "拷贝构造函数",
+          "description": "本章覆盖：copy constructor；implicit copy constructor；user-defined copy constructor；shallow copy；deep copy；copy from const reference；resource owning type；copy semantics；copy elision 与实际调用次数；不因为“打印日志没看到拷贝”就误解语言语义。",
+          "path": "/tutorials/cpp/chapter-7-2/",
+          "wordCount": 193,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "拷贝赋值运算符",
+          "description": "本章覆盖：copy assignment；self-assignment；release old resource；acquire new state；copy-and-swap 思想；strong exception guarantee 的连接；return `*this`；implicit copy assignment；deleted copy assignment；assignment 与 construction 是不同生命周期操作。",
+          "path": "/tutorials/cpp/chapter-7-3/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "Rule of Three、Five 与 Zero",
+          "description": "本章覆盖：destructor；copy constructor；copy assignment；move constructor；move assignment；Rule of Three；Rule of Five；Rule of Zero；优先使用标准 RAII 成员让编译器生成 special member；手写五件套往往意味着类型资源模型需要认真审视。",
+          "path": "/tutorials/cpp/chapter-7-4/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "Value Category：lvalue、xvalue、prvalue",
+          "description": "本章覆盖：expression；value category；glvalue；lvalue；xvalue；prvalue；temporary；named variable is lvalue；value category 与 type 是不同维度；move / forwarding 的前置知识；不用“左边的是左值”这种错误口诀。",
+          "path": "/tutorials/cpp/chapter-7-5/",
+          "wordCount": 156,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-6",
+          "title": "右值引用与 std::move",
+          "description": "本章覆盖：`T&&`；rvalue reference；bind to temporary；`std::move`；move 是 cast / intent，不保证真的移动；moved-from object；valid but unspecified state 的典型理解；move constructor；move assignment；不对马上还要使用的对象随意 move。",
+          "path": "/tutorials/cpp/chapter-7-6/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-7",
+          "title": "Move Constructor 与 Move Assignment",
+          "description": "本章覆盖：resource stealing；reset source；noexcept；self move 的边界；member-wise move；implicit move generation；user-declared destructor 对隐式 move 的影响；move-only type；file handle / socket handle / unique_ptr；容器重分配对 noexcept move 的偏好连接。",
+          "path": "/tutorials/cpp/chapter-7-7/",
+          "wordCount": 203,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-8",
+          "title": "Copy Elision、RVO、NRVO 与返回值优化",
+          "description": "本章覆盖：copy elision；RVO；NRVO；C++17 guaranteed copy elision 场景；return local by value；不要为了“避免拷贝”返回局部对象引用；不要机械 `return std::move(local)`；value return 是现代 C++ 常见高质量接口；编译器优化与语言保证要区分。",
+          "path": "/tutorials/cpp/chapter-7-8/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-9",
+          "title": "Perfect Forwarding 与 Forwarding Reference",
+          "description": "本章覆盖：forwarding reference；template `T&&`；reference collapsing；`std::forward`；preserve value category；wrapper / factory；emplace 类 API 的原理前置；universal reference 是历史教学术语；forwarding 只在泛型转发场景使用；不把所有 `T&&` 都叫 forwarding reference。",
+          "path": "/tutorials/cpp/chapter-7-9/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-10",
+          "title": "Reference Collapsing 与类型推导规则",
+          "description": "本章覆盖：`T& &`；`T& &&`；`T&& &`；`T&& &&`；collapse rules；template type deduction；`auto&&`；named rvalue reference is lvalue expression；`decltype` 配合；完美转发为什么成立。",
+          "path": "/tutorials/cpp/chapter-7-10/",
+          "wordCount": 142,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-11",
+          "title": "Lifetime Bug：Dangling Pointer / Reference / View",
+          "description": "本章覆盖：dangling pointer；dangling reference；use-after-free；temporary lifetime；returning local reference；lambda reference capture；string_view / span lifetime；iterator invalidation 的连接留给 STL；async callback lifetime；所有权、借用与生命周期必须一起设计。",
+          "path": "/tutorials/cpp/chapter-7-11/",
+          "wordCount": 215,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-12",
+          "title": "Exception Safety 与 RAII 的资源一致性",
+          "description": "本章覆盖：basic guarantee；strong guarantee；no-throw guarantee；stack unwinding；partially constructed object；destructor cleanup；transaction-like state change；copy-and-swap；commit / rollback 思想；RAII 是异常安全的基础而不是附属技巧。",
+          "path": "/tutorials/cpp/chapter-7-12/",
+          "wordCount": 196,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "指针、动态内存与智能指针",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "原始指针：地址、解引用与可空语义",
+          "description": "本章覆盖：pointer；address-of；dereference；null pointer；`nullptr`；pointer to object；pointer arithmetic 的数组边界；dangling pointer；non-owning pointer；raw pointer 并不自动表示“危险”，关键是所有权语义。",
+          "path": "/tutorials/cpp/chapter-8-1/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "数组、指针与 C 风格接口边界",
+          "description": "本章覆盖：built-in array；array-to-pointer decay；array size information loss；pointer arithmetic；C string；null terminator；pointer + length；span 思想的后续连接；与 C API / OS API 交互；新业务代码避免把裸数组作为复杂接口。",
+          "path": "/tutorials/cpp/chapter-8-2/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "new、delete、new[] 与 delete[]",
+          "description": "本章覆盖：dynamic allocation；`new`；`delete`；`new[]`；`delete[]`；constructor / destructor；allocation failure；mismatched delete；memory leak；exception safety；普通业务代码应优先 RAII / smart pointer / container，而不是直接 new/delete。",
+          "path": "/tutorials/cpp/chapter-8-3/",
+          "wordCount": 197,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "operator new、allocator 与内存分配层次",
+          "description": "本章覆盖：new expression；`operator new`；allocation vs construction；delete expression；`operator delete`；placement new；custom allocation；memory pool；allocator 的高层定位；STL allocator 细节留给 STL 课程；低延迟系统可能需要定制分配策略；不在普通业务代码提前做内存池优化。",
+          "path": "/tutorials/cpp/chapter-8-4/",
+          "wordCount": 205,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "std::unique_ptr：独占所有权",
+          "description": "本章覆盖：`std::unique_ptr`；exclusive ownership；move-only；`make_unique`；automatic cleanup；custom deleter；array specialization 的边界；function return；ownership transfer；raw pointer observer；首选默认动态所有权模型。",
+          "path": "/tutorials/cpp/chapter-8-5/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-6",
+          "title": "std::shared_ptr：共享所有权与控制块",
+          "description": "本章覆盖：`std::shared_ptr`；reference count；control block；`make_shared`；copy ownership；destruction；aliasing constructor 的高级定位；shared ownership 的真实语义；ref count 有同步 / 间接成本；不要把 shared_ptr 当“更安全的默认指针”。",
+          "path": "/tutorials/cpp/chapter-8-6/",
+          "wordCount": 181,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-7",
+          "title": "std::weak_ptr 与循环引用",
+          "description": "本章覆盖：`std::weak_ptr`；non-owning observation；`lock()`；expired；shared_ptr cycle；parent / child graph；callback registration；cache；ownership graph；weak_ptr 解决的是共享所有权图中的非 owning edge。",
+          "path": "/tutorials/cpp/chapter-8-7/",
+          "wordCount": 170,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-8",
+          "title": "enable_shared_from_this 与 shared_ptr 常见陷阱",
+          "description": "本章覆盖：`std::enable_shared_from_this`；`shared_from_this`；从 this 再构造 shared_ptr 的双控制块风险；object 必须已经由 shared_ptr 管理；constructor 中 shared_from_this 的边界；callback 捕获 shared_ptr；self-lifetime extension；memory leak due callback cycle；weak capture；异步对象生命周期设计。",
+          "path": "/tutorials/cpp/chapter-8-8/",
+          "wordCount": 233,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-9",
+          "title": "所有权设计：raw pointer、reference、unique_ptr、shared_ptr 怎么选",
+          "description": "本章覆盖：owner vs observer；non-null borrow；nullable borrow；exclusive ownership；shared ownership；API parameter；return value；member field；factory；tree / graph；async callback；所有权越简单越好；shared ownership 必须有业务理由。",
+          "path": "/tutorials/cpp/chapter-8-9/",
+          "wordCount": 190,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "模板、泛型编程与 Concepts",
+      "chapters": [
+        {
+          "slug": "chapter-9-1",
+          "title": "Function Template 与类型参数",
+          "description": "本章覆盖：function template；template parameter；type parameter；template argument deduction；explicit template argument；instantiation；generic algorithm idea；compile-time polymorphism；error message；与函数重载的协作。",
+          "path": "/tutorials/cpp/chapter-9-1/",
+          "wordCount": 189,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-2",
+          "title": "Class Template 与泛型类型",
+          "description": "本章覆盖：class template；template member；instantiation；type parameter；non-type template parameter 基础；default template argument；member function definition；header visibility requirement；generic wrapper；STL 容器是模板类的后续实例。",
+          "path": "/tutorials/cpp/chapter-9-2/",
+          "wordCount": 199,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-3",
+          "title": "Template Specialization 与 Partial Specialization",
+          "description": "本章覆盖：primary template；explicit specialization；partial specialization；class template partial specialization；function template 没有 partial specialization；overload vs specialization；trait customization；maintenance complexity；优先清晰设计，不把 specialization 当普通 if。",
+          "path": "/tutorials/cpp/chapter-9-3/",
+          "wordCount": 238,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-4",
+          "title": "Non-type Template Parameter 与编译期配置",
+          "description": "本章覆盖：integral NTTP；enum NTTP；pointer/reference 的历史边界；C++20 扩展范围高层认知；fixed-size type；static configuration；compile-time dimension；code bloat；runtime parameter vs compile-time parameter；只在确有静态价值时模板化。",
+          "path": "/tutorials/cpp/chapter-9-4/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-5",
+          "title": "Type Traits 与类型级编程基础",
+          "description": "本章覆盖：`<type_traits>`；`std::is_same`；`std::is_integral`；`std::is_trivially_copyable`；`std::remove_reference`；`std::decay`；`_v` / `_t` aliases；compile-time condition；generic API constraints；不死记全部 traits，学会查标准库并理解用途。",
+          "path": "/tutorials/cpp/chapter-9-5/",
+          "wordCount": 208,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-6",
+          "title": "SFINAE 与 enable_if 的历史价值",
+          "description": "本章覆盖：substitution failure is not an error；overload participation；`std::enable_if`；type trait condition；return type / template parameter SFINAE；error readability 问题；C++20 Concepts 改善约束表达；阅读旧代码必须理解 SFINAE；新代码优先 Concepts（项目标准允许时）。",
+          "path": "/tutorials/cpp/chapter-9-6/",
+          "wordCount": 210,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-7",
+          "title": "if constexpr 与编译期分支",
+          "description": "本章覆盖：`if constexpr`；compile-time condition；discarded statement；type-dependent code；trait + if constexpr；generic serialization / formatting 场景；与普通 if 的区别；减少 specialization 数量；仍需保持模板逻辑可读。",
+          "path": "/tutorials/cpp/chapter-9-7/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-8",
+          "title": "Concepts 与 requires",
+          "description": "本章覆盖：concept；`requires`；constraint；named concept；requires-clause；requires-expression；constrained template；better diagnostics；semantic requirement vs syntactic requirement；Concepts 不会自动证明业务语义正确；C++20 企业项目是否采用取决于编译基线。",
+          "path": "/tutorials/cpp/chapter-9-8/",
+          "wordCount": 208,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-9",
+          "title": "Variadic Template 与 Parameter Pack",
+          "description": "本章覆盖：parameter pack；template parameter pack；function parameter pack；pack expansion；`sizeof...`；recursive expansion 的历史写法；forwarding；factory / logging / tuple-like API；complexity control；fold expression 的后续连接。",
+          "path": "/tutorials/cpp/chapter-9-9/",
+          "wordCount": 194,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-9-10",
+          "title": "Fold Expression、CTAD 与现代模板接口",
+          "description": "本章覆盖：fold expression；unary fold；binary fold；parameter pack reduction；class template argument deduction；deduction guide；explicit deduction guide；generic wrapper；ergonomic API；模板接口应把复杂性藏在实现中，而不是让调用者承担。",
+          "path": "/tutorials/cpp/chapter-9-10/",
+          "wordCount": 188,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "现代 C++ 常用语言与词汇类型",
+      "chapters": [
+        {
+          "slug": "chapter-10-1",
+          "title": "nullptr、override、final、default、delete 等现代基础特性",
+          "description": "本章覆盖：`nullptr`；`override`；`final`；`= default`；`= delete`；explicit intent；避免 `NULL` / 0 指针歧义；禁止隐式生成特定 special member；编译器帮助验证设计；现代 C++ 先追求“让意图进入类型和语法”。",
+          "path": "/tutorials/cpp/chapter-10-1/",
+          "wordCount": 140,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-2",
+          "title": "range-based for 与结构化绑定",
+          "description": "本章覆盖：range-based for；`auto`；`auto&`；`const auto&`；copy vs reference；structured binding；array / tuple-like / struct binding；map pair 的后续 STL 连接；生命周期；遍历容器的 iterator invalidation 留给 STL。",
+          "path": "/tutorials/cpp/chapter-10-2/",
+          "wordCount": 167,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-3",
+          "title": "constexpr、consteval、constinit 的现代用法",
+          "description": "本章覆盖：constexpr variable；constexpr function；constexpr object；constant evaluation；`consteval`；immediate function；`constinit`；static initialization；compile-time validation；不把运行时业务强行编译期化；C++20 compile-time 能力扩展。",
+          "path": "/tutorials/cpp/chapter-10-3/",
+          "wordCount": 200,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-4",
+          "title": "std::string 与字符串所有权",
+          "description": "本章覆盖：`std::string`；owning string；construction；copy / move；size；empty；append；substring 的基础；`c_str()`；C API interop；small string optimization 是实现优化，不是标准保证；深入 API 不在 STL 主体重复扩张。",
+          "path": "/tutorials/cpp/chapter-10-4/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-5",
+          "title": "std::string_view：零拷贝字符串视图与生命周期",
+          "description": "本章覆盖：`std::string_view`；non-owning view；pointer + length 高层模型；cheap copy；function parameter；substring view；no ownership；dangling string_view；temporary string；null termination 不保证；性能优化必须建立在生命周期正确性上。",
+          "path": "/tutorials/cpp/chapter-10-5/",
+          "wordCount": 187,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-6",
+          "title": "std::optional：可选值建模",
+          "description": "本章覆盖：`std::optional<T>`；engaged / disengaged；`std::nullopt`；`has_value`；dereference；`value()`；optional return；“不存在”不是错误时的建模；optional vs pointer；optional vs exception；避免魔法值如 -1 / empty string 表示缺失。",
+          "path": "/tutorials/cpp/chapter-10-6/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-7",
+          "title": "std::variant：类型安全联合体",
+          "description": "本章覆盖：`std::variant`；alternatives；active alternative；`std::get`；`std::get_if`；`std::visit`；tagged union；compile-time closed set；error state / AST / message 类型；variant vs inheritance；union 的更安全替代场景。",
+          "path": "/tutorials/cpp/chapter-10-7/",
+          "wordCount": 185,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-8",
+          "title": "std::any 与类型擦除边界",
+          "description": "本章覆盖：`std::any`；runtime type erasure；`any_cast`；heterogeneous value；plugin / property bag 场景；type safety 在读取点恢复；runtime overhead；不应用 any 逃避建模；variant 在封闭类型集合下通常更清晰。",
+          "path": "/tutorials/cpp/chapter-10-8/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-9",
+          "title": "std::span：连续内存的非拥有视图",
+          "description": "本章覆盖：`std::span`；contiguous sequence view；pointer + size；array；vector interop 的后续连接；static extent / dynamic extent；subspan；no ownership；lifetime；C++20 API；现代接口优于裸 pointer + length 的部分场景。",
+          "path": "/tutorials/cpp/chapter-10-9/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-10-10",
+          "title": "Coroutines：协程语言机制与工程边界",
+          "description": "本章覆盖：`co_await`；`co_yield`；`co_return`；coroutine transformation 高层认知；promise type；coroutine handle；lazy task / generator 场景；C++20 coroutine 是语言机制，不是完整调度器；networking framework / async runtime 提供真正运行环境；生命周期与 frame ownership；初级岗位不要求手写协程框架，但高性能异步项目需要能理解。",
+          "path": "/tutorials/cpp/chapter-10-10/",
+          "wordCount": 235,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "异常、错误处理与资源安全",
+      "chapters": [
+        {
+          "slug": "chapter-11-1",
+          "title": "Exception 基础：throw、try、catch",
+          "description": "本章覆盖：`throw`；`try`；`catch`；exception object；type matching；catch by const reference；catch-all；rethrow；error propagation；exception 用于异常路径而不是普通分支。",
+          "path": "/tutorials/cpp/chapter-11-1/",
+          "wordCount": 138,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-2",
+          "title": "Stack Unwinding 与析构调用",
+          "description": "本章覆盖：stack unwinding；automatic object destruction；RAII cleanup；partially constructed object；member destruction；base destruction；destructor throwing risk；exception safety；这也是 RAII 比手工 cleanup label 更强的核心原因。",
+          "path": "/tutorials/cpp/chapter-11-2/",
+          "wordCount": 191,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-3",
+          "title": "noexcept 与异常规范",
+          "description": "本章覆盖：`noexcept`；noexcept function；`noexcept(expr)`；termination；move constructor noexcept；generic code；optimizer opportunity 不应作为唯一动机；API contract；只有真正保证不抛时才声明 noexcept。",
+          "path": "/tutorials/cpp/chapter-11-3/",
+          "wordCount": 162,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-4",
+          "title": "标准异常类型与自定义异常",
+          "description": "本章覆盖：`std::exception`；`std::runtime_error`；`std::logic_error`；`what()`；custom exception；domain error information；exception hierarchy；不需要为每个错误创建复杂继承树；错误信息要包含可定位上下文但避免敏感信息。",
+          "path": "/tutorials/cpp/chapter-11-4/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-5",
+          "title": "Error Code、Status、optional 与 exception 怎么选",
+          "description": "本章覆盖：return code；status object；`std::error_code`；optional；variant-like result；exception；recoverable vs exceptional；hot path；API boundary；cross-language boundary；团队规范一致性；没有“一律禁止异常”或“一律使用异常”的通用答案。",
+          "path": "/tutorials/cpp/chapter-11-5/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-6",
+          "title": "std::expected（C++23）与 Result 模式补充",
+          "description": "本章覆盖：`std::expected`；value / error；C++23；monadic-style operations 的高层认知；explicit error channel；expected vs exception；expected vs optional；企业编译基线可能暂不支持；作为 C++23 补充，不强迫进入 C++17/20 项目。",
+          "path": "/tutorials/cpp/chapter-11-6/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-11-7",
+          "title": "跨模块、线程与 C API 的错误边界",
+          "description": "本章覆盖：exception 不应无意穿越 C ABI；thread entry exception；callback boundary；plugin / shared library boundary；logging；translate exception to status；cleanup；noexcept boundary；crash vs recover；企业系统要明确“错误在哪一层被处理”。",
+          "path": "/tutorials/cpp/chapter-11-7/",
+          "wordCount": 188,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "编译模型、头文件、链接、ODR 与 Modules",
+      "chapters": [
+        {
+          "slug": "chapter-12-1",
+          "title": "Translation Unit 与头文件模型",
+          "description": "本章覆盖：translation unit；preprocessing result；source file；header file；declaration；definition；include；每个 cpp 独立编译；header 不是独立链接单元；编译时间来源高层认知。",
+          "path": "/tutorials/cpp/chapter-12-1/",
+          "wordCount": 132,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-2",
+          "title": "Header Guard 与 #pragma once",
+          "description": "本章覆盖：include guard；macro guard；multiple inclusion；`#pragma once`；portability；header dependency；self-contained header；include what you use；不依赖“别的头文件顺便 include 了”。",
+          "path": "/tutorials/cpp/chapter-12-2/",
+          "wordCount": 152,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-3",
+          "title": "前向声明与依赖解耦",
+          "description": "本章覆盖：forward declaration；incomplete type；pointer / reference to incomplete type；complete type requirement；reduce include dependency；compile time；cyclic dependency；pImpl 的后续连接；不为减少 include 牺牲接口可读性。",
+          "path": "/tutorials/cpp/chapter-12-3/",
+          "wordCount": 182,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-4",
+          "title": "Namespace、using 与名称查找",
+          "description": "本章覆盖：namespace；nested namespace；namespace alias；`using`；using declaration；using directive；global namespace pollution；header 中避免 `using namespace`；ADL 的高层认知；名称查找与模板复杂性只建立连接。",
+          "path": "/tutorials/cpp/chapter-12-4/",
+          "wordCount": 164,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-5",
+          "title": "Linkage、Storage Duration 与符号可见性",
+          "description": "本章覆盖：external linkage；internal linkage；no linkage；namespace-scope variable；`static`；`extern`；inline variable；anonymous namespace；symbol；shared library visibility 的工程连接；storage duration 与 linkage 不同。",
+          "path": "/tutorials/cpp/chapter-12-5/",
+          "wordCount": 187,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-6",
+          "title": "ODR：One Definition Rule",
+          "description": "本章覆盖：ODR；one definition；multiple declarations；inline function；template；class definition in header；duplicated definition；linker error；silent ODR violation 风险；LTO / shared library 下问题可能更复杂；ODR 是理解大型 C++ 构建问题的核心。",
+          "path": "/tutorials/cpp/chapter-12-6/",
+          "wordCount": 193,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-7",
+          "title": "Preprocessor、Macro 与条件编译",
+          "description": "本章覆盖：`#define`；object-like macro；function-like macro；`#if`；`#ifdef`；`#ifndef`；platform conditional；macro expansion；parentheses trap；double evaluation；优先 constexpr / inline / template；macro 主要保留条件编译、生成式场景与外部 API 兼容。",
+          "path": "/tutorials/cpp/chapter-12-7/",
+          "wordCount": 202,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-8",
+          "title": "Static Library、Shared Library 与动态链接基础",
+          "description": "本章覆盖：static library；`.a` / `.lib`；shared library；`.so` / `.dll`；link time；load time；symbol resolution；ABI；versioning 高层认知；runtime library path；Linux `ldd` / Windows dependency 工具的定位；详细 ELF / PE 留给系统专项。",
+          "path": "/tutorials/cpp/chapter-12-8/",
+          "wordCount": 182,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-9",
+          "title": "ABI、Name Mangling 与二进制兼容性",
+          "description": "本章覆盖：ABI；calling convention 高层认知；name mangling；compiler / standard library ABI；class layout；virtual table implementation；exception ABI；binary compatibility；header-only vs binary library；C ABI wrapper；跨编译器 / 跨版本边界必须验证。",
+          "path": "/tutorials/cpp/chapter-12-9/",
+          "wordCount": 200,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-12-10",
+          "title": "C++20 Modules：目标、优势与现实采用边界",
+          "description": "本章覆盖：module；module interface；import；export；header model 的问题；build system support；compiler support；third-party dependency adoption；modules 不等于 package manager；企业项目可能长期与 header 并存；了解方向，但不把尚未普遍落地的工具链复杂度塞进基础主线。",
+          "path": "/tutorials/cpp/chapter-12-10/",
+          "wordCount": 195,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "多线程、原子操作与 C++ 内存模型",
+      "chapters": [
+        {
+          "slug": "chapter-13-1",
+          "title": "std::thread 与线程生命周期",
+          "description": "本章覆盖：`std::thread`；thread entry；join；detach；joinable；RAII thread wrapper；`std::jthread` 的 C++20 定位；thread argument passing；reference wrapper 的边界；exception across thread entry；不随意 detach 制造不可控生命周期。",
+          "path": "/tutorials/cpp/chapter-13-1/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-2",
+          "title": "Data Race、Race Condition 与线程安全",
+          "description": "本章覆盖：race condition；data race；undefined behavior；shared mutable state；thread safety；reentrancy；immutable data；thread confinement；synchronization；“结果偶尔错”只是并发 bug 的一种表现。",
+          "path": "/tutorials/cpp/chapter-13-2/",
+          "wordCount": 159,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-3",
+          "title": "mutex、lock_guard 与 unique_lock",
+          "description": "本章覆盖：`std::mutex`；lock；unlock；critical section；`std::lock_guard`；RAII lock；`std::unique_lock`；deferred lock；lock ownership；手工 lock/unlock 的异常安全风险；临界区尽量短但首先保证正确。",
+          "path": "/tutorials/cpp/chapter-13-3/",
+          "wordCount": 156,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-4",
+          "title": "Deadlock、std::scoped_lock 与锁顺序",
+          "description": "本章覆盖：deadlock；circular wait；multiple mutex；lock ordering；`std::lock`；`std::scoped_lock`；nested locking；avoid holding lock during blocking I/O；callback while holding lock 的风险；deadlock debugging 高层流程。",
+          "path": "/tutorials/cpp/chapter-13-4/",
+          "wordCount": 185,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-5",
+          "title": "condition_variable 与生产者消费者同步",
+          "description": "本章覆盖：`std::condition_variable`；wait；notify_one；notify_all；predicate；spurious wakeup；unique_lock requirement；producer-consumer；bounded queue 的后续实战；condition variable 不是“事件消息队列”。",
+          "path": "/tutorials/cpp/chapter-13-5/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-6",
+          "title": "future、promise、async 与任务结果",
+          "description": "本章覆盖：`std::future`；`std::promise`；`std::async`；future result；exception propagation；launch policy；one-shot channel；packaged_task 的定位；thread pool 不由 std::async 自动等价提供；现代工程常使用自建 / 框架线程池。",
+          "path": "/tutorials/cpp/chapter-13-6/",
+          "wordCount": 174,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-7",
+          "title": "std::atomic 与无锁原子操作基础",
+          "description": "本章覆盖：`std::atomic`；load；store；exchange；compare_exchange；fetch_add；atomicity；lock-free query；atomic 不自动解决复合业务 invariant；CAS loop；只有充分理由才进入 lock-free 设计。",
+          "path": "/tutorials/cpp/chapter-13-7/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-8",
+          "title": "C++ Memory Model 与 memory_order",
+          "description": "本章覆盖：happens-before；sequenced-before；synchronizes-with；memory ordering；`memory_order_seq_cst`；acquire；release；relaxed；acq_rel；fence 的高级定位；mutex 建立同步关系；初级代码默认先用 mutex / seq_cst，优化前必须证明正确。",
+          "path": "/tutorials/cpp/chapter-13-8/",
+          "wordCount": 182,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-13-9",
+          "title": "False Sharing、Cache 与并发性能边界",
+          "description": "本章覆盖：CPU cache 高层认知；cache line；false sharing；contention；padding / alignment；read-mostly data；sharding；lock granularity；atomic hot spot；profiler / benchmark；并发性能优化必须基于测量而不是猜测。",
+          "path": "/tutorials/cpp/chapter-13-9/",
+          "wordCount": 164,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "企业工程、调试、测试与性能",
+      "chapters": [
+        {
+          "slug": "chapter-14-1",
+          "title": "CMake 项目结构与 Target 思维",
+          "description": "本章覆盖：CMake 的定位；`CMakeLists.txt`；configure；generate；build；target；executable；library；`target_include_directories`；`target_link_libraries`；compile features；target-based CMake；不以全局变量堆砌大型工程。",
+          "path": "/tutorials/cpp/chapter-14-1/",
+          "wordCount": 184,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-2",
+          "title": "Debug / Release、Compiler Flags 与构建配置",
+          "description": "本章覆盖：Debug；Release；RelWithDebInfo；optimization；debug symbols；warnings；standard level；sanitizer configuration；platform-specific flags；compile definitions；reproducible build 基础；不在源码里到处写环境特定宏补丁。",
+          "path": "/tutorials/cpp/chapter-14-2/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-3",
+          "title": "Git、Code Review 与 C++ 团队协作接口",
+          "description": "本章覆盖：Git 只作为工程工具接口；branch；commit；pull request；code review；small change；readable diff；formatting；generated files；binary artifacts；Git 详细教程独立建设；C++ review 特别关注所有权、生命周期、并发与异常安全。",
+          "path": "/tutorials/cpp/chapter-14-3/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-4",
+          "title": "Unit Test、GoogleTest 与可测试设计",
+          "description": "本章覆盖：unit test；GoogleTest 的行业常见定位；test case；fixture；assertion；boundary condition；exception test；death test 的特殊边界；dependency injection；deterministic test；concurrency test；测试不能只覆盖 happy path。",
+          "path": "/tutorials/cpp/chapter-14-4/",
+          "wordCount": 179,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-5",
+          "title": "Static Analysis、clang-tidy 与编译器诊断",
+          "description": "本章覆盖：static analysis；clang-tidy；compiler warnings；sanitizers vs static analysis；bugprone checks；modernize checks；performance checks；false positive；project config；CI quality gate；工具输出需要工程判断而不是机械全改。",
+          "path": "/tutorials/cpp/chapter-14-5/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-6",
+          "title": "Crash、Core Dump 与线上故障定位",
+          "description": "本章覆盖：segmentation fault；abort；core dump；stack trace；symbol；GDB；addr2line 的 Linux 定位；optimized build；stripped binary；reproduction；logs；crash signature；先保存证据再重启 / 修复。",
+          "path": "/tutorials/cpp/chapter-14-6/",
+          "wordCount": 155,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-7",
+          "title": "CPU Profiling 与 Hot Path",
+          "description": "本章覆盖：profiler；sampling；instrumentation；perf 的 Linux 定位；flame graph 高层认知；hot function；call stack；branch / cache 高层指标；micro-optimization；algorithmic complexity；先优化真正热点。",
+          "path": "/tutorials/cpp/chapter-14-7/",
+          "wordCount": 157,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-8",
+          "title": "Memory Profiling、Leak 与 Allocation Hotspot",
+          "description": "本章覆盖：heap allocation；leak；peak memory；fragmentation 高层认知；allocation count；sanitizer；heap profiler；object lifetime；pool allocator 的适用场景；reserve / reuse 的 STL 连接；不以“完全不用 heap”为通用优化目标。",
+          "path": "/tutorials/cpp/chapter-14-8/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-9",
+          "title": "Benchmark、性能测量与避免错误基准",
+          "description": "本章覆盖：benchmark；warm-up 的边界；optimization elimination；clock selection；repeated measurement；noise；CPU frequency / scheduling；debug vs release；realistic workload；microbenchmark vs system benchmark；Google Benchmark 的行业定位；不根据一次运行时间下结论。",
+          "path": "/tutorials/cpp/chapter-14-9/",
+          "wordCount": 216,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-14-10",
+          "title": "企业级 C++ Code Review 与质量门禁",
+          "description": "本章覆盖：ownership 是否清晰；lifetime 是否安全；raw pointer 是否只是 observer；RAII 是否完整；Rule of Zero 优先；move / copy 语义是否合理；virtual destructor；exception safety；thread safety；data race / deadlock；const correctness；compiler warnings；sanitizer / test；platform portability；performance claim 是否有测量；实现细节是否被误写成标准保证。",
+          "path": "/tutorials/cpp/chapter-14-10/",
+          "wordCount": 266,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "C++ 综合实战实验室",
+      "chapters": [
+        {
+          "slug": "chapter-15-1",
+          "title": "RAII 文件与资源管理器",
+          "description": "本章覆盖：文件句柄 / FILE* / OS handle 抽象；constructor acquire；destructor release；move-only type；deleted copy；noexcept move；error handling；resource leak test；early return；exception safety；Rule of Five vs Rule of Zero 的取舍。",
+          "path": "/tutorials/cpp/chapter-15-1/",
+          "wordCount": 190,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-15-2",
+          "title": "多态任务系统与插件式接口原型",
+          "description": "本章覆盖：abstract base；virtual function；virtual destructor；`unique_ptr<Base>`；factory；runtime polymorphism；dependency inversion；plugin-like interface；error boundary；ownership；object slicing test；不使用复杂继承树。",
+          "path": "/tutorials/cpp/chapter-15-2/",
+          "wordCount": 193,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-15-3",
+          "title": "Move-only 消息对象与异步任务管线",
+          "description": "本章覆盖：move-only resource；rvalue reference；std::move；producer / consumer；thread；mutex；condition_variable；queue 数据结构接口位置；ownership transfer；shutdown protocol；exception boundary；lifetime validation。",
+          "path": "/tutorials/cpp/chapter-15-3/",
+          "wordCount": 187,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-15-4",
+          "title": "泛型序列化 / 校验组件",
+          "description": "本章覆盖：function template；class template；type traits；if constexpr；Concepts（C++20 版本）；overload；compile-time constraint；error diagnostics；customization point 的基础思想；unit test；避免无约束“万能模板”。",
+          "path": "/tutorials/cpp/chapter-15-4/",
+          "wordCount": 173,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-15-5",
+          "title": "Linux C++ 命令行服务骨架",
+          "description": "本章覆盖：CMake；multi-file project；namespace；config；logging interface；signal / socket 仅保留系统课程接口占位；worker thread；graceful shutdown 高层模型；exception / status boundary；GDB；sanitizer；unit test；Debug / Release build；不把 POSIX 细节吞入 C++ 课程。",
+          "path": "/tutorials/cpp/chapter-15-5/",
+          "wordCount": 208,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-15-6",
+          "title": "秋招级 C++ 综合工程与故障审计",
+          "description": "本章覆盖：给定一个存在真实缺陷的小型 C++ 项目；memory leak；dangling reference；use-after-free；object slicing；missing virtual destructor；accidental copy；missing move；shared_ptr cycle；data race；deadlock；ODR / undefined reference；warning cleanup；ASan / UBSan / TSan；GDB stack trace；CMake 修复；test regression；performance baseline；最终输出“语言问题 / 生命周期问题 / 并发问题 / 构建问题 / 性能问题”审计报告。",
+          "path": "/tutorials/cpp/chapter-15-6/",
+          "wordCount": 318,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/cpp/",
+  "sortOrder": 27
+}

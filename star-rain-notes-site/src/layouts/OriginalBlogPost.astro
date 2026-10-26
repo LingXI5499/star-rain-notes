@@ -1,0 +1,10 @@
+---
+import {catalog,renderBody,type Blog} from '../utils/content';
+import JournalPost from './JournalPost.astro';
+interface Props{post:Blog;}
+const {post}=Astro.props;
+const body=await renderBody(`blogs/${post.slug}/body.html`);
+const charCount='wordCount'in post?Number(post.wordCount):body.text.replace(/\s/g,'').length,minutes=Math.max(1,Math.ceil(charCount/400));
+const index=catalog.blogs.findIndex(b=>b.slug===post.slug),previous=catalog.blogs[index+1],next=catalog.blogs[index-1];
+---
+<JournalPost {...post} body={body} charCount={charCount} minutes={minutes} tags={post.tags.map(tag=>({name:tag.name,path:`/blog/tags/${tag.slug}/`}))} topics={post.topics.map(topic=>({name:topic.name,path:`/blog/topics/${topic.slug}/`}))} previous={previous} next={next} returnPath="/blog/" returnLabel="博客时间线"/>

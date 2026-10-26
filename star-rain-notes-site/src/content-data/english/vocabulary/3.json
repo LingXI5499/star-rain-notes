@@ -1,0 +1,1728 @@
+{
+  "id": "3",
+  "title": "颜色、形状、大小、材料、质地",
+  "layer": "基础通用词层",
+  "wordCount": 191,
+  "path": "/english/vocabulary/3/",
+  "words": [
+    {
+      "word": "quality",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kwɑləti",
+      "phoneticUk": "'kwɒlɪtɪ",
+      "translation": "质量；品质，特性；品质",
+      "sceneMeaning": "质量；品质",
+      "examples": "[]"
+    },
+    {
+      "word": "matter",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mætɚ",
+      "phoneticUk": "'mætə",
+      "translation": "事情；物质；要紧；要紧，重要",
+      "sceneMeaning": "物质；事情",
+      "examples": "[]"
+    },
+    {
+      "word": "big",
+      "partOfSpeech": "adj",
+      "phoneticUs": "bɪɡ",
+      "phoneticUk": "bɪg",
+      "translation": "大的，巨大的",
+      "sceneMeaning": "大的；重要的",
+      "examples": "[]"
+    },
+    {
+      "word": "black",
+      "partOfSpeech": "adj",
+      "phoneticUs": "blæk",
+      "phoneticUk": "blæk",
+      "translation": "黑色的；黑暗的",
+      "sceneMeaning": "黑色的；黑暗的",
+      "examples": "[]"
+    },
+    {
+      "word": "cut",
+      "partOfSpeech": "v",
+      "phoneticUs": "kʌt",
+      "phoneticUk": "kʌt",
+      "translation": "切，割，剪；减少",
+      "sceneMeaning": "切；割；削减",
+      "examples": "[]"
+    },
+    {
+      "word": "easy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'izi",
+      "phoneticUk": "'iːzɪ",
+      "translation": "容易的；安逸的",
+      "sceneMeaning": "容易的；安逸的",
+      "examples": "[]"
+    },
+    {
+      "word": "form",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fɔrm",
+      "phoneticUk": "fɔːm",
+      "translation": "形式；形状；形成",
+      "sceneMeaning": "形成；组成",
+      "examples": "[]"
+    },
+    {
+      "word": "former",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'fɔrmɚ",
+      "phoneticUk": "'fɔːmə",
+      "translation": "在前的；前者",
+      "sceneMeaning": "在前的；前者",
+      "examples": "[]"
+    },
+    {
+      "word": "green",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɡrin",
+      "phoneticUk": "griːn",
+      "translation": "绿色的；绿色",
+      "sceneMeaning": "绿色的；环保的；生疏的",
+      "examples": "[]"
+    },
+    {
+      "word": "hard",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hɑrd",
+      "phoneticUk": "hɑːd",
+      "translation": "硬的；困难的",
+      "sceneMeaning": "硬的；困难的；努力的",
+      "examples": "[]"
+    },
+    {
+      "word": "huge",
+      "partOfSpeech": "adj",
+      "phoneticUs": "hjudʒ",
+      "phoneticUk": "hjuːdʒ",
+      "translation": "巨大的，庞大的",
+      "sceneMeaning": "巨大的",
+      "examples": "[]"
+    },
+    {
+      "word": "large",
+      "partOfSpeech": "adj",
+      "phoneticUs": "lɑrdʒ",
+      "phoneticUk": "lɑːdʒ",
+      "translation": "大的；巨大的",
+      "sceneMeaning": "大的；大量的",
+      "examples": "[]"
+    },
+    {
+      "word": "measure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛʒɚ",
+      "phoneticUk": "'meʒə",
+      "translation": "量，测量；分量；测量",
+      "sceneMeaning": "测量；衡量",
+      "examples": "[]"
+    },
+    {
+      "word": "paper",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pepɚ",
+      "phoneticUk": "'peɪpə",
+      "translation": "纸；官方文件；文章",
+      "sceneMeaning": "纸；论文",
+      "examples": "[]"
+    },
+    {
+      "word": "point",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɔɪnt",
+      "phoneticUk": "pɒɪnt",
+      "translation": "点；要点；细目；分",
+      "sceneMeaning": "点；要点；分数",
+      "examples": "[]"
+    },
+    {
+      "word": "red",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "rɛd",
+      "phoneticUk": "red",
+      "translation": "红色的；红色",
+      "sceneMeaning": "红色的",
+      "examples": "[]"
+    },
+    {
+      "word": "broken",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'brokən",
+      "phoneticUk": "'brəʊk(ə)n",
+      "translation": "被打碎的，骨折的",
+      "sceneMeaning": "被打碎的，骨折的；本场景常见用法：折线；虚线；断线；点线",
+      "examples": "[]"
+    },
+    {
+      "word": "easily",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'izəli",
+      "phoneticUk": "'iːzɪlɪ",
+      "translation": "容易地；舒适的",
+      "sceneMeaning": "容易地；舒适的",
+      "examples": "[]"
+    },
+    {
+      "word": "largely",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'lɑrdʒli",
+      "phoneticUk": "'lɑːdʒlɪ",
+      "translation": "大部分；大量地",
+      "sceneMeaning": "主要地；大部分",
+      "examples": "[]"
+    },
+    {
+      "word": "line",
+      "partOfSpeech": "n",
+      "phoneticUs": "laɪn",
+      "phoneticUk": "laɪn",
+      "translation": "线；排；路线；线条",
+      "sceneMeaning": "线；行；线路",
+      "examples": "[]"
+    },
+    {
+      "word": "plastic",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'plæstɪk",
+      "phoneticUk": "'plæstɪk",
+      "translation": "可塑的；塑料；塑料的",
+      "sceneMeaning": "塑料的；可塑的",
+      "examples": "[]"
+    },
+    {
+      "word": "purple",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'pɝpl",
+      "phoneticUk": "'pɜːp(ə)l",
+      "translation": "紫色；紫的",
+      "sceneMeaning": "紫色的",
+      "examples": "[]"
+    },
+    {
+      "word": "solid",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'sɑlɪd",
+      "phoneticUk": "'sɒlɪd",
+      "translation": "固体的；固体；扎实的，坚实的",
+      "sceneMeaning": "固体的；坚固的",
+      "examples": "[]"
+    },
+    {
+      "word": "blue",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "blu",
+      "phoneticUk": "bluː",
+      "translation": "蓝色的；蓝色",
+      "sceneMeaning": "蓝色的；忧郁的",
+      "examples": "[]"
+    },
+    {
+      "word": "break",
+      "partOfSpeech": "v",
+      "phoneticUs": "brek",
+      "phoneticUk": "breɪk",
+      "translation": "打破；损坏；破坏",
+      "sceneMeaning": "打破；断裂",
+      "examples": "[]"
+    },
+    {
+      "word": "contract",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑntrækt",
+      "phoneticUk": "'kɒntrækt",
+      "translation": "契约，合同；婚约；合同",
+      "sceneMeaning": "收缩；订合同",
+      "examples": "[]"
+    },
+    {
+      "word": "golden",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡoldən",
+      "phoneticUk": "'gəʊld(ə)n",
+      "translation": "金色的；极好的",
+      "sceneMeaning": "金色的；宝贵的",
+      "examples": "[]"
+    },
+    {
+      "word": "heavy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɛvi",
+      "phoneticUk": "'hevɪ",
+      "translation": "重的；大的；充满的",
+      "sceneMeaning": "重的；大量的",
+      "examples": "[]"
+    },
+    {
+      "word": "light",
+      "partOfSpeech": "adj",
+      "phoneticUs": "laɪt",
+      "phoneticUk": "laɪt",
+      "translation": "轻的，少量的",
+      "sceneMeaning": "浅色的；轻的；明亮的",
+      "examples": "[]"
+    },
+    {
+      "word": "edge",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɛdʒ",
+      "phoneticUk": "edʒ",
+      "translation": "边缘，边；刀口",
+      "sceneMeaning": "边缘；优势",
+      "examples": "[]"
+    },
+    {
+      "word": "heavily",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'hɛvɪli",
+      "phoneticUk": "'hevɪlɪ",
+      "translation": "重重地；大量地",
+      "sceneMeaning": "沉重地；大量地",
+      "examples": "[]"
+    },
+    {
+      "word": "construction",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'strʌkʃən",
+      "phoneticUk": "kən'strʌkʃ(ə)n",
+      "translation": "建造；建筑；建筑物；建筑",
+      "sceneMeaning": "建造；建筑；建筑物；建筑；本场景常见用法：工程质量",
+      "examples": "[]"
+    },
+    {
+      "word": "deep",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dip",
+      "phoneticUk": "diːp",
+      "translation": "深的；纵深的",
+      "sceneMeaning": "深的；深色的；深刻的",
+      "examples": "[]"
+    },
+    {
+      "word": "design",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'zaɪn",
+      "phoneticUk": "dɪ'zaɪn",
+      "translation": "设计；设计；图样",
+      "sceneMeaning": "设计；图案",
+      "examples": "[]"
+    },
+    {
+      "word": "figure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɪɡjɚ",
+      "phoneticUk": "'fɪgə",
+      "translation": "数字；外形；人物；人物；数字",
+      "sceneMeaning": "数字；人物；图形",
+      "examples": "[]"
+    },
+    {
+      "word": "giant",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dʒaɪənt",
+      "phoneticUk": "'dʒaɪənt",
+      "translation": "巨人；巨物",
+      "sceneMeaning": "巨人；巨物；本场景常见用法：[生]巨型乌贼；大王乌贼",
+      "examples": "[]"
+    },
+    {
+      "word": "material",
+      "partOfSpeech": "n",
+      "phoneticUs": "mə'tɪrɪəl",
+      "phoneticUk": "mə'tɪərɪəl",
+      "translation": "材料；素材a物质的",
+      "sceneMeaning": "材料；资料",
+      "examples": "[]"
+    },
+    {
+      "word": "narrow",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'næro",
+      "phoneticUk": "'nærəʊ",
+      "translation": "狭的，狭窄的；狭窄的",
+      "sceneMeaning": "狭窄的；有限的",
+      "examples": "[]"
+    },
+    {
+      "word": "polite",
+      "partOfSpeech": "adj",
+      "phoneticUs": "pə'laɪt",
+      "phoneticUk": "pə'laɪt",
+      "translation": "有礼貌的；有教养的",
+      "sceneMeaning": "有礼貌的；有教养的",
+      "examples": "[]"
+    },
+    {
+      "word": "tremendous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "trə'mɛndəs",
+      "phoneticUk": "trɪ'mendəs",
+      "translation": "极大的，非常的；巨大的",
+      "sceneMeaning": "极大的，非常的；巨大的",
+      "examples": "[]"
+    },
+    {
+      "word": "massive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mæsɪv",
+      "phoneticUk": "'mæsiv",
+      "translation": "(尺寸、数量、规模) 非常大的",
+      "sceneMeaning": "(尺寸、数量、规模) 非常大的",
+      "examples": "[]"
+    },
+    {
+      "word": "pattern",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pætɚn",
+      "phoneticUk": "'pæt(ə)n",
+      "translation": "型，式样，模，模型；模式",
+      "sceneMeaning": "图案；模式",
+      "examples": "[]"
+    },
+    {
+      "word": "substance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sʌbstəns",
+      "phoneticUk": "'sʌbst(ə)ns",
+      "translation": "物质；实质；本旨",
+      "sceneMeaning": "物质；实质",
+      "examples": "[]"
+    },
+    {
+      "word": "substantial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "səbˈstænʃəl",
+      "phoneticUk": "səb'stænʃ(ə)l",
+      "translation": "物质的；坚固的；大量的",
+      "sceneMeaning": "物质的；坚固的；大量的",
+      "examples": "[]"
+    },
+    {
+      "word": "crude",
+      "partOfSpeech": "adj",
+      "phoneticUs": "krud",
+      "phoneticUk": "kruːd",
+      "translation": "简陋的；天然的",
+      "sceneMeaning": "简陋的；天然的；本场景常见用法：粗钢；原钢；粗铁",
+      "examples": "[]"
+    },
+    {
+      "word": "erect",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'rɛkt",
+      "phoneticUk": "ɪ'rekt",
+      "translation": "建造；使竖立",
+      "sceneMeaning": "建造；使竖立",
+      "examples": "[]"
+    },
+    {
+      "word": "fierce",
+      "partOfSpeech": "adj",
+      "phoneticUs": "fɪrs",
+      "phoneticUk": "fɪəs",
+      "translation": "凶猛的，狂热的",
+      "sceneMeaning": "凶猛的，狂热的",
+      "examples": "[]"
+    },
+    {
+      "word": "stain",
+      "partOfSpeech": "v",
+      "phoneticUs": "sten",
+      "phoneticUk": "steɪn",
+      "translation": "沾污；给…着色",
+      "sceneMeaning": "沾污；给…着色；本场景常见用法：黑色颜料",
+      "examples": "[]"
+    },
+    {
+      "word": "color",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʌlɚ",
+      "phoneticUk": "'kʌlə(r)",
+      "translation": "颜色，彩色；颜料",
+      "sceneMeaning": "给……着色；变色",
+      "examples": "[]"
+    },
+    {
+      "word": "expand",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'spænd",
+      "phoneticUk": "ɪk'spænd; ek-",
+      "translation": "扩大；使膨胀；扩大",
+      "sceneMeaning": "扩大；扩展",
+      "examples": "[]"
+    },
+    {
+      "word": "square",
+      "partOfSpeech": "n",
+      "phoneticUs": "skwɛr",
+      "phoneticUk": "skweə",
+      "translation": "正方形；广场",
+      "sceneMeaning": "正方形的；平方的",
+      "examples": "[]"
+    },
+    {
+      "word": "tiny",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'taɪni",
+      "phoneticUk": "'taɪnɪ",
+      "translation": "微小的",
+      "sceneMeaning": "极小的",
+      "examples": "[]"
+    },
+    {
+      "word": "vast",
+      "partOfSpeech": "adj",
+      "phoneticUs": "væst",
+      "phoneticUk": "vɑːst",
+      "translation": "巨大的；大量的",
+      "sceneMeaning": "巨大的；大量的",
+      "examples": "[]"
+    },
+    {
+      "word": "bright",
+      "partOfSpeech": "adj",
+      "phoneticUs": "braɪt",
+      "phoneticUk": "braɪt",
+      "translation": "明亮的；聪明的",
+      "sceneMeaning": "明亮的；聪明的",
+      "examples": "[]"
+    },
+    {
+      "word": "brilliant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'brɪljənt",
+      "phoneticUk": "'brɪlj(ə)nt",
+      "translation": "光辉的；卓越的",
+      "sceneMeaning": "光辉的；卓越的；本场景常见用法：炽白光；亮白",
+      "examples": "[]"
+    },
+    {
+      "word": "dark",
+      "partOfSpeech": "adj",
+      "phoneticUs": "dɑrk",
+      "phoneticUk": "dɑːk",
+      "translation": "暗的；黑色的",
+      "sceneMeaning": "黑暗的；深色的",
+      "examples": "[]"
+    },
+    {
+      "word": "enormous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'nɔrməs",
+      "phoneticUk": "ɪ'nɔːməs",
+      "translation": "巨大的，庞大的；巨大的",
+      "sceneMeaning": "巨大的，庞大的；巨大的",
+      "examples": "[]"
+    },
+    {
+      "word": "length",
+      "partOfSpeech": "n",
+      "phoneticUs": "[leŋθ]",
+      "phoneticUk": "leŋθ",
+      "translation": "长，长度；一段",
+      "sceneMeaning": "长度；篇幅",
+      "examples": "[]"
+    },
+    {
+      "word": "lucky",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lʌki",
+      "phoneticUk": "'lʌkɪ",
+      "translation": "幸运的；吉祥的",
+      "sceneMeaning": "幸运的；吉祥的",
+      "examples": "[]"
+    },
+    {
+      "word": "paint",
+      "partOfSpeech": "v",
+      "phoneticUs": "",
+      "phoneticUk": "peɪnt",
+      "translation": "画；油漆；绘画",
+      "sceneMeaning": "涂漆；画画",
+      "examples": "[]"
+    },
+    {
+      "word": "bar",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɑr",
+      "phoneticUk": "bɑː",
+      "translation": "酒吧间；条，杆；栅",
+      "sceneMeaning": "酒吧间；条，杆；栅；本场景常见用法：圆条；圆钢筋",
+      "examples": "[]"
+    },
+    {
+      "word": "brown",
+      "partOfSpeech": "n",
+      "phoneticUs": "braʊn",
+      "phoneticUk": "braʊn",
+      "translation": "褐色，棕色",
+      "sceneMeaning": "棕色的",
+      "examples": "[]"
+    },
+    {
+      "word": "constructive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'strʌktɪv",
+      "phoneticUk": "kənˈstrʌktɪv",
+      "translation": "建设的，建设性的",
+      "sceneMeaning": "建设的，建设性的",
+      "examples": "[]"
+    },
+    {
+      "word": "gloomy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡlumi",
+      "phoneticUk": "'gluːmɪ",
+      "translation": "黑暗的；令人沮丧的；阴沉的，沮丧的",
+      "sceneMeaning": "黑暗的；令人沮丧的；阴沉的，沮丧的",
+      "examples": "[]"
+    },
+    {
+      "word": "grey",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɡre",
+      "phoneticUk": "greɪ",
+      "translation": "灰色的；灰色",
+      "sceneMeaning": "灰色的；灰色；本场景常见用法：银灰色；银啡麻",
+      "examples": "[]"
+    },
+    {
+      "word": "immense",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'mɛns",
+      "phoneticUk": "ɪ'mens",
+      "translation": "巨大的；极好的",
+      "sceneMeaning": "巨大的；极好的",
+      "examples": "[]"
+    },
+    {
+      "word": "inch",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪntʃ",
+      "phoneticUk": "ɪn(t)ʃ",
+      "translation": "英寸",
+      "sceneMeaning": "英寸；本场景常见用法：[计量]每平方英寸磅数",
+      "examples": "[]"
+    },
+    {
+      "word": "mass",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæs",
+      "phoneticUk": "mæs",
+      "translation": "众多；团；群众",
+      "sceneMeaning": "大量；质量；群众",
+      "examples": "[]"
+    },
+    {
+      "word": "orange",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɔrɪndʒ",
+      "phoneticUk": "'ɒrɪn(d)ʒ",
+      "translation": "橙(树)；柑(树)",
+      "sceneMeaning": "橙色的；橘色的",
+      "examples": "[]"
+    },
+    {
+      "word": "pale",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "苍白的；浅的",
+      "sceneMeaning": "苍白的；浅色的",
+      "examples": "[]"
+    },
+    {
+      "word": "pointless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɔɪntləs",
+      "phoneticUk": "'pɒɪntlɪs",
+      "translation": "无意义的",
+      "sceneMeaning": "无意义的",
+      "examples": "[]"
+    },
+    {
+      "word": "rough",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rʌf",
+      "phoneticUk": "rʌf",
+      "translation": "表面不平的；粗略的",
+      "sceneMeaning": "粗糙的；大致的",
+      "examples": "[]"
+    },
+    {
+      "word": "silver",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "银；银子；银器",
+      "sceneMeaning": "银色的；银制的",
+      "examples": "[]"
+    },
+    {
+      "word": "spin",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "spɪn",
+      "phoneticUk": "spɪn",
+      "translation": "纺；使旋转；旋转",
+      "sceneMeaning": "纺；使旋转；旋转；本场景常见用法：[物]电子自旋共振；顺磁共振",
+      "examples": "[]"
+    },
+    {
+      "word": "volume",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vɑljum",
+      "phoneticUk": "'vɒljuːm",
+      "translation": "卷，册；容积；音量",
+      "sceneMeaning": "体积；音量；卷册",
+      "examples": "[]"
+    },
+    {
+      "word": "widespread",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈwʌɪdsprɛd",
+      "phoneticUk": "'waɪdspred",
+      "translation": "普遍的，广泛的",
+      "sceneMeaning": "普遍的，广泛的",
+      "examples": "[]"
+    },
+    {
+      "word": "breadth",
+      "partOfSpeech": "n",
+      "phoneticUs": "brɛdθ",
+      "phoneticUk": "bredθ; -t-",
+      "translation": "宽度，幅度；幅面",
+      "sceneMeaning": "宽度，幅度；幅面",
+      "examples": "[]"
+    },
+    {
+      "word": "carbon",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑrbən",
+      "phoneticUk": "'kɑːb(ə)n",
+      "translation": "碳",
+      "sceneMeaning": "碳；本场景常见用法：白炭黑",
+      "examples": "[]"
+    },
+    {
+      "word": "carve",
+      "partOfSpeech": "v",
+      "phoneticUs": "kɑrv",
+      "phoneticUk": "kɑːv",
+      "translation": "刻，雕刻；切开",
+      "sceneMeaning": "雕刻；切开",
+      "examples": "[]"
+    },
+    {
+      "word": "circle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɝkl",
+      "phoneticUk": "'sɜːk(ə)l",
+      "translation": "圆，圆周；圈子",
+      "sceneMeaning": "圆；圈子",
+      "examples": "[]"
+    },
+    {
+      "word": "circular",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɝkjəlɚ",
+      "phoneticUk": "'sɜːkjʊlə",
+      "translation": "圆的；循环的",
+      "sceneMeaning": "圆形的；循环的",
+      "examples": "[]"
+    },
+    {
+      "word": "construct",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'strʌkt",
+      "phoneticUk": "kən'strʌkt",
+      "translation": "建造；建设；构筑",
+      "sceneMeaning": "建造；构造",
+      "examples": "[]"
+    },
+    {
+      "word": "corn",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔrn",
+      "phoneticUk": "kɔːn",
+      "translation": "谷物；(英)小麦",
+      "sceneMeaning": "谷物；(英)小麦；本场景常见用法：玉米浆",
+      "examples": "[]"
+    },
+    {
+      "word": "cotton",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑtn",
+      "phoneticUk": "'kɒt(ə)n",
+      "translation": "棉；棉线；棉布",
+      "sceneMeaning": "棉花；棉布",
+      "examples": "[]"
+    },
+    {
+      "word": "crystal",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪstl",
+      "phoneticUk": "'krɪst(ə)l",
+      "translation": "水晶，结晶体；晶粒",
+      "sceneMeaning": "水晶，结晶体；晶粒；本场景常见用法：单晶硅",
+      "examples": "[]"
+    },
+    {
+      "word": "decorate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'dɛkəret",
+      "phoneticUk": "'dekəreɪt",
+      "translation": "装饰，装璜，修饰；装饰",
+      "sceneMeaning": "装饰；布置",
+      "examples": "[]"
+    },
+    {
+      "word": "depth",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɛpθ",
+      "phoneticUk": "depθ",
+      "translation": "深度；深厚；深处",
+      "sceneMeaning": "深度；深刻",
+      "examples": "[]"
+    },
+    {
+      "word": "flat",
+      "partOfSpeech": "adj",
+      "phoneticUs": "flæt",
+      "phoneticUk": "flæt",
+      "translation": "平的，扁平的",
+      "sceneMeaning": "平的；扁平的",
+      "examples": "[]"
+    },
+    {
+      "word": "freeze",
+      "partOfSpeech": "v",
+      "phoneticUs": "friz",
+      "phoneticUk": "friːz",
+      "translation": "冻；结冻；使结冰",
+      "sceneMeaning": "冻结；结冰",
+      "examples": "[]"
+    },
+    {
+      "word": "glass",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡlæs",
+      "phoneticUk": "glɑːs",
+      "translation": "玻璃；玻璃杯",
+      "sceneMeaning": "玻璃；杯子",
+      "examples": "[]"
+    },
+    {
+      "word": "grace",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡres",
+      "phoneticUk": "greɪs",
+      "translation": "优美，文雅；雅致",
+      "sceneMeaning": "优美，文雅；雅致",
+      "examples": "[]"
+    },
+    {
+      "word": "hardship",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɑrdʃɪp",
+      "phoneticUk": "'hɑːdʃɪp",
+      "translation": "艰难，困苦",
+      "sceneMeaning": "艰难，困苦",
+      "examples": "[]"
+    },
+    {
+      "word": "height",
+      "partOfSpeech": "n",
+      "phoneticUs": "haɪt",
+      "phoneticUk": "haɪt",
+      "translation": "高，高度；高处",
+      "sceneMeaning": "高度；身高",
+      "examples": "[]"
+    },
+    {
+      "word": "honesty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑnəsti",
+      "phoneticUk": "'ɒnɪstɪ",
+      "translation": "诚实，正直；诚实",
+      "sceneMeaning": "诚实，正直；诚实",
+      "examples": "[]"
+    },
+    {
+      "word": "horror",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hɔrɚ",
+      "phoneticUk": "'hɒrə",
+      "translation": "恐怖；战栗；憎恶",
+      "sceneMeaning": "恐怖；战栗；憎恶",
+      "examples": "[]"
+    },
+    {
+      "word": "infinite",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪnfɪnət",
+      "phoneticUk": "'ɪnfɪnət",
+      "translation": "无限的；无数的；无限的",
+      "sceneMeaning": "无限的；无数的；无限的；本场景常见用法：无限维的",
+      "examples": "[]"
+    },
+    {
+      "word": "liquid",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'lɪkwɪd",
+      "phoneticUk": "'lɪkwɪd",
+      "translation": "液体；液体的",
+      "sceneMeaning": "液体的；流动的",
+      "examples": "[]"
+    },
+    {
+      "word": "palm",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɑm",
+      "phoneticUk": "pɑːm",
+      "translation": "手掌，手心；掌状物",
+      "sceneMeaning": "手掌，手心；掌状物",
+      "examples": "[]"
+    },
+    {
+      "word": "polish",
+      "partOfSpeech": "v",
+      "phoneticUs": "'pɑlɪʃ",
+      "phoneticUk": "'pɒlɪʃ",
+      "translation": "磨光；使优美",
+      "sceneMeaning": "磨光；润色",
+      "examples": "[]"
+    },
+    {
+      "word": "pure",
+      "partOfSpeech": "adj",
+      "phoneticUs": "pjʊr",
+      "phoneticUk": "pjʊə",
+      "translation": "纯粹的；纯洁的",
+      "sceneMeaning": "纯粹的；纯洁的；本场景常见用法：纯色",
+      "examples": "[]"
+    },
+    {
+      "word": "rust",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rʌst",
+      "phoneticUk": "rʌst",
+      "translation": "锈；生锈，氧化",
+      "sceneMeaning": "锈；生锈，氧化",
+      "examples": "[]"
+    },
+    {
+      "word": "smooth",
+      "partOfSpeech": "adj",
+      "phoneticUs": "smʊð",
+      "phoneticUk": "smuːð",
+      "translation": "光滑的",
+      "sceneMeaning": "光滑的；顺利的",
+      "examples": "[]"
+    },
+    {
+      "word": "steel",
+      "partOfSpeech": "n",
+      "phoneticUs": "stil",
+      "phoneticUk": "stiːl",
+      "translation": "钢，钢铁",
+      "sceneMeaning": "钢；钢铁",
+      "examples": "[]"
+    },
+    {
+      "word": "thickness",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈθɪknɪs",
+      "phoneticUk": "'θɪknɪs",
+      "translation": "厚(度)；密(度)",
+      "sceneMeaning": "厚度",
+      "examples": "[]"
+    },
+    {
+      "word": "vivid",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vɪvɪd",
+      "phoneticUk": "'vɪvɪd",
+      "translation": "鲜艳的；生动的",
+      "sceneMeaning": "鲜艳的；生动的",
+      "examples": "[]"
+    },
+    {
+      "word": "widen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'waɪdn",
+      "phoneticUk": "'waɪd(ə)n",
+      "translation": "加宽；变宽",
+      "sceneMeaning": "加宽；变宽",
+      "examples": "[]"
+    },
+    {
+      "word": "alloy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ælɔɪ",
+      "phoneticUk": "'ælɒɪ",
+      "translation": "合金；(金属的)成色",
+      "sceneMeaning": "合金；(金属的)成色；本场景常见用法：形状记忆合金",
+      "examples": "[]"
+    },
+    {
+      "word": "aluminium",
+      "partOfSpeech": "n",
+      "phoneticUs": ",æljə'mɪnɪəm",
+      "phoneticUk": "æl(j)ʊ'mɪnɪəm",
+      "translation": "铝",
+      "sceneMeaning": "铝；本场景常见用法：[金属材料]铝线；铝丝",
+      "examples": "[]"
+    },
+    {
+      "word": "angle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æŋɡl",
+      "phoneticUk": "'æŋg(ə)l",
+      "translation": "角，角度",
+      "sceneMeaning": "角；角度；观点",
+      "examples": "[]"
+    },
+    {
+      "word": "arrow",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æro",
+      "phoneticUk": "'ærəʊ",
+      "translation": "箭；箭状物",
+      "sceneMeaning": "箭；箭状物",
+      "examples": "[]"
+    },
+    {
+      "word": "bend",
+      "partOfSpeech": "v",
+      "phoneticUs": "bɛnd",
+      "phoneticUk": "bend",
+      "translation": "使弯曲；弯曲",
+      "sceneMeaning": "弯曲；使弯曲",
+      "examples": "[]"
+    },
+    {
+      "word": "blaze",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "blez",
+      "phoneticUk": "bleɪz",
+      "translation": "火；闪光；燃烧",
+      "sceneMeaning": "火；闪光；燃烧",
+      "examples": "[]"
+    },
+    {
+      "word": "brass",
+      "partOfSpeech": "n",
+      "phoneticUs": "bræs",
+      "phoneticUk": "brɑːs",
+      "translation": "黄铜；黄铜器",
+      "sceneMeaning": "黄铜；黄铜器；本场景常见用法：古铜色",
+      "examples": "[]"
+    },
+    {
+      "word": "brighten",
+      "partOfSpeech": "v",
+      "phoneticUs": "'braɪtn",
+      "phoneticUk": "'braɪt(ə)n",
+      "translation": "使发光；使快活",
+      "sceneMeaning": "使发光；使快活",
+      "examples": "[]"
+    },
+    {
+      "word": "centimetre",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɛntɪmitɚ",
+      "phoneticUk": "'sentɪmiːtə",
+      "translation": "公分，厘米",
+      "sceneMeaning": "公分，厘米",
+      "examples": "[]"
+    },
+    {
+      "word": "cheerful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tʃɪrfl",
+      "phoneticUk": "'tʃɪəfʊl; -f(ə)l",
+      "translation": "快乐的，愉快的",
+      "sceneMeaning": "快乐的，愉快的",
+      "examples": "[]"
+    },
+    {
+      "word": "circulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɝkjəlet",
+      "phoneticUk": "'sɜːkjʊleɪt",
+      "translation": "使循环；循环",
+      "sceneMeaning": "使循环；循环",
+      "examples": "[]"
+    },
+    {
+      "word": "circumference",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɚ'kʌmfərəns",
+      "phoneticUk": "sə'kʌmf(ə)r(ə)ns",
+      "translation": "圆周，周长，圆周线",
+      "sceneMeaning": "圆周，周长，圆周线；本场景常见用法：头围",
+      "examples": "[]"
+    },
+    {
+      "word": "cloth",
+      "partOfSpeech": "n",
+      "phoneticUs": "klɔθ",
+      "phoneticUk": "klɒθ",
+      "translation": "布；衣料；桌布",
+      "sceneMeaning": "布；织物",
+      "examples": "[]"
+    },
+    {
+      "word": "coarse",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kɔrs",
+      "phoneticUk": "kɔːs",
+      "translation": "粗的，粗糙的",
+      "sceneMeaning": "粗的，粗糙的；本场景常见用法：粗织物",
+      "examples": "[]"
+    },
+    {
+      "word": "coil",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kɔɪl",
+      "phoneticUk": "kɒɪl",
+      "translation": "(一)卷；线圈；卷",
+      "sceneMeaning": "(一)卷；线圈；卷",
+      "examples": "[]"
+    },
+    {
+      "word": "copper",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑpɚ",
+      "phoneticUk": "'kɒpə",
+      "translation": "铜；铜币，铜制器",
+      "sceneMeaning": "铜",
+      "examples": "[]"
+    },
+    {
+      "word": "corner",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɔrnɚ",
+      "phoneticUk": "'kɔːnə",
+      "translation": "角；犄角；边远地区",
+      "sceneMeaning": "角；拐角",
+      "examples": "[]"
+    },
+    {
+      "word": "crown",
+      "partOfSpeech": "n",
+      "phoneticUs": "kraʊn",
+      "phoneticUk": "kraʊn",
+      "translation": "王冠，冕；花冠",
+      "sceneMeaning": "王冠，冕；花冠；本场景常见用法：金冠",
+      "examples": "[]"
+    },
+    {
+      "word": "cruel",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kruəl",
+      "phoneticUk": "krʊəl",
+      "translation": "残忍的，残酷的",
+      "sceneMeaning": "残忍的，残酷的",
+      "examples": "[]"
+    },
+    {
+      "word": "cube",
+      "partOfSpeech": "n",
+      "phoneticUs": "kjʊb",
+      "phoneticUk": "kjuːb",
+      "translation": "立方形；立方",
+      "sceneMeaning": "立方形；立方",
+      "examples": "[]"
+    },
+    {
+      "word": "curl",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kɝl",
+      "phoneticUk": "kɜːl",
+      "translation": "卷毛；螺旋；卷曲",
+      "sceneMeaning": "卷毛；螺旋；卷曲",
+      "examples": "[]"
+    },
+    {
+      "word": "curve",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kɝv",
+      "phoneticUk": "kɜːv",
+      "translation": "曲线；弯；弄弯",
+      "sceneMeaning": "曲线；弯曲",
+      "examples": "[]"
+    },
+    {
+      "word": "deepen",
+      "partOfSpeech": "v / vi / vt",
+      "phoneticUs": "'dipən",
+      "phoneticUk": "'diːp(ə)n",
+      "translation": "加深；深化；使加深，加剧",
+      "sceneMeaning": "加深；深化；使加深，加剧；本场景常见用法：深化改革",
+      "examples": "[]"
+    },
+    {
+      "word": "diameter",
+      "partOfSpeech": "n",
+      "phoneticUs": "daɪ'æmɪtɚ",
+      "phoneticUk": "daɪ'æmɪtə",
+      "translation": "直径",
+      "sceneMeaning": "直径",
+      "examples": "[]"
+    },
+    {
+      "word": "dot",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɑt",
+      "phoneticUk": "dɒt",
+      "translation": "点，圆点；打点于",
+      "sceneMeaning": "点，圆点；打点于；本场景常见用法：光点图形",
+      "examples": "[]"
+    },
+    {
+      "word": "durability",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "ˌdjʊərə'bɪlətɪ",
+      "translation": "持久",
+      "sceneMeaning": "持久",
+      "examples": "[]"
+    },
+    {
+      "word": "dusk",
+      "partOfSpeech": "n",
+      "phoneticUs": "dʌsk",
+      "phoneticUk": "dʌsk",
+      "translation": "薄暮，黄昏，幽暗",
+      "sceneMeaning": "薄暮，黄昏，幽暗",
+      "examples": "[]"
+    },
+    {
+      "word": "dye",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "daɪ",
+      "phoneticUk": "daɪ",
+      "translation": "染；染料；染色",
+      "sceneMeaning": "染色",
+      "examples": "[]"
+    },
+    {
+      "word": "feeble",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fibl",
+      "phoneticUk": "'fiːb(ə)l",
+      "translation": "虚弱的；微弱的",
+      "sceneMeaning": "虚弱的；微弱的",
+      "examples": "[]"
+    },
+    {
+      "word": "fold",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fold",
+      "phoneticUk": "fəʊld",
+      "translation": "折叠；合拢；褶",
+      "sceneMeaning": "折叠；合拢",
+      "examples": "[]"
+    },
+    {
+      "word": "gay",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɡe",
+      "phoneticUk": "geɪ",
+      "translation": "快乐的；鲜明的",
+      "sceneMeaning": "快乐的；鲜明的",
+      "examples": "[]"
+    },
+    {
+      "word": "gold",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɡold",
+      "phoneticUk": "gəʊld",
+      "translation": "金；钱财；金制的",
+      "sceneMeaning": "金；金色",
+      "examples": "[]"
+    },
+    {
+      "word": "graceful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡresfl",
+      "phoneticUk": "'greɪsfʊl; -f(ə)l",
+      "translation": "优美的，优雅的",
+      "sceneMeaning": "优美的，优雅的",
+      "examples": "[]"
+    },
+    {
+      "word": "gray",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "ɡre",
+      "phoneticUk": "greɪ",
+      "translation": "灰色的；灰色",
+      "sceneMeaning": "灰色的；阴沉的",
+      "examples": "[]"
+    },
+    {
+      "word": "harden",
+      "partOfSpeech": "v",
+      "phoneticUs": "'hɑrdn",
+      "phoneticUk": "'hɑːd(ə)n",
+      "translation": "使变硬；变硬",
+      "sceneMeaning": "变硬；使坚定",
+      "examples": "[]"
+    },
+    {
+      "word": "hardworking",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɑrd,wɝkɪŋ",
+      "phoneticUk": "hɑ:d'wɜ:kɪŋ",
+      "translation": "苦干的，不辞辛劳的",
+      "sceneMeaning": "苦干的，不辞辛劳的",
+      "examples": "[]"
+    },
+    {
+      "word": "honourable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɔnərəbl",
+      "phoneticUk": "'ɒn(ə)rəb(ə)l",
+      "translation": "诚实的；光荣的",
+      "sceneMeaning": "诚实的；光荣的",
+      "examples": "[]"
+    },
+    {
+      "word": "immeasurable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'mɛʒərəbl",
+      "phoneticUk": "ɪ'meʒ(ə)rəb(ə)l",
+      "translation": "无法估量的",
+      "sceneMeaning": "无法估量的",
+      "examples": "[]"
+    },
+    {
+      "word": "indefinite",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'dɛfɪnət",
+      "phoneticUk": "ɪn'defɪnɪt",
+      "translation": "不明确的；不定的",
+      "sceneMeaning": "不明确的；不定的",
+      "examples": "[]"
+    },
+    {
+      "word": "iron",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'aɪɚn",
+      "phoneticUk": "'aɪən",
+      "translation": "铁；烙铁；烫(衣)",
+      "sceneMeaning": "铁；熨斗",
+      "examples": "[]"
+    },
+    {
+      "word": "laborious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "lə'bɔrɪəs",
+      "phoneticUk": "lə'bɔːrɪəs",
+      "translation": "费力的",
+      "sceneMeaning": "费力的",
+      "examples": "[]"
+    },
+    {
+      "word": "leather",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɛðɚ",
+      "phoneticUk": "'leðə",
+      "translation": "皮革；皮革制品",
+      "sceneMeaning": "皮革",
+      "examples": "[]"
+    },
+    {
+      "word": "lengthy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɛŋθi",
+      "phoneticUk": "'leŋθɪ",
+      "translation": "长的，漫长的",
+      "sceneMeaning": "长的，漫长的",
+      "examples": "[]"
+    },
+    {
+      "word": "lighten",
+      "partOfSpeech": "v",
+      "phoneticUs": "'laɪtn",
+      "phoneticUk": "'laɪt(ə)n",
+      "translation": "照亮，使明亮",
+      "sceneMeaning": "照亮，使明亮",
+      "examples": "[]"
+    },
+    {
+      "word": "lightly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'laɪtli",
+      "phoneticUk": "'laɪtlɪ",
+      "translation": "轻轻地，轻松地",
+      "sceneMeaning": "轻轻地；少量地",
+      "examples": "[]"
+    },
+    {
+      "word": "loop",
+      "partOfSpeech": "n",
+      "phoneticUs": "lup",
+      "phoneticUk": "luːp",
+      "translation": "圈，环，环孔",
+      "sceneMeaning": "圈，环，环孔",
+      "examples": "[]"
+    },
+    {
+      "word": "lumber",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lʌmbɚ",
+      "phoneticUk": "'lʌmbə",
+      "translation": "木材；木料；制材",
+      "sceneMeaning": "木材；木料；制材",
+      "examples": "[]"
+    },
+    {
+      "word": "marble",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɑrbl",
+      "phoneticUk": "'mɑːb(ə)l",
+      "translation": "大理石",
+      "sceneMeaning": "大理石",
+      "examples": "[]"
+    },
+    {
+      "word": "marvelous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'mɑrvələs",
+      "phoneticUk": "'mɑ:vɪləs",
+      "translation": "引起惊异的",
+      "sceneMeaning": "引起惊异的",
+      "examples": "[]"
+    },
+    {
+      "word": "mat",
+      "partOfSpeech": "n",
+      "phoneticUs": "mæt",
+      "phoneticUk": "mæt",
+      "translation": "席子；草席；垫子",
+      "sceneMeaning": "席子；草席；垫子；本场景常见用法：橡胶垫",
+      "examples": "[]"
+    },
+    {
+      "word": "melt",
+      "partOfSpeech": "v / vi / vt",
+      "phoneticUs": "mɛlt",
+      "phoneticUk": "melt",
+      "translation": "融化；使融化",
+      "sceneMeaning": "融化；熔化",
+      "examples": "[]"
+    },
+    {
+      "word": "mercury",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "水银，汞",
+      "sceneMeaning": "水银，汞",
+      "examples": "[]"
+    },
+    {
+      "word": "metal",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛtl",
+      "phoneticUk": "'met(ə)l",
+      "translation": "金属，金属制品",
+      "sceneMeaning": "金属",
+      "examples": "[]"
+    },
+    {
+      "word": "millimetre",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mili,mi:tə",
+      "phoneticUk": "",
+      "translation": "毫米",
+      "sceneMeaning": "毫米",
+      "examples": "[]"
+    },
+    {
+      "word": "mould",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "məuld",
+      "phoneticUk": "məʊld",
+      "translation": "模子，模型；浇铸",
+      "sceneMeaning": "模子，模型；浇铸",
+      "examples": "[]"
+    },
+    {
+      "word": "nitrogen",
+      "partOfSpeech": "n",
+      "phoneticUs": "'naɪtrədʒən",
+      "phoneticUk": "'naɪtrədʒ(ə)n",
+      "translation": "氮",
+      "sceneMeaning": "氮",
+      "examples": "[]"
+    },
+    {
+      "word": "ore",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɔr",
+      "phoneticUk": "ɔː",
+      "translation": "矿，矿石，矿砂",
+      "sceneMeaning": "矿，矿石，矿砂；本场景常见用法：金矿石，金矿",
+      "examples": "[]"
+    },
+    {
+      "word": "pink",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "pɪŋk",
+      "phoneticUk": "pɪŋk",
+      "translation": "粉红色；粉红色的",
+      "sceneMeaning": "粉红色的",
+      "examples": "[]"
+    },
+    {
+      "word": "pole",
+      "partOfSpeech": "n",
+      "phoneticUs": "pol",
+      "phoneticUk": "pəʊl",
+      "translation": "杆，柱",
+      "sceneMeaning": "杆，柱；本场景常见用法：单极",
+      "examples": "[]"
+    },
+    {
+      "word": "powder",
+      "partOfSpeech": "n",
+      "phoneticUs": "'paʊdɚ",
+      "phoneticUk": "'paʊdə",
+      "translation": "粉末；药粉；火药",
+      "sceneMeaning": "粉末；药粉；火药",
+      "examples": "[]"
+    },
+    {
+      "word": "radius",
+      "partOfSpeech": "n",
+      "phoneticUs": "'redɪəs",
+      "phoneticUk": "'reɪdɪəs",
+      "translation": "半径",
+      "sceneMeaning": "半径；本场景常见用法：曲率半径，弯曲半径",
+      "examples": "[]"
+    },
+    {
+      "word": "ray",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "光线，射线，辐射线",
+      "sceneMeaning": "光线，射线，辐射线",
+      "examples": "[]"
+    },
+    {
+      "word": "reluctant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'lʌktənt",
+      "phoneticUk": "rɪ'lʌkt(ə)nt",
+      "translation": "不愿的，勉强的；不愿意的，勉强的",
+      "sceneMeaning": "不愿的，勉强的；不愿意的，勉强的",
+      "examples": "[]"
+    },
+    {
+      "word": "rotary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'rotəri",
+      "phoneticUk": "'rəʊt(ə)rɪ",
+      "translation": "旋转的，转动的",
+      "sceneMeaning": "旋转的，转动的",
+      "examples": "[]"
+    },
+    {
+      "word": "shade",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ʃed",
+      "phoneticUk": "ʃeɪd",
+      "translation": "荫；遮光物；荫蔽；阴凉处",
+      "sceneMeaning": "给……遮阴；使颜色渐变",
+      "examples": "[]"
+    },
+    {
+      "word": "shear",
+      "partOfSpeech": "v",
+      "phoneticUs": "ʃɪr",
+      "phoneticUk": "ʃɪə",
+      "translation": "剪；剥夺；剪",
+      "sceneMeaning": "剪；剥夺；剪；本场景常见用法：剪力变形；剪切形变",
+      "examples": "[]"
+    },
+    {
+      "word": "silk",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɪlk",
+      "phoneticUk": "sɪlk",
+      "translation": "蚕丝，丝，丝织品",
+      "sceneMeaning": "丝；丝绸",
+      "examples": "[]"
+    },
+    {
+      "word": "slender",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'slɛndɚ",
+      "phoneticUk": "'slendə",
+      "translation": "细长的；微薄的",
+      "sceneMeaning": "细长的；微薄的；本场景常见用法：细长体；瘦长体",
+      "examples": "[]"
+    },
+    {
+      "word": "slit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "slɪt",
+      "phoneticUk": "slɪt",
+      "translation": "裂缝；切开，撕开",
+      "sceneMeaning": "裂缝；切开，撕开",
+      "examples": "[]"
+    },
+    {
+      "word": "sticky",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'stɪki",
+      "phoneticUk": "'stɪkɪ",
+      "translation": "粘性的；胶粘的；粘的",
+      "sceneMeaning": "粘性的；胶粘的；粘的",
+      "examples": "[]"
+    },
+    {
+      "word": "stiff",
+      "partOfSpeech": "adj",
+      "phoneticUs": "stɪf",
+      "phoneticUk": "stɪf",
+      "translation": "硬的；僵直的",
+      "sceneMeaning": "硬的；僵直的；本场景常见用法：坚定沉着；不露感情",
+      "examples": "[]"
+    },
+    {
+      "word": "stoop",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "stʊp",
+      "phoneticUk": "stuːp",
+      "translation": "俯身；弯身；弯腰",
+      "sceneMeaning": "俯身；弯身；弯腰",
+      "examples": "[]"
+    },
+    {
+      "word": "stretch",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "strɛtʃ",
+      "phoneticUk": "stretʃ",
+      "translation": "伸展；伸",
+      "sceneMeaning": "伸展；拉长",
+      "examples": "[]"
+    },
+    {
+      "word": "sulphur",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sʌlfə",
+      "phoneticUk": "'sʌlfə",
+      "translation": "硫(磺)，硫黄",
+      "sceneMeaning": "硫(磺)，硫黄；本场景常见用法：硫含量",
+      "examples": "[]"
+    },
+    {
+      "word": "tin",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɪn",
+      "phoneticUk": "tɪn",
+      "translation": "锡；罐头",
+      "sceneMeaning": "锡；罐头；本场景常见用法：马口铁；镀锡铁皮",
+      "examples": "[]"
+    },
+    {
+      "word": "tone",
+      "partOfSpeech": "n",
+      "phoneticUs": "ton",
+      "phoneticUk": "təʊn",
+      "translation": "音；腔调；声调",
+      "sceneMeaning": "色调；语气；音调",
+      "examples": "[]"
+    },
+    {
+      "word": "triangle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'traɪæŋɡl",
+      "phoneticUk": "'traɪæŋg(ə)l",
+      "translation": "三角(形)",
+      "sceneMeaning": "三角形",
+      "examples": "[]"
+    },
+    {
+      "word": "twist",
+      "partOfSpeech": "v / vi&n",
+      "phoneticUs": "twɪst",
+      "phoneticUk": "twɪst",
+      "translation": "捻；拧；扭弯；扭曲，使弯曲",
+      "sceneMeaning": "扭曲；转动",
+      "examples": "[]"
+    },
+    {
+      "word": "upright",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ʌpraɪt",
+      "phoneticUk": "'ʌpraɪt",
+      "translation": "垂直的；正直的",
+      "sceneMeaning": "垂直的；正直的",
+      "examples": "[]"
+    },
+    {
+      "word": "violet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'vaɪələt",
+      "phoneticUk": "'vaɪələt",
+      "translation": "紫罗兰",
+      "sceneMeaning": "紫罗兰；本场景常见用法：紫色光线Ｘ",
+      "examples": "[]"
+    },
+    {
+      "word": "wax",
+      "partOfSpeech": "n",
+      "phoneticUs": "waks",
+      "phoneticUk": "waks",
+      "translation": "蜡，蜂蜡",
+      "sceneMeaning": "蜡，蜂蜡；本场景常见用法：打光蜡",
+      "examples": "[]"
+    },
+    {
+      "word": "wicked",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'wɪkɪd",
+      "phoneticUk": "'wɪkɪd",
+      "translation": "坏的；令人厌恶的",
+      "sceneMeaning": "坏的；令人厌恶的",
+      "examples": "[]"
+    },
+    {
+      "word": "width",
+      "partOfSpeech": "n",
+      "phoneticUs": "wɪdθ",
+      "phoneticUk": "wɪtθ; wɪdθ",
+      "translation": "宽阔，广阔；宽度",
+      "sceneMeaning": "宽度",
+      "examples": "[]"
+    },
+    {
+      "word": "wooden",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'wʊdn",
+      "phoneticUk": "'wʊd(ə)n",
+      "translation": "木制的；呆板的",
+      "sceneMeaning": "木制的；僵硬的",
+      "examples": "[]"
+    },
+    {
+      "word": "wool",
+      "partOfSpeech": "n",
+      "phoneticUs": "wʊl",
+      "phoneticUk": "wʊl",
+      "translation": "羊毛；毛线，绒线",
+      "sceneMeaning": "羊毛；毛线",
+      "examples": "[]"
+    }
+  ]
+}

@@ -275,7 +275,7 @@ async function pickBodyImage() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function leaveEditor() {
-  await router.push('/useradmin/blog/manage')
+  await router.push('/blog/manage')
 }
 
 /** One guard covers buttons, navigation, history and changes to the article parameter. */
@@ -373,7 +373,7 @@ async function persistMeta(context) {
   if (created) {
     savedBody.value = ''
     context.id = updated.id
-    draftTransition = { from: route.fullPath, to: `/useradmin/blog/editor/${updated.id}` }
+    draftTransition = { from: route.fullPath, to: `/blog/editor/${updated.id}` }
     try {
       const failure = await router.replace(draftTransition.to)
       if (failure) throw new Error('Draft navigation failed')
@@ -458,7 +458,7 @@ async function act(action) {
       savedMeta.value = metaOf(snapshot())
       savedBody.value = body.value
       saving.value = false
-      await router.replace('/useradmin/blog/manage')
+      await router.replace('/blog/manage')
       return
     }
     if (!validContext(context)) return

@@ -23,20 +23,7 @@ import BlogPagination from '../components/BlogPagination.vue'
 import BlogTimeline from '../components/BlogTimeline.vue'
 import { monthLabel } from '../support/display'
 
-/*
- * BLOG-010 归档浏览（对齐 V1 的归档信息架构）。
- *
- * V1 的归档浏览是「年份 → 月份（带数量）」的侧栏 + 时间线列表；V2 沿用同一套侧栏
- * （`BlogSidebar` 的 ARCHIVE 区块），并按 V2 已有的能力多留了标签 / 专题两个维度：
- * 两者可以任意组合，全部落在 URL 查询串上，因此「2026 年 7 月的 Java 标签文章」
- * 是一个可以直接分享的地址。
- *
- * 时间筛选依据 publishedAt 而不是 createdAt：草稿可能去年写的、今年才发布，
- * 按创建时间归档会让读者在「今年」里找不到刚发的文章（这条语义由后端 SQL 保证）。
- *
- * 这一页在两条路径树上复用（/blog/archive 与 /useradmin/blog/archive），
- * 因此写回 URL 时用 contentPath() 按当前模式取地址。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 const { contentPath } = useViewMode()
 /**
  * 路由；通过 useRoute 建立。

@@ -1,0 +1,49 @@
+{
+  "slug": "leetcode-20",
+  "title": "LeetCode 20｜有效的括号：从暴力枚举到栈的五种解法",
+  "description": "以 LeetCode 20「有效的括号」为例，从最直观的暴力消除法出发，逐步推导标准栈、提前压入右括号、映射表与双端队列、数组模拟栈五种解法。结合黑盒与白盒测试、详细执行步骤、复杂度分析，以及 C、C++、Java、Python、JavaScript 五语言实现，理解括号匹配的核心原理、算法优化过程与不同方案的适用场景。",
+  "publishedAt": "2026-10-12",
+  "updatedAt": "2026-10-12",
+  "wordCount": 22490,
+  "tags": [
+    {
+      "slug": "leetcode",
+      "name": "LeetCode"
+    },
+    {
+      "slug": "tag-177g4f2",
+      "name": "复杂度分析"
+    },
+    {
+      "slug": "tag-1p0w09q",
+      "name": "多语言实现"
+    },
+    {
+      "slug": "tag-wpjlja",
+      "name": "字符串"
+    },
+    {
+      "slug": "tag-3pbk8y",
+      "name": "数据结构与算法"
+    },
+    {
+      "slug": "tag-3rqqwn",
+      "name": "栈"
+    },
+    {
+      "slug": "tag-15lnn0f",
+      "name": "算法优化"
+    },
+    {
+      "slug": "tag-10brnis",
+      "name": "软件测试"
+    }
+  ],
+  "topics": [
+    {
+      "slug": "leetcode",
+      "name": "力扣"
+    }
+  ],
+  "path": "/blog/posts/leetcode-20/"
+}

@@ -12,7 +12,7 @@ root = pathlib.Path(__file__).resolve().parents[2]
 # NUL 分隔能保留带空格或中文的文件名；Git 出错时立即失败，不把空清单视为通过。
 paths = subprocess.check_output(['git', 'ls-files', '-z'], cwd=root).decode('utf-8').split('\0')
 # 根目录只允许项目说明、开源协议和 Git 规则，其余公共内容应放在前后端、自建 skills 或 CI 目录。
-allowed_root_files = {'README.md', 'LICENSE', '.gitignore', '.gitattributes'}
+allowed_root_files = {'README.md', 'LICENSE', '.gitignore', '.gitattributes', 'AGENTS.md', 'start-dev.ps1', '一键启动.cmd'}
 # 扫描私钥头、常见平台令牌、云访问标识及个人邮箱特征；命中仅返回文件和行号。
 # 这是项目范围的辅助检查，不尝试解密文件或访问任何外部服务。
 secret_patterns = [
@@ -27,17 +27,21 @@ secret_patterns = [
 public_license_snapshots = {
     'frontend/public/legal/editor-word-third-party-notices.txt':
         '058f7c18088e046e163ec1c423775c00cedeffef55061d6187fa3a4599cbc8a2',
+    # Reviewed public author contact, already displayed by the static site.
+    'star-rain-notes-site/src/content-data/profile.json':
+        '244a900e0a5c76d3aab5bfbea2ac2af8c015cccf814f78f0371775699489d61d',
 }
 # 累积所有问题再统一报告，方便一次修正多个文件。
 errors = []
 # 逐文件验证目录范围、私有配置类型和内容特征；路径或类型不允许时不继续读取内容。
 for name in filter(None, paths):
     path = pathlib.PurePosixPath(name)
-    audit_document = name.startswith(('docs/audit/', 'docs/deployment/', 'docs/editor/', 'docs/account/')) and name.endswith('.md')
+    audit_document = name.startswith(('docs/audit/', 'docs/deployment/', 'docs/editor/', 'docs/account/')) and path.suffix in {'.md', '.conf'}
+    tutorial_sample = name.startswith('docs/tutorials/') and path.suffix in {'.md', '.html', '.json', '.png', '.cjs', '.tsv'}
     # Only the reviewed, secret-free account verification summary is admitted as JSON evidence.
     verification_evidence = name == 'docs/account/account-v3-verification.json'
     verification_tool = path.parts[0] == 'tools' and path.suffix in {'.py', '.mjs', '.txt'}
-    if path.parts[0] not in {'backend', 'frontend', 'skills', '.github'} and name not in allowed_root_files and not audit_document and not verification_tool and not verification_evidence:
+    if path.parts[0] not in {'backend', 'frontend', 'star-rain-notes-site', 'skills', '.github'} and name not in allowed_root_files and not audit_document and not tutorial_sample and not verification_tool and not verification_evidence:
         errors.append((name, 'outside active source tree'))
         continue
     # 大小写统一后判断敏感文件后缀；公开的 .env.example 是允许的模板。
@@ -63,11 +67,12 @@ for name in filter(None, paths):
     expected_license_hash = public_license_snapshots.get(name)
     verified_license = bool(expected_license_hash and hashlib.sha256(content.encode('utf-8')).hexdigest() == expected_license_hash)
     if expected_license_hash and not verified_license:
-        errors.append((name, 'third-party license snapshot differs from reviewed upstream content'))
+        errors.append((name, 'reviewed public snapshot changed; review its contents before updating the digest'))
     # 从 1 开始计数便于编辑器定位；只记录行号，不泄露该行的原文。
     for number, line in enumerate(content.splitlines(), 1):
         patterns = secret_patterns[:-1] if verified_license else secret_patterns
-        if any(pattern.search(line) for pattern in patterns):
+        # Avoid expensive email scans on long generated data lines with no address.
+        if any(pattern.search(line) for pattern in patterns if pattern is not secret_patterns[-1] or '@' in line):
             errors.append((name, f'possible private value at line {number}'))
 # CI 通过退出码判定结果；错误写入 stderr，成功摘要写入 stdout。
 for name, reason in errors:

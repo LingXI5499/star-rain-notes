@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 滚动导航可读取位置，点击目录时用 <code>scrollIntoView</code>，回顶部用 <code>scrollTo</code>。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">document.querySelector('#toTop').onclick = () =&gt; window.scrollTo({ top: 0, behavior: 'smooth' });
+document.querySelector('#part2').onclick = () =&gt; document.querySelector('#section2').scrollIntoView({ behavior: 'smooth' });
+</code></pre>
+<p><strong>学完能做：</strong> 实现滚动吸顶、分区跳转和返回顶部。</p>

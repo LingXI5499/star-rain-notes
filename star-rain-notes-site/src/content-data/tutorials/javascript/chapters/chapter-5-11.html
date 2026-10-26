@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 过滤决定展示哪些项，排序决定展示顺序；使用 <code>toSorted</code> 或复制数组避免破坏原数据。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const nums = [8, 3, 5, 2];
+const result = nums.filter(n =&gt; n &gt;= 3).toSorted((a, b) =&gt; a - b);
+console.log(result); // [3,5,8]
+</code></pre>
+<p><strong>学完能做：</strong> 根据筛选项对数据重新排序。</p>

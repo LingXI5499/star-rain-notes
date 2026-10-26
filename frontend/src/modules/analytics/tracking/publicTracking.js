@@ -7,6 +7,7 @@
  */
 
 import { recordPageView } from '../api/analyticsApi'
+import { isPrivateRoute } from '../../../shared/routeVisibility'
 
 const allowed = new Set(['/', '/blog', '/blog/archive', '/tutorials', '/portfolio', '/messages', '/about', '/search'])
 
@@ -19,8 +20,8 @@ export
    */
   function installPublicTracking(router) {
   let first = true
-  router.afterEach((to) => {
-    if (to.path.startsWith('/useradmin')) return
+  router.afterEach((to, from, failure) => {
+    if (failure || isPrivateRoute(to) || !to.meta?.publicPage) return
     const isEntry = first
     first = false
     if (!allowed.has(to.path)) return

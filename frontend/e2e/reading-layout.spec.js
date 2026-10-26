@@ -34,7 +34,7 @@ async function installReaders(page) {
   })
 }
 
-for (const path of ['/tutorials/long/first', '/useradmin/learning/chapters/first', '/english/grammar/first', '/useradmin/english/grammar/first', '/english/reading/long', '/english/writing/author/long', '/privacy']) {
+for (const path of ['/tutorials/long/first', '/learning/chapters/first', '/english/grammar/first', '/english/reading/long', '/english/writing/author/long', '/privacy']) {
   test(`global directory remains available throughout reading: ${path}`, async ({ page }, testInfo) => {
     await installReaders(page)
     await page.setViewportSize({ width: 390, height: 844 })
@@ -56,8 +56,7 @@ for (const path of ['/tutorials/long/first', '/useradmin/learning/chapters/first
     if (path.includes('/grammar/') || path === '/tutorials/long/first') {
       await dialog.getByRole('button', { name: '课程目录', exact: true }).click()
       const second = dialog.getByRole('link', { name: /Second lesson/ })
-      const prefix = path.startsWith('/useradmin') ? '/useradmin' : ''
-      const expected = `${prefix}${path.includes('grammar') ? '/english/grammar/second' : '/tutorials/long/second'}`
+      const expected = path.includes('grammar') ? '/english/grammar/second' : '/tutorials/long/second'
       await expect(second).toHaveAttribute('href', expected)
       await second.click()
       await expect(page).toHaveURL(expected)

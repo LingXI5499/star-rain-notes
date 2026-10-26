@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 图片放在 <code>overflow:hidden</code> 容器内，悬浮时缩放图片，容器边缘不变。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.thumb { overflow: hidden; }
+.thumb img { width: 100%; transition: transform .25s; }
+.thumb:hover img { transform: scale(1.08); }
+</code></pre>
+<p><strong>学完能做：</strong> 组合图片裁切与悬停放大交互。</p>

@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 监听器可注册在捕获阶段；<code>removeEventListener</code> 需要传相同的函数引用。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">function handle(e) { console.log(e.type); }
+document.addEventListener('click', handle, true);
+document.removeEventListener('click', handle, true);
+</code></pre>
+<p><strong>学完能做：</strong> 正确注册、移除事件监听器。</p>

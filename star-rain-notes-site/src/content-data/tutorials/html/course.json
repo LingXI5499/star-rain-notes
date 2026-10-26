@@ -1,0 +1,384 @@
+{
+  "slug": "html",
+  "title": "HTML",
+  "description": "HTML 基础、语义标签、图文链接、列表表格、表单、页面结构及原生媒体能力；各章提供最小示例与实操目标。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-10-15",
+  "chapterCount": 43,
+  "wordCount": 9205,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "一.先认识 HTML 的组成",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "标签、元素、属性：先读懂一行 HTML",
+          "description": "区分标签、元素和属性，正确书写基本标签。",
+          "path": "/tutorials/html/chapter-1-1/",
+          "wordCount": 171,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "嵌套、父子、兄弟：读懂页面结构树",
+          "description": "识别父子与兄弟节点，画出简单嵌套结构。",
+          "path": "/tutorials/html/chapter-1-2/",
+          "wordCount": 187,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "从一份 HTML 文档开始",
+          "description": "独立编写 HTML5 文档骨架并在浏览器打开。",
+          "path": "/tutorials/html/chapter-1-3/",
+          "wordCount": 288,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "页面标题、描述与 Favicon",
+          "description": "设置网页标题、页面摘要与站点图标。",
+          "path": "/tutorials/html/chapter-1-4/",
+          "wordCount": 196,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "空格、换行、实体与代码文本",
+          "description": "正确处理文本空白、换行、特殊字符和代码展示。",
+          "path": "/tutorials/html/chapter-1-5/",
+          "wordCount": 179,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-6",
+          "title": "全局属性与 data-*",
+          "description": "使用 id、class、title、data-* 等全局属性。",
+          "path": "/tutorials/html/chapter-1-6/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-7",
+          "title": "手机 viewport 前后对照",
+          "description": "配置 viewport，理解移动端视口对页面宽度的影响。",
+          "path": "/tutorials/html/chapter-1-7/",
+          "wordCount": 181,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "二.文字、链接与图片",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "标题、段落与文字",
+          "description": "合理选用标题层级、段落和基础文本标签。",
+          "path": "/tutorials/html/chapter-2-1/",
+          "wordCount": 147,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "强调、引用与文本语义",
+          "description": "区分强调、引用与纯视觉效果的语义。",
+          "path": "/tutorials/html/chapter-2-2/",
+          "wordCount": 171,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "链接、导航与锚点",
+          "description": "编写页面链接、导航链接和页内跳转。",
+          "path": "/tutorials/html/chapter-2-3/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "相对路径、绝对路径与 URL 解析",
+          "description": "区分相对与绝对路径，正确定位资源地址。",
+          "path": "/tutorials/html/chapter-2-4/",
+          "wordCount": 206,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "图片、替代文本与图注",
+          "description": "插入图片并设置替代文本与图注。",
+          "path": "/tutorials/html/chapter-2-5/",
+          "wordCount": 181,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-6",
+          "title": "picture 与响应式图片",
+          "description": "按不同显示条件提供合适的图片资源。",
+          "path": "/tutorials/html/chapter-2-6/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-7",
+          "title": "三份 HTML 页面互相跳转",
+          "description": "建立多页面之间的超链接导航。",
+          "path": "/tutorials/html/chapter-2-7/",
+          "wordCount": 166,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-8",
+          "title": "页内目录与锚点",
+          "description": "为长文建立可点击、可定位的章节目录。",
+          "path": "/tutorials/html/chapter-2-8/",
+          "wordCount": 131,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "三.列表、表格与数据关系",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "有序列表与无序列表",
+          "description": "根据内容选择有序或无序列表。",
+          "path": "/tutorials/html/chapter-3-1/",
+          "wordCount": 149,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "描述列表与联系信息",
+          "description": "使用描述列表表达术语及对应说明。",
+          "path": "/tutorials/html/chapter-3-2/",
+          "wordCount": 190,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "数据表格",
+          "description": "构建带表头、行和单元格的数据表。",
+          "path": "/tutorials/html/chapter-3-3/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "表格行列合并与表头关联",
+          "description": "实现跨行跨列并正确关联表头。",
+          "path": "/tutorials/html/chapter-3-4/",
+          "wordCount": 237,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "复杂表格与表头关联",
+          "description": "组织多级表头并保持数据可读性。",
+          "path": "/tutorials/html/chapter-3-5/",
+          "wordCount": 220,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "有序步骤与嵌套任务清单",
+          "description": "使用嵌套列表表达步骤与分层任务。",
+          "path": "/tutorials/html/chapter-3-6/",
+          "wordCount": 161,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "四.表单与原生输入",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "布尔属性：出现就表示启用",
+          "description": "识别 checked、disabled、required 等布尔属性的行为。",
+          "path": "/tutorials/html/chapter-4-1/",
+          "wordCount": 216,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "表单从输入到数据：name、value、提交",
+          "description": "理解表单字段名、字段值与提交数据的关系。",
+          "path": "/tutorials/html/chapter-4-2/",
+          "wordCount": 218,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "原生表单与输入控件",
+          "description": "选择并组合输入框、按钮等常见原生控件。",
+          "path": "/tutorials/html/chapter-4-3/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "fieldset、label 与选项分组",
+          "description": "为输入项建立标签与逻辑分组。",
+          "path": "/tutorials/html/chapter-4-4/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "输入类型与浏览器校验",
+          "description": "根据数据类型选择输入控件和内建校验。",
+          "path": "/tutorials/html/chapter-4-5/",
+          "wordCount": 202,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "select、datalist 与 output",
+          "description": "选择下拉、建议选项和结果输出组件。",
+          "path": "/tutorials/html/chapter-4-6/",
+          "wordCount": 277,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "键盘导航与无障碍命名",
+          "description": "确保表单可用键盘操作且控件名称清晰。",
+          "path": "/tutorials/html/chapter-4-7/",
+          "wordCount": 167,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "真正使用 GET 的原生搜索表单",
+          "description": "使用 GET 查询参数构建可用的搜索表单。",
+          "path": "/tutorials/html/chapter-4-8/",
+          "wordCount": 185,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-9",
+          "title": "完整原生信息采集表",
+          "description": "组合完成包含多种字段的信息采集页面。",
+          "path": "/tutorials/html/chapter-4-9/",
+          "wordCount": 248,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-10",
+          "title": "密码与确认密码：跨字段校验",
+          "description": "理解确认密码等跨字段规则需要脚本补充。",
+          "path": "/tutorials/html/chapter-4-10/",
+          "wordCount": 220,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "五.容器、语义与原生能力",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "div 通用容器",
+          "description": "使用 div 分组内容但不误当语义标签。",
+          "path": "/tutorials/html/chapter-5-1/",
+          "wordCount": 127,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "页面结构标签",
+          "description": "按页面职责选择 header、main、section 等结构标签。",
+          "path": "/tutorials/html/chapter-5-2/",
+          "wordCount": 243,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "原生折叠详情",
+          "description": "使用 details 与 summary 实现无需脚本的折叠。",
+          "path": "/tutorials/html/chapter-5-3/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "progress 与 meter 的区别",
+          "description": "区分任务进度与区间测量的适用场景。",
+          "path": "/tutorials/html/chapter-5-4/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "原生 dialog 与表单关闭",
+          "description": "使用 dialog 表达对话框并正确关闭。",
+          "path": "/tutorials/html/chapter-5-5/",
+          "wordCount": 243,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "Popover 原生浮层",
+          "description": "使用 Popover 建立原生浮层及其触发关系。",
+          "path": "/tutorials/html/chapter-5-6/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "template 与可复用 DOM 片段",
+          "description": "定义可由脚本克隆的 template 内容。",
+          "path": "/tutorials/html/chapter-5-7/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-8",
+          "title": "常用原生元素组合",
+          "description": "合理组合原生元素实现常见展示模块。",
+          "path": "/tutorials/html/chapter-5-8/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-9",
+          "title": "音频与视频原生控件",
+          "description": "嵌入音视频并控制基本播放选项。",
+          "path": "/tutorials/html/chapter-5-9/",
+          "wordCount": 184,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-10",
+          "title": "图片、SVG 与音视频容器",
+          "description": "区分图片、SVG 与多媒体展示容器的职责。",
+          "path": "/tutorials/html/chapter-5-10/",
+          "wordCount": 216,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-11",
+          "title": "iframe 与独立浏览上下文",
+          "description": "理解 iframe 的嵌入方式和隔离边界。",
+          "path": "/tutorials/html/chapter-5-11/",
+          "wordCount": 155,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-12",
+          "title": "本地生成视频、封面与字幕",
+          "description": "了解本地视频文件、封面和字幕轨道的接入。",
+          "path": "/tutorials/html/chapter-5-12/",
+          "wordCount": 256,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/html/",
+  "sortOrder": 10
+}

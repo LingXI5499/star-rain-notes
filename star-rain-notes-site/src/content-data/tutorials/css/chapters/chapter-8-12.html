@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 把内容复制两份并连续移动轨道，形成无缝滚动；悬浮时可以暂停。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-css">.track { display: flex; width: max-content; animation: slide 12s linear infinite; }
+.track:hover { animation-play-state: paused; }
+@keyframes slide { to { transform: translateX(-50%); } }
+</code></pre>
+<p><strong>学完能做：</strong> 构建可循环、可悬停暂停的走马灯。</p>

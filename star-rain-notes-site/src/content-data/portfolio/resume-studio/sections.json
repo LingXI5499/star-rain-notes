@@ -1,0 +1,148 @@
+[
+  {
+    "id": "31",
+    "title": "项目介绍",
+    "type": "MARKDOWN",
+    "html": "<p>面向个人投递简历时频繁调整内容、管理多个版本和检查打印结果的需求，建立从编辑、保存、校验到 PDF 输出的完整本地流程。公开源码使用虚构演示资料和中性头像。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "32",
+    "title": "核心功能",
+    "type": "FEATURE_LIST",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "title": "实时编辑",
+          "description": "编辑个人信息、教育、技能、项目和实习；条目可增删、排序，右侧同步预览 A4 排版。"
+        },
+        {
+          "title": "岗位版本",
+          "description": "复制、切换、重命名和删除投递版本，每个版本独立保存内容与排版设置。"
+        },
+        {
+          "title": "可靠保存",
+          "description": "IndexedDB 事务完成后确认保存；JSON 支持完整备份、校验导入和合并，多标签冲突会阻止陈旧覆盖。"
+        },
+        {
+          "title": "单页 PDF",
+          "description": "预览与打印共用组件；本地 Chromium 等待字体和照片，检查边界及页数后直接下载 PDF。"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "33",
+    "title": "使用流程",
+    "type": "MARKDOWN",
+    "html": "<p>复制岗位版本 → 修改简历内容 → 检查 A4 预览和溢出提示 → 等待保存完成 → 导出 PDF → 定期备份 JSON。超页时在副本中人工精简内容。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "34",
+    "title": "技术栈",
+    "type": "TECH_STACK",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "name": "Vue 3",
+          "group": ""
+        },
+        {
+          "name": "TypeScript",
+          "group": ""
+        },
+        {
+          "name": "Express",
+          "group": ""
+        },
+        {
+          "name": "IndexedDB",
+          "group": ""
+        },
+        {
+          "name": "Playwright",
+          "group": ""
+        },
+        {
+          "name": "PDF",
+          "group": ""
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "35",
+    "title": "关键实现",
+    "type": "MARKDOWN",
+    "html": "<p>Vue 编辑器与打印页复用 ResumeSheet，避免两套排版偏差。IndexedDB 保存版本与修订信息，BroadcastChannel 提醒多标签冲突。仅监听回环地址的 Express 服务使用独立数据快照生成 PDF，并校验来源、图片、字体和输出页数。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "36",
+    "title": "项目成果",
+    "type": "STATS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "label": "PDF 目标",
+          "value": "A4 单页"
+        },
+        {
+          "label": "单元测试",
+          "value": "16 项"
+        },
+        {
+          "label": "数据存储",
+          "value": "本机优先"
+        }
+      ]
+    },
+    "media": []
+  },
+  {
+    "id": "37",
+    "title": "验证与交付",
+    "type": "MARKDOWN",
+    "html": "<p>2026-10-15 整理版本通过 16 项单元测试、类型检查和生产构建。3 个浏览器场景验证初始预览、单页中文 PDF、断开外网后的编辑与导出；生产模式也实际输出一页可检索中文的 PDF，未记录页面脚本错误。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "38",
+    "title": "当前阶段与使用边界",
+    "type": "MARKDOWN",
+    "html": "<p>需要本地 Node 服务、Chromium 与中文字体，不能只上传静态 dist 获得 PDF 能力。清理浏览器数据可能丢失本地版本，应独立备份。没有云账户、自动改写经历或任意模板设计；超页不裁切、不暗中删改经历。</p>\n",
+    "data": {},
+    "media": []
+  },
+  {
+    "id": "39",
+    "title": "源码与文档",
+    "type": "LINKS",
+    "html": "",
+    "data": {
+      "items": [
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/resume-studio",
+          "label": "查看项目源码",
+          "description": "GitHub 集合中的独立项目目录"
+        },
+        {
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/resume-studio/README.md",
+          "label": "运行与使用说明",
+          "description": "依赖、启动、测试和项目边界"
+        }
+      ]
+    },
+    "media": []
+  }
+]

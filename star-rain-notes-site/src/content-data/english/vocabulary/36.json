@@ -1,0 +1,711 @@
+{
+  "id": "36",
+  "title": "环境 / 生态 / 资源 / 可持续性",
+  "layer": "社会与世界主题层",
+  "wordCount": 78,
+  "path": "/english/vocabulary/36/",
+  "words": [
+    {
+      "word": "reduce",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'dʊs",
+      "phoneticUk": "rɪ'djuːs",
+      "translation": "减少，减小；简化；减少",
+      "sceneMeaning": "减少；降低",
+      "examples": "[]"
+    },
+    {
+      "word": "energy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛnɚdʒi",
+      "phoneticUk": "'enədʒɪ",
+      "translation": "活力；精力；能",
+      "sceneMeaning": "能源；能量",
+      "examples": "[]"
+    },
+    {
+      "word": "environment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vaɪrənmənt",
+      "phoneticUk": "ɪn'vaɪrənm(ə)nt; en-",
+      "translation": "环境，外界；围绕",
+      "sceneMeaning": "环境",
+      "examples": "[]"
+    },
+    {
+      "word": "natural",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nætʃrəl",
+      "phoneticUk": "'nætʃ(ə)r(ə)l",
+      "translation": "自然界的；天然的",
+      "sceneMeaning": "自然的；天然的",
+      "examples": "[]"
+    },
+    {
+      "word": "protect",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'tɛkt",
+      "phoneticUk": "prə'tekt",
+      "translation": "保护，保卫，警戒",
+      "sceneMeaning": "保护",
+      "examples": "[]"
+    },
+    {
+      "word": "protection",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'tɛkʃən",
+      "phoneticUk": "prə'tekʃ(ə)n",
+      "translation": "保护，警戒",
+      "sceneMeaning": "保护",
+      "examples": "[]"
+    },
+    {
+      "word": "risk",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪsk",
+      "phoneticUk": "rɪsk",
+      "translation": "风险，危险，冒险",
+      "sceneMeaning": "风险",
+      "examples": "[]"
+    },
+    {
+      "word": "climate",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klaɪmət",
+      "phoneticUk": "ˈklaɪmət",
+      "translation": "气候；风土，地带",
+      "sceneMeaning": "气候",
+      "examples": "[]"
+    },
+    {
+      "word": "electric",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'lɛktrɪk",
+      "phoneticUk": "ɪ'lektrɪk",
+      "translation": "电的，电动的",
+      "sceneMeaning": "电的，电动的；本场景常见用法：电力系统",
+      "examples": "[]"
+    },
+    {
+      "word": "plastic",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'plæstɪk",
+      "phoneticUk": "'plæstɪk",
+      "translation": "可塑的；塑料；塑料的",
+      "sceneMeaning": "塑料",
+      "examples": "[]"
+    },
+    {
+      "word": "sustainable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sə'stenəbl",
+      "phoneticUk": "səˈsteɪnəbl",
+      "translation": "可持续的",
+      "sceneMeaning": "可持续的",
+      "examples": "[]"
+    },
+    {
+      "word": "adapt",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'dæpt",
+      "phoneticUk": "ə'dæpt",
+      "translation": "使适应；改编；适应于",
+      "sceneMeaning": "适应；调整",
+      "examples": "[]"
+    },
+    {
+      "word": "demand",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "dɪ'mænd",
+      "phoneticUk": "dɪ'mɑːnd",
+      "translation": "要求；需要；询问；需求，要求；要求",
+      "sceneMeaning": "需求；要求",
+      "examples": "[]"
+    },
+    {
+      "word": "consumption",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'sʌmpʃən",
+      "phoneticUk": "kən'sʌm(p)ʃ(ə)n",
+      "translation": "消耗量；消耗；消费，消耗",
+      "sceneMeaning": "消耗；消费",
+      "examples": "[]"
+    },
+    {
+      "word": "gas",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡæs",
+      "phoneticUk": "gæs",
+      "translation": "煤气；气体；汽油",
+      "sceneMeaning": "天然气；气体",
+      "examples": "[]"
+    },
+    {
+      "word": "ban",
+      "partOfSpeech": "v",
+      "phoneticUs": "bæn",
+      "phoneticUk": "bæn",
+      "translation": "禁止",
+      "sceneMeaning": "禁止",
+      "examples": "[]"
+    },
+    {
+      "word": "electricity",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'lɛk'trɪsəti",
+      "phoneticUk": ",ɪlek'trɪsɪtɪ; ,el-; ,iːl-",
+      "translation": "电，电学；电流",
+      "sceneMeaning": "电；电力",
+      "examples": "[]"
+    },
+    {
+      "word": "organic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɔr'gænɪk",
+      "phoneticUk": "ɔː'gænɪk",
+      "translation": "有机体的；器官的",
+      "sceneMeaning": "有机的；生态的",
+      "examples": "[]"
+    },
+    {
+      "word": "regulation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˌrɛɡjəˈleʃən",
+      "phoneticUk": "regjʊ'leɪʃ(ə)n",
+      "translation": "规则，规章；管理；管理；规则",
+      "sceneMeaning": "法规；管理",
+      "examples": "[]"
+    },
+    {
+      "word": "sustain",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "sə'sten",
+      "phoneticUk": "sə'steɪn",
+      "translation": "支撑；供养；忍受；维持",
+      "sceneMeaning": "支撑；供养；忍受；维持",
+      "examples": "[]"
+    },
+    {
+      "word": "reserve",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'zɝv",
+      "phoneticUk": "rɪ'zɜːv",
+      "translation": "储备，保留；预定；留出，预定",
+      "sceneMeaning": "保护区；储备",
+      "examples": "[]"
+    },
+    {
+      "word": "campaign",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæm'pen",
+      "phoneticUk": "kæm'peɪn",
+      "translation": "战役；运动；活动",
+      "sceneMeaning": "运动；活动",
+      "examples": "[]"
+    },
+    {
+      "word": "conservative",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "kən'sɝvətɪv",
+      "phoneticUk": "kən'sɜːvətɪv",
+      "translation": "保守的；保守的人；保守的，传统的",
+      "sceneMeaning": "保守的；保守的人；保守的，传统的；本场景常见用法：保守政权",
+      "examples": "[]"
+    },
+    {
+      "word": "absorb",
+      "partOfSpeech": "v",
+      "phoneticUs": "æbˈsɔrb; æbˈzɔrb; əbˈsɔrb",
+      "phoneticUk": "əb'zɔːb; -'sɔːb",
+      "translation": "吸收；使专心；吸收（液体、气体等）",
+      "sceneMeaning": "吸收",
+      "examples": "[]"
+    },
+    {
+      "word": "disposal",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'spozl",
+      "phoneticUk": "dɪ'spəʊz(ə)l",
+      "translation": "丢掉，处理，销毁",
+      "sceneMeaning": "丢掉，处理，销毁；本场景常见用法：[化]污水处理系统",
+      "examples": "[]"
+    },
+    {
+      "word": "exploit",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'splɔɪt",
+      "phoneticUk": "ɪk'splɒɪt; ek-",
+      "translation": "剥削；利用；开拓；开采",
+      "sceneMeaning": "剥削；利用；开拓；开采",
+      "examples": "[]"
+    },
+    {
+      "word": "air",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɛr",
+      "phoneticUk": "eə",
+      "translation": "空气；空中；外观",
+      "sceneMeaning": "空气",
+      "examples": "[]"
+    },
+    {
+      "word": "atmosphere",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ætməsfɪr",
+      "phoneticUk": "'ætməsfɪə",
+      "translation": "大气；空气；气氛；气氛；大气；空气",
+      "sceneMeaning": "大气；氛围",
+      "examples": "[]"
+    },
+    {
+      "word": "awareness",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'wɛrnəs",
+      "phoneticUk": "əˈweənəs",
+      "translation": "意识",
+      "sceneMeaning": "意识；认识",
+      "examples": "[]"
+    },
+    {
+      "word": "disaster",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'zæstɚ",
+      "phoneticUk": "dɪ'zɑːstə",
+      "translation": "灾难，灾祸；天灾",
+      "sceneMeaning": "灾害；灾难",
+      "examples": "[]"
+    },
+    {
+      "word": "ocean",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "海洋；洋",
+      "sceneMeaning": "海洋",
+      "examples": "[]"
+    },
+    {
+      "word": "oil",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɔɪl",
+      "phoneticUk": "ɒɪl",
+      "translation": "油；石油；加油于",
+      "sceneMeaning": "石油；油",
+      "examples": "[]"
+    },
+    {
+      "word": "preserve",
+      "partOfSpeech": "v",
+      "phoneticUs": "prɪ'zɝv",
+      "phoneticUk": "prɪ'zɜːv",
+      "translation": "保护；保存；腌渍；保护",
+      "sceneMeaning": "保存；保护",
+      "examples": "[]"
+    },
+    {
+      "word": "agreement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'grimənt",
+      "phoneticUk": "ə'griːm(ə)nt",
+      "translation": "协定，协议；同意",
+      "sceneMeaning": "协议；一致",
+      "examples": "[]"
+    },
+    {
+      "word": "conservation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kɑnsɚ'veʃən",
+      "phoneticUk": "kɒnsə'veɪʃ(ə)n",
+      "translation": "保存，保护；守恒；保护，保存",
+      "sceneMeaning": "保护；节约",
+      "examples": "[]"
+    },
+    {
+      "word": "garbage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɡɑrbɪdʒ",
+      "phoneticUk": "'gɑːbɪdʒ",
+      "translation": "垃圾，污物，废料",
+      "sceneMeaning": "垃圾",
+      "examples": "[]"
+    },
+    {
+      "word": "pollution",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'luʃən",
+      "phoneticUk": "pə'luːʃ(ə)n",
+      "translation": "污染",
+      "sceneMeaning": "污染",
+      "examples": "[]"
+    },
+    {
+      "word": "restore",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'stɔr",
+      "phoneticUk": "rɪ'stɔː",
+      "translation": "恢复；归还；修补；修复",
+      "sceneMeaning": "恢复；修复",
+      "examples": "[]"
+    },
+    {
+      "word": "artificial",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɑrtɪ'fɪʃl",
+      "phoneticUk": "ɑːtɪ'fɪʃ(ə)l",
+      "translation": "人工的；娇揉造作的",
+      "sceneMeaning": "人工的；娇揉造作的",
+      "examples": "[]"
+    },
+    {
+      "word": "atomic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'tɑmɪk",
+      "phoneticUk": "ə'tɒmɪk",
+      "translation": "原子的；原子能的",
+      "sceneMeaning": "原子的；原子能的；本场景常见用法：[化]原子吸收分光光度法",
+      "examples": "[]"
+    },
+    {
+      "word": "battery",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæt(ə)rɪ",
+      "phoneticUk": "'bætri",
+      "translation": "电池；一套，一组",
+      "sceneMeaning": "电池",
+      "examples": "[]"
+    },
+    {
+      "word": "coal",
+      "partOfSpeech": "n",
+      "phoneticUs": "kol",
+      "phoneticUk": "kəʊl",
+      "translation": "煤，煤块",
+      "sceneMeaning": "煤",
+      "examples": "[]"
+    },
+    {
+      "word": "emit",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪ'mɪt",
+      "phoneticUk": "ɪ'mɪt",
+      "translation": "散发；发射；发表；发出，排出",
+      "sceneMeaning": "排放；发出",
+      "examples": "[]"
+    },
+    {
+      "word": "flood",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "flʌd",
+      "phoneticUk": "flʌd",
+      "translation": "洪水；淹没",
+      "sceneMeaning": "洪水；泛滥",
+      "examples": "[]"
+    },
+    {
+      "word": "forest",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fɔrɪst",
+      "phoneticUk": "'fɒrɪst",
+      "translation": "森林；森林地带",
+      "sceneMeaning": "森林",
+      "examples": "[]"
+    },
+    {
+      "word": "lake",
+      "partOfSpeech": "n",
+      "phoneticUs": "lek",
+      "phoneticUk": "leɪk",
+      "translation": "湖",
+      "sceneMeaning": "湖泊",
+      "examples": "[]"
+    },
+    {
+      "word": "mere",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mɪr",
+      "phoneticUk": "mɪə",
+      "translation": "仅仅的；纯粹的",
+      "sceneMeaning": "仅仅的；纯粹的",
+      "examples": "[]"
+    },
+    {
+      "word": "pollute",
+      "partOfSpeech": "v",
+      "phoneticUs": "pə'lut",
+      "phoneticUk": "pə'luːt",
+      "translation": "弄脏，污染，沾污",
+      "sceneMeaning": "污染",
+      "examples": "[]"
+    },
+    {
+      "word": "regulate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'rɛɡjulet",
+      "phoneticUk": "'regjʊleɪt",
+      "translation": "管理，控制；调整；管理",
+      "sceneMeaning": "监管；调节",
+      "examples": "[]"
+    },
+    {
+      "word": "renew",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'nʊ",
+      "phoneticUk": "rɪ'njuː",
+      "translation": "使更新；更新；〔中止后〕重新开始，继续",
+      "sceneMeaning": "使更新；更新；〔中止后〕重新开始，继续",
+      "examples": "[]"
+    },
+    {
+      "word": "soil",
+      "partOfSpeech": "v",
+      "phoneticUs": "sɔɪl",
+      "phoneticUk": "sɒɪl",
+      "translation": "弄脏；变脏",
+      "sceneMeaning": "土壤",
+      "examples": "[]"
+    },
+    {
+      "word": "violent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vaɪələnt",
+      "phoneticUk": "'vaɪəl(ə)nt",
+      "translation": "猛烈的；狂暴的",
+      "sceneMeaning": "猛烈的；狂暴的",
+      "examples": "[]"
+    },
+    {
+      "word": "adversity",
+      "partOfSpeech": "n",
+      "phoneticUs": "əd'vɝsəti",
+      "phoneticUk": "ədˈvɜ:səti",
+      "translation": "逆境，不幸",
+      "sceneMeaning": "逆境，不幸",
+      "examples": "[]"
+    },
+    {
+      "word": "assess",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'sɛs",
+      "phoneticUk": "ə'ses",
+      "translation": "对(财产等)估价；评价",
+      "sceneMeaning": "评估",
+      "examples": "[]"
+    },
+    {
+      "word": "coast",
+      "partOfSpeech": "n",
+      "phoneticUs": "kost",
+      "phoneticUk": "kəʊst",
+      "translation": "海岸，海滨(地区)",
+      "sceneMeaning": "海岸",
+      "examples": "[]"
+    },
+    {
+      "word": "contaminate",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'tæmɪnet",
+      "phoneticUk": "kən'tæmɪneɪt",
+      "translation": "污染，弄脏",
+      "sceneMeaning": "污染；弄脏",
+      "examples": "[]"
+    },
+    {
+      "word": "desert",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "(for v.) dɪˈzɝ​t; (for n.) 'dɛzɚt",
+      "phoneticUk": "(for v.) dɪ'zɜːt; (for n.) 'dezət",
+      "translation": "沙漠；离弃；擅离；抛弃",
+      "sceneMeaning": "沙漠",
+      "examples": "[]"
+    },
+    {
+      "word": "dispose",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'spoz",
+      "phoneticUk": "dɪ'spəʊz",
+      "translation": "去掉，丢掉；销毁",
+      "sceneMeaning": "处理；处置",
+      "examples": "[]"
+    },
+    {
+      "word": "drought",
+      "partOfSpeech": "n",
+      "phoneticUs": "draʊt",
+      "phoneticUk": "draʊt",
+      "translation": "旱灾，干旱",
+      "sceneMeaning": "干旱",
+      "examples": "[]"
+    },
+    {
+      "word": "earthquake",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɝθ'kwek",
+      "phoneticUk": "'ɜːθkweɪk",
+      "translation": "地震；大震荡",
+      "sceneMeaning": "地震",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'fɪʃənsi",
+      "phoneticUk": "ɪ'fɪʃ(ə)nsɪ",
+      "translation": "效率；功效，效能",
+      "sceneMeaning": "效率",
+      "examples": "[]"
+    },
+    {
+      "word": "emission",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'mɪʃən",
+      "phoneticUk": "ɪ'mɪʃn",
+      "translation": "排放，辐射",
+      "sceneMeaning": "排放；排放物",
+      "examples": "[]"
+    },
+    {
+      "word": "endanger",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'dendʒɚ",
+      "phoneticUk": "ɪnˈdeɪndʒə(r)",
+      "translation": "危及，危害，濒临危险",
+      "sceneMeaning": "危及，危害，濒临危险",
+      "examples": "[]"
+    },
+    {
+      "word": "gaseous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡæsɪəs",
+      "phoneticUk": "'gæsɪəs; 'geɪsɪəs",
+      "translation": "气体的，气态的",
+      "sceneMeaning": "气体的，气态的",
+      "examples": "[]"
+    },
+    {
+      "word": "grid",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡrɪd",
+      "phoneticUk": "grɪd",
+      "translation": "输电网",
+      "sceneMeaning": "电网；网格",
+      "examples": "[]"
+    },
+    {
+      "word": "moisture",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɔɪstʃɚ",
+      "phoneticUk": "'mɒɪstʃə",
+      "translation": "潮湿，湿气；温度",
+      "sceneMeaning": "潮湿，湿气；温度；本场景常见用法：土壤含水量",
+      "examples": "[]"
+    },
+    {
+      "word": "monitor",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɔnɪtɚ",
+      "phoneticUk": "'mɒnɪtə",
+      "translation": "班长；监视器；监控；监听",
+      "sceneMeaning": "监测；监控",
+      "examples": "[]"
+    },
+    {
+      "word": "petroleum",
+      "partOfSpeech": "n",
+      "phoneticUs": "pə'trolɪəm",
+      "phoneticUk": "pə'trəʊlɪəm",
+      "translation": "石油",
+      "sceneMeaning": "石油；本场景常见用法：石油烃",
+      "examples": "[]"
+    },
+    {
+      "word": "pit",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɪt",
+      "phoneticUk": "pɪt",
+      "translation": "坑，地坑；煤矿",
+      "sceneMeaning": "坑，地坑；煤矿",
+      "examples": "[]"
+    },
+    {
+      "word": "preservation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",prɛzɚ'veʃən",
+      "phoneticUk": "ˌprezəˈveɪʃn",
+      "translation": "保存，保留",
+      "sceneMeaning": "保存；保护",
+      "examples": "[]"
+    },
+    {
+      "word": "recharge",
+      "partOfSpeech": "v",
+      "phoneticUs": "ri:'tʃɑ:dʒ, 'ri:tʃɑ:dʒ",
+      "phoneticUk": "ˌri:'tʃɑ:dʒ",
+      "translation": "再充电",
+      "sceneMeaning": "再充电",
+      "examples": "[]"
+    },
+    {
+      "word": "recycle",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ri'saɪkl",
+      "phoneticUk": "riː'saɪk(ə)l",
+      "translation": "循环，再利用",
+      "sceneMeaning": "回收利用",
+      "examples": "[]"
+    },
+    {
+      "word": "refuse",
+      "partOfSpeech": "v",
+      "phoneticUs": "ri'fjʊz",
+      "phoneticUk": "rɪ'fjuːz",
+      "translation": "拒绝",
+      "sceneMeaning": "拒绝；本场景常见用法：垃圾收集",
+      "examples": "[]"
+    },
+    {
+      "word": "reservior",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "水库；蓄水池",
+      "sceneMeaning": "水库；蓄水池",
+      "examples": "[]"
+    },
+    {
+      "word": "resourceful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'sɔrsfl",
+      "phoneticUk": "rɪ'sɔːsfl",
+      "translation": "机智的",
+      "sceneMeaning": "机智的",
+      "examples": "[]"
+    },
+    {
+      "word": "shore",
+      "partOfSpeech": "n",
+      "phoneticUs": "ʃɔr",
+      "phoneticUk": "ʃɔː",
+      "translation": "滨，岸",
+      "sceneMeaning": "滨，岸",
+      "examples": "[]"
+    },
+    {
+      "word": "shortage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʃɔrtɪdʒ",
+      "phoneticUk": "'ʃɔːtɪdʒ",
+      "translation": "不足，缺少，不足额",
+      "sceneMeaning": "短缺",
+      "examples": "[]"
+    },
+    {
+      "word": "treaty",
+      "partOfSpeech": "n",
+      "phoneticUs": "'triti",
+      "phoneticUk": "'triːtɪ",
+      "translation": "条约；协议，协定",
+      "sceneMeaning": "条约",
+      "examples": "[]"
+    }
+  ]
+}

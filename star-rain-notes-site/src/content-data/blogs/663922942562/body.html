@@ -1,0 +1,1852 @@
+<h2>一、排序算法分类</h2>
+<p>排序的目标可以描述为：</p>
+<p>给定长度为 (n) 的序列：</p>
+<p>[
+A = (a_0, a_1, \ldots, a_{n-1})
+]</p>
+<p>经过重新排列后得到 (A')，它必须同时满足：</p>
+<p>[
+\forall i \in {0, 1, \ldots, n-2},\quad a'<em>i \le a'</em>{i+1}
+]</p>
+<p>[
+\operatorname{multiset}(A') = \operatorname{multiset}(A)
+]</p>
+<p>第二个式子保证排序只改变位置、不增加、不删除也不篡改元素。</p>
+<p>NIST 对排序的定义同样强调两个基本条件：结果必须满足预定顺序，并且结果必须是原始数据的一个排列。排序算法实际上存在几十种，选择哪一种与数据规模、可用内存、数据原有有序程度、键值范围以及比较和移动数据的成本有关。</p>
+<p>本文学习的数据结构与算法课程中最核心的十大经典排序：</p>
+<pre><code>排序算法
+│
+├── 比较排序
+│   │
+│   ├── 交换类
+│   │   ├── 冒泡排序 Bubble Sort
+│   │   └── 快速排序 Quick Sort
+│   │
+│   ├── 选择类
+│   │   ├── 选择排序 Selection Sort
+│   │   └── 堆排序 Heap Sort
+│   │
+│   ├── 插入类
+│   │   ├── 插入排序 Insertion Sort
+│   │   └── 希尔排序 Shell Sort
+│   │
+│   └── 归并类
+│       └── 归并排序 Merge Sort
+│
+└── 非比较排序 / 分配排序
+    │
+    ├── 计数排序 Counting Sort
+    ├── 桶排序 Bucket Sort
+    └── 基数排序 Radix Sort
+</code></pre>
+<h3>1.1 比较排序</h3>
+<p>这类算法主要通过：</p>
+<pre><code>a &gt; b
+a &lt; b
+a &lt;= b
+</code></pre>
+<p>获得元素之间的顺序关系。</p>
+<p>包括：</p>
+<pre><code>冒泡
+选择
+插入
+希尔
+归并
+快速
+堆
+</code></pre>
+<h3>1.2 非比较排序</h3>
+<p>这类算法不仅使用元素之间的大小关系，还会利用数据本身的结构信息。</p>
+<p>例如：</p>
+<pre><code>值的具体范围
+数字属于哪个区间
+个位数字是多少
+十位数字是多少
+</code></pre>
+<p>包括：</p>
+<pre><code>计数排序
+桶排序
+基数排序
+</code></pre>
+<h2>二、十大经典排序算法</h2>
+<blockquote>
+<p>下面所有代码均按<strong>升序</strong>排序。四种语言实现保持同一算法思想，不调用语言自带的排序函数。</p>
+</blockquote>
+<h3>符号约定</h3>
+<ul>
+<li>(n)：待排序元素数量；(k)：整数值域大小；(b)：桶数量或进制；(d)：最大数的位数。</li>
+<li>(\Theta(\cdot)) 表示紧确渐进界，(O(\cdot)) 表示渐进上界；额外空间不计输入数组本身。</li>
+<li>对正整数 (n)，常用等差求和为：</li>
+</ul>
+<p>[
+\sum_{i=1}^{n-1} i
+= \frac{n(n-1)}{2}
+= \Theta(n^2)
+]</p>
+<h2>2.1 冒泡排序 Bubble Sort</h2>
+<h3>核心思想</h3>
+<p>冒泡排序只做一件事：<strong>不断比较相邻元素，如果左边大于右边就交换，让当前未排序区间中的最大值逐步移动到最右侧。</strong></p>
+<p>它可以把数组理解成“未排序区 + 已排序尾部”。第一轮从左到右扫描后，最大的元素一定到达末尾；第二轮只需要扫描到倒数第二个位置；如此缩小未排序区间。为了处理“数组本来就有序”的情况，增加 <code>swapped</code> 标记：某一轮一次交换都没有发生，就说明整个数组已经有序，可以提前结束。</p>
+<h3>执行流程</h3>
+<ol>
+<li>将未排序区间的右边界设为数组最后一个位置。</li>
+<li>从左到右比较 <code>a[i]</code> 与 <code>a[i + 1]</code>。</li>
+<li>如果 <code>a[i] &gt; a[i + 1]</code>，交换二者，并记录本轮发生过交换。</li>
+<li>一轮结束后，当前最大值已经位于右边界，因此右边界左移一位。</li>
+<li>如果某一轮没有发生任何交换，直接结束；否则继续下一轮。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">void bubbleSort(int a[], int n) {
+    for (int end = n - 1; end &gt; 0; end--) {
+        int swapped = 0;
+
+        for (int i = 0; i &lt; end; i++) {
+            if (a[i] &gt; a[i + 1]) {
+                int temp = a[i];
+                a[i] = a[i + 1];
+                a[i + 1] = temp;
+                swapped = 1;
+            }
+        }
+
+        if (!swapped) {
+            break;
+        }
+    }
+}
+</code></pre>
+<pre><code class="language-java">public static void bubbleSort(int[] a) {
+    for (int end = a.length - 1; end &gt; 0; end--) {
+        boolean swapped = false;
+
+        for (int i = 0; i &lt; end; i++) {
+            if (a[i] &gt; a[i + 1]) {
+                int temp = a[i];
+                a[i] = a[i + 1];
+                a[i + 1] = temp;
+                swapped = true;
+            }
+        }
+
+        if (!swapped) {
+            break;
+        }
+    }
+}
+</code></pre>
+<pre><code class="language-python">def bubble_sort(a):
+    for end in range(len(a) - 1, 0, -1):
+        swapped = False
+
+        for i in range(end):
+            if a[i] &gt; a[i + 1]:
+                a[i], a[i + 1] = a[i + 1], a[i]
+                swapped = True
+
+        if not swapped:
+            break
+</code></pre>
+<pre><code class="language-javascript">function bubbleSort(a) {
+    for (let end = a.length - 1; end &gt; 0; end--) {
+        let swapped = false;
+
+        for (let i = 0; i &lt; end; i++) {
+            if (a[i] &gt; a[i + 1]) {
+                [a[i], a[i + 1]] = [a[i + 1], a[i]];
+                swapped = true;
+            }
+        }
+
+        if (!swapped) {
+            break;
+        }
+    }
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>第 (r) 轮需要比较 (n-r) 对相邻元素。最坏情况下所有轮都执行，因此：</p>
+<p>[
+C_{\text{worst}}(n)
+= \sum_{r=1}^{n-1}(n-r)
+= \sum_{i=1}^{n-1} i
+= \frac{n(n-1)}{2}
+= \Theta(n^2)
+]</p>
+<ul>
+<li><strong>最好时间复杂度：</strong> (\Theta(n))。已排序输入在第一轮做完 (n-1) 次比较后，<code>swapped = false</code>，立即结束。</li>
+<li><strong>平均/最坏时间复杂度：</strong> (\Theta(n^2))。随机或逆序输入都需要平方级的相邻比较；逆序时交换次数也为 (n(n-1)/2)。</li>
+<li><strong>空间复杂度：</strong> (\Theta(1))。仅使用下标、标记和一个临时变量。</li>
+</ul>
+<h3>应用场景</h3>
+<p>适合<strong>教学、验证逻辑、极小规模数组、近乎有序且希望利用提前结束优化的数据</strong>。工程中通常只在几十到几百个元素的小数据上考虑；当 n 达到 10^5 时，平方级比较数量已经接近 10^10，没有实际优势。</p>
+<h2>2.2 选择排序 Selection Sort</h2>
+<h3>核心思想</h3>
+<p>选择排序把数组划分为“已排序区 + 未排序区”。<strong>每一轮从未排序区中找到最小元素，再把它交换到未排序区的最前面。</strong></p>
+<p>它与冒泡排序最大的区别是：冒泡会在一轮中发生多次交换，而选择排序先完成“查找最小值”，最后通常只交换一次，因此它的<strong>比较次数很多，但写入和交换次数较少</strong>。</p>
+<h3>执行流程</h3>
+<ol>
+<li>从位置 <code>i = 0</code> 开始，把 <code>i</code> 当作当前最小元素下标。</li>
+<li>扫描 <code>i + 1</code> 到数组末尾，找到真正的最小元素下标 <code>minIndex</code>。</li>
+<li>如果 <code>minIndex != i</code>，交换 <code>a[i]</code> 与 <code>a[minIndex]</code>。</li>
+<li>此时 <code>a[i]</code> 已经确定，已排序区扩大一个元素。</li>
+<li>继续处理下一个位置，直到只剩最后一个元素。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">void selectionSort(int a[], int n) {
+    for (int i = 0; i &lt; n - 1; i++) {
+        int minIndex = i;
+
+        for (int j = i + 1; j &lt; n; j++) {
+            if (a[j] &lt; a[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        if (minIndex != i) {
+            int temp = a[i];
+            a[i] = a[minIndex];
+            a[minIndex] = temp;
+        }
+    }
+}
+</code></pre>
+<pre><code class="language-java">public static void selectionSort(int[] a) {
+    for (int i = 0; i &lt; a.length - 1; i++) {
+        int minIndex = i;
+
+        for (int j = i + 1; j &lt; a.length; j++) {
+            if (a[j] &lt; a[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        if (minIndex != i) {
+            int temp = a[i];
+            a[i] = a[minIndex];
+            a[minIndex] = temp;
+        }
+    }
+}
+</code></pre>
+<pre><code class="language-python">def selection_sort(a):
+    n = len(a)
+
+    for i in range(n - 1):
+        min_index = i
+
+        for j in range(i + 1, n):
+            if a[j] &lt; a[min_index]:
+                min_index = j
+
+        if min_index != i:
+            a[i], a[min_index] = a[min_index], a[i]
+</code></pre>
+<pre><code class="language-javascript">function selectionSort(a) {
+    for (let i = 0; i &lt; a.length - 1; i++) {
+        let minIndex = i;
+
+        for (let j = i + 1; j &lt; a.length; j++) {
+            if (a[j] &lt; a[minIndex]) {
+                minIndex = j;
+            }
+        }
+
+        if (minIndex !== i) {
+            [a[i], a[minIndex]] = [a[minIndex], a[i]];
+        }
+    }
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>第 (i) 轮必须扫描未排序区的 (n-i-1) 个候选元素；输入是否有序不会减少这部分工作：</p>
+<p>[
+C(n) = \sum_{i=0}^{n-2}(n-i-1)
+= \frac{n(n-1)}{2}
+= \Theta(n^2)
+]</p>
+<ul>
+<li><strong>最好/平均/最坏时间复杂度：</strong> 均为 (\Theta(n^2))。</li>
+<li><strong>交换次数：</strong> (S(n) \le n-1 = \Theta(n))。每轮最多交换一次，这是它相对冒泡排序写入次数更少的原因。</li>
+<li><strong>空间复杂度：</strong> (\Theta(1))。只保存循环变量、最小下标和临时变量。</li>
+</ul>
+<h3>应用场景</h3>
+<p>适合<strong>小型数组</strong>，以及“<strong>比较便宜，但交换或写入成本较高</strong>”的场景。它不适合大规模数据，因为无论输入是否有序，比较次数始终是平方级。</p>
+<h2>2.3 插入排序 Insertion Sort</h2>
+<h3>核心思想</h3>
+<p>插入排序维护一个始终有序的左侧区域。<strong>每次从右侧未排序区取出一个元素 <code>key</code>，把比它大的元素整体右移，再把 <code>key</code> 插入正确位置。</strong></p>
+<p>它与整理扑克牌非常相似：手里的牌始终有序，新抓到一张牌后，从右向左寻找插入位置。插入排序的性能本质上与数组中的<strong>逆序对数量</strong>有关：数据越接近有序，需要移动的元素越少。</p>
+<h3>执行流程</h3>
+<ol>
+<li>默认第一个元素已经有序，从第二个元素开始处理。</li>
+<li>保存当前元素为 <code>key</code>。</li>
+<li>从 <code>key</code> 左侧开始向前检查已排序区。</li>
+<li>只要当前元素大于 <code>key</code>，就把它向右移动一格。</li>
+<li>找到第一个不大于 <code>key</code> 的位置后，把 <code>key</code> 放到其后。</li>
+<li>重复以上过程，直到所有元素进入已排序区。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">void insertionSort(int a[], int n) {
+    for (int i = 1; i &lt; n; i++) {
+        int key = a[i];
+        int j = i - 1;
+
+        while (j &gt;= 0 &amp;&amp; a[j] &gt; key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+
+        a[j + 1] = key;
+    }
+}
+</code></pre>
+<pre><code class="language-java">public static void insertionSort(int[] a) {
+    for (int i = 1; i &lt; a.length; i++) {
+        int key = a[i];
+        int j = i - 1;
+
+        while (j &gt;= 0 &amp;&amp; a[j] &gt; key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+
+        a[j + 1] = key;
+    }
+}
+</code></pre>
+<pre><code class="language-python">def insertion_sort(a):
+    for i in range(1, len(a)):
+        key = a[i]
+        j = i - 1
+
+        while j &gt;= 0 and a[j] &gt; key:
+            a[j + 1] = a[j]
+            j -= 1
+
+        a[j + 1] = key
+</code></pre>
+<pre><code class="language-javascript">function insertionSort(a) {
+    for (let i = 1; i &lt; a.length; i++) {
+        const key = a[i];
+        let j = i - 1;
+
+        while (j &gt;= 0 &amp;&amp; a[j] &gt; key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+
+        a[j + 1] = key;
+    }
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>插入排序的移动次数与输入数组的逆序对数 (I(A)) 一一对应：</p>
+<p>[
+I(A) = \left|{(i,j) \mid 0 \le i &lt; j &lt; n,\ a_i &gt; a_j}\right|
+]</p>
+<p>因此运行时间可写为 (\Theta(n + I(A)))。几个典型输入为：</p>
+<p>[
+I(A_{\text{sorted}})=0,\qquad
+\mathbb{E}[I(A_{\text{random}})] = \frac{n(n-1)}{4},\qquad
+I(A_{\text{reverse}})=\frac{n(n-1)}{2}
+]</p>
+<ul>
+<li><strong>最好时间复杂度：</strong> (\Theta(n))。已排序时每个 <code>key</code> 只需一次失败比较。</li>
+<li><strong>平均/最坏时间复杂度：</strong> (\Theta(n^2))。随机输入的期望逆序对数和逆序输入的逆序对数都为平方级。</li>
+<li><strong>空间复杂度：</strong> (\Theta(1))。只保存 <code>key</code>、下标和少量临时变量。</li>
+</ul>
+<h3>应用场景</h3>
+<p>非常适合<strong>小数组</strong>与<strong>接近有序的数据</strong>。许多高性能通用排序在子数组变得很小时，也会切换到插入排序。对于只有少量元素错位的数据，即使 n 达到数千甚至更大，插入排序也可能非常高效。</p>
+<h2>2.4 希尔排序 Shell Sort</h2>
+<h3>核心思想</h3>
+<p>希尔排序可以看成“允许元素先进行大跨度移动的插入排序”。普通插入排序一次只能把元素向前移动一个位置；希尔排序先按较大的间隔 <code>gap</code> 对元素分组，在每组内部做插入排序，让离正确位置很远的元素快速跨越数组。</p>
+<p>随着 <code>gap</code> 不断缩小，数组整体越来越接近有序；当最后 <code>gap = 1</code> 时，再执行一次普通插入排序，此时移动成本已经显著降低。下面采用经典的 <strong>Knuth <code>3x + 1</code> 增量序列</strong>：<code>1, 4, 13, 40, 121, ...</code>。</p>
+<h3>执行流程</h3>
+<ol>
+<li>先计算小于数组长度的最大 Knuth 间隔 <code>gap</code>。</li>
+<li>对所有相隔 <code>gap</code> 的元素执行“带间隔的插入排序”。</li>
+<li>当前 <code>gap</code> 处理完成后，将 <code>gap</code> 缩小为原来的约三分之一。</li>
+<li>重复分组插入，直到 <code>gap = 1</code>。</li>
+<li><code>gap = 1</code> 的最后一轮等价于普通插入排序，但此时数组通常已经高度有序。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">void shellSort(int a[], int n) {
+    int gap = 1;
+
+    while (gap &lt; n / 3) {
+        gap = gap * 3 + 1;
+    }
+
+    while (gap &gt;= 1) {
+        for (int i = gap; i &lt; n; i++) {
+            int temp = a[i];
+            int j = i;
+
+            while (j &gt;= gap &amp;&amp; a[j - gap] &gt; temp) {
+                a[j] = a[j - gap];
+                j -= gap;
+            }
+
+            a[j] = temp;
+        }
+
+        gap /= 3;
+    }
+}
+</code></pre>
+<pre><code class="language-java">public static void shellSort(int[] a) {
+    int gap = 1;
+
+    while (gap &lt; a.length / 3) {
+        gap = gap * 3 + 1;
+    }
+
+    while (gap &gt;= 1) {
+        for (int i = gap; i &lt; a.length; i++) {
+            int temp = a[i];
+            int j = i;
+
+            while (j &gt;= gap &amp;&amp; a[j - gap] &gt; temp) {
+                a[j] = a[j - gap];
+                j -= gap;
+            }
+
+            a[j] = temp;
+        }
+
+        gap /= 3;
+    }
+}
+</code></pre>
+<pre><code class="language-python">def shell_sort(a):
+    n = len(a)
+    gap = 1
+
+    while gap &lt; n // 3:
+        gap = gap * 3 + 1
+
+    while gap &gt;= 1:
+        for i in range(gap, n):
+            temp = a[i]
+            j = i
+
+            while j &gt;= gap and a[j - gap] &gt; temp:
+                a[j] = a[j - gap]
+                j -= gap
+
+            a[j] = temp
+
+        gap //= 3
+</code></pre>
+<pre><code class="language-javascript">function shellSort(a) {
+    let gap = 1;
+
+    while (gap &lt; Math.floor(a.length / 3)) {
+        gap = gap * 3 + 1;
+    }
+
+    while (gap &gt;= 1) {
+        for (let i = gap; i &lt; a.length; i++) {
+            const temp = a[i];
+            let j = i;
+
+            while (j &gt;= gap &amp;&amp; a[j - gap] &gt; temp) {
+                a[j] = a[j - gap];
+                j -= gap;
+            }
+
+            a[j] = temp;
+        }
+
+        gap = Math.floor(gap / 3);
+    }
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>希尔排序的复杂度必须连同增量序列讨论。本文采用 Knuth 序列：</p>
+<p>[
+h_t = \frac{3^t-1}{2}\quad (1,4,13,40,\ldots)
+]</p>
+<p>满足 (h_t &lt; n) 的层数为 (\Theta(\log_3 n))。每一层至少线性扫描数组；但带间隔插入排序的移动次数取决于数据分布，因此不能给出对所有输入都紧确的统一平均式。</p>
+<ul>
+<li><strong>已排序输入：</strong> (\Theta(n\log n))，约有 (\log_3 n) 层，每层扫描 (n) 个元素。</li>
+<li><strong>平均时间复杂度：</strong> 依赖输入分布与增量序列；Knuth 序列在实践中通常显著优于 (\Theta(n^2)) 的直接插入排序。</li>
+<li><strong>最坏时间复杂度：</strong> 对本文 Knuth <code>3x+1</code> 序列，可用 (O(n^{3/2})) 上界描述。</li>
+<li><strong>空间复杂度：</strong> (\Theta(1))。整个过程原地完成。</li>
+</ul>
+<h3>应用场景</h3>
+<p>适合<strong>中小型数组、内存紧张、不要求稳定性、又希望明显快于普通插入排序</strong>的场景。它的代码和空间成本都较低，但在需要严格可预测的 n log n 上界时，通常优先考虑归并、堆排序等算法。</p>
+<h2>2.5 归并排序 Merge Sort</h2>
+<h3>核心思想</h3>
+<p>归并排序是典型的<strong>分治 Divide and Conquer</strong>：先把一个大数组不断二分，直到每个子数组只剩一个元素；单个元素天然有序，然后再把两个已经有序的子数组线性合并。</p>
+<p>真正的关键不在“拆分”，而在“合并”：使用两个指针分别指向左右有序区间的开头，每次取较小者放入辅助数组。由于每层归并都会完整处理当前所有元素，而递归树大约有 log2(n) 层，因此时间复杂度稳定在 n log n。</p>
+<h3>执行流程</h3>
+<ol>
+<li>如果当前区间只有 0 或 1 个元素，直接返回。</li>
+<li>找到中点，把区间拆成左半部分和右半部分。</li>
+<li>递归排序左半部分。</li>
+<li>递归排序右半部分。</li>
+<li>使用两个指针比较左右有序区间，把较小元素依次写入辅助数组。</li>
+<li>将一侧剩余元素全部复制到辅助数组。</li>
+<li>把合并结果复制回原数组对应区间。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+
+static void mergeRange(int a[], int temp[], int left, int mid, int right) {
+    int i = left;
+    int j = mid + 1;
+    int k = left;
+
+    while (i &lt;= mid &amp;&amp; j &lt;= right) {
+        if (a[i] &lt;= a[j]) {
+            temp[k++] = a[i++];
+        } else {
+            temp[k++] = a[j++];
+        }
+    }
+
+    while (i &lt;= mid) {
+        temp[k++] = a[i++];
+    }
+
+    while (j &lt;= right) {
+        temp[k++] = a[j++];
+    }
+
+    for (i = left; i &lt;= right; i++) {
+        a[i] = temp[i];
+    }
+}
+
+static void mergeSortRange(int a[], int temp[], int left, int right) {
+    if (left &gt;= right) {
+        return;
+    }
+
+    int mid = left + (right - left) / 2;
+    mergeSortRange(a, temp, left, mid);
+    mergeSortRange(a, temp, mid + 1, right);
+    mergeRange(a, temp, left, mid, right);
+}
+
+void mergeSort(int a[], int n) {
+    if (n &lt;= 1) {
+        return;
+    }
+
+    int *temp = (int *)malloc((size_t)n * sizeof(int));
+    if (temp == NULL) {
+        return;
+    }
+
+    mergeSortRange(a, temp, 0, n - 1);
+    free(temp);
+}
+</code></pre>
+<pre><code class="language-java">public static void mergeSort(int[] a) {
+    if (a.length &lt;= 1) {
+        return;
+    }
+
+    int[] temp = new int[a.length];
+    mergeSortRange(a, temp, 0, a.length - 1);
+}
+
+private static void mergeSortRange(int[] a, int[] temp, int left, int right) {
+    if (left &gt;= right) {
+        return;
+    }
+
+    int mid = left + (right - left) / 2;
+    mergeSortRange(a, temp, left, mid);
+    mergeSortRange(a, temp, mid + 1, right);
+    mergeRange(a, temp, left, mid, right);
+}
+
+private static void mergeRange(int[] a, int[] temp, int left, int mid, int right) {
+    int i = left;
+    int j = mid + 1;
+    int k = left;
+
+    while (i &lt;= mid &amp;&amp; j &lt;= right) {
+        if (a[i] &lt;= a[j]) {
+            temp[k++] = a[i++];
+        } else {
+            temp[k++] = a[j++];
+        }
+    }
+
+    while (i &lt;= mid) {
+        temp[k++] = a[i++];
+    }
+
+    while (j &lt;= right) {
+        temp[k++] = a[j++];
+    }
+
+    for (i = left; i &lt;= right; i++) {
+        a[i] = temp[i];
+    }
+}
+</code></pre>
+<pre><code class="language-python">def merge_sort(a):
+    if len(a) &lt;= 1:
+        return
+
+    temp = [0] * len(a)
+
+    def merge_sort_range(left, right):
+        if left &gt;= right:
+            return
+
+        mid = left + (right - left) // 2
+        merge_sort_range(left, mid)
+        merge_sort_range(mid + 1, right)
+        merge_range(left, mid, right)
+
+    def merge_range(left, mid, right):
+        i = left
+        j = mid + 1
+        k = left
+
+        while i &lt;= mid and j &lt;= right:
+            if a[i] &lt;= a[j]:
+                temp[k] = a[i]
+                i += 1
+            else:
+                temp[k] = a[j]
+                j += 1
+            k += 1
+
+        while i &lt;= mid:
+            temp[k] = a[i]
+            i += 1
+            k += 1
+
+        while j &lt;= right:
+            temp[k] = a[j]
+            j += 1
+            k += 1
+
+        for p in range(left, right + 1):
+            a[p] = temp[p]
+
+    merge_sort_range(0, len(a) - 1)
+</code></pre>
+<pre><code class="language-javascript">function mergeSort(a) {
+    if (a.length &lt;= 1) {
+        return;
+    }
+
+    const temp = new Array(a.length);
+
+    function mergeSortRange(left, right) {
+        if (left &gt;= right) {
+            return;
+        }
+
+        const mid = left + Math.floor((right - left) / 2);
+        mergeSortRange(left, mid);
+        mergeSortRange(mid + 1, right);
+        mergeRange(left, mid, right);
+    }
+
+    function mergeRange(left, mid, right) {
+        let i = left;
+        let j = mid + 1;
+        let k = left;
+
+        while (i &lt;= mid &amp;&amp; j &lt;= right) {
+            if (a[i] &lt;= a[j]) {
+                temp[k++] = a[i++];
+            } else {
+                temp[k++] = a[j++];
+            }
+        }
+
+        while (i &lt;= mid) {
+            temp[k++] = a[i++];
+        }
+
+        while (j &lt;= right) {
+            temp[k++] = a[j++];
+        }
+
+        for (let p = left; p &lt;= right; p++) {
+            a[p] = temp[p];
+        }
+    }
+
+    mergeSortRange(0, a.length - 1);
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>设一次合并的线性工作为 (cn)，递推式为：</p>
+<p>[
+T(n) = 2T\left(\frac{n}{2}\right) + cn
+]</p>
+<p>递归树高度为 (\log_2 n)，每一层的合并总量均为 (cn)，因此：</p>
+<p>[
+T(n) = \sum_{\ell=0}^{\log_2 n-1} cn + \Theta(n)
+= cn\log_2 n + \Theta(n)
+= \Theta(n\log n)
+]</p>
+<ul>
+<li><strong>最好/平均/最坏时间复杂度：</strong> 均为 (\Theta(n\log n))。</li>
+<li><strong>空间复杂度：</strong> (\Theta(n))。辅助数组使用 (n) 个位置，递归栈的 (\Theta(\log n)) 被其主导。</li>
+</ul>
+<h3>应用场景</h3>
+<p>适合<strong>大规模数据、要求稳定排序、链表排序、外部排序、大文件分块排序</strong>。代价是需要额外线性空间。百万级、千万级数据在内存允许时都很常见。</p>
+<h2>2.6 快速排序 Quick Sort</h2>
+<h3>核心思想</h3>
+<p>快速排序同样使用分治，但它不是先“平均切开”，而是先选择一个基准值 <code>pivot</code>，通过一次 <strong>partition 分区</strong>把数组重新组织成“较小元素 | pivot | 较大元素”。分区完成后，<code>pivot</code> 已经处于最终位置，只需要递归处理左右两侧。</p>
+<p>下面使用 <strong>Lomuto 分区</strong>，直接选择当前区间最后一个元素作为 <code>pivot</code>。这个版本非常适合理解算法，但如果输入已经有序、逆序或包含大量相同元素，分区可能极不平衡，因此不是抗退化的生产级版本。</p>
+<h3>执行流程</h3>
+<ol>
+<li>选择区间最后一个元素作为 <code>pivot</code>。</li>
+<li>使用指针 <code>i</code> 维护“已经小于等于 pivot 的区域”的右边界。</li>
+<li>指针 <code>j</code> 从左到右扫描除 pivot 外的元素。</li>
+<li>当 <code>a[j] &lt;= pivot</code> 时，扩大较小元素区域，并把 <code>a[j]</code> 交换进去。</li>
+<li>扫描结束后，把 pivot 与 <code>a[i + 1]</code> 交换，pivot 到达最终位置。</li>
+<li>递归排序 pivot 左侧区间和右侧区间。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">static int quickPartition(int a[], int left, int right) {
+    int pivot = a[right];
+    int i = left - 1;
+
+    for (int j = left; j &lt; right; j++) {
+        if (a[j] &lt;= pivot) {
+            i++;
+            int temp = a[i];
+            a[i] = a[j];
+            a[j] = temp;
+        }
+    }
+
+    int temp = a[i + 1];
+    a[i + 1] = a[right];
+    a[right] = temp;
+    return i + 1;
+}
+
+static void quickSortRange(int a[], int left, int right) {
+    if (left &gt;= right) {
+        return;
+    }
+
+    int pivotIndex = quickPartition(a, left, right);
+    quickSortRange(a, left, pivotIndex - 1);
+    quickSortRange(a, pivotIndex + 1, right);
+}
+
+void quickSort(int a[], int n) {
+    if (n &gt; 1) {
+        quickSortRange(a, 0, n - 1);
+    }
+}
+</code></pre>
+<pre><code class="language-java">public static void quickSort(int[] a) {
+    if (a.length &gt; 1) {
+        quickSortRange(a, 0, a.length - 1);
+    }
+}
+
+private static void quickSortRange(int[] a, int left, int right) {
+    if (left &gt;= right) {
+        return;
+    }
+
+    int pivotIndex = quickPartition(a, left, right);
+    quickSortRange(a, left, pivotIndex - 1);
+    quickSortRange(a, pivotIndex + 1, right);
+}
+
+private static int quickPartition(int[] a, int left, int right) {
+    int pivot = a[right];
+    int i = left - 1;
+
+    for (int j = left; j &lt; right; j++) {
+        if (a[j] &lt;= pivot) {
+            i++;
+            int temp = a[i];
+            a[i] = a[j];
+            a[j] = temp;
+        }
+    }
+
+    int temp = a[i + 1];
+    a[i + 1] = a[right];
+    a[right] = temp;
+    return i + 1;
+}
+</code></pre>
+<pre><code class="language-python">def quick_sort(a):
+    def partition(left, right):
+        pivot = a[right]
+        i = left - 1
+
+        for j in range(left, right):
+            if a[j] &lt;= pivot:
+                i += 1
+                a[i], a[j] = a[j], a[i]
+
+        a[i + 1], a[right] = a[right], a[i + 1]
+        return i + 1
+
+    def quick_sort_range(left, right):
+        if left &gt;= right:
+            return
+
+        pivot_index = partition(left, right)
+        quick_sort_range(left, pivot_index - 1)
+        quick_sort_range(pivot_index + 1, right)
+
+    if len(a) &gt; 1:
+        quick_sort_range(0, len(a) - 1)
+</code></pre>
+<pre><code class="language-javascript">function quickSort(a) {
+    function partition(left, right) {
+        const pivot = a[right];
+        let i = left - 1;
+
+        for (let j = left; j &lt; right; j++) {
+            if (a[j] &lt;= pivot) {
+                i++;
+                [a[i], a[j]] = [a[j], a[i]];
+            }
+        }
+
+        [a[i + 1], a[right]] = [a[right], a[i + 1]];
+        return i + 1;
+    }
+
+    function quickSortRange(left, right) {
+        if (left &gt;= right) {
+            return;
+        }
+
+        const pivotIndex = partition(left, right);
+        quickSortRange(left, pivotIndex - 1);
+        quickSortRange(pivotIndex + 1, right);
+    }
+
+    if (a.length &gt; 1) {
+        quickSortRange(0, a.length - 1);
+    }
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>一次分区需要线性扫描当前区间。若每次枢轴将问题近似平分：</p>
+<p>[
+T_{\text{balanced}}(n)
+= 2T\left(\frac{n}{2}\right) + cn
+= \Theta(n\log n)
+]</p>
+<p>若每次枢轴都是最小值或最大值，递推式退化为：</p>
+<p>[
+T_{\text{degenerate}}(n)
+= T(n-1) + cn
+= c\sum_{i=1}^{n-1} i
+= \Theta(n^2)
+]</p>
+<ul>
+<li><strong>最好/平均时间复杂度：</strong> (\Theta(n\log n))。本文的中位数三取样枢轴可降低持续极端分区的概率，但不能消除最坏情况。</li>
+<li><strong>最坏时间复杂度：</strong> (\Theta(n^2))。</li>
+<li><strong>空间复杂度：</strong> 平均 (\Theta(\log n))、最坏 (\Theta(n))，来自递归栈；分区本身为 (\Theta(1)) 额外空间。</li>
+</ul>
+<h3>应用场景</h3>
+<p>非常适合<strong>内存中的普通数组和随机数据</strong>，实际常数因子小、缓存局部性好，是通用排序的重要基础思想。真实工程通常会通过随机 pivot、三数取中、三向切分或 introsort 等方式避免本文版本的最坏退化。</p>
+<h2>2.7 堆排序 Heap Sort</h2>
+<h3>核心思想</h3>
+<p>堆排序利用<strong>最大堆 Max Heap</strong>维护“当前最大元素”。最大堆满足：每个父节点都不小于它的子节点，因此堆顶 <code>a[0]</code> 始终是当前堆中的最大值。</p>
+<p>数组可以直接表示完全二叉树：下标为 <code>i</code> 的节点，其左孩子为 2i + 1，右孩子为 2i + 2。堆排序先把整个数组原地建成最大堆，然后反复把堆顶最大值交换到数组末尾，缩小堆范围，再通过向下调整恢复最大堆。</p>
+<h3>执行流程</h3>
+<ol>
+<li>从最后一个非叶子节点开始向前执行 <code>siftDown</code>，原地建立最大堆。</li>
+<li>此时 <code>a[0]</code> 是整个数组最大值。</li>
+<li>把 <code>a[0]</code> 与当前堆的最后一个元素交换，最大值进入最终位置。</li>
+<li>将堆大小减一，对新的根节点执行向下调整。</li>
+<li>重复“取堆顶 + 缩小堆 + 恢复堆”，直到只剩一个元素。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">static void heapSiftDown(int a[], int root, int size) {
+    while (1) {
+        int left = root * 2 + 1;
+        int right = root * 2 + 2;
+        int largest = root;
+
+        if (left &lt; size &amp;&amp; a[left] &gt; a[largest]) {
+            largest = left;
+        }
+
+        if (right &lt; size &amp;&amp; a[right] &gt; a[largest]) {
+            largest = right;
+        }
+
+        if (largest == root) {
+            break;
+        }
+
+        int temp = a[root];
+        a[root] = a[largest];
+        a[largest] = temp;
+        root = largest;
+    }
+}
+
+void heapSort(int a[], int n) {
+    for (int i = n / 2 - 1; i &gt;= 0; i--) {
+        heapSiftDown(a, i, n);
+    }
+
+    for (int end = n - 1; end &gt; 0; end--) {
+        int temp = a[0];
+        a[0] = a[end];
+        a[end] = temp;
+        heapSiftDown(a, 0, end);
+    }
+}
+</code></pre>
+<pre><code class="language-java">public static void heapSort(int[] a) {
+    for (int i = a.length / 2 - 1; i &gt;= 0; i--) {
+        heapSiftDown(a, i, a.length);
+    }
+
+    for (int end = a.length - 1; end &gt; 0; end--) {
+        int temp = a[0];
+        a[0] = a[end];
+        a[end] = temp;
+        heapSiftDown(a, 0, end);
+    }
+}
+
+private static void heapSiftDown(int[] a, int root, int size) {
+    while (true) {
+        int left = root * 2 + 1;
+        int right = root * 2 + 2;
+        int largest = root;
+
+        if (left &lt; size &amp;&amp; a[left] &gt; a[largest]) {
+            largest = left;
+        }
+
+        if (right &lt; size &amp;&amp; a[right] &gt; a[largest]) {
+            largest = right;
+        }
+
+        if (largest == root) {
+            break;
+        }
+
+        int temp = a[root];
+        a[root] = a[largest];
+        a[largest] = temp;
+        root = largest;
+    }
+}
+</code></pre>
+<pre><code class="language-python">def heap_sort(a):
+    def sift_down(root, size):
+        while True:
+            left = root * 2 + 1
+            right = root * 2 + 2
+            largest = root
+
+            if left &lt; size and a[left] &gt; a[largest]:
+                largest = left
+
+            if right &lt; size and a[right] &gt; a[largest]:
+                largest = right
+
+            if largest == root:
+                break
+
+            a[root], a[largest] = a[largest], a[root]
+            root = largest
+
+    n = len(a)
+
+    for i in range(n // 2 - 1, -1, -1):
+        sift_down(i, n)
+
+    for end in range(n - 1, 0, -1):
+        a[0], a[end] = a[end], a[0]
+        sift_down(0, end)
+</code></pre>
+<pre><code class="language-javascript">function heapSort(a) {
+    function siftDown(root, size) {
+        while (true) {
+            const left = root * 2 + 1;
+            const right = root * 2 + 2;
+            let largest = root;
+
+            if (left &lt; size &amp;&amp; a[left] &gt; a[largest]) {
+                largest = left;
+            }
+
+            if (right &lt; size &amp;&amp; a[right] &gt; a[largest]) {
+                largest = right;
+            }
+
+            if (largest === root) {
+                break;
+            }
+
+            [a[root], a[largest]] = [a[largest], a[root]];
+            root = largest;
+        }
+    }
+
+    for (let i = Math.floor(a.length / 2) - 1; i &gt;= 0; i--) {
+        siftDown(i, a.length);
+    }
+
+    for (let end = a.length - 1; end &gt; 0; end--) {
+        [a[0], a[end]] = [a[end], a[0]];
+        siftDown(0, end);
+    }
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>自底向上建堆的关键在于：高度为 (h) 的节点数至多约为 (n/2^{h+1})，而该节点下沉至多 (h) 次。故：</p>
+<p>[
+T_{\text{build}}(n)
+\le \sum_{h=0}^{\lfloor\log_2 n\rfloor}\frac{n}{2^{h+1}}h
+= \frac{n}{2}\sum_{h=0}^{\infty}\frac{h}{2^h}
+= \Theta(n)
+]</p>
+<p>排序阶段执行 (n-1) 次「交换堆顶 + 下沉」，每次至多 (\lfloor\log_2 n\rfloor) 层：</p>
+<p>[
+T_{\text{sort}}(n) = (n-1)\Theta(\log n)=\Theta(n\log n)
+]</p>
+<ul>
+<li><strong>平均/最坏时间复杂度：</strong> (\Theta(n\log n))。</li>
+<li><strong>最好时间复杂度：</strong> 通常也按 (\Theta(n\log n)) 讨论；若存在大量相等键，本文实现的某些下沉可立即停止。</li>
+<li><strong>空间复杂度：</strong> (\Theta(1))。使用迭代式 <code>siftDown</code>，全程原地执行。</li>
+</ul>
+<h3>应用场景</h3>
+<p>适合<strong>数据量大、额外内存紧张，同时不能接受快速排序 O(n^2) 最坏情况</strong>的场景。它的时间上界稳定、空间常数级，但缓存局部性通常不如快速排序，也不是稳定排序。</p>
+<h2>2.8 计数排序 Counting Sort</h2>
+<h3>核心思想</h3>
+<p>计数排序不通过元素之间的比较确定顺序，而是利用整数值域。<strong>如果数据只可能落在一个不大的范围内，就直接统计每个值出现多少次，再根据累计计数确定每个元素最终应该出现的位置。</strong></p>
+<p>设最小值为 <code>min</code>、最大值为 <code>max</code>，则值域大小 k=max-min+1。使用 <code>value - min</code> 作为计数数组下标，因此下面的实现同时支持负整数。为了保持稳定性，先计算前缀累计次数，再从原数组右向左写入输出数组。</p>
+<h3>执行流程</h3>
+<ol>
+<li>扫描数组，找到 <code>min</code> 和 <code>max</code>。</li>
+<li>创建长度为 <code>k = max - min + 1</code> 的 <code>count</code> 数组。</li>
+<li>统计每个值出现的次数。</li>
+<li>对 <code>count</code> 做前缀累加，使其表示“某个值最后应该到达的位置”。</li>
+<li>从原数组右向左扫描，把元素稳定地放入 <code>output</code>。</li>
+<li>将 <code>output</code> 复制回原数组。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+
+void countingSort(int a[], int n) {
+    if (n &lt;= 1) {
+        return;
+    }
+
+    int min = a[0];
+    int max = a[0];
+
+    for (int i = 1; i &lt; n; i++) {
+        if (a[i] &lt; min) min = a[i];
+        if (a[i] &gt; max) max = a[i];
+    }
+
+    long long range64 = (long long)max - min + 1;
+    if (range64 &lt;= 0) {
+        return;
+    }
+
+    size_t range = (size_t)range64;
+    int *count = (int *)calloc(range, sizeof(int));
+    int *output = (int *)malloc((size_t)n * sizeof(int));
+
+    if (count == NULL || output == NULL) {
+        free(count);
+        free(output);
+        return;
+    }
+
+    for (int i = 0; i &lt; n; i++) {
+        count[(size_t)((long long)a[i] - min)]++;
+    }
+
+    for (size_t i = 1; i &lt; range; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (int i = n - 1; i &gt;= 0; i--) {
+        size_t index = (size_t)((long long)a[i] - min);
+        output[count[index] - 1] = a[i];
+        count[index]--;
+    }
+
+    for (int i = 0; i &lt; n; i++) {
+        a[i] = output[i];
+    }
+
+    free(count);
+    free(output);
+}
+</code></pre>
+<pre><code class="language-java">public static void countingSort(int[] a) {
+    if (a.length &lt;= 1) {
+        return;
+    }
+
+    int min = a[0];
+    int max = a[0];
+
+    for (int i = 1; i &lt; a.length; i++) {
+        if (a[i] &lt; min) min = a[i];
+        if (a[i] &gt; max) max = a[i];
+    }
+
+    long rangeLong = (long) max - min + 1;
+    if (rangeLong &gt; Integer.MAX_VALUE) {
+        throw new IllegalArgumentException("value range is too large");
+    }
+
+    int range = (int) rangeLong;
+    int[] count = new int[range];
+    int[] output = new int[a.length];
+
+    for (int value : a) {
+        count[(int) ((long) value - min)]++;
+    }
+
+    for (int i = 1; i &lt; range; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (int i = a.length - 1; i &gt;= 0; i--) {
+        int index = (int) ((long) a[i] - min);
+        output[count[index] - 1] = a[i];
+        count[index]--;
+    }
+
+    for (int i = 0; i &lt; a.length; i++) {
+        a[i] = output[i];
+    }
+}
+</code></pre>
+<pre><code class="language-python">def counting_sort(a):
+    if len(a) &lt;= 1:
+        return
+
+    min_value = min(a)
+    max_value = max(a)
+    value_range = max_value - min_value + 1
+
+    count = [0] * value_range
+    output = [0] * len(a)
+
+    for value in a:
+        count[value - min_value] += 1
+
+    for i in range(1, value_range):
+        count[i] += count[i - 1]
+
+    for i in range(len(a) - 1, -1, -1):
+        index = a[i] - min_value
+        output[count[index] - 1] = a[i]
+        count[index] -= 1
+
+    for i in range(len(a)):
+        a[i] = output[i]
+</code></pre>
+<pre><code class="language-javascript">function countingSort(a) {
+    if (a.length &lt;= 1) {
+        return;
+    }
+
+    let min = a[0];
+    let max = a[0];
+
+    for (let i = 1; i &lt; a.length; i++) {
+        if (a[i] &lt; min) min = a[i];
+        if (a[i] &gt; max) max = a[i];
+    }
+
+    const range = max - min + 1;
+    const count = new Array(range).fill(0);
+    const output = new Array(a.length);
+
+    for (const value of a) {
+        count[value - min]++;
+    }
+
+    for (let i = 1; i &lt; range; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (let i = a.length - 1; i &gt;= 0; i--) {
+        const index = a[i] - min;
+        output[count[index] - 1] = a[i];
+        count[index]--;
+    }
+
+    for (let i = 0; i &lt; a.length; i++) {
+        a[i] = output[i];
+    }
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>设值域大小为：</p>
+<p>[
+k = \max(A) - \min(A) + 1
+]</p>
+<p>扫描最值、统计频次、稳定回填和复制各需 (\Theta(n))；初始化与前缀累加计数数组各需 (\Theta(k))。因此：</p>
+<p>[
+T(n,k) = \Theta(n)+\Theta(k)+\Theta(n)+\Theta(k)+\Theta(n)
+= \Theta(n+k)
+]</p>
+<ul>
+<li><strong>最好/平均/最坏时间复杂度：</strong> 均为 (\Theta(n+k))，与原始顺序无关。</li>
+<li><strong>空间复杂度：</strong> (\Theta(n+k))，来自 <code>output[n]</code> 与 <code>count[k]</code>。</li>
+<li>当 (k=O(n)) 时，时间为 (\Theta(n))；当 (k\gg n) 时，计数数组会主导时间和内存。</li>
+</ul>
+<h3>应用场景</h3>
+<p>适合<strong>元素数量很大、但整数值域很小</strong>的场景，例如海量考试成绩 <code>0~100</code>、年龄 <code>0~120</code>、有限状态编号等。若只有 1000 个元素，但数值范围从 <code>0</code> 到 10^9，则创建巨大计数数组会严重浪费内存，不应使用计数排序。</p>
+<h2>2.9 桶排序 Bucket Sort</h2>
+<h3>核心思想</h3>
+<p>桶排序先利用值域把数据分成多个区间，每个区间对应一个“桶”。<strong>只要桶的映射保持从小到大的区间顺序，那么所有较小桶中的元素一定不大于较大桶中的元素；因此只需要分别排序桶内部，再按桶顺序连接即可。</strong></p>
+<p>桶排序的关键不是“桶”本身，而是<strong>数据分布是否均匀</strong>。如果元素均匀分散到多个桶，每个桶都很小，桶内排序成本很低；如果所有元素都挤进同一个桶，就会退化为桶内排序算法本身的复杂度。下面使用 n 个桶，并用数组模拟桶，桶内采用插入排序。</p>
+<h3>执行流程</h3>
+<ol>
+<li>找出数组中的 <code>min</code> 和 <code>max</code>，确定总值域。</li>
+<li>设置桶数量 <code>bucketCount = n</code>。</li>
+<li>根据元素在 <code>[min, max]</code> 中的位置，把每个元素映射到对应桶。</li>
+<li>先统计每个桶的元素数量，再计算每个桶在辅助数组中的起始位置。</li>
+<li>第二次扫描原数组，把元素稳定地分配到各桶对应的连续区间。</li>
+<li>对每个桶内部使用插入排序。</li>
+<li>把辅助数组复制回原数组。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+
+static void bucketInsertionSort(int a[], int left, int right) {
+    for (int i = left + 1; i &lt; right; i++) {
+        int key = a[i];
+        int j = i - 1;
+
+        while (j &gt;= left &amp;&amp; a[j] &gt; key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+
+        a[j + 1] = key;
+    }
+}
+
+void bucketSort(int a[], int n) {
+    if (n &lt;= 1) {
+        return;
+    }
+
+    int min = a[0];
+    int max = a[0];
+
+    for (int i = 1; i &lt; n; i++) {
+        if (a[i] &lt; min) min = a[i];
+        if (a[i] &gt; max) max = a[i];
+    }
+
+    if (min == max) {
+        return;
+    }
+
+    int bucketCount = n;
+    int *count = (int *)calloc((size_t)bucketCount, sizeof(int));
+    int *start = (int *)malloc((size_t)bucketCount * sizeof(int));
+    int *cursor = (int *)malloc((size_t)bucketCount * sizeof(int));
+    int *output = (int *)malloc((size_t)n * sizeof(int));
+
+    if (count == NULL || start == NULL || cursor == NULL || output == NULL) {
+        free(count);
+        free(start);
+        free(cursor);
+        free(output);
+        return;
+    }
+
+    long long range = (long long)max - min + 1;
+
+    for (int i = 0; i &lt; n; i++) {
+        int index = (int)(((long long)a[i] - min) * bucketCount / range);
+        count[index]++;
+    }
+
+    start[0] = 0;
+    for (int i = 1; i &lt; bucketCount; i++) {
+        start[i] = start[i - 1] + count[i - 1];
+    }
+
+    for (int i = 0; i &lt; bucketCount; i++) {
+        cursor[i] = start[i];
+    }
+
+    for (int i = 0; i &lt; n; i++) {
+        int index = (int)(((long long)a[i] - min) * bucketCount / range);
+        output[cursor[index]++] = a[i];
+    }
+
+    for (int i = 0; i &lt; bucketCount; i++) {
+        bucketInsertionSort(output, start[i], start[i] + count[i]);
+    }
+
+    for (int i = 0; i &lt; n; i++) {
+        a[i] = output[i];
+    }
+
+    free(count);
+    free(start);
+    free(cursor);
+    free(output);
+}
+</code></pre>
+<pre><code class="language-java">public static void bucketSort(int[] a) {
+    if (a.length &lt;= 1) {
+        return;
+    }
+
+    int min = a[0];
+    int max = a[0];
+
+    for (int i = 1; i &lt; a.length; i++) {
+        if (a[i] &lt; min) min = a[i];
+        if (a[i] &gt; max) max = a[i];
+    }
+
+    if (min == max) {
+        return;
+    }
+
+    int bucketCount = a.length;
+    int[] count = new int[bucketCount];
+    int[] start = new int[bucketCount];
+    int[] cursor = new int[bucketCount];
+    int[] output = new int[a.length];
+    long range = (long) max - min + 1;
+
+    for (int value : a) {
+        int index = (int) (((long) value - min) * bucketCount / range);
+        count[index]++;
+    }
+
+    for (int i = 1; i &lt; bucketCount; i++) {
+        start[i] = start[i - 1] + count[i - 1];
+    }
+
+    for (int i = 0; i &lt; bucketCount; i++) {
+        cursor[i] = start[i];
+    }
+
+    for (int value : a) {
+        int index = (int) (((long) value - min) * bucketCount / range);
+        output[cursor[index]++] = value;
+    }
+
+    for (int i = 0; i &lt; bucketCount; i++) {
+        bucketInsertionSort(output, start[i], start[i] + count[i]);
+    }
+
+    for (int i = 0; i &lt; a.length; i++) {
+        a[i] = output[i];
+    }
+}
+
+private static void bucketInsertionSort(int[] a, int left, int right) {
+    for (int i = left + 1; i &lt; right; i++) {
+        int key = a[i];
+        int j = i - 1;
+
+        while (j &gt;= left &amp;&amp; a[j] &gt; key) {
+            a[j + 1] = a[j];
+            j--;
+        }
+
+        a[j + 1] = key;
+    }
+}
+</code></pre>
+<pre><code class="language-python">def bucket_sort(a):
+    if len(a) &lt;= 1:
+        return
+
+    min_value = min(a)
+    max_value = max(a)
+
+    if min_value == max_value:
+        return
+
+    n = len(a)
+    bucket_count = n
+    value_range = max_value - min_value + 1
+    count = [0] * bucket_count
+
+    def bucket_index(value):
+        return (value - min_value) * bucket_count // value_range
+
+    for value in a:
+        count[bucket_index(value)] += 1
+
+    start = [0] * bucket_count
+    for i in range(1, bucket_count):
+        start[i] = start[i - 1] + count[i - 1]
+
+    cursor = start.copy()
+    output = [0] * n
+
+    for value in a:
+        index = bucket_index(value)
+        output[cursor[index]] = value
+        cursor[index] += 1
+
+    for b in range(bucket_count):
+        left = start[b]
+        right = left + count[b]
+
+        for i in range(left + 1, right):
+            key = output[i]
+            j = i - 1
+
+            while j &gt;= left and output[j] &gt; key:
+                output[j + 1] = output[j]
+                j -= 1
+
+            output[j + 1] = key
+
+    for i in range(n):
+        a[i] = output[i]
+</code></pre>
+<pre><code class="language-javascript">function bucketSort(a) {
+    if (a.length &lt;= 1) {
+        return;
+    }
+
+    let min = a[0];
+    let max = a[0];
+
+    for (let i = 1; i &lt; a.length; i++) {
+        if (a[i] &lt; min) min = a[i];
+        if (a[i] &gt; max) max = a[i];
+    }
+
+    if (min === max) {
+        return;
+    }
+
+    const n = a.length;
+    const bucketCount = n;
+    const range = max - min + 1;
+    const count = new Array(bucketCount).fill(0);
+
+    const bucketIndex = (value) =&gt;
+        Math.floor((value - min) * bucketCount / range);
+
+    for (const value of a) {
+        count[bucketIndex(value)]++;
+    }
+
+    const start = new Array(bucketCount).fill(0);
+    for (let i = 1; i &lt; bucketCount; i++) {
+        start[i] = start[i - 1] + count[i - 1];
+    }
+
+    const cursor = start.slice();
+    const output = new Array(n);
+
+    for (const value of a) {
+        const index = bucketIndex(value);
+        output[cursor[index]++] = value;
+    }
+
+    for (let b = 0; b &lt; bucketCount; b++) {
+        const left = start[b];
+        const right = left + count[b];
+
+        for (let i = left + 1; i &lt; right; i++) {
+            const key = output[i];
+            let j = i - 1;
+
+            while (j &gt;= left &amp;&amp; output[j] &gt; key) {
+                output[j + 1] = output[j];
+                j--;
+            }
+
+            output[j + 1] = key;
+        }
+    }
+
+    for (let i = 0; i &lt; n; i++) {
+        a[i] = output[i];
+    }
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>设有 (b) 个桶，第 (i) 个桶含 (m_i) 个元素，且 (\sum_{i=1}^{b}m_i=n)。分配、定位和合并需要 (\Theta(n+b))；本文的桶内插入排序总成本为：</p>
+<p>[
+\sum_{i=1}^{b}\Theta(m_i^2)
+]</p>
+<p>总时间因此为：</p>
+<p>[
+T(n,b) = \Theta\left(n+b+\sum_{i=1}^{b}m_i^2\right)
+]</p>
+<ul>
+<li><strong>均匀分布、(b=\Theta(n))：</strong> 每桶期望常数个元素，(\sum m_i^2=\Theta(n))，故期望 (\Theta(n+b)=\Theta(n))。</li>
+<li><strong>最坏时间复杂度：</strong> (\Theta(n^2))。全部元素落进一个桶时，(m_1=n)。</li>
+<li><strong>空间复杂度：</strong> (\Theta(n+b))，需要辅助数组、桶计数、起始位置和游标。</li>
+</ul>
+<h3>应用场景</h3>
+<p>适合<strong>数据量大且数值分布近似均匀</strong>的场景，例如经过归一化的测量值、价格区间、概率值等。桶排序的性能高度依赖分布与桶划分方式；分布严重倾斜时优势会迅速消失。</p>
+<h2>2.10 基数排序 Radix Sort</h2>
+<h3>核心思想</h3>
+<p>基数排序不直接比较两个整数的整体大小，而是把整数拆成多个数位依次处理。下面采用 <strong>LSD（Least Significant Digit）基数排序</strong>：从个位开始，再处理十位、百位……每一轮都对当前数位做一次<strong>稳定的计数排序</strong>。</p>
+<p>稳定性是关键。上一轮已经按低位形成的相对顺序，必须在下一轮处理更高位时保持不变。这样当最高位处理完成后，所有数位信息就共同决定了最终顺序。本文实现范围与原文一致：<strong>非负十进制整数</strong>。</p>
+<h3>执行流程</h3>
+<ol>
+<li>找到数组中的最大值，确定需要处理多少个十进制数位。</li>
+<li>令 <code>exp = 1</code>，表示当前处理个位。</li>
+<li>提取每个元素当前位：<code>digit = (value / exp) % 10</code>。</li>
+<li>对 <code>0~9</code> 十个数字执行稳定计数排序。</li>
+<li>将这一轮结果复制回原数组。</li>
+<li>令 <code>exp *= 10</code>，依次处理十位、百位、千位……</li>
+<li>当最大值在当前 <code>exp</code> 下已经没有更高位时结束。</li>
+</ol>
+<h3>四种语言实现</h3>
+<p>::: code-group C|Java|Python|JavaScript</p>
+<pre><code class="language-c">#include &lt;stdlib.h&gt;
+
+static void radixCountingPass(int a[], int n, long long exp, int output[]) {
+    int count[10] = {0};
+
+    for (int i = 0; i &lt; n; i++) {
+        int digit = (int)(((long long)a[i] / exp) % 10);
+        count[digit]++;
+    }
+
+    for (int i = 1; i &lt; 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (int i = n - 1; i &gt;= 0; i--) {
+        int digit = (int)(((long long)a[i] / exp) % 10);
+        output[count[digit] - 1] = a[i];
+        count[digit]--;
+    }
+
+    for (int i = 0; i &lt; n; i++) {
+        a[i] = output[i];
+    }
+}
+
+void radixSort(int a[], int n) {
+    if (n &lt;= 1) {
+        return;
+    }
+
+    int max = a[0];
+    for (int i = 0; i &lt; n; i++) {
+        if (a[i] &lt; 0) {
+            return;
+        }
+        if (a[i] &gt; max) {
+            max = a[i];
+        }
+    }
+
+    int *output = (int *)malloc((size_t)n * sizeof(int));
+    if (output == NULL) {
+        return;
+    }
+
+    for (long long exp = 1; max / exp &gt; 0; exp *= 10) {
+        radixCountingPass(a, n, exp, output);
+    }
+
+    free(output);
+}
+</code></pre>
+<pre><code class="language-java">public static void radixSort(int[] a) {
+    if (a.length &lt;= 1) {
+        return;
+    }
+
+    int max = a[0];
+    for (int value : a) {
+        if (value &lt; 0) {
+            throw new IllegalArgumentException("radixSort only supports non-negative integers");
+        }
+        if (value &gt; max) {
+            max = value;
+        }
+    }
+
+    int[] output = new int[a.length];
+
+    for (long exp = 1; max / exp &gt; 0; exp *= 10) {
+        radixCountingPass(a, output, exp);
+    }
+}
+
+private static void radixCountingPass(int[] a, int[] output, long exp) {
+    int[] count = new int[10];
+
+    for (int value : a) {
+        int digit = (int) ((value / exp) % 10);
+        count[digit]++;
+    }
+
+    for (int i = 1; i &lt; 10; i++) {
+        count[i] += count[i - 1];
+    }
+
+    for (int i = a.length - 1; i &gt;= 0; i--) {
+        int digit = (int) ((a[i] / exp) % 10);
+        output[count[digit] - 1] = a[i];
+        count[digit]--;
+    }
+
+    for (int i = 0; i &lt; a.length; i++) {
+        a[i] = output[i];
+    }
+}
+</code></pre>
+<pre><code class="language-python">def radix_sort(a):
+    if len(a) &lt;= 1:
+        return
+
+    if any(value &lt; 0 for value in a):
+        raise ValueError("radix_sort only supports non-negative integers")
+
+    max_value = max(a)
+    output = [0] * len(a)
+    exp = 1
+
+    while max_value // exp &gt; 0:
+        count = [0] * 10
+
+        for value in a:
+            digit = (value // exp) % 10
+            count[digit] += 1
+
+        for i in range(1, 10):
+            count[i] += count[i - 1]
+
+        for i in range(len(a) - 1, -1, -1):
+            digit = (a[i] // exp) % 10
+            output[count[digit] - 1] = a[i]
+            count[digit] -= 1
+
+        for i in range(len(a)):
+            a[i] = output[i]
+
+        exp *= 10
+</code></pre>
+<pre><code class="language-javascript">function radixSort(a) {
+    if (a.length &lt;= 1) {
+        return;
+    }
+
+    let max = a[0];
+
+    for (const value of a) {
+        if (value &lt; 0) {
+            throw new Error("radixSort only supports non-negative integers");
+        }
+        if (value &gt; max) {
+            max = value;
+        }
+    }
+
+    const output = new Array(a.length);
+
+    for (let exp = 1; Math.floor(max / exp) &gt; 0; exp *= 10) {
+        const count = new Array(10).fill(0);
+
+        for (const value of a) {
+            const digit = Math.floor(value / exp) % 10;
+            count[digit]++;
+        }
+
+        for (let i = 1; i &lt; 10; i++) {
+            count[i] += count[i - 1];
+        }
+
+        for (let i = a.length - 1; i &gt;= 0; i--) {
+            const digit = Math.floor(a[i] / exp) % 10;
+            output[count[digit] - 1] = a[i];
+            count[digit]--;
+        }
+
+        for (let i = 0; i &lt; a.length; i++) {
+            a[i] = output[i];
+        }
+    }
+}
+</code></pre>
+<p>:::</p>
+<h3>复杂度与计算过程</h3>
+<p>设最大值为 (M)，进制为 (b)。当 (M&gt;0) 时，所需位数为：</p>
+<p>[
+d = \lfloor\log_b M\rfloor + 1
+]</p>
+<p>每一位执行一次稳定计数排序，单轮成本为 (\Theta(n+b))，共 (d) 轮：</p>
+<p>[
+T(n,d,b) = d\cdot\Theta(n+b) = \Theta(d(n+b))
+]</p>
+<ul>
+<li><strong>最好/平均/最坏时间复杂度：</strong> 均为 (\Theta(d(n+b)))。十进制中 (b=10)，常简写为 (\Theta(dn))。</li>
+<li><strong>空间复杂度：</strong> (\Theta(n+b))，来自输出数组与当前位的计数数组。</li>
+<li>对固定字长整数，(d) 是常数上界，因此基数排序呈现接近线性的增长；本文实现仅支持非负十进制整数。</li>
+</ul>
+<h3>应用场景</h3>
+<p>适合<strong>大量固定长度或位数有限的非负整数</strong>，例如学号、订单号、整数 ID、电话号码编码等。它不依赖元素之间的比较，但需要键能够自然分解为有限个数位，并且每一轮必须使用稳定排序。</p>
+<h2>三、十大排序算法最终总结</h2>
+<p>设符号如下：</p>
+<p>[
+n = \text{元素数量},\quad
+k = \max(A)-\min(A)+1,\quad
+d = \lfloor\log_b M\rfloor+1
+]</p>
+<p>其中 (b) 表示桶数量或基数，(M) 为最大非负整数键。</p>
+<p>复杂度表中的特殊情况：希尔排序特指本文采用的 <strong>Knuth <code>3x + 1</code> 增量序列</strong>；堆排序按“键值互异”的常见模型列出最好时间，若允许大量相等键，本文实现存在 Θ(n) 的特殊最好情况；桶排序最坏情况针对本文“桶内使用插入排序”的实现。</p>
+<table>
+<thead>
+<tr>
+<th>算法</th>
+<th>核心思想</th>
+<th>最好时间</th>
+<th>平均时间</th>
+<th>最坏时间</th>
+<th>额外空间</th>
+<th>稳定性</th>
+<th>典型适用场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>冒泡排序</td>
+<td>相邻比较交换，最大值逐轮后移</td>
+<td>Θ(n)</td>
+<td>Θ(n^2)</td>
+<td>Θ(n^2)</td>
+<td>Θ(1)</td>
+<td>稳定</td>
+<td>教学、极小数组、近有序数据</td>
+</tr>
+<tr>
+<td>选择排序</td>
+<td>每轮选择未排序区最小值</td>
+<td>Θ(n^2)</td>
+<td>Θ(n^2)</td>
+<td>Θ(n^2)</td>
+<td>Θ(1)</td>
+<td>不稳定</td>
+<td>小数组、希望减少交换次数</td>
+</tr>
+<tr>
+<td>插入排序</td>
+<td>维护有序区，将新元素插入正确位置</td>
+<td>Θ(n)</td>
+<td>Θ(n^2)</td>
+<td>Θ(n^2)</td>
+<td>Θ(1)</td>
+<td>稳定</td>
+<td>小数组、接近有序数据</td>
+</tr>
+<tr>
+<td>希尔排序</td>
+<td>按 gap 分组插入，让元素先大跨度移动</td>
+<td>约 Θ(n log n)*</td>
+<td>依增量序列与分布</td>
+<td>O(n^3/2)*</td>
+<td>Θ(1)</td>
+<td>不稳定</td>
+<td>中小数组、内存紧张</td>
+</tr>
+<tr>
+<td>归并排序</td>
+<td>分治拆分，再线性合并两个有序区间</td>
+<td>Θ(n log n)</td>
+<td>Θ(n log n)</td>
+<td>Θ(n log n)</td>
+<td>Θ(n)</td>
+<td>稳定</td>
+<td>大规模、稳定排序、外部排序</td>
+</tr>
+<tr>
+<td>快速排序</td>
+<td>pivot 分区后递归处理左右区间</td>
+<td>Θ(n log n)</td>
+<td>Θ(n log n)</td>
+<td>Θ(n^2)</td>
+<td>平均 Θ(log n)，最坏 Θ(n)</td>
+<td>不稳定</td>
+<td>内存数组、普通随机数据</td>
+</tr>
+<tr>
+<td>堆排序</td>
+<td>最大堆反复取出当前最大值</td>
+<td>Θ(n log n)**</td>
+<td>Θ(n log n)</td>
+<td>Θ(n log n)</td>
+<td>Θ(1)</td>
+<td>不稳定</td>
+<td>大规模、内存紧张、要求最坏上界</td>
+</tr>
+<tr>
+<td>计数排序</td>
+<td>统计有限值域内每个值出现次数</td>
+<td>Θ(n+k)</td>
+<td>Θ(n+k)</td>
+<td>Θ(n+k)</td>
+<td>Θ(n+k)</td>
+<td>稳定</td>
+<td>大量整数且值域很小</td>
+</tr>
+<tr>
+<td>桶排序</td>
+<td>按值域分桶，各桶排序后顺序连接</td>
+<td>Θ(n+b)</td>
+<td>均匀分布下期望 Θ(n+b)</td>
+<td>Θ(n^2)***</td>
+<td>Θ(n+b)</td>
+<td>本文实现稳定</td>
+<td>大量近似均匀分布数据</td>
+</tr>
+<tr>
+<td>基数排序</td>
+<td>按个位、十位等数位逐轮稳定排序</td>
+<td>Θ(d(n+b))</td>
+<td>Θ(d(n+b))</td>
+<td>Θ(d(n+b))</td>
+<td>Θ(n+b)</td>
+<td>稳定</td>
+<td>大量固定长度非负整数</td>
+</tr>
+</tbody>
+</table>

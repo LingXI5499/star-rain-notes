@@ -1,0 +1,738 @@
+{
+  "id": "14",
+  "title": "宿舍 / 日常学习空间",
+  "layer": "核心生活场景层",
+  "wordCount": 81,
+  "path": "/english/vocabulary/14/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可用的；有空的",
+      "examples": "[]"
+    },
+    {
+      "word": "academic",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ækə'dɛmɪk",
+      "phoneticUk": "ækə'demɪk",
+      "translation": "学院的；学术的；学术的",
+      "sceneMeaning": "学术的；学习的",
+      "examples": "[]"
+    },
+    {
+      "word": "credit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɛdɪt",
+      "phoneticUk": "'kredɪt",
+      "translation": "信用贷款；信用",
+      "sceneMeaning": "学分；信用",
+      "examples": "[]"
+    },
+    {
+      "word": "focus",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'fokəs",
+      "phoneticUk": "'fəʊkəs",
+      "translation": "聚焦，注视；焦点",
+      "sceneMeaning": "专注；聚焦",
+      "examples": "[]"
+    },
+    {
+      "word": "paper",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pepɚ",
+      "phoneticUk": "'peɪpə",
+      "translation": "纸；官方文件；文章",
+      "sceneMeaning": "纸；论文",
+      "examples": "[]"
+    },
+    {
+      "word": "personal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɝsənl",
+      "phoneticUk": "'pɜːs(ə)n(ə)l",
+      "translation": "个人的；本人的",
+      "sceneMeaning": "个人的；私人的",
+      "examples": "[]"
+    },
+    {
+      "word": "read",
+      "partOfSpeech": "v",
+      "phoneticUs": "rid; (read, read) rɛd",
+      "phoneticUk": "riːd; (read, read) red",
+      "translation": "读，看懂；读",
+      "sceneMeaning": "阅读",
+      "examples": "[]"
+    },
+    {
+      "word": "responsible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "rɪ'spɑnsəbl",
+      "phoneticUk": "ri'spɔnsəbl",
+      "translation": "负责的，有责任的",
+      "sceneMeaning": "负责的",
+      "examples": "[]"
+    },
+    {
+      "word": "type",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "taɪp",
+      "phoneticUk": "taɪp",
+      "translation": "型，类型；打字",
+      "sceneMeaning": "打字；输入",
+      "examples": "[]"
+    },
+    {
+      "word": "attend",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'tɛnd",
+      "phoneticUk": "ə'tend",
+      "translation": "出席；照顾，护理",
+      "sceneMeaning": "参加；出席",
+      "examples": "[]"
+    },
+    {
+      "word": "independent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪndɪ'pɛndənt",
+      "phoneticUk": ",ɪndɪ'pendənt",
+      "translation": "独立的；自主的",
+      "sceneMeaning": "独立的",
+      "examples": "[]"
+    },
+    {
+      "word": "print",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "prɪnt",
+      "phoneticUk": "prɪnt",
+      "translation": "印刷；印刷；正片",
+      "sceneMeaning": "打印；印刷",
+      "examples": "[]"
+    },
+    {
+      "word": "prepare",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "prɪ'pɛr",
+      "phoneticUk": "prɪ'peə",
+      "translation": "准备，预备；做准备",
+      "sceneMeaning": "准备",
+      "examples": "[]"
+    },
+    {
+      "word": "regularly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "",
+      "phoneticUk": "'reɡjələli",
+      "translation": "定期地，有规律地",
+      "sceneMeaning": "有规律地；经常地",
+      "examples": "[]"
+    },
+    {
+      "word": "campus",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kæmpəs",
+      "phoneticUk": "'kæmpəs",
+      "translation": "校园，学校场地",
+      "sceneMeaning": "校园",
+      "examples": "[]"
+    },
+    {
+      "word": "exam",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪg'zæm",
+      "phoneticUk": "ɪg'zæm; eg-",
+      "translation": "考试；检查，细查",
+      "sceneMeaning": "考试",
+      "examples": "[]"
+    },
+    {
+      "word": "preparation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",prɛpə'reʃən",
+      "phoneticUk": ",prepə'reɪʃ(ə)n",
+      "translation": "准备，预备；制备",
+      "sceneMeaning": "准备，预备；制备",
+      "examples": "[]"
+    },
+    {
+      "word": "efficient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃnt",
+      "phoneticUk": "ɪ'fɪʃ(ə)nt",
+      "translation": "效率高的，有能力的",
+      "sceneMeaning": "高效的",
+      "examples": "[]"
+    },
+    {
+      "word": "mess",
+      "partOfSpeech": "n",
+      "phoneticUs": "mɛs",
+      "phoneticUk": "mes",
+      "translation": "混乱，混杂，肮脏",
+      "sceneMeaning": "混乱，混杂，肮脏；本场景常见用法：食堂；餐厅",
+      "examples": "[]"
+    },
+    {
+      "word": "organize",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɔrɡənˌaɪz",
+      "phoneticUk": "ˈɔ:gənaɪz",
+      "translation": "组织，编组",
+      "sceneMeaning": "组织；整理",
+      "examples": "[]"
+    },
+    {
+      "word": "quiet",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kwaɪət",
+      "phoneticUk": "'kwaɪət",
+      "translation": "寂静的；安静的",
+      "sceneMeaning": "安静的",
+      "examples": "[]"
+    },
+    {
+      "word": "schedule",
+      "partOfSpeech": "n",
+      "phoneticUs": "'skɛdʒul; (canadian) ˈʃɛdʒʊl; ˈʃɛdjʊl",
+      "phoneticUk": "ˈʃɛdjuːl",
+      "translation": "时间表；计划表；日程表",
+      "sceneMeaning": "课程表；日程",
+      "examples": "[]"
+    },
+    {
+      "word": "stressful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'strɛsfl",
+      "phoneticUk": "'stresfəl",
+      "translation": "充满著压力的，充满著紧张的",
+      "sceneMeaning": "有压力的",
+      "examples": "[]"
+    },
+    {
+      "word": "assignment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'saɪnmənt",
+      "phoneticUk": "ə'saɪnm(ə)nt",
+      "translation": "任务，指定的作业；作业",
+      "sceneMeaning": "作业；任务",
+      "examples": "[]"
+    },
+    {
+      "word": "borrow",
+      "partOfSpeech": "v",
+      "phoneticUs": "'bɑro",
+      "phoneticUk": "'bɒrəʊ",
+      "translation": "借，借用，借人",
+      "sceneMeaning": "借入",
+      "examples": "[]"
+    },
+    {
+      "word": "chair",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɛr",
+      "phoneticUk": "tʃeə",
+      "translation": "椅子；主席",
+      "sceneMeaning": "椅子",
+      "examples": "[]"
+    },
+    {
+      "word": "download",
+      "partOfSpeech": "v",
+      "phoneticUs": ",daʊn'lod",
+      "phoneticUk": "'daʊnləʊd",
+      "translation": "下载",
+      "sceneMeaning": "下载",
+      "examples": "[]"
+    },
+    {
+      "word": "independently",
+      "partOfSpeech": "adv",
+      "phoneticUs": ",ɪndɪ'pɛndəntli",
+      "phoneticUk": "ˌɪndɪ'pendəntlɪ",
+      "translation": "独立地",
+      "sceneMeaning": "独立地",
+      "examples": "[]"
+    },
+    {
+      "word": "notice",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'notɪs",
+      "phoneticUk": "'nəʊtɪs",
+      "translation": "注意；通知；注意",
+      "sceneMeaning": "通知；注意",
+      "examples": "[]"
+    },
+    {
+      "word": "pen",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɛn",
+      "phoneticUk": "pen",
+      "translation": "钢笔，自来水笔",
+      "sceneMeaning": "钢笔；笔",
+      "examples": "[]"
+    },
+    {
+      "word": "remind",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'maɪnd",
+      "phoneticUk": "rɪ'maɪnd",
+      "translation": "提醒，使想起",
+      "sceneMeaning": "提醒，使想起",
+      "examples": "[]"
+    },
+    {
+      "word": "canteen",
+      "partOfSpeech": "n",
+      "phoneticUs": "kænˈtiːn",
+      "phoneticUk": "kæn'tiːn",
+      "translation": "小卖部；临时餐室；食堂",
+      "sceneMeaning": "食堂；小卖部",
+      "examples": "[]"
+    },
+    {
+      "word": "copy",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑpi",
+      "phoneticUk": "'kɒpɪ",
+      "translation": "抄件；抄写，复制",
+      "sceneMeaning": "复制；抄写",
+      "examples": "[]"
+    },
+    {
+      "word": "discussion",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪ'skʌʃən",
+      "phoneticUk": "dɪ'skʌʃ(ə)n",
+      "translation": "讨论，谈论；论述",
+      "sceneMeaning": "讨论",
+      "examples": "[]"
+    },
+    {
+      "word": "grade",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɡred",
+      "phoneticUk": "greɪd",
+      "translation": "给…分等级；等级",
+      "sceneMeaning": "成绩；年级",
+      "examples": "[]"
+    },
+    {
+      "word": "independence",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪndɪ'pɛndəns",
+      "phoneticUk": "ɪndɪ'pend(ə)ns",
+      "translation": "独立，自主，自立",
+      "sceneMeaning": "独立，自主，自立",
+      "examples": "[]"
+    },
+    {
+      "word": "lend",
+      "partOfSpeech": "v",
+      "phoneticUs": "lɛnd",
+      "phoneticUk": "lend",
+      "translation": "把…借给，贷(款)",
+      "sceneMeaning": "借出",
+      "examples": "[]"
+    },
+    {
+      "word": "noise",
+      "partOfSpeech": "n",
+      "phoneticUs": "nɔɪz",
+      "phoneticUk": "nɒɪz",
+      "translation": "喧闹声；响声；噪声",
+      "sceneMeaning": "噪音",
+      "examples": "[]"
+    },
+    {
+      "word": "noticeable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'notɪsəbl",
+      "phoneticUk": "'nəʊtɪsəb(ə)l",
+      "translation": "显而易见的；重要的",
+      "sceneMeaning": "显而易见的；重要的",
+      "examples": "[]"
+    },
+    {
+      "word": "productive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'dʌktɪv",
+      "phoneticUk": "prəˈdʌktɪv",
+      "translation": "富有成效的",
+      "sceneMeaning": "高产的；有成效的",
+      "examples": "[]"
+    },
+    {
+      "word": "silent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'saɪlənt",
+      "phoneticUk": "'saɪlənt",
+      "translation": "沉默的；寂静无声的",
+      "sceneMeaning": "沉默的；寂静无声的；本场景常见用法：保持沉默",
+      "examples": "[]"
+    },
+    {
+      "word": "submit",
+      "partOfSpeech": "v",
+      "phoneticUs": "səb'mɪt",
+      "phoneticUk": "səb'mɪt",
+      "translation": "使服从；服从；提交",
+      "sceneMeaning": "提交",
+      "examples": "[]"
+    },
+    {
+      "word": "cafeteria",
+      "partOfSpeech": "n",
+      "phoneticUs": ",kæfə'tɪrɪə",
+      "phoneticUk": "kæfɪ'tɪərɪə",
+      "translation": "自助食堂",
+      "sceneMeaning": "自助餐厅；食堂",
+      "examples": "[]"
+    },
+    {
+      "word": "concentrate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kɑnsn'tret",
+      "phoneticUk": "'kɒns(ə)ntreɪt",
+      "translation": "集中；聚集；浓缩",
+      "sceneMeaning": "集中注意力",
+      "examples": "[]"
+    },
+    {
+      "word": "deadline",
+      "partOfSpeech": "n",
+      "phoneticUs": "ˈdedlaɪn",
+      "phoneticUk": "ˈdedlaɪn",
+      "translation": "最后期限",
+      "sceneMeaning": "截止日期",
+      "examples": "[]"
+    },
+    {
+      "word": "desk",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "书桌，办公桌",
+      "sceneMeaning": "书桌",
+      "examples": "[]"
+    },
+    {
+      "word": "discipline",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dɪsəplɪn",
+      "phoneticUk": "'dɪsɪplɪn",
+      "translation": "纪律；训练；训练",
+      "sceneMeaning": "纪律；自律",
+      "examples": "[]"
+    },
+    {
+      "word": "dormitory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɔrmətɔri",
+      "phoneticUk": "ˈdɔːmətri",
+      "translation": "集体寝室；宿舍；宿舍",
+      "sceneMeaning": "宿舍",
+      "examples": "[]"
+    },
+    {
+      "word": "fetch",
+      "partOfSpeech": "v",
+      "phoneticUs": "fɛtʃ",
+      "phoneticUk": "fetʃ",
+      "translation": "拿来；请来，接去；取回",
+      "sceneMeaning": "拿来；请来，接去；取回",
+      "examples": "[]"
+    },
+    {
+      "word": "file",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "faɪl",
+      "phoneticUk": "faɪl",
+      "translation": "档案；把…归档",
+      "sceneMeaning": "文件；档案",
+      "examples": "[]"
+    },
+    {
+      "word": "gradual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɡrædʒuəl",
+      "phoneticUk": "'grædʒʊəl",
+      "translation": "逐渐的；渐进的",
+      "sceneMeaning": "逐渐的；渐进的",
+      "examples": "[]"
+    },
+    {
+      "word": "noisy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɔɪzi",
+      "phoneticUk": "'nɒɪzɪ",
+      "translation": "嘈杂的；喧闹的",
+      "sceneMeaning": "吵闹的",
+      "examples": "[]"
+    },
+    {
+      "word": "outlet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'aʊtlɛt",
+      "phoneticUk": "'aʊtlet",
+      "translation": "出口，出路；排遣",
+      "sceneMeaning": "插座；出口",
+      "examples": "[]"
+    },
+    {
+      "word": "permission",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɚ'mɪʃən",
+      "phoneticUk": "pə'mɪʃ(ə)n",
+      "translation": "允许，许可，同意",
+      "sceneMeaning": "许可；允许",
+      "examples": "[]"
+    },
+    {
+      "word": "register",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "'rɛdʒɪstɚ",
+      "phoneticUk": "'redʒɪstə",
+      "translation": "登记，注册",
+      "sceneMeaning": "登记；注册",
+      "examples": "[]"
+    },
+    {
+      "word": "review",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'vju",
+      "phoneticUk": "rɪ'vjuː",
+      "translation": "再检查；复习；回顾",
+      "sceneMeaning": "复习；回顾",
+      "examples": "[]"
+    },
+    {
+      "word": "riotous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'raɪətəs",
+      "phoneticUk": "ˈraɪətəs",
+      "translation": "狂暴的",
+      "sceneMeaning": "狂暴的",
+      "examples": "[]"
+    },
+    {
+      "word": "silence",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'saɪləns",
+      "phoneticUk": "'saɪləns",
+      "translation": "沉默；使沉默",
+      "sceneMeaning": "安静；沉默",
+      "examples": "[]"
+    },
+    {
+      "word": "academy",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kædəmi",
+      "phoneticUk": "ə'kædəmɪ",
+      "translation": "私立中学；专科院校",
+      "sceneMeaning": "私立中学；专科院校；本场景常见用法：国家科学院",
+      "examples": "[]"
+    },
+    {
+      "word": "attendance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'tɛndəns",
+      "phoneticUk": "ə'tend(ə)ns",
+      "translation": "出席人数",
+      "sceneMeaning": "出勤；参加",
+      "examples": "[]"
+    },
+    {
+      "word": "bathroom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bæθrum",
+      "phoneticUk": "'bɑːθruːm; -rʊm",
+      "translation": "浴室；盥洗室",
+      "sceneMeaning": "卫生间；浴室",
+      "examples": "[]"
+    },
+    {
+      "word": "calculator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kælkjuletɚ",
+      "phoneticUk": "'kælkjʊleɪtə",
+      "translation": "计算器，计算者",
+      "sceneMeaning": "计算器",
+      "examples": "[]"
+    },
+    {
+      "word": "classmate",
+      "partOfSpeech": "n",
+      "phoneticUs": "'klæsmet",
+      "phoneticUk": "'klɑːsmeɪt",
+      "translation": "同班同学",
+      "sceneMeaning": "同学",
+      "examples": "[]"
+    },
+    {
+      "word": "concentration",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnsn'treʃən",
+      "phoneticUk": "kɒns(ə)n'treɪʃ(ə)n",
+      "translation": "集中；专注；浓缩；集中",
+      "sceneMeaning": "专注；集中",
+      "examples": "[]"
+    },
+    {
+      "word": "cooperate",
+      "partOfSpeech": "v",
+      "phoneticUs": "koʊˈɑːpəreɪt",
+      "phoneticUk": "kəʊ'ɒpəreɪt",
+      "translation": "合作，协作；配合",
+      "sceneMeaning": "合作",
+      "examples": "[]"
+    },
+    {
+      "word": "dictionary",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dɪkʃə'nɛri",
+      "phoneticUk": "'dɪkʃ(ə)n(ə)rɪ",
+      "translation": "词典，字典",
+      "sceneMeaning": "词典",
+      "examples": "[]"
+    },
+    {
+      "word": "disturb",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'stɝb",
+      "phoneticUk": "dɪ'stɜːb",
+      "translation": "打扰，扰乱；弄乱",
+      "sceneMeaning": "打扰",
+      "examples": "[]"
+    },
+    {
+      "word": "dorm",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɔrm",
+      "phoneticUk": "dɔːm",
+      "translation": "宿舍",
+      "sceneMeaning": "宿舍",
+      "examples": "[]"
+    },
+    {
+      "word": "drawer",
+      "partOfSpeech": "n",
+      "phoneticUs": "drɔr",
+      "phoneticUk": "drɔ:(r)",
+      "translation": "抽屉",
+      "sceneMeaning": "抽屉",
+      "examples": "[]"
+    },
+    {
+      "word": "efficiently",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɪʃəntli",
+      "phoneticUk": "i'fiʃəntli",
+      "translation": "有效地",
+      "sceneMeaning": "高效地",
+      "examples": "[]"
+    },
+    {
+      "word": "lamp",
+      "partOfSpeech": "n",
+      "phoneticUs": "læmp",
+      "phoneticUk": "læmp",
+      "translation": "灯",
+      "sceneMeaning": "台灯；灯",
+      "examples": "[]"
+    },
+    {
+      "word": "lavatory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lævətɔri",
+      "phoneticUk": "'lævət(ə)rɪ",
+      "translation": "盥洗室，厕所",
+      "sceneMeaning": "盥洗室，厕所",
+      "examples": "[]"
+    },
+    {
+      "word": "memorial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mə'morɪəl",
+      "phoneticUk": "mə'mɔːrɪəl",
+      "translation": "纪念的；记忆的",
+      "sceneMeaning": "纪念的；记忆的；本场景常见用法：毛主席纪念堂",
+      "examples": "[]"
+    },
+    {
+      "word": "memorize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mɛmə'raɪz",
+      "phoneticUk": "'meməraɪz",
+      "translation": "熟记，牢记",
+      "sceneMeaning": "记忆；背诵",
+      "examples": "[]"
+    },
+    {
+      "word": "motivation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",motə'veʃən",
+      "phoneticUk": "ˌməʊtɪ'veɪʃn",
+      "translation": "激励，刺激",
+      "sceneMeaning": "动力；动机",
+      "examples": "[]"
+    },
+    {
+      "word": "notebook",
+      "partOfSpeech": "n",
+      "phoneticUs": "'notbʊk",
+      "phoneticUk": "'nəʊtbʊk",
+      "translation": "笔记本，期票簿",
+      "sceneMeaning": "笔记本",
+      "examples": "[]"
+    },
+    {
+      "word": "oriental",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",orɪ'ɛntəl",
+      "phoneticUk": "ɔːrɪ'ent(ə)l; ɒr-",
+      "translation": "东方的；东方国家的",
+      "sceneMeaning": "东方的；东方国家的；本场景常见用法：文华东方酒店",
+      "examples": "[]"
+    },
+    {
+      "word": "pencil",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɛnsl",
+      "phoneticUk": "'pens(ə)l; -sɪl",
+      "translation": "铅笔",
+      "sceneMeaning": "铅笔",
+      "examples": "[]"
+    },
+    {
+      "word": "punctual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pʌŋtʃʊəl",
+      "phoneticUk": "'pʌŋ(k)tʃʊəl; -tjʊəl",
+      "translation": "严守时刻的；准时的；准时的",
+      "sceneMeaning": "准时的",
+      "examples": "[]"
+    },
+    {
+      "word": "steal",
+      "partOfSpeech": "v",
+      "phoneticUs": "stil",
+      "phoneticUk": "sti:l",
+      "translation": "偷窃",
+      "sceneMeaning": "偷窃",
+      "examples": "[]"
+    },
+    {
+      "word": "typewriter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'taɪpraɪtɚ",
+      "phoneticUk": "'taɪpraɪtə",
+      "translation": "打字机",
+      "sceneMeaning": "打字机",
+      "examples": "[]"
+    }
+  ]
+}

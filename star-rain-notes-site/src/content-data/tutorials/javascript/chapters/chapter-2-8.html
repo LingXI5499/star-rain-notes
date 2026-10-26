@@ -1,0 +1,8 @@
+<p><strong>核心：</strong> 默认参数提供缺省值，<code>...rest</code> 收集额外参数；<code>arguments</code> 是传统函数的类数组参数对象。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">function sum(start = 0, ...nums) {
+  return nums.reduce((total, n) =&gt; total + n, start);
+}
+console.log(sum(10, 1, 2)); // 13
+</code></pre>
+<p><strong>学完能做：</strong> 区分 arguments、剩余参数与默认参数。</p>

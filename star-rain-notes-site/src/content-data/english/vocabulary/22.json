@@ -1,0 +1,666 @@
+{
+  "id": "22",
+  "title": "酒店 / 住宿",
+  "layer": "核心生活场景层",
+  "wordCount": 73,
+  "path": "/english/vocabulary/22/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可用的；有空的",
+      "examples": "[]"
+    },
+    {
+      "word": "include",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'klud",
+      "phoneticUk": "ɪn'kluːd",
+      "translation": "包括，包含；包含",
+      "sceneMeaning": "包括",
+      "examples": "[]"
+    },
+    {
+      "word": "private",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'praɪvət",
+      "phoneticUk": "'praɪvət",
+      "translation": "私人的；私下的；私人的",
+      "sceneMeaning": "私人的；独立的",
+      "examples": "[]"
+    },
+    {
+      "word": "complain",
+      "partOfSpeech": "v",
+      "phoneticUs": "kəm'plen",
+      "phoneticUk": "kəm'pleɪn",
+      "translation": "抱怨，拆苦；控告；抱怨",
+      "sceneMeaning": "投诉；抱怨",
+      "examples": "[]"
+    },
+    {
+      "word": "rate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ret",
+      "phoneticUk": "reɪt",
+      "translation": "比率；速度；价格；比率，速率",
+      "sceneMeaning": "价格；费率；比率",
+      "examples": "[]"
+    },
+    {
+      "word": "key",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "kiː",
+      "translation": "钥匙；键；答案",
+      "sceneMeaning": "钥匙；关键",
+      "examples": "[]"
+    },
+    {
+      "word": "leave",
+      "partOfSpeech": "v",
+      "phoneticUs": "liv",
+      "phoneticUk": "liːv",
+      "translation": "离去；离开",
+      "sceneMeaning": "离开",
+      "examples": "[]"
+    },
+    {
+      "word": "manager",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mænɪdʒɚ",
+      "phoneticUk": "'mænɪdʒə",
+      "translation": "经理，管理人",
+      "sceneMeaning": "经理；管理者",
+      "examples": "[]"
+    },
+    {
+      "word": "pay",
+      "partOfSpeech": "v",
+      "phoneticUs": "pe",
+      "phoneticUk": "peɪ",
+      "translation": "支付；付给；给予",
+      "sceneMeaning": "支付",
+      "examples": "[]"
+    },
+    {
+      "word": "receive",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'siv",
+      "phoneticUk": "rɪ'siːv",
+      "translation": "收到；得到；接待",
+      "sceneMeaning": "收到；得到；接待",
+      "examples": "[]"
+    },
+    {
+      "word": "serve",
+      "partOfSpeech": "vt",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "为…服务；招待",
+      "sceneMeaning": "服务；供应",
+      "examples": "[]"
+    },
+    {
+      "word": "book",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "bʊk",
+      "phoneticUk": "bʊk",
+      "translation": "书，书籍；预定",
+      "sceneMeaning": "预订；登记",
+      "examples": "[]"
+    },
+    {
+      "word": "replace",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'ples",
+      "phoneticUk": "rɪ'pleɪs",
+      "translation": "代替",
+      "sceneMeaning": "更换；替换",
+      "examples": "[]"
+    },
+    {
+      "word": "comfortable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kʌmftəbl",
+      "phoneticUk": "ˈkʌmftəbl",
+      "translation": "舒适的，安慰的",
+      "sceneMeaning": "舒适的",
+      "examples": "[]"
+    },
+    {
+      "word": "request",
+      "partOfSpeech": "n / n&v",
+      "phoneticUs": "rɪ'kwɛst",
+      "phoneticUk": "rɪ'kwest",
+      "translation": "请求，要求；要求",
+      "sceneMeaning": "请求；要求",
+      "examples": "[]"
+    },
+    {
+      "word": "hotel",
+      "partOfSpeech": "n",
+      "phoneticUs": "ho'tɛl",
+      "phoneticUk": "həʊ'tel; əʊ-",
+      "translation": "旅馆",
+      "sceneMeaning": "酒店；旅馆",
+      "examples": "[]"
+    },
+    {
+      "word": "toilet",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɔɪlət",
+      "phoneticUk": "ˈtɔɪlɪt",
+      "translation": "厕所，盥洗室，浴室",
+      "sceneMeaning": "厕所；马桶",
+      "examples": "[]"
+    },
+    {
+      "word": "clean",
+      "partOfSpeech": "adj",
+      "phoneticUs": "klin",
+      "phoneticUk": "kliːn",
+      "translation": "清洁的；纯洁的",
+      "sceneMeaning": "干净的",
+      "examples": "[]"
+    },
+    {
+      "word": "facility",
+      "partOfSpeech": "n",
+      "phoneticUs": "fə'sɪləti",
+      "phoneticUk": "fə'sɪləti",
+      "translation": "设备；容易；便利；设施",
+      "sceneMeaning": "设施；设备",
+      "examples": "[]"
+    },
+    {
+      "word": "luxury",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lʌɡʒəri",
+      "phoneticUk": "'lʌkʃ(ə)rɪ",
+      "translation": "奢侈，奢华；奢侈品",
+      "sceneMeaning": "豪华的；奢侈的",
+      "examples": "[]"
+    },
+    {
+      "word": "provided",
+      "partOfSpeech": "conj",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "以…为条件",
+      "sceneMeaning": "以…为条件",
+      "examples": "[]"
+    },
+    {
+      "word": "tourist",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tʊrɪst",
+      "phoneticUk": "'tʊərɪst",
+      "translation": "旅游者，观光者",
+      "sceneMeaning": "游客",
+      "examples": "[]"
+    },
+    {
+      "word": "complaint",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'plent",
+      "phoneticUk": "kəm'pleɪnt",
+      "translation": "抱怨；怨言；控告；抱怨; 投诉",
+      "sceneMeaning": "投诉；抱怨",
+      "examples": "[]"
+    },
+    {
+      "word": "leisure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'liʒɚ",
+      "phoneticUk": "'leʒə",
+      "translation": "空闲时间；悠闲；悠闲，空闲",
+      "sceneMeaning": "空闲时间；悠闲；悠闲，空闲",
+      "examples": "[]"
+    },
+    {
+      "word": "charge",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tʃɑrdʒ",
+      "phoneticUk": "tʃɑːdʒ",
+      "translation": "索价；控告；费用",
+      "sceneMeaning": "收费；充电",
+      "examples": "[]"
+    },
+    {
+      "word": "blank",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "blæŋk",
+      "phoneticUk": "blæŋk",
+      "translation": "空白的；空白",
+      "sceneMeaning": "空白的；空白；本场景常见用法：空白支票",
+      "examples": "[]"
+    },
+    {
+      "word": "reserve",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'zɝv",
+      "phoneticUk": "rɪ'zɜːv",
+      "translation": "储备，保留；预定；留出，预定",
+      "sceneMeaning": "预订；保留",
+      "examples": "[]"
+    },
+    {
+      "word": "resort",
+      "partOfSpeech": "vi&n",
+      "phoneticUs": "rɪ'zɔrt",
+      "phoneticUk": "rɪ'zɔːt",
+      "translation": "求助，凭借;诉诸于",
+      "sceneMeaning": "度假村；度假胜地",
+      "examples": "[]"
+    },
+    {
+      "word": "vacant",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'vekənt",
+      "phoneticUk": "'veɪk(ə)nt",
+      "translation": "空的；未被占用的",
+      "sceneMeaning": "空着的；未被占用的",
+      "examples": "[]"
+    },
+    {
+      "word": "cancel",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kænsl",
+      "phoneticUk": "'kæns(ə)l",
+      "translation": "取消，撤消；删去；取消",
+      "sceneMeaning": "取消",
+      "examples": "[]"
+    },
+    {
+      "word": "arrive",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'raɪv",
+      "phoneticUk": "ə'raɪv",
+      "translation": "到达；来临；达到",
+      "sceneMeaning": "到达",
+      "examples": "[]"
+    },
+    {
+      "word": "comfort",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kʌmfɚt",
+      "phoneticUk": "'kʌmfət",
+      "translation": "舒适；安慰；安慰",
+      "sceneMeaning": "舒适；安慰；安慰",
+      "examples": "[]"
+    },
+    {
+      "word": "quiet",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kwaɪət",
+      "phoneticUk": "'kwaɪət",
+      "translation": "寂静的；安静的",
+      "sceneMeaning": "安静的",
+      "examples": "[]"
+    },
+    {
+      "word": "confirm",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fɝm",
+      "phoneticUk": "kən'fɜːm",
+      "translation": "证实，肯定；批准；证实",
+      "sceneMeaning": "确认",
+      "examples": "[]"
+    },
+    {
+      "word": "reception",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "rɪ'sɛpʃən",
+      "phoneticUk": "rɪ'sepʃ(ə)n",
+      "translation": "接待；招待会；接受；接待；反响",
+      "sceneMeaning": "接待处；接待",
+      "examples": "[]"
+    },
+    {
+      "word": "roll",
+      "partOfSpeech": "vi&vt",
+      "phoneticUs": "rol",
+      "phoneticUk": "rəʊl",
+      "translation": "滚动；转动",
+      "sceneMeaning": "滚动；转动",
+      "examples": "[]"
+    },
+    {
+      "word": "accommodate",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'kɑmədet",
+      "phoneticUk": "ə'kɒmədeɪt",
+      "translation": "容纳；供应，供给；为…提供住宿",
+      "sceneMeaning": "容纳；为……提供住宿",
+      "examples": "[]"
+    },
+    {
+      "word": "accommodation",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə,kɑmə'deʃən",
+      "phoneticUk": "əkɒmə'deɪʃ(ə)n",
+      "translation": "招待设备；预定铺位",
+      "sceneMeaning": "住宿；住处",
+      "examples": "[]"
+    },
+    {
+      "word": "convenience",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'vinɪəns",
+      "phoneticUk": "kən'viːnɪəns",
+      "translation": "便利，方便；厕所",
+      "sceneMeaning": "便利，方便；厕所；本场景常见用法：为了方便起见",
+      "examples": "[]"
+    },
+    {
+      "word": "convenient",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kən'vinɪənt",
+      "phoneticUk": "kən'viːnɪənt",
+      "translation": "便利的；近便的；方便的",
+      "sceneMeaning": "方便的",
+      "examples": "[]"
+    },
+    {
+      "word": "embrace",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'bres",
+      "phoneticUk": "ɪm'breɪs; em-",
+      "translation": "拥抱；包括；包围；拥抱；欣然接受，乐意采纳 (新思想、意见、宗教等)",
+      "sceneMeaning": "拥抱；包括；包围；拥抱；欣然接受，乐意采纳 (新思想、意见、宗教等)",
+      "examples": "[]"
+    },
+    {
+      "word": "exclude",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'sklʊd",
+      "phoneticUk": "ɪk'skluːd; ek-",
+      "translation": "把…排除在外；排除，不包括",
+      "sceneMeaning": "不包括；排除",
+      "examples": "[]"
+    },
+    {
+      "word": "fee",
+      "partOfSpeech": "n",
+      "phoneticUs": "fi",
+      "phoneticUk": "fiː",
+      "translation": "费，酬金；赏金",
+      "sceneMeaning": "费用",
+      "examples": "[]"
+    },
+    {
+      "word": "sheet",
+      "partOfSpeech": "n",
+      "phoneticUs": "ʃit",
+      "phoneticUk": "ʃiːt",
+      "translation": "被单；纸张；薄板",
+      "sceneMeaning": "床单；纸张",
+      "examples": "[]"
+    },
+    {
+      "word": "breakfast",
+      "partOfSpeech": "n",
+      "phoneticUs": "'brɛkfəst",
+      "phoneticUk": "'brekfəst",
+      "translation": "早饭，早餐",
+      "sceneMeaning": "早餐",
+      "examples": "[]"
+    },
+    {
+      "word": "elevator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛlɪvetɚ",
+      "phoneticUk": "'elɪveɪtə",
+      "translation": "电梯；升降机",
+      "sceneMeaning": "电梯",
+      "examples": "[]"
+    },
+    {
+      "word": "facilitate",
+      "partOfSpeech": "v",
+      "phoneticUs": "fə'sɪlə'tet",
+      "phoneticUk": "fəˈsɪlɪteɪt",
+      "translation": "使便利，促进",
+      "sceneMeaning": "使便利，促进",
+      "examples": "[]"
+    },
+    {
+      "word": "noisy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'nɔɪzi",
+      "phoneticUk": "'nɒɪzɪ",
+      "translation": "嘈杂的；喧闹的",
+      "sceneMeaning": "吵闹的",
+      "examples": "[]"
+    },
+    {
+      "word": "occupation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɑkju'peʃən",
+      "phoneticUk": "ɒkjʊ'peɪʃ(ə)n",
+      "translation": "占领，占据；职业；职业，工作",
+      "sceneMeaning": "占领，占据；职业；职业，工作",
+      "examples": "[]"
+    },
+    {
+      "word": "passport",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pæspɔrt",
+      "phoneticUk": "'pɑːspɔːt",
+      "translation": "护照",
+      "sceneMeaning": "护照",
+      "examples": "[]"
+    },
+    {
+      "word": "shower",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʃaʊɚ",
+      "phoneticUk": "'ʃaʊə",
+      "translation": "阵雨；(一)阵；淋浴",
+      "sceneMeaning": "淋浴；淋浴间",
+      "examples": "[]"
+    },
+    {
+      "word": "accustomed",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'kʌstəmd",
+      "phoneticUk": "ə'kʌstəmd",
+      "translation": "惯常的；习惯的",
+      "sceneMeaning": "惯常的；习惯的",
+      "examples": "[]"
+    },
+    {
+      "word": "blanket",
+      "partOfSpeech": "n",
+      "phoneticUs": "'blæŋkɪt",
+      "phoneticUk": "'blæŋkɪt",
+      "translation": "毛毯，毯子，羊毛毯",
+      "sceneMeaning": "毯子；毛毯",
+      "examples": "[]"
+    },
+    {
+      "word": "corridor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɔrɪdɔr",
+      "phoneticUk": "'kɒrɪdɔː",
+      "translation": "走廊，回廊，通路",
+      "sceneMeaning": "走廊",
+      "examples": "[]"
+    },
+    {
+      "word": "cushion",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kʊʃən",
+      "phoneticUk": "'kʊʃ(ə)n",
+      "translation": "垫子，坐垫，靠垫",
+      "sceneMeaning": "垫子，坐垫，靠垫；本场景常见用法：靠垫",
+      "examples": "[]"
+    },
+    {
+      "word": "deposit",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'pɑzɪt",
+      "phoneticUk": "dɪ'pɒzɪt",
+      "translation": "使沉淀；存放",
+      "sceneMeaning": "押金；存款",
+      "examples": "[]"
+    },
+    {
+      "word": "exclusively",
+      "partOfSpeech": "adv",
+      "phoneticUs": "ɪk'sklʊsɪvli",
+      "phoneticUk": "ɪk'skluːsɪvlɪ",
+      "translation": "专门地",
+      "sceneMeaning": "专门地",
+      "examples": "[]"
+    },
+    {
+      "word": "floor",
+      "partOfSpeech": "n",
+      "phoneticUs": "flɔr",
+      "phoneticUk": "flɔː",
+      "translation": "地板；楼层",
+      "sceneMeaning": "楼层；地板",
+      "examples": "[]"
+    },
+    {
+      "word": "guest",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɡɛst",
+      "phoneticUk": "gest",
+      "translation": "客人，宾客；旅客",
+      "sceneMeaning": "客人；宾客",
+      "examples": "[]"
+    },
+    {
+      "word": "hollow",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɑlo",
+      "phoneticUk": "'hɒləʊ",
+      "translation": "空的；空洞的",
+      "sceneMeaning": "空的；空洞的；本场景常见用法：中空心",
+      "examples": "[]"
+    },
+    {
+      "word": "inn",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn",
+      "phoneticUk": "ɪn",
+      "translation": "小旅店；小酒店",
+      "sceneMeaning": "小旅馆；客栈",
+      "examples": "[]"
+    },
+    {
+      "word": "keyboard",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ki'bɔrd",
+      "phoneticUk": "'kiːbɔːd",
+      "translation": "键盘",
+      "sceneMeaning": "键盘；本场景常见用法：[计]快捷键",
+      "examples": "[]"
+    },
+    {
+      "word": "laundry",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɔndri",
+      "phoneticUk": "'lɔːndrɪ",
+      "translation": "洗衣房，洗衣店；要洗的衣服；刚洗过的衣物；洗衣房",
+      "sceneMeaning": "洗衣服务；洗衣房",
+      "examples": "[]"
+    },
+    {
+      "word": "lavatory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lævətɔri",
+      "phoneticUk": "'lævət(ə)rɪ",
+      "translation": "盥洗室，厕所",
+      "sceneMeaning": "盥洗室，厕所",
+      "examples": "[]"
+    },
+    {
+      "word": "lift",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "lɪft",
+      "phoneticUk": "lɪft",
+      "translation": "提起，提高；电梯",
+      "sceneMeaning": "提起，提高；电梯",
+      "examples": "[]"
+    },
+    {
+      "word": "lobby",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'lɑbi",
+      "phoneticUk": "'lɒbɪ",
+      "translation": "大堂；游说",
+      "sceneMeaning": "大厅；前厅",
+      "examples": "[]"
+    },
+    {
+      "word": "lodge",
+      "partOfSpeech": "v",
+      "phoneticUs": "lɑdʒ",
+      "phoneticUk": "lɒdʒ",
+      "translation": "暂住，借宿，投宿；住宿，暂住",
+      "sceneMeaning": "暂住，借宿，投宿；住宿，暂住；本场景常见用法：投诉；对…提出控告",
+      "examples": "[]"
+    },
+    {
+      "word": "maid",
+      "partOfSpeech": "n",
+      "phoneticUs": "med",
+      "phoneticUk": "meɪd",
+      "translation": "女佣，女仆；少女",
+      "sceneMeaning": "女佣，女仆；少女",
+      "examples": "[]"
+    },
+    {
+      "word": "occupy",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ɑkjupaɪ",
+      "phoneticUk": "'ɒkjʊpaɪ",
+      "translation": "占领；占，占有",
+      "sceneMeaning": "占领；占，占有",
+      "examples": "[]"
+    },
+    {
+      "word": "pillow",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɪlo",
+      "phoneticUk": "'pɪləʊ",
+      "translation": "枕头",
+      "sceneMeaning": "枕头",
+      "examples": "[]"
+    },
+    {
+      "word": "receipt",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'sit",
+      "phoneticUk": "rɪ'siːt",
+      "translation": "收到；收条，收据",
+      "sceneMeaning": "收据",
+      "examples": "[]"
+    },
+    {
+      "word": "reservation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",rɛzɚ'veʃən",
+      "phoneticUk": "ˌrezə'veɪʃn",
+      "translation": "预定",
+      "sceneMeaning": "预订；预约",
+      "examples": "[]"
+    },
+    {
+      "word": "towel",
+      "partOfSpeech": "n",
+      "phoneticUs": "'taʊəl",
+      "phoneticUk": "'taʊəl",
+      "translation": "毛巾，手巾",
+      "sceneMeaning": "毛巾",
+      "examples": "[]"
+    }
+  ]
+}

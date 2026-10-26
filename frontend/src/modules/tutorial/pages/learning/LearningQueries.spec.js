@@ -21,8 +21,8 @@ vi.mock('../../api/learningApi', () => ({ getMasteryPage: vi.fn(), getMasteryOpt
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function render(component) {
- const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/useradmin/learning/:pathMatch(.*)*', component: { template: '<div />' } }] })
- await router.push('/useradmin/learning/history'); await router.isReady()
+ const router = createRouter({ history: createMemoryHistory(), routes: [{ path: '/learning/:pathMatch(.*)*', component: { template: '<div />' } }] })
+ await router.push('/learning/history'); await router.isReady()
  const w = mount(component, { global: { plugins: [router], stubs: { LearningNav: true } } }); await flushPromises(); return w
 }
 /**

@@ -1,0 +1,1191 @@
+{
+  "slug": "javascript",
+  "title": "JavaScript",
+  "description": "JavaScript 语法、数据处理、DOM 事件、交互组件、异步与浏览器 API，以及模块化实践；各章提供最小示例与实操目标。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-10-15",
+  "chapterCount": 142,
+  "wordCount": 34388,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "一.JS 从值和变量开始",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "let、const 与块级作用域",
+          "description": "用 let 和 const 声明变量并区分可重新赋值性。",
+          "path": "/tutorials/javascript/chapter-1-1/",
+          "wordCount": 136,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "类型、typeof 与空值",
+          "description": "识别基本数据类型、typeof 结果与空值。",
+          "path": "/tutorials/javascript/chapter-1-2/",
+          "wordCount": 198,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "八种语言类型与包装对象",
+          "description": "理解七种原始类型和对象类型及包装行为。",
+          "path": "/tutorials/javascript/chapter-1-3/",
+          "wordCount": 196,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "类型转换与严格比较",
+          "description": "判断类型转换对相等比较的影响。",
+          "path": "/tutorials/javascript/chapter-1-4/",
+          "wordCount": 138,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "显式转换、隐式转换与 NaN",
+          "description": "显式处理输入类型并识别 NaN。",
+          "path": "/tutorials/javascript/chapter-1-5/",
+          "wordCount": 190,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-6",
+          "title": "自增、比较与运算顺序",
+          "description": "正确使用自增、比较和运算符优先级。",
+          "path": "/tutorials/javascript/chapter-1-6/",
+          "wordCount": 134,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-7",
+          "title": "短路运算、可选链与空值合并",
+          "description": "运用短路求值、可选链和空值合并。",
+          "path": "/tutorials/javascript/chapter-1-7/",
+          "wordCount": 153,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-8",
+          "title": "短路、默认值与空值合并",
+          "description": "区分逻辑或默认值与空值默认值。",
+          "path": "/tutorials/javascript/chapter-1-8/",
+          "wordCount": 131,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-9",
+          "title": "字符串、模板字面量与搜索",
+          "description": "使用模板字符串组织可读的动态文本。",
+          "path": "/tutorials/javascript/chapter-1-9/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-10",
+          "title": "字符串拆分、截取、检索与替换",
+          "description": "完成字符串拆分、查找、截取和替换。",
+          "path": "/tutorials/javascript/chapter-1-10/",
+          "wordCount": 234,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-11",
+          "title": "数值精度与金额计算",
+          "description": "理解浮点精度误差对金额的影响。",
+          "path": "/tutorials/javascript/chapter-1-11/",
+          "wordCount": 171,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-12",
+          "title": "toFixed、舍入与整数金额",
+          "description": "正确处理舍入展示与整数金额运算。",
+          "path": "/tutorials/javascript/chapter-1-12/",
+          "wordCount": 152,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-13",
+          "title": "随机整数、随机点名与不重复抽取",
+          "description": "生成指定范围随机数并避免重复抽取。",
+          "path": "/tutorials/javascript/chapter-1-13/",
+          "wordCount": 182,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-14",
+          "title": "Date 与 Intl 格式化",
+          "description": "创建日期并进行地区化格式输出。",
+          "path": "/tutorials/javascript/chapter-1-14/",
+          "wordCount": 186,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "二.分支、循环与函数",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "if、switch 与条件表达式",
+          "description": "根据条件使用 if、switch 和三元表达式。",
+          "path": "/tutorials/javascript/chapter-2-1/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "闰年、分支与边界用例",
+          "description": "用边界案例验证条件分支的正确性。",
+          "path": "/tutorials/javascript/chapter-2-2/",
+          "wordCount": 164,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "switch、break 与函数返回",
+          "description": "区分 switch 终止分支与函数结束。",
+          "path": "/tutorials/javascript/chapter-2-3/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "for、while 与 for...of",
+          "description": "选择合适循环遍历范围或可迭代数据。",
+          "path": "/tutorials/javascript/chapter-2-4/",
+          "wordCount": 167,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "while、break、continue 与循环边界",
+          "description": "正确控制循环退出、跳过和边界。",
+          "path": "/tutorials/javascript/chapter-2-5/",
+          "wordCount": 161,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-6",
+          "title": "嵌套循环与九九乘法表",
+          "description": "通过嵌套循环生成二维规律结果。",
+          "path": "/tutorials/javascript/chapter-2-6/",
+          "wordCount": 168,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-7",
+          "title": "函数、参数与返回值",
+          "description": "定义函数、传参并处理返回结果。",
+          "path": "/tutorials/javascript/chapter-2-7/",
+          "wordCount": 130,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-8",
+          "title": "arguments、剩余参数与默认参数",
+          "description": "区分 arguments、剩余参数与默认参数。",
+          "path": "/tutorials/javascript/chapter-2-8/",
+          "wordCount": 209,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "三.数组、对象与数据处理",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "数组增删与复制",
+          "description": "对数组执行添加、删除和复制操作。",
+          "path": "/tutorials/javascript/chapter-3-1/",
+          "wordCount": 150,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "push、pop、shift、unshift 与 splice",
+          "description": "理解不同数组变更方法影响的位置。",
+          "path": "/tutorials/javascript/chapter-3-2/",
+          "wordCount": 173,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "数组求和、平均值与最大值",
+          "description": "使用遍历计算合计、平均和极值。",
+          "path": "/tutorials/javascript/chapter-3-3/",
+          "wordCount": 176,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "冒泡排序：比较、交换与提前退出",
+          "description": "用比较交换实现基础排序并提前退出。",
+          "path": "/tutorials/javascript/chapter-3-4/",
+          "wordCount": 262,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "查找、判断与数值排序",
+          "description": "正确选择查找、条件判断和数字排序方法。",
+          "path": "/tutorials/javascript/chapter-3-5/",
+          "wordCount": 184,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-6",
+          "title": "find、findIndex、some 与 every",
+          "description": "按查找目标选择 find、findIndex、some、every。",
+          "path": "/tutorials/javascript/chapter-3-6/",
+          "wordCount": 218,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-7",
+          "title": "map、filter 与 reduce",
+          "description": "使用 map、filter、reduce 处理数据集合。",
+          "path": "/tutorials/javascript/chapter-3-7/",
+          "wordCount": 173,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-8",
+          "title": "reduce 累计与初始值",
+          "description": "掌握 reduce 初始累计值与累积过程。",
+          "path": "/tutorials/javascript/chapter-3-8/",
+          "wordCount": 160,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-9",
+          "title": "对象、解构与扩展语法",
+          "description": "定义对象并使用解构、扩展语法。",
+          "path": "/tutorials/javascript/chapter-3-9/",
+          "wordCount": 154,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-10",
+          "title": "多级解构、重命名与安全默认值",
+          "description": "安全提取深层字段并提供默认值。",
+          "path": "/tutorials/javascript/chapter-3-10/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-11",
+          "title": "Object.keys、values、entries 与 assign",
+          "description": "遍历对象属性及合并对象数据。",
+          "path": "/tutorials/javascript/chapter-3-11/",
+          "wordCount": 210,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-12",
+          "title": "JSON 序列化与解析",
+          "description": "在对象和 JSON 字符串之间转换。",
+          "path": "/tutorials/javascript/chapter-3-12/",
+          "wordCount": 177,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-13",
+          "title": "Map、Set 与去重",
+          "description": "使用 Map 保存键值映射、Set 消除重复。",
+          "path": "/tutorials/javascript/chapter-3-13/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-14",
+          "title": "浅复制、深复制与 structuredClone",
+          "description": "识别引用共享并选择适当的复制方式。",
+          "path": "/tutorials/javascript/chapter-3-14/",
+          "wordCount": 247,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-15",
+          "title": "递归复制：退出条件与循环引用",
+          "description": "理解递归复制边界与循环引用风险。",
+          "path": "/tutorials/javascript/chapter-3-15/",
+          "wordCount": 262,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-16",
+          "title": "正则表达式与文本匹配",
+          "description": "使用正则检查基本文本格式。",
+          "path": "/tutorials/javascript/chapter-3-16/",
+          "wordCount": 145,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-17",
+          "title": "正则边界、字符组与量词",
+          "description": "理解字符集合、数量与匹配边界。",
+          "path": "/tutorials/javascript/chapter-3-17/",
+          "wordCount": 163,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-18",
+          "title": "正则替换、捕获与 g 的状态",
+          "description": "完成捕获、替换并注意全局正则的状态。",
+          "path": "/tutorials/javascript/chapter-3-18/",
+          "wordCount": 235,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "四.DOM、事件与页面变化",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "页面如何出现：HTML → CSS → JS → 重新绘制",
+          "description": "理解浏览器解析页面及脚本修改界面的过程。",
+          "path": "/tutorials/javascript/chapter-4-1/",
+          "wordCount": 151,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "DOM 查询、创建与删除",
+          "description": "查找指定节点并动态创建或移除元素。",
+          "path": "/tutorials/javascript/chapter-4-2/",
+          "wordCount": 202,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "节点关系、克隆与安全删除",
+          "description": "访问父子兄弟节点并安全复制、删除。",
+          "path": "/tutorials/javascript/chapter-4-3/",
+          "wordCount": 223,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "伪数组、NodeList 与 Array.from",
+          "description": "将 NodeList 等类数组集合转换为数组。",
+          "path": "/tutorials/javascript/chapter-4-4/",
+          "wordCount": 212,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "点击事件与计数器",
+          "description": "响应点击并同步更新计数显示。",
+          "path": "/tutorials/javascript/chapter-4-5/",
+          "wordCount": 226,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-6",
+          "title": "键盘事件与快捷键",
+          "description": "根据键盘按键实现快捷操作。",
+          "path": "/tutorials/javascript/chapter-4-6/",
+          "wordCount": 181,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-7",
+          "title": "input、change、焦点与组合输入",
+          "description": "区分输入、变更、焦点与中文输入组合事件。",
+          "path": "/tutorials/javascript/chapter-4-7/",
+          "wordCount": 220,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-8",
+          "title": "事件捕获、冒泡与目标",
+          "description": "理解事件传播三个阶段及事件目标。",
+          "path": "/tutorials/javascript/chapter-4-8/",
+          "wordCount": 232,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-9",
+          "title": "事件捕获、冒泡与解绑",
+          "description": "正确注册、移除事件监听器。",
+          "path": "/tutorials/javascript/chapter-4-9/",
+          "wordCount": 226,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-10",
+          "title": "mouseover 与 mouseenter 的边界差异",
+          "description": "区分鼠标进入子元素时的两类事件行为。",
+          "path": "/tutorials/javascript/chapter-4-10/",
+          "wordCount": 257,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-11",
+          "title": "事件委托与动态元素",
+          "description": "通过父元素统一处理动态生成子项事件。",
+          "path": "/tutorials/javascript/chapter-4-11/",
+          "wordCount": 203,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-12",
+          "title": "CustomEvent 与组件通信",
+          "description": "发送与监听自定义事件传递组件信息。",
+          "path": "/tutorials/javascript/chapter-4-12/",
+          "wordCount": 222,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-13",
+          "title": "AbortController 清理监听器",
+          "description": "使用 AbortController 批量清理监听。",
+          "path": "/tutorials/javascript/chapter-4-13/",
+          "wordCount": 247,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-14",
+          "title": "FormData 与提交状态",
+          "description": "读取 FormData 并管理表单提交过程。",
+          "path": "/tutorials/javascript/chapter-4-14/",
+          "wordCount": 247,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-15",
+          "title": "节点插入、替换、克隆与删除",
+          "description": "使用 DOM API 实现插入、替换和复制。",
+          "path": "/tutorials/javascript/chapter-4-15/",
+          "wordCount": 246,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-16",
+          "title": "使用表格 API 动态增删数据行",
+          "description": "通过表格 DOM API 添加或删除数据行。",
+          "path": "/tutorials/javascript/chapter-4-16/",
+          "wordCount": 207,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-17",
+          "title": "行内样式、计算样式与四种尺寸",
+          "description": "区分行内样式、计算样式与布局尺寸。",
+          "path": "/tutorials/javascript/chapter-4-17/",
+          "wordCount": 246,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-18",
+          "title": "鼠标坐标的视口、页面与目标参照",
+          "description": "区分相对视口、文档和元素的鼠标坐标。",
+          "path": "/tutorials/javascript/chapter-4-18/",
+          "wordCount": 272,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-19",
+          "title": "DOM 查询、文本、属性与状态类",
+          "description": "读取与修改文本、属性、类名和控件状态。",
+          "path": "/tutorials/javascript/chapter-4-19/",
+          "wordCount": 234,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "五.从小交互组合成组件",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "显示密码：类型切换与状态名称",
+          "description": "切换密码输入可见性并正确维护状态。",
+          "path": "/tutorials/javascript/chapter-5-1/",
+          "wordCount": 234,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "全选、部分选中与 indeterminate",
+          "description": "实现全选、部分选中和不确定状态。",
+          "path": "/tutorials/javascript/chapter-5-2/",
+          "wordCount": 265,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "收藏切换：布尔状态与可访问反馈",
+          "description": "保持收藏状态与可访问反馈一致。",
+          "path": "/tutorials/javascript/chapter-5-3/",
+          "wordCount": 216,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "明暗主题切换",
+          "description": "切换主题样式并保持页面显示一致。",
+          "path": "/tutorials/javascript/chapter-5-4/",
+          "wordCount": 195,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "标签页切换",
+          "description": "按激活项切换标签内容。",
+          "path": "/tutorials/javascript/chapter-5-5/",
+          "wordCount": 242,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-6",
+          "title": "弹窗与确认",
+          "description": "打开、关闭弹窗并处理确认结果。",
+          "path": "/tutorials/javascript/chapter-5-6/",
+          "wordCount": 256,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-7",
+          "title": "手风琴：单项展开与响应状态",
+          "description": "实现互斥或独立展开的折叠列表。",
+          "path": "/tutorials/javascript/chapter-5-7/",
+          "wordCount": 264,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-8",
+          "title": "即时搜索与筛选",
+          "description": "根据输入实时过滤可见数据。",
+          "path": "/tutorials/javascript/chapter-5-8/",
+          "wordCount": 244,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-9",
+          "title": "按价格范围筛选商品",
+          "description": "按最小与最大价格筛选商品。",
+          "path": "/tutorials/javascript/chapter-5-9/",
+          "wordCount": 207,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-10",
+          "title": "分类筛选：稳定数据、排他状态与组合条件",
+          "description": "组合分类和其他筛选条件且保持数据源稳定。",
+          "path": "/tutorials/javascript/chapter-5-10/",
+          "wordCount": 214,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-11",
+          "title": "排序与过滤",
+          "description": "根据筛选项对数据重新排序。",
+          "path": "/tutorials/javascript/chapter-5-11/",
+          "wordCount": 193,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-12",
+          "title": "表单校验与反馈",
+          "description": "校验用户输入并提示异常字段。",
+          "path": "/tutorials/javascript/chapter-5-12/",
+          "wordCount": 233,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-13",
+          "title": "逐项表单验证与错误关联",
+          "description": "关联错误信息与对应输入控件。",
+          "path": "/tutorials/javascript/chapter-5-13/",
+          "wordCount": 284,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-14",
+          "title": "ATM 状态：存入、取出与校验",
+          "description": "设计余额状态变化并校验交易条件。",
+          "path": "/tutorials/javascript/chapter-5-14/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-15",
+          "title": "猜数字：有限次数与重新开始",
+          "description": "管理猜测次数、胜负反馈和重启。",
+          "path": "/tutorials/javascript/chapter-5-15/",
+          "wordCount": 185,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-16",
+          "title": "待办清单：增删与完成",
+          "description": "完成待办事项的新增、删除与完成。",
+          "path": "/tutorials/javascript/chapter-5-16/",
+          "wordCount": 195,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-17",
+          "title": "个人资料：编辑、确认与取消",
+          "description": "实现编辑草稿、保存与取消恢复。",
+          "path": "/tutorials/javascript/chapter-5-17/",
+          "wordCount": 160,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-18",
+          "title": "数据生成柱形图：比例与标签",
+          "description": "将数据按比例映射为图形高度和标签。",
+          "path": "/tutorials/javascript/chapter-5-18/",
+          "wordCount": 194,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-19",
+          "title": "缩略图选择、事件委托与主图状态",
+          "description": "根据缩略图点击结果切换主图片。",
+          "path": "/tutorials/javascript/chapter-5-19/",
+          "wordCount": 215,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-20",
+          "title": "轮播图：上一张与下一张",
+          "description": "实现上一张、下一张的索引切换。",
+          "path": "/tutorials/javascript/chapter-5-20/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-21",
+          "title": "轮播组件：索引、圆点、暂停与触摸",
+          "description": "加入导航圆点、暂停和触摸切换。",
+          "path": "/tutorials/javascript/chapter-5-21/",
+          "wordCount": 215,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-22",
+          "title": "放大镜：坐标换算、边界与比例",
+          "description": "通过坐标和比例限制放大镜移动范围。",
+          "path": "/tutorials/javascript/chapter-5-22/",
+          "wordCount": 178,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-23",
+          "title": "拖拽排序练习",
+          "description": "在拖放后更新元素或数据顺序。",
+          "path": "/tutorials/javascript/chapter-5-23/",
+          "wordCount": 353,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-24",
+          "title": "滚动头部、电梯导航与回到顶部",
+          "description": "实现滚动吸顶、分区跳转和返回顶部。",
+          "path": "/tutorials/javascript/chapter-5-24/",
+          "wordCount": 303,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-25",
+          "title": "横向频道栏：滚动与下划线定位",
+          "description": "使横向导航滚动并同步当前指示线。",
+          "path": "/tutorials/javascript/chapter-5-25/",
+          "wordCount": 210,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-26",
+          "title": "CSS 像素、DPR 与二倍图换算",
+          "description": "理解设备像素比对图像清晰度的影响。",
+          "path": "/tutorials/javascript/chapter-5-26/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-27",
+          "title": "支持失焦与外部点击关闭的下拉菜单",
+          "description": "实现可通过外部点击或失焦关闭的菜单。",
+          "path": "/tutorials/javascript/chapter-5-27/",
+          "wordCount": 293,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-28",
+          "title": "重复触发时重置计时的 Toast",
+          "description": "重复通知时重置 Toast 展示时长。",
+          "path": "/tutorials/javascript/chapter-5-28/",
+          "wordCount": 218,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-29",
+          "title": "可选择的搜索建议列表",
+          "description": "制作可键盘或鼠标选择的搜索建议。",
+          "path": "/tutorials/javascript/chapter-5-29/",
+          "wordCount": 270,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-30",
+          "title": "可编辑、完成和删除的购物清单",
+          "description": "完成清单项编辑、状态切换及删除。",
+          "path": "/tutorials/javascript/chapter-5-30/",
+          "wordCount": 214,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "六.时间、异步与浏览器 API",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "try、catch、finally 与主动抛错",
+          "description": "捕获异常并使用 finally 完成必要清理。",
+          "path": "/tutorials/javascript/chapter-6-1/",
+          "wordCount": 180,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "throw、try/catch/finally 与零值验证",
+          "description": "主动抛出错误并正确检查包含零的输入。",
+          "path": "/tutorials/javascript/chapter-6-2/",
+          "wordCount": 197,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "Promise 与异步结果",
+          "description": "理解 Promise 的成功、失败和链式处理。",
+          "path": "/tutorials/javascript/chapter-6-3/",
+          "wordCount": 199,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "async、await 与 finally",
+          "description": "使用 async/await 编排异步流程和清理。",
+          "path": "/tutorials/javascript/chapter-6-4/",
+          "wordCount": 221,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "并行请求与 Promise.all",
+          "description": "通过 Promise.all 并发等待多个任务。",
+          "path": "/tutorials/javascript/chapter-6-5/",
+          "wordCount": 188,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-6",
+          "title": "事件循环与微任务",
+          "description": "理解事件循环中的任务与微任务调度。",
+          "path": "/tutorials/javascript/chapter-6-6/",
+          "wordCount": 192,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-7",
+          "title": "同步任务、微任务与定时器",
+          "description": "判断同步代码、Promise 和定时器的执行顺序。",
+          "path": "/tutorials/javascript/chapter-6-7/",
+          "wordCount": 183,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-8",
+          "title": "Fetch：响应、失败与取消",
+          "description": "发起 Fetch 请求并处理响应、错误和取消。",
+          "path": "/tutorials/javascript/chapter-6-8/",
+          "wordCount": 267,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-9",
+          "title": "防抖：等待输入停下",
+          "description": "理解防抖只在连续触发停止后执行。",
+          "path": "/tutorials/javascript/chapter-6-9/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-10",
+          "title": "原生防抖：最后一次输入后执行",
+          "description": "实现可重复触发的原生防抖函数。",
+          "path": "/tutorials/javascript/chapter-6-10/",
+          "wordCount": 201,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-11",
+          "title": "节流：限制处理频率",
+          "description": "理解节流对高频事件的调用限制。",
+          "path": "/tutorials/javascript/chapter-6-11/",
+          "wordCount": 189,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-12",
+          "title": "原生节流：连续事件限制频率",
+          "description": "实现按时间间隔控制执行频率的节流。",
+          "path": "/tutorials/javascript/chapter-6-12/",
+          "wordCount": 197,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-13",
+          "title": "延迟关闭浮层与清除定时器",
+          "description": "合理设置并清除浮层延迟关闭计时器。",
+          "path": "/tutorials/javascript/chapter-6-13/",
+          "wordCount": 215,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-14",
+          "title": "异步任务进度模拟",
+          "description": "用异步状态模拟任务运行和进度反馈。",
+          "path": "/tutorials/javascript/chapter-6-14/",
+          "wordCount": 229,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-15",
+          "title": "协议确认与验证码按钮倒计时",
+          "description": "实现协议勾选约束与验证码倒计时。",
+          "path": "/tutorials/javascript/chapter-6-15/",
+          "wordCount": 264,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-16",
+          "title": "时间戳与目标时间倒计时",
+          "description": "根据时间戳计算倒计时并处理结束条件。",
+          "path": "/tutorials/javascript/chapter-6-16/",
+          "wordCount": 210,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-17",
+          "title": "图形时钟：角度、原点与实时日期",
+          "description": "将时间转换成钟针角度并持续更新。",
+          "path": "/tutorials/javascript/chapter-6-17/",
+          "wordCount": 210,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-18",
+          "title": "requestAnimationFrame 与时间",
+          "description": "使用 requestAnimationFrame 驱动逐帧更新。",
+          "path": "/tutorials/javascript/chapter-6-18/",
+          "wordCount": 242,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-19",
+          "title": "IntersectionObserver 观察可见性",
+          "description": "通过可见性观察实现进入视口响应。",
+          "path": "/tutorials/javascript/chapter-6-19/",
+          "wordCount": 277,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-20",
+          "title": "ResizeObserver 与组件尺寸",
+          "description": "通过元素尺寸观察更新组件布局。",
+          "path": "/tutorials/javascript/chapter-6-20/",
+          "wordCount": 213,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-21",
+          "title": "File API 与本地文本",
+          "description": "读取用户选择的本地文本文件。",
+          "path": "/tutorials/javascript/chapter-6-21/",
+          "wordCount": 186,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-22",
+          "title": "Canvas 绘图与导出",
+          "description": "使用 Canvas 绘制简单图形并导出。",
+          "path": "/tutorials/javascript/chapter-6-22/",
+          "wordCount": 235,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-23",
+          "title": "localStorage 与隔离环境",
+          "description": "理解本地持久化和不同来源间的隔离。",
+          "path": "/tutorials/javascript/chapter-6-23/",
+          "wordCount": 172,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-24",
+          "title": "localStorage、sessionStorage 与复杂数据",
+          "description": "区分会话存储与持久存储并存取对象。",
+          "path": "/tutorials/javascript/chapter-6-24/",
+          "wordCount": 240,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-25",
+          "title": "URL 与 URLSearchParams",
+          "description": "通过 URL API 解析、修改查询参数。",
+          "path": "/tutorials/javascript/chapter-6-25/",
+          "wordCount": 228,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-26",
+          "title": "location、navigator 与 URL 查询参数",
+          "description": "读取地址栏、浏览器信息及查询参数。",
+          "path": "/tutorials/javascript/chapter-6-26/",
+          "wordCount": 227,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-27",
+          "title": "History 状态与前进后退",
+          "description": "使用 History API 管理同页导航状态。",
+          "path": "/tutorials/javascript/chapter-6-27/",
+          "wordCount": 210,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-28",
+          "title": "URL 参数保存筛选与刷新恢复",
+          "description": "通过 URL 保留筛选参数并支持刷新恢复。",
+          "path": "/tutorials/javascript/chapter-6-28/",
+          "wordCount": 257,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-29",
+          "title": "GET 列表的加载、空状态与 HTTP 错误",
+          "description": "处理列表请求的加载中、空结果和失败。",
+          "path": "/tutorials/javascript/chapter-6-29/",
+          "wordCount": 309,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-30",
+          "title": "POST JSON 提交与状态码检查",
+          "description": "发送 JSON 请求体并正确判断 HTTP 响应。",
+          "path": "/tutorials/javascript/chapter-6-30/",
+          "wordCount": 278,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-31",
+          "title": "取消旧搜索请求与竞态保护",
+          "description": "取消旧请求并防止过期结果覆盖新结果。",
+          "path": "/tutorials/javascript/chapter-6-31/",
+          "wordCount": 359,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-32",
+          "title": "文本与图片文件的本地预览",
+          "description": "选择文件后预览文本或图片。",
+          "path": "/tutorials/javascript/chapter-6-32/",
+          "wordCount": 281,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-33",
+          "title": "把文字导出为本地文件",
+          "description": "在浏览器端创建并下载文本文件。",
+          "path": "/tutorials/javascript/chapter-6-33/",
+          "wordCount": 296,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-34",
+          "title": "组件销毁后清理监听与计时器",
+          "description": "在组件退出时移除监听器和定时器。",
+          "path": "/tutorials/javascript/chapter-6-34/",
+          "wordCount": 283,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-35",
+          "title": "由数组驱动的本地图片资源切换",
+          "description": "用资源数组控制本地图片的展示状态。",
+          "path": "/tutorials/javascript/chapter-6-35/",
+          "wordCount": 196,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "七.作用域、原型与模块进阶",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "块作用域、提升与暂时性死区",
+          "description": "区分变量提升、块级作用域与暂时性死区。",
+          "path": "/tutorials/javascript/chapter-7-1/",
+          "wordCount": 156,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "闭包与独立状态",
+          "description": "使用闭包封装独立且持续存在的状态。",
+          "path": "/tutorials/javascript/chapter-7-2/",
+          "wordCount": 171,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "立即执行函数与模块隔离",
+          "description": "通过立即执行函数隔离局部变量。",
+          "path": "/tutorials/javascript/chapter-7-3/",
+          "wordCount": 131,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "this 与箭头函数",
+          "description": "判断 this 的调用上下文及箭头函数行为。",
+          "path": "/tutorials/javascript/chapter-7-4/",
+          "wordCount": 169,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "普通函数、箭头函数与 call/apply/bind",
+          "description": "使用 call、apply、bind 控制函数上下文。",
+          "path": "/tutorials/javascript/chapter-7-5/",
+          "wordCount": 226,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-6",
+          "title": "构造函数、实例与返回对象的例外",
+          "description": "理解 new 创建实例与构造函数返回值特例。",
+          "path": "/tutorials/javascript/chapter-7-6/",
+          "wordCount": 175,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-7",
+          "title": "原型链、constructor 与继承",
+          "description": "认识对象原型链及属性查找机制。",
+          "path": "/tutorials/javascript/chapter-7-7/",
+          "wordCount": 221,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-8",
+          "title": "class、实例与原型",
+          "description": "使用 class 定义实例方法并理解其原型本质。",
+          "path": "/tutorials/javascript/chapter-7-8/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-9",
+          "title": "ES Modules：导出与导入",
+          "description": "用 export/import 拆分和复用模块。",
+          "path": "/tutorials/javascript/chapter-7-9/",
+          "wordCount": 203,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-10",
+          "title": "递归遍历多级菜单",
+          "description": "使用递归处理任意层级的菜单树。",
+          "path": "/tutorials/javascript/chapter-7-10/",
+          "wordCount": 208,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-11",
+          "title": "class 继承、super 与静态成员",
+          "description": "使用 extends、super 和 static 表达类型关系。",
+          "path": "/tutorials/javascript/chapter-7-11/",
+          "wordCount": 269,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-12",
+          "title": "ESM：数据、工具与入口三个文件",
+          "description": "将数据、工具方法与入口拆为独立模块。",
+          "path": "/tutorials/javascript/chapter-7-12/",
+          "wordCount": 271,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "八.组合验证与作品实践",
+      "chapters": [
+        {
+          "slug": "chapter-8-1",
+          "title": "作品集：筛选与项目详情",
+          "description": "整合作品数据、筛选状态和详情展示。",
+          "path": "/tutorials/javascript/chapter-8-1/",
+          "wordCount": 209,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-2",
+          "title": "购物清单：数量与金额",
+          "description": "维护购物数量并计算单项与总金额。",
+          "path": "/tutorials/javascript/chapter-8-2/",
+          "wordCount": 225,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-3",
+          "title": "测验应用：评分与重新开始",
+          "description": "实现答题流程、分数统计和重新开始。",
+          "path": "/tutorials/javascript/chapter-8-3/",
+          "wordCount": 232,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-4",
+          "title": "支出账本：新增、删除与统计",
+          "description": "完成收支记录的增删与汇总。",
+          "path": "/tutorials/javascript/chapter-8-4/",
+          "wordCount": 198,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-5",
+          "title": "专注时钟：计时状态与暂停",
+          "description": "实现开始、暂停、重置的专注计时器。",
+          "path": "/tutorials/javascript/chapter-8-5/",
+          "wordCount": 272,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-8-6",
+          "title": "颜色工具：HEX、RGB 与复制",
+          "description": "实现颜色格式转换、预览与复制操作。",
+          "path": "/tutorials/javascript/chapter-8-6/",
+          "wordCount": 254,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/javascript/",
+  "sortOrder": 12
+}

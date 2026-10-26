@@ -1,0 +1,6 @@
+<p><strong>核心：</strong> 收藏组件的核心是保存布尔状态，并让按钮文字、<code>aria-pressed</code> 同步变化。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">let liked = false;
+btn.onclick = () =&gt; { liked = !liked; btn.textContent = liked ? '已收藏' : '收藏'; btn.setAttribute('aria-pressed', String(liked)); };
+</code></pre>
+<p><strong>学完能做：</strong> 保持收藏状态与可访问反馈一致。</p>

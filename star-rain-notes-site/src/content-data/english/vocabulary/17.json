@@ -1,0 +1,738 @@
+{
+  "id": "17",
+  "title": "银行 / 支付 / 金钱管理",
+  "layer": "核心生活场景层",
+  "wordCount": 81,
+  "path": "/english/vocabulary/17/",
+  "words": [
+    {
+      "word": "save",
+      "partOfSpeech": "v",
+      "phoneticUs": "sev",
+      "phoneticUk": "seɪv",
+      "translation": "节省",
+      "sceneMeaning": "储蓄；节省",
+      "examples": "[]"
+    },
+    {
+      "word": "financial",
+      "partOfSpeech": "adj",
+      "phoneticUs": "faɪ'nænʃl",
+      "phoneticUk": "faɪ'nænʃ(ə)l; fɪ-",
+      "translation": "财政的，金融的；财政的，经济的",
+      "sceneMeaning": "金融的；财务的",
+      "examples": "[]"
+    },
+    {
+      "word": "afford",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'fɔrd",
+      "phoneticUk": "ə'fɔːd",
+      "translation": "担负得起…；提供；负担得起",
+      "sceneMeaning": "负担得起",
+      "examples": "[]"
+    },
+    {
+      "word": "rate",
+      "partOfSpeech": "n",
+      "phoneticUs": "ret",
+      "phoneticUk": "reɪt",
+      "translation": "比率；速度；价格；比率，速率",
+      "sceneMeaning": "利率；比率",
+      "examples": "[]"
+    },
+    {
+      "word": "cost",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔst",
+      "phoneticUk": "kɒst",
+      "translation": "价格，代价；成本",
+      "sceneMeaning": "成本；花费",
+      "examples": "[]"
+    },
+    {
+      "word": "credit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɛdɪt",
+      "phoneticUk": "'kredɪt",
+      "translation": "信用贷款；信用",
+      "sceneMeaning": "信用；赊账；学分",
+      "examples": "[]"
+    },
+    {
+      "word": "digital",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪdʒɪtl",
+      "phoneticUk": "'dɪdʒɪt(ə)l",
+      "translation": "数字的，计数的",
+      "sceneMeaning": "数字的",
+      "examples": "[]"
+    },
+    {
+      "word": "economy",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'kɑnəmi",
+      "phoneticUk": "ɪ'kɒnəmɪ",
+      "translation": "经济；节约，节省",
+      "sceneMeaning": "经济；节约",
+      "examples": "[]"
+    },
+    {
+      "word": "expensive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪk'spɛnsɪv",
+      "phoneticUk": "ɪk'spensɪv; ek-",
+      "translation": "昂贵的，花钱多的",
+      "sceneMeaning": "昂贵的",
+      "examples": "[]"
+    },
+    {
+      "word": "interest",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪntrəst",
+      "phoneticUk": "'ɪnt(ə)rɪst",
+      "translation": "兴趣；利益；利息",
+      "sceneMeaning": "利息；兴趣",
+      "examples": "[]"
+    },
+    {
+      "word": "money",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mʌni",
+      "phoneticUk": "'mʌnɪ",
+      "translation": "货币；金钱，财富",
+      "sceneMeaning": "货币；金钱，财富；本场景常见用法：省钱；储蓄金钱",
+      "examples": "[]"
+    },
+    {
+      "word": "pay",
+      "partOfSpeech": "v",
+      "phoneticUs": "pe",
+      "phoneticUk": "peɪ",
+      "translation": "支付；付给；给予",
+      "sceneMeaning": "支付",
+      "examples": "[]"
+    },
+    {
+      "word": "risk",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪsk",
+      "phoneticUk": "rɪsk",
+      "translation": "风险，危险，冒险",
+      "sceneMeaning": "风险",
+      "examples": "[]"
+    },
+    {
+      "word": "economic",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˌikəˈnɑmɪk, ˌɛkəˈ-nɑmɪk",
+      "phoneticUk": ",iːkə'nɒmɪk; ek-",
+      "translation": "经济的，经济学的",
+      "sceneMeaning": "经济的",
+      "examples": "[]"
+    },
+    {
+      "word": "income",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnkʌm",
+      "phoneticUk": "'ɪnkʌm",
+      "translation": "收入；收益；进款",
+      "sceneMeaning": "收入",
+      "examples": "[]"
+    },
+    {
+      "word": "bank",
+      "partOfSpeech": "n",
+      "phoneticUs": "bæŋk",
+      "phoneticUk": "bæŋk",
+      "translation": "银行；库；岩，堤",
+      "sceneMeaning": "银行；河岸",
+      "examples": "[]"
+    },
+    {
+      "word": "card",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɑrd",
+      "phoneticUk": "kɑːd",
+      "translation": "卡，卡片，名片",
+      "sceneMeaning": "卡；银行卡",
+      "examples": "[]"
+    },
+    {
+      "word": "debt",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɛt",
+      "phoneticUk": "det",
+      "translation": "债，债务，欠债；债务",
+      "sceneMeaning": "债务",
+      "examples": "[]"
+    },
+    {
+      "word": "invest",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'vɛst",
+      "phoneticUk": "ɪn'vest",
+      "translation": "投资；投入；投资",
+      "sceneMeaning": "投资",
+      "examples": "[]"
+    },
+    {
+      "word": "loan",
+      "partOfSpeech": "n / vt",
+      "phoneticUs": "lon",
+      "phoneticUk": "ləʊn",
+      "translation": "贷款；暂借；借出；贷款",
+      "sceneMeaning": "贷款",
+      "examples": "[]"
+    },
+    {
+      "word": "loss",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔs",
+      "phoneticUk": "lɒs",
+      "translation": "遗失；损失；失败",
+      "sceneMeaning": "损失；亏损",
+      "examples": "[]"
+    },
+    {
+      "word": "security",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'kjʊrəti",
+      "phoneticUk": "sɪ'kjʊərətɪ",
+      "translation": "安全，安全感；安全，安保",
+      "sceneMeaning": "安全；证券",
+      "examples": "[]"
+    },
+    {
+      "word": "annual",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ænjuəl",
+      "phoneticUk": "'ænjʊəl",
+      "translation": "每年的；年报",
+      "sceneMeaning": "每年的",
+      "examples": "[]"
+    },
+    {
+      "word": "cash",
+      "partOfSpeech": "n",
+      "phoneticUs": "kæʃ",
+      "phoneticUk": "kæʃ",
+      "translation": "现金，现款",
+      "sceneMeaning": "现金",
+      "examples": "[]"
+    },
+    {
+      "word": "account",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'kaʊnt",
+      "phoneticUk": "ə'kaʊnt",
+      "translation": "记述；解释；帐目",
+      "sceneMeaning": "账户；说明",
+      "examples": "[]"
+    },
+    {
+      "word": "balance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bæləns",
+      "phoneticUk": "'bæl(ə)ns",
+      "translation": "使平衡；称；天平",
+      "sceneMeaning": "余额；平衡",
+      "examples": "[]"
+    },
+    {
+      "word": "cheap",
+      "partOfSpeech": "adj",
+      "phoneticUs": "tʃip",
+      "phoneticUk": "tʃiːp",
+      "translation": "廉价的；劣质的",
+      "sceneMeaning": "便宜的",
+      "examples": "[]"
+    },
+    {
+      "word": "guarantee",
+      "partOfSpeech": "n / v",
+      "phoneticUs": ",ɡærən'ti",
+      "phoneticUk": "ˌɡærən'ti:",
+      "translation": "保证；担保物；担保；保证，担保",
+      "sceneMeaning": "保证；担保物；担保；保证，担保；本场景常见用法：[经]财务担保",
+      "examples": "[]"
+    },
+    {
+      "word": "exchange",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ɪks'tʃendʒ",
+      "phoneticUk": "ɪks'tʃeɪndʒ; eks-",
+      "translation": "交换；交流；交换；交换，交流",
+      "sceneMeaning": "兑换；交换",
+      "examples": "[]"
+    },
+    {
+      "word": "budget",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bʌdʒɪt",
+      "phoneticUk": "'bʌdʒit",
+      "translation": "预算；编预算",
+      "sceneMeaning": "做预算；安排开支",
+      "examples": "[]"
+    },
+    {
+      "word": "charge",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "tʃɑrdʒ",
+      "phoneticUk": "tʃɑːdʒ",
+      "translation": "索价；控告；费用",
+      "sceneMeaning": "收费；充电；指控",
+      "examples": "[]"
+    },
+    {
+      "word": "commitment",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mɪtmənt",
+      "phoneticUk": "kə'mɪtm(ə)nt",
+      "translation": "承诺，保证",
+      "sceneMeaning": "承诺，保证；本场景常见用法：财务承诺；财政承担",
+      "examples": "[]"
+    },
+    {
+      "word": "scan",
+      "partOfSpeech": "v",
+      "phoneticUs": "skæn",
+      "phoneticUk": "skæn",
+      "translation": "细看；浏览；扫描",
+      "sceneMeaning": "扫描；浏览",
+      "examples": "[]"
+    },
+    {
+      "word": "stock",
+      "partOfSpeech": "n",
+      "phoneticUs": "stɑk",
+      "phoneticUk": "stɒk",
+      "translation": "原料；库存品；股本；股票；库存",
+      "sceneMeaning": "股票；库存",
+      "examples": "[]"
+    },
+    {
+      "word": "transfer",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "træns'fɝ",
+      "phoneticUk": "træns'fɜː; trɑːns-; -nz-",
+      "translation": "转移；调动vi转移；转换，调换",
+      "sceneMeaning": "转账；转移",
+      "examples": "[]"
+    },
+    {
+      "word": "cancel",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kænsl",
+      "phoneticUk": "'kæns(ə)l",
+      "translation": "取消，撤消；删去；取消",
+      "sceneMeaning": "取消",
+      "examples": "[]"
+    },
+    {
+      "word": "plunge",
+      "partOfSpeech": "v",
+      "phoneticUs": "plʌndʒ",
+      "phoneticUk": "plʌn(d)ʒ",
+      "translation": "使投入；使陷入",
+      "sceneMeaning": "使投入；使陷入",
+      "examples": "[]"
+    },
+    {
+      "word": "bet",
+      "partOfSpeech": "vt&vi&n",
+      "phoneticUs": "bɛt",
+      "phoneticUk": "bet",
+      "translation": "打赌",
+      "sceneMeaning": "打赌；本场景常见用法：[美国俚语]原来的打赌取消了；原来的预测不算数了",
+      "examples": "[]"
+    },
+    {
+      "word": "bill",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɪl",
+      "phoneticUk": "bɪl",
+      "translation": "账单；招贴；票据",
+      "sceneMeaning": "钞票；账单",
+      "examples": "[]"
+    },
+    {
+      "word": "counter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kaʊntɚ",
+      "phoneticUk": "'kaʊntə",
+      "translation": "柜台；计数器",
+      "sceneMeaning": "柜台；计数器",
+      "examples": "[]"
+    },
+    {
+      "word": "investment",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'vɛstmənt",
+      "phoneticUk": "ɪn'ves(t)m(ə)nt",
+      "translation": "投资，投资额，投入",
+      "sceneMeaning": "投资",
+      "examples": "[]"
+    },
+    {
+      "word": "borrow",
+      "partOfSpeech": "v",
+      "phoneticUs": "'bɑro",
+      "phoneticUk": "'bɒrəʊ",
+      "translation": "借，借用，借人",
+      "sceneMeaning": "借入",
+      "examples": "[]"
+    },
+    {
+      "word": "confirm",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'fɝm",
+      "phoneticUk": "kən'fɜːm",
+      "translation": "证实，肯定；批准；证实",
+      "sceneMeaning": "确认",
+      "examples": "[]"
+    },
+    {
+      "word": "count",
+      "partOfSpeech": "v",
+      "phoneticUs": "kaʊnt",
+      "phoneticUk": "kaʊnt",
+      "translation": "计算；数，计数",
+      "sceneMeaning": "计算；数，计数；本场景常见用法：计数率",
+      "examples": "[]"
+    },
+    {
+      "word": "finance",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'faɪnæns",
+      "phoneticUk": "faɪ'næns; fɪ-; 'faɪnæns",
+      "translation": "财政，金融；财源；财政；资助",
+      "sceneMeaning": "金融；财政",
+      "examples": "[]"
+    },
+    {
+      "word": "note",
+      "partOfSpeech": "n",
+      "phoneticUs": "not",
+      "phoneticUk": "nəʊt",
+      "translation": "笔记；便条；注释",
+      "sceneMeaning": "纸币；便条",
+      "examples": "[]"
+    },
+    {
+      "word": "payment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pemənt",
+      "phoneticUk": "'peɪm(ə)nt",
+      "translation": "支付，支付的款项",
+      "sceneMeaning": "付款；支付",
+      "examples": "[]"
+    },
+    {
+      "word": "stake",
+      "partOfSpeech": "n",
+      "phoneticUs": "stek",
+      "phoneticUk": "steɪk",
+      "translation": "桩；赌金；奖品；风险",
+      "sceneMeaning": "桩；赌金；奖品；风险",
+      "examples": "[]"
+    },
+    {
+      "word": "commit",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'mɪt",
+      "phoneticUk": "kə'mɪt",
+      "translation": "犯(错误);干(坏事)；犯罪；承担义务",
+      "sceneMeaning": "犯(错误);干(坏事)；犯罪；承担义务",
+      "examples": "[]"
+    },
+    {
+      "word": "fee",
+      "partOfSpeech": "n",
+      "phoneticUs": "fi",
+      "phoneticUk": "fiː",
+      "translation": "费，酬金；赏金",
+      "sceneMeaning": "费用；手续费",
+      "examples": "[]"
+    },
+    {
+      "word": "fund",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "fʌnd",
+      "phoneticUk": "fʌnd",
+      "translation": "资金；基金；存款；基金，储备；；提供资金",
+      "sceneMeaning": "基金；资金",
+      "examples": "[]"
+    },
+    {
+      "word": "lend",
+      "partOfSpeech": "v",
+      "phoneticUs": "lɛnd",
+      "phoneticUk": "lend",
+      "translation": "把…借给，贷(款)",
+      "sceneMeaning": "借出",
+      "examples": "[]"
+    },
+    {
+      "word": "transaction",
+      "partOfSpeech": "n",
+      "phoneticUs": "træn'zækʃən",
+      "phoneticUk": "trænˈzækʃn",
+      "translation": "交易，业务，事务",
+      "sceneMeaning": "交易；业务",
+      "examples": "[]"
+    },
+    {
+      "word": "wage",
+      "partOfSpeech": "v",
+      "phoneticUs": "wedʒ",
+      "phoneticUk": "weɪdʒ",
+      "translation": "开展(运动)",
+      "sceneMeaning": "工资",
+      "examples": "[]"
+    },
+    {
+      "word": "annually",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'ænjuəli",
+      "phoneticUk": "'ænjʊəlɪ",
+      "translation": "每年，一年一次",
+      "sceneMeaning": "每年；一年一次地",
+      "examples": "[]"
+    },
+    {
+      "word": "bond",
+      "partOfSpeech": "n",
+      "phoneticUs": "bɑnd",
+      "phoneticUk": "bɒnd",
+      "translation": "联结，联系；公债",
+      "sceneMeaning": "债券；纽带",
+      "examples": "[]"
+    },
+    {
+      "word": "branch",
+      "partOfSpeech": "n",
+      "phoneticUs": "bræntʃ",
+      "phoneticUk": "brɑːn(t)ʃ",
+      "translation": "树枝；分部；分科",
+      "sceneMeaning": "银行分行；分支",
+      "examples": "[]"
+    },
+    {
+      "word": "coin",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔɪn",
+      "phoneticUk": "kɒɪn",
+      "translation": "硬币；铸造(硬币)",
+      "sceneMeaning": "硬币",
+      "examples": "[]"
+    },
+    {
+      "word": "expense",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'spɛns",
+      "phoneticUk": "ɪk'spens; ek-",
+      "translation": "花费，消费；费用",
+      "sceneMeaning": "费用；开支",
+      "examples": "[]"
+    },
+    {
+      "word": "insurance",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'ʃʊrəns",
+      "phoneticUk": "ɪn'ʃʊər(ə)ns",
+      "translation": "保险；保险费",
+      "sceneMeaning": "保险",
+      "examples": "[]"
+    },
+    {
+      "word": "insure",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪn'ʃʊr",
+      "phoneticUk": "ɪn'ʃɔː; ɪn'ʃʊə",
+      "translation": "给…保险；确保",
+      "sceneMeaning": "给……投保；确保",
+      "examples": "[]"
+    },
+    {
+      "word": "monthly",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'mʌnθli",
+      "phoneticUk": "'mʌnθlɪ",
+      "translation": "每月的；每月",
+      "sceneMeaning": "每月一次地",
+      "examples": "[]"
+    },
+    {
+      "word": "owe",
+      "partOfSpeech": "v",
+      "phoneticUs": "o",
+      "phoneticUk": "əʊ",
+      "translation": "欠；应把…归功于",
+      "sceneMeaning": "欠；归因于",
+      "examples": "[]"
+    },
+    {
+      "word": "profit",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɑfɪt",
+      "phoneticUk": "'prɒfɪt",
+      "translation": "益处；利润；得益",
+      "sceneMeaning": "利润；收益",
+      "examples": "[]"
+    },
+    {
+      "word": "profitable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɑfɪtəbl",
+      "phoneticUk": "ˈprɒfɪtəbl",
+      "translation": "有利可图的，有益的",
+      "sceneMeaning": "有利可图的",
+      "examples": "[]"
+    },
+    {
+      "word": "asset",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æsɛt",
+      "phoneticUk": "'æset",
+      "translation": "有价值的人(或物)资产",
+      "sceneMeaning": "资产",
+      "examples": "[]"
+    },
+    {
+      "word": "calculate",
+      "partOfSpeech": "v",
+      "phoneticUs": "'kælkjulet",
+      "phoneticUk": "'kælkjʊleɪt",
+      "translation": "计算；估计；计划；计算",
+      "sceneMeaning": "计算",
+      "examples": "[]"
+    },
+    {
+      "word": "calculator",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kælkjuletɚ",
+      "phoneticUk": "'kælkjʊleɪtə",
+      "translation": "计算器，计算者",
+      "sceneMeaning": "计算器，计算者；本场景常见用法：电子计算器",
+      "examples": "[]"
+    },
+    {
+      "word": "cheque",
+      "partOfSpeech": "n",
+      "phoneticUs": "tʃɛk",
+      "phoneticUk": "tʃek",
+      "translation": "支票",
+      "sceneMeaning": "支票；本场景常见用法：以支票偿付",
+      "examples": "[]"
+    },
+    {
+      "word": "commission",
+      "partOfSpeech": "n",
+      "phoneticUs": "kə'mɪʃən",
+      "phoneticUk": "kə'mɪʃ(ə)n",
+      "translation": "委任状；委员会",
+      "sceneMeaning": "佣金；委员会",
+      "examples": "[]"
+    },
+    {
+      "word": "deposit",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'pɑzɪt",
+      "phoneticUk": "dɪ'pɒzɪt",
+      "translation": "使沉淀；存放",
+      "sceneMeaning": "存入；存放",
+      "examples": "[]"
+    },
+    {
+      "word": "inexpensive",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",ɪnɪk'spɛnsɪv",
+      "phoneticUk": "ɪnɪk'spensɪv; ɪnek-",
+      "translation": "花费不多的，廉价的",
+      "sceneMeaning": "花费不多的，廉价的",
+      "examples": "[]"
+    },
+    {
+      "word": "liability",
+      "partOfSpeech": "n",
+      "phoneticUs": "'laɪə'bɪləti",
+      "phoneticUk": "ˌlaɪəˈbɪləti",
+      "translation": "责任",
+      "sceneMeaning": "负债；责任",
+      "examples": "[]"
+    },
+    {
+      "word": "meter",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mitɚr",
+      "phoneticUk": "'mitɚ",
+      "translation": "计量器，计，表",
+      "sceneMeaning": "计量器，计，表",
+      "examples": "[]"
+    },
+    {
+      "word": "penny",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɛni",
+      "phoneticUk": "'penɪ",
+      "translation": "(英)便士；(美)分",
+      "sceneMeaning": "(英)便士；(美)分；本场景常见用法：便士股票，低价股",
+      "examples": "[]"
+    },
+    {
+      "word": "pin",
+      "partOfSpeech": "n",
+      "phoneticUs": "pɪn",
+      "phoneticUk": "pɪn",
+      "translation": "针，饰针；别住",
+      "sceneMeaning": "个人识别码；别针",
+      "examples": "[]"
+    },
+    {
+      "word": "receipt",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'sit",
+      "phoneticUk": "rɪ'siːt",
+      "translation": "收到；收条，收据",
+      "sceneMeaning": "收据",
+      "examples": "[]"
+    },
+    {
+      "word": "secure",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "sə'kjʊr",
+      "phoneticUk": "sɪ'kjʊə; sɪ'kjɔː",
+      "translation": "安心的；安全的；确保……安全",
+      "sceneMeaning": "安全的；稳固的",
+      "examples": "[]"
+    },
+    {
+      "word": "signature",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪgnətʃɚ",
+      "phoneticUk": "'sɪgnətʃə",
+      "translation": "署名，签字，签名；签名",
+      "sceneMeaning": "签名",
+      "examples": "[]"
+    },
+    {
+      "word": "verify",
+      "partOfSpeech": "v",
+      "phoneticUs": "'vɛrɪfaɪ",
+      "phoneticUk": "'verɪfaɪ",
+      "translation": "证实，查证；证明",
+      "sceneMeaning": "核实；验证",
+      "examples": "[]"
+    },
+    {
+      "word": "withdraw",
+      "partOfSpeech": "v",
+      "phoneticUs": "wɪð'drɔ",
+      "phoneticUk": "wɪð'drɔː",
+      "translation": "收回；撤回vi撤退",
+      "sceneMeaning": "取款；撤回",
+      "examples": "[]"
+    }
+  ]
+}

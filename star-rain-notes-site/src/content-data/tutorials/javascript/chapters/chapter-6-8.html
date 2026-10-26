@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> <code>fetch</code> 返回 Response；HTTP 404 不会自动使 fetch 拒绝，需检查 <code>res.ok</code>，取消用 AbortController。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const controller = new AbortController();
+const res = await fetch('/api/posts', { signal: controller.signal });
+if (!res.ok) throw new Error(`HTTP ${res.status}`);
+</code></pre>
+<p><strong>学完能做：</strong> 发起 Fetch 请求并处理响应、错误和取消。</p>

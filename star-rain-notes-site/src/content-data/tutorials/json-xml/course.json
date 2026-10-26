@@ -1,0 +1,330 @@
+{
+  "slug": "json-xml",
+  "title": "JSON 与 XML",
+  "description": "面向 Java 全栈开发的数据表示与交换教程，系统掌握 JSON、XML、序列化/反序列化、HTTP JSON 数据契约，以及 Maven、MyBatis 等 Java 生态中的 XML 实战。",
+  "category": "前端开发",
+  "categorySlug": "546626728421",
+  "publishedAt": "2026-09-23",
+  "chapterCount": 35,
+  "wordCount": 19034,
+  "categoryId": "7",
+  "groups": [
+    {
+      "title": "结构化数据、序列化与格式生态",
+      "chapters": [
+        {
+          "slug": "chapter-1-1",
+          "title": "从对象到文本：数据表示、序列化与反序列化",
+          "description": "本章属于「JSON 与 XML / 结构化数据、序列化与格式生态」，围绕「从对象到文本：数据表示、序列化与反序列化」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-1-1/",
+          "wordCount": 553,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-2",
+          "title": "文本与二进制格式：JSON、XML、YAML、CSV、Protocol Buffers",
+          "description": "本章属于「JSON 与 XML / 结构化数据、序列化与格式生态」，围绕「文本与二进制格式：JSON、XML、YAML、CSV、Protocol Buffers」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-1-2/",
+          "wordCount": 619,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-3",
+          "title": "Unicode、UTF-8、字符集与转义",
+          "description": "本章属于「JSON 与 XML / 结构化数据、序列化与格式生态」，围绕「Unicode、UTF-8、字符集与转义」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-1-3/",
+          "wordCount": 553,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-4",
+          "title": "MIME Type、Content-Type 与数据格式协商",
+          "description": "本章属于「JSON 与 XML / 结构化数据、序列化与格式生态」，围绕「MIME Type、Content-Type 与数据格式协商」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-1-4/",
+          "wordCount": 577,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-1-5",
+          "title": "数据格式选型：Web API、配置、文档与消息场景",
+          "description": "本章属于「JSON 与 XML / 结构化数据、序列化与格式生态」，围绕「数据格式选型：Web API、配置、文档与消息场景」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-1-5/",
+          "wordCount": 565,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "JSON 数据模型与语法",
+      "chapters": [
+        {
+          "slug": "chapter-2-1",
+          "title": "JSON Object、Array 与六种值类型",
+          "description": "本章属于「JSON 与 XML / JSON 数据模型与语法」，围绕「JSON Object、Array 与六种值类型」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-2-1/",
+          "wordCount": 556,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-2",
+          "title": "字符串、数字、布尔值、null 与转义规则",
+          "description": "本章属于「JSON 与 XML / JSON 数据模型与语法」，围绕「字符串、数字、布尔值、null 与转义规则」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-2-2/",
+          "wordCount": 550,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-3",
+          "title": "嵌套对象、数组与树形数据建模",
+          "description": "本章属于「JSON 与 XML / JSON 数据模型与语法」，围绕「嵌套对象、数组与树形数据建模」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-2-3/",
+          "wordCount": 532,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-4",
+          "title": "合法 JSON、常见语法错误与校验",
+          "description": "本章属于「JSON 与 XML / JSON 数据模型与语法」，围绕「合法 JSON、常见语法错误与校验」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-2-4/",
+          "wordCount": 538,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-2-5",
+          "title": "JavaScript Object 与 JSON 的本质区别",
+          "description": "本章属于「JSON 与 XML / JSON 数据模型与语法」，围绕「JavaScript Object 与 JSON 的本质区别」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-2-5/",
+          "wordCount": 568,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "JavaScript / TypeScript 操作 JSON",
+      "chapters": [
+        {
+          "slug": "chapter-3-1",
+          "title": "JSON.parse：JSON 文本到 JavaScript 值",
+          "description": "本章属于「JSON 与 XML / JavaScript / TypeScript 操作 JSON」，围绕「JSON.parse：JSON 文本到 JavaScript 值」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-3-1/",
+          "wordCount": 593,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-2",
+          "title": "JSON.stringify：JavaScript 值到 JSON 文本",
+          "description": "本章属于「JSON 与 XML / JavaScript / TypeScript 操作 JSON」，围绕「JSON.stringify：JavaScript 值到 JSON 文本」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-3-2/",
+          "wordCount": 605,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-3",
+          "title": "replacer、space 与自定义序列化",
+          "description": "本章属于「JSON 与 XML / JavaScript / TypeScript 操作 JSON」，围绕「replacer、space 与自定义序列化」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-3-3/",
+          "wordCount": 569,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-4",
+          "title": "reviver、日期恢复与反序列化边界",
+          "description": "本章属于「JSON 与 XML / JavaScript / TypeScript 操作 JSON」，围绕「reviver、日期恢复与反序列化边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-3-4/",
+          "wordCount": 563,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-3-5",
+          "title": "undefined、Function、BigInt、Date 等特殊值处理",
+          "description": "本章属于「JSON 与 XML / JavaScript / TypeScript 操作 JSON」，围绕「undefined、Function、BigInt、Date 等特殊值处理」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-3-5/",
+          "wordCount": 614,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "JSON、HTTP 与 Spring Boot",
+      "chapters": [
+        {
+          "slug": "chapter-4-1",
+          "title": "HTTP JSON 请求体与 application/json",
+          "description": "本章属于「JSON 与 XML / JSON、HTTP 与 Spring Boot」，围绕「HTTP JSON 请求体与 application/json」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-4-1/",
+          "wordCount": 583,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-2",
+          "title": "Axios / Fetch 发送与接收 JSON",
+          "description": "本章属于「JSON 与 XML / JSON、HTTP 与 Spring Boot」，围绕「Axios / Fetch 发送与接收 JSON」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-4-2/",
+          "wordCount": 559,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-3",
+          "title": "@RequestBody、HttpMessageConverter 与 Jackson",
+          "description": "本章属于「JSON 与 XML / JSON、HTTP 与 Spring Boot」，围绕「@RequestBody、HttpMessageConverter 与 Jackson」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-4-3/",
+          "wordCount": 622,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-4",
+          "title": "DTO / VO / Result / PageResult 的数据契约",
+          "description": "本章属于「JSON 与 XML / JSON、HTTP 与 Spring Boot」，围绕「DTO / VO / Result / PageResult 的数据契约」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-4-4/",
+          "wordCount": 586,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-4-5",
+          "title": "Jackson 常用注解、LocalDateTime 与序列化排错",
+          "description": "本章属于「JSON 与 XML / JSON、HTTP 与 Spring Boot」，围绕「Jackson 常用注解、LocalDateTime 与序列化排错」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-4-5/",
+          "wordCount": 592,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "XML 基础语法与文档模型",
+      "chapters": [
+        {
+          "slug": "chapter-5-1",
+          "title": "XML Declaration、Root Element 与良构文档",
+          "description": "本章属于「JSON 与 XML / XML 基础语法与文档模型」，围绕「XML Declaration、Root Element 与良构文档」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-5-1/",
+          "wordCount": 584,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-2",
+          "title": "Element、Attribute、Text 与嵌套结构",
+          "description": "本章属于「JSON 与 XML / XML 基础语法与文档模型」，围绕「Element、Attribute、Text 与嵌套结构」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-5-2/",
+          "wordCount": 572,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-3",
+          "title": "实体引用、Comment、CDATA 与转义",
+          "description": "本章属于「JSON 与 XML / XML 基础语法与文档模型」，围绕「实体引用、Comment、CDATA 与转义」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-5-3/",
+          "wordCount": 554,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-4",
+          "title": "XML Namespace、前缀与命名冲突",
+          "description": "本章属于「JSON 与 XML / XML 基础语法与文档模型」，围绕「XML Namespace、前缀与命名冲突」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-5-4/",
+          "wordCount": 551,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-5-5",
+          "title": "XML DOM 树模型与解析思维",
+          "description": "本章属于「JSON 与 XML / XML 基础语法与文档模型」，围绕「XML DOM 树模型与解析思维」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-5-5/",
+          "wordCount": 533,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "XML 在 Java 生态中的真实应用",
+      "chapters": [
+        {
+          "slug": "chapter-6-1",
+          "title": "Maven pom.xml：Project、Dependency、Plugin 与 Profile",
+          "description": "本章属于「JSON 与 XML / XML 在 Java 生态中的真实应用」，围绕「Maven pom.xml：Project、Dependency、Plugin 与 Profile」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-6-1/",
+          "wordCount": 633,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-2",
+          "title": "MyBatis Mapper XML：select、insert、update、delete",
+          "description": "本章属于「JSON 与 XML / XML 在 Java 生态中的真实应用」，围绕「MyBatis Mapper XML：select、insert、update、delete」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-6-2/",
+          "wordCount": 627,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-3",
+          "title": "MyBatis 动态 SQL：if、where、foreach、set",
+          "description": "本章属于「JSON 与 XML / XML 在 Java 生态中的真实应用」，围绕「MyBatis 动态 SQL：if、where、foreach、set」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-6-3/",
+          "wordCount": 594,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-4",
+          "title": "Spring / Servlet 历史 XML 配置与演进",
+          "description": "本章属于「JSON 与 XML / XML 在 Java 生态中的真实应用」，围绕「Spring / Servlet 历史 XML 配置与演进」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-6-4/",
+          "wordCount": 567,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-6-5",
+          "title": "XML 配置排错：Schema、Namespace、IDE 与运行时错误",
+          "description": "本章属于「JSON 与 XML / XML 在 Java 生态中的真实应用」，围绕「XML 配置排错：Schema、Namespace、IDE 与运行时错误」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-6-5/",
+          "wordCount": 597,
+          "hasBody": true
+        }
+      ]
+    },
+    {
+      "title": "Schema、查询、传统协议与格式演进",
+      "chapters": [
+        {
+          "slug": "chapter-7-1",
+          "title": "DTD 与 XSD：Schema 的作用与边界",
+          "description": "本章属于「JSON 与 XML / Schema、查询、传统协议与格式演进」，围绕「DTD 与 XSD：Schema 的作用与边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-7-1/",
+          "wordCount": 558,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-2",
+          "title": "XPath：节点定位与基础表达式",
+          "description": "本章属于「JSON 与 XML / Schema、查询、传统协议与格式演进」，围绕「XPath：节点定位与基础表达式」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-7-2/",
+          "wordCount": 546,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-3",
+          "title": "XSLT、XQuery 的定位与了解边界",
+          "description": "本章属于「JSON 与 XML / Schema、查询、传统协议与格式演进」，围绕「XSLT、XQuery 的定位与了解边界」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-7-3/",
+          "wordCount": 555,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-4",
+          "title": "SOAP、WSDL、RSS 的现实定位",
+          "description": "本章属于「JSON 与 XML / Schema、查询、传统协议与格式演进」，围绕「SOAP、WSDL、RSS 的现实定位」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-7-4/",
+          "wordCount": 552,
+          "hasBody": true
+        },
+        {
+          "slug": "chapter-7-5",
+          "title": "JSON vs XML：Web 与 Java 场景选型",
+          "description": "本章属于「JSON 与 XML / Schema、查询、传统协议与格式演进」，围绕「JSON vs XML：Web 与 Java 场景选型」建立核心认知，要求能够解释概念、理解机制或 API、完成最小代码实验，并能连接到 Java 全栈真实项目与秋招问题。",
+          "path": "/tutorials/json-xml/chapter-7-5/",
+          "wordCount": 564,
+          "hasBody": true
+        }
+      ]
+    }
+  ],
+  "path": "/tutorials/json-xml/",
+  "sortOrder": 13
+}

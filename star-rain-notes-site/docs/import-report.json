@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-21",
+  "source": "https://yulanlin.cn/api/public/",
+  "counts": {
+    "blogs": 16,
+    "courses": 39,
+    "chapters": 2180,
+    "works": 10,
+    "vocabularyThemes": 60,
+    "words": 7053,
+    "grammarLessons": 42,
+    "messages": 1,
+    "localizedAssets": 31
+  },
+  "emptyCourses": [
+    {
+      "slug": "389330587493",
+      "title": "软件工程导论"
+    },
+    {
+      "slug": "684789137469",
+      "title": "UML建模与需求分析"
+    },
+    {
+      "slug": "343894687280",
+      "title": "软件项目管理"
+    },
+    {
+      "slug": "349838896484",
+      "title": "软件质量保证与测试"
+    }
+  ],
+  "emptyChapters": [],
+  "missing": [],
+  "notes": [
+    "原站已发布的提纲按真实内容保留，不补写为完整教程。",
+    "作品中关于原平台业务的说明作为原作品描述保留；本站不提供对应动态业务。"
+  ]
+}

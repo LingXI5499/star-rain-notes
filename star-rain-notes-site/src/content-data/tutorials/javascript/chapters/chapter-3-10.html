@@ -1,0 +1,7 @@
+<p><strong>核心：</strong> 嵌套解构可以重命名并设置默认值；可选链用于访问不确定存在的深层值。</p>
+<p><strong>最小示例：</strong></p>
+<pre><code class="language-js">const user = { profile: { city: '太原' } };
+const { profile: { city: home = '未知' } = {} } = user;
+console.log(home); // 太原
+</code></pre>
+<p><strong>学完能做：</strong> 安全提取深层字段并提供默认值。</p>

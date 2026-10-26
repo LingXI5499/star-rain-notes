@@ -52,7 +52,7 @@ async function setMarkdown(page, markdown) {
 
 test('new work keeps the created draft after a failed save and uses sequential versions on retry and publish', async ({ page }) => {
  const state = await installPortfolio(page); state.failBody = true
- await page.goto('/useradmin/portfolio/editor/new')
+ await page.goto('/portfolio/editor/new')
  await page.getByLabel('作品标题', { exact: true }).fill('真实编辑器重试验收')
  await page.getByLabel('简介', { exact: true }).fill('验证未保存输入、版本和重复创建保护。')
  await setMarkdown(page, '# 创作过程\n\n重试后正文仍然存在。')
@@ -88,7 +88,7 @@ for (const sample of portfolioCases) test(`manually authored real project conten
   work.media = [{ id: 'screenshot', usageType: 'SCREENSHOT', url: work.coverUrl }]
  }
  work.bodyMarkdown = ''
- await page.goto(`/useradmin/portfolio/editor/${work.id}`)
+ await page.goto(`/portfolio/editor/${work.id}`)
  await expect(page.getByLabel('作品标题', { exact: true })).toHaveValue(sample.title)
  await setMarkdown(page, sample.bodyMarkdown)
  await page.getByRole('button', { name: '保存作品', exact: true }).first().click()
@@ -131,7 +131,7 @@ for (const theme of ['light', 'dark']) for (const width of [1440, 390]) test(`ga
  await expect(page.locator('.markdown-body pre')).toBeVisible()
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)
  await page.screenshot({ path: testInfo.outputPath('detail.png'), fullPage: true })
- await page.goto('/useradmin/portfolio/editor/new')
+ await page.goto('/portfolio/editor/new')
  await expect(page.locator('html')).toHaveAttribute('data-theme', theme)
  await expect(page.locator('.vditor-ir [contenteditable="true"]')).toBeVisible()
  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true)

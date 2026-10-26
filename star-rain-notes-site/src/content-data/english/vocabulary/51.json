@@ -1,0 +1,1701 @@
+{
+  "id": "51",
+  "title": "问题 / 风险 / 限制 / 解决",
+  "layer": "抽象阅读与逻辑层",
+  "wordCount": 188,
+  "path": "/english/vocabulary/51/",
+  "words": [
+    {
+      "word": "available",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ə'veləbl",
+      "phoneticUk": "ə'veɪləb(ə)l",
+      "translation": "可利用的；通用的；可利用的，现有的；可获得的",
+      "sceneMeaning": "可获得的；可用的",
+      "examples": "[]"
+    },
+    {
+      "word": "process",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'prɑsɛs",
+      "phoneticUk": "'prəʊses",
+      "translation": "过程；工序；加工；过程，进程；；工序；工艺流程；处理",
+      "sceneMeaning": "过程；流程",
+      "examples": "[]"
+    },
+    {
+      "word": "reduce",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'dʊs",
+      "phoneticUk": "rɪ'djuːs",
+      "translation": "减少，减小；简化；减少",
+      "sceneMeaning": "减少",
+      "examples": "[]"
+    },
+    {
+      "word": "avoid",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'vɔɪd",
+      "phoneticUk": "ə'vɒɪd",
+      "translation": "避免，躲开；撤消；避免",
+      "sceneMeaning": "避免",
+      "examples": "[]"
+    },
+    {
+      "word": "critical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'krɪtɪkl",
+      "phoneticUk": "'krɪtɪk(ə)l",
+      "translation": "决定性的；批评的；批评的，爱挑剔的",
+      "sceneMeaning": "关键的；危急的",
+      "examples": "[]"
+    },
+    {
+      "word": "criticism",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪtə'sɪzəm",
+      "phoneticUk": "'krɪtɪsɪz(ə)m",
+      "translation": "批评；批判；评论；批评",
+      "sceneMeaning": "批评",
+      "examples": "[]"
+    },
+    {
+      "word": "source",
+      "partOfSpeech": "n",
+      "phoneticUs": "sɔrs",
+      "phoneticUk": "sɔːs",
+      "translation": "来源",
+      "sceneMeaning": "来源；源头",
+      "examples": "[]"
+    },
+    {
+      "word": "stress",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "strɛs",
+      "phoneticUk": "stres",
+      "translation": "压力；重音；着重",
+      "sceneMeaning": "压力；紧张",
+      "examples": "[]"
+    },
+    {
+      "word": "best",
+      "partOfSpeech": "adj",
+      "phoneticUs": "bɛst",
+      "phoneticUk": "best",
+      "translation": "最好的；最大的",
+      "sceneMeaning": "最好的；最大的",
+      "examples": "[]"
+    },
+    {
+      "word": "better",
+      "partOfSpeech": "adj / adv",
+      "phoneticUs": "'bɛtɚ",
+      "phoneticUk": "'betə",
+      "translation": "较好的；更好地",
+      "sceneMeaning": "较好的；更好地；本场景常见用法：改进；改善",
+      "examples": "[]"
+    },
+    {
+      "word": "cause",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔz",
+      "phoneticUk": "kɔːz",
+      "translation": "原因，理由；事业",
+      "sceneMeaning": "原因",
+      "examples": "[]"
+    },
+    {
+      "word": "common",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɑmən",
+      "phoneticUk": "'kɒmən",
+      "translation": "普通的；共同的",
+      "sceneMeaning": "普通的；共同的",
+      "examples": "[]"
+    },
+    {
+      "word": "control",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kən'trol",
+      "phoneticUk": "kən'trəʊl",
+      "translation": "控制，克制；控制",
+      "sceneMeaning": "控制",
+      "examples": "[]"
+    },
+    {
+      "word": "cost",
+      "partOfSpeech": "n",
+      "phoneticUs": "kɔst",
+      "phoneticUk": "kɒst",
+      "translation": "价格，代价；成本",
+      "sceneMeaning": "成本；代价",
+      "examples": "[]"
+    },
+    {
+      "word": "crisis",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kraɪsɪs",
+      "phoneticUk": "'kraɪsɪs",
+      "translation": "危机；存亡之际；危机",
+      "sceneMeaning": "危机",
+      "examples": "[]"
+    },
+    {
+      "word": "difficult",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪfɪkəlt",
+      "phoneticUk": "'dɪfɪk(ə)lt",
+      "translation": "困难的；难对付的",
+      "sceneMeaning": "困难的",
+      "examples": "[]"
+    },
+    {
+      "word": "effective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪ'fɛktɪv",
+      "phoneticUk": "ɪ'fektɪv",
+      "translation": "有效的；有影响的",
+      "sceneMeaning": "有效的",
+      "examples": "[]"
+    },
+    {
+      "word": "happen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'hæpən",
+      "phoneticUk": "'hæp(ə)n",
+      "translation": "发生；碰巧，恰好",
+      "sceneMeaning": "发生；碰巧，恰好",
+      "examples": "[]"
+    },
+    {
+      "word": "improve",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪm'pruv",
+      "phoneticUk": "ɪm'pruːv",
+      "translation": "使更好；改善",
+      "sceneMeaning": "改进；提高",
+      "examples": "[]"
+    },
+    {
+      "word": "manage",
+      "partOfSpeech": "v",
+      "phoneticUs": "'mænɪdʒ",
+      "phoneticUk": "'mænɪdʒ",
+      "translation": "管理；设法；对付",
+      "sceneMeaning": "管理；设法应对",
+      "examples": "[]"
+    },
+    {
+      "word": "measure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'mɛʒɚ",
+      "phoneticUk": "'meʒə",
+      "translation": "量，测量；分量；测量",
+      "sceneMeaning": "措施；衡量",
+      "examples": "[]"
+    },
+    {
+      "word": "possible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɑsəbl",
+      "phoneticUk": "'pɒsɪb(ə)l",
+      "translation": "可能的；可能存在的",
+      "sceneMeaning": "可能的",
+      "examples": "[]"
+    },
+    {
+      "word": "problem",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑbləm",
+      "phoneticUk": "'prɒbləm",
+      "translation": "问题；习题，问题",
+      "sceneMeaning": "问题",
+      "examples": "[]"
+    },
+    {
+      "word": "protect",
+      "partOfSpeech": "v",
+      "phoneticUs": "prə'tɛkt",
+      "phoneticUk": "prə'tekt",
+      "translation": "保护，保卫，警戒",
+      "sceneMeaning": "保护",
+      "examples": "[]"
+    },
+    {
+      "word": "protection",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'tɛkʃən",
+      "phoneticUk": "prə'tekʃ(ə)n",
+      "translation": "保护，警戒",
+      "sceneMeaning": "保护",
+      "examples": "[]"
+    },
+    {
+      "word": "risk",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪsk",
+      "phoneticUk": "rɪsk",
+      "translation": "风险，危险，冒险",
+      "sceneMeaning": "风险",
+      "examples": "[]"
+    },
+    {
+      "word": "answer",
+      "partOfSpeech": "v",
+      "phoneticUs": "'ænsɚ",
+      "phoneticUk": "'ɑːnsə",
+      "translation": "回答；响应；适应",
+      "sceneMeaning": "答案；回应",
+      "examples": "[]"
+    },
+    {
+      "word": "concern",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kən'sɝn",
+      "phoneticUk": "kən'sɜːn",
+      "translation": "关心，挂念；关系；重要的事情；与…有关，关于",
+      "sceneMeaning": "担忧；关注",
+      "examples": "[]"
+    },
+    {
+      "word": "conflict",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɑnflɪkt",
+      "phoneticUk": "'kɒnflɪkt",
+      "translation": "争论；冲突；斗争；冲突",
+      "sceneMeaning": "冲突",
+      "examples": "[]"
+    },
+    {
+      "word": "damage",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dæmɪdʒ",
+      "phoneticUk": "'dæmɪdʒ",
+      "translation": "损害，毁坏；损害",
+      "sceneMeaning": "损害；破坏",
+      "examples": "[]"
+    },
+    {
+      "word": "handle",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'hændl",
+      "phoneticUk": "'hænd(ə)l",
+      "translation": "柄，把手；拿，触；处理",
+      "sceneMeaning": "处理",
+      "examples": "[]"
+    },
+    {
+      "word": "limited",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'lɪmɪtɪd",
+      "phoneticUk": "'lɪmɪtɪd",
+      "translation": "有限的",
+      "sceneMeaning": "有限的",
+      "examples": "[]"
+    },
+    {
+      "word": "pressure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɛʃɚ",
+      "phoneticUk": "'preʃə",
+      "translation": "压力；压力；压，按",
+      "sceneMeaning": "压力",
+      "examples": "[]"
+    },
+    {
+      "word": "response",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'spɑns",
+      "phoneticUk": "rɪ'spɒns",
+      "translation": "作答，回答；响应；反应",
+      "sceneMeaning": "回应；反应",
+      "examples": "[]"
+    },
+    {
+      "word": "solve",
+      "partOfSpeech": "v",
+      "phoneticUs": "sɔlv",
+      "phoneticUk": "sɒlv",
+      "translation": "解答，解释，解决；解决",
+      "sceneMeaning": "解决",
+      "examples": "[]"
+    },
+    {
+      "word": "approach",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'protʃ",
+      "phoneticUk": "ə'prəʊtʃ",
+      "translation": "向…靠近；靠近；方法",
+      "sceneMeaning": "方法；途径",
+      "examples": "[]"
+    },
+    {
+      "word": "complicated",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'kɑmplɪketɪd",
+      "phoneticUk": "'kɒmplɪkeɪtɪd",
+      "translation": "复杂的，难懂的",
+      "sceneMeaning": "复杂的，难懂的；本场景常见用法：复杂断层",
+      "examples": "[]"
+    },
+    {
+      "word": "loss",
+      "partOfSpeech": "n",
+      "phoneticUs": "lɔs",
+      "phoneticUk": "lɒs",
+      "translation": "遗失；损失；失败",
+      "sceneMeaning": "损失",
+      "examples": "[]"
+    },
+    {
+      "word": "obvious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɑbvɪəs",
+      "phoneticUk": "'ɒbvɪəs",
+      "translation": "明显的，显而易见的",
+      "sceneMeaning": "明显的，显而易见的",
+      "examples": "[]"
+    },
+    {
+      "word": "sustainable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sə'stenəbl",
+      "phoneticUk": "səˈsteɪnəbl",
+      "translation": "可持续的",
+      "sceneMeaning": "可持续的",
+      "examples": "[]"
+    },
+    {
+      "word": "tough",
+      "partOfSpeech": "adj",
+      "phoneticUs": "tʌf",
+      "phoneticUk": "tʌf",
+      "translation": "坚韧的；健壮的；困难的",
+      "sceneMeaning": "坚韧的；健壮的；困难的",
+      "examples": "[]"
+    },
+    {
+      "word": "adapt",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'dæpt",
+      "phoneticUk": "ə'dæpt",
+      "translation": "使适应；改编；适应于",
+      "sceneMeaning": "适应",
+      "examples": "[]"
+    },
+    {
+      "word": "challenge",
+      "partOfSpeech": ". v / n",
+      "phoneticUs": "'tʃælɪndʒ",
+      "phoneticUk": "'tʃælɪn(d)ʒ",
+      "translation": "挑战；要求，需要；挑战；质疑",
+      "sceneMeaning": "挑战",
+      "examples": "[]"
+    },
+    {
+      "word": "complex",
+      "partOfSpeech": "adj",
+      "phoneticUs": "kəm'plɛks; 'kɑm,plɛks",
+      "phoneticUk": "'kɒmpleks",
+      "translation": "结合的；复杂的；复杂的",
+      "sceneMeaning": "复杂的",
+      "examples": "[]"
+    },
+    {
+      "word": "impossible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'pɑsəbl",
+      "phoneticUk": "ɪm'pɒsɪb(ə)l",
+      "translation": "不可能的，办不到的",
+      "sceneMeaning": "不可能的",
+      "examples": "[]"
+    },
+    {
+      "word": "issue",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'ɪʃu",
+      "phoneticUk": "'ɪʃuː; 'ɪsjuː",
+      "translation": "问题；发行；发行；发表〔声明〕；问题",
+      "sceneMeaning": "议题；问题",
+      "examples": "[]"
+    },
+    {
+      "word": "limit",
+      "partOfSpeech": "n",
+      "phoneticUs": "'lɪmɪt",
+      "phoneticUk": "'lɪmɪt",
+      "translation": "限度；限制；范围",
+      "sceneMeaning": "限制",
+      "examples": "[]"
+    },
+    {
+      "word": "policy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'pɑləsi",
+      "phoneticUk": "'pɒləsɪ",
+      "translation": "政策，方针",
+      "sceneMeaning": "政策；方针",
+      "examples": "[]"
+    },
+    {
+      "word": "severe",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sɪ'vɪr",
+      "phoneticUk": "sɪ'vɪə",
+      "translation": "严格的；严厉的；严重的",
+      "sceneMeaning": "严重的；严厉的",
+      "examples": "[]"
+    },
+    {
+      "word": "solution",
+      "partOfSpeech": "n",
+      "phoneticUs": "sə'luʃən",
+      "phoneticUk": "sə'luːʃ(ə)n",
+      "translation": "解决，解答；溶解；解决，解答，解决办法",
+      "sceneMeaning": "解决办法",
+      "examples": "[]"
+    },
+    {
+      "word": "accident",
+      "partOfSpeech": "n",
+      "phoneticUs": "'æksədənt",
+      "phoneticUk": "'æksɪdənt",
+      "translation": "意外的；事故",
+      "sceneMeaning": "事故",
+      "examples": "[]"
+    },
+    {
+      "word": "address",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "ə'drɛs",
+      "phoneticUk": "ə'dres",
+      "translation": "地址；演说；谈吐；解决",
+      "sceneMeaning": "处理；应对",
+      "examples": "[]"
+    },
+    {
+      "word": "blame",
+      "partOfSpeech": "v",
+      "phoneticUs": "blem",
+      "phoneticUk": "bleɪm",
+      "translation": "责备，把…归咎于；指责，责怪",
+      "sceneMeaning": "责备，把…归咎于；指责，责怪",
+      "examples": "[]"
+    },
+    {
+      "word": "improvement",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪm'prʊvmənt",
+      "phoneticUk": "ɪm'pruːvm(ə)nt",
+      "translation": "改进，改善；改进处",
+      "sceneMeaning": "改进；改善",
+      "examples": "[]"
+    },
+    {
+      "word": "method",
+      "partOfSpeech": "n",
+      "phoneticUs": "'mɛθəd",
+      "phoneticUk": "'meθəd",
+      "translation": "方法，办法；教学法",
+      "sceneMeaning": "方法",
+      "examples": "[]"
+    },
+    {
+      "word": "permanent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'pɝmənənt",
+      "phoneticUk": "'pɜːm(ə)nənt",
+      "translation": "永久的，持久的；永久的",
+      "sceneMeaning": "永久的",
+      "examples": "[]"
+    },
+    {
+      "word": "prevent",
+      "partOfSpeech": "v",
+      "phoneticUs": "pri'vɛnt",
+      "phoneticUk": "prɪ'vent",
+      "translation": "预防，防止；阻止；预防",
+      "sceneMeaning": "防止",
+      "examples": "[]"
+    },
+    {
+      "word": "strategy",
+      "partOfSpeech": "n",
+      "phoneticUs": "'strætədʒi",
+      "phoneticUk": "ˈstrætədʒɪ",
+      "translation": "战略；策略；策略，战略",
+      "sceneMeaning": "策略",
+      "examples": "[]"
+    },
+    {
+      "word": "action",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ækʃən",
+      "phoneticUk": "'ækʃ(ə)n",
+      "translation": "行动；作用；功能",
+      "sceneMeaning": "行动",
+      "examples": "[]"
+    },
+    {
+      "word": "complaint",
+      "partOfSpeech": "n",
+      "phoneticUs": "kəm'plent",
+      "phoneticUk": "kəm'pleɪnt",
+      "translation": "抱怨；怨言；控告；抱怨; 投诉",
+      "sceneMeaning": "投诉；抱怨",
+      "examples": "[]"
+    },
+    {
+      "word": "correct",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "kə'rɛkt",
+      "phoneticUk": "kə'rekt",
+      "translation": "正确的；纠正",
+      "sceneMeaning": "正确的；纠正",
+      "examples": "[]"
+    },
+    {
+      "word": "danger",
+      "partOfSpeech": "n",
+      "phoneticUs": "'dendʒɚ",
+      "phoneticUk": "'deɪn(d)ʒə",
+      "translation": "危险；危险事物",
+      "sceneMeaning": "危险",
+      "examples": "[]"
+    },
+    {
+      "word": "factor",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktɚ",
+      "phoneticUk": "'fæktə",
+      "translation": "因素；因子，系数",
+      "sceneMeaning": "因素",
+      "examples": "[]"
+    },
+    {
+      "word": "fail",
+      "partOfSpeech": "v",
+      "phoneticUs": "fel",
+      "phoneticUk": "feɪl",
+      "translation": "失败；失灵；不能",
+      "sceneMeaning": "失败；未能做到",
+      "examples": "[]"
+    },
+    {
+      "word": "practical",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'præktɪkl",
+      "phoneticUk": "'præktɪk(ə)l",
+      "translation": "实践的；实用的",
+      "sceneMeaning": "实际的；可行的",
+      "examples": "[]"
+    },
+    {
+      "word": "rescue",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'rɛskju",
+      "phoneticUk": "'reskjuː",
+      "translation": "营救，解救，救援；营救，援救",
+      "sceneMeaning": "营救，解救，救援；营救，援救",
+      "examples": "[]"
+    },
+    {
+      "word": "tension",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tɛnʃən",
+      "phoneticUk": "'tenʃ(ə)n",
+      "translation": "n.；紧张,不安,拉紧,张力；紧张",
+      "sceneMeaning": "紧张；压力",
+      "examples": "[]"
+    },
+    {
+      "word": "treatment",
+      "partOfSpeech": "n",
+      "phoneticUs": "'tritmənt",
+      "phoneticUk": "'triːtm(ə)nt",
+      "translation": "待遇；治疗，疗法；治疗；对待",
+      "sceneMeaning": "处理；治疗",
+      "examples": "[]"
+    },
+    {
+      "word": "dispute",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'dɪs'pjʊt",
+      "phoneticUk": "dɪ'spjuːt; 'dɪspjuːt",
+      "translation": "争论，争执；争论；辩论，争论",
+      "sceneMeaning": "争议；纠纷",
+      "examples": "[]"
+    },
+    {
+      "word": "failure",
+      "partOfSpeech": "n",
+      "phoneticUs": "'feljɚ",
+      "phoneticUk": "'feɪljə",
+      "translation": "失败；失败的人",
+      "sceneMeaning": "失败；故障",
+      "examples": "[]"
+    },
+    {
+      "word": "instant",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ɪnstənt",
+      "phoneticUk": "'ɪnst(ə)nt",
+      "translation": "瞬间；立即的；立即的；紧急的；速溶的，方便的",
+      "sceneMeaning": "瞬间；立即的；立即的；紧急的；速溶的，方便的",
+      "examples": "[]"
+    },
+    {
+      "word": "cope",
+      "partOfSpeech": "v",
+      "phoneticUs": "kop",
+      "phoneticUk": "kəʊp",
+      "translation": "对付，应付",
+      "sceneMeaning": "应对；处理",
+      "examples": "[]"
+    },
+    {
+      "word": "emergency",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪ'mɝdʒənsi",
+      "phoneticUk": "ɪ'mɜːdʒ(ə)nsɪ",
+      "translation": "紧急情况，突然事件；紧急情况",
+      "sceneMeaning": "紧急情况",
+      "examples": "[]"
+    },
+    {
+      "word": "burden",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bɝdn",
+      "phoneticUk": "'bɜːd(ə)n",
+      "translation": "担子，重担；装载量；重担，负担",
+      "sceneMeaning": "负担",
+      "examples": "[]"
+    },
+    {
+      "word": "obstacle",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɑbstəkl",
+      "phoneticUk": "'ɒbstək(ə)l",
+      "translation": "障碍，障碍物，妨害；阻碍",
+      "sceneMeaning": "障碍",
+      "examples": "[]"
+    },
+    {
+      "word": "tackle",
+      "partOfSpeech": "v",
+      "phoneticUs": "'tækl",
+      "phoneticUk": "'tæk(ə)l",
+      "translation": "处理",
+      "sceneMeaning": "处理",
+      "examples": "[]"
+    },
+    {
+      "word": "temporary",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tɛmpə'rɛri",
+      "phoneticUk": "'temp(ə)rərɪ",
+      "translation": "暂时的，临时的",
+      "sceneMeaning": "暂时的",
+      "examples": "[]"
+    },
+    {
+      "word": "urgent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɝdʒənt",
+      "phoneticUk": "ˈɜːdʒənt",
+      "translation": "紧急的；强求的",
+      "sceneMeaning": "紧急的",
+      "examples": "[]"
+    },
+    {
+      "word": "barrier",
+      "partOfSpeech": "n",
+      "phoneticUs": "'bærɪɚ",
+      "phoneticUk": "'bærɪə",
+      "translation": "栅栏，屏障；障碍",
+      "sceneMeaning": "障碍；壁垒",
+      "examples": "[]"
+    },
+    {
+      "word": "incredible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'krɛdəbl",
+      "phoneticUk": "in'kredəbl",
+      "translation": "不可思议的",
+      "sceneMeaning": "不可思议的",
+      "examples": "[]"
+    },
+    {
+      "word": "symptom",
+      "partOfSpeech": "n",
+      "phoneticUs": "'sɪmptəm",
+      "phoneticUk": "'sɪm(p)təm",
+      "translation": "症状",
+      "sceneMeaning": "症状；征兆",
+      "examples": "[]"
+    },
+    {
+      "word": "nuisance",
+      "partOfSpeech": "n",
+      "phoneticUs": "'nusns",
+      "phoneticUk": "'njuːs(ə)ns",
+      "translation": "讨厌的东西",
+      "sceneMeaning": "讨厌的东西；本场景常见用法：噪声危害",
+      "examples": "[]"
+    },
+    {
+      "word": "restrain",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'stren",
+      "phoneticUk": "rɪ'streɪn",
+      "translation": "抑制，遏制；限制",
+      "sceneMeaning": "抑制，遏制；限制",
+      "examples": "[]"
+    },
+    {
+      "word": "tedious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'tidɪəs",
+      "phoneticUk": "'tiːdɪəs",
+      "translation": "冗长乏味的，沉闷的；单调沉闷的",
+      "sceneMeaning": "冗长乏味的，沉闷的；单调沉闷的",
+      "examples": "[]"
+    },
+    {
+      "word": "actual",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'æktʃuəl",
+      "phoneticUk": "'æktʃʊəl; -tjʊəl",
+      "translation": "实际的；现行的",
+      "sceneMeaning": "实际的；现行的",
+      "examples": "[]"
+    },
+    {
+      "word": "dangerous",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dendʒərəs",
+      "phoneticUk": "'deɪn(d)ʒ(ə)rəs",
+      "translation": "危险的，不安全的",
+      "sceneMeaning": "危险的",
+      "examples": "[]"
+    },
+    {
+      "word": "evil",
+      "partOfSpeech": "adj / n",
+      "phoneticUs": "'ivl",
+      "phoneticUk": "'iːv(ə)l; -vɪl",
+      "translation": "邪恶；祸害；坏的；邪恶，罪恶",
+      "sceneMeaning": "邪恶；祸害；坏的；邪恶，罪恶",
+      "examples": "[]"
+    },
+    {
+      "word": "harmful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'hɑrmfəl",
+      "phoneticUk": "'hɑːmfʊl; -f(ə)l",
+      "translation": "有害的",
+      "sceneMeaning": "有害的",
+      "examples": "[]"
+    },
+    {
+      "word": "precious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɛʃəs",
+      "phoneticUk": "'preʃəs",
+      "translation": "珍贵的，宝贵的",
+      "sceneMeaning": "珍贵的，宝贵的",
+      "examples": "[]"
+    },
+    {
+      "word": "reform",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "rɪ'fɔrm",
+      "phoneticUk": "rɪ'fɔːm",
+      "translation": "改革，改良",
+      "sceneMeaning": "改革",
+      "examples": "[]"
+    },
+    {
+      "word": "respond",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'spɑnd",
+      "phoneticUk": "rɪ'spɒnd",
+      "translation": "作答；响应",
+      "sceneMeaning": "回应",
+      "examples": "[]"
+    },
+    {
+      "word": "strain",
+      "partOfSpeech": "v",
+      "phoneticUs": "stren",
+      "phoneticUk": "streɪn",
+      "translation": "拉紧；尽力；扭伤，拉伤",
+      "sceneMeaning": "拉紧；尽力；扭伤，拉伤；本场景常见用法：应变能",
+      "examples": "[]"
+    },
+    {
+      "word": "stressful",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'strɛsfl",
+      "phoneticUk": "'stresfəl",
+      "translation": "充满著压力的，充满著紧张的",
+      "sceneMeaning": "充满著压力的，充满著紧张的",
+      "examples": "[]"
+    },
+    {
+      "word": "adjust",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'dʒʌst",
+      "phoneticUk": "ə'dʒʌst",
+      "translation": "调整，调节；校正",
+      "sceneMeaning": "调整",
+      "examples": "[]"
+    },
+    {
+      "word": "consequence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'kɑnsəkwɛns",
+      "phoneticUk": "'kɒnsɪkw(ə)ns",
+      "translation": "结果，后果；结果，成果",
+      "sceneMeaning": "后果",
+      "examples": "[]"
+    },
+    {
+      "word": "critic",
+      "partOfSpeech": "n",
+      "phoneticUs": "'krɪtɪk",
+      "phoneticUk": "'krɪtɪk",
+      "translation": "批评家，爱挑剔的人；批评家，评论家",
+      "sceneMeaning": "批评家，爱挑剔的人；批评家，评论家",
+      "examples": "[]"
+    },
+    {
+      "word": "delay",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'le",
+      "phoneticUk": "dɪ'leɪ",
+      "translation": "推迟；耽搁；延误；推迟，延期",
+      "sceneMeaning": "延迟",
+      "examples": "[]"
+    },
+    {
+      "word": "harm",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hɑrm",
+      "phoneticUk": "hɑːm",
+      "translation": "伤害，损害；损害；损害；危害；伤害；伤害，损害〔某事物〕",
+      "sceneMeaning": "伤害；危害",
+      "examples": "[]"
+    },
+    {
+      "word": "negotiate",
+      "partOfSpeech": "v",
+      "phoneticUs": "nɪ'ɡoʃɪet",
+      "phoneticUk": "nɪ'ɡəʊʃɪeɪt",
+      "translation": "谈判，协商，交涉",
+      "sceneMeaning": "谈判",
+      "examples": "[]"
+    },
+    {
+      "word": "plan",
+      "partOfSpeech": "n&vt",
+      "phoneticUs": "plæn",
+      "phoneticUk": "plæn",
+      "translation": "计划，打算",
+      "sceneMeaning": "计划",
+      "examples": "[]"
+    },
+    {
+      "word": "possibly",
+      "partOfSpeech": "adv",
+      "phoneticUs": "'pɑsəbli",
+      "phoneticUk": "'pɒsɪblɪ",
+      "translation": "可能地；也许",
+      "sceneMeaning": "可能地；也许",
+      "examples": "[]"
+    },
+    {
+      "word": "recovery",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "重获；痊愈，恢复",
+      "sceneMeaning": "恢复",
+      "examples": "[]"
+    },
+    {
+      "word": "settle",
+      "partOfSpeech": "v",
+      "phoneticUs": "'sɛtl",
+      "phoneticUk": "'set(ə)l",
+      "translation": "安排；安放；调停",
+      "sceneMeaning": "解决；安定",
+      "examples": "[]"
+    },
+    {
+      "word": "alert",
+      "partOfSpeech": "adj / v",
+      "phoneticUs": "ə'lɝt",
+      "phoneticUk": "ə'lɜːt",
+      "translation": "提醒；使〔某人〕意识到；机警的",
+      "sceneMeaning": "提醒；使〔某人〕意识到；机警的；本场景常见用法：紧急警报，红色警报；应急状况",
+      "examples": "[]"
+    },
+    {
+      "word": "bother",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'bɑðɚ",
+      "phoneticUk": "'bɒðə",
+      "translation": "烦扰，迷惑；麻烦；麻烦；打扰",
+      "sceneMeaning": "烦扰，迷惑；麻烦；麻烦；打扰",
+      "examples": "[]"
+    },
+    {
+      "word": "criticize",
+      "partOfSpeech": "v",
+      "phoneticUs": "'krɪtə'saɪz",
+      "phoneticUk": "'krɪtɪsaɪz",
+      "translation": "批评；评论；非难；批评；评论",
+      "sceneMeaning": "批评；评论；非难；批评；评论",
+      "examples": "[]"
+    },
+    {
+      "word": "disorder",
+      "partOfSpeech": "n",
+      "phoneticUs": "",
+      "phoneticUk": "",
+      "translation": "混乱，杂乱；骚乱",
+      "sceneMeaning": "混乱，杂乱；骚乱",
+      "examples": "[]"
+    },
+    {
+      "word": "error",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɛrɚ",
+      "phoneticUk": "'erə",
+      "translation": "错误，谬误；差错",
+      "sceneMeaning": "错误",
+      "examples": "[]"
+    },
+    {
+      "word": "factory",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fæktri",
+      "phoneticUk": "'fækt(ə)rɪ",
+      "translation": "工厂，制造厂",
+      "sceneMeaning": "工厂，制造厂；本场景常见用法：电工器材厂",
+      "examples": "[]"
+    },
+    {
+      "word": "foothold",
+      "partOfSpeech": "n",
+      "phoneticUs": "'fʊt'hold",
+      "phoneticUk": "ˈfʊthəʊld",
+      "translation": "立足处（攀登时脚踩的地方）",
+      "sceneMeaning": "立足处（攀登时脚踩的地方）",
+      "examples": "[]"
+    },
+    {
+      "word": "inappropriate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'ɪnə'proprɪət",
+      "phoneticUk": "ɪnə'prəʊprɪət",
+      "translation": "不合适的",
+      "sceneMeaning": "不合适的",
+      "examples": "[]"
+    },
+    {
+      "word": "mistake",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "mɪ'stek",
+      "phoneticUk": "mɪ'steɪk",
+      "translation": "错误；误解，弄错",
+      "sceneMeaning": "错误；失误",
+      "examples": "[]"
+    },
+    {
+      "word": "mysterious",
+      "partOfSpeech": "adj",
+      "phoneticUs": "mɪ'stɪrɪəs",
+      "phoneticUk": "mɪ'stɪərɪəs",
+      "translation": "神秘的；难以理解的",
+      "sceneMeaning": "神秘的；难以理解的",
+      "examples": "[]"
+    },
+    {
+      "word": "possibility",
+      "partOfSpeech": "n",
+      "phoneticUs": ",pɑsə'bɪləti",
+      "phoneticUk": ",pɒsɪ'bɪlɪtɪ",
+      "translation": "可能；可能的事",
+      "sceneMeaning": "可能；可能的事",
+      "examples": "[]"
+    },
+    {
+      "word": "procedure",
+      "partOfSpeech": "n",
+      "phoneticUs": "prə'sidʒɚ",
+      "phoneticUk": "prə'siːdʒə",
+      "translation": "程序；手续；过程；程序",
+      "sceneMeaning": "程序；步骤",
+      "examples": "[]"
+    },
+    {
+      "word": "recover",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'kʌvɚ",
+      "phoneticUk": "rɪ'kʌvə",
+      "translation": "重新获得；挽回；恢复；重新获得；寻回",
+      "sceneMeaning": "恢复",
+      "examples": "[]"
+    },
+    {
+      "word": "repair",
+      "partOfSpeech": "vt&n",
+      "phoneticUs": "rɪ'pɛr",
+      "phoneticUk": "rɪ'peə",
+      "translation": "修理，修补",
+      "sceneMeaning": "修理；修复",
+      "examples": "[]"
+    },
+    {
+      "word": "resolve",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "rɪ'zɑlv",
+      "phoneticUk": "rɪ'zɒlv",
+      "translation": "解决；决心；决心；解决；下决心",
+      "sceneMeaning": "解决；化解",
+      "examples": "[]"
+    },
+    {
+      "word": "restrict",
+      "partOfSpeech": "v",
+      "phoneticUs": "rɪ'strɪkt",
+      "phoneticUk": "rɪ'strɪkt",
+      "translation": "vt限制，限定，约束；限制，限定",
+      "sceneMeaning": "限制",
+      "examples": "[]"
+    },
+    {
+      "word": "slippery",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'slɪpəri",
+      "phoneticUk": "'slɪp(ə)rɪ",
+      "translation": "滑的，使人滑跤的；滑的；模糊的，不明确的，",
+      "sceneMeaning": "滑的，使人滑跤的；滑的；模糊的，不明确的，",
+      "examples": "[]"
+    },
+    {
+      "word": "threat",
+      "partOfSpeech": "n",
+      "phoneticUs": "θrɛt",
+      "phoneticUk": "θret",
+      "translation": "威胁，恐吓，凶兆",
+      "sceneMeaning": "威胁",
+      "examples": "[]"
+    },
+    {
+      "word": "confront",
+      "partOfSpeech": "v",
+      "phoneticUs": "kən'frʌnt",
+      "phoneticUk": "kən'frʌnt",
+      "translation": "面对",
+      "sceneMeaning": "面对",
+      "examples": "[]"
+    },
+    {
+      "word": "confusion",
+      "partOfSpeech": "n",
+      "phoneticUs": "kən'fjʊʒən",
+      "phoneticUk": "kən'fjuːʒ(ə)n",
+      "translation": "混乱；骚乱；混淆",
+      "sceneMeaning": "困惑；混乱",
+      "examples": "[]"
+    },
+    {
+      "word": "curb",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kɝb",
+      "phoneticUk": "kəb",
+      "translation": "控制",
+      "sceneMeaning": "控制",
+      "examples": "[]"
+    },
+    {
+      "word": "cure",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "kjʊr",
+      "phoneticUk": "kjʊə; kjɔː",
+      "translation": "医治；消除；治愈",
+      "sceneMeaning": "治疗；解决办法",
+      "examples": "[]"
+    },
+    {
+      "word": "destroy",
+      "partOfSpeech": "v",
+      "phoneticUs": "dɪ'strɔɪ",
+      "phoneticUk": "dɪ'strɒɪ",
+      "translation": "破坏；消灭；打破",
+      "sceneMeaning": "破坏；消灭；打破",
+      "examples": "[]"
+    },
+    {
+      "word": "difficulty",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'dɪfɪkəlti",
+      "phoneticUk": "'dɪfɪk(ə)ltɪ",
+      "translation": "困难；难事；困境",
+      "sceneMeaning": "困难",
+      "examples": "[]"
+    },
+    {
+      "word": "dilemma",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪˈlemə",
+      "phoneticUk": "dɪˈlemə",
+      "translation": "困境",
+      "sceneMeaning": "困境",
+      "examples": "[]"
+    },
+    {
+      "word": "exert",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪɡ'zɝt",
+      "phoneticUk": "ɪg'zɜːt; eg-",
+      "translation": "尽(力)，运用",
+      "sceneMeaning": "尽(力)，运用",
+      "examples": "[]"
+    },
+    {
+      "word": "exposure",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪk'spoʒɚ",
+      "phoneticUk": "ɪk'spəʊʒə; ek-",
+      "translation": "暴露；揭露；曝光；暴露；揭露",
+      "sceneMeaning": "暴露；风险敞口",
+      "examples": "[]"
+    },
+    {
+      "word": "improper",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'prɑpɚ",
+      "phoneticUk": "ɪmˈprɒpə(r)",
+      "translation": "不合适的，不适当的",
+      "sceneMeaning": "不合适的，不适当的",
+      "examples": "[]"
+    },
+    {
+      "word": "incident",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnsɪdənt",
+      "phoneticUk": "'ɪnsɪd(ə)nt",
+      "translation": "发生的事；事件",
+      "sceneMeaning": "事件；事故",
+      "examples": "[]"
+    },
+    {
+      "word": "overcome",
+      "partOfSpeech": "v",
+      "phoneticUs": ",ovɚ'kʌm",
+      "phoneticUk": "əʊvə'kʌm",
+      "translation": "战胜，克服",
+      "sceneMeaning": "克服",
+      "examples": "[]"
+    },
+    {
+      "word": "preventable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "pri'vɛntəbl",
+      "phoneticUk": "prɪ'ventəbl",
+      "translation": "可预防的",
+      "sceneMeaning": "可预防的",
+      "examples": "[]"
+    },
+    {
+      "word": "probability",
+      "partOfSpeech": "n",
+      "phoneticUs": "'prɑbə'bɪləti",
+      "phoneticUk": "prɒbə'bɪlɪtɪ",
+      "translation": "可能性；概率",
+      "sceneMeaning": "可能性；概率；本场景常见用法：故障几率；失效概率；崩塌概率",
+      "examples": "[]"
+    },
+    {
+      "word": "protective",
+      "partOfSpeech": "adj",
+      "phoneticUs": "prə'tɛktɪv",
+      "phoneticUk": "prə'tektɪv",
+      "translation": "保护的，防护的",
+      "sceneMeaning": "保护性的",
+      "examples": "[]"
+    },
+    {
+      "word": "puzzle",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'pʌzl",
+      "phoneticUk": "'pʌz(ə)l",
+      "translation": "难题；谜；使迷惑；迷惑；难解之事，谜",
+      "sceneMeaning": "难题；谜；使迷惑；迷惑；难解之事，谜",
+      "examples": "[]"
+    },
+    {
+      "word": "puzzling",
+      "partOfSpeech": "adj",
+      "phoneticUs": "",
+      "phoneticUk": "'pʌzlɪŋ",
+      "translation": "令人困惑的",
+      "sceneMeaning": "令人困惑的",
+      "examples": "[]"
+    },
+    {
+      "word": "remedy",
+      "partOfSpeech": "n / n&vt",
+      "phoneticUs": "'rɛmədi",
+      "phoneticUk": "'remɪdɪ",
+      "translation": "治疗；补救；药物",
+      "sceneMeaning": "补救办法",
+      "examples": "[]"
+    },
+    {
+      "word": "reply",
+      "partOfSpeech": "vi&n",
+      "phoneticUs": "rɪ'plai",
+      "phoneticUk": "rɪ'plaɪ",
+      "translation": "回答，答复",
+      "sceneMeaning": "回答，答复；本场景常见用法：速复",
+      "examples": "[]"
+    },
+    {
+      "word": "restraint",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'strent",
+      "phoneticUk": "rɪ'streɪnt",
+      "translation": "抑制；遏制；克制",
+      "sceneMeaning": "抑制；遏制；克制",
+      "examples": "[]"
+    },
+    {
+      "word": "tense",
+      "partOfSpeech": "n",
+      "phoneticUs": "tɛns",
+      "phoneticUk": "tens",
+      "translation": "时态，时",
+      "sceneMeaning": "时态，时；本场景常见用法：现在进行时",
+      "examples": "[]"
+    },
+    {
+      "word": "trap",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "træp",
+      "phoneticUk": "træp",
+      "translation": "陷阱；诡计；诱骗",
+      "sceneMeaning": "陷阱；诡计；诱骗",
+      "examples": "[]"
+    },
+    {
+      "word": "abnormal",
+      "partOfSpeech": "adj",
+      "phoneticUs": "æbˈnɔːrml",
+      "phoneticUk": "æb'nɔːml",
+      "translation": "不正常的；变态的",
+      "sceneMeaning": "不正常的；变态的；本场景常见用法：月经失调",
+      "examples": "[]"
+    },
+    {
+      "word": "accidental",
+      "partOfSpeech": "adj",
+      "phoneticUs": ",æksɪ'dɛntl",
+      "phoneticUk": "æksɪ'dent(ə)l",
+      "translation": "偶然的；非本质的",
+      "sceneMeaning": "偶然的；非本质的",
+      "examples": "[]"
+    },
+    {
+      "word": "adequate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈædɪkwət",
+      "phoneticUk": "'ædɪkwət",
+      "translation": "足够的；可以胜任的；足够的",
+      "sceneMeaning": "足够的；适当的",
+      "examples": "[]"
+    },
+    {
+      "word": "alarm",
+      "partOfSpeech": "n",
+      "phoneticUs": "ə'lɑrm",
+      "phoneticUk": "ə'lɑːm",
+      "translation": "惊恐，忧虑；警报",
+      "sceneMeaning": "警报；惊慌",
+      "examples": "[]"
+    },
+    {
+      "word": "arise",
+      "partOfSpeech": "v",
+      "phoneticUs": "ə'raɪz",
+      "phoneticUk": "ə'raɪz",
+      "translation": "出现；由…引起",
+      "sceneMeaning": "出现；由…引起",
+      "examples": "[]"
+    },
+    {
+      "word": "caution",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "'kɔʃən",
+      "phoneticUk": "'kɔ:ʃən",
+      "translation": "小心，谨慎；警告，告诫",
+      "sceneMeaning": "小心，谨慎；警告，告诫",
+      "examples": "[]"
+    },
+    {
+      "word": "collapse",
+      "partOfSpeech": "v",
+      "phoneticUs": "kə'læps",
+      "phoneticUk": "kə'læps",
+      "translation": "倒坍；崩溃，瓦解",
+      "sceneMeaning": "倒坍；崩溃，瓦解",
+      "examples": "[]"
+    },
+    {
+      "word": "defect",
+      "partOfSpeech": "n",
+      "phoneticUs": "‘dɪfɛkt",
+      "phoneticUk": "'diːfekt; dɪ'fekt",
+      "translation": "缺点，缺陷，欠缺",
+      "sceneMeaning": "缺陷",
+      "examples": "[]"
+    },
+    {
+      "word": "disservice",
+      "partOfSpeech": "n",
+      "phoneticUs": "dɪs'sɝvɪs",
+      "phoneticUk": "dɪsˈsɜ:vɪs",
+      "translation": "伤害，帮倒忙",
+      "sceneMeaning": "伤害，帮倒忙",
+      "examples": "[]"
+    },
+    {
+      "word": "exaggerate",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "ɪɡ'zædʒəret",
+      "phoneticUk": "ɪg'zædʒəreɪt; eg-",
+      "translation": "夸大，夸张；夸张",
+      "sceneMeaning": "夸大，夸张；夸张",
+      "examples": "[]"
+    },
+    {
+      "word": "expose",
+      "partOfSpeech": "v",
+      "phoneticUs": "ɪk'spoz；ek-",
+      "phoneticUk": "ɪk'spəʊz; ek-",
+      "translation": "使暴露；揭露；暴露",
+      "sceneMeaning": "使暴露；揭露；暴露",
+      "examples": "[]"
+    },
+    {
+      "word": "fault",
+      "partOfSpeech": "n",
+      "phoneticUs": "fɔlt",
+      "phoneticUk": "fɔːlt; fɒlt",
+      "translation": "缺点；过失；故障",
+      "sceneMeaning": "错误；缺点",
+      "examples": "[]"
+    },
+    {
+      "word": "faulty",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fɔlti",
+      "phoneticUk": "'fɔːltɪ; 'fɒltɪ",
+      "translation": "有错误的，有缺点的",
+      "sceneMeaning": "有错误的，有缺点的",
+      "examples": "[]"
+    },
+    {
+      "word": "feasible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fizəbl",
+      "phoneticUk": "'fiːzɪb(ə)l",
+      "translation": "可行的；可能的；可行的；可能的；可用的",
+      "sceneMeaning": "可行的",
+      "examples": "[]"
+    },
+    {
+      "word": "fussy",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'fʌsi",
+      "phoneticUk": "'fʌsɪ",
+      "translation": "爱挑剔的；",
+      "sceneMeaning": "爱挑剔的；",
+      "examples": "[]"
+    },
+    {
+      "word": "halt",
+      "partOfSpeech": "n / v",
+      "phoneticUs": "hɔlt",
+      "phoneticUk": "hɔːlt",
+      "translation": "停止；立定；停住",
+      "sceneMeaning": "停止；立定；停住",
+      "examples": "[]"
+    },
+    {
+      "word": "hazard",
+      "partOfSpeech": "n",
+      "phoneticUs": "'hæzɚd",
+      "phoneticUk": "'hæzəd",
+      "translation": "危险；公害；危险",
+      "sceneMeaning": "危险因素",
+      "examples": "[]"
+    },
+    {
+      "word": "hopeless",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ˈhoʊpləs",
+      "phoneticUk": "'həʊpləs",
+      "translation": "没有希望的，绝望的",
+      "sceneMeaning": "没有希望的，绝望的",
+      "examples": "[]"
+    },
+    {
+      "word": "impermanent",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪm'pɝmənənt",
+      "phoneticUk": "im'pə:mənənt",
+      "translation": "非永久（性）的；不持久的，暂时的",
+      "sceneMeaning": "非永久（性）的；不持久的，暂时的",
+      "examples": "[]"
+    },
+    {
+      "word": "inadequacy",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'ædɪkwəsi",
+      "phoneticUk": "ɪn'ædɪkwəsɪ",
+      "translation": "不足",
+      "sceneMeaning": "不足",
+      "examples": "[]"
+    },
+    {
+      "word": "inadequate",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'ædɪkwət",
+      "phoneticUk": "ɪn'ædɪkwət",
+      "translation": "不足的，不够的",
+      "sceneMeaning": "不足的；不充分的",
+      "examples": "[]"
+    },
+    {
+      "word": "incidence",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ɪnsɪdəns",
+      "phoneticUk": "'ɪnsɪd(ə)ns",
+      "translation": "几率，发生率",
+      "sceneMeaning": "几率，发生率",
+      "examples": "[]"
+    },
+    {
+      "word": "intensity",
+      "partOfSpeech": "n",
+      "phoneticUs": "ɪn'tɛnsəti",
+      "phoneticUk": "ɪn'tensɪtɪ",
+      "translation": "强烈，剧烈；强度",
+      "sceneMeaning": "强烈，剧烈；强度；本场景常见用法：应力强度因子；应力强度因数",
+      "examples": "[]"
+    },
+    {
+      "word": "interruption",
+      "partOfSpeech": "n",
+      "phoneticUs": ",ɪntə'rʌpʃən",
+      "phoneticUk": "ɪntə'rʌpʃn",
+      "translation": "中断，打断；障碍物；打扰；中断",
+      "sceneMeaning": "中断",
+      "examples": "[]"
+    },
+    {
+      "word": "invisible",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ɪn'vɪzəbl",
+      "phoneticUk": "ɪn'vɪzɪb(ə)l",
+      "translation": "看不见的，无形的",
+      "sceneMeaning": "看不见的，无形的",
+      "examples": "[]"
+    },
+    {
+      "word": "liability",
+      "partOfSpeech": "n",
+      "phoneticUs": "'laɪə'bɪləti",
+      "phoneticUk": "ˌlaɪəˈbɪləti",
+      "translation": "责任",
+      "sceneMeaning": "责任；负债",
+      "examples": "[]"
+    },
+    {
+      "word": "limitation",
+      "partOfSpeech": "n",
+      "phoneticUs": ",lɪmɪ'teʃən",
+      "phoneticUk": "lɪmɪ'teɪʃ(ə)n",
+      "translation": "限制；限度，局限",
+      "sceneMeaning": "限制；局限",
+      "examples": "[]"
+    },
+    {
+      "word": "malfunction",
+      "partOfSpeech": "n",
+      "phoneticUs": ",mæl'fʌŋkʃən",
+      "phoneticUk": "mæl'fʌŋ(k)ʃ(ə)n",
+      "translation": "失灵，故障",
+      "sceneMeaning": "失灵，故障",
+      "examples": "[]"
+    },
+    {
+      "word": "mend",
+      "partOfSpeech": "v",
+      "phoneticUs": "mɛnd",
+      "phoneticUk": "mend",
+      "translation": "修理，修补，缝补",
+      "sceneMeaning": "修理，修补，缝补",
+      "examples": "[]"
+    },
+    {
+      "word": "precaution",
+      "partOfSpeech": "n",
+      "phoneticUs": "prɪ'kɔʃən",
+      "phoneticUk": "prɪ'kɔːʃ(ə)n",
+      "translation": "预防；警惕",
+      "sceneMeaning": "预防；警惕；本场景常见用法：安全预防措施",
+      "examples": "[]"
+    },
+    {
+      "word": "probable",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'prɑbəbl",
+      "phoneticUk": "'prɒbəb(ə)l",
+      "translation": "或有的；大概的",
+      "sceneMeaning": "或有的；大概的",
+      "examples": "[]"
+    },
+    {
+      "word": "radioactive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'redɪo'æktɪv",
+      "phoneticUk": ",reɪdɪəʊ'æktɪv",
+      "translation": "放射性的",
+      "sceneMeaning": "放射性的",
+      "examples": "[]"
+    },
+    {
+      "word": "restriction",
+      "partOfSpeech": "n",
+      "phoneticUs": "rɪ'strɪkʃən",
+      "phoneticUk": "rɪ'strɪkʃn",
+      "translation": "限制，限定",
+      "sceneMeaning": "限制；约束",
+      "examples": "[]"
+    },
+    {
+      "word": "riot",
+      "partOfSpeech": "n",
+      "phoneticUs": "'raɪət",
+      "phoneticUk": "'raɪət",
+      "translation": "暴乱",
+      "sceneMeaning": "暴乱",
+      "examples": "[]"
+    },
+    {
+      "word": "shortage",
+      "partOfSpeech": "n",
+      "phoneticUs": "'ʃɔrtɪdʒ",
+      "phoneticUk": "'ʃɔːtɪdʒ",
+      "translation": "不足，缺少，不足额",
+      "sceneMeaning": "短缺",
+      "examples": "[]"
+    },
+    {
+      "word": "soluble",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'sɑljəbl",
+      "phoneticUk": "'sɒljʊb(ə)l",
+      "translation": "可溶的；可以解决的",
+      "sceneMeaning": "可溶的；可以解决的；本场景常见用法：可溶性淀粉",
+      "examples": "[]"
+    },
+    {
+      "word": "succession",
+      "partOfSpeech": "n",
+      "phoneticUs": "sək'sɛʃən",
+      "phoneticUk": "sək'seʃ(ə)n",
+      "translation": "连续；继任，继承",
+      "sceneMeaning": "连续；继任，继承；本场景常见用法：接班人计划；继任计划",
+      "examples": "[]"
+    },
+    {
+      "word": "successive",
+      "partOfSpeech": "adj",
+      "phoneticUs": "sək'sɛsɪv",
+      "phoneticUk": "sək'sesɪv",
+      "translation": "连续的；接连的",
+      "sceneMeaning": "连续的；接连的；本场景常见用法：逐次消元",
+      "examples": "[]"
+    },
+    {
+      "word": "threaten",
+      "partOfSpeech": "v / vt&vi",
+      "phoneticUs": "'θrɛtn",
+      "phoneticUk": "'θret(ə)n",
+      "translation": "威胁，恐吓；威胁",
+      "sceneMeaning": "威胁",
+      "examples": "[]"
+    },
+    {
+      "word": "trigger",
+      "partOfSpeech": "v",
+      "phoneticUs": "'trɪɡɚ",
+      "phoneticUk": "'trɪgə",
+      "translation": "引发，引起",
+      "sceneMeaning": "触发因素；诱因",
+      "examples": "[]"
+    },
+    {
+      "word": "troublesome",
+      "partOfSpeech": "adj",
+      "phoneticUs": "'trʌblsəm",
+      "phoneticUk": "'trʌb(ə)ls(ə)m",
+      "translation": "令人烦恼的；麻烦的",
+      "sceneMeaning": "令人烦恼的；麻烦的",
+      "examples": "[]"
+    },
+    {
+      "word": "uncertain",
+      "partOfSpeech": "adj",
+      "phoneticUs": "ʌn'sɝtn",
+      "phoneticUk": "ʌnˈsɜ:tn",
+      "translation": "不确定的",
+      "sceneMeaning": "不确定的",
+      "examples": "[]"
+    },
+    {
+      "word": "weaken",
+      "partOfSpeech": "v",
+      "phoneticUs": "'wikən",
+      "phoneticUk": "'wiːk(ə)n",
+      "translation": "削弱；变弱；减少，减弱",
+      "sceneMeaning": "削弱；变弱；减少，减弱",
+      "examples": "[]"
+    },
+    {
+      "word": "weakness",
+      "partOfSpeech": "n",
+      "phoneticUs": "'wiknəs",
+      "phoneticUk": "ˈwiːknəs",
+      "translation": "虚弱，软弱；弱点",
+      "sceneMeaning": "弱点",
+      "examples": "[]"
+    },
+    {
+      "word": "worsen",
+      "partOfSpeech": "v",
+      "phoneticUs": "'wɝsn",
+      "phoneticUk": "'wɜ:sn",
+      "translation": "（使）变得更坏",
+      "sceneMeaning": "（使）变得更坏",
+      "examples": "[]"
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+
+
+
+:root {
+  --action-height: 40px;
+  --action-radius: 10px;
+  --action-padding: 9px 14px;
+  --interaction-duration: 160ms;
+}
+
+
+body :where(.public-shell, .admin-shell) :where(
+  button, a.public-button, a.primary-button, a.secondary-button, a.english-rw__button,
+  a[class*='__create'], [class*='__actions'] > a, .portfolio-card footer a
+):not(:where(
+  .vditor button, .editor-menubar button, .editor-menubar__menu button, .public-pagination button, .public-select button, .public-search button,
+  .public-filter-tabs button, .public-toggle-filter button, .media-library__preview,
+  .theme-words__display button, .admin-shell__header-action, .admin-shell__mobile-menu,
+  .site-header button, .theme-control button, .vocabulary-card__display button,
+  .admin-shell__group-toggle, .admin-shell__collapse, .admin-shell__mobile-toggle,
+  .admin-shell__nav-caption--toggle, .admin-shell__scrim,
+  .chapter-exercises__select, .mobile-public-nav button,
+  [role='tab'], [role='option'], [aria-haspopup], [class*='__icon'], [class*='__toggle']
+)) {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: var(--action-height);
+  padding: var(--action-padding);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--action-radius);
+  color: var(--text-primary);
+  background: var(--bg-surface);
+  font-family: var(--font-family);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: color var(--interaction-duration) ease, background-color var(--interaction-duration) ease,
+    border-color var(--interaction-duration) ease, box-shadow var(--interaction-duration) ease;
+}
+
+
+body :where(.public-shell, .admin-shell) :where(button, .public-button, .primary-button, .secondary-button, .english-rw__button, a[class*='__create']):where(:hover:not(:disabled)) {
+  border-color: var(--primary);
+  box-shadow: 0 3px 10px color-mix(in srgb, var(--primary) 10%, transparent);
+}
+
+
+body :is(.public-shell, .admin-shell) :is(.primary-button, .public-button.primary, .english-rw__button.primary, a[class*='__create'], .theme-words__confirm) {
+  color: var(--on-primary);
+  border-color: var(--primary);
+  background: var(--primary);
+}
+
+
+body :is(.public-shell, .admin-shell) :is(.primary-button, .public-button.primary, .english-rw__button.primary, a[class*='__create'], .theme-words__confirm):hover:not(:disabled) {
+  color: var(--on-primary);
+  background: var(--primary-hover);
+}
+
+
+body :is(.public-shell, .admin-shell) :is(button.danger, button.is-danger, .danger-button, .english-docs-admin__delete) {
+  color: var(--danger, #b44848);
+  border-color: color-mix(in srgb, var(--danger, #b44848) 35%, var(--border));
+}
+
+
+body :is(.public-shell, .admin-shell) :is(button, a):focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 3px;
+}
+
+
+body :is(.public-shell, .admin-shell) button:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+  box-shadow: none;
+  transform: none;
+}
+
+
+:is(.public-shell, .admin-shell) :is(
+  .surface-card, .editorial-card, .public-interactive, .content-card, .portfolio-card, .tag-card,
+  .media-library__card, .tutorial-manage__card, .curriculum-admin__chapter,
+  .vocabulary-card, .english-rw__card, .english-docs-admin__card, .invitation-card,
+  [class$='__card'], [class$='-card']
+) {
+  transition: border-color var(--interaction-duration) ease, box-shadow var(--interaction-duration) ease,
+    transform var(--interaction-duration) ease;
+}
+
+
+@media (hover: hover) {
+
+  :is(.public-shell, .admin-shell) :is(
+    .surface-card, .editorial-card, .content-card, .portfolio-card, .tag-card, .media-library__card,
+    .tutorial-manage__card, .curriculum-admin__chapter, .vocabulary-card, .english-rw__card,
+    .english-docs-admin__card, .invitation-card, [class$='__card'], [class$='-card']
+  ):hover {
+    border-color: color-mix(in srgb, var(--primary) 45%, var(--border));
+    box-shadow: 0 8px 24px color-mix(in srgb, var(--primary) 9%, transparent);
+    transform: translateY(-2px);
+  }
+}
+
+
+:is(.public-shell, .admin-shell) :is(.surface-card, .content-card, .portfolio-card, .tag-card, .media-library__card,
+  .tutorial-manage__card, .curriculum-admin__chapter, .vocabulary-card, [class$='__card'], [class$='-card']):focus-within {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 12%, transparent);
+}
+
+
+:is(.public-shell, .admin-shell) :is(article[tabindex='0'], [class$='__card'][tabindex='0']) { cursor: pointer; }
+
+
+@media (max-width: 760px) {
+
+  :root { --action-height: 44px; --action-padding: 10px 14px; }
+
+  :is(.public-shell, .admin-shell) :is([class$='__actions'], [class$='__tools'], .table-actions) {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .admin-shell__header-title { flex-shrink: 0; }
+
+  .admin-shell__header-actions, .admin-shell__account { min-width: 0; }
+
+  .admin-shell__header .admin-shell__header-action, .admin-shell__mobile-menu { min-height: 44px; }
+
+  .admin-shell__account > .admin-shell__header-action { max-width: 80px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  :is(.tutorial-preview__header, .tutorial-exercises-manage__heading) { align-items: flex-start; flex-wrap: wrap; }
+
+  :is(.public-shell, .admin-shell) :is(input, select, textarea) { font-size: max(16px, 1em); }
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+
+  :root { --interaction-duration: 0ms; }
+
+  :is(.public-shell, .admin-shell) :is([class$='__card'], [class$='-card'], .surface-card):hover { transform: none; }
+}

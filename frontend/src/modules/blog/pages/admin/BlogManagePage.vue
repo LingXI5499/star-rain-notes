@@ -23,18 +23,7 @@ import {
   POST_STATUSES, canDelete, canPublish, canRestore, canWithdraw, dateLabel,
 } from '../../support/display'
 
-/*
- * 后台博客列表（对齐 V1 views/admin/BlogListView.vue）。
- *
- * 结构与 V1 一致：标题区 + 筛选工具条 + 卡片式列表 + 分页器。
- * 行内操作按后端状态机给出：每个状态只显示它能做的事，
- * 让「先撤回再删除」这类规则在界面上就能看出来。
- *
- * 预览打开的是**公开树**的文章地址（/blog/posts/:slug，同域同源）。
- * 为什么不用账号树的镜像地址：预览要看的就是匿名访客看到的那一页，
- * 账号树那份带着登录态与账号外壳，不是公开发布后的样子。
- * 地址直接用当前 origin 拼：入口改成路径方案后不再有域名推导，后台与公开站同一个来源。
- */
+// 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
 /**
  * router；通过 useRouter 建立。
  */
@@ -288,8 +277,8 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
         <p>管理文章生命周期、标签与前台时间线展示。</p>
       </div>
       <div class="content-admin__hero-actions">
-        <RouterLink to="/useradmin/blog/taxonomy">分类与专题</RouterLink>
-        <RouterLink to="/useradmin/blog/editor/new" class="is-primary">＋ 新建文章</RouterLink>
+        <RouterLink to="/blog/taxonomy">分类与专题</RouterLink>
+        <RouterLink to="/blog/editor/new" class="is-primary">＋ 新建文章</RouterLink>
       </div>
     </header>
 
@@ -318,7 +307,7 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
     <p v-if="loading" class="loading" role="status">正在加载文章…</p>
 
     <div class="content-admin__list">
-      <article v-for="post in data.items" :key="post.id" class="content-card" tabindex="0" :aria-label="`编辑文章：${post.title}`" @click="router.push(`/useradmin/blog/editor/${post.id}`)" @keydown.enter.self="router.push(`/useradmin/blog/editor/${post.id}`)">
+      <article v-for="post in data.items" :key="post.id" class="content-card" tabindex="0" :aria-label="`编辑文章：${post.title}`" @click="router.push(`/blog/editor/${post.id}`)" @keydown.enter.self="router.push(`/blog/editor/${post.id}`)">
         <div class="content-card__body">
           <div class="content-card__heading">
             <div>
@@ -343,7 +332,7 @@ usePaginationScroll(() => `${page.value}:${pageSize.value}`, () => loading.value
             </div>
             <div class="content-card__actions" @click.stop>
               <button type="button" @click="preview(post)">预览</button>
-              <button type="button" @click="router.push(`/useradmin/blog/editor/${post.id}`)">编辑</button>
+              <button type="button" @click="router.push(`/blog/editor/${post.id}`)">编辑</button>
               <button v-if="canPublish(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'publish')">发布</button>
               <button v-if="canWithdraw(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'withdraw')">撤回</button>
               <button v-if="canRestore(post.status)" type="button" :disabled="busyId === post.id" @click="act(post, 'restore')">重新公开</button>
