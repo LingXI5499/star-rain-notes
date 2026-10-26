@@ -12,6 +12,14 @@ export default defineConfig({
   plugins: [vue()],
   test: {
     environment: 'happy-dom',
+    environmentOptions: {
+      happyDOM: {
+        settings: {
+          // happy-dom 21 起默认禁用 iframe 页面加载，PDF 打印测试需要真实浏览上下文。
+          enableIframePageLoading: true,
+        },
+      },
+    },
     include: ['src/**/*.spec.js'],
   },
 })

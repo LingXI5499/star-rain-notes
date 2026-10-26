@@ -37,6 +37,7 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run build
+      - run: npm audit --audit-level=high
 
   # 技能包独立检查：验证 Python 脚本语法与文章结构检查器，不生成发布或部署产物。
   skills:
