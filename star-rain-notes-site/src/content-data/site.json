@@ -5,5 +5,10 @@
   "intro": "系统整理技术，认真记录思考，在真实项目中验证学习，也为下一次出发留下清晰的路径。",
   "url": "https://yulanlin.cn",
   "language": "zh-CN",
-  "ogImage": "/brand/og-default.png"
+  "ogImage": "/brand/og-default.png",
+  "registration": {
+    "icpRecord": "晋ICP备2026008281号-1",
+    "publicSecurityRecord": "晋公网安备14050002001992号",
+    "publicSecurityCode": "14050002001992"
+  }
 }

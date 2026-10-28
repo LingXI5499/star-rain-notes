@@ -8,11 +8,11 @@
 .theme-words__intro:not(.__static_scope){color:var(--text-secondary);font-size:14px}
 .theme-words__plan:not(.__static_scope){flex-shrink:0;padding:12px 16px;border:1px solid var(--border-strong);border-radius:12px;font-size:14px}
 .theme-words__note:not(.__static_scope){padding:12px 16px;background:var(--primary-soft);border-radius:12px;color:var(--primary);font-size:13px;margin-bottom:18px}
-button:not(.__static_scope),select:not(.__static_scope),input[type=search]:not(.__static_scope){width:auto;min-width:0;min-height:40px;padding:9px 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-surface);color:var(--text-primary);font:inherit;font-size:13px}
-button:not(.__static_scope){cursor:pointer;white-space:nowrap;transition:background .15s,border-color .15s}
-button:not(.__static_scope):hover:not(:disabled){border-color:var(--primary);background:var(--primary-soft)}
-button:not(.__static_scope):disabled{opacity:.45;cursor:default}
-button:not(.__static_scope):focus-visible,summary:not(.__static_scope):focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+:where(.theme-words) button:not(.__static_scope),:where(.theme-words) select:not(.__static_scope),:where(.theme-words) input[type=search]:not(.__static_scope){width:auto;min-width:0;min-height:40px;padding:9px 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-surface);color:var(--text-primary);font:inherit;font-size:13px}
+:where(.theme-words) button:not(.__static_scope){cursor:pointer;white-space:nowrap}
+:where(.theme-words) button:not(.__static_scope):hover:not(:disabled){border-color:var(--primary);background:var(--primary-soft)}
+:where(.theme-words) button:not(.__static_scope):disabled{opacity:.45;cursor:default}
+:where(.theme-words) button:not(.__static_scope):focus-visible,:where(.theme-words) summary:not(.__static_scope):focus-visible{outline:2px solid var(--primary);outline-offset:3px}
 .theme-words__tools:not(.__static_scope){position:sticky;top:calc(var(--vocabulary-header-offset,64px) + 10px);z-index:15;padding:16px 18px 12px;background:var(--bg-surface);border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow-md,0 8px 28px #0001)}
 .theme-words__filters:not(.__static_scope){display:flex;align-items:flex-end;gap:10px}
 .theme-words__search:not(.__static_scope){display:flex;align-items:center;gap:10px;flex:1;min-width:0;padding:0 12px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-elevated)}
@@ -49,7 +49,7 @@ button:not(.__static_scope):focus-visible,summary:not(.__static_scope):focus-vis
 .theme-words__pager:not(.__static_scope){display:flex;justify-content:center;align-items:center;gap:24px;margin-top:28px;font-size:13px}
 .theme-words__empty:not(.__static_scope){padding:48px 20px;text-align:center;line-height:2;background:var(--bg-surface);border:1px dashed var(--border-strong);border-radius:16px}
 .theme-words__empty button:not(.__static_scope){margin-left:12px}
-[role=alert]:not(.__static_scope){color:var(--accent)}
+.theme-words [role=alert]:not(.__static_scope){color:var(--accent)}
 @media(max-width:720px){
 .theme-words__header:not(.__static_scope){align-items:flex-start;flex-direction:column;gap:14px}
 .theme-words__plan:not(.__static_scope){padding:8px 12px}
