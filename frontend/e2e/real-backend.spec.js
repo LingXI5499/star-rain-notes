@@ -125,14 +125,17 @@ function png() {
   const chunk = (type, body) => { const name = Buffer.from(type), size = Buffer.alloc(4), sum = Buffer.alloc(4); size.writeUInt32BE(body.length); sum.writeUInt32BE(crc32(Buffer.concat([name, body]))); return Buffer.concat([size, name, body, sum]) }
   return Buffer.concat([Buffer.from('89504e470d0a1a0a', 'hex'), chunk('IHDR', header), chunk('IDAT', deflateSync(raw, { level: 0 })), chunk('IEND', Buffer.alloc(0))])
 }
-test('uploads are protected and authorized image variants remain revocable', async ({ page }) => {
+test('image uploads default to public and authorized image variants remain revocable', async ({ page }) => {
   const bytes = png()
   const uploaded = await page.request.post('/api/admin/media/assets', { headers: { 'X-XSRF-TOKEN': await csrf(page) }, multipart: { file: { name: 'isolated-cover.png', mimeType: 'image/png', buffer: bytes } } })
   expect(uploaded.status()).toBe(200)
   const asset = (await uploaded.json()).data
-  expect(asset.accessLevel).toBe('PROTECTED')
+  expect(asset.accessLevel).toBe('PUBLIC')
   const anonymous = await requests.newContext({ baseURL: process.env.STAR_RAIN_API_TARGET })
   try {
+    expect((await anonymous.get(`/api/media/assets/${asset.id}/content`)).status()).toBe(200)
+    expect((await anonymous.get(`/api/media/assets/${asset.id}/thumbnail?width=360`)).status()).toBe(200)
+    expect((await write(page, 'PATCH', `/api/admin/media/assets/${asset.id}/access-level`, { accessLevel: 'PROTECTED' })).status()).toBe(200)
     expect((await anonymous.get(`/api/media/assets/${asset.id}/content`)).status()).toBe(403)
     expect((await anonymous.get(`/api/media/assets/${asset.id}/thumbnail?width=360`)).status()).toBe(403)
     const publicResult = await write(page, 'PATCH', `/api/admin/media/assets/${asset.id}/access-level`, { accessLevel: 'PUBLIC' })
