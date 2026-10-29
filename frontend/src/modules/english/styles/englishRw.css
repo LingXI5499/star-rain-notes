@@ -125,10 +125,10 @@
    */
   .english-rw label{display:grid;gap:8px;color:var(--text-secondary);font-size:13px}
 /**
- * 样式范围：.english-rw input:not([type=checkbox]),.english-rw textarea。
+ * 样式范围：.english-rw input:not([type=checkbox]):not([type=search]),.english-rw textarea。
  * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
  */
-.english-rw input:not([type=checkbox]),.english-rw textarea{box-sizing:border-box;width:100%;padding:12px 14px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-page);color:var(--text-primary);font:inherit;line-height:1.7}
+.english-rw input:not([type=checkbox]):not([type=search]),.english-rw textarea{box-sizing:border-box;width:100%;padding:12px 14px;border:1px solid var(--border-strong);border-radius:10px;background:var(--bg-page);color:var(--text-primary);font:inherit;line-height:1.7}
 /**
  * 样式范围：.english-rw__notice。
  * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。

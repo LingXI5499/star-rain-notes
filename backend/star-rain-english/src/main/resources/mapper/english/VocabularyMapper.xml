@@ -253,4 +253,10 @@
       绑定参数：id；参数含义参见 Mapper 方法注释。
     -->
     <delete id="deleteWord">DELETE FROM sr_english_vocabulary_word WHERE id=#{id}</delete>
+    <insert id="initializeLibraryMapping">
+        INSERT INTO sr_english_vocabulary_mapping(word_id,entry_id,legacy_index,migration_status,migration_reason)
+        VALUES(#{id},CONCAT('manual-',#{id}),GREATEST(#{sortOrder}-1,0),'unclassified','人工新增，请复核词义并选择主题。')
+    </insert>
+    <delete id="deleteLibraryTopics">DELETE FROM sr_english_vocabulary_topic WHERE word_id=#{id}</delete>
+    <delete id="deleteLibraryMapping">DELETE FROM sr_english_vocabulary_mapping WHERE word_id=#{id}</delete>
 </mapper>

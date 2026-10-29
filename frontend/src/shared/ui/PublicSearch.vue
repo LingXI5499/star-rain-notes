@@ -88,7 +88,7 @@ onBeforeUnmount(cancel)
    * 样式范围：.public-search__field input。
    * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
    */
-  .public-search__field input{width:100%;min-width:0;min-height:38px;padding:8px 0;border:0;border-radius:0;background:transparent;color:var(--text-primary);font:inherit;font-size:13px;line-height:1.5;outline:none;box-shadow:none}
+  .public-search .public-search__field>input[type=search]{width:100%;min-width:0;min-height:38px;padding:8px 0;border:0;border-radius:0;background:transparent;color:var(--text-primary);font:inherit;font-size:13px;line-height:1.5;outline:none;box-shadow:none}
   /**
    * 样式范围：.public-search__field input::-webkit-search-cancel-button。
    */

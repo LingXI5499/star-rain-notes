@@ -228,6 +228,7 @@ public class VocabularyServiceImpl implements VocabularyService {
         validateWord(request);
         Word word = fromRequest(request);
         mapper.insertWord(word);
+        mapper.initializeLibraryMapping(word);
         changed("ENGLISH_VOCABULARY_WORD", word.getId());
         return requiredWord(word.getId());
     }
@@ -269,6 +270,8 @@ public class VocabularyServiceImpl implements VocabularyService {
         if (mapper.deleteWord(id(wordId)) == 0) {
             throw new VocabularyWordNotFoundException();
         }
+        mapper.deleteLibraryTopics(id(wordId));
+        mapper.deleteLibraryMapping(id(wordId));
         changed("ENGLISH_VOCABULARY_WORD", id(wordId));
     }
 

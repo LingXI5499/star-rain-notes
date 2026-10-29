@@ -1,0 +1,1789 @@
+{
+  "schemaVersion": 1,
+  "works": [
+    {
+      "slug": "163657625159",
+      "title": "速安药房 · 单店药店即时配送管理系统",
+      "description": "基于 Spring Boot 3 + Vue 3 + MyBatis-Plus + MySQL 的前后端分离业务系统，覆盖用户选药、购物车、地址、订单、库存、骑手配送、订单状态机与后台数据看板，重点实践事务一致性、业务状态流转和权限边界。",
+      "category": "软件项目",
+      "format": "Web 应用",
+      "techStack": [
+        "Java 17",
+        "Spring Boot 3",
+        "Mybatis-Plus",
+        "MySQL 8",
+        "Vue3",
+        "TypeScript",
+        "Pinia",
+        "Element Plus",
+        "Echarts"
+      ],
+      "status": "COMPLETED",
+      "publishedAt": "2026-09-06",
+      "updatedAt": "2026-10-09",
+      "startedOn": "2026-06-20",
+      "endedOn": "2026-07-05",
+      "featured": false,
+      "cover": "/images/content/f06d729d5ae2f8a4.webp",
+      "screenshots": [],
+      "links": [
+        {
+          "label": "查看代码",
+          "url": "https://github.com/LingXI5499/pharmacy-delivery-system",
+          "type": "GITHUB"
+        }
+      ],
+      "path": "/portfolio/163657625159/",
+      "bodyMarkdown": "## 项目背景\n\n\n\n\n在完成个人知识平台“星雨笔录”之后，我希望继续用一个更接近典型业务系统的项目练习 Java 全栈开发，因此选择了“单店药店即时配送”这一场景。\n\n\n\n\n和只做基础增删改查不同，这个项目把重点放在一条完整业务链路上：用户浏览药品、加入购物车、维护收货地址、提交订单；后台完成接单、打包、分配骑手、配送和完结；同时系统维护库存变化、订单状态日志以及经营数据看板。\n\n\n\n\n项目的目标不是复制大型医药电商平台，而是在可控范围内完成一个结构清晰、业务闭环完整、能够继续扩展的前后端分离系统。\n\n\n\n\n## 我想解决的问题\n\n\n\n\n这个项目主要用于验证和练习以下能力：\n\n\n\n\n1. 如何从业务场景抽象数据库实体与表关系。\n2. 如何使用 Controller、Service、Mapper 分层组织 Spring Boot 项目。\n3. 如何让前端 Vue 应用与后端 REST API 协同工作。\n4. 如何处理用户、管理员不同角色的访问边界。\n5. 如何保证“下单、扣库存、创建订单、清空购物车”等操作的一致性。\n6. 如何避免订单状态被任意修改，而是按照确定的业务流程推进。\n7. 如何将后台业务数据以图表形式呈现，而不只是做 CRUD 页面。\n\n\n\n\n## 系统角色\n\n\n\n\n### 普通用户\n\n\n\n\n普通用户可以注册登录、浏览药品、按分类或关键词查找商品、维护购物车和收货地址，并完成下单、订单查询和特定阶段的取消操作。\n\n\n\n\n### 药品管理员\n\n\n\n\n管理员拥有独立后台，可以维护药品分类、药品、库存、订单、骑手和用户状态，并通过控制中心查看订单与销售相关指标。\n\n\n\n\n## 核心业务流程\n\n\n\n\n### 用户下单\n\n\n\n\n```\n浏览药品\n  ↓\n加入购物车\n  ↓\n选择商品与收货地址\n  ↓\n校验库存\n  ↓\n扣减库存\n  ↓\n创建订单与订单明细\n  ↓\n记录初始订单状态\n  ↓\n清理已下单购物车记录\n```\n\n\n\n\n整个创建订单过程在事务中完成。任何关键步骤发生异常时，应避免留下“订单存在但库存没扣”或“库存已扣但订单没生成”一类明显的不一致状态。\n\n\n\n\n### 后台履约\n\n\n\n\n```\n待接单\n  ↓\n待打包\n  ↓\n待派送\n  ↓\n配送中\n  ↓\n已完成\n```\n\n\n\n\n系统通过订单状态枚举和状态机限制合法流转，并为状态变化写入日志。\n\n\n\n\n在允许取消的阶段取消订单时，系统会根据订单明细自动恢复对应库存。\n\n\n\n\n## 用户端功能\n\n\n\n\n- 注册与登录\n- 药品分类浏览\n- 药品搜索与详情\n- 购物车管理\n- 收货地址管理\n- 提交订单\n- 订单分页查询\n- 订单详情与状态查看\n- 待接单阶段取消订单\n- 查看配送骑手信息\n\n\n\n\n## 管理端功能\n\n\n\n\n- 数据控制中心\n- 今日订单、今日销售额、待处理订单、库存预警\n- 订单趋势、销售趋势\n- 分类销售分布\n- 热销药品榜\n- 药品分类管理\n- 药品管理\n- 库存调整与低库存预警\n- 订单接单、打包、派送、完成与取消\n- 骑手管理\n- 用户状态管理\n\n\n\n\n## 技术架构\n\n\n\n\n### 后端\n\n\n\n\n- Java 17\n- Spring Boot 3.5.15\n- Spring MVC\n- MyBatis-Plus\n- MySQL 8\n- Jakarta Validation\n- Maven\n- JUnit\n\n\n\n\n### 前端\n\n\n\n\n- Vue 3\n- TypeScript\n- Vue Router\n- Pinia\n- Axios\n- Element Plus\n- ECharts\n- Vite\n\n\n\n\n## 数据库设计\n\n\n\n\n系统当前包含 9 张核心表：用户、药品分类、药品、用户地址、骑手、购物车、订单主表、订单明细和订单状态日志。\n\n\n\n\n其中订单被拆分为主表与明细表；订单状态日志单独持久化，用于保存状态变化轨迹；药品表保存实时库存与库存预警阈值。\n",
+      "sections": []
+    },
+    {
+      "slug": "625524871958",
+      "title": "星雨笔录",
+      "description": "星雨笔录是一个面向个人长期学习、知识整理与内容沉淀的全栈知识平台。项目以 Java 21 和 Spring Boot 3.5 构建后端服务，以 Vue 3、TypeScript 和 Vite 构建前端界面，提供系统化教程、英语学习、内容管理、学习记录以及后台发布管理等功能。项目已经部署在阿里云服务器，并通过 Nginx 提供网站访问和接口反向代理。",
+      "category": "软件项目",
+      "format": "Web 应用",
+      "techStack": [
+        "Java",
+        "Spring Boot 3.5",
+        "Mybatis-Plus",
+        "MySql 8",
+        "Flyway",
+        "Vue 3",
+        "TypeScript",
+        "Vite",
+        "Nginx"
+      ],
+      "status": "ONLINE",
+      "publishedAt": "2026-08-28",
+      "updatedAt": "2026-10-11",
+      "startedOn": "2026-04-01",
+      "endedOn": "2026-08-28",
+      "featured": true,
+      "cover": "/images/content/bb43ae909bc6d49f.webp",
+      "screenshots": [
+        {
+          "src": "/images/content/cda8f53760af1d78.webp",
+          "alt": "教程分类页 · 按学习主题与知识体系整理教程分类，帮助用户快速进入对应专题。"
+        },
+        {
+          "src": "/images/content/98cf3d7e746c5e95.webp",
+          "alt": "教程阅读页 · 提供正文阅读、章节目录与上下篇导航，让长篇学习内容保持清晰的阅读节奏。"
+        },
+        {
+          "src": "/images/content/e4b7138362c44391.webp",
+          "alt": "博客首页 · 以卡片化列表呈现最新文章、标签和摘要，方便浏览与检索技术笔记。"
+        }
+      ],
+      "links": [
+        {
+          "label": "查看代码",
+          "url": "https://github.com/LingXI5499/star-rain-notes",
+          "type": "GITHUB"
+        },
+        {
+          "label": "访问作品",
+          "url": "https://yulanlin.cn",
+          "type": "DEMO"
+        }
+      ],
+      "path": "/portfolio/625524871958/",
+      "bodyMarkdown": "## 项目介绍\n\n\n\n\n星雨笔录是一个面向个人长期学习与知识沉淀的全栈知识平台。\n\n\n\n\n项目并不只是展示文章的普通博客，而是围绕“内容组织、系统学习、持续维护和实际部署”建立的一套知识管理系统。平台将教程、英语学习、作品展示和后台内容管理放在统一架构中，让零散内容能够按照知识体系、课程目录和学习路径进行组织。\n\n\n\n\n## 项目目标\n\n\n\n\n星雨笔录主要解决以下问题：\n\n\n\n\n- 将分散的学习笔记整理成结构清晰的知识体系。\n- 使用教程、目录和章节组织长期学习内容。\n- 为英语阅读、听力、写作、词汇和语法学习提供统一入口。\n- 通过后台管理内容的创建、编辑、审核、发布和撤回。\n- 保存稳定的内容编号和公开地址，避免修改标题后链接失效。\n- 通过真实服务器部署验证项目的完整运行链路。\n\n\n\n\n## 核心功能\n\n\n\n\n### 系统化教程\n\n\n\n\n教程模块按照“知识体系 → 教程 → 目录分组 → 章节”的层级组织内容。\n\n\n\n\n管理员可以在后台创建知识体系和教程，并维护章节目录、Markdown 正文、摘要、排序和发布状态。学习者可以在前台按照知识体系浏览教程，通过目录进入具体章节。\n\n\n\n\n这种结构适合组织 Java、计算机基础、开发工具、智能体开发和软件工程等需要长期维护的学习内容。\n\n\n\n\n### 英语学习\n\n\n\n\n英语模块用于组织不同类型的英语学习资料，目前包含：\n\n\n\n\n- 单词与词汇内容。\n- 词族及派生词学习。\n- 英语语法教程。\n- A1–C2 分级阅读。\n- 完整听力材料和逐句时间片段。\n- 语音规则学习。\n- 写作资源与写作任务。\n- 跨模块学习组合。\n- 学习记录与学习分析。\n\n\n\n\n阅读、听力和写作内容可以按照 CEFR 等级及主题、文体、场景、能力和语言功能等标签分类。\n\n\n\n\n听力模块采用“一份完整音频 + 完整听力稿 + 时间片段”的结构。每个时间片段记录对应的英文原文、中文翻译以及在音频中的开始和结束时间，从而支持逐句学习和定位。\n\n\n\n\n### 内容管理\n\n\n\n\n后台管理系统用于维护平台内容，包括：\n\n\n\n\n- 教程和章节管理。\n- 博客内容管理。\n- 作品管理。\n- 英语阅读、听力、写作和词族管理。\n- 媒体资源管理。\n- 内容审核与发布状态管理。\n- 用户、邀请和权限相关管理。\n- 学习数据与后台分析。\n\n\n\n\n系统区分普通管理员和超级管理员的操作权限。内容可以经历草稿、发布和撤回等生命周期，降低误操作对公开内容的影响。\n\n\n\n\n### 内容编号与稳定地址\n\n\n\n\n具有独立访问地址的内容由后端自动生成 12 位数字编号。\n\n\n\n\n修改标题时不会自动修改已有编号，因此公开地址能够保持稳定。数据库唯一约束同时作为并发情况下的最终保护。\n\n\n\n\n### 学习记录\n\n\n\n\n学习者登录后可以使用阅读、听力、写作等学习内容。系统能够保存相应的学习行为和练习结果，为个人学习记录、推荐和后台分析提供数据基础。\n\n\n\n\n## 技术架构\n\n\n\n\n### 后端\n\n\n\n\n后端基于 Java 21 和 Spring Boot 3.5 构建，负责：\n\n\n\n\n- REST API。\n- 用户认证与权限校验。\n- 教程、英语和作品等业务逻辑。\n- 内容生命周期和审核流程。\n- 数据库访问与事务处理。\n- 媒体上传与访问地址管理。\n- 参数校验及统一错误响应。\n- 健康检查和生产环境配置。\n\n\n\n\nMyBatis-Plus 用于数据库访问，MySQL 8 保存业务数据，Flyway 管理数据库结构版本。\n\n\n\n\n### 前端\n\n\n\n\n前端基于 Vue 3、TypeScript 和 Vite 构建，包含：\n\n\n\n\n- 面向访客和学习者的公开页面。\n- 教程与英语学习界面。\n- 登录和个人学习相关页面。\n- 面向管理员的内容管理控制台。\n- 响应式页面布局和主题展示。\n- 与后端 API 的统一请求和错误处理。\n\n\n\n\n生产构建完成后，前端静态文件由 Nginx 提供访问。\n\n\n\n\n### 部署\n\n\n\n\n项目部署在阿里云服务器，并使用宝塔面板辅助维护。\n\n\n\n\n生产环境主要链路为：\n\n\n\n\n1. 用户通过域名访问网站。\n2. Nginx 返回 Vue 构建后的静态资源。\n3. `/api/` 请求由 Nginx 反向代理到 Spring Boot 服务。\n4. `/uploads/` 用于访问上传的媒体资源。\n5. Spring Boot 连接 MySQL 数据库处理业务数据。\n6. 环境变量保存数据库连接、认证和媒体目录等生产配置。\n\n\n\n\n前端、后端、数据库和上传文件相互独立，升级应用时可以保留原有业务数据与媒体资源。\n\n\n\n\n## 项目特点\n\n\n\n\n- 教程内容采用多层级知识结构，而不是简单文章列表。\n- 英语模块覆盖阅读、听力、写作、词汇和语法等学习场景。\n- 后台提供内容创建、审核、发布、撤回和排序能力。\n- 内容编号由后端统一生成，公开地址保持稳定。\n- 数据库结构通过 Flyway 按版本维护。\n- 前后端采用分离架构，并完成真实服务器部署。\n- 应用升级时保留数据库、上传文件和既有内容。\n\n\n\n\n## 当前状态\n\n\n\n\n星雨笔录目前已经完成前后端构建和服务器部署，网站可以通过正式域名访问。\n\n\n\n\n项目仍会随着实际学习和使用持续完善。后续工作将集中在充实高质量学习内容、优化管理流程、完善练习体验以及提高系统可靠性。\n\n\n\n\n## 项目入口\n\n\n\n\n- 在线访问：[https://yulanlin.cn](https://yulanlin.cn)\n- 项目仓库：[LingXI5499/star-rain-notes](https://github.com/LingXI5499/star-rain-notes)\n",
+      "sections": []
+    },
+    {
+      "slug": "ai-intelligence-daily",
+      "title": "AI Intelligence Daily · AI 情报日报",
+      "description": "轻量 Python 信息聚合网站，集中整理 AI、编程、社会热点、政策与秋招公开信息，支持每日刷新、手动更新、内容去重和可选的 DeepSeek 摘要。",
+      "category": "工具",
+      "format": "Web 应用",
+      "techStack": [
+        "Python",
+        "FastAPI",
+        "Jinja2",
+        "SQLite",
+        "httpx",
+        "BeautifulSoup",
+        "DeepSeek API"
+      ],
+      "status": "COMPLETED",
+      "publishedAt": "2026-10-16",
+      "updatedAt": "2026-10-16",
+      "startedOn": null,
+      "endedOn": null,
+      "featured": false,
+      "cover": "/images/content/598f219ba543cad8.webp",
+      "screenshots": [],
+      "links": [
+        {
+          "label": "项目源码",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/ai-intelligence-daily",
+          "type": "GITHUB"
+        },
+        {
+          "label": "运行说明",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/ai-intelligence-daily/README.md",
+          "type": "DOC"
+        }
+      ],
+      "path": "/portfolio/ai-intelligence-daily/",
+      "bodyMarkdown": "## 项目介绍\n\n\n\n\n用一个轻量网页代替在多个站点之间反复切换，围绕固定频率、可观察刷新和可降级摘要形成个人情报入口，而不是扩展成重型实时舆情系统。\n\n\n\n\n## 核心功能\n\n\n\n\n## 使用流程\n\n\n\n\n打开首页查看最近日报 → 按需立即刷新 → 观察各来源进度 → 浏览去重后的信息与原始链接 → 查看摘要。服务持续运行时由每日定时任务触发相同流程。\n\n\n\n\n## 技术栈\n\n\n\n\n## 关键实现\n\n\n\n\nFastAPI 提供页面与刷新 API，Jinja2 渲染首页。Collector 与刷新服务分离，自动与手动刷新共享同一任务锁；SQLite 使用指纹去重和 WAL。摘要服务把外部模型调用与无 Key 的规则回退隔离。\n\n\n\n\n## 项目成果\n\n\n\n\n## 验证与交付\n\n\n\n\n2026-10-15 整理版本通过 13 项自动测试，覆盖数据库去重、模型指纹、采集解析器、任务互斥、日报落库和每日调度边界。测试不代表外部来源在任何时间均可采集。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n\n\n\n\n## 当前阶段与使用边界\n\n\n\n\n需要服务持续运行才能定时刷新。来源页面结构、网络和模型服务可能变化，采集失败保留最近数据。仅访问公开信息，没有登录绕过、验证码规避或私人数据采集。\n\n\n\n\n## 源码与文档\n",
+      "sections": [
+        {
+          "id": "59",
+          "title": "项目介绍",
+          "type": "MARKDOWN",
+          "html": "<p>用一个轻量网页代替在多个站点之间反复切换，围绕固定频率、可观察刷新和可降级摘要形成个人情报入口，而不是扩展成重型实时舆情系统。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "用一个轻量网页代替在多个站点之间反复切换，围绕固定频率、可观察刷新和可降级摘要形成个人情报入口，而不是扩展成重型实时舆情系统。\n"
+        },
+        {
+          "id": "60",
+          "title": "核心功能",
+          "type": "FEATURE_LIST",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "title": "多来源采集",
+                "description": "使用独立 Collector 处理 GitHub Trending、Hacker News、百度热搜、中国政府网及秋招公开 JSON。"
+              },
+              {
+                "title": "受控刷新",
+                "description": "服务运行时每天北京时间 08:00 刷新一次，其余时间不轮询；可通过首页主动刷新。"
+              },
+              {
+                "title": "去重与状态",
+                "description": "记录采集进度，使用指纹去重和 SQLite 保存最近数据；单个来源失败不使整次任务失效。"
+              },
+              {
+                "title": "可选 AI 摘要",
+                "description": "配置 DeepSeek Key 后调用模型生成摘要；没有 Key 时仍能运行并返回本地规则摘要。"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "61",
+          "title": "使用流程",
+          "type": "MARKDOWN",
+          "html": "<p>打开首页查看最近日报 → 按需立即刷新 → 观察各来源进度 → 浏览去重后的信息与原始链接 → 查看摘要。服务持续运行时由每日定时任务触发相同流程。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "打开首页查看最近日报 → 按需立即刷新 → 观察各来源进度 → 浏览去重后的信息与原始链接 → 查看摘要。服务持续运行时由每日定时任务触发相同流程。\n"
+        },
+        {
+          "id": "62",
+          "title": "技术栈",
+          "type": "TECH_STACK",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "name": "Python",
+                "group": ""
+              },
+              {
+                "name": "FastAPI",
+                "group": ""
+              },
+              {
+                "name": "Jinja2",
+                "group": ""
+              },
+              {
+                "name": "SQLite",
+                "group": ""
+              },
+              {
+                "name": "httpx",
+                "group": ""
+              },
+              {
+                "name": "BeautifulSoup",
+                "group": ""
+              },
+              {
+                "name": "DeepSeek API",
+                "group": ""
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "63",
+          "title": "关键实现",
+          "type": "MARKDOWN",
+          "html": "<p>FastAPI 提供页面与刷新 API，Jinja2 渲染首页。Collector 与刷新服务分离，自动与手动刷新共享同一任务锁；SQLite 使用指纹去重和 WAL。摘要服务把外部模型调用与无 Key 的规则回退隔离。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "FastAPI 提供页面与刷新 API，Jinja2 渲染首页。Collector 与刷新服务分离，自动与手动刷新共享同一任务锁；SQLite 使用指纹去重和 WAL。摘要服务把外部模型调用与无 Key 的规则回退隔离。\n"
+        },
+        {
+          "id": "64",
+          "title": "项目成果",
+          "type": "STATS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "label": "数据来源",
+                "value": "5 类入口"
+              },
+              {
+                "label": "自动刷新",
+                "value": "每日 08:00"
+              },
+              {
+                "label": "自动测试",
+                "value": "13 项"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "65",
+          "title": "验证与交付",
+          "type": "MARKDOWN",
+          "html": "<p>2026-10-15 整理版本通过 13 项自动测试，覆盖数据库去重、模型指纹、采集解析器、任务互斥、日报落库和每日调度边界。测试不代表外部来源在任何时间均可采集。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "2026-10-15 整理版本通过 13 项自动测试，覆盖数据库去重、模型指纹、采集解析器、任务互斥、日报落库和每日调度边界。测试不代表外部来源在任何时间均可采集。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n"
+        },
+        {
+          "id": "66",
+          "title": "当前阶段与使用边界",
+          "type": "MARKDOWN",
+          "html": "<p>需要服务持续运行才能定时刷新。来源页面结构、网络和模型服务可能变化，采集失败保留最近数据。仅访问公开信息，没有登录绕过、验证码规避或私人数据采集。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "需要服务持续运行才能定时刷新。来源页面结构、网络和模型服务可能变化，采集失败保留最近数据。仅访问公开信息，没有登录绕过、验证码规避或私人数据采集。\n"
+        },
+        {
+          "id": "67",
+          "title": "源码与文档",
+          "type": "LINKS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/ai-intelligence-daily",
+                "label": "查看项目源码",
+                "description": "GitHub 集合中的独立项目目录"
+              },
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/ai-intelligence-daily/README.md",
+                "label": "运行与使用说明",
+                "description": "依赖、启动、测试和项目边界"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        }
+      ]
+    },
+    {
+      "slug": "asterway",
+      "title": "Asterway · 星行纪",
+      "description": "个人成长产品的前端原型，整合目标、任务、日程、习惯、专注、复盘和成长社区，并用本地规则伙伴把计划、记忆与站内提醒串联起来。",
+      "category": "软件项目",
+      "format": "原型",
+      "techStack": [
+        "Vue 3",
+        "TypeScript",
+        "Pinia",
+        "Vue Router",
+        "Zod",
+        "Vitest",
+        "Playwright"
+      ],
+      "status": "DEVELOPING",
+      "publishedAt": "2026-10-16",
+      "updatedAt": "2026-10-16",
+      "startedOn": null,
+      "endedOn": null,
+      "featured": false,
+      "cover": "/images/content/8ed8ebfd3f2cb1aa.webp",
+      "screenshots": [
+        {
+          "src": "/images/content/a84444c22ad3f8be.webp",
+          "alt": "今日行动总览（历史演示数据）"
+        },
+        {
+          "src": "/images/content/5b325e9a50e97c3e.webp",
+          "alt": "成长社区前端原型"
+        }
+      ],
+      "links": [
+        {
+          "label": "项目源码",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/asterway",
+          "type": "GITHUB"
+        },
+        {
+          "label": "运行说明",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/asterway/README.md",
+          "type": "DOC"
+        }
+      ],
+      "path": "/portfolio/asterway/",
+      "bodyMarkdown": "## 项目介绍\n\n\n\n\n探索一个把“设定目标—安排今日行动—持续专注—记录习惯—复盘调整”连接起来的成长工作台。原型用于展示产品流程与交互设计，不把页面数量等同于服务端系统已完成。\n\n\n\n\n## 核心功能\n\n\n\n\n## 使用流程\n\n\n\n\n建立目标或应用成长模板 → 选择效率方法生成行动 → 确认日程 → 专注与习惯打卡 → 查看趋势、积分和复盘 → 通过全局伙伴调整下一步。\n\n\n\n\n## 技术栈\n\n\n\n\n## 关键实现\n\n\n\n\nVue 页面与共享组件承载 18 个产品页面；Pinia 维护统一业务状态，domain 层负责校验、统计和规则。计划建议具有确认、过期检查和冲突保护，撤销避免覆盖后续操作；数据保存于当前浏览器。\n\n\n\n\n## 项目成果\n\n\n\n\n## 验证与交付\n\n\n\n\n2026-10-15 整理版本通过 38 项业务测试、TypeScript 检查和生产构建。原项目 v0.4 验证记录包含 34 个桌面与手机浏览器场景。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n\n\n\n\n## 当前阶段与使用边界\n\n\n\n\n当前仍是前端原型：成长伙伴没有接入开放大模型；账户、社区、消息、会员和支付没有真实服务端。提醒仅在应用打开时显示，数据不跨设备同步。示例用户、榜单和社区内容明确属于演示。\n\n\n\n\n## 界面与效果\n\n\n\n\n## 源码与文档\n",
+      "sections": [
+        {
+          "id": "40",
+          "title": "项目介绍",
+          "type": "MARKDOWN",
+          "html": "<p>探索一个把“设定目标—安排今日行动—持续专注—记录习惯—复盘调整”连接起来的成长工作台。原型用于展示产品流程与交互设计，不把页面数量等同于服务端系统已完成。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "探索一个把“设定目标—安排今日行动—持续专注—记录习惯—复盘调整”连接起来的成长工作台。原型用于展示产品流程与交互设计，不把页面数量等同于服务端系统已完成。\n"
+        },
+        {
+          "id": "41",
+          "title": "核心功能",
+          "type": "FEATURE_LIST",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "title": "成长行动",
+                "description": "目标下关联多个任务，结合周日程、习惯周矩阵、专注计时与成长复盘，统计来自本地行动记录。"
+              },
+              {
+                "title": "效率方法",
+                "description": "提供四象限、每日三件事、时间分块、番茄专注等方法，先预览计划，再确认与撤销。"
+              },
+              {
+                "title": "全局伙伴",
+                "description": "侧边伙伴可根据本地规则建立目标、任务和习惯，引用记忆、调整日程并设置站内提醒。"
+              },
+              {
+                "title": "社区原型",
+                "description": "展示图文、短视频、社群、消息、挑战、成就和个人主页，支持本地演示交互与数据备份。"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "42",
+          "title": "使用流程",
+          "type": "MARKDOWN",
+          "html": "<p>建立目标或应用成长模板 → 选择效率方法生成行动 → 确认日程 → 专注与习惯打卡 → 查看趋势、积分和复盘 → 通过全局伙伴调整下一步。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "建立目标或应用成长模板 → 选择效率方法生成行动 → 确认日程 → 专注与习惯打卡 → 查看趋势、积分和复盘 → 通过全局伙伴调整下一步。\n"
+        },
+        {
+          "id": "43",
+          "title": "技术栈",
+          "type": "TECH_STACK",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "name": "Vue 3",
+                "group": ""
+              },
+              {
+                "name": "TypeScript",
+                "group": ""
+              },
+              {
+                "name": "Pinia",
+                "group": ""
+              },
+              {
+                "name": "Vue Router",
+                "group": ""
+              },
+              {
+                "name": "Zod",
+                "group": ""
+              },
+              {
+                "name": "Vitest",
+                "group": ""
+              },
+              {
+                "name": "Playwright",
+                "group": ""
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "44",
+          "title": "关键实现",
+          "type": "MARKDOWN",
+          "html": "<p>Vue 页面与共享组件承载 18 个产品页面；Pinia 维护统一业务状态，domain 层负责校验、统计和规则。计划建议具有确认、过期检查和冲突保护，撤销避免覆盖后续操作；数据保存于当前浏览器。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "Vue 页面与共享组件承载 18 个产品页面；Pinia 维护统一业务状态，domain 层负责校验、统计和规则。计划建议具有确认、过期检查和冲突保护，撤销避免覆盖后续操作；数据保存于当前浏览器。\n"
+        },
+        {
+          "id": "45",
+          "title": "项目成果",
+          "type": "STATS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "label": "产品页面",
+                "value": "18 个"
+              },
+              {
+                "label": "成长模板",
+                "value": "27 组"
+              },
+              {
+                "label": "业务测试",
+                "value": "38 项"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "46",
+          "title": "验证与交付",
+          "type": "MARKDOWN",
+          "html": "<p>2026-10-15 整理版本通过 38 项业务测试、TypeScript 检查和生产构建。原项目 v0.4 验证记录包含 34 个桌面与手机浏览器场景。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "2026-10-15 整理版本通过 38 项业务测试、TypeScript 检查和生产构建。原项目 v0.4 验证记录包含 34 个桌面与手机浏览器场景。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n"
+        },
+        {
+          "id": "47",
+          "title": "当前阶段与使用边界",
+          "type": "MARKDOWN",
+          "html": "<p>当前仍是前端原型：成长伙伴没有接入开放大模型；账户、社区、消息、会员和支付没有真实服务端。提醒仅在应用打开时显示，数据不跨设备同步。示例用户、榜单和社区内容明确属于演示。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "当前仍是前端原型：成长伙伴没有接入开放大模型；账户、社区、消息、会员和支付没有真实服务端。提醒仅在应用打开时显示，数据不跨设备同步。示例用户、榜单和社区内容明确属于演示。\n"
+        },
+        {
+          "id": "48",
+          "title": "界面与效果",
+          "type": "GALLERY",
+          "html": "",
+          "data": {},
+          "media": [
+            {
+              "src": "/images/content/a84444c22ad3f8be.webp",
+              "caption": "今日行动总览（历史演示数据）"
+            },
+            {
+              "src": "/images/content/5b325e9a50e97c3e.webp",
+              "caption": "成长社区前端原型"
+            }
+          ],
+          "content": "\n"
+        },
+        {
+          "id": "49",
+          "title": "源码与文档",
+          "type": "LINKS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/asterway",
+                "label": "查看项目源码",
+                "description": "GitHub 集合中的独立项目目录"
+              },
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/asterway/README.md",
+                "label": "运行与使用说明",
+                "description": "依赖、启动、测试和项目边界"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        }
+      ]
+    },
+    {
+      "slug": "atlasflow",
+      "title": "AtlasFlow · 全球地图相册",
+      "description": "基于三维地球的互动摄影探索网站：点击地点寻找附近公开影像，在动态照片墙中浏览，并用摄像头手势聚合照片球、散开与平移。",
+      "category": "软件项目",
+      "format": "Web 应用",
+      "techStack": [
+        "Vue 3",
+        "TypeScript",
+        "Vite",
+        "MapLibre GL",
+        "GSAP",
+        "MediaPipe",
+        "Wikimedia Commons"
+      ],
+      "status": "COMPLETED",
+      "publishedAt": "2026-10-16",
+      "updatedAt": "2026-10-16",
+      "startedOn": null,
+      "endedOn": null,
+      "featured": false,
+      "cover": "/images/content/0d6e00e58cbcf922.webp",
+      "screenshots": [
+        {
+          "src": "/images/content/8a8ff2792ca2c4fa.webp",
+          "alt": "三维地球探索界面"
+        },
+        {
+          "src": "/images/content/5fc21c8d0aad43df.webp",
+          "alt": "附近公开影像照片墙"
+        }
+      ],
+      "links": [
+        {
+          "label": "项目源码",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/atlasflow",
+          "type": "GITHUB"
+        },
+        {
+          "label": "运行说明",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/atlasflow/README.md",
+          "type": "DOC"
+        }
+      ],
+      "path": "/portfolio/atlasflow/",
+      "bodyMarkdown": "## 项目介绍\n\n\n\n\n把地图探索与影像浏览连接起来，让用户从“选择一个地方”自然过渡到“观看这个地方附近的影像”。核心工作集中在坐标到屏幕的转场、真实照片检索和多种输入方式的统一。\n\n\n\n\n## 核心功能\n\n\n\n\n## 使用流程\n\n\n\n\n选择城市或点击地球 → 探索附近影像 → 观看照片浮现转场 → 浏览与放大照片 → 按需开启手势 → 返回原地球视角。\n\n\n\n\n## 技术栈\n\n\n\n\n## 关键实现\n\n\n\n\nVue 组件组织地图、照片墙、转场与手势面板；显式体验状态管理请求切换、分页和返回。照片服务通过 provider 接口隔离；MediaPipe Worker 串行推理，避免占用主线程和堆积视频帧。缩略图按需准备，地图与照片署名保持可见。\n\n\n\n\n## 项目成果\n\n\n\n\n## 验证与交付\n\n\n\n\n2026-10-15 整理版本在新目录通过 33 项单元测试、TypeScript 检查和生产构建。原项目另有公开照片查询与手势样本的验证记录。实体摄像头效果仍受光照和硬件影响。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n\n\n\n\n## 当前阶段与使用边界\n\n\n\n\n地图和照片需要外网；坐标附近可能没有足够的地理照片。手势需 HTTPS 或 localhost、摄像头和主动授权。风景优先属于排序规则，不是图像内容识别；没有用户账户或云相册。\n\n\n\n\n## 界面与效果\n\n\n\n\n## 源码与文档\n",
+      "sections": [
+        {
+          "id": "1",
+          "title": "项目介绍",
+          "type": "MARKDOWN",
+          "html": "<p>把地图探索与影像浏览连接起来，让用户从“选择一个地方”自然过渡到“观看这个地方附近的影像”。核心工作集中在坐标到屏幕的转场、真实照片检索和多种输入方式的统一。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "把地图探索与影像浏览连接起来，让用户从“选择一个地方”自然过渡到“观看这个地方附近的影像”。核心工作集中在坐标到屏幕的转场、真实照片检索和多种输入方式的统一。\n"
+        },
+        {
+          "id": "2",
+          "title": "核心功能",
+          "type": "FEATURE_LIST",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "title": "地球探索",
+                "description": "旋转、缩放真实三维地球，通过任意坐标或精选城市发起探索。"
+              },
+              {
+                "title": "真实地理影像",
+                "description": "按地理标记检索 Wikimedia Commons 图片，分页获取元数据，保留作者、许可和原始来源。"
+              },
+              {
+                "title": "沉浸照片空间",
+                "description": "照片从所选坐标浮现，进入支持拖动、滚轮、键盘、详情与高清预览的照片墙。"
+              },
+              {
+                "title": "手势交互",
+                "description": "用户主动开启摄像头后，在本地识别握拳、张掌、点赞与 V 手势，控制照片球和照片墙。"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "3",
+          "title": "使用流程",
+          "type": "MARKDOWN",
+          "html": "<p>选择城市或点击地球 → 探索附近影像 → 观看照片浮现转场 → 浏览与放大照片 → 按需开启手势 → 返回原地球视角。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "选择城市或点击地球 → 探索附近影像 → 观看照片浮现转场 → 浏览与放大照片 → 按需开启手势 → 返回原地球视角。\n"
+        },
+        {
+          "id": "4",
+          "title": "技术栈",
+          "type": "TECH_STACK",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "name": "Vue 3",
+                "group": ""
+              },
+              {
+                "name": "TypeScript",
+                "group": ""
+              },
+              {
+                "name": "Vite",
+                "group": ""
+              },
+              {
+                "name": "MapLibre GL",
+                "group": ""
+              },
+              {
+                "name": "GSAP",
+                "group": ""
+              },
+              {
+                "name": "MediaPipe",
+                "group": ""
+              },
+              {
+                "name": "Wikimedia Commons",
+                "group": ""
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "5",
+          "title": "关键实现",
+          "type": "MARKDOWN",
+          "html": "<p>Vue 组件组织地图、照片墙、转场与手势面板；显式体验状态管理请求切换、分页和返回。照片服务通过 provider 接口隔离；MediaPipe Worker 串行推理，避免占用主线程和堆积视频帧。缩略图按需准备，地图与照片署名保持可见。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "Vue 组件组织地图、照片墙、转场与手势面板；显式体验状态管理请求切换、分页和返回。照片服务通过 provider 接口隔离；MediaPipe Worker 串行推理，避免占用主线程和堆积视频帧。缩略图按需准备，地图与照片署名保持可见。\n"
+        },
+        {
+          "id": "6",
+          "title": "项目成果",
+          "type": "STATS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "label": "单地点图片上限",
+                "value": "200 张"
+              },
+              {
+                "label": "测试通过",
+                "value": "33 项"
+              },
+              {
+                "label": "摄像头交互",
+                "value": "本地识别"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "7",
+          "title": "验证与交付",
+          "type": "MARKDOWN",
+          "html": "<p>2026-10-15 整理版本在新目录通过 33 项单元测试、TypeScript 检查和生产构建。原项目另有公开照片查询与手势样本的验证记录。实体摄像头效果仍受光照和硬件影响。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "2026-10-15 整理版本在新目录通过 33 项单元测试、TypeScript 检查和生产构建。原项目另有公开照片查询与手势样本的验证记录。实体摄像头效果仍受光照和硬件影响。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n"
+        },
+        {
+          "id": "8",
+          "title": "当前阶段与使用边界",
+          "type": "MARKDOWN",
+          "html": "<p>地图和照片需要外网；坐标附近可能没有足够的地理照片。手势需 HTTPS 或 localhost、摄像头和主动授权。风景优先属于排序规则，不是图像内容识别；没有用户账户或云相册。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "地图和照片需要外网；坐标附近可能没有足够的地理照片。手势需 HTTPS 或 localhost、摄像头和主动授权。风景优先属于排序规则，不是图像内容识别；没有用户账户或云相册。\n"
+        },
+        {
+          "id": "9",
+          "title": "界面与效果",
+          "type": "GALLERY",
+          "html": "",
+          "data": {},
+          "media": [
+            {
+              "src": "/images/content/8a8ff2792ca2c4fa.webp",
+              "caption": "三维地球探索界面"
+            },
+            {
+              "src": "/images/content/5fc21c8d0aad43df.webp",
+              "caption": "附近公开影像照片墙"
+            }
+          ],
+          "content": "\n"
+        },
+        {
+          "id": "10",
+          "title": "源码与文档",
+          "type": "LINKS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/atlasflow",
+                "label": "查看项目源码",
+                "description": "GitHub 集合中的独立项目目录"
+              },
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/atlasflow/README.md",
+                "label": "运行与使用说明",
+                "description": "依赖、启动、测试和项目边界"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        }
+      ]
+    },
+    {
+      "slug": "frontend-lab",
+      "title": "Frontend Lab · 界面实验室",
+      "description": "完全使用原生 HTML、CSS 和 JavaScript 构建的前端学习工作台，集合可运行实验、代码与效果对照、技术速查、开发手册和学习进度。",
+      "category": "工具",
+      "format": "Web 应用",
+      "techStack": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "iframe Sandbox",
+        "LocalStorage",
+        "Playwright"
+      ],
+      "status": "COMPLETED",
+      "publishedAt": "2026-10-16",
+      "updatedAt": "2026-10-16",
+      "startedOn": null,
+      "endedOn": null,
+      "featured": false,
+      "cover": "/images/content/5cef38beea494932.webp",
+      "screenshots": [
+        {
+          "src": "/images/content/2643714175e9e24d.webp",
+          "alt": "源码与效果对照工作台"
+        },
+        {
+          "src": "/images/content/532d5504e72ace83.webp",
+          "alt": "开发手册与课程检索"
+        }
+      ],
+      "links": [
+        {
+          "label": "项目源码",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/frontend-lab",
+          "type": "GITHUB"
+        },
+        {
+          "label": "运行说明",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/frontend-lab/README.md",
+          "type": "DOC"
+        }
+      ],
+      "path": "/portfolio/frontend-lab/",
+      "bodyMarkdown": "## 项目介绍\n\n\n\n\n前端初学者常能复制代码，却难以解释代码与界面的关系。这个项目把真实运行效果、源码、知识解释和动手修改放在同一工作台中，让观察、修改和验证形成连续学习流程。\n\n\n\n\n## 核心功能\n\n\n\n\n## 使用流程\n\n\n\n\n从学习路线选择实验 → 阅读目标与源码 → 修改参数或代码 → 运行并观察页面、控制台和测量结果 → 完成自测 → 收藏、记录进度或导出页面。\n\n\n\n\n## 技术栈\n\n\n\n\n## 关键实现\n\n\n\n\n采用数据与界面分离的原生脚本组织课程；运行器使用 iframe srcdoc 与 sandbox 隔离，不授予同源权限，并限制外部网络。控制台消息校验来源和运行 token。草稿与进度保存在当前浏览器，手册章节按需加载。\n\n\n\n\n## 项目成果\n\n\n\n\n## 验证与交付\n\n\n\n\n2026-10-15 整理版本通过 263 个实验的初始运行及整站浏览器回归，覆盖草稿、错误提示、收藏、进度、自测、导出、响应式和直接打开文件。手册检查覆盖 1,009 份教学数据，另有 24 章教学规则检查。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n\n\n\n\n## 当前阶段与使用边界\n\n\n\n\n不提供后端账户或跨设备同步，不自动判断任意开放练习的正确性。运行器中的存储、剪贴板和网络能力受隔离限制。手册保留第三方课程和官方资料来源，不把所有来源材料标为原创。\n\n\n\n\n## 界面与效果\n\n\n\n\n## 源码与文档\n",
+      "sections": [
+        {
+          "id": "11",
+          "title": "项目介绍",
+          "type": "MARKDOWN",
+          "html": "<p>前端初学者常能复制代码，却难以解释代码与界面的关系。这个项目把真实运行效果、源码、知识解释和动手修改放在同一工作台中，让观察、修改和验证形成连续学习流程。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "前端初学者常能复制代码，却难以解释代码与界面的关系。这个项目把真实运行效果、源码、知识解释和动手修改放在同一工作台中，让观察、修改和验证形成连续学习流程。\n"
+        },
+        {
+          "id": "12",
+          "title": "核心功能",
+          "type": "FEATURE_LIST",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "title": "实验与路线",
+                "description": "263 个实验覆盖 HTML、CSS、JavaScript、网页布局与综合实践，配合前置知识、观察重点和练习。"
+              },
+              {
+                "title": "编辑运行",
+                "description": "切换 HTML/CSS/JS，修改源码并运行，查看控制台反馈，在电脑、平板和手机宽度之间切换。"
+              },
+              {
+                "title": "逐条对照",
+                "description": "将元素、CSS 声明、计算样式、实际尺寸和 JavaScript 阅读顺序与预览画面联系起来。"
+              },
+              {
+                "title": "学习与导出",
+                "description": "本地保存草稿、收藏和进度；导出可独立打开的完整 HTML，按需加载开发手册。"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "13",
+          "title": "使用流程",
+          "type": "MARKDOWN",
+          "html": "<p>从学习路线选择实验 → 阅读目标与源码 → 修改参数或代码 → 运行并观察页面、控制台和测量结果 → 完成自测 → 收藏、记录进度或导出页面。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "从学习路线选择实验 → 阅读目标与源码 → 修改参数或代码 → 运行并观察页面、控制台和测量结果 → 完成自测 → 收藏、记录进度或导出页面。\n"
+        },
+        {
+          "id": "14",
+          "title": "技术栈",
+          "type": "TECH_STACK",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "name": "HTML",
+                "group": ""
+              },
+              {
+                "name": "CSS",
+                "group": ""
+              },
+              {
+                "name": "JavaScript",
+                "group": ""
+              },
+              {
+                "name": "iframe Sandbox",
+                "group": ""
+              },
+              {
+                "name": "LocalStorage",
+                "group": ""
+              },
+              {
+                "name": "Playwright",
+                "group": ""
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "15",
+          "title": "关键实现",
+          "type": "MARKDOWN",
+          "html": "<p>采用数据与界面分离的原生脚本组织课程；运行器使用 iframe srcdoc 与 sandbox 隔离，不授予同源权限，并限制外部网络。控制台消息校验来源和运行 token。草稿与进度保存在当前浏览器，手册章节按需加载。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "采用数据与界面分离的原生脚本组织课程；运行器使用 iframe srcdoc 与 sandbox 隔离，不授予同源权限，并限制外部网络。控制台消息校验来源和运行 token。草稿与进度保存在当前浏览器，手册章节按需加载。\n"
+        },
+        {
+          "id": "16",
+          "title": "项目成果",
+          "type": "STATS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "label": "可运行实验",
+                "value": "263 个"
+              },
+              {
+                "label": "学习章节",
+                "value": "24 章"
+              },
+              {
+                "label": "技术速查",
+                "value": "283 条"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "17",
+          "title": "验证与交付",
+          "type": "MARKDOWN",
+          "html": "<p>2026-10-15 整理版本通过 263 个实验的初始运行及整站浏览器回归，覆盖草稿、错误提示、收藏、进度、自测、导出、响应式和直接打开文件。手册检查覆盖 1,009 份教学数据，另有 24 章教学规则检查。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "2026-10-15 整理版本通过 263 个实验的初始运行及整站浏览器回归，覆盖草稿、错误提示、收藏、进度、自测、导出、响应式和直接打开文件。手册检查覆盖 1,009 份教学数据，另有 24 章教学规则检查。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n"
+        },
+        {
+          "id": "18",
+          "title": "当前阶段与使用边界",
+          "type": "MARKDOWN",
+          "html": "<p>不提供后端账户或跨设备同步，不自动判断任意开放练习的正确性。运行器中的存储、剪贴板和网络能力受隔离限制。手册保留第三方课程和官方资料来源，不把所有来源材料标为原创。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "不提供后端账户或跨设备同步，不自动判断任意开放练习的正确性。运行器中的存储、剪贴板和网络能力受隔离限制。手册保留第三方课程和官方资料来源，不把所有来源材料标为原创。\n"
+        },
+        {
+          "id": "19",
+          "title": "界面与效果",
+          "type": "GALLERY",
+          "html": "",
+          "data": {},
+          "media": [
+            {
+              "src": "/images/content/2643714175e9e24d.webp",
+              "caption": "源码与效果对照工作台"
+            },
+            {
+              "src": "/images/content/532d5504e72ace83.webp",
+              "caption": "开发手册与课程检索"
+            }
+          ],
+          "content": "\n"
+        },
+        {
+          "id": "20",
+          "title": "源码与文档",
+          "type": "LINKS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/frontend-lab",
+                "label": "查看项目源码",
+                "description": "GitHub 集合中的独立项目目录"
+              },
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/frontend-lab/README.md",
+                "label": "运行与使用说明",
+                "description": "依赖、启动、测试和项目边界"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        }
+      ]
+    },
+    {
+      "slug": "java-web-lab",
+      "title": "Java Web Lab · 全栈链路与业务实验室",
+      "description": "面向 Java Web 学习与技术讲解的交互实验网站，将 HTTP、框架节点、业务代码与可执行 SQL 对应起来，并用六阶段模型解释并发、集群、异步与治理。",
+      "category": "工具",
+      "format": "Web 应用",
+      "techStack": [
+        "JavaScript",
+        "Vite",
+        "Three.js",
+        "CodeMirror 6",
+        "SQLite WASM",
+        "Web Worker"
+      ],
+      "status": "COMPLETED",
+      "publishedAt": "2026-10-16",
+      "updatedAt": "2026-10-16",
+      "startedOn": null,
+      "endedOn": null,
+      "featured": false,
+      "cover": "/images/content/eb4035bf8533b447.webp",
+      "screenshots": [
+        {
+          "src": "/images/content/b581700915b7b66b.webp",
+          "alt": "Java 业务与链路实验界面"
+        },
+        {
+          "src": "/images/content/2542de0d42009906.webp",
+          "alt": "代码阅读与 SQL 讲解"
+        }
+      ],
+      "links": [
+        {
+          "label": "项目源码",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/java-web-lab",
+          "type": "GITHUB"
+        },
+        {
+          "label": "运行说明",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/java-web-lab/README.md",
+          "type": "DOC"
+        }
+      ],
+      "path": "/portfolio/java-web-lab/",
+      "bodyMarkdown": "## 项目介绍\n\n\n\n\n从一次请求出发，把容易混淆的网络、容器、框架、业务和数据库职责放进同一条可观察的链路。学习者既能看概念关系，也能修改 SQL 检查具体数据结果。\n\n\n\n\n## 核心功能\n\n\n\n\n## 使用流程\n\n\n\n\n选择业务实验 → 对照 HTTP、Controller、Service、Mapper 和 SQL → 编辑执行 SQL → 检查结果与约束 → 切换运行机制节点 → 进入架构演示或演讲模式。\n\n\n\n\n## 技术栈\n\n\n\n\n## 关键实现\n\n\n\n\n内容、视图与确定性教学模型分离；Three.js 负责球面与示意路径，SVG 展示关系和 Trace。CodeMirror 承载代码阅读与 SQL 编辑，SQLite WASM 在 Worker 中运行独立种子数据库。\n\n\n\n\n## 项目成果\n\n\n\n\n## 验证与交付\n\n\n\n\n2026-10-15 整理版本通过 22 项测试与生产构建。全部 46 个 SQL 实验在新种子数据库中执行，包含 44 个正常执行和 2 个预期约束拒绝；测试核对分页、连接、关联写入和事务不变量。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n\n\n\n\n## 当前阶段与使用边界\n\n\n\n\n项目本身是前端教学网站，不包含可运行 Spring Boot 服务，Java 片段只读。资源池、缓存、集群、队列和熔断属于明确简化的教学模型，不能据此推导真实生产容量或中间件性能。\n\n\n\n\n## 界面与效果\n\n\n\n\n## 源码与文档\n",
+      "sections": [
+        {
+          "id": "21",
+          "title": "项目介绍",
+          "type": "MARKDOWN",
+          "html": "<p>从一次请求出发，把容易混淆的网络、容器、框架、业务和数据库职责放进同一条可观察的链路。学习者既能看概念关系，也能修改 SQL 检查具体数据结果。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "从一次请求出发，把容易混淆的网络、容器、框架、业务和数据库职责放进同一条可观察的链路。学习者既能看概念关系，也能修改 SQL 检查具体数据结果。\n"
+        },
+        {
+          "id": "22",
+          "title": "核心功能",
+          "type": "FEATURE_LIST",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "title": "业务 SQL 实验",
+                "description": "46 个实验涵盖 CRUD、NULL、分页、连接、聚合、关联写入、多表事务和回滚，浏览器内即可执行。"
+              },
+              {
+                "title": "请求机制",
+                "description": "18 个运行机制节点说明容器、框架、Controller、Service、Mapper、JDBC 与 JSON 转换的关系。"
+              },
+              {
+                "title": "架构演示",
+                "description": "通过三维地球、资源池、库存竞争、集群分流、消息积压和熔断模型展示六阶段演进。"
+              },
+              {
+                "title": "知识与演讲",
+                "description": "提供 165 个概念节点、过程案例、工程案例、原创训练题，以及全屏演讲、播放与讲者笔记。"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "23",
+          "title": "使用流程",
+          "type": "MARKDOWN",
+          "html": "<p>选择业务实验 → 对照 HTTP、Controller、Service、Mapper 和 SQL → 编辑执行 SQL → 检查结果与约束 → 切换运行机制节点 → 进入架构演示或演讲模式。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "选择业务实验 → 对照 HTTP、Controller、Service、Mapper 和 SQL → 编辑执行 SQL → 检查结果与约束 → 切换运行机制节点 → 进入架构演示或演讲模式。\n"
+        },
+        {
+          "id": "24",
+          "title": "技术栈",
+          "type": "TECH_STACK",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "name": "JavaScript",
+                "group": ""
+              },
+              {
+                "name": "Vite",
+                "group": ""
+              },
+              {
+                "name": "Three.js",
+                "group": ""
+              },
+              {
+                "name": "CodeMirror 6",
+                "group": ""
+              },
+              {
+                "name": "SQLite WASM",
+                "group": ""
+              },
+              {
+                "name": "Web Worker",
+                "group": ""
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "25",
+          "title": "关键实现",
+          "type": "MARKDOWN",
+          "html": "<p>内容、视图与确定性教学模型分离；Three.js 负责球面与示意路径，SVG 展示关系和 Trace。CodeMirror 承载代码阅读与 SQL 编辑，SQLite WASM 在 Worker 中运行独立种子数据库。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "内容、视图与确定性教学模型分离；Three.js 负责球面与示意路径，SVG 展示关系和 Trace。CodeMirror 承载代码阅读与 SQL 编辑，SQLite WASM 在 Worker 中运行独立种子数据库。\n"
+        },
+        {
+          "id": "26",
+          "title": "项目成果",
+          "type": "STATS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "label": "SQL 实验",
+                "value": "46 个"
+              },
+              {
+                "label": "运行机制",
+                "value": "18 个节点"
+              },
+              {
+                "label": "概念索引",
+                "value": "165 个"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "27",
+          "title": "验证与交付",
+          "type": "MARKDOWN",
+          "html": "<p>2026-10-15 整理版本通过 22 项测试与生产构建。全部 46 个 SQL 实验在新种子数据库中执行，包含 44 个正常执行和 2 个预期约束拒绝；测试核对分页、连接、关联写入和事务不变量。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "2026-10-15 整理版本通过 22 项测试与生产构建。全部 46 个 SQL 实验在新种子数据库中执行，包含 44 个正常执行和 2 个预期约束拒绝；测试核对分页、连接、关联写入和事务不变量。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n"
+        },
+        {
+          "id": "28",
+          "title": "当前阶段与使用边界",
+          "type": "MARKDOWN",
+          "html": "<p>项目本身是前端教学网站，不包含可运行 Spring Boot 服务，Java 片段只读。资源池、缓存、集群、队列和熔断属于明确简化的教学模型，不能据此推导真实生产容量或中间件性能。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "项目本身是前端教学网站，不包含可运行 Spring Boot 服务，Java 片段只读。资源池、缓存、集群、队列和熔断属于明确简化的教学模型，不能据此推导真实生产容量或中间件性能。\n"
+        },
+        {
+          "id": "29",
+          "title": "界面与效果",
+          "type": "GALLERY",
+          "html": "",
+          "data": {},
+          "media": [
+            {
+              "src": "/images/content/b581700915b7b66b.webp",
+              "caption": "Java 业务与链路实验界面"
+            },
+            {
+              "src": "/images/content/2542de0d42009906.webp",
+              "caption": "代码阅读与 SQL 讲解"
+            }
+          ],
+          "content": "\n"
+        },
+        {
+          "id": "30",
+          "title": "源码与文档",
+          "type": "LINKS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/java-web-lab",
+                "label": "查看项目源码",
+                "description": "GitHub 集合中的独立项目目录"
+              },
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/java-web-lab/README.md",
+                "label": "运行与使用说明",
+                "description": "依赖、启动、测试和项目边界"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        }
+      ]
+    },
+    {
+      "slug": "musiclingxi",
+      "title": "MusicLingXi · 离线音乐播放器",
+      "description": "面向个人使用的 Android 离线播放器，使用原生 Web 技术组织播放界面，并通过原生媒体会话实现后台、通知与锁屏控制，支持同步歌词和播放模式。",
+      "category": "软件项目",
+      "format": "移动应用",
+      "techStack": [
+        "HTML",
+        "CSS",
+        "JavaScript",
+        "Vite",
+        "Capacitor 8",
+        "Android MediaSession"
+      ],
+      "status": "COMPLETED",
+      "publishedAt": "2026-10-16",
+      "updatedAt": "2026-10-16",
+      "startedOn": null,
+      "endedOn": null,
+      "featured": false,
+      "cover": "/images/content/1fae31c6163412f3.webp",
+      "screenshots": [],
+      "links": [
+        {
+          "label": "项目源码",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/musiclingxi",
+          "type": "GITHUB"
+        },
+        {
+          "label": "运行说明",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/musiclingxi/README.md",
+          "type": "DOC"
+        }
+      ],
+      "path": "/portfolio/musiclingxi/",
+      "bodyMarkdown": "## 项目介绍\n\n\n\n\n将简洁的个人离线播放需求落实成可构建的 Android 工程，重点处理播放顺序、Web 与原生适配器分工，以及离开 WebView 后的媒体控制。\n\n\n\n\n## 核心功能\n\n\n\n\n## 使用流程\n\n\n\n\n安装依赖 → 在浏览器预览界面 → 自行导入本地音频并校验清单 → 按需放入歌词 → 同步 Android 资源与插件 → 构建 APK 并在真机检查后台播放。\n\n\n\n\n## 技术栈\n\n\n\n\n## 关键实现\n\n\n\n\n业务界面使用 ES modules 与原生 CSS；统一播放服务在浏览器 HTMLAudioElement 和 Android 原生适配器之间选择。播放模式纯函数与共享顺序游标负责重复、随机和上一首历史，避免两个适配器同时发声。\n\n\n\n\n## 项目成果\n\n\n\n\n## 验证与交付\n\n\n\n\n2026-10-15 整理版本通过 43 项测试、77 首占位清单资源检查、无歌词降级检查、Web 生产构建及 Android 插件/资源同步。此轮不代表所有 Android 真机与系统版本均已完成体验验收。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n\n\n\n\n## 当前阶段与使用边界\n\n\n\n\n公开仓库只有 77 个零字节音频占位文件，不含真实音频及歌词正文，克隆后会显示“暂无音频 / 暂无歌词”。需要自行提供可使用的音频。没有联网曲库、账号、推荐或云同步。\n\n\n\n\n## 源码与文档\n",
+      "sections": [
+        {
+          "id": "50",
+          "title": "项目介绍",
+          "type": "MARKDOWN",
+          "html": "<p>将简洁的个人离线播放需求落实成可构建的 Android 工程，重点处理播放顺序、Web 与原生适配器分工，以及离开 WebView 后的媒体控制。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "将简洁的个人离线播放需求落实成可构建的 Android 工程，重点处理播放顺序、Web 与原生适配器分工，以及离开 WebView 后的媒体控制。\n"
+        },
+        {
+          "id": "51",
+          "title": "核心功能",
+          "type": "FEATURE_LIST",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "title": "播放与队列",
+                "description": "搜索内置清单、切歌、拖动进度、查看队列，支持列表循环、单曲循环与随机一轮不重复。"
+              },
+              {
+                "title": "同步歌词",
+                "description": "解析 LRC 时间标签，高亮当前行并自动居中，可点击歌词跳转；无歌词时提供明确降级。"
+              },
+              {
+                "title": "原生后台",
+                "description": "Android 通过 MediaSessionService 和前台媒体服务维持播放，处理通知、锁屏控制与音频焦点。"
+              },
+              {
+                "title": "状态记忆",
+                "description": "保存最后曲目、音量、模式和明暗主题；冷启动恢复状态但不会自动开始播放。"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "52",
+          "title": "使用流程",
+          "type": "MARKDOWN",
+          "html": "<p>安装依赖 → 在浏览器预览界面 → 自行导入本地音频并校验清单 → 按需放入歌词 → 同步 Android 资源与插件 → 构建 APK 并在真机检查后台播放。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "安装依赖 → 在浏览器预览界面 → 自行导入本地音频并校验清单 → 按需放入歌词 → 同步 Android 资源与插件 → 构建 APK 并在真机检查后台播放。\n"
+        },
+        {
+          "id": "53",
+          "title": "技术栈",
+          "type": "TECH_STACK",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "name": "HTML",
+                "group": ""
+              },
+              {
+                "name": "CSS",
+                "group": ""
+              },
+              {
+                "name": "JavaScript",
+                "group": ""
+              },
+              {
+                "name": "Vite",
+                "group": ""
+              },
+              {
+                "name": "Capacitor 8",
+                "group": ""
+              },
+              {
+                "name": "Android MediaSession",
+                "group": ""
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "54",
+          "title": "关键实现",
+          "type": "MARKDOWN",
+          "html": "<p>业务界面使用 ES modules 与原生 CSS；统一播放服务在浏览器 HTMLAudioElement 和 Android 原生适配器之间选择。播放模式纯函数与共享顺序游标负责重复、随机和上一首历史，避免两个适配器同时发声。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "业务界面使用 ES modules 与原生 CSS；统一播放服务在浏览器 HTMLAudioElement 和 Android 原生适配器之间选择。播放模式纯函数与共享顺序游标负责重复、随机和上一首历史，避免两个适配器同时发声。\n"
+        },
+        {
+          "id": "55",
+          "title": "项目成果",
+          "type": "STATS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "label": "自动测试",
+                "value": "43 项"
+              },
+              {
+                "label": "媒体清单",
+                "value": "77 个占位"
+              },
+              {
+                "label": "运行平台",
+                "value": "Android / Web"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "56",
+          "title": "验证与交付",
+          "type": "MARKDOWN",
+          "html": "<p>2026-10-15 整理版本通过 43 项测试、77 首占位清单资源检查、无歌词降级检查、Web 生产构建及 Android 插件/资源同步。此轮不代表所有 Android 真机与系统版本均已完成体验验收。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "2026-10-15 整理版本通过 43 项测试、77 首占位清单资源检查、无歌词降级检查、Web 生产构建及 Android 插件/资源同步。此轮不代表所有 Android 真机与系统版本均已完成体验验收。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n"
+        },
+        {
+          "id": "57",
+          "title": "当前阶段与使用边界",
+          "type": "MARKDOWN",
+          "html": "<p>公开仓库只有 77 个零字节音频占位文件，不含真实音频及歌词正文，克隆后会显示“暂无音频 / 暂无歌词”。需要自行提供可使用的音频。没有联网曲库、账号、推荐或云同步。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "公开仓库只有 77 个零字节音频占位文件，不含真实音频及歌词正文，克隆后会显示“暂无音频 / 暂无歌词”。需要自行提供可使用的音频。没有联网曲库、账号、推荐或云同步。\n"
+        },
+        {
+          "id": "58",
+          "title": "源码与文档",
+          "type": "LINKS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/musiclingxi",
+                "label": "查看项目源码",
+                "description": "GitHub 集合中的独立项目目录"
+              },
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/musiclingxi/README.md",
+                "label": "运行与使用说明",
+                "description": "依赖、启动、测试和项目边界"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        }
+      ]
+    },
+    {
+      "slug": "resume-studio",
+      "title": "Resume Studio · 个人简历工作室",
+      "description": "仅在本机运行的简历编辑器，支持 A4 实时预览、岗位版本、本地自动保存和 JSON 备份，并直接导出包含中文文本、照片和链接的单页 PDF。",
+      "category": "工具",
+      "format": "Web 应用",
+      "techStack": [
+        "Vue 3",
+        "TypeScript",
+        "Express",
+        "IndexedDB",
+        "Playwright",
+        "PDF"
+      ],
+      "status": "COMPLETED",
+      "publishedAt": "2026-10-16",
+      "updatedAt": "2026-10-16",
+      "startedOn": null,
+      "endedOn": null,
+      "featured": false,
+      "cover": "/images/content/a37a97484b4be34f.webp",
+      "screenshots": [],
+      "links": [
+        {
+          "label": "项目源码",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/resume-studio",
+          "type": "GITHUB"
+        },
+        {
+          "label": "运行说明",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/resume-studio/README.md",
+          "type": "DOC"
+        }
+      ],
+      "path": "/portfolio/resume-studio/",
+      "bodyMarkdown": "## 项目介绍\n\n\n\n\n面向个人投递简历时频繁调整内容、管理多个版本和检查打印结果的需求，建立从编辑、保存、校验到 PDF 输出的完整本地流程。公开源码使用虚构演示资料和中性头像。\n\n\n\n\n## 核心功能\n\n\n\n\n## 使用流程\n\n\n\n\n复制岗位版本 → 修改简历内容 → 检查 A4 预览和溢出提示 → 等待保存完成 → 导出 PDF → 定期备份 JSON。超页时在副本中人工精简内容。\n\n\n\n\n## 技术栈\n\n\n\n\n## 关键实现\n\n\n\n\nVue 编辑器与打印页复用 ResumeSheet，避免两套排版偏差。IndexedDB 保存版本与修订信息，BroadcastChannel 提醒多标签冲突。仅监听回环地址的 Express 服务使用独立数据快照生成 PDF，并校验来源、图片、字体和输出页数。\n\n\n\n\n## 项目成果\n\n\n\n\n## 验证与交付\n\n\n\n\n2026-10-15 整理版本通过 16 项单元测试、类型检查和生产构建。3 个浏览器场景验证初始预览、单页中文 PDF、断开外网后的编辑与导出；生产模式也实际输出一页可检索中文的 PDF，未记录页面脚本错误。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n\n\n\n\n## 当前阶段与使用边界\n\n\n\n\n需要本地 Node 服务、Chromium 与中文字体，不能只上传静态 dist 获得 PDF 能力。清理浏览器数据可能丢失本地版本，应独立备份。没有云账户、自动改写经历或任意模板设计；超页不裁切、不暗中删改经历。\n\n\n\n\n## 源码与文档\n",
+      "sections": [
+        {
+          "id": "31",
+          "title": "项目介绍",
+          "type": "MARKDOWN",
+          "html": "<p>面向个人投递简历时频繁调整内容、管理多个版本和检查打印结果的需求，建立从编辑、保存、校验到 PDF 输出的完整本地流程。公开源码使用虚构演示资料和中性头像。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "面向个人投递简历时频繁调整内容、管理多个版本和检查打印结果的需求，建立从编辑、保存、校验到 PDF 输出的完整本地流程。公开源码使用虚构演示资料和中性头像。\n"
+        },
+        {
+          "id": "32",
+          "title": "核心功能",
+          "type": "FEATURE_LIST",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "title": "实时编辑",
+                "description": "编辑个人信息、教育、技能、项目和实习；条目可增删、排序，右侧同步预览 A4 排版。"
+              },
+              {
+                "title": "岗位版本",
+                "description": "复制、切换、重命名和删除投递版本，每个版本独立保存内容与排版设置。"
+              },
+              {
+                "title": "可靠保存",
+                "description": "IndexedDB 事务完成后确认保存；JSON 支持完整备份、校验导入和合并，多标签冲突会阻止陈旧覆盖。"
+              },
+              {
+                "title": "单页 PDF",
+                "description": "预览与打印共用组件；本地 Chromium 等待字体和照片，检查边界及页数后直接下载 PDF。"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "33",
+          "title": "使用流程",
+          "type": "MARKDOWN",
+          "html": "<p>复制岗位版本 → 修改简历内容 → 检查 A4 预览和溢出提示 → 等待保存完成 → 导出 PDF → 定期备份 JSON。超页时在副本中人工精简内容。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "复制岗位版本 → 修改简历内容 → 检查 A4 预览和溢出提示 → 等待保存完成 → 导出 PDF → 定期备份 JSON。超页时在副本中人工精简内容。\n"
+        },
+        {
+          "id": "34",
+          "title": "技术栈",
+          "type": "TECH_STACK",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "name": "Vue 3",
+                "group": ""
+              },
+              {
+                "name": "TypeScript",
+                "group": ""
+              },
+              {
+                "name": "Express",
+                "group": ""
+              },
+              {
+                "name": "IndexedDB",
+                "group": ""
+              },
+              {
+                "name": "Playwright",
+                "group": ""
+              },
+              {
+                "name": "PDF",
+                "group": ""
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "35",
+          "title": "关键实现",
+          "type": "MARKDOWN",
+          "html": "<p>Vue 编辑器与打印页复用 ResumeSheet，避免两套排版偏差。IndexedDB 保存版本与修订信息，BroadcastChannel 提醒多标签冲突。仅监听回环地址的 Express 服务使用独立数据快照生成 PDF，并校验来源、图片、字体和输出页数。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "Vue 编辑器与打印页复用 ResumeSheet，避免两套排版偏差。IndexedDB 保存版本与修订信息，BroadcastChannel 提醒多标签冲突。仅监听回环地址的 Express 服务使用独立数据快照生成 PDF，并校验来源、图片、字体和输出页数。\n"
+        },
+        {
+          "id": "36",
+          "title": "项目成果",
+          "type": "STATS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "label": "PDF 目标",
+                "value": "A4 单页"
+              },
+              {
+                "label": "单元测试",
+                "value": "16 项"
+              },
+              {
+                "label": "数据存储",
+                "value": "本机优先"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "37",
+          "title": "验证与交付",
+          "type": "MARKDOWN",
+          "html": "<p>2026-10-15 整理版本通过 16 项单元测试、类型检查和生产构建。3 个浏览器场景验证初始预览、单页中文 PDF、断开外网后的编辑与导出；生产模式也实际输出一页可检索中文的 PDF，未记录页面脚本错误。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "2026-10-15 整理版本通过 16 项单元测试、类型检查和生产构建。3 个浏览器场景验证初始预览、单页中文 PDF、断开外网后的编辑与导出；生产模式也实际输出一页可检索中文的 PDF，未记录页面脚本错误。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n"
+        },
+        {
+          "id": "38",
+          "title": "当前阶段与使用边界",
+          "type": "MARKDOWN",
+          "html": "<p>需要本地 Node 服务、Chromium 与中文字体，不能只上传静态 dist 获得 PDF 能力。清理浏览器数据可能丢失本地版本，应独立备份。没有云账户、自动改写经历或任意模板设计；超页不裁切、不暗中删改经历。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "需要本地 Node 服务、Chromium 与中文字体，不能只上传静态 dist 获得 PDF 能力。清理浏览器数据可能丢失本地版本，应独立备份。没有云账户、自动改写经历或任意模板设计；超页不裁切、不暗中删改经历。\n"
+        },
+        {
+          "id": "39",
+          "title": "源码与文档",
+          "type": "LINKS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/resume-studio",
+                "label": "查看项目源码",
+                "description": "GitHub 集合中的独立项目目录"
+              },
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/resume-studio/README.md",
+                "label": "运行与使用说明",
+                "description": "依赖、启动、测试和项目边界"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        }
+      ]
+    },
+    {
+      "slug": "starfall-ruins",
+      "title": "Starfall Ruins · 星陨遗迹",
+      "description": "Unity 与 Blender 结合的三维游戏原型，围绕移动跳跃、星碎片收集、祭坛激活和传送门解锁组织探索流程，同时保留场景构建工具和岩石资产源文件。",
+      "category": "实验与研究",
+      "format": "游戏",
+      "techStack": [
+        "Unity 6",
+        "C#",
+        "Unity Input System",
+        "URP",
+        "Blender",
+        "FBX"
+      ],
+      "status": "DEVELOPING",
+      "publishedAt": "2026-10-16",
+      "updatedAt": "2026-10-16",
+      "startedOn": null,
+      "endedOn": null,
+      "featured": false,
+      "cover": "/images/content/d40b54f4c2f82571.webp",
+      "screenshots": [
+        {
+          "src": "/images/content/98328eda29a9352a.webp",
+          "alt": "基础沙盒阶段真实截图，不代表新增玩法完整验收"
+        }
+      ],
+      "links": [
+        {
+          "label": "项目源码",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/starfall-ruins",
+          "type": "GITHUB"
+        },
+        {
+          "label": "运行说明",
+          "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/starfall-ruins/README.md",
+          "type": "DOC"
+        }
+      ],
+      "path": "/portfolio/starfall-ruins/",
+      "bodyMarkdown": "## 项目介绍\n\n\n\n\n先验证 Blender 建模、FBX 导入、材质和场景组织，再在基础沙盒上加入具有目标的探索流程。当前作品用于展示资源管线、脚本分工和玩法原型，不作为已经发布的完整游戏。\n\n\n\n\n## 核心功能\n\n\n\n\n## 使用流程\n\n\n\n\n用匹配版本的 Unity 打开工程 → 加载 MainScene → 进入 Play Mode 检查角色与场景 → 收集碎片并尝试激活祭坛 → 解锁传送门；按需使用关卡构建菜单，操作前保存当前场景。\n\n\n\n\n## 技术栈\n\n\n\n\n## 关键实现\n\n\n\n\n玩法层由 Core、Player、Collectibles、Interaction、Environment 与 UI 脚本组成。事件驱动状态展示，编辑器构建工具组织场景内容。Assets、Packages、ProjectSettings 与 .meta 一起保留，Blender 源资产放在 art-source。\n\n\n\n\n## 项目成果\n\n\n\n\n## 验证与交付\n\n\n\n\n2026-10-15 整理版本保留 12 个玩法脚本、主场景与 56 个资源 GUID，静态检查未发现因精简造成的本地引用缺失。已有基础沙盒的移动、跳跃与鼠标操作记录；新增完整玩法未在本次重新执行 Play Mode 或独立构建验收。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n\n\n\n\n## 当前阶段与使用边界\n\n\n\n\n当前仍为开发中的原型，没有完整商业关卡、存档、发行版本或跨设备性能保证。配图为基础沙盒阶段的真实截图，不能据此认定后续收集流程已经全部验收。\n\n\n\n\n## 界面与效果\n\n\n\n\n## 源码与文档\n",
+      "sections": [
+        {
+          "id": "68",
+          "title": "项目介绍",
+          "type": "MARKDOWN",
+          "html": "<p>先验证 Blender 建模、FBX 导入、材质和场景组织，再在基础沙盒上加入具有目标的探索流程。当前作品用于展示资源管线、脚本分工和玩法原型，不作为已经发布的完整游戏。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "先验证 Blender 建模、FBX 导入、材质和场景组织，再在基础沙盒上加入具有目标的探索流程。当前作品用于展示资源管线、脚本分工和玩法原型，不作为已经发布的完整游戏。\n"
+        },
+        {
+          "id": "69",
+          "title": "核心功能",
+          "type": "FEATURE_LIST",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "title": "角色控制",
+                "description": "使用 WASD 移动、空格跳跃与鼠标视角，管理重力、碰撞和光标锁定。"
+              },
+              {
+                "title": "探索目标",
+                "description": "通过 GameManager 管理碎片持有量、祭坛激活进度、传送门解锁及完成状态。"
+              },
+              {
+                "title": "交互与 HUD",
+                "description": "以交互接口、目标提示、拾取与环境控制器划分职责，HUD 订阅状态变化。"
+              },
+              {
+                "title": "资产与关卡",
+                "description": "保留 Blender 岩石生成脚本、blend 源文件、FBX 和 Unity Prefab；编辑器工具可构建玩法关卡。"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "70",
+          "title": "使用流程",
+          "type": "MARKDOWN",
+          "html": "<p>用匹配版本的 Unity 打开工程 → 加载 MainScene → 进入 Play Mode 检查角色与场景 → 收集碎片并尝试激活祭坛 → 解锁传送门；按需使用关卡构建菜单，操作前保存当前场景。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "用匹配版本的 Unity 打开工程 → 加载 MainScene → 进入 Play Mode 检查角色与场景 → 收集碎片并尝试激活祭坛 → 解锁传送门；按需使用关卡构建菜单，操作前保存当前场景。\n"
+        },
+        {
+          "id": "71",
+          "title": "技术栈",
+          "type": "TECH_STACK",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "name": "Unity 6",
+                "group": ""
+              },
+              {
+                "name": "C#",
+                "group": ""
+              },
+              {
+                "name": "Unity Input System",
+                "group": ""
+              },
+              {
+                "name": "URP",
+                "group": ""
+              },
+              {
+                "name": "Blender",
+                "group": ""
+              },
+              {
+                "name": "FBX",
+                "group": ""
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "72",
+          "title": "关键实现",
+          "type": "MARKDOWN",
+          "html": "<p>玩法层由 Core、Player、Collectibles、Interaction、Environment 与 UI 脚本组成。事件驱动状态展示，编辑器构建工具组织场景内容。Assets、Packages、ProjectSettings 与 .meta 一起保留，Blender 源资产放在 art-source。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "玩法层由 Core、Player、Collectibles、Interaction、Environment 与 UI 脚本组成。事件驱动状态展示，编辑器构建工具组织场景内容。Assets、Packages、ProjectSettings 与 .meta 一起保留，Blender 源资产放在 art-source。\n"
+        },
+        {
+          "id": "73",
+          "title": "项目成果",
+          "type": "STATS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "label": "玩法脚本",
+                "value": "12 个"
+              },
+              {
+                "label": "资源 GUID",
+                "value": "56 个"
+              },
+              {
+                "label": "当前定位",
+                "value": "游戏原型"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        },
+        {
+          "id": "74",
+          "title": "验证与交付",
+          "type": "MARKDOWN",
+          "html": "<p>2026-10-15 整理版本保留 12 个玩法脚本、主场景与 56 个资源 GUID，静态检查未发现因精简造成的本地引用缺失。已有基础沙盒的移动、跳跃与鼠标操作记录；新增完整玩法未在本次重新执行 Play Mode 或独立构建验收。</p>\n<p>源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "2026-10-15 整理版本保留 12 个玩法脚本、主场景与 56 个资源 GUID，静态检查未发现因精简造成的本地引用缺失。已有基础沙盒的移动、跳跃与鼠标操作记录；新增完整玩法未在本次重新执行 Play Mode 或独立构建验收。\n\n\n\n\n源码位于 AI Coding 作品集合的独立目录，运行方法与依赖以项目 README 为准。\n"
+        },
+        {
+          "id": "75",
+          "title": "当前阶段与使用边界",
+          "type": "MARKDOWN",
+          "html": "<p>当前仍为开发中的原型，没有完整商业关卡、存档、发行版本或跨设备性能保证。配图为基础沙盒阶段的真实截图，不能据此认定后续收集流程已经全部验收。</p>\n",
+          "data": {},
+          "media": [],
+          "content": "当前仍为开发中的原型，没有完整商业关卡、存档、发行版本或跨设备性能保证。配图为基础沙盒阶段的真实截图，不能据此认定后续收集流程已经全部验收。\n"
+        },
+        {
+          "id": "76",
+          "title": "界面与效果",
+          "type": "GALLERY",
+          "html": "",
+          "data": {},
+          "media": [
+            {
+              "src": "/images/content/98328eda29a9352a.webp",
+              "caption": "基础沙盒阶段真实截图，不代表新增玩法完整验收"
+            }
+          ],
+          "content": "\n"
+        },
+        {
+          "id": "77",
+          "title": "源码与文档",
+          "type": "LINKS",
+          "html": "",
+          "data": {
+            "items": [
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/starfall-ruins",
+                "label": "查看项目源码",
+                "description": "GitHub 集合中的独立项目目录"
+              },
+              {
+                "url": "https://github.com/LingXI5499/ai-coding-portfolio/tree/main/starfall-ruins/README.md",
+                "label": "运行与使用说明",
+                "description": "依赖、启动、测试和项目边界"
+              }
+            ]
+          },
+          "media": [],
+          "content": "\n"
+        }
+      ]
+    }
+  ]
+}

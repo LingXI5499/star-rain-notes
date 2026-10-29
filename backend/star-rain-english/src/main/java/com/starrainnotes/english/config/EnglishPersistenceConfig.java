@@ -29,7 +29,8 @@ import org.springframework.context.annotation.Configuration;
     "com.starrainnotes.english.reading.mapper",
     "com.starrainnotes.english.writing.article.mapper",
     "com.starrainnotes.english.taxonomy.mapper",
-    "com.starrainnotes.english.knowledge.mapper"
+    "com.starrainnotes.english.knowledge.mapper",
+    "com.starrainnotes.english.library.mapper"
 })
 public class EnglishPersistenceConfig {
 }

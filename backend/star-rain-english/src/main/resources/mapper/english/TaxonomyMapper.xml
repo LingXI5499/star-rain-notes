@@ -13,7 +13,7 @@
    将数据库列装配为 com.starrainnotes.english.taxonomy.dto.TaxonomyDto$Node；id/result 区分标识字段与普通属性。
  -->
  <resultMap id="node" type="com.starrainnotes.english.taxonomy.dto.TaxonomyDto$Node">
-  <id property="id" column="id"/><result property="parentId" column="parent_id"/><result property="dimension" column="dimension"/>
+  <id property="id" column="id"/><result property="parentId" column="parent_id"/><result property="dimension" column="dimension"/><result property="libraryModule" column="library_module"/><result property="code" column="code"/>
   <result property="name" column="name"/><result property="nameEn" column="name_en"/><result property="slug" column="slug"/>
   <result property="description" column="description"/><result property="sortOrder" column="sort_order"/><result property="enabled" column="enabled"/><result property="worldBaseline" column="is_world_baseline"/>
  </resultMap>
@@ -21,7 +21,7 @@
    columns：投影列；可复用 SQL 片段。
    通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
  -->
- <sql id="columns">id,parent_id,dimension,name,name_en,slug,description,sort_order,enabled,is_world_baseline</sql>
+ <sql id="columns">id,parent_id,dimension,library_module,code,name,name_en,slug,description,sort_order,enabled,is_world_baseline</sql>
  <!--
    list：list；读取语句。
    涉及数据表：sr_english_taxonomy_term；关系条件与可见性筛选由下方 SQL 明确限定。
@@ -56,7 +56,7 @@
    插入成功后 JDBC 自动生成的主键回填到 id。
    绑定参数：parentId、dimension、name、nameEn、slug、description、sortOrder；参数含义参见 Mapper 方法注释。
  -->
- <insert id="insert" useGeneratedKeys="true" keyProperty="id">INSERT INTO sr_english_taxonomy_term(parent_id,dimension,name,name_en,slug,description,sort_order,enabled,is_world_baseline) VALUES(#{parentId},#{dimension},#{name},#{nameEn},#{slug},#{description},#{sortOrder},1,0)</insert>
+ <insert id="insert" useGeneratedKeys="true" keyProperty="id">INSERT INTO sr_english_taxonomy_term(parent_id,dimension,library_module,code,name,name_en,slug,description,sort_order,enabled,is_world_baseline) VALUES(#{parentId},#{dimension},#{libraryModule},#{code},#{name},#{nameEn},#{slug},#{description},#{sortOrder},1,0)</insert>
  <!--
    update：更新；更新语句。
    涉及数据表：sr_english_taxonomy_term；关系条件与可见性筛选由下方 SQL 明确限定。

@@ -51,9 +51,9 @@ describe('mobile public navigation', () => {
     await button('英语').trigger('click'); await flushPromises()
     const sheet=document.querySelector('[role="dialog"]')
     expect(sheet.getAttribute('aria-label')).toBe('英语导航')
-    const reading=sheet.querySelector('a[href="/english/reading"]')
+    const reading=sheet.querySelector('a[href="/english/world"]')
     reading.click(); await flushPromises()
-    expect(router.currentRoute.value.path).toBe('/english/reading')
+    expect(router.currentRoute.value.path).toBe('/english/world')
     expect(document.querySelector('[role="dialog"]')).toBeNull(); expect(document.body.style.overflow).toBe('')
   })
   it('offers secondary pages and the account center from the homepage', async () => {

@@ -26,6 +26,13 @@ async function installReaders(page) {
       translationZhMarkdown: `## 中文章节\n\n${'这是中文正文。'.repeat(400)}`, rights: {} } : []
     return route.fulfill({ json: { code: 'OK', data } })
   })
+  await page.route('**/api/public/english/library/world/taxonomy', route => route.fulfill({json:{code:'OK',data:[]}}))
+  for (const path of ['world/articles', 'essays']) {
+    await page.route(`**/api/public/english/${path}/long`, route => route.fulfill({json:{code:'OK',data:{
+      slug:'long',title:'English article',bodyMarkdown:`## English section\n\n${'A long reading paragraph. '.repeat(400)}`,
+      translationZhMarkdown:`## 中文章节\n\n${'这是中文正文。'.repeat(400)}`,rights:{},
+    }}}))
+  }
   await page.route('**/api/account/learning/chapters/first/**', route => {
     const path = new URL(route.request().url()).pathname
     return route.fulfill({ json: { code: 'OK', data: path.endsWith('study-state') ? {
@@ -68,10 +75,11 @@ for (const path of ['/tutorials/long/first', '/learning/chapters/first', '/engli
       await expect(dialog).toContainText('English section')
       await expect(dialog).not.toContainText('中文章节')
       await page.keyboard.press('Escape')
-      await page.getByRole('button', { name: '中文', exact: true }).click()
+      await page.locator('.library-translation > summary').click()
+      await expect(page.locator('.library-translation')).toContainText('中文章节')
       await trigger.click()
-      await expect(dialog).toContainText('中文章节')
-      await expect(dialog).not.toContainText('English section')
+      await expect(dialog).toContainText('English section')
+      await expect(dialog).not.toContainText('中文章节')
     }
     await page.keyboard.press('Escape')
     await expect(dialog).toBeHidden()

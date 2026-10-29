@@ -8,12 +8,12 @@
  */
 
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-const state = vi.hoisted(() => ({ request: null, responseError: null, get: vi.fn() }))
+const state = vi.hoisted(() => ({ request: null, responseError: null, get: vi.fn(), clientOptions: null }))
 vi.mock('axios', () => ({ default: {
   get: state.get,
   isCancel: error => error?.code === 'ERR_CANCELED',
   CanceledError: class extends Error { code = 'ERR_CANCELED' },
-  create: () => ({ interceptors: { request: { use: callback => { state.request = callback } }, response: { use: (_, callback) => { state.responseError = callback } } } }),
+  create: options => { state.clientOptions = options; return { interceptors: { request: { use: callback => { state.request = callback } }, response: { use: (_, callback) => { state.responseError = callback } } } } },
 } }))
 import { clearCsrf, errorMessage, isRequestCanceled, invalidateAccountRequests } from './http'
 /**
@@ -24,6 +24,10 @@ import { clearCsrf, errorMessage, isRequestCanceled, invalidateAccountRequests }
 const token = value => ({ data: { data: { token: value } } })
 beforeEach(() => { clearCsrf(); vi.clearAllMocks() })
 describe('CSRF single flight and user errors', () => {
+  it('keeps session tokens authoritative over stale browser cookies', () => {
+    expect(state.clientOptions.xsrfCookieName).toBeNull()
+    expect(state.clientOptions.withCredentials).toBe(true)
+  })
   it('fetches one token for ten concurrent writes and reuses it', async () => {
     state.get.mockResolvedValue(token('current'))
     const configs = await Promise.all(Array.from({ length: 10 }, () => state.request({ method: 'post', headers: {} })))

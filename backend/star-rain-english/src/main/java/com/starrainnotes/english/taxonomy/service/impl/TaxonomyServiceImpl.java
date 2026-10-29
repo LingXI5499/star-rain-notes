@@ -145,12 +145,23 @@ public class TaxonomyServiceImpl implements TaxonomyService {
      * @param old old；类型为 <code>Node</code>
      */
     private void validate(Node n,Node old) {
-        if(n==null || n.getDimension()==null || !List.of("TOPIC","GENRE","PURPOSE").contains(n.getDimension()) || n.getName()==null || n.getName().isBlank() || n.getName().length()>100
+        if (old != null && n != null) { n.setCode(old.getCode()); n.setLibraryModule(old.getLibraryModule()); }
+        if (n != null && n.getLibraryModule() != null) {
+            String prefix = "vocabulary".equals(n.getLibraryModule()) ? "T" : "world".equals(n.getLibraryModule()) ? "R" : "";
+            if (prefix.isEmpty() || n.getCode() == null || !n.getCode().matches(prefix + "\\d{2}(-\\d{2})?")
+                || !("vocabulary".equals(n.getLibraryModule()) ? "VOCABULARY" : "TOPIC").equals(n.getDimension())) { invalid(); }
+        }
+
+        if(n==null || n.getDimension()==null || !List.of("TOPIC","VOCABULARY","GENRE","PURPOSE").contains(n.getDimension()) || n.getName()==null || n.getName().isBlank() || n.getName().length()>100
           || n.getNameEn()==null || n.getNameEn().isBlank() || n.getNameEn().length()>150 || n.getSlug()==null || !n.getSlug().matches("[a-z0-9][a-z0-9-]{0,199}") || (n.getDescription()!=null && n.getDescription().length()>500)) invalid();
         if(old!=null && (!old.getSlug().equals(n.getSlug()) || !old.getDimension().equals(n.getDimension()) || !Objects.equals(old.getParentId(),n.getParentId()))) invalid();
         if(n.getParentId()!=null) {
             Node p=mapper.byId(n.getParentId());
             if(p==null || !p.isEnabled() || p.getParentId()!=null || !p.getDimension().equals(n.getDimension()) || "PURPOSE".equals(n.getDimension())) invalid();
+            if (n.getLibraryModule() != null && (!n.getLibraryModule().equals(p.getLibraryModule())
+                || p.getCode() == null || !n.getCode().startsWith(p.getCode() + "-"))) { invalid(); }
+        } else if (n.getLibraryModule() != null && n.getCode().contains("-")) {
+            invalid();
         }
     }
     /**

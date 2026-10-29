@@ -39,8 +39,8 @@ const more = [
   { path: '/search', label: '搜索', description: '查找站内内容' },
 ]
 const english = [
-  { path: '/english/vocabulary', label: '单词' }, { path: '/english/grammar', label: '语法' },
-  { path: '/english/reading', label: '阅读' }, { path: '/english/writing', label: '写作' },
+  { path: '/english/vocabulary', label: '词汇' }, { path: '/english/grammar', label: '语法' },
+  { path: '/english/world', label: '世界' }, { path: '/english/essays', label: '随笔' },
 ]
 /**
  * 标题；通过 computed 建立。

@@ -17,18 +17,28 @@ const editorContext = useEditorContexts('english-writing')
 
 import PublicFilterTabs from '../../../../shared/ui/PublicFilterTabs.vue'
 import { accountPath } from '../../../../shared/viewMode'
-import { errorMessage } from '../../../../shared/http'
+import { errorMessage, get, post, put, del } from '../../../../shared/http'
 import { useAuthStore } from '../../../account/stores/authStore'
 import EnglishTaxonomyFields from '../../components/EnglishTaxonomyFields.vue'
 import EnglishBilingualProse from '../../components/EnglishBilingualProse.vue'
 import EnglishRevisionPanel from '../../components/EnglishRevisionPanel.vue'
-import { createWriting,getWriting,saveWriting,completeWriting,publishWriting,deleteWriting } from '../../api/englishRwApi'
+import { createWriting as legacyCreateWriting,getWriting as legacyGetWriting,saveWriting as legacySaveWriting,completeWriting as legacyCompleteWriting,publishWriting as legacyPublishWriting,deleteWriting as legacyDeleteWriting } from '../../api/englishRwApi'
 import { createWritingAutosave } from '../../lib/writingAutosave'
 import '../../styles/englishRw.css'
 /**
  * 路由；通过 useRoute 建立。
  */
 const route=useRoute(),router=useRouter(),auth=useAuthStore()
+const props=defineProps({essay:Boolean})
+const createWriting=value=>props.essay?post('/admin/english/essays',value):legacyCreateWriting(value)
+const getWriting=id=>props.essay?get('/admin/english/essays/'+id):legacyGetWriting(id)
+const saveWriting=(id,value)=>props.essay?put('/admin/english/essays/'+id,value):legacySaveWriting(id,value)
+const completeWriting=(id,rowVersion)=>props.essay?post('/admin/english/essays/'+id+'/complete',{rowVersion}):legacyCompleteWriting(id,rowVersion)
+const publishWriting=(id,rowVersion,publish)=>props.essay?post('/admin/english/essays/publication/'+id+'/'+(publish?'publish':'withdraw'),{rowVersion}):legacyPublishWriting(id,rowVersion,publish)
+const deleteWriting=id=>props.essay?del('/admin/english/essays/'+id):legacyDeleteWriting(id)
+const writingHome=()=>accountPath(props.essay?'/english/manage/essays':'/english/writing')
+const writingEditor=id=>accountPath(props.essay?'/english/manage/essays/editor/'+id:'/english/writing/articles/'+id+'/edit')
+
 /**
  * 英语Editor；通过 ref 建立。
  * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
@@ -75,7 +85,7 @@ watch(()=>[route.params.id,route.path.endsWith('/revisions')],async()=>{
  try {
   const value=route.params.id?await getWriting(route.params.id):await createWriting({primaryTopicId:route.query.topicId||null})
   if(n!==generation)return
-  if(!route.params.id){await router.replace(accountPath('/english/writing/articles/'+value.id+'/edit'));return}
+  if(!route.params.id){await router.replace(writingEditor(value.id));return}
   await accept(value)
   autosave=createWritingAutosave({read:payload,save:async body=>{const saved=await saveWriting(article.value.id,body);acceptedWriting.value={...body};return saved},applyVersion:saved=>{article.value={...article.value,rowVersion:saved.rowVersion,state:saved.state,visibility:saved.visibility}},onState:(state,cause)=>{status.value=state;if(cause)error.value=errorMessage(cause)}})
  }catch(cause){if(n===generation)error.value=errorMessage(cause)}finally{if(n===generation)loading.value=false}
@@ -146,7 +156,7 @@ async function restored(value){await accept(value);status.value='saved';error.va
  * 结束路径在 finally 中恢复忙碌或加载状态，成功与失败都会释放界面等待状态。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
-async function archive(){ busy.value=true;try { await deleteWriting(article.value.id);autosave.dispose();await router.push(accountPath('/english/writing')) }catch(cause){error.value=errorMessage(cause)}finally{busy.value=false} }
+async function archive(){ busy.value=true;try { await deleteWriting(article.value.id);autosave.dispose();await router.push(writingHome()) }catch(cause){error.value=errorMessage(cause)}finally{busy.value=false} }
 /**
  * warnLeave的处理函数。
  * 主要协作：syncEditors、autosave.isDirty、event.preventDefault。
@@ -160,9 +170,9 @@ onBeforeRouteLeave(async()=>{syncEditors();await nextTick();if(!autosave?.isDirt
  */
 onBeforeUnmount(()=>{generation++;autosave?.dispose();window.removeEventListener('beforeunload',warnLeave)})
 </script>
-<template><main class="english-rw"><RouterLink :to="accountPath('/english/writing')">← 我的写作</RouterLink>
+<template><main class="english-rw"><RouterLink :to="writingHome()">← {{essay?'随笔管理':'我的写作'}}</RouterLink>
  <p v-if="loading" class="english-rw__empty">正在准备编辑器…</p><p v-if="error" class="english-rw__error" role="alert">{{error}}</p>
- <template v-if="!loading && article"><header class="english-rw__hero"><div><p class="public-eyebrow">MY WRITING · 自主表达</p><h1>{{form.title || 'Untitled Article'}}</h1><p role="status">{{statusLabel}} · {{article.visibility==='PUBLIC'?'已公开':'仅自己可见'}} · {{article.state==='COMPLETED'?'已完成':'草稿'}}</p></div><div class="english-rw__actions"><button class="english-rw__button" :disabled="busy || status==='conflict'" @click="localRecoveryPaused ? saveConfirmedRecovery() : flush()">{{ localRecoveryPaused ? '确认保存恢复稿' : '保存草稿' }}</button><button class="english-rw__button english-rw__button--primary" :disabled="busy || status==='conflict'" @click="action('complete')">完成写作</button><button v-if="canPublish" class="english-rw__button" :disabled="busy || status==='conflict'" @click="action(article.visibility==='PUBLIC'?'withdraw':'publish')">{{article.visibility==='PUBLIC'?'撤回公开':'公开原创'}}</button></div></header>
+ <template v-if="!loading && article"><header class="english-rw__hero"><div><p class="public-eyebrow">{{essay?'ESSAYS · 记录经历与思考':'MY WRITING · 自主表达'}}</p><h1>{{form.title || 'Untitled Article'}}</h1><p role="status">{{statusLabel}} · {{article.visibility==='PUBLIC'?'已公开':'仅自己可见'}} · {{article.state==='COMPLETED'?'已完成':'草稿'}}</p></div><div class="english-rw__actions"><button class="english-rw__button" :disabled="busy || status==='conflict'" @click="localRecoveryPaused ? saveConfirmedRecovery() : flush()">{{ localRecoveryPaused ? '确认保存恢复稿' : '保存草稿' }}</button><button class="english-rw__button english-rw__button--primary" :disabled="busy || status==='conflict'" @click="action('complete')">{{essay?'完成随笔':'完成写作'}}</button><button v-if="canPublish" class="english-rw__button" :disabled="busy || status==='conflict'" @click="action(article.visibility==='PUBLIC'?'withdraw':'publish')">{{article.visibility==='PUBLIC'?'撤回公开':'公开原创'}}</button></div></header>
  <section v-if="status==='conflict' || status==='error'" class="english-rw__panel"><h2>当前草稿仍保留在编辑框</h2><p class="english-rw__muted">读取服务端内容后核对，再决定如何合并。</p><div class="english-rw__actions"><button v-if="status==='error'" class="english-rw__button" @click="retrySave">重试保存</button><button class="english-rw__button" @click="loadRemote">读取服务端版本</button></div><div v-if="remote"><h3>服务端版本 · {{remote.title}}</h3><p v-if="remote.summary">{{remote.summary}}</p><p v-if="remote.keywords?.length" class="english-rw__muted">关键词：{{remote.keywords.join('、')}}</p><pre class="rw-writing__remote">{{remote.bodyMarkdown}}</pre><button class="english-rw__button" @click="merge">确认按当前草稿合并保存</button></div></section>
  <p v-if="localRecoveryPaused" role="status">本地恢复/导入内容待确认，自动保存已暂停；检查后点击「确认保存恢复稿」。</p><PublicFilterTabs v-model="tab" label="写作工作区" :options="[{value:'edit',label:'编辑正文'},{value:'preview',label:'阅读预览'},{value:'history',label:'历史版本'}]" />
  <section v-show="tab==='edit'"><div class="english-rw__panel"><div class="english-rw__fields"><label>标题 · 可选<input v-model="form.title" maxlength="200" placeholder="Untitled Article"></label><label>关键词 · 可选<input v-model="keywords" maxlength="3000" placeholder="用逗号分隔"></label><label>摘要 · 可选<textarea v-model="form.summary" maxlength="1000" rows="3"></textarea></label></div><h3>文章分类 · 可选</h3><EnglishTaxonomyFields v-model="form" /></div>

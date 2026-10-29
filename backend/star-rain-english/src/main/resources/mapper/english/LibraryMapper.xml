@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.starrainnotes.english.library.mapper.LibraryMapper">
+  <select id="overview" resultType="com.starrainnotes.english.library.dto.LibraryDto$Overview">
+    SELECT (SELECT COUNT(*) FROM sr_english_vocabulary_word) vocabulary_records,
+      (SELECT COUNT(*) FROM sr_english_vocabulary_mapping WHERE migration_status='confirmed') confirmed_records,
+      (SELECT COUNT(*) FROM sr_english_vocabulary_mapping WHERE migration_status='needs-review') review_records,
+      (SELECT COUNT(*) FROM sr_english_vocabulary_mapping WHERE migration_status='unclassified') unclassified_records,
+      (SELECT COUNT(*) FROM sr_english_grammar_lesson WHERE publish_status='PUBLISHED') grammar_lessons,
+      (SELECT COUNT(*) FROM sr_english_reading_article a WHERE a.deleted_at IS NULL AND <include refid="com.starrainnotes.english.reading.mapper.ReadingMapper.publicCheck"/>) world_articles,
+      (SELECT COUNT(*) FROM sr_english_writing_article a WHERE <include refid="com.starrainnotes.english.writing.article.mapper.WritingArticleMapper.public"/>) essays
+  </select>
+  <select id="counts" resultType="com.starrainnotes.english.library.dto.LibraryDto$Count">
+    <choose>
+      <when test="module == 'vocabulary'">
+        SELECT n.code, COUNT(DISTINCT w.id) total FROM sr_english_taxonomy_term n
+        LEFT JOIN sr_english_taxonomy_term child ON child.id=n.id OR child.parent_id=n.id
+        LEFT JOIN sr_english_vocabulary_topic t ON t.term_id=child.id AND child.enabled=1
+        LEFT JOIN sr_english_vocabulary_mapping m ON m.word_id=t.word_id AND m.migration_status='confirmed'
+        LEFT JOIN sr_english_vocabulary_word w ON w.id=m.word_id AND EXISTS(SELECT 1 FROM sr_english_vocabulary_theme source WHERE source.id=w.theme_id)
+        WHERE n.library_module='vocabulary' AND n.enabled=1 GROUP BY n.id,n.code
+      </when>
+      <otherwise>
+        SELECT n.code, COUNT(DISTINCT a.id) total FROM sr_english_taxonomy_term n
+        LEFT JOIN sr_english_taxonomy_term child ON child.id=n.id OR child.parent_id=n.id
+        LEFT JOIN sr_english_reading_article a ON child.enabled=1 AND (a.primary_topic_id=child.id OR EXISTS(SELECT 1 FROM sr_english_reading_tag rt WHERE rt.article_id=a.id AND rt.term_id=child.id)) AND a.deleted_at IS NULL AND (<include refid="com.starrainnotes.english.reading.mapper.ReadingMapper.publicCheck"/>)
+        WHERE n.library_module='world' AND n.enabled=1 GROUP BY n.id,n.code
+      </otherwise>
+    </choose>
+  </select>
+  <sql id="filter">
+    FROM sr_english_vocabulary_word w JOIN sr_english_vocabulary_theme source ON source.id=w.theme_id JOIN sr_english_vocabulary_mapping m ON m.word_id=w.id
+    <where>
+      <if test="theme != null">AND w.theme_id=#{theme}</if>
+      <if test="search != ''">AND (LOCATE(LOWER(#{search}),LOWER(w.word)) &gt; 0 OR LOCATE(#{search},w.translation) &gt; 0 OR LOCATE(#{search},w.scene_meaning) &gt; 0)</if>
+      <if test="status != ''">AND m.migration_status=#{status}</if>
+      <if test="code != ''">
+        AND m.migration_status='confirmed' AND EXISTS (
+          SELECT 1 FROM sr_english_vocabulary_topic t JOIN sr_english_taxonomy_term n ON n.id=t.term_id
+          LEFT JOIN sr_english_taxonomy_term parent ON parent.id=n.parent_id
+          WHERE t.word_id=w.id AND n.enabled=1 AND (parent.id IS NULL OR parent.enabled=1)
+            AND (n.code=#{code} OR parent.code=#{code}) AND n.library_module='vocabulary')
+      </if>
+    </where>
+  </sql>
+  <sql id="columns">
+    w.id,w.theme_id,w.word,w.part_of_speech,w.phonetic_us,w.phonetic_uk,w.translation,w.scene_meaning,
+    w.inflections,CAST(w.examples AS CHAR) examples,w.sort_order,w.memory_count,
+    m.entry_id,m.legacy_index,m.migration_status,m.migration_reason,m.row_version
+  </sql>
+  <select id="countWords" resultType="long">SELECT COUNT(*) <include refid="filter"/></select>
+  <select id="words" resultType="com.starrainnotes.english.library.dto.LibraryDto$Word">
+    SELECT <include refid="columns"/> <include refid="filter"/> ORDER BY w.theme_id,w.sort_order,w.id LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="topicCodes" resultType="string">
+    SELECT n.code FROM sr_english_vocabulary_topic t JOIN sr_english_taxonomy_term n ON n.id=t.term_id WHERE t.word_id=#{id} ORDER BY n.sort_order,n.id
+  </select>
+  <select id="lock" resultType="com.starrainnotes.english.library.dto.LibraryDto$Word">
+    SELECT <include refid="columns"/> FROM sr_english_vocabulary_word w JOIN sr_english_vocabulary_mapping m ON m.word_id=w.id WHERE w.id=#{id} FOR UPDATE
+  </select>
+  <update id="updateMapping">
+    UPDATE sr_english_vocabulary_mapping SET migration_status=#{value.migrationStatus},migration_reason=#{value.migrationReason},row_version=row_version+1
+    WHERE word_id=#{id} AND row_version=#{value.rowVersion}
+  </update>
+  <delete id="clearTopics">DELETE FROM sr_english_vocabulary_topic WHERE word_id=#{id}</delete>
+  <insert id="addTopic">INSERT INTO sr_english_vocabulary_topic(word_id,term_id) VALUES(#{id},#{term})</insert>
+  <sql id="essayPublic"><include refid="com.starrainnotes.english.writing.article.mapper.WritingArticleMapper.public"/></sql>
+  <sql id="essayFilter">
+    FROM sr_english_writing_article a WHERE <include refid="essayPublic"/>
+    <if test="search != ''">AND LOCATE(LOWER(#{search}),LOWER(a.title)) &gt; 0</if>
+    <if test="tag != ''">AND JSON_CONTAINS(a.keywords_json,JSON_QUOTE(#{tag}))</if>
+    <if test="month != ''">AND a.published_at &gt;= CONCAT(#{month},'-01') AND a.published_at &lt; DATE_ADD(CONCAT(#{month},'-01'),INTERVAL 1 MONTH)</if>
+    <if test="genre != ''">AND EXISTS (SELECT 1 FROM sr_english_writing_article_tag r JOIN sr_english_taxonomy_term t ON t.id=r.term_id WHERE r.article_id=a.id AND t.dimension='GENRE' AND t.enabled=1 AND t.name=#{genre})</if>
+  </sql>
+  <select id="countEssays" resultType="long">SELECT COUNT(*) <include refid="essayFilter"/></select>
+  <select id="essays" resultType="com.starrainnotes.english.library.dto.LibraryDto$Essay">
+    SELECT CAST(a.id AS CHAR) id,a.title,a.slug,a.summary,a.published_at,CAST(a.keywords_json AS CHAR) keywords_json,
+      (SELECT MIN(t.name) FROM sr_english_writing_article_tag r JOIN sr_english_taxonomy_term t ON t.id=r.term_id WHERE r.article_id=a.id AND t.dimension='GENRE' AND t.enabled=1) genre
+    <include refid="essayFilter"/> ORDER BY a.published_at DESC,a.id DESC LIMIT #{limit} OFFSET #{offset}
+  </select>
+  <select id="essayTags" resultType="map">
+    SELECT j.name,COUNT(DISTINCT a.id) total FROM sr_english_writing_article a
+    JOIN JSON_TABLE(COALESCE(a.keywords_json,JSON_ARRAY()),'$[*]' COLUMNS(name VARCHAR(100) PATH '$')) j
+    WHERE <include refid="essayPublic"/> GROUP BY j.name ORDER BY total DESC,j.name
+  </select>
+  <select id="essayMonths" resultType="map">
+    SELECT DATE_FORMAT(a.published_at,'%Y-%m') name,COUNT(*) total FROM sr_english_writing_article a
+    WHERE <include refid="essayPublic"/> GROUP BY name ORDER BY name DESC
+  </select>
+  <select id="essayGenres" resultType="map">
+    SELECT t.name,COUNT(DISTINCT a.id) total FROM sr_english_writing_article a
+    JOIN sr_english_writing_article_tag r ON r.article_id=a.id JOIN sr_english_taxonomy_term t ON t.id=r.term_id
+    WHERE <include refid="essayPublic"/> AND t.dimension='GENRE' AND t.enabled=1 GROUP BY t.id,t.name ORDER BY MIN(t.sort_order),t.id
+  </select>
+</mapper>

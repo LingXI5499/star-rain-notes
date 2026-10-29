@@ -11,16 +11,16 @@ import { RouterLink } from 'vue-router'
 import { accountPath } from '../../../../shared/viewMode'
 
 const domains = [
-  { glyph: '词', title: '单词', en: 'VOCABULARY', description: '主题词库、音标、释义与例句。', path: '/english/manage/vocabulary' },
+  { glyph: '词', title: '词汇', en: 'VOCABULARY', description: '两级主题、词条正文与分类复核。', path: '/english/manage/vocabulary' },
   { glyph: '语', title: '语法', en: 'GRAMMAR', description: '课程章节、课时正文与顺序。', path: '/english/manage/grammar' },
-  { glyph: '读', title: '阅读', en: 'READING', description: '真实文章、双语对照与人工精读。', path: '/english/manage/reading' },
-  { glyph: '写', title: '写作', en: 'WRITING', description: '本人英文创作、草稿与历史版本。', path: '/english/writing' },
+  { glyph: '读', title: '世界', en: 'WORLD', description: '真实文章、双语对照与人工精读。', path: '/english/manage/world' },
+  { glyph: '写', title: '随笔', en: 'ESSAYS', description: '站长英语与双语随笔、草稿与历史版本。', path: '/english/manage/essays' },
 ]
 </script>
 
 <template>
   <main class="english-manage">
-    <header class="english-manage__hero"><div><p class="public-eyebrow">ENGLISH SYSTEMS · 内容管理</p><h1>英语管理工作台</h1><p>集中管理单词、语法、阅读与写作。</p></div><RouterLink :to="accountPath('/english/manage/overview')">总览设置</RouterLink></header>
+    <header class="english-manage__hero"><div><p class="public-eyebrow">ENGLISH SYSTEMS · 内容管理</p><h1>英语管理工作台</h1><p>集中管理词汇、语法、世界与随笔。</p></div><RouterLink :to="accountPath('/english/manage/overview')">总览设置</RouterLink></header>
     <div class="english-manage__grid"><RouterLink v-for="item in domains" :key="item.title" :to="accountPath(item.path)" class="english-manage__card"><span>{{ item.glyph }}</span><small>{{ item.en }}</small><h2>{{ item.title }}</h2><p>{{ item.description }}</p><strong>进入管理 →</strong></RouterLink></div>
   </main>
 </template>

@@ -80,7 +80,7 @@ public class EnglishSearchSourceApiAdapter implements EnglishSearchSourceApi {
      */
     private void route(EnglishSearchDocument document) {
         if ("ENGLISH_VOCABULARY_WORD".equals(document.getContentType())) {
-            String prefix = "/english/vocabulary/" + document.getThemeId() + "?q=";
+            String prefix = "/english/vocabulary?status=all&q=";
             String query = document.getTitle();
             String encoded = URLEncoder.encode(query, StandardCharsets.UTF_8);
             // A long non-ASCII phrase may exceed the index URL limit after encoding.

@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/public/english/content/reading")
+@RequestMapping({"/api/public/english/content/reading", "/api/public/english/world/articles"})
 public class ReadingPublicController {
     /**
      * 业务服务。

@@ -11,14 +11,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { useAuthStore } from '../../modules/account/stores/authStore'
-const state = vi.hoisted(() => ({ options: null, insert: vi.fn(), upload: vi.fn() }))
-vi.mock('../../modules/media/api/mediaApi', () => ({ uploadMedia: state.upload, getMedia: vi.fn() }))
+const state = vi.hoisted(() => ({ options: null, insert: vi.fn(), upload: vi.fn(), prepare:vi.fn(), remote:vi.fn() }))
+vi.mock('../../modules/media/api/mediaApi', () => ({ uploadMedia: state.upload, getMedia: vi.fn(), prepareEditorImage:state.prepare, importEditorImage:state.remote }))
 vi.mock('../markdown/mathJax', () => ({ prepareMathJax: vi.fn().mockResolvedValue(undefined) }))
 vi.mock('vditor', () => ({ default: class {
   constructor(host, options) { state.options = options; this.value = options.value; host.innerHTML = '<div contenteditable="true"><p>原文</p></div>' }
   getValue() { return this.value }
   setValue(value) { this.value = value }
   setTheme() {}
+  disabled() {}
+  enable() {}
   insertMD(value) { state.insert(value) }
   destroy() {}
 } }))
@@ -74,7 +76,7 @@ describe('shared Markdown editor', () => {
       const file = new File(['PNG'], '截图.png', { type: 'image/png' })
       expect(transfer(wrapper, type, [file]).defaultPrevented).toBe(true)
       await flushPromises()
-      expect(state.upload).toHaveBeenLastCalledWith(file, 'PROTECTED', expect.objectContaining({ signal: expect.any(AbortSignal) }))
+      expect(state.upload).toHaveBeenLastCalledWith(file, 'PUBLIC', expect.objectContaining({ signal: expect.any(AbortSignal) }))
     }
     expect(state.upload).toHaveBeenCalledTimes(2)
     expect(state.insert).toHaveBeenCalledTimes(2)
@@ -103,6 +105,17 @@ describe('shared Markdown editor', () => {
     expect(state.upload.mock.calls[0][2].signal.aborted).toBe(true)
     resolve({originalName:'late.png',contentUrl:'/api/media/assets/20/content'});await flushPromises()
     expect(state.insert).not.toHaveBeenCalled();wrapper.unmount()
+  })
+  it('does not insert an upload that finishes after the document becomes read-only',async()=>{
+    let resolve
+    state.upload.mockReturnValue(new Promise(done=>{resolve=done}))
+    const wrapper=await editor()
+    transfer(wrapper,'paste',[new File(['PNG'],'late.png')])
+    await wrapper.setProps({readOnly:true})
+    resolve({originalName:'late.png',contentUrl:'/api/media/assets/21/content'})
+    await flushPromises()
+    expect(state.insert).not.toHaveBeenCalled()
+    wrapper.unmount()
   })
   it('keeps the document untouched on upload failure and on unmount', async () => {
     state.upload.mockRejectedValue({ response: { status: 500, data: { code: 'MEDIA_STORAGE_WRITE_FAILED' } } })

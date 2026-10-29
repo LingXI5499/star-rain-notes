@@ -1,187 +1,28 @@
 <script setup>
-/**
- * EnglishHomePage.vue：英语学习模块的页面组件。
- * 职责范围：文档、词汇、语法、阅读听力及复习记录。
- * 负责路由对应页面的数据加载、交互状态和内容展示，业务写入通过导入的接口执行。
- * 主要依赖：vue、vue-router、../../../blog/components/BlogProse.vue、../../../site/components/ThemeHero.vue、../../../../shared/viewMode、../../../account/stores/authStore。
- * 主要响应式状态：auth、overview、summary、loading、error。
- * 阅读入口：stageText（stage文本的处理函数）。
- */
-
-
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import BlogProse from '../../../blog/components/BlogProse.vue'
 import ThemeHero from '../../../site/components/ThemeHero.vue'
-import { useViewMode } from '../../../../shared/viewMode'
-import { useAuthStore } from '../../../account/stores/authStore'
 import { errorMessage } from '../../../../shared/http'
+import { getLibraryOverview, getLibraryTaxonomy } from '../../api/englishLibraryApi'
 import { getEnglishOverview } from '../../api/englishApi'
-import { loadVocabularySummary } from '../../support/vocabularySummary'
-
-/* 英语首页保留单词、语法、真实阅读与自主创作四个方向。 */
-const { contentPath } = useViewMode()
-/**
- * 认证；通过 useAuthStore 建立。
- */
-const auth = useAuthStore()
-
-/**
- * overview；通过 ref 建立。
- * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
- */
-const overview = ref(null)
-/**
- * 摘要；通过 ref 建立。
- * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
- */
-const summary = ref({ completed: 0, inProgress: 0, dueForReview: 0, total: 0 })
-/**
- * loading；通过 ref 建立。
- * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
- */
-const loading = ref(true)
-/**
- * 错误；通过 ref 建立。
- * 用于驱动组件或组合式函数的状态变化；修改后由 Vue 更新相关视图。
- */
-const error = ref('')
-
-const stageLabels = {
-  FOUNDATION: '基础阶段',
-  WORD_MEMORY: '词汇记忆',
-  READING: '阅读训练',
-  ANALYTICS: '高阶分析',
-}
-
-/* 主视觉下方的四个核心方向入口 */
-const heroTraits = [
-  { to: '/english/vocabulary', zh: '单词', en: 'Vocabulary' },
-  { to: '/english/grammar', zh: '语法', en: 'Grammar' },
-  { to: '/english/reading', zh: '阅读', en: 'Reading' },
-  { to: '/english/writing', zh: '写作', en: 'Writing' },
-]
-
-const directions = [
-  { glyph: '词', name: '单词', en: 'VOCABULARY', to: '/english/vocabulary', description: '主题词库、发音与固定间隔复习，建立可长期维护的词汇网络。', cta: '进入词库' },
-  { glyph: '语', name: '语法', en: 'GRAMMAR', to: '/english/grammar', description: '沿章节和课程目录，从词法走向复杂句法与真实表达。', cta: '开始课程' },
-  { glyph: '读', name: '阅读', en: 'READING', to: '/english/reading', description: '通过真实文章阅读，练习信息提取、结构理解和语言观察。', cta: '开始阅读' },
-  { glyph: '写', name: '写作', en: 'WRITING', to: '/english/writing', description: '通过自主英文创作，记录思考，练习结构清晰、意思准确的表达。', cta: '开始写作' },
-]
-
-/**
- * stage文本的处理函数。
- * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
- */
-const stageText = () => {
-  const stage = overview.value?.currentStage
-  if (!stage) return '读取中'
-  return stageLabels[stage] || stage
-}
-
-/**
- * 组件挂载后执行初始化工作，依赖此时已存在的 DOM 或初始状态。
- */
-onMounted(async () => {
-  try {
-    // 导航统一使用规范路径；账号能力仍由登录状态和权限决定。
-    const [content, learning] = await Promise.all([
-      getEnglishOverview(),
-      auth.currentUser ? loadVocabularySummary() : Promise.resolve(null),
-    ])
-    overview.value = content
-    if (learning) summary.value = learning
-  } catch (cause) {
-    error.value = errorMessage(cause)
-  } finally {
-    loading.value = false
-  }
-})
+const content=ref({}), overview=ref({}), vocabulary=ref([]), world=ref([]), loading=ref(true), error=ref('')
+const topicCount = rows => rows.reduce((n,c) => n + c.children.length,0)
+const directions=computed(()=>[
+ {glyph:'Aa',name:'词汇',en:'VOCABULARY',to:'/english/vocabulary',description:`${vocabulary.value.length} 个一级分类，${topicCount(vocabulary.value)} 个二级主题。按主题探索单词、音标、词性与语境。`},
+ {glyph:'◇',name:'语法',en:'GRAMMAR',to:'/english/grammar',description:`沿着既有课程，建立理解和表达的语法框架。已发布 ${overview.value.grammarLessons || 0} 个课节。`},
+ {glyph:'◎',name:'世界',en:'WORLD',to:'/english/world',description:`${world.value.length} 个一级分类，${topicCount(world.value)} 个知识主题。通过英语阅读科学、技术、社会和生活。`},
+ {glyph:'✎',name:'随笔',en:'ESSAYS',to:'/english/essays',description:'站长自己的英语与双语文章，记录经历、观察和思考。'},
+])
+async function load(){loading.value=true;error.value='';try{const [stats,words,topics,home]=await Promise.all([getLibraryOverview(),getLibraryTaxonomy('vocabulary'),getLibraryTaxonomy('world'),getEnglishOverview()]);content.value=home;overview.value=stats;vocabulary.value=words;world.value=topics}catch(cause){error.value=errorMessage(cause)}finally{loading.value=false}}
+onMounted(load)
 </script>
-
 <template>
-  <div class="english-home">
-    <header class="english-hero">
-      <ThemeHero src="/brand/themes/english-hero.webp" alt="英语模块世界观视觉" />
-      <div class="english-hero__copy">
-        <p class="public-eyebrow">STAR RAIN NOTES · ENGLISH</p>
-        <h1>{{ overview?.title || '英语能力成长路径' }}</h1>
-        <p class="english-hero__lead">{{ overview?.subtitle || '从单词和语法打好基础，通过阅读积累输入，再用写作练习清晰表达。' }}</p>
-        <div class="english-hero__actions">
-          <RouterLink class="is-primary" :to="contentPath('/english/vocabulary/study')">今日背单词 <span aria-hidden="true">→</span></RouterLink>
-          <RouterLink :to="contentPath('/english/vocabulary')">浏览词库 <span aria-hidden="true">↗</span></RouterLink>
-        </div>
-        <p class="english-hero__quote">Knowledge leaves a trail.</p>
-        <ul class="english-hero__traits" aria-label="英语学习方向">
-          <li v-for="trait in heroTraits" :key="trait.to">
-            <RouterLink :to="contentPath(trait.to)"><strong>{{ trait.zh }}</strong><span>{{ trait.en }}</span></RouterLink>
-          </li>
-        </ul>
-      </div>
-      <aside class="english-hero__stage" aria-label="当前阶段">
-        <small>CURRENT STAGE</small>
-        <strong>{{ stageText() }}</strong>
-      </aside>
-    </header>
-
-    <p class="english-guest-hint">
-      {{ auth.currentUser ? `当前登录：${auth.currentUser.displayName || auth.currentUser.username}，学习进度会同步到账户。` : '当前为游客，英语进度仅保存在此浏览器。' }}
-    </p>
-
-    <p v-if="loading" class="english-state">正在整理英语学习路径…</p>
-    <p v-else-if="error" class="english-state" role="alert">{{ error }}</p>
-
-    <template v-else>
-      <section class="english-overview">
-        <div>
-          <p class="public-eyebrow">WHY ENGLISH</p>
-          <h2 class="public-section-title">为什么学英语</h2>
-          <p>{{ overview?.introduction || '技术世界以英语为主，长期投资英语是职业与认知的复利。' }}</p>
-        </div>
-        <dl>
-          <div><dt>已完成</dt><dd>{{ summary.completed }}</dd></div>
-          <div><dt>学习中</dt><dd>{{ summary.inProgress }}</dd></div>
-          <div><dt>待复习</dt><dd>{{ summary.dueForReview }}</dd></div>
-          <div><dt>累计记录</dt><dd>{{ summary.total }}</dd></div>
-        </dl>
-      </section>
-
-      <section class="english-section">
-        <header>
-          <div><p class="public-eyebrow">FOUR DIRECTIONS</p><h2 class="public-section-title">四条学习方向</h2></div>
-          <RouterLink :to="contentPath('/english/progress')">查看学习洞察 <span aria-hidden="true">→</span></RouterLink>
-        </header>
-        <div class="direction-grid">
-          <RouterLink v-for="direction in directions" :key="direction.name" :to="contentPath(direction.to)" class="direction-card public-interactive" :data-kind="direction.en.toLowerCase()">
-            <div><span>{{ direction.glyph }}</span><small>{{ direction.en }}</small></div>
-            <h3>{{ direction.name }}</h3>
-            <p>{{ direction.description }}</p>
-            <strong>{{ direction.cta }} →</strong>
-          </RouterLink>
-        </div>
-      </section>
-
-      <section class="vocab-gateway">
-        <div>
-          <p class="public-eyebrow">VOCABULARY MEMORY</p>
-          <h2>把单词放进可以持续复习的系统</h2>
-          <p>按主题浏览词汇，通过英译中、中译英与随机混合完成固定间隔复习。</p>
-          <div>
-            <RouterLink :to="contentPath('/english/vocabulary')">浏览主题</RouterLink>
-            <RouterLink :to="contentPath('/english/vocabulary/study')">开始今日学习 →</RouterLink>
-          </div>
-        </div>
-        <span aria-hidden="true">Aa</span>
-      </section>
-
-      <section v-if="overview?.roadmapMarkdown" class="english-section english-roadmap">
-        <header><div><p class="public-eyebrow">ROADMAP</p><h2 class="public-section-title">长期学习路线</h2></div></header>
-        <BlogProse :markdown="overview.roadmapMarkdown" />
-      </section>
-    </template>
-  </div>
+ <div class="english-home">
+  <header class="english-hero"><ThemeHero src="/brand/themes/english-hero.webp" alt="英语模块视觉"/><div class="english-hero__copy"><p class="public-eyebrow">STAR RAIN NOTES · ENGLISH</p><h1>{{content.title || '用英语连接更大的世界'}}</h1><p class="english-hero__lead">{{content.introduction || '积累词汇，理解语法，在阅读与表达中持续成长。'}}</p><div class="english-hero__actions"><RouterLink class="is-primary" to="/english/vocabulary">探索词汇地图 →</RouterLink><RouterLink to="/english/world">走进世界 ↗</RouterLink></div><p class="english-hero__quote">Knowledge leaves a trail.</p><ul class="english-hero__traits" aria-label="英语模块"><li v-for="d in directions" :key="d.en"><RouterLink :to="d.to"><strong>{{ d.name }}</strong><span>{{ d.en }}</span></RouterLink></li></ul></div><aside class="english-hero__stage"><small>EXPLORE & EXPRESS</small><strong>阅读与成长</strong></aside></header>
+  <p v-if="error" role="alert">{{ error }} <button type="button" @click="load">重新加载</button></p>
+  <template v-else><section class="english-overview" :aria-busy="loading"><div><p class="public-eyebrow">LANGUAGE & KNOWLEDGE</p><h2 class="public-section-title">从语言基础，到阅读与表达</h2><p>用主题组织词汇，用课程梳理语法，用文章理解世界和记录自己。</p></div><dl><div><dt>来源词条记录</dt><dd>{{ Number(overview.vocabularyRecords || 0).toLocaleString() }}</dd></div><div><dt>已识别词汇主题</dt><dd>{{ topicCount(vocabulary) }}</dd></div><div><dt>语法课节</dt><dd>{{ overview.grammarLessons || 0 }}</dd></div><div><dt>世界知识主题</dt><dd>{{ topicCount(world) }}</dd></div></dl></section><section class="english-section"><header><div><p class="public-eyebrow">EXPLORE ENGLISH</p><h2 class="public-section-title">四条路径，自由探索</h2></div></header><div class="direction-grid"><RouterLink v-for="d in directions" :key="d.en" :to="d.to" class="direction-card public-interactive"><div><span aria-hidden="true">{{ d.glyph }}</span><small>{{ d.en }}</small></div><h3>{{ d.name }}</h3><p>{{ d.description }}</p><strong>进入{{ d.name }} →</strong></RouterLink></div></section></template>
+ </div>
 </template>
-
 <style scoped>
 /**
  * 组件局部样式：布局、状态和断点分别在以下规则处说明。

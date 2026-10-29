@@ -33,7 +33,9 @@ export function bindEditingVersion(domain, id, version) {
  *   2. 非幂等方法自动带上 X-XSRF-TOKEN；
  *   3. 401 时清空 CSRF 缓存并广播 account-session-expired，由外壳处理跳转。
  */
-const http = axios.create({ baseURL: '/api', withCredentials: true, timeout: 20000 })
+// CSRF comes from the session endpoint. A leftover cookie from another local
+// application must not overwrite the explicit header in Axios's browser adapter.
+const http = axios.create({ baseURL: '/api', withCredentials: true, timeout: 20000, xsrfCookieName: null })
 let csrfToken = ''
 let csrfRequest = null
 let csrfEpoch = 0

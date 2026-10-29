@@ -10,6 +10,7 @@ package com.starrainnotes.english.reading.dto;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
 import java.util.List;
+import java.time.LocalDateTime;
 import com.starrainnotes.english.knowledge.dto.DocumentMetadata;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -102,6 +103,8 @@ public final class ReadingDto {
          * 发布状态。
          */
         private String publishStatus;
+        private LocalDateTime publishedAt;
+        private LocalDateTime updatedAt;
         /**
          * 展示排序值。
          */

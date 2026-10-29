@@ -1,5 +1,6 @@
 <script setup>
 import { computed, defineAsyncComponent, onBeforeUnmount, ref, watch } from 'vue'
+import { prepareImageUrl } from './editorImages'
 import { outlineSections } from './commands/editorStructure'
 import {
   editTable,
@@ -33,6 +34,7 @@ const mode = ref('ir'),
   current = ref(null)
 const tableColumn = ref(1),
   image = ref(null),
+  imagePreparing = ref(false),
   imageFields = ref({}),
   media = ref([]),
   tsv = ref(''),
@@ -174,7 +176,16 @@ function pickImageAt(point) {
 function openImage() {
   safe(() => pickImageAt(sourcePoint().start))
 }
-function saveImage() {
+async function saveImage() {
+  if (props.readOnly || imagePreparing.value) return
+  imagePreparing.value = true
+  const epoch=generation, baseline=imageBaseline.value
+  try {
+    const asset=await prepareImageUrl(imageFields.value.url)
+    if(!active || props.readOnly || epoch!==generation || baseline!==props.adapter.markdown())throw new Error('正文已变化，请重新选择图片；原文未改变。')
+    imageFields.value.url=asset.contentUrl
+  }catch(error){notice.value=error.message;return}
+  finally { imagePreparing.value=false }
   safe(() => {
     if (imageBaseline.value !== props.adapter.markdown())
       throw new Error('正文已变化，请重新选择图片；原文未改变。')
@@ -419,7 +430,7 @@ defineExpose({ openPreview,changeMode,show,openImage,mode })
         >图片尺寸<select v-model="imageFields.size">
           <option v-for="size in ['normal', 'wide', 'full']" :key="size">{{ size }}</option>
         </select></label
-      ><button type="button" :disabled="readOnly" @click="saveImage">应用图片属性</button
+      ><button type="button" :disabled="readOnly || imagePreparing" @click="saveImage">{{imagePreparing ? '正在处理图片…' : '应用图片属性'}}</button
       ><button v-if="pickImage" type="button" @click="replaceImage">从媒体库替换</button
       ><button type="button" @click="copyImageUrl">复制图片地址</button
       ><button type="button" @click="panel = ''">取消</button>

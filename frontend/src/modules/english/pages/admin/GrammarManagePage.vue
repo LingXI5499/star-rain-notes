@@ -11,6 +11,7 @@
 
 import { computed, reactive, ref, watch } from 'vue'
 import { RouterLink, useRoute, useRouter } from 'vue-router'
+import PublicSearch from '../../../../shared/ui/PublicSearch.vue'
 import MarkdownEditor from '../../../../shared/editor/MarkdownEditor.vue'
 import { useEditorContexts } from '../../../../shared/editor/recovery/useEditorContexts'
 const editorContext = useEditorContexts('english-grammar-course')
@@ -234,7 +235,7 @@ load()
 </script>
 
 <template>
-  <main class="grammar-admin"><nav><RouterLink :to="accountPath('/english/manage')">英语工作台</RouterLink> › 语法教程</nav><header><div><p class="public-eyebrow">GRAMMAR CURRICULUM · 固定单课程</p><h1>{{ data?.course.title || '英语语法完整教程' }}</h1><p>{{ sections.length }} 章 · 左侧选择章节，右侧管理直属课节。</p></div><div><button @click="courseEditing = true">课程信息</button><button :disabled="busy" @click="toggleCourse">{{ data?.course.publishStatus === 'PUBLISHED' ? '撤回课程' : '发布课程' }}</button><RouterLink v-if="activeId" :to="{ path: accountPath('/english/manage/grammar/lesson/new'), query: { section: activeId } }">＋ 新建课时</RouterLink></div></header><p v-if="error" class="grammar-admin__error" role="alert">{{ error }}</p><p v-if="notice" class="grammar-admin__notice" role="status">{{ notice }}</p><p v-if="loading">正在读取课程…</p><div v-else class="grammar-admin__layout"><aside><header><div><small>01 · SECTIONS</small><h2>课程章节</h2></div><button @click="openSection()">＋</button></header><article v-for="section in sections" :key="section.id" :class="{ active: activeId === section.id }"><button class="grammar-admin__section-select" @click="select(section)"><strong>{{ section.title }}</strong><small>{{ section.lessons.length }} 个课时</small></button><div><button @click="openSection(section)">编辑</button><button v-if="!section.lessons.length" @click="removeSection(section)">删除</button></div></article></aside><section class="grammar-admin__lessons"><header><div><small>02 · LESSONS</small><h2>{{ active?.title || '请选择章节' }}</h2></div><input v-model="search" type="search" placeholder="搜索当前章节课时"></header><p v-if="!active" class="grammar-admin__empty">先选择左侧章节。</p><p v-else-if="!lessons.length" class="grammar-admin__empty">当前章节暂无课时。</p><article v-for="lesson in lessons" :key="lesson.id"><span>{{ lesson.slug }}</span><div><h3>{{ lesson.title }}</h3><p>{{ lesson.summary }}</p></div><small>{{ lesson.publishStatus === 'PUBLISHED' ? '已发布' : lesson.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</small><div><RouterLink :to="accountPath(`/english/manage/grammar/lesson/${lesson.id}`)">编辑</RouterLink><button :disabled="busy" @click="toggleLesson(lesson)">{{ lesson.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button @click="removeLesson(lesson)">删除</button></div></article></section></div>
+  <main class="grammar-admin"><nav><RouterLink :to="accountPath('/english/manage')">英语工作台</RouterLink> › 语法教程</nav><header><div><p class="public-eyebrow">GRAMMAR CURRICULUM · 固定单课程</p><h1>{{ data?.course.title || '英语语法完整教程' }}</h1><p>{{ sections.length }} 章 · 左侧选择章节，右侧管理直属课节。</p></div><div><button @click="courseEditing = true">课程信息</button><button :disabled="busy" @click="toggleCourse">{{ data?.course.publishStatus === 'PUBLISHED' ? '撤回课程' : '发布课程' }}</button><RouterLink v-if="activeId" :to="{ path: accountPath('/english/manage/grammar/lesson/new'), query: { section: activeId } }">＋ 新建课时</RouterLink></div></header><p v-if="error" class="grammar-admin__error" role="alert">{{ error }}</p><p v-if="notice" class="grammar-admin__notice" role="status">{{ notice }}</p><p v-if="loading">正在读取课程…</p><div v-else class="grammar-admin__layout"><aside><header><div><small>01 · SECTIONS</small><h2>课程章节</h2></div><button aria-label="新增章节" @click="openSection()">＋ 新建</button></header><article v-for="section in sections" :key="section.id" :class="{ active: activeId === section.id }"><button class="grammar-admin__section-select" @click="select(section)"><strong>{{ section.title }}</strong><small>{{ section.lessons.length }} 个课时</small></button><div><button @click="openSection(section)">编辑</button><button v-if="!section.lessons.length" @click="removeSection(section)">删除</button></div></article></aside><section class="grammar-admin__lessons"><header><div><small>02 · LESSONS</small><h2>{{ active?.title || '请选择章节' }}</h2></div><PublicSearch v-model="search" label="搜索课时" placeholder="搜索当前章节课时…" /></header><p v-if="!active" class="grammar-admin__empty">先选择左侧章节。</p><p v-else-if="!lessons.length" class="grammar-admin__empty">当前章节暂无课时。</p><article v-for="lesson in lessons" :key="lesson.id"><span>{{ lesson.slug }}</span><div><h3>{{ lesson.title }}</h3><p>{{ lesson.summary }}</p></div><small>{{ lesson.publishStatus === 'PUBLISHED' ? '已发布' : lesson.publishStatus === 'WITHDRAWN' ? '已撤回' : '草稿' }}</small><div><RouterLink :to="accountPath(`/english/manage/grammar/lesson/${lesson.id}`)">编辑</RouterLink><button :disabled="busy" @click="toggleLesson(lesson)">{{ lesson.publishStatus === 'PUBLISHED' ? '撤回' : '发布' }}</button><button @click="removeLesson(lesson)">删除</button></div></article></section></div>
     <div v-if="sectionEditing" class="grammar-admin__overlay" @click.self="sectionEditing = false"><form class="grammar-admin__dialog" role="dialog" aria-modal="true" aria-label="编辑语法章节" @submit.prevent="saveSection"><h2>{{ sectionForm.id ? '编辑章节' : '新建章节' }}</h2><label>章节名称<input v-model="sectionForm.title" required maxlength="200"></label><label>顺序<input v-model.number="sectionForm.sortOrder" type="number"></label><div><button type="button" @click="sectionEditing = false">取消</button><button type="submit" :disabled="busy">保存</button></div></form></div>
     <div v-if="courseEditing" class="grammar-admin__overlay" @click.self="courseEditing = false"><form class="grammar-admin__dialog grammar-admin__dialog--course" role="dialog" aria-modal="true" aria-label="编辑课程信息" @submit.prevent="saveCourse"><h2>课程信息</h2><label>课程标题<input v-model="courseForm.title" required></label><label>副标题<input v-model="courseForm.subtitle"></label><label>课程摘要<textarea v-model="courseForm.summary" rows="3"></textarea></label><label>课程介绍<textarea v-model="courseForm.introduction" rows="4"></textarea></label><div><span>课程路线</span><MarkdownEditor :editor-context="loading ? null : editorContext(data?.course?.id || 'course', 'roadmapMarkdown', data?.course?.rowVersion, data?.course?.roadmapMarkdown || '')" ref="courseEditor" v-model="courseForm.roadmapMarkdown" /></div><div><button type="button" @click="courseEditing = false">取消</button><button type="submit" :disabled="busy">保存</button></div></form></div>
   </main>
@@ -277,12 +278,12 @@ load()
    * 样式范围：.grammar-admin>header>div:last-child。
    * 使用弹性布局排列子项，方向为 默认水平方向；对齐及换行由本规则声明控制。
    */
-  .grammar-admin>header>div:last-child{display:flex;gap:8px}
+  .grammar-admin>header>div:last-child{display:flex;gap:8px;flex-wrap:wrap}
   /**
    * 样式范围：.grammar-admin button,.grammar-admin>header a。
    * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
    */
-  .grammar-admin button,.grammar-admin>header a{padding:8px 13px;border:1px solid var(--border-strong);border-radius:9px;background:var(--bg-surface);color:var(--text-primary);font:inherit;cursor:pointer}
+  .grammar-admin button,.grammar-admin>header a{padding:8px 13px;border:1px solid var(--border-strong);border-radius:8px;background:var(--bg-surface);color:var(--text-primary);font:inherit;font-size:14px;font-weight:600;line-height:20px;min-height:40px;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;cursor:pointer;transition:background-color .16s,border-color .16s,color .16s}
   /**
    * 样式范围：.grammar-admin>header a。
    * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
@@ -341,7 +342,7 @@ load()
    * 样式范围：.grammar-admin__section-select。
    * 使用网格布局组织内容；列定义为 子规则或自动网格决定，间距由 5px 控制。
    */
-  .grammar-admin__section-select{display:grid;flex:1;gap:5px;min-width:0;text-align:left}
+  .grammar-admin .grammar-admin__section-select{display:grid;flex:1;justify-content:start;gap:8px;min-width:0;padding:8px;border:0;background:transparent;text-align:left}
   /**
    * 样式范围：.grammar-admin__section-select small。
    * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
@@ -355,7 +356,7 @@ load()
   /**
    * 样式范围：.grammar-admin__layout aside article>div button。
    */
-  .grammar-admin__layout aside article>div button{padding:5px;font-size:11px}
+  .grammar-admin__layout aside article>div button{padding:8px;font-size:12px}
   /**
    * 样式范围：.grammar-admin__lessons>header input。
    * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
@@ -390,7 +391,7 @@ load()
    * 样式范围：.grammar-admin__lessons article>div:last-child a,.grammar-admin__lessons article>div:last-child button。
    * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
    */
-  .grammar-admin__lessons article>div:last-child a,.grammar-admin__lessons article>div:last-child button{padding:6px;border:0;background:transparent;color:var(--primary);font-size:12px}
+  .grammar-admin__lessons article>div:last-child a,.grammar-admin__lessons article>div:last-child button{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:8px 12px;border:1px solid var(--border);border-radius:8px;background:var(--bg-page);color:var(--primary);font-size:14px;font-weight:600;line-height:20px;text-decoration:none}
   /**
    * 样式范围：.grammar-admin__empty。
    * 颜色、字号或间距复用主题变量，变量取值由当前外壳与明暗主题决定。
@@ -461,4 +462,10 @@ load()
    * 样式范围：.grammar-admin__lessons article>div:last-child。
    */
   .grammar-admin__lessons article>div:last-child{grid-column:1/-1}}
+.grammar-admin button:hover:not(:disabled),.grammar-admin__lessons article a:hover{border-color:var(--primary);background:var(--primary-soft);color:var(--primary)}
+.grammar-admin :is(button,a,input):focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.grammar-admin button:disabled{opacity:.5;cursor:not-allowed}
+.grammar-admin__lessons>header .public-search{width:min(100%,280px)}
+.grammar-admin__section-select strong{white-space:normal;overflow-wrap:anywhere}
+@media(max-width:750px){.grammar-admin__layout>aside>header,.grammar-admin__lessons>header{flex-wrap:wrap}.grammar-admin__lessons>header .public-search{width:100%}.grammar-admin__layout aside article>div{flex-wrap:wrap}.grammar-admin h1{font-size:30px;line-height:36px}}
 </style>

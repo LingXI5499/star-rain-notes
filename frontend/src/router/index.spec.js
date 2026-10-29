@@ -24,7 +24,10 @@ describe('unified router and access controls', () => {
     expect(router.resolve('/').matched[0].components.default).toBe(HomePage)
     expect(router.resolve('/').meta.console).toBeUndefined()
     expect(records.filter(r => r.path.startsWith('/useradmin'))).toHaveLength(1)
-    for (const declaration of routeDeclarations) expect(router.resolve(declaration.path).matched.at(-1).path).toBe(declaration.path)
+    for (const declaration of routeDeclarations) {
+      const example=declaration.path.replace(':category(t[0-9]{2})','t01').replace(':topic(t[0-9]{2}-[0-9]{2})?','t01-01').replace(':category(r[0-9]{2})','r01').replace(':topic(r[0-9]{2}-[0-9]{2})?','r01-01')
+      expect(router.resolve(example).matched.at(-1).path).toBe(declaration.path)
+    }
   })
   it.each(['/login', '/register', '/forgot-password', '/reset-password'])('opens %s directly', async path => {
     await router.push(path)

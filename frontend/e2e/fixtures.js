@@ -19,7 +19,7 @@ export const test = base.extend({
     page.on('pageerror', error => { browserErrors.push(error.message); console.error('Browser application error:', error.message) })
     const state = { signedIn: true, user, article: post(), savedBodies: [], delayBody: null, blogDelays: {}, workDelays: {},
       tags: [{ id: 1, name: 'Unused', slug: 'unused', status: 'ENABLED', postCount: 0 }], deletedTags: [], bodyFailure: false,
-      writing:{id:2,title:'Writing',bodyMarkdown:'English body\n',translationZhMarkdown:'中文正文\n',rowVersion:1,state:'DRAFT',visibility:'PRIVATE',keywords:[]},writingSaves:[] }
+      writing:{id:2,title:'Writing',bodyMarkdown:'English body\n',translationZhMarkdown:'中文正文\n',rowVersion:1,state:'DRAFT',visibility:'PRIVATE',keywords:[]},writingSaves:[],preparedImages:[] }
     await page.route('https://**/*', async route => {
       const url = new URL(route.request().url()), start = url.pathname.indexOf('/dist/')
       if (!url.pathname.includes('vditor') || start < 0) return route.abort()
@@ -38,6 +38,10 @@ export const test = base.extend({
       if (path === '/account/me') return state.signedIn ? ok(state.user) : fail(401, 'UNAUTHORIZED')
       if (path === '/auth/login') { state.signedIn = true; return ok(state.user) }
       if (path === '/auth/logout') { state.signedIn = false; return ok(null) }
+      if (/^\/admin\/media\/editor-images\/\d+\/prepare$/.test(path) && method === 'POST') {
+        const id = path.split('/').at(-2); state.preparedImages.push(id)
+        return ok({id,mediaType:'IMAGE',accessLevel:'PUBLIC',status:'ACTIVE',contentUrl:`/api/media/assets/${id}/content`})
+      }
       if(path==='/public/english/taxonomy')return ok([])
       if(path==='/account/english/writing/articles/2') {
         if(method==='PUT'){const submitted=request.postDataJSON();state.writingSaves.push(submitted);state.writing={...state.writing,...submitted,rowVersion:state.writing.rowVersion+1}}

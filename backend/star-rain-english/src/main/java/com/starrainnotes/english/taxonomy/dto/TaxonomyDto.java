@@ -38,6 +38,8 @@ public final class TaxonomyDto {
          * dimension。
          */
         private String dimension;
+        private String libraryModule;
+        private String code;
         /**
          * 名称。
          */

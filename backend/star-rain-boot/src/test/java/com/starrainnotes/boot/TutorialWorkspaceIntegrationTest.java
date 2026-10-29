@@ -122,7 +122,7 @@ class TutorialWorkspaceIntegrationTest extends MapperXmlIntegrationSupport {
             statement.executeUpdate("INSERT INTO sr_tutorial_category(name,slug,sort_order) VALUES('Before upgrade','before-upgrade',0)");
         }
         Flyway upgraded = Flyway.configure().dataSource(dataSource).defaultSchema(schema).schemas(schema).load();
-        upgraded.migrate(); upgraded.validate(); assertEquals("2.047",upgraded.info().current().getVersion().getVersion());
+        upgraded.migrate(); upgraded.validate(); assertEquals("2.048",upgraded.info().current().getVersion().getVersion());
         try (Statement statement=connection.createStatement(); ResultSet row=statement.executeQuery("SELECT COUNT(*) FROM sr_tutorial_category WHERE slug='before-upgrade'")) { assertTrue(row.next());assertEquals(1,row.getInt(1)); }
         Configuration configuration = new Configuration(); configuration.setMapUnderscoreToCamelCase(true);
         configuration.setEnvironment(new Environment("workspace-test",new SpringManagedTransactionFactory(),dataSource));

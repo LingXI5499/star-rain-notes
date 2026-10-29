@@ -18,6 +18,8 @@ import { resolveVditorEditorHeight, setVditorFullscreenActive } from '../markdow
 import { createCodeGroupMarkdown, validateCodeGroupBlocks } from '../markdown/markdownCodeGroup'
 import { normalizePastedMath } from '../markdown/markdownMath'
 import { prepareMathJax } from '../markdown/mathJax'
+import { prepareImageUrl, prepareImageMarkdown } from './editorImages'
+import { markdownImages, imageEdit } from './commands/editorDocument'
 import { uploadMedia, getMedia } from '../../modules/media/api/mediaApi'
 import { IMAGE_ACCEPT, imageMarkdown, mediaUploadError, validateEditorImage } from '../../modules/media/support/upload'
 import { useAuthStore } from '../../modules/account/stores/authStore'
@@ -146,9 +148,14 @@ function menuAction(id) {
 const longDocument = computed(() => props.modelValue.length >= 100000)
 const adapter = createVditorAdapter(() => vditor, () => host.value)
 let workbenchRange = null
-function applyLocalContent(value) {
+async function applyLocalContent(value) {
   if (!ready || props.readOnly) return
   try {
+    if (markdownImages(value).length) {
+      const baseline = vditor.getValue(), operation = imageOperation
+      value = await prepareImageMarkdown(value)
+      if(disposed || operation!==imageOperation || props.readOnly || baseline!==vditor.getValue())throw new Error('正文已变化，未应用导入内容，请重试。')
+    }
     adapter.setMode('sv')
     suppressing = true
     vditor.setValue(value)
@@ -379,13 +386,14 @@ function rememberImageRange() {
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
 function insertMediaImage(asset, range) {
-  if (!ready || !vditor || disposed) return
+  if (!ready || !vditor || disposed || props.readOnly) return
   if (range?.startContainer.isConnected && host.value?.contains(range.startContainer)) {
     host.value.querySelector('[contenteditable="true"]')?.focus()
     const selection = window.getSelection()
     selection.removeAllRanges()
     selection.addRange(range)
   }
+  knownImageUrls.add(asset.contentUrl || asset.url)
   vditor.insertMD(`\n${imageMarkdown(asset)}\n`)
   rememberImageRange()
 }
@@ -395,11 +403,18 @@ function insertMediaImage(asset, range) {
  * 主要协作：rememberImageRange、props.pickImage、insertMediaImage。
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
+async function pickPublicImage() {
+  const asset = await props.pickImage?.()
+  if (!asset?.url) return null
+  const prepared = await prepareImageUrl(asset.url)
+  return {...asset, url:prepared.contentUrl}
+}
 async function insertImage() {
   if (!props.pickImage || props.readOnly) return
   const range = rememberImageRange()
   const operation = imageOperation
-  const asset = await props.pickImage()
+  let asset
+  try { asset = await pickPublicImage() } catch(cause) { imageError.value=mediaUploadError(cause);return }
   if (!asset?.url || disposed || operation !== imageOperation) return
   insertMediaImage(asset, range)
 }
@@ -425,6 +440,7 @@ function selectImageFiles() {
  * @returns {Promise} 异步处理结果；请求或校验失败时由 Promise 的拒绝路径报告。
  */
 async function uploadImageFiles(files, range = rememberImageRange()) {
+  clearTimeout(imageNormalizationTimer)
   if (!files.length || !ready) return
   if (!canUploadImages.value) { imageError.value = '当前账号没有媒体上传权限。'; return }
   if (uploadingImages.value) { imageError.value = '图片正在上传，请等待完成后再添加。'; return }
@@ -443,7 +459,7 @@ async function uploadImageFiles(files, range = rememberImageRange()) {
     imageStatus.value = `正在上传 ${completed + 1} / ${files.length}：${file.name}`
     imagePercent.value = null
     try {
-      const asset = await uploadMedia(file, 'PROTECTED', { signal: imageUploadController.signal, onUploadProgress: event => {
+      const asset = await uploadMedia(file, 'PUBLIC', { signal: imageUploadController.signal, onUploadProgress: event => {
         if (operation === imageOperation && event.total > 0) imagePercent.value = Math.min(99, Math.round(event.loaded / event.total * 100))
       } })
       if (disposed || operation !== imageOperation) break
@@ -460,7 +476,7 @@ async function uploadImageFiles(files, range = rememberImageRange()) {
   imageError.value = failures.join('\n')
   failedImages.value = retryFiles
   imagePercent.value = null
-  imageStatus.value = completed ? `已插入 ${completed} 张图片并加入媒体库；保存正文后会建立内容引用。` : ''
+  imageStatus.value = completed ? `已插入 ${completed} 张公开图片并加入媒体库；保存正文后会建立内容引用。` : ''
   uploadingImages.value = false
   imageUploadController = null
 }
@@ -485,7 +501,12 @@ function onImageFiles(event) {
  */
 function onEditorDrop(event) {
   const files = Array.from(event.dataTransfer?.files || [])
-  if (!files.length) return
+  if (!files.length) {
+    const html=event.dataTransfer?.getData('text/html') || ''
+    const content=html && /<img\b/i.test(html) ? vditor.html2md(html) : event.dataTransfer?.getData('text/plain') || ''
+    if(markdownImages(content).length){event.preventDefault();event.stopImmediatePropagation();void insertExternalContent(content)}
+    return
+  }
   event.preventDefault()
   event.stopImmediatePropagation()
   const range = document.caretRangeFromPoint?.(event.clientX, event.clientY)
@@ -536,6 +557,51 @@ function watchTheme() {
  * @param event 事件；默认值、解构字段与可选参数见函数签名。
  * @returns 本函数计算或组装的结果，具体结构由返回表达式定义。
  */
+let imageNormalizationTimer
+let knownImageUrls=new Set(markdownImages(props.modelValue).map(image=>image.url))
+function queueInsertedImages(source){
+  clearTimeout(imageNormalizationTimer)
+  if(props.readOnly || !canUploadImages.value || uploadingImages.value)return
+  if(!source.includes('!['))return
+  imageNormalizationTimer=setTimeout(async()=>{
+    const candidates=[...new Set(markdownImages(source).map(image=>image.url))].filter(url=>!knownImageUrls.has(url))
+    if(!candidates.length)return
+    const operation=imageOperation
+    try{
+      for(const url of candidates){
+        knownImageUrls.add(url)
+        const asset=await prepareImageUrl(url)
+        if(disposed || operation!==imageOperation || props.readOnly)return
+        const current=vditor.getValue()
+        const matches=markdownImages(current).filter(image=>image.url===url)
+        let next=current
+        for(const image of matches.reverse()){
+          const edit=imageEdit(image,{...image,url:asset.contentUrl})
+          next=next.slice(0,edit.start)+edit.replacement+next.slice(edit.end)
+        }
+        knownImageUrls.add(asset.contentUrl)
+        if(next!==current){suppressing=true;try{vditor.setValue(next);emit('update:modelValue',next)}finally{suppressing=false}}
+      }
+      imageStatus.value='正文图片已自动存入公开媒体库。'
+    }catch(cause){if(!disposed && operation===imageOperation)imageError.value=mediaUploadError(cause)}
+  },500)
+}
+
+async function insertExternalContent(source) {
+  clearTimeout(imageNormalizationTimer)
+  if(!canUploadImages.value || uploadingImages.value){imageError.value=uploadingImages.value?'图片正在导入，请稍后再试。':'当前账号没有媒体上传权限。';return}
+  const operation=++imageOperation,range=rememberImageRange()
+  uploadingImages.value=true;imageError.value='';imageStatus.value='正在将图片导入公开媒体库…'
+  imageUploadController=new AbortController()
+  try{
+    const content=await prepareImageMarkdown(source,{signal:imageUploadController.signal})
+    if(disposed || operation!==imageOperation || props.readOnly)return
+    if(range?.startContainer.isConnected && host.value?.contains(range.startContainer)){const selection=window.getSelection();selection.removeAllRanges();selection.addRange(range)}
+    vditor.insertMD(content);imageStatus.value='图片已公开并存入媒体库，保存正文后建立内容引用。'
+  }catch(cause){if(!disposed && operation===imageOperation){imageError.value=mediaUploadError(cause);imageStatus.value='图片导入失败，正文未修改；可保存原图后上传。'}}
+  finally{if(operation===imageOperation){uploadingImages.value=false;imageUploadController=null}}
+}
+
 function onEditorPaste(event) {
   const files = Array.from(event.clipboardData?.files || [])
   if (files.length) {
@@ -544,7 +610,12 @@ function onEditorPaste(event) {
     void uploadImageFiles(files)
     return
   }
-  const pasted = event.clipboardData?.getData('text/plain')
+  const html=event.clipboardData?.getData('text/html') || ''
+  const text=event.clipboardData?.getData('text/plain') || ''
+  const pasted=html && /<img\b/i.test(html) ? vditor.html2md(html) : text
+  if(pasted && markdownImages(pasted).length){
+    event.preventDefault();event.stopImmediatePropagation();void insertExternalContent(pasted);return
+  }
   if (!pasted) return
   const normalized = normalizePastedMath(pasted)
   /* null 表示「不是公式」，原样交给 Vditor 的默认粘贴流程 */
@@ -706,7 +777,7 @@ async function mountEditor() {
     outline: { enable: true, position: 'left' },
     toolbar: buildToolbar(),
     input: (value) => {
-      if (!suppressing) emit('update:modelValue', normalizeVditorMarkdown(value))
+      if (!suppressing) { const source=normalizeVditorMarkdown(value);emit('update:modelValue',source);queueInsertedImages(source) }
     },
     after: () => {
       ready = true
@@ -737,6 +808,7 @@ onMounted(() => {
 })
 watch(() => props.readOnly, value => { if (ready) { if (value) vditor.disabled(); else vditor.enable() } })
 watch(() => JSON.stringify([props.editorContext?.accountId,props.editorContext?.module,props.editorContext?.documentId,props.editorContext?.field]), () => {
+  clearTimeout(imageNormalizationTimer);knownImageUrls=new Set(markdownImages(props.modelValue).map(image=>image.url))
   imageOperation++;imageUploadController?.abort();uploadingImages.value=false;failedImages.value=[];imagePercent.value=null;imageError.value='';imageStatus.value='';savedImageRange=null;workbenchRange=null
   tablePickerOpen.value=false;codeGroupOpen.value=false;adapter.reset();workbench.value?.hide()
   menuBar.value?.close()
@@ -755,6 +827,7 @@ watch(
     const current = vditor.getValue()
     if (value !== current && value !== normalizeVditorMarkdown(current)) {
       imageOperation += 1
+      clearTimeout(imageNormalizationTimer);knownImageUrls=new Set(markdownImages(value || '').map(image=>image.url))
       imageUploadController?.abort()
       uploadingImages.value = false
       imageStatus.value = ''
@@ -772,6 +845,7 @@ watch(
  */
 onBeforeUnmount(() => {
   disposed = true
+  clearTimeout(imageNormalizationTimer)
   imageOperation += 1
   imageUploadController?.abort()
   document.removeEventListener('selectionchange', rememberImageRange)
@@ -818,7 +892,7 @@ const lineCount = computed(() => (props.modelValue ? String(props.modelValue).sp
   <div ref="editorShell" class="markdown-editor" :class="{'markdown-editor--fullscreen':fullscreen}" :role="fullscreen?'dialog':undefined" :aria-modal="fullscreen?true:undefined" :aria-label="fullscreen?'全屏文档编辑器':undefined" @keydown.esc="editorEscape">
     <EditorMenuBar ref="menuBar" :ready="editorReady" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :busy="fileTools?.busy || uploadingImages" :fullscreen="fullscreen" :mode="workbench?.documentTools?.mode || 'ir'" :theme="editorTheme" :heading-keys="workbench?.keys" @capture="adapter.remember()" @action="menuAction" />
     <div class="markdown-editor__panels">
-    <EditorWorkbench ref="workbench" compact :adapter="adapter" :host="host" :ready="editorReady" :model-value="modelValue" :context="editorContext" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :pick-image="pickImage" :get-media="getMedia" @action="workbenchAction" />
+    <EditorWorkbench ref="workbench" compact :adapter="adapter" :host="host" :ready="editorReady" :model-value="modelValue" :context="editorContext" :read-only="readOnly" :can-upload="canUploadImages" :can-pick="Boolean(pickImage)" :pick-image="pickImage ? pickPublicImage : null" :get-media="getMedia" @action="workbenchAction" />
     <EditorRecovery ref="recovery" compact :context="editorContext" :source="modelValue" :read-only="readOnly || !editorReady" @restore="applyLocalContent" />
     <p v-if="longDocument" role="status">正文超过 10 万字符，采用源码视图减少大规模渲染开销；阅读效果请使用预览。保存格式仍为 Markdown。</p>
     <EditorDiagnostics ref="diagnostics" compact :context="editorContext" :source="modelValue" :get-media="getMedia" />

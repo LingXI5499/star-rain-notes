@@ -6,7 +6,13 @@
  * 阅读入口：listMedia（列出媒体）；getMedia（读取媒体）；uploadMedia（上传媒体）；archiveMedia（archive媒体的处理函数）；restoreMedia（恢复媒体）。
  */
 
-import { get, patch, post, postForm } from '../../../shared/http'
+import http, { get, patch, post, postForm } from '../../../shared/http'
+
+export const prepareEditorImage = id => post(`/admin/media/editor-images/${encodeURIComponent(id)}/prepare`)
+export const importEditorImage = async (url, options = {}) => {
+  const response = await http.post('/admin/media/editor-images/import', { url }, { timeout: 40000, ...options })
+  return response.data.data
+}
 
 /*
  * 媒体模块后端接口封装。

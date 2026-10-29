@@ -21,6 +21,10 @@ import org.apache.ibatis.annotations.Param;
  */
 @Mapper
 public interface VocabularyMapper {
+    /** New words enter editorial classification without changing their learning identity. */
+    int initializeLibraryMapping(Word word);
+    int deleteLibraryTopics(@Param("id") long id);
+    int deleteLibraryMapping(@Param("id") long id);
     /**
      * themes处理入口。
      *

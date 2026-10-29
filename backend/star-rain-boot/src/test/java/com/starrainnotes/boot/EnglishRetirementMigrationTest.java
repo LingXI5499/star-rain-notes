@@ -36,7 +36,7 @@ class EnglishRetirementMigrationTest extends MapperXmlIntegrationSupport {
         inIsolatedDatabase((connection, schema) -> {
             Flyway flyway = flyway(connection, schema, null);
             flyway.migrate();
-            assertEquals("2.047", flyway.info().current().getVersion().getVersion());
+            assertEquals("2.048", flyway.info().current().getVersion().getVersion());
             assertRetiredSchemaAbsent(connection);
             try (Statement sql = connection.createStatement()) {
                 sql.executeUpdate("INSERT INTO sr_english_reading_article(slug,title,summary,body_markdown,content_origin)"

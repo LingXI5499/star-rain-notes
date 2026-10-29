@@ -320,7 +320,9 @@ try {
     Wait-Http "$apiUrl/api/public/site/config" $started.Backend 'Backend'
     $workerArguments = @('-NoLogo', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File', ('"{0}"' -f $PSCommandPath),
         '-FrontendWorker', '-BackendPort', $BackendPort, '-FrontendPort', $FrontendPort)
-    $frontend = Start-Process -FilePath (Join-Path $PSHOME 'powershell.exe') -ArgumentList $workerArguments -WorkingDirectory $frontendRoot -WindowStyle Hidden -PassThru `
+    $workerShell = Join-Path $PSHOME 'pwsh.exe'
+    if (!(Test-Path -LiteralPath $workerShell)) { $workerShell = Join-Path $PSHOME 'powershell.exe' }
+    $frontend = Start-Process -FilePath $workerShell -ArgumentList $workerArguments -WorkingDirectory $frontendRoot -WindowStyle Hidden -PassThru `
         -RedirectStandardOutput (Join-Path $runtimeRoot 'frontend.log') -RedirectStandardError (Join-Path $runtimeRoot 'frontend-error.log')
     $started.Frontend = Get-ProcessRecord $frontend
     Save-Session $started

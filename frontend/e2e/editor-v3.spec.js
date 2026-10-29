@@ -285,6 +285,8 @@ test('source table editing preserves pipes and image property changes keep the m
   await page.getByLabel('替代文本').fill('更新的结构图')
   await page.getByLabel('图片尺寸').selectOption('full')
   await page.getByRole('button', { name: '应用图片属性', exact: true }).click()
+  await expect(page.locator('.editor-document-tools__panel').filter({has:page.getByLabel('替代文本')})).toHaveCount(0)
+  expect(fixture.preparedImages).toContain('19')
   await page.getByRole('button', { name: '保存正文', exact: true }).click()
   await expect.poll(() => fixture.savedBodies.length).toBe(1)
   const saved = fixture.savedBodies.at(-1)

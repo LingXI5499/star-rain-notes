@@ -65,8 +65,8 @@ const typeLabel = {
   ENGLISH_VOCABULARY_WORD: '英语单词',
   ENGLISH_GRAMMAR_COURSE: '英语语法课程',
   ENGLISH_GRAMMAR_LESSON: '英语语法课时',
-  ENGLISH_READING: '英语阅读',
-  ENGLISH_WRITING: '英语原创写作',
+  ENGLISH_READING: '世界文章',
+  ENGLISH_WRITING: '英语随笔',
 }
 /**
  * 有效类型；通过 computed 建立。

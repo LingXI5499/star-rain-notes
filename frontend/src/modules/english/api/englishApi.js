@@ -552,47 +552,47 @@ export const deleteGrammarLesson = (id) => del(`/admin/english/grammar/lessons/$
 
 /**
  * 列出阅读。
- * 请求入口：get(`${admin ? '/admin' : '/public'}/english/content/reading`)；路径参数的编码和请求体结构保持接口契约。
+ * 请求入口：get(`${admin ? '/admin' : '/public'}/english/world/articles`)；路径参数的编码和请求体结构保持接口契约。
  * @param params 查询参数；默认值、解构字段与可选参数见函数签名。
  * @param admin = false 后台false；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
  */
-export const listReading = (params, admin = false) => get(`${admin ? '/admin' : '/public'}/english/content/reading`, params)
+export const listReading = (params, admin = false) => get(`${admin ? '/admin' : '/public'}/english/world/articles`, params)
 /**
  * 读取阅读。
- * 请求入口：get(`${admin ? '/admin' : '/public'}/english/content/reading/${idOrSlug}`)；路径参数的编码和请求体结构保持接口契约。
+ * 请求入口：get(`${admin ? '/admin' : '/public'}/english/world/articles/${idOrSlug}`)；路径参数的编码和请求体结构保持接口契约。
  * @param idOrSlug 标识或固定链接标识；默认值、解构字段与可选参数见函数签名。
  * @param admin = false 后台false；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
  */
-export const getReading = (idOrSlug, admin = false) => get(`${admin ? '/admin' : '/public'}/english/content/reading/${idOrSlug}`)
+export const getReading = (idOrSlug, admin = false) => get(`${admin ? '/admin' : '/public'}/english/world/articles/${idOrSlug}`)
 /**
  * 创建阅读。
- * 请求入口：post('/admin/english/content/reading')；路径参数的编码和请求体结构保持接口契约。
+ * 请求入口：post('/admin/english/world/articles')；路径参数的编码和请求体结构保持接口契约。
  * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
  */
-export const createReading = payload => post('/admin/english/content/reading', payload)
+export const createReading = payload => post('/admin/english/world/articles', payload)
 /**
  * 更新阅读。
- * 请求入口：put(`/admin/english/content/reading/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * 请求入口：put(`/admin/english/world/articles/${id}`)；路径参数的编码和请求体结构保持接口契约。
  * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
  * @param payload 本次提交的数据；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
  */
-export const updateReading = (id, payload) => put(`/admin/english/content/reading/${id}`, payload)
+export const updateReading = (id, payload) => put(`/admin/english/world/articles/${id}`, payload)
 /**
  * 设置阅读已发布。
- * 请求入口：post(`/admin/english/content/reading/${id}/${published ? 'publish' : 'withdraw'}`)；路径参数的编码和请求体结构保持接口契约。
+ * 请求入口：post(`/admin/english/world/articles/${id}/${published ? 'publish' : 'withdraw'}`)；路径参数的编码和请求体结构保持接口契约。
  * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
  * @param published 已发布；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
  */
-export const setReadingPublished = (id, published) => post(`/admin/english/content/reading/${id}/${published ? 'publish' : 'withdraw'}`)
+export const setReadingPublished = (id, published, rowVersion) => post(`/admin/english/world/articles/${id}/${published ? 'publish' : 'withdraw'}`, rowVersion == null ? undefined : { rowVersion })
 /**
  * 删除阅读。
- * 请求入口：del(`/admin/english/content/reading/${id}`)；路径参数的编码和请求体结构保持接口契约。
+ * 请求入口：del(`/admin/english/world/articles/${id}`)；路径参数的编码和请求体结构保持接口契约。
  * @param id 当前业务对象的数据库标识；默认值、解构字段与可选参数见函数签名。
  * @returns {Promise} 请求完成后的业务数据；接口失败沿共享 HTTP 客户端的错误路径传递。
  */
-export const deleteReading = id => del(`/admin/english/content/reading/${id}`)
+export const deleteReading = id => del(`/admin/english/world/articles/${id}`)

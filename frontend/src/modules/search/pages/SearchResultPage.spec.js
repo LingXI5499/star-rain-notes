@@ -18,8 +18,8 @@ let wrapper
 beforeEach(() => {
   vi.clearAllMocks()
   api.search.mockResolvedValue({ items: [
-    { contentType: 'ENGLISH_VOCABULARY_WORD', contentId: '12', title: 'record', summary: '记录', routePath: '/english/vocabulary/4?q=record' },
-    { contentType: 'ENGLISH_WRITING', contentId: '12', title: 'My article', routePath: '/english/writing/author/writing-12' },
+    { contentType: 'ENGLISH_VOCABULARY_WORD', contentId: '12', title: 'record', summary: '记录', routePath: '/english/vocabulary?status=all&q=record' },
+    { contentType: 'ENGLISH_WRITING', contentId: '12', title: 'My article', routePath: '/english/essays/writing-12' },
   ], total: 2, page: 1, pageSize: 20 })
 })
 afterEach(() => wrapper?.unmount())
@@ -45,9 +45,9 @@ describe('English site search', () => {
     await setup()
     expect(api.search).toHaveBeenCalledWith('record', 'ENGLISH', 1, 20, expect.any(AbortSignal))
     expect(wrapper.text()).toContain('英语单词')
-    expect(wrapper.text()).toContain('英语原创写作')
-    expect(wrapper.find('a[href="/english/vocabulary/4?q=record"]').exists()).toBe(true)
-    expect(wrapper.find('a[href="/english/writing/author/writing-12"]').exists()).toBe(true)
+    expect(wrapper.text()).toContain('英语随笔')
+    expect(wrapper.find('a[href="/english/vocabulary?status=all&q=record"]').exists()).toBe(true)
+    expect(wrapper.find('a[href="/english/essays/writing-12"]').exists()).toBe(true)
   })
   it('switches from all results to English and resets the page', async () => {
     const router = await setup('/search?q=record&page=3')
@@ -59,7 +59,7 @@ describe('English site search', () => {
   })
   it('keeps vocabulary query parameters when linking within the account path tree', async () => {
     await setup('/search?q=record&type=ENGLISH')
-    expect(wrapper.find('a[href="/english/vocabulary/4?q=record"]').exists()).toBe(true)
-    expect(wrapper.find('a[href="/english/writing/author/writing-12"]').exists()).toBe(true)
+    expect(wrapper.find('a[href="/english/vocabulary?status=all&q=record"]').exists()).toBe(true)
+    expect(wrapper.find('a[href="/english/essays/writing-12"]').exists()).toBe(true)
   })
 })

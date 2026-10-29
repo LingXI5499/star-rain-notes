@@ -95,7 +95,7 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         var document = source.findPublished("ENGLISH_READING", id);
         assertNotNull(document);
         assertTrue(document.getSearchableText().contains("中文译文"));
-        assertTrue(document.getRoutePath().startsWith("/english/reading/probe-"));
+        assertTrue(document.getRoutePath().startsWith("/english/world/articles/probe-"));
         execute("UPDATE sr_english_reading_rights SET rights_status='BLOCKED' WHERE article_id=?", id);
         assertNull(source.findPublished("ENGLISH_READING", id));
         execute("UPDATE sr_english_reading_rights SET rights_status='CLEARED' WHERE article_id=?", id);
@@ -121,7 +121,7 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         assertNotNull(document.getPublishedAt());
         assertTrue(document.getSearchableText().contains("keywordprobe"));
         assertTrue(document.getSearchableText().contains("原创译文"));
-        assertTrue(document.getRoutePath().startsWith("/english/writing/author/"));
+        assertTrue(document.getRoutePath().startsWith("/english/essays/"));
         execute("UPDATE sr_english_writing_article SET public_eligible=0 WHERE id=?", id);
         assertNull(source.findPublished("ENGLISH_WRITING", id));
         execute("UPDATE sr_english_writing_article SET public_eligible=1,visibility='PRIVATE' WHERE id=?", id);
@@ -140,7 +140,7 @@ class EnglishSearchSourceMapperTest extends MapperXmlIntegrationSupport {
         long theme = insert("INSERT INTO sr_english_vocabulary_theme(layer,name) VALUES('Probe layer','Search probe theme')");
         long word = insert("INSERT INTO sr_english_vocabulary_word(theme_id,word,translation,examples) VALUES(?,?,?,?)",
             theme, "rock & roll", "摇滚", "[]");
-        assertEquals("/english/vocabulary/" + theme + "?q=rock+%26+roll",
+        assertEquals("/english/vocabulary?status=all&q=rock+%26+roll",
             source.findPublished("ENGLISH_VOCABULARY_WORD", word).getRoutePath());
         assertEquals(word, source.page("ENGLISH_VOCABULARY_WORD", word - 1, 1).getFirst().getId());
         assertTrue(source.page("ENGLISH_VOCABULARY_WORD", word, 1).stream().noneMatch(row -> row.getId() == word));

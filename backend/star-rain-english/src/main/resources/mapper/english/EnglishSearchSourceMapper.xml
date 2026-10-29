@@ -66,7 +66,7 @@
             <when test="type == 'ENGLISH_READING'">
                 SELECT a.id, #{type} AS content_type, a.title, a.summary,
                     CONCAT_WS(' ', a.body_markdown, a.translation_zh_markdown) AS searchable_text,
-                    CONCAT('/english/reading/', a.slug) AS route_path, a.published_at, a.updated_at, NULL AS theme_id
+                    CONCAT('/english/world/articles/', a.slug) AS route_path, a.published_at, a.updated_at, NULL AS theme_id
                 FROM sr_english_reading_article a WHERE a.deleted_at IS NULL
                     AND <include refid="com.starrainnotes.english.reading.mapper.ReadingMapper.publicCheck"/>
             </when>
@@ -76,7 +76,7 @@
             <when test="type == 'ENGLISH_WRITING'">
                 SELECT a.id, #{type} AS content_type, a.title, a.summary,
                     CONCAT_WS(' ', a.body_markdown, a.translation_zh_markdown, a.keywords_json) AS searchable_text,
-                    CONCAT('/english/writing/author/', a.slug) AS route_path, a.published_at, a.updated_at, NULL AS theme_id
+                    CONCAT('/english/essays/', a.slug) AS route_path, a.published_at, a.updated_at, NULL AS theme_id
                 FROM sr_english_writing_article a
                 WHERE <include refid="com.starrainnotes.english.writing.article.mapper.WritingArticleMapper.public"/>
             </when>

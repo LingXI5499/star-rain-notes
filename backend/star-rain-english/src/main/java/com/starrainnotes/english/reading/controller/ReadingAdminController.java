@@ -31,7 +31,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/admin/english/content/reading")
+@RequestMapping({"/api/admin/english/content/reading", "/api/admin/english/world/articles"})
 @PreAuthorize("hasAuthority('english:content-read-admin')")
 public class ReadingAdminController {
     /**

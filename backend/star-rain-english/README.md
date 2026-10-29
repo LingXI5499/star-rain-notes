@@ -4,19 +4,34 @@ V2 英语域重新建模。V1 只用于核对已有内容和用户流程，不�
 
 ## 当前范围
 
-- 词汇：主题、单词和例句。
+- 词汇：两级主题、词条、例句和分类复核；既有单词 ID、发音、学习计划与记忆记录继续使用。
 - 语法：课程、章节和课时。
-- 阅读：文章。
-- 写作：素材和任务。
+- 世界：按 16 个一级分类、144 个主题组织英语文章。
+- 随笔：站长的英语与双语文章，保留本人草稿、版本、完成与公开发布流程。
+
+公开页面采用独立静态站的内容组织与展示方式：词汇使用 18 个一级分类和 167 个二级主题，世界和随笔取代原有阅读、写作入口。旧页面地址保留兼容跳转，查询参数和锚点不丢失。既有私人写作接口和对象级权限保持兼容。
+
+`library` 负责主题导航、词汇映射与随笔筛选；世界文章与随笔复用既有正文校验、版权、所有者、事务、版本和发布服务。新增接口沿用 Session、CSRF 和英语内容权限，不提供匿名管理能力。
+
+## 静态内容对齐
+
+1. 在根目录运行 `node tools/export-static-english.mjs`，生成可审阅的 `backend/content/static-english-content.json`。
+2. 应用 `V2_048__english_library_taxonomy.sql`，只增加分类标识和词汇映射表，不在启动时清理内容。
+3. 运行 `python tools/sync-static-english.py` 预览；`--apply` 在整库备份后事务性同步。配置和备份必须位于当前项目目录内，数据库必须为显式配置的本机 MySQL。
+4. 完成后通过既有维护入口重建搜索和 SEO 投影，核对公开接口、索引链接与受保护数据。
+
+本次来源包含 7,053 条词汇记录、42 节语法；世界与随笔均为 0 篇已发布文章。缺少可靠分类的词条保留为待复核或未分类，不能自动混入已确认主题。旧公开示例撤回公开状态，保留原文、作者和版本；来源增加文章后，需先审核版权与作者归属，再进行文章导入。
+
+后台新增词条先进入未分类队列，可修改正文并关联二级主题；词条编辑与分类修改在同一事务中提交，`rowVersion` 不匹配返回 409。新增与删除沿用既有词库管理入口，并同步维护映射关系。
 
 不引入学习组合、词族关系、词性转化图或相应表。后台名称生成内部 slug，前端不填写 slug。英语内容仍使用全站统一的 Markdown 编辑器。
 
 ## 模块内分层
 
-`overview`、`vocabulary`、`grammar`、`reading`、`writing` 是业务子域。每个子域根据实际职责分别放置 `controller`、`service`、`mapper`、`dto`；概览还含 `entity` 和 `exception`。
+`overview`、`vocabulary`、`grammar`、`reading`、`writing`、`library` 根据实际职责分别放置 `controller`、`service`、`mapper`、`dto`；概览还含 `entity` 和 `exception`。
 
 HTTP 入口只做参数接收、权限声明和响应封装；Service 负责校验、状态转换和事务；Mapper 负责持久化，手写 SQL 放在 `src/main/resources/mapper/english/` 的 MyBatis XML。表结构与权限的 Flyway 版本在 `star-rain-boot/src/main/resources/db/migration/`，不放在本模块根目录。
 
 ## V1 内容导入
 
-项目级一次性导入工具位于 `star-rain-v2/tools/data-migration/english/`。它不是启动迁移，不能在生产库上自动运行；需指定来源库和目标库，并核对数据与媒体引用。此前在隔离库核对到 V1 本机快照：60 个主题、7053 个单词、42 个语法课时、6 篇阅读、6 份写作素材和 6 项写作任务。数据量只代表这次本机快照。
+历史导入材料归档于项目内部的 `history/`，不能作为当前启动入口。历史快照中的主题、词汇和文章数量不代表当前公开目录；当前来源与验证边界见 `docs/deployment/english-library-upgrade.md`。

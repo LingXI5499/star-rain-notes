@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
  * 写作Article后台控制器，属于英语学习模块。
  * 声明 HTTP 路由，接收路径、查询或请求体参数，并将业务结果包装为统一响应。权限和参数校验以本类注解及调用服务为准。
  */
-@RestController @RequiredArgsConstructor @RequestMapping("/api/admin/english/content/writing-articles")
+@RestController @RequiredArgsConstructor @RequestMapping({"/api/admin/english/content/writing-articles", "/api/admin/english/essays/publication"})
 @PreAuthorize("hasAuthority('english:content-publish')")
 public class WritingArticleAdminController {
     /**

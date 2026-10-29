@@ -6,6 +6,7 @@ import com.starrainnotes.boot.StarRainV2Application;
 import com.starrainnotes.search.service.SearchRebuildService;
 import com.starrainnotes.seo.service.SeoRebuildService;
 import com.starrainnotes.tutorial.content.service.TutorialPublicationService;
+import com.starrainnotes.portfolio.service.PortfolioWorkService;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
@@ -93,6 +94,17 @@ public final class PublishStaticContent {
                         Integer published = jdbc.queryForObject("SELECT COUNT(*) FROM sr_blog_post WHERE id=? AND status='PUBLISHED'", Integer.class, id.asLong());
                         if (published == 0) {
                             blogs.publish(id.asLong());
+                        }
+                    }
+                    PortfolioWorkService portfolio = context.getBean(PortfolioWorkService.class);
+                    for (JsonNode id : plan.path("publishPortfolioIds")) {
+                        Integer published = jdbc.queryForObject("SELECT COUNT(*) FROM sr_portfolio_work WHERE id=? AND status='PUBLISHED'", Integer.class, id.asLong());
+                        if (published == 0) {
+                            portfolio.publish(id.asLong());
+                        }
+                        String publishedAt = plan.path("portfolioPublishedAt").path(id.asText()).asText("");
+                        if (!publishedAt.isBlank()) {
+                            jdbc.update("UPDATE sr_portfolio_work SET published_at=? WHERE id=?", java.time.LocalDate.parse(publishedAt).atStartOfDay(), id.asLong());
                         }
                     }
                     Map<String, Object> counts = new LinkedHashMap<>();

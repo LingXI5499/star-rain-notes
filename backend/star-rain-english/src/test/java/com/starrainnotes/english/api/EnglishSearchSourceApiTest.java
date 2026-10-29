@@ -39,7 +39,7 @@ class EnglishSearchSourceApiTest {
         var source = new EnglishSearchSourceApiAdapter(mapper);
         String path = source.findPublished("ENGLISH_VOCABULARY_WORD", 12L).getRoutePath();
         assertTrue(path.length() <= 500);
-        String query = URLDecoder.decode(path.substring(path.indexOf("?q=") + 3), StandardCharsets.UTF_8);
+        String query = URLDecoder.decode(java.util.Arrays.stream(java.net.URI.create("https://example.test" + path).getRawQuery().split("&")).filter(value -> value.startsWith("q=")).findFirst().orElseThrow().substring(2), StandardCharsets.UTF_8);
         assertFalse(query.isBlank());
         assertTrue(document.getTitle().startsWith(query));
         assertEquals(0, query.length() % 2);

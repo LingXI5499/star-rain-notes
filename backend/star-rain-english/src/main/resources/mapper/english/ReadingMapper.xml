@@ -11,12 +11,12 @@
   articleMap：articleMap；结果映射。
   将数据库列装配为 com.starrainnotes.english.reading.dto.ReadingDto$Article；id/result 区分标识字段与普通属性。
 -->
-<resultMap id="articleMap" type="com.starrainnotes.english.reading.dto.ReadingDto$Article"><result property="id" column="id"/><result property="slug" column="slug"/><result property="title" column="title"/><result property="summary" column="summary"/><result property="bodyMarkdown" column="body_markdown"/><result property="translationZhMarkdown" column="translation_zh_markdown"/><result property="primaryTopicId" column="primary_topic_id"/><result property="rowVersion" column="row_version"/><result property="sourceName" column="source_name"/><result property="sourceUrl" column="source_url"/><result property="contentOrigin" column="content_origin"/><result property="publishStatus" column="publish_status"/><result property="sortOrder" column="sort_order"/></resultMap>
+<resultMap id="articleMap" type="com.starrainnotes.english.reading.dto.ReadingDto$Article"><result property="id" column="id"/><result property="slug" column="slug"/><result property="title" column="title"/><result property="summary" column="summary"/><result property="bodyMarkdown" column="body_markdown"/><result property="translationZhMarkdown" column="translation_zh_markdown"/><result property="primaryTopicId" column="primary_topic_id"/><result property="rowVersion" column="row_version"/><result property="sourceName" column="source_name"/><result property="sourceUrl" column="source_url"/><result property="contentOrigin" column="content_origin"/><result property="publishStatus" column="publish_status"/><result property="publishedAt" column="published_at"/><result property="updatedAt" column="updated_at"/><result property="sortOrder" column="sort_order"/></resultMap>
     <!--
       columns：投影列；可复用 SQL 片段。
       通过 include 引用，复用相同列或条件，避免列表与计数的过滤口径分散。
     -->
-    <sql id="columns">a.id,a.slug,a.title,a.summary,a.body_markdown,a.translation_zh_markdown,a.primary_topic_id,a.row_version,a.source_name,a.source_url,a.content_origin,a.publish_status,a.sort_order</sql>
+    <sql id="columns">a.id,a.slug,a.title,a.summary,a.body_markdown,a.translation_zh_markdown,a.primary_topic_id,a.row_version,a.source_name,a.source_url,a.content_origin,a.publish_status,a.published_at,a.updated_at,a.sort_order</sql>
     <!--
       publicCheck：公开检查；可复用 SQL 片段。
       涉及数据表：sr_english_reading_rights；关系条件与可见性筛选由下方 SQL 明确限定。

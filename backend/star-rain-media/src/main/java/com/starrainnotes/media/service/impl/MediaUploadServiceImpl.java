@@ -130,7 +130,10 @@ public class MediaUploadServiceImpl implements MediaUploadService {
         Long uploaderAccountId = currentActorApi.current().getAccountId();
         uploadLimiter.check(uploaderAccountId);
         UploadMetadata metadata = validator.validate(file);
-        MediaAccessLevel level = accessLevel == null ? MediaAccessLevel.PROTECTED : accessLevel;
+        MediaAccessLevel level = accessLevel == null
+                ? (metadata.mediaType() == com.starrainnotes.media.enumeration.MediaType.IMAGE
+                    ? MediaAccessLevel.PUBLIC : MediaAccessLevel.PROTECTED)
+                : accessLevel;
 
         StoredFile storedFile = storeAndDigest(file, metadata);
 
